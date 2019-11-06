@@ -1,0 +1,18 @@
+This package is the public-facing Plasmic runtime (presentational style).  It contains functions
+and type definitions used by generated blackbox presentational code.
+
+If you want to use this for yourself, then first build the output:
+
+  yarn build
+
+Then create a link to this:
+
+  yarn link
+
+Then, from the package where you want to use this package, do:
+
+  yarn link plasmic-p
+
+This basically symlinks a folder in your consumer node_modules folder that links back
+to the output from `yarn build`.  If you update any file here, be sure to run `yarn build`
+again so your updates are reflected in consuming packages.
