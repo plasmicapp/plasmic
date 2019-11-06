@@ -11,8 +11,10 @@ export interface Binding<C extends RenderRoot> {
   wrapped?: (element: React.ReactNode) => React.ReactNode;
   component?: (props: React.ComponentProps<C>) => React.ReactNode;
 }
+const BINDING_KEYS = ["rootClass", "props", "wrapped", "component"];
+
 export type Bindings = {
-  [key: string]: Binding<any> | readonly RepeatedRenderOpts<any>[];
+  [key: string]: Flex<Binding<any>> | readonly (Flex<RepeatedRenderOpts<any>>)[];
 };
 
 export interface RenderOpts<V extends Variants> {
@@ -24,6 +26,13 @@ export interface RenderOpts<V extends Variants> {
 export type RepeatedRenderOpts<C extends RenderRoot> = Binding<C> & {
   bindings?: Bindings;
 }
+const REPEATED_BINDING_KEYS = [...BINDING_KEYS, "bindings"];
+
+// Flex provides a more "flexible" way to specify bindings.  Specifically, you can either:
+// 1. Specify the full Binding
+// 2. Specify a valid ReactNode, which is interpreted as the children
+// 3. Specify dict of props
+export type Flex<B extends Binding<any>> = B | React.ReactNode | undefined | (B extends Binding<infer C> ? React.ComponentProps<C> : never);
 
 export function hasVariant<V extends Variants>(variants: V|undefined, groupName: keyof V, variant: string) {
   if (variants === undefined) {
@@ -41,39 +50,76 @@ export function hasVariant<V extends Variants>(variants: V|undefined, groupName:
   }
 }
 
+
 export function createBindableElement<C extends RenderRoot, OC extends RenderRoot=C>(
-  binding: Binding<OC> | undefined,
+  binding: Flex<Binding<OC>>,
   defaultRoot: C,
   defaultProps: Partial<React.ComponentProps<C>>
 ): React.ReactElement | null {
-  binding = binding || {};
+  const binding2 = deriveBinding(binding);
 
-  const root = binding.rootClass || defaultRoot;
-  const props = {...defaultProps, ...binding.props};
+  const root = binding2.rootClass || defaultRoot;
+  const props = {...defaultProps, ...binding2.props};
 
-  if (binding.component) {
-    return binding.component(props as React.ComponentProps<OC>) as (React.ReactElement | null);
+  if (binding2.component) {
+    return binding2.component(props as React.ComponentProps<OC>) as (React.ReactElement | null);
   } else {
     const element = React.createElement(root, props);
-    if (binding.wrapped) {
-      return binding.wrapped(element) as (React.ReactElement | null);
+    if (binding2.wrapped) {
+      return binding2.wrapped(element) as (React.ReactElement | null);
     } else {
       return element;
     }
   }
 }
 
+function deriveBinding<B extends Binding<any>>(x: Flex<B>, bindingKeys: string[]=BINDING_KEYS): B {
+  if (!x) {
+    // undefined Binding is an empty Binding
+    return {} as B;
+  } else if (isReactNode(x)) {
+    // If ReactNode, then assume this is the children
+    return {props: {children: x}} as B;
+  } else if (typeof(x) === "object") {
+    // If any of the bindingKeys is a key of this object, then assume
+    // this is a full Binding
+    for (const key of bindingKeys) {
+      if (key in x) {
+        return x as unknown as B;
+      }
+    }
+
+    // Else, assume this is just a props object.
+    return { props: x } as unknown as B;
+  }
+
+  throw new Error(`Unexpected binding: ${x}`);
+}
+
+function isReactNode(x: any) {
+  return typeof(x) === "string" || typeof(x) === "number" || React.isValidElement(x);
+}
+
+function deriveRepeatedRenderOpts<Opts extends RepeatedRenderOpts<any>>(x: Flex<Opts>): Opts {
+  return deriveBinding(x, REPEATED_BINDING_KEYS) as Opts;
+}
+
 export function createRepeatedBindableTree<Opts extends RepeatedRenderOpts<any>>(
-  repeatedOpts: readonly Opts[] | undefined,
+  repeatedOpts: readonly (Flex<Opts>)[] | undefined,
   renderFunc: (opts: Opts) => React.ReactNode
 ) {
-  if (!repeatedOpts || repeatedOpts.length === 0) {
+  if (!repeatedOpts) {
     return null;
   }
-  if (repeatedOpts.length === 1) {
-    return renderFunc(repeatedOpts[0]);
+
+  const realOpts = repeatedOpts.filter(opts => !!opts).map(opts => deriveRepeatedRenderOpts(opts));
+  if (realOpts.length === 0) {
+    return null;
   }
-  return React.createElement(React.Fragment, {}, repeatedOpts.map(opts => renderFunc(opts)));
+  if (realOpts.length === 1) {
+    return renderFunc(realOpts[0]);
+  }
+  return React.createElement(React.Fragment, {}, realOpts.map(opts => renderFunc(opts)));
 }
 
 
