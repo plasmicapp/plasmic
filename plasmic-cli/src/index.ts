@@ -7,7 +7,7 @@ import L from "lodash";
 import { stripExtension, writeFileContent } from "./file-utils";
 import {PlasmicConfig, DEFAULT_CONFIG, findConfigFile, fillDefaults, readConfig, writeConfig, getContext, updateConfig, ComponentConfig, PlasmicContext} from "./config-utils";
 import glob from "glob";
-import { replaceImports, isLocalImportPath, parseImportPath } from "./code-utils";
+import { replaceImports, isLocalModulePath } from "./code-utils";
 
 yargs
   .usage('Usage: $0 <command> [options]')
@@ -141,7 +141,7 @@ async function syncProjects(opts: SyncArgs) {
           type: "managed",
           projectId: projectId,
           renderModuleFilePath: renderModuleFileName,
-          importPath: skeletonModuleFileName,
+          importSpec: { modulePath: skeletonModuleFileName },
           cssFilePath: cssFileName,
         };
         writeFileContent(path.join(srcDir, renderModuleFileName), renderModule, {force: false});
@@ -200,12 +200,12 @@ function fixComponentPaths(srcDir: string, compConfig: ComponentConfig, baseName
 
   // If `compConfig.importPath` is still referencing a local file, then we can also best-effort detect
   // whether it has been moved.
-  if (isLocalImportPath(compConfig.importPath)) {
-    const {modulePath, exportName} = parseImportPath(compConfig.importPath);
+  if (isLocalModulePath(compConfig.importSpec.modulePath)) {
+    const modulePath = compConfig.importSpec.modulePath;
     const fuzzyPath = findSrcDirPath(srcDir, modulePath, baseNameToFiles);
     if (fuzzyPath !== modulePath) {
       console.warn(`\tDetected file moved from ${modulePath} to ${fuzzyPath}`);
-      compConfig.importPath = `${fuzzyPath}` + (exportName ? `::${exportName}` : "");
+      compConfig.importSpec.modulePath = fuzzyPath;
     }
   }
 }
@@ -250,9 +250,8 @@ function fixComponentImportStatements(srcDir: string, compConfig: ComponentConfi
   fixFileImportStatements(srcDir, compConfig.renderModuleFilePath, allCompConfigs);
   fixFileImportStatements(srcDir, compConfig.cssFilePath, allCompConfigs);
   // If ComponentConfig.importPath is still a local file, we best-effort also fix up the import statements there.
-  if (isLocalImportPath(compConfig.importPath)) {
-    const {modulePath} = parseImportPath(compConfig.importPath);
-    fixFileImportStatements(srcDir, modulePath, allCompConfigs);
+  if (isLocalModulePath(compConfig.importSpec.modulePath)) {
+    fixFileImportStatements(srcDir, compConfig.importSpec.modulePath, allCompConfigs);
   }
 }
 

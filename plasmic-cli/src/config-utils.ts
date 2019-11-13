@@ -27,6 +27,23 @@ export interface PlasmicConfig {
   components: ComponentConfig[];
 }
 
+/**
+ * Describes how to import a Component
+ */
+export interface ImportSpec {
+  // The import path to use to instantiate this Component.  The modulePath can be:
+  // * An external npm module, like "antd/lib/button"
+  // * An aliased path, like "@app/components/Button"
+  // * A local file, like "components/Button.tsx" (path is relative to srcDir, and file
+  //   extension is fully specified).  If local file is specified, then the module is imported
+  //   via relative path.
+  modulePath: string;
+
+  // If the Component is a named export of the module, then this is the name.  If the Component
+  // is the default export, then this is undefined.
+  exportName?: string;
+}
+
 export interface ComponentConfig {
   id: string;
   name: string;
@@ -39,24 +56,8 @@ export interface ComponentConfig {
   // The file path for the component css file, relative to srcDir.
   cssFilePath: string;
 
-  // The import path to use to instantiate this Component.  The import path can be:
-  // * An external npm module, like "antd/lib/button"
-  // * An aliased path, like "@app/components/Button"
-  // * A local file, like "components/Button.tsx" (path is relative to srcDir, and file
-  //   extension is fully specified).  If local file is specified, then the module is imported
-  //   via relative path.
-  //
-  // If the actual Component is the default export, then just the import path is
-  // sufficient.  If the Component is a named export of the module, then you can specify
-  // the name after the path, followed by "::".
-  //
-  // Here are some valid importPaths:
-  //   antd/lib/button
-  //   antd::Button
-  //   @app/components/Button
-  //   src/components/Button.tsx
-  //   src/components/Button.tsx::PrimaryButton
-  importPath: string;
+  // How to import this Component
+  importSpec: ImportSpec;
 }
 
 /**
