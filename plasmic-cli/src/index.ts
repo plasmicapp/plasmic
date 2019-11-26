@@ -124,7 +124,7 @@ async function syncProjects(opts: SyncArgs) {
   const allCompConfigs = L.keyBy(config.components, c => c.id);
   const baseNameToFiles = buildBaseNameToFiles(context);
 
-  const results = await Promise.all(projectIds.map(projectId => axios.post(`${config.host}/api/v1/site/${projectId}/codegen/components`)));
+  const results = await Promise.all(projectIds.map(projectId => axios.post(`${config.host}/api/v1/projects/${projectId}/code`)));
   for (const [projectId, result] of L.zip(projectIds, results) as [string, AxiosResponse<any>][]) {
     for (const bundle of result.data.results) {
       const {renderModule, skeletonModule, cssRules, renderModuleFileName, skeletonModuleFileName, cssFileName, componentName, id} = bundle;
