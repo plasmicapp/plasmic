@@ -144,4 +144,5 @@ export function updateConfig(context: PlasmicContext, updates: Partial<PlasmicCo
   let config = readConfig(context.configFile);
   config = {...config, ...updates};
   writeConfig(context.configFile, config);
+  context.config = config;
 }

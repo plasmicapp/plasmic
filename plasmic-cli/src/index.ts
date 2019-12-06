@@ -8,6 +8,7 @@ import { stripExtension, writeFileContent } from "./file-utils";
 import {PlasmicConfig, DEFAULT_CONFIG, findConfigFile, fillDefaults, readConfig, writeConfig, getContext, updateConfig, ComponentConfig, PlasmicContext} from "./config-utils";
 import glob from "glob";
 import { replaceImports, isLocalModulePath } from "./code-utils";
+import socketio from "socket.io-client";
 
 yargs
   .usage('Usage: $0 <command> [options]')
@@ -50,21 +51,17 @@ yargs
   .command<SyncArgs>(
     'sync',
     'Syncs designs from Plasmic to local files.',
-    yags => yags
-      .option('projects', {
-        alias: 'p',
-        describe: 'ID of Plasmic projects to sync.  If not specified, defaults to all known projects.',
-        type: 'array',
-        default: [],
-      })
-      .option('components', {
-        alias: 'c',
-        describe: 'Names or IDs of components to sync.  If not specified, defaults to all known components of existing projects, or all components of new projects.',
-        type: "array",
-        default: [],
-      }),
+    yags => configureSyncArgs(yags),
     argv => {
       syncProjects(argv)
+    }
+  )
+  .command<WatchArgs>(
+    'watch',
+    'Watches for updates to projects, and syncs them automatically to local files.',
+    yags => configureSyncArgs(yags),
+    argv => {
+      watchProjects(argv)
     }
   )
   .command<FixImportsArgs>(
@@ -77,6 +74,26 @@ yargs
   .help('h').alias('h', 'help')
   .argv;
 
+function configureSyncArgs(yags: yargs.Argv) {
+  return yags
+  .option('projects', {
+    alias: 'p',
+    describe: 'ID of Plasmic projects to sync.  If not specified, defaults to all known projects.',
+    type: 'array',
+    default: [],
+  })
+  .option('components', {
+    alias: 'c',
+    describe: 'Names or IDs of components to sync.  If not specified, defaults to all known components of existing projects, or all components of new projects.',
+    type: "array",
+    default: [],
+  })
+  .option('include-new', {
+    type: 'boolean',
+    describe: 'If no --components are explicitly specified, then also export new components',
+    default: false,
+  });
+}
 
 interface CommonArgs {}
 
@@ -98,9 +115,34 @@ function initPlasmic(opts: InitArgs) {
   console.log("Successfully created plasmic.json");
 }
 
+interface WatchArgs extends SyncArgs {
+}
+async function watchProjects(opts: WatchArgs) {
+  const context = getContext();
+  const config = context.config;
+  const socket = socketio.connect(config.host, { path: `/api/v1/socket`});
+  const promise = new Promise(resolve => {});
+  const projectIds = opts.projects.length > 0 ? opts.projects : config.components.map(c => c.projectId);
+  if (projectIds.length === 0) {
+    console.error("Don't know which projects to sync; please specify via --projects");
+    process.exit(1);
+  }
+  socket.on("connect", () => {
+    // upon connection, subscribe to changes for argument projects
+    socket.emit("subscribe", {namespace: "projects", projectIds});
+  });
+  socket.on("update", (data: any) => {
+    // Just run syncProjects() for now when any project has been updated
+    console.log(`Project ${data.projectId} updated to revision ${data.revisionNum}`);
+    syncProjects(opts);
+  });
+  await promise;
+}
+
 interface SyncArgs extends CommonArgs {
   projects: readonly string[];
   components: readonly string[];
+  includeNew: boolean;
 }
 async function syncProjects(opts: SyncArgs) {
   const context = getContext();
@@ -115,7 +157,7 @@ async function syncProjects(opts: SyncArgs) {
   // `components` is a list of component names or IDs
   const components = opts.components.length > 0 ? opts.components : config.components.map(c => c.id);
   const shouldSyncComponents = (id: string, name: string) => {
-    if (components.length === 0) {
+    if (components.length === 0 || (opts.components.length === 0 && opts.includeNew)) {
       return true;
     }
     return components.includes(id) || components.includes(name);
@@ -162,6 +204,7 @@ async function syncProjects(opts: SyncArgs) {
 
   // Write the new ComponentConfigs to disk
   updateConfig(context, {components: config.components});
+  console.log("New context", context);
 
   // Now we know config.components are all correct, so we can go ahead and fix up all the import statements
   fixAllImportStatements(context);
