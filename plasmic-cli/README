@@ -2,6 +2,7 @@ Public plasmic cli for syncing designs to local code.
 
 To use in development, you should first:
 
+  yarn install
   yarn build
 
 Which generates the js file in dist/.  Then, you should do
