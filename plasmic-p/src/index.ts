@@ -21,6 +21,7 @@ export interface RenderOpts<V extends Variants> {
   variants?: V;
   bindings?: Bindings;
   slots?: {[key: string]: React.ReactNode};
+  args?: {[key: string]: any};
 }
 
 export type RepeatedRenderOpts<C extends RenderRoot> = Binding<C> & {
