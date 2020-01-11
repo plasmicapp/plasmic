@@ -157,9 +157,19 @@ async function watchProjects(opts: WatchArgs) {
   const context = getContext();
   const config = context.config;
   const auth = context.auth;
-  const socket = socketio.connect(auth.host, { path: `/api/v1/socket`});
+  const socket = socketio.connect(auth.host, {
+    path: `/api/v1/socket`,
+    transportOptions: {
+      polling: {
+        extraHeaders: {
+          'x-plasmic-api-user': auth.user,
+          'x-plasmic-api-token': auth.token,
+        }
+      }
+    }
+  });
   const promise = new Promise(resolve => {});
-  const projectIds = opts.projects.length > 0 ? opts.projects : config.components.map(c => c.projectId);
+  const projectIds = L.uniq(opts.projects.length > 0 ? opts.projects : config.components.map(c => c.projectId));
   if (projectIds.length === 0) {
     console.error("Don't know which projects to sync; please specify via --projects");
     process.exit(1);
@@ -168,6 +178,10 @@ async function watchProjects(opts: WatchArgs) {
     // upon connection, subscribe to changes for argument projects
     socket.emit("subscribe", {namespace: "projects", projectIds});
   });
+  socket.on("error", (data: any) => {
+    console.error(data);
+    process.exit(1);
+  })
   socket.on("update", (data: any) => {
     // Just run syncProjects() for now when any project has been updated
     console.log(`Project ${data.projectId} updated to revision ${data.revisionNum}`);
