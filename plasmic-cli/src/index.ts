@@ -1,14 +1,17 @@
 #!/usr/bin/env node
 import yargs from "yargs";
 import fs from "fs";
+import os from "os";
 import path from "path";
 import axios, { AxiosResponse } from "axios";
 import L from "lodash";
 import { stripExtension, writeFileContent } from "./file-utils";
-import {PlasmicConfig, DEFAULT_CONFIG, findConfigFile, fillDefaults, readConfig, writeConfig, getContext, updateConfig, ComponentConfig, PlasmicContext} from "./config-utils";
+import {PlasmicConfig, DEFAULT_CONFIG, findConfigFile, fillDefaults, readConfig, writeConfig, getContext, updateConfig, ComponentConfig, PlasmicContext, findAuthFile, writeAuth, AUTH_FILE_NAME, CONFIG_FILE_NAME} from "./config-utils";
 import glob from "glob";
 import { replaceImports, isLocalModulePath } from "./code-utils";
 import socketio from "socket.io-client";
+import {ComponentBundle} from "./api";
+import inquirer from "inquirer";
 
 yargs
   .usage('Usage: $0 <command> [options]')
@@ -19,7 +22,7 @@ yargs
       .option('host', {
         describe: 'Plasmic host to use',
         type: 'string',
-        default: DEFAULT_CONFIG.host,
+        default: 'https://prod.plasmic.app',
       })
       .option("platform", {
         describe: "Target platform to generate code for",
@@ -105,13 +108,46 @@ interface InitArgs extends CommonArgs {
   style: "css",
   srcDir: string;
 }
-function initPlasmic(opts: InitArgs) {
+async function initPlasmic(opts: InitArgs) {
   const configFile = findConfigFile(process.cwd(), {traverseParents: false});
   if (configFile) {
     console.error("You already have a plasmic.json file!  Please either delete or edit it directly.")
     return;
   }
-  writeConfig(path.join(process.cwd(), 'plasmic.json'), createInitConfig(opts));
+
+  const authFile = findAuthFile(process.cwd(), {traverseParents: true});
+  if (!authFile) {
+    const initial = await inquirer.prompt([
+      {
+        name: "host",
+        message: "Host of the Plasmic instance to use",
+        default: "http://localhost:3003",
+      },
+    ]);
+    const auth = await inquirer.prompt([
+      {
+        name: "user",
+        message: "Your plasmic user email",
+      },
+      {
+        name: "token",
+        message: `Your personal access token (create one at ${initial.host}/self/settings)`,
+      }
+    ]);
+
+    const newAuthFile = path.join(os.homedir(), AUTH_FILE_NAME);
+    writeAuth(newAuthFile, {
+      host: initial.host,
+      user: auth.user,
+      token: auth.token
+    });
+
+    console.log(`Successfully created Plasmic credentials file at ${newAuthFile}`);
+  } else {
+    console.log(`Using existing Plasmic credentials at ${authFile}`);
+  }
+
+  writeConfig(path.join(process.cwd(), CONFIG_FILE_NAME), createInitConfig(opts));
   console.log("Successfully created plasmic.json");
 }
 
@@ -120,7 +156,8 @@ interface WatchArgs extends SyncArgs {
 async function watchProjects(opts: WatchArgs) {
   const context = getContext();
   const config = context.config;
-  const socket = socketio.connect(config.host, { path: `/api/v1/socket`});
+  const auth = context.auth;
+  const socket = socketio.connect(auth.host, { path: `/api/v1/socket`});
   const promise = new Promise(resolve => {});
   const projectIds = opts.projects.length > 0 ? opts.projects : config.components.map(c => c.projectId);
   if (projectIds.length === 0) {
@@ -146,6 +183,7 @@ interface SyncArgs extends CommonArgs {
 }
 async function syncProjects(opts: SyncArgs) {
   const context = getContext();
+  const api = context.api;
   const config = context.config;
   const srcDir = path.join(context.rootDir, config.srcDir);
   const projectIds = opts.projects.length > 0 ? opts.projects : config.components.map(c => c.projectId);
@@ -166,9 +204,9 @@ async function syncProjects(opts: SyncArgs) {
   const allCompConfigs = L.keyBy(config.components, c => c.id);
   const baseNameToFiles = buildBaseNameToFiles(context);
 
-  const results = await Promise.all(projectIds.map(projectId => axios.post(`${config.host}/api/v1/projects/${projectId}/code`)));
-  for (const [projectId, result] of L.zip(projectIds, results) as [string, AxiosResponse<any>][]) {
-    for (const bundle of result.data.results) {
+  const results = await Promise.all(projectIds.map(projectId => api.projectComponents(projectId)));
+  for (const [projectId, bundles] of L.zip(projectIds, results) as [string, ComponentBundle[]][]) {
+    for (const bundle of bundles) {
       const {renderModule, skeletonModule, cssRules, renderModuleFileName, skeletonModuleFileName, cssFileName, componentName, id} = bundle;
       if (!shouldSyncComponents(id, componentName)) {
         continue;
@@ -307,7 +345,6 @@ function fixFileImportStatements(srcDir: string, srcDirFilePath: string, allComp
 
 function createInitConfig(opts: InitArgs): PlasmicConfig {
   return fillDefaults({
-    host: opts.host,
     srcDir: opts.srcDir,
     scheme: opts.scheme,
     style: opts.style,

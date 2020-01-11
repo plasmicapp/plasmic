@@ -1,12 +1,15 @@
 import fs from "fs";
 import path from "path";
+import os from "os";
 import L from "lodash";
 import { writeFileContent } from "./file-utils";
+import { PlasmicApi } from "./api";
+
+export const AUTH_FILE_NAME = ".plasmic.auth";
+export const CONFIG_FILE_NAME = "plasmic.json";
+
 
 export interface PlasmicConfig {
-  // Plasmic web app host
-  host: string;
-
   // Target platform to generate code for
   platform: "react";
 
@@ -73,10 +76,30 @@ export interface PlasmicContext {
 
   // The parsed PlasmicConfig
   config: PlasmicConfig;
+
+  // The parsed AuthConfig
+  auth: AuthConfig;
+
+  // Api instance to use for talking to Plasmic
+  api: PlasmicApi;
+}
+
+export interface AuthConfig {
+  // Plasmic web app host
+  host: string;
+
+  // Plasmic user email
+  user: string;
+
+  // Plasmic API token
+  token: string;
+
+  // If Plasmic instance is gated by basic auth, the basic auth user and password
+  basicAuthUser?: string;
+  basicAuthPassword?: string;
 }
 
 export const DEFAULT_CONFIG: PlasmicConfig = {
-  host: "http://localhost:3003",
   platform: "react",
   lang: "ts",
   scheme: "blackbox",
@@ -94,15 +117,38 @@ export const DEFAULT_CONFIG: PlasmicConfig = {
 export function findConfigFile(dir: string, opts: {
   traverseParents?: boolean
 }): string|undefined {
+  return findFile(dir, f => f === CONFIG_FILE_NAME, opts);
+}
+
+export function findAuthFile(dir: string, opts: {
+  traverseParents?: boolean
+}) {
+  let file = findFile(dir, f => f === AUTH_FILE_NAME, opts);
+  if (!file) {
+    file = findFile(os.homedir(), f => f === AUTH_FILE_NAME, {traverseParents: false});
+  }
+  return file;
+}
+
+/**
+ * Finds the full path to the first file satisfying `pred` in `dir`.  If
+ * `opts.traverseParents` is set to true, then will also look in ancestor
+ * directories until the plasmic.json file is found.  If none is found,
+ * returns undefined.
+ */
+function findFile(dir: string, pred: (name: string) => boolean, opts: {
+  traverseParents?: boolean
+}): string | undefined {
   const files = fs.readdirSync(dir);
-  const config = files.find(f => f === "plasmic.json");
-  if (config) {
-    return path.join(dir, config);
+  const found = files.find(f => pred(f));
+  if (found) {
+    return path.join(dir, found);
   }
   if (dir === '/' || !opts.traverseParents) {
     return undefined;
   }
-  return findConfigFile(path.dirname(dir), opts);
+  return findFile(path.dirname(dir), pred, opts);
+
 }
 
 /**
@@ -119,10 +165,18 @@ export function getContext(): PlasmicContext {
     console.error('No plasmic.json file found; please run `plasmic init` first.');
     process.exit(1);
   }
+  const authFile = findAuthFile(process.cwd(), {traverseParents: true});
+  if (!authFile) {
+    console.log("No .plasmic.auth file found with Plasmic credentials; please run `plasmic init` first.");
+    process.exit(1);
+  }
+  const auth = readAuth(authFile);
   return {
     config: readConfig(configFile),
     configFile,
-    rootDir: path.dirname(configFile)
+    rootDir: path.dirname(configFile),
+    auth,
+    api: new PlasmicApi(auth),
   };
 }
 
@@ -136,8 +190,22 @@ export function readConfig(configFile: string) {
   }
 }
 
+export function readAuth(authFile: string) {
+  try {
+    return JSON.parse(fs.readFileSync(authFile).toString()) as AuthConfig;
+  } catch (e) {
+    console.error(`Error encountered reading plasmic credentials at ${authFile}: ${e}`);
+    process.exit(1);
+  }
+}
+
 export function writeConfig(configFile: string, config: PlasmicConfig) {
   writeFileContent(configFile, JSON.stringify(config, undefined, 2), {force: true});
+}
+
+export function writeAuth(authFile: string, config: AuthConfig) {
+  writeFileContent(authFile, JSON.stringify(config, undefined, 2), {force: true});
+  fs.chmodSync(authFile, "600");
 }
 
 export function updateConfig(context: PlasmicContext, updates: Partial<PlasmicConfig>) {

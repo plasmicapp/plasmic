@@ -12,6 +12,7 @@
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",
+    "@types/inquirer": "^6.5.0",
     "@types/lodash": "^4.14.146",
     "@types/node": "^12.12.6",
     "@types/socket.io-client": "^1.4.32",
@@ -24,6 +25,7 @@
     "chalk": "^2.4.2",
     "fs": "^0.0.1-security",
     "glob": "^7.1.6",
+    "inquirer": "^7.0.3",
     "lodash": "^4.17.15",
     "path": "^0.12.7",
     "socket.io-client": "^2.3.0",
