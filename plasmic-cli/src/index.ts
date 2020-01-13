@@ -15,6 +15,12 @@ import inquirer from "inquirer";
 
 yargs
   .usage('Usage: $0 <command> [options]')
+  .option('auth', {
+    describe: 'Plasmic auth file to use; by default, uses ~/.plasmic.auth, or the first .plasmic.auth file found in current and parent directories',
+  })
+  .option('config', {
+    describe: "Plasmic config file to use; by default, uses the first plasmic.json file found in the current or parent directories",
+  })
   .command<InitArgs>(
     'init',
     'Initializes Plasmic for a project.',
@@ -98,7 +104,10 @@ function configureSyncArgs(yags: yargs.Argv) {
   });
 }
 
-interface CommonArgs {}
+export interface CommonArgs {
+  auth?: string;
+  config?: string;
+}
 
 interface InitArgs extends CommonArgs {
   host: string;
@@ -109,14 +118,14 @@ interface InitArgs extends CommonArgs {
   srcDir: string;
 }
 async function initPlasmic(opts: InitArgs) {
-  const configFile = findConfigFile(process.cwd(), {traverseParents: false});
-  if (configFile) {
+  const configFile = opts.config || findConfigFile(process.cwd(), {traverseParents: false});
+  if (configFile && fs.existsSync(configFile)) {
     console.error("You already have a plasmic.json file!  Please either delete or edit it directly.")
     return;
   }
 
-  const authFile = findAuthFile(process.cwd(), {traverseParents: true});
-  if (!authFile) {
+  const authFile = opts.auth || findAuthFile(process.cwd(), {traverseParents: true});
+  if (!authFile || !fs.existsSync(authFile)) {
     const initial = await inquirer.prompt([
       {
         name: "host",
@@ -135,7 +144,7 @@ async function initPlasmic(opts: InitArgs) {
       }
     ]);
 
-    const newAuthFile = path.join(os.homedir(), AUTH_FILE_NAME);
+    const newAuthFile = opts.auth || path.join(os.homedir(), AUTH_FILE_NAME);
     writeAuth(newAuthFile, {
       host: initial.host,
       user: auth.user,
@@ -147,14 +156,15 @@ async function initPlasmic(opts: InitArgs) {
     console.log(`Using existing Plasmic credentials at ${authFile}`);
   }
 
-  writeConfig(path.join(process.cwd(), CONFIG_FILE_NAME), createInitConfig(opts));
+  const newConfigFile = opts.config || path.join(process.cwd(), CONFIG_FILE_NAME);
+  writeConfig(newConfigFile, createInitConfig(opts));
   console.log("Successfully created plasmic.json");
 }
 
 interface WatchArgs extends SyncArgs {
 }
 async function watchProjects(opts: WatchArgs) {
-  const context = getContext();
+  const context = getContext(opts);
   const config = context.config;
   const socket = context.api.connectSocket();
   const promise = new Promise(resolve => {});
@@ -187,7 +197,7 @@ interface SyncArgs extends CommonArgs {
   includeNew: boolean;
 }
 async function syncProjects(opts: SyncArgs) {
-  const context = getContext();
+  const context = getContext(opts);
   const api = context.api;
   const config = context.config;
   const srcDir = path.join(context.rootDir, config.srcDir);
@@ -254,7 +264,7 @@ async function syncProjects(opts: SyncArgs) {
 
 interface FixImportsArgs extends CommonArgs {}
 function fixImports(opts: FixImportsArgs) {
-  const context = getContext();
+  const context = getContext(opts);
   const config = context.config;
   const srcDir = path.join(context.rootDir, config.srcDir);
   const baseNameToFiles = buildBaseNameToFiles(context);

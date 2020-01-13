@@ -4,6 +4,7 @@ import os from "os";
 import L from "lodash";
 import { writeFileContent } from "./file-utils";
 import { PlasmicApi } from "./api";
+import {CommonArgs} from "./index";
 
 export const AUTH_FILE_NAME = ".plasmic.auth";
 export const CONFIG_FILE_NAME = "plasmic.json";
@@ -148,7 +149,6 @@ function findFile(dir: string, pred: (name: string) => boolean, opts: {
     return undefined;
   }
   return findFile(path.dirname(dir), pred, opts);
-
 }
 
 /**
@@ -159,13 +159,13 @@ export function fillDefaults(config: Partial<PlasmicConfig>): PlasmicConfig {
   return L.defaults(config, DEFAULT_CONFIG);
 }
 
-export function getContext(): PlasmicContext {
-  const configFile = findConfigFile(process.cwd(), {traverseParents: true});
+export function getContext(args: CommonArgs): PlasmicContext {
+  const configFile = args.config || findConfigFile(process.cwd(), {traverseParents: true});
   if (!configFile) {
     console.error('No plasmic.json file found; please run `plasmic init` first.');
     process.exit(1);
   }
-  const authFile = findAuthFile(process.cwd(), {traverseParents: true});
+  const authFile = args.auth || findAuthFile(process.cwd(), {traverseParents: true});
   if (!authFile) {
     console.log("No .plasmic.auth file found with Plasmic credentials; please run `plasmic init` first.");
     process.exit(1);
@@ -181,6 +181,10 @@ export function getContext(): PlasmicContext {
 }
 
 export function readConfig(configFile: string) {
+  if (!fs.existsSync(configFile)) {
+    console.error(`No Plasmic config file found at ${configFile}`);
+    process.exit(1);
+  }
   try {
     const result = JSON.parse(fs.readFileSync(configFile!).toString()) as PlasmicConfig;
     return fillDefaults(result);
@@ -191,6 +195,10 @@ export function readConfig(configFile: string) {
 }
 
 export function readAuth(authFile: string) {
+  if (!fs.existsSync(authFile)) {
+    console.error(`No Plasmic auth file found at ${authFile}`);
+    process.exit(1);
+  }
   try {
     return JSON.parse(fs.readFileSync(authFile).toString()) as AuthConfig;
   } catch (e) {
