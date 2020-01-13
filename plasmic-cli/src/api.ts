@@ -1,5 +1,6 @@
 import { AuthConfig } from "./config-utils";
 import axios, {AxiosResponse, AxiosError} from "axios";
+import socketio from "socket.io-client";
 
 export interface ComponentBundle {
   renderModule: string;
@@ -22,13 +23,22 @@ export class PlasmicApi {
     return result.data.results as ComponentBundle[];
   }
 
+  connectSocket() {
+    const socket = socketio.connect(this.auth.host, {
+      path: `/api/v1/socket`,
+      transportOptions: {
+        polling: {
+          extraHeaders: this.makeHeaders()
+        }
+      }
+    });
+    return socket;
+  }
+
   private async post(url: string, data?: any) {
     try {
       return await axios.post(url, data, {
-        headers: {
-          "x-plasmic-api-user": this.auth.user,
-          "x-plasmic-api-token": this.auth.token,
-        }
+        headers: this.makeHeaders()
       });
     } catch (e) {
       const error = e as AxiosError;
@@ -38,5 +48,19 @@ export class PlasmicApi {
       }
       throw e;
     }
+  }
+
+  private makeHeaders() {
+    const headers: Record<string, string> = {
+      "x-plasmic-api-user": this.auth.user,
+      "x-plasmic-api-token": this.auth.token,
+    };
+
+    if (this.auth.basicAuthUser && this.auth.basicAuthPassword) {
+      const authString = Buffer.from(`${this.auth.basicAuthUser}:${this.auth.basicAuthPassword}`).toString("base64");
+      headers["Authorization"] = `Basic ${authString}`;
+    }
+
+    return headers;
   }
 }

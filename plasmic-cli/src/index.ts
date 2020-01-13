@@ -156,18 +156,7 @@ interface WatchArgs extends SyncArgs {
 async function watchProjects(opts: WatchArgs) {
   const context = getContext();
   const config = context.config;
-  const auth = context.auth;
-  const socket = socketio.connect(auth.host, {
-    path: `/api/v1/socket`,
-    transportOptions: {
-      polling: {
-        extraHeaders: {
-          'x-plasmic-api-user': auth.user,
-          'x-plasmic-api-token': auth.token,
-        }
-      }
-    }
-  });
+  const socket = context.api.connectSocket();
   const promise = new Promise(resolve => {});
   const projectIds = L.uniq(opts.projects.length > 0 ? opts.projects : config.components.map(c => c.projectId));
   if (projectIds.length === 0) {
@@ -187,6 +176,8 @@ async function watchProjects(opts: WatchArgs) {
     console.log(`Project ${data.projectId} updated to revision ${data.revisionNum}`);
     syncProjects(opts);
   });
+
+  console.log("Watching projects...");
   await promise;
 }
 
@@ -256,7 +247,6 @@ async function syncProjects(opts: SyncArgs) {
 
   // Write the new ComponentConfigs to disk
   updateConfig(context, {components: config.components});
-  console.log("New context", context);
 
   // Now we know config.components are all correct, so we can go ahead and fix up all the import statements
   fixAllImportStatements(context);
