@@ -2,7 +2,7 @@ import _classNames from "classnames";
 import React from "react";
 
 export type ElementTag = keyof JSX.IntrinsicElements;
-export type RenderRoot = ElementTag | React.ComponentType;
+export type RenderRoot = ElementTag | React.ComponentType<any>;
 export type Variants = {[key: string]: string | string[] | undefined | {[val: string]: boolean}};
 
 export interface Binding<C extends RenderRoot> {
@@ -33,7 +33,9 @@ const REPEATED_BINDING_KEYS = [...BINDING_KEYS, "bindings"];
 // 1. Specify the full Binding
 // 2. Specify a valid ReactNode, which is interpreted as the children
 // 3. Specify dict of props
-export type Flex<B extends Binding<any>> = B | React.ReactNode | undefined | (B extends Binding<infer C> ? React.ComponentProps<C> : never);
+// Note: We do Exclude<React.ReactNode, {}> because React.ReactNode includes React.ReactFragment,
+// which allows {}, which would make Flex<Binding> allow any dictionary, defeating the purpose!
+export type Flex<B extends Binding<any>> = B | Exclude<React.ReactNode, {}> | undefined | (B extends Binding<infer C> ? React.ComponentProps<C> : never);
 
 export function hasVariant<V extends Variants>(variants: V|undefined, groupName: keyof V, variant: string) {
   if (variants === undefined) {
