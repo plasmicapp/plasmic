@@ -29,6 +29,15 @@ export interface PlasmicConfig {
 
   // Configs for each component we have synced.
   components: ComponentConfig[];
+
+  projects: ProjectConfig[];
+}
+
+export interface ProjectConfig {
+  projectId: string;
+  contextFilePath: string;
+  fontsFilePath: string;
+  contextTypeName: string;
 }
 
 /**
@@ -106,7 +115,8 @@ export const DEFAULT_CONFIG: PlasmicConfig = {
   scheme: "blackbox",
   style: "css",
   srcDir: ".",
-  components: []
+  components: [],
+  projects: []
 };
 
 /**

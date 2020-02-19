@@ -13,6 +13,20 @@ export interface ComponentBundle {
   id: string;
 }
 
+export interface ProjectConfig {
+  fontsFileName: string;
+  fontsModule: string;
+  contextFileName: string;
+  contextModule: string;
+  contextTypeName: string;
+  projectId: string;
+}
+
+export interface ProjectBundle {
+  results: ComponentBundle[];
+  projectConfig: ProjectConfig;
+}
+
 export class PlasmicApi {
   constructor(private auth: AuthConfig) {
 
@@ -20,7 +34,7 @@ export class PlasmicApi {
 
   async projectComponents(projectId: string) {
     const result = await this.post(`${this.auth.host}/api/v1/projects/${projectId}/code`);
-    return result.data.results as ComponentBundle[];
+    return result.data as ProjectBundle;
   }
 
   connectSocket() {
