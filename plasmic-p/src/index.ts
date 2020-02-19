@@ -3,7 +3,7 @@ import React from "react";
 
 export type ElementTag = keyof JSX.IntrinsicElements;
 export type RenderRoot = ElementTag | React.ComponentType<any>;
-export type Variants = {[key: string]: string | string[] | undefined | {[val: string]: boolean}};
+export type Variants = Record<string, string | string[] | undefined | {[val: string]: boolean}>;
 
 export interface Binding<C extends RenderRoot> {
   rootClass?: C;
@@ -13,29 +13,32 @@ export interface Binding<C extends RenderRoot> {
 }
 const BINDING_KEYS = ["rootClass", "props", "wrapped", "component"];
 
-export type Bindings = {
-  [key: string]: Flex<Binding<any>> | readonly (Flex<RepeatedRenderOpts<any>>)[];
+export type Bindings = Record<string, any>;
+export type Slots = Record<string, React.ReactNode>;
+export type Args = Record<string, any>;
+
+export interface RenderOpts<V extends Variants, B extends Bindings, S extends Slots, A extends Args> {
+  bindings?: B;
+  variants?: V;
+  slots?: S;
+  args?: A;
+}
+
+export interface RepeatedRenderOpts<B extends Bindings> {
+  bindings?: B;
 };
 
-export interface RenderOpts<V extends Variants> {
-  variants?: V;
-  bindings?: Bindings;
-  slots?: {[key: string]: React.ReactNode};
-  args?: {[key: string]: any};
-}
-
-export type RepeatedRenderOpts<C extends RenderRoot> = Binding<C> & {
-  bindings?: Bindings;
-}
-const REPEATED_BINDING_KEYS = [...BINDING_KEYS, "bindings"];
+const REPEATED_BINDING_KEYS = ["bindings"];
 
 // Flex provides a more "flexible" way to specify bindings.  Specifically, you can either:
 // 1. Specify the full Binding
 // 2. Specify a valid ReactNode, which is interpreted as the children
 // 3. Specify dict of props
-// Note: We do Exclude<React.ReactNode, {}> because React.ReactNode includes React.ReactFragment,
-// which allows {}, which would make Flex<Binding> allow any dictionary, defeating the purpose!
-export type Flex<B extends Binding<any>> = B | Exclude<React.ReactNode, {}> | undefined | (B extends Binding<infer C> ? React.ComponentProps<C> : never);
+// Note: We use React.ReactChild instead of React.ReactNode because we don't want to include
+// React.ReactFragment, which includes {}, which would allow any object to be passed in,
+// defeating any attempt to type-check!
+export type Flex<B extends Binding<any>> = B | React.ReactChild | null | undefined | (B extends Binding<infer C> ? React.ComponentProps<C> : never);
+export type FlexRepeated<R extends RepeatedRenderOpts<any>> = R | (R extends RepeatedRenderOpts<infer SubB> ? SubB : never);
 
 export function hasVariant<V extends Variants>(variants: V|undefined, groupName: keyof V, variant: string) {
   if (variants === undefined) {
@@ -53,7 +56,6 @@ export function hasVariant<V extends Variants>(variants: V|undefined, groupName:
   }
 }
 
-
 export function createBindableElement<C extends RenderRoot, OC extends RenderRoot=C>(
   binding: Flex<Binding<OC>>,
   defaultRoot: C,
@@ -62,7 +64,7 @@ export function createBindableElement<C extends RenderRoot, OC extends RenderRoo
   const binding2 = deriveBinding(binding);
 
   const root = binding2.rootClass || defaultRoot;
-  const props = {...defaultProps, ...binding2.props};
+  const props = mergeProps(defaultProps, binding2.props);
 
   if (binding2.component) {
     return binding2.component(props as React.ComponentProps<OC>) as (React.ReactElement | null);
@@ -76,7 +78,39 @@ export function createBindableElement<C extends RenderRoot, OC extends RenderRoo
   }
 }
 
-function deriveBinding<B extends Binding<any>>(x: Flex<B>, bindingKeys: string[]=BINDING_KEYS): B {
+function mergeProps(defaults: Record<string, any>, overrides?: Record<string, any>): Record<string, any> {
+  if (!overrides) {
+    return defaults;
+  }
+
+  const result = {...defaults};
+
+  for (const key of Object.keys(overrides)) {
+    result[key] = mergePropVals(key, defaults[key], overrides[key]);
+  }
+
+  return result;
+}
+
+function mergePropVals(name: string, val1: any, val2: any): any {
+  if (typeof(val1) === "function" && typeof(val2) === "function") {
+    return (...args: any[]) => {
+      val1(...args);
+      return val2(...args);
+    };
+  } else if (name === "className" && val1 && val2) {
+    return `${val1} ${val2}`;
+  } else if (name === "style" && val1 && val2) {
+    return {
+      ...val1,
+      ...val2
+    };
+  } else {
+    return val2;
+  }
+}
+
+export function deriveBinding<B extends Binding<any>>(x: Flex<B>, bindingKeys: string[]=BINDING_KEYS): B {
   if (!x) {
     // undefined Binding is an empty Binding
     return {} as B;
@@ -103,12 +137,19 @@ function isReactNode(x: any) {
   return typeof(x) === "string" || typeof(x) === "number" || React.isValidElement(x);
 }
 
-function deriveRepeatedRenderOpts<Opts extends RepeatedRenderOpts<any>>(x: Flex<Opts>): Opts {
-  return deriveBinding(x, REPEATED_BINDING_KEYS) as Opts;
+function deriveRepeatedRenderOpts<Opts extends RepeatedRenderOpts<any>>(x: FlexRepeated<Opts>): Opts {
+  for (const key of REPEATED_BINDING_KEYS) {
+    if (key in x) {
+      return x as Opts;
+    }
+  }
+  return {
+    bindings: x
+  } as Opts;
 }
 
 export function createRepeatedBindableTree<Opts extends RepeatedRenderOpts<any>>(
-  repeatedOpts: readonly (Flex<Opts>)[] | undefined,
+  repeatedOpts: readonly (FlexRepeated<Opts>)[] | undefined,
   renderFunc: (opts: Opts) => React.ReactNode
 ) {
   if (!repeatedOpts) {
@@ -126,11 +167,11 @@ export function createRepeatedBindableTree<Opts extends RepeatedRenderOpts<any>>
 }
 
 
-export interface RenderFunc<V extends Variants> {
-  (opts: RenderOpts<V>): React.ReactElement | null;
+export interface RenderFunc<V extends Variants, B extends Bindings, S extends Slots, A extends Args> {
+  (opts: RenderOpts<V, B, S, A>): React.ReactElement | null;
 }
 
-export function createPlasmicWrapper<V extends Variants, RF extends RenderFunc<V>>(render: RF) {
+export function createPlasmicWrapper<RF extends any>(render: RF) {
   const wrap = <P extends { render: RF }>(Component: React.ComponentType<P>) => {
     const Wrapper = (props: Omit<P, "render">) => {
       const allProps = {...props, render} as any as P;
