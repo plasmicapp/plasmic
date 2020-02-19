@@ -110,7 +110,7 @@ function mergePropVals(name: string, val1: any, val2: any): any {
   }
 }
 
-export function deriveBinding<B extends Binding<any>>(x: Flex<B>, bindingKeys: string[]=BINDING_KEYS): B {
+function deriveBinding<B extends Binding<any>>(x: Flex<B>, bindingKeys: string[]=BINDING_KEYS): B {
   if (!x) {
     // undefined Binding is an empty Binding
     return {} as B;
@@ -186,3 +186,21 @@ export function createPlasmicWrapper<RF extends any>(render: RF) {
 }
 
 export const classNames = _classNames;
+
+export function wrapFlexChild(children: React.ReactNode): React.ReactNode {
+  if (Array.isArray(children)) {
+    return children.map(child => wrapFlexChild(child));
+  } else if (React.isValidElement(children)) {
+    if (children.type === React.Fragment) {
+      return wrapFlexChild(children.props.children);
+    }
+    const className = `__wab_flex-item ${children.props.className}`;
+    return React.createElement(
+      "div",
+      { className },
+      children
+    );
+  } else {
+    return children;
+  }
+}
