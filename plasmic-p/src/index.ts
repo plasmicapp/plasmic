@@ -5,40 +5,58 @@ export type ElementTag = keyof JSX.IntrinsicElements;
 export type RenderRoot = ElementTag | React.ComponentType<any>;
 export type Variants = Record<string, string | string[] | undefined | {[val: string]: boolean}>;
 
-export interface Binding<C extends RenderRoot> {
-  rootClass?: C;
-  props?: React.ComponentProps<C>;
-  wrapped?: (element: React.ReactNode) => React.ReactNode;
-  component?: (props: React.ComponentProps<C>) => React.ReactNode;
+export interface DefaultOverride<C extends RenderRoot> {
+  type: "default",
+  props: React.ComponentProps<C>;
 }
-const BINDING_KEYS = ["rootClass", "props", "wrapped", "component"];
 
-export type Bindings = Record<string, any>;
-export type Slots = Record<string, React.ReactNode>;
+export interface AsOverride<C extends RenderRoot> {
+  type: "as",
+  as: C;
+  props: React.ComponentProps<C>;
+}
+
+export interface RenderOverride<C extends RenderRoot> {
+  type: "render",
+  render: (props: React.ComponentProps<C>) => React.ReactNode;
+}
+
+export type Override<DefaultRoot extends RenderRoot> = DefaultOverride<DefaultRoot>|AsOverride<any>|RenderOverride<DefaultRoot>;
+
+
+const OVERRIDE_KEYS = ["as", "props", "component"];
+
+export type Overrides = Record<string, Flex<any>>;
 export type Args = Record<string, any>;
 
-export interface RenderOpts<V extends Variants, B extends Bindings, S extends Slots, A extends Args> {
-  bindings?: B;
+export interface RenderOpts<V extends Variants, A extends Args, O extends Overrides> {
   variants?: V;
-  slots?: S;
   args?: A;
+  overrides?: O;
 }
 
-export interface RepeatedRenderOpts<B extends Bindings> {
-  bindings?: B;
-};
+// Flex provides a more "flexible" way to specify bindings.
+export type Flex<DefaultRoot extends RenderRoot> =
+  // Fully-specified bindings
+  | Omit<DefaultOverride<DefaultRoot>, "type">
+  | Omit<AsOverride<any>, "type">
+  | Omit<RenderOverride<any>, "type">
 
-const REPEATED_BINDING_KEYS = ["bindings"];
+  // Valid ReactNode, used as children.
+  // Note: We use React.ReactChild instead of React.ReactNode because we don't want to include
+  // React.ReactFragment, which includes {}, which would allow any object to be passed in,
+  // defeating any attempt to type-check!
+  | React.ReactChild
 
-// Flex provides a more "flexible" way to specify bindings.  Specifically, you can either:
-// 1. Specify the full Binding
-// 2. Specify a valid ReactNode, which is interpreted as the children
-// 3. Specify dict of props
-// Note: We use React.ReactChild instead of React.ReactNode because we don't want to include
-// React.ReactFragment, which includes {}, which would allow any object to be passed in,
-// defeating any attempt to type-check!
-export type Flex<B extends Binding<any>> = B | React.ReactChild | null | undefined | (B extends Binding<infer C> ? React.ComponentProps<C> : never);
-export type FlexRepeated<R extends RepeatedRenderOpts<any>> = R | (R extends RepeatedRenderOpts<infer SubB> ? SubB : never);
+  // Not rendered
+  | null  // rendered as null
+  | undefined // rendered as null
+
+  // dict of props for the default RenderRoot
+  | React.ComponentProps<DefaultRoot>
+
+  // render function taking in dict of props for the default RenderRoot
+  | ((props: React.ComponentProps<DefaultRoot>) => React.ReactNode);
 
 export function hasVariant<V extends Variants>(variants: V|undefined, groupName: keyof V, variant: string) {
   if (variants === undefined) {
@@ -56,26 +74,19 @@ export function hasVariant<V extends Variants>(variants: V|undefined, groupName:
   }
 }
 
-export function createBindableElement<C extends RenderRoot, OC extends RenderRoot=C>(
-  binding: Flex<Binding<OC>>,
-  defaultRoot: C,
-  defaultProps: Partial<React.ComponentProps<C>>
-): React.ReactElement | null {
-  const binding2 = deriveBinding(binding);
-
-  const root = binding2.rootClass || defaultRoot;
-  const props = mergeProps(defaultProps, binding2.props);
-
-  if (binding2.component) {
-    return binding2.component(props as React.ComponentProps<OC>) as (React.ReactElement | null);
-  } else {
-    const element = React.createElement(root, props);
-    if (binding2.wrapped) {
-      return binding2.wrapped(element) as (React.ReactElement | null);
-    } else {
-      return element;
-    }
+export function createPlasmicElement<DefaultRoot extends RenderRoot>(
+  override: Flex<DefaultRoot>,
+  defaultRoot: DefaultRoot,
+  defaultProps: Partial<React.ComponentProps<DefaultRoot>>
+): React.ReactNode | null {
+  const override2 = deriveOverride(override);
+  if (override2.type === "render") {
+    return override2.render(defaultProps as React.ComponentProps<DefaultRoot>);
   }
+
+  const root = override2.type === "as" ? override2.as : defaultRoot;
+  const props = mergeProps(defaultProps, override2.props);
+  return React.createElement(root, props);
 }
 
 function mergeProps(defaults: Record<string, any>, overrides?: Record<string, any>): Record<string, any> {
@@ -110,80 +121,60 @@ function mergePropVals(name: string, val1: any, val2: any): any {
   }
 }
 
-function deriveBinding<B extends Binding<any>>(x: Flex<B>, bindingKeys: string[]=BINDING_KEYS): B {
+function deriveOverride<C extends RenderRoot>(x: Flex<C>, bindingKeys: string[]=OVERRIDE_KEYS): Override<C> {
   if (!x) {
     // undefined Binding is an empty Binding
-    return {} as B;
+    return {
+      type: "default",
+      props: {} as any
+    };
   } else if (isReactNode(x)) {
     // If ReactNode, then assume this is the children
-    return {props: {children: x}} as B;
+    return {
+      type: "default",
+      props: {
+        children: x
+      } as any
+    };
   } else if (typeof(x) === "object") {
-    // If any of the bindingKeys is a key of this object, then assume
-    // this is a full Binding
-    for (const key of bindingKeys) {
-      if (key in x) {
-        return x as unknown as B;
-      }
+    // If any of the overrideKeys is a key of this object, then assume
+    // this is a full Override
+    if ("as" in x) {
+      return {
+        ...x,
+        type: "as",
+      };
+    } else if ("props" in x) {
+      return {
+        ...x,
+        type: "default",
+      };
+    } else if ("render" in x) {
+      return {
+        ...x,
+        type: "render",
+      };
     }
 
     // Else, assume this is just a props object.
-    return { props: x } as unknown as B;
+    return {
+      type: "default",
+      props: x
+    };
+  } else if (typeof(x) === "function") {
+    return {
+      type: "render",
+      render: x
+    };
   }
 
-  throw new Error(`Unexpected binding: ${x}`);
+  throw new Error(`Unexpected override: ${x}`);
 }
 
 function isReactNode(x: any) {
   return typeof(x) === "string" || typeof(x) === "number" || React.isValidElement(x);
 }
 
-function deriveRepeatedRenderOpts<Opts extends RepeatedRenderOpts<any>>(x: FlexRepeated<Opts>): Opts {
-  for (const key of REPEATED_BINDING_KEYS) {
-    if (key in x) {
-      return x as Opts;
-    }
-  }
-  return {
-    bindings: x
-  } as Opts;
-}
-
-export function createRepeatedBindableTree<Opts extends RepeatedRenderOpts<any>>(
-  repeatedOpts: readonly (FlexRepeated<Opts>)[] | undefined,
-  renderFunc: (opts: Opts) => React.ReactNode
-) {
-  if (!repeatedOpts) {
-    return null;
-  }
-
-  const realOpts = repeatedOpts.filter(opts => !!opts).map(opts => deriveRepeatedRenderOpts(opts));
-  if (realOpts.length === 0) {
-    return null;
-  }
-  if (realOpts.length === 1) {
-    return renderFunc(realOpts[0]);
-  }
-  return React.createElement(React.Fragment, {}, realOpts.map(opts => renderFunc(opts)));
-}
-
-
-export interface RenderFunc<V extends Variants, B extends Bindings, S extends Slots, A extends Args> {
-  (opts: RenderOpts<V, B, S, A>): React.ReactElement | null;
-}
-
-export function createPlasmicWrapper<RF extends any>(render: RF) {
-  const wrap = <P extends { render: RF }>(Component: React.ComponentType<P>) => {
-    const Wrapper = (props: Omit<P, "render">) => {
-      const allProps = {...props, render} as any as P;
-      return React.createElement(Component, allProps);
-    };
-    return Wrapper;
-  }
-  return {
-    render,
-    wrap
-  };
-}
 
 export const classNames = _classNames;
 
@@ -204,3 +195,8 @@ export function wrapFlexChild(children: React.ReactNode): React.ReactNode {
     return children;
   }
 }
+
+export interface RenderFunc<V extends Variants, A extends Args, O extends Overrides> {
+  (opts: RenderOpts<V, A, O>): React.ReactNode;
+}
+export type RenderFuncOverrides<RF> = RF extends RenderFunc<infer V, infer A, infer O> ? O : never;

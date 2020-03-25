@@ -351,6 +351,7 @@ async function syncProjects(opts: SyncArgs) {
       };
       config.projects.push(c);
     } else {
+      project.contextTypeName = pc.contextTypeName;
       fixProjectFilePaths(srcDir, project, baseNameToFiles);
       writeFileContent(path.join(srcDir, project.contextFilePath), pc.contextModule, {force: true});
       writeFileContent(path.join(srcDir, project.fontsFilePath), pc.fontsModule, {force: true});
