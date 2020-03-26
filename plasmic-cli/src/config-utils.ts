@@ -14,14 +14,11 @@ export interface PlasmicConfig {
   // Target platform to generate code for
   platform: "react";
 
-  // Language to generate code in
-  lang: "ts";
+  // Config for code generation
+  code: CodeConfig;
 
-  // Code generation scheme
-  scheme: "blackbox";
-
-  // Styling framework to use
-  style: "css";
+  // Config for style generation
+  style: StyleConfig;
 
   // The folder containing the source files; this is the default place where
   // generated code is dumped and found.
@@ -31,6 +28,19 @@ export interface PlasmicConfig {
   components: ComponentConfig[];
 
   projects: ProjectConfig[];
+}
+
+export interface CodeConfig {
+  // Language to generate code in
+  lang: "ts";
+
+  // Code generation scheme
+  scheme: "blackbox";
+}
+
+export interface StyleConfig {
+  // Styling framework to use
+  scheme: "css";
 }
 
 export interface ProjectConfig {
@@ -111,9 +121,13 @@ export interface AuthConfig {
 
 export const DEFAULT_CONFIG: PlasmicConfig = {
   platform: "react",
-  lang: "ts",
-  scheme: "blackbox",
-  style: "css",
+  code: {
+    lang: "ts",
+    scheme: "blackbox",
+  },
+  style: {
+    scheme: "css",
+  },
   srcDir: ".",
   components: [],
   projects: []
@@ -166,7 +180,7 @@ function findFile(dir: string, pred: (name: string) => boolean, opts: {
  * with default values.
  */
 export function fillDefaults(config: Partial<PlasmicConfig>): PlasmicConfig {
-  return L.defaults(config, DEFAULT_CONFIG);
+  return L.merge({}, DEFAULT_CONFIG, config);
 }
 
 export function getContext(args: CommonArgs): PlasmicContext {

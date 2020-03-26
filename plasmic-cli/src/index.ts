@@ -54,25 +54,25 @@ yargs
           choices: ["react"],
           default: DEFAULT_CONFIG.platform
         })
-        .option("lang", {
+        .option("code-lang", {
           describe: "Target language to generate code for",
           choices: ["ts"],
-          default: DEFAULT_CONFIG.lang
+          default: DEFAULT_CONFIG.code.lang
         })
-        .option("scheme", {
+        .option("code-scheme", {
           describe: "Code generation scheme to use",
           choices: ["blackbox"],
-          default: DEFAULT_CONFIG.scheme
+          default: DEFAULT_CONFIG.code.scheme
         })
         .option("src-dir", {
           describe: "Folder where component source files live",
           type: "string",
           default: DEFAULT_CONFIG.srcDir
         })
-        .option("style", {
+        .option("style-scheme", {
           describe: "Styling framework to use",
           choices: ["css"],
-          default: DEFAULT_CONFIG.style
+          default: DEFAULT_CONFIG.style.scheme
         }),
     argv => initPlasmic(argv)
   )
@@ -134,9 +134,9 @@ export interface CommonArgs {
 interface InitArgs extends CommonArgs {
   host: string;
   platform: "react";
-  lang: "ts";
-  scheme: "blackbox";
-  style: "css";
+  codeLang: "ts";
+  codeScheme: "blackbox";
+  styleScheme: "css";
   srcDir: string;
 }
 async function initPlasmic(opts: InitArgs) {
@@ -543,9 +543,13 @@ function fixFileImportStatements(
 function createInitConfig(opts: InitArgs): PlasmicConfig {
   return fillDefaults({
     srcDir: opts.srcDir,
-    scheme: opts.scheme,
-    style: opts.style,
-    lang: opts.lang,
+    code: {
+      lang: opts.codeLang,
+      scheme: opts.codeScheme,
+    },
+    style: {
+      scheme: opts.styleScheme,
+    },
     platform: opts.platform
   });
 }
