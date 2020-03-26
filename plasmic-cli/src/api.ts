@@ -13,18 +13,23 @@ export interface ComponentBundle {
   id: string;
 }
 
+export interface GlobalVariantBundle {
+  id: string;
+  name: string;
+  contextModule: string;
+  contextFileName: string;
+}
+
 export interface ProjectConfig {
   fontsFileName: string;
   fontsModule: string;
-  contextFileName: string;
-  contextModule: string;
-  contextTypeName: string;
   projectId: string;
 }
 
 export interface ProjectBundle {
-  results: ComponentBundle[];
+  components: ComponentBundle[];
   projectConfig: ProjectConfig;
+  globalVariants: GlobalVariantBundle[];
 }
 
 export class PlasmicApi {

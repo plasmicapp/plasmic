@@ -21,7 +21,8 @@ import {
   writeAuth,
   AUTH_FILE_NAME,
   CONFIG_FILE_NAME,
-  ProjectConfig
+  ProjectConfig,
+  GlobalVariantConfig
 } from "./config-utils";
 import glob from "glob";
 import { replaceImports, isLocalModulePath } from "./code-utils";
@@ -264,6 +265,7 @@ async function syncProjects(opts: SyncArgs) {
   };
 
   const allCompConfigs = L.keyBy(config.components, c => c.id);
+  const allVariantConfigs = L.keyBy(config.globalVariants.variants, c => c.id);
   const baseNameToFiles = buildBaseNameToFiles(context);
 
   const results = await Promise.all(
@@ -273,7 +275,7 @@ async function syncProjects(opts: SyncArgs) {
     string,
     ProjectBundle
   ][]) {
-    for (const bundle of projectBundle.results) {
+    for (const bundle of projectBundle.components) {
       const {
         renderModule,
         skeletonModule,
@@ -288,10 +290,11 @@ async function syncProjects(opts: SyncArgs) {
         continue;
       }
       console.log(`Syncing component ${componentName} [${projectId}/${id}]`);
-      const compConfig = allCompConfigs[id];
-      if (!compConfig) {
+      let compConfig = allCompConfigs[id];
+      const isNew = !compConfig;
+      if (isNew) {
         // This is the first time we're syncing this component
-        allCompConfigs[id] = {
+        compConfig = {
           id,
           name: componentName,
           type: "managed",
@@ -300,14 +303,8 @@ async function syncProjects(opts: SyncArgs) {
           importSpec: { modulePath: skeletonModuleFileName },
           cssFilePath: cssFileName
         };
-        writeFileContent(
-          path.join(srcDir, renderModuleFileName),
-          renderModule,
-          { force: false }
-        );
-        writeFileContent(path.join(srcDir, cssFileName), cssRules, {
-          force: false
-        });
+        allCompConfigs[id] = compConfig;
+        config.components.push(allCompConfigs[id]);
 
         // Because it's the first time, we also generate the skeleton file.
         writeFileContent(
@@ -315,51 +312,69 @@ async function syncProjects(opts: SyncArgs) {
           skeletonModule,
           { force: false }
         );
-        config.components.push(allCompConfigs[id]);
       } else {
         // This is an existing component. We first make sure the files are all in the expected
         // places, and then overwrite them with the new content
         fixComponentPaths(srcDir, compConfig, baseNameToFiles);
-        writeFileContent(
-          path.join(srcDir, compConfig.renderModuleFilePath),
-          renderModule,
-          { force: true }
-        );
-        writeFileContent(path.join(srcDir, compConfig.cssFilePath), cssRules, {
-          force: true
-        });
       }
+      writeFileContent(
+        path.join(srcDir, compConfig.renderModuleFilePath),
+        renderModule,
+        { force: !isNew }
+      );
+      writeFileContent(path.join(srcDir, compConfig.cssFilePath), cssRules, {
+        force: !isNew
+      });
+    }
+
+    for (const bundle of projectBundle.globalVariants) {
+      console.log(`Syncing global variant ${bundle.name} [${projectId}/${bundle.id}]`);
+      let variantConfig = allVariantConfigs[bundle.id];
+      const isNew = !variantConfig;
+      if (isNew) {
+        variantConfig = {
+          id: bundle.id,
+          name: bundle.name,
+          projectId,
+          contextFilePath: bundle.contextFileName,
+        };
+        allVariantConfigs[bundle.id] = variantConfig;
+        config.globalVariants.variants.push(variantConfig);
+      } else {
+        fixGlobalVariantFilePath(srcDir, variantConfig, baseNameToFiles);
+      }
+
+      writeFileContent(
+        path.join(srcDir, variantConfig.contextFilePath),
+        bundle.contextModule,
+        {force: !isNew}
+      );
     }
     const project = config.projects.find(
       c => c.projectId === projectBundle.projectConfig.projectId
     );
     const pc = projectBundle.projectConfig;
     if (!project) {
-      writeFileContent(
-        path.join(srcDir, pc.contextFileName),
-        pc.contextModule,
-        { force: false }
-      );
       writeFileContent(path.join(srcDir, pc.fontsFileName), pc.fontsModule, {
         force: false
       });
       const c = {
         projectId: pc.projectId,
-        contextFilePath: pc.contextFileName,
         fontsFilePath: pc.fontsFileName,
-        contextTypeName: pc.contextTypeName
       };
       config.projects.push(c);
     } else {
-      project.contextTypeName = pc.contextTypeName;
       fixProjectFilePaths(srcDir, project, baseNameToFiles);
-      writeFileContent(path.join(srcDir, project.contextFilePath), pc.contextModule, {force: true});
       writeFileContent(path.join(srcDir, project.fontsFilePath), pc.fontsModule, {force: true});
     }
   }
 
   // Write the new ComponentConfigs to disk
-  updateConfig(context, { components: config.components, projects: config.projects });
+  updateConfig(context, {
+    components: config.components,
+    projects: config.projects,
+    globalVariants: config.globalVariants
+  });
 
   // Now we know config.components are all correct, so we can go ahead and fix up all the import statements
   fixAllImportStatements(context);
@@ -388,29 +403,17 @@ function fixComponentPaths(
   compConfig: ComponentConfig,
   baseNameToFiles: Record<string, string[]>
 ) {
-  const newRenderModuleFilePath = findSrcDirPath(
+  compConfig.renderModuleFilePath = findSrcDirPath(
     srcDir,
     compConfig.renderModuleFilePath,
     baseNameToFiles
   );
-  if (newRenderModuleFilePath !== compConfig.renderModuleFilePath) {
-    console.warn(
-      `\tDetected file moved from ${compConfig.renderModuleFilePath} to ${newRenderModuleFilePath}`
-    );
-    compConfig.renderModuleFilePath = newRenderModuleFilePath;
-  }
 
-  const newCssFilePath = findSrcDirPath(
+  compConfig.cssFilePath = findSrcDirPath(
     srcDir,
     compConfig.cssFilePath,
     baseNameToFiles
   );
-  if (newCssFilePath !== compConfig.cssFilePath) {
-    console.warn(
-      `\tDetected file moved from ${compConfig.cssFilePath} to ${newCssFilePath}`
-    );
-    compConfig.cssFilePath = newCssFilePath;
-  }
 
   // If `compConfig.importPath` is still referencing a local file, then we can also best-effort detect
   // whether it has been moved.
@@ -424,33 +427,22 @@ function fixComponentPaths(
   }
 }
 
+function fixGlobalVariantFilePath(
+  srcDir: string,
+  variantConfig: GlobalVariantConfig,
+  baseNameToFiles: Record<string, string[]>
+) {
+  variantConfig.contextFilePath = findSrcDirPath(srcDir, variantConfig.contextFilePath, baseNameToFiles);
+}
+
+
+
 function fixProjectFilePaths(
   srcDir: string,
   projectConfig: ProjectConfig,
   baseNameToFiles: Record<string, string[]>
 ) {
-  const newContextFilePath = findSrcDirPath(
-    srcDir,
-    projectConfig.contextFilePath,
-    baseNameToFiles
-  );
-  if (newContextFilePath !== projectConfig.contextFilePath) {
-    console.warn(
-      `\tDetected file moved from ${projectConfig.contextFilePath} to ${newContextFilePath}`
-    );
-    projectConfig.contextFilePath = newContextFilePath;
-  }
-  const newFontsFilePath = findSrcDirPath(
-    srcDir,
-    projectConfig.fontsFilePath,
-    baseNameToFiles
-  );
-  if (newFontsFilePath !== projectConfig.fontsFilePath) {
-    console.warn(
-      `\tDetected file moved from ${projectConfig.fontsFilePath} to ${newFontsFilePath}`
-    );
-    projectConfig.fontsFilePath = newFontsFilePath;
-  }
+  projectConfig.fontsFilePath = findSrcDirPath(srcDir, projectConfig.fontsFilePath, baseNameToFiles);
 }
 
 /**
@@ -472,8 +464,9 @@ function findSrcDirPath(
     return expectedPath;
   } else if (baseNameToFiles[fileName].length === 1) {
     // There's only one file of the same name, so maybe we've been moved there?
-    const newPath = baseNameToFiles[fileName][0];
-    return path.relative(srcDir, newPath);
+    const newPath = path.relative(srcDir, baseNameToFiles[fileName][0]);
+    console.log(`\tDetected file moved from ${expectedPath} to ${newPath}`);
+    return newPath;
   } else {
     console.error(
       `Cannot find expected file at ${expectedPath}, and found multiple possible matching files ${baseNameToFiles[fileName]}.  Please update plasmic.config with the real location for ${fileName}.`
@@ -490,9 +483,9 @@ function fixAllImportStatements(context: PlasmicContext) {
   const config = context.config;
   const srcDir = path.join(context.rootDir, config.srcDir);
   const allCompConfigs = L.keyBy(config.components, c => c.id);
-  const allProjectConfigs = L.keyBy(config.projects, p => p.projectId);
+  const allGlobalVariantConfigs = L.keyBy(config.globalVariants.variants, c => c.id);
   for (const compConfig of config.components) {
-    fixComponentImportStatements(srcDir, compConfig, allCompConfigs, allProjectConfigs);
+    fixComponentImportStatements(srcDir, compConfig, allCompConfigs, allGlobalVariantConfigs);
   }
 }
 
@@ -500,22 +493,22 @@ function fixComponentImportStatements(
   srcDir: string,
   compConfig: ComponentConfig,
   allCompConfigs: Record<string, ComponentConfig>,
-  allProjectConfigs: Record<string, ProjectConfig>
+  allGlobalVariantConfigs: Record<string, GlobalVariantConfig>
 ) {
   fixFileImportStatements(
     srcDir,
     compConfig.renderModuleFilePath,
     allCompConfigs,
-    allProjectConfigs
+    allGlobalVariantConfigs
   );
-  fixFileImportStatements(srcDir, compConfig.cssFilePath, allCompConfigs, allProjectConfigs);
+  fixFileImportStatements(srcDir, compConfig.cssFilePath, allCompConfigs, allGlobalVariantConfigs);
   // If ComponentConfig.importPath is still a local file, we best-effort also fix up the import statements there.
   if (isLocalModulePath(compConfig.importSpec.modulePath)) {
     fixFileImportStatements(
       srcDir,
       compConfig.importSpec.modulePath,
       allCompConfigs,
-      allProjectConfigs
+      allGlobalVariantConfigs
     );
   }
 }
@@ -524,7 +517,7 @@ function fixFileImportStatements(
   srcDir: string,
   srcDirFilePath: string,
   allCompConfigs: Record<string, ComponentConfig>,
-  allProjectConfigs: Record<string, ProjectConfig>
+  allGlobalVariantConfigs: Record<string, GlobalVariantConfig>
 ) {
   const prevContent = fs
     .readFileSync(path.join(srcDir, srcDirFilePath))
@@ -533,7 +526,7 @@ function fixFileImportStatements(
     prevContent,
     srcDirFilePath,
     allCompConfigs,
-    allProjectConfigs
+    allGlobalVariantConfigs,
   );
   writeFileContent(path.join(srcDir, srcDirFilePath), newContent, {
     force: true

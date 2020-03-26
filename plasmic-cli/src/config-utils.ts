@@ -27,6 +27,8 @@ export interface PlasmicConfig {
   // Configs for each component we have synced.
   components: ComponentConfig[];
 
+  // Configs for each global variant we have synced.
+  globalVariants: GlobalVariantsConfig;
   projects: ProjectConfig[];
 }
 
@@ -45,9 +47,7 @@ export interface StyleConfig {
 
 export interface ProjectConfig {
   projectId: string;
-  contextFilePath: string;
   fontsFilePath: string;
-  contextTypeName: string;
 }
 
 /**
@@ -81,6 +81,17 @@ export interface ComponentConfig {
 
   // How to import this Component
   importSpec: ImportSpec;
+}
+
+export interface GlobalVariantsConfig {
+  variants: GlobalVariantConfig[];
+}
+
+export interface GlobalVariantConfig {
+  id: string;
+  name: string;
+  projectId: string;
+  contextFilePath: string;
 }
 
 /**
@@ -130,7 +141,10 @@ export const DEFAULT_CONFIG: PlasmicConfig = {
   },
   srcDir: ".",
   components: [],
-  projects: []
+  projects: [],
+  globalVariants: {
+    variants: []
+  },
 };
 
 /**
