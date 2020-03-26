@@ -1,5 +1,5 @@
-import { AuthConfig } from "./config-utils";
-import axios, {AxiosResponse, AxiosError} from "axios";
+import { AuthConfig } from "./utils/config-utils";
+import axios, { AxiosResponse, AxiosError } from "axios";
 import socketio from "socket.io-client";
 
 export interface ComponentBundle {
@@ -33,12 +33,12 @@ export interface ProjectBundle {
 }
 
 export class PlasmicApi {
-  constructor(private auth: AuthConfig) {
-
-  }
+  constructor(private auth: AuthConfig) {}
 
   async projectComponents(projectId: string) {
-    const result = await this.post(`${this.auth.host}/api/v1/projects/${projectId}/code`);
+    const result = await this.post(
+      `${this.auth.host}/api/v1/projects/${projectId}/code`
+    );
     return result.data as ProjectBundle;
   }
 
@@ -62,7 +62,9 @@ export class PlasmicApi {
     } catch (e) {
       const error = e as AxiosError;
       if (error.response && error.response.status === 403) {
-        console.error(`Incorrect Plasmic credentials; please check your .plasmic.auth file.`);
+        console.error(
+          `Incorrect Plasmic credentials; please check your .plasmic.auth file.`
+        );
         process.exit(1);
       }
       throw e;
@@ -72,11 +74,13 @@ export class PlasmicApi {
   private makeHeaders() {
     const headers: Record<string, string> = {
       "x-plasmic-api-user": this.auth.user,
-      "x-plasmic-api-token": this.auth.token,
+      "x-plasmic-api-token": this.auth.token
     };
 
     if (this.auth.basicAuthUser && this.auth.basicAuthPassword) {
-      const authString = Buffer.from(`${this.auth.basicAuthUser}:${this.auth.basicAuthPassword}`).toString("base64");
+      const authString = Buffer.from(
+        `${this.auth.basicAuthUser}:${this.auth.basicAuthPassword}`
+      ).toString("base64");
       headers["Authorization"] = `Basic ${authString}`;
     }
 
