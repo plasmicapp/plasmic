@@ -198,15 +198,15 @@ function isReactNode(x: any) {
 
 export const classNames = _classNames;
 
-export function wrapFlexChild(children: React.ReactNode): React.ReactNode {
+export function wrapFlexChild(children: React.ReactNode, index?: number): React.ReactNode {
   if (Array.isArray(children)) {
-    return children.map(child => wrapFlexChild(child));
+    return children.map((child, i) => wrapFlexChild(child, i));
   } else if (React.isValidElement(children)) {
     if (children.type === React.Fragment) {
       return wrapFlexChild(children.props.children);
     }
     const className = `__wab_flex-item ${children.props.className}`;
-    return React.createElement("div", { className }, children);
+    return React.createElement("div", { className, key: index }, children);
   } else {
     return children;
   }
