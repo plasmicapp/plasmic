@@ -6,7 +6,8 @@ import {
   PlasmicContext,
   ComponentConfig,
   ProjectConfig,
-  GlobalVariantConfig
+  GlobalVariantGroupConfig,
+  PlasmicConfig
 } from "./config-utils";
 import { isLocalModulePath } from "./code-utils";
 
@@ -18,7 +19,7 @@ export function stripExtension(filename: string) {
   return filename.substring(0, filename.lastIndexOf(ext));
 }
 
-export function writeFileContent(
+export function writeFileContentRaw(
   path: string,
   content: string,
   opts?: { force?: boolean }
@@ -30,6 +31,28 @@ export function writeFileContent(
   }
 
   fs.writeFileSync(path, content);
+}
+
+export function writeFileContent(
+  config: PlasmicConfig,
+  srcDirFilePath: string,
+  content: string,
+  opts: { force?: boolean } = {}
+) {
+  const path = makeFilePath(config, srcDirFilePath);
+  writeFileContentRaw(path, content, opts);
+}
+
+export function readFileContent(config: PlasmicConfig, srcDirFilePath: string) {
+  return fs.readFileSync(makeFilePath(config, srcDirFilePath)).toString();
+}
+
+export function fileExists(config: PlasmicConfig, srcDirFilePath: string) {
+  return fs.existsSync(makeFilePath(config, srcDirFilePath));
+}
+
+export function makeFilePath(config: PlasmicConfig, filePath: string) {
+  return path.join(config.srcDir, filePath);
 }
 
 export function buildBaseNameToFiles(context: PlasmicContext) {
@@ -75,7 +98,7 @@ export function fixComponentPaths(
 
 export function fixGlobalVariantFilePath(
   srcDir: string,
-  variantConfig: GlobalVariantConfig,
+  variantConfig: GlobalVariantGroupConfig,
   baseNameToFiles: Record<string, string[]>
 ) {
   variantConfig.contextFilePath = findSrcDirPath(
@@ -104,7 +127,7 @@ export function fixProjectFilePaths(
  * If `expectedPath` doesn't exist, but there's more than one file of that name in `baseNameToFiles`, then
  * error and quit.  If no file of that name can be found, `expectedPath` is returned.
  */
-function findSrcDirPath(
+export function findSrcDirPath(
   srcDir: string,
   expectedPath: string,
   baseNameToFiles: Record<string, string[]>

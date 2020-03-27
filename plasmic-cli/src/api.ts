@@ -30,6 +30,24 @@ export interface ProjectBundle {
   components: ComponentBundle[];
   projectConfig: ProjectConfig;
   globalVariants: GlobalVariantBundle[];
+  usedTokens: StyleTokensMap;
+}
+
+export interface StyleTokensMap {
+  props: {
+    name: string;
+    type: string;
+    value: string | number;
+    meta: {
+      projectId: string;
+      id: string;
+    };
+  }[];
+  global: {
+    meta: {
+      source: "plasmic.app";
+    };
+  };
 }
 
 export class PlasmicApi {
@@ -37,9 +55,16 @@ export class PlasmicApi {
 
   async projectComponents(projectId: string) {
     const result = await this.post(
-      `${this.auth.host}/api/v1/projects/${projectId}/code`
+      `${this.auth.host}/api/v1/projects/${projectId}/code/components`
     );
     return result.data as ProjectBundle;
+  }
+
+  async projectStyleTokens(projectId: string) {
+    const result = await this.post(
+      `${this.auth.host}/api/v1/projects/${projectId}/code/tokens`
+    );
+    return result.data as StyleTokensMap;
   }
 
   connectSocket() {

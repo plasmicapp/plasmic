@@ -4,6 +4,7 @@ import { fixImports, FixImportsArgs } from "./actions/fix-imports";
 import { InitArgs, initPlasmic } from "./actions/init";
 import { SyncArgs, syncProjects } from "./actions/sync";
 import { WatchArgs, watchProjects } from "./actions/watch";
+import { SyncStyleTokensArgs, syncStyleTokens } from "./actions/sync-styles";
 import { DEFAULT_CONFIG } from "./utils/config-utils";
 
 yargs
@@ -68,6 +69,19 @@ yargs
     argv => {
       watchProjects(argv);
     }
+  )
+  .command<SyncStyleTokensArgs>(
+    "sync-style-tokens",
+    "Syncs style tokens",
+    yags =>
+      yags.option("projects", {
+        alias: "p",
+        describe:
+          "ID of Plasmic projects to sync.  If not specifed, defaults to all known projects.",
+        type: "array",
+        default: []
+      }),
+    argv => syncStyleTokens(argv)
   )
   .command<FixImportsArgs>(
     "fix-imports",

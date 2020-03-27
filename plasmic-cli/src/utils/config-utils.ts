@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import os from "os";
 import L from "lodash";
-import { writeFileContent } from "./file-utils";
+import { writeFileContentRaw } from "./file-utils";
 import { PlasmicApi } from "../api";
 import { CommonArgs } from "../index";
 import { DeepPartial } from "utility-types";
@@ -14,15 +14,18 @@ export interface PlasmicConfig {
   // Target platform to generate code for
   platform: "react";
 
+  // The folder containing the source files; this is the default place where
+  // all files are generated and dumped.
+  srcDir: string;
+
   // Config for code generation
   code: CodeConfig;
 
   // Config for style generation
   style: StyleConfig;
 
-  // The folder containing the source files; this is the default place where
-  // generated code is dumped and found.
-  srcDir: string;
+  // Config for style tokens
+  tokens: TokensConfig;
 
   // Configs for each component we have synced.
   components: ComponentConfig[];
@@ -43,12 +46,16 @@ export interface CodeConfig {
 export interface StyleConfig {
   // Styling framework to use
   scheme: "css";
-  tokensFilePath: string;
 }
 
 export interface ProjectConfig {
   projectId: string;
   fontsFilePath: string;
+}
+
+export interface TokensConfig {
+  scheme: "theo";
+  tokensFilePath: string;
 }
 
 /**
@@ -85,10 +92,10 @@ export interface ComponentConfig {
 }
 
 export interface GlobalVariantsConfig {
-  variants: GlobalVariantConfig[];
+  variantGroups: GlobalVariantGroupConfig[];
 }
 
-export interface GlobalVariantConfig {
+export interface GlobalVariantGroupConfig {
   id: string;
   name: string;
   projectId: string;
@@ -138,14 +145,17 @@ export const DEFAULT_CONFIG: PlasmicConfig = {
     scheme: "blackbox"
   },
   style: {
-    scheme: "css",
+    scheme: "css"
+  },
+  tokens: {
+    scheme: "theo",
     tokensFilePath: "plasmic-tokens.theo.json"
   },
   srcDir: ".",
   components: [],
   projects: [],
   globalVariants: {
-    variants: []
+    variantGroups: []
   }
 };
 
@@ -274,13 +284,13 @@ export function readAuth(authFile: string) {
 }
 
 export function writeConfig(configFile: string, config: PlasmicConfig) {
-  writeFileContent(configFile, JSON.stringify(config, undefined, 2), {
+  writeFileContentRaw(configFile, JSON.stringify(config, undefined, 2), {
     force: true
   });
 }
 
 export function writeAuth(authFile: string, config: AuthConfig) {
-  writeFileContent(authFile, JSON.stringify(config, undefined, 2), {
+  writeFileContentRaw(authFile, JSON.stringify(config, undefined, 2), {
     force: true
   });
   fs.chmodSync(authFile, "600");
@@ -288,10 +298,10 @@ export function writeAuth(authFile: string, config: AuthConfig) {
 
 export function updateConfig(
   context: PlasmicContext,
-  updates: Partial<PlasmicConfig>
+  updates: DeepPartial<PlasmicConfig>
 ) {
   let config = readConfig(context.configFile);
-  config = { ...config, ...updates };
+  L.merge(config, updates);
   writeConfig(context.configFile, config);
   context.config = config;
 }

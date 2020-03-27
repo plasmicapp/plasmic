@@ -1,5 +1,6 @@
 import path from "path";
 import L from "lodash";
+import fs, { writeFile } from "fs";
 import { CommonArgs } from "..";
 import { getContext, updateConfig, PlasmicConfig } from "../utils/config-utils";
 import {
@@ -16,6 +17,7 @@ import {
   ProjectConfig
 } from "../api";
 import { fixAllImportStatements } from "../utils/code-utils";
+import { upsertStyleTokens } from "./sync-styles";
 
 export interface SyncArgs extends CommonArgs {
   projects: readonly string[];
@@ -27,7 +29,6 @@ export async function syncProjects(opts: SyncArgs) {
   const context = getContext(opts);
   const api = context.api;
   const config = context.config;
-  const srcDir = path.join(context.rootDir, config.srcDir);
   const projectIds =
     opts.projects.length > 0
       ? opts.projects
@@ -74,6 +75,7 @@ export async function syncProjects(opts: SyncArgs) {
       baseNameToFiles
     );
     syncProjectConfig(config, projectBundle.projectConfig, baseNameToFiles);
+    upsertStyleTokens(config, projectBundle.usedTokens, baseNameToFiles);
   }
 
   // Write the new ComponentConfigs to disk
@@ -124,22 +126,18 @@ function syncProjectComponents(
       config.components.push(allCompConfigs[id]);
 
       // Because it's the first time, we also generate the skeleton file.
-      writeFileContent(
-        path.join(srcDir, skeletonModuleFileName),
-        skeletonModule,
-        { force: false }
-      );
+      writeFileContent(config, skeletonModuleFileName, skeletonModule, {
+        force: false
+      });
     } else {
       // This is an existing component. We first make sure the files are all in the expected
       // places, and then overwrite them with the new content
       fixComponentPaths(srcDir, compConfig, baseNameToFiles);
     }
-    writeFileContent(
-      path.join(srcDir, compConfig.renderModuleFilePath),
-      renderModule,
-      { force: !isNew }
-    );
-    writeFileContent(path.join(srcDir, compConfig.cssFilePath), cssRules, {
+    writeFileContent(config, compConfig.renderModuleFilePath, renderModule, {
+      force: !isNew
+    });
+    writeFileContent(config, compConfig.cssFilePath, cssRules, {
       force: !isNew
     });
   }
@@ -151,7 +149,10 @@ function syncGlobalVariants(
   bundles: GlobalVariantBundle[],
   baseNameToFiles: Record<string, string[]>
 ) {
-  const allVariantConfigs = L.keyBy(config.globalVariants.variants, c => c.id);
+  const allVariantConfigs = L.keyBy(
+    config.globalVariants.variantGroups,
+    c => c.id
+  );
   for (const bundle of bundles) {
     console.log(
       `Syncing global variant ${bundle.name} [${projectId}/${bundle.id}]`
@@ -166,13 +167,14 @@ function syncGlobalVariants(
         contextFilePath: bundle.contextFileName
       };
       allVariantConfigs[bundle.id] = variantConfig;
-      config.globalVariants.variants.push(variantConfig);
+      config.globalVariants.variantGroups.push(variantConfig);
     } else {
       fixGlobalVariantFilePath(config.srcDir, variantConfig, baseNameToFiles);
     }
 
     writeFileContent(
-      path.join(config.srcDir, variantConfig.contextFilePath),
+      config,
+      variantConfig.contextFilePath,
       bundle.contextModule,
       { force: !isNew }
     );
@@ -186,13 +188,9 @@ function syncProjectConfig(
 ) {
   const project = config.projects.find(c => c.projectId === pc.projectId);
   if (!project) {
-    writeFileContent(
-      path.join(config.srcDir, pc.fontsFileName),
-      pc.fontsModule,
-      {
-        force: false
-      }
-    );
+    writeFileContent(config, pc.fontsFileName, pc.fontsModule, {
+      force: false
+    });
     const c = {
       projectId: pc.projectId,
       fontsFilePath: pc.fontsFileName
@@ -200,10 +198,8 @@ function syncProjectConfig(
     config.projects.push(c);
   } else {
     fixProjectFilePaths(config.srcDir, project, baseNameToFiles);
-    writeFileContent(
-      path.join(config.srcDir, project.fontsFilePath),
-      pc.fontsModule,
-      { force: true }
-    );
+    writeFileContent(config, project.fontsFilePath, pc.fontsModule, {
+      force: true
+    });
   }
 }

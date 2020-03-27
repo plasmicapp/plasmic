@@ -5,8 +5,9 @@ import {
   ComponentConfig,
   ImportSpec,
   ProjectConfig,
-  GlobalVariantConfig,
-  PlasmicContext
+  GlobalVariantGroupConfig,
+  PlasmicContext,
+  PlasmicConfig
 } from "./config-utils";
 import { stripExtension, writeFileContent } from "./file-utils";
 
@@ -20,7 +21,7 @@ export function replaceImports(
   code: string,
   fromPath: string,
   compConfigsMap: Record<string, ComponentConfig>,
-  globalVariantConfigsMap: Record<string, GlobalVariantConfig>
+  globalVariantConfigsMap: Record<string, GlobalVariantGroupConfig>
 ) {
   return code.replace(IMPORT_MARKER, (sub, uuid, type) => {
     if (type === "component") {
@@ -94,12 +95,12 @@ export function fixAllImportStatements(context: PlasmicContext) {
   const srcDir = path.join(context.rootDir, config.srcDir);
   const allCompConfigs = L.keyBy(config.components, c => c.id);
   const allGlobalVariantConfigs = L.keyBy(
-    config.globalVariants.variants,
+    config.globalVariants.variantGroups,
     c => c.id
   );
   for (const compConfig of config.components) {
     fixComponentImportStatements(
-      srcDir,
+      config,
       compConfig,
       allCompConfigs,
       allGlobalVariantConfigs
@@ -108,19 +109,19 @@ export function fixAllImportStatements(context: PlasmicContext) {
 }
 
 function fixComponentImportStatements(
-  srcDir: string,
+  config: PlasmicConfig,
   compConfig: ComponentConfig,
   allCompConfigs: Record<string, ComponentConfig>,
-  allGlobalVariantConfigs: Record<string, GlobalVariantConfig>
+  allGlobalVariantConfigs: Record<string, GlobalVariantGroupConfig>
 ) {
   fixFileImportStatements(
-    srcDir,
+    config,
     compConfig.renderModuleFilePath,
     allCompConfigs,
     allGlobalVariantConfigs
   );
   fixFileImportStatements(
-    srcDir,
+    config,
     compConfig.cssFilePath,
     allCompConfigs,
     allGlobalVariantConfigs
@@ -128,7 +129,7 @@ function fixComponentImportStatements(
   // If ComponentConfig.importPath is still a local file, we best-effort also fix up the import statements there.
   if (isLocalModulePath(compConfig.importSpec.modulePath)) {
     fixFileImportStatements(
-      srcDir,
+      config,
       compConfig.importSpec.modulePath,
       allCompConfigs,
       allGlobalVariantConfigs
@@ -137,13 +138,13 @@ function fixComponentImportStatements(
 }
 
 function fixFileImportStatements(
-  srcDir: string,
+  config: PlasmicConfig,
   srcDirFilePath: string,
   allCompConfigs: Record<string, ComponentConfig>,
-  allGlobalVariantConfigs: Record<string, GlobalVariantConfig>
+  allGlobalVariantConfigs: Record<string, GlobalVariantGroupConfig>
 ) {
   const prevContent = fs
-    .readFileSync(path.join(srcDir, srcDirFilePath))
+    .readFileSync(path.join(config.srcDir, srcDirFilePath))
     .toString();
   const newContent = replaceImports(
     prevContent,
@@ -151,7 +152,5 @@ function fixFileImportStatements(
     allCompConfigs,
     allGlobalVariantConfigs
   );
-  writeFileContent(path.join(srcDir, srcDirFilePath), newContent, {
-    force: true
-  });
+  writeFileContent(config, srcDirFilePath, newContent, { force: true });
 }
