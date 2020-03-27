@@ -1,5 +1,5 @@
 {
-  "name": "plasmic-cli",
+  "name": "@plasmic/cli",
   "version": "0.0.1",
   "description": "plasmic cli for syncing local code with Plasmic designs",
   "main": "./dist/index.js",
