@@ -2,43 +2,49 @@ import _classNames from "classnames";
 import React from "react";
 
 export type ElementTag = keyof JSX.IntrinsicElements;
-export type RenderRoot = ElementTag | React.ComponentType<any>;
-export type Variants = Record<string, string | string[] | undefined | {[val: string]: boolean}>;
+export type Variants = Record<
+  string,
+  string | string[] | undefined | { [val: string]: boolean }
+>;
 
-export interface DefaultOverride<C extends RenderRoot> {
-  type: "default",
+export interface DefaultOverride<C extends React.ElementType> {
+  type: "default";
   props: React.ComponentProps<C>;
 }
 
-export interface AsOverride<C extends RenderRoot> {
-  type: "as",
+export interface AsOverride<C extends React.ElementType> {
+  type: "as";
   as: C;
   props: React.ComponentProps<C>;
 }
 
-export interface RenderOverride<C extends RenderRoot> {
-  type: "render",
+export interface RenderOverride<C extends React.ElementType> {
+  type: "render";
   render: (props: React.ComponentProps<C>) => React.ReactNode;
 }
 
-export type Override<DefaultRoot extends RenderRoot> = DefaultOverride<DefaultRoot>|AsOverride<any>|RenderOverride<DefaultRoot>;
-
-
-const OVERRIDE_KEYS = ["as", "props", "component"];
+export type Override<DefaultElementType extends React.ElementType> =
+  | DefaultOverride<DefaultElementType>
+  | AsOverride<any>
+  | RenderOverride<DefaultElementType>;
 
 export type Overrides = Record<string, Flex<any>>;
 export type Args = Record<string, any>;
 
-export interface RenderOpts<V extends Variants, A extends Args, O extends Overrides> {
+export interface RenderOpts<
+  V extends Variants,
+  A extends Args,
+  O extends Overrides
+> {
   variants?: V;
   args?: A;
   overrides?: O;
 }
 
 // Flex provides a more "flexible" way to specify bindings.
-export type Flex<DefaultRoot extends RenderRoot> =
+export type Flex<DefaultElementType extends React.ElementType> =
   // Fully-specified bindings
-  | Omit<DefaultOverride<DefaultRoot>, "type">
+  | Omit<DefaultOverride<DefaultElementType>, "type">
   | Omit<AsOverride<any>, "type">
   | Omit<RenderOverride<any>, "type">
 
@@ -49,16 +55,20 @@ export type Flex<DefaultRoot extends RenderRoot> =
   | React.ReactChild
 
   // Not rendered
-  | null  // rendered as null
+  | null // rendered as null
   | undefined // rendered as null
 
   // dict of props for the default RenderRoot
-  | React.ComponentProps<DefaultRoot>
+  | React.ComponentProps<DefaultElementType>
 
   // render function taking in dict of props for the default RenderRoot
-  | ((props: React.ComponentProps<DefaultRoot>) => React.ReactNode);
+  | ((props: React.ComponentProps<DefaultElementType>) => React.ReactNode);
 
-export function hasVariant<V extends Variants>(variants: V|undefined, groupName: keyof V, variant: string) {
+export function hasVariant<V extends Variants>(
+  variants: V | undefined,
+  groupName: keyof V,
+  variant: string
+) {
   if (variants === undefined) {
     return false;
   }
@@ -67,21 +77,27 @@ export function hasVariant<V extends Variants>(variants: V|undefined, groupName:
     return false;
   } else if (Array.isArray(groupVariants)) {
     return groupVariants.includes(variant);
-  } else if (typeof(groupVariants) === "string") {
+  } else if (typeof groupVariants === "string") {
     return groupVariants === variant;
   } else {
-    return groupVariants[variant] !== undefined && groupVariants[variant] !== false;
+    return (
+      groupVariants[variant] !== undefined && groupVariants[variant] !== false
+    );
   }
 }
 
-export function createPlasmicElement<DefaultRoot extends RenderRoot>(
-  override: Flex<DefaultRoot>,
-  defaultRoot: DefaultRoot,
-  defaultProps: Partial<React.ComponentProps<DefaultRoot>>
+export function createPlasmicElement<
+  DefaultElementType extends React.ElementType
+>(
+  override: Flex<DefaultElementType>,
+  defaultRoot: DefaultElementType,
+  defaultProps: Partial<React.ComponentProps<DefaultElementType>>
 ): React.ReactNode | null {
   const override2 = deriveOverride(override);
   if (override2.type === "render") {
-    return override2.render(defaultProps as React.ComponentProps<DefaultRoot>);
+    return override2.render(
+      defaultProps as React.ComponentProps<DefaultElementType>
+    );
   }
 
   const root = override2.type === "as" ? override2.as : defaultRoot;
@@ -89,12 +105,15 @@ export function createPlasmicElement<DefaultRoot extends RenderRoot>(
   return React.createElement(root, props);
 }
 
-function mergeProps(defaults: Record<string, any>, overrides?: Record<string, any>): Record<string, any> {
+function mergeProps(
+  defaults: Record<string, any>,
+  overrides?: Record<string, any>
+): Record<string, any> {
   if (!overrides) {
     return defaults;
   }
 
-  const result = {...defaults};
+  const result = { ...defaults };
 
   for (const key of Object.keys(overrides)) {
     result[key] = mergePropVals(key, defaults[key], overrides[key]);
@@ -104,7 +123,7 @@ function mergeProps(defaults: Record<string, any>, overrides?: Record<string, an
 }
 
 function mergePropVals(name: string, val1: any, val2: any): any {
-  if (typeof(val1) === "function" && typeof(val2) === "function") {
+  if (typeof val1 === "function" && typeof val2 === "function") {
     return (...args: any[]) => {
       val1(...args);
       return val2(...args);
@@ -121,7 +140,7 @@ function mergePropVals(name: string, val1: any, val2: any): any {
   }
 }
 
-function deriveOverride<C extends RenderRoot>(x: Flex<C>, bindingKeys: string[]=OVERRIDE_KEYS): Override<C> {
+function deriveOverride<C extends React.ElementType>(x: Flex<C>): Override<C> {
   if (!x) {
     // undefined Binding is an empty Binding
     return {
@@ -136,23 +155,23 @@ function deriveOverride<C extends RenderRoot>(x: Flex<C>, bindingKeys: string[]=
         children: x
       } as any
     };
-  } else if (typeof(x) === "object") {
+  } else if (typeof x === "object") {
     // If any of the overrideKeys is a key of this object, then assume
     // this is a full Override
     if ("as" in x) {
       return {
         ...x,
-        type: "as",
+        type: "as"
       };
     } else if ("props" in x) {
       return {
         ...x,
-        type: "default",
+        type: "default"
       };
     } else if ("render" in x) {
       return {
         ...x,
-        type: "render",
+        type: "render"
       };
     }
 
@@ -161,7 +180,7 @@ function deriveOverride<C extends RenderRoot>(x: Flex<C>, bindingKeys: string[]=
       type: "default",
       props: x
     };
-  } else if (typeof(x) === "function") {
+  } else if (typeof x === "function") {
     return {
       type: "render",
       render: x
@@ -172,9 +191,10 @@ function deriveOverride<C extends RenderRoot>(x: Flex<C>, bindingKeys: string[]=
 }
 
 function isReactNode(x: any) {
-  return typeof(x) === "string" || typeof(x) === "number" || React.isValidElement(x);
+  return (
+    typeof x === "string" || typeof x === "number" || React.isValidElement(x)
+  );
 }
-
 
 export const classNames = _classNames;
 
@@ -186,17 +206,23 @@ export function wrapFlexChild(children: React.ReactNode): React.ReactNode {
       return wrapFlexChild(children.props.children);
     }
     const className = `__wab_flex-item ${children.props.className}`;
-    return React.createElement(
-      "div",
-      { className },
-      children
-    );
+    return React.createElement("div", { className }, children);
   } else {
     return children;
   }
 }
 
-export interface RenderFunc<V extends Variants, A extends Args, O extends Overrides> {
+export interface RenderFunc<
+  V extends Variants,
+  A extends Args,
+  O extends Overrides
+> {
   (opts: RenderOpts<V, A, O>): React.ReactNode;
 }
-export type RenderFuncOverrides<RF> = RF extends RenderFunc<infer V, infer A, infer O> ? O : never;
+export type RenderFuncOverrides<RF> = RF extends RenderFunc<
+  infer V,
+  infer A,
+  infer O
+>
+  ? O
+  : never;
