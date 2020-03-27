@@ -4,8 +4,9 @@
   "description": "plasmic library for rendering in the presentational style",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": ["dist", "lib"],
   "scripts": {
-    "build": "tsc"
+    "build": "tsc && mkdir -p lib && cp src/styles/plasmic.css lib/"
   },
   "dependencies": {
     "classnames": "^2.2.6"
