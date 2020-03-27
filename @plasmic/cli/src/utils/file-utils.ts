@@ -57,7 +57,7 @@ export function makeFilePath(config: PlasmicConfig, filePath: string) {
 
 export function buildBaseNameToFiles(context: PlasmicContext) {
   const srcDir = path.join(context.rootDir, context.config.srcDir);
-  const allFiles = glob.sync(`${srcDir}/**/*.+(ts|css|tsx)`, {
+  const allFiles = glob.sync(`${srcDir}/**/*.+(ts|css|tsx|json)`, {
     ignore: [`${srcDir}/**/node_modules/**/*`]
   });
   return L.groupBy(allFiles, f => path.basename(f));

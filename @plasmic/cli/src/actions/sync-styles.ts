@@ -1,5 +1,5 @@
 import L from "lodash";
-import { PlasmicConfig, getContext } from "../utils/config-utils";
+import { PlasmicConfig, getContext, updateConfig } from "../utils/config-utils";
 import { StyleTokensMap } from "../api";
 import {
   writeFileContent,
@@ -34,6 +34,10 @@ export async function syncStyleTokens(opts: SyncStyleTokensArgs) {
   ][]) {
     upsertStyleTokens(config, styleMap, baseNameToFiles);
   }
+
+  updateConfig(context, {
+    tokens: config.tokens
+  });
 }
 
 export function upsertStyleTokens(

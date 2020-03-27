@@ -82,7 +82,8 @@ export async function syncProjects(opts: SyncArgs) {
   updateConfig(context, {
     components: config.components,
     projects: config.projects,
-    globalVariants: config.globalVariants
+    globalVariants: config.globalVariants,
+    tokens: config.tokens,
   });
 
   // Now we know config.components are all correct, so we can go ahead and fix up all the import statements
