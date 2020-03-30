@@ -10,6 +10,7 @@ import {
   PlasmicConfig
 } from "./config-utils";
 import { stripExtension, writeFileContent } from "./file-utils";
+import { flatMap } from "./lang-utils";
 
 const IMPORT_MARKER = /import .*\s+plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalContext))?/g;
 
@@ -93,18 +94,21 @@ export function isLocalModulePath(modulePath: string) {
 export function fixAllImportStatements(context: PlasmicContext) {
   const config = context.config;
   const srcDir = path.join(context.rootDir, config.srcDir);
-  const allCompConfigs = L.keyBy(config.components, c => c.id);
+  const allComponents = flatMap(config.projects, p => p.components);
+  const allCompConfigs = L.keyBy(allComponents, c => c.id);
   const allGlobalVariantConfigs = L.keyBy(
     config.globalVariants.variantGroups,
     c => c.id
   );
-  for (const compConfig of config.components) {
-    fixComponentImportStatements(
-      config,
-      compConfig,
-      allCompConfigs,
-      allGlobalVariantConfigs
-    );
+  for (const project of config.projects) {
+    for (const compConfig of project.components) {
+      fixComponentImportStatements(
+        config,
+        compConfig,
+        allCompConfigs,
+        allGlobalVariantConfigs
+      );
+    }
   }
 }
 

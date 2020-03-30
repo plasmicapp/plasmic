@@ -11,7 +11,7 @@ export async function watchProjects(opts: WatchArgs) {
   const projectIds = L.uniq(
     opts.projects.length > 0
       ? opts.projects
-      : config.components.map(c => c.projectId)
+      : config.projects.map(c => c.projectId)
   );
   if (projectIds.length === 0) {
     console.error(

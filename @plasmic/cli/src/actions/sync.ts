@@ -2,7 +2,7 @@ import path from "path";
 import L from "lodash";
 import fs, { writeFile } from "fs";
 import { CommonArgs } from "..";
-import { getContext, updateConfig, PlasmicConfig } from "../utils/config-utils";
+import { getContext, updateConfig, PlasmicConfig, ProjectConfig as CliProjectConfig } from "../utils/config-utils";
 import {
   buildBaseNameToFiles,
   writeFileContent,
@@ -14,10 +14,11 @@ import {
   ProjectBundle,
   ComponentBundle,
   GlobalVariantBundle,
-  ProjectConfig
+  ProjectConfig as ApiProjectConfig
 } from "../api";
 import { fixAllImportStatements } from "../utils/code-utils";
 import { upsertStyleTokens } from "./sync-styles";
+import { flatMap } from "../utils/lang-utils";
 
 export interface SyncArgs extends CommonArgs {
   projects: readonly string[];
@@ -32,7 +33,7 @@ export async function syncProjects(opts: SyncArgs) {
   const projectIds =
     opts.projects.length > 0
       ? opts.projects
-      : config.components.map(c => c.projectId);
+      : config.projects.map(p => p.projectId);
   if (projectIds.length === 0) {
     console.error(
       "Don't know which projects to sync; please specify via --projects"
@@ -44,7 +45,7 @@ export async function syncProjects(opts: SyncArgs) {
   const components =
     opts.components.length > 0
       ? opts.components
-      : config.components.map(c => c.id);
+      : flatMap(config.projects, p => p.components.map(c => c.id));
   const shouldSyncComponents = (id: string, name: string) => {
     if (
       components.length === 0 ||
@@ -64,23 +65,22 @@ export async function syncProjects(opts: SyncArgs) {
     string,
     ProjectBundle
   ][]) {
-    const componentBundles = projectBundle.components.filter(bundle =>
-      shouldSyncComponents(bundle.id, bundle.componentName)
-    );
-    syncProjectComponents(config, projectId, componentBundles, baseNameToFiles);
+
     syncGlobalVariants(
       config,
       projectId,
       projectBundle.globalVariants,
       baseNameToFiles
     );
-    syncProjectConfig(config, projectBundle.projectConfig, baseNameToFiles);
+    const componentBundles = projectBundle.components.filter(bundle =>
+      shouldSyncComponents(bundle.id, bundle.componentName)
+    );
+    syncProjectConfig(config, projectBundle.projectConfig, componentBundles, baseNameToFiles);
     upsertStyleTokens(config, projectBundle.usedTokens, baseNameToFiles);
   }
 
   // Write the new ComponentConfigs to disk
   updateConfig(context, {
-    components: config.components,
     projects: config.projects,
     globalVariants: config.globalVariants,
     tokens: config.tokens,
@@ -92,11 +92,11 @@ export async function syncProjects(opts: SyncArgs) {
 
 function syncProjectComponents(
   config: PlasmicConfig,
-  projectId: string,
+  project: CliProjectConfig,
   componentBundles: ComponentBundle[],
   baseNameToFiles: Record<string, string[]>
 ) {
-  const allCompConfigs = L.keyBy(config.components, c => c.id);
+  const allCompConfigs = L.keyBy(project.components, c => c.id);
   const srcDir = config.srcDir;
   for (const bundle of componentBundles) {
     const {
@@ -109,7 +109,7 @@ function syncProjectComponents(
       componentName,
       id
     } = bundle;
-    console.log(`Syncing component ${componentName} [${projectId}/${id}]`);
+    console.log(`Syncing component ${componentName} [${project.projectId}/${id}]`);
     let compConfig = allCompConfigs[id];
     const isNew = !compConfig;
     if (isNew) {
@@ -118,13 +118,13 @@ function syncProjectComponents(
         id,
         name: componentName,
         type: "managed",
-        projectId: projectId,
+        projectId: project.projectId,
         renderModuleFilePath: renderModuleFileName,
         importSpec: { modulePath: skeletonModuleFileName },
         cssFilePath: cssFileName
       };
       allCompConfigs[id] = compConfig;
-      config.components.push(allCompConfigs[id]);
+      project.components.push(allCompConfigs[id]);
 
       // Because it's the first time, we also generate the skeleton file.
       writeFileContent(config, skeletonModuleFileName, skeletonModule, {
@@ -184,23 +184,29 @@ function syncGlobalVariants(
 
 function syncProjectConfig(
   config: PlasmicConfig,
-  pc: ProjectConfig,
+  pc: ApiProjectConfig,
+  componentBundles: ComponentBundle[],
   baseNameToFiles: Record<string, string[]>
 ) {
-  const project = config.projects.find(c => c.projectId === pc.projectId);
-  if (!project) {
+  const cliProject = config.projects.find(c => c.projectId === pc.projectId);
+  if (!cliProject) {
     writeFileContent(config, pc.fontsFileName, pc.fontsModule, {
       force: false
     });
     const c = {
       projectId: pc.projectId,
-      fontsFilePath: pc.fontsFileName
+      fontsFilePath: pc.fontsFileName,
+      components: []
     };
     config.projects.push(c);
+    syncProjectComponents(config, c, componentBundles, baseNameToFiles);
   } else {
-    fixProjectFilePaths(config.srcDir, project, baseNameToFiles);
-    writeFileContent(config, project.fontsFilePath, pc.fontsModule, {
+    fixProjectFilePaths(config.srcDir, cliProject, baseNameToFiles);
+    writeFileContent(config, cliProject.fontsFilePath, pc.fontsModule, {
       force: true
     });
+    syncProjectComponents(config, cliProject, componentBundles, baseNameToFiles);
   }
+
+
 }

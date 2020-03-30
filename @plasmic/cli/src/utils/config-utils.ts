@@ -27,9 +27,6 @@ export interface PlasmicConfig {
   // Config for style tokens
   tokens: TokensConfig;
 
-  // Configs for each component we have synced.
-  components: ComponentConfig[];
-
   // Configs for each global variant we have synced.
   globalVariants: GlobalVariantsConfig;
   projects: ProjectConfig[];
@@ -51,6 +48,9 @@ export interface StyleConfig {
 export interface ProjectConfig {
   projectId: string;
   fontsFilePath: string;
+
+  // Configs for each component we have synced.
+  components: ComponentConfig[];
 }
 
 export interface TokensConfig {
@@ -152,7 +152,6 @@ export const DEFAULT_CONFIG: PlasmicConfig = {
     tokensFilePath: "plasmic-tokens.theo.json"
   },
   srcDir: ".",
-  components: [],
   projects: [],
   globalVariants: {
     variantGroups: []

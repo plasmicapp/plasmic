@@ -10,10 +10,12 @@ export function fixImports(opts: FixImportsArgs) {
   const config = context.config;
   const srcDir = path.join(context.rootDir, config.srcDir);
   const baseNameToFiles = buildBaseNameToFiles(context);
-  for (const compConfig of config.components) {
-    fixComponentPaths(srcDir, compConfig, baseNameToFiles);
+  for (const cliProject of config.projects) {
+    for (const compConfig of cliProject.components) {
+      fixComponentPaths(srcDir, compConfig, baseNameToFiles);
+    }
   }
 
-  updateConfig(context, { components: config.components });
+  updateConfig(context, { projects: config.projects });
   fixAllImportStatements(context);
 }

@@ -11,7 +11,7 @@ Then create a link to this:
 
 Then, from the package where you want to use this package, do:
 
-  yarn link plasmic-p
+  yarn link @plasmic/react-web
 
 This basically symlinks a folder in your consumer node_modules folder that links back
 to the output from `yarn build`.  If you update any file here, be sure to run `yarn build`
