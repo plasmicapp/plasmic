@@ -59,6 +59,9 @@ export function upsertStyleTokens(
       curStyleMap.props.push(prop);
     }
   }
+  curStyleMap.props.sort((prop1, prop2) =>
+    prop1.name === prop2.name ? 0 : prop1.name < prop2.name ? -1 : 1
+  );
   writeFileContent(
     config,
     config.tokens.tokensFilePath,
