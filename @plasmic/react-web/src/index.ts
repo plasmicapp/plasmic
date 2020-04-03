@@ -91,7 +91,8 @@ export function createPlasmicElement<
 >(
   override: Flex<DefaultElementType>,
   defaultRoot: DefaultElementType,
-  defaultProps: Partial<React.ComponentProps<DefaultElementType>>
+  defaultProps: Partial<React.ComponentProps<DefaultElementType>>,
+  wrapChildrenInFlex?: boolean
 ): React.ReactNode | null {
   const override2 = deriveOverride(override);
   if (override2.type === "render") {
@@ -102,6 +103,13 @@ export function createPlasmicElement<
 
   const root = override2.type === "as" ? override2.as : defaultRoot;
   const props = mergeProps(defaultProps, override2.props);
+  if (wrapChildrenInFlex && props.children) {
+    props.children = React.createElement(
+      "div",
+      { className: "__wab_flex-container" },
+      wrapFlexChild(props.children)
+    );
+  }
   return React.createElement(root, props);
 }
 
@@ -198,7 +206,10 @@ function isReactNode(x: any) {
 
 export const classNames = _classNames;
 
-export function wrapFlexChild(children: React.ReactNode, index?: number): React.ReactNode {
+export function wrapFlexChild(
+  children: React.ReactNode,
+  index?: number
+): React.ReactNode {
   if (Array.isArray(children)) {
     return children.map((child, i) => wrapFlexChild(child, i));
   } else if (React.isValidElement(children)) {
