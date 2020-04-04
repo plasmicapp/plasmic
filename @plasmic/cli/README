@@ -25,3 +25,13 @@ Usage
 `plasmic sync --projects ...` allows you to sync all components in the specified projects
 down as code files to your current folder.  Once you've run `plasmic init`, you can run
 `plasmic sync` from any subfolder of the folder with the `plasmic.json` file.
+
+Debugging
+=========
+
+If you would like to run the source in-place from the .ts files so that you
+can debug the unmangled source code in Chrome devtools, but still be able to
+run the app as if it were being run from a different project directory, start
+the app with the env var:
+
+    DEBUG_CHDIR=/path/to/target/project node -r ts-node/register src/index.ts help

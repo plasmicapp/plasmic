@@ -7,6 +7,10 @@ import { WatchArgs, watchProjects } from "./actions/watch";
 import { SyncStyleTokensArgs, syncStyleTokens } from "./actions/sync-styles";
 import { DEFAULT_CONFIG } from "./utils/config-utils";
 
+if (process.env.DEBUG_CHDIR) {
+  process.chdir(process.env.DEBUG_CHDIR);
+}
+
 yargs
   .usage("Usage: $0 <command> [options]")
   .option("auth", {
