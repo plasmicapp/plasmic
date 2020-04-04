@@ -29,7 +29,7 @@ yargs
         .option("host", {
           describe: "Plasmic host to use",
           type: "string",
-          default: "https://prod.plasmic.app"
+          default: "https://studio.plasmic.app"
         })
         .option("platform", {
           describe: "Target platform to generate code for",
