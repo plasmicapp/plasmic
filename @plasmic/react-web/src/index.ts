@@ -9,13 +9,13 @@ export type Variants = Record<
 
 export interface DefaultOverride<C extends React.ElementType> {
   type: "default";
-  props: React.ComponentProps<C>;
+  props: Partial<React.ComponentProps<C>>;
 }
 
 export interface AsOverride<C extends React.ElementType> {
   type: "as";
   as: C;
-  props: React.ComponentProps<C>;
+  props: Partial<React.ComponentProps<C>>;
 }
 
 export interface RenderOverride<C extends React.ElementType> {
@@ -58,10 +58,10 @@ export type Flex<DefaultElementType extends React.ElementType> =
   | null // rendered as null
   | undefined // rendered as null
 
-  // dict of props for the default RenderRoot
-  | React.ComponentProps<DefaultElementType>
+  // dict of props for the DefaultElementType
+  | Partial<React.ComponentProps<DefaultElementType>>
 
-  // render function taking in dict of props for the default RenderRoot
+  // render function taking in dict of props for the DefaultElementType
   | ((props: React.ComponentProps<DefaultElementType>) => React.ReactNode);
 
 export function hasVariant<V extends Variants>(
@@ -141,7 +141,7 @@ function mergePropVals(name: string, val1: any, val2: any): any {
   } else if (name === "style" && val1 && val2) {
     return {
       ...val1,
-      ...val2
+      ...val2,
     };
   } else {
     return val2;
@@ -153,15 +153,15 @@ function deriveOverride<C extends React.ElementType>(x: Flex<C>): Override<C> {
     // undefined Binding is an empty Binding
     return {
       type: "default",
-      props: {} as any
+      props: {} as any,
     };
   } else if (isReactNode(x)) {
     // If ReactNode, then assume this is the children
     return {
       type: "default",
       props: {
-        children: x
-      } as any
+        children: x,
+      } as any,
     };
   } else if (typeof x === "object") {
     // If any of the overrideKeys is a key of this object, then assume
@@ -169,29 +169,31 @@ function deriveOverride<C extends React.ElementType>(x: Flex<C>): Override<C> {
     if ("as" in x) {
       return {
         ...x,
-        type: "as"
-      };
+        props: x.props || {},
+        type: "as",
+      } as any;
     } else if ("props" in x) {
       return {
         ...x,
-        type: "default"
+        props: x.props || {},
+        type: "default",
       };
     } else if ("render" in x) {
       return {
         ...x,
-        type: "render"
-      };
+        type: "render",
+      } as any;
     }
 
     // Else, assume this is just a props object.
     return {
       type: "default",
-      props: x
+      props: x,
     };
   } else if (typeof x === "function") {
     return {
       type: "render",
-      render: x
+      render: x,
     };
   }
 
