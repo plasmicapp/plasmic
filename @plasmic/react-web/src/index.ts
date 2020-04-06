@@ -103,14 +103,15 @@ export function createPlasmicElement<
 
   const root = override2.type === "as" ? override2.as : defaultRoot;
   const props = mergeProps(defaultProps, override2.props);
+  let children = props.children;
   if (wrapChildrenInFlex && props.children) {
-    props.children = React.createElement(
+    children = React.createElement(
       "div",
       { className: "__wab_flex-container" },
-      wrapFlexChild(props.children)
+      children
     );
   }
-  return React.createElement(root, props);
+  return React.createElement(root, props, children);
 }
 
 function mergeProps(
@@ -205,23 +206,6 @@ function isReactNode(x: any) {
 }
 
 export const classNames = _classNames;
-
-export function wrapFlexChild(
-  children: React.ReactNode,
-  index?: number
-): React.ReactNode {
-  if (Array.isArray(children)) {
-    return children.map((child, i) => wrapFlexChild(child, i));
-  } else if (React.isValidElement(children)) {
-    if (children.type === React.Fragment) {
-      return wrapFlexChild(children.props.children);
-    }
-    const className = `__wab_flex-item ${children.props.className}`;
-    return React.createElement("div", { className, key: index }, children);
-  } else {
-    return children;
-  }
-}
 
 export interface RenderFunc<
   V extends Variants,

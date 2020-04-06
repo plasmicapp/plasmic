@@ -8,25 +8,6 @@
   pointer-events: none;
 }
 
-.__wab_flex-item {
-  display: grid !important;
-  align-items: stretch !important;
-  align-content: stretch !important;
-  justify-items: stretch !important;
-  justify-content: stretch !important;
-  box-sizing: content-box;
-  background: none !important;
-  border: none !important;
-  padding: 0 !important;
-  box-shadow: none !important;
-  overflow: visible !important;
-  pointer-events: none;
-}
-
-.__wab_flex-item > * {
-  margin: 0 !important;
+.__wab_flex-container > * {
   pointer-events: auto;
-  width: auto !important;
-  height: auto !important;
-  align-self: auto !important;
 }
