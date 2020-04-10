@@ -11,7 +11,7 @@ import {
   PlasmicConfig,
   fillDefaults,
   writeConfig,
-  writeAuth
+  writeAuth,
 } from "../utils/config-utils";
 
 export interface InitArgs extends CommonArgs {
@@ -39,25 +39,25 @@ export async function initPlasmic(opts: InitArgs) {
       {
         name: "host",
         message: "Host of the Plasmic instance to use",
-        default: "http://localhost:3003"
-      }
+        default: "https://prod.plasmic.app",
+      },
     ]);
     const auth = await inquirer.prompt([
       {
         name: "user",
-        message: "Your plasmic user email"
+        message: "Your plasmic user email",
       },
       {
         name: "token",
-        message: `Your personal access token (create one at ${initial.host}/self/settings)`
-      }
+        message: `Your personal access token (create one at ${initial.host}/self/settings)`,
+      },
     ]);
 
     const newAuthFile = opts.auth || path.join(os.homedir(), AUTH_FILE_NAME);
     writeAuth(newAuthFile, {
       host: initial.host,
       user: auth.user,
-      token: auth.token
+      token: auth.token,
     });
 
     console.log(
@@ -66,7 +66,6 @@ export async function initPlasmic(opts: InitArgs) {
   } else {
     console.log(`Using existing Plasmic credentials at ${authFile}`);
   }
-
   const newConfigFile =
     opts.config || path.join(process.cwd(), CONFIG_FILE_NAME);
   writeConfig(newConfigFile, createInitConfig(opts));
@@ -78,11 +77,11 @@ function createInitConfig(opts: InitArgs): PlasmicConfig {
     srcDir: opts.srcDir,
     code: {
       lang: opts.codeLang,
-      scheme: opts.codeScheme
+      scheme: opts.codeScheme,
     },
     style: {
-      scheme: opts.styleScheme
+      scheme: opts.styleScheme,
     },
-    platform: opts.platform
+    platform: opts.platform,
   });
 }
