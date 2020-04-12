@@ -149,6 +149,21 @@ function mergePropVals(name: string, val1: any, val2: any): any {
   }
 }
 
+export function wrapWithClassName(element: React.ReactNode, className: string) {
+  const key = React.isValidElement(element) ? element.key || undefined : undefined;
+  return React.createElement(
+    "div",
+    {
+      key,
+      className,
+      style: {
+        display: "grid"
+      }
+    },
+    element
+  );
+}
+
 function deriveOverride<C extends React.ElementType>(x: Flex<C>): Override<C> {
   if (!x) {
     // undefined Binding is an empty Binding
