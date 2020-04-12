@@ -82,7 +82,7 @@ export async function initPlasmic(opts: InitArgs) {
   ]);
   if (addDep.answer === "yes") {
     const cmd =
-      "yarn add @plasmicapp/react-web || npm add @plasmicapp/react-web";
+      "yarn add @plasmicapp/react-web || npm install --save @plasmicapp/react-web";
     console.log(cmd);
     const r = spawnSync(cmd, { shell: true, stdio: "inherit" });
     if (r.status === 0) {
