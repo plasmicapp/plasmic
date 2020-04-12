@@ -40,7 +40,7 @@ export async function initPlasmic(opts: InitArgs) {
       {
         name: "host",
         message: "Host of the Plasmic instance to use",
-        default: "https://prod.plasmic.app",
+        default: "https://studio.plasmic.app",
       },
     ]);
     const auth = await inquirer.prompt([
