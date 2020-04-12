@@ -13,6 +13,7 @@ import {
   writeConfig,
   writeAuth,
 } from "../utils/config-utils";
+import { execSync, spawnSync } from "child_process";
 
 export interface InitArgs extends CommonArgs {
   host: string;
@@ -69,7 +70,29 @@ export async function initPlasmic(opts: InitArgs) {
   const newConfigFile =
     opts.config || path.join(process.cwd(), CONFIG_FILE_NAME);
   writeConfig(newConfigFile, createInitConfig(opts));
-  console.log("Successfully created plasmic.json");
+  console.log("Successfully created plasmic.json.");
+
+  const addDep = await inquirer.prompt([
+    {
+      name: "answer",
+      message:
+        "@plasmicapp/react-web is required to build plasmic generated code. Do you want to add it now? (yes/no)",
+      default: "yes",
+    },
+  ]);
+  if (addDep.answer === "yes") {
+    const cmd =
+      "yarn add @plasmicapp/react-web || npm add @plasmicapp/react-web";
+    console.log(cmd);
+    const r = spawnSync(cmd, { shell: true, stdio: "inherit" });
+    if (r.status === 0) {
+      console.log("Successfully added @plasmicapp/react-web dependency.");
+    } else {
+      console.log(
+        "Cannot add @plasmicapp/react-web to your project dependency. Please add it manually."
+      );
+    }
+  }
 }
 
 function createInitConfig(opts: InitArgs): PlasmicConfig {
