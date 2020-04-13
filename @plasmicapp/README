@@ -1,0 +1,20 @@
+Publishing packages
+===================
+
+Make user you are authenticating with npm as the plasmicapp user.
+
+    npm whoami # check who you are currently
+    npm login # if you were not plasmicapp
+
+Ensure you have a clean repository.
+
+Ensure you have pulled the latest changes from master.
+
+Announce on Slack in #general your intent to publish.
+
+Bump the version in package.json.  Make this its own commit.
+
+Publish with:
+
+    yarn build
+    npm publish --access public
