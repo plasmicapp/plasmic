@@ -12,7 +12,19 @@ import {
 import { stripExtension, writeFileContent } from "./file-utils";
 import { flatMap } from "./lang-utils";
 
-const IMPORT_MARKER = /import .*\s+plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalContext))?/g;
+const IMPORT_MARKER = /import (.*);.*\s+plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalContext))?/g;
+
+function getNewNamePart(existingSpec: string, newNamePart: string) {
+  const items = existingSpec.match(/(.*)\s+from\s+.*/);
+  if (!items) {
+    throw new Error(`Malformed import spec to fix ${existingSpec}`);
+  }
+  const existingImportedNames = (items[1] as string).split(",").map(name => name.trim());
+  const newSpecParts = existingImportedNames.includes(newNamePart)
+      ? existingImportedNames
+      : [...existingImportedNames, newNamePart];
+  return newSpecParts.join(", ");
+}
 
 /**
  * Given the argument `code` string, for module at `fromPath`, replaces all Plasmic imports
@@ -24,7 +36,7 @@ export function replaceImports(
   compConfigsMap: Record<string, ComponentConfig>,
   globalVariantConfigsMap: Record<string, GlobalVariantGroupConfig>
 ) {
-  return code.replace(IMPORT_MARKER, (sub, uuid, type) => {
+  return code.replace(IMPORT_MARKER, (sub, spec, uuid, type) => {
     if (type === "component") {
       // instantiation of a mapped or managed component
       const compConfig = compConfigsMap[uuid];
@@ -32,8 +44,10 @@ export function replaceImports(
       const namePart = exportName
         ? `{${exportName} as ${compConfig.name}}`
         : `${compConfig.name}`;
+
       const realPath = makeImportPath(fromPath, modulePath, true);
-      return `import ${namePart} from "${realPath}";  // plasmic-import: ${uuid}/component`;
+      const newSpec = getNewNamePart(spec, namePart);
+      return `import ${newSpec} from "${realPath}"; // plasmic-import: ${uuid}/component`;
     } else if (type === "render") {
       // import of the PP blackbox
       const compConfig = compConfigsMap[uuid];
@@ -42,12 +56,13 @@ export function replaceImports(
         compConfig.renderModuleFilePath,
         true
       );
-      return `import PP__${compConfig.name} from "${realPath}";  // plasmic-import: ${uuid}/render`;
+      const newSpec = getNewNamePart(spec, `PP__${compConfig.name}`);
+      return `import ${newSpec} from "${realPath}"; // plasmic-import: ${uuid}/render`;
     } else if (type === "css") {
       // import of the PP css file
       const compConfig = compConfigsMap[uuid];
       const realPath = makeImportPath(fromPath, compConfig.cssFilePath, false);
-      return `import "${realPath}";  // plasmic-import: ${uuid}/css`;
+      return `import "${realPath}"; // plasmic-import: ${uuid}/css`;
     } else if (type === "globalVariant") {
       // import of global context
       const variantConfig = globalVariantConfigsMap[uuid];
@@ -56,7 +71,7 @@ export function replaceImports(
         variantConfig.contextFilePath,
         true
       );
-      return `import ${variantConfig.name} from "${realPath}";  // plasmic-import: ${uuid}/globalVariant`;
+      return `import ${variantConfig.name} from "${realPath}"; // plasmic-import: ${uuid}/globalVariant`;
     } else {
       // Does not match a known import type; just keep the same matched string
       return sub;
