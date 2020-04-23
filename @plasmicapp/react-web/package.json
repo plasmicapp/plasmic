@@ -1,10 +1,13 @@
 {
   "name": "@plasmicapp/react-web",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "plasmic library for rendering in the presentational style",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist", "lib"],
+  "files": [
+    "dist",
+    "lib"
+  ],
   "scripts": {
     "build": "tsc && mkdir -p lib && cp src/styles/plasmic.css lib/"
   },

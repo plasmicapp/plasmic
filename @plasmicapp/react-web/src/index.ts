@@ -2,26 +2,39 @@ import _classNames from "classnames";
 import React from "react";
 
 export type ElementTag = keyof JSX.IntrinsicElements;
-export type Variants = Record<
-  string,
-  string | string[] | undefined | { [val: string]: boolean }
->;
 
-export interface DefaultOverride<C extends React.ElementType> {
-  type: "default";
-  props: Partial<React.ComponentProps<C>>;
+interface Variants {
+  [vg: string]: string | string[];
 }
 
-export interface AsOverride<C extends React.ElementType> {
+type StringArray<T extends string> = T[];
+
+type VariantArg<V extends string | string[]> = V extends StringArray<infer M> ? M | M[] | {[v in M]?: boolean} : V;
+
+export type VariantsArg<V extends Variants> = {
+  [vg in keyof V]?: VariantArg<V[vg]>;
+};
+
+interface OverrideTwiddle {
+  wrapChildren?: (children: React.ReactNode) => React.ReactNode;
+  wrap?: (node: React.ReactNode) => React.ReactNode;
+}
+
+export type DefaultOverride<C extends React.ElementType> = {
+  type: "default";
+  props: Partial<React.ComponentProps<C>>;
+} & OverrideTwiddle;
+
+export type AsOverride<C extends React.ElementType> = {
   type: "as";
   as: C;
   props: Partial<React.ComponentProps<C>>;
-}
+} & OverrideTwiddle;
 
-export interface RenderOverride<C extends React.ElementType> {
+export type RenderOverride<C extends React.ElementType> = {
   type: "render";
   render: (props: React.ComponentProps<C>) => React.ReactNode;
-}
+} & OverrideTwiddle;
 
 export type Override<DefaultElementType extends React.ElementType> =
   | DefaultOverride<DefaultElementType>
@@ -36,7 +49,7 @@ export interface RenderOpts<
   A extends Args,
   O extends Overrides
 > {
-  variants?: V;
+  variants?: VariantsArg<V>;
   args?: A;
   overrides?: O;
 }
@@ -46,7 +59,7 @@ export type Flex<DefaultElementType extends React.ElementType> =
   // Fully-specified bindings
   | Omit<DefaultOverride<DefaultElementType>, "type">
   | Omit<AsOverride<any>, "type">
-  | Omit<RenderOverride<any>, "type">
+  | Omit<RenderOverride<DefaultElementType>, "type">
 
   // Valid ReactNode, used as children.
   // Note: We use React.ReactChild instead of React.ReactNode because we don't want to include
@@ -65,7 +78,7 @@ export type Flex<DefaultElementType extends React.ElementType> =
   | ((props: React.ComponentProps<DefaultElementType>) => React.ReactNode);
 
 export function hasVariant<V extends Variants>(
-  variants: V | undefined,
+  variants: VariantsArg<V> | undefined,
   groupName: keyof V,
   variant: string
 ) {
@@ -102,8 +115,13 @@ export function createPlasmicElement<
   }
 
   const root = override2.type === "as" ? override2.as : defaultRoot;
-  const props = mergeProps(defaultProps, override2.props);
+  const props = mergeProps(defaultProps, (override2.type === "default" || override2.type === "as") ? override2.props : {});
   let children = props.children;
+
+  if (override2.wrapChildren) {
+    children = override2.wrapChildren(children);
+  }
+
   if (wrapChildrenInFlex && props.children) {
     children = React.createElement(
       "div",
@@ -111,7 +129,13 @@ export function createPlasmicElement<
       children
     );
   }
-  return React.createElement(root, props, children);
+  let result = React.createElement(root, props, children) as React.ReactElement;
+
+  if (override2.wrap) {
+    result = override2.wrap(result) as React.ReactElement;
+  }
+
+  return result;
 }
 
 function mergeProps(
@@ -231,10 +255,66 @@ export interface RenderFunc<
 > {
   (opts: RenderOpts<V, A, O>): React.ReactNode;
 }
-export type RenderFuncOverrides<RF> = RF extends RenderFunc<
-  infer V,
-  infer A,
-  infer O
->
+export type RenderFuncOverrides<RF> = RF extends RenderFunc<any, any, infer O>
   ? O
   : never;
+export type RenderFuncVariants<RF> = RF extends RenderFunc<infer V, any, any>
+  ? V
+  : never;
+export type RenderFuncArgs<RF> = RF extends RenderFunc<any, infer A, any>
+  ? A
+  : never;
+
+export abstract class Renderer<V extends Variants, A extends Args, RFs extends Record<string, RenderFunc<V, A, any>>, Root extends keyof RFs> {
+  constructor(protected variants: VariantsArg<V>, protected args: A, protected renderFuncs: RFs, protected root: Root) {}
+  protected abstract create(variants: VariantsArg<V>, args: A): Renderer<V, A, RFs, Root>;
+  abstract getInternalVariantProps(): string[];
+  abstract getInternalArgProps(): string[];
+  withVariants(variants: VariantsArg<V>) {
+    return this.create({...this.variants, ...variants}, this.args);
+  }
+  withArgs(args: Partial<A>) {
+    return this.create(this.variants, {...this.args, ...args});
+  }
+  withOverrides(overrides: RenderFuncOverrides<RFs[Root]>) {
+    return this.forNode(this.root).withOverrides(overrides);
+  }
+  forNode(node: keyof RFs): NodeRenderer<RFs[typeof node]> {
+    return new NodeRenderer(this.renderFuncs[node], this.variants, this.args, {});
+  }
+  render() {
+    return this.forNode(this.root);
+  }
+}
+
+export class NodeRenderer<RF extends RenderFunc<any, any, any>> {
+  constructor(protected renderFunc: RF, protected variants: any, protected args: any, protected overrides: any) {}
+  withOverrides(overrides: RenderFuncOverrides<RF>) {
+    return new NodeRenderer(this.renderFunc, this.variants, this.args, {...this.overrides, ...overrides});
+  }
+  render() {
+    return this.renderFunc({
+      variants: this.variants,
+      overrides: this.overrides,
+      args: this.args,
+    });
+  }
+}
+
+export type OmitVariants<X extends Variants, V extends Variants> = {
+  [k in keyof X]: k extends keyof V ? ExcludeVariants<X[k], V[k]> : X[k];
+};
+
+type ExcludeVariants<X extends string|string[], Y extends string|string[]> = (
+  X extends StringArray<infer x> ? (
+    Y extends StringArray<infer y> ?
+      Exclude<x, y>[]
+    : Exclude<x, Y>[]
+  ) : (
+    Y extends StringArray<infer y> ?
+      Exclude<X, y> :
+      Exclude<X, Y>
+  )
+);
+
+export type RendererVariants<R extends Renderer<any, any, any, any>> = R extends Renderer<infer V, any, any, any> ? V : never;
