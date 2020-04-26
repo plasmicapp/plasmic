@@ -14,6 +14,7 @@ import {
   writeAuth,
 } from "../utils/config-utils";
 import { execSync, spawnSync } from "child_process";
+import { installUpgrade } from "../utils/npm-utils";
 
 export interface InitArgs extends CommonArgs {
   host: string;
@@ -81,17 +82,7 @@ export async function initPlasmic(opts: InitArgs) {
     },
   ]);
   if (addDep.answer === "yes") {
-    const cmd =
-      "yarn add @plasmicapp/react-web || npm install --save @plasmicapp/react-web";
-    console.log(cmd);
-    const r = spawnSync(cmd, { shell: true, stdio: "inherit" });
-    if (r.status === 0) {
-      console.log("Successfully added @plasmicapp/react-web dependency.");
-    } else {
-      console.log(
-        "Cannot add @plasmicapp/react-web to your project dependency. Please add it manually."
-      );
-    }
+    installUpgrade("@plasmicapp/react-web");
   }
 }
 

@@ -1,0 +1,96 @@
+import fs from "fs";
+import glob from "fast-glob";
+import semver from "semver";
+import latest from "latest-version";
+import {findFile} from "./file-utils";
+import { PlasmicContext } from "./config-utils";
+import { execSync, spawnSync } from "child_process";
+import inquirer from "inquirer";
+
+export async function warnLatestCli(context: PlasmicContext) {
+  await warnLatest(context, "@plasmicapp/cli", {
+    requiredMsg: () => "@plasmicapp/cli is required to export Plasmic code.",
+    updateMsg: (c, v) => `A more recent version of @plasmicapp/cli [${v}] is available.`,
+  });
+}
+
+export async function warnLatestReactWeb(context: PlasmicContext) {
+  await warnLatest(context, "@plasmicapp/react-web", {
+    requiredMsg: () => "@plasmicapp/react-web is required to use Plasmic-generated code.",
+    updateMsg: (c, v) => `A more recent version of @plasmicapp/react-web [${v}] is available; your exported code may not work unless you update`,
+  });
+}
+
+export async function warnLatest(context: PlasmicContext, pkg: string, msgs: {
+  requiredMsg: () => string;
+  updateMsg: (curVersion: string, latestVersion: string) => string;
+}) {
+  const check = await checkVersion(context, "@plasmicapp/react-web");
+  if (check.type === "up-to-date") {
+    return;
+  }
+  const res = await inquirer.prompt([
+    {
+      name: "install",
+      message: `${check.type === "not-installed" ? msgs.requiredMsg() : msgs.updateMsg(check.current, check.latest)}  Do you want to ${check.type === "not-installed" ? "add" : "update"} it now? (yes/no)`,
+      default: "yes"
+    }
+  ]);
+  if (res.install === "yes") {
+    installUpgrade(pkg);
+  }
+}
+
+async function checkVersion(context: PlasmicContext, pkg: string) {
+  const last = await latest(pkg);
+  const cur = findInstalledVersion(context, pkg);
+  if (!cur) {
+    return {type: "not-installed"} as const;
+  }
+  if (semver.gt(last, cur)) {
+    return {
+      type: "obsolete",
+      latest: last,
+      current: cur
+    } as const;
+  }
+  return {type: "up-to-date"} as const;
+}
+
+function findInstalledVersion(context: PlasmicContext, pkg: string) {
+  const filename = findInstalledPackageJsonFile(pkg, context.rootDir);
+  if (filename) {
+    const json = parsePackageJson(filename);
+    if (json && json.name === pkg) {
+      return json.version;
+    }
+  }
+  return undefined;
+}
+
+function findInstalledPackageJsonFile(pkg: string, dir: string) {
+  const files = glob.sync(`${dir}/**/node_modules/${pkg}/package.json`);
+  return files.length > 0 ? files[0] : undefined;
+}
+
+function parsePackageJson(path: string) {
+  try {
+    return JSON.parse(fs.readFileSync(path).toString());
+  } catch (e) {
+    return undefined;
+  }
+}
+
+export function installUpgrade(pkg: string) {
+  const cmd =
+    `yarn add ${pkg} || npm install --save ${pkg}`;
+  console.log(cmd);
+  const r = spawnSync(cmd, { shell: true, stdio: "inherit" });
+  if (r.status === 0) {
+    console.log(`Successfully added ${pkg} dependency.`);
+  } else {
+    console.warn(
+      `Cannot add ${pkg} to your project dependency. Please add it manually.`
+    );
+  }
+}

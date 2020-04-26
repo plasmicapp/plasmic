@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import os from "os";
 import L from "lodash";
-import { writeFileContentRaw } from "./file-utils";
+import { writeFileContentRaw, findFile } from "./file-utils";
 import { PlasmicApi } from "../api";
 import { CommonArgs } from "../index";
 import { DeepPartial } from "utility-types";
@@ -186,30 +186,6 @@ export function findAuthFile(
     });
   }
   return file;
-}
-
-/**
- * Finds the full path to the first file satisfying `pred` in `dir`.  If
- * `opts.traverseParents` is set to true, then will also look in ancestor
- * directories until the plasmic.json file is found.  If none is found,
- * returns undefined.
- */
-function findFile(
-  dir: string,
-  pred: (name: string) => boolean,
-  opts: {
-    traverseParents?: boolean;
-  }
-): string | undefined {
-  const files = fs.readdirSync(dir);
-  const found = files.find(f => pred(f));
-  if (found) {
-    return path.join(dir, found);
-  }
-  if (dir === "/" || !opts.traverseParents) {
-    return undefined;
-  }
-  return findFile(path.dirname(dir), pred, opts);
 }
 
 /**

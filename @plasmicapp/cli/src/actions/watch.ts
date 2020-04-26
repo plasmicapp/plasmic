@@ -1,6 +1,7 @@
 import L from "lodash";
 import { SyncArgs, syncProjects } from "./sync";
 import { getContext } from "../utils/config-utils";
+import { warnLatestReactWeb } from "../utils/npm-utils";
 
 export interface WatchArgs extends SyncArgs {}
 export async function watchProjects(opts: WatchArgs) {
@@ -19,6 +20,9 @@ export async function watchProjects(opts: WatchArgs) {
     );
     process.exit(1);
   }
+
+  await warnLatestReactWeb(context);
+
   socket.on("connect", () => {
     // upon connection, subscribe to changes for argument projects
     socket.emit("subscribe", { namespace: "projects", projectIds });

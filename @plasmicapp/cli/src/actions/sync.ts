@@ -19,6 +19,7 @@ import {
 import { fixAllImportStatements } from "../utils/code-utils";
 import { upsertStyleTokens } from "./sync-styles";
 import { flatMap } from "../utils/lang-utils";
+import { warnLatestReactWeb } from "../utils/npm-utils";
 
 export interface SyncArgs extends CommonArgs {
   projects: readonly string[];
@@ -88,6 +89,8 @@ export async function syncProjects(opts: SyncArgs) {
 
   // Now we know config.components are all correct, so we can go ahead and fix up all the import statements
   fixAllImportStatements(context);
+
+  await warnLatestReactWeb(context);
 }
 
 function syncProjectComponents(
