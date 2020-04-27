@@ -12,17 +12,14 @@ import {
 import { stripExtension, writeFileContent } from "./file-utils";
 import { flatMap } from "./lang-utils";
 
-const IMPORT_MARKER = /import (.*);.*\s+plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalContext))?/g;
+const IMPORT_MARKER = /^import\s+([^;]+)\s+from\s+["'`]([^"'`;]+)["'`];.*\s+plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant))?/gm;
 
 function getNewNamePart(existingSpec: string, newNamePart: string) {
-  const items = existingSpec.match(/(.*)\s+from\s+.*/);
-  if (!items) {
-    throw new Error(`Malformed import spec to fix ${existingSpec}`);
-  }
-  const existingImportedNames = (items[1] as string).split(",").map(name => name.trim());
+  // TODO: make this much less fragile!
+  const existingImportedNames = existingSpec.replace("{", "").replace("}", "").split(",").map(name => name.trim());
   const newSpecParts = existingImportedNames.includes(newNamePart)
-      ? existingImportedNames
-      : [...existingImportedNames, newNamePart];
+      ? [existingSpec]
+      : [existingSpec, newNamePart];
   return newSpecParts.join(", ");
 }
 
@@ -36,7 +33,7 @@ export function replaceImports(
   compConfigsMap: Record<string, ComponentConfig>,
   globalVariantConfigsMap: Record<string, GlobalVariantGroupConfig>
 ) {
-  return code.replace(IMPORT_MARKER, (sub, spec, uuid, type) => {
+  return code.replace(IMPORT_MARKER, (sub, spec, from, uuid, type) => {
     if (type === "component") {
       // instantiation of a mapped or managed component
       const compConfig = compConfigsMap[uuid];
@@ -71,7 +68,7 @@ export function replaceImports(
         variantConfig.contextFilePath,
         true
       );
-      return `import ${variantConfig.name} from "${realPath}"; // plasmic-import: ${uuid}/globalVariant`;
+      return `import ${variantConfig.name}Context from "${realPath}"; // plasmic-import: ${uuid}/globalVariant`;
     } else {
       // Does not match a known import type; just keep the same matched string
       return sub;
