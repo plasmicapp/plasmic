@@ -115,9 +115,9 @@ export function fixProjectFilePaths(
   projectConfig: ProjectConfig,
   baseNameToFiles: Record<string, string[]>
 ) {
-  projectConfig.fontsFilePath = findSrcDirPath(
+  projectConfig.cssFilePath = findSrcDirPath(
     srcDir,
-    projectConfig.fontsFilePath,
+    projectConfig.cssFilePath,
     baseNameToFiles
   );
 }

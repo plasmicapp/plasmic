@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/cli",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "plasmic cli for syncing local code with Plasmic designs",
   "main": "./dist/index.js",
   "bin": {

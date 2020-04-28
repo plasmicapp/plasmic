@@ -12,7 +12,7 @@ import {
 import { stripExtension, writeFileContent } from "./file-utils";
 import { flatMap } from "./lang-utils";
 
-const IMPORT_MARKER = /^import\s+([^;]+)\s+from\s+["'`]([^"'`;]+)["'`];.*\s+plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant))?/gm;
+const IMPORT_MARKER = /^import\s+([^;]+)\s+from\s+["'`]([^"'`;]+)["'`];.*\s+plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss))?/gm;
 
 function getNewNamePart(existingSpec: string, newNamePart: string) {
   // TODO: make this much less fragile!
@@ -31,6 +31,7 @@ export function replaceImports(
   code: string,
   fromPath: string,
   compConfigsMap: Record<string, ComponentConfig>,
+  projectConfigsMap: Record<string, ProjectConfig>,
   globalVariantConfigsMap: Record<string, GlobalVariantGroupConfig>
 ) {
   return code.replace(IMPORT_MARKER, (sub, spec, from, uuid, type) => {
@@ -69,6 +70,10 @@ export function replaceImports(
         true
       );
       return `import ${variantConfig.name}Context from "${realPath}"; // plasmic-import: ${uuid}/globalVariant`;
+    } else if (type === "projectcss") {
+      const projectConfig = projectConfigsMap[uuid];
+      const realPath = makeImportPath(fromPath, projectConfig.cssFilePath, false);
+      return `import "${realPath}"; // plasmic-import: ${uuid}/projectcss`;
     } else {
       // Does not match a known import type; just keep the same matched string
       return sub;
@@ -162,10 +167,12 @@ function fixFileImportStatements(
   const prevContent = fs
     .readFileSync(path.join(config.srcDir, srcDirFilePath))
     .toString();
+  const allProjectConfigs = L.keyBy(config.projects, p => p.projectId);
   const newContent = replaceImports(
     prevContent,
     srcDirFilePath,
     allCompConfigs,
+    allProjectConfigs,
     allGlobalVariantConfigs
   );
   writeFileContent(config, srcDirFilePath, newContent, { force: true });

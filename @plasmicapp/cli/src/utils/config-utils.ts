@@ -51,7 +51,7 @@ export interface StyleConfig {
 
 export interface ProjectConfig {
   projectId: string;
-  fontsFilePath: string;
+  cssFilePath: string;
 
   // Configs for each component we have synced.
   components: ComponentConfig[];

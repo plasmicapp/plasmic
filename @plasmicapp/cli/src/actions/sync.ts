@@ -191,25 +191,27 @@ function syncProjectConfig(
   componentBundles: ComponentBundle[],
   baseNameToFiles: Record<string, string[]>
 ) {
-  const cliProject = config.projects.find(c => c.projectId === pc.projectId);
+  let cliProject = config.projects.find(c => c.projectId === pc.projectId);
+  const defaultCssFilePath = path.join(config.defaultPlasmicDir, pc.cssFileName);
+  const isNew = !cliProject;
   if (!cliProject) {
-    writeFileContent(config, pc.fontsFileName, pc.fontsModule, {
-      force: false
-    });
-    const c = {
+    cliProject = {
       projectId: pc.projectId,
-      fontsFilePath: pc.fontsFileName,
+      cssFilePath: defaultCssFilePath,
       components: []
     };
-    config.projects.push(c);
-    syncProjectComponents(config, c, componentBundles, baseNameToFiles);
-  } else {
-    fixProjectFilePaths(config.srcDir, cliProject, baseNameToFiles);
-    writeFileContent(config, cliProject.fontsFilePath, pc.fontsModule, {
-      force: true
-    });
-    syncProjectComponents(config, cliProject, componentBundles, baseNameToFiles);
+    config.projects.push(cliProject);
   }
 
+  if (!cliProject.cssFilePath) {
+    // this is a config from before cssFilePath existed
+    cliProject.cssFilePath = defaultCssFilePath;
+  } else if (!isNew) {
+    fixProjectFilePaths(config.srcDir, cliProject, baseNameToFiles);
+  }
 
+  writeFileContent(config, cliProject.cssFilePath, pc.cssRules, {
+    force: !isNew
+  });
+  syncProjectComponents(config, cliProject, componentBundles, baseNameToFiles);
 }

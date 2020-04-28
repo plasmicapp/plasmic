@@ -21,9 +21,9 @@ export interface GlobalVariantBundle {
 }
 
 export interface ProjectConfig {
-  fontsFileName: string;
-  fontsModule: string;
   projectId: string;
+  cssFileName: string;
+  cssRules: string;
 }
 
 export interface ProjectBundle {
