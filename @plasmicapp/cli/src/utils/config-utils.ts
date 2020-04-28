@@ -18,6 +18,10 @@ export interface PlasmicConfig {
   // all files are generated and dumped.
   srcDir: string;
 
+  // The default folder where Plasmic-generated PP files will be dumped. Path
+  // is relative to the srcDir.
+  defaultPlasmicDir: string;
+
   // Config for code generation
   code: CodeConfig;
 
@@ -152,6 +156,7 @@ export const DEFAULT_CONFIG: PlasmicConfig = {
     tokensFilePath: "plasmic-tokens.theo.json"
   },
   srcDir: ".",
+  defaultPlasmicDir: "./plasmic",
   projects: [],
   globalVariants: {
     variantGroups: []

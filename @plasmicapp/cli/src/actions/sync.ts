@@ -122,9 +122,9 @@ function syncProjectComponents(
         name: componentName,
         type: "managed",
         projectId: project.projectId,
-        renderModuleFilePath: renderModuleFileName,
+        renderModuleFilePath: path.join(config.defaultPlasmicDir, renderModuleFileName),
         importSpec: { modulePath: skeletonModuleFileName },
-        cssFilePath: cssFileName
+        cssFilePath: path.join(config.defaultPlasmicDir, cssFileName)
       };
       allCompConfigs[id] = compConfig;
       project.components.push(allCompConfigs[id]);
@@ -168,7 +168,7 @@ function syncGlobalVariants(
         id: bundle.id,
         name: bundle.name,
         projectId,
-        contextFilePath: bundle.contextFileName
+        contextFilePath: path.join(config.defaultPlasmicDir, bundle.contextFileName)
       };
       allVariantConfigs[bundle.id] = variantConfig;
       config.globalVariants.variantGroups.push(variantConfig);

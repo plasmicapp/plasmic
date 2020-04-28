@@ -49,9 +49,14 @@ yargs
           default: DEFAULT_CONFIG.code.scheme,
         })
         .option("src-dir", {
-          describe: "Folder where component source files live",
+          describe: "Folder where your React code files live",
           type: "string",
           default: defaultSrcDir,
+        })
+        .option("plasmic-dir", {
+          describe: "Folder where Plasmic will dump Plasmic-generated files by default; relative to src-dir",
+          type: "string",
+          default: `./plasmic`,
         })
         .option("style-scheme", {
           describe: "Styling framework to use",

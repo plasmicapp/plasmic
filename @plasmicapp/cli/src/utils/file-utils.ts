@@ -20,17 +20,19 @@ export function stripExtension(filename: string) {
 }
 
 export function writeFileContentRaw(
-  path: string,
+  filePath: string,
   content: string,
   opts?: { force?: boolean }
 ) {
   opts = opts || {};
-  if (fs.existsSync(path) && !opts.force) {
-    console.error(`Cannot write to ${path}; file already exists.`);
+  if (fs.existsSync(filePath) && !opts.force) {
+    console.error(`Cannot write to ${filePath}; file already exists.`);
     process.exit(1);
   }
 
-  fs.writeFileSync(path, content);
+  fs.mkdirSync(path.dirname(filePath), {recursive: true});
+
+  fs.writeFileSync(filePath, content);
 }
 
 export function writeFileContent(

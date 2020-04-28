@@ -23,6 +23,7 @@ export interface InitArgs extends CommonArgs {
   codeScheme: "blackbox";
   styleScheme: "css";
   srcDir: string;
+  plasmicDir: string;
 }
 export async function initPlasmic(opts: InitArgs) {
   const configFile =
@@ -89,6 +90,7 @@ export async function initPlasmic(opts: InitArgs) {
 function createInitConfig(opts: InitArgs): PlasmicConfig {
   return fillDefaults({
     srcDir: opts.srcDir,
+    defaultPlasmicDir: opts.plasmicDir,
     code: {
       lang: opts.codeLang,
       scheme: opts.codeScheme,
