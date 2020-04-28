@@ -138,6 +138,38 @@ export function createPlasmicElement<
   return result;
 }
 
+// We use data-plasmic-XXX attributes for custom properties since Typescript doesn't
+// support type check on @jsx pragma. See https://github.com/microsoft/TypeScript/issues/21699
+// for more info.
+export function createPlasmicElementProxy<
+  DefaultElementType extends React.ElementType
+>(
+  defaultElement: DefaultElementType,
+  props: Partial<React.ComponentProps<DefaultElementType>> & {
+    dataPlasmicWrapChildrenInFlex?: boolean;
+    dataPlasmicOverride: Flex<DefaultElementType>;
+  },
+  ...children: React.ReactNode[]
+) {
+  const override = props["data-plasmic-override"];
+  const wrapFlexChild = props["data-plasmic-wrap-flex-child"];
+  delete props["data-plasmic-override"];
+  delete props["data-plasmic-wrap-flex-child"];
+  return createPlasmicElement(
+    override,
+    defaultElement,
+    {
+      ...props,
+      ...(children.length > 0 ? { children } : {}),
+    },
+    wrapFlexChild
+  );
+}
+
+export function makeFragment(...children: React.ReactNode[]) {
+  return React.createElement(React.Fragment, {}, ...children);
+}
+
 function mergeProps(
   defaults: Record<string, any>,
   overrides?: Record<string, any>
