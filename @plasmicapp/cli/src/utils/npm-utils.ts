@@ -6,12 +6,15 @@ import {findFile} from "./file-utils";
 import { PlasmicContext } from "./config-utils";
 import { execSync, spawnSync } from "child_process";
 import inquirer from "inquirer";
+import findupSync from "findup-sync";
 
-export async function warnLatestCli(context: PlasmicContext) {
-  await warnLatest(context, "@plasmicapp/cli", {
-    requiredMsg: () => "@plasmicapp/cli is required to export Plasmic code.",
-    updateMsg: (c, v) => `A more recent version of @plasmicapp/cli [${v}] is available.`,
-  });
+export function getCliVersion() {
+  const packageJson = findupSync("package.json", {cwd: __dirname});
+  if (!packageJson) {
+    throw new Error(`Cannot find package.json in ancestors of ${__dirname}`);
+  }
+  const j = parsePackageJson(packageJson);
+  return j.version as string;
 }
 
 export async function warnLatestReactWeb(context: PlasmicContext) {
@@ -25,7 +28,7 @@ export async function warnLatest(context: PlasmicContext, pkg: string, msgs: {
   requiredMsg: () => string;
   updateMsg: (curVersion: string, latestVersion: string) => string;
 }) {
-  const check = await checkVersion(context, "@plasmicapp/react-web");
+  const check = await checkVersion(context, pkg);
   if (check.type === "up-to-date") {
     return;
   }
@@ -57,12 +60,12 @@ async function checkVersion(context: PlasmicContext, pkg: string) {
   return {type: "up-to-date"} as const;
 }
 
-function findInstalledVersion(context: PlasmicContext, pkg: string) {
+export function findInstalledVersion(context: PlasmicContext, pkg: string) {
   const filename = findInstalledPackageJsonFile(pkg, context.rootDir);
   if (filename) {
     const json = parsePackageJson(filename);
     if (json && json.name === pkg) {
-      return json.version;
+      return json.version as string;
     }
   }
   return undefined;

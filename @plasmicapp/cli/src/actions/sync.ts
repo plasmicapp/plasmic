@@ -2,13 +2,14 @@ import path from "path";
 import L from "lodash";
 import fs, { writeFile } from "fs";
 import { CommonArgs } from "..";
-import { getContext, updateConfig, PlasmicConfig, ProjectConfig as CliProjectConfig } from "../utils/config-utils";
+import { getContext, updateConfig, PlasmicConfig, ProjectConfig as CliProjectConfig, PlasmicContext } from "../utils/config-utils";
 import {
   buildBaseNameToFiles,
   writeFileContent,
   fixComponentPaths,
   fixGlobalVariantFilePath,
-  fixProjectFilePaths
+  fixProjectFilePaths,
+  findSrcDirPath
 } from "../utils/file-utils";
 import {
   ProjectBundle,
@@ -19,7 +20,8 @@ import {
 import { fixAllImportStatements } from "../utils/code-utils";
 import { upsertStyleTokens } from "./sync-styles";
 import { flatMap } from "../utils/lang-utils";
-import { warnLatestReactWeb } from "../utils/npm-utils";
+import { warnLatestReactWeb, getCliVersion, findInstalledVersion } from "../utils/npm-utils";
+import { assert } from "console";
 
 export interface SyncArgs extends CommonArgs {
   projects: readonly string[];
@@ -27,14 +29,36 @@ export interface SyncArgs extends CommonArgs {
   includeNew: boolean;
 }
 
+function maybeMigrate(context: PlasmicContext) {
+  let existingFiles: L.Dictionary<string[]> | null = null;
+  context.config.projects.forEach((project) => {
+    project.components.forEach((c) => {
+      if (c.renderModuleFilePath.endsWith("ts")) {
+        if (!existingFiles) {
+          existingFiles = buildBaseNameToFiles(context);
+        }
+        const relFilePath = findSrcDirPath(
+          context.config.srcDir,
+          c.renderModuleFilePath,
+          existingFiles
+        );
+        const absFilePath = path.join(context.config.srcDir, relFilePath);
+        if (fs.existsSync(absFilePath)) {
+          console.log(`rename file from ${absFilePath} to ${absFilePath}x`);
+          fs.renameSync(absFilePath, `${absFilePath}x`);
+        }
+        c.renderModuleFilePath = `${c.renderModuleFilePath}x`;
+      }
+    });
+  });
+}
+
 export async function syncProjects(opts: SyncArgs) {
   const context = getContext(opts);
-  const api = context.api;
-  const config = context.config;
   const projectIds =
     opts.projects.length > 0
       ? opts.projects
-      : config.projects.map(p => p.projectId);
+      : context.config.projects.map(p => p.projectId);
   if (projectIds.length === 0) {
     console.error(
       "Don't know which projects to sync; please specify via --projects"
@@ -42,6 +66,25 @@ export async function syncProjects(opts: SyncArgs) {
     process.exit(1);
   }
 
+  const reactWebVersion = findInstalledVersion(
+    context,
+    "@plasmicapp/react-wev"
+  );
+
+  const results = await Promise.all(
+    projectIds.map((projectId) =>
+      context.api.projectComponents(projectId, getCliVersion(), reactWebVersion)
+    )
+  );
+  if (
+    results.find((project) =>
+      project.components.find((c) => c.renderModuleFileName.endsWith(".tsx"))
+    )
+  ) {
+    maybeMigrate(context);
+  }
+
+  const config = context.config;
   // `components` is a list of component names or IDs
   const components =
     opts.components.length > 0
@@ -59,9 +102,6 @@ export async function syncProjects(opts: SyncArgs) {
 
   const baseNameToFiles = buildBaseNameToFiles(context);
 
-  const results = await Promise.all(
-    projectIds.map(projectId => api.projectComponents(projectId))
-  );
   for (const [projectId, projectBundle] of L.zip(projectIds, results) as [
     string,
     ProjectBundle

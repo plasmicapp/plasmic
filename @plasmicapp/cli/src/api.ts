@@ -53,9 +53,14 @@ export interface StyleTokensMap {
 export class PlasmicApi {
   constructor(private auth: AuthConfig) {}
 
-  async projectComponents(projectId: string) {
+  async projectComponents(
+    projectId: string,
+    cliVersion: string,
+    reactWebVersion: string | undefined
+  ) {
     const result = await this.post(
-      `${this.auth.host}/api/v1/projects/${projectId}/code/components`
+      `${this.auth.host}/api/v1/projects/${projectId}/code/components`,
+      { cliVersion, reactWebVersion: reactWebVersion || "" }
     );
     return result.data as ProjectBundle;
   }
@@ -72,9 +77,9 @@ export class PlasmicApi {
       path: `/api/v1/socket`,
       transportOptions: {
         polling: {
-          extraHeaders: this.makeHeaders()
-        }
-      }
+          extraHeaders: this.makeHeaders(),
+        },
+      },
     });
     return socket;
   }
@@ -82,7 +87,7 @@ export class PlasmicApi {
   private async post(url: string, data?: any) {
     try {
       return await axios.post(url, data, {
-        headers: this.makeHeaders()
+        headers: this.makeHeaders(),
       });
     } catch (e) {
       const error = e as AxiosError;
@@ -92,14 +97,24 @@ export class PlasmicApi {
         );
         process.exit(1);
       }
-      throw e;
+      if (error.response && error.response.data) {
+        if (error.response.data.error) {
+          console.log(error.response.data.error.message);
+        } else {
+          console.log(`Error: request failed with status code ${error.response.status}. The response is
+  ${error.response.data}`);
+        }
+        process.exit(1);
+      } else {
+        throw e;
+      }
     }
   }
 
   private makeHeaders() {
     const headers: Record<string, string> = {
       "x-plasmic-api-user": this.auth.user,
-      "x-plasmic-api-token": this.auth.token
+      "x-plasmic-api-token": this.auth.token,
     };
 
     if (this.auth.basicAuthUser && this.auth.basicAuthPassword) {
