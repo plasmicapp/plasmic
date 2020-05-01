@@ -12,7 +12,22 @@ import {
 import { stripExtension, writeFileContent } from "./file-utils";
 import { flatMap } from "./lang-utils";
 
-const IMPORT_MARKER = /^import\s+([^;]+)\s+from\s+["'`]([^"'`;]+)["'`];.*\s+plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss))?/gm;
+const IMPORT_MARKER = /^import\s+(.+)\s*;.*\s+plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss))?/gm;
+const IMPORT_MARKER_WITH_FROM = /^(.+)\s+from\s+["'`]([^"'`;]+)["'`]$/;
+const IMPORT_MARKER_WITHOUT_FROM = /^["'`]([^"'`;]+)["'`]$/;
+
+function parseImportBody(body: string) {
+  const maybeWithFrom = body.match(IMPORT_MARKER_WITH_FROM);
+  if (maybeWithFrom) {
+    return {spec: maybeWithFrom[1] as string, from: maybeWithFrom[2] as string}
+  }
+  const noFrom = body.match(IMPORT_MARKER_WITHOUT_FROM);
+  if (!noFrom) {
+    console.error("Unable to parse import body", noFrom);
+    process.exit(1);
+  }
+  return {spec: "", from: noFrom[1] as string}
+}
 
 function getNewNamePart(existingSpec: string, newNamePart: string) {
   // TODO: make this much less fragile!
@@ -34,7 +49,8 @@ export function replaceImports(
   projectConfigsMap: Record<string, ProjectConfig>,
   globalVariantConfigsMap: Record<string, GlobalVariantGroupConfig>
 ) {
-  return code.replace(IMPORT_MARKER, (sub, spec, from, uuid, type) => {
+  return code.replace(IMPORT_MARKER, (sub, body, uuid, type) => {
+    const {spec, from} = parseImportBody(body);
     if (type === "component") {
       // instantiation of a mapped or managed component
       const compConfig = compConfigsMap[uuid];
