@@ -47,6 +47,8 @@ export interface CodeConfig {
 export interface StyleConfig {
   // Styling framework to use
   scheme: "css";
+
+  defaultStyleCssFilePath: string;
 }
 
 export interface ProjectConfig {
@@ -149,7 +151,10 @@ export const DEFAULT_CONFIG: PlasmicConfig = {
     scheme: "blackbox"
   },
   style: {
-    scheme: "css"
+    scheme: "css",
+    // We set it to empty to compile. In reality, it will be provided the by
+    // the server.
+    defaultStyleCssFilePath: ""
   },
   tokens: {
     scheme: "theo",

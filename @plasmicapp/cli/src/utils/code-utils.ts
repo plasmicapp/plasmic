@@ -7,12 +7,13 @@ import {
   ProjectConfig,
   GlobalVariantGroupConfig,
   PlasmicContext,
-  PlasmicConfig
+  PlasmicConfig,
+  StyleConfig
 } from "./config-utils";
 import { stripExtension, writeFileContent } from "./file-utils";
 import { flatMap } from "./lang-utils";
 
-const IMPORT_MARKER = /^import\s+(.+)\s*;.*\s+plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss))?/gm;
+const IMPORT_MARKER = /^import\s+(.+)\s*;.*\s+plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss|defaultcss))?/gm;
 const IMPORT_MARKER_WITH_FROM = /^(.+)\s+from\s+["'`]([^"'`;]+)["'`]$/;
 const IMPORT_MARKER_WITHOUT_FROM = /^["'`]([^"'`;]+)["'`]$/;
 
@@ -52,6 +53,7 @@ function getNewNamePart(existingSpec: string, newNamePart: string) {
 export function replaceImports(
   code: string,
   fromPath: string,
+  styleConfig: StyleConfig,
   compConfigsMap: Record<string, ComponentConfig>,
   projectConfigsMap: Record<string, ProjectConfig>,
   globalVariantConfigsMap: Record<string, GlobalVariantGroupConfig>
@@ -101,6 +103,9 @@ export function replaceImports(
         false
       );
       return `import "${realPath}"; // plasmic-import: ${uuid}/projectcss`;
+    } else if (type === "defaultcss") {
+      const realPath = makeImportPath(fromPath, styleConfig.defaultStyleCssFilePath, false);
+      return `import "${realPath}"; // plasmic-import: ${uuid}/defaultcss`;
     } else {
       // Does not match a known import type; just keep the same matched string
       return sub;
@@ -198,6 +203,7 @@ function fixFileImportStatements(
   const newContent = replaceImports(
     prevContent,
     srcDirFilePath,
+    config.style,
     allCompConfigs,
     allProjectConfigs,
     allGlobalVariantConfigs

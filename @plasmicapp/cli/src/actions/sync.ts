@@ -21,7 +21,8 @@ import {
   ProjectBundle,
   ComponentBundle,
   GlobalVariantBundle,
-  ProjectConfig as ApiProjectConfig
+  ProjectConfig as ApiProjectConfig,
+  StyleConfigResponse
 } from "../api";
 import { fixAllImportStatements } from "../utils/code-utils";
 import { upsertStyleTokens } from "./sync-styles";
@@ -94,6 +95,14 @@ export async function syncProjects(opts: SyncArgs) {
     maybeMigrate(context);
   }
 
+  const baseNameToFiles = buildBaseNameToFiles(context);
+
+  syncStyleConfig(
+    context.config,
+    await context.api.genStyleConfig(),
+    baseNameToFiles
+  );
+
   const config = context.config;
   // `components` is a list of component names or IDs
   const components =
@@ -109,8 +118,6 @@ export async function syncProjects(opts: SyncArgs) {
     }
     return components.includes(id) || components.includes(name);
   };
-
-  const baseNameToFiles = buildBaseNameToFiles(context);
 
   for (const [projectId, projectBundle] of L.zip(projectIds, results) as [
     string,
@@ -138,7 +145,8 @@ export async function syncProjects(opts: SyncArgs) {
   updateConfig(context, {
     projects: config.projects,
     globalVariants: config.globalVariants,
-    tokens: config.tokens
+    tokens: config.tokens,
+    style: config.style
   });
 
   // Now we know config.components are all correct, so we can go ahead and fix up all the import statements
@@ -204,6 +212,29 @@ function syncProjectComponents(
       force: !isNew
     });
   }
+}
+
+function syncStyleConfig(
+  config: PlasmicConfig,
+  response: StyleConfigResponse,
+  baseNameToFiles: Record<string, string[]>
+) {
+  const expectedPath =
+    config.style.defaultStyleCssFilePath ||
+    path.join(config.defaultPlasmicDir, response.defaultStyleCssFileName);
+
+  config.style.defaultStyleCssFilePath = findSrcDirPath(
+    config.srcDir,
+    expectedPath,
+    baseNameToFiles
+  );
+
+  writeFileContent(
+    config,
+    config.style.defaultStyleCssFilePath,
+    response.defaultStyleCssRules,
+    { force: true }
+  );
 }
 
 function syncGlobalVariants(

@@ -33,6 +33,11 @@ export interface ProjectBundle {
   usedTokens: StyleTokensMap;
 }
 
+export interface StyleConfigResponse {
+  defaultStyleCssFileName: string;
+  defaultStyleCssRules: string;
+}
+
 export interface StyleTokensMap {
   props: {
     name: string;
@@ -52,6 +57,13 @@ export interface StyleTokensMap {
 
 export class PlasmicApi {
   constructor(private auth: AuthConfig) {}
+
+  async genStyleConfig(){
+    const result = await this.post(
+      `${this.auth.host}/api/v1/code/style-config`
+    );
+    return result.data as StyleConfigResponse;
+  }
 
   async projectComponents(
     projectId: string,
