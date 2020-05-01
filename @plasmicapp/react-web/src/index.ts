@@ -145,10 +145,7 @@ export function createPlasmicElementProxy<
   DefaultElementType extends React.ElementType
 >(
   defaultElement: DefaultElementType,
-  props: Partial<React.ComponentProps<DefaultElementType>> & {
-    dataPlasmicWrapChildrenInFlex?: boolean;
-    dataPlasmicOverride: Flex<DefaultElementType>;
-  },
+  props: Partial<React.ComponentProps<DefaultElementType>>,
   ...children: React.ReactNode[]
 ) {
   const override = props["data-plasmic-override"];
@@ -160,7 +157,11 @@ export function createPlasmicElementProxy<
     defaultElement,
     {
       ...props,
-      ...(children.length > 0 ? { children } : {}),
+      ...(children.length === 0
+        ? {}
+        : children.length === 1
+        ? { children: children[0] }
+        : { children })
     },
     wrapFlexChild
   );
