@@ -2,14 +2,14 @@ import fs from "fs";
 import glob from "fast-glob";
 import semver from "semver";
 import latest from "latest-version";
-import {findFile} from "./file-utils";
+import { findFile } from "./file-utils";
 import { PlasmicContext } from "./config-utils";
 import { execSync, spawnSync } from "child_process";
 import inquirer from "inquirer";
 import findupSync from "findup-sync";
 
 export function getCliVersion() {
-  const packageJson = findupSync("package.json", {cwd: __dirname});
+  const packageJson = findupSync("package.json", { cwd: __dirname });
   if (!packageJson) {
     throw new Error(`Cannot find package.json in ancestors of ${__dirname}`);
   }
@@ -19,15 +19,21 @@ export function getCliVersion() {
 
 export async function warnLatestReactWeb(context: PlasmicContext) {
   await warnLatest(context, "@plasmicapp/react-web", {
-    requiredMsg: () => "@plasmicapp/react-web is required to use Plasmic-generated code.",
-    updateMsg: (c, v) => `A more recent version of @plasmicapp/react-web [${v}] is available; your exported code may not work unless you update`,
+    requiredMsg: () =>
+      "@plasmicapp/react-web is required to use Plasmic-generated code.",
+    updateMsg: (c, v) =>
+      `A more recent version of @plasmicapp/react-web [${v}] is available; your exported code may not work unless you update`
   });
 }
 
-export async function warnLatest(context: PlasmicContext, pkg: string, msgs: {
-  requiredMsg: () => string;
-  updateMsg: (curVersion: string, latestVersion: string) => string;
-}) {
+export async function warnLatest(
+  context: PlasmicContext,
+  pkg: string,
+  msgs: {
+    requiredMsg: () => string;
+    updateMsg: (curVersion: string, latestVersion: string) => string;
+  }
+) {
   const check = await checkVersion(context, pkg);
   if (check.type === "up-to-date") {
     return;
@@ -35,7 +41,13 @@ export async function warnLatest(context: PlasmicContext, pkg: string, msgs: {
   const res = await inquirer.prompt([
     {
       name: "install",
-      message: `${check.type === "not-installed" ? msgs.requiredMsg() : msgs.updateMsg(check.current, check.latest)}  Do you want to ${check.type === "not-installed" ? "add" : "update"} it now? (yes/no)`,
+      message: `${
+        check.type === "not-installed"
+          ? msgs.requiredMsg()
+          : msgs.updateMsg(check.current, check.latest)
+      }  Do you want to ${
+        check.type === "not-installed" ? "add" : "update"
+      } it now? (yes/no)`,
       default: "yes"
     }
   ]);
@@ -48,7 +60,7 @@ async function checkVersion(context: PlasmicContext, pkg: string) {
   const last = await latest(pkg);
   const cur = findInstalledVersion(context, pkg);
   if (!cur) {
-    return {type: "not-installed"} as const;
+    return { type: "not-installed" } as const;
   }
   if (semver.gt(last, cur)) {
     return {
@@ -57,7 +69,7 @@ async function checkVersion(context: PlasmicContext, pkg: string) {
       current: cur
     } as const;
   }
-  return {type: "up-to-date"} as const;
+  return { type: "up-to-date" } as const;
 }
 
 export function findInstalledVersion(context: PlasmicContext, pkg: string) {
@@ -85,8 +97,7 @@ function parsePackageJson(path: string) {
 }
 
 export function installUpgrade(pkg: string) {
-  const cmd =
-    `yarn add ${pkg} || npm install --save ${pkg}`;
+  const cmd = `yarn add ${pkg} || npm install --save ${pkg}`;
   console.log(cmd);
   const r = spawnSync(cmd, { shell: true, stdio: "inherit" });
   if (r.status === 0) {

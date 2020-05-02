@@ -30,7 +30,7 @@ export function writeFileContentRaw(
     process.exit(1);
   }
 
-  fs.mkdirSync(path.dirname(filePath), {recursive: true});
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
 
   fs.writeFileSync(filePath, content);
 }

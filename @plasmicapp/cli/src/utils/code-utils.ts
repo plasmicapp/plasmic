@@ -19,22 +19,29 @@ const IMPORT_MARKER_WITHOUT_FROM = /^["'`]([^"'`;]+)["'`]$/;
 function parseImportBody(body: string) {
   const maybeWithFrom = body.match(IMPORT_MARKER_WITH_FROM);
   if (maybeWithFrom) {
-    return {spec: maybeWithFrom[1] as string, from: maybeWithFrom[2] as string}
+    return {
+      spec: maybeWithFrom[1] as string,
+      from: maybeWithFrom[2] as string
+    };
   }
   const noFrom = body.match(IMPORT_MARKER_WITHOUT_FROM);
   if (!noFrom) {
     console.error("Unable to parse import body", noFrom);
     process.exit(1);
   }
-  return {spec: "", from: noFrom[1] as string}
+  return { spec: "", from: noFrom[1] as string };
 }
 
 function getNewNamePart(existingSpec: string, newNamePart: string) {
   // TODO: make this much less fragile!
-  const existingImportedNames = existingSpec.replace("{", "").replace("}", "").split(",").map(name => name.trim());
+  const existingImportedNames = existingSpec
+    .replace("{", "")
+    .replace("}", "")
+    .split(",")
+    .map(name => name.trim());
   const newSpecParts = existingImportedNames.includes(newNamePart)
-      ? [existingSpec]
-      : [existingSpec, newNamePart];
+    ? [existingSpec]
+    : [existingSpec, newNamePart];
   return newSpecParts.join(", ");
 }
 
@@ -50,7 +57,7 @@ export function replaceImports(
   globalVariantConfigsMap: Record<string, GlobalVariantGroupConfig>
 ) {
   return code.replace(IMPORT_MARKER, (sub, body, uuid, type) => {
-    const {spec, from} = parseImportBody(body);
+    const { spec, from } = parseImportBody(body);
     if (type === "component") {
       // instantiation of a mapped or managed component
       const compConfig = compConfigsMap[uuid];
@@ -88,7 +95,11 @@ export function replaceImports(
       return `import ${variantConfig.name}Context from "${realPath}"; // plasmic-import: ${uuid}/globalVariant`;
     } else if (type === "projectcss") {
       const projectConfig = projectConfigsMap[uuid];
-      const realPath = makeImportPath(fromPath, projectConfig.cssFilePath, false);
+      const realPath = makeImportPath(
+        fromPath,
+        projectConfig.cssFilePath,
+        false
+      );
       return `import "${realPath}"; // plasmic-import: ${uuid}/projectcss`;
     } else {
       // Does not match a known import type; just keep the same matched string

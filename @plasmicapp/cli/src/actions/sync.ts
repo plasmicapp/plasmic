@@ -2,7 +2,13 @@ import path from "path";
 import L from "lodash";
 import fs, { writeFile } from "fs";
 import { CommonArgs } from "..";
-import { getContext, updateConfig, PlasmicConfig, ProjectConfig as CliProjectConfig, PlasmicContext } from "../utils/config-utils";
+import {
+  getContext,
+  updateConfig,
+  PlasmicConfig,
+  ProjectConfig as CliProjectConfig,
+  PlasmicContext
+} from "../utils/config-utils";
 import {
   buildBaseNameToFiles,
   writeFileContent,
@@ -20,7 +26,11 @@ import {
 import { fixAllImportStatements } from "../utils/code-utils";
 import { upsertStyleTokens } from "./sync-styles";
 import { flatMap } from "../utils/lang-utils";
-import { warnLatestReactWeb, getCliVersion, findInstalledVersion } from "../utils/npm-utils";
+import {
+  warnLatestReactWeb,
+  getCliVersion,
+  findInstalledVersion
+} from "../utils/npm-utils";
 import { assert } from "console";
 
 export interface SyncArgs extends CommonArgs {
@@ -31,8 +41,8 @@ export interface SyncArgs extends CommonArgs {
 
 function maybeMigrate(context: PlasmicContext) {
   let existingFiles: L.Dictionary<string[]> | null = null;
-  context.config.projects.forEach((project) => {
-    project.components.forEach((c) => {
+  context.config.projects.forEach(project => {
+    project.components.forEach(c => {
       if (c.renderModuleFilePath.endsWith("ts")) {
         if (!existingFiles) {
           existingFiles = buildBaseNameToFiles(context);
@@ -72,13 +82,13 @@ export async function syncProjects(opts: SyncArgs) {
   );
 
   const results = await Promise.all(
-    projectIds.map((projectId) =>
+    projectIds.map(projectId =>
       context.api.projectComponents(projectId, getCliVersion(), reactWebVersion)
     )
   );
   if (
-    results.find((project) =>
-      project.components.find((c) => c.renderModuleFileName.endsWith(".tsx"))
+    results.find(project =>
+      project.components.find(c => c.renderModuleFileName.endsWith(".tsx"))
     )
   ) {
     maybeMigrate(context);
@@ -106,7 +116,6 @@ export async function syncProjects(opts: SyncArgs) {
     string,
     ProjectBundle
   ][]) {
-
     syncGlobalVariants(
       config,
       projectId,
@@ -116,7 +125,12 @@ export async function syncProjects(opts: SyncArgs) {
     const componentBundles = projectBundle.components.filter(bundle =>
       shouldSyncComponents(bundle.id, bundle.componentName)
     );
-    syncProjectConfig(config, projectBundle.projectConfig, componentBundles, baseNameToFiles);
+    syncProjectConfig(
+      config,
+      projectBundle.projectConfig,
+      componentBundles,
+      baseNameToFiles
+    );
     upsertStyleTokens(config, projectBundle.usedTokens, baseNameToFiles);
   }
 
@@ -124,7 +138,7 @@ export async function syncProjects(opts: SyncArgs) {
   updateConfig(context, {
     projects: config.projects,
     globalVariants: config.globalVariants,
-    tokens: config.tokens,
+    tokens: config.tokens
   });
 
   // Now we know config.components are all correct, so we can go ahead and fix up all the import statements
@@ -152,7 +166,9 @@ function syncProjectComponents(
       componentName,
       id
     } = bundle;
-    console.log(`Syncing component ${componentName} [${project.projectId}/${id}]`);
+    console.log(
+      `Syncing component ${componentName} [${project.projectId}/${id}]`
+    );
     let compConfig = allCompConfigs[id];
     const isNew = !compConfig;
     if (isNew) {
@@ -162,7 +178,10 @@ function syncProjectComponents(
         name: componentName,
         type: "managed",
         projectId: project.projectId,
-        renderModuleFilePath: path.join(config.defaultPlasmicDir, renderModuleFileName),
+        renderModuleFilePath: path.join(
+          config.defaultPlasmicDir,
+          renderModuleFileName
+        ),
         importSpec: { modulePath: skeletonModuleFileName },
         cssFilePath: path.join(config.defaultPlasmicDir, cssFileName)
       };
@@ -208,7 +227,10 @@ function syncGlobalVariants(
         id: bundle.id,
         name: bundle.name,
         projectId,
-        contextFilePath: path.join(config.defaultPlasmicDir, bundle.contextFileName)
+        contextFilePath: path.join(
+          config.defaultPlasmicDir,
+          bundle.contextFileName
+        )
       };
       allVariantConfigs[bundle.id] = variantConfig;
       config.globalVariants.variantGroups.push(variantConfig);
@@ -232,7 +254,10 @@ function syncProjectConfig(
   baseNameToFiles: Record<string, string[]>
 ) {
   let cliProject = config.projects.find(c => c.projectId === pc.projectId);
-  const defaultCssFilePath = path.join(config.defaultPlasmicDir, pc.cssFileName);
+  const defaultCssFilePath = path.join(
+    config.defaultPlasmicDir,
+    pc.cssFileName
+  );
   const isNew = !cliProject;
   if (!cliProject) {
     cliProject = {

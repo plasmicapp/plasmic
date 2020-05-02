@@ -11,7 +11,7 @@ import {
   PlasmicConfig,
   fillDefaults,
   writeConfig,
-  writeAuth,
+  writeAuth
 } from "../utils/config-utils";
 import { execSync, spawnSync } from "child_process";
 import { installUpgrade } from "../utils/npm-utils";
@@ -42,25 +42,25 @@ export async function initPlasmic(opts: InitArgs) {
       {
         name: "host",
         message: "Host of the Plasmic instance to use",
-        default: "https://studio.plasmic.app",
-      },
+        default: "https://studio.plasmic.app"
+      }
     ]);
     const auth = await inquirer.prompt([
       {
         name: "user",
-        message: "Your plasmic user email",
+        message: "Your plasmic user email"
       },
       {
         name: "token",
-        message: `Your personal access token (create one at ${initial.host}/self/settings)`,
-      },
+        message: `Your personal access token (create one at ${initial.host}/self/settings)`
+      }
     ]);
 
     const newAuthFile = opts.auth || path.join(os.homedir(), AUTH_FILE_NAME);
     writeAuth(newAuthFile, {
       host: initial.host,
       user: auth.user,
-      token: auth.token,
+      token: auth.token
     });
 
     console.log(
@@ -79,8 +79,8 @@ export async function initPlasmic(opts: InitArgs) {
       name: "answer",
       message:
         "@plasmicapp/react-web is required to build plasmic generated code. Do you want to add it now? (yes/no)",
-      default: "yes",
-    },
+      default: "yes"
+    }
   ]);
   if (addDep.answer === "yes") {
     installUpgrade("@plasmicapp/react-web");
@@ -93,11 +93,11 @@ function createInitConfig(opts: InitArgs): PlasmicConfig {
     defaultPlasmicDir: opts.plasmicDir,
     code: {
       lang: opts.codeLang,
-      scheme: opts.codeScheme,
+      scheme: opts.codeScheme
     },
     style: {
-      scheme: opts.styleScheme,
+      scheme: opts.styleScheme
     },
-    platform: opts.platform,
+    platform: opts.platform
   });
 }
