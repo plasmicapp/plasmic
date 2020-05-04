@@ -130,11 +130,19 @@ export function createPlasmicElement<
   }
 
   if (wrapChildrenInFlex && props.children) {
-    children = React.createElement(
-      "div",
-      { className: "__wab_flex-container" },
-      children
-    );
+    if (Array.isArray(children)) {
+      children = React.createElement(
+        "div",
+        { className: "__wab_flex-container" },
+        ...children
+      );
+    } else {
+      children = React.createElement(
+        "div",
+        { className: "__wab_flex-container" },
+        children
+      );
+    }
   }
 
   let result: React.ReactElement | null = null;
