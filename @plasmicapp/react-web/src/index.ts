@@ -136,7 +136,17 @@ export function createPlasmicElement<
       children
     );
   }
-  let result = React.createElement(root, props, children) as React.ReactElement;
+
+  let result: React.ReactElement | null = null;
+  if (Array.isArray(children)) {
+    result = React.createElement(
+      root,
+      props,
+      ...children
+    ) as React.ReactElement;
+  } else {
+    result = React.createElement(root, props, children) as React.ReactElement;
+  }
 
   if (override2.wrap) {
     result = override2.wrap(result) as React.ReactElement;
@@ -164,11 +174,7 @@ export function createPlasmicElementProxy<
     defaultElement,
     {
       ...props,
-      ...(children.length === 0
-        ? {}
-        : children.length === 1
-        ? { children: children[0] }
-        : { children })
+      ...(children.length === 0 ? {} : { children })
     },
     wrapFlexChild
   );
