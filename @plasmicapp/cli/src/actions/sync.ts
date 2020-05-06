@@ -37,7 +37,7 @@ import { assert } from "console";
 export interface SyncArgs extends CommonArgs {
   projects: readonly string[];
   components: readonly string[];
-  includeNew: boolean;
+  onlyExisting: boolean;
 }
 
 function maybeMigrate(context: PlasmicContext) {
@@ -112,7 +112,7 @@ export async function syncProjects(opts: SyncArgs) {
   const shouldSyncComponents = (id: string, name: string) => {
     if (
       components.length === 0 ||
-      (opts.components.length === 0 && opts.includeNew)
+      (opts.components.length === 0 && !opts.onlyExisting)
     ) {
       return true;
     }

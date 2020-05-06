@@ -63,6 +63,11 @@ export function replaceImports(
     if (type === "component") {
       // instantiation of a mapped or managed component
       const compConfig = compConfigsMap[uuid];
+      if (!compConfig) {
+        throw new Error(
+          `Encountered Plasmic components in ${fromPath} that are being used but have not been synced.`
+        );
+      }
       const { modulePath, exportName } = compConfig.importSpec;
       const namePart = exportName
         ? `{${exportName} as ${compConfig.name}}`
@@ -145,6 +150,7 @@ export function isLocalModulePath(modulePath: string) {
  * file locations as the source of truth.
  */
 export function fixAllImportStatements(context: PlasmicContext) {
+  console.log("Fixing import statements...");
   const config = context.config;
   const srcDir = path.join(context.rootDir, config.srcDir);
   const allComponents = flatMap(config.projects, p => p.components);
@@ -200,6 +206,7 @@ function fixFileImportStatements(
   allCompConfigs: Record<string, ComponentConfig>,
   allGlobalVariantConfigs: Record<string, GlobalVariantGroupConfig>
 ) {
+  console.log(`\tFixing ${srcDirFilePath}`);
   const prevContent = fs
     .readFileSync(path.join(config.srcDir, srcDirFilePath))
     .toString();

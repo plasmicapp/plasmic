@@ -123,10 +123,10 @@ function configureSyncArgs(yags: yargs.Argv) {
       type: "array",
       default: []
     })
-    .option("include-new", {
+    .option("only-existing", {
       type: "boolean",
       describe:
-        "If no --components are explicitly specified, then also export new components",
+        "If no --components are explicitly specified, then only syncs components that had been synced before.",
       default: false
     });
 }
