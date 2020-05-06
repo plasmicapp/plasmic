@@ -13,8 +13,8 @@ import {
 import { stripExtension, writeFileContent } from "./file-utils";
 import { flatMap } from "./lang-utils";
 
-const IMPORT_MARKER = /^import\s+(.+)\s*;.*\s+plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss|defaultcss))?/gm;
-const IMPORT_MARKER_WITH_FROM = /^(.+)\s+from\s+["'`]([^"'`;]+)["'`]$/;
+const IMPORT_MARKER = /import\s+([^;]+)\s*;.*\s+plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss|defaultcss))?/g;
+const IMPORT_MARKER_WITH_FROM = /^([^;]+)\s+from\s+["'`]([^"'`;]+)["'`]$/;
 const IMPORT_MARKER_WITHOUT_FROM = /^["'`]([^"'`;]+)["'`]$/;
 
 function parseImportBody(body: string) {
@@ -104,7 +104,11 @@ export function replaceImports(
       );
       return `import "${realPath}"; // plasmic-import: ${uuid}/projectcss`;
     } else if (type === "defaultcss") {
-      const realPath = makeImportPath(fromPath, styleConfig.defaultStyleCssFilePath, false);
+      const realPath = makeImportPath(
+        fromPath,
+        styleConfig.defaultStyleCssFilePath,
+        false
+      );
       return `import "${realPath}"; // plasmic-import: ${uuid}/defaultcss`;
     } else {
       // Does not match a known import type; just keep the same matched string
