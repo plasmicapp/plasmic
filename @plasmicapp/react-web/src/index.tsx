@@ -244,6 +244,23 @@ export function wrapWithClassName(element: React.ReactNode, className: string) {
   );
 }
 
+// To get a type safe FlexStack, you need to explicitly specify both the tag
+// and generic type, such as
+//   <FlexStack<"a"> tag={"a"} href={...}>...</FlexStack<"a">
+export const FlexStack = <T extends React.ElementType>(
+  props: React.ComponentProps<T> & { as: T }
+) => {
+  const { as, children, ...rest } = props;
+  const wrappedChildren = (
+    <div className="__wab_flex-container">{children}</div>
+  );
+  return React.createElement(as, rest, wrappedChildren);
+};
+
+export const DefaultFlexStack = (props: React.ComponentProps<"div">) => {
+  return <FlexStack<"div"> as="div" {...props} />;
+};
+
 function deriveOverride<C extends React.ElementType>(x: Flex<C>): Override<C> {
   if (!x) {
     // undefined Binding is an empty Binding
