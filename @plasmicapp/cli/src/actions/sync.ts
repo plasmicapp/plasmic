@@ -49,11 +49,11 @@ function maybeMigrate(context: PlasmicContext) {
           existingFiles = buildBaseNameToFiles(context);
         }
         const relFilePath = findSrcDirPath(
-          context.config.srcDir,
+          context.absoluteSrcDir,
           c.renderModuleFilePath,
           existingFiles
         );
-        const absFilePath = path.join(context.config.srcDir, relFilePath);
+        const absFilePath = path.join(context.absoluteSrcDir, relFilePath);
         if (fs.existsSync(absFilePath)) {
           console.log(`rename file from ${absFilePath} to ${absFilePath}x`);
           fs.renameSync(absFilePath, `${absFilePath}x`);
@@ -97,11 +97,7 @@ export async function syncProjects(opts: SyncArgs) {
 
   const baseNameToFiles = buildBaseNameToFiles(context);
 
-  syncStyleConfig(
-    context.config,
-    await context.api.genStyleConfig(),
-    baseNameToFiles
-  );
+  syncStyleConfig(context, await context.api.genStyleConfig(), baseNameToFiles);
 
   const config = context.config;
   // `components` is a list of component names or IDs
@@ -124,7 +120,7 @@ export async function syncProjects(opts: SyncArgs) {
     ProjectBundle
   ][]) {
     syncGlobalVariants(
-      config,
+      context,
       projectId,
       projectBundle.globalVariants,
       baseNameToFiles
@@ -133,12 +129,12 @@ export async function syncProjects(opts: SyncArgs) {
       shouldSyncComponents(bundle.id, bundle.componentName)
     );
     syncProjectConfig(
-      config,
+      context,
       projectBundle.projectConfig,
       componentBundles,
       baseNameToFiles
     );
-    upsertStyleTokens(config, projectBundle.usedTokens, baseNameToFiles);
+    upsertStyleTokens(context, projectBundle.usedTokens, baseNameToFiles);
   }
 
   // Write the new ComponentConfigs to disk
@@ -156,13 +152,12 @@ export async function syncProjects(opts: SyncArgs) {
 }
 
 function syncProjectComponents(
-  config: PlasmicConfig,
+  context: PlasmicContext,
   project: CliProjectConfig,
   componentBundles: ComponentBundle[],
   baseNameToFiles: Record<string, string[]>
 ) {
   const allCompConfigs = L.keyBy(project.components, c => c.id);
-  const srcDir = config.srcDir;
   for (const bundle of componentBundles) {
     const {
       renderModule,
@@ -187,64 +182,67 @@ function syncProjectComponents(
         type: "managed",
         projectId: project.projectId,
         renderModuleFilePath: path.join(
-          config.defaultPlasmicDir,
+          context.config.defaultPlasmicDir,
           renderModuleFileName
         ),
         importSpec: { modulePath: skeletonModuleFileName },
-        cssFilePath: path.join(config.defaultPlasmicDir, cssFileName)
+        cssFilePath: path.join(context.config.defaultPlasmicDir, cssFileName)
       };
       allCompConfigs[id] = compConfig;
       project.components.push(allCompConfigs[id]);
 
       // Because it's the first time, we also generate the skeleton file.
-      writeFileContent(config, skeletonModuleFileName, skeletonModule, {
+      writeFileContent(context, skeletonModuleFileName, skeletonModule, {
         force: false
       });
     } else {
       // This is an existing component. We first make sure the files are all in the expected
       // places, and then overwrite them with the new content
-      fixComponentPaths(srcDir, compConfig, baseNameToFiles);
+      fixComponentPaths(context.absoluteSrcDir, compConfig, baseNameToFiles);
     }
-    writeFileContent(config, compConfig.renderModuleFilePath, renderModule, {
+    writeFileContent(context, compConfig.renderModuleFilePath, renderModule, {
       force: !isNew
     });
-    writeFileContent(config, compConfig.cssFilePath, cssRules, {
+    writeFileContent(context, compConfig.cssFilePath, cssRules, {
       force: !isNew
     });
   }
 }
 
 function syncStyleConfig(
-  config: PlasmicConfig,
+  context: PlasmicContext,
   response: StyleConfigResponse,
   baseNameToFiles: Record<string, string[]>
 ) {
   const expectedPath =
-    config.style.defaultStyleCssFilePath ||
-    path.join(config.defaultPlasmicDir, response.defaultStyleCssFileName);
+    context.config.style.defaultStyleCssFilePath ||
+    path.join(
+      context.config.defaultPlasmicDir,
+      response.defaultStyleCssFileName
+    );
 
-  config.style.defaultStyleCssFilePath = findSrcDirPath(
-    config.srcDir,
+  context.config.style.defaultStyleCssFilePath = findSrcDirPath(
+    context.absoluteSrcDir,
     expectedPath,
     baseNameToFiles
   );
 
   writeFileContent(
-    config,
-    config.style.defaultStyleCssFilePath,
+    context,
+    context.config.style.defaultStyleCssFilePath,
     response.defaultStyleCssRules,
     { force: true }
   );
 }
 
 function syncGlobalVariants(
-  config: PlasmicConfig,
+  context: PlasmicContext,
   projectId: string,
   bundles: GlobalVariantBundle[],
   baseNameToFiles: Record<string, string[]>
 ) {
   const allVariantConfigs = L.keyBy(
-    config.globalVariants.variantGroups,
+    context.config.globalVariants.variantGroups,
     c => c.id
   );
   for (const bundle of bundles) {
@@ -259,18 +257,22 @@ function syncGlobalVariants(
         name: bundle.name,
         projectId,
         contextFilePath: path.join(
-          config.defaultPlasmicDir,
+          context.config.defaultPlasmicDir,
           bundle.contextFileName
         )
       };
       allVariantConfigs[bundle.id] = variantConfig;
-      config.globalVariants.variantGroups.push(variantConfig);
+      context.config.globalVariants.variantGroups.push(variantConfig);
     } else {
-      fixGlobalVariantFilePath(config.srcDir, variantConfig, baseNameToFiles);
+      fixGlobalVariantFilePath(
+        context.absoluteSrcDir,
+        variantConfig,
+        baseNameToFiles
+      );
     }
 
     writeFileContent(
-      config,
+      context,
       variantConfig.contextFilePath,
       bundle.contextModule,
       { force: !isNew }
@@ -279,14 +281,16 @@ function syncGlobalVariants(
 }
 
 function syncProjectConfig(
-  config: PlasmicConfig,
+  context: PlasmicContext,
   pc: ApiProjectConfig,
   componentBundles: ComponentBundle[],
   baseNameToFiles: Record<string, string[]>
 ) {
-  let cliProject = config.projects.find(c => c.projectId === pc.projectId);
+  let cliProject = context.config.projects.find(
+    c => c.projectId === pc.projectId
+  );
   const defaultCssFilePath = path.join(
-    config.defaultPlasmicDir,
+    context.config.defaultPlasmicDir,
     pc.cssFileName
   );
   const isNew = !cliProject;
@@ -296,18 +300,18 @@ function syncProjectConfig(
       cssFilePath: defaultCssFilePath,
       components: []
     };
-    config.projects.push(cliProject);
+    context.config.projects.push(cliProject);
   }
 
   if (!cliProject.cssFilePath) {
     // this is a config from before cssFilePath existed
     cliProject.cssFilePath = defaultCssFilePath;
   } else if (!isNew) {
-    fixProjectFilePaths(config.srcDir, cliProject, baseNameToFiles);
+    fixProjectFilePaths(context.absoluteSrcDir, cliProject, baseNameToFiles);
   }
 
-  writeFileContent(config, cliProject.cssFilePath, pc.cssRules, {
+  writeFileContent(context, cliProject.cssFilePath, pc.cssRules, {
     force: !isNew
   });
-  syncProjectComponents(config, cliProject, componentBundles, baseNameToFiles);
+  syncProjectComponents(context, cliProject, componentBundles, baseNameToFiles);
 }

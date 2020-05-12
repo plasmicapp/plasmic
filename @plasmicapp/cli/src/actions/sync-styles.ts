@@ -1,5 +1,10 @@
 import L from "lodash";
-import { PlasmicConfig, getContext, updateConfig } from "../utils/config-utils";
+import {
+  PlasmicConfig,
+  PlasmicContext,
+  getContext,
+  updateConfig
+} from "../utils/config-utils";
 import { StyleTokensMap } from "../api";
 import {
   writeFileContent,
@@ -22,7 +27,7 @@ export async function syncStyleTokens(opts: SyncStyleTokensArgs) {
   const projectIds =
     opts.projects.length > 0
       ? opts.projects
-      : L.uniq(readCurStyleMap(config).props.map(p => p.meta.projectId));
+      : L.uniq(readCurStyleMap(context).props.map(p => p.meta.projectId));
 
   const baseNameToFiles = buildBaseNameToFiles(context);
   const results = await Promise.all(
@@ -32,7 +37,7 @@ export async function syncStyleTokens(opts: SyncStyleTokensArgs) {
     string,
     StyleTokensMap
   ][]) {
-    upsertStyleTokens(config, styleMap, baseNameToFiles);
+    upsertStyleTokens(context, styleMap, baseNameToFiles);
   }
 
   updateConfig(context, {
@@ -41,16 +46,16 @@ export async function syncStyleTokens(opts: SyncStyleTokensArgs) {
 }
 
 export function upsertStyleTokens(
-  config: PlasmicConfig,
+  context: PlasmicContext,
   newStyleMap: StyleTokensMap,
   baseNameToFiles: Record<string, string[]>
 ) {
-  config.tokens.tokensFilePath = findSrcDirPath(
-    config.srcDir,
-    config.tokens.tokensFilePath,
+  context.config.tokens.tokensFilePath = findSrcDirPath(
+    context.absoluteSrcDir,
+    context.config.tokens.tokensFilePath,
     baseNameToFiles
   );
-  const curStyleMap = readCurStyleMap(config);
+  const curStyleMap = readCurStyleMap(context);
   for (const prop of newStyleMap.props) {
     const index = curStyleMap.props.findIndex(p => p.meta.id === prop.meta.id);
     if (index >= 0) {
@@ -63,21 +68,23 @@ export function upsertStyleTokens(
     prop1.name === prop2.name ? 0 : prop1.name < prop2.name ? -1 : 1
   );
   writeFileContent(
-    config,
-    config.tokens.tokensFilePath,
+    context,
+    context.config.tokens.tokensFilePath,
     JSON.stringify(curStyleMap, undefined, 2),
     { force: true }
   );
 }
 
-function readCurStyleMap(config: PlasmicConfig): StyleTokensMap {
-  const filePath = config.tokens.tokensFilePath;
-  if (fileExists(config, filePath)) {
+function readCurStyleMap(context: PlasmicContext): StyleTokensMap {
+  const filePath = context.config.tokens.tokensFilePath;
+  if (fileExists(context, filePath)) {
     try {
-      return JSON.parse(readFileContent(config, config.tokens.tokensFilePath));
+      return JSON.parse(
+        readFileContent(context, context.config.tokens.tokensFilePath)
+      );
     } catch (e) {
       console.log(
-        `Error countered reading ${config.tokens.tokensFilePath}: ${e}`
+        `Error countered reading ${context.config.tokens.tokensFilePath}: ${e}`
       );
       process.exit(1);
     }
@@ -91,8 +98,8 @@ function readCurStyleMap(config: PlasmicConfig): StyleTokensMap {
       }
     } as StyleTokensMap;
     writeFileContent(
-      config,
-      config.tokens.tokensFilePath,
+      context,
+      context.config.tokens.tokensFilePath,
       JSON.stringify(defaultMap, undefined, 2),
       { force: false }
     );

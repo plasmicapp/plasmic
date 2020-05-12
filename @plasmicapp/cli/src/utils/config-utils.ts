@@ -119,6 +119,10 @@ export interface PlasmicContext {
   // Folder where plasmic.json file lives
   rootDir: string;
 
+  // Absolute path to the source directory
+  // If config.srcDir is a relative path, it will be relative to the Plasmic config file
+  absoluteSrcDir: string;
+
   // The parsed PlasmicConfig
   config: PlasmicConfig;
 
@@ -226,10 +230,15 @@ export function getContext(args: CommonArgs): PlasmicContext {
     process.exit(1);
   }
   const auth = readAuth(authFile);
+  const config = readConfig(configFile);
+  const rootDir = path.dirname(configFile);
   return {
-    config: readConfig(configFile),
+    config,
     configFile,
-    rootDir: path.dirname(configFile),
+    rootDir,
+    absoluteSrcDir: path.isAbsolute(config.srcDir)
+      ? config.srcDir
+      : path.resolve(rootDir, config.srcDir),
     auth,
     api: new PlasmicApi(auth)
   };

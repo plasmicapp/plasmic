@@ -7,7 +7,8 @@ import {
   ComponentConfig,
   ProjectConfig,
   GlobalVariantGroupConfig,
-  PlasmicConfig
+  PlasmicConfig,
+  CONFIG_FILE_NAME
 } from "./config-utils";
 import { isLocalModulePath } from "./code-utils";
 
@@ -36,29 +37,44 @@ export function writeFileContentRaw(
 }
 
 export function writeFileContent(
-  config: PlasmicConfig,
+  context: PlasmicContext,
   srcDirFilePath: string,
   content: string,
   opts: { force?: boolean } = {}
 ) {
-  const path = makeFilePath(config, srcDirFilePath);
+  const path = makeFilePath(context, srcDirFilePath);
   writeFileContentRaw(path, content, opts);
 }
 
-export function readFileContent(config: PlasmicConfig, srcDirFilePath: string) {
-  return fs.readFileSync(makeFilePath(config, srcDirFilePath)).toString();
+export function readFileContent(
+  context: PlasmicContext,
+  srcDirFilePath: string
+) {
+  return fs.readFileSync(makeFilePath(context, srcDirFilePath)).toString();
 }
 
-export function fileExists(config: PlasmicConfig, srcDirFilePath: string) {
-  return fs.existsSync(makeFilePath(config, srcDirFilePath));
+export function fileExists(context: PlasmicContext, srcDirFilePath: string) {
+  return fs.existsSync(makeFilePath(context, srcDirFilePath));
 }
 
-export function makeFilePath(config: PlasmicConfig, filePath: string) {
-  return path.join(config.srcDir, filePath);
+export function makeFilePath(context: PlasmicContext, filePath: string) {
+  return path.join(context.absoluteSrcDir, filePath);
 }
 
-export function buildBaseNameToFiles(context: PlasmicContext) {
-  const srcDir = path.join(context.rootDir, context.config.srcDir);
+/**
+ * Returns absolute paths of all Plasmic managed files found, grouped by each basename
+ * for example:
+ * {
+ * "file.txt": [ "/path1/file.txt", "/path2.txt" ]
+ * ...
+ * }
+ * @param {PlasmicContext} context
+ * @returns {Record<string, string[]>}
+ **/
+export function buildBaseNameToFiles(
+  context: PlasmicContext
+): Record<string, string[]> {
+  const srcDir = context.absoluteSrcDir;
   const allFiles = glob.sync(`${srcDir}/**/*.+(ts|css|tsx|json)`, {
     ignore: [`${srcDir}/**/node_modules/**/*`]
   });
@@ -70,18 +86,18 @@ export function buildBaseNameToFiles(context: PlasmicContext) {
  * if the files have been moved.  Mutates `compConfig` with the new paths.
  */
 export function fixComponentPaths(
-  srcDir: string,
+  absoluteSrcDir: string,
   compConfig: ComponentConfig,
   baseNameToFiles: Record<string, string[]>
 ) {
   compConfig.renderModuleFilePath = findSrcDirPath(
-    srcDir,
+    absoluteSrcDir,
     compConfig.renderModuleFilePath,
     baseNameToFiles
   );
 
   compConfig.cssFilePath = findSrcDirPath(
-    srcDir,
+    absoluteSrcDir,
     compConfig.cssFilePath,
     baseNameToFiles
   );
@@ -90,7 +106,11 @@ export function fixComponentPaths(
   // whether it has been moved.
   if (isLocalModulePath(compConfig.importSpec.modulePath)) {
     const modulePath = compConfig.importSpec.modulePath;
-    const fuzzyPath = findSrcDirPath(srcDir, modulePath, baseNameToFiles);
+    const fuzzyPath = findSrcDirPath(
+      absoluteSrcDir,
+      modulePath,
+      baseNameToFiles
+    );
     if (fuzzyPath !== modulePath) {
       console.warn(`\tDetected file moved from ${modulePath} to ${fuzzyPath}`);
       compConfig.importSpec.modulePath = fuzzyPath;
@@ -99,24 +119,24 @@ export function fixComponentPaths(
 }
 
 export function fixGlobalVariantFilePath(
-  srcDir: string,
+  absoluteSrcDir: string,
   variantConfig: GlobalVariantGroupConfig,
   baseNameToFiles: Record<string, string[]>
 ) {
   variantConfig.contextFilePath = findSrcDirPath(
-    srcDir,
+    absoluteSrcDir,
     variantConfig.contextFilePath,
     baseNameToFiles
   );
 }
 
 export function fixProjectFilePaths(
-  srcDir: string,
+  absoluteSrcDir: string,
   projectConfig: ProjectConfig,
   baseNameToFiles: Record<string, string[]>
 ) {
   projectConfig.cssFilePath = findSrcDirPath(
-    srcDir,
+    absoluteSrcDir,
     projectConfig.cssFilePath,
     baseNameToFiles
   );
@@ -130,18 +150,23 @@ export function fixProjectFilePaths(
  * error and quit.  If no file of that name can be found, `expectedPath` is returned.
  */
 export function findSrcDirPath(
-  srcDir: string,
+  absoluteSrcDir: string,
   expectedPath: string,
   baseNameToFiles: Record<string, string[]>
 ): string {
+  if (!path.isAbsolute(absoluteSrcDir)) {
+    console.error("Cannot find srcDir. Please check plasmic.json.");
+    process.exit(1);
+  }
+
   const fileName = path.basename(expectedPath);
-  if (fs.existsSync(path.join(srcDir, expectedPath))) {
+  if (fs.existsSync(path.join(absoluteSrcDir, expectedPath))) {
     return expectedPath;
   } else if (!(fileName in baseNameToFiles)) {
     return expectedPath;
   } else if (baseNameToFiles[fileName].length === 1) {
     // There's only one file of the same name, so maybe we've been moved there?
-    const newPath = path.relative(srcDir, baseNameToFiles[fileName][0]);
+    const newPath = path.relative(absoluteSrcDir, baseNameToFiles[fileName][0]);
     console.log(`\tDetected file moved from ${expectedPath} to ${newPath}`);
     return newPath;
   } else {

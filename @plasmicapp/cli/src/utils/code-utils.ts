@@ -152,7 +152,6 @@ export function isLocalModulePath(modulePath: string) {
 export function fixAllImportStatements(context: PlasmicContext) {
   console.log("Fixing import statements...");
   const config = context.config;
-  const srcDir = path.join(context.rootDir, config.srcDir);
   const allComponents = flatMap(config.projects, p => p.components);
   const allCompConfigs = L.keyBy(allComponents, c => c.id);
   const allGlobalVariantConfigs = L.keyBy(
@@ -162,7 +161,7 @@ export function fixAllImportStatements(context: PlasmicContext) {
   for (const project of config.projects) {
     for (const compConfig of project.components) {
       fixComponentImportStatements(
-        config,
+        context,
         compConfig,
         allCompConfigs,
         allGlobalVariantConfigs
@@ -172,19 +171,19 @@ export function fixAllImportStatements(context: PlasmicContext) {
 }
 
 function fixComponentImportStatements(
-  config: PlasmicConfig,
+  context: PlasmicContext,
   compConfig: ComponentConfig,
   allCompConfigs: Record<string, ComponentConfig>,
   allGlobalVariantConfigs: Record<string, GlobalVariantGroupConfig>
 ) {
   fixFileImportStatements(
-    config,
+    context,
     compConfig.renderModuleFilePath,
     allCompConfigs,
     allGlobalVariantConfigs
   );
   fixFileImportStatements(
-    config,
+    context,
     compConfig.cssFilePath,
     allCompConfigs,
     allGlobalVariantConfigs
@@ -192,7 +191,7 @@ function fixComponentImportStatements(
   // If ComponentConfig.importPath is still a local file, we best-effort also fix up the import statements there.
   if (isLocalModulePath(compConfig.importSpec.modulePath)) {
     fixFileImportStatements(
-      config,
+      context,
       compConfig.importSpec.modulePath,
       allCompConfigs,
       allGlobalVariantConfigs
@@ -201,23 +200,23 @@ function fixComponentImportStatements(
 }
 
 function fixFileImportStatements(
-  config: PlasmicConfig,
+  context: PlasmicContext,
   srcDirFilePath: string,
   allCompConfigs: Record<string, ComponentConfig>,
   allGlobalVariantConfigs: Record<string, GlobalVariantGroupConfig>
 ) {
   console.log(`\tFixing ${srcDirFilePath}`);
   const prevContent = fs
-    .readFileSync(path.join(config.srcDir, srcDirFilePath))
+    .readFileSync(path.join(context.absoluteSrcDir, srcDirFilePath))
     .toString();
-  const allProjectConfigs = L.keyBy(config.projects, p => p.projectId);
+  const allProjectConfigs = L.keyBy(context.config.projects, p => p.projectId);
   const newContent = replaceImports(
     prevContent,
     srcDirFilePath,
-    config.style,
+    context.config.style,
     allCompConfigs,
     allProjectConfigs,
     allGlobalVariantConfigs
   );
-  writeFileContent(config, srcDirFilePath, newContent, { force: true });
+  writeFileContent(context, srcDirFilePath, newContent, { force: true });
 }
