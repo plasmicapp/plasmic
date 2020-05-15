@@ -210,14 +210,20 @@ function mergeProps(
 }
 
 function mergePropVals(name: string, val1: any, val2: any): any {
-  if (typeof val1 === "function" && typeof val2 === "function") {
+  if (val1 == null && val2 == null) {
+    return null;
+  } else if (val1 == null && val2 != null) {
+    return val2;
+  } else if (val1 != null && val2 == null) {
+    return val1;
+  } else if (typeof val1 === "function" && typeof val2 === "function") {
     return (...args: any[]) => {
       val1(...args);
       return val2(...args);
     };
-  } else if (name === "className" && val1 && val2) {
+  } else if (name === "className") {
     return `${val1} ${val2}`;
-  } else if (name === "style" && val1 && val2) {
+  } else if (name === "style") {
     return {
       ...val1,
       ...val2
