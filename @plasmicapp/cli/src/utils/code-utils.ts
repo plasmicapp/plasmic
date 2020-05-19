@@ -42,7 +42,7 @@ function getNewNamePart(existingSpec: string, newNamePart: string) {
     .map(name => name.trim());
   const newSpecParts = existingImportedNames.includes(newNamePart)
     ? [existingSpec]
-    : [existingSpec, newNamePart];
+    : [newNamePart, existingSpec];
   return newSpecParts.join(", ");
 }
 
