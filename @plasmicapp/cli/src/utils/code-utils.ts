@@ -84,8 +84,7 @@ export function replaceImports(
         compConfig.renderModuleFilePath,
         true
       );
-      const newSpec = getNewNamePart(spec, `PP__${compConfig.name}`);
-      return `import ${newSpec} from "${realPath}"; // plasmic-import: ${uuid}/render`;
+      return `import ${spec} from "${realPath}"; // plasmic-import: ${uuid}/render`;
     } else if (type === "css") {
       // import of the PP css file
       const compConfig = compConfigsMap[uuid];
