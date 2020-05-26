@@ -17,7 +17,7 @@ import {
   V8IntrinsicIdentifier,
   AssignmentExpression,
   ReturnStatement,
-  ImportDeclaration,
+  ImportDeclaration
 } from "@babel/types";
 import * as babel from "@babel/core";
 import * as L from "lodash";
@@ -30,7 +30,7 @@ import {
   PlasmicTagOrComponent,
   makeCallExpression,
   wrapInJsxExprContainer,
-  PlasmicArgRef,
+  PlasmicArgRef
 } from "./plasmic-ast";
 import {
   CodeVersion,
@@ -38,10 +38,10 @@ import {
   isInHtmlContext,
   calleeMatch,
   memberExpressionMatch,
-  makeMemberExpression,
+  makeMemberExpression
 } from "./plasmic-parser";
 import { nodesDeepEqualIgnoreComments, code } from "./utils";
-import { first } from "lodash";
+import { first, cloneDeep } from "lodash";
 
 const getNamedAttrs = (jsxElement: JSXElement) => {
   const attrs = new Map<string, JSXAttribute>();
@@ -219,7 +219,7 @@ const mergeAttributes = (
         if (newNodeHasPropsWithIdSpreador) {
           // Keep the id as props but using new node id.
           mergedAttrs.push(
-            cloneDeepWithHook(attrInEditedNode, (n) => {
+            cloneDeepWithHook(attrInEditedNode, n => {
               if (n === arg.callee) {
                 const cloned = babel.types.clone(arg.callee);
                 (cloned as MemberExpression).property.name = `props${newNodeId}`;
@@ -313,7 +313,7 @@ const mergedChildren = (
   //
   // TODO: support better merging of children?
   return withoutNils(
-    newNode.jsxElement.children.map((c) => {
+    newNode.jsxElement.children.map(c => {
       if (c.type === "opaque") {
         return c.rawNode as JsxChildType;
       }
@@ -357,7 +357,7 @@ const mergeShowFunc = (
   let replacedShowCall = false;
   traverse(editedNodeClone, {
     noScope: true,
-    CallExpression: function (path) {
+    CallExpression: function(path) {
       const call = path.node;
       if (calleeMatch(call.callee, helperObject, `show${editedNodeId}`)) {
         if (newNodeCallShowFunc) {
@@ -369,7 +369,7 @@ const mergeShowFunc = (
         replacedShowCall = true;
         path.skip();
       }
-    },
+    }
   });
   if (newNodeCallShowFunc && !replacedShowCall) {
     // add the show call, using the new node id!
@@ -379,7 +379,7 @@ const mergeShowFunc = (
     } else {
       traverse(editedNodeClone, {
         noScope: true,
-        JSXElement: function (path) {
+        JSXElement: function(path) {
           // We have to use location to identify the node since they point to
           // different AST structure - one point to the editedNode.rawNode, and
           // the other point to editedNodeClone.
@@ -393,7 +393,7 @@ const mergeShowFunc = (
             );
             path.stop();
           }
-        },
+        }
       });
     }
   }
@@ -476,7 +476,7 @@ const serializeNonOpaquePlasmicASTNode = (
   assert(newNode.type !== "opaque");
   if (newNode.type === "arg") {
     const nodesToMerged = new Map<Node, Node>();
-    newNode.jsxNodes.forEach((n) => {
+    newNode.jsxNodes.forEach(n => {
       const rawMerged = serializeTagOrComponent(
         n,
         newVersion,
@@ -542,7 +542,7 @@ export class ComponentSkeletonModel {
     return {
       uuid: this.uuid,
       nameInIdToUuid: [...this.nameInIdToUuid.entries()],
-      fileContent: this.fileContent,
+      fileContent: this.fileContent
     };
   }
 
@@ -566,7 +566,7 @@ export class ProjectSyncMetadataModel {
     const j = JSON.parse(json);
     assert(L.isArray(j));
     return new ProjectSyncMetadataModel(
-      j.map((item) => ComponentSkeletonModel.fromJsObject(item))
+      j.map(item => ComponentSkeletonModel.fromJsObject(item))
     );
   }
 }
@@ -605,7 +605,7 @@ const tryExtractPlasmicJsxExpression = (
         return {
           jsx: ensure(node.argument),
           identifyingComment: c,
-          revision: +m[1],
+          revision: +m[1]
         };
       }
     }
@@ -617,25 +617,25 @@ const tryParseComponentSkeletonFile = (
   fileContent: string
 ): PlasmicComponentSkeletonFile | undefined => {
   const file = parser.parse(fileContent, {
-    strictMode: false,
+    strictMode: true,
     sourceType: "module",
-    plugins: ["jsx", "typescript"],
+    plugins: ["jsx", "typescript"]
   });
   let jsx: VersionedJsx | undefined = undefined;
   traverse(file, {
     noScope: true,
-    AssignmentExpression: function (path) {
+    AssignmentExpression: function(path) {
       jsx = tryExtractPlasmicJsxExpression(path.node);
       if (jsx) {
         path.stop();
       }
     },
-    ReturnStatement: function (path) {
+    ReturnStatement: function(path) {
       jsx = tryExtractPlasmicJsxExpression(path.node);
       if (jsx) {
         path.stop();
       }
-    },
+    }
   });
   // typescript treat jsx as never type... why?
   jsx = jsx as VersionedJsx | undefined;
@@ -652,7 +652,10 @@ type PlasmicImportType =
   | undefined;
 
 const tryParsePlasmicImportSpec = (node: ImportDeclaration) => {
-  const c = ensure(node.trailingComments?.[0]);
+  const c = node.trailingComments?.[0];
+  if (!c) {
+    return undefined;
+  }
   const m = c.value.match(
     /plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss|defaultcss))?/
   );
@@ -662,6 +665,61 @@ const tryParsePlasmicImportSpec = (node: ImportDeclaration) => {
   return undefined;
 };
 
+const compareImports = (
+  import1: PlasmicImportSpec,
+  import2: PlasmicImportSpec
+) => {
+  if (import1.id !== import2.id) {
+    return import1.id < import2.id ? -1 : 1;
+  }
+  if (import1.type !== import2.type) {
+    if (import1.type === undefined) {
+      return -1;
+    }
+    if (import2.type === undefined) {
+      return 1;
+    }
+    return import1.type < import2.type ? -1 : 1;
+  }
+  return 0;
+};
+
+// merge slave into master
+const mergeImports = (i1: ImportDeclaration, i2: ImportDeclaration) => {
+  const cloned = cloneDeep(i1);
+  for (const s2 of i2.specifiers) {
+    if (s2.type === "ImportDefaultSpecifier") {
+      if (
+        i1.specifiers.find(
+          s1 =>
+            s1.type === "ImportDefaultSpecifier" &&
+            s1.local.name === s2.local.name
+        )
+      ) {
+        continue;
+      }
+      cloned.specifiers.push(s2);
+    } else if (s2.type === "ImportSpecifier") {
+      if (
+        i1.specifiers.find(
+          s1 =>
+            s1.type === "ImportSpecifier" &&
+            s1.local.name === s2.local.name &&
+            s1.imported.name === s2.imported.name
+        )
+      ) {
+        continue;
+      }
+      cloned.specifiers.push(s2);
+    } else {
+      assert(s2.type === "ImportNamespaceSpecifier");
+      // Plasmic doesn't generate namespace import statement.
+      cloned.specifiers.push(s2);
+    }
+  }
+  return cloned;
+};
+
 const mergePlasmicImports = (
   mergedFile: babel.types.File,
   parsedNew: PlasmicComponentSkeletonFile,
@@ -669,22 +727,50 @@ const mergePlasmicImports = (
 ) => {
   const newImports = extractPlasmicImports(parsedNew.file);
   const editedImports = extractPlasmicImports(parsedEdited.file);
-  const editedImportDecls = new Set(editedImports.map((i) => i.node));
 
   let firstImport = -1;
   let firstPlasmicImport = -1;
+  // Remove all imports that is being merged.
   mergedFile.program.body = mergedFile.program.body.filter((stmt, i) => {
     if (stmt.type === "ImportDeclaration") {
       if (firstImport === -1) {
         firstImport = i;
       }
-      if (editedImportDecls.has(stmt) && firstPlasmicImport === -1) {
-        firstPlasmicImport = i;
+      if (tryParsePlasmicImportSpec(stmt)) {
+        if (firstPlasmicImport === -1) {
+          firstPlasmicImport = i;
+        }
+        return false;
       }
     }
+    return true;
   });
   // TODO: perform the merge!
   const mergedImports: Array<ImportDeclaration> = [];
+  // edited imports are ordered first
+  const allImports = [...editedImports, ...newImports];
+  allImports.sort(compareImports);
+  // Remove leadingComments - babel parser assign each comment to two nodes.
+  // One as a trailing comment of the node before the comment, and one as a
+  // leading comment of the node after the comment. We remove the
+  // leadingComments so that we don't generate the comments twice (one from
+  // editedImports, and one from newImports).
+  allImports.forEach(importDecl => (importDecl.node.leadingComments = null));
+  let i = 0;
+  while (i < allImports.length) {
+    if (
+      i + 1 < allImports.length &&
+      compareImports(allImports[i], allImports[i + 1]) === 0
+    ) {
+      mergedImports.push(
+        mergeImports(allImports[i].node, allImports[i + 1].node)
+      );
+      i++;
+    } else {
+      mergedImports.push(allImports[i].node);
+    }
+    i++;
+  }
   const insertMergedImportsAt =
     firstPlasmicImport > -1
       ? firstPlasmicImport
@@ -703,13 +789,13 @@ interface PlasmicImportSpec {
 const extractPlasmicImports = (file: babel.types.File) => {
   const plasmicImports: Array<PlasmicImportSpec> = [];
   traverse(file, {
-    ImportDeclaration: function (path) {
+    ImportDeclaration: function(path) {
       const importSpec = tryParsePlasmicImportSpec(path.node);
       if (importSpec) {
         plasmicImports.push({ ...importSpec, node: path.node });
       }
       path.skip();
-    },
+    }
   });
   return plasmicImports;
 };
@@ -744,10 +830,10 @@ export const mergeFiles = async (
   }
   const projectSyncData = await projectSyncDataProvider();
   const mergedFiles: [string, string][] = [
-    ...updateableByComponentUuid.entries(),
+    ...updateableByComponentUuid.entries()
   ].map(([componentUuid, parsedEdited]) => {
     const baseMetadata = ensure(
-      projectSyncData.components.find((c) => c.uuid === componentUuid)
+      projectSyncData.components.find(c => c.uuid === componentUuid)
     );
     const parsedBase = ensure(
       tryParseComponentSkeletonFile(baseMetadata.fileContent)
@@ -788,7 +874,7 @@ export const mergeFiles = async (
       }
       return undefined;
     });
-    // mergePlasmicImports(mergedFile, parsedNew, parsedEdited);
+    mergePlasmicImports(mergedFile, parsedNew, parsedEdited);
     return [componentUuid, code(mergedFile, { retainLines: true })];
   });
   return new Map<string, string>(mergedFiles);
