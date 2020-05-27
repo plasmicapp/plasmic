@@ -297,6 +297,82 @@ type JsxChildType =
   | JSXElement
   | JSXFragment;
 
+interface PerfectMatch {
+  type: "perfect";
+  index: number;
+}
+
+interface TypeMatch {
+  type: "type";
+  index: number;
+}
+
+interface NoMatch {
+  type: "none";
+}
+
+type MatchResult = PerfectMatch | TypeMatch | NoMatch;
+
+const findMatch = (
+  nodes: PlasmicASTNode[],
+  start: number,
+  idMatchChecker: (idInNodes: string, idInN: string) => boolean,
+  n: PlasmicASTNode
+): MatchResult => {
+  let matchingTypeAt = -1;
+  if (n.type === "text" || n.type === "string-lit") {
+    for (let i = start; i < nodes.length; i++) {
+      const ni = nodes[i];
+      if (ni.type === "text" || ni.type === "string-lit") {
+        if (ni.value === n.value) {
+          return { type: "perfect", index: i };
+        }
+        if (matchingTypeAt === -1) {
+          matchingTypeAt = i;
+        }
+      }
+    }
+  } else if (n.type === "arg") {
+    for (let i = start; i < nodes.length; i++) {
+      const ni = nodes[i];
+      if (ni.type === "arg") {
+        if (n.argName === ni.argName) {
+          return { type: "perfect", index: i };
+        }
+        if (matchingTypeAt === -1) {
+          matchingTypeAt = i;
+        }
+      }
+    }
+  } else if (n.type === "cond-str-call") {
+    for (let i = start; i < nodes.length; i++) {
+      const ni = nodes[i];
+      if (ni.type === "cond-str-call") {
+        return { type: "perfect", index: i };
+      }
+      if (matchingTypeAt === -1) {
+        matchingTypeAt = i;
+      }
+    }
+  } else if (n.type === "tag-or-component") {
+    for (let i = start; i < nodes.length; i++) {
+      const ni = nodes[i];
+      if (
+        ni.type === "tag-or-component" &&
+        idMatchChecker(ni.jsxElement.nameInId, n.jsxElement.nameInId)
+      ) {
+        return { type: "perfect", index: i };
+      }
+      if (matchingTypeAt === -1) {
+        matchingTypeAt = i;
+      }
+    }
+  }
+  return matchingTypeAt !== -1
+    ? { type: "type", index: matchingTypeAt }
+    : { type: "none" };
+};
+
 const mergedChildren = (
   newNode: PlasmicTagOrComponent,
   editedNode: PlasmicTagOrComponent,
@@ -305,15 +381,82 @@ const mergedChildren = (
   editedVersion: CodeVersion,
   baseVersion: CodeVersion
 ): Array<JsxChildType> => {
-  // Just emit children from new node while preserving edits to named
-  // JSXElement.
-  //
-  // Edit to text should probably be reflected in Plasmic, i.e. it is ok
-  // to not support auto-merging of user editing "Hello" to "Hello World".
-  //
-  // TODO: support better merging of children?
+  let nextInsertStartAt = 0;
+  const insertEditedNodeIntoNew = (
+    editedChild: PlasmicASTNode,
+    prevEditedChild: PlasmicASTNode | undefined
+  ) => {
+    if (!prevEditedChild) {
+      merged.splice(0, 0, editedChild);
+      nextInsertStartAt = 1;
+    } else {
+      const prevMatch = findMatch(
+        merged,
+        nextInsertStartAt,
+        (newNameInId, editedNameInId) =>
+          newNameInId === editedNameInId ||
+          editedVersion.getUuid(editedNameInId) ===
+            newVersion.getUuid(newNameInId),
+        prevEditedChild
+      );
+      if (prevMatch.type === "perfect" || prevMatch.type === "type") {
+        // previous node matches merged[prevMatch]. insert current node at
+        // prevMatch + 1.
+        merged.splice(prevMatch.index + 1, 0, editedChild);
+        nextInsertStartAt = prevMatch.index + 2;
+      } else {
+        merged.splice(nextInsertStartAt, 0, editedChild);
+        nextInsertStartAt += 1;
+      }
+    }
+  };
+
+  const newChildren = newNode.jsxElement.children;
+  const merged = newNode.jsxElement.children.slice(0);
+
+  const editedChildren = editedNode.jsxElement.children;
+  editedChildren.forEach((editedChild, i) => {
+    if (editedChild.type === "text" || editedChild.type === "string-lit") {
+      const matchInNewVersion = findMatch(
+        merged,
+        nextInsertStartAt,
+        (newNameInId, editedNameInId) =>
+          newNameInId === editedNameInId ||
+          editedVersion.getUuid(editedNameInId) ===
+            newVersion.getUuid(newNameInId),
+        editedChild
+      );
+      if (matchInNewVersion.type === "perfect") {
+        // skip text node if it matches some text in new version. But make sure
+        // subsequent nodes are inserted after the match.
+        nextInsertStartAt = matchInNewVersion.index + 1;
+        return;
+      }
+      const matchInBaseVersion = findMatch(
+        baseNode.jsxElement.children,
+        0,
+        (baseNameInId, editedNameInId) =>
+          baseNameInId === editedNameInId ||
+          editedVersion.getUuid(editedNameInId) ===
+            baseVersion.getUuid(baseNameInId),
+        editedChild
+      );
+      if (matchInBaseVersion.type === "perfect") {
+        // skip text node if it matches some text in base version
+        return;
+      }
+      insertEditedNodeIntoNew(editedChild, editedChildren[i - 1]);
+    } else if (editedChild.type === "opaque") {
+      insertEditedNodeIntoNew(editedChild, editedChildren[i - 1]);
+    }
+  });
+
   return withoutNils(
-    newNode.jsxElement.children.map(c => {
+    merged.map(c => {
+      if (!newChildren.includes(c)) {
+        // children preserved from editedNode doesn't need any fixing.
+        return c.rawNode as JsxChildType;
+      }
       if (c.type === "opaque") {
         return c.rawNode as JsxChildType;
       }

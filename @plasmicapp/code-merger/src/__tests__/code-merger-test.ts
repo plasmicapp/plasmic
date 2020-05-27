@@ -332,29 +332,48 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("new children discarded", function() {
-    const nameInIdToUuid = new Map([["Root", "Root"]]);
+  it("merge children", function() {
+    const nameInIdToUuid = new Map([
+      ["Root", "Root"],
+      ["Img", "Img"]
+    ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
+        Hello World
+        <div className={rh.clsImg()}></div>
       </div>`,
       nameInIdToUuid
     );
     const edited = new CodeVersion(
       `<div className={rh.clsRoot()}>
-      Hello World
+        {"Added text node"}
+        Hello World
+        <div>Opaque node 1</div>
+        <div className={rh.clsImg()} onClick={xxx}></div>
+        {"Second text"}
+        {showThis() && <div>Opaque node 2</div>}
       </div>`,
       nameInIdToUuid
     );
     const newV = new CodeVersion(
       `<div className={rh.clsRoot()}>
+        Hello World Edited
+        <div className={rh.clsImg()}></div>
       </div>`,
       nameInIdToUuid
     );
     expect(
       code(serializePlasmicASTNode(newV.root, newV, edited, base))
     ).toEqual(
-      formatted(`<div className={rh.clsRoot()}>
-   </div>`)
+      formatted(`
+      <div className={rh.clsRoot()}>
+        {"Added text node"}
+        Hello World Edited
+        <div>Opaque node 1</div>
+        <div className={rh.clsImg()} onClick={xxx}></div>
+        {"Second text"}
+        {showThis() && <div>Opaque node 2</div>}
+     </div>`)
     );
   });
 
@@ -380,6 +399,7 @@ describe("Test CodeMerger", function() {
       code(serializePlasmicASTNode(newV.root, newV, edited, base))
     ).toEqual(
       formatted(`<div tabindex={234} className={rh.clsRoot()} tabindex={123}>
+      Hello World
    </div>`)
     );
   });
@@ -429,6 +449,7 @@ describe("Test CodeMerger", function() {
           myEventHandler();
         }}
         onClick={handleClick}>
+        Hello World
    </div>`)
     );
   });
@@ -535,6 +556,7 @@ describe("Test CodeMerger", function() {
               myEventHandler();
             }}
             onClick={handleClick}>
+            Hello World
            </div>;
       }`)
     );

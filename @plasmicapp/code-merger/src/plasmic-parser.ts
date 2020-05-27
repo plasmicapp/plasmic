@@ -14,7 +14,7 @@ import {
   JSXSpreadChild,
   JSXFragment,
   V8IntrinsicIdentifier,
-  JSXExpressionContainer,
+  JSXExpressionContainer
 } from "@babel/types";
 import * as babel from "@babel/core";
 import * as L from "lodash";
@@ -25,7 +25,7 @@ import {
   PlasmicASTNode,
   PlasmicJsxElement,
   PlasmicTagOrComponent,
-  PlasmicArgRef,
+  PlasmicArgRef
 } from "./plasmic-ast";
 import { formatted, code } from "./utils";
 
@@ -44,7 +44,7 @@ export const getSource = (n: Node | null, input: string) => {
 const attrToString = (attr: JSXAttribute, input: string) => {
   return {
     name: attr.name.name,
-    value: getSource(attr.value, input),
+    value: getSource(attr.value, input)
   };
 };
 
@@ -83,7 +83,7 @@ const parseJsxElement = (
   const children: Array<PlasmicASTNode> = [];
   traverse(n, {
     noScope: true,
-    JSXAttribute: function (path) {
+    JSXAttribute: function(path) {
       if (path.parent === n.openingElement) {
         const name = path.node.name.name;
         ensure(L.isString(name));
@@ -91,30 +91,30 @@ const parseJsxElement = (
           name as string,
           path.node.value === null
             ? null
-            : parseJSXExpressionOrContainer(path.node.value, input),
+            : parseJSXExpressionOrContainer(path.node.value, input)
         ]);
         path.skip();
       }
     },
-    JSXSpreadAttribute: function (path) {
+    JSXSpreadAttribute: function(path) {
       if (path.parent === n.openingElement) {
         attrs.push(ensure(getSource(path.node, input)));
         path.skip();
       }
     },
-    JSXElement: function (path) {
+    JSXElement: function(path) {
       if (path.parent === n) {
         children.push(parseJSXExpressionOrContainer(path.node, input));
         path.skip();
       }
     },
-    JSXExpressionContainer: function (path) {
+    JSXExpressionContainer: function(path) {
       if (path.parent === n) {
         children.push(parseJSXExpressionOrContainer(path.node, input));
         path.skip();
       }
     },
-    JSXText: function (path) {
+    JSXText: function(path) {
       if (path.parent === n) {
         const text = getSource(path.node, input);
         if (text !== undefined && !/^\s*$/.test(text)) {
@@ -122,13 +122,13 @@ const parseJsxElement = (
         }
         path.skip();
       }
-    },
+    }
   });
   return {
     attrs,
     children,
     rawNode: n,
-    nameInId: plasmicId,
+    nameInId: plasmicId
   };
 };
 
@@ -158,7 +158,7 @@ const parseJSXExpressionOrContainer = (
     return {
       type: "opaque",
       rawNode: n,
-      value: ensure(getSource(n, input)),
+      value: ensure(getSource(n, input))
     };
   }
   const expr = n.type === "JSXExpressionContainer" ? n.expression : n;
@@ -166,7 +166,7 @@ const parseJSXExpressionOrContainer = (
     return {
       type: "string-lit",
       value: expr.value,
-      rawNode: n as StringLiteral | JSXExpressionContainer,
+      rawNode: n as StringLiteral | JSXExpressionContainer
     };
   }
   if (expr.type === "CallExpression") {
@@ -223,7 +223,7 @@ const parseJSXExpressionOrContainer = (
     const jsxNodes: PlasmicTagOrComponent[] = [];
     traverse(n, {
       noScope: true,
-      JSXElement: function (path) {
+      JSXElement: function(path) {
         const inHtmlContext = isInHtmlContext(path);
         const maybeWrappedJsxElement = tryParseAsPlasmicJsxElement(
           path.node,
@@ -245,13 +245,12 @@ const parseJSXExpressionOrContainer = (
               rawNode.type === "JSXExpressionContainer"
                 ? rawNode
                 : // Should be JSXElement
-                  (assert(rawNode.type === "JSXElement"),
-                  rawNode as JSXElement),
+                  (assert(rawNode.type === "JSXElement"), rawNode as JSXElement)
           });
 
           path.skip();
         }
-      },
+      }
     });
     return { type: "arg", argName: m[1], jsxNodes, rawNode: n };
   }
@@ -265,7 +264,7 @@ const parseJSXExpressionOrContainer = (
   let jsxElement: PlasmicJsxElement | undefined = undefined;
   traverse(n, {
     noScope: true,
-    JSXElement: function (path) {
+    JSXElement: function(path) {
       const parent = path.parent;
       const inHtmlContext =
         parent.type === "JSXElement" || parent.type === "JSXFragment";
@@ -273,21 +272,21 @@ const parseJSXExpressionOrContainer = (
       if (jsxElement) {
         path.stop();
       }
-    },
+    }
   });
   return jsxElement
     ? { type: "tag-or-component", jsxElement, rawNode: n }
     : {
         type: "opaque",
         rawNode: n,
-        value: ensure(getSource(n, input)),
+        value: ensure(getSource(n, input))
       };
 };
 
 export const parseFromJsxExpression = (input: string) => {
   const ast = parser.parseExpression(input, {
     strictMode: false,
-    plugins: ["jsx", "typescript"],
+    plugins: ["jsx", "typescript"]
   });
   return parseJSXExpressionOrContainer(ast, input);
 };
@@ -303,17 +302,17 @@ const findTagOrComponents = (
   }
   if (node.type === "tag-or-component") {
     r.set(node.jsxElement.nameInId, node);
-    node.jsxElement.attrs.forEach((attr) => {
+    node.jsxElement.attrs.forEach(attr => {
       if (L.isString(attr)) {
         return;
       }
       findTagOrComponents(attr[1], r);
     });
-    node.jsxElement.children.forEach((c) => {
+    node.jsxElement.children.forEach(c => {
       findTagOrComponents(c, r);
     });
   } else if (node.type === "arg") {
-    node.jsxNodes.forEach((n) => findTagOrComponents(n, r));
+    node.jsxNodes.forEach(n => findTagOrComponents(n, r));
   }
 };
 
@@ -405,6 +404,10 @@ export class CodeVersion {
     });
   }
 
+  getUuid(nameInId: string) {
+    return ensure(this.nameInIdToUuid.get(nameInId));
+  }
+
   // Find a tagOrComponent node whose nameInId matches, or uuid matches.
   // nameInId has higher priority.
   findNode(id: { nameInId: string; uuid: string }) {
@@ -418,7 +421,7 @@ export class CodeVersion {
   getId(node: PlasmicTagOrComponent) {
     return {
       nameInId: node.jsxElement.nameInId,
-      uuid: ensure(this.nameInIdToUuid.get(node.jsxElement.nameInId)),
+      uuid: ensure(this.nameInIdToUuid.get(node.jsxElement.nameInId))
     };
   }
 
@@ -429,7 +432,7 @@ export class CodeVersion {
     let found = false;
     traverse(node.rawNode, {
       noScope: true,
-      CallExpression: function (path) {
+      CallExpression: function(path) {
         if (
           calleeMatch(
             path.node.callee,
@@ -441,18 +444,18 @@ export class CodeVersion {
           path.stop();
         }
       },
-      JSXElement: function (path) {
+      JSXElement: function(path) {
         if (path.node === node.jsxElement.rawNode) {
           path.skip();
         }
-      },
+      }
     });
     return found;
   }
 
   hasClassNameIdAttr(node: PlasmicTagOrComponent) {
     const matchingAttr = node.jsxElement.rawNode.openingElement.attributes.find(
-      (attr) =>
+      attr =>
         attr.type === "JSXAttribute" &&
         attr.name.name === "className" &&
         attr.value?.type === "JSXExpressionContainer" &&
@@ -467,7 +470,7 @@ export class CodeVersion {
   }
   hasPropsIdSpreador(node: PlasmicTagOrComponent) {
     const matchingAttr = node.jsxElement.rawNode.openingElement.attributes.find(
-      (attr) =>
+      attr =>
         attr.type === "JSXSpreadAttribute" &&
         isCallIgnoreArguments(
           attr.argument,
