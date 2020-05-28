@@ -253,7 +253,7 @@ export function wrapWithClassName(element: React.ReactNode, className: string) {
 // To get a type safe FlexStack, you need to explicitly specify both the tag
 // and generic type, such as
 //   <FlexStack<"a"> tag={"a"} href={...}>...</FlexStack<"a">
-export const FlexStack = <T extends React.ElementType>(
+export const FlexStackImpl = <T extends React.ElementType>(
   props: React.ComponentProps<T> & { as: T }
 ) => {
   const { as, children, ...rest } = props;
@@ -263,9 +263,31 @@ export const FlexStack = <T extends React.ElementType>(
   return React.createElement(as, rest, wrappedChildren);
 };
 
-export const DefaultFlexStack = (props: React.ComponentProps<"div">) => {
-  return <FlexStack<"div"> as="div" {...props} />;
+const makeFlexStackImpl = <T extends React.ElementType>(tag: T) => {
+  return (props: React.ComponentProps<T>) => {
+    return <FlexStackImpl<T> as={tag} {...props} />;
+  };
 };
+
+export const FlexStack = {
+  div: makeFlexStackImpl<"div">("div"),
+  a: makeFlexStackImpl<"a">("a"),
+  button: makeFlexStackImpl<"button">("button"),
+  h1: makeFlexStackImpl<"h1">("h1"),
+  h2: makeFlexStackImpl<"h2">("h2"),
+  h3: makeFlexStackImpl<"h3">("h3"),
+  h4: makeFlexStackImpl<"h4">("h4"),
+  h5: makeFlexStackImpl<"h5">("h5"),
+  h6: makeFlexStackImpl<"h6">("h6"),
+  label: makeFlexStackImpl<"label">("label"),
+  form: makeFlexStackImpl<"form">("form"),
+  section: makeFlexStackImpl<"section">("section"),
+  head: makeFlexStackImpl<"head">("head"),
+  main: makeFlexStackImpl<"main">("main"),
+  nav: makeFlexStackImpl<"nav">("nav")
+};
+
+export const DefaultFlexStack = FlexStack.div;
 
 function deriveOverride<C extends React.ElementType>(x: Flex<C>): Override<C> {
   if (!x) {
