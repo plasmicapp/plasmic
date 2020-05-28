@@ -499,6 +499,10 @@ describe("Test CodeMerger", function() {
       editedFile: `
       import React from "react";
       function Comp1() {
+        // plasmic-managed-start
+        const rh = new PlasmicTreeRow__RenderHelper(variants, args, props.className);
+        // plasmic-managed-end
+
         // plasmic-managed-jsx/2
         return <div className={rh.clsRoot() }
                 onMouseEnter={
@@ -513,6 +517,10 @@ describe("Test CodeMerger", function() {
       }`,
       newFile: `
       function Comp1() {
+        // plasmic-managed-start
+        const rh = new PlasmicTreeRow__RenderHelper(variants, args, props.className);
+        // plasmic-managed-end
+
         // plasmic-managed-jsx/3
         return <div className={ rh.clsNewRoot()}
           onMouseEnter={ rh.onNewRootMouseEnter}
@@ -529,6 +537,10 @@ describe("Test CodeMerger", function() {
         "comp1",
         new Map([["Root", "Root"]]),
         `function Comp1() {
+           // plasmic-managed-start
+           const rh = new PlasmicTreeRow__RenderHelper(variants, args, props.className);
+           // plasmic-managed-end
+
            // plasmic-managed-jsx/2
            return <div className={ rh.clsRoot() }
                    onMouseEnter={ rh.onRootMouseEnter }
@@ -547,6 +559,10 @@ describe("Test CodeMerger", function() {
       formatted(`
       import React from "react";
       function Comp1() {
+        // plasmic-managed-start
+        const rh = new PlasmicTreeRow__RenderHelper(variants, args, props.className);
+        // plasmic-managed-end
+
         // plasmic-managed-jsx/3
         return <div
             onMouseEnter={rh.onNewRootMouseEnter}
@@ -692,6 +708,7 @@ describe("Test CodeMerger", function() {
           // be overwritten after every "plasmic sync".
           // plasmic-managed-start
 
+          const globalVariants = React.useState({});
           const rh = new PlasmicTreeRow__RenderHelper(variants, args, props.className);
           // plasmic-managed-end
 
@@ -850,6 +867,7 @@ describe("Test CodeMerger", function() {
           // be overwritten after every "plasmic sync".
           // plasmic-managed-start
 
+          const globalVariants = React.useState({});
           const rh = new PlasmicTreeRow__RenderHelper(variants, args, props.className);
           // plasmic-managed-end
 

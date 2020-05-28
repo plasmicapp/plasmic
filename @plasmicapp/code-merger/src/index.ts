@@ -40,7 +40,7 @@ import {
   memberExpressionMatch,
   makeMemberExpression
 } from "./plasmic-parser";
-import { nodesDeepEqualIgnoreComments, code } from "./utils";
+import { nodesDeepEqualIgnoreComments, code, formatted } from "./utils";
 import { first, cloneDeep } from "lodash";
 
 const getNamedAttrs = (jsxElement: JSXElement) => {
@@ -1018,7 +1018,16 @@ export const mergeFiles = async (
       return undefined;
     });
     mergePlasmicImports(mergedFile, parsedNew, parsedEdited);
-    return [componentUuid, code(mergedFile, { retainLines: true })];
+    const mergedCode = code(mergedFile, { retainLines: true });
+    // Replace the plasmic-managed code block
+    const plasmicManagedRegex = /\/\/\s*plasmic-managed-start[\s\S]*\/\/\s*plasmic-managed-end/;
+    const newFragment = component.newFile.match(plasmicManagedRegex);
+    assert(newFragment);
+    const replacedCode = mergedCode.replace(
+      plasmicManagedRegex,
+      newFragment[0]
+    );
+    return [componentUuid, formatted(replacedCode)];
   });
   return new Map<string, string>(mergedFiles);
 };
