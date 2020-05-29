@@ -714,14 +714,30 @@ export class ProjectSyncMetadataModel {
   }
 }
 
+export const makeCachedProjectSyncDataProvider = (
+  rawProvider: ProjectSyncDataProviderType
+): ProjectSyncDataProviderType => {
+  type Entry = {
+    proejctId: string;
+    revision: number;
+    model: ProjectSyncMetadataModel;
+  };
+  const cache: Array<Entry> = [];
+  return (projectId: string, revision: number) => {
+    const cached = cache.find(
+      ent => ent.proejctId === projectId && ent.revision === revision
+    );
+    if (cached) {
+      return Promise.resolve(cached.model);
+    }
+    return rawProvider(projectId, revision);
+  };
+};
+
 export type ProjectSyncDataProviderType = (
   projectId: string,
   revision: number
 ) => Promise<ProjectSyncMetadataModel>;
-
-export type ProjectSyncDataProviderClosureType = () => Promise<
-  ProjectSyncMetadataModel
->;
 
 interface PlasmicComponentSkeletonFile {
   jsx: Expression;
@@ -953,8 +969,8 @@ export type ComponentInfoForMerge = {
 
 export const mergeFiles = async (
   componentByUuid: Map<string, ComponentInfoForMerge>,
-  expectedRevision: number,
-  projectSyncDataProvider: ProjectSyncDataProviderClosureType
+  projectId: string,
+  projectSyncDataProvider: ProjectSyncDataProviderType
 ) => {
   const updateableByComponentUuid = new Map<
     string,
@@ -963,7 +979,6 @@ export const mergeFiles = async (
   componentByUuid.forEach((codeVersions, uuid) => {
     const parsedEdited = tryParseComponentSkeletonFile(codeVersions.editedFile);
     if (parsedEdited) {
-      assert(parsedEdited.revision === expectedRevision);
       updateableByComponentUuid.set(uuid, parsedEdited);
     }
   });
@@ -971,10 +986,14 @@ export const mergeFiles = async (
     // Nothing to update
     return;
   }
-  const projectSyncData = await projectSyncDataProvider();
-  const mergedFiles: [string, string][] = [
-    ...updateableByComponentUuid.entries()
-  ].map(([componentUuid, parsedEdited]) => {
+
+  const mergedFiles = new Map<string, string>();
+
+  for (const [componentUuid, parsedEdited] of updateableByComponentUuid) {
+    const projectSyncData = await projectSyncDataProvider(
+      projectId,
+      parsedEdited.revision
+    );
     const baseMetadata = ensure(
       projectSyncData.components.find(c => c.uuid === componentUuid)
     );
@@ -1027,7 +1046,7 @@ export const mergeFiles = async (
       plasmicManagedRegex,
       newFragment[0]
     );
-    return [componentUuid, formatted(replacedCode)];
-  });
-  return new Map<string, string>(mergedFiles);
+    mergedFiles.set(componentUuid, formatted(replacedCode));
+  }
+  return mergedFiles;
 };
