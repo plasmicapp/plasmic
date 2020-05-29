@@ -1,6 +1,7 @@
 import { AuthConfig } from "./utils/config-utils";
 import axios, { AxiosResponse, AxiosError } from "axios";
 import socketio from "socket.io-client";
+import { ProjectSyncMetadataModel } from "@plasmicapp/code-merger";
 
 export interface ComponentBundle {
   renderModule: string;
@@ -11,6 +12,8 @@ export interface ComponentBundle {
   cssFileName: string;
   componentName: string;
   id: string;
+  scheme: string;
+  nameInIdToUuid: Array<[string, string]>;
 }
 
 export interface GlobalVariantBundle {
@@ -58,7 +61,7 @@ export interface StyleTokensMap {
 export class PlasmicApi {
   constructor(private auth: AuthConfig) {}
 
-  async genStyleConfig(){
+  async genStyleConfig() {
     const result = await this.post(
       `${this.auth.host}/api/v1/code/style-config`
     );
@@ -68,11 +71,19 @@ export class PlasmicApi {
   async projectComponents(
     projectId: string,
     cliVersion: string,
-    reactWebVersion: string | undefined
+    reactWebVersion: string | undefined,
+    newCompScheme: "blackbox" | "direct",
+    // The list of existing components as [componentUuid, codeScheme]
+    existingCompScheme: Array<[string, "blackbox" | "direct"]>
   ) {
     const result = await this.post(
       `${this.auth.host}/api/v1/projects/${projectId}/code/components`,
-      { cliVersion, reactWebVersion: reactWebVersion || "" }
+      {
+        cliVersion,
+        reactWebVersion: reactWebVersion || "",
+        newCompScheme,
+        existingCompScheme
+      }
     );
     return result.data as ProjectBundle;
   }
@@ -82,6 +93,14 @@ export class PlasmicApi {
       `${this.auth.host}/api/v1/projects/${projectId}/code/tokens`
     );
     return result.data as StyleTokensMap;
+  }
+
+  async projectSyncMetadata(projectId: string, revision: number) {
+    const result = await this.post(
+      `${this.auth.host}/api/v1/projects/${projectId}/code/project-sync-metadata`,
+      { revision }
+    );
+    return ProjectSyncMetadataModel.fromJson(result.data);
   }
 
   connectSocket() {

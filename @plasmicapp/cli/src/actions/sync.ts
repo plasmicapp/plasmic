@@ -1,5 +1,5 @@
 import path from "path";
-import L from "lodash";
+import L, { merge } from "lodash";
 import fs, { writeFile } from "fs";
 import { CommonArgs } from "..";
 import {
@@ -15,7 +15,8 @@ import {
   fixComponentPaths,
   fixGlobalVariantFilePath,
   fixProjectFilePaths,
-  findSrcDirPath
+  findSrcDirPath,
+  readFileContent
 } from "../utils/file-utils";
 import {
   ProjectBundle,
@@ -32,12 +33,19 @@ import {
   getCliVersion,
   findInstalledVersion
 } from "../utils/npm-utils";
-import { assert } from "console";
+import {
+  ComponentInfoForMerge,
+  mergeFiles,
+  makeCachedProjectSyncDataProvider
+} from "@plasmicapp/code-merger";
+import { options } from "yargs";
 
 export interface SyncArgs extends CommonArgs {
   projects: readonly string[];
   components: readonly string[];
   onlyExisting: boolean;
+  forceOverwrite: boolean;
+  newComponentScheme?: "blackbox" | "direct";
 }
 
 function maybeMigrate(context: PlasmicContext) {
@@ -79,13 +87,25 @@ export async function syncProjects(opts: SyncArgs) {
 
   const reactWebVersion = findInstalledVersion(
     context,
-    "@plasmicapp/react-wev"
+    "@plasmicapp/react-web"
   );
 
   const results = await Promise.all(
-    projectIds.map(projectId =>
-      context.api.projectComponents(projectId, getCliVersion(), reactWebVersion)
-    )
+    projectIds.map(projectId => {
+      const existingProject = context.config.projects.find(
+        p => p.projectId === projectId
+      );
+      const existingCompConfig: Array<[string, "blackbox" | "direct"]> = (
+        existingProject?.components || []
+      ).map(c => [c.id, c.scheme]);
+      return context.api.projectComponents(
+        projectId,
+        getCliVersion(),
+        reactWebVersion,
+        opts.newComponentScheme || context.config.code.scheme,
+        existingCompConfig
+      );
+    })
   );
   if (
     results.find(project =>
@@ -94,6 +114,14 @@ export async function syncProjects(opts: SyncArgs) {
   ) {
     maybeMigrate(context);
   }
+  // Materialize scheme into each component config.
+  context.config.projects.forEach(p =>
+    p.components.forEach(c => {
+      if (!c.scheme) {
+        c.scheme = context.config.code.scheme;
+      }
+    })
+  );
 
   const baseNameToFiles = buildBaseNameToFiles(context);
 
@@ -128,11 +156,12 @@ export async function syncProjects(opts: SyncArgs) {
     const componentBundles = projectBundle.components.filter(bundle =>
       shouldSyncComponents(bundle.id, bundle.componentName)
     );
-    syncProjectConfig(
+    await syncProjectConfig(
       context,
       projectBundle.projectConfig,
       componentBundles,
-      baseNameToFiles
+      baseNameToFiles,
+      opts.forceOverwrite
     );
     upsertStyleTokens(context, projectBundle.usedTokens, baseNameToFiles);
   }
@@ -151,11 +180,12 @@ export async function syncProjects(opts: SyncArgs) {
   await warnLatestReactWeb(context);
 }
 
-function syncProjectComponents(
+async function syncProjectComponents(
   context: PlasmicContext,
   project: CliProjectConfig,
   componentBundles: ComponentBundle[],
-  baseNameToFiles: Record<string, string[]>
+  baseNameToFiles: Record<string, string[]>,
+  forceOverwrite: boolean
 ) {
   const allCompConfigs = L.keyBy(project.components, c => c.id);
   for (const bundle of componentBundles) {
@@ -167,7 +197,9 @@ function syncProjectComponents(
       skeletonModuleFileName,
       cssFileName,
       componentName,
-      id
+      id,
+      scheme,
+      nameInIdToUuid
     } = bundle;
     console.log(
       `Syncing component ${componentName} [${project.projectId}/${id}]`
@@ -186,7 +218,8 @@ function syncProjectComponents(
           renderModuleFileName
         ),
         importSpec: { modulePath: skeletonModuleFileName },
-        cssFilePath: path.join(context.config.defaultPlasmicDir, cssFileName)
+        cssFilePath: path.join(context.config.defaultPlasmicDir, cssFileName),
+        scheme: scheme as "blackbox" | "direct"
       };
       allCompConfigs[id] = compConfig;
       project.components.push(allCompConfigs[id]);
@@ -199,6 +232,68 @@ function syncProjectComponents(
       // This is an existing component. We first make sure the files are all in the expected
       // places, and then overwrite them with the new content
       fixComponentPaths(context.absoluteSrcDir, compConfig, baseNameToFiles);
+      const editedFile = readFileContent(
+        context,
+        compConfig.importSpec.modulePath
+      );
+      if (scheme === "direct") {
+        // merge code!
+        const componentByUuid = new Map<string, ComponentInfoForMerge>();
+
+        componentByUuid.set(compConfig.id, {
+          editedFile,
+          newFile: skeletonModule,
+          newNameInIdToUuid: new Map(nameInIdToUuid)
+        });
+        const mergedFiles = await mergeFiles(
+          componentByUuid,
+          project.projectId,
+          makeCachedProjectSyncDataProvider((projectId, revision) =>
+            context.api.projectSyncMetadata(projectId, revision)
+          )
+        );
+        const merged = mergedFiles?.get(compConfig.id);
+        if (merged) {
+          writeFileContent(context, compConfig.importSpec.modulePath, merged, {
+            force: true
+          });
+        } else {
+          if (!forceOverwrite) {
+            console.error(
+              `Cannot merge ${compConfig.importSpec.modulePath}. If you just switched the code scheme for the component from blackbox to direct, use --force-overwrite option to force the switch.`
+            );
+            process.exit(1);
+          } else {
+            console.log(
+              `Overwrite ${compConfig.importSpec.modulePath} despite merge failure`,
+              skeletonModule
+            );
+            writeFileContent(
+              context,
+              compConfig.importSpec.modulePath,
+              skeletonModule,
+              {
+                force: true
+              }
+            );
+          }
+        }
+      } else if (/\/\/\s*plasmic-managed-jsx\/\d+/.test(editedFile)) {
+        if (forceOverwrite) {
+          writeFileContent(
+            context,
+            compConfig.importSpec.modulePath,
+            skeletonModule,
+            {
+              force: true
+            }
+          );
+        } else {
+          console.warn(
+            `file ${compConfig.importSpec.modulePath} is likely in direct-edit scheme. If you intend to switch the code scheme from direct to blackbox, use --force-overwrite option to force the switch.`
+          );
+        }
+      }
     }
     writeFileContent(context, compConfig.renderModuleFilePath, renderModule, {
       force: !isNew
@@ -280,11 +375,12 @@ function syncGlobalVariants(
   }
 }
 
-function syncProjectConfig(
+async function syncProjectConfig(
   context: PlasmicContext,
   pc: ApiProjectConfig,
   componentBundles: ComponentBundle[],
-  baseNameToFiles: Record<string, string[]>
+  baseNameToFiles: Record<string, string[]>,
+  forceOverwrite: boolean
 ) {
   let cliProject = context.config.projects.find(
     c => c.projectId === pc.projectId
@@ -313,5 +409,11 @@ function syncProjectConfig(
   writeFileContent(context, cliProject.cssFilePath, pc.cssRules, {
     force: !isNew
   });
-  syncProjectComponents(context, cliProject, componentBundles, baseNameToFiles);
+  await syncProjectComponents(
+    context,
+    cliProject,
+    componentBundles,
+    baseNameToFiles,
+    forceOverwrite
+  );
 }

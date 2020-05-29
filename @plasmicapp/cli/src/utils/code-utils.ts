@@ -98,7 +98,7 @@ export function replaceImports(
         variantConfig.contextFilePath,
         true
       );
-      return `import ${variantConfig.name}Context from "${realPath}"; // plasmic-import: ${uuid}/globalVariant`;
+      return `import ${spec} from "${realPath}"; // plasmic-import: ${uuid}/globalVariant`;
     } else if (type === "projectcss") {
       const projectConfig = projectConfigsMap[uuid];
       const realPath = makeImportPath(

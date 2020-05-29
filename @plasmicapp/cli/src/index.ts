@@ -128,6 +128,18 @@ function configureSyncArgs(yags: yargs.Argv) {
       describe:
         "If no --components are explicitly specified, then only syncs components that had been synced before.",
       default: false
+    })
+    .option("force-overwrite", {
+      type: "boolean",
+      describe:
+        "Overwrite the skeleton file with newly generated version. Useful when switching between codegen schemes.",
+      default: false
+    })
+    .option("new-component-scheme", {
+      type: "string",
+      choices: ["blackbox", "direct"],
+      describe:
+        "Sync the new components using this code scheme rather than the default code scheme."
     });
 }
 

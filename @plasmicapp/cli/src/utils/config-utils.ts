@@ -40,8 +40,8 @@ export interface CodeConfig {
   // Language to generate code in
   lang: "ts";
 
-  // Code generation scheme
-  scheme: "blackbox";
+  // The default code generation scheme. Each component can override the scheme.
+  scheme: "blackbox" | "direct";
 }
 
 export interface StyleConfig {
@@ -95,6 +95,8 @@ export interface ComponentConfig {
 
   // How to import this Component
   importSpec: ImportSpec;
+
+  scheme: "blackbox" | "direct";
 }
 
 export interface GlobalVariantsConfig {

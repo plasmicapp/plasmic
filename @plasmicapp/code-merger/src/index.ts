@@ -718,19 +718,21 @@ export const makeCachedProjectSyncDataProvider = (
   rawProvider: ProjectSyncDataProviderType
 ): ProjectSyncDataProviderType => {
   type Entry = {
-    proejctId: string;
+    projectId: string;
     revision: number;
     model: ProjectSyncMetadataModel;
   };
   const cache: Array<Entry> = [];
-  return (projectId: string, revision: number) => {
+  return async (projectId: string, revision: number) => {
     const cached = cache.find(
-      ent => ent.proejctId === projectId && ent.revision === revision
+      ent => ent.projectId === projectId && ent.revision === revision
     );
     if (cached) {
-      return Promise.resolve(cached.model);
+      return cached.model;
     }
-    return rawProvider(projectId, revision);
+    const model = await rawProvider(projectId, revision);
+    cache.push({ projectId, revision, model });
+    return model;
   };
 };
 
@@ -984,7 +986,7 @@ export const mergeFiles = async (
   });
   if (updateableByComponentUuid.size === 0) {
     // Nothing to update
-    return;
+    return undefined;
   }
 
   const mergedFiles = new Map<string, string>();
