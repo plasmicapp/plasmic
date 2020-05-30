@@ -211,7 +211,7 @@ function mergeProps(
 
 function mergePropVals(name: string, val1: any, val2: any): any {
   if (val1 == null && val2 == null) {
-    return null;
+    return val2;
   } else if (val1 == null && val2 != null) {
     return val2;
   } else if (val1 != null && val2 == null) {
