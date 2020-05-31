@@ -344,10 +344,10 @@ const findMatch = (
         }
       }
     }
-  } else if (n.type === "cond-str-call") {
+  } else if (n.type === "child-str-call") {
     for (let i = start; i < nodes.length; i++) {
       const ni = nodes[i];
-      if (ni.type === "cond-str-call") {
+      if (ni.type === "child-str-call") {
         return { type: "perfect", index: i };
       }
       if (matchingTypeAt === -1) {
@@ -637,7 +637,7 @@ const serializeNonOpaquePlasmicASTNode = (
     return cloneDeepWithHook(newNode.rawNode, (n: Node) =>
       nodesToMerged.get(n)
     );
-  } else if (newNode.type === "cond-str-call") {
+  } else if (newNode.type === "child-str-call") {
     // Just output the new version
     return newNode.rawNode;
   } else if (newNode.type === "string-lit") {

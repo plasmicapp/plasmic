@@ -171,9 +171,9 @@ const parseJSXExpressionOrContainer = (
   }
   if (expr.type === "CallExpression") {
     const callee = getSource(expr.callee, input);
-    const m = callee?.match(/^rh\.condStr(.+)$/);
+    const m = callee?.match(/^rh\.childStr(.+)$/);
     if (m) {
-      return { type: "cond-str-call", plasmicId: ensure(m[1]), rawNode: n };
+      return { type: "child-str-call", plasmicId: ensure(m[1]), rawNode: n };
     }
   }
   // Parsing default nodes of slot is complicated since there is no clear

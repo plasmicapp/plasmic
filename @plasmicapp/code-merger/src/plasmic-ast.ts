@@ -13,7 +13,7 @@ import {
   MemberExpression,
   JSXSpreadChild,
   JSXFragment,
-  JSXExpressionContainer,
+  JSXExpressionContainer
 } from "@babel/types";
 import * as babel from "@babel/core";
 import * as L from "lodash";
@@ -40,8 +40,8 @@ export interface PlasmicArgRef extends PlasmicNodeBase {
   rawNode: Expression | JSXExpressionContainer;
 }
 
-export interface PlasmicCondStringCall extends PlasmicNodeBase {
-  type: "cond-str-call";
+export interface PlasmicChildStringCall extends PlasmicNodeBase {
+  type: "child-str-call";
   plasmicId: string;
   rawNode: Expression | JSXExpressionContainer;
 }
@@ -64,7 +64,7 @@ export interface PlasmicJsxText extends PlasmicNodeBase {
 export interface PlasmicJsxElement extends PlasmicNodeBase {
   nameInId: string;
   // A list of JSX attribute or JSX spread operator
-  attrs: Array<[string, PlasmicASTNode|null] | string>;
+  attrs: Array<[string, PlasmicASTNode | null] | string>;
   children: Array<PlasmicASTNode>;
   rawNode: JSXElement;
 }
@@ -84,7 +84,7 @@ export type PlasmicASTNode =
   | PlasmicArgRef
   | PlasmicStringLiteralExpr
   | PlasmicJsxText
-  | PlasmicCondStringCall;
+  | PlasmicChildStringCall;
 
 export const makeCallExpression = (
   objectName: string,

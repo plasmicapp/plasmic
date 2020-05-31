@@ -513,6 +513,7 @@ describe("Test CodeMerger", function() {
                 }}
                 onClick={handleClick}>
                   Hello World
+                  <div className={rh.clsHint()}>{rh.childStrHint()}</div>
                 </div>;
       }`,
       newFile: `
@@ -526,16 +527,23 @@ describe("Test CodeMerger", function() {
           onMouseEnter={ rh.onNewRootMouseEnter}
           onMouseLeave={rh.onNewRootMouseLeave}
           onMouseDown={rh.onNewRootMouseDown}>
+          <div className={rh.clsHint()}>{rh.childStrHint()}</div>
         </div>;
       }`,
       // map for newCode
-      newNameInIdToUuid: new Map([["NewRoot", "Root"]])
+      newNameInIdToUuid: new Map([
+        ["NewRoot", "Root"],
+        ["Hint", "Hint"]
+      ])
     });
 
     const baseInfo = new ProjectSyncMetadataModel([
       new ComponentSkeletonModel(
         "comp1",
-        new Map([["Root", "Root"]]),
+        new Map([
+          ["Root", "Root"],
+          ["Hint", "Hint"]
+        ]),
         `function Comp1() {
            // plasmic-managed-start
            const rh = new PlasmicTreeRow__RenderHelper(variants, args, props.className);
@@ -546,12 +554,13 @@ describe("Test CodeMerger", function() {
                    onMouseEnter={ rh.onRootMouseEnter }
                    onMouseLeave={rh.onRootMouseLeave}
                    onMouseDown={rh.onRootMouseDown}>
+                   <div className={rh.clsHint()}>{rh.childStrHint()}</div>
                  </div>;
           }`
       )
     ]);
 
-    const merged = await mergeFiles(componentByUuid, 2, () =>
+    const merged = await mergeFiles(componentByUuid, "pid", () =>
       Promise.resolve(baseInfo)
     );
     expect(merged?.size).toEqual(1);
@@ -573,6 +582,7 @@ describe("Test CodeMerger", function() {
             }}
             onClick={handleClick}>
             Hello World
+            <div className={rh.clsHint()}>{rh.childStrHint()}</div>
            </div>;
       }`)
     );
@@ -822,7 +832,7 @@ describe("Test CodeMerger", function() {
     ]);
 
     debugger;
-    const merged = await mergeFiles(componentByUuid, 66, () =>
+    const merged = await mergeFiles(componentByUuid, "pid", () =>
       Promise.resolve(baseInfo)
     );
     expect(merged?.size).toEqual(1);
