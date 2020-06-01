@@ -497,7 +497,24 @@ describe("Test CodeMerger", function() {
     componentByUuid.set("comp1", {
       // edited version of the code, i.e. the entire file.
       editedFile: `
-      import React from "react";
+      import React, { ReactNode } from "react";
+      import { hasVariant, DefaultFlexStack, FlexStack } from "@plasmicapp/react-web";
+
+      import {
+        PlasmicCodeSandboxDialogContent__RenderHelper,
+        PlasmicCodeSandboxDialogContent__VariantsArgs,
+        PlasmicCodeSandboxDialogContent__VariantsType,
+        PlasmicCodeSandboxDialogContent__TriggerStateType
+      } from "./PP__CodeSandboxDialogContent"; // plasmic-import: f68b061e-0f85-41c1-8707-3ba9f634f1af/render
+      import Button from "../Button"; // plasmic-import: 4SYnkOQLd5/component
+      import { PlasmicButton__VariantsArgs } from "../../../plasmic/PlasmicButton"; // plasmic-import: 4SYnkOQLd5/renderer
+      import Dropdown from "./Dropdown"; // plasmic-import: a200b79f-288d-4306-be99-e5fd221b8ba6/component
+      import { PlasmicDropdown__VariantsArgs } from "./PP__Dropdown"; // plasmic-import: a200b79f-288d-4306-be99-e5fd221b8ba6/renderer
+      import DropdownItem from "./DropdownItem"; // plasmic-import: f4c2f0bb-8dce-49c7-a106-65abe9e70e51/component
+      import { PlasmicDropdownItem__VariantsArgs } from "./PP__DropdownItem"; // plasmic-import: f4c2f0bb-8dce-49c7-a106-65abe9e70e51/renderer
+      import IconButton from "../../IconButton"; // plasmic-import: cfe92-5RW/component
+      import { PlasmicIconButton__VariantsArgs } from "../../../plasmic/PlasmicIconButton"; // plasmic-import: cfe92-5RW/renderer
+
       function Comp1() {
         // plasmic-managed-start
         const rh = new PlasmicTreeRow__RenderHelper(variants, args, props.className);
@@ -517,6 +534,23 @@ describe("Test CodeMerger", function() {
                 </div>;
       }`,
       newFile: `
+      import { hasVariant, DefaultFlexStack, FlexStack } from "@plasmicapp/react-web";
+
+      import {
+        PlasmicCodeSandboxDialogContent__RenderHelper,
+        PlasmicCodeSandboxDialogContent__VariantsArgs,
+        PlasmicCodeSandboxDialogContent__VariantsType,
+        PlasmicCodeSandboxDialogContent__TriggerStateType
+      } from "./PP__CodeSandboxDialogContent"; // plasmic-import: f68b061e-0f85-41c1-8707-3ba9f634f1af/render
+      import Button from "../Button"; // plasmic-import: 4SYnkOQLd5/component
+      import { PlasmicButton__VariantsArgs } from "../../../plasmic/PlasmicButton"; // plasmic-import: 4SYnkOQLd5/renderer
+      import Dropdown from "./Dropdown"; // plasmic-import: a200b79f-288d-4306-be99-e5fd221b8ba6/component
+      import { PlasmicDropdown__VariantsArgs } from "./PP__Dropdown"; // plasmic-import: a200b79f-288d-4306-be99-e5fd221b8ba6/renderer
+      import DropdownItem from "./DropdownItem"; // plasmic-import: f4c2f0bb-8dce-49c7-a106-65abe9e70e51/component
+      import { PlasmicDropdownItem__VariantsArgs } from "./PP__DropdownItem"; // plasmic-import: f4c2f0bb-8dce-49c7-a106-65abe9e70e51/renderer
+      import IconButton from "../../IconButton"; // plasmic-import: cfe92-5RW/component
+      import { PlasmicIconButton__VariantsArgs } from "../../../plasmic/PlasmicIconButton"; // plasmic-import: cfe92-5RW/renderer
+
       function Comp1() {
         // plasmic-managed-start
         const rh = new PlasmicTreeRow__RenderHelper(variants, args, props.className);
@@ -544,7 +578,25 @@ describe("Test CodeMerger", function() {
           ["Root", "Root"],
           ["Hint", "Hint"]
         ]),
-        `function Comp1() {
+        `
+        import { hasVariant, DefaultFlexStack, FlexStack } from "@plasmicapp/react-web";
+
+        import {
+          PlasmicCodeSandboxDialogContent__RenderHelper,
+          PlasmicCodeSandboxDialogContent__VariantsArgs,
+          PlasmicCodeSandboxDialogContent__VariantsType,
+          PlasmicCodeSandboxDialogContent__TriggerStateType
+        } from "./PP__CodeSandboxDialogContent"; // plasmic-import: f68b061e-0f85-41c1-8707-3ba9f634f1af/render
+        import Button from "../Button"; // plasmic-import: 4SYnkOQLd5/component
+        import { PlasmicButton__VariantsArgs } from "../../../plasmic/PlasmicButton"; // plasmic-import: 4SYnkOQLd5/renderer
+        import Dropdown from "./Dropdown"; // plasmic-import: a200b79f-288d-4306-be99-e5fd221b8ba6/component
+        import { PlasmicDropdown__VariantsArgs } from "./PP__Dropdown"; // plasmic-import: a200b79f-288d-4306-be99-e5fd221b8ba6/renderer
+        import DropdownItem from "./DropdownItem"; // plasmic-import: f4c2f0bb-8dce-49c7-a106-65abe9e70e51/component
+        import { PlasmicDropdownItem__VariantsArgs } from "./PP__DropdownItem"; // plasmic-import: f4c2f0bb-8dce-49c7-a106-65abe9e70e51/renderer
+        import IconButton from "../../IconButton"; // plasmic-import: cfe92-5RW/component
+        import { PlasmicIconButton__VariantsArgs } from "../../../plasmic/PlasmicIconButton"; // plasmic-import: cfe92-5RW/renderer
+
+        function Comp1() {
            // plasmic-managed-start
            const rh = new PlasmicTreeRow__RenderHelper(variants, args, props.className);
            // plasmic-managed-end
@@ -564,9 +616,27 @@ describe("Test CodeMerger", function() {
       Promise.resolve(baseInfo)
     );
     expect(merged?.size).toEqual(1);
+    debugger;
     expect(merged?.get("comp1")).toEqual(
       formatted(`
-      import React from "react";
+      import React, {ReactNode} from "react";
+      import { hasVariant, DefaultFlexStack, FlexStack } from "@plasmicapp/react-web";
+
+      import {
+        PlasmicCodeSandboxDialogContent__RenderHelper,
+        PlasmicCodeSandboxDialogContent__VariantsArgs,
+        PlasmicCodeSandboxDialogContent__VariantsType,
+        PlasmicCodeSandboxDialogContent__TriggerStateType
+      } from "./PP__CodeSandboxDialogContent"; // plasmic-import: f68b061e-0f85-41c1-8707-3ba9f634f1af/render
+      import Button from "../Button"; // plasmic-import: 4SYnkOQLd5/component
+      import { PlasmicButton__VariantsArgs } from "../../../plasmic/PlasmicButton"; // plasmic-import: 4SYnkOQLd5/renderer
+      import Dropdown from "./Dropdown"; // plasmic-import: a200b79f-288d-4306-be99-e5fd221b8ba6/component
+      import { PlasmicDropdown__VariantsArgs } from "./PP__Dropdown"; // plasmic-import: a200b79f-288d-4306-be99-e5fd221b8ba6/renderer
+      import DropdownItem from "./DropdownItem"; // plasmic-import: f4c2f0bb-8dce-49c7-a106-65abe9e70e51/component
+      import { PlasmicDropdownItem__VariantsArgs } from "./PP__DropdownItem"; // plasmic-import: f4c2f0bb-8dce-49c7-a106-65abe9e70e51/renderer
+      import IconButton from "../../IconButton"; // plasmic-import: cfe92-5RW/component
+      import { PlasmicIconButton__VariantsArgs } from "../../../plasmic/PlasmicIconButton"; // plasmic-import: cfe92-5RW/renderer
+
       function Comp1() {
         // plasmic-managed-start
         const rh = new PlasmicTreeRow__RenderHelper(variants, args, props.className);
@@ -831,7 +901,6 @@ describe("Test CodeMerger", function() {
       )
     ]);
 
-    debugger;
     const merged = await mergeFiles(componentByUuid, "pid", () =>
       Promise.resolve(baseInfo)
     );
@@ -840,8 +909,6 @@ describe("Test CodeMerger", function() {
       formatted(`
         // This is a skeleton starter React component generated by Plasmic.
         import React, { ReactNode } from "react";
-
-        import {PersonalAccessToken} from "../gen/PersonalAccessToken"; // plasmic-import: UuidOfPersonalAccessToken/render
         import PlasmicTreeRow, {
           PlasmicTreeRow__RenderHelper,
           PlasmicTreeRow__VariantsArgs,
@@ -849,7 +916,9 @@ describe("Test CodeMerger", function() {
           PlasmicTreeRow__TriggerStateType as TriggerStateType,
           PlasmicTreeRow__TriggerStateType
         } from "../gen/PlasmicTreeRow"; // plasmic-import: rxCVTHM-KfP/render
+        import {PersonalAccessToken} from "../gen/PersonalAccessToken"; // plasmic-import: UuidOfPersonalAccessToken/render
         import { hasVariant, DefaultFlexStack, FlexStack } from "@plasmicapp/react-web";
+
         interface TreeRowProps {
           label?: ReactNode;
           type?: ReactNode;

@@ -906,32 +906,28 @@ const mergePlasmicImports = (
     }
     return true;
   });
-  // TODO: perform the merge!
-  const mergedImports: Array<ImportDeclaration> = [];
-  // edited imports are ordered first
-  const allImports = [...editedImports, ...newImports];
-  allImports.sort(compareImports);
   // Remove leadingComments - babel parser assign each comment to two nodes.
   // One as a trailing comment of the node before the comment, and one as a
   // leading comment of the node after the comment. We remove the
   // leadingComments so that we don't generate the comments twice (one from
   // editedImports, and one from newImports).
-  allImports.forEach(importDecl => (importDecl.node.leadingComments = null));
-  let i = 0;
-  while (i < allImports.length) {
-    if (
-      i + 1 < allImports.length &&
-      compareImports(allImports[i], allImports[i + 1]) === 0
-    ) {
-      mergedImports.push(
-        mergeImports(allImports[i].node, allImports[i + 1].node)
-      );
-      i++;
+  [...editedImports, ...newImports].forEach(
+    importDecl => (importDecl.node.leadingComments = null)
+  );
+  const mergedImports: Array<ImportDeclaration> = [];
+  for (const editedImport of editedImports) {
+    const newImportAt = newImports.findIndex(
+      newImport => compareImports(editedImport, newImport) === 0
+    );
+    if (newImportAt !== -1) {
+      const newImport = newImports[newImportAt];
+      newImports.splice(newImportAt, 1);
+      mergedImports.push(mergeImports(editedImport.node, newImport.node));
     } else {
-      mergedImports.push(allImports[i].node);
+      mergedImports.push(editedImport.node);
     }
-    i++;
   }
+  mergedImports.push(...newImports.map(x => x.node));
   const insertMergedImportsAt =
     firstPlasmicImport > -1
       ? firstPlasmicImport
