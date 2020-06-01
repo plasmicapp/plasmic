@@ -1036,15 +1036,7 @@ export const mergeFiles = async (
     });
     mergePlasmicImports(mergedFile, parsedNew, parsedEdited);
     const mergedCode = code(mergedFile, { retainLines: true });
-    // Replace the plasmic-managed code block
-    const plasmicManagedRegex = /\/\/\s*plasmic-managed-start[\s\S]*\/\/\s*plasmic-managed-end/;
-    const newFragment = component.newFile.match(plasmicManagedRegex);
-    assert(newFragment);
-    const replacedCode = mergedCode.replace(
-      plasmicManagedRegex,
-      newFragment[0]
-    );
-    mergedFiles.set(componentUuid, formatted(replacedCode));
+    mergedFiles.set(componentUuid, formatted(mergedCode));
   }
   return mergedFiles;
 };

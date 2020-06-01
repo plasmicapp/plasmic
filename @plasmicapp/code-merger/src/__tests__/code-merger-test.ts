@@ -776,13 +776,8 @@ describe("Test CodeMerger", function() {
             display: props.display,
             more: props.more
           };
-
-          // The following code block is fully managed by Plasmic. Don't edit - it will
-          // be overwritten after every "plasmic sync".
-          // plasmic-managed-start
-
+          const myVar = 1;
           const rh = new PlasmicTreeRow__RenderHelper(variants, args, props.className);
-          // plasmic-managed-end
 
           // plasmic-managed-jsx/66
           return (
@@ -848,13 +843,7 @@ describe("Test CodeMerger", function() {
             more: props.more
           };
 
-          // The following code block is fully managed by Plasmic. Don't edit - it will
-          // be overwritten after every "plasmic sync".
-          // plasmic-managed-start
-
-          const globalVariants = React.useState({});
           const rh = new PlasmicTreeRow__RenderHelper(variants, args, props.className);
-          // plasmic-managed-end
 
           // plasmic-managed-jsx/66
           return (
@@ -926,13 +915,7 @@ describe("Test CodeMerger", function() {
             display: props.display,
             more: props.more
           };
-
-          // The following code block is fully managed by Plasmic. Don't edit - it will
-          // be overwritten after every "plasmic sync".
-          // plasmic-managed-start
-
           const rh = new PlasmicTreeRow__RenderHelper(variants, args, props.className);
-          // plasmic-managed-end
 
           // plasmic-managed-jsx/66
           return (
@@ -1006,13 +989,8 @@ describe("Test CodeMerger", function() {
             more: props.more
           };
 
-          // The following code block is fully managed by Plasmic. Don't edit - it will
-          // be overwritten after every "plasmic sync".
-          // plasmic-managed-start
-
-          const globalVariants = React.useState({});
+          const myVar = 1;
           const rh = new PlasmicTreeRow__RenderHelper(variants, args, props.className);
-          // plasmic-managed-end
 
           // plasmic-managed-jsx/66
           return (
