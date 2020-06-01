@@ -102,6 +102,70 @@ describe("Test CodeMerger", function() {
     );
   });
 
+  it(`className changed`, function() {
+    const nameInIdToUuid = new Map([["Root", "Root"]]);
+    const base = new CodeVersion(
+      "<div className={rh.clsRoot()} />",
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      "<div className={rh.clsRoot()} />",
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      "<div className={rh.clsNewRoot()}/>",
+      new Map([["NewRoot", "Root"]])
+    );
+    expect(
+      code(serializePlasmicASTNode(newV.root, newV, edited, base))
+    ).toEqual(formatted(`<div className={rh.clsNewRoot()} />`));
+  });
+
+  it(`className appended`, function() {
+    const nameInIdToUuid = new Map([["Root", "Root"]]);
+    const base = new CodeVersion(
+      "<div className={rh.clsRoot()} />",
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      "<div className={rh.clsRoot() + ' myClass'} />",
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      "<div className={rh.clsNewRoot()}/>",
+      new Map([["NewRoot", "Root"]])
+    );
+    debugger;
+    expect(
+      code(serializePlasmicASTNode(newV.root, newV, edited, base))
+    ).toEqual(
+      //formatted(`<div className={rh.clsNewRoot() + ' myClass'} />`)
+      formatted(`<div className={rh.clsRoot() + ' myClass'} />`)
+    );
+  });
+
+  it(`className appended, but then upgraded`, function() {
+    const nameInIdToUuid = new Map([["Root", "Root"]]);
+    const base = new CodeVersion(
+      "<div className={rh.clsRoot()} />",
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      "<div className={rh.clsRoot() + ' myClass'} />",
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      "<div {...rh.propsNewRoot()}/>",
+      new Map([["NewRoot", "Root"]])
+    );
+    expect(
+      code(serializePlasmicASTNode(newV.root, newV, edited, base))
+    ).toEqual(
+      //formatted(`<div className={rh.clsNewRoot() + ' myClass'} {...rh.propsRoot()}/>`)
+      formatted(`<div />`)
+    );
+  });
+
   it("add show func; remove show func", function() {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
@@ -521,7 +585,7 @@ describe("Test CodeMerger", function() {
         // plasmic-managed-end
 
         // plasmic-managed-jsx/2
-        return <div className={rh.clsRoot() }
+        return <div className={rh.clsRoot()}
                 onMouseEnter={
                    rh.onRootMouseEnter}
                 onMouseLeave={() => {
