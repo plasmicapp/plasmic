@@ -38,7 +38,8 @@ import {
   isInHtmlContext,
   calleeMatch,
   memberExpressionMatch,
-  makeMemberExpression
+  makeMemberExpression,
+  getSource
 } from "./plasmic-parser";
 import { nodesDeepEqualIgnoreComments, code, formatted } from "./utils";
 import { first, cloneDeep } from "lodash";
@@ -78,11 +79,11 @@ const mergeAttributes = (
   const editedNodeId = editedNode.jsxElement.nameInId;
   const newNodeId = newNode.jsxElement.nameInId;
 
-  const newNodeHasClassNameAttr = newVersion.hasClassNameIdAttr(newNode);
-  const newNodeHasPropsWithIdSpreador = newVersion.hasPropsIdSpreador(newNode);
-  // Only one of newNodeHasClassNameAttr and newNodeHasPropsWithIdSpreador is
-  // true
-  assert(newNodeHasPropsWithIdSpreador !== newNodeHasClassNameAttr);
+  const newNodePropsWithIdSpreador = newVersion.tryGetPropsIdSpreador(newNode);
+  const editedHasPropsWithIdSpreador = editedVersion.hasPropsIdSpreador(
+    editedNode
+  );
+
   const newNamedAttrs = getNamedAttrs(newNode.jsxElement.rawNode);
   const editedNamedAttrs = getNamedAttrs(editedNode.jsxElement.rawNode);
   const baseNamedAttrs = getNamedAttrs(baseNode.jsxElement.rawNode);
@@ -127,7 +128,8 @@ const mergeAttributes = (
     const newAttrs: Array<JSXAttribute> = [];
     newNamedAttrs.forEach((attr, name) => {
       if (name === "className") {
-        // skip the id attribute
+        // skip the className attribute - we will use the edited version, but
+        // just upgrade the id there.
         return;
       }
       const editedAttr = editedNamedAttrs.get(name);
@@ -216,7 +218,7 @@ const mergeAttributes = (
         calleeMatch(arg.callee, helperObject, `props${editedNodeId}`)
       ) {
         assert(arg.callee.type === "MemberExpression");
-        if (newNodeHasPropsWithIdSpreador) {
+        if (newNodePropsWithIdSpreador) {
           // Keep the id as props but using new node id.
           mergedAttrs.push(
             cloneDeepWithHook(attrInEditedNode, n => {
@@ -229,19 +231,10 @@ const mergeAttributes = (
             })
           );
         } else {
-          const newAttr = babel.types.jsxAttribute(
-            babel.types.jsxIdentifier("className"),
-            babel.types.jsxExpressionContainer(
-              makeCallExpression(helperObject, `cls${newNodeId}`)
-            )
-          );
-          if (arg.arguments.length === 0) {
-            // Downgrade to "className={rh.clsXXX()}".
-            mergedAttrs.push(newAttr);
-          } else {
-            // insert "className={rh.clsXXX()}" - the old "rh.propsXXX" call
-            // should lead to compilation failrue for developer to fix.
-            mergedAttrs.push(newAttr, attrInEditedNode);
+          if (arg.arguments.length !== 0) {
+            // Keep the old "rh.propsXXX(...)" call, which should lead to
+            // compilation failrue for developer to fix.
+            mergedAttrs.push(attrInEditedNode);
           }
         }
       } else {
@@ -253,38 +246,50 @@ const mergeAttributes = (
       attrInEditedNode.name.type === "JSXIdentifier"
         ? attrInEditedNode.name.name
         : attrInEditedNode.name.name.name;
-    if (
-      attrName === "className" &&
-      attrInEditedNode.value?.type === "JSXExpressionContainer"
-    ) {
-      const expr = attrInEditedNode.value.expression;
-      if (
-        expr.type === "CallExpression" &&
-        calleeMatch(expr.callee, helperObject, `cls${editedNodeId}`)
-      ) {
-        assert(expr.callee.type === "MemberExpression");
-        if (newNodeHasPropsWithIdSpreador) {
-          // Upgrade to {...propsXXX()}.
-          const newAttr = babel.types.jsxSpreadAttribute(
-            makeCallExpression(helperObject, `props${newNodeId}`)
-          );
-          mergedAttrs.push(newAttr);
-        } else {
-          // Keep it as className, but using the new id.
-          const newAttr = babel.types.jsxAttribute(
-            babel.types.jsxIdentifier("className"),
-            babel.types.jsxExpressionContainer(
-              makeCallExpression(helperObject, `cls${newNodeId}`)
-            )
-          );
-          mergedAttrs.push(newAttr);
+    if (attrName === "className") {
+      let found = false;
+      // Keep it as className, but using the new id.
+      const newAttr = cloneDeepWithHook(attrInEditedNode, n => {
+        if (
+          n.type === "CallExpression" &&
+          calleeMatch(n.callee, helperObject, `cls${editedNodeId}`)
+        ) {
+          found = true;
+          return makeCallExpression(helperObject, `cls${newNodeId}`);
         }
-        continue;
+        return undefined;
+      });
+      // className must contain rh.cls<editedNodeId> in edited file.
+      if (found) {
+        const attrSource = getSource(attrInEditedNode, editedVersion.input);
+        console.warn(
+          `className was edited in a non backwards compatible way - ${attrSource} doesn't contain ${editedNodeId}`
+        );
       }
+      mergedAttrs.push(newAttr);
+
+      continue;
     }
     const toEmit = emitAttrInEditedNode(attrName, attrInEditedNode);
     if (toEmit) {
       mergedAttrs.push(toEmit);
+    }
+  }
+
+  const classNameAt = mergedAttrs.findIndex(
+    attr => attr.type === "JSXAttribute" && attr.name.name === "className"
+  );
+  if (newNodePropsWithIdSpreador && !editedHasPropsWithIdSpreador) {
+    // insert the new spreador right after className, always
+    const insertSpreadorAt = classNameAt === -1 ? 0 : classNameAt + 1;
+    mergedAttrs.splice(insertSpreadorAt, 0, newNodePropsWithIdSpreador);
+  }
+  // insert className if missing in edited version, mostly to support old
+  // code.
+  if (classNameAt === -1) {
+    const newClassNameAttr = newNamedAttrs.get("className");
+    if (newClassNameAttr) {
+      mergedAttrs.splice(0, 0, newClassNameAttr);
     }
   }
   return mergedAttrs;

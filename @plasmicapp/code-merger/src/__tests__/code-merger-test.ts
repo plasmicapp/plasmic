@@ -81,21 +81,21 @@ describe("Test CodeMerger", function() {
       ["MyButton", "MyButton"]
     ]);
     const base = new CodeVersion(
-      "<div className={rh.clsRoot()}><a {...rh.propsMyLink()}>Google</a><button {...rh.propsMyButton()}/></div>",
+      "<div className={rh.clsRoot()}><a className={rh.clsMyLink()} {...rh.propsMyLink()}>Google</a><button className={rh.clsMyButton()} {...rh.propsMyButton()}/></div>",
       nameInIdToUuid
     );
     const edited = new CodeVersion(
-      "<div className={rh.clsRoot()} width={1}><a {...rh.propsMyLink()}>Google</a><button {...rh.propsMyButton(modifier)}/></div>",
+      "<div className={rh.clsRoot()} width={1}><a className={rh.clsMyLink()} {...rh.propsMyLink()}>Google</a><button className={rh.clsMyButton()} {...rh.propsMyButton(modifier)}/></div>",
       nameInIdToUuid
     );
     const newV = new CodeVersion(
-      "<div {...rh.propsRoot()}><a className={rh.clsMyLink()}>Google</a><button className={rh.clsMyButton()}/></div>",
+      "<div className={rh.clsRoot()} {...rh.propsRoot()}><a className={rh.clsMyLink()}>Google</a><button className={rh.clsMyButton()}/></div>",
       nameInIdToUuid
     );
     expect(
       code(serializePlasmicASTNode(newV.root, newV, edited, base))
     ).toEqual(
-      formatted(`<div {...rh.propsRoot()} width={1}>
+      formatted(`<div className={rh.clsRoot()} {...rh.propsRoot()} width={1}>
          <a className={rh.clsMyLink()}>Google</a>
         <button className={rh.clsMyButton()} {...rh.propsMyButton(modifier)} />
        </div>`)
@@ -138,10 +138,7 @@ describe("Test CodeMerger", function() {
     debugger;
     expect(
       code(serializePlasmicASTNode(newV.root, newV, edited, base))
-    ).toEqual(
-      //formatted(`<div className={rh.clsNewRoot() + ' myClass'} />`)
-      formatted(`<div className={rh.clsRoot() + ' myClass'} />`)
-    );
+    ).toEqual(formatted(`<div className={rh.clsNewRoot() + ' myClass'} />`));
   });
 
   it(`className appended, but then upgraded`, function() {
@@ -161,8 +158,9 @@ describe("Test CodeMerger", function() {
     expect(
       code(serializePlasmicASTNode(newV.root, newV, edited, base))
     ).toEqual(
-      //formatted(`<div className={rh.clsNewRoot() + ' myClass'} {...rh.propsRoot()}/>`)
-      formatted(`<div />`)
+      formatted(
+        `<div className={rh.clsNewRoot() + ' myClass'} {...rh.propsNewRoot()}/>`
+      )
     );
   });
 
@@ -210,27 +208,61 @@ describe("Test CodeMerger", function() {
       ["MyButton", "MyButton"]
     ]);
     const base = new CodeVersion(
-      "<div className={rh.clsRoot()}><a {...rh.propsMyLink()}>Google</a><button {...rh.propsMyButton()}/></div>",
+      "<div className={rh.clsRoot()}><a {...rh.propsMyLink()}>Google</a><button className={rh.clsMyButton()} {...rh.propsMyButton()}/></div>",
       nameInIdToUuid
     );
     const edited = new CodeVersion(
-      "<div className={rh.clsRoot()} width={1}><button {...rh.propsMyButton(modifier)}/></div>",
+      "<div className={rh.clsRoot()} width={1}><button className={rh.clsMyButton()} {...rh.propsMyButton(modifier)}/></div>",
       nameInIdToUuid
     );
     const newV = new CodeVersion(
-      "<div {...rh.propsRoot()}><a className={rh.clsMyLink()}>Google</a><button className={rh.clsMyButton()}/></div>",
+      "<div className={rh.clsRoot()} {...rh.propsRoot()}><a className={rh.clsMyLink()}>Google</a><button className={rh.clsMyButton()}/></div>",
       nameInIdToUuid
     );
     expect(
       code(serializePlasmicASTNode(newV.root, newV, edited, base))
     ).toEqual(
-      formatted(`<div {...rh.propsRoot()} width={1}>
+      formatted(`<div className={rh.clsRoot()} {...rh.propsRoot()} width={1}>
         <button className={rh.clsMyButton()} {...rh.propsMyButton(modifier)} />
       </div>`)
     );
   });
 
   it("nodes reordered", function() {
+    const nameInIdToUuid = new Map([
+      ["Root", "Root"],
+      ["MyLink", "MyLink"],
+      ["MyButton", "MyButton"]
+    ]);
+    const base = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+         <a className={rh.clsMyLink()} {...rh.propsMyLink()}>Google</a>
+         <button className={rh.clsMyButton()} {...rh.propsMyButton()}/>
+      </div>`,
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      `<div className={rh.clsRoot()} width={1}>
+        <button className={rh.clsMyButton()} {...rh.propsMyButton(modifier)}/>
+        <a className={rh.clsMyLink()} {...rh.propsMyLink()}>Google</a>
+      </div>`,
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      "<div className={rh.clsRoot()} {...rh.propsRoot()}><button className={rh.clsMyButton()}/><a className={rh.clsMyLink()}>Google</a></div>",
+      nameInIdToUuid
+    );
+    expect(
+      code(serializePlasmicASTNode(newV.root, newV, edited, base))
+    ).toEqual(
+      formatted(`<div className={rh.clsRoot()} {...rh.propsRoot()} width={1}>
+      <button className={rh.clsMyButton()} {...rh.propsMyButton(modifier)} />
+      <a className={rh.clsMyLink()}>Google</a>
+      </div>`)
+    );
+  });
+
+  it("merge with old code that doesn't always generate className", function() {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
       ["MyLink", "MyLink"],
@@ -251,13 +283,13 @@ describe("Test CodeMerger", function() {
       nameInIdToUuid
     );
     const newV = new CodeVersion(
-      "<div {...rh.propsRoot()}><button className={rh.clsMyButton()}/><a className={rh.clsMyLink()}>Google</a></div>",
+      "<div className={rh.clsRoot()} {...rh.propsRoot()}><button className={rh.clsMyButton()}/><a className={rh.clsMyLink()}>Google</a></div>",
       nameInIdToUuid
     );
     expect(
       code(serializePlasmicASTNode(newV.root, newV, edited, base))
     ).toEqual(
-      formatted(`<div {...rh.propsRoot()} width={1}>
+      formatted(`<div className={rh.clsRoot()} {...rh.propsRoot()} width={1}>
       <button className={rh.clsMyButton()} {...rh.propsMyButton(modifier)} />
       <a className={rh.clsMyLink()}>Google</a>
       </div>`)
@@ -287,7 +319,7 @@ describe("Test CodeMerger", function() {
       nameInIdToUuid
     );
     const newV = new CodeVersion(
-      `<div {...rh.propsRoot()}>
+      `<div className={rh.clsRoot()} {...rh.propsRoot()}>
         <button className={rh.clsMyButton()}/>
         <a className={rh.clsMyLink()}>Google</a>
       </div>`,
@@ -296,7 +328,7 @@ describe("Test CodeMerger", function() {
     expect(
       code(serializePlasmicASTNode(newV.root, newV, edited, base))
     ).toEqual(
-      formatted(`<div {...rh.propsRoot()} width={1}>
+      formatted(`<div  className={rh.clsRoot()} {...rh.propsRoot()} width={1}>
         {myGuard() && <button className={rh.clsMyButton()} tabIndex={1}/>}
         <Wrapper>
           <a className={rh.clsMyLink()} tabIndex={2}>Google</a>
@@ -327,7 +359,7 @@ describe("Test CodeMerger", function() {
       nameInIdToUuid
     );
     const newV = new CodeVersion(
-      `<div {...rh.propsRoot()}>
+      `<div className={rh.clsRoot()} {...rh.propsRoot()}>
         <button className={rh.clsMyButton()}/>
       </div>`,
       nameInIdToUuid
@@ -335,7 +367,7 @@ describe("Test CodeMerger", function() {
     expect(
       code(serializePlasmicASTNode(newV.root, newV, edited, base))
     ).toEqual(
-      formatted(`<div {...rh.propsRoot()} width={1}>
+      formatted(`<div className={rh.clsRoot()} {...rh.propsRoot()} width={1}>
       {items.map(() => {
         return (myGuard() && <button className={rh.clsMyButton()} tabIndex={1}/>);
         })

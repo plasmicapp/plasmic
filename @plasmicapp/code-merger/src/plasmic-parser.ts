@@ -136,13 +136,18 @@ const tryParseAsPlasmicJsxElement = (
   jsx: JSXElement,
   input: string
 ): PlasmicJsxElement | undefined => {
+  let nodeId: string | undefined = undefined;
   for (const attr of jsx.openingElement.attributes) {
-    const nodeId = tryGetNodeIdFromAttr(attr, input);
-    if (nodeId) {
-      return parseJsxElement(jsx, nodeId, input);
+    const curNodeId = tryGetNodeIdFromAttr(attr, input);
+    if (curNodeId) {
+      if (nodeId) {
+        // The id in className and spreador must match.
+        assert(nodeId === curNodeId);
+      }
+      nodeId = curNodeId;
     }
   }
-  return undefined;
+  return nodeId ? parseJsxElement(jsx, nodeId, input) : undefined;
 };
 
 export const isInHtmlContext = <T extends Node>(path: NodePath<T>) => {
@@ -382,7 +387,7 @@ export class CodeVersion {
   root: PlasmicASTNode;
 
   constructor(
-    input: string,
+    readonly input: string,
     // A map from nameInId to uuid
     readonly nameInIdToUuid: Map<string, string>,
     rootExpr?: Expression
@@ -468,7 +473,8 @@ export class CodeVersion {
 
     return !!matchingAttr;
   }
-  hasPropsIdSpreador(node: PlasmicTagOrComponent) {
+
+  tryGetPropsIdSpreador(node: PlasmicTagOrComponent) {
     const matchingAttr = node.jsxElement.rawNode.openingElement.attributes.find(
       attr =>
         attr.type === "JSXSpreadAttribute" &&
@@ -479,6 +485,10 @@ export class CodeVersion {
         )
     );
 
-    return !!matchingAttr;
+    return matchingAttr;
+  }
+
+  hasPropsIdSpreador(node: PlasmicTagOrComponent) {
+    return !!this.tryGetPropsIdSpreador(node);
   }
 }
