@@ -11,3 +11,7 @@
 .__wab_flex-container > * {
   pointer-events: auto;
 }
+
+.__wab_slot {
+  display: contents;
+}
