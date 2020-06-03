@@ -589,6 +589,7 @@ const serializeTagOrComponent = (
       editedNodeJsxElementClone.closingElement = babel.types.jsxClosingElement(
         editedNodeJsxElementClone.openingElement.name
       );
+      editedNodeJsxElementClone.openingElement.selfClosing = false;
     }
 
     const editNodeClone = cloneDeepWithHook(editedNode.rawNode, (n: Node) => {

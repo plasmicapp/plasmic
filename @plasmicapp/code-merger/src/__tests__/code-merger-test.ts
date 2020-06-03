@@ -550,6 +550,35 @@ describe("Test CodeMerger", function() {
     );
   });
 
+  it("add nested children", function() {
+    const nameInIdToUuid = new Map([["Root", "Root"]]);
+    const base = new CodeVersion(
+      `<div className={rh.clsRoot()} />`,
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      `<div className={rh.clsRoot()} />`,
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+        <div className={rh.clsBox()}/>
+      </div>`,
+      new Map([
+        ["Root", "Root"],
+        ["Box", "Box"]
+      ])
+    );
+    debugger;
+    expect(
+      code(serializePlasmicASTNode(newV.root, newV, edited, base))
+    ).toEqual(
+      formatted(`<div className={rh.clsRoot()}>
+        <div className={rh.clsBox()}/>
+      </div>`)
+    );
+  });
+
   it("projectSyncMetadataModel", function() {
     const m = new ProjectSyncMetadataModel([
       new ComponentSkeletonModel(
