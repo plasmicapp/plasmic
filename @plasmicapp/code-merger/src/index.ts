@@ -136,9 +136,11 @@ const mergeAttributes = (
       const baseAttr = baseNamedAttrs.get(name);
       if (editedAttr) {
         const res = conflictResolution(name, baseAttr, editedAttr, attr);
-        if (res === "emit-both" || res === "emit-new") {
+        if (res === "emit-both") {
           newAttrs.push(attr);
         }
+        // In case of "emit-new", we don't emit it before IdNode, but at the
+        // same place as edited node to minimize diff.
       } else if (!baseAttr) {
         // newly added attribute in new version
         const attrValueNode = ensure(
@@ -169,9 +171,11 @@ const mergeAttributes = (
     const baseAttr = baseNamedAttrs.get(name);
     if (newAttr) {
       const res = conflictResolution(name, baseAttr, editedAttr, newAttr);
-      if (!(res === "emit-both" || res === "emit-edited")) {
-        return undefined;
+      if (res === "emit-new") {
+        // We emit the newAttr in place to minimize diff.
+        return newAttr;
       }
+      assert(res === "emit-both" || res === "emit-edited");
       // Upgrade id in edited version for event handler
       if (name.startsWith("on") && editedNodeId !== newNodeId) {
         const eventNameInId = name.substring(2);

@@ -538,8 +538,8 @@ describe("Test CodeMerger", function() {
       code(serializePlasmicASTNode(newV.root, newV, edited, base))
     ).toEqual(
       formatted(`<div
-        onMouseEnter={rh.onNewRootMouseEnter}
         className={rh.clsNewRoot()}
+        onMouseEnter={rh.onNewRootMouseEnter}
         onMouseLeave={() => {
           rh.onNewRootMouseLeave();
           myEventHandler();
@@ -576,6 +576,32 @@ describe("Test CodeMerger", function() {
       formatted(`<div className={rh.clsRoot()}>
         <div className={rh.clsBox()}/>
       </div>`)
+    );
+  });
+
+  it("attribute changed in Plasmic", function() {
+    const nameInIdToUuid = new Map([
+      ["Root", "Root"],
+      ["Img", "Img"]
+    ]);
+    const base = new CodeVersion(
+      `<div className={rh.clsRoot()} icon={<img className={rh.clsImg()}></img>} />`,
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      `<div className={rh.clsRoot()} icon={<img className={rh.clsImg()}></img>} />`,
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      `<div className={rh.clsRoot()} icon={<img className={rh.clsImg()} {...rh.propsImg()}></img>} />`,
+      nameInIdToUuid
+    );
+    expect(
+      code(serializePlasmicASTNode(newV.root, newV, edited, base))
+    ).toEqual(
+      formatted(
+        `<div className={rh.clsRoot()} icon={<img className={rh.clsImg()} {...rh.propsImg()}></img>} />`
+      )
     );
   });
 
@@ -769,8 +795,8 @@ describe("Test CodeMerger", function() {
 
         // plasmic-managed-jsx/3
         return <div
-            onMouseEnter={rh.onNewRootMouseEnter}
             className={rh.clsNewRoot()}
+            onMouseEnter={rh.onNewRootMouseEnter}
             onMouseLeave={() => {
               rh.onNewRootMouseLeave();
               myEventHandler();
