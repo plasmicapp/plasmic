@@ -260,7 +260,7 @@ const mergeAttributes = (
         return undefined;
       });
       // className must contain rh.cls<editedNodeId> in edited file.
-      if (found) {
+      if (!found) {
         const attrSource = getSource(attrInEditedNode, editedVersion.input);
         console.warn(
           `className was edited in a non backwards compatible way - ${attrSource} doesn't contain ${editedNodeId}`
