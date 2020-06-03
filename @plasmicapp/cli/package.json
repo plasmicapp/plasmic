@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/cli",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "plasmic cli for syncing local code with Plasmic designs",
   "main": "./dist/index.js",
   "bin": {
@@ -24,7 +24,7 @@
     "utility-types": "^3.10.0"
   },
   "dependencies": {
-    "@plasmicapp/code-merger": "^0.0.8",
+    "@plasmicapp/code-merger": "^0.0.9",
     "@types/findup-sync": "^2.0.2",
     "axios": "^0.19.0",
     "chalk": "^2.4.2",
