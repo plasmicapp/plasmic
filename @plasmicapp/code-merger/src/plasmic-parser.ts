@@ -117,8 +117,11 @@ const parseJsxElement = (
     JSXText: function(path) {
       if (path.parent === n) {
         const text = getSource(path.node, input);
-        if (text !== undefined && !/^\s*$/.test(text)) {
-          children.push({ type: "text", rawNode: path.node, value: text });
+        if (text !== undefined) {
+          const trimmed = text.trim();
+          if (trimmed) {
+            children.push({ type: "text", rawNode: path.node, value: trimmed });
+          }
         }
         path.skip();
       }

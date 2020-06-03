@@ -214,7 +214,7 @@ Node  </div>)`;
     assert(r.rawNode.start === 1);
     const jsxElt = assertTagOrComponent(r);
     assertPlasmicJsxElementBase(jsxElt, "Abc", false, "div", 1, 1);
-    assertTextNode(jsxElt.children[0], "  Text\nNode  ");
+    assertTextNode(jsxElt.children[0], "Text\nNode");
   });
 
   it("string literal node", function() {

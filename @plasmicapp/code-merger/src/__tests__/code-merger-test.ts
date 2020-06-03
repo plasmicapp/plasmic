@@ -135,7 +135,6 @@ describe("Test CodeMerger", function() {
       "<div className={rh.clsNewRoot()}/>",
       new Map([["NewRoot", "Root"]])
     );
-    debugger;
     expect(
       code(serializePlasmicASTNode(newV.root, newV, edited, base))
     ).toEqual(formatted(`<div className={rh.clsNewRoot() + ' myClass'} />`));
@@ -569,7 +568,6 @@ describe("Test CodeMerger", function() {
         ["Box", "Box"]
       ])
     );
-    debugger;
     expect(
       code(serializePlasmicASTNode(newV.root, newV, edited, base))
     ).toEqual(
@@ -601,6 +599,45 @@ describe("Test CodeMerger", function() {
     ).toEqual(
       formatted(
         `<div className={rh.clsRoot()} icon={<img className={rh.clsImg()} {...rh.propsImg()}></img>} />`
+      )
+    );
+  });
+
+  it("text node not changed", function() {
+    const nameInIdToUuid = new Map([
+      ["Root", "Root"],
+      ["Btn", "Btn"]
+    ]);
+    const base = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+         <button className={rh.clsBtn()}>Click Me</button>
+       </div>`,
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+         <button className={rh.clsBtn()}>
+           Click Me
+         </button>
+       </div>`,
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+         <button className={rh.clsBtn()}>Click Me</button>
+       </div>`,
+      nameInIdToUuid
+    );
+    debugger;
+    expect(
+      code(serializePlasmicASTNode(newV.root, newV, edited, base))
+    ).toEqual(
+      formatted(
+        `<div className={rh.clsRoot()}>
+         <button className={rh.clsBtn()}>
+           Click Me
+         </button>
+       </div>`
       )
     );
   });
@@ -767,7 +804,6 @@ describe("Test CodeMerger", function() {
       Promise.resolve(baseInfo)
     );
     expect(merged?.size).toEqual(1);
-    debugger;
     expect(merged?.get("comp1")).toEqual(
       formatted(`
       import React, {ReactNode} from "react";

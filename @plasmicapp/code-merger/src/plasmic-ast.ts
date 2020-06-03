@@ -57,6 +57,7 @@ export interface PlasmicStringLiteralExpr extends PlasmicNodeBase {
 // A HTML text node.
 export interface PlasmicJsxText extends PlasmicNodeBase {
   type: "text";
+  // This is the effective value, which is trimmed.
   value: string;
   rawNode: JSXText;
 }
