@@ -265,8 +265,7 @@ async function syncProjectComponents(
             process.exit(1);
           } else {
             console.log(
-              `Overwrite ${compConfig.importSpec.modulePath} despite merge failure`,
-              skeletonModule
+              `Overwrite ${compConfig.importSpec.modulePath} despite merge failure`
             );
             writeFileContent(
               context,
