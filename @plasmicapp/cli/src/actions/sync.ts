@@ -289,7 +289,7 @@ async function syncProjectComponents(
           );
         } else {
           console.warn(
-            `file ${compConfig.importSpec.modulePath} is likely in direct-edit scheme. If you intend to switch the code scheme from direct to blackbox, use --force-overwrite option to force the switch.`
+            `file ${compConfig.importSpec.modulePath} is likely in "direct" scheme. If you intend to switch the code scheme from direct to blackbox, use --force-overwrite option to force the switch.`
           );
         }
       }

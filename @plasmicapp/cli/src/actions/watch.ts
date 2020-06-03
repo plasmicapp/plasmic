@@ -5,6 +5,9 @@ import { warnLatestReactWeb } from "../utils/npm-utils";
 
 export interface WatchArgs extends SyncArgs {}
 export async function watchProjects(opts: WatchArgs) {
+  // Perform a sync before watch.
+  await syncProjects(opts);
+
   const context = getContext(opts);
   const config = context.config;
   const socket = context.api.connectSocket();
