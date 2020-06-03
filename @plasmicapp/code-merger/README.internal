@@ -1,0 +1,32 @@
+This project is used by both @plasmicapp/cli and Plasmic backend server to perform
+three way code merge for the direct edit code scheme.
+
+After any change is made to this file, following these steps to publish it.
+
+Step 1 - bump the version number in package.json, and publish it as
+
+  yarn build
+  # See plasmic/public-packages/@plasmicapp/README about how to login to publish
+  # this package.
+  npm publish --access public
+
+Step 2 - update @plasmicapp/cli to use the new version of @plasmicapp/code-merger as
+
+  cd ../cli
+  yarn add -W @plasmicapp/code-merger
+
+  # open package.json, and bump the version
+  vi package.json
+
+  # Publish the cli
+  yarn build
+  npm publish --access public
+
+Step 3 - update plasmic server to use the new version of code-merger and cli.
+
+  cd plasmic/wab
+  yarn add -W @plasmicapp/code-merger
+  # Open src/wab/server/routes/projects.ts, and change `requiredCliVersion` to
+  # the new cli version set in Step 2.
+
+Now submit a PR for all the above changes.
