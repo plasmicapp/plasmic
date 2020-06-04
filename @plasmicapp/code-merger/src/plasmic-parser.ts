@@ -4,30 +4,21 @@ import {
   JSXElement,
   JSXAttribute,
   JSXSpreadAttribute,
-  Comment,
   Expression,
   JSXEmptyExpression,
   StringLiteral,
-  JSXText,
-  TSNonNullExpression,
-  MemberExpression,
-  JSXSpreadChild,
-  JSXFragment,
   V8IntrinsicIdentifier,
   JSXExpressionContainer
 } from "@babel/types";
 import * as babel from "@babel/core";
 import * as L from "lodash";
-import generate from "@babel/generator";
-import { cloneDeepWithHook } from "./cloneDeepWithHook";
-import { assert, withoutNils, ensure } from "./common";
+import { assert, ensure } from "./common";
 import {
   PlasmicASTNode,
   PlasmicJsxElement,
   PlasmicTagOrComponent,
   PlasmicArgRef
 } from "./plasmic-ast";
-import { formatted, code } from "./utils";
 
 export const helperObject = "rh";
 
@@ -41,34 +32,34 @@ export const getSource = (n: Node | null, input: string) => {
   return input.substring(n.start, n.end);
 };
 
-const attrToString = (attr: JSXAttribute, input: string) => {
-  return {
-    name: attr.name.name,
-    value: getSource(attr.value, input)
-  };
-};
-
-const tryGetNodeIdFromAttr = (
-  attr: JSXAttribute | JSXSpreadAttribute,
-  input: string
-) => {
+const tryGetNodeIdFromAttr = (attr: JSXAttribute | JSXSpreadAttribute) => {
   if (attr.type === "JSXAttribute") {
-    const { name, value } = attrToString(attr, input);
-    if (name === "className") {
-      const m = value?.match(/^\s*{\s*rh\.cls(.+)\(/);
-      if (m) {
-        return m[1];
-      }
+    if (attr.name.name === "className" && attr.value) {
+      let nodeId: string | undefined = undefined;
+      traverse(attr.value, {
+        noScope: true,
+        CallExpression: function(path) {
+          const member = tryExtractCalleeMember(path.node.callee, helperObject);
+          const m = member?.match(/^cls(.+)$/);
+          if (m) {
+            nodeId = m[1];
+            path.stop();
+          }
+        }
+      });
+      return nodeId;
     }
   } else {
     // spread
-    const code =
-      attr.start && attr.end
-        ? input.substring(attr.start, attr.end)
-        : undefined;
-    const m = code?.match(/^\s*{\s*\.\.\.rh\.props(.+)\(/);
-    if (m) {
-      return m[1];
+    if (
+      attr.argument.type === "CallExpression" &&
+      attr.argument.callee.type === "MemberExpression"
+    ) {
+      const member = tryExtractCalleeMember(attr.argument.callee, helperObject);
+      const m = member?.match(/^props(.+)$/);
+      if (m) {
+        return m[1];
+      }
     }
   }
   return undefined;
@@ -141,7 +132,7 @@ const tryParseAsPlasmicJsxElement = (
 ): PlasmicJsxElement | undefined => {
   let nodeId: string | undefined = undefined;
   for (const attr of jsx.openingElement.attributes) {
-    const curNodeId = tryGetNodeIdFromAttr(attr, input);
+    const curNodeId = tryGetNodeIdFromAttr(attr);
     if (curNodeId) {
       if (nodeId) {
         // The id in className and spreador must match.
@@ -344,6 +335,23 @@ export const calleeMatch = (
     callee.property.type === "Identifier" &&
     callee.property.name === member
   );
+};
+
+export const tryExtractCalleeMember = (
+  callee: Expression | V8IntrinsicIdentifier | JSXEmptyExpression,
+  object: string
+) => {
+  if (callee.type !== "MemberExpression") {
+    return undefined;
+  }
+  if (
+    callee.object.type === "Identifier" &&
+    callee.object.name === object &&
+    callee.property.type === "Identifier"
+  ) {
+    return callee.property.name as string;
+  }
+  return undefined;
 };
 
 export const memberExpressionMatch = (

@@ -390,6 +390,22 @@ Node  </div>)`;
     assertKVAttr(input, jsxElt.attrs[0], "className", "{rh.clsXXX()}");
   });
 
+  it("modifier", function() {
+    const input = `<div className={rh.clsXXX()} {...rh.propsXXX(props => (props.X = ""))}></div>`;
+    const r = parseFromJsxExpression(input);
+    assert(!L.isString(r));
+    const jsxElt = assertTagOrComponent(r);
+    assertPlasmicJsxElementBase(jsxElt, "XXX", false, "div", 2, 0);
+  });
+
+  it("append className", function() {
+    const input = `<div className={rh.clsXXX() + ('')} {...rh.propsXXX()}></div>`;
+    const r = parseFromJsxExpression(input);
+    assert(!L.isString(r));
+    const jsxElt = assertTagOrComponent(r);
+    assertPlasmicJsxElementBase(jsxElt, "XXX", false, "div", 2, 0);
+  });
+
   it("parse attributes", function() {
     const input = `<div>
         <Button {...rh.propsXXX()} width={100} icon={<img></img>}
