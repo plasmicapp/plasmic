@@ -12,6 +12,7 @@
     "build": "tsc && mkdir -p lib && cp src/styles/plasmic.css lib/"
   },
   "dependencies": {
+    "@plasmicapp/react-web": "^0.1.5",
     "classnames": "^2.2.6"
   },
   "devDependencies": {

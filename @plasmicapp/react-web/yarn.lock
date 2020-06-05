@@ -2,6 +2,13 @@
 # yarn lockfile v1
 
 
+"@plasmicapp/react-web@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.1.5.tgz#a9239c0dc6e1569e87116900c0c4401dd56cd093"
+  integrity sha512-SnUzSvwCMRenO3wU3UebLmF3UhSOXKg3KFLRtvvs91xpWPGKe80xHCsj8rW69G3MJETgsVkXfyrQRZCpljfigA==
+  dependencies:
+    classnames "^2.2.6"
+
 "@types/classnames@^2.2.9":
   version "2.2.9"
   resolved "https://registry.yarnpkg.com/@types/classnames/-/classnames-2.2.9.tgz#d868b6febb02666330410fe7f58f3c4b8258be7b"
