@@ -84,11 +84,11 @@ export function hasVariant<V extends Variants>(
   groupName: keyof V,
   variant: string
 ) {
-  if (variants === undefined) {
+  if (variants == null) {
     return false;
   }
   const groupVariants = variants[groupName];
-  if (groupVariants === undefined) {
+  if (groupVariants == null) {
     return false;
   } else if (Array.isArray(groupVariants)) {
     return groupVariants.includes(variant);
@@ -248,6 +248,15 @@ export function wrapWithClassName(element: React.ReactNode, className: string) {
     },
     element
   );
+}
+
+export function PlasmicIcon(
+  props: React.ComponentProps<"svg"> & {
+    PlasmicIconType: React.ComponentType;
+  }
+) {
+  const { PlasmicIconType, ...rest } = props;
+  return <PlasmicIconType {...rest} />;
 }
 
 // To get a type safe FlexStack, you need to explicitly specify both the tag
