@@ -16,14 +16,16 @@ import {
   fixGlobalVariantFilePath,
   fixProjectFilePaths,
   findSrcDirPath,
-  readFileContent
+  readFileContent,
+  fixIconFilePath
 } from "../utils/file-utils";
 import {
   ProjectBundle,
   ComponentBundle,
   GlobalVariantBundle,
   ProjectConfig as ApiProjectConfig,
-  StyleConfigResponse
+  StyleConfigResponse,
+  IconBundle
 } from "../api";
 import { fixAllImportStatements } from "../utils/code-utils";
 import { upsertStyleTokens } from "./sync-styles";
@@ -160,6 +162,7 @@ export async function syncProjects(opts: SyncArgs) {
       context,
       projectBundle.projectConfig,
       componentBundles,
+      projectBundle.iconAssets,
       baseNameToFiles,
       opts.forceOverwrite
     );
@@ -215,10 +218,15 @@ async function syncProjectComponents(
         projectId: project.projectId,
         renderModuleFilePath: path.join(
           context.config.defaultPlasmicDir,
+          L.snakeCase(`${project.projectName}`),
           renderModuleFileName
         ),
         importSpec: { modulePath: skeletonModuleFileName },
-        cssFilePath: path.join(context.config.defaultPlasmicDir, cssFileName),
+        cssFilePath: path.join(
+          context.config.defaultPlasmicDir,
+          L.snakeCase(project.projectName),
+          cssFileName
+        ),
         scheme: scheme as "blackbox" | "direct"
       };
       allCompConfigs[id] = compConfig;
@@ -374,10 +382,47 @@ function syncGlobalVariants(
   }
 }
 
+function syncProjectIconAssets(
+  context: PlasmicContext,
+  project: CliProjectConfig,
+  iconBundles: IconBundle[],
+  baseNameToFiles: Record<string, string[]>
+) {
+  const knownIconConfigs = L.keyBy(project.icons, i => i.id);
+  console.log("ICON BUNDLES", iconBundles);
+  for (const bundle of iconBundles) {
+    console.log(
+      `Syncing icon ${bundle.name} [${project.projectId}/${bundle.id}]`
+    );
+    let iconConfig = knownIconConfigs[bundle.id];
+    const isNew = !iconConfig;
+    if (isNew) {
+      iconConfig = {
+        id: bundle.id,
+        name: bundle.name,
+        moduleFilePath: path.join(
+          context.config.defaultPlasmicDir,
+          L.snakeCase(`${project.projectName}`),
+          bundle.fileName
+        )
+      };
+      knownIconConfigs[bundle.id] = iconConfig;
+      project.icons.push(iconConfig);
+    } else {
+      fixIconFilePath(context.absoluteSrcDir, iconConfig, baseNameToFiles);
+    }
+
+    writeFileContent(context, iconConfig.moduleFilePath, bundle.module, {
+      force: !isNew
+    });
+  }
+}
+
 async function syncProjectConfig(
   context: PlasmicContext,
   pc: ApiProjectConfig,
   componentBundles: ComponentBundle[],
+  iconBundles: IconBundle[],
   baseNameToFiles: Record<string, string[]>,
   forceOverwrite: boolean
 ) {
@@ -386,14 +431,17 @@ async function syncProjectConfig(
   );
   const defaultCssFilePath = path.join(
     context.config.defaultPlasmicDir,
+    L.snakeCase(pc.projectName),
     pc.cssFileName
   );
   const isNew = !cliProject;
   if (!cliProject) {
     cliProject = {
       projectId: pc.projectId,
+      projectName: pc.projectName,
       cssFilePath: defaultCssFilePath,
-      components: []
+      components: [],
+      icons: []
     };
     context.config.projects.push(cliProject);
   }
@@ -415,4 +463,5 @@ async function syncProjectConfig(
     baseNameToFiles,
     forceOverwrite
   );
+  syncProjectIconAssets(context, cliProject, iconBundles, baseNameToFiles);
 }

@@ -8,12 +8,13 @@ import {
   GlobalVariantGroupConfig,
   PlasmicContext,
   PlasmicConfig,
-  StyleConfig
+  StyleConfig,
+  IconConfig
 } from "./config-utils";
 import { stripExtension, writeFileContent } from "./file-utils";
 import { flatMap } from "./lang-utils";
 
-const IMPORT_MARKER = /import\s+([^;]+)\s*;.*\s+plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss|defaultcss))?/g;
+const IMPORT_MARKER = /import\s+([^;]+)\s*;.*\s+plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss|defaultcss|icon))?/g;
 const IMPORT_MARKER_WITH_FROM = /^([^;]+)\s+from\s+["'`]([^"'`;]+)["'`]$/;
 const IMPORT_MARKER_WITHOUT_FROM = /^["'`]([^"'`;]+)["'`]$/;
 
@@ -56,7 +57,8 @@ export function replaceImports(
   styleConfig: StyleConfig,
   compConfigsMap: Record<string, ComponentConfig>,
   projectConfigsMap: Record<string, ProjectConfig>,
-  globalVariantConfigsMap: Record<string, GlobalVariantGroupConfig>
+  globalVariantConfigsMap: Record<string, GlobalVariantGroupConfig>,
+  iconConfigsMap: Record<string, IconConfig>
 ) {
   return code.replace(IMPORT_MARKER, (sub, body, uuid, type) => {
     const { spec, from } = parseImportBody(body);
@@ -99,6 +101,15 @@ export function replaceImports(
         true
       );
       return `import ${spec} from "${realPath}"; // plasmic-import: ${uuid}/globalVariant`;
+    } else if (type === "icon") {
+      // import of global context
+      const iconConfig = iconConfigsMap[uuid];
+      const realPath = makeImportPath(
+        fromPath,
+        iconConfig.moduleFilePath,
+        true
+      );
+      return `import ${spec} from "${realPath}"; // plasmic-import: ${uuid}/icon`;
     } else if (type === "projectcss") {
       const projectConfig = projectConfigsMap[uuid];
       const realPath = makeImportPath(
@@ -157,13 +168,18 @@ export function fixAllImportStatements(context: PlasmicContext) {
     config.globalVariants.variantGroups,
     c => c.id
   );
+  const allIconConfigs = L.keyBy(
+    flatMap(config.projects, p => p.icons),
+    c => c.id
+  );
   for (const project of config.projects) {
     for (const compConfig of project.components) {
       fixComponentImportStatements(
         context,
         compConfig,
         allCompConfigs,
-        allGlobalVariantConfigs
+        allGlobalVariantConfigs,
+        allIconConfigs
       );
     }
   }
@@ -173,19 +189,22 @@ function fixComponentImportStatements(
   context: PlasmicContext,
   compConfig: ComponentConfig,
   allCompConfigs: Record<string, ComponentConfig>,
-  allGlobalVariantConfigs: Record<string, GlobalVariantGroupConfig>
+  allGlobalVariantConfigs: Record<string, GlobalVariantGroupConfig>,
+  allIconConfigs: Record<string, IconConfig>
 ) {
   fixFileImportStatements(
     context,
     compConfig.renderModuleFilePath,
     allCompConfigs,
-    allGlobalVariantConfigs
+    allGlobalVariantConfigs,
+    allIconConfigs
   );
   fixFileImportStatements(
     context,
     compConfig.cssFilePath,
     allCompConfigs,
-    allGlobalVariantConfigs
+    allGlobalVariantConfigs,
+    allIconConfigs
   );
   // If ComponentConfig.importPath is still a local file, we best-effort also fix up the import statements there.
   if (isLocalModulePath(compConfig.importSpec.modulePath)) {
@@ -193,7 +212,8 @@ function fixComponentImportStatements(
       context,
       compConfig.importSpec.modulePath,
       allCompConfigs,
-      allGlobalVariantConfigs
+      allGlobalVariantConfigs,
+      allIconConfigs
     );
   }
 }
@@ -202,7 +222,8 @@ function fixFileImportStatements(
   context: PlasmicContext,
   srcDirFilePath: string,
   allCompConfigs: Record<string, ComponentConfig>,
-  allGlobalVariantConfigs: Record<string, GlobalVariantGroupConfig>
+  allGlobalVariantConfigs: Record<string, GlobalVariantGroupConfig>,
+  allIconConfigs: Record<string, IconConfig>
 ) {
   console.log(`\tFixing ${srcDirFilePath}`);
   const prevContent = fs
@@ -215,7 +236,8 @@ function fixFileImportStatements(
     context.config.style,
     allCompConfigs,
     allProjectConfigs,
-    allGlobalVariantConfigs
+    allGlobalVariantConfigs,
+    allIconConfigs
   );
   writeFileContent(context, srcDirFilePath, newContent, { force: true });
 }
