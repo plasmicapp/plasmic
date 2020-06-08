@@ -53,10 +53,12 @@ export interface StyleConfig {
 
 export interface ProjectConfig {
   projectId: string;
+  projectName: string;
   cssFilePath: string;
 
   // Configs for each component we have synced.
   components: ComponentConfig[];
+  icons: IconConfig[];
 }
 
 export interface TokensConfig {
@@ -97,6 +99,12 @@ export interface ComponentConfig {
   importSpec: ImportSpec;
 
   scheme: "blackbox" | "direct";
+}
+
+export interface IconConfig {
+  id: string;
+  name: string;
+  moduleFilePath: string;
 }
 
 export interface GlobalVariantsConfig {

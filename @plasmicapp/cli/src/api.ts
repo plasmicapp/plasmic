@@ -25,8 +25,16 @@ export interface GlobalVariantBundle {
 
 export interface ProjectConfig {
   projectId: string;
+  projectName: string;
   cssFileName: string;
   cssRules: string;
+}
+
+export interface IconBundle {
+  id: string;
+  name: string;
+  module: string;
+  fileName: string;
 }
 
 export interface ProjectBundle {
@@ -34,6 +42,7 @@ export interface ProjectBundle {
   projectConfig: ProjectConfig;
   globalVariants: GlobalVariantBundle[];
   usedTokens: StyleTokensMap;
+  iconAssets: IconBundle[];
 }
 
 export interface StyleConfigResponse {
@@ -85,6 +94,7 @@ export class PlasmicApi {
         existingCompScheme
       }
     );
+    console.log("RESULT", result.data);
     return result.data as ProjectBundle;
   }
 

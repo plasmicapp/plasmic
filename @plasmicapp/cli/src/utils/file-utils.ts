@@ -8,7 +8,8 @@ import {
   ProjectConfig,
   GlobalVariantGroupConfig,
   PlasmicConfig,
-  CONFIG_FILE_NAME
+  CONFIG_FILE_NAME,
+  IconConfig
 } from "./config-utils";
 import { isLocalModulePath } from "./code-utils";
 
@@ -126,6 +127,18 @@ export function fixGlobalVariantFilePath(
   variantConfig.contextFilePath = findSrcDirPath(
     absoluteSrcDir,
     variantConfig.contextFilePath,
+    baseNameToFiles
+  );
+}
+
+export function fixIconFilePath(
+  absoluteSrcDir: string,
+  iconConfig: IconConfig,
+  baseNameToFiles: Record<string, string[]>
+) {
+  iconConfig.moduleFilePath = findSrcDirPath(
+    absoluteSrcDir,
+    iconConfig.moduleFilePath,
     baseNameToFiles
   );
 }
