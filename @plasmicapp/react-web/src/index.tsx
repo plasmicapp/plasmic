@@ -261,8 +261,10 @@ export function PlasmicIcon(
 
 // To get a type safe FlexStack, you need to explicitly specify both the tag
 // and generic type, such as
-//   <FlexStack<"a"> tag={"a"} href={...}>...</FlexStack<"a">
-export const FlexStackImpl = <T extends React.ElementType>(
+//   <StackImpl as={"a"} href={...}>...</FlexStack>
+export const StackImpl = <
+  T extends keyof JSX.IntrinsicElements | React.ComponentType<any>
+>(
   props: React.ComponentProps<T> & { as: T }
 ) => {
   const { as, children, ...rest } = props;
@@ -272,31 +274,37 @@ export const FlexStackImpl = <T extends React.ElementType>(
   return React.createElement(as, rest, wrappedChildren);
 };
 
-const makeFlexStackImpl = <T extends React.ElementType>(tag: T) => {
+const makeStackImpl = <
+  T extends keyof JSX.IntrinsicElements | React.ComponentType<any>
+>(
+  as: T
+) => {
   return (props: React.ComponentProps<T>) => {
-    return <FlexStackImpl<T> as={tag} {...props} />;
+    return <StackImpl as={as} {...props} />;
   };
 };
 
-export const FlexStack = {
-  div: makeFlexStackImpl<"div">("div"),
-  a: makeFlexStackImpl<"a">("a"),
-  button: makeFlexStackImpl<"button">("button"),
-  h1: makeFlexStackImpl<"h1">("h1"),
-  h2: makeFlexStackImpl<"h2">("h2"),
-  h3: makeFlexStackImpl<"h3">("h3"),
-  h4: makeFlexStackImpl<"h4">("h4"),
-  h5: makeFlexStackImpl<"h5">("h5"),
-  h6: makeFlexStackImpl<"h6">("h6"),
-  label: makeFlexStackImpl<"label">("label"),
-  form: makeFlexStackImpl<"form">("form"),
-  section: makeFlexStackImpl<"section">("section"),
-  head: makeFlexStackImpl<"head">("head"),
-  main: makeFlexStackImpl<"main">("main"),
-  nav: makeFlexStackImpl<"nav">("nav")
+export const Stack = {
+  div: makeStackImpl("div"),
+  a: makeStackImpl("a"),
+  button: makeStackImpl("button"),
+  h1: makeStackImpl("h1"),
+  h2: makeStackImpl("h2"),
+  h3: makeStackImpl("h3"),
+  h4: makeStackImpl("h4"),
+  h5: makeStackImpl("h5"),
+  h6: makeStackImpl("h6"),
+  label: makeStackImpl("label"),
+  form: makeStackImpl("form"),
+  section: makeStackImpl("section"),
+  head: makeStackImpl("head"),
+  main: makeStackImpl("main"),
+  nav: makeStackImpl("nav")
 };
 
-export const DefaultFlexStack = FlexStack.div;
+export const DefaultFlexStack = Stack.div;
+
+export const FlexStack = Stack;
 
 function deriveOverride<C extends React.ElementType>(x: Flex<C>): Override<C> {
   if (!x) {
