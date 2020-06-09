@@ -174,7 +174,7 @@ export const DEFAULT_CONFIG: PlasmicConfig = {
     scheme: "theo",
     tokensFilePath: "plasmic-tokens.theo.json"
   },
-  srcDir: ".",
+  srcDir: "./src/components",
   defaultPlasmicDir: "./plasmic",
   projects: [],
   globalVariants: {
