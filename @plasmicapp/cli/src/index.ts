@@ -26,7 +26,7 @@ yargs
     "init",
     "Initializes Plasmic for a project.",
     yags => {
-      const defaultSrcDir = fs.existsSync("./src") ? "./src" : ".";
+      const defaultSrcDir = "./src/components";
       yags
         .option("host", {
           describe: "Plasmic host to use",
