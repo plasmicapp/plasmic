@@ -652,7 +652,53 @@ const serializeTagOrComponent = (
     return undefined;
   }
   // This is new node. Just output self.
-  return newNode.rawNode;
+  const childrenReplacement = new Map<Node, Node>();
+  newNode.jsxElement.children.forEach(child => {
+    // Plasmic never emit opaque node.
+    assert(child.type !== "opaque");
+    const childReplacement = serializeNonOpaquePlasmicASTNode(
+      child,
+      newVersion,
+      editedVersion,
+      baseVersion
+    );
+    if (childReplacement) {
+      if (babel.types.isExpression(childReplacement)) {
+        // need to wrap in expression container
+        const maybeWrapped =
+          childReplacement.type !== "JSXElement" &&
+          childReplacement.type !== "JSXFragment"
+            ? babel.types.jsxExpressionContainer(childReplacement)
+            : childReplacement;
+        childrenReplacement.set(child.rawNode, maybeWrapped);
+      } else {
+        childrenReplacement.set(child.rawNode, childReplacement);
+      }
+    }
+  });
+  // Attribute replacement
+  const attrsReplacement = new Map<Node, Node>();
+  newNode.jsxElement.attrs.forEach(attr => {
+    if (!L.isString(attr)) {
+      const [key, value] = attr;
+      // className is an opaque attribute!
+      if (value && value.type !== "opaque") {
+        const attrReplacement = serializeNonOpaquePlasmicASTNode(
+          value,
+          newVersion,
+          editedVersion,
+          baseVersion
+        );
+        if (attrReplacement) {
+          attrsReplacement.set(value.rawNode, attrReplacement);
+        }
+      }
+    }
+  });
+  return cloneDeepWithHook(
+    newNode.rawNode,
+    (n: Node) => childrenReplacement.get(n) || attrsReplacement.get(n)
+  );
 };
 
 const serializeNonOpaquePlasmicASTNode = (
