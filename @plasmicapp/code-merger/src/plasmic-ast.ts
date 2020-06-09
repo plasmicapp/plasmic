@@ -33,9 +33,10 @@ export interface PlasmicOpaqueExpr extends PlasmicNodeBase {
 export interface PlasmicArgRef extends PlasmicNodeBase {
   type: "arg";
   argName: string;
-  // For TplSlot, there will be multiple mainNodes, one for each defaultNode.
-  // For text TplSlot, there will be one or zero mainNodes, depending if there
+  // For TplSlot, there will be multiple jsxNodes, one for each defaultNode.
+  // For text TplSlot, there will be one or zero jsxNodes, depending if there
   // is style wrapper or not.
+  // This could also be the single wrapper node that wraps all JSX nodes.
   jsxNodes: PlasmicTagOrComponent[];
   rawNode: Expression | JSXExpressionContainer;
 }

@@ -282,13 +282,59 @@ Node  </div>)`;
         1,
         1
       );
+      assert(ensure(getSource(wrapper.rawNode, input)).startsWith("<div"));
+    }
+  });
+
+  it("argRef node - slot with single default node but not show function has right boundary", function() {
+    const input = `(<Button className={rh.clsAbc()}>
+          {args.buttonText || <div className={rh.clsDefault0()}></div>}
+            </Button>)`;
+    const r = parseFromJsxExpression(input);
+    assert(r.rawNode.start === 1);
+    const jsxElt = assertTagOrComponent(r);
+    assertPlasmicJsxElementBase(jsxElt, "Abc", false, "Button", 1, 1);
+    const child = jsxElt.children[0];
+    if (assertArgRefNode(child, "buttonText", 1)) {
       assert(
-        ensure(getSource(wrapper.rawNode, input)).startsWith("{args.buttonText")
+        ensure(getSource(child.jsxNodes[0].rawNode, input)).startsWith("<div")
+      );
+      assertPlasmicJsxElementBase(
+        child.jsxNodes[0].jsxElement,
+        "Default0",
+        true,
+        "div",
+        1,
+        0
       );
     }
   });
 
-  it("argRef node - slot with default nodes, and auto lifting the boundary", function() {
+  it("argRef node - slot with single default node and show function has wrong boundary", function() {
+    const input = `(<Button className={rh.clsAbc()}>
+          {args.buttonText || (rh.showDefault0() && <div className={rh.clsDefault0()}></div>)}
+            </Button>)`;
+    const r = parseFromJsxExpression(input);
+    assert(r.rawNode.start === 1);
+    const jsxElt = assertTagOrComponent(r);
+    assertPlasmicJsxElementBase(jsxElt, "Abc", false, "Button", 1, 1);
+    const child = jsxElt.children[0];
+    if (assertArgRefNode(child, "buttonText", 1)) {
+      assert(
+        ensure(getSource(child.jsxNodes[0].rawNode, input)).startsWith("<div")
+      );
+      assertPlasmicJsxElementBase(
+        child.jsxNodes[0].jsxElement,
+        "Default0",
+        true,
+        "div",
+        1,
+        0
+      );
+    }
+  });
+
+  it("argRef node - slot with default nodes has accurate boundary within fragment", function() {
     const input = `(<Button className={rh.clsAbc()}>
           {args.buttonText ||
             <>
@@ -320,9 +366,7 @@ Node  </div>)`;
         0
       );
       assert(
-        ensure(getSource(child.jsxNodes[1].rawNode, input)).startsWith(
-          "{rh.showDefault1()"
-        )
+        ensure(getSource(child.jsxNodes[1].rawNode, input)).startsWith("<div>")
       );
       assertPlasmicJsxElementBase(
         child.jsxNodes[1].jsxElement,
@@ -333,9 +377,7 @@ Node  </div>)`;
         1
       );
       assert(
-        ensure(getSource(child.jsxNodes[2].rawNode, input)).startsWith(
-          "<a className={rh.clsDefault2()}"
-        )
+        ensure(getSource(child.jsxNodes[2].rawNode, input)).startsWith("<p>")
       );
       assertPlasmicJsxElementBase(
         child.jsxNodes[2].jsxElement,
