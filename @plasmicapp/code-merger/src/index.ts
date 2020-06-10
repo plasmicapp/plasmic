@@ -343,7 +343,7 @@ type MatchResult = PerfectMatch | TypeMatch | NoMatch;
 const findMatch = (
   nodes: PlasmicASTNode[],
   start: number,
-  idMatchChecker: (idInNodes: string, idInN: string) => boolean,
+  nodeMatcher: NodeMatchChecker,
   n: PlasmicASTNode
 ): MatchResult => {
   let matchingTypeAt = -1;
@@ -363,7 +363,7 @@ const findMatch = (
     for (let i = start; i < nodes.length; i++) {
       const ni = nodes[i];
       if (ni.type === "arg") {
-        if (n.argName === ni.argName) {
+        if (nodeMatcher.argMatch(ni.argName, n.argName)) {
           return { type: "perfect", index: i };
         }
         if (matchingTypeAt === -1) {
@@ -386,7 +386,7 @@ const findMatch = (
       const ni = nodes[i];
       if (
         ni.type === "tag-or-component" &&
-        idMatchChecker(ni.jsxElement.nameInId, n.jsxElement.nameInId)
+        nodeMatcher.idMatch(ni.jsxElement.nameInId, n.jsxElement.nameInId)
       ) {
         return { type: "perfect", index: i };
       }
@@ -399,6 +399,22 @@ const findMatch = (
     ? { type: "type", index: matchingTypeAt }
     : { type: "none" };
 };
+
+class NodeMatchChecker {
+  constructor(readonly v1: CodeVersion, readonly v2: CodeVersion) {}
+  idMatch = (nameInId1: string, nameInId2: string) =>
+    nameInId1 === nameInId2 ||
+    this.v1.getUuid(nameInId1) === this.v2.getUuid(nameInId2);
+
+  argMatch = (argNameInV1: string, argNameInV2: string) => {
+    if (argNameInV1 === argNameInV2) {
+      return true;
+    }
+    const v1SlotArgUuid = this.v1.tryGetSlotArgUuid(argNameInV1);
+    const v2SlotArgUuid = this.v2.tryGetSlotArgUuid(argNameInV2);
+    return !!v1SlotArgUuid && v1SlotArgUuid === v2SlotArgUuid;
+  };
+}
 
 const mergedChildren = (
   newNode: PlasmicTagOrComponent,
@@ -420,10 +436,7 @@ const mergedChildren = (
       const prevMatch = findMatch(
         merged,
         nextInsertStartAt,
-        (newNameInId, editedNameInId) =>
-          newNameInId === editedNameInId ||
-          editedVersion.getUuid(editedNameInId) ===
-            newVersion.getUuid(newNameInId),
+        new NodeMatchChecker(newVersion, editedVersion),
         prevEditedChild
       );
       if (prevMatch.type === "perfect" || prevMatch.type === "type") {
@@ -447,10 +460,7 @@ const mergedChildren = (
       const matchInNewVersion = findMatch(
         merged,
         nextInsertStartAt,
-        (newNameInId, editedNameInId) =>
-          newNameInId === editedNameInId ||
-          editedVersion.getUuid(editedNameInId) ===
-            newVersion.getUuid(newNameInId),
+        new NodeMatchChecker(newVersion, editedVersion),
         editedChild
       );
       if (matchInNewVersion.type === "perfect") {
@@ -462,10 +472,7 @@ const mergedChildren = (
       const matchInBaseVersion = findMatch(
         baseNode.jsxElement.children,
         0,
-        (baseNameInId, editedNameInId) =>
-          baseNameInId === editedNameInId ||
-          editedVersion.getUuid(editedNameInId) ===
-            baseVersion.getUuid(baseNameInId),
+        new NodeMatchChecker(baseVersion, editedVersion),
         editedChild
       );
       if (matchInBaseVersion.type === "perfect") {
@@ -645,7 +652,53 @@ const serializeTagOrComponent = (
     return undefined;
   }
   // This is new node. Just output self.
-  return newNode.rawNode;
+  const childrenReplacement = new Map<Node, Node>();
+  newNode.jsxElement.children.forEach(child => {
+    // Plasmic never emit opaque node.
+    assert(child.type !== "opaque");
+    const childReplacement = serializeNonOpaquePlasmicASTNode(
+      child,
+      newVersion,
+      editedVersion,
+      baseVersion
+    );
+    if (childReplacement) {
+      if (babel.types.isExpression(childReplacement)) {
+        // need to wrap in expression container
+        const maybeWrapped =
+          childReplacement.type !== "JSXElement" &&
+          childReplacement.type !== "JSXFragment"
+            ? babel.types.jsxExpressionContainer(childReplacement)
+            : childReplacement;
+        childrenReplacement.set(child.rawNode, maybeWrapped);
+      } else {
+        childrenReplacement.set(child.rawNode, childReplacement);
+      }
+    }
+  });
+  // Attribute replacement
+  const attrsReplacement = new Map<Node, Node>();
+  newNode.jsxElement.attrs.forEach(attr => {
+    if (!L.isString(attr)) {
+      const [key, value] = attr;
+      // className is an opaque attribute!
+      if (value && value.type !== "opaque") {
+        const attrReplacement = serializeNonOpaquePlasmicASTNode(
+          value,
+          newVersion,
+          editedVersion,
+          baseVersion
+        );
+        if (attrReplacement) {
+          attrsReplacement.set(value.rawNode, attrReplacement);
+        }
+      }
+    }
+  });
+  return cloneDeepWithHook(
+    newNode.rawNode,
+    (n: Node) => childrenReplacement.get(n) || attrsReplacement.get(n)
+  );
 };
 
 const serializeNonOpaquePlasmicASTNode = (

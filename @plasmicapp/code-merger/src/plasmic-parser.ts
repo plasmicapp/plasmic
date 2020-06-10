@@ -175,76 +175,41 @@ const parseJSXExpressionOrContainer = (
       return { type: "child-str-call", plasmicId: ensure(m[1]), rawNode: n };
     }
   }
-  // Parsing default nodes of slot is complicated since there is no clear
-  // boundary between multiple default nodes. For example, for the following
-  // generated code,
-  //    args.XXX ||
-  //      <>
-  //       <div className={rh.clsDefault0()}></div>
-  //       {rh.showDefault1() && <div {...rh.propsDefault1()}></div>}
-  //       {rh.showDefault2() && <div {...rh.propsDefault2()}></div>}
-  //      </>
-  // the code may be edited as below, which will make the boundary difficult
-  // to detect.
-  //    myGuard() && args.XXX ||
-  //      <>
-  //       <div>
-  //         { shouldShowDefault0 ? <div className={rh.clsDefault0()}></div> : null}
-  //       </div>
-  //       <div>
-  //         {rh.showDefault1() && <div {...rh.propsDefault1()}></div>}
-  //         {rh.showDefault2() && <div {...rh.propsDefault2()}></div>}
-  //       </div>
-  //      </>
-  // We need to apply some constraints.
-  //  - it must starts with "(( args.XXX", literally.
-  //  - one can only edit attributes of the element. This means one cannot
-  //    modify the structure of the defaultNodes, except for wrapping it in
-  //    an expression if it was not or unwrap it.
-  //
-  // In the future, we could support user annotated boundary using comment.
-  // The comment works as below
-  //    args.XXX ||
-  //      <>
-  //       { // plasmicId=default0
-  //       <div>
-  //         { shouldShowDefault0 ? <div className={rh.clsDefault0()}></div> : null}
-  //       </div>
-  //       }
-  //       <div>
-  //         {rh.showDefault1() && <div {...rh.propsDefault1()}></div>}
-  //         {rh.showDefault2() && <div {...rh.propsDefault2()}></div>}
-  //       </div>
-  //      </>
+
   const rawExpr = getSource(expr, input);
   const m = rawExpr?.match(/^\(*\s*args\.([^\)\s]*)/);
   if (m) {
     const jsxNodes: PlasmicTagOrComponent[] = [];
     traverse(n, {
       noScope: true,
+      JSXFragment: function(path) {
+        // In the new version of code, multiple default nodes are wrapped in a
+        // fragment, with which, we have clear boundaries between defaultNodes.
+        path.node.children.forEach(c => {
+          if (c.type === "JSXElement" || c.type === "JSXExpressionContainer") {
+            const parsedChild = parseJSXExpressionOrContainer(c, input);
+            if (parsedChild && parsedChild.type === "tag-or-component") {
+              jsxNodes.push(parsedChild);
+            }
+          }
+        });
+        path.stop();
+      },
       JSXElement: function(path) {
-        const inHtmlContext = isInHtmlContext(path);
+        // To be conservative, JSX element's boundary stays at the element
+        // itself. This means we may over-generate the rh.showXXX helpers after
+        // each merge. But at least it is not lossy. The new version of code
+        // won't have this problem since we always wrap default node(s) in a
+        // fragment.
         const maybeWrappedJsxElement = tryParseAsPlasmicJsxElement(
           path.node,
           input
         );
         if (maybeWrappedJsxElement) {
-          // We don't allow any wrapping for defaultNode.
-          assert(maybeWrappedJsxElement.rawNode === path.node);
-          // find the boundary node, which is the first ancestor whose
-          // parent is JSXElement or JSXFragment
-          const rawNode = inHtmlContext
-            ? path.node
-            : path.findParent(isInHtmlContext)?.node || n;
-
           jsxNodes.push({
             type: "tag-or-component",
             jsxElement: maybeWrappedJsxElement,
-            rawNode:
-              rawNode.type === "JSXExpressionContainer"
-                ? rawNode
-                : // Should be JSXElement
-                  (assert(rawNode.type === "JSXElement"), rawNode as JSXElement)
+            rawNode: path.node
           });
 
           path.skip();
@@ -264,9 +229,6 @@ const parseJSXExpressionOrContainer = (
   traverse(n, {
     noScope: true,
     JSXElement: function(path) {
-      const parent = path.parent;
-      const inHtmlContext =
-        parent.type === "JSXElement" || parent.type === "JSXFragment";
       jsxElement = tryParseAsPlasmicJsxElement(path.node, input);
       if (jsxElement) {
         path.stop();
@@ -292,26 +254,28 @@ export const parseFromJsxExpression = (input: string) => {
 
 // Given an AST, collect all JSX nodes into r, which index the nodes by
 // nameInId.
-const findTagOrComponents = (
+const findNodes = (
   node: PlasmicASTNode | null,
-  r: Map<string, PlasmicTagOrComponent>
+  tags: Map<string, PlasmicTagOrComponent>,
+  args: Map<string, PlasmicArgRef>
 ) => {
   if (!node) {
     return;
   }
   if (node.type === "tag-or-component") {
-    r.set(node.jsxElement.nameInId, node);
+    tags.set(node.jsxElement.nameInId, node);
     node.jsxElement.attrs.forEach(attr => {
       if (L.isString(attr)) {
         return;
       }
-      findTagOrComponents(attr[1], r);
+      findNodes(attr[1], tags, args);
     });
     node.jsxElement.children.forEach(c => {
-      findTagOrComponents(c, r);
+      findNodes(c, tags, args);
     });
   } else if (node.type === "arg") {
-    node.jsxNodes.forEach(n => findTagOrComponents(n, r));
+    args.set(node.argName, node);
+    node.jsxNodes.forEach(n => findNodes(n, tags, args));
   }
 };
 
@@ -397,6 +361,10 @@ export class CodeVersion {
   // The node of the jsx tree.
   root: PlasmicASTNode;
 
+  private argNameToNode = new Map<string, PlasmicArgRef>();
+  private slotArgNameToUuid = new Map<string, string>();
+  private uuidToSlotArgName = new Map<string, string>();
+
   constructor(
     readonly input: string,
     // A map from nameInId to uuid
@@ -408,7 +376,7 @@ export class CodeVersion {
     } else {
       this.root = parseFromJsxExpression(input);
     }
-    findTagOrComponents(this.root, this.tagOrComponents);
+    findNodes(this.root, this.tagOrComponents, this.argNameToNode);
     this.tagOrComponents.forEach((n, nameInId) =>
       this.tagOrComponentsByUuid.set(
         ensure(this.nameInIdToUuid.get(nameInId)),
@@ -417,6 +385,11 @@ export class CodeVersion {
     );
     this.nameInIdToUuid.forEach((uuid, nameInId) => {
       this.uuidToNameInId.set(uuid, nameInId);
+      if (nameInId.startsWith("$slot")) {
+        const argName = L.lowerFirst(nameInId.substr(5));
+        this.slotArgNameToUuid.set(argName, uuid);
+        this.uuidToSlotArgName.set(uuid, argName);
+      }
     });
   }
 
@@ -439,6 +412,29 @@ export class CodeVersion {
       nameInId: node.jsxElement.nameInId,
       uuid: ensure(this.nameInIdToUuid.get(node.jsxElement.nameInId))
     };
+  }
+
+  tryGetSlotArgUuid(argName: string) {
+    return this.slotArgNameToUuid.get(argName);
+  }
+
+  // uuid for an arg could be missing since we only record uuid for slot arg
+  // only. It could also be missing in historical version.
+  findSlotArgNode(argName: string, uuid: string | undefined) {
+    // Try matching by name first
+    const node = this.argNameToNode.get(argName);
+    if (node) {
+      return node;
+    }
+    if (!uuid) {
+      return undefined;
+    }
+    // Match by UUID
+    const argNameByUuid = this.uuidToSlotArgName.get(uuid);
+    if (argNameByUuid) {
+      return this.argNameToNode.get(argNameByUuid);
+    }
+    return undefined;
   }
 
   hasShowFuncCall(node: PlasmicTagOrComponent) {

@@ -628,7 +628,6 @@ describe("Test CodeMerger", function() {
        </div>`,
       nameInIdToUuid
     );
-    debugger;
     expect(
       code(serializePlasmicASTNode(newV.root, newV, edited, base))
     ).toEqual(
@@ -659,13 +658,291 @@ describe("Test CodeMerger", function() {
        </button>`,
       nameInIdToUuid
     );
-    debugger;
     expect(
       code(serializePlasmicASTNode(newV.root, newV, edited, base))
     ).toEqual(
       formatted(
         `<button className={rh.clsRoot()}>
          </button>`
+      )
+    );
+  });
+
+  it("slot node name changed and wrapper edited", function() {
+    const nameInIdToUuid = new Map([
+      ["Root", "Root"],
+      ["$slotText", "1234"]
+    ]);
+    const base = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+        {args.text || <div className={rh.cls$slotText()}>{args.text || "Abc"}</div>}
+       </div>`,
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+        {args.text || <div className={rh.cls$slotText() + " my"}>{args.text || "Abc"}</div>}
+       </div>`,
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+        {args.text2 || <div className={rh.cls$slotText2()}>{args.text2 || "Abc"}</div>}
+       </div>`,
+      new Map([
+        ["Root", "Root"],
+        ["$slotText2", "1234"]
+      ])
+    );
+    expect(
+      code(serializePlasmicASTNode(newV.root, newV, edited, base))
+    ).toEqual(
+      formatted(
+        `<div className={rh.clsRoot()}>
+        {args.text2 || <div className={rh.cls$slotText2() + " my"}>{args.text2 || "Abc"}</div>}
+       </div>`
+      )
+    );
+  });
+
+  it("slot node name changed and default node edited", function() {
+    const nameInIdToUuid = new Map([
+      ["Root", "Root"],
+      ["Default0", "1234"]
+    ]);
+    const base = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+        {args.text || <div className={rh.clsDefault0()}>"Abc"</div>}
+       </div>`,
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+      {args.text || <div className={rh.clsDefault0() + " my"}>"Abc"</div>}
+       </div>`,
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+      {args.text2 || (rh.showNewDefault0() && <div className={rh.clsNewDefault0()}>"Abc"</div>)}
+       </div>`,
+      new Map([
+        ["Root", "Root"],
+        ["NewDefault0", "1234"]
+      ])
+    );
+    expect(
+      code(serializePlasmicASTNode(newV.root, newV, edited, base))
+    ).toEqual(
+      formatted(
+        `<div className={rh.clsRoot()}>
+        {args.text2 || (rh.showNewDefault0() && <div className={rh.clsNewDefault0() + " my"}>"Abc"</div>)}
+       </div>`
+      )
+    );
+  });
+
+  it("apply slot style via inheritance works for text slot - always has a wrapper", function() {
+    const nameInIdToUuid = new Map([
+      ["Root", "Root"],
+      ["$slotText", "1234"]
+    ]);
+    const base = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+        {args.text && <div className={rh.cls$slotText()}>{args.text || "Abc"}</div>}
+       </div>`,
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+        <div className={rh.cls$slotText() + " my"}>{args.text || "Abc"}</div>
+       </div>`,
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+        <div className={rh.cls$slotText2()}>{args.text2 || "Abc"}</div>
+       </div>`,
+      new Map([
+        ["Root", "Root"],
+        ["$slotText2", "1234"]
+      ])
+    );
+    expect(
+      code(serializePlasmicASTNode(newV.root, newV, edited, base))
+    ).toEqual(
+      formatted(
+        `<div className={rh.clsRoot()}>
+        <div className={rh.cls$slotText2() + " my"}>{args.text2 || "Abc"}</div>
+       </div>`
+      )
+    );
+  });
+
+  it("apply slot style via inheritance works for text slot - adding a wrapper", function() {
+    const nameInIdToUuid = new Map([["Root", "Root"]]);
+    const base = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+        {args.text || "Abc"}
+       </div>`,
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+        {args.text || "Abc"}
+       </div>`,
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+        <div className={rh.cls$slotText2()}>{args.text2 || "Abc"}</div>
+       </div>`,
+      new Map([
+        ["Root", "Root"],
+        ["$slotText2", "1234"]
+      ])
+    );
+    expect(
+      code(serializePlasmicASTNode(newV.root, newV, edited, base))
+    ).toEqual(
+      formatted(
+        `<div className={rh.clsRoot()}>
+        <div className={rh.cls$slotText2()}>{args.text2 || "Abc"}</div>
+       </div>`
+      )
+    );
+  });
+
+  it("apply slot style via inheritance works for non text slot - always has a wrapper", function() {
+    const nameInIdToUuid = new Map([
+      ["Root", "Root"],
+      ["Img0", "1234"],
+      ["$slotIconSlot", "2345"]
+    ]);
+    const base = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+        <div className={rh.cls$slotIconSlot()}>
+          {args.iconSlot || <img className={rh.clsImg0()}></img>}
+        </div>
+       </div>`,
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+        <div className={rh.cls$slotIconSlot()}>
+          {args.iconSlot || <img className={rh.clsImg0() + " my"}></img>}
+        </div>
+       </div>`,
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+        <div className={rh.cls$slotIconSlot2()}>
+          {args.iconSlot2 || <img className={rh.clsImg0()}></img>}
+        </div>
+       </div>`,
+      new Map([
+        ["Root", "Root"],
+        ["Img0", "1234"],
+        ["$slotIconSlot2", "2345"]
+      ])
+    );
+    expect(
+      code(serializePlasmicASTNode(newV.root, newV, edited, base))
+    ).toEqual(
+      formatted(
+        `<div className={rh.clsRoot()}>
+        <div className={rh.cls$slotIconSlot2()}>
+          {args.iconSlot2 || <img className={rh.clsImg0() + " my"}></img>}
+        </div>
+       </div>`
+      )
+    );
+  });
+
+  it("apply slot style via inheritance works for non text slot - adding a wrapper", function() {
+    const nameInIdToUuid = new Map([
+      ["Root", "Root"],
+      ["Img0", "1234"]
+    ]);
+    const base = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+        {args.iconSlot || <img className={rh.clsImg0()}></img>}
+       </div>`,
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+        {args.iconSlot || <img className={rh.clsImg0() + " my"}></img>}
+       </div>`,
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+        <div className={rh.cls$slotIconSlot()}>
+          {args.iconSlot || <img className={rh.clsImg0()}></img>}
+        </div>
+       </div>`,
+      new Map([
+        ["Root", "Root"],
+        ["Img0", "1234"],
+        ["$slotIconSlot", "2345"]
+      ])
+    );
+    debugger;
+    expect(
+      code(serializePlasmicASTNode(newV.root, newV, edited, base))
+    ).toEqual(
+      formatted(
+        `<div className={rh.clsRoot()}>
+        <div className={rh.cls$slotIconSlot()}>
+          {args.iconSlot || <img className={rh.clsImg0() + " my"}></img>}
+        </div>
+       </div>`
+      )
+    );
+  });
+
+  it("apply slot style via inheritance works for non text slot - removing the wrapper", function() {
+    const nameInIdToUuid = new Map([
+      ["Root", "Root"],
+      ["Img0", "1234"],
+      ["$slotIconSlot", "2345"]
+    ]);
+    const base = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+         <div className={rh.cls$slotIconSlot()}>
+          {args.iconSlot || <img className={rh.clsImg0()}></img>}
+         </div>
+       </div>`,
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+         <div className={rh.cls$slotIconSlot()}>
+          {args.iconSlot || <img className={rh.clsImg0() + " my"}></img>}
+         </div>
+       </div>`,
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+          {args.iconSlot2 || <img className={rh.clsImg0()}></img>}
+       </div>`,
+      new Map([
+        ["Root", "Root"],
+        ["Img0", "1234"],
+        ["$slotIconSlot2", "2345"]
+      ])
+    );
+    debugger;
+    expect(
+      code(serializePlasmicASTNode(newV.root, newV, edited, base))
+    ).toEqual(
+      formatted(
+        `<div className={rh.clsRoot()}>
+        {args.iconSlot2 || <img className={rh.clsImg0() + " my"}></img>}
+     </div>`
       )
     );
   });
