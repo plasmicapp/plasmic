@@ -27,7 +27,7 @@
     "utility-types": "^3.10.0"
   },
   "dependencies": {
-    "@plasmicapp/code-merger": "^0.0.13",
+    "@plasmicapp/code-merger": "^0.0.14",
     "@types/findup-sync": "^2.0.2",
     "@types/jest": "^26.0.0",
     "@types/prettier": "^2.0.1",
