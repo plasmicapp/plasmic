@@ -1,13 +1,16 @@
 {
   "name": "@plasmicapp/cli",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "plasmic cli for syncing local code with Plasmic designs",
   "main": "./dist/index.js",
   "bin": {
     "plasmic": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsc",
+    "wtest": "jest --colors --watchAll",
+    "test": "jest --colors",
+    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
+    "build": "bash build.sh",
     "plasmic": "ts-node src/index.ts"
   },
   "devDependencies": {
@@ -20,12 +23,14 @@
     "@types/socket.io-client": "^1.4.32",
     "@types/yargs": "^13.0.3",
     "ts-node": "^8.4.1",
-    "typescript": "^3.7.2",
+    "typescript": "^3.9.5",
     "utility-types": "^3.10.0"
   },
   "dependencies": {
     "@plasmicapp/code-merger": "^0.0.13",
     "@types/findup-sync": "^2.0.2",
+    "@types/jest": "^26.0.0",
+    "@types/prettier": "^2.0.1",
     "axios": "^0.19.0",
     "chalk": "^2.4.2",
     "fast-glob": "^3.2.2",
@@ -33,11 +38,14 @@
     "fs": "^0.0.1-security",
     "glob": "^7.1.6",
     "inquirer": "^7.0.3",
+    "jest": "^26.0.1",
     "latest-version": "^5.1.0",
     "lodash": "^4.17.15",
     "path": "^0.12.7",
+    "prettier": "^2.0.5",
     "semver": "^7.3.2",
     "socket.io-client": "^2.3.0",
+    "ts-jest": "^26.1.0",
     "yargs": "^14.2.0"
   }
 }

@@ -17,7 +17,8 @@ import {
   fixProjectFilePaths,
   findSrcDirPath,
   readFileContent,
-  fixIconFilePath
+  fixIconFilePath,
+  stripExtension
 } from "../utils/file-utils";
 import {
   ProjectBundle,
@@ -27,7 +28,11 @@ import {
   StyleConfigResponse,
   IconBundle
 } from "../api";
-import { fixAllImportStatements } from "../utils/code-utils";
+import {
+  fixAllImportStatements,
+  tsxToJsx,
+  formatJs
+} from "../utils/code-utils";
 import { upsertStyleTokens } from "./sync-styles";
 import { flatMap } from "../utils/lang-utils";
 import {
@@ -74,6 +79,15 @@ function maybeMigrate(context: PlasmicContext) {
   });
 }
 
+function maybeConvertTsxToJsx(fileName: string, content: string) {
+  if (fileName.endsWith("tsx")) {
+    const jsFileName = stripExtension(fileName) + ".jsx";
+    const jsContent = formatJs(tsxToJsx(content));
+    return [jsFileName, jsContent];
+  }
+  return [fileName, content];
+}
+
 export async function syncProjects(opts: SyncArgs) {
   const context = getContext(opts);
   const projectIds =
@@ -115,6 +129,27 @@ export async function syncProjects(opts: SyncArgs) {
     )
   ) {
     maybeMigrate(context);
+  }
+
+  if (context.config.code.lang === "js") {
+    results.forEach(project => {
+      project.components.forEach(c => {
+        [c.renderModuleFileName, c.renderModule] = maybeConvertTsxToJsx(
+          c.renderModuleFileName,
+          c.renderModule
+        );
+        [c.skeletonModuleFileName, c.skeletonModule] = maybeConvertTsxToJsx(
+          c.skeletonModuleFileName,
+          c.skeletonModule
+        );
+      });
+      project.globalVariants.forEach(gv => {
+        [gv.contextFileName, gv.contextModule] = maybeConvertTsxToJsx(
+          gv.contextFileName,
+          gv.contextModule
+        );
+      });
+    });
   }
   // Materialize scheme into each component config.
   context.config.projects.forEach(p =>

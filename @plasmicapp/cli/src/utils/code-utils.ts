@@ -13,6 +13,9 @@ import {
 } from "./config-utils";
 import { stripExtension, writeFileContent } from "./file-utils";
 import { flatMap } from "./lang-utils";
+import * as ts from "typescript";
+import * as Prettier from "prettier/standalone";
+import parserTypeScript from "prettier/parser-typescript";
 
 const IMPORT_MARKER = /import\s+([^;]+)\s*;.*\s+plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss|defaultcss|icon))?/g;
 const IMPORT_MARKER_WITH_FROM = /^([^;]+)\s+from\s+["'`]([^"'`;]+)["'`]$/;
@@ -241,3 +244,40 @@ function fixFileImportStatements(
   );
   writeFileContent(context, srcDirFilePath, newContent, { force: true });
 }
+
+class CompilerOptions {
+  private static opts: ts.CompilerOptions | undefined = undefined;
+
+  static getOpts() {
+    if (!this.opts) {
+      let curDir = __dirname;
+      let configPath = "";
+      do {
+        curDir = path.join(curDir, "..");
+        configPath = path.join(curDir, "tsconfig-transform.json");
+      } while (!fs.existsSync(configPath));
+      const c = ts.readConfigFile(configPath, path =>
+        fs.readFileSync(path, { encoding: "utf-8" })
+      );
+      this.opts = ts.convertCompilerOptionsFromJson(
+        c.config.compilerOptions,
+        "."
+      ).options;
+    }
+    return this.opts;
+  }
+}
+
+export const tsxToJsx = (code: string) => {
+  let result = ts.transpileModule(code, {
+    compilerOptions: CompilerOptions.getOpts()
+  });
+  return result.outputText;
+};
+
+export const formatJs = (code: string) => {
+  return Prettier.format(code, {
+    parser: "typescript",
+    plugins: [parserTypeScript]
+  });
+};

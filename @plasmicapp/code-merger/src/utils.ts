@@ -18,14 +18,14 @@ export const code = (
 export const formatted = (c: string) => {
   return Prettier.format(c, {
     parser: "typescript",
-    plugins: [parserTypeScript],
+    plugins: [parserTypeScript]
   });
 };
 
 export function parseExpr(input: string) {
   return parser.parseExpression(input, {
     strictMode: false,
-    plugins: ["jsx", "typescript"],
+    plugins: ["jsx", "typescript"]
   });
 }
 

@@ -76,7 +76,8 @@ export function buildBaseNameToFiles(
   context: PlasmicContext
 ): Record<string, string[]> {
   const srcDir = context.absoluteSrcDir;
-  const allFiles = glob.sync(`${srcDir}/**/*.+(ts|css|tsx|json)`, {
+  const scriptFileExt = context.config.code.lang === "ts" ? "tsx" : "jsx";
+  const allFiles = glob.sync(`${srcDir}/**/*.+(ts|css|${scriptFileExt}|json)`, {
     ignore: [`${srcDir}/**/node_modules/**/*`]
   });
   return L.groupBy(allFiles, f => path.basename(f));
