@@ -68,6 +68,24 @@ const findAttrValueNode = (name: string, jsxElement: PlasmicJsxElement) => {
   return undefined;
 };
 
+const mergedTag = (
+  newNode: PlasmicTagOrComponent,
+  editedNode: PlasmicTagOrComponent,
+  baseNode: PlasmicTagOrComponent
+) => {
+  const baseTag = baseNode.jsxElement.rawNode.openingElement.name;
+  const editedTag = editedNode.jsxElement.rawNode.openingElement.name;
+  const newTag = newNode.jsxElement.rawNode.openingElement.name;
+  const baseTagCode = code(baseTag);
+  const editedTagCode = code(editedTag);
+  if (baseTagCode === editedTagCode) {
+    return newTag;
+  }
+  // User edited the tag. Always use the edited version, even when it conflict
+  // with the new version.
+  return editedTag;
+};
+
 const mergeAttributes = (
   newNode: PlasmicTagOrComponent,
   editedNode: PlasmicTagOrComponent,
@@ -563,11 +581,21 @@ const serializeTagOrComponent = (
   const editedNode = editedVersion.findNode(nodeId);
   const baseNode = baseVersion.findNode(nodeId);
   if (editedNode) {
-    // the node must exist in base versio.
+    // the node must exist in base version.
     assert(!!baseNode);
     const editedNodeJsxElementClone = babel.types.cloneDeep(
       editedNode.jsxElement.rawNode
     );
+
+    editedNodeJsxElementClone.openingElement.name = mergedTag(
+      newNode,
+      editedNode,
+      baseNode
+    );
+    if (editedNodeJsxElementClone.closingElement) {
+      editedNodeJsxElementClone.closingElement.name =
+        editedNodeJsxElementClone.openingElement.name;
+    }
 
     editedNodeJsxElementClone.openingElement.attributes = mergeAttributes(
       newNode,

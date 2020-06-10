@@ -642,6 +642,34 @@ describe("Test CodeMerger", function() {
     );
   });
 
+  it("tag change in new version", function() {
+    const nameInIdToUuid = new Map([["Root", "Root"]]);
+    const base = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+       </div>`,
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+       </div>`,
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      `<button className={rh.clsRoot()}>
+       </button>`,
+      nameInIdToUuid
+    );
+    debugger;
+    expect(
+      code(serializePlasmicASTNode(newV.root, newV, edited, base))
+    ).toEqual(
+      formatted(
+        `<button className={rh.clsRoot()}>
+         </button>`
+      )
+    );
+  });
+
   it("projectSyncMetadataModel", function() {
     const m = new ProjectSyncMetadataModel([
       new ComponentSkeletonModel(
@@ -1120,7 +1148,6 @@ describe("Test CodeMerger", function() {
             <DefaultFlexStack {...rh.propsRoot()}>
               <div className={rh.clsLeftIconSlots()}>
                 {args.triangle || <div {...rh.props9MoAVl56zyD()} />}
-
                 {args.type || (
                   <>
                     {rh.showTZ4YvnJs1m0() && <div {...rh.propsTZ4YvnJs1m0()} />}
