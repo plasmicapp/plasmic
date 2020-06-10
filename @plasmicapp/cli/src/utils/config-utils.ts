@@ -38,7 +38,7 @@ export interface PlasmicConfig {
 
 export interface CodeConfig {
   // Language to generate code in
-  lang: "ts";
+  lang: "ts" | "js";
 
   // The default code generation scheme. Each component can override the scheme.
   scheme: "blackbox" | "direct";
