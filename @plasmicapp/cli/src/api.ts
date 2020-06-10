@@ -83,7 +83,9 @@ export class PlasmicApi {
     reactWebVersion: string | undefined,
     newCompScheme: "blackbox" | "direct",
     // The list of existing components as [componentUuid, codeScheme]
-    existingCompScheme: Array<[string, "blackbox" | "direct"]>
+    existingCompScheme: Array<[string, "blackbox" | "direct"]>,
+    // The list of [componentUuid, revision]
+    existingDirectCompRevision: Array<[string, number]>
   ) {
     const result = await this.post(
       `${this.auth.host}/api/v1/projects/${projectId}/code/components`,
@@ -91,7 +93,8 @@ export class PlasmicApi {
         cliVersion,
         reactWebVersion: reactWebVersion || "",
         newCompScheme,
-        existingCompScheme
+        existingCompScheme,
+        existingDirectCompRevision
       }
     );
     console.log("RESULT", result.data);
