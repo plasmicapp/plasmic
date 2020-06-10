@@ -11,7 +11,8 @@ import {
   PlasmicConfig,
   fillDefaults,
   writeConfig,
-  writeAuth
+  writeAuth,
+  DEFAULT_CONFIG
 } from "../utils/config-utils";
 import { execSync, spawnSync } from "child_process";
 import { installUpgrade } from "../utils/npm-utils";
@@ -48,7 +49,7 @@ export async function initPlasmic(opts: InitArgs) {
     const auth = await inquirer.prompt([
       {
         name: "user",
-        message: "Your plasmic user email"
+        message: "Your Plasmic user email"
       },
       {
         name: "token",
@@ -69,16 +70,55 @@ export async function initPlasmic(opts: InitArgs) {
   } else {
     console.log(`Using existing Plasmic credentials at ${authFile}`);
   }
+
+  const langDetect = fs.existsSync("tsconfig.json")
+    ? {
+        lang: "ts",
+        explanation: "tsconfig.json detected, guessing Typescript"
+      }
+    : {
+        lang: "js",
+        explanation: "No tsconfig.json detected, guessing Javascript"
+      };
+
+  const answers = await inquirer.prompt([
+    {
+      name: "srcDir",
+      message:
+        "What directory should React component files (that you edit) be put into?",
+      default: DEFAULT_CONFIG.srcDir,
+      when: () => !opts.srcDir
+    },
+    {
+      name: "plasmicDir",
+      message: (ans: any) =>
+        `What directory should Plasmic-managed files be put into (relative to ${ans.srcDir ||
+          DEFAULT_CONFIG.srcDir})?`,
+      default: DEFAULT_CONFIG.defaultPlasmicDir,
+      when: () => !opts.plasmicDir
+    },
+    // TODO: No effect currently, need to adjust CLI flags once JS codegen is ready.
+    {
+      name: "codeLang",
+      message: `What target language should Plasmic generate code in? (${langDetect.explanation})`,
+      default: langDetect.lang,
+      when: () => !opts.codeLang
+    }
+  ]);
+
+  const merged = { ...opts, ...answers };
   const newConfigFile =
-    opts.config || path.join(process.cwd(), CONFIG_FILE_NAME);
-  writeConfig(newConfigFile, createInitConfig(opts));
+    merged.config || path.join(process.cwd(), CONFIG_FILE_NAME);
+  writeConfig(newConfigFile, createInitConfig(merged));
   console.log("Successfully created plasmic.json.");
+  console.log();
 
   const addDep = await inquirer.prompt([
     {
       name: "answer",
       message:
-        "@plasmicapp/react-web is required to build plasmic generated code. Do you want to add it now? (yes/no)",
+        "@plasmicapp/react-web is a small runtime required by Plasmic-generated code. Do you want to add it now?" +
+        " (yes/no)",
       default: "yes"
     }
   ]);

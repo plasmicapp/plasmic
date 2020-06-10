@@ -26,7 +26,6 @@ yargs
     "init",
     "Initializes Plasmic for a project.",
     yags => {
-      const defaultSrcDir = fs.existsSync("./src") ? "./src" : ".";
       yags
         .option("host", {
           describe: "Plasmic host to use",
@@ -41,7 +40,7 @@ yargs
         .option("code-lang", {
           describe: "Target language to generate code for",
           choices: ["ts"],
-          default: DEFAULT_CONFIG.code.lang
+          default: "ts"
         })
         .option("code-scheme", {
           describe: "Code generation scheme to use",
@@ -49,15 +48,16 @@ yargs
           default: DEFAULT_CONFIG.code.scheme
         })
         .option("src-dir", {
-          describe: "Folder where your React code files live",
+          describe:
+            "Default directory to put React component files (that you edit) into",
           type: "string",
-          default: defaultSrcDir
+          default: ""
         })
         .option("plasmic-dir", {
           describe:
-            "Folder where Plasmic will dump Plasmic-generated files by default; relative to src-dir",
+            "Default directory to put Plasmic-managed files into; relative to src-dir",
           type: "string",
-          default: `./plasmic`
+          default: ""
         })
         .option("style-scheme", {
           describe: "Styling framework to use",
