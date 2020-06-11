@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/cli",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "plasmic cli for syncing local code with Plasmic designs",
   "main": "./dist/index.js",
   "bin": {
@@ -23,7 +23,6 @@
     "@types/socket.io-client": "^1.4.32",
     "@types/yargs": "^13.0.3",
     "ts-node": "^8.4.1",
-    "typescript": "^3.9.5",
     "utility-types": "^3.10.0"
   },
   "dependencies": {
@@ -46,6 +45,7 @@
     "semver": "^7.3.2",
     "socket.io-client": "^2.3.0",
     "ts-jest": "^26.1.0",
+    "typescript": "^3.9.5",
     "yargs": "^14.2.0"
   }
 }
