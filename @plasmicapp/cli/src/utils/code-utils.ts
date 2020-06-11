@@ -277,6 +277,9 @@ export const tsxToJsx = (code: string) => {
 
 export const formatJs = (code: string) => {
   return Prettier.format(code, {
+    printWidth: 80,
+    tabWidth: 2,
+    useTabs: false,
     parser: "typescript",
     plugins: [parserTypeScript]
   });
