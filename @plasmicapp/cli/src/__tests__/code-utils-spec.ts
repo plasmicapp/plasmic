@@ -277,6 +277,7 @@ import { ensure, asOne, isValidEmail } from "../../../../common";
 import { createSandboxUrl } from "../../../../codesandbox/url";
 import { Tooltip } from "antd";
 import { observer } from "mobx-react-lite";
+
 function _CodeSandboxDialogContent(props) {
   const sc = props.sc;
   const [inviting, setInviting] = React.useState(false);
@@ -344,6 +345,7 @@ function _CodeSandboxDialogContent(props) {
     canEdit: !sc.canEditProject() ? "no" : undefined,
     scheme: codeScheme === "direct" ? "direct" : "blackbox",
   };
+
   const args = {};
   // The following code block is fully managed by Plasmic. Don't edit - it will
   // be overwritten after every "plasmic sync".
@@ -484,6 +486,7 @@ function _CodeSandboxDialogContent(props) {
     </div>
   );
 }
+
 export const CodeSandboxDialogContent = observer(_CodeSandboxDialogContent);
       `.trim()
     );

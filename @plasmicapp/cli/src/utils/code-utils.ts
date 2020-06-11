@@ -16,6 +16,10 @@ import { flatMap } from "./lang-utils";
 import * as ts from "typescript";
 import * as Prettier from "prettier/standalone";
 import parserTypeScript from "prettier/parser-typescript";
+import * as parser from "@babel/parser";
+import traverse, { Node, NodePath } from "@babel/traverse";
+import generate, { GeneratorOptions } from "@babel/generator";
+import * as babel from "@babel/core";
 
 const IMPORT_MARKER = /import\s+([^;]+)\s*;.*\s+plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss|defaultcss|icon))?/g;
 const IMPORT_MARKER_WITH_FROM = /^([^;]+)\s+from\s+["'`]([^"'`;]+)["'`]$/;
@@ -276,7 +280,34 @@ export const tsxToJsx = (code: string) => {
 };
 
 export const formatJs = (code: string) => {
-  return Prettier.format(code, {
+  const file = parser.parse(code, {
+    strictMode: true,
+    sourceType: "module",
+    plugins: ["jsx", "typescript"]
+  });
+  let newLineMarker = "THIS_SHALL_BE_NEW_LINE";
+  while (code.includes(newLineMarker)) {
+    newLineMarker = newLineMarker + "_REALLY";
+  }
+  traverse(file, {
+    Statement: function(path) {
+      if (
+        file.program.body.includes(path.node) &&
+        path.node.type !== "ImportDeclaration"
+      ) {
+        path.insertBefore(babel.types.stringLiteral(newLineMarker));
+        path.skip();
+      }
+    }
+  });
+
+  const withmarkers = generate(file, { retainLines: true }).code;
+  const withNewLines = withmarkers.replace(
+    new RegExp(`"${newLineMarker}"`, "g"),
+    "\n"
+  );
+
+  return Prettier.format(withNewLines, {
     printWidth: 80,
     tabWidth: 2,
     useTabs: false,
