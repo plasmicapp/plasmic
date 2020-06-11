@@ -106,12 +106,35 @@ export async function syncProjects(opts: SyncArgs) {
     "@plasmicapp/react-web"
   );
 
+  const baseNameToFiles = buildBaseNameToFiles(context);
+
   const results = await Promise.all(
     projectIds.map(projectId => {
       const existingProject = context.config.projects.find(
         p => p.projectId === projectId
       );
-      const existingCompConfig: Array<[string, "blackbox" | "direct"]> = (
+      const existingDirectCompRevision = new Array<[string, number]>();
+      if (existingProject) {
+        existingProject.components.forEach(compConfig => {
+          if (compConfig.scheme === "direct") {
+            fixComponentPaths(
+              context.absoluteSrcDir,
+              compConfig,
+              baseNameToFiles
+            );
+            const editedFile = readFileContent(
+              context,
+              compConfig.importSpec.modulePath
+            );
+            const m = editedFile.match(/^\s*plasmic-managed-jsx\/(\d+)\s*$/);
+            if (m) {
+              existingDirectCompRevision.push([compConfig.id, +m[1]]);
+            }
+          }
+        });
+      }
+
+      const existingCompScheme: Array<[string, "blackbox" | "direct"]> = (
         existingProject?.components || []
       ).map(c => [c.id, c.scheme]);
       return context.api.projectComponents(
@@ -119,7 +142,8 @@ export async function syncProjects(opts: SyncArgs) {
         getCliVersion(),
         reactWebVersion,
         opts.newComponentScheme || context.config.code.scheme,
-        existingCompConfig
+        existingCompScheme,
+        existingDirectCompRevision
       );
     })
   );
@@ -159,8 +183,6 @@ export async function syncProjects(opts: SyncArgs) {
       }
     })
   );
-
-  const baseNameToFiles = buildBaseNameToFiles(context);
 
   syncStyleConfig(context, await context.api.genStyleConfig(), baseNameToFiles);
 
