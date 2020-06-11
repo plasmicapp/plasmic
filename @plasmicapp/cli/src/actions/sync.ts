@@ -445,8 +445,10 @@ function syncProjectIconAssets(
   iconBundles: IconBundle[],
   baseNameToFiles: Record<string, string[]>
 ) {
+  if (!project.icons) {
+    project.icons = [];
+  }
   const knownIconConfigs = L.keyBy(project.icons, i => i.id);
-  console.log("ICON BUNDLES", iconBundles);
   for (const bundle of iconBundles) {
     console.log(
       `Syncing icon ${bundle.name} [${project.projectId}/${bundle.id}]`
@@ -501,6 +503,8 @@ async function syncProjectConfig(
       icons: []
     };
     context.config.projects.push(cliProject);
+  } else {
+    cliProject.projectName = pc.projectName;
   }
 
   if (!cliProject.cssFilePath) {

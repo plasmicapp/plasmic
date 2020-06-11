@@ -97,7 +97,6 @@ export class PlasmicApi {
         existingDirectCompRevision
       }
     );
-    console.log("RESULT", result.data);
     return result.data as ProjectBundle;
   }
 
