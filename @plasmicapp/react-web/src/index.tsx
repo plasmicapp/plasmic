@@ -4,18 +4,12 @@ import React from "react";
 export type ElementTag = keyof JSX.IntrinsicElements;
 
 interface Variants {
-  [vg: string]: string | string[];
+  [vg: string]: any;
 }
 
-type StringArray<T extends string> = T[];
-
-type VariantArg<V extends string | string[]> = V extends StringArray<infer M>
-  ? M | M[] | { [v in M]?: boolean }
-  : V;
-
-export type VariantsArg<V extends Variants> = {
-  [vg in keyof V]?: VariantArg<V[vg]>;
-};
+export type MultiChoiceArg<M extends string> = M | M[] | { [v in M]?: boolean };
+export type SingleChoiceArg<M extends string> = M;
+export type SingleBooleanChoiceArg<M extends string> = M | boolean;
 
 interface OverrideTwiddle {
   wrapChildren?: (children: React.ReactNode) => React.ReactNode;
@@ -51,7 +45,7 @@ export interface RenderOpts<
   A extends Args,
   O extends Overrides
 > {
-  variants?: VariantsArg<V>;
+  variants?: V;
   args?: A;
   overrides?: O;
 }
@@ -80,7 +74,7 @@ export type Flex<DefaultElementType extends React.ElementType> =
   | ((props: React.ComponentProps<DefaultElementType>) => React.ReactNode);
 
 export function hasVariant<V extends Variants>(
-  variants: VariantsArg<V> | undefined,
+  variants: V | undefined,
   groupName: keyof V,
   variant: string
 ) {
@@ -89,6 +83,10 @@ export function hasVariant<V extends Variants>(
   }
   const groupVariants = variants[groupName];
   if (groupVariants == null) {
+    return false;
+  } else if (groupVariants === true) {
+    return variant === groupName;
+  } else if (groupVariants === false) {
     return false;
   } else if (Array.isArray(groupVariants)) {
     return groupVariants.includes(variant);
@@ -443,18 +441,15 @@ export abstract class Renderer<
   Root extends keyof RFs
 > {
   constructor(
-    protected variants: VariantsArg<V>,
+    protected variants: V,
     protected args: A,
     protected renderFuncs: RFs,
     protected root: Root
   ) {}
-  protected abstract create(
-    variants: VariantsArg<V>,
-    args: A
-  ): Renderer<V, A, RFs, Root>;
+  protected abstract create(variants: V, args: A): Renderer<V, A, RFs, Root>;
   abstract getInternalVariantProps(): string[];
   abstract getInternalArgProps(): string[];
-  withVariants(variants: VariantsArg<V>) {
+  withVariants(variants: V) {
     return this.create({ ...this.variants, ...variants }, this.args);
   }
   withArgs(args: Partial<A>) {
@@ -497,21 +492,6 @@ export class NodeRenderer<RF extends RenderFunc<any, any, any>> {
     });
   }
 }
-
-export type OmitVariants<X extends Variants, V extends Variants> = {
-  [k in keyof X]: k extends keyof V ? ExcludeVariants<X[k], V[k]> : X[k];
-};
-
-type ExcludeVariants<
-  X extends string | string[],
-  Y extends string | string[]
-> = X extends StringArray<infer x>
-  ? Y extends StringArray<infer y>
-    ? Exclude<x, y>[]
-    : Exclude<x, Y>[]
-  : Y extends StringArray<infer y>
-  ? Exclude<X, y>
-  : Exclude<X, Y>;
 
 export type RendererVariants<
   R extends Renderer<any, any, any, any>
