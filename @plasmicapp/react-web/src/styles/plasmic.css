@@ -15,3 +15,7 @@
 .__wab_slot {
   display: contents;
 }
+
+.__wab_slot-string-wrapper {
+  position: relative;
+}
