@@ -39,8 +39,8 @@ yargs
         })
         .option("code-lang", {
           describe: "Target language to generate code for",
-          choices: ["ts"],
-          default: "ts"
+          choices: ["", "js", "ts"],
+          default: ""
         })
         .option("code-scheme", {
           describe: "Code generation scheme to use",

@@ -81,6 +81,18 @@ export async function initPlasmic(opts: InitArgs) {
         explanation: "No tsconfig.json detected, guessing Javascript"
       };
 
+  const jsOpt = {
+    name: "Javascript",
+    value: "js",
+    short: "js"
+  };
+
+  const tsOpt = {
+    name: "Typescript",
+    value: "ts",
+    short: "ts"
+  };
+
   const answers = await inquirer.prompt([
     {
       name: "srcDir",
@@ -97,11 +109,12 @@ export async function initPlasmic(opts: InitArgs) {
       default: DEFAULT_CONFIG.defaultPlasmicDir,
       when: () => !opts.plasmicDir
     },
-    // TODO: No effect currently, need to adjust CLI flags once JS codegen is ready.
     {
       name: "codeLang",
       message: `What target language should Plasmic generate code in? (${langDetect.explanation})`,
-      default: langDetect.lang,
+      type: "list",
+      choices: () =>
+        langDetect.lang === "js" ? [jsOpt, tsOpt] : [tsOpt, jsOpt],
       when: () => !opts.codeLang
     }
   ]);
