@@ -1,4 +1,13 @@
-import { tsxToJsx, formatJs } from "../utils/code-utils";
+import {
+  tsxToJsx,
+  formatJs,
+  parseImport,
+  ensureImportSpecifierWithAlias,
+  toCode,
+  ensureImportDefaultSpecifier
+} from "../utils/code-utils";
+import { code } from "../../../code-merger/src/utils";
+import { iteratee } from "lodash";
 
 describe("code-utils", function() {
   it("typescript to javascript should work", function() {
@@ -490,5 +499,166 @@ function _CodeSandboxDialogContent(props) {
 export const CodeSandboxDialogContent = observer(_CodeSandboxDialogContent);
       `.trim()
     );
+  });
+
+  const doEnsureImportSpecifierWithAlias = (
+    importStmt: string,
+    imported: string,
+    alias: string
+  ) => {
+    const decl = parseImport(importStmt);
+    if (decl) {
+      ensureImportSpecifierWithAlias(decl, imported, alias);
+      return toCode(decl);
+    } else {
+      return "";
+    }
+  };
+
+  const doEnsureImportDefaultSpecifier = (
+    importStmt: string,
+    defaultExport: string
+  ) => {
+    const decl = parseImport(importStmt);
+    if (decl) {
+      ensureImportDefaultSpecifier(decl, defaultExport);
+      return toCode(decl);
+    } else {
+      return "";
+    }
+  };
+
+  it("fix import default specifier should work", function() {
+    // nothing changed
+    expect(
+      doEnsureImportDefaultSpecifier(
+        `import Button from "../plasmic/Button"; // plasmic-import: 12345/component`,
+        "Button"
+      )
+    ).toEqual(
+      `import Button from "../plasmic/Button"; // plasmic-import: 12345/component`
+    );
+
+    // update
+    expect(
+      doEnsureImportDefaultSpecifier(
+        `import Button from "../plasmic/Button"; // plasmic-import: 12345/component`,
+        "Button2"
+      )
+    ).toEqual(
+      `import Button2 from "../plasmic/Button"; // plasmic-import: 12345/component`
+    );
+    // update with other specifiers
+    expect(
+      doEnsureImportDefaultSpecifier(
+        `import Button, { Button__Variants, Button__Args as Args } from "../plasmic/Button"; // plasmic-import: 12345/component`,
+        "Button2"
+      )
+    ).toEqual(
+      `import Button2, {
+  Button__Variants,
+  Button__Args as Args
+} from "../plasmic/Button"; // plasmic-import: 12345/component`
+    );
+
+    // insert
+    expect(
+      doEnsureImportDefaultSpecifier(
+        `import { Button__Variants, Button__Args as Args } from "../plasmic/Button"; // plasmic-import: 12345/component`,
+        "Button2"
+      )
+    ).toEqual(
+      `import Button2, {
+  Button__Variants,
+  Button__Args as Args
+} from "../plasmic/Button"; // plasmic-import: 12345/component`
+    );
+
+    // multiline
+    expect(
+      doEnsureImportDefaultSpecifier(
+        `import {
+  Button__Variants,
+  Button__Args as Args
+} from "../plasmic/Button"; // plasmic-import: 12345DeadBeef12345DeadBeef12345DeadBeef12345DeadBeef12345DeadBeef12345DeadBeef12345DeadBeef/component`,
+        "Button2"
+      )
+    ).toEqual(
+      `import Button2, {
+  Button__Variants,
+  Button__Args as Args
+} from "../plasmic/Button"; // plasmic-import: 12345DeadBeef12345DeadBeef12345DeadBeef12345DeadBeef12345DeadBeef12345DeadBeef12345DeadBeef/component`
+    );
+  });
+
+  it("fix import specifier should work", function() {
+    // nothing changed
+    expect(
+      doEnsureImportSpecifierWithAlias(
+        `import { PlasmicButton as Button } from "../plasmic/Button"; // plasmic-import: 12345/component`,
+        "PlasmicButton",
+        "Button"
+      )
+    ).toEqual(
+      `import { PlasmicButton as Button } from "../plasmic/Button"; // plasmic-import: 12345/component`
+    );
+
+    // Update
+    expect(
+      doEnsureImportSpecifierWithAlias(
+        `import { PlasmicButton as Button } from "../plasmic/Button"; // plasmic-import: 12345/component`,
+        "PlasmicButton1",
+        "Button"
+      )
+    ).toEqual(
+      `import { PlasmicButton1 as Button } from "../plasmic/Button"; // plasmic-import: 12345/component`
+    );
+
+    // Update with default
+    expect(
+      doEnsureImportSpecifierWithAlias(
+        `import Default, { PlasmicButton as Button } from "../plasmic/Button"; // plasmic-import: 12345/component`,
+        "PlasmicButton1",
+        "Button"
+      )
+    ).toEqual(
+      `import Default, { PlasmicButton1 as Button } from "../plasmic/Button"; // plasmic-import: 12345/component`
+    );
+
+    // Insert
+    expect(
+      doEnsureImportSpecifierWithAlias(
+        `import Default, { PlasmicButton as Button } from "../plasmic/Button"; // plasmic-import: 12345/component`,
+        "PlasmicButton1",
+        "Button1"
+      )
+    ).toEqual(
+      `import Default, {
+  PlasmicButton as Button,
+  PlasmicButton1 as Button1
+} from "../plasmic/Button"; // plasmic-import: 12345/component`
+    );
+  });
+
+  const pasrseImportAndToCode = (code: string) => {
+    const decl = parseImport(code);
+    if (!decl) {
+      return "";
+    }
+    return toCode(decl);
+  };
+
+  it("fix imports with no modification", function() {
+    expect(
+      pasrseImportAndToCode(
+        `import {
+  PlasmicIconButton__VariantsArgs,
+  PlasmicIconButton
+} from "../plasmic/PlasmicIconButton"; // plasmic-import: cfe92-5RW/render`
+      )
+    ).toEqual(`import {
+  PlasmicIconButton__VariantsArgs,
+  PlasmicIconButton
+} from "../plasmic/PlasmicIconButton"; // plasmic-import: cfe92-5RW/render`);
   });
 });

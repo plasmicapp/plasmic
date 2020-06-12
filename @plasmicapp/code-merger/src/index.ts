@@ -894,22 +894,23 @@ const tryParseComponentSkeletonFile = (
   return jsx ? { ...jsx, file } : undefined;
 };
 
-type PlasmicImportType =
+export type PlasmicImportType =
   | "renderer"
   | "css"
   | "component"
   | "globalVariant"
   | "projectCss"
   | "defaultcss"
+  | "icon"
   | undefined;
 
-const tryParsePlasmicImportSpec = (node: ImportDeclaration) => {
+export const tryParsePlasmicImportSpec = (node: ImportDeclaration) => {
   const c = node.trailingComments?.[0];
   if (!c) {
     return undefined;
   }
   const m = c.value.match(
-    /plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss|defaultcss))?/
+    /plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss|defaultcss|icon))?/
   );
   if (m) {
     return { id: m[1], type: m[2] as PlasmicImportType };

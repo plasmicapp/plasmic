@@ -20,38 +20,63 @@ import * as parser from "@babel/parser";
 import traverse, { Node, NodePath } from "@babel/traverse";
 import generate, { GeneratorOptions } from "@babel/generator";
 import * as babel from "@babel/core";
+import { ImportDeclaration } from "@babel/types";
 
 const IMPORT_MARKER = /import\s+([^;]+)\s*;.*\s+plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss|defaultcss|icon))?/g;
-const IMPORT_MARKER_WITH_FROM = /^([^;]+)\s+from\s+["'`]([^"'`;]+)["'`]$/;
-const IMPORT_MARKER_WITHOUT_FROM = /^["'`]([^"'`;]+)["'`]$/;
 
-function parseImportBody(body: string) {
-  const maybeWithFrom = body.match(IMPORT_MARKER_WITH_FROM);
-  if (maybeWithFrom) {
-    return {
-      spec: maybeWithFrom[1] as string,
-      from: maybeWithFrom[2] as string
-    };
+function findImportSpecifierWithAlias(
+  importDecl: ImportDeclaration,
+  local: string
+) {
+  for (const spec of importDecl.specifiers) {
+    if (spec.type === "ImportSpecifier" && spec.local.name === local) {
+      return spec;
+    }
   }
-  const noFrom = body.match(IMPORT_MARKER_WITHOUT_FROM);
-  if (!noFrom) {
-    console.error("Unable to parse import body", noFrom);
-    process.exit(1);
-  }
-  return { spec: "", from: noFrom[1] as string };
+  return undefined;
 }
 
-function getNewNamePart(existingSpec: string, newNamePart: string) {
-  // TODO: make this much less fragile!
-  const existingImportedNames = existingSpec
-    .replace("{", "")
-    .replace("}", "")
-    .split(",")
-    .map(name => name.trim());
-  const newSpecParts = existingImportedNames.includes(newNamePart)
-    ? [existingSpec]
-    : [newNamePart, existingSpec];
-  return newSpecParts.join(", ");
+function findImportDefaultSpecifier(importDecl: ImportDeclaration) {
+  for (const spec of importDecl.specifiers) {
+    if (spec.type === "ImportDefaultSpecifier") {
+      return spec;
+    }
+  }
+  return undefined;
+}
+
+export function ensureImportSpecifierWithAlias(
+  decl: ImportDeclaration,
+  imported: string,
+  alias: string
+) {
+  const existing = findImportSpecifierWithAlias(decl, alias);
+  if (existing) {
+    existing.imported.name = imported;
+  } else {
+    decl.specifiers.push(
+      babel.types.importSpecifier(
+        babel.types.identifier(alias),
+        babel.types.identifier(imported)
+      )
+    );
+  }
+}
+
+export function ensureImportDefaultSpecifier(
+  decl: ImportDeclaration,
+  defaultExport: string
+) {
+  const existing = findImportDefaultSpecifier(decl);
+  if (existing) {
+    existing.local.name = defaultExport;
+  } else {
+    decl.specifiers.splice(
+      0,
+      0,
+      babel.types.importDefaultSpecifier(babel.types.identifier(defaultExport))
+    );
+  }
 }
 
 /**
@@ -68,7 +93,11 @@ export function replaceImports(
   iconConfigsMap: Record<string, IconConfig>
 ) {
   return code.replace(IMPORT_MARKER, (sub, body, uuid, type) => {
-    const { spec, from } = parseImportBody(body);
+    const decl = parseImport(sub);
+    if (!decl) {
+      console.error("Unable to parse import statement", sub);
+      process.exit(1);
+    }
     if (type === "component") {
       // instantiation of a mapped or managed component
       const compConfig = compConfigsMap[uuid];
@@ -78,13 +107,16 @@ export function replaceImports(
         );
       }
       const { modulePath, exportName } = compConfig.importSpec;
-      const namePart = exportName
-        ? `{${exportName} as ${compConfig.name}}`
-        : `${compConfig.name}`;
-
+      if (exportName) {
+        // ensure import { ${exportName} as ${compConfig.name} }
+        ensureImportSpecifierWithAlias(decl, exportName, compConfig.name);
+      } else {
+        // ensure import ${compConfig.name} from ...
+        ensureImportDefaultSpecifier(decl, compConfig.name);
+      }
       const realPath = makeImportPath(fromPath, modulePath, true);
-      const newSpec = getNewNamePart(spec, namePart);
-      return `import ${newSpec} from "${realPath}"; // plasmic-import: ${uuid}/component`;
+      decl.source = babel.types.stringLiteral(realPath);
+      return toCode(decl);
     } else if (type === "render") {
       // import of the PP blackbox
       const compConfig = compConfigsMap[uuid];
@@ -93,12 +125,14 @@ export function replaceImports(
         compConfig.renderModuleFilePath,
         true
       );
-      return `import ${spec} from "${realPath}"; // plasmic-import: ${uuid}/render`;
+      decl.source = babel.types.stringLiteral(realPath);
+      return toCode(decl);
     } else if (type === "css") {
       // import of the PP css file
       const compConfig = compConfigsMap[uuid];
       const realPath = makeImportPath(fromPath, compConfig.cssFilePath, false);
-      return `import "${realPath}"; // plasmic-import: ${uuid}/css`;
+      decl.source = babel.types.stringLiteral(realPath);
+      return toCode(decl);
     } else if (type === "globalVariant") {
       // import of global context
       const variantConfig = globalVariantConfigsMap[uuid];
@@ -107,7 +141,8 @@ export function replaceImports(
         variantConfig.contextFilePath,
         true
       );
-      return `import ${spec} from "${realPath}"; // plasmic-import: ${uuid}/globalVariant`;
+      decl.source = babel.types.stringLiteral(realPath);
+      return toCode(decl);
     } else if (type === "icon") {
       // import of global context
       const iconConfig = iconConfigsMap[uuid];
@@ -116,7 +151,8 @@ export function replaceImports(
         iconConfig.moduleFilePath,
         true
       );
-      return `import ${spec} from "${realPath}"; // plasmic-import: ${uuid}/icon`;
+      decl.source = babel.types.stringLiteral(realPath);
+      return toCode(decl);
     } else if (type === "projectcss") {
       const projectConfig = projectConfigsMap[uuid];
       const realPath = makeImportPath(
@@ -124,14 +160,16 @@ export function replaceImports(
         projectConfig.cssFilePath,
         false
       );
-      return `import "${realPath}"; // plasmic-import: ${uuid}/projectcss`;
+      decl.source = babel.types.stringLiteral(realPath);
+      return toCode(decl);
     } else if (type === "defaultcss") {
       const realPath = makeImportPath(
         fromPath,
         styleConfig.defaultStyleCssFilePath,
         false
       );
-      return `import "${realPath}"; // plasmic-import: ${uuid}/defaultcss`;
+      decl.source = babel.types.stringLiteral(realPath);
+      return toCode(decl);
     } else {
       // Does not match a known import type; just keep the same matched string
       return sub;
@@ -314,4 +352,39 @@ export const formatJs = (code: string) => {
     parser: "typescript",
     plugins: [parserTypeScript]
   });
+};
+
+export const parseImport = (code: string) => {
+  const file = parser.parse(code, {
+    strictMode: true,
+    sourceType: "module",
+    plugins: ["jsx", "typescript"]
+  });
+  if (file.program.body.length === 1) {
+    const stmt = file.program.body[0];
+    if (stmt.type === "ImportDeclaration") {
+      return stmt;
+    }
+  }
+  return undefined;
+};
+
+export const toCode = (node: ImportDeclaration) => {
+  const code = generate(node, { retainLines: true, comments: false }).code;
+  const formatted = Prettier.format(code, {
+    parser: "typescript",
+    trailingComma: "none",
+    plugins: [parserTypeScript]
+  });
+
+  // Prettier add a newline to the end of file. So trim it.
+  const body = formatted.trimRight();
+  // Babel may move the comment to the next line - so we manually append the
+  // comment.
+  // See https://github.com/babel/babel/issues/5512
+  if (node.trailingComments?.length === 1) {
+    const comment = node.trailingComments[0];
+    return body + ` //${comment.value}`;
+  }
+  return body;
 };
