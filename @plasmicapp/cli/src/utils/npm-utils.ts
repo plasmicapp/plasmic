@@ -97,7 +97,7 @@ function parsePackageJson(path: string) {
 }
 
 export function installUpgrade(pkg: string) {
-  const cmd = `yarn add ${pkg} || npm install --save ${pkg}`;
+  const cmd = `yarn add -W ${pkg} || npm install --save ${pkg}`;
   console.log(cmd);
   const r = spawnSync(cmd, { shell: true, stdio: "inherit" });
   if (r.status === 0) {
