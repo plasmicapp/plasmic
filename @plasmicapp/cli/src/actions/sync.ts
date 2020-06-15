@@ -18,7 +18,8 @@ import {
   findSrcDirPath,
   readFileContent,
   fixIconFilePath,
-  stripExtension
+  stripExtension,
+  writeFileContentRaw
 } from "../utils/file-utils";
 import {
   ProjectBundle,
@@ -126,7 +127,7 @@ export async function syncProjects(opts: SyncArgs) {
               context,
               compConfig.importSpec.modulePath
             );
-            const m = editedFile.match(/^\s*plasmic-managed-jsx\/(\d+)\s*$/);
+            const m = editedFile.match(/\/\/\s*plasmic-managed-jsx\/(\d+)\s*/);
             if (m) {
               existingDirectCompRevision.push([compConfig.id, +m[1]]);
             }
@@ -240,6 +241,54 @@ export async function syncProjects(opts: SyncArgs) {
   await warnLatestReactWeb(context);
 }
 
+const preMergeFile = (
+  componentName: string,
+  context: PlasmicContext,
+  baseSrc: string,
+  baseNameInIdToUuid: Map<string, string>,
+  newSrc: string,
+  newNameInIdToUuid: Map<string, string>
+) => {
+  if (!context.config.mergeDumpDir) {
+    return;
+  }
+  // Dump base and new file, and the id map
+  const ext = context.config.code.lang === "ts" ? "tsx" : "jsx";
+  const baseSrcFile = path.join(
+    context.config.mergeDumpDir,
+    `${componentName}_baseSrc.${ext}`
+  );
+  writeFileContentRaw(baseSrcFile, baseSrc, { force: true });
+  const baseIdFile = path.join(
+    context.config.mergeDumpDir,
+    `${componentName}_baseId.json`
+  );
+  writeFileContentRaw(
+    baseIdFile,
+    JSON.stringify([...baseNameInIdToUuid.entries()]),
+    {
+      force: true
+    }
+  );
+  const newSrcFile = path.join(
+    context.config.mergeDumpDir,
+    `${componentName}_newSrc.${ext}`
+  );
+  writeFileContentRaw(newSrcFile, newSrc, { force: true });
+
+  const newIdFile = path.join(
+    context.config.mergeDumpDir,
+    `${componentName}_newId.json`
+  );
+  writeFileContentRaw(
+    newIdFile,
+    JSON.stringify([...newNameInIdToUuid.entries()]),
+    {
+      force: true
+    }
+  );
+};
+
 async function syncProjectComponents(
   context: PlasmicContext,
   project: CliProjectConfig,
@@ -315,7 +364,22 @@ async function syncProjectComponents(
           project.projectId,
           makeCachedProjectSyncDataProvider((projectId, revision) =>
             context.api.projectSyncMetadata(projectId, revision)
-          )
+          ),
+          (
+            compId: string,
+            baseSrc: string,
+            baseNameInIdToUuid: Map<string, string>,
+            newSrc: string,
+            newNameInIdToUuid: Map<string, string>
+          ) =>
+            preMergeFile(
+              componentName,
+              context,
+              baseSrc,
+              baseNameInIdToUuid,
+              newSrc,
+              newNameInIdToUuid
+            )
         );
         const merged = mergedFiles?.get(compConfig.id);
         if (merged) {

@@ -1060,7 +1060,14 @@ export type ComponentInfoForMerge = {
 export const mergeFiles = async (
   componentByUuid: Map<string, ComponentInfoForMerge>,
   projectId: string,
-  projectSyncDataProvider: ProjectSyncDataProviderType
+  projectSyncDataProvider: ProjectSyncDataProviderType,
+  preMergeFile?: (
+    compId: string,
+    baseSrc: string,
+    baseNameInIdToUuid: Map<string, string>,
+    newSrc: string,
+    newNameInIdToUuid: Map<string, string>
+  ) => void
 ) => {
   const updateableByComponentUuid = new Map<
     string,
@@ -1087,6 +1094,16 @@ export const mergeFiles = async (
     const baseMetadata = ensure(
       projectSyncData.components.find(c => c.uuid === componentUuid)
     );
+    const component = ensure(componentByUuid.get(componentUuid));
+    if (preMergeFile) {
+      preMergeFile(
+        componentUuid,
+        baseMetadata.fileContent,
+        baseMetadata.nameInIdToUuid,
+        component.newFile,
+        component.newNameInIdToUuid
+      );
+    }
     const parsedBase = ensure(
       tryParseComponentSkeletonFile(baseMetadata.fileContent)
     );
@@ -1097,7 +1114,6 @@ export const mergeFiles = async (
     );
 
     // All other metadata
-    const component = ensure(componentByUuid.get(componentUuid));
     const editedCodeVersion = new CodeVersion(
       component.editedFile,
       // edited version share the same nameInIdtoUuid mapping

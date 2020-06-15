@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/cli",
-  "version": "0.1.23",
+  "version": "0.1.24",
   "description": "plasmic cli for syncing local code with Plasmic designs",
   "main": "./dist/index.js",
   "bin": {
@@ -16,22 +16,22 @@
   "devDependencies": {
     "@types/glob": "^7.1.1",
     "@types/inquirer": "^6.5.0",
+    "@types/jest": "^26.0.0",
     "@types/latest-version": "^4.0.1",
     "@types/lodash": "^4.14.146",
     "@types/node": "^12.12.6",
     "@types/semver": "^7.1.0",
     "@types/socket.io-client": "^1.4.32",
     "@types/yargs": "^13.0.3",
-    "@types/jest": "^26.0.0",
-    "ts-node": "^8.4.1",
-    "utility-types": "^3.10.0",
     "jest": "^26.0.1",
-    "ts-jest": "^26.1.0"
+    "ts-jest": "^26.1.0",
+    "ts-node": "^8.4.1",
+    "utility-types": "^3.10.0"
   },
   "dependencies": {
     "@babel/core": "^7.10.2",
     "@babel/generator": "^7.10.2",
-    "@plasmicapp/code-merger": "^0.0.15",
+    "@plasmicapp/code-merger": "^0.0.16",
     "@types/babel__core": "^7.1.8",
     "@types/babel__generator": "^7.6.1",
     "@types/findup-sync": "^2.0.2",

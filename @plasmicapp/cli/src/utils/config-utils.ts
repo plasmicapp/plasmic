@@ -34,6 +34,10 @@ export interface PlasmicConfig {
   // Configs for each global variant we have synced.
   globalVariants: GlobalVariantsConfig;
   projects: ProjectConfig[];
+
+  // The folder cli stores the new version of each file for debugging, or
+  // manually resolving conflicts. If empty, then no file will be dumped.
+  mergeDumpDir: string;
 }
 
 export interface CodeConfig {
@@ -179,7 +183,8 @@ export const DEFAULT_CONFIG: PlasmicConfig = {
   projects: [],
   globalVariants: {
     variantGroups: []
-  }
+  },
+  mergeDumpDir: ""
 };
 
 /**
