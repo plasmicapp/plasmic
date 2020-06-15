@@ -39,7 +39,9 @@ import {
   calleeMatch,
   memberExpressionMatch,
   makeMemberExpression,
-  getSource
+  getSource,
+  isCallIgnoreArguments,
+  isCallWithoutArguments
 } from "./plasmic-parser";
 import { nodesDeepEqualIgnoreComments, code, formatted } from "./utils";
 import { first, cloneDeep } from "lodash";
@@ -269,6 +271,21 @@ const mergeAttributes = (
         ? attrInEditedNode.name.name
         : attrInEditedNode.name.name.name;
     if (attrName === "className") {
+      // Delete the className attribute if user hasn't made any change, and
+      // it was discarded in new version. This should be rare, as we are
+      // generating className attribute for all intrinsic elements and component
+      // instance with a cassName attribute.
+      const deleteClassName =
+        !newVersion.hasClassNameIdAttr(newNode) &&
+        attrInEditedNode.value?.type === "JSXExpressionContainer" &&
+        isCallWithoutArguments(
+          attrInEditedNode.value.expression,
+          helperObject,
+          `cls${editedNodeId}`
+        );
+      if (deleteClassName) {
+        continue;
+      }
       let found = false;
       // Keep it as className, but using the new id.
       const newAttr = cloneDeepWithHook(attrInEditedNode, n => {
@@ -281,6 +298,7 @@ const mergeAttributes = (
         }
         return undefined;
       });
+
       // className must contain rh.cls<editedNodeId> in edited file.
       if (!found) {
         const attrSource = getSource(attrInEditedNode, editedVersion.input);

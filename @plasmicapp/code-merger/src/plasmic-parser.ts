@@ -8,7 +8,8 @@ import {
   JSXEmptyExpression,
   StringLiteral,
   V8IntrinsicIdentifier,
-  JSXExpressionContainer
+  JSXExpressionContainer,
+  CallExpression
 } from "@babel/types";
 import * as babel from "@babel/core";
 import * as L from "lodash";
@@ -345,11 +346,21 @@ export const isCallIgnoreArguments = (
   call: Node,
   object: string,
   member: string
-) => {
+): call is CallExpression => {
   if (call.type !== "CallExpression") {
     return false;
   }
   return calleeMatch(call.callee, object, member);
+};
+
+export const isCallWithoutArguments = (
+  call: Node,
+  object: string,
+  member: string
+) => {
+  return (
+    isCallIgnoreArguments(call, object, member) && call.arguments.length === 0
+  );
 };
 
 export class CodeVersion {
