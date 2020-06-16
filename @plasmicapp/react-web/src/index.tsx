@@ -207,27 +207,23 @@ function mergeProps(
   return result;
 }
 
-function mergePropVals(name: string, val1: any, val2: any): any {
-  if (val1 == null && val2 == null) {
-    return val2;
-  } else if (val1 == null && val2 != null) {
-    return val2;
-  } else if (val1 != null && val2 == null) {
-    return val1;
-  } else if (typeof val1 === "function" && typeof val2 === "function") {
+function mergePropVals(name: string, defaultVal: any, overrideVal: any): any {
+  if (typeof defaultVal === "function" && typeof overrideVal === "function") {
     return (...args: any[]) => {
-      val1(...args);
-      return val2(...args);
+      defaultVal(...args);
+      return overrideVal(...args);
     };
   } else if (name === "className") {
-    return `${val1} ${val2}`;
+    return `${defaultVal || ""} ${overrideVal || ""}`;
   } else if (name === "style") {
     return {
-      ...val1,
-      ...val2
+      ...(defaultVal || {}),
+      ...(overrideVal || {})
     };
   } else {
-    return val2;
+    // Else we always let override win, even if override is undefined, so that
+    // it is possible for users to override an unwanted default value.
+    return overrideVal;
   }
 }
 
