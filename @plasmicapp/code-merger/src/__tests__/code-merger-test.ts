@@ -8,6 +8,7 @@ import {
 } from "../index";
 import { formatted, code } from "../utils";
 import { ensure } from "../common";
+import { iteratee } from "lodash";
 
 describe("Test CodeMerger", function() {
   it("no change", function() {
@@ -889,7 +890,6 @@ describe("Test CodeMerger", function() {
         ["$slotIconSlot", "2345"]
       ])
     );
-    debugger;
     expect(
       code(serializePlasmicASTNode(newV.root, newV, edited, base))
     ).toEqual(
@@ -935,7 +935,6 @@ describe("Test CodeMerger", function() {
         ["$slotIconSlot2", "2345"]
       ])
     );
-    debugger;
     expect(
       code(serializePlasmicASTNode(newV.root, newV, edited, base))
     ).toEqual(
@@ -1448,6 +1447,61 @@ describe("Test CodeMerger", function() {
           }
 
           export default TreeRow as React.FunctionComponent<TreeRowProps>;`)
+    );
+  });
+
+  it("merge old slot and new slot should work", function() {
+    const nameInIdToUuid = new Map([
+      ["1", "Root"],
+      ["Image", "1234"]
+    ]);
+    const base = new CodeVersion(
+      `<div className={rh.cls1()}>
+      {args.children || (
+        <>
+          <div className={rh.clsImage()} {...rh.propsImage()} />
+        </>
+      )}
+    </div>`,
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      `<div className={rh.cls1()}>
+      {args.children || (
+        <>
+          <div className={rh.clsImage()} {...rh.propsImage()} />
+        </>
+      )}
+    </div>`,
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      `<div className={rh.cls1()}>
+          <PlasmicSlot
+            defaultContents={<div className={rh.clsImage()} {...rh.propsImage()} />}
+            value={args.children}
+            className={rh.cls$slotChildren()}
+          />
+        </div>`,
+      new Map([
+        ["1", "Root"],
+        ["Image", "1234"],
+        ["$slotChildren", "2345"]
+      ])
+    );
+    debugger;
+    expect(
+      code(serializePlasmicASTNode(newV.root, newV, edited, base))
+    ).toEqual(
+      formatted(
+        `<div className={rh.cls1()}>
+        <PlasmicSlot
+          defaultContents={<div className={rh.clsImage()} {...rh.propsImage()} />}
+          value={args.children}
+          className={rh.cls$slotChildren()}
+        />
+      </div>`
+      )
     );
   });
 });

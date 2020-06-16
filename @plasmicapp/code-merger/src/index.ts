@@ -149,7 +149,8 @@ const mergeAttributes = (
     newNamedAttrs.forEach((attr, name) => {
       if (name === "className") {
         // skip the className attribute - we will use the edited version, but
-        // just upgrade the id there.
+        // just upgrade the id there if there is one in edited version.
+        // Otherwise, we will insert className at the end.
         return;
       }
       const editedAttr = editedNamedAttrs.get(name);
@@ -708,7 +709,15 @@ const serializeTagOrComponent = (
           baseVersion
         );
         if (attrReplacement) {
-          attrsReplacement.set(value.rawNode, attrReplacement);
+          if (attrReplacement.type !== "JSXExpressionContainer") {
+            assert(attrReplacement.type !== "JSXText");
+            attrsReplacement.set(
+              value.rawNode,
+              babel.types.jsxExpressionContainer(attrReplacement)
+            );
+          } else {
+            attrsReplacement.set(value.rawNode, attrReplacement);
+          }
         }
       }
     }
