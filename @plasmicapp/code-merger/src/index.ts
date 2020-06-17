@@ -1085,7 +1085,8 @@ export const mergeFiles = async (
     baseNameInIdToUuid: Map<string, string>,
     newSrc: string,
     newNameInIdToUuid: Map<string, string>
-  ) => void
+  ) => void,
+  appendJsxTreeOnMissingBase?: boolean
 ) => {
   const updateableByComponentUuid = new Map<
     string,
@@ -1105,14 +1106,41 @@ export const mergeFiles = async (
   const mergedFiles = new Map<string, string>();
 
   for (const [componentUuid, parsedEdited] of updateableByComponentUuid) {
-    const projectSyncData = await projectSyncDataProvider(
-      projectId,
-      parsedEdited.revision
-    );
-    const baseMetadata = ensure(
-      projectSyncData.components.find(c => c.uuid === componentUuid)
-    );
+    let baseMetadata: ComponentSkeletonModel | undefined = undefined;
+    try {
+      const projectSyncData = await projectSyncDataProvider(
+        projectId,
+        parsedEdited.revision
+      );
+      baseMetadata = projectSyncData.components.find(
+        c => c.uuid === componentUuid
+      );
+    } catch {
+      console.log(
+        `missing merging base for ${projectId} at revision ${parsedEdited.revision}`
+      );
+    }
     const component = ensure(componentByUuid.get(componentUuid));
+    const parsedNew = ensure(tryParseComponentSkeletonFile(component.newFile));
+
+    if (!baseMetadata) {
+      if (appendJsxTreeOnMissingBase) {
+        mergedFiles.set(
+          componentUuid,
+          formatted(`${component.editedFile}
+
+          // Please perform merge with the following JSX manually.
+           \`// plasmic-managed-jsx/${parsedNew.revision}
+  return (${code(parsedNew.jsx).trimEnd()});\``)
+        );
+        continue;
+      } else {
+        throw new Error(
+          `Cannot perform three way merge due to missing base version. For Plasmic CLI users, please add '--append-jsx-on-missing-base' so that you can perform merging by yourselves.`
+        );
+      }
+    }
+
     if (preMergeFile) {
       preMergeFile(
         componentUuid,
@@ -1138,7 +1166,7 @@ export const mergeFiles = async (
       baseMetadata.nameInIdToUuid,
       parsedEdited.jsx
     );
-    const parsedNew = ensure(tryParseComponentSkeletonFile(component.newFile));
+
     const newCodeVersion = new CodeVersion(
       component.newFile,
       component.newNameInIdToUuid,
