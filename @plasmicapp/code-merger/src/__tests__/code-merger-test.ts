@@ -1148,6 +1148,67 @@ describe("Test CodeMerger", function() {
       }`)
     );
   });
+
+  it("mergeFiles should work when base is missing", async function() {
+    const componentByUuid = new Map<string, ComponentInfoForMerge>();
+    componentByUuid.set("comp1", {
+      // edited version of the code, i.e. the entire file.
+      editedFile: `
+      import React, { ReactNode } from "react";
+      import { hasVariant, DefaultFlexStack, FlexStack } from "@plasmicapp/react-web";
+
+      function Comp1() {
+        const rh = new PlasmicTreeRow__RenderHelper(variants, args, props.className);
+
+        // plasmic-managed-jsx/2
+        return (<div className={rh.clsRoot()} onClick={handleClick}>
+          Hello
+        </div>);
+      }`,
+      newFile: `
+      import { hasVariant, DefaultFlexStack, FlexStack } from "@plasmicapp/react-web";
+
+      function Comp1() {
+        const rh = new PlasmicTreeRow__RenderHelper(variants, args, props.className);
+
+        // plasmic-managed-jsx/3
+        return (<div className={rh.clsRoot()}>
+          World
+        </div>);
+      }`,
+      // map for newCode
+      newNameInIdToUuid: new Map([["NewRoot", "Root"]])
+    });
+
+    const merged = await mergeFiles(
+      componentByUuid,
+      "pid",
+      () => Promise.reject("no metadata"),
+      undefined,
+      true
+    );
+    expect(merged?.size).toEqual(1);
+    expect(merged?.get("comp1")).toEqual(
+      formatted(`
+      import React, {ReactNode} from "react";
+      import { hasVariant, DefaultFlexStack, FlexStack } from "@plasmicapp/react-web";
+
+      function Comp1() {
+        const rh = new PlasmicTreeRow__RenderHelper(variants, args, props.className);
+
+        // plasmic-managed-jsx/2
+        return (<div className={rh.clsRoot()} onClick={handleClick}>
+          Hello
+        </div>);
+      }
+
+      // Please perform merge with the following JSX manually.
+      \`// plasmic-managed-jsx/3
+  return (<div className={rh.clsRoot()}>World</div>;);\`
+      `)
+    );
+  });
+
   it("mergeFiles should work for real case", async function() {
     const componentByUuid = new Map<string, ComponentInfoForMerge>();
     const nameInIdToUuid = new Map<string, string>([
