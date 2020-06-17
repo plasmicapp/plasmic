@@ -3,6 +3,12 @@ import axios, { AxiosResponse, AxiosError } from "axios";
 import socketio from "socket.io-client";
 import { ProjectSyncMetadataModel } from "@plasmicapp/code-merger";
 
+export class AppServerError extends Error {
+  constructor(message: string) {
+    super(message);
+  }
+}
+
 export interface ComponentBundle {
   renderModule: string;
   skeletonModule: string;
@@ -83,9 +89,7 @@ export class PlasmicApi {
     reactWebVersion: string | undefined,
     newCompScheme: "blackbox" | "direct",
     // The list of existing components as [componentUuid, codeScheme]
-    existingCompScheme: Array<[string, "blackbox" | "direct"]>,
-    // The list of [componentUuid, revision]
-    existingDirectCompRevision: Array<[string, number]>
+    existingCompScheme: Array<[string, "blackbox" | "direct"]>
   ) {
     const result = await this.post(
       `${this.auth.host}/api/v1/projects/${projectId}/code/components`,
@@ -93,8 +97,7 @@ export class PlasmicApi {
         cliVersion,
         reactWebVersion: reactWebVersion || "",
         newCompScheme,
-        existingCompScheme,
-        existingDirectCompRevision
+        existingCompScheme
       }
     );
     return result.data as ProjectBundle;
@@ -107,10 +110,15 @@ export class PlasmicApi {
     return result.data as StyleTokensMap;
   }
 
-  async projectSyncMetadata(projectId: string, revision: number) {
+  async projectSyncMetadata(
+    projectId: string,
+    revision: number,
+    rethrowAppError: boolean
+  ) {
     const result = await this.post(
       `${this.auth.host}/api/v1/projects/${projectId}/code/project-sync-metadata`,
-      { revision }
+      { revision },
+      rethrowAppError
     );
     return ProjectSyncMetadataModel.fromJson(result.data);
   }
@@ -127,7 +135,9 @@ export class PlasmicApi {
     return socket;
   }
 
-  private async post(url: string, data?: any) {
+  // If rethrowAppError is true, we will throw an exception with the error
+  // message
+  private async post(url: string, data?: any, rethrowAppError?: boolean) {
     try {
       return await axios.post(url, data, {
         headers: this.makeHeaders()
@@ -141,11 +151,15 @@ export class PlasmicApi {
         process.exit(1);
       }
       if (error.response && error.response.data) {
+        let message: string = "";
         if (error.response.data.error) {
-          console.log(error.response.data.error.message);
+          message = error.response.data.error.message;
         } else {
-          console.log(`Error: request failed with status code ${error.response.status}. The response is
-  ${error.response.data}`);
+          message = `Error: request failed with status code ${error.response.status}. The response is
+  ${error.response.data}`;
+        }
+        if (rethrowAppError) {
+          throw new AppServerError(message);
         }
         process.exit(1);
       } else {

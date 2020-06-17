@@ -27,7 +27,8 @@ import {
   GlobalVariantBundle,
   ProjectConfig as ApiProjectConfig,
   StyleConfigResponse,
-  IconBundle
+  IconBundle,
+  AppServerError
 } from "../api";
 import {
   fixAllImportStatements,
@@ -54,6 +55,7 @@ export interface SyncArgs extends CommonArgs {
   onlyExisting: boolean;
   forceOverwrite: boolean;
   newComponentScheme?: "blackbox" | "direct";
+  appendJsxOnMissingBase?: boolean;
 }
 
 function maybeMigrate(context: PlasmicContext) {
@@ -107,34 +109,11 @@ export async function syncProjects(opts: SyncArgs) {
     "@plasmicapp/react-web"
   );
 
-  const baseNameToFiles = buildBaseNameToFiles(context);
-
   const results = await Promise.all(
     projectIds.map(projectId => {
       const existingProject = context.config.projects.find(
         p => p.projectId === projectId
       );
-      const existingDirectCompRevision = new Array<[string, number]>();
-      if (existingProject) {
-        existingProject.components.forEach(compConfig => {
-          if (compConfig.scheme === "direct") {
-            fixComponentPaths(
-              context.absoluteSrcDir,
-              compConfig,
-              baseNameToFiles
-            );
-            const editedFile = readFileContent(
-              context,
-              compConfig.importSpec.modulePath
-            );
-            const m = editedFile.match(/\/\/\s*plasmic-managed-jsx\/(\d+)\s*/);
-            if (m) {
-              existingDirectCompRevision.push([compConfig.id, +m[1]]);
-            }
-          }
-        });
-      }
-
       const existingCompScheme: Array<[string, "blackbox" | "direct"]> = (
         existingProject?.components || []
       ).map(c => [c.id, c.scheme]);
@@ -143,8 +122,7 @@ export async function syncProjects(opts: SyncArgs) {
         getCliVersion(),
         reactWebVersion,
         opts.newComponentScheme || context.config.code.scheme,
-        existingCompScheme,
-        existingDirectCompRevision
+        existingCompScheme
       );
     })
   );
@@ -185,6 +163,7 @@ export async function syncProjects(opts: SyncArgs) {
     })
   );
 
+  const baseNameToFiles = buildBaseNameToFiles(context);
   syncStyleConfig(context, await context.api.genStyleConfig(), baseNameToFiles);
 
   const config = context.config;
@@ -222,7 +201,8 @@ export async function syncProjects(opts: SyncArgs) {
       componentBundles,
       projectBundle.iconAssets,
       baseNameToFiles,
-      opts.forceOverwrite
+      opts.forceOverwrite,
+      !!opts.appendJsxOnMissingBase
     );
     upsertStyleTokens(context, projectBundle.usedTokens, baseNameToFiles);
   }
@@ -241,60 +221,13 @@ export async function syncProjects(opts: SyncArgs) {
   await warnLatestReactWeb(context);
 }
 
-const preMergeFile = (
-  componentName: string,
-  context: PlasmicContext,
-  baseSrc: string,
-  baseNameInIdToUuid: Map<string, string>,
-  newSrc: string,
-  newNameInIdToUuid: Map<string, string>
-) => {
-  if (!context.config.mergeDumpDir) {
-    return;
-  }
-  // Dump base and new file, and the id map
-  const ext = context.config.code.lang === "ts" ? "tsx" : "jsx";
-  const baseSrcFile = path.join(
-    context.config.mergeDumpDir,
-    `${componentName}_baseSrc.${ext}`
-  );
-  writeFileContentRaw(baseSrcFile, baseSrc, { force: true });
-  const baseIdFile = path.join(
-    context.config.mergeDumpDir,
-    `${componentName}_baseId.json`
-  );
-  writeFileContentRaw(
-    baseIdFile,
-    JSON.stringify([...baseNameInIdToUuid.entries()]),
-    {
-      force: true
-    }
-  );
-  const newSrcFile = path.join(
-    context.config.mergeDumpDir,
-    `${componentName}_newSrc.${ext}`
-  );
-  writeFileContentRaw(newSrcFile, newSrc, { force: true });
-
-  const newIdFile = path.join(
-    context.config.mergeDumpDir,
-    `${componentName}_newId.json`
-  );
-  writeFileContentRaw(
-    newIdFile,
-    JSON.stringify([...newNameInIdToUuid.entries()]),
-    {
-      force: true
-    }
-  );
-};
-
 async function syncProjectComponents(
   context: PlasmicContext,
   project: CliProjectConfig,
   componentBundles: ComponentBundle[],
   baseNameToFiles: Record<string, string[]>,
-  forceOverwrite: boolean
+  forceOverwrite: boolean,
+  appendJsxOnMissingBase: boolean
 ) {
   const allCompConfigs = L.keyBy(project.components, c => c.id);
   for (const bundle of componentBundles) {
@@ -362,24 +295,27 @@ async function syncProjectComponents(
         const mergedFiles = await mergeFiles(
           componentByUuid,
           project.projectId,
-          makeCachedProjectSyncDataProvider((projectId, revision) =>
-            context.api.projectSyncMetadata(projectId, revision)
-          ),
-          (
-            compId: string,
-            baseSrc: string,
-            baseNameInIdToUuid: Map<string, string>,
-            newSrc: string,
-            newNameInIdToUuid: Map<string, string>
-          ) =>
-            preMergeFile(
-              componentName,
-              context,
-              baseSrc,
-              baseNameInIdToUuid,
-              newSrc,
-              newNameInIdToUuid
-            )
+          makeCachedProjectSyncDataProvider(async (projectId, revision) => {
+            try {
+              return await context.api.projectSyncMetadata(
+                projectId,
+                revision,
+                true
+              );
+            } catch (e) {
+              if (
+                e instanceof AppServerError &&
+                /revision \d+ not found/.test(e.message)
+              ) {
+                throw e;
+              } else {
+                console.log(e.messag);
+                process.exit(1);
+              }
+            }
+          }),
+          () => {},
+          appendJsxOnMissingBase
         );
         const merged = mergedFiles?.get(compConfig.id);
         if (merged) {
@@ -547,7 +483,8 @@ async function syncProjectConfig(
   componentBundles: ComponentBundle[],
   iconBundles: IconBundle[],
   baseNameToFiles: Record<string, string[]>,
-  forceOverwrite: boolean
+  forceOverwrite: boolean,
+  appendJsxOnMissingBase: boolean
 ) {
   let cliProject = context.config.projects.find(
     c => c.projectId === pc.projectId
@@ -586,7 +523,8 @@ async function syncProjectConfig(
     cliProject,
     componentBundles,
     baseNameToFiles,
-    forceOverwrite
+    forceOverwrite,
+    appendJsxOnMissingBase
   );
   syncProjectIconAssets(context, cliProject, iconBundles, baseNameToFiles);
 }

@@ -103,7 +103,7 @@ export function replaceImports(
       const compConfig = compConfigsMap[uuid];
       if (!compConfig) {
         throw new Error(
-          `Encountered Plasmic components in ${fromPath} that are being used but have not been synced.`
+          `Encountered Plasmic components (of uuid ${uuid}) in ${fromPath} that are being used but have not been synced.`
         );
       }
       const { modulePath, exportName } = compConfig.importSpec;
