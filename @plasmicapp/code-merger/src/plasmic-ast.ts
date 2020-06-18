@@ -22,12 +22,17 @@ import { cloneDeepWithHook } from "./cloneDeepWithHook";
 import { assert, withoutNils, ensure } from "./common";
 
 export interface PlasmicNodeBase {
-  rawNode: Node;
+  rawNode:
+    | Expression
+    | JSXEmptyExpression
+    | JSXExpressionContainer
+    | JSXSpreadChild
+    | JSXFragment
+    | JSXText;
 }
 
 export interface PlasmicOpaqueExpr extends PlasmicNodeBase {
   type: "opaque";
-  value: string;
 }
 
 export interface PlasmicArgRef extends PlasmicNodeBase {
@@ -63,21 +68,49 @@ export interface PlasmicJsxText extends PlasmicNodeBase {
   rawNode: JSXText;
 }
 
+// Plasmic can merge two expressions both are sound. An expression is sound if
+// it is a fragment, or if it is a single sound PlasmicTagOrComponent.
+export interface PlasmicJSXFragment extends PlasmicNodeBase {
+  type: "jsx-fragment";
+  children: PlasmicASTNode[];
+  rawNode: JSXFragment;
+}
+
 export interface PlasmicJsxElement extends PlasmicNodeBase {
   nameInId: string;
-  // A list of JSX attribute or JSX spread operator
+  // A list of JSX attribute or JSX spread operator. The value of a JSXAttribute
+  // could be null (such as disabled in <div disabled/>).
   attrs: Array<[string, PlasmicASTNode | null] | string>;
-  children: Array<PlasmicASTNode>;
+  children: PlasmicASTNode[];
   rawNode: JSXElement;
 }
 
 // This is a blob of expression that returns a JSX element. Unlike
 // PlasmicJsxElement, it may have chrome such as
 // "rh.showButton() && <Button...>...</Button>"
+//
+// A PlasmicTagOrComponent is sound if the expression it represents contains
+// only one PlasmicJSXElement.
+//
+// For example, these are sound
+//   <><div></div><>
+//   show2() && <div/>
+//   <div></div>
+//   () => {
+//     return <div/>;
+//   }()
+//
+// These are not sound expression
+//   () => {
+//     return <><div/><div/></>;
+//   }()
+//
+//   showFirst ? <div/> : <div/>
 export interface PlasmicTagOrComponent extends PlasmicNodeBase {
   type: "tag-or-component";
   jsxElement: PlasmicJsxElement;
   rawNode: Expression | JSXExpressionContainer;
+  sound: boolean;
 }
 
 export type PlasmicASTNode =
@@ -86,7 +119,8 @@ export type PlasmicASTNode =
   | PlasmicArgRef
   | PlasmicStringLiteralExpr
   | PlasmicJsxText
-  | PlasmicChildStringCall;
+  | PlasmicChildStringCall
+  | PlasmicJSXFragment;
 
 export const makeCallExpression = (
   objectName: string,

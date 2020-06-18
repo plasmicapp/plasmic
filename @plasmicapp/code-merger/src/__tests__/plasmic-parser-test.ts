@@ -12,7 +12,8 @@ import {
 import * as L from "lodash";
 import traverse, { Node, NodePath } from "@babel/traverse";
 import * as parser from "@babel/parser";
-import { formatted, code } from "../utils";
+import { formatted, code, tagName } from "../utils";
+import { iteratee } from "lodash";
 
 const assertKVAttr = (
   input: string,
@@ -47,14 +48,11 @@ const assertPlasmicJsxElementBase = (
   numChildren: number
 ) => {
   const name = n.rawNode.openingElement.name;
-  if (name.type === "JSXIdentifier") {
-    assert(name.name === tag);
-  } else {
-    assert(false, "Unimplemented");
-  }
-  assert(n.nameInId === expcetedPlasmicId);
-  assert(n.attrs.length === numAttrs);
-  assert(n.children.length === numChildren);
+  expect(name.type).toEqual("JSXIdentifier");
+  expect(n.nameInId).toEqual(expcetedPlasmicId);
+  expect(tagName(n.rawNode)).toEqual(tag);
+  expect(n.attrs.length).toBe(numAttrs);
+  expect(n.children.length).toBe(numChildren);
 };
 const assertTagOrComponent = (
   n: PlasmicASTNode | undefined,
@@ -76,9 +74,9 @@ const assertTextNode = (n: PlasmicASTNode, value: string) => {
   assert(n.value === value);
 };
 
-const assertOpaqueNode = (n: PlasmicASTNode, value: string) => {
+const assertOpaqueNode = (n: PlasmicASTNode, input: string, value: string) => {
   assert(n.type === "opaque");
-  assert(n.value === value);
+  expect(getSource(n.rawNode, input)).toEqual(value);
 };
 
 const assertChildStrNode = (n: PlasmicASTNode, plasmicId: string) => {
@@ -390,6 +388,31 @@ Node  </div>)`;
     }
   });
 
+  it("can parse fragment in attribute", function() {
+    const input = `
+      <Button
+        className={rh.clsAbc()}
+        content={
+          <>
+            <Icon1 className={rh.clsIcon1()}/>
+            <Icon2 className={rh.clsIcon2()}/>
+          </>} />`;
+    const r = parseFromJsxExpression(input);
+    assert(!L.isString(r));
+    const jsxElt = assertTagOrComponent(r);
+    assertPlasmicJsxElementBase(jsxElt, "Abc", false, "Button", 2, 0);
+    assertNodeAttr(
+      input,
+      jsxElt.attrs[1],
+      "content",
+      (value: PlasmicASTNode) => {
+        debugger;
+        assert(value.type === "jsx-fragment");
+        expect(value.children.length).toBe(2);
+      }
+    );
+  });
+
   it("with show function", function() {
     const input = "rh.showClsAbc() && <div className={rh.clsAbc()}></div>";
     const r = parseFromJsxExpression(input);
@@ -448,7 +471,7 @@ Node  </div>)`;
     assertPlasmicJsxElementBase(jsxElt, "XXX", false, "div", 2, 0);
   });
 
-  it("parse attributes", function() {
+  it("parse attributes - basic", function() {
     const input = `<div>
         <Button {...rh.propsXXX()} width={100} icon={<img></img>}
           slot={<a {...rh.propsSlot()}>Hello</a> } {...myProps}>
@@ -469,7 +492,30 @@ Node  </div>)`;
       assertTextNode(j.children[0], "Hello");
     });
     assert(jsxElt.attrs[4] === "{...myProps}");
-    assertOpaqueNode(jsxElt.children[0], "{<svg></svg>}");
+    assertOpaqueNode(jsxElt.children[0], input, "{<svg></svg>}");
+  });
+
+  it("parse attributes - slot arg with multiple nodes", function() {
+    const input = `
+      <Button {...rh.propsXXX()} slotProp={
+        <>
+          <div className={rh.cls1()}>Hello</div>
+          <a className={rh.cls2()}>World</a>
+        </>}/>`;
+    const r = parseFromJsxExpression(input);
+    assert(!L.isString(r));
+    const jsxElt = assertTagOrComponent(r);
+    assertPlasmicJsxElementBase(jsxElt, "XXX", true, "Button", 2, 0);
+    assert(jsxElt.attrs[0] === "{...rh.propsXXX()}");
+    assertNodeAttr(
+      input,
+      jsxElt.attrs[1],
+      "slotProp",
+      (value: PlasmicASTNode) => {
+        assert(value.type === "jsx-fragment");
+        expect(value.children.length).toEqual(2);
+      }
+    );
   });
 
   it("parse real generated code", function() {

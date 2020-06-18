@@ -4,7 +4,8 @@ import {
   ProjectSyncMetadataModel,
   ComponentSkeletonModel,
   mergeFiles,
-  ComponentInfoForMerge
+  ComponentInfoForMerge,
+  fixArgs
 } from "../index";
 import { formatted, code } from "../utils";
 import { ensure } from "../common";
@@ -494,7 +495,7 @@ describe("Test CodeMerger", function() {
     expect(
       code(serializePlasmicASTNode(newV.root, newV, edited, base))
     ).toEqual(
-      formatted(`<div tabindex={234} className={rh.clsRoot()} tabindex={123}>
+      formatted(`<div className={rh.clsRoot()} tabindex={<>{123}{234}</>}>
       Hello World
    </div>`)
     );
@@ -942,6 +943,245 @@ describe("Test CodeMerger", function() {
         `<div className={rh.clsRoot()}>
         {args.iconSlot2 || <img className={rh.clsImg0() + " my"}></img>}
      </div>`
+      )
+    );
+  });
+
+  it("merge two slots's defaultContent - 1 node and 2 nodes", function() {
+    const nameInIdToUuid = new Map([
+      ["Root", "Root"],
+      ["Img0", "1234"],
+      ["$slotIconSlot", "2345"]
+    ]);
+    const base = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+         <PlasmicSlot
+           className={rh.cls$slotIconSlot()}
+           value={args.iconSlot}
+           defaultContent={<img className={rh.clsImg0()}></img>}/>
+       </div>`,
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+         <PlasmicSlot
+           className={rh.cls$slotIconSlot()}
+           value={args.iconSlot}
+           defaultContent={<img className={rh.clsImg0()} tabIndex={1}></img>}/>
+       </div>`,
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+         <PlasmicSlot
+           className={rh.cls$slotIconSlot2()}
+           value={args.iconSlot}
+           defaultContent={
+             <>
+               <img className={rh.clsImg1()}></img>
+               <img className={rh.clsImg0()}></img>
+             </>}/>
+       </div>`,
+      new Map([
+        ["Root", "Root"],
+        ["Img0", "1234"],
+        ["Img1", "4567"],
+        ["$slotIconSlot2", "2345"]
+      ])
+    );
+    expect(
+      code(serializePlasmicASTNode(newV.root, newV, edited, base))
+    ).toEqual(
+      formatted(
+        `<div className={rh.clsRoot()}>
+        <PlasmicSlot
+          className={rh.cls$slotIconSlot2()}
+          value={args.iconSlot}
+          defaultContent={
+            <>
+              <img className={rh.clsImg1()}></img>
+              <img className={rh.clsImg0()} tabIndex={1}></img>
+            </>}/>
+      </div>`
+      )
+    );
+  });
+
+  it("merge two slots's defaultContent - 1 node and 1 node", function() {
+    const nameInIdToUuid = new Map([
+      ["Root", "Root"],
+      ["Img0", "1234"],
+      ["$slotIconSlot", "2345"]
+    ]);
+    const base = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+         <PlasmicSlot
+           className={rh.cls$slotIconSlot()}
+           value={args.iconSlot}
+           defaultContent={<img className={rh.clsImg0()}></img>}/>
+       </div>`,
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+         <PlasmicSlot
+           className={rh.cls$slotIconSlot()}
+           value={args.iconSlot}
+           defaultContent={<><img className={rh.clsImg0()} tabIndex={1}></img></>}/>
+       </div>`,
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+         <PlasmicSlot
+           className={rh.cls$slotIconSlot2()}
+           value={args.iconSlot}
+           defaultContent={
+              <img className={rh.clsImg1()}></img>
+           }/>
+       </div>`,
+      new Map([
+        ["Root", "Root"],
+        ["Img1", "1234"],
+        ["$slotIconSlot2", "2345"]
+      ])
+    );
+    // When the result is only one node, we follow edited version to add the
+    // fragment or not.
+    expect(
+      code(serializePlasmicASTNode(newV.root, newV, edited, base))
+    ).toEqual(
+      formatted(
+        `<div className={rh.clsRoot()}>
+        <PlasmicSlot
+          className={rh.cls$slotIconSlot2()}
+          value={args.iconSlot}
+          defaultContent={
+            <><img className={rh.clsImg1()} tabIndex={1}></img></>
+          }/>
+      </div>`
+      )
+    );
+  });
+
+  it("renaming of argsRef", function() {
+    const nameInIdToUuid = new Map([
+      ["Root", "Root"],
+      ["$slotIconSlot", "2345"]
+    ]);
+    const base = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+         <PlasmicSlot
+           className={rh.cls$slotIconSlot()}
+           value={args.iconSlot}
+           defaultContent={<></>}/>
+       </div>`,
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+         <PlasmicSlot
+           className={rh.cls$slotIconSlot()}
+           value={args.iconSlot || "abc"}
+           defaultContent={<></>}/>
+       </div>`,
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+         <PlasmicSlot
+           className={rh.cls$slotIconSlot2()}
+           value={args.iconSlot2}
+           defaultContent={
+              <></>
+           }/>
+       </div>`,
+      new Map([
+        ["Root", "Root"],
+        ["$slotIconSlot2", "2345"]
+      ])
+    );
+    // When the result is only one node, we follow edited version to add the
+    // fragment or not.
+    expect(
+      code(
+        fixArgs(
+          serializePlasmicASTNode(newV.root, newV, edited, base),
+          newV,
+          edited,
+          base
+        )
+      )
+    ).toEqual(
+      formatted(
+        `<div className={rh.clsRoot()}>
+        <PlasmicSlot
+          className={rh.cls$slotIconSlot2()}
+          value={args.iconSlot2 || "abc"}
+          defaultContent={<></>}/>
+      </div>`
+      )
+    );
+  });
+
+  it("renaming of args in non argsRef", function() {
+    const nameInIdToUuid = new Map([
+      ["Root", "Root"],
+      ["$slotIconSlot", "2345"]
+    ]);
+    const base = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+         <PlasmicSlot
+           className={rh.cls$slotIconSlot()}
+           value={args.iconSlot}
+           defaultContent={<></>}/>
+       </div>`,
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+         <PlasmicSlot
+           className={rh.cls$slotIconSlot()}
+           value={args.iconSlot || "abc"}
+           defaultContent={<></>}/>
+          {showArgsAgain() && args.iconSlot}
+       </div>`,
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+         <PlasmicSlot
+           className={rh.cls$slotIconSlot2()}
+           value={args.iconSlot2}
+           defaultContent={
+              <></>
+           }/>
+       </div>`,
+      new Map([
+        ["Root", "Root"],
+        ["$slotIconSlot2", "2345"]
+      ])
+    );
+    // When the result is only one node, we follow edited version to add the
+    // fragment or not.
+    expect(
+      code(
+        fixArgs(
+          serializePlasmicASTNode(newV.root, newV, edited, base),
+          newV,
+          edited,
+          base
+        )
+      )
+    ).toEqual(
+      formatted(
+        `<div className={rh.clsRoot()}>
+        <PlasmicSlot
+          className={rh.cls$slotIconSlot2()}
+          value={args.iconSlot2 || "abc"}
+          defaultContent={<></>}/>
+        {showArgsAgain() && args.iconSlot2}
+      </div>`
       )
     );
   });

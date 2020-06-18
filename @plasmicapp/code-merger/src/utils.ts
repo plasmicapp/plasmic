@@ -4,6 +4,7 @@ import parserTypeScript from "prettier/parser-typescript";
 import * as Prettier from "prettier/standalone";
 import { Node } from "@babel/traverse";
 import * as parser from "@babel/parser";
+import { JSXElement } from "@babel/types";
 
 export const code = (
   n: Node | undefined,
@@ -29,14 +30,16 @@ export function parseExpr(input: string) {
   });
 }
 
-export const getIdentifierName = (n: Node): string => {
-  assert(n.type === "Identifier" || n.type === "JSXIdentifier");
-  return n.name;
-};
-
 export const nodesDeepEqualIgnoreComments = (n1: Node, n2: Node) => {
   return (
     code(n1, { comments: false, compact: true }, true) ===
     code(n2, { comments: false, compact: true }, true)
   );
+};
+
+export const tagName = (jsxElement: JSXElement) => {
+  // babel generator append ";" to the name. stirp it.
+  return code(jsxElement.openingElement.name)
+    .replace(";", "")
+    .trim();
 };

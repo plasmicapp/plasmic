@@ -36,17 +36,36 @@ import {
   CodeVersion,
   helperObject,
   isInHtmlContext,
-  calleeMatch,
   memberExpressionMatch,
   makeMemberExpression,
   getSource,
   isCallIgnoreArguments,
-  isCallWithoutArguments
+  isCallWithoutArguments,
+  tryExtractPropertyNameOfMemberExpression
 } from "./plasmic-parser";
-import { nodesDeepEqualIgnoreComments, code, formatted } from "./utils";
+import {
+  nodesDeepEqualIgnoreComments,
+  code,
+  formatted,
+  tagName
+} from "./utils";
 import { first, cloneDeep } from "lodash";
 
-const getNamedAttrs = (jsxElement: JSXElement) => {
+const mkJsxFragment = (children: JsxChildType[]) => {
+  return babel.types.jsxFragment(
+    babel.types.jsxOpeningFragment(),
+    babel.types.jsxClosingFragment(),
+    // Remove unnecessary {}
+    children.map(child =>
+      child.type === "JSXExpressionContainer" &&
+      child.expression.type === "JSXElement"
+        ? child.expression
+        : child
+    )
+  );
+};
+
+const getRawNamedAttrs = (jsxElement: JSXElement) => {
   const attrs = new Map<string, JSXAttribute>();
   for (const attr of jsxElement.openingElement.attributes) {
     if (attr.type !== "JSXAttribute") {
@@ -56,6 +75,18 @@ const getNamedAttrs = (jsxElement: JSXElement) => {
     attrs.set(attr.name.name, attr);
   }
   return attrs;
+};
+
+const findParsedNamedAttrs = (node: PlasmicTagOrComponent, name: string) => {
+  for (const attr of node.jsxElement.attrs) {
+    if (!L.isArray(attr)) {
+      continue;
+    }
+    if (attr[0] === name) {
+      return attr[1];
+    }
+  }
+  return undefined;
 };
 
 const findAttrValueNode = (name: string, jsxElement: PlasmicJsxElement) => {
@@ -104,9 +135,9 @@ const mergeAttributes = (
     editedNode
   );
 
-  const newNamedAttrs = getNamedAttrs(newNode.jsxElement.rawNode);
-  const editedNamedAttrs = getNamedAttrs(editedNode.jsxElement.rawNode);
-  const baseNamedAttrs = getNamedAttrs(baseNode.jsxElement.rawNode);
+  const newNamedAttrs = getRawNamedAttrs(newNode.jsxElement.rawNode);
+  const editedNamedAttrs = getRawNamedAttrs(editedNode.jsxElement.rawNode);
+  const baseNamedAttrs = getRawNamedAttrs(baseNode.jsxElement.rawNode);
 
   const conflictResolution = (
     name: string,
@@ -123,7 +154,7 @@ const mergeAttributes = (
     if (!baseAttr) {
       // We don't know how to handle the conflict. Emit both and let developer
       // handle it.
-      return "emit-both";
+      return "emit-merged";
     }
     if (nodesDeepEqualIgnoreComments(baseAttr, editedAttr)) {
       // User didn't edit it. Emit the new version.
@@ -131,6 +162,8 @@ const mergeAttributes = (
     }
     if (
       name.startsWith("on") ||
+      (name === "value" &&
+        tagName(newNode.jsxElement.rawNode) === "PlasmicSlot") ||
       nodesDeepEqualIgnoreComments(baseAttr, newAttr)
     ) {
       // Plasmic doesn't change it. Emit the edited version then.
@@ -138,9 +171,7 @@ const mergeAttributes = (
       return "emit-edited";
     }
     // Both Plasmic and developer edited it. Emit both.
-    // TODO: for event handler, maybe emit edited version, but replace the
-    // identifier?
-    return "emit-both";
+    return "emit-merged";
   };
 
   // Return new attributes in newNode to be inserted.
@@ -156,12 +187,8 @@ const mergeAttributes = (
       const editedAttr = editedNamedAttrs.get(name);
       const baseAttr = baseNamedAttrs.get(name);
       if (editedAttr) {
-        const res = conflictResolution(name, baseAttr, editedAttr, attr);
-        if (res === "emit-both") {
-          newAttrs.push(attr);
-        }
-        // In case of "emit-new", we don't emit it before IdNode, but at the
-        // same place as edited node to minimize diff.
+        // In case of "emit-new" or "emit-merged", we don't emit it before
+        // IdNode, but at the same place as edited node to minimize diff.
       } else if (!baseAttr) {
         // newly added attribute in new version
         const attrValueNode = ensure(
@@ -195,8 +222,98 @@ const mergeAttributes = (
       if (res === "emit-new") {
         // We emit the newAttr in place to minimize diff.
         return newAttr;
+      } else if (res === "emit-merged") {
+        const parsedNewAttrValue = findParsedNamedAttrs(newNode, name);
+        const parsedEditedAttrValue = findParsedNamedAttrs(editedNode, name);
+        const parsedBaseAttrValue = findParsedNamedAttrs(baseNode, name);
+        // These two must not be undefined (i.e. not found)
+        assert(parsedNewAttrValue !== undefined);
+        assert(parsedEditedAttrValue !== undefined);
+        let mergedAttrValue:
+          | Expression
+          | JSXEmptyExpression
+          | JSXExpressionContainer
+          | JSXSpreadChild
+          | JSXFragment
+          | JSXText
+          | undefined = undefined;
+        if (!parsedNewAttrValue) {
+          if (parsedEditedAttrValue) {
+            mergedAttrValue = serializePlasmicASTNode(
+              parsedEditedAttrValue,
+              newVersion,
+              editedVersion,
+              baseVersion
+            );
+          } else {
+            mergedAttrValue = undefined;
+          }
+        } else {
+          if (!parsedEditedAttrValue) {
+            mergedAttrValue = serializePlasmicASTNode(
+              parsedNewAttrValue,
+              newVersion,
+              editedVersion,
+              baseVersion
+            );
+          } else {
+            // do merge, really!
+            const asArray = (node: PlasmicASTNode | null | undefined) =>
+              !node
+                ? []
+                : node.type === "jsx-fragment"
+                ? node.children
+                : [node];
+            const mergedNodes = mergeNodes(
+              asArray(parsedNewAttrValue),
+              asArray(parsedEditedAttrValue),
+              asArray(parsedBaseAttrValue),
+              newVersion,
+              editedVersion,
+              baseVersion
+            );
+            // If edited forced wrapping single node with JSXFragment, so do we
+            // if the result is a single element.
+            const editedForcedFragment =
+              parsedEditedAttrValue.type === "jsx-fragment" &&
+              parsedEditedAttrValue.children.length === 1;
+            mergedAttrValue =
+              mergedNodes.length > 1
+                ? mkJsxFragment(mergedNodes)
+                : mergedNodes.length === 1
+                ? editedForcedFragment
+                  ? mkJsxFragment(mergedNodes)
+                  : mergedNodes[0]
+                : babel.types.jsxEmptyExpression();
+          }
+        }
+        if (!mergedAttrValue) {
+          return babel.types.jsxAttribute(newAttr.name);
+        } else {
+          if (
+            mergedAttrValue.type === "JSXText" ||
+            mergedAttrValue.type === "JSXSpreadChild"
+          ) {
+            // Either newVersion or editedVersion was wrapped in a fragment.
+            // We wrap too.
+            babel.types.jsxAttribute(
+              newAttr.name,
+              mkJsxFragment([mergedAttrValue])
+            );
+          } else if (
+            babel.types.isExpression(mergedAttrValue) ||
+            babel.types.isJSXEmptyExpression(mergedAttrValue)
+          ) {
+            return babel.types.jsxAttribute(
+              newAttr.name,
+              babel.types.jsxExpressionContainer(mergedAttrValue)
+            );
+          } else {
+            return babel.types.jsxAttribute(newAttr.name, mergedAttrValue);
+          }
+        }
       }
-      assert(res === "emit-both" || res === "emit-edited");
+      assert(res === "emit-edited");
       // Upgrade id in edited version for event handler
       if (name.startsWith("on") && editedNodeId !== newNodeId) {
         const eventNameInId = name.substring(2);
@@ -240,7 +357,7 @@ const mergeAttributes = (
       const arg = attrInEditedNode.argument;
       if (
         arg.type === "CallExpression" &&
-        calleeMatch(arg.callee, helperObject, `props${editedNodeId}`)
+        memberExpressionMatch(arg.callee, helperObject, `props${editedNodeId}`)
       ) {
         assert(arg.callee.type === "MemberExpression");
         if (newNodePropsWithIdSpreador) {
@@ -292,7 +409,7 @@ const mergeAttributes = (
       const newAttr = cloneDeepWithHook(attrInEditedNode, n => {
         if (
           n.type === "CallExpression" &&
-          calleeMatch(n.callee, helperObject, `cls${editedNodeId}`)
+          memberExpressionMatch(n.callee, helperObject, `cls${editedNodeId}`)
         ) {
           found = true;
           return makeCallExpression(helperObject, `cls${newNodeId}`);
@@ -435,14 +552,14 @@ class NodeMatchChecker {
   };
 }
 
-const mergedChildren = (
-  newNode: PlasmicTagOrComponent,
-  editedNode: PlasmicTagOrComponent,
-  baseNode: PlasmicTagOrComponent,
+const mergeNodes = (
+  newNodes: PlasmicASTNode[],
+  editedNodes: PlasmicASTNode[],
+  baseNodes: PlasmicASTNode[],
   newVersion: CodeVersion,
   editedVersion: CodeVersion,
   baseVersion: CodeVersion
-): Array<JsxChildType> => {
+) => {
   let nextInsertStartAt = 0;
   const insertEditedNodeIntoNew = (
     editedChild: PlasmicASTNode,
@@ -470,11 +587,9 @@ const mergedChildren = (
     }
   };
 
-  const newChildren = newNode.jsxElement.children;
-  const merged = newNode.jsxElement.children.slice(0);
+  const merged = newNodes.slice(0);
 
-  const editedChildren = editedNode.jsxElement.children;
-  editedChildren.forEach((editedChild, i) => {
+  editedNodes.forEach((editedChild, i) => {
     if (editedChild.type === "text" || editedChild.type === "string-lit") {
       const matchInNewVersion = findMatch(
         merged,
@@ -489,7 +604,7 @@ const mergedChildren = (
         return;
       }
       const matchInBaseVersion = findMatch(
-        baseNode.jsxElement.children,
+        baseNodes,
         0,
         new NodeMatchChecker(baseVersion, editedVersion),
         editedChild
@@ -498,15 +613,15 @@ const mergedChildren = (
         // skip text node if it matches some text in base version
         return;
       }
-      insertEditedNodeIntoNew(editedChild, editedChildren[i - 1]);
+      insertEditedNodeIntoNew(editedChild, editedNodes[i - 1]);
     } else if (editedChild.type === "opaque") {
-      insertEditedNodeIntoNew(editedChild, editedChildren[i - 1]);
+      insertEditedNodeIntoNew(editedChild, editedNodes[i - 1]);
     }
   });
 
   return withoutNils(
     merged.map(c => {
-      if (!newChildren.includes(c)) {
+      if (!newNodes.includes(c)) {
         // children preserved from editedNode doesn't need any fixing.
         return c.rawNode as JsxChildType;
       }
@@ -533,6 +648,24 @@ const mergedChildren = (
   );
 };
 
+const mergedChildren = (
+  newNode: PlasmicTagOrComponent,
+  editedNode: PlasmicTagOrComponent,
+  baseNode: PlasmicTagOrComponent,
+  newVersion: CodeVersion,
+  editedVersion: CodeVersion,
+  baseVersion: CodeVersion
+): Array<JsxChildType> => {
+  return mergeNodes(
+    newNode.jsxElement.children,
+    editedNode.jsxElement.children,
+    baseNode.jsxElement.children,
+    newVersion,
+    editedVersion,
+    baseVersion
+  );
+};
+
 const makeJsxElementWithShowCall = (jsxElement: JSXElement, nodeId: string) =>
   babel.types.logicalExpression(
     "&&",
@@ -555,7 +688,9 @@ const mergeShowFunc = (
     noScope: true,
     CallExpression: function(path) {
       const call = path.node;
-      if (calleeMatch(call.callee, helperObject, `show${editedNodeId}`)) {
+      if (
+        memberExpressionMatch(call.callee, helperObject, `show${editedNodeId}`)
+      ) {
         if (newNodeCallShowFunc) {
           assert(call.callee.type === "MemberExpression");
           call.callee.property = babel.types.identifier(`show${newNodeId}`);
@@ -733,7 +868,7 @@ const serializeNonOpaquePlasmicASTNode = (
   newVersion: CodeVersion,
   editedVersion: CodeVersion,
   baseVersion: CodeVersion
-): Expression | JSXExpressionContainer | JSXText | undefined => {
+): Expression | JSXExpressionContainer | JSXText | JSXFragment | undefined => {
   assert(newNode.type !== "opaque");
   if (newNode.type === "arg") {
     const nodesToMerged = new Map<Node, Node>();
@@ -764,6 +899,31 @@ const serializeNonOpaquePlasmicASTNode = (
   } else if (newNode.type === "text") {
     // Just output the new version
     return newNode.rawNode;
+  } else if (newNode.type === "jsx-fragment") {
+    return babel.types.jsxFragment(
+      babel.types.jsxOpeningFragment(),
+      babel.types.jsxClosingFragment(),
+      withoutNils(
+        newNode.children.map(child => {
+          const newRawNode = serializePlasmicASTNode(
+            child,
+            newVersion,
+            editedVersion,
+            baseVersion
+          );
+          if (!newRawNode) {
+            return undefined;
+          }
+          if (
+            babel.types.isExpression(newRawNode) ||
+            babel.types.isJSXEmptyExpression(newRawNode)
+          ) {
+            return babel.types.jsxExpressionContainer(newRawNode);
+          }
+          return newRawNode;
+        })
+      )
+    );
   } else {
     assert(newNode.type === "tag-or-component");
     return serializeTagOrComponent(
@@ -780,7 +940,14 @@ export const serializePlasmicASTNode = (
   newVersion: CodeVersion,
   editedVersion: CodeVersion,
   baseVersion: CodeVersion
-): Node | undefined => {
+):
+  | Expression
+  | JSXEmptyExpression
+  | JSXExpressionContainer
+  | JSXSpreadChild
+  | JSXFragment
+  | JSXText
+  | undefined => {
   if (newNode.type === "opaque") {
     return newNode.rawNode;
   }
@@ -1084,6 +1251,50 @@ export type ComponentInfoForMerge = {
   newNameInIdToUuid: Map<string, string>;
 };
 
+// We may miss some args update, such as this one.
+//  <div ...>
+//    {() => {
+//       const argsX = args.value;
+//        return ...;
+//    }()}
+//   </div>
+// Here we guarantee the update across the entire JSX tree.
+export const fixArgs = (
+  newJsx:
+    | Expression
+    | JSXEmptyExpression
+    | JSXExpressionContainer
+    | JSXSpreadChild
+    | JSXFragment
+    | JSXText
+    | undefined,
+  newVersion: CodeVersion,
+  editedVersion: CodeVersion,
+  baseVersion: CodeVersion
+) => {
+  return !newJsx
+    ? undefined
+    : cloneDeepWithHook(newJsx, (n: Node) => {
+        if (babel.types.isExpression(n)) {
+          const maybeStaleArgName = tryExtractPropertyNameOfMemberExpression(
+            n,
+            "args"
+          );
+          if (maybeStaleArgName) {
+            const maybeUuid = baseVersion.tryGetSlotArgUuid(maybeStaleArgName);
+            const newArg = newVersion.findSlotArgNode(
+              maybeStaleArgName,
+              maybeUuid
+            );
+            if (newArg && newArg.argName !== maybeStaleArgName) {
+              return makeMemberExpression("args", newArg.argName);
+            }
+          }
+        }
+        return undefined;
+      });
+};
+
 export const mergeFiles = async (
   componentByUuid: Map<string, ComponentInfoForMerge>,
   projectId: string,
@@ -1188,12 +1399,19 @@ export const mergeFiles = async (
       baseCodeVersion
     );
 
+    const newJsxWithArgsFixed = fixArgs(
+      newJsx,
+      newCodeVersion,
+      editedCodeVersion,
+      baseCodeVersion
+    );
+
     // Ideally, we should keep parsedEdited read-only, but, it is not a big deal
     // to modify the comment.
     parsedEdited.identifyingComment.value = ` plasmic-managed-jsx/${parsedNew.revision}`;
     const mergedFile = cloneDeepWithHook(parsedEdited.file, (n: Node) => {
       if (n === parsedEdited.jsx) {
-        return newJsx;
+        return newJsxWithArgsFixed;
       }
       return undefined;
     });
