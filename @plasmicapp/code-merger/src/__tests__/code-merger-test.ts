@@ -505,9 +505,9 @@ describe("Test CodeMerger", function() {
     const nameInIdToUuid = new Map([["Root", "Root"]]);
     const base = new CodeVersion(
       `<div className={ rh.clsRoot() }
-        onMouseEnter={ rh.onRootMouseEnter }
-        onMouseLeave={rh.onRootMouseLeave}
-        onMouseDown={rh.onRootMouseDown}>
+        onMouseEnter={ rh.onMouseEnterRoot }
+        onMouseLeave={rh.onMouseLeaveRoot}
+        onMouseDown={rh.onMouseDownRoot}>
       </div>`,
       nameInIdToUuid
     );
@@ -515,9 +515,9 @@ describe("Test CodeMerger", function() {
       `<div className={rh.clsRoot()
       }
         onMouseEnter={
-          rh.onRootMouseEnter}
+          rh.onMouseEnterRoot}
         onMouseLeave={() => {
-          rh.onRootMouseLeave();
+          rh.onMouseLeaveRoot();
           myEventHandler();
         }}
         onClick={handleClick}>
@@ -527,9 +527,9 @@ describe("Test CodeMerger", function() {
     );
     const newV = new CodeVersion(
       `<div className={ rh.clsNewRoot()}
-       onMouseEnter={ rh.onNewRootMouseEnter}
-       onMouseLeave={rh.onNewRootMouseLeave}
-       onMouseDown={rh.onNewRootMouseDown}>
+       onMouseEnter={ rh.onMouseEnterNewRoot}
+       onMouseLeave={rh.onMouseLeaveNewRoot}
+       onMouseDown={rh.onMouseDownNewRoot}>
       </div>`,
       new Map([["NewRoot", "Root"]])
     );
@@ -540,9 +540,9 @@ describe("Test CodeMerger", function() {
     ).toEqual(
       formatted(`<div
         className={rh.clsNewRoot()}
-        onMouseEnter={rh.onNewRootMouseEnter}
+        onMouseEnter={rh.onMouseEnterNewRoot}
         onMouseLeave={() => {
-          rh.onNewRootMouseLeave();
+          rh.onMouseLeaveNewRoot();
           myEventHandler();
         }}
         onClick={handleClick}>

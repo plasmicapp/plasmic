@@ -322,12 +322,12 @@ const mergeAttributes = (
             memberExpressionMatch(
               n,
               helperObject,
-              `on${editedNodeId}${eventNameInId}`
+              `on${eventNameInId}${editedNodeId}`
             )
           ) {
             return makeMemberExpression(
               helperObject,
-              `on${newNodeId}${eventNameInId}`
+              `on${eventNameInId}${newNodeId}`
             );
           }
           return undefined;
