@@ -35,17 +35,6 @@ export interface PlasmicOpaqueExpr extends PlasmicNodeBase {
   type: "opaque";
 }
 
-export interface PlasmicArgRef extends PlasmicNodeBase {
-  type: "arg";
-  argName: string;
-  // For TplSlot, there will be multiple jsxNodes, one for each defaultNode.
-  // For text TplSlot, there will be one or zero jsxNodes, depending if there
-  // is style wrapper or not.
-  // This could also be the single wrapper node that wraps all JSX nodes.
-  jsxNodes: PlasmicTagOrComponent[];
-  rawNode: Expression | JSXExpressionContainer;
-}
-
 export interface PlasmicChildStringCall extends PlasmicNodeBase {
   type: "child-str-call";
   plasmicId: string;
@@ -78,9 +67,11 @@ export interface PlasmicJSXFragment extends PlasmicNodeBase {
 
 export interface PlasmicJsxElement extends PlasmicNodeBase {
   nameInId: string;
-  // A list of JSX attribute or JSX spread operator. The value of a JSXAttribute
+  // A list of JSXAttribute or JSXSpreadAttribute. The value of a JSXAttribute
   // could be null (such as disabled in <div disabled/>).
-  attrs: Array<[string, PlasmicASTNode | null] | string>;
+  // For JSXSpreadAttribute, the value is a single PlasmicASTNode, which
+  // represents the value of the spread argument.
+  attrs: Array<[string, PlasmicASTNode | null] | PlasmicASTNode>;
   children: PlasmicASTNode[];
   rawNode: JSXElement;
 }
@@ -116,7 +107,6 @@ export interface PlasmicTagOrComponent extends PlasmicNodeBase {
 export type PlasmicASTNode =
   | PlasmicTagOrComponent
   | PlasmicOpaqueExpr
-  | PlasmicArgRef
   | PlasmicStringLiteralExpr
   | PlasmicJsxText
   | PlasmicChildStringCall

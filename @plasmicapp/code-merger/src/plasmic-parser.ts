@@ -20,26 +20,16 @@ import { assert, ensure } from "./common";
 import {
   PlasmicASTNode,
   PlasmicJsxElement,
-  PlasmicTagOrComponent,
-  PlasmicArgRef,
-  PlasmicJSXFragment
+  PlasmicTagOrComponent
 } from "./plasmic-ast";
+import { cloneDeepWithHook } from "./cloneDeepWithHook";
+import { isAttribute, getAttrName } from "./utils";
 
 export const helperObject = "rh";
 
-export const getSource = (n: Node | null, input: string) => {
-  if (!n) {
-    return undefined;
-  }
-  if (n.start === null || n.end === null) {
-    return undefined;
-  }
-  return input.substring(n.start, n.end);
-};
-
 const tryGetNodeIdFromAttr = (attr: JSXAttribute | JSXSpreadAttribute) => {
   if (attr.type === "JSXAttribute") {
-    if (attr.name.name === "className" && attr.value) {
+    if (isAttribute(attr, "className") && attr.value) {
       let nodeId: string | undefined = undefined;
       traverse(attr.value, {
         noScope: true,
@@ -78,25 +68,21 @@ const tryGetNodeIdFromAttr = (attr: JSXAttribute | JSXSpreadAttribute) => {
 
 const parseJsxElement = (
   n: JSXElement,
-  plasmicId: string,
-  input: string
+  plasmicId: string
 ): PlasmicJsxElement => {
   const attrs: Array<
-    [string, PlasmicASTNode | null] | string
+    [string, PlasmicASTNode | null] | PlasmicASTNode
   > = n.openingElement.attributes.map(attr => {
     if (attr.type === "JSXAttribute") {
-      const name = attr.name.name;
+      const name = getAttrName(attr);
       assert(L.isString(name));
-      return [
-        name as string,
-        attr.value === null ? null : parseNode(attr.value, input)
-      ];
+      return [name, attr.value === null ? null : parseNode(attr.value)];
     } else {
       // spreador
-      return ensure(getSource(attr, input));
+      return parseNode(attr.argument);
     }
   });
-  const children = parseChildren(n, input);
+  const children = parseChildren(n);
   return {
     attrs,
     children,
@@ -106,8 +92,7 @@ const parseJsxElement = (
 };
 
 const tryParseAsPlasmicJsxElement = (
-  jsx: JSXElement,
-  input: string
+  jsx: JSXElement
 ): PlasmicJsxElement | undefined => {
   let nodeId: string | undefined = undefined;
   for (const attr of jsx.openingElement.attributes) {
@@ -120,7 +105,7 @@ const tryParseAsPlasmicJsxElement = (
       nodeId = curNodeId;
     }
   }
-  return nodeId ? parseJsxElement(jsx, nodeId, input) : undefined;
+  return nodeId ? parseJsxElement(jsx, nodeId) : undefined;
 };
 
 export const isInHtmlContext = <T extends Node>(path: NodePath<T>) => {
@@ -128,14 +113,11 @@ export const isInHtmlContext = <T extends Node>(path: NodePath<T>) => {
   return parent.type === "JSXElement" || parent.type === "JSXFragment";
 };
 
-const parseChildren = (
-  n: JSXFragment | JSXElement,
-  input: string
-): PlasmicASTNode[] => {
+const parseChildren = (n: JSXFragment | JSXElement): PlasmicASTNode[] => {
   const nodesList: PlasmicASTNode[] = [];
   n.children.forEach(child => {
     if (child.type === "JSXText") {
-      const text = getSource(child, input);
+      const text = child.value;
       if (text !== undefined) {
         const trimmed = text.trim();
         if (trimmed) {
@@ -143,7 +125,7 @@ const parseChildren = (
         }
       }
     } else {
-      nodesList.push(parseNode(child, input));
+      nodesList.push(parseNode(child));
     }
   });
   return nodesList;
@@ -155,32 +137,28 @@ const parseNode = (
     | JSXEmptyExpression
     | JSXExpressionContainer
     | JSXSpreadChild
-    | JSXFragment,
-  input: string
+    | JSXFragment
 ): PlasmicASTNode => {
   let node: PlasmicASTNode | null = null;
   if (n.type === "JSXExpressionContainer") {
     // Always unwrap the expression container
-    node = parseNode(n.expression, input);
+    node = parseNode(n.expression);
   } else if (n.type === "JSXSpreadChild") {
-    node = parseAsOneNode(n.expression, input);
+    node = parseAsOneNode(n.expression);
   } else if (n.type === "JSXFragment") {
     node = {
       type: "jsx-fragment",
-      children: parseChildren(n, input),
+      children: parseChildren(n),
       rawNode: n
     };
   } else {
-    node = parseAsOneNode(n, input);
+    node = parseAsOneNode(n);
   }
   node.rawNode = n;
   return node;
 };
 
-const parseAsOneNode = (
-  n: Expression | JSXEmptyExpression,
-  input: string
-): PlasmicASTNode => {
+const parseAsOneNode = (n: Expression | JSXEmptyExpression): PlasmicASTNode => {
   if (n.type === "JSXEmptyExpression") {
     return {
       type: "opaque",
@@ -196,59 +174,19 @@ const parseAsOneNode = (
     };
   }
   if (n.type === "CallExpression") {
-    const callee = getSource(n.callee, input);
-    const m = callee?.match(/^rh\.childStr(.+)$/);
+    const callee = tryExtractPropertyNameOfMemberExpression(
+      n.callee,
+      helperObject
+    );
+    const m = callee?.match(/^childStr(.+)$/);
     if (m) {
       return { type: "child-str-call", plasmicId: ensure(m[1]), rawNode: n };
     }
   }
 
-  const rawExpr = getSource(n, input);
-  const m = rawExpr?.match(/^\(*\s*args\.([^\)\s]*)/);
-  if (m) {
-    const jsxNodes: PlasmicTagOrComponent[] = [];
-    traverse(n, {
-      noScope: true,
-      JSXFragment: function(path) {
-        // In the new version of code, multiple default nodes are wrapped in a
-        // fragment, with which, we have clear boundaries between defaultNodes.
-        path.node.children.forEach(c => {
-          if (c.type === "JSXElement" || c.type === "JSXExpressionContainer") {
-            const parsedChild = parseNode(c, input);
-            if (parsedChild && parsedChild.type === "tag-or-component") {
-              jsxNodes.push(parsedChild);
-            }
-          }
-        });
-        path.stop();
-      },
-      JSXElement: function(path) {
-        // To be conservative, JSX element's boundary stays at the element
-        // itself. This means we may over-generate the rh.showXXX helpers after
-        // each merge. But at least it is not lossy. The new version of code
-        // won't have this problem since we always wrap default node(s) in a
-        // fragment.
-        const maybeWrappedJsxElement = tryParseAsPlasmicJsxElement(
-          path.node,
-          input
-        );
-        if (maybeWrappedJsxElement) {
-          jsxNodes.push({
-            type: "tag-or-component",
-            jsxElement: maybeWrappedJsxElement,
-            rawNode: path.node,
-            sound: true
-          });
-
-          path.skip();
-        }
-      }
-    });
-    return { type: "arg", argName: m[1], jsxNodes, rawNode: n };
-  }
   // Need to handle this case specially since traverse doesn't visit n itself.
   if (n.type === "JSXElement") {
-    const jsxElement = tryParseAsPlasmicJsxElement(n, input);
+    const jsxElement = tryParseAsPlasmicJsxElement(n);
     if (jsxElement) {
       return { type: "tag-or-component", jsxElement, rawNode: n, sound: true };
     }
@@ -257,7 +195,7 @@ const parseAsOneNode = (
   traverse(n, {
     noScope: true,
     JSXElement: function(path) {
-      const jsxElement = tryParseAsPlasmicJsxElement(path.node, input);
+      const jsxElement = tryParseAsPlasmicJsxElement(path.node);
       if (jsxElement) {
         jsxElements.push(jsxElement);
         path.skip();
@@ -284,15 +222,14 @@ export const parseFromJsxExpression = (input: string) => {
     strictMode: false,
     plugins: ["jsx", "typescript"]
   });
-  return parseNode(ast, input);
+  return parseNode(ast);
 };
 
 // Given an AST, collect all JSX nodes into r, which index the nodes by
 // nameInId.
 const findNodes = (
   node: PlasmicASTNode | null,
-  tags: Map<string, PlasmicTagOrComponent>,
-  args: Map<string, PlasmicArgRef>
+  tags: Map<string, PlasmicTagOrComponent>
 ) => {
   if (!node) {
     return;
@@ -300,19 +237,17 @@ const findNodes = (
   if (node.type === "tag-or-component") {
     tags.set(node.jsxElement.nameInId, node);
     node.jsxElement.attrs.forEach(attr => {
-      if (L.isString(attr)) {
-        return;
+      if (!L.isArray(attr)) {
+        findNodes(attr, tags);
+      } else {
+        findNodes(attr[1], tags);
       }
-      findNodes(attr[1], tags, args);
     });
     node.jsxElement.children.forEach(c => {
-      findNodes(c, tags, args);
+      findNodes(c, tags);
     });
-  } else if (node.type === "arg") {
-    args.set(node.argName, node);
-    node.jsxNodes.forEach(n => findNodes(n, tags, args));
   } else if (node.type === "jsx-fragment") {
-    node.children.forEach(child => findNodes(child, tags, args));
+    node.children.forEach(child => findNodes(child, tags));
   }
 };
 
@@ -323,7 +258,7 @@ export const makeShowCall = (nameInId: string) =>
   `${makeShowCallCallee(nameInId)}()`;
 
 export const tryExtractPropertyNameOfMemberExpression = (
-  callee: Expression | V8IntrinsicIdentifier | JSXEmptyExpression,
+  callee: Node,
   object: string
 ) => {
   if (callee.type !== "MemberExpression") {
@@ -392,22 +327,20 @@ export class CodeVersion {
   // The node of the jsx tree.
   root: PlasmicASTNode;
 
-  private argNameToNode = new Map<string, PlasmicArgRef>();
   private slotArgNameToUuid = new Map<string, string>();
   private uuidToSlotArgName = new Map<string, string>();
 
   constructor(
-    readonly input: string,
+    rootExpr: string | Expression,
     // A map from nameInId to uuid
-    readonly nameInIdToUuid: Map<string, string>,
-    rootExpr?: Expression
+    readonly nameInIdToUuid: Map<string, string>
   ) {
-    if (rootExpr) {
-      this.root = parseNode(rootExpr, input);
+    if (L.isString(rootExpr)) {
+      this.root = parseFromJsxExpression(rootExpr);
     } else {
-      this.root = parseFromJsxExpression(input);
+      this.root = parseNode(rootExpr);
     }
-    findNodes(this.root, this.tagOrComponents, this.argNameToNode);
+    findNodes(this.root, this.tagOrComponents);
     this.tagOrComponents.forEach((n, nameInId) =>
       this.tagOrComponentsByUuid.set(
         ensure(this.nameInIdToUuid.get(nameInId)),
@@ -424,8 +357,93 @@ export class CodeVersion {
     });
   }
 
+  renameJsxTree(targetCodeVersion: CodeVersion) {
+    const revisedNameInIdToUuid = new Map<string, string>(
+      targetCodeVersion.nameInIdToUuid
+    );
+    const renamedJsx = cloneDeepWithHook(this.root.rawNode, (n: Node) => {
+      const helperMember = tryExtractPropertyNameOfMemberExpression(
+        n,
+        helperObject
+      );
+      if (helperMember) {
+        const eventHandlers = [
+          "onMouseUp",
+          "onMouseDown",
+          "onFocus",
+          "onBlur",
+          "onMouseEnter",
+          "onMouseLeave"
+        ];
+        const regEx = new RegExp(
+          `^(cls|props|show|childStr|${eventHandlers.join("|")})(.+)$`
+        );
+        const m = helperMember.match(regEx);
+        if (m) {
+          const prefix = m[1];
+          const nameInId = m[2];
+          const curUuid = ensure(this.nameInIdToUuid.get(nameInId));
+          const newNameInId = targetCodeVersion.findMatchingNameInId({
+            nameInId,
+            uuid: curUuid
+          });
+          if (!newNameInId) {
+            // node has been deleted in targetCodeVersion. Fine to keep the name,
+            // but need to add this id into the new map.
+            revisedNameInIdToUuid.set(nameInId, curUuid);
+          } else {
+            return makeMemberExpression(
+              helperObject,
+              `${prefix}${newNameInId}`
+            );
+          }
+        }
+        return undefined;
+      }
+      const argName = tryExtractPropertyNameOfMemberExpression(n, "args");
+      if (argName) {
+        const newSlotArgName = targetCodeVersion.findMatchingSlotArgName(
+          argName,
+          this.tryGetSlotArgUuid(argName)
+        );
+        if (!newSlotArgName) {
+          // Either non slot args, or the arg has been deleted. Keep the name
+        } else {
+          return makeMemberExpression("args", newSlotArgName);
+        }
+      }
+
+      return undefined;
+    });
+    assert(babel.types.isExpression(renamedJsx));
+    return new CodeVersion(renamedJsx, revisedNameInIdToUuid);
+  }
+
   getUuid(nameInId: string) {
     return ensure(this.nameInIdToUuid.get(nameInId));
+  }
+
+  findMatchingNameInId(id: { nameInId: string; uuid: string }) {
+    const uuid = this.nameInIdToUuid.get(id.nameInId);
+    if (uuid) {
+      // nameInId exists - keep the id!
+      return id.nameInId;
+    }
+    // nameInId doesn't exist. Match by uuid
+    return this.uuidToNameInId.get(id.uuid);
+  }
+
+  findMatchingSlotArgName(argName: string, uuid: string | undefined) {
+    const slotUuid = this.slotArgNameToUuid.get(argName);
+    if (slotUuid) {
+      // argName exists - keep the name
+      return argName;
+    }
+    if (!uuid) {
+      return undefined;
+    }
+    // Match by UUID
+    return this.uuidToSlotArgName.get(uuid);
   }
 
   // Find a tagOrComponent node whose nameInId matches, or uuid matches.
@@ -447,25 +465,6 @@ export class CodeVersion {
 
   tryGetSlotArgUuid(argName: string) {
     return this.slotArgNameToUuid.get(argName);
-  }
-
-  // uuid for an arg could be missing since we only record uuid for slot arg
-  // only. It could also be missing in historical version.
-  findSlotArgNode(argName: string, uuid: string | undefined) {
-    // Try matching by name first
-    const node = this.argNameToNode.get(argName);
-    if (node) {
-      return node;
-    }
-    if (!uuid) {
-      return undefined;
-    }
-    // Match by UUID
-    const argNameByUuid = this.uuidToSlotArgName.get(uuid);
-    if (argNameByUuid) {
-      return this.argNameToNode.get(argNameByUuid);
-    }
-    return undefined;
   }
 
   hasShowFuncCall(node: PlasmicTagOrComponent) {
@@ -498,15 +497,28 @@ export class CodeVersion {
 
   hasClassNameIdAttr(node: PlasmicTagOrComponent) {
     const matchingAttr = node.jsxElement.rawNode.openingElement.attributes.find(
-      attr =>
-        attr.type === "JSXAttribute" &&
-        attr.name.name === "className" &&
-        attr.value?.type === "JSXExpressionContainer" &&
-        isCallIgnoreArguments(
-          attr.value.expression,
-          helperObject,
-          `cls${node.jsxElement.nameInId}`
-        )
+      attr => {
+        if (!isAttribute(attr, "className")) {
+          return false;
+        }
+        let found = false;
+        traverse(attr, {
+          noScope: true,
+          MemberExpression: function(path) {
+            found =
+              found ||
+              memberExpressionMatch(
+                path.node,
+                helperObject,
+                `cls${node.jsxElement.nameInId}`
+              );
+            if (found) {
+              path.stop();
+            }
+          }
+        });
+        return found;
+      }
     );
 
     return !!matchingAttr;
@@ -514,13 +526,28 @@ export class CodeVersion {
 
   tryGetPropsIdSpreador(node: PlasmicTagOrComponent) {
     const matchingAttr = node.jsxElement.rawNode.openingElement.attributes.find(
-      attr =>
-        attr.type === "JSXSpreadAttribute" &&
-        isCallIgnoreArguments(
-          attr.argument,
-          helperObject,
-          `props${node.jsxElement.nameInId}`
-        )
+      attr => {
+        if (attr.type !== "JSXSpreadAttribute") {
+          return false;
+        }
+        let found = false;
+        traverse(attr, {
+          noScope: true,
+          MemberExpression: function(path) {
+            found =
+              found ||
+              memberExpressionMatch(
+                path.node,
+                helperObject,
+                `props${node.jsxElement.nameInId}`
+              );
+            if (found) {
+              path.stop();
+            }
+          }
+        });
+        return found;
+      }
     );
 
     return matchingAttr;

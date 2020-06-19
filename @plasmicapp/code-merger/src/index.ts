@@ -17,6 +17,8 @@ import {
   V8IntrinsicIdentifier,
   AssignmentExpression,
   ReturnStatement,
+  JSXNamespacedName,
+  JSXIdentifier,
   ImportDeclaration
 } from "@babel/types";
 import * as babel from "@babel/core";
@@ -29,8 +31,7 @@ import {
   PlasmicJsxElement,
   PlasmicTagOrComponent,
   makeCallExpression,
-  wrapInJsxExprContainer,
-  PlasmicArgRef
+  wrapInJsxExprContainer
 } from "./plasmic-ast";
 import {
   CodeVersion,
@@ -38,7 +39,6 @@ import {
   isInHtmlContext,
   memberExpressionMatch,
   makeMemberExpression,
-  getSource,
   isCallIgnoreArguments,
   isCallWithoutArguments,
   tryExtractPropertyNameOfMemberExpression
@@ -47,7 +47,10 @@ import {
   nodesDeepEqualIgnoreComments,
   code,
   formatted,
-  tagName
+  tagName,
+  compactCode,
+  isAttribute,
+  getAttrName
 } from "./utils";
 import { first, cloneDeep } from "lodash";
 
@@ -89,18 +92,6 @@ const findParsedNamedAttrs = (node: PlasmicTagOrComponent, name: string) => {
   return undefined;
 };
 
-const findAttrValueNode = (name: string, jsxElement: PlasmicJsxElement) => {
-  for (const attr of jsxElement.attrs) {
-    if (L.isString(attr)) {
-      continue;
-    }
-    if (attr[0] === name) {
-      return attr[1];
-    }
-  }
-  return undefined;
-};
-
 const mergedTag = (
   newNode: PlasmicTagOrComponent,
   editedNode: PlasmicTagOrComponent,
@@ -119,16 +110,145 @@ const mergedTag = (
   return editedTag;
 };
 
+const wrapAsJsxAttrValue = (
+  rawValue:
+    | Expression
+    | JSXEmptyExpression
+    | JSXExpressionContainer
+    | JSXSpreadChild
+    | JSXFragment
+    | JSXText
+    | undefined
+) => {
+  if (!rawValue) {
+    return undefined;
+  }
+  if (rawValue.type === "JSXText" || rawValue.type === "JSXSpreadChild") {
+    // Either newVersion or editedVersion was wrapped in a fragment.
+    // We wrap too.
+    mkJsxFragment([rawValue]);
+  } else if (
+    babel.types.isExpression(rawValue) ||
+    babel.types.isJSXEmptyExpression(rawValue)
+  ) {
+    return babel.types.jsxExpressionContainer(rawValue);
+  } else {
+    return rawValue;
+  }
+};
+
+const mergeAttributeValue = (
+  attrName: string,
+  newNode: PlasmicTagOrComponent,
+  editedNode: PlasmicTagOrComponent,
+  baseNode: PlasmicTagOrComponent,
+  codeVersions: CodeVersions
+) => {
+  const parsedNewAttrValue = findParsedNamedAttrs(newNode, attrName);
+  const parsedEditedAttrValue = findParsedNamedAttrs(editedNode, attrName);
+  const parsedBaseAttrValue = findParsedNamedAttrs(baseNode, attrName);
+  // These two must not be undefined (i.e. not found)
+  assert(parsedNewAttrValue !== undefined);
+  assert(parsedEditedAttrValue !== undefined);
+  let mergedAttrValue:
+    | Expression
+    | JSXEmptyExpression
+    | JSXExpressionContainer
+    | JSXSpreadChild
+    | JSXFragment
+    | JSXText
+    | undefined = undefined;
+  if (!parsedNewAttrValue) {
+    if (parsedEditedAttrValue) {
+      mergedAttrValue = serializePlasmicASTNode(
+        parsedEditedAttrValue,
+        codeVersions
+      );
+    } else {
+      mergedAttrValue = undefined;
+    }
+  } else {
+    if (!parsedEditedAttrValue) {
+      mergedAttrValue = serializePlasmicASTNode(
+        parsedNewAttrValue,
+        codeVersions
+      );
+    } else {
+      // do merge, really!
+      const asArray = (node: PlasmicASTNode | null | undefined) =>
+        !node ? [] : node.type === "jsx-fragment" ? node.children : [node];
+      const mergedNodes = mergeNodes(
+        asArray(parsedNewAttrValue),
+        asArray(parsedEditedAttrValue),
+        asArray(parsedBaseAttrValue),
+        codeVersions
+      );
+      // If edited forced wrapping single node with JSXFragment, so do we
+      // if the result is a single element.
+      const editedForcedFragment =
+        parsedEditedAttrValue.type === "jsx-fragment" &&
+        parsedEditedAttrValue.children.length === 1;
+      mergedAttrValue =
+        mergedNodes.length > 1
+          ? mkJsxFragment(mergedNodes)
+          : mergedNodes.length === 1
+          ? editedForcedFragment
+            ? mkJsxFragment(mergedNodes)
+            : mergedNodes[0]
+          : babel.types.jsxEmptyExpression();
+    }
+  }
+  return wrapAsJsxAttrValue(mergedAttrValue);
+};
+
+const serializeNamedAttribute = (
+  attrName: JSXIdentifier | JSXNamespacedName,
+  rawValue: PlasmicASTNode | null | undefined,
+  codeVersions: CodeVersions
+) => {
+  const attrValue = rawValue
+    ? serializePlasmicASTNode(rawValue, codeVersions)
+    : undefined;
+  return babel.types.jsxAttribute(attrName, wrapAsJsxAttrValue(attrValue));
+};
+
+const serializeJsxSpreadAttribute = (
+  editedAttr: PlasmicASTNode,
+  newNodeHasPropsWithIdSpreador: boolean,
+  nodeId: string,
+  codeVersions: CodeVersions
+) => {
+  if (
+    !newNodeHasPropsWithIdSpreador &&
+    isCallWithoutArguments(editedAttr.rawNode, helperObject, `props${nodeId}`)
+  ) {
+    // delete the id spreador, if deleted from new version
+    return undefined;
+  }
+  const attrValue = serializePlasmicASTNode(editedAttr, codeVersions);
+  if (!attrValue || attrValue.type === "JSXEmptyExpression") {
+    return undefined;
+  }
+  assert(attrValue.type !== "JSXText");
+  assert(attrValue.type !== "JSXSpreadChild");
+  if (babel.types.isExpression(attrValue)) {
+    return babel.types.jsxSpreadAttribute(attrValue);
+  } else if (attrValue.type === "JSXExpressionContainer") {
+    return attrValue.expression.type === "JSXEmptyExpression"
+      ? undefined
+      : babel.types.jsxSpreadAttribute(attrValue.expression);
+  }
+};
+
 const mergeAttributes = (
   newNode: PlasmicTagOrComponent,
   editedNode: PlasmicTagOrComponent,
   baseNode: PlasmicTagOrComponent,
-  newVersion: CodeVersion,
-  editedVersion: CodeVersion,
-  baseVersion: CodeVersion
+  codeVersions: CodeVersions
 ) => {
-  const editedNodeId = editedNode.jsxElement.nameInId;
-  const newNodeId = newNode.jsxElement.nameInId;
+  const { newVersion, editedVersion } = codeVersions;
+  assert(editedNode.jsxElement.nameInId === newNode.jsxElement.nameInId);
+  assert(editedNode.jsxElement.nameInId === baseNode.jsxElement.nameInId);
 
   const newNodePropsWithIdSpreador = newVersion.tryGetPropsIdSpreador(newNode);
   const editedHasPropsWithIdSpreador = editedVersion.hasPropsIdSpreador(
@@ -152,7 +272,7 @@ const mergeAttributes = (
       return "emit-edited";
     }
     if (!baseAttr) {
-      // We don't know how to handle the conflict. Emit both and let developer
+      // We don't know how to handle the conflict. Merge them and let developer
       // handle it.
       return "emit-merged";
     }
@@ -167,289 +287,107 @@ const mergeAttributes = (
       nodesDeepEqualIgnoreComments(baseAttr, newAttr)
     ) {
       // Plasmic doesn't change it. Emit the edited version then.
-      // Note that we specialize "onXXX" to account of id change.
       return "emit-edited";
     }
     // Both Plasmic and developer edited it. Emit both.
     return "emit-merged";
   };
 
-  // Return new attributes in newNode to be inserted.
-  const newAttrsBeforeIdNode = () => {
-    const newAttrs: Array<JSXAttribute> = [];
-    newNamedAttrs.forEach((attr, name) => {
-      if (name === "className") {
-        // skip the className attribute - we will use the edited version, but
-        // just upgrade the id there if there is one in edited version.
-        // Otherwise, we will insert className at the end.
-        return;
-      }
-      const editedAttr = editedNamedAttrs.get(name);
-      const baseAttr = baseNamedAttrs.get(name);
-      if (editedAttr) {
-        // In case of "emit-new" or "emit-merged", we don't emit it before
-        // IdNode, but at the same place as edited node to minimize diff.
-      } else if (!baseAttr) {
-        // newly added attribute in new version
-        const attrValueNode = ensure(
-          findAttrValueNode(name, newNode.jsxElement)
-        );
-        assert(attrValueNode.rawNode.type === "JSXExpressionContainer");
-        const mergedNewValue = ensure(
-          serializePlasmicASTNode(
-            attrValueNode,
-            newVersion,
-            editedVersion,
-            baseVersion
-          )
-        );
-        assert(mergedNewValue.type === "JSXExpressionContainer");
-        newAttrs.push(babel.types.jsxAttribute(attr.name, mergedNewValue));
-      } else {
-        // developer deleted the attribute. Keep it deleted - this is likely
-        // due to developer doing some refactoring of the component.
-        // TODO: only keep it deleted if there is no change to to the attribute
-      }
-    });
-    return newAttrs;
-  };
-
-  const emitAttrInEditedNode = (name: string, editedAttr: JSXAttribute) => {
-    const newAttr = newNamedAttrs.get(name);
-    const baseAttr = baseNamedAttrs.get(name);
+  const emitAttrInEditedNode = (attrName: string) => {
+    const editedAttr = ensure(editedNamedAttrs.get(attrName));
+    const newAttr = newNamedAttrs.get(attrName);
+    const baseAttr = baseNamedAttrs.get(attrName);
     if (newAttr) {
-      const res = conflictResolution(name, baseAttr, editedAttr, newAttr);
+      const res = conflictResolution(attrName, baseAttr, editedAttr, newAttr);
       if (res === "emit-new") {
         // We emit the newAttr in place to minimize diff.
         return newAttr;
       } else if (res === "emit-merged") {
-        const parsedNewAttrValue = findParsedNamedAttrs(newNode, name);
-        const parsedEditedAttrValue = findParsedNamedAttrs(editedNode, name);
-        const parsedBaseAttrValue = findParsedNamedAttrs(baseNode, name);
-        // These two must not be undefined (i.e. not found)
-        assert(parsedNewAttrValue !== undefined);
-        assert(parsedEditedAttrValue !== undefined);
-        let mergedAttrValue:
-          | Expression
-          | JSXEmptyExpression
-          | JSXExpressionContainer
-          | JSXSpreadChild
-          | JSXFragment
-          | JSXText
-          | undefined = undefined;
-        if (!parsedNewAttrValue) {
-          if (parsedEditedAttrValue) {
-            mergedAttrValue = serializePlasmicASTNode(
-              parsedEditedAttrValue,
-              newVersion,
-              editedVersion,
-              baseVersion
-            );
-          } else {
-            mergedAttrValue = undefined;
-          }
-        } else {
-          if (!parsedEditedAttrValue) {
-            mergedAttrValue = serializePlasmicASTNode(
-              parsedNewAttrValue,
-              newVersion,
-              editedVersion,
-              baseVersion
-            );
-          } else {
-            // do merge, really!
-            const asArray = (node: PlasmicASTNode | null | undefined) =>
-              !node
-                ? []
-                : node.type === "jsx-fragment"
-                ? node.children
-                : [node];
-            const mergedNodes = mergeNodes(
-              asArray(parsedNewAttrValue),
-              asArray(parsedEditedAttrValue),
-              asArray(parsedBaseAttrValue),
-              newVersion,
-              editedVersion,
-              baseVersion
-            );
-            // If edited forced wrapping single node with JSXFragment, so do we
-            // if the result is a single element.
-            const editedForcedFragment =
-              parsedEditedAttrValue.type === "jsx-fragment" &&
-              parsedEditedAttrValue.children.length === 1;
-            mergedAttrValue =
-              mergedNodes.length > 1
-                ? mkJsxFragment(mergedNodes)
-                : mergedNodes.length === 1
-                ? editedForcedFragment
-                  ? mkJsxFragment(mergedNodes)
-                  : mergedNodes[0]
-                : babel.types.jsxEmptyExpression();
-          }
-        }
-        if (!mergedAttrValue) {
-          return babel.types.jsxAttribute(newAttr.name);
-        } else {
-          if (
-            mergedAttrValue.type === "JSXText" ||
-            mergedAttrValue.type === "JSXSpreadChild"
-          ) {
-            // Either newVersion or editedVersion was wrapped in a fragment.
-            // We wrap too.
-            babel.types.jsxAttribute(
-              newAttr.name,
-              mkJsxFragment([mergedAttrValue])
-            );
-          } else if (
-            babel.types.isExpression(mergedAttrValue) ||
-            babel.types.isJSXEmptyExpression(mergedAttrValue)
-          ) {
-            return babel.types.jsxAttribute(
-              newAttr.name,
-              babel.types.jsxExpressionContainer(mergedAttrValue)
-            );
-          } else {
-            return babel.types.jsxAttribute(newAttr.name, mergedAttrValue);
-          }
-        }
+        const value = mergeAttributeValue(
+          attrName,
+          newNode,
+          editedNode,
+          baseNode,
+          codeVersions
+        );
+        return babel.types.jsxAttribute(newAttr.name, value);
       }
       assert(res === "emit-edited");
-      // Upgrade id in edited version for event handler
-      if (name.startsWith("on") && editedNodeId !== newNodeId) {
-        const eventNameInId = name.substring(2);
-        return cloneDeepWithHook(editedAttr, (n: Node) => {
-          if (
-            memberExpressionMatch(
-              n,
-              helperObject,
-              `on${eventNameInId}${editedNodeId}`
-            )
-          ) {
-            return makeMemberExpression(
-              helperObject,
-              `on${eventNameInId}${newNodeId}`
-            );
-          }
-          return undefined;
-        });
-      }
       return editedAttr;
     } else if (!baseAttr) {
       // user added attribute in edited version. Emit the edited attribute
       // without any transformation.
-      return editedAttr;
+      return serializeNamedAttribute(
+        editedAttr.name,
+        findParsedNamedAttrs(editedNode, attrName),
+        codeVersions
+      );
     } else {
       // Attribute deleted in new version. However, user may have modified it.
-      // For now, just delete it.
-      // TODO: if user has modified it, leave it but add some comment; if user
-      // has not modified it, delete it.
-      return undefined;
+      // Delete it only if there is no modification; otherwise, keep it for user
+      // to fix the compilation failure.
+      return nodesDeepEqualIgnoreComments(baseAttr, editedAttr)
+        ? undefined
+        : serializeNamedAttribute(
+            editedAttr.name,
+            findParsedNamedAttrs(editedNode, attrName),
+            codeVersions
+          );
     }
   };
 
-  const mergedAttrs: Array<
-    JSXAttribute | JSXSpreadAttribute
-  > = newAttrsBeforeIdNode();
+  const mergedAttrs: Array<JSXAttribute | JSXSpreadAttribute> = [];
 
-  for (const attrInEditedNode of editedNode.jsxElement.rawNode.openingElement
-    .attributes) {
-    if (attrInEditedNode.type === "JSXSpreadAttribute") {
-      const arg = attrInEditedNode.argument;
-      if (
-        arg.type === "CallExpression" &&
-        memberExpressionMatch(arg.callee, helperObject, `props${editedNodeId}`)
-      ) {
-        assert(arg.callee.type === "MemberExpression");
-        if (newNodePropsWithIdSpreador) {
-          // Keep the id as props but using new node id.
-          mergedAttrs.push(
-            cloneDeepWithHook(attrInEditedNode, n => {
-              if (n === arg.callee) {
-                const cloned = babel.types.clone(arg.callee);
-                (cloned as MemberExpression).property.name = `props${newNodeId}`;
-                return cloned;
-              }
-              return undefined;
-            })
-          );
-        } else {
-          if (arg.arguments.length !== 0) {
-            // Keep the old "rh.propsXXX(...)" call, which should lead to
-            // compilation failrue for developer to fix.
-            mergedAttrs.push(attrInEditedNode);
-          }
-        }
-      } else {
-        mergedAttrs.push(attrInEditedNode);
-      }
-      continue;
+  newNamedAttrs.forEach((attr, name) => {
+    const editedAttr = editedNamedAttrs.get(name);
+    const baseAttr = baseNamedAttrs.get(name);
+    if (!baseAttr && !editedAttr) {
+      // newly added attribute in new version
+      mergedAttrs.push(
+        serializeNamedAttribute(
+          attr.name,
+          findParsedNamedAttrs(newNode, name),
+          codeVersions
+        )
+      );
     }
-    const attrName =
-      attrInEditedNode.name.type === "JSXIdentifier"
-        ? attrInEditedNode.name.name
-        : attrInEditedNode.name.name.name;
-    if (attrName === "className") {
-      // Delete the className attribute if user hasn't made any change, and
-      // it was discarded in new version. This should be rare, as we are
-      // generating className attribute for all intrinsic elements and component
-      // instance with a cassName attribute.
-      const deleteClassName =
-        !newVersion.hasClassNameIdAttr(newNode) &&
-        attrInEditedNode.value?.type === "JSXExpressionContainer" &&
-        isCallWithoutArguments(
-          attrInEditedNode.value.expression,
-          helperObject,
-          `cls${editedNodeId}`
-        );
-      if (deleteClassName) {
-        continue;
-      }
-      let found = false;
-      // Keep it as className, but using the new id.
-      const newAttr = cloneDeepWithHook(attrInEditedNode, n => {
-        if (
-          n.type === "CallExpression" &&
-          memberExpressionMatch(n.callee, helperObject, `cls${editedNodeId}`)
-        ) {
-          found = true;
-          return makeCallExpression(helperObject, `cls${newNodeId}`);
-        }
-        return undefined;
-      });
+  });
 
-      // className must contain rh.cls<editedNodeId> in edited file.
-      if (!found) {
-        const attrSource = getSource(attrInEditedNode, editedVersion.input);
-        console.warn(
-          `className was edited in a non backwards compatible way - ${attrSource} doesn't contain ${editedNodeId}`
-        );
+  for (const attrInEditedNode of editedNode.jsxElement.attrs) {
+    if (L.isArray(attrInEditedNode)) {
+      const toEmit = emitAttrInEditedNode(attrInEditedNode[0]);
+      if (toEmit) {
+        mergedAttrs.push(toEmit);
       }
-      mergedAttrs.push(newAttr);
-
-      continue;
-    }
-    const toEmit = emitAttrInEditedNode(attrName, attrInEditedNode);
-    if (toEmit) {
-      mergedAttrs.push(toEmit);
+    } else {
+      const serializedSpreador = serializeJsxSpreadAttribute(
+        attrInEditedNode,
+        !!newNodePropsWithIdSpreador,
+        newNode.jsxElement.nameInId,
+        codeVersions
+      );
+      if (serializedSpreador) {
+        mergedAttrs.push(serializedSpreador);
+      }
     }
   }
-
-  const classNameAt = mergedAttrs.findIndex(
-    attr => attr.type === "JSXAttribute" && attr.name.name === "className"
+  let classNameAt = mergedAttrs.findIndex(attr =>
+    isAttribute(attr, "className")
   );
-  if (newNodePropsWithIdSpreador && !editedHasPropsWithIdSpreador) {
-    // insert the new spreador right after className, always
-    const insertSpreadorAt = classNameAt === -1 ? 0 : classNameAt + 1;
-    mergedAttrs.splice(insertSpreadorAt, 0, newNodePropsWithIdSpreador);
-  }
-  // insert className if missing in edited version, mostly to support old
-  // code.
+  // insert className if missing in edited version, mostly to support old code.
   if (classNameAt === -1) {
     const newClassNameAttr = newNamedAttrs.get("className");
     if (newClassNameAttr) {
       mergedAttrs.splice(0, 0, newClassNameAttr);
+      classNameAt = 0;
     }
   }
+  if (newNodePropsWithIdSpreador && !editedHasPropsWithIdSpreador) {
+    // insert the new spreador right after className if any, always
+    const insertSpreadorAt = classNameAt === -1 ? 0 : classNameAt + 1;
+    mergedAttrs.splice(insertSpreadorAt, 0, newNodePropsWithIdSpreador);
+  }
+
   return mergedAttrs;
 };
 
@@ -479,7 +417,6 @@ type MatchResult = PerfectMatch | TypeMatch | NoMatch;
 const findMatch = (
   nodes: PlasmicASTNode[],
   start: number,
-  nodeMatcher: NodeMatchChecker,
   n: PlasmicASTNode
 ): MatchResult => {
   let matchingTypeAt = -1;
@@ -488,18 +425,6 @@ const findMatch = (
       const ni = nodes[i];
       if (ni.type === "text" || ni.type === "string-lit") {
         if (ni.value === n.value) {
-          return { type: "perfect", index: i };
-        }
-        if (matchingTypeAt === -1) {
-          matchingTypeAt = i;
-        }
-      }
-    }
-  } else if (n.type === "arg") {
-    for (let i = start; i < nodes.length; i++) {
-      const ni = nodes[i];
-      if (ni.type === "arg") {
-        if (nodeMatcher.argMatch(ni.argName, n.argName)) {
           return { type: "perfect", index: i };
         }
         if (matchingTypeAt === -1) {
@@ -522,7 +447,7 @@ const findMatch = (
       const ni = nodes[i];
       if (
         ni.type === "tag-or-component" &&
-        nodeMatcher.idMatch(ni.jsxElement.nameInId, n.jsxElement.nameInId)
+        ni.jsxElement.nameInId === n.jsxElement.nameInId
       ) {
         return { type: "perfect", index: i };
       }
@@ -536,29 +461,11 @@ const findMatch = (
     : { type: "none" };
 };
 
-class NodeMatchChecker {
-  constructor(readonly v1: CodeVersion, readonly v2: CodeVersion) {}
-  idMatch = (nameInId1: string, nameInId2: string) =>
-    nameInId1 === nameInId2 ||
-    this.v1.getUuid(nameInId1) === this.v2.getUuid(nameInId2);
-
-  argMatch = (argNameInV1: string, argNameInV2: string) => {
-    if (argNameInV1 === argNameInV2) {
-      return true;
-    }
-    const v1SlotArgUuid = this.v1.tryGetSlotArgUuid(argNameInV1);
-    const v2SlotArgUuid = this.v2.tryGetSlotArgUuid(argNameInV2);
-    return !!v1SlotArgUuid && v1SlotArgUuid === v2SlotArgUuid;
-  };
-}
-
 const mergeNodes = (
   newNodes: PlasmicASTNode[],
   editedNodes: PlasmicASTNode[],
   baseNodes: PlasmicASTNode[],
-  newVersion: CodeVersion,
-  editedVersion: CodeVersion,
-  baseVersion: CodeVersion
+  codeVersions: CodeVersions
 ) => {
   let nextInsertStartAt = 0;
   const insertEditedNodeIntoNew = (
@@ -569,12 +476,7 @@ const mergeNodes = (
       merged.splice(0, 0, editedChild);
       nextInsertStartAt = 1;
     } else {
-      const prevMatch = findMatch(
-        merged,
-        nextInsertStartAt,
-        new NodeMatchChecker(newVersion, editedVersion),
-        prevEditedChild
-      );
+      const prevMatch = findMatch(merged, nextInsertStartAt, prevEditedChild);
       if (prevMatch.type === "perfect" || prevMatch.type === "type") {
         // previous node matches merged[prevMatch]. insert current node at
         // prevMatch + 1.
@@ -587,14 +489,26 @@ const mergeNodes = (
     }
   };
 
-  const merged = newNodes.slice(0);
+  // remove tag node from new nodes list when there is no perfect match.
+  const merged = newNodes.filter(newNode => {
+    if (newNode.type === "tag-or-component") {
+      const matchInEditedVersion = findMatch(editedNodes, 0, newNode);
+      const matchInBaseVersion = findMatch(baseNodes, 0, newNode);
+      if (
+        matchInBaseVersion.type === "perfect" &&
+        matchInEditedVersion.type !== "perfect"
+      ) {
+        return false;
+      }
+    }
+    return true;
+  });
 
   editedNodes.forEach((editedChild, i) => {
     if (editedChild.type === "text" || editedChild.type === "string-lit") {
       const matchInNewVersion = findMatch(
         merged,
         nextInsertStartAt,
-        new NodeMatchChecker(newVersion, editedVersion),
         editedChild
       );
       if (matchInNewVersion.type === "perfect") {
@@ -603,12 +517,7 @@ const mergeNodes = (
         nextInsertStartAt = matchInNewVersion.index + 1;
         return;
       }
-      const matchInBaseVersion = findMatch(
-        baseNodes,
-        0,
-        new NodeMatchChecker(baseVersion, editedVersion),
-        editedChild
-      );
+      const matchInBaseVersion = findMatch(baseNodes, 0, editedChild);
       if (matchInBaseVersion.type === "perfect") {
         // skip text node if it matches some text in base version
         return;
@@ -621,19 +530,10 @@ const mergeNodes = (
 
   return withoutNils(
     merged.map(c => {
-      if (!newNodes.includes(c)) {
-        // children preserved from editedNode doesn't need any fixing.
-        return c.rawNode as JsxChildType;
-      }
       if (c.type === "opaque") {
         return c.rawNode as JsxChildType;
       }
-      const n = serializeNonOpaquePlasmicASTNode(
-        c,
-        newVersion,
-        editedVersion,
-        baseVersion
-      );
+      const n = serializeNonOpaquePlasmicASTNode(c, codeVersions);
       if (!n) {
         return undefined;
       }
@@ -652,17 +552,13 @@ const mergedChildren = (
   newNode: PlasmicTagOrComponent,
   editedNode: PlasmicTagOrComponent,
   baseNode: PlasmicTagOrComponent,
-  newVersion: CodeVersion,
-  editedVersion: CodeVersion,
-  baseVersion: CodeVersion
+  codeVersions: CodeVersions
 ): Array<JsxChildType> => {
   return mergeNodes(
     newNode.jsxElement.children,
     editedNode.jsxElement.children,
     baseNode.jsxElement.children,
-    newVersion,
-    editedVersion,
-    baseVersion
+    codeVersions
   );
 };
 
@@ -733,10 +629,10 @@ const mergeShowFunc = (
 
 const serializeTagOrComponent = (
   newNode: PlasmicTagOrComponent,
-  newVersion: CodeVersion,
-  editedVersion: CodeVersion,
-  baseVersion: CodeVersion
+  codeVersions: CodeVersions
 ): Expression | JSXExpressionContainer | undefined => {
+  const { newVersion, editedVersion, baseVersion } = codeVersions;
+
   const nodeId = newVersion.getId(newNode);
   // find node with same id in edited version.
   const editedNode = editedVersion.findNode(nodeId);
@@ -762,18 +658,14 @@ const serializeTagOrComponent = (
       newNode,
       editedNode,
       baseNode,
-      newVersion,
-      editedVersion,
-      baseVersion
+      codeVersions
     );
 
     editedNodeJsxElementClone.children = mergedChildren(
       newNode,
       editedNode,
       baseNode,
-      newVersion,
-      editedVersion,
-      baseVersion
+      codeVersions
     );
     if (
       !editedNodeJsxElementClone.closingElement &&
@@ -812,9 +704,7 @@ const serializeTagOrComponent = (
     assert(child.type !== "opaque");
     const childReplacement = serializeNonOpaquePlasmicASTNode(
       child,
-      newVersion,
-      editedVersion,
-      baseVersion
+      codeVersions
     );
     if (childReplacement) {
       if (babel.types.isExpression(childReplacement)) {
@@ -833,15 +723,13 @@ const serializeTagOrComponent = (
   // Attribute replacement
   const attrsReplacement = new Map<Node, Node>();
   newNode.jsxElement.attrs.forEach(attr => {
-    if (!L.isString(attr)) {
+    if (L.isArray(attr)) {
       const [key, value] = attr;
       // className is an opaque attribute!
       if (value && value.type !== "opaque") {
         const attrReplacement = serializeNonOpaquePlasmicASTNode(
           value,
-          newVersion,
-          editedVersion,
-          baseVersion
+          codeVersions
         );
         if (attrReplacement) {
           if (attrReplacement.type !== "JSXExpressionContainer") {
@@ -865,32 +753,10 @@ const serializeTagOrComponent = (
 
 const serializeNonOpaquePlasmicASTNode = (
   newNode: PlasmicASTNode,
-  newVersion: CodeVersion,
-  editedVersion: CodeVersion,
-  baseVersion: CodeVersion
+  codeVersions: CodeVersions
 ): Expression | JSXExpressionContainer | JSXText | JSXFragment | undefined => {
   assert(newNode.type !== "opaque");
-  if (newNode.type === "arg") {
-    const nodesToMerged = new Map<Node, Node>();
-    newNode.jsxNodes.forEach(n => {
-      const rawMerged = serializeTagOrComponent(
-        n,
-        newVersion,
-        editedVersion,
-        baseVersion
-      );
-      nodesToMerged.set(
-        n.rawNode,
-        rawMerged ||
-          (n.rawNode.type === "JSXExpressionContainer"
-            ? babel.types.jsxExpressionContainer(babel.types.nullLiteral())
-            : babel.types.nullLiteral())
-      );
-    });
-    return cloneDeepWithHook(newNode.rawNode, (n: Node) =>
-      nodesToMerged.get(n)
-    );
-  } else if (newNode.type === "child-str-call") {
+  if (newNode.type === "child-str-call") {
     // Just output the new version
     return newNode.rawNode;
   } else if (newNode.type === "string-lit") {
@@ -905,12 +771,7 @@ const serializeNonOpaquePlasmicASTNode = (
       babel.types.jsxClosingFragment(),
       withoutNils(
         newNode.children.map(child => {
-          const newRawNode = serializePlasmicASTNode(
-            child,
-            newVersion,
-            editedVersion,
-            baseVersion
-          );
+          const newRawNode = serializePlasmicASTNode(child, codeVersions);
           if (!newRawNode) {
             return undefined;
           }
@@ -926,20 +787,19 @@ const serializeNonOpaquePlasmicASTNode = (
     );
   } else {
     assert(newNode.type === "tag-or-component");
-    return serializeTagOrComponent(
-      newNode,
-      newVersion,
-      editedVersion,
-      baseVersion
-    );
+    return serializeTagOrComponent(newNode, codeVersions);
   }
 };
 
-export const serializePlasmicASTNode = (
+interface CodeVersions {
+  newVersion: CodeVersion;
+  editedVersion: CodeVersion;
+  baseVersion: CodeVersion;
+}
+
+const serializePlasmicASTNode = (
   newNode: PlasmicASTNode,
-  newVersion: CodeVersion,
-  editedVersion: CodeVersion,
-  baseVersion: CodeVersion
+  codeVersions: CodeVersions
 ):
   | Expression
   | JSXEmptyExpression
@@ -951,12 +811,32 @@ export const serializePlasmicASTNode = (
   if (newNode.type === "opaque") {
     return newNode.rawNode;
   }
-  return serializeNonOpaquePlasmicASTNode(
-    newNode,
-    newVersion,
-    editedVersion,
-    baseVersion
-  );
+  return serializeNonOpaquePlasmicASTNode(newNode, codeVersions);
+};
+
+export const renameAndSerializePlasmicASTNode = (
+  newNode: PlasmicASTNode,
+  codeVersions: CodeVersions
+):
+  | Expression
+  | JSXEmptyExpression
+  | JSXExpressionContainer
+  | JSXSpreadChild
+  | JSXFragment
+  | JSXText
+  | undefined => {
+  if (newNode.type === "opaque") {
+    return newNode.rawNode;
+  }
+  return serializeNonOpaquePlasmicASTNode(newNode, {
+    baseVersion: codeVersions.baseVersion.renameJsxTree(
+      codeVersions.newVersion
+    ),
+    editedVersion: codeVersions.editedVersion.renameJsxTree(
+      codeVersions.newVersion
+    ),
+    newVersion: codeVersions.newVersion
+  });
 };
 
 export class ComponentSkeletonModel {
@@ -1251,50 +1131,6 @@ export type ComponentInfoForMerge = {
   newNameInIdToUuid: Map<string, string>;
 };
 
-// We may miss some args update, such as this one.
-//  <div ...>
-//    {() => {
-//       const argsX = args.value;
-//        return ...;
-//    }()}
-//   </div>
-// Here we guarantee the update across the entire JSX tree.
-export const fixArgs = (
-  newJsx:
-    | Expression
-    | JSXEmptyExpression
-    | JSXExpressionContainer
-    | JSXSpreadChild
-    | JSXFragment
-    | JSXText
-    | undefined,
-  newVersion: CodeVersion,
-  editedVersion: CodeVersion,
-  baseVersion: CodeVersion
-) => {
-  return !newJsx
-    ? undefined
-    : cloneDeepWithHook(newJsx, (n: Node) => {
-        if (babel.types.isExpression(n)) {
-          const maybeStaleArgName = tryExtractPropertyNameOfMemberExpression(
-            n,
-            "args"
-          );
-          if (maybeStaleArgName) {
-            const maybeUuid = baseVersion.tryGetSlotArgUuid(maybeStaleArgName);
-            const newArg = newVersion.findSlotArgNode(
-              maybeStaleArgName,
-              maybeUuid
-            );
-            if (newArg && newArg.argName !== maybeStaleArgName) {
-              return makeMemberExpression("args", newArg.argName);
-            }
-          }
-        }
-        return undefined;
-      });
-};
-
 export const mergeFiles = async (
   componentByUuid: Map<string, ComponentInfoForMerge>,
   projectId: string,
@@ -1373,45 +1209,34 @@ export const mergeFiles = async (
     const parsedBase = ensure(
       tryParseComponentSkeletonFile(baseMetadata.fileContent)
     );
+    const newCodeVersion = new CodeVersion(
+      parsedNew.jsx,
+      component.newNameInIdToUuid
+    );
     const baseCodeVersion = new CodeVersion(
-      baseMetadata.fileContent,
-      baseMetadata.nameInIdToUuid,
-      parsedBase.jsx
+      parsedBase.jsx,
+      baseMetadata.nameInIdToUuid
     );
 
     // All other metadata
     const editedCodeVersion = new CodeVersion(
-      component.editedFile,
+      parsedEdited.jsx,
       // edited version share the same nameInIdtoUuid mapping
-      baseMetadata.nameInIdToUuid,
-      parsedEdited.jsx
+      baseMetadata.nameInIdToUuid
     );
 
-    const newCodeVersion = new CodeVersion(
-      component.newFile,
-      component.newNameInIdToUuid,
-      parsedNew.jsx
-    );
-    const newJsx = serializePlasmicASTNode(
-      newCodeVersion.root,
-      newCodeVersion,
-      editedCodeVersion,
-      baseCodeVersion
-    );
-
-    const newJsxWithArgsFixed = fixArgs(
-      newJsx,
-      newCodeVersion,
-      editedCodeVersion,
-      baseCodeVersion
-    );
+    const newJsx = renameAndSerializePlasmicASTNode(newCodeVersion.root, {
+      newVersion: newCodeVersion,
+      editedVersion: editedCodeVersion,
+      baseVersion: baseCodeVersion
+    });
 
     // Ideally, we should keep parsedEdited read-only, but, it is not a big deal
     // to modify the comment.
     parsedEdited.identifyingComment.value = ` plasmic-managed-jsx/${parsedNew.revision}`;
     const mergedFile = cloneDeepWithHook(parsedEdited.file, (n: Node) => {
       if (n === parsedEdited.jsx) {
-        return newJsxWithArgsFixed;
+        return newJsx;
       }
       return undefined;
     });
