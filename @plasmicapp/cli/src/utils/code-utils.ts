@@ -270,7 +270,6 @@ function fixFileImportStatements(
   allGlobalVariantConfigs: Record<string, GlobalVariantGroupConfig>,
   allIconConfigs: Record<string, IconConfig>
 ) {
-  console.log(`\tFixing ${srcDirFilePath}`);
   const prevContent = fs
     .readFileSync(path.join(context.absoluteSrcDir, srcDirFilePath))
     .toString();

@@ -8,10 +8,9 @@ import {
 import { StyleTokensMap } from "../api";
 import {
   writeFileContent,
-  findSrcDirPath,
-  buildBaseNameToFiles,
   readFileContent,
-  fileExists
+  fileExists,
+  fixAllFilePaths
 } from "../utils/file-utils";
 import { CommonArgs } from "..";
 
@@ -21,6 +20,8 @@ export interface SyncStyleTokensArgs extends CommonArgs {
 
 export async function syncStyleTokens(opts: SyncStyleTokensArgs) {
   const context = getContext(opts);
+  fixAllFilePaths(context);
+
   const api = context.api;
   const config = context.config;
 
@@ -29,7 +30,6 @@ export async function syncStyleTokens(opts: SyncStyleTokensArgs) {
       ? opts.projects
       : L.uniq(readCurStyleMap(context).props.map(p => p.meta.projectId));
 
-  const baseNameToFiles = buildBaseNameToFiles(context);
   const results = await Promise.all(
     projectIds.map(projectId => api.projectStyleTokens(projectId))
   );
@@ -37,7 +37,7 @@ export async function syncStyleTokens(opts: SyncStyleTokensArgs) {
     string,
     StyleTokensMap
   ][]) {
-    upsertStyleTokens(context, styleMap, baseNameToFiles);
+    upsertStyleTokens(context, styleMap);
   }
 
   updateConfig(context, {
@@ -47,14 +47,8 @@ export async function syncStyleTokens(opts: SyncStyleTokensArgs) {
 
 export function upsertStyleTokens(
   context: PlasmicContext,
-  newStyleMap: StyleTokensMap,
-  baseNameToFiles: Record<string, string[]>
+  newStyleMap: StyleTokensMap
 ) {
-  context.config.tokens.tokensFilePath = findSrcDirPath(
-    context.absoluteSrcDir,
-    context.config.tokens.tokensFilePath,
-    baseNameToFiles
-  );
   const curStyleMap = readCurStyleMap(context);
   for (const prop of newStyleMap.props) {
     const index = curStyleMap.props.findIndex(p => p.meta.id === prop.meta.id);
