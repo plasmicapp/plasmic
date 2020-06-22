@@ -7,6 +7,7 @@ import { PlasmicApi } from "../api";
 import { CommonArgs } from "../index";
 import { DeepPartial } from "utility-types";
 import * as Sentry from "@sentry/node";
+import { runNecessaryMigrations } from "../migrations/migrations";
 
 export const AUTH_FILE_NAME = ".plasmic.auth";
 export const CONFIG_FILE_NAME = "plasmic.json";
@@ -35,6 +36,9 @@ export interface PlasmicConfig {
   // Configs for each global variant we have synced.
   globalVariants: GlobalVariantsConfig;
   projects: ProjectConfig[];
+
+  // The version of cli when this file was written
+  cliVersion?: string;
 }
 
 export interface CodeConfig {
@@ -252,6 +256,9 @@ export function getContext(args: CommonArgs): PlasmicContext {
     );
     process.exit(1);
   }
+
+  runNecessaryMigrations(configFile);
+
   const config = readConfig(configFile);
   const rootDir = path.dirname(configFile);
   return {
