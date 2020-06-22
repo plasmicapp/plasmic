@@ -6,7 +6,6 @@ import { SyncArgs, syncProjects } from "./actions/sync";
 import { WatchArgs, watchProjects } from "./actions/watch";
 import { SyncStyleTokensArgs, syncStyleTokens } from "./actions/sync-styles";
 import { DEFAULT_CONFIG } from "./utils/config-utils";
-import fs, { fstat } from "fs";
 
 if (process.env.DEBUG_CHDIR) {
   process.chdir(process.env.DEBUG_CHDIR);

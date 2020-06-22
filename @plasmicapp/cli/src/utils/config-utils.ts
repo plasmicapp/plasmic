@@ -6,6 +6,7 @@ import { writeFileContentRaw, findFile } from "./file-utils";
 import { PlasmicApi } from "../api";
 import { CommonArgs } from "../index";
 import { DeepPartial } from "utility-types";
+import * as Sentry from "@sentry/node";
 
 export const AUTH_FILE_NAME = ".plasmic.auth";
 export const CONFIG_FILE_NAME = "plasmic.json";
@@ -223,14 +224,6 @@ export function fillDefaults(
 }
 
 export function getContext(args: CommonArgs): PlasmicContext {
-  const configFile =
-    args.config || findConfigFile(process.cwd(), { traverseParents: true });
-  if (!configFile) {
-    console.error(
-      "No plasmic.json file found; please run `plasmic init` first."
-    );
-    process.exit(1);
-  }
   const authFile =
     args.auth || findAuthFile(process.cwd(), { traverseParents: true });
   if (!authFile) {
@@ -240,6 +233,25 @@ export function getContext(args: CommonArgs): PlasmicContext {
     process.exit(1);
   }
   const auth = readAuth(authFile);
+  if (auth.host.startsWith("https://studio.plasmic.app")) {
+    // Production usage of cli
+    Sentry.configureScope(scope => {
+      scope.setUser({ email: auth.user });
+    });
+    Sentry.init({
+      dsn:
+        "https://3ed4eb43d28646e381bf3c50cff24bd6@o328029.ingest.sentry.io/5285892"
+    });
+  }
+
+  const configFile =
+    args.config || findConfigFile(process.cwd(), { traverseParents: true });
+  if (!configFile) {
+    console.error(
+      "No plasmic.json file found; please run `plasmic init` first."
+    );
+    process.exit(1);
+  }
   const config = readConfig(configFile);
   const rootDir = path.dirname(configFile);
   return {
