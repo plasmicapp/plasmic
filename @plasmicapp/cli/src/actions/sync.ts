@@ -54,30 +54,6 @@ export interface SyncArgs extends CommonArgs {
   appendJsxOnMissingBase?: boolean;
 }
 
-function maybeMigrate(context: PlasmicContext) {
-  let existingFiles: L.Dictionary<string[]> | null = null;
-  context.config.projects.forEach(project => {
-    project.components.forEach(c => {
-      if (c.renderModuleFilePath.endsWith("ts")) {
-        if (!existingFiles) {
-          existingFiles = buildBaseNameToFiles(context);
-        }
-        const relFilePath = findSrcDirPath(
-          context.absoluteSrcDir,
-          c.renderModuleFilePath,
-          existingFiles
-        );
-        const absFilePath = path.join(context.absoluteSrcDir, relFilePath);
-        if (fs.existsSync(absFilePath)) {
-          console.log(`rename file from ${absFilePath} to ${absFilePath}x`);
-          fs.renameSync(absFilePath, `${absFilePath}x`);
-        }
-        c.renderModuleFilePath = `${c.renderModuleFilePath}x`;
-      }
-    });
-  });
-}
-
 function maybeConvertTsxToJsx(fileName: string, content: string) {
   if (fileName.endsWith("tsx")) {
     const jsFileName = stripExtension(fileName) + ".jsx";
@@ -123,13 +99,6 @@ export async function syncProjects(opts: SyncArgs) {
       );
     })
   );
-  if (
-    results.find(project =>
-      project.components.find(c => c.renderModuleFileName.endsWith(".tsx"))
-    )
-  ) {
-    maybeMigrate(context);
-  }
 
   if (context.config.code.lang === "js") {
     results.forEach(project => {
