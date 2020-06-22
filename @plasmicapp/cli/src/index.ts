@@ -6,6 +6,7 @@ import { SyncArgs, syncProjects } from "./actions/sync";
 import { WatchArgs, watchProjects } from "./actions/watch";
 import { SyncStyleTokensArgs, syncStyleTokens } from "./actions/sync-styles";
 import { DEFAULT_CONFIG } from "./utils/config-utils";
+import { syncIcons, SyncIconsArgs } from "./actions/sync-icons";
 
 if (process.env.DEBUG_CHDIR) {
   process.chdir(process.env.DEBUG_CHDIR);
@@ -94,6 +95,19 @@ yargs
         default: []
       }),
     argv => syncStyleTokens(argv)
+  )
+  .command<SyncIconsArgs>(
+    "sync-icons",
+    "Syncs icon assets",
+    yags =>
+      yags.option("projects", {
+        alias: "p",
+        describe:
+          "ID of Plasmic projects to sync.  If not specifed, defaults to all known projects.",
+        type: "array",
+        default: []
+      }),
+    argv => syncIcons(argv)
   )
   .command<FixImportsArgs>(
     "fix-imports",

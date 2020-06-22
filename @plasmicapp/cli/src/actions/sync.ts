@@ -5,9 +5,8 @@ import { CommonArgs } from "..";
 import {
   getContext,
   updateConfig,
-  PlasmicConfig,
-  ProjectConfig as CliProjectConfig,
-  PlasmicContext
+  PlasmicContext,
+  ProjectConfig
 } from "../utils/config-utils";
 import {
   buildBaseNameToFiles,
@@ -21,7 +20,7 @@ import {
   ProjectBundle,
   ComponentBundle,
   GlobalVariantBundle,
-  ProjectConfig as ApiProjectConfig,
+  ProjectMetaBundle,
   StyleConfigResponse,
   IconBundle,
   AppServerError
@@ -44,6 +43,7 @@ import {
   makeCachedProjectSyncDataProvider
 } from "@plasmicapp/code-merger";
 import { options } from "yargs";
+import { syncProjectIconAssets } from "./sync-icons";
 
 export interface SyncArgs extends CommonArgs {
   projects: readonly string[];
@@ -95,7 +95,8 @@ export async function syncProjects(opts: SyncArgs) {
         getCliVersion(),
         reactWebVersion,
         opts.newComponentScheme || context.config.code.scheme,
-        existingCompScheme
+        existingCompScheme,
+        opts.components
       );
     })
   );
@@ -132,19 +133,19 @@ export async function syncProjects(opts: SyncArgs) {
   syncStyleConfig(context, await context.api.genStyleConfig());
 
   const config = context.config;
-  // `components` is a list of component names or IDs
-  const components =
-    opts.components.length > 0
-      ? opts.components
-      : flatMap(config.projects, p => p.components.map(c => c.id));
+  const knownComponentIds = new Set(
+    flatMap(config.projects, p => p.components.map(c => c.id))
+  );
   const shouldSyncComponents = (id: string, name: string) => {
-    if (
-      components.length === 0 ||
-      (opts.components.length === 0 && !opts.onlyExisting)
-    ) {
-      return true;
+    if (opts.onlyExisting) {
+      // If explicitly told to only sync known components, then check
+      return knownComponentIds.has(id);
     }
-    return components.includes(id) || components.includes(name);
+
+    // Otherwise, we sync all components; if the user had specified --components, we
+    // have already passed that up to the server, and the server should've only sent
+    // down a filtered set of components already.
+    return true;
   };
 
   for (const [projectId, projectBundle] of L.zip(projectIds, results) as [
@@ -182,7 +183,7 @@ export async function syncProjects(opts: SyncArgs) {
 
 async function syncProjectComponents(
   context: PlasmicContext,
-  project: CliProjectConfig,
+  project: ProjectConfig,
   componentBundles: ComponentBundle[],
   forceOverwrite: boolean,
   appendJsxOnMissingBase: boolean
@@ -377,85 +378,47 @@ function syncGlobalVariants(
   }
 }
 
-function syncProjectIconAssets(
-  context: PlasmicContext,
-  project: CliProjectConfig,
-  iconBundles: IconBundle[]
-) {
-  if (!project.icons) {
-    project.icons = [];
-  }
-  const knownIconConfigs = L.keyBy(project.icons, i => i.id);
-  for (const bundle of iconBundles) {
-    console.log(
-      `Syncing icon ${bundle.name} [${project.projectId}/${bundle.id}]`
-    );
-    let iconConfig = knownIconConfigs[bundle.id];
-    const isNew = !iconConfig;
-    if (isNew) {
-      iconConfig = {
-        id: bundle.id,
-        name: bundle.name,
-        moduleFilePath: path.join(
-          context.config.defaultPlasmicDir,
-          L.snakeCase(`${project.projectName}`),
-          bundle.fileName
-        )
-      };
-      knownIconConfigs[bundle.id] = iconConfig;
-      project.icons.push(iconConfig);
-    }
-
-    writeFileContent(context, iconConfig.moduleFilePath, bundle.module, {
-      force: !isNew
-    });
-  }
-}
-
 async function syncProjectConfig(
   context: PlasmicContext,
-  pc: ApiProjectConfig,
+  pc: ProjectMetaBundle,
   componentBundles: ComponentBundle[],
   iconBundles: IconBundle[],
   forceOverwrite: boolean,
   appendJsxOnMissingBase: boolean
 ) {
-  let cliProject = context.config.projects.find(
-    c => c.projectId === pc.projectId
-  );
+  let project = context.config.projects.find(c => c.projectId === pc.projectId);
   const defaultCssFilePath = path.join(
     context.config.defaultPlasmicDir,
     L.snakeCase(pc.projectName),
     pc.cssFileName
   );
-  const isNew = !cliProject;
-  if (!cliProject) {
-    cliProject = {
+  const isNew = !project;
+  if (!project) {
+    project = {
       projectId: pc.projectId,
       projectName: pc.projectName,
       cssFilePath: defaultCssFilePath,
       components: [],
       icons: []
     };
-    context.config.projects.push(cliProject);
+    context.config.projects.push(project);
   } else {
-    cliProject.projectName = pc.projectName;
+    project.projectName = pc.projectName;
   }
 
-  if (!cliProject.cssFilePath) {
-    // this is a config from before cssFilePath existed
-    cliProject.cssFilePath = defaultCssFilePath;
+  if (!project.cssFilePath) {
+    project.cssFilePath = defaultCssFilePath;
   }
 
-  writeFileContent(context, cliProject.cssFilePath, pc.cssRules, {
+  writeFileContent(context, project.cssFilePath, pc.cssRules, {
     force: !isNew
   });
   await syncProjectComponents(
     context,
-    cliProject,
+    project,
     componentBundles,
     forceOverwrite,
     appendJsxOnMissingBase
   );
-  syncProjectIconAssets(context, cliProject, iconBundles);
+  syncProjectIconAssets(context, project, iconBundles);
 }

@@ -15,7 +15,7 @@ import {
   DEFAULT_CONFIG
 } from "../utils/config-utils";
 import { execSync, spawnSync } from "child_process";
-import { installUpgrade } from "../utils/npm-utils";
+import { installUpgrade, getCliVersion } from "../utils/npm-utils";
 
 export interface InitArgs extends CommonArgs {
   host: string;
@@ -151,6 +151,7 @@ function createInitConfig(opts: InitArgs): PlasmicConfig {
     style: {
       scheme: opts.styleScheme
     },
-    platform: opts.platform
+    platform: opts.platform,
+    cliVersion: getCliVersion()
   });
 }
