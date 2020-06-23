@@ -1,25 +1,15 @@
-import * as parser from "@babel/parser";
-import traverse, { Node, NodePath } from "@babel/traverse";
+import { Node } from "@babel/traverse";
 import {
   JSXElement,
-  JSXAttribute,
-  JSXSpreadAttribute,
-  Comment,
   Expression,
   JSXEmptyExpression,
   StringLiteral,
   JSXText,
-  TSNonNullExpression,
-  MemberExpression,
   JSXSpreadChild,
   JSXFragment,
   JSXExpressionContainer
 } from "@babel/types";
 import * as babel from "@babel/core";
-import * as L from "lodash";
-import generate from "@babel/generator";
-import { cloneDeepWithHook } from "./cloneDeepWithHook";
-import { assert, withoutNils, ensure } from "./common";
 
 export interface PlasmicNodeBase {
   rawNode:
@@ -33,17 +23,6 @@ export interface PlasmicNodeBase {
 
 export interface PlasmicOpaqueExpr extends PlasmicNodeBase {
   type: "opaque";
-}
-
-export interface PlasmicArgRef extends PlasmicNodeBase {
-  type: "arg";
-  argName: string;
-  // For TplSlot, there will be multiple jsxNodes, one for each defaultNode.
-  // For text TplSlot, there will be one or zero jsxNodes, depending if there
-  // is style wrapper or not.
-  // This could also be the single wrapper node that wraps all JSX nodes.
-  jsxNodes: PlasmicTagOrComponent[];
-  rawNode: Expression | JSXExpressionContainer;
 }
 
 export interface PlasmicChildStringCall extends PlasmicNodeBase {
@@ -78,45 +57,40 @@ export interface PlasmicJSXFragment extends PlasmicNodeBase {
 
 export interface PlasmicJsxElement extends PlasmicNodeBase {
   nameInId: string;
-  // A list of JSX attribute or JSX spread operator. The value of a JSXAttribute
+  // A list of JSXAttribute or JSXSpreadAttribute. The value of a JSXAttribute
   // could be null (such as disabled in <div disabled/>).
-  attrs: Array<[string, PlasmicASTNode | null] | string>;
+  // For JSXSpreadAttribute, the value is a single PlasmicASTNode, which
+  // represents the value of the spread argument.
+  attrs: Array<[string, PlasmicASTNode | null] | PlasmicASTNode>;
   children: PlasmicASTNode[];
   rawNode: JSXElement;
+  // The parent of rawNode.
+  rawParent: Node | undefined;
 }
 
 // This is a blob of expression that returns a JSX element. Unlike
 // PlasmicJsxElement, it may have chrome such as
 // "rh.showButton() && <Button...>...</Button>"
 //
-// A PlasmicTagOrComponent is sound if the expression it represents contains
-// only one PlasmicJSXElement.
-//
-// For example, these are sound
-//   <><div></div><>
-//   show2() && <div/>
-//   <div></div>
-//   () => {
-//     return <div/>;
-//   }()
-//
-// These are not sound expression
-//   () => {
-//     return <><div/><div/></>;
-//   }()
-//
-//   showFirst ? <div/> : <div/>
+// A PlasmicTagOrComponent can have multiple PlasmicJSXElement. In this case,
+// the first one is the primary node, while the rest are secondary nodes.
+// Secondary nodes are subject to these limtations during code merge
+//  - if primary node was deleted, then all secondary nodes will also be deleted
+//  - the secondary node's boundary is the immediately parent of the JSXElement
+//    if the parent is an expression; otherwise, it is the JSXElement itself.
+//    This is because we don't know the real boundary of the secondary node.
+//    Lifting the preant up should cover the common case of
+//    "rh.showXXX() && <tag...>"
 export interface PlasmicTagOrComponent extends PlasmicNodeBase {
   type: "tag-or-component";
   jsxElement: PlasmicJsxElement;
   rawNode: Expression | JSXExpressionContainer;
-  sound: boolean;
+  secondaryNodes: PlasmicTagOrComponent[];
 }
 
 export type PlasmicASTNode =
   | PlasmicTagOrComponent
   | PlasmicOpaqueExpr
-  | PlasmicArgRef
   | PlasmicStringLiteralExpr
   | PlasmicJsxText
   | PlasmicChildStringCall

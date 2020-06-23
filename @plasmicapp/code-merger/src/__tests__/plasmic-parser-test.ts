@@ -1,39 +1,42 @@
 import { assert, ensure } from "../common";
-import {
-  PlasmicASTNode,
-  PlasmicJsxElement,
-  PlasmicArgRef
-} from "../plasmic-ast";
-import {
-  getSource,
-  parseFromJsxExpression,
-  CodeVersion
-} from "../plasmic-parser";
+import { PlasmicASTNode, PlasmicJsxElement } from "../plasmic-ast";
+import { parseFromJsxExpression, CodeVersion } from "../plasmic-parser";
 import * as L from "lodash";
 import traverse, { Node, NodePath } from "@babel/traverse";
 import * as parser from "@babel/parser";
-import { formatted, code, tagName } from "../utils";
+import { formatted, code, tagName, compactCode } from "../utils";
 import { iteratee } from "lodash";
+import { JSXSpreadAttribute } from "@babel/types";
+
+const getSource = (n: Node | null, input: string) => {
+  if (!n) {
+    return undefined;
+  }
+  if (n.start === null || n.end === null) {
+    return undefined;
+  }
+  return input.substring(n.start, n.end);
+};
 
 const assertKVAttr = (
   input: string,
-  attr: string | [string, PlasmicASTNode | null],
+  attr: PlasmicASTNode | [string, PlasmicASTNode | null],
   expectedName: string,
   expectedValue: string
 ) => {
-  assert(!L.isString(attr));
-  assert(attr[0] === expectedName);
-  assert(getSource(ensure(attr[1]).rawNode, input) === expectedValue);
+  assert(L.isArray(attr));
+  expect(attr[0]).toEqual(expectedName);
+  expect(getSource(ensure(attr[1]).rawNode, input)).toEqual(expectedValue);
 };
 
 const assertNodeAttr = (
   input: string,
-  attr: string | [string, PlasmicASTNode | null],
+  attr: PlasmicASTNode | [string, PlasmicASTNode | null],
   expectedName: string,
   f: (value: PlasmicASTNode) => void
 ) => {
-  assert(!L.isString(attr));
-  assert(attr[0] === expectedName);
+  assert(L.isArray(attr));
+  expect(attr[0]).toEqual(expectedName);
   assert(!L.isString(attr[1]));
   assert(attr[1]);
   f(attr[1]);
@@ -42,7 +45,6 @@ const assertNodeAttr = (
 const assertPlasmicJsxElementBase = (
   n: PlasmicJsxElement,
   expcetedPlasmicId: string,
-  inHtmlContext: boolean,
   tag: string,
   numAttrs: number,
   numChildren: number
@@ -84,15 +86,12 @@ const assertChildStrNode = (n: PlasmicASTNode, plasmicId: string) => {
   assert(n.plasmicId === plasmicId);
 };
 
-const assertArgRefNode = (
-  n: PlasmicASTNode,
-  argName: string,
-  numJsxNodes: number
-): n is PlasmicArgRef => {
-  assert(n.type === "arg");
-  assert(n.argName === argName);
-  assert(n.jsxNodes.length === numJsxNodes);
-  return true;
+const assertJSXSpreadorAttribute = (
+  attr: PlasmicASTNode | [string, PlasmicASTNode | null],
+  expectedCode: string
+) => {
+  assert(!L.isArray(attr));
+  expect(compactCode(attr.rawNode)).toEqual(expectedCode);
 };
 
 const assertJsxElement = (node: Node | undefined) => {
@@ -193,15 +192,14 @@ function TreeRow(props: TreeRowProps) {
   it("non-plasmic node", function() {
     const input = "<div></div>";
     const r = parseFromJsxExpression(input);
-    console.log(r);
-    assert(astToString(r, input) === "<div></div>");
+    expect(astToString(r, input)).toEqual("<div></div>");
   });
   it("plasmic node", function() {
     const input = "(<div className={rh.clsAbc()}></div>)";
     const r = parseFromJsxExpression(input);
-    assert(r.rawNode.start === 1);
+    expect(r.rawNode.start).toBe(1);
     const jsxElt = assertTagOrComponent(r);
-    assertPlasmicJsxElementBase(jsxElt, "Abc", false, "div", 1, 0);
+    assertPlasmicJsxElementBase(jsxElt, "Abc", "div", 1, 0);
     assertKVAttr(input, jsxElt.attrs[0], "className", "{rh.clsAbc()}");
   });
 
@@ -211,7 +209,7 @@ Node  </div>)`;
     const r = parseFromJsxExpression(input);
     assert(r.rawNode.start === 1);
     const jsxElt = assertTagOrComponent(r);
-    assertPlasmicJsxElementBase(jsxElt, "Abc", false, "div", 1, 1);
+    assertPlasmicJsxElementBase(jsxElt, "Abc", "div", 1, 1);
     assertTextNode(jsxElt.children[0], "Text\nNode");
   });
 
@@ -220,7 +218,7 @@ Node  </div>)`;
     const r = parseFromJsxExpression(input);
     assert(r.rawNode.start === 1);
     const jsxElt = assertTagOrComponent(r);
-    assertPlasmicJsxElementBase(jsxElt, "Abc", false, "div", 1, 1);
+    assertPlasmicJsxElementBase(jsxElt, "Abc", "div", 1, 1);
     assertStringLit(jsxElt.children[0], "Text Node");
   });
 
@@ -229,21 +227,28 @@ Node  </div>)`;
     const r = parseFromJsxExpression(input);
     assert(r.rawNode.start === 1);
     const jsxElt = assertTagOrComponent(r);
-    assertPlasmicJsxElementBase(jsxElt, "Abc", false, "div", 1, 1);
+    assertPlasmicJsxElementBase(jsxElt, "Abc", "div", 1, 1);
     assertChildStrNode(jsxElt.children[0], "XXX");
   });
 
   it("argRef node - generic", function() {
     const input = `(<Button className={rh.clsAbc()}> {
-            // comment is ok
-            // parentheis is ok
-            (( args.buttonText)) || "defaultText"}
+// comment is ok
+// parentheis is ok
+(( args.buttonText)) || "defaultText"}
             </Button>)`;
     const r = parseFromJsxExpression(input);
     assert(r.rawNode.start === 1);
     const jsxElt = assertTagOrComponent(r);
-    assertPlasmicJsxElementBase(jsxElt, "Abc", false, "Button", 1, 1);
-    assertArgRefNode(jsxElt.children[0], "buttonText", 0);
+    assertPlasmicJsxElementBase(jsxElt, "Abc", "Button", 1, 1);
+    assertOpaqueNode(
+      jsxElt.children[0],
+      input,
+      `{
+// comment is ok
+// parentheis is ok
+(( args.buttonText)) || "defaultText"}`
+    );
   });
 
   it("argRef node - text slot with no wrapper", function() {
@@ -253,139 +258,35 @@ Node  </div>)`;
     const r = parseFromJsxExpression(input);
     assert(r.rawNode.start === 1);
     const jsxElt = assertTagOrComponent(r);
-    assertPlasmicJsxElementBase(jsxElt, "Abc", false, "Button", 1, 1);
-    assertArgRefNode(jsxElt.children[0], "buttonText", 0);
+    assertPlasmicJsxElementBase(jsxElt, "Abc", "Button", 1, 1);
+    assertOpaqueNode(
+      jsxElt.children[0],
+      input,
+      `{args.buttonText || "defaultText"}`
+    );
   });
 
   it("argRef node - text slot with wrapper", function() {
     const input = `(<Button className={rh.clsAbc()}>
-          {args.buttonText || typeof args.buttonText === "string"
-            ? <div className={rh.clsButtonText()}>
-                {args.buttonText || "Click me"}
-              </div>
-            : "Click me"}
+             <PlasmicSlot
+               className={rh.cls$slotButtonText()}
+               value={args.buttonText}
+               defaultValue={"click Me"}>
+             </PlasmicSlot>
           </Button>)`;
     const r = parseFromJsxExpression(input);
     assert(r.rawNode.start === 1);
     const jsxElt = assertTagOrComponent(r);
-    assertPlasmicJsxElementBase(jsxElt, "Abc", false, "Button", 1, 1);
+    assertPlasmicJsxElementBase(jsxElt, "Abc", "Button", 1, 1);
     const child = jsxElt.children[0];
-    if (assertArgRefNode(child, "buttonText", 1)) {
-      const wrapper = child.jsxNodes[0];
-      assertPlasmicJsxElementBase(
-        wrapper.jsxElement,
-        "ButtonText",
-        false,
-        "div",
-        1,
-        1
-      );
-      assert(ensure(getSource(wrapper.rawNode, input)).startsWith("<div"));
-    }
-  });
-
-  it("argRef node - slot with single default node but not show function has right boundary", function() {
-    const input = `(<Button className={rh.clsAbc()}>
-          {args.buttonText || <div className={rh.clsDefault0()}></div>}
-            </Button>)`;
-    const r = parseFromJsxExpression(input);
-    assert(r.rawNode.start === 1);
-    const jsxElt = assertTagOrComponent(r);
-    assertPlasmicJsxElementBase(jsxElt, "Abc", false, "Button", 1, 1);
-    const child = jsxElt.children[0];
-    if (assertArgRefNode(child, "buttonText", 1)) {
-      assert(
-        ensure(getSource(child.jsxNodes[0].rawNode, input)).startsWith("<div")
-      );
-      assertPlasmicJsxElementBase(
-        child.jsxNodes[0].jsxElement,
-        "Default0",
-        true,
-        "div",
-        1,
-        0
-      );
-    }
-  });
-
-  it("argRef node - slot with single default node and show function has wrong boundary", function() {
-    const input = `(<Button className={rh.clsAbc()}>
-          {args.buttonText || (rh.showDefault0() && <div className={rh.clsDefault0()}></div>)}
-            </Button>)`;
-    const r = parseFromJsxExpression(input);
-    assert(r.rawNode.start === 1);
-    const jsxElt = assertTagOrComponent(r);
-    assertPlasmicJsxElementBase(jsxElt, "Abc", false, "Button", 1, 1);
-    const child = jsxElt.children[0];
-    if (assertArgRefNode(child, "buttonText", 1)) {
-      assert(
-        ensure(getSource(child.jsxNodes[0].rawNode, input)).startsWith("<div")
-      );
-      assertPlasmicJsxElementBase(
-        child.jsxNodes[0].jsxElement,
-        "Default0",
-        true,
-        "div",
-        1,
-        0
-      );
-    }
-  });
-
-  it("argRef node - slot with default nodes has accurate boundary within fragment", function() {
-    const input = `(<Button className={rh.clsAbc()}>
-          {args.buttonText ||
-            <>
-              <div className={rh.clsDefault0()}></div>
-              <div>
-              {rh.showDefault1() && <a className={rh.clsDefault1()} src="">Click me</a>}
-              </div>
-              <p>
-                <a className={rh.clsDefault2()} src="">Click me</a>
-              </p>
-            </>
-          }
-            </Button>)`;
-    const r = parseFromJsxExpression(input);
-    assert(r.rawNode.start === 1);
-    const jsxElt = assertTagOrComponent(r);
-    assertPlasmicJsxElementBase(jsxElt, "Abc", false, "Button", 1, 1);
-    const child = jsxElt.children[0];
-    if (assertArgRefNode(child, "buttonText", 3)) {
-      assert(
-        ensure(getSource(child.jsxNodes[0].rawNode, input)).startsWith("<div")
-      );
-      assertPlasmicJsxElementBase(
-        child.jsxNodes[0].jsxElement,
-        "Default0",
-        true,
-        "div",
-        1,
-        0
-      );
-      assert(
-        ensure(getSource(child.jsxNodes[1].rawNode, input)).startsWith("<div>")
-      );
-      assertPlasmicJsxElementBase(
-        child.jsxNodes[1].jsxElement,
-        "Default1",
-        false,
-        "a",
-        2,
-        1
-      );
-      assert(
-        ensure(getSource(child.jsxNodes[2].rawNode, input)).startsWith("<p>")
-      );
-      assertPlasmicJsxElementBase(
-        child.jsxNodes[2].jsxElement,
-        "Default2",
-        true,
-        "a",
-        2,
-        1
-      );
-    }
+    const jsxChild = assertTagOrComponent(child);
+    assertPlasmicJsxElementBase(
+      jsxChild,
+      "$slotButtonText",
+      "PlasmicSlot",
+      3,
+      0
+    );
   });
 
   it("can parse fragment in attribute", function() {
@@ -398,15 +299,13 @@ Node  </div>)`;
             <Icon2 className={rh.clsIcon2()}/>
           </>} />`;
     const r = parseFromJsxExpression(input);
-    assert(!L.isString(r));
     const jsxElt = assertTagOrComponent(r);
-    assertPlasmicJsxElementBase(jsxElt, "Abc", false, "Button", 2, 0);
+    assertPlasmicJsxElementBase(jsxElt, "Abc", "Button", 2, 0);
     assertNodeAttr(
       input,
       jsxElt.attrs[1],
       "content",
       (value: PlasmicASTNode) => {
-        debugger;
         assert(value.type === "jsx-fragment");
         expect(value.children.length).toBe(2);
       }
@@ -419,7 +318,7 @@ Node  </div>)`;
     assert(!L.isString(r));
     assert(r.rawNode.start === 0);
     const jsxElt = assertTagOrComponent(r);
-    assertPlasmicJsxElementBase(jsxElt, "Abc", false, "div", 1, 0);
+    assertPlasmicJsxElementBase(jsxElt, "Abc", "div", 1, 0);
     assertKVAttr(input, jsxElt.attrs[0], "className", "{rh.clsAbc()}");
   });
 
@@ -430,7 +329,7 @@ Node  </div>)`;
     const r = parseFromJsxExpression(input);
     assert(!L.isString(r));
     const jsxElt = assertTagOrComponent(r);
-    assertPlasmicJsxElementBase(jsxElt, "XXX", false, "Button", 1, 0);
+    assertPlasmicJsxElementBase(jsxElt, "XXX", "Button", 1, 0);
     assertKVAttr(input, jsxElt.attrs[0], "className", "{rh.clsXXX()}");
   });
 
@@ -442,7 +341,7 @@ Node  </div>)`;
     const r = parseFromJsxExpression(input);
     assert(!L.isString(r));
     const jsxElt = assertTagOrComponent(r);
-    assertPlasmicJsxElementBase(jsxElt, "XXX", false, "div", 1, 0);
+    assertPlasmicJsxElementBase(jsxElt, "XXX", "div", 1, 0);
     assertKVAttr(input, jsxElt.attrs[0], "className", "{rh.clsXXX()}");
   });
 
@@ -451,7 +350,7 @@ Node  </div>)`;
     const r = parseFromJsxExpression(input);
     assert(!L.isString(r));
     const jsxElt = assertTagOrComponent(r);
-    assertPlasmicJsxElementBase(jsxElt, "XXX", true, "div", 1, 0);
+    assertPlasmicJsxElementBase(jsxElt, "XXX", "div", 1, 0);
     assertKVAttr(input, jsxElt.attrs[0], "className", "{rh.clsXXX()}");
   });
 
@@ -460,7 +359,7 @@ Node  </div>)`;
     const r = parseFromJsxExpression(input);
     assert(!L.isString(r));
     const jsxElt = assertTagOrComponent(r);
-    assertPlasmicJsxElementBase(jsxElt, "XXX", false, "div", 2, 0);
+    assertPlasmicJsxElementBase(jsxElt, "XXX", "div", 2, 0);
   });
 
   it("append className", function() {
@@ -468,7 +367,7 @@ Node  </div>)`;
     const r = parseFromJsxExpression(input);
     assert(!L.isString(r));
     const jsxElt = assertTagOrComponent(r);
-    assertPlasmicJsxElementBase(jsxElt, "XXX", false, "div", 2, 0);
+    assertPlasmicJsxElementBase(jsxElt, "XXX", "div", 2, 0);
   });
 
   it("parse attributes - basic", function() {
@@ -481,17 +380,17 @@ Node  </div>)`;
     const r = parseFromJsxExpression(input);
     assert(!L.isString(r));
     const jsxElt = assertTagOrComponent(r);
-    assertPlasmicJsxElementBase(jsxElt, "XXX", true, "Button", 5, 1);
-    assert(jsxElt.attrs[0] === "{...rh.propsXXX()}");
+    assertPlasmicJsxElementBase(jsxElt, "XXX", "Button", 5, 1);
+    assertJSXSpreadorAttribute(jsxElt.attrs[0], "rh.propsXXX()");
     assertKVAttr(input, jsxElt.attrs[1], "width", "{100}");
     assertKVAttr(input, jsxElt.attrs[2], "icon", "{<img></img>}");
     assertNodeAttr(input, jsxElt.attrs[3], "slot", (value: PlasmicASTNode) => {
       const j = assertTagOrComponent(value);
-      assertPlasmicJsxElementBase(j, "Slot", false, "a", 1, 1);
-      assert(j.attrs[0] === "{...rh.propsSlot()}");
+      assertPlasmicJsxElementBase(j, "Slot", "a", 1, 1);
+      assertJSXSpreadorAttribute(j.attrs[0], "rh.propsSlot()");
       assertTextNode(j.children[0], "Hello");
     });
-    assert(jsxElt.attrs[4] === "{...myProps}");
+    assertJSXSpreadorAttribute(jsxElt.attrs[4], "myProps");
     assertOpaqueNode(jsxElt.children[0], input, "{<svg></svg>}");
   });
 
@@ -505,8 +404,8 @@ Node  </div>)`;
     const r = parseFromJsxExpression(input);
     assert(!L.isString(r));
     const jsxElt = assertTagOrComponent(r);
-    assertPlasmicJsxElementBase(jsxElt, "XXX", true, "Button", 2, 0);
-    assert(jsxElt.attrs[0] === "{...rh.propsXXX()}");
+    assertPlasmicJsxElementBase(jsxElt, "XXX", "Button", 2, 0);
+    assertJSXSpreadorAttribute(jsxElt.attrs[0], "rh.propsXXX()");
     assertNodeAttr(
       input,
       jsxElt.attrs[1],
@@ -592,7 +491,7 @@ Node  </div>)`;
 
     assert(!L.isString(r));
     const jsxElt = assertTagOrComponent(r);
-    assertPlasmicJsxElementBase(jsxElt, "Root", false, "div", 1, 6);
+    assertPlasmicJsxElementBase(jsxElt, "Root", "div", 1, 6);
   });
 
   it("parse all nodes", function() {
@@ -625,47 +524,27 @@ Node  </div>)`;
       </div>`,
       new Map<string, string>(nameInIds.map(id => [id, `uuid${id}`]))
     );
-    assert(cv.tagOrComponents.size === nameInIds.length);
+    assert(cv.allTagOrComponents.size === nameInIds.length);
 
     // test findNode
-    assertTagOrComponent(
-      cv.findNode({ nameInId: "Root", uuid: "Root" }),
-      "JSXElement"
-    );
-    assertTagOrComponent(
-      cv.findNode({ nameInId: "XznmtPNB0Zyw", uuid: "XznmtPNB0Zyw" }),
-      "JSXElement"
-    );
-    assertTagOrComponent(
-      cv.findNode({ nameInId: "DVE$i8K$uR8I", uuid: "DVE$i8K$uR8I" }),
-      "JSXElement"
-    );
-    const flexStack = ensure(
-      cv.findNode({ nameInId: "RqL5xG5ECSOA", uuid: "RqL5xG5ECSOA" })
-    );
+    assertTagOrComponent(cv.findTagOrComponent("Root"), "JSXElement");
+    assertTagOrComponent(cv.findTagOrComponent("XznmtPNB0Zyw"), "JSXElement");
+    assertTagOrComponent(cv.findTagOrComponent("DVE$i8K$uR8I"), "JSXElement");
+    const flexStack = ensure(cv.findTagOrComponent("RqL5xG5ECSOA"));
     assertTagOrComponent(flexStack, "JSXElement");
-    const openButton = ensure(
-      cv.findNode({ nameInId: "OpenButton", uuid: "OpenButton" })
-    );
+    const openButton = ensure(cv.findTagOrComponent("OpenButton"));
     assertTagOrComponent(openButton, "JSXExpressionContainer");
     assertTagOrComponent(
-      cv.findNode({ nameInId: "XIMhb4EWD7N5", uuid: "XIMhb4EWD7N5" }),
+      cv.findTagOrComponent("XIMhb4EWD7N5"),
       "JSXExpressionContainer"
     );
-    const closeButton = ensure(
-      cv.findNode({ nameInId: "CloseButton", uuid: "uuidCloseButton" })
-    );
+    const closeButton = ensure(cv.findTagOrComponent("CloseButton"));
     assertTagOrComponent(closeButton, "JSXElement");
     // findNode fallback to uuid
-    assertTagOrComponent(
-      cv.findNode({ nameInId: "RootRenamed", uuid: "uuidRoot" }),
-      "JSXElement"
-    );
+    assertTagOrComponent(cv.findTagOrComponent("Root"), "JSXElement");
     // getId
     assert(cv.root.type === "tag-or-component");
-    const rootIds = cv.getId(cv.root);
-    assert(rootIds.nameInId === "Root");
-    assert(rootIds.uuid === "uuidRoot");
+    expect(cv.root.jsxElement.nameInId).toEqual("Root");
 
     // serach
     assert(cv.hasClassNameIdAttr(cv.root));
@@ -679,5 +558,21 @@ Node  </div>)`;
     assert(!cv.hasClassNameIdAttr(openButton));
     assert(cv.hasPropsIdSpreador(openButton));
     assert(cv.hasShowFuncCall(openButton));
+  });
+
+  it("spreador attribute with tags node", function() {
+    const input =
+      "(<Button className={rh.clsAbc()} {...{icon: <img className={rh.clsImg()}/>}}></Button>)";
+    const r = parseFromJsxExpression(input);
+    expect(r.rawNode.start).toBe(1);
+    const jsxElt = assertTagOrComponent(r);
+    assertPlasmicJsxElementBase(jsxElt, "Abc", "Button", 2, 0);
+    assertKVAttr(input, jsxElt.attrs[0], "className", "{rh.clsAbc()}");
+    assertJSXSpreadorAttribute(
+      jsxElt.attrs[1],
+      "{icon:<img className={rh.clsImg()}/>}"
+    );
+    assert(!L.isArray(jsxElt.attrs[1]));
+    assert(jsxElt.attrs[1].type === "tag-or-component");
   });
 });
