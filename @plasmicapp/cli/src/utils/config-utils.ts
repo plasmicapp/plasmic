@@ -8,6 +8,7 @@ import { CommonArgs } from "../index";
 import { DeepPartial } from "utility-types";
 import * as Sentry from "@sentry/node";
 import { runNecessaryMigrations } from "../migrations/migrations";
+import { getCliVersion } from "./npm-utils";
 
 export const AUTH_FILE_NAME = ".plasmic.auth";
 export const CONFIG_FILE_NAME = "plasmic.json";
@@ -241,6 +242,8 @@ export function getContext(args: CommonArgs): PlasmicContext {
     // Production usage of cli
     Sentry.configureScope(scope => {
       scope.setUser({ email: auth.user });
+      scope.setExtra("cliVersion", getCliVersion());
+      scope.setExtra("args", args);
     });
     Sentry.init({
       dsn:
