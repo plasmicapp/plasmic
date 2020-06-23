@@ -243,7 +243,8 @@ export function getContext(args: CommonArgs): PlasmicContext {
     Sentry.configureScope(scope => {
       scope.setUser({ email: auth.user });
       scope.setExtra("cliVersion", getCliVersion());
-      scope.setExtra("args", args);
+      scope.setExtra("args", JSON.stringify(args));
+      scope.setExtra("host", auth.host);
     });
     Sentry.init({
       dsn:

@@ -39,13 +39,6 @@ export async function initPlasmic(opts: InitArgs) {
   const authFile =
     opts.auth || findAuthFile(process.cwd(), { traverseParents: true });
   if (!authFile || !fs.existsSync(authFile)) {
-    const initial = await inquirer.prompt([
-      {
-        name: "host",
-        message: "Host of the Plasmic instance to use",
-        default: "https://studio.plasmic.app"
-      }
-    ]);
     const auth = await inquirer.prompt([
       {
         name: "user",
@@ -53,13 +46,13 @@ export async function initPlasmic(opts: InitArgs) {
       },
       {
         name: "token",
-        message: `Your personal access token (create one at ${initial.host}/self/settings)`
+        message: `Your personal access token (create one at https://studio.plasmic.app/self/settings)`
       }
     ]);
 
     const newAuthFile = opts.auth || path.join(os.homedir(), AUTH_FILE_NAME);
     writeAuth(newAuthFile, {
-      host: initial.host,
+      host: "https://studio.plasmic.app",
       user: auth.user,
       token: auth.token
     });
