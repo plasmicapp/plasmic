@@ -67,6 +67,36 @@ describe("Test CodeMerger", function() {
     );
   });
 
+  it("tag name conflicts", function() {
+    const nameInIdToUuid = new Map([["Root", "Root"]]);
+    const base = new CodeVersion(
+      "<div className={rh.clsRoot()}>Hello World</div>",
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      "<MyTags.div className={rh.clsRoot()}>Hello World</MyTags.div>",
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      "<Button className={rh.clsRoot()}>Hello World</Button>",
+      nameInIdToUuid
+    );
+    expect(
+      code(
+        renameAndSerializePlasmicASTNode(newV.root, {
+          newVersion: newV,
+          editedVersion: edited,
+          baseVersion: base
+        })
+      )
+    ).toEqual(
+      formatted(`
+      <MyTags.div___Button className={rh.clsRoot()}>
+        Hello World
+      </MyTags.div___Button>`)
+    );
+  });
+
   it("User added attribute preserved", function() {
     const nameInIdToUuid = new Map([["Root", "Root"]]);
     const base = new CodeVersion(
@@ -662,7 +692,7 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("add nested children", function() {
+  it("add children", function() {
     const nameInIdToUuid = new Map([["Root", "Root"]]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()} />`,
@@ -743,6 +773,94 @@ describe("Test CodeMerger", function() {
       `<div className={rh.clsRoot()}>
          <button className={rh.clsBtn()}>
            Click Me
+         </button>
+       </div>`,
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+         <button className={rh.clsBtn()}>Click Me</button>
+       </div>`,
+      nameInIdToUuid
+    );
+    expect(
+      code(
+        renameAndSerializePlasmicASTNode(newV.root, {
+          newVersion: newV,
+          editedVersion: edited,
+          baseVersion: base
+        })
+      )
+    ).toEqual(
+      formatted(
+        `<div className={rh.clsRoot()}>
+         <button className={rh.clsBtn()}>
+           Click Me
+         </button>
+       </div>`
+      )
+    );
+  });
+
+  it("text node changed from JSXText to function call", function() {
+    const nameInIdToUuid = new Map([
+      ["Root", "Root"],
+      ["Btn", "Btn"]
+    ]);
+    const base = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+         <button className={rh.clsBtn()}>Click Me</button>
+       </div>`,
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+         <button className={rh.clsBtn()}>
+           Click Me
+         </button>
+       </div>`,
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+         <button className={rh.clsBtn()}>{rh.childStrBtn()}</button>
+       </div>`,
+      nameInIdToUuid
+    );
+    expect(
+      code(
+        renameAndSerializePlasmicASTNode(newV.root, {
+          newVersion: newV,
+          editedVersion: edited,
+          baseVersion: base
+        })
+      )
+    ).toEqual(
+      formatted(
+        `<div className={rh.clsRoot()}>
+         <button className={rh.clsBtn()}>
+           {rh.childStrBtn()}
+         </button>
+       </div>`
+      )
+    );
+  });
+
+  it("text node changed function call to JSXText", function() {
+    const nameInIdToUuid = new Map([
+      ["Root", "Root"],
+      ["Btn", "Btn"]
+    ]);
+    const base = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+         <button className={rh.clsBtn()}>{rh.childStrBtn()}</button>
+       </div>`,
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+         <button className={rh.clsBtn()}>
+         {rh.childStrBtn()}
          </button>
        </div>`,
       nameInIdToUuid
