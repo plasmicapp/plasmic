@@ -97,7 +97,9 @@ function parsePackageJson(path: string) {
 }
 
 export function installUpgrade(pkg: string) {
-  const cmd = `yarn add -W ${pkg} || npm install --save ${pkg}`;
+  const mgr = detectPackageManager();
+  const cmd =
+    mgr === "yarn" ? `yarn add -W ${pkg}` : `npm install --save ${pkg}`;
   console.log(cmd);
   const r = spawnSync(cmd, { shell: true, stdio: "inherit" });
   if (r.status === 0) {
@@ -106,5 +108,14 @@ export function installUpgrade(pkg: string) {
     console.warn(
       `Cannot add ${pkg} to your project dependency. Please add it manually.`
     );
+  }
+}
+
+export function detectPackageManager() {
+  const yarnLock = findupSync("yarn.lock", { cwd: __dirname });
+  if (yarnLock) {
+    return "yarn";
+  } else {
+    return "npm";
   }
 }
