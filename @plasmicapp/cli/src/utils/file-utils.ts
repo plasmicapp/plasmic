@@ -9,7 +9,8 @@ import {
   GlobalVariantGroupConfig,
   PlasmicConfig,
   CONFIG_FILE_NAME,
-  IconConfig
+  IconConfig,
+  updateConfig
 } from "./config-utils";
 import { isLocalModulePath } from "./code-utils";
 
@@ -84,79 +85,6 @@ export function buildBaseNameToFiles(
 }
 
 /**
- * Attempts to look for all files referenced in `compConfig`, and best-guess fix up the references
- * if the files have been moved.  Mutates `compConfig` with the new paths.
- */
-export function fixComponentPaths(
-  absoluteSrcDir: string,
-  compConfig: ComponentConfig,
-  baseNameToFiles: Record<string, string[]>
-) {
-  compConfig.renderModuleFilePath = findSrcDirPath(
-    absoluteSrcDir,
-    compConfig.renderModuleFilePath,
-    baseNameToFiles
-  );
-
-  compConfig.cssFilePath = findSrcDirPath(
-    absoluteSrcDir,
-    compConfig.cssFilePath,
-    baseNameToFiles
-  );
-
-  // If `compConfig.importPath` is still referencing a local file, then we can also best-effort detect
-  // whether it has been moved.
-  if (isLocalModulePath(compConfig.importSpec.modulePath)) {
-    const modulePath = compConfig.importSpec.modulePath;
-    const fuzzyPath = findSrcDirPath(
-      absoluteSrcDir,
-      modulePath,
-      baseNameToFiles
-    );
-    if (fuzzyPath !== modulePath) {
-      console.warn(`\tDetected file moved from ${modulePath} to ${fuzzyPath}`);
-      compConfig.importSpec.modulePath = fuzzyPath;
-    }
-  }
-}
-
-export function fixGlobalVariantFilePath(
-  absoluteSrcDir: string,
-  variantConfig: GlobalVariantGroupConfig,
-  baseNameToFiles: Record<string, string[]>
-) {
-  variantConfig.contextFilePath = findSrcDirPath(
-    absoluteSrcDir,
-    variantConfig.contextFilePath,
-    baseNameToFiles
-  );
-}
-
-export function fixIconFilePath(
-  absoluteSrcDir: string,
-  iconConfig: IconConfig,
-  baseNameToFiles: Record<string, string[]>
-) {
-  iconConfig.moduleFilePath = findSrcDirPath(
-    absoluteSrcDir,
-    iconConfig.moduleFilePath,
-    baseNameToFiles
-  );
-}
-
-export function fixProjectFilePaths(
-  absoluteSrcDir: string,
-  projectConfig: ProjectConfig,
-  baseNameToFiles: Record<string, string[]>
-) {
-  projectConfig.cssFilePath = findSrcDirPath(
-    absoluteSrcDir,
-    projectConfig.cssFilePath,
-    baseNameToFiles
-  );
-}
-
-/**
  * Tries to find the file at `srcDir/expectedPath`.  If it's not there, tries to detect if it has
  * been moved to a different location.  Returns the found location relative to the `srcDir`.
  *
@@ -213,4 +141,63 @@ export function findFile(
     return undefined;
   }
   return findFile(path.dirname(dir), pred, opts);
+}
+
+/**
+ * Fixes all src-relative file paths in PlasmicConfig by detecting file
+ * movement on disk.
+ */
+export function fixAllFilePaths(context: PlasmicContext) {
+  const baseNameToFiles = buildBaseNameToFiles(context);
+  const config = context.config;
+
+  let changed = false;
+
+  const fixPath = <K extends string>(bundle: { [k in K]: string }, key: K) => {
+    const known = bundle[key];
+    const found = findSrcDirPath(
+      context.absoluteSrcDir,
+      known,
+      baseNameToFiles
+    );
+    if (known !== found) {
+      bundle[key] = found;
+      changed = true;
+    }
+  };
+
+  const fixProject = (proj: ProjectConfig) => {
+    fixPath(proj, "cssFilePath");
+    for (const component of proj.components) {
+      fixComponent(component);
+    }
+    for (const icon of proj.icons) {
+      fixPath(icon, "moduleFilePath");
+    }
+  };
+
+  const fixComponent = (comp: ComponentConfig) => {
+    fixPath(comp, "renderModuleFilePath");
+    fixPath(comp, "cssFilePath");
+    // If `compConfig.importPath` is still referencing a local file, then we can also best-effort detect
+    // whether it has been moved.
+    if (isLocalModulePath(comp.importSpec.modulePath)) {
+      fixPath(comp.importSpec, "modulePath");
+    }
+  };
+
+  for (const project of config.projects) {
+    fixProject(project);
+  }
+
+  for (const bundle of config.globalVariants.variantGroups) {
+    fixPath(bundle, "contextFilePath");
+  }
+
+  fixPath(config.tokens, "tokensFilePath");
+  fixPath(config.style, "defaultStyleCssFilePath");
+
+  if (changed) {
+    updateConfig(context, context.config);
+  }
 }

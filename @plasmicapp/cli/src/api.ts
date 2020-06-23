@@ -29,7 +29,7 @@ export interface GlobalVariantBundle {
   contextFileName: string;
 }
 
-export interface ProjectConfig {
+export interface ProjectMetaBundle {
   projectId: string;
   projectName: string;
   cssFileName: string;
@@ -45,11 +45,13 @@ export interface IconBundle {
 
 export interface ProjectBundle {
   components: ComponentBundle[];
-  projectConfig: ProjectConfig;
+  projectConfig: ProjectMetaBundle;
   globalVariants: GlobalVariantBundle[];
   usedTokens: StyleTokensMap;
   iconAssets: IconBundle[];
 }
+
+export type ProjectMeta = Omit<ProjectBundle, "projectConfig">;
 
 export interface StyleConfigResponse {
   defaultStyleCssFileName: string;
@@ -73,6 +75,10 @@ export interface StyleTokensMap {
   };
 }
 
+export interface ProjectIconsResponse {
+  icons: IconBundle[];
+}
+
 export class PlasmicApi {
   constructor(private auth: AuthConfig) {}
 
@@ -89,15 +95,18 @@ export class PlasmicApi {
     reactWebVersion: string | undefined,
     newCompScheme: "blackbox" | "direct",
     // The list of existing components as [componentUuid, codeScheme]
-    existingCompScheme: Array<[string, "blackbox" | "direct"]>
+    existingCompScheme: Array<[string, "blackbox" | "direct"]>,
+    componentIdOrNames: readonly string[] | undefined
   ) {
+    console.log("SYNC", { componentIdOrNames });
     const result = await this.post(
       `${this.auth.host}/api/v1/projects/${projectId}/code/components`,
       {
         cliVersion,
         reactWebVersion: reactWebVersion || "",
         newCompScheme,
-        existingCompScheme
+        existingCompScheme,
+        componentIdOrNames
       }
     );
     return result.data as ProjectBundle;
@@ -108,6 +117,13 @@ export class PlasmicApi {
       `${this.auth.host}/api/v1/projects/${projectId}/code/tokens`
     );
     return result.data as StyleTokensMap;
+  }
+
+  async projectIcons(projectId: string) {
+    const result = await this.post(
+      `${this.auth.host}/api/v1/projects/${projectId}/code/icons`
+    );
+    return result.data as ProjectIconsResponse;
   }
 
   async projectSyncMetadata(

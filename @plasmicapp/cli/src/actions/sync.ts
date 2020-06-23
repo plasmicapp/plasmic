@@ -5,27 +5,22 @@ import { CommonArgs } from "..";
 import {
   getContext,
   updateConfig,
-  PlasmicConfig,
-  ProjectConfig as CliProjectConfig,
-  PlasmicContext
+  PlasmicContext,
+  ProjectConfig
 } from "../utils/config-utils";
 import {
   buildBaseNameToFiles,
   writeFileContent,
-  fixComponentPaths,
-  fixGlobalVariantFilePath,
-  fixProjectFilePaths,
   findSrcDirPath,
   readFileContent,
-  fixIconFilePath,
   stripExtension,
-  writeFileContentRaw
+  fixAllFilePaths
 } from "../utils/file-utils";
 import {
   ProjectBundle,
   ComponentBundle,
   GlobalVariantBundle,
-  ProjectConfig as ApiProjectConfig,
+  ProjectMetaBundle,
   StyleConfigResponse,
   IconBundle,
   AppServerError
@@ -48,6 +43,7 @@ import {
   makeCachedProjectSyncDataProvider
 } from "@plasmicapp/code-merger";
 import { options } from "yargs";
+import { syncProjectIconAssets } from "./sync-icons";
 
 export interface SyncArgs extends CommonArgs {
   projects: readonly string[];
@@ -56,30 +52,6 @@ export interface SyncArgs extends CommonArgs {
   forceOverwrite: boolean;
   newComponentScheme?: "blackbox" | "direct";
   appendJsxOnMissingBase?: boolean;
-}
-
-function maybeMigrate(context: PlasmicContext) {
-  let existingFiles: L.Dictionary<string[]> | null = null;
-  context.config.projects.forEach(project => {
-    project.components.forEach(c => {
-      if (c.renderModuleFilePath.endsWith("ts")) {
-        if (!existingFiles) {
-          existingFiles = buildBaseNameToFiles(context);
-        }
-        const relFilePath = findSrcDirPath(
-          context.absoluteSrcDir,
-          c.renderModuleFilePath,
-          existingFiles
-        );
-        const absFilePath = path.join(context.absoluteSrcDir, relFilePath);
-        if (fs.existsSync(absFilePath)) {
-          console.log(`rename file from ${absFilePath} to ${absFilePath}x`);
-          fs.renameSync(absFilePath, `${absFilePath}x`);
-        }
-        c.renderModuleFilePath = `${c.renderModuleFilePath}x`;
-      }
-    });
-  });
 }
 
 function maybeConvertTsxToJsx(fileName: string, content: string) {
@@ -93,6 +65,7 @@ function maybeConvertTsxToJsx(fileName: string, content: string) {
 
 export async function syncProjects(opts: SyncArgs) {
   const context = getContext(opts);
+  fixAllFilePaths(context);
   const projectIds =
     opts.projects.length > 0
       ? opts.projects
@@ -122,17 +95,11 @@ export async function syncProjects(opts: SyncArgs) {
         getCliVersion(),
         reactWebVersion,
         opts.newComponentScheme || context.config.code.scheme,
-        existingCompScheme
+        existingCompScheme,
+        opts.components
       );
     })
   );
-  if (
-    results.find(project =>
-      project.components.find(c => c.renderModuleFileName.endsWith(".tsx"))
-    )
-  ) {
-    maybeMigrate(context);
-  }
 
   if (context.config.code.lang === "js") {
     results.forEach(project => {
@@ -163,35 +130,29 @@ export async function syncProjects(opts: SyncArgs) {
     })
   );
 
-  const baseNameToFiles = buildBaseNameToFiles(context);
-  syncStyleConfig(context, await context.api.genStyleConfig(), baseNameToFiles);
+  syncStyleConfig(context, await context.api.genStyleConfig());
 
   const config = context.config;
-  // `components` is a list of component names or IDs
-  const components =
-    opts.components.length > 0
-      ? opts.components
-      : flatMap(config.projects, p => p.components.map(c => c.id));
+  const knownComponentIds = new Set(
+    flatMap(config.projects, p => p.components.map(c => c.id))
+  );
   const shouldSyncComponents = (id: string, name: string) => {
-    if (
-      components.length === 0 ||
-      (opts.components.length === 0 && !opts.onlyExisting)
-    ) {
-      return true;
+    if (opts.onlyExisting) {
+      // If explicitly told to only sync known components, then check
+      return knownComponentIds.has(id);
     }
-    return components.includes(id) || components.includes(name);
+
+    // Otherwise, we sync all components; if the user had specified --components, we
+    // have already passed that up to the server, and the server should've only sent
+    // down a filtered set of components already.
+    return true;
   };
 
   for (const [projectId, projectBundle] of L.zip(projectIds, results) as [
     string,
     ProjectBundle
   ][]) {
-    syncGlobalVariants(
-      context,
-      projectId,
-      projectBundle.globalVariants,
-      baseNameToFiles
-    );
+    syncGlobalVariants(context, projectId, projectBundle.globalVariants);
     const componentBundles = projectBundle.components.filter(bundle =>
       shouldSyncComponents(bundle.id, bundle.componentName)
     );
@@ -200,11 +161,10 @@ export async function syncProjects(opts: SyncArgs) {
       projectBundle.projectConfig,
       componentBundles,
       projectBundle.iconAssets,
-      baseNameToFiles,
       opts.forceOverwrite,
       !!opts.appendJsxOnMissingBase
     );
-    upsertStyleTokens(context, projectBundle.usedTokens, baseNameToFiles);
+    upsertStyleTokens(context, projectBundle.usedTokens);
   }
 
   // Write the new ComponentConfigs to disk
@@ -223,9 +183,8 @@ export async function syncProjects(opts: SyncArgs) {
 
 async function syncProjectComponents(
   context: PlasmicContext,
-  project: CliProjectConfig,
+  project: ProjectConfig,
   componentBundles: ComponentBundle[],
-  baseNameToFiles: Record<string, string[]>,
   forceOverwrite: boolean,
   appendJsxOnMissingBase: boolean
 ) {
@@ -276,9 +235,7 @@ async function syncProjectComponents(
         force: false
       });
     } else {
-      // This is an existing component. We first make sure the files are all in the expected
-      // places, and then overwrite them with the new content
-      fixComponentPaths(context.absoluteSrcDir, compConfig, baseNameToFiles);
+      // This is an existing component.
       const editedFile = readFileContent(
         context,
         compConfig.importSpec.modulePath
@@ -370,8 +327,7 @@ async function syncProjectComponents(
 
 function syncStyleConfig(
   context: PlasmicContext,
-  response: StyleConfigResponse,
-  baseNameToFiles: Record<string, string[]>
+  response: StyleConfigResponse
 ) {
   const expectedPath =
     context.config.style.defaultStyleCssFilePath ||
@@ -379,26 +335,15 @@ function syncStyleConfig(
       context.config.defaultPlasmicDir,
       response.defaultStyleCssFileName
     );
-
-  context.config.style.defaultStyleCssFilePath = findSrcDirPath(
-    context.absoluteSrcDir,
-    expectedPath,
-    baseNameToFiles
-  );
-
-  writeFileContent(
-    context,
-    context.config.style.defaultStyleCssFilePath,
-    response.defaultStyleCssRules,
-    { force: true }
-  );
+  writeFileContent(context, expectedPath, response.defaultStyleCssRules, {
+    force: true
+  });
 }
 
 function syncGlobalVariants(
   context: PlasmicContext,
   projectId: string,
-  bundles: GlobalVariantBundle[],
-  baseNameToFiles: Record<string, string[]>
+  bundles: GlobalVariantBundle[]
 ) {
   const allVariantConfigs = L.keyBy(
     context.config.globalVariants.variantGroups,
@@ -422,12 +367,6 @@ function syncGlobalVariants(
       };
       allVariantConfigs[bundle.id] = variantConfig;
       context.config.globalVariants.variantGroups.push(variantConfig);
-    } else {
-      fixGlobalVariantFilePath(
-        context.absoluteSrcDir,
-        variantConfig,
-        baseNameToFiles
-      );
     }
 
     writeFileContent(
@@ -439,92 +378,47 @@ function syncGlobalVariants(
   }
 }
 
-function syncProjectIconAssets(
-  context: PlasmicContext,
-  project: CliProjectConfig,
-  iconBundles: IconBundle[],
-  baseNameToFiles: Record<string, string[]>
-) {
-  if (!project.icons) {
-    project.icons = [];
-  }
-  const knownIconConfigs = L.keyBy(project.icons, i => i.id);
-  for (const bundle of iconBundles) {
-    console.log(
-      `Syncing icon ${bundle.name} [${project.projectId}/${bundle.id}]`
-    );
-    let iconConfig = knownIconConfigs[bundle.id];
-    const isNew = !iconConfig;
-    if (isNew) {
-      iconConfig = {
-        id: bundle.id,
-        name: bundle.name,
-        moduleFilePath: path.join(
-          context.config.defaultPlasmicDir,
-          L.snakeCase(`${project.projectName}`),
-          bundle.fileName
-        )
-      };
-      knownIconConfigs[bundle.id] = iconConfig;
-      project.icons.push(iconConfig);
-    } else {
-      fixIconFilePath(context.absoluteSrcDir, iconConfig, baseNameToFiles);
-    }
-
-    writeFileContent(context, iconConfig.moduleFilePath, bundle.module, {
-      force: !isNew
-    });
-  }
-}
-
 async function syncProjectConfig(
   context: PlasmicContext,
-  pc: ApiProjectConfig,
+  pc: ProjectMetaBundle,
   componentBundles: ComponentBundle[],
   iconBundles: IconBundle[],
-  baseNameToFiles: Record<string, string[]>,
   forceOverwrite: boolean,
   appendJsxOnMissingBase: boolean
 ) {
-  let cliProject = context.config.projects.find(
-    c => c.projectId === pc.projectId
-  );
+  let project = context.config.projects.find(c => c.projectId === pc.projectId);
   const defaultCssFilePath = path.join(
     context.config.defaultPlasmicDir,
     L.snakeCase(pc.projectName),
     pc.cssFileName
   );
-  const isNew = !cliProject;
-  if (!cliProject) {
-    cliProject = {
+  const isNew = !project;
+  if (!project) {
+    project = {
       projectId: pc.projectId,
       projectName: pc.projectName,
       cssFilePath: defaultCssFilePath,
       components: [],
       icons: []
     };
-    context.config.projects.push(cliProject);
+    context.config.projects.push(project);
   } else {
-    cliProject.projectName = pc.projectName;
+    project.projectName = pc.projectName;
   }
 
-  if (!cliProject.cssFilePath) {
-    // this is a config from before cssFilePath existed
-    cliProject.cssFilePath = defaultCssFilePath;
-  } else if (!isNew) {
-    fixProjectFilePaths(context.absoluteSrcDir, cliProject, baseNameToFiles);
+  if (!project.cssFilePath) {
+    project.cssFilePath = defaultCssFilePath;
   }
 
-  writeFileContent(context, cliProject.cssFilePath, pc.cssRules, {
+  writeFileContent(context, project.cssFilePath, pc.cssRules, {
     force: !isNew
   });
   await syncProjectComponents(
     context,
-    cliProject,
+    project,
     componentBundles,
-    baseNameToFiles,
     forceOverwrite,
     appendJsxOnMissingBase
   );
-  syncProjectIconAssets(context, cliProject, iconBundles, baseNameToFiles);
+  syncProjectIconAssets(context, project, iconBundles);
 }
