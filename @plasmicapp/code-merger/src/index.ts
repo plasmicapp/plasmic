@@ -36,7 +36,7 @@ import {
 import {
   CodeVersion,
   helperObject,
-  isInHtmlContext,
+  isJsxElementOrFragment,
   memberExpressionMatch,
   makeMemberExpression,
   isCallIgnoreArguments,
@@ -52,7 +52,7 @@ import {
   isAttribute,
   getAttrName
 } from "./utils";
-import { first, cloneDeep } from "lodash";
+import { first, cloneDeep, replace } from "lodash";
 
 const mkJsxFragment = (children: JsxChildType[]) => {
   return babel.types.jsxFragment(
@@ -569,74 +569,17 @@ const makeJsxElementWithShowCall = (jsxElement: JSXElement, nodeId: string) =>
     jsxElement
   );
 
-const mergeShowFunc = (
-  newNode: PlasmicTagOrComponent,
-  editedNode: PlasmicTagOrComponent,
-  newVersion: CodeVersion,
-  editedVersion: CodeVersion,
-  editedNodeClone: Expression | JSXExpressionContainer
-) => {
-  const editedNodeId = editedNode.jsxElement.nameInId;
-  const newNodeId = newNode.jsxElement.nameInId;
-  const newNodeCallShowFunc = newVersion.hasShowFuncCall(newNode);
-  let replacedShowCall = false;
-  traverse(editedNodeClone, {
-    noScope: true,
-    CallExpression: function(path) {
-      const call = path.node;
-      if (
-        memberExpressionMatch(call.callee, helperObject, `show${editedNodeId}`)
-      ) {
-        if (newNodeCallShowFunc) {
-          assert(call.callee.type === "MemberExpression");
-          call.callee.property = babel.types.identifier(`show${newNodeId}`);
-        } else {
-          path.replaceWithSourceString("true");
-        }
-        replacedShowCall = true;
-        path.skip();
-      }
-    }
-  });
-  if (newNodeCallShowFunc && !replacedShowCall) {
-    // add the show call, using the new node id!
-    if (editedNode.rawNode === editedNode.jsxElement.rawNode) {
-      assert(editedNodeClone.type === "JSXElement");
-      return makeJsxElementWithShowCall(editedNodeClone, newNodeId);
-    } else {
-      traverse(editedNodeClone, {
-        noScope: true,
-        JSXElement: function(path) {
-          // We have to use location to identify the node since they point to
-          // different AST structure - one point to the editedNode.rawNode, and
-          // the other point to editedNodeClone.
-          if (path.node.start === editedNode.jsxElement.rawNode.start) {
-            const inHtmlContext = isInHtmlContext(path);
-            const expr = makeJsxElementWithShowCall(path.node, newNodeId);
-            // we are converting JSXElement to an expression. So maybe we need
-            // a JSXExpressionContainer.
-            path.replaceWith(
-              inHtmlContext ? wrapInJsxExprContainer(expr) : expr
-            );
-            path.stop();
-          }
-        }
-      });
-    }
-  }
-  return editedNodeClone;
-};
-
 const serializeTagOrComponent = (
   newNode: PlasmicTagOrComponent,
   codeVersions: CodeVersions
 ): Expression | JSXExpressionContainer | undefined => {
   const { newVersion, editedVersion, baseVersion } = codeVersions;
 
-  const nodeId = newVersion.getId(newNode);
   // find node with same id in edited version.
-  const editedNode = editedVersion.findNode(nodeId);
-  const baseNode = baseVersion.findNode(nodeId);
+  const editedNode = editedVersion.findTagOrComponent(
+    newNode.jsxElement.nameInId
+  );
+  const baseNode = baseVersion.findTagOrComponent(newNode.jsxElement.nameInId);
   if (editedNode) {
     // the node must exist in base version.
     assert(!!baseNode);
@@ -677,20 +620,67 @@ const serializeTagOrComponent = (
       editedNodeJsxElementClone.openingElement.selfClosing = false;
     }
 
-    const editNodeClone = cloneDeepWithHook(editedNode.rawNode, (n: Node) => {
+    const secondaryNodes = new Map<Node, Node | undefined>(
+      editedNode.secondaryNodes.map(n => {
+        const newSecondaryNode = newVersion.findTagOrComponent(
+          n.jsxElement.nameInId
+        );
+        if (!newSecondaryNode) {
+          return [n.rawNode, undefined];
+        }
+        const rawReplacement = serializePlasmicASTNode(
+          newSecondaryNode,
+          codeVersions
+        );
+        return [n.rawNode, rawReplacement];
+      })
+    );
+
+    const newNodeCallShowFunc = newVersion.hasShowFuncCall(newNode);
+    const editedNodeCallShowFunc = editedVersion.hasShowFuncCall(editedNode);
+
+    const editedNodeClone = cloneDeepWithHook(editedNode.rawNode, (n: Node) => {
       if (n === editedNode.jsxElement.rawNode) {
+        if (newNodeCallShowFunc && !editedNodeCallShowFunc) {
+          // add the show call
+          const expr = makeJsxElementWithShowCall(
+            editedNodeJsxElementClone,
+            editedNode.jsxElement.nameInId
+          );
+          // add an expression container if the parent is JSXElement or Fragment
+          return editedNode.jsxElement.rawParent &&
+            isJsxElementOrFragment(editedNode.jsxElement.rawParent)
+            ? wrapInJsxExprContainer(expr)
+            : expr;
+        }
         return editedNodeJsxElementClone;
+      }
+
+      if (secondaryNodes.has(n)) {
+        const replacement = secondaryNodes.get(n);
+        // If deleted, an empty fragment instead
+        return replacement || mkJsxFragment([]);
       }
       return undefined;
     });
 
-    return mergeShowFunc(
-      newNode,
-      editedNode,
-      newVersion,
-      editedVersion,
-      editNodeClone
-    );
+    if (editedNodeCallShowFunc && !newNodeCallShowFunc) {
+      traverse(editedNodeClone, {
+        noScope: true,
+        CallExpression: function(path) {
+          if (
+            isCallIgnoreArguments(
+              path.node,
+              helperObject,
+              `show${editedNode.jsxElement.nameInId}`
+            )
+          ) {
+            path.replaceWithSourceString("true");
+          }
+        }
+      });
+    }
+    return editedNodeClone;
   }
   // check if the node has been deleted.
   if (baseNode) {
@@ -1131,6 +1121,38 @@ export type ComponentInfoForMerge = {
   newNameInIdToUuid: Map<string, string>;
 };
 
+export class WarningInfo {
+  private _rawWarnings: string[] = [];
+  private _secondaryNodes: PlasmicTagOrComponent[] = [];
+
+  addRawWarn(msg: string) {
+    this._rawWarnings.push(msg);
+  }
+
+  setSecondaryNodes(nodes: PlasmicTagOrComponent[]) {
+    this._secondaryNodes.push(...nodes);
+  }
+
+  rawWarnings() {
+    return this._rawWarnings;
+  }
+  secondaryNodes() {
+    return this._secondaryNodes;
+  }
+
+  maybeWarn() {
+    this._rawWarnings.forEach(m => console.warn(m));
+    if (this._secondaryNodes.length > 0) {
+      const nodes = this._secondaryNodes
+        .map(n => n.jsxElement.nameInId)
+        .join("\n\t");
+      console.warn(
+        `Plasmic perform limited merge to the following nodes since they are secondary nodes.\n${nodes}`
+      );
+    }
+  }
+}
+
 export const mergeFiles = async (
   componentByUuid: Map<string, ComponentInfoForMerge>,
   projectId: string,
@@ -1142,7 +1164,9 @@ export const mergeFiles = async (
     newSrc: string,
     newNameInIdToUuid: Map<string, string>
   ) => void,
-  appendJsxTreeOnMissingBase?: boolean
+  appendJsxTreeOnMissingBase?: boolean,
+  // Output parameter, which is used to collect warning information
+  warningInfos?: Map<string, WarningInfo>
 ) => {
   const updateableByComponentUuid = new Map<
     string,
@@ -1162,6 +1186,8 @@ export const mergeFiles = async (
   const mergedFiles = new Map<string, string>();
 
   for (const [componentUuid, parsedEdited] of updateableByComponentUuid) {
+    const warnInfo = new WarningInfo();
+    warningInfos?.set(componentUuid, warnInfo);
     let baseMetadata: ComponentSkeletonModel | undefined = undefined;
     try {
       const projectSyncData = await projectSyncDataProvider(
@@ -1172,7 +1198,7 @@ export const mergeFiles = async (
         c => c.uuid === componentUuid
       );
     } catch {
-      console.log(
+      warnInfo.addRawWarn(
         `missing merging base for ${projectId} at revision ${parsedEdited.revision}`
       );
     }
@@ -1224,6 +1250,9 @@ export const mergeFiles = async (
       // edited version share the same nameInIdtoUuid mapping
       baseMetadata.nameInIdToUuid
     );
+    warnInfo.setSecondaryNodes([
+      ...editedCodeVersion.secondaryTagsOrComponents.values()
+    ]);
 
     const newJsx = renameAndSerializePlasmicASTNode(newCodeVersion.root, {
       newVersion: newCodeVersion,

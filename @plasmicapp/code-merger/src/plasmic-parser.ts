@@ -68,7 +68,8 @@ const tryGetNodeIdFromAttr = (attr: JSXAttribute | JSXSpreadAttribute) => {
 
 const parseJsxElement = (
   n: JSXElement,
-  plasmicId: string
+  plasmicId: string,
+  parent: Node | undefined
 ): PlasmicJsxElement => {
   const attrs: Array<
     [string, PlasmicASTNode | null] | PlasmicASTNode
@@ -76,10 +77,13 @@ const parseJsxElement = (
     if (attr.type === "JSXAttribute") {
       const name = getAttrName(attr);
       assert(L.isString(name));
-      return [name, attr.value === null ? null : parseNode(attr.value)];
+      return [
+        name,
+        attr.value === null ? null : parseNode(attr.value, attr, false)
+      ];
     } else {
       // spreador
-      return parseNode(attr.argument);
+      return parseNode(attr.argument, attr, false);
     }
   });
   const children = parseChildren(n);
@@ -87,12 +91,14 @@ const parseJsxElement = (
     attrs,
     children,
     rawNode: n,
+    rawParent: parent,
     nameInId: plasmicId
   };
 };
 
 const tryParseAsPlasmicJsxElement = (
-  jsx: JSXElement
+  jsx: JSXElement,
+  parent: Node | undefined
 ): PlasmicJsxElement | undefined => {
   let nodeId: string | undefined = undefined;
   for (const attr of jsx.openingElement.attributes) {
@@ -105,12 +111,11 @@ const tryParseAsPlasmicJsxElement = (
       nodeId = curNodeId;
     }
   }
-  return nodeId ? parseJsxElement(jsx, nodeId) : undefined;
+  return nodeId ? parseJsxElement(jsx, nodeId, parent) : undefined;
 };
 
-export const isInHtmlContext = <T extends Node>(path: NodePath<T>) => {
-  const parent = path.parent;
-  return parent.type === "JSXElement" || parent.type === "JSXFragment";
+export const isJsxElementOrFragment = (n: Node) => {
+  return n.type === "JSXElement" || n.type === "JSXFragment";
 };
 
 const parseChildren = (n: JSXFragment | JSXElement): PlasmicASTNode[] => {
@@ -125,7 +130,7 @@ const parseChildren = (n: JSXFragment | JSXElement): PlasmicASTNode[] => {
         }
       }
     } else {
-      nodesList.push(parseNode(child));
+      nodesList.push(parseNode(child, n, true));
     }
   });
   return nodesList;
@@ -137,28 +142,35 @@ const parseNode = (
     | JSXEmptyExpression
     | JSXExpressionContainer
     | JSXSpreadChild
-    | JSXFragment
+    | JSXFragment,
+  parent: Node | undefined,
+  forceFragmentAsOneNode: boolean
 ): PlasmicASTNode => {
   let node: PlasmicASTNode | null = null;
   if (n.type === "JSXExpressionContainer") {
     // Always unwrap the expression container
-    node = parseNode(n.expression);
+    node = parseNode(n.expression, n, forceFragmentAsOneNode);
   } else if (n.type === "JSXSpreadChild") {
-    node = parseAsOneNode(n.expression);
+    node = parseAsOneNode(n.expression, n);
   } else if (n.type === "JSXFragment") {
-    node = {
-      type: "jsx-fragment",
-      children: parseChildren(n),
-      rawNode: n
-    };
+    node = forceFragmentAsOneNode
+      ? parseAsOneNode(n, parent)
+      : {
+          type: "jsx-fragment",
+          children: parseChildren(n),
+          rawNode: n
+        };
   } else {
-    node = parseAsOneNode(n);
+    node = parseAsOneNode(n, parent);
   }
   node.rawNode = n;
   return node;
 };
 
-const parseAsOneNode = (n: Expression | JSXEmptyExpression): PlasmicASTNode => {
+const parseAsOneNode = (
+  n: Expression | JSXEmptyExpression | JSXFragment,
+  parent: Node | undefined
+): PlasmicASTNode => {
   if (n.type === "JSXEmptyExpression") {
     return {
       type: "opaque",
@@ -186,16 +198,21 @@ const parseAsOneNode = (n: Expression | JSXEmptyExpression): PlasmicASTNode => {
 
   // Need to handle this case specially since traverse doesn't visit n itself.
   if (n.type === "JSXElement") {
-    const jsxElement = tryParseAsPlasmicJsxElement(n);
+    const jsxElement = tryParseAsPlasmicJsxElement(n, parent);
     if (jsxElement) {
-      return { type: "tag-or-component", jsxElement, rawNode: n, sound: true };
+      return {
+        type: "tag-or-component",
+        jsxElement,
+        rawNode: n,
+        secondaryNodes: []
+      };
     }
   }
   const jsxElements: PlasmicJsxElement[] = [];
   traverse(n, {
     noScope: true,
     JSXElement: function(path) {
-      const jsxElement = tryParseAsPlasmicJsxElement(path.node);
+      const jsxElement = tryParseAsPlasmicJsxElement(path.node, path.parent);
       if (jsxElement) {
         jsxElements.push(jsxElement);
         path.skip();
@@ -207,7 +224,15 @@ const parseAsOneNode = (n: Expression | JSXEmptyExpression): PlasmicASTNode => {
         type: "tag-or-component",
         jsxElement: jsxElements[0],
         rawNode: n,
-        sound: jsxElements.length === 1
+        secondaryNodes: jsxElements.slice(1).map(elt => ({
+          type: "tag-or-component",
+          jsxElement: elt,
+          rawNode:
+            elt.rawParent && elt.rawParent.type === "LogicalExpression"
+              ? elt.rawParent
+              : elt.rawNode,
+          secondaryNodes: []
+        }))
       }
     : {
         type: "opaque",
@@ -222,14 +247,15 @@ export const parseFromJsxExpression = (input: string) => {
     strictMode: false,
     plugins: ["jsx", "typescript"]
   });
-  return parseNode(ast);
+  return parseNode(ast, undefined, true);
 };
 
 // Given an AST, collect all JSX nodes into r, which index the nodes by
 // nameInId.
 const findNodes = (
   node: PlasmicASTNode | null,
-  tags: Map<string, PlasmicTagOrComponent>
+  tags: Map<string, PlasmicTagOrComponent>,
+  secondaryTags: Map<string, PlasmicTagOrComponent>
 ) => {
   if (!node) {
     return;
@@ -238,16 +264,20 @@ const findNodes = (
     tags.set(node.jsxElement.nameInId, node);
     node.jsxElement.attrs.forEach(attr => {
       if (!L.isArray(attr)) {
-        findNodes(attr, tags);
+        findNodes(attr, tags, secondaryTags);
       } else {
-        findNodes(attr[1], tags);
+        findNodes(attr[1], tags, secondaryTags);
       }
     });
     node.jsxElement.children.forEach(c => {
-      findNodes(c, tags);
+      findNodes(c, tags, secondaryTags);
     });
+    node.secondaryNodes.forEach(c => findNodes(c, tags, secondaryTags));
+    node.secondaryNodes.forEach(c =>
+      secondaryTags.set(c.jsxElement.nameInId, c)
+    );
   } else if (node.type === "jsx-fragment") {
-    node.children.forEach(child => findNodes(child, tags));
+    node.children.forEach(child => findNodes(child, tags, secondaryTags));
   }
 };
 
@@ -320,7 +350,9 @@ export const isCallWithoutArguments = (
 
 export class CodeVersion {
   // keyed by nameInId, which could be uuid, or name
-  tagOrComponents = new Map<string, PlasmicTagOrComponent>();
+  allTagOrComponents = new Map<string, PlasmicTagOrComponent>();
+  // keyed by nameInId, which could be uuid, or name
+  secondaryTagsOrComponents = new Map<string, PlasmicTagOrComponent>();
   // keyed by uuid
   tagOrComponentsByUuid = new Map<string, PlasmicTagOrComponent>();
   uuidToNameInId = new Map<string, string>();
@@ -338,10 +370,14 @@ export class CodeVersion {
     if (L.isString(rootExpr)) {
       this.root = parseFromJsxExpression(rootExpr);
     } else {
-      this.root = parseNode(rootExpr);
+      this.root = parseNode(rootExpr, undefined, true);
     }
-    findNodes(this.root, this.tagOrComponents);
-    this.tagOrComponents.forEach((n, nameInId) =>
+    findNodes(
+      this.root,
+      this.allTagOrComponents,
+      this.secondaryTagsOrComponents
+    );
+    this.allTagOrComponents.forEach((n, nameInId) =>
       this.tagOrComponentsByUuid.set(
         ensure(this.nameInIdToUuid.get(nameInId)),
         n
@@ -419,10 +455,6 @@ export class CodeVersion {
     return new CodeVersion(renamedJsx, revisedNameInIdToUuid);
   }
 
-  getUuid(nameInId: string) {
-    return ensure(this.nameInIdToUuid.get(nameInId));
-  }
-
   findMatchingNameInId(id: { nameInId: string; uuid: string }) {
     const uuid = this.nameInIdToUuid.get(id.nameInId);
     if (uuid) {
@@ -448,19 +480,8 @@ export class CodeVersion {
 
   // Find a tagOrComponent node whose nameInId matches, or uuid matches.
   // nameInId has higher priority.
-  findNode(id: { nameInId: string; uuid: string }) {
-    const node = this.tagOrComponents.get(id.nameInId);
-    if (node) {
-      return node;
-    }
-    return this.tagOrComponentsByUuid.get(id.uuid);
-  }
-
-  getId(node: PlasmicTagOrComponent) {
-    return {
-      nameInId: node.jsxElement.nameInId,
-      uuid: ensure(this.nameInIdToUuid.get(node.jsxElement.nameInId))
-    };
+  findTagOrComponent(nameInId: string) {
+    return this.allTagOrComponents.get(nameInId);
   }
 
   tryGetSlotArgUuid(argName: string) {

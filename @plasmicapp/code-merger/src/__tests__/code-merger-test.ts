@@ -4,7 +4,8 @@ import {
   ProjectSyncMetadataModel,
   ComponentSkeletonModel,
   mergeFiles,
-  ComponentInfoForMerge
+  ComponentInfoForMerge,
+  WarningInfo
 } from "../index";
 import { formatted, code } from "../utils";
 import { ensure } from "../common";
@@ -1376,8 +1377,6 @@ describe("Test CodeMerger", function() {
         ["Img2", "3456"]
       ])
     );
-    // When the result is only one node, we follow edited version to add the
-    // fragment or not.
     expect(
       code(
         renameAndSerializePlasmicASTNode(newV.root, {
@@ -1396,6 +1395,116 @@ describe("Test CodeMerger", function() {
        </div>`
       )
     );
+  });
+
+  it("parse, preserve and merge secondary nodes when primary node remains", function() {
+    const nameInIdToUuid = new Map([
+      ["Root", "Root"],
+      ["Btn", "2345"],
+      ["Img", "3456"],
+      ["Link", "4567"]
+    ]);
+    const base = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+        <Button className={rh.clsBtn()} {...rh.propsBtn()}/>
+        {rh.showImg() && <img className={rh.clsImg()}></img>}
+        {rh.showLink() && <a className={rh.clsLink()}></a>}
+       </div>`,
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+      {(() => {
+        return (<>
+          <Button className={rh.clsBtn()} {...rh.propsBtn()}/>
+          {rh.showImg() && <img className={rh.clsImg() + " myClass"} tabIndex={1}></img>}
+          {rh.showLink() && <a className={rh.clsLink()}></a>}
+          </>);
+      })()}
+     </div>`,
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+      <Button className={rh.clsBtn()} {...rh.propsBtn()}/>
+      {rh.showImg2() && <img className={rh.clsImg2()} {...rh.propsImg2()}></img>}
+      <a className={rh.clsLink2()}></a>
+     </div>`,
+      new Map([
+        ["Root", "Root"],
+        ["Btn", "2345"],
+        ["Img2", "3456"],
+        ["Link2", "4567"]
+      ])
+    );
+    expect(
+      code(
+        renameAndSerializePlasmicASTNode(newV.root, {
+          newVersion: newV,
+          editedVersion: edited,
+          baseVersion: base
+        })
+      )
+    ).toEqual(
+      formatted(
+        `<div className={rh.clsRoot()}>
+        {(() => {
+          return (<>
+            <Button className={rh.clsBtn()} {...rh.propsBtn()}/>
+            {rh.showImg2() && <img className={rh.clsImg2() + " myClass"} {...rh.propsImg2()} tabIndex={1}></img>}
+            {true && <a className={rh.clsLink2()}></a>}
+            </>);
+        })()}
+       </div>`
+      )
+    );
+  });
+
+  it("parse but delete secondary nodes when primary node was deleted", function() {
+    const nameInIdToUuid = new Map([
+      ["Root", "Root"],
+      ["Btn", "2345"],
+      ["Img", "3456"]
+    ]);
+    const base = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+        <Button className={rh.clsBtn()} {...rh.propsBtn()}/>
+        <img className={rh.clsImg()}></img>
+       </div>`,
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+      {(() => {
+        return (<>
+          <Button className={rh.clsBtn()} {...rh.propsBtn()}/>
+          <img className={rh.clsImg() + " myClass"} tabIndex={1}></img>
+          </>);
+      })()}
+     </div>`,
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+        {rh.showImg2() && <img className={rh.clsImg2()} {...rh.propsImg2()}></img>}
+       </div>`,
+      new Map([
+        ["Root", "Root"],
+        ["Btn", "2345"],
+        ["Img2", "3456"]
+      ])
+    );
+    // When the result is only one node, we follow edited version to add the
+    // fragment or not.
+    expect(
+      code(
+        renameAndSerializePlasmicASTNode(newV.root, {
+          newVersion: newV,
+          editedVersion: edited,
+          baseVersion: base
+        })
+      )
+    ).toEqual(formatted(`<div className={rh.clsRoot()}></div>`));
   });
 
   it("projectSyncMetadataModel", function() {
@@ -1632,12 +1741,14 @@ describe("Test CodeMerger", function() {
       newNameInIdToUuid: new Map([["NewRoot", "Root"]])
     });
 
+    const warningInfos = new Map<string, WarningInfo>();
     const merged = await mergeFiles(
       componentByUuid,
       "pid",
       () => Promise.reject("no metadata"),
       undefined,
-      true
+      true,
+      warningInfos
     );
     expect(merged?.size).toEqual(1);
     expect(merged?.get("comp1")).toEqual(
@@ -1659,6 +1770,104 @@ describe("Test CodeMerger", function() {
   return (<div className={rh.clsRoot()}>World</div>;);\`
       `)
     );
+    expect(warningInfos.size).toBe(1);
+    expect(warningInfos.get("comp1")?.rawWarnings().length).toBe(1);
+  });
+
+  it("mergeFiles should generate warning for secondary nodes", async function() {
+    const componentByUuid = new Map<string, ComponentInfoForMerge>();
+    componentByUuid.set("comp1", {
+      // edited version of the code, i.e. the entire file.
+      editedFile: `
+      import React, { ReactNode } from "react";
+      import { hasVariant, DefaultFlexStack, FlexStack } from "@plasmicapp/react-web";
+
+      function Comp1() {
+        const rh = new PlasmicTreeRow__RenderHelper(variants, args, props.className);
+
+        // plasmic-managed-jsx/2
+        return (<div className={rh.clsRoot()} onClick={handleClick}>
+          <>
+            <img className={rh.clsImg1()} />
+            <img className={rh.clsImg2()} />
+          </>
+        </div>);
+      }`,
+      newFile: `
+      import { hasVariant, DefaultFlexStack, FlexStack } from "@plasmicapp/react-web";
+
+      function Comp1() {
+        const rh = new PlasmicTreeRow__RenderHelper(variants, args, props.className);
+
+        // plasmic-managed-jsx/3
+        return (<div className={rh.clsRoot()}>
+          <img className={rh.clsImg1()} {...rh.propsImg1()}/>
+          <img className={rh.clsImg2()} {...rh.propsImg2()}/>
+        </div>);
+      }`,
+      // map for newCode
+      newNameInIdToUuid: new Map([
+        ["Root", "1"],
+        ["Img1", "2"],
+        ["Img2", "3"]
+      ])
+    });
+
+    const baseInfo = new ProjectSyncMetadataModel([
+      new ComponentSkeletonModel(
+        "comp1",
+        new Map([
+          ["Root", "1"],
+          ["Img1", "2"],
+          ["Img2", "3"]
+        ]),
+        `
+        import React, { ReactNode } from "react";
+      import { hasVariant, DefaultFlexStack, FlexStack } from "@plasmicapp/react-web";
+
+      function Comp1() {
+        const rh = new PlasmicTreeRow__RenderHelper(variants, args, props.className);
+
+        // plasmic-managed-jsx/2
+        return (<div className={rh.clsRoot()}>
+            <img className={rh.clsImg1()} />
+            <img className={rh.clsImg2()} />
+          </div>);
+      }`
+      )
+    ]);
+
+    const warningInfos = new Map<string, WarningInfo>();
+    const merged = await mergeFiles(
+      componentByUuid,
+      "pid",
+      () => Promise.resolve(baseInfo),
+      undefined,
+      true,
+      warningInfos
+    );
+    expect(merged?.size).toEqual(1);
+    expect(merged?.get("comp1")).toEqual(
+      formatted(`
+      import React, { ReactNode } from "react";
+      import { hasVariant, DefaultFlexStack, FlexStack } from "@plasmicapp/react-web";
+
+      function Comp1() {
+        const rh = new PlasmicTreeRow__RenderHelper(variants, args, props.className);
+
+        // plasmic-managed-jsx/3
+        return (<div className={rh.clsRoot()} onClick={handleClick}>
+          <>
+            <img className={rh.clsImg1()} {...rh.propsImg1()} />
+            <img className={rh.clsImg2()} {...rh.propsImg2()} />
+          </>
+        </div>);
+      }`)
+    );
+    expect(warningInfos.size).toBe(1);
+    expect(
+      warningInfos.get("comp1")?.secondaryNodes()[0]?.jsxElement.nameInId
+    ).toEqual("Img2");
   });
 
   it("mergeFiles should work for real case", async function() {
