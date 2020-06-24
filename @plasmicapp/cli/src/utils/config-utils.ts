@@ -240,15 +240,15 @@ export function getContext(args: CommonArgs): PlasmicContext {
   const auth = readAuth(authFile);
   if (auth.host.startsWith("https://studio.plasmic.app")) {
     // Production usage of cli
+    Sentry.init({
+      dsn:
+        "https://3ed4eb43d28646e381bf3c50cff24bd6@o328029.ingest.sentry.io/5285892"
+    });
     Sentry.configureScope(scope => {
       scope.setUser({ email: auth.user });
       scope.setExtra("cliVersion", getCliVersion());
       scope.setExtra("args", JSON.stringify(args));
       scope.setExtra("host", auth.host);
-    });
-    Sentry.init({
-      dsn:
-        "https://3ed4eb43d28646e381bf3c50cff24bd6@o328029.ingest.sentry.io/5285892"
     });
   }
 
