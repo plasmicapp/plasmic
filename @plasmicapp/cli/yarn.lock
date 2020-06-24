@@ -524,10 +524,10 @@
     "@nodelib/fs.scandir" "2.1.3"
     fastq "^1.6.0"
 
-"@plasmicapp/code-merger@^0.0.18":
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/code-merger/-/code-merger-0.0.18.tgz#ba9e162ea6edaa02e22339561e938c9bc22380d0"
-  integrity sha512-docrDJAdsvVMdQd9wZ+ThBOH5w7Vrd68Edx94V15BgZiM8VJcrRw6B9qDY0qsVpK+uX6QiflBeqFylmgMn8XPA==
+"@plasmicapp/code-merger@^0.0.19":
+  version "0.0.19"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/code-merger/-/code-merger-0.0.19.tgz#dcb5ea53b99e24b045222466872f2ec871db3e0a"
+  integrity sha512-Y8ip2Y8s/QQzgrUzub2pyyfgxBPsO0L9s64zx7jZUWMwLsGbfOtCPLI+6Bo07aMG3MgdmEPWY0Dr/PG76QSdsQ==
   dependencies:
     "@babel/core" "^7.9.6"
     "@babel/generator" "^7.9.6"
