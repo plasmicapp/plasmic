@@ -97,17 +97,20 @@ const mergedTag = (
   editedNode: PlasmicTagOrComponent,
   baseNode: PlasmicTagOrComponent
 ) => {
-  const baseTag = baseNode.jsxElement.rawNode.openingElement.name;
   const editedTag = editedNode.jsxElement.rawNode.openingElement.name;
   const newTag = newNode.jsxElement.rawNode.openingElement.name;
-  const baseTagCode = code(baseTag);
-  const editedTagCode = code(editedTag);
+  const baseTagCode = tagName(baseNode.jsxElement.rawNode);
+  const editedTagCode = tagName(editedNode.jsxElement.rawNode);
   if (baseTagCode === editedTagCode) {
     return newTag;
   }
-  // User edited the tag. Always use the edited version, even when it conflict
-  // with the new version.
-  return editedTag;
+  const newTagCode = tagName(newNode.jsxElement.rawNode);
+  // User edited the tag.
+  if (baseTagCode === newTagCode || editedTagCode === newTagCode) {
+    return editedTag;
+  }
+  // Generate a bad tag identifier for user to resolve conflicts
+  return babel.types.jsxIdentifier(`${editedTagCode}___${newTagCode}`);
 };
 
 const wrapAsJsxAttrValue = (
@@ -438,7 +441,10 @@ const findMatch = (
       if (ni.type === "child-str-call") {
         return { type: "perfect", index: i };
       }
-      if (matchingTypeAt === -1) {
+      if (
+        matchingTypeAt === -1 &&
+        (ni.type === "text" || ni.type === "string-lit")
+      ) {
         matchingTypeAt = i;
       }
     }
@@ -451,7 +457,7 @@ const findMatch = (
       ) {
         return { type: "perfect", index: i };
       }
-      if (matchingTypeAt === -1) {
+      if (matchingTypeAt === -1 && ni.type === "tag-or-component") {
         matchingTypeAt = i;
       }
     }
@@ -505,7 +511,11 @@ const mergeNodes = (
   });
 
   editedNodes.forEach((editedChild, i) => {
-    if (editedChild.type === "text" || editedChild.type === "string-lit") {
+    if (
+      editedChild.type === "text" ||
+      editedChild.type === "string-lit" ||
+      editedChild.type === "child-str-call"
+    ) {
       const matchInNewVersion = findMatch(
         merged,
         nextInsertStartAt,
@@ -526,6 +536,11 @@ const mergeNodes = (
     } else if (editedChild.type === "opaque") {
       insertEditedNodeIntoNew(editedChild, editedNodes[i - 1]);
     }
+    // We intentially don't preserve PlasmicTagOrComponent nodes that are moved
+    // from other places here (note that if the nodes were here before, then
+    // merged should already contain that node). The reason is that it is easy
+    // to do so in Plasmic, and that it enforces the consistency between Plasmic
+    // studio and code.
   });
 
   return withoutNils(
@@ -533,6 +548,7 @@ const mergeNodes = (
       if (c.type === "opaque") {
         return c.rawNode as JsxChildType;
       }
+      // Note that, if c is PlasmicTagOrComponent, it must come from newNodes.
       const n = serializeNonOpaquePlasmicASTNode(c, codeVersions);
       if (!n) {
         return undefined;
