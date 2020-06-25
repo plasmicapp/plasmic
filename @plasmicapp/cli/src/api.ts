@@ -98,7 +98,6 @@ export class PlasmicApi {
     existingCompScheme: Array<[string, "blackbox" | "direct"]>,
     componentIdOrNames: readonly string[] | undefined
   ) {
-    console.log("SYNC", { componentIdOrNames });
     const result = await this.post(
       `${this.auth.host}/api/v1/projects/${projectId}/code/components`,
       {

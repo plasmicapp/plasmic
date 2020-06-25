@@ -335,6 +335,7 @@ function syncStyleConfig(
       context.config.defaultPlasmicDir,
       response.defaultStyleCssFileName
     );
+  context.config.style.defaultStyleCssFilePath = expectedPath;
   writeFileContent(context, expectedPath, response.defaultStyleCssRules, {
     force: true
   });
