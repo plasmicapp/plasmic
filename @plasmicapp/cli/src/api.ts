@@ -176,6 +176,7 @@ export class PlasmicApi {
         if (rethrowAppError) {
           throw new AppServerError(message);
         }
+        console.error(message);
         process.exit(1);
       } else {
         throw e;
