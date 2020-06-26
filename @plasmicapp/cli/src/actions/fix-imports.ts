@@ -1,4 +1,3 @@
-import path from "path";
 import { CommonArgs } from "..";
 import { getContext, updateConfig } from "../utils/config-utils";
 import { fixAllImportStatements } from "../utils/code-utils";

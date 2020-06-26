@@ -15,7 +15,7 @@
 import L from "lodash";
 import { getCliVersion } from "../utils/npm-utils";
 import fs from "fs";
-import path from "path";
+import path from "upath";
 import semver from "semver";
 import { writeFileContentRaw } from "../utils/file-utils";
 import { migrateInit } from "./0.1.27-migrateInit";

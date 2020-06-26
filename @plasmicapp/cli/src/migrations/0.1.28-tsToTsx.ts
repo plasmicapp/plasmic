@@ -1,7 +1,7 @@
 import { PlasmicConfig } from "../utils/config-utils";
 
 import fs from "fs";
-import path from "path";
+import path from "upath";
 import glob from "glob";
 import L from "lodash";
 import { MigrateContext } from "./migrations";

@@ -1,6 +1,5 @@
-import path from "path";
+import path from "upath";
 import L, { merge } from "lodash";
-import fs, { writeFile } from "fs";
 import { CommonArgs } from "..";
 import {
   getContext,

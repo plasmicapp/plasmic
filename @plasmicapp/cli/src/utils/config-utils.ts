@@ -1,5 +1,5 @@
 import fs from "fs";
-import path from "path";
+import path from "upath";
 import os from "os";
 import L from "lodash";
 import { writeFileContentRaw, findFile } from "./file-utils";

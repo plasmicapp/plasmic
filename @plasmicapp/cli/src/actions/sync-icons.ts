@@ -1,5 +1,5 @@
 import L from "lodash";
-import path from "path";
+import path from "upath";
 import {
   PlasmicConfig,
   PlasmicContext,

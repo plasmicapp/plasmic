@@ -1,6 +1,6 @@
 import fs from "fs";
 import inquirer from "inquirer";
-import path from "path";
+import path from "upath";
 import os from "os";
 import { CommonArgs } from "..";
 import {
