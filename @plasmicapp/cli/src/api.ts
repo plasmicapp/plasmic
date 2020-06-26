@@ -111,6 +111,20 @@ export class PlasmicApi {
     return result.data as ProjectBundle;
   }
 
+  async uploadBundle(
+    projectId: string,
+    bundleName: string,
+    bundleJs: string,
+    css: string[],
+    metaJson: string
+  ) {
+    const result = await this.post(
+      `${this.auth.host}/api/v1/projects/${projectId}/jsbundle/upload`,
+      { projectId, bundleName, bundleJs, css, metaJson }
+    );
+    return result.data as StyleTokensMap;
+  }
+
   async projectStyleTokens(projectId: string) {
     const result = await this.post(
       `${this.auth.host}/api/v1/projects/${projectId}/code/tokens`

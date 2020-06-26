@@ -7,6 +7,7 @@ import { WatchArgs, watchProjects } from "./actions/watch";
 import { SyncStyleTokensArgs, syncStyleTokens } from "./actions/sync-styles";
 import { DEFAULT_CONFIG } from "./utils/config-utils";
 import { syncIcons, SyncIconsArgs } from "./actions/sync-icons";
+import { UploadBundleArgs, uploadJsBundle } from "./actions/upload-bundle";
 
 if (process.env.DEBUG_CHDIR) {
   process.chdir(process.env.DEBUG_CHDIR);
@@ -114,6 +115,36 @@ yargs
     "Fixes import paths after you've moved around Plasmic blackbox files",
     yags => 0,
     argv => fixImports(argv)
+  )
+  .command<UploadBundleArgs>(
+    "upload-bundle",
+    false,
+    yargs =>
+      yargs
+        .option("project", {
+          alias: "p",
+          describe: "ID of Plasmic project to upload the bundle to.",
+          type: "string"
+        })
+        .option("bundleName", {
+          describe: "Name of the bundle",
+          type: "string"
+        })
+        .option("bundleJsFile", {
+          describe: "Path of the bundled Javascript file in AMD format",
+          type: "string"
+        })
+        .option("cssFiles", {
+          describe: "Path of the bundled css files to load",
+          type: "array",
+          default: []
+        })
+        .option("metaJsonFile", {
+          describe:
+            "Path of the meta data file (in JSON format) describing the component",
+          type: "string"
+        }),
+    argv => uploadJsBundle(argv)
   )
   .demandCommand()
   .strict()
