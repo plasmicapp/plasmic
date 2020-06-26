@@ -137,7 +137,12 @@ export function findFile(
   if (found) {
     return path.join(dir, found);
   }
-  if (dir === "/" || !opts.traverseParents) {
+  if (!opts.traverseParents) {
+    return undefined;
+  }
+  const parent = path.dirname(dir);
+  if (parent === dir) {
+    // We've hit the root dir already
     return undefined;
   }
   return findFile(path.dirname(dir), pred, opts);
