@@ -86,29 +86,55 @@ export async function initPlasmic(opts: InitArgs) {
     short: "ts"
   };
 
+  const blackboxOpt = {
+    name:
+      "Blackbox Library: gives you a lib of presentational components that take prop overrides.",
+    value: "blackbox",
+    short: "blackbox"
+  };
+
+  const directOpt = {
+    name:
+      "Direct Edit: gives you components whose JSX trees you can directly edit to attach props."
+  };
+
   const answers = await inquirer.prompt([
     {
       name: "srcDir",
       message:
-        "What directory should React component files (that you edit) be put into?",
+        "What directory should React component files (that you edit) be put into?\n>",
       default: DEFAULT_CONFIG.srcDir,
       when: () => !opts.srcDir
     },
     {
       name: "plasmicDir",
       message: (ans: any) =>
-        `What directory should Plasmic-managed files be put into (relative to ${ans.srcDir ||
-          DEFAULT_CONFIG.srcDir})?`,
+        `What directory should Plasmic-managed files be put into?
+  (This is relative to ${ans.srcDir || DEFAULT_CONFIG.srcDir})
+>`,
       default: DEFAULT_CONFIG.defaultPlasmicDir,
       when: () => !opts.plasmicDir
     },
     {
       name: "codeLang",
-      message: `What target language should Plasmic generate code in? (${langDetect.explanation})`,
+      message: `What target language should Plasmic generate code in?
+  (${langDetect.explanation})
+>`,
       type: "list",
       choices: () =>
         langDetect.lang === "js" ? [jsOpt, tsOpt] : [tsOpt, jsOpt],
       when: () => !opts.codeLang
+    },
+    {
+      name: "codeScheme",
+      message: `Which codegen scheme to use by default?
+  - We generally recommend Blackbox for new users.
+  - See https://plasmic.app/learn/codegen-schemes for examples.
+  - You can choose schemes for individual components.
+`,
+      type: "list",
+      choices: () => [blackboxOpt, directOpt],
+      when: () => !opts.codeScheme
     }
   ]);
 
@@ -123,12 +149,11 @@ export async function initPlasmic(opts: InitArgs) {
     {
       name: "answer",
       message:
-        "@plasmicapp/react-web is a small runtime required by Plasmic-generated code. Do you want to add it now?" +
-        " (yes/no)",
-      default: "yes"
+        "@plasmicapp/react-web is a small runtime required by Plasmic-generated code.\n  Do you want to add it now?",
+      type: "confirm"
     }
   ]);
-  if (addDep.answer === "yes") {
+  if (addDep.answer) {
     installUpgrade("@plasmicapp/react-web");
   }
 }

@@ -44,8 +44,8 @@ yargs
         })
         .option("code-scheme", {
           describe: "Code generation scheme to use",
-          choices: ["blackbox"],
-          default: DEFAULT_CONFIG.code.scheme
+          choices: ["", "blackbox", "direct"],
+          default: ""
         })
         .option("src-dir", {
           describe:
