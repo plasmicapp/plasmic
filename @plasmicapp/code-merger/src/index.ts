@@ -975,11 +975,11 @@ const tryParseComponentSkeletonFile = (
 };
 
 export type PlasmicImportType =
-  | "renderer"
+  | "render"
   | "css"
   | "component"
   | "globalVariant"
-  | "projectCss"
+  | "projectcss"
   | "defaultcss"
   | "icon"
   | undefined;

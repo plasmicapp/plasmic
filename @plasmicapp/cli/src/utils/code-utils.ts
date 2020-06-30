@@ -21,6 +21,8 @@ import traverse, { Node, NodePath } from "@babel/traverse";
 import generate, { GeneratorOptions } from "@babel/generator";
 import * as babel from "@babel/core";
 import { ImportDeclaration } from "@babel/types";
+import { tryParsePlasmicImportSpec } from "@plasmicapp/code-merger";
+import { code as nodeToCode } from "@plasmicapp/code-merger/dist/utils";
 
 const IMPORT_MARKER = /import\s+([^;]+)\s*;.*\s+plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss|defaultcss|icon))?/g;
 
@@ -92,12 +94,21 @@ export function replaceImports(
   globalVariantConfigsMap: Record<string, GlobalVariantGroupConfig>,
   iconConfigsMap: Record<string, IconConfig>
 ) {
-  return code.replace(IMPORT_MARKER, (sub, body, uuid, type) => {
-    const decl = parseImport(sub);
-    if (!decl) {
-      console.error("Unable to parse import statement", sub);
-      process.exit(1);
+  const file = parser.parse(code, {
+    strictMode: true,
+    sourceType: "module",
+    plugins: ["jsx", "typescript"]
+  });
+  file.program.body.forEach(stmt => {
+    if (stmt.type !== "ImportDeclaration") {
+      return;
     }
+    const spec = tryParsePlasmicImportSpec(stmt);
+    if (!spec) {
+      return;
+    }
+    const type = spec.type;
+    const uuid = spec.id;
     if (type === "component") {
       // instantiation of a mapped or managed component
       const compConfig = compConfigsMap[uuid];
@@ -109,14 +120,13 @@ export function replaceImports(
       const { modulePath, exportName } = compConfig.importSpec;
       if (exportName) {
         // ensure import { ${exportName} as ${compConfig.name} }
-        ensureImportSpecifierWithAlias(decl, exportName, compConfig.name);
+        ensureImportSpecifierWithAlias(stmt, exportName, compConfig.name);
       } else {
         // ensure import ${compConfig.name} from ...
-        ensureImportDefaultSpecifier(decl, compConfig.name);
+        ensureImportDefaultSpecifier(stmt, compConfig.name);
       }
       const realPath = makeImportPath(fromPath, modulePath, true);
-      decl.source = babel.types.stringLiteral(realPath);
-      return toCode(decl);
+      stmt.source.value = realPath;
     } else if (type === "render") {
       // import of the PP blackbox
       const compConfig = compConfigsMap[uuid];
@@ -125,14 +135,12 @@ export function replaceImports(
         compConfig.renderModuleFilePath,
         true
       );
-      decl.source = babel.types.stringLiteral(realPath);
-      return toCode(decl);
+      stmt.source.value = realPath;
     } else if (type === "css") {
       // import of the PP css file
       const compConfig = compConfigsMap[uuid];
       const realPath = makeImportPath(fromPath, compConfig.cssFilePath, false);
-      decl.source = babel.types.stringLiteral(realPath);
-      return toCode(decl);
+      stmt.source.value = realPath;
     } else if (type === "globalVariant") {
       // import of global context
       const variantConfig = globalVariantConfigsMap[uuid];
@@ -141,8 +149,7 @@ export function replaceImports(
         variantConfig.contextFilePath,
         true
       );
-      decl.source = babel.types.stringLiteral(realPath);
-      return toCode(decl);
+      stmt.source.value = realPath;
     } else if (type === "icon") {
       // import of global context
       const iconConfig = iconConfigsMap[uuid];
@@ -151,8 +158,7 @@ export function replaceImports(
         iconConfig.moduleFilePath,
         true
       );
-      decl.source = babel.types.stringLiteral(realPath);
-      return toCode(decl);
+      stmt.source.value = realPath;
     } else if (type === "projectcss") {
       const projectConfig = projectConfigsMap[uuid];
       const realPath = makeImportPath(
@@ -160,21 +166,17 @@ export function replaceImports(
         projectConfig.cssFilePath,
         false
       );
-      decl.source = babel.types.stringLiteral(realPath);
-      return toCode(decl);
+      stmt.source.value = realPath;
     } else if (type === "defaultcss") {
       const realPath = makeImportPath(
         fromPath,
         styleConfig.defaultStyleCssFilePath,
         false
       );
-      decl.source = babel.types.stringLiteral(realPath);
-      return toCode(decl);
-    } else {
-      // Does not match a known import type; just keep the same matched string
-      return sub;
+      stmt.source.value = realPath;
     }
   });
+  return nodeToCode(file, { retainLines: true });
 }
 
 function makeImportPath(fromPath: string, toPath: string, stripExt: boolean) {
