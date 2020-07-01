@@ -246,13 +246,6 @@ function fixComponentImportStatements(
     allGlobalVariantConfigs,
     allIconConfigs
   );
-  fixFileImportStatements(
-    context,
-    compConfig.cssFilePath,
-    allCompConfigs,
-    allGlobalVariantConfigs,
-    allIconConfigs
-  );
   // If ComponentConfig.importPath is still a local file, we best-effort also fix up the import statements there.
   if (isLocalModulePath(compConfig.importSpec.modulePath)) {
     fixFileImportStatements(
