@@ -24,9 +24,7 @@ export async function watchProjects(opts: WatchArgs) {
     process.exit(1);
   }
 
-  await warnLatestReactWeb(context);
-
-  socket.on("connect", () => {
+  socket.on("initServerInfo", () => {
     // upon connection, subscribe to changes for argument projects
     socket.emit("subscribe", { namespace: "projects", projectIds });
   });
