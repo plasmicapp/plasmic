@@ -56,6 +56,17 @@ export function ensureImportSpecifierWithAlias(
   if (existing) {
     existing.imported.name = imported;
   } else {
+    decl.specifiers = decl.specifiers.filter(specifier => {
+      if (
+        specifier.type === "ImportDefaultSpecifier" &&
+        specifier.local.name === alias
+      ) {
+        // If we are importing a default for a name that will collide with our
+        // desired alias, then the default import is wrong and we skip it.
+        return false;
+      }
+      return true;
+    });
     decl.specifiers.push(
       babel.types.importSpecifier(
         babel.types.identifier(alias),
@@ -97,7 +108,15 @@ export function replaceImports(
   const file = parser.parse(code, {
     strictMode: true,
     sourceType: "module",
-    plugins: ["jsx", "typescript"]
+    plugins: [
+      // At a minimum, we need to parse jsx and typescript
+      "jsx",
+      "typescript",
+
+      // There are also various features that people may have... May just
+      // need to add as we encounter them...
+      "classProperties"
+    ]
   });
   file.program.body.forEach(stmt => {
     if (stmt.type !== "ImportDeclaration") {
