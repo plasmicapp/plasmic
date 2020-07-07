@@ -279,7 +279,7 @@ export function PlasmicSlot<T extends keyof JSX.IntrinsicElements = "div">(
 ) {
   const { as, defaultContents, value, ...rest } = props;
 
-  let content = value || defaultContents;
+  let content = value === undefined ? defaultContents : value;
   if (!content || (Array.isArray(content) && content.length === 0)) {
     return null;
   }
