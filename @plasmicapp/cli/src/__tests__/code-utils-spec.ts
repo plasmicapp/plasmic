@@ -730,6 +730,7 @@ function _CodeSandboxDialogContent(props) {
         aBwbYpvCqht4V3F8CJNJX3: {
           projectId: "aBwbYpvCqht4V3F8CJNJX3",
           projectName: "Plasmic Kit",
+          version: "latest",
           cssFilePath: "/tmp/newDir/PP__plasmic_kit.css",
           components: [],
           icons: []
@@ -843,6 +844,7 @@ function _CodeSandboxDialogContent(props) {
         aBwbYpvCqht4V3F8CJNJX3: {
           projectId: "aBwbYpvCqht4V3F8CJNJX3",
           projectName: "Plasmic Kit",
+          version: "latest",
           cssFilePath: "/tmp/newDir/PP__plasmic_kit.css",
           components: [],
           icons: []

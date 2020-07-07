@@ -1,11 +1,13 @@
 import path from "upath";
 import L, { merge } from "lodash";
 import { CommonArgs } from "..";
+import { logger } from "../deps";
 import {
   getContext,
   updateConfig,
   PlasmicContext,
-  ProjectConfig
+  ProjectConfig,
+  CONFIG_FILE_NAME
 } from "../utils/config-utils";
 import {
   buildBaseNameToFiles,
@@ -51,6 +53,9 @@ export interface SyncArgs extends CommonArgs {
   forceOverwrite: boolean;
   newComponentScheme?: "blackbox" | "direct";
   appendJsxOnMissingBase?: boolean;
+  recursive?: boolean;
+  includeDependencies?: boolean;
+  nonInteractive?: boolean;
 }
 
 function maybeConvertTsxToJsx(fileName: string, content: string) {
@@ -177,7 +182,9 @@ export async function syncProjects(opts: SyncArgs) {
   // Now we know config.components are all correct, so we can go ahead and fix up all the import statements
   fixAllImportStatements(context);
 
-  await warnLatestReactWeb(context);
+  if (!opts.nonInteractive) {
+    await warnLatestReactWeb(context);
+  }
 }
 
 async function syncProjectComponents(
@@ -201,8 +208,8 @@ async function syncProjectComponents(
       scheme,
       nameInIdToUuid
     } = bundle;
-    console.log(
-      `Syncing component ${componentName} [${project.projectId}/${id}]`
+    logger.info(
+      `Syncing component ${componentName} [${project.projectId}/${id} ${project.version}]`
     );
     let compConfig = allCompConfigs[id];
     const isNew = !compConfig;
@@ -235,10 +242,22 @@ async function syncProjectComponents(
       });
     } else {
       // This is an existing component.
-      const editedFile = readFileContent(
-        context,
-        compConfig.importSpec.modulePath
-      );
+
+      // Update config on new name from server
+      if (componentName !== compConfig.name) {
+        compConfig.name = componentName;
+      }
+
+      // Read in the existing file
+      let editedFile: string;
+      try {
+        editedFile = readFileContent(context, compConfig.importSpec.modulePath);
+      } catch (e) {
+        logger.warn(
+          `${compConfig.importSpec.modulePath} is missing. If you deleted this component, remember to remove the component from ${CONFIG_FILE_NAME}`
+        );
+        throw e;
+      }
       if (scheme === "direct") {
         // merge code!
         const componentByUuid = new Map<string, ComponentInfoForMerge>();
@@ -397,6 +416,7 @@ async function syncProjectConfig(
     project = {
       projectId: pc.projectId,
       projectName: pc.projectName,
+      version: "latest",
       cssFilePath: defaultCssFilePath,
       components: [],
       icons: []

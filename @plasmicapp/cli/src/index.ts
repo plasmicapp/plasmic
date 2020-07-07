@@ -190,7 +190,25 @@ function configureSyncArgs(yags: yargs.Argv) {
       choices: ["blackbox", "direct"],
       describe:
         "Sync the new components using this code scheme rather than the default code scheme."
+    })
+    .option("non-interactive", {
+      type: "boolean",
+      describe: "Set to hide any interactive prompts (i.e. for testing / CI)",
+      default: false
     });
+  /**
+    // Introduce these when we're out of internal testing
+    .option("recursive", {
+      type: "boolean",
+      describe: "TBD better description",
+      default: false
+    })
+    .option("include-dependencies", {
+      type: "boolean",
+      describe: "TBD better description",
+      default: false
+    })
+    */
 }
 
 export interface CommonArgs {

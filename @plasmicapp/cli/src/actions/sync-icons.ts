@@ -39,6 +39,7 @@ export async function syncIcons(opts: SyncIconsArgs) {
       project = {
         projectId,
         projectName: "",
+        version: "latest",
         cssFilePath: "",
         components: [],
         icons: []

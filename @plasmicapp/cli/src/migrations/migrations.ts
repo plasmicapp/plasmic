@@ -21,6 +21,7 @@ import { writeFileContentRaw } from "../utils/file-utils";
 import { migrateInit } from "./0.1.27-migrateInit";
 import { tsToTsx } from "./0.1.28-tsToTsx";
 import { ensureProjectIcons } from "./0.1.31-ensureProjectIcons";
+import { ensureVersion } from "./0.1.42-ensureVersion";
 
 export interface MigrateContext {
   absoluteSrcDir: string;
@@ -31,7 +32,8 @@ type MigrateFunc = (prev: any, context: MigrateContext) => any;
 export const MIGRATIONS: Record<string, MigrateFunc> = {
   "0.1.27": migrateInit,
   "0.1.28": tsToTsx,
-  "0.1.31": ensureProjectIcons
+  "0.1.31": ensureProjectIcons,
+  "0.1.42": ensureVersion
 };
 
 export function runNecessaryMigrations(configFile: string) {

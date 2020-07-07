@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/cli",
-  "version": "0.1.41",
+  "version": "0.1.42",
   "description": "plasmic cli for syncing local code with Plasmic designs",
   "main": "./dist/index.js",
   "bin": {
@@ -14,17 +14,20 @@
     "plasmic": "ts-node src/index.ts"
   },
   "devDependencies": {
+    "@babel/preset-typescript": "^7.10.4",
     "@types/glob": "^7.1.1",
     "@types/inquirer": "^6.5.0",
-    "@types/jest": "^26.0.0",
+    "@types/jest": "^26.0.4",
     "@types/latest-version": "^4.0.1",
     "@types/lodash": "^4.14.146",
     "@types/node": "^12.12.6",
     "@types/semver": "^7.1.0",
     "@types/socket.io-client": "^1.4.32",
+    "@types/tmp": "^0.2.0",
     "@types/yargs": "^13.0.3",
-    "jest": "^26.0.1",
-    "ts-jest": "^26.1.0",
+    "jest": "^26.1.0",
+    "tmp": "^0.2.1",
+    "ts-jest": "^26.1.1",
     "ts-node": "^8.4.1",
     "utility-types": "^3.10.0"
   },
@@ -46,12 +49,14 @@
     "inquirer": "^7.0.3",
     "latest-version": "^5.1.0",
     "lodash": "^4.17.15",
+    "moment": "^2.27.0",
     "path": "^0.12.7",
     "prettier": "^2.0.5",
     "semver": "^7.3.2",
     "socket.io-client": "^2.3.0",
     "typescript": "^3.9.5",
     "upath": "^1.2.0",
+    "winston": "^3.3.3",
     "yargs": "^14.2.0"
   }
 }

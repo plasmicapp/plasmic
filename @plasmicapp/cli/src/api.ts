@@ -82,7 +82,7 @@ export interface ProjectIconsResponse {
 export class PlasmicApi {
   constructor(private auth: AuthConfig) {}
 
-  async genStyleConfig() {
+  async genStyleConfig(): Promise<StyleConfigResponse> {
     const result = await this.post(
       `${this.auth.host}/api/v1/code/style-config`
     );
@@ -97,7 +97,7 @@ export class PlasmicApi {
     // The list of existing components as [componentUuid, codeScheme]
     existingCompScheme: Array<[string, "blackbox" | "direct"]>,
     componentIdOrNames: readonly string[] | undefined
-  ) {
+  ): Promise<ProjectBundle> {
     const result = await this.post(
       `${this.auth.host}/api/v1/projects/${projectId}/code/components`,
       {
@@ -117,7 +117,7 @@ export class PlasmicApi {
     bundleJs: string,
     css: string[],
     metaJson: string
-  ) {
+  ): Promise<StyleTokensMap> {
     const result = await this.post(
       `${this.auth.host}/api/v1/projects/${projectId}/jsbundle/upload`,
       { projectId, bundleName, bundleJs, css, metaJson }
@@ -125,14 +125,14 @@ export class PlasmicApi {
     return result.data as StyleTokensMap;
   }
 
-  async projectStyleTokens(projectId: string) {
+  async projectStyleTokens(projectId: string): Promise<StyleTokensMap> {
     const result = await this.post(
       `${this.auth.host}/api/v1/projects/${projectId}/code/tokens`
     );
     return result.data as StyleTokensMap;
   }
 
-  async projectIcons(projectId: string) {
+  async projectIcons(projectId: string): Promise<ProjectIconsResponse> {
     const result = await this.post(
       `${this.auth.host}/api/v1/projects/${projectId}/code/icons`
     );
@@ -143,7 +143,7 @@ export class PlasmicApi {
     projectId: string,
     revision: number,
     rethrowAppError: boolean
-  ) {
+  ): Promise<ProjectSyncMetadataModel> {
     const result = await this.post(
       `${this.auth.host}/api/v1/projects/${projectId}/code/project-sync-metadata`,
       { revision },
@@ -152,7 +152,7 @@ export class PlasmicApi {
     return ProjectSyncMetadataModel.fromJson(result.data);
   }
 
-  connectSocket() {
+  connectSocket(): SocketIOClient.Socket {
     const socket = socketio.connect(this.auth.host, {
       path: `/api/v1/socket`,
       transportOptions: {
