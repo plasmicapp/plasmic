@@ -324,10 +324,13 @@ class CompilerOptions {
 }
 
 export const tsxToJsx = (code: string) => {
-  let result = ts.transpileModule(code, {
+  // when the code has jsx pragma, typescript will remove comments, and remove
+  // "import React from 'React'" if React is unused. So we first invalidate it.
+  const replaced = code.replace("/** @jsx", "/** @ jsx");
+  let result = ts.transpileModule(replaced, {
     compilerOptions: CompilerOptions.getOpts()
   });
-  return result.outputText;
+  return result.outputText.replace("/** @ jsx", "/** @jsx");
 };
 
 export const formatJs = (code: string) => {
