@@ -112,7 +112,7 @@ export function installUpgrade(pkg: string) {
 }
 
 export function detectPackageManager() {
-  const yarnLock = findupSync("yarn.lock", { cwd: __dirname });
+  const yarnLock = findupSync("yarn.lock", { cwd: process.cwd() });
   if (yarnLock) {
     return "yarn";
   } else {
