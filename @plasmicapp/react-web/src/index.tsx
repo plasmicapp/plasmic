@@ -114,7 +114,8 @@ export function createPlasmicElement<
     );
   }
 
-  const root = override2.type === "as" ? override2.as : defaultRoot;
+  const root =
+    override2.type === "as" ? override2.as || defaultRoot : defaultRoot;
   const props = mergeProps(
     defaultProps,
     override2.type === "default" || override2.type === "as"
