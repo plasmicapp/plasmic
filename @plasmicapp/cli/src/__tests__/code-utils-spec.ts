@@ -970,10 +970,11 @@ export default PlasmicButton;
 // Plasmic Project: aBwbYpvCqht4V3F8CJNJX3
 // Component: 4SYnkOQLd5
 import React from \"react\";
-import \"@plasmicapp/react-web/lib/plasmic.css\";
-import \"../plasmic__default_style.css\"; // plasmic-import: global/defaultcss
-import \"./plasmic_plasmic_kit.css\"; // plasmic-import: aBwbYpvCqht4V3F8CJNJX3/projectcss
-import \"./PlasmicButton.css\"; // plasmic-import: 4SYnkOQLd5/css
+import { createPlasmicElementProxy } from "@plasmicapp/react-web";
+import "@plasmicapp/react-web/lib/plasmic.css";
+import "../plasmic__default_style.css"; // plasmic-import: global/defaultcss
+import "./plasmic_plasmic_kit.css"; // plasmic-import: aBwbYpvCqht4V3F8CJNJX3/projectcss
+import "./PlasmicButton.css"; // plasmic-import: 4SYnkOQLd5/css
 function PlasmicButton(props) {
     return <button></button>;
 }
