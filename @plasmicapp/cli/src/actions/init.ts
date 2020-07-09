@@ -95,7 +95,8 @@ export async function initPlasmic(opts: InitArgs) {
 
   const directOpt = {
     name:
-      "Direct Edit: gives you components whose JSX trees you can directly edit to attach props."
+      "Direct Edit: gives you components whose JSX trees you can directly edit to attach props.",
+    value: "direct"
   };
 
   const answers = await inquirer.prompt([
