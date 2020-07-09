@@ -117,6 +117,12 @@ export async function syncProjects(opts: SyncArgs) {
           c.skeletonModule
         );
       });
+      project.iconAssets.forEach(icon => {
+        [icon.fileName, icon.module] = maybeConvertTsxToJsx(
+          icon.fileName,
+          icon.module
+        );
+      });
       project.globalVariants.forEach(gv => {
         [gv.contextFileName, gv.contextModule] = maybeConvertTsxToJsx(
           gv.contextFileName,

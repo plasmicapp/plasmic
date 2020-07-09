@@ -326,11 +326,16 @@ class CompilerOptions {
 export const tsxToJsx = (code: string) => {
   // when the code has jsx pragma, typescript will remove comments, and remove
   // "import React from 'React'" if React is unused. So we first invalidate it.
-  const replaced = code.replace("/** @jsx", "/** @ jsx");
+  // We also need to add the usageMagic to prevent typescript from remove the
+  // import of ncreatePlasmicElementProxy.
+  const usageMagic = "\ncreatePlasmicElementProxy();";
+  const replaced = code.replace("/** @jsx", "/** @ jsx") + usageMagic;
   let result = ts.transpileModule(replaced, {
     compilerOptions: CompilerOptions.getOpts()
   });
-  return result.outputText.replace("/** @ jsx", "/** @jsx");
+  return result.outputText
+    .replace("/** @ jsx", "/** @jsx")
+    .replace(usageMagic, "");
 };
 
 export const formatJs = (code: string) => {
