@@ -100,7 +100,8 @@ export async function syncProjects(opts: SyncArgs) {
         reactWebVersion,
         opts.newComponentScheme || context.config.code.scheme,
         existingCompScheme,
-        opts.components.length === 0 ? undefined : opts.components
+        opts.components.length === 0 ? undefined : opts.components,
+        opts.recursive
       );
     })
   );

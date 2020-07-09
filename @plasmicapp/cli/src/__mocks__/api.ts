@@ -94,8 +94,8 @@ function getComponentsByProjectId(
 function getComponentsRecursive(
   component: MockComponent,
   includeDependencies?: boolean
-) {
-  const result = [component];
+): MockComponent[] {
+  const result: MockComponent[] = [component];
   const queue = [...component.children];
   while (queue.length > 0) {
     const current = queue.shift();
@@ -167,19 +167,23 @@ class PlasmicApi {
     newCompScheme: "blackbox" | "direct",
     // The list of existing components as [componentUuid, codeScheme]
     existingCompScheme: Array<[string, "blackbox" | "direct"]>,
-    componentIdOrNames: readonly string[] | undefined
+    componentIdOrNames: readonly string[] | undefined,
+    recursive?: boolean
   ): Promise<ProjectBundle> {
     if (L.keys(COMPONENTS).length <= 0) {
       throw new Error("Remember to call __setMockComponents first!");
     }
     const projectComponents = getComponentsByProjectId(projectId);
-    const components = componentIdOrNames
+    const rootComponents = componentIdOrNames
       ? projectComponents.filter(
           c =>
             componentIdOrNames.includes(c.id) ||
             componentIdOrNames.includes(c.name)
         )
       : projectComponents;
+    const components = !!recursive
+      ? L.flatMap(rootComponents, c => getComponentsRecursive(c, false))
+      : [...rootComponents];
 
     const result = {
       components: components.map(c => genComponentBundle(c)),

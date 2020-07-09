@@ -163,17 +163,35 @@ describe("versioned-sync", () => {
     expect(componentInConfig?.name).toEqual(buttonData.name);
   });
 
+  /**
   test("syncs latest", async () => {});
 
   test("syncs exact version", async () => {});
 
   test("syncs according to semver", async () => {});
-});
-/**
-describe("recursive-sync", () => {
-  test("recursive base case", () => {});
+  */
 });
 
+describe("recursive-sync", () => {
+  test("recursive base case", async () => {
+    // Should sync both Button+Container because of the dependency
+    opts.components = ["containerId"];
+    opts.recursive = true;
+    await syncProjects(opts);
+    const button = mockApi.stringToMockComponent(readFile("./src/Button.tsx"));
+    const container = mockApi.stringToMockComponent(
+      readFile("./src/Container.tsx")
+    );
+    expect(button).toBeTruthy();
+    expect(container).toBeTruthy();
+    expect(button.name).toEqual("Button");
+    expect(button.version).toEqual("1.2.3");
+    expect(container.name).toEqual("Container");
+    expect(container.version).toEqual("1.2.3");
+  });
+});
+
+/**
 describe("sync-dependencies", () => {
   test("dependencies base case", () => {});
   test("conflicting project versions", () => {});

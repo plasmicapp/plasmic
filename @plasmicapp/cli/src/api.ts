@@ -96,7 +96,8 @@ export class PlasmicApi {
     newCompScheme: "blackbox" | "direct",
     // The list of existing components as [componentUuid, codeScheme]
     existingCompScheme: Array<[string, "blackbox" | "direct"]>,
-    componentIdOrNames: readonly string[] | undefined
+    componentIdOrNames: readonly string[] | undefined,
+    recursive?: boolean
   ): Promise<ProjectBundle> {
     const result = await this.post(
       `${this.auth.host}/api/v1/projects/${projectId}/code/components`,
@@ -105,7 +106,8 @@ export class PlasmicApi {
         reactWebVersion: reactWebVersion || "",
         newCompScheme,
         existingCompScheme,
-        componentIdOrNames
+        componentIdOrNames,
+        recursive
       }
     );
     return result.data as ProjectBundle;
