@@ -1,6 +1,7 @@
 import path from "upath";
 import L from "lodash";
 import fs from "fs";
+import { logger } from "../deps";
 import {
   ComponentConfig,
   ImportSpec,
@@ -226,7 +227,7 @@ export function isLocalModulePath(modulePath: string) {
  * file locations as the source of truth.
  */
 export function fixAllImportStatements(context: PlasmicContext) {
-  console.log("Fixing import statements...");
+  logger.info("Fixing import statements...");
   const config = context.config;
   const allComponents = flatMap(config.projects, p => p.components);
   const allCompConfigs = L.keyBy(allComponents, c => c.id);

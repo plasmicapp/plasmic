@@ -1,12 +1,12 @@
 import L from "lodash";
-import { SyncArgs, syncProjects } from "./sync";
+import { SyncArgs, sync } from "./sync";
 import { getContext } from "../utils/config-utils";
 import { warnLatestReactWeb } from "../utils/npm-utils";
 
 export interface WatchArgs extends SyncArgs {}
 export async function watchProjects(opts: WatchArgs) {
   // Perform a sync before watch.
-  await syncProjects(opts);
+  await sync(opts);
 
   const context = getContext(opts);
   const config = context.config;
@@ -37,7 +37,7 @@ export async function watchProjects(opts: WatchArgs) {
     console.log(
       `Project ${data.projectId} updated to revision ${data.revisionNum}`
     );
-    syncProjects(opts);
+    sync(opts);
   });
 
   console.log("Watching projects...");

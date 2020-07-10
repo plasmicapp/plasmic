@@ -43,6 +43,12 @@ export interface IconBundle {
   fileName: string;
 }
 
+export interface ProjectComponentVersionMeta {
+  projectId: string;
+  componentIds: string[];
+  version: string;
+}
+
 export interface ProjectBundle {
   components: ComponentBundle[];
   projectConfig: ProjectMetaBundle;
@@ -89,6 +95,53 @@ export class PlasmicApi {
     return result.data as StyleConfigResponse;
   }
 
+  /**
+   * Sync resolution - Given a fuzzy idea of what the user wants,
+   * (i.e. a versionRange and component names),
+   * ask the server for the exact references for a later call to `projectComponents`
+   * - For components specified in the parameters - the server will return the latest version that satisfies the versionRange
+   * - Any conflicting versions will be returned in `conflicts`, and should cause the client's sync to abort
+   * @param projects
+   * @param recursive
+   * @param includeDependencies
+   */
+  async resolveSync(
+    projects: {
+      projectId: string;
+      versionRange: string;
+      componentIdOrNames: readonly string[] | undefined;
+    }[],
+    recursive?: boolean,
+    includeDependencies?: boolean
+  ): Promise<{
+    projects: ProjectComponentVersionMeta[];
+    conflicts: ProjectComponentVersionMeta[];
+  }> {
+    const resp: any = await this.post(
+      `${this.auth.host}/api/v1/code/resolve-sync`,
+      {
+        projects,
+        recursive,
+        includeDependencies
+      }
+    );
+    const projectResults = resp.data.projects as ProjectComponentVersionMeta[];
+    const conflicts = resp.data.conflicts as ProjectComponentVersionMeta[];
+    return { projects: projectResults, conflicts };
+  }
+
+  /**
+   * Code-gen endpoint.
+   * This will fetch components at an exact specified version.
+   * If you don't know what version should be used, call `resolveSync` first.
+   * @param projectId
+   * @param cliVersion
+   * @param reactWebVersion
+   * @param newCompScheme
+   * @param existingCompScheme
+   * @param componentIdOrNames
+   * @param version
+   */
   async projectComponents(
     projectId: string,
     cliVersion: string,
@@ -97,7 +150,7 @@ export class PlasmicApi {
     // The list of existing components as [componentUuid, codeScheme]
     existingCompScheme: Array<[string, "blackbox" | "direct"]>,
     componentIdOrNames: readonly string[] | undefined,
-    recursive?: boolean
+    version: string
   ): Promise<ProjectBundle> {
     const result = await this.post(
       `${this.auth.host}/api/v1/projects/${projectId}/code/components`,
@@ -107,7 +160,7 @@ export class PlasmicApi {
         newCompScheme,
         existingCompScheme,
         componentIdOrNames,
-        recursive
+        version
       }
     );
     return result.data as ProjectBundle;

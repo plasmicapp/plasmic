@@ -7,6 +7,7 @@ import {
   ensureImportDefaultSpecifier,
   replaceImports
 } from "../utils/code-utils";
+import { createProjectConfig } from "../utils/config-utils";
 import { code } from "../../../code-merger/src/utils";
 import { iteratee } from "lodash";
 
@@ -727,14 +728,12 @@ function _CodeSandboxDialogContent(props) {
         }
       },
       {
-        aBwbYpvCqht4V3F8CJNJX3: {
+        aBwbYpvCqht4V3F8CJNJX3: createProjectConfig({
           projectId: "aBwbYpvCqht4V3F8CJNJX3",
           projectName: "Plasmic Kit",
           version: "latest",
-          cssFilePath: "/tmp/newDir/PP__plasmic_kit.css",
-          components: [],
-          icons: []
-        }
+          cssFilePath: "/tmp/newDir/PP__plasmic_kit.css"
+        })
       },
       {}, // globalVariantConfigMap
       {
@@ -841,14 +840,12 @@ function _CodeSandboxDialogContent(props) {
         }
       },
       {
-        aBwbYpvCqht4V3F8CJNJX3: {
+        aBwbYpvCqht4V3F8CJNJX3: createProjectConfig({
           projectId: "aBwbYpvCqht4V3F8CJNJX3",
           projectName: "Plasmic Kit",
           version: "latest",
-          cssFilePath: "/tmp/newDir/PP__plasmic_kit.css",
-          components: [],
-          icons: []
-        }
+          cssFilePath: "/tmp/newDir/PP__plasmic_kit.css"
+        })
       },
       {}, // globalVariantConfigMap
       {

@@ -1,5 +1,6 @@
 import path from "upath";
 import L, { merge } from "lodash";
+import inquirer from "inquirer";
 import { CommonArgs } from "..";
 import { logger } from "../deps";
 import {
@@ -7,6 +8,7 @@ import {
   updateConfig,
   PlasmicContext,
   ProjectConfig,
+  createProjectConfig,
   CONFIG_FILE_NAME
 } from "../utils/config-utils";
 import {
@@ -45,6 +47,7 @@ import {
 } from "@plasmicapp/code-merger";
 import { options } from "yargs";
 import { syncProjectIconAssets } from "./sync-icons";
+import * as semver from "../../../../../wab/src/wab/commons/semver";
 
 export interface SyncArgs extends CommonArgs {
   projects: readonly string[];
@@ -67,71 +70,127 @@ function maybeConvertTsxToJsx(fileName: string, content: string) {
   return [fileName, content];
 }
 
-export async function syncProjects(opts: SyncArgs) {
+/**
+ * Sync will always try to sync down a set of components that are version-consistent among specified projects.
+ * (we only allow 1 version per projectId).
+ * NOTE: the repo/plasmic.json might include projects with conflicting versions in its dependency tree.
+ * We leave it to the user to sync all projects if they want us to catch/prevent this.
+ * @param opts
+ */
+export async function sync(opts: SyncArgs): Promise<void> {
   const context = getContext(opts);
   fixAllFilePaths(context);
   const projectIds =
     opts.projects.length > 0
       ? opts.projects
       : context.config.projects.map(p => p.projectId);
+
+  // Short-circuit if nothing to sync
   if (projectIds.length === 0) {
-    console.error(
+    throw new Error(
       "Don't know which projects to sync; please specify via --projects"
     );
-    process.exit(1);
   }
 
+  // Resolve what will be synced
+  const projectConfigMap = L.keyBy(context.config.projects, p => p.projectId);
+  const projectSyncParams = projectIds.map(projectId => {
+    return {
+      projectId,
+      versionRange: projectConfigMap[projectId]?.version ?? "latest",
+      componentIdOrNames:
+        opts.components.length === 0 ? undefined : opts.components
+    };
+  });
+  const { projects: resolveResults, conflicts } = await context.api.resolveSync(
+    projectSyncParams,
+    opts.recursive,
+    opts.includeDependencies
+  );
+
+  // Throw if there's nothing to sync
+  if (resolveResults.length <= 0) {
+    throw new Error(
+      `Could not find any matching versions. Please check your plasmic.json file.`
+    );
+  }
+
+  // First check if the sync is consistent with itself (independent of plasmic.json),
+  // since we can specify multiple root projects to sync
+  if (conflicts && conflicts.length > 0) {
+    // TODO: replace with better error message
+    throw new Error(
+      `Sync resolution failed: \n${resolveResults}\nConflicts:\n${conflicts}`
+    );
+  }
+
+  // Check for projects that don't satisfy our PlasmicConfig version ranges
+  // Note: This should ONLY be for project dependencies, since resolveSync will only get user-specified projects/components within range.
+  const breakingProjects = resolveResults.filter(
+    r =>
+      !!projectConfigMap[r.projectId] &&
+      !semver.satisfies(r.version, projectConfigMap[r.projectId].version)
+  );
+  // Check if we want to continue, giving up early in non-interactive mode
+  const breakingMessage = breakingProjects.map(
+    p =>
+      `${p.projectId}@${projectConfigMap[p.projectId].version}=>v${p.version}`
+  );
+  if (breakingProjects.length > 0 && opts.nonInteractive) {
+    throw new Error(
+      `Unable to sync these projects due to conflicting versions: ${breakingMessage}`
+    );
+  } else if (breakingProjects.length > 0) {
+    logger.warn(
+      `Doing this sync will generate components outside of these project's version ranges:\n${breakingMessage}`
+    );
+    const res = await inquirer.prompt([
+      {
+        name: "continue",
+        message: `Do you want to continue? (Y/n)`,
+        default: "y"
+      }
+    ]);
+    if (!["y", "yes"].includes(res.continue.toLowerCase())) {
+      throw new Error("User aborted");
+    }
+  }
+  // Update plasmic.json with newest version numbers
+  resolveResults.forEach(p => {
+    // Defaulting to caret ranges
+    const newVersionRange = semver.toCaretRange(p.version);
+    if (projectConfigMap[p.projectId] && newVersionRange) {
+      projectConfigMap[p.projectId].version = newVersionRange;
+    }
+  });
+
+  // Sync each project
+  // Note: order should not matter during code-gen, because we fix imports all together at the end
   const reactWebVersion = findInstalledVersion(
     context,
     "@plasmicapp/react-web"
   );
-
-  const results = await Promise.all(
-    projectIds.map(projectId => {
-      const existingProject = context.config.projects.find(
-        p => p.projectId === projectId
-      );
-      const existingCompScheme: Array<[string, "blackbox" | "direct"]> = (
-        existingProject?.components || []
-      ).map(c => [c.id, c.scheme]);
-      return context.api.projectComponents(
-        projectId,
-        getCliVersion(),
-        reactWebVersion,
-        opts.newComponentScheme || context.config.code.scheme,
-        existingCompScheme,
-        opts.components.length === 0 ? undefined : opts.components,
-        opts.recursive
+  await Promise.all(
+    resolveResults.map(async projectMeta => {
+      // By default projects that users explicitly sync use "latest" and dependencies use caret ranges.
+      const caretVersionRange = semver.toCaretRange(projectMeta.version);
+      const versionRange =
+        projectConfigMap[projectMeta.projectId]?.version ??
+        (projectIds.includes(projectMeta.projectId) || !caretVersionRange)
+          ? "latest"
+          : caretVersionRange;
+      await syncProject(
+        context,
+        opts,
+        projectMeta.projectId,
+        projectMeta.componentIds,
+        projectMeta.version,
+        versionRange,
+        reactWebVersion
       );
     })
   );
 
-  if (context.config.code.lang === "js") {
-    results.forEach(project => {
-      project.components.forEach(c => {
-        [c.renderModuleFileName, c.renderModule] = maybeConvertTsxToJsx(
-          c.renderModuleFileName,
-          c.renderModule
-        );
-        [c.skeletonModuleFileName, c.skeletonModule] = maybeConvertTsxToJsx(
-          c.skeletonModuleFileName,
-          c.skeletonModule
-        );
-      });
-      project.iconAssets.forEach(icon => {
-        [icon.fileName, icon.module] = maybeConvertTsxToJsx(
-          icon.fileName,
-          icon.module
-        );
-      });
-      project.globalVariants.forEach(gv => {
-        [gv.contextFileName, gv.contextModule] = maybeConvertTsxToJsx(
-          gv.contextFileName,
-          gv.contextModule
-        );
-      });
-    });
-  }
   // Materialize scheme into each component config.
   context.config.projects.forEach(p =>
     p.components.forEach(c => {
@@ -143,9 +202,79 @@ export async function syncProjects(opts: SyncArgs) {
 
   syncStyleConfig(context, await context.api.genStyleConfig());
 
-  const config = context.config;
+  // Write the new ComponentConfigs to disk
+  updateConfig(context, {
+    projects: context.config.projects,
+    globalVariants: context.config.globalVariants,
+    tokens: context.config.tokens,
+    style: context.config.style
+  });
+
+  // Now we know config.components are all correct, so we can go ahead and fix up all the import statements
+  fixAllImportStatements(context);
+
+  if (!opts.nonInteractive) {
+    await warnLatestReactWeb(context);
+  }
+}
+
+async function syncProject(
+  context: PlasmicContext,
+  opts: SyncArgs,
+  projectId: string,
+  componentIds: string[],
+  projectVersion: string,
+  projectVersionRange: string,
+  reactWebVersion?: string
+): Promise<void> {
+  const newComponentScheme =
+    opts.newComponentScheme || context.config.code.scheme;
+  const existingProject = context.config.projects.find(
+    p => p.projectId === projectId
+  );
+  const existingCompScheme: Array<[string, "blackbox" | "direct"]> = (
+    existingProject?.components || []
+  ).map(c => [c.id, c.scheme]);
+
+  // Server-side code-gen
+  const projectBundle = await context.api.projectComponents(
+    projectId,
+    getCliVersion(),
+    reactWebVersion,
+    newComponentScheme,
+    existingCompScheme,
+    componentIds,
+    projectVersion
+  );
+
+  // Convert from TSX => JSX
+  if (context.config.code.lang === "js") {
+    projectBundle.components.forEach(c => {
+      [c.renderModuleFileName, c.renderModule] = maybeConvertTsxToJsx(
+        c.renderModuleFileName,
+        c.renderModule
+      );
+      [c.skeletonModuleFileName, c.skeletonModule] = maybeConvertTsxToJsx(
+        c.skeletonModuleFileName,
+        c.skeletonModule
+      );
+    });
+    projectBundle.iconAssets.forEach(icon => {
+      [icon.fileName, icon.module] = maybeConvertTsxToJsx(
+        icon.fileName,
+        icon.module
+      );
+    });
+    projectBundle.globalVariants.forEach(gv => {
+      [gv.contextFileName, gv.contextModule] = maybeConvertTsxToJsx(
+        gv.contextFileName,
+        gv.contextModule
+      );
+    });
+  }
+
   const knownComponentIds = new Set(
-    flatMap(config.projects, p => p.components.map(c => c.id))
+    flatMap(context.config.projects, p => p.components.map(c => c.id))
   );
   const shouldSyncComponents = (id: string, name: string) => {
     if (opts.onlyExisting) {
@@ -159,44 +288,27 @@ export async function syncProjects(opts: SyncArgs) {
     return true;
   };
 
-  for (const [projectId, projectBundle] of L.zip(projectIds, results) as [
-    string,
-    ProjectBundle
-  ][]) {
-    syncGlobalVariants(context, projectId, projectBundle.globalVariants);
-    const componentBundles = projectBundle.components.filter(bundle =>
-      shouldSyncComponents(bundle.id, bundle.componentName)
-    );
-    await syncProjectConfig(
-      context,
-      projectBundle.projectConfig,
-      componentBundles,
-      projectBundle.iconAssets,
-      opts.forceOverwrite,
-      !!opts.appendJsxOnMissingBase
-    );
-    upsertStyleTokens(context, projectBundle.usedTokens);
-  }
-
-  // Write the new ComponentConfigs to disk
-  updateConfig(context, {
-    projects: config.projects,
-    globalVariants: config.globalVariants,
-    tokens: config.tokens,
-    style: config.style
-  });
-
-  // Now we know config.components are all correct, so we can go ahead and fix up all the import statements
-  fixAllImportStatements(context);
-
-  if (!opts.nonInteractive) {
-    await warnLatestReactWeb(context);
-  }
+  syncGlobalVariants(context, projectId, projectBundle.globalVariants);
+  const componentBundles = projectBundle.components.filter(bundle =>
+    shouldSyncComponents(bundle.id, bundle.componentName)
+  );
+  await syncProjectConfig(
+    context,
+    projectBundle.projectConfig,
+    projectVersion,
+    projectVersionRange,
+    componentBundles,
+    projectBundle.iconAssets,
+    opts.forceOverwrite,
+    !!opts.appendJsxOnMissingBase
+  );
+  upsertStyleTokens(context, projectBundle.usedTokens);
 }
 
 async function syncProjectComponents(
   context: PlasmicContext,
   project: ProjectConfig,
+  version: string,
   componentBundles: ComponentBundle[],
   forceOverwrite: boolean,
   appendJsxOnMissingBase: boolean
@@ -216,7 +328,7 @@ async function syncProjectComponents(
       nameInIdToUuid
     } = bundle;
     logger.info(
-      `Syncing component ${componentName} [${project.projectId}/${id} ${project.version}]`
+      `Syncing component ${componentName} ${version} [${project.projectId}/${id} ${project.version}]`
     );
     let compConfig = allCompConfigs[id];
     const isNew = !compConfig;
@@ -291,7 +403,7 @@ async function syncProjectComponents(
               ) {
                 throw e;
               } else {
-                console.log(e.messag);
+                logger.log(e.messag);
                 process.exit(1);
               }
             }
@@ -306,12 +418,11 @@ async function syncProjectComponents(
           });
         } else {
           if (!forceOverwrite) {
-            console.error(
+            throw new Error(
               `Cannot merge ${compConfig.importSpec.modulePath}. If you just switched the code scheme for the component from blackbox to direct, use --force-overwrite option to force the switch.`
             );
-            process.exit(1);
           } else {
-            console.log(
+            logger.warn(
               `Overwrite ${compConfig.importSpec.modulePath} despite merge failure`
             );
             writeFileContent(
@@ -335,7 +446,7 @@ async function syncProjectComponents(
             }
           );
         } else {
-          console.warn(
+          logger.warn(
             `file ${compConfig.importSpec.modulePath} is likely in "direct" scheme. If you intend to switch the code scheme from direct to blackbox, use --force-overwrite option to force the switch.`
           );
         }
@@ -376,7 +487,7 @@ function syncGlobalVariants(
     c => c.id
   );
   for (const bundle of bundles) {
-    console.log(
+    logger.info(
       `Syncing global variant ${bundle.name} [${projectId}/${bundle.id}]`
     );
     let variantConfig = allVariantConfigs[bundle.id];
@@ -407,6 +518,8 @@ function syncGlobalVariants(
 async function syncProjectConfig(
   context: PlasmicContext,
   pc: ProjectMetaBundle,
+  version: string,
+  versionRange: string,
   componentBundles: ComponentBundle[],
   iconBundles: IconBundle[],
   forceOverwrite: boolean,
@@ -420,14 +533,12 @@ async function syncProjectConfig(
   );
   const isNew = !project;
   if (!project) {
-    project = {
+    project = createProjectConfig({
       projectId: pc.projectId,
       projectName: pc.projectName,
-      version: "latest",
-      cssFilePath: defaultCssFilePath,
-      components: [],
-      icons: []
-    };
+      version: versionRange,
+      cssFilePath: defaultCssFilePath
+    });
     context.config.projects.push(project);
   } else {
     project.projectName = pc.projectName;
@@ -443,6 +554,7 @@ async function syncProjectConfig(
   await syncProjectComponents(
     context,
     project,
+    version,
     componentBundles,
     forceOverwrite,
     appendJsxOnMissingBase

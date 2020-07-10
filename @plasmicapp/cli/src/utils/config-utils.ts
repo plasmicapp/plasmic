@@ -68,6 +68,23 @@ export interface ProjectConfig {
   icons: IconConfig[];
 }
 
+export function createProjectConfig(base: {
+  projectId: string;
+  projectName: string;
+  version: string;
+  cssFilePath: string;
+}) {
+  return {
+    projectId: base.projectId,
+    projectName: base.projectName,
+    version: base.version,
+    cssFilePath: base.cssFilePath,
+    components: [],
+    icons: [],
+    dependencies: []
+  };
+}
+
 export interface TokensConfig {
   scheme: "theo";
   tokensFilePath: string;
