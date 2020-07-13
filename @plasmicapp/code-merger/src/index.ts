@@ -982,6 +982,7 @@ export type PlasmicImportType =
   | "projectcss"
   | "defaultcss"
   | "icon"
+  | "jsBundle"
   | undefined;
 
 export const tryParsePlasmicImportSpec = (node: ImportDeclaration) => {
@@ -990,7 +991,7 @@ export const tryParsePlasmicImportSpec = (node: ImportDeclaration) => {
     return undefined;
   }
   const m = c.value.match(
-    /plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss|defaultcss|icon))?/
+    /plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss|defaultcss|icon|jsBundle))?/
   );
   if (m) {
     return { id: m[1], type: m[2] as PlasmicImportType };
