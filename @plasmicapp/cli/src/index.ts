@@ -154,6 +154,11 @@ yargs
             "Paths to import the CSSs in generated code. They will be imported whenever this module is imported.",
           type: "array",
           default: []
+        })
+        .option("version", {
+          describe:
+            "Version of the uploaded package. May be used to generate package dependency in CodeSandbox, sometime in future.",
+          type: "string"
         }),
     argv => uploadJsBundle(argv)
   )
