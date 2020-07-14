@@ -389,6 +389,14 @@ function deriveOverride<C extends React.ElementType>(x: Flex<C>): Override<C> {
         ...x,
         type: "render"
       } as any;
+    } else if (isSubset(Object.keys(x), ["wrap", "wrapChildren"])) {
+      // Only twiddling functions present, so assume no props overrides
+      // (otherwise we'd assume these were props).
+      return {
+        ...x,
+        props: {},
+        type: "default"
+      };
     }
 
     // Else, assume this is just a props object.
@@ -404,6 +412,10 @@ function deriveOverride<C extends React.ElementType>(x: Flex<C>): Override<C> {
   }
 
   throw new Error(`Unexpected override: ${x}`);
+}
+
+function isSubset<T>(a1: T[], a2: T[]) {
+  return a1.every(x => a2.includes(x));
 }
 
 function isReactNode(x: any) {
