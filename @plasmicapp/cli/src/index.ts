@@ -144,7 +144,7 @@ yargs
             "Path of the meta data file (in JSON format) describing the component",
           type: "string"
         })
-        .option("genImportPath", {
+        .option("genModulePath", {
           describe:
             "Path to import the components in generated code. Default to the bundleName. For example, if bundleName is 'antd', then Plasmic will generate 'import { Button } from \"antd\";'",
           type: "string"
