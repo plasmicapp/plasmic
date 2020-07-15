@@ -155,9 +155,9 @@ yargs
           type: "array",
           default: []
         })
-        .option("version", {
+        .option("pkgVersion", {
           describe:
-            "Version of the uploaded package. May be used to generate package dependency in CodeSandbox, sometime in future.",
+            "Version of the uploaded package. Used to generate package dependency in CodeSandbox.",
           type: "string"
         }),
     argv => uploadJsBundle(argv)
