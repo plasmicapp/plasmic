@@ -1019,12 +1019,23 @@ const compareImports = (
 };
 
 // merge slave into master
-const mergeImports = (i1: ImportDeclaration, i2: ImportDeclaration) => {
-  const cloned = cloneDeep(i1);
-  for (const s2 of i2.specifiers) {
+const mergeImports = (
+  editedImport: ImportDeclaration,
+  newImport: ImportDeclaration
+) => {
+  if (
+    editedImport.specifiers.find(s => s.type === "ImportNamespaceSpecifier")
+  ) {
+    return cloneDeep(editedImport);
+  }
+  if (newImport.specifiers.find(s => s.type === "ImportNamespaceSpecifier")) {
+    return cloneDeep(newImport);
+  }
+  const cloned = cloneDeep(editedImport);
+  for (const s2 of newImport.specifiers) {
     if (s2.type === "ImportDefaultSpecifier") {
       if (
-        i1.specifiers.find(
+        editedImport.specifiers.find(
           s1 =>
             s1.type === "ImportDefaultSpecifier" &&
             s1.local.name === s2.local.name
@@ -1035,7 +1046,7 @@ const mergeImports = (i1: ImportDeclaration, i2: ImportDeclaration) => {
       cloned.specifiers.push(s2);
     } else if (s2.type === "ImportSpecifier") {
       if (
-        i1.specifiers.find(
+        editedImport.specifiers.find(
           s1 =>
             s1.type === "ImportSpecifier" &&
             s1.local.name === s2.local.name &&

@@ -1685,7 +1685,7 @@ describe("Test CodeMerger", function() {
       import { PlasmicDropdownItem__VariantsArgs } from "./PP__DropdownItem"; // plasmic-import: f4c2f0bb-8dce-49c7-a106-65abe9e70e51/renderer
       import IconButton from "../../IconButton"; // plasmic-import: cfe92-5RW/component
       import { PlasmicIconButton__VariantsArgs } from "../../../plasmic/PlasmicIconButton"; // plasmic-import: cfe92-5RW/renderer
-      import { Button as AntdButton, UserAdded } from "antd"; // plasmic-import: the-uuid/jsBundle
+      import * as antd from "antd"; // plasmic-import: the-uuid/jsBundle
 
       function Comp1() {
         // plasmic-managed-start
@@ -1722,7 +1722,7 @@ describe("Test CodeMerger", function() {
       import { PlasmicDropdownItem__VariantsArgs } from "./PP__DropdownItem"; // plasmic-import: f4c2f0bb-8dce-49c7-a106-65abe9e70e51/renderer
       import IconButton from "../../IconButton"; // plasmic-import: cfe92-5RW/component
       import { PlasmicIconButton__VariantsArgs } from "../../../plasmic/PlasmicIconButton"; // plasmic-import: cfe92-5RW/renderer
-      import { Button as AntdButton, StudioAdded } from "antd"; // plasmic-import: the-uuid/jsBundle
+      import * as antd from "antd"; // plasmic-import: the-uuid/jsBundle
 
       function Comp1() {
         // plasmic-managed-start
@@ -1768,7 +1768,7 @@ describe("Test CodeMerger", function() {
         import { PlasmicDropdownItem__VariantsArgs } from "./PP__DropdownItem"; // plasmic-import: f4c2f0bb-8dce-49c7-a106-65abe9e70e51/renderer
         import IconButton from "../../IconButton"; // plasmic-import: cfe92-5RW/component
         import { PlasmicIconButton__VariantsArgs } from "../../../plasmic/PlasmicIconButton"; // plasmic-import: cfe92-5RW/renderer
-        import { Button as AntdButton } from "antd"; // plasmic-import: the-uuid/jsBundle
+        import * as antd from "antd"; // plasmic-import: the-uuid/jsBundle
 
         function Comp1() {
            // plasmic-managed-start
@@ -1809,7 +1809,7 @@ describe("Test CodeMerger", function() {
       import { PlasmicDropdownItem__VariantsArgs } from "./PP__DropdownItem"; // plasmic-import: f4c2f0bb-8dce-49c7-a106-65abe9e70e51/renderer
       import IconButton from "../../IconButton"; // plasmic-import: cfe92-5RW/component
       import { PlasmicIconButton__VariantsArgs } from "../../../plasmic/PlasmicIconButton"; // plasmic-import: cfe92-5RW/renderer
-      import { Button as AntdButton, UserAdded, StudioAdded } from "antd"; // plasmic-import: the-uuid/jsBundle
+      import * as antd from "antd"; // plasmic-import: the-uuid/jsBundle
 
       function Comp1() {
         // plasmic-managed-start
