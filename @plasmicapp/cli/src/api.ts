@@ -121,7 +121,7 @@ export class PlasmicApi {
     metaJson: string,
     genModulePath: string | undefined,
     genCssPaths: string[],
-    version: string | undefined
+    pkgVersion: string | undefined
   ): Promise<StyleTokensMap> {
     const result = await this.post(
       `${this.auth.host}/api/v1/projects/${projectId}/jsbundle/upload`,
@@ -133,7 +133,7 @@ export class PlasmicApi {
         metaJson,
         genModulePath,
         genCssPaths,
-        version
+        pkgVersion
       }
     );
     return result.data as StyleTokensMap;

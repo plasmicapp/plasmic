@@ -23,7 +23,7 @@ export interface UploadBundleArgs extends CommonArgs {
   metaJsonFile: string;
   genModulePath?: string;
   genCssPaths: string[];
-  version?: string;
+  pkgVersion?: string;
 }
 
 export async function uploadJsBundle(opts: UploadBundleArgs) {
@@ -39,6 +39,6 @@ export async function uploadJsBundle(opts: UploadBundleArgs) {
     fs.readFileSync(opts.metaJsonFile).toString(),
     opts.genModulePath,
     opts.genCssPaths,
-    opts.version
+    opts.pkgVersion
   );
 }
