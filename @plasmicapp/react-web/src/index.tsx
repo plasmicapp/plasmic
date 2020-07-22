@@ -45,9 +45,9 @@ export interface RenderOpts<
   A extends Args,
   O extends Overrides
 > {
-  variants?: V;
-  args?: A;
-  overrides?: O;
+  variants?: Partial<V>;
+  args?: Partial<A>;
+  overrides?: Partial<O>;
 }
 
 // Flex provides a more "flexible" way to specify bindings.
@@ -450,19 +450,22 @@ export abstract class Renderer<
   Root extends keyof RFs
 > {
   constructor(
-    protected variants: V,
-    protected args: A,
+    protected variants: Partial<V>,
+    protected args: Partial<A>,
     protected renderFuncs: RFs,
     protected root: Root
   ) {}
-  protected abstract create(variants: V, args: A): Renderer<V, A, RFs, Root>;
+  protected abstract create(
+    variants: Partial<V>,
+    args: Partial<A>
+  ): Renderer<V, A, RFs, Root>;
   abstract getInternalVariantProps(): string[];
   abstract getInternalArgProps(): string[];
-  withVariants(variants: V) {
-    return this.create({ ...this.variants, ...variants }, this.args);
+  withVariants(variants: Partial<V>) {
+    return this.create(mergeVariants(this.variants, variants), this.args);
   }
   withArgs(args: Partial<A>) {
-    return this.create(this.variants, { ...this.args, ...args });
+    return this.create(this.variants, mergeArgs(this.args, args));
   }
   withOverrides(overrides: RenderFuncOverrides<RFs[Root]>) {
     return this.forNode(this.root).withOverrides(overrides);
@@ -470,38 +473,148 @@ export abstract class Renderer<
   forNode(node: keyof RFs): NodeRenderer<RFs[typeof node]> {
     return new NodeRenderer(
       this.renderFuncs[node],
-      this.variants,
-      this.args,
+      this.variants as RenderFuncVariants<RFs[typeof node]>,
+      this.args as RenderFuncArgs<RFs[typeof node]>,
       {}
     );
   }
   render() {
-    return this.forNode(this.root);
+    return this.forNode(this.root).render();
   }
 }
 
 export class NodeRenderer<RF extends RenderFunc<any, any, any>> {
   constructor(
     protected renderFunc: RF,
-    protected variants: any,
-    protected args: any,
-    protected overrides: any
+    protected variants: Partial<RenderFuncVariants<RF>>,
+    protected args: Partial<RenderFuncArgs<RF>>,
+    protected overrides: Partial<RenderFuncOverrides<RF>>
   ) {}
-  withOverrides(overrides: RenderFuncOverrides<RF>) {
-    return new NodeRenderer(this.renderFunc, this.variants, this.args, {
-      ...this.overrides,
-      ...overrides
-    });
+  withVariants(variants: Partial<RenderFuncVariants<RF>>) {
+    return new NodeRenderer(
+      this.renderFunc,
+      mergeVariants(this.variants, variants),
+      this.args,
+      this.overrides
+    );
+  }
+  withArgs(args: Partial<RenderFuncArgs<RF>>) {
+    return new NodeRenderer(
+      this.renderFunc,
+      this.variants,
+      mergeArgs(this.args, args),
+      this.overrides
+    );
+  }
+  withOverrides(overrides: Partial<RenderFuncOverrides<RF>>) {
+    return new NodeRenderer(
+      this.renderFunc,
+      this.variants,
+      this.args,
+      mergeFlexOverrides(this.overrides, overrides)
+    );
   }
   render() {
     return this.renderFunc({
       variants: this.variants,
       overrides: this.overrides,
       args: this.args
-    });
+    }) as React.ReactElement;
   }
+}
+
+function mergeVariants<V extends Variants>(
+  v1: Partial<V>,
+  v2: Partial<V>
+): Partial<V> {
+  return { ...v1, ...v2 };
+}
+
+function mergeArgs<A extends Args>(a1: Partial<A>, a2: Partial<A>): Partial<A> {
+  return { ...a1, ...a2 };
+}
+
+function mergeFlexOverrides<O extends Overrides>(
+  o1: Partial<O>,
+  o2: Partial<O>
+): Partial<O> {
+  const keys = Array.from(new Set([...Object.keys(o1), ...Object.keys(o2)]));
+  const merged: Record<string, any> = {};
+  for (const key of keys) {
+    merged[key] = mergeFlexOverride(o1[key], o2[key]);
+  }
+  return merged as Partial<O>;
+}
+
+function chainSingleArgFuncs<A>(...funcs: ((arg: A) => A)[]) {
+  if (funcs.length === 0) {
+    return undefined;
+  }
+  return (arg: A) => {
+    let res: A = arg;
+    for (const func of funcs) {
+      res = func(res);
+    }
+    return res;
+  };
+}
+
+function mergeFlexOverride<C extends React.ElementType<any>>(
+  fo1: Flex<C> | undefined,
+  fo2: Flex<C> | undefined
+): Flex<C> | undefined {
+  if (!fo1) {
+    return fo2;
+  }
+  if (!fo2) {
+    return fo1;
+  }
+
+  const o1 = deriveOverride(fo1);
+  const o2 = deriveOverride(fo2);
+  const wrap = chainSingleArgFuncs(...[o1.wrap, o2.wrap].filter(notNil));
+  const wrapChildren = chainSingleArgFuncs(
+    ...[o1.wrapChildren, o2.wrapChildren].filter(notNil)
+  );
+
+  // "render" type always takes precedence
+  if (o2.type === "render") {
+    return {
+      render: o2.render,
+      wrap,
+      wrapChildren
+    };
+  }
+
+  if (o1.type === "render") {
+    return {
+      render: o1.render,
+      wrap,
+      wrapChildren
+    };
+  }
+
+  const props = mergeProps(o1.props, o2.props) as Partial<
+    React.ComponentProps<C>
+  >;
+
+  // "as" will take precedence
+  const as =
+    (o2.type === "as" ? o2.as : undefined) ??
+    (o1.type === "as" ? o1.as : undefined);
+
+  return {
+    props,
+    wrap,
+    wrapChildren,
+    ...(as ? { as } : {})
+  };
 }
 
 export type RendererVariants<
   R extends Renderer<any, any, any, any>
 > = R extends Renderer<infer V, any, any, any> ? V : never;
+
+function notNil<T>(x: T | undefined | null): x is T {
+  return x != null;
+}
