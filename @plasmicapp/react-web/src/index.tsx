@@ -53,9 +53,15 @@ export interface RenderOpts<
 // Flex provides a more "flexible" way to specify bindings.
 export type Flex<DefaultElementType extends React.ElementType> =
   // Fully-specified bindings
-  | Omit<DefaultOverride<DefaultElementType>, "type">
+  | (Omit<DefaultOverride<DefaultElementType>, "type"> & {
+      as?: never;
+      render?: never;
+    })
   | Omit<AsOverride<any>, "type">
-  | Omit<RenderOverride<DefaultElementType>, "type">
+  | (Omit<RenderOverride<DefaultElementType>, "type"> & {
+      as?: never;
+      props?: never;
+    })
 
   // Valid ReactNode, used as children.
   // Note: We use React.ReactChild instead of React.ReactNode because we don't want to include
@@ -63,12 +69,18 @@ export type Flex<DefaultElementType extends React.ElementType> =
   // defeating any attempt to type-check!
   | React.ReactChild
 
-  // Not rendered
-  | null // rendered as null
-  | undefined // rendered as null
+  // Ignored
+  | null
+  | undefined
 
   // dict of props for the DefaultElementType
-  | Partial<React.ComponentProps<DefaultElementType>>
+  | (Partial<React.ComponentProps<DefaultElementType>> & {
+      wrap?: never;
+      wrapChildren?: never;
+      props?: never;
+      as?: never;
+      render?: never;
+    })
 
   // render function taking in dict of props for the DefaultElementType
   | ((props: React.ComponentProps<DefaultElementType>) => React.ReactNode);
