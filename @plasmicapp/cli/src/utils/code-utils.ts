@@ -23,9 +23,16 @@ import generate, { GeneratorOptions } from "@babel/generator";
 import * as babel from "@babel/core";
 import { ImportDeclaration } from "@babel/types";
 import { tryParsePlasmicImportSpec } from "@plasmicapp/code-merger";
-import { code as nodeToCode } from "@plasmicapp/code-merger/dist/utils";
 
-const IMPORT_MARKER = /import\s+([^;]+)\s*;.*\s+plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss|defaultcss|icon))?/g;
+const nodeToFormattedCode = (n: Node) => {
+  const c = generate(n, { retainLines: true }).code;
+  return Prettier.format(c, {
+    parser: "typescript",
+    plugins: [parserTypeScript],
+    trailingComma: "none",
+    arrowParens: "avoid"
+  });
+};
 
 function findImportSpecifierWithAlias(
   importDecl: ImportDeclaration,
@@ -196,7 +203,7 @@ export function replaceImports(
       stmt.source.value = realPath;
     }
   });
-  return nodeToCode(file, { retainLines: true });
+  return nodeToFormattedCode(file);
 }
 
 function makeImportPath(fromPath: string, toPath: string, stripExt: boolean) {
@@ -361,7 +368,7 @@ export const formatJs = (code: string) => {
     }
   });
 
-  const withmarkers = generate(file, { retainLines: true }).code;
+  const withmarkers = nodeToFormattedCode(file);
   const withNewLines = withmarkers.replace(
     new RegExp(`"${newLineMarker}"`, "g"),
     "\n"
@@ -374,39 +381,4 @@ export const formatJs = (code: string) => {
     parser: "typescript",
     plugins: [parserTypeScript]
   });
-};
-
-export const parseImport = (code: string) => {
-  const file = parser.parse(code, {
-    strictMode: true,
-    sourceType: "module",
-    plugins: ["jsx", "typescript"]
-  });
-  if (file.program.body.length === 1) {
-    const stmt = file.program.body[0];
-    if (stmt.type === "ImportDeclaration") {
-      return stmt;
-    }
-  }
-  return undefined;
-};
-
-export const toCode = (node: ImportDeclaration) => {
-  const code = generate(node, { retainLines: true, comments: false }).code;
-  const formatted = Prettier.format(code, {
-    parser: "typescript",
-    trailingComma: "none",
-    plugins: [parserTypeScript]
-  });
-
-  // Prettier add a newline to the end of file. So trim it.
-  const body = formatted.trimRight();
-  // Babel may move the comment to the next line - so we manually append the
-  // comment.
-  // See https://github.com/babel/babel/issues/5512
-  if (node.trailingComments?.length === 1) {
-    const comment = node.trailingComments[0];
-    return body + ` //${comment.value}`;
-  }
-  return body;
 };

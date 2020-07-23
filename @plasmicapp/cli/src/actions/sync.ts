@@ -47,7 +47,7 @@ import {
 } from "@plasmicapp/code-merger";
 import { options } from "yargs";
 import { syncProjectIconAssets } from "./sync-icons";
-import * as semver from "../../../../../wab/src/wab/commons/semver";
+import * as semver from "../utils/semver";
 
 export interface SyncArgs extends CommonArgs {
   projects: readonly string[];

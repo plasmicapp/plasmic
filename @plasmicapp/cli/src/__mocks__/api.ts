@@ -1,9 +1,6 @@
 import L from "lodash";
-import * as semver from "../../../../../wab/src/wab/commons/semver";
-import {
-  VersionResolution,
-  mergeResolves
-} from "../../../../../wab/src/wab/commons/versions";
+import * as semver from "../utils/semver";
+import { VersionResolution, mergeResolves } from "../utils/versions";
 import { ProjectSyncMetadataModel } from "@plasmicapp/code-merger";
 import { AuthConfig } from "../utils/config-utils";
 import {
