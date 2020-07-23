@@ -461,11 +461,14 @@ export abstract class Renderer<
   ): Renderer<V, A, RFs, Root>;
   abstract getInternalVariantProps(): string[];
   abstract getInternalArgProps(): string[];
-  withVariants(variants: Partial<V>) {
-    return this.create(mergeVariants(this.variants, variants), this.args);
+  withVariants(variants: Partial<V>): this {
+    return this.create(
+      mergeVariants(this.variants, variants),
+      this.args
+    ) as this;
   }
-  withArgs(args: Partial<A>) {
-    return this.create(this.variants, mergeArgs(this.args, args));
+  withArgs(args: Partial<A>): this {
+    return this.create(this.variants, mergeArgs(this.args, args)) as this;
   }
   withOverrides(overrides: RenderFuncOverrides<RFs[Root]>) {
     return this.forNode(this.root).withOverrides(overrides);
@@ -490,29 +493,29 @@ export class NodeRenderer<RF extends RenderFunc<any, any, any>> {
     protected args: Partial<RenderFuncArgs<RF>>,
     protected overrides: Partial<RenderFuncOverrides<RF>>
   ) {}
-  withVariants(variants: Partial<RenderFuncVariants<RF>>) {
+  withVariants(variants: Partial<RenderFuncVariants<RF>>): this {
     return new NodeRenderer(
       this.renderFunc,
       mergeVariants(this.variants, variants),
       this.args,
       this.overrides
-    );
+    ) as this;
   }
-  withArgs(args: Partial<RenderFuncArgs<RF>>) {
+  withArgs(args: Partial<RenderFuncArgs<RF>>): this {
     return new NodeRenderer(
       this.renderFunc,
       this.variants,
       mergeArgs(this.args, args),
       this.overrides
-    );
+    ) as this;
   }
-  withOverrides(overrides: Partial<RenderFuncOverrides<RF>>) {
+  withOverrides(overrides: Partial<RenderFuncOverrides<RF>>): this {
     return new NodeRenderer(
       this.renderFunc,
       this.variants,
       this.args,
       mergeFlexOverrides(this.overrides, overrides)
-    );
+    ) as this;
   }
   render() {
     return this.renderFunc({
