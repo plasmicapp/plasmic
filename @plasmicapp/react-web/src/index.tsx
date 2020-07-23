@@ -519,7 +519,7 @@ export class NodeRenderer<RF extends RenderFunc<any, any, any>> {
       variants: this.variants,
       overrides: this.overrides,
       args: this.args
-    }) as React.ReactElement;
+    }) as React.ReactElement | null;
   }
 }
 
