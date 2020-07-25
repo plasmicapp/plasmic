@@ -633,3 +633,21 @@ export type RendererVariants<
 function notNil<T>(x: T | undefined | null): x is T {
   return x != null;
 }
+
+export function pick<T>(obj: T, ...keys: (keyof T)[]): Partial<T> {
+  const res: Partial<T> = {};
+  for (const key of keys) {
+    res[key] = obj[key];
+  }
+  return res;
+}
+
+export function omit<T>(obj: T, ...keys: (keyof T)[]): Partial<T> {
+  const res: Partial<T> = {};
+  for (const key of Object.keys(obj) as (keyof T)[]) {
+    if (!keys.includes(key)) {
+      res[key] = obj[key];
+    }
+  }
+  return res;
+}
