@@ -24,8 +24,11 @@ import * as babel from "@babel/core";
 import { ImportDeclaration } from "@babel/types";
 import { tryParsePlasmicImportSpec } from "@plasmicapp/code-merger";
 
-const nodeToFormattedCode = (n: Node) => {
+const nodeToFormattedCode = (n: Node, unformatted?: boolean) => {
   const c = generate(n, { retainLines: true }).code;
+  if (unformatted) {
+    return c;
+  }
   return Prettier.format(c, {
     parser: "typescript",
     plugins: [parserTypeScript],
@@ -368,7 +371,7 @@ export const formatJs = (code: string) => {
     }
   });
 
-  const withmarkers = nodeToFormattedCode(file);
+  const withmarkers = nodeToFormattedCode(file, true);
   const withNewLines = withmarkers.replace(
     new RegExp(`"${newLineMarker}"`, "g"),
     "\n"
