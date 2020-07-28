@@ -40,6 +40,8 @@ export interface PlasmicConfig {
 
   // The version of cli when this file was written
   cliVersion?: string;
+
+  postSyncCommands?: string[];
 }
 
 export interface CodeConfig {

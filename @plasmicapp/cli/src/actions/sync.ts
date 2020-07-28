@@ -50,6 +50,7 @@ import {
 import { options } from "yargs";
 import { syncProjectIconAssets } from "./sync-icons";
 import * as semver from "../utils/semver";
+import { spawnSync } from "child_process";
 
 export interface SyncArgs extends CommonArgs {
   projects: readonly string[];
@@ -219,6 +220,9 @@ export async function sync(opts: SyncArgs): Promise<void> {
 
   if (!opts.nonInteractive) {
     await warnLatestReactWeb(context);
+  }
+  for (const cmd of context.config.postSyncCommands || []) {
+    spawnSync(cmd, { shell: true, stdio: "inherit" });
   }
 }
 
