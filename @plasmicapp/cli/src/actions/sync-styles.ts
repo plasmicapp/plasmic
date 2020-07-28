@@ -13,6 +13,7 @@ import {
   fixAllFilePaths
 } from "../utils/file-utils";
 import { CommonArgs } from "..";
+import { formatAsLocal } from "../utils/code-utils";
 
 export interface SyncStyleTokensArgs extends CommonArgs {
   projects: readonly string[];
@@ -64,7 +65,9 @@ export function upsertStyleTokens(
   writeFileContent(
     context,
     context.config.tokens.tokensFilePath,
+
     JSON.stringify(curStyleMap, undefined, 2),
+
     { force: true }
   );
 }

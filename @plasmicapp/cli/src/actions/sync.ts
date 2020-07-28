@@ -31,7 +31,9 @@ import {
 import {
   fixAllImportStatements,
   tsxToJsx,
-  formatJs
+  formatScript,
+  ComponentUpdateSummary,
+  formatAsLocal
 } from "../utils/code-utils";
 import { upsertStyleTokens } from "./sync-styles";
 import { flatMap } from "../utils/lang-utils";
@@ -64,7 +66,7 @@ export interface SyncArgs extends CommonArgs {
 function maybeConvertTsxToJsx(fileName: string, content: string) {
   if (fileName.endsWith("tsx")) {
     const jsFileName = stripExtension(fileName) + ".jsx";
-    const jsContent = formatJs(tsxToJsx(content));
+    const jsContent = formatScript(tsxToJsx(content));
     return [jsFileName, jsContent];
   }
   return [fileName, content];
@@ -170,6 +172,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
     context,
     "@plasmicapp/react-web"
   );
+  const summary = new Map<string, ComponentUpdateSummary>();
   await Promise.all(
     resolveResults.map(async projectMeta => {
       // By default projects that users explicitly sync use "latest" and dependencies use caret ranges.
@@ -186,7 +189,8 @@ export async function sync(opts: SyncArgs): Promise<void> {
         projectMeta.componentIds,
         projectMeta.version,
         versionRange,
-        reactWebVersion
+        reactWebVersion,
+        summary
       );
     })
   );
@@ -211,7 +215,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
   });
 
   // Now we know config.components are all correct, so we can go ahead and fix up all the import statements
-  fixAllImportStatements(context);
+  fixAllImportStatements(context, summary);
 
   if (!opts.nonInteractive) {
     await warnLatestReactWeb(context);
@@ -225,7 +229,8 @@ async function syncProject(
   componentIds: string[],
   projectVersion: string,
   projectVersionRange: string,
-  reactWebVersion?: string
+  reactWebVersion: string | undefined,
+  summary: Map<string, ComponentUpdateSummary>
 ): Promise<void> {
   const newComponentScheme =
     opts.newComponentScheme || context.config.code.scheme;
@@ -300,7 +305,8 @@ async function syncProject(
     componentBundles,
     projectBundle.iconAssets,
     opts.forceOverwrite,
-    !!opts.appendJsxOnMissingBase
+    !!opts.appendJsxOnMissingBase,
+    summary
   );
   upsertStyleTokens(context, projectBundle.usedTokens);
 }
@@ -311,7 +317,8 @@ async function syncProjectComponents(
   version: string,
   componentBundles: ComponentBundle[],
   forceOverwrite: boolean,
-  appendJsxOnMissingBase: boolean
+  appendJsxOnMissingBase: boolean,
+  summary: Map<string, ComponentUpdateSummary>
 ) {
   const allCompConfigs = L.keyBy(project.components, c => c.id);
   for (const bundle of componentBundles) {
@@ -332,6 +339,7 @@ async function syncProjectComponents(
     );
     let compConfig = allCompConfigs[id];
     const isNew = !compConfig;
+    let skeletonModuleModified = isNew;
     if (isNew) {
       // This is the first time we're syncing this component
       compConfig = {
@@ -435,8 +443,10 @@ async function syncProjectComponents(
             );
           }
         }
+        skeletonModuleModified = true;
       } else if (/\/\/\s*plasmic-managed-jsx\/\d+/.test(editedFile)) {
         if (forceOverwrite) {
+          skeletonModuleModified = true;
           writeFileContent(
             context,
             compConfig.importSpec.modulePath,
@@ -458,6 +468,7 @@ async function syncProjectComponents(
     writeFileContent(context, compConfig.cssFilePath, cssRules, {
       force: !isNew
     });
+    summary.set(id, { skeletonModuleModified });
   }
 }
 
@@ -523,7 +534,8 @@ async function syncProjectConfig(
   componentBundles: ComponentBundle[],
   iconBundles: IconBundle[],
   forceOverwrite: boolean,
-  appendJsxOnMissingBase: boolean
+  appendJsxOnMissingBase: boolean,
+  summary: Map<string, ComponentUpdateSummary>
 ) {
   let project = context.config.projects.find(c => c.projectId === pc.projectId);
   const defaultCssFilePath = path.join(
@@ -547,7 +559,6 @@ async function syncProjectConfig(
   if (!project.cssFilePath) {
     project.cssFilePath = defaultCssFilePath;
   }
-
   writeFileContent(context, project.cssFilePath, pc.cssRules, {
     force: !isNew
   });
@@ -557,7 +568,8 @@ async function syncProjectConfig(
     version,
     componentBundles,
     forceOverwrite,
-    appendJsxOnMissingBase
+    appendJsxOnMissingBase,
+    summary
   );
   syncProjectIconAssets(context, project, iconBundles);
 }

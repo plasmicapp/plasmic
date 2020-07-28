@@ -1,4 +1,4 @@
-import path from "upath";
+import path, { resolve } from "upath";
 import L from "lodash";
 import fs from "fs";
 import { logger } from "../deps";
@@ -15,8 +15,8 @@ import {
 import { stripExtension, writeFileContent } from "./file-utils";
 import { flatMap } from "./lang-utils";
 import * as ts from "typescript";
-import * as Prettier from "prettier/standalone";
-import parserTypeScript from "prettier/parser-typescript";
+import * as Prettier from "prettier";
+import { Options, resolveConfig } from "prettier";
 import * as parser from "@babel/parser";
 import traverse, { Node, NodePath } from "@babel/traverse";
 import generate, { GeneratorOptions } from "@babel/generator";
@@ -24,17 +24,24 @@ import * as babel from "@babel/core";
 import { ImportDeclaration } from "@babel/types";
 import { tryParsePlasmicImportSpec } from "@plasmicapp/code-merger";
 
+export const formatAsLocal = (
+  c: string,
+  filePath: string,
+  defaultOpts: Options = {}
+) => {
+  const opts = resolveConfig.sync(process.cwd()) || defaultOpts;
+  opts.filepath = filePath;
+  return Prettier.format(c, opts);
+};
+
 const nodeToFormattedCode = (n: Node, unformatted?: boolean) => {
   const c = generate(n, { retainLines: true }).code;
-  if (unformatted) {
-    return c;
-  }
-  return Prettier.format(c, {
-    parser: "typescript",
-    plugins: [parserTypeScript],
-    trailingComma: "none",
-    arrowParens: "avoid"
-  });
+  return unformatted
+    ? c
+    : formatAsLocal(c, "/tmp/x.tsx", {
+        trailingComma: "none",
+        arrowParens: "avoid"
+      });
 };
 
 function findImportSpecifierWithAlias(
@@ -232,11 +239,19 @@ export function isLocalModulePath(modulePath: string) {
   return !!path.extname(modulePath);
 }
 
+export interface ComponentUpdateSummary {
+  // Whether the skeleton module was modified or created.
+  skeletonModuleModified: boolean;
+}
+
 /**
  * Assuming that all the files referenced in PlasmicConfig are correct, fixes import statements using PlasmicConfig
  * file locations as the source of truth.
  */
-export function fixAllImportStatements(context: PlasmicContext) {
+export function fixAllImportStatements(
+  context: PlasmicContext,
+  summary?: Map<string, ComponentUpdateSummary>
+) {
   logger.info("Fixing import statements...");
   const config = context.config;
   const allComponents = flatMap(config.projects, p => p.components);
@@ -251,13 +266,23 @@ export function fixAllImportStatements(context: PlasmicContext) {
   );
   for (const project of config.projects) {
     for (const compConfig of project.components) {
-      fixComponentImportStatements(
-        context,
-        compConfig,
-        allCompConfigs,
-        allGlobalVariantConfigs,
-        allIconConfigs
-      );
+      const compSummary = summary?.get(compConfig.id);
+      if (summary && !compSummary) {
+        continue;
+      }
+      const fixSkeletonModule = compSummary
+        ? compSummary.skeletonModuleModified
+        : true;
+      if (!summary || compSummary) {
+        fixComponentImportStatements(
+          context,
+          compConfig,
+          allCompConfigs,
+          allGlobalVariantConfigs,
+          allIconConfigs,
+          fixSkeletonModule
+        );
+      }
     }
   }
 }
@@ -267,7 +292,8 @@ function fixComponentImportStatements(
   compConfig: ComponentConfig,
   allCompConfigs: Record<string, ComponentConfig>,
   allGlobalVariantConfigs: Record<string, GlobalVariantGroupConfig>,
-  allIconConfigs: Record<string, IconConfig>
+  allIconConfigs: Record<string, IconConfig>,
+  fixSkeletonModule: boolean
 ) {
   fixFileImportStatements(
     context,
@@ -277,7 +303,10 @@ function fixComponentImportStatements(
     allIconConfigs
   );
   // If ComponentConfig.importPath is still a local file, we best-effort also fix up the import statements there.
-  if (isLocalModulePath(compConfig.importSpec.modulePath)) {
+  if (
+    isLocalModulePath(compConfig.importSpec.modulePath) &&
+    fixSkeletonModule
+  ) {
     fixFileImportStatements(
       context,
       compConfig.importSpec.modulePath,
@@ -349,7 +378,7 @@ export const tsxToJsx = (code: string) => {
     .replace(usageMagic, "");
 };
 
-export const formatJs = (code: string) => {
+export const formatScript = (code: string) => {
   const file = parser.parse(code, {
     strictMode: true,
     sourceType: "module",
@@ -376,12 +405,9 @@ export const formatJs = (code: string) => {
     new RegExp(`"${newLineMarker}"`, "g"),
     "\n"
   );
-
-  return Prettier.format(withNewLines, {
+  return formatAsLocal(withNewLines, "/tmp/x.tsx", {
     printWidth: 80,
     tabWidth: 2,
-    useTabs: false,
-    parser: "typescript",
-    plugins: [parserTypeScript]
+    useTabs: false
   });
 };

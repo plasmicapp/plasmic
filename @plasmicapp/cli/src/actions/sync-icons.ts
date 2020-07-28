@@ -10,6 +10,8 @@ import {
 import { ProjectIconsResponse, IconBundle } from "../api";
 import { writeFileContent, fixAllFilePaths } from "../utils/file-utils";
 import { CommonArgs } from "..";
+import { format } from "winston";
+import { formatAsLocal } from "../utils/code-utils";
 
 export interface SyncIconsArgs extends CommonArgs {
   projects: readonly string[];
@@ -81,8 +83,13 @@ export function syncProjectIconAssets(
       project.icons.push(iconConfig);
     }
 
-    writeFileContent(context, iconConfig.moduleFilePath, bundle.module, {
-      force: !isNew
-    });
+    writeFileContent(
+      context,
+      iconConfig.moduleFilePath,
+      formatAsLocal(bundle.module, iconConfig.moduleFilePath),
+      {
+        force: !isNew
+      }
+    );
   }
 }

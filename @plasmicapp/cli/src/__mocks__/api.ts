@@ -100,7 +100,7 @@ function genComponentBundle(component: MockComponent): ComponentBundle {
   return {
     renderModule: mockComponentToString(component),
     skeletonModule: mockComponentToString(component),
-    cssRules: "css rules " + component.name,
+    cssRules: `theClass {color: blue;}`,
     renderModuleFileName: genFilename(component.name, "tsx"),
     skeletonModuleFileName: component.name + ".tsx",
     cssFileName: genFilename(component.name, "css"),
@@ -127,7 +127,7 @@ function genProjectMetaBundle(projectId: string): ProjectMetaBundle {
     projectId,
     projectName: projectId,
     cssFileName: genFilename(projectId, "css"),
-    cssRules: "css rules " + projectId
+    cssRules: `theClass {color: green;}`
   };
 }
 
@@ -137,7 +137,7 @@ class PlasmicApi {
   async genStyleConfig(): Promise<StyleConfigResponse> {
     const result = {
       defaultStyleCssFileName: genFilename("default", "css"),
-      defaultStyleCssRules: "default css"
+      defaultStyleCssRules: `theClass {color: red;}`
     };
     return result;
   }
