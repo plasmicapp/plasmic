@@ -1,0 +1,63 @@
+{
+  "platform": "react",
+  "code": {
+    "lang": "ts",
+    "scheme": "blackbox"
+  },
+  "style": {
+    "scheme": "css",
+    "defaultStyleCssFilePath": "/tmp/newDir/PP__plasmic__default_style.css"
+  },
+  "tokens": {
+    "scheme": "theo",
+    "tokensFilePath": "wab/styles/plasmic-tokens.theo.json"
+  },
+  "srcDir": "./src",
+  "defaultPlasmicDir": "./wab/client/plasmic",
+  "projects": [
+    {
+      "projectId": "aBwbYpvCqht4V3F8CJNJX3",
+      "components": [
+        {
+          "id": "f68b061e-0f85-41c1-8707-3ba9f634f1af",
+          "name": "CodeSandboxDialogContent",
+          "type": "managed",
+          "projectId": "aBwbYpvCqht4V3F8CJNJX3",
+          "renderModuleFilePath": "/tmp/newDir/PP__CodeSandboxDialogContent.tsx",
+          "importSpec": {
+            "modulePath": "/tmp/newDir/CodeSandboxDialogContent.tsx"
+          },
+          "cssFilePath": "/tmp/newDir/PP__CodeSandboxDialogContent.css",
+          "scheme": "direct"
+        },
+        {
+          "id": "4SYnkOQLd5",
+          "name": "Button",
+          "type": "managed",
+          "projectId": "aBwbYpvCqht4V3F8CJNJX3",
+          "renderModuleFilePath": "/tmp/newDir/PlasmicButton.tsx",
+          "importSpec": {
+            "modulePath": "/tmp/newDir/Button.tsx"
+          },
+          "cssFilePath": "/tmp/newDir/PlasmicButton.css",
+          "scheme": "blackbox"
+        }
+      ],
+      "cssFilePath": "/tmp/newDir/PP__plasmic_kit.css",
+      "projectName": "Plasmic Kit",
+      "icons": [
+        {
+          "id": "rFn9Vj2p9",
+          "name": "Close",
+          "moduleFilePath": "/tmp/newDir/PlasmicIcon__Close.tsx"
+        }
+      ],
+      "version": "latest"
+    }
+  ],
+  "globalVariants": {
+    "variantGroups": [
+    ]
+  },
+  "cliVersion": "0.1.40"
+}

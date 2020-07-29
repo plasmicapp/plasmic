@@ -34,8 +34,15 @@ export const formatAsLocal = (
   return Prettier.format(c, opts);
 };
 
-const nodeToFormattedCode = (n: Node, unformatted?: boolean) => {
-  const c = generate(n, { retainLines: true }).code;
+const nodeToFormattedCode = (
+  n: Node,
+  unformatted?: boolean,
+  commentsToRemove?: Set<string>
+) => {
+  const c = generate(n, {
+    retainLines: true,
+    shouldPrintComment: c => !commentsToRemove || !commentsToRemove.has(c)
+  }).code;
   return unformatted
     ? c
     : formatAsLocal(c, "/tmp/x.tsx", {
@@ -117,11 +124,8 @@ export function ensureImportDefaultSpecifier(
 export function replaceImports(
   code: string,
   fromPath: string,
-  styleConfig: StyleConfig,
-  compConfigsMap: Record<string, ComponentConfig>,
-  projectConfigsMap: Record<string, ProjectConfig>,
-  globalVariantConfigsMap: Record<string, GlobalVariantGroupConfig>,
-  iconConfigsMap: Record<string, IconConfig>
+  fixImportContext: FixImportContext,
+  removeImportDirective: boolean
 ) {
   const file = parser.parse(code, {
     strictMode: true,
@@ -136,6 +140,7 @@ export function replaceImports(
       "classProperties"
     ]
   });
+  const commentsToRemove = new Set<string>();
   file.program.body.forEach(stmt => {
     if (stmt.type !== "ImportDeclaration") {
       return;
@@ -144,11 +149,14 @@ export function replaceImports(
     if (!spec) {
       return;
     }
+    if (removeImportDirective) {
+      commentsToRemove.add(stmt.trailingComments?.[0].value || "");
+    }
     const type = spec.type;
     const uuid = spec.id;
     if (type === "component") {
       // instantiation of a mapped or managed component
-      const compConfig = compConfigsMap[uuid];
+      const compConfig = fixImportContext.components[uuid];
       if (!compConfig) {
         throw new Error(
           `Encountered Plasmic components (of uuid ${uuid}) in ${fromPath} that are being used but have not been synced.`
@@ -166,7 +174,7 @@ export function replaceImports(
       stmt.source.value = realPath;
     } else if (type === "render") {
       // import of the PP blackbox
-      const compConfig = compConfigsMap[uuid];
+      const compConfig = fixImportContext.components[uuid];
       const realPath = makeImportPath(
         fromPath,
         compConfig.renderModuleFilePath,
@@ -175,12 +183,12 @@ export function replaceImports(
       stmt.source.value = realPath;
     } else if (type === "css") {
       // import of the PP css file
-      const compConfig = compConfigsMap[uuid];
+      const compConfig = fixImportContext.components[uuid];
       const realPath = makeImportPath(fromPath, compConfig.cssFilePath, false);
       stmt.source.value = realPath;
     } else if (type === "globalVariant") {
       // import of global context
-      const variantConfig = globalVariantConfigsMap[uuid];
+      const variantConfig = fixImportContext.globalVariants[uuid];
       const realPath = makeImportPath(
         fromPath,
         variantConfig.contextFilePath,
@@ -189,7 +197,7 @@ export function replaceImports(
       stmt.source.value = realPath;
     } else if (type === "icon") {
       // import of global context
-      const iconConfig = iconConfigsMap[uuid];
+      const iconConfig = fixImportContext.icons[uuid];
       const realPath = makeImportPath(
         fromPath,
         iconConfig.moduleFilePath,
@@ -197,7 +205,7 @@ export function replaceImports(
       );
       stmt.source.value = realPath;
     } else if (type === "projectcss") {
-      const projectConfig = projectConfigsMap[uuid];
+      const projectConfig = fixImportContext.projects[uuid];
       const realPath = makeImportPath(
         fromPath,
         projectConfig.cssFilePath,
@@ -207,13 +215,13 @@ export function replaceImports(
     } else if (type === "defaultcss") {
       const realPath = makeImportPath(
         fromPath,
-        styleConfig.defaultStyleCssFilePath,
+        fixImportContext.config.style.defaultStyleCssFilePath,
         false
       );
       stmt.source.value = realPath;
     }
   });
-  return nodeToFormattedCode(file);
+  return nodeToFormattedCode(file, false, commentsToRemove);
 }
 
 function makeImportPath(fromPath: string, toPath: string, stripExt: boolean) {
@@ -244,6 +252,35 @@ export interface ComponentUpdateSummary {
   skeletonModuleModified: boolean;
 }
 
+export interface FixImportContext {
+  config: PlasmicConfig;
+  components: Record<string, ComponentConfig>;
+  globalVariants: Record<string, GlobalVariantGroupConfig>;
+  icons: Record<string, IconConfig>;
+  projects: Record<string, ProjectConfig>;
+}
+
+export const mkFixImportContext = (config: PlasmicConfig) => {
+  const allComponents = flatMap(config.projects, p => p.components);
+  const components = L.keyBy(allComponents, c => c.id);
+  const globalVariants = L.keyBy(
+    config.globalVariants.variantGroups,
+    c => c.id
+  );
+  const icons = L.keyBy(
+    flatMap(config.projects, p => p.icons),
+    c => c.id
+  );
+  const projects = L.keyBy(config.projects, p => p.projectId);
+  return {
+    config,
+    components,
+    globalVariants,
+    icons,
+    projects
+  };
+};
+
 /**
  * Assuming that all the files referenced in PlasmicConfig are correct, fixes import statements using PlasmicConfig
  * file locations as the source of truth.
@@ -254,16 +291,7 @@ export function fixAllImportStatements(
 ) {
   logger.info("Fixing import statements...");
   const config = context.config;
-  const allComponents = flatMap(config.projects, p => p.components);
-  const allCompConfigs = L.keyBy(allComponents, c => c.id);
-  const allGlobalVariantConfigs = L.keyBy(
-    config.globalVariants.variantGroups,
-    c => c.id
-  );
-  const allIconConfigs = L.keyBy(
-    flatMap(config.projects, p => p.icons),
-    c => c.id
-  );
+  const fixImportContext = mkFixImportContext(config);
   for (const project of config.projects) {
     for (const compConfig of project.components) {
       const compSummary = summary?.get(compConfig.id);
@@ -277,9 +305,7 @@ export function fixAllImportStatements(
         fixComponentImportStatements(
           context,
           compConfig,
-          allCompConfigs,
-          allGlobalVariantConfigs,
-          allIconConfigs,
+          fixImportContext,
           fixSkeletonModule
         );
       }
@@ -290,17 +316,14 @@ export function fixAllImportStatements(
 function fixComponentImportStatements(
   context: PlasmicContext,
   compConfig: ComponentConfig,
-  allCompConfigs: Record<string, ComponentConfig>,
-  allGlobalVariantConfigs: Record<string, GlobalVariantGroupConfig>,
-  allIconConfigs: Record<string, IconConfig>,
+  fixImportContext: FixImportContext,
   fixSkeletonModule: boolean
 ) {
   fixFileImportStatements(
     context,
     compConfig.renderModuleFilePath,
-    allCompConfigs,
-    allGlobalVariantConfigs,
-    allIconConfigs
+    fixImportContext,
+    false
   );
   // If ComponentConfig.importPath is still a local file, we best-effort also fix up the import statements there.
   if (
@@ -310,9 +333,8 @@ function fixComponentImportStatements(
     fixFileImportStatements(
       context,
       compConfig.importSpec.modulePath,
-      allCompConfigs,
-      allGlobalVariantConfigs,
-      allIconConfigs
+      fixImportContext,
+      true
     );
   }
 }
@@ -320,22 +342,18 @@ function fixComponentImportStatements(
 function fixFileImportStatements(
   context: PlasmicContext,
   srcDirFilePath: string,
-  allCompConfigs: Record<string, ComponentConfig>,
-  allGlobalVariantConfigs: Record<string, GlobalVariantGroupConfig>,
-  allIconConfigs: Record<string, IconConfig>
+  fixImportContext: FixImportContext,
+  removeImportDirective: boolean
 ) {
   const prevContent = fs
     .readFileSync(path.join(context.absoluteSrcDir, srcDirFilePath))
     .toString();
-  const allProjectConfigs = L.keyBy(context.config.projects, p => p.projectId);
+
   const newContent = replaceImports(
     prevContent,
     srcDirFilePath,
-    context.config.style,
-    allCompConfigs,
-    allProjectConfigs,
-    allGlobalVariantConfigs,
-    allIconConfigs
+    fixImportContext,
+    removeImportDirective
   );
   writeFileContent(context, srcDirFilePath, newContent, { force: true });
 }

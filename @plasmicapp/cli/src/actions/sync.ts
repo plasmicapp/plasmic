@@ -9,7 +9,8 @@ import {
   PlasmicContext,
   ProjectConfig,
   createProjectConfig,
-  CONFIG_FILE_NAME
+  CONFIG_FILE_NAME,
+  ComponentConfig
 } from "../utils/config-utils";
 import {
   buildBaseNameToFiles,
@@ -33,7 +34,8 @@ import {
   tsxToJsx,
   formatScript,
   ComponentUpdateSummary,
-  formatAsLocal
+  replaceImports,
+  mkFixImportContext
 } from "../utils/code-utils";
 import { upsertStyleTokens } from "./sync-styles";
 import { flatMap } from "../utils/lang-utils";
@@ -71,6 +73,18 @@ function maybeConvertTsxToJsx(fileName: string, content: string) {
     return [jsFileName, jsContent];
   }
   return [fileName, content];
+}
+
+interface ComponentPendingMerge {
+  // path of the skeleton module
+  skeletonModulePath: string;
+  editedSkeletonFile: string;
+  newSkeletonFile: string;
+  // function to perform code merger using input whose import has been resolved.
+  merge: (
+    resolvedNewSkeletonFile: string,
+    resolvedEditedSkeletonFile: string
+  ) => Promise<void>;
 }
 
 /**
@@ -174,6 +188,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
     "@plasmicapp/react-web"
   );
   const summary = new Map<string, ComponentUpdateSummary>();
+  const pendingMerge = new Array<ComponentPendingMerge>();
   await Promise.all(
     resolveResults.map(async projectMeta => {
       // By default projects that users explicitly sync use "latest" and dependencies use caret ranges.
@@ -191,7 +206,8 @@ export async function sync(opts: SyncArgs): Promise<void> {
         projectMeta.version,
         versionRange,
         reactWebVersion,
-        summary
+        summary,
+        pendingMerge
       );
     })
   );
@@ -215,6 +231,24 @@ export async function sync(opts: SyncArgs): Promise<void> {
     style: context.config.style
   });
 
+  const fixImportContext = mkFixImportContext(context.config);
+
+  for (const m of pendingMerge) {
+    const resolvedEditedFile = replaceImports(
+      m.editedSkeletonFile,
+      m.skeletonModulePath,
+      fixImportContext,
+      true
+    );
+    const resolvedNewFile = replaceImports(
+      m.newSkeletonFile,
+      m.skeletonModulePath,
+      fixImportContext,
+      true
+    );
+    await m.merge(resolvedNewFile, resolvedEditedFile);
+  }
+
   // Now we know config.components are all correct, so we can go ahead and fix up all the import statements
   fixAllImportStatements(context, summary);
 
@@ -234,7 +268,8 @@ async function syncProject(
   projectVersion: string,
   projectVersionRange: string,
   reactWebVersion: string | undefined,
-  summary: Map<string, ComponentUpdateSummary>
+  summary: Map<string, ComponentUpdateSummary>,
+  pendingMerge: ComponentPendingMerge[]
 ): Promise<void> {
   const newComponentScheme =
     opts.newComponentScheme || context.config.code.scheme;
@@ -310,10 +345,75 @@ async function syncProject(
     projectBundle.iconAssets,
     opts.forceOverwrite,
     !!opts.appendJsxOnMissingBase,
-    summary
+    summary,
+    pendingMerge
   );
   upsertStyleTokens(context, projectBundle.usedTokens);
 }
+
+const updateDirectSkeleton = async (
+  newFileContent: string,
+  editedFileContent: string,
+  context: PlasmicContext,
+  compConfig: ComponentConfig,
+  forceOverwrite: boolean,
+  nameInIdToUuid: [string, string][],
+  appendJsxOnMissingBase: boolean
+) => {
+  // merge code!
+  const componentByUuid = new Map<string, ComponentInfoForMerge>();
+
+  componentByUuid.set(compConfig.id, {
+    editedFile: editedFileContent,
+    newFile: newFileContent,
+    newNameInIdToUuid: new Map(nameInIdToUuid)
+  });
+  const mergedFiles = await mergeFiles(
+    componentByUuid,
+    compConfig.projectId,
+    makeCachedProjectSyncDataProvider(async (projectId, revision) => {
+      try {
+        return await context.api.projectSyncMetadata(projectId, revision, true);
+      } catch (e) {
+        if (
+          e instanceof AppServerError &&
+          /revision \d+ not found/.test(e.message)
+        ) {
+          throw e;
+        } else {
+          logger.log(e.messag);
+          process.exit(1);
+        }
+      }
+    }),
+    () => {},
+    appendJsxOnMissingBase
+  );
+  const merged = mergedFiles?.get(compConfig.id);
+  if (merged) {
+    writeFileContent(context, compConfig.importSpec.modulePath, merged, {
+      force: true
+    });
+  } else {
+    if (!forceOverwrite) {
+      throw new Error(
+        `Cannot merge ${compConfig.importSpec.modulePath}. If you just switched the code scheme for the component from blackbox to direct, use --force-overwrite option to force the switch.`
+      );
+    } else {
+      logger.warn(
+        `Overwrite ${compConfig.importSpec.modulePath} despite merge failure`
+      );
+      writeFileContent(
+        context,
+        compConfig.importSpec.modulePath,
+        newFileContent,
+        {
+          force: true
+        }
+      );
+    }
+  }
+};
 
 async function syncProjectComponents(
   context: PlasmicContext,
@@ -322,7 +422,8 @@ async function syncProjectComponents(
   componentBundles: ComponentBundle[],
   forceOverwrite: boolean,
   appendJsxOnMissingBase: boolean,
-  summary: Map<string, ComponentUpdateSummary>
+  summary: Map<string, ComponentUpdateSummary>,
+  pendingMerge: ComponentPendingMerge[]
 ) {
   const allCompConfigs = L.keyBy(project.components, c => c.id);
   for (const bundle of componentBundles) {
@@ -390,63 +491,22 @@ async function syncProjectComponents(
         throw e;
       }
       if (scheme === "direct") {
-        // merge code!
-        const componentByUuid = new Map<string, ComponentInfoForMerge>();
-
-        componentByUuid.set(compConfig.id, {
-          editedFile,
-          newFile: skeletonModule,
-          newNameInIdToUuid: new Map(nameInIdToUuid)
-        });
-        const mergedFiles = await mergeFiles(
-          componentByUuid,
-          project.projectId,
-          makeCachedProjectSyncDataProvider(async (projectId, revision) => {
-            try {
-              return await context.api.projectSyncMetadata(
-                projectId,
-                revision,
-                true
-              );
-            } catch (e) {
-              if (
-                e instanceof AppServerError &&
-                /revision \d+ not found/.test(e.message)
-              ) {
-                throw e;
-              } else {
-                logger.log(e.messag);
-                process.exit(1);
-              }
-            }
-          }),
-          () => {},
-          appendJsxOnMissingBase
-        );
-        const merged = mergedFiles?.get(compConfig.id);
-        if (merged) {
-          writeFileContent(context, compConfig.importSpec.modulePath, merged, {
-            force: true
-          });
-        } else {
-          if (!forceOverwrite) {
-            throw new Error(
-              `Cannot merge ${compConfig.importSpec.modulePath}. If you just switched the code scheme for the component from blackbox to direct, use --force-overwrite option to force the switch.`
-            );
-          } else {
-            logger.warn(
-              `Overwrite ${compConfig.importSpec.modulePath} despite merge failure`
-            );
-            writeFileContent(
+        // We cannot merge right now, but wait until all the imports are resolved
+        pendingMerge.push({
+          skeletonModulePath: compConfig.importSpec.modulePath,
+          editedSkeletonFile: editedFile,
+          newSkeletonFile: skeletonModule,
+          merge: async (resolvedNewFile, resolvedEditedFile) =>
+            updateDirectSkeleton(
+              resolvedNewFile,
+              resolvedEditedFile,
               context,
-              compConfig.importSpec.modulePath,
-              skeletonModule,
-              {
-                force: true
-              }
-            );
-          }
-        }
+              compConfig,
+              forceOverwrite,
+              nameInIdToUuid,
+              appendJsxOnMissingBase
+            )
+        });
         skeletonModuleModified = true;
       } else if (/\/\/\s*plasmic-managed-jsx\/\d+/.test(editedFile)) {
         if (forceOverwrite) {
@@ -539,7 +599,8 @@ async function syncProjectConfig(
   iconBundles: IconBundle[],
   forceOverwrite: boolean,
   appendJsxOnMissingBase: boolean,
-  summary: Map<string, ComponentUpdateSummary>
+  summary: Map<string, ComponentUpdateSummary>,
+  pendingMerge: ComponentPendingMerge[]
 ) {
   let project = context.config.projects.find(c => c.projectId === pc.projectId);
   const defaultCssFilePath = path.join(
@@ -573,7 +634,8 @@ async function syncProjectConfig(
     componentBundles,
     forceOverwrite,
     appendJsxOnMissingBase,
-    summary
+    summary,
+    pendingMerge
   );
   syncProjectIconAssets(context, project, iconBundles);
 }

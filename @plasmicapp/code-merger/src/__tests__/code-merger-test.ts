@@ -2021,8 +2021,7 @@ describe("Test CodeMerger", function() {
           PlasmicTreeRow__VariantsArgs,
           PlasmicTreeRow__VariantsType,
           PlasmicTreeRow__TriggerStateType as TriggerStateType
-        } from "../gen/PlasmicTreeRow"; // plasmic-import: rxCVTHM-KfP/render
-
+        } from "../gen/PlasmicTreeRow";
         import { hasVariant, DefaultFlexStack, FlexStack } from "@plasmicapp/react-web";
 
         interface TreeRowProps {
@@ -2083,9 +2082,8 @@ describe("Test CodeMerger", function() {
           PlasmicTreeRow__VariantsArgs,
           PlasmicTreeRow__VariantsType,
           PlasmicTreeRow__TriggerStateType
-        } from "../gen/PlasmicTreeRow"; // plasmic-import: rxCVTHM-KfP/render
-        import {PersonalAccessToken} from "../gen/PersonalAccessToken"; // plasmic-import: UuidOfPersonalAccessToken/render
-
+        } from "../gen/PlasmicTreeRow";
+        import {PersonalAccessToken} from "../gen/PersonalAccessToken";
         import { hasVariant, DefaultFlexStack, FlexStack } from "@plasmicapp/react-web";
 
         interface TreeRowProps {
@@ -2224,9 +2222,9 @@ describe("Test CodeMerger", function() {
           PlasmicTreeRow__VariantsType,
           PlasmicTreeRow__TriggerStateType as TriggerStateType,
           PlasmicTreeRow__TriggerStateType
-        } from "../gen/PlasmicTreeRow"; // plasmic-import: rxCVTHM-KfP/render
-        import {PersonalAccessToken} from "../gen/PersonalAccessToken"; // plasmic-import: UuidOfPersonalAccessToken/render
+        } from "../gen/PlasmicTreeRow";
         import { hasVariant, DefaultFlexStack, FlexStack } from "@plasmicapp/react-web";
+        import {PersonalAccessToken} from "../gen/PersonalAccessToken";
 
         interface TreeRowProps {
           label?: ReactNode;
