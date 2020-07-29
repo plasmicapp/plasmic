@@ -35,7 +35,7 @@
   "dependencies": {
     "@babel/core": "^7.10.2",
     "@babel/generator": "^7.10.2",
-    "@plasmicapp/code-merger": "^0.0.23",
+    "@plasmicapp/code-merger": "^0.0.24",
     "@sentry/node": "^5.17.0",
     "@types/babel__core": "^7.1.8",
     "@types/babel__generator": "^7.6.1",

@@ -1070,54 +1070,34 @@ const mergePlasmicImports = (
   parsedNew: PlasmicComponentSkeletonFile,
   parsedEdited: PlasmicComponentSkeletonFile
 ) => {
-  const newImports = extractPlasmicImports(parsedNew.file);
-  const editedImports = extractPlasmicImports(parsedEdited.file);
-
-  let firstImport = -1;
-  let firstPlasmicImport = -1;
-  // Remove all imports that is being merged.
-  mergedFile.program.body = mergedFile.program.body.filter((stmt, i) => {
-    if (stmt.type === "ImportDeclaration") {
-      if (firstImport === -1) {
-        firstImport = i;
-      }
-      if (tryParsePlasmicImportSpec(stmt)) {
-        if (firstPlasmicImport === -1) {
-          firstPlasmicImport = i;
-        }
-        return false;
-      }
-    }
-    return true;
-  });
-  // Remove leadingComments - babel parser assign each comment to two nodes.
-  // One as a trailing comment of the node before the comment, and one as a
-  // leading comment of the node after the comment. We remove the
-  // leadingComments so that we don't generate the comments twice (one from
-  // editedImports, and one from newImports).
-  [...editedImports, ...newImports].forEach(
-    importDecl => (importDecl.node.leadingComments = null)
+  const newImports = parsedNew.file.program.body.filter(
+    stmt => stmt.type === "ImportDeclaration"
+  ) as ImportDeclaration[];
+  const editedImports = parsedEdited.file.program.body.filter(
+    stmt => stmt.type === "ImportDeclaration"
+  ) as ImportDeclaration[];
+  const firstImport = mergedFile.program.body.findIndex(
+    stmt => stmt.type === "ImportDeclaration"
   );
+  mergedFile.program.body = mergedFile.program.body.filter(
+    stmt => stmt.type !== "ImportDeclaration"
+  );
+
   const mergedImports: Array<ImportDeclaration> = [];
   for (const editedImport of editedImports) {
     const newImportAt = newImports.findIndex(
-      newImport => compareImports(editedImport, newImport) === 0
+      newImport => editedImport.source.value === newImport.source.value
     );
     if (newImportAt !== -1) {
       const newImport = newImports[newImportAt];
       newImports.splice(newImportAt, 1);
-      mergedImports.push(mergeImports(editedImport.node, newImport.node));
+      mergedImports.push(mergeImports(editedImport, newImport));
     } else {
-      mergedImports.push(editedImport.node);
+      mergedImports.push(editedImport);
     }
   }
-  mergedImports.push(...newImports.map(x => x.node));
-  const insertMergedImportsAt =
-    firstPlasmicImport > -1
-      ? firstPlasmicImport
-      : firstImport > -1
-      ? firstImport
-      : 0;
+  mergedImports.push(...newImports);
+  const insertMergedImportsAt = firstImport > -1 ? firstImport : 0;
   mergedFile.program.body.splice(insertMergedImportsAt, 0, ...mergedImports);
 };
 
