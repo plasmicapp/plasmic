@@ -160,10 +160,13 @@ export function fixAllFilePaths(context: PlasmicContext) {
 
   const fixPath = <K extends string>(bundle: { [k in K]: string }, key: K) => {
     const known = bundle[key];
-    if (!known) {
+    if (known == null) {
       throw new Error(
         `"${key} is required, but missing in ${CONFIG_FILE_NAME}. Please restore the file or delete from ${CONFIG_FILE_NAME} to re-sync: ${bundle}"`
       );
+    }
+    if (!known) {
+      return;
     }
     const found = findSrcDirPath(
       context.absoluteSrcDir,
