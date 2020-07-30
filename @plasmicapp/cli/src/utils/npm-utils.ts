@@ -7,6 +7,7 @@ import { PlasmicContext } from "./config-utils";
 import { execSync, spawnSync } from "child_process";
 import inquirer from "inquirer";
 import findupSync from "findup-sync";
+import { logger } from "../deps";
 
 export function getCliVersion() {
   const packageJson = findupSync("package.json", { cwd: __dirname });
@@ -100,12 +101,12 @@ export function installUpgrade(pkg: string) {
   const mgr = detectPackageManager();
   const cmd =
     mgr === "yarn" ? `yarn add -W ${pkg}` : `npm install --save ${pkg}`;
-  console.log(cmd);
+  logger.info(cmd);
   const r = spawnSync(cmd, { shell: true, stdio: "inherit" });
   if (r.status === 0) {
-    console.log(`Successfully added ${pkg} dependency.`);
+    logger.info(`Successfully added ${pkg} dependency.`);
   } else {
-    console.warn(
+    logger.warn(
       `Cannot add ${pkg} to your project dependency. Please add it manually.`
     );
   }

@@ -2,6 +2,7 @@ import L from "lodash";
 import { SyncArgs, sync } from "./sync";
 import { getContext } from "../utils/config-utils";
 import { warnLatestReactWeb } from "../utils/npm-utils";
+import { logger } from "../deps";
 
 export interface WatchArgs extends SyncArgs {}
 export async function watchProjects(opts: WatchArgs) {
@@ -18,7 +19,7 @@ export async function watchProjects(opts: WatchArgs) {
       : config.projects.map(c => c.projectId)
   );
   if (projectIds.length === 0) {
-    console.error(
+    logger.error(
       "Don't know which projects to sync; please specify via --projects"
     );
     process.exit(1);
@@ -29,17 +30,17 @@ export async function watchProjects(opts: WatchArgs) {
     socket.emit("subscribe", { namespace: "projects", projectIds });
   });
   socket.on("error", (data: any) => {
-    console.error(data);
+    logger.error(data);
     process.exit(1);
   });
   socket.on("update", (data: any) => {
     // Just run syncProjects() for now when any project has been updated
-    console.log(
+    logger.info(
       `Project ${data.projectId} updated to revision ${data.revisionNum}`
     );
     sync(opts);
   });
 
-  console.log("Watching projects...");
+  logger.info("Watching projects...");
   await promise;
 }

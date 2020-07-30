@@ -53,6 +53,7 @@ import { options } from "yargs";
 import { syncProjectIconAssets } from "./sync-icons";
 import * as semver from "../utils/semver";
 import { spawnSync } from "child_process";
+import { HandledError } from "../utils/error";
 
 export interface SyncArgs extends CommonArgs {
   projects: readonly string[];
@@ -104,7 +105,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
 
   // Short-circuit if nothing to sync
   if (projectIds.length === 0) {
-    throw new Error(
+    throw new HandledError(
       "Don't know which projects to sync; please specify via --projects"
     );
   }
@@ -125,10 +126,10 @@ export async function sync(opts: SyncArgs): Promise<void> {
     opts.includeDependencies
   );
 
-  // Throw if there's nothing to sync
+  // Fail if there's nothing to sync
   if (resolveResults.length <= 0) {
-    throw new Error(
-      `Could not find any matching versions. Please check your plasmic.json file.`
+    throw new HandledError(
+      "Found nothing to sync - make sure the project id, component id, or component names are valid."
     );
   }
 
@@ -136,7 +137,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
   // since we can specify multiple root projects to sync
   if (conflicts && conflicts.length > 0) {
     // TODO: replace with better error message
-    throw new Error(
+    throw new HandledError(
       `Sync resolution failed: \n${resolveResults}\nConflicts:\n${conflicts}`
     );
   }
@@ -154,7 +155,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
       `${p.projectId}@${projectConfigMap[p.projectId].version}=>v${p.version}`
   );
   if (breakingProjects.length > 0 && opts.nonInteractive) {
-    throw new Error(
+    throw new HandledError(
       `Unable to sync these projects due to conflicting versions: ${breakingMessage}`
     );
   } else if (breakingProjects.length > 0) {
@@ -169,7 +170,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
       }
     ]);
     if (!["y", "yes"].includes(res.continue.toLowerCase())) {
-      throw new Error("User aborted");
+      throw new HandledError("sync aborted by user.");
     }
   }
   // Update plasmic.json with newest version numbers
@@ -396,7 +397,7 @@ const updateDirectSkeleton = async (
     });
   } else {
     if (!forceOverwrite) {
-      throw new Error(
+      throw new HandledError(
         `Cannot merge ${compConfig.importSpec.modulePath}. If you just switched the code scheme for the component from blackbox to direct, use --force-overwrite option to force the switch.`
       );
     } else {

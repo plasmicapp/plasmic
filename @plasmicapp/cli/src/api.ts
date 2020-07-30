@@ -2,6 +2,7 @@ import { AuthConfig } from "./utils/config-utils";
 import axios, { AxiosResponse, AxiosError } from "axios";
 import socketio from "socket.io-client";
 import { ProjectSyncMetadataModel } from "@plasmicapp/code-merger";
+import { logger } from "./deps";
 
 export class AppServerError extends Error {
   constructor(message: string) {
@@ -241,7 +242,7 @@ export class PlasmicApi {
     } catch (e) {
       const error = e as AxiosError;
       if (error.response && error.response.status === 403) {
-        console.error(
+        logger.error(
           `Incorrect Plasmic credentials; please check your .plasmic.auth file.`
         );
         process.exit(1);
@@ -257,7 +258,7 @@ export class PlasmicApi {
         if (rethrowAppError) {
           throw new AppServerError(message);
         }
-        console.error(message);
+        logger.error(message);
         process.exit(1);
       } else {
         throw e;

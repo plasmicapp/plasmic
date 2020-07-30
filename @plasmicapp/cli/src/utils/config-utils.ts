@@ -9,6 +9,7 @@ import { DeepPartial } from "utility-types";
 import * as Sentry from "@sentry/node";
 import { runNecessaryMigrations } from "../migrations/migrations";
 import { getCliVersion } from "./npm-utils";
+import { logger } from "../deps";
 
 export const AUTH_FILE_NAME = ".plasmic.auth";
 export const CONFIG_FILE_NAME = "plasmic.json";
@@ -252,7 +253,7 @@ export function getContext(args: CommonArgs): PlasmicContext {
   const authFile =
     args.auth || findAuthFile(process.cwd(), { traverseParents: true });
   if (!authFile) {
-    console.log(
+    logger.error(
       "No .plasmic.auth file found with Plasmic credentials; please run `plasmic init` first."
     );
     process.exit(1);
@@ -275,7 +276,7 @@ export function getContext(args: CommonArgs): PlasmicContext {
   const configFile =
     args.config || findConfigFile(process.cwd(), { traverseParents: true });
   if (!configFile) {
-    console.error(
+    logger.error(
       "No plasmic.json file found; please run `plasmic init` first."
     );
     process.exit(1);
@@ -299,7 +300,7 @@ export function getContext(args: CommonArgs): PlasmicContext {
 
 export function readConfig(configFile: string) {
   if (!fs.existsSync(configFile)) {
-    console.error(`No Plasmic config file found at ${configFile}`);
+    logger.error(`No Plasmic config file found at ${configFile}`);
     process.exit(1);
   }
   try {
@@ -308,7 +309,7 @@ export function readConfig(configFile: string) {
     ) as PlasmicConfig;
     return fillDefaults(result);
   } catch (e) {
-    console.error(
+    logger.error(
       `Error encountered reading plasmic.config at ${configFile}: ${e}`
     );
     process.exit(1);
@@ -317,13 +318,13 @@ export function readConfig(configFile: string) {
 
 export function readAuth(authFile: string) {
   if (!fs.existsSync(authFile)) {
-    console.error(`No Plasmic auth file found at ${authFile}`);
+    logger.error(`No Plasmic auth file found at ${authFile}`);
     process.exit(1);
   }
   try {
     return JSON.parse(fs.readFileSync(authFile).toString()) as AuthConfig;
   } catch (e) {
-    console.error(
+    logger.error(
       `Error encountered reading plasmic credentials at ${authFile}: ${e}`
     );
     process.exit(1);
