@@ -155,6 +155,23 @@ yargs
           describe:
             "Path of the meta data file (in JSON format) describing the component",
           type: "string"
+        })
+        .option("pkgVersion", {
+          describe:
+            "version of the package to include in the generated package.json",
+          type: "string",
+          default: "latest"
+        })
+        .option("genModulePath", {
+          describe:
+            "the path of include when generating import statement and generate package.json for. Default to bundleName.",
+          type: "string"
+        })
+        .option("genCssPaths", {
+          describe:
+            "the list of css paths to import in generate code whenever a component in this bundle is used",
+          type: "array",
+          default: []
         }),
     argv => handleError(uploadJsBundle(argv))
   )
