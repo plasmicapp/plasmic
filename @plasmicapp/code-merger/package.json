@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/code-merger",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "description": "plasmic library for updating code generated in direct-edit scheme",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -22,8 +22,10 @@
     "@types/babel__generator": "^7.6.1",
     "@types/babel__parser": "^7.1.1",
     "@types/babel__traverse": "^7.0.11",
+    "@types/diff": "^4.0.2",
     "@types/lodash": "^4.14.152",
     "@types/prettier": "^2.0.1",
+    "diff": "^4.0.2",
     "lodash": "^4.17.15",
     "prettier": "^2.0.5"
   },
@@ -32,9 +34,9 @@
     "@babel/preset-typescript": "^7.9.0",
     "@types/jest": "^25.2.3",
     "babel-jest": "^26.0.1",
-    "typescript": "^3.9.3",
     "jest": "^26.0.1",
-    "ts-jest": "^26.0.0"
+    "ts-jest": "^26.0.0",
+    "typescript": "^3.9.3"
   },
   "peerDependencies": {}
 }

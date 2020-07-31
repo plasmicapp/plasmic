@@ -52,7 +52,8 @@ import {
   isAttribute,
   getAttrName
 } from "./utils";
-import { first, cloneDeep, replace } from "lodash";
+import { first, cloneDeep, replace, difference, map } from "lodash";
+import { diffChars } from "diff";
 
 const mkJsxFragment = (children: JsxChildType[]) => {
   return babel.types.jsxFragment(
@@ -417,6 +418,10 @@ interface NoMatch {
 
 type MatchResult = PerfectMatch | TypeMatch | NoMatch;
 
+const computeDiff = (s1: string, s2: string) => {
+  return L.sum(diffChars(s1, s2).map(part => part.value.length));
+};
+
 const findMatch = (
   nodes: PlasmicASTNode[],
   start: number,
@@ -426,12 +431,16 @@ const findMatch = (
   if (n.type === "text" || n.type === "string-lit") {
     for (let i = start; i < nodes.length; i++) {
       const ni = nodes[i];
+      let lastDiff = 0;
       if (ni.type === "text" || ni.type === "string-lit") {
         if (ni.value === n.value) {
           return { type: "perfect", index: i };
         }
-        if (matchingTypeAt === -1) {
+        const diff = computeDiff(n.value, ni.value);
+        // Find the best match, i.e. the one with least diff.
+        if (matchingTypeAt === -1 || diff < lastDiff) {
           matchingTypeAt = i;
+          lastDiff = diff;
         }
       }
     }
@@ -474,7 +483,7 @@ const mergeNodes = (
   codeVersions: CodeVersions
 ) => {
   let nextInsertStartAt = 0;
-  const insertEditedNodeIntoNew = (
+  const insertEditedNode = (
     editedChild: PlasmicASTNode,
     prevEditedChild: PlasmicASTNode | undefined
   ) => {
@@ -532,9 +541,22 @@ const mergeNodes = (
         // skip text node if it matches some text in base version
         return;
       }
-      insertEditedNodeIntoNew(editedChild, editedNodes[i - 1]);
+      if (matchInBaseVersion.type === "type") {
+        const matchInMergedVersion = findMatch(
+          merged,
+          nextInsertStartAt,
+          baseNodes[matchInBaseVersion.index]
+        );
+        if (matchInMergedVersion.type === "perfect") {
+          // If base and new/merged version has a perfect match, then replace new version
+          // with the edited version.
+          merged.splice(matchInMergedVersion.index, 1, editedChild);
+          return;
+        }
+      }
+      insertEditedNode(editedChild, editedNodes[i - 1]);
     } else if (editedChild.type === "opaque") {
-      insertEditedNodeIntoNew(editedChild, editedNodes[i - 1]);
+      insertEditedNode(editedChild, editedNodes[i - 1]);
     }
     // We intentially don't preserve PlasmicTagOrComponent nodes that are moved
     // from other places here (note that if the nodes were here before, then

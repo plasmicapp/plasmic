@@ -603,6 +603,90 @@ describe("Test CodeMerger", function() {
     );
   });
 
+  it("single text child edited", function() {
+    const nameInIdToUuid = new Map([
+      ["Root", "Root"],
+      ["Img", "Img"]
+    ]);
+    const base = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+        Hello World
+        <div className={rh.clsImg()}></div>
+      </div>`,
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+        Hello World Edited
+      </div>`,
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+        Hello World
+      </div>`,
+      nameInIdToUuid
+    );
+    expect(
+      code(
+        renameAndSerializePlasmicASTNode(newV.root, {
+          newVersion: newV,
+          editedVersion: edited,
+          baseVersion: base
+        })
+      )
+    ).toEqual(
+      formatted(`
+      <div className={rh.clsRoot()}>
+      Hello World Edited
+     </div>`)
+    );
+  });
+
+  it("multiple text children edited", function() {
+    const nameInIdToUuid = new Map([
+      ["Root", "Root"],
+      ["Img", "Img"]
+    ]);
+    const base = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+        {"Hello"} {"World"} {"My"} {"Friends"}
+        <div className={rh.clsImg()}></div>
+      </div>`,
+      nameInIdToUuid
+    );
+    const edited = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+      {"Hello1"} {"World"} {"My2"} {"Friends"}
+      </div>`,
+      nameInIdToUuid
+    );
+    const newV = new CodeVersion(
+      `<div className={rh.clsRoot()}>
+      {"Hello"} {"World"} {"My3"} {"Friends"}
+      </div>`,
+      nameInIdToUuid
+    );
+    expect(
+      code(
+        renameAndSerializePlasmicASTNode(newV.root, {
+          newVersion: newV,
+          editedVersion: edited,
+          baseVersion: base
+        })
+      )
+    ).toEqual(
+      formatted(`
+      <div className={rh.clsRoot()}>
+      {"Hello1"}
+      {"World"}
+      {"My3"}
+      {"My2"}
+      {"Friends"}
+     </div>`)
+    );
+  });
+
   it("conflict attributes are both preserved", function() {
     const nameInIdToUuid = new Map([["Root", "Root"]]);
     const base = new CodeVersion(
