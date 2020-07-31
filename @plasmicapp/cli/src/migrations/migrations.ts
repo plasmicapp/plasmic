@@ -22,6 +22,7 @@ import { migrateInit } from "./0.1.27-migrateInit";
 import { tsToTsx } from "./0.1.28-tsToTsx";
 import { ensureProjectIcons } from "./0.1.31-ensureProjectIcons";
 import { ensureVersion } from "./0.1.42-ensureVersion";
+import { logger } from "../deps";
 
 export interface MigrateContext {
   absoluteSrcDir: string;
@@ -54,7 +55,7 @@ export function runNecessaryMigrations(configFile: string) {
     L.keys(MIGRATIONS).filter(v => !curVersion || semver.gt(v, curVersion))
   );
   for (const version of greaterVersions) {
-    console.log(`Migrating to plasmic.json version ${version}`);
+    logger.info(`Migrating to plasmic.json version ${version}`);
     const prev = readConfig();
     const next = MIGRATIONS[version](prev, context);
     next.cliVersion = version;

@@ -12,6 +12,7 @@ import { writeFileContent, fixAllFilePaths } from "../utils/file-utils";
 import { CommonArgs } from "..";
 import { format } from "winston";
 import { formatAsLocal } from "../utils/code-utils";
+import { logger } from "../deps";
 
 export interface SyncIconsArgs extends CommonArgs {
   projects: readonly string[];
@@ -64,7 +65,7 @@ export function syncProjectIconAssets(
   }
   const knownIconConfigs = L.keyBy(project.icons, i => i.id);
   for (const bundle of iconBundles) {
-    console.log(
+    logger.info(
       `Syncing icon ${bundle.name} [${project.projectId}/${bundle.id}]`
     );
     let iconConfig = knownIconConfigs[bundle.id];

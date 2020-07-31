@@ -14,6 +14,7 @@ import {
 } from "../utils/file-utils";
 import { CommonArgs } from "..";
 import { formatAsLocal } from "../utils/code-utils";
+import { logger } from "../deps";
 
 export interface SyncStyleTokensArgs extends CommonArgs {
   projects: readonly string[];
@@ -80,7 +81,7 @@ function readCurStyleMap(context: PlasmicContext): StyleTokensMap {
         readFileContent(context, context.config.tokens.tokensFilePath)
       );
     } catch (e) {
-      console.log(
+      logger.error(
         `Error countered reading ${context.config.tokens.tokensFilePath}: ${e}`
       );
       process.exit(1);

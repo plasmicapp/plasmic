@@ -13,6 +13,7 @@ import {
   updateConfig
 } from "./config-utils";
 import { isLocalModulePath } from "./code-utils";
+import { logger } from "../deps";
 
 export function stripExtension(filename: string) {
   const ext = path.extname(filename);
@@ -29,7 +30,7 @@ export function writeFileContentRaw(
 ) {
   opts = opts || {};
   if (fs.existsSync(filePath) && !opts.force) {
-    console.error(`Cannot write to ${filePath}; file already exists.`);
+    logger.error(`Cannot write to ${filePath}; file already exists.`);
     process.exit(1);
   }
 
@@ -97,7 +98,7 @@ export function findSrcDirPath(
   baseNameToFiles: Record<string, string[]>
 ): string {
   if (!path.isAbsolute(absoluteSrcDir)) {
-    console.error("Cannot find srcDir. Please check plasmic.json.");
+    logger.error("Cannot find srcDir. Please check plasmic.json.");
     process.exit(1);
   }
 
@@ -109,10 +110,10 @@ export function findSrcDirPath(
   } else if (baseNameToFiles[fileName].length === 1) {
     // There's only one file of the same name, so maybe we've been moved there?
     const newPath = path.relative(absoluteSrcDir, baseNameToFiles[fileName][0]);
-    console.log(`\tDetected file moved from ${expectedPath} to ${newPath}`);
+    logger.info(`\tDetected file moved from ${expectedPath} to ${newPath}`);
     return newPath;
   } else {
-    console.error(
+    logger.error(
       `Cannot find expected file at ${expectedPath}, and found multiple possible matching files ${baseNameToFiles[fileName]}.  Please update plasmic.config with the real location for ${fileName}.`
     );
     process.exit(1);

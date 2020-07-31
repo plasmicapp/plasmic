@@ -6,6 +6,7 @@ import glob from "glob";
 import L from "lodash";
 import { MigrateContext } from "./migrations";
 import { findSrcDirPath } from "../utils/file-utils";
+import { logger } from "../deps";
 
 export function tsToTsx(config: PlasmicConfig, context: MigrateContext) {
   const srcDir = context.absoluteSrcDir;
@@ -23,7 +24,7 @@ export function tsToTsx(config: PlasmicConfig, context: MigrateContext) {
         );
         const absFilePath = path.join(context.absoluteSrcDir, relFilePath);
         if (fs.existsSync(absFilePath)) {
-          console.log(`rename file from ${absFilePath} to ${absFilePath}x`);
+          logger.info(`rename file from ${absFilePath} to ${absFilePath}x`);
           fs.renameSync(absFilePath, `${absFilePath}x`);
         }
         c.renderModuleFilePath = `${c.renderModuleFilePath}x`;

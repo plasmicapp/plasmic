@@ -16,6 +16,7 @@ import {
 } from "../utils/config-utils";
 import { execSync, spawnSync } from "child_process";
 import { installUpgrade, getCliVersion } from "../utils/npm-utils";
+import { logger } from "../deps";
 
 export interface InitArgs extends CommonArgs {
   host: string;
@@ -30,7 +31,7 @@ export async function initPlasmic(opts: InitArgs) {
   const configFile =
     opts.config || findConfigFile(process.cwd(), { traverseParents: false });
   if (configFile && fs.existsSync(configFile)) {
-    console.error(
+    logger.error(
       "You already have a plasmic.json file!  Please either delete or edit it directly."
     );
     return;
@@ -57,11 +58,11 @@ export async function initPlasmic(opts: InitArgs) {
       token: auth.token
     });
 
-    console.log(
+    logger.info(
       `Successfully created Plasmic credentials file at ${newAuthFile}`
     );
   } else {
-    console.log(`Using existing Plasmic credentials at ${authFile}`);
+    logger.info(`Using existing Plasmic credentials at ${authFile}`);
   }
 
   const langDetect = fs.existsSync("tsconfig.json")
@@ -143,8 +144,7 @@ export async function initPlasmic(opts: InitArgs) {
   const newConfigFile =
     merged.config || path.join(process.cwd(), CONFIG_FILE_NAME);
   writeConfig(newConfigFile, createInitConfig(merged));
-  console.log("Successfully created plasmic.json.");
-  console.log();
+  logger.info("Successfully created plasmic.json.\n");
 
   const addDep = await inquirer.prompt([
     {
