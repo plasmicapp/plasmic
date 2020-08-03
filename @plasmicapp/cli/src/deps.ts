@@ -8,7 +8,8 @@ export const logger = winston.createLogger({
   transports: [
     new winston.transports.Console({
       format: winston.format.printf(
-        info => `${moment().format("HH:mm:ss")}:${info.level}\t${info.message}`
+        info => `${info.message}`
+        //info => `${moment().format("HH:mm:ss")}:${info.level}\t${info.message}`
       )
     })
     //new winston.transports.File({ filename: "error.log", level: "error" }),

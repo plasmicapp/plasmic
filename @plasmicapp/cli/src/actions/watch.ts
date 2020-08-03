@@ -1,4 +1,5 @@
 import L from "lodash";
+import moment from "moment";
 import { SyncArgs, sync } from "./sync";
 import { getContext } from "../utils/config-utils";
 import { warnLatestReactWeb } from "../utils/npm-utils";
@@ -36,7 +37,9 @@ export async function watchProjects(opts: WatchArgs) {
   socket.on("update", (data: any) => {
     // Just run syncProjects() for now when any project has been updated
     logger.info(
-      `Project ${data.projectId} updated to revision ${data.revisionNum}`
+      `[${moment().format("HH:mm:ss")}] Project ${
+        data.projectId
+      } updated to revision ${data.revisionNum}`
     );
     sync(opts);
   });
