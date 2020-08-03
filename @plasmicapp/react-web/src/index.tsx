@@ -644,8 +644,11 @@ function notNil<T>(x: T | undefined | null): x is T {
   return x != null;
 }
 
-export function pick<T>(obj: T, ...keys: (keyof T)[]): Partial<T> {
-  const res: Partial<T> = {};
+export function pick<T, S extends keyof T>(
+  obj: T,
+  ...keys: S[]
+): Partial<Pick<T, S>> {
+  const res: Partial<Pick<T, S>> = {};
   for (const key of keys) {
     if (key in obj) {
       res[key] = obj[key];
