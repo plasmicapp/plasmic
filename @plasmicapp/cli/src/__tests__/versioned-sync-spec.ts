@@ -1,83 +1,15 @@
 jest.mock("../api");
 const mockApi = require("../api");
-import * as fs from "fs";
-import * as path from "path";
-import * as tmp from "tmp";
 import L from "lodash";
-import * as semver from "semver";
 import { sync, SyncArgs } from "../actions/sync";
-import { AUTH_FILE_NAME, CONFIG_FILE_NAME } from "../utils/config-utils";
 import { MockComponent } from "../__mocks__/api";
-import { PlasmicConfig } from "../utils/config-utils";
-import { isExportDeclaration } from "typescript";
+import { TempRepo } from "../utils/test-utils";
 
 let opts: SyncArgs; // Options to pass to sync
-let plasmicJson: PlasmicConfig; // plasmic.json
-let tmpDir: tmp.DirResult; // Temporary directory used for tests
-
-function resolveFile(relativePath: string): string {
-  return path.resolve(tmpDir.name, relativePath);
-}
-
-function readFile(relativePath: string): string {
-  const absPath = resolveFile(relativePath);
-  const buf = fs.readFileSync(absPath);
-  return buf.toString();
-}
-
-function getMockComponentFromFile(
-  projectId: string,
-  componentId: string
-): MockComponent | undefined {
-  const plasmicJson: PlasmicConfig = JSON.parse(readFile(CONFIG_FILE_NAME));
-  const srcDir = plasmicJson.srcDir;
-  const projectConfig = plasmicJson.projects.find(
-    p => p.projectId === projectId
-  );
-  if (!projectConfig) {
-    return;
-  }
-  const componentConfig = projectConfig.components.find(
-    c => c.id === componentId
-  );
-  if (!componentConfig) {
-    return;
-  }
-  const data = readFile(
-    path.join(srcDir, componentConfig.renderModuleFilePath)
-  );
-  return mockApi.stringToMockComponent(data);
-}
-
-function checkFile(relativePath: string): boolean {
-  const absPath = resolveFile(relativePath);
-  try {
-    const stats = fs.statSync(absPath);
-    return !!stats ? true : false;
-  } catch (e) {
-    return false;
-  }
-}
+let tmpRepo: TempRepo;
 
 // Reset the test project directory
 beforeEach(() => {
-  tmpDir = tmp.dirSync({ unsafeCleanup: true });
-  const plasmicJsonFile = resolveFile(CONFIG_FILE_NAME);
-  const plasmicAuthFile = resolveFile(AUTH_FILE_NAME);
-  // Default opts and config
-  opts = {
-    projects: ["projectId1"],
-    components: [],
-    onlyExisting: false,
-    forceOverwrite: true,
-    newComponentScheme: "blackbox",
-    appendJsxOnMissingBase: false,
-    recursive: false,
-    includeDependencies: false,
-    nonInteractive: true,
-    config: plasmicJsonFile,
-    auth: plasmicAuthFile
-  };
   // Setup server-side mock data
   const depComponent = {
     id: "depComponentId",
@@ -104,7 +36,13 @@ beforeEach(() => {
   components.forEach(c => mockApi.setMockComponent(c.id, c));
 
   // Setup client-side directory
-  plasmicJson = {
+  tmpRepo = new TempRepo();
+  tmpRepo.writePlasmicAuth({
+    host: "http://localhost:3003",
+    user: "yang@plasmic.app",
+    token: "faketoken"
+  });
+  tmpRepo.writePlasmicJson({
     platform: "react",
     code: {
       lang: "ts",
@@ -125,20 +63,28 @@ beforeEach(() => {
       variantGroups: []
     },
     cliVersion: "0.1.44"
+  });
+
+  // Default opts and config
+  opts = {
+    projects: ["projectId1"],
+    components: [],
+    onlyExisting: false,
+    forceOverwrite: true,
+    newComponentScheme: "blackbox",
+    appendJsxOnMissingBase: false,
+    recursive: false,
+    includeDependencies: false,
+    nonInteractive: true,
+    config: tmpRepo.plasmicJsonPath(),
+    auth: tmpRepo.plasmicAuthPath()
   };
-  const plasmicAuth = {
-    host: "http://localhost:3003",
-    user: "yang@plasmic.app",
-    token: "faketoken"
-  };
-  fs.writeFileSync(plasmicJsonFile, JSON.stringify(plasmicJson));
-  fs.writeFileSync(plasmicAuthFile, JSON.stringify(plasmicAuth));
 });
 
 afterEach(() => {
   // Remove the temporary directory
   // TODO: Comment out to keep files for debugging
-  tmpDir.removeCallback();
+  tmpRepo.destroy();
 });
 
 describe("versioned-sync", () => {
@@ -147,8 +93,12 @@ describe("versioned-sync", () => {
     opts.recursive = false;
     opts.includeDependencies = false;
     await expect(sync(opts)).resolves.toBeUndefined();
-    const button = getMockComponentFromFile("projectId1", "buttonId");
-    const container = getMockComponentFromFile("projectId1", "containerId");
+    const button = mockApi.stringToMockComponent(
+      tmpRepo.getComponentFileContents("projectId1", "buttonId")
+    );
+    const container = mockApi.stringToMockComponent(
+      tmpRepo.getComponentFileContents("projectId1", "containerId")
+    );
     // Check correct files exist
     expect(button).toBeTruthy();
     expect(container).toBeTruthy();
@@ -156,10 +106,10 @@ describe("versioned-sync", () => {
     expect(button?.version).toEqual("1.2.3");
     expect(container?.name).toEqual("Container");
     expect(container?.version).toEqual("1.2.3");
-    expect(checkFile("./src/DepComponent.tsx")).toBeFalsy();
+    expect(tmpRepo.checkFile("./src/DepComponent.tsx")).toBeFalsy();
 
     // Check plasmic.json
-    const plasmicJson: PlasmicConfig = JSON.parse(readFile(CONFIG_FILE_NAME));
+    const plasmicJson = tmpRepo.readPlasmicJson();
     expect(plasmicJson.projects.length).toEqual(1);
     const projectConfig = plasmicJson.projects[0];
     expect(projectConfig.components.length).toEqual(2);
@@ -172,6 +122,7 @@ describe("versioned-sync", () => {
     opts.components = ["buttonId", "containerId"];
     // Simulates user deleting files by accident, since the project exists in plasmic.json,
     // but not in the project directory
+    const plasmicJson = tmpRepo.readPlasmicJson();
     plasmicJson.projects.push({
       projectId: "projectId1",
       projectName: "Project 1",
@@ -193,7 +144,7 @@ describe("versioned-sync", () => {
       ],
       icons: []
     });
-    fs.writeFileSync(opts.config as string, JSON.stringify(plasmicJson));
+    tmpRepo.writePlasmicJson(plasmicJson);
     await expect(sync(opts)).rejects.toThrow();
   });
 
@@ -207,7 +158,7 @@ describe("versioned-sync", () => {
     // Try syncing again and see if things show up
     await expect(sync(opts)).resolves.toBeUndefined();
 
-    const plasmicJson: PlasmicConfig = JSON.parse(readFile(CONFIG_FILE_NAME));
+    const plasmicJson = tmpRepo.readPlasmicJson();
     const projectInConfig = plasmicJson.projects.find(
       p => p.projectId === "projectId1"
     );
@@ -227,7 +178,9 @@ describe("versioned-sync", () => {
     mockApi.setMockComponent("buttonId", buttonData);
     // Try syncing again and see if things show up
     await expect(sync(opts)).resolves.toBeUndefined();
-    const button = getMockComponentFromFile("projectId1", "buttonId");
+    const button = mockApi.stringToMockComponent(
+      tmpRepo.getComponentFileContents("projectId1", "buttonId")
+    );
     expect(button).toBeTruthy();
     expect(button?.name).toEqual("Button");
     expect(button?.version).toEqual("2.0.0");
@@ -241,18 +194,20 @@ describe("versioned-sync", () => {
     buttonData.version = "2.0.0";
     mockApi.setMockComponent("buttonId", buttonData);
     // Read in updated plasmic.json post-sync
-    const plasmicJson: PlasmicConfig = JSON.parse(readFile(CONFIG_FILE_NAME));
+    const plasmicJson = tmpRepo.readPlasmicJson();
     expect(plasmicJson.projects.length).toEqual(1); // projectId1
     expect(plasmicJson.projects[0].components.length).toEqual(1); // Button
     // Try syncing non-existent version
     plasmicJson.projects[0].version = "1.2.10"; // Doesn't exist
-    fs.writeFileSync(opts.config as string, JSON.stringify(plasmicJson));
+    tmpRepo.writePlasmicJson(plasmicJson);
     await expect(sync(opts)).rejects.toThrow();
     // Try syncing existing version
     plasmicJson.projects[0].version = "2.0.0"; // Doesn't exist
-    fs.writeFileSync(opts.config as string, JSON.stringify(plasmicJson));
+    tmpRepo.writePlasmicJson(plasmicJson);
     await expect(sync(opts)).resolves.toBeUndefined();
-    const button = getMockComponentFromFile("projectId1", "buttonId");
+    const button = mockApi.stringToMockComponent(
+      tmpRepo.getComponentFileContents("projectId1", "buttonId")
+    );
     expect(button).toBeTruthy();
     expect(button?.name).toEqual("Button");
     expect(button?.version).toEqual("2.0.0");
@@ -266,13 +221,15 @@ describe("versioned-sync", () => {
     buttonData.version = "1.10.1";
     mockApi.setMockComponent("buttonId", buttonData);
     // Update plasmic.json to use semver
-    const plasmicJson: PlasmicConfig = JSON.parse(readFile(CONFIG_FILE_NAME));
+    const plasmicJson = tmpRepo.readPlasmicJson();
     expect(plasmicJson.projects.length).toEqual(1);
     expect(plasmicJson.projects[0].components.length).toEqual(1);
     plasmicJson.projects[0].version = "^1.2.3";
     // Try syncing again and see if things show up
     await expect(sync(opts)).resolves.toBeUndefined();
-    const button = getMockComponentFromFile("projectId1", "buttonId");
+    const button = mockApi.stringToMockComponent(
+      tmpRepo.getComponentFileContents("projectId1", "buttonId")
+    );
     expect(button).toBeTruthy();
     expect(button?.name).toEqual("Button");
     expect(button?.version).toEqual("1.10.1");
@@ -286,18 +243,22 @@ describe("recursive-sync", () => {
     opts.recursive = true;
     opts.includeDependencies = false;
     await expect(sync(opts)).resolves.toBeUndefined();
-    const button = getMockComponentFromFile("projectId1", "buttonId");
-    const container = getMockComponentFromFile("projectId1", "containerId");
+    const button = mockApi.stringToMockComponent(
+      tmpRepo.getComponentFileContents("projectId1", "buttonId")
+    );
+    const container = mockApi.stringToMockComponent(
+      tmpRepo.getComponentFileContents("projectId1", "containerId")
+    );
     expect(button).toBeTruthy();
     expect(container).toBeTruthy();
     expect(button?.name).toEqual("Button");
     expect(button?.version).toEqual("1.2.3");
     expect(container?.name).toEqual("Container");
     expect(container?.version).toEqual("1.2.3");
-    expect(checkFile("./src/DepComponent.tsx")).toBeFalsy();
+    expect(tmpRepo.checkFile("./src/DepComponent.tsx")).toBeFalsy();
 
     // Check plasmic.json
-    const plasmicJson: PlasmicConfig = JSON.parse(readFile(CONFIG_FILE_NAME));
+    const plasmicJson = tmpRepo.readPlasmicJson();
     expect(plasmicJson.projects.length).toEqual(1);
     const projectConfig = plasmicJson.projects[0];
     expect(projectConfig.components.length).toEqual(2);
@@ -308,18 +269,17 @@ describe("recursive-sync", () => {
     opts.recursive = true;
     opts.includeDependencies = true;
     await expect(sync(opts)).resolves.toBeUndefined();
-    expect(checkFile("./src/Button.tsx")).toBeTruthy();
-    expect(checkFile("./src/Container.tsx")).toBeTruthy();
-    const depComponent = getMockComponentFromFile(
-      "dependencyId1",
-      "depComponentId"
+    expect(tmpRepo.checkFile("./src/Button.tsx")).toBeTruthy();
+    expect(tmpRepo.checkFile("./src/Container.tsx")).toBeTruthy();
+    const depComponent = mockApi.stringToMockComponent(
+      tmpRepo.getComponentFileContents("dependencyId1", "depComponentId")
     );
     expect(depComponent).toBeTruthy();
     expect(depComponent?.name).toEqual("DepComponent");
     expect(depComponent?.version).toEqual("2.3.4");
 
     // Check plasmic.json
-    const plasmicJson: PlasmicConfig = JSON.parse(readFile(CONFIG_FILE_NAME));
+    const plasmicJson = tmpRepo.readPlasmicJson();
     expect(plasmicJson.projects.length).toEqual(2);
     const projectConfigMap = L.keyBy(plasmicJson.projects, p => p.projectId);
     expect(projectConfigMap["projectId1"]).toBeTruthy();
@@ -360,16 +320,15 @@ describe("recursive-sync", () => {
     await expect(sync(opts)).resolves.toBeUndefined();
 
     // Check we have the right version
-    const plasmicJson: PlasmicConfig = JSON.parse(readFile(CONFIG_FILE_NAME));
+    const plasmicJson = tmpRepo.readPlasmicJson();
     expect(plasmicJson.projects.length).toEqual(2);
     const depProjectConfig = plasmicJson.projects.find(
       p => p.projectId === "dependencyId1"
     );
     expect(depProjectConfig?.components?.length).toEqual(1);
     expect(depProjectConfig?.version).toEqual("^2.3.4");
-    const depComponent = getMockComponentFromFile(
-      "dependencyId1",
-      "depComponentId"
+    const depComponent = mockApi.stringToMockComponent(
+      tmpRepo.getComponentFileContents("dependencyId1", "depComponentId")
     );
     expect(depComponent?.version).toEqual("2.3.4");
     expect(depComponent?.id).toEqual("depComponentId");

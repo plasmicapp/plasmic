@@ -23,6 +23,7 @@ import generate, { GeneratorOptions } from "@babel/generator";
 import * as babel from "@babel/core";
 import { ImportDeclaration } from "@babel/types";
 import { tryParsePlasmicImportSpec } from "@plasmicapp/code-merger";
+import { HandledError } from "../utils/error";
 
 export const formatAsLocal = (
   c: string,
@@ -158,8 +159,8 @@ export function replaceImports(
       // instantiation of a mapped or managed component
       const compConfig = fixImportContext.components[uuid];
       if (!compConfig) {
-        throw new Error(
-          `Encountered Plasmic components (of uuid ${uuid}) in ${fromPath} that are being used but have not been synced.`
+        throw new HandledError(
+          `Encountered Plasmic components (of uuid ${uuid}) in ${fromPath} that are being used but have not been synced. Try --recursive to also fetch missing components.`
         );
       }
       const { modulePath, exportName } = compConfig.importSpec;

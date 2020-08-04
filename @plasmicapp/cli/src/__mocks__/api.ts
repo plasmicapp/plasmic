@@ -42,7 +42,10 @@ function setMockComponent(id: string, comp: MockComponent) {
  * Used to interpret data that's stored in the "codegen" files from the Mock server
  * @param data
  */
-function stringToMockComponent(data: string): MockComponent {
+function stringToMockComponent(data?: string): MockComponent | undefined {
+  if (!data) {
+    return;
+  }
   const withoutComments = data.startsWith("//") ? data.slice(2) : data;
   const cleaned = withoutComments.trim();
   return JSON.parse(cleaned);
