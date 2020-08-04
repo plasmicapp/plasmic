@@ -14,6 +14,7 @@ import {
 } from "./config-utils";
 import { isLocalModulePath } from "./code-utils";
 import { logger } from "../deps";
+import { HandledError } from "../utils/error";
 
 export function stripExtension(filename: string) {
   const ext = path.extname(filename);
@@ -161,11 +162,13 @@ export function fixAllFilePaths(context: PlasmicContext) {
 
   const fixPath = <K extends string>(bundle: { [k in K]: string }, key: K) => {
     const known = bundle[key];
+    // Check null and undefined
     if (known == null) {
-      throw new Error(
+      throw new HandledError(
         `"${key} is required, but missing in ${CONFIG_FILE_NAME}. Please restore the file or delete from ${CONFIG_FILE_NAME} to re-sync: ${bundle}"`
       );
     }
+    // Check falsey values (e.g. "")
     if (!known) {
       return;
     }

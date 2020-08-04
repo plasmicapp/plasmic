@@ -10,6 +10,7 @@ import * as Sentry from "@sentry/node";
 import { runNecessaryMigrations } from "../migrations/migrations";
 import { getCliVersion } from "./npm-utils";
 import { logger } from "../deps";
+import { HandledError } from "../utils/error";
 
 export const AUTH_FILE_NAME = ".plasmic.auth";
 export const CONFIG_FILE_NAME = "plasmic.json";
@@ -253,10 +254,10 @@ export function getContext(args: CommonArgs): PlasmicContext {
   const authFile =
     args.auth || findAuthFile(process.cwd(), { traverseParents: true });
   if (!authFile) {
-    logger.error(
+    const err = new HandledError(
       "No .plasmic.auth file found with Plasmic credentials; please run `plasmic init` first."
     );
-    process.exit(1);
+    throw err;
   }
   const auth = readAuth(authFile);
   if (auth.host.startsWith("https://studio.plasmic.app")) {
@@ -276,10 +277,10 @@ export function getContext(args: CommonArgs): PlasmicContext {
   const configFile =
     args.config || findConfigFile(process.cwd(), { traverseParents: true });
   if (!configFile) {
-    logger.error(
+    const err = new HandledError(
       "No plasmic.json file found; please run `plasmic init` first."
     );
-    process.exit(1);
+    throw err;
   }
 
   runNecessaryMigrations(configFile);
@@ -300,8 +301,10 @@ export function getContext(args: CommonArgs): PlasmicContext {
 
 export function readConfig(configFile: string) {
   if (!fs.existsSync(configFile)) {
-    logger.error(`No Plasmic config file found at ${configFile}`);
-    process.exit(1);
+    const err = new HandledError(
+      `No Plasmic config file found at ${configFile}`
+    );
+    throw err;
   }
   try {
     const result = JSON.parse(
@@ -312,14 +315,14 @@ export function readConfig(configFile: string) {
     logger.error(
       `Error encountered reading plasmic.config at ${configFile}: ${e}`
     );
-    process.exit(1);
+    throw e;
   }
 }
 
 export function readAuth(authFile: string) {
   if (!fs.existsSync(authFile)) {
-    logger.error(`No Plasmic auth file found at ${authFile}`);
-    process.exit(1);
+    const err = new HandledError(`No Plasmic auth file found at ${authFile}`);
+    throw err;
   }
   try {
     return JSON.parse(fs.readFileSync(authFile).toString()) as AuthConfig;
@@ -327,7 +330,7 @@ export function readAuth(authFile: string) {
     logger.error(
       `Error encountered reading plasmic credentials at ${authFile}: ${e}`
     );
-    process.exit(1);
+    throw e;
   }
 }
 
