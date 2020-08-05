@@ -1,6 +1,6 @@
 import _classNames from "classnames";
-import React from "react";
-
+import * as React from "react";
+import { useFocusRing as useAriaFocusRing } from "@react-aria/focus";
 export type ElementTag = keyof JSX.IntrinsicElements;
 
 interface Variants {
@@ -128,7 +128,7 @@ export function createPlasmicElement<
 
   const root =
     override2.type === "as" ? override2.as || defaultRoot : defaultRoot;
-  const props = mergeProps(
+  const props = mergeOverrideProps(
     defaultProps,
     override2.type === "default" || override2.type === "as"
       ? override2.props
@@ -196,15 +196,18 @@ export function createPlasmicElementProxy<
 ) {
   const override = props["data-plasmic-override"];
   const wrapFlexChild = props["data-plasmic-wrap-flex-child"];
+  const triggerProps = (props["data-plasmic-trigger-props"] ??
+    []) as React.HTMLAttributes<HTMLElement>[];
   delete props["data-plasmic-override"];
   delete props["data-plasmic-wrap-flex-child"];
   return createPlasmicElement(
     override,
     defaultElement,
-    {
-      ...props,
-      ...(children.length === 0 ? {} : { children })
-    },
+    mergeProps(
+      props,
+      children.length === 0 ? {} : { children },
+      ...triggerProps
+    ) as any,
     wrapFlexChild
   );
 }
@@ -213,7 +216,61 @@ export function makeFragment(...children: React.ReactNode[]) {
   return React.createElement(React.Fragment, {}, ...children);
 }
 
+const NONE = Symbol("NONE");
+
 function mergeProps(
+  props: Record<string, any>,
+  ...restProps: Record<string, any>[]
+): Record<string, any> {
+  const result = { ...props };
+
+  for (const rest of restProps) {
+    for (const key of Object.keys(rest)) {
+      result[key] = mergePropVals(key, result[key], rest[key]);
+    }
+  }
+
+  return result;
+}
+
+function mergePropVals(name: string, val1: any, val2: any): any {
+  if (val1 === NONE || val2 === NONE) {
+    // The NONE sentinel always skips all merging and returns null
+    return null;
+  } else if (val1 == null) {
+    // If either of them is nil, prefer the other
+    return val2;
+  } else if (val2 == null) {
+    return val1;
+  } else if (typeof val1 !== typeof val2) {
+    // If the type of the two values are different, then no way to merge them.
+    // Prefer val2.
+    return val2;
+  } else if (name === "className") {
+    // Special case for className -- always combine both class names
+    return classNames(val1, val2);
+  } else if (name === "style") {
+    // Special case for style -- always shallow-merge style dicts
+    return { ...val1, ...val2 };
+  } else if (name.startsWith("on") && typeof val1 === "function") {
+    // Special case for event handlers -- always call both handlers
+    return (...args: any[]) => {
+      let res: any;
+      if (typeof val1 === "function") {
+        res = val1(...args);
+      }
+      if (typeof val2 === "function") {
+        res = val2(...args);
+      }
+      return res;
+    };
+  } else {
+    // For all else, prefer val2
+    return val2;
+  }
+}
+
+function mergeOverrideProps(
   defaults: Record<string, any>,
   overrides?: Record<string, any>
 ): Record<string, any> {
@@ -224,30 +281,24 @@ function mergeProps(
   const result = { ...defaults };
 
   for (const key of Object.keys(overrides)) {
-    result[key] = mergePropVals(key, defaults[key], overrides[key]);
+    const defaultVal = defaults[key];
+    let overrideVal = overrides[key];
+    // We use the NONE sentinel of the overrideVal is nil, and is not one of the
+    // props that we merge by default -- which are className, style, and
+    // event handlers.  This means for all other "normal" props -- like children,
+    // title, etc -- a nil value will unset the default.
+    if (
+      overrideVal == null &&
+      key !== "className" &&
+      key !== "style" &&
+      !(key.startsWith("on") && typeof defaultVal === "function")
+    ) {
+      overrideVal = NONE;
+    }
+    result[key] = mergePropVals(key, defaultVal, overrideVal);
   }
 
   return result;
-}
-
-function mergePropVals(name: string, defaultVal: any, overrideVal: any): any {
-  if (typeof defaultVal === "function" && typeof overrideVal === "function") {
-    return (...args: any[]) => {
-      defaultVal(...args);
-      return overrideVal(...args);
-    };
-  } else if (name === "className") {
-    return `${defaultVal || ""} ${overrideVal || ""}`;
-  } else if (name === "style") {
-    return {
-      ...(defaultVal || {}),
-      ...(overrideVal || {})
-    };
-  } else {
-    // Else we always let override win, even if override is undefined, so that
-    // it is possible for users to override an unwanted default value.
-    return overrideVal;
-  }
 }
 
 export function wrapWithClassName(element: React.ReactNode, className: string) {
@@ -324,7 +375,7 @@ export function PlasmicSlot<T extends keyof JSX.IntrinsicElements = "div">(
 
   return React.createElement(
     as || "div",
-    mergeProps({ className: "__wab_slot" }, rest),
+    mergeOverrideProps({ className: "__wab_slot" }, rest),
     content
   );
 }
@@ -619,7 +670,7 @@ function mergeFlexOverride<C extends React.ElementType<any>>(
     };
   }
 
-  const props = mergeProps(o1.props, o2.props) as Partial<
+  const props = mergeOverrideProps(o1.props, o2.props) as Partial<
     React.ComponentProps<C>
   >;
 
@@ -665,4 +716,78 @@ export function omit<T>(obj: T, ...keys: (keyof T)[]): Partial<T> {
     }
   }
   return res;
+}
+
+function useFocused(opts: { isTextInput?: boolean }) {
+  const { isFocused, focusProps } = useAriaFocusRing({
+    within: false,
+    isTextInput: opts.isTextInput
+  });
+
+  return [isFocused, focusProps];
+}
+
+function useFocusVisible(opts: { isTextInput?: boolean }) {
+  const { isFocusVisible, focusProps } = useAriaFocusRing({
+    within: false,
+    isTextInput: opts.isTextInput
+  });
+
+  return [isFocusVisible, focusProps];
+}
+
+function useFocusedWithin(opts: { isTextInput?: boolean }) {
+  const { isFocused, focusProps } = useAriaFocusRing({
+    within: true,
+    isTextInput: opts.isTextInput
+  });
+
+  return [isFocused, focusProps];
+}
+
+function useHover() {
+  const [isHover, setHover] = React.useState(false);
+  return [
+    isHover,
+    {
+      onMouseEnter: (e: React.MouseEvent) => setHover(true),
+      onMouseLeave: (e: React.MouseEvent) => setHover(false)
+    }
+  ];
+}
+
+function usePressed() {
+  const [isPressed, setPressed] = React.useState(false);
+  return [
+    isPressed,
+    {
+      onMouseDown: (e: React.MouseEvent) => setPressed(true),
+      onMouseUp: (e: React.MouseEvent) => setPressed(false)
+    }
+  ];
+}
+
+const TRIGGER_TO_HOOK = {
+  useHover,
+  useFocused,
+  useFocusVisible,
+  useFocusedWithin,
+  usePressed
+} as const;
+
+type TriggerType = keyof typeof TRIGGER_TO_HOOK;
+
+interface TriggerOpts {
+  isTextInput?: boolean;
+}
+
+/**
+ * Installs argment trigger. All the useTrigger calls must use hardcoded `trigger` arg,
+ * as it's not valid to install variable React hooks!
+ */
+export function useTrigger(trigger: TriggerType, opts: TriggerOpts) {
+  return TRIGGER_TO_HOOK[trigger](opts) as [
+    boolean,
+    React.HTMLAttributes<HTMLElement>
+  ];
 }
