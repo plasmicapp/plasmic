@@ -270,6 +270,8 @@ function mergePropVals(name: string, val1: any, val2: any): any {
   }
 }
 
+export const UNSET = Symbol("UNSET");
+
 function mergeOverrideProps(
   defaults: Record<string, any>,
   overrides?: Record<string, any>
@@ -283,19 +285,23 @@ function mergeOverrideProps(
   for (const key of Object.keys(overrides)) {
     const defaultVal = defaults[key];
     let overrideVal = overrides[key];
-    // We use the NONE sentinel of the overrideVal is nil, and is not one of the
-    // props that we merge by default -- which are className, style, and
-    // event handlers.  This means for all other "normal" props -- like children,
-    // title, etc -- a nil value will unset the default.
-    if (
-      overrideVal == null &&
-      key !== "className" &&
-      key !== "style" &&
-      !(key.startsWith("on") && typeof defaultVal === "function")
-    ) {
-      overrideVal = NONE;
+    if (overrideVal === UNSET) {
+      delete result[key];
+    } else {
+      // We use the NONE sentinel of the overrideVal is nil, and is not one of the
+      // props that we merge by default -- which are className, style, and
+      // event handlers.  This means for all other "normal" props -- like children,
+      // title, etc -- a nil value will unset the default.
+      if (
+        overrideVal == null &&
+        key !== "className" &&
+        key !== "style" &&
+        !(key.startsWith("on") && typeof defaultVal === "function")
+      ) {
+        overrideVal = NONE;
+      }
+      result[key] = mergePropVals(key, defaultVal, overrideVal);
     }
-    result[key] = mergePropVals(key, defaultVal, overrideVal);
   }
 
   return result;
