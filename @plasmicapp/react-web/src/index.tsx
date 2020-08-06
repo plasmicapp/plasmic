@@ -751,6 +751,15 @@ function useFocusedWithin(opts: { isTextInput?: boolean }) {
   return [isFocused, focusProps];
 }
 
+function useFocusVisibleWithin(opts: { isTextInput?: boolean }) {
+  const { isFocusVisible, focusProps } = useAriaFocusRing({
+    within: true,
+    isTextInput: opts.isTextInput
+  });
+
+  return [isFocusVisible, focusProps];
+}
+
 function useHover() {
   const [isHover, setHover] = React.useState(false);
   return [
@@ -778,6 +787,7 @@ const TRIGGER_TO_HOOK = {
   useFocused,
   useFocusVisible,
   useFocusedWithin,
+  useFocusVisibleWithin,
   usePressed
 } as const;
 
