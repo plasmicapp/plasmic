@@ -11,7 +11,7 @@ import {
 } from "../utils/config-utils";
 import { code } from "../../../code-merger/src/utils";
 import { iteratee } from "lodash";
-import { readFileSync } from "fs";
+import { readFileText } from "../utils/file-utils";
 
 describe("code-utils", function() {
   it("typescript to javascript should work", function() {
@@ -535,7 +535,7 @@ function _CodeSandboxDialogContent(props) {
   return null;
 }
 `;
-    const configJson = readFileSync(
+    const configJson = readFileText(
       "./testData/fixImports_plasmic.json"
     ).toString();
     const fixImportContext = mkFixImportContext(JSON.parse(configJson));
@@ -607,7 +607,7 @@ function _CodeSandboxDialogContent(props) {
   return null;
 }
 `;
-    const configJson = readFileSync(
+    const configJson = readFileText(
       "./testData/fixImports_plasmic.json"
     ).toString();
     const fixImportContext = mkFixImportContext(JSON.parse(configJson));
@@ -680,7 +680,7 @@ function _CodeSandboxDialogContent(props) {
 }
 `;
 
-    const configJson = readFileSync(
+    const configJson = readFileText(
       "./testData/fixImports_plasmic.json"
     ).toString();
     const fixImportContext = mkFixImportContext(JSON.parse(configJson));

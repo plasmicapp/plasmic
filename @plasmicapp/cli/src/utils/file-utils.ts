@@ -30,14 +30,14 @@ export function writeFileContentRaw(
   opts?: { force?: boolean }
 ) {
   opts = opts || {};
-  if (fs.existsSync(filePath) && !opts.force) {
+  if (existsBuffered(filePath) && !opts.force) {
     logger.error(`Cannot write to ${filePath}; file already exists.`);
     process.exit(1);
   }
 
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
 
-  fs.writeFileSync(filePath, content);
+  writeFileText(filePath, content);
 }
 
 export function writeFileContent(
@@ -54,11 +54,12 @@ export function readFileContent(
   context: PlasmicContext,
   srcDirFilePath: string
 ) {
-  return fs.readFileSync(makeFilePath(context, srcDirFilePath)).toString();
+  const path = makeFilePath(context, srcDirFilePath);
+  return readFileText(path);
 }
 
 export function fileExists(context: PlasmicContext, srcDirFilePath: string) {
-  return fs.existsSync(makeFilePath(context, srcDirFilePath));
+  return existsBuffered(makeFilePath(context, srcDirFilePath));
 }
 
 export function makeFilePath(context: PlasmicContext, filePath: string) {
@@ -104,7 +105,7 @@ export function findSrcDirPath(
   }
 
   const fileName = path.basename(expectedPath);
-  if (fs.existsSync(path.join(absoluteSrcDir, expectedPath))) {
+  if (existsBuffered(path.join(absoluteSrcDir, expectedPath))) {
     return expectedPath;
   } else if (!(fileName in baseNameToFiles)) {
     return expectedPath;
@@ -217,4 +218,57 @@ export function fixAllFilePaths(context: PlasmicContext) {
   if (changed) {
     updateConfig(context, context.config);
   }
+}
+
+/** Whether we're currently recording to the buffer. */
+let buffering = false;
+
+/** Map of path to content. */
+const buffer = new Map<string, string>();
+
+/**
+ * This turns on buffering of file writes/reads.
+ *
+ * This is useful for reducing the extent to which our file updates are scattered over time, which can cause webpack
+ * dev server to trip up.
+ *
+ * This also has the side benefit of making our CLI commands more atomic, in case of failure partway through a sync.
+ */
+export async function withBufferedFs(f: () => Promise<void>) {
+  buffering = true;
+  buffer.clear();
+  try {
+    await f();
+    [...buffer.entries()].forEach(([path, content]) => {
+      // eslint-disable-next-line no-restricted-properties
+      fs.writeFileSync(path, content);
+    });
+  } finally {
+    buffering = false;
+  }
+}
+
+export function writeFileText(path: string, content: string) {
+  if (buffering) {
+    buffer.set(path, content);
+  } else {
+    // eslint-disable-next-line no-restricted-properties
+    fs.writeFileSync(path, content, "utf8");
+  }
+}
+
+export function readFileText(path: string) {
+  return buffering
+    ? // eslint-disable-next-line no-restricted-properties
+      buffer.get(path) ?? fs.readFileSync(path, "utf8")
+    : // eslint-disable-next-line no-restricted-properties
+      fs.readFileSync(path, "utf8");
+}
+
+export function existsBuffered(path: string) {
+  return buffering
+    ? // eslint-disable-next-line no-restricted-properties
+      buffer.has(path) || fs.existsSync(path)
+    : // eslint-disable-next-line no-restricted-properties
+      fs.existsSync(path);
 }

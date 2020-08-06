@@ -18,7 +18,8 @@ import {
   findSrcDirPath,
   readFileContent,
   stripExtension,
-  fixAllFilePaths
+  fixAllFilePaths,
+  withBufferedFs
 } from "../utils/file-utils";
 import {
   ProjectBundle,
@@ -190,68 +191,71 @@ export async function sync(opts: SyncArgs): Promise<void> {
   );
   const summary = new Map<string, ComponentUpdateSummary>();
   const pendingMerge = new Array<ComponentPendingMerge>();
-  await Promise.all(
-    resolveResults.map(async projectMeta => {
-      // By default projects that users explicitly sync use "latest" and dependencies use caret ranges.
-      const caretVersionRange = semver.toCaretRange(projectMeta.version);
-      const versionRange =
-        projectConfigMap[projectMeta.projectId]?.version ??
-        (projectIds.includes(projectMeta.projectId) || !caretVersionRange)
-          ? "latest"
-          : caretVersionRange;
-      await syncProject(
-        context,
-        opts,
-        projectMeta.projectId,
-        projectMeta.componentIds,
-        projectMeta.version,
-        versionRange,
-        reactWebVersion,
-        summary,
-        pendingMerge
+
+  await withBufferedFs(async () => {
+    await Promise.all(
+      resolveResults.map(async projectMeta => {
+        // By default projects that users explicitly sync use "latest" and dependencies use caret ranges.
+        const caretVersionRange = semver.toCaretRange(projectMeta.version);
+        const versionRange =
+          projectConfigMap[projectMeta.projectId]?.version ??
+          (projectIds.includes(projectMeta.projectId) || !caretVersionRange)
+            ? "latest"
+            : caretVersionRange;
+        await syncProject(
+          context,
+          opts,
+          projectMeta.projectId,
+          projectMeta.componentIds,
+          projectMeta.version,
+          versionRange,
+          reactWebVersion,
+          summary,
+          pendingMerge
+        );
+      })
+    );
+
+    // Materialize scheme into each component config.
+    context.config.projects.forEach(p =>
+      p.components.forEach(c => {
+        if (!c.scheme) {
+          c.scheme = context.config.code.scheme;
+        }
+      })
+    );
+
+    syncStyleConfig(context, await context.api.genStyleConfig());
+
+    // Write the new ComponentConfigs to disk
+    updateConfig(context, {
+      projects: context.config.projects,
+      globalVariants: context.config.globalVariants,
+      tokens: context.config.tokens,
+      style: context.config.style
+    });
+
+    const fixImportContext = mkFixImportContext(context.config);
+
+    for (const m of pendingMerge) {
+      const resolvedEditedFile = replaceImports(
+        m.editedSkeletonFile,
+        m.skeletonModulePath,
+        fixImportContext,
+        true
       );
-    })
-  );
+      const resolvedNewFile = replaceImports(
+        m.newSkeletonFile,
+        m.skeletonModulePath,
+        fixImportContext,
+        true
+      );
+      await m.merge(resolvedNewFile, resolvedEditedFile);
+    }
 
-  // Materialize scheme into each component config.
-  context.config.projects.forEach(p =>
-    p.components.forEach(c => {
-      if (!c.scheme) {
-        c.scheme = context.config.code.scheme;
-      }
-    })
-  );
-
-  syncStyleConfig(context, await context.api.genStyleConfig());
-
-  // Write the new ComponentConfigs to disk
-  updateConfig(context, {
-    projects: context.config.projects,
-    globalVariants: context.config.globalVariants,
-    tokens: context.config.tokens,
-    style: context.config.style
+    // Now we know config.components are all correct, so we can go ahead and fix up all the import statements
+    fixAllImportStatements(context, summary);
   });
-
-  const fixImportContext = mkFixImportContext(context.config);
-
-  for (const m of pendingMerge) {
-    const resolvedEditedFile = replaceImports(
-      m.editedSkeletonFile,
-      m.skeletonModulePath,
-      fixImportContext,
-      true
-    );
-    const resolvedNewFile = replaceImports(
-      m.newSkeletonFile,
-      m.skeletonModulePath,
-      fixImportContext,
-      true
-    );
-    await m.merge(resolvedNewFile, resolvedEditedFile);
-  }
-
-  // Now we know config.components are all correct, so we can go ahead and fix up all the import statements
-  fixAllImportStatements(context, summary);
 
   if (!opts.nonInteractive) {
     await warnLatestReactWeb(context);

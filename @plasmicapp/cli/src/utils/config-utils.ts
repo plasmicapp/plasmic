@@ -2,7 +2,12 @@ import fs from "fs";
 import path from "upath";
 import os from "os";
 import L from "lodash";
-import { writeFileContentRaw, findFile } from "./file-utils";
+import {
+  writeFileContentRaw,
+  findFile,
+  readFileText,
+  existsBuffered
+} from "./file-utils";
 import { PlasmicApi } from "../api";
 import { CommonArgs } from "../index";
 import { DeepPartial } from "utility-types";
@@ -300,16 +305,14 @@ export function getContext(args: CommonArgs): PlasmicContext {
 }
 
 export function readConfig(configFile: string) {
-  if (!fs.existsSync(configFile)) {
+  if (!existsBuffered(configFile)) {
     const err = new HandledError(
       `No Plasmic config file found at ${configFile}`
     );
     throw err;
   }
   try {
-    const result = JSON.parse(
-      fs.readFileSync(configFile!).toString()
-    ) as PlasmicConfig;
+    const result = JSON.parse(readFileText(configFile!)) as PlasmicConfig;
     return fillDefaults(result);
   } catch (e) {
     logger.error(
@@ -320,12 +323,12 @@ export function readConfig(configFile: string) {
 }
 
 export function readAuth(authFile: string) {
-  if (!fs.existsSync(authFile)) {
+  if (!existsBuffered(authFile)) {
     const err = new HandledError(`No Plasmic auth file found at ${authFile}`);
     throw err;
   }
   try {
-    return JSON.parse(fs.readFileSync(authFile).toString()) as AuthConfig;
+    return JSON.parse(readFileText(authFile)) as AuthConfig;
   } catch (e) {
     logger.error(
       `Error encountered reading plasmic credentials at ${authFile}: ${e}`

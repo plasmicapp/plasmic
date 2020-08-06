@@ -1,10 +1,11 @@
 import * as tmp from "tmp";
-import * as fs from "fs";
+import fs from "fs";
 import * as path from "path";
 import L from "lodash";
 import { MockComponent } from "../__mocks__/api";
 import { AuthConfig, PlasmicConfig } from "../utils/config-utils";
 import { AUTH_FILE_NAME, CONFIG_FILE_NAME } from "../utils/config-utils";
+import { readFileText, writeFileText } from "./file-utils";
 
 export class TempRepo {
   tmpDir: tmp.DirResult; // Temporary directory used for tests
@@ -23,13 +24,13 @@ export class TempRepo {
 
   readFile(relativePath: string): string {
     const absPath = this.resolveFile(relativePath);
-    const buf = fs.readFileSync(absPath);
+    const buf = readFileText(absPath);
     return buf.toString();
   }
 
   writeFile(relativePath: string, data: string) {
     const absPath = this.resolveFile(relativePath);
-    fs.writeFileSync(absPath, data);
+    writeFileText(absPath, data);
   }
 
   deleteFile(relativePath: string) {

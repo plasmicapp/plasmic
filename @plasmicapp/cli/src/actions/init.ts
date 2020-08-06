@@ -17,6 +17,7 @@ import {
 import { execSync, spawnSync } from "child_process";
 import { installUpgrade, getCliVersion } from "../utils/npm-utils";
 import { logger } from "../deps";
+import { existsBuffered } from "../utils/file-utils";
 
 export interface InitArgs extends CommonArgs {
   host: string;
@@ -30,7 +31,7 @@ export interface InitArgs extends CommonArgs {
 export async function initPlasmic(opts: InitArgs) {
   const configFile =
     opts.config || findConfigFile(process.cwd(), { traverseParents: false });
-  if (configFile && fs.existsSync(configFile)) {
+  if (configFile && existsBuffered(configFile)) {
     logger.error(
       "You already have a plasmic.json file!  Please either delete or edit it directly."
     );
@@ -39,7 +40,7 @@ export async function initPlasmic(opts: InitArgs) {
 
   const authFile =
     opts.auth || findAuthFile(process.cwd(), { traverseParents: true });
-  if (!authFile || !fs.existsSync(authFile)) {
+  if (!authFile || !existsBuffered(authFile)) {
     const auth = await inquirer.prompt([
       {
         name: "user",
@@ -65,7 +66,7 @@ export async function initPlasmic(opts: InitArgs) {
     logger.info(`Using existing Plasmic credentials at ${authFile}`);
   }
 
-  const langDetect = fs.existsSync("tsconfig.json")
+  const langDetect = existsBuffered("tsconfig.json")
     ? {
         lang: "ts",
         explanation: "tsconfig.json detected, guessing Typescript"

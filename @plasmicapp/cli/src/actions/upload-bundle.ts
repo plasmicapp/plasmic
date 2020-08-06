@@ -10,7 +10,8 @@ import {
   writeFileContent,
   readFileContent,
   fileExists,
-  fixAllFilePaths
+  fixAllFilePaths,
+  readFileText
 } from "../utils/file-utils";
 import { CommonArgs } from "..";
 import fs from "fs";
@@ -34,9 +35,9 @@ export async function uploadJsBundle(opts: UploadBundleArgs) {
   await api.uploadBundle(
     opts.project,
     opts.bundleName,
-    fs.readFileSync(opts.bundleJsFile).toString(),
-    opts.cssFiles.map(f => fs.readFileSync(f).toString()),
-    fs.readFileSync(opts.metaJsonFile).toString(),
+    readFileText(opts.bundleJsFile),
+    opts.cssFiles.map(f => readFileText(f)),
+    readFileText(opts.metaJsonFile),
     opts.genModulePath,
     opts.genCssPaths,
     opts.pkgVersion
