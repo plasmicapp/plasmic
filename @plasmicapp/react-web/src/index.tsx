@@ -1,7 +1,14 @@
 import _classNames from "classnames";
 import * as React from "react";
 import { useFocusRing as useAriaFocusRing } from "@react-aria/focus";
-export type ElementTag = keyof JSX.IntrinsicElements;
+
+// From https://stackoverflow.com/questions/54775790/forcing-excess-property-checking-on-variable-passed-to-typescript-function
+export type StrictProps<T, TExpected> = Exclude<
+  keyof T,
+  keyof TExpected
+> extends never
+  ? {}
+  : "Unexpected extraneous props";
 
 interface Variants {
   [vg: string]: any;
