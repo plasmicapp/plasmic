@@ -24,12 +24,13 @@ export type DefaultOverride<C extends React.ElementType> = {
 export type AsOverride<C extends React.ElementType> = {
   type: "as";
   as: C;
-  props: Partial<React.ComponentProps<C>>;
+  props?: Partial<React.ComponentProps<C>>;
 } & OverrideTwiddle;
 
 export type RenderOverride<C extends React.ElementType> = {
   type: "render";
   render: (props: React.ComponentProps<C>) => React.ReactNode;
+  props?: Partial<React.ComponentProps<C>>;
 } & OverrideTwiddle;
 
 export type Override<DefaultElementType extends React.ElementType> =
@@ -60,7 +61,6 @@ export type Flex<DefaultElementType extends React.ElementType> =
   | Omit<AsOverride<any>, "type">
   | (Omit<RenderOverride<DefaultElementType>, "type"> & {
       as?: never;
-      props?: never;
     })
 
   // Valid ReactNode, used as children.
@@ -120,20 +120,13 @@ export function createPlasmicElement<
   wrapChildrenInFlex?: boolean
 ): React.ReactNode | null {
   const override2 = deriveOverride(override);
+  const props = mergeOverrideProps(defaultProps, override2.props);
   if (override2.type === "render") {
-    return override2.render(
-      defaultProps as React.ComponentProps<DefaultElementType>
-    );
+    return override2.render(props as React.ComponentProps<DefaultElementType>);
   }
 
   const root =
     override2.type === "as" ? override2.as || defaultRoot : defaultRoot;
-  const props = mergeOverrideProps(
-    defaultProps,
-    override2.type === "default" || override2.type === "as"
-      ? override2.props
-      : {}
-  );
 
   let children = props.children;
 
@@ -381,7 +374,7 @@ export function PlasmicSlot<T extends keyof JSX.IntrinsicElements = "div">(
 
   return React.createElement(
     as || "div",
-    mergeOverrideProps({ className: "__wab_slot" }, rest),
+    mergeProps({ className: "__wab_slot" }, rest),
     content
   );
 }
@@ -659,10 +652,14 @@ function mergeFlexOverride<C extends React.ElementType<any>>(
     ...[o1.wrapChildren, o2.wrapChildren].filter(notNil)
   );
 
-  // "render" type always takes precedence
+  // "render" type always takes precedence, but we still merge the props
+  const props = mergeOverrideProps(o1.props ?? {}, o2.props) as Partial<
+    React.ComponentProps<C>
+  >;
   if (o2.type === "render") {
     return {
       render: o2.render,
+      props,
       wrap,
       wrapChildren
     };
@@ -671,14 +668,11 @@ function mergeFlexOverride<C extends React.ElementType<any>>(
   if (o1.type === "render") {
     return {
       render: o1.render,
+      props,
       wrap,
       wrapChildren
     };
   }
-
-  const props = mergeOverrideProps(o1.props, o2.props) as Partial<
-    React.ComponentProps<C>
-  >;
 
   // "as" will take precedence
   const as =
