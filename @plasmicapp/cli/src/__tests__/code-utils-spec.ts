@@ -9,7 +9,6 @@ import {
   PlasmicConfig,
   PlasmicContext
 } from "../utils/config-utils";
-import { code } from "../../../code-merger/src/utils";
 import { iteratee } from "lodash";
 import { readFileText } from "../utils/file-utils";
 
