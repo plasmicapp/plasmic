@@ -2,7 +2,7 @@ import fs from "fs";
 import glob from "fast-glob";
 import semver from "semver";
 import latest from "latest-version";
-import { findFile } from "./file-utils";
+import { findFile, readFileText } from "./file-utils";
 import { PlasmicContext } from "./config-utils";
 import { execSync, spawnSync } from "child_process";
 import inquirer from "inquirer";
@@ -91,7 +91,7 @@ function findInstalledPackageJsonFile(pkg: string, dir: string) {
 
 function parsePackageJson(path: string) {
   try {
-    return JSON.parse(fs.readFileSync(path).toString());
+    return JSON.parse(readFileText(path));
   } catch (e) {
     return undefined;
   }

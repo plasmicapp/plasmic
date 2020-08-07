@@ -17,7 +17,7 @@ import { getCliVersion } from "../utils/npm-utils";
 import fs from "fs";
 import path from "upath";
 import semver from "semver";
-import { writeFileContentRaw } from "../utils/file-utils";
+import { readFileText, writeFileContentRaw } from "../utils/file-utils";
 import { migrateInit } from "./0.1.27-migrateInit";
 import { tsToTsx } from "./0.1.28-tsToTsx";
 import { ensureProjectIcons } from "./0.1.31-ensureProjectIcons";
@@ -38,7 +38,7 @@ export const MIGRATIONS: Record<string, MigrateFunc> = {
 };
 
 export function runNecessaryMigrations(configFile: string) {
-  const readConfig = () => JSON.parse(fs.readFileSync(configFile).toString());
+  const readConfig = () => JSON.parse(readFileText(configFile));
   const writeConfig = (config: any) =>
     writeFileContentRaw(configFile, JSON.stringify(config, undefined, 2), {
       force: true

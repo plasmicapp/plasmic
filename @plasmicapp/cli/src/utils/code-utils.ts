@@ -12,7 +12,12 @@ import {
   StyleConfig,
   IconConfig
 } from "./config-utils";
-import { stripExtension, writeFileContent } from "./file-utils";
+import {
+  existsBuffered,
+  readFileText,
+  stripExtension,
+  writeFileContent
+} from "./file-utils";
 import { flatMap } from "./lang-utils";
 import * as ts from "typescript";
 import * as Prettier from "prettier";
@@ -346,9 +351,9 @@ function fixFileImportStatements(
   fixImportContext: FixImportContext,
   removeImportDirective: boolean
 ) {
-  const prevContent = fs
-    .readFileSync(path.join(context.absoluteSrcDir, srcDirFilePath))
-    .toString();
+  const prevContent = readFileText(
+    path.join(context.absoluteSrcDir, srcDirFilePath)
+  ).toString();
 
   const newContent = replaceImports(
     prevContent,
@@ -369,10 +374,8 @@ class CompilerOptions {
       do {
         curDir = path.join(curDir, "..");
         configPath = path.join(curDir, "tsconfig-transform.json");
-      } while (!fs.existsSync(configPath));
-      const c = ts.readConfigFile(configPath, path =>
-        fs.readFileSync(path, { encoding: "utf-8" })
-      );
+      } while (!existsBuffered(configPath));
+      const c = ts.readConfigFile(configPath, path => readFileText(path));
       this.opts = ts.convertCompilerOptionsFromJson(
         c.config.compilerOptions,
         "."
