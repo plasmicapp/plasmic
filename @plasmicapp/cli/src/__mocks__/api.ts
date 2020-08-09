@@ -9,7 +9,7 @@ import {
   StyleTokensMap,
   ProjectIconsResponse,
   ProjectMetaBundle,
-  ComponentBundle
+  ComponentBundle,
 } from "../api";
 
 const api: any = jest.genMockFromModule("../api");
@@ -84,14 +84,14 @@ function getMockComponents(
 ): MockComponent[] {
   return L.chain(COMPONENTS)
     .values()
-    .filter(c => c.projectId === projectId)
+    .filter((c) => c.projectId === projectId)
     .filter(
-      c =>
+      (c) =>
         !componentIdOrNames ||
         componentIdOrNames.includes(c.id) ||
         componentIdOrNames.includes(c.name)
     )
-    .filter(c => semver.satisfies(c.version, versionRange))
+    .filter((c) => semver.satisfies(c.version, versionRange))
     .value();
 }
 
@@ -110,7 +110,7 @@ function genComponentBundle(component: MockComponent): ComponentBundle {
     componentName: component.name,
     id: component.id,
     scheme: "blackbox",
-    nameInIdToUuid: []
+    nameInIdToUuid: [],
   };
 }
 
@@ -119,9 +119,9 @@ function genEmptyStyleTokensMap() {
     props: [],
     global: {
       meta: {
-        source: "plasmic.app" as "plasmic.app"
-      }
-    }
+        source: "plasmic.app" as "plasmic.app",
+      },
+    },
   };
 }
 
@@ -130,7 +130,7 @@ function genProjectMetaBundle(projectId: string): ProjectMetaBundle {
     projectId,
     projectName: projectId,
     cssFileName: genFilename(projectId, "css"),
-    cssRules: `theClass {color: green;}`
+    cssRules: `theClass {color: green;}`,
   };
 }
 
@@ -140,7 +140,7 @@ class PlasmicApi {
   async genStyleConfig(): Promise<StyleConfigResponse> {
     const result = {
       defaultStyleCssFileName: genFilename("default", "css"),
-      defaultStyleCssRules: `theClass {color: red;}`
+      defaultStyleCssRules: `theClass {color: red;}`,
     };
     return result;
   }
@@ -156,7 +156,7 @@ class PlasmicApi {
   ): Promise<VersionResolution> {
     // Keyed by projectId, since we can only have 1 version per projectId
     let results: VersionResolution = { projects: [], conflicts: [] };
-    const queue = L.flatMap(projects, p =>
+    const queue = L.flatMap(projects, (p) =>
       getMockComponents(p.projectId, p.componentIdOrNames, p.versionRange)
     );
     while (queue.length > 0) {
@@ -171,11 +171,11 @@ class PlasmicApi {
             {
               projectId: c.projectId,
               version: c.version,
-              componentIds: [c.id]
-            }
+              componentIds: [c.id],
+            },
           ],
-          conflicts: []
-        }
+          conflicts: [],
+        },
       ]);
 
       // Recursive Mode
@@ -184,7 +184,7 @@ class PlasmicApi {
           queue.push(...c.children);
         } else {
           const childrenFromSameProject = c.children.filter(
-            child => child.projectId === c.projectId
+            (child) => child.projectId === c.projectId
           );
           queue.push(...childrenFromSameProject);
         }
@@ -217,11 +217,11 @@ class PlasmicApi {
     }
 
     const result = {
-      components: mockComponents.map(c => genComponentBundle(c)),
+      components: mockComponents.map((c) => genComponentBundle(c)),
       projectConfig: genProjectMetaBundle(projectId),
       globalVariants: [],
       usedTokens: genEmptyStyleTokensMap(),
-      iconAssets: []
+      iconAssets: [],
     };
     return result;
   }

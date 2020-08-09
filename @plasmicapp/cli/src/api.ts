@@ -123,7 +123,7 @@ export class PlasmicApi {
       {
         projects,
         recursive,
-        includeDependencies
+        includeDependencies,
       }
     );
     const projectResults = resp.data.projects as ProjectComponentVersionMeta[];
@@ -161,7 +161,7 @@ export class PlasmicApi {
         newCompScheme,
         existingCompScheme,
         componentIdOrNames,
-        version
+        version,
       }
     );
     return result.data as ProjectBundle;
@@ -187,7 +187,7 @@ export class PlasmicApi {
         metaJson,
         genModulePath,
         genCssPaths,
-        pkgVersion
+        pkgVersion,
       }
     );
     return result.data as StyleTokensMap;
@@ -225,9 +225,9 @@ export class PlasmicApi {
       path: `/api/v1/socket`,
       transportOptions: {
         polling: {
-          extraHeaders: this.makeHeaders()
-        }
-      }
+          extraHeaders: this.makeHeaders(),
+        },
+      },
     });
     return socket;
   }
@@ -237,7 +237,7 @@ export class PlasmicApi {
   private async post(url: string, data?: any, rethrowAppError?: boolean) {
     try {
       return await axios.post(url, data, {
-        headers: this.makeHeaders()
+        headers: this.makeHeaders(),
       });
     } catch (e) {
       const error = e as AxiosError;
@@ -269,7 +269,7 @@ export class PlasmicApi {
   private makeHeaders() {
     const headers: Record<string, string> = {
       "x-plasmic-api-user": this.auth.user,
-      "x-plasmic-api-token": this.auth.token
+      "x-plasmic-api-token": this.auth.token,
     };
 
     if (this.auth.basicAuthUser && this.auth.basicAuthPassword) {

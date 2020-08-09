@@ -10,13 +10,13 @@ import {
   PlasmicContext,
   PlasmicConfig,
   StyleConfig,
-  IconConfig
+  IconConfig,
 } from "./config-utils";
 import {
   existsBuffered,
   readFileText,
   stripExtension,
-  writeFileContent
+  writeFileContent,
 } from "./file-utils";
 import { flatMap } from "./lang-utils";
 import * as ts from "typescript";
@@ -47,13 +47,13 @@ const nodeToFormattedCode = (
 ) => {
   const c = generate(n, {
     retainLines: true,
-    shouldPrintComment: c => !commentsToRemove || !commentsToRemove.has(c)
+    shouldPrintComment: (c) => !commentsToRemove || !commentsToRemove.has(c),
   }).code;
   return unformatted
     ? c
     : formatAsLocal(c, "/tmp/x.tsx", {
         trailingComma: "none",
-        arrowParens: "avoid"
+        arrowParens: "avoid",
       });
 };
 
@@ -87,7 +87,7 @@ export function ensureImportSpecifierWithAlias(
   if (existing) {
     existing.imported.name = imported;
   } else {
-    decl.specifiers = decl.specifiers.filter(specifier => {
+    decl.specifiers = decl.specifiers.filter((specifier) => {
       if (
         specifier.type === "ImportDefaultSpecifier" &&
         specifier.local.name === alias
@@ -143,11 +143,11 @@ export function replaceImports(
 
       // There are also various features that people may have... May just
       // need to add as we encounter them...
-      "classProperties"
-    ]
+      "classProperties",
+    ],
   });
   const commentsToRemove = new Set<string>();
-  file.program.body.forEach(stmt => {
+  file.program.body.forEach((stmt) => {
     if (stmt.type !== "ImportDeclaration") {
       return;
     }
@@ -267,23 +267,23 @@ export interface FixImportContext {
 }
 
 export const mkFixImportContext = (config: PlasmicConfig) => {
-  const allComponents = flatMap(config.projects, p => p.components);
-  const components = L.keyBy(allComponents, c => c.id);
+  const allComponents = flatMap(config.projects, (p) => p.components);
+  const components = L.keyBy(allComponents, (c) => c.id);
   const globalVariants = L.keyBy(
     config.globalVariants.variantGroups,
-    c => c.id
+    (c) => c.id
   );
   const icons = L.keyBy(
-    flatMap(config.projects, p => p.icons),
-    c => c.id
+    flatMap(config.projects, (p) => p.icons),
+    (c) => c.id
   );
-  const projects = L.keyBy(config.projects, p => p.projectId);
+  const projects = L.keyBy(config.projects, (p) => p.projectId);
   return {
     config,
     components,
     globalVariants,
     icons,
-    projects
+    projects,
   };
 };
 
@@ -375,7 +375,7 @@ class CompilerOptions {
         curDir = path.join(curDir, "..");
         configPath = path.join(curDir, "tsconfig-transform.json");
       } while (!existsBuffered(configPath));
-      const c = ts.readConfigFile(configPath, path => readFileText(path));
+      const c = ts.readConfigFile(configPath, (path) => readFileText(path));
       this.opts = ts.convertCompilerOptionsFromJson(
         c.config.compilerOptions,
         "."
@@ -393,7 +393,7 @@ export const tsxToJsx = (code: string) => {
   const usageMagic = "\ncreatePlasmicElementProxy();";
   const replaced = code.replace("/** @jsx", "/** @ jsx") + usageMagic;
   let result = ts.transpileModule(replaced, {
-    compilerOptions: CompilerOptions.getOpts()
+    compilerOptions: CompilerOptions.getOpts(),
   });
   return result.outputText
     .replace("/** @ jsx", "/** @jsx")
@@ -404,14 +404,14 @@ export const formatScript = (code: string) => {
   const file = parser.parse(code, {
     strictMode: true,
     sourceType: "module",
-    plugins: ["jsx", "typescript"]
+    plugins: ["jsx", "typescript"],
   });
   let newLineMarker = "THIS_SHALL_BE_NEW_LINE";
   while (code.includes(newLineMarker)) {
     newLineMarker = newLineMarker + "_REALLY";
   }
   traverse(file, {
-    Statement: function(path) {
+    Statement: function (path) {
       if (
         file.program.body.includes(path.node) &&
         path.node.type !== "ImportDeclaration"
@@ -419,7 +419,7 @@ export const formatScript = (code: string) => {
         path.insertBefore(babel.types.stringLiteral(newLineMarker));
         path.skip();
       }
-    }
+    },
   });
 
   const withmarkers = nodeToFormattedCode(file, true);
@@ -430,6 +430,6 @@ export const formatScript = (code: string) => {
   return formatAsLocal(withNewLines, "/tmp/x.tsx", {
     printWidth: 80,
     tabWidth: 2,
-    useTabs: false
+    useTabs: false,
   });
 };

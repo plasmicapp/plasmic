@@ -12,7 +12,7 @@ import {
   CallExpression,
   JSXSpreadChild,
   JSXFragment,
-  JSXText
+  JSXText,
 } from "@babel/types";
 import * as babel from "@babel/core";
 import * as L from "lodash";
@@ -20,7 +20,7 @@ import { assert, ensure } from "./common";
 import {
   PlasmicASTNode,
   PlasmicJsxElement,
-  PlasmicTagOrComponent
+  PlasmicTagOrComponent,
 } from "./plasmic-ast";
 import { cloneDeepWithHook } from "./cloneDeepWithHook";
 import { isAttribute, getAttrName } from "./utils";
@@ -33,7 +33,7 @@ const tryGetNodeIdFromAttr = (attr: JSXAttribute | JSXSpreadAttribute) => {
       let nodeId: string | undefined = undefined;
       traverse(attr.value, {
         noScope: true,
-        CallExpression: function(path) {
+        CallExpression: function (path) {
           const member = tryExtractPropertyNameOfMemberExpression(
             path.node.callee,
             helperObject
@@ -43,7 +43,7 @@ const tryGetNodeIdFromAttr = (attr: JSXAttribute | JSXSpreadAttribute) => {
             nodeId = m[1];
             path.stop();
           }
-        }
+        },
       });
       return nodeId;
     }
@@ -73,13 +73,13 @@ const parseJsxElement = (
 ): PlasmicJsxElement => {
   const attrs: Array<
     [string, PlasmicASTNode | null] | PlasmicASTNode
-  > = n.openingElement.attributes.map(attr => {
+  > = n.openingElement.attributes.map((attr) => {
     if (attr.type === "JSXAttribute") {
       const name = getAttrName(attr);
       assert(L.isString(name));
       return [
         name,
-        attr.value === null ? null : parseNode(attr.value, attr, false)
+        attr.value === null ? null : parseNode(attr.value, attr, false),
       ];
     } else {
       // spreador
@@ -92,7 +92,7 @@ const parseJsxElement = (
     children,
     rawNode: n,
     rawParent: parent,
-    nameInId: plasmicId
+    nameInId: plasmicId,
   };
 };
 
@@ -120,7 +120,7 @@ export const isJsxElementOrFragment = (n: Node) => {
 
 const parseChildren = (n: JSXFragment | JSXElement): PlasmicASTNode[] => {
   const nodesList: PlasmicASTNode[] = [];
-  n.children.forEach(child => {
+  n.children.forEach((child) => {
     if (child.type === "JSXText") {
       const text = child.value;
       if (text !== undefined) {
@@ -158,7 +158,7 @@ const parseNode = (
       : {
           type: "jsx-fragment",
           children: parseChildren(n),
-          rawNode: n
+          rawNode: n,
         };
   } else {
     node = parseAsOneNode(n, parent);
@@ -174,7 +174,7 @@ const parseAsOneNode = (
   if (n.type === "JSXEmptyExpression") {
     return {
       type: "opaque",
-      rawNode: n
+      rawNode: n,
     };
   }
 
@@ -182,7 +182,7 @@ const parseAsOneNode = (
     return {
       type: "string-lit",
       value: n.value,
-      rawNode: n
+      rawNode: n,
     };
   }
   if (n.type === "CallExpression") {
@@ -204,39 +204,39 @@ const parseAsOneNode = (
         type: "tag-or-component",
         jsxElement,
         rawNode: n,
-        secondaryNodes: []
+        secondaryNodes: [],
       };
     }
   }
   const jsxElements: PlasmicJsxElement[] = [];
   traverse(n, {
     noScope: true,
-    JSXElement: function(path) {
+    JSXElement: function (path) {
       const jsxElement = tryParseAsPlasmicJsxElement(path.node, path.parent);
       if (jsxElement) {
         jsxElements.push(jsxElement);
         path.skip();
       }
-    }
+    },
   });
   return jsxElements.length > 0
     ? {
         type: "tag-or-component",
         jsxElement: jsxElements[0],
         rawNode: n,
-        secondaryNodes: jsxElements.slice(1).map(elt => ({
+        secondaryNodes: jsxElements.slice(1).map((elt) => ({
           type: "tag-or-component",
           jsxElement: elt,
           rawNode:
             elt.rawParent && elt.rawParent.type === "LogicalExpression"
               ? elt.rawParent
               : elt.rawNode,
-          secondaryNodes: []
-        }))
+          secondaryNodes: [],
+        })),
       }
     : {
         type: "opaque",
-        rawNode: n
+        rawNode: n,
       };
 };
 
@@ -245,7 +245,7 @@ export const parseJSXExpressionOrContainerAsNodeList = (expr: Expression) => {};
 export const parseFromJsxExpression = (input: string) => {
   const ast = parser.parseExpression(input, {
     strictMode: false,
-    plugins: ["jsx", "typescript"]
+    plugins: ["jsx", "typescript"],
   });
   return parseNode(ast, undefined, true);
 };
@@ -262,22 +262,22 @@ const findNodes = (
   }
   if (node.type === "tag-or-component") {
     tags.set(node.jsxElement.nameInId, node);
-    node.jsxElement.attrs.forEach(attr => {
+    node.jsxElement.attrs.forEach((attr) => {
       if (!L.isArray(attr)) {
         findNodes(attr, tags, secondaryTags);
       } else {
         findNodes(attr[1], tags, secondaryTags);
       }
     });
-    node.jsxElement.children.forEach(c => {
+    node.jsxElement.children.forEach((c) => {
       findNodes(c, tags, secondaryTags);
     });
-    node.secondaryNodes.forEach(c => findNodes(c, tags, secondaryTags));
-    node.secondaryNodes.forEach(c =>
+    node.secondaryNodes.forEach((c) => findNodes(c, tags, secondaryTags));
+    node.secondaryNodes.forEach((c) =>
       secondaryTags.set(c.jsxElement.nameInId, c)
     );
   } else if (node.type === "jsx-fragment") {
-    node.children.forEach(child => findNodes(child, tags, secondaryTags));
+    node.children.forEach((child) => findNodes(child, tags, secondaryTags));
   }
 };
 
@@ -409,7 +409,7 @@ export class CodeVersion {
           "onFocus",
           "onBlur",
           "onMouseEnter",
-          "onMouseLeave"
+          "onMouseLeave",
         ];
         const regEx = new RegExp(
           `^(cls|props|show|childStr|${eventHandlers.join("|")})(.+)$`
@@ -421,7 +421,7 @@ export class CodeVersion {
           const curUuid = ensure(this.nameInIdToUuid.get(nameInId));
           const newNameInId = targetCodeVersion.findMatchingNameInId({
             nameInId,
-            uuid: curUuid
+            uuid: curUuid,
           });
           if (!newNameInId) {
             // node has been deleted in targetCodeVersion. Fine to keep the name,
@@ -495,7 +495,7 @@ export class CodeVersion {
     let found = false;
     traverse(node.rawNode, {
       noScope: true,
-      CallExpression: function(path) {
+      CallExpression: function (path) {
         if (
           memberExpressionMatch(
             path.node.callee,
@@ -507,25 +507,25 @@ export class CodeVersion {
           path.stop();
         }
       },
-      JSXElement: function(path) {
+      JSXElement: function (path) {
         if (path.node === node.jsxElement.rawNode) {
           path.skip();
         }
-      }
+      },
     });
     return found;
   }
 
   hasClassNameIdAttr(node: PlasmicTagOrComponent) {
     const matchingAttr = node.jsxElement.rawNode.openingElement.attributes.find(
-      attr => {
+      (attr) => {
         if (!isAttribute(attr, "className")) {
           return false;
         }
         let found = false;
         traverse(attr, {
           noScope: true,
-          MemberExpression: function(path) {
+          MemberExpression: function (path) {
             found =
               found ||
               memberExpressionMatch(
@@ -536,7 +536,7 @@ export class CodeVersion {
             if (found) {
               path.stop();
             }
-          }
+          },
         });
         return found;
       }
@@ -547,14 +547,14 @@ export class CodeVersion {
 
   tryGetPropsIdSpreador(node: PlasmicTagOrComponent) {
     const matchingAttr = node.jsxElement.rawNode.openingElement.attributes.find(
-      attr => {
+      (attr) => {
         if (attr.type !== "JSXSpreadAttribute") {
           return false;
         }
         let found = false;
         traverse(attr, {
           noScope: true,
-          MemberExpression: function(path) {
+          MemberExpression: function (path) {
             found =
               found ||
               memberExpressionMatch(
@@ -565,7 +565,7 @@ export class CodeVersion {
             if (found) {
               path.stop();
             }
-          }
+          },
         });
         return found;
       }

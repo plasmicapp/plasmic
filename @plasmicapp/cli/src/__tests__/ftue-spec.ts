@@ -15,46 +15,46 @@ beforeEach(() => {
     name: "Button",
     projectId: "projectId1",
     version: "1.2.3",
-    children: []
+    children: [],
   };
   const container = {
     id: "containerId",
     name: "Container",
     projectId: "projectId1",
     version: "1.2.3",
-    children: [button]
+    children: [button],
   };
   const components: MockComponent[] = [button, container];
-  components.forEach(c => mockApi.setMockComponent(c.id, c));
+  components.forEach((c) => mockApi.setMockComponent(c.id, c));
 
   // Setup client-side directory
   tmpRepo = new TempRepo();
   tmpRepo.writePlasmicAuth({
     host: "http://localhost:3003",
     user: "yang@plasmic.app",
-    token: "faketoken"
+    token: "faketoken",
   });
   tmpRepo.writePlasmicJson({
     platform: "react",
     code: {
       lang: "ts",
-      scheme: "blackbox"
+      scheme: "blackbox",
     },
     style: {
       scheme: "css",
-      defaultStyleCssFilePath: ""
+      defaultStyleCssFilePath: "",
     },
     tokens: {
       scheme: "theo",
-      tokensFilePath: "plasmic-tokens.theo.json"
+      tokensFilePath: "plasmic-tokens.theo.json",
     },
     srcDir: "src/",
     defaultPlasmicDir: "./plasmic",
     projects: [],
     globalVariants: {
-      variantGroups: []
+      variantGroups: [],
     },
-    cliVersion: "0.1.44"
+    cliVersion: "0.1.44",
   });
 
   // Default opts and config
@@ -69,7 +69,7 @@ beforeEach(() => {
     recursive: false,
     includeDependencies: false,
     config: tmpRepo.plasmicJsonPath(),
-    auth: tmpRepo.plasmicAuthPath()
+    auth: tmpRepo.plasmicAuthPath(),
   };
 });
 
@@ -112,7 +112,7 @@ describe("first-time-user-experience", () => {
     expect(plasmicJson.projects.length).toEqual(1);
     const projectConfig = plasmicJson.projects[0];
     expect(projectConfig.components.length).toEqual(2);
-    const componentNames = projectConfig.components.map(c => c.name);
+    const componentNames = projectConfig.components.map((c) => c.name);
     expect(componentNames).toContain("Button");
     expect(componentNames).toContain("Container");
   });

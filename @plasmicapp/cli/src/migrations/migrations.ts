@@ -34,25 +34,25 @@ export const MIGRATIONS: Record<string, MigrateFunc> = {
   "0.1.27": migrateInit,
   "0.1.28": tsToTsx,
   "0.1.31": ensureProjectIcons,
-  "0.1.42": ensureVersion
+  "0.1.42": ensureVersion,
 };
 
 export function runNecessaryMigrations(configFile: string) {
   const readConfig = () => JSON.parse(readFileText(configFile));
   const writeConfig = (config: any) =>
     writeFileContentRaw(configFile, JSON.stringify(config, undefined, 2), {
-      force: true
+      force: true,
     });
   const cur = readConfig();
 
   const context: MigrateContext = {
     absoluteSrcDir: path.isAbsolute(cur.srcDir)
       ? cur.srcDir
-      : path.resolve(path.dirname(configFile), cur.srcDir)
+      : path.resolve(path.dirname(configFile), cur.srcDir),
   };
   const curVersion: string | undefined = cur.cliVersion;
   const greaterVersions = semver.sort(
-    L.keys(MIGRATIONS).filter(v => !curVersion || semver.gt(v, curVersion))
+    L.keys(MIGRATIONS).filter((v) => !curVersion || semver.gt(v, curVersion))
   );
   for (const version of greaterVersions) {
     logger.info(`Migrating to plasmic.json version ${version}`);

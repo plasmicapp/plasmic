@@ -10,7 +10,7 @@ import {
   JSXIdentifier,
   JSXNamespacedName,
   JSXAttribute,
-  JSXSpreadAttribute
+  JSXSpreadAttribute,
 } from "@babel/types";
 
 export const code = (
@@ -27,14 +27,14 @@ export const formatted = (c: string) => {
   return Prettier.format(c, {
     parser: "typescript",
     plugins: [parserTypeScript],
-    trailingComma: "none"
+    trailingComma: "none",
   });
 };
 
 export function parseExpr(input: string) {
   return parser.parseExpression(input, {
     strictMode: false,
-    plugins: ["jsx", "typescript"]
+    plugins: ["jsx", "typescript"],
   });
 }
 
@@ -48,9 +48,7 @@ export const nodesDeepEqualIgnoreComments = (n1: Node, n2: Node) => {
 
 export const tagName = (jsxElement: JSXElement) => {
   // babel generator append ";" to the name. stirp it.
-  return code(jsxElement.openingElement.name)
-    .replace(";", "")
-    .trim();
+  return code(jsxElement.openingElement.name).replace(";", "").trim();
 };
 
 export const getAttrName = (attr: JSXAttribute) => {

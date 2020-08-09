@@ -50,8 +50,8 @@ export const sortAsc = (versions: string[]) =>
   );
 export const sortDesc = (versions: string[]) => sortAsc(versions).reverse();
 export const minSatisfying = (versions: string[], range: string) =>
-  sortAsc(versions).find(v => satisfies(v, range)) ?? null;
+  sortAsc(versions).find((v) => satisfies(v, range)) ?? null;
 export const maxSatisfying = (versions: string[], range: string) =>
-  sortDesc(versions).find(v => satisfies(v, range)) ?? null;
+  sortDesc(versions).find((v) => satisfies(v, range)) ?? null;
 export const coerce = (v: string) =>
   isLatest(v) ? latestTag : semverlib.coerce(v)?.version;

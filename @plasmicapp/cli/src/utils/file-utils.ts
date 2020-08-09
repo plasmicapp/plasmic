@@ -10,7 +10,7 @@ import {
   PlasmicConfig,
   CONFIG_FILE_NAME,
   IconConfig,
-  updateConfig
+  updateConfig,
 } from "./config-utils";
 import { isLocalModulePath } from "./code-utils";
 import { logger } from "../deps";
@@ -82,9 +82,9 @@ export function buildBaseNameToFiles(
   const srcDir = context.absoluteSrcDir;
   const scriptFileExt = context.config.code.lang === "ts" ? "tsx" : "jsx";
   const allFiles = glob.sync(`${srcDir}/**/*.+(ts|css|${scriptFileExt}|json)`, {
-    ignore: [`${srcDir}/**/node_modules/**/*`]
+    ignore: [`${srcDir}/**/node_modules/**/*`],
   });
-  return L.groupBy(allFiles, f => path.basename(f));
+  return L.groupBy(allFiles, (f) => path.basename(f));
 }
 
 /**
@@ -136,7 +136,7 @@ export function findFile(
   }
 ): string | undefined {
   const files = fs.readdirSync(dir);
-  const found = files.find(f => pred(f));
+  const found = files.find((f) => pred(f));
   if (found) {
     return path.join(dir, found);
   }

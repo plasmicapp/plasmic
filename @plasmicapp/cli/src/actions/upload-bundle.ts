@@ -3,7 +3,7 @@ import {
   PlasmicConfig,
   PlasmicContext,
   getContext,
-  updateConfig
+  updateConfig,
 } from "../utils/config-utils";
 import { StyleTokensMap } from "../api";
 import {
@@ -11,7 +11,7 @@ import {
   readFileContent,
   fileExists,
   fixAllFilePaths,
-  readFileText
+  readFileText,
 } from "../utils/file-utils";
 import { CommonArgs } from "..";
 import fs from "fs";
@@ -36,7 +36,7 @@ export async function uploadJsBundle(opts: UploadBundleArgs) {
     opts.project,
     opts.bundleName,
     readFileText(opts.bundleJsFile),
-    opts.cssFiles.map(f => readFileText(f)),
+    opts.cssFiles.map((f) => readFileText(f)),
     readFileText(opts.metaJsonFile),
     opts.genModulePath,
     opts.genCssPaths,

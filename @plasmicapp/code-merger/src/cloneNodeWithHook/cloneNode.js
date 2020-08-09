@@ -13,7 +13,9 @@ function cloneIfNode(obj, deep, withoutLoc, cloneNodeHook) {
 
 function cloneIfNodeOrArray(obj, deep, withoutLoc, cloneNodeHook) {
   if (Array.isArray(obj)) {
-    return obj.map(node => cloneIfNode(node, deep, withoutLoc, cloneNodeHook));
+    return obj.map((node) =>
+      cloneIfNode(node, deep, withoutLoc, cloneNodeHook)
+    );
   }
   return cloneIfNode(obj, deep, withoutLoc, cloneNodeHook);
 }
@@ -50,7 +52,12 @@ export default function cloneNode(
 
     if (has(node, "typeAnnotation")) {
       newNode.typeAnnotation = deep
-        ? cloneIfNodeOrArray(node.typeAnnotation, true, withoutLoc, cloneNodeHook)
+        ? cloneIfNodeOrArray(
+            node.typeAnnotation,
+            true,
+            withoutLoc,
+            cloneNodeHook
+          )
         : node.typeAnnotation;
     }
   } else if (!has(NODE_FIELDS, type)) {
@@ -62,7 +69,12 @@ export default function cloneNode(
           newNode[field] =
             type === "File" && field === "comments"
               ? maybeCloneComments(node.comments, deep, withoutLoc)
-              : cloneIfNodeOrArray(node[field], true, withoutLoc, cloneNodeHook);
+              : cloneIfNodeOrArray(
+                  node[field],
+                  true,
+                  withoutLoc,
+                  cloneNodeHook
+                );
         } else {
           newNode[field] = node[field];
         }
@@ -81,21 +93,21 @@ export default function cloneNode(
     newNode.leadingComments = maybeCloneComments(
       node.leadingComments,
       deep,
-      withoutLoc,
+      withoutLoc
     );
   }
   if (has(node, "innerComments")) {
     newNode.innerComments = maybeCloneComments(
       node.innerComments,
       deep,
-      withoutLoc,
+      withoutLoc
     );
   }
   if (has(node, "trailingComments")) {
     newNode.trailingComments = maybeCloneComments(
       node.trailingComments,
       deep,
-      withoutLoc,
+      withoutLoc
     );
   }
   if (has(node, "extra")) {

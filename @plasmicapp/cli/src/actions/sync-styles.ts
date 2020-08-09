@@ -3,14 +3,14 @@ import {
   PlasmicConfig,
   PlasmicContext,
   getContext,
-  updateConfig
+  updateConfig,
 } from "../utils/config-utils";
 import { StyleTokensMap } from "../api";
 import {
   writeFileContent,
   readFileContent,
   fileExists,
-  fixAllFilePaths
+  fixAllFilePaths,
 } from "../utils/file-utils";
 import { CommonArgs } from "..";
 import { formatAsLocal } from "../utils/code-utils";
@@ -30,10 +30,10 @@ export async function syncStyleTokens(opts: SyncStyleTokensArgs) {
   const projectIds =
     opts.projects.length > 0
       ? opts.projects
-      : L.uniq(readCurStyleMap(context).props.map(p => p.meta.projectId));
+      : L.uniq(readCurStyleMap(context).props.map((p) => p.meta.projectId));
 
   const results = await Promise.all(
-    projectIds.map(projectId => api.projectStyleTokens(projectId))
+    projectIds.map((projectId) => api.projectStyleTokens(projectId))
   );
   for (const [projectId, styleMap] of L.zip(projectIds, results) as [
     string,
@@ -43,7 +43,7 @@ export async function syncStyleTokens(opts: SyncStyleTokensArgs) {
   }
 
   updateConfig(context, {
-    tokens: config.tokens
+    tokens: config.tokens,
   });
 }
 
@@ -53,7 +53,9 @@ export function upsertStyleTokens(
 ) {
   const curStyleMap = readCurStyleMap(context);
   for (const prop of newStyleMap.props) {
-    const index = curStyleMap.props.findIndex(p => p.meta.id === prop.meta.id);
+    const index = curStyleMap.props.findIndex(
+      (p) => p.meta.id === prop.meta.id
+    );
     if (index >= 0) {
       curStyleMap.props[index] = prop;
     } else {
@@ -91,9 +93,9 @@ function readCurStyleMap(context: PlasmicContext): StyleTokensMap {
       props: [],
       global: {
         meta: {
-          source: "plasmic.app"
-        }
-      }
+          source: "plasmic.app",
+        },
+      },
     } as StyleTokensMap;
     writeFileContent(
       context,

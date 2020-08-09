@@ -19,7 +19,7 @@ import {
   ReturnStatement,
   JSXNamespacedName,
   JSXIdentifier,
-  ImportDeclaration
+  ImportDeclaration,
 } from "@babel/types";
 import * as babel from "@babel/core";
 import * as L from "lodash";
@@ -31,7 +31,7 @@ import {
   PlasmicJsxElement,
   PlasmicTagOrComponent,
   makeCallExpression,
-  wrapInJsxExprContainer
+  wrapInJsxExprContainer,
 } from "./plasmic-ast";
 import {
   CodeVersion,
@@ -41,7 +41,7 @@ import {
   makeMemberExpression,
   isCallIgnoreArguments,
   isCallWithoutArguments,
-  tryExtractPropertyNameOfMemberExpression
+  tryExtractPropertyNameOfMemberExpression,
 } from "./plasmic-parser";
 import {
   nodesDeepEqualIgnoreComments,
@@ -50,7 +50,7 @@ import {
   tagName,
   compactCode,
   isAttribute,
-  getAttrName
+  getAttrName,
 } from "./utils";
 import { first, cloneDeep, replace, difference, map } from "lodash";
 import { diffChars } from "diff";
@@ -60,7 +60,7 @@ const mkJsxFragment = (children: JsxChildType[]) => {
     babel.types.jsxOpeningFragment(),
     babel.types.jsxClosingFragment(),
     // Remove unnecessary {}
-    children.map(child =>
+    children.map((child) =>
       child.type === "JSXExpressionContainer" &&
       child.expression.type === "JSXElement"
         ? child.expression
@@ -375,7 +375,7 @@ const mergeAttributes = (
       }
     }
   }
-  let classNameAt = mergedAttrs.findIndex(attr =>
+  let classNameAt = mergedAttrs.findIndex((attr) =>
     isAttribute(attr, "className")
   );
   // insert className if missing in edited version, mostly to support old code.
@@ -419,7 +419,7 @@ interface NoMatch {
 type MatchResult = PerfectMatch | TypeMatch | NoMatch;
 
 const computeDiff = (s1: string, s2: string) => {
-  return L.sum(diffChars(s1, s2).map(part => part.value.length));
+  return L.sum(diffChars(s1, s2).map((part) => part.value.length));
 };
 
 const findMatch = (
@@ -505,7 +505,7 @@ const mergeNodes = (
   };
 
   // remove tag node from new nodes list when there is no perfect match.
-  const merged = newNodes.filter(newNode => {
+  const merged = newNodes.filter((newNode) => {
     if (newNode.type === "tag-or-component") {
       const matchInEditedVersion = findMatch(editedNodes, 0, newNode);
       const matchInBaseVersion = findMatch(baseNodes, 0, newNode);
@@ -566,7 +566,7 @@ const mergeNodes = (
   });
 
   return withoutNils(
-    merged.map(c => {
+    merged.map((c) => {
       if (c.type === "opaque") {
         return c.rawNode as JsxChildType;
       }
@@ -659,7 +659,7 @@ const serializeTagOrComponent = (
     }
 
     const secondaryNodes = new Map<Node, Node | undefined>(
-      editedNode.secondaryNodes.map(n => {
+      editedNode.secondaryNodes.map((n) => {
         const newSecondaryNode = newVersion.findTagOrComponent(
           n.jsxElement.nameInId
         );
@@ -705,7 +705,7 @@ const serializeTagOrComponent = (
     if (editedNodeCallShowFunc && !newNodeCallShowFunc) {
       traverse(editedNodeClone, {
         noScope: true,
-        CallExpression: function(path) {
+        CallExpression: function (path) {
           if (
             isCallIgnoreArguments(
               path.node,
@@ -715,7 +715,7 @@ const serializeTagOrComponent = (
           ) {
             path.replaceWithSourceString("true");
           }
-        }
+        },
       });
     }
     return editedNodeClone;
@@ -727,7 +727,7 @@ const serializeTagOrComponent = (
   }
   // This is new node. Just output self.
   const childrenReplacement = new Map<Node, Node>();
-  newNode.jsxElement.children.forEach(child => {
+  newNode.jsxElement.children.forEach((child) => {
     // Plasmic never emit opaque node.
     assert(child.type !== "opaque");
     const childReplacement = serializeNonOpaquePlasmicASTNode(
@@ -750,7 +750,7 @@ const serializeTagOrComponent = (
   });
   // Attribute replacement
   const attrsReplacement = new Map<Node, Node>();
-  newNode.jsxElement.attrs.forEach(attr => {
+  newNode.jsxElement.attrs.forEach((attr) => {
     if (L.isArray(attr)) {
       const [key, value] = attr;
       // className is an opaque attribute!
@@ -798,7 +798,7 @@ const serializeNonOpaquePlasmicASTNode = (
       babel.types.jsxOpeningFragment(),
       babel.types.jsxClosingFragment(),
       withoutNils(
-        newNode.children.map(child => {
+        newNode.children.map((child) => {
           const newRawNode = serializePlasmicASTNode(child, codeVersions);
           if (!newRawNode) {
             return undefined;
@@ -863,7 +863,7 @@ export const renameAndSerializePlasmicASTNode = (
     editedVersion: codeVersions.editedVersion.renameJsxTree(
       codeVersions.newVersion
     ),
-    newVersion: codeVersions.newVersion
+    newVersion: codeVersions.newVersion,
   });
 };
 
@@ -878,7 +878,7 @@ export class ComponentSkeletonModel {
     return {
       uuid: this.uuid,
       nameInIdToUuid: [...this.nameInIdToUuid.entries()],
-      fileContent: this.fileContent
+      fileContent: this.fileContent,
     };
   }
 
@@ -902,7 +902,7 @@ export class ProjectSyncMetadataModel {
     const j = JSON.parse(json);
     assert(L.isArray(j));
     return new ProjectSyncMetadataModel(
-      j.map(item => ComponentSkeletonModel.fromJsObject(item))
+      j.map((item) => ComponentSkeletonModel.fromJsObject(item))
     );
   }
 }
@@ -918,7 +918,7 @@ export const makeCachedProjectSyncDataProvider = (
   const cache: Array<Entry> = [];
   return async (projectId: string, revision: number) => {
     const cached = cache.find(
-      ent => ent.projectId === projectId && ent.revision === revision
+      (ent) => ent.projectId === projectId && ent.revision === revision
     );
     if (cached) {
       return cached.model;
@@ -959,7 +959,7 @@ const tryExtractPlasmicJsxExpression = (
         return {
           jsx: ensure(node.argument),
           identifyingComment: c,
-          revision: +m[1]
+          revision: +m[1],
         };
       }
     }
@@ -973,23 +973,23 @@ const tryParseComponentSkeletonFile = (
   const file = parser.parse(fileContent, {
     strictMode: true,
     sourceType: "module",
-    plugins: ["jsx", "typescript"]
+    plugins: ["jsx", "typescript"],
   });
   let jsx: VersionedJsx | undefined = undefined;
   traverse(file, {
     noScope: true,
-    AssignmentExpression: function(path) {
+    AssignmentExpression: function (path) {
       jsx = tryExtractPlasmicJsxExpression(path.node);
       if (jsx) {
         path.stop();
       }
     },
-    ReturnStatement: function(path) {
+    ReturnStatement: function (path) {
       jsx = tryExtractPlasmicJsxExpression(path.node);
       if (jsx) {
         path.stop();
       }
-    }
+    },
   });
   // typescript treat jsx as never type... why?
   jsx = jsx as VersionedJsx | undefined;
@@ -1046,11 +1046,11 @@ const mergeImports = (
   newImport: ImportDeclaration
 ) => {
   if (
-    editedImport.specifiers.find(s => s.type === "ImportNamespaceSpecifier")
+    editedImport.specifiers.find((s) => s.type === "ImportNamespaceSpecifier")
   ) {
     return cloneDeep(editedImport);
   }
-  if (newImport.specifiers.find(s => s.type === "ImportNamespaceSpecifier")) {
+  if (newImport.specifiers.find((s) => s.type === "ImportNamespaceSpecifier")) {
     return cloneDeep(newImport);
   }
   const cloned = cloneDeep(editedImport);
@@ -1058,7 +1058,7 @@ const mergeImports = (
     if (s2.type === "ImportDefaultSpecifier") {
       if (
         editedImport.specifiers.find(
-          s1 =>
+          (s1) =>
             s1.type === "ImportDefaultSpecifier" &&
             s1.local.name === s2.local.name
         )
@@ -1069,7 +1069,7 @@ const mergeImports = (
     } else if (s2.type === "ImportSpecifier") {
       if (
         editedImport.specifiers.find(
-          s1 =>
+          (s1) =>
             s1.type === "ImportSpecifier" &&
             s1.local.name === s2.local.name &&
             s1.imported.name === s2.imported.name
@@ -1093,22 +1093,22 @@ const mergePlasmicImports = (
   parsedEdited: PlasmicComponentSkeletonFile
 ) => {
   const newImports = parsedNew.file.program.body.filter(
-    stmt => stmt.type === "ImportDeclaration"
+    (stmt) => stmt.type === "ImportDeclaration"
   ) as ImportDeclaration[];
   const editedImports = parsedEdited.file.program.body.filter(
-    stmt => stmt.type === "ImportDeclaration"
+    (stmt) => stmt.type === "ImportDeclaration"
   ) as ImportDeclaration[];
   const firstImport = mergedFile.program.body.findIndex(
-    stmt => stmt.type === "ImportDeclaration"
+    (stmt) => stmt.type === "ImportDeclaration"
   );
   mergedFile.program.body = mergedFile.program.body.filter(
-    stmt => stmt.type !== "ImportDeclaration"
+    (stmt) => stmt.type !== "ImportDeclaration"
   );
 
   const mergedImports: Array<ImportDeclaration> = [];
   for (const editedImport of editedImports) {
     const newImportAt = newImports.findIndex(
-      newImport => editedImport.source.value === newImport.source.value
+      (newImport) => editedImport.source.value === newImport.source.value
     );
     if (newImportAt !== -1) {
       const newImport = newImports[newImportAt];
@@ -1132,13 +1132,13 @@ interface PlasmicImportSpec {
 const extractPlasmicImports = (file: babel.types.File) => {
   const plasmicImports: Array<PlasmicImportSpec> = [];
   traverse(file, {
-    ImportDeclaration: function(path) {
+    ImportDeclaration: function (path) {
       const importSpec = tryParsePlasmicImportSpec(path.node);
       if (importSpec) {
         plasmicImports.push({ ...importSpec, node: path.node });
       }
       path.skip();
-    }
+    },
   });
   return plasmicImports;
 };
@@ -1171,10 +1171,10 @@ export class WarningInfo {
   }
 
   maybeWarn() {
-    this._rawWarnings.forEach(m => console.warn(m));
+    this._rawWarnings.forEach((m) => console.warn(m));
     if (this._secondaryNodes.length > 0) {
       const nodes = this._secondaryNodes
-        .map(n => n.jsxElement.nameInId)
+        .map((n) => n.jsxElement.nameInId)
         .join("\n\t");
       console.warn(
         `Plasmic perform limited merge to the following nodes since they are secondary nodes.\n${nodes}`
@@ -1225,7 +1225,7 @@ export const mergeFiles = async (
         parsedEdited.revision
       );
       baseMetadata = projectSyncData.components.find(
-        c => c.uuid === componentUuid
+        (c) => c.uuid === componentUuid
       );
     } catch {
       warnInfo.addRawWarn(
@@ -1281,13 +1281,13 @@ export const mergeFiles = async (
       baseMetadata.nameInIdToUuid
     );
     warnInfo.setSecondaryNodes([
-      ...editedCodeVersion.secondaryTagsOrComponents.values()
+      ...editedCodeVersion.secondaryTagsOrComponents.values(),
     ]);
 
     const newJsx = renameAndSerializePlasmicASTNode(newCodeVersion.root, {
       newVersion: newCodeVersion,
       editedVersion: editedCodeVersion,
-      baseVersion: baseCodeVersion
+      baseVersion: baseCodeVersion,
     });
 
     // Ideally, we should keep parsedEdited read-only, but, it is not a big deal

@@ -57,13 +57,13 @@ export class TempRepo {
     );
     const srcDir = plasmicJson.srcDir;
     const projectConfig = plasmicJson.projects.find(
-      p => p.projectId === projectId
+      (p) => p.projectId === projectId
     );
     if (!projectConfig) {
       return;
     }
     const componentConfig = projectConfig.components.find(
-      c => c.id === componentId
+      (c) => c.id === componentId
     );
     if (!componentConfig) {
       return;

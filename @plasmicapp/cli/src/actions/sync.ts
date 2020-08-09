@@ -10,7 +10,7 @@ import {
   ProjectConfig,
   createProjectConfig,
   CONFIG_FILE_NAME,
-  ComponentConfig
+  ComponentConfig,
 } from "../utils/config-utils";
 import {
   buildBaseNameToFiles,
@@ -19,7 +19,7 @@ import {
   readFileContent,
   stripExtension,
   fixAllFilePaths,
-  withBufferedFs
+  withBufferedFs,
 } from "../utils/file-utils";
 import {
   ProjectBundle,
@@ -28,7 +28,7 @@ import {
   ProjectMetaBundle,
   StyleConfigResponse,
   IconBundle,
-  AppServerError
+  AppServerError,
 } from "../api";
 import {
   fixAllImportStatements,
@@ -36,19 +36,19 @@ import {
   formatScript,
   ComponentUpdateSummary,
   replaceImports,
-  mkFixImportContext
+  mkFixImportContext,
 } from "../utils/code-utils";
 import { upsertStyleTokens } from "./sync-styles";
 import { flatMap } from "../utils/lang-utils";
 import {
   warnLatestReactWeb,
   getCliVersion,
-  findInstalledVersion
+  findInstalledVersion,
 } from "../utils/npm-utils";
 import {
   ComponentInfoForMerge,
   mergeFiles,
-  makeCachedProjectSyncDataProvider
+  makeCachedProjectSyncDataProvider,
 } from "@plasmicapp/code-merger";
 import { options } from "yargs";
 import { syncProjectIconAssets } from "./sync-icons";
@@ -102,7 +102,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
   const projectIds =
     opts.projects.length > 0
       ? opts.projects
-      : context.config.projects.map(p => p.projectId);
+      : context.config.projects.map((p) => p.projectId);
 
   // Short-circuit if nothing to sync
   if (projectIds.length === 0) {
@@ -112,13 +112,13 @@ export async function sync(opts: SyncArgs): Promise<void> {
   }
 
   // Resolve what will be synced
-  const projectConfigMap = L.keyBy(context.config.projects, p => p.projectId);
-  const projectSyncParams = projectIds.map(projectId => {
+  const projectConfigMap = L.keyBy(context.config.projects, (p) => p.projectId);
+  const projectSyncParams = projectIds.map((projectId) => {
     return {
       projectId,
       versionRange: projectConfigMap[projectId]?.version ?? "latest",
       componentIdOrNames:
-        opts.components.length === 0 ? undefined : opts.components
+        opts.components.length === 0 ? undefined : opts.components,
     };
   });
   const { projects: resolveResults, conflicts } = await context.api.resolveSync(
@@ -146,13 +146,13 @@ export async function sync(opts: SyncArgs): Promise<void> {
   // Check for projects that don't satisfy our PlasmicConfig version ranges
   // Note: This should ONLY be for project dependencies, since resolveSync will only get user-specified projects/components within range.
   const breakingProjects = resolveResults.filter(
-    r =>
+    (r) =>
       !!projectConfigMap[r.projectId] &&
       !semver.satisfies(r.version, projectConfigMap[r.projectId].version)
   );
   // Check if we want to continue, giving up early in non-interactive mode
   const breakingMessage = breakingProjects.map(
-    p =>
+    (p) =>
       `${p.projectId}@${projectConfigMap[p.projectId].version}=>v${p.version}`
   );
   if (breakingProjects.length > 0 && opts.nonInteractive) {
@@ -167,15 +167,15 @@ export async function sync(opts: SyncArgs): Promise<void> {
       {
         name: "continue",
         message: `Do you want to continue? (Y/n)`,
-        default: "y"
-      }
+        default: "y",
+      },
     ]);
     if (!["y", "yes"].includes(res.continue.toLowerCase())) {
       throw new HandledError("sync aborted by user.");
     }
   }
   // Update plasmic.json with newest version numbers
-  resolveResults.forEach(p => {
+  resolveResults.forEach((p) => {
     // Defaulting to caret ranges
     const newVersionRange = semver.toCaretRange(p.version);
     if (projectConfigMap[p.projectId] && newVersionRange) {
@@ -194,7 +194,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
 
   await withBufferedFs(async () => {
     await Promise.all(
-      resolveResults.map(async projectMeta => {
+      resolveResults.map(async (projectMeta) => {
         // By default projects that users explicitly sync use "latest" and dependencies use caret ranges.
         const caretVersionRange = semver.toCaretRange(projectMeta.version);
         const versionRange =
@@ -217,8 +217,8 @@ export async function sync(opts: SyncArgs): Promise<void> {
     );
 
     // Materialize scheme into each component config.
-    context.config.projects.forEach(p =>
-      p.components.forEach(c => {
+    context.config.projects.forEach((p) =>
+      p.components.forEach((c) => {
         if (!c.scheme) {
           c.scheme = context.config.code.scheme;
         }
@@ -232,7 +232,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
       projects: context.config.projects,
       globalVariants: context.config.globalVariants,
       tokens: context.config.tokens,
-      style: context.config.style
+      style: context.config.style,
     });
 
     const fixImportContext = mkFixImportContext(context.config);
@@ -279,11 +279,11 @@ async function syncProject(
   const newComponentScheme =
     opts.newComponentScheme || context.config.code.scheme;
   const existingProject = context.config.projects.find(
-    p => p.projectId === projectId
+    (p) => p.projectId === projectId
   );
   const existingCompScheme: Array<[string, "blackbox" | "direct"]> = (
     existingProject?.components || []
-  ).map(c => [c.id, c.scheme]);
+  ).map((c) => [c.id, c.scheme]);
 
   // Server-side code-gen
   const projectBundle = await context.api.projectComponents(
@@ -298,7 +298,7 @@ async function syncProject(
 
   // Convert from TSX => JSX
   if (context.config.code.lang === "js") {
-    projectBundle.components.forEach(c => {
+    projectBundle.components.forEach((c) => {
       [c.renderModuleFileName, c.renderModule] = maybeConvertTsxToJsx(
         c.renderModuleFileName,
         c.renderModule
@@ -308,13 +308,13 @@ async function syncProject(
         c.skeletonModule
       );
     });
-    projectBundle.iconAssets.forEach(icon => {
+    projectBundle.iconAssets.forEach((icon) => {
       [icon.fileName, icon.module] = maybeConvertTsxToJsx(
         icon.fileName,
         icon.module
       );
     });
-    projectBundle.globalVariants.forEach(gv => {
+    projectBundle.globalVariants.forEach((gv) => {
       [gv.contextFileName, gv.contextModule] = maybeConvertTsxToJsx(
         gv.contextFileName,
         gv.contextModule
@@ -323,7 +323,7 @@ async function syncProject(
   }
 
   const knownComponentIds = new Set(
-    flatMap(context.config.projects, p => p.components.map(c => c.id))
+    flatMap(context.config.projects, (p) => p.components.map((c) => c.id))
   );
   const shouldSyncComponents = (id: string, name: string) => {
     if (opts.onlyExisting) {
@@ -338,7 +338,7 @@ async function syncProject(
   };
 
   syncGlobalVariants(context, projectId, projectBundle.globalVariants);
-  const componentBundles = projectBundle.components.filter(bundle =>
+  const componentBundles = projectBundle.components.filter((bundle) =>
     shouldSyncComponents(bundle.id, bundle.componentName)
   );
   await syncProjectConfig(
@@ -371,7 +371,7 @@ const updateDirectSkeleton = async (
   componentByUuid.set(compConfig.id, {
     editedFile: editedFileContent,
     newFile: newFileContent,
-    newNameInIdToUuid: new Map(nameInIdToUuid)
+    newNameInIdToUuid: new Map(nameInIdToUuid),
   });
   const mergedFiles = await mergeFiles(
     componentByUuid,
@@ -397,7 +397,7 @@ const updateDirectSkeleton = async (
   const merged = mergedFiles?.get(compConfig.id);
   if (merged) {
     writeFileContent(context, compConfig.importSpec.modulePath, merged, {
-      force: true
+      force: true,
     });
   } else {
     if (!forceOverwrite) {
@@ -413,7 +413,7 @@ const updateDirectSkeleton = async (
         compConfig.importSpec.modulePath,
         newFileContent,
         {
-          force: true
+          force: true,
         }
       );
     }
@@ -430,7 +430,7 @@ async function syncProjectComponents(
   summary: Map<string, ComponentUpdateSummary>,
   pendingMerge: ComponentPendingMerge[]
 ) {
-  const allCompConfigs = L.keyBy(project.components, c => c.id);
+  const allCompConfigs = L.keyBy(project.components, (c) => c.id);
   for (const bundle of componentBundles) {
     const {
       renderModule,
@@ -442,7 +442,7 @@ async function syncProjectComponents(
       componentName,
       id,
       scheme,
-      nameInIdToUuid
+      nameInIdToUuid,
     } = bundle;
     logger.info(
       `Syncing component ${componentName} ${version} [${project.projectId}/${id} ${project.version}]`
@@ -468,14 +468,14 @@ async function syncProjectComponents(
           L.snakeCase(project.projectName),
           cssFileName
         ),
-        scheme: scheme as "blackbox" | "direct"
+        scheme: scheme as "blackbox" | "direct",
       };
       allCompConfigs[id] = compConfig;
       project.components.push(allCompConfigs[id]);
 
       // Because it's the first time, we also generate the skeleton file.
       writeFileContent(context, skeletonModuleFileName, skeletonModule, {
-        force: false
+        force: false,
       });
     } else {
       // This is an existing component.
@@ -510,7 +510,7 @@ async function syncProjectComponents(
               forceOverwrite,
               nameInIdToUuid,
               appendJsxOnMissingBase
-            )
+            ),
         });
         skeletonModuleModified = true;
       } else if (/\/\/\s*plasmic-managed-jsx\/\d+/.test(editedFile)) {
@@ -521,7 +521,7 @@ async function syncProjectComponents(
             compConfig.importSpec.modulePath,
             skeletonModule,
             {
-              force: true
+              force: true,
             }
           );
         } else {
@@ -532,10 +532,10 @@ async function syncProjectComponents(
       }
     }
     writeFileContent(context, compConfig.renderModuleFilePath, renderModule, {
-      force: !isNew
+      force: !isNew,
     });
     writeFileContent(context, compConfig.cssFilePath, cssRules, {
-      force: !isNew
+      force: !isNew,
     });
     summary.set(id, { skeletonModuleModified });
   }
@@ -553,7 +553,7 @@ function syncStyleConfig(
     );
   context.config.style.defaultStyleCssFilePath = expectedPath;
   writeFileContent(context, expectedPath, response.defaultStyleCssRules, {
-    force: true
+    force: true,
   });
 }
 
@@ -564,7 +564,7 @@ function syncGlobalVariants(
 ) {
   const allVariantConfigs = L.keyBy(
     context.config.globalVariants.variantGroups,
-    c => c.id
+    (c) => c.id
   );
   for (const bundle of bundles) {
     logger.info(
@@ -580,7 +580,7 @@ function syncGlobalVariants(
         contextFilePath: path.join(
           context.config.defaultPlasmicDir,
           bundle.contextFileName
-        )
+        ),
       };
       allVariantConfigs[bundle.id] = variantConfig;
       context.config.globalVariants.variantGroups.push(variantConfig);
@@ -607,7 +607,9 @@ async function syncProjectConfig(
   summary: Map<string, ComponentUpdateSummary>,
   pendingMerge: ComponentPendingMerge[]
 ) {
-  let project = context.config.projects.find(c => c.projectId === pc.projectId);
+  let project = context.config.projects.find(
+    (c) => c.projectId === pc.projectId
+  );
   const defaultCssFilePath = path.join(
     context.config.defaultPlasmicDir,
     L.snakeCase(pc.projectName),
@@ -619,7 +621,7 @@ async function syncProjectConfig(
       projectId: pc.projectId,
       projectName: pc.projectName,
       version: versionRange,
-      cssFilePath: defaultCssFilePath
+      cssFilePath: defaultCssFilePath,
     });
     context.config.projects.push(project);
   } else {
@@ -630,7 +632,7 @@ async function syncProjectConfig(
     project.cssFilePath = defaultCssFilePath;
   }
   writeFileContent(context, project.cssFilePath, pc.cssRules, {
-    force: !isNew
+    force: !isNew,
   });
   await syncProjectComponents(
     context,

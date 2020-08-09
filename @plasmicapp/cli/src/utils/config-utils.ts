@@ -6,7 +6,7 @@ import {
   writeFileContentRaw,
   findFile,
   readFileText,
-  existsBuffered
+  existsBuffered,
 } from "./file-utils";
 import { PlasmicApi } from "../api";
 import { CommonArgs } from "../index";
@@ -90,7 +90,7 @@ export function createProjectConfig(base: {
     cssFilePath: base.cssFilePath,
     components: [],
     icons: [],
-    dependencies: []
+    dependencies: [],
   };
 }
 
@@ -195,24 +195,24 @@ export const DEFAULT_CONFIG: PlasmicConfig = {
   platform: "react",
   code: {
     lang: "ts",
-    scheme: "blackbox"
+    scheme: "blackbox",
   },
   style: {
     scheme: "css",
     // We set it to empty to compile. In reality, it will be provided the by
     // the server.
-    defaultStyleCssFilePath: ""
+    defaultStyleCssFilePath: "",
   },
   tokens: {
     scheme: "theo",
-    tokensFilePath: "plasmic-tokens.theo.json"
+    tokensFilePath: "plasmic-tokens.theo.json",
   },
   srcDir: "./src/components",
   defaultPlasmicDir: "./plasmic",
   projects: [],
   globalVariants: {
-    variantGroups: []
-  }
+    variantGroups: [],
+  },
 };
 
 /**
@@ -227,7 +227,7 @@ export function findConfigFile(
     traverseParents?: boolean;
   }
 ): string | undefined {
-  return findFile(dir, f => f === CONFIG_FILE_NAME, opts);
+  return findFile(dir, (f) => f === CONFIG_FILE_NAME, opts);
 }
 
 export function findAuthFile(
@@ -236,10 +236,10 @@ export function findAuthFile(
     traverseParents?: boolean;
   }
 ) {
-  let file = findFile(dir, f => f === AUTH_FILE_NAME, opts);
+  let file = findFile(dir, (f) => f === AUTH_FILE_NAME, opts);
   if (!file) {
-    file = findFile(os.homedir(), f => f === AUTH_FILE_NAME, {
-      traverseParents: false
+    file = findFile(os.homedir(), (f) => f === AUTH_FILE_NAME, {
+      traverseParents: false,
     });
   }
   return file;
@@ -269,9 +269,9 @@ export function getContext(args: CommonArgs): PlasmicContext {
     // Production usage of cli
     Sentry.init({
       dsn:
-        "https://3ed4eb43d28646e381bf3c50cff24bd6@o328029.ingest.sentry.io/5285892"
+        "https://3ed4eb43d28646e381bf3c50cff24bd6@o328029.ingest.sentry.io/5285892",
     });
-    Sentry.configureScope(scope => {
+    Sentry.configureScope((scope) => {
       scope.setUser({ email: auth.user });
       scope.setExtra("cliVersion", getCliVersion());
       scope.setExtra("args", JSON.stringify(args));
@@ -300,7 +300,7 @@ export function getContext(args: CommonArgs): PlasmicContext {
       ? config.srcDir
       : path.resolve(rootDir, config.srcDir),
     auth,
-    api: new PlasmicApi(auth)
+    api: new PlasmicApi(auth),
   };
 }
 
@@ -332,7 +332,7 @@ export function readAuth(authFile: string) {
     // Strip trailing slashes.
     return {
       ...parsed,
-      host: parsed.host.replace(/\/+$/, "")
+      host: parsed.host.replace(/\/+$/, ""),
     };
   } catch (e) {
     logger.error(
@@ -344,13 +344,13 @@ export function readAuth(authFile: string) {
 
 export function writeConfig(configFile: string, config: PlasmicConfig) {
   writeFileContentRaw(configFile, JSON.stringify(config, undefined, 2), {
-    force: true
+    force: true,
   });
 }
 
 export function writeAuth(authFile: string, config: AuthConfig) {
   writeFileContentRaw(authFile, JSON.stringify(config, undefined, 2), {
-    force: true
+    force: true,
   });
   fs.chmodSync(authFile, "600");
 }

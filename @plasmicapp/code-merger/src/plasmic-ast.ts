@@ -7,7 +7,7 @@ import {
   JSXText,
   JSXSpreadChild,
   JSXFragment,
-  JSXExpressionContainer
+  JSXExpressionContainer,
 } from "@babel/types";
 import * as babel from "@babel/core";
 

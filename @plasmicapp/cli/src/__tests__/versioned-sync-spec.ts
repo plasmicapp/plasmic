@@ -16,53 +16,53 @@ beforeEach(() => {
     name: "DepComponent",
     projectId: "dependencyId1",
     version: "2.3.4",
-    children: []
+    children: [],
   };
   const button = {
     id: "buttonId",
     name: "Button",
     projectId: "projectId1",
     version: "1.2.3",
-    children: [depComponent]
+    children: [depComponent],
   };
   const container = {
     id: "containerId",
     name: "Container",
     projectId: "projectId1",
     version: "1.2.3",
-    children: [button]
+    children: [button],
   };
   const components: MockComponent[] = [button, container, depComponent];
-  components.forEach(c => mockApi.setMockComponent(c.id, c));
+  components.forEach((c) => mockApi.setMockComponent(c.id, c));
 
   // Setup client-side directory
   tmpRepo = new TempRepo();
   tmpRepo.writePlasmicAuth({
     host: "http://localhost:3003",
     user: "yang@plasmic.app",
-    token: "faketoken"
+    token: "faketoken",
   });
   tmpRepo.writePlasmicJson({
     platform: "react",
     code: {
       lang: "ts",
-      scheme: "blackbox"
+      scheme: "blackbox",
     },
     style: {
       scheme: "css",
-      defaultStyleCssFilePath: "plasmic/PP__plasmic__default_style.css"
+      defaultStyleCssFilePath: "plasmic/PP__plasmic__default_style.css",
     },
     tokens: {
       scheme: "theo",
-      tokensFilePath: "plasmic-tokens.theo.json"
+      tokensFilePath: "plasmic-tokens.theo.json",
     },
     srcDir: "src/",
     defaultPlasmicDir: "./plasmic",
     projects: [],
     globalVariants: {
-      variantGroups: []
+      variantGroups: [],
     },
-    cliVersion: "0.1.44"
+    cliVersion: "0.1.44",
   });
 
   // Default opts and config
@@ -77,7 +77,7 @@ beforeEach(() => {
     includeDependencies: false,
     nonInteractive: true,
     config: tmpRepo.plasmicJsonPath(),
-    auth: tmpRepo.plasmicAuthPath()
+    auth: tmpRepo.plasmicAuthPath(),
   };
 });
 
@@ -113,7 +113,7 @@ describe("versioned-sync", () => {
     expect(plasmicJson.projects.length).toEqual(1);
     const projectConfig = plasmicJson.projects[0];
     expect(projectConfig.components.length).toEqual(2);
-    const componentNames = projectConfig.components.map(c => c.name);
+    const componentNames = projectConfig.components.map((c) => c.name);
     expect(componentNames).toContain("Button");
     expect(componentNames).toContain("Container");
   });
@@ -136,13 +136,13 @@ describe("versioned-sync", () => {
           projectId: "projectId1",
           renderModuleFilePath: "plasmic/project_id_1/PlasmicButton.tsx",
           importSpec: {
-            modulePath: "Button.tsx"
+            modulePath: "Button.tsx",
           },
           cssFilePath: "plasmic/PlasmicButton.css",
-          scheme: "blackbox"
-        }
+          scheme: "blackbox",
+        },
       ],
-      icons: []
+      icons: [],
     });
     tmpRepo.writePlasmicJson(plasmicJson);
     await expect(sync(opts)).rejects.toThrow();
@@ -160,10 +160,10 @@ describe("versioned-sync", () => {
 
     const plasmicJson = tmpRepo.readPlasmicJson();
     const projectInConfig = plasmicJson.projects.find(
-      p => p.projectId === "projectId1"
+      (p) => p.projectId === "projectId1"
     );
     const componentInConfig = !!projectInConfig
-      ? projectInConfig.components.find(c => c.id === buttonData.id)
+      ? projectInConfig.components.find((c) => c.id === buttonData.id)
       : undefined;
     expect(componentInConfig).toBeTruthy();
     expect(componentInConfig?.name).toEqual(buttonData.name);
@@ -281,14 +281,14 @@ describe("recursive-sync", () => {
     // Check plasmic.json
     const plasmicJson = tmpRepo.readPlasmicJson();
     expect(plasmicJson.projects.length).toEqual(2);
-    const projectConfigMap = L.keyBy(plasmicJson.projects, p => p.projectId);
+    const projectConfigMap = L.keyBy(plasmicJson.projects, (p) => p.projectId);
     expect(projectConfigMap["projectId1"]).toBeTruthy();
     expect(projectConfigMap["dependencyId1"]).toBeTruthy();
     const projectComponentNames = projectConfigMap["projectId1"].components.map(
-      c => c.name
+      (c) => c.name
     );
     const depComponentNames = projectConfigMap["dependencyId1"].components.map(
-      c => c.name
+      (c) => c.name
     );
     expect(projectComponentNames).toContain("Button");
     expect(projectComponentNames).toContain("Container");
@@ -306,7 +306,7 @@ describe("recursive-sync", () => {
       name: "DepComponent",
       projectId: "dependencyId1",
       version: "3.4.5",
-      children: []
+      children: [],
     });
     mockApi.setMockComponent("containerId", containerData);
     await expect(sync(opts)).rejects.toThrow();
@@ -323,7 +323,7 @@ describe("recursive-sync", () => {
     const plasmicJson = tmpRepo.readPlasmicJson();
     expect(plasmicJson.projects.length).toEqual(2);
     const depProjectConfig = plasmicJson.projects.find(
-      p => p.projectId === "dependencyId1"
+      (p) => p.projectId === "dependencyId1"
     );
     expect(depProjectConfig?.components?.length).toEqual(1);
     expect(depProjectConfig?.version).toEqual("^2.3.4");

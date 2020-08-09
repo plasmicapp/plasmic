@@ -13,11 +13,11 @@ export async function watchProjects(opts: WatchArgs) {
   const context = getContext(opts);
   const config = context.config;
   const socket = context.api.connectSocket();
-  const promise = new Promise(resolve => {});
+  const promise = new Promise((resolve) => {});
   const projectIds = L.uniq(
     opts.projects.length > 0
       ? opts.projects
-      : config.projects.map(c => c.projectId)
+      : config.projects.map((c) => c.projectId)
   );
   if (projectIds.length === 0) {
     logger.error(

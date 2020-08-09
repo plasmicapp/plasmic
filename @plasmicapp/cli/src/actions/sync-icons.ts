@@ -5,7 +5,7 @@ import {
   PlasmicContext,
   getContext,
   updateConfig,
-  ProjectConfig
+  ProjectConfig,
 } from "../utils/config-utils";
 import { ProjectIconsResponse, IconBundle } from "../api";
 import { writeFileContent, fixAllFilePaths } from "../utils/file-utils";
@@ -28,16 +28,16 @@ export async function syncIcons(opts: SyncIconsArgs) {
   const projectIds =
     opts.projects.length > 0
       ? opts.projects
-      : context.config.projects.map(p => p.projectId);
+      : context.config.projects.map((p) => p.projectId);
 
   const results = await Promise.all(
-    projectIds.map(projectId => api.projectIcons(projectId))
+    projectIds.map((projectId) => api.projectIcons(projectId))
   );
   for (const [projectId, resp] of L.zip(projectIds, results) as [
     string,
     ProjectIconsResponse
   ][]) {
-    let project = config.projects.find(p => p.projectId === projectId);
+    let project = config.projects.find((p) => p.projectId === projectId);
     if (!project) {
       project = {
         projectId,
@@ -45,7 +45,7 @@ export async function syncIcons(opts: SyncIconsArgs) {
         version: "latest",
         cssFilePath: "",
         components: [],
-        icons: []
+        icons: [],
       };
       config.projects.push(project);
     }
@@ -63,7 +63,7 @@ export function syncProjectIconAssets(
   if (!project.icons) {
     project.icons = [];
   }
-  const knownIconConfigs = L.keyBy(project.icons, i => i.id);
+  const knownIconConfigs = L.keyBy(project.icons, (i) => i.id);
   for (const bundle of iconBundles) {
     logger.info(
       `Syncing icon ${bundle.name} [${project.projectId}/${bundle.id}]`
@@ -78,7 +78,7 @@ export function syncProjectIconAssets(
           context.config.defaultPlasmicDir,
           L.snakeCase(`${project.projectName}`),
           bundle.fileName
-        )
+        ),
       };
       knownIconConfigs[bundle.id] = iconConfig;
       project.icons.push(iconConfig);
@@ -89,7 +89,7 @@ export function syncProjectIconAssets(
       iconConfig.moduleFilePath,
       formatAsLocal(bundle.module, iconConfig.moduleFilePath),
       {
-        force: !isNew
+        force: !isNew,
       }
     );
   }

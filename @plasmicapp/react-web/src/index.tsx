@@ -317,8 +317,8 @@ export function wrapWithClassName(element: React.ReactNode, className: string) {
       key,
       className,
       style: {
-        display: "grid"
-      }
+        display: "grid",
+      },
     },
     element
   );
@@ -372,7 +372,7 @@ export function PlasmicSlot<T extends keyof JSX.IntrinsicElements = "div">(
     content = <div className="__wab_slot-string-wrapper">{maybeString}</div>;
   }
 
-  const nonEmptyProps = Object.keys(rest).filter(p => !!(rest as any)[p]);
+  const nonEmptyProps = Object.keys(rest).filter((p) => !!(rest as any)[p]);
   if (nonEmptyProps.length === 0) {
     // No attrs to apply to the slot (which means the slot is unstyled), then
     // just render the content directly; no need for style wrapper.
@@ -426,7 +426,7 @@ export const Stack = {
   section: makeStackImpl("section"),
   head: makeStackImpl("head"),
   main: makeStackImpl("main"),
-  nav: makeStackImpl("nav")
+  nav: makeStackImpl("nav"),
 };
 
 export const DefaultFlexStack = Stack.div;
@@ -438,15 +438,15 @@ function deriveOverride<C extends React.ElementType>(x: Flex<C>): Override<C> {
     // undefined Binding is an empty Binding
     return {
       type: "default",
-      props: {} as any
+      props: {} as any,
     };
   } else if (isReactNode(x)) {
     // If ReactNode, then assume this is the children
     return {
       type: "default",
       props: {
-        children: x
-      } as any
+        children: x,
+      } as any,
     };
   } else if (typeof x === "object") {
     // If any of the overrideKeys is a key of this object, then assume
@@ -455,18 +455,18 @@ function deriveOverride<C extends React.ElementType>(x: Flex<C>): Override<C> {
       return {
         ...x,
         props: x.props || {},
-        type: "as"
+        type: "as",
       } as any;
     } else if ("props" in x) {
       return {
         ...x,
         props: x.props || {},
-        type: "default"
+        type: "default",
       };
     } else if ("render" in x) {
       return {
         ...x,
-        type: "render"
+        type: "render",
       } as any;
     } else if (isSubset(Object.keys(x), ["wrap", "wrapChildren"])) {
       // Only twiddling functions present, so assume no props overrides
@@ -474,19 +474,19 @@ function deriveOverride<C extends React.ElementType>(x: Flex<C>): Override<C> {
       return {
         ...x,
         props: {},
-        type: "default"
+        type: "default",
       };
     }
 
     // Else, assume this is just a props object.
     return {
       type: "default",
-      props: x
+      props: x,
     };
   } else if (typeof x === "function") {
     return {
       type: "render",
-      render: x
+      render: x,
     };
   }
 
@@ -494,7 +494,7 @@ function deriveOverride<C extends React.ElementType>(x: Flex<C>): Override<C> {
 }
 
 function isSubset<T>(a1: T[], a2: T[]) {
-  return a1.every(x => a2.includes(x));
+  return a1.every((x) => a2.includes(x));
 }
 
 function isReactNode(x: any) {
@@ -600,7 +600,7 @@ export class NodeRenderer<RF extends RenderFunc<any, any, any>> {
     return this.renderFunc({
       variants: this.variants,
       overrides: this.overrides,
-      args: this.args
+      args: this.args,
     }) as React.ReactElement | null;
   }
 }
@@ -668,7 +668,7 @@ function mergeFlexOverride<C extends React.ElementType<any>>(
       render: o2.render,
       props,
       wrap,
-      wrapChildren
+      wrapChildren,
     };
   }
 
@@ -677,7 +677,7 @@ function mergeFlexOverride<C extends React.ElementType<any>>(
       render: o1.render,
       props,
       wrap,
-      wrapChildren
+      wrapChildren,
     };
   }
 
@@ -690,7 +690,7 @@ function mergeFlexOverride<C extends React.ElementType<any>>(
     props,
     wrap,
     wrapChildren,
-    ...(as ? { as } : {})
+    ...(as ? { as } : {}),
   };
 }
 
@@ -728,7 +728,7 @@ export function omit<T>(obj: T, ...keys: (keyof T)[]): Partial<T> {
 function useFocused(opts: { isTextInput?: boolean }) {
   const { isFocused, focusProps } = useAriaFocusRing({
     within: false,
-    isTextInput: opts.isTextInput
+    isTextInput: opts.isTextInput,
   });
 
   return [isFocused, focusProps];
@@ -737,7 +737,7 @@ function useFocused(opts: { isTextInput?: boolean }) {
 function useFocusVisible(opts: { isTextInput?: boolean }) {
   const { isFocusVisible, focusProps } = useAriaFocusRing({
     within: false,
-    isTextInput: opts.isTextInput
+    isTextInput: opts.isTextInput,
   });
 
   return [isFocusVisible, focusProps];
@@ -746,7 +746,7 @@ function useFocusVisible(opts: { isTextInput?: boolean }) {
 function useFocusedWithin(opts: { isTextInput?: boolean }) {
   const { isFocused, focusProps } = useAriaFocusRing({
     within: true,
-    isTextInput: opts.isTextInput
+    isTextInput: opts.isTextInput,
   });
 
   return [isFocused, focusProps];
@@ -755,7 +755,7 @@ function useFocusedWithin(opts: { isTextInput?: boolean }) {
 function useFocusVisibleWithin(opts: { isTextInput?: boolean }) {
   const { isFocusVisible, focusProps } = useAriaFocusRing({
     within: true,
-    isTextInput: opts.isTextInput
+    isTextInput: opts.isTextInput,
   });
 
   return [isFocusVisible, focusProps];
@@ -767,8 +767,8 @@ function useHover() {
     isHover,
     {
       onMouseEnter: (e: React.MouseEvent) => setHover(true),
-      onMouseLeave: (e: React.MouseEvent) => setHover(false)
-    }
+      onMouseLeave: (e: React.MouseEvent) => setHover(false),
+    },
   ];
 }
 
@@ -778,8 +778,8 @@ function usePressed() {
     isPressed,
     {
       onMouseDown: (e: React.MouseEvent) => setPressed(true),
-      onMouseUp: (e: React.MouseEvent) => setPressed(false)
-    }
+      onMouseUp: (e: React.MouseEvent) => setPressed(false),
+    },
   ];
 }
 
@@ -789,7 +789,7 @@ const TRIGGER_TO_HOOK = {
   useFocusVisible,
   useFocusedWithin,
   useFocusVisibleWithin,
-  usePressed
+  usePressed,
 } as const;
 
 type TriggerType = keyof typeof TRIGGER_TO_HOOK;

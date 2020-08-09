@@ -12,7 +12,7 @@ import {
   fillDefaults,
   writeConfig,
   writeAuth,
-  DEFAULT_CONFIG
+  DEFAULT_CONFIG,
 } from "../utils/config-utils";
 import { execSync, spawnSync } from "child_process";
 import { installUpgrade, getCliVersion } from "../utils/npm-utils";
@@ -44,19 +44,19 @@ export async function initPlasmic(opts: InitArgs) {
     const auth = await inquirer.prompt([
       {
         name: "user",
-        message: "Your Plasmic user email"
+        message: "Your Plasmic user email",
       },
       {
         name: "token",
-        message: `Your personal access token (create one at https://studio.plasmic.app/self/settings)`
-      }
+        message: `Your personal access token (create one at https://studio.plasmic.app/self/settings)`,
+      },
     ]);
 
     const newAuthFile = opts.auth || path.join(os.homedir(), AUTH_FILE_NAME);
     writeAuth(newAuthFile, {
       host: "https://studio.plasmic.app",
       user: auth.user,
-      token: auth.token
+      token: auth.token,
     });
 
     logger.info(
@@ -69,36 +69,36 @@ export async function initPlasmic(opts: InitArgs) {
   const langDetect = existsBuffered("tsconfig.json")
     ? {
         lang: "ts",
-        explanation: "tsconfig.json detected, guessing Typescript"
+        explanation: "tsconfig.json detected, guessing Typescript",
       }
     : {
         lang: "js",
-        explanation: "No tsconfig.json detected, guessing Javascript"
+        explanation: "No tsconfig.json detected, guessing Javascript",
       };
 
   const jsOpt = {
     name: "Javascript",
     value: "js",
-    short: "js"
+    short: "js",
   };
 
   const tsOpt = {
     name: "Typescript",
     value: "ts",
-    short: "ts"
+    short: "ts",
   };
 
   const blackboxOpt = {
     name:
       "Blackbox Library: gives you a lib of presentational components that take prop overrides.",
     value: "blackbox",
-    short: "blackbox"
+    short: "blackbox",
   };
 
   const directOpt = {
     name:
       "Direct Edit: gives you components whose JSX trees you can directly edit to attach props.",
-    value: "direct"
+    value: "direct",
   };
 
   const answers = await inquirer.prompt([
@@ -107,7 +107,7 @@ export async function initPlasmic(opts: InitArgs) {
       message:
         "What directory should React component files (that you edit) be put into?\n>",
       default: DEFAULT_CONFIG.srcDir,
-      when: () => !opts.srcDir
+      when: () => !opts.srcDir,
     },
     {
       name: "plasmicDir",
@@ -116,7 +116,7 @@ export async function initPlasmic(opts: InitArgs) {
   (This is relative to ${ans.srcDir || DEFAULT_CONFIG.srcDir})
 >`,
       default: DEFAULT_CONFIG.defaultPlasmicDir,
-      when: () => !opts.plasmicDir
+      when: () => !opts.plasmicDir,
     },
     {
       name: "codeLang",
@@ -126,7 +126,7 @@ export async function initPlasmic(opts: InitArgs) {
       type: "list",
       choices: () =>
         langDetect.lang === "js" ? [jsOpt, tsOpt] : [tsOpt, jsOpt],
-      when: () => !opts.codeLang
+      when: () => !opts.codeLang,
     },
     {
       name: "codeScheme",
@@ -137,8 +137,8 @@ export async function initPlasmic(opts: InitArgs) {
 `,
       type: "list",
       choices: () => [blackboxOpt, directOpt],
-      when: () => !opts.codeScheme
-    }
+      when: () => !opts.codeScheme,
+    },
   ]);
 
   const merged = { ...opts, ...answers };
@@ -152,8 +152,8 @@ export async function initPlasmic(opts: InitArgs) {
       name: "answer",
       message:
         "@plasmicapp/react-web is a small runtime required by Plasmic-generated code.\n  Do you want to add it now?",
-      type: "confirm"
-    }
+      type: "confirm",
+    },
   ]);
   if (addDep.answer) {
     installUpgrade("@plasmicapp/react-web");
@@ -166,12 +166,12 @@ function createInitConfig(opts: InitArgs): PlasmicConfig {
     defaultPlasmicDir: opts.plasmicDir,
     code: {
       lang: opts.codeLang,
-      scheme: opts.codeScheme
+      scheme: opts.codeScheme,
     },
     style: {
-      scheme: opts.styleScheme
+      scheme: opts.styleScheme,
     },
     platform: opts.platform,
-    cliVersion: getCliVersion()
+    cliVersion: getCliVersion(),
   });
 }

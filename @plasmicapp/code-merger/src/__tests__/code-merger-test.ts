@@ -5,14 +5,14 @@ import {
   ComponentSkeletonModel,
   mergeFiles,
   ComponentInfoForMerge,
-  WarningInfo
+  WarningInfo,
 } from "../index";
 import { formatted, code } from "../utils";
 import { ensure } from "../common";
 import { iteratee } from "lodash";
 
-describe("Test CodeMerger", function() {
-  it("no change", function() {
+describe("Test CodeMerger", function () {
+  it("no change", function () {
     const nameInIdToUuid = new Map([["Root", "Root"]]);
     const base = new CodeVersion(
       "<div className={rh.clsRoot()}>Hello World</div>",
@@ -31,13 +31,13 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(formatted("<div className={rh.clsRoot()}>Hello World</div>"));
   });
 
-  it("attribute without value, with null, tag with member reference", function() {
+  it("attribute without value, with null, tag with member reference", function () {
     const nameInIdToUuid = new Map([["Root", "Root"]]);
     const base = new CodeVersion(
       "<div className={rh.clsRoot()}>Hello World</div>",
@@ -56,7 +56,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -67,7 +67,7 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("tag name conflicts", function() {
+  it("tag name conflicts", function () {
     const nameInIdToUuid = new Map([["Root", "Root"]]);
     const base = new CodeVersion(
       "<div className={rh.clsRoot()}>Hello World</div>",
@@ -86,7 +86,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -97,7 +97,7 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("User added attribute preserved", function() {
+  it("User added attribute preserved", function () {
     const nameInIdToUuid = new Map([["Root", "Root"]]);
     const base = new CodeVersion(
       "<div className={rh.clsRoot()}>Hello World</div>",
@@ -116,7 +116,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -124,11 +124,11 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it(`id function upgrade, downgrade, downgrade preserving rh.propsXXX(modifier)`, function() {
+  it(`id function upgrade, downgrade, downgrade preserving rh.propsXXX(modifier)`, function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
       ["MyLink", "MyLink"],
-      ["MyButton", "MyButton"]
+      ["MyButton", "MyButton"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -156,7 +156,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -167,7 +167,7 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it(`className changed`, function() {
+  it(`className changed`, function () {
     const nameInIdToUuid = new Map([["Root", "Root"]]);
     const base = new CodeVersion(
       "<div className={rh.clsRoot()} />",
@@ -186,13 +186,13 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(formatted(`<div className={rh.clsNewRoot()} />`));
   });
 
-  it(`className appended`, function() {
+  it(`className appended`, function () {
     const nameInIdToUuid = new Map([["Root", "Root"]]);
     const base = new CodeVersion(
       "<div className={rh.clsRoot()} />",
@@ -211,13 +211,13 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(formatted(`<div className={rh.clsNewRoot() + ' myClass'} />`));
   });
 
-  it(`className edited, but then deleted with id changed`, function() {
+  it(`className edited, but then deleted with id changed`, function () {
     const nameInIdToUuid = new Map([["Root", "Root"]]);
     const base = new CodeVersion(
       "<div className={rh.clsRoot()} />",
@@ -236,7 +236,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -246,11 +246,11 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("add show func; remove show func", function() {
+  it("add show func; remove show func", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
       ["MyLink", "MyLink"],
-      ["MyButton", "MyButton"]
+      ["MyButton", "MyButton"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -278,7 +278,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -289,11 +289,11 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("node deleted", function() {
+  it("node deleted", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
       ["MyLink", "MyLink"],
-      ["MyButton", "MyButton"]
+      ["MyButton", "MyButton"],
     ]);
     const base = new CodeVersion(
       "<div className={rh.clsRoot()}><a {...rh.propsMyLink()}>Google</a><button className={rh.clsMyButton()} {...rh.propsMyButton()}/></div>",
@@ -312,7 +312,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -322,11 +322,11 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("nodes reordered", function() {
+  it("nodes reordered", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
       ["MyLink", "MyLink"],
-      ["MyButton", "MyButton"]
+      ["MyButton", "MyButton"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -351,7 +351,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -362,11 +362,11 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("merge with old code that doesn't always generate className", function() {
+  it("merge with old code that doesn't always generate className", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
       ["MyLink", "MyLink"],
-      ["MyButton", "MyButton"]
+      ["MyButton", "MyButton"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -391,7 +391,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -402,11 +402,11 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("nodes wrapped", function() {
+  it("nodes wrapped", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
       ["MyLink", "MyLink"],
-      ["MyButton", "MyButton"]
+      ["MyButton", "MyButton"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -436,7 +436,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -449,11 +449,11 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("nodes wrapped for repetition", function() {
+  it("nodes wrapped for repetition", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
       ["MyLink", "MyLink"],
-      ["MyButton", "MyButton"]
+      ["MyButton", "MyButton"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -481,7 +481,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -494,12 +494,12 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("nodes moved around", function() {
+  it("nodes moved around", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
       ["C1", "C1"],
       ["C2", "C2"],
-      ["MyButton", "MyButton"]
+      ["MyButton", "MyButton"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -537,7 +537,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -552,10 +552,10 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("merge children", function() {
+  it("merge children", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
-      ["Img", "Img"]
+      ["Img", "Img"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -587,7 +587,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -603,10 +603,10 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("single text child edited", function() {
+  it("single text child edited", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
-      ["Img", "Img"]
+      ["Img", "Img"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -632,7 +632,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -643,10 +643,10 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("multiple text children edited", function() {
+  it("multiple text children edited", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
-      ["Img", "Img"]
+      ["Img", "Img"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -672,7 +672,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -687,7 +687,7 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("conflict attributes are both preserved", function() {
+  it("conflict attributes are both preserved", function () {
     const nameInIdToUuid = new Map([["Root", "Root"]]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -710,7 +710,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -720,7 +720,7 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("event handlers edited and/or deleted", function() {
+  it("event handlers edited and/or deleted", function () {
     const nameInIdToUuid = new Map([["Root", "Root"]]);
     const base = new CodeVersion(
       `<div className={ rh.clsRoot() }
@@ -759,7 +759,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -776,7 +776,7 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("add children", function() {
+  it("add children", function () {
     const nameInIdToUuid = new Map([["Root", "Root"]]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()} />`,
@@ -792,7 +792,7 @@ describe("Test CodeMerger", function() {
       </div>`,
       new Map([
         ["Root", "Root"],
-        ["Box", "Box"]
+        ["Box", "Box"],
       ])
     );
     expect(
@@ -800,7 +800,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -810,10 +810,10 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("attribute changed in Plasmic", function() {
+  it("attribute changed in Plasmic", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
-      ["Img", "Img"]
+      ["Img", "Img"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()} icon={<img className={rh.clsImg()}></img>} />`,
@@ -832,7 +832,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -842,10 +842,10 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("text node not changed", function() {
+  it("text node not changed", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
-      ["Btn", "Btn"]
+      ["Btn", "Btn"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -872,7 +872,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -886,10 +886,10 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("text node changed from JSXText to function call", function() {
+  it("text node changed from JSXText to function call", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
-      ["Btn", "Btn"]
+      ["Btn", "Btn"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -916,7 +916,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -930,10 +930,10 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("text node changed function call to JSXText", function() {
+  it("text node changed function call to JSXText", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
-      ["Btn", "Btn"]
+      ["Btn", "Btn"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -960,7 +960,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -974,7 +974,7 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("tag change in new version", function() {
+  it("tag change in new version", function () {
     const nameInIdToUuid = new Map([["Root", "Root"]]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -996,7 +996,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -1007,10 +1007,10 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("slot node name changed and wrapper edited", function() {
+  it("slot node name changed and wrapper edited", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
-      ["$slotText", "1234"]
+      ["$slotText", "1234"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -1030,7 +1030,7 @@ describe("Test CodeMerger", function() {
        </div>`,
       new Map([
         ["Root", "Root"],
-        ["$slotText2", "1234"]
+        ["$slotText2", "1234"],
       ])
     );
     expect(
@@ -1038,7 +1038,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -1050,10 +1050,10 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("slot node name changed and default node edited", function() {
+  it("slot node name changed and default node edited", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
-      ["$slotText", "1234"]
+      ["$slotText", "1234"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -1073,7 +1073,7 @@ describe("Test CodeMerger", function() {
        </div>`,
       new Map([
         ["Root", "Root"],
-        ["$slotText2", "1234"]
+        ["$slotText2", "1234"],
       ])
     );
     expect(
@@ -1081,7 +1081,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -1093,11 +1093,11 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("apply slot style via inheritance works for non text slot - always has a wrapper", function() {
+  it("apply slot style via inheritance works for non text slot - always has a wrapper", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
       ["Img0", "1234"],
-      ["$slotIconSlot", "2345"]
+      ["$slotIconSlot", "2345"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -1130,7 +1130,7 @@ describe("Test CodeMerger", function() {
       new Map([
         ["Root", "Root"],
         ["Img0", "1234"],
-        ["$slotIconSlot2", "2345"]
+        ["$slotIconSlot2", "2345"],
       ])
     );
     expect(
@@ -1138,7 +1138,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -1154,10 +1154,10 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("apply slot style via inheritance works for non text slot - adding a wrapper", function() {
+  it("apply slot style via inheritance works for non text slot - adding a wrapper", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
-      ["Img0", "1234"]
+      ["Img0", "1234"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -1180,7 +1180,7 @@ describe("Test CodeMerger", function() {
       new Map([
         ["Root", "Root"],
         ["Img0", "1234"],
-        ["$slotIconSlot", "2345"]
+        ["$slotIconSlot", "2345"],
       ])
     );
     expect(
@@ -1188,7 +1188,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -1202,11 +1202,11 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("apply slot style via inheritance works for non text slot - removing the wrapper", function() {
+  it("apply slot style via inheritance works for non text slot - removing the wrapper", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
       ["Img0", "1234"],
-      ["$slotIconSlot", "2345"]
+      ["$slotIconSlot", "2345"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -1231,7 +1231,7 @@ describe("Test CodeMerger", function() {
       new Map([
         ["Root", "Root"],
         ["Img0", "1234"],
-        ["$slotIconSlot2", "2345"]
+        ["$slotIconSlot2", "2345"],
       ])
     );
     expect(
@@ -1239,7 +1239,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -1251,11 +1251,11 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("merge two slots's defaultContent - 1 node and 2 nodes", function() {
+  it("merge two slots's defaultContent - 1 node and 2 nodes", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
       ["Img0", "1234"],
-      ["$slotIconSlot", "2345"]
+      ["$slotIconSlot", "2345"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -1290,7 +1290,7 @@ describe("Test CodeMerger", function() {
         ["Root", "Root"],
         ["Img0", "1234"],
         ["Img1", "4567"],
-        ["$slotIconSlot2", "2345"]
+        ["$slotIconSlot2", "2345"],
       ])
     );
     expect(
@@ -1298,7 +1298,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -1317,11 +1317,11 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("merge two slots's defaultContent - 1 node and 1 node", function() {
+  it("merge two slots's defaultContent - 1 node and 1 node", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
       ["Img0", "1234"],
-      ["$slotIconSlot", "2345"]
+      ["$slotIconSlot", "2345"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -1353,7 +1353,7 @@ describe("Test CodeMerger", function() {
       new Map([
         ["Root", "Root"],
         ["Img1", "1234"],
-        ["$slotIconSlot2", "2345"]
+        ["$slotIconSlot2", "2345"],
       ])
     );
     // When the result is only one node, we follow edited version to add the
@@ -1363,7 +1363,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -1380,10 +1380,10 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("renaming of argsRef", function() {
+  it("renaming of argsRef", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
-      ["$slotIconSlot", "2345"]
+      ["$slotIconSlot", "2345"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -1414,7 +1414,7 @@ describe("Test CodeMerger", function() {
        </div>`,
       new Map([
         ["Root", "Root"],
-        ["$slotIconSlot2", "2345"]
+        ["$slotIconSlot2", "2345"],
       ])
     );
     // When the result is only one node, we follow edited version to add the
@@ -1424,7 +1424,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -1439,10 +1439,10 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("renaming of args in non argsRef", function() {
+  it("renaming of args in non argsRef", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
-      ["$slotIconSlot", "2345"]
+      ["$slotIconSlot", "2345"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -1474,7 +1474,7 @@ describe("Test CodeMerger", function() {
        </div>`,
       new Map([
         ["Root", "Root"],
-        ["$slotIconSlot2", "2345"]
+        ["$slotIconSlot2", "2345"],
       ])
     );
     // When the result is only one node, we follow edited version to add the
@@ -1484,7 +1484,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -1500,11 +1500,11 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("serialize nodes in user added attributes and handle moved node", function() {
+  it("serialize nodes in user added attributes and handle moved node", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
       ["Btn", "2345"],
-      ["Img", "3456"]
+      ["Img", "3456"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -1527,7 +1527,7 @@ describe("Test CodeMerger", function() {
       new Map([
         ["Root", "Root"],
         ["Btn", "2345"],
-        ["Img2", "3456"]
+        ["Img2", "3456"],
       ])
     );
     // When the result is only one node, we follow edited version to add the
@@ -1537,7 +1537,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -1549,11 +1549,11 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("parse and serialize nodes in spreador attribute", function() {
+  it("parse and serialize nodes in spreador attribute", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
       ["Btn", "2345"],
-      ["Img", "3456"]
+      ["Img", "3456"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -1576,7 +1576,7 @@ describe("Test CodeMerger", function() {
       new Map([
         ["Root", "Root"],
         ["Btn", "2345"],
-        ["Img2", "3456"]
+        ["Img2", "3456"],
       ])
     );
     expect(
@@ -1584,7 +1584,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -1599,12 +1599,12 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("parse, preserve and merge secondary nodes when primary node remains", function() {
+  it("parse, preserve and merge secondary nodes when primary node remains", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
       ["Btn", "2345"],
       ["Img", "3456"],
-      ["Link", "4567"]
+      ["Link", "4567"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -1636,7 +1636,7 @@ describe("Test CodeMerger", function() {
         ["Root", "Root"],
         ["Btn", "2345"],
         ["Img2", "3456"],
-        ["Link2", "4567"]
+        ["Link2", "4567"],
       ])
     );
     expect(
@@ -1644,7 +1644,7 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(
@@ -1662,11 +1662,11 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("parse but delete secondary nodes when primary node was deleted", function() {
+  it("parse but delete secondary nodes when primary node was deleted", function () {
     const nameInIdToUuid = new Map([
       ["Root", "Root"],
       ["Btn", "2345"],
-      ["Img", "3456"]
+      ["Img", "3456"],
     ]);
     const base = new CodeVersion(
       `<div className={rh.clsRoot()}>
@@ -1693,7 +1693,7 @@ describe("Test CodeMerger", function() {
       new Map([
         ["Root", "Root"],
         ["Btn", "2345"],
-        ["Img2", "3456"]
+        ["Img2", "3456"],
       ])
     );
     // When the result is only one node, we follow edited version to add the
@@ -1703,19 +1703,19 @@ describe("Test CodeMerger", function() {
         renameAndSerializePlasmicASTNode(newV.root, {
           newVersion: newV,
           editedVersion: edited,
-          baseVersion: base
+          baseVersion: base,
         })
       )
     ).toEqual(formatted(`<div className={rh.clsRoot()}></div>`));
   });
 
-  it("projectSyncMetadataModel", function() {
+  it("projectSyncMetadataModel", function () {
     const m = new ProjectSyncMetadataModel([
       new ComponentSkeletonModel(
         "001",
         new Map<string, string>([
           ["a", "1"],
-          ["b", "2"]
+          ["b", "2"],
         ]),
         "content 001"
       ),
@@ -1723,10 +1723,10 @@ describe("Test CodeMerger", function() {
         "002",
         new Map<string, string>([
           ["c", "3"],
-          ["d", "4"]
+          ["d", "4"],
         ]),
         "content 002"
-      )
+      ),
     ]);
 
     expect(JSON.stringify(m)).toEqual(
@@ -1747,7 +1747,7 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("mergeFiles should work", async function() {
+  it("mergeFiles should work", async function () {
     const componentByUuid = new Map<string, ComponentInfoForMerge>();
     componentByUuid.set("comp1", {
       // edited version of the code, i.e. the entire file.
@@ -1824,8 +1824,8 @@ describe("Test CodeMerger", function() {
       // map for newCode
       newNameInIdToUuid: new Map([
         ["NewRoot", "Root"],
-        ["Hint", "Hint"]
-      ])
+        ["Hint", "Hint"],
+      ]),
     });
 
     const baseInfo = new ProjectSyncMetadataModel([
@@ -1833,7 +1833,7 @@ describe("Test CodeMerger", function() {
         "comp1",
         new Map([
           ["Root", "Root"],
-          ["Hint", "Hint"]
+          ["Hint", "Hint"],
         ]),
         `
         import { hasVariant, DefaultFlexStack, FlexStack } from "@plasmicapp/react-web";
@@ -1867,7 +1867,7 @@ describe("Test CodeMerger", function() {
                    <div className={rh.clsHint()}>{rh.childStrHint()}</div>
                  </div>;
           }`
-      )
+      ),
     ]);
 
     const merged = await mergeFiles(componentByUuid, "pid", () =>
@@ -1916,7 +1916,7 @@ describe("Test CodeMerger", function() {
     );
   });
 
-  it("mergeFiles should work when base is missing", async function() {
+  it("mergeFiles should work when base is missing", async function () {
     const componentByUuid = new Map<string, ComponentInfoForMerge>();
     componentByUuid.set("comp1", {
       // edited version of the code, i.e. the entire file.
@@ -1944,7 +1944,7 @@ describe("Test CodeMerger", function() {
         </div>);
       }`,
       // map for newCode
-      newNameInIdToUuid: new Map([["NewRoot", "Root"]])
+      newNameInIdToUuid: new Map([["NewRoot", "Root"]]),
     });
 
     const warningInfos = new Map<string, WarningInfo>();
@@ -1980,7 +1980,7 @@ describe("Test CodeMerger", function() {
     expect(warningInfos.get("comp1")?.rawWarnings().length).toBe(1);
   });
 
-  it("mergeFiles should generate warning for secondary nodes", async function() {
+  it("mergeFiles should generate warning for secondary nodes", async function () {
     const componentByUuid = new Map<string, ComponentInfoForMerge>();
     componentByUuid.set("comp1", {
       // edited version of the code, i.e. the entire file.
@@ -2015,8 +2015,8 @@ describe("Test CodeMerger", function() {
       newNameInIdToUuid: new Map([
         ["Root", "1"],
         ["Img1", "2"],
-        ["Img2", "3"]
-      ])
+        ["Img2", "3"],
+      ]),
     });
 
     const baseInfo = new ProjectSyncMetadataModel([
@@ -2025,7 +2025,7 @@ describe("Test CodeMerger", function() {
         new Map([
           ["Root", "1"],
           ["Img1", "2"],
-          ["Img2", "3"]
+          ["Img2", "3"],
         ]),
         `
         import React, { ReactNode } from "react";
@@ -2040,7 +2040,7 @@ describe("Test CodeMerger", function() {
             <img className={rh.clsImg2()} />
           </div>);
       }`
-      )
+      ),
     ]);
 
     const warningInfos = new Map<string, WarningInfo>();
@@ -2076,7 +2076,7 @@ describe("Test CodeMerger", function() {
     ).toEqual("Img2");
   });
 
-  it("mergeFiles should work for real case", async function() {
+  it("mergeFiles should work for real case", async function () {
     const componentByUuid = new Map<string, ComponentInfoForMerge>();
     const nameInIdToUuid = new Map<string, string>([
       ["Root", "Oz-F5C0WGXN"],
@@ -2093,7 +2093,7 @@ describe("Test CodeMerger", function() {
       ["Display", "hc8CIIePquV"],
       ["GgSsc5c_XYW", "ggSsc5c_XYW"],
       ["More", "ZlFyfu63cGO"],
-      ["NskLZmZ2M3D", "NskLZmZ2M3D"]
+      ["NskLZmZ2M3D", "NskLZmZ2M3D"],
     ]);
     componentByUuid.set("comp1", {
       // edited version of the code, i.e. the entire file.
@@ -2221,7 +2221,7 @@ describe("Test CodeMerger", function() {
 
           export default TreeRow as React.FunctionComponent<TreeRowProps>;`,
       // map for newCode
-      newNameInIdToUuid: nameInIdToUuid
+      newNameInIdToUuid: nameInIdToUuid,
     });
 
     const baseInfo = new ProjectSyncMetadataModel([
@@ -2289,7 +2289,7 @@ describe("Test CodeMerger", function() {
           }
 
           export default TreeRow as React.FunctionComponent<TreeRowProps>;`
-      )
+      ),
     ]);
 
     const merged = await mergeFiles(componentByUuid, "pid", () =>

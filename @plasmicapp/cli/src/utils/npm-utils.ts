@@ -23,7 +23,7 @@ export async function warnLatestReactWeb(context: PlasmicContext) {
     requiredMsg: () =>
       "@plasmicapp/react-web is required to use Plasmic-generated code.",
     updateMsg: (c, v) =>
-      `A more recent version of @plasmicapp/react-web [${v}] is available; your exported code may not work unless you update`
+      `A more recent version of @plasmicapp/react-web [${v}] is available; your exported code may not work unless you update`,
   });
 }
 
@@ -49,8 +49,8 @@ export async function warnLatest(
       }  Do you want to ${
         check.type === "not-installed" ? "add" : "update"
       } it now? (yes/no)`,
-      default: "yes"
-    }
+      default: "yes",
+    },
   ]);
   if (res.install === "yes") {
     installUpgrade(pkg);
@@ -67,7 +67,7 @@ async function checkVersion(context: PlasmicContext, pkg: string) {
     return {
       type: "obsolete",
       latest: last,
-      current: cur
+      current: cur,
     } as const;
   }
   return { type: "up-to-date" } as const;

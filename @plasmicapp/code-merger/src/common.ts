@@ -13,18 +13,14 @@ export function assert<T>(
   }
 }
 
-export function assertEq<T>(
-    a: T,
-    b: T,
-    msg: StringGen = "Assertion failed"
-  ) {
-    if (a !== b) {
-        console.log(a, b);
-      msg = L.isString(msg) ? msg : msg();
-      debugger;
-      throw new Error(msg);
-    }
+export function assertEq<T>(a: T, b: T, msg: StringGen = "Assertion failed") {
+  if (a !== b) {
+    console.log(a, b);
+    msg = L.isString(msg) ? msg : msg();
+    debugger;
+    throw new Error(msg);
   }
+}
 
 export const omitNils = <V>(x: {
   [k: string]: V | null | undefined;

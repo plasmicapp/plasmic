@@ -2,11 +2,11 @@ import { parseExpr, code, formatted, tagName } from "../utils";
 import { cloneDeepWithHook } from "../cloneDeepWithHook";
 import * as babel from "@babel/core";
 
-describe("cloneNodeWithHook", function() {
-  it("should work", function() {
+describe("cloneNodeWithHook", function () {
+  it("should work", function () {
     const input = `<div>{"Greeting"}<a className={"aClass"}></a><span/></div>`;
     const ast = parseExpr(input);
-    const cloned = cloneDeepWithHook(ast, n => {
+    const cloned = cloneDeepWithHook(ast, (n) => {
       if (n.type === "StringLiteral") {
         return babel.types.stringLiteral("Hello world");
       } else if (n.type === "JSXAttribute") {

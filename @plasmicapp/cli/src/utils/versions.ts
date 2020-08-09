@@ -19,16 +19,16 @@ export interface VersionResolution {
  */
 export function mergeResolves(input: VersionResolution[]): VersionResolution {
   const projects: L.Dictionary<ProjectComponentVersionMeta> = {};
-  const conflicts = L.flatMap(input, i => i.conflicts);
+  const conflicts = L.flatMap(input, (i) => i.conflicts);
 
-  L.flatMap(input, i => i.projects).forEach(meta => {
+  L.flatMap(input, (i) => i.projects).forEach((meta) => {
     if (!projects[meta.projectId]) {
       // First time seeing projectId
       projects[meta.projectId] = L.cloneDeep(meta);
     } else if (projects[meta.projectId].version !== meta.version) {
       // Add to conflicts
       const found = conflicts.find(
-        x => x.projectId === meta.projectId && x.version === meta.version
+        (x) => x.projectId === meta.projectId && x.version === meta.version
       );
       if (found) {
         found.componentIds.push(...meta.componentIds);
@@ -43,6 +43,6 @@ export function mergeResolves(input: VersionResolution[]): VersionResolution {
 
   return {
     projects: L.values(projects),
-    conflicts
+    conflicts,
   };
 }

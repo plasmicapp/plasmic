@@ -11,11 +11,11 @@ import { logger } from "../deps";
 export function tsToTsx(config: PlasmicConfig, context: MigrateContext) {
   const srcDir = context.absoluteSrcDir;
   const allFiles = glob.sync(`${srcDir}/**/*.+(ts)`, {
-    ignore: [`${srcDir}/**/node_modules/**/*`]
+    ignore: [`${srcDir}/**/node_modules/**/*`],
   });
-  const existingFiles = L.groupBy(allFiles, f => path.basename(f));
-  config.projects.forEach(project => {
-    project.components.forEach(c => {
+  const existingFiles = L.groupBy(allFiles, (f) => path.basename(f));
+  config.projects.forEach((project) => {
+    project.components.forEach((c) => {
       if (c.renderModuleFilePath.endsWith("ts")) {
         const relFilePath = findSrcDirPath(
           context.absoluteSrcDir,
