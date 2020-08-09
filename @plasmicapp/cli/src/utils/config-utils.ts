@@ -328,7 +328,12 @@ export function readAuth(authFile: string) {
     throw err;
   }
   try {
-    return JSON.parse(readFileText(authFile)) as AuthConfig;
+    const parsed = JSON.parse(readFileText(authFile)) as AuthConfig;
+    // Strip trailing slashes.
+    return {
+      ...parsed,
+      host: parsed.host.replace(/\/+$/, "")
+    };
   } catch (e) {
     logger.error(
       `Error encountered reading plasmic credentials at ${authFile}: ${e}`
