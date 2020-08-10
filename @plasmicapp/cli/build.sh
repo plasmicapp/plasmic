@@ -1,5 +1,7 @@
 #/bin/bash
 
-yarn eslint 'src/**'
+set -o errexit -o nounset
+
+eslint 'src/**'
 tsc
 cp ./tsconfig-transform.json ./dist
