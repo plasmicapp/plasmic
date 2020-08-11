@@ -7,6 +7,7 @@ import {
   ProjectBundle,
   StyleConfigResponse,
   StyleTokensMap,
+  ProjectComponentVersionMeta,
   ProjectIconsResponse,
   ProjectMetaBundle,
   ComponentBundle,
@@ -164,19 +165,17 @@ class PlasmicApi {
       if (!c) {
         continue;
       }
-      results = mergeResolves([
-        results,
-        {
-          projects: [
-            {
-              projectId: c.projectId,
-              version: c.version,
-              componentIds: [c.id],
-            },
-          ],
-          conflicts: [],
-        },
-      ]);
+      const projectMeta: ProjectComponentVersionMeta = {
+        projectId: c.projectId,
+        version: c.version,
+        componentIds: [c.id],
+        iconIds: [],
+      };
+      const resolution = {
+        projects: [projectMeta],
+        conflicts: [],
+      };
+      results = mergeResolves([results, resolution]);
 
       // Recursive Mode
       if (recursive) {

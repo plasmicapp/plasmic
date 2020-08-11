@@ -47,6 +47,7 @@ export interface IconBundle {
 export interface ProjectComponentVersionMeta {
   projectId: string;
   componentIds: string[];
+  iconIds: string[];
   version: string;
 }
 
@@ -200,9 +201,13 @@ export class PlasmicApi {
     return result.data as StyleTokensMap;
   }
 
-  async projectIcons(projectId: string): Promise<ProjectIconsResponse> {
+  async projectIcons(
+    projectId: string,
+    iconIds?: string[]
+  ): Promise<ProjectIconsResponse> {
     const result = await this.post(
-      `${this.auth.host}/api/v1/projects/${projectId}/code/icons`
+      `${this.auth.host}/api/v1/projects/${projectId}/code/icons`,
+      { iconIds }
     );
     return result.data as ProjectIconsResponse;
   }

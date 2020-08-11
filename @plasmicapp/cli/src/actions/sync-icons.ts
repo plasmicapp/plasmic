@@ -4,6 +4,7 @@ import {
   PlasmicConfig,
   PlasmicContext,
   getContext,
+  getOrAddProjectConfig,
   updateConfig,
   ProjectConfig,
 } from "../utils/config-utils";
@@ -37,19 +38,7 @@ export async function syncIcons(opts: SyncIconsArgs) {
     string,
     ProjectIconsResponse
   ][]) {
-    let project = config.projects.find((p) => p.projectId === projectId);
-    if (!project) {
-      project = {
-        projectId,
-        projectName: "",
-        version: "latest",
-        cssFilePath: "",
-        components: [],
-        icons: [],
-      };
-      config.projects.push(project);
-    }
-    syncProjectIconAssets(context, project, resp.icons);
+    syncProjectIconAssets(context, projectId, resp.icons);
   }
 
   updateConfig(context, config);
@@ -57,9 +46,10 @@ export async function syncIcons(opts: SyncIconsArgs) {
 
 export function syncProjectIconAssets(
   context: PlasmicContext,
-  project: ProjectConfig,
+  projectId: string,
   iconBundles: IconBundle[]
 ) {
+  const project = getOrAddProjectConfig(context, projectId);
   if (!project.icons) {
     project.icons = [];
   }

@@ -5,6 +5,7 @@ import { CommonArgs } from "..";
 import { logger } from "../deps";
 import {
   getContext,
+  getOrAddProjectConfig,
   updateConfig,
   PlasmicContext,
   ProjectConfig,
@@ -193,28 +194,29 @@ export async function sync(opts: SyncArgs): Promise<void> {
   const pendingMerge = new Array<ComponentPendingMerge>();
 
   await withBufferedFs(async () => {
-    await Promise.all(
-      resolveResults.map(async (projectMeta) => {
-        // By default projects that users explicitly sync use "latest" and dependencies use caret ranges.
-        const caretVersionRange = semver.toCaretRange(projectMeta.version);
-        const versionRange =
-          projectConfigMap[projectMeta.projectId]?.version ??
-          (projectIds.includes(projectMeta.projectId) || !caretVersionRange)
-            ? "latest"
-            : caretVersionRange;
-        await syncProject(
-          context,
-          opts,
-          projectMeta.projectId,
-          projectMeta.componentIds,
-          projectMeta.version,
-          versionRange,
-          reactWebVersion,
-          summary,
-          pendingMerge
-        );
-      })
-    );
+    // Sync in sequence (no parallelism)
+    // going in reverse to get leaves of the dependency tree first
+    for (const projectMeta of L.cloneDeep(resolveResults).reverse()) {
+      // By default projects that users explicitly sync use "latest" and dependencies use caret ranges.
+      const caretVersionRange = semver.toCaretRange(projectMeta.version);
+      const versionRange =
+        projectConfigMap[projectMeta.projectId]?.version ??
+        (projectIds.includes(projectMeta.projectId) || !caretVersionRange)
+          ? "latest"
+          : caretVersionRange;
+      await syncProject(
+        context,
+        opts,
+        projectMeta.projectId,
+        projectMeta.componentIds,
+        projectMeta.iconIds,
+        projectMeta.version,
+        versionRange,
+        reactWebVersion,
+        summary,
+        pendingMerge
+      );
+    }
 
     // Materialize scheme into each component config.
     context.config.projects.forEach((p) =>
@@ -270,6 +272,7 @@ async function syncProject(
   opts: SyncArgs,
   projectId: string,
   componentIds: string[],
+  iconIds: string[],
   projectVersion: string,
   projectVersionRange: string,
   reactWebVersion: string | undefined,
@@ -354,6 +357,14 @@ async function syncProject(
     pendingMerge
   );
   upsertStyleTokens(context, projectBundle.usedTokens);
+
+  // Sync icons
+  // Resolution might pass back an empty array,
+  // but calling projectIcons with an empty array returns all icons
+  if (iconIds.length > 0) {
+    const iconsResp = await context.api.projectIcons(projectId, iconIds);
+    syncProjectIconAssets(context, projectId, iconsResp.icons);
+  }
 }
 
 const updateDirectSkeleton = async (
@@ -607,33 +618,37 @@ async function syncProjectConfig(
   summary: Map<string, ComponentUpdateSummary>,
   pendingMerge: ComponentPendingMerge[]
 ) {
-  let project = context.config.projects.find(
-    (c) => c.projectId === pc.projectId
-  );
   const defaultCssFilePath = path.join(
     context.config.defaultPlasmicDir,
     L.snakeCase(pc.projectName),
     pc.cssFileName
   );
-  const isNew = !project;
-  if (!project) {
-    project = createProjectConfig({
+  const isNew = !context.config.projects.find(
+    (p) => p.projectId === pc.projectId
+  );
+  const project = getOrAddProjectConfig(
+    context,
+    pc.projectId,
+    createProjectConfig({
       projectId: pc.projectId,
       projectName: pc.projectName,
       version: versionRange,
       cssFilePath: defaultCssFilePath,
-    });
-    context.config.projects.push(project);
-  } else {
-    project.projectName = pc.projectName;
-  }
+    })
+  );
 
+  // Update missing/outdated props
+  project.projectName = pc.projectName;
   if (!project.cssFilePath) {
     project.cssFilePath = defaultCssFilePath;
   }
+
+  // Write out project css
   writeFileContent(context, project.cssFilePath, pc.cssRules, {
     force: !isNew,
   });
+
+  // Write out components
   await syncProjectComponents(
     context,
     project,
@@ -644,5 +659,7 @@ async function syncProjectConfig(
     summary,
     pendingMerge
   );
-  syncProjectIconAssets(context, project, iconBundles);
+
+  // Write out icons
+  syncProjectIconAssets(context, pc.projectId, iconBundles);
 }

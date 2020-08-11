@@ -364,3 +364,25 @@ export function updateConfig(
   writeConfig(context.configFile, config);
   context.config = config;
 }
+
+export function getOrAddProjectConfig(
+  context: PlasmicContext,
+  projectId: string,
+  base?: ProjectConfig // if one doesn't exist, start with this
+): ProjectConfig {
+  let project = context.config.projects.find((p) => p.projectId === projectId);
+  if (!project) {
+    project = !!base
+      ? L.cloneDeep(base)
+      : {
+          projectId,
+          projectName: "",
+          version: "latest",
+          cssFilePath: "",
+          components: [],
+          icons: [],
+        };
+    context.config.projects.push(project);
+  }
+  return project;
+}
