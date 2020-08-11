@@ -15,6 +15,7 @@ import {
 } from "../utils/file-utils";
 import { CommonArgs } from "..";
 import fs from "fs";
+import pako from "pako";
 
 export interface UploadBundleArgs extends CommonArgs {
   project: string;
@@ -35,9 +36,9 @@ export async function uploadJsBundle(opts: UploadBundleArgs) {
   await api.uploadBundle(
     opts.project,
     opts.bundleName,
-    readFileText(opts.bundleJsFile),
-    opts.cssFiles.map((f) => readFileText(f)),
-    readFileText(opts.metaJsonFile),
+    pako.deflate(readFileText(opts.bundleJsFile), { to: "string" }),
+    opts.cssFiles.map((f) => pako.deflate(readFileText(f), { to: "string" })),
+    pako.deflate(readFileText(opts.metaJsonFile), { to: "string" }),
     opts.genModulePath,
     opts.genCssPaths,
     opts.pkgVersion
