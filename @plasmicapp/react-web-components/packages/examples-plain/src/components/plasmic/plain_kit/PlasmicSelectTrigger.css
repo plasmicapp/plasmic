@@ -1,0 +1,149 @@
+.SelectTrigger__root__9i6lx {
+  font-family: Roboto;
+  font-size: 16px;
+  font-weight: 400;
+  font-style: normal;
+  color: rgb(83, 83, 83) /* plasmic-token: rHCbxkIpj */;
+  text-align: left;
+  text-transform: none;
+  line-height: 1.5;
+  letter-spacing: normal;
+  white-space: pre-wrap;
+  user-select: text;
+  text-overflow: clip;
+  display: inline-flex;
+  width: auto;
+  height: auto;
+  position: relative;
+  background-color: rgb(250, 250, 250) /* plasmic-token: FrS0G-YYk */;
+  flex-direction: row;
+  border-top-color: rgb(202, 202, 202) /* plasmic-token: 9DOLtHXsT */;
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-right-color: rgb(202, 202, 202) /* plasmic-token: 9DOLtHXsT */;
+  border-right-width: 1px;
+  border-right-style: solid;
+  border-bottom-color: rgb(202, 202, 202) /* plasmic-token: 9DOLtHXsT */;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-left-color: rgb(202, 202, 202) /* plasmic-token: 9DOLtHXsT */;
+  border-left-width: 1px;
+  border-left-style: solid;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+.SelectTrigger__root__9i6lx > .__wab_flex-container {
+  flex-direction: row;
+  align-items: center;
+  margin-left: calc(0px - 4px);
+  width: calc(100% + 4px);
+}
+.SelectTrigger__root__9i6lx > .__wab_flex-container > *,
+.SelectTrigger__root__9i6lx > .__wab_flex-container > .__wab_slot > * {
+  margin-left: 4px;
+}
+.SelectTrigger__root--isActive__9i6lxZ2tTl {
+  background-color: rgb(234, 234, 234) /* plasmic-token: siC6dMyEH */;
+}
+.SelectTrigger__root--isActive__9i6lxZ2tTl > .__wab_flex-container {
+}
+.SelectTrigger__root--isActive__9i6lxZ2tTl > .__wab_flex-container > *,
+.SelectTrigger__root--isActive__9i6lxZ2tTl
+  > .__wab_flex-container
+  > .__wab_slot
+  > * {
+}
+.SelectTrigger__root--isDisabled__9i6lxbjSab {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.SelectTrigger__root--isDisabled__9i6lxbjSab > .__wab_flex-container {
+}
+.SelectTrigger__root--isDisabled__9i6lxbjSab > .__wab_flex-container > *,
+.SelectTrigger__root--isDisabled__9i6lxbjSab
+  > .__wab_flex-container
+  > .__wab_slot
+  > * {
+}
+.SelectTrigger__root--__9i6lxCYQJO {
+  outline: none;
+}
+.SelectTrigger__root--__9i6lxCYQJO > .__wab_flex-container {
+}
+.SelectTrigger__root--__9i6lxCYQJO > .__wab_flex-container > *,
+.SelectTrigger__root--__9i6lxCYQJO > .__wab_flex-container > .__wab_slot > * {
+}
+.SelectTrigger__root__9i6lx:hover {
+  border-top-color: rgb(179, 179, 179) /* plasmic-token: CZVnuh585 */;
+  border-right-color: rgb(179, 179, 179) /* plasmic-token: CZVnuh585 */;
+  border-bottom-color: rgb(179, 179, 179) /* plasmic-token: CZVnuh585 */;
+  border-left-color: rgb(179, 179, 179) /* plasmic-token: CZVnuh585 */;
+  background-color: rgb(255, 255, 255) /* plasmic-token: RKKShCHUE */;
+}
+.SelectTrigger__root__9i6lx:hover > .__wab_flex-container {
+}
+.SelectTrigger__root__9i6lx:hover > .__wab_flex-container > *,
+.SelectTrigger__root__9i6lx:hover > .__wab_flex-container > .__wab_slot > * {
+}
+.SelectTrigger__root__9i6lx:focus {
+  border-top-color: rgb(145, 195, 255) /* plasmic-token: mBd88Cy9y */;
+  border-right-color: rgb(145, 195, 255) /* plasmic-token: mBd88Cy9y */;
+  border-bottom-color: rgb(145, 195, 255) /* plasmic-token: mBd88Cy9y */;
+  border-left-color: rgb(145, 195, 255) /* plasmic-token: mBd88Cy9y */;
+  outline: none;
+}
+.SelectTrigger__root__9i6lx:focus > .__wab_flex-container {
+}
+.SelectTrigger__root__9i6lx:focus > .__wab_flex-container > *,
+.SelectTrigger__root__9i6lx:focus > .__wab_flex-container > .__wab_slot > * {
+}
+.SelectTrigger__contentContainer__6pISe {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+}
+.SelectTrigger__svg__mr_0w {
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+  color: rgb(142, 142, 142) /* plasmic-token: Q__K0BQPe */;
+  flex-shrink: 0;
+}
+.SelectTrigger__svg--isActive__mr_0wZ2tTl {
+}
+.SelectTrigger__focusRing__GDmEk {
+  display: block;
+  width: auto;
+  height: auto;
+  border-top-width: 2px;
+  border-right-width: 2px;
+  border-bottom-width: 2px;
+  border-left-width: 2px;
+  border-top-color: rgb(25, 118, 210) /* plasmic-token: GyExB0Vfx */;
+  border-top-style: dashed;
+  border-right-color: rgb(25, 118, 210) /* plasmic-token: GyExB0Vfx */;
+  border-right-style: dashed;
+  border-bottom-color: rgb(25, 118, 210) /* plasmic-token: GyExB0Vfx */;
+  border-bottom-style: dashed;
+  border-left-color: rgb(25, 118, 210) /* plasmic-token: GyExB0Vfx */;
+  border-left-style: dashed;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  bottom: -5px;
+  left: -5px;
+}
+.SelectTrigger__root--__9i6lxCYQJO .SelectTrigger__focusRing__GDmEk {
+  left: -9px;
+  outline: none;
+}
