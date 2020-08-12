@@ -53,9 +53,10 @@ export interface RenderOpts<
   A extends Args,
   O extends Overrides
 > {
-  variants?: Partial<V>;
-  args?: Partial<A>;
-  overrides?: Partial<O>;
+  variants: Partial<V>;
+  args: Partial<A>;
+  overrides: Partial<O>;
+  forNode?: string;
 }
 
 // Flex provides a more "flexible" way to specify bindings.
@@ -187,7 +188,58 @@ export function createPlasmicElement<
 // We use data-plasmic-XXX attributes for custom properties since Typescript doesn't
 // support type check on @jsx pragma. See https://github.com/microsoft/TypeScript/issues/21699
 // for more info.
+const seenElements = new Map<string, React.ReactNode>();
 export function createPlasmicElementProxy<
+  DefaultElementType extends React.ElementType
+>(
+  defaultElement: DefaultElementType,
+  props: Partial<React.ComponentProps<DefaultElementType>>,
+  ...children: React.ReactNode[]
+) {
+  // We use seenElements to keep track of elements that has been rendered by
+  // createPlasmicElementProxy().  When a JSX tree is evaluated, the JSX factory
+  // is invoked from the leaf to the root as the last call.  So we can store
+  // all the elements we've created until we encounter the leaf, at which point
+  // we will clear this map.  We are guaranteed that this map will only contain
+  // elements from one Plasmic* component at a time, because we're just creating
+  // elements and not "rendering" at this point; even if this JSX tree references
+  // other Plasmic* elements, we'll just create an element referencing that component,
+  // rather than following into the content of that component.
+  //
+  // TODO: is this ConcurrentMode friendly?
+
+  const name = props["data-plasmic-name"];
+  const isRoot = props["data-plasmic-root"];
+  const forNodeName = props["data-plasmic-for-node"];
+
+  delete props["data-plasmic-name"];
+  delete props["data-plasmic-root"];
+  delete props["data-plasmic-for-node"];
+
+  const element = createPlasmicElementFromJsx(
+    defaultElement,
+    props,
+    ...children
+  );
+  if (name) {
+    seenElements.set(name, element);
+  }
+
+  if (isRoot) {
+    // If this is the root, and we requested a specific node by specifying data-plasmic-for-node,
+    // then return that node instead
+    const forNode = forNodeName
+      ? seenElements.get(forNodeName) ?? null
+      : element;
+
+    // Clear out the seenElements map, as we're done rendering this Plasmic* component.
+    seenElements.clear();
+    return forNode;
+  }
+  return element;
+}
+
+function createPlasmicElementFromJsx<
   DefaultElementType extends React.ElementType
 >(
   defaultElement: DefaultElementType,
@@ -505,39 +557,26 @@ function isReactNode(x: any) {
 
 export const classNames = _classNames;
 
-export interface RenderFunc<
-  V extends Variants,
-  A extends Args,
-  O extends Overrides
-> {
-  (opts: RenderOpts<V, A, O>): React.ReactNode;
+interface RenderFunc<V extends Variants, A extends Args, O extends Overrides> {
+  (opts: RenderOpts<V, A, O>): React.ReactElement | null;
 }
-export type RenderFuncOverrides<RF> = RF extends RenderFunc<any, any, infer O>
-  ? O
-  : never;
-export type RenderFuncVariants<RF> = RF extends RenderFunc<infer V, any, any>
-  ? V
-  : never;
-export type RenderFuncArgs<RF> = RF extends RenderFunc<any, infer A, any>
-  ? A
-  : never;
 
 export abstract class Renderer<
   V extends Variants,
   A extends Args,
-  RFs extends Record<string, RenderFunc<V, A, any>>,
-  Root extends keyof RFs
+  O extends Overrides,
+  Root extends keyof O
 > {
   constructor(
     protected variants: Partial<V>,
     protected args: Partial<A>,
-    protected renderFuncs: RFs,
+    protected renderFunc: RenderFunc<V, A, O>,
     protected root: Root
   ) {}
   protected abstract create(
     variants: Partial<V>,
     args: Partial<A>
-  ): Renderer<V, A, RFs, Root>;
+  ): Renderer<V, A, O, Root>;
   abstract getInternalVariantProps(): string[];
   abstract getInternalArgProps(): string[];
   withVariants(variants: Partial<V>): this {
@@ -549,14 +588,15 @@ export abstract class Renderer<
   withArgs(args: Partial<A>): this {
     return this.create(this.variants, mergeArgs(this.args, args)) as this;
   }
-  withOverrides(overrides: RenderFuncOverrides<RFs[Root]>) {
+  withOverrides(overrides: O) {
     return this.forNode(this.root).withOverrides(overrides);
   }
-  forNode(node: keyof RFs): NodeRenderer<RFs[typeof node]> {
+  forNode(node: keyof O) {
     return new NodeRenderer(
-      this.renderFuncs[node],
-      this.variants as RenderFuncVariants<RFs[typeof node]>,
-      this.args as RenderFuncArgs<RFs[typeof node]>,
+      this.renderFunc,
+      node as string,
+      this.variants as V,
+      this.args as A,
       {}
     );
   }
@@ -565,32 +605,40 @@ export abstract class Renderer<
   }
 }
 
-export class NodeRenderer<RF extends RenderFunc<any, any, any>> {
+export class NodeRenderer<
+  V extends Variants,
+  A extends Args,
+  O extends Overrides
+> {
   constructor(
-    protected renderFunc: RF,
-    protected variants: Partial<RenderFuncVariants<RF>>,
-    protected args: Partial<RenderFuncArgs<RF>>,
-    protected overrides: Partial<RenderFuncOverrides<RF>>
+    protected renderFunc: RenderFunc<V, A, O>,
+    protected name: string,
+    protected variants: Partial<V>,
+    protected args: Partial<A>,
+    protected overrides: Partial<O>
   ) {}
-  withVariants(variants: Partial<RenderFuncVariants<RF>>): this {
+  withVariants(variants: Partial<V>): this {
     return new NodeRenderer(
       this.renderFunc,
+      this.name,
       mergeVariants(this.variants, variants),
       this.args,
       this.overrides
     ) as this;
   }
-  withArgs(args: Partial<RenderFuncArgs<RF>>): this {
+  withArgs(args: Partial<A>): this {
     return new NodeRenderer(
       this.renderFunc,
+      this.name,
       this.variants,
       mergeArgs(this.args, args),
       this.overrides
     ) as this;
   }
-  withOverrides(overrides: Partial<RenderFuncOverrides<RF>>): this {
+  withOverrides(overrides: Partial<O>): this {
     return new NodeRenderer(
       this.renderFunc,
+      this.name,
       this.variants,
       this.args,
       mergeFlexOverrides(this.overrides, overrides)
@@ -601,6 +649,7 @@ export class NodeRenderer<RF extends RenderFunc<any, any, any>> {
       variants: this.variants,
       overrides: this.overrides,
       args: this.args,
+      forNode: this.name,
     }) as React.ReactElement | null;
   }
 }
@@ -694,9 +743,53 @@ function mergeFlexOverride<C extends React.ElementType<any>>(
   };
 }
 
-export type RendererVariants<
-  R extends Renderer<any, any, any, any>
-> = R extends Renderer<infer V, any, any, any> ? V : never;
+export function deriveRenderOpts(
+  props: Record<string, any>,
+  config: {
+    name: string;
+    descendantNames: string[];
+    internalVariantPropNames: string[];
+    internalArgPropNames: string[];
+  }
+) {
+  const {
+    name,
+    descendantNames,
+    internalVariantPropNames,
+    internalArgPropNames,
+  } = config;
+  const variants = mergeVariants(
+    pick(props, ...internalVariantPropNames),
+    props.variants ?? {}
+  );
+  const args = mergeArgs(
+    pick(props, ...internalArgPropNames),
+    props.args ?? {}
+  );
+  let overrides = mergeOverrideProps(
+    pick(props, ...descendantNames),
+    props.overrides ?? {}
+  );
+
+  const leftoverProps = omit(
+    props,
+    "variants",
+    "args",
+    "overrides",
+    ...descendantNames,
+    ...internalVariantPropNames,
+    ...internalArgPropNames
+  ) as Partial<React.ComponentProps<"button">>;
+
+  if (Object.keys(leftoverProps).length > 0) {
+    overrides = mergeOverrideProps(overrides, {
+      [name]: {
+        props: leftoverProps,
+      },
+    });
+  }
+  return { variants, args, overrides };
+}
 
 function notNil<T>(x: T | undefined | null): x is T {
   return x != null;
