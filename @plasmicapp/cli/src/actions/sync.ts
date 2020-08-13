@@ -350,7 +350,6 @@ async function syncProject(
     projectVersion,
     projectVersionRange,
     componentBundles,
-    projectBundle.iconAssets,
     opts.forceOverwrite,
     !!opts.appendJsxOnMissingBase,
     summary,
@@ -616,7 +615,6 @@ async function syncProjectConfig(
   version: string,
   versionRange: string,
   componentBundles: ComponentBundle[],
-  iconBundles: IconBundle[],
   forceOverwrite: boolean,
   appendJsxOnMissingBase: boolean,
   summary: Map<string, ComponentUpdateSummary>,
@@ -663,7 +661,4 @@ async function syncProjectConfig(
     summary,
     pendingMerge
   );
-
-  // Write out icons
-  syncProjectIconAssets(context, pc.projectId, iconBundles);
 }
