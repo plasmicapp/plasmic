@@ -14,6 +14,7 @@ import { CommonArgs } from "..";
 import { format } from "winston";
 import { formatAsLocal } from "../utils/code-utils";
 import { logger } from "../deps";
+import * as semver from "../utils/semver";
 
 export interface SyncIconsArgs extends CommonArgs {
   projects: readonly string[];
@@ -31,8 +32,17 @@ export async function syncIcons(opts: SyncIconsArgs) {
       ? opts.projects
       : context.config.projects.map((p) => p.projectId);
 
+  const getVersionRange = (projectId: string) => {
+    const projectConfig = context.config.projects.find(
+      (x) => x.projectId === projectId
+    );
+    return projectConfig?.version ?? semver.latestTag;
+  };
+
   const results = await Promise.all(
-    projectIds.map((projectId) => api.projectIcons(projectId))
+    projectIds.map((projectId) =>
+      api.projectIcons(projectId, getVersionRange(projectId))
+    )
   );
   for (const [projectId, resp] of L.zip(projectIds, results) as [
     string,

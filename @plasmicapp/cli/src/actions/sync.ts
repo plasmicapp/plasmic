@@ -362,7 +362,11 @@ async function syncProject(
   // Resolution might pass back an empty array,
   // but calling projectIcons with an empty array returns all icons
   if (iconIds.length > 0) {
-    const iconsResp = await context.api.projectIcons(projectId, iconIds);
+    const iconsResp = await context.api.projectIcons(
+      projectId,
+      projectVersionRange,
+      iconIds
+    );
     syncProjectIconAssets(context, projectId, iconsResp.icons);
   }
 }

@@ -194,20 +194,25 @@ export class PlasmicApi {
     return result.data as StyleTokensMap;
   }
 
-  async projectStyleTokens(projectId: string): Promise<StyleTokensMap> {
+  async projectStyleTokens(
+    projectId: string,
+    versionRange?: string
+  ): Promise<StyleTokensMap> {
     const result = await this.post(
-      `${this.auth.host}/api/v1/projects/${projectId}/code/tokens`
+      `${this.auth.host}/api/v1/projects/${projectId}/code/tokens`,
+      { versionRange }
     );
     return result.data as StyleTokensMap;
   }
 
   async projectIcons(
     projectId: string,
+    versionRange?: string,
     iconIds?: string[]
   ): Promise<ProjectIconsResponse> {
     const result = await this.post(
       `${this.auth.host}/api/v1/projects/${projectId}/code/icons`,
-      { iconIds }
+      { versionRange, iconIds }
     );
     return result.data as ProjectIconsResponse;
   }
