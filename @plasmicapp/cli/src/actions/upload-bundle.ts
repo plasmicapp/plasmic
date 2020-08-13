@@ -26,6 +26,7 @@ export interface UploadBundleArgs extends CommonArgs {
   genModulePath?: string;
   genCssPaths: string[];
   pkgVersion?: string;
+  extraPropMetaJsonFile?: string;
 }
 
 export async function uploadJsBundle(opts: UploadBundleArgs) {
@@ -41,6 +42,9 @@ export async function uploadJsBundle(opts: UploadBundleArgs) {
     pako.deflate(readFileText(opts.metaJsonFile), { to: "string" }),
     opts.genModulePath,
     opts.genCssPaths,
-    opts.pkgVersion
+    opts.pkgVersion,
+    opts.extraPropMetaJsonFile
+      ? readFileText(opts.extraPropMetaJsonFile)
+      : undefined
   );
 }

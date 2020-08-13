@@ -161,6 +161,11 @@ yargs
             "Path of the meta data file (in JSON format) describing the component",
           type: "string",
         })
+        .option("extraPropMetaJsonFile", {
+          describe:
+            "Path of the extra meta data file (in JSON format) describing the component's additional controlled properties and initial properties",
+          type: "string",
+        })
         .option("pkgVersion", {
           describe:
             "version of the package to include in the generated package.json",
