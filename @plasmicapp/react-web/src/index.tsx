@@ -766,7 +766,7 @@ export function deriveRenderOpts(
     pick(props, ...internalArgPropNames),
     props.args ?? {}
   );
-  let overrides = mergeOverrideProps(
+  let overrides = mergeFlexOverrides(
     pick(props, ...descendantNames),
     props.overrides ?? {}
   );
@@ -782,7 +782,7 @@ export function deriveRenderOpts(
   ) as Partial<React.ComponentProps<"button">>;
 
   if (Object.keys(leftoverProps).length > 0) {
-    overrides = mergeOverrideProps(overrides, {
+    overrides = mergeFlexOverrides(overrides, {
       [name]: {
         props: leftoverProps,
       },
