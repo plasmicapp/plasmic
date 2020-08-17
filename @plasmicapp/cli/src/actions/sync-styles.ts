@@ -15,6 +15,7 @@ import {
 import { CommonArgs } from "..";
 import { formatAsLocal } from "../utils/code-utils";
 import { logger } from "../deps";
+import * as semver from "../utils/semver";
 
 export interface SyncStyleTokensArgs extends CommonArgs {
   projects: readonly string[];
@@ -32,8 +33,17 @@ export async function syncStyleTokens(opts: SyncStyleTokensArgs) {
       ? opts.projects
       : L.uniq(readCurStyleMap(context).props.map((p) => p.meta.projectId));
 
+  const getVersionRange = (projectId: string) => {
+    const projectConfig = context.config.projects.find(
+      (x) => x.projectId === projectId
+    );
+    return projectConfig?.version ?? semver.latestTag;
+  };
+
   const results = await Promise.all(
-    projectIds.map((projectId) => api.projectStyleTokens(projectId))
+    projectIds.map((projectId) =>
+      api.projectStyleTokens(projectId, getVersionRange(projectId))
+    )
   );
   for (const [projectId, styleMap] of L.zip(projectIds, results) as [
     string,
