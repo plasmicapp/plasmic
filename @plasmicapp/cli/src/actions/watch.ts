@@ -1,5 +1,6 @@
 import L from "lodash";
 import moment from "moment";
+import * as semver from "../utils/semver";
 import { SyncArgs, sync } from "./sync";
 import { getContext } from "../utils/config-utils";
 import { warnLatestReactWeb } from "../utils/npm-utils";
@@ -19,7 +20,23 @@ export async function watchProjects(opts: WatchArgs) {
       ? opts.projects
       : config.projects.map((c) => c.projectId)
   );
-  if (projectIds.length === 0) {
+
+  // Filter out projects that are not latest
+  const latestProjects = projectIds.filter((projectId) => {
+    const projectConfig = config.projects.find(
+      (p) => p.projectId === projectId
+    );
+    return !projectConfig || semver.isLatest(projectConfig.version);
+  });
+
+  if (projectIds.length !== latestProjects.length) {
+    const filteredProjects = L.difference(projectIds, latestProjects);
+    logger.warn(
+      `Warning: watch only works for projects with version="latest". Ignoring ${filteredProjects}`
+    );
+  }
+
+  if (latestProjects.length === 0) {
     logger.error(
       "Don't know which projects to sync; please specify via --projects"
     );
@@ -28,7 +45,7 @@ export async function watchProjects(opts: WatchArgs) {
 
   socket.on("initServerInfo", () => {
     // upon connection, subscribe to changes for argument projects
-    socket.emit("subscribe", { namespace: "projects", projectIds });
+    socket.emit("subscribe", { namespace: "projects", latestProjects });
   });
   socket.on("error", (data: any) => {
     logger.error(data);
@@ -44,6 +61,6 @@ export async function watchProjects(opts: WatchArgs) {
     sync(opts);
   });
 
-  logger.info("Watching projects...");
+  logger.info(`Watching projects ${latestProjects} ...`);
   await promise;
 }
