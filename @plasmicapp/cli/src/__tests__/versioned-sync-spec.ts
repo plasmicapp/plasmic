@@ -174,7 +174,7 @@ describe("versioned-sync", () => {
     await expect(sync(opts)).resolves.toBeUndefined();
     // Change component version server-side
     const buttonData = mockApi.getMockComponentById("buttonId");
-    buttonData.version = "2.0.0";
+    buttonData.version = "1.3.4";
     mockApi.setMockComponent("buttonId", buttonData);
     // Try syncing again and see if things show up
     await expect(sync(opts)).resolves.toBeUndefined();
@@ -183,7 +183,7 @@ describe("versioned-sync", () => {
     );
     expect(button).toBeTruthy();
     expect(button?.name).toEqual("Button");
-    expect(button?.version).toEqual("2.0.0");
+    expect(button?.version).toEqual("1.3.4");
   });
 
   test("syncs exact version", async () => {

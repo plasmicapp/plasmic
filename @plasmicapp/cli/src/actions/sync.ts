@@ -146,23 +146,40 @@ export async function sync(opts: SyncArgs): Promise<void> {
 
   // Check for projects that don't satisfy our PlasmicConfig version ranges
   // Note: This should ONLY be for project dependencies, since resolveSync will only get user-specified projects/components within range.
-  const breakingProjects = resolveResults.filter(
+  // Prevent downgrades!
+  const olderBreakingProjects = resolveResults.filter(
     (r) =>
       !!projectConfigMap[r.projectId] &&
-      !semver.satisfies(r.version, projectConfigMap[r.projectId].version)
+      semver.ltr(r.version, projectConfigMap[r.projectId].version)
   );
-  // Check if we want to continue, giving up early in non-interactive mode
-  const breakingMessage = breakingProjects.map(
+  if (olderBreakingProjects.length > 0) {
+    const olderBreakingMessage = olderBreakingProjects.map(
+      (p) =>
+        `${p.projectId}@${projectConfigMap[p.projectId].version}=>v${p.version}`
+    );
+    throw new HandledError(
+      `Unable to sync due to a potential downgrade: ${olderBreakingMessage}\n Please make sure your projects are using the newest available versions in imported dependencies.`
+    );
+  }
+
+  // Prompt warning when upgrading above the specified range
+  const newerBreakingProjects = resolveResults.filter(
+    (r) =>
+      !!projectConfigMap[r.projectId] &&
+      semver.gtr(r.version, projectConfigMap[r.projectId].version)
+  );
+  const newerBreakingMessage = newerBreakingProjects.map(
     (p) =>
       `${p.projectId}@${projectConfigMap[p.projectId].version}=>v${p.version}`
   );
-  if (breakingProjects.length > 0 && opts.nonInteractive) {
+  if (newerBreakingProjects.length > 0 && opts.nonInteractive) {
+    // giving up early in non-interactive mode
     throw new HandledError(
-      `Unable to sync these projects due to conflicting versions: ${breakingMessage}`
+      `Unable to sync these projects due to conflicting versions: ${newerBreakingMessage}`
     );
-  } else if (breakingProjects.length > 0) {
+  } else if (newerBreakingProjects.length > 0) {
     logger.warn(
-      `Doing this sync will generate components outside of these project's version ranges:\n${breakingMessage}`
+      `Doing this sync will generate components outside of these project's version ranges:\n${newerBreakingMessage}`
     );
     const res = await inquirer.prompt([
       {
@@ -175,6 +192,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
       throw new HandledError("sync aborted by user.");
     }
   }
+
   // Update plasmic.json with newest version numbers
   resolveResults.forEach((p) => {
     // Defaulting to caret ranges
@@ -199,11 +217,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
     for (const projectMeta of L.cloneDeep(resolveResults).reverse()) {
       // By default projects that users explicitly sync use "latest" and dependencies use caret ranges.
       const caretVersionRange = semver.toCaretRange(projectMeta.version);
-      const versionRange =
-        projectConfigMap[projectMeta.projectId]?.version ??
-        (projectIds.includes(projectMeta.projectId) || !caretVersionRange)
-          ? "latest"
-          : caretVersionRange;
+      const versionRange = caretVersionRange ?? "latest";
       await syncProject(
         context,
         opts,

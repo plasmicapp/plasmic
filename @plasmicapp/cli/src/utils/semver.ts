@@ -55,3 +55,13 @@ export const maxSatisfying = (versions: string[], range: string) =>
   sortDesc(versions).find((v) => satisfies(v, range)) ?? null;
 export const coerce = (v: string) =>
   isLatest(v) ? latestTag : semverlib.coerce(v)?.version;
+export const gtr = (version: string, range: string) =>
+  (isLatest(version) && !isLatest(range)) ||
+  (!isLatest(version) && !isLatest(range) && semverlib.gtr(version, range));
+export const ltr = (version: string, range: string) =>
+  (!isLatest(version) && isLatest(range)) ||
+  (!isLatest(version) && !isLatest(range) && semverlib.ltr(version, range));
+export const outside = (version: string, range: string, hilo?: ">" | "<") =>
+  (hilo === ">" && gtr(version, range)) ||
+  (hilo === "<" && ltr(version, range)) ||
+  (!hilo && (gtr(version, range) || ltr(version, range)));
