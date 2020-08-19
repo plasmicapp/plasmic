@@ -204,6 +204,11 @@ export function replaceImports(
     } else if (type === "icon") {
       // import of global context
       const iconConfig = fixImportContext.icons[uuid];
+      if (!iconConfig) {
+        throw new HandledError(
+          `Encountered Plasmic icons (of uuid ${uuid}) in ${fromPath} that are being used but have not been synced. Try --recursive to also fetch missing components.`
+        );
+      }
       const realPath = makeImportPath(
         fromPath,
         iconConfig.moduleFilePath,
