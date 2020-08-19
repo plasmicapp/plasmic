@@ -2,6 +2,6 @@
 
 set -o errexit -o nounset
 
-eslint 'src/**'
+yarn eslint 'src/**'
 tsc
 cp ./tsconfig-transform.json ./dist
