@@ -132,7 +132,7 @@ export async function initPlasmic(opts: InitArgs) {
       name: "codeScheme",
       message: `Which codegen scheme to use by default?
   - We generally recommend Blackbox for new users.
-  - See https://plasmic.app/learn/codegen-schemes for examples.
+  - See https://plasmic.app/learn/codegen-overview for examples.
   - You can choose schemes for individual components.
 `,
       type: "list",
