@@ -1,0 +1,218 @@
+{
+  "platform": "react",
+  "code": {
+    "lang": "ts",
+    "scheme": "blackbox"
+  },
+  "style": {
+    "scheme": "css",
+    "defaultStyleCssFilePath": "plasmic/plasmic__default_style.css"
+  },
+  "tokens": {
+    "scheme": "theo",
+    "tokensFilePath": "plasmic-tokens.theo.json"
+  },
+  "srcDir": "./src/components",
+  "defaultPlasmicDir": "./plasmic",
+  "projects": [
+    {
+      "projectId": "wtmthg1Ku3JDsEq1LhL9ox",
+      "projectName": "Plain Kit",
+      "version": "latest",
+      "cssFilePath": "plasmic/plain_kit/plasmic_plain_kit.css",
+      "components": [
+        {
+          "id": "CcnzMSyt18",
+          "name": "Checkbox",
+          "type": "managed",
+          "projectId": "wtmthg1Ku3JDsEq1LhL9ox",
+          "renderModuleFilePath": "plasmic/plain_kit/PlasmicCheckbox.tsx",
+          "importSpec": {
+            "modulePath": "Checkbox.tsx"
+          },
+          "cssFilePath": "plasmic/plain_kit/PlasmicCheckbox.css",
+          "scheme": "blackbox"
+        },
+        {
+          "id": "X4To_O49HY",
+          "name": "Gallery",
+          "type": "managed",
+          "projectId": "wtmthg1Ku3JDsEq1LhL9ox",
+          "renderModuleFilePath": "plasmic/plain_kit/PlasmicGallery.tsx",
+          "importSpec": {
+            "modulePath": "Gallery.tsx"
+          },
+          "cssFilePath": "plasmic/plain_kit/PlasmicGallery.css",
+          "scheme": "blackbox"
+        },
+        {
+          "id": "iXSR2ghqMB",
+          "name": "Switch",
+          "type": "managed",
+          "projectId": "wtmthg1Ku3JDsEq1LhL9ox",
+          "renderModuleFilePath": "plasmic/plain_kit/PlasmicSwitch.tsx",
+          "importSpec": {
+            "modulePath": "Switch.tsx"
+          },
+          "cssFilePath": "plasmic/plain_kit/PlasmicSwitch.css",
+          "scheme": "blackbox"
+        },
+        {
+          "id": "zWD5Iq9v1R",
+          "name": "Select",
+          "type": "managed",
+          "projectId": "wtmthg1Ku3JDsEq1LhL9ox",
+          "renderModuleFilePath": "plasmic/plain_kit/PlasmicSelect.tsx",
+          "importSpec": {
+            "modulePath": "Select.tsx"
+          },
+          "cssFilePath": "plasmic/plain_kit/PlasmicSelect.css",
+          "scheme": "blackbox"
+        },
+        {
+          "id": "s-Af7sfJ1e",
+          "name": "SelectOption",
+          "type": "managed",
+          "projectId": "wtmthg1Ku3JDsEq1LhL9ox",
+          "renderModuleFilePath": "plasmic/plain_kit/PlasmicSelectOption.tsx",
+          "importSpec": {
+            "modulePath": "SelectOption.tsx"
+          },
+          "cssFilePath": "plasmic/plain_kit/PlasmicSelectOption.css",
+          "scheme": "blackbox"
+        },
+        {
+          "id": "XF8C-4i94Q",
+          "name": "Button",
+          "type": "managed",
+          "projectId": "wtmthg1Ku3JDsEq1LhL9ox",
+          "renderModuleFilePath": "plasmic/plain_kit/PlasmicButton.tsx",
+          "importSpec": {
+            "modulePath": "Button.tsx"
+          },
+          "cssFilePath": "plasmic/plain_kit/PlasmicButton.css",
+          "scheme": "blackbox"
+        },
+        {
+          "id": "HOQb6uOtcZm",
+          "name": "SelectTrigger",
+          "type": "managed",
+          "projectId": "wtmthg1Ku3JDsEq1LhL9ox",
+          "renderModuleFilePath": "plasmic/plain_kit/PlasmicSelectTrigger.tsx",
+          "importSpec": {
+            "modulePath": "SelectTrigger.tsx"
+          },
+          "cssFilePath": "plasmic/plain_kit/PlasmicSelectTrigger.css",
+          "scheme": "blackbox"
+        },
+        {
+          "id": "4nOGTtu8yy",
+          "name": "TextField",
+          "type": "managed",
+          "projectId": "wtmthg1Ku3JDsEq1LhL9ox",
+          "renderModuleFilePath": "plasmic/plain_kit/PlasmicTextField.tsx",
+          "importSpec": {
+            "modulePath": "TextField.tsx"
+          },
+          "cssFilePath": "plasmic/plain_kit/PlasmicTextField.css",
+          "scheme": "blackbox"
+        },
+        {
+          "id": "Oj95bmXSU2",
+          "name": "RadioGroup",
+          "type": "managed",
+          "projectId": "wtmthg1Ku3JDsEq1LhL9ox",
+          "renderModuleFilePath": "plasmic/plain_kit/PlasmicRadioGroup.tsx",
+          "importSpec": {
+            "modulePath": "RadioGroup.tsx"
+          },
+          "cssFilePath": "plasmic/plain_kit/PlasmicRadioGroup.css",
+          "scheme": "blackbox"
+        },
+        {
+          "id": "Ax1JW2mE4J",
+          "name": "Radio",
+          "type": "managed",
+          "projectId": "wtmthg1Ku3JDsEq1LhL9ox",
+          "renderModuleFilePath": "plasmic/plain_kit/PlasmicRadio.tsx",
+          "importSpec": {
+            "modulePath": "Radio.tsx"
+          },
+          "cssFilePath": "plasmic/plain_kit/PlasmicRadio.css",
+          "scheme": "blackbox"
+        },
+        {
+          "id": "zv45Jzqo2A",
+          "name": "SliderThumb",
+          "type": "managed",
+          "projectId": "wtmthg1Ku3JDsEq1LhL9ox",
+          "renderModuleFilePath": "plasmic/plain_kit/PlasmicSliderThumb.tsx",
+          "importSpec": {
+            "modulePath": "SliderThumb.tsx"
+          },
+          "cssFilePath": "plasmic/plain_kit/PlasmicSliderThumb.css",
+          "scheme": "blackbox"
+        },
+        {
+          "id": "AJ2JM8R_qB",
+          "name": "Slider",
+          "type": "managed",
+          "projectId": "wtmthg1Ku3JDsEq1LhL9ox",
+          "renderModuleFilePath": "plasmic/plain_kit/PlasmicSlider.tsx",
+          "importSpec": {
+            "modulePath": "Slider.tsx"
+          },
+          "cssFilePath": "plasmic/plain_kit/PlasmicSlider.css",
+          "scheme": "blackbox"
+        }
+      ],
+      "icons": [
+        {
+          "id": "g6WlrAGLKi",
+          "name": "CheckIcon",
+          "moduleFilePath": "plasmic/plain_kit/PlasmicIcon__Check.tsx"
+        },
+        {
+          "id": "b6p3Dmw_Vl",
+          "name": "IndeterminateIcon",
+          "moduleFilePath": "plasmic/plain_kit/PlasmicIcon__Indeterminate.tsx"
+        },
+        {
+          "id": "KhlCVmsFsF",
+          "name": "ChevronDownIcon",
+          "moduleFilePath": "plasmic/plain_kit/PlasmicIcon__ChevronDown.tsx"
+        },
+        {
+          "id": "O5mVhCLjk",
+          "name": "ChevronUpIcon",
+          "moduleFilePath": "plasmic/plain_kit/PlasmicIcon__ChevronUp.tsx"
+        },
+        {
+          "id": "gnRTErCL42",
+          "name": "SearchIcon",
+          "moduleFilePath": "plasmic/plain_kit/PlasmicIcon__Search.tsx"
+        },
+        {
+          "id": "brsBLyIxJA",
+          "name": "ClearIcon",
+          "moduleFilePath": "plasmic/plain_kit/PlasmicIcon__Clear.tsx"
+        },
+        {
+          "id": "XM6RWYtIx7",
+          "name": "RadioIcon",
+          "moduleFilePath": "plasmic/plain_kit/PlasmicIcon__Radio.tsx"
+        },
+        {
+          "id": "1EKpdbGgyG",
+          "name": "RadioTrueIcon",
+          "moduleFilePath": "plasmic/plain_kit/PlasmicIcon__RadioTrue.tsx"
+        }
+      ],
+      "dependencies": []
+    }
+  ],
+  "globalVariants": {
+    "variantGroups": []
+  },
+  "cliVersion": "0.1.54"
+}
