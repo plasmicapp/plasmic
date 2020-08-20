@@ -1,0 +1,82 @@
+.RadioGroup__root__nC5Zp {
+  font-family: Roboto;
+  font-size: 16px;
+  font-weight: 400;
+  font-style: normal;
+  color: rgb(83, 83, 83) /* plasmic-token: rHCbxkIpj */;
+  text-align: left;
+  text-transform: none;
+  line-height: 1.5;
+  letter-spacing: normal;
+  white-space: pre-wrap;
+  display: inline-flex;
+  width: auto;
+  height: auto;
+  position: relative;
+  background-color: #ffffff;
+  flex-direction: column;
+}
+.RadioGroup__root--isHorizontal__nC5ZpBX0XH {
+}
+.RadioGroup__labelContainer__9rC4F {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+.RadioGroup__labelContainer--isHorizontal__9rC4FBX0XH {
+}
+.RadioGroup__labelContainer--hasLabel__9rC4FtOWqv {
+}
+.RadioGroup__slotLabel__ucV6p {
+  font-size: 12px;
+  color: rgb(161, 161, 161) /* plasmic-token: jTvy_szdF */;
+}
+.RadioGroup__optionsContainer__Stqkq {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+}
+.RadioGroup__optionsContainer__Stqkq > .__wab_flex-container {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  margin-top: calc(0px - 4px);
+  height: calc(100% + 4px);
+}
+.RadioGroup__optionsContainer__Stqkq > .__wab_flex-container > *,
+.RadioGroup__optionsContainer__Stqkq > .__wab_flex-container > .__wab_slot > * {
+  margin-top: 4px;
+}
+.RadioGroup__optionsContainer--isHorizontal__StqkqBX0XH {
+  display: flex;
+  flex-direction: row;
+}
+.RadioGroup__optionsContainer--isHorizontal__StqkqBX0XH
+  > .__wab_flex-container {
+  flex-direction: row;
+  margin-left: calc(0px - 32px);
+  width: calc(100% + 32px);
+}
+.RadioGroup__optionsContainer--isHorizontal__StqkqBX0XH
+  > .__wab_flex-container
+  > *,
+.RadioGroup__optionsContainer--isHorizontal__StqkqBX0XH
+  > .__wab_flex-container
+  > .__wab_slot
+  > * {
+  margin-left: 32px;
+}
+.RadioGroup__radio__45Bkq.__wab_instance {
+  position: relative;
+}
+.RadioGroup__radio__0Pud7.__wab_instance {
+  position: relative;
+}
+.RadioGroup__radio__GyXZ6.__wab_instance {
+  position: relative;
+}
+.RadioGroup__radio__sbfnA.__wab_instance {
+  position: relative;
+}
