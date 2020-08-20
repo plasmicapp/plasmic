@@ -44,9 +44,14 @@ export type RendererArgs<R extends AnyRenderer> = R extends Renderer<
 >
   ? A
   : unknown;
-export type RendererOverrides<R extends AnyRenderer> = Parameters<
-  R['withOverrides']
->[0];
+export type RendererOverrides<R extends AnyRenderer> = R extends Renderer<
+  any,
+  any,
+  infer O,
+  any
+>
+  ? O
+  : unknown;
 
 export type PlasmicClass<R extends AnyRenderer> = {
   createRenderer: () => R;

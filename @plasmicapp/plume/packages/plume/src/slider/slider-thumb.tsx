@@ -4,7 +4,7 @@ import { Overrides } from '@plasmicapp/react-web';
 import { VisuallyHidden } from '@react-aria/visually-hidden';
 import { useFocusableRef } from '@react-spectrum/utils';
 import { FocusableRef } from '@react-types/shared';
-import { pick } from 'lodash-es';
+import pick from 'lodash-es/pick';
 import * as React from 'react';
 import {
   AnyRenderer,

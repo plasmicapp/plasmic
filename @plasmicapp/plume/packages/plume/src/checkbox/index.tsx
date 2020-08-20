@@ -29,6 +29,8 @@ interface PlumeCheckboxConfig<R extends Renderer<any, any, any, any>> {
   isDisabledVariant?: VariantDefTuple<RendererVariants<R>>;
   hasLabelVariant?: VariantDefTuple<RendererVariants<R>>;
 
+  labelSlot?: RendererArgs<R>;
+
   root: keyof RendererOverrides<R>;
 }
 
@@ -83,7 +85,10 @@ export function usePlumeCheckbox<
     plumeProps: {
       variants: variants as RendererVariants<R>,
       overrides: overrides as RendererOverrides<R>,
-      args: pick(props, ...renderer.getInternalArgProps()) as RendererArgs<R>,
+      args: {
+        ...pick(props, ...renderer.getInternalArgProps()),
+        ...config.labelSlot && {[config.labelSlot]: children}
+      } as RendererArgs<R>
     },
     state,
   };

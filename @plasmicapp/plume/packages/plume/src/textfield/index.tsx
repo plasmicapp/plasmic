@@ -40,6 +40,9 @@ export interface PlumeTextFieldConfig<R extends Renderer<any, any, any, any>> {
   showStartIconVariant?: VariantDefTuple<RendererVariants<R>>;
   showEndIconVariant?: VariantDefTuple<RendererVariants<R>>;
 
+  startIconSlot?: keyof RendererArgs<R>;
+  endIconSlot?: keyof RendererArgs<R>;
+
   root: keyof RendererOverrides<R>;
   textbox: keyof RendererOverrides<R>;
   label?: keyof RendererOverrides<R>;
@@ -103,6 +106,8 @@ export function usePlumeTextField<
 
   const args = {
     ...pick(props, ...renderer.getInternalArgProps()),
+    ...config.startIconSlot && {[config.startIconSlot]: startIcon},
+    ...config.endIconSlot && {[config.endIconSlot]: endIcon},
   };
 
   const overrides: Overrides = {
