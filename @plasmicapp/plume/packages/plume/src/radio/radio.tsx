@@ -25,6 +25,8 @@ interface PlumeRadioConfig<R extends Renderer<any, any, any, any>> {
   isDisabledVariant?: VariantDefTuple<RendererVariants<R>>;
   hasLabelVariant?: VariantDefTuple<RendererVariants<R>>;
 
+  labelSlot?: keyof RendererArgs<R>;
+
   root: keyof RendererOverrides<R>;
 }
 
@@ -90,6 +92,7 @@ export function usePlumeRadio<
       } as RendererVariants<R>,
       args: {
         ...pick(props, ...renderer.getInternalArgProps()),
+        ...config.labelSlot && {[config.labelSlot]: children},
       } as RendererArgs<R>,
       overrides: overrides as RendererOverrides<R>,
     },

@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/plume",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -55,9 +55,9 @@
     "typescript": "^3.9.6"
   },
   "dependencies": {
-    "@chungwu/react-aria-slider": "^3.0.4",
-    "@chungwu/react-stately-slider": "^3.0.4",
-    "@chungwu/react-types-slider": "^3.0.2",
+    "@chungwu/react-aria-slider": "^3.0.5",
+    "@chungwu/react-stately-slider": "^3.0.6",
+    "@chungwu/react-types-slider": "^3.0.6",
     "@react-aria/button": "^3.2.1",
     "@react-aria/checkbox": "^3.1.0",
     "@react-aria/focus": "^3.2.0",

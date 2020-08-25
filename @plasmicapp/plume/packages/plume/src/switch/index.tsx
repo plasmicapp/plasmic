@@ -29,6 +29,8 @@ interface PlumeSwitchConfig<R extends AnyRenderer> {
   isDisabledVariant?: VariantDefTuple<RendererVariants<R>>;
   hasLabelVariant?: VariantDefTuple<RendererVariants<R>>;
 
+  labelSlot?: keyof RendererArgs<R>;
+
   root: keyof RendererOverrides<R>;
 }
 
@@ -82,7 +84,10 @@ export function usePlumeSwitch<
     plumeProps: {
       variants: variants as RendererVariants<R>,
       overrides: overrides as RendererOverrides<R>,
-      args: pick(props, ...renderer.getInternalArgProps()) as RendererArgs<R>,
+      args: {
+        ...pick(props, ...renderer.getInternalArgProps()),
+        ...config.labelSlot && {[config.labelSlot]: children}
+      } as RendererArgs<R>,
     },
     state,
   };

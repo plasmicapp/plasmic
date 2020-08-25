@@ -4,7 +4,7 @@ import { SliderProps } from '@chungwu/react-types-slider';
 import { Overrides, Renderer } from '@plasmicapp/react-web';
 import { useFocusableRef } from '@react-spectrum/utils';
 import { FocusableRef } from '@react-types/shared';
-import { pick } from 'lodash-es';
+import pick from 'lodash-es/pick';
 import * as React from 'react';
 import {
   AnyRenderer,

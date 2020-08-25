@@ -34,6 +34,10 @@ interface PlumeButtonConfig<R extends AnyRenderer> {
   showStartIconVariant?: VariantDefTuple<RendererVariants<R>>;
   showEndIconVariant?: VariantDefTuple<RendererVariants<R>>;
 
+  startIconSlot?: keyof RendererArgs<R>;
+  endIconSlot?: keyof RendererArgs<R>;
+  contentSlot?: keyof RendererArgs<R>;
+
   root: keyof RendererOverrides<R>;
 }
 
@@ -54,6 +58,7 @@ export function usePlumeButton<
     endIcon,
     className,
     style,
+    children
   } = props;
   const renderer = plasmicClass.createRenderer();
   const domRef = useFocusableRef(ref);
@@ -92,6 +97,9 @@ export function usePlumeButton<
       } as RendererVariants<R>,
       args: {
         ...pick(props, ...renderer.getInternalArgProps()),
+        ...config.startIconSlot && {[config.startIconSlot]: startIcon},
+        ...config.endIconSlot && {[config.endIconSlot]: endIcon},
+        ...config.contentSlot && {[config.contentSlot]: children},
       } as RendererArgs<R>,
       overrides: overrides as RendererOverrides<R>,
     },
