@@ -8,6 +8,7 @@ import { execSync, spawnSync } from "child_process";
 import inquirer from "inquirer";
 import findupSync from "findup-sync";
 import { logger } from "../deps";
+import { confirmWithUser } from "./user-utils";
 
 export function getCliVersion() {
   const packageJson = findupSync("package.json", { cwd: __dirname });
@@ -18,13 +19,21 @@ export function getCliVersion() {
   return j.version as string;
 }
 
-export async function warnLatestReactWeb(context: PlasmicContext) {
-  await warnLatest(context, "@plasmicapp/react-web", {
-    requiredMsg: () =>
-      "@plasmicapp/react-web is required to use Plasmic-generated code.",
-    updateMsg: (c, v) =>
-      `A more recent version of @plasmicapp/react-web [${v}] is available; your exported code may not work unless you update`,
-  });
+export async function warnLatestReactWeb(
+  context: PlasmicContext,
+  yes?: boolean
+) {
+  await warnLatest(
+    context,
+    "@plasmicapp/react-web",
+    {
+      requiredMsg: () =>
+        "@plasmicapp/react-web is required to use Plasmic-generated code.",
+      updateMsg: (c, v) =>
+        `A more recent version of @plasmicapp/react-web [${v}] is available; your exported code may not work unless you update`,
+    },
+    yes
+  );
 }
 
 export async function warnLatest(
@@ -33,26 +42,26 @@ export async function warnLatest(
   msgs: {
     requiredMsg: () => string;
     updateMsg: (curVersion: string, latestVersion: string) => string;
-  }
+  },
+  yes?: boolean
 ) {
   const check = await checkVersion(context, pkg);
   if (check.type === "up-to-date") {
     return;
   }
-  const res = await inquirer.prompt([
-    {
-      name: "install",
-      message: `${
+
+  if (
+    await confirmWithUser(
+      `${
         check.type === "not-installed"
           ? msgs.requiredMsg()
           : msgs.updateMsg(check.current, check.latest)
       }  Do you want to ${
         check.type === "not-installed" ? "add" : "update"
-      } it now? (yes/no)`,
-      default: "yes",
-    },
-  ]);
-  if (res.install === "yes") {
+      } it now?`,
+      yes
+    )
+  ) {
     installUpgrade(pkg);
   }
 }

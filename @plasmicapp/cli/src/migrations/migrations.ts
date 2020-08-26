@@ -37,7 +37,7 @@ export const MIGRATIONS: Record<string, MigrateFunc> = {
   "0.1.42": ensureVersion,
 };
 
-export function runNecessaryMigrations(configFile: string) {
+export function runNecessaryMigrationsConfig(configFile: string) {
   const readConfig = () => JSON.parse(readFileText(configFile));
   const writeConfig = (config: any) =>
     writeFileContentRaw(configFile, JSON.stringify(config, undefined, 2), {

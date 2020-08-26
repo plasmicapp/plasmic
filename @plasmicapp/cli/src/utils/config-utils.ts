@@ -12,13 +12,14 @@ import { PlasmicApi } from "../api";
 import { CommonArgs } from "../index";
 import { DeepPartial } from "utility-types";
 import * as Sentry from "@sentry/node";
-import { runNecessaryMigrations } from "../migrations/migrations";
+import { runNecessaryMigrationsConfig } from "../migrations/migrations";
 import { getCliVersion } from "./npm-utils";
 import { logger } from "../deps";
 import { HandledError } from "../utils/error";
 
 export const AUTH_FILE_NAME = ".plasmic.auth";
 export const CONFIG_FILE_NAME = "plasmic.json";
+export const LOCK_FILE_NAME = "plasmic.lock";
 
 export interface PlasmicConfig {
   // Target platform to generate code for
@@ -68,12 +69,15 @@ export interface StyleConfig {
 
 export interface ProjectConfig {
   projectId: string;
+  // Project name synced down from Studio
   projectName: string;
+  // A version range that the user wants to sync without warnings
   version: string;
   cssFilePath: string;
 
   // Configs for each component we have synced.
   components: ComponentConfig[];
+  // Configs for each icon we have synced.
   icons: IconConfig[];
 }
 
@@ -82,7 +86,7 @@ export function createProjectConfig(base: {
   projectName: string;
   version: string;
   cssFilePath: string;
-}) {
+}): ProjectConfig {
   return {
     projectId: base.projectId,
     projectName: base.projectName,
@@ -90,7 +94,6 @@ export function createProjectConfig(base: {
     cssFilePath: base.cssFilePath,
     components: [],
     icons: [],
-    dependencies: [],
   };
 }
 
@@ -151,6 +154,31 @@ export interface GlobalVariantGroupConfig {
   contextFilePath: string;
 }
 
+export interface PlasmicLock {
+  // One for each project that has been synced
+  projects: ProjectLock[];
+
+  // The version of CLI when this file was written
+  cliVersion?: string;
+}
+
+function createPlasmicLock(): PlasmicLock {
+  return {
+    projects: [],
+    cliVersion: getCliVersion(),
+  };
+}
+
+export interface ProjectLock {
+  projectId: string;
+  // The exact version that was last synced
+  version: string;
+  dependencies: {
+    // Maps from projectId => exact version
+    [projectId: string]: string;
+  };
+}
+
 /**
  * PlasmicContext is the PlasmicConfig plus context in which the PlasmicConfig was
  * created.
@@ -158,6 +186,9 @@ export interface GlobalVariantGroupConfig {
 export interface PlasmicContext {
   // Location of the plasmic.json file
   configFile: string;
+
+  // Location of the plasmic.lock file
+  lockFile: string;
 
   // Folder where plasmic.json file lives
   rootDir: string;
@@ -168,6 +199,9 @@ export interface PlasmicContext {
 
   // The parsed PlasmicConfig
   config: PlasmicConfig;
+
+  // The parsed PlasmicLock
+  lock: PlasmicLock;
 
   // The parsed AuthConfig
   auth: AuthConfig;
@@ -256,6 +290,7 @@ export function fillDefaults(
 }
 
 export function getContext(args: CommonArgs): PlasmicContext {
+  // PlasmicAuth
   const authFile =
     args.auth || findAuthFile(process.cwd(), { traverseParents: true });
   if (!authFile) {
@@ -265,6 +300,7 @@ export function getContext(args: CommonArgs): PlasmicContext {
     throw err;
   }
   const auth = readAuth(authFile);
+  // Sentry
   if (auth.host.startsWith("https://studio.plasmic.app")) {
     // Production usage of cli
     Sentry.init({
@@ -279,6 +315,7 @@ export function getContext(args: CommonArgs): PlasmicContext {
     });
   }
 
+  // PlasmicConfig
   const configFile =
     args.config || findConfigFile(process.cwd(), { traverseParents: true });
   if (!configFile) {
@@ -287,14 +324,20 @@ export function getContext(args: CommonArgs): PlasmicContext {
     );
     throw err;
   }
-
-  runNecessaryMigrations(configFile);
-
+  runNecessaryMigrationsConfig(configFile);
   const config = readConfig(configFile);
   const rootDir = path.dirname(configFile);
+
+  // PlasmicLock
+  // plasmic.lock should be in the same directory as plasmic.json
+  const lockFile = path.join(rootDir, LOCK_FILE_NAME);
+  const lock = readLock(lockFile);
+
   return {
     config,
     configFile,
+    lock,
+    lockFile,
     rootDir,
     absoluteSrcDir: path.isAbsolute(config.srcDir)
       ? config.srcDir
@@ -304,7 +347,7 @@ export function getContext(args: CommonArgs): PlasmicContext {
   };
 }
 
-export function readConfig(configFile: string) {
+export function readConfig(configFile: string): PlasmicConfig {
   if (!existsBuffered(configFile)) {
     const err = new HandledError(
       `No Plasmic config file found at ${configFile}`
@@ -316,7 +359,24 @@ export function readConfig(configFile: string) {
     return fillDefaults(result);
   } catch (e) {
     logger.error(
-      `Error encountered reading plasmic.config at ${configFile}: ${e}`
+      `Error encountered reading ${CONFIG_FILE_NAME} at ${configFile}: ${e}`
+    );
+    throw e;
+  }
+}
+
+export function readLock(lockFile: string): PlasmicLock {
+  if (!existsBuffered(lockFile)) {
+    return createPlasmicLock();
+  }
+  try {
+    const result = JSON.parse(readFileText(lockFile!)) as PlasmicLock;
+    return {
+      ...result,
+    };
+  } catch (e) {
+    logger.error(
+      `Error encountered reading ${LOCK_FILE_NAME} at ${lockFile}: ${e}`
     );
     throw e;
   }
@@ -348,6 +408,12 @@ export function writeConfig(configFile: string, config: PlasmicConfig) {
   });
 }
 
+export function writeLock(lockFile: string, lock: PlasmicLock) {
+  writeFileContentRaw(lockFile, JSON.stringify(lock, undefined, 2), {
+    force: true,
+  });
+}
+
 export function writeAuth(authFile: string, config: AuthConfig) {
   writeFileContentRaw(authFile, JSON.stringify(config, undefined, 2), {
     force: true,
@@ -359,10 +425,14 @@ export function updateConfig(
   context: PlasmicContext,
   updates: DeepPartial<PlasmicConfig>
 ) {
+  // plasmic.json
   let config = readConfig(context.configFile);
   L.merge(config, updates);
   writeConfig(context.configFile, config);
   context.config = config;
+
+  // plasmic.lock
+  writeLock(context.lockFile, context.lock);
 }
 
 export function getOrAddProjectConfig(
@@ -383,6 +453,25 @@ export function getOrAddProjectConfig(
           icons: [],
         };
     context.config.projects.push(project);
+  }
+  return project;
+}
+
+export function getOrAddProjectLock(
+  context: PlasmicContext,
+  projectId: string,
+  base?: ProjectLock // if one doesn't exist, start with this
+): ProjectLock {
+  let project = context.lock.projects.find((p) => p.projectId === projectId);
+  if (!project) {
+    project = !!base
+      ? L.cloneDeep(base)
+      : {
+          projectId,
+          version: "",
+          dependencies: {},
+        };
+    context.lock.projects.push(project);
   }
   return project;
 }

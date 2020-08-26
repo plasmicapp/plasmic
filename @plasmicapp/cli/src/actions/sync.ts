@@ -1,14 +1,15 @@
 import path from "upath";
-import L, { merge } from "lodash";
-import inquirer from "inquirer";
+import L from "lodash";
 import { CommonArgs } from "..";
 import { logger } from "../deps";
 import {
   getContext,
   getOrAddProjectConfig,
+  getOrAddProjectLock,
   updateConfig,
   PlasmicContext,
   ProjectConfig,
+  ProjectLock,
   createProjectConfig,
   CONFIG_FILE_NAME,
   ComponentConfig,
@@ -51,22 +52,21 @@ import {
   mergeFiles,
   makeCachedProjectSyncDataProvider,
 } from "@plasmicapp/code-merger";
-import { options } from "yargs";
 import { syncProjectIconAssets } from "./sync-icons";
 import * as semver from "../utils/semver";
 import { spawnSync } from "child_process";
 import { HandledError } from "../utils/error";
+import { checkVersionResolution } from "../utils/resolve-utils";
 
 export interface SyncArgs extends CommonArgs {
   projects: readonly string[];
-  components: readonly string[];
-  onlyExisting: boolean;
   forceOverwrite: boolean;
   newComponentScheme?: "blackbox" | "direct";
   appendJsxOnMissingBase?: boolean;
-  recursive?: boolean;
-  includeDependencies?: boolean;
-  nonInteractive?: boolean;
+  yes?: boolean;
+  force?: boolean;
+  nonRecursive?: boolean;
+  skipReactWeb?: boolean;
 }
 
 function maybeConvertTsxToJsx(fileName: string, content: string) {
@@ -115,95 +115,31 @@ export async function sync(opts: SyncArgs): Promise<void> {
   // Resolve what will be synced
   const projectConfigMap = L.keyBy(context.config.projects, (p) => p.projectId);
   const projectSyncParams = projectIds.map((projectId) => {
+    // Use the version in plasmic.json, otherwise default to "latest"
+    const versionRange = projectConfigMap[projectId]?.version ?? "latest";
     return {
       projectId,
-      versionRange: projectConfigMap[projectId]?.version ?? "latest",
-      componentIdOrNames:
-        opts.components.length === 0 ? undefined : opts.components,
+      versionRange,
+      componentIdOrNames: undefined, // Get all components!
     };
   });
-  const { projects: resolveResults, conflicts } = await context.api.resolveSync(
+  const versionResolution = await context.api.resolveSync(
     projectSyncParams,
-    opts.recursive,
-    opts.includeDependencies
+    true // we always want to get dependency data
   );
 
-  // Fail if there's nothing to sync
-  if (resolveResults.length <= 0) {
+  // Make sure the resolution is compatible with plasmic.json and plasmic.lock
+  const projectsToSync = await checkVersionResolution(
+    versionResolution,
+    context,
+    opts
+  );
+  if (projectsToSync.length <= 0) {
     throw new HandledError(
-      "Found nothing to sync - make sure the project id, component id, or component names are valid."
+      "No compatible versions to sync. Please fix the warnings and try again."
     );
   }
 
-  // First check if the sync is consistent with itself (independent of plasmic.json),
-  // since we can specify multiple root projects to sync
-  if (conflicts && conflicts.length > 0) {
-    // TODO: replace with better error message
-    throw new HandledError(
-      `Sync resolution failed: \n${resolveResults}\nConflicts:\n${conflicts}`
-    );
-  }
-
-  // Check for projects that don't satisfy our PlasmicConfig version ranges
-  // Note: This should ONLY be for project dependencies, since resolveSync will only get user-specified projects/components within range.
-  // Prevent downgrades!
-  const olderBreakingProjects = resolveResults.filter(
-    (r) =>
-      !!projectConfigMap[r.projectId] &&
-      semver.ltr(r.version, projectConfigMap[r.projectId].version)
-  );
-  if (olderBreakingProjects.length > 0) {
-    const olderBreakingMessage = olderBreakingProjects.map(
-      (p) =>
-        `${p.projectId}@${projectConfigMap[p.projectId].version}=>v${p.version}`
-    );
-    throw new HandledError(
-      `Unable to sync due to a potential downgrade: ${olderBreakingMessage}\n Please make sure your projects are using the newest available versions in imported dependencies.`
-    );
-  }
-
-  // Prompt warning when upgrading above the specified range
-  const newerBreakingProjects = resolveResults.filter(
-    (r) =>
-      !!projectConfigMap[r.projectId] &&
-      semver.gtr(r.version, projectConfigMap[r.projectId].version)
-  );
-  const newerBreakingMessage = newerBreakingProjects.map(
-    (p) =>
-      `${p.projectId}@${projectConfigMap[p.projectId].version}=>v${p.version}`
-  );
-  if (newerBreakingProjects.length > 0 && opts.nonInteractive) {
-    // giving up early in non-interactive mode
-    throw new HandledError(
-      `Unable to sync these projects due to conflicting versions: ${newerBreakingMessage}`
-    );
-  } else if (newerBreakingProjects.length > 0) {
-    logger.warn(
-      `Doing this sync will generate components outside of these project's version ranges:\n${newerBreakingMessage}`
-    );
-    const res = await inquirer.prompt([
-      {
-        name: "continue",
-        message: `Do you want to continue? (Y/n)`,
-        default: "y",
-      },
-    ]);
-    if (!["y", "yes"].includes(res.continue.toLowerCase())) {
-      throw new HandledError("sync aborted by user.");
-    }
-  }
-
-  // Update plasmic.json with newest version numbers
-  resolveResults.forEach((p) => {
-    // Defaulting to caret ranges
-    const newVersionRange = semver.toCaretRange(p.version);
-    if (projectConfigMap[p.projectId] && newVersionRange) {
-      projectConfigMap[p.projectId].version = newVersionRange;
-    }
-  });
-
-  // Sync each project
-  // Note: order should not matter during code-gen, because we fix imports all together at the end
   const reactWebVersion = findInstalledVersion(
     context,
     "@plasmicapp/react-web"
@@ -211,13 +147,11 @@ export async function sync(opts: SyncArgs): Promise<void> {
   const summary = new Map<string, ComponentUpdateSummary>();
   const pendingMerge = new Array<ComponentPendingMerge>();
 
+  // Perform the actual sync
   await withBufferedFs(async () => {
     // Sync in sequence (no parallelism)
     // going in reverse to get leaves of the dependency tree first
-    for (const projectMeta of L.cloneDeep(resolveResults).reverse()) {
-      // By default projects that users explicitly sync use "latest" and dependencies use caret ranges.
-      const caretVersionRange = semver.toCaretRange(projectMeta.version);
-      const versionRange = caretVersionRange ?? "latest";
+    for (const projectMeta of projectsToSync) {
       await syncProject(
         context,
         opts,
@@ -225,7 +159,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
         projectMeta.componentIds,
         projectMeta.iconIds,
         projectMeta.version,
-        versionRange,
+        projectMeta.dependencies,
         reactWebVersion,
         summary,
         pendingMerge
@@ -251,8 +185,8 @@ export async function sync(opts: SyncArgs): Promise<void> {
       style: context.config.style,
     });
 
+    // Fix imports
     const fixImportContext = mkFixImportContext(context.config);
-
     for (const m of pendingMerge) {
       const resolvedEditedFile = replaceImports(
         m.editedSkeletonFile,
@@ -268,14 +202,16 @@ export async function sync(opts: SyncArgs): Promise<void> {
       );
       await m.merge(resolvedNewFile, resolvedEditedFile);
     }
-
     // Now we know config.components are all correct, so we can go ahead and fix up all the import statements
     fixAllImportStatements(context, summary);
   });
 
-  if (!opts.nonInteractive) {
-    await warnLatestReactWeb(context);
+  // Prompt to upgrade react-web
+  if (!opts.skipReactWeb) {
+    await warnLatestReactWeb(context, opts.yes);
   }
+
+  // Post-sync commands
   for (const cmd of context.config.postSyncCommands || []) {
     spawnSync(cmd, { shell: true, stdio: "inherit" });
   }
@@ -288,7 +224,7 @@ async function syncProject(
   componentIds: string[],
   iconIds: string[],
   projectVersion: string,
-  projectVersionRange: string,
+  dependencies: { [projectId: string]: string },
   reactWebVersion: string | undefined,
   summary: Map<string, ComponentUpdateSummary>,
   pendingMerge: ComponentPendingMerge[]
@@ -339,31 +275,14 @@ async function syncProject(
     });
   }
 
-  const knownComponentIds = new Set(
-    flatMap(context.config.projects, (p) => p.components.map((c) => c.id))
-  );
-  const shouldSyncComponents = (id: string, name: string) => {
-    if (opts.onlyExisting) {
-      // If explicitly told to only sync known components, then check
-      return knownComponentIds.has(id);
-    }
-
-    // Otherwise, we sync all components; if the user had specified --components, we
-    // have already passed that up to the server, and the server should've only sent
-    // down a filtered set of components already.
-    return true;
-  };
-
   syncGlobalVariants(context, projectId, projectBundle.globalVariants);
-  const componentBundles = projectBundle.components.filter((bundle) =>
-    shouldSyncComponents(bundle.id, bundle.componentName)
-  );
+  const componentBundles = projectBundle.components;
   await syncProjectConfig(
     context,
     projectBundle.projectConfig,
     projectVersion,
-    projectVersionRange,
-    componentBundles,
+    dependencies,
+    projectBundle.components,
     opts.forceOverwrite,
     !!opts.appendJsxOnMissingBase,
     summary,
@@ -377,7 +296,7 @@ async function syncProject(
   if (iconIds.length > 0) {
     const iconsResp = await context.api.projectIcons(
       projectId,
-      projectVersionRange,
+      projectVersion,
       iconIds
     );
     syncProjectIconAssets(context, projectId, iconsResp.icons);
@@ -627,7 +546,7 @@ async function syncProjectConfig(
   context: PlasmicContext,
   pc: ProjectMetaBundle,
   version: string,
-  versionRange: string,
+  dependencies: { [projectId: string]: string },
   componentBundles: ComponentBundle[],
   forceOverwrite: boolean,
   appendJsxOnMissingBase: boolean,
@@ -642,7 +561,9 @@ async function syncProjectConfig(
   const isNew = !context.config.projects.find(
     (p) => p.projectId === pc.projectId
   );
-  const project = getOrAddProjectConfig(
+  // If latest, use that as the range, otherwise set to latest published (>=0.0.0)
+  const versionRange = semver.isLatest(version) ? version : ">=0.0.0";
+  const projectConfig = getOrAddProjectConfig(
     context,
     pc.projectId,
     createProjectConfig({
@@ -654,20 +575,25 @@ async function syncProjectConfig(
   );
 
   // Update missing/outdated props
-  project.projectName = pc.projectName;
-  if (!project.cssFilePath) {
-    project.cssFilePath = defaultCssFilePath;
+  projectConfig.projectName = pc.projectName;
+  if (!projectConfig.cssFilePath) {
+    projectConfig.cssFilePath = defaultCssFilePath;
   }
 
   // Write out project css
-  writeFileContent(context, project.cssFilePath, pc.cssRules, {
+  writeFileContent(context, projectConfig.cssFilePath, pc.cssRules, {
     force: !isNew,
   });
+
+  // plasmic.lock
+  const projectLock = getOrAddProjectLock(context, pc.projectId);
+  projectLock.version = version;
+  projectLock.dependencies = dependencies;
 
   // Write out components
   await syncProjectComponents(
     context,
-    project,
+    projectConfig,
     version,
     componentBundles,
     forceOverwrite,

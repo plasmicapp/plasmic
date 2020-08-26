@@ -1,33 +1,63 @@
 import L from "lodash";
+import { ensure } from "../utils/lang-utils";
 import * as semver from "../utils/semver";
-import { VersionResolution, mergeResolves } from "../utils/versions";
 import { ProjectSyncMetadataModel } from "@plasmicapp/code-merger";
 import { AuthConfig } from "../utils/config-utils";
 import {
   ProjectBundle,
   StyleConfigResponse,
   StyleTokensMap,
-  ProjectComponentVersionMeta,
+  ProjectVersionMeta,
   ProjectIconsResponse,
   ProjectMetaBundle,
   ComponentBundle,
+  VersionResolution,
 } from "../api";
 
 const api: any = jest.genMockFromModule("../api");
 
 /**
  * Store a simplified data model for use with testing
- * NOTE: each component can have its own dependency tree, which may not be consistent.
- * This allows you to write really flexible tests,
- * but may not enforce all constraints that a server would typically provide.
  */
-let COMPONENTS: L.Dictionary<MockComponent> = {};
+// Keyed by (projectId, version)
+const PROJECTS: MockProject[] = [];
+export interface MockProject {
+  projectId: string;
+  version: string;
+  components: MockComponent[];
+  dependencies: {
+    [projectId: string]: string;
+  };
+}
 export interface MockComponent {
   id: string;
   name: string;
-  projectId: string;
-  version: string;
-  children: MockComponent[];
+  projectId?: string;
+  version?: string;
+}
+
+function clear() {
+  while (PROJECTS.length > 0) {
+    PROJECTS.shift();
+  }
+}
+
+function mockProjectToProjectVersionMeta(
+  mock: MockProject,
+  componentIdOrNames?: readonly string[]
+): ProjectVersionMeta {
+  return {
+    ...mock,
+    componentIds: mock.components
+      .filter(
+        (c) =>
+          !componentIdOrNames ||
+          componentIdOrNames.includes(c.name) ||
+          componentIdOrNames.includes(c.id)
+      )
+      .map((c) => c.id),
+    iconIds: [],
+  };
 }
 
 /**
@@ -35,8 +65,26 @@ export interface MockComponent {
  * @param id componentId
  * @param comp MockComponent
  */
-function setMockComponent(id: string, comp: MockComponent) {
-  COMPONENTS[id] = comp;
+function addMockProject(proj: MockProject) {
+  const projectId = proj.projectId;
+  const version = proj.version;
+  // Populate projectId and version into each component
+  // will be useful when reading / writing components to files
+  proj.components = proj.components.map((c) => {
+    return {
+      ...c,
+      projectId,
+      version,
+    };
+  });
+
+  const existing = getMockProject(projectId, version);
+  if (!existing) {
+    PROJECTS.push(proj);
+  } else {
+    existing.components = proj.components;
+    existing.dependencies = proj.dependencies;
+  }
 }
 
 /**
@@ -62,13 +110,13 @@ function mockComponentToString(component: MockComponent): string {
   return "// " + JSON.stringify(component);
 }
 
-/**
- * Only fetch by top-level id.
- * Does not crawl the dependency tree.
- * @param id
- */
-function getMockComponentById(id: string): MockComponent {
-  return COMPONENTS[id];
+function getMockProject(
+  projectId: string,
+  version: string
+): MockProject | undefined {
+  return PROJECTS.find(
+    (m) => m.projectId === projectId && m.version === version
+  );
 }
 
 /**
@@ -80,20 +128,18 @@ function getMockComponentById(id: string): MockComponent {
  */
 function getMockComponents(
   projectId: string,
-  componentIdOrNames: readonly string[] | undefined,
-  versionRange: string
+  version: string,
+  componentIdOrNames: readonly string[] | undefined
 ): MockComponent[] {
-  return L.chain(COMPONENTS)
-    .values()
-    .filter((c) => c.projectId === projectId)
-    .filter(
-      (c) =>
-        !componentIdOrNames ||
-        componentIdOrNames.includes(c.id) ||
-        componentIdOrNames.includes(c.name)
-    )
-    .filter((c) => semver.satisfies(c.version, versionRange))
-    .value();
+  const project = getMockProject(projectId, version);
+  return !project
+    ? []
+    : project.components.filter(
+        (c) =>
+          !componentIdOrNames ||
+          componentIdOrNames.includes(c.id) ||
+          componentIdOrNames.includes(c.name)
+      );
 }
 
 function genFilename(base: string, suffix: string) {
@@ -152,41 +198,45 @@ class PlasmicApi {
       versionRange: string;
       componentIdOrNames: readonly string[] | undefined;
     }[],
-    recursive?: boolean,
-    includeDependencies?: boolean
+    recursive?: boolean
   ): Promise<VersionResolution> {
-    // Keyed by projectId, since we can only have 1 version per projectId
-    let results: VersionResolution = { projects: [], conflicts: [] };
-    const queue = L.flatMap(projects, (p) =>
-      getMockComponents(p.projectId, p.componentIdOrNames, p.versionRange)
-    );
-    while (queue.length > 0) {
-      const c = queue.shift();
-      if (!c) {
-        continue;
-      }
-      const projectMeta: ProjectComponentVersionMeta = {
-        projectId: c.projectId,
-        version: c.version,
-        componentIds: [c.id],
-        iconIds: [],
-      };
-      const resolution = {
-        projects: [projectMeta],
-        conflicts: [],
-      };
-      results = mergeResolves([results, resolution]);
+    const results: VersionResolution = {
+      projects: [],
+      dependencies: [],
+      conflicts: [],
+    };
 
-      // Recursive Mode
-      if (recursive) {
-        if (includeDependencies) {
-          queue.push(...c.children);
-        } else {
-          const childrenFromSameProject = c.children.filter(
-            (child) => child.projectId === c.projectId
-          );
-          queue.push(...childrenFromSameProject);
-        }
+    // Get top level projects
+    projects.forEach((proj) => {
+      const availableProjects = Array.from(PROJECTS.values()).filter(
+        (p) => p.projectId === proj.projectId
+      );
+      const availableVersions = availableProjects.map((p) => p.version);
+      const version = semver.maxSatisfying(
+        availableVersions,
+        proj.versionRange
+      );
+      if (version) {
+        const mockProject = ensure(getMockProject(proj.projectId, version));
+        const projectMeta = mockProjectToProjectVersionMeta(
+          mockProject,
+          proj.componentIdOrNames
+        );
+        results.projects.push(projectMeta);
+      }
+    });
+
+    // Get dependencies
+    if (!!recursive) {
+      const queue: ProjectVersionMeta[] = [...results.projects];
+      while (queue.length > 0) {
+        const curr = ensure(queue.shift());
+        L.toPairs(curr.dependencies).forEach(([projectId, version]) => {
+          const mockProject = ensure(getMockProject(projectId, version));
+          const projectMeta = mockProjectToProjectVersionMeta(mockProject);
+          results.dependencies.push(projectMeta);
+          queue.push(projectMeta);
+        });
       }
     }
 
@@ -203,13 +253,13 @@ class PlasmicApi {
     componentIdOrNames: readonly string[] | undefined,
     version: string
   ): Promise<ProjectBundle> {
-    if (L.keys(COMPONENTS).length <= 0) {
-      throw new Error("Remember to call __setMockComponents first!");
+    if (PROJECTS.length <= 0) {
+      throw new Error("Remember to call __addMockProject first!");
     }
     const mockComponents = getMockComponents(
       projectId,
-      componentIdOrNames,
-      version
+      version,
+      componentIdOrNames
     );
     if (mockComponents.length <= 0) {
       throw new Error("Code gen failed: no components match the parameters");
@@ -255,7 +305,8 @@ class PlasmicApi {
 }
 
 api.PlasmicApi = PlasmicApi;
-api.getMockComponentById = getMockComponentById;
-api.setMockComponent = setMockComponent;
+api.clear = clear;
+api.getMockProject = getMockProject;
+api.addMockProject = addMockProject;
 api.stringToMockComponent = stringToMockComponent;
 module.exports = api;
