@@ -12,7 +12,7 @@ import {
   RendererVariants,
 } from '../common';
 import { AriaTextFieldProps } from '@react-types/textfield';
-import { useTextField } from '@react-aria/textfield';
+import { useTextField as useAriaTextField } from '@react-aria/textfield';
 import { createFocusableRef } from '@react-spectrum/utils';
 import pick from 'lodash-es/pick';
 import commonStyles from '../common.module.css';
@@ -29,7 +29,7 @@ export type PlumeTextFieldProps = AriaTextFieldProps &
 export interface PlumeTextFieldRefValue
   extends FocusableRefValue<HTMLInputElement, HTMLDivElement> {
   select(): void;
-  getInputElement(): HTMLInputElement;
+  UNSAFE_getInputElement(): HTMLInputElement;
 }
 
 export type PlumeTextFieldRef = React.Ref<PlumeTextFieldRefValue>;
@@ -40,6 +40,7 @@ export interface PlumeTextFieldConfig<R extends Renderer<any, any, any, any>> {
   showStartIconVariant?: VariantDefTuple<RendererVariants<R>>;
   showEndIconVariant?: VariantDefTuple<RendererVariants<R>>;
 
+  labelSlot?: keyof RendererArgs<R>;
   startIconSlot?: keyof RendererArgs<R>;
   endIconSlot?: keyof RendererArgs<R>;
 
@@ -48,7 +49,7 @@ export interface PlumeTextFieldConfig<R extends Renderer<any, any, any, any>> {
   label?: keyof RendererOverrides<R>;
 }
 
-export function usePlumeTextField<
+export function useTextField<
   P extends PlumeTextFieldProps,
   R extends Renderer<any, any, any, any>
 >(
@@ -68,7 +69,7 @@ export function usePlumeTextField<
     label,
   } = props;
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const { labelProps, inputProps } = useTextField(props, inputRef);
+  const { labelProps, inputProps } = useAriaTextField(props, inputRef);
   const { hoverProps } = useHover(props);
 
   const rootRef = React.useRef<HTMLDivElement>(null);
@@ -89,7 +90,7 @@ export function usePlumeTextField<
         inputRef.current.select();
       }
     },
-    getInputElement() {
+    UNSAFE_getInputElement() {
       return inputRef.current as HTMLInputElement;
     },
   }));
@@ -106,6 +107,7 @@ export function usePlumeTextField<
 
   const args = {
     ...pick(props, ...renderer.getInternalArgProps()),
+    ...config.labelSlot && {[config.labelSlot]: label},
     ...config.startIconSlot && {[config.startIconSlot]: startIcon},
     ...config.endIconSlot && {[config.endIconSlot]: endIcon},
   };

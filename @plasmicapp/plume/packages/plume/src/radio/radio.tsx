@@ -1,5 +1,5 @@
 import { Overrides, Renderer } from '@plasmicapp/react-web';
-import { useRadio } from '@react-aria/radio';
+import { useRadio as useAriaRadio } from '@react-aria/radio';
 import { mergeProps } from '@react-aria/utils';
 import { VisuallyHidden } from '@react-aria/visually-hidden';
 import { useFocusableRef } from '@react-spectrum/utils';
@@ -31,7 +31,8 @@ interface PlumeRadioConfig<R extends Renderer<any, any, any, any>> {
 }
 
 export type PlumeRadioRef = FocusableRef<HTMLLabelElement>;
-export function usePlumeRadio<
+
+export function useRadio<
   P extends PlumeRadioProps,
   R extends Renderer<any, any, any, any>
 >(
@@ -51,7 +52,7 @@ export function usePlumeRadio<
     isReadOnly: isGroupReadOnly,
   } = useRadioGroupContext();
 
-  const { inputProps } = useRadio(
+  const { inputProps } = useAriaRadio(
     {
       ...props,
       isDisabled: isDisabled || isGroupDisabled,

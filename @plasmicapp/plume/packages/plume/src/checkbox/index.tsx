@@ -1,5 +1,5 @@
 import { Overrides, Renderer } from '@plasmicapp/react-web';
-import { useCheckbox } from '@react-aria/checkbox';
+import { useCheckbox as useAriaCheckbox } from '@react-aria/checkbox';
 import { useHover } from '@react-aria/interactions';
 import { VisuallyHidden } from '@react-aria/visually-hidden';
 import { useFocusableRef } from '@react-spectrum/utils';
@@ -34,7 +34,7 @@ interface PlumeCheckboxConfig<R extends Renderer<any, any, any, any>> {
   root: keyof RendererOverrides<R>;
 }
 
-export function usePlumeCheckbox<
+export function useCheckbox<
   P extends PlumeCheckboxProps,
   R extends Renderer<any, any, any, any>
 >(
@@ -52,12 +52,12 @@ export function usePlumeCheckbox<
   const state = useToggleState(props);
   const { hoverProps } = useHover(props);
 
-  const { inputProps } = useCheckbox(props, state, inputRef);
+  const { inputProps } = useAriaCheckbox(props, state, inputRef);
 
   const variants = {
     ...pick(props, ...renderer.getInternalVariantProps()),
     ...mergeVariantDefTuples([
-      state.isSelected && config.isSelectedVariant,
+      state.isSelected && !isIndeterminate && config.isSelectedVariant,
       isIndeterminate && config.isIndeterminateVariant,
       isDisabled && config.isDisabledVariant,
       !!children && config.hasLabelVariant,

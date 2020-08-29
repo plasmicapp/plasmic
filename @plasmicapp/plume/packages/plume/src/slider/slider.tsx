@@ -1,8 +1,8 @@
-import { useSlider } from '@chungwu/react-aria-slider';
+import { useSlider as useAriaSlider } from '@chungwu/react-aria-slider';
 import { useSliderState } from '@chungwu/react-stately-slider';
 import { SliderProps } from '@chungwu/react-types-slider';
 import { Overrides, Renderer } from '@plasmicapp/react-web';
-import { useFocusableRef } from '@react-spectrum/utils';
+import { useFocusableRef, createDOMRef } from '@react-spectrum/utils';
 import { FocusableRef } from '@react-types/shared';
 import pick from 'lodash-es/pick';
 import * as React from 'react';
@@ -38,7 +38,7 @@ export interface PlumeSliderConfig<R extends Renderer<any, any, any, any>> {
   label?: keyof RendererOverrides<R>;
 }
 
-export function usePlumeSlider<
+export function useSlider<
   P extends PlumeSliderProps,
   R extends AnyRenderer
 >(
@@ -56,10 +56,16 @@ export function usePlumeSlider<
   } = props;
   const trackRef = React.useRef<HTMLElement>(null);
 
-  const domRef = useFocusableRef(ref);
+  const domRef = React.useRef<HTMLElement>(null);
+  React.useImperativeHandle(ref, () => ({
+    ...createDOMRef(domRef),
+    focus() {
+      state.setFocusedThumb(0);
+    }
+  }));
   const renderer = plasmicClass.createRenderer();
   const state = useSliderState(props);
-  const { trackProps, labelProps, containerProps } = useSlider(
+  const { trackProps, labelProps, containerProps } = useAriaSlider(
     props,
     state,
     trackRef
