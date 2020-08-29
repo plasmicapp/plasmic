@@ -24,6 +24,7 @@ import { ensureProjectIcons } from "./0.1.31-ensureProjectIcons";
 import { ensureVersion } from "./0.1.42-ensureVersion";
 import { logger } from "../deps";
 import { HandledError } from "../utils/error";
+import { ensureJsBundleThemes } from "./0.1.57-ensureJsBundleThemes";
 
 export interface MigrateContext {
   absoluteSrcDir: string;
@@ -36,6 +37,7 @@ export const MIGRATIONS: Record<string, MigrateFunc> = {
   "0.1.28": tsToTsx,
   "0.1.31": ensureProjectIcons,
   "0.1.42": ensureVersion,
+  "0.1.57": ensureJsBundleThemes,
 };
 
 export function runNecessaryMigrationsConfig(configFile: string) {

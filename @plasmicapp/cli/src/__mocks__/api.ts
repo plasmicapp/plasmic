@@ -178,6 +178,7 @@ function genProjectMetaBundle(projectId: string): ProjectMetaBundle {
     projectName: projectId,
     cssFileName: genFilename(projectId, "css"),
     cssRules: `theClass {color: green;}`,
+    jsBundleThemes: [],
   };
 }
 

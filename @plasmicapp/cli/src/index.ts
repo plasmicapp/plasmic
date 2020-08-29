@@ -177,6 +177,15 @@ yargs
             "the path of include when generating import statement and generate package.json for. Default to bundleName.",
           type: "string",
         })
+        .option("themeProviderWrapper", {
+          describe: "the wrapper that inject theme to the bundle.",
+          type: "string",
+        })
+        .option("themeModuleFile", {
+          describe:
+            "the typescript file that contains and exports the implementation of themeProviderWrapper. Used for code generation. It must be specified together with themeProviderWrapper.",
+          type: "string",
+        })
         .option("genCssPaths", {
           describe:
             "the list of css paths to import in generate code whenever a component in this bundle is used",

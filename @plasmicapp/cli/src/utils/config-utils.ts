@@ -8,7 +8,7 @@ import {
   readFileText,
   existsBuffered,
 } from "./file-utils";
-import { PlasmicApi } from "../api";
+import { JsBundleTheme, PlasmicApi } from "../api";
 import { CommonArgs } from "../index";
 import { DeepPartial } from "utility-types";
 import * as Sentry from "@sentry/node";
@@ -67,6 +67,11 @@ export interface StyleConfig {
   defaultStyleCssFilePath: string;
 }
 
+export interface JsBundleThemeConfig {
+  themeFilePath: string;
+  bundleName: string;
+}
+
 export interface ProjectConfig {
   projectId: string;
   // Project name synced down from Studio
@@ -74,6 +79,7 @@ export interface ProjectConfig {
   // A version range that the user wants to sync without warnings
   version: string;
   cssFilePath: string;
+  jsBundleThemes: JsBundleThemeConfig[];
 
   // Configs for each component we have synced.
   components: ComponentConfig[];
@@ -94,6 +100,7 @@ export function createProjectConfig(base: {
     cssFilePath: base.cssFilePath,
     components: [],
     icons: [],
+    jsBundleThemes: [],
   };
 }
 
@@ -451,6 +458,7 @@ export function getOrAddProjectConfig(
           cssFilePath: "",
           components: [],
           icons: [],
+          jsBundleThemes: [],
         };
     context.config.projects.push(project);
   }

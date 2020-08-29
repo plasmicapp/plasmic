@@ -30,11 +30,18 @@ export interface GlobalVariantBundle {
   contextFileName: string;
 }
 
+export interface JsBundleTheme {
+  themeFileName: string;
+  themeModule: string;
+  bundleName: string;
+}
+
 export interface ProjectMetaBundle {
   projectId: string;
   projectName: string;
   cssFileName: string;
   cssRules: string;
+  jsBundleThemes: JsBundleTheme[];
 }
 
 export interface IconBundle {
@@ -179,7 +186,9 @@ export class PlasmicApi {
     genModulePath: string | undefined,
     genCssPaths: string[],
     pkgVersion: string | undefined,
-    extraPropMetaJson: string | undefined
+    extraPropMetaJson: string | undefined,
+    themeProviderWrapper: string | undefined,
+    themeModule: string | undefined
   ): Promise<StyleTokensMap> {
     const result = await this.post(
       `${this.auth.host}/api/v1/projects/${projectId}/jsbundle/upload`,
@@ -193,6 +202,8 @@ export class PlasmicApi {
         genCssPaths,
         pkgVersion,
         extraPropMetaJson,
+        themeProviderWrapper,
+        themeModule,
       }
     );
     return result.data as StyleTokensMap;
