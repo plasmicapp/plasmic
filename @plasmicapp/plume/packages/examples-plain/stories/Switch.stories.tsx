@@ -1,5 +1,5 @@
 import * as React from "react";
-import Switch from "../components/Switch";
+import Switch from "../src/components/Switch";
 import { Story } from "@storybook/react/types-6-0";
 
 export default {

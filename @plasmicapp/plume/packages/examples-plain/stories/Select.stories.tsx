@@ -1,5 +1,5 @@
 import * as React from "react";
-import {SelectUnknown as Select} from "../components/Select";
+import {SelectUnknown as Select} from "../src/components/Select";
 import { Item } from "@plasmicapp/plume";
 import { Story } from "@storybook/react/types-6-0";
 

@@ -1,6 +1,6 @@
 import * as React from "react";
-import RadioGroup from "../components/RadioGroup";
-import Radio from "../components/Radio";
+import RadioGroup from "../src/components/RadioGroup";
+import Radio from "../src/components/Radio";
 import { Story } from "@storybook/react/types-6-0";
 
 export default {

@@ -1,5 +1,5 @@
 import * as React from "react";
-import Checkbox from "../components/Checkbox";
+import Checkbox from "../src/components/Checkbox";
 import { Story } from "@storybook/react/types-6-0";
 
 export default {

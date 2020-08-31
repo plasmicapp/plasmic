@@ -1,55 +1,67 @@
 {
-  "name": "examples-plain",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@plasmicapp/plume": "link:../plume",
-    "@plasmicapp/react-web": "^0.2.1",
-    "@storybook/addon-knobs": "^6.0.6",
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1",
-    "typescript": "~3.7.2"
+  "version": "0.1.1",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=10"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "storybook": "start-storybook -p 6006"
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test --passWithNoTests",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
-  "eslintConfig": {
-    "extends": "react-app"
+  "peerDependencies": {
+    "react": ">=16"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
   },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "name": "plume-examples-plain",
+  "author": "Chung Wu",
+  "module": "dist/examples-plain.esm.js",
   "devDependencies": {
-    "@plasmicapp/cli": "^0.1.54",
-    "@storybook/addon-actions": "^6.0.6",
-    "@storybook/addon-controls": "^6.0.6",
-    "@storybook/addon-docs": "^6.0.6",
-    "@storybook/addon-links": "^6.0.6",
-    "@storybook/addons": "^6.0.6",
-    "@storybook/preset-create-react-app": "^3.1.4",
-    "@storybook/react": "^6.0.6",
-    "@types/jest": "^24.0.0",
-    "@types/node": "^12.0.0",
-    "@types/react": "^16.9.46",
+    "@babel/core": "^7.11.5",
+    "@plasmicapp/cli": "^0.1.56-rc.0",
+    "@storybook/addon-actions": "^6.0.21",
+    "@storybook/addon-controls": "^6.0.21",
+    "@storybook/addon-docs": "^6.0.21",
+    "@storybook/addon-info": "^5.3.21",
+    "@storybook/addon-links": "^6.0.21",
+    "@storybook/addons": "^6.0.21",
+    "@storybook/react": "^6.0.21",
+    "@types/react": "^16.9.49",
     "@types/react-dom": "^16.9.8",
     "babel-loader": "^8.1.0",
-    "react-docgen-typescript-loader": "^3.7.2"
+    "husky": "^4.2.5",
+    "react": "^16.13.1",
+    "react-docgen-typescript-loader": "^3.7.2",
+    "react-dom": "^16.13.1",
+    "react-is": "^16.13.1",
+    "rollup-plugin-postcss": "^3.1.8",
+    "ts-loader": "^8.0.3",
+    "tsdx": "^0.13.3",
+    "tslib": "^2.0.1",
+    "typescript": "^4.0.2"
+  },
+  "dependencies": {
+    "@plasmicapp/plume": "^0.1.5",
+    "@plasmicapp/react-web": "^0.2.1"
   }
 }
