@@ -1,14 +1,12 @@
 import * as React from "react";
-import { withKnobs, text, boolean, select } from "@storybook/addon-knobs";
-import TextField from "../components/TextField";
-import ClearIcon from "../components/plasmic/plain_kit/PlasmicIcon__Clear";
-import SearchIcon from "../components/plasmic/plain_kit/PlasmicIcon__Search";
+import TextField from "../src/components/TextField";
+import ClearIcon from "../src/components/plasmic/plain_kit/PlasmicIcon__Clear";
+import SearchIcon from "../src/components/plasmic/plain_kit/PlasmicIcon__Search";
 import { Story } from "@storybook/react/types-6-0";
 
 export default {
   title: "TextField",
-  component: TextField,
-  decorators: [withKnobs]
+  component: TextField
 }
 
 const Template: Story<React.ComponentProps<typeof TextField>> = args => <TextField {...args}/>;

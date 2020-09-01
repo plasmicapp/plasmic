@@ -25,6 +25,20 @@
 .SliderThumb__root--__5LUWOQyxsn {
   outline: none;
 }
+.SliderThumb__tooltipContainer__t9EjR {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  margin-top: -24px;
+}
+.SliderThumb__tooltipContainer--hasLabel__t9EjRGzvrM {
+}
+.SliderThumb__tooltipContainer--isDisabled__t9EjRiTnwH {
+}
+.SliderThumb__tooltipContainer--isDragging__t9EjRUMPBq {
+}
 .SliderThumb__thumb__lXzp7 {
   border-top-color: rgb(202, 202, 202) /* plasmic-token: 9DOLtHXsT */;
   border-right-color: rgb(202, 202, 202) /* plasmic-token: 9DOLtHXsT */;

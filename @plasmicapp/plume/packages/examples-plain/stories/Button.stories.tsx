@@ -1,8 +1,8 @@
 import * as React from "react";
 import { Story } from "@storybook/react/types-6-0";
-import Button from "../components/Button";
-import CheckIcon from "../components/plasmic/plain_kit/PlasmicIcon__Check";
-import ChevronDownIcon from "../components/plasmic/plain_kit/PlasmicIcon__ChevronDown";
+import Button from "../src/components/Button";
+import CheckIcon from "../src/components/plasmic/plain_kit/PlasmicIcon__Check";
+import ChevronDownIcon from "../src/components/plasmic/plain_kit/PlasmicIcon__ChevronDown";
 
 export default {
   title: "Button",

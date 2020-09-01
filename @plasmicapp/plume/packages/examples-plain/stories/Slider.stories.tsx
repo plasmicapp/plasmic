@@ -1,5 +1,5 @@
 import * as React from "react";
-import Slider from "../components/Slider";
+import Slider from "../src/components/Slider";
 import { Story } from "@storybook/react/types-6-0";
 
 export default {
