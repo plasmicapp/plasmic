@@ -10,22 +10,22 @@ let tmpRepo: TempRepo;
 // Reset the test project directory
 beforeEach(() => {
   // Setup server-side mock data
-  const button = {
-    id: "buttonId",
-    name: "Button",
+  const project1 = {
     projectId: "projectId1",
     version: "1.2.3",
-    children: [],
+    components: [
+      {
+        id: "buttonId",
+        name: "Button",
+      },
+      {
+        id: "containerId",
+        name: "Container",
+      },
+    ],
+    dependencies: {},
   };
-  const container = {
-    id: "containerId",
-    name: "Container",
-    projectId: "projectId1",
-    version: "1.2.3",
-    children: [button],
-  };
-  const components: MockComponent[] = [button, container];
-  components.forEach((c) => mockApi.setMockComponent(c.id, c));
+  mockApi.addMockProject(project1);
 
   // Setup client-side directory
   tmpRepo = new TempRepo();
@@ -60,14 +60,13 @@ beforeEach(() => {
   // Default opts and config
   opts = {
     projects: [],
-    components: [],
-    onlyExisting: false,
+    yes: true,
+    force: true,
+    nonRecursive: false,
+    skipReactWeb: true,
     forceOverwrite: false,
     appendJsxOnMissingBase: false,
     newComponentScheme: "blackbox",
-    nonInteractive: true,
-    recursive: false,
-    includeDependencies: false,
     config: tmpRepo.plasmicJsonPath(),
     auth: tmpRepo.plasmicAuthPath(),
   };
@@ -75,6 +74,7 @@ beforeEach(() => {
 
 afterEach(() => {
   tmpRepo.destroy();
+  mockApi.clear();
 });
 
 describe("first-time-user-experience", () => {
@@ -115,11 +115,5 @@ describe("first-time-user-experience", () => {
     const componentNames = projectConfig.components.map((c) => c.name);
     expect(componentNames).toContain("Button");
     expect(componentNames).toContain("Container");
-  });
-
-  test("invalid components", async () => {
-    opts.projects = ["projectId1"];
-    opts.components = ["notRealComponent"];
-    await expect(sync(opts)).rejects.toThrow();
   });
 });

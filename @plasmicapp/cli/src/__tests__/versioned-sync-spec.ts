@@ -2,7 +2,7 @@ jest.mock("../api");
 const mockApi = require("../api");
 import L from "lodash";
 import { sync, SyncArgs } from "../actions/sync";
-import { MockComponent } from "../__mocks__/api";
+import { MockComponent, MockProject } from "../__mocks__/api";
 import { TempRepo } from "../utils/test-utils";
 
 let opts: SyncArgs; // Options to pass to sync
@@ -11,29 +11,35 @@ let tmpRepo: TempRepo;
 // Reset the test project directory
 beforeEach(() => {
   // Setup server-side mock data
-  const depComponent = {
-    id: "depComponentId",
-    name: "DepComponent",
+  const project1 = {
+    projectId: "projectId1",
+    version: "1.2.3",
+    components: [
+      {
+        id: "buttonId",
+        name: "Button",
+      },
+      {
+        id: "containerId",
+        name: "Container",
+      },
+    ],
+    dependencies: {
+      dependencyId1: "2.3.4",
+    },
+  };
+  const dependency = {
     projectId: "dependencyId1",
     version: "2.3.4",
-    children: [],
+    components: [
+      {
+        id: "depComponentId",
+        name: "DepComponent",
+      },
+    ],
+    dependencies: {},
   };
-  const button = {
-    id: "buttonId",
-    name: "Button",
-    projectId: "projectId1",
-    version: "1.2.3",
-    children: [depComponent],
-  };
-  const container = {
-    id: "containerId",
-    name: "Container",
-    projectId: "projectId1",
-    version: "1.2.3",
-    children: [button],
-  };
-  const components: MockComponent[] = [button, container, depComponent];
-  components.forEach((c) => mockApi.setMockComponent(c.id, c));
+  [project1, dependency].forEach((p) => mockApi.addMockProject(p));
 
   // Setup client-side directory
   tmpRepo = new TempRepo();
@@ -67,15 +73,14 @@ beforeEach(() => {
 
   // Default opts and config
   opts = {
-    projects: ["projectId1"],
-    components: [],
-    onlyExisting: false,
+    projects: [],
+    yes: true,
+    force: true,
+    nonRecursive: false,
+    skipReactWeb: true,
     forceOverwrite: true,
     newComponentScheme: "blackbox",
     appendJsxOnMissingBase: false,
-    recursive: false,
-    includeDependencies: false,
-    nonInteractive: true,
     config: tmpRepo.plasmicJsonPath(),
     auth: tmpRepo.plasmicAuthPath(),
   };
@@ -85,13 +90,13 @@ afterEach(() => {
   // Remove the temporary directory
   // TODO: Comment out to keep files for debugging
   tmpRepo.destroy();
+  mockApi.clear();
 });
 
 describe("versioned-sync", () => {
-  test("syncs normal case", async () => {
-    opts.components = ["buttonId", "containerId"];
-    opts.recursive = false;
-    opts.includeDependencies = false;
+  test("syncs non-recursive case", async () => {
+    opts.projects = ["projectId1"];
+    opts.nonRecursive = true;
     await expect(sync(opts)).resolves.toBeUndefined();
     const button = mockApi.stringToMockComponent(
       tmpRepo.getComponentFileContents("projectId1", "buttonId")
@@ -119,7 +124,8 @@ describe("versioned-sync", () => {
   });
 
   test("syncs missing components", async () => {
-    opts.components = ["buttonId", "containerId"];
+    opts.projects = ["projectId1"];
+    opts.nonRecursive = true;
     // Simulates user deleting files by accident, since the project exists in plasmic.json,
     // but not in the project directory
     const plasmicJson = tmpRepo.readPlasmicJson();
@@ -149,12 +155,16 @@ describe("versioned-sync", () => {
   });
 
   test("syncs down new names", async () => {
-    opts.components = ["buttonId", "containerId"];
+    opts.projects = ["projectId1"];
     await expect(sync(opts)).resolves.toBeUndefined();
     // Change component name server-side
-    const buttonData = mockApi.getMockComponentById("buttonId");
+    const mockProject = mockApi.getMockProject("projectId1", "1.2.3");
+    const buttonData = mockProject.components.find(
+      (c: MockComponent) => c.id === "buttonId"
+    );
     buttonData.name = "NewButton";
-    mockApi.setMockComponent("buttonId", buttonData);
+    mockProject.version = "2.0.0";
+    mockApi.addMockProject(mockProject);
     // Try syncing again and see if things show up
     await expect(sync(opts)).resolves.toBeUndefined();
 
@@ -170,12 +180,12 @@ describe("versioned-sync", () => {
   });
 
   test("syncs latest", async () => {
-    opts.components = ["buttonId"];
+    opts.projects = ["projectId1"];
     await expect(sync(opts)).resolves.toBeUndefined();
     // Change component version server-side
-    const buttonData = mockApi.getMockComponentById("buttonId");
-    buttonData.version = "1.3.4";
-    mockApi.setMockComponent("buttonId", buttonData);
+    const mockProject = mockApi.getMockProject("projectId1", "1.2.3");
+    mockProject.version = "1.3.4";
+    mockApi.addMockProject(mockProject);
     // Try syncing again and see if things show up
     await expect(sync(opts)).resolves.toBeUndefined();
     const button = mockApi.stringToMockComponent(
@@ -187,16 +197,17 @@ describe("versioned-sync", () => {
   });
 
   test("syncs exact version", async () => {
-    opts.components = ["buttonId"];
+    opts.projects = ["projectId1"];
+    opts.nonRecursive = true;
     await expect(sync(opts)).resolves.toBeUndefined();
     // Change component version server-side
-    const buttonData = mockApi.getMockComponentById("buttonId");
-    buttonData.version = "2.0.0";
-    mockApi.setMockComponent("buttonId", buttonData);
+    const mockProject = mockApi.getMockProject("projectId1", "1.2.3");
+    mockProject.version = "2.0.0";
+    mockApi.addMockProject(mockProject);
     // Read in updated plasmic.json post-sync
     const plasmicJson = tmpRepo.readPlasmicJson();
     expect(plasmicJson.projects.length).toEqual(1); // projectId1
-    expect(plasmicJson.projects[0].components.length).toEqual(1); // Button
+    expect(plasmicJson.projects[0].components.length).toEqual(2); // Container+Button
     // Try syncing non-existent version
     plasmicJson.projects[0].version = "1.2.10"; // Doesn't exist
     tmpRepo.writePlasmicJson(plasmicJson);
@@ -214,16 +225,17 @@ describe("versioned-sync", () => {
   });
 
   test("syncs according to semver", async () => {
-    opts.components = ["buttonId"];
+    opts.projects = ["projectId1"];
+    opts.nonRecursive = true;
     await expect(sync(opts)).resolves.toBeUndefined();
     // Change component version server-side
-    const buttonData = mockApi.getMockComponentById("buttonId");
-    buttonData.version = "1.10.1";
-    mockApi.setMockComponent("buttonId", buttonData);
+    const mockProject = mockApi.getMockProject("projectId1", "1.2.3");
+    mockProject.version = "1.10.1";
+    mockApi.addMockProject(mockProject);
     // Update plasmic.json to use semver
     const plasmicJson = tmpRepo.readPlasmicJson();
     expect(plasmicJson.projects.length).toEqual(1);
-    expect(plasmicJson.projects[0].components.length).toEqual(1);
+    expect(plasmicJson.projects[0].components.length).toEqual(2);
     plasmicJson.projects[0].version = "^1.2.3";
     // Try syncing again and see if things show up
     await expect(sync(opts)).resolves.toBeUndefined();
@@ -237,11 +249,10 @@ describe("versioned-sync", () => {
 });
 
 describe("recursive-sync", () => {
-  test("recursive base case", async () => {
+  test("non-recursive base case", async () => {
     // Should sync both Button+Container because of the dependency
-    opts.components = ["containerId"];
-    opts.recursive = true;
-    opts.includeDependencies = false;
+    opts.projects = ["projectId1"];
+    opts.nonRecursive = true;
     await expect(sync(opts)).resolves.toBeUndefined();
     const button = mockApi.stringToMockComponent(
       tmpRepo.getComponentFileContents("projectId1", "buttonId")
@@ -265,9 +276,7 @@ describe("recursive-sync", () => {
   });
 
   test("dependencies base case", async () => {
-    opts.components = ["containerId"];
-    opts.recursive = true;
-    opts.includeDependencies = true;
+    opts.projects = ["projectId1"];
     await expect(sync(opts)).resolves.toBeUndefined();
     expect(tmpRepo.checkFile("./src/Button.tsx")).toBeTruthy();
     expect(tmpRepo.checkFile("./src/Container.tsx")).toBeTruthy();
@@ -293,54 +302,5 @@ describe("recursive-sync", () => {
     expect(projectComponentNames).toContain("Button");
     expect(projectComponentNames).toContain("Container");
     expect(depComponentNames).toContain("DepComponent");
-  });
-
-  test("conflicting project versions in dependency tree", async () => {
-    opts.components = ["containerId"];
-    opts.recursive = true;
-    opts.includeDependencies = true;
-    // Add a conflicting dep
-    const containerData = mockApi.getMockComponentById("containerId");
-    containerData.children.push({
-      id: "depComponentId",
-      name: "DepComponent",
-      projectId: "dependencyId1",
-      version: "3.4.5",
-      children: [],
-    });
-    mockApi.setMockComponent("containerId", containerData);
-    await expect(sync(opts)).rejects.toThrow();
-  });
-
-  test("conflicting project versions in plasmic.json", async () => {
-    // First sync the dependency
-    opts.components = ["buttonId"];
-    opts.recursive = true;
-    opts.includeDependencies = true;
-    await expect(sync(opts)).resolves.toBeUndefined();
-
-    // Check we have the right version
-    const plasmicJson = tmpRepo.readPlasmicJson();
-    expect(plasmicJson.projects.length).toEqual(2);
-    const depProjectConfig = plasmicJson.projects.find(
-      (p) => p.projectId === "dependencyId1"
-    );
-    expect(depProjectConfig?.components?.length).toEqual(1);
-    expect(depProjectConfig?.version).toEqual("^2.3.4");
-    const depComponent = mockApi.stringToMockComponent(
-      tmpRepo.getComponentFileContents("dependencyId1", "depComponentId")
-    );
-    expect(depComponent?.version).toEqual("2.3.4");
-    expect(depComponent?.id).toEqual("depComponentId");
-
-    // Add a conflicting dep
-    const containerData = mockApi.getMockComponentById("containerId");
-    const depData = mockApi.getMockComponentById("depComponentId");
-    depData.version = "2.0.0"; // using an older version
-    containerData.children = [depData];
-    mockApi.setMockComponent("containerId", containerData);
-    mockApi.setMockComponent("depComponentId", depData);
-    opts.components = ["containerId"];
-    await expect(sync(opts)).rejects.toThrow();
   });
 });

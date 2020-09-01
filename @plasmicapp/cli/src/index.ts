@@ -199,17 +199,20 @@ function configureSyncArgs(yags: yargs.Argv) {
       type: "array",
       default: [],
     })
-    .option("components", {
-      alias: "c",
-      describe:
-        "Names or IDs of components to sync.  If not specified, defaults to all known components of existing projects, or all components of new projects.",
-      type: "array",
-      default: [],
+    .option("yes", {
+      type: "boolean",
+      describe: "Automatic yes to prompts.",
+      default: false,
     })
-    .option("only-existing", {
+    .option("force", {
+      type: "boolean",
+      describe: "Force sync to bypass specified version ranges.",
+      default: false,
+    })
+    .option("non-recursive", {
       type: "boolean",
       describe:
-        "If no --components are explicitly specified, then only syncs components that had been synced before.",
+        "Do not recursively sync dependencies, only sync the specified projects",
       default: false,
     })
     .option("force-overwrite", {
@@ -229,23 +232,6 @@ function configureSyncArgs(yags: yargs.Argv) {
       choices: ["blackbox", "direct"],
       describe:
         "Sync the new components using this code scheme rather than the default code scheme.",
-    })
-    .option("non-interactive", {
-      type: "boolean",
-      describe: "Set to hide any interactive prompts (i.e. for testing / CI)",
-      default: false,
-    })
-    .option("recursive", {
-      type: "boolean",
-      describe:
-        "Recursively sync any components used by specified components within the same project. To also sync imported components from dependencies, use --include-dependencies",
-      default: false,
-    })
-    .option("include-dependencies", {
-      type: "boolean",
-      describe:
-        "Recursively sync imported components from dependencies (Only useful in conjunction with --recursive)",
-      default: false,
     });
 }
 

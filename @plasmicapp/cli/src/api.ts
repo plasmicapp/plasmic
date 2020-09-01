@@ -44,11 +44,20 @@ export interface IconBundle {
   fileName: string;
 }
 
-export interface ProjectComponentVersionMeta {
+export interface ProjectVersionMeta {
   projectId: string;
+  version: string;
   componentIds: string[];
   iconIds: string[];
-  version: string;
+  dependencies: {
+    [projectId: string]: string;
+  };
+}
+
+export interface VersionResolution {
+  projects: ProjectVersionMeta[];
+  dependencies: ProjectVersionMeta[];
+  conflicts: ProjectVersionMeta[];
 }
 
 export interface ProjectBundle {
@@ -105,7 +114,6 @@ export class PlasmicApi {
    * - Any conflicting versions will be returned in `conflicts`, and should cause the client's sync to abort
    * @param projects
    * @param recursive
-   * @param includeDependencies
    */
   async resolveSync(
     projects: {
@@ -113,23 +121,17 @@ export class PlasmicApi {
       versionRange: string;
       componentIdOrNames: readonly string[] | undefined;
     }[],
-    recursive?: boolean,
-    includeDependencies?: boolean
-  ): Promise<{
-    projects: ProjectComponentVersionMeta[];
-    conflicts: ProjectComponentVersionMeta[];
-  }> {
+    recursive?: boolean
+  ): Promise<VersionResolution> {
     const resp: any = await this.post(
       `${this.auth.host}/api/v1/code/resolve-sync`,
       {
         projects,
         recursive,
-        includeDependencies,
       }
     );
-    const projectResults = resp.data.projects as ProjectComponentVersionMeta[];
-    const conflicts = resp.data.conflicts as ProjectComponentVersionMeta[];
-    return { projects: projectResults, conflicts };
+    const versionResolution = resp.data as VersionResolution;
+    return { ...versionResolution };
   }
 
   /**
