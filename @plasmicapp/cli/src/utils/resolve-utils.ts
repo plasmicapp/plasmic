@@ -61,6 +61,21 @@ async function checkProjectMeta(
   const projectId = meta.projectId;
   const newVersion = meta.version;
 
+  /**
+   * Best effort, try to get it from plasmic.json, else just return projectId
+   * @param pid = projectId
+   */
+  const getName = (pid: string) => {
+    const projectConfig = context.config.projects.find(
+      (p) => p.projectId === pid
+    );
+    if (projectConfig) {
+      return `'${projectConfig.projectName}'`;
+    } else {
+      return projectId;
+    }
+  };
+
   // Checks newVersion against plasmic.lock
   const checkVersionLock = async (): Promise<boolean> => {
     const projectLock = context.lock.projects.find(
@@ -81,7 +96,9 @@ async function checkProjectMeta(
     // At this point, we can assume newVersion is always X.Y.Z (not latest)
     if (semver.eq(newVersion, versionOnDisk)) {
       logger.info(
-        `We already have project ${projectId}@${newVersion}. Skipping...`
+        `Project ${getName(
+          projectId
+        )}@${newVersion} is already up to date. Skipping...`
       );
       return false;
     }
@@ -89,31 +106,41 @@ async function checkProjectMeta(
     if (semver.lt(newVersion, versionOnDisk)) {
       meta === root
         ? logger.warn(
-            `Trying to sync ${projectId}@${newVersion}, but your code has version ${versionOnDisk}. You should consider updating your ${CONFIG_FILE_NAME}. Skipping...`
+            `The local version of ${getName(
+              projectId
+            )} (${versionOnDisk}) is higher than requested version @${newVersion}. Plasmic does not support downgrading a project. You should consider updating the version range in ${CONFIG_FILE_NAME}. Skipping...`
           )
         : logger.warn(
-            `${root.projectId} uses ${projectId}@${newVersion}, but your code has ${projectId}@${versionOnDisk}. You should consider upgrading this dependency in Studio. Skipping...`
+            `${getName(root.projectId)} uses ${getName(
+              projectId
+            )}@${newVersion}, but your code has ${getName(
+              projectId
+            )}@${versionOnDisk}. You should consider upgrading this dependency in Plasmic Studio. Skipping...`
           );
       return false;
     }
 
     if (semver.gt(newVersion, versionOnDisk)) {
       if (meta === root) {
-        logger.info(`Updating ${projectId} to ${newVersion}`);
+        logger.info(`Updating ${getName(projectId)} to ${newVersion}`);
         return true;
       } else {
         logger.info(
-          `${root.projectId} uses ${projectId}@${newVersion}, but your code has version ${versionOnDisk}`
+          `${getName(root.projectId)} uses ${getName(
+            projectId
+          )}@${newVersion}, but your code has version ${versionOnDisk}`
         );
         return await confirmWithUser(
-          `Do you want to upgrade ${projectId} to ${newVersion}?`,
+          `Do you want to upgrade ${getName(projectId)} to ${newVersion}?`,
           opts.yes
         );
       }
     }
 
     throw new Error(
-      `Error comparing version=${newVersion} with the version found in plasmic.lock (${versionOnDisk})`
+      `Error comparing version=${newVersion} with the version found in plasmic.lock (${versionOnDisk}) for ${getName(
+        projectId
+      )}`
     );
   };
 
@@ -128,7 +155,9 @@ async function checkProjectMeta(
       return (
         projectId === root.projectId || // Bypass prompt if top-level project
         (await confirmWithUser(
-          `${root.projectId} uses ${projectId}@${newVersion}, which has never been synced before. Do you want to sync it down?`,
+          `${getName(root.projectId)} uses ${getName(
+            projectId
+          )}@${newVersion}, which has never been synced before. Do you want to sync it down?`,
           opts.yes
         ))
       );
@@ -140,7 +169,9 @@ async function checkProjectMeta(
     }
 
     logger.warn(
-      `${projectId}@${newVersion} falls outside the range specified in ${CONFIG_FILE_NAME} (${versionRange})\nTip: To avoid this warning in the future, update your ${CONFIG_FILE_NAME}.`
+      `${getName(
+        projectId
+      )}@${newVersion} falls outside the range specified in ${CONFIG_FILE_NAME} (${versionRange})\nTip: To avoid this warning in the future, update your ${CONFIG_FILE_NAME}.`
     );
     return await confirmWithUser("Do you want to force it?", opts.force, "n");
   };
@@ -162,7 +193,7 @@ export async function checkVersionResolution(
   // Fail if there's nothing to sync
   if (versionResolution.projects.length <= 0) {
     throw new HandledError(
-      `Found nothing to sync - make sure the projectId and version values are valid in ${CONFIG_FILE_NAME}.`
+      `Found nothing to sync. Make sure the projectId and version values are valid in ${CONFIG_FILE_NAME}.`
     );
   }
 

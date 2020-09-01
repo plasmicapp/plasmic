@@ -108,7 +108,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
   // Short-circuit if nothing to sync
   if (projectIds.length === 0) {
     throw new HandledError(
-      "Don't know which projects to sync; please specify via --projects"
+      "Don't know which projects to sync. Please specify via --projects"
     );
   }
 

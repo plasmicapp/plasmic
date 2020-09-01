@@ -166,7 +166,7 @@ export function fixAllFilePaths(context: PlasmicContext) {
     // Check null and undefined
     if (known == null) {
       throw new HandledError(
-        `"${key} is required, but missing in ${CONFIG_FILE_NAME}. Please restore the file or delete from ${CONFIG_FILE_NAME} to re-sync: ${bundle}"`
+        `"${key} is required, but missing in ${CONFIG_FILE_NAME}. Please restore the file or delete from ${CONFIG_FILE_NAME} and run plasmic sync: ${bundle}"`
       );
     }
     // Check falsey values (e.g. "")

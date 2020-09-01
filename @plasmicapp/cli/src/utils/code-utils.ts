@@ -165,7 +165,7 @@ export function replaceImports(
       const compConfig = fixImportContext.components[uuid];
       if (!compConfig) {
         throw new HandledError(
-          `Encountered Plasmic components (of uuid ${uuid}) in ${fromPath} that are being used but have not been synced. Try --recursive to also fetch missing components.`
+          `Encountered Plasmic components (of uuid ${uuid}) in ${fromPath} that are being used but have not been synced. Please run "plasmic sync" without the --non-recursive flag to sync dependencies.`
         );
       }
       const { modulePath, exportName } = compConfig.importSpec;
@@ -206,7 +206,7 @@ export function replaceImports(
       const iconConfig = fixImportContext.icons[uuid];
       if (!iconConfig) {
         throw new HandledError(
-          `Encountered Plasmic icons (of uuid ${uuid}) in ${fromPath} that are being used but have not been synced. Try --recursive to also fetch missing components.`
+          `Encountered Plasmic icons (of uuid ${uuid}) in ${fromPath} that are being used but have not been synced. Please run "plasmic sync" without the --non-recursive flag to sync dependencies.`
         );
       }
       const realPath = makeImportPath(

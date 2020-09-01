@@ -295,7 +295,7 @@ export function getContext(args: CommonArgs): PlasmicContext {
     args.auth || findAuthFile(process.cwd(), { traverseParents: true });
   if (!authFile) {
     const err = new HandledError(
-      "No .plasmic.auth file found with Plasmic credentials; please run `plasmic init` first."
+      "No .plasmic.auth file found with Plasmic credentials. Please run `plasmic init` first."
     );
     throw err;
   }
@@ -320,7 +320,7 @@ export function getContext(args: CommonArgs): PlasmicContext {
     args.config || findConfigFile(process.cwd(), { traverseParents: true });
   if (!configFile) {
     const err = new HandledError(
-      "No plasmic.json file found; please run `plasmic init` first."
+      "No plasmic.json file found. Please run `plasmic init` first."
     );
     throw err;
   }
