@@ -23,6 +23,7 @@ import { tsToTsx } from "./0.1.28-tsToTsx";
 import { ensureProjectIcons } from "./0.1.31-ensureProjectIcons";
 import { ensureVersion } from "./0.1.42-ensureVersion";
 import { logger } from "../deps";
+import { HandledError } from "../utils/error";
 
 export interface MigrateContext {
   absoluteSrcDir: string;
@@ -38,19 +39,26 @@ export const MIGRATIONS: Record<string, MigrateFunc> = {
 };
 
 export function runNecessaryMigrationsConfig(configFile: string) {
+  const cliVersion = getCliVersion();
   const readConfig = () => JSON.parse(readFileText(configFile));
   const writeConfig = (config: any) =>
     writeFileContentRaw(configFile, JSON.stringify(config, undefined, 2), {
       force: true,
     });
   const cur = readConfig();
+  const curVersion: string | undefined = cur.cliVersion;
+
+  if (!!curVersion && semver.lt(cliVersion, curVersion)) {
+    throw new HandledError(
+      `Project requires @plasmicapp/cli>=${curVersion} (You currently have ${cliVersion}). Please install a newer version of the CLI and try again.`
+    );
+  }
 
   const context: MigrateContext = {
     absoluteSrcDir: path.isAbsolute(cur.srcDir)
       ? cur.srcDir
       : path.resolve(path.dirname(configFile), cur.srcDir),
   };
-  const curVersion: string | undefined = cur.cliVersion;
   const greaterVersions = semver.sort(
     L.keys(MIGRATIONS).filter((v) => !curVersion || semver.gt(v, curVersion))
   );
@@ -63,10 +71,9 @@ export function runNecessaryMigrationsConfig(configFile: string) {
   }
 
   // Finally, stamp the latest version
-  const latestVersion = getCliVersion();
   const latestConfig = readConfig();
-  if (latestConfig.cliVersion !== latestVersion) {
-    latestConfig.cliVersion = latestVersion;
+  if (latestConfig.cliVersion !== cliVersion) {
+    latestConfig.cliVersion = cliVersion;
     writeConfig(latestConfig);
   }
 }
