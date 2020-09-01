@@ -1,4 +1,4 @@
-import { useRadioGroup } from '@react-aria/radio';
+import { useRadioGroup as useAriaRadioGroup } from '@react-aria/radio';
 import { mergeProps } from '@react-aria/utils';
 import { useRadioGroupState } from '@react-stately/radio';
 import { AriaRadioGroupProps } from '@react-types/radio';
@@ -16,6 +16,7 @@ import {
 } from '../common';
 import { RadioGroupContext } from './context';
 import { Overrides } from '@plasmicapp/react-web';
+import { DOMRef } from '@react-types/shared';
 
 export type PlumeRadioGroupProps = AriaRadioGroupProps &
   StyleProps & {
@@ -33,9 +34,9 @@ interface PlumeRadioGroupConfig<R extends AnyRenderer> {
   label?: keyof RendererOverrides<R>;
 }
 
-export type PlumeRadioGroupRef = React.Ref<HTMLDivElement>;
+export type PlumeRadioGroupRef = DOMRef<HTMLDivElement>;
 
-export function usePlumeRadioGroup<
+export function useRadioGroup<
   P extends PlumeRadioGroupProps,
   R extends AnyRenderer
 >(
@@ -47,7 +48,7 @@ export function usePlumeRadioGroup<
   const renderer = plasmicClass.createRenderer();
   const { className, style, orientation, isDisabled, isReadOnly } = props;
   const state = useRadioGroupState(props);
-  const { radioGroupProps, labelProps } = useRadioGroup(props, state);
+  const { radioGroupProps, labelProps } = useAriaRadioGroup(props, state);
 
   const overrides: Overrides = {
     [config.root]: {

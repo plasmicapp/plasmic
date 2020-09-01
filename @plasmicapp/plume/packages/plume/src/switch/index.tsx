@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Renderer, Overrides } from '@plasmicapp/react-web';
+import { Overrides } from '@plasmicapp/react-web';
 import { useToggleState } from '@react-stately/toggle';
 import { AriaSwitchProps } from '@react-types/switch';
-import { useSwitch } from '@react-aria/switch';
+import { useSwitch as useAriaSwitch } from '@react-aria/switch';
 import { VisuallyHidden } from '@react-aria/visually-hidden';
 import { FocusableRef, HoverEvents } from '@react-types/shared';
 import { useFocusableRef } from '@react-spectrum/utils';
@@ -34,7 +34,7 @@ interface PlumeSwitchConfig<R extends AnyRenderer> {
   root: keyof RendererOverrides<R>;
 }
 
-export function usePlumeSwitch<
+export function useSwitch<
   P extends PlumeSwitchProps,
   R extends AnyRenderer
 >(
@@ -49,7 +49,7 @@ export function usePlumeSwitch<
   const domRef = useFocusableRef(ref, inputRef);
   const state = useToggleState(props);
 
-  const { inputProps } = useSwitch(props, state, inputRef);
+  const { inputProps } = useAriaSwitch(props, state, inputRef);
   const { hoverProps } = useHover(props);
 
   const variants = {

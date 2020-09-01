@@ -1,6 +1,6 @@
 import { Overrides } from '@plasmicapp/react-web';
 import * as React from 'react';
-import { useButton } from '@react-aria/button';
+import { useButton as useAriaButton } from '@react-aria/button';
 import { useHover } from '@react-aria/interactions';
 import { FocusableRef, HoverEvents } from '@react-types/shared';
 import { useFocusableRef } from '@react-spectrum/utils';
@@ -18,10 +18,9 @@ import {
   RendererVariants,
 } from '../common';
 
-export type PlumeButtonProps = Omit<AriaButtonProps, 'elementType' | 'type'> &
+export type PlumeButtonProps = Omit<AriaButtonProps, 'type'> &
   HoverEvents &
   StyleProps & {
-    as?: React.ElementType;
     htmlType?: AriaButtonProps['type'];
     startIcon?: React.ReactNode;
     endIcon?: React.ReactNode;
@@ -41,7 +40,7 @@ interface PlumeButtonConfig<R extends AnyRenderer> {
   root: keyof RendererOverrides<R>;
 }
 
-export function usePlumeButton<
+export function useButton<
   P extends PlumeButtonProps,
   R extends AnyRenderer
 >(
@@ -52,31 +51,30 @@ export function usePlumeButton<
 ) {
   const {
     htmlType,
-    as,
     isDisabled,
     startIcon,
     endIcon,
     className,
     style,
+    elementType,
     children
   } = props;
   const renderer = plasmicClass.createRenderer();
   const domRef = useFocusableRef(ref);
 
   const { hoverProps } = useHover(props);
-  const { buttonProps } = useButton(
+  const { buttonProps } = useAriaButton(
     {
       // Rename deviations we've made from AriaButtonProps
       ...props,
       type: htmlType,
-      elementType: as,
     },
     domRef
   );
 
   const overrides: Overrides = {
     [config.root]: {
-      as,
+      as: elementType,
       props: mergeProps(buttonProps, hoverProps, {
         ref: domRef,
         className,

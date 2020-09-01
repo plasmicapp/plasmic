@@ -6,7 +6,7 @@ import {
   useOverlay,
   useOverlayPosition,
 } from '@react-aria/overlays';
-import { HiddenSelect, useSelect } from '@react-aria/select';
+import { HiddenSelect, useSelect as useAriaSelect } from '@react-aria/select';
 import { unwrapDOMRef, useFocusableRef } from '@react-spectrum/utils';
 import { SelectState, useSelectState } from '@react-stately/select';
 import { Placement } from '@react-types/overlays';
@@ -17,6 +17,9 @@ import {
   FocusableRefValue,
   FocusStrategy,
   HoverEvents,
+  FocusEvents,
+  FocusableProps,
+  FocusableDOMProps,
 } from '@react-types/shared';
 import pick from 'lodash-es/pick';
 import * as React from 'react';
@@ -39,7 +42,10 @@ export type PlumeSelectProps<T> = Omit<
   keyof AsyncLoadable
 > &
   StyleProps &
-  HoverEvents & {
+  HoverEvents &
+  FocusableProps &
+  FocusableDOMProps &
+  {
     name?: string;
     placement?: Placement;
     placeholder?: React.ReactNode;
@@ -62,6 +68,7 @@ interface PlumeSelectConfig<R extends Renderer<any, any, any, any>> {
 
   triggerContentSlot: keyof RendererArgs<R>;
   optionsSlot: keyof RendererArgs<R>;
+  labelSlot?: keyof RendererArgs<R>;
 
   root: keyof RendererOverrides<R>;
   trigger: keyof RendererOverrides<R>;
@@ -72,7 +79,7 @@ interface PlumeSelectConfig<R extends Renderer<any, any, any, any>> {
   renderOption: (key: React.Key, content: React.ReactNode) => React.ReactNode;
 }
 
-export function usePlumeSelect<
+export function useSelect<
   T extends object,
   P extends PlumeSelectProps<T>,
   R extends Renderer<any, any, any, any>
@@ -101,7 +108,7 @@ export function usePlumeSelect<
   const listboxRef = React.useRef<HTMLDivElement>(null);
   const overlayRef = React.useRef<HTMLDivElement>(null);
 
-  const { triggerProps, menuProps, labelProps } = useSelect(
+  const { triggerProps, menuProps, labelProps } = useAriaSelect(
     props,
     state,
     unwrapDOMRef(triggerRef)
@@ -215,7 +222,10 @@ export function usePlumeSelect<
     [config.trigger]: {
       props: mergeProps(
         triggerProps,
-        pick(props, 'onHoverStart', 'onHoverEnd', 'onHoverChange'),
+        pick(props,
+          'onHoverStart', 'onHoverEnd', 'onHoverChange',
+          'onFocus', 'onBlur', 'onFocusChange', 'autoFocus', 'excludeFromTabOrder'
+        ),
         { ref: triggerRef }
       ),
     },
@@ -251,6 +261,7 @@ export function usePlumeSelect<
     [config.optionsSlot]: (
       <SelectContext.Provider value={state}>{items}</SelectContext.Provider>
     ),
+    ...config.labelSlot && {[config.labelSlot]: label}
   };
 
   return {

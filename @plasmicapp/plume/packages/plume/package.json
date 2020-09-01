@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/plume",
-  "version": "0.1.2",
+  "version": "0.1.5",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

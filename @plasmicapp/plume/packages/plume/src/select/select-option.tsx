@@ -1,5 +1,5 @@
 import { Overrides } from '@plasmicapp/react-web';
-import { useOption } from '@react-aria/listbox';
+import { useOption as useAriaOption } from '@react-aria/listbox';
 import {
   AnyRenderer,
   mergeProps,
@@ -14,6 +14,8 @@ import {
 import pick from 'lodash-es/pick';
 import * as React from 'react';
 import { SelectContext } from './context';
+import { DOMRef, FocusableRef } from '@react-types/shared';
+import { unwrapDOMRef, useFocusableRef } from '@react-spectrum/utils';
 
 export type PlumeSelectOptionProps = {
   itemKey: React.Key;
@@ -29,9 +31,9 @@ interface PlumeSelectOptionConfig<R extends AnyRenderer> {
   root: keyof RendererOverrides<R>;
 }
 
-export type PlumeSelectOptionRef = React.Ref<HTMLElement>;
+export type PlumeSelectOptionRef = FocusableRef<HTMLElement>;
 
-export function usePlumeSelectOption<
+export function useSelectOption<
   P extends PlumeSelectOptionProps,
   R extends AnyRenderer
 >(
@@ -54,9 +56,9 @@ export function usePlumeSelectOption<
   const isSelected = state.selectionManager.isSelected(itemKey);
   const isDisabled = state.disabledKeys.has(itemKey);
 
-  const { ref, onRef } = useForwardedRef(outerRef);
+  const ref = useFocusableRef(outerRef);
 
-  const { optionProps, labelProps, descriptionProps } = useOption(
+  const { optionProps, labelProps, descriptionProps } = useAriaOption(
     {
       isSelected,
       isDisabled,
@@ -85,7 +87,7 @@ export function usePlumeSelectOption<
 
   const overrides: Overrides = {
     [config.root]: {
-      props: mergeProps(optionProps, { ref: onRef }),
+      props: mergeProps(optionProps, { ref }),
     },
   };
 

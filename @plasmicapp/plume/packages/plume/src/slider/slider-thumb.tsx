@@ -1,4 +1,4 @@
-import { useSliderThumb } from '@chungwu/react-aria-slider';
+import { useSliderThumb as useAriaSliderThumb } from '@chungwu/react-aria-slider';
 import { SliderThumbProps } from '@chungwu/react-types-slider';
 import { Overrides } from '@plasmicapp/react-web';
 import { VisuallyHidden } from '@react-aria/visually-hidden';
@@ -28,11 +28,13 @@ export interface PlumeSliderThumbConfig<R extends AnyRenderer> {
   isDraggingVariant?: VariantDefTuple<RendererVariants<R>>;
   hasLabelVariant?: VariantDefTuple<RendererVariants<R>>;
 
+  labelSlot?: keyof RendererArgs<R>;
+
   root: keyof RendererOverrides<R>;
   label?: keyof RendererOverrides<R>;
 }
 
-export function usePlumeSliderThumb<
+export function useSliderThumb<
   P extends PlumeSliderThumbProps,
   R extends AnyRenderer
 >(
@@ -41,13 +43,13 @@ export function usePlumeSliderThumb<
   config: PlumeSliderThumbConfig<R>,
   ref: PlumeSliderThumbRef = null
 ) {
-  const { className, style, isDisabled, index } = props;
+  const { className, style, isDisabled, index, label } = props;
   const context = useSliderContext();
   const renderer = plasmicClass.createRenderer();
   const domRef = useFocusableRef(ref);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const state = context.state;
-  const { thumbProps, inputProps, labelProps } = useSliderThumb(
+  const { thumbProps, inputProps, labelProps } = useAriaSliderThumb(
     {
       ...props,
       isReadOnly: context.sliderProps.isReadOnly || props.isReadOnly,
@@ -107,6 +109,7 @@ export function usePlumeSliderThumb<
       } as RendererVariants<R>,
       args: {
         ...pick(props, ...renderer.getInternalArgProps()),
+        ...config.labelSlot && {[config.labelSlot]: label},
       } as RendererArgs<R>,
       overrides: overrides as RendererOverrides<R>,
     },
