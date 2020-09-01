@@ -45,7 +45,10 @@ export async function watchProjects(opts: WatchArgs) {
 
   socket.on("initServerInfo", () => {
     // upon connection, subscribe to changes for argument projects
-    socket.emit("subscribe", { namespace: "projects", latestProjects });
+    socket.emit("subscribe", {
+      namespace: "projects",
+      projectIds: latestProjects,
+    });
   });
   socket.on("error", (data: any) => {
     logger.error(data);
