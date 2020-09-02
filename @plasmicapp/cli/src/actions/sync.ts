@@ -39,6 +39,7 @@ import {
   ComponentUpdateSummary,
   replaceImports,
   mkFixImportContext,
+  formatAsLocal,
 } from "../utils/code-utils";
 import { upsertStyleTokens } from "./sync-styles";
 import { flatMap } from "../utils/lang-utils";
@@ -271,6 +272,12 @@ async function syncProject(
       [gv.contextFileName, gv.contextModule] = maybeConvertTsxToJsx(
         gv.contextFileName,
         gv.contextModule
+      );
+    });
+    projectBundle.projectConfig.jsBundleThemes.forEach((theme) => {
+      [theme.themeFileName, theme.themeModule] = maybeConvertTsxToJsx(
+        theme.themeFileName,
+        theme.themeModule
       );
     });
   }
@@ -544,7 +551,7 @@ function syncGlobalVariants(
 
 async function syncProjectConfig(
   context: PlasmicContext,
-  pc: ProjectMetaBundle,
+  projectBundle: ProjectMetaBundle,
   version: string,
   dependencies: { [projectId: string]: string },
   componentBundles: ComponentBundle[],
@@ -555,40 +562,65 @@ async function syncProjectConfig(
 ) {
   const defaultCssFilePath = path.join(
     context.config.defaultPlasmicDir,
-    L.snakeCase(pc.projectName),
-    pc.cssFileName
+    L.snakeCase(projectBundle.projectName),
+    projectBundle.cssFileName
   );
   const isNew = !context.config.projects.find(
-    (p) => p.projectId === pc.projectId
+    (p) => p.projectId === projectBundle.projectId
   );
+
   // If latest, use that as the range, otherwise set to latest published (>=0.0.0)
   const versionRange = semver.isLatest(version) ? version : ">=0.0.0";
   const projectConfig = getOrAddProjectConfig(
     context,
-    pc.projectId,
+    projectBundle.projectId,
     createProjectConfig({
-      projectId: pc.projectId,
-      projectName: pc.projectName,
+      projectId: projectBundle.projectId,
+      projectName: projectBundle.projectName,
       version: versionRange,
       cssFilePath: defaultCssFilePath,
     })
   );
 
   // Update missing/outdated props
-  projectConfig.projectName = pc.projectName;
+  projectConfig.projectName = projectBundle.projectName;
   if (!projectConfig.cssFilePath) {
     projectConfig.cssFilePath = defaultCssFilePath;
   }
 
   // Write out project css
-  writeFileContent(context, projectConfig.cssFilePath, pc.cssRules, {
+  writeFileContent(context, projectConfig.cssFilePath, projectBundle.cssRules, {
     force: !isNew,
   });
 
   // plasmic.lock
-  const projectLock = getOrAddProjectLock(context, pc.projectId);
+  const projectLock = getOrAddProjectLock(context, projectConfig.projectId);
   projectLock.version = version;
   projectLock.dependencies = dependencies;
+
+
+  projectBundle.jsBundleThemes.forEach((theme) => {
+    let themeConfig = projectConfig.jsBundleThemes.find(
+      (c) => c.bundleName === theme.bundleName
+    );
+    if (!themeConfig) {
+      const themeFilePath = path.join(
+        context.config.defaultPlasmicDir,
+        L.snakeCase(projectBundle.projectName),
+        theme.themeFileName
+      );
+      themeConfig = { themeFilePath, bundleName: theme.bundleName };
+      projectConfig.jsBundleThemes.push(themeConfig);
+    }
+    const formatted = formatAsLocal(
+      theme.themeModule,
+      themeConfig.themeFilePath
+    );
+    writeFileContent(context, themeConfig.themeFilePath, formatted, {
+      force: true,
+    });
+  });
+
 
   // Write out components
   await syncProjectComponents(

@@ -27,12 +27,13 @@ export interface UploadBundleArgs extends CommonArgs {
   genCssPaths: string[];
   pkgVersion?: string;
   extraPropMetaJsonFile?: string;
+  themeProviderWrapper?: string;
+  themeModuleFile?: string;
 }
 
 export async function uploadJsBundle(opts: UploadBundleArgs) {
   const context = getContext(opts);
   fixAllFilePaths(context);
-
   const api = context.api;
   await api.uploadBundle(
     opts.project,
@@ -45,6 +46,8 @@ export async function uploadJsBundle(opts: UploadBundleArgs) {
     opts.pkgVersion,
     opts.extraPropMetaJsonFile
       ? readFileText(opts.extraPropMetaJsonFile)
-      : undefined
+      : undefined,
+    opts.themeProviderWrapper,
+    opts.themeModuleFile ? readFileText(opts.themeModuleFile) : undefined
   );
 }

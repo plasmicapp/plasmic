@@ -149,6 +149,7 @@ describe("versioned-sync", () => {
         },
       ],
       icons: [],
+      jsBundleThemes: [],
     });
     tmpRepo.writePlasmicJson(plasmicJson);
     await expect(sync(opts)).rejects.toThrow();
