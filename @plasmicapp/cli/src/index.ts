@@ -11,6 +11,7 @@ import { syncIcons, SyncIconsArgs } from "./actions/sync-icons";
 import { UploadBundleArgs, uploadJsBundle } from "./actions/upload-bundle";
 import { HandledError } from "./utils/error";
 import updateNotifier from "update-notifier";
+import semver from "semver";
 
 if (process.env.DEBUG_CHDIR) {
   process.chdir(process.env.DEBUG_CHDIR);
@@ -28,7 +29,15 @@ const handleError = <T>(p: Promise<T>) => {
 
 const pkg = require("../package.json");
 // Check once an hour
-updateNotifier({ pkg, updateCheckInterval: 1000 * 60 * 60 }).notify();
+const notifier = updateNotifier({ pkg, updateCheckInterval: 1000 * 60 * 60 });
+// Workaround for this bug
+// https://github.com/yeoman/update-notifier/issues/181
+if (
+  !!notifier.update &&
+  semver.gt(notifier.update.latest, notifier.update.current)
+) {
+  notifier.notify();
+}
 
 yargs
   .usage("Usage: $0 <command> [options]")
