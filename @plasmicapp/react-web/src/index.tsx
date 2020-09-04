@@ -25,7 +25,7 @@ interface OverrideTwiddle {
 
 export type DefaultOverride<C extends React.ElementType> = {
   type: "default";
-  props: Partial<React.ComponentProps<C>>;
+  props?: Partial<React.ComponentProps<C>>;
 } & OverrideTwiddle;
 
 export type AsOverride<C extends React.ElementType> = {
