@@ -1,5 +1,5 @@
-import { SliderState } from '@chungwu/react-stately-slider';
-import { BaseSliderProps } from '@chungwu/react-types-slider';
+import { SliderState } from '@react-stately/slider';
+import { BaseSliderProps } from '@react-types/slider';
 import * as React from 'react';
 
 export const SliderContext = React.createContext<

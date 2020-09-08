@@ -1,5 +1,5 @@
-import { useSliderThumb as useAriaSliderThumb } from '@chungwu/react-aria-slider';
-import { SliderThumbProps } from '@chungwu/react-types-slider';
+import { useSliderThumb as useAriaSliderThumb } from '@react-aria/slider';
+import { SliderThumbProps } from '@react-types/slider';
 import { Overrides } from '@plasmicapp/react-web';
 import { VisuallyHidden } from '@react-aria/visually-hidden';
 import { useFocusableRef } from '@react-spectrum/utils';
