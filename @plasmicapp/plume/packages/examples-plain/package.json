@@ -61,7 +61,7 @@
     "typescript": "^4.0.2"
   },
   "dependencies": {
-    "@plasmicapp/plume": "^0.1.5",
+    "@plasmicapp/plume": "^0.1.6",
     "@plasmicapp/react-web": "^0.2.1"
   }
 }
