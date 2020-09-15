@@ -40,6 +40,7 @@ import {
   replaceImports,
   mkFixImportContext,
   formatAsLocal,
+  maybeConvertTsxToJsx,
 } from "../utils/code-utils";
 import { upsertStyleTokens } from "./sync-styles";
 import { flatMap } from "../utils/lang-utils";
@@ -68,15 +69,6 @@ export interface SyncArgs extends CommonArgs {
   force?: boolean;
   nonRecursive?: boolean;
   skipReactWeb?: boolean;
-}
-
-function maybeConvertTsxToJsx(fileName: string, content: string) {
-  if (fileName.endsWith("tsx")) {
-    const jsFileName = stripExtension(fileName) + ".jsx";
-    const jsContent = formatScript(tsxToJsx(content));
-    return [jsFileName, jsContent];
-  }
-  return [fileName, content];
 }
 
 interface ComponentPendingMerge {
@@ -306,6 +298,15 @@ async function syncProject(
       projectVersion,
       iconIds
     );
+
+    if (context.config.code.lang === "js") {
+      iconsResp.icons.forEach((icon) => {
+        [icon.fileName, icon.module] = maybeConvertTsxToJsx(
+          icon.fileName,
+          icon.module
+        );
+      });
+    }
     syncProjectIconAssets(context, projectId, iconsResp.icons);
   }
 }
@@ -598,7 +599,6 @@ async function syncProjectConfig(
   projectLock.version = version;
   projectLock.dependencies = dependencies;
 
-
   projectBundle.jsBundleThemes.forEach((theme) => {
     let themeConfig = projectConfig.jsBundleThemes.find(
       (c) => c.bundleName === theme.bundleName
@@ -620,7 +620,6 @@ async function syncProjectConfig(
       force: true,
     });
   });
-
 
   // Write out components
   await syncProjectComponents(

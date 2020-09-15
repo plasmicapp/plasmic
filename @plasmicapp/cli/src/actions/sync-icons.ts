@@ -12,7 +12,7 @@ import { ProjectIconsResponse, IconBundle } from "../api";
 import { writeFileContent, fixAllFilePaths } from "../utils/file-utils";
 import { CommonArgs } from "..";
 import { format } from "winston";
-import { formatAsLocal } from "../utils/code-utils";
+import { formatAsLocal, maybeConvertTsxToJsx } from "../utils/code-utils";
 import { logger } from "../deps";
 import * as semver from "../utils/semver";
 
@@ -48,6 +48,14 @@ export async function syncIcons(opts: SyncIconsArgs) {
     string,
     ProjectIconsResponse
   ][]) {
+    if (context.config.code.lang === "js") {
+      resp.icons.forEach((icon) => {
+        [icon.fileName, icon.module] = maybeConvertTsxToJsx(
+          icon.fileName,
+          icon.module
+        );
+      });
+    }
     syncProjectIconAssets(context, projectId, resp.icons);
   }
 

@@ -405,6 +405,15 @@ export const tsxToJsx = (code: string) => {
     .replace(usageMagic, "");
 };
 
+export function maybeConvertTsxToJsx(fileName: string, content: string) {
+  if (fileName.endsWith("tsx")) {
+    const jsFileName = stripExtension(fileName) + ".jsx";
+    const jsContent = formatScript(tsxToJsx(content));
+    return [jsFileName, jsContent];
+  }
+  return [fileName, content];
+}
+
 export const formatScript = (code: string) => {
   const file = parser.parse(code, {
     strictMode: true,
