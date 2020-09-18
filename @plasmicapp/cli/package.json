@@ -11,7 +11,8 @@
     "test": "jest --colors",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
     "build": "bash build.sh",
-    "plasmic": "ts-node src/index.ts"
+    "plasmic": "ts-node src/index.ts",
+    "prepare": "yarn build"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.10.4",

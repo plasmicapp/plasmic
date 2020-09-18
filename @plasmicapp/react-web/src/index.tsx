@@ -252,6 +252,7 @@ function createPlasmicElementFromJsx<
     []) as React.HTMLAttributes<HTMLElement>[];
   delete props["data-plasmic-override"];
   delete props["data-plasmic-wrap-flex-child"];
+  delete props["data-plasmic-trigger-props"];
   return createPlasmicElement(
     override,
     defaultElement,
@@ -533,7 +534,7 @@ function deriveOverride<C extends React.ElementType>(x: Flex<C>): Override<C> {
     // Else, assume this is just a props object.
     return {
       type: "default",
-      props: x,
+      props: x as any,
     };
   } else if (typeof x === "function") {
     return {
