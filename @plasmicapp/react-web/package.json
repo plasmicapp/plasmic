@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/react-web",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "plasmic library for rendering in the presentational style",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,7 +9,8 @@
     "lib"
   ],
   "scripts": {
-    "build": "tsc && mkdir -p lib && cp src/styles/plasmic.css lib/"
+    "build": "tsc && mkdir -p lib && cp src/styles/plasmic.css lib/",
+    "prepare": "yarn build"
   },
   "dependencies": {
     "@react-aria/focus": "^3.1.0",
