@@ -30,7 +30,7 @@ export async function warnLatestReactWeb(
       requiredMsg: () =>
         "@plasmicapp/react-web is required to use Plasmic-generated code.",
       updateMsg: (c, v) =>
-        `A more recent version of @plasmicapp/react-web [${v}] is available; your exported code may not work unless you update`,
+        `A more recent version of @plasmicapp/react-web [${v}] is available; your exported code may not work unless you update.`,
     },
     yes
   );
