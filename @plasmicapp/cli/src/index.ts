@@ -5,9 +5,7 @@ import { fixImports, FixImportsArgs } from "./actions/fix-imports";
 import { InitArgs, initPlasmic } from "./actions/init";
 import { SyncArgs, sync } from "./actions/sync";
 import { WatchArgs, watchProjects } from "./actions/watch";
-import { SyncStyleTokensArgs, syncStyleTokens } from "./actions/sync-styles";
 import { DEFAULT_CONFIG } from "./utils/config-utils";
-import { syncIcons, SyncIconsArgs } from "./actions/sync-icons";
 import { UploadBundleArgs, uploadJsBundle } from "./actions/upload-bundle";
 import { HandledError } from "./utils/error";
 import updateNotifier from "update-notifier";
@@ -109,32 +107,6 @@ yargs
     (argv) => {
       handleError(watchProjects(argv));
     }
-  )
-  .command<SyncStyleTokensArgs>(
-    "sync-style-tokens",
-    "Syncs style tokens",
-    (yags) =>
-      yags.option("projects", {
-        alias: "p",
-        describe:
-          "ID of Plasmic projects to sync.  If not specifed, defaults to all known projects.",
-        type: "array",
-        default: [],
-      }),
-    (argv) => handleError(syncStyleTokens(argv))
-  )
-  .command<SyncIconsArgs>(
-    "sync-icons",
-    "Syncs icon assets",
-    (yags) =>
-      yags.option("projects", {
-        alias: "p",
-        describe:
-          "ID of Plasmic projects to sync.  If not specifed, defaults to all known projects.",
-        type: "array",
-        default: [],
-      }),
-    (argv) => handleError(syncIcons(argv))
   )
   .command<FixImportsArgs>(
     "fix-imports",
