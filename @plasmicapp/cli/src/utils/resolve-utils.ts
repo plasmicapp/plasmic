@@ -93,6 +93,11 @@ async function checkProjectMeta(
       return true;
     }
 
+    if (semver.isLatest(versionOnDisk)) {
+      // Explicitly allow downgrades from "latest" to published version
+      return true;
+    }
+
     // At this point, we can assume newVersion is always X.Y.Z (not latest)
     if (semver.eq(newVersion, versionOnDisk)) {
       logger.info(
