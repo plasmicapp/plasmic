@@ -14,6 +14,7 @@ beforeEach(() => {
   const project1 = {
     projectId: "projectId1",
     version: "1.2.3",
+    projectName: "project1",
     components: [
       {
         id: "buttonId",
@@ -31,6 +32,7 @@ beforeEach(() => {
   const dependency = {
     projectId: "dependencyId1",
     version: "2.3.4",
+    projectName: "dependency1",
     components: [
       {
         id: "depComponentId",

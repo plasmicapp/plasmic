@@ -307,7 +307,7 @@ async function syncProject(
         );
       });
     }
-    syncProjectIconAssets(context, projectId, iconsResp.icons);
+    syncProjectIconAssets(context, projectId, projectVersion, iconsResp.icons);
   }
 }
 
@@ -400,7 +400,7 @@ async function syncProjectComponents(
       nameInIdToUuid,
     } = bundle;
     logger.info(
-      `Syncing component ${componentName} ${version} [${project.projectId}/${id} ${project.version}]`
+      `Syncing component: ${componentName}@${version}\t['${project.projectName}' ${project.projectId}/${id} ${project.version}]`
     );
     let compConfig = allCompConfigs[id];
     const isNew = !compConfig;

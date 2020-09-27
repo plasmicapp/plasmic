@@ -24,6 +24,7 @@ const PROJECTS: MockProject[] = [];
 export interface MockProject {
   projectId: string;
   version: string;
+  projectName: string;
   components: MockComponent[];
   dependencies: {
     [projectId: string]: string;

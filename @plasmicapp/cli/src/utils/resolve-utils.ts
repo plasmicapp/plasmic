@@ -59,22 +59,8 @@ async function checkProjectMeta(
   opts: SyncArgs
 ): Promise<boolean> {
   const projectId = meta.projectId;
+  const projectName = meta.projectName;
   const newVersion = meta.version;
-
-  /**
-   * Best effort, try to get it from plasmic.json, else just return projectId
-   * @param pid = projectId
-   */
-  const getName = (pid: string) => {
-    const projectConfig = context.config.projects.find(
-      (p) => p.projectId === pid
-    );
-    if (projectConfig) {
-      return `'${projectConfig.projectName}'`;
-    } else {
-      return projectId;
-    }
-  };
 
   // Checks newVersion against plasmic.lock
   const checkVersionLock = async (): Promise<boolean> => {
@@ -101,9 +87,7 @@ async function checkProjectMeta(
     // At this point, we can assume newVersion is always X.Y.Z (not latest)
     if (semver.eq(newVersion, versionOnDisk)) {
       logger.info(
-        `Project ${getName(
-          projectId
-        )}@${newVersion} is already up to date. Skipping...`
+        `Project '${projectName}'@${newVersion} is already up to date. Skipping...`
       );
       return false;
     }
@@ -111,41 +95,30 @@ async function checkProjectMeta(
     if (semver.lt(newVersion, versionOnDisk)) {
       meta === root
         ? logger.warn(
-            `The local version of ${getName(
-              projectId
-            )} (${versionOnDisk}) is higher than requested version @${newVersion}. Plasmic does not support downgrading a project. You should consider updating the version range in ${CONFIG_FILE_NAME}. Skipping...`
+            `The local version of '${projectName}' (${versionOnDisk}) is higher than requested version @${newVersion}. Plasmic does not support downgrading a project. You should consider updating the version range in ${CONFIG_FILE_NAME}. Skipping...`
           )
         : logger.warn(
-            `${getName(root.projectId)} uses ${getName(
-              projectId
-            )}@${newVersion}, but your code has ${getName(
-              projectId
-            )}@${versionOnDisk}. You should consider upgrading this dependency in Plasmic Studio. Skipping...`
+            `'${root.projectName}' uses '${projectName}'@${newVersion}, but your code has '${projectName}'@${versionOnDisk}. You should consider upgrading this dependency in Plasmic Studio. Skipping...`
           );
       return false;
     }
 
     if (semver.gt(newVersion, versionOnDisk)) {
       if (meta === root) {
-        logger.info(`Updating ${getName(projectId)} to ${newVersion}`);
         return true;
       } else {
         logger.info(
-          `${getName(root.projectId)} uses ${getName(
-            projectId
-          )}@${newVersion}, but your code has version ${versionOnDisk}`
+          `'${root.projectName}' uses '${projectName}'@${newVersion}, but your code has version ${versionOnDisk}`
         );
         return await confirmWithUser(
-          `Do you want to upgrade ${getName(projectId)} to ${newVersion}?`,
+          `Do you want to upgrade '${projectName}' to ${newVersion}?`,
           opts.yes
         );
       }
     }
 
     throw new Error(
-      `Error comparing version=${newVersion} with the version found in plasmic.lock (${versionOnDisk}) for ${getName(
-        projectId
-      )}`
+      `Error comparing version=${newVersion} with the version found in plasmic.lock (${versionOnDisk}) for '${projectName}'`
     );
   };
 
@@ -157,26 +130,25 @@ async function checkProjectMeta(
     const versionRange = projectConfig?.version;
     // If haven't seen this before
     if (!versionRange) {
-      return (
-        projectId === root.projectId || // Bypass prompt if top-level project
-        (await confirmWithUser(
-          `${getName(root.projectId)} uses ${getName(
-            projectId
-          )}@${newVersion}, which has never been synced before. Do you want to sync it down?`,
-          opts.yes
-        ))
-      );
+      // Always sync down dependencies if it's the first time to avoid compile/fix-imports error
+      projectId !== root.projectId
+        ? logger.info(
+            `'${root.projectName}' uses '${projectName}', which has never been synced before. We will also sync '${projectName}'@${newVersion}.`
+          )
+        : logger.info(
+            `'${projectName} has never been synced before. Syncing...'`
+          );
+      return true;
     }
 
     // If satisfies range in plasmic.json
     if (semver.satisfies(newVersion, versionRange)) {
+      logger.info(`Updating project '${projectName}' to ${newVersion}`);
       return true;
     }
 
     logger.warn(
-      `${getName(
-        projectId
-      )}@${newVersion} falls outside the range specified in ${CONFIG_FILE_NAME} (${versionRange})\nTip: To avoid this warning in the future, update your ${CONFIG_FILE_NAME}.`
+      `${projectName}@${newVersion} falls outside the range specified in ${CONFIG_FILE_NAME} (${versionRange})\nTip: To avoid this warning in the future, update your ${CONFIG_FILE_NAME}.`
     );
     return await confirmWithUser("Do you want to force it?", opts.force, "n");
   };
@@ -210,11 +182,7 @@ export async function checkVersionResolution(
       : walkDependencyTree(root, versionResolution.dependencies).reverse();
     for (const m of queue) {
       // If we haven't seen this yet
-      if (
-        !seen.find(
-          (p) => p.projectId === m.projectId && p.version === m.version
-        )
-      ) {
+      if (!seen.find((p) => p.projectId === m.projectId)) {
         if (await checkProjectMeta(m, root, context, opts)) {
           result.push(m);
         }

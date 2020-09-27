@@ -54,6 +54,7 @@ export interface IconBundle {
 export interface ProjectVersionMeta {
   projectId: string;
   version: string;
+  projectName: string;
   componentIds: string[];
   iconIds: string[];
   dependencies: {
@@ -100,6 +101,7 @@ export interface StyleTokensMap {
 }
 
 export interface ProjectIconsResponse {
+  version: string;
   icons: IconBundle[];
 }
 

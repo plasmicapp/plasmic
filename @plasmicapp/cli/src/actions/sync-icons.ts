@@ -56,7 +56,7 @@ export async function syncIcons(opts: SyncIconsArgs) {
         );
       });
     }
-    syncProjectIconAssets(context, projectId, resp.icons);
+    syncProjectIconAssets(context, projectId, resp.version, resp.icons);
   }
 
   updateConfig(context, config);
@@ -65,6 +65,7 @@ export async function syncIcons(opts: SyncIconsArgs) {
 export function syncProjectIconAssets(
   context: PlasmicContext,
   projectId: string,
+  version: string,
   iconBundles: IconBundle[]
 ) {
   const project = getOrAddProjectConfig(context, projectId);
@@ -74,7 +75,7 @@ export function syncProjectIconAssets(
   const knownIconConfigs = L.keyBy(project.icons, (i) => i.id);
   for (const bundle of iconBundles) {
     logger.info(
-      `Syncing icon ${bundle.name} [${project.projectId}/${bundle.id}]`
+      `Syncing icon: ${bundle.name}@${version}\t['${project.projectName}' ${project.projectId}/${bundle.id} ${project.version}]`
     );
     let iconConfig = knownIconConfigs[bundle.id];
     const isNew = !iconConfig;
