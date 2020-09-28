@@ -13,6 +13,7 @@ beforeEach(() => {
   const project1 = {
     projectId: "projectId1",
     version: "1.2.3",
+    projectName: "projectName",
     components: [
       {
         id: "buttonId",
