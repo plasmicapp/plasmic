@@ -510,17 +510,17 @@ function deriveOverride<C extends React.ElementType>(x: Flex<C>): Override<C> {
         props: x.props || {},
         type: "as",
       } as any;
+    } else if ("render" in x) {
+      return {
+        ...x,
+        type: "render",
+      } as any;
     } else if ("props" in x) {
       return {
         ...x,
         props: x.props || {},
         type: "default",
       };
-    } else if ("render" in x) {
-      return {
-        ...x,
-        type: "render",
-      } as any;
     } else if (isSubset(Object.keys(x), ["wrap", "wrapChildren"])) {
       // Only twiddling functions present, so assume no props overrides
       // (otherwise we'd assume these were props).
