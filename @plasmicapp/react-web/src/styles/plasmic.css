@@ -18,3 +18,7 @@
 .__wab_slot-string-wrapper {
   position: relative;
 }
+
+.__wab_text {
+  display: inline-block;
+}
