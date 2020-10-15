@@ -139,7 +139,7 @@ export function createPlasmicElement<
   let children = props.children;
 
   if (override2.wrapChildren) {
-    children = override2.wrapChildren(children);
+    children = override2.wrapChildren(ensureNotArray(children));
   }
 
   if (wrapChildrenInFlex && props.children) {
@@ -183,6 +183,14 @@ export function createPlasmicElement<
   }
 
   return result;
+}
+
+function ensureNotArray(children: React.ReactNode) {
+  if (Array.isArray(children)) {
+    return React.createElement(React.Fragment, {}, ...children);
+  } else {
+    return children;
+  }
 }
 
 // We use data-plasmic-XXX attributes for custom properties since Typescript doesn't
