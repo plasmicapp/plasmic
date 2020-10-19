@@ -356,6 +356,14 @@ function fixFileImportStatements(
   fixImportContext: FixImportContext,
   removeImportDirective: boolean
 ) {
+  const filePath = path.join(context.absoluteSrcDir, srcDirFilePath);
+  if (!existsBuffered(filePath)) {
+    console.warn(
+      `Cannot fix imports in non-existing file ${srcDirFilePath}. Check your plasmic.json file for invalid entries.`
+    );
+    return;
+  }
+
   const prevContent = readFileText(
     path.join(context.absoluteSrcDir, srcDirFilePath)
   ).toString();
