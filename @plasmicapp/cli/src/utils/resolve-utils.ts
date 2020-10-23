@@ -86,10 +86,17 @@ async function checkProjectMeta(
 
     // At this point, we can assume newVersion is always X.Y.Z (not latest)
     if (semver.eq(newVersion, versionOnDisk)) {
-      logger.info(
-        `Project '${projectName}'@${newVersion} is already up to date. Skipping...`
-      );
-      return false;
+      if (opts.force) {
+        logger.info(
+          `Project '${projectName}'@${newVersion} is already up to date, but syncing anyway because --force is used`
+        );
+        return true;
+      } else {
+        logger.info(
+          `Project '${projectName}'@${newVersion} is already up to date. Skipping...`
+        );
+        return false;
+      }
     }
 
     if (semver.lt(newVersion, versionOnDisk)) {
@@ -152,6 +159,12 @@ async function checkProjectMeta(
     );
     return await confirmWithUser("Do you want to force it?", opts.force, "n");
   };
+
+  if (opts.projects.includes(projectId) && opts.force) {
+    // if --force is used, and this is an explicitly specified --projects, then
+    // we should always sync it, even if nothing has changed
+    return true;
+  }
 
   return (await checkVersionLock()) && (await checkVersionRange());
 }

@@ -36,6 +36,9 @@ export interface PlasmicConfig {
   // Config for code generation
   code: CodeConfig;
 
+  // Config for pictures
+  images: ImagesConfig;
+
   // Config for style generation
   style: StyleConfig;
 
@@ -67,6 +70,10 @@ export interface StyleConfig {
   defaultStyleCssFilePath: string;
 }
 
+export interface ImagesConfig {
+  scheme: "inlined" | "files";
+}
+
 export interface JsBundleThemeConfig {
   themeFilePath: string;
   bundleName: string;
@@ -85,6 +92,8 @@ export interface ProjectConfig {
   components: ComponentConfig[];
   // Configs for each icon we have synced.
   icons: IconConfig[];
+  // Configs for each image we know about
+  images: ImageConfig[];
 }
 
 export function createProjectConfig(base: {
@@ -100,6 +109,7 @@ export function createProjectConfig(base: {
     cssFilePath: base.cssFilePath,
     components: [],
     icons: [],
+    images: [],
     jsBundleThemes: [],
   };
 }
@@ -148,6 +158,12 @@ export interface IconConfig {
   id: string;
   name: string;
   moduleFilePath: string;
+}
+
+export interface ImageConfig {
+  id: string;
+  name: string;
+  filePath: string;
 }
 
 export interface GlobalVariantsConfig {
@@ -215,6 +231,9 @@ export interface PlasmicContext {
 
   // Api instance to use for talking to Plasmic
   api: PlasmicApi;
+
+  // args passed to cli
+  cliArgs: any;
 }
 
 export interface AuthConfig {
@@ -243,6 +262,9 @@ export const DEFAULT_CONFIG: PlasmicConfig = {
     // We set it to empty to compile. In reality, it will be provided the by
     // the server.
     defaultStyleCssFilePath: "",
+  },
+  images: {
+    scheme: "inlined",
   },
   tokens: {
     scheme: "theo",
@@ -351,6 +373,7 @@ export function getContext(args: CommonArgs): PlasmicContext {
       : path.resolve(rootDir, config.srcDir),
     auth,
     api: new PlasmicApi(auth),
+    cliArgs: args,
   };
 }
 
@@ -430,13 +453,11 @@ export function writeAuth(authFile: string, config: AuthConfig) {
 
 export function updateConfig(
   context: PlasmicContext,
-  updates: DeepPartial<PlasmicConfig>
+  newConfig: PlasmicConfig
 ) {
   // plasmic.json
-  let config = readConfig(context.configFile);
-  L.merge(config, updates);
-  writeConfig(context.configFile, config);
-  context.config = config;
+  writeConfig(context.configFile, newConfig);
+  context.config = newConfig;
 
   // plasmic.lock
   writeLock(context.lockFile, context.lock);
@@ -458,6 +479,7 @@ export function getOrAddProjectConfig(
           cssFilePath: "",
           components: [],
           icons: [],
+          images: [],
           jsBundleThemes: [],
         };
     context.config.projects.push(project);

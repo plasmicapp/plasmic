@@ -11,6 +11,7 @@ import {
   PlasmicConfig,
   StyleConfig,
   IconConfig,
+  ImageConfig,
 } from "./config-utils";
 import {
   existsBuffered,
@@ -26,9 +27,9 @@ import * as parser from "@babel/parser";
 import traverse, { Node, NodePath } from "@babel/traverse";
 import generate, { GeneratorOptions } from "@babel/generator";
 import * as babel from "@babel/core";
-import { ImportDeclaration, ImportSpecifier } from "@babel/types";
-import { tryParsePlasmicImportSpec } from "@plasmicapp/code-merger";
+import { ImportDeclaration } from "@babel/types";
 import { HandledError } from "../utils/error";
+import { fixComponentCssReferences } from "../actions/sync-images";
 
 export const formatAsLocal = (
   c: string,
@@ -127,11 +128,44 @@ export function ensureImportDefaultSpecifier(
   }
 }
 
+interface PlasmicImportSpec {
+  id: string;
+  type: PlasmicImportType;
+  node: ImportDeclaration;
+}
+
+type PlasmicImportType =
+  | "render"
+  | "css"
+  | "component"
+  | "globalVariant"
+  | "projectcss"
+  | "defaultcss"
+  | "icon"
+  | "picture"
+  | "jsBundle"
+  | undefined;
+
+function tryParsePlasmicImportSpec(node: ImportDeclaration) {
+  const c = node.trailingComments?.[0];
+  if (!c) {
+    return undefined;
+  }
+  const m = c.value.match(
+    /plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss|defaultcss|icon|picture|jsBundle))?/
+  );
+  if (m) {
+    return { id: m[1], type: m[2] as PlasmicImportType } as PlasmicImportSpec;
+  }
+  return undefined;
+}
+
 /**
  * Given the argument `code` string, for module at `fromPath`, replaces all Plasmic imports
  * for modules found in `compConfigsMap`.
  */
 export function replaceImports(
+  context: PlasmicContext,
   code: string,
   fromPath: string,
   fixImportContext: FixImportContext,
@@ -169,9 +203,7 @@ export function replaceImports(
       // instantiation of a mapped or managed component
       const compConfig = fixImportContext.components[uuid];
       if (!compConfig) {
-        throw new HandledError(
-          `Encountered Plasmic components (of uuid ${uuid}) in ${fromPath} that are being used but have not been synced. Please run "plasmic sync" without the --non-recursive flag to sync dependencies.`
-        );
+        throwMissingReference(context, "component", uuid, fromPath);
       }
       const { modulePath, exportName } = compConfig.importSpec;
       if (exportName) {
@@ -210,15 +242,20 @@ export function replaceImports(
       // import of global context
       const iconConfig = fixImportContext.icons[uuid];
       if (!iconConfig) {
-        throw new HandledError(
-          `Encountered Plasmic icons (of uuid ${uuid}) in ${fromPath} that are being used but have not been synced. Please run "plasmic sync" without the --non-recursive flag to sync dependencies.`
-        );
+        throwMissingReference(context, "icon", uuid, fromPath);
       }
       const realPath = makeImportPath(
         fromPath,
         iconConfig.moduleFilePath,
         true
       );
+      stmt.source.value = realPath;
+    } else if (type === "picture") {
+      const imageConfig = fixImportContext.images[uuid];
+      if (!imageConfig) {
+        throwMissingReference(context, "image", uuid, fromPath);
+      }
+      const realPath = makeImportPath(fromPath, imageConfig.filePath, false);
       stmt.source.value = realPath;
     } else if (type === "projectcss") {
       const projectConfig = fixImportContext.projects[uuid];
@@ -238,6 +275,23 @@ export function replaceImports(
     }
   });
   return nodeToFormattedCode(file, false, commentsToRemove);
+}
+
+function throwMissingReference(
+  context: PlasmicContext,
+  itemType: string,
+  uuid: string,
+  fromPath: string
+) {
+  let recFix = `Please make sure projects that "${uuid}" depends on have already been synced.`;
+  if (context.cliArgs.nonRecursive) {
+    recFix = `Please run "plasmic sync" without the --non-recursive flag to sync dependencies.`;
+  } else if (!context.cliArgs.force) {
+    recFix = `Please run "plasmic sync" with --force flag to force-sync the dependencies.`;
+  }
+  throw new HandledError(
+    `Encountered Plasmic ${itemType} "${uuid}" in ${fromPath} that are being used but have not been synced. ${recFix}`
+  );
 }
 
 function makeImportPath(fromPath: string, toPath: string, stripExt: boolean) {
@@ -273,6 +327,7 @@ export interface FixImportContext {
   components: Record<string, ComponentConfig>;
   globalVariants: Record<string, GlobalVariantGroupConfig>;
   icons: Record<string, IconConfig>;
+  images: Record<string, ImageConfig>;
   projects: Record<string, ProjectConfig>;
 }
 
@@ -287,12 +342,17 @@ export const mkFixImportContext = (config: PlasmicConfig) => {
     flatMap(config.projects, (p) => p.icons),
     (c) => c.id
   );
+  const images = L.keyBy(
+    flatMap(config.projects, (p) => p.images),
+    (c) => c.id
+  );
   const projects = L.keyBy(config.projects, (p) => p.projectId);
   return {
     config,
     components,
     globalVariants,
     icons,
+    images,
     projects,
   };
 };
@@ -353,6 +413,14 @@ function fixComponentImportStatements(
       true
     );
   }
+
+  if (context.config.images.scheme === "files") {
+    fixComponentCssReferences(
+      context,
+      fixImportContext,
+      compConfig.cssFilePath
+    );
+  }
 }
 
 function fixFileImportStatements(
@@ -374,6 +442,7 @@ function fixFileImportStatements(
   ).toString();
 
   const newContent = replaceImports(
+    context,
     prevContent,
     srcDirFilePath,
     fixImportContext,

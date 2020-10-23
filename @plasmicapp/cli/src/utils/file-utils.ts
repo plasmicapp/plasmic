@@ -15,6 +15,7 @@ import {
 import { isLocalModulePath } from "./code-utils";
 import { logger } from "../deps";
 import { HandledError } from "../utils/error";
+import { ensureString } from "./lang-utils";
 
 export function stripExtension(filename: string) {
   const ext = path.extname(filename);
@@ -26,7 +27,7 @@ export function stripExtension(filename: string) {
 
 export function writeFileContentRaw(
   filePath: string,
-  content: string,
+  content: string | Buffer,
   opts?: { force?: boolean }
 ) {
   opts = opts || {};
@@ -40,10 +41,22 @@ export function writeFileContentRaw(
   writeFileText(filePath, content);
 }
 
+export function defaultResourcePath(
+  context: PlasmicContext,
+  project: ProjectConfig,
+  ...subpaths: string[]
+) {
+  return path.join(
+    context.config.defaultPlasmicDir,
+    L.snakeCase(`${project.projectName}`),
+    ...subpaths
+  );
+}
+
 export function writeFileContent(
   context: PlasmicContext,
   srcDirFilePath: string,
-  content: string,
+  content: string | Buffer,
   opts: { force?: boolean } = {}
 ) {
   const path = makeFilePath(context, srcDirFilePath);
@@ -192,6 +205,9 @@ export function fixAllFilePaths(context: PlasmicContext) {
     for (const icon of proj.icons) {
       fixPath(icon, "moduleFilePath");
     }
+    for (const image of proj.images) {
+      fixPath(image, "filePath");
+    }
   };
 
   const fixComponent = (comp: ComponentConfig) => {
@@ -224,7 +240,7 @@ export function fixAllFilePaths(context: PlasmicContext) {
 let buffering = false;
 
 /** Map of path to content. */
-const buffer = new Map<string, string>();
+const buffer = new Map<string, string | Buffer>();
 
 /**
  * This turns on buffering of file writes/reads.
@@ -248,19 +264,26 @@ export async function withBufferedFs(f: () => Promise<void>) {
   }
 }
 
-export function writeFileText(path: string, content: string) {
+export function writeFileText(path: string, content: string | Buffer) {
   if (buffering) {
     buffer.set(path, content);
   } else {
-    // eslint-disable-next-line no-restricted-properties
-    fs.writeFileSync(path, content, "utf8");
+    if (content instanceof Buffer) {
+      // eslint-disable-next-line no-restricted-properties
+      fs.writeFileSync(path, content);
+    } else {
+      // eslint-disable-next-line no-restricted-properties
+      fs.writeFileSync(path, content, "utf8");
+    }
   }
 }
 
 export function readFileText(path: string) {
   return buffering
-    ? // eslint-disable-next-line no-restricted-properties
-      buffer.get(path) ?? fs.readFileSync(path, "utf8")
+    ? buffer.has(path)
+      ? ensureString(buffer.get(path))
+      : // eslint-disable-next-line no-restricted-properties
+        fs.readFileSync(path, "utf8")
     : // eslint-disable-next-line no-restricted-properties
       fs.readFileSync(path, "utf8");
 }

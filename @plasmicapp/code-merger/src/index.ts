@@ -996,50 +996,6 @@ const tryParseComponentSkeletonFile = (
   return jsx ? { ...jsx, file } : undefined;
 };
 
-export type PlasmicImportType =
-  | "render"
-  | "css"
-  | "component"
-  | "globalVariant"
-  | "projectcss"
-  | "defaultcss"
-  | "icon"
-  | "jsBundle"
-  | undefined;
-
-export const tryParsePlasmicImportSpec = (node: ImportDeclaration) => {
-  const c = node.trailingComments?.[0];
-  if (!c) {
-    return undefined;
-  }
-  const m = c.value.match(
-    /plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss|defaultcss|icon|jsBundle))?/
-  );
-  if (m) {
-    return { id: m[1], type: m[2] as PlasmicImportType };
-  }
-  return undefined;
-};
-
-const compareImports = (
-  import1: PlasmicImportSpec,
-  import2: PlasmicImportSpec
-) => {
-  if (import1.id !== import2.id) {
-    return import1.id < import2.id ? -1 : 1;
-  }
-  if (import1.type !== import2.type) {
-    if (import1.type === undefined) {
-      return -1;
-    }
-    if (import2.type === undefined) {
-      return 1;
-    }
-    return import1.type < import2.type ? -1 : 1;
-  }
-  return 0;
-};
-
 // merge slave into master
 const mergeImports = (
   editedImport: ImportDeclaration,
@@ -1129,26 +1085,6 @@ const mergePlasmicImports = (
   mergedImports.push(...newImports);
   const insertMergedImportsAt = firstImport > -1 ? firstImport : 0;
   mergedFile.program.body.splice(insertMergedImportsAt, 0, ...mergedImports);
-};
-
-interface PlasmicImportSpec {
-  id: string;
-  type: PlasmicImportType;
-  node: ImportDeclaration;
-}
-
-const extractPlasmicImports = (file: babel.types.File) => {
-  const plasmicImports: Array<PlasmicImportSpec> = [];
-  traverse(file, {
-    ImportDeclaration: function (path) {
-      const importSpec = tryParsePlasmicImportSpec(path.node);
-      if (importSpec) {
-        plasmicImports.push({ ...importSpec, node: path.node });
-      }
-      path.skip();
-    },
-  });
-  return plasmicImports;
 };
 
 export type ComponentInfoForMerge = {

@@ -1,4 +1,4 @@
-import { AuthConfig } from "./utils/config-utils";
+import { AuthConfig, ImagesConfig } from "./utils/config-utils";
 import axios, { AxiosResponse, AxiosError } from "axios";
 import socketio from "socket.io-client";
 import { ProjectSyncMetadataModel } from "@plasmicapp/code-merger";
@@ -51,12 +51,18 @@ export interface IconBundle {
   fileName: string;
 }
 
+export interface ImageBundle {
+  id: string;
+  name: string;
+  blob: string;
+  fileName: string;
+}
+
 export interface ProjectVersionMeta {
   projectId: string;
   version: string;
   projectName: string;
   componentIds: string[];
-  iconIds: string[];
   dependencies: {
     [projectId: string]: string;
   };
@@ -74,6 +80,7 @@ export interface ProjectBundle {
   globalVariants: GlobalVariantBundle[];
   usedTokens: StyleTokensMap;
   iconAssets: IconBundle[];
+  imageAssets: ImageBundle[];
 }
 
 export type ProjectMeta = Omit<ProjectBundle, "projectConfig">;
@@ -163,7 +170,8 @@ export class PlasmicApi {
     // The list of existing components as [componentUuid, codeScheme]
     existingCompScheme: Array<[string, "blackbox" | "direct"]>,
     componentIdOrNames: readonly string[] | undefined,
-    version: string
+    version: string,
+    imageOpts: ImagesConfig
   ): Promise<ProjectBundle> {
     const result = await this.post(
       `${this.auth.host}/api/v1/projects/${projectId}/code/components`,
@@ -174,6 +182,7 @@ export class PlasmicApi {
         existingCompScheme,
         componentIdOrNames,
         version,
+        imageOpts,
       }
     );
     return result.data as ProjectBundle;

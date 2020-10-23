@@ -1,61 +1,11 @@
-import L from "lodash";
-import {
-  PlasmicConfig,
-  PlasmicContext,
-  getContext,
-  updateConfig,
-} from "../utils/config-utils";
 import { StyleTokensMap } from "../api";
-import {
-  writeFileContent,
-  readFileContent,
-  fileExists,
-  fixAllFilePaths,
-} from "../utils/file-utils";
-import { CommonArgs } from "..";
-import { formatAsLocal } from "../utils/code-utils";
 import { logger } from "../deps";
-import * as semver from "../utils/semver";
-
-export interface SyncStyleTokensArgs extends CommonArgs {
-  projects: readonly string[];
-}
-
-export async function syncStyleTokens(opts: SyncStyleTokensArgs) {
-  const context = getContext(opts);
-  fixAllFilePaths(context);
-
-  const api = context.api;
-  const config = context.config;
-
-  const projectIds =
-    opts.projects.length > 0
-      ? opts.projects
-      : L.uniq(readCurStyleMap(context).props.map((p) => p.meta.projectId));
-
-  const getVersionRange = (projectId: string) => {
-    const projectConfig = context.config.projects.find(
-      (x) => x.projectId === projectId
-    );
-    return projectConfig?.version ?? semver.latestTag;
-  };
-
-  const results = await Promise.all(
-    projectIds.map((projectId) =>
-      api.projectStyleTokens(projectId, getVersionRange(projectId))
-    )
-  );
-  for (const [projectId, styleMap] of L.zip(projectIds, results) as [
-    string,
-    StyleTokensMap
-  ][]) {
-    upsertStyleTokens(context, styleMap);
-  }
-
-  updateConfig(context, {
-    tokens: config.tokens,
-  });
-}
+import { PlasmicContext } from "../utils/config-utils";
+import {
+  fileExists,
+  readFileContent,
+  writeFileContent,
+} from "../utils/file-utils";
 
 export function upsertStyleTokens(
   context: PlasmicContext,

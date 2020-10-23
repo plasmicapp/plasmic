@@ -537,8 +537,14 @@ function _CodeSandboxDialogContent(props) {
     const configJson = readFileText(
       "./testData/fixImports_plasmic.json"
     ).toString();
-    const fixImportContext = mkFixImportContext(JSON.parse(configJson));
+    const config = JSON.parse(configJson);
+    const context = {
+      config,
+      cliArgs: {},
+    } as any;
+    const fixImportContext = mkFixImportContext(config);
     const replaced = replaceImports(
+      context,
       code,
       "/tmp/CodeSandbox.tsx",
       fixImportContext,
@@ -609,8 +615,14 @@ function _CodeSandboxDialogContent(props) {
     const configJson = readFileText(
       "./testData/fixImports_plasmic.json"
     ).toString();
-    const fixImportContext = mkFixImportContext(JSON.parse(configJson));
+    const config = JSON.parse(configJson);
+    const fixImportContext = mkFixImportContext(config);
+    const context = {
+      config,
+      cliArgs: {},
+    } as any;
     const replaced = replaceImports(
+      context,
       code,
       "/tmp/CodeSandbox.tsx",
       fixImportContext,
@@ -682,8 +694,14 @@ function _CodeSandboxDialogContent(props) {
     const configJson = readFileText(
       "./testData/fixImports_plasmic.json"
     ).toString();
-    const fixImportContext = mkFixImportContext(JSON.parse(configJson));
+    const config = JSON.parse(configJson);
+    const fixImportContext = mkFixImportContext(config);
+    const context = {
+      config,
+      cliArgs: {},
+    } as any;
     const replaced = replaceImports(
+      context,
       code,
       "/tmp/CodeSandbox.tsx",
       fixImportContext,

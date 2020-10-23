@@ -3,7 +3,6 @@ import {
   PlasmicConfig,
   PlasmicContext,
   getContext,
-  updateConfig,
 } from "../utils/config-utils";
 import { StyleTokensMap } from "../api";
 import {

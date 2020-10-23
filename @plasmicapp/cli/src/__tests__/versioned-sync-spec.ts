@@ -60,6 +60,9 @@ beforeEach(() => {
       scheme: "css",
       defaultStyleCssFilePath: "plasmic/PP__plasmic__default_style.css",
     },
+    images: {
+      scheme: "inlined",
+    },
     tokens: {
       scheme: "theo",
       tokensFilePath: "plasmic-tokens.theo.json",
@@ -151,6 +154,7 @@ describe("versioned-sync", () => {
         },
       ],
       icons: [],
+      images: [],
       jsBundleThemes: [],
     });
     tmpRepo.writePlasmicJson(plasmicJson);

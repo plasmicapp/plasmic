@@ -1,5 +1,5 @@
 import { CommonArgs } from "..";
-import { getContext, updateConfig } from "../utils/config-utils";
+import { getContext } from "../utils/config-utils";
 import { fixAllImportStatements } from "../utils/code-utils";
 import { fixAllFilePaths } from "../utils/file-utils";
 

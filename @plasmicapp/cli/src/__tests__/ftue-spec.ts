@@ -45,6 +45,9 @@ beforeEach(() => {
       scheme: "css",
       defaultStyleCssFilePath: "",
     },
+    images: {
+      scheme: "inlined",
+    },
     tokens: {
       scheme: "theo",
       tokensFilePath: "plasmic-tokens.theo.json",

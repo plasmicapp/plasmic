@@ -8,6 +8,9 @@
     "scheme": "css",
     "defaultStyleCssFilePath": "/tmp/newDir/PP__plasmic__default_style.css"
   },
+  "images": {
+    "scheme": "inlined"
+  },
   "tokens": {
     "scheme": "theo",
     "tokensFilePath": "wab/styles/plasmic-tokens.theo.json"
@@ -52,6 +55,7 @@
           "moduleFilePath": "/tmp/newDir/PlasmicIcon__Close.tsx"
         }
       ],
+      "images": [],
       "version": "latest"
     }
   ],

@@ -21,3 +21,11 @@ export function ensure<T>(x: T | null | undefined, msg: StringGen = ""): T {
     return x;
   }
 }
+
+export function ensureString(x: any) {
+  if (L.isString(x)) {
+    return x;
+  } else {
+    throw new Error(`Expected ${x} to be a string`);
+  }
+}

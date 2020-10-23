@@ -57,7 +57,6 @@ function mockProjectToProjectVersionMeta(
           componentIdOrNames.includes(c.id)
       )
       .map((c) => c.id),
-    iconIds: [],
   };
 }
 
@@ -273,6 +272,7 @@ class PlasmicApi {
       globalVariants: [],
       usedTokens: genEmptyStyleTokensMap(),
       iconAssets: [],
+      imageAssets: [],
     };
     return result;
   }

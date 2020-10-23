@@ -59,6 +59,7 @@ import * as semver from "../utils/semver";
 import { spawnSync } from "child_process";
 import { HandledError } from "../utils/error";
 import { checkVersionResolution } from "../utils/resolve-utils";
+import { syncProjectImageAssets } from "./sync-images";
 
 export interface SyncArgs extends CommonArgs {
   projects: readonly string[];
@@ -150,7 +151,6 @@ export async function sync(opts: SyncArgs): Promise<void> {
         opts,
         projectMeta.projectId,
         projectMeta.componentIds,
-        projectMeta.iconIds,
         projectMeta.version,
         projectMeta.dependencies,
         reactWebVersion,
@@ -171,23 +171,20 @@ export async function sync(opts: SyncArgs): Promise<void> {
     syncStyleConfig(context, await context.api.genStyleConfig());
 
     // Write the new ComponentConfigs to disk
-    updateConfig(context, {
-      projects: context.config.projects,
-      globalVariants: context.config.globalVariants,
-      tokens: context.config.tokens,
-      style: context.config.style,
-    });
+    updateConfig(context, context.config);
 
     // Fix imports
     const fixImportContext = mkFixImportContext(context.config);
     for (const m of pendingMerge) {
       const resolvedEditedFile = replaceImports(
+        context,
         m.editedSkeletonFile,
         m.skeletonModulePath,
         fixImportContext,
         true
       );
       const resolvedNewFile = replaceImports(
+        context,
         m.newSkeletonFile,
         m.skeletonModulePath,
         fixImportContext,
@@ -215,7 +212,6 @@ async function syncProject(
   opts: SyncArgs,
   projectId: string,
   componentIds: string[],
-  iconIds: string[],
   projectVersion: string,
   dependencies: { [projectId: string]: string },
   reactWebVersion: string | undefined,
@@ -239,7 +235,8 @@ async function syncProject(
     newComponentScheme,
     existingCompScheme,
     componentIds,
-    projectVersion
+    projectVersion,
+    context.config.images
   );
 
   // Convert from TSX => JSX
@@ -275,7 +272,6 @@ async function syncProject(
   }
 
   syncGlobalVariants(context, projectId, projectBundle.globalVariants);
-  const componentBundles = projectBundle.components;
   await syncProjectConfig(
     context,
     projectBundle.projectConfig,
@@ -288,27 +284,18 @@ async function syncProject(
     pendingMerge
   );
   upsertStyleTokens(context, projectBundle.usedTokens);
-
-  // Sync icons
-  // Resolution might pass back an empty array,
-  // but calling projectIcons with an empty array returns all icons
-  if (iconIds.length > 0) {
-    const iconsResp = await context.api.projectIcons(
-      projectId,
-      projectVersion,
-      iconIds
-    );
-
-    if (context.config.code.lang === "js") {
-      iconsResp.icons.forEach((icon) => {
-        [icon.fileName, icon.module] = maybeConvertTsxToJsx(
-          icon.fileName,
-          icon.module
-        );
-      });
-    }
-    syncProjectIconAssets(context, projectId, projectVersion, iconsResp.icons);
-  }
+  syncProjectIconAssets(
+    context,
+    projectId,
+    projectVersion,
+    projectBundle.iconAssets
+  );
+  syncProjectImageAssets(
+    context,
+    projectId,
+    projectVersion,
+    projectBundle.imageAssets
+  );
 }
 
 const updateDirectSkeleton = async (
