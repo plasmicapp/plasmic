@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/cli",
-  "version": "0.1.60",
+  "version": "0.1.62",
   "description": "plasmic cli for syncing local code with Plasmic designs",
   "main": "./dist/index.js",
   "bin": {
@@ -40,7 +40,7 @@
   "dependencies": {
     "@babel/core": "^7.10.5",
     "@babel/generator": "^7.10.5",
-    "@plasmicapp/code-merger": "^0.0.25",
+    "@plasmicapp/code-merger": "^0.0.27",
     "@plasmicapp/react-web": "^0.2.1",
     "@sentry/node": "^5.19.2",
     "@types/babel__core": "^7.1.9",

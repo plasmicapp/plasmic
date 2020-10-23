@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/code-merger",
-  "version": "0.0.25",
+  "version": "0.0.27",
   "description": "plasmic library for updating code generated in direct-edit scheme",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,29 +14,28 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@babel/core": "^7.10.5",
-    "@babel/generator": "^7.10.5",
-    "@babel/parser": "^7.10.5",
-    "@babel/traverse": "^7.10.5",
-    "@types/babel__core": "^7.1.9",
-    "@types/babel__generator": "^7.6.1",
-    "@types/babel__parser": "^7.1.1",
-    "@types/babel__traverse": "^7.0.13",
+    "@babel/core": "^7.12.3",
+    "@babel/generator": "^7.12.1",
+    "@babel/parser": "^7.12.3",
+    "@babel/traverse": "^7.12.1",
+    "@types/babel__core": "^7.1.10",
+    "@types/babel__generator": "^7.6.2",
+    "@types/babel__traverse": "^7.0.15",
     "@types/diff": "^4.0.2",
-    "@types/lodash": "^4.14.157",
-    "@types/prettier": "^2.0.2",
+    "@types/lodash": "^4.14.162",
+    "@types/prettier": "^2.1.5",
     "diff": "^4.0.2",
     "lodash": "^4.17.19",
     "prettier": "^2.0.5"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.10.4",
-    "@babel/preset-typescript": "^7.10.4",
-    "@types/jest": "^26.0.4",
+    "@babel/preset-env": "^7.12.1",
+    "@babel/preset-typescript": "^7.12.1",
+    "@types/jest": "^26.0.15",
     "babel-jest": "^26.1.0",
-    "typescript": "^3.9.6",
     "jest": "^26.1.0",
-    "ts-jest": "^26.1.2"
+    "ts-jest": "^26.1.2",
+    "typescript": "^3.9.6"
   },
   "peerDependencies": {}
 }
