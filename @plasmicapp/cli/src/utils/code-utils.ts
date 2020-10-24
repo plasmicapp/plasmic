@@ -26,7 +26,7 @@ import * as parser from "@babel/parser";
 import traverse, { Node, NodePath } from "@babel/traverse";
 import generate, { GeneratorOptions } from "@babel/generator";
 import * as babel from "@babel/core";
-import { ImportDeclaration } from "@babel/types";
+import { ImportDeclaration, ImportSpecifier } from "@babel/types";
 import { tryParsePlasmicImportSpec } from "@plasmicapp/code-merger";
 import { HandledError } from "../utils/error";
 
@@ -85,7 +85,11 @@ export function ensureImportSpecifierWithAlias(
 ) {
   const existing = findImportSpecifierWithAlias(decl, alias);
   if (existing) {
-    existing.imported.name = imported;
+    if (existing.imported.type === "Identifier") {
+      existing.imported.name = imported;
+    } else {
+      existing.imported.value = imported;
+    }
   } else {
     decl.specifiers = decl.specifiers.filter((specifier) => {
       if (
@@ -151,7 +155,8 @@ export function replaceImports(
     if (stmt.type !== "ImportDeclaration") {
       return;
     }
-    const spec = tryParsePlasmicImportSpec(stmt);
+    const importStmt: ImportDeclaration = stmt;
+    const spec = tryParsePlasmicImportSpec(importStmt);
     if (!spec) {
       return;
     }

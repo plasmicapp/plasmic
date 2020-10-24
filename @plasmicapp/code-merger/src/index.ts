@@ -1072,7 +1072,7 @@ const mergeImports = (
           (s1) =>
             s1.type === "ImportSpecifier" &&
             s1.local.name === s2.local.name &&
-            s1.imported.name === s2.imported.name
+            importedName(s1) === importedName(s2)
         )
       ) {
         continue;
@@ -1086,6 +1086,14 @@ const mergeImports = (
   }
   return cloned;
 };
+
+function importedName(stmt: babel.types.ImportSpecifier) {
+  if (stmt.imported.type === "Identifier") {
+    return stmt.imported.name;
+  } else {
+    return stmt.imported.value;
+  }
+}
 
 const mergePlasmicImports = (
   mergedFile: babel.types.File,
