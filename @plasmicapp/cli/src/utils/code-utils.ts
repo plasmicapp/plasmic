@@ -478,12 +478,16 @@ export const tsxToJsx = (code: string) => {
   // We also need to add the usageMagic to prevent typescript from remove the
   // import of ncreatePlasmicElementProxy.
   const usageMagic = "\ncreatePlasmicElementProxy();";
-  const replaced = code.replace("/** @jsx", "/** @ jsx") + usageMagic;
+  const replaced =
+    code
+      .replace("/** @jsx ", "/** @ jsx ")
+      .replace("/** @jsxRuntime ", "/** @ jsxRuntime ") + usageMagic;
   let result = ts.transpileModule(replaced, {
     compilerOptions: CompilerOptions.getOpts(),
   });
   return result.outputText
-    .replace("/** @ jsx", "/** @jsx")
+    .replace("/** @ jsx ", "/** @jsx ")
+    .replace("/** @ jsxRuntime ", "/** @jsxRuntime ")
     .replace(usageMagic, "");
 };
 
