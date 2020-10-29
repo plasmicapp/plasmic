@@ -28,9 +28,11 @@ export function syncProjectIconAssets(
   }
   const knownIconConfigs = L.keyBy(project.icons, (i) => i.id);
   for (const bundle of iconBundles) {
-    logger.info(
-      `Syncing icon: ${bundle.name}@${version}\t['${project.projectName}' ${project.projectId}/${bundle.id} ${project.version}]`
-    );
+    if (context.cliArgs.quiet !== true) {
+      logger.info(
+        `Syncing icon: ${bundle.name}@${version}\t['${project.projectName}' ${project.projectId}/${bundle.id} ${project.version}]`
+      );
+    }
     let iconConfig = knownIconConfigs[bundle.id];
     const isNew = !iconConfig;
     if (isNew) {

@@ -22,9 +22,11 @@ export function syncProjectImageAssets(
   const project = getOrAddProjectConfig(context, projectId);
   const knownImageConfigs = L.keyBy(project.images, (i) => i.id);
   for (const bundle of imageBundles) {
-    logger.info(
-      `Syncing image: ${bundle.name}@${version}\t['${project.projectName}' ${project.projectId}/${bundle.id} ${project.version}]`
-    );
+    if (context.cliArgs.quiet !== true) {
+      logger.info(
+        `Syncing image: ${bundle.name}@${version}\t['${project.projectName}' ${project.projectId}/${bundle.id} ${project.version}]`
+      );
+    }
     let imageConfig = knownImageConfigs[bundle.id];
     const isNew = !imageConfig;
     const defaultFilePath = defaultResourcePath(

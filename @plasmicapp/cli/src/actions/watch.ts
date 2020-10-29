@@ -5,11 +5,21 @@ import { SyncArgs, sync } from "./sync";
 import { getContext } from "../utils/config-utils";
 import { warnLatestReactWeb } from "../utils/npm-utils";
 import { logger } from "../deps";
+import { CommonArgs } from "..";
 
-export interface WatchArgs extends SyncArgs {}
+export interface WatchArgs extends CommonArgs {
+  projects: readonly string[];
+  forceOverwrite: boolean;
+  newComponentScheme?: "blackbox" | "direct";
+  appendJsxOnMissingBase?: boolean;
+  yes?: boolean;
+  force?: boolean;
+  nonRecursive?: boolean;
+  skipReactWeb?: boolean;
+}
 export async function watchProjects(opts: WatchArgs) {
   // Perform a sync before watch.
-  await sync(opts);
+  await sync({ ...opts, quiet: true });
 
   const context = getContext(opts);
   const config = context.config;
@@ -61,7 +71,7 @@ export async function watchProjects(opts: WatchArgs) {
         data.projectId
       } updated to revision ${data.revisionNum}`
     );
-    sync(opts);
+    sync({ ...opts, quiet: true });
   });
 
   logger.info(`Watching projects ${latestProjects} ...`);

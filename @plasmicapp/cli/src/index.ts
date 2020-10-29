@@ -103,7 +103,7 @@ yargs
   .command<WatchArgs>(
     "watch",
     "Watches for updates to projects, and syncs them automatically to local files.",
-    (yags) => configureSyncArgs(yags),
+    (yags) => configureSyncArgs(yags, false),
     (argv) => {
       handleError(watchProjects(argv));
     }
@@ -180,8 +180,11 @@ yargs
   .help("h")
   .alias("h", "help").argv;
 
-function configureSyncArgs(yags: yargs.Argv) {
-  return yags
+function configureSyncArgs(
+  yags: yargs.Argv,
+  includeQuietOption: boolean = true
+) {
+  let args = yags
     .option("projects", {
       alias: "p",
       describe:
@@ -223,6 +226,14 @@ function configureSyncArgs(yags: yargs.Argv) {
       describe:
         "Sync the new components using this code scheme rather than the default code scheme.",
     });
+  if (includeQuietOption) {
+    args = args.option("quiet", {
+      type: "boolean",
+      describe: "Do not inform each asset to be synced",
+      default: false,
+    });
+  }
+  return args;
 }
 
 export interface CommonArgs {

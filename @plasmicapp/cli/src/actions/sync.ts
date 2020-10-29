@@ -70,6 +70,7 @@ export interface SyncArgs extends CommonArgs {
   force?: boolean;
   nonRecursive?: boolean;
   skipReactWeb?: boolean;
+  quiet?: boolean;
 }
 
 interface ComponentPendingMerge {
@@ -386,9 +387,11 @@ async function syncProjectComponents(
       scheme,
       nameInIdToUuid,
     } = bundle;
-    logger.info(
-      `Syncing component: ${componentName}@${version}\t['${project.projectName}' ${project.projectId}/${id} ${project.version}]`
-    );
+    if (context.cliArgs.quiet !== true) {
+      logger.info(
+        `Syncing component: ${componentName}@${version}\t['${project.projectName}' ${project.projectId}/${id} ${project.version}]`
+      );
+    }
     let compConfig = allCompConfigs[id];
     const isNew = !compConfig;
     let skeletonModuleModified = isNew;
@@ -509,9 +512,11 @@ function syncGlobalVariants(
     (c) => c.id
   );
   for (const bundle of bundles) {
-    logger.info(
-      `Syncing global variant ${bundle.name} [${projectId}/${bundle.id}]`
-    );
+    if (context.cliArgs.quiet !== true) {
+      logger.info(
+        `Syncing global variant ${bundle.name} [${projectId}/${bundle.id}]`
+      );
+    }
     let variantConfig = allVariantConfigs[bundle.id];
     const isNew = !variantConfig;
     if (isNew) {
