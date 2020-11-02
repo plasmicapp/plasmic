@@ -21,7 +21,7 @@ export async function watchProjects(opts: WatchArgs) {
   // Perform a sync before watch.
   await sync({ ...opts, quiet: true });
 
-  const context = getContext(opts);
+  const context = await getContext(opts);
   const config = context.config;
   const socket = context.api.connectSocket();
   const promise = new Promise((resolve) => {});

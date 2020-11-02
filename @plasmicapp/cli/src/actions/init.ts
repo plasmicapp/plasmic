@@ -29,17 +29,9 @@ export interface InitArgs extends CommonArgs {
   plasmicDir: string;
 }
 export async function initPlasmic(opts: InitArgs) {
-  const configFile =
-    opts.config || findConfigFile(process.cwd(), { traverseParents: false });
-  if (configFile && existsBuffered(configFile)) {
-    logger.error(
-      "You already have a plasmic.json file!  Please either delete or edit it directly."
-    );
-    return;
-  }
-
   const authFile =
     opts.auth || findAuthFile(process.cwd(), { traverseParents: true });
+  let createdAuthFile = false;
   if (!authFile || !existsBuffered(authFile)) {
     const auth = await inquirer.prompt([
       {
@@ -62,8 +54,24 @@ export async function initPlasmic(opts: InitArgs) {
     logger.info(
       `Successfully created Plasmic credentials file at ${newAuthFile}`
     );
+    createdAuthFile = true;
   } else {
     logger.info(`Using existing Plasmic credentials at ${authFile}`);
+  }
+
+  const configFile =
+    opts.config || findConfigFile(process.cwd(), { traverseParents: false });
+  if (configFile && existsBuffered(configFile)) {
+    if (createdAuthFile) {
+      // This is the case when `init` is not running for the first time (possibly triggered by other command),
+      // but the auth file couldn't be found (e.g. if the user accidentally removed it).
+      logger.info(`Using existing plasmic.json file at ${configFile}`);
+    } else {
+      logger.error(
+        "You already have a plasmic.json file!  Please either delete or edit it directly."
+      );
+    }
+    return;
   }
 
   const langDetect = existsBuffered("tsconfig.json")

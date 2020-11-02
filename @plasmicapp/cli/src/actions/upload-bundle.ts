@@ -31,7 +31,7 @@ export interface UploadBundleArgs extends CommonArgs {
 }
 
 export async function uploadJsBundle(opts: UploadBundleArgs) {
-  const context = getContext(opts);
+  const context = await getContext(opts);
   fixAllFilePaths(context);
   const api = context.api;
   await api.uploadBundle(

@@ -16,6 +16,9 @@ import { runNecessaryMigrationsConfig } from "../migrations/migrations";
 import { getCliVersion } from "./npm-utils";
 import { logger } from "../deps";
 import { HandledError } from "../utils/error";
+import inquirer from "inquirer";
+import { initPlasmic } from "../actions/init";
+import { ensure } from "./lang-utils";
 
 export const AUTH_FILE_NAME = ".plasmic.auth";
 export const CONFIG_FILE_NAME = "plasmic.json";
@@ -318,15 +321,20 @@ export function fillDefaults(
   return L.merge({}, DEFAULT_CONFIG, config);
 }
 
-export function getContext(args: CommonArgs): PlasmicContext {
+export async function getContext(args: CommonArgs): Promise<PlasmicContext> {
   // PlasmicAuth
-  const authFile =
+  let authFile =
     args.auth || findAuthFile(process.cwd(), { traverseParents: true });
   if (!authFile) {
-    const err = new HandledError(
-      "No .plasmic.auth file found with Plasmic credentials. Please run `plasmic init` first."
-    );
-    throw err;
+    await maybeRunPlasmicInit(args, ".plasmic.auth");
+    authFile =
+      args.auth || findAuthFile(process.cwd(), { traverseParents: true });
+    if (!authFile) {
+      const err = new HandledError(
+        "No .plasmic.auth file found with Plasmic credentials. Please run `plasmic init` first."
+      );
+      throw err;
+    }
   }
   const auth = readAuth(authFile);
   // Sentry
@@ -345,13 +353,18 @@ export function getContext(args: CommonArgs): PlasmicContext {
   }
 
   // PlasmicConfig
-  const configFile =
+  let configFile =
     args.config || findConfigFile(process.cwd(), { traverseParents: true });
+
   if (!configFile) {
-    const err = new HandledError(
-      "No plasmic.json file found. Please run `plasmic init` first."
-    );
-    throw err;
+    await maybeRunPlasmicInit(args, "plasmic.json");
+    configFile = findConfigFile(process.cwd(), { traverseParents: true });
+    if (!configFile) {
+      const err = new HandledError(
+        "No plasmic.json file found. Please run `plasmic init` first."
+      );
+      throw err;
+    }
   }
   runNecessaryMigrationsConfig(configFile);
   const config = readConfig(configFile);
@@ -504,4 +517,28 @@ export function getOrAddProjectLock(
     context.lock.projects.push(project);
   }
   return project;
+}
+
+export async function maybeRunPlasmicInit(
+  args: CommonArgs,
+  missingFile: string
+): Promise<void> {
+  const runInit = await inquirer.prompt({
+    name: "answer",
+    message: `No ${missingFile} file found. Would you like to run \`plasmic init\`?`,
+    type: "confirm",
+  });
+
+  if (runInit.answer) {
+    await initPlasmic({
+      host: "https://studio.plasmic.app",
+      platform: "react",
+      codeLang: "ts",
+      codeScheme: "blackbox",
+      styleScheme: "css",
+      srcDir: "",
+      plasmicDir: "",
+      ...args,
+    });
+  }
 }

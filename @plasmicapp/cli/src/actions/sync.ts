@@ -93,7 +93,7 @@ interface ComponentPendingMerge {
  * @param opts
  */
 export async function sync(opts: SyncArgs): Promise<void> {
-  const context = getContext(opts);
+  const context = await getContext(opts);
   fixAllFilePaths(context);
   const projectIds =
     opts.projects.length > 0
