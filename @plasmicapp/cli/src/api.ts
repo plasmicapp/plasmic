@@ -1,4 +1,4 @@
-import { AuthConfig, ImagesConfig } from "./utils/config-utils";
+import { AuthConfig, ImagesConfig, StyleConfig } from "./utils/config-utils";
 import axios, { AxiosResponse, AxiosError } from "axios";
 import socketio from "socket.io-client";
 import { ProjectSyncMetadataModel } from "@plasmicapp/code-merger";
@@ -115,9 +115,10 @@ export interface ProjectIconsResponse {
 export class PlasmicApi {
   constructor(private auth: AuthConfig) {}
 
-  async genStyleConfig(): Promise<StyleConfigResponse> {
+  async genStyleConfig(styleOpts?: StyleConfig): Promise<StyleConfigResponse> {
     const result = await this.post(
-      `${this.auth.host}/api/v1/code/style-config`
+      `${this.auth.host}/api/v1/code/style-config`,
+      styleOpts
     );
     return result.data as StyleConfigResponse;
   }
@@ -171,7 +172,8 @@ export class PlasmicApi {
     existingCompScheme: Array<[string, "blackbox" | "direct"]>,
     componentIdOrNames: readonly string[] | undefined,
     version: string,
-    imageOpts: ImagesConfig
+    imageOpts: ImagesConfig,
+    stylesOpts: StyleConfig
   ): Promise<ProjectBundle> {
     const result = await this.post(
       `${this.auth.host}/api/v1/projects/${projectId}/code/components`,
@@ -183,6 +185,7 @@ export class PlasmicApi {
         componentIdOrNames,
         version,
         imageOpts,
+        stylesOpts,
       }
     );
     return result.data as ProjectBundle;

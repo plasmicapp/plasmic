@@ -17,9 +17,11 @@ import { logger } from "../deps";
 import { HandledError } from "../utils/error";
 import { ensureString } from "./lang-utils";
 
-export function stripExtension(filename: string) {
-  const ext = path.extname(filename);
-  if (ext.length === 0) {
+export function stripExtension(filename: string, removeComposedPath = false) {
+  const ext = removeComposedPath
+    ? filename.substring(filename.indexOf("."))
+    : path.extname(filename);
+  if (!ext || filename === ext) {
     return filename;
   }
   return filename.substring(0, filename.lastIndexOf(ext));
@@ -77,6 +79,17 @@ export function fileExists(context: PlasmicContext, srcDirFilePath: string) {
 
 export function makeFilePath(context: PlasmicContext, filePath: string) {
   return path.join(context.absoluteSrcDir, filePath);
+}
+
+export function renameFile(
+  context: PlasmicContext,
+  oldPath: string,
+  newPath: string
+) {
+  return fs.renameSync(
+    path.join(context.absoluteSrcDir, oldPath),
+    path.join(context.absoluteSrcDir, newPath)
+  );
 }
 
 /**

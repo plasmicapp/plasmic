@@ -22,6 +22,7 @@ import {
   stripExtension,
   fixAllFilePaths,
   withBufferedFs,
+  renameFile,
 } from "../utils/file-utils";
 import {
   ProjectBundle,
@@ -95,6 +96,7 @@ interface ComponentPendingMerge {
 export async function sync(opts: SyncArgs): Promise<void> {
   const context = await getContext(opts);
   fixAllFilePaths(context);
+  fixFileExtension(context);
   const projectIds =
     opts.projects.length > 0
       ? opts.projects
@@ -169,7 +171,10 @@ export async function sync(opts: SyncArgs): Promise<void> {
       })
     );
 
-    syncStyleConfig(context, await context.api.genStyleConfig());
+    syncStyleConfig(
+      context,
+      await context.api.genStyleConfig(context.config.style)
+    );
 
     // Write the new ComponentConfigs to disk
     updateConfig(context, context.config);
@@ -208,6 +213,45 @@ export async function sync(opts: SyncArgs): Promise<void> {
   }
 }
 
+function maybeRenamePathExt(
+  context: PlasmicContext,
+  path: string,
+  ext: string
+) {
+  if (!path) {
+    return path;
+  }
+  const correctPath = `${stripExtension(path, true)}${ext}`;
+  if (path !== correctPath) {
+    renameFile(context, path, correctPath);
+  }
+  return correctPath;
+}
+
+function fixFileExtension(context: PlasmicContext) {
+  const cssExt =
+    context.config.style.scheme === "css-module" ? ".module.css" : ".css";
+  context.config.style.defaultStyleCssFilePath = maybeRenamePathExt(
+    context,
+    context.config.style.defaultStyleCssFilePath,
+    cssExt
+  );
+  context.config.projects.forEach((project) => {
+    project.cssFilePath = maybeRenamePathExt(
+      context,
+      project.cssFilePath,
+      cssExt
+    );
+    project.components.forEach((component) => {
+      component.cssFilePath = maybeRenamePathExt(
+        context,
+        component.cssFilePath,
+        cssExt
+      );
+    });
+  });
+}
+
 async function syncProject(
   context: PlasmicContext,
   opts: SyncArgs,
@@ -237,7 +281,8 @@ async function syncProject(
     existingCompScheme,
     componentIds,
     projectVersion,
-    context.config.images
+    context.config.images,
+    context.config.style
   );
 
   // Convert from TSX => JSX
@@ -271,8 +316,8 @@ async function syncProject(
       );
     });
   }
-
   syncGlobalVariants(context, projectId, projectBundle.globalVariants);
+
   await syncProjectConfig(
     context,
     projectBundle.projectConfig,
