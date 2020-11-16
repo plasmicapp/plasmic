@@ -68,7 +68,7 @@ export interface CodeConfig {
 
 export interface StyleConfig {
   // Styling framework to use
-  scheme: "css" | "css-module";
+  scheme: "css" | "css-modules";
 
   defaultStyleCssFilePath: string;
 }

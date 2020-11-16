@@ -230,7 +230,7 @@ function maybeRenamePathExt(
 
 function fixFileExtension(context: PlasmicContext) {
   const cssExt =
-    context.config.style.scheme === "css-module" ? ".module.css" : ".css";
+    context.config.style.scheme === "css-modules" ? ".module.css" : ".css";
   context.config.style.defaultStyleCssFilePath = maybeRenamePathExt(
     context,
     context.config.style.defaultStyleCssFilePath,
