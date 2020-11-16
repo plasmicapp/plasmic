@@ -86,8 +86,13 @@ yargs
         })
         .option("style-scheme", {
           describe: "Styling framework to use",
-          choices: ["css"],
-          default: DEFAULT_CONFIG.style.scheme,
+          choices: ["", "css", "css-modules"],
+          default: "",
+        })
+        .option("images-scheme", {
+          describe: "How to reference used image files",
+          choices: ["", "inlined", "files"],
+          default: "",
         });
     },
     (argv) => initPlasmic(argv)

@@ -533,9 +533,10 @@ export async function maybeRunPlasmicInit(
     await initPlasmic({
       host: "https://studio.plasmic.app",
       platform: "react",
-      codeLang: "ts",
-      codeScheme: "blackbox",
-      styleScheme: "css",
+      codeLang: "",
+      codeScheme: "",
+      styleScheme: "",
+      imagesScheme: "",
       srcDir: "",
       plasmicDir: "",
       ...args,

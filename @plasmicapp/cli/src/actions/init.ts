@@ -22,9 +22,10 @@ import { existsBuffered } from "../utils/file-utils";
 export interface InitArgs extends CommonArgs {
   host: string;
   platform: "react";
-  codeLang: "ts";
-  codeScheme: "blackbox";
-  styleScheme: "css";
+  codeLang: "" | "ts" | "js";
+  codeScheme: "" | "blackbox" | "direct";
+  styleScheme: "" | "css" | "css-modules";
+  imagesScheme: "" | "inlined" | "files";
   srcDir: string;
   plasmicDir: string;
 }
@@ -109,6 +110,26 @@ export async function initPlasmic(opts: InitArgs) {
     value: "direct",
   };
 
+  const plainCssOpt = {
+    name: `Plain CSS stylesheets, imported as "import './plasmic.css'"`,
+    value: "css",
+  };
+
+  const cssModuleOpt = {
+    name: `CSS modules, imported as "import sty from './plasmic.module.css'"`,
+    value: "css-modules",
+  };
+
+  const inlinedImagesOpt = {
+    name: `Inlined as base64-encoded data URIs`,
+    value: "inlined",
+  };
+
+  const filesImagesOpt = {
+    name: `Imported as files, like "import img from './image.png'". Not all bundlers support this.`,
+    value: "files",
+  };
+
   const answers = await inquirer.prompt([
     {
       name: "srcDir",
@@ -138,7 +159,7 @@ export async function initPlasmic(opts: InitArgs) {
     },
     {
       name: "codeScheme",
-      message: `Which codegen scheme to use by default?
+      message: `Which codegen scheme should Plasmic use by default?
   - We generally recommend Blackbox for new users.
   - See https://plasmic.app/learn/codegen-overview for examples.
   - You can choose schemes for individual components.
@@ -146,6 +167,20 @@ export async function initPlasmic(opts: InitArgs) {
       type: "list",
       choices: () => [blackboxOpt, directOpt],
       when: () => !opts.codeScheme,
+    },
+    {
+      name: "styleScheme",
+      message: `How should we generate css for Plasmic components?`,
+      type: "list",
+      choices: () => [plainCssOpt, cssModuleOpt],
+      when: () => !opts.styleScheme,
+    },
+    {
+      name: "imagesScheme",
+      message: `How should we reference image files used in Plasmic components?`,
+      type: "list",
+      choices: () => [inlinedImagesOpt, filesImagesOpt],
+      when: () => !opts.imagesScheme,
     },
   ]);
 
@@ -173,11 +208,14 @@ function createInitConfig(opts: InitArgs): PlasmicConfig {
     srcDir: opts.srcDir,
     defaultPlasmicDir: opts.plasmicDir,
     code: {
-      lang: opts.codeLang,
-      scheme: opts.codeScheme,
+      ...(opts.codeLang && { lang: opts.codeLang }),
+      ...(opts.codeScheme && { scheme: opts.codeScheme }),
     },
     style: {
-      scheme: opts.styleScheme,
+      ...(opts.styleScheme && { scheme: opts.styleScheme }),
+    },
+    images: {
+      ...(opts.imagesScheme && { scheme: opts.imagesScheme }),
     },
     platform: opts.platform,
     cliVersion: getCliVersion(),
