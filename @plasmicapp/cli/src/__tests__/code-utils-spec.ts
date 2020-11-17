@@ -182,7 +182,7 @@ function _CodeSandboxDialogContent(props: CodeSandboxDialogContentProps) {
 
                 <DropdownItem
                 {...rh.propsPlainReactOption()}
-                value={"Plain React"}
+                value={"Direct Edit"}
                 selected={codeScheme === "direct"}
                 onSelected={() => onSwitchCodeScheme("direct")}
                 />
@@ -412,7 +412,7 @@ function _CodeSandboxDialogContent(props) {
 
               <DropdownItem
                 {...rh.propsPlainReactOption()}
-                value={"Plain React"}
+                value={"Direct Edit"}
                 selected={codeScheme === "direct"}
                 onSelected={() => onSwitchCodeScheme("direct")}
               />
