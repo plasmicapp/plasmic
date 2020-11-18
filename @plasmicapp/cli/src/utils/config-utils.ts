@@ -74,7 +74,9 @@ export interface StyleConfig {
 }
 
 export interface ImagesConfig {
-  scheme: "inlined" | "files";
+  scheme: "inlined" | "files" | "public-files";
+  publicDir?: string;
+  publicUrlPrefix?: string;
 }
 
 export interface JsBundleThemeConfig {
@@ -279,6 +281,12 @@ export const DEFAULT_CONFIG: PlasmicConfig = {
   globalVariants: {
     variantGroups: [],
   },
+};
+
+export const DEFAULT_PUBLIC_FILES_CONFIG: ImagesConfig = {
+  scheme: "public-files",
+  publicDir: "../public",
+  publicUrlPrefix: "/public/",
 };
 
 /**
@@ -539,6 +547,8 @@ export async function maybeRunPlasmicInit(
       imagesScheme: "",
       srcDir: "",
       plasmicDir: "",
+      imagesPublicDir: "",
+      imagesPublicUrlPrefix: "",
       ...args,
     });
   }

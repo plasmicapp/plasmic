@@ -55,6 +55,18 @@ export function defaultResourcePath(
   );
 }
 
+export function defaultPublicResourcePath(
+  context: PlasmicContext,
+  project: ProjectConfig,
+  ...subpaths: string[]
+) {
+  return path.join(
+    context.config.images.publicDir,
+    L.snakeCase(`plasmic/${project.projectName}`),
+    ...subpaths
+  );
+}
+
 export function writeFileContent(
   context: PlasmicContext,
   srcDirFilePath: string,

@@ -91,7 +91,17 @@ yargs
         })
         .option("images-scheme", {
           describe: "How to reference used image files",
-          choices: ["", "inlined", "files"],
+          choices: ["", "inlined", "files", "public-files"],
+          default: "",
+        })
+        .option("images-public-dir", {
+          describe: "Default directory to put public static files",
+          type: "string",
+          default: "",
+        })
+        .option("images-public-url-prefix", {
+          describe: "URL prefix from which the app will serve static files",
+          type: "string",
           default: "",
         });
     },

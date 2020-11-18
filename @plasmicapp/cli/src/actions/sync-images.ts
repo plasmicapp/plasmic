@@ -1,17 +1,16 @@
 import L from "lodash";
-import { pathToFileURL } from "url";
 import { ImageBundle } from "../api";
 import { getOrAddProjectConfig, PlasmicContext } from "../utils/config-utils";
 import path from "upath";
 import {
+  defaultPublicResourcePath,
   defaultResourcePath,
   readFileContent,
-  readFileText,
   writeFileContent,
 } from "../utils/file-utils";
-import { ensure } from "../utils/lang-utils";
 import { logger } from "../deps";
 import { FixImportContext } from "../utils/code-utils";
+import { ensure } from "../utils/lang-utils";
 
 export function syncProjectImageAssets(
   context: PlasmicContext,
@@ -29,12 +28,10 @@ export function syncProjectImageAssets(
     }
     let imageConfig = knownImageConfigs[bundle.id];
     const isNew = !imageConfig;
-    const defaultFilePath = defaultResourcePath(
-      context,
-      project,
-      "images",
-      bundle.fileName
-    );
+    const defaultFilePath =
+      context.config.images.scheme === "public-files"
+        ? defaultPublicResourcePath(context, project, "images", bundle.fileName)
+        : defaultResourcePath(context, project, "images", bundle.fileName);
     if (isNew) {
       imageConfig = {
         id: bundle.id,
@@ -57,20 +54,29 @@ export function syncProjectImageAssets(
   }
 }
 
-const RE_ASSETREF_ALL = /var\(--image-([^\)]+)\)/g;
+const RE_ASSETCSSREF_ALL = /var\(--image-([^\)]+)\)/g;
 export function fixComponentCssReferences(
   context: PlasmicContext,
   fixImportContext: FixImportContext,
   cssFilePath: string
 ) {
   const prevContent = readFileContent(context, cssFilePath);
-  const newContent = prevContent.replace(RE_ASSETREF_ALL, (sub, assetId) => {
+  const newContent = prevContent.replace(RE_ASSETCSSREF_ALL, (sub, assetId) => {
     const asset = fixImportContext.images[assetId];
     if (asset) {
-      return `url("./${path.relative(
-        path.dirname(cssFilePath),
-        asset.filePath
-      )}")`;
+      return context.config.images.scheme === "public-files"
+        ? `url("${path.join(
+            "/",
+            ensure(context.config.images.publicUrlPrefix),
+            path.relative(
+              ensure(context.config.images.publicDir),
+              asset.filePath
+            )
+          )}")`
+        : `url("./${path.relative(
+            path.dirname(cssFilePath),
+            asset.filePath
+          )}")`;
     } else {
       return sub;
     }
@@ -78,5 +84,32 @@ export function fixComponentCssReferences(
 
   if (prevContent !== newContent) {
     writeFileContent(context, cssFilePath, newContent, { force: true });
+  }
+}
+
+const RE_ASSETTSXREF_ALL = /Plasmic_Image_([^\)]+)__Ref/g;
+export function fixComponentImagesReferences(
+  context: PlasmicContext,
+  fixImportContext: FixImportContext,
+  renderModuleFilePath: string
+) {
+  const prevContent = readFileContent(context, renderModuleFilePath);
+  const newContent = prevContent.replace(RE_ASSETTSXREF_ALL, (sub, assetId) => {
+    const asset = fixImportContext.images[assetId];
+    if (asset) {
+      return `"${path.join(
+        "/",
+        ensure(context.config.images.publicUrlPrefix),
+        path.relative(ensure(context.config.images.publicDir), asset.filePath)
+      )}"`;
+    } else {
+      return sub;
+    }
+  });
+
+  if (prevContent !== newContent) {
+    writeFileContent(context, renderModuleFilePath, newContent, {
+      force: true,
+    });
   }
 }

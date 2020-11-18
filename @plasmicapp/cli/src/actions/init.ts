@@ -13,6 +13,7 @@ import {
   writeConfig,
   writeAuth,
   DEFAULT_CONFIG,
+  DEFAULT_PUBLIC_FILES_CONFIG,
 } from "../utils/config-utils";
 import { execSync, spawnSync } from "child_process";
 import { installUpgrade, getCliVersion } from "../utils/npm-utils";
@@ -25,7 +26,9 @@ export interface InitArgs extends CommonArgs {
   codeLang: "" | "ts" | "js";
   codeScheme: "" | "blackbox" | "direct";
   styleScheme: "" | "css" | "css-modules";
-  imagesScheme: "" | "inlined" | "files";
+  imagesScheme: "" | "inlined" | "files" | "public-files";
+  imagesPublicDir: string;
+  imagesPublicUrlPrefix: string;
   srcDir: string;
   plasmicDir: string;
 }
@@ -130,6 +133,11 @@ export async function initPlasmic(opts: InitArgs) {
     value: "files",
   };
 
+  const publicFilesImagesOpt = {
+    name: `Images stored in a special static folder, referenced like <img src="/static/image.png"/>`,
+    value: "public-files",
+  };
+
   const answers = await inquirer.prompt([
     {
       name: "srcDir",
@@ -177,10 +185,29 @@ export async function initPlasmic(opts: InitArgs) {
     },
     {
       name: "imagesScheme",
-      message: `How should we reference image files used in Plasmic components?`,
+      message: `How should we reference image files used in Plasmic components?\n>`,
       type: "list",
-      choices: () => [inlinedImagesOpt, filesImagesOpt],
+      choices: () => [inlinedImagesOpt, filesImagesOpt, publicFilesImagesOpt],
       when: () => !opts.imagesScheme,
+    },
+    {
+      name: "imagesPublicDir",
+      message: (ans: any) =>
+        `What directory should public static files be put into?
+    (This is relative to ${ans.srcDir || DEFAULT_CONFIG.srcDir})
+>`,
+      default: DEFAULT_PUBLIC_FILES_CONFIG.publicDir,
+      when: (ans: any) =>
+        !opts.imagesPublicDir &&
+        ans.imagesScheme === publicFilesImagesOpt.value,
+    },
+    {
+      name: "imagesPublicUrlPrefix",
+      message: `What's the URL prefix from which the app will serve static files?\n>`,
+      default: DEFAULT_PUBLIC_FILES_CONFIG.publicUrlPrefix,
+      when: (ans: any) =>
+        !opts.imagesPublicUrlPrefix &&
+        ans.imagesScheme === publicFilesImagesOpt.value,
     },
   ]);
 
@@ -216,6 +243,8 @@ function createInitConfig(opts: InitArgs): PlasmicConfig {
     },
     images: {
       ...(opts.imagesScheme && { scheme: opts.imagesScheme }),
+      ...(opts.imagesScheme && { publicDir: opts.imagesPublicDir }),
+      ...(opts.imagesScheme && { publicUrlPrefix: opts.imagesPublicUrlPrefix }),
     },
     platform: opts.platform,
     cliVersion: getCliVersion(),
