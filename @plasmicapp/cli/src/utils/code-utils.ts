@@ -29,7 +29,10 @@ import generate, { GeneratorOptions } from "@babel/generator";
 import * as babel from "@babel/core";
 import { ImportDeclaration } from "@babel/types";
 import { HandledError } from "../utils/error";
-import { fixComponentCssReferences } from "../actions/sync-images";
+import {
+  fixComponentCssReferences,
+  fixComponentImagesReferences,
+} from "../actions/sync-images";
 
 export const formatAsLocal = (
   c: string,
@@ -414,12 +417,19 @@ function fixComponentImportStatements(
     );
   }
 
-  if (context.config.images.scheme === "files") {
+  if (context.config.images.scheme !== "inlined") {
     fixComponentCssReferences(
       context,
       fixImportContext,
       compConfig.cssFilePath
     );
+    if (context.config.images.scheme === "public-files") {
+      fixComponentImagesReferences(
+        context,
+        fixImportContext,
+        compConfig.renderModuleFilePath
+      );
+    }
   }
 }
 
