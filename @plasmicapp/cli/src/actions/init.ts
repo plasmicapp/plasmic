@@ -16,7 +16,11 @@ import {
   DEFAULT_PUBLIC_FILES_CONFIG,
 } from "../utils/config-utils";
 import { execSync, spawnSync } from "child_process";
-import { installUpgrade, getCliVersion } from "../utils/npm-utils";
+import {
+  installUpgrade,
+  getCliVersion,
+  getParsedPackageJson,
+} from "../utils/npm-utils";
 import { logger } from "../deps";
 import { existsBuffered } from "../utils/file-utils";
 
@@ -88,6 +92,24 @@ export async function initPlasmic(opts: InitArgs) {
         explanation: "No tsconfig.json detected, guessing Javascript",
       };
 
+  const nextDetect =
+    existsBuffered("next.config.js") ||
+    existsBuffered(".next") ||
+    existsBuffered("next-env.d.ts") ||
+    (() => {
+      try {
+        const packageJsonContent = getParsedPackageJson();
+        return packageJsonContent.scripts.build === "next build";
+      } catch {
+        return false;
+      }
+    })()
+      ? {
+          next: true,
+          explanation: "NextJs detected",
+        }
+      : {};
+
   const jsOpt = {
     name: "Javascript",
     value: "js",
@@ -134,7 +156,7 @@ export async function initPlasmic(opts: InitArgs) {
   };
 
   const publicFilesImagesOpt = {
-    name: `Images stored in a special static folder, referenced like <img src="/static/image.png"/>`,
+    name: `Images stored in a public folder, referenced like <img src="/static/image.png"/>`,
     value: "public-files",
   };
 
@@ -143,7 +165,7 @@ export async function initPlasmic(opts: InitArgs) {
       name: "srcDir",
       message:
         "What directory should React component files (that you edit) be put into?\n>",
-      default: DEFAULT_CONFIG.srcDir,
+      default: nextDetect.next ? "./components" : DEFAULT_CONFIG.srcDir,
       when: () => !opts.srcDir,
     },
     {
@@ -171,43 +193,59 @@ export async function initPlasmic(opts: InitArgs) {
   - We generally recommend Blackbox for new users.
   - See https://plasmic.app/learn/codegen-overview for examples.
   - You can choose schemes for individual components.
-`,
+>`,
       type: "list",
       choices: () => [blackboxOpt, directOpt],
       when: () => !opts.codeScheme,
     },
     {
       name: "styleScheme",
-      message: `How should we generate css for Plasmic components?`,
+      message: `How should we generate css for Plasmic components?${
+        nextDetect.next &&
+        `\n  (${nextDetect.explanation}, guessing CSS modules)`
+      }\n>`,
       type: "list",
       choices: () => [plainCssOpt, cssModuleOpt],
+      default: () => (nextDetect.next ? cssModuleOpt.value : plainCssOpt.value),
       when: () => !opts.styleScheme,
     },
     {
       name: "imagesScheme",
-      message: `How should we reference image files used in Plasmic components?\n>`,
+      message: `How should we reference image files used in Plasmic components? ${
+        nextDetect.next &&
+        `\n  (${nextDetect.explanation}, guessing Public folder)`
+      }\n>`,
       type: "list",
       choices: () => [inlinedImagesOpt, filesImagesOpt, publicFilesImagesOpt],
+      default: () =>
+        nextDetect.next ? publicFilesImagesOpt.value : inlinedImagesOpt.value,
       when: () => !opts.imagesScheme,
     },
     {
       name: "imagesPublicDir",
       message: (ans: any) =>
-        `What directory should public static files be put into?
-    (This is relative to ${ans.srcDir || DEFAULT_CONFIG.srcDir})
+        `What directory should static image files be put into?
+  (This is relative to ${ans.srcDir || DEFAULT_CONFIG.srcDir})
 >`,
       default: DEFAULT_PUBLIC_FILES_CONFIG.publicDir,
       when: (ans: any) =>
         !opts.imagesPublicDir &&
-        ans.imagesScheme === publicFilesImagesOpt.value,
+        (opts.imagesScheme || ans.imagesScheme) === publicFilesImagesOpt.value,
     },
     {
       name: "imagesPublicUrlPrefix",
       message: `What's the URL prefix from which the app will serve static files?\n>`,
-      default: DEFAULT_PUBLIC_FILES_CONFIG.publicUrlPrefix,
+      default: (ans: any) =>
+        nextDetect.next &&
+        path.join(
+          opts.srcDir || ans.srcDir,
+          opts.imagesPublicDir || ans.imagesPublicDir
+        ) === path.normalize("./public")
+          ? "/"
+          : DEFAULT_PUBLIC_FILES_CONFIG.publicUrlPrefix,
       when: (ans: any) =>
         !opts.imagesPublicUrlPrefix &&
-        ans.imagesScheme === publicFilesImagesOpt.value,
+        (opts.imagesScheme || ans.imagesScheme) === publicFilesImagesOpt.value,
     },
   ]);
 

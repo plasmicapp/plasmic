@@ -10,12 +10,16 @@ import findupSync from "findup-sync";
 import { logger } from "../deps";
 import { confirmWithUser } from "./user-utils";
 
-export function getCliVersion() {
+export function getParsedPackageJson() {
   const packageJson = findupSync("package.json", { cwd: __dirname });
   if (!packageJson) {
     throw new Error(`Cannot find package.json in ancestors of ${__dirname}`);
   }
-  const j = parsePackageJson(packageJson);
+  return parsePackageJson(packageJson);
+}
+
+export function getCliVersion() {
+  const j = getParsedPackageJson();
   return j.version as string;
 }
 
