@@ -93,7 +93,7 @@ async function checkProjectMeta(
         return true;
       } else {
         logger.info(
-          `Project '${projectName}'@${newVersion} is already up to date. Skipping...`
+          `Project '${projectName}'@${newVersion} is already up to date; skipping. (To force an update, run again with "--force")`
         );
         return false;
       }
