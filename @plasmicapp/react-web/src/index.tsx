@@ -216,6 +216,10 @@ export function createPlasmicElementProxy<
   //
   // TODO: is this ConcurrentMode friendly?
 
+  if (props == null) {
+    props = {};
+  }
+
   const name = props["data-plasmic-name"];
   const isRoot = props["data-plasmic-root"];
   const forNodeName = props["data-plasmic-for-node"];
