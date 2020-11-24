@@ -52,6 +52,11 @@ export async function warnLatest(
   const check = await checkVersion(context, pkg);
   if (check.type === "up-to-date") {
     return;
+  } else if (check.type === "wrong-npm-registry") {
+    logger.warn(
+      `${msgs.requiredMsg()} Unable to find this package in your npm registry. Please update this dependency manually.`
+    );
+    return;
   }
 
   if (
@@ -71,7 +76,15 @@ export async function warnLatest(
 }
 
 async function checkVersion(context: PlasmicContext, pkg: string) {
-  const last = await latest(pkg);
+  // Try to get the latest version from npm
+  let last = null;
+  try {
+    last = await latest(pkg);
+  } catch (e) {
+    // This is likely because .npmrc is set to a different registry
+    return { type: "wrong-npm-registry" } as const;
+  }
+
   const cur = findInstalledVersion(context, pkg);
   if (!cur) {
     return { type: "not-installed" } as const;
