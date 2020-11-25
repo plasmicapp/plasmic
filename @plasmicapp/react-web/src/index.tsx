@@ -780,7 +780,7 @@ export function deriveRenderOpts(
     props.args ?? {}
   );
   let overrides = mergeFlexOverrides(
-    pick(props, ...descendantNames),
+    omit(pick(props, ...descendantNames), ...internalArgPropNames),
     props.overrides ?? {}
   );
 
