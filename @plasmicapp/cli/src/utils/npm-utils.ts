@@ -125,8 +125,7 @@ function parsePackageJson(path: string) {
 
 export function installUpgrade(pkg: string) {
   const mgr = detectPackageManager();
-  const cmd =
-    mgr === "yarn" ? `yarn add -W ${pkg}` : `npm install --save ${pkg}`;
+  const cmd = mgr === "yarn" ? `yarn add -W ${pkg}` : `npm install ${pkg}`;
   logger.info(cmd);
   const r = spawnSync(cmd, { shell: true, stdio: "inherit" });
   if (r.status === 0) {
