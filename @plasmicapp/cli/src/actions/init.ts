@@ -1,28 +1,28 @@
-import fs from "fs";
 import inquirer from "inquirer";
-import path from "upath";
 import os from "os";
+import path from "upath";
+import { v4 as uuidv4 } from "uuid";
 import { CommonArgs } from "..";
+import { logger } from "../deps";
 import {
-  findConfigFile,
-  findAuthFile,
   AUTH_FILE_NAME,
   CONFIG_FILE_NAME,
-  PlasmicConfig,
-  fillDefaults,
-  writeConfig,
-  writeAuth,
   DEFAULT_CONFIG,
   DEFAULT_PUBLIC_FILES_CONFIG,
+  fillDefaults,
+  findAuthFile,
+  findConfigFile,
+  PlasmicConfig,
+  writeAuth,
+  writeConfig,
 } from "../utils/config-utils";
-import { execSync, spawnSync } from "child_process";
+import { existsBuffered } from "../utils/file-utils";
 import {
-  installUpgrade,
   getCliVersion,
   getParsedPackageJson,
+  installUpgrade,
 } from "../utils/npm-utils";
-import { logger } from "../deps";
-import { existsBuffered } from "../utils/file-utils";
+import { pollAuthToken } from "../utils/poll-token";
 
 export interface InitArgs extends CommonArgs {
   host: string;
@@ -46,17 +46,26 @@ export async function initPlasmic(opts: InitArgs) {
         name: "user",
         message: "Your Plasmic user email",
       },
-      {
-        name: "token",
-        message: `Your personal access token (create one at https://studio.plasmic.app/self/settings)`,
-      },
     ]);
+
+    const initToken = uuidv4();
+    logger.info(
+      `Please log into this link: ${opts.host}/auth/plasmic-init/${initToken}`
+    );
+
+    let authToken: string;
+    try {
+      authToken = await pollAuthToken(opts.host, auth.user, initToken);
+    } catch (e) {
+      console.error(`Could not get auth token from Plasmic: ${e}`);
+      return;
+    }
 
     const newAuthFile = opts.auth || path.join(os.homedir(), AUTH_FILE_NAME);
     writeAuth(newAuthFile, {
-      host: "https://studio.plasmic.app",
+      host: opts.host,
       user: auth.user,
-      token: auth.token,
+      token: authToken,
     });
 
     logger.info(
