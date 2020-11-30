@@ -200,13 +200,9 @@ export async function initPlasmic(opts: InitArgs) {
     },
     {
       name: "styleScheme",
-      message: `How should we generate css for Plasmic components?${
-        nextDetect.next &&
-        `\n  (${nextDetect.explanation}, guessing CSS modules)`
-      }\n>`,
+      message: `How should we generate css for Plasmic components?`,
       type: "list",
-      choices: () => [plainCssOpt, cssModuleOpt],
-      default: () => (nextDetect.next ? cssModuleOpt.value : plainCssOpt.value),
+      choices: () => [cssModuleOpt, plainCssOpt],
       when: () => !opts.styleScheme,
     },
     {
