@@ -160,8 +160,13 @@ async function checkProjectMeta(
     return await confirmWithUser("Do you want to force it?", opts.force, "n");
   };
 
-  if (opts.projects.includes(projectId) && opts.force) {
-    // if --force is used, and this is an explicitly specified --projects, then
+  const projectIds =
+    opts.projects.length > 0
+      ? opts.projects
+      : context.config.projects.map((p) => p.projectId);
+
+  if (projectIds.includes(projectId) && opts.force) {
+    // if --force is used, and this is in the list of projects to sync, then
     // we should always sync it, even if nothing has changed
     return true;
   }
