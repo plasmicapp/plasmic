@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/cli",
-  "version": "0.1.72",
+  "version": "0.1.73",
   "description": "plasmic cli for syncing local code with Plasmic designs",
   "main": "./dist/index.js",
   "bin": {
@@ -27,7 +27,7 @@
     "@types/pako": "^1.0.1",
     "@types/prettier": "^2.0.2",
     "@types/semver": "^7.3.1",
-    "@types/socket.io-client": "^1.4.33",
+    "@types/socket.io-client": "^1.4.34",
     "@types/tmp": "^0.2.0",
     "@types/update-notifier": "^4.1.0",
     "@types/uuid": "^8.3.0",
@@ -61,7 +61,7 @@
     "path": "^0.12.7",
     "prettier": "^2.0.5",
     "semver": "^7.3.2",
-    "socket.io-client": "^2.3.0",
+    "socket.io-client": "^3.0.3",
     "typescript": "^3.9.6",
     "upath": "^1.2.0",
     "update-notifier": "^4.1.0",
