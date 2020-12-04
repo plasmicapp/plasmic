@@ -1,66 +1,59 @@
-import path from "upath";
+import {
+  ComponentInfoForMerge,
+  makeCachedProjectSyncDataProvider,
+  mergeFiles,
+} from "@plasmicapp/code-merger";
+import { spawnSync } from "child_process";
 import L from "lodash";
+import path from "upath";
 import { CommonArgs } from "..";
-import { logger } from "../deps";
 import {
-  getContext,
-  getOrAddProjectConfig,
-  getOrAddProjectLock,
-  updateConfig,
-  PlasmicContext,
-  ProjectConfig,
-  ProjectLock,
-  createProjectConfig,
-  CONFIG_FILE_NAME,
-  ComponentConfig,
-} from "../utils/config-utils";
-import {
-  buildBaseNameToFiles,
-  writeFileContent,
-  findSrcDirPath,
-  readFileContent,
-  stripExtension,
-  fixAllFilePaths,
-  withBufferedFs,
-  renameFile,
-} from "../utils/file-utils";
-import {
-  ProjectBundle,
+  AppServerError,
   ComponentBundle,
   GlobalVariantBundle,
   ProjectMetaBundle,
   StyleConfigResponse,
-  IconBundle,
-  AppServerError,
 } from "../api";
+import { logger } from "../deps";
 import {
-  fixAllImportStatements,
-  tsxToJsx,
-  formatScript,
   ComponentUpdateSummary,
-  replaceImports,
-  mkFixImportContext,
+  fixAllImportStatements,
   formatAsLocal,
   maybeConvertTsxToJsx,
+  mkFixImportContext,
+  replaceImports,
 } from "../utils/code-utils";
-import { upsertStyleTokens } from "./sync-styles";
-import { flatMap } from "../utils/lang-utils";
 import {
-  warnLatestReactWeb,
-  getCliVersion,
-  findInstalledVersion,
-} from "../utils/npm-utils";
-import {
-  ComponentInfoForMerge,
-  mergeFiles,
-  makeCachedProjectSyncDataProvider,
-} from "@plasmicapp/code-merger";
-import { syncProjectIconAssets } from "./sync-icons";
-import * as semver from "../utils/semver";
-import { spawnSync } from "child_process";
+  ComponentConfig,
+  CONFIG_FILE_NAME,
+  createProjectConfig,
+  getContext,
+  getOrAddProjectConfig,
+  getOrAddProjectLock,
+  PlasmicContext,
+  ProjectConfig,
+  updateConfig,
+} from "../utils/config-utils";
 import { HandledError } from "../utils/error";
+import {
+  defaultResourcePath,
+  fixAllFilePaths,
+  readFileContent,
+  renameFile,
+  stripExtension,
+  withBufferedFs,
+  writeFileContent,
+} from "../utils/file-utils";
+import {
+  findInstalledVersion,
+  getCliVersion,
+  warnLatestReactWeb,
+} from "../utils/npm-utils";
 import { checkVersionResolution } from "../utils/resolve-utils";
+import * as semver from "../utils/semver";
+import { syncProjectIconAssets } from "./sync-icons";
 import { syncProjectImageAssets } from "./sync-images";
+import { upsertStyleTokens } from "./sync-styles";
 
 export interface SyncArgs extends CommonArgs {
   projects: readonly string[];
@@ -316,7 +309,11 @@ async function syncProject(
       );
     });
   }
-  syncGlobalVariants(context, projectId, projectBundle.globalVariants);
+  syncGlobalVariants(
+    context,
+    projectBundle.projectConfig,
+    projectBundle.globalVariants
+  );
 
   await syncProjectConfig(
     context,
@@ -447,17 +444,13 @@ async function syncProjectComponents(
         name: componentName,
         type: "managed",
         projectId: project.projectId,
-        renderModuleFilePath: path.join(
-          context.config.defaultPlasmicDir,
-          L.snakeCase(`${project.projectName}`),
+        renderModuleFilePath: defaultResourcePath(
+          context,
+          project,
           renderModuleFileName
         ),
         importSpec: { modulePath: skeletonModuleFileName },
-        cssFilePath: path.join(
-          context.config.defaultPlasmicDir,
-          L.snakeCase(project.projectName),
-          cssFileName
-        ),
+        cssFilePath: defaultResourcePath(context, project, cssFileName),
         scheme: scheme as "blackbox" | "direct",
       };
       allCompConfigs[id] = compConfig;
@@ -549,9 +542,10 @@ function syncStyleConfig(
 
 function syncGlobalVariants(
   context: PlasmicContext,
-  projectId: string,
+  projectMeta: ProjectMetaBundle,
   bundles: GlobalVariantBundle[]
 ) {
+  const projectId = projectMeta.projectId;
   const allVariantConfigs = L.keyBy(
     context.config.globalVariants.variantGroups,
     (c) => c.id
@@ -569,8 +563,9 @@ function syncGlobalVariants(
         id: bundle.id,
         name: bundle.name,
         projectId,
-        contextFilePath: path.join(
-          context.config.defaultPlasmicDir,
+        contextFilePath: defaultResourcePath(
+          context,
+          projectMeta,
           bundle.contextFileName
         ),
       };
@@ -598,9 +593,9 @@ async function syncProjectConfig(
   summary: Map<string, ComponentUpdateSummary>,
   pendingMerge: ComponentPendingMerge[]
 ) {
-  const defaultCssFilePath = path.join(
-    context.config.defaultPlasmicDir,
-    L.snakeCase(projectBundle.projectName),
+  const defaultCssFilePath = defaultResourcePath(
+    context,
+    projectBundle.projectName,
     projectBundle.cssFileName
   );
   const isNew = !context.config.projects.find(
@@ -641,9 +636,9 @@ async function syncProjectConfig(
       (c) => c.bundleName === theme.bundleName
     );
     if (!themeConfig) {
-      const themeFilePath = path.join(
-        context.config.defaultPlasmicDir,
-        L.snakeCase(projectBundle.projectName),
+      const themeFilePath = defaultResourcePath(
+        context,
+        projectConfig,
         theme.themeFileName
       );
       themeConfig = { themeFilePath, bundleName: theme.bundleName };

@@ -1,20 +1,18 @@
 import fs from "fs";
-import path from "upath";
 import glob from "glob";
 import L from "lodash";
-import {
-  PlasmicContext,
-  ComponentConfig,
-  ProjectConfig,
-  GlobalVariantGroupConfig,
-  PlasmicConfig,
-  CONFIG_FILE_NAME,
-  IconConfig,
-  updateConfig,
-} from "./config-utils";
-import { isLocalModulePath } from "./code-utils";
+import path from "upath";
+import { ProjectMetaBundle } from "../api";
 import { logger } from "../deps";
 import { HandledError } from "../utils/error";
+import { isLocalModulePath } from "./code-utils";
+import {
+  ComponentConfig,
+  CONFIG_FILE_NAME,
+  PlasmicContext,
+  ProjectConfig,
+  updateConfig,
+} from "./config-utils";
 import { ensureString } from "./lang-utils";
 
 export function stripExtension(filename: string, removeComposedPath = false) {
@@ -45,12 +43,13 @@ export function writeFileContentRaw(
 
 export function defaultResourcePath(
   context: PlasmicContext,
-  project: ProjectConfig,
+  project: ProjectConfig | ProjectMetaBundle | string,
   ...subpaths: string[]
 ) {
+  const projectName = L.isString(project) ? project : project.projectName;
   return path.join(
     context.config.defaultPlasmicDir,
-    L.snakeCase(`${project.projectName}`),
+    L.snakeCase(projectName),
     ...subpaths
   );
 }
