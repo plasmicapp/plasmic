@@ -1,28 +1,35 @@
+import * as Sentry from "@sentry/node";
 import fs from "fs";
-import path from "upath";
-import os from "os";
+import inquirer from "inquirer";
 import L from "lodash";
+import os from "os";
+import path from "upath";
+import { DeepPartial } from "utility-types";
+import { initPlasmic } from "../actions/init";
+import { PlasmicApi } from "../api";
+import { logger } from "../deps";
+import { CommonArgs } from "../index";
+import { runNecessaryMigrationsConfig } from "../migrations/migrations";
+import { HandledError } from "../utils/error";
 import {
-  writeFileContentRaw,
+  existsBuffered,
   findFile,
   readFileText,
-  existsBuffered,
+  writeFileContentRaw,
 } from "./file-utils";
-import { JsBundleTheme, PlasmicApi } from "../api";
-import { CommonArgs } from "../index";
-import { DeepPartial } from "utility-types";
-import * as Sentry from "@sentry/node";
-import { runNecessaryMigrationsConfig } from "../migrations/migrations";
 import { getCliVersion } from "./npm-utils";
-import { logger } from "../deps";
-import { HandledError } from "../utils/error";
-import inquirer from "inquirer";
-import { initPlasmic } from "../actions/init";
-import { ensure } from "./lang-utils";
 
+export const DEFAULT_HOST = "https://studio.plasmic.app";
+
+// Default filenames
 export const AUTH_FILE_NAME = ".plasmic.auth";
 export const CONFIG_FILE_NAME = "plasmic.json";
 export const LOCK_FILE_NAME = "plasmic.lock";
+
+// Default environment variable names
+export const ENV_AUTH_HOST = "PLASMIC_AUTH_HOST";
+export const ENV_AUTH_USER = "PLASMIC_AUTH_USER";
+export const ENV_AUTH_TOKEN = "PLASMIC_AUTH_TOKEN";
 
 export interface PlasmicConfig {
   // Target platform to generate code for
@@ -330,23 +337,30 @@ export function fillDefaults(
 }
 
 export async function getContext(args: CommonArgs): Promise<PlasmicContext> {
-  // PlasmicAuth
-  let authFile =
+  /** PlasmicAuth */
+  let authFilename =
     args.auth || findAuthFile(process.cwd(), { traverseParents: true });
-  if (!authFile) {
+  let authFromFile: AuthConfig | null = null;
+  const authFromEnv = getEnvAuth();
+  // If we're missing all auth options, run `plasmic init`
+  if (!authFromEnv && !authFilename) {
     await maybeRunPlasmicInit(args, ".plasmic.auth");
-    authFile =
+    authFilename =
       args.auth || findAuthFile(process.cwd(), { traverseParents: true });
-    if (!authFile) {
-      const err = new HandledError(
-        "No .plasmic.auth file found with Plasmic credentials. Please run `plasmic init` first."
-      );
-      throw err;
-    }
   }
-  const auth = readAuth(authFile);
-  // Sentry
-  if (auth.host.startsWith("https://studio.plasmic.app")) {
+  // Best effort try to get auth file
+  if (authFilename) {
+    authFromFile = readAuth(authFilename);
+  }
+  const auth = authFromEnv ?? authFromFile;
+  if (!auth) {
+    throw new HandledError(
+      "No .plasmic.auth file found with Plasmic credentials. Please run `plasmic init` first."
+    );
+  }
+
+  /** Sentry */
+  if (auth.host.startsWith(DEFAULT_HOST)) {
     // Production usage of cli
     Sentry.init({
       dsn:
@@ -360,7 +374,7 @@ export async function getContext(args: CommonArgs): Promise<PlasmicContext> {
     });
   }
 
-  // PlasmicConfig
+  /** PlasmicConfig **/
   let configFile =
     args.config || findConfigFile(process.cwd(), { traverseParents: true });
 
@@ -378,7 +392,7 @@ export async function getContext(args: CommonArgs): Promise<PlasmicContext> {
   const config = readConfig(configFile);
   const rootDir = path.dirname(configFile);
 
-  // PlasmicLock
+  /** PlasmicLock */
   // plasmic.lock should be in the same directory as plasmic.json
   const lockFile = path.join(rootDir, LOCK_FILE_NAME);
   const lock = readLock(lockFile);
@@ -451,6 +465,29 @@ export function readAuth(authFile: string) {
     );
     throw e;
   }
+}
+
+export function getEnvAuth(): AuthConfig | undefined {
+  const host = process.env[ENV_AUTH_HOST];
+  const user = process.env[ENV_AUTH_USER];
+  const token = process.env[ENV_AUTH_TOKEN];
+
+  // both user and token are required
+  if (!user || !token) {
+    // Try to give a hint if they partially entered a credential
+    if (user || token) {
+      logger.warn(
+        `Your Plasmic credentials were only partially set via environment variables. Try both ${ENV_AUTH_USER} and ${ENV_AUTH_TOKEN}`
+      );
+    }
+    return;
+  }
+
+  return {
+    host: host ?? DEFAULT_HOST,
+    user,
+    token,
+  };
 }
 
 export function writeConfig(configFile: string, config: PlasmicConfig) {
@@ -539,7 +576,7 @@ export async function maybeRunPlasmicInit(
 
   if (runInit.answer) {
     await initPlasmic({
-      host: "https://studio.plasmic.app",
+      host: DEFAULT_HOST,
       platform: "react",
       codeLang: "",
       codeScheme: "",
