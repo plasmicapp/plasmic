@@ -1,0 +1,15 @@
+{
+  "name": "gatsby-source-plasmic",
+  "version": "0.0.1",
+  "description": "Integrate Plasmic codegen with Gatsby!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@plasmicapp/cli": "^0.1.75",
+    "react": "^17.0.1"
+  }
+}
