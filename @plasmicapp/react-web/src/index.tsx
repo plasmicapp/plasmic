@@ -119,6 +119,24 @@ export function hasVariant<V extends Variants>(
   }
 }
 
+function wrapFlexContainerChildren(children: React.ReactNode) {
+  if (!children) {
+    return null;
+  } else if (Array.isArray(children)) {
+    return React.createElement(
+      "div",
+      { className: "__wab_flex-container" },
+      ...children
+    );
+  } else {
+    return React.createElement(
+      "div",
+      { className: "__wab_flex-container" },
+      children
+    );
+  }
+}
+
 export function createPlasmicElement<
   DefaultElementType extends React.ElementType
 >(
@@ -142,26 +160,27 @@ export function createPlasmicElement<
     children = override2.wrapChildren(ensureNotArray(children));
   }
 
-  if (wrapChildrenInFlex && props.children) {
-    if (Array.isArray(children)) {
-      children = React.createElement(
-        "div",
-        { className: "__wab_flex-container" },
-        ...children
-      );
-    } else {
-      children = React.createElement(
-        "div",
-        { className: "__wab_flex-container" },
-        children
-      );
-    }
+  if (wrapChildrenInFlex) {
+    children = wrapFlexContainerChildren(children);
   }
 
-  let result: React.ReactElement | null = null;
+  let result = createElementWithChildren(root, props, children);
+
+  if (override2.wrap) {
+    result = override2.wrap(result) as React.ReactElement;
+  }
+
+  return result;
+}
+
+function createElementWithChildren(
+  elementType: any,
+  props: any,
+  children: React.ReactNode
+) {
   if (Array.isArray(children)) {
-    result = React.createElement(
-      root,
+    return React.createElement(
+      elementType,
       props,
       ...children
     ) as React.ReactElement;
@@ -173,16 +192,10 @@ export function createPlasmicElement<
     // If the `root` is an PlasmicGeneratedComponent, and these props with {children: undefined}
     // are used, then it will be taken as a `children` override, and will thus blank out
     // everything under the root node.
-    result = React.createElement(root, props, children);
+    return React.createElement(elementType, props, children);
   } else {
-    result = React.createElement(root, props);
+    return React.createElement(elementType, props);
   }
-
-  if (override2.wrap) {
-    result = override2.wrap(result) as React.ReactElement;
-  }
-
-  return result;
 }
 
 function ensureNotArray(children: React.ReactNode) {
@@ -451,32 +464,39 @@ export function PlasmicSlot<T extends keyof JSX.IntrinsicElements = "div">(
   );
 }
 
-// To get a type safe FlexStack, you need to explicitly specify both the tag
-// and generic type, such as
-//   <StackImpl as={"a"} href={...}>...</FlexStack>
-export const StackImpl = <
-  T extends keyof JSX.IntrinsicElements | React.ComponentType<any>
+function renderStack<T extends keyof JSX.IntrinsicElements>(
+  as: T,
+  props: React.ComponentProps<T>,
+  ref: React.Ref<any>
+) {
+  const { children, ...rest } = props;
+  const wrappedChildren = wrapFlexContainerChildren(children);
+  return createElementWithChildren(as, { ref, ...rest }, wrappedChildren);
+}
+
+function FlexStack_<T extends keyof JSX.IntrinsicElements = "div">(
+  props: { as?: T } & React.ComponentProps<T>,
+  outerRef: React.Ref<any>
+) {
+  const { as, ...rest } = props;
+  return renderStack(as ?? "div", rest as React.ComponentProps<T>, outerRef);
+}
+
+const FlexStack = React.forwardRef(FlexStack_) as <
+  T extends keyof JSX.IntrinsicElements = "div"
 >(
-  props: React.ComponentProps<T> & { as: T }
-) => {
-  const { as, children, ...rest } = props;
-  const wrappedChildren = (
-    <div className="__wab_flex-container">{children}</div>
-  );
-  return React.createElement(as, rest, wrappedChildren);
+  props: { as?: T } & React.ComponentProps<T>
+) => React.ReactElement;
+
+const makeStackImpl = <T extends keyof JSX.IntrinsicElements>(as: T) => {
+  return React.forwardRef(
+    (props: React.ComponentProps<T>, ref: React.Ref<any>) => {
+      return renderStack(as, props, ref);
+    }
+  ) as React.FC<React.ComponentProps<T>>;
 };
 
-const makeStackImpl = <
-  T extends keyof JSX.IntrinsicElements | React.ComponentType<any>
->(
-  as: T
-) => {
-  return (props: React.ComponentProps<T>) => {
-    return <StackImpl as={as} {...props} />;
-  };
-};
-
-export const Stack = {
+export const Stack = Object.assign(FlexStack, {
   div: makeStackImpl("div"),
   a: makeStackImpl("a"),
   button: makeStackImpl("button"),
@@ -492,11 +512,7 @@ export const Stack = {
   head: makeStackImpl("head"),
   main: makeStackImpl("main"),
   nav: makeStackImpl("nav"),
-};
-
-export const DefaultFlexStack = Stack.div;
-
-export const FlexStack = Stack;
+});
 
 function deriveOverride<C extends React.ElementType>(x: Flex<C>): Override<C> {
   if (!x) {
