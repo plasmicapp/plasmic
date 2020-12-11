@@ -1,6 +1,6 @@
+import { useFocusRing as useAriaFocusRing } from "@react-aria/focus";
 import _classNames from "classnames";
 import * as React from "react";
-import { useFocusRing as useAriaFocusRing } from "@react-aria/focus";
 
 // From https://stackoverflow.com/questions/54775790/forcing-excess-property-checking-on-variable-passed-to-typescript-function
 export type StrictProps<T, TExpected> = Exclude<
@@ -771,16 +771,22 @@ export function deriveRenderOpts(
     internalVariantPropNames,
     internalArgPropNames,
   } = config;
+  const reservedPropNames = ["variants", "args", "overrides"];
   const variants = mergeVariants(
-    pick(props, ...internalVariantPropNames),
+    omit(pick(props, ...internalVariantPropNames), ...reservedPropNames),
     props.variants ?? {}
   );
   const args = mergeArgs(
-    pick(props, ...internalArgPropNames),
+    omit(pick(props, ...internalArgPropNames), ...reservedPropNames),
     props.args ?? {}
   );
   let overrides = mergeFlexOverrides(
-    omit(pick(props, ...descendantNames), ...internalArgPropNames),
+    omit(
+      pick(props, ...descendantNames),
+      ...internalArgPropNames,
+      ...internalVariantPropNames,
+      ...reservedPropNames
+    ),
     props.overrides ?? {}
   );
 
