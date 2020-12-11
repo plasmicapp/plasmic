@@ -1,17 +1,27 @@
-import path, { resolve } from "upath";
+import * as babel from "@babel/core";
+import generate from "@babel/generator";
+import * as parser from "@babel/parser";
+import traverse, { Node } from "@babel/traverse";
+import { ImportDeclaration } from "@babel/types";
 import L from "lodash";
-import fs from "fs";
+import * as Prettier from "prettier";
+import { Options, resolveConfig } from "prettier";
+import * as ts from "typescript";
+import path from "upath";
+import {
+  fixComponentCssReferences,
+  fixComponentImagesReferences,
+} from "../actions/sync-images";
 import { logger } from "../deps";
+import { HandledError } from "../utils/error";
 import {
   ComponentConfig,
-  ImportSpec,
-  ProjectConfig,
   GlobalVariantGroupConfig,
-  PlasmicContext,
-  PlasmicConfig,
-  StyleConfig,
   IconConfig,
   ImageConfig,
+  PlasmicConfig,
+  PlasmicContext,
+  ProjectConfig,
 } from "./config-utils";
 import {
   existsBuffered,
@@ -20,19 +30,6 @@ import {
   writeFileContent,
 } from "./file-utils";
 import { flatMap } from "./lang-utils";
-import * as ts from "typescript";
-import * as Prettier from "prettier";
-import { Options, resolveConfig } from "prettier";
-import * as parser from "@babel/parser";
-import traverse, { Node, NodePath } from "@babel/traverse";
-import generate, { GeneratorOptions } from "@babel/generator";
-import * as babel from "@babel/core";
-import { ImportDeclaration } from "@babel/types";
-import { HandledError } from "../utils/error";
-import {
-  fixComponentCssReferences,
-  fixComponentImagesReferences,
-} from "../actions/sync-images";
 
 export const formatAsLocal = (
   c: string,
@@ -488,17 +485,27 @@ export const tsxToJsx = (code: string) => {
   // We also need to add the usageMagic to prevent typescript from remove the
   // import of ncreatePlasmicElementProxy.
   const usageMagic = "\ncreatePlasmicElementProxy();";
-  const replaced =
-    code
-      .replace("/** @jsx ", "/** @ jsx ")
-      .replace("/** @jsxRuntime ", "/** @ jsxRuntime ") + usageMagic;
-  let result = ts.transpileModule(replaced, {
+  const jsxPragmas = ["jsx", "jsxFrag", "jsxRuntime"];
+
+  function prepForTranspile(str: string) {
+    for (const p of jsxPragmas) {
+      str = str.replace(`/** @${p} `, `/** @ ${p} `);
+    }
+    return str + usageMagic;
+  }
+
+  function fixPostTranspile(str: string) {
+    for (const p of jsxPragmas) {
+      str = str.replace(`/** @ ${p} `, `/** @${p} `);
+    }
+    str = str.replace(usageMagic, "");
+    return str;
+  }
+
+  let result = ts.transpileModule(prepForTranspile(code), {
     compilerOptions: CompilerOptions.getOpts(),
   });
-  return result.outputText
-    .replace("/** @ jsx ", "/** @jsx ")
-    .replace("/** @ jsxRuntime ", "/** @jsxRuntime ")
-    .replace(usageMagic, "");
+  return fixPostTranspile(result.outputText);
 };
 
 export function maybeConvertTsxToJsx(fileName: string, content: string) {
