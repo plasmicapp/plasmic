@@ -151,8 +151,18 @@ export function createPlasmicElement<
     return override2.render(props as React.ComponentProps<DefaultElementType>);
   }
 
-  const root =
-    override2.type === "as" ? override2.as || defaultRoot : defaultRoot;
+  let root = defaultRoot;
+  if (override2.type === "as" && override2.as) {
+    if (defaultRoot === (Stack as React.ElementType)) {
+      // If there was an "as" override specified, but the default type is
+      // a Stack, then we don't want to switch to using "as" as the root,
+      // because then we'd lose the flex wrapper that Stack provides.
+      // Instead, we specify the "as" as the "as" prop to Stack.
+      props.as = override2.as;
+    } else {
+      root = override2.as;
+    }
+  }
 
   let children = props.children;
 
@@ -161,6 +171,7 @@ export function createPlasmicElement<
   }
 
   if (wrapChildrenInFlex) {
+    // For legacy, we still support data-plasmic-wrap-flex-children
     children = wrapFlexContainerChildren(children);
   }
 
@@ -467,31 +478,43 @@ export function PlasmicSlot<T extends keyof JSX.IntrinsicElements = "div">(
 function renderStack<T extends keyof JSX.IntrinsicElements>(
   as: T,
   props: React.ComponentProps<T>,
+  hasGap: boolean | undefined,
   ref: React.Ref<any>
 ) {
   const { children, ...rest } = props;
-  const wrappedChildren = wrapFlexContainerChildren(children);
+  const wrappedChildren = hasGap
+    ? wrapFlexContainerChildren(children)
+    : children;
   return createElementWithChildren(as, { ref, ...rest }, wrappedChildren);
 }
 
 function FlexStack_<T extends keyof JSX.IntrinsicElements = "div">(
-  props: { as?: T } & React.ComponentProps<T>,
+  props: { as?: T; hasGap?: boolean } & React.ComponentProps<T>,
   outerRef: React.Ref<any>
 ) {
-  const { as, ...rest } = props;
-  return renderStack(as ?? "div", rest as React.ComponentProps<T>, outerRef);
+  const { as, hasGap, ...rest } = props;
+  return renderStack(
+    as ?? "div",
+    rest as React.ComponentProps<T>,
+    hasGap,
+    outerRef
+  );
 }
 
 const FlexStack = React.forwardRef(FlexStack_) as <
   T extends keyof JSX.IntrinsicElements = "div"
 >(
-  props: { as?: T } & React.ComponentProps<T>
+  props: { as?: T; hasGap?: boolean } & React.ComponentProps<T>
 ) => React.ReactElement;
 
 const makeStackImpl = <T extends keyof JSX.IntrinsicElements>(as: T) => {
   return React.forwardRef(
-    (props: React.ComponentProps<T>, ref: React.Ref<any>) => {
-      return renderStack(as, props, ref);
+    (
+      props: React.ComponentProps<T> & { hasGap?: boolean },
+      ref: React.Ref<any>
+    ) => {
+      const { hasGap, ...rest } = props;
+      return renderStack(as, rest as React.ComponentProps<T>, hasGap, ref);
     }
   ) as React.FC<React.ComponentProps<T>>;
 };
