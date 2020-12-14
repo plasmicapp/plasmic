@@ -33,7 +33,7 @@ export const ENV_AUTH_TOKEN = "PLASMIC_AUTH_TOKEN";
 
 export interface PlasmicConfig {
   // Target platform to generate code for
-  platform: "react";
+  platform: "react" | "nextjs" | "gatsby";
 
   // The folder containing the source files; this is the default place where
   // all files are generated and dumped.
@@ -577,7 +577,7 @@ export async function maybeRunPlasmicInit(
   if (runInit.answer) {
     await initPlasmic({
       host: DEFAULT_HOST,
-      platform: "react",
+      platform: "",
       codeLang: "",
       codeScheme: "",
       styleScheme: "",

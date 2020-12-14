@@ -26,7 +26,7 @@ import { pollAuthToken } from "../utils/poll-token";
 
 export interface InitArgs extends CommonArgs {
   host: string;
-  platform: "react";
+  platform: "" | "react" | "nextjs" | "gatsby";
   codeLang: "" | "ts" | "js";
   codeScheme: "" | "blackbox" | "direct";
   styleScheme: "" | "css" | "css-modules";
@@ -101,7 +101,7 @@ export async function initPlasmic(opts: InitArgs) {
         explanation: "No tsconfig.json detected, guessing Javascript",
       };
 
-  const nextDetect =
+  const platformDetect =
     existsBuffered("next.config.js") ||
     existsBuffered(".next") ||
     existsBuffered("next-env.d.ts") ||
@@ -114,10 +114,30 @@ export async function initPlasmic(opts: InitArgs) {
       }
     })()
       ? {
-          next: true,
-          explanation: "NextJs detected",
+          platform: "nextjs",
+          explanation: "Next.js detected",
+        }
+      : existsBuffered("gatsby-config.js")
+      ? {
+          platform: "gatsby",
+          explanation: "Gatsby detected",
         }
       : {};
+
+  const reactOpt = {
+    name: "React",
+    value: "react",
+  };
+
+  const nextjsOpt = {
+    name: "Next.js",
+    value: "nextjs",
+  };
+
+  const gatsbyOpt = {
+    name: "Gatsby",
+    value: "gatsby",
+  };
 
   const jsOpt = {
     name: "Javascript",
@@ -171,10 +191,23 @@ export async function initPlasmic(opts: InitArgs) {
 
   const answers = await inquirer.prompt([
     {
+      name: "platform",
+      message: `What platform should code generation target? ${
+        platformDetect.platform ? `(${platformDetect.explanation})` : ""
+      }\n>`,
+      type: "list",
+      choices: [reactOpt, nextjsOpt, gatsbyOpt],
+      default: platformDetect.platform || DEFAULT_CONFIG.platform,
+      when: () => !opts.platform,
+    },
+    {
       name: "srcDir",
       message:
         "What directory should React component files (that you edit) be put into?\n>",
-      default: nextDetect.next ? "./components" : DEFAULT_CONFIG.srcDir,
+      default:
+        platformDetect.platform === "nextjs"
+          ? "./components"
+          : DEFAULT_CONFIG.srcDir,
       when: () => !opts.srcDir,
     },
     {
@@ -217,13 +250,16 @@ export async function initPlasmic(opts: InitArgs) {
     {
       name: "imagesScheme",
       message: `How should we reference image files used in Plasmic components? ${
-        nextDetect.next &&
-        `\n  (${nextDetect.explanation}, guessing Public folder)`
+        platformDetect.platform === "nextjs"
+          ? `\n  (${platformDetect.explanation}, guessing Public folder)`
+          : ""
       }\n>`,
       type: "list",
       choices: () => [inlinedImagesOpt, filesImagesOpt, publicFilesImagesOpt],
       default: () =>
-        nextDetect.next ? publicFilesImagesOpt.value : inlinedImagesOpt.value,
+        platformDetect.platform === "nextjs"
+          ? publicFilesImagesOpt.value
+          : inlinedImagesOpt.value,
       when: () => !opts.imagesScheme,
     },
     {
@@ -241,7 +277,7 @@ export async function initPlasmic(opts: InitArgs) {
       name: "imagesPublicUrlPrefix",
       message: `What's the URL prefix from which the app will serve static files?\n>`,
       default: (ans: any) =>
-        nextDetect.next &&
+        platformDetect.platform === "nextjs" &&
         path.join(
           opts.srcDir || ans.srcDir,
           opts.imagesPublicDir || ans.imagesPublicDir
@@ -289,7 +325,7 @@ function createInitConfig(opts: InitArgs): PlasmicConfig {
       ...(opts.imagesScheme && { publicDir: opts.imagesPublicDir }),
       ...(opts.imagesScheme && { publicUrlPrefix: opts.imagesPublicUrlPrefix }),
     },
-    platform: opts.platform,
+    ...(opts.platform && { platform: opts.platform }),
     cliVersion: getCliVersion(),
   });
 }

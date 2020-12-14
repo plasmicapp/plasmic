@@ -1,15 +1,14 @@
 #!/usr/bin/env node
+import semver from "semver";
+import updateNotifier from "update-notifier";
 import yargs from "yargs";
-import { logger } from "./deps";
 import { fixImports, FixImportsArgs } from "./actions/fix-imports";
 import { InitArgs, initPlasmic } from "./actions/init";
-import { SyncArgs, sync } from "./actions/sync";
-import { WatchArgs, watchProjects } from "./actions/watch";
-import { DEFAULT_CONFIG } from "./utils/config-utils";
+import { sync, SyncArgs } from "./actions/sync";
 import { UploadBundleArgs, uploadJsBundle } from "./actions/upload-bundle";
+import { WatchArgs, watchProjects } from "./actions/watch";
+import { logger } from "./deps";
 import { HandledError } from "./utils/error";
-import updateNotifier from "update-notifier";
-import semver from "semver";
 
 if (process.env.DEBUG_CHDIR) {
   process.chdir(process.env.DEBUG_CHDIR);
@@ -59,8 +58,8 @@ yargs
         })
         .option("platform", {
           describe: "Target platform to generate code for",
-          choices: ["react"],
-          default: DEFAULT_CONFIG.platform,
+          choices: ["", "react", "nextjs", "gatsby"],
+          default: "",
         })
         .option("code-lang", {
           describe: "Target language to generate code for",
