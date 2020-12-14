@@ -25,6 +25,7 @@ export const DEFAULT_HOST = "https://studio.plasmic.app";
 export const AUTH_FILE_NAME = ".plasmic.auth";
 export const CONFIG_FILE_NAME = "plasmic.json";
 export const LOCK_FILE_NAME = "plasmic.lock";
+export const CONFIG_SCHEMA_FILE_NAME = "plasmic.schema.json";
 
 // Default environment variable names
 export const ENV_AUTH_HOST = "PLASMIC_AUTH_HOST";
@@ -491,9 +492,29 @@ export function getEnvAuth(): AuthConfig | undefined {
 }
 
 export function writeConfig(configFile: string, config: PlasmicConfig) {
-  writeFileContentRaw(configFile, JSON.stringify(config, undefined, 2), {
-    force: true,
-  });
+  const schemaFilePath = findFile(
+    __dirname,
+    (f) => f === CONFIG_SCHEMA_FILE_NAME,
+    { traverseParents: true }
+  );
+  const relativeSchemaFilePath = schemaFilePath
+    ? path.relative(configFile, schemaFilePath)
+    : undefined;
+
+  writeFileContentRaw(
+    configFile,
+    JSON.stringify(
+      {
+        ...config,
+        $schema: relativeSchemaFilePath,
+      },
+      undefined,
+      2
+    ),
+    {
+      force: true,
+    }
+  );
 }
 
 export function writeLock(lockFile: string, lock: PlasmicLock) {

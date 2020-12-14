@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/cli",
-  "version": "0.1.75",
+  "version": "0.1.76",
   "description": "plasmic cli for syncing local code with Plasmic designs",
   "main": "./dist/index.js",
   "bin": {
@@ -37,6 +37,7 @@
     "eslint": "^7.7.0",
     "jest": "^26.1.0",
     "jest-circus": "^26.1.0",
+    "typescript-json-schema": "^0.45.0",
     "tmp": "^0.2.1",
     "ts-jest": "^26.1.2",
     "ts-node": "^8.10.2",
