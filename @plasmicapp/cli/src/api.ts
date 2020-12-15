@@ -1,8 +1,8 @@
-import { AuthConfig, ImagesConfig, StyleConfig } from "./utils/config-utils";
-import axios, { AxiosResponse, AxiosError } from "axios";
-import socketio from "socket.io-client";
 import { ProjectSyncMetadataModel } from "@plasmicapp/code-merger";
+import axios, { AxiosError } from "axios";
+import socketio from "socket.io-client";
 import { logger } from "./deps";
+import { AuthConfig, ImagesConfig, StyleConfig } from "./utils/config-utils";
 
 export class AppServerError extends Error {
   constructor(message: string) {
@@ -149,6 +149,12 @@ export class PlasmicApi {
     );
     const versionResolution = resp.data as VersionResolution;
     return { ...versionResolution };
+  }
+
+  async getCurrentUser() {
+    return await axios.get(`${this.auth.host}/api/v1/auth/self`, {
+      headers: this.makeHeaders(),
+    });
   }
 
   /**

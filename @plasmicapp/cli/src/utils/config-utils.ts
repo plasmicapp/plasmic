@@ -337,28 +337,59 @@ export function fillDefaults(
   return L.merge({}, DEFAULT_CONFIG, config);
 }
 
-export async function getContext(args: CommonArgs): Promise<PlasmicContext> {
-  /** PlasmicAuth */
-  let authFilename =
-    args.auth || findAuthFile(process.cwd(), { traverseParents: true });
-  let authFromFile: AuthConfig | null = null;
+/**
+ * Examines several places to find the right auth information.
+ * NOTE: the token can be wrong/revoked. Call `getCurrentAuth()`
+ * instead to be sure that the credentials are correct.
+ */
+function readCurrentAuth(
+  authPath = findAuthFile(process.cwd(), { traverseParents: true })
+) {
   const authFromEnv = getEnvAuth();
-  // If we're missing all auth options, run `plasmic init`
-  if (!authFromEnv && !authFilename) {
-    await maybeRunPlasmicInit(args, ".plasmic.auth");
-    authFilename =
-      args.auth || findAuthFile(process.cwd(), { traverseParents: true });
+  if (authFromEnv) return authFromEnv;
+
+  if (!authPath) {
+    throw new HandledError("Could not find the .plasmic.auth file path.");
   }
-  // Best effort try to get auth file
-  if (authFilename) {
-    authFromFile = readAuth(authFilename);
+  return readAuth(authPath);
+}
+
+export async function getCurrentAuth(authPath?: string) {
+  const auth = readCurrentAuth(authPath);
+  const api = new PlasmicApi(auth);
+
+  try {
+    await api.getCurrentUser();
+  } catch {
+    throw new HandledError("The authentication config is invalid.");
   }
-  const auth = authFromEnv ?? authFromFile;
-  if (!auth) {
-    throw new HandledError(
-      "No .plasmic.auth file found with Plasmic credentials. Please run `plasmic init` first."
-    );
+  return auth;
+}
+
+/**
+ * Attempts to get verified auth credentials. If the current
+ * ones are invalid, invite the user to start the auth process.
+ * Ends the current node process if unable to get them.
+ */
+async function getOrInitAuth(args: CommonArgs) {
+  if (args.auth && !existsBuffered(args.auth)) {
+    throw new HandledError(`No Plasmic config file found at ${args.auth}`);
   }
+
+  try {
+    const auth = await getCurrentAuth(args.auth);
+    return auth;
+  } catch (e) {
+    if (await maybeRunPlasmicInit(args, ".plasmic.auth")) {
+      return getCurrentAuth();
+    }
+    // User refused to add credentials. End the process.
+    process.exit(1);
+  }
+}
+
+export async function getContext(args: CommonArgs): Promise<PlasmicContext> {
+  const auth = await getOrInitAuth(args);
 
   /** Sentry */
   if (auth.host.startsWith(DEFAULT_HOST)) {
@@ -588,7 +619,7 @@ export function getOrAddProjectLock(
 export async function maybeRunPlasmicInit(
   args: CommonArgs,
   missingFile: string
-): Promise<void> {
+): Promise<boolean> {
   const runInit = await inquirer.prompt({
     name: "answer",
     message: `No ${missingFile} file found. Would you like to run \`plasmic init\`?`,
@@ -609,5 +640,7 @@ export async function maybeRunPlasmicInit(
       imagesPublicUrlPrefix: "",
       ...args,
     });
+    return true;
   }
+  return false;
 }

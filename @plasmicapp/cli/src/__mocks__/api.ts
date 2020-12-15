@@ -1,18 +1,18 @@
-import L from "lodash";
-import { ensure } from "../utils/lang-utils";
-import * as semver from "../utils/semver";
 import { ProjectSyncMetadataModel } from "@plasmicapp/code-merger";
-import { AuthConfig } from "../utils/config-utils";
+import L from "lodash";
 import {
+  ComponentBundle,
   ProjectBundle,
-  StyleConfigResponse,
-  StyleTokensMap,
-  ProjectVersionMeta,
   ProjectIconsResponse,
   ProjectMetaBundle,
-  ComponentBundle,
+  ProjectVersionMeta,
+  StyleConfigResponse,
+  StyleTokensMap,
   VersionResolution,
 } from "../api";
+import { AuthConfig } from "../utils/config-utils";
+import { ensure } from "../utils/lang-utils";
+import * as semver from "../utils/semver";
 
 const api: any = jest.genMockFromModule("../api");
 
@@ -242,6 +242,10 @@ class PlasmicApi {
     }
 
     return results;
+  }
+
+  async getCurrentUser() {
+    return true;
   }
 
   async projectComponents(

@@ -12,10 +12,29 @@ function generateEntrypoint({ dir, projectIds }) {
   const currentDir = dir;
   const configPath = path.join(currentDir, "plasmic.json");
   const entrypointPath = path.join(__dirname, "PlasmicLoader.js");
-  cp.execSync(`plasmic sync --projects ${projectIds.join(" ")}`, {
-    cwd: currentDir,
-    stdio: "inherit",
-  });
+
+  try {
+    cp.execSync("plasmic auth --check", {
+      cwd: currentDir,
+      stdio: "inherit",
+    });
+  } catch {
+    console.error(
+      "Unable to sync plasmic project. Please check your auth config and try again."
+    );
+  }
+
+  try {
+    cp.execSync(`plasmic sync --projects ${projectIds.join(" ")}`, {
+      cwd: currentDir,
+      stdio: "inherit",
+    });
+  } catch {
+    console.error(
+      "Unable to sync plasmic project. Please check the above error and try again."
+    );
+  }
+
   const configData = fs.readFileSync(configPath);
   const config = JSON.parse(configData.toString());
   const componentData = [];

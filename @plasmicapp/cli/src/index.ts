@@ -2,6 +2,7 @@
 import semver from "semver";
 import updateNotifier from "update-notifier";
 import yargs from "yargs";
+import * as auth from "./actions/auth";
 import { fixImports, FixImportsArgs } from "./actions/fix-imports";
 import { InitArgs, initPlasmic } from "./actions/init";
 import { sync, SyncArgs } from "./actions/sync";
@@ -110,6 +111,20 @@ yargs
         });
     },
     (argv) => initPlasmic(argv)
+  )
+  .command<auth.AuthArgs>(
+    "auth",
+    "Authenticates you to plasmic.",
+    (yags) => {
+      yargs.option("check", {
+        alias: "c",
+        describe: "Verifies if the current credentials are valid.",
+        type: "boolean",
+      });
+    },
+    (argv) => {
+      handleError(auth.auth(argv));
+    }
   )
   .command<SyncArgs>(
     "sync",
