@@ -849,6 +849,23 @@ export function deriveRenderOpts(
   return { variants, args, overrides };
 }
 
+export function ensureGlobalVariants<T extends Record<string, any>>(
+  globalVariantValues: T
+) {
+  Object.entries(globalVariantValues).forEach(([key, value]) => {
+    if (value === "PLEASE_RENDER_INSIDE_PROVIDER") {
+      const providerName =
+        key === "screen"
+          ? "ScreenVariantProvider"
+          : `${key[0].toUpperCase()}${key.substring(1)}Context.Provider`;
+      throw new Error(
+        `Plasmic context value for global variant "${key}" was not provided; please use ${providerName} at the root of your React app. Learn More: https://www.plasmic.app/learn/other-assets/#global-variants`
+      );
+    }
+  });
+  return globalVariantValues;
+}
+
 function notNil<T>(x: T | undefined | null): x is T {
   return x != null;
 }
