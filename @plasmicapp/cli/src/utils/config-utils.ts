@@ -388,7 +388,7 @@ export async function getContext(args: CommonArgs): Promise<PlasmicContext> {
       throw err;
     }
   }
-  runNecessaryMigrationsConfig(configFile);
+  await runNecessaryMigrationsConfig(configFile, args.yes);
   const config = readConfig(configFile);
   const rootDir = path.dirname(configFile);
 

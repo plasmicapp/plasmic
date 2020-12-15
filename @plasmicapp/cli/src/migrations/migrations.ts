@@ -13,17 +13,17 @@
  * passed into your migration function is valid as of the previous version.
  */
 import L from "lodash";
-import { getCliVersion } from "../utils/npm-utils";
-import fs from "fs";
-import path from "upath";
 import semver from "semver";
+import path from "upath";
+import { logger } from "../deps";
+import { HandledError } from "../utils/error";
 import { readFileText, writeFileContentRaw } from "../utils/file-utils";
+import { getCliVersion, installUpgrade } from "../utils/npm-utils";
+import { confirmWithUser } from "../utils/user-utils";
 import { migrateInit } from "./0.1.27-migrateInit";
 import { tsToTsx } from "./0.1.28-tsToTsx";
 import { ensureProjectIcons } from "./0.1.31-ensureProjectIcons";
 import { ensureVersion } from "./0.1.42-ensureVersion";
-import { logger } from "../deps";
-import { HandledError } from "../utils/error";
 import { ensureJsBundleThemes } from "./0.1.57-ensureJsBundleThemes";
 import { ensureImageFiles } from "./0.1.64-imageFiles";
 
@@ -42,7 +42,10 @@ export const MIGRATIONS: Record<string, MigrateFunc> = {
   "0.1.64": ensureImageFiles,
 };
 
-export function runNecessaryMigrationsConfig(configFile: string) {
+export async function runNecessaryMigrationsConfig(
+  configFile: string,
+  yes?: boolean
+) {
   const cliVersion = getCliVersion();
   const readConfig = () => JSON.parse(readFileText(configFile));
   const writeConfig = (config: any) =>
@@ -53,9 +56,15 @@ export function runNecessaryMigrationsConfig(configFile: string) {
   const curVersion: string | undefined = cur.cliVersion;
 
   if (!!curVersion && semver.lt(cliVersion, curVersion)) {
-    throw new HandledError(
-      `Project requires @plasmicapp/cli>=${curVersion} (You currently have ${cliVersion}). Please install a newer version of the CLI and try again.`
+    const confirm = await confirmWithUser(
+      `Project requires @plasmicapp/cli>=${curVersion} (You currently have ${cliVersion}). Would you like to upgrade it?`,
+      yes
     );
+    if (!confirm) {
+      throw new HandledError("Upgrading is required to continue.");
+    }
+
+    installUpgrade("@plasmicapp/cli");
   }
 
   const context: MigrateContext = {

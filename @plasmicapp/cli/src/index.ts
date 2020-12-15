@@ -46,6 +46,11 @@ yargs
     describe:
       "Plasmic config file to use; by default, uses the first plasmic.json file found in the current or parent directories",
   })
+  .option("yes", {
+    type: "boolean",
+    describe: "Automatic yes to prompts.",
+    default: false,
+  })
   .command<InitArgs>(
     "init",
     "Initializes Plasmic for a project.",
@@ -206,11 +211,6 @@ function configureSyncArgs(
       type: "array",
       default: [],
     })
-    .option("yes", {
-      type: "boolean",
-      describe: "Automatic yes to prompts.",
-      default: false,
-    })
     .option("force", {
       type: "boolean",
       describe: "Force sync to bypass specified version ranges.",
@@ -253,4 +253,5 @@ function configureSyncArgs(
 export interface CommonArgs {
   auth?: string;
   config?: string;
+  yes?: boolean;
 }
