@@ -213,12 +213,13 @@ export function replaceImports(
         // ensure import ${compConfig.name} from ...
         ensureImportDefaultSpecifier(stmt, compConfig.name);
       }
-      const realPath = makeImportPath(fromPath, modulePath, true);
+      const realPath = makeImportPath(context, fromPath, modulePath, true);
       stmt.source.value = realPath;
     } else if (type === "render") {
       // import of the PP blackbox
       const compConfig = fixImportContext.components[uuid];
       const realPath = makeImportPath(
+        context,
         fromPath,
         compConfig.renderModuleFilePath,
         true
@@ -227,12 +228,18 @@ export function replaceImports(
     } else if (type === "css") {
       // import of the PP css file
       const compConfig = fixImportContext.components[uuid];
-      const realPath = makeImportPath(fromPath, compConfig.cssFilePath, false);
+      const realPath = makeImportPath(
+        context,
+        fromPath,
+        compConfig.cssFilePath,
+        false
+      );
       stmt.source.value = realPath;
     } else if (type === "globalVariant") {
       // import of global context
       const variantConfig = fixImportContext.globalVariants[uuid];
       const realPath = makeImportPath(
+        context,
         fromPath,
         variantConfig.contextFilePath,
         true
@@ -245,6 +252,7 @@ export function replaceImports(
         throwMissingReference(context, "icon", uuid, fromPath);
       }
       const realPath = makeImportPath(
+        context,
         fromPath,
         iconConfig.moduleFilePath,
         true
@@ -255,11 +263,17 @@ export function replaceImports(
       if (!imageConfig) {
         throwMissingReference(context, "image", uuid, fromPath);
       }
-      const realPath = makeImportPath(fromPath, imageConfig.filePath, false);
+      const realPath = makeImportPath(
+        context,
+        fromPath,
+        imageConfig.filePath,
+        false
+      );
       stmt.source.value = realPath;
     } else if (type === "projectcss") {
       const projectConfig = fixImportContext.projects[uuid];
       const realPath = makeImportPath(
+        context,
         fromPath,
         projectConfig.cssFilePath,
         false
@@ -267,6 +281,7 @@ export function replaceImports(
       stmt.source.value = realPath;
     } else if (type === "defaultcss") {
       const realPath = makeImportPath(
+        context,
         fromPath,
         fixImportContext.config.style.defaultStyleCssFilePath,
         false
@@ -294,10 +309,18 @@ function throwMissingReference(
   );
 }
 
-function makeImportPath(fromPath: string, toPath: string, stripExt: boolean) {
+function makeImportPath(
+  context: PlasmicContext,
+  fromPath: string,
+  toPath: string,
+  stripExt: boolean
+) {
   let result = toPath;
   if (isLocalModulePath(toPath)) {
-    result = path.relative(path.dirname(fromPath), toPath);
+    result = path.relative(
+      path.join(context.absoluteSrcDir || "", path.dirname(fromPath)),
+      path.join(context.absoluteSrcDir || "", toPath)
+    );
     if (!result.startsWith(".")) {
       result = `./${result}`;
     }

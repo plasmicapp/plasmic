@@ -44,6 +44,18 @@ export interface PlasmicConfig {
   // is relative to the srcDir.
   defaultPlasmicDir: string;
 
+  // Next.js specific config.
+  nextjsConfig?: {
+    // The folder containing page components source files.
+    pagesDir?: string;
+  };
+
+  // Gatsby specific setup.
+  gatsbyConfig?: {
+    // The folder containing page components source files.
+    pagesDir?: string;
+  };
+
   // Config for code generation
   code: CodeConfig;
 
@@ -610,4 +622,8 @@ export async function maybeRunPlasmicInit(
       ...args,
     });
   }
+}
+
+export function isPageAwarePlatform(platform: string): boolean {
+  return platform === "nextjs" || platform === "gatsby";
 }

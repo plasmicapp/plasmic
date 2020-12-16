@@ -36,6 +36,7 @@ import {
 } from "../utils/config-utils";
 import { HandledError } from "../utils/error";
 import {
+  defaultPagePath,
   defaultResourcePath,
   fixAllFilePaths,
   readFileContent,
@@ -268,6 +269,7 @@ async function syncProject(
   // Server-side code-gen
   const projectBundle = await context.api.projectComponents(
     projectId,
+    context.config.platform,
     getCliVersion(),
     reactWebVersion,
     newComponentScheme,
@@ -428,6 +430,7 @@ async function syncProjectComponents(
       id,
       scheme,
       nameInIdToUuid,
+      isPage,
     } = bundle;
     if (context.cliArgs.quiet !== true) {
       logger.info(
@@ -437,6 +440,11 @@ async function syncProjectComponents(
     let compConfig = allCompConfigs[id];
     const isNew = !compConfig;
     let skeletonModuleModified = isNew;
+
+    const skeletonPath = isPage
+      ? defaultPagePath(context, skeletonModuleFileName)
+      : skeletonModuleFileName;
+
     if (isNew) {
       // This is the first time we're syncing this component
       compConfig = {
@@ -449,7 +457,7 @@ async function syncProjectComponents(
           project,
           renderModuleFileName
         ),
-        importSpec: { modulePath: skeletonModuleFileName },
+        importSpec: { modulePath: skeletonPath },
         cssFilePath: defaultResourcePath(context, project, cssFileName),
         scheme: scheme as "blackbox" | "direct",
       };
@@ -457,7 +465,7 @@ async function syncProjectComponents(
       project.components.push(allCompConfigs[id]);
 
       // Because it's the first time, we also generate the skeleton file.
-      writeFileContent(context, skeletonModuleFileName, skeletonModule, {
+      writeFileContent(context, skeletonPath, skeletonModule, {
         force: false,
       });
     } else {

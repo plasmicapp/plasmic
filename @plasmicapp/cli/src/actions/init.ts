@@ -12,6 +12,7 @@ import {
   fillDefaults,
   findAuthFile,
   findConfigFile,
+  isPageAwarePlatform,
   PlasmicConfig,
   writeAuth,
   writeConfig,
@@ -35,6 +36,7 @@ export interface InitArgs extends CommonArgs {
   imagesPublicUrlPrefix: string;
   srcDir: string;
   plasmicDir: string;
+  pagesDir?: string;
 }
 export async function initPlasmic(opts: InitArgs) {
   const authFile =
@@ -204,10 +206,8 @@ export async function initPlasmic(opts: InitArgs) {
       name: "srcDir",
       message:
         "What directory should React component files (that you edit) be put into?\n>",
-      default:
-        platformDetect.platform === "nextjs"
-          ? "./components"
-          : DEFAULT_CONFIG.srcDir,
+      default: (ans: any) =>
+        ans.platform === "nextjs" ? "./components" : DEFAULT_CONFIG.srcDir,
       when: () => !opts.srcDir,
     },
     {
@@ -218,6 +218,15 @@ export async function initPlasmic(opts: InitArgs) {
 >`,
       default: DEFAULT_CONFIG.defaultPlasmicDir,
       when: () => !opts.plasmicDir,
+    },
+    {
+      name: "pagesDir",
+      message: (ans: any) =>
+        `What directory should pages be put into?
+  (This is relative to ${ans.srcDir || DEFAULT_CONFIG.srcDir})
+>`,
+      default: "../pages",
+      when: (ans: any) => isPageAwarePlatform(ans.platform) && !opts.pagesDir,
     },
     {
       name: "codeLang",
@@ -249,15 +258,16 @@ export async function initPlasmic(opts: InitArgs) {
     },
     {
       name: "imagesScheme",
-      message: `How should we reference image files used in Plasmic components? ${
-        platformDetect.platform === "nextjs"
-          ? `\n  (${platformDetect.explanation}, guessing Public folder)`
-          : ""
-      }\n>`,
+      message: (ans: any) =>
+        `How should we reference image files used in Plasmic components? ${
+          ans.platform === "nextjs"
+            ? `\n  (platform is Next.js, guessing Public folder)`
+            : ""
+        }\n>`,
       type: "list",
       choices: () => [inlinedImagesOpt, filesImagesOpt, publicFilesImagesOpt],
-      default: () =>
-        platformDetect.platform === "nextjs"
+      default: (ans: any) =>
+        ans.platform === "nextjs"
           ? publicFilesImagesOpt.value
           : inlinedImagesOpt.value,
       when: () => !opts.imagesScheme,
@@ -277,7 +287,7 @@ export async function initPlasmic(opts: InitArgs) {
       name: "imagesPublicUrlPrefix",
       message: `What's the URL prefix from which the app will serve static files?\n>`,
       default: (ans: any) =>
-        platformDetect.platform === "nextjs" &&
+        ans.platform === "nextjs" &&
         path.join(
           opts.srcDir || ans.srcDir,
           opts.imagesPublicDir || ans.imagesPublicDir
@@ -313,6 +323,16 @@ function createInitConfig(opts: InitArgs): PlasmicConfig {
   return fillDefaults({
     srcDir: opts.srcDir,
     defaultPlasmicDir: opts.plasmicDir,
+    ...(opts.platform === "nextjs" && {
+      nextjsConfig: {
+        pagesDir: opts.pagesDir,
+      },
+    }),
+    ...(opts.platform === "gatsby" && {
+      gatsbyConfig: {
+        pagesDir: opts.pagesDir,
+      },
+    }),
     code: {
       ...(opts.codeLang && { lang: opts.codeLang }),
       ...(opts.codeScheme && { scheme: opts.codeScheme }),

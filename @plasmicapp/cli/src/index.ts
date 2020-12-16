@@ -88,6 +88,10 @@ yargs
           type: "string",
           default: "",
         })
+        .option("pages-dir", {
+          describe: "Default directory to put page files (that you edit) into",
+          type: "string",
+        })
         .option("style-scheme", {
           describe: "Styling framework to use",
           choices: ["", "css", "css-modules"],

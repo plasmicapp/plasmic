@@ -1,8 +1,8 @@
-import { AuthConfig, ImagesConfig, StyleConfig } from "./utils/config-utils";
-import axios, { AxiosResponse, AxiosError } from "axios";
-import socketio from "socket.io-client";
 import { ProjectSyncMetadataModel } from "@plasmicapp/code-merger";
+import axios, { AxiosError } from "axios";
+import socketio from "socket.io-client";
 import { logger } from "./deps";
+import { AuthConfig, ImagesConfig, StyleConfig } from "./utils/config-utils";
 
 export class AppServerError extends Error {
   constructor(message: string) {
@@ -21,6 +21,7 @@ export interface ComponentBundle {
   id: string;
   scheme: string;
   nameInIdToUuid: Array<[string, string]>;
+  isPage: boolean;
 }
 
 export interface GlobalVariantBundle {
@@ -165,6 +166,7 @@ export class PlasmicApi {
    */
   async projectComponents(
     projectId: string,
+    platform: string,
     cliVersion: string,
     reactWebVersion: string | undefined,
     newCompScheme: "blackbox" | "direct",
@@ -178,6 +180,7 @@ export class PlasmicApi {
     const result = await this.post(
       `${this.auth.host}/api/v1/projects/${projectId}/code/components`,
       {
+        platform,
         cliVersion,
         reactWebVersion: reactWebVersion || "",
         newCompScheme,

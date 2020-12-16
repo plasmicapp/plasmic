@@ -66,6 +66,16 @@ export function defaultPublicResourcePath(
   );
 }
 
+export function defaultPagePath(context: PlasmicContext, fileName: string) {
+  if (context.config.platform === "nextjs") {
+    return path.join(context.config.nextjsConfig?.pagesDir || "", fileName);
+  }
+  if (context.config.platform === "gatsby") {
+    return path.join(context.config.gatsbyConfig?.pagesDir || "", fileName);
+  }
+  return fileName;
+}
+
 export function writeFileContent(
   context: PlasmicContext,
   srcDirFilePath: string,
