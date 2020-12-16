@@ -75,6 +75,11 @@ export interface VersionResolution {
   conflicts: ProjectVersionMeta[];
 }
 
+export interface RequiredPackages {
+  "@plasmicapp/cli": string;
+  "@plasmicapp/react-web": string;
+}
+
 export interface ProjectBundle {
   components: ComponentBundle[];
   projectConfig: ProjectMetaBundle;
@@ -157,6 +162,13 @@ export class PlasmicApi {
       headers: this.makeHeaders(),
     });
   }
+  
+  async requiredPackages(): Promise<RequiredPackages> {
+    const resp = await this.post(
+      `${this.auth.host}/api/v1/code/required-packages`
+    );
+    return { ...resp.data } as RequiredPackages;
+  }
 
   /**
    * Code-gen endpoint.
@@ -173,8 +185,6 @@ export class PlasmicApi {
   async projectComponents(
     projectId: string,
     platform: string,
-    cliVersion: string,
-    reactWebVersion: string | undefined,
     newCompScheme: "blackbox" | "direct",
     // The list of existing components as [componentUuid, codeScheme]
     existingCompScheme: Array<[string, "blackbox" | "direct"]>,
@@ -187,8 +197,6 @@ export class PlasmicApi {
       `${this.auth.host}/api/v1/projects/${projectId}/code/components`,
       {
         platform,
-        cliVersion,
-        reactWebVersion: reactWebVersion || "",
         newCompScheme,
         existingCompScheme,
         componentIdOrNames,
@@ -289,28 +297,36 @@ export class PlasmicApi {
       });
     } catch (e) {
       const error = e as AxiosError;
-      if (error.response && error.response.status === 403) {
-        logger.error(
-          `Incorrect Plasmic credentials; please check your .plasmic.auth file.`
-        );
-        process.exit(1);
+      const errorMsg = this.makeErrorMessage(error);
+
+      if (rethrowAppError) {
+        throw new AppServerError(errorMsg);
       }
-      if (error.response && error.response.data) {
-        let message: string = "";
-        if (error.response.data.error) {
-          message = error.response.data.error.message;
-        } else {
-          message = `Error: request failed with status code ${error.response.status}. The response is
-  ${error.response.data}`;
-        }
-        if (rethrowAppError) {
-          throw new AppServerError(message);
-        }
-        logger.error(message);
-        process.exit(1);
-      } else {
+
+      if (!errorMsg) {
         throw e;
       }
+
+      logger.error(errorMsg);
+      process.exit(1);
+    }
+  }
+
+  private makeErrorMessage(error: AxiosError) {
+    const response = error.response;
+    if (!response) {
+      return undefined;
+    }
+    if (response.status === 403) {
+      return `Incorrect Plasmic credentials; please check your .plasmic.auth file.`;
+    }
+    if (response.data?.error?.message) {
+      return response.data.error.message;
+    } else if (response.data) {
+      return `Error: request failed with status code ${response.status}. The response is
+  ${response.data}`;
+    } else {
+      return undefined;
     }
   }
 

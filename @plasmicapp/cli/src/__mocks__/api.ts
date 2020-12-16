@@ -6,6 +6,7 @@ import {
   ProjectIconsResponse,
   ProjectMetaBundle,
   ProjectVersionMeta,
+  RequiredPackages,
   StyleConfigResponse,
   StyleTokensMap,
   VersionResolution,
@@ -252,8 +253,6 @@ class PlasmicApi {
   async projectComponents(
     projectId: string,
     platform: string,
-    cliVersion: string,
-    reactWebVersion: string | undefined,
     newCompScheme: "blackbox" | "direct",
     // The list of existing components as [componentUuid, codeScheme]
     existingCompScheme: Array<[string, "blackbox" | "direct"]>,
@@ -269,7 +268,13 @@ class PlasmicApi {
       componentIdOrNames
     );
     if (mockComponents.length <= 0) {
-      throw new Error("Code gen failed: no components match the parameters");
+      throw new Error(
+        `Code gen failed: no components match the parameters ${JSON.stringify(
+          { projectId, version, componentIdOrNames },
+          undefined,
+          2
+        )}`
+      );
     }
 
     const result = {
@@ -307,6 +312,13 @@ class PlasmicApi {
     rethrowAppError: boolean
   ): Promise<ProjectSyncMetadataModel> {
     throw new Error("Unimplemented");
+  }
+
+  async requiredPackages(): Promise<RequiredPackages> {
+    return {
+      "@plasmicapp/cli": "0.0.1",
+      "@plasmicapp/react-web": "0.0.1",
+    };
   }
 
   connectSocket() {}

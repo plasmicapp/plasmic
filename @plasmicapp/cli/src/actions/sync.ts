@@ -48,10 +48,13 @@ import {
 import {
   findInstalledVersion,
   getCliVersion,
+  installCommand,
+  installUpgrade,
   warnLatestReactWeb,
 } from "../utils/npm-utils";
 import { checkVersionResolution } from "../utils/resolve-utils";
 import * as semver from "../utils/semver";
+import { confirmWithUser } from "../utils/user-utils";
 import { syncProjectIconAssets } from "./sync-icons";
 import { syncProjectImageAssets } from "./sync-images";
 import { upsertStyleTokens } from "./sync-styles";
@@ -64,7 +67,7 @@ export interface SyncArgs extends CommonArgs {
   yes?: boolean;
   force?: boolean;
   nonRecursive?: boolean;
-  skipReactWeb?: boolean;
+  skipUpgradeCheck?: boolean;
   quiet?: boolean;
 }
 
@@ -80,6 +83,56 @@ interface ComponentPendingMerge {
   ) => Promise<void>;
 }
 
+async function ensureRequiredPackages(context: PlasmicContext, yes?: boolean) {
+  const requireds = await context.api.requiredPackages();
+
+  const confirmInstall = async (
+    pkg: string,
+    requiredVersion: string,
+    opts: { global: boolean; dev: boolean }
+  ) => {
+    let success = false;
+    const command = installCommand(pkg, opts);
+    const upgrade = await confirmWithUser(
+      `A more recent version of ${pkg} >=${requiredVersion} is required. Would you like to upgrade via "${command}"?`,
+      yes
+    );
+    if (upgrade) {
+      success = installUpgrade(pkg, opts);
+    } else {
+      success = false;
+    }
+
+    if (!success) {
+      throw new HandledError(`Upgrading ${pkg} is required to continue.`);
+    }
+  };
+
+  const cliVersion = getCliVersion();
+  if (!cliVersion || semver.gt(requireds["@plasmicapp/cli"], cliVersion)) {
+    const isGlobal = !findInstalledVersion(context, "@plasmicapp/cli");
+    await confirmInstall("@plasmicapp/cli", requireds["@plasmicapp/cli"], {
+      global: isGlobal,
+      dev: true,
+    });
+  }
+
+  const reactWebVersion = findInstalledVersion(
+    context,
+    "@plasmicapp/react-web"
+  );
+  if (
+    !reactWebVersion ||
+    semver.gt(requireds["@plasmicapp/react-web"], reactWebVersion)
+  ) {
+    await confirmInstall(
+      "@plasmicapp/react-web",
+      requireds["@plasmicapp/react-web"],
+      { global: false, dev: false }
+    );
+  }
+}
+
 /**
  * Sync will always try to sync down a set of components that are version-consistent among specified projects.
  * (we only allow 1 version per projectId).
@@ -89,8 +142,14 @@ interface ComponentPendingMerge {
  */
 export async function sync(opts: SyncArgs): Promise<void> {
   const context = await getContext(opts);
+
+  if (!opts.skipUpgradeCheck) {
+    await ensureRequiredPackages(context, opts.yes);
+  }
+
   fixAllFilePaths(context);
   fixFileExtension(context);
+
   const projectIds =
     opts.projects.length > 0
       ? opts.projects
@@ -130,11 +189,6 @@ export async function sync(opts: SyncArgs): Promise<void> {
       "No compatible versions to sync. Please fix the warnings and try again."
     );
   }
-
-  const reactWebVersion = findInstalledVersion(
-    context,
-    "@plasmicapp/react-web"
-  );
   const summary = new Map<string, ComponentUpdateSummary>();
   const pendingMerge = new Array<ComponentPendingMerge>();
 
@@ -150,7 +204,6 @@ export async function sync(opts: SyncArgs): Promise<void> {
         projectMeta.componentIds,
         projectMeta.version,
         projectMeta.dependencies,
-        reactWebVersion,
         summary,
         pendingMerge
       );
@@ -197,7 +250,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
   });
 
   // Prompt to upgrade react-web
-  if (!opts.skipReactWeb) {
+  if (!opts.skipUpgradeCheck) {
     await warnLatestReactWeb(context, opts.yes);
   }
 
@@ -253,7 +306,6 @@ async function syncProject(
   componentIds: string[],
   projectVersion: string,
   dependencies: { [projectId: string]: string },
-  reactWebVersion: string | undefined,
   summary: Map<string, ComponentUpdateSummary>,
   pendingMerge: ComponentPendingMerge[]
 ): Promise<void> {
@@ -270,8 +322,6 @@ async function syncProject(
   const projectBundle = await context.api.projectComponents(
     projectId,
     context.config.platform,
-    getCliVersion(),
-    reactWebVersion,
     newComponentScheme,
     existingCompScheme,
     componentIds,

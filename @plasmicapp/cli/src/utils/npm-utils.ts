@@ -1,13 +1,11 @@
-import fs from "fs";
+import { spawnSync } from "child_process";
 import glob from "fast-glob";
-import semver from "semver";
-import latest from "latest-version";
-import { findFile, readFileText } from "./file-utils";
-import { PlasmicContext } from "./config-utils";
-import { execSync, spawnSync } from "child_process";
-import inquirer from "inquirer";
 import findupSync from "findup-sync";
+import latest from "latest-version";
+import semver from "semver";
 import { logger } from "../deps";
+import { PlasmicContext } from "./config-utils";
+import { readFileText } from "./file-utils";
 import { confirmWithUser } from "./user-utils";
 
 export function getParsedPackageJson() {
@@ -110,7 +108,7 @@ export function findInstalledVersion(context: PlasmicContext, pkg: string) {
   return undefined;
 }
 
-function findInstalledPackageJsonFile(pkg: string, dir: string) {
+export function findInstalledPackageJsonFile(pkg: string, dir: string) {
   const files = glob.sync(`${dir}/**/node_modules/${pkg}/package.json`);
   return files.length > 0 ? files[0] : undefined;
 }
@@ -123,17 +121,45 @@ function parsePackageJson(path: string) {
   }
 }
 
-export function installUpgrade(pkg: string) {
-  const mgr = detectPackageManager();
-  const cmd = mgr === "yarn" ? `yarn add -W ${pkg}` : `npm install ${pkg}`;
+export function installUpgrade(
+  pkg: string,
+  opts: { global?: boolean; dev?: boolean } = {}
+) {
+  const cmd = installCommand(pkg, opts);
   logger.info(cmd);
   const r = spawnSync(cmd, { shell: true, stdio: "inherit" });
   if (r.status === 0) {
     logger.info(`Successfully added ${pkg} dependency.`);
+    return true;
   } else {
     logger.warn(
       `Cannot add ${pkg} to your project dependency. Please add it manually.`
     );
+    return false;
+  }
+}
+
+export function installCommand(
+  pkg: string,
+  opts: { global?: boolean; dev?: boolean } = {}
+) {
+  const mgr = detectPackageManager();
+  if (mgr === "yarn") {
+    if (opts.global) {
+      return `yarn global add -W ${pkg}`;
+    } else if (opts.dev) {
+      return `yarn add --dev -W ${pkg}`;
+    } else {
+      return `yarn add -W ${pkg}`;
+    }
+  } else {
+    if (opts.global) {
+      return `npm install -g ${pkg}`;
+    } else if (opts.dev) {
+      return `npm install --save-dev ${pkg}`;
+    } else {
+      return `npm install ${pkg}`;
+    }
   }
 }
 

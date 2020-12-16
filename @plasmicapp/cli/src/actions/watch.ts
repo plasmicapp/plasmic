@@ -1,11 +1,10 @@
 import L from "lodash";
 import moment from "moment";
-import * as semver from "../utils/semver";
-import { SyncArgs, sync } from "./sync";
-import { getContext } from "../utils/config-utils";
-import { warnLatestReactWeb } from "../utils/npm-utils";
-import { logger } from "../deps";
 import { CommonArgs } from "..";
+import { logger } from "../deps";
+import { getContext } from "../utils/config-utils";
+import * as semver from "../utils/semver";
+import { sync } from "./sync";
 
 export interface WatchArgs extends CommonArgs {
   projects: readonly string[];
@@ -15,7 +14,7 @@ export interface WatchArgs extends CommonArgs {
   yes?: boolean;
   force?: boolean;
   nonRecursive?: boolean;
-  skipReactWeb?: boolean;
+  skipUpgradeCheck?: boolean;
 }
 export async function watchProjects(opts: WatchArgs) {
   // Perform a sync before watch.

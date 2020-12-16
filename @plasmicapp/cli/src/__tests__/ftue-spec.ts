@@ -1,7 +1,6 @@
 jest.mock("../api");
 const mockApi = require("../api");
 import { sync, SyncArgs } from "../actions/sync";
-import { MockComponent } from "../__mocks__/api";
 import { TempRepo } from "../utils/test-utils";
 
 let opts: SyncArgs; // Options to pass to sync
@@ -67,7 +66,7 @@ beforeEach(() => {
     yes: true,
     force: true,
     nonRecursive: false,
-    skipReactWeb: true,
+    skipUpgradeCheck: true,
     forceOverwrite: false,
     appendJsxOnMissingBase: false,
     newComponentScheme: "blackbox",
