@@ -516,7 +516,7 @@ const makeStackImpl = <T extends keyof JSX.IntrinsicElements>(as: T) => {
       const { hasGap, ...rest } = props;
       return renderStack(as, rest as React.ComponentProps<T>, hasGap, ref);
     }
-  ) as React.FC<React.ComponentProps<T>>;
+  ) as React.FC<React.ComponentProps<T> & { hasGap?: boolean }>;
 };
 
 export const Stack = Object.assign(FlexStack, {
