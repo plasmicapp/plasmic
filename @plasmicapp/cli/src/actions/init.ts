@@ -24,6 +24,7 @@ import {
   installUpgrade,
 } from "../utils/npm-utils";
 import { pollAuthToken } from "../utils/poll-token";
+import { confirmWithUser } from "../utils/user-utils";
 
 export interface InitArgs extends CommonArgs {
   host: string;
@@ -191,130 +192,160 @@ export async function initPlasmic(opts: InitArgs) {
     value: "public-files",
   };
 
-  const answers = await inquirer.prompt([
-    {
-      name: "platform",
-      message: `What platform should code generation target? ${
-        platformDetect.platform ? `(${platformDetect.explanation})` : ""
-      }\n>`,
-      type: "list",
-      choices: [reactOpt, nextjsOpt, gatsbyOpt],
-      default: platformDetect.platform || DEFAULT_CONFIG.platform,
-      when: () => !opts.platform,
-    },
-    {
-      name: "srcDir",
-      message:
-        "What directory should React component files (that you edit) be put into?\n>",
-      default: (ans: any) =>
-        ans.platform === "nextjs" ? "./components" : DEFAULT_CONFIG.srcDir,
-      when: () => !opts.srcDir,
-    },
-    {
-      name: "plasmicDir",
-      message: (ans: any) =>
-        `What directory should Plasmic-managed files be put into?
-  (This is relative to ${ans.srcDir || DEFAULT_CONFIG.srcDir})
->`,
-      default: DEFAULT_CONFIG.defaultPlasmicDir,
-      when: () => !opts.plasmicDir,
-    },
-    {
-      name: "pagesDir",
-      message: (ans: any) =>
-        `What directory should pages be put into?
-  (This is relative to ${ans.srcDir || DEFAULT_CONFIG.srcDir})
->`,
-      default: "../pages",
-      when: (ans: any) => isPageAwarePlatform(ans.platform) && !opts.pagesDir,
-    },
-    {
-      name: "codeLang",
-      message: `What target language should Plasmic generate code in?
-  (${langDetect.explanation})
->`,
-      type: "list",
-      choices: () =>
-        langDetect.lang === "js" ? [jsOpt, tsOpt] : [tsOpt, jsOpt],
-      when: () => !opts.codeLang,
-    },
-    {
-      name: "codeScheme",
-      message: `Which codegen scheme should Plasmic use by default?
-  - We generally recommend Blackbox for new users.
-  - See https://plasmic.app/learn/codegen-overview for examples.
-  - You can choose schemes for individual components.
->`,
-      type: "list",
-      choices: () => [blackboxOpt, directOpt],
-      when: () => !opts.codeScheme,
-    },
-    {
-      name: "styleScheme",
-      message: `How should we generate css for Plasmic components?`,
-      type: "list",
-      choices: () => [cssModuleOpt, plainCssOpt],
-      when: () => !opts.styleScheme,
-    },
-    {
-      name: "imagesScheme",
-      message: (ans: any) =>
-        `How should we reference image files used in Plasmic components? ${
-          ans.platform === "nextjs"
-            ? `\n  (platform is Next.js, guessing Public folder)`
-            : ""
-        }\n>`,
-      type: "list",
-      choices: () => [inlinedImagesOpt, filesImagesOpt, publicFilesImagesOpt],
-      default: (ans: any) =>
-        ans.platform === "nextjs"
-          ? publicFilesImagesOpt.value
-          : inlinedImagesOpt.value,
-      when: () => !opts.imagesScheme,
-    },
-    {
-      name: "imagesPublicDir",
-      message: (ans: any) =>
-        `What directory should static image files be put into?
-  (This is relative to ${ans.srcDir || DEFAULT_CONFIG.srcDir})
->`,
-      default: DEFAULT_PUBLIC_FILES_CONFIG.publicDir,
-      when: (ans: any) =>
-        !opts.imagesPublicDir &&
-        (opts.imagesScheme || ans.imagesScheme) === publicFilesImagesOpt.value,
-    },
-    {
-      name: "imagesPublicUrlPrefix",
-      message: `What's the URL prefix from which the app will serve static files?\n>`,
-      default: (ans: any) =>
-        ans.platform === "nextjs" &&
-        path.join(
-          opts.srcDir || ans.srcDir,
-          opts.imagesPublicDir || ans.imagesPublicDir
-        ) === path.normalize("./public")
-          ? "/"
-          : DEFAULT_PUBLIC_FILES_CONFIG.publicUrlPrefix,
-      when: (ans: any) =>
-        !opts.imagesPublicUrlPrefix &&
-        (opts.imagesScheme || ans.imagesScheme) === publicFilesImagesOpt.value,
-    },
-  ]);
+  const defaultAnswers = {
+    platform:
+      opts.platform || platformDetect.platform || DEFAULT_CONFIG.platform,
+    srcDir:
+      opts.srcDir ||
+      (platformDetect.platform === "nextjs"
+        ? "./components"
+        : DEFAULT_CONFIG.srcDir),
+    plasmicDir: opts.plasmicDir || DEFAULT_CONFIG.defaultPlasmicDir,
+    pagesDir: opts.pagesDir || "../pages",
+    codeLang: opts.codeLang || langDetect.lang === "js" ? "js" : "ts",
+    codeScheme: opts.codeScheme || "blackbox",
+    styleScheme: opts.styleScheme || "css-modules",
+    imagesScheme:
+      opts.imagesScheme ||
+      (platformDetect.platform === "nextjs"
+        ? publicFilesImagesOpt.value
+        : inlinedImagesOpt.value),
+    imagesPublicDir:
+      opts.imagesPublicDir || DEFAULT_PUBLIC_FILES_CONFIG.publicDir,
+    imagesPublicUrlPrefix:
+      platformDetect.platform === "nextjs" &&
+      path.join(opts.srcDir, opts.imagesPublicDir) ===
+        path.normalize("./public")
+        ? "/"
+        : DEFAULT_PUBLIC_FILES_CONFIG.publicUrlPrefix,
+  };
 
-  const merged = { ...opts, ...answers };
+  let answers: any = {};
+
+  if (!opts.yes) {
+    answers = await inquirer.prompt([
+      {
+        name: "platform",
+        message: `What platform should code generation target? ${
+          platformDetect.platform ? `(${platformDetect.explanation})` : ""
+        }\n>`,
+        type: "list",
+        choices: [reactOpt, nextjsOpt, gatsbyOpt],
+        default: platformDetect.platform || DEFAULT_CONFIG.platform,
+        when: () => !opts.platform,
+      },
+      {
+        name: "srcDir",
+        message:
+          "What directory should React component files (that you edit) be put into?\n>",
+        default: (ans: any) =>
+          ans.platform === "nextjs" ? "./components" : DEFAULT_CONFIG.srcDir,
+        when: () => !opts.srcDir,
+      },
+      {
+        name: "plasmicDir",
+        message: (ans: any) =>
+          `What directory should Plasmic-managed files be put into?
+    (This is relative to ${ans.srcDir || DEFAULT_CONFIG.srcDir})
+  >`,
+        default: DEFAULT_CONFIG.defaultPlasmicDir,
+        when: () => !opts.plasmicDir,
+      },
+      {
+        name: "pagesDir",
+        message: (ans: any) =>
+          `What directory should pages be put into?
+    (This is relative to ${ans.srcDir || DEFAULT_CONFIG.srcDir})
+  >`,
+        default: "../pages",
+        when: (ans: any) => isPageAwarePlatform(ans.platform) && !opts.pagesDir,
+      },
+      {
+        name: "codeLang",
+        message: `What target language should Plasmic generate code in?
+    (${langDetect.explanation})
+  >`,
+        type: "list",
+        choices: () =>
+          langDetect.lang === "js" ? [jsOpt, tsOpt] : [tsOpt, jsOpt],
+        when: () => !opts.codeLang,
+      },
+      {
+        name: "codeScheme",
+        message: `Which codegen scheme should Plasmic use by default?
+    - We generally recommend Blackbox for new users.
+    - See https://plasmic.app/learn/codegen-overview for examples.
+    - You can choose schemes for individual components.
+  >`,
+        type: "list",
+        choices: () => [blackboxOpt, directOpt],
+        when: () => !opts.codeScheme,
+      },
+      {
+        name: "styleScheme",
+        message: `How should we generate css for Plasmic components?`,
+        type: "list",
+        choices: () => [cssModuleOpt, plainCssOpt],
+        when: () => !opts.styleScheme,
+      },
+      {
+        name: "imagesScheme",
+        message: (ans: any) =>
+          `How should we reference image files used in Plasmic components? ${
+            ans.platform === "nextjs"
+              ? `\n  (platform is Next.js, guessing Public folder)`
+              : ""
+          }\n>`,
+        type: "list",
+        choices: () => [inlinedImagesOpt, filesImagesOpt, publicFilesImagesOpt],
+        default: (ans: any) =>
+          ans.platform === "nextjs"
+            ? publicFilesImagesOpt.value
+            : inlinedImagesOpt.value,
+        when: () => !opts.imagesScheme,
+      },
+      {
+        name: "imagesPublicDir",
+        message: (ans: any) =>
+          `What directory should static image files be put into?
+    (This is relative to ${ans.srcDir || DEFAULT_CONFIG.srcDir})
+  >`,
+        default: DEFAULT_PUBLIC_FILES_CONFIG.publicDir,
+        when: (ans: any) =>
+          !opts.imagesPublicDir &&
+          (opts.imagesScheme || ans.imagesScheme) ===
+            publicFilesImagesOpt.value,
+      },
+      {
+        name: "imagesPublicUrlPrefix",
+        message: `What's the URL prefix from which the app will serve static files?\n>`,
+        default: (ans: any) =>
+          ans.platform === "nextjs" &&
+          path.join(
+            opts.srcDir || ans.srcDir,
+            opts.imagesPublicDir || ans.imagesPublicDir
+          ) === path.normalize("./public")
+            ? "/"
+            : DEFAULT_PUBLIC_FILES_CONFIG.publicUrlPrefix,
+        when: (ans: any) =>
+          !opts.imagesPublicUrlPrefix &&
+          (opts.imagesScheme || ans.imagesScheme) ===
+            publicFilesImagesOpt.value,
+      },
+    ]);
+  }
+
+  const merged = { ...defaultAnswers, ...answers };
   const newConfigFile =
     merged.config || path.join(process.cwd(), CONFIG_FILE_NAME);
   writeConfig(newConfigFile, createInitConfig(merged));
   logger.info("Successfully created plasmic.json.\n");
 
-  const addDep = await inquirer.prompt([
-    {
-      name: "answer",
-      message:
-        "@plasmicapp/react-web is a small runtime required by Plasmic-generated code.\n  Do you want to add it now?",
-      type: "confirm",
-    },
-  ]);
-  if (addDep.answer) {
+  const answer = await confirmWithUser(
+    "@plasmicapp/react-web is a small runtime required by Plasmic-generated code.\n  Do you want to add it now?",
+    opts.yes
+  );
+  if (answer) {
     installUpgrade("@plasmicapp/react-web");
   }
 }

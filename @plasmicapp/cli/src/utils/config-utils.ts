@@ -1,6 +1,5 @@
 import * as Sentry from "@sentry/node";
 import fs from "fs";
-import inquirer from "inquirer";
 import L from "lodash";
 import os from "os";
 import path from "upath";
@@ -11,6 +10,7 @@ import { logger } from "../deps";
 import { CommonArgs } from "../index";
 import { runNecessaryMigrationsConfig } from "../migrations/migrations";
 import { HandledError } from "../utils/error";
+import { confirmWithUser } from "../utils/user-utils";
 import {
   existsBuffered,
   findFile,
@@ -632,29 +632,29 @@ export async function maybeRunPlasmicInit(
   args: CommonArgs,
   missingFile: string
 ): Promise<boolean> {
-  const runInit = await inquirer.prompt({
-    name: "answer",
-    message: `No ${missingFile} file found. Would you like to run \`plasmic init\`?`,
-    type: "confirm",
-  });
+  const answer = await confirmWithUser(
+    `No ${missingFile} file found. Would you like to run \`plasmic init\`?`,
+    args.yes
+  );
 
-  if (runInit.answer) {
-    await initPlasmic({
-      host: DEFAULT_HOST,
-      platform: "",
-      codeLang: "",
-      codeScheme: "",
-      styleScheme: "",
-      imagesScheme: "",
-      srcDir: "",
-      plasmicDir: "",
-      imagesPublicDir: "",
-      imagesPublicUrlPrefix: "",
-      ...args,
-    });
-    return true;
+  if (!answer) {
+    return false;
   }
-  return false;
+
+  await initPlasmic({
+    host: DEFAULT_HOST,
+    platform: "",
+    codeLang: "",
+    codeScheme: "",
+    styleScheme: "",
+    imagesScheme: "",
+    srcDir: "",
+    plasmicDir: "",
+    imagesPublicDir: "",
+    imagesPublicUrlPrefix: "",
+    ...args,
+  });
+  return true;
 }
 
 export function isPageAwarePlatform(platform: string): boolean {
