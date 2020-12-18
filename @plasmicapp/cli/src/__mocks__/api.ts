@@ -245,6 +245,10 @@ class PlasmicApi {
     return results;
   }
 
+  async getCurrentUser() {
+    return true;
+  }
+
   async projectComponents(
     projectId: string,
     platform: string,

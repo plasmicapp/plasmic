@@ -152,6 +152,12 @@ export class PlasmicApi {
     return { ...versionResolution };
   }
 
+  async getCurrentUser() {
+    return await axios.get(`${this.auth.host}/api/v1/auth/self`, {
+      headers: this.makeHeaders(),
+    });
+  }
+
   /**
    * Code-gen endpoint.
    * This will fetch components at an exact specified version.
