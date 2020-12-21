@@ -634,7 +634,7 @@ function syncGlobalVariants(
     writeFileContent(
       context,
       variantConfig.contextFilePath,
-      bundle.contextModule,
+      formatAsLocal(bundle.contextModule, variantConfig.contextFilePath),
       { force: !isNew }
     );
   }

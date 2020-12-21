@@ -32,13 +32,18 @@ import {
 import { flatMap } from "./lang-utils";
 
 export const formatAsLocal = (
-  c: string,
+  content: string,
   filePath: string,
   defaultOpts: Options = {}
 ) => {
   const opts = resolveConfig.sync(process.cwd()) || defaultOpts;
   opts.filepath = filePath;
-  return Prettier.format(c, opts);
+
+  // Running Prettier multiple times may actually yield different results!
+  // Here we run it twice, just to be safe... :-/
+  const res = Prettier.format(content, opts);
+  const res2 = Prettier.format(res, opts);
+  return res2;
 };
 
 const nodeToFormattedCode = (
