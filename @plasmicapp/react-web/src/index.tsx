@@ -475,6 +475,39 @@ export function PlasmicSlot<T extends keyof JSX.IntrinsicElements = "div">(
   );
 }
 
+function isInternalHref(href: string): boolean {
+  return /^\/(?!\/)/.test(href);
+}
+
+export function PlasmicLink(props: any) {
+  if (props.platform === "nextjs") {
+    const nextjsProps = [
+      "href",
+      "replace",
+      "scroll",
+      "shallow",
+      "passHref",
+      "prefetch",
+      "locale",
+    ];
+
+    return React.createElement(
+      props.component,
+      pick(props, ...nextjsProps),
+      <a {...omit(props, "component", "platform", ...nextjsProps)} />
+    );
+  }
+
+  if (props.platform === "gatsby" && isInternalHref(props.href)) {
+    return React.createElement(props.component, {
+      ...omit(props, "component", "platform", "href"),
+      ...{ to: props.href },
+    });
+  }
+
+  return <a {...omit(props, "component", "platform")} />;
+}
+
 function renderStack<T extends keyof JSX.IntrinsicElements>(
   as: T,
   props: React.ComponentProps<T>,
