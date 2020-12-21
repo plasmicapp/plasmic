@@ -1,0 +1,6 @@
+{
+  "name": "@plasmicapp/loader/gatsby",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Integrate Plasmic codegen via a convenient PlasmicLoader component for Gatsby!"
+}
