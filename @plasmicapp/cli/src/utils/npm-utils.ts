@@ -2,10 +2,11 @@ import { spawnSync } from "child_process";
 import glob from "fast-glob";
 import findupSync from "findup-sync";
 import latest from "latest-version";
+import path from "path";
 import semver from "semver";
 import { logger } from "../deps";
 import { PlasmicContext } from "./config-utils";
-import { readFileText } from "./file-utils";
+import { findFile, readFileText } from "./file-utils";
 import { confirmWithUser } from "./user-utils";
 
 export function getParsedPackageJson() {
@@ -109,7 +110,15 @@ export function findInstalledVersion(context: PlasmicContext, pkg: string) {
 }
 
 export function findInstalledPackageJsonFile(pkg: string, dir: string) {
-  const files = glob.sync(`${dir}/**/node_modules/${pkg}/package.json`);
+  const packageJsonPath = findFile(dir, (f) => f === "package.json", {
+    traverseParents: true,
+  });
+  if (!packageJsonPath) {
+    return undefined;
+  }
+  const files = glob.sync(
+    `${path.dirname(packageJsonPath)}/**/node_modules/${pkg}/package.json`
+  );
   return files.length > 0 ? files[0] : undefined;
 }
 
