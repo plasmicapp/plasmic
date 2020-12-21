@@ -1,11 +1,11 @@
 import L from "lodash";
-import { logger } from "../deps";
-import * as semver from "./semver";
-import { VersionResolution, ProjectVersionMeta } from "../api";
-import { CONFIG_FILE_NAME, PlasmicContext } from "./config-utils";
-import { flatMap, ensure } from "./lang-utils";
-import { HandledError } from "./error";
 import { SyncArgs } from "../actions/sync";
+import { ProjectVersionMeta, VersionResolution } from "../api";
+import { logger } from "../deps";
+import { CONFIG_FILE_NAME, PlasmicContext } from "./config-utils";
+import { HandledError } from "./error";
+import { ensure } from "./lang-utils";
+import * as semver from "./semver";
 import { confirmWithUser } from "./user-utils";
 
 /**
@@ -102,10 +102,10 @@ async function checkProjectMeta(
     if (semver.lt(newVersion, versionOnDisk)) {
       meta === root
         ? logger.warn(
-            `The local version of '${projectName}' (${versionOnDisk}) is higher than requested version @${newVersion}. Plasmic does not support downgrading a project. You should consider updating the version range in ${CONFIG_FILE_NAME}. Skipping...`
+            `The local version of '${projectName}' (${versionOnDisk}) is higher than requested version @${newVersion}. Plasmic does not support downgrading a project. You should consider updating the version range in ${CONFIG_FILE_NAME}.`
           )
         : logger.warn(
-            `'${root.projectName}' uses '${projectName}'@${newVersion}, but your code has '${projectName}'@${versionOnDisk}. You should consider upgrading this dependency in Plasmic Studio. Skipping...`
+            `'${root.projectName}' uses '${projectName}'@${newVersion}, but your code has '${projectName}'@${versionOnDisk}. You should consider upgrading this dependency in Plasmic Studio.`
           );
       return false;
     }
