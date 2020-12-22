@@ -5,7 +5,8 @@ import path from "path";
 function execOrFail(dir: string, command: string, message: string) {
   try {
     cp.execSync(command, { cwd: dir, stdio: "inherit" });
-  } catch {
+  } catch (e) {
+    console.error(e);
     console.error(message);
     process.exit(1);
   }

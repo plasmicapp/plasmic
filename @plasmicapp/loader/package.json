@@ -1,18 +1,15 @@
 {
   "name": "@plasmicapp/loader",
-  "version": "0.0.1",
+  "version": "0.0.9",
+  "private": "true",
   "description": "Integrate Plasmic codegen via a convenient PlasmicLoader component!",
   "scripts": {
-    "build": "tsc && copyfiles -f src/gatsby/package.json dist/gatsby",
+    "build": "node ./build.js",
+    "release": "npm run build && cd dist && npm publish",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "main": "dist/PlasmicLoader.jsx",
   "types": "dist/PlasmicLoader.d.ts",
-  "files": [
-    "dist"
-  ],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@plasmicapp/cli": "^0.1.79",
     "@plasmicapp/react-web": "^0.2.14"
