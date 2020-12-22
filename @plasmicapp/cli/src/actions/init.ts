@@ -213,11 +213,10 @@ export async function initPlasmic(opts: InitArgs) {
     imagesPublicDir:
       opts.imagesPublicDir || DEFAULT_PUBLIC_FILES_CONFIG.publicDir,
     imagesPublicUrlPrefix:
-      platformDetect.platform === "nextjs" &&
-      path.join(opts.srcDir, opts.imagesPublicDir) ===
-        path.normalize("./public")
+      opts.imagesPublicUrlPrefix ||
+      (platformDetect.platform === "nextjs"
         ? "/"
-        : DEFAULT_PUBLIC_FILES_CONFIG.publicUrlPrefix,
+        : DEFAULT_PUBLIC_FILES_CONFIG.publicUrlPrefix),
   };
 
   let answers: any = {};
