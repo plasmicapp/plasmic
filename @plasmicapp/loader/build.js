@@ -11,6 +11,13 @@ fs.copyFileSync(
   path.join("dist", "gatsby", "package.json")
 );
 
+fs.mkdirSync(path.join("dist", "templates"), { recursive: true });
+
+fs.copyFileSync(
+  path.join("src", "templates", "PlasmicLoader.dot"),
+  path.join("dist", "templates", "PlasmicLoader.dot")
+);
+
 delete packageJson.private;
 delete packageJson.scripts;
 

@@ -4,6 +4,7 @@ type PlasmicLoader = {
   projectId?: string;
   component: string;
   componentProps?: object | null;
+  providerProps?: { [name: string]: object };
 };
 export default function PlasmicLoader({
   projectId,
