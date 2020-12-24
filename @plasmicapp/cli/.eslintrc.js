@@ -25,6 +25,12 @@ module.exports = {
       {
         property: "existsSync",
       },
+      {
+        property: "unlinkSync",
+      },
+      {
+        property: "renameSync",
+      },
     ],
     "no-restricted-syntax": [
       "error",

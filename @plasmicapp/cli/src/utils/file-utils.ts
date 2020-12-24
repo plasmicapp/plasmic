@@ -94,6 +94,11 @@ export function readFileContent(
   return readFileText(path);
 }
 
+export function deleteFile(context: PlasmicContext, srcDirFilePath: string) {
+  const path = makeFilePath(context, srcDirFilePath);
+  deleteFileBuffered(path);
+}
+
 export function fileExists(context: PlasmicContext, srcDirFilePath: string) {
   return existsBuffered(makeFilePath(context, srcDirFilePath));
 }
@@ -107,9 +112,9 @@ export function renameFile(
   oldPath: string,
   newPath: string
 ) {
-  return fs.renameSync(
-    path.join(context.absoluteSrcDir, oldPath),
-    path.join(context.absoluteSrcDir, newPath)
+  renameFileBuffered(
+    makeFilePath(context, oldPath),
+    makeFilePath(context, newPath)
   );
 }
 
@@ -273,8 +278,24 @@ export function fixAllFilePaths(context: PlasmicContext) {
 /** Whether we're currently recording to the buffer. */
 let buffering = false;
 
-/** Map of path to content. */
-const buffer = new Map<string, string | Buffer>();
+interface BufferCreateFile {
+  type: "create";
+  content: string | Buffer;
+}
+interface BufferRenameFile {
+  type: "rename";
+  newPath: string;
+}
+interface BufferDeleteFile {
+  type: "delete";
+}
+
+/** List of buffer actions. */
+const buffer = new Map<
+  string,
+  BufferCreateFile | BufferRenameFile | BufferDeleteFile
+>();
+const renamedFiles = new Map<string, string>();
 
 /**
  * This turns on buffering of file writes/reads.
@@ -289,10 +310,22 @@ export async function withBufferedFs(f: () => Promise<void>) {
   buffer.clear();
   try {
     await f();
-    [...buffer.entries()].forEach(([path, content]) => {
-      // eslint-disable-next-line no-restricted-properties
-      fs.writeFileSync(path, content);
-    });
+    for (const [path, action] of buffer.entries()) {
+      switch (action.type) {
+        case "create":
+          // eslint-disable-next-line no-restricted-properties
+          fs.writeFileSync(path, action.content);
+          break;
+        case "rename":
+          // eslint-disable-next-line no-restricted-properties
+          fs.renameSync(path, action.newPath);
+          break;
+        case "delete":
+          // eslint-disable-next-line no-restricted-properties
+          fs.unlinkSync(path);
+          break;
+      }
+    }
   } finally {
     buffering = false;
   }
@@ -300,32 +333,118 @@ export async function withBufferedFs(f: () => Promise<void>) {
 
 export function writeFileText(path: string, content: string | Buffer) {
   if (buffering) {
-    buffer.set(path, content);
+    buffer.set(path, { type: "create", content });
   } else {
-    if (content instanceof Buffer) {
-      // eslint-disable-next-line no-restricted-properties
-      fs.writeFileSync(path, content);
-    } else {
-      // eslint-disable-next-line no-restricted-properties
-      fs.writeFileSync(path, content, "utf8");
-    }
+    // eslint-disable-next-line no-restricted-properties
+    fs.writeFileSync(path, content, "utf8");
   }
 }
 
-export function readFileText(path: string) {
-  return buffering
-    ? buffer.has(path)
-      ? ensureString(buffer.get(path))
-      : // eslint-disable-next-line no-restricted-properties
-        fs.readFileSync(path, "utf8")
-    : // eslint-disable-next-line no-restricted-properties
-      fs.readFileSync(path, "utf8");
+export function readFileText(path: string): string {
+  if (buffering) {
+    const action = buffer.get(path);
+    if (action) {
+      switch (action.type) {
+        case "create":
+          return ensureString(action.content);
+        case "rename":
+          return readFileText(action.newPath);
+        case "delete":
+          throw new HandledError("File does not exists");
+      }
+    }
+  }
+
+  // eslint-disable-next-line no-restricted-properties
+  return fs.readFileSync(path, "utf8");
 }
 
-export function existsBuffered(path: string) {
-  return buffering
-    ? // eslint-disable-next-line no-restricted-properties
-      buffer.has(path) || fs.existsSync(path)
-    : // eslint-disable-next-line no-restricted-properties
-      fs.existsSync(path);
+export function renameFileBuffered(oldPath: string, newPath: string) {
+  if (oldPath === newPath) {
+    return;
+  }
+
+  if (buffering) {
+    if (!existsBuffered(oldPath)) {
+      throw new HandledError("File does not exists");
+    }
+
+    const action = buffer.get(oldPath);
+
+    if (action) {
+      switch (action.type) {
+        case "create":
+          buffer.set(newPath, action);
+          buffer.delete(oldPath);
+          break;
+        case "rename":
+          throw new HandledError("File does not exists");
+        case "delete":
+          throw new HandledError("File does not exists");
+      }
+    }
+
+    const renamedFile = renamedFiles.get(oldPath);
+    if (renamedFile !== undefined) {
+      oldPath = renamedFile;
+    }
+
+    buffer.set(oldPath, { type: "rename", newPath });
+    renamedFiles.set(newPath, oldPath);
+  } else {
+    // eslint-disable-next-line no-restricted-properties
+    fs.renameSync(oldPath, newPath);
+  }
+}
+
+export function deleteFileBuffered(path: string) {
+  if (buffering) {
+    if (!existsBuffered(path)) {
+      throw new HandledError("File does not exists");
+    }
+
+    const action = buffer.get(path);
+
+    if (action) {
+      switch (action.type) {
+        case "create":
+          buffer.delete(path);
+          break;
+        case "rename":
+          throw new HandledError("File does not exists");
+        case "delete":
+          throw new HandledError("File does not exists");
+      }
+    } else {
+      buffer.set(path, { type: "delete" });
+    }
+
+    renamedFiles.delete(path);
+  } else {
+    // eslint-disable-next-line no-restricted-properties
+    fs.unlinkSync(path);
+  }
+}
+
+export function existsBuffered(path: string): boolean {
+  if (buffering) {
+    if (renamedFiles.has(path)) {
+      return true;
+    }
+
+    const action = buffer.get(path);
+    if (action) {
+      switch (action.type) {
+        case "create":
+          return true;
+        case "rename":
+          return false;
+        case "delete":
+          return false;
+      }
+    }
+  }
+
+  // eslint-disable-next-line no-restricted-properties
+  return fs.existsSync(path);
 }

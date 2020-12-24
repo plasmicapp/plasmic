@@ -1,15 +1,17 @@
 import L from "lodash";
-import { ImageBundle } from "../api";
-import { getOrAddProjectConfig, PlasmicContext } from "../utils/config-utils";
 import path from "upath";
+import { ImageBundle } from "../api";
+import { logger } from "../deps";
+import { FixImportContext } from "../utils/code-utils";
+import { getOrAddProjectConfig, PlasmicContext } from "../utils/config-utils";
 import {
   defaultPublicResourcePath,
   defaultResourcePath,
+  fileExists,
   readFileContent,
+  renameFile,
   writeFileContent,
 } from "../utils/file-utils";
-import { logger } from "../deps";
-import { FixImportContext } from "../utils/code-utils";
 import { ensure } from "../utils/lang-utils";
 
 export function syncProjectImageAssets(
@@ -40,6 +42,22 @@ export function syncProjectImageAssets(
       };
       project.images.push(imageConfig);
     } else {
+      const filePath = path.join(
+        path.dirname(imageConfig.filePath),
+        path.basename(defaultFilePath)
+      );
+      if (
+        imageConfig.filePath !== filePath &&
+        fileExists(context, imageConfig.filePath)
+      ) {
+        if (context.cliArgs.quiet !== true) {
+          logger.info(
+            `Renaming image: ${imageConfig.name}@${version}\t['${project.projectName}' ${project.projectId}/${bundle.id} ${project.version}]`
+          );
+        }
+        renameFile(context, imageConfig.filePath, filePath);
+        imageConfig.filePath = filePath;
+      }
       imageConfig.name = bundle.name;
     }
 
