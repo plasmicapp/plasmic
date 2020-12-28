@@ -119,21 +119,18 @@ export function hasVariant<V extends Variants>(
   }
 }
 
-function wrapFlexContainerChildren(children: React.ReactNode) {
+function wrapFlexContainerChildren(children: React.ReactNode, hasGap: boolean) {
+  // We need to always wrap the children, even if there are no gaps, because
+  // otherwise if we toggle between with and without gap, React reconciliation
+  // will blow away the children tree and all state if we switch from having
+  // a wrapper and not.
+  const className = hasGap ? "__wab_flex-container" : "__wab_passthrough";
   if (!children) {
     return null;
   } else if (Array.isArray(children)) {
-    return React.createElement(
-      "div",
-      { className: "__wab_flex-container" },
-      ...children
-    );
+    return React.createElement("div", { className }, ...children);
   } else {
-    return React.createElement(
-      "div",
-      { className: "__wab_flex-container" },
-      children
-    );
+    return React.createElement("div", { className }, children);
   }
 }
 
@@ -172,7 +169,7 @@ export function createPlasmicElement<
 
   if (wrapChildrenInFlex) {
     // For legacy, we still support data-plasmic-wrap-flex-children
-    children = wrapFlexContainerChildren(children);
+    children = wrapFlexContainerChildren(children, true);
   }
 
   let result = createElementWithChildren(root, props, children);
@@ -515,9 +512,7 @@ function renderStack<T extends keyof JSX.IntrinsicElements>(
   ref: React.Ref<any>
 ) {
   const { children, ...rest } = props;
-  const wrappedChildren = hasGap
-    ? wrapFlexContainerChildren(children)
-    : children;
+  const wrappedChildren = wrapFlexContainerChildren(children, hasGap ?? false);
   return createElementWithChildren(as, { ref, ...rest }, wrappedChildren);
 }
 
