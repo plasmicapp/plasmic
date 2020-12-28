@@ -1,20 +1,7 @@
-import L from "lodash";
-import {
-  PlasmicConfig,
-  PlasmicContext,
-  getContext,
-} from "../utils/config-utils";
-import { StyleTokensMap } from "../api";
-import {
-  writeFileContent,
-  readFileContent,
-  fileExists,
-  fixAllFilePaths,
-  readFileText,
-} from "../utils/file-utils";
-import { CommonArgs } from "..";
-import fs from "fs";
 import pako from "pako";
+import { CommonArgs } from "..";
+import { fixAllFilePaths, readFileText } from "../utils/file-utils";
+import { getContext } from "../utils/get-context";
 
 export interface UploadBundleArgs extends CommonArgs {
   project: string;

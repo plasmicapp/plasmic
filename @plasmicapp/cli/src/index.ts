@@ -114,7 +114,7 @@ yargs
           default: "",
         });
     },
-    (argv) => initPlasmic(argv)
+    (argv) => handleError(initPlasmic(argv))
   )
   .command<auth.AuthArgs>(
     "auth",
@@ -150,7 +150,7 @@ yargs
     "fix-imports",
     "Fixes import paths after you've moved around Plasmic blackbox files",
     (yags) => 0,
-    (argv) => fixImports(argv)
+    (argv) => handleError(fixImports(argv))
   )
   .command<UploadBundleArgs>(
     "upload-bundle",

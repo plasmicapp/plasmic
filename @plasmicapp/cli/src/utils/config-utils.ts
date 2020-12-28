@@ -1,23 +1,15 @@
-import * as Sentry from "@sentry/node";
-import fs from "fs";
 import L from "lodash";
-import os from "os";
 import path from "upath";
 import { DeepPartial } from "utility-types";
-import { initPlasmic } from "../actions/init";
 import { PlasmicApi } from "../api";
 import { logger } from "../deps";
-import { CommonArgs } from "../index";
-import { runNecessaryMigrationsConfig } from "../migrations/migrations";
 import { HandledError } from "../utils/error";
-import { confirmWithUser } from "../utils/user-utils";
 import {
   existsBuffered,
   findFile,
   readFileText,
   writeFileContentRaw,
 } from "./file-utils";
-import { getCliVersion } from "./npm-utils";
 
 export const DEFAULT_HOST = "https://studio.plasmic.app";
 
@@ -202,21 +194,6 @@ export interface GlobalVariantGroupConfig {
   contextFilePath: string;
 }
 
-export interface PlasmicLock {
-  // One for each project that has been synced
-  projects: ProjectLock[];
-
-  // The version of CLI when this file was written
-  cliVersion?: string;
-}
-
-function createPlasmicLock(): PlasmicLock {
-  return {
-    projects: [],
-    cliVersion: getCliVersion(),
-  };
-}
-
 export interface ProjectLock {
   projectId: string;
   // The exact version that was last synced
@@ -225,6 +202,14 @@ export interface ProjectLock {
     // Maps from projectId => exact version
     [projectId: string]: string;
   };
+}
+
+export interface PlasmicLock {
+  // One for each project that has been synced
+  projects: ProjectLock[];
+
+  // The version of CLI when this file was written
+  cliVersion?: string;
 }
 
 /**
@@ -324,21 +309,6 @@ export function findConfigFile(
   return findFile(dir, (f) => f === CONFIG_FILE_NAME, opts);
 }
 
-export function findAuthFile(
-  dir: string,
-  opts: {
-    traverseParents?: boolean;
-  }
-) {
-  let file = findFile(dir, (f) => f === AUTH_FILE_NAME, opts);
-  if (!file) {
-    file = findFile(os.homedir(), (f) => f === AUTH_FILE_NAME, {
-      traverseParents: false,
-    });
-  }
-  return file;
-}
-
 /**
  * Given some partial configs for PlasmicConfig, fills in all required fields
  * with default values.
@@ -347,113 +317,6 @@ export function fillDefaults(
   config: DeepPartial<PlasmicConfig>
 ): PlasmicConfig {
   return L.merge({}, DEFAULT_CONFIG, config);
-}
-
-/**
- * Examines several places to find the right auth information.
- * NOTE: the token can be wrong/revoked. Call `getCurrentAuth()`
- * instead to be sure that the credentials are correct.
- */
-function readCurrentAuth(
-  authPath = findAuthFile(process.cwd(), { traverseParents: true })
-) {
-  const authFromEnv = getEnvAuth();
-  if (authFromEnv) return authFromEnv;
-
-  if (!authPath) {
-    throw new HandledError("Could not find the .plasmic.auth file path.");
-  }
-  return readAuth(authPath);
-}
-
-export async function getCurrentAuth(authPath?: string) {
-  const auth = readCurrentAuth(authPath);
-  const api = new PlasmicApi(auth);
-
-  try {
-    await api.getCurrentUser();
-  } catch {
-    throw new HandledError("The authentication config is invalid.");
-  }
-  return auth;
-}
-
-/**
- * Attempts to get verified auth credentials. If the current
- * ones are invalid, invite the user to start the auth process.
- * Ends the current node process if unable to get them.
- */
-async function getOrInitAuth(args: CommonArgs) {
-  if (args.auth && !existsBuffered(args.auth)) {
-    throw new HandledError(`No Plasmic config file found at ${args.auth}`);
-  }
-
-  try {
-    const auth = await getCurrentAuth(args.auth);
-    return auth;
-  } catch (e) {
-    if (await maybeRunPlasmicInit(args, ".plasmic.auth")) {
-      return getCurrentAuth();
-    }
-    // User refused to add credentials. End the process.
-    process.exit(1);
-  }
-}
-
-export async function getContext(args: CommonArgs): Promise<PlasmicContext> {
-  const auth = await getOrInitAuth(args);
-
-  /** Sentry */
-  if (auth.host.startsWith(DEFAULT_HOST)) {
-    // Production usage of cli
-    Sentry.init({
-      dsn:
-        "https://3ed4eb43d28646e381bf3c50cff24bd6@o328029.ingest.sentry.io/5285892",
-    });
-    Sentry.configureScope((scope) => {
-      scope.setUser({ email: auth.user });
-      scope.setExtra("cliVersion", getCliVersion());
-      scope.setExtra("args", JSON.stringify(args));
-      scope.setExtra("host", auth.host);
-    });
-  }
-
-  /** PlasmicConfig **/
-  let configFile =
-    args.config || findConfigFile(process.cwd(), { traverseParents: true });
-
-  if (!configFile) {
-    await maybeRunPlasmicInit(args, "plasmic.json");
-    configFile = findConfigFile(process.cwd(), { traverseParents: true });
-    if (!configFile) {
-      const err = new HandledError(
-        "No plasmic.json file found. Please run `plasmic init` first."
-      );
-      throw err;
-    }
-  }
-  await runNecessaryMigrationsConfig(configFile, args.yes);
-  const config = readConfig(configFile);
-  const rootDir = path.dirname(configFile);
-
-  /** PlasmicLock */
-  // plasmic.lock should be in the same directory as plasmic.json
-  const lockFile = path.join(rootDir, LOCK_FILE_NAME);
-  const lock = readLock(lockFile);
-
-  return {
-    config,
-    configFile,
-    lock,
-    lockFile,
-    rootDir,
-    absoluteSrcDir: path.isAbsolute(config.srcDir)
-      ? config.srcDir
-      : path.resolve(rootDir, config.srcDir),
-    auth,
-    api: new PlasmicApi(auth),
-    cliArgs: args,
-  };
 }
 
 export function readConfig(configFile: string): PlasmicConfig {
@@ -472,66 +335,6 @@ export function readConfig(configFile: string): PlasmicConfig {
     );
     throw e;
   }
-}
-
-export function readLock(lockFile: string): PlasmicLock {
-  if (!existsBuffered(lockFile)) {
-    return createPlasmicLock();
-  }
-  try {
-    const result = JSON.parse(readFileText(lockFile!)) as PlasmicLock;
-    return {
-      ...result,
-    };
-  } catch (e) {
-    logger.error(
-      `Error encountered reading ${LOCK_FILE_NAME} at ${lockFile}: ${e}`
-    );
-    throw e;
-  }
-}
-
-export function readAuth(authFile: string) {
-  if (!existsBuffered(authFile)) {
-    const err = new HandledError(`No Plasmic auth file found at ${authFile}`);
-    throw err;
-  }
-  try {
-    const parsed = JSON.parse(readFileText(authFile)) as AuthConfig;
-    // Strip trailing slashes.
-    return {
-      ...parsed,
-      host: parsed.host.replace(/\/+$/, ""),
-    };
-  } catch (e) {
-    logger.error(
-      `Error encountered reading plasmic credentials at ${authFile}: ${e}`
-    );
-    throw e;
-  }
-}
-
-export function getEnvAuth(): AuthConfig | undefined {
-  const host = process.env[ENV_AUTH_HOST];
-  const user = process.env[ENV_AUTH_USER];
-  const token = process.env[ENV_AUTH_TOKEN];
-
-  // both user and token are required
-  if (!user || !token) {
-    // Try to give a hint if they partially entered a credential
-    if (user || token) {
-      logger.warn(
-        `Your Plasmic credentials were only partially set via environment variables. Try both ${ENV_AUTH_USER} and ${ENV_AUTH_TOKEN}`
-      );
-    }
-    return;
-  }
-
-  return {
-    host: host ?? DEFAULT_HOST,
-    user,
-    token,
-  };
 }
 
 export function writeConfig(configFile: string, config: PlasmicConfig) {
@@ -564,13 +367,6 @@ export function writeLock(lockFile: string, lock: PlasmicLock) {
   writeFileContentRaw(lockFile, JSON.stringify(lock, undefined, 2), {
     force: true,
   });
-}
-
-export function writeAuth(authFile: string, config: AuthConfig) {
-  writeFileContentRaw(authFile, JSON.stringify(config, undefined, 2), {
-    force: true,
-  });
-  fs.chmodSync(authFile, "600");
 }
 
 export function updateConfig(
@@ -626,35 +422,6 @@ export function getOrAddProjectLock(
     context.lock.projects.push(project);
   }
   return project;
-}
-
-export async function maybeRunPlasmicInit(
-  args: CommonArgs,
-  missingFile: string
-): Promise<boolean> {
-  const answer = await confirmWithUser(
-    `No ${missingFile} file found. Would you like to run \`plasmic init\`?`,
-    args.yes
-  );
-
-  if (!answer) {
-    return false;
-  }
-
-  await initPlasmic({
-    host: DEFAULT_HOST,
-    platform: "",
-    codeLang: "",
-    codeScheme: "",
-    styleScheme: "",
-    imagesScheme: "",
-    srcDir: "",
-    plasmicDir: "",
-    imagesPublicDir: "",
-    imagesPublicUrlPrefix: "",
-    ...args,
-  });
-  return true;
 }
 
 export function isPageAwarePlatform(platform: string): boolean {

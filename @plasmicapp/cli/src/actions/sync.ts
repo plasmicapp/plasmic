@@ -27,7 +27,6 @@ import {
   ComponentConfig,
   CONFIG_FILE_NAME,
   createProjectConfig,
-  getContext,
   getOrAddProjectConfig,
   getOrAddProjectLock,
   PlasmicContext,
@@ -45,6 +44,7 @@ import {
   withBufferedFs,
   writeFileContent,
 } from "../utils/file-utils";
+import { getContext } from "../utils/get-context";
 import {
   findInstalledVersion,
   getCliVersion,

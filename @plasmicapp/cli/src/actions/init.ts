@@ -1,20 +1,16 @@
 import inquirer from "inquirer";
-import os from "os";
 import path from "upath";
-import { v4 as uuidv4 } from "uuid";
 import { CommonArgs } from "..";
 import { logger } from "../deps";
+import { getOrStartAuth } from "../utils/auth-utils";
 import {
-  AUTH_FILE_NAME,
   CONFIG_FILE_NAME,
   DEFAULT_CONFIG,
   DEFAULT_PUBLIC_FILES_CONFIG,
   fillDefaults,
-  findAuthFile,
   findConfigFile,
   isPageAwarePlatform,
   PlasmicConfig,
-  writeAuth,
   writeConfig,
 } from "../utils/config-utils";
 import { existsBuffered } from "../utils/file-utils";
@@ -23,7 +19,6 @@ import {
   getParsedPackageJson,
   installUpgrade,
 } from "../utils/npm-utils";
-import { pollAuthToken } from "../utils/poll-token";
 import { confirmWithUser } from "../utils/user-utils";
 
 export interface InitArgs extends CommonArgs {
@@ -40,57 +35,14 @@ export interface InitArgs extends CommonArgs {
   pagesDir?: string;
 }
 export async function initPlasmic(opts: InitArgs) {
-  const authFile =
-    opts.auth || findAuthFile(process.cwd(), { traverseParents: true });
-  let createdAuthFile = false;
-  if (!authFile || !existsBuffered(authFile)) {
-    const auth = await inquirer.prompt([
-      {
-        name: "user",
-        message: "Your Plasmic user email",
-      },
-    ]);
-
-    const initToken = uuidv4();
-    logger.info(
-      `Please log into this link: ${opts.host}/auth/plasmic-init/${initToken}`
-    );
-
-    let authToken: string;
-    try {
-      authToken = await pollAuthToken(opts.host, auth.user, initToken);
-    } catch (e) {
-      console.error(`Could not get auth token from Plasmic: ${e}`);
-      return;
-    }
-
-    const newAuthFile = opts.auth || path.join(os.homedir(), AUTH_FILE_NAME);
-    writeAuth(newAuthFile, {
-      host: opts.host,
-      user: auth.user,
-      token: authToken,
-    });
-
-    logger.info(
-      `Successfully created Plasmic credentials file at ${newAuthFile}`
-    );
-    createdAuthFile = true;
-  } else {
-    logger.info(`Using existing Plasmic credentials at ${authFile}`);
-  }
+  await getOrStartAuth(opts);
 
   const configFile =
     opts.config || findConfigFile(process.cwd(), { traverseParents: false });
   if (configFile && existsBuffered(configFile)) {
-    if (createdAuthFile) {
-      // This is the case when `init` is not running for the first time (possibly triggered by other command),
-      // but the auth file couldn't be found (e.g. if the user accidentally removed it).
-      logger.info(`Using existing plasmic.json file at ${configFile}`);
-    } else {
-      logger.error(
-        "You already have a plasmic.json file!  Please either delete or edit it directly."
-      );
-    }
+    logger.error(
+      "You already have a plasmic.json file! Please either delete or edit it directly."
+    );
     return;
   }
 

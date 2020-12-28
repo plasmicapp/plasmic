@@ -2,7 +2,7 @@ import L from "lodash";
 import moment from "moment";
 import { CommonArgs } from "..";
 import { logger } from "../deps";
-import { getContext } from "../utils/config-utils";
+import { getContext } from "../utils/get-context";
 import * as semver from "../utils/semver";
 import { sync } from "./sync";
 
