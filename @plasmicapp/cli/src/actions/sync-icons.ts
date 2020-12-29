@@ -1,16 +1,16 @@
 import L from "lodash";
 import path from "upath";
-import { PlasmicContext, getOrAddProjectConfig } from "../utils/config-utils";
-import { ProjectIconsResponse, IconBundle } from "../api";
-import {
-  writeFileContent,
-  fixAllFilePaths,
-  defaultResourcePath,
-} from "../utils/file-utils";
 import { CommonArgs } from "..";
-import { format } from "winston";
-import { formatAsLocal, maybeConvertTsxToJsx } from "../utils/code-utils";
+import { IconBundle } from "../api";
 import { logger } from "../deps";
+import { formatAsLocal } from "../utils/code-utils";
+import { getOrAddProjectConfig, PlasmicContext } from "../utils/config-utils";
+import {
+  defaultResourcePath,
+  fileExists,
+  renameFile,
+  writeFileContent,
+} from "../utils/file-utils";
 
 export interface SyncIconsArgs extends CommonArgs {
   projects: readonly string[];
@@ -35,20 +35,37 @@ export function syncProjectIconAssets(
     }
     let iconConfig = knownIconConfigs[bundle.id];
     const isNew = !iconConfig;
+    const defaultModuleFilePath = defaultResourcePath(
+      context,
+      project,
+      "icons",
+      bundle.fileName
+    );
     if (isNew) {
       iconConfig = {
         id: bundle.id,
         name: bundle.name,
-        moduleFilePath: defaultResourcePath(
-          context,
-          project,
-          "icons",
-          bundle.fileName
-        ),
+        moduleFilePath: defaultModuleFilePath,
       };
       knownIconConfigs[bundle.id] = iconConfig;
       project.icons.push(iconConfig);
     } else {
+      const moduleFilePath = path.join(
+        path.dirname(iconConfig.moduleFilePath),
+        path.basename(defaultModuleFilePath)
+      );
+      if (
+        iconConfig.moduleFilePath !== moduleFilePath &&
+        fileExists(context, iconConfig.moduleFilePath)
+      ) {
+        if (context.cliArgs.quiet !== true) {
+          logger.info(
+            `Renaming icon: ${iconConfig.name}@${version}\t['${project.projectName}' ${project.projectId}/${bundle.id} ${project.version}]`
+          );
+        }
+        renameFile(context, iconConfig.moduleFilePath, moduleFilePath);
+        iconConfig.moduleFilePath = moduleFilePath;
+      }
       iconConfig.name = bundle.name;
     }
 
