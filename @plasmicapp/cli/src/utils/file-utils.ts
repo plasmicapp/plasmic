@@ -310,19 +310,21 @@ export async function withBufferedFs(f: () => Promise<void>) {
   buffer.clear();
   try {
     await f();
-    for (const [path, action] of buffer.entries()) {
+    for (const [filePath, action] of buffer.entries()) {
       switch (action.type) {
         case "create":
+          fs.mkdirSync(path.dirname(filePath), { recursive: true });
           // eslint-disable-next-line no-restricted-properties
-          fs.writeFileSync(path, action.content);
+          fs.writeFileSync(filePath, action.content);
           break;
         case "rename":
+          fs.mkdirSync(path.dirname(action.newPath), { recursive: true });
           // eslint-disable-next-line no-restricted-properties
-          fs.renameSync(path, action.newPath);
+          fs.renameSync(filePath, action.newPath);
           break;
         case "delete":
           // eslint-disable-next-line no-restricted-properties
-          fs.unlinkSync(path);
+          fs.unlinkSync(filePath);
           break;
       }
     }
@@ -392,6 +394,7 @@ export function renameFileBuffered(oldPath: string, newPath: string) {
     buffer.set(oldPath, { type: "rename", newPath });
     renamedFiles.set(newPath, oldPath);
   } else {
+    fs.mkdirSync(path.dirname(newPath), { recursive: true });
     // eslint-disable-next-line no-restricted-properties
     fs.renameSync(oldPath, newPath);
   }

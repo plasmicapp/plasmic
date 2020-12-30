@@ -11,6 +11,7 @@ import { ComponentUpdateSummary } from "../utils/code-utils";
 import {
   ComponentConfig,
   CONFIG_FILE_NAME,
+  isPageAwarePlatform,
   PlasmicContext,
   ProjectConfig,
 } from "../utils/config-utils";
@@ -201,6 +202,21 @@ export async function syncProjectComponents(
           renderModuleFilePath
         );
         compConfig.renderModuleFilePath = renderModuleFilePath;
+      }
+
+      if (
+        isPage &&
+        isPageAwarePlatform(context.config.platform) &&
+        skeletonPath !== compConfig.importSpec.modulePath &&
+        fileExists(context, compConfig.importSpec.modulePath)
+      ) {
+        if (context.cliArgs.quiet !== true) {
+          logger.info(
+            `Renaming page file: ${compConfig.importSpec.modulePath} -> ${skeletonPath}\t['${project.projectName}' ${project.projectId}/${id} ${project.version}]`
+          );
+        }
+        renameFile(context, compConfig.importSpec.modulePath, skeletonPath);
+        compConfig.importSpec.modulePath = skeletonPath;
       }
 
       if (scheme === "direct") {
