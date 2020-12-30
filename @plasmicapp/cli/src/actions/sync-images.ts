@@ -7,6 +7,7 @@ import { getOrAddProjectConfig, PlasmicContext } from "../utils/config-utils";
 import {
   defaultPublicResourcePath,
   defaultResourcePath,
+  deleteFile,
   fileExists,
   readFileContent,
   renameFile,
@@ -22,6 +23,12 @@ export function syncProjectImageAssets(
 ) {
   const project = getOrAddProjectConfig(context, projectId);
   const knownImageConfigs = L.keyBy(project.images, (i) => i.id);
+  const imageBundleIds = L.keyBy(imageBundles, (i) => i.id);
+  const deletedImages = L.filter(
+    knownImageConfigs,
+    (i) => !imageBundleIds[i.id]
+  );
+
   for (const bundle of imageBundles) {
     if (context.cliArgs.quiet !== true) {
       logger.info(
@@ -70,6 +77,19 @@ export function syncProjectImageAssets(
       }
     );
   }
+
+  const deletedImageFiles = new Set<string>();
+  for (const deletedImage of deletedImages) {
+    const imageConfig = knownImageConfigs[deletedImage.id];
+    if (fileExists(context, imageConfig.filePath)) {
+      logger.info(
+        `Deleting image: ${imageConfig.name}@${version}\t['${project.projectName}' ${project.projectId}/${deletedImage.id} ${project.version}]`
+      );
+      deleteFile(context, imageConfig.filePath);
+      deletedImageFiles.add(deletedImage.id);
+    }
+  }
+  project.images = project.images.filter((i) => !deletedImageFiles.has(i.id));
 }
 
 const RE_ASSETCSSREF_ALL = /var\(--image-([^\)]+)\)/g;

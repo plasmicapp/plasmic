@@ -7,6 +7,7 @@ import { formatAsLocal } from "../utils/code-utils";
 import { getOrAddProjectConfig, PlasmicContext } from "../utils/config-utils";
 import {
   defaultResourcePath,
+  deleteFile,
   fileExists,
   renameFile,
   writeFileContent,
@@ -26,7 +27,11 @@ export function syncProjectIconAssets(
   if (!project.icons) {
     project.icons = [];
   }
+
   const knownIconConfigs = L.keyBy(project.icons, (i) => i.id);
+  const iconBundleIds = L.keyBy(iconBundles, (i) => i.id);
+  const deletedIcons = L.filter(knownIconConfigs, (i) => !iconBundleIds[i.id]);
+
   for (const bundle of iconBundles) {
     if (context.cliArgs.quiet !== true) {
       logger.info(
@@ -78,4 +83,17 @@ export function syncProjectIconAssets(
       }
     );
   }
+
+  const deletedIconFiles = new Set<string>();
+  for (const deletedIcon of deletedIcons) {
+    const iconConfig = knownIconConfigs[deletedIcon.id];
+    if (fileExists(context, iconConfig.moduleFilePath)) {
+      logger.info(
+        `Deleting icon: ${iconConfig.name}@${version}\t['${project.projectName}' ${project.projectId}/${deletedIcon.id} ${project.version}]`
+      );
+      deleteFile(context, iconConfig.moduleFilePath);
+      deletedIconFiles.add(deletedIcon.id);
+    }
+  }
+  project.icons = project.icons.filter((i) => !deletedIconFiles.has(i.id));
 }

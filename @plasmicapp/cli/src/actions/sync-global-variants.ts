@@ -6,6 +6,7 @@ import { formatAsLocal } from "../utils/code-utils";
 import { PlasmicContext } from "../utils/config-utils";
 import {
   defaultResourcePath,
+  deleteFile,
   fileExists,
   renameFile,
   writeFileContent,
@@ -21,6 +22,12 @@ export function syncGlobalVariants(
     context.config.globalVariants.variantGroups,
     (c) => c.id
   );
+  const variantBundleIds = L.keyBy(bundles, (i) => i.id);
+  const deletedGlobalVariants = L.filter(
+    allVariantConfigs,
+    (i) => !variantBundleIds[i.id]
+  );
+
   for (const bundle of bundles) {
     if (context.cliArgs.quiet !== true) {
       logger.info(
@@ -70,4 +77,19 @@ export function syncGlobalVariants(
       { force: !isNew }
     );
   }
+
+  const deletedVariantsFiles = new Set<string>();
+  for (const deletedGlobalVariant of deletedGlobalVariants) {
+    const variantConfig = allVariantConfigs[deletedGlobalVariant.id];
+    if (fileExists(context, variantConfig.contextFilePath)) {
+      logger.info(
+        `Deleting global variant: ${variantConfig.name} [${projectId}/${deletedGlobalVariant.id}]`
+      );
+      deleteFile(context, variantConfig.contextFilePath);
+      deletedVariantsFiles.add(deletedGlobalVariant.id);
+    }
+  }
+  context.config.globalVariants.variantGroups = context.config.globalVariants.variantGroups.filter(
+    (v) => !deletedVariantsFiles.has(v.id)
+  );
 }

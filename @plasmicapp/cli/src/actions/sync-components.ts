@@ -19,6 +19,7 @@ import { HandledError } from "../utils/error";
 import {
   defaultPagePath,
   defaultResourcePath,
+  deleteFile,
   fileExists,
   readFileContent,
   renameFile,
@@ -112,6 +113,12 @@ export async function syncProjectComponents(
   pendingMerge: ComponentPendingMerge[]
 ) {
   const allCompConfigs = L.keyBy(project.components, (c) => c.id);
+  const componentBundleIds = L.keyBy(componentBundles, (i) => i.id);
+  const deletedComponents = L.filter(
+    allCompConfigs,
+    (i) => !componentBundleIds[i.id]
+  );
+
   for (const bundle of componentBundles) {
     const {
       renderModule,
@@ -144,6 +151,11 @@ export async function syncProjectComponents(
       project,
       renderModuleFileName
     );
+    const defaultCssFilePath = defaultResourcePath(
+      context,
+      project,
+      cssFileName
+    );
 
     if (isNew) {
       // This is the first time we're syncing this component
@@ -154,7 +166,7 @@ export async function syncProjectComponents(
         projectId: project.projectId,
         renderModuleFilePath: defaultRenderModuleFilePath,
         importSpec: { modulePath: skeletonPath },
-        cssFilePath: defaultResourcePath(context, project, cssFileName),
+        cssFilePath: defaultCssFilePath,
         scheme: scheme as "blackbox" | "direct",
       };
       allCompConfigs[id] = compConfig;
@@ -202,6 +214,23 @@ export async function syncProjectComponents(
           renderModuleFilePath
         );
         compConfig.renderModuleFilePath = renderModuleFilePath;
+      }
+
+      const cssFilePath = path.join(
+        path.dirname(compConfig.cssFilePath),
+        path.basename(defaultCssFilePath)
+      );
+      if (
+        compConfig.cssFilePath !== cssFilePath &&
+        fileExists(context, compConfig.cssFilePath)
+      ) {
+        if (context.cliArgs.quiet !== true) {
+          logger.info(
+            `Renaming component css file: ${compConfig.cssFilePath}@${version}\t['${project.projectName}' ${project.projectId}/${id} ${project.version}]`
+          );
+        }
+        renameFile(context, compConfig.cssFilePath, cssFilePath);
+        compConfig.cssFilePath = cssFilePath;
       }
 
       if (
@@ -263,4 +292,23 @@ export async function syncProjectComponents(
     });
     summary.set(id, { skeletonModuleModified });
   }
+
+  const deletedComponentFiles = new Set<string>();
+  for (const deletedComponent of deletedComponents) {
+    const componentConfig = allCompConfigs[deletedComponent.id];
+    if (
+      fileExists(context, componentConfig.renderModuleFilePath) &&
+      fileExists(context, componentConfig.cssFilePath)
+    ) {
+      logger.info(
+        `Deleting component: ${componentConfig.name}@${version}\t['${project.projectName}' ${project.projectId}/${componentConfig.id} ${project.version}]`
+      );
+      deleteFile(context, componentConfig.renderModuleFilePath);
+      deleteFile(context, componentConfig.cssFilePath);
+      deletedComponentFiles.add(deletedComponent.id);
+    }
+  }
+  project.components = project.components.filter(
+    (c) => !deletedComponentFiles.has(c.id)
+  );
 }
