@@ -32,6 +32,7 @@ import {
   writeFileContent,
 } from "../utils/file-utils";
 import { getContext } from "../utils/get-context";
+import { printFirstSyncInfo } from "../utils/help";
 import {
   findInstalledVersion,
   getCliVersion,
@@ -122,6 +123,8 @@ async function ensureRequiredPackages(context: PlasmicContext, yes?: boolean) {
  */
 export async function sync(opts: SyncArgs): Promise<void> {
   const context = await getContext(opts);
+
+  const isFirstRun = context.config.projects.length === 0;
 
   if (!opts.skipUpgradeCheck) {
     await ensureRequiredPackages(context, opts.yes);
@@ -237,6 +240,10 @@ export async function sync(opts: SyncArgs): Promise<void> {
   // Post-sync commands
   for (const cmd of context.config.postSyncCommands || []) {
     spawnSync(cmd, { shell: true, stdio: "inherit" });
+  }
+
+  if (isFirstRun) {
+    printFirstSyncInfo(context);
   }
 }
 

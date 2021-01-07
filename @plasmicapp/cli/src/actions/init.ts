@@ -13,12 +13,14 @@ import {
   PlasmicConfig,
   writeConfig,
 } from "../utils/config-utils";
-import { existsBuffered } from "../utils/file-utils";
 import {
-  getCliVersion,
-  getParsedPackageJson,
-  installUpgrade,
-} from "../utils/npm-utils";
+  detectCreateReactApp,
+  detectGatsby,
+  detectNextJs,
+  detectTypescript,
+} from "../utils/envdetect";
+import { existsBuffered } from "../utils/file-utils";
+import { getCliVersion, installUpgrade } from "../utils/npm-utils";
 import { confirmWithUser } from "../utils/user-utils";
 
 export interface InitArgs extends CommonArgs {
@@ -46,7 +48,7 @@ export async function initPlasmic(opts: InitArgs) {
     return;
   }
 
-  const langDetect = existsBuffered("tsconfig.json")
+  const langDetect = detectTypescript()
     ? {
         lang: "ts",
         explanation: "tsconfig.json detected, guessing Typescript",
@@ -56,28 +58,19 @@ export async function initPlasmic(opts: InitArgs) {
         explanation: "No tsconfig.json detected, guessing Javascript",
       };
 
-  const platformDetect =
-    existsBuffered("next.config.js") ||
-    existsBuffered(".next") ||
-    existsBuffered("next-env.d.ts") ||
-    (() => {
-      try {
-        const packageJsonContent = getParsedPackageJson();
-        return packageJsonContent.scripts.build === "next build";
-      } catch {
-        return false;
+  const platformDetect = detectNextJs()
+    ? {
+        platform: "nextjs",
+        explanation: "Next.js detected",
       }
-    })()
-      ? {
-          platform: "nextjs",
-          explanation: "Next.js detected",
-        }
-      : existsBuffered("gatsby-config.js")
-      ? {
-          platform: "gatsby",
-          explanation: "Gatsby detected",
-        }
-      : {};
+    : detectGatsby()
+    ? {
+        platform: "gatsby",
+        explanation: "Gatsby detected",
+      }
+    : {};
+
+  const isCra = detectCreateReactApp();
 
   const reactOpt = {
     name: "React",
@@ -106,19 +99,6 @@ export async function initPlasmic(opts: InitArgs) {
     short: "ts",
   };
 
-  const blackboxOpt = {
-    name:
-      "Blackbox Library: gives you a lib of presentational components that take prop overrides.",
-    value: "blackbox",
-    short: "blackbox",
-  };
-
-  const directOpt = {
-    name:
-      "Direct Edit: gives you components whose JSX trees you can directly edit to attach props.",
-    value: "direct",
-  };
-
   const plainCssOpt = {
     name: `Plain CSS stylesheets, imported as "import './plasmic.css'"`,
     value: "css",
@@ -135,7 +115,9 @@ export async function initPlasmic(opts: InitArgs) {
   };
 
   const filesImagesOpt = {
-    name: `Imported as files, like "import img from './image.png'". Not all bundlers support this.`,
+    name: `Imported as files, like "import img from './image.png'". ${
+      !isCra ? "Not all bundlers support this." : ""
+    }`,
     value: "files",
   };
 
@@ -161,6 +143,8 @@ export async function initPlasmic(opts: InitArgs) {
       opts.imagesScheme ||
       (platformDetect.platform === "nextjs"
         ? publicFilesImagesOpt.value
+        : isCra
+        ? filesImagesOpt.value
         : inlinedImagesOpt.value),
     imagesPublicDir:
       opts.imagesPublicDir || DEFAULT_PUBLIC_FILES_CONFIG.publicDir,
@@ -179,7 +163,7 @@ export async function initPlasmic(opts: InitArgs) {
         name: "platform",
         message: `What platform should code generation target? ${
           platformDetect.platform ? `(${platformDetect.explanation})` : ""
-        }\n>`,
+        }\n`,
         type: "list",
         choices: [reactOpt, nextjsOpt, gatsbyOpt],
         default: platformDetect.platform || DEFAULT_CONFIG.platform,
@@ -196,9 +180,8 @@ export async function initPlasmic(opts: InitArgs) {
       {
         name: "plasmicDir",
         message: (ans: any) =>
-          `What directory should Plasmic-managed files be put into?
-    (This is relative to ${ans.srcDir || DEFAULT_CONFIG.srcDir})
-  >`,
+          `What directory should Plasmic-managed files (that you should not edit) be put into?
+    (This is relative to ${ans.srcDir || DEFAULT_CONFIG.srcDir})\n>`,
         default: DEFAULT_CONFIG.defaultPlasmicDir,
         when: () => !opts.plasmicDir,
       },
@@ -206,35 +189,22 @@ export async function initPlasmic(opts: InitArgs) {
         name: "pagesDir",
         message: (ans: any) =>
           `What directory should pages be put into?
-    (This is relative to ${ans.srcDir || DEFAULT_CONFIG.srcDir})
-  >`,
+    (This is relative to ${ans.srcDir || DEFAULT_CONFIG.srcDir})\n>`,
         default: "../pages",
         when: (ans: any) => isPageAwarePlatform(ans.platform) && !opts.pagesDir,
       },
       {
         name: "codeLang",
         message: `What target language should Plasmic generate code in?
-    (${langDetect.explanation})
-  >`,
+    (${langDetect.explanation})\n`,
         type: "list",
         choices: () =>
           langDetect.lang === "js" ? [jsOpt, tsOpt] : [tsOpt, jsOpt],
         when: () => !opts.codeLang,
       },
       {
-        name: "codeScheme",
-        message: `Which codegen scheme should Plasmic use by default?
-    - We generally recommend Blackbox for new users.
-    - See https://plasmic.app/learn/codegen-overview for examples.
-    - You can choose schemes for individual components.
-  >`,
-        type: "list",
-        choices: () => [blackboxOpt, directOpt],
-        when: () => !opts.codeScheme,
-      },
-      {
         name: "styleScheme",
-        message: `How should we generate css for Plasmic components?`,
+        message: `How should we generate css for Plasmic components?\n`,
         type: "list",
         choices: () => [cssModuleOpt, plainCssOpt],
         when: () => !opts.styleScheme,
@@ -246,12 +216,14 @@ export async function initPlasmic(opts: InitArgs) {
             ans.platform === "nextjs"
               ? `\n  (platform is Next.js, guessing Public folder)`
               : ""
-          }\n>`,
+          }\n`,
         type: "list",
-        choices: () => [inlinedImagesOpt, filesImagesOpt, publicFilesImagesOpt],
+        choices: () => [filesImagesOpt, publicFilesImagesOpt, inlinedImagesOpt],
         default: (ans: any) =>
           ans.platform === "nextjs"
             ? publicFilesImagesOpt.value
+            : isCra
+            ? filesImagesOpt.value
             : inlinedImagesOpt.value,
         when: () => !opts.imagesScheme,
       },
@@ -259,8 +231,7 @@ export async function initPlasmic(opts: InitArgs) {
         name: "imagesPublicDir",
         message: (ans: any) =>
           `What directory should static image files be put into?
-    (This is relative to ${ans.srcDir || DEFAULT_CONFIG.srcDir})
-  >`,
+    (This is relative to ${ans.srcDir || DEFAULT_CONFIG.srcDir})\n`,
         default: DEFAULT_PUBLIC_FILES_CONFIG.publicDir,
         when: (ans: any) =>
           !opts.imagesPublicDir &&

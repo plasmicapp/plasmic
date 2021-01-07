@@ -9,7 +9,7 @@ import { PlasmicContext } from "./config-utils";
 import { findFile, readFileText } from "./file-utils";
 import { confirmWithUser } from "./user-utils";
 
-export function getParsedPackageJson() {
+export function getParsedCliPackageJson() {
   const packageJson = findupSync("package.json", { cwd: __dirname });
   if (!packageJson) {
     throw new Error(`Cannot find package.json in ancestors of ${__dirname}`);
@@ -18,8 +18,16 @@ export function getParsedPackageJson() {
 }
 
 export function getCliVersion() {
-  const j = getParsedPackageJson();
+  const j = getParsedCliPackageJson();
   return j.version as string;
+}
+
+export function getParsedPackageJson() {
+  const packageJson = findupSync("package.json");
+  if (!packageJson) {
+    throw new Error(`Cannot find package.json`);
+  }
+  return parsePackageJson(packageJson);
 }
 
 export async function warnLatestReactWeb(
