@@ -135,11 +135,11 @@ export function fixComponentImagesReferences(
   const newContent = prevContent.replace(RE_ASSETTSXREF_ALL, (sub, assetId) => {
     const asset = fixImportContext.images[assetId];
     if (asset) {
-      return `"${path.join(
+      return path.join(
         "/",
         ensure(context.config.images.publicUrlPrefix),
         path.relative(ensure(context.config.images.publicDir), asset.filePath)
-      )}"`;
+      );
     } else {
       return sub;
     }
