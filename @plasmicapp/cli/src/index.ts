@@ -120,11 +120,17 @@ yargs
     "auth",
     "Authenticates you to plasmic.",
     (yags) => {
-      yargs.option("check", {
-        alias: "c",
-        describe: "Verifies if the current credentials are valid.",
-        type: "boolean",
-      });
+      yags
+        .option("host", {
+          describe: "Plasmic host to use",
+          type: "string",
+          default: "https://studio.plasmic.app",
+        })
+        .option("check", {
+          alias: "c",
+          describe: "Just verifies if the current credentials are valid.",
+          type: "boolean",
+        });
     },
     (argv) => {
       handleError(auth.auth(argv));

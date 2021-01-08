@@ -23,7 +23,7 @@ import {
   writeFileContentRaw,
 } from "./file-utils";
 
-async function startAuth(opts: CommonArgs & { host: string }) {
+export async function startAuth(opts: CommonArgs & { host: string }) {
   if (opts.yes) {
     throw new HandledError("Plasmic credentials could not be found.");
   }

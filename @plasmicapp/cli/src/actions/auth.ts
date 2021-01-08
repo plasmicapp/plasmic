@@ -1,8 +1,9 @@
 import { logger } from "../deps";
-import { getCurrentAuth } from "../utils/auth-utils";
+import { getCurrentAuth, startAuth } from "../utils/auth-utils";
 
 export type AuthArgs = {
   check?: boolean;
+  host: string;
 };
 
 export async function checkCredentials() {
@@ -17,6 +18,7 @@ export async function checkCredentials() {
 export async function auth(args: AuthArgs) {
   if (args.check) {
     return checkCredentials();
+  } else {
+    await startAuth({ host: args.host });
   }
-  // TODO: perhaps initialize auth flow?
 }
