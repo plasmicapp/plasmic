@@ -18,13 +18,15 @@ export function syncGlobalVariants(
   bundles: GlobalVariantBundle[]
 ) {
   const projectId = projectMeta.projectId;
-  const allVariantConfigs = L.keyBy(
-    context.config.globalVariants.variantGroups,
+  const existingVariantConfigs = L.keyBy(
+    context.config.globalVariants.variantGroups.filter(
+      (group) => group.projectId === projectId
+    ),
     (c) => c.id
   );
   const variantBundleIds = L.keyBy(bundles, (i) => i.id);
   const deletedGlobalVariants = L.filter(
-    allVariantConfigs,
+    existingVariantConfigs,
     (i) => !variantBundleIds[i.id]
   );
 
@@ -34,7 +36,7 @@ export function syncGlobalVariants(
         `Syncing global variant ${bundle.name} [${projectId}/${bundle.id}]`
       );
     }
-    let variantConfig = allVariantConfigs[bundle.id];
+    let variantConfig = existingVariantConfigs[bundle.id];
     const isNew = !variantConfig;
     const defaultContextFilePath = defaultResourcePath(
       context,
@@ -48,7 +50,7 @@ export function syncGlobalVariants(
         projectId,
         contextFilePath: defaultContextFilePath,
       };
-      allVariantConfigs[bundle.id] = variantConfig;
+      existingVariantConfigs[bundle.id] = variantConfig;
       context.config.globalVariants.variantGroups.push(variantConfig);
     } else {
       const contextFilePath = path.join(
@@ -80,7 +82,7 @@ export function syncGlobalVariants(
 
   const deletedVariantsFiles = new Set<string>();
   for (const deletedGlobalVariant of deletedGlobalVariants) {
-    const variantConfig = allVariantConfigs[deletedGlobalVariant.id];
+    const variantConfig = existingVariantConfigs[deletedGlobalVariant.id];
     if (fileExists(context, variantConfig.contextFilePath)) {
       logger.info(
         `Deleting global variant: ${variantConfig.name} [${projectId}/${deletedGlobalVariant.id}]`
