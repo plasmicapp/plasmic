@@ -25,67 +25,84 @@ export const ENV_AUTH_USER = "PLASMIC_AUTH_USER";
 export const ENV_AUTH_TOKEN = "PLASMIC_AUTH_TOKEN";
 
 export interface PlasmicConfig {
-  // Target platform to generate code for
+  /** Target platform to generate code for */
   platform: "react" | "nextjs" | "gatsby";
 
-  // The folder containing the source files; this is the default place where
-  // all files are generated and dumped.
+  /**
+   * The folder containing the component source files; this is the default place where
+   * all files are generated and stored.
+   */
   srcDir: string;
 
-  // The default folder where Plasmic-generated PP files will be dumped. Path
-  // is relative to the srcDir.
+  /**
+   * The default folder where Plasmic-managed files will be stored. These include
+   * blackbox component files, svg component files, style files, etc.  The path
+   * is relative to the srcDir.
+   */
   defaultPlasmicDir: string;
 
-  // Next.js specific config.
+  /**
+   * Next.js specific config
+   */
   nextjsConfig?: {
-    // The folder containing page components source files.
+    /** The folder containing page components source files. */
     pagesDir?: string;
   };
 
-  // Gatsby specific setup.
+  /** Gatsby-specific config */
   gatsbyConfig?: {
-    // The folder containing page components source files.
+    /** The folder containing page components source files. */
     pagesDir?: string;
   };
 
-  // Config for code generation
+  /** Config for code generation */
   code: CodeConfig;
 
-  // Config for pictures
+  /** Config for pictures */
   images: ImagesConfig;
 
-  // Config for style generation
+  /** Config for style generation */
   style: StyleConfig;
 
-  // Config for style tokens
+  /** Config for style tokens */
   tokens: TokensConfig;
 
-  // Configs for each global variant we have synced.
+  /** Metadata for global variant groups */
   globalVariants: GlobalVariantsConfig;
+
+  /** Metadata for each project that has been synced */
   projects: ProjectConfig[];
 
-  // The version of cli when this file was written
+  /** The version of cli when this file was written */
   cliVersion?: string;
 
+  /** Arbitrary command to run after `plasmic sync` has run; useful for linting and code formatting synced files */
   postSyncCommands?: string[];
 }
 
 export interface CodeConfig {
-  // Language to generate code in
+  /** Language to generate code in */
   lang: "ts" | "js";
 
-  // The default code generation scheme. Each component can override the scheme.
+  /** The default code generation scheme. Each component can override the scheme. */
   scheme: "blackbox" | "direct";
 }
 
 export interface StyleConfig {
-  // Styling framework to use
+  /** Styling framework to use */
   scheme: "css" | "css-modules";
 
+  /** File location for global css styles shared by all components. Relative to srcDir */
   defaultStyleCssFilePath: string;
 }
 
 export interface ImagesConfig {
+  /**
+   * How image files should be referenced from generated React components. The choices are:
+   * * "files" - imported as relative files, like "import img from './image.png'". Not all bundlers support this.
+   * * "public-files" - images are stored in a public folder, and referenced from some url prefix, like `<img src="/static/image.png"/>`.
+   * * "inlined" - inlined directly into React files and css files as base64-encoded data-URIs.
+   */
   scheme: "inlined" | "files" | "public-files";
   publicDir?: string;
   publicUrlPrefix?: string;
@@ -97,19 +114,27 @@ export interface JsBundleThemeConfig {
 }
 
 export interface ProjectConfig {
+  /** Project ID */
   projectId: string;
-  // Project name synced down from Studio
+  /** Project name synced down from Studio */
   projectName: string;
-  // A version range that the user wants to sync without warnings
+  /**
+   * A version range for syncing this project. Can be:
+   * * "latest" - always syncs down whatever has been saved in the project.
+   * * ">0" - always syncs down the latest published version of the project.
+   * * any other semver string you'd like
+   */
   version: string;
+  /** File location for the project-wide css styles. Relative to srcDir */
   cssFilePath: string;
+
   jsBundleThemes: JsBundleThemeConfig[];
 
-  // Configs for each component we have synced.
+  /** Metadata for each synced component in this project. */
   components: ComponentConfig[];
-  // Configs for each icon we have synced.
+  /** Metadata for each synced icon in this project */
   icons: IconConfig[];
-  // Configs for each image we know about
+  /** Metadata for each synced image in this project */
   images: ImageConfig[];
 }
 
@@ -140,16 +165,18 @@ export interface TokensConfig {
  * Describes how to import a Component
  */
 export interface ImportSpec {
-  // The import path to use to instantiate this Component.  The modulePath can be:
-  // * An external npm module, like "antd/lib/button"
-  // * An aliased path, like "@app/components/Button"
-  // * A local file, like "components/Button.tsx" (path is relative to srcDir, and file
-  //   extension is fully specified).  If local file is specified, then the module is imported
-  //   via relative path.
+  /**
+   * The import path to use to instantiate this Component.  The modulePath can be:
+   * * An external npm module, like "antd/lib/button"
+   * * An aliased path, like "@app/components/Button"
+   * * A local file, like "components/Button.tsx" (path is relative to srcDir, and file extension is fully specified).  If local file is specified, then the module is imported via relative path.
+   */
   modulePath: string;
 
-  // If the Component is a named export of the module, then this is the name.  If the Component
-  // is the default export, then this is undefined.
+  /**
+   * If the Component is a named export of the module, then this is the name.  If the Component
+   * is the default export, then this is undefined.
+   */
   exportName?: string;
 }
 
@@ -159,15 +186,16 @@ export interface ComponentConfig {
   type: "managed";
   projectId: string;
 
-  // The file path for the blackbox render module, relative to srcDir.
+  /** The file path for the blackbox render module, relative to srcDir. */
   renderModuleFilePath: string;
 
-  // The file path for the component css file, relative to srcDir.
+  /** The file path for the component css file, relative to srcDir. */
   cssFilePath: string;
 
-  // How to import this Component
+  /** How to import this Component from another component file */
   importSpec: ImportSpec;
 
+  /** Code generation scheme used for this component */
   scheme: "blackbox" | "direct";
 }
 
@@ -344,7 +372,7 @@ export function writeConfig(configFile: string, config: PlasmicConfig) {
     { traverseParents: true }
   );
   const relativeSchemaFilePath = schemaFilePath
-    ? path.relative(configFile, schemaFilePath)
+    ? path.relative(path.dirname(configFile), schemaFilePath)
     : undefined;
 
   writeFileContentRaw(
