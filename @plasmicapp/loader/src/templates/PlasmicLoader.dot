@@ -66,10 +66,10 @@ function getComponent(projectId, component) {
 };
 
 function renderWithProviders(component, projectId, providersWithProps) {
-  const providers = Object.entries(providersWithProps || {}).map(([provider, props]) => {
+  const providers = Object.entries(providersWithProps || {}).map(([provider, value]) => {
     if (providersWithOneProject[provider]) {
       const {component, isContext} = providersWithOneProject[provider];
-      return [isContext ? component.Provider :component, props];
+      return [isContext ? component.Provider :component, value];
     }
     if (!providerMap[provider]) {
       throw new Error(`The provider ${provider} could not be found.`);
@@ -78,14 +78,14 @@ function renderWithProviders(component, projectId, providersWithProps) {
       throw new Error(`The provider ${provider} requires a valid projectId. Passed: ${projectId}. Options: ${Object.keys(providerMap[provider])}`);
     }
     const {component, isContext} = providerMap[provider][projectId];
-    return [isContext ? component.Provider :component, props];
+    return [isContext ? component.Provider :component, value];
   });
 
   if (!providers.length) {
     return component;
   }
 
-  return providers.reduce((child, [wrapper, props]) => React.createElement(wrapper, props, child), component);
+  return providers.reduce((child, [wrapper, value]) => React.createElement(wrapper, {value}, child), component);
 };
 
 export default function PlasmicLoader({ projectId, component, componentProps = {}, providerProps = {} }) {
