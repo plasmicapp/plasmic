@@ -30,7 +30,7 @@ export default function MyPage(props) {
 ```
 
 | Prop           | Required?                                                       | Description                                                                                                               |
-| -------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | --- |
+| -------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | component      | Yes                                                             | The name of the component that you want to load. Note that you can only load named components in Plasmic                  | $12 |
 | componentProps | No                                                              | Any additional prop you wish to pass to your component                                                                    |
 | projectId      | Only if you have multiple projects with the same component name | The unique project identifier. It is inside your Plasmic project URL: https://studio.plasmic.app/projects/here-project-id |
