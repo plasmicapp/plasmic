@@ -133,29 +133,33 @@ export async function sync(opts: SyncArgs): Promise<void> {
   fixAllFilePaths(context);
   fixFileExtension(context);
 
-  const projectIds =
-    opts.projects.length > 0
-      ? opts.projects
-      : context.config.projects.map((p) => p.projectId);
+  // Resolve what will be synced
+  const projectConfigMap = L.keyBy(context.config.projects, (p) => p.projectId);
+  const projectWithVersion = opts.projects.map((p) => {
+    const [projectId, versionRange] = p.split("@");
+    return {
+      projectId,
+      versionRange:
+        versionRange || projectConfigMap[projectId]?.version || "latest",
+      componentIdOrNames: undefined, // Get all components!
+    };
+  });
+
+  const projectSyncParams = projectWithVersion.length
+    ? projectWithVersion
+    : context.config.projects.map((p) => ({
+        projectId: p.projectId,
+        versionRange: p.version,
+        componentIdOrNames: undefined, // Get all components!
+      }));
 
   // Short-circuit if nothing to sync
-  if (projectIds.length === 0) {
+  if (projectSyncParams.length === 0) {
     throw new HandledError(
       "Don't know which projects to sync. Please specify via --projects"
     );
   }
 
-  // Resolve what will be synced
-  const projectConfigMap = L.keyBy(context.config.projects, (p) => p.projectId);
-  const projectSyncParams = projectIds.map((projectId) => {
-    // Use the version in plasmic.json, otherwise default to "latest"
-    const versionRange = projectConfigMap[projectId]?.version ?? "latest";
-    return {
-      projectId,
-      versionRange,
-      componentIdOrNames: undefined, // Get all components!
-    };
-  });
   const versionResolution = await context.api.resolveSync(
     projectSyncParams,
     true // we always want to get dependency data
@@ -205,6 +209,17 @@ export async function sync(opts: SyncArgs): Promise<void> {
       context,
       await context.api.genStyleConfig(context.config.style)
     );
+
+    // Update project version if specified and successfully synced.
+    if (projectWithVersion.length) {
+      const versionMap: Record<string, string> = {};
+      projectWithVersion.forEach(
+        (p) => (versionMap[p.projectId] = p.versionRange)
+      );
+      context.config.projects.forEach(
+        (p) => (p.version = versionMap[p.projectId] || p.version)
+      );
+    }
 
     // Write the new ComponentConfigs to disk
     updateConfig(context, context.config);

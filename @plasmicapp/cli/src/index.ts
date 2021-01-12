@@ -232,7 +232,7 @@ function configureSyncArgs(
     .option("projects", {
       alias: "p",
       describe:
-        "ID of Plasmic projects to sync.  If not specified, defaults to all known projects.",
+        "One or more projects to sync, separated by comma. Version constraints can be specified using @. Example: projectid, projectid@>=version",
       type: "array",
       default: [],
     })
