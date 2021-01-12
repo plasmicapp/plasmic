@@ -14,7 +14,7 @@ module.exports = {
       resolve: `@plasmicapp/loader/gatsby`,
       options: {
         dir: __dirname, // The root directory of your project.
-        projectIds: ["some-project-id"], // An array of project ids.
+        projects: ["projectid", "projectid@>0"], // An array of projects to sync.
       },
     },
   ],

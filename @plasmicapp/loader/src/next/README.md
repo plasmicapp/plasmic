@@ -12,7 +12,7 @@ const plasmic = require("@plasmicapp/loader/next");
 
 const withPlasmic = plasmic({
   dir: __dirname, // The root directory of your project.
-  projectIds: ["some-project-id"], // An array of project ids.
+  projects: ["projectid", "projectid@>0"], // An array of project to sync.
 });
 
 module.exports = withPlasmic({

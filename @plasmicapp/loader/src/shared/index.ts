@@ -106,11 +106,11 @@ function generatePlasmicLoader(dir: string) {
 
 export type PlamicOpts = {
   dir: string;
-  projectIds: string[];
+  projects: string[];
 };
 
-export function generateEntrypoint({ dir, projectIds }: PlamicOpts) {
-  console.log("Syncing plasmic projects: ", projectIds);
+export function generateEntrypoint({ dir, projects }: PlamicOpts) {
+  console.log("Syncing plasmic projects: ", projects);
   const plasmicDir = path.join(dir, ".plasmic");
   const plasmicExecPath = path.join(dir, "node_modules", ".bin", "plasmic");
 
@@ -124,7 +124,7 @@ export function generateEntrypoint({ dir, projectIds }: PlamicOpts) {
 
   execOrFail(
     plasmicDir,
-    `node ${plasmicExecPath} sync --yes  --projects ${projectIds.join(" ")}`,
+    `node ${plasmicExecPath} sync --yes  --projects ${projects.join(" ")}`,
     "Unable to sync plasmic project. Please check the above error and try again."
   );
 
