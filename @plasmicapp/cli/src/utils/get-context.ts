@@ -6,7 +6,6 @@ import { logger } from "../deps";
 import { CommonArgs } from "../index";
 import { runNecessaryMigrationsConfig } from "../migrations/migrations";
 import { HandledError } from "../utils/error";
-import { confirmWithUser } from "../utils/user-utils";
 import { getCurrentAuth } from "./auth-utils";
 import {
   DEFAULT_HOST,
@@ -120,14 +119,7 @@ export async function maybeRunPlasmicInit(
   args: CommonArgs,
   missingFile: string
 ): Promise<boolean> {
-  const answer = await confirmWithUser(
-    `No ${missingFile} file found. Would you like to run \`plasmic init\`?`,
-    args.yes
-  );
-
-  if (!answer) {
-    return false;
-  }
+  console.log(`No ${missingFile} file found. Initializing plasmic...`);
 
   await initPlasmic({
     host: DEFAULT_HOST,

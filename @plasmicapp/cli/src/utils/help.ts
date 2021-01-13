@@ -59,13 +59,10 @@ ${wrap(
   `For each SVG icon, Plasmic also generates a React component. The component takes in all the usual props that you can pass to an svg element, and defaults to width/height of 1em.`
 )}
 
-${wrap(
-  `For example, for the ${chalk.bold(
-    exampleIcon.name
-  )} icon at ${chalk.bold.underline(
-    exampleIcon.moduleFilePath
-  )}, instantiate it like:`
-)}
+For example, for the ${chalk.bold(
+          exampleIcon.name
+        )} icon at ${chalk.bold.underline(exampleIcon.moduleFilePath)},
+instantiate it like:
 
     ${chalk.green(`<${exampleIcon.name} color="red" />`)}
 
