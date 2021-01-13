@@ -1,5 +1,4 @@
 import L from "lodash";
-import path from "upath";
 import { DeepPartial } from "utility-types";
 import { PlasmicApi } from "../api";
 import { logger } from "../deps";
@@ -104,7 +103,15 @@ export interface ImagesConfig {
    * * "inlined" - inlined directly into React files and css files as base64-encoded data-URIs.
    */
   scheme: "inlined" | "files" | "public-files";
+
+  /**
+   * The folder where "public" static files are stored. Plasmic-managed image files will be stored as "plasmic/project-name/image-name" under this folder.  Relative to srcDir; for example, "../public"
+   */
   publicDir?: string;
+
+  /**
+   * The url prefix where "public" static files are stored.  For example, if publicDir is "public", publicUrlPrefix is "/static", then a file at public/test.png will be served at /static/test.png.
+   */
   publicUrlPrefix?: string;
 }
 
@@ -181,9 +188,13 @@ export interface ImportSpec {
 }
 
 export interface ComponentConfig {
+  /** Component ID */
   id: string;
+  /** Javascript name of component */
   name: string;
   type: "managed";
+
+  /** Plasmic project that this component belongs in */
   projectId: string;
 
   /** The file path for the blackbox render module, relative to srcDir. */
@@ -200,14 +211,22 @@ export interface ComponentConfig {
 }
 
 export interface IconConfig {
+  /** ID of icon */
   id: string;
+
+  /** Javascript name of the React component for this icon */
   name: string;
+
+  /** The file path for the React component file for this icon, relative to srcDir. */
   moduleFilePath: string;
 }
 
 export interface ImageConfig {
+  /** ID of image */
   id: string;
+  /** name of image */
   name: string;
+  /** File path for the image file, relative to srcDir */
   filePath: string;
 }
 
@@ -216,9 +235,13 @@ export interface GlobalVariantsConfig {
 }
 
 export interface GlobalVariantGroupConfig {
+  /** ID of the global variant group */
   id: string;
+  /** Javascript name of the global variant group */
   name: string;
+  /** Plasmic project this global variant group belongs to */
   projectId: string;
+  /** File path for the global variant group React context definition, relative to srcDir */
   contextFilePath: string;
 }
 
@@ -366,21 +389,12 @@ export function readConfig(configFile: string): PlasmicConfig {
 }
 
 export function writeConfig(configFile: string, config: PlasmicConfig) {
-  const schemaFilePath = findFile(
-    __dirname,
-    (f) => f === CONFIG_SCHEMA_FILE_NAME,
-    { traverseParents: true }
-  );
-  const relativeSchemaFilePath = schemaFilePath
-    ? path.relative(path.dirname(configFile), schemaFilePath)
-    : undefined;
-
   writeFileContentRaw(
     configFile,
     JSON.stringify(
       {
         ...config,
-        $schema: relativeSchemaFilePath,
+        $schema: `https://unpkg.com/@plasmicapp/cli@${config.cliVersion}/dist/plasmic.schema.json`,
       },
       undefined,
       2
