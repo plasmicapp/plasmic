@@ -125,7 +125,7 @@ export function fixComponentCssReferences(
   }
 }
 
-const RE_ASSETTSXREF_ALL = /Plasmic_Image_([^\)]+)__Ref/g;
+const RE_ASSETTSXREF_ALL = /Plasmic_Image_([^\)\s]+)__Ref/g;
 export function fixComponentImagesReferences(
   context: PlasmicContext,
   fixImportContext: FixImportContext,
