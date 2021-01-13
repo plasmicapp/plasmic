@@ -61,7 +61,8 @@ export function defaultPublicResourcePath(
 ) {
   return path.join(
     context.config.images.publicDir,
-    L.snakeCase(`plasmic/${project.projectName}`),
+    "plasmic",
+    L.snakeCase(project.projectName),
     ...subpaths
   );
 }
