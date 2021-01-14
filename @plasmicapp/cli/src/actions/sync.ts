@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import { spawnSync } from "child_process";
 import L from "lodash";
 import path from "upath";
@@ -38,6 +39,7 @@ import {
   getCliVersion,
   installCommand,
   installUpgrade,
+  isCliGloballyInstalled,
   warnLatestReactWeb,
 } from "../utils/npm-utils";
 import { checkVersionResolution } from "../utils/resolve-utils";
@@ -91,11 +93,17 @@ async function ensureRequiredPackages(context: PlasmicContext, yes?: boolean) {
 
   const cliVersion = getCliVersion();
   if (!cliVersion || semver.gt(requireds["@plasmicapp/cli"], cliVersion)) {
-    const isGlobal = !findInstalledVersion(context, "@plasmicapp/cli");
+    const isGlobal = isCliGloballyInstalled(context.rootDir);
     await confirmInstall("@plasmicapp/cli", requireds["@plasmicapp/cli"], {
       global: isGlobal,
       dev: true,
     });
+
+    // Exit so the user can run again with the new cli
+    console.log(
+      chalk.bold(`@plasmicapp/cli has been upgraded; please try again`)
+    );
+    process.exit();
   }
 
   const reactWebVersion = findInstalledVersion(

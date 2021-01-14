@@ -117,10 +117,32 @@ export function findInstalledVersion(context: PlasmicContext, pkg: string) {
   return undefined;
 }
 
-export function findInstalledPackageJsonFile(pkg: string, dir: string) {
-  const packageJsonPath = findFile(dir, (f) => f === "package.json", {
+/**
+ * Detects if the cli is globally installed.  `rootDir` is the folder
+ * where plasmic.json is
+ */
+export function isCliGloballyInstalled(rootDir: string) {
+  const packageJsonFile = findPackageJsonPath(rootDir);
+  if (!packageJsonFile) {
+    // We assume global, as instructions state global and we can't really
+    // do better
+    return true;
+  }
+  const installedDir = __dirname;
+
+  // Else, we assume it is local if the installedDir is a subfolder of
+  // the root project dir
+  return !installedDir.startsWith(path.dirname(packageJsonFile));
+}
+
+function findPackageJsonPath(dir: string) {
+  return findFile(dir, (f) => f === "package.json", {
     traverseParents: true,
   });
+}
+
+export function findInstalledPackageJsonFile(pkg: string, dir: string) {
+  const packageJsonPath = findPackageJsonPath(dir);
   if (!packageJsonPath) {
     return undefined;
   }

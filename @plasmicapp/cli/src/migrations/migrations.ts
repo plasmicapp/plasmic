@@ -12,13 +12,18 @@
  * The framework will run migrations in sequence, so you are guaranteed that the plasmic.json blob
  * passed into your migration function is valid as of the previous version.
  */
+import chalk from "chalk";
 import L from "lodash";
 import semver from "semver";
 import path from "upath";
 import { logger } from "../deps";
 import { HandledError } from "../utils/error";
 import { readFileText, writeFileContentRaw } from "../utils/file-utils";
-import { getCliVersion, installUpgrade } from "../utils/npm-utils";
+import {
+  getCliVersion,
+  installUpgrade,
+  isCliGloballyInstalled,
+} from "../utils/npm-utils";
 import { confirmWithUser } from "../utils/user-utils";
 import { migrateInit } from "./0.1.27-migrateInit";
 import { tsToTsx } from "./0.1.28-tsToTsx";
@@ -64,7 +69,19 @@ export async function runNecessaryMigrationsConfig(
       throw new HandledError("Upgrading is required to continue.");
     }
 
-    installUpgrade("@plasmicapp/cli");
+    const success = installUpgrade("@plasmicapp/cli", {
+      global: isCliGloballyInstalled(path.dirname(configFile)),
+      dev: true,
+    });
+
+    if (success) {
+      console.log(
+        chalk.bold("@plasmicapp/cli has been upgraded; please try again!")
+      );
+      process.exit();
+    } else {
+      throw new HandledError("Error upgrading @plasmicapp/cli");
+    }
   }
 
   const context: MigrateContext = {
