@@ -63,14 +63,16 @@ export async function watchProjects(opts: WatchArgs) {
     logger.error(data);
     process.exit(1);
   });
-  socket.on("update", (data: any) => {
+  socket.on("update", async (data: any) => {
     // Just run syncProjects() for now when any project has been updated
+    // Note on the 'updated to revision' part: this is parsed by the
+    // loader package to know that we finished updating the components.
+    await sync({ ...opts, quiet: true });
     logger.info(
       `[${moment().format("HH:mm:ss")}] Project ${
         data.projectId
       } updated to revision ${data.revisionNum}`
     );
-    sync({ ...opts, quiet: true });
   });
 
   logger.info(`Watching projects ${latestProjects} ...`);
