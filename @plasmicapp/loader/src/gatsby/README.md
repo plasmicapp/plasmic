@@ -15,6 +15,7 @@ module.exports = {
       options: {
         dir: __dirname, // The root directory of your project.
         projects: ["projectid", "projectid@>0"], // An array of projects to sync.
+        watch: false // (optional) Automatically sync your unversioned projects as you make changes in the studio. Defaults to `true` during development.
       },
     },
   ],

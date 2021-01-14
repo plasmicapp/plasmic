@@ -18,6 +18,9 @@ module.exports = (plasmicOpt: PlamicOpts) => {
         return;
       }
       firstTime = false;
+      if (plasmicOpt.watch === undefined) {
+        plasmicOpt.watch = phase === PHASE_DEVELOPMENT_SERVER;
+      }
       if (buildPhase.includes(phase)) {
         generateEntrypoint(plasmicOpt);
       }

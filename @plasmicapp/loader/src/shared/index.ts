@@ -3,6 +3,8 @@ import dot from "dot";
 import fs from "fs";
 import path from "path";
 
+dot.templateSettings.strip = false;
+
 function execOrFail(dir: string, command: string, message: string) {
   try {
     cp.execSync(command, { cwd: dir, stdio: "inherit" });
@@ -44,7 +46,7 @@ function generatePlasmicLoader(dir: string) {
   const entrypointPath = path.join(__dirname, "../", "PlasmicLoader.jsx");
   const templatePath = path.join(__dirname, "../", "templates");
 
-  const templates = (dot as any).process({ path: templatePath, strip: false });
+  const templates = (dot as any).process({ path: templatePath });
   const configData = fs.readFileSync(configPath);
   const config = JSON.parse(configData.toString());
 
@@ -107,9 +109,10 @@ function generatePlasmicLoader(dir: string) {
 export type PlamicOpts = {
   dir: string;
   projects: string[];
+  watch?: boolean;
 };
 
-export function generateEntrypoint({ dir, projects }: PlamicOpts) {
+export function generateEntrypoint({ dir, projects, watch }: PlamicOpts) {
   console.log("Syncing plasmic projects: ", projects);
   const plasmicDir = path.join(dir, ".plasmic");
   const plasmicExecPath = path.join(dir, "node_modules", ".bin", "plasmic");
@@ -129,4 +132,19 @@ export function generateEntrypoint({ dir, projects }: PlamicOpts) {
   );
 
   generatePlasmicLoader(plasmicDir);
+
+  if (watch) {
+    const watchCmd = cp.spawn("node", [plasmicExecPath, "watch"], {
+      cwd: plasmicDir,
+    });
+    watchCmd.stdout.on("data", function (data) {
+      process.stdout.write(`plasmic: ${data.toString()}`);
+
+      // Once the CLI output this message, we know the components & configs were updated.
+      const didUpdate = data.toString().includes("updated to revision");
+      if (didUpdate) {
+        generatePlasmicLoader(plasmicDir);
+      }
+    });
+  }
 }
