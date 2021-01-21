@@ -15,6 +15,10 @@ function execOrFail(dir: string, command: string, message: string) {
   }
 }
 
+function convertToUrlPath(filepath: string) {
+  return filepath.replace(/\\/g, "/");
+}
+
 function tryInitializePlasmicDir(dir: string) {
   const plasmicDir = path.join(dir, ".plasmic");
   const plasmicExecPath = path.join(dir, "node_modules", ".bin", "plasmic");
@@ -28,7 +32,7 @@ function tryInitializePlasmicDir(dir: string) {
 
   execOrFail(
     plasmicDir,
-    `node ${plasmicExecPath} init --yes`,
+    `${plasmicExecPath} init --yes`,
     "Unable to initialize plasmic. Please check the above error and try again."
   );
 }
@@ -58,7 +62,9 @@ function generatePlasmicLoader(dir: string) {
       const data = {
         name: component.name,
         projectId: project.projectId,
-        path: path.join(dir, config.srcDir, component.renderModuleFilePath),
+        path: convertToUrlPath(
+          path.join(dir, config.srcDir, component.renderModuleFilePath)
+        ),
       };
       if (!componentDataKeyedByName[data.name]) {
         componentDataKeyedByName[data.name] = [];
@@ -75,7 +81,9 @@ function generatePlasmicLoader(dir: string) {
     const data = {
       name: provider.name,
       projectId: provider.projectId,
-      path: path.join(dir, config.srcDir, provider.contextFilePath),
+      path: convertToUrlPath(
+        path.join(dir, config.srcDir, provider.contextFilePath)
+      ),
       providerName: provider.name === "Screen" ? "ScreenVariantProvider" : "",
     };
     if (!providersKeyedByName[data.name]) {
@@ -119,7 +127,7 @@ export function generateEntrypoint({ dir, projects, watch }: PlamicOpts) {
 
   execOrFail(
     dir,
-    `node ${plasmicExecPath} auth --check`,
+    `${plasmicExecPath} auth --check`,
     "Unable to authenticate. Please check your auth config and try again."
   );
 
@@ -127,7 +135,7 @@ export function generateEntrypoint({ dir, projects, watch }: PlamicOpts) {
 
   execOrFail(
     plasmicDir,
-    `node ${plasmicExecPath} sync --yes  --projects ${projects.join(" ")}`,
+    `${plasmicExecPath} sync --yes  --projects ${projects.join(" ")}`,
     "Unable to sync plasmic project. Please check the above error and try again."
   );
 
