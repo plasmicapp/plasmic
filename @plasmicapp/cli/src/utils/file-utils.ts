@@ -105,7 +105,9 @@ export function fileExists(context: PlasmicContext, srcDirFilePath: string) {
 }
 
 export function makeFilePath(context: PlasmicContext, filePath: string) {
-  return path.join(context.absoluteSrcDir, filePath);
+  return path.isAbsolute(filePath)
+    ? filePath
+    : path.join(context.absoluteSrcDir, filePath);
 }
 
 export function renameFile(

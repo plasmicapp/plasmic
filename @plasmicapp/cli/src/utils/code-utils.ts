@@ -25,6 +25,7 @@ import {
 } from "./config-utils";
 import {
   existsBuffered,
+  makeFilePath,
   readFileText,
   stripExtension,
   writeFileContent,
@@ -323,8 +324,8 @@ function makeImportPath(
   let result = toPath;
   if (isLocalModulePath(toPath)) {
     result = path.relative(
-      path.join(context.absoluteSrcDir || "", path.dirname(fromPath)),
-      path.join(context.absoluteSrcDir || "", toPath)
+      makeFilePath(context, path.dirname(fromPath)),
+      makeFilePath(context, toPath)
     );
     if (!result.startsWith(".")) {
       result = `./${result}`;
@@ -464,7 +465,7 @@ function fixFileImportStatements(
   fixImportContext: FixImportContext,
   removeImportDirective: boolean
 ) {
-  const filePath = path.join(context.absoluteSrcDir, srcDirFilePath);
+  const filePath = makeFilePath(context, srcDirFilePath);
   if (!existsBuffered(filePath)) {
     console.warn(
       `Cannot fix imports in non-existing file ${srcDirFilePath}. Check your plasmic.json file for invalid entries.`
@@ -472,9 +473,7 @@ function fixFileImportStatements(
     return;
   }
 
-  const prevContent = readFileText(
-    path.join(context.absoluteSrcDir, srcDirFilePath)
-  ).toString();
+  const prevContent = readFileText(filePath).toString();
 
   const newContent = replaceImports(
     context,

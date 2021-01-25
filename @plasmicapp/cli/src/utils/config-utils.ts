@@ -208,6 +208,8 @@ export interface ComponentConfig {
 
   /** Code generation scheme used for this component */
   scheme: "blackbox" | "direct";
+
+  componentType: "page" | "component";
 }
 
 export interface IconConfig {

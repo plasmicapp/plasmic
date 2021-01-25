@@ -168,6 +168,7 @@ export async function syncProjectComponents(
         importSpec: { modulePath: skeletonPath },
         cssFilePath: defaultCssFilePath,
         scheme: scheme as "blackbox" | "direct",
+        componentType: isPage ? "page" : "component",
       };
       allCompConfigs[id] = compConfig;
       project.components.push(allCompConfigs[id]);
@@ -178,6 +179,8 @@ export async function syncProjectComponents(
       });
     } else {
       // This is an existing component.
+
+      compConfig.componentType = isPage ? "page" : "component";
 
       // Update config on new name from server
       if (componentName !== compConfig.name) {

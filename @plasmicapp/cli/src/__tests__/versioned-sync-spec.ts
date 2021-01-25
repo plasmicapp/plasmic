@@ -151,6 +151,7 @@ describe("versioned-sync", () => {
           },
           cssFilePath: "plasmic/PlasmicButton.css",
           scheme: "blackbox",
+          componentType: "component",
         },
       ],
       icons: [],
