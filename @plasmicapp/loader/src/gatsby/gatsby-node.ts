@@ -1,8 +1,18 @@
+import path from "path";
 import { generateEntrypoint, PlamicOpts } from "../shared";
 
-exports.onPreInit = async (_: any, pluginOptions: PlamicOpts) => {
+type PluginOptions = Omit<PlamicOpts, "pageDir"> & { pageDir?: string };
+
+exports.onPreInit = async (_: any, pluginOptions: PluginOptions) => {
   if (pluginOptions.watch === undefined) {
     pluginOptions.watch = process.env.NODE_ENV === "development";
   }
-  generateEntrypoint(pluginOptions);
+  generateEntrypoint({
+    initArgs: {
+      platform: "gatsby",
+      "pages-dir": "../pages",
+    },
+    pageDir: path.join(pluginOptions.dir, "src", "pages"),
+    ...pluginOptions,
+  });
 };

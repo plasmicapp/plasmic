@@ -2,12 +2,15 @@
 const PHASE_PRODUCTION_BUILD = "phase-production-build";
 const PHASE_DEVELOPMENT_SERVER = "phase-development-server";
 
+import path from "path";
 import { generateEntrypoint, PlamicOpts } from "../shared";
+
+type PluginOptions = Omit<PlamicOpts, "pageDir"> & { pageDir?: string };
 
 // Check to make sure it only runs once.
 let firstTime = true;
 
-module.exports = (plasmicOpt: PlamicOpts) => {
+module.exports = (pluginOptions: PluginOptions) => {
   const buildPhase = [PHASE_DEVELOPMENT_SERVER, PHASE_PRODUCTION_BUILD];
 
   return (nextConfig: any = {}, composePlugins: any = {}) => {
@@ -18,11 +21,18 @@ module.exports = (plasmicOpt: PlamicOpts) => {
         return;
       }
       firstTime = false;
-      if (plasmicOpt.watch === undefined) {
-        plasmicOpt.watch = phase === PHASE_DEVELOPMENT_SERVER;
+      if (pluginOptions.watch === undefined) {
+        pluginOptions.watch = phase === PHASE_DEVELOPMENT_SERVER;
       }
       if (buildPhase.includes(phase)) {
-        generateEntrypoint(plasmicOpt);
+        generateEntrypoint({
+          initArgs: {
+            platform: "nextjs",
+            "pages-dir": "../pages",
+          },
+          pageDir: path.join(pluginOptions.dir, "./pages"),
+          ...pluginOptions,
+        });
       }
       return typeof nextConfig === "function"
         ? nextConfig(phase, args)
