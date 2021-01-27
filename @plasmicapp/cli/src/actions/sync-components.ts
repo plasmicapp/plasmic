@@ -7,7 +7,7 @@ import L from "lodash";
 import path from "upath";
 import { AppServerError, ComponentBundle } from "../api";
 import { logger } from "../deps";
-import { ComponentUpdateSummary } from "../utils/code-utils";
+import { ComponentUpdateSummary, formatAsLocal } from "../utils/code-utils";
 import {
   ComponentConfig,
   CONFIG_FILE_NAME,
@@ -290,7 +290,8 @@ export async function syncProjectComponents(
     writeFileContent(context, compConfig.renderModuleFilePath, renderModule, {
       force: !isNew,
     });
-    writeFileContent(context, compConfig.cssFilePath, cssRules, {
+    const formattedCssRules = formatAsLocal(cssRules, compConfig.cssFilePath);
+    writeFileContent(context, compConfig.cssFilePath, formattedCssRules, {
       force: !isNew,
     });
     summary.set(id, { skeletonModuleModified });

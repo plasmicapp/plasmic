@@ -458,8 +458,13 @@ async function syncProjectConfig(
     projectConfig.cssFilePath = defaultCssFilePath;
   }
 
+  const formattedCssRules = formatAsLocal(
+    projectBundle.cssRules,
+    projectConfig.cssFilePath
+  );
+
   // Write out project css
-  writeFileContent(context, projectConfig.cssFilePath, projectBundle.cssRules, {
+  writeFileContent(context, projectConfig.cssFilePath, formattedCssRules, {
     force: !isNew,
   });
 

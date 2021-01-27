@@ -3,6 +3,7 @@ import { DeepPartial } from "utility-types";
 import { PlasmicApi } from "../api";
 import { logger } from "../deps";
 import { HandledError } from "../utils/error";
+import { formatAsLocal } from "./code-utils";
 import {
   existsBuffered,
   findFile,
@@ -393,13 +394,16 @@ export function readConfig(configFile: string): PlasmicConfig {
 export function writeConfig(configFile: string, config: PlasmicConfig) {
   writeFileContentRaw(
     configFile,
-    JSON.stringify(
-      {
-        ...config,
-        $schema: `https://unpkg.com/@plasmicapp/cli@${config.cliVersion}/dist/plasmic.schema.json`,
-      },
-      undefined,
-      2
+    formatAsLocal(
+      JSON.stringify(
+        {
+          ...config,
+          $schema: `https://unpkg.com/@plasmicapp/cli@${config.cliVersion}/dist/plasmic.schema.json`,
+        },
+        undefined,
+        2
+      ),
+      configFile
     ),
     {
       force: true,
@@ -408,9 +412,13 @@ export function writeConfig(configFile: string, config: PlasmicConfig) {
 }
 
 export function writeLock(lockFile: string, lock: PlasmicLock) {
-  writeFileContentRaw(lockFile, JSON.stringify(lock, undefined, 2), {
-    force: true,
-  });
+  writeFileContentRaw(
+    lockFile,
+    formatAsLocal(JSON.stringify(lock, undefined, 2), "/tmp/x.json"),
+    {
+      force: true,
+    }
+  );
 }
 
 export function updateConfig(
