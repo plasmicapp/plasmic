@@ -264,6 +264,11 @@ function configureSyncArgs(
       choices: ["blackbox", "direct"],
       describe:
         "Sync the new components using this code scheme rather than the default code scheme.",
+    })
+    .option("ignore-post-sync", {
+      type: "boolean",
+      describe: "Ignore post-sync commands in plasmic.json",
+      default: false,
     });
   if (includeQuietOption) {
     args = args.option("quiet", {

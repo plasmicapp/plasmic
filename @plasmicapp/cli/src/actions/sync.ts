@@ -63,6 +63,7 @@ export interface SyncArgs extends CommonArgs {
   force?: boolean;
   nonRecursive?: boolean;
   skipUpgradeCheck?: boolean;
+  ignorePostSync?: boolean;
   quiet?: boolean;
 }
 
@@ -261,8 +262,10 @@ export async function sync(opts: SyncArgs): Promise<void> {
   }
 
   // Post-sync commands
-  for (const cmd of context.config.postSyncCommands || []) {
-    spawnSync(cmd, { shell: true, stdio: "inherit" });
+  if (!opts.ignorePostSync) {
+    for (const cmd of context.config.postSyncCommands || []) {
+      spawnSync(cmd, { shell: true, stdio: "inherit" });
+    }
   }
 
   if (isFirstRun) {
