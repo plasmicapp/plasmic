@@ -6,9 +6,17 @@ type PlasmicLoader = {
   componentProps?: object | null;
   providerProps?: { [name: string]: object };
 };
-export default function PlasmicLoader({
-  projectId,
-  component,
-}: PlasmicLoader): JSX.Element | null {
+export default function PlasmicLoader(
+  props: PlasmicLoader
+): JSX.Element | null {
+  return null;
+}
+
+type ProviderProps = {
+  projectId?: string;
+  props: { [name: string]: object };
+};
+
+export function Providers(props: ProviderProps): JSX.Element | null {
   return null;
 }

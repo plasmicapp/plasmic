@@ -18,6 +18,11 @@ fs.copyFileSync(
   path.join("dist", "templates", "PlasmicLoader.dot")
 );
 
+fs.copyFileSync(
+  path.join("src", "templates", "PlasmicPage.dot"),
+  path.join("dist", "templates", "PlasmicPage.dot")
+);
+
 delete packageJson.private;
 delete packageJson.scripts;
 
