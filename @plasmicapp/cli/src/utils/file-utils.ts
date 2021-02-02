@@ -206,17 +206,79 @@ export function findFile(
   return findFile(path.dirname(dir), pred, opts);
 }
 
+type BundleKeyPair = {
+  bundle: Record<string, any>;
+  key: string;
+};
+
+/**
+ * Parses a configuration and returns file/dir paths in it (in the format
+ * BundleKeyPair to allow the caller to change these paths).
+ */
+function getAllPaths(context: PlasmicContext): BundleKeyPair[] {
+  const config = context.config;
+
+  const pairs: BundleKeyPair[] = [];
+  const pushPath = (bundle: Record<string, any>, key: string) => {
+    pairs.push({ bundle, key });
+  };
+
+  const pushComponent = (comp: ComponentConfig) => {
+    pushPath(comp, "renderModuleFilePath");
+    pushPath(comp, "cssFilePath");
+    if (isLocalModulePath(comp.importSpec.modulePath)) {
+      pushPath(comp.importSpec, "modulePath");
+    }
+  };
+
+  const pushProject = (proj: ProjectConfig) => {
+    pushPath(proj, "cssFilePath");
+    for (const component of proj.components) {
+      pushComponent(component);
+    }
+    for (const icon of proj.icons) {
+      pushPath(icon, "moduleFilePath");
+    }
+    for (const image of proj.images) {
+      pushPath(image, "filePath");
+    }
+  };
+
+  for (const project of config.projects) {
+    pushProject(project);
+  }
+
+  for (const bundle of config.globalVariants.variantGroups) {
+    pushPath(bundle, "contextFilePath");
+  }
+
+  pushPath(config.tokens, "tokensFilePath");
+  pushPath(config.style, "defaultStyleCssFilePath");
+
+  pushPath(config, "defaultPlasmicDir");
+  if (config.images.publicDir) {
+    pushPath(config.images, "publicDir");
+  }
+  if (config.gatsbyConfig) {
+    pushPath(config.gatsbyConfig, "pagesDir");
+  }
+  if (config.nextjsConfig) {
+    pushPath(config.nextjsConfig, "pagesDir");
+  }
+
+  return pairs;
+}
+
 /**
  * Fixes all src-relative file paths in PlasmicConfig by detecting file
  * movement on disk.
  */
 export function fixAllFilePaths(context: PlasmicContext) {
   const baseNameToFiles = buildBaseNameToFiles(context);
-  const config = context.config;
-
   let changed = false;
 
-  const fixPath = <K extends string>(bundle: { [k in K]: string }, key: K) => {
+  const paths = getAllPaths(context);
+  for (const { bundle, key } of paths) {
     const known = bundle[key];
     // Check null and undefined
     if (known == null) {
@@ -226,7 +288,7 @@ export function fixAllFilePaths(context: PlasmicContext) {
     }
     // Check falsey values (e.g. "")
     if (!known) {
-      return;
+      continue;
     }
     const found = findSrcDirPath(
       context.absoluteSrcDir,
@@ -237,44 +299,37 @@ export function fixAllFilePaths(context: PlasmicContext) {
       bundle[key] = found;
       changed = true;
     }
-  };
-
-  const fixProject = (proj: ProjectConfig) => {
-    fixPath(proj, "cssFilePath");
-    for (const component of proj.components) {
-      fixComponent(component);
-    }
-    for (const icon of proj.icons) {
-      fixPath(icon, "moduleFilePath");
-    }
-    for (const image of proj.images) {
-      fixPath(image, "filePath");
-    }
-  };
-
-  const fixComponent = (comp: ComponentConfig) => {
-    fixPath(comp, "renderModuleFilePath");
-    fixPath(comp, "cssFilePath");
-    // If `compConfig.importPath` is still referencing a local file, then we can also best-effort detect
-    // whether it has been moved.
-    if (isLocalModulePath(comp.importSpec.modulePath)) {
-      fixPath(comp.importSpec, "modulePath");
-    }
-  };
-
-  for (const project of config.projects) {
-    fixProject(project);
   }
-
-  for (const bundle of config.globalVariants.variantGroups) {
-    fixPath(bundle, "contextFilePath");
-  }
-
-  fixPath(config.tokens, "tokensFilePath");
-  fixPath(config.style, "defaultStyleCssFilePath");
 
   if (changed) {
     updateConfig(context, context.config);
+  }
+}
+
+/**
+ * Throws an error if some file in PlasmicConfig is not inside the root
+ * directory (i.e., the directory containing plasmic.json).
+ */
+export function assertAllPathsInRootDir(context: PlasmicContext) {
+  if (!context.absoluteSrcDir.startsWith(context.rootDir)) {
+    throw new HandledError(
+      `"srcDir" in ${CONFIG_FILE_NAME} is outside of ${context.rootDir}`
+    );
+  }
+
+  const paths = getAllPaths(context);
+  for (const { bundle, key } of paths) {
+    const relPath = bundle[key];
+    if (!relPath) {
+      continue;
+    }
+
+    const absPath = path.resolve(context.absoluteSrcDir, relPath);
+    if (!absPath.startsWith(context.rootDir)) {
+      throw new HandledError(
+        `The path "${relPath}" in ${CONFIG_FILE_NAME} is outside of ${context.rootDir}`
+      );
+    }
   }
 }
 

@@ -25,6 +25,7 @@ import {
 } from "../utils/config-utils";
 import { HandledError } from "../utils/error";
 import {
+  assertAllPathsInRootDir,
   defaultResourcePath,
   fixAllFilePaths,
   renameFile,
@@ -141,6 +142,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
 
   fixAllFilePaths(context);
   fixFileExtension(context);
+  assertAllPathsInRootDir(context);
 
   // Resolve what will be synced
   const projectConfigMap = L.keyBy(context.config.projects, (p) => p.projectId);
