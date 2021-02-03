@@ -41,7 +41,6 @@ import {
   installCommand,
   installUpgrade,
   isCliGloballyInstalled,
-  warnLatestReactWeb,
 } from "../utils/npm-utils";
 import { checkVersionResolution } from "../utils/resolve-utils";
 import * as semver from "../utils/semver";
@@ -257,11 +256,6 @@ export async function sync(opts: SyncArgs): Promise<void> {
     // Now we know config.components are all correct, so we can go ahead and fix up all the import statements
     fixAllImportStatements(context, summary);
   });
-
-  // Prompt to upgrade react-web
-  if (!opts.skipUpgradeCheck) {
-    await warnLatestReactWeb(context, opts.yes);
-  }
 
   // Post-sync commands
   if (!opts.ignorePostSync) {

@@ -30,23 +30,6 @@ export function getParsedPackageJson() {
   return parsePackageJson(packageJson);
 }
 
-export async function warnLatestReactWeb(
-  context: PlasmicContext,
-  yes?: boolean
-) {
-  await warnLatest(
-    context,
-    "@plasmicapp/react-web",
-    {
-      requiredMsg: () =>
-        "@plasmicapp/react-web is required to use Plasmic-generated code.",
-      updateMsg: (c, v) =>
-        `A more recent version of @plasmicapp/react-web [${v}] is available; your exported code may not work unless you update.`,
-    },
-    yes
-  );
-}
-
 export async function warnLatest(
   context: PlasmicContext,
   pkg: string,
@@ -107,7 +90,7 @@ async function checkVersion(context: PlasmicContext, pkg: string) {
 }
 
 export function findInstalledVersion(context: PlasmicContext, pkg: string) {
-  const filename = findInstalledPackageJsonFile(pkg, context.rootDir);
+  const filename = findInstalledPackageJsonFile(context, pkg);
   if (filename) {
     const json = parsePackageJson(filename);
     if (json && json.name === pkg) {
@@ -141,14 +124,12 @@ function findPackageJsonPath(dir: string) {
   });
 }
 
-export function findInstalledPackageJsonFile(pkg: string, dir: string) {
-  const packageJsonPath = findPackageJsonPath(dir);
-  if (!packageJsonPath) {
-    return undefined;
-  }
-  const files = glob.sync(
-    `${path.dirname(packageJsonPath)}/**/node_modules/${pkg}/package.json`
-  );
+function findInstalledPackageJsonFile(context: PlasmicContext, pkg: string) {
+  const packageJsonPath = findPackageJsonPath(context.rootDir);
+  const rootDir = packageJsonPath
+    ? path.dirname(packageJsonPath)
+    : context.rootDir;
+  const files = glob.sync(`${rootDir}/**/node_modules/${pkg}/package.json`);
   return files.length > 0 ? files[0] : undefined;
 }
 
