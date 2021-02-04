@@ -1,29 +1,32 @@
-import { existsBuffered } from "./file-utils";
+import findupSync from "findup-sync";
 import { getParsedPackageJson } from "./npm-utils";
 
 export function detectTypescript() {
-  return existsBuffered("tsconfig.json");
+  return findupSync("tsconfig.json");
 }
 
 export function detectNextJs() {
   if (
-    existsBuffered("next.config.js") ||
-    existsBuffered(".next") ||
-    existsBuffered("next-env.d.ts")
+    findupSync("next.config.js") ||
+    findupSync(".next") ||
+    findupSync("next-env.d.ts")
   ) {
     return true;
   }
 
   try {
     const packageJsonContent = getParsedPackageJson();
-    return packageJsonContent.scripts.build === "next build";
+    return (
+      packageJsonContent.scripts.build === "next build" ||
+      "next" in packageJsonContent.dependencies
+    );
   } catch {
     return false;
   }
 }
 
 export function detectGatsby() {
-  return existsBuffered("gatsby-config.js");
+  return findupSync("gatsby-config.js");
 }
 
 export function detectCreateReactApp() {

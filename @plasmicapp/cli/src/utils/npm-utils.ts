@@ -124,6 +124,11 @@ function findPackageJsonPath(dir: string) {
   });
 }
 
+export function findPackageJsonDir(rootDir: string) {
+  const filePath = findPackageJsonPath(rootDir);
+  return filePath ? path.dirname(filePath) : undefined;
+}
+
 function findInstalledPackageJsonFile(context: PlasmicContext, pkg: string) {
   const packageJsonPath = findPackageJsonPath(context.rootDir);
   const rootDir = packageJsonPath

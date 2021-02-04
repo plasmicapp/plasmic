@@ -1,4 +1,5 @@
-import inquirer from "inquirer";
+import inquirer, { DistinctQuestion } from "inquirer";
+import L from "lodash";
 import path from "upath";
 import { CommonArgs } from "..";
 import { logger } from "../deps";
@@ -20,7 +21,12 @@ import {
   detectTypescript,
 } from "../utils/envdetect";
 import { existsBuffered } from "../utils/file-utils";
-import { getCliVersion, installUpgrade } from "../utils/npm-utils";
+import { ensure } from "../utils/lang-utils";
+import {
+  findPackageJsonDir,
+  getCliVersion,
+  installUpgrade,
+} from "../utils/npm-utils";
 import { confirmWithUser } from "../utils/user-utils";
 
 export interface InitArgs extends CommonArgs {
@@ -48,219 +54,13 @@ export async function initPlasmic(opts: InitArgs) {
     return;
   }
 
-  const langDetect = detectTypescript()
-    ? {
-        lang: "ts",
-        explanation: "tsconfig.json detected, guessing Typescript",
-      }
-    : {
-        lang: "js",
-        explanation: "No tsconfig.json detected, guessing Javascript",
-      };
-
-  const platformDetect = detectNextJs()
-    ? {
-        platform: "nextjs",
-        explanation: "Next.js detected",
-      }
-    : detectGatsby()
-    ? {
-        platform: "gatsby",
-        explanation: "Gatsby detected",
-      }
-    : {};
-
-  const isCra = detectCreateReactApp();
-
-  const reactOpt = {
-    name: "React",
-    value: "react",
-  };
-
-  const nextjsOpt = {
-    name: "Next.js",
-    value: "nextjs",
-  };
-
-  const gatsbyOpt = {
-    name: "Gatsby",
-    value: "gatsby",
-  };
-
-  const jsOpt = {
-    name: "Javascript",
-    value: "js",
-    short: "js",
-  };
-
-  const tsOpt = {
-    name: "Typescript",
-    value: "ts",
-    short: "ts",
-  };
-
-  const plainCssOpt = {
-    name: `Plain CSS stylesheets, imported as "import './plasmic.css'"`,
-    value: "css",
-  };
-
-  const cssModuleOpt = {
-    name: `CSS modules, imported as "import sty from './plasmic.module.css'"`,
-    value: "css-modules",
-  };
-
-  const inlinedImagesOpt = {
-    name: `Inlined as base64-encoded data URIs`,
-    value: "inlined",
-  };
-
-  const filesImagesOpt = {
-    name: `Imported as files, like "import img from './image.png'". ${
-      !isCra ? "Not all bundlers support this." : ""
-    }`,
-    value: "files",
-  };
-
-  const publicFilesImagesOpt = {
-    name: `Images stored in a public folder, referenced like <img src="/static/image.png"/>`,
-    value: "public-files",
-  };
-
-  const defaultAnswers = {
-    platform:
-      opts.platform || platformDetect.platform || DEFAULT_CONFIG.platform,
-    srcDir:
-      opts.srcDir ||
-      (platformDetect.platform === "nextjs"
-        ? "./components"
-        : DEFAULT_CONFIG.srcDir),
-    plasmicDir: opts.plasmicDir || DEFAULT_CONFIG.defaultPlasmicDir,
-    pagesDir: opts.pagesDir || "../pages",
-    codeLang: opts.codeLang || langDetect.lang === "js" ? "js" : "ts",
-    codeScheme: opts.codeScheme || "blackbox",
-    styleScheme: opts.styleScheme || "css-modules",
-    imagesScheme:
-      opts.imagesScheme ||
-      (platformDetect.platform === "nextjs"
-        ? publicFilesImagesOpt.value
-        : isCra
-        ? filesImagesOpt.value
-        : inlinedImagesOpt.value),
-    imagesPublicDir:
-      opts.imagesPublicDir || DEFAULT_PUBLIC_FILES_CONFIG.publicDir,
-    imagesPublicUrlPrefix:
-      opts.imagesPublicUrlPrefix ||
-      (platformDetect.platform === "nextjs"
-        ? "/"
-        : DEFAULT_PUBLIC_FILES_CONFIG.publicUrlPrefix),
-  };
-
-  let answers: any = {};
-
-  if (!opts.yes) {
-    answers = await inquirer.prompt([
-      {
-        name: "platform",
-        message: `What platform should code generation target? ${
-          platformDetect.platform ? `(${platformDetect.explanation})` : ""
-        }\n`,
-        type: "list",
-        choices: [reactOpt, nextjsOpt, gatsbyOpt],
-        default: platformDetect.platform || DEFAULT_CONFIG.platform,
-        when: () => !opts.platform,
-      },
-      {
-        name: "srcDir",
-        message:
-          "What directory should React component files (that you edit) be put into?\n>",
-        default: (ans: any) =>
-          ans.platform === "nextjs" ? "./components" : DEFAULT_CONFIG.srcDir,
-        when: () => !opts.srcDir,
-      },
-      {
-        name: "plasmicDir",
-        message: (ans: any) =>
-          `What directory should Plasmic-managed files (that you should not edit) be put into?
-    (This is relative to ${ans.srcDir || DEFAULT_CONFIG.srcDir})\n>`,
-        default: DEFAULT_CONFIG.defaultPlasmicDir,
-        when: () => !opts.plasmicDir,
-      },
-      {
-        name: "pagesDir",
-        message: (ans: any) =>
-          `What directory should pages be put into?
-    (This is relative to ${ans.srcDir || DEFAULT_CONFIG.srcDir})\n>`,
-        default: "../pages",
-        when: (ans: any) => isPageAwarePlatform(ans.platform) && !opts.pagesDir,
-      },
-      {
-        name: "codeLang",
-        message: `What target language should Plasmic generate code in?
-    (${langDetect.explanation})\n`,
-        type: "list",
-        choices: () =>
-          langDetect.lang === "js" ? [jsOpt, tsOpt] : [tsOpt, jsOpt],
-        when: () => !opts.codeLang,
-      },
-      {
-        name: "styleScheme",
-        message: `How should we generate css for Plasmic components?\n`,
-        type: "list",
-        choices: () => [cssModuleOpt, plainCssOpt],
-        when: () => !opts.styleScheme,
-      },
-      {
-        name: "imagesScheme",
-        message: (ans: any) =>
-          `How should we reference image files used in Plasmic components? ${
-            ans.platform === "nextjs"
-              ? `\n  (platform is Next.js, guessing Public folder)`
-              : ""
-          }\n`,
-        type: "list",
-        choices: () => [filesImagesOpt, publicFilesImagesOpt, inlinedImagesOpt],
-        default: (ans: any) =>
-          ans.platform === "nextjs"
-            ? publicFilesImagesOpt.value
-            : isCra
-            ? filesImagesOpt.value
-            : inlinedImagesOpt.value,
-        when: () => !opts.imagesScheme,
-      },
-      {
-        name: "imagesPublicDir",
-        message: (ans: any) =>
-          `What directory should static image files be put into?
-    (This is relative to ${ans.srcDir || DEFAULT_CONFIG.srcDir})\n`,
-        default: DEFAULT_PUBLIC_FILES_CONFIG.publicDir,
-        when: (ans: any) =>
-          !opts.imagesPublicDir &&
-          (opts.imagesScheme || ans.imagesScheme) ===
-            publicFilesImagesOpt.value,
-      },
-      {
-        name: "imagesPublicUrlPrefix",
-        message: `What's the URL prefix from which the app will serve static files?\n>`,
-        default: (ans: any) =>
-          ans.platform === "nextjs" &&
-          path.join(
-            opts.srcDir || ans.srcDir,
-            opts.imagesPublicDir || ans.imagesPublicDir
-          ) === path.normalize("./public")
-            ? "/"
-            : DEFAULT_PUBLIC_FILES_CONFIG.publicUrlPrefix,
-        when: (ans: any) =>
-          !opts.imagesPublicUrlPrefix &&
-          (opts.imagesScheme || ans.imagesScheme) ===
-            publicFilesImagesOpt.value,
-      },
-    ]);
-  }
-
-  const merged = { ...defaultAnswers, ...answers };
+  // path to plasmic.json
   const newConfigFile =
-    merged.config || path.join(process.cwd(), CONFIG_FILE_NAME);
-  writeConfig(newConfigFile, createInitConfig(merged));
+    opts.config || path.join(process.cwd(), CONFIG_FILE_NAME);
+
+  const answers = await deriveInitAnswers(opts);
+  writeConfig(newConfigFile, createInitConfig(answers));
+
   logger.info("Successfully created plasmic.json.\n");
 
   const answer = await confirmWithUser(
@@ -301,4 +101,246 @@ function createInitConfig(opts: InitArgs): PlasmicConfig {
     ...(opts.platform && { platform: opts.platform }),
     cliVersion: getCliVersion(),
   });
+}
+
+type DefaultDeriver = {
+  [T in keyof InitArgs]?: string | ((srcDir: string) => string);
+} & {
+  alwaysDerived: (keyof InitArgs)[];
+};
+
+async function deriveInitAnswers(opts: Partial<InitArgs>) {
+  const plasmicRootDir = opts.config
+    ? path.dirname(opts.config)
+    : process.cwd();
+
+  const platform =
+    opts.platform || detectNextJs()
+      ? "nextjs"
+      : detectGatsby()
+      ? "gatsby"
+      : "react";
+  const isCra = detectCreateReactApp();
+
+  const isNext = platform === "nextjs";
+  const isGatsby = platform === "gatsby";
+  const isGeneric = !isCra && !isNext && !isGatsby;
+
+  if (isNext) {
+    console.log("Detected Next.js...");
+  } else if (isGatsby) {
+    console.log("Detected Gatsby...");
+  } else if (isCra) {
+    console.log("Detected create-react-app...");
+  }
+
+  const deriver = isNext
+    ? getNextDefaults(plasmicRootDir)
+    : isGatsby
+    ? getGatsbyDefaults(plasmicRootDir)
+    : isCra
+    ? getCraDefaults(plasmicRootDir)
+    : getGenericDefaults(plasmicRootDir);
+
+  const answers: Partial<InitArgs> = {
+    platform,
+  };
+
+  async function maybePrompt(question: DistinctQuestion) {
+    const name = ensure(question.name) as keyof InitArgs;
+    if (opts[name]) {
+      answers[name] = opts[name] as any;
+    } else {
+      let defaultVal = deriver[name] || question.default;
+      if (L.isFunction(defaultVal)) {
+        defaultVal = defaultVal(ensure(answers.srcDir));
+      }
+
+      if (!opts.yes && !deriver.alwaysDerived.includes(name)) {
+        const ans = await inquirer.prompt({ ...question, default: defaultVal });
+        answers[name] = ans[name];
+      } else {
+        answers[name] = ensure(defaultVal);
+      }
+    }
+  }
+
+  await maybePrompt({
+    name: "srcDir",
+    message:
+      "What directory should React component files (that you edit) be put into?\n>",
+  });
+
+  await maybePrompt({
+    name: "plasmicDir",
+    message: `What directory should Plasmic-managed files (that you should not edit) be put into? (This is relative to "${answers.srcDir}")\n>`,
+    default: DEFAULT_CONFIG.defaultPlasmicDir,
+  });
+
+  if (isPageAwarePlatform(platform)) {
+    await maybePrompt({
+      name: "pagesDir",
+      message: `What directory should pages be put into? (This is relative to "${answers.srcDir}")`,
+    });
+  }
+
+  const isTypescript = detectTypescript();
+  await maybePrompt({
+    name: "codeLang",
+    message: `What target language should Plasmic generate code in?`,
+    type: "list",
+    choices: () => [
+      {
+        name: `Typescript${isTypescript ? " (tsconfig.json detected)" : ""}`,
+        value: "ts",
+      },
+      {
+        name: "Javascript",
+        value: "js",
+      },
+    ],
+    default: isTypescript ? "ts" : "js",
+  });
+
+  await maybePrompt({
+    name: "styleScheme",
+    message: `How should we generate css for Plasmic components?\n`,
+    type: "list",
+    choices: () => [
+      {
+        name: `CSS modules, imported as "import sty from './plasmic.module.css'"`,
+        value: "css-modules",
+      },
+      {
+        name: `Plain CSS stylesheets, imported as "import './plasmic.css'"`,
+        value: "css",
+      },
+    ],
+    default: "css-modules",
+  });
+
+  await maybePrompt({
+    name: "imagesScheme",
+    message: `How should we reference image files used in Plasmic components?\n`,
+    type: "list",
+    choices: () => [
+      {
+        name: `Imported as files, like "import img from './image.png'". ${
+          isGeneric ? "Not all bundlers support this." : ""
+        }`,
+        value: "files",
+      },
+      {
+        name: `Images stored in a public folder, referenced like <img src="/static/image.png"/>`,
+        value: "public-files",
+      },
+      {
+        name: `Inlined as base64-encoded data URIs`,
+        value: "inlined",
+      },
+    ],
+    default: "inlined",
+  });
+
+  if (answers.imagesScheme === "public-files") {
+    await maybePrompt({
+      name: "imagesPublicDir",
+      message: (ans: any) =>
+        `What directory should static image files be put into? (This is relative to "${answers.srcDir}")\n`,
+      default: DEFAULT_PUBLIC_FILES_CONFIG.publicDir,
+    });
+
+    await maybePrompt({
+      name: "imagesPublicUrlPrefix",
+      message: `What's the URL prefix from which the app will serve static files? ${
+        isNext ? `(for Next.js, this is usually "/")` : ""
+      }\n>`,
+      default: DEFAULT_PUBLIC_FILES_CONFIG.publicUrlPrefix,
+    });
+  }
+
+  return answers as InitArgs;
+}
+
+function getNextDefaults(plasmicRootDir: string): DefaultDeriver {
+  const projectRootDir = findPackageJsonDir(plasmicRootDir) ?? plasmicRootDir;
+  return {
+    srcDir: path.relative(
+      plasmicRootDir,
+      path.join(projectRootDir, "components")
+    ),
+    pagesDir: (srcDir: string) =>
+      path.relative(
+        path.join(plasmicRootDir, srcDir),
+        path.join(projectRootDir, "pages")
+      ),
+    styleScheme: "css-modules",
+    imagesScheme: "public-files",
+    imagesPublicDir: (srcDir: string) =>
+      path.relative(
+        path.join(plasmicRootDir, srcDir),
+        path.join(projectRootDir, "public")
+      ),
+    imagesPublicUrlPrefix: "/",
+    alwaysDerived: [
+      "styleScheme",
+      "imagesScheme",
+      "imagesPublicDir",
+      "pagesDir",
+    ],
+  };
+}
+
+function getGatsbyDefaults(plasmicRootDir: string): DefaultDeriver {
+  const projectRootDir = findPackageJsonDir(plasmicRootDir) ?? plasmicRootDir;
+  return {
+    srcDir: path.relative(
+      plasmicRootDir,
+      path.join(projectRootDir, "src", "components")
+    ),
+    pagesDir: (srcDir: string) => {
+      const absSrcDir = path.join(plasmicRootDir, srcDir);
+      const absPagesDir = path.join(projectRootDir, "src", "pages");
+      const relDir = path.relative(absSrcDir, absPagesDir);
+      return relDir;
+    },
+    styleScheme: "css-modules",
+    imagesScheme: "files",
+    imagesPublicDir: (srcDir: string) =>
+      path.relative(
+        path.join(plasmicRootDir, srcDir),
+        path.join(projectRootDir, "static")
+      ),
+    imagesPublicUrlPrefix: "/",
+    alwaysDerived: ["imagesScheme", "pagesDir"],
+  };
+}
+
+function getCraDefaults(plasmicRootDir: string): DefaultDeriver {
+  const projectRootDir = findPackageJsonDir(plasmicRootDir) ?? plasmicRootDir;
+  return {
+    srcDir: path.relative(
+      plasmicRootDir,
+      path.join(projectRootDir, "src", "components")
+    ),
+    styleScheme: "css-modules",
+    imagesScheme: "files",
+    imagesPublicDir: (srcDir: string) =>
+      path.relative(
+        path.join(plasmicRootDir, srcDir),
+        path.join(projectRootDir, "public")
+      ),
+    alwaysDerived: [],
+  };
+}
+
+function getGenericDefaults(plasmicRootDir: string): DefaultDeriver {
+  const projectRootDir = findPackageJsonDir(plasmicRootDir) ?? plasmicRootDir;
+  const srcDir = existsBuffered(path.join(projectRootDir, "src"))
+    ? path.join(projectRootDir, "src", "components")
+    : path.join(projectRootDir, "components");
+  return {
+    srcDir: path.relative(plasmicRootDir, srcDir),
+    alwaysDerived: [],
+  };
 }

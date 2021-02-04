@@ -345,7 +345,7 @@ export const DEFAULT_CONFIG: PlasmicConfig = {
 export const DEFAULT_PUBLIC_FILES_CONFIG: ImagesConfig = {
   scheme: "public-files",
   publicDir: "../public",
-  publicUrlPrefix: "/public/",
+  publicUrlPrefix: "/static/",
 };
 
 /**
