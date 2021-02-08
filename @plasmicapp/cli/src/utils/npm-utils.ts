@@ -171,7 +171,7 @@ export function installCommand(
   const mgr = detectPackageManager();
   if (mgr === "yarn") {
     if (opts.global) {
-      return `yarn global add -W ${pkg}`;
+      return `yarn global add ${pkg}`;
     } else if (opts.dev) {
       return `yarn add --dev -W ${pkg}`;
     } else {
