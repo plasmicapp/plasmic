@@ -114,12 +114,17 @@ async function deriveInitAnswers(opts: Partial<InitArgs>) {
     ? path.dirname(opts.config)
     : process.cwd();
 
-  const platform =
-    opts.platform || detectNextJs()
-      ? "nextjs"
-      : detectGatsby()
-      ? "gatsby"
-      : "react";
+  let platform = opts.platform;
+  if (!platform && detectNextJs()) {
+    platform = "nextjs";
+  }
+  if (!platform && detectGatsby()) {
+    platform = "gatsby";
+  }
+  if (!platform) {
+    platform = "react";
+  }
+
   const isCra = detectCreateReactApp();
 
   const isNext = platform === "nextjs";
