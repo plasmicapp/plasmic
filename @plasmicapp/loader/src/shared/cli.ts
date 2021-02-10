@@ -11,7 +11,11 @@ const exec = util.promisify(cp.exec);
 
 async function execOrFail(dir: string, command: string, message: string) {
   try {
-    await exec(command, { cwd: dir, stdio: "inherit" } as any);
+    await exec(command, {
+      cwd: dir,
+      stdio: "inherit",
+      env: { ...process.env, PLASMIC_LOADER: 1 },
+    } as any);
   } catch (e) {
     console.error(e);
     console.error(message);

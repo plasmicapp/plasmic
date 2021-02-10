@@ -14,6 +14,7 @@ async function initPlasmicLoader(pluginOptions: PluginOptions) {
     initArgs: {
       platform: "nextjs",
       "pages-dir": "../pages",
+      "src-dir": "./components",
     },
     pageDir: path.join(pluginOptions.dir, "./pages"),
     ...pluginOptions,
