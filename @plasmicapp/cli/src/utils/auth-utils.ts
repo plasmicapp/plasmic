@@ -1,13 +1,13 @@
 import fs from "fs";
 import inquirer from "inquirer";
 import os from "os";
+import socketio from "socket.io-client";
 import path from "upath";
 import { v4 as uuidv4 } from "uuid";
 import { PlasmicApi } from "../api";
 import { logger } from "../deps";
 import { CommonArgs } from "../index";
 import { HandledError } from "../utils/error";
-import { pollAuthToken } from "../utils/poll-token";
 import {
   AuthConfig,
   AUTH_FILE_NAME,
@@ -23,35 +23,119 @@ import {
   writeFileContentRaw,
 } from "./file-utils";
 
+export type AuthData = {
+  user: string;
+  token: string;
+};
+
+export type CancellablePromise<T> = {
+  promise: Promise<T>;
+  cancel: () => void;
+};
+
+export function authByPolling(
+  host: string,
+  initToken: string
+): CancellablePromise<AuthData> {
+  const socket = socketio.connect(host, {
+    path: `/api/v1/init-token`,
+    transportOptions: {
+      polling: {
+        extraHeaders: {
+          "x-plasmic-init-token": initToken,
+        },
+      },
+    },
+  });
+
+  const promise = new Promise<AuthData>((resolve) => {
+    socket.on("connect", (reason: string) => {
+      console.log("Waiting for token...");
+    });
+
+    socket.on("token", (data: AuthData) => {
+      resolve(data);
+      socket.close();
+    });
+
+    socket.on("error", (error: {}) => {
+      console.warn(error);
+    });
+  });
+
+  const cancel = () => {
+    socket.close();
+  };
+
+  return { promise, cancel };
+}
+
+function authByPrompt(host: string) {
+  const promise = inquirer.prompt([
+    {
+      name: "user",
+      message: "Your Plasmic user email",
+    },
+    {
+      name: "token",
+      message: `Your personal access token (create one at ${host}/self/settings)`,
+    },
+  ]);
+
+  const cancel = () => {
+    console.log("Cancelling prompt...");
+    process.stdin.pause();
+  };
+
+  return { promise, cancel };
+}
+
 export async function startAuth(opts: CommonArgs & { host: string }) {
   if (opts.yes) {
     throw new HandledError("Plasmic credentials could not be found.");
   }
-  const { email } = await inquirer.prompt([
-    {
-      name: "email",
-      message: "Your Plasmic user email",
-    },
-  ]);
 
-  const initToken = uuidv4();
-  logger.info(
-    `Please log into this link: ${opts.host}/auth/plasmic-init/${initToken}`
-  );
+  const auth = await new Promise<AuthData>((resolve, reject) => {
+    let prompt: CancellablePromise<AuthData>;
 
-  let authToken: string;
-  try {
-    authToken = await pollAuthToken(opts.host, email, initToken);
-  } catch (e) {
-    console.error(`Could not get auth token from Plasmic: ${e}`);
+    const initToken = uuidv4();
+    logger.info(
+      `Please log into this link: ${opts.host}/auth/plasmic-init/${initToken}`
+    );
+
+    const polling = authByPolling(opts.host, initToken);
+    polling.promise.then((auth) => {
+      if (prompt) {
+        prompt.cancel();
+      } else {
+        clearTimeout(timeout);
+      }
+      resolve(auth);
+    });
+
+    const timeout = setTimeout(() => {
+      console.log(`We haven't received an auth token from Plasmic yet.`);
+      prompt = authByPrompt(opts.host);
+      prompt.promise
+        .then((auth) => {
+          polling.cancel();
+          resolve(auth);
+        })
+        .catch(reject);
+    }, 20 * 1000);
+  });
+
+  if (!auth.user || !auth.token) {
+    console.error(`Could not get auth token.`);
     return;
   }
 
   const newAuthFile = opts.auth || path.join(os.homedir(), AUTH_FILE_NAME);
+
   writeAuth(newAuthFile, {
     host: opts.host,
-    user: email,
-    token: authToken,
+    user: auth.user,
+    token: auth.token,
   });
 
   logger.info(
