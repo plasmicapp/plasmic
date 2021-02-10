@@ -65,6 +65,7 @@ export interface SyncArgs extends CommonArgs {
   skipUpgradeCheck?: boolean;
   ignorePostSync?: boolean;
   quiet?: boolean;
+  metadata?: string;
 }
 
 async function ensureRequiredPackages(context: PlasmicContext, yes?: boolean) {
@@ -172,7 +173,8 @@ export async function sync(opts: SyncArgs): Promise<void> {
 
   const versionResolution = await context.api.resolveSync(
     projectSyncParams,
-    true // we always want to get dependency data
+    true, // we always want to get dependency data
+    opts.metadata
   );
 
   // Make sure the resolution is compatible with plasmic.json and plasmic.lock
@@ -336,7 +338,8 @@ async function syncProject(
     componentIds,
     projectVersion,
     context.config.images,
-    context.config.style
+    context.config.style,
+    opts.metadata
   );
 
   // Convert from TSX => JSX

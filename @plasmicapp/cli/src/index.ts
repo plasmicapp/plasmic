@@ -269,6 +269,12 @@ function configureSyncArgs(
       type: "boolean",
       describe: "Ignore post-sync commands in plasmic.json",
       default: false,
+    })
+    .option("metadata", {
+      type: "string",
+      describe: "Pass metadata through to the server. Use comma-separated tags",
+      default: "",
+      hidden: true,
     });
   if (includeQuietOption) {
     args = args.option("quiet", {

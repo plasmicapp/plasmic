@@ -71,7 +71,7 @@ export async function syncProject(
   const oldConfig = await readConfig(dir);
   await execOrFail(
     dir,
-    `${execPath} sync --yes  --projects ${projects.join(" ")}`,
+    `${execPath} sync --yes --metadata cms --projects ${projects.join(" ")}`,
     "Unable to sync plasmic project. Please check the above error and try again."
   );
   return clearStalePages(dir, pageDir, oldConfig);

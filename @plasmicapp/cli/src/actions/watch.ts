@@ -15,10 +15,17 @@ export interface WatchArgs extends CommonArgs {
   force?: boolean;
   nonRecursive?: boolean;
   skipUpgradeCheck?: boolean;
+  metadata?: string;
 }
 export async function watchProjects(opts: WatchArgs) {
   // Perform a sync before watch.
-  await sync({ ...opts, quiet: true });
+  const syncOpts = {
+    ...opts,
+    quiet: true,
+    // Include `watch` metadata. Includes a comma in case it was set via args
+    metadata: opts.metadata + ",watch",
+  };
+  await sync(syncOpts);
 
   const context = await getContext(opts);
   const config = context.config;
@@ -67,7 +74,7 @@ export async function watchProjects(opts: WatchArgs) {
     // Just run syncProjects() for now when any project has been updated
     // Note on the 'updated to revision' part: this is parsed by the
     // loader package to know that we finished updating the components.
-    await sync({ ...opts, quiet: true });
+    await sync(syncOpts);
     logger.info(
       `[${moment().format("HH:mm:ss")}] Project ${
         data.projectId

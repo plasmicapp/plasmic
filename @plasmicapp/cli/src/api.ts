@@ -144,13 +144,15 @@ export class PlasmicApi {
       versionRange: string;
       componentIdOrNames: readonly string[] | undefined;
     }[],
-    recursive?: boolean
+    recursive?: boolean,
+    metadata?: string
   ): Promise<VersionResolution> {
     const resp: any = await this.post(
       `${this.auth.host}/api/v1/code/resolve-sync`,
       {
         projects,
         recursive,
+        metadata,
       }
     );
     const versionResolution = resp.data as VersionResolution;
@@ -162,7 +164,7 @@ export class PlasmicApi {
       headers: this.makeHeaders(),
     });
   }
-  
+
   async requiredPackages(): Promise<RequiredPackages> {
     const resp = await this.post(
       `${this.auth.host}/api/v1/code/required-packages`
@@ -191,7 +193,8 @@ export class PlasmicApi {
     componentIdOrNames: readonly string[] | undefined,
     version: string,
     imageOpts: ImagesConfig,
-    stylesOpts: StyleConfig
+    stylesOpts: StyleConfig,
+    metadata?: string
   ): Promise<ProjectBundle> {
     const result = await this.post(
       `${this.auth.host}/api/v1/projects/${projectId}/code/components`,
@@ -203,6 +206,7 @@ export class PlasmicApi {
         version,
         imageOpts,
         stylesOpts,
+        metadata,
       }
     );
     return result.data as ProjectBundle;
