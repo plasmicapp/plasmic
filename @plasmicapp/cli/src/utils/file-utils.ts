@@ -311,6 +311,12 @@ export function fixAllFilePaths(context: PlasmicContext) {
  * directory (i.e., the directory containing plasmic.json).
  */
 export function assertAllPathsInRootDir(context: PlasmicContext) {
+
+  // Do not run this check when running in PlasmicLoader environment
+  if (process.env.PLASMIC_LOADER) {
+    return;
+  }
+
   if (!context.absoluteSrcDir.startsWith(context.rootDir)) {
     throw new HandledError(
       `"srcDir" in ${CONFIG_FILE_NAME} is outside of ${context.rootDir}`

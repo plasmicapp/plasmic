@@ -11,6 +11,7 @@ exports.onPreInit = (_: any, pluginOptions: PluginOptions) => {
     initArgs: {
       platform: "gatsby",
       "pages-dir": "../pages",
+      "src-dir": "./components",
     },
     pageDir: path.join(pluginOptions.dir, "src", "pages"),
     ...pluginOptions,
