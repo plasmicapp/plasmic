@@ -157,7 +157,11 @@ async function checkProjectMeta(
     logger.warn(
       `${projectName}@${newVersion} falls outside the range specified in ${CONFIG_FILE_NAME} (${versionRange})\nTip: To avoid this warning in the future, update your ${CONFIG_FILE_NAME}.`
     );
-    return await confirmWithUser("Do you want to force it?", opts.force, "n");
+    return await confirmWithUser(
+      "Do you want to force it?",
+      opts.force || opts.yes,
+      "n"
+    );
   };
 
   const projectIds =
