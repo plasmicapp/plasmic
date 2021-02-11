@@ -144,15 +144,13 @@ export class PlasmicApi {
       versionRange: string;
       componentIdOrNames: readonly string[] | undefined;
     }[],
-    recursive?: boolean,
-    metadata?: string
+    recursive?: boolean
   ): Promise<VersionResolution> {
     const resp: any = await this.post(
       `${this.auth.host}/api/v1/code/resolve-sync`,
       {
         projects,
         recursive,
-        metadata,
       }
     );
     const versionResolution = resp.data as VersionResolution;
@@ -194,7 +192,7 @@ export class PlasmicApi {
     version: string,
     imageOpts: ImagesConfig,
     stylesOpts: StyleConfig,
-    metadata?: string
+    metadata?: any
   ): Promise<ProjectBundle> {
     const result = await this.post(
       `${this.auth.host}/api/v1/projects/${projectId}/code/components`,
