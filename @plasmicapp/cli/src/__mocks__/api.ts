@@ -1,6 +1,7 @@
 import { ProjectSyncMetadataModel } from "@plasmicapp/code-merger";
 import L from "lodash";
 import {
+  ChecksumBundle,
   ComponentBundle,
   ProjectBundle,
   ProjectIconsResponse,
@@ -277,13 +278,23 @@ class PlasmicApi {
       );
     }
 
+    const components = mockComponents.map((c) => genComponentBundle(c));
     const result = {
-      components: mockComponents.map((c) => genComponentBundle(c)),
+      components,
       projectConfig: genProjectMetaBundle(projectId),
       globalVariants: [],
       usedTokens: genEmptyStyleTokensMap(),
       iconAssets: [],
       imageAssets: [],
+      checksums: {
+        renderModuleChecksums: components.map((c) => [c.id, c.renderModule]),
+        cssRulesChecksums: components.map((c) => [c.id, c.cssRules]),
+        imageChecksums: [],
+        iconChecksums: [],
+        globalVariantChecksums: [],
+        projectCssChecksum: "",
+        themeChecksums: [],
+      } as ChecksumBundle,
     };
     return result;
   }

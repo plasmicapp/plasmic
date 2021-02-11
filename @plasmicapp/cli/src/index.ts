@@ -276,6 +276,12 @@ function configureSyncArgs(
         "Pass metadata through to the server. Use querystring format (e.g. command=sync&source=cli&cli_version=1.0.0",
       default: "source=cli",
       hidden: true,
+    })
+    .option("all-files", {
+      type: "boolean",
+      describe:
+        "Sync all files, including those that haven't changed since last sync",
+      default: "",
     });
   if (includeQuietOption) {
     args = args.option("quiet", {

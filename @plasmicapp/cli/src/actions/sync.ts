@@ -5,10 +5,12 @@ import * as querystring from "querystring";
 import path from "upath";
 import { CommonArgs } from "..";
 import {
+  ChecksumBundle,
   ComponentBundle,
   ProjectMetaBundle,
   StyleConfigResponse,
 } from "../api";
+import { getChecksums } from "../utils/checksum";
 import {
   ComponentUpdateSummary,
   fixAllImportStatements,
@@ -36,6 +38,7 @@ import {
 } from "../utils/file-utils";
 import { getContext } from "../utils/get-context";
 import { printFirstSyncInfo } from "../utils/help";
+import { ensure } from "../utils/lang-utils";
 import {
   findInstalledVersion,
   getCliVersion,
@@ -67,6 +70,7 @@ export interface SyncArgs extends CommonArgs {
   ignorePostSync?: boolean;
   quiet?: boolean;
   metadata?: string;
+  allFiles?: boolean;
 }
 
 async function ensureRequiredPackages(context: PlasmicContext, yes?: boolean) {
@@ -329,6 +333,13 @@ async function syncProject(
     existingProject?.components || []
   ).map((c) => [c.id, c.scheme]);
 
+  const existingChecksums = getChecksums(
+    context,
+    opts,
+    projectId,
+    componentIds
+  );
+
   // Server-side code-gen
   const projectBundle = await context.api.projectComponents(
     projectId,
@@ -339,6 +350,7 @@ async function syncProject(
     projectVersion,
     context.config.images,
     context.config.style,
+    existingChecksums,
     !!opts.metadata ? querystring.decode(opts.metadata) : {}
   );
 
@@ -376,7 +388,8 @@ async function syncProject(
   syncGlobalVariants(
     context,
     projectBundle.projectConfig,
-    projectBundle.globalVariants
+    projectBundle.globalVariants,
+    projectBundle.checksums
   );
 
   await syncProjectConfig(
@@ -388,20 +401,23 @@ async function syncProject(
     opts.forceOverwrite,
     !!opts.appendJsxOnMissingBase,
     summary,
-    pendingMerge
+    pendingMerge,
+    projectBundle.checksums
   );
   upsertStyleTokens(context, projectBundle.usedTokens);
   syncProjectIconAssets(
     context,
     projectId,
     projectVersion,
-    projectBundle.iconAssets
+    projectBundle.iconAssets,
+    projectBundle.checksums
   );
   syncProjectImageAssets(
     context,
     projectId,
     projectVersion,
-    projectBundle.imageAssets
+    projectBundle.imageAssets,
+    projectBundle.checksums
   );
 }
 
@@ -430,7 +446,8 @@ async function syncProjectConfig(
   forceOverwrite: boolean,
   appendJsxOnMissingBase: boolean,
   summary: Map<string, ComponentUpdateSummary>,
-  pendingMerge: ComponentPendingMerge[]
+  pendingMerge: ComponentPendingMerge[],
+  checksums: ChecksumBundle
 ) {
   const defaultCssFilePath = defaultResourcePath(
     context,
@@ -460,21 +477,37 @@ async function syncProjectConfig(
     projectConfig.cssFilePath = defaultCssFilePath;
   }
 
-  const formattedCssRules = formatAsLocal(
-    projectBundle.cssRules,
-    projectConfig.cssFilePath
-  );
-
-  // Write out project css
-  writeFileContent(context, projectConfig.cssFilePath, formattedCssRules, {
-    force: !isNew,
-  });
-
   // plasmic.lock
   const projectLock = getOrAddProjectLock(context, projectConfig.projectId);
   projectLock.version = version;
   projectLock.dependencies = dependencies;
+  projectLock.lang = context.config.code.lang;
 
+  if (projectBundle.cssRules) {
+    const formattedCssRules = formatAsLocal(
+      projectBundle.cssRules,
+      projectConfig.cssFilePath
+    );
+
+    // Write out project css
+    writeFileContent(context, projectConfig.cssFilePath, formattedCssRules, {
+      force: !isNew,
+    });
+  }
+  projectLock.fileLocks = projectLock.fileLocks.filter(
+    (fileLock) => fileLock.type !== "projectCss"
+  );
+  projectLock.fileLocks.push({
+    assetId: projectConfig.projectId,
+    type: "projectCss",
+    checksum: projectBundle.cssRules,
+  });
+
+  const themeFileLocks = L.keyBy(
+    projectLock.fileLocks.filter((fileLock) => fileLock.type === "theme"),
+    (fl) => fl.assetId
+  );
+  const id2themeChecksum = new Map(checksums.themeChecksums);
   projectBundle.jsBundleThemes.forEach((theme) => {
     let themeConfig = projectConfig.jsBundleThemes.find(
       (c) => c.bundleName === theme.bundleName
@@ -492,6 +525,18 @@ async function syncProjectConfig(
       theme.themeModule,
       themeConfig.themeFilePath
     );
+    // Update FileLocks
+    if (themeFileLocks[theme.bundleName]) {
+      themeFileLocks[theme.bundleName].checksum = ensure(
+        id2themeChecksum.get(theme.bundleName)
+      );
+    } else {
+      projectLock.fileLocks.push({
+        type: "theme",
+        assetId: theme.bundleName,
+        checksum: ensure(id2themeChecksum.get(theme.bundleName)),
+      });
+    }
     writeFileContent(context, themeConfig.themeFilePath, formatted, {
       force: true,
     });
@@ -506,6 +551,8 @@ async function syncProjectConfig(
     forceOverwrite,
     appendJsxOnMissingBase,
     summary,
-    pendingMerge
+    pendingMerge,
+    projectLock,
+    checksums
   );
 }
