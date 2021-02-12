@@ -1,2 +1,3 @@
 #!/usr/bin/env node
-require("@plasmicapp/cli");
+console.log("Please use @plasmicapp/cli instead!");
+process.exit(1);

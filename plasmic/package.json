@@ -1,12 +1,10 @@
 {
   "name": "plasmic",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "./index.js",
   "bin": {
     "plasmic": "./index.js"
   },
   "license": "MIT",
-  "dependencies": {
-    "@plasmicapp/cli": "*"
-  }
+  "dependencies": {}
 }
