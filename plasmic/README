@@ -1,0 +1,5 @@
+This is just a thin wrapper around @plasmicapp/cli.
+
+It's a convenient and easier-to-remember npx command:
+
+    npx plasmic auth
