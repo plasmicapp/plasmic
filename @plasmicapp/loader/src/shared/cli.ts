@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import cp from "child_process";
 import fs from "fs/promises";
 import path from "path";
@@ -18,7 +19,7 @@ async function execOrFail(dir: string, command: string, message: string) {
     } as any);
   } catch (e) {
     console.error(e);
-    console.error(message);
+    console.error(chalk.bold(chalk.redBright("Plasmic error:")), message);
     process.exit(1);
   }
 }
@@ -48,7 +49,7 @@ export async function tryInitializePlasmicDir(dir: string, initArgs: initArgs) {
   await execOrFail(
     plasmicDir,
     `${plasmicExecPath} init --yes=true ${objToExecArgs(initArgs)}`,
-    "Unable to initialize plasmic. Please check the above error and try again."
+    "Unable to initialize Plasmic. Please check the above error and try again."
   );
 }
 
@@ -56,7 +57,7 @@ export function checkAuth(dir: string, execPath: string) {
   return execOrFail(
     dir,
     `${execPath} auth --check`,
-    "Unable to authenticate. Please check your auth config and try again."
+    "Unable to authenticate Plasmic. Please run `plasmic auth` or check your ~/.plasmic.auth file, and try again."
   );
 }
 
@@ -78,7 +79,7 @@ export async function syncProject(
     `${execPath} sync --yes --metadata source=loader --projects ${projects.join(
       " "
     )}`,
-    "Unable to sync plasmic project. Please check the above error and try again."
+    "Unable to sync Plasmic project. Please check the above error and try again."
   );
   return clearStalePages(dir, pageDir, oldConfig);
 }
