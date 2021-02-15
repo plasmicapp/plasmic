@@ -48,7 +48,7 @@ export function authByPolling(
     },
   });
 
-  const promise = new Promise<AuthData>((resolve) => {
+  const promise = new Promise<AuthData>((resolve, reject) => {
     socket.on("connect", (reason: string) => {
       console.log("Waiting for token...");
     });
@@ -60,6 +60,7 @@ export function authByPolling(
 
     socket.on("error", (error: {}) => {
       console.warn(error);
+      reject(error);
     });
   });
 
@@ -113,6 +114,11 @@ export async function startAuth(opts: CommonArgs & { host: string }) {
       resolve(auth);
     });
 
+    // Default to 1 minute.
+    const authPollTimeout = Number(process.env.PLASMIC_AUTH_POLL_TIMEOUT) || 60 * 1000;
+    if (authPollTimeout === -1) {
+      return;
+    }
     const timeout = setTimeout(() => {
       console.log(`We haven't received an auth token from Plasmic yet.`);
       prompt = authByPrompt(opts.host);
@@ -122,7 +128,7 @@ export async function startAuth(opts: CommonArgs & { host: string }) {
           resolve(auth);
         })
         .catch(reject);
-    }, 20 * 1000);
+    }, authPollTimeout);
   });
 
   if (!auth.user || !auth.token) {
