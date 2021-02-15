@@ -565,10 +565,10 @@
     lodash "^4.17.19"
     prettier "^2.0.5"
 
-"@plasmicapp/react-web@^0.2.14":
-  version "0.2.14"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.14.tgz#c85d2c82a55f27685e630ae00fabdd0fb12b17bf"
-  integrity sha512-cxn97hCE0JD88/0dXOedjgnFbW2Y5ImEginsv1iZu2XUYw+CMKZ7gMpQv2VtrN2vAD8myPNVHqTNwt19t/PSqw==
+"@plasmicapp/react-web@^0.2.18":
+  version "0.2.18"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.18.tgz#f7bd61c3cca2e61d3bfa476b8e7633f58fdd733b"
+  integrity sha512-uBSecx1gh6NUXChsLae07OEAwKD0Fwiy8FC2YBFbbnWypm+A61XyTjOYWd/EHjrj7vMGtjisf7mmyUAV/AcTvA==
   dependencies:
     "@react-aria/focus" "^3.2.1"
     classnames "^2.2.6"

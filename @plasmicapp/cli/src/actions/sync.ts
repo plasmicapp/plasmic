@@ -1,6 +1,7 @@
 import chalk from "chalk";
 import { spawnSync } from "child_process";
 import L from "lodash";
+import * as querystring from "querystring";
 import path from "upath";
 import { CommonArgs } from "..";
 import {
@@ -173,8 +174,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
 
   const versionResolution = await context.api.resolveSync(
     projectSyncParams,
-    true, // we always want to get dependency data
-    opts.metadata
+    true // we always want to get dependency data
   );
 
   // Make sure the resolution is compatible with plasmic.json and plasmic.lock
@@ -339,7 +339,7 @@ async function syncProject(
     projectVersion,
     context.config.images,
     context.config.style,
-    opts.metadata
+    !!opts.metadata ? querystring.decode(opts.metadata) : {}
   );
 
   // Convert from TSX => JSX

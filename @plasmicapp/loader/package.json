@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/loader",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "private": "true",
   "description": "Integrate Plasmic codegen via a convenient PlasmicLoader component!",
   "scripts": {
@@ -11,7 +11,7 @@
   "main": "dist/PlasmicLoader.jsx",
   "types": "dist/PlasmicLoader.d.ts",
   "dependencies": {
-    "@plasmicapp/cli": "^0.1.104",
+    "@plasmicapp/cli": "^0.1.105",
     "@plasmicapp/react-web": "^0.2.18",
     "dot": "^1.1.3"
   },

@@ -272,8 +272,9 @@ function configureSyncArgs(
     })
     .option("metadata", {
       type: "string",
-      describe: "Pass metadata through to the server. Use comma-separated tags",
-      default: "",
+      describe:
+        "Pass metadata through to the server. Use querystring format (e.g. command=sync&source=cli&cli_version=1.0.0",
+      default: "source=cli",
       hidden: true,
     });
   if (includeQuietOption) {

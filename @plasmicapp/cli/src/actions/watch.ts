@@ -22,8 +22,8 @@ export async function watchProjects(opts: WatchArgs) {
   const syncOpts = {
     ...opts,
     quiet: true,
-    // Include `watch` metadata. Includes a comma in case it was set via args
-    metadata: opts.metadata + ",watch",
+    // Include `watch` metadata. Includes '&' in case it was set via args
+    metadata: opts.metadata + "&command=watch",
   };
   await sync(syncOpts);
 
