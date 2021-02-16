@@ -19,6 +19,6 @@ export async function auth(args: AuthArgs) {
   if (args.check) {
     return checkCredentials();
   } else {
-    await startAuth({ host: args.host });
+    await startAuth(args);
   }
 }
