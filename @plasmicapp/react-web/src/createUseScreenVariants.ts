@@ -41,7 +41,11 @@ export default function createUseScreenVariants(
   return function () {
     const [, updateState] = React.useState<{}>();
 
-    React.useEffect(() => {
+    // We do useLayoutEffect instead of useEffect to immediately
+    // register our forceUpdate. This ensures that if there was
+    // a window resize event between render and effects, that the
+    // listener will be registered in time
+    React.useLayoutEffect(() => {
       const forceUpdate = () => updateState({});
       listeners.push(forceUpdate);
       return () => {
