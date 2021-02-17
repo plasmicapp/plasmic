@@ -1,0 +1,1 @@
+Please use @plasmicapp/cli instead!

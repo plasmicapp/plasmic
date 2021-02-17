@@ -34,4 +34,4 @@ fs.writeFileSync(
   JSON.stringify(packageJson, null, 2)
 );
 
-fs.copyFileSync("README.npm.md", path.join("dist", "README.md"));
+fs.copyFileSync("README.md", path.join("dist", "README.md"));
