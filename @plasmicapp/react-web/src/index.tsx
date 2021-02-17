@@ -479,7 +479,9 @@ function isInternalHref(href: string): boolean {
 }
 
 export function PlasmicLink(props: any) {
-  if (props.platform === "nextjs") {
+  // props.href is required for nextjs; if no props.href,
+  // then we just render the default anchor element
+  if (props.platform === "nextjs" && props.href) {
     const nextjsProps = [
       "href",
       "replace",

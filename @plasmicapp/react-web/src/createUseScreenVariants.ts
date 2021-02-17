@@ -1,5 +1,6 @@
 import * as React from "react";
 import ReactDOM from "react-dom";
+import { useIsomorphicLayoutEffect } from "./react-utils";
 
 type Queries = { [name: string]: string };
 
@@ -45,7 +46,7 @@ export default function createUseScreenVariants(
     // register our forceUpdate. This ensures that if there was
     // a window resize event between render and effects, that the
     // listener will be registered in time
-    React.useLayoutEffect(() => {
+    useIsomorphicLayoutEffect(() => {
       const forceUpdate = () => updateState({});
       listeners.push(forceUpdate);
       return () => {
