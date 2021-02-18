@@ -37,7 +37,7 @@ export function syncProjectIconAssets(
   const projectLock = getOrAddProjectLock(context, projectId);
   const knownIconConfigs = L.keyBy(project.icons, (i) => i.id);
   const iconFileLocks = L.keyBy(
-    projectLock.fileLocks.filter((fileLock) => fileLock.type === "icon"),
+    projectLock.fileLocks?.filter((fileLock) => fileLock.type === "icon") || [],
     (fl) => fl.assetId
   );
   const id2IconChecksum = new Map(checksums.iconChecksums);
@@ -90,6 +90,9 @@ export function syncProjectIconAssets(
       iconConfig.name = bundle.name;
     }
 
+    if (!projectLock.fileLocks) {
+      projectLock.fileLocks = [];
+    }
     // Update FileLocks
     if (iconFileLocks[bundle.id]) {
       iconFileLocks[bundle.id].checksum = ensure(
@@ -127,8 +130,10 @@ export function syncProjectIconAssets(
   project.icons = project.icons.filter((i) => !deletedIconFiles.has(i.id));
 
   const deletedIconIds = new Set(deletedIcons.map((i) => i.id));
-  projectLock.fileLocks = projectLock.fileLocks.filter(
-    (fileLock) =>
-      fileLock.type !== "icon" || !deletedIconIds.has(fileLock.assetId)
-  );
+  if (projectLock.fileLocks) {
+    projectLock.fileLocks = projectLock.fileLocks.filter(
+      (fileLock) =>
+        fileLock.type !== "icon" || !deletedIconIds.has(fileLock.assetId)
+    );
+  }
 }
