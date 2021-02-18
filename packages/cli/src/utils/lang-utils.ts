@@ -29,3 +29,22 @@ export function ensureString(x: any) {
     throw new Error(`Expected ${x} to be a string`);
   }
 }
+
+export class AssertionError extends Error {
+  constructor(msg = "Assertion failed") {
+    super(msg);
+  }
+}
+
+export function assert<T>(
+  cond: T,
+  msg: StringGen = "Assertion failed"
+): asserts cond {
+  if (!cond) {
+    // We always generate an non empty message so that it doesn't get swallowed
+    // by the async library.
+    msg = (L.isString(msg) ? msg : msg()) || "Assertion failed";
+    debugger;
+    throw new AssertionError(msg);
+  }
+}

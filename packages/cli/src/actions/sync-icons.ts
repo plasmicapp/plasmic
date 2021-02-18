@@ -1,10 +1,14 @@
 import L from "lodash";
 import path from "upath";
 import { CommonArgs } from "..";
-import { IconBundle } from "../api";
+import { ChecksumBundle, IconBundle } from "../api";
 import { logger } from "../deps";
 import { formatAsLocal } from "../utils/code-utils";
-import { getOrAddProjectConfig, PlasmicContext } from "../utils/config-utils";
+import {
+  getOrAddProjectConfig,
+  getOrAddProjectLock,
+  PlasmicContext,
+} from "../utils/config-utils";
 import {
   defaultResourcePath,
   deleteFile,
@@ -12,6 +16,7 @@ import {
   renameFile,
   writeFileContent,
 } from "../utils/file-utils";
+import { ensure } from "../utils/lang-utils";
 
 export interface SyncIconsArgs extends CommonArgs {
   projects: readonly string[];
@@ -21,16 +26,27 @@ export function syncProjectIconAssets(
   context: PlasmicContext,
   projectId: string,
   version: string,
-  iconBundles: IconBundle[]
+  iconBundles: IconBundle[],
+  checksums: ChecksumBundle
 ) {
   const project = getOrAddProjectConfig(context, projectId);
   if (!project.icons) {
     project.icons = [];
   }
 
+  const projectLock = getOrAddProjectLock(context, projectId);
   const knownIconConfigs = L.keyBy(project.icons, (i) => i.id);
+  const iconFileLocks = L.keyBy(
+    projectLock.fileLocks.filter((fileLock) => fileLock.type === "icon"),
+    (fl) => fl.assetId
+  );
+  const id2IconChecksum = new Map(checksums.iconChecksums);
+
   const iconBundleIds = L.keyBy(iconBundles, (i) => i.id);
-  const deletedIcons = L.filter(knownIconConfigs, (i) => !iconBundleIds[i.id]);
+  const deletedIcons = L.filter(
+    knownIconConfigs,
+    (i) => !iconBundleIds[i.id] && !id2IconChecksum.has(i.id)
+  );
 
   for (const bundle of iconBundles) {
     if (context.cliArgs.quiet !== true) {
@@ -74,6 +90,19 @@ export function syncProjectIconAssets(
       iconConfig.name = bundle.name;
     }
 
+    // Update FileLocks
+    if (iconFileLocks[bundle.id]) {
+      iconFileLocks[bundle.id].checksum = ensure(
+        id2IconChecksum.get(bundle.id)
+      );
+    } else {
+      projectLock.fileLocks.push({
+        type: "icon",
+        assetId: bundle.id,
+        checksum: ensure(id2IconChecksum.get(bundle.id)),
+      });
+    }
+
     writeFileContent(
       context,
       iconConfig.moduleFilePath,
@@ -96,4 +125,10 @@ export function syncProjectIconAssets(
     }
   }
   project.icons = project.icons.filter((i) => !deletedIconFiles.has(i.id));
+
+  const deletedIconIds = new Set(deletedIcons.map((i) => i.id));
+  projectLock.fileLocks = projectLock.fileLocks.filter(
+    (fileLock) =>
+      fileLock.type !== "icon" || !deletedIconIds.has(fileLock.assetId)
+  );
 }

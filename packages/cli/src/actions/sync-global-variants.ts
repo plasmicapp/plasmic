@@ -1,9 +1,9 @@
 import L from "lodash";
 import path from "upath";
-import { GlobalVariantBundle, ProjectMetaBundle } from "../api";
+import { ChecksumBundle, GlobalVariantBundle, ProjectMetaBundle } from "../api";
 import { logger } from "../deps";
 import { formatAsLocal } from "../utils/code-utils";
-import { PlasmicContext } from "../utils/config-utils";
+import { getOrAddProjectLock, PlasmicContext } from "../utils/config-utils";
 import {
   defaultResourcePath,
   deleteFile,
@@ -11,23 +11,34 @@ import {
   renameFile,
   writeFileContent,
 } from "../utils/file-utils";
+import { ensure } from "../utils/lang-utils";
 
 export function syncGlobalVariants(
   context: PlasmicContext,
   projectMeta: ProjectMetaBundle,
-  bundles: GlobalVariantBundle[]
+  bundles: GlobalVariantBundle[],
+  checksums: ChecksumBundle
 ) {
   const projectId = projectMeta.projectId;
+  const projectLock = getOrAddProjectLock(context, projectId);
   const existingVariantConfigs = L.keyBy(
     context.config.globalVariants.variantGroups.filter(
       (group) => group.projectId === projectId
     ),
     (c) => c.id
   );
+  const globalVariantFileLocks = L.keyBy(
+    projectLock.fileLocks.filter(
+      (fileLock) => fileLock.type === "globalVariant"
+    ),
+    (fl) => fl.assetId
+  );
+  const id2VariantChecksum = new Map(checksums.globalVariantChecksums);
+
   const variantBundleIds = L.keyBy(bundles, (i) => i.id);
   const deletedGlobalVariants = L.filter(
     existingVariantConfigs,
-    (i) => !variantBundleIds[i.id]
+    (i) => !variantBundleIds[i.id] && !id2VariantChecksum.has(i.id)
   );
 
   for (const bundle of bundles) {
@@ -72,6 +83,19 @@ export function syncGlobalVariants(
       variantConfig.name = bundle.name;
     }
 
+    // Update FileLocks
+    if (globalVariantFileLocks[bundle.id]) {
+      globalVariantFileLocks[bundle.id].checksum = ensure(
+        id2VariantChecksum.get(bundle.id)
+      );
+    } else {
+      projectLock.fileLocks.push({
+        type: "globalVariant",
+        assetId: bundle.id,
+        checksum: ensure(id2VariantChecksum.get(bundle.id)),
+      });
+    }
+
     writeFileContent(
       context,
       variantConfig.contextFilePath,
@@ -93,5 +117,12 @@ export function syncGlobalVariants(
   }
   context.config.globalVariants.variantGroups = context.config.globalVariants.variantGroups.filter(
     (v) => !deletedVariantsFiles.has(v.id)
+  );
+
+  const deletedVariantIds = new Set(deletedGlobalVariants.map((i) => i.id));
+  projectLock.fileLocks = projectLock.fileLocks.filter(
+    (fileLock) =>
+      fileLock.type !== "globalVariant" ||
+      !deletedVariantIds.has(fileLock.assetId)
   );
 }

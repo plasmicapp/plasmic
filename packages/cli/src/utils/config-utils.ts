@@ -248,6 +248,22 @@ export interface GlobalVariantGroupConfig {
   contextFilePath: string;
 }
 
+export interface FileLock {
+  // The type of file whose checksum was computed
+  type:
+    | "renderModule"
+    | "cssRules"
+    | "icon"
+    | "image"
+    | "projectCss"
+    | "globalVariant"
+    | "theme";
+  // The checksum value for the file
+  checksum: string;
+  // The component id, or the image asset id
+  assetId: string;
+}
+
 export interface ProjectLock {
   projectId: string;
   // The exact version that was last synced
@@ -256,6 +272,10 @@ export interface ProjectLock {
     // Maps from projectId => exact version
     [projectId: string]: string;
   };
+  // The language during last sync
+  lang: "ts" | "js";
+  // One for each file whose checksum is computed
+  fileLocks: FileLock[];
 }
 
 export interface PlasmicLock {
@@ -470,6 +490,8 @@ export function getOrAddProjectLock(
           projectId,
           version: "",
           dependencies: {},
+          lang: context.config.code.lang,
+          fileLocks: [],
         };
     context.lock.projects.push(project);
   }
