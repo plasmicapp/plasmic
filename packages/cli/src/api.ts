@@ -87,6 +87,7 @@ export interface ProjectBundle {
   usedTokens: StyleTokensMap;
   iconAssets: IconBundle[];
   imageAssets: ImageBundle[];
+  checksums: ChecksumBundle;
 }
 
 export type ProjectMeta = Omit<ProjectBundle, "projectConfig">;
@@ -111,6 +112,23 @@ export interface StyleTokensMap {
       source: "plasmic.app";
     };
   };
+}
+
+export interface ChecksumBundle {
+  // List of checksums as [ComponentBundle.id, checksum]
+  renderModuleChecksums: Array<[string, string]>;
+  // List of checksums as [ComponentBundle.id, checksum]
+  cssRulesChecksums: Array<[string, string]>;
+  // List of checksums as [imageBundle.id, checksum]
+  imageChecksums: Array<[string, string]>;
+  // List of checksums as [IconBundle.id, checksum]
+  iconChecksums: Array<[string, string]>;
+  // List of checksums as [GlobalVariant.id, checksum]
+  globalVariantChecksums: Array<[string, string]>;
+  // Checksum of projectCss file
+  projectCssChecksum: string;
+  // List of checksums as [theme.bundleName, checksum]
+  themeChecksums: Array<[string, string]>;
 }
 
 export interface ProjectIconsResponse {
@@ -192,6 +210,7 @@ export class PlasmicApi {
     version: string,
     imageOpts: ImagesConfig,
     stylesOpts: StyleConfig,
+    checksums: ChecksumBundle,
     metadata?: any
   ): Promise<ProjectBundle> {
     const result = await this.post(
@@ -204,6 +223,7 @@ export class PlasmicApi {
         version,
         imageOpts,
         stylesOpts,
+        checksums,
         metadata,
       }
     );
