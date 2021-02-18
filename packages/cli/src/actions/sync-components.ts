@@ -128,13 +128,13 @@ export async function syncProjectComponents(
   );
 
   const renderModuleFileLocks = L.keyBy(
-    projectLock.fileLocks.filter(
+    projectLock.fileLocks?.filter(
       (fileLock) => fileLock.type === "renderModule"
-    ),
+    ) || [],
     (fl) => fl.assetId
   );
   const cssRulesFileLocks = L.keyBy(
-    projectLock.fileLocks.filter((fileLock) => fileLock.type === "cssRules"),
+    projectLock.fileLocks?.filter((fileLock) => fileLock.type === "cssRules") || [],
     (fl) => fl.assetId
   );
   const id2RenderModuleChecksum = new Map(checksums.renderModuleChecksums);
@@ -309,6 +309,9 @@ export async function syncProjectComponents(
       }
     }
 
+    if (!projectLock.fileLocks) {
+      projectLock.fileLocks = [];
+    }
     // Update FileLocks
     if (renderModuleFileLocks[id]) {
       renderModuleFileLocks[id].checksum = ensure(
@@ -361,9 +364,11 @@ export async function syncProjectComponents(
   );
 
   const deletedComponentIds = new Set(deletedComponents.map((i) => i.id));
-  projectLock.fileLocks = projectLock.fileLocks.filter(
-    (fileLock) =>
-      (fileLock.type !== "renderModule" && fileLock.type !== "cssRules") ||
-      !deletedComponentIds.has(fileLock.assetId)
-  );
+  if (projectLock.fileLocks) {
+    projectLock.fileLocks = projectLock.fileLocks.filter(
+      (fileLock) =>
+        (fileLock.type !== "renderModule" && fileLock.type !== "cssRules") ||
+        !deletedComponentIds.has(fileLock.assetId)
+    );
+  }
 }
