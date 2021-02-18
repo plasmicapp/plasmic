@@ -1,9 +1,13 @@
 import L from "lodash";
 import path from "upath";
-import { ImageBundle } from "../api";
+import { ChecksumBundle, ImageBundle } from "../api";
 import { logger } from "../deps";
 import { FixImportContext } from "../utils/code-utils";
-import { getOrAddProjectConfig, PlasmicContext } from "../utils/config-utils";
+import {
+  getOrAddProjectConfig,
+  getOrAddProjectLock,
+  PlasmicContext,
+} from "../utils/config-utils";
 import {
   defaultPublicResourcePath,
   defaultResourcePath,
@@ -19,14 +23,22 @@ export function syncProjectImageAssets(
   context: PlasmicContext,
   projectId: string,
   version: string,
-  imageBundles: ImageBundle[]
+  imageBundles: ImageBundle[],
+  checksums: ChecksumBundle
 ) {
   const project = getOrAddProjectConfig(context, projectId);
+  const projectLock = getOrAddProjectLock(context, projectId);
   const knownImageConfigs = L.keyBy(project.images, (i) => i.id);
   const imageBundleIds = L.keyBy(imageBundles, (i) => i.id);
+  const imageFileLocks = L.keyBy(
+    projectLock.fileLocks.filter((fileLock) => fileLock.type === "image"),
+    (fl) => fl.assetId
+  );
+  const id2ImageChecksum = new Map(checksums.imageChecksums);
+
   const deletedImages = L.filter(
     knownImageConfigs,
-    (i) => !imageBundleIds[i.id]
+    (i) => !imageBundleIds[i.id] && !id2ImageChecksum.has(i.id)
   );
 
   for (const bundle of imageBundles) {
@@ -68,6 +80,19 @@ export function syncProjectImageAssets(
       imageConfig.name = bundle.name;
     }
 
+    // Update FileLocks
+    if (imageFileLocks[bundle.id]) {
+      imageFileLocks[bundle.id].checksum = ensure(
+        id2ImageChecksum.get(bundle.id)
+      );
+    } else {
+      projectLock.fileLocks.push({
+        type: "image",
+        assetId: bundle.id,
+        checksum: ensure(id2ImageChecksum.get(bundle.id)),
+      });
+    }
+
     writeFileContent(
       context,
       imageConfig.filePath,
@@ -90,6 +115,12 @@ export function syncProjectImageAssets(
     }
   }
   project.images = project.images.filter((i) => !deletedImageFiles.has(i.id));
+
+  const deletedImageIds = new Set(deletedImages.map((i) => i.id));
+  projectLock.fileLocks = projectLock.fileLocks.filter(
+    (fileLock) =>
+      fileLock.type !== "image" || !deletedImageIds.has(fileLock.assetId)
+  );
 }
 
 const RE_ASSETCSSREF_ALL = /var\(--image-([^\)]+)\)/g;
@@ -149,5 +180,8 @@ export function fixComponentImagesReferences(
     writeFileContent(context, renderModuleFilePath, newContent, {
       force: true,
     });
+    // Returns true if the content changed
+    return true;
   }
+  return false;
 }

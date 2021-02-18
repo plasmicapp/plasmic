@@ -166,6 +166,15 @@ function tryParsePlasmicImportSpec(node: ImportDeclaration) {
   return undefined;
 }
 
+function filterUnformattedMarker(code: string, changed: boolean) {
+  const lines = code.split("\n");
+  const isUnformattedMarker = (line: string) =>
+    line.trim() === "// plasmic-unformatted";
+  changed = changed || lines.some(isUnformattedMarker);
+  code = lines.filter((line) => !isUnformattedMarker(line)).join("\n");
+  return [code, changed] as const;
+}
+
 /**
  * Given the argument `code` string, for module at `fromPath`, replaces all Plasmic imports
  * for modules found in `compConfigsMap`.
@@ -175,8 +184,10 @@ export function replaceImports(
   code: string,
   fromPath: string,
   fixImportContext: FixImportContext,
-  removeImportDirective: boolean
+  removeImportDirective: boolean,
+  changed = false
 ) {
+  [code, changed] = filterUnformattedMarker(code, changed);
   const file = parser.parse(code, {
     strictMode: true,
     sourceType: "module",
@@ -200,6 +211,7 @@ export function replaceImports(
     if (!spec) {
       return;
     }
+    changed = true;
     if (removeImportDirective) {
       commentsToRemove.add(stmt.trailingComments?.[0].value || "");
     }
@@ -295,7 +307,7 @@ export function replaceImports(
       stmt.source.value = realPath;
     }
   });
-  return nodeToFormattedCode(file, false, commentsToRemove);
+  return nodeToFormattedCode(file, !changed, commentsToRemove);
 }
 
 function throwMissingReference(
@@ -424,12 +436,6 @@ function fixComponentImportStatements(
   fixImportContext: FixImportContext,
   fixSkeletonModule: boolean
 ) {
-  fixFileImportStatements(
-    context,
-    compConfig.renderModuleFilePath,
-    fixImportContext,
-    false
-  );
   // If ComponentConfig.importPath is still a local file, we best-effort also fix up the import statements there.
   if (
     isLocalModulePath(compConfig.importSpec.modulePath) &&
@@ -443,6 +449,8 @@ function fixComponentImportStatements(
     );
   }
 
+  let renderModuleChanged = false;
+
   if (context.config.images.scheme !== "inlined") {
     fixComponentCssReferences(
       context,
@@ -450,20 +458,30 @@ function fixComponentImportStatements(
       compConfig.cssFilePath
     );
     if (context.config.images.scheme === "public-files") {
-      fixComponentImagesReferences(
+      renderModuleChanged = fixComponentImagesReferences(
         context,
         fixImportContext,
         compConfig.renderModuleFilePath
       );
     }
   }
+
+  // Fix file imports and run prettier just after fixing image references
+  fixFileImportStatements(
+    context,
+    compConfig.renderModuleFilePath,
+    fixImportContext,
+    false,
+    renderModuleChanged
+  );
 }
 
 function fixFileImportStatements(
   context: PlasmicContext,
   srcDirFilePath: string,
   fixImportContext: FixImportContext,
-  removeImportDirective: boolean
+  removeImportDirective: boolean,
+  fileHasChanged = false
 ) {
   const filePath = makeFilePath(context, srcDirFilePath);
   if (!existsBuffered(filePath)) {
@@ -480,9 +498,12 @@ function fixFileImportStatements(
     prevContent,
     srcDirFilePath,
     fixImportContext,
-    removeImportDirective
+    removeImportDirective,
+    fileHasChanged
   );
-  writeFileContent(context, srcDirFilePath, newContent, { force: true });
+  if (prevContent !== newContent) {
+    writeFileContent(context, srcDirFilePath, newContent, { force: true });
+  }
 }
 
 class CompilerOptions {

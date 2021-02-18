@@ -5,7 +5,7 @@ import {
 } from "@plasmicapp/code-merger";
 import L from "lodash";
 import path from "upath";
-import { AppServerError, ComponentBundle } from "../api";
+import { AppServerError, ChecksumBundle, ComponentBundle } from "../api";
 import { logger } from "../deps";
 import { ComponentUpdateSummary, formatAsLocal } from "../utils/code-utils";
 import {
@@ -14,6 +14,7 @@ import {
   isPageAwarePlatform,
   PlasmicContext,
   ProjectConfig,
+  ProjectLock,
 } from "../utils/config-utils";
 import { HandledError } from "../utils/error";
 import {
@@ -25,6 +26,7 @@ import {
   renameFile,
   writeFileContent,
 } from "../utils/file-utils";
+import { ensure } from "../utils/lang-utils";
 
 export interface ComponentPendingMerge {
   // path of the skeleton module
@@ -110,14 +112,33 @@ export async function syncProjectComponents(
   forceOverwrite: boolean,
   appendJsxOnMissingBase: boolean,
   summary: Map<string, ComponentUpdateSummary>,
-  pendingMerge: ComponentPendingMerge[]
+  pendingMerge: ComponentPendingMerge[],
+  projectLock: ProjectLock,
+  checksums: ChecksumBundle
 ) {
+  const componentsFromChecksums = new Set([
+    ...checksums.cssRulesChecksums.map(([id, _]) => id),
+    checksums.renderModuleChecksums.map(([id, _]) => id),
+  ]);
   const allCompConfigs = L.keyBy(project.components, (c) => c.id);
   const componentBundleIds = L.keyBy(componentBundles, (i) => i.id);
   const deletedComponents = L.filter(
     allCompConfigs,
-    (i) => !componentBundleIds[i.id]
+    (i) => !componentBundleIds[i.id] && !componentsFromChecksums.has(i.id)
   );
+
+  const renderModuleFileLocks = L.keyBy(
+    projectLock.fileLocks.filter(
+      (fileLock) => fileLock.type === "renderModule"
+    ),
+    (fl) => fl.assetId
+  );
+  const cssRulesFileLocks = L.keyBy(
+    projectLock.fileLocks.filter((fileLock) => fileLock.type === "cssRules"),
+    (fl) => fl.assetId
+  );
+  const id2RenderModuleChecksum = new Map(checksums.renderModuleChecksums);
+  const id2CssRulesChecksum = new Map(checksums.cssRulesChecksums);
 
   for (const bundle of componentBundles) {
     const {
@@ -287,6 +308,29 @@ export async function syncProjectComponents(
         }
       }
     }
+
+    // Update FileLocks
+    if (renderModuleFileLocks[id]) {
+      renderModuleFileLocks[id].checksum = ensure(
+        id2RenderModuleChecksum.get(id)
+      );
+    } else {
+      projectLock.fileLocks.push({
+        type: "renderModule",
+        assetId: id,
+        checksum: ensure(id2RenderModuleChecksum.get(id)),
+      });
+    }
+    if (cssRulesFileLocks[id]) {
+      cssRulesFileLocks[id].checksum = ensure(id2CssRulesChecksum.get(id));
+    } else {
+      projectLock.fileLocks.push({
+        type: "cssRules",
+        assetId: id,
+        checksum: ensure(id2CssRulesChecksum.get(id)),
+      });
+    }
+
     writeFileContent(context, compConfig.renderModuleFilePath, renderModule, {
       force: !isNew,
     });
@@ -314,5 +358,12 @@ export async function syncProjectComponents(
   }
   project.components = project.components.filter(
     (c) => !deletedComponentFiles.has(c.id)
+  );
+
+  const deletedComponentIds = new Set(deletedComponents.map((i) => i.id));
+  projectLock.fileLocks = projectLock.fileLocks.filter(
+    (fileLock) =>
+      (fileLock.type !== "renderModule" && fileLock.type !== "cssRules") ||
+      !deletedComponentIds.has(fileLock.assetId)
   );
 }
