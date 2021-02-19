@@ -275,7 +275,7 @@ export interface ProjectLock {
   // The language during last sync
   lang: "ts" | "js";
   // One for each file whose checksum is computed
-  fileLocks: FileLock[] | undefined;
+  fileLocks: FileLock[];
 }
 
 export interface PlasmicLock {

@@ -482,9 +482,6 @@ async function syncProjectConfig(
   projectLock.version = version;
   projectLock.dependencies = dependencies;
   projectLock.lang = context.config.code.lang;
-  if (!projectLock.fileLocks) {
-    projectLock.fileLocks = [];
-  }
 
   if (projectBundle.cssRules) {
     const formattedCssRules = formatAsLocal(
@@ -503,7 +500,7 @@ async function syncProjectConfig(
   projectLock.fileLocks.push({
     assetId: projectConfig.projectId,
     type: "projectCss",
-    checksum: projectBundle.cssRules,
+    checksum: checksums.projectCssChecksum,
   });
 
   const themeFileLocks = L.keyBy(
@@ -534,7 +531,7 @@ async function syncProjectConfig(
         id2themeChecksum.get(theme.bundleName)
       );
     } else {
-      ensure(projectLock.fileLocks).push({
+      projectLock.fileLocks.push({
         type: "theme",
         assetId: theme.bundleName,
         checksum: ensure(id2themeChecksum.get(theme.bundleName)),

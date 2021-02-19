@@ -31,8 +31,7 @@ export function syncProjectImageAssets(
   const knownImageConfigs = L.keyBy(project.images, (i) => i.id);
   const imageBundleIds = L.keyBy(imageBundles, (i) => i.id);
   const imageFileLocks = L.keyBy(
-    projectLock.fileLocks?.filter((fileLock) => fileLock.type === "image") ||
-      [],
+    projectLock.fileLocks.filter((fileLock) => fileLock.type === "image"),
     (fl) => fl.assetId
   );
   const id2ImageChecksum = new Map(checksums.imageChecksums);
@@ -81,9 +80,6 @@ export function syncProjectImageAssets(
       imageConfig.name = bundle.name;
     }
 
-    if (!projectLock.fileLocks) {
-      projectLock.fileLocks = [];
-    }
     // Update FileLocks
     if (imageFileLocks[bundle.id]) {
       imageFileLocks[bundle.id].checksum = ensure(
@@ -121,12 +117,10 @@ export function syncProjectImageAssets(
   project.images = project.images.filter((i) => !deletedImageFiles.has(i.id));
 
   const deletedImageIds = new Set(deletedImages.map((i) => i.id));
-  if (projectLock.fileLocks) {
-    projectLock.fileLocks = projectLock.fileLocks.filter(
-      (fileLock) =>
-        fileLock.type !== "image" || !deletedImageIds.has(fileLock.assetId)
-    );
-  }
+  projectLock.fileLocks = projectLock.fileLocks.filter(
+    (fileLock) =>
+      fileLock.type !== "image" || !deletedImageIds.has(fileLock.assetId)
+  );
 }
 
 const RE_ASSETCSSREF_ALL = /var\(--image-([^\)]+)\)/g;

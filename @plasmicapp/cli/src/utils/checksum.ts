@@ -17,9 +17,7 @@ export function getChecksums(
     (projectLock) => projectLock.projectId === projectId
   );
 
-  const fileLocks = projectLock?.fileLocks;
-
-  if (!projectConfig || !projectLock || !fileLocks || opts.allFiles) {
+  if (!projectConfig || !projectLock || opts.allFiles) {
     return {
       imageChecksums: [],
       iconChecksums: [],
@@ -30,6 +28,8 @@ export function getChecksums(
       themeChecksums: [],
     };
   }
+
+  const fileLocks = projectLock.fileLocks;
 
   const knownImages = new Set(projectConfig.images.map((i) => i.id));
   const knownIcons = new Set(projectConfig.icons.map((i) => i.id));

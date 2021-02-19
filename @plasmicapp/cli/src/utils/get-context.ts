@@ -4,7 +4,7 @@ import { initPlasmic } from "../actions/init";
 import { PlasmicApi } from "../api";
 import { logger } from "../deps";
 import { CommonArgs } from "../index";
-import { runNecessaryMigrationsConfig } from "../migrations/migrations";
+import { runNecessaryMigrations } from "../migrations/migrations";
 import { HandledError } from "../utils/error";
 import { getCurrentAuth } from "./auth-utils";
 import {
@@ -75,13 +75,14 @@ export async function getContext(args: CommonArgs): Promise<PlasmicContext> {
       throw err;
     }
   }
-  await runNecessaryMigrationsConfig(configFile, args.yes);
-  const config = readConfig(configFile);
   const rootDir = path.dirname(configFile);
-
-  /** PlasmicLock */
   // plasmic.lock should be in the same directory as plasmic.json
   const lockFile = path.join(rootDir, LOCK_FILE_NAME);
+
+  await runNecessaryMigrations(configFile, lockFile, args.yes);
+  const config = readConfig(configFile);
+
+  /** PlasmicLock */
   const lock = readLock(lockFile);
 
   return {
