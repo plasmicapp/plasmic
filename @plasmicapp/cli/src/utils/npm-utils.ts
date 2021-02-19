@@ -173,17 +173,17 @@ export function installCommand(
     if (opts.global) {
       return `yarn global add ${pkg}`;
     } else if (opts.dev) {
-      return `yarn add --dev -W ${pkg}`;
+      return `yarn add --dev --ignore-scripts -W ${pkg}`;
     } else {
-      return `yarn add -W ${pkg}`;
+      return `yarn add --ignore-scripts -W ${pkg}`;
     }
   } else {
     if (opts.global) {
       return `npm install -g ${pkg}`;
     } else if (opts.dev) {
-      return `npm install --save-dev ${pkg}`;
+      return `npm install --save-dev --ignore-scripts ${pkg}`;
     } else {
-      return `npm install ${pkg}`;
+      return `npm install --ignore-scripts ${pkg}`;
     }
   }
 }
