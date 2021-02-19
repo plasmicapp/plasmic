@@ -33,8 +33,7 @@ function objToExecArgs(obj: object) {
     .join(" ");
 }
 
-export async function tryInitializePlasmicDir(dir: string, initArgs: initArgs) {
-  const plasmicDir = path.join(dir, ".plasmic");
+export async function tryInitializePlasmicDir(dir: string, plasmicDir: string, initArgs: initArgs) {
   const plasmicExecPath = path.join(dir, "node_modules", ".bin", "plasmic");
   const configPath = path.join(plasmicDir, "plasmic.json");
 
@@ -44,7 +43,7 @@ export async function tryInitializePlasmicDir(dir: string, initArgs: initArgs) {
     return;
   } catch {}
 
-  await fs.mkdir(plasmicDir);
+  await fs.mkdir(plasmicDir, { recursive: true });
 
   await execOrFail(
     plasmicDir,
