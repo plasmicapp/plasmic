@@ -482,6 +482,9 @@ async function syncProjectConfig(
   projectLock.version = version;
   projectLock.dependencies = dependencies;
   projectLock.lang = context.config.code.lang;
+  if (!projectLock.fileLocks) {
+    projectLock.fileLocks = [];
+  }
 
   if (projectBundle.cssRules) {
     const formattedCssRules = formatAsLocal(
@@ -531,7 +534,7 @@ async function syncProjectConfig(
         id2themeChecksum.get(theme.bundleName)
       );
     } else {
-      projectLock.fileLocks.push({
+      ensure(projectLock.fileLocks).push({
         type: "theme",
         assetId: theme.bundleName,
         checksum: ensure(id2themeChecksum.get(theme.bundleName)),

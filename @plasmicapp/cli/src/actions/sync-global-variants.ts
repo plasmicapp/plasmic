@@ -28,9 +28,9 @@ export function syncGlobalVariants(
     (c) => c.id
   );
   const globalVariantFileLocks = L.keyBy(
-    projectLock.fileLocks.filter(
+    projectLock.fileLocks?.filter(
       (fileLock) => fileLock.type === "globalVariant"
-    ),
+    ) || [],
     (fl) => fl.assetId
   );
   const id2VariantChecksum = new Map(checksums.globalVariantChecksums);
@@ -84,6 +84,9 @@ export function syncGlobalVariants(
     }
 
     // Update FileLocks
+    if (!projectLock.fileLocks) {
+      projectLock.fileLocks = [];
+    }
     if (globalVariantFileLocks[bundle.id]) {
       globalVariantFileLocks[bundle.id].checksum = ensure(
         id2VariantChecksum.get(bundle.id)
@@ -120,9 +123,11 @@ export function syncGlobalVariants(
   );
 
   const deletedVariantIds = new Set(deletedGlobalVariants.map((i) => i.id));
-  projectLock.fileLocks = projectLock.fileLocks.filter(
-    (fileLock) =>
-      fileLock.type !== "globalVariant" ||
-      !deletedVariantIds.has(fileLock.assetId)
-  );
+  if (projectLock.fileLocks) {
+    projectLock.fileLocks = projectLock.fileLocks.filter(
+      (fileLock) =>
+        fileLock.type !== "globalVariant" ||
+        !deletedVariantIds.has(fileLock.assetId)
+    );
+  }
 }
