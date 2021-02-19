@@ -5,6 +5,7 @@ import * as gen from "./gen";
 
 export type PlamicOpts = {
   dir: string;
+  plasmicDir: string;
   pageDir: string;
   projects: string[];
   watch?: boolean;
@@ -42,14 +43,14 @@ export async function generateEntrypoint({
   pageDir,
   projects,
   watch,
+  plasmicDir,
   initArgs = {},
 }: PlamicOpts) {
   console.log("Syncing plasmic projects: ", projects);
-  const plasmicDir = path.join(dir, ".plasmic");
   const plasmicExecPath = path.join(dir, "node_modules", ".bin", "plasmic");
 
   await cli.checkAuth(dir, plasmicExecPath);
-  await cli.tryInitializePlasmicDir(dir, initArgs);
+  await cli.tryInitializePlasmicDir(dir, plasmicDir, initArgs);
   await cli.syncProject(plasmicDir, pageDir, plasmicExecPath, projects);
   await gen.generateAll({ dir: plasmicDir, pageDir });
 

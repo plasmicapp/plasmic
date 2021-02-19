@@ -7,17 +7,23 @@ const PHASE_PRODUCTION_BUILD = "phase-production-build";
 const PHASE_DEVELOPMENT_SERVER = "phase-development-server";
 const buildPhase = [PHASE_DEVELOPMENT_SERVER, PHASE_PRODUCTION_BUILD];
 
-type PluginOptions = Omit<PlamicOpts, "pageDir"> & { pageDir?: string };
+type PluginOptions = Partial<PlamicOpts>;
 
 async function initPlasmicLoader(pluginOptions: PluginOptions) {
+  if (pluginOptions.dir === undefined) {
+    pluginOptions.dir = process.cwd();
+  }
+  if (pluginOptions.plasmicDir === undefined) {
+    pluginOptions.plasmicDir = path.join(pluginOptions.dir, ".next", '.plasmic');
+  }
+  pluginOptions.pageDir = path.join(pluginOptions.dir, "pages");
   return generateEntrypoint({
     initArgs: {
       platform: "nextjs",
-      "pages-dir": "../pages",
+      "pages-dir": "../../pages",
       "src-dir": "./components",
     },
-    pageDir: path.join(pluginOptions.dir, "./pages"),
-    ...pluginOptions,
+    ...(pluginOptions as PlamicOpts),
   });
 }
 
@@ -42,7 +48,10 @@ module.exports = (pluginOptions: PluginOptions) => {
       if (!initPlasmicPromise) {
         initPlasmicPromise = initPlasmicLoader({
           ...pluginOptions,
-          watch: pluginOptions.watch || phase === PHASE_DEVELOPMENT_SERVER,
+          watch:
+            pluginOptions.watch !== undefined
+              ? pluginOptions.watch
+              : phase === PHASE_DEVELOPMENT_SERVER,
         });
       }
 
