@@ -1,6 +1,6 @@
 import * as React from "react";
 import ReactDOM from "react-dom";
-import { useIsomorphicLayoutEffect } from "./react-utils";
+import { isBrowser, useIsomorphicLayoutEffect } from "./react-utils";
 
 type Queries = { [name: string]: string };
 
@@ -8,11 +8,11 @@ const listeners: Array<() => void> = [];
 const queries: Queries = {};
 
 function matchScreenVariants() {
-  if (!globalThis.matchMedia) {
+  if (!isBrowser) {
     return [];
   }
   return Object.entries(queries)
-    .filter(([, query]) => globalThis.matchMedia(query).matches)
+    .filter(([, query]) => window.matchMedia(query).matches)
     .map(([name]) => name);
 }
 
@@ -28,8 +28,8 @@ function calculateScreenVariant() {
   }
 }
 
-if (globalThis.addEventListener) {
-  globalThis.addEventListener("resize", calculateScreenVariant);
+if (isBrowser) {
+  window.addEventListener("resize", calculateScreenVariant);
 }
 
 export default function createUseScreenVariants(
