@@ -393,7 +393,10 @@ export function fillDefaults(
   return L.merge({}, DEFAULT_CONFIG, config);
 }
 
-export function readConfig(configFile: string): PlasmicConfig {
+export function readConfig(
+  configFile: string,
+  autoFillDefaults: boolean
+): PlasmicConfig {
   if (!existsBuffered(configFile)) {
     const err = new HandledError(
       `No Plasmic config file found at ${configFile}`
@@ -402,7 +405,7 @@ export function readConfig(configFile: string): PlasmicConfig {
   }
   try {
     const result = JSON.parse(readFileText(configFile!)) as PlasmicConfig;
-    return fillDefaults(result);
+    return autoFillDefaults ? fillDefaults(result) : result;
   } catch (e) {
     logger.error(
       `Error encountered reading ${CONFIG_FILE_NAME} at ${configFile}: ${e}`

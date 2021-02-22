@@ -18,13 +18,15 @@ import L from "lodash";
 import semver from "semver";
 import path from "upath";
 import { logger } from "../deps";
-import { PlasmicConfig, PlasmicLock } from "../utils/config-utils";
-import { HandledError } from "../utils/error";
 import {
-  existsBuffered,
-  readFileText,
-  writeFileContentRaw,
-} from "../utils/file-utils";
+  PlasmicConfig,
+  PlasmicLock,
+  readConfig,
+  writeConfig,
+  writeLock,
+} from "../utils/config-utils";
+import { HandledError } from "../utils/error";
+import { existsBuffered, readFileText } from "../utils/file-utils";
 import {
   getCliVersion,
   installUpgrade,
@@ -72,7 +74,6 @@ export async function runNecessaryMigrations(
   yes?: boolean
 ) {
   const cliVersion = getCliVersion();
-  const readConfig = (): PlasmicConfig => JSON.parse(readFileText(configFile));
   // If we don't have a lock file, we don't need to run migrations on it!
   const maybeReadLock = (): PlasmicLock | undefined => {
     if (existsBuffered(lockFile)) {
@@ -80,15 +81,7 @@ export async function runNecessaryMigrations(
     }
     return undefined;
   };
-  const writeConfig = (config: PlasmicConfig) =>
-    writeFileContentRaw(configFile, JSON.stringify(config, undefined, 2), {
-      force: true,
-    });
-  const writeLock = (lock: PlasmicLock) =>
-    writeFileContentRaw(lockFile, JSON.stringify(lock, undefined, 2), {
-      force: true,
-    });
-  const cur = readConfig();
+  const cur = readConfig(configFile, false);
   const curVersion: string | undefined = cur.cliVersion;
 
   if (!!curVersion && semver.lt(cliVersion, curVersion)) {
@@ -129,10 +122,10 @@ export async function runNecessaryMigrations(
     logger.info(`Migrating to plasmic.json version ${version}`);
     const migrationFunc = MIGRATIONS[version];
     if (migrationFunc !== undefined) {
-      const prev = readConfig();
+      const prev = readConfig(configFile, false);
       const next = migrationFunc(prev, context);
       next.cliVersion = version;
-      writeConfig(next);
+      writeConfig(configFile, next);
     }
 
     const lockMigrationFunc = LOCK_MIGRATIONS[version];
@@ -140,15 +133,15 @@ export async function runNecessaryMigrations(
       const prev = maybeReadLock();
       if (prev) {
         const next = lockMigrationFunc(prev, context);
-        writeLock(next);
+        writeLock(lockFile, next);
       }
     }
   }
 
   // Finally, stamp the latest version
-  const latestConfig = readConfig();
+  const latestConfig = readConfig(configFile, false);
   if (latestConfig.cliVersion !== cliVersion) {
     latestConfig.cliVersion = cliVersion;
-    writeConfig(latestConfig);
+    writeConfig(configFile, latestConfig);
   }
 }

@@ -80,7 +80,7 @@ export async function getContext(args: CommonArgs): Promise<PlasmicContext> {
   const lockFile = path.join(rootDir, LOCK_FILE_NAME);
 
   await runNecessaryMigrations(configFile, lockFile, args.yes);
-  const config = readConfig(configFile);
+  const config = readConfig(configFile, true);
 
   /** PlasmicLock */
   const lock = readLock(lockFile);
