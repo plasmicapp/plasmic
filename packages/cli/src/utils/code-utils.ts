@@ -402,7 +402,7 @@ export const mkFixImportContext = (config: PlasmicConfig) => {
  * Assuming that all the files referenced in PlasmicConfig are correct, fixes import statements using PlasmicConfig
  * file locations as the source of truth.
  */
-export function fixAllImportStatements(
+export async function fixAllImportStatements(
   context: PlasmicContext,
   summary?: Map<string, ComponentUpdateSummary>
 ) {
@@ -419,7 +419,7 @@ export function fixAllImportStatements(
         ? compSummary.skeletonModuleModified
         : true;
       if (!summary || compSummary) {
-        fixComponentImportStatements(
+        await fixComponentImportStatements(
           context,
           compConfig,
           fixImportContext,
@@ -430,7 +430,7 @@ export function fixAllImportStatements(
   }
 }
 
-function fixComponentImportStatements(
+async function fixComponentImportStatements(
   context: PlasmicContext,
   compConfig: ComponentConfig,
   fixImportContext: FixImportContext,
@@ -441,7 +441,7 @@ function fixComponentImportStatements(
     isLocalModulePath(compConfig.importSpec.modulePath) &&
     fixSkeletonModule
   ) {
-    fixFileImportStatements(
+    await fixFileImportStatements(
       context,
       compConfig.importSpec.modulePath,
       fixImportContext,
@@ -452,13 +452,13 @@ function fixComponentImportStatements(
   let renderModuleChanged = false;
 
   if (context.config.images.scheme !== "inlined") {
-    fixComponentCssReferences(
+    await fixComponentCssReferences(
       context,
       fixImportContext,
       compConfig.cssFilePath
     );
     if (context.config.images.scheme === "public-files") {
-      renderModuleChanged = fixComponentImagesReferences(
+      renderModuleChanged = await fixComponentImagesReferences(
         context,
         fixImportContext,
         compConfig.renderModuleFilePath
@@ -467,7 +467,7 @@ function fixComponentImportStatements(
   }
 
   // Fix file imports and run prettier just after fixing image references
-  fixFileImportStatements(
+  await fixFileImportStatements(
     context,
     compConfig.renderModuleFilePath,
     fixImportContext,
@@ -476,7 +476,7 @@ function fixComponentImportStatements(
   );
 }
 
-function fixFileImportStatements(
+async function fixFileImportStatements(
   context: PlasmicContext,
   srcDirFilePath: string,
   fixImportContext: FixImportContext,
@@ -502,7 +502,9 @@ function fixFileImportStatements(
     fileHasChanged
   );
   if (prevContent !== newContent) {
-    writeFileContent(context, srcDirFilePath, newContent, { force: true });
+    await writeFileContent(context, srcDirFilePath, newContent, {
+      force: true,
+    });
   }
 }
 

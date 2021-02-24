@@ -80,7 +80,7 @@ const updateDirectSkeleton = async (
   );
   const merged = mergedFiles?.get(compConfig.id);
   if (merged) {
-    writeFileContent(context, compConfig.importSpec.modulePath, merged, {
+    await writeFileContent(context, compConfig.importSpec.modulePath, merged, {
       force: true,
     });
   } else {
@@ -92,7 +92,7 @@ const updateDirectSkeleton = async (
       logger.warn(
         `Overwrite ${compConfig.importSpec.modulePath} despite merge failure`
       );
-      writeFileContent(
+      await writeFileContent(
         context,
         compConfig.importSpec.modulePath,
         newFileContent,
@@ -195,7 +195,7 @@ export async function syncProjectComponents(
       project.components.push(allCompConfigs[id]);
 
       // Because it's the first time, we also generate the skeleton file.
-      writeFileContent(context, skeletonPath, skeletonModule, {
+      await writeFileContent(context, skeletonPath, skeletonModule, {
         force: false,
       });
     } else {
@@ -293,7 +293,7 @@ export async function syncProjectComponents(
       } else if (/\/\/\s*plasmic-managed-jsx\/\d+/.test(editedFile)) {
         if (forceOverwrite) {
           skeletonModuleModified = true;
-          writeFileContent(
+          await writeFileContent(
             context,
             compConfig.importSpec.modulePath,
             skeletonModule,
@@ -332,11 +332,16 @@ export async function syncProjectComponents(
       });
     }
 
-    writeFileContent(context, compConfig.renderModuleFilePath, renderModule, {
-      force: !isNew,
-    });
+    await writeFileContent(
+      context,
+      compConfig.renderModuleFilePath,
+      renderModule,
+      {
+        force: !isNew,
+      }
+    );
     const formattedCssRules = formatAsLocal(cssRules, compConfig.cssFilePath);
-    writeFileContent(context, compConfig.cssFilePath, formattedCssRules, {
+    await writeFileContent(context, compConfig.cssFilePath, formattedCssRules, {
       force: !isNew,
     });
     summary.set(id, { skeletonModuleModified });

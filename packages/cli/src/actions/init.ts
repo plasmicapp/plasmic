@@ -59,7 +59,7 @@ export async function initPlasmic(opts: InitArgs) {
     opts.config || path.join(process.cwd(), CONFIG_FILE_NAME);
 
   const answers = await deriveInitAnswers(opts);
-  writeConfig(newConfigFile, createInitConfig(answers));
+  await writeConfig(newConfigFile, createInitConfig(answers));
 
   logger.info("Successfully created plasmic.json.\n");
 

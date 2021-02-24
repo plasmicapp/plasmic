@@ -13,7 +13,7 @@ import {
 } from "../utils/file-utils";
 import { ensure } from "../utils/lang-utils";
 
-export function syncGlobalVariants(
+export async function syncGlobalVariants(
   context: PlasmicContext,
   projectMeta: ProjectMetaBundle,
   bundles: GlobalVariantBundle[],
@@ -96,7 +96,7 @@ export function syncGlobalVariants(
       });
     }
 
-    writeFileContent(
+    await writeFileContent(
       context,
       variantConfig.contextFilePath,
       formatAsLocal(bundle.contextModule, variantConfig.contextFilePath),

@@ -19,7 +19,7 @@ import {
 } from "../utils/file-utils";
 import { ensure } from "../utils/lang-utils";
 
-export function syncProjectImageAssets(
+export async function syncProjectImageAssets(
   context: PlasmicContext,
   projectId: string,
   version: string,
@@ -93,7 +93,7 @@ export function syncProjectImageAssets(
       });
     }
 
-    writeFileContent(
+    await writeFileContent(
       context,
       imageConfig.filePath,
       Buffer.from(bundle.blob, "base64"),
@@ -124,7 +124,7 @@ export function syncProjectImageAssets(
 }
 
 const RE_ASSETCSSREF_ALL = /var\(--image-([^\)]+)\)/g;
-export function fixComponentCssReferences(
+export async function fixComponentCssReferences(
   context: PlasmicContext,
   fixImportContext: FixImportContext,
   cssFilePath: string
@@ -152,12 +152,12 @@ export function fixComponentCssReferences(
   });
 
   if (prevContent !== newContent) {
-    writeFileContent(context, cssFilePath, newContent, { force: true });
+    await writeFileContent(context, cssFilePath, newContent, { force: true });
   }
 }
 
 const RE_ASSETTSXREF_ALL = /Plasmic_Image_([^\)\s]+)__Ref/g;
-export function fixComponentImagesReferences(
+export async function fixComponentImagesReferences(
   context: PlasmicContext,
   fixImportContext: FixImportContext,
   renderModuleFilePath: string
@@ -177,7 +177,7 @@ export function fixComponentImagesReferences(
   });
 
   if (prevContent !== newContent) {
-    writeFileContent(context, renderModuleFilePath, newContent, {
+    await writeFileContent(context, renderModuleFilePath, newContent, {
       force: true,
     });
     // Returns true if the content changed

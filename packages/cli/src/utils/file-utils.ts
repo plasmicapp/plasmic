@@ -14,6 +14,7 @@ import {
   updateConfig,
 } from "./config-utils";
 import { ensureString } from "./lang-utils";
+import { confirmWithUser } from "./user-utils";
 
 export function stripExtension(filename: string, removeComposedPath = false) {
   const ext = removeComposedPath
@@ -25,15 +26,21 @@ export function stripExtension(filename: string, removeComposedPath = false) {
   return filename.substring(0, filename.lastIndexOf(ext));
 }
 
-export function writeFileContentRaw(
+export async function writeFileContentRaw(
   filePath: string,
   content: string | Buffer,
-  opts?: { force?: boolean }
+  opts?: { force?: boolean; yes?: boolean }
 ) {
   opts = opts || {};
   if (existsBuffered(filePath) && !opts.force) {
-    logger.error(`Cannot write to ${filePath}; file already exists.`);
-    process.exit(1);
+    const overwrite = await confirmWithUser(
+      `File ${filePath} already exists. Do you want to overwrite?`,
+      opts.yes
+    );
+    if (!overwrite) {
+      logger.error(`Cannot write to ${filePath}; file already exists.`);
+      process.exit(1);
+    }
   }
 
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
@@ -77,14 +84,17 @@ export function defaultPagePath(context: PlasmicContext, fileName: string) {
   return fileName;
 }
 
-export function writeFileContent(
+export async function writeFileContent(
   context: PlasmicContext,
   srcDirFilePath: string,
   content: string | Buffer,
   opts: { force?: boolean } = {}
 ) {
   const path = makeFilePath(context, srcDirFilePath);
-  writeFileContentRaw(path, content, opts);
+  await writeFileContentRaw(path, content, {
+    yes: context.cliArgs.yes,
+    ...opts,
+  });
 }
 
 export function readFileContent(
@@ -273,7 +283,7 @@ function getAllPaths(context: PlasmicContext): BundleKeyPair[] {
  * Fixes all src-relative file paths in PlasmicConfig by detecting file
  * movement on disk.
  */
-export function fixAllFilePaths(context: PlasmicContext) {
+export async function fixAllFilePaths(context: PlasmicContext) {
   const baseNameToFiles = buildBaseNameToFiles(context);
   let changed = false;
 
@@ -302,7 +312,7 @@ export function fixAllFilePaths(context: PlasmicContext) {
   }
 
   if (changed) {
-    updateConfig(context, context.config);
+    await updateConfig(context, context.config);
   }
 }
 
@@ -311,7 +321,6 @@ export function fixAllFilePaths(context: PlasmicContext) {
  * directory (i.e., the directory containing plasmic.json).
  */
 export function assertAllPathsInRootDir(context: PlasmicContext) {
-
   // Do not run this check when running in PlasmicLoader environment
   if (process.env.PLASMIC_LOADER) {
     return;

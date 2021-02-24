@@ -7,6 +7,6 @@ export interface FixImportsArgs extends CommonArgs {}
 export async function fixImports(opts: FixImportsArgs) {
   const context = await getContext(opts);
 
-  fixAllFilePaths(context);
-  fixAllImportStatements(context);
+  await fixAllFilePaths(context);
+  await fixAllImportStatements(context);
 }

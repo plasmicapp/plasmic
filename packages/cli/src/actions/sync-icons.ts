@@ -22,7 +22,7 @@ export interface SyncIconsArgs extends CommonArgs {
   projects: readonly string[];
 }
 
-export function syncProjectIconAssets(
+export async function syncProjectIconAssets(
   context: PlasmicContext,
   projectId: string,
   version: string,
@@ -103,7 +103,7 @@ export function syncProjectIconAssets(
       });
     }
 
-    writeFileContent(
+    await writeFileContent(
       context,
       iconConfig.moduleFilePath,
       formatAsLocal(bundle.module, iconConfig.moduleFilePath),

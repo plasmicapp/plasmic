@@ -115,7 +115,8 @@ export async function startAuth(opts: CommonArgs & { host: string }) {
     });
 
     // Default to 1 minute.
-    const authPollTimeout = Number(process.env.PLASMIC_AUTH_POLL_TIMEOUT) || 60 * 1000;
+    const authPollTimeout =
+      Number(process.env.PLASMIC_AUTH_POLL_TIMEOUT) || 60 * 1000;
     if (authPollTimeout === -1) {
       return;
     }
@@ -138,7 +139,7 @@ export async function startAuth(opts: CommonArgs & { host: string }) {
 
   const newAuthFile = opts.auth || path.join(os.homedir(), AUTH_FILE_NAME);
 
-  writeAuth(newAuthFile, {
+  await writeAuth(newAuthFile, {
     host: opts.host,
     user: auth.user,
     token: auth.token,
@@ -252,8 +253,8 @@ export function findAuthFile(
   return file;
 }
 
-export function writeAuth(authFile: string, config: AuthConfig) {
-  writeFileContentRaw(authFile, JSON.stringify(config, undefined, 2), {
+export async function writeAuth(authFile: string, config: AuthConfig) {
+  await writeFileContentRaw(authFile, JSON.stringify(config, undefined, 2), {
     force: true,
   });
   fs.chmodSync(authFile, "600");

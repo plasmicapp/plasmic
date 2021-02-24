@@ -7,11 +7,11 @@ import {
   writeFileContent,
 } from "../utils/file-utils";
 
-export function upsertStyleTokens(
+export async function upsertStyleTokens(
   context: PlasmicContext,
   newStyleMap: StyleTokensMap
 ) {
-  const curStyleMap = readCurStyleMap(context);
+  const curStyleMap = await readCurStyleMap(context);
   for (const prop of newStyleMap.props) {
     const index = curStyleMap.props.findIndex(
       (p) => p.meta.id === prop.meta.id
@@ -25,7 +25,7 @@ export function upsertStyleTokens(
   curStyleMap.props.sort((prop1, prop2) =>
     prop1.name === prop2.name ? 0 : prop1.name < prop2.name ? -1 : 1
   );
-  writeFileContent(
+  await writeFileContent(
     context,
     context.config.tokens.tokensFilePath,
 
@@ -35,7 +35,9 @@ export function upsertStyleTokens(
   );
 }
 
-function readCurStyleMap(context: PlasmicContext): StyleTokensMap {
+async function readCurStyleMap(
+  context: PlasmicContext
+): Promise<StyleTokensMap> {
   const filePath = context.config.tokens.tokensFilePath;
   if (fileExists(context, filePath)) {
     try {
@@ -57,11 +59,13 @@ function readCurStyleMap(context: PlasmicContext): StyleTokensMap {
         },
       },
     } as StyleTokensMap;
-    writeFileContent(
+    await writeFileContent(
       context,
       context.config.tokens.tokensFilePath,
       JSON.stringify(defaultMap, undefined, 2),
-      { force: false }
+      {
+        force: false,
+      }
     );
     return defaultMap;
   }

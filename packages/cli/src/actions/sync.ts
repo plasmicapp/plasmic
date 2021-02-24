@@ -145,7 +145,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
     await ensureRequiredPackages(context, opts.yes);
   }
 
-  fixAllFilePaths(context);
+  await fixAllFilePaths(context);
   fixFileExtension(context);
   assertAllPathsInRootDir(context);
 
@@ -221,7 +221,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
       })
     );
 
-    syncStyleConfig(
+    await syncStyleConfig(
       context,
       await context.api.genStyleConfig(context.config.style)
     );
@@ -238,7 +238,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
     }
 
     // Write the new ComponentConfigs to disk
-    updateConfig(context, context.config);
+    await updateConfig(context, context.config);
 
     // Fix imports
     const fixImportContext = mkFixImportContext(context.config);
@@ -260,7 +260,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
       await m.merge(resolvedNewFile, resolvedEditedFile);
     }
     // Now we know config.components are all correct, so we can go ahead and fix up all the import statements
-    fixAllImportStatements(context, summary);
+    await fixAllImportStatements(context, summary);
   });
 
   // Post-sync commands
@@ -385,7 +385,7 @@ async function syncProject(
       );
     });
   }
-  syncGlobalVariants(
+  await syncGlobalVariants(
     context,
     projectBundle.projectConfig,
     projectBundle.globalVariants,
@@ -404,15 +404,15 @@ async function syncProject(
     pendingMerge,
     projectBundle.checksums
   );
-  upsertStyleTokens(context, projectBundle.usedTokens);
-  syncProjectIconAssets(
+  await upsertStyleTokens(context, projectBundle.usedTokens);
+  await syncProjectIconAssets(
     context,
     projectId,
     projectVersion,
     projectBundle.iconAssets,
     projectBundle.checksums
   );
-  syncProjectImageAssets(
+  await syncProjectImageAssets(
     context,
     projectId,
     projectVersion,
@@ -421,7 +421,7 @@ async function syncProject(
   );
 }
 
-function syncStyleConfig(
+async function syncStyleConfig(
   context: PlasmicContext,
   response: StyleConfigResponse
 ) {
@@ -432,7 +432,7 @@ function syncStyleConfig(
       response.defaultStyleCssFileName
     );
   context.config.style.defaultStyleCssFilePath = expectedPath;
-  writeFileContent(context, expectedPath, response.defaultStyleCssRules, {
+  await writeFileContent(context, expectedPath, response.defaultStyleCssRules, {
     force: true,
   });
 }
@@ -490,9 +490,14 @@ async function syncProjectConfig(
     );
 
     // Write out project css
-    writeFileContent(context, projectConfig.cssFilePath, formattedCssRules, {
-      force: !isNew,
-    });
+    await writeFileContent(
+      context,
+      projectConfig.cssFilePath,
+      formattedCssRules,
+      {
+        force: !isNew,
+      }
+    );
   }
   projectLock.fileLocks = projectLock.fileLocks.filter(
     (fileLock) => fileLock.type !== "projectCss"
@@ -508,7 +513,7 @@ async function syncProjectConfig(
     (fl) => fl.assetId
   );
   const id2themeChecksum = new Map(checksums.themeChecksums);
-  projectBundle.jsBundleThemes.forEach((theme) => {
+  for (const theme of projectBundle.jsBundleThemes) {
     let themeConfig = projectConfig.jsBundleThemes.find(
       (c) => c.bundleName === theme.bundleName
     );
@@ -537,10 +542,10 @@ async function syncProjectConfig(
         checksum: ensure(id2themeChecksum.get(theme.bundleName)),
       });
     }
-    writeFileContent(context, themeConfig.themeFilePath, formatted, {
+    await writeFileContent(context, themeConfig.themeFilePath, formatted, {
       force: true,
     });
-  });
+  }
 
   // Write out components
   await syncProjectComponents(
