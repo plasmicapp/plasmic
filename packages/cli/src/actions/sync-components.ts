@@ -27,6 +27,7 @@ import {
   writeFileContent,
 } from "../utils/file-utils";
 import { assert, ensure } from "../utils/lang-utils";
+import { confirmWithUser } from "../utils/user-utils";
 
 export interface ComponentPendingMerge {
   // path of the skeleton module
@@ -360,6 +361,17 @@ export async function syncProjectComponents(
       deleteFile(context, componentConfig.renderModuleFilePath);
       deleteFile(context, componentConfig.cssFilePath);
       deletedComponentFiles.add(deletedComponent.id);
+
+      const skeletonPath = componentConfig.importSpec.modulePath;
+      if (fileExists(context, skeletonPath)) {
+        const deleteSkeleton = await confirmWithUser(
+          `Do you want to delete ${skeletonPath}?`,
+          context.cliArgs.yes
+        );
+        if (deleteSkeleton) {
+          deleteFile(context, skeletonPath);
+        }
+      }
     }
   }
   project.components = project.components.filter(
