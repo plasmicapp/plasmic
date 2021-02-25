@@ -1,0 +1,20 @@
+bower_components/
+node_modules/
+**/.idea/workspace.xml
+*.pyc
+**/.idea/libraries/Generated_files.xml
+**/.idea/sqldialects.xml
+.ipynb_checkpoints/
+# Typedoc output
+/sub/typedoc/
+/sub/typedoc-*/
+/sub/typedoc.json
+/sub/typedoc.json.gz
+.cache-loader/
+.DS_Store
+**/.vscode/
+**/*.swp
+yarn.lock
+.cache
+.idea
+.env
