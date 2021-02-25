@@ -1,4 +1,30 @@
-import React, { useEffect } from "react";
+import React, { useEffect, ComponentType } from "react";
+
+export interface ComponentMeta {
+  name: string;
+  props: { [prop: string]: "string" | "boolean" | "number" | "slot" };
+}
+
+interface Registration {
+  component: ComponentType;
+  meta: ComponentMeta;
+}
+
+declare global {
+  interface Window {
+    __PlasmicHostVersion: string;
+    __PlasmicComponentRegistry: Registration[];
+  }
+}
+
+self.__PlasmicHostVersion = "1";
+self.__PlasmicComponentRegistry = [];
+export function registerComponent(
+  component: ComponentType<any>,
+  meta: ComponentMeta
+) {
+  self.__PlasmicComponentRegistry.push({ component, meta });
+}
 
 function ensure<T>(x: T | null | undefined): T {
   if (x === null || x === undefined) {
