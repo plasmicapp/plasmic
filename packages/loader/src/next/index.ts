@@ -14,7 +14,11 @@ async function initPlasmicLoader(pluginOptions: PluginOptions) {
     pluginOptions.dir = process.cwd();
   }
   if (pluginOptions.plasmicDir === undefined) {
-    pluginOptions.plasmicDir = path.join(pluginOptions.dir, ".next", '.plasmic');
+    pluginOptions.plasmicDir = path.join(
+      pluginOptions.dir,
+      ".next",
+      ".plasmic"
+    );
   }
   pluginOptions.pageDir = path.join(pluginOptions.dir, "pages");
   return generateEntrypoint({
@@ -56,6 +60,14 @@ module.exports = (pluginOptions: PluginOptions) => {
       }
 
       return Object.assign({}, nextConfig, {
+        webpackDevMiddleware: (config: any) => {
+          // Ignore .next, but don't ignore .next/.plasmic.
+          config.watchOptions.ignored = config.watchOptions.ignored.filter(
+            (ignore: any) => !ignore.toString().includes(".next")
+          );
+          config.watchOptions.ignored.push(/.next\/(?!.plasmic)/);
+          return config;
+        },
         webpack(config: any, options: any) {
           config.plugins.push({
             __plugin: "PlasmicLoaderPlugin",
