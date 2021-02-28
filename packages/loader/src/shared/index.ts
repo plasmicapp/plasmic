@@ -20,9 +20,11 @@ async function watchForChanges(
   let oldConfig = await cli.readConfig(plasmicDir);
   const watchCmd = cp.spawn(
     "node",
-    [cliPath, "watch", "--metadata", "source=loader"],
+    [cliPath, "watch", "--yes", "--metadata", "source=loader"],
     {
       cwd: plasmicDir,
+      env: {...process.env, PLASMIC_LOADER: "1"},
+      stdio: "pipe"
     }
   );
   watchCmd.stdout.on("data", async function (data) {
