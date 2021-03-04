@@ -36,7 +36,7 @@ import {
   withBufferedFs,
   writeFileContent,
 } from "../utils/file-utils";
-import { getContext } from "../utils/get-context";
+import { generateMetadata, getContext } from "../utils/get-context";
 import { printFirstSyncInfo } from "../utils/help";
 import { ensure } from "../utils/lang-utils";
 import {
@@ -351,7 +351,7 @@ async function syncProject(
     context.config.images,
     context.config.style,
     existingChecksums,
-    !!opts.metadata ? querystring.decode(opts.metadata) : {}
+    generateMetadata(context, opts.metadata)
   );
 
   // Convert from TSX => JSX

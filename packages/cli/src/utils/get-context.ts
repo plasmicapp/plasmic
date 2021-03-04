@@ -1,4 +1,5 @@
 import * as Sentry from "@sentry/node";
+import * as querystring from "querystring";
 import path from "upath";
 import { initPlasmic } from "../actions/init";
 import { PlasmicApi } from "../api";
@@ -136,4 +137,21 @@ export async function maybeRunPlasmicInit(
     ...args,
   });
   return true;
+}
+
+/**
+ * Create a metadata bundle
+ * This will be used to tag Segment events (e.g. for codegen)
+ * 
+ * @param fromArgs 
+ */
+export function generateMetadata(context: PlasmicContext, fromArgs?: string) {
+  // The following come from CLI args:
+  // - source=[cli, loader]
+  // - command=[watch]
+  const metadata = !fromArgs ? {} :
+    { ...querystring.decode(fromArgs) };
+
+  metadata.platform = context.config.platform;
+  return metadata;
 }
