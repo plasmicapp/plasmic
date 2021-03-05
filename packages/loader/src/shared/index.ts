@@ -3,13 +3,14 @@ import path from "path";
 import * as cli from "./cli";
 import * as gen from "./gen";
 
-export type PlamicOpts = {
+export type PlasmicOpts = {
   dir: string;
   plasmicDir: string;
   pageDir: string;
   projects: string[];
   watch?: boolean;
   initArgs?: cli.initArgs;
+  ignorePages?: string[];
 };
 
 async function watchForChanges(
@@ -46,15 +47,16 @@ export async function generateEntrypoint({
   projects,
   watch,
   plasmicDir,
+  ignorePages,
   initArgs = {},
-}: PlamicOpts) {
+}: PlasmicOpts) {
   console.log("Syncing plasmic projects: ", projects);
   const plasmicExecPath = path.join(dir, "node_modules", ".bin", "plasmic");
 
   await cli.checkAuth(dir, plasmicExecPath);
   await cli.tryInitializePlasmicDir(dir, plasmicDir, initArgs);
   await cli.syncProject(plasmicDir, pageDir, plasmicExecPath, projects);
-  await gen.generateAll({ dir: plasmicDir, pageDir });
+  await gen.generateAll({ dir: plasmicDir, pageDir, ignorePages });
 
   if (watch) {
     watchForChanges(plasmicDir, pageDir, plasmicExecPath);

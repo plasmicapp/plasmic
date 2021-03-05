@@ -13,6 +13,7 @@ type ComponentData = {
 type GenOptions = {
   dir: string;
   pageDir: string;
+  ignorePages?: string[];
 };
 
 type ProviderData = ComponentData & { providerName?: string };
@@ -31,13 +32,19 @@ export async function generateAll(opts: GenOptions) {
   const templatePath = path.join(__dirname, "../", "templates");
   const templates = (dot as any).process({ path: templatePath });
 
-  return Promise.all([
+  await Promise.all([
     generatePlasmicLoader(opts.dir, config, templates),
-    generatePageComponents(opts.pageDir, config, templates),
+    opts.ignorePages
+      ? Promise.resolve()
+      : generatePageComponents(opts.pageDir, config, templates),
   ]);
 }
 
-function generatePageComponents(dir: string, config: any, templates: any) {
+async function generatePageComponents(
+  dir: string,
+  config: any,
+  templates: any
+) {
   const componentData: ComponentData[] = [];
   for (const project of config.projects) {
     for (const component of project.components) {
@@ -53,7 +60,7 @@ function generatePageComponents(dir: string, config: any, templates: any) {
     }
   }
 
-  return Promise.all(
+  await Promise.all(
     componentData.map((data) =>
       writeFile(
         data.path,
