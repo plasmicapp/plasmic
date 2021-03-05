@@ -1,26 +1,24 @@
 import path from "path";
-import { generateEntrypoint, PlamicOpts } from "../shared";
+import { generateEntrypoint, PlasmicOpts } from "../shared";
 
-type PluginOptions = Partial<PlamicOpts>;
+type PluginOptions = Partial<PlasmicOpts>;
 
 exports.onPreBootstrap = (_: any, pluginOptions: PluginOptions) => {
-  if (pluginOptions.watch === undefined) {
-    pluginOptions.watch = process.env.NODE_ENV === "development";
-  }
-  if (pluginOptions.dir === undefined) {
-    pluginOptions.dir = process.cwd();
-  }
-  if (pluginOptions.plasmicDir === undefined) {
-    pluginOptions.plasmicDir = path.join(pluginOptions.dir, ".cache", '.plasmic');
-  }
-
-  pluginOptions.pageDir = path.join(pluginOptions.dir, "src", "pages");
-  return generateEntrypoint({
+  const defaultDir = pluginOptions.dir || process.cwd();
+  const defaultOptions = {
     initArgs: {
       platform: "gatsby",
-      "pages-dir": "../pages",
+      "pages-dir": "./pages",
       "src-dir": "./components",
     },
-    ...(pluginOptions as PlamicOpts),
-  });
+    dir: defaultDir,
+    watch: process.env.NODE_ENV === "development",
+    plasmicDir: path.join(defaultDir, ".cache", ".plasmic"),
+    pageDir: path.join(defaultDir, "src", "pages"),
+  };
+
+  return generateEntrypoint({
+    ...defaultOptions,
+    ...pluginOptions,
+  } as PlasmicOpts);
 };
