@@ -2,9 +2,10 @@
 import semver from "semver";
 import updateNotifier from "update-notifier";
 import yargs from "yargs";
+import { ensure } from "./utils/lang-utils";
 import * as auth from "./actions/auth";
 import { fixImports, FixImportsArgs } from "./actions/fix-imports";
-import { InitArgs, initPlasmic } from "./actions/init";
+import { InitArgs, initPlasmic, getYargsOption } from "./actions/init";
 import { sync, SyncArgs } from "./actions/sync";
 import { UploadBundleArgs, uploadJsBundle } from "./actions/upload-bundle";
 import { WatchArgs, watchProjects } from "./actions/watch";
@@ -57,62 +58,17 @@ yargs
     "Initializes Plasmic for a project.",
     (yags) => {
       yags
-        .option("host", {
-          describe: "Plasmic host to use",
-          type: "string",
-          default: "https://studio.plasmic.app",
-        })
-        .option("platform", {
-          describe: "Target platform to generate code for",
-          choices: ["", "react", "nextjs", "gatsby"],
-          default: "",
-        })
-        .option("code-lang", {
-          describe: "Target language to generate code for",
-          choices: ["", "js", "ts"],
-          default: "",
-        })
-        .option("code-scheme", {
-          describe: "Code generation scheme to use",
-          choices: ["", "blackbox", "direct"],
-          default: "",
-        })
-        .option("src-dir", {
-          describe:
-            "Default directory to put React component files (that you edit) into",
-          type: "string",
-          default: "",
-        })
-        .option("plasmic-dir", {
-          describe:
-            "Default directory to put Plasmic-managed files into; relative to src-dir",
-          type: "string",
-          default: "",
-        })
-        .option("pages-dir", {
-          describe: "Default directory to put page files (that you edit) into",
-          type: "string",
-        })
-        .option("style-scheme", {
-          describe: "Styling framework to use",
-          choices: ["", "css", "css-modules"],
-          default: "",
-        })
-        .option("images-scheme", {
-          describe: "How to reference used image files",
-          choices: ["", "inlined", "files", "public-files"],
-          default: "",
-        })
-        .option("images-public-dir", {
-          describe: "Default directory to put public static files",
-          type: "string",
-          default: "",
-        })
-        .option("images-public-url-prefix", {
-          describe: "URL prefix from which the app will serve static files",
-          type: "string",
-          default: "",
-        });
+        .option("host", getYargsOption("host", "https://studio.plasmic.app"))
+        .option("platform", getYargsOption("platform"))
+        .option("code-lang", getYargsOption("codeLang"))
+        .option("code-scheme", getYargsOption("codeScheme"))
+        .option("src-dir", getYargsOption("srcDir"))
+        .option("plasmic-dir", getYargsOption("plasmicDir"))
+        .option("pages-dir", getYargsOption("pagesDir"))
+        .option("style-scheme", getYargsOption("styleScheme"))
+        .option("images-scheme", getYargsOption("imagesScheme"))
+        .option("images-public-dir", getYargsOption("imagesPublicDir"))
+        .option("images-public-url-prefix", getYargsOption("imagesPublicUrlPrefix"));
     },
     (argv) => handleError(initPlasmic(argv))
   )

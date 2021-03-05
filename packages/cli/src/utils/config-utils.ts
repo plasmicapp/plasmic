@@ -342,7 +342,7 @@ export const DEFAULT_CONFIG: PlasmicConfig = {
     scheme: "blackbox",
   },
   style: {
-    scheme: "css",
+    scheme: "css-modules",
     // We set it to empty to compile. In reality, it will be provided the by
     // the server.
     defaultStyleCssFilePath: "",
