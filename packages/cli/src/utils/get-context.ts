@@ -13,10 +13,11 @@ import {
   findConfigFile,
   LOCK_FILE_NAME,
   PlasmicContext,
+  PlasmicConfig,
   PlasmicLock,
   readConfig,
 } from "./config-utils";
-import { existsBuffered, readFileText } from "./file-utils";
+import { existsBuffered, fileExists, readFileText } from "./file-utils";
 import { ensure } from "./lang-utils";
 import { getCliVersion } from "./npm-utils";
 
@@ -41,6 +42,125 @@ export function readLock(lockFile: string): PlasmicLock {
       `Error encountered reading ${LOCK_FILE_NAME} at ${lockFile}: ${e}`
     );
     throw e;
+  }
+}
+
+function removeMissingFilesFromLock(
+  context: PlasmicContext,
+  config: PlasmicConfig,
+  lock: PlasmicLock
+) {
+  const knownProjects = Object.fromEntries(
+    config.projects.map((project) => [project.projectId, project])
+  );
+  const knownGlobalVariants = Object.fromEntries(
+    context.config.globalVariants.variantGroups.map((vg) => [vg.projectId, vg])
+  );
+  lock.projects = lock.projects
+    .filter((project) => knownProjects[project.projectId])
+    .map((project) => {
+      const knownComponents = Object.fromEntries(
+        knownProjects[project.projectId].components.map((component) => [
+          component.id,
+          component,
+        ])
+      );
+      const knownImages = Object.fromEntries(
+        knownProjects[project.projectId].images.map((image) => [
+          image.id,
+          image,
+        ])
+      );
+      const knownIcons = Object.fromEntries(
+        knownProjects[project.projectId].images.map((icons) => [
+          icons.id,
+          icons,
+        ])
+      );
+      const knownJsBundle = Object.fromEntries(
+        knownProjects[project.projectId].jsBundleThemes.map((theme) => [
+          theme.bundleName,
+          theme,
+        ])
+      );
+
+      project.fileLocks = project.fileLocks.filter((lock) => {
+        switch (lock.type) {
+          default:
+            return false;
+          case "projectCss":
+            return knownProjects[project.projectId].cssFilePath;
+          case "globalVariant":
+            return knownGlobalVariants[project.projectId];
+          case "cssRules":
+          case "renderModule":
+            return knownComponents[lock.assetId];
+          case "image":
+            return knownImages[lock.assetId];
+          case "icon":
+            return knownIcons[lock.assetId];
+          case "theme":
+            return knownJsBundle[lock.assetId];
+        }
+      });
+
+      return project;
+    });
+}
+
+function removeMissingFilesFromConfig(
+  context: PlasmicContext,
+  config: PlasmicConfig
+) {
+  function filterFiles<T>(list: T[], getPath: (item: T) => string) {
+    return list.filter((element) => {
+      const filePath = getPath(element);
+      if (fileExists(context, filePath)) {
+        return true;
+      }
+      logger.error(
+        `File ${path.join(
+          context.absoluteSrcDir,
+          filePath
+        )} not found. Removing from plasmic.json...`
+      );
+      return false;
+    });
+  }
+
+  context.config.globalVariants.variantGroups = filterFiles(
+    context.config.globalVariants.variantGroups,
+    (variant) => variant.contextFilePath
+  );
+
+  context.config.style.defaultStyleCssFilePath =
+    filterFiles(
+      [context.config.style.defaultStyleCssFilePath],
+      (file) => file
+    )[0] || "";
+
+  for (const project of config.projects) {
+    project.cssFilePath =
+      filterFiles([project.cssFilePath], (file) => file)[0] || "";
+
+    project.images = filterFiles(project.images, (image) => image.filePath);
+    project.icons = filterFiles(project.icons, (icon) => icon.moduleFilePath);
+    project.components = filterFiles(
+      project.components,
+      (comp) => comp.renderModuleFilePath
+    );
+    project.components = filterFiles(
+      project.components,
+      (comp) => comp.importSpec.modulePath
+    );
+    project.components = filterFiles(
+      project.components,
+      (comp) => comp.cssFilePath
+    );
+    project.jsBundleThemes = filterFiles(
+      project.jsBundleThemes,
+      (theme) => theme.themeFilePath
+    );
   }
 }
 
@@ -86,7 +206,7 @@ export async function getContext(args: CommonArgs): Promise<PlasmicContext> {
   /** PlasmicLock */
   const lock = readLock(lockFile);
 
-  return {
+  const context = {
     config,
     configFile,
     lock,
@@ -99,6 +219,11 @@ export async function getContext(args: CommonArgs): Promise<PlasmicContext> {
     api: new PlasmicApi(auth),
     cliArgs: args,
   };
+
+  removeMissingFilesFromConfig(context, config);
+  removeMissingFilesFromLock(context, config, lock);
+
+  return context;
 }
 
 async function getOrInitAuth(args: CommonArgs) {
