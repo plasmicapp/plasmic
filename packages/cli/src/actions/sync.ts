@@ -30,7 +30,6 @@ import { HandledError } from "../utils/error";
 import {
   assertAllPathsInRootDir,
   defaultResourcePath,
-  fixAllFilePaths,
   renameFile,
   stripExtension,
   withBufferedFs,
@@ -145,7 +144,6 @@ export async function sync(opts: SyncArgs): Promise<void> {
     await ensureRequiredPackages(context, opts.yes);
   }
 
-  await fixAllFilePaths(context);
   fixFileExtension(context);
   assertAllPathsInRootDir(context);
 

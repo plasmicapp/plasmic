@@ -17,9 +17,15 @@ import {
   PlasmicLock,
   readConfig,
 } from "./config-utils";
-import { existsBuffered, fileExists, readFileText } from "./file-utils";
+import {
+  existsBuffered,
+  fileExists,
+  readFileText,
+  buildBaseNameToFiles,
+} from "./file-utils";
 import { ensure } from "./lang-utils";
 import { getCliVersion } from "./npm-utils";
+import * as prompts from "./prompts";
 
 function createPlasmicLock(): PlasmicLock {
   return {
@@ -108,59 +114,149 @@ function removeMissingFilesFromLock(
     });
 }
 
-function removeMissingFilesFromConfig(
+async function attemptToRestoreFilePath(
+  context: PlasmicContext,
+  expectedPath: string,
+  baseNameToFiles: Record<string, string[]>
+) {
+  if (fileExists(context, expectedPath)) {
+    return expectedPath;
+  }
+  const fileName = path.basename(expectedPath);
+  if (!baseNameToFiles[fileName]) {
+    const answer = await prompts.askChoice({
+      message: `File ${path.join(
+        context.absoluteSrcDir,
+        expectedPath
+      )} not found. Do you want to recreate it?`,
+      choices: ["Yes", "No"],
+      defaultAnswer: "Yes",
+      hidePrompt: context.cliArgs.yes,
+    });
+
+    if (answer === "No") {
+      throw new HandledError(
+        "Please add this file or update your plasmic.json by removing or changing this path and try again."
+      );
+    }
+    return undefined;
+  }
+
+  if (baseNameToFiles[fileName].length === 1) {
+    const newPath = path.relative(
+      context.absoluteSrcDir,
+      baseNameToFiles[fileName][0]
+    );
+    logger.info(`\tDetected file moved from ${expectedPath} to ${newPath}.`);
+    return newPath;
+  }
+
+  // Multiple files
+  const none = "None.";
+  const answer = await prompts.askChoice({
+    message: `Cannot find expected file at ${expectedPath}. Please select one of the following matches:`,
+    choices: [...baseNameToFiles[fileName], none],
+    defaultAnswer: none,
+    hidePrompt: context.cliArgs.yes,
+  });
+
+  if (answer === none) {
+    throw new HandledError(
+      "Please add this file or update your plasmic.json by removing or changing this path and try again."
+    );
+  }
+  return answer;
+}
+
+async function resolveMissingFilesInConfig(
   context: PlasmicContext,
   config: PlasmicConfig
 ) {
-  function filterFiles<T>(list: T[], getPath: (item: T) => string) {
-    return list.filter((element) => {
-      const filePath = getPath(element);
-      if (fileExists(context, filePath)) {
-        return true;
-      }
-      logger.error(
-        `File ${path.join(
-          context.absoluteSrcDir,
-          filePath
-        )} not found. Removing from plasmic.json...`
+  const baseNameToFiles = buildBaseNameToFiles(context);
+
+  // Make sure all the files exist. Prompt the user / exit process if not.
+  async function filterFiles<T>(list: T[], pathProp: keyof T) {
+    const newList = [];
+    for (const item of list) {
+      const newPath = await attemptToRestoreFilePath(
+        context,
+        item[pathProp] as any,
+        baseNameToFiles
       );
-      return false;
-    });
+      if (newPath) {
+        item[pathProp] = newPath as any;
+        newList.push(item);
+      }
+    }
+    return newList;
   }
 
-  context.config.globalVariants.variantGroups = filterFiles(
+  context.config.globalVariants.variantGroups = await filterFiles(
     context.config.globalVariants.variantGroups,
-    (variant) => variant.contextFilePath
+    "contextFilePath"
   );
 
   context.config.style.defaultStyleCssFilePath =
-    filterFiles(
-      [context.config.style.defaultStyleCssFilePath],
-      (file) => file
-    )[0] || "";
+    (await attemptToRestoreFilePath(
+      context,
+      context.config.style.defaultStyleCssFilePath,
+      baseNameToFiles
+    )) || "";
 
   for (const project of config.projects) {
     project.cssFilePath =
-      filterFiles([project.cssFilePath], (file) => file)[0] || "";
+      (await attemptToRestoreFilePath(
+        context,
+        project.cssFilePath,
+        baseNameToFiles
+      )) || "";
 
-    project.images = filterFiles(project.images, (image) => image.filePath);
-    project.icons = filterFiles(project.icons, (icon) => icon.moduleFilePath);
-    project.components = filterFiles(
-      project.components,
-      (comp) => comp.renderModuleFilePath
-    );
-    project.components = filterFiles(
-      project.components,
-      (comp) => comp.importSpec.modulePath
-    );
-    project.components = filterFiles(
-      project.components,
-      (comp) => comp.cssFilePath
-    );
-    project.jsBundleThemes = filterFiles(
+    project.images = await filterFiles(project.images, "filePath");
+    project.icons = await filterFiles(project.icons, "moduleFilePath");
+    project.jsBundleThemes = await filterFiles(
       project.jsBundleThemes,
-      (theme) => theme.themeFilePath
+      "themeFilePath"
     );
+
+    // For components, if they decide to recreate in any of the path (css, wrapper, or blackbox component)
+    // we'll delete existing files.
+
+    const newComponents = [];
+    for (const component of project.components) {
+      const newModulePath = await attemptToRestoreFilePath(
+        context,
+        component.importSpec.modulePath,
+        baseNameToFiles
+      );
+      if (!newModulePath) {
+        continue;
+      }
+      const newRenderModulePath = await attemptToRestoreFilePath(
+        context,
+        component.renderModuleFilePath,
+        baseNameToFiles
+      );
+
+      if (!newRenderModulePath) {
+        continue;
+      }
+
+      const newCssPath = await attemptToRestoreFilePath(
+        context,
+        component.cssFilePath,
+        baseNameToFiles
+      );
+
+      if (!newCssPath) {
+        continue;
+      }
+
+      component.importSpec.modulePath = newModulePath;
+      component.renderModuleFilePath = newRenderModulePath;
+      component.cssFilePath = newCssPath;
+      newComponents.push(component);
+    }
+    project.components = newComponents;
   }
 }
 
@@ -220,7 +316,7 @@ export async function getContext(args: CommonArgs): Promise<PlasmicContext> {
     cliArgs: args,
   };
 
-  removeMissingFilesFromConfig(context, config);
+  await resolveMissingFilesInConfig(context, config);
   removeMissingFilesFromLock(context, config, lock);
 
   return context;
@@ -267,15 +363,14 @@ export async function maybeRunPlasmicInit(
 /**
  * Create a metadata bundle
  * This will be used to tag Segment events (e.g. for codegen)
- * 
- * @param fromArgs 
+ *
+ * @param fromArgs
  */
 export function generateMetadata(context: PlasmicContext, fromArgs?: string) {
   // The following come from CLI args:
   // - source=[cli, loader]
   // - command=[watch]
-  const metadata = !fromArgs ? {} :
-    { ...querystring.decode(fromArgs) };
+  const metadata = !fromArgs ? {} : { ...querystring.decode(fromArgs) };
 
   metadata.platform = context.config.platform;
   return metadata;
