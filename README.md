@@ -8,7 +8,8 @@
   Plasmic
 </h1>
 <h3 align="center">
-  The visual UI builder for React.
+  The visual web design tool and frontend builder that works with your codebase.
 </h3>
 
-For more documentation, please [visit our website](https://www.plasmic.app/learn).
+- [Documentation](https://www.plasmic.app/learn/)
+- [Quickstart](https://www.plasmic.app/learn/quickstart/)
