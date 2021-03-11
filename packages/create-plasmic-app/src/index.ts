@@ -137,7 +137,8 @@ async function run(): Promise<void> {
     platform === "nextjs" || platform === "gatsby"
       ? await maybePrompt({
           name: "scheme",
-          message: "What scheme do you want to use to integrate with Plasmic?",
+          message:
+            "What scheme do you want to use to integrate with Plasmic? (We recommend `PlasmicLoader` for simple websites and `Codegen` for stateful components)",
           type: "list",
           choices: () => [
             {
@@ -174,13 +175,22 @@ async function run(): Promise<void> {
     }
   }
 
+  console.log();
+  console.log("Let's get started! Here's what we'll do: ");
+  console.log("1. Authenticate with Plasmic");
+  console.log("2. Create the project repo");
+  console.log("3. Install Plasmic dependency");
+
   /**
    * CREATE RESOURCES
    */
 
   // Authenticate with Plasmic
-  console.log("Authenticating with Plasmic...");
-  const authCheckResult = spawn("npx @plasmicapp/cli auth -c");
+  console.log();
+  console.log("///////////////////////////////");
+  console.log("// AUTHENTICATING WITH PLASMIC ");
+  console.log("///////////////////////////////");
+  const authCheckResult = spawn("npx @plasmicapp/cli auth --check");
   if (authCheckResult.status !== 0) {
     const authResult = spawn("npx @plasmicapp/cli auth");
     if (authResult.status !== 0) {
@@ -191,7 +201,10 @@ async function run(): Promise<void> {
   }
 
   // Calling `npx create-XXX` means we don't have to keep these dependencies up to date
-  console.log("Creating the project...");
+  console.log();
+  console.log("///////////////////////////////");
+  console.log("// CREATING THE PROJECT ");
+  console.log("///////////////////////////////");
   const createResult =
     platform === "nextjs"
       ? spawn(`npx create-next-app ${resolvedProjectPath}`)
@@ -207,7 +220,10 @@ async function run(): Promise<void> {
   }
 
   // Install dependency
-  console.log("Installing the Plasmic dependency...");
+  console.log();
+  console.log("///////////////////////////////");
+  console.log("// INSTALLING THE PLASMIC DEPENDENCY");
+  console.log("///////////////////////////////");
   const installResult =
     scheme === "loader"
       ? installUpgrade("@plasmicapp/loader", {
@@ -220,13 +236,16 @@ async function run(): Promise<void> {
 
   // Sync only if codegen
   if (scheme === "codegen") {
-    console.log("Syncing Plasmic components...");
+    console.log();
+    console.log("///////////////////////////////");
+    console.log("// SYNCING PLASMIC COMPONENTS");
+    console.log("///////////////////////////////");
     const syncResult = spawn(
       `npx plasmic sync --yes -p ${projectId}`,
       resolvedProjectPath
     );
     if (syncResult.status !== 0) {
-      return crash("Failed to sync project");
+      return crash(`Failed to sync project ${projectId}`, syncResult.error);
     }
   }
 
@@ -286,7 +305,11 @@ async function run(): Promise<void> {
  * @param err
  */
 function crash(message: string, err?: Error) {
+  console.log("/////////////////////////////");
+  console.log("// create-plasmic-app failed!");
+  console.log("/////////////////////////////");
   console.log();
+
   console.log(message);
   if (err) {
     console.error("Unexpected error: ");
