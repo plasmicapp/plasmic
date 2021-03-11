@@ -1,12 +1,13 @@
 {
   "name": "@plasmicapp/loader",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "private": "true",
   "description": "Integrate Plasmic codegen via a convenient PlasmicLoader component!",
   "scripts": {
     "build": "node ./build.js",
     "release": "npm run build && cd dist && npm publish",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "echo 'Welcome to Plasmic! Before using please make sure you are authenticated by running `npx @plasmicapp/cli auth`'"
   },
   "main": "dist/PlasmicLoader.jsx",
   "types": "dist/PlasmicLoader.d.ts",

@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/cli",
-  "version": "0.1.117",
+  "version": "0.1.118",
   "description": "plasmic cli for syncing local code with Plasmic designs",
   "main": "./dist/index.js",
   "bin": {
@@ -12,7 +12,8 @@
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
     "build": "bash build.sh",
     "plasmic": "ts-node src/index.ts",
-    "prepare": "yarn build"
+    "prepare": "yarn build",
+    "postinstall": "echo 'Welcome to Plasmic! Before using please make sure you are authenticated by running `plasmic auth`'"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.12.1",
