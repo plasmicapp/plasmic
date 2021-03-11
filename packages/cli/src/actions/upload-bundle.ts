@@ -1,6 +1,6 @@
 import pako from "pako";
 import { CommonArgs } from "..";
-import { fixAllFilePaths, readFileText } from "../utils/file-utils";
+import { readFileText } from "../utils/file-utils";
 import { getContext } from "../utils/get-context";
 
 export interface UploadBundleArgs extends CommonArgs {
@@ -19,7 +19,6 @@ export interface UploadBundleArgs extends CommonArgs {
 
 export async function uploadJsBundle(opts: UploadBundleArgs) {
   const context = await getContext(opts);
-  await fixAllFilePaths(context);
   const api = context.api;
   await api.uploadBundle(
     opts.project,
