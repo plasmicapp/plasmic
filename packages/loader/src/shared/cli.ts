@@ -33,7 +33,11 @@ function objToExecArgs(obj: object) {
     .join(" ");
 }
 
-export async function tryInitializePlasmicDir(dir: string, plasmicDir: string, initArgs: initArgs) {
+export async function tryInitializePlasmicDir(
+  dir: string,
+  plasmicDir: string,
+  initArgs: initArgs
+) {
   const plasmicExecPath = path.join(dir, "node_modules", ".bin", "plasmic");
   const configPath = path.join(plasmicDir, "plasmic.json");
 

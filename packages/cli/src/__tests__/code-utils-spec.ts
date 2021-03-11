@@ -1,15 +1,9 @@
 import {
-  tsxToJsx,
   formatScript,
-  replaceImports,
   mkFixImportContext,
+  replaceImports,
+  tsxToJsx,
 } from "../utils/code-utils";
-import {
-  createProjectConfig,
-  PlasmicConfig,
-  PlasmicContext,
-} from "../utils/config-utils";
-import { iteratee } from "lodash";
 import { readFileText } from "../utils/file-utils";
 
 describe("code-utils", function () {

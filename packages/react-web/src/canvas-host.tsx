@@ -1,4 +1,4 @@
-import React, { useEffect, ComponentType } from "react";
+import React, { ComponentType, useEffect } from "react";
 
 export interface ComponentMeta {
   name: string;

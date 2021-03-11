@@ -20,13 +20,16 @@ export function updateNotify(): void {
 
 /**
  * Run a command on the shell synchronously
- * @param cmd 
+ * @param cmd
  * @param workingDir
- * @returns 
+ * @returns
  */
-export function spawn(cmd: string, workingDir?: string): SpawnSyncReturns<Buffer> {
+export function spawn(
+  cmd: string,
+  workingDir?: string
+): SpawnSyncReturns<Buffer> {
   console.log(cmd);
-  const r = spawnSync(cmd, { 
+  const r = spawnSync(cmd, {
     shell: true,
     stdio: "inherit",
     cwd: workingDir,
@@ -38,11 +41,11 @@ export function spawn(cmd: string, workingDir?: string): SpawnSyncReturns<Buffer
  * Install a package using either `npm` or `yarn`
  * @param pkg - package name
  * @param opts
- * @returns 
+ * @returns
  */
 export function installUpgrade(
   pkg: string,
-  opts: { global?: boolean; dev?: boolean, workingDir?: string } = {}
+  opts: { global?: boolean; dev?: boolean; workingDir?: string } = {}
 ): boolean {
   const cmd = installCommand(pkg, opts);
   const r = spawn(cmd, opts.workingDir);
@@ -59,13 +62,13 @@ export function installUpgrade(
 
 /**
  * Generate the installation command string for an npm package
- * @param pkg 
- * @param opts 
- * @returns 
+ * @param pkg
+ * @param opts
+ * @returns
  */
 function installCommand(
   pkg: string,
-  opts: { global?: boolean; dev?: boolean, workingDir?: string } = {}
+  opts: { global?: boolean; dev?: boolean; workingDir?: string } = {}
 ): string {
   const mgr = detectPackageManager(opts.workingDir);
   if (mgr === "yarn") {
@@ -89,8 +92,8 @@ function installCommand(
 
 /**
  * Detect if you should use `npm` or `yarn`
- * @param dir 
- * @returns 
+ * @param dir
+ * @returns
  */
 export function detectPackageManager(dir?: string): "yarn" | "npm" {
   const yarnLock = findupSync("yarn.lock", { cwd: dir });

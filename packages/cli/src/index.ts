@@ -2,10 +2,9 @@
 import semver from "semver";
 import updateNotifier from "update-notifier";
 import yargs from "yargs";
-import { ensure } from "./utils/lang-utils";
 import * as auth from "./actions/auth";
 import { fixImports, FixImportsArgs } from "./actions/fix-imports";
-import { InitArgs, initPlasmic, getYargsOption } from "./actions/init";
+import { getYargsOption, InitArgs, initPlasmic } from "./actions/init";
 import { sync, SyncArgs } from "./actions/sync";
 import { UploadBundleArgs, uploadJsBundle } from "./actions/upload-bundle";
 import { WatchArgs, watchProjects } from "./actions/watch";
@@ -68,7 +67,10 @@ yargs
         .option("style-scheme", getYargsOption("styleScheme"))
         .option("images-scheme", getYargsOption("imagesScheme"))
         .option("images-public-dir", getYargsOption("imagesPublicDir"))
-        .option("images-public-url-prefix", getYargsOption("imagesPublicUrlPrefix"));
+        .option(
+          "images-public-url-prefix",
+          getYargsOption("imagesPublicUrlPrefix")
+        );
     },
     (argv) => handleError(initPlasmic(argv))
   )

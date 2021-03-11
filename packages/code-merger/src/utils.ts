@@ -1,17 +1,10 @@
-import { assert } from "./common";
 import generate, { GeneratorOptions } from "@babel/generator";
+import * as parser from "@babel/parser";
+import { Node } from "@babel/traverse";
+import { JSXAttribute, JSXElement, JSXSpreadAttribute } from "@babel/types";
 import parserTypeScript from "prettier/parser-typescript";
 import * as Prettier from "prettier/standalone";
-import { Node } from "@babel/traverse";
-import * as parser from "@babel/parser";
-import { compact } from "lodash";
-import {
-  JSXElement,
-  JSXIdentifier,
-  JSXNamespacedName,
-  JSXAttribute,
-  JSXSpreadAttribute,
-} from "@babel/types";
+import { assert } from "./common";
 
 export const code = (
   n: Node | undefined,

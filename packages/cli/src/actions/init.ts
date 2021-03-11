@@ -115,10 +115,13 @@ async function deriveInitAnswers(opts: Partial<InitArgs>) {
     ? path.dirname(opts.config)
     : process.cwd();
 
-  const platform = !!opts.platform ? opts.platform :
-    detectNextJs() ? "nextjs" :
-    detectGatsby() ? "gatsby" :
-    "react";
+  const platform = !!opts.platform
+    ? opts.platform
+    : detectNextJs()
+    ? "nextjs"
+    : detectGatsby()
+    ? "gatsby"
+    : "react";
   const isCra = detectCreateReactApp();
   const isNext = platform === "nextjs";
   const isGatsby = platform === "gatsby";
@@ -159,52 +162,78 @@ async function deriveInitAnswers(opts: Partial<InitArgs>) {
       return defaultAnswer;
     }
   };
-  
+
   // Start with a complete set of defaults
   const answers: Partial<InitArgs> = {
     host: getDefaultAnswer("host", "") as any,
     platform,
     codeLang: getDefaultAnswer("codeLang", isTypescript ? "ts" : "js") as any,
-    codeScheme: getDefaultAnswer("codeScheme", DEFAULT_CONFIG.code.scheme) as any,
-    styleScheme: getDefaultAnswer("styleScheme", DEFAULT_CONFIG.style.scheme) as any,
-    imagesScheme: getDefaultAnswer("imagesScheme", DEFAULT_CONFIG.images.scheme) as any,
-    imagesPublicDir: getDefaultAnswer("imagesPublicDir", ensure(DEFAULT_PUBLIC_FILES_CONFIG.publicDir)) as any,
-    imagesPublicUrlPrefix: getDefaultAnswer("imagesPublicUrlPrefix", ensure(DEFAULT_PUBLIC_FILES_CONFIG.publicUrlPrefix)) as any,
+    codeScheme: getDefaultAnswer(
+      "codeScheme",
+      DEFAULT_CONFIG.code.scheme
+    ) as any,
+    styleScheme: getDefaultAnswer(
+      "styleScheme",
+      DEFAULT_CONFIG.style.scheme
+    ) as any,
+    imagesScheme: getDefaultAnswer(
+      "imagesScheme",
+      DEFAULT_CONFIG.images.scheme
+    ) as any,
+    imagesPublicDir: getDefaultAnswer(
+      "imagesPublicDir",
+      ensure(DEFAULT_PUBLIC_FILES_CONFIG.publicDir)
+    ) as any,
+    imagesPublicUrlPrefix: getDefaultAnswer(
+      "imagesPublicUrlPrefix",
+      ensure(DEFAULT_PUBLIC_FILES_CONFIG.publicUrlPrefix)
+    ) as any,
     srcDir: getDefaultAnswer("srcDir", DEFAULT_CONFIG.srcDir) as any,
-    plasmicDir: getDefaultAnswer("plasmicDir", DEFAULT_CONFIG.defaultPlasmicDir) as any,
+    plasmicDir: getDefaultAnswer(
+      "plasmicDir",
+      DEFAULT_CONFIG.defaultPlasmicDir
+    ) as any,
     pagesDir: getDefaultAnswer("pagesDir", undefined) as any,
   };
 
   logger.info("Here are the default settings we recommend:");
   // Display only a subset of the defaults
-  console.table(L(answers)
-    .toPairs()
-    .filter(([key, value]) => {
-      if (!value) {
-        // Ignore undefined
-        return false;
-      } else if (
-        // Ignore public-files specific args
-        answers.imagesScheme !== "public-files" &&
-        (key === "imagesPublicDir" || key === "imagesPublicUrlPrefix")
-      ) {
-        return false;
-      }
-      return true;
-    })
-    .map(([key, value]) => {
-      const desc = getInitArgsShortDescription(key as keyof InitArgs);
-      const choices = getInitArgsChoices(key as keyof InitArgs);
-      return [key, {
-        value,
-        description: ensure(desc) + (!!choices ? ` (${choices.join(",")})` : ""),
-      }];
-    })
-    .fromPairs()
-    .value());
+  console.table(
+    L(answers)
+      .toPairs()
+      .filter(([key, value]) => {
+        if (!value) {
+          // Ignore undefined
+          return false;
+        } else if (
+          // Ignore public-files specific args
+          answers.imagesScheme !== "public-files" &&
+          (key === "imagesPublicDir" || key === "imagesPublicUrlPrefix")
+        ) {
+          return false;
+        }
+        return true;
+      })
+      .map(([key, value]) => {
+        const desc = getInitArgsShortDescription(key as keyof InitArgs);
+        const choices = getInitArgsChoices(key as keyof InitArgs);
+        return [
+          key,
+          {
+            value,
+            description:
+              ensure(desc) + (!!choices ? ` (${choices.join(",")})` : ""),
+          },
+        ];
+      })
+      .fromPairs()
+      .value()
+  );
 
   // Allow a user to short-circuit
-  if (await confirmWithUser("Do you want to proceed with these values?", opts.yes)) {
+  if (
+    await confirmWithUser("Do you want to proceed with these values?", opts.yes)
+  ) {
     return answers as InitArgs;
   }
 
@@ -215,7 +244,10 @@ async function deriveInitAnswers(opts: Partial<InitArgs>) {
     if (opts[name]) {
       logger.info(message + answers[name] + "(specified in CLI arg)");
     } else if (!opts.yes && !deriver.alwaysDerived.includes(name)) {
-      const ans = await inquirer.prompt({ ...question, default: answers[name] });
+      const ans = await inquirer.prompt({
+        ...question,
+        default: answers[name],
+      });
       answers[name] = ans[name];
     }
     // Other questions are silently skipped
@@ -228,13 +260,17 @@ async function deriveInitAnswers(opts: Partial<InitArgs>) {
 
   await maybePrompt({
     name: "plasmicDir",
-    message: `${getInitArgsQuestion("plasmicDir")} (This is relative to "${answers.srcDir}")\n>`,
+    message: `${getInitArgsQuestion("plasmicDir")} (This is relative to "${
+      answers.srcDir
+    }")\n>`,
   });
 
   if (isPageAwarePlatform(platform)) {
     await maybePrompt({
       name: "pagesDir",
-      message: `${getInitArgsQuestion("pagesDir")} (This is relative to "${answers.srcDir}")\n>`,
+      message: `${getInitArgsQuestion("pagesDir")} (This is relative to "${
+        answers.srcDir
+      }")\n>`,
     });
   }
 
@@ -295,7 +331,9 @@ async function deriveInitAnswers(opts: Partial<InitArgs>) {
   if (answers.imagesScheme === "public-files") {
     await maybePrompt({
       name: "imagesPublicDir",
-      message: `${getInitArgsQuestion("imagesPublicDir")} (This is relative to "${answers.srcDir}")\n>`,
+      message: `${getInitArgsQuestion(
+        "imagesPublicDir"
+      )} (This is relative to "${answers.srcDir}")\n>`,
     });
 
     await maybePrompt({
@@ -442,17 +480,22 @@ const INIT_ARGS_DESCRIPTION: {
   imagesPublicUrlPrefix: {
     shortDescription: "URL prefix for static files",
     longDescription: "URL prefix from which the app will serve static files",
-    question: "What's the URL prefix from which the app will serve static files?",
+    question:
+      "What's the URL prefix from which the app will serve static files?",
   },
   srcDir: {
     shortDescription: "Source directory",
-    longDescription: "Default directory to put React component files (that you edit) into",
-    question: "What directory should React component files (that you edit) be put into?",
+    longDescription:
+      "Default directory to put React component files (that you edit) into",
+    question:
+      "What directory should React component files (that you edit) be put into?",
   },
   plasmicDir: {
     shortDescription: "Plasmic-managed directory",
-    longDescription: "Default directory to put Plasmic-managed files into; relative to src-dir",
-    question: "What directory should Plasmic-managed files (that you should not edit) be put into?",
+    longDescription:
+      "Default directory to put Plasmic-managed files into; relative to src-dir",
+    question:
+      "What directory should Plasmic-managed files (that you should not edit) be put into?",
   },
   pagesDir: {
     shortDescription: "Pages directory",
@@ -464,7 +507,7 @@ const INIT_ARGS_DESCRIPTION: {
 /**
  * Get the short description, which exists for all args
  * @param key
- * @returns 
+ * @returns
  */
 export function getInitArgsShortDescription(key: keyof InitArgs) {
   return INIT_ARGS_DESCRIPTION[key]?.shortDescription;
@@ -472,29 +515,33 @@ export function getInitArgsShortDescription(key: keyof InitArgs) {
 
 /**
  * Try to get a long description, falling back to the short description
- * @param key 
- * @returns 
+ * @param key
+ * @returns
  */
 export function getInitArgsLongDescription(key: keyof InitArgs) {
-  return INIT_ARGS_DESCRIPTION[key]?.longDescription ??
-    INIT_ARGS_DESCRIPTION[key]?.shortDescription;
+  return (
+    INIT_ARGS_DESCRIPTION[key]?.longDescription ??
+    INIT_ARGS_DESCRIPTION[key]?.shortDescription
+  );
 }
 
 /**
  * Try to get a question form, falling back to the description
  * @param key
- * @returns 
+ * @returns
  */
 export function getInitArgsQuestion(key: keyof InitArgs) {
-  return INIT_ARGS_DESCRIPTION[key]?.question ??
+  return (
+    INIT_ARGS_DESCRIPTION[key]?.question ??
     INIT_ARGS_DESCRIPTION[key]?.longDescription ??
-    INIT_ARGS_DESCRIPTION[key]?.shortDescription;
+    INIT_ARGS_DESCRIPTION[key]?.shortDescription
+  );
 }
 
 /**
  * Get the possible choices for an arg
  * @param key
- * @returns 
+ * @returns
  */
 export function getInitArgsChoices(key: keyof InitArgs) {
   return INIT_ARGS_DESCRIPTION[key]?.choices;
@@ -504,19 +551,21 @@ export function getInitArgsChoices(key: keyof InitArgs) {
  * Get a `opt` object for use with the `yargs` library.
  * If no choices are specified, assume it's freeform string input
  * All options use "" as the default, unless overridden
- * @param key 
- * @param defaultOverride 
- * @returns 
+ * @param key
+ * @param defaultOverride
+ * @returns
  */
 export function getYargsOption(key: keyof InitArgs, defaultOverride?: string) {
   const arg = ensure(INIT_ARGS_DESCRIPTION[key]);
-  return !arg.choices ? {
-    describe: ensure(getInitArgsLongDescription(key)),
-    string: true,
-    default: defaultOverride ?? "",
-  } : {
-    describe: ensure(getInitArgsLongDescription(key)),
-    choices: ["", ...ensure(getInitArgsChoices(key))],
-    default: defaultOverride ?? "",
-  };
+  return !arg.choices
+    ? {
+        describe: ensure(getInitArgsLongDescription(key)),
+        string: true,
+        default: defaultOverride ?? "",
+      }
+    : {
+        describe: ensure(getInitArgsLongDescription(key)),
+        choices: ["", ...ensure(getInitArgsChoices(key))],
+        default: defaultOverride ?? "",
+      };
 }

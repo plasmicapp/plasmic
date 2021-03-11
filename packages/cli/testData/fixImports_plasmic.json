@@ -60,8 +60,7 @@
     }
   ],
   "globalVariants": {
-    "variantGroups": [
-    ]
+    "variantGroups": []
   },
   "cliVersion": "0.1.40"
 }

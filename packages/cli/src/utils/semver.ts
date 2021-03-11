@@ -1,5 +1,5 @@
-import * as semverlib from "semver";
 import L from "lodash";
+import * as semverlib from "semver";
 
 /**
  * Wrap `semver` with support for understanding "latest"

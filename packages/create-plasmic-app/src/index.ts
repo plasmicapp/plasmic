@@ -1,22 +1,22 @@
 #!/usr/bin/env node
-import inquirer, { DistinctQuestion } from "inquirer";
 import chalk from "chalk";
-import * as path from "path";
 import * as fs from "fs";
+import inquirer, { DistinctQuestion } from "inquirer";
+import * as path from "path";
 import validateProjectName from "validate-npm-package-name";
 import yargs from "yargs";
+import {
+  modifyDefaultGatsbyConfig,
+  writeDefaultCraAppjs,
+  writeDefaultNextjsConfig,
+} from "./utils/file-utils";
 import { ensure, ensureString } from "./utils/lang-utils";
 import {
   detectPackageManager,
   installUpgrade,
   spawn,
-  updateNotify
+  updateNotify,
 } from "./utils/npm-utils";
-import {
-  writeDefaultNextjsConfig,
-  modifyDefaultGatsbyConfig,
-  writeDefaultCraAppjs
-} from "./utils/file-utils";
 
 // Check for updates
 updateNotify();
@@ -49,19 +49,19 @@ const argv = yargs
 /**
  * Prompt the user for any answers that we're missing from the command-line args
  * @param question instance of a question formatted for `inquirer`
- * @returns 
+ * @returns
  */
 async function maybePrompt(question: DistinctQuestion) {
-    const name = ensure(question.name) as string;
-    const message = ensure(question.message);
-    const maybeAnswer = argv[name] as string;
-    if (maybeAnswer) {
-      console.log(message + maybeAnswer + "(specified in CLI arg)");
-      return ensureString(argv[name]);
-    } else {
-      const ans = await inquirer.prompt({ ...question });
-      return ans[name];
-    }
+  const name = ensure(question.name) as string;
+  const message = ensure(question.message);
+  const maybeAnswer = argv[name] as string;
+  if (maybeAnswer) {
+    console.log(message + maybeAnswer + "(specified in CLI arg)");
+    return ensureString(argv[name]);
+  } else {
+    const ans = await inquirer.prompt({ ...question });
+    return ans[name];
+  }
 }
 
 // Keeping these as globals to easily share with our `crash` function
@@ -75,14 +75,15 @@ async function run(): Promise<void> {
    * PROMPT USER
    */
   // User-specified project path/directory
-  projectPath = (
-    argv._.length > 0 ? 
-      argv._[0] + "" : // coerce to a string
-      (await inquirer.prompt({
-        name: "projectPath",
-        message: "What is your project named?",
-        default: "my-app",
-      })).projectPath
+  projectPath = (argv._.length > 0
+    ? argv._[0] + "" // coerce to a string
+    : (
+        await inquirer.prompt({
+          name: "projectPath",
+          message: "What is your project named?",
+          default: "my-app",
+        })
+      ).projectPath
   ).trim();
   // Absolute path to the new project
   resolvedProjectPath = path.resolve(projectPath);
@@ -98,12 +99,14 @@ async function run(): Promise<void> {
   const nameValidation = validateProjectName(projectName);
   if (!nameValidation.validForNewPackages) {
     if (nameValidation.warnings) {
-      nameValidation.warnings.forEach(e => console.warn(e));
+      nameValidation.warnings.forEach((e) => console.warn(e));
     }
     if (nameValidation.errors) {
-      nameValidation.errors.forEach(e => console.error(e));
+      nameValidation.errors.forEach((e) => console.error(e));
     }
-    return crash(`${projectName} is not a valid name for an npm package. Please choose another name.`);
+    return crash(
+      `${projectName} is not a valid name for an npm package. Please choose another name.`
+    );
   }
 
   // Prompt for the platform
@@ -130,23 +133,25 @@ async function run(): Promise<void> {
 
   // Scheme to use for Plasmic integration
   // - loader only available for gatsby/next.js
-  const scheme: "codegen" | "loader" = (platform === "nextjs" || platform === "gatsby") ?
-    await maybePrompt({
-        name: "scheme",
-        message: "What scheme do you want to use to integrate with Plasmic?",
-        type: "list",
-        choices: () => [
+  const scheme: "codegen" | "loader" =
+    platform === "nextjs" || platform === "gatsby"
+      ? await maybePrompt({
+          name: "scheme",
+          message: "What scheme do you want to use to integrate with Plasmic?",
+          type: "list",
+          choices: () => [
             {
-                name: "PlasmicLoader",
-                value: "loader",
+              name: "PlasmicLoader",
+              value: "loader",
             },
             {
-                name: "Codegen",
-                value: "codegen",
+              name: "Codegen",
+              value: "codegen",
             },
-        ],
-        default: "loader",
-    }) : "codegen";
+          ],
+          default: "loader",
+        })
+      : "codegen";
 
   // Get the projectId
   console.log();
@@ -161,7 +166,9 @@ async function run(): Promise<void> {
       name: "projectId",
       message: "What is the project ID of your project?",
     });
-    projectId = rawProjectId.replace("https://studio.plasmic.app/projects/", "").trim();
+    projectId = rawProjectId
+      .replace("https://studio.plasmic.app/projects/", "")
+      .trim();
     if (!projectId) {
       console.error(`"${rawProjectId}" is not a valid project ID.`);
     }
@@ -177,16 +184,22 @@ async function run(): Promise<void> {
   if (authCheckResult.status !== 0) {
     const authResult = spawn("npx @plasmicapp/cli auth");
     if (authResult.status !== 0) {
-        return crash("Failed to authenticate with Plasmic. Please run `npx @plasmicapp/cli auth` manually.");
+      return crash(
+        "Failed to authenticate with Plasmic. Please run `npx @plasmicapp/cli auth` manually."
+      );
     }
   }
 
   // Calling `npx create-XXX` means we don't have to keep these dependencies up to date
   console.log("Creating the project...");
-  const createResult = platform === "nextjs" ? spawn(`npx create-next-app ${resolvedProjectPath}`) :
-    platform === "gatsby" ? spawn(`npx gatsby new ${resolvedProjectPath}`) :
-    platform === "react" ? spawn(`npx create-react-app ${resolvedProjectPath}`) :
-    undefined;
+  const createResult =
+    platform === "nextjs"
+      ? spawn(`npx create-next-app ${resolvedProjectPath}`)
+      : platform === "gatsby"
+      ? spawn(`npx gatsby new ${resolvedProjectPath}`)
+      : platform === "react"
+      ? spawn(`npx create-react-app ${resolvedProjectPath}`)
+      : undefined;
   if (!createResult) {
     return crash(`Unrecognized platform: ${platform}`);
   } else if (createResult.status !== 0) {
@@ -195,8 +208,12 @@ async function run(): Promise<void> {
 
   // Install dependency
   console.log("Installing the Plasmic dependency...");
-  const installResult = scheme === "loader" ? installUpgrade("@plasmicapp/loader", { workingDir: resolvedProjectPath }) :
-    installUpgrade("@plasmicapp/cli", { workingDir: resolvedProjectPath });
+  const installResult =
+    scheme === "loader"
+      ? installUpgrade("@plasmicapp/loader", {
+          workingDir: resolvedProjectPath,
+        })
+      : installUpgrade("@plasmicapp/cli", { workingDir: resolvedProjectPath });
   if (!installResult) {
     return crash("Failed to install the Plasmic dependency");
   }
@@ -204,7 +221,10 @@ async function run(): Promise<void> {
   // Sync only if codegen
   if (scheme === "codegen") {
     console.log("Syncing Plasmic components...");
-    const syncResult = spawn(`npx plasmic sync --yes -p ${projectId}`, resolvedProjectPath);
+    const syncResult = spawn(
+      `npx plasmic sync --yes -p ${projectId}`,
+      resolvedProjectPath
+    );
     if (syncResult.status !== 0) {
       return crash("Failed to sync project");
     }
@@ -229,37 +249,48 @@ async function run(): Promise<void> {
    * INSTRUCT USER ON NEXT STEPS
    */
   const pkgMgr = detectPackageManager(resolvedProjectPath);
-  const npmRunCmd = pkgMgr === "yarn" ? "yarn" : "npm run"
-  const command = platform === "nextjs" ? `${npmRunCmd} dev` :
-    platform === "gatsby" ? `${npmRunCmd} develop` :
-    platform === "react" ? `${npmRunCmd} start` : undefined;
+  const npmRunCmd = pkgMgr === "yarn" ? "yarn" : "npm run";
+  const command =
+    platform === "nextjs"
+      ? `${npmRunCmd} dev`
+      : platform === "gatsby"
+      ? `${npmRunCmd} develop`
+      : platform === "react"
+      ? `${npmRunCmd} start`
+      : undefined;
   const relativeDir = path.relative(process.cwd(), resolvedProjectPath);
   console.log("----------------------------------------");
-  console.log(chalk.green.bold(`Congrats! We created the project at ${relativeDir}`));
+  console.log(
+    chalk.green.bold(`Congrats! We created the project at ${relativeDir}`)
+  );
   console.log();
   console.log();
   console.log();
-  console.log("Change directories into your new project and start the development server:");
+  console.log(
+    "Change directories into your new project and start the development server:"
+  );
   console.log();
   console.log(chalk.bold(`cd ${relativeDir}`));
   console.log(chalk.bold(command));
   console.log();
   if (platform === "nextjs" || platform === "gatsby") {
-    console.log("Navigate to the routes (e.g. /home) defined by your page components from Plasmic Studio.");
+    console.log(
+      "Navigate to the routes (e.g. /home) defined by your page components from Plasmic Studio."
+    );
   }
 }
 
 /**
  * Call this to exit the script with an error message
- * @param message 
- * @param err 
+ * @param message
+ * @param err
  */
 function crash(message: string, err?: Error) {
   console.log();
   console.log(message);
   if (err) {
     console.error("Unexpected error: ");
-    console.error(err)
+    console.error(err);
   }
   console.log();
   if (fs.existsSync(resolvedProjectPath)) {

@@ -1,15 +1,15 @@
+import * as babel from "@babel/core";
 import { Node } from "@babel/traverse";
 import {
-  JSXElement,
   Expression,
+  JSXElement,
   JSXEmptyExpression,
-  StringLiteral,
-  JSXText,
-  JSXSpreadChild,
-  JSXFragment,
   JSXExpressionContainer,
+  JSXFragment,
+  JSXSpreadChild,
+  JSXText,
+  StringLiteral,
 } from "@babel/types";
-import * as babel from "@babel/core";
 
 export interface PlasmicNodeBase {
   rawNode:

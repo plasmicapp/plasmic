@@ -1,6 +1,6 @@
-import { parseExpr, code, formatted, tagName } from "../utils";
-import { cloneDeepWithHook } from "../cloneDeepWithHook";
 import * as babel from "@babel/core";
+import { cloneDeepWithHook } from "../cloneDeepWithHook";
+import { code, formatted, parseExpr, tagName } from "../utils";
 
 describe("cloneNodeWithHook", function () {
   it("should work", function () {

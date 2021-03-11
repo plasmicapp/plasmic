@@ -1,7 +1,6 @@
 import chalk from "chalk";
 import { spawnSync } from "child_process";
 import L from "lodash";
-import * as querystring from "querystring";
 import path from "upath";
 import { CommonArgs } from "..";
 import {

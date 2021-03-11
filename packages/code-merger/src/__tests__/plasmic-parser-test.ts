@@ -1,12 +1,10 @@
+import * as parser from "@babel/parser";
+import { Node } from "@babel/traverse";
+import * as L from "lodash";
 import { assert, ensure } from "../common";
 import { PlasmicASTNode, PlasmicJsxElement } from "../plasmic-ast";
-import { parseFromJsxExpression, CodeVersion } from "../plasmic-parser";
-import * as L from "lodash";
-import traverse, { Node, NodePath } from "@babel/traverse";
-import * as parser from "@babel/parser";
-import { formatted, code, tagName, compactCode } from "../utils";
-import { iteratee } from "lodash";
-import { JSXSpreadAttribute } from "@babel/types";
+import { CodeVersion, parseFromJsxExpression } from "../plasmic-parser";
+import { code, compactCode, formatted, tagName } from "../utils";
 
 const getSource = (n: Node | null, input: string) => {
   if (!n) {

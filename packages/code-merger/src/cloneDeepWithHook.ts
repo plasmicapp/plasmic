@@ -1,5 +1,5 @@
-import { cloneNode } from "./cloneNodeWithHook";
 import { Node } from "@babel/types";
+import { cloneNode } from "./cloneNodeWithHook";
 
 export const cloneDeepWithHook = <T extends Node>(
   n: T,

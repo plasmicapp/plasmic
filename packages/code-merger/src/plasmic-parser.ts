@@ -1,29 +1,26 @@
-import * as parser from "@babel/parser";
-import traverse, { Node, NodePath } from "@babel/traverse";
-import {
-  JSXElement,
-  JSXAttribute,
-  JSXSpreadAttribute,
-  Expression,
-  JSXEmptyExpression,
-  StringLiteral,
-  V8IntrinsicIdentifier,
-  JSXExpressionContainer,
-  CallExpression,
-  JSXSpreadChild,
-  JSXFragment,
-  JSXText,
-} from "@babel/types";
 import * as babel from "@babel/core";
+import * as parser from "@babel/parser";
+import traverse, { Node } from "@babel/traverse";
+import {
+  CallExpression,
+  Expression,
+  JSXAttribute,
+  JSXElement,
+  JSXEmptyExpression,
+  JSXExpressionContainer,
+  JSXFragment,
+  JSXSpreadAttribute,
+  JSXSpreadChild,
+} from "@babel/types";
 import * as L from "lodash";
+import { cloneDeepWithHook } from "./cloneDeepWithHook";
 import { assert, ensure } from "./common";
 import {
   PlasmicASTNode,
   PlasmicJsxElement,
   PlasmicTagOrComponent,
 } from "./plasmic-ast";
-import { cloneDeepWithHook } from "./cloneDeepWithHook";
-import { isAttribute, getAttrName } from "./utils";
+import { getAttrName, isAttribute } from "./utils";
 
 export const helperObject = "rh";
 

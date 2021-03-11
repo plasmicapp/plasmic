@@ -1,4 +1,4 @@
-import { code, parseExpr, nodesDeepEqualIgnoreComments } from "../utils";
+import { code, nodesDeepEqualIgnoreComments, parseExpr } from "../utils";
 
 describe("utils", function () {
   it("should work", function () {

@@ -12,8 +12,8 @@ import {
   DEFAULT_HOST,
   findConfigFile,
   LOCK_FILE_NAME,
-  PlasmicContext,
   PlasmicConfig,
+  PlasmicContext,
   PlasmicLock,
   readConfig,
 } from "./config-utils";
