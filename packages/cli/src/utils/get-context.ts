@@ -12,8 +12,8 @@ import {
   DEFAULT_HOST,
   findConfigFile,
   LOCK_FILE_NAME,
-  PlasmicContext,
   PlasmicConfig,
+  PlasmicContext,
   PlasmicLock,
   readConfig,
 } from "./config-utils";
@@ -267,15 +267,14 @@ export async function maybeRunPlasmicInit(
 /**
  * Create a metadata bundle
  * This will be used to tag Segment events (e.g. for codegen)
- * 
- * @param fromArgs 
+ *
+ * @param fromArgs
  */
 export function generateMetadata(context: PlasmicContext, fromArgs?: string) {
   // The following come from CLI args:
   // - source=[cli, loader]
   // - command=[watch]
-  const metadata = !fromArgs ? {} :
-    { ...querystring.decode(fromArgs) };
+  const metadata = !fromArgs ? {} : { ...querystring.decode(fromArgs) };
 
   metadata.platform = context.config.platform;
   return metadata;

@@ -1,15 +1,13 @@
-import { CodeVersion } from "../plasmic-parser";
 import {
-  renameAndSerializePlasmicASTNode,
-  ProjectSyncMetadataModel,
+  ComponentInfoForMerge,
   ComponentSkeletonModel,
   mergeFiles,
-  ComponentInfoForMerge,
+  ProjectSyncMetadataModel,
+  renameAndSerializePlasmicASTNode,
   WarningInfo,
 } from "../index";
-import { formatted, code } from "../utils";
-import { ensure } from "../common";
-import { iteratee } from "lodash";
+import { CodeVersion } from "../plasmic-parser";
+import { code, formatted } from "../utils";
 
 describe("Test CodeMerger", function () {
   it("no change", function () {

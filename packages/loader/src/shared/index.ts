@@ -24,8 +24,8 @@ async function watchForChanges(
     [cliPath, "watch", "--yes", "--metadata", "source=loader"],
     {
       cwd: plasmicDir,
-      env: {...process.env, PLASMIC_LOADER: "1"},
-      stdio: "pipe"
+      env: { ...process.env, PLASMIC_LOADER: "1" },
+      stdio: "pipe",
     }
   );
   watchCmd.stdout.on("data", async function (data) {

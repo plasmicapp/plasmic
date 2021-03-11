@@ -1,59 +1,48 @@
+import * as babel from "@babel/core";
 import * as parser from "@babel/parser";
-import traverse, { Node, NodePath } from "@babel/traverse";
+import traverse, { Node } from "@babel/traverse";
 import {
-  JSXElement,
-  JSXAttribute,
-  JSXSpreadAttribute,
+  AssignmentExpression,
   Comment,
   Expression,
-  JSXEmptyExpression,
-  StringLiteral,
-  JSXText,
-  TSNonNullExpression,
-  MemberExpression,
-  JSXSpreadChild,
-  JSXFragment,
-  JSXExpressionContainer,
-  V8IntrinsicIdentifier,
-  AssignmentExpression,
-  ReturnStatement,
-  JSXNamespacedName,
-  JSXIdentifier,
   ImportDeclaration,
+  JSXAttribute,
+  JSXElement,
+  JSXEmptyExpression,
+  JSXExpressionContainer,
+  JSXFragment,
+  JSXIdentifier,
+  JSXNamespacedName,
+  JSXSpreadAttribute,
+  JSXSpreadChild,
+  JSXText,
+  ReturnStatement,
 } from "@babel/types";
-import * as babel from "@babel/core";
+import { diffChars } from "diff";
 import * as L from "lodash";
-import generate from "@babel/generator";
+import { cloneDeep } from "lodash";
 import { cloneDeepWithHook } from "./cloneDeepWithHook";
-import { assert, withoutNils, ensure, assertEq } from "./common";
+import { assert, ensure, withoutNils } from "./common";
 import {
-  PlasmicASTNode,
-  PlasmicJsxElement,
-  PlasmicTagOrComponent,
   makeCallExpression,
+  PlasmicASTNode,
+  PlasmicTagOrComponent,
   wrapInJsxExprContainer,
 } from "./plasmic-ast";
 import {
   CodeVersion,
   helperObject,
-  isJsxElementOrFragment,
-  memberExpressionMatch,
-  makeMemberExpression,
   isCallIgnoreArguments,
   isCallWithoutArguments,
-  tryExtractPropertyNameOfMemberExpression,
+  isJsxElementOrFragment,
 } from "./plasmic-parser";
 import {
-  nodesDeepEqualIgnoreComments,
   code,
   formatted,
-  tagName,
-  compactCode,
   isAttribute,
-  getAttrName,
+  nodesDeepEqualIgnoreComments,
+  tagName,
 } from "./utils";
-import { first, cloneDeep, replace, difference, map } from "lodash";
-import { diffChars } from "diff";
 
 const mkJsxFragment = (children: JsxChildType[]) => {
   return babel.types.jsxFragment(

@@ -1,0 +1,33 @@
+repos:
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v2.2.0
+    hooks:
+      - id: prettier
+        files: ^.*\.(js|jsx|ts|tsx|json|css|scss|md|toml|xml)$
+        exclude: (^.*/plasmic/.*$|.md$)
+        additional_dependencies:
+          - prettier
+          - prettier-plugin-organize-imports
+          - typescript
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v2.2.0
+    hooks:
+      - id: prettier
+        files: ^.*/plasmic/.*\.(js|jsx|ts|tsx|json|css|scss|md|toml|xml)$
+  - repo: git://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+      - id: check-merge-conflict
+      - id: trailing-whitespace
+        exclude: ^.*/__snapshots__/.*$
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v7.20.0
+    hooks:
+      - id: eslint
+        files: ^wab/src/.*\.(ts|tsx)$
+        types: [file]
+        additional_dependencies:
+          - eslint
+          - "@typescript-eslint/eslint-plugin"
+          - "@typescript-eslint/parser"
+          - typescript@3.9.7
