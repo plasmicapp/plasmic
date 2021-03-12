@@ -1,6 +1,7 @@
 import path from "upath";
-import { generateEntrypoint, PlasmicOpts } from "../shared";
+import { initLoader, onPostInit, PlasmicOpts } from "../shared";
 import { ensure } from "../shared/utils";
+import * as gen from "../shared/gen";
 
 // From: https://github.com/vercel/next.js/blob/canary/packages/next/next-server/lib/constants.ts.
 const PHASE_PRODUCTION_BUILD = "phase-production-build";
@@ -11,6 +12,8 @@ type PluginOptions = Partial<PlasmicOpts>;
 
 async function initPlasmicLoader(pluginOptions: PluginOptions) {
   const defaultDir = pluginOptions.dir || process.cwd();
+  const plasmicDir = path.join(defaultDir, ".next", ".plasmic");
+  const nextPageDir = path.join(defaultDir, "pages");
   const defaultOptions = {
     watch: process.env.NODE_ENV === "development",
     initArgs: {
@@ -20,14 +23,20 @@ async function initPlasmicLoader(pluginOptions: PluginOptions) {
       "src-dir": "./components",
     },
     dir: defaultDir,
-    plasmicDir: path.join(defaultDir, ".next", ".plasmic"),
-    pageDir: path.join(defaultDir, "pages"),
+    plasmicDir,
+    pageDir: path.join(plasmicDir, "pages"),
   };
 
-  return generateEntrypoint({
+  const opts = {
     ...defaultOptions,
     ...pluginOptions,
-  } as PlasmicOpts);
+  } as PlasmicOpts;
+
+  await initLoader(opts);
+
+  return onPostInit(opts, async (pages, config) =>
+    gen.generateNextPages(pages, nextPageDir, config)
+  );
 }
 
 /*

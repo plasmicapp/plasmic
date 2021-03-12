@@ -30,6 +30,11 @@ fs.copyFileSync(
   path.join("dist", "templates", "PlasmicPage.dot")
 );
 
+fs.copyFileSync(
+  path.join("src", "templates", "NextPage.dot"),
+  path.join("dist", "templates", "NextPage.dot")
+);
+
 delete packageJson.private;
 delete packageJson.scripts;
 

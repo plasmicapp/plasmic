@@ -70,54 +70,49 @@ export async function readConfig(dir: string) {
   return JSON.parse(configData.toString());
 }
 
+/**
+ * Convert a page path (like pages/my-page.tsx) into their corresponding path (/my-page).
+ */
+function getPageUrl(path: string) {
+  const [_, url] = path.split(/^pages(.*)\..*$/);
+  return url;
+}
+
+export function getPagesFromConfig(plasmicDir: string, config: any) {
+  const componentData: {
+    name: string;
+    projectId: string;
+    path: string;
+    url: string;
+  }[] = [];
+  for (const project of config.projects) {
+    for (const component of project.components) {
+      if (component.componentType !== "page") {
+        continue;
+      }
+      componentData.push({
+        name: component.name,
+        projectId: project.projectId,
+        path: path.join(plasmicDir, component.importSpec.modulePath),
+        url: getPageUrl(component.importSpec.modulePath),
+      });
+    }
+  }
+
+  return componentData;
+}
+
 export async function syncProject(
   dir: string,
   pageDir: string,
   execPath: string,
   projects: string[]
 ) {
-  const oldConfig = await readConfig(dir);
-  await execOrFail(
+  return execOrFail(
     dir,
     `${execPath} sync --yes --metadata source=loader --projects ${projects.join(
       " "
     )}`,
     "Unable to sync Plasmic project. Please check the above error and try again."
   );
-  return clearStalePages(dir, pageDir, oldConfig);
-}
-
-export async function clearStalePages(
-  dir: string,
-  pageDir: string,
-  oldConfig: any
-) {
-  const seen: { [key: string]: boolean } = {};
-  const stalePaths: string[] = [];
-  const newConfig = await readConfig(dir);
-
-  for (const project of newConfig.projects) {
-    for (const component of project.components) {
-      if (component.componentType !== "page") {
-        continue;
-      }
-      seen[component.id] = true;
-    }
-  }
-
-  for (const project of oldConfig.projects) {
-    for (const component of project.components) {
-      if (component.componentType !== "page") {
-        continue;
-      }
-      if (!seen[component.id]) {
-        const [_, componentPath] = component.importSpec.modulePath.split(
-          /pages/
-        );
-        stalePaths.push(path.join(pageDir, componentPath));
-        stalePaths.push(path.join(dir, "pages", componentPath));
-      }
-    }
-  }
-  return Promise.all(stalePaths.map((filePath) => fs.unlink(filePath)));
 }
