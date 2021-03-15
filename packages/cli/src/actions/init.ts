@@ -164,7 +164,7 @@ async function deriveInitAnswers(opts: Partial<InitArgs>) {
   };
 
   // Start with a complete set of defaults
-  const answers: Partial<InitArgs> = {
+  const answers: InitArgs = {
     host: getDefaultAnswer("host", "") as any,
     platform,
     codeLang: getDefaultAnswer("codeLang", isTypescript ? "ts" : "js") as any,
@@ -248,7 +248,8 @@ async function deriveInitAnswers(opts: Partial<InitArgs>) {
         ...question,
         default: answers[name],
       });
-      answers[name] = ans[name];
+      // Not sure why TS complains here without this cast.
+      (answers as any)[name] = ans[name];
     }
     // Other questions are silently skipped
   }
