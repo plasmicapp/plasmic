@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import cp from "child_process";
 import fs from "fs/promises";
-import path from "path";
+import path from "upath";
 import util from "util";
 
 export type initArgs = {

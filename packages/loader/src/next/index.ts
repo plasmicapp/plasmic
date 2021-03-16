@@ -1,4 +1,4 @@
-import path from "path";
+import path from "upath";
 import { generateEntrypoint, PlasmicOpts } from "../shared";
 import { ensure } from "../shared/utils";
 

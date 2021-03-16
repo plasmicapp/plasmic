@@ -1,6 +1,6 @@
 import dot from "dot";
 import fs from "fs/promises";
-import path from "path";
+import path from "upath";
 
 dot.templateSettings.strip = false;
 

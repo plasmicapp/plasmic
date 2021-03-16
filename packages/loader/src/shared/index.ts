@@ -1,5 +1,5 @@
 import cp from "child_process";
-import path from "path";
+import path from "upath";
 import * as cli from "./cli";
 import * as gen from "./gen";
 
