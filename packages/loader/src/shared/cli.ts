@@ -3,6 +3,9 @@ import cp from "child_process";
 import fs from "fs/promises";
 import path from "upath";
 import util from "util";
+import * as api from "./api";
+import * as semver from "./semver";
+import * as utils from "./utils";
 
 export type initArgs = {
   [key: string]: string;
@@ -32,27 +35,72 @@ function objToExecArgs(obj: object) {
     .join(" ");
 }
 
+async function getCurrentLoaderVersion() {
+  try {
+    const packageJsonPath = path.join(__dirname, "..", "package.json");
+    const packageJsonFile = await fs.readFile(packageJsonPath);
+    const version: string | undefined = JSON.parse(packageJsonFile.toString())
+      .version;
+    return utils.ensure(version);
+  } catch (e) {
+    console.error(e);
+    process.exit(1);
+  }
+}
+
+export async function ensureRequiredLoaderVersion() {
+  const requiredVersions = await api.getRequiredPackages();
+  const version = await getCurrentLoaderVersion();
+
+  if (semver.gt(requiredVersions["@plasmicapp/loader"], version)) {
+    console.info(
+      "A newer version of @plasmicapp/loader is required. Please upgrade your current version and try again."
+    );
+    process.exit(1);
+  }
+}
+
 export async function tryInitializePlasmicDir(
   dir: string,
   plasmicDir: string,
   initArgs: initArgs
 ) {
-  const plasmicExecPath = path.join(dir, "node_modules", ".bin", "plasmic");
+  await fs.mkdir(plasmicDir, { recursive: true });
+  await fs.writeFile(
+    path.join(plasmicDir, "package.json"),
+    `{
+  "name":"plasmic-loader",
+  "version":"0.0.1",
+  "dependencies": {
+    "@plasmicapp/cli": "latest",
+    "@plasmicapp/react-web": "latest"
+  }
+}`
+  );
+  await execOrFail(
+    plasmicDir,
+    "npm install --no-package-lock",
+    `Unable to install plasmic dependencies. Please delete ${plasmicDir} and try again.`
+  );
+
+  const plasmicExecPath = path.join(
+    plasmicDir,
+    "node_modules",
+    ".bin",
+    "plasmic"
+  );
   const configPath = path.join(plasmicDir, "plasmic.json");
 
   try {
     await fs.access(configPath);
     console.log(".plasmic directory detected, skipping init.");
-    return;
-  } catch {}
-
-  await fs.mkdir(plasmicDir, { recursive: true });
-
-  await execOrFail(
-    plasmicDir,
-    `${plasmicExecPath} init --yes=true ${objToExecArgs(initArgs)}`,
-    "Unable to initialize Plasmic. Please check the above error and try again."
-  );
+  } catch {
+    await execOrFail(
+      plasmicDir,
+      `${plasmicExecPath} init --yes=true ${objToExecArgs(initArgs)}`,
+      "Unable to initialize Plasmic. Please check the above error and try again."
+    );
+  }
 }
 
 export function checkAuth(dir: string, execPath: string) {

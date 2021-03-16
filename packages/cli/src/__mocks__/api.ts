@@ -327,6 +327,7 @@ class PlasmicApi {
 
   async requiredPackages(): Promise<RequiredPackages> {
     return {
+      "@plasmicapp/loader": "0.0.1",
       "@plasmicapp/cli": "0.0.1",
       "@plasmicapp/react-web": "0.0.1",
     };

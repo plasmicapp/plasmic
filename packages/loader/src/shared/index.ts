@@ -23,7 +23,7 @@ async function watchForChanges(
   { dir, plasmicDir, pageDir }: PlasmicOpts,
   onRegisterPages?: onRegisterPages
 ) {
-  const cliPath = path.join(dir, "node_modules", ".bin", "plasmic");
+  const cliPath = path.join(plasmicDir, "node_modules", ".bin", "plasmic");
   let currentConfig = await cli.readConfig(plasmicDir);
   const watchCmd = cp.spawn(
     "node",
@@ -54,11 +54,13 @@ async function watchForChanges(
 
 export async function initLoader(opts: PlasmicOpts) {
   const { dir, pageDir, projects, plasmicDir, initArgs = {} } = opts;
+  console.log("Checking that your loader version is up to date.");
+  await cli.ensureRequiredLoaderVersion();
   console.log("Syncing plasmic projects: ", projects);
-  const plasmicExecPath = path.join(dir, "node_modules", ".bin", "plasmic");
+  const plasmicExecPath = path.join(plasmicDir, "node_modules", ".bin", "plasmic");
 
-  await cli.checkAuth(dir, plasmicExecPath);
   await cli.tryInitializePlasmicDir(dir, plasmicDir, initArgs);
+  await cli.checkAuth(dir, plasmicExecPath);
   await cli.syncProject(plasmicDir, pageDir, plasmicExecPath, projects);
 
   if (opts.substitutions) {
