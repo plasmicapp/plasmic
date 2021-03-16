@@ -74,7 +74,7 @@ export async function writeDefaultCraAppjs(projectDir: string): Promise<void> {
   const srcDir = path.join(projectDir, "src");
   // The absolute path to App.js
   const appjsFile = ensure(
-    glob.sync(path.join(srcDir, "**", "App.?(j|t)s"))[0]
+    glob.sync(path.join(srcDir, "**", "App.?(j|t)s?(x)"))[0]
   );
   // The absolute path to the Plasmic component
   const component = await getPlasmicComponent(projectDir);
