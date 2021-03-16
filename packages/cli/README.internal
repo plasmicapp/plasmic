@@ -26,4 +26,4 @@ can debug the unmangled source code in Chrome devtools, but still be able to
 run the app as if it were being run from a different project directory, start
 the app with the env var:
 
-    DEBUG_CHDIR=/path/to/target/project node -r ts-node/register src/index.ts help
+    DEBUG_CHDIR=/path/to/target/project node --inspect -r ts-node/register src/index.ts help

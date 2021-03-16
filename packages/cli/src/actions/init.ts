@@ -1,4 +1,5 @@
-import inquirer, { DistinctQuestion } from "inquirer";
+import chalk from "chalk";
+import inquirer from "inquirer";
 import L from "lodash";
 import path from "upath";
 import { CommonArgs } from "..";
@@ -110,6 +111,37 @@ type DefaultDeriver = {
   alwaysDerived: (keyof InitArgs)[];
 };
 
+/**
+ * A simpler subset of the DistinctQuestion interface that we actually use.
+ */
+interface SimpleQuestion {
+  name: string;
+  message: string;
+  type?: "list";
+  choices?: () => { name: string; value: string }[];
+}
+
+/**
+ * Pretty-print the question along with the default answer, as if that was the choice
+ * being made. Don't actually interactively prompt for a response.
+ */
+function simulatePrompt(
+  question: SimpleQuestion,
+  defaultAnswer: string | boolean | undefined,
+  bold = false
+) {
+  const message = question.message.endsWith(">")
+    ? question.message
+    : question.message + ">";
+  process.stdout.write((bold ? chalk.bold(message) : message) + " ");
+  console.log(
+    chalk.cyan(
+      question.choices?.().find((choice) => choice.value === defaultAnswer)
+        ?.name ?? defaultAnswer
+    )
+  );
+}
+
 async function deriveInitAnswers(opts: Partial<InitArgs>) {
   const plasmicRootDir = opts.config
     ? path.dirname(opts.config)
@@ -163,7 +195,7 @@ async function deriveInitAnswers(opts: Partial<InitArgs>) {
     }
   };
 
-  // Start with a complete set of defaults
+  // Start with a complete set of defaults. Some of these are not worth displaying.
   const answers: InitArgs = {
     host: getDefaultAnswer("host", "") as any,
     platform,
@@ -195,155 +227,163 @@ async function deriveInitAnswers(opts: Partial<InitArgs>) {
     ) as any,
     pagesDir: getDefaultAnswer("pagesDir", undefined) as any,
   };
+  const prominentAnswers = L.omit(answers, "codeScheme");
 
-  logger.info("Here are the default settings we recommend:");
-  // Display only a subset of the defaults
-  console.table(
-    L(answers)
-      .toPairs()
-      .filter(([key, value]) => {
-        if (!value) {
-          // Ignore undefined
-          return false;
-        } else if (
-          // Ignore public-files specific args
-          answers.imagesScheme !== "public-files" &&
-          (key === "imagesPublicDir" || key === "imagesPublicUrlPrefix")
-        ) {
-          return false;
-        }
-        return true;
-      })
-      .map(([key, value]) => {
-        const desc = getInitArgsShortDescription(key as keyof InitArgs);
-        const choices = getInitArgsChoices(key as keyof InitArgs);
-        return [
-          key,
-          {
-            value,
-            description:
-              ensure(desc) + (!!choices ? ` (${choices.join(",")})` : ""),
-          },
-        ];
-      })
-      .fromPairs()
-      .value()
+  console.log(
+    chalk.bold(
+      "Plasmic Express Setup -- Here are the default settings we recommend:\n"
+    )
   );
 
+  await performAsks(true);
+
   // Allow a user to short-circuit
-  if (
-    await confirmWithUser("Do you want to proceed with these values?", opts.yes)
-  ) {
-    return answers as InitArgs;
-  }
-
-  // Proceed with platform-specific prompts
-  async function maybePrompt(question: DistinctQuestion) {
-    const name = ensure(question.name) as keyof InitArgs;
-    const message = ensure(question.message) as string;
-    if (opts[name]) {
-      logger.info(message + answers[name] + "(specified in CLI arg)");
-    } else if (!opts.yes && !deriver.alwaysDerived.includes(name)) {
-      const ans = await inquirer.prompt({
-        ...question,
-        default: answers[name],
-      });
-      // Not sure why TS complains here without this cast.
-      (answers as any)[name] = ans[name];
+  const useExpressQuestion: SimpleQuestion = {
+    name: "continue",
+    message: `Would you like to accept these defaults?`,
+    type: "list",
+    choices: () => [
+      {
+        value: "yes",
+        name: "Accept these defaults",
+      },
+      {
+        value: "no",
+        name: "Customize the choices",
+      },
+    ],
+  };
+  console.log();
+  if (opts.yes) {
+    simulatePrompt(useExpressQuestion, "yes", true);
+    return answers;
+  } else {
+    const useExpress = await inquirer.prompt([useExpressQuestion]);
+    if (useExpress.continue === "yes") {
+      return answers;
     }
-    // Other questions are silently skipped
   }
 
-  await maybePrompt({
-    name: "srcDir",
-    message: `${getInitArgsQuestion("srcDir")}\n>`,
-  });
+  /**
+   * @param express When true, we pretty-print the question along with the default answer, as if that was the choice
+   * being made. This is for displaying the default choices in the express setup.
+   */
+  async function performAsks(express: boolean) {
+    // Proceed with platform-specific prompts
+    async function maybePrompt(question: SimpleQuestion) {
+      const name = ensure(question.name) as keyof InitArgs;
+      const message = ensure(question.message) as string;
+      if (opts[name]) {
+        logger.info(message + answers[name] + "(specified in CLI arg)");
+      } else if (express) {
+        const defaultAnswer = answers[name];
+        simulatePrompt(question, defaultAnswer);
+      } else if (!opts.yes && !deriver.alwaysDerived.includes(name)) {
+        const ans = await inquirer.prompt({
+          ...question,
+          default: answers[name],
+        });
+        // Not sure why TS complains here without this cast.
+        (answers as any)[name] = ans[name];
+      }
+      // Other questions are silently skipped
+    }
 
-  await maybePrompt({
-    name: "plasmicDir",
-    message: `${getInitArgsQuestion("plasmicDir")} (This is relative to "${
-      answers.srcDir
-    }")\n>`,
-  });
-
-  if (isPageAwarePlatform(platform)) {
     await maybePrompt({
-      name: "pagesDir",
-      message: `${getInitArgsQuestion("pagesDir")} (This is relative to "${
+      name: "srcDir",
+      message: `${getInitArgsQuestion("srcDir")}\n>`,
+    });
+
+    await maybePrompt({
+      name: "plasmicDir",
+      message: `${getInitArgsQuestion("plasmicDir")} (This is relative to "${
         answers.srcDir
       }")\n>`,
     });
-  }
 
-  await maybePrompt({
-    name: "codeLang",
-    message: `${getInitArgsQuestion("codeLang")}\n`,
-    type: "list",
-    choices: () => [
-      {
-        name: `Typescript${isTypescript ? " (tsconfig.json detected)" : ""}`,
-        value: "ts",
-      },
-      {
-        name: "Javascript",
-        value: "js",
-      },
-    ],
-  });
+    if (isPageAwarePlatform(platform)) {
+      await maybePrompt({
+        name: "pagesDir",
+        message: `${getInitArgsQuestion("pagesDir")} (This is relative to "${
+          answers.srcDir
+        }")\n>`,
+      });
+    }
 
-  await maybePrompt({
-    name: "styleScheme",
-    message: `${getInitArgsQuestion("styleScheme")}\n`,
-    type: "list",
-    choices: () => [
-      {
-        name: `CSS modules, imported as "import sty from './plasmic.module.css'"`,
-        value: "css-modules",
-      },
-      {
-        name: `Plain CSS stylesheets, imported as "import './plasmic.css'"`,
-        value: "css",
-      },
-    ],
-  });
-
-  await maybePrompt({
-    name: "imagesScheme",
-    message: `${getInitArgsQuestion("imagesScheme")}\n`,
-    type: "list",
-    choices: () => [
-      {
-        name: `Imported as files, like "import img from './image.png'". ${
-          isGeneric ? "Not all bundlers support this." : ""
-        }`,
-        value: "files",
-      },
-      {
-        name: `Images stored in a public folder, referenced like <img src="/static/image.png"/>`,
-        value: "public-files",
-      },
-      {
-        name: `Inlined as base64-encoded data URIs`,
-        value: "inlined",
-      },
-    ],
-  });
-
-  if (answers.imagesScheme === "public-files") {
     await maybePrompt({
-      name: "imagesPublicDir",
-      message: `${getInitArgsQuestion(
-        "imagesPublicDir"
-      )} (This is relative to "${answers.srcDir}")\n>`,
+      name: "codeLang",
+      message: `${getInitArgsQuestion("codeLang")}\n`,
+      type: "list",
+      choices: () => [
+        {
+          name: `Typescript${isTypescript ? " (tsconfig.json detected)" : ""}`,
+          value: "ts",
+        },
+        {
+          name: `Javascript${
+            !isTypescript ? " (no tsconfig.json detected)" : ""
+          }`,
+          value: "js",
+        },
+      ],
     });
 
     await maybePrompt({
-      name: "imagesPublicUrlPrefix",
-      message: `${getInitArgsQuestion("imagesPublicUrlPrefix")} ${
-        isNext ? `(for Next.js, this is usually "/")` : ""
-      }\n>`,
+      name: "styleScheme",
+      message: `${getInitArgsQuestion("styleScheme")}\n`,
+      type: "list",
+      choices: () => [
+        {
+          name: `CSS modules, imported as "import sty from './plasmic.module.css'"`,
+          value: "css-modules",
+        },
+        {
+          name: `Plain CSS stylesheets, imported as "import './plasmic.css'"`,
+          value: "css",
+        },
+      ],
     });
+
+    await maybePrompt({
+      name: "imagesScheme",
+      message: `${getInitArgsQuestion("imagesScheme")}\n`,
+      type: "list",
+      choices: () => [
+        {
+          name: `Imported as files, like "import img from './image.png'". ${
+            isGeneric ? "Not all bundlers support this." : ""
+          }`,
+          value: "files",
+        },
+        {
+          name: `Images stored in a public folder, referenced like <img src="/static/image.png"/>`,
+          value: "public-files",
+        },
+        {
+          name: `Inlined as base64-encoded data URIs`,
+          value: "inlined",
+        },
+      ],
+    });
+
+    if (answers.imagesScheme === "public-files") {
+      await maybePrompt({
+        name: "imagesPublicDir",
+        message: `${getInitArgsQuestion(
+          "imagesPublicDir"
+        )} (This is relative to "${answers.srcDir}")\n>`,
+      });
+
+      await maybePrompt({
+        name: "imagesPublicUrlPrefix",
+        message: `${getInitArgsQuestion("imagesPublicUrlPrefix")} ${
+          isNext ? `(for Next.js, this is usually "/")` : ""
+        }\n>`,
+      });
+    }
   }
+
+  await performAsks(false);
 
   return answers as InitArgs;
 }
