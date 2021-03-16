@@ -16,6 +16,7 @@ async function initPlasmicLoader(pluginOptions: PluginOptions) {
     initArgs: {
       platform: "nextjs",
       "pages-dir": "./pages",
+      "images-public-dir": "../../../public",
       "src-dir": "./components",
     },
     dir: defaultDir,

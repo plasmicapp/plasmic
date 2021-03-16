@@ -9,6 +9,7 @@ exports.onPreBootstrap = (_: any, pluginOptions: PluginOptions) => {
     initArgs: {
       platform: "gatsby",
       "pages-dir": "./pages",
+      "images-public-dir": "../../../public",
       "src-dir": "./components",
     },
     dir: defaultDir,
