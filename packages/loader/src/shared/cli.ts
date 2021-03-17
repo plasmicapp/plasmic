@@ -14,9 +14,8 @@ async function execOrFail(dir: string, command: string, message: string) {
   try {
     await exec(command, {
       cwd: dir,
-      stdio: "inherit",
-      env: { ...process.env, PLASMIC_LOADER: 1 },
-    } as any);
+      env: { ...process.env, PLASMIC_LOADER: "1" },
+    });
   } catch (e) {
     console.error(e);
     console.error(chalk.bold(chalk.redBright("Plasmic error:")), message);
@@ -68,6 +67,19 @@ export async function readConfig(dir: string) {
   const configPath = path.join(dir, "plasmic.json");
   const configData = await fs.readFile(configPath);
   return JSON.parse(configData.toString());
+}
+
+export async function saveConfig(dir: string, config: any) {
+  const configPath = path.join(dir, "plasmic.json");
+  return fs.writeFile(configPath, JSON.stringify(config, undefined, 2));
+}
+
+export async function fixImports(dir: string, plasmicExecPath: string) {
+  return execOrFail(
+    dir,
+    `${plasmicExecPath} fix-imports`,
+    `Plasmic was unable to fix the imports for this project. Please delete ${dir} and try again.`
+  );
 }
 
 /**
