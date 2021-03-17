@@ -43,6 +43,16 @@ const argv = yargs
     string: true,
     default: "",
   })
+  .option("template", {
+    describe: "Specify a template for the created project",
+    string: true,
+    default: "",
+  })
+  .option("typescript", {
+    describe: "Use the default Typescript template",
+    boolean: true,
+    default: false,
+  })
   .strict()
   .help("h")
   .alias("h", "help").argv;
@@ -197,6 +207,9 @@ async function run(): Promise<void> {
     }
   }
 
+  const template = argv["template"];
+  const useTypescript = argv["typescript"];
+
   console.log();
   console.log("Let's get started! Here's what we'll do: ");
   console.log("1. Authenticate with Plasmic");
@@ -217,18 +230,46 @@ async function run(): Promise<void> {
 
   // Calling `npx create-XXX` means we don't have to keep these dependencies up to date
   banner("CREATING THE PROJECT");
-  const createResult =
-    platform === "nextjs"
-      ? spawn(`npx create-next-app ${resolvedProjectPath}`)
-      : platform === "gatsby"
-      ? spawn(`npx gatsby new ${resolvedProjectPath}`)
-      : platform === "react"
-      ? spawn(`npx create-react-app ${resolvedProjectPath}`)
-      : undefined;
-  if (!createResult) {
+  if (!["nextjs", "gatsby", "react"].includes(platform)) {
     return crash(`Unrecognized platform: ${platform}`);
-  } else if (createResult.status !== 0) {
+  }
+  let createCommand = "";
+  if (platform === "nextjs") {
+    createCommand += `npx create-next-app ${resolvedProjectPath}`;
+    if (template) {
+      createCommand += ` --example ${template}`;
+    } else if (useTypescript) {
+      // Typescript option is mutually exclusive with --template
+      createCommand += ` --example with-typescript`;
+    }
+  } else if (platform === "gatsby") {
+    createCommand += `npx gatsby new ${resolvedProjectPath}`;
+    if (template) {
+      createCommand += ` ${template}`;
+    }
+    // Default Gatsby starter already supports Typescript
+    // See where we `touch tsconfig.json` later on
+  } else if (platform === "react") {
+    createCommand += `npx create-react-app ${resolvedProjectPath}`;
+    if (template) {
+      createCommand += ` --template ${template}`;
+    } else if (useTypescript) {
+      createCommand += " --template typescript";
+    }
+  } else {
+    return crash(`Unrecognized platform: ${platform}`);
+  }
+
+  const createResult = spawn(createCommand);
+  if (createResult.status !== 0) {
     return crash("Error creating project", createResult.error);
+  }
+
+  // Create tsconfig.json if it doesn't exist
+  // this will force Plasmic to recognize Typescript
+  const tsconfigPath = path.join(resolvedProjectPath, "tsconfig.json");
+  if (useTypescript && !fs.existsSync(tsconfigPath)) {
+    fs.writeFileSync(tsconfigPath, "");
   }
 
   // Install dependency
