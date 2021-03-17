@@ -1,16 +1,26 @@
 #!/usr/bin/env node
+import * as Sentry from "@sentry/node";
 import chalk from "chalk";
 import * as fs from "fs";
-import inquirer, {DistinctQuestion} from "inquirer";
+import inquirer, { DistinctQuestion } from "inquirer";
 import * as path from "path";
 import validateProjectName from "validate-npm-package-name";
 import yargs from "yargs";
-import {modifyDefaultGatsbyConfig, writeDefaultCraAppjs, writeDefaultNextjsConfig,} from "./utils/file-utils";
-import {ensure, ensureString} from "./utils/lang-utils";
-import {detectPackageManager, installUpgrade, spawn, updateNotify,} from "./utils/npm-utils";
+import {
+  modifyDefaultGatsbyConfig,
+  writeDefaultCraAppjs,
+  writeDefaultNextjsConfig,
+} from "./utils/file-utils";
+import { ensure, ensureString } from "./utils/lang-utils";
+import {
+  detectPackageManager,
+  installUpgrade,
+  spawn,
+  updateNotify,
+} from "./utils/npm-utils";
 
 // Check for updates
-updateNotify();
+const createPlasmicAppVersion = updateNotify();
 
 // Specify command-line args
 const argv = yargs
@@ -36,6 +46,17 @@ const argv = yargs
   .strict()
   .help("h")
   .alias("h", "help").argv;
+
+// Initialize Sentry
+Sentry.init({
+  dsn:
+    "https://0d602108de7f44aa9470a41cc069395f@o328029.ingest.sentry.io/5679926",
+});
+Sentry.configureScope((scope) => {
+  //scope.setUser({ email: auth.user });
+  scope.setExtra("cliVersion", createPlasmicAppVersion);
+  scope.setExtra("args", JSON.stringify(argv));
+});
 
 /**
  * Prompt the user for any answers that we're missing from the command-line args
@@ -137,8 +158,7 @@ async function run(): Promise<void> {
     platform === "nextjs" || platform === "gatsby"
       ? await maybePrompt({
           name: "scheme",
-          message:
-            "Which scheme do you want to use to integrate Plasmic?",
+          message: "Which scheme do you want to use to integrate Plasmic?",
           type: "list",
           choices: () => [
             {
@@ -266,7 +286,9 @@ async function run(): Promise<void> {
   const relativeDir = path.relative(process.cwd(), resolvedProjectPath);
   console.log("----------------------------------------");
   console.log(
-    chalk.green.bold(`Congrats! We created the Plasmic-connected project at ${relativeDir}`)
+    chalk.green.bold(
+      `Congrats! We created the Plasmic-connected project at ${relativeDir}`
+    )
   );
   console.log();
   console.log();

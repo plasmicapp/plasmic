@@ -8,14 +8,16 @@ import updateNotifier from "update-notifier";
 /**
  * Call this to check if there's an update available
  * and display to the user
+ * @returns version
  */
-export function updateNotify(): void {
+export function updateNotify(): string {
   const pkg = require("../../package.json");
   const notifier = updateNotifier({
     pkg,
     updateCheckInterval: 1000 * 60 * 60, // Check once an hour
   });
   notifier.notify();
+  return pkg.version;
 }
 
 /**
