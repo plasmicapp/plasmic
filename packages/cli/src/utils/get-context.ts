@@ -119,6 +119,12 @@ async function attemptToRestoreFilePath(
   expectedPath: string,
   baseNameToFiles: Record<string, string[]>
 ) {
+
+  // If the path is not set, always recreate.
+  if (expectedPath === "") {
+    return undefined;
+  }
+
   if (fileExists(context, expectedPath)) {
     return expectedPath;
   }
