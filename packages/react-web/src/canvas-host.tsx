@@ -2,7 +2,7 @@ import React, { ComponentType, useEffect } from "react";
 
 export interface ComponentMeta {
   name: string;
-  props: { [prop: string]: "string" | "boolean" | "number" | "slot" };
+  props: { [prop: string]: "string" | "boolean" | "number" | "object" | "slot" };
 }
 
 interface Registration {
