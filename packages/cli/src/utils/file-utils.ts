@@ -9,10 +9,12 @@ import { isLocalModulePath } from "./code-utils";
 import {
   ComponentConfig,
   CONFIG_FILE_NAME,
+  isPageAwarePlatform,
   PlasmicContext,
   ProjectConfig,
   updateConfig,
 } from "./config-utils";
+import { detectCreateReactApp } from "./envdetect";
 import { ensureString } from "./lang-utils";
 import { confirmWithUser } from "./user-utils";
 
@@ -523,4 +525,105 @@ export function existsBuffered(path: string): boolean {
 
   // eslint-disable-next-line no-restricted-properties
   return fs.existsSync(path);
+}
+
+/**
+ * If this is a Next.js, Gatsby, or create-react-app stack,
+ * - searches for an existing index file
+ * - if it's missing, creates a Welcome to Plasmic page
+ *
+ * Expect this to only succeed with create-plasmic-app,
+ * which explicitly deletes the index file
+ * @param context
+ * @returns
+ */
+export async function createMissingIndexPage(context: PlasmicContext) {
+  const isNextjs = context.config.platform === "nextjs";
+  const isGatsby = context.config.platform === "gatsby";
+  const isCra = context.config.platform === "react" && detectCreateReactApp();
+  const isTypescript = context.config.code.lang === "ts";
+
+  const pagesDir = isNextjs
+    ? context.config.nextjsConfig?.pagesDir
+    : isGatsby
+    ? context.config.gatsbyConfig?.pagesDir
+    : isCra
+    ? "../" // relative to srcDir in plasmic.json
+    : undefined;
+  const indexBasename = isCra ? `App` : `index`;
+  const extension = isTypescript ? "tsx" : "jsx";
+  const indexFilename = `${indexBasename}.${extension}`;
+
+  // Skip creating index file if not Next.js, Gatsby, or CRA
+  if (!pagesDir) {
+    return;
+  }
+
+  // Search for an existing file, skip if so
+  const searchQuery = path.join(
+    context.config.srcDir,
+    pagesDir,
+    `${indexBasename}.*`
+  );
+  const searchResults = glob.sync(searchQuery);
+  if (searchResults.length > 0) {
+    return;
+  }
+
+  // Create an index file
+  const pageComponents = L.flatMap(
+    context.config.projects,
+    (p) => p.components
+  ).filter((c) => c.componentType === "page");
+  const pageLinks = pageComponents
+    .map((pc) => {
+      // Get the extension name
+      const extName = path.extname(pc.importSpec.modulePath);
+      // Get the relative path on the filesystem
+      const relativePath = path.relative(pagesDir, pc.importSpec.modulePath);
+      // Format as an absolute path without the extension name
+      const relativeLink =
+        "/" + relativePath.slice(0, relativePath.indexOf(extName));
+      return `<li><a style={{ color: "blue" }} href="${relativeLink}">${pc.name} - ${relativeLink}</a></li>`;
+    })
+    .join("\n");
+  const pageSection =
+    !isPageAwarePlatform(context.config.platform) || pageComponents.length <= 0
+      ? ""
+      : `
+        <h3>Your pages:</h3>
+        <ul>
+          ${pageLinks}
+        </ul>
+  `;
+  const indexPath = path.join(pagesDir, indexFilename);
+  const content = `
+import React from "react";
+function Index() {
+  return (
+    <div style={{ width: "100%", padding: "100px", alignContent: "center" }}>
+      <header>
+        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0zNCAyNkgzMlYyNUMzMiAxOC4zNzI5IDI2LjYyNzEgMTMuMDAwNiAyMCAxMy4wMDA2QzEzLjM3MjkgMTMuMDAwNiA4LjAwMDU1IDE4LjM3MjkgOC4wMDA1NSAyNUw4IDI2SDZDNS40NDc3MSAyNiA1IDI1LjU1MjMgNSAyNUM1IDE2LjcxNTkgMTEuNzE2IDEwLjAwMDQgMjAgMTAuMDAwNEMyOC4yODQxIDEwLjAwMDQgMzQuOTk5NiAxNi43MTU5IDM0Ljk5OTYgMjVDMzQuOTk5NiAyNS41NTIzIDM0LjU1MjMgMjYgMzQgMjZaIiBmaWxsPSJ1cmwoI3BhaW50MF9saW5lYXIpIi8+CjxwYXRoIGQ9Ik0yNi45OTkxIDI1QzI2Ljk5OTEgMjEuMTM0NiAyMy44NjU1IDE4LjAwMSAyMCAxOC4wMDFDMTYuMTM0NSAxOC4wMDExIDEzIDIxLjEzNDYgMTMgMjVWMjZIMTVDMTUuNTUyMyAyNiAxNiAyNS41NTIzIDE2IDI1QzE2IDIyLjc5MDkgMTcuNzkwOSAyMSAyMCAyMUMyMi4yMDkxIDIxIDI0IDIyLjc5MDkgMjQgMjVDMjQgMjUuNTUyMyAyNC40NDc3IDI2IDI1IDI2SDI3TDI2Ljk5OTEgMjVaIiBmaWxsPSJ1cmwoI3BhaW50MV9saW5lYXIpIi8+CjxwYXRoIGQ9Ik0zMC45OTkgMjQuOTk5OUMzMC45OTkgMTguOTI1NCAyNi4wNzQ2IDE0LjAwMSAyMCAxNC4wMDFDMTMuOTI1NCAxNC4wMDEgOS4wMDEwNSAxOC45MjU1IDkuMDAxMDUgMjVIOVYyNkgxMi4wMDA0VjI1QzEyLjAwMDQgMjAuNTgyIDE1LjU4MiAxNy4wMDA1IDIwIDE3LjAwMDVDMjQuNDE4IDE3LjAwMDUgMjggMjAuNTgyIDI4IDI1VjI2SDMxVjI1TDMwLjk5OSAyNC45OTk5WiIgZmlsbD0idXJsKCNwYWludDJfbGluZWFyKSIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyIiB4MT0iNSIgeTE9IjI2IiB4Mj0iMzUiIHkyPSIyNiIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjMTg3N0YyIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzA0QTRGNCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MV9saW5lYXIiIHgxPSIxMyIgeTE9IjI2IiB4Mj0iMjciIHkyPSIyNiIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjRjAyODQ5Ii8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0Y1NTMzRCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50Ml9saW5lYXIiIHgxPSI5IiB5MT0iMjYiIHgyPSIzMSIgeTI9IjI2IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiM0NUJENjIiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMkFCQkE3Ii8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPC9zdmc+Cg==" alt="" />
+        <h1 style={{ margin: 0 }}>
+          Welcome to Plasmic!
+        </h1>
+        <h4>
+          <a
+            style={{ color: "blue" }}
+            href="https://www.plasmic.app/learn/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Learn Plasmic
+          </a>
+        </h4>
+        ${pageSection}
+      </header>
+    </div>
+  );
+}
+
+export default Index;
+  `;
+  await writeFileContent(context, indexPath, content);
 }
