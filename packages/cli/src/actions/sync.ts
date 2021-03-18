@@ -28,6 +28,7 @@ import {
 import { HandledError } from "../utils/error";
 import {
   assertAllPathsInRootDir,
+  createMissingIndexPage,
   defaultResourcePath,
   renameFile,
   stripExtension,
@@ -269,6 +270,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
 
   if (isFirstRun) {
     printFirstSyncInfo(context);
+    await createMissingIndexPage(context);
   }
 }
 
