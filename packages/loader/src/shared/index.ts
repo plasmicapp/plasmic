@@ -10,15 +10,19 @@ export type PlasmicOpts = {
   projects: string[];
   watch?: boolean;
   initArgs?: cli.initArgs;
-  ignorePages?: string[];
 };
 
+type onRegisterPages = (
+  pages: { name: string; projectId: string; path: string; url: string }[],
+  config: any
+) => void;
+
 async function watchForChanges(
-  plasmicDir: string,
-  pageDir: string,
-  cliPath: string
+  { dir, plasmicDir, pageDir }: PlasmicOpts,
+  onRegisterPages?: onRegisterPages
 ) {
-  let oldConfig = await cli.readConfig(plasmicDir);
+  const cliPath = path.join(dir, "node_modules", ".bin", "plasmic");
+  let currentConfig = await cli.readConfig(plasmicDir);
   const watchCmd = cp.spawn(
     "node",
     [cliPath, "watch", "--yes", "--metadata", "source=loader"],
@@ -34,20 +38,23 @@ async function watchForChanges(
     // Once the CLI output this message, we know the components & configs were updated.
     const didUpdate = data.toString().includes("updated to revision");
     if (didUpdate) {
-      gen.generateAll({ dir: plasmicDir, pageDir });
-      cli.clearStalePages(plasmicDir, pageDir, oldConfig);
-      oldConfig = await cli.readConfig(plasmicDir);
+      await gen.generateAll({ dir: plasmicDir, pageDir });
+      currentConfig = await cli.readConfig(plasmicDir);
+      if (onRegisterPages) {
+        onRegisterPages(
+          cli.getPagesFromConfig(plasmicDir, currentConfig),
+          currentConfig
+        );
+      }
     }
   });
 }
 
-export async function generateEntrypoint({
+export async function initLoader({
   dir,
   pageDir,
   projects,
-  watch,
   plasmicDir,
-  ignorePages,
   initArgs = {},
 }: PlasmicOpts) {
   console.log("Syncing plasmic projects: ", projects);
@@ -56,9 +63,18 @@ export async function generateEntrypoint({
   await cli.checkAuth(dir, plasmicExecPath);
   await cli.tryInitializePlasmicDir(dir, plasmicDir, initArgs);
   await cli.syncProject(plasmicDir, pageDir, plasmicExecPath, projects);
-  await gen.generateAll({ dir: plasmicDir, pageDir, ignorePages });
+  await gen.generateAll({ dir: plasmicDir, pageDir });
+}
 
-  if (watch) {
-    watchForChanges(plasmicDir, pageDir, plasmicExecPath);
+export async function onPostInit(
+  opts: PlasmicOpts,
+  onRegisterPages?: onRegisterPages
+) {
+  if (onRegisterPages) {
+    const config = await cli.readConfig(opts.plasmicDir);
+    onRegisterPages(cli.getPagesFromConfig(opts.plasmicDir, config), config);
+  }
+  if (opts.watch) {
+    watchForChanges(opts, onRegisterPages);
   }
 }
