@@ -43,7 +43,7 @@ ${wrap(
   `This component is owned and edited by you to instantiate the Plasmic${exampleComponent.name} component with desired variants, states, event handlers, and data.  You have complete control over this file, and this is the actual component that should be used by the rest of the codebase.`
 )}
 
-Learn more at https://www.plasmic.app/learn/blackbox-scheme/
+Learn more at https://www.plasmic.app/learn/codegen-guide/
 `
       );
     }
