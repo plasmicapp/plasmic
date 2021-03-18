@@ -12,8 +12,7 @@
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
     "build": "bash build.sh",
     "plasmic": "ts-node src/index.ts",
-    "prepare": "yarn build",
-    "postinstall": "echo 'Welcome to Plasmic! Before using please make sure you are authenticated by running `plasmic auth`'"
+    "prepare": "yarn build"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.12.1",
