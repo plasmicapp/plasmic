@@ -2,6 +2,7 @@ import cp from "child_process";
 import path from "upath";
 import * as cli from "./cli";
 import * as gen from "./gen";
+import * as substitutions from "./substitutions";
 
 export type PlasmicOpts = {
   dir: string;
@@ -10,6 +11,7 @@ export type PlasmicOpts = {
   projects: string[];
   watch?: boolean;
   initArgs?: cli.initArgs;
+  substitutions?: substitutions.Substitutions;
 };
 
 type onRegisterPages = (
@@ -50,19 +52,25 @@ async function watchForChanges(
   });
 }
 
-export async function initLoader({
-  dir,
-  pageDir,
-  projects,
-  plasmicDir,
-  initArgs = {},
-}: PlasmicOpts) {
+export async function initLoader(opts: PlasmicOpts) {
+  const { dir, pageDir, projects, plasmicDir, initArgs = {} } = opts;
   console.log("Syncing plasmic projects: ", projects);
   const plasmicExecPath = path.join(dir, "node_modules", ".bin", "plasmic");
 
   await cli.checkAuth(dir, plasmicExecPath);
   await cli.tryInitializePlasmicDir(dir, plasmicDir, initArgs);
   await cli.syncProject(plasmicDir, pageDir, plasmicExecPath, projects);
+
+  if (opts.substitutions) {
+    console.log("Registering substitutions...");
+    const config = await cli.readConfig(plasmicDir);
+    substitutions.registerSubstitutions(plasmicDir, config, opts.substitutions);
+    await cli.saveConfig(plasmicDir, config);
+    await cli.fixImports(plasmicDir, plasmicExecPath);
+  }
+
+  console.log("Generating loader...");
+
   await gen.generateAll({ dir: plasmicDir, pageDir });
 }
 
