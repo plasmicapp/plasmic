@@ -3,9 +3,18 @@ import React, { ComponentType, useEffect } from "react";
 export interface ComponentMeta {
   name: string;
   props: { [prop: string]: "string" | "boolean" | "number" | "object" | "slot" };
+  /**
+   * Either the path to the component relative to `rootDir` or the npm
+   * package name
+   */
+  importPath: string;
+  /**
+   * Whether it's a default export or named export
+   */
+  isDefaultExport?: boolean;
 }
 
-interface Registration {
+export interface Registration {
   component: ComponentType;
   meta: ComponentMeta;
 }
