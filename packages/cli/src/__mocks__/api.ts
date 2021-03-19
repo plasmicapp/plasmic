@@ -281,6 +281,7 @@ class PlasmicApi {
     const components = mockComponents.map((c) => genComponentBundle(c));
     const result = {
       components,
+      codeComponentMetas: [],
       projectConfig: genProjectMetaBundle(projectId),
       globalVariants: [],
       usedTokens: genEmptyStyleTokensMap(),
@@ -293,7 +294,6 @@ class PlasmicApi {
         iconChecksums: [],
         globalVariantChecksums: [],
         projectCssChecksum: "",
-        themeChecksums: [],
       } as ChecksumBundle,
     };
     return result;

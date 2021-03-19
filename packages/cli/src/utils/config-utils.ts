@@ -121,6 +121,12 @@ export interface JsBundleThemeConfig {
   bundleName: string;
 }
 
+export interface CodeComponentConfig {
+  id: string;
+  name: string;
+  componentImportPath: string;
+}
+
 export interface ProjectConfig {
   /** Project ID */
   projectId: string;
@@ -136,7 +142,10 @@ export interface ProjectConfig {
   /** File location for the project-wide css styles. Relative to srcDir */
   cssFilePath: string;
 
-  jsBundleThemes: JsBundleThemeConfig[];
+  // Code-component-related fields can be treated as optional not to be shown
+  // to the users nor appear to be missing in the documentation.
+  jsBundleThemes?: JsBundleThemeConfig[];
+  codeComponents?: CodeComponentConfig[]
 
   /** Metadata for each synced component in this project. */
   components: ComponentConfig[];
@@ -160,7 +169,6 @@ export function createProjectConfig(base: {
     components: [],
     icons: [],
     images: [],
-    jsBundleThemes: [],
   };
 }
 
@@ -256,8 +264,7 @@ export interface FileLock {
     | "icon"
     | "image"
     | "projectCss"
-    | "globalVariant"
-    | "theme";
+    | "globalVariant";
   // The checksum value for the file
   checksum: string;
   // The component id, or the image asset id

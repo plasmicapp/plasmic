@@ -5,6 +5,7 @@ import path from "upath";
 import { CommonArgs } from "..";
 import {
   ChecksumBundle,
+  CodeComponentMeta,
   ComponentBundle,
   ProjectMetaBundle,
   StyleConfigResponse,
@@ -235,9 +236,6 @@ export async function sync(opts: SyncArgs): Promise<void> {
       );
     }
 
-    // Write the new ComponentConfigs to disk
-    await updateConfig(context, context.config);
-
     // Fix imports
     const fixImportContext = mkFixImportContext(context.config);
     for (const m of pendingMerge) {
@@ -259,6 +257,14 @@ export async function sync(opts: SyncArgs): Promise<void> {
     }
     // Now we know config.components are all correct, so we can go ahead and fix up all the import statements
     await fixAllImportStatements(context, summary);
+
+    // We don't need to persist codeComponentMeta as it's just used to fix
+    // import statements, so just delete it before writing the new components
+    // config.
+    context.config.projects.forEach((p) => delete p.codeComponents);
+
+    // Write the new ComponentConfigs to disk
+    await updateConfig(context, context.config);
   });
 
   // Post-sync commands
@@ -377,7 +383,7 @@ async function syncProject(
         gv.contextModule
       );
     });
-    projectBundle.projectConfig.jsBundleThemes.forEach((theme) => {
+    (projectBundle.projectConfig.jsBundleThemes || []).forEach((theme) => {
       [theme.themeFileName, theme.themeModule] = maybeConvertTsxToJsx(
         theme.themeFileName,
         theme.themeModule
@@ -389,6 +395,12 @@ async function syncProject(
     projectBundle.projectConfig,
     projectBundle.globalVariants,
     projectBundle.checksums
+  );
+
+  syncCodeComponentsMeta(
+    context,
+    projectId,
+    projectBundle.codeComponentMetas,
   );
 
   await syncProjectConfig(
@@ -507,12 +519,11 @@ async function syncProjectConfig(
     checksum: checksums.projectCssChecksum,
   });
 
-  const themeFileLocks = L.keyBy(
-    projectLock.fileLocks.filter((fileLock) => fileLock.type === "theme"),
-    (fl) => fl.assetId
-  );
-  const id2themeChecksum = new Map(checksums.themeChecksums);
+  /*
   for (const theme of projectBundle.jsBundleThemes) {
+    if (!projectConfig.jsBundleThemes) {
+      projectConfig.jsBundleThemes = [];
+    }
     let themeConfig = projectConfig.jsBundleThemes.find(
       (c) => c.bundleName === theme.bundleName
     );
@@ -529,21 +540,14 @@ async function syncProjectConfig(
       theme.themeModule,
       themeConfig.themeFilePath
     );
-    // Update FileLocks
-    if (themeFileLocks[theme.bundleName]) {
-      themeFileLocks[theme.bundleName].checksum = ensure(
-        id2themeChecksum.get(theme.bundleName)
-      );
-    } else {
-      projectLock.fileLocks.push({
-        type: "theme",
-        assetId: theme.bundleName,
-        checksum: ensure(id2themeChecksum.get(theme.bundleName)),
-      });
-    }
     await writeFileContent(context, themeConfig.themeFilePath, formatted, {
       force: true,
     });
+  }
+  */
+
+  if (projectConfig.jsBundleThemes && projectConfig.jsBundleThemes.length === 0) {
+    delete projectConfig.jsBundleThemes;
   }
 
   // Write out components
@@ -559,4 +563,16 @@ async function syncProjectConfig(
     projectLock,
     checksums
   );
+}
+
+function syncCodeComponentsMeta(context: PlasmicContext, projectId: string, codeComponentBundles: CodeComponentMeta[]) {
+  const projectConfig = getOrAddProjectConfig(
+    context,
+    projectId);
+
+  projectConfig.codeComponents = codeComponentBundles.map((meta) => ({
+        id: meta.id,
+        name: meta.name,
+        componentImportPath: meta.importPath,
+      }));
 }
