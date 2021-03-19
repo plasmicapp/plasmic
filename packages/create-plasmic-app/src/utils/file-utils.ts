@@ -1,7 +1,7 @@
 import { createReadStream } from "fs";
 import * as fs from "fs/promises";
 import glob from "glob";
-import * as path from "path";
+import * as path from "upath";
 import * as readline from "readline";
 import { ensure, ensureString } from "./lang-utils";
 

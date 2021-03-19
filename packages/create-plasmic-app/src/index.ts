@@ -3,7 +3,7 @@ import * as Sentry from "@sentry/node";
 import chalk from "chalk";
 import * as fs from "fs";
 import inquirer, { DistinctQuestion } from "inquirer";
-import * as path from "path";
+import * as path from "upath";
 import validateProjectName from "validate-npm-package-name";
 import yargs from "yargs";
 import {
