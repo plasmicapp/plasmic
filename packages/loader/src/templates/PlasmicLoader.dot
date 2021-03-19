@@ -34,7 +34,7 @@ const componentMap = {
   {{~ it.componentMap :component}}
   "{{=component.name}}": {
     {{~ component.projects :project}}
-    "{{=project.projectId}}": {{=component.name}}{{=project.projectId}}
+    "{{=project.projectId}}": {{=component.name}}{{=project.projectId}},
     {{~}}
   },
   {{~}}

@@ -51,7 +51,10 @@ exports.onPostBootstrap = async () => {
     );
 
     pages
-      .filter((page) => !existingPagesMap[page.url])
+      .filter(
+        (page) =>
+          !existingPagesMap[page.url] && !existingPagesMap[page.url + "/"]
+      )
       .forEach((page) =>
         createPageParam.actions.createPage({
           path: page.url,
