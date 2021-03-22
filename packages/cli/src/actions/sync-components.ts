@@ -141,6 +141,43 @@ export async function syncProjectComponents(
   const id2RenderModuleChecksum = new Map(checksums.renderModuleChecksums);
   const id2CssRulesChecksum = new Map(checksums.cssRulesChecksums);
 
+  const deletedComponentFiles = new Set<string>();
+  for (const deletedComponent of deletedComponents) {
+    const componentConfig = allCompConfigs[deletedComponent.id];
+    if (
+      fileExists(context, componentConfig.renderModuleFilePath) &&
+      fileExists(context, componentConfig.cssFilePath)
+    ) {
+      logger.info(
+        `Deleting component: ${componentConfig.name}@${version}\t['${project.projectName}' ${project.projectId}/${componentConfig.id} ${project.version}]`
+      );
+      deleteFile(context, componentConfig.renderModuleFilePath);
+      deleteFile(context, componentConfig.cssFilePath);
+      deletedComponentFiles.add(deletedComponent.id);
+
+      const skeletonPath = componentConfig.importSpec.modulePath;
+      if (fileExists(context, skeletonPath)) {
+        const deleteSkeleton = await confirmWithUser(
+          `Do you want to delete ${skeletonPath}?`,
+          context.cliArgs.yes
+        );
+        if (deleteSkeleton) {
+          deleteFile(context, skeletonPath);
+        }
+      }
+    }
+  }
+  project.components = project.components.filter(
+    (c) => !deletedComponentFiles.has(c.id)
+  );
+
+  const deletedComponentIds = new Set(deletedComponents.map((i) => i.id));
+  projectLock.fileLocks = projectLock.fileLocks.filter(
+    (fileLock) =>
+      (fileLock.type !== "renderModule" && fileLock.type !== "cssRules") ||
+      !deletedComponentIds.has(fileLock.assetId)
+  );
+
   for (const bundle of componentBundles) {
     const {
       renderModule,
@@ -347,41 +384,4 @@ export async function syncProjectComponents(
     });
     summary.set(id, { skeletonModuleModified });
   }
-
-  const deletedComponentFiles = new Set<string>();
-  for (const deletedComponent of deletedComponents) {
-    const componentConfig = allCompConfigs[deletedComponent.id];
-    if (
-      fileExists(context, componentConfig.renderModuleFilePath) &&
-      fileExists(context, componentConfig.cssFilePath)
-    ) {
-      logger.info(
-        `Deleting component: ${componentConfig.name}@${version}\t['${project.projectName}' ${project.projectId}/${componentConfig.id} ${project.version}]`
-      );
-      deleteFile(context, componentConfig.renderModuleFilePath);
-      deleteFile(context, componentConfig.cssFilePath);
-      deletedComponentFiles.add(deletedComponent.id);
-
-      const skeletonPath = componentConfig.importSpec.modulePath;
-      if (fileExists(context, skeletonPath)) {
-        const deleteSkeleton = await confirmWithUser(
-          `Do you want to delete ${skeletonPath}?`,
-          context.cliArgs.yes
-        );
-        if (deleteSkeleton) {
-          deleteFile(context, skeletonPath);
-        }
-      }
-    }
-  }
-  project.components = project.components.filter(
-    (c) => !deletedComponentFiles.has(c.id)
-  );
-
-  const deletedComponentIds = new Set(deletedComponents.map((i) => i.id));
-  projectLock.fileLocks = projectLock.fileLocks.filter(
-    (fileLock) =>
-      (fileLock.type !== "renderModule" && fileLock.type !== "cssRules") ||
-      !deletedComponentIds.has(fileLock.assetId)
-  );
 }
