@@ -12,14 +12,15 @@ type PluginOptions = Partial<PlasmicOpts>;
 
 async function initPlasmicLoader(pluginOptions: PluginOptions) {
   const defaultDir = pluginOptions.dir || process.cwd();
-  const plasmicDir = path.join(defaultDir, ".next", ".plasmic");
+  const cacheDir = path.join(__dirname, "..", "..", ".cache");
+  const plasmicDir = path.join(cacheDir, ".plasmic");
   const nextPageDir = path.join(defaultDir, "pages");
   const defaultOptions = {
     watch: process.env.NODE_ENV === "development",
     initArgs: {
       platform: "nextjs",
       "pages-dir": "./pages",
-      "images-public-dir": "../../../public",
+      "images-public-dir": path.join(process.cwd(), "public"),
       "src-dir": "./components",
     },
     dir: defaultDir,

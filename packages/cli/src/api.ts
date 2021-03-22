@@ -76,6 +76,7 @@ export interface VersionResolution {
 }
 
 export interface RequiredPackages {
+  "@plasmicapp/loader": string;
   "@plasmicapp/cli": string;
   "@plasmicapp/react-web": string;
 }
