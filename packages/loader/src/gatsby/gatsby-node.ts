@@ -1,12 +1,17 @@
 import path from "upath";
-import { initLoader, onPostInit, PlasmicOpts } from "../shared";
-
+import { initLoader, onPostInit } from "../shared";
+import type { PlasmicOpts } from "../shared/types";
 type PluginOptions = Partial<PlasmicOpts>;
 
 let opts: PlasmicOpts;
 exports.onPreBootstrap = (_: any, pluginOptions: PluginOptions) => {
+
+  // This is passed by Gatsby, here we're deleting it to make sure
+  // the plugin options only contains known keys.
+  delete (pluginOptions as any).plugins;
   const defaultDir = pluginOptions.dir || process.cwd();
   const plasmicDir = path.join(defaultDir, ".cache", ".plasmic");
+
   const defaultOptions = {
     initArgs: {
       platform: "gatsby",

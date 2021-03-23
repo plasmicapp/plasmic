@@ -1,10 +1,6 @@
 import path from "upath";
-
-export type Substitutions = {
-  components?: {
-    [key: string]: { projectId?: string; path: string };
-  };
-};
+import * as logger from "./logger";
+import { Substitutions } from "./types";
 
 function substituteComponents(
   componentsDir: string,
@@ -14,10 +10,13 @@ function substituteComponents(
   if (!substitutions) {
     return;
   }
+  const componentsMap = Object.fromEntries(
+    substitutions.map((elem) => [elem.name, elem])
+  );
   const seenComponents: Record<string, boolean> = {};
   const markAsSeen = (name: string) => {
     if (seenComponents[name]) {
-      console.info(
+      logger.error(
         `Component ${name} found in multiple projects. Please specify the project id!`
       );
       process.exit(1);
@@ -26,10 +25,10 @@ function substituteComponents(
   };
   config.projects.forEach((project: any) => {
     project.components.forEach((component: any) => {
-      if (!substitutions[component.name]) {
+      if (!componentsMap[component.name]) {
         return;
       }
-      const { projectId, path: componentPath } = substitutions[component.name];
+      const { projectId, path: componentPath } = componentsMap[component.name];
 
       if (projectId && projectId !== project.projectId) {
         return;
@@ -39,7 +38,7 @@ function substituteComponents(
       }
       component.importSpec.modulePath = path.relative(
         componentsDir,
-        componentPath
+        path.resolve(componentPath)
       );
     });
   });
