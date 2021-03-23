@@ -3,6 +3,9 @@
   "version": "0.1.122",
   "description": "plasmic cli for syncing local code with Plasmic designs",
   "main": "./dist/index.js",
+  "engines": {
+    "node": ">=12"
+  },
   "bin": {
     "plasmic": "./dist/index.js"
   },
