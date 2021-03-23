@@ -236,6 +236,9 @@ export function replaceImports(
     } else if (type === "render") {
       // import of the PP blackbox
       const compConfig = fixImportContext.components[uuid];
+      if (!compConfig) {
+        throwMissingReference(context, "component", uuid, fromPath);
+      }
       const realPath = makeImportPath(
         context,
         fromPath,
@@ -246,6 +249,9 @@ export function replaceImports(
     } else if (type === "css") {
       // import of the PP css file
       const compConfig = fixImportContext.components[uuid];
+      if (!compConfig) {
+        throwMissingReference(context, "component", uuid, fromPath);
+      }
       const realPath = makeImportPath(
         context,
         fromPath,
@@ -256,6 +262,9 @@ export function replaceImports(
     } else if (type === "globalVariant") {
       // import of global context
       const variantConfig = fixImportContext.globalVariants[uuid];
+      if (!variantConfig) {
+        throwMissingReference(context, "global variant", uuid, fromPath);
+      }
       const realPath = makeImportPath(
         context,
         fromPath,
@@ -290,6 +299,9 @@ export function replaceImports(
       stmt.source.value = realPath;
     } else if (type === "projectcss") {
       const projectConfig = fixImportContext.projects[uuid];
+      if (!projectConfig) {
+        throwMissingReference(context, "project", uuid, fromPath);
+      }
       const realPath = makeImportPath(
         context,
         fromPath,
