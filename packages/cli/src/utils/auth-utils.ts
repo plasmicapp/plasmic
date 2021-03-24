@@ -196,7 +196,7 @@ function readCurrentAuth(authPath?: string) {
   const authFromEnv = getEnvAuth();
   if (authFromEnv) return authFromEnv;
 
-  if (!authPath) {
+  if (!authPath && !process.env.PLASMIC_DISABLE_AUTH_SEARCH) {
     authPath = findAuthFile(process.cwd(), { traverseParents: true });
   }
   if (!authPath) {

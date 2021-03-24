@@ -11,7 +11,8 @@ import {
   writeFileContentRaw,
 } from "./file-utils";
 
-export const DEFAULT_HOST = "https://studio.plasmic.app";
+export const DEFAULT_HOST =
+  process.env.PLASMIC_DEFAULT_HOST || "https://studio.plasmic.app";
 
 // Default filenames
 export const AUTH_FILE_NAME = ".plasmic.auth";
@@ -130,6 +131,8 @@ export interface CodeComponentConfig {
 export interface ProjectConfig {
   /** Project ID */
   projectId: string;
+  /** Project API token. Grants read-only sync access to just this specific project and its dependencies. */
+  projectApiToken?: string;
   /** Project name synced down from Studio */
   projectName: string;
   /**
@@ -157,12 +160,14 @@ export interface ProjectConfig {
 
 export function createProjectConfig(base: {
   projectId: string;
+  projectApiToken: string;
   projectName: string;
   version: string;
   cssFilePath: string;
 }): ProjectConfig {
   return {
     projectId: base.projectId,
+    projectApiToken: base.projectApiToken,
     projectName: base.projectName,
     version: base.version,
     cssFilePath: base.cssFilePath,

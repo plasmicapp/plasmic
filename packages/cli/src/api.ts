@@ -61,6 +61,7 @@ export interface ImageBundle {
 
 export interface ProjectVersionMeta {
   projectId: string;
+  projectApiToken: string;
   version: string;
   projectName: string;
   componentIds: string[];
@@ -142,6 +143,11 @@ export interface ProjectIconsResponse {
   icons: IconBundle[];
 }
 
+export interface ProjectIdAndToken {
+  projectId: string;
+  projectApiToken: string;
+}
+
 export class PlasmicApi {
   constructor(private auth: AuthConfig) {}
 
@@ -167,6 +173,7 @@ export class PlasmicApi {
       projectId: string;
       versionRange: string;
       componentIdOrNames: readonly string[] | undefined;
+      projectApiToken?: string;
     }[],
     recursive?: boolean
   ): Promise<VersionResolution> {
@@ -320,9 +327,13 @@ export class PlasmicApi {
   // message
   private async post(url: string, data?: any, rethrowAppError?: boolean) {
     try {
-      return await axios.post(url, data, {
-        headers: this.makeHeaders(),
-      });
+      return await axios.post(
+        url,
+        { projectIdsAndTokens: this.projectIdsAndTokens, ...data },
+        {
+          headers: this.makeHeaders(),
+        }
+      );
     } catch (e) {
       const error = e as AxiosError;
       const errorMsg = this.makeErrorMessage(error);
@@ -346,7 +357,7 @@ export class PlasmicApi {
       return undefined;
     }
     if (response.status === 403) {
-      return `Incorrect Plasmic credentials; please check your .plasmic.auth file.`;
+      return `Incorrect Plasmic credentials; please check your .plasmic.auth file or your project API tokens.`;
     }
     if (response.data?.error?.message) {
       return response.data.error.message;
@@ -372,5 +383,10 @@ export class PlasmicApi {
     }
 
     return headers;
+  }
+
+  private projectIdsAndTokens?: ProjectIdAndToken[];
+  attachProjectIdsAndTokens(idsAndTokens: ProjectIdAndToken[]) {
+    this.projectIdsAndTokens = idsAndTokens;
   }
 }

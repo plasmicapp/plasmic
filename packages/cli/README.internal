@@ -21,9 +21,18 @@ correctly
 Debugging
 =========
 
-If you would like to run the source in-place from the .ts files so that you
-can debug the unmangled source code in Chrome devtools, but still be able to
-run the app as if it were being run from a different project directory, start
-the app with the env var:
+Example invocation:
 
-    DEBUG_CHDIR=/path/to/target/project node --inspect -r ts-node/register src/index.ts help
+    DEBUG_CHDIR=/path/to/target/project \
+        PLASMIC_DEFAULT_HOST=http://localhost:3003 \
+        PLASMIC_DISABLE_AUTH_SEARCH=1 \
+        node --inspect -r ts-node/register src/index.ts \
+        --auth ~/.plasmic.dev.auth \
+        sync
+
+This runs the source in-place from the .ts files so that you can debug the unmangled source code in Chrome devtools.
+
+- `DEBUG_CHDIR`: First cd's into the target directory (which typically has its own node_modules etc., so it's tricky to try to run the source from there).
+- `PLASMIC_DEFAULT_HOST`: Point to your localhost app server (even if you don't already have an auth file set up).
+- `--auth`: Reference your own alternate auth file, if you already have one.
+- `PLASMIC_DISABLE_AUTH_SEARCH`: Prevent auto-searching home and parent dirs for a `.plasmic.auth` file. Useful if you want to not provide any `--auth` (you probably won't use both `--auth` and this together).

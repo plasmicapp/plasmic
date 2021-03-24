@@ -7,6 +7,7 @@ import {
   ChecksumBundle,
   CodeComponentMeta,
   ComponentBundle,
+  ProjectIdAndToken,
   ProjectMetaBundle,
   StyleConfigResponse,
 } from "../api";
@@ -137,7 +138,9 @@ async function ensureRequiredPackages(context: PlasmicContext, yes?: boolean) {
  * @param opts
  */
 export async function sync(opts: SyncArgs): Promise<void> {
-  const context = await getContext(opts);
+  // Initially allow for a missing auth. Only require an auth once we need to fetch new or updated API tokens for any
+  // projects.
+  let context = await getContext(opts, { enableSkipAuth: true });
 
   const isFirstRun = context.config.projects.length === 0;
 
@@ -157,6 +160,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
       versionRange:
         versionRange || projectConfigMap[projectId]?.version || "latest",
       componentIdOrNames: undefined, // Get all components!
+      projectApiToken: projectConfigMap[projectId]?.projectApiToken,
     };
   });
 
@@ -166,6 +170,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
         projectId: p.projectId,
         versionRange: p.version,
         componentIdOrNames: undefined, // Get all components!
+        projectApiToken: p.projectApiToken,
       }));
 
   // Short-circuit if nothing to sync
@@ -174,6 +179,22 @@ export async function sync(opts: SyncArgs): Promise<void> {
       "Don't know which projects to sync. Please specify via --projects"
     );
   }
+
+  // If there are any missing projectApiTokens, reload the context, this time requiring auth, so that we can fetch the
+  // projectApiTokens from the server (as a user that has permission to do so).
+  if (projectSyncParams.some((p) => !p.projectApiToken)) {
+    context = await getContext(opts);
+  }
+
+  // Pass just the root IDs and tokens that we do have for the resolve call. (In reality it doesn't need any of this
+  // because it only consults the projectApiToken within projectSyncParams; we could just attach [].)
+  context.api.attachProjectIdsAndTokens(
+    projectSyncParams.flatMap((p) =>
+      p.projectApiToken
+        ? [{ projectId: p.projectId, projectApiToken: p.projectApiToken }]
+        : []
+    )
+  );
 
   const versionResolution = await context.api.resolveSync(
     projectSyncParams,
@@ -194,6 +215,15 @@ export async function sync(opts: SyncArgs): Promise<void> {
   const summary = new Map<string, ComponentUpdateSummary>();
   const pendingMerge = new Array<ComponentPendingMerge>();
 
+  // The resolveSync call returns the project API tokens for all relevant projects (sources and dependencies).
+  // resolveSync is what does this because it's what is computing all concrete versions to sync, and the dependency
+  // graph can change with any version. Subsequent API calls require the exact API tokens, not to redo this work on each
+  // call. Only resolveSync accepts just the API tokens for the root projects.
+  const projectIdsAndTokens = projectsToSync.map((p) =>
+    L.pick(p, "projectId", "projectApiToken")
+  );
+  context.api.attachProjectIdsAndTokens(projectIdsAndTokens);
+
   // Perform the actual sync
   await withBufferedFs(async () => {
     // Sync in sequence (no parallelism)
@@ -202,6 +232,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
       await syncProject(
         context,
         opts,
+        projectIdsAndTokens,
         projectMeta.projectId,
         projectMeta.componentIds,
         projectMeta.version,
@@ -322,6 +353,7 @@ function fixFileExtension(context: PlasmicContext) {
 async function syncProject(
   context: PlasmicContext,
   opts: SyncArgs,
+  projectIdsAndTokens: ProjectIdAndToken[],
   projectId: string,
   componentIds: string[],
   projectVersion: string,
@@ -337,6 +369,10 @@ async function syncProject(
   const existingCompScheme: Array<[string, "blackbox" | "direct"]> = (
     existingProject?.components || []
   ).map((c) => [c.id, c.scheme]);
+
+  const projectApiToken = ensure(
+    projectIdsAndTokens.find((p) => p.projectId === projectId)
+  ).projectApiToken;
 
   const existingChecksums = getChecksums(
     context,
@@ -406,6 +442,7 @@ async function syncProject(
   await syncProjectConfig(
     context,
     projectBundle.projectConfig,
+    projectApiToken,
     projectVersion,
     dependencies,
     projectBundle.components,
@@ -451,6 +488,7 @@ async function syncStyleConfig(
 async function syncProjectConfig(
   context: PlasmicContext,
   projectBundle: ProjectMetaBundle,
+  projectApiToken: string,
   version: string,
   dependencies: { [projectId: string]: string },
   componentBundles: ComponentBundle[],
@@ -476,6 +514,7 @@ async function syncProjectConfig(
     projectBundle.projectId,
     createProjectConfig({
       projectId: projectBundle.projectId,
+      projectApiToken,
       projectName: projectBundle.projectName,
       version: versionRange,
       cssFilePath: defaultCssFilePath,
@@ -487,6 +526,7 @@ async function syncProjectConfig(
   if (!projectConfig.cssFilePath) {
     projectConfig.cssFilePath = defaultCssFilePath;
   }
+  projectConfig.projectApiToken = projectApiToken;
 
   // plasmic.lock
   const projectLock = getOrAddProjectLock(context, projectConfig.projectId);

@@ -5,6 +5,7 @@ import {
   ComponentBundle,
   ProjectBundle,
   ProjectIconsResponse,
+  ProjectIdAndToken,
   ProjectMetaBundle,
   ProjectVersionMeta,
   RequiredPackages,
@@ -25,6 +26,7 @@ const api: any = jest.genMockFromModule("../api");
 const PROJECTS: MockProject[] = [];
 export interface MockProject {
   projectId: string;
+  projectApiToken: string;
   version: string;
   projectName: string;
   components: MockComponent[];
@@ -201,6 +203,7 @@ class PlasmicApi {
       projectId: string;
       versionRange: string;
       componentIdOrNames: readonly string[] | undefined;
+      projectApiToken?: string;
     }[],
     recursive?: boolean
   ): Promise<VersionResolution> {
@@ -215,6 +218,16 @@ class PlasmicApi {
       const availableProjects = Array.from(PROJECTS.values()).filter(
         (p) => p.projectId === proj.projectId
       );
+      if (
+        !(
+          (this.auth.user && this.auth.token) ||
+          availableProjects.every(
+            (p) => p.projectApiToken === proj.projectApiToken
+          )
+        )
+      ) {
+        throw new Error("No user+token, and project API tokens don't match");
+      }
       const availableVersions = availableProjects.map((p) => p.version);
       const version = semver.maxSatisfying(
         availableVersions,
@@ -262,6 +275,21 @@ class PlasmicApi {
   ): Promise<ProjectBundle> {
     if (PROJECTS.length <= 0) {
       throw new Error("Remember to call __addMockProject first!");
+    }
+    const maybeTokenPair = this.lastProjectIdsAndTokens.find(
+      (pair) => pair.projectId === projectId
+    );
+    if (
+      !(
+        (this.auth.user && this.auth.token) ||
+        PROJECTS.find(
+          (p) =>
+            p.projectId === projectId &&
+            p.projectApiToken === maybeTokenPair?.projectApiToken
+        )
+      )
+    ) {
+      throw new Error("No user+token and project API tokens don't match");
     }
     const mockComponents = getMockComponents(
       projectId,
@@ -334,6 +362,11 @@ class PlasmicApi {
   }
 
   connectSocket() {}
+
+  lastProjectIdsAndTokens: ProjectIdAndToken[] = [];
+  attachProjectIdsAndTokens(idsAndTokens: ProjectIdAndToken[]) {
+    this.lastProjectIdsAndTokens = idsAndTokens;
+  }
 }
 
 api.PlasmicApi = PlasmicApi;

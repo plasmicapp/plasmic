@@ -1,7 +1,8 @@
 import L from "lodash";
 import { SyncArgs } from "../actions/sync";
-import { ProjectConfig } from "../utils/config-utils";
+import { PlasmicConfig, ProjectConfig } from "../utils/config-utils";
 import { TempRepo } from "../utils/test-utils";
+import { MockProject } from "../__mocks__/api";
 
 jest.mock("../api");
 
@@ -9,10 +10,38 @@ export const mockApi = require("../api");
 export let opts: SyncArgs; // Options to pass to sync
 export let tmpRepo: TempRepo;
 
+export const defaultPlasmicJson: PlasmicConfig = {
+  platform: "react",
+  code: {
+    lang: "ts",
+    scheme: "blackbox",
+  },
+  style: {
+    scheme: "css",
+    defaultStyleCssFilePath: "plasmic/PP__plasmic__default_style.css",
+  },
+  images: {
+    scheme: "inlined",
+  },
+  tokens: {
+    scheme: "theo",
+    tokensFilePath: "plasmic-tokens.theo.json",
+  },
+  srcDir: "src/",
+  defaultPlasmicDir: "./plasmic",
+  projects: [],
+  globalVariants: {
+    variantGroups: [],
+  },
+  cliVersion: "0.1.44",
+};
 export function standardTestSetup(includeDep = true) {
+  process.env.PLASMIC_DISABLE_AUTH_SEARCH = "1";
+
   // Setup server-side mock data
-  const project1 = {
+  const project1: MockProject = {
     projectId: "projectId1",
+    projectApiToken: "abc",
     version: "1.2.3",
     projectName: "project1",
     components: [
@@ -31,8 +60,9 @@ export function standardTestSetup(includeDep = true) {
         }
       : {},
   };
-  const dependency = {
+  const dependency: MockProject = {
     projectId: "dependencyId1",
+    projectApiToken: "def",
     version: "2.3.4",
     projectName: "dependency1",
     components: [
@@ -52,31 +82,7 @@ export function standardTestSetup(includeDep = true) {
     user: "yang@plasmic.app",
     token: "faketoken",
   });
-  tmpRepo.writePlasmicJson({
-    platform: "react",
-    code: {
-      lang: "ts",
-      scheme: "blackbox",
-    },
-    style: {
-      scheme: "css",
-      defaultStyleCssFilePath: "plasmic/PP__plasmic__default_style.css",
-    },
-    images: {
-      scheme: "inlined",
-    },
-    tokens: {
-      scheme: "theo",
-      tokensFilePath: "plasmic-tokens.theo.json",
-    },
-    srcDir: "src/",
-    defaultPlasmicDir: "./plasmic",
-    projects: [],
-    globalVariants: {
-      variantGroups: [],
-    },
-    cliVersion: "0.1.44",
-  });
+  tmpRepo.writePlasmicJson(defaultPlasmicJson);
 
   // Default opts and config
   opts = {
@@ -96,6 +102,7 @@ export function standardTestSetup(includeDep = true) {
 export function standardTestTeardown() {
   tmpRepo.destroy();
   mockApi.clear();
+  delete process.env["PLASMIC_DISABLE_AUTH_SEARCH"];
 }
 
 export function expectProject1Components() {
@@ -143,6 +150,7 @@ export function expectProject1PlasmicJson() {
   const plasmicJson = tmpRepo.readPlasmicJson();
   expect(plasmicJson.projects.length).toEqual(1);
   const projectConfig = plasmicJson.projects[0];
+  expect(projectConfig.projectApiToken).toBe("abc");
   expect(projectConfig.components.length).toEqual(2);
   const componentNames = projectConfig.components.map((c) => c.name);
   expect(componentNames).toContain("Button");

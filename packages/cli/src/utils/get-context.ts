@@ -18,10 +18,10 @@ import {
   readConfig,
 } from "./config-utils";
 import {
+  buildBaseNameToFiles,
   existsBuffered,
   fileExists,
   readFileText,
-  buildBaseNameToFiles,
 } from "./file-utils";
 import { ensure } from "./lang-utils";
 import { getCliVersion } from "./npm-utils";
@@ -111,7 +111,6 @@ async function attemptToRestoreFilePath(
   expectedPath: string,
   baseNameToFiles: Record<string, string[]>
 ) {
-
   // If the path is not set, always recreate.
   if (expectedPath === "") {
     return undefined;
@@ -258,8 +257,13 @@ async function resolveMissingFilesInConfig(
   }
 }
 
-export async function getContext(args: CommonArgs): Promise<PlasmicContext> {
-  const auth = await getOrInitAuth(args);
+export async function getContext(
+  args: CommonArgs,
+  { enableSkipAuth = false }: { enableSkipAuth?: boolean } = {}
+): Promise<PlasmicContext> {
+  const auth = enableSkipAuth
+    ? await getCurrentOrDefaultAuth(args)
+    : await getOrInitAuth(args);
 
   /** Sentry */
   if (auth.host.startsWith(DEFAULT_HOST)) {
@@ -269,7 +273,9 @@ export async function getContext(args: CommonArgs): Promise<PlasmicContext> {
         "https://3ed4eb43d28646e381bf3c50cff24bd6@o328029.ingest.sentry.io/5285892",
     });
     Sentry.configureScope((scope) => {
-      scope.setUser({ email: auth.user });
+      if (auth.user) {
+        scope.setUser({ email: auth.user });
+      }
       scope.setExtra("cliVersion", getCliVersion());
       scope.setExtra("args", JSON.stringify(args));
       scope.setExtra("host", auth.host);
@@ -318,6 +324,22 @@ export async function getContext(args: CommonArgs): Promise<PlasmicContext> {
   removeMissingFilesFromLock(context, config, lock);
 
   return context;
+}
+
+/**
+ * Use empty user/token to signify no auth (only returning to provide a default host).
+ */
+async function getCurrentOrDefaultAuth(args: CommonArgs) {
+  const auth = await getCurrentAuth(args.auth);
+  if (auth) {
+    return auth;
+  }
+
+  return {
+    host: DEFAULT_HOST,
+    user: "",
+    token: "",
+  };
 }
 
 async function getOrInitAuth(args: CommonArgs) {
