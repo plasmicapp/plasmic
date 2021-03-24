@@ -150,7 +150,7 @@ export async function generateNextPages(
   const catchAllFileName = "[...plasmicLoaderPage]" + extension;
   const topLevelPages = await fs.readdir(dir);
 
-  const plasmicRootPage = pages.find((page) => page.url === "/index");
+  const plasmicRootPage = pages.find((page) => page.url === "/");
   const existingRootPage = topLevelPages.find((page) =>
     page.match(/^index\.(js|jsx|ts|tsx)$/)
   );

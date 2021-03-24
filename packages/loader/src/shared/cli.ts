@@ -129,12 +129,19 @@ export async function fixImports(dir: string, plasmicExecPath: string) {
   );
 }
 
-/**
- * Convert a page path (like pages/my-page.tsx) into their corresponding path (/my-page).
- */
 function getPageUrl(path: string) {
-  const [_, url] = path.split(/^pages(.*)\..*$/);
-  return url;
+  // Convert a page path (like pages/my-page.tsx) into their corresponding path (/my-page).
+  let [_, url] = path.split(/^pages(.*)\..*$/);
+
+  // Remove the ending "/index" path, which is required for file routing but not for URLs.
+  // Examples:
+  // /index -> /
+  // /index/index -> /index
+
+  if (url.endsWith("index")) {
+    url = url.slice(0, -6);
+  }
+  return url === "" ? "/" : url;
 }
 
 export function getPagesFromConfig(plasmicDir: string, config: any) {
