@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "upath";
 import templates from "../templates";
+import * as logger from "./logger";
 
 type ComponentData = {
   name: string;
@@ -66,19 +67,29 @@ function generatePlasmicLoader(dir: string, config: any) {
   const componentData: ComponentData[] = [];
   const componentDataKeyedByName: { [name: string]: ComponentData[] } = {};
 
+  const addToComponentData = (data: ComponentData) => {
+    if (!componentDataKeyedByName[data.name]) {
+      componentDataKeyedByName[data.name] = [];
+    }
+    componentData.push(data);
+    componentDataKeyedByName[data.name].push(data);
+  };
+
   for (const project of config.projects) {
-    for (const component of project.components) {
-      const data = {
+    project.components.forEach((component: any) =>
+      addToComponentData({
         name: component.name,
         projectId: project.projectId,
         path: path.join(dir, config.srcDir, component.renderModuleFilePath),
-      };
-      if (!componentDataKeyedByName[data.name]) {
-        componentDataKeyedByName[data.name] = [];
-      }
-      componentData.push(data);
-      componentDataKeyedByName[data.name].push(data);
-    }
+      })
+    );
+    project.icons.forEach((icon: any) =>
+      addToComponentData({
+        name: icon.name,
+        projectId: project.projectId,
+        path: path.join(dir, config.srcDir, icon.moduleFilePath),
+      })
+    );
   }
 
   const providerData: ProviderData[] = [];
@@ -148,20 +159,20 @@ export async function generateNextPages(
     plasmicRootPage &&
     existingRootPage &&
     !(await isPlasmicManagedFile(path.join(dir, existingRootPage)));
-  let conflictingCatchAll = topLevelPages.some(
+  const conflictingCatchAll = topLevelPages.find(
     (page) => page.startsWith("[") && page !== catchAllFileName
   );
 
   if (conflictingRoot && !didWarnConflictingRoot) {
-    console.log(
-      'Plasmic found top-level "/" page while trying to register its own. Plasmic page will be ignored.'
+    logger.warn(
+      `Top-level ${existingRootPage} detected.\nPlasmic uses a catch-all file to register Plasmic pages. Because of this conflict, Plasmic wont register this page.`
     );
     didWarnConflictingRoot = true;
   }
 
   if (conflictingCatchAll && !didWarnConflictingCatchAll) {
-    console.log(
-      "Plasmic found top-level catch-all while trying to register its own. Plasmic page will be ignored."
+    logger.warn(
+      `Top-level ${conflictingCatchAll} detected.\nPlasmic uses a catch-all file to register Plasmic pages. Because of this conflict, Plasmic pages will be ignored.`
     );
     didWarnConflictingCatchAll = true;
   }
@@ -181,7 +192,7 @@ export async function generateNextPages(
       path.join(dir, catchAllFileName),
       templates.NextPage({
         pages: pages
-          .filter((page) => page.url === "/")
+          .filter((page) => page.url !== "/")
           .map((page) => ({ ...page, url: page.url.substring(1) })),
       })
     );

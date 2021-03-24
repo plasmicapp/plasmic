@@ -1,8 +1,8 @@
-import path from "upath";
-import { initLoader, onPostInit, PlasmicOpts } from "../shared";
+import { initLoader, maybeAddToGitIgnore, onPostInit } from "../shared";
 import { ensure } from "../shared/utils";
 import * as gen from "../shared/gen";
-
+import type { PlasmicOpts } from "../shared/types";
+import path from "upath";
 // From: https://github.com/vercel/next.js/blob/canary/packages/next/next-server/lib/constants.ts.
 const PHASE_PRODUCTION_BUILD = "phase-production-build";
 const PHASE_DEVELOPMENT_SERVER = "phase-development-server";
@@ -12,8 +12,10 @@ type PluginOptions = Partial<PlasmicOpts>;
 
 async function initPlasmicLoader(pluginOptions: PluginOptions) {
   const defaultDir = pluginOptions.dir || process.cwd();
-  const cacheDir = path.join(__dirname, "..", "..", ".cache");
-  const plasmicDir = path.join(cacheDir, ".plasmic");
+
+  // Attempted to select a hidden location (like .next/.plasmic or inside node modules)
+  // But ran into issues. We'll choose .plasmic and add this to their .gitignore.
+  const plasmicDir = path.join(defaultDir, ".plasmic");
   const nextPageDir = path.join(defaultDir, "pages");
   const defaultOptions = {
     watch: process.env.NODE_ENV === "development",
@@ -33,6 +35,7 @@ async function initPlasmicLoader(pluginOptions: PluginOptions) {
     ...pluginOptions,
   } as PlasmicOpts;
 
+  await maybeAddToGitIgnore(path.join(process.cwd(), ".gitignore"), ".plasmic");
   await initLoader(opts);
 
   return onPostInit(opts, async (pages, config) =>

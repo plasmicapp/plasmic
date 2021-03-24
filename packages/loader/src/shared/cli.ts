@@ -6,10 +6,8 @@ import util from "util";
 import * as api from "./api";
 import * as semver from "./semver";
 import * as utils from "./utils";
-
-export type initArgs = {
-  [key: string]: string;
-};
+import * as logger from "./logger";
+import type { PlasmicOpts } from "./types";
 
 const exec = util.promisify(cp.exec);
 
@@ -20,8 +18,7 @@ async function execOrFail(dir: string, command: string, message: string) {
       env: { ...process.env, PLASMIC_LOADER: "1" },
     });
   } catch (e) {
-    console.error(e);
-    console.error(chalk.bold(chalk.redBright("Plasmic error:")), message);
+    logger.error(chalk.bold(chalk.redBright("Plasmic error: ")) + message);
     process.exit(1);
   }
 }
@@ -43,7 +40,7 @@ async function getCurrentLoaderVersion() {
       .version;
     return utils.ensure(version);
   } catch (e) {
-    console.error(e);
+    logger.error(e);
     process.exit(1);
   }
 }
@@ -53,19 +50,14 @@ export async function ensureRequiredLoaderVersion() {
   const version = await getCurrentLoaderVersion();
 
   if (semver.gt(requiredVersions["@plasmicapp/loader"], version)) {
-    console.info(
+    logger.info(
       "A newer version of @plasmicapp/loader is required. Please upgrade your current version and try again."
     );
     process.exit(1);
   }
 }
 
-export async function tryInitializePlasmicDir(
-  dir: string,
-  plasmicDir: string,
-  initArgs: initArgs
-) {
-  await fs.mkdir(plasmicDir, { recursive: true });
+async function installPackages(plasmicDir: string) {
   await fs.writeFile(
     path.join(plasmicDir, "package.json"),
     `{
@@ -82,6 +74,14 @@ export async function tryInitializePlasmicDir(
     "npm install --no-package-lock",
     `Unable to install plasmic dependencies. Please delete ${plasmicDir} and try again.`
   );
+}
+
+export async function tryInitializePlasmicDir(
+  plasmicDir: string,
+  initArgs: PlasmicOpts["initArgs"] = {}
+) {
+  await fs.mkdir(plasmicDir, { recursive: true });
+  await installPackages(plasmicDir);
 
   const plasmicExecPath = path.join(
     plasmicDir,
@@ -93,7 +93,6 @@ export async function tryInitializePlasmicDir(
 
   try {
     await fs.access(configPath);
-    console.log(".plasmic directory detected, skipping init.");
   } catch {
     await execOrFail(
       plasmicDir,

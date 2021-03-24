@@ -1,18 +1,12 @@
 import cp from "child_process";
 import path from "upath";
+import fs from "fs/promises";
 import * as cli from "./cli";
 import * as gen from "./gen";
 import * as substitutions from "./substitutions";
-
-export type PlasmicOpts = {
-  dir: string;
-  plasmicDir: string;
-  pageDir: string;
-  projects: string[];
-  watch?: boolean;
-  initArgs?: cli.initArgs;
-  substitutions?: substitutions.Substitutions;
-};
+import * as logger from "./logger";
+import type { PlasmicOpts } from "./types";
+import { PlasmicOptsSchema } from "./validation";
 
 type onRegisterPages = (
   pages: { name: string; projectId: string; path: string; url: string }[],
@@ -20,7 +14,7 @@ type onRegisterPages = (
 ) => void;
 
 async function watchForChanges(
-  { dir, plasmicDir, pageDir }: PlasmicOpts,
+  { plasmicDir, pageDir }: PlasmicOpts,
   onRegisterPages?: onRegisterPages
 ) {
   const cliPath = path.join(plasmicDir, "node_modules", ".bin", "plasmic");
@@ -34,11 +28,15 @@ async function watchForChanges(
       stdio: "pipe",
     }
   );
-  watchCmd.stdout.on("data", async function (data) {
-    process.stdout.write(`plasmic: ${data.toString()}`);
+  watchCmd.stdout.on("data", async function (data: Buffer) {
+    const content = data.toString();
+    content
+      .split("\n")
+      .filter(Boolean)
+      .forEach((text) => logger.cliInfo(text));
 
     // Once the CLI output this message, we know the components & configs were updated.
-    const didUpdate = data.toString().includes("updated to revision");
+    const didUpdate = content.includes("updated to revision");
     if (didUpdate) {
       await gen.generateAll({ dir: plasmicDir, pageDir });
       currentConfig = await cli.readConfig(plasmicDir);
@@ -52,26 +50,38 @@ async function watchForChanges(
   });
 }
 
-export async function initLoader(opts: PlasmicOpts) {
-  const { dir, pageDir, projects, plasmicDir, initArgs = {} } = opts;
-  console.log("Checking that your loader version is up to date.");
-  await cli.ensureRequiredLoaderVersion();
-  console.log("Syncing plasmic projects: ", projects);
-  const plasmicExecPath = path.join(plasmicDir, "node_modules", ".bin", "plasmic");
+export async function initLoader(userOpts: PlasmicOpts) {
+  const opts: PlasmicOpts = await PlasmicOptsSchema.validateAsync(
+    userOpts
+  ).catch((error) => {
+    logger.error(error.message);
+    process.exit(1);
+  });
 
-  await cli.tryInitializePlasmicDir(dir, plasmicDir, initArgs);
+  const { dir, pageDir, projects, plasmicDir, initArgs = {} } = opts;
+  logger.info("Checking that your loader version is up to date.");
+  await cli.ensureRequiredLoaderVersion();
+  logger.info(`Syncing plasmic projects: ${projects.join(", ")}`);
+  const plasmicExecPath = path.join(
+    plasmicDir,
+    "node_modules",
+    ".bin",
+    "plasmic"
+  );
+
+  await cli.tryInitializePlasmicDir(plasmicDir, initArgs);
   await cli.checkAuth(dir, plasmicExecPath);
   await cli.syncProject(plasmicDir, pageDir, plasmicExecPath, projects);
 
   if (opts.substitutions) {
-    console.log("Registering substitutions...");
+    logger.info("Registering substitutions...");
     const config = await cli.readConfig(plasmicDir);
     substitutions.registerSubstitutions(plasmicDir, config, opts.substitutions);
     await cli.saveConfig(plasmicDir, config);
     await cli.fixImports(plasmicDir, plasmicExecPath);
   }
 
-  console.log("Generating loader...");
+  logger.info("Generating loader...");
 
   await gen.generateAll({ dir: plasmicDir, pageDir });
 }
@@ -87,4 +97,23 @@ export async function onPostInit(
   if (opts.watch) {
     watchForChanges(opts, onRegisterPages);
   }
+}
+
+export async function maybeAddToGitIgnore(gitIgnorePath: string, name: string) {
+  const file = await fs
+    .readFile(gitIgnorePath)
+    .then((content) => content.toString())
+    .catch((err) => {
+      logger.info(
+        `Found error while trying to read .gitignore: ${err.message}\nPlease add "${name}" to your .gitignore.`
+      );
+      return "";
+    });
+
+  if (!file || file.includes(name)) return;
+  await fs.writeFile(
+    gitIgnorePath,
+    `${file}\n# Plasmic loader code\n${name}\n`
+  );
+  logger.info(`Added "${name}" to your .gitignore.`);
 }
