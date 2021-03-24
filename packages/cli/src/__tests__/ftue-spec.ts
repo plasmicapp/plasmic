@@ -1,83 +1,21 @@
 jest.mock("../api");
-const mockApi = require("../api");
-import { sync, SyncArgs } from "../actions/sync";
-import { TempRepo } from "../utils/test-utils";
-
-let opts: SyncArgs; // Options to pass to sync
-let tmpRepo: TempRepo;
+import { sync } from "../actions/sync";
+import {
+  expectProject1Components,
+  expectProject1PlasmicJson,
+  opts,
+  standardTestSetup,
+  standardTestTeardown,
+  tmpRepo,
+} from "../test-common/fixtures";
 
 // Reset the test project directory
 beforeEach(() => {
-  // Setup server-side mock data
-  const project1 = {
-    projectId: "projectId1",
-    version: "1.2.3",
-    projectName: "projectName",
-    components: [
-      {
-        id: "buttonId",
-        name: "Button",
-      },
-      {
-        id: "containerId",
-        name: "Container",
-      },
-    ],
-    dependencies: {},
-  };
-  mockApi.addMockProject(project1);
-
-  // Setup client-side directory
-  tmpRepo = new TempRepo();
-  tmpRepo.writePlasmicAuth({
-    host: "http://localhost:3003",
-    user: "yang@plasmic.app",
-    token: "faketoken",
-  });
-  tmpRepo.writePlasmicJson({
-    platform: "react",
-    code: {
-      lang: "ts",
-      scheme: "blackbox",
-    },
-    style: {
-      scheme: "css",
-      defaultStyleCssFilePath: "",
-    },
-    images: {
-      scheme: "inlined",
-    },
-    tokens: {
-      scheme: "theo",
-      tokensFilePath: "plasmic-tokens.theo.json",
-    },
-    srcDir: "src/",
-    defaultPlasmicDir: "./plasmic",
-    projects: [],
-    globalVariants: {
-      variantGroups: [],
-    },
-    cliVersion: "0.1.44",
-  });
-
-  // Default opts and config
-  opts = {
-    projects: [],
-    yes: true,
-    force: true,
-    nonRecursive: false,
-    skipUpgradeCheck: true,
-    forceOverwrite: false,
-    appendJsxOnMissingBase: false,
-    newComponentScheme: "blackbox",
-    config: tmpRepo.plasmicJsonPath(),
-    auth: tmpRepo.plasmicAuthPath(),
-  };
+  standardTestSetup(false);
 });
 
 afterEach(() => {
-  tmpRepo.destroy();
-  mockApi.clear();
+  standardTestTeardown();
 });
 
 describe("first-time-user-experience", () => {
@@ -95,28 +33,11 @@ describe("first-time-user-experience", () => {
   test("specify project", async () => {
     opts.projects = ["projectId1"];
     await expect(sync(opts)).resolves.toBeUndefined();
-    const button = mockApi.stringToMockComponent(
-      tmpRepo.getComponentFileContents("projectId1", "buttonId")
-    );
-    const container = mockApi.stringToMockComponent(
-      tmpRepo.getComponentFileContents("projectId1", "containerId")
-    );
-    // Check correct files exist
-    expect(button).toBeTruthy();
-    expect(container).toBeTruthy();
-    expect(button?.name).toEqual("Button");
-    expect(button?.version).toEqual("1.2.3");
-    expect(container?.name).toEqual("Container");
-    expect(container?.version).toEqual("1.2.3");
+
+    expectProject1Components();
+
     expect(tmpRepo.checkFile("./src/DepComponent.tsx")).toBeFalsy();
 
-    // Check plasmic.json
-    const plasmicJson = tmpRepo.readPlasmicJson();
-    expect(plasmicJson.projects.length).toEqual(1);
-    const projectConfig = plasmicJson.projects[0];
-    expect(projectConfig.components.length).toEqual(2);
-    const componentNames = projectConfig.components.map((c) => c.name);
-    expect(componentNames).toContain("Button");
-    expect(componentNames).toContain("Container");
+    expectProject1PlasmicJson();
   });
 });
