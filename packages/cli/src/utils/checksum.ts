@@ -25,7 +25,6 @@ export function getChecksums(
       cssRulesChecksums: [],
       globalVariantChecksums: [],
       projectCssChecksum: "",
-      themeChecksums: [],
     };
   }
 
@@ -40,7 +39,7 @@ export function getChecksums(
       .map((vg) => vg.id)
   );
   const knownThemes = new Set(
-    projectConfig.jsBundleThemes.map((theme) => theme.bundleName)
+    (projectConfig.jsBundleThemes || []).map((theme) => theme.bundleName)
   );
 
   const toBeSyncedComponents = new Set(componentIds);
@@ -96,15 +95,6 @@ export function getChecksums(
   const projectCssChecksum =
     projectCssChecksums.length > 0 ? projectCssChecksums[0].checksum : "";
 
-  const themeChecksums = fileLocks
-    .filter(
-      (fileLock) =>
-        projectLock.lang === context.config.code.lang &&
-        fileLock.type === "theme" &&
-        knownThemes.has(fileLock.assetId)
-    )
-    .map((fileLock): [string, string] => [fileLock.assetId, fileLock.checksum]);
-
   return {
     imageChecksums,
     iconChecksums,
@@ -112,6 +102,5 @@ export function getChecksums(
     cssRulesChecksums,
     globalVariantChecksums,
     projectCssChecksum,
-    themeChecksums,
   };
 }

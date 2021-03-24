@@ -42,7 +42,7 @@ export interface ProjectMetaBundle {
   projectName: string;
   cssFileName: string;
   cssRules: string;
-  jsBundleThemes: JsBundleTheme[];
+  jsBundleThemes?: JsBundleTheme[];
 }
 
 export interface IconBundle {
@@ -83,6 +83,7 @@ export interface RequiredPackages {
 
 export interface ProjectBundle {
   components: ComponentBundle[];
+  codeComponentMetas: CodeComponentMeta[];
   projectConfig: ProjectMetaBundle;
   globalVariants: GlobalVariantBundle[];
   usedTokens: StyleTokensMap;
@@ -128,8 +129,12 @@ export interface ChecksumBundle {
   globalVariantChecksums: Array<[string, string]>;
   // Checksum of projectCss file
   projectCssChecksum: string;
-  // List of checksums as [theme.bundleName, checksum]
-  themeChecksums: Array<[string, string]>;
+}
+
+export interface CodeComponentMeta {
+  id: string; // component uuid
+  name: string;
+  importPath: string;
 }
 
 export interface ProjectIconsResponse {

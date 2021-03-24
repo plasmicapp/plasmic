@@ -83,12 +83,6 @@ function removeMissingFilesFromLock(
           icons,
         ])
       );
-      const knownJsBundle = Object.fromEntries(
-        knownProjects[project.projectId].jsBundleThemes.map((theme) => [
-          theme.bundleName,
-          theme,
-        ])
-      );
 
       project.fileLocks = project.fileLocks.filter((lock) => {
         switch (lock.type) {
@@ -105,8 +99,6 @@ function removeMissingFilesFromLock(
             return knownImages[lock.assetId];
           case "icon":
             return knownIcons[lock.assetId];
-          case "theme":
-            return knownJsBundle[lock.assetId];
         }
       });
 
@@ -220,7 +212,7 @@ async function resolveMissingFilesInConfig(
     project.images = await filterFiles(project.images, "filePath");
     project.icons = await filterFiles(project.icons, "moduleFilePath");
     project.jsBundleThemes = await filterFiles(
-      project.jsBundleThemes,
+      project.jsBundleThemes || [],
       "themeFilePath"
     );
 

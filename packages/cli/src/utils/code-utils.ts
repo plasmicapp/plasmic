@@ -15,6 +15,7 @@ import {
 import { logger } from "../deps";
 import { HandledError } from "../utils/error";
 import {
+  CodeComponentConfig,
   ComponentConfig,
   GlobalVariantGroupConfig,
   IconConfig,
@@ -30,7 +31,7 @@ import {
   stripExtension,
   writeFileContent,
 } from "./file-utils";
-import { flatMap } from "./lang-utils";
+import { assert, flatMap } from "./lang-utils";
 
 export const formatAsLocal = (
   content: string,
@@ -150,6 +151,7 @@ type PlasmicImportType =
   | "icon"
   | "picture"
   | "jsBundle"
+  | "codeComponent"
   | undefined;
 
 function tryParsePlasmicImportSpec(node: ImportDeclaration) {
@@ -158,7 +160,7 @@ function tryParsePlasmicImportSpec(node: ImportDeclaration) {
     return undefined;
   }
   const m = c.value.match(
-    /plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss|defaultcss|icon|picture|jsBundle))?/
+    /plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss|defaultcss|icon|picture|jsBundle|codeComponent))?/
   );
   if (m) {
     return { id: m[1], type: m[2] as PlasmicImportType } as PlasmicImportSpec;
@@ -317,6 +319,23 @@ export function replaceImports(
         false
       );
       stmt.source.value = realPath;
+    } else if (type === "codeComponent") {
+      const meta = fixImportContext.codeComponentMetas[uuid];
+      if (meta.componentImportPath[0] === '.') {
+        // Relative path from the project root
+        const toPath = path.join(context.rootDir, meta.componentImportPath);
+        assert(path.isAbsolute(toPath));
+        const realPath = makeImportPath(
+          context,
+          fromPath,
+          toPath,
+          true,
+        );
+        stmt.source.value = realPath;
+      } else {
+        // npm package
+        stmt.source.value = meta.componentImportPath;
+      }
     }
   });
   return nodeToFormattedCode(file, !changed, commentsToRemove);
@@ -378,6 +397,7 @@ export interface ComponentUpdateSummary {
 export interface FixImportContext {
   config: PlasmicConfig;
   components: Record<string, ComponentConfig>;
+  codeComponentMetas: Record<string, CodeComponentConfig>;
   globalVariants: Record<string, GlobalVariantGroupConfig>;
   icons: Record<string, IconConfig>;
   images: Record<string, ImageConfig>;
@@ -387,6 +407,8 @@ export interface FixImportContext {
 export const mkFixImportContext = (config: PlasmicConfig) => {
   const allComponents = flatMap(config.projects, (p) => p.components);
   const components = L.keyBy(allComponents, (c) => c.id);
+  const allCodeComponents = flatMap(config.projects, (p) => p.codeComponents || []);
+  const codeComponentMetas = L.keyBy(allCodeComponents, (c) => c.id);
   const globalVariants = L.keyBy(
     config.globalVariants.variantGroups,
     (c) => c.id
@@ -403,6 +425,7 @@ export const mkFixImportContext = (config: PlasmicConfig) => {
   return {
     config,
     components,
+    codeComponentMetas,
     globalVariants,
     icons,
     images,
