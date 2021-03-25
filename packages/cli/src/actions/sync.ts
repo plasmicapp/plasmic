@@ -24,7 +24,9 @@ import {
   createProjectConfig,
   getOrAddProjectConfig,
   getOrAddProjectLock,
+  LOADER_CONFIG_FILE_NAME,
   PlasmicContext,
+  PlasmicLoaderConfig,
   updateConfig,
 } from "../utils/config-utils";
 import { HandledError } from "../utils/error";
@@ -32,14 +34,17 @@ import {
   assertAllPathsInRootDir,
   createMissingIndexPage,
   defaultResourcePath,
+  existsBuffered,
+  readFileText,
   renameFile,
   stripExtension,
   withBufferedFs,
   writeFileContent,
+  writeFileText,
 } from "../utils/file-utils";
 import { generateMetadata, getContext } from "../utils/get-context";
 import { printFirstSyncInfo } from "../utils/help";
-import { ensure } from "../utils/lang-utils";
+import { assert, ensure, tuple } from "../utils/lang-utils";
 import {
   findInstalledVersion,
   getCliVersion,
@@ -72,6 +77,7 @@ export interface SyncArgs extends CommonArgs {
   quiet?: boolean;
   metadata?: string;
   allFiles?: boolean;
+  loaderConfig?: string;
 }
 
 async function ensureRequiredPackages(context: PlasmicContext, yes?: boolean) {
@@ -130,6 +136,29 @@ async function ensureRequiredPackages(context: PlasmicContext, yes?: boolean) {
   }
 }
 
+function getLoaderConfigPath(opts: SyncArgs) {
+  return opts.loaderConfig || LOADER_CONFIG_FILE_NAME;
+}
+
+function maybeReadLoaderConfig(
+  opts: SyncArgs
+): PlasmicLoaderConfig | undefined {
+  const path = getLoaderConfigPath(opts);
+  if (!existsBuffered(path)) {
+    return undefined;
+  }
+  return JSON.parse(readFileText(path!));
+}
+
+function writeLoaderConfig(opts: SyncArgs, config: PlasmicLoaderConfig) {
+  const loaderConfigPath = getLoaderConfigPath(opts);
+
+  writeFileText(
+    loaderConfigPath,
+    formatAsLocal(JSON.stringify(config), loaderConfigPath)
+  );
+}
+
 /**
  * Sync will always try to sync down a set of components that are version-consistent among specified projects.
  * (we only allow 1 version per projectId).
@@ -151,6 +180,16 @@ export async function sync(opts: SyncArgs): Promise<void> {
   fixFileExtension(context);
   assertAllPathsInRootDir(context);
 
+  const loaderConfig = process.env.PLASMIC_LOADER
+    ? maybeReadLoaderConfig(opts)
+    : undefined;
+
+  const projectIdToToken = new Map(
+    [...context.config.projects, ...(loaderConfig?.projects ?? [])]
+      .filter((p) => p.projectApiToken)
+      .map((p) => tuple(p.projectId, p.projectApiToken))
+  );
+
   // Resolve what will be synced
   const projectConfigMap = L.keyBy(context.config.projects, (p) => p.projectId);
   const projectWithVersion = opts.projects.map((p) => {
@@ -160,7 +199,7 @@ export async function sync(opts: SyncArgs): Promise<void> {
       versionRange:
         versionRange || projectConfigMap[projectId]?.version || "latest",
       componentIdOrNames: undefined, // Get all components!
-      projectApiToken: projectConfigMap[projectId]?.projectApiToken,
+      projectApiToken: projectIdToToken.get(projectId),
     };
   });
 
@@ -298,6 +337,27 @@ export async function sync(opts: SyncArgs): Promise<void> {
     // import statements, so just delete it before writing the new components
     // config.
     context.config.projects.forEach((p) => delete p.codeComponents);
+
+    if (process.env.PLASMIC_LOADER) {
+      const rootProjectIds = new Set(projectSyncParams.map((p) => p.projectId));
+      const freshIdsAndTokens = projectsToSync
+        .filter((p) => rootProjectIds.has(p.projectId))
+        .map((p) => L.pick(p, "projectId", "projectApiToken"));
+
+      assert(rootProjectIds.size === freshIdsAndTokens.length);
+
+      const config: PlasmicLoaderConfig = {
+        projects: L.sortBy(
+          L.uniqBy(
+            [...freshIdsAndTokens, ...(loaderConfig?.projects ?? [])],
+            (p) => p.projectId
+          ),
+          (p) => p.projectId
+        ),
+      };
+
+      writeLoaderConfig(opts, config);
+    }
 
     // Write the new ComponentConfigs to disk
     await updateConfig(context, context.config);
@@ -438,11 +498,7 @@ async function syncProject(
     projectBundle.checksums
   );
 
-  syncCodeComponentsMeta(
-    context,
-    projectId,
-    projectBundle.codeComponentMetas,
-  );
+  syncCodeComponentsMeta(context, projectId, projectBundle.codeComponentMetas);
 
   await syncProjectConfig(
     context,
@@ -591,7 +647,10 @@ async function syncProjectConfig(
   }
   */
 
-  if (projectConfig.jsBundleThemes && projectConfig.jsBundleThemes.length === 0) {
+  if (
+    projectConfig.jsBundleThemes &&
+    projectConfig.jsBundleThemes.length === 0
+  ) {
     delete projectConfig.jsBundleThemes;
   }
 
@@ -610,14 +669,16 @@ async function syncProjectConfig(
   );
 }
 
-function syncCodeComponentsMeta(context: PlasmicContext, projectId: string, codeComponentBundles: CodeComponentMeta[]) {
-  const projectConfig = getOrAddProjectConfig(
-    context,
-    projectId);
+function syncCodeComponentsMeta(
+  context: PlasmicContext,
+  projectId: string,
+  codeComponentBundles: CodeComponentMeta[]
+) {
+  const projectConfig = getOrAddProjectConfig(context, projectId);
 
   projectConfig.codeComponents = codeComponentBundles.map((meta) => ({
-        id: meta.id,
-        name: meta.name,
-        componentImportPath: meta.importPath,
-      }));
+    id: meta.id,
+    name: meta.name,
+    componentImportPath: meta.importPath,
+  }));
 }

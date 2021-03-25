@@ -48,3 +48,5 @@ export function assert<T>(
     throw new AssertionError(msg);
   }
 }
+
+export const tuple = <T extends any[]>(...args: T): T => args;

@@ -9,6 +9,7 @@ import { sync, SyncArgs } from "./actions/sync";
 import { UploadBundleArgs, uploadJsBundle } from "./actions/upload-bundle";
 import { WatchArgs, watchProjects } from "./actions/watch";
 import { logger } from "./deps";
+import { LOADER_CONFIG_FILE_NAME } from "./utils/config-utils";
 import { HandledError } from "./utils/error";
 
 if (process.env.DEBUG_CHDIR) {
@@ -198,6 +199,13 @@ function configureSyncArgs(
       type: "boolean",
       describe: "Force sync to bypass specified version ranges.",
       default: false,
+    })
+    .option("loader-config", {
+      type: "string",
+      describe:
+        "Path to loader config file, and causes CLI to run in PlasmicLoader mode.",
+      hidden: true,
+      default: LOADER_CONFIG_FILE_NAME,
     })
     .option("non-recursive", {
       type: "boolean",

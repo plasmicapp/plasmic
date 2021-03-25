@@ -1,6 +1,6 @@
 import L from "lodash";
 import { DeepPartial } from "utility-types";
-import { PlasmicApi } from "../api";
+import { PlasmicApi, ProjectIdAndToken } from "../api";
 import { logger } from "../deps";
 import { HandledError } from "../utils/error";
 import { formatAsLocal } from "./code-utils";
@@ -18,12 +18,17 @@ export const DEFAULT_HOST =
 export const AUTH_FILE_NAME = ".plasmic.auth";
 export const CONFIG_FILE_NAME = "plasmic.json";
 export const LOCK_FILE_NAME = "plasmic.lock";
+export const LOADER_CONFIG_FILE_NAME = "plasmic-loader.json";
 export const CONFIG_SCHEMA_FILE_NAME = "plasmic.schema.json";
 
 // Default environment variable names
 export const ENV_AUTH_HOST = "PLASMIC_AUTH_HOST";
 export const ENV_AUTH_USER = "PLASMIC_AUTH_USER";
 export const ENV_AUTH_TOKEN = "PLASMIC_AUTH_TOKEN";
+
+export interface PlasmicLoaderConfig {
+  projects: ProjectIdAndToken[];
+}
 
 export interface PlasmicConfig {
   /** Target platform to generate code for */
@@ -148,7 +153,7 @@ export interface ProjectConfig {
   // Code-component-related fields can be treated as optional not to be shown
   // to the users nor appear to be missing in the documentation.
   jsBundleThemes?: JsBundleThemeConfig[];
-  codeComponents?: CodeComponentConfig[]
+  codeComponents?: CodeComponentConfig[];
 
   /** Metadata for each synced component in this project. */
   components: ComponentConfig[];
