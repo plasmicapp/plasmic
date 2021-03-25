@@ -219,9 +219,14 @@ export async function sync(opts: SyncArgs): Promise<void> {
   // resolveSync is what does this because it's what is computing all concrete versions to sync, and the dependency
   // graph can change with any version. Subsequent API calls require the exact API tokens, not to redo this work on each
   // call. Only resolveSync accepts just the API tokens for the root projects.
-  const projectIdsAndTokens = projectsToSync.map((p) =>
-    L.pick(p, "projectId", "projectApiToken")
-  );
+  //
+  // We shouldn't simply use projectsToSync, because this list excludes up-to-date projects, but syncing a dependent
+  // project still requires tokens to the dependencies.
+  const projectIdsAndTokens = [
+    ...versionResolution.projects,
+    ...versionResolution.dependencies,
+  ].map((p) => L.pick(p, "projectId", "projectApiToken"));
+
   context.api.attachProjectIdsAndTokens(projectIdsAndTokens);
 
   // Perform the actual sync

@@ -187,6 +187,19 @@ function genProjectMetaBundle(projectId: string): ProjectMetaBundle {
   };
 }
 
+function* getDeps(projects: ProjectVersionMeta[]) {
+  const queue: ProjectVersionMeta[] = [...projects];
+  while (queue.length > 0) {
+    const curr = ensure(queue.shift());
+    for (const [projectId, version] of L.toPairs(curr.dependencies)) {
+      const mockProject = ensure(getMockProject(projectId, version));
+      const projectMeta = mockProjectToProjectVersionMeta(mockProject);
+      yield projectMeta;
+      queue.push(projectMeta);
+    }
+  }
+}
+
 class PlasmicApi {
   constructor(private auth: AuthConfig) {}
 
@@ -245,16 +258,8 @@ class PlasmicApi {
 
     // Get dependencies
     if (!!recursive) {
-      const queue: ProjectVersionMeta[] = [...results.projects];
-      while (queue.length > 0) {
-        const curr = ensure(queue.shift());
-        L.toPairs(curr.dependencies).forEach(([projectId, version]) => {
-          const mockProject = ensure(getMockProject(projectId, version));
-          const projectMeta = mockProjectToProjectVersionMeta(mockProject);
-          results.dependencies.push(projectMeta);
-          queue.push(projectMeta);
-        });
-      }
+      const deps = [...getDeps(results.projects)];
+      results.dependencies.push(...deps);
     }
 
     return results;
@@ -279,17 +284,25 @@ class PlasmicApi {
     const maybeTokenPair = this.lastProjectIdsAndTokens.find(
       (pair) => pair.projectId === projectId
     );
+    const project = ensure(PROJECTS.find((p) => p.projectId === projectId));
     if (
       !(
         (this.auth.user && this.auth.token) ||
-        PROJECTS.find(
-          (p) =>
-            p.projectId === projectId &&
-            p.projectApiToken === maybeTokenPair?.projectApiToken
-        )
+        project.projectApiToken === maybeTokenPair?.projectApiToken
       )
     ) {
       throw new Error("No user+token and project API tokens don't match");
+    }
+    // Server also require tokens for the dependencies.
+    const deps = [...getDeps([mockProjectToProjectVersionMeta(project)])];
+    if (
+      !deps.every((dep) =>
+        this.lastProjectIdsAndTokens.find((p) => p.projectId === dep.projectId)
+      )
+    ) {
+      throw new Error(
+        "No user+token and project API tokens don't match on a dependency"
+      );
     }
     const mockComponents = getMockComponents(
       projectId,

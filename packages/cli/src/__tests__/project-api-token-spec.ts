@@ -5,6 +5,7 @@ import {
   expectProject1Components,
   expectProject1PlasmicJson,
   expectProjectAndDepPlasmicJson,
+  mockApi,
   opts,
   project1Config,
   standardTestSetup,
@@ -111,6 +112,20 @@ describe("Project API tokens", () => {
     expectProject1Components();
 
     expectProjectAndDepPlasmicJson();
+  });
+
+  test("works even if dependency was determined to not need an update", async () => {
+    // Make project1 have a dependency.
+    standardTestSetup();
+
+    opts.projects = ["projectId1"];
+    await expect(sync(opts)).resolves.toBeUndefined();
+
+    // We sync project1 which got updated, but the dependency is still same version.
+    opts.force = false;
+    removeAuth();
+    mockApi.getMockProject("projectId1", "1.2.3").version = "1.2.4";
+    await expect(sync(opts)).resolves.toBeUndefined();
   });
 
   test("should prompt for auth if you have only irrelevant tokens", async () => {
