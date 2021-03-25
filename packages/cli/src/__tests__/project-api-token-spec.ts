@@ -80,9 +80,7 @@ describe("Project API tokens", () => {
   test("when not available, should prompt for auth", async () => {
     opts.projects = ["projectId1"];
     removeAuth();
-    await expect(sync(opts)).rejects.toThrow(
-      "Could not find the authentication credentials"
-    );
+    await expect(sync(opts)).rejects.toThrow("Unable to authenticate");
   });
 
   // TODO: Would be nice to eventually make this not fail outright but to prompt for auth.
@@ -136,9 +134,7 @@ describe("Project API tokens", () => {
       ...defaultPlasmicJson,
       projects: [{ ...project1Config, projectApiToken: "abc" }],
     });
-    await expect(sync(opts)).rejects.toThrow(
-      "Could not find the authentication credentials"
-    );
+    await expect(sync(opts)).rejects.toThrow("Unable to authenticate");
   });
 
   test("should use plasmic-loader.json for API tokens in loader mode", async () => {

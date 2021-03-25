@@ -62,6 +62,11 @@ yargs
     "Initializes Plasmic for a project.",
     (yags) => {
       yags
+        .option("enable-skip-auth", {
+          describe: "Enable skipping auth, just initialize a plasmic.json",
+          type: "boolean",
+          default: false,
+        })
         .option("host", getYargsOption("host", "https://studio.plasmic.app"))
         .option("platform", getYargsOption("platform"))
         .option("code-lang", getYargsOption("codeLang"))

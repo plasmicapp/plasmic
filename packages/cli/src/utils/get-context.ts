@@ -287,7 +287,7 @@ export async function getContext(
     args.config || findConfigFile(process.cwd(), { traverseParents: true });
 
   if (!configFile) {
-    await maybeRunPlasmicInit(args, "plasmic.json");
+    await maybeRunPlasmicInit(args, "plasmic.json", enableSkipAuth);
     configFile = findConfigFile(process.cwd(), { traverseParents: true });
     if (!configFile) {
       const err = new HandledError(
@@ -358,9 +358,10 @@ async function getOrInitAuth(args: CommonArgs) {
   process.exit(1);
 }
 
-export async function maybeRunPlasmicInit(
+async function maybeRunPlasmicInit(
   args: CommonArgs,
-  missingFile: string
+  missingFile: string,
+  enableSkipAuth?: boolean
 ): Promise<boolean> {
   console.log(`No ${missingFile} file found. Initializing plasmic...`);
 
@@ -375,6 +376,7 @@ export async function maybeRunPlasmicInit(
     plasmicDir: "",
     imagesPublicDir: "",
     imagesPublicUrlPrefix: "",
+    enableSkipAuth,
     ...args,
   });
   return true;

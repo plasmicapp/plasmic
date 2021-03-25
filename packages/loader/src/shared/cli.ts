@@ -155,7 +155,7 @@ export async function tryInitializePlasmicDir(
     await spawnOrFail(
       plasmicDir,
       plasmicExecPath,
-      ["init", "--yes=true", ...objToExecArgs(initArgs)],
+      ["init", "--enable-skip-auth", "--yes=true", ...objToExecArgs(initArgs)],
       "Unable to initialize Plasmic. Please check the above error and try again."
     );
   }

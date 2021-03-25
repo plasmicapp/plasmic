@@ -42,9 +42,12 @@ export interface InitArgs extends CommonArgs {
   srcDir: string;
   plasmicDir: string;
   pagesDir?: string;
+  enableSkipAuth?: boolean;
 }
 
-export async function initPlasmic(opts: InitArgs) {
+export async function initPlasmic(
+  opts: InitArgs & { enableSkipAuth?: boolean }
+) {
   await getOrStartAuth(opts);
 
   const configFile =

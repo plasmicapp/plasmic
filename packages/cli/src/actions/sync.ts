@@ -21,6 +21,7 @@ import {
   replaceImports,
 } from "../utils/code-utils";
 import {
+  CONFIG_FILE_NAME,
   createProjectConfig,
   getOrAddProjectConfig,
   getOrAddProjectLock,
@@ -222,7 +223,18 @@ export async function sync(opts: SyncArgs): Promise<void> {
   // If there are any missing projectApiTokens, reload the context, this time requiring auth, so that we can fetch the
   // projectApiTokens from the server (as a user that has permission to do so).
   if (projectSyncParams.some((p) => !p.projectApiToken)) {
-    context = await getContext(opts);
+    try {
+      context = await getContext(opts);
+    } catch (e) {
+      if (e.message.includes("Unable to authenticate Plasmic")) {
+        const configFileName = process.env.PLASMIC_LOADER
+          ? LOADER_CONFIG_FILE_NAME
+          : CONFIG_FILE_NAME;
+        throw new HandledError(
+          `Unable to authenticate Plasmic. Please run 'plasmic auth' or check the projectApiTokens in your ${configFileName}, and try again.`
+        );
+      }
+    }
   }
 
   // Pass just the root IDs and tokens that we do have for the resolve call. (In reality it doesn't need any of this
