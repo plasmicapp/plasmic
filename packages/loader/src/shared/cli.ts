@@ -4,10 +4,10 @@ import fs from "fs/promises";
 import path from "upath";
 import util from "util";
 import * as api from "./api";
-import * as semver from "./semver";
-import * as utils from "./utils";
 import * as logger from "./logger";
+import * as semver from "./semver";
 import type { PlasmicOpts } from "./types";
+import * as utils from "./utils";
 
 const exec = util.promisify(cp.exec);
 
@@ -69,6 +69,9 @@ async function installPackages(plasmicDir: string) {
   }
 }`
   );
+  if (process.env.DO_YALC_ADD_CLI) {
+    await execOrFail(plasmicDir, "yalc add @plasmicapp/cli", "");
+  }
   await execOrFail(
     plasmicDir,
     "npm install --no-package-lock",
