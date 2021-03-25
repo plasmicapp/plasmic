@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import chalk from "chalk";
 import semver from "semver";
 import updateNotifier from "update-notifier";
 import yargs from "yargs";
@@ -19,7 +20,10 @@ if (process.env.DEBUG_CHDIR) {
 const handleError = <T>(p: Promise<T>) => {
   return p.catch((e) => {
     if (e instanceof HandledError) {
-      logger.error(e.message);
+      logger.error(
+        chalk.bold(chalk.redBright("\nPlasmic error: ")) + e.message
+      );
+      process.exit(1);
     } else {
       throw e;
     }
