@@ -552,18 +552,17 @@ export async function createMissingIndexPage(context: PlasmicContext) {
     : undefined;
   const indexBasename = isCra ? `App` : `index`;
   const extension = isTypescript ? "tsx" : "jsx";
-  const indexFilename = `${indexBasename}.${extension}`;
 
   // Skip creating index file if not Next.js, Gatsby, or CRA
   if (!pagesDir) {
     return;
   }
 
+  const indexRelPath = path.join(pagesDir, `${indexBasename}.${extension}`);
   // Search for an existing file, skip if so
-  const searchQuery = path.join(
-    context.config.srcDir,
-    pagesDir,
-    `${indexBasename}.*`
+  const searchQuery = makeFilePath(
+    context,
+    path.join(pagesDir, `${indexBasename}.*`)
   );
   const searchResults = glob.sync(searchQuery);
   if (searchResults.length > 0) {
@@ -577,13 +576,10 @@ export async function createMissingIndexPage(context: PlasmicContext) {
   ).filter((c) => c.componentType === "page");
   const pageLinks = pageComponents
     .map((pc) => {
-      // Get the extension name
-      const extName = path.extname(pc.importSpec.modulePath);
       // Get the relative path on the filesystem
       const relativePath = path.relative(pagesDir, pc.importSpec.modulePath);
       // Format as an absolute path without the extension name
-      const relativeLink =
-        "/" + relativePath.slice(0, relativePath.indexOf(extName));
+      const relativeLink = "/" + stripExtension(relativePath);
       return `<li><a style={{ color: "blue" }} href="${relativeLink}">${pc.name} - ${relativeLink}</a></li>`;
     })
     .join("\n");
@@ -596,7 +592,6 @@ export async function createMissingIndexPage(context: PlasmicContext) {
           ${pageLinks}
         </ul>
   `;
-  const indexPath = path.join(pagesDir, indexFilename);
   const content = `
 import React from "react";
 function Index() {
@@ -625,5 +620,5 @@ function Index() {
 
 export default Index;
   `;
-  await writeFileContent(context, indexPath, content);
+  await writeFileContent(context, makeFilePath(context, indexRelPath), content);
 }
