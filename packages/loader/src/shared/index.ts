@@ -1,10 +1,10 @@
 import cp from "child_process";
-import path from "upath";
 import fs from "fs/promises";
+import path from "upath";
 import * as cli from "./cli";
 import * as gen from "./gen";
-import * as substitutions from "./substitutions";
 import * as logger from "./logger";
+import * as substitutions from "./substitutions";
 import type { PlasmicOpts } from "./types";
 import { PlasmicOptsSchema } from "./validation";
 
@@ -70,8 +70,7 @@ export async function initLoader(userOpts: PlasmicOpts) {
   );
 
   await cli.tryInitializePlasmicDir(plasmicDir, initArgs);
-  await cli.checkAuth(dir, plasmicExecPath);
-  await cli.syncProject(plasmicDir, pageDir, plasmicExecPath, projects);
+  await cli.syncProject(plasmicDir, dir, plasmicExecPath, projects);
 
   if (opts.substitutions) {
     logger.info("Registering substitutions...");

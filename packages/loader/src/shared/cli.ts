@@ -161,14 +161,6 @@ export async function tryInitializePlasmicDir(
   }
 }
 
-export function checkAuth(dir: string, execPath: string) {
-  return execOrFail(
-    dir,
-    `${execPath} auth --check`,
-    "Unable to authenticate Plasmic. Please run `plasmic auth` or check your ~/.plasmic.auth file, and try again."
-  );
-}
-
 export async function readConfig(dir: string) {
   const configPath = path.join(dir, "plasmic.json");
   const configData = await fs.readFile(configPath);
@@ -229,7 +221,7 @@ export function getPagesFromConfig(plasmicDir: string, config: any) {
 
 export async function syncProject(
   dir: string,
-  pageDir: string,
+  userDir: string,
   execPath: string,
   projects: string[]
 ) {
@@ -238,6 +230,8 @@ export async function syncProject(
     execPath,
     [
       ..."sync --yes --metadata source=loader".split(/ /g),
+      "--loader-config",
+      path.join(userDir, "plasmic-loader.json"),
       "--projects",
       projects.join(" "),
     ],
