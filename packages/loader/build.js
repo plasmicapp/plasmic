@@ -6,7 +6,7 @@ const path = require("path");
 const packageJson = require("./package.json");
 
 try {
-  cp.execSync("npx typescript");
+  cp.execSync("tsc");
 } catch (e) {
   console.log(e.stdout.toString());
   console.log(e.stderr.toString());
