@@ -55,6 +55,7 @@ function getEnv() {
   return {
     ...process.env,
     PLASMIC_LOADER: "1",
+    NODE_OPTIONS: process.env.LOADER_CLI_NODE_OPTIONS,
   };
 }
 
@@ -124,11 +125,13 @@ async function installPackages(plasmicDir: string) {
   if (process.env.DO_YALC_ADD_CLI) {
     await execOrFail(plasmicDir, "yalc add @plasmicapp/cli", "");
   }
-  await execOrFail(
-    plasmicDir,
-    "npm install --no-package-lock",
-    `Unable to install plasmic dependencies. Please delete ${plasmicDir} and try again.`
-  );
+  if (!process.env.NO_INSTALL) {
+    await execOrFail(
+      plasmicDir,
+      "npm install --no-package-lock",
+      `Unable to install plasmic dependencies. Please delete ${plasmicDir} and try again.`
+    );
+  }
 }
 
 export async function tryInitializePlasmicDir(
