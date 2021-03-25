@@ -57,7 +57,8 @@ export function PlasmicCanvasHost() {
   useEffect(() => {
     if (
       !document.querySelector("#plasmic-studio-tag") &&
-      !location.hash.match(/\bcanvas=true\b/)
+      !location.hash.match(/\bcanvas=true\b/) &&
+      !location.hash.match(/\blive=true\b/)
     ) {
       renderStudioIntoIframe();
     }
