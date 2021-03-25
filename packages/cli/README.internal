@@ -36,3 +36,8 @@ This runs the source in-place from the .ts files so that you can debug the unman
 - `PLASMIC_DEFAULT_HOST`: Point to your localhost app server (even if you don't already have an auth file set up).
 - `--auth`: Reference your own alternate auth file, if you already have one.
 - `PLASMIC_DISABLE_AUTH_SEARCH`: Prevent auto-searching home and parent dirs for a `.plasmic.auth` file. Useful if you want to not provide any `--auth` (you probably won't use both `--auth` and this together).
+
+Extra hidden API
+================
+
+- `PLASMIC_LOADER` env var: runs in PlasmicLoader mode.
