@@ -156,7 +156,7 @@ export function installUpgrade(
   }
   const r = spawnSync(cmd, {
     shell: true,
-    stdio: process.env.QUIET ? "pipe" : "inherit",
+    stdio: process.env.QUIET ? "ignore" : "inherit",
   });
   if (r.status === 0) {
     if (!process.env.QUIET) {

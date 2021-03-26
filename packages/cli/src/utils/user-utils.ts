@@ -11,6 +11,10 @@ export async function confirmWithUser(
   yes?: boolean,
   defaultAnswer?: "y" | "n"
 ): Promise<boolean> {
+  if (process.env.QUIET) {
+    return true;
+  }
+
   if (!!yes) {
     if (!process.env.QUIET) {
       console.log(`${message} (Y/n): y`);
