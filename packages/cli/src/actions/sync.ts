@@ -383,7 +383,9 @@ export async function sync(opts: SyncArgs): Promise<void> {
   }
 
   if (isFirstRun) {
-    printFirstSyncInfo(context);
+    if (!process.env.QUIET) {
+      printFirstSyncInfo(context);
+    }
     await createMissingIndexPage(context);
   }
 }

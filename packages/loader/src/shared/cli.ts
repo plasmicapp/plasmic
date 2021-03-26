@@ -55,6 +55,7 @@ function getEnv() {
   return {
     ...process.env,
     PLASMIC_LOADER: "1",
+    QUIET: "1",
     NODE_OPTIONS: process.env.LOADER_CLI_NODE_OPTIONS,
   };
 }

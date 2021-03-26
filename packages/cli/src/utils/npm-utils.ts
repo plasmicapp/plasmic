@@ -151,10 +151,17 @@ export function installUpgrade(
   opts: { global?: boolean; dev?: boolean } = {}
 ) {
   const cmd = installCommand(pkg, opts);
-  logger.info(cmd);
-  const r = spawnSync(cmd, { shell: true, stdio: "inherit" });
+  if (!process.env.QUIET) {
+    logger.info(cmd);
+  }
+  const r = spawnSync(cmd, {
+    shell: true,
+    stdio: process.env.QUIET ? "pipe" : "inherit",
+  });
   if (r.status === 0) {
-    logger.info(`Successfully added ${pkg} dependency.`);
+    if (!process.env.QUIET) {
+      logger.info(`Successfully added ${pkg} dependency.`);
+    }
     return true;
   } else {
     logger.warn(
