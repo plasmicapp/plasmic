@@ -33,7 +33,6 @@ import {
 import { HandledError } from "../utils/error";
 import {
   assertAllPathsInRootDir,
-  createMissingIndexPage,
   defaultResourcePath,
   existsBuffered,
   readFileText,
@@ -386,7 +385,6 @@ export async function sync(opts: SyncArgs): Promise<void> {
     if (!process.env.QUIET) {
       printFirstSyncInfo(context);
     }
-    await createMissingIndexPage(context);
   }
 }
 

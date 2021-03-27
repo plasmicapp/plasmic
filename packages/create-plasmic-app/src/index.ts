@@ -8,7 +8,7 @@ import validateProjectName from "validate-npm-package-name";
 import yargs from "yargs";
 import {
   modifyDefaultGatsbyConfig,
-  writeDefaultCraAppjs,
+  overwriteIndex,
   writeDefaultNextjsConfig,
 } from "./utils/file-utils";
 import { ensure, ensureString } from "./utils/lang-utils";
@@ -141,26 +141,28 @@ async function run(): Promise<void> {
   }
 
   // Prompt for the platform
-  const platform = await maybePrompt({
-    name: "platform",
-    message: "What React framework do you want to use?",
-    type: "list",
-    choices: () => [
-      {
-        name: "Next.js",
-        value: "nextjs",
-      },
-      {
-        name: "Gatsby",
-        value: "gatsby",
-      },
-      {
-        name: "Create React App",
-        value: "react",
-      },
-    ],
-    default: "nextjs",
-  });
+  const platform = ensureString(
+    await maybePrompt({
+      name: "platform",
+      message: "What React framework do you want to use?",
+      type: "list",
+      choices: () => [
+        {
+          name: "Next.js",
+          value: "nextjs",
+        },
+        {
+          name: "Gatsby",
+          value: "gatsby",
+        },
+        {
+          name: "Create React App",
+          value: "react",
+        },
+      ],
+      default: "nextjs",
+    })
+  );
 
   // Scheme to use for Plasmic integration
   // - loader only available for gatsby/next.js
@@ -220,12 +222,10 @@ async function run(): Promise<void> {
   banner("AUTHENTICATING WITH PLASMIC");
   const authCheckResult = spawn("npx @plasmicapp/cli auth --check");
   if (authCheckResult.status !== 0) {
-    const authResult = spawn("npx @plasmicapp/cli auth");
-    if (authResult.status !== 0) {
-      return crash(
-        "Failed to authenticate with Plasmic. Please run `npx @plasmicapp/cli auth` manually."
-      );
-    }
+    spawnOrFail(
+      "npx @plasmicapp/cli auth",
+      "Failed to authenticate with Plasmic. Please run `npx @plasmicapp/cli auth` manually."
+    );
   }
 
   // Calling `npx create-XXX` means we don't have to keep these dependencies up to date
@@ -259,11 +259,7 @@ async function run(): Promise<void> {
   } else {
     return crash(`Unrecognized platform: ${platform}`);
   }
-
-  const createResult = spawn(createCommand);
-  if (createResult.status !== 0) {
-    return crash("Error creating project", createResult.error);
-  }
+  spawnOrFail(createCommand);
 
   // Create tsconfig.json if it doesn't exist
   // this will force Plasmic to recognize Typescript
@@ -284,38 +280,31 @@ async function run(): Promise<void> {
     return crash("Failed to install the Plasmic dependency");
   }
 
-  // Sync only if codegen
+  // Trigger a sync
+  const pkgMgr = detectPackageManager(resolvedProjectPath);
+  const npmRunCmd = pkgMgr === "yarn" ? "yarn" : "npm run";
   if (scheme === "codegen") {
     banner("SYNCING PLASMIC COMPONENTS");
-    const syncResult = spawn(
-      `npx plasmic sync --yes -p ${projectId}`,
-      resolvedProjectPath
-    );
-    if (syncResult.status !== 0) {
-      return crash(`Failed to sync project ${projectId}`, syncResult.error);
+    spawnOrFail(`npx plasmic sync --yes -p ${projectId}`, resolvedProjectPath);
+  } else if (scheme === "loader") {
+    if (platform === "nextjs") {
+      await writeDefaultNextjsConfig(resolvedProjectPath, projectId);
+    } else if (platform === "gatsby") {
+      await modifyDefaultGatsbyConfig(resolvedProjectPath, projectId);
+    } else {
+      crash("PlasmicLoader is only compatible with either Next.js or Gatsby");
     }
+    spawnOrFail(`${npmRunCmd} build`, resolvedProjectPath);
+  } else {
+    crash(`Unrecognized Plasmic scheme: ${scheme}`);
   }
 
-  // Write files necessary to make renders work
-  if (scheme === "loader" && platform === "nextjs") {
-    await writeDefaultNextjsConfig(resolvedProjectPath, projectId);
-  } else if (scheme === "codegen" && platform === "nextjs") {
-    // Pages are automatically written by `plasmic sync`
-  } else if (scheme === "loader" && platform === "gatsby") {
-    await modifyDefaultGatsbyConfig(resolvedProjectPath, projectId);
-  } else if (scheme === "codegen" && platform === "gatsby") {
-    // Pages are automatically written by `plasmic sync`
-  } else if (scheme === "codegen" && platform === "react") {
-    await writeDefaultCraAppjs(resolvedProjectPath);
-  } else {
-    return crash(`Unrecognized config [${platform}, ${scheme}]`);
-  }
+  // Overwrite the index file
+  await overwriteIndex(resolvedProjectPath, platform, scheme);
 
   /**
    * INSTRUCT USER ON NEXT STEPS
    */
-  const pkgMgr = detectPackageManager(resolvedProjectPath);
-  const npmRunCmd = pkgMgr === "yarn" ? "yarn" : "npm run";
   const command =
     platform === "nextjs"
       ? `${npmRunCmd} dev`
@@ -345,6 +334,21 @@ async function run(): Promise<void> {
     console.log(
       "Navigate to the routes (e.g. /home) defined by your page components from Plasmic Studio."
     );
+  }
+}
+
+/**
+ * Run a command synchronously
+ * @returns
+ */
+function spawnOrFail(
+  cmd: string,
+  workingDir?: string,
+  customErrorMsg?: string
+) {
+  const result = spawn(cmd, workingDir);
+  if (result.status !== 0) {
+    return crash(customErrorMsg ?? `Failed to run "${cmd}": ${result.error}`);
   }
 }
 
