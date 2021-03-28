@@ -1,4 +1,3 @@
-import chalk from "chalk";
 import cp from "child_process";
 import fs from "fs/promises";
 import path from "upath";
@@ -10,26 +9,81 @@ import type { PlasmicOpts } from "./types";
 import * as utils from "./utils";
 
 const exec = util.promisify(cp.exec);
+const execFile = util.promisify(cp.execFile);
+
+function handleExitError(message: string) {
+  logger.error(message);
+  process.exit(1);
+}
+
+async function doOrFail(doit: () => Promise<unknown>, message: string) {
+  try {
+    await doit();
+  } catch (e) {
+    handleExitError(message);
+  }
+}
 
 async function execOrFail(dir: string, command: string, message: string) {
-  try {
-    await exec(command, {
-      cwd: dir,
-      env: { ...process.env, PLASMIC_LOADER: "1" },
-    });
-  } catch (e) {
-    logger.error(chalk.bold(chalk.redBright("Plasmic error: ")) + message);
-    process.exit(1);
+  return doOrFail(
+    () =>
+      exec(command, {
+        cwd: dir,
+        env: getEnv(),
+      }),
+    message
+  );
+}
+
+async function execFileOrFail(
+  dir: string,
+  file: string,
+  args: string[],
+  message: string
+) {
+  return doOrFail(
+    () =>
+      execFile(file, args, {
+        cwd: dir,
+        env: getEnv(),
+      }),
+    message
+  );
+}
+
+function getEnv() {
+  return {
+    ...process.env,
+    PLASMIC_LOADER: "1",
+    QUIET: "1",
+    NODE_OPTIONS: process.env.LOADER_CLI_NODE_OPTIONS,
+  };
+}
+
+/**
+ * Spawn lets us see the output. Helpful for debugging.
+ */
+async function spawnOrFail(
+  dir: string,
+  file: string,
+  args: string[],
+  message: string
+) {
+  const { status } = cp.spawnSync(file, args, {
+    cwd: dir,
+    env: getEnv(),
+    stdio: "inherit",
+  });
+  if (status !== 0) {
+    handleExitError(message);
   }
 }
 
 function objToExecArgs(obj: object) {
-  return Object.entries(obj)
-    .map(
-      ([param, value]) =>
-        `--${param}=${Array.isArray(value) ? value.join(",") : value}`
-    )
-    .join(" ");
+  return Object.entries(obj).map(
+    ([param, value]) =>
+      `--${param}=${Array.isArray(value) ? value.join(",") : value}`
+  );
 }
 
 async function getCurrentLoaderVersion() {
@@ -72,11 +126,13 @@ async function installPackages(plasmicDir: string) {
   if (process.env.DO_YALC_ADD_CLI) {
     await execOrFail(plasmicDir, "yalc add @plasmicapp/cli", "");
   }
-  await execOrFail(
-    plasmicDir,
-    "npm install --no-package-lock",
-    `Unable to install plasmic dependencies. Please delete ${plasmicDir} and try again.`
-  );
+  if (!process.env.NO_INSTALL) {
+    await execOrFail(
+      plasmicDir,
+      "npm install --no-package-lock",
+      `Unable to install plasmic dependencies. Please delete ${plasmicDir} and try again.`
+    );
+  }
 }
 
 export async function tryInitializePlasmicDir(
@@ -97,20 +153,13 @@ export async function tryInitializePlasmicDir(
   try {
     await fs.access(configPath);
   } catch {
-    await execOrFail(
+    await spawnOrFail(
       plasmicDir,
-      `${plasmicExecPath} init --yes=true ${objToExecArgs(initArgs)}`,
+      plasmicExecPath,
+      ["init", "--enable-skip-auth", "--yes=true", ...objToExecArgs(initArgs)],
       "Unable to initialize Plasmic. Please check the above error and try again."
     );
   }
-}
-
-export function checkAuth(dir: string, execPath: string) {
-  return execOrFail(
-    dir,
-    `${execPath} auth --check`,
-    "Unable to authenticate Plasmic. Please run `plasmic auth` or check your ~/.plasmic.auth file, and try again."
-  );
 }
 
 export async function readConfig(dir: string) {
@@ -173,15 +222,20 @@ export function getPagesFromConfig(plasmicDir: string, config: any) {
 
 export async function syncProject(
   dir: string,
-  pageDir: string,
+  userDir: string,
   execPath: string,
   projects: string[]
 ) {
-  return execOrFail(
+  return spawnOrFail(
     dir,
-    `${execPath} sync --yes --metadata source=loader --projects ${projects.join(
-      " "
-    )}`,
+    execPath,
+    [
+      ..."sync --yes --metadata source=loader".split(/ /g),
+      "--loader-config",
+      path.join(userDir, "plasmic-loader.json"),
+      "--projects",
+      projects.join(" "),
+    ],
     "Unable to sync Plasmic project. Please check the above error and try again."
   );
 }

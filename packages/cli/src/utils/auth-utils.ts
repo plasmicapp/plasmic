@@ -223,17 +223,28 @@ export async function getCurrentAuth(authPath?: string) {
   }
 }
 
-export async function getOrStartAuth(opts: CommonArgs & { host: string }) {
+function failAuth() {
+  throw new HandledError(
+    `Unable to authenticate Plasmic. Please run 'plasmic auth'.`
+  );
+}
+
+export async function getOrStartAuth(
+  opts: CommonArgs & { host: string; enableSkipAuth?: boolean }
+) {
   let auth = await getCurrentAuth(opts.auth);
+  if (!auth && opts.enableSkipAuth) {
+    return;
+  }
   if (!auth && opts.yes) {
-    throw new HandledError("Could not find the authentication credentials.");
+    failAuth();
   }
   if (!auth) {
     await startAuth(opts);
     auth = await getCurrentAuth(opts.auth);
   }
   if (!auth) {
-    throw new HandledError("Could not find the authentication credentials.");
+    failAuth();
   }
   return auth;
 }

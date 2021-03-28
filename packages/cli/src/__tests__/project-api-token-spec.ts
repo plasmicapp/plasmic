@@ -1,4 +1,3 @@
-jest.mock("../api");
 import { sync } from "../actions/sync";
 import {
   defaultPlasmicJson,
@@ -12,6 +11,8 @@ import {
   standardTestTeardown,
   tmpRepo,
 } from "../test-common/fixtures";
+
+jest.mock("../api");
 
 // Reset the test project directory
 beforeEach(() => {
@@ -79,9 +80,7 @@ describe("Project API tokens", () => {
   test("when not available, should prompt for auth", async () => {
     opts.projects = ["projectId1"];
     removeAuth();
-    await expect(sync(opts)).rejects.toThrow(
-      "Could not find the authentication credentials"
-    );
+    await expect(sync(opts)).rejects.toThrow("Unable to authenticate");
   });
 
   // TODO: Would be nice to eventually make this not fail outright but to prompt for auth.
@@ -135,8 +134,40 @@ describe("Project API tokens", () => {
       ...defaultPlasmicJson,
       projects: [{ ...project1Config, projectApiToken: "abc" }],
     });
-    await expect(sync(opts)).rejects.toThrow(
-      "Could not find the authentication credentials"
-    );
+    await expect(sync(opts)).rejects.toThrow("Unable to authenticate");
+  });
+
+  test("should use plasmic-loader.json for API tokens in loader mode", async () => {
+    process.env.PLASMIC_LOADER = "1";
+
+    opts.projects = ["projectId1"];
+    await expect(sync(opts)).resolves.toBeUndefined();
+
+    const loaderConfig = tmpRepo.readPlasmicLoaderJson();
+    expect(loaderConfig).toEqual({
+      projects: [
+        {
+          projectId: "projectId1",
+          projectApiToken: "abc",
+        },
+      ],
+    });
+
+    // Re-run, this time with no auth and no tokens in plasmic.json, only in plasmic-loader.json.
+    removeAuth();
+    tmpRepo.writePlasmicJson(defaultPlasmicJson);
+    await expect(sync(opts)).resolves.toBeUndefined();
+
+    delete process.env["PLASMIC_LOADER"];
+  });
+
+  test("should fail in loader mode if not available", async () => {
+    process.env.PLASMIC_LOADER = "1";
+
+    opts.projects = ["projectId1"];
+    removeAuth();
+    await expect(sync(opts)).rejects.toThrow();
+
+    delete process.env["PLASMIC_LOADER"];
   });
 });

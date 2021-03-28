@@ -40,4 +40,7 @@ This runs the source in-place from the .ts files so that you can debug the unman
 Extra hidden API
 ================
 
-- `PLASMIC_LOADER` env var: runs in PlasmicLoader mode.
+Additional environment variables, primarily used by PlasmicLoader.
+
+- `PLASMIC_LOADER`: runs in "PlasmicLoader mode."
+- `QUIET`: suppress various output, especially confirmations and subprocesses.

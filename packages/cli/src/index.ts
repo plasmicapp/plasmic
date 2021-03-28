@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import chalk from "chalk";
 import semver from "semver";
 import updateNotifier from "update-notifier";
 import yargs from "yargs";
@@ -9,6 +10,7 @@ import { sync, SyncArgs } from "./actions/sync";
 import { UploadBundleArgs, uploadJsBundle } from "./actions/upload-bundle";
 import { WatchArgs, watchProjects } from "./actions/watch";
 import { logger } from "./deps";
+import { LOADER_CONFIG_FILE_NAME } from "./utils/config-utils";
 import { HandledError } from "./utils/error";
 
 if (process.env.DEBUG_CHDIR) {
@@ -18,7 +20,10 @@ if (process.env.DEBUG_CHDIR) {
 const handleError = <T>(p: Promise<T>) => {
   return p.catch((e) => {
     if (e instanceof HandledError) {
-      logger.error(e.message);
+      logger.error(
+        chalk.bold(chalk.redBright("\nPlasmic error: ")) + e.message
+      );
+      process.exit(1);
     } else {
       throw e;
     }
@@ -57,6 +62,11 @@ yargs
     "Initializes Plasmic for a project.",
     (yags) => {
       yags
+        .option("enable-skip-auth", {
+          describe: "Enable skipping auth, just initialize a plasmic.json",
+          type: "boolean",
+          default: false,
+        })
         .option("host", getYargsOption("host", "https://studio.plasmic.app"))
         .option("platform", getYargsOption("platform"))
         .option("code-lang", getYargsOption("codeLang"))
@@ -198,6 +208,13 @@ function configureSyncArgs(
       type: "boolean",
       describe: "Force sync to bypass specified version ranges.",
       default: false,
+    })
+    .option("loader-config", {
+      type: "string",
+      describe:
+        "Path to loader config file, and causes CLI to run in PlasmicLoader mode.",
+      hidden: true,
+      default: LOADER_CONFIG_FILE_NAME,
     })
     .option("non-recursive", {
       type: "boolean",

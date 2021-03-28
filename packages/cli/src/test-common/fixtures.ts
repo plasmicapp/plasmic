@@ -96,6 +96,7 @@ export function standardTestSetup(includeDep = true) {
     appendJsxOnMissingBase: false,
     config: tmpRepo.plasmicJsonPath(),
     auth: tmpRepo.plasmicAuthPath(),
+    loaderConfig: tmpRepo.plasmicLoaderJsonPath(),
   };
 }
 

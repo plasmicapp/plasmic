@@ -56,7 +56,7 @@ export function installUpgrade(
     return true;
   } else {
     console.warn(
-      `Cannot add ${pkg} to your project dependency. Please add it manually.`
+      `Cannot add ${pkg} to your project dependencies. Please add it manually.`
     );
     return false;
   }

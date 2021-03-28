@@ -42,9 +42,12 @@ export interface InitArgs extends CommonArgs {
   srcDir: string;
   plasmicDir: string;
   pagesDir?: string;
+  enableSkipAuth?: boolean;
 }
 
-export async function initPlasmic(opts: InitArgs) {
+export async function initPlasmic(
+  opts: InitArgs & { enableSkipAuth?: boolean }
+) {
   await getOrStartAuth(opts);
 
   const configFile =
@@ -63,7 +66,9 @@ export async function initPlasmic(opts: InitArgs) {
   const answers = await deriveInitAnswers(opts);
   await writeConfig(newConfigFile, createInitConfig(answers));
 
-  logger.info("Successfully created plasmic.json.\n");
+  if (!process.env.QUIET) {
+    logger.info("Successfully created plasmic.json.\n");
+  }
 
   const answer = await confirmWithUser(
     "@plasmicapp/react-web is a small runtime required by Plasmic-generated code.\n  Do you want to add it now?",
@@ -229,6 +234,10 @@ async function deriveInitAnswers(opts: Partial<InitArgs>) {
   };
   const prominentAnswers = L.omit(answers, "codeScheme");
 
+  if (process.env.QUIET) {
+    return answers;
+  }
+
   console.log(
     chalk.bold(
       "Plasmic Express Setup -- Here are the default settings we recommend:\n"
@@ -254,6 +263,7 @@ async function deriveInitAnswers(opts: Partial<InitArgs>) {
     ],
   };
   console.log();
+
   if (opts.yes) {
     simulatePrompt(useExpressQuestion, "yes", true);
     return answers;
