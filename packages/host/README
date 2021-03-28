@@ -1,0 +1,8 @@
+Simple app hosting package for Plasmic.  It contains functions and type
+definitions to allow code components to be used in Plasmic Studio.
+
+Install
+=======
+
+  yarn add @plasmicapp/host
+
