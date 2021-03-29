@@ -11,7 +11,7 @@ import { PlasmicOptsSchema } from "./validation";
 type onRegisterPages = (
   pages: { name: string; projectId: string; path: string; url: string }[],
   config: any
-) => void;
+) => Promise<void>;
 
 async function watchForChanges(
   { plasmicDir, pageDir }: PlasmicOpts,
@@ -41,7 +41,7 @@ async function watchForChanges(
       await gen.generateAll({ dir: plasmicDir, pageDir });
       currentConfig = await cli.readConfig(plasmicDir);
       if (onRegisterPages) {
-        onRegisterPages(
+        await onRegisterPages(
           cli.getPagesFromConfig(plasmicDir, currentConfig),
           currentConfig
         );
@@ -91,7 +91,7 @@ export async function onPostInit(
 ) {
   if (onRegisterPages) {
     const config = await cli.readConfig(opts.plasmicDir);
-    onRegisterPages(cli.getPagesFromConfig(opts.plasmicDir, config), config);
+    await onRegisterPages(cli.getPagesFromConfig(opts.plasmicDir, config), config);
   }
   if (opts.watch) {
     watchForChanges(opts, onRegisterPages);
