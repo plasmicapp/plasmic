@@ -19,6 +19,10 @@ import {
   updateNotify,
 } from "./utils/npm-utils";
 
+if (process.env.CPA_DEBUG_CHDIR) {
+  process.chdir(process.env.CPA_DEBUG_CHDIR);
+}
+
 // Check for updates
 const createPlasmicAppVersion = updateNotify();
 
