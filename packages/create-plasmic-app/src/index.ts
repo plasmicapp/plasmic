@@ -47,6 +47,11 @@ const argv = yargs
     string: true,
     default: "",
   })
+  .option("projectApiToken", {
+    describe: "Plasmic project API token (optional, to bypass standard auth)",
+    string: true,
+    default: "",
+  })
   .option("template", {
     describe: "Specify a template for the created project",
     string: true,
@@ -215,6 +220,7 @@ async function run(): Promise<void> {
 
   const template = argv["template"];
   const useTypescript = argv["typescript"];
+  const projectApiToken = argv["projectApiToken"];
 
   console.log();
   console.log("Let's get started! Here's what we'll do: ");
@@ -224,12 +230,18 @@ async function run(): Promise<void> {
 
   // Authenticate with Plasmic
   banner("AUTHENTICATING WITH PLASMIC");
-  const authCheckResult = spawn("npx -p @plasmicapp/cli plasmic auth --check");
-  if (authCheckResult.status !== 0) {
-    spawnOrFail(
-      "npx -p @plasmicapp/cli plasmic auth",
-      "Failed to authenticate with Plasmic. Please run `npx @plasmicapp/cli auth` manually."
+  if (projectApiToken) {
+    console.log("Skipping auth; using the given project API token.");
+  } else {
+    const authCheckResult = spawn(
+      "npx -p @plasmicapp/cli plasmic auth --check"
     );
+    if (authCheckResult.status !== 0) {
+      spawnOrFail(
+        "npx -p @plasmicapp/cli plasmic auth",
+        "Failed to authenticate with Plasmic. Please run `npx @plasmicapp/cli auth` manually."
+      );
+    }
   }
 
   // Calling `npx create-XXX` means we don't have to keep these dependencies up to date
@@ -289,7 +301,10 @@ async function run(): Promise<void> {
   const npmRunCmd = pkgMgr === "yarn" ? "yarn" : "npm run";
   if (scheme === "codegen") {
     banner("SYNCING PLASMIC COMPONENTS");
-    spawnOrFail(`npx plasmic sync --yes -p ${projectId}`, resolvedProjectPath);
+    const project = projectApiToken
+      ? `${projectId}:${projectApiToken}`
+      : projectId;
+    spawnOrFail(`npx plasmic sync --yes -p ${project}`, resolvedProjectPath);
   } else if (scheme === "loader") {
     if (platform === "nextjs") {
       await writeDefaultNextjsConfig(resolvedProjectPath, projectId);
