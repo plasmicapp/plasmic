@@ -129,7 +129,7 @@ async function installPackages(plasmicDir: string) {
   if (!process.env.NO_INSTALL) {
     await execOrFail(
       plasmicDir,
-      "npm install --no-package-lock",
+      "npm update --no-package-lock",
       `Unable to install plasmic dependencies. Please delete ${plasmicDir} and try again.`
     );
   }
