@@ -6,7 +6,7 @@ import * as api from "./api";
 import * as logger from "./logger";
 import * as semver from "./semver";
 import type { PlasmicOpts } from "./types";
-import * as utils from "./utils";
+import * as config from "./config";
 
 const exec = util.promisify(cp.exec);
 const execFile = util.promisify(cp.execFile);
@@ -86,22 +86,9 @@ function objToExecArgs(obj: object) {
   );
 }
 
-async function getCurrentLoaderVersion() {
-  try {
-    const packageJsonPath = path.join(__dirname, "..", "package.json");
-    const packageJsonFile = await fs.readFile(packageJsonPath);
-    const version: string | undefined = JSON.parse(packageJsonFile.toString())
-      .version;
-    return utils.ensure(version);
-  } catch (e) {
-    logger.error(e);
-    process.exit(1);
-  }
-}
-
 export async function ensureRequiredLoaderVersion() {
   const requiredVersions = await api.getRequiredPackages();
-  const version = await getCurrentLoaderVersion();
+  const version = config.packageJson.version;
 
   if (semver.gt(requiredVersions["@plasmicapp/loader"], version)) {
     logger.info(

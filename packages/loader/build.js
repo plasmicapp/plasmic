@@ -35,6 +35,18 @@ fs.copyFileSync(
   path.join("dist", "templates", "NextPage.dot")
 );
 
+if (process.argv.indexOf("--prod") !== -1) {
+  fs.copyFileSync(
+    path.join("dist", "shared", "config", "staticConfig.prod.js"),
+    path.join("dist", "shared", "config", "staticConfig.js")
+  );
+
+  fs.unlinkSync(path.join("dist", "shared", "config", "staticConfig.prod.js"));
+  fs.unlinkSync(
+    path.join("dist", "shared", "config", "staticConfig.prod.d.ts")
+  );
+}
+
 delete packageJson.private;
 delete packageJson.scripts;
 

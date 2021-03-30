@@ -4,6 +4,10 @@ A plugin to sync your Plasmic designs via a convenient <PlasmicLoader /> compone
 
 To release a new version, run `npm version patch` (or set the proper version in the `package.json` file) and run `npm run release`.
 
+## Building the package
+
+Running `node build.js` will create a build with development config. Pass the `--prod` flag to use prod config. This config is available at `src/shared/config`
+
 ## Debugging
 
 Here are some flags that may help with your local development/debugging the CLI+Loader combo.
