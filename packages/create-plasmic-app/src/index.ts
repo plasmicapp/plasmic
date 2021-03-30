@@ -224,10 +224,10 @@ async function run(): Promise<void> {
 
   // Authenticate with Plasmic
   banner("AUTHENTICATING WITH PLASMIC");
-  const authCheckResult = spawn("npx @plasmicapp/cli auth --check");
+  const authCheckResult = spawn("npx -p @plasmicapp/cli plasmic auth --check");
   if (authCheckResult.status !== 0) {
     spawnOrFail(
-      "npx @plasmicapp/cli auth",
+      "npx -p @plasmicapp/cli plasmic auth",
       "Failed to authenticate with Plasmic. Please run `npx @plasmicapp/cli auth` manually."
     );
   }
@@ -239,7 +239,7 @@ async function run(): Promise<void> {
   }
   let createCommand = "";
   if (platform === "nextjs") {
-    createCommand += `npx create-next-app ${resolvedProjectPath}`;
+    createCommand += `npx -p create-next-app create-next-app ${resolvedProjectPath}`;
     if (template) {
       createCommand += ` --example ${template}`;
     } else if (useTypescript) {
@@ -247,14 +247,14 @@ async function run(): Promise<void> {
       createCommand += ` --example with-typescript`;
     }
   } else if (platform === "gatsby") {
-    createCommand += `npx gatsby new ${resolvedProjectPath}`;
+    createCommand += `npx -p gatsby gatsby new ${resolvedProjectPath}`;
     if (template) {
       createCommand += ` ${template}`;
     }
     // Default Gatsby starter already supports Typescript
     // See where we `touch tsconfig.json` later on
   } else if (platform === "react") {
-    createCommand += `npx create-react-app ${resolvedProjectPath}`;
+    createCommand += `npx -p create-react-app create-react-app ${resolvedProjectPath}`;
     if (template) {
       createCommand += ` --template ${template}`;
     } else if (useTypescript) {
