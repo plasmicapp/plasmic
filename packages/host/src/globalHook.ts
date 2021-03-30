@@ -14,8 +14,8 @@ const officialHook = root.__REACT_DEVTOOLS_GLOBAL_HOOK__;
 if (codeComponents) {
   ensure(officialHook);
   // Return true if this is a canvas frame's tree.
-  // Performs a BFS and checks if any of the first 5 nodes contain the "frameInfo"
-  // property.
+  // Performs a BFS and checks if any of the first 30 nodes contain the
+  // "frameInfo" property.
   // Right now we rely on one of the first elements in the tree passing a prop
   // with this name. It's not the first element in the React tree because
   // it's below some React context providers for example.
@@ -28,8 +28,8 @@ if (codeComponents) {
     let count = 0;
     let next: IteratorResult<Fiber, any>;
 
-    // Get first 5 nodes and then stop the generator
-    while (count < 5 && !(next = nodeIterator.next()).done) {
+    // Get first 30 nodes and then stop the generator
+    while (count < 30 && !(next = nodeIterator.next()).done) {
       count++;
       const node: Fiber = next.value;
       if (
