@@ -1,4 +1,5 @@
 import chalk from "chalk";
+import { captureException } from "./sentry";
 
 const prefixes = {
   cliInfo: `${chalk.blueBright("info")} ${chalk.green("plasmic-cli")}`,
@@ -25,5 +26,9 @@ export function error(message: string) {
 
 export function crash(message: string, err?: Error) {
   error(message);
+  if (err) {
+    captureException(err).then(() => process.exit(1));
+    return;
+  }
   process.exit(1);
 }

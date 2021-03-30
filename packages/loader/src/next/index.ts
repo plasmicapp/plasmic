@@ -113,6 +113,6 @@ module.exports = (pluginOptions: PluginOptions) => (nextConfig: any = {}) => (
   try {
     return processNextPhase(pluginOptions, nextConfig, phase);
   } catch (e) {
-    logger.crash(e);
+    logger.crash(e.message, e);
   }
 };

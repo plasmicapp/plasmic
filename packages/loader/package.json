@@ -1,16 +1,20 @@
 {
   "name": "@plasmicapp/loader",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "private": "true",
   "description": "Integrate Plasmic codegen via a convenient PlasmicLoader component!",
   "scripts": {
     "build": "node ./build.js",
-    "release": "npm run build && cd dist && npm publish",
+    "release": "node ./build.js --prod && cd dist && npm publish",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">=12"
   },
   "main": "dist/PlasmicLoader.jsx",
   "types": "dist/PlasmicLoader.d.ts",
   "dependencies": {
+    "@sentry/node": "^6.2.3",
     "axios": "^0.21.1",
     "chalk": "^4.1.0",
     "dot": "^1.1.3",
