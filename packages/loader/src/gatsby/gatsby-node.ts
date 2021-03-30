@@ -1,11 +1,12 @@
 import path from "upath";
+import * as logger from "../shared/logger";
 import { initLoader, onPostInit } from "../shared";
 import type { PlasmicOpts } from "../shared/types";
 type PluginOptions = Partial<PlasmicOpts>;
 
 let opts: PlasmicOpts;
-exports.onPreBootstrap = (_: any, pluginOptions: PluginOptions) => {
 
+async function onGatsbyPreBootstrap(pluginOptions: PluginOptions) {
   // This is passed by Gatsby, here we're deleting it to make sure
   // the plugin options only contains known keys.
   delete (pluginOptions as any).plugins;
@@ -31,12 +32,11 @@ exports.onPreBootstrap = (_: any, pluginOptions: PluginOptions) => {
   } as PlasmicOpts;
 
   return initLoader(opts);
-};
+}
 
 let createPageParam: any = {};
-exports.createPagesStatefully = (opts: any) => (createPageParam = opts);
 
-exports.onPostBootstrap = async () => {
+async function onGatsbyPostBootstrap() {
   return onPostInit(opts, async (pages) => {
     const existingPages = await createPageParam.graphql(`
       {
@@ -68,4 +68,12 @@ exports.onPostBootstrap = async () => {
         })
       );
   });
-};
+}
+
+exports.createPagesStatefully = (opts: any) => (createPageParam = opts);
+
+exports.onPreBootstrap = (_: any, pluginOptions: PluginOptions) =>
+  onGatsbyPreBootstrap(pluginOptions).catch((e) => logger.crash(e.message, e));
+
+exports.onPostBootstrap = () =>
+  onGatsbyPostBootstrap().catch((e) => logger.crash(e.message, e));

@@ -22,3 +22,8 @@ export function warn(message: string) {
 export function error(message: string) {
   console.error(`${prefixes.error} - ${message}`);
 }
+
+export function crash(message: string, err?: Error) {
+  error(message);
+  process.exit(1);
+}

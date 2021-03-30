@@ -16,10 +16,9 @@ function substituteComponents(
   const seenComponents: Record<string, boolean> = {};
   const markAsSeen = (name: string) => {
     if (seenComponents[name]) {
-      logger.error(
+      logger.crash(
         `Component ${name} found in multiple projects. Please specify the project id!`
       );
-      process.exit(1);
     }
     seenComponents[name] = true;
   };

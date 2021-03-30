@@ -28,7 +28,8 @@ async function watchForChanges(
       stdio: "pipe",
     }
   );
-  watchCmd.stdout.on("data", async function (data: Buffer) {
+
+  async function handleWatchCliOutput(data: string) {
     const content = data.toString();
     content
       .split("\n")
@@ -47,18 +48,20 @@ async function watchForChanges(
         );
       }
     }
-  });
+  }
+  watchCmd.stdout.on("data", (data: Buffer) =>
+    handleWatchCliOutput(data.toString()).catch((e) =>
+      logger.crash(e.message, e)
+    )
+  );
 }
 
 export async function initLoader(userOpts: PlasmicOpts) {
   const opts: PlasmicOpts = await PlasmicOptsSchema.validateAsync(
     userOpts
-  ).catch((error) => {
-    logger.error(error.message);
-    process.exit(1);
-  });
-
+  ).catch((error) => logger.crash(error.message));
   const { dir, pageDir, projects, plasmicDir, initArgs = {} } = opts;
+
   logger.info("Checking that your loader version is up to date.");
   await cli.ensureRequiredLoaderVersion();
   logger.info(`Syncing plasmic projects: ${projects.join(", ")}`);
@@ -91,10 +94,13 @@ export async function onPostInit(
 ) {
   if (onRegisterPages) {
     const config = await cli.readConfig(opts.plasmicDir);
-    await onRegisterPages(cli.getPagesFromConfig(opts.plasmicDir, config), config);
+    await onRegisterPages(
+      cli.getPagesFromConfig(opts.plasmicDir, config),
+      config
+    );
   }
   if (opts.watch) {
-    watchForChanges(opts, onRegisterPages);
+    await watchForChanges(opts, onRegisterPages);
   }
 }
 

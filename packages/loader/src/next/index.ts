@@ -1,8 +1,10 @@
 import { initLoader, maybeAddToGitIgnore, onPostInit } from "../shared";
 import { ensure } from "../shared/utils";
 import * as gen from "../shared/gen";
+import * as logger from "../shared/logger";
 import type { PlasmicOpts } from "../shared/types";
 import path from "upath";
+
 // From: https://github.com/vercel/next.js/blob/canary/packages/next/next-server/lib/constants.ts.
 const PHASE_PRODUCTION_BUILD = "phase-production-build";
 const PHASE_DEVELOPMENT_SERVER = "phase-development-server";
@@ -39,7 +41,9 @@ async function initPlasmicLoader(pluginOptions: PluginOptions) {
   await initLoader(opts);
 
   return onPostInit(opts, async (pages, config) =>
-    gen.generateNextPages(pages, nextPageDir, config)
+    gen
+      .generateNextPages(pages, nextPageDir, config)
+      .catch((e) => logger.crash(e.message, e))
   );
 }
 
@@ -54,51 +58,61 @@ async function initPlasmicLoader(pluginOptions: PluginOptions) {
  */
 
 let initPlasmicPromise: Promise<void> | undefined;
-module.exports = (pluginOptions: PluginOptions) => {
-  return (nextConfig: any = {}) => {
-    return function (phase: string) {
-      if (!buildPhase.includes(phase)) {
-        return nextConfig;
-      }
+function processNextPhase(
+  pluginOptions: PluginOptions,
+  nextConfig: any,
+  phase: string
+) {
+  if (!buildPhase.includes(phase)) {
+    return nextConfig;
+  }
 
-      if (!initPlasmicPromise) {
-        initPlasmicPromise = initPlasmicLoader({
-          ...pluginOptions,
-          watch:
-            pluginOptions.watch !== undefined
-              ? pluginOptions.watch
-              : phase === PHASE_DEVELOPMENT_SERVER,
-        });
-      }
+  if (!initPlasmicPromise) {
+    initPlasmicPromise = initPlasmicLoader({
+      ...pluginOptions,
+      watch:
+        pluginOptions.watch !== undefined
+          ? pluginOptions.watch
+          : phase === PHASE_DEVELOPMENT_SERVER,
+    }).catch((e) => logger.crash(e.message, e));
+  }
 
-      return Object.assign({}, nextConfig, {
-        webpackDevMiddleware: (config: any) => {
-          // Ignore .next, but don't ignore .next/.plasmic.
-          config.watchOptions.ignored = config.watchOptions.ignored.filter(
-            (ignore: any) => !ignore.toString().includes(".next")
+  return Object.assign({}, nextConfig, {
+    webpackDevMiddleware: (config: any) => {
+      // Ignore .next, but don't ignore .next/.plasmic.
+      config.watchOptions.ignored = config.watchOptions.ignored.filter(
+        (ignore: any) => !ignore.toString().includes(".next")
+      );
+      config.watchOptions.ignored.push(/.next\/(?!.plasmic)/);
+      return config;
+    },
+    webpack(config: any, options: any) {
+      config.plugins.push({
+        __plugin: "PlasmicLoaderPlugin",
+        apply(compiler: any) {
+          compiler.hooks.beforeCompile.tapAsync(
+            "PlasmicLoaderPlugin",
+            (params: any, callback: () => {}) => {
+              ensure(initPlasmicPromise).then(callback);
+            }
           );
-          config.watchOptions.ignored.push(/.next\/(?!.plasmic)/);
-          return config;
-        },
-        webpack(config: any, options: any) {
-          config.plugins.push({
-            __plugin: "PlasmicLoaderPlugin",
-            apply(compiler: any) {
-              compiler.hooks.beforeCompile.tapAsync(
-                "PlasmicLoaderPlugin",
-                (params: any, callback: () => {}) => {
-                  ensure(initPlasmicPromise).then(callback);
-                }
-              );
-            },
-          });
-
-          if (typeof nextConfig.webpack === "function") {
-            return nextConfig.webpack(config, options);
-          }
-          return config;
         },
       });
-    };
-  };
+
+      if (typeof nextConfig.webpack === "function") {
+        return nextConfig.webpack(config, options);
+      }
+      return config;
+    },
+  });
+}
+
+module.exports = (pluginOptions: PluginOptions) => (nextConfig: any = {}) => (
+  phase: string
+) => {
+  try {
+    return processNextPhase(pluginOptions, nextConfig, phase);
+  } catch (e) {
+    logger.crash(e);
+  }
 };

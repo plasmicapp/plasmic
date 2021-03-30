@@ -9,18 +9,12 @@ import type { PlasmicOpts } from "./types";
 import * as config from "./config";
 
 const exec = util.promisify(cp.exec);
-const execFile = util.promisify(cp.execFile);
-
-function handleExitError(message: string) {
-  logger.error(message);
-  process.exit(1);
-}
 
 async function doOrFail(doit: () => Promise<unknown>, message: string) {
   try {
     await doit();
   } catch (e) {
-    handleExitError(message);
+    logger.crash(message, e);
   }
 }
 
@@ -28,22 +22,6 @@ async function execOrFail(dir: string, command: string, message: string) {
   return doOrFail(
     () =>
       exec(command, {
-        cwd: dir,
-        env: getEnv(),
-      }),
-    message
-  );
-}
-
-async function execFileOrFail(
-  dir: string,
-  file: string,
-  args: string[],
-  message: string
-) {
-  return doOrFail(
-    () =>
-      execFile(file, args, {
         cwd: dir,
         env: getEnv(),
       }),
@@ -75,7 +53,7 @@ async function spawnOrFail(
     stdio: "inherit",
   });
   if (status !== 0) {
-    handleExitError(message);
+    logger.crash(message);
   }
 }
 
@@ -91,10 +69,9 @@ export async function ensureRequiredLoaderVersion() {
   const version = config.packageJson.version;
 
   if (semver.gt(requiredVersions["@plasmicapp/loader"], version)) {
-    logger.info(
+    logger.crash(
       "A newer version of @plasmicapp/loader is required. Please upgrade your current version and try again."
     );
-    process.exit(1);
   }
 }
 
