@@ -242,10 +242,9 @@ async function run(): Promise<void> {
     createCommand += `npx -p create-next-app create-next-app ${resolvedProjectPath}`;
     if (template) {
       createCommand += ` --example ${template}`;
-    } else if (useTypescript) {
-      // Typescript option is mutually exclusive with --template
-      createCommand += ` --example with-typescript`;
     }
+    // Default Next.js starter already supports Typescript
+    // See where we `touch tsconfig.json` later on
   } else if (platform === "gatsby") {
     createCommand += `npx -p gatsby gatsby new ${resolvedProjectPath}`;
     if (template) {
@@ -270,6 +269,10 @@ async function run(): Promise<void> {
   const tsconfigPath = path.join(resolvedProjectPath, "tsconfig.json");
   if (useTypescript && !fs.existsSync(tsconfigPath)) {
     fs.writeFileSync(tsconfigPath, "");
+    const installTsResult = installUpgrade("typescript @types/react");
+    if (!installTsResult) {
+      return crash("Failed to install Typescript");
+    }
   }
 
   // Install dependency
