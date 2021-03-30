@@ -193,13 +193,14 @@ export async function sync(opts: SyncArgs): Promise<void> {
   // Resolve what will be synced
   const projectConfigMap = L.keyBy(context.config.projects, (p) => p.projectId);
   const projectWithVersion = opts.projects.map((p) => {
-    const [projectId, versionRange] = p.split("@");
+    const [projectIdToken, versionRange] = p.split("@");
+    const [projectId, projectApiToken] = projectIdToken.split(":");
     return {
       projectId,
       versionRange:
         versionRange || projectConfigMap[projectId]?.version || "latest",
       componentIdOrNames: undefined, // Get all components!
-      projectApiToken: projectIdToToken.get(projectId),
+      projectApiToken: projectApiToken || projectIdToToken.get(projectId),
     };
   });
 

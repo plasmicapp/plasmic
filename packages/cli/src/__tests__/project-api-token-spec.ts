@@ -43,6 +43,24 @@ describe("Project API tokens", () => {
     await expect(sync(opts)).resolves.toBeUndefined();
   });
 
+  test("can be passed in from command-line args", async () => {
+    removeAuth();
+
+    // Without specifying version.
+    opts.projects = ["projectId1:abc"];
+    await expect(sync(opts)).resolves.toBeUndefined();
+
+    // Specifying version.
+    opts.projects = ["projectId1:abc@1.2.3"];
+    await expect(sync(opts)).resolves.toBeUndefined();
+
+    // Wrong token (should fail).
+    opts.projects = ["projectId1:123"];
+    await expect(sync(opts)).rejects.toThrow(
+      "No user+token, and project API tokens don't match"
+    );
+  });
+
   test("is corrected by auth'd user if token was initially incorrect", async () => {
     opts.projects = ["projectId1"];
     tmpRepo.writePlasmicJson({
