@@ -198,7 +198,7 @@ export async function syncProject(
       "--loader-config",
       path.join(userDir, "plasmic-loader.json"),
       "--projects",
-      projects.join(" "),
+      ...projects,
     ],
     "Unable to sync Plasmic project. Please check the above error and try again."
   );
