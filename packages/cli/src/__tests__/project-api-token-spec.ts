@@ -179,6 +179,23 @@ describe("Project API tokens", () => {
     delete process.env["PLASMIC_LOADER"];
   });
 
+  test("works in PlasmicLoader mode even if root project was determined to not need an update", async () => {
+    process.env.PLASMIC_LOADER = "1";
+
+    // Make project1 have a dependency.
+    standardTestSetup();
+
+    // Explicitly sync both - we had a bug writing back the plasmic-loader.json in this case.
+    opts.projects = ["projectId1", "dependencyId1"];
+    await expect(sync(opts)).resolves.toBeUndefined();
+
+    // We sync project1 which got updated, but the dependency is still same version.
+    opts.force = false;
+    removeAuth();
+    mockApi.getMockProject("projectId1", "1.2.3").version = "1.2.4";
+    await expect(sync(opts)).resolves.toBeUndefined();
+  });
+
   test("should fail in loader mode if not available", async () => {
     process.env.PLASMIC_LOADER = "1";
 

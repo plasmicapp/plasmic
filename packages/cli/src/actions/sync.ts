@@ -44,7 +44,7 @@ import {
 } from "../utils/file-utils";
 import { generateMetadata, getContext } from "../utils/get-context";
 import { printFirstSyncInfo } from "../utils/help";
-import { assert, ensure, tuple } from "../utils/lang-utils";
+import { ensure, tuple } from "../utils/lang-utils";
 import {
   findInstalledVersion,
   getCliVersion,
@@ -352,11 +352,9 @@ export async function sync(opts: SyncArgs): Promise<void> {
 
     if (process.env.PLASMIC_LOADER) {
       const rootProjectIds = new Set(projectSyncParams.map((p) => p.projectId));
-      const freshIdsAndTokens = projectsToSync
+      const freshIdsAndTokens = projectIdsAndTokens
         .filter((p) => rootProjectIds.has(p.projectId))
         .map((p) => L.pick(p, "projectId", "projectApiToken"));
-
-      assert(rootProjectIds.size === freshIdsAndTokens.length);
 
       const config: PlasmicLoaderConfig = {
         projects: L.sortBy(
