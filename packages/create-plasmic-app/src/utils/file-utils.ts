@@ -63,6 +63,23 @@ module.exports = withPlasmic({
   );
 }
 
+export async function writePlasmicLoaderJson(
+  projectDir: string,
+  projectId: string,
+  projectApiToken: string
+): Promise<void> {
+  const plasmicLoaderJson = path.join(projectDir, "plasmic-loader.json");
+  const content = {
+    projects: [
+      {
+        projectId,
+        projectApiToken,
+      },
+    ],
+  };
+  await fs.writeFile(plasmicLoaderJson, JSON.stringify(content));
+}
+
 /**
  * create-gatsby will create a default gatsby-config.js that we need to modify
  * @param absPath

@@ -10,6 +10,7 @@ import {
   modifyDefaultGatsbyConfig,
   overwriteIndex,
   writeDefaultNextjsConfig,
+  writePlasmicLoaderJson,
 } from "./utils/file-utils";
 import { ensure, ensureString } from "./utils/lang-utils";
 import {
@@ -315,6 +316,13 @@ async function run(): Promise<void> {
       await modifyDefaultGatsbyConfig(resolvedProjectPath, projectId);
     } else {
       crash("PlasmicLoader is only compatible with either Next.js or Gatsby");
+    }
+    if (projectApiToken) {
+      await writePlasmicLoaderJson(
+        resolvedProjectPath,
+        projectId,
+        projectApiToken
+      );
     }
     spawnOrFail(`${npmRunCmd} build`, resolvedProjectPath);
   } else {
