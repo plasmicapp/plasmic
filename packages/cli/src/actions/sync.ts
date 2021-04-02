@@ -259,9 +259,10 @@ export async function sync(opts: SyncArgs): Promise<void> {
     opts
   );
   if (projectsToSync.length <= 0) {
-    throw new HandledError(
-      "No compatible versions to sync. Please fix the warnings and try again."
+    console.info(
+      "Your projects are up-to-date with respect to your specified version ranges. Nothing to sync."
     );
+    return;
   }
   const summary = new Map<string, ComponentUpdateSummary>();
   const pendingMerge = new Array<ComponentPendingMerge>();
