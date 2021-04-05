@@ -10,13 +10,16 @@ const componentsByPath = {
 
 export default function PlasmicLoaderPage() {
   const router = useRouter();
-  const { plasmicLoaderPage } = router.query;
+  let { plasmicLoaderPage } = router.query;
+  if (Array.isArray(plasmicLoaderPage)) {
+    plasmicLoaderPage = plasmicLoaderPage.join('/');
+  }
   const {name, projectId} = componentsByPath[plasmicLoaderPage];
 
   return <PlasmicLoader component={name} projectId={projectId} />;
 }
 
-export async function getStaticProps(context) {
+export async function getStaticProps() {
   return {
     props: {},
   };
@@ -26,7 +29,7 @@ export async function getStaticPaths() {
   return {
     paths: [
       {{~ it.pages :page}}
-        { params: { plasmicLoaderPage: ["{{=page.url}}"] } },
+        { params: { plasmicLoaderPage: [{{~ page.urlpaths :path}}"{{=path}}",{{~}}] } },
       {{~}}
     ],
     fallback: false,
