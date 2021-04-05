@@ -13,7 +13,7 @@ type onRegisterPages = (
   config: any
 ) => Promise<void>;
 
-async function watchForChanges(
+export async function watchForChanges(
   { plasmicDir, pageDir }: PlasmicOpts,
   onRegisterPages?: onRegisterPages
 ) {
@@ -45,7 +45,7 @@ async function watchForChanges(
         await onRegisterPages(
           cli.getPagesFromConfig(plasmicDir, currentConfig),
           currentConfig
-        );
+        ).catch((e) => logger.crash(e.message, e));
       }
     }
   }
@@ -97,7 +97,7 @@ export async function onPostInit(
     await onRegisterPages(
       cli.getPagesFromConfig(opts.plasmicDir, config),
       config
-    );
+    ).catch((e) => logger.crash(e.message, e));;
   }
   if (opts.watch) {
     await watchForChanges(opts, onRegisterPages);

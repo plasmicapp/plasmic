@@ -193,7 +193,11 @@ export async function generateNextPages(
       templates.NextPage({
         pages: pages
           .filter((page) => page.url !== "/")
-          .map((page) => ({ ...page, url: page.url.substring(1) })),
+          .map((page) => ({
+            ...page,
+            url: page.url.substring(1),
+            urlpaths: page.url.substring(1).split("/"),
+          })),
       })
     );
   }

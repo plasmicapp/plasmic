@@ -1,9 +1,10 @@
-import { initLoader, maybeAddToGitIgnore, onPostInit } from "../shared";
-import { ensure } from "../shared/utils";
+import { watchForChanges } from "../shared";
+import { spawn } from "../shared/utils";
 import * as gen from "../shared/gen";
 import * as logger from "../shared/logger";
 import type { PlasmicOpts } from "../shared/types";
 import path from "upath";
+import cp from "child_process";
 
 // From: https://github.com/vercel/next.js/blob/canary/packages/next/next-server/lib/constants.ts.
 const PHASE_PRODUCTION_BUILD = "phase-production-build";
@@ -12,11 +13,13 @@ const buildPhase = [PHASE_DEVELOPMENT_SERVER, PHASE_PRODUCTION_BUILD];
 
 type PluginOptions = Partial<PlasmicOpts>;
 
-async function initPlasmicLoader(pluginOptions: PluginOptions) {
+let isFirstTime = true;
+function initPlasmicLoader(pluginOptions: PluginOptions) {
+  if (!isFirstTime) {
+    return;
+  }
+  isFirstTime = false;
   const defaultDir = pluginOptions.dir || process.cwd();
-
-  // Attempted to select a hidden location (like .next/.plasmic or inside node modules)
-  // But ran into issues. We'll choose .plasmic and add this to their .gitignore.
   const plasmicDir = path.join(defaultDir, ".plasmic");
   const nextPageDir = path.join(defaultDir, "pages");
   const defaultOptions = {
@@ -37,81 +40,35 @@ async function initPlasmicLoader(pluginOptions: PluginOptions) {
     ...pluginOptions,
   } as PlasmicOpts;
 
-  await maybeAddToGitIgnore(path.join(process.cwd(), ".gitignore"), ".plasmic");
-  await initLoader(opts);
-
-  return onPostInit(opts, async (pages, config) =>
-    gen
-      .generateNextPages(pages, nextPageDir, config)
-      .catch((e) => logger.crash(e.message, e))
+  const result = cp.spawnSync(
+    "node",
+    [path.join(__dirname, "sync-next.js"), JSON.stringify(opts)],
+    { stdio: "inherit" }
   );
-}
 
-/*
- * Next does not support any asynchronous workflow for plugins. What we're doing here
- * is running PlasmicLoader in a promise and registering an ad-hoc Webpack plugin that
- * hooks into Webpack's "beforeCompile" hook (from where we can add async code).
- *
- * Next also runs Webpack twice (one for the server and another for the client) where
- * both runs are asynchronous. What we do is saving the PlasmicLoader promise as a
- * module-scoped variable and hook to it from both runs.
- */
-
-let initPlasmicPromise: Promise<void> | undefined;
-function processNextPhase(
-  pluginOptions: PluginOptions,
-  nextConfig: any,
-  phase: string
-) {
-  if (!buildPhase.includes(phase)) {
-    return nextConfig;
+  if (result.status !== 0) {
+    logger.crash(
+      "Unable to sync plasmic code. Please check the above error and try again."
+    );
   }
 
-  if (!initPlasmicPromise) {
-    initPlasmicPromise = initPlasmicLoader({
-      ...pluginOptions,
-      watch:
-        pluginOptions.watch !== undefined
-          ? pluginOptions.watch
-          : phase === PHASE_DEVELOPMENT_SERVER,
-    }).catch((e) => logger.crash(e.message, e));
+  if (opts.watch) {
+    spawn(
+      watchForChanges(opts, (pages, config) =>
+        gen.generateNextPages(pages, nextPageDir, config)
+      )
+    );
   }
-
-  return Object.assign({}, nextConfig, {
-    webpackDevMiddleware: (config: any) => {
-      // Ignore .next, but don't ignore .next/.plasmic.
-      config.watchOptions.ignored = config.watchOptions.ignored.filter(
-        (ignore: any) => !ignore.toString().includes(".next")
-      );
-      config.watchOptions.ignored.push(/.next\/(?!.plasmic)/);
-      return config;
-    },
-    webpack(config: any, options: any) {
-      config.plugins.push({
-        __plugin: "PlasmicLoaderPlugin",
-        apply(compiler: any) {
-          compiler.hooks.beforeCompile.tapAsync(
-            "PlasmicLoaderPlugin",
-            (params: any, callback: () => {}) => {
-              ensure(initPlasmicPromise).then(callback);
-            }
-          );
-        },
-      });
-
-      if (typeof nextConfig.webpack === "function") {
-        return nextConfig.webpack(config, options);
-      }
-      return config;
-    },
-  });
 }
 
 module.exports = (pluginOptions: PluginOptions) => (nextConfig: any = {}) => (
   phase: string
 ) => {
   try {
-    return processNextPhase(pluginOptions, nextConfig, phase);
+    if (buildPhase.includes(phase)) {
+      initPlasmicLoader(pluginOptions);
+    }
+    return nextConfig;
   } catch (e) {
     logger.crash(e.message, e);
   }
