@@ -881,11 +881,17 @@ export function deriveRenderOpts(
   return { variants, args, overrides };
 }
 
+const isDefaultValue = (val: string) => val === "PLEASE_RENDER_INSIDE_PROVIDER";
+const seenDefaultVariants: Record<string, boolean> = {};
 export function ensureGlobalVariants<T extends Record<string, any>>(
   globalVariantValues: T
 ) {
-  Object.entries(globalVariantValues).forEach(([key, value]) => {
-    if (value === "PLEASE_RENDER_INSIDE_PROVIDER") {
+  Object.entries(globalVariantValues)
+    .filter(
+      ([key, value]) => isDefaultValue(value) && !seenDefaultVariants[key]
+    )
+    .forEach(([key, value]) => {
+      seenDefaultVariants[key] = true;
       const providerName = `${key[0].toUpperCase()}${key.substring(
         1
       )}Context.Provider`;
@@ -893,8 +899,7 @@ export function ensureGlobalVariants<T extends Record<string, any>>(
         `Plasmic context value for global variant "${key}" was not provided; please use ${providerName} at the root of your React app. Learn More: https://www.plasmic.app/learn/other-assets/#global-variants`
       );
       (globalVariantValues as any)[key] = undefined;
-    }
-  });
+    });
   return globalVariantValues;
 }
 
