@@ -1,8 +1,7 @@
 import path from "upath";
 import * as logger from "../shared/logger";
 import { initLoader, onPostInit } from "../shared";
-import type { PlasmicOpts } from "../shared/types";
-type PluginOptions = Partial<PlasmicOpts>;
+import type { PlasmicOpts, PluginOptions, Substitutions } from "../shared/types";
 
 let opts: PlasmicOpts;
 
@@ -24,12 +23,13 @@ async function onGatsbyPreBootstrap(pluginOptions: PluginOptions) {
     watch: process.env.NODE_ENV === "development",
     plasmicDir,
     pageDir: path.join(plasmicDir, "pages"),
+    substitutions: {} as Substitutions,
   };
 
   opts = {
     ...defaultOptions,
     ...pluginOptions,
-  } as PlasmicOpts;
+  };
 
   return initLoader(opts);
 }

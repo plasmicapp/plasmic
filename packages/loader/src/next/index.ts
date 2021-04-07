@@ -2,7 +2,7 @@ import { watchForChanges } from "../shared";
 import { spawn } from "../shared/utils";
 import * as gen from "../shared/gen";
 import * as logger from "../shared/logger";
-import type { PlasmicOpts } from "../shared/types";
+import type { PlasmicOpts, PluginOptions, Substitutions } from "../shared/types";
 import path from "upath";
 import cp from "child_process";
 
@@ -10,8 +10,6 @@ import cp from "child_process";
 const PHASE_PRODUCTION_BUILD = "phase-production-build";
 const PHASE_DEVELOPMENT_SERVER = "phase-development-server";
 const buildPhase = [PHASE_DEVELOPMENT_SERVER, PHASE_PRODUCTION_BUILD];
-
-type PluginOptions = Partial<PlasmicOpts>;
 
 let isFirstTime = true;
 function initPlasmicLoader(pluginOptions: PluginOptions) {
@@ -33,12 +31,13 @@ function initPlasmicLoader(pluginOptions: PluginOptions) {
     dir: defaultDir,
     plasmicDir,
     pageDir: path.join(plasmicDir, "pages"),
+    substitutions: {} as Substitutions,
   };
 
-  const opts = {
+  const opts: PlasmicOpts = {
     ...defaultOptions,
     ...pluginOptions,
-  } as PlasmicOpts;
+  };
 
   const result = cp.spawnSync(
     "node",

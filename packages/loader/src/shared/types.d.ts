@@ -6,10 +6,12 @@ export type PlasmicOpts = {
   plasmicDir: string;
   pageDir: string;
   projects: string[];
-  watch?: boolean;
-  initArgs?: Record<string, string>;
-  substitutions?: Substitutions;
+  watch: boolean;
+  initArgs: Record<string, string>;
+  substitutions: Substitutions;
 };
+
+export type PluginOptions = Partial<PlasmicOpts> & { projects: string[] };
 
 /**
  * Component substitution options.
