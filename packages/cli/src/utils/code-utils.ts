@@ -338,6 +338,11 @@ export function replaceImports(
       }
     }
   });
+
+  if (!changed) {
+    return code;
+  }
+
   return nodeToFormattedCode(file, !changed, commentsToRemove);
 }
 
