@@ -56,11 +56,41 @@ export async function watchForChanges(
   );
 }
 
+export async function checkLoaderConfig(opts: PlasmicOpts) {
+  const savedConfigPath = path.join(
+    opts.plasmicDir,
+    ".plasmic-loader-config.json"
+  );
+
+  const currentConfig = JSON.stringify({ ...opts, watch: false });
+  const savedConfig = await fs
+    .readFile(savedConfigPath)
+    .then((file) => file.toString())
+    .catch(() => undefined);
+
+  if (savedConfig === currentConfig) {
+    return;
+  }
+
+  if (savedConfig !== undefined) {
+    logger.info(
+      "Detected a change in the previous config. Deleting .plasmic directory..."
+    );
+  }
+
+  // Settings changed, so delete .plasmic dir.
+  await fs.rm(opts.plasmicDir, { recursive: true, force: true });
+  await fs.mkdir(opts.plasmicDir, { recursive: true });
+  await fs.writeFile(savedConfigPath, JSON.stringify(opts));
+}
+
 export async function initLoader(userOpts: PlasmicOpts) {
   const opts: PlasmicOpts = await PlasmicOptsSchema.validateAsync(
     userOpts
   ).catch((error) => logger.crash(error.message));
   const { dir, pageDir, projects, plasmicDir, initArgs = {} } = opts;
+
+  await checkLoaderConfig(opts);
 
   logger.info("Checking that your loader version is up to date.");
   await cli.ensureRequiredLoaderVersion();
@@ -97,7 +127,7 @@ export async function onPostInit(
     await onRegisterPages(
       cli.getPagesFromConfig(opts.plasmicDir, config),
       config
-    ).catch((e) => logger.crash(e.message, e));;
+    ).catch((e) => logger.crash(e.message, e));
   }
   if (opts.watch) {
     await watchForChanges(opts, onRegisterPages);
