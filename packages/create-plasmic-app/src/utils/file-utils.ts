@@ -57,6 +57,7 @@ const withPlasmic = plasmic({
   projects: ['${projectId}'] // An array of project ids.
 });
 module.exports = withPlasmic({
+  trailingSlash: true,
   // Your NextJS config.
 });
   `
