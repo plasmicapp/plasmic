@@ -240,6 +240,7 @@ async function run(): Promise<void> {
     if (authCheckResult.status !== 0) {
       spawnOrFail(
         "npx -p @plasmicapp/cli plasmic auth",
+        resolvedProjectPath,
         "Failed to authenticate with Plasmic. Please run `npx @plasmicapp/cli auth` manually."
       );
     }
