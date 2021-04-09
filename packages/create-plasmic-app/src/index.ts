@@ -283,7 +283,9 @@ async function run(): Promise<void> {
   const tsconfigPath = path.join(resolvedProjectPath, "tsconfig.json");
   if (useTypescript && !fs.existsSync(tsconfigPath)) {
     fs.writeFileSync(tsconfigPath, "");
-    const installTsResult = installUpgrade("typescript @types/react");
+    const installTsResult = installUpgrade("typescript @types/react", {
+      workingDir: resolvedProjectPath,
+    });
     if (!installTsResult) {
       return crash("Failed to install Typescript");
     }
