@@ -400,6 +400,9 @@ function crash(message: string, err?: Error) {
   if (fs.existsSync(resolvedProjectPath)) {
     console.log(`Please remove ${resolvedProjectPath} and try again.`);
   }
+  if (err) {
+    Sentry.captureException(err);
+  }
   process.exit(1);
 }
 
