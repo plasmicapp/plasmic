@@ -230,8 +230,9 @@ export function replaceImports(
         // ensure import { ${exportName} as ${compConfig.name} }
         ensureImportSpecifierWithAlias(stmt, exportName, compConfig.name);
       } else {
-        // ensure import ${compConfig.name} from ...
-        ensureImportDefaultSpecifier(stmt, compConfig.name);
+        // Keep the same name as it might be different from compConfig.name due
+        // to name collisions.
+        // ensureImportDefaultSpecifier(stmt, compConfig.name);
       }
       const realPath = makeImportPath(context, fromPath, modulePath, true);
       stmt.source.value = realPath;
