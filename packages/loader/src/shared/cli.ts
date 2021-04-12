@@ -29,11 +29,11 @@ async function execOrFail(dir: string, command: string, message: string) {
   );
 }
 
-function getEnv() {
+export function getEnv() {
   return {
+    QUIET: "1",
     ...process.env,
     PLASMIC_LOADER: "1",
-    QUIET: "1",
     NODE_OPTIONS: process.env.LOADER_CLI_NODE_OPTIONS,
   };
 }
