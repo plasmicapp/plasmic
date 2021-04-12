@@ -17,7 +17,7 @@ export async function watchForChanges(
   { plasmicDir, pageDir }: PlasmicOpts,
   onRegisterPages?: onRegisterPages
 ) {
-  const cliPath = path.join(plasmicDir, "node_modules", ".bin", "plasmic");
+  const cliPath = path.join(plasmicDir, "node_modules", ".bin", process.platform === "win32" ? "plasmic.cmd":"plasmic");
   let currentConfig = await cli.readConfig(plasmicDir);
   const watchCmd = cp.spawn(
     "node",
@@ -99,7 +99,7 @@ export async function initLoader(userOpts: PlasmicOpts) {
     plasmicDir,
     "node_modules",
     ".bin",
-    "plasmic"
+    process.platform === "win32" ? "plasmic.cmd":"plasmic"
   );
 
   await cli.tryInitializePlasmicDir(plasmicDir, initArgs);
