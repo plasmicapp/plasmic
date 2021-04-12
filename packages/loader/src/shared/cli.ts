@@ -110,7 +110,7 @@ export async function tryInitializePlasmicDir(
     plasmicDir,
     "node_modules",
     ".bin",
-    "plasmic"
+    process.platform === "win32" ? "plasmic.cmd":"plasmic"
   );
   const configPath = path.join(plasmicDir, "plasmic.json");
 
