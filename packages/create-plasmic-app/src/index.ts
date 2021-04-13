@@ -61,7 +61,7 @@ const argv = yargs
   .option("typescript", {
     describe: "Use the default Typescript template",
     boolean: true,
-    default: false,
+    default: "",
   })
   .strict()
   .help("h")
@@ -86,13 +86,13 @@ Sentry.configureScope((scope) => {
 async function maybePrompt(question: DistinctQuestion) {
   const name = ensure(question.name) as string;
   const message = ensure(question.message);
-  const maybeAnswer = argv[name] as string;
-  if (maybeAnswer) {
-    console.log(message + maybeAnswer + "(specified in CLI arg)");
-    return ensureString(argv[name]);
-  } else {
+  const maybeAnswer = argv[name];
+  if (maybeAnswer === null || maybeAnswer === undefined || maybeAnswer === "") {
     const ans = await inquirer.prompt({ ...question });
     return ans[name];
+  } else {
+    console.log(`${message}: ${maybeAnswer} (specified in CLI arg)`);
+    return ensure(argv[name]);
   }
 }
 
