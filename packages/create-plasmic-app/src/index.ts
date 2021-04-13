@@ -251,15 +251,19 @@ async function run(): Promise<void> {
   if (projectApiToken) {
     console.log("Skipping auth; using the given project API token.");
   } else {
-    const authCheckResult = spawn(
-      "npx -p @plasmicapp/cli plasmic auth --check"
-    );
-    if (authCheckResult.status !== 0) {
-      spawnOrFail(
-        "npx -p @plasmicapp/cli plasmic auth",
-        resolvedProjectPath,
-        "Failed to authenticate with Plasmic. Please run `npx @plasmicapp/cli auth` manually."
+    let authCheckResult = false;
+    try {
+      authCheckResult = await spawn(
+        "npx -p @plasmicapp/cli plasmic auth --check"
       );
+    } finally {
+      if (!authCheckResult) {
+        await spawnOrFail(
+          "npx -p @plasmicapp/cli plasmic auth",
+          process.cwd(),
+          "Failed to authenticate with Plasmic. Please run `npx @plasmicapp/cli auth` manually."
+        );
+      }
     }
   }
 
@@ -293,14 +297,14 @@ async function run(): Promise<void> {
   } else {
     return crash(`Unrecognized platform: ${platform}`);
   }
-  spawnOrFail(createCommand);
+  await spawnOrFail(createCommand);
 
   // Create tsconfig.json if it doesn't exist
   // this will force Plasmic to recognize Typescript
   const tsconfigPath = path.join(resolvedProjectPath, "tsconfig.json");
   if (useTypescript && !fs.existsSync(tsconfigPath)) {
     fs.writeFileSync(tsconfigPath, "");
-    const installTsResult = installUpgrade("typescript @types/react", {
+    const installTsResult = await installUpgrade("typescript @types/react", {
       workingDir: resolvedProjectPath,
     });
     if (!installTsResult) {
@@ -312,10 +316,12 @@ async function run(): Promise<void> {
   banner("INSTALLING THE PLASMIC DEPENDENCY");
   const installResult =
     scheme === "loader"
-      ? installUpgrade("@plasmicapp/loader", {
+      ? await installUpgrade("@plasmicapp/loader", {
           workingDir: resolvedProjectPath,
         })
-      : installUpgrade("@plasmicapp/cli", { workingDir: resolvedProjectPath });
+      : await installUpgrade("@plasmicapp/cli", {
+          workingDir: resolvedProjectPath,
+        });
   if (!installResult) {
     return crash("Failed to install the Plasmic dependency");
   }
@@ -328,7 +334,10 @@ async function run(): Promise<void> {
     const project = projectApiToken
       ? `${projectId}:${projectApiToken}`
       : projectId;
-    spawnOrFail(`npx plasmic sync --yes -p ${project}`, resolvedProjectPath);
+    await spawnOrFail(
+      `npx plasmic sync --yes -p ${project}`,
+      resolvedProjectPath
+    );
   } else if (scheme === "loader") {
     if (platform === "nextjs") {
       await writeDefaultNextjsConfig(resolvedProjectPath, projectId);
@@ -344,7 +353,7 @@ async function run(): Promise<void> {
         projectApiToken
       );
     }
-    spawnOrFail(`${npmRunCmd} build`, resolvedProjectPath);
+    await spawnOrFail(`${npmRunCmd} build`, resolvedProjectPath);
   } else {
     crash(`Unrecognized Plasmic scheme: ${scheme}`);
   }
@@ -391,14 +400,14 @@ async function run(): Promise<void> {
  * Run a command synchronously
  * @returns
  */
-function spawnOrFail(
+async function spawnOrFail(
   cmd: string,
   workingDir?: string,
   customErrorMsg?: string
 ) {
-  const result = spawn(cmd, workingDir);
-  if (result.status !== 0) {
-    return crash(customErrorMsg ?? `Failed to run "${cmd}": ${result.error}`);
+  const result = await spawn(cmd, workingDir);
+  if (!result) {
+    return crash(customErrorMsg ?? `Failed to run "${cmd}"`);
   }
 }
 
@@ -426,6 +435,7 @@ function crash(message: string, err?: Error) {
 }
 
 run().catch((err) => {
+  console.log();
   console.log("Aborting installation.");
   crash("Caught exception: ", err);
 });

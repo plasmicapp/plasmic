@@ -1,7 +1,7 @@
 /*eslint
 @typescript-eslint/no-var-requires: 0,
 */
-import { spawnSync, SpawnSyncReturns } from "child_process";
+import * as execa from "execa";
 import findupSync from "findup-sync";
 import updateNotifier from "update-notifier";
 
@@ -24,19 +24,19 @@ export function updateNotify(): string {
  * Run a command on the shell synchronously
  * @param cmd
  * @param workingDir
- * @returns
+ * @returns boolean - true if success, false if fail
  */
-export function spawn(
+export async function spawn(
   cmd: string,
   workingDir?: string
-): SpawnSyncReturns<Buffer> {
+): Promise<boolean> {
   console.log(cmd);
-  const r = spawnSync(cmd, {
+  const cp = await execa.command(cmd, {
     shell: true,
     stdio: "inherit",
     cwd: workingDir,
   });
-  return r;
+  return cp.exitCode === 0;
 }
 
 /**
@@ -45,13 +45,13 @@ export function spawn(
  * @param opts
  * @returns
  */
-export function installUpgrade(
+export async function installUpgrade(
   pkg: string,
   opts: { global?: boolean; dev?: boolean; workingDir?: string } = {}
-): boolean {
+): Promise<boolean> {
   const cmd = installCommand(pkg, opts);
-  const r = spawn(cmd, opts.workingDir);
-  if (r.status === 0) {
+  const r = await spawn(cmd, opts.workingDir);
+  if (r) {
     console.log(`Successfully added ${pkg} dependency.`);
     return true;
   } else {

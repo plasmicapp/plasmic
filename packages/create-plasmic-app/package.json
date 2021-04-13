@@ -36,6 +36,7 @@
   "dependencies": {
     "@sentry/node": "^6.2.2",
     "chalk": "^4.1.0",
+    "execa": "^5.0.0",
     "findup-sync": "^4.0.0",
     "glob": "^7.1.6",
     "inquirer": "^8.0.0",
