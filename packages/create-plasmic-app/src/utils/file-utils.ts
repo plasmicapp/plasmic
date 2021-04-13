@@ -294,6 +294,7 @@ function Index() {
           </a>
         </h4>
         ${getPageSection()}
+        <p><i>Note: Remember to remove this file if you introduce a Page component at the '/' path.</i></p>
       </header>
     </div>
   );
