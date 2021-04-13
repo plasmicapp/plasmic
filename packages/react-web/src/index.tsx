@@ -887,13 +887,11 @@ export function ensureGlobalVariants<T extends Record<string, any>>(
   globalVariantValues: T
 ) {
   Object.entries(globalVariantValues)
-    .filter(
-      ([key, value]) => isDefaultValue(value)
-    )
-    .forEach(([key, value]) => {
+    .filter(([_, value]) => isDefaultValue(value))
+    .forEach(([key, _]) => {
       (globalVariantValues as any)[key] = undefined;
 
-      if (!seenDefaultVariants[key]) {
+      if (!seenDefaultVariants[key] && process.env.NODE_ENV === "development") {
         seenDefaultVariants[key] = true;
         const providerName = `${key[0].toUpperCase()}${key.substring(
           1
@@ -974,8 +972,8 @@ function useHover() {
   return [
     isHover,
     {
-      onMouseEnter: (e: React.MouseEvent) => setHover(true),
-      onMouseLeave: (e: React.MouseEvent) => setHover(false),
+      onMouseEnter: () => setHover(true),
+      onMouseLeave: () => setHover(false),
     },
   ];
 }
@@ -985,8 +983,8 @@ function usePressed() {
   return [
     isPressed,
     {
-      onMouseDown: (e: React.MouseEvent) => setPressed(true),
-      onMouseUp: (e: React.MouseEvent) => setPressed(false),
+      onMouseDown: () => setPressed(true),
+      onMouseUp: () => setPressed(false),
     },
   ];
 }

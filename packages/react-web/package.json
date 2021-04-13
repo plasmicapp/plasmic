@@ -1,27 +1,54 @@
 {
   "name": "@plasmicapp/react-web",
-  "version": "0.2.27",
+  "version": "0.2.28",
   "description": "plasmic library for rendering in the presentational style",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "module": "dist/react-web.esm.js",
+  "size-limit": [
+    {
+      "path": "dist/react-web.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/react-web.esm.js",
+      "limit": "10 KB"
+    }
+  ],
   "files": [
     "dist",
     "lib"
   ],
   "scripts": {
-    "build": "tsc && mkdir -p lib && cp src/styles/plasmic.css lib/",
-    "prepare": "yarn build"
+    "build": "tsdx build && mkdir -p lib && cp src/styles/plasmic.css lib/",
+    "start": "tsdx watch",
+    "test": "tsdx test --passWithNoTests",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
+  },
+  "prettier": {},
   "dependencies": {
     "@react-aria/focus": "^3.2.1",
     "classnames": "^2.2.6"
   },
   "devDependencies": {
+    "@size-limit/preset-small-lib": "^4.10.2",
     "@types/classnames": "^2.2.9",
     "@types/react": "^16.9.46",
     "@types/react-dom": "^16.9.8",
+    "husky": "^6.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "size-limit": "^4.10.2",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.2.0",
     "typescript": "^3.9.7"
   },
   "peerDependencies": {
