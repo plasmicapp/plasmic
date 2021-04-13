@@ -4,6 +4,9 @@
   "description": "Create Plasmic-powered React apps",
   "main": "./dist/index.js",
   "license": "MIT",
+  "engines": {
+    "node": "^12.13.0 || ^14.15.0 || >=15.0.0"
+  },
   "bin": {
     "create-plasmic-app": "./dist/index.js"
   },
