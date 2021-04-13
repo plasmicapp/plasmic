@@ -888,17 +888,20 @@ export function ensureGlobalVariants<T extends Record<string, any>>(
 ) {
   Object.entries(globalVariantValues)
     .filter(
-      ([key, value]) => isDefaultValue(value) && !seenDefaultVariants[key]
+      ([key, value]) => isDefaultValue(value)
     )
     .forEach(([key, value]) => {
-      seenDefaultVariants[key] = true;
-      const providerName = `${key[0].toUpperCase()}${key.substring(
-        1
-      )}Context.Provider`;
-      console.warn(
-        `Plasmic context value for global variant "${key}" was not provided; please use ${providerName} at the root of your React app. Learn More: https://www.plasmic.app/learn/other-assets/#global-variants`
-      );
       (globalVariantValues as any)[key] = undefined;
+
+      if (!seenDefaultVariants[key]) {
+        seenDefaultVariants[key] = true;
+        const providerName = `${key[0].toUpperCase()}${key.substring(
+          1
+        )}Context.Provider`;
+        console.warn(
+          `Plasmic context value for global variant "${key}" was not provided; please use ${providerName} at the root of your React app. Learn More: https://www.plasmic.app/learn/other-assets/#global-variants`
+        );
+      }
     });
   return globalVariantValues;
 }

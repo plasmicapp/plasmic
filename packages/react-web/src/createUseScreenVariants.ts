@@ -16,20 +16,29 @@ function matchScreenVariants() {
     .map(([name]) => name);
 }
 
-let curScreenVariant: string[] = [];
+// undefined if screen variants have never been calculated
+let curScreenVariants: string[] | undefined = undefined;
 
-function calculateScreenVariant() {
+function recalculateScreenVariants() {
   const screenVariant = matchScreenVariants();
-  if (screenVariant !== curScreenVariant) {
-    curScreenVariant = screenVariant;
+  if (!curScreenVariants || screenVariant.join("") !== curScreenVariants.join("")) {
+    curScreenVariants = screenVariant;
     ReactDOM.unstable_batchedUpdates(() =>
       listeners.forEach((listener) => listener())
     );
   }
 }
 
+function ensureInitCurScreenVariants() {
+  // Initializes curScreenVariants if it hadn't been before. Note that this must
+  // be called from within an effect.
+  if (curScreenVariants === undefined) {
+    curScreenVariants = matchScreenVariants();
+  }
+}
+
 if (isBrowser) {
-  window.addEventListener("resize", calculateScreenVariant);
+  window.addEventListener("resize", recalculateScreenVariants);
 }
 
 export default function createUseScreenVariants(
@@ -37,24 +46,56 @@ export default function createUseScreenVariants(
   screenQueries: Queries
 ) {
   Object.assign(queries, screenQueries);
-  calculateScreenVariant();
 
-  return function () {
+  return function() {
+    // It is important that upon first render, we return [] or undefined, because
+    // that is what SSR will use, and the client must match.  In an effect (which
+    // only happens on the client), we then actually ask for the real screen variant
+    // and, if different from [] or undefined, forces a re-render.
+
     const [, updateState] = React.useState<{}>();
+    const lastScreenVariantsRef = React.useRef<string[]>(curScreenVariants || []);
 
     // We do useLayoutEffect instead of useEffect to immediately
     // register our forceUpdate. This ensures that if there was
     // a window resize event between render and effects, that the
     // listener will be registered in time
     useIsomorphicLayoutEffect(() => {
-      const forceUpdate = () => updateState({});
-      listeners.push(forceUpdate);
+      const updateIfChanged = () => {
+        if (
+          curScreenVariants && 
+          lastScreenVariantsRef.current.join("") !== curScreenVariants.join("")
+        ) {
+          lastScreenVariantsRef.current = curScreenVariants;
+          // Force update
+          updateState({});
+        }
+      };
+
+      // Listeners are invoked whenever the window is resized
+      listeners.push(updateIfChanged);
+
+      // Initialize the curScreenVariants for the first time.  We don't need
+      // to invoke the listeners here because all components will already 
+      // have this effect running and will re-render if the real screen
+      // variant is non-empty.
+      ensureInitCurScreenVariants();
+
+      // Now, if the curScreenVariants differs from what we returned last,
+      // then force a re-render.
+      updateIfChanged();
       return () => {
-        listeners.splice(listeners.indexOf(forceUpdate), 1);
+        // Remove our listener on unmount
+        listeners.splice(listeners.indexOf(updateIfChanged), 1);
       };
     }, []);
-    return isMulti
-      ? curScreenVariant
-      : curScreenVariant[curScreenVariant.length - 1];
+
+    if (isMulti) {
+      return curScreenVariants || [];
+    } else if (curScreenVariants) {
+      return curScreenVariants[curScreenVariants.length - 1];
+    } else {
+      return undefined;
+    }
   };
 }
