@@ -150,6 +150,24 @@ async function run(): Promise<void> {
     );
   }
 
+  // Prompt for Typescript
+  const useTypescript: boolean = await maybePrompt({
+    name: "typescript",
+    message: "What language do you want to use?",
+    type: "list",
+    choices: () => [
+      {
+        name: "JavaScript",
+        value: false,
+      },
+      {
+        name: "TypeScript",
+        value: true,
+      },
+    ],
+    default: false,
+  });
+
   // Prompt for the platform
   const platform = ensureString(
     await maybePrompt({
@@ -220,7 +238,6 @@ async function run(): Promise<void> {
   }
 
   const template = argv["template"];
-  const useTypescript = argv["typescript"];
   const projectApiToken = argv["projectApiToken"];
 
   console.log();
