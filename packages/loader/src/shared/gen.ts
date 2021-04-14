@@ -188,16 +188,27 @@ export async function generateNextPages(
   }
 
   if (!conflictingCatchAll) {
+    const pagesToWrite: Pages[] = [];
+    for (const page of pages) {
+      if (page.url === "/") continue;
+      try {
+        const possiblePath =
+          path.join(dir, ...page.url.substring(1).split("/")) + extension;
+        await fs.access(possiblePath);
+        continue;
+      } catch {
+        pagesToWrite.push(page);
+      }
+    }
+
     await fs.writeFile(
       path.join(dir, catchAllFileName),
       templates.NextPage({
-        pages: pages
-          .filter((page) => page.url !== "/")
-          .map((page) => ({
-            ...page,
-            url: page.url.substring(1),
-            urlpaths: page.url.substring(1).split("/"),
-          })),
+        pages: pagesToWrite.map((page) => ({
+          ...page,
+          url: page.url.substring(1),
+          urlpaths: page.url.substring(1).split("/"),
+        })),
       })
     );
   }
