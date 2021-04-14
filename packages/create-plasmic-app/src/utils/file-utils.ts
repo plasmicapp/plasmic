@@ -222,7 +222,7 @@ function generateHomePage(
     componentAbsPath
   );
   const appjsContents = `
-import ${componentName} from './${componentRelativePath}';
+import ${componentName} from './${stripExtension(componentRelativePath)}';
 
 function App() {
   return (<${componentName} />);
