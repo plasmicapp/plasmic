@@ -2,7 +2,11 @@ import { watchForChanges } from "../shared";
 import { spawn } from "../shared/utils";
 import * as gen from "../shared/gen";
 import * as logger from "../shared/logger";
-import type { PlasmicOpts, PluginOptions, Substitutions } from "../shared/types";
+import type {
+  PlasmicOpts,
+  PluginOptions,
+  Substitutions,
+} from "../shared/types";
 import path from "upath";
 import cp from "child_process";
 
@@ -60,9 +64,12 @@ function initPlasmicLoader(pluginOptions: PluginOptions) {
   }
 }
 
-module.exports = (pluginOptions: PluginOptions) => (nextConfig: any = {}) => (
-  phase: string
-) => {
+type NextConfigExport = (phase: string) => {};
+type NextConfigExportCreator = (nextConfig: any) => NextConfigExport;
+
+const plasmic = (pluginOptions: PluginOptions): NextConfigExportCreator => (
+  nextConfig = {}
+) => (phase) => {
   try {
     if (buildPhase.includes(phase)) {
       initPlasmicLoader(pluginOptions);
@@ -72,3 +79,5 @@ module.exports = (pluginOptions: PluginOptions) => (nextConfig: any = {}) => (
     logger.crash(e.message, e);
   }
 };
+
+export = plasmic;
