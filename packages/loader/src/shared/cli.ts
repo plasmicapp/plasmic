@@ -34,6 +34,7 @@ export function getEnv() {
     QUIET: "1",
     ...process.env,
     PLASMIC_LOADER: "1",
+    npm_config_yes: "1",
     NODE_OPTIONS: process.env.LOADER_CLI_NODE_OPTIONS,
   };
 }
@@ -82,7 +83,6 @@ async function installPackages(plasmicDir: string) {
   "name":"plasmic-loader",
   "version":"0.0.1",
   "dependencies": {
-    "@plasmicapp/cli": "latest",
     "@plasmicapp/react-web": "latest"
   }
 }`
@@ -105,13 +105,6 @@ export async function tryInitializePlasmicDir(
 ) {
   await fs.mkdir(plasmicDir, { recursive: true });
   await installPackages(plasmicDir);
-
-  const plasmicExecPath = path.join(
-    plasmicDir,
-    "node_modules",
-    ".bin",
-    process.platform === "win32" ? "plasmic.cmd":"plasmic"
-  );
   const configPath = path.join(plasmicDir, "plasmic.json");
 
   try {
@@ -119,8 +112,16 @@ export async function tryInitializePlasmicDir(
   } catch {
     await spawnOrFail(
       plasmicDir,
-      plasmicExecPath,
-      ["init", "--enable-skip-auth", "--yes=true", ...objToExecArgs(initArgs)],
+      "npx",
+      [
+        "-p",
+        "@plasmicapp/cli@latest",
+        "plasmic",
+        "init",
+        "--enable-skip-auth",
+        "--yes=true",
+        ...objToExecArgs(initArgs),
+      ],
       "Unable to initialize Plasmic. Please check the above error and try again."
     );
   }
@@ -137,10 +138,10 @@ export async function saveConfig(dir: string, config: any) {
   return fs.writeFile(configPath, JSON.stringify(config, undefined, 2));
 }
 
-export async function fixImports(dir: string, plasmicExecPath: string) {
+export async function fixImports(dir: string) {
   return execOrFail(
     dir,
-    `${plasmicExecPath} fix-imports`,
+    `npx -p @plasmicapp/cli@latest plasmic fix-imports`,
     `Plasmic was unable to fix the imports for this project. Please delete ${dir} and try again.`
   );
 }
@@ -187,14 +188,15 @@ export function getPagesFromConfig(plasmicDir: string, config: any) {
 export async function syncProject(
   dir: string,
   userDir: string,
-  execPath: string,
   projects: string[]
 ) {
   return spawnOrFail(
     dir,
-    execPath,
+    "npx",
     [
-      ..."sync --yes --metadata source=loader".split(/ /g),
+      ..."-p @plasmicapp/cli@latest plasmic sync --yes --metadata source=loader".split(
+        / /g
+      ),
       "--loader-config",
       path.join(userDir, "plasmic-loader.json"),
       "--projects",

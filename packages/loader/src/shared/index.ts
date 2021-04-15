@@ -17,11 +17,16 @@ export async function watchForChanges(
   { plasmicDir, pageDir }: PlasmicOpts,
   onRegisterPages?: onRegisterPages
 ) {
-  const cliPath = path.join(plasmicDir, "node_modules", ".bin", process.platform === "win32" ? "plasmic.cmd":"plasmic");
   let currentConfig = await cli.readConfig(plasmicDir);
   const watchCmd = cp.spawn(
-    "node",
-    [cliPath, "watch", "--yes", "--metadata", "source=loader"],
+    "npx",
+    [
+      ..."-p @plasmicapp/cli@latest plasmic --",
+      "watch",
+      "--yes",
+      "--metadata",
+      "source=loader",
+    ],
     {
       cwd: plasmicDir,
       env: cli.getEnv(),
@@ -95,22 +100,16 @@ export async function initLoader(userOpts: PlasmicOpts) {
   logger.info("Checking that your loader version is up to date.");
   await cli.ensureRequiredLoaderVersion();
   logger.info(`Syncing plasmic projects: ${projects.join(", ")}`);
-  const plasmicExecPath = path.join(
-    plasmicDir,
-    "node_modules",
-    ".bin",
-    process.platform === "win32" ? "plasmic.cmd":"plasmic"
-  );
 
   await cli.tryInitializePlasmicDir(plasmicDir, initArgs);
-  await cli.syncProject(plasmicDir, dir, plasmicExecPath, projects);
+  await cli.syncProject(plasmicDir, dir, projects);
 
   if (opts.substitutions) {
     logger.info("Registering substitutions...");
     const config = await cli.readConfig(plasmicDir);
     substitutions.registerSubstitutions(plasmicDir, config, opts.substitutions);
     await cli.saveConfig(plasmicDir, config);
-    await cli.fixImports(plasmicDir, plasmicExecPath);
+    await cli.fixImports(plasmicDir);
   }
 
   logger.info("Generating loader...");
