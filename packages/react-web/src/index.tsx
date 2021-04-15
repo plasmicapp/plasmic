@@ -2,6 +2,8 @@
 import _classNames from "classnames";
 export const classNames = _classNames;
 export { omit, pick } from "./common";
+// Plume
+export * from "./plume/select";
 export { StrictProps } from "./react-utils";
 export {
   createPlasmicElementProxy,

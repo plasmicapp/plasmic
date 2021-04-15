@@ -178,7 +178,7 @@ function createPlasmicElement<DefaultElementType extends React.ElementType>(
 }
 
 // We use data-plasmic-XXX attributes for custom properties since Typescript doesn't
-// support type check on @jsx pragma. See https://github.com/microsoft/TypeScript/issues/21699
+// support type check on jsx pragma. See https://github.com/microsoft/TypeScript/issues/21699
 // for more info.
 const seenElements = new Map<string, React.ReactNode>();
 export function createPlasmicElementProxy<
