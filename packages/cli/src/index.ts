@@ -19,10 +19,8 @@ if (process.env.DEBUG_CHDIR) {
 
 const handleError = <T>(p: Promise<T>) => {
   return p.catch((e) => {
+    console.error(chalk.bold(chalk.redBright("\nPlasmic error: ")) + e.message);
     if (e instanceof HandledError) {
-      logger.error(
-        chalk.bold(chalk.redBright("\nPlasmic error: ")) + e.message
-      );
       process.exit(1);
     } else {
       throw e;
