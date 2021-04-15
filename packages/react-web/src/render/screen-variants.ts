@@ -1,6 +1,6 @@
 import * as React from "react";
 import ReactDOM from "react-dom";
-import { isBrowser, useIsomorphicLayoutEffect } from "./react-utils";
+import { isBrowser, useIsomorphicLayoutEffect } from "../react-utils";
 
 type Queries = { [name: string]: string };
 
@@ -21,7 +21,10 @@ let curScreenVariants: string[] | undefined = undefined;
 
 function recalculateScreenVariants() {
   const screenVariant = matchScreenVariants();
-  if (!curScreenVariants || screenVariant.join("") !== curScreenVariants.join("")) {
+  if (
+    !curScreenVariants ||
+    screenVariant.join("") !== curScreenVariants.join("")
+  ) {
     curScreenVariants = screenVariant;
     ReactDOM.unstable_batchedUpdates(() =>
       listeners.forEach((listener) => listener())
@@ -41,20 +44,22 @@ if (isBrowser) {
   window.addEventListener("resize", recalculateScreenVariants);
 }
 
-export default function createUseScreenVariants(
+export function createUseScreenVariants(
   isMulti: boolean,
   screenQueries: Queries
 ) {
   Object.assign(queries, screenQueries);
 
-  return function() {
+  return function () {
     // It is important that upon first render, we return [] or undefined, because
     // that is what SSR will use, and the client must match.  In an effect (which
     // only happens on the client), we then actually ask for the real screen variant
     // and, if different from [] or undefined, forces a re-render.
 
     const [, updateState] = React.useState<{}>();
-    const lastScreenVariantsRef = React.useRef<string[]>(curScreenVariants || []);
+    const lastScreenVariantsRef = React.useRef<string[]>(
+      curScreenVariants || []
+    );
 
     // We do useLayoutEffect instead of useEffect to immediately
     // register our forceUpdate. This ensures that if there was
@@ -63,7 +68,7 @@ export default function createUseScreenVariants(
     useIsomorphicLayoutEffect(() => {
       const updateIfChanged = () => {
         if (
-          curScreenVariants && 
+          curScreenVariants &&
           lastScreenVariantsRef.current.join("") !== curScreenVariants.join("")
         ) {
           lastScreenVariantsRef.current = curScreenVariants;
@@ -76,7 +81,7 @@ export default function createUseScreenVariants(
       listeners.push(updateIfChanged);
 
       // Initialize the curScreenVariants for the first time.  We don't need
-      // to invoke the listeners here because all components will already 
+      // to invoke the listeners here because all components will already
       // have this effect running and will re-render if the real screen
       // variant is non-empty.
       ensureInitCurScreenVariants();
