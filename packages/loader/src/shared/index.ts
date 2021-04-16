@@ -1,4 +1,3 @@
-import cp from "child_process";
 import fs from "fs/promises";
 import path from "upath";
 import * as cli from "./cli";
@@ -7,6 +6,7 @@ import * as logger from "./logger";
 import * as substitutions from "./substitutions";
 import type { PlasmicOpts } from "./types";
 import { PlasmicOptsSchema } from "./validation";
+import execa from "execa";
 
 type onRegisterPages = (
   pages: { name: string; projectId: string; path: string; url: string }[],
@@ -18,10 +18,10 @@ export async function watchForChanges(
   onRegisterPages?: onRegisterPages
 ) {
   let currentConfig = await cli.readConfig(plasmicDir);
-  const watchCmd = cp.spawn(
+  const watchCmd = execa(
     "npx",
     [
-      ..."-p @plasmicapp/cli@latest plasmic --",
+      ..."-p @plasmicapp/cli@latest plasmic".split(/ /g),
       "watch",
       "--yes",
       "--metadata",
@@ -54,11 +54,14 @@ export async function watchForChanges(
       }
     }
   }
-  watchCmd.stdout.on("data", (data: Buffer) =>
-    handleWatchCliOutput(data.toString()).catch((e) =>
-      logger.crash(e.message, e)
-    )
-  );
+
+  if (watchCmd.stdout) {
+    watchCmd.stdout.on("data", (data: Buffer) =>
+      handleWatchCliOutput(data.toString()).catch((e) =>
+        logger.crash(e.message, e)
+      )
+    );
+  }
 }
 
 export async function checkLoaderConfig(opts: PlasmicOpts) {
