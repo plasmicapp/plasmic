@@ -1,0 +1,104 @@
+.root {
+  display: inline-flex;
+  flex-direction: column;
+  position: relative;
+  width: auto;
+  height: auto;
+}
+.trigger {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  border-radius: 4px;
+  background: #fafafa;
+  border: 1px solid #cacaca /* plasmic-token: nhesNmtki */;
+}
+.trigger > :global(.__wab_flex-container) {
+  flex-direction: row;
+  align-items: center;
+  margin-left: calc(0px - 4px);
+  width: calc(100% + 4px);
+}
+.trigger > :global(.__wab_flex-container) > *,
+.trigger > :global(.__wab_flex-container) > :global(.__wab_slot) > * {
+  margin-left: 4px;
+}
+.trigger__isOpen {
+  background: #eaeaea;
+}
+.trigger__isDisabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.root:focus-within .trigger {
+  outline: none;
+  border-color: #91c3ff /* plasmic-token: d6bwNiXd7 */;
+}
+.root:hover .trigger {
+  background: #ffffff;
+}
+.contentContainer {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+}
+.slotPlaceholder {
+  color: #8e8e8e /* plasmic-token: qkpYmtuXPi */;
+  font-style: italic;
+}
+.dropdownIcon {
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}
+.root:focus-within .dropdownIcon {
+  outline: none;
+}
+.focusRing {
+  position: absolute;
+  bottom: -5px;
+  top: -5px;
+  right: -5px;
+  left: -9px;
+  width: auto;
+  height: auto;
+  pointer-events: none;
+  display: block;
+  border-radius: 4px;
+  border: 2px dashed #1976d2 /* plasmic-token: UnHa69oaay */;
+}
+.root .focusRing_____focusVisibleWithin {
+  outline: none;
+}
+.overlay {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 1px 1px 4px 0px #00000033;
+  flex-column-gap: 0px;
+  position: relative;
+  align-items: stretch;
+  justify-content: flex-start;
+  border-radius: 4px;
+  background: #ffffff;
+}
+.optionsContainer {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+.option__gcPey:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.option__upo2O:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
