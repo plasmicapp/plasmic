@@ -96,6 +96,10 @@ yargs
           alias: "c",
           describe: "Just verifies if the current credentials are valid.",
           type: "boolean",
+        })
+        .option("email", {
+          describe: "Print the email of the currently authenticated user and exit.",
+          type: "boolean",
         });
     },
     (argv) => {
