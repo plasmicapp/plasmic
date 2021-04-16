@@ -8,6 +8,7 @@ import type { PlasmicOpts } from "./types";
 import { PlasmicOptsSchema } from "./validation";
 import execa from "execa";
 import rmfr from "rmfr";
+import { initSentry } from "./sentry";
 
 type onRegisterPages = (
   pages: { name: string; projectId: string; path: string; url: string }[],
@@ -15,10 +16,15 @@ type onRegisterPages = (
 ) => Promise<void>;
 
 export async function watchForChanges(
-  { plasmicDir, pageDir }: PlasmicOpts,
+  opts: PlasmicOpts,
   onRegisterPages?: onRegisterPages
 ) {
+  const { plasmicDir, pageDir } = opts;
   let currentConfig = await cli.readConfig(plasmicDir);
+
+  // Initialize sentry again, as this may not have been
+  // initialized in next.
+  await initSentry(opts);
   const watchCmd = execa(
     "npx",
     [
@@ -94,6 +100,7 @@ export async function checkLoaderConfig(opts: PlasmicOpts) {
 }
 
 export async function initLoader(userOpts: PlasmicOpts) {
+  await initSentry(userOpts);
   const opts: PlasmicOpts = await PlasmicOptsSchema.validateAsync(
     userOpts
   ).catch((error) => logger.crash(error.message));

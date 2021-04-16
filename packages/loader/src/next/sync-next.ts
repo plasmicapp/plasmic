@@ -15,8 +15,8 @@ import { spawn } from "../shared/utils";
 async function run() {
   const opts: PlasmicOpts = JSON.parse(process.argv[2]);
   const nextPageDir = path.join(opts.dir, "pages");
-  await maybeAddToGitIgnore(path.join(process.cwd(), ".gitignore"), ".plasmic");
   await initLoader(opts);
+  await maybeAddToGitIgnore(path.join(process.cwd(), ".gitignore"), ".plasmic");
 
   const config = await cli.readConfig(opts.plasmicDir);
   const pages = cli.getPagesFromConfig(opts.plasmicDir, config);

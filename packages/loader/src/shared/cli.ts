@@ -57,7 +57,7 @@ async function spawnOrFail(
     });
   } catch (e) {
     logger.error(e);
-    logger.crash(message);
+    logger.crash(message, e);
   }
 }
 
@@ -66,6 +66,17 @@ function objToExecArgs(obj: object) {
     ([param, value]) =>
       `--${param}=${Array.isArray(value) ? value.join(",") : value}`
   );
+}
+
+export async function getCurrentUser() {
+  try {
+    const { stdout } = await exec(
+      "npx -p @plasmicapp/cli@latest plasmic auth --email"
+    );
+    return stdout;
+  } catch {
+    return "";
+  }
 }
 
 export async function ensureRequiredLoaderVersion() {
