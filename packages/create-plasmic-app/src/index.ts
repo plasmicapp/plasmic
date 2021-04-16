@@ -6,19 +6,9 @@ import inquirer, { DistinctQuestion } from "inquirer";
 import * as path from "upath";
 import validateProjectName from "validate-npm-package-name";
 import yargs from "yargs";
-import {
-  modifyDefaultGatsbyConfig,
-  overwriteIndex,
-  writeDefaultNextjsConfig,
-  writePlasmicLoaderJson,
-} from "./utils/file-utils";
-import { ensure, ensureString } from "./utils/lang-utils";
-import {
-  detectPackageManager,
-  installUpgrade,
-  spawn,
-  updateNotify,
-} from "./utils/npm-utils";
+import * as cpa from "./lib";
+import { assert, ensure, ensureString } from "./utils/lang-utils";
+import { updateNotify } from "./utils/npm-utils";
 
 if (process.env.CPA_DEBUG_CHDIR) {
   process.chdir(process.env.CPA_DEBUG_CHDIR);
@@ -100,14 +90,6 @@ async function maybePrompt(question: DistinctQuestion) {
 let projectPath: string;
 let resolvedProjectPath: string;
 
-function banner(message: string) {
-  // 50-char width
-  console.log();
-  console.log("==================================================");
-  console.log(chalk.bold(message));
-  console.log("==================================================");
-}
-
 /**
  * Main function
  */
@@ -133,7 +115,7 @@ async function run(): Promise<void> {
 
   // User need to specify a truthy value
   if (!projectPath) {
-    return crash("Please specify the project directory");
+    throw new Error("Please specify the project directory");
   }
 
   // Check that projectName is a valid npm package name
@@ -145,7 +127,7 @@ async function run(): Promise<void> {
     if (nameValidation.errors) {
       nameValidation.errors.forEach((e) => console.error(e));
     }
-    return crash(
+    throw new Error(
       `${projectName} is not a valid name for an npm package. Please choose another name.`
     );
   }
@@ -240,202 +222,41 @@ async function run(): Promise<void> {
   const template = argv["template"];
   const projectApiToken = argv["projectApiToken"];
 
+  // RUN IT
   console.log();
-  console.log("Let's get started! Here's what we'll do: ");
-  console.log("1. Authenticate with Plasmic");
-  console.log("2. Create a React/Next/Gatsby repo");
-  console.log("3. Integrate with Plasmic");
-
-  // Authenticate with Plasmic
-  banner("AUTHENTICATING WITH PLASMIC");
-  if (projectApiToken) {
-    console.log("Skipping auth; using the given project API token.");
-  } else {
-    let authCheckResult = false;
-    try {
-      authCheckResult = await spawn(
-        "npx -p @plasmicapp/cli plasmic auth --check"
-      );
-    } finally {
-      if (!authCheckResult) {
-        await spawnOrFail(
-          "npx -p @plasmicapp/cli plasmic auth",
-          process.cwd(),
-          "Failed to authenticate with Plasmic. Please run `npx @plasmicapp/cli auth` manually."
-        );
-      }
-    }
-  }
-
-  // Calling `npx create-XXX` means we don't have to keep these dependencies up to date
-  banner("CREATING THE PROJECT");
-  if (!["nextjs", "gatsby", "react"].includes(platform)) {
-    return crash(`Unrecognized platform: ${platform}`);
-  }
-  let createCommand = "";
-  if (platform === "nextjs") {
-    createCommand += `npx -p create-next-app create-next-app ${resolvedProjectPath}`;
-    if (template) {
-      createCommand += ` --example ${template}`;
-    }
-    // Default Next.js starter already supports Typescript
-    // See where we `touch tsconfig.json` later on
-  } else if (platform === "gatsby") {
-    createCommand += `npx -p gatsby gatsby new ${resolvedProjectPath}`;
-    if (template) {
-      createCommand += ` ${template}`;
-    }
-    // Default Gatsby starter already supports Typescript
-    // See where we `touch tsconfig.json` later on
-  } else if (platform === "react") {
-    createCommand += `npx -p create-react-app create-react-app ${resolvedProjectPath}`;
-    if (template) {
-      createCommand += ` --template ${template}`;
-    } else if (useTypescript) {
-      createCommand += " --template typescript";
-    }
-  } else {
-    return crash(`Unrecognized platform: ${platform}`);
-  }
-  await spawnOrFail(createCommand);
-
-  // Create tsconfig.json if it doesn't exist
-  // this will force Plasmic to recognize Typescript
-  const tsconfigPath = path.join(resolvedProjectPath, "tsconfig.json");
-  if (useTypescript && !fs.existsSync(tsconfigPath)) {
-    fs.writeFileSync(tsconfigPath, "");
-    const installTsResult = await installUpgrade("typescript @types/react", {
-      workingDir: resolvedProjectPath,
-    });
-    if (!installTsResult) {
-      return crash("Failed to install Typescript");
-    }
-  }
-
-  // Install dependency
-  banner("INSTALLING THE PLASMIC DEPENDENCY");
-  const installResult =
-    scheme === "loader"
-      ? await installUpgrade("@plasmicapp/loader", {
-          workingDir: resolvedProjectPath,
-        })
-      : await installUpgrade("@plasmicapp/cli", {
-          workingDir: resolvedProjectPath,
-        });
-  if (!installResult) {
-    return crash("Failed to install the Plasmic dependency");
-  }
-
-  // Trigger a sync
-  const pkgMgr = detectPackageManager(resolvedProjectPath);
-  const npmRunCmd = pkgMgr === "yarn" ? "yarn" : "npm run";
-  if (scheme === "codegen") {
-    banner("SYNCING PLASMIC COMPONENTS");
-    const project = projectApiToken
-      ? `${projectId}:${projectApiToken}`
-      : projectId;
-    await spawnOrFail(
-      `npx plasmic sync --yes -p ${project}`,
-      resolvedProjectPath
-    );
-  } else if (scheme === "loader") {
-    if (platform === "nextjs") {
-      await writeDefaultNextjsConfig(resolvedProjectPath, projectId);
-    } else if (platform === "gatsby") {
-      await modifyDefaultGatsbyConfig(resolvedProjectPath, projectId);
-    } else {
-      crash("PlasmicLoader is only compatible with either Next.js or Gatsby");
-    }
-    if (projectApiToken) {
-      await writePlasmicLoaderJson(
-        resolvedProjectPath,
-        projectId,
-        projectApiToken
-      );
-    }
-    await spawnOrFail(`${npmRunCmd} build`, resolvedProjectPath);
-  } else {
-    crash(`Unrecognized Plasmic scheme: ${scheme}`);
-  }
-
-  // Overwrite the index file
-  await overwriteIndex(resolvedProjectPath, platform, scheme);
-
-  /**
-   * INSTRUCT USER ON NEXT STEPS
-   */
-  const command =
-    platform === "nextjs"
-      ? `${npmRunCmd} dev`
-      : platform === "gatsby"
-      ? `${npmRunCmd} develop`
-      : platform === "react"
-      ? `${npmRunCmd} start`
-      : undefined;
-  const relativeDir = path.relative(process.cwd(), resolvedProjectPath);
-  console.log("----------------------------------------");
-  console.log(
-    chalk.green.bold(
-      `Congrats! We created the Plasmic-connected project at ${relativeDir}`
-    )
+  assert(
+    platform === "nextjs" || platform === "gatsby" || platform === "react",
+    "platform must be one of ['nextjs', 'gatsby', 'react']"
   );
-  console.log();
-  console.log();
-  console.log();
-  console.log(
-    "Change directories into your new project and start the development server:"
-  );
-  console.log();
-  console.log(chalk.bold(`cd ${relativeDir}`));
-  console.log(chalk.bold(command));
-  console.log();
-  if (platform === "nextjs" || platform === "gatsby") {
-    console.log(
-      "Navigate to the routes (e.g. /home) defined by your page components from Plasmic Studio."
-    );
-  }
-}
-
-/**
- * Run a command synchronously
- * @returns
- */
-async function spawnOrFail(
-  cmd: string,
-  workingDir?: string,
-  customErrorMsg?: string
-) {
-  const result = await spawn(cmd, workingDir);
-  if (!result) {
-    return crash(customErrorMsg ?? `Failed to run "${cmd}"`);
-  }
-}
-
-/**
- * Call this to exit the script with an error message
- * @param message
- * @param err
- */
-function crash(message: string, err?: Error) {
-  banner("create-plasmic-app failed!");
-
-  console.log(message);
-  if (err) {
-    console.error("Unexpected error: ");
-    console.error(err);
-  }
-  console.log();
-  if (fs.existsSync(resolvedProjectPath)) {
-    console.log(`Please remove ${resolvedProjectPath} and try again.`);
-  }
-  if (err) {
-    Sentry.captureException(err);
-  }
-  process.exit(1);
+  await cpa.create({
+    resolvedProjectPath,
+    projectId,
+    platform,
+    scheme,
+    useTypescript,
+    projectApiToken,
+    template,
+  });
 }
 
 run().catch((err) => {
   console.log();
   console.log("Aborting installation.");
-  crash("Caught exception: ", err);
+  cpa.banner("create-plasmic-app failed!");
+
+  console.error("Unexpected error: ");
+  console.error(err);
+  console.log();
+
+  // Instruct user to remove artifacts
+  if (fs.existsSync(resolvedProjectPath)) {
+    console.log(`Please remove ${resolvedProjectPath} and try again.`);
+  }
+
+  // Log to Sentry
+  if (err) {
+    Sentry.captureException(err);
+  }
+
+  process.exit(1);
 });
