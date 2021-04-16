@@ -1,6 +1,6 @@
 import Joi from "joi";
 import type { PlasmicOpts } from "./types";
-import fs from "fs/promises";
+import { promises as fs } from "fs";
 import path from "upath";
 
 function pathExists(value: string) {

@@ -1,5 +1,5 @@
 import cp from "child_process";
-import fs from "fs/promises";
+import { promises as fs } from "fs";
 import path from "upath";
 import util from "util";
 import * as api from "./api";

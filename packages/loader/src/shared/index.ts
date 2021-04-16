@@ -1,4 +1,4 @@
-import fs from "fs/promises";
+import { promises as fs } from "fs";
 import path from "upath";
 import * as cli from "./cli";
 import * as gen from "./gen";
@@ -7,6 +7,7 @@ import * as substitutions from "./substitutions";
 import type { PlasmicOpts } from "./types";
 import { PlasmicOptsSchema } from "./validation";
 import execa from "execa";
+import rmfr from "rmfr";
 
 type onRegisterPages = (
   pages: { name: string; projectId: string; path: string; url: string }[],
@@ -87,7 +88,7 @@ export async function checkLoaderConfig(opts: PlasmicOpts) {
   }
 
   // Settings changed, so delete .plasmic dir.
-  await fs.rm(opts.plasmicDir, { recursive: true, force: true });
+  await rmfr(opts.plasmicDir);
   await fs.mkdir(opts.plasmicDir, { recursive: true });
   await fs.writeFile(savedConfigPath, JSON.stringify(opts));
 }
