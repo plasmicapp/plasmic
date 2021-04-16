@@ -7,6 +7,7 @@ import * as logger from "./logger";
 import * as semver from "./semver";
 import type { PlasmicOpts } from "./types";
 import * as config from "./config";
+import execa from "execa";
 
 const exec = util.promisify(cp.exec);
 
@@ -48,12 +49,14 @@ async function spawnOrFail(
   args: string[],
   message: string
 ) {
-  const { status } = cp.spawnSync(file, args, {
-    cwd: dir,
-    env: getEnv(),
-    stdio: "inherit",
-  });
-  if (status !== 0) {
+  try {
+    await execa(file, args, {
+      cwd: dir,
+      env: getEnv(),
+      stdio: "inherit",
+    });
+  } catch (e) {
+    logger.error(e);
     logger.crash(message);
   }
 }

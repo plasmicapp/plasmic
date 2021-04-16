@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/loader",
-  "version": "0.0.37",
+  "version": "0.0.38",
   "private": "true",
   "description": "Integrate Plasmic codegen via a convenient PlasmicLoader component!",
   "scripts": {
@@ -18,6 +18,7 @@
     "axios": "^0.21.1",
     "chalk": "^4.1.0",
     "dot": "^1.1.3",
+    "execa": "^5.0.0",
     "joi": "^17.4.0",
     "semver": "^7.3.4",
     "upath": "^2.0.1"
