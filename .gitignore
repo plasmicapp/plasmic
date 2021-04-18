@@ -14,7 +14,6 @@ node_modules/
 .DS_Store
 **/.vscode/
 **/*.swp
-yarn.lock
 .cache
 .idea
 .env
