@@ -14,11 +14,11 @@ import { globalHookCtx } from "./globalHook";
 import { ensure } from "./lang-utils";
 const root = require("window-or-global");
 
+type PrimitiveType = "string" | "boolean" | "number" | "object" | "slot";
+
 export interface ComponentMeta {
   name: string;
-  props: {
-    [prop: string]: "string" | "boolean" | "number" | "object" | "slot";
-  };
+  props: { [prop: string]: PrimitiveType };
   /**
    * Either the path to the component relative to `rootDir` or the npm
    * package name
@@ -37,25 +37,52 @@ export interface ComponentMeta {
   classNameProp?: string;
 }
 
-export interface Registration {
+export interface ComponentRegistration {
   component: React.ComponentType;
   meta: ComponentMeta;
+}
+
+export type Fetcher = (...args: any[]) => Promise<any>;
+
+export interface FetcherMeta {
+  args: { name: string; type: PrimitiveType }[];
+  returns: PrimitiveType;
+  /**
+   * Either the path to the fetcher relative to `rootDir` or the npm
+   * package name
+   */
+  importPath: string;
+  /**
+   * Whether it's a default export or named export
+   */
+  isDefaultExport?: boolean;
+}
+
+export interface FetcherRegistration {
+  fetcher: Fetcher;
+  meta: FetcherMeta;
 }
 
 declare global {
   interface Window {
     __PlasmicHostVersion: string;
-    __PlasmicComponentRegistry: Registration[];
+    __PlasmicComponentRegistry: ComponentRegistration[];
+    __PlasmicFetcherRegistry: FetcherRegistration[];
   }
 }
 
 self.__PlasmicHostVersion = "1";
 self.__PlasmicComponentRegistry = [];
+self.__PlasmicFetcherRegistry = [];
 export function registerComponent(
   component: React.ComponentType<any>,
   meta: ComponentMeta
 ) {
   self.__PlasmicComponentRegistry.push({ component, meta });
+}
+
+export function registerFetcher(fetcher: Fetcher, meta: FetcherMeta) {
+  self.__PlasmicFetcherRegistry.push({ fetcher, meta });
 }
 
 const plasmicRootNode: mobx.IObservableValue<React.ReactElement | null> = mobx.observable.box(
