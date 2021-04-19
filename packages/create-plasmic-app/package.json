@@ -1,6 +1,6 @@
 {
   "name": "create-plasmic-app",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Create Plasmic-powered React apps",
   "main": "./dist/index.js",
   "license": "MIT",

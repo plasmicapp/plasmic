@@ -44,6 +44,8 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
       authCheckResult = await spawn(
         "npx -p @plasmicapp/cli plasmic auth --check"
       );
+    } catch (e) {
+      // Ignore the auth check failure. We'll address in the finally block
     } finally {
       if (!authCheckResult) {
         await spawnOrFail(
