@@ -1,8 +1,9 @@
 {
   "name": "create-plasmic-app",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Create Plasmic-powered React apps",
-  "main": "./dist/index.js",
+  "main": "./dist/lib.js",
+  "types": "./dist/lib.d.ts",
   "license": "MIT",
   "engines": {
     "node": "^12.13.0 || ^14.15.0 || >=15.0.0"
@@ -15,9 +16,9 @@
     "test": "jest --colors",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
     "build": "eslint 'src/**' && tsc",
-    "create-plasmic-app": "ts-node src/index.ts",
-    "prepare": "yarn build"
+    "create-plasmic-app": "ts-node src/index.ts"
   },
+  "prepublish": "yarn build",
   "devDependencies": {
     "@types/findup-sync": "^2.0.2",
     "@types/glob": "^7.1.3",
