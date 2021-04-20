@@ -26,6 +26,13 @@ export interface ComponentMeta {
    * Whether it's a default export or named export
    */
   isDefaultExport?: boolean;
+
+  /**
+   * The prop that expects CSS class names, required for styling code component
+   * instances from Plasmic Studio. If not specified, it's assumed to be
+   * "className".
+   */
+  classNameProp?: string;
 }
 
 export interface Registration {
