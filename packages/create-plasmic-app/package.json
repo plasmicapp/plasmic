@@ -16,9 +16,9 @@
     "test": "jest --colors",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
     "build": "eslint 'src/**' && tsc",
-    "create-plasmic-app": "ts-node src/index.ts"
+    "create-plasmic-app": "ts-node src/index.ts",
+    "prepare": "yarn build"
   },
-  "prepublish": "yarn build",
   "devDependencies": {
     "@types/findup-sync": "^2.0.2",
     "@types/glob": "^7.1.3",
