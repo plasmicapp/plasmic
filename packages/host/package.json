@@ -13,22 +13,22 @@
     "prepare": "yarn build"
   },
   "dependencies": {
+    "@plasmicapp/react-web": "^0.2.30",
     "mobx": "^5.15.4",
     "mobx-react-lite": "^2.0.7",
-    "window-or-global": "^1.0.1",
+    "resize-observer-polyfill": "^1.5.1",
     "slate": "^0.59.0",
     "slate-react": "^0.59.0",
-    "resize-observer-polyfill": "^1.5.1",
-    "@plasmicapp/react-web": "^0.2.24"
+    "window-or-global": "^1.0.1"
   },
   "devDependencies": {
+    "@types/classnames": "^2.2.9",
+    "@types/node": "^14.0.26",
     "@types/react": "^16.9.46",
     "@types/react-dom": "^16.9.8",
-    "@types/classnames": "^2.2.9",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "typescript": "^3.9.7",
-    "@types/node": "^14.0.26"
+    "typescript": "^3.9.7"
   },
   "peerDependencies": {
     "react": ">=16.8.0",
