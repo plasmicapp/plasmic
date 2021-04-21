@@ -1,5 +1,4 @@
-import { createReadStream, unlinkSync } from "fs";
-import * as fs from "fs/promises";
+import { createReadStream, promises as fs, unlinkSync } from "fs";
 import glob from "glob";
 import L from "lodash";
 import * as readline from "readline";
