@@ -186,6 +186,12 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
       "Navigate to the routes (e.g. /home) defined by your page components from Plasmic Studio."
     );
   }
+  if (scheme === "codegen") {
+    console.log(
+      "To watch for changes in Plasmic components, in a separate terminal run:"
+    );
+    console.log(chalk.bold(`npx plasmic watch`));
+  }
 }
 
 export function banner(message: string): void {
