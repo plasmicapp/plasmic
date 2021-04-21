@@ -1,4 +1,4 @@
-import React from "react";
+import React, { isValidElement } from "react";
 
 export const isBrowser = typeof window !== "undefined";
 
@@ -37,6 +37,28 @@ export function ensureNotArray(children: React.ReactNode) {
   } else {
     return children;
   }
+}
+
+/**
+ * Flattens ReactNode into an array of react children, recursively flattening
+ * fragments
+ */
+export function flattenChildren(children: React.ReactNode) {
+  return React.Children.toArray(children).reduce(
+    (acc: React.ReactChild[], child) => {
+      if (React.isValidElement(child) && child.type === React.Fragment) {
+        acc.push(...flattenChildren(child.props.children));
+      } else if (
+        isValidElement(child) ||
+        typeof child === "string" ||
+        typeof child === "number"
+      ) {
+        acc.push(child);
+      }
+      return acc;
+    },
+    []
+  );
 }
 
 export function isReactNode(x: any) {

@@ -29,17 +29,18 @@ import { useHover, usePress } from "react-aria";
 import * as ReactDOM from "react-dom";
 import { Item } from "react-stately";
 import { ensure, isString, mergeProps, pick } from "../../common";
+import { flattenChildren, useIsomorphicLayoutEffect } from "../../react-utils";
 import { Overrides } from "../../render/elements";
 import {
   AnyPlasmicClass,
-  mergeVariantDefTuples,
+  mergeVariantToggles,
   noOutline,
   PlasmicClassArgs,
   PlasmicClassOverrides,
   PlasmicClassVariants,
   StyleProps,
   useForwardedRef,
-  VariantDefTuple,
+  VariantDef,
 } from "../plume-utils";
 import { SelectContext } from "./context";
 import { BaseSelectOptionProps } from "./select-option";
@@ -70,9 +71,9 @@ export interface BaseSelectProps<T extends SelectItemType>
   defaultValue?: string;
 
   /**
-   * List of SelectOptions
+   * List of Select.Options
    */
-  children?: React.ReactElement<BaseSelectOptionProps>[];
+  children?: React.ReactNode;
 
   /**
    * List of items that are options for this Select
@@ -172,7 +173,7 @@ function asAriaSelectProps<T extends SelectItemType>(
         "Don't need to specify items or renderOption when using children"
       );
     }
-    items = children as any;
+    items = flattenChildren(children) as any;
 
     // Since each item is already the SelectOption element, renderOption is
     // just the identity function
@@ -253,9 +254,9 @@ export type SelectRef = FocusableRef;
 export type SelectRefValue = FocusableRefValue;
 
 interface SelectConfig<C extends AnyPlasmicClass> {
-  isOpenVariant: VariantDefTuple<PlasmicClassVariants<C>>;
-  placeholderVariant?: VariantDefTuple<PlasmicClassVariants<C>>;
-  isDisabledVariant?: VariantDefTuple<PlasmicClassVariants<C>>;
+  placeholderVariant?: VariantDef<PlasmicClassVariants<C>>;
+  isOpenVariant: VariantDef<PlasmicClassVariants<C>>;
+  isDisabledVariant?: VariantDef<PlasmicClassVariants<C>>;
 
   triggerContentSlot: keyof PlasmicClassArgs<C>;
   optionsSlot: keyof PlasmicClassArgs<C>;
@@ -343,7 +344,7 @@ export function useSelect<
     }),
   });
 
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (state.isOpen) {
       requestAnimationFrame(() => {
         updatePosition();
@@ -353,7 +354,7 @@ export function useSelect<
 
   // Measure the width of the button to inform the width of the menu (below).
   const [buttonWidth, setButtonWidth] = React.useState<number | null>(null);
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (triggerRef.current) {
       const width = triggerRef.current.offsetWidth;
       setButtonWidth(width);
@@ -390,11 +391,11 @@ export function useSelect<
 
   const variants = {
     ...pick(props, ...plasmicClass.internalVariantProps),
-    ...mergeVariantDefTuples([
-      state.isOpen && config.isOpenVariant,
-      !state.selectedItem && config.placeholderVariant,
-      isDisabled && config.isDisabledVariant,
-    ]),
+    ...mergeVariantToggles(
+      { def: config.isOpenVariant, active: state.isOpen },
+      { def: config.placeholderVariant, active: !state.selectedItem },
+      { def: config.isDisabledVariant, active: isDisabled }
+    ),
   };
 
   const overrides: Overrides = {

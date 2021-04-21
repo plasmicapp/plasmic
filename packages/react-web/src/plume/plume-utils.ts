@@ -2,6 +2,12 @@ import * as React from "react";
 import { groupBy, mapValues } from "../common";
 import { SingleChoiceArg } from "../render/elements";
 
+export let PLUME_STRICT_MODE = true;
+
+export function setPlumeStrictMode(mode: boolean) {
+  PLUME_STRICT_MODE = mode;
+}
+
 export interface StyleProps {
   className?: string;
   style?: React.CSSProperties;
@@ -18,6 +24,12 @@ type DictTuples<V extends Record<string, any>> = DictValues<
   { [K in keyof V]: [K, V[K]] }
 >;
 export type VariantDefTuple<V> = DictTuples<VariantArgsChoices<V>>;
+
+type DistributeTuple<T> = T extends [infer T1, infer T2]
+  ? { group: T1; variant: T2 }
+  : never;
+
+export type VariantDef<V> = DistributeTuple<VariantDefTuple<V>>;
 
 export type PlasmicClass<
   V extends Record<string, any>,
@@ -41,19 +53,20 @@ export type PlasmicClassOverrides<
   C extends AnyPlasmicClass
 > = C extends PlasmicClass<any, any, infer O> ? O : unknown;
 
-export function mergeVariantDefTuples<V>(
-  defs: (undefined | false | null | React.ReactChild | VariantDefTuple<V>)[]
+type BooleanLike = boolean | undefined | null;
+
+export function mergeVariantToggles<V>(
+  ...toggles: { def?: VariantDef<V>; active: BooleanLike }[]
 ) {
-  const grouped = groupBy(
-    defs.filter((x): x is VariantDefTuple<V> => !!x),
-    ([group, _]) => group as string
-  );
-  return mapValues(grouped, (value) => {
-    if (value.length === 1) {
-      return value[0][1];
-    } else {
-      return value.map((v) => v[1]);
-    }
+  const definedToggles = toggles.filter((x) => !!x.def) as {
+    def: VariantDef<V>;
+    active: BooleanLike;
+  }[];
+  const grouped = groupBy(definedToggles, ({ def }) => def.group as string);
+  return mapValues(grouped, (subToggles) => {
+    return Object.fromEntries(
+      subToggles.map(({ def, active }) => [def.variant, !!active])
+    );
   });
 }
 

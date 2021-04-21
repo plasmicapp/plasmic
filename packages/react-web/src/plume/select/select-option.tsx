@@ -2,15 +2,18 @@ import { useOption as useAriaOption } from "@react-aria/listbox";
 import { useFocusableRef } from "@react-spectrum/utils";
 import { FocusableRef } from "@react-types/shared";
 import * as React from "react";
+import { ListState } from "react-stately";
 import { mergeProps, pick } from "../../common";
 import { Overrides } from "../../render/elements";
 import {
   AnyPlasmicClass,
-  mergeVariantDefTuples,
+  mergeVariantToggles,
+  noOutline,
   PlasmicClassArgs,
   PlasmicClassOverrides,
   PlasmicClassVariants,
-  VariantDefTuple,
+  PLUME_STRICT_MODE,
+  VariantDef,
 } from "../plume-utils";
 import { SelectContext } from "./context";
 
@@ -22,9 +25,9 @@ export interface BaseSelectOptionProps {
 }
 
 interface SelectOptionConfig<C extends AnyPlasmicClass> {
-  isSelectedVariant: VariantDefTuple<PlasmicClassVariants<C>>;
-  isDisabledVariant?: VariantDefTuple<PlasmicClassVariants<C>>;
-  isHighlightedVariant?: VariantDefTuple<PlasmicClassVariants<C>>;
+  isSelectedVariant: VariantDef<PlasmicClassVariants<C>>;
+  isDisabledVariant?: VariantDef<PlasmicClassVariants<C>>;
+  isHighlightedVariant?: VariantDef<PlasmicClassVariants<C>>;
 
   contentSlot: keyof PlasmicClassArgs<C>;
 
@@ -42,14 +45,39 @@ export function useSelectOption<
   config: SelectOptionConfig<C>,
   outerRef: SelectOptionRef = null
 ) {
-  const { value: itemKey, children } = props;
   const state = React.useContext(SelectContext);
 
   if (!state) {
-    throw new Error(
-      "You can only use a SelectOption within a Select component."
-    );
+    if (PLUME_STRICT_MODE) {
+      throw new Error(
+        "You can only use a Select.Option within a Select component."
+      );
+    }
   }
+
+  // Depending on whether we are in "real" usage (within the correct context)
+  // or in "fake" usage (somewhere in live mode or just littered outside the
+  // context), we use real or fake props.  Note that it's okay for this to
+  // be conditional, as there's no way for an instance to switch between
+  // the two.
+  if (state) {
+    return useRealPlasmicProps(state, plasmicClass, props, config, outerRef);
+  } else {
+    return useFakePlasmicProps(plasmicClass, props, config, outerRef);
+  }
+}
+
+function useRealPlasmicProps<
+  P extends BaseSelectOptionProps,
+  C extends AnyPlasmicClass
+>(
+  state: ListState<any>,
+  plasmicClass: C,
+  props: P,
+  config: SelectOptionConfig<C>,
+  outerRef: SelectOptionRef = null
+) {
+  const { value: itemKey, children } = props;
 
   const item = state.collection.getItem(itemKey);
   const isSelected = state.selectionManager.isSelected(itemKey);
@@ -76,11 +104,11 @@ export function useSelectOption<
 
   const variants = {
     ...pick(props, ...plasmicClass.internalVariantProps),
-    ...mergeVariantDefTuples([
-      isSelected && config.isSelectedVariant,
-      isDisabled && config.isDisabledVariant,
-      isHighlighted && config.isHighlightedVariant,
-    ]),
+    ...mergeVariantToggles(
+      { def: config.isSelectedVariant, active: isSelected },
+      { def: config.isDisabledVariant, active: isDisabled },
+      { def: config.isHighlightedVariant, active: isHighlighted }
+    ),
   };
 
   const args = {
@@ -90,7 +118,7 @@ export function useSelectOption<
 
   const overrides: Overrides = {
     [config.root]: {
-      props: mergeProps(optionProps, { ref }),
+      props: mergeProps(optionProps, { ref, style: noOutline() }),
     },
   };
 
@@ -98,6 +126,38 @@ export function useSelectOption<
     plasmicProps: {
       variants: variants as PlasmicClassVariants<C>,
       args: args as PlasmicClassArgs<C>,
+      overrides: overrides as PlasmicClassOverrides<C>,
+    },
+  };
+}
+
+function useFakePlasmicProps<
+  P extends BaseSelectOptionProps,
+  C extends AnyPlasmicClass
+>(
+  plasmicClass: C,
+  props: P,
+  config: SelectOptionConfig<C>,
+  outerRef: SelectOptionRef = null
+) {
+  const ref = useFocusableRef(outerRef);
+
+  const overrides: Overrides = {
+    [config.root]: {
+      props: { ref, style: noOutline() },
+    },
+  };
+
+  return {
+    plasmicProps: {
+      variants: pick(
+        props,
+        ...plasmicClass.internalVariantProps
+      ) as PlasmicClassVariants<C>,
+      args: pick(
+        props,
+        ...plasmicClass.internalArgProps
+      ) as PlasmicClassArgs<C>,
       overrides: overrides as PlasmicClassOverrides<C>,
     },
   };

@@ -16,7 +16,9 @@ const root = require("window-or-global");
 
 export interface ComponentMeta {
   name: string;
-  props: { [prop: string]: "string" | "boolean" | "number" | "object" | "slot" };
+  props: {
+    [prop: string]: "string" | "boolean" | "number" | "object" | "slot";
+  };
   /**
    * Either the path to the component relative to `rootDir` or the npm
    * package name
@@ -56,7 +58,10 @@ export function registerComponent(
   self.__PlasmicComponentRegistry.push({ component, meta });
 }
 
-const plasmicRootNode: mobx.IObservableValue<React.ReactElement | null> = mobx.observable.box(null, {deep: false});
+const plasmicRootNode: mobx.IObservableValue<React.ReactElement | null> = mobx.observable.box(
+  null,
+  { deep: false }
+);
 
 root.__Sub = {
   React,
@@ -70,8 +75,9 @@ root.__Sub = {
   localObject: Object,
   localElement: Element,
   globalHookCtx,
-  setPlasmicRootNode: (node: React.ReactElement | null) => plasmicRootNode.set(node),
-}
+  setPlasmicRootNode: (node: React.ReactElement | null) =>
+    plasmicRootNode.set(node),
+};
 
 export function renderStudioIntoIframe() {
   const script = document.createElement("script");
@@ -82,17 +88,24 @@ export function renderStudioIntoIframe() {
   document.body.appendChild(script);
 }
 
-export const PlasmicCanvasHost = mobxReactLite.observer(function PlasmicCanvasHost() {
-  const shouldRenderStudio = !document.querySelector("#plasmic-studio-tag") &&
-  !location.hash.match(/\bcanvas=true\b/) &&
-  !location.hash.match(/\blive=true\b/);
-  React.useEffect(() => {
+export const PlasmicCanvasHost = mobxReactLite.observer(
+  function PlasmicCanvasHost() {
+    const shouldRenderStudio =
+      !document.querySelector("#plasmic-studio-tag") &&
+      !location.hash.match(/\bcanvas=true\b/) &&
+      !location.hash.match(/\blive=true\b/);
+    React.useEffect(() => {
+      if (shouldRenderStudio) {
+        renderStudioIntoIframe();
+      }
+    }, [shouldRenderStudio]);
     if (shouldRenderStudio) {
-      renderStudioIntoIframe();
+      return null;
     }
-  }, [shouldRenderStudio]);
-  if (shouldRenderStudio) {
-    return null;
+    return (
+      <div id="app" className="__wab_user-body">
+        {plasmicRootNode.get()}
+      </div>
+    );
   }
-  return <div id="app" className="__wab_user-body">{plasmicRootNode.get()}</div>;
-});
+);

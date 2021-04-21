@@ -2,6 +2,7 @@
 import _classNames from "classnames";
 export const classNames = _classNames;
 export { omit, pick } from "./common";
+export { setPlumeStrictMode } from "./plume/plume-utils";
 // Plume
 export * from "./plume/select";
 export { StrictProps } from "./react-utils";
