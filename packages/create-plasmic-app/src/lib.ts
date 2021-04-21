@@ -1,6 +1,7 @@
 import chalk from "chalk";
 import * as fs from "fs";
 import * as path from "upath";
+import validateProjectName from "validate-npm-package-name";
 import {
   modifyDefaultGatsbyConfig,
   overwriteIndex,
@@ -192,6 +193,31 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
     );
     console.log(chalk.bold(`npx plasmic watch`));
   }
+}
+
+export function checkValidName(name?: string): boolean {
+  // User need to specify a truthy value
+  if (!name) {
+    console.warn("Please specify the project directory");
+    return false;
+  }
+
+  // Check that projectName is a valid npm package name
+  const nameValidation = validateProjectName(name);
+  if (!nameValidation.validForNewPackages) {
+    if (nameValidation.warnings) {
+      nameValidation.warnings.forEach((e) => console.warn(e));
+    }
+    if (nameValidation.errors) {
+      nameValidation.errors.forEach((e) => console.error(e));
+    }
+    console.warn(
+      `'${name}' is not a valid name for an npm package. Please choose another name.`
+    );
+    return false;
+  }
+
+  return true;
 }
 
 export function banner(message: string): void {

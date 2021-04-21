@@ -4,7 +4,6 @@ import chalk from "chalk";
 import * as fs from "fs";
 import inquirer, { DistinctQuestion } from "inquirer";
 import * as path from "upath";
-import validateProjectName from "validate-npm-package-name";
 import yargs from "yargs";
 import * as cpa from "./lib";
 import { assert, ensure, ensureString } from "./utils/lang-utils";
@@ -87,7 +86,8 @@ async function maybePrompt(question: DistinctQuestion) {
 }
 
 // Keeping these as globals to easily share with our `crash` function
-let projectPath: string;
+let projectName: string | undefined =
+  argv._.length > 0 ? argv._[0] + "" : undefined;
 let resolvedProjectPath: string;
 
 /**
@@ -98,38 +98,16 @@ async function run(): Promise<void> {
    * PROMPT USER
    */
   // User-specified project path/directory
-  projectPath = (argv._.length > 0
-    ? argv._[0] + "" // coerce to a string
-    : (
-        await inquirer.prompt({
-          name: "projectPath",
-          message: "What is your project named?",
-          default: "my-app",
-        })
-      ).projectPath
-  ).trim();
-  // Absolute path to the new project
-  resolvedProjectPath = path.resolve(projectPath);
-  // Reuse the basename as the project name
-  const projectName = path.basename(resolvedProjectPath);
-
-  // User need to specify a truthy value
-  if (!projectPath) {
-    throw new Error("Please specify the project directory");
-  }
-
-  // Check that projectName is a valid npm package name
-  const nameValidation = validateProjectName(projectName);
-  if (!nameValidation.validForNewPackages) {
-    if (nameValidation.warnings) {
-      nameValidation.warnings.forEach((e) => console.warn(e));
-    }
-    if (nameValidation.errors) {
-      nameValidation.errors.forEach((e) => console.error(e));
-    }
-    throw new Error(
-      `${projectName} is not a valid name for an npm package. Please choose another name.`
-    );
+  while (!cpa.checkValidName(projectName)) {
+    projectName = (
+      await inquirer.prompt({
+        name: "projectPath",
+        message: "What is your project named?",
+        default: "my-app",
+      })
+    ).projectPath.trim();
+    // Absolute path to the new project
+    resolvedProjectPath = path.resolve(projectName);
   }
 
   // Prompt for Typescript
