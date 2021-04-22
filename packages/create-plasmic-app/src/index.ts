@@ -117,12 +117,12 @@ async function run(): Promise<void> {
     type: "list",
     choices: () => [
       {
-        name: "JavaScript",
-        value: false,
-      },
-      {
         name: "TypeScript",
         value: true,
+      },
+      {
+        name: "JavaScript",
+        value: false,
       },
     ],
     default: false,
