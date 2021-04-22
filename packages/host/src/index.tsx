@@ -117,15 +117,24 @@ export function renderStudioIntoIframe() {
 
 export const PlasmicCanvasHost = mobxReactLite.observer(
   function PlasmicCanvasHost() {
+    // If window.parent is null, then this is a window whose containing iframe
+    // has been detached from the DOM (for the top window, window.parent === window).
+    // In that case, we shouldn't do anything.  If window.parent is null, by the way,
+    // location.hash will also be null.
+    const isFrameAttached = !!window.parent;
     const shouldRenderStudio =
+      isFrameAttached &&
       !document.querySelector("#plasmic-studio-tag") &&
       !location.hash.match(/\bcanvas=true\b/) &&
       !location.hash.match(/\blive=true\b/);
     React.useEffect(() => {
-      if (shouldRenderStudio) {
+      if (shouldRenderStudio && isFrameAttached) {
         renderStudioIntoIframe();
       }
-    }, [shouldRenderStudio]);
+    }, [shouldRenderStudio, isFrameAttached]);
+    if (!isFrameAttached) {
+      return null;
+    }
     if (shouldRenderStudio) {
       return null;
     }
