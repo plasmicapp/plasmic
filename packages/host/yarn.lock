@@ -31,10 +31,10 @@
   dependencies:
     "@babel/runtime" "^7.6.2"
 
-"@plasmicapp/react-web@^0.2.30":
-  version "0.2.30"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.30.tgz#f2b202643780e08850bc9126505847c38adfa4de"
-  integrity sha512-OJg+3swEV6TU/y5/K/XLTX5kuu0hB+oBC6sYeskzzn19xOkQYdBTNXml3MaMn7HwxxXeyX2zE3FJAeUbF0WmkA==
+"@plasmicapp/react-web@^0.2.31":
+  version "0.2.31"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.31.tgz#3e24ecf3ecd0f7e5065b62e1057fb6b809175dcb"
+  integrity sha512-BRUuE3sUe6T/pilOq/38Bhj8RgvxhPKUh6F/gSlsrpOfjEnA/urHR7uiEZYHnL48NCRKRnXpbAHCE2FgMowG0A==
   dependencies:
     "@react-spectrum/utils" "^3.5.1"
     classnames "^2.2.6"

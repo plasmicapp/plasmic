@@ -13,7 +13,7 @@
     "prepare": "yarn build"
   },
   "dependencies": {
-    "@plasmicapp/react-web": "^0.2.30",
+    "@plasmicapp/react-web": "^0.2.31",
     "mobx": "^5.15.4",
     "mobx-react-lite": "^2.0.7",
     "resize-observer-polyfill": "^1.5.1",

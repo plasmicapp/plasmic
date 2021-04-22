@@ -136,3 +136,5 @@ export const PlasmicCanvasHost = mobxReactLite.observer(
     );
   }
 );
+
+ReactWeb.setPlumeStrictMode(false);
