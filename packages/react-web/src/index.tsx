@@ -5,6 +5,7 @@ export { omit, pick } from "./common";
 export { setPlumeStrictMode } from "./plume/plume-utils";
 // Plume
 export * from "./plume/select";
+export * from "./plume/checkbox";
 export { StrictProps } from "./react-utils";
 export {
   createPlasmicElementProxy,
