@@ -1,6 +1,5 @@
 import { watchForChanges } from "../shared";
 import { spawn } from "../shared/utils";
-import * as gen from "../shared/gen";
 import * as logger from "../shared/logger";
 import type {
   PlasmicOpts,
@@ -9,6 +8,7 @@ import type {
 } from "../shared/types";
 import path from "upath";
 import cp from "child_process";
+import { generateNextPages } from "./pages";
 
 // From: https://github.com/vercel/next.js/blob/canary/packages/next/next-server/lib/constants.ts.
 const PHASE_PRODUCTION_BUILD = "phase-production-build";
@@ -58,7 +58,7 @@ function initPlasmicLoader(pluginOptions: PluginOptions) {
   if (opts.watch) {
     spawn(
       watchForChanges(opts, (pages, config) =>
-        gen.generateNextPages(pages, nextPageDir, config)
+        generateNextPages(pages, nextPageDir, config)
       )
     );
   }

@@ -5,12 +5,12 @@
  */
 
 import { initLoader, maybeAddToGitIgnore } from "../shared";
-import * as gen from "../shared/gen";
 import * as logger from "../shared/logger";
 import * as cli from "../shared/cli";
 import type { PlasmicOpts } from "../shared/types";
 import path from "upath";
 import { spawn } from "../shared/utils";
+import { generateNextPages } from "./pages";
 
 async function run() {
   const opts: PlasmicOpts = JSON.parse(process.argv[2]);
@@ -21,7 +21,7 @@ async function run() {
   const config = await cli.readConfig(opts.plasmicDir);
   const pages = cli.getPagesFromConfig(opts.plasmicDir, config);
 
-  return gen.generateNextPages(pages, nextPageDir, config);
+  return generateNextPages(pages, nextPageDir, config);
 }
 
 if (require.main === module) {
