@@ -161,8 +161,9 @@ export async function fixImports(dir: string) {
 }
 
 function getPageUrl(path: string) {
-  // Convert a page path (like pages/my-page.tsx) into their corresponding path (/my-page).
-  let [_, url] = path.split(/^pages(.*)\..*$/);
+  // Convert a page path (like pages/my-page.tsx or ../pages/index.jsx) into their
+  // corresponding path (/my-page).
+  let [_, url] = path.split(/pages(.*)\..*$/);
 
   // Remove the ending "/index" path, which is required for file routing but not for URLs.
   // Examples:
