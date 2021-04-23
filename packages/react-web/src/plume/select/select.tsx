@@ -153,6 +153,8 @@ function asAriaSelectProps<T extends SelectItemType>(
   props: BaseSelectProps<T>
 ) {
   let {
+    value,
+    defaultValue,
     children,
     items,
     renderOption,
@@ -245,6 +247,13 @@ function asAriaSelectProps<T extends SelectItemType>(
       onSelectionChange: onChange,
       items,
       disabledKeys: disabledOptionValues,
+      defaultSelectedKey: defaultValue,
+
+      // react-aria is picky about selectedKey; if it is null, it means "no selection";
+      // if it is undefined, it means "uncontrolled".  So here, if the user passes in a
+      // value prop, then we make sure selectedKey will be null and not undefined, so
+      // we don't accidentally enter uncontrolled mode.
+      ...("value" in props && { selectedKey: value ?? null }),
     } as AriaSelectProps<MaybeWrapped<T>>,
     getUnwrapped,
   };
