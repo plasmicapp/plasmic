@@ -69,6 +69,12 @@ export async function watchForChanges(
       )
     );
   }
+
+  if (watchCmd.stderr) {
+    watchCmd.stderr.on("data", (data: Buffer) => {
+      logger.cliError(data.toString());
+    });
+  }
 }
 
 export async function checkLoaderConfig(opts: PlasmicOpts) {

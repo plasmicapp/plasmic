@@ -56,7 +56,6 @@ async function spawnOrFail(
       stdio: "inherit",
     });
   } catch (e) {
-    logger.error(e);
     logger.crash(message, e);
   }
 }

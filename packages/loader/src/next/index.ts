@@ -49,10 +49,9 @@ function initPlasmicLoader(pluginOptions: PluginOptions) {
     { stdio: "inherit" }
   );
 
+  // If it didn't succeed, there's likely an error that was logged. So we'll exit the process.
   if (result.status !== 0) {
-    logger.crash(
-      "Unable to sync plasmic code. Please check the above error and try again."
-    );
+    process.exit(1);
   }
 
   if (opts.watch) {
