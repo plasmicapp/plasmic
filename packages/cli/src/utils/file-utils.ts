@@ -381,6 +381,7 @@ const renamedFiles = new Map<string, string>();
 export async function withBufferedFs(f: () => Promise<void>) {
   buffering = true;
   buffer.clear();
+  renamedFiles.clear();
   try {
     await f();
     for (const [filePath, action] of buffer.entries()) {
