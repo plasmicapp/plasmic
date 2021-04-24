@@ -125,7 +125,7 @@ async function run(): Promise<void> {
         value: false,
       },
     ],
-    default: false,
+    default: true,
   });
 
   // Prompt for the platform
