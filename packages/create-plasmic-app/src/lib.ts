@@ -5,16 +5,24 @@ import validateProjectName from "validate-npm-package-name";
 import {
   modifyDefaultGatsbyConfig,
   overwriteIndex,
+  overwriteReadme,
   writeDefaultNextjsConfig,
   writePlasmicLoaderJson,
 } from "./utils/file-utils";
 import { detectPackageManager, installUpgrade, spawn } from "./utils/npm-utils";
 
+export type PlatformType = "nextjs" | "gatsby" | "react";
+export type SchemeType = "codegen" | "loader";
+
+export function toString(s: PlatformType): string {
+  return s === "nextjs" ? "Next.js" : s === "gatsby" ? "Gatsby" : "React";
+}
+
 export interface CreatePlasmicAppArgs {
   resolvedProjectPath: string;
   projectId: string;
-  platform: "nextjs" | "gatsby" | "react";
-  scheme: "codegen" | "loader";
+  platform: PlatformType;
+  scheme: SchemeType;
   useTypescript: boolean;
   projectApiToken?: string;
   template?: string;
@@ -164,8 +172,12 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
       ? `${npmRunCmd} develop`
       : platform === "react"
       ? `${npmRunCmd} start`
-      : undefined;
+      : "";
   const relativeDir = path.relative(process.cwd(), resolvedProjectPath);
+
+  // Overwrite README
+  await overwriteReadme(resolvedProjectPath, platform, command);
+
   console.log("----------------------------------------");
   console.log(
     chalk.green.bold(

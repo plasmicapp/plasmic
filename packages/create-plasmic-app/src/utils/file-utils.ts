@@ -3,6 +3,7 @@ import glob from "glob";
 import L from "lodash";
 import * as readline from "readline";
 import * as path from "upath";
+import { PlatformType, toString } from "../lib";
 import { ensure, ensureString } from "./lang-utils";
 
 /**
@@ -201,6 +202,48 @@ export async function overwriteIndex(
       ? generateHomePage(homeFilePossibilities[0], indexAbsPath)
       : generateWelcomePage(config, isCra);
   await fs.writeFile(indexAbsPath, content);
+}
+
+/**
+ * Overwrite the README file
+ * @param projectPath
+ * @param platform
+ * @param buildCommand
+ */
+export async function overwriteReadme(
+  projectPath: string,
+  platform: PlatformType,
+  buildCommand: string
+): Promise<void> {
+  const readmeFile = path.join(projectPath, "README.md");
+  const contents = `
+This is a ${toString(
+    platform
+  )} project bootstrapped with [\`create-plasmic-app\`](https://www.npmjs.com/package/create-plasmic-app).
+
+## Getting Started
+
+First, run the development server:
+
+\`\`\`bash
+${buildCommand}
+\`\`\`
+
+Open your browser to see the result.
+
+You can start editing your project in Plasmic Studio. The page auto-updates as you edit the project.
+
+## Learn More
+
+To learn more about Plasmic, take a look at the following resources:
+
+- [Plasmic Documentation](https://docs.plasmic.app/learn/)
+- [Plasmic Slack Community](https://www.plasmic.app/slack)
+- [Plasmic Forum](https://forum.plasmic.app/)
+
+You can check out [the Plasmic GitHub repository](https://github.com/plasmicapp/plasmic) - your feedback and contributions are welcome!
+  `.trim();
+  await fs.writeFile(readmeFile, contents);
 }
 
 /**
