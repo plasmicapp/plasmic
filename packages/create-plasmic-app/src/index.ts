@@ -206,6 +206,11 @@ async function run(): Promise<void> {
     platform === "nextjs" || platform === "gatsby" || platform === "react",
     "platform must be one of ['nextjs', 'gatsby', 'react']"
   );
+
+  // Set the metadata environment variable to tag the future Segment codegen event
+  cpa.setMetadataEnv({
+    source: "create-plasmic-app",
+  });
   await cpa.create({
     resolvedProjectPath,
     projectId,

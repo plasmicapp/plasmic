@@ -1,5 +1,7 @@
 import chalk from "chalk";
 import * as fs from "fs";
+import L from "lodash";
+import * as querystring from "querystring";
 import * as path from "upath";
 import validateProjectName from "validate-npm-package-name";
 import {
@@ -253,4 +255,17 @@ async function spawnOrFail(
   if (!result) {
     throw new Error(customErrorMsg ?? `Failed to run "${cmd}"`);
   }
+}
+
+export function setMetadataEnv(metadata: Record<string, string>): void {
+  const fromEnv = process.env.PLASMIC_METADATA
+    ? querystring.decode(process.env.PLASMIC_METADATA)
+    : {};
+  const env = { ...fromEnv };
+  L.toPairs(metadata).forEach(([k, v]) => {
+    if (!env[k]) {
+      env[k] = v;
+    }
+  });
+  process.env.PLASMIC_METADATA = querystring.encode(env);
 }
