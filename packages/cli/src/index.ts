@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import chalk from "chalk";
 import semver from "semver";
 import updateNotifier from "update-notifier";
 import yargs from "yargs";
@@ -9,24 +8,12 @@ import { getYargsOption, InitArgs, initPlasmic } from "./actions/init";
 import { sync, SyncArgs } from "./actions/sync";
 import { UploadBundleArgs, uploadJsBundle } from "./actions/upload-bundle";
 import { WatchArgs, watchProjects } from "./actions/watch";
-import { logger } from "./deps";
 import { LOADER_CONFIG_FILE_NAME } from "./utils/config-utils";
-import { HandledError } from "./utils/error";
+import { handleError } from "./utils/error";
 
 if (process.env.DEBUG_CHDIR) {
   process.chdir(process.env.DEBUG_CHDIR);
 }
-
-const handleError = <T>(p: Promise<T>) => {
-  return p.catch((e) => {
-    console.error(chalk.bold(chalk.redBright("\nPlasmic error: ")) + e.message);
-    if (e instanceof HandledError) {
-      process.exit(1);
-    } else {
-      throw e;
-    }
-  });
-};
 
 const pkg = require("../package.json");
 // Check once an hour
@@ -98,7 +85,8 @@ yargs
           type: "boolean",
         })
         .option("email", {
-          describe: "Print the email of the currently authenticated user and exit.",
+          describe:
+            "Print the email of the currently authenticated user and exit.",
           type: "boolean",
         });
     },

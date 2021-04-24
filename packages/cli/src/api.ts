@@ -1,8 +1,8 @@
 import { ProjectSyncMetadataModel } from "@plasmicapp/code-merger";
 import axios, { AxiosError } from "axios";
 import socketio from "socket.io-client";
-import { logger } from "./deps";
 import { AuthConfig, ImagesConfig, StyleConfig } from "./utils/config-utils";
+import { HandledError } from "./utils/error";
 
 export class AppServerError extends Error {
   constructor(message: string) {
@@ -346,8 +346,7 @@ export class PlasmicApi {
         throw e;
       }
 
-      logger.error(errorMsg);
-      process.exit(1);
+      throw new HandledError(errorMsg);
     }
   }
 

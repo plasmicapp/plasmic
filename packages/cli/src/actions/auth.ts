@@ -1,5 +1,6 @@
 import { logger } from "../deps";
 import { getCurrentAuth, startAuth } from "../utils/auth-utils";
+import { HandledError } from "../utils/error";
 
 export type AuthArgs = {
   check?: boolean;
@@ -12,8 +13,9 @@ export async function checkCredentials() {
     logger.info("Plasmic credentials are ok.");
     return;
   }
-  logger.info("The authentication credentials are missing or invalid.");
-  process.exit(1);
+  throw new HandledError(
+    "The authentication credentials are missing or invalid."
+  );
 }
 
 async function getEmail() {
@@ -22,8 +24,9 @@ async function getEmail() {
     logger.info(authCreds.user);
     return;
   }
-  logger.info("The authentication credentials are missing or invalid.");
-  process.exit(1);
+  throw new HandledError(
+    "The authentication credentials are missing or invalid."
+  );
 }
 
 export async function auth(args: AuthArgs) {

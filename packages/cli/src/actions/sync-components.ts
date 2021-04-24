@@ -71,8 +71,7 @@ const updateDirectSkeleton = async (
         ) {
           throw e;
         } else {
-          logger.log(e.messag);
-          process.exit(1);
+          throw new HandledError(e.messag);
         }
       }
     }),

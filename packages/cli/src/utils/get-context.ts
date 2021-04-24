@@ -355,7 +355,7 @@ async function getOrInitAuth(args: CommonArgs) {
 
   // Could not find the authentication credentials and the user
   // declined to run plasmic init.
-  process.exit(1);
+  throw new HandledError("Could not authenticate.");
 }
 
 async function maybeRunPlasmicInit(

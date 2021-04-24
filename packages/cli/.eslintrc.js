@@ -31,6 +31,12 @@ module.exports = {
       {
         property: "renameSync",
       },
+      {
+        object: "process",
+        property: "exit",
+        message:
+          "CLI can be used as a library. Please throw Error or HandledError instead.",
+      },
     ],
     "no-restricted-syntax": [
       "error",

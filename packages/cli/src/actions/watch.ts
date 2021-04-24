@@ -2,6 +2,7 @@ import L from "lodash";
 import moment from "moment";
 import { CommonArgs } from "..";
 import { logger } from "../deps";
+import { HandledError } from "../utils/error";
 import { getContext } from "../utils/get-context";
 import * as semver from "../utils/semver";
 import { sync } from "./sync";
@@ -17,7 +18,7 @@ export interface WatchArgs extends CommonArgs {
   skipUpgradeCheck?: boolean;
   metadata?: string;
 }
-export async function watchProjects(opts: WatchArgs) {
+export async function watchProjects(opts: WatchArgs): Promise<void> {
   // Perform a sync before watch.
   const syncOpts = {
     ...opts,
@@ -30,7 +31,6 @@ export async function watchProjects(opts: WatchArgs) {
   const context = await getContext(opts);
   const config = context.config;
   const socket = context.api.connectSocket();
-  const promise = new Promise((resolve) => {});
   const projectIds = L.uniq(
     opts.projects.length > 0
       ? opts.projects
@@ -53,35 +53,35 @@ export async function watchProjects(opts: WatchArgs) {
   }
 
   if (latestProjects.length === 0) {
-    logger.error(
+    throw new HandledError(
       "Don't know which projects to sync; please specify via --projects"
     );
-    process.exit(1);
   }
 
-  socket.on("initServerInfo", () => {
-    // upon connection, subscribe to changes for argument projects
-    socket.emit("subscribe", {
-      namespace: "projects",
-      projectIds: latestProjects,
+  const promise = new Promise<void>((resolve, reject) => {
+    socket.on("initServerInfo", () => {
+      // upon connection, subscribe to changes for argument projects
+      socket.emit("subscribe", {
+        namespace: "projects",
+        projectIds: latestProjects,
+      });
     });
-  });
-  socket.on("error", (data: any) => {
-    logger.error(data);
-    process.exit(1);
-  });
-  socket.on("update", async (data: any) => {
-    // Just run syncProjects() for now when any project has been updated
-    // Note on the 'updated to revision' part: this is parsed by the
-    // loader package to know that we finished updating the components.
-    await sync(syncOpts);
-    logger.info(
-      `[${moment().format("HH:mm:ss")}] Project ${
-        data.projectId
-      } updated to revision ${data.revisionNum}`
-    );
+    socket.on("error", (data: any) => {
+      reject(new HandledError(data));
+    });
+    socket.on("update", async (data: any) => {
+      // Just run syncProjects() for now when any project has been updated
+      // Note on the 'updated to revision' part: this is parsed by the
+      // loader package to know that we finished updating the components.
+      await sync(syncOpts);
+      logger.info(
+        `[${moment().format("HH:mm:ss")}] Project ${
+          data.projectId
+        } updated to revision ${data.revisionNum}`
+      );
+    });
   });
 
   logger.info(`Watching projects ${latestProjects} ...`);
-  await promise;
+  return promise;
 }

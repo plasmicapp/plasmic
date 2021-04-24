@@ -1,6 +1,6 @@
 import { StyleTokensMap } from "../api";
-import { logger } from "../deps";
 import { PlasmicContext } from "../utils/config-utils";
+import { HandledError } from "../utils/error";
 import {
   fileExists,
   readFileContent,
@@ -45,10 +45,9 @@ async function readCurStyleMap(
         readFileContent(context, context.config.tokens.tokensFilePath)
       );
     } catch (e) {
-      logger.error(
-        `Error countered reading ${context.config.tokens.tokensFilePath}: ${e}`
+      throw new HandledError(
+        `Error encountered reading ${context.config.tokens.tokensFilePath}: ${e}`
       );
-      process.exit(1);
     }
   } else {
     const defaultMap = {

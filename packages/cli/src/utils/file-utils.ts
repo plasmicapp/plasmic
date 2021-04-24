@@ -38,8 +38,9 @@ export async function writeFileContentRaw(
       opts.yes
     );
     if (!overwrite) {
-      logger.error(`Cannot write to ${filePath}; file already exists.`);
-      process.exit(1);
+      throw new HandledError(
+        `Cannot write to ${filePath}; file already exists.`
+      );
     }
   }
 
@@ -165,8 +166,7 @@ export function findSrcDirPath(
   baseNameToFiles: Record<string, string[]>
 ): string {
   if (!path.isAbsolute(absoluteSrcDir)) {
-    logger.error("Cannot find srcDir. Please check plasmic.json.");
-    process.exit(1);
+    throw new HandledError("Cannot find srcDir. Please check plasmic.json.");
   }
 
   const fileName = path.basename(expectedPath);
@@ -180,10 +180,9 @@ export function findSrcDirPath(
     logger.info(`\tDetected file moved from ${expectedPath} to ${newPath}`);
     return newPath;
   } else {
-    logger.error(
+    throw new HandledError(
       `Cannot find expected file at ${expectedPath}, and found multiple possible matching files ${baseNameToFiles[fileName]}.  Please update plasmic.config with the real location for ${fileName}.`
     );
-    process.exit(1);
   }
 }
 

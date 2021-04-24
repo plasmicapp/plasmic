@@ -114,10 +114,9 @@ async function ensureRequiredPackages(context: PlasmicContext, yes?: boolean) {
     });
 
     // Exit so the user can run again with the new cli
-    console.log(
+    throw new HandledError(
       chalk.bold(`@plasmicapp/cli has been upgraded; please try again`)
     );
-    process.exit();
   }
 
   const reactWebVersion = findInstalledVersion(

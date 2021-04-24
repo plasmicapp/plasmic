@@ -1,11 +1,12 @@
 {
   "name": "@plasmicapp/cli",
-  "version": "0.1.137",
+  "version": "0.1.138",
   "description": "plasmic cli for syncing local code with Plasmic designs",
-  "main": "./dist/index.js",
   "engines": {
     "node": ">=12"
   },
+  "main": "./dist/lib.js",
+  "types": "./dist/lib.d.ts",
   "bin": {
     "plasmic": "./dist/index.js"
   },
