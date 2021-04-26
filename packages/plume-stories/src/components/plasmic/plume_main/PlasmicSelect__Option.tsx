@@ -25,7 +25,7 @@ import {
   useTrigger,
   StrictProps,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  ensureGlobalVariants
 } from "@plasmicapp/react-web";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -56,11 +56,15 @@ export const PlasmicSelect__Option__VariantProps = new Array<VariantPropType>(
 
 export type PlasmicSelect__Option__ArgsType = {
   children?: React.ReactNode;
+  value?: string;
+  textValue?: string;
 };
 
 type ArgPropType = keyof PlasmicSelect__Option__ArgsType;
 export const PlasmicSelect__Option__ArgProps = new Array<ArgPropType>(
-  "children"
+  "children",
+  "value",
+  "textValue"
 );
 
 export type PlasmicSelect__Option__OverridesType = {
@@ -78,7 +82,7 @@ function PlasmicSelect__Option__RenderFunc(props: {
   const { variants, args, overrides, forNode } = props;
 
   const superContexts = {
-    Select: React.useContext(SUPER__PlasmicSelect.Context),
+    Select: React.useContext(SUPER__PlasmicSelect.Context)
   };
 
   return (
@@ -97,7 +101,7 @@ function PlasmicSelect__Option__RenderFunc(props: {
           variants,
           "isHighlighted",
           "isHighlighted"
-        ),
+        )
       })}
     >
       <p.PlasmicSlot
@@ -108,7 +112,7 @@ function PlasmicSelect__Option__RenderFunc(props: {
             variants,
             "isSelected",
             "isSelected"
-          ),
+          )
         })}
       />
     </div>
@@ -123,11 +127,14 @@ function useBehavior<P extends p.BaseSelectOptionProps>(
     PlasmicSelect__Option,
     props,
     {
-      isSelectedVariant: ["isSelected", "isSelected"],
-      isDisabledVariant: ["isDisabled", "isDisabled"],
-      isHighlightedVariant: ["isHighlighted", "isHighlighted"],
+      isSelectedVariant: { group: "isSelected", variant: "isSelected" },
+      isDisabledVariant: { group: "isDisabled", variant: "isDisabled" },
+      isHighlightedVariant: {
+        group: "isHighlighted",
+        variant: "isHighlighted"
+      },
       contentSlot: "children",
-      root: "root",
+      root: "root"
     },
 
     ref
@@ -135,7 +142,7 @@ function useBehavior<P extends p.BaseSelectOptionProps>(
 }
 
 const PlasmicDescendants = {
-  root: ["root"],
+  root: ["root"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<
@@ -150,8 +157,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicSelect__Option__OverridesType,
   DescendantsType<T>
 >;
-type NodeComponentProps<T extends NodeNameType> = {
-  // Explicitly specify variants, args, and overrides as objects
+type NodeComponentProps<T extends NodeNameType> = { // Explicitly specify variants, args, and overrides as objects
   variants?: PlasmicSelect__Option__VariantsArgs;
   args?: PlasmicSelect__Option__ArgsType;
   overrides?: NodeOverridesType<T>;
@@ -178,14 +184,14 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       name: nodeName,
       descendantNames: [...PlasmicDescendants[nodeName]],
       internalArgPropNames: PlasmicSelect__Option__ArgProps,
-      internalVariantPropNames: PlasmicSelect__Option__VariantProps,
+      internalVariantPropNames: PlasmicSelect__Option__VariantProps
     });
 
     return PlasmicSelect__Option__RenderFunc({
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -206,7 +212,7 @@ export const PlasmicSelect__Option = Object.assign(
     internalVariantProps: PlasmicSelect__Option__VariantProps,
     internalArgProps: PlasmicSelect__Option__ArgProps,
 
-    useBehavior,
+    useBehavior
   }
 );
 

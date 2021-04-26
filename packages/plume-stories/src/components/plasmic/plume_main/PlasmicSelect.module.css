@@ -94,11 +94,3 @@
   align-items: stretch;
   justify-content: flex-start;
 }
-.option__gcPey:global(.__wab_instance) {
-  position: relative;
-  flex-shrink: 0;
-}
-.option__upo2O:global(.__wab_instance) {
-  position: relative;
-  flex-shrink: 0;
-}

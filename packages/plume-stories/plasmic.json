@@ -24,75 +24,32 @@
       "projectId": "n4MmNtkTML1b3NdHyWSk1o",
       "projectName": "Plume Select",
       "version": "latest",
-      "cssFilePath": "plasmic/plume_select/plasmic_plume_select.module.css",
+      "cssFilePath": "",
       "components": [
         {
           "id": "6u2q0exdPVb",
           "name": "Select",
           "type": "managed",
           "projectId": "n4MmNtkTML1b3NdHyWSk1o",
-          "renderModuleFilePath": "plasmic/plume_select/PlasmicSelect.tsx",
+          "renderModuleFilePath": "plasmic/plume_main/PlasmicSelect.tsx",
           "importSpec": {
             "modulePath": "Select.tsx"
           },
-          "cssFilePath": "plasmic/plume_select/PlasmicSelect.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
-          "id": "k3hzj9oCzy2",
-          "name": "SelectOption",
-          "type": "managed",
-          "projectId": "n4MmNtkTML1b3NdHyWSk1o",
-          "renderModuleFilePath": "plasmic/plume_select/PlasmicSelectOption.tsx",
-          "importSpec": {
-            "modulePath": "SelectOption.tsx"
-          },
-          "cssFilePath": "plasmic/plume_select/PlasmicSelectOption.module.css",
+          "cssFilePath": "plasmic/plume_main/PlasmicSelect.module.css",
           "scheme": "blackbox",
           "componentType": "component"
         }
       ],
       "icons": [
         {
-          "id": "9pGcLN9Hikh-",
-          "name": "CheckIcon",
-          "moduleFilePath": "plasmic/plume_select/icons/PlasmicIcon__Check.tsx"
-        },
-        {
-          "id": "uBGenvzGbir3",
-          "name": "IndeterminateIcon",
-          "moduleFilePath": "plasmic/plume_select/icons/PlasmicIcon__Indeterminate.tsx"
-        },
-        {
           "id": "Gsf5I1eFfGS4",
           "name": "ChevronDownIcon",
-          "moduleFilePath": "plasmic/plume_select/icons/PlasmicIcon__ChevronDown.tsx"
+          "moduleFilePath": "plasmic/plume_main/icons/PlasmicIcon__ChevronDown.tsx"
         },
         {
           "id": "vxBQXREfSm3L",
           "name": "ChevronUpIcon",
-          "moduleFilePath": "plasmic/plume_select/icons/PlasmicIcon__ChevronUp.tsx"
-        },
-        {
-          "id": "LcqHvzMEUNHT",
-          "name": "SearchIcon",
-          "moduleFilePath": "plasmic/plume_select/icons/PlasmicIcon__Search.tsx"
-        },
-        {
-          "id": "F81BJ7hpxy19",
-          "name": "ClearIcon",
-          "moduleFilePath": "plasmic/plume_select/icons/PlasmicIcon__Clear.tsx"
-        },
-        {
-          "id": "SQxvi-Cpu09t",
-          "name": "RadioIcon",
-          "moduleFilePath": "plasmic/plume_select/icons/PlasmicIcon__Radio.tsx"
-        },
-        {
-          "id": "JPaHuxIIpYVm",
-          "name": "RadioTrueIcon",
-          "moduleFilePath": "plasmic/plume_select/icons/PlasmicIcon__RadioTrue.tsx"
+          "moduleFilePath": "plasmic/plume_main/icons/PlasmicIcon__ChevronUp.tsx"
         }
       ],
       "images": [],
@@ -158,6 +115,6 @@
       }
     ]
   },
-  "cliVersion": "0.1.134",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.134/dist/plasmic.schema.json"
+  "cliVersion": "0.1.136",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.136/dist/plasmic.schema.json"
 }

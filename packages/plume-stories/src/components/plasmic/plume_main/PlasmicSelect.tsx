@@ -25,7 +25,7 @@ import {
   useTrigger,
   StrictProps,
   deriveRenderOpts,
-  ensureGlobalVariants,
+  ensureGlobalVariants
 } from "@plasmicapp/react-web";
 import Select__Option from "../../Select__Option"; // plasmic-import: Z70s2K4zPR/component
 
@@ -96,17 +96,16 @@ function PlasmicSelect__RenderFunc(props: {
   forNode?: string;
 }) {
   const { variants, args, overrides, forNode } = props;
-  null;
 
   const [
     isRootFocusVisibleWithin,
-    triggerRootFocusVisibleWithinProps,
+    triggerRootFocusVisibleWithinProps
   ] = useTrigger("useFocusVisibleWithin", {
-    isTextInput: false,
+    isTextInput: false
   });
 
   const triggers = {
-    focusVisibleWithin_root: isRootFocusVisibleWithin,
+    focusVisibleWithin_root: isRootFocusVisibleWithin
   };
 
   return (
@@ -130,7 +129,7 @@ function PlasmicSelect__RenderFunc(props: {
               "isDisabled",
               "isDisabled"
             ),
-            [sty.trigger__isOpen]: hasVariant(variants, "isOpen", "isOpen"),
+            [sty.trigger__isOpen]: hasVariant(variants, "isOpen", "isOpen")
           })}
         >
           <div
@@ -141,7 +140,7 @@ function PlasmicSelect__RenderFunc(props: {
                 variants,
                 "showPlaceholder",
                 "showPlaceholder"
-              ),
+              )
             })}
           >
             {(
@@ -167,7 +166,7 @@ function PlasmicSelect__RenderFunc(props: {
                     variants,
                     "showPlaceholder",
                     "showPlaceholder"
-                  ),
+                  )
                 })}
               />
             ) : null}
@@ -186,7 +185,7 @@ function PlasmicSelect__RenderFunc(props: {
                 variants,
                 "isOpen",
                 "isOpen"
-              ),
+              )
             })}
             role={"img"}
           />
@@ -197,7 +196,7 @@ function PlasmicSelect__RenderFunc(props: {
               data-plasmic-override={overrides.focusRing}
               className={classNames(defaultcss.all, sty.focusRing, {
                 [sty.focusRing_____focusVisibleWithin]:
-                  triggers.focusVisibleWithin_root,
+                  triggers.focusVisibleWithin_root
               })}
             />
           ) : null}
@@ -208,7 +207,7 @@ function PlasmicSelect__RenderFunc(props: {
             data-plasmic-name={"overlay"}
             data-plasmic-override={overrides.overlay}
             className={classNames(defaultcss.all, sty.overlay, {
-              [sty.overlay__isOpen]: hasVariant(variants, "isOpen", "isOpen"),
+              [sty.overlay__isOpen]: hasVariant(variants, "isOpen", "isOpen")
             })}
           >
             <div
@@ -224,6 +223,7 @@ function PlasmicSelect__RenderFunc(props: {
                         "__wab_instance",
                         sty.option__gcPey
                       )}
+                      value={"value1" as const}
                     >
                       {"Option 1"}
                     </Select__Option>
@@ -233,6 +233,7 @@ function PlasmicSelect__RenderFunc(props: {
                         "__wab_instance",
                         sty.option__upo2O
                       )}
+                      value={"value2" as const}
                     >
                       {"Option 2"}
                     </Select__Option>
@@ -252,13 +253,40 @@ function useBehavior<
   T extends p.SelectItemType,
   P extends p.BaseSelectProps<T>
 >(props: P, ref: p.SelectRef, config?: p.SelectBehaviorConfig) {
+  props = {
+    ...props,
+    ...(!props.children &&
+      !props.items && {
+        children: (
+          <React.Fragment>
+            <Select__Option
+              className={classNames("__wab_instance", sty.option__gcPey)}
+              value={"value1" as const}
+            >
+              {"Option 1"}
+            </Select__Option>
+
+            <Select__Option
+              className={classNames("__wab_instance", sty.option__upo2O)}
+              value={"value2" as const}
+            >
+              {"Option 2"}
+            </Select__Option>
+          </React.Fragment>
+        )
+      })
+  };
+
   return p.useSelect<T, P, typeof PlasmicSelect>(
     PlasmicSelect,
     props,
     {
-      isOpenVariant: ["isOpen", "isOpen"],
-      placeholderVariant: ["showPlaceholder", "showPlaceholder"],
-      isDisabledVariant: ["isDisabled", "isDisabled"],
+      isOpenVariant: { group: "isOpen", variant: "isOpen" },
+      placeholderVariant: {
+        group: "showPlaceholder",
+        variant: "showPlaceholder"
+      },
+      isDisabledVariant: { group: "isDisabled", variant: "isDisabled" },
       triggerContentSlot: "selectedContent",
       optionsSlot: "children",
       placeholderSlot: "placeholder",
@@ -266,7 +294,7 @@ function useBehavior<
       trigger: "trigger",
       dropdownOverlay: "overlay",
       optionsContainer: "optionsContainer",
-      behaviorConfig: config,
+      behaviorConfig: config
     },
 
     ref
@@ -281,14 +309,14 @@ const PlasmicDescendants = {
     "dropdownIcon",
     "focusRing",
     "overlay",
-    "optionsContainer",
+    "optionsContainer"
   ],
   trigger: ["trigger", "contentContainer", "dropdownIcon", "focusRing"],
   contentContainer: ["contentContainer"],
   dropdownIcon: ["dropdownIcon"],
   focusRing: ["focusRing"],
   overlay: ["overlay", "optionsContainer"],
-  optionsContainer: ["optionsContainer"],
+  optionsContainer: ["optionsContainer"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<
@@ -309,8 +337,7 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicSelect__OverridesType,
   DescendantsType<T>
 >;
-type NodeComponentProps<T extends NodeNameType> = {
-  // Explicitly specify variants, args, and overrides as objects
+type NodeComponentProps<T extends NodeNameType> = { // Explicitly specify variants, args, and overrides as objects
   variants?: PlasmicSelect__VariantsArgs;
   args?: PlasmicSelect__ArgsType;
   overrides?: NodeOverridesType<T>;
@@ -337,14 +364,14 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       name: nodeName,
       descendantNames: [...PlasmicDescendants[nodeName]],
       internalArgPropNames: PlasmicSelect__ArgProps,
-      internalVariantPropNames: PlasmicSelect__VariantProps,
+      internalVariantPropNames: PlasmicSelect__VariantProps
     });
 
     return PlasmicSelect__RenderFunc({
       variants,
       args,
       overrides,
-      forNode: nodeName,
+      forNode: nodeName
     });
   };
   if (nodeName === "root") {
@@ -374,7 +401,7 @@ export const PlasmicSelect = Object.assign(
     // Context for sub components
     Context: PlasmicSelectContext,
 
-    useBehavior,
+    useBehavior
   }
 );
 
