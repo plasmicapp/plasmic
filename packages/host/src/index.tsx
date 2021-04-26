@@ -17,7 +17,18 @@ const root = require("window-or-global");
 type PrimitiveType = "string" | "boolean" | "number" | "object" | "slot";
 
 export interface ComponentMeta {
+  /**
+   * Any unique identifying string for this fetcher.
+   */
   name: string;
+  /**
+   * The Studio-user-friendly display name.
+   */
+  displayName?: string;
+  /**
+   * The symbol to import from the importPath.
+   */
+  importName?: string;
   props: { [prop: string]: PrimitiveType };
   /**
    * Either the path to the component relative to `rootDir` or the npm
@@ -45,6 +56,18 @@ export interface ComponentRegistration {
 export type Fetcher = (...args: any[]) => Promise<any>;
 
 export interface FetcherMeta {
+  /**
+   * Any unique identifying string for this fetcher.
+   */
+  name: string;
+  /**
+   * The Studio-user-friendly display name.
+   */
+  displayName?: string;
+  /**
+   * The symbol to import from the importPath.
+   */
+  importName?: string;
   args: { name: string; type: PrimitiveType }[];
   returns: PrimitiveType;
   /**
