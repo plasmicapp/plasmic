@@ -1,7 +1,6 @@
 export {
   BaseSelectProps,
   SelectBehaviorConfig,
-  SelectItemType,
   SelectRef,
   useSelect,
 } from "./select";

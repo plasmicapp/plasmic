@@ -28,7 +28,7 @@ import * as React from "react";
 import { useHover, usePress } from "react-aria";
 import * as ReactDOM from "react-dom";
 import { Item } from "react-stately";
-import { ensure, isString, mergeProps, pick } from "../../common";
+import { isString, mergeProps, pick } from "../../common";
 import { flattenChildren, useIsomorphicLayoutEffect } from "../../react-utils";
 import { Overrides } from "../../render/elements";
 import {
@@ -45,9 +45,7 @@ import {
 import { SelectContext } from "./context";
 import { BaseSelectOptionProps } from "./select-option";
 
-export type SelectItemType = string | object;
-
-export interface BaseSelectProps<T extends SelectItemType>
+export interface BaseSelectProps
   extends DOMProps,
     AriaLabelingProps,
     FocusableDOMProps,
@@ -76,22 +74,6 @@ export interface BaseSelectProps<T extends SelectItemType>
   children?: React.ReactNode;
 
   /**
-   * List of items that are options for this Select
-   */
-  items?: T[];
-
-  /**
-   * Renders the argument item
-   */
-  renderOption?: (item: T) => React.ReactElement<BaseSelectOptionProps>;
-
-  /**
-   * Returns list of SelectOption values that is disabled; these options
-   * cannot be focused or selected.
-   */
-  disabledOptionValues?: string[];
-
-  /**
    * Whether the Select is currently open
    */
   isOpen?: boolean;
@@ -112,11 +94,11 @@ export interface BaseSelectProps<T extends SelectItemType>
   name?: string;
 
   /**
-   * Render function for displaying the selected option in the trigger.
-   * If not specified, then the option is rendered the same way as
-   * it is in SelectOption.
+   * By default, Select will render whatever is in Select.Option as the
+   * content in the trigger button when it is selected.  You can override
+   * what content by passing in `selectedContent` here.
    */
-  renderSelectedOption?: (item: T) => React.ReactNode;
+  selectedContent?: React.ReactNode;
 
   /**
    * Desired placement location of the Select dropdown
@@ -142,78 +124,31 @@ export interface BaseSelectProps<T extends SelectItemType>
   placeholder?: React.ReactNode;
 }
 
-type MaybeWrapped<T extends SelectItemType> = T extends string ? { key: T } : T;
+type AriaItemType = React.ReactElement<BaseSelectOptionProps>;
 
 /**
  * Converts props in our BaseSelectProps into props that react-aria's
  * useSelect() understands.  Specifically, we will always be using the
  * items and children-as-render-prop combo.
  */
-function asAriaSelectProps<T extends SelectItemType>(
-  props: BaseSelectProps<T>
-) {
+function asAriaSelectProps(props: BaseSelectProps) {
   let {
     value,
     defaultValue,
     children,
-    items,
-    renderOption,
-    disabledOptionValues,
     onChange,
     placement,
     menuMatchTriggerWidth,
     menuWidth,
     ...rest
   } = props;
-  let isWrapped = false;
-  if (children != null) {
-    // children is specified, so children must be an array of SelectOption
-    // elements.  We will use the SelectOption elements themselves as the
-    // "items".
-    if (items || renderOption) {
-      throw new Error(
-        "Don't need to specify items or renderOption when using children"
-      );
-    }
-    items = flattenChildren(children) as any;
-
-    // Since each item is already the SelectOption element, renderOption is
-    // just the identity function
-    renderOption = ((x: any) => x) as any;
-  } else if (items != null) {
-    if (!renderOption) {
-      throw new Error("Must specify renderOption when specifying items prop");
-    }
-
-    // If items is specifed, then great! But we allow items to be plain strings,
-    // and react-aria doesn't.  So we do the wrapping for react-aria.
-    if (items.length > 0 && typeof items[0] !== "object") {
-      isWrapped = true;
-      items = items.map((x) => ({ key: x })) as any;
-    }
-  } else {
-    items = [];
-  }
-
-  /**
-   * react-aria requires items to be objects, but we allow strings, and wrap strings
-   * into objects. This function can unwrap to the string if we did the wrapping.
-   */
-  const getUnwrapped = (item: MaybeWrapped<T>): T => {
-    if (isWrapped) {
-      return (item as any).key as T;
-    } else {
-      return item as T;
-    }
-  };
+  const items = deriveItemsFromChildren(children);
+  const disabledKeys = items
+    .filter((x) => x.props.isDisabled)
+    .map((x) => x.props.value);
 
   // Our children now becomes a render function to render each item.
-  children = ((item: MaybeWrapped<T>) => {
-    // Each item is either a SelectOption element -- in which case, we just
-    // reuse it -- or it's some generic T, in which case, renderOption renders
-    // it into a SelectOption element
-    const option = ensure(renderOption)(getUnwrapped(item));
-
+  children = ((option: AriaItemType) => {
     // This is SelectOption.children, which is the rendered content
     const content = option.props.children;
 
@@ -246,7 +181,7 @@ function asAriaSelectProps<T extends SelectItemType>(
       children,
       onSelectionChange: onChange,
       items,
-      disabledKeys: disabledOptionValues,
+      disabledKeys,
       defaultSelectedKey: defaultValue,
 
       // react-aria is picky about selectedKey; if it is null, it means "no selection";
@@ -254,8 +189,7 @@ function asAriaSelectProps<T extends SelectItemType>(
       // value prop, then we make sure selectedKey will be null and not undefined, so
       // we don't accidentally enter uncontrolled mode.
       ...("value" in props && { selectedKey: value ?? null }),
-    } as AriaSelectProps<MaybeWrapped<T>>,
-    getUnwrapped,
+    } as AriaSelectProps<AriaItemType>,
   };
 }
 
@@ -295,13 +229,14 @@ interface SelectState {
   setSelectedValue: (value: string | null) => void;
 }
 
-export function useSelect<
-  T extends SelectItemType,
-  P extends BaseSelectProps<T>,
-  C extends AnyPlasmicClass
->(plasmicClass: C, props: P, config: SelectConfig<C>, ref: SelectRef = null) {
-  const { ariaProps, getUnwrapped } = asAriaSelectProps(props);
-  const state = useAriaSelectState<MaybeWrapped<T>>(ariaProps);
+export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
+  plasmicClass: C,
+  props: P,
+  config: SelectConfig<C>,
+  ref: SelectRef = null
+) {
+  const { ariaProps } = asAriaSelectProps(props);
+  const state = useAriaSelectState<AriaItemType>(ariaProps);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
   const rootRef = useFocusableRef(ref, triggerRef);
   const listboxRef = React.useRef<HTMLDivElement>(null);
@@ -316,6 +251,7 @@ export function useSelect<
     menuMatchTriggerWidth,
     autoFocus,
     placeholder,
+    selectedContent,
   } = props;
 
   const { triggerProps: triggerPressProps, menuProps } = useAriaSelect(
@@ -392,10 +328,7 @@ export function useSelect<
   );
 
   const triggerContent = state.selectedItem
-    ? props.items && props.renderSelectedOption
-      ? props.renderSelectedOption(getUnwrapped(state.selectedItem.value))
-      : (state.selectedItem
-          .rendered as React.ReactElement<BaseSelectOptionProps>).props.children
+    ? selectedContent ?? state.selectedItem.value.props.children
     : null;
 
   const variants = {
@@ -508,3 +441,15 @@ const ListBoxWrapper = React.forwardRef(function ListBoxWrapper<T>(
     </FocusScope>
   );
 });
+
+function deriveItemsFromChildren(
+  children: React.ReactNode
+): React.ReactElement<BaseSelectOptionProps>[] {
+  if (!children) {
+    return [];
+  }
+
+  return flattenChildren(
+    children
+  ) as React.ReactElement<BaseSelectOptionProps>[];
+}

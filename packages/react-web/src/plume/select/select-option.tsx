@@ -22,6 +22,7 @@ export interface BaseSelectOptionProps {
   textValue?: string;
   "aria-label"?: string;
   children?: React.ReactNode;
+  isDisabled?: boolean;
 }
 
 interface SelectOptionConfig<C extends AnyPlasmicClass> {
