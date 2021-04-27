@@ -1,3 +1,4 @@
+import { auth, Metadata } from "@plasmicapp/cli";
 import chalk from "chalk";
 import * as fs from "fs";
 import L from "lodash";
@@ -50,22 +51,19 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
   if (projectApiToken) {
     console.log("Skipping auth; using the given project API token.");
   } else {
-    let authCheckResult = false;
-    try {
-      authCheckResult = await spawn(
-        "npx -p @plasmicapp/cli plasmic auth --check"
-      );
-    } catch (e) {
-      // Ignore the auth check failure. We'll address in the finally block
-    } finally {
-      if (!authCheckResult) {
-        await spawnOrFail(
-          "npx -p @plasmicapp/cli plasmic auth",
-          process.cwd(),
+    const promise = auth({
+      host: "https://studio.plasmic.app",
+      check: true,
+    })
+      .catch(() => {
+        return auth({ host: "https://studio.plasmic.app" });
+      })
+      .catch(() => {
+        throw new Error(
           "Failed to authenticate with Plasmic. Please run `npx @plasmicapp/cli auth` manually."
         );
-      }
-    }
+      });
+    await promise;
   }
 
   // Calling `npx create-XXX` means we don't have to keep these dependencies up to date
@@ -257,7 +255,7 @@ async function spawnOrFail(
   }
 }
 
-export function setMetadataEnv(metadata: Record<string, string>): void {
+export function setMetadataEnv(metadata: Metadata): void {
   const fromEnv = process.env.PLASMIC_METADATA
     ? querystring.decode(process.env.PLASMIC_METADATA)
     : {};

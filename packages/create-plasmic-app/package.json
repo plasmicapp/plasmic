@@ -1,6 +1,6 @@
 {
   "name": "create-plasmic-app",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "Create Plasmic-powered React apps",
   "main": "./dist/lib.js",
   "types": "./dist/lib.d.ts",
@@ -38,6 +38,7 @@
     "ts-node": "^9.1.1"
   },
   "dependencies": {
+    "@plasmicapp/cli": "^0.1.140",
     "@sentry/node": "^6.2.2",
     "chalk": "^4.1.0",
     "execa": "^5.0.0",
