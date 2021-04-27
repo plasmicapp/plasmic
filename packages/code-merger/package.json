@@ -18,6 +18,10 @@
     "@babel/generator": "^7.12.1",
     "@babel/parser": "^7.12.3",
     "@babel/traverse": "^7.12.1",
+    "@types/babel__core": "^7.1.14",
+    "@types/babel__generator": "^7.6.2",
+    "@types/babel__parser": "^7.1.1",
+    "@types/babel__traverse": "^7.11.1",
     "diff": "^4.0.2",
     "lodash": "^4.17.19",
     "prettier": "^2.0.5"
@@ -25,14 +29,14 @@
   "devDependencies": {
     "@babel/preset-env": "^7.12.1",
     "@babel/preset-typescript": "^7.12.1",
+    "@types/diff": "^4.0.2",
     "@types/jest": "^26.0.15",
+    "@types/lodash": "^4.14.162",
+    "@types/prettier": "^2.1.5",
     "babel-jest": "^26.1.0",
     "jest": "^26.1.0",
     "ts-jest": "^26.1.2",
-    "typescript": "^3.9.6",
-    "@types/diff": "^4.0.2",
-    "@types/lodash": "^4.14.162",
-    "@types/prettier": "^2.1.5"
+    "typescript": "^3.9.6"
   },
   "peerDependencies": {}
 }
