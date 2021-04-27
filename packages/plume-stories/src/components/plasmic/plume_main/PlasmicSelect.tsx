@@ -129,6 +129,7 @@ function PlasmicSelect__RenderFunc(props: {
               "isDisabled",
               "isDisabled"
             ),
+
             [sty.trigger__isOpen]: hasVariant(variants, "isOpen", "isOpen")
           })}
         >
@@ -286,6 +287,7 @@ function useBehavior<
         group: "showPlaceholder",
         variant: "showPlaceholder"
       },
+
       isDisabledVariant: { group: "isDisabled", variant: "isDisabled" },
       triggerContentSlot: "selectedContent",
       optionsSlot: "children",
@@ -311,6 +313,7 @@ const PlasmicDescendants = {
     "overlay",
     "optionsContainer"
   ],
+
   trigger: ["trigger", "contentContainer", "dropdownIcon", "focusRing"],
   contentContainer: ["contentContainer"],
   dropdownIcon: ["dropdownIcon"],
@@ -337,7 +340,9 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicSelect__OverridesType,
   DescendantsType<T>
 >;
-type NodeComponentProps<T extends NodeNameType> = { // Explicitly specify variants, args, and overrides as objects
+
+type NodeComponentProps<T extends NodeNameType> = {
+  // Explicitly specify variants, args, and overrides as objects
   variants?: PlasmicSelect__VariantsArgs;
   args?: PlasmicSelect__ArgsType;
   overrides?: NodeOverridesType<T>;

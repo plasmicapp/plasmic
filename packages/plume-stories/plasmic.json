@@ -21,16 +21,16 @@
   "defaultPlasmicDir": "./plasmic",
   "projects": [
     {
-      "projectId": "n4MmNtkTML1b3NdHyWSk1o",
-      "projectName": "Plume Select",
+      "projectId": "tH77ekFNugan8Yv3d3xJez",
+      "projectName": "[Plume] MAIN",
       "version": "latest",
-      "cssFilePath": "",
+      "cssFilePath": "plasmic/plume_main/plasmic_plume_main.module.css",
       "components": [
         {
-          "id": "6u2q0exdPVb",
+          "id": "Xawb-6P8kx",
           "name": "Select",
           "type": "managed",
-          "projectId": "n4MmNtkTML1b3NdHyWSk1o",
+          "projectId": "tH77ekFNugan8Yv3d3xJez",
           "renderModuleFilePath": "plasmic/plume_main/PlasmicSelect.tsx",
           "importSpec": {
             "modulePath": "Select.tsx"
@@ -38,23 +38,58 @@
           "cssFilePath": "plasmic/plume_main/PlasmicSelect.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "Z70s2K4zPR",
+          "name": "Select__Option",
+          "type": "managed",
+          "projectId": "tH77ekFNugan8Yv3d3xJez",
+          "renderModuleFilePath": "plasmic/plume_main/PlasmicSelect__Option.tsx",
+          "importSpec": {
+            "modulePath": "Select__Option.tsx"
+          },
+          "cssFilePath": "plasmic/plume_main/PlasmicSelect__Option.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
+        },
+        {
+          "id": "LgyDaVryVh",
+          "name": "Checkbox",
+          "type": "managed",
+          "projectId": "tH77ekFNugan8Yv3d3xJez",
+          "renderModuleFilePath": "plasmic/plume_main/PlasmicCheckbox.tsx",
+          "importSpec": {
+            "modulePath": "Checkbox.tsx"
+          },
+          "cssFilePath": "plasmic/plume_main/PlasmicCheckbox.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [
         {
-          "id": "Gsf5I1eFfGS4",
+          "id": "VfjbLxU-bA",
           "name": "ChevronDownIcon",
           "moduleFilePath": "plasmic/plume_main/icons/PlasmicIcon__ChevronDown.tsx"
         },
         {
-          "id": "vxBQXREfSm3L",
+          "id": "_2iYp9TARO",
           "name": "ChevronUpIcon",
           "moduleFilePath": "plasmic/plume_main/icons/PlasmicIcon__ChevronUp.tsx"
+        },
+        {
+          "id": "2TUbGrU8Nj",
+          "name": "CheckIcon",
+          "moduleFilePath": "plasmic/plume_main/icons/PlasmicIcon__Check.tsx"
+        },
+        {
+          "id": "T-bi-rtb01",
+          "name": "IndeterminateIcon",
+          "moduleFilePath": "plasmic/plume_main/icons/PlasmicIcon__Indeterminate.tsx"
         }
       ],
       "images": [],
-      "projectApiToken": "f75lZOpwf8skihkA0nUBw44Sgwq3ueuDvNfq55xRp8wsdy3nSIsDHV6yUqrilosDv4Qu9zbAmBMmKJLZbQ",
-      "jsBundleThemes": []
+      "projectApiToken": "JTzjzwH8VA7mmgD4FcZ5jqm1yr8UTlWljYEWPR0425SNXY8sGEAtj5JoZpzwl7jYe6bAyqZNeUDJ00bJgJw"
     },
     {
       "projectId": "tH77ekFNugan8Yv3d3xJez",
@@ -87,6 +122,19 @@
           "cssFilePath": "plasmic/plume_main/PlasmicSelect__Option.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "LgyDaVryVh",
+          "name": "Checkbox",
+          "type": "managed",
+          "projectId": "tH77ekFNugan8Yv3d3xJez",
+          "renderModuleFilePath": "plasmic/plume_main/PlasmicCheckbox.tsx",
+          "importSpec": {
+            "modulePath": "Checkbox.tsx"
+          },
+          "cssFilePath": "plasmic/plume_main/PlasmicCheckbox.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [
@@ -99,10 +147,21 @@
           "id": "_2iYp9TARO",
           "name": "ChevronUpIcon",
           "moduleFilePath": "plasmic/plume_main/icons/PlasmicIcon__ChevronUp.tsx"
+        },
+        {
+          "id": "2TUbGrU8Nj",
+          "name": "CheckIcon",
+          "moduleFilePath": "plasmic/plume_main/icons/PlasmicIcon__Check.tsx"
+        },
+        {
+          "id": "T-bi-rtb01",
+          "name": "IndeterminateIcon",
+          "moduleFilePath": "plasmic/plume_main/icons/PlasmicIcon__Indeterminate.tsx"
         }
       ],
       "images": [],
-      "projectApiToken": "JTzjzwH8VA7mmgD4FcZ5jqm1yr8UTlWljYEWPR0425SNXY8sGEAtj5JoZpzwl7jYe6bAyqZNeUDJ00bJgJw"
+      "projectApiToken": "JTzjzwH8VA7mmgD4FcZ5jqm1yr8UTlWljYEWPR0425SNXY8sGEAtj5JoZpzwl7jYe6bAyqZNeUDJ00bJgJw",
+      "jsBundleThemes": []
     }
   ],
   "globalVariants": {
@@ -115,6 +174,6 @@
       }
     ]
   },
-  "cliVersion": "0.1.136",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.136/dist/plasmic.schema.json"
+  "cliVersion": "0.1.137",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.137/dist/plasmic.schema.json"
 }

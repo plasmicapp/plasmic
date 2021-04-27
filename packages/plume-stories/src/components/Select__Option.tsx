@@ -1,9 +1,9 @@
-import { SelectOptionRef } from "@plasmicapp/react-web";
 import * as React from "react";
 import {
-  DefaultSelect__OptionProps,
   PlasmicSelect__Option,
+  DefaultSelect__OptionProps
 } from "./plasmic/plume_main/PlasmicSelect__Option";
+import { SelectOptionRef } from "@plasmicapp/react-web";
 
 interface Select__OptionProps extends DefaultSelect__OptionProps {}
 

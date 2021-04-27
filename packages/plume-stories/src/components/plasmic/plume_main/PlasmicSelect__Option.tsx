@@ -97,6 +97,7 @@ function PlasmicSelect__Option__RenderFunc(props: {
           "isDisabled",
           "isDisabled"
         ),
+
         [sty.root__isHighlighted]: hasVariant(
           variants,
           "isHighlighted",
@@ -133,6 +134,7 @@ function useBehavior<P extends p.BaseSelectOptionProps>(
         group: "isHighlighted",
         variant: "isHighlighted"
       },
+
       contentSlot: "children",
       root: "root"
     },
@@ -157,7 +159,9 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicSelect__Option__OverridesType,
   DescendantsType<T>
 >;
-type NodeComponentProps<T extends NodeNameType> = { // Explicitly specify variants, args, and overrides as objects
+
+type NodeComponentProps<T extends NodeNameType> = {
+  // Explicitly specify variants, args, and overrides as objects
   variants?: PlasmicSelect__Option__VariantsArgs;
   args?: PlasmicSelect__Option__ArgsType;
   overrides?: NodeOverridesType<T>;

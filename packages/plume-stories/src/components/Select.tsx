@@ -1,9 +1,9 @@
-import { SelectItemType, SelectRef } from "@plasmicapp/react-web";
 import * as React from "react";
 import {
-  DefaultSelectProps,
   PlasmicSelect,
+  DefaultSelectProps
 } from "./plasmic/plume_main/PlasmicSelect";
+import { SelectRef, SelectItemType } from "@plasmicapp/react-web";
 import Option from "./Select__Option";
 
 interface SelectProps<T extends SelectItemType> extends DefaultSelectProps<T> {}
@@ -24,5 +24,5 @@ const Select = React.forwardRef(Select_) as <T extends SelectItemType>(
 ) => React.ReactElement | null;
 
 export default Object.assign(Select, {
-  Option,
+  Option
 });
