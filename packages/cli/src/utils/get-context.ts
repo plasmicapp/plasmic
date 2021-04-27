@@ -1,4 +1,5 @@
 import * as Sentry from "@sentry/node";
+import L from "lodash";
 import * as querystring from "querystring";
 import path from "upath";
 import { initPlasmic } from "../actions/init";
@@ -385,17 +386,37 @@ async function maybeRunPlasmicInit(
 }
 
 /**
+ * Table of where this metadata will be set
+ *
+ * Source             | via       |
+ * -------------------------------------------------------------------------
+ * cli                | defaults  | source=cli    scheme=codegen command=sync|watch
+ * loader             | defaults  | source=loader scheme=loader  command=sync|watch
+ * create-plasmic-app | env       | source=create-plasmic-app
+ * plasmic-action     | env       | source=plasmic-action
+ */
+export interface Metadata {
+  platform?: string; // from plasmic.json
+  source?: "cli" | "loader" | "create-plasmic-app" | "plasmic-action";
+  scheme?: "codegen" | "loader";
+  command?: "sync" | "watch";
+}
+
+/**
  * Create a metadata bundle
  * This will be used to tag Segment events (e.g. for codegen)
- *
+ * @param defaults
  * @param fromArgs
  */
-export function generateMetadata(context: PlasmicContext, fromArgs?: string) {
-  // The following come from CLI args:
-  // - source=[cli, loader]
-  // - command=[watch]
-  const metadata = !fromArgs ? {} : { ...querystring.decode(fromArgs) };
+export function generateMetadata(
+  defaults: Metadata,
+  fromArgs?: string
+): Metadata {
+  const fromEnv = process.env.PLASMIC_METADATA;
+  const metadataFromEnv = !fromEnv ? {} : { ...querystring.decode(fromEnv) };
+  const metadataFromArgs = !fromArgs ? {} : { ...querystring.decode(fromArgs) };
+  // Priority: 1. args 2. env 3. defaults
+  const metadata = L.assign({ ...defaults }, metadataFromEnv, metadataFromArgs);
 
-  metadata.platform = context.config.platform;
   return metadata;
 }

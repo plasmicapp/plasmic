@@ -99,7 +99,13 @@ yargs
     "Syncs designs from Plasmic to local files.",
     (yags) => configureSyncArgs(yags),
     (argv) => {
-      handleError(sync(argv));
+      handleError(
+        sync(argv, {
+          source: "cli",
+          scheme: "codegen",
+          command: "sync",
+        })
+      );
     }
   )
   .command<WatchArgs>(
@@ -107,7 +113,13 @@ yargs
     "Watches for updates to projects, and syncs them automatically to local files.",
     (yags) => configureSyncArgs(yags, false),
     (argv) => {
-      handleError(watchProjects(argv));
+      handleError(
+        watchProjects(argv, {
+          source: "cli",
+          scheme: "codegen",
+          command: "watch",
+        })
+      );
     }
   )
   .command<FixImportsArgs>(

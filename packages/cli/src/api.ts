@@ -3,6 +3,7 @@ import axios, { AxiosError } from "axios";
 import socketio from "socket.io-client";
 import { AuthConfig, ImagesConfig, StyleConfig } from "./utils/config-utils";
 import { HandledError } from "./utils/error";
+import { Metadata } from "./utils/get-context";
 
 export class AppServerError extends Error {
   constructor(message: string) {
@@ -224,7 +225,7 @@ export class PlasmicApi {
     imageOpts: ImagesConfig,
     stylesOpts: StyleConfig,
     checksums: ChecksumBundle,
-    metadata?: any
+    metadata?: Metadata
   ): Promise<ProjectBundle> {
     const result = await this.post(
       `${this.auth.host}/api/v1/projects/${projectId}/code/components`,

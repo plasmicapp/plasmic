@@ -3,7 +3,7 @@ import moment from "moment";
 import { CommonArgs } from "..";
 import { logger } from "../deps";
 import { HandledError } from "../utils/error";
-import { getContext } from "../utils/get-context";
+import { getContext, Metadata } from "../utils/get-context";
 import * as semver from "../utils/semver";
 import { sync } from "./sync";
 
@@ -18,15 +18,20 @@ export interface WatchArgs extends CommonArgs {
   skipUpgradeCheck?: boolean;
   metadata?: string;
 }
-export async function watchProjects(opts: WatchArgs): Promise<void> {
+export async function watchProjects(
+  opts: WatchArgs,
+  metadataDefaults?: Metadata
+): Promise<void> {
   // Perform a sync before watch.
   const syncOpts = {
     ...opts,
     quiet: true,
-    // Include `watch` metadata. Includes '&' in case it was set via args
-    metadata: opts.metadata + "&command=watch",
   };
-  await sync(syncOpts);
+  const syncMetadata: Metadata = {
+    ...metadataDefaults,
+    command: "watch", // force this to be set
+  };
+  await sync(syncOpts, syncMetadata);
 
   const context = await getContext(opts);
   const config = context.config;
@@ -73,7 +78,7 @@ export async function watchProjects(opts: WatchArgs): Promise<void> {
       // Just run syncProjects() for now when any project has been updated
       // Note on the 'updated to revision' part: this is parsed by the
       // loader package to know that we finished updating the components.
-      await sync(syncOpts);
+      await sync(syncOpts, syncMetadata);
       logger.info(
         `[${moment().format("HH:mm:ss")}] Project ${
           data.projectId

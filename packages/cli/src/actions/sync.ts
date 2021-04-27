@@ -42,7 +42,7 @@ import {
   writeFileContent,
   writeFileText,
 } from "../utils/file-utils";
-import { generateMetadata, getContext } from "../utils/get-context";
+import { generateMetadata, getContext, Metadata } from "../utils/get-context";
 import { printFirstSyncInfo } from "../utils/help";
 import { ensure, tuple } from "../utils/lang-utils";
 import {
@@ -165,7 +165,10 @@ function writeLoaderConfig(opts: SyncArgs, config: PlasmicLoaderConfig) {
  * We leave it to the user to sync all projects if they want us to catch/prevent this.
  * @param opts
  */
-export async function sync(opts: SyncArgs): Promise<void> {
+export async function sync(
+  opts: SyncArgs,
+  metadataDefaults?: Metadata
+): Promise<void> {
   // Initially allow for a missing auth. Only require an auth once we need to fetch new or updated API tokens for any
   // projects.
   let context = await getContext(opts, { enableSkipAuth: true });
@@ -294,7 +297,8 @@ export async function sync(opts: SyncArgs): Promise<void> {
         projectMeta.version,
         projectMeta.dependencies,
         summary,
-        pendingMerge
+        pendingMerge,
+        metadataDefaults
       );
     }
 
@@ -435,7 +439,8 @@ async function syncProject(
   projectVersion: string,
   dependencies: { [projectId: string]: string },
   summary: Map<string, ComponentUpdateSummary>,
-  pendingMerge: ComponentPendingMerge[]
+  pendingMerge: ComponentPendingMerge[],
+  metadataDefaults?: Metadata
 ): Promise<void> {
   const newComponentScheme =
     opts.newComponentScheme || context.config.code.scheme;
@@ -468,7 +473,13 @@ async function syncProject(
     context.config.images,
     context.config.style,
     existingChecksums,
-    generateMetadata(context, opts.metadata)
+    generateMetadata(
+      {
+        ...metadataDefaults,
+        platform: context.config.platform,
+      },
+      opts.metadata
+    )
   );
 
   // Convert from TSX => JSX
