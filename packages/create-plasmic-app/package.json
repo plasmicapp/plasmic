@@ -1,6 +1,6 @@
 {
   "name": "create-plasmic-app",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "Create Plasmic-powered React apps",
   "main": "./dist/lib.js",
   "types": "./dist/lib.d.ts",
@@ -35,7 +35,8 @@
     "jest": "^26.6.3",
     "jest-circus": "^26.6.3",
     "ts-jest": "^26.5.3",
-    "ts-node": "^9.1.1"
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.3"
   },
   "dependencies": {
     "@plasmicapp/cli": "^0.1.142",
@@ -46,7 +47,6 @@
     "glob": "^7.1.6",
     "inquirer": "^8.0.0",
     "lodash": "^4.17.21",
-    "typescript": "^4.2.3",
     "upath": "^2.0.1",
     "update-notifier": "^5.1.0",
     "validate-npm-package-name": "^3.0.0",
