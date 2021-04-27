@@ -1,6 +1,6 @@
 import { useOption as useAriaOption } from "@react-aria/listbox";
 import { useFocusableRef } from "@react-spectrum/utils";
-import { FocusableRef } from "@react-types/shared";
+import { FocusableRef, Node } from "@react-types/shared";
 import * as React from "react";
 import { ListState } from "react-stately";
 import { mergeProps, pick } from "../../common";
@@ -78,14 +78,18 @@ function useRealPlasmicProps<
   config: SelectOptionConfig<C>,
   outerRef: SelectOptionRef = null
 ) {
-  const { value: itemKey, children } = props;
+  const { children } = props;
 
-  const item = state.collection.getItem(itemKey);
-  const isSelected = state.selectionManager.isSelected(itemKey);
-  const isDisabled = state.disabledKeys.has(itemKey);
+  // We pass in the Node secretly as an undocumented prop from <Select />
+  const node = (props as any)._node as Node<
+    React.ReactElement<BaseSelectOptionProps>
+  >;
+
+  const isSelected = state.selectionManager.isSelected(node.key);
+  const isDisabled = state.disabledKeys.has(node.key);
   const isHighlighted =
     state.selectionManager.isFocused &&
-    state.selectionManager.focusedKey === itemKey;
+    state.selectionManager.focusedKey === node.key;
 
   const ref = useFocusableRef(outerRef);
 
@@ -93,8 +97,8 @@ function useRealPlasmicProps<
     {
       isSelected,
       isDisabled,
-      "aria-label": item && item["aria-label"],
-      key: itemKey,
+      "aria-label": node && node["aria-label"],
+      key: node.key,
       shouldSelectOnPressUp: true,
       shouldFocusOnHover: true,
       isVirtualized: false,
@@ -114,7 +118,7 @@ function useRealPlasmicProps<
 
   const args = {
     ...pick(props, ...plasmicClass.internalArgProps),
-    [config.contentSlot]: children ?? itemKey,
+    [config.contentSlot]: children,
   };
 
   const overrides: Overrides = {

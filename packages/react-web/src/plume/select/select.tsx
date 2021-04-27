@@ -23,11 +23,12 @@ import {
   FocusStrategy,
   HoverEvents,
   InputBase,
+  Node,
 } from "@react-types/shared";
 import * as React from "react";
 import { useHover, usePress } from "react-aria";
 import * as ReactDOM from "react-dom";
-import { Item } from "react-stately";
+import { Item, Section } from "react-stately";
 import { isString, mergeProps, pick } from "../../common";
 import { flattenChildren, useIsomorphicLayoutEffect } from "../../react-utils";
 import { Overrides } from "../../render/elements";
@@ -38,12 +39,14 @@ import {
   PlasmicClassArgs,
   PlasmicClassOverrides,
   PlasmicClassVariants,
+  PLUME_STRICT_MODE,
   StyleProps,
   useForwardedRef,
   VariantDef,
 } from "../plume-utils";
 import { SelectContext } from "./context";
 import { BaseSelectOptionProps } from "./select-option";
+import { BaseSelectOptionGroupProps } from "./select-option-group";
 
 export interface BaseSelectProps
   extends DOMProps,
@@ -124,12 +127,44 @@ export interface BaseSelectProps
   placeholder?: React.ReactNode;
 }
 
-type AriaItemType = React.ReactElement<BaseSelectOptionProps>;
+type AriaOptionType = React.ReactElement<BaseSelectOptionProps>;
+type AriaGroupType = React.ReactElement<BaseSelectOptionGroupProps>;
+type AriaSelectItemType = AriaOptionType | AriaGroupType;
 
 /**
  * Converts props in our BaseSelectProps into props that react-aria's
- * useSelect() understands.  Specifically, we will always be using the
- * items and children-as-render-prop combo.
+ * useSelect() understands.
+ *
+ * Because we're not exposing the Collections API (see ./index.tsx),
+ * we are converting our own API into props for useSelect.
+ *
+ * Specifically, in Plume's API,
+ * - `children` flattens to a list of ReactElements of type Select.Option
+ *   or Select.OptionGroup
+ *
+ * and we map it this way to the Collections API:
+ * - `items` is a list of those flattened ReactElements from `children`!
+ * - `children`, as a render prop, is supposed to take one of the `items`
+ *   and return a `Section` or `Item` element. We take an Option/OptionGroup
+ *   element, and use its props to render the appropriate `Section` or
+ *   `Item`. The "trick" here is that we then stuff the Option element as
+ *   `Item.children`, and the OptionGroup element as `Section.title`.
+ *
+ * When the Collections API does its work deriving `Node`s, the corresponding
+ * Option/OptionGroup ReactElements will end up as `Node.rendered`.
+ *
+ * Then, when we are actually rendering the content of the dropdown, we
+ * iterate through each collected `Node`, and renders
+ * React.cloneElement(Node.rendered, {_node: node}).  This "secretly" passes
+ * the derived collection `Node` as a prop to Option and OptionGroup, and they
+ * can make use of the derived `Node.key` etc in their rendering functions.
+ *
+ * One thing to note here is that we never "rendered" the Option/OptionGroup
+ * React elements that the user constructed; instead, we just looked at the
+ * props used on those elements, and passed those onto the Collections API.
+ * What gets rendered to the screen is the cloned version of these elements
+ * with the secret derived `_node` prop.  That means Option and OptionGroup
+ * render functions can assume that _node is passed in.
  */
 function asAriaSelectProps(props: BaseSelectProps) {
   let {
@@ -144,41 +179,76 @@ function asAriaSelectProps(props: BaseSelectProps) {
   } = props;
   const items = deriveItemsFromChildren(children);
   const disabledKeys = items
-    .filter((x) => x.props.isDisabled)
+    .filter(
+      (x): x is React.ReactElement<BaseSelectOptionProps> =>
+        getPlumeType(x) === "select-option"
+    )
     .map((x) => x.props.value);
 
-  // Our children now becomes a render function to render each item.
-  children = ((option: AriaItemType) => {
-    // This is SelectOption.children, which is the rendered content
-    const content = option.props.children;
+  /**
+   * Renders an Option or OptionGroup ReactElement into an Item or Section element
+   */
+  const renderAsAriaCollectionChild = (child: AriaSelectItemType) => {
+    const plumeType = getPlumeType(child);
+    if (plumeType === "select-option") {
+      const option = child as React.ReactElement<BaseSelectOptionProps>;
 
-    // The children render prop needs to return an <Item/>
-    return (
-      <Item
-        // We use SelectOption.value, but we fallback to content to
-        // avoid throwing an error when used on canvas
-        key={option.props.value ?? `${content}`}
-        // textValue is either explicitly specified by the user, or we
-        // try to derive it if SelectOption.children is a string.
-        textValue={
-          option.props.textValue ??
-          (isString(content) ? content : `${option.props.value}`)
-        }
-        aria-label={option.props["aria-label"]}
-      >
-        {
-          // Note that what we actually render is the SelectOption, not just
-          // the `content`.
-        }
-        {option}
-      </Item>
-    );
-  }) as any;
+      // This is SelectOption.children, which is the rendered content
+      const content = option.props.children;
+
+      // The children render prop needs to return an <Item/>
+      return (
+        <Item
+          // We use SelectOption.value, but we fallback to key and then to
+          // content to avoid throwing an error when used on canvas
+          key={option.props.value ?? option.key ?? `${content}`}
+          // textValue is either explicitly specified by the user, or we
+          // try to derive it if SelectOption.children is a string.
+          textValue={
+            option.props.textValue ??
+            (isString(content)
+              ? content
+              : option.props.value
+              ? `${option.props.value}`
+              : option.key
+              ? `${option.key}`
+              : undefined)
+          }
+          aria-label={option.props["aria-label"]}
+        >
+          {
+            // Note that what we setting the Option element as the children
+            // here, and not content; we want the entire Option element to
+            // end up as Node.rendered.
+          }
+          {option}
+        </Item>
+      );
+    } else {
+      const group = child as React.ReactElement<BaseSelectOptionGroupProps>;
+      return (
+        <Section
+          // Note that we are using the whole OptionGroup element as the title
+          // here, and not group.props.title; we want the entire OptionGroup
+          // element to end up as Node.rendered.
+          title={group}
+          aria-label={group.props["aria-label"]}
+          // We are flattening and deriving the descendant Options as items here
+          items={deriveItemsFromChildren(group.props.children)}
+        >
+          {
+            // We use the same render function to turn descendent Options into Items
+          }
+          {renderAsAriaCollectionChild}
+        </Section>
+      );
+    }
+  };
 
   return {
     ariaProps: {
       ...rest,
-      children,
+      children: renderAsAriaCollectionChild,
       onSelectionChange: onChange,
       items,
       disabledKeys,
@@ -189,7 +259,7 @@ function asAriaSelectProps(props: BaseSelectProps) {
       // value prop, then we make sure selectedKey will be null and not undefined, so
       // we don't accidentally enter uncontrolled mode.
       ...("value" in props && { selectedKey: value ?? null }),
-    } as AriaSelectProps<AriaItemType>,
+    } as AriaSelectProps<AriaSelectItemType>,
   };
 }
 
@@ -236,7 +306,7 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
   ref: SelectRef = null
 ) {
   const { ariaProps } = asAriaSelectProps(props);
-  const state = useAriaSelectState<AriaItemType>(ariaProps);
+  const state = useAriaSelectState<AriaSelectItemType>(ariaProps);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
   const rootRef = useFocusableRef(ref, triggerRef);
   const listboxRef = React.useRef<HTMLDivElement>(null);
@@ -385,7 +455,7 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
     [config.placeholderSlot]: placeholder,
     [config.optionsSlot]: (
       <SelectContext.Provider value={state}>
-        {Array.from(state.collection).map((item) => item.rendered)}
+        {Array.from(state.collection).map((node) => renderCollectionNode(node))}
       </SelectContext.Provider>
     ),
   };
@@ -406,6 +476,20 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
     },
     state: plumeState,
   };
+}
+
+export function renderCollectionNode(node: Node<AriaSelectItemType>) {
+  if (node.hasChildNodes) {
+    return React.cloneElement(
+      node.rendered as AriaGroupType,
+      { _node: node } as any
+    );
+  } else {
+    return React.cloneElement(
+      node.rendered as AriaOptionType,
+      { _node: node } as any
+    );
+  }
 }
 
 const ListBoxWrapper = React.forwardRef(function ListBoxWrapper<T>(
@@ -444,12 +528,32 @@ const ListBoxWrapper = React.forwardRef(function ListBoxWrapper<T>(
 
 function deriveItemsFromChildren(
   children: React.ReactNode
-): React.ReactElement<BaseSelectOptionProps>[] {
+): AriaSelectItemType[] {
   if (!children) {
     return [];
   }
 
-  return flattenChildren(
-    children
-  ) as React.ReactElement<BaseSelectOptionProps>[];
+  const flattened = flattenChildren(children);
+  if (
+    PLUME_STRICT_MODE &&
+    flattened.some((child) => !isValidSelectChild(child))
+  ) {
+    throw new Error(
+      `Can only use Select.Option and Select.OptionGroup as children to Select`
+    );
+  }
+  return flattenChildren(children).filter(
+    isValidSelectChild
+  ) as AriaSelectItemType[];
+}
+
+function isValidSelectChild(child: React.ReactChild) {
+  return !!getPlumeType(child);
+}
+
+function getPlumeType(child: React.ReactChild) {
+  if (React.isValidElement(child)) {
+    return (child.type as any).__plumeType as string | undefined;
+  }
+  return undefined;
 }
