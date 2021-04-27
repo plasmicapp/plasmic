@@ -365,7 +365,7 @@ async function maybeRunPlasmicInit(
   enableSkipAuth?: boolean
 ): Promise<boolean> {
   if (!process.env.QUIET) {
-    console.log(`No ${missingFile} file found. Initializing plasmic...`);
+    logger.info(`No ${missingFile} file found. Initializing plasmic...`);
   }
 
   await initPlasmic({

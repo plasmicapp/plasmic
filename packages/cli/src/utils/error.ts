@@ -1,4 +1,5 @@
 import chalk from "chalk";
+import { logger } from "../deps";
 
 /**
  * Represents an error that doesn't need to be forwarded to Sentry.
@@ -19,7 +20,7 @@ export class HandledError extends Error {
  */
 export const handleError = <T>(p: Promise<T>) => {
   return p.catch((e) => {
-    console.error(chalk.bold(chalk.redBright("\nPlasmic error: ")) + e.message);
+    logger.error(chalk.bold(chalk.redBright("\nPlasmic error: ")) + e.message);
     if (e instanceof HandledError) {
       // eslint-disable-next-line
       process.exit(1);

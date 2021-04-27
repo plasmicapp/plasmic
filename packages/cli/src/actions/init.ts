@@ -139,7 +139,7 @@ function simulatePrompt(
     ? question.message
     : question.message + ">";
   process.stdout.write((bold ? chalk.bold(message) : message) + " ");
-  console.log(
+  logger.info(
     chalk.cyan(
       question.choices?.().find((choice) => choice.value === defaultAnswer)
         ?.name ?? defaultAnswer
@@ -238,7 +238,7 @@ async function deriveInitAnswers(opts: Partial<InitArgs>) {
     return answers;
   }
 
-  console.log(
+  logger.info(
     chalk.bold(
       "Plasmic Express Setup -- Here are the default settings we recommend:\n"
     )
@@ -262,7 +262,7 @@ async function deriveInitAnswers(opts: Partial<InitArgs>) {
       },
     ],
   };
-  console.log();
+  logger.info("");
 
   if (opts.yes) {
     simulatePrompt(useExpressQuestion, "yes", true);

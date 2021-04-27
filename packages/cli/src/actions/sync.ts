@@ -11,6 +11,7 @@ import {
   ProjectMetaBundle,
   StyleConfigResponse,
 } from "../api";
+import { logger } from "../deps";
 import { getChecksums } from "../utils/checksum";
 import {
   ComponentUpdateSummary,
@@ -261,7 +262,7 @@ export async function sync(
     opts
   );
   if (projectsToSync.length <= 0) {
-    console.info(
+    logger.info(
       "Your projects are up-to-date with respect to your specified version ranges. Nothing to sync."
     );
     return;

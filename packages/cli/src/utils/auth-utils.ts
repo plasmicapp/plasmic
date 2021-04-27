@@ -50,7 +50,7 @@ export function authByPolling(
 
   const promise = new Promise<AuthData>((resolve, reject) => {
     socket.on("connect", (reason: string) => {
-      console.log("Waiting for token...");
+      logger.info("Waiting for token...");
     });
 
     socket.on("token", (data: AuthData) => {
@@ -59,7 +59,7 @@ export function authByPolling(
     });
 
     socket.on("error", (error: {}) => {
-      console.warn(error);
+      logger.warn(error);
       reject(error);
     });
   });
@@ -84,7 +84,7 @@ function authByPrompt(host: string) {
   ]);
 
   const cancel = () => {
-    console.log("Cancelling prompt...");
+    logger.info("Cancelling prompt...");
     process.stdin.pause();
   };
 
@@ -121,7 +121,7 @@ export async function startAuth(opts: CommonArgs & { host: string }) {
       return;
     }
     const timeout = setTimeout(() => {
-      console.log(`We haven't received an auth token from Plasmic yet.`);
+      logger.info(`We haven't received an auth token from Plasmic yet.`);
       prompt = authByPrompt(opts.host);
       prompt.promise
         .then((auth) => {
@@ -133,7 +133,7 @@ export async function startAuth(opts: CommonArgs & { host: string }) {
   });
 
   if (!auth.user || !auth.token) {
-    console.error(`Could not get auth token.`);
+    logger.error(`Could not get auth token.`);
     return;
   }
 

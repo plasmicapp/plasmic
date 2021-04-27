@@ -37,6 +37,11 @@ module.exports = {
         message:
           "CLI can be used as a library. Please throw Error or HandledError instead.",
       },
+      {
+        object: "console",
+        message:
+          "Please use `logger` so that consumers of the library can control logging.",
+      },
     ],
     "no-restricted-syntax": [
       "error",

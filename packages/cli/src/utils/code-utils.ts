@@ -322,16 +322,11 @@ export function replaceImports(
       stmt.source.value = realPath;
     } else if (type === "codeComponent") {
       const meta = fixImportContext.codeComponentMetas[uuid];
-      if (meta.componentImportPath[0] === '.') {
+      if (meta.componentImportPath[0] === ".") {
         // Relative path from the project root
         const toPath = path.join(context.rootDir, meta.componentImportPath);
         assert(path.isAbsolute(toPath));
-        const realPath = makeImportPath(
-          context,
-          fromPath,
-          toPath,
-          true,
-        );
+        const realPath = makeImportPath(context, fromPath, toPath, true);
         stmt.source.value = realPath;
       } else {
         // npm package
@@ -413,7 +408,10 @@ export interface FixImportContext {
 export const mkFixImportContext = (config: PlasmicConfig) => {
   const allComponents = flatMap(config.projects, (p) => p.components);
   const components = L.keyBy(allComponents, (c) => c.id);
-  const allCodeComponents = flatMap(config.projects, (p) => p.codeComponents || []);
+  const allCodeComponents = flatMap(
+    config.projects,
+    (p) => p.codeComponents || []
+  );
   const codeComponentMetas = L.keyBy(allCodeComponents, (c) => c.id);
   const globalVariants = L.keyBy(
     config.globalVariants.variantGroups,
@@ -526,7 +524,7 @@ async function fixFileImportStatements(
 ) {
   const filePath = makeFilePath(context, srcDirFilePath);
   if (!existsBuffered(filePath)) {
-    console.warn(
+    logger.warn(
       `Cannot fix imports in non-existing file ${srcDirFilePath}. Check your plasmic.json file for invalid entries.`
     );
     return;

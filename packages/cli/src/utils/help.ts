@@ -1,6 +1,7 @@
 import chalk from "chalk";
 import L from "lodash";
 import wrapAnsi from "wrap-ansi";
+import { logger } from "../deps";
 import { PlasmicContext } from "./config-utils";
 import { ensure } from "./lang-utils";
 
@@ -12,12 +13,12 @@ export function printFirstSyncInfo(context: PlasmicContext) {
   const config = context.config;
   if (config.code.scheme === "blackbox" && config.projects.length > 0) {
     const project = ensure(L.last(config.projects));
-    console.log(
+    logger.info(
       `\nYour Plasmic project "${project.projectName}" has now been synced to disk.`
     );
     const exampleComponent = project.components[0];
     if (exampleComponent) {
-      console.log(
+      logger.info(
         `
 
 ${chalk.bold("Using Plasmic Components")}
@@ -50,7 +51,7 @@ Learn more at https://www.plasmic.app/learn/codegen-guide/
 
     const exampleIcon = project.icons[0];
     if (exampleIcon) {
-      console.log(
+      logger.info(
         `
 ${chalk.bold("Using Icons")}
 ${chalk.bold("-----------")}

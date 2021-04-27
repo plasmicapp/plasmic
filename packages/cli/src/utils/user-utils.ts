@@ -1,4 +1,5 @@
 import inquirer from "inquirer";
+import { logger } from "../deps";
 
 /**
  * Provide a standardized way to ask user to continue
@@ -17,7 +18,7 @@ export async function confirmWithUser(
 
   if (!!yes) {
     if (!process.env.QUIET) {
-      console.log(`${message} (Y/n): y`);
+      logger.info(`${message} (Y/n): y`);
     }
     return true;
   }
