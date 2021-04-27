@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/cli",
-  "version": "0.1.139",
+  "version": "0.1.140",
   "description": "plasmic cli for syncing local code with Plasmic designs",
   "engines": {
     "node": ">=12"
@@ -31,7 +31,6 @@
     "@types/pako": "^1.0.1",
     "@types/prettier": "^2.0.2",
     "@types/semver": "^7.3.1",
-    "@types/socket.io-client": "^1.4.34",
     "@types/tmp": "^0.2.0",
     "@types/update-notifier": "^4.1.0",
     "@types/uuid": "^8.3.0",
@@ -45,13 +44,13 @@
     "tmp": "^0.2.1",
     "ts-jest": "^26.1.2",
     "ts-node": "^8.10.2",
-    "typescript-json-schema": "^0.45.0",
-    "utility-types": "^3.10.0"
+    "typescript-json-schema": "^0.45.0"
   },
   "dependencies": {
     "@babel/core": "^7.12.3",
     "@babel/generator": "^7.12.1",
     "@plasmicapp/code-merger": "^0.0.30",
+    "@types/socket.io-client": "^1.4.34",
     "@sentry/node": "^5.19.2",
     "axios": "^0.21.1",
     "chalk": "^4.1.0",
@@ -71,6 +70,7 @@
     "typescript": "^3.9.6",
     "upath": "^1.2.0",
     "update-notifier": "^4.1.0",
+    "utility-types": "^3.10.0",
     "uuid": "^8.3.1",
     "winston": "^3.3.3",
     "wrap-ansi": "^7.0.0",
