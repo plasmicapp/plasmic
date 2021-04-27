@@ -107,9 +107,9 @@ async function run(): Promise<void> {
         default: "my-app",
       })
     ).projectPath.trim();
-    // Absolute path to the new project
-    resolvedProjectPath = path.resolve(projectName);
   }
+  // Absolute path to the new project
+  resolvedProjectPath = path.resolve(projectName);
 
   // Prompt for Typescript
   const useTypescript: boolean = await maybePrompt({
@@ -233,7 +233,7 @@ run().catch((err) => {
   console.log();
 
   // Instruct user to remove artifacts
-  if (fs.existsSync(resolvedProjectPath)) {
+  if (resolvedProjectPath && fs.existsSync(resolvedProjectPath)) {
     console.log(`Please remove ${resolvedProjectPath} and try again.`);
   }
 
