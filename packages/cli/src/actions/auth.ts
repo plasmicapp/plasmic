@@ -3,9 +3,9 @@ import { getCurrentAuth, startAuth } from "../utils/auth-utils";
 import { HandledError } from "../utils/error";
 
 export type AuthArgs = {
-  check?: boolean;
   host: string;
-  email: string;
+  check?: boolean;
+  email?: boolean;
 };
 
 export async function checkCredentials() {
