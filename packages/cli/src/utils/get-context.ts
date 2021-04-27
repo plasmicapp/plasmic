@@ -405,6 +405,11 @@ export interface Metadata {
 /**
  * Create a metadata bundle
  * This will be used to tag Segment events (e.g. for codegen)
+ * Merges in:
+ * 1. defaults
+ * 2. PLASMIC_METADATA environment variable settings
+ * 3. arguments from the command-line
+ * to create a single Metadata object for Segment
  * @param defaults
  * @param fromArgs
  */
@@ -419,4 +424,22 @@ export function generateMetadata(
   const metadata = L.assign({ ...defaults }, metadataFromEnv, metadataFromArgs);
 
   return metadata;
+}
+
+/**
+ * This is meant to be called from consumers of the CLI to set
+ * metadata into the PLASMIC_METADATA environment variable
+ * @param metadata
+ */
+export function setMetadataEnv(metadata: Metadata): void {
+  const fromEnv = process.env.PLASMIC_METADATA
+    ? querystring.decode(process.env.PLASMIC_METADATA)
+    : {};
+  const env = { ...fromEnv };
+  L.toPairs(metadata).forEach(([k, v]) => {
+    if (!env[k]) {
+      env[k] = v;
+    }
+  });
+  process.env.PLASMIC_METADATA = querystring.encode(env);
 }

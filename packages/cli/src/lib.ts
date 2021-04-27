@@ -6,4 +6,4 @@ export { UploadBundleArgs, uploadJsBundle } from "./actions/upload-bundle";
 export { WatchArgs, watchProjects } from "./actions/watch";
 export { logger } from "./deps";
 export { HandledError, handleError } from "./utils/error";
-export { Metadata } from "./utils/get-context";
+export { Metadata, setMetadataEnv } from "./utils/get-context";
