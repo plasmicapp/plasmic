@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { setMetadataEnv } from "@plasmicapp/cli";
 import * as Sentry from "@sentry/node";
 import chalk from "chalk";
 import * as fs from "fs";
@@ -208,7 +209,7 @@ async function run(): Promise<void> {
   );
 
   // Set the metadata environment variable to tag the future Segment codegen event
-  cpa.setMetadataEnv({
+  setMetadataEnv({
     source: "create-plasmic-app",
   });
   await cpa.create({

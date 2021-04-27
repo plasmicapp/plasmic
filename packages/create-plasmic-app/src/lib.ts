@@ -1,8 +1,6 @@
-import { auth, Metadata } from "@plasmicapp/cli";
+import { auth, setMetadataEnv } from "@plasmicapp/cli";
 import chalk from "chalk";
 import * as fs from "fs";
-import L from "lodash";
-import * as querystring from "querystring";
 import * as path from "upath";
 import validateProjectName from "validate-npm-package-name";
 import {
@@ -255,15 +253,8 @@ async function spawnOrFail(
   }
 }
 
-export function setMetadataEnv(metadata: Metadata): void {
-  const fromEnv = process.env.PLASMIC_METADATA
-    ? querystring.decode(process.env.PLASMIC_METADATA)
-    : {};
-  const env = { ...fromEnv };
-  L.toPairs(metadata).forEach(([k, v]) => {
-    if (!env[k]) {
-      env[k] = v;
-    }
-  });
-  process.env.PLASMIC_METADATA = querystring.encode(env);
-}
+/**
+ * Re-export this so that consumers (e.g. plasmic-action)
+ * can use it too
+ */
+export const setMetadata = setMetadataEnv;
