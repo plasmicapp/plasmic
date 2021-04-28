@@ -129,6 +129,10 @@ export async function fixComponentCssReferences(
   fixImportContext: FixImportContext,
   cssFilePath: string
 ) {
+  if (!fileExists(context, cssFilePath)) {
+    return;
+  }
+
   const prevContent = readFileContent(context, cssFilePath);
   const newContent = prevContent.replace(RE_ASSETCSSREF_ALL, (sub, assetId) => {
     const asset = fixImportContext.images[assetId];
