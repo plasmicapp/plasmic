@@ -8,7 +8,7 @@ import type { PlasmicOpts } from "./types";
 import { PlasmicOptsSchema } from "./validation";
 import execa from "execa";
 import rmfr from "rmfr";
-import { initSentry } from "./sentry";
+import { initSentry, captureException } from "./sentry";
 
 type onRegisterPages = (
   pages: { name: string; projectId: string; path: string; url: string }[],
@@ -87,7 +87,12 @@ export async function checkLoaderConfig(opts: PlasmicOpts) {
   const savedConfig = await fs
     .readFile(savedConfigPath)
     .then((file) => file.toString())
-    .catch(() => undefined);
+    .catch((error) => {
+      if (error.code === "ENOENT") {
+        return undefined;
+      }
+      throw error;
+    });
 
   if (savedConfig === currentConfig) {
     return;
@@ -100,7 +105,17 @@ export async function checkLoaderConfig(opts: PlasmicOpts) {
   }
 
   // Settings changed, so delete .plasmic dir.
-  await rmfr(opts.plasmicDir);
+  await rmfr(opts.plasmicDir).catch((error) => {
+    if (error.code !== "ENOTEMPTY" || error.code !== "EBUSY") {
+      throw error;
+    }
+    logger.warn(
+      `Unable to clear ${opts.plasmicDir}.\n` +
+        `This may happen due to another process (like an antivirus) reading or locking files while we attempt to remove the directory.\n` +
+        `Please run your command again. If the problem persist, please delete ${opts.plasmicDir}.`
+    );
+    process.exit(1);
+  });
   await fs.mkdir(opts.plasmicDir, { recursive: true });
   await fs.writeFile(savedConfigPath, JSON.stringify(opts));
 }
@@ -154,9 +169,17 @@ export async function maybeAddToGitIgnore(gitIgnorePath: string, name: string) {
   const file = await fs
     .readFile(gitIgnorePath)
     .then((content) => content.toString())
-    .catch((err) => {
-      logger.info(
-        `Found error while trying to read .gitignore: ${err.message}\nPlease add "${name}" to your .gitignore.`
+    .catch(async (error) => {
+      if (error.code === "ENOENT") {
+        logger.warn(
+          ".gitignore not found. Plasmic loader creates multiple files that are not meant to be checked into your repository. To silence this warning, please add a .gitignore."
+        );
+        return;
+      }
+      // For other errors, capture them but do not crash the process.
+      await captureException(error);
+      logger.warn(
+        `Found error while trying to read .gitignore:\n\n ${error.message}\n\nPlease add "${name}" to your .gitignore.`
       );
       return "";
     });

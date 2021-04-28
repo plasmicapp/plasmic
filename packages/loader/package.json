@@ -1,10 +1,11 @@
 {
   "name": "@plasmicapp/loader",
-  "version": "0.0.42",
+  "version": "0.0.43",
   "private": "true",
   "description": "Integrate Plasmic codegen via a convenient PlasmicLoader component!",
   "scripts": {
     "build": "node ./build.js",
+    "add-to-yalc": "node ./build.js && cd dist && yalc publish",
     "release": "node ./build.js --prod && cd dist && npm publish",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -1,34 +1,11 @@
-import cp from "child_process";
 import { promises as fs } from "fs";
 import path from "upath";
-import util from "util";
 import * as api from "./api";
 import * as logger from "./logger";
 import * as semver from "./semver";
 import type { PlasmicOpts } from "./types";
 import * as config from "./config";
 import execa from "execa";
-
-const exec = util.promisify(cp.exec);
-
-async function doOrFail(doit: () => Promise<unknown>, message: string) {
-  try {
-    await doit();
-  } catch (e) {
-    logger.crash(message, e);
-  }
-}
-
-async function execOrFail(dir: string, command: string, message: string) {
-  return doOrFail(
-    () =>
-      exec(command, {
-        cwd: dir,
-        env: getEnv(),
-      }),
-    message
-  );
-}
 
 export function getEnv() {
   return {
@@ -40,46 +17,49 @@ export function getEnv() {
   };
 }
 
-/**
- * Spawn lets us see the output. Helpful for debugging.
- */
-async function spawnOrFail(
-  dir: string,
-  file: string,
-  args: string[],
-  message: string
+async function runCommand(
+  command: string,
+  opts: { dir?: string; hideOutput?: boolean } = {}
 ) {
-  try {
-    await execa(file, args, {
-      cwd: dir,
-      env: getEnv(),
-      stdio: "inherit",
-    });
-  } catch (e) {
-    logger.crash(message, e);
-  }
+  if (!opts.dir) opts.dir = process.cwd();
+  if (!opts.hideOutput) opts.hideOutput = false;
+  const [file, ...args] = command.split(" ");
+  return execa(file, args, {
+    cwd: opts.dir,
+    env: getEnv(),
+    stdio: opts.hideOutput ? "pipe" : "inherit",
+  });
 }
 
 function objToExecArgs(obj: object) {
-  return Object.entries(obj).map(
-    ([param, value]) =>
-      `--${param}=${Array.isArray(value) ? value.join(",") : value}`
-  );
+  return Object.entries(obj)
+    .map(
+      ([param, value]) =>
+        `--${param}=${Array.isArray(value) ? value.join(",") : value}`
+    )
+    .join(" ");
 }
 
-export async function getCurrentUser() {
-  try {
-    const { stdout } = await exec(
-      "npx -p @plasmicapp/cli@latest plasmic auth --email"
-    );
-    return stdout;
-  } catch {
-    return "";
-  }
+export function getCurrentUser() {
+  return runCommand("npx -p @plasmicapp/cli@latest plasmic auth --email")
+    .then(({ stdout }) => stdout)
+    .catch((error) => {
+      // If the error is that the user's credentials are invalid, return no user.
+      if (error.message?.includes("authentication credentials")) {
+        return "";
+      }
+      throw error;
+    });
 }
 
 export async function ensureRequiredLoaderVersion() {
-  const requiredVersions = await api.getRequiredPackages();
+  const requiredVersions = await api.getRequiredPackages().catch((error) => {
+    let message = `Unable to verify loader version. Error: ${error.message}.`;
+    if (error.response) {
+      message += `\n\n${error.response.data}`;
+    }
+    throw new Error(message);
+  });
   const version = config.packageJson.version;
 
   if (semver.gt(requiredVersions["@plasmicapp/loader"], version)) {
@@ -101,14 +81,15 @@ async function installPackages(plasmicDir: string) {
 }`
   );
   if (process.env.DO_YALC_ADD_CLI) {
-    await execOrFail(plasmicDir, "yalc add @plasmicapp/cli", "");
+    await runCommand("yalc add @plasmicapp/cli", {
+      dir: plasmicDir,
+      hideOutput: true,
+    });
   }
   if (!process.env.NO_INSTALL) {
-    await execOrFail(
-      plasmicDir,
-      "npm update --no-package-lock --legacy-peer-deps",
-      `Unable to install plasmic dependencies. Please delete ${plasmicDir} and try again.`
-    );
+    await runCommand("npm update --no-package-lock --legacy-peer-deps", {
+      dir: plasmicDir,
+    });
   }
 }
 
@@ -122,20 +103,15 @@ export async function tryInitializePlasmicDir(
 
   try {
     await fs.access(configPath);
-  } catch {
-    await spawnOrFail(
-      plasmicDir,
-      "npx",
-      [
-        "-p",
-        "@plasmicapp/cli@latest",
-        "plasmic",
-        "init",
-        "--enable-skip-auth",
-        "--yes=true",
-        ...objToExecArgs(initArgs),
-      ],
-      "Unable to initialize Plasmic. Please check the above error and try again."
+  } catch (error) {
+    if (error.code !== "ENOENT") {
+      throw error;
+    }
+    await runCommand(
+      `npx -p @plasmicapp/cli@latest plasmic init --enable-skip-auth ${objToExecArgs(
+        initArgs
+      )}`,
+      { dir: plasmicDir }
     );
   }
 }
@@ -152,11 +128,9 @@ export async function saveConfig(dir: string, config: any) {
 }
 
 export async function fixImports(dir: string) {
-  return execOrFail(
+  return runCommand("npx -p @plasmicapp/cli@latest plasmic fix-imports", {
     dir,
-    `npx -p @plasmicapp/cli@latest plasmic fix-imports`,
-    `Plasmic was unable to fix the imports for this project. Please delete ${dir} and try again.`
-  );
+  });
 }
 
 function getPageUrl(path: string) {
@@ -204,18 +178,18 @@ export async function syncProject(
   userDir: string,
   projects: string[]
 ) {
-  return spawnOrFail(
-    dir,
-    "npx",
+  return runCommand(
     [
-      ..."-p @plasmicapp/cli@latest plasmic sync --yes --metadata source=loader".split(
-        / /g
-      ),
+      "npx -p @plasmicapp/cli@latest plasmic sync",
+      "--yes",
+      "--metadata source=loader",
       "--loader-config",
       path.join(userDir, "plasmic-loader.json"),
       "--projects",
       ...projects,
-    ],
-    "Unable to sync Plasmic project. Please check the above error and try again."
+    ].join(" "),
+    {
+      dir,
+    }
   );
 }

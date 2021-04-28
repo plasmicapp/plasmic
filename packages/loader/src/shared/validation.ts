@@ -7,9 +7,14 @@ function pathExists(value: string) {
   return fs
     .access(path.resolve(value))
     .then(() => value)
-    .catch(() => {
+    .catch((error) => {
+      if (error.code === "ENOENT") {
+        throw new Error(
+          `Path not found: ${value}. Please verify your plasmic loader config and try again.`
+        );
+      }
       throw new Error(
-        `Path not found: ${value}. Please verify your plasmic loader config and try again.`
+        `Could not verify that path ${value} exists. Error: ${error.message}.`
       );
     });
 }
