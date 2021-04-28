@@ -16,6 +16,7 @@ export async function initSentry(options: PluginOptions) {
   });
   Sentry.configureScope((scope) => {
     scope.setExtra("loaderVersion", config.packageJson.version);
+    scope.setExtra("nodeVersion", process.version);
     scope.setExtra("projects", options.projects);
     scope.setExtra("config", JSON.stringify(options));
 
