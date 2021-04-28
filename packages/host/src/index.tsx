@@ -102,8 +102,8 @@ root.__Sub = {
   localObject: Object,
   localElement: Element,
   globalHookCtx,
-  setPlasmicRootNode: (node: React.ReactElement | null) =>
-    plasmicRootNode.set(node),
+  setPlasmicRootNode,
+  registerRenderErrorListener,
 };
 
 export function renderStudioIntoIframe() {
@@ -113,6 +113,14 @@ export function renderStudioIntoIframe() {
   const plasmicOrigin = ensure(params.get("origin"));
   script.src = plasmicOrigin + "/static/js/studio.js";
   document.body.appendChild(script);
+}
+
+let renderCount = 0;
+function setPlasmicRootNode(node: React.ReactElement | null) {
+  // Keep track of renderCount, which we use as key to ErrorBoundary, so
+  // we can reset the error on each render
+  renderCount++;
+  plasmicRootNode.set(node);
 }
 
 export const PlasmicCanvasHost = mobxReactLite.observer(
@@ -140,10 +148,58 @@ export const PlasmicCanvasHost = mobxReactLite.observer(
     }
     return (
       <div id="app" className="__wab_user-body">
-        {plasmicRootNode.get()}
+        <ErrorBoundary key={`${renderCount}`}>
+          {plasmicRootNode.get()}
+        </ErrorBoundary>
       </div>
     );
   }
 );
+
+type RenderErrorListener = (err: Error) => void;
+const renderErrorListeners: RenderErrorListener[] = [];
+function registerRenderErrorListener(listener: RenderErrorListener) {
+  renderErrorListeners.push(listener);
+  return () => {
+    const index = renderErrorListeners.indexOf(listener);
+    if (index >= 0) {
+      renderErrorListeners.splice(index, 1);
+    }
+  };
+}
+
+interface ErrorBoundaryProps {
+  children?: React.ReactNode;
+}
+
+interface ErrorBoundaryState {
+  error?: Error;
+}
+
+class ErrorBoundary extends React.Component<
+  ErrorBoundaryProps,
+  ErrorBoundaryState
+> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = {};
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    renderErrorListeners.forEach((listener) => listener(error));
+  }
+
+  render() {
+    if (this.state.error) {
+      return <div>Error: {`${this.state.error.message}`}</div>;
+    } else {
+      return this.props.children;
+    }
+  }
+}
 
 ReactWeb.setPlumeStrictMode(false);
