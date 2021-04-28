@@ -1,14 +1,15 @@
+import execa from "execa";
 import { promises as fs } from "fs";
+import rmfr from "rmfr";
 import path from "upath";
 import * as cli from "./cli";
 import * as gen from "./gen";
 import * as logger from "./logger";
+import { setMetadata } from "./metadata";
+import { captureException, initSentry } from "./sentry";
 import * as substitutions from "./substitutions";
 import type { PlasmicOpts } from "./types";
 import { PlasmicOptsSchema } from "./validation";
-import execa from "execa";
-import rmfr from "rmfr";
-import { initSentry, captureException } from "./sentry";
 
 type onRegisterPages = (
   pages: { name: string; projectId: string; path: string; url: string }[],
@@ -25,15 +26,13 @@ export async function watchForChanges(
   // Initialize sentry again, as this may not have been
   // initialized in next.
   await initSentry(opts);
+  setMetadata({
+    source: "loader",
+    scheme: "loader",
+  });
   const watchCmd = execa(
     "npx",
-    [
-      ..."-p @plasmicapp/cli@latest plasmic".split(/ /g),
-      "watch",
-      "--yes",
-      "--metadata",
-      "source=loader",
-    ],
+    [..."-p @plasmicapp/cli@latest plasmic".split(/ /g), "watch", "--yes"],
     {
       cwd: plasmicDir,
       env: cli.getEnv(),

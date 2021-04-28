@@ -1,11 +1,12 @@
+import execa from "execa";
 import { promises as fs } from "fs";
 import path from "upath";
 import * as api from "./api";
+import * as config from "./config";
 import * as logger from "./logger";
+import { setMetadata } from "./metadata";
 import * as semver from "./semver";
 import type { PlasmicOpts } from "./types";
-import * as config from "./config";
-import execa from "execa";
 
 export function getEnv() {
   return {
@@ -178,11 +179,14 @@ export async function syncProject(
   userDir: string,
   projects: string[]
 ) {
+  setMetadata({
+    source: "loader",
+    scheme: "loader",
+  });
   return runCommand(
     [
       "npx -p @plasmicapp/cli@latest plasmic sync",
       "--yes",
-      "--metadata source=loader",
       "--loader-config",
       path.join(userDir, "plasmic-loader.json"),
       "--projects",
