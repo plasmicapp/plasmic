@@ -183,7 +183,7 @@ function asAriaSelectProps(props: BaseSelectProps) {
       (x): x is React.ReactElement<BaseSelectOptionProps> =>
         getPlumeType(x) === "select-option"
     )
-    .map((x) => x.props.value);
+    .map((x) => x.props.isDisabled);
 
   /**
    * Renders an Option or OptionGroup ReactElement into an Item or Section element
