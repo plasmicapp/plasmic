@@ -1,4 +1,6 @@
-import isString from "lodash/isString";
+function isString(x: any): x is string {
+  return typeof x === "string";
+}
 
 type StringGen = string | (() => string);
 

@@ -4,16 +4,21 @@
   "description": "plasmic library for app hosting",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "module": "dist/host.esm.js",
   "files": [
-    "dist",
-    "lib"
+    "dist"
   ],
   "scripts": {
-    "build": "tsc && mkdir -p lib && cp src/styles/plasmic.css lib/",
-    "prepare": "yarn build"
+    "build": "tsdx build",
+    "start": "tsdx watch",
+    "test": "tsdx test --passWithNoTests",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
   },
   "dependencies": {
-    "@plasmicapp/react-web": "^0.2.31",
+    "@plasmicapp/react-web": "^0.2.35",
     "mobx": "^5.15.4",
     "mobx-react-lite": "^2.0.7",
     "resize-observer-polyfill": "^1.5.1",
@@ -28,6 +33,9 @@
     "@types/react-dom": "^16.9.8",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "size-limit": "^4.10.2",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.2.0",
     "typescript": "^3.9.7"
   },
   "peerDependencies": {

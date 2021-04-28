@@ -189,7 +189,7 @@ class ErrorBoundary extends React.Component<
     return { error };
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+  componentDidCatch(error: Error) {
     renderErrorListeners.forEach((listener) => listener(error));
   }
 

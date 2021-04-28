@@ -9,7 +9,7 @@ const root = globalThis;
 // impact performance
 const codeComponents = searchParams.get("codeComponents") === "true";
 
-const officialHook = root.__REACT_DEVTOOLS_GLOBAL_HOOK__;
+const officialHook = (root as any).__REACT_DEVTOOLS_GLOBAL_HOOK__;
 
 if (codeComponents) {
   ensure(officialHook);
@@ -81,9 +81,9 @@ if (codeComponents) {
 
     const customHookProps = {
       onCommitFiberRoot: (
-        rendererID,
+        rendererID: any,
         fiberRoot: { current: Fiber },
-        priorityLevel
+        priorityLevel: any
       ) => {
         if (lastSynced < officialHook.plasmic.startedEvalCount) {
           const { current: rootNode } = fiberRoot;
