@@ -41,16 +41,16 @@ function objToExecArgs(obj: object) {
     .join(" ");
 }
 
-export function getCurrentUser() {
-  return runCommand("npx -p @plasmicapp/cli@latest plasmic auth --email")
-    .then(({ stdout }) => stdout)
-    .catch((error) => {
-      // If the error is that the user's credentials are invalid, return no user.
-      if (error.message?.includes("authentication credentials")) {
-        return "";
-      }
-      throw error;
-    });
+export async function tryGetCurrentUser(): Promise<string> {
+  try {
+    const { stdout } = await runCommand(
+      "npx -p @plasmicapp/cli@latest plasmic auth --email"
+    );
+    return stdout;
+  } catch (e) {
+    // Fail silently if can't get user.
+    return "";
+  }
 }
 
 export async function ensureRequiredLoaderVersion() {
