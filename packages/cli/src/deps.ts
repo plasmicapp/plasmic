@@ -10,6 +10,7 @@ export const logger = winston.createLogger({
         (info) => `${info.message}`
         //info => `${moment().format("HH:mm:ss")}:${info.level}\t${info.message}`
       ),
+      stderrLevels: ["error"],
     }),
     //new winston.transports.File({ filename: "error.log", level: "error" }),
     //new winston.transports.File({ filename: "combined.log", level: "info" }),
