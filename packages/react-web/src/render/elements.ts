@@ -42,7 +42,7 @@ export type AsOverride<C extends React.ElementType> = {
 
 export type RenderOverride<C extends React.ElementType> = {
   type: "render";
-  render: (props: React.ComponentProps<C>) => React.ReactNode;
+  render: (props: React.ComponentProps<C>, Comp: C) => React.ReactNode;
   props?: Partial<React.ComponentProps<C>>;
 } & OverrideTwiddle;
 
@@ -141,7 +141,10 @@ function createPlasmicElement<DefaultElementType extends React.ElementType>(
   const override2 = deriveOverride(override);
   const props = mergeOverrideProps(defaultProps, override2.props);
   if (override2.type === "render") {
-    return override2.render(props as React.ComponentProps<DefaultElementType>);
+    return override2.render(
+      props as React.ComponentProps<DefaultElementType>,
+      defaultRoot
+    );
   }
 
   let root = defaultRoot;
