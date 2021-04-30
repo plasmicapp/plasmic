@@ -1,8 +1,6 @@
-import { useOption as useAriaOption } from "@react-aria/listbox";
-import { useFocusableRef } from "@react-spectrum/utils";
-import { FocusableRef, Node } from "@react-types/shared";
+import { useMenuItem as useAriaMenuItem } from "@react-aria/menu";
+import { Node } from "@react-types/shared";
 import * as React from "react";
-import { ListState } from "react-stately";
 import { mergeProps, pick } from "../../common";
 import { Overrides } from "../../render/elements";
 import { ItemLikeProps } from "../collection-utils";
@@ -16,12 +14,16 @@ import {
   PLUME_STRICT_MODE,
   VariantDef,
 } from "../plume-utils";
-import { SelectContext } from "./context";
+import { MenuContext, MenuContextValue } from "./context";
 
-export interface BaseSelectOptionProps extends ItemLikeProps {}
+export interface BaseMenuItemProps extends ItemLikeProps {
+  /**
+   * Called when this item is selected
+   */
+  onAction?: (key: string) => void;
+}
 
-interface SelectOptionConfig<C extends AnyPlasmicClass> {
-  isSelectedVariant: VariantDef<PlasmicClassVariants<C>>;
+interface MenuItemConfig<C extends AnyPlasmicClass> {
   isDisabledVariant?: VariantDef<PlasmicClassVariants<C>>;
   isHighlightedVariant?: VariantDef<PlasmicClassVariants<C>>;
 
@@ -31,24 +33,15 @@ interface SelectOptionConfig<C extends AnyPlasmicClass> {
   labelContainer: keyof PlasmicClassOverrides<C>;
 }
 
-export type SelectOptionRef = FocusableRef<HTMLElement>;
-
-export function useSelectOption<
-  P extends BaseSelectOptionProps,
+export function useMenuItem<
+  P extends BaseMenuItemProps,
   C extends AnyPlasmicClass
->(
-  plasmicClass: C,
-  props: P,
-  config: SelectOptionConfig<C>,
-  outerRef: SelectOptionRef = null
-) {
-  const state = React.useContext(SelectContext);
+>(plasmicClass: C, props: P, config: MenuItemConfig<C>) {
+  const context = React.useContext(MenuContext);
 
-  if (!state) {
+  if (!context) {
     if (PLUME_STRICT_MODE) {
-      throw new Error(
-        "You can only use a Select.Option within a Select component."
-      );
+      throw new Error("You can only use a Menu.Item within a Menu component.");
     }
   }
 
@@ -57,48 +50,57 @@ export function useSelectOption<
   // context), we use real or fake props.  Note that it's okay for this to
   // be conditional, as there's no way for an instance to switch between
   // the two.
-  if (state) {
-    return useRealPlasmicProps(state, plasmicClass, props, config, outerRef);
+  if (context) {
+    return useRealPlasmicProps(context, plasmicClass, props, config);
   } else {
-    return useFakePlasmicProps(plasmicClass, props, config, outerRef);
+    return useFakePlasmicProps(plasmicClass, props, config);
   }
 }
 
 function useRealPlasmicProps<
-  P extends BaseSelectOptionProps,
+  P extends BaseMenuItemProps,
   C extends AnyPlasmicClass
 >(
-  state: ListState<any>,
+  context: MenuContextValue,
   plasmicClass: C,
   props: P,
-  config: SelectOptionConfig<C>,
-  outerRef: SelectOptionRef = null
+  config: MenuItemConfig<C>
 ) {
-  const { children } = props;
+  const { children, onAction } = props;
+
+  const { state, menuProps } = context;
 
   // We pass in the Node secretly as an undocumented prop from <Select />
   const node = (props as any)._node as Node<
-    React.ReactElement<BaseSelectOptionProps>
+    React.ReactElement<BaseMenuItemProps>
   >;
 
-  const isSelected = state.selectionManager.isSelected(node.key);
   const isDisabled = state.disabledKeys.has(node.key);
   const isHighlighted =
     state.selectionManager.isFocused &&
     state.selectionManager.focusedKey === node.key;
 
-  const ref = useFocusableRef(outerRef);
+  const ref = React.useRef<HTMLLIElement>(null);
 
-  const { optionProps, labelProps } = useAriaOption(
-    {
-      isSelected,
-      isDisabled,
-      "aria-label": node && node["aria-label"],
-      key: node.key,
-      shouldSelectOnPressUp: true,
-      shouldFocusOnHover: true,
-      isVirtualized: false,
-    },
+  const { menuItemProps, labelProps } = useAriaMenuItem(
+    mergeProps(
+      {
+        // We need to merge both the onAction on MenuItem and the onAction
+        // on Menu
+        onAction,
+      },
+      {
+        onAction: menuProps.onAction,
+        onClose: menuProps.onClose,
+      },
+      {
+        isDisabled,
+        "aria-label": node && node["aria-label"],
+        key: node.key,
+        isVirtualized: false,
+        closeOnSelect: true,
+      }
+    ),
     state,
     ref
   );
@@ -106,7 +108,6 @@ function useRealPlasmicProps<
   const variants = {
     ...pick(props, ...plasmicClass.internalVariantProps),
     ...mergeVariantToggles(
-      { def: config.isSelectedVariant, active: isSelected },
       { def: config.isDisabledVariant, active: isDisabled },
       { def: config.isHighlightedVariant, active: isHighlighted }
     ),
@@ -119,10 +120,11 @@ function useRealPlasmicProps<
 
   const overrides: Overrides = {
     [config.root]: {
-      props: mergeProps(optionProps, { ref, style: noOutline() }),
+      as: "li",
+      props: mergeProps(menuItemProps, { ref, style: noOutline() }),
     },
     [config.labelContainer]: {
-      props: labelProps,
+      props: { ...labelProps },
     },
   };
 
@@ -136,19 +138,12 @@ function useRealPlasmicProps<
 }
 
 function useFakePlasmicProps<
-  P extends BaseSelectOptionProps,
+  P extends BaseMenuItemProps,
   C extends AnyPlasmicClass
->(
-  plasmicClass: C,
-  props: P,
-  config: SelectOptionConfig<C>,
-  outerRef: SelectOptionRef = null
-) {
-  const ref = useFocusableRef(outerRef);
-
+>(plasmicClass: C, props: P, config: MenuItemConfig<C>) {
   const overrides: Overrides = {
     [config.root]: {
-      props: { ref, style: noOutline() },
+      props: { style: noOutline() },
     },
   };
 

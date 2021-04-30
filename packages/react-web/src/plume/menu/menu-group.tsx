@@ -1,6 +1,7 @@
+import { useMenuSection } from "@react-aria/menu";
 import { Node } from "@react-types/shared";
 import * as React from "react";
-import { useListBoxSection, useSeparator } from "react-aria";
+import { useSeparator } from "react-aria";
 import { pick } from "../../common";
 import { Overrides } from "../../render/elements";
 import { renderCollectionNode, SectionLikeProps } from "../collection-utils";
@@ -12,42 +13,38 @@ import {
   PlasmicClassVariants,
   PLUME_STRICT_MODE,
 } from "../plume-utils";
-import { SelectContext } from "./context";
+import { MenuContext } from "./context";
 
-export interface BaseSelectOptionGroupProps extends SectionLikeProps {}
+export interface BaseMenuGroupProps extends SectionLikeProps {}
 
-interface SelectOptionGroupConfig<C extends AnyPlasmicClass> {
+interface MenuGroupConfig<C extends AnyPlasmicClass> {
   noTitleVariant: PlasmicClassVariants<C>;
   isFirstVariant: PlasmicClassVariants<C>;
 
-  optionsSlot: keyof PlasmicClassArgs<C>;
+  itemsSlot: keyof PlasmicClassArgs<C>;
   titleSlot: keyof PlasmicClassArgs<C>;
 
   root: keyof PlasmicClassOverrides<C>;
   separator: keyof PlasmicClassOverrides<C>;
   titleContainer: keyof PlasmicClassOverrides<C>;
-  optionsContainer: keyof PlasmicClassOverrides<C>;
+  itemsContainer: keyof PlasmicClassOverrides<C>;
 }
 
-export function useSelectOptionGroup<
-  P extends BaseSelectOptionGroupProps,
+export function useMenuGroup<
+  P extends BaseMenuGroupProps,
   C extends AnyPlasmicClass
->(plasmicClass: C, props: P, config: SelectOptionGroupConfig<C>) {
-  const state = React.useContext(SelectContext);
+>(plasmicClass: C, props: P, config: MenuGroupConfig<C>) {
+  const context = React.useContext(MenuContext);
 
-  // `node` should exist if the OptionGroup was instantiated properly
-  // within a Select
   const node = (props as any)._node as
-    | Node<React.ReactElement<BaseSelectOptionGroupProps>>
+    | Node<React.ReactElement<BaseMenuGroupProps>>
     | undefined;
 
-  if (PLUME_STRICT_MODE && (!state || !node)) {
-    throw new Error(
-      "You can only use a Select.OptionGroup within a Select component."
-    );
+  if (PLUME_STRICT_MODE && (!context || !node)) {
+    throw new Error("You can only use a Menu.Group within a Menu component.");
   }
 
-  const { headingProps, groupProps } = useListBoxSection({
+  const { headingProps, groupProps } = useMenuSection({
     heading: props.title,
     "aria-label": props["aria-label"],
   });
@@ -63,7 +60,9 @@ export function useSelectOptionGroup<
       {
         def: config.isFirstVariant,
         active:
-          state && node ? state.collection.getFirstKey() === node.key : false,
+          context && node
+            ? context.state.collection.getFirstKey() === node.key
+            : false,
       }
     ),
   };
@@ -71,15 +70,15 @@ export function useSelectOptionGroup<
   const args = {
     ...pick(props, ...plasmicClass.internalArgProps),
     [config.titleSlot]: props.title,
-    [config.optionsSlot]: node
-      ? // if `node` exists (so OptionGroup is correctly placed within a Select),
+    [config.itemsSlot]: node
+      ? // if `node` exists (so Menu.Group is correctly placed within a Menu),
         // we use the children nodes that have been derived by the Collections API
         // and render those, instead of `props.children`.  These nodes will have
         // derived keys, etc.
         Array.from(node.childNodes).map((childNode) =>
           renderCollectionNode(childNode)
         )
-      : // Otherwise, we're not really in a working Select, but we still want to
+      : // Otherwise, we're not really in a working Menu, but we still want to
         // best-effort render as closely to configured as possible.  So we just
         // render the children.
         props.children,
@@ -90,6 +89,7 @@ export function useSelectOptionGroup<
       props: {
         ...separatorProps,
       },
+      as: "li",
     },
     [config.titleContainer]: {
       props: {
@@ -100,10 +100,11 @@ export function useSelectOptionGroup<
         render: () => null,
       }),
     },
-    [config.optionsContainer]: {
+    [config.itemsContainer]: {
       props: {
         ...groupProps,
       },
+      as: "ul",
     },
   };
 

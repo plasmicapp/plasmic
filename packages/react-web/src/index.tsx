@@ -2,10 +2,13 @@
 import _classNames from "classnames";
 export const classNames = _classNames;
 export { omit, pick } from "./common";
+export * from "./plume/checkbox";
+export * from "./plume/menu";
+export * from "./plume/menu-button";
 export { setPlumeStrictMode } from "./plume/plume-utils";
 // Plume
 export * from "./plume/select";
-export * from "./plume/checkbox";
+// Render
 export { StrictProps } from "./react-utils";
 export {
   createPlasmicElementProxy,

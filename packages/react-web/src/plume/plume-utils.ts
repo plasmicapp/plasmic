@@ -1,5 +1,5 @@
 import * as React from "react";
-import { groupBy, mapValues } from "../common";
+import { groupBy, mapValues, pick } from "../common";
 import { SingleChoiceArg } from "../render/elements";
 
 export let PLUME_STRICT_MODE = true;
@@ -70,10 +70,12 @@ export function mergeVariantToggles<V>(
   });
 }
 
-export function useForwardedRef<T>(ref: React.Ref<T>) {
+export function useForwardedRef<T>(ref?: React.Ref<T>) {
   const onRef = React.useCallback(
     (x: T) => {
-      updateRef(ref, x);
+      if (ref) {
+        updateRef(ref, x);
+      }
       ensuredRef.current = x;
     },
     [ref]
@@ -99,4 +101,15 @@ function updateRef<T>(ref: React.Ref<T>, value: T | null) {
 
 export function noOutline() {
   return { outline: "none" };
+}
+
+export function getPlumeType(child: React.ReactChild) {
+  if (React.isValidElement(child)) {
+    return (child.type as any).__plumeType as string | undefined;
+  }
+  return undefined;
+}
+
+export function getStyleProps<P extends StyleProps>(props: P): StyleProps {
+  return pick(props, "className", "style");
 }

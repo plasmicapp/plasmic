@@ -23,23 +23,27 @@ import {
   FocusStrategy,
   HoverEvents,
   InputBase,
-  Node,
 } from "@react-types/shared";
 import * as React from "react";
 import { useHover, usePress } from "react-aria";
 import * as ReactDOM from "react-dom";
-import { Item, Section } from "react-stately";
-import { isString, mergeProps, pick } from "../../common";
-import { flattenChildren, useIsomorphicLayoutEffect } from "../../react-utils";
+import { mergeProps, pick } from "../../common";
+import { useIsomorphicLayoutEffect } from "../../react-utils";
 import { Overrides } from "../../render/elements";
 import {
+  deriveItemsFromChildren,
+  extractDisabledKeys,
+  renderAsCollectionChild,
+  renderCollectionNode,
+} from "../collection-utils";
+import {
   AnyPlasmicClass,
+  getStyleProps,
   mergeVariantToggles,
   noOutline,
   PlasmicClassArgs,
   PlasmicClassOverrides,
   PlasmicClassVariants,
-  PLUME_STRICT_MODE,
   StyleProps,
   useForwardedRef,
   VariantDef,
@@ -127,6 +131,11 @@ export interface BaseSelectProps
   placeholder?: React.ReactNode;
 }
 
+const COLLECTION_OPTS = {
+  itemPlumeType: "select-option",
+  sectionPlumeType: "select-option-group",
+};
+
 type AriaOptionType = React.ReactElement<BaseSelectOptionProps>;
 type AriaGroupType = React.ReactElement<BaseSelectOptionGroupProps>;
 type AriaSelectItemType = AriaOptionType | AriaGroupType;
@@ -177,72 +186,18 @@ function asAriaSelectProps(props: BaseSelectProps) {
     menuWidth,
     ...rest
   } = props;
-  const items = deriveItemsFromChildren(children);
-  const disabledKeys = items
-    .filter(
-      (x): x is React.ReactElement<BaseSelectOptionProps> =>
-        getPlumeType(x) === "select-option"
-    )
-    .map((x) => x.props.isDisabled);
+  const items = deriveItems(children);
+
+  const disabledKeys = extractDisabledKeys(items, COLLECTION_OPTS);
 
   /**
    * Renders an Option or OptionGroup ReactElement into an Item or Section element
    */
   const renderAsAriaCollectionChild = (child: AriaSelectItemType) => {
-    const plumeType = getPlumeType(child);
-    if (plumeType === "select-option") {
-      const option = child as React.ReactElement<BaseSelectOptionProps>;
-
-      // This is SelectOption.children, which is the rendered content
-      const content = option.props.children;
-
-      // The children render prop needs to return an <Item/>
-      return (
-        <Item
-          // We use SelectOption.value, but we fallback to key and then to
-          // content to avoid throwing an error when used on canvas
-          key={option.props.value ?? option.key ?? `${content}`}
-          // textValue is either explicitly specified by the user, or we
-          // try to derive it if SelectOption.children is a string.
-          textValue={
-            option.props.textValue ??
-            (isString(content)
-              ? content
-              : option.props.value
-              ? `${option.props.value}`
-              : option.key
-              ? `${option.key}`
-              : undefined)
-          }
-          aria-label={option.props["aria-label"]}
-        >
-          {
-            // Note that what we setting the Option element as the children
-            // here, and not content; we want the entire Option element to
-            // end up as Node.rendered.
-          }
-          {option}
-        </Item>
-      );
-    } else {
-      const group = child as React.ReactElement<BaseSelectOptionGroupProps>;
-      return (
-        <Section
-          // Note that we are using the whole OptionGroup element as the title
-          // here, and not group.props.title; we want the entire OptionGroup
-          // element to end up as Node.rendered.
-          title={group}
-          aria-label={group.props["aria-label"]}
-          // We are flattening and deriving the descendant Options as items here
-          items={deriveItemsFromChildren(group.props.children)}
-        >
-          {
-            // We use the same render function to turn descendent Options into Items
-          }
-          {renderAsAriaCollectionChild}
-        </Section>
-      );
-    }
+    return renderAsCollectionChild(child, {
+      ...COLLECTION_OPTS,
+      deriveItems,
+    });
   };
 
   return {
@@ -425,7 +380,7 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
       ),
     },
     [config.trigger]: {
-      props: mergeProps(triggerProps, triggerHoverProps, {
+      props: mergeProps(triggerProps, triggerHoverProps, getStyleProps(props), {
         ref: triggerRef,
         autoFocus,
       }),
@@ -478,20 +433,6 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
   };
 }
 
-export function renderCollectionNode(node: Node<AriaSelectItemType>) {
-  if (node.hasChildNodes) {
-    return React.cloneElement(
-      node.rendered as AriaGroupType,
-      { _node: node } as any
-    );
-  } else {
-    return React.cloneElement(
-      node.rendered as AriaOptionType,
-      { _node: node } as any
-    );
-  }
-}
-
 const ListBoxWrapper = React.forwardRef(function ListBoxWrapper<T>(
   props: {
     state: AriaSelectState<T>;
@@ -526,34 +467,9 @@ const ListBoxWrapper = React.forwardRef(function ListBoxWrapper<T>(
   );
 });
 
-function deriveItemsFromChildren(
-  children: React.ReactNode
-): AriaSelectItemType[] {
-  if (!children) {
-    return [];
-  }
-
-  const flattened = flattenChildren(children);
-  if (
-    PLUME_STRICT_MODE &&
-    flattened.some((child) => !isValidSelectChild(child))
-  ) {
-    throw new Error(
-      `Can only use Select.Option and Select.OptionGroup as children to Select`
-    );
-  }
-  return flattenChildren(children).filter(
-    isValidSelectChild
-  ) as AriaSelectItemType[];
-}
-
-function isValidSelectChild(child: React.ReactChild) {
-  return !!getPlumeType(child);
-}
-
-function getPlumeType(child: React.ReactChild) {
-  if (React.isValidElement(child)) {
-    return (child.type as any).__plumeType as string | undefined;
-  }
-  return undefined;
+function deriveItems(children: React.ReactNode) {
+  return deriveItemsFromChildren<AriaSelectItemType>(children, {
+    ...COLLECTION_OPTS,
+    invalidChildError: `Can only use Select.Option and Select.OptionGroup as children to Select`,
+  });
 }
