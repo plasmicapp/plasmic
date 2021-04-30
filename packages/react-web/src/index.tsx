@@ -24,7 +24,7 @@ export {
 export { ensureGlobalVariants } from "./render/global-variants";
 export { PlasmicIcon } from "./render/PlasmicIcon";
 export { PlasmicLink } from "./render/PlasmicLink";
-export { PlasmicSlot } from "./render/PlasmicSlot";
+export { PlasmicSlot, renderPlasmicSlot } from "./render/PlasmicSlot";
 export { createUseScreenVariants } from "./render/screen-variants";
 export { Stack } from "./render/Stack";
 export { useTrigger } from "./render/triggers";

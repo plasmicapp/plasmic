@@ -8,7 +8,17 @@ export function PlasmicSlot<T extends keyof JSX.IntrinsicElements = "div">(
     value?: React.ReactNode;
   }
 ) {
-  const { as, defaultContents, value, ...rest } = props;
+  return renderPlasmicSlot(props);
+}
+
+export function renderPlasmicSlot<
+  T extends keyof JSX.IntrinsicElements = "div"
+>(opts: {
+  as?: T;
+  defaultContents?: React.ReactNode;
+  value?: React.ReactNode;
+}) {
+  const { as, defaultContents, value, ...rest } = opts;
 
   let content = value === undefined ? defaultContents : value;
   if (!content || (Array.isArray(content) && content.length === 0)) {
