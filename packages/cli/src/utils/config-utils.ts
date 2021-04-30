@@ -194,8 +194,9 @@ export interface ImportSpec {
   /**
    * The import path to use to instantiate this Component.  The modulePath can be:
    * * An external npm module, like "antd/lib/button"
-   * * An aliased path, like "@app/components/Button"
    * * A local file, like "components/Button.tsx" (path is relative to srcDir, and file extension is fully specified).  If local file is specified, then the module is imported via relative path.
+   *
+   * For this to be an external npm module, the ComponentConfig.type must be "mapped".
    */
   modulePath: string;
 
@@ -209,21 +210,24 @@ export interface ImportSpec {
 export interface ComponentConfig {
   /** Component ID */
   id: string;
+
   /** Javascript name of component */
   name: string;
-  type: "managed";
 
   /** Plasmic project that this component belongs in */
   projectId: string;
+
+  /** Whether this component is managed by Plasmic -- with Plasmic* files generated -- or mapped to an external library */
+  type: "managed" | "mapped";
+
+  /** How to import this Component from another component file */
+  importSpec: ImportSpec;
 
   /** The file path for the blackbox render module, relative to srcDir. */
   renderModuleFilePath: string;
 
   /** The file path for the component css file, relative to srcDir. */
   cssFilePath: string;
-
-  /** How to import this Component from another component file */
-  importSpec: ImportSpec;
 
   /** Code generation scheme used for this component */
   scheme: "blackbox" | "direct";

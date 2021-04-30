@@ -235,8 +235,10 @@ export async function syncProjectComponents(
       await writeFileContent(context, skeletonPath, skeletonModule, {
         force: false,
       });
-    } else {
+    } else if (compConfig.type === "mapped") {
+    } else if (compConfig.type === "managed") {
       // This is an existing component.
+      // We only bother touching files on disk if this component is managed.
 
       compConfig.componentType = isPage ? "page" : "component";
 
@@ -369,18 +371,26 @@ export async function syncProjectComponents(
       });
     }
 
-    await writeFileContent(
-      context,
-      compConfig.renderModuleFilePath,
-      renderModule,
-      {
-        force: !isNew,
-      }
-    );
-    const formattedCssRules = formatAsLocal(cssRules, compConfig.cssFilePath);
-    await writeFileContent(context, compConfig.cssFilePath, formattedCssRules, {
-      force: !isNew,
-    });
+    if (compConfig.type === "managed") {
+      // Again, only need to touch files on disk if managed
+      await writeFileContent(
+        context,
+        compConfig.renderModuleFilePath,
+        renderModule,
+        {
+          force: !isNew,
+        }
+      );
+      const formattedCssRules = formatAsLocal(cssRules, compConfig.cssFilePath);
+      await writeFileContent(
+        context,
+        compConfig.cssFilePath,
+        formattedCssRules,
+        {
+          force: !isNew,
+        }
+      );
+    }
     summary.set(id, { skeletonModuleModified });
   }
 }

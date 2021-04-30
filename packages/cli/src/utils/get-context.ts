@@ -221,6 +221,11 @@ async function resolveMissingFilesInConfig(
 
     const newComponents = [];
     for (const component of project.components) {
+      if (component.type === "mapped") {
+        // For components mapped to an external module, we skip restoring files on disk
+        newComponents.push(component);
+        continue;
+      }
       const newModulePath = await attemptToRestoreFilePath(
         context,
         component.importSpec.modulePath,

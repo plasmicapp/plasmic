@@ -306,7 +306,7 @@ export async function sync(
     // Materialize scheme into each component config.
     context.config.projects.forEach((p) =>
       p.components.forEach((c) => {
-        if (!c.scheme) {
+        if (c.type === "managed" && !c.scheme) {
           c.scheme = context.config.code.scheme;
         }
       })
