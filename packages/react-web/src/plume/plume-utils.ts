@@ -1,16 +1,11 @@
 import * as React from "react";
-import { groupBy, mapValues, pick } from "../common";
+import { groupBy, mapValues } from "../common";
 import { SingleChoiceArg } from "../render/elements";
 
 export let PLUME_STRICT_MODE = true;
 
 export function setPlumeStrictMode(mode: boolean) {
   PLUME_STRICT_MODE = mode;
-}
-
-export interface StyleProps {
-  className?: string;
-  style?: React.CSSProperties;
 }
 
 type VariantArgChoices<T> = T extends (infer M)[]
@@ -108,8 +103,4 @@ export function getPlumeType(child: React.ReactChild) {
     return (child.type as any).__plumeType as string | undefined;
   }
   return undefined;
-}
-
-export function getStyleProps<P extends StyleProps>(props: P): StyleProps {
-  return pick(props, "className", "style");
 }

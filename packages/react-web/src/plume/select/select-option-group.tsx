@@ -12,6 +12,7 @@ import {
   PlasmicClassVariants,
   PLUME_STRICT_MODE,
 } from "../plume-utils";
+import { getDefaultPlasmicProps } from "../props-utils";
 import { SelectContext } from "./context";
 
 export interface BaseSelectOptionGroupProps extends SectionLikeProps {}
@@ -41,10 +42,13 @@ export function useSelectOptionGroup<
     | Node<React.ReactElement<BaseSelectOptionGroupProps>>
     | undefined;
 
-  if (PLUME_STRICT_MODE && (!state || !node)) {
-    throw new Error(
-      "You can only use a Select.OptionGroup within a Select component."
-    );
+  if (!state || !node) {
+    if (PLUME_STRICT_MODE) {
+      throw new Error(
+        "You can only use a Select.OptionGroup within a Select component."
+      );
+    }
+    return getDefaultPlasmicProps(plasmicClass, props);
   }
 
   const { headingProps, groupProps } = useListBoxSection({
@@ -62,8 +66,7 @@ export function useSelectOptionGroup<
       { def: config.noTitleVariant, active: !props.title },
       {
         def: config.isFirstVariant,
-        active:
-          state && node ? state.collection.getFirstKey() === node.key : false,
+        active: state.collection.getFirstKey() === node.key,
       }
     ),
   };
@@ -71,18 +74,9 @@ export function useSelectOptionGroup<
   const args = {
     ...pick(props, ...plasmicClass.internalArgProps),
     [config.titleSlot]: props.title,
-    [config.optionsSlot]: node
-      ? // if `node` exists (so OptionGroup is correctly placed within a Select),
-        // we use the children nodes that have been derived by the Collections API
-        // and render those, instead of `props.children`.  These nodes will have
-        // derived keys, etc.
-        Array.from(node.childNodes).map((childNode) =>
-          renderCollectionNode(childNode)
-        )
-      : // Otherwise, we're not really in a working Select, but we still want to
-        // best-effort render as closely to configured as possible.  So we just
-        // render the children.
-        props.children,
+    [config.optionsSlot]: Array.from(node.childNodes).map((childNode) =>
+      renderCollectionNode(childNode)
+    ),
   };
 
   const overrides: Overrides = {

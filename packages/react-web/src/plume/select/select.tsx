@@ -1,10 +1,4 @@
-import { FocusScope } from "@react-aria/focus";
 import { useListBox } from "@react-aria/listbox";
-import {
-  DismissButton,
-  useOverlay,
-  useOverlayPosition,
-} from "@react-aria/overlays";
 import { HiddenSelect, useSelect as useAriaSelect } from "@react-aria/select";
 import { useFocusableRef } from "@react-spectrum/utils";
 import {
@@ -20,15 +14,12 @@ import {
   FocusableProps,
   FocusableRef,
   FocusableRefValue,
-  FocusStrategy,
   HoverEvents,
   InputBase,
 } from "@react-types/shared";
 import * as React from "react";
 import { useHover, usePress } from "react-aria";
-import * as ReactDOM from "react-dom";
 import { mergeProps, pick } from "../../common";
-import { useIsomorphicLayoutEffect } from "../../react-utils";
 import { Overrides } from "../../render/elements";
 import {
   deriveItemsFromChildren,
@@ -38,16 +29,18 @@ import {
 } from "../collection-utils";
 import {
   AnyPlasmicClass,
-  getStyleProps,
   mergeVariantToggles,
   noOutline,
   PlasmicClassArgs,
   PlasmicClassOverrides,
   PlasmicClassVariants,
-  StyleProps,
-  useForwardedRef,
   VariantDef,
 } from "../plume-utils";
+import { getStyleProps, StyleProps } from "../props-utils";
+import {
+  TriggeredOverlayContext,
+  TriggeredOverlayContextValue,
+} from "../triggered-overlay/context";
 import { SelectContext } from "./context";
 import { BaseSelectOptionProps } from "./select-option";
 import { BaseSelectOptionGroupProps } from "./select-option-group";
@@ -232,18 +225,8 @@ interface SelectConfig<C extends AnyPlasmicClass> {
 
   root: keyof PlasmicClassOverrides<C>;
   trigger: keyof PlasmicClassOverrides<C>;
-  dropdownOverlay: keyof PlasmicClassOverrides<C>;
+  overlay: keyof PlasmicClassOverrides<C>;
   optionsContainer: keyof PlasmicClassOverrides<C>;
-
-  behaviorConfig?: SelectBehaviorConfig;
-}
-
-export interface SelectBehaviorConfig {
-  /**
-   * Additional offset in the y direction for the overlay, when placed relative
-   * to the trigger button.
-   */
-  overlayYOffset?: number;
 }
 
 interface SelectState {
@@ -261,11 +244,10 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
   ref: SelectRef = null
 ) {
   const { ariaProps } = asAriaSelectProps(props);
+  const { placement } = props;
   const state = useAriaSelectState<AriaSelectItemType>(ariaProps);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
   const rootRef = useFocusableRef(ref, triggerRef);
-  const listboxRef = React.useRef<HTMLDivElement>(null);
-  const overlayRef = React.useRef<HTMLDivElement>(null);
 
   const {
     isDisabled,
@@ -288,70 +270,6 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
   const { pressProps: triggerProps } = usePress(triggerPressProps);
   const { hoverProps: triggerHoverProps } = useHover(ariaProps);
 
-  const { overlayProps: overlayAriaProps } = useOverlay(
-    {
-      isOpen: state.isOpen,
-      onClose: () => state.close(),
-      isDismissable: true,
-      shouldCloseOnBlur: true,
-    },
-    overlayRef
-  );
-
-  const {
-    overlayProps: overlayPositionProps,
-    updatePosition,
-  } = useOverlayPosition({
-    targetRef: triggerRef,
-    overlayRef: overlayRef,
-    scrollRef: listboxRef,
-    placement: props.placement ?? "bottom left",
-    shouldFlip: true,
-    isOpen: state.isOpen,
-    containerPadding: 0,
-    ...(config.behaviorConfig && {
-      offset: config.behaviorConfig.overlayYOffset,
-    }),
-  });
-
-  useIsomorphicLayoutEffect(() => {
-    if (state.isOpen) {
-      requestAnimationFrame(() => {
-        updatePosition();
-      });
-    }
-  }, [state.isOpen, updatePosition]);
-
-  // Measure the width of the button to inform the width of the menu (below).
-  const [buttonWidth, setButtonWidth] = React.useState<number | null>(null);
-  useIsomorphicLayoutEffect(() => {
-    if (triggerRef.current) {
-      const width = triggerRef.current.offsetWidth;
-      setButtonWidth(width);
-    }
-  }, [triggerRef, state.selectedKey]);
-
-  const overlayProps = mergeProps(
-    {
-      style: {
-        left: "auto",
-        right: "auto",
-        top: "auto",
-        bottom: "auto",
-        position: "absolute",
-      },
-    },
-    overlayAriaProps,
-    overlayPositionProps,
-    {
-      style: {
-        width: menuWidth ?? (menuMatchTriggerWidth ? buttonWidth : "auto"),
-        minWidth: buttonWidth,
-      },
-      ref: overlayRef,
-    }
-  );
-
   const triggerContent = state.selectedItem
     ? selectedContent ?? state.selectedItem.value.props.children
     : null;
@@ -364,6 +282,18 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
       { def: config.isDisabledVariant, active: isDisabled }
     ),
   };
+
+  const triggerContext: TriggeredOverlayContextValue = React.useMemo(
+    () => ({
+      triggerRef,
+      state,
+      placement,
+      overlayMatchTriggerWidth: menuMatchTriggerWidth,
+      overlayMinTriggerWidth: true,
+      overlayWidth: menuWidth,
+    }),
+    [triggerRef, state, placement, menuMatchTriggerWidth, menuWidth]
+  );
 
   const overrides: Overrides = {
     [config.root]: {
@@ -385,20 +315,17 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
         autoFocus,
       }),
     },
-    [config.dropdownOverlay]: {
-      props: overlayProps,
-      wrap: (content) => ReactDOM.createPortal(content, document.body),
+    [config.overlay]: {
+      wrap: (content) => (
+        <TriggeredOverlayContext.Provider value={triggerContext}>
+          {content}
+        </TriggeredOverlayContext.Provider>
+      ),
     },
     [config.optionsContainer]: {
-      props: {},
-      wrap: (children) => (
-        <ListBoxWrapper
-          state={state}
-          menuProps={menuProps}
-          autoFocus={state.focusStrategy || true}
-          ref={listboxRef}
-        >
-          {children}
+      wrap: (content) => (
+        <ListBoxWrapper state={state} menuProps={menuProps}>
+          {content as React.ReactElement}
         </ListBoxWrapper>
       ),
     },
@@ -433,39 +360,30 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
   };
 }
 
-const ListBoxWrapper = React.forwardRef(function ListBoxWrapper<T>(
-  props: {
-    state: AriaSelectState<T>;
-    menuProps: React.HTMLAttributes<HTMLElement>;
-    autoFocus?: boolean | FocusStrategy;
-    children?: React.ReactNode;
-  },
-  outerRef: React.Ref<HTMLDivElement>
-) {
+function ListBoxWrapper(props: {
+  state: AriaSelectState<any>;
+  menuProps: React.HTMLAttributes<HTMLElement>;
+  children: React.ReactElement;
+}) {
   const { state, menuProps, children } = props;
 
-  const { ref, onRef } = useForwardedRef(outerRef);
+  const ref = React.useRef<HTMLElement>(null);
 
   const { listBoxProps } = useListBox(
-    // @ts-ignore
     {
-      ...props,
       ...menuProps,
       isVirtualized: false,
+      autoFocus: state.focusStrategy || true,
     },
     state,
     ref
   );
 
-  return (
-    <FocusScope restoreFocus>
-      <DismissButton onDismiss={() => state.close()} />
-      <div {...mergeProps(listBoxProps, { style: noOutline() })} ref={onRef}>
-        {children}
-      </div>
-    </FocusScope>
+  return React.cloneElement(
+    children,
+    mergeProps(children.props, listBoxProps, { style: noOutline(), ref })
   );
-});
+}
 
 function deriveItems(children: React.ReactNode) {
   return deriveItemsFromChildren<AriaSelectItemType>(children, {

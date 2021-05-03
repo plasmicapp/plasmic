@@ -1,32 +1,30 @@
-import { useMenuTrigger } from "@react-aria/menu";
-import { DismissButton, useOverlayPosition } from "@react-aria/overlays";
 import { useMenuTriggerState } from "@react-stately/menu";
 import { Placement } from "@react-types/overlays";
 import { DOMProps, FocusableProps, HoverEvents } from "@react-types/shared";
 import * as React from "react";
-import { FocusScope, useHover, useOverlay, usePress } from "react-aria";
-import * as ReactDOM from "react-dom";
+import { useHover } from "react-aria";
 import { mergeProps, pick } from "../../common";
-import { useIsomorphicLayoutEffect } from "../../react-utils";
 import { Overrides } from "../../render/elements";
 import { BaseMenuProps } from "../menu/menu";
 import {
   AnyPlasmicClass,
-  getStyleProps,
   mergeVariantToggles,
   PlasmicClassArgs,
   PlasmicClassOverrides,
   PlasmicClassVariants,
-  StyleProps,
   useForwardedRef,
   VariantDef,
 } from "../plume-utils";
+import { getStyleProps, StyleProps } from "../props-utils";
+import { TriggeredOverlayContext } from "../triggered-overlay/context";
+import { useMenuTrigger } from "./menu-trigger";
 
 export interface BaseMenuButtonProps
   extends DOMProps,
     FocusableProps,
     HoverEvents,
-    StyleProps {
+    StyleProps,
+    Pick<React.ComponentProps<"button">, "title"> {
   /**
    * The menu to show; can either be a Menu instance, or a function that returns a Menu
    * instance if you want to defer creating the instance till when it's opened.
@@ -81,7 +79,6 @@ export interface MenuButtonConfig<C extends AnyPlasmicClass> {
 
   root: keyof PlasmicClassOverrides<C>;
   trigger: keyof PlasmicClassOverrides<C>;
-  dropdownOverlay: keyof PlasmicClassOverrides<C>;
 }
 
 interface MenuButtonState {
@@ -114,8 +111,6 @@ export function useMenuButton<
   } = props;
 
   const { ref: triggerRef, onRef: triggerOnRef } = useForwardedRef(outerRef);
-  const overlayRef = React.useRef<HTMLDivElement>(null);
-  const menuListRef = React.useRef<HTMLUListElement>(null);
 
   const state = useMenuTriggerState({
     isOpen,
@@ -124,78 +119,19 @@ export function useMenuButton<
     shouldFlip: true,
   });
 
-  const { menuTriggerProps: triggerPressProps, menuProps } = useMenuTrigger(
+  const { triggerProps, makeMenu, triggerContext } = useMenuTrigger(
     {
-      type: "menu",
       isDisabled,
+      triggerRef,
+      placement,
+      menuMatchTriggerWidth,
+      menuWidth,
+      menu,
     },
-    state,
-    triggerRef
+    state
   );
 
-  const { pressProps: triggerProps } = usePress(triggerPressProps);
   const { hoverProps: triggerHoverProps } = useHover(props);
-
-  const { overlayProps: overlayAriaProps } = useOverlay(
-    {
-      isOpen: state.isOpen,
-      onClose: () => state.close(),
-      isDismissable: true,
-      shouldCloseOnBlur: true,
-    },
-    overlayRef
-  );
-
-  const {
-    overlayProps: overlayPositionProps,
-    updatePosition,
-  } = useOverlayPosition({
-    targetRef: triggerRef,
-    overlayRef,
-    scrollRef: menuListRef,
-    placement: placement ?? "bottom left",
-    shouldFlip: true,
-    isOpen: state.isOpen,
-    onClose: state.close,
-  });
-
-  useIsomorphicLayoutEffect(() => {
-    if (state.isOpen) {
-      requestAnimationFrame(() => {
-        updatePosition();
-      });
-    }
-  }, [state.isOpen, updatePosition]);
-
-  // Measure the width of the button to inform the width of the menu (below).
-  const [buttonWidth, setButtonWidth] = React.useState<number | null>(null);
-  useIsomorphicLayoutEffect(() => {
-    if (triggerRef.current) {
-      const width = triggerRef.current.offsetWidth;
-      setButtonWidth(width);
-    }
-  }, [triggerRef]);
-
-  const overlayProps = mergeProps(
-    {
-      style: {
-        left: "auto",
-        right: "auto",
-        top: "auto",
-        bottom: "auto",
-        position: "absolute",
-      },
-    },
-    overlayAriaProps,
-    overlayPositionProps,
-    {
-      style: {
-        width: menuWidth ?? (menuMatchTriggerWidth ? buttonWidth : "auto"),
-        minWidth: buttonWidth,
-      },
-      ref: overlayRef,
-    }
-  );
 
   const variants = {
     ...pick(props, ...plasmicClass.internalVariantProps),
@@ -205,41 +141,30 @@ export function useMenuButton<
     ),
   };
 
-  const makeMenu = () => {
-    let realMenu = typeof menu === "function" ? menu() : menu;
-    realMenu = React.cloneElement(
-      realMenu,
-      mergeProps(realMenu.props, menuProps, {
-        menuListRef: menuListRef,
-        onClose: state.close,
-        autoFocus: state.focusStrategy || true,
-      })
-    );
-    return (
-      <FocusScope restoreFocus>
-        <DismissButton onDismiss={state.close} />
-        {realMenu}
-        <DismissButton onDismiss={state.close} />
-      </FocusScope>
-    );
-    return;
-  };
-
   const args = {
     ...pick(props, ...plasmicClass.internalArgProps),
     [config.menuSlot]: state.isOpen ? makeMenu() : undefined,
   };
 
   const overrides: Overrides = {
-    [config.trigger]: {
-      props: mergeProps(triggerProps, triggerHoverProps, getStyleProps(props), {
-        ref: triggerOnRef,
-        autoFocus,
-      }),
+    [config.root]: {
+      wrapChildren: (children) => (
+        <TriggeredOverlayContext.Provider value={triggerContext}>
+          {children}
+        </TriggeredOverlayContext.Provider>
+      ),
     },
-    [config.dropdownOverlay]: {
-      props: overlayProps,
-      wrap: (content) => ReactDOM.createPortal(content, document.body),
+    [config.trigger]: {
+      props: mergeProps(
+        triggerProps,
+        triggerHoverProps,
+        getStyleProps(props),
+        pick(props, "title"),
+        {
+          ref: triggerOnRef,
+          autoFocus,
+        }
+      ),
     },
   };
 

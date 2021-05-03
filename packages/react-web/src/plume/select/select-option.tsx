@@ -2,7 +2,6 @@ import { useOption as useAriaOption } from "@react-aria/listbox";
 import { useFocusableRef } from "@react-spectrum/utils";
 import { FocusableRef, Node } from "@react-types/shared";
 import * as React from "react";
-import { ListState } from "react-stately";
 import { mergeProps, pick } from "../../common";
 import { Overrides } from "../../render/elements";
 import { ItemLikeProps } from "../collection-utils";
@@ -16,6 +15,7 @@ import {
   PLUME_STRICT_MODE,
   VariantDef,
 } from "../plume-utils";
+import { getDefaultPlasmicProps } from "../props-utils";
 import { SelectContext } from "./context";
 
 export interface BaseSelectOptionProps extends ItemLikeProps {}
@@ -45,35 +45,18 @@ export function useSelectOption<
   const state = React.useContext(SelectContext);
 
   if (!state) {
+    // If no context, then we are being incorrectly used.  Complain or just don't
+    // bother installing any hooks.  It's okay to violate rules of hooks here
+    // because this instance won't suddenly be used correctly in another render.
     if (PLUME_STRICT_MODE) {
       throw new Error(
         "You can only use a Select.Option within a Select component."
       );
     }
+
+    return getDefaultPlasmicProps(plasmicClass, props);
   }
 
-  // Depending on whether we are in "real" usage (within the correct context)
-  // or in "fake" usage (somewhere in live mode or just littered outside the
-  // context), we use real or fake props.  Note that it's okay for this to
-  // be conditional, as there's no way for an instance to switch between
-  // the two.
-  if (state) {
-    return useRealPlasmicProps(state, plasmicClass, props, config, outerRef);
-  } else {
-    return useFakePlasmicProps(plasmicClass, props, config, outerRef);
-  }
-}
-
-function useRealPlasmicProps<
-  P extends BaseSelectOptionProps,
-  C extends AnyPlasmicClass
->(
-  state: ListState<any>,
-  plasmicClass: C,
-  props: P,
-  config: SelectOptionConfig<C>,
-  outerRef: SelectOptionRef = null
-) {
   const { children } = props;
 
   // We pass in the Node secretly as an undocumented prop from <Select />
@@ -130,38 +113,6 @@ function useRealPlasmicProps<
     plasmicProps: {
       variants: variants as PlasmicClassVariants<C>,
       args: args as PlasmicClassArgs<C>,
-      overrides: overrides as PlasmicClassOverrides<C>,
-    },
-  };
-}
-
-function useFakePlasmicProps<
-  P extends BaseSelectOptionProps,
-  C extends AnyPlasmicClass
->(
-  plasmicClass: C,
-  props: P,
-  config: SelectOptionConfig<C>,
-  outerRef: SelectOptionRef = null
-) {
-  const ref = useFocusableRef(outerRef);
-
-  const overrides: Overrides = {
-    [config.root]: {
-      props: { ref, style: noOutline() },
-    },
-  };
-
-  return {
-    plasmicProps: {
-      variants: pick(
-        props,
-        ...plasmicClass.internalVariantProps
-      ) as PlasmicClassVariants<C>,
-      args: pick(
-        props,
-        ...plasmicClass.internalArgProps
-      ) as PlasmicClassArgs<C>,
       overrides: overrides as PlasmicClassOverrides<C>,
     },
   };

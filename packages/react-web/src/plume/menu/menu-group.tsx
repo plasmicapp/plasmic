@@ -13,6 +13,7 @@ import {
   PlasmicClassVariants,
   PLUME_STRICT_MODE,
 } from "../plume-utils";
+import { getDefaultPlasmicProps } from "../props-utils";
 import { MenuContext } from "./context";
 
 export interface BaseMenuGroupProps extends SectionLikeProps {}
@@ -40,8 +41,11 @@ export function useMenuGroup<
     | Node<React.ReactElement<BaseMenuGroupProps>>
     | undefined;
 
-  if (PLUME_STRICT_MODE && (!context || !node)) {
-    throw new Error("You can only use a Menu.Group within a Menu component.");
+  if (!context || !node) {
+    if (PLUME_STRICT_MODE) {
+      throw new Error("You can only use a Menu.Group within a Menu component.");
+    }
+    return getDefaultPlasmicProps(plasmicClass, props);
   }
 
   const { headingProps, groupProps } = useMenuSection({
@@ -59,10 +63,7 @@ export function useMenuGroup<
       { def: config.noTitleVariant, active: !props.title },
       {
         def: config.isFirstVariant,
-        active:
-          context && node
-            ? context.state.collection.getFirstKey() === node.key
-            : false,
+        active: context.state.collection.getFirstKey() === node.key,
       }
     ),
   };
@@ -70,18 +71,9 @@ export function useMenuGroup<
   const args = {
     ...pick(props, ...plasmicClass.internalArgProps),
     [config.titleSlot]: props.title,
-    [config.itemsSlot]: node
-      ? // if `node` exists (so Menu.Group is correctly placed within a Menu),
-        // we use the children nodes that have been derived by the Collections API
-        // and render those, instead of `props.children`.  These nodes will have
-        // derived keys, etc.
-        Array.from(node.childNodes).map((childNode) =>
-          renderCollectionNode(childNode)
-        )
-      : // Otherwise, we're not really in a working Menu, but we still want to
-        // best-effort render as closely to configured as possible.  So we just
-        // render the children.
-        props.children,
+    [config.itemsSlot]: Array.from(node.childNodes).map((childNode) =>
+      renderCollectionNode(childNode)
+    ),
   };
 
   const overrides: Overrides = {

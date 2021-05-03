@@ -1,3 +1,4 @@
+export { DropdownMenu } from "./DropdownMenu";
 export {
   BaseMenuButtonProps,
   MenuButtonRef,

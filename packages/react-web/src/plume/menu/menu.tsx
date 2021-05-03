@@ -4,7 +4,7 @@ import { AriaMenuProps } from "@react-types/menu";
 import {
   AriaLabelingProps,
   DOMProps,
-  FocusStrategy,
+  FocusableProps,
 } from "@react-types/shared";
 import * as React from "react";
 import { mergeProps, pick } from "../../common";
@@ -17,20 +17,22 @@ import {
 } from "../collection-utils";
 import {
   AnyPlasmicClass,
-  getStyleProps,
-  mergeVariantToggles,
   noOutline,
   PlasmicClassArgs,
   PlasmicClassOverrides,
   PlasmicClassVariants,
-  StyleProps,
-  useForwardedRef,
+  VariantDef,
 } from "../plume-utils";
+import { getStyleProps, StyleProps } from "../props-utils";
 import { MenuContext } from "./context";
 import { BaseMenuGroupProps } from "./menu-group";
 import { BaseMenuItemProps } from "./menu-item";
 
-export interface BaseMenuProps extends DOMProps, AriaLabelingProps, StyleProps {
+export interface BaseMenuProps
+  extends DOMProps,
+    AriaLabelingProps,
+    FocusableProps,
+    StyleProps {
   /**
    * List of `Menu.Item`s or `Menu.Group`s that make up the menu
    */
@@ -45,16 +47,6 @@ export interface BaseMenuProps extends DOMProps, AriaLabelingProps, StyleProps {
    * Called when the menu is closed.
    */
   onClose?: () => void;
-
-  /**
-   * Provides a ref to the ul element of the menu list
-   */
-  menuListRef?: React.Ref<HTMLUListElement>;
-
-  /**
-   * Whether menu should receive focus on render
-   */
-  autoFocus?: boolean | FocusStrategy;
 }
 
 export type MenuRef = React.Ref<HTMLElement>;
@@ -69,6 +61,11 @@ const COLLECTION_OPTS = {
 };
 
 export interface MenuConfig<C extends AnyPlasmicClass> {
+  isPlacedTopVariant?: VariantDef<PlasmicClassVariants<C>>;
+  isPlacedBottomVariant?: VariantDef<PlasmicClassVariants<C>>;
+  isPlacedLeftVariant?: VariantDef<PlasmicClassVariants<C>>;
+  isPlacedRightVariant?: VariantDef<PlasmicClassVariants<C>>;
+
   itemsSlot: keyof PlasmicClassArgs<C>;
   itemsContainer: keyof PlasmicClassOverrides<C>;
   root: keyof PlasmicClassOverrides<C>;
@@ -105,11 +102,10 @@ export function useMenu<P extends BaseMenuProps, C extends AnyPlasmicClass>(
   ref: MenuRef = null
 ) {
   const { ariaProps } = asAriaMenuProps(props);
+
   const state = useTreeState(ariaProps);
 
-  const { ref: menuListRef, onRef: menuListOnRef } = useForwardedRef(
-    props.menuListRef
-  );
+  const menuListRef = React.useRef<HTMLUListElement>(null);
 
   const { menuProps } = useAriaMenu(ariaProps, state, menuListRef);
 
@@ -120,7 +116,6 @@ export function useMenu<P extends BaseMenuProps, C extends AnyPlasmicClass>(
 
   const variants = {
     ...pick(props, ...plasmicClass.internalVariantProps),
-    ...mergeVariantToggles(),
   };
 
   const overrides: Overrides = {
@@ -132,7 +127,7 @@ export function useMenu<P extends BaseMenuProps, C extends AnyPlasmicClass>(
     [config.itemsContainer]: {
       as: "ul",
       props: mergeProps(menuProps, {
-        ref: menuListOnRef,
+        ref: menuListRef,
         style: {
           ...noOutline(),
         },

@@ -14,7 +14,8 @@ import {
   PLUME_STRICT_MODE,
   VariantDef,
 } from "../plume-utils";
-import { MenuContext, MenuContextValue } from "./context";
+import { getDefaultPlasmicProps } from "../props-utils";
+import { MenuContext } from "./context";
 
 export interface BaseMenuItemProps extends ItemLikeProps {
   /**
@@ -43,29 +44,10 @@ export function useMenuItem<
     if (PLUME_STRICT_MODE) {
       throw new Error("You can only use a Menu.Item within a Menu component.");
     }
+
+    return getDefaultPlasmicProps(plasmicClass, props);
   }
 
-  // Depending on whether we are in "real" usage (within the correct context)
-  // or in "fake" usage (somewhere in live mode or just littered outside the
-  // context), we use real or fake props.  Note that it's okay for this to
-  // be conditional, as there's no way for an instance to switch between
-  // the two.
-  if (context) {
-    return useRealPlasmicProps(context, plasmicClass, props, config);
-  } else {
-    return useFakePlasmicProps(plasmicClass, props, config);
-  }
-}
-
-function useRealPlasmicProps<
-  P extends BaseMenuItemProps,
-  C extends AnyPlasmicClass
->(
-  context: MenuContextValue,
-  plasmicClass: C,
-  props: P,
-  config: MenuItemConfig<C>
-) {
   const { children, onAction } = props;
 
   const { state, menuProps } = context;
@@ -132,31 +114,6 @@ function useRealPlasmicProps<
     plasmicProps: {
       variants: variants as PlasmicClassVariants<C>,
       args: args as PlasmicClassArgs<C>,
-      overrides: overrides as PlasmicClassOverrides<C>,
-    },
-  };
-}
-
-function useFakePlasmicProps<
-  P extends BaseMenuItemProps,
-  C extends AnyPlasmicClass
->(plasmicClass: C, props: P, config: MenuItemConfig<C>) {
-  const overrides: Overrides = {
-    [config.root]: {
-      props: { style: noOutline() },
-    },
-  };
-
-  return {
-    plasmicProps: {
-      variants: pick(
-        props,
-        ...plasmicClass.internalVariantProps
-      ) as PlasmicClassVariants<C>,
-      args: pick(
-        props,
-        ...plasmicClass.internalArgProps
-      ) as PlasmicClassArgs<C>,
       overrides: overrides as PlasmicClassOverrides<C>,
     },
   };

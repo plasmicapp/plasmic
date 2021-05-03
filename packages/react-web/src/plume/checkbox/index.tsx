@@ -14,9 +14,9 @@ import {
   PlasmicClassArgs,
   PlasmicClassOverrides,
   PlasmicClassVariants,
-  StyleProps,
-  VariantDef
+  VariantDef,
 } from "../plume-utils";
+import { getStyleProps, StyleProps } from "../props-utils";
 
 export type CheckboxRef = FocusableRef<HTMLLabelElement>;
 
@@ -32,7 +32,7 @@ function asAriaCheckboxProps(props: CheckboxProps) {
   const ariaProps = {
     ...props,
     isSelected: props.isChecked,
-    defaultSelected: props.defaultChecked
+    defaultSelected: props.defaultChecked,
   };
   delete ariaProps["isChecked"];
   delete ariaProps["defaultChecked"];
@@ -54,7 +54,7 @@ export function useCheckbox<P extends CheckboxProps, C extends AnyPlasmicClass>(
   config: CheckboxConfig<C>,
   ref: CheckboxRef = null
 ) {
-  const { children, className, isDisabled, isIndeterminate, style } = props;
+  const { children, isDisabled, isIndeterminate } = props;
   const inputRef = React.useRef<HTMLInputElement>(null);
   const domRef = useFocusableRef(ref, inputRef);
   const ariaProps = asAriaCheckboxProps(props);
@@ -66,50 +66,48 @@ export function useCheckbox<P extends CheckboxProps, C extends AnyPlasmicClass>(
     ...mergeVariantToggles(
       {
         def: config.isDisabledVariant,
-        active: isDisabled
+        active: isDisabled,
       },
       {
         def: config.isCheckedVariant,
-        active: state.isSelected
+        active: state.isSelected,
       },
       {
         def: config.isIndeterminateVariant,
-        active: isIndeterminate
+        active: isIndeterminate,
       },
       {
         def: config.noLabelVariant,
-        active: !children
+        active: !children,
       }
-    )
+    ),
   };
   const overrides: Overrides = {
     [config.root]: {
       as: "label",
-      props: mergeProps(hoverProps, {
+      props: mergeProps(hoverProps, getStyleProps(props), {
         ref: domRef,
-        className,
-        style
       }),
-      wrapChildren: children => (
+      wrapChildren: (children) => (
         <>
           <VisuallyHidden isFocusable>
             <input {...inputProps} ref={inputRef} />
           </VisuallyHidden>
           {children}
         </>
-      )
-    }
+      ),
+    },
   };
   const args = {
     ...pick(props, ...plasmicClass.internalArgProps),
-    ...(config.labelSlot ? { [config.labelSlot]: children } : {})
+    ...(config.labelSlot ? { [config.labelSlot]: children } : {}),
   };
   return {
     plasmicProps: {
       variants: variants as PlasmicClassVariants<C>,
       overrides: overrides as PlasmicClassOverrides<C>,
-      args: args as PlasmicClassArgs<C>
+      args: args as PlasmicClassArgs<C>,
     },
-    state
+    state,
   };
 }
