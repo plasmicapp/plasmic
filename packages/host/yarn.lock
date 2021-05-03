@@ -1106,10 +1106,10 @@
     "@nodelib/fs.scandir" "2.1.4"
     fastq "^1.6.0"
 
-"@plasmicapp/react-web@^0.2.36":
-  version "0.2.36"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.36.tgz#14c5a7c16a7c49485e819b6b286a688639053781"
-  integrity sha512-TA7Xga5t6nOV21Q8pU7NhAPruM/MdGFAsUiAv6BDoQpQfecUDOxNIXXK/8wMVUsGKyLgRCPUCBgL6RqMqcaQNA==
+"@plasmicapp/react-web@^0.2.38":
+  version "0.2.38"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.38.tgz#9988b640e8ddc65e3b690b93b1f9d0c8533dd2c9"
+  integrity sha512-8LCsWfMHkruZbejzSRCieMbC36xZCWOxUc9nWJDW/23yWC4T8jzMEzNGzj+d2xniZyR11N79RNQpDxTXAojm2A==
   dependencies:
     "@react-spectrum/utils" "^3.5.1"
     classnames "^2.2.6"
