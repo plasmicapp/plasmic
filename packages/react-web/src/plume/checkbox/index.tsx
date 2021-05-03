@@ -43,7 +43,7 @@ interface CheckboxConfig<C extends AnyPlasmicClass> {
   isCheckedVariant: VariantDef<PlasmicClassVariants<C>>;
   isIndeterminateVariant?: VariantDef<PlasmicClassVariants<C>>;
   isDisabledVariant?: VariantDef<PlasmicClassVariants<C>>;
-  hasLabelVariant?: VariantDef<PlasmicClassVariants<C>>;
+  noLabelVariant?: VariantDef<PlasmicClassVariants<C>>;
   labelSlot?: keyof PlasmicClassArgs<C>;
   root: keyof PlasmicClassOverrides<C>;
 }
@@ -77,8 +77,8 @@ export function useCheckbox<P extends CheckboxProps, C extends AnyPlasmicClass>(
         active: isIndeterminate
       },
       {
-        def: config.hasLabelVariant,
-        active: !!children
+        def: config.noLabelVariant,
+        active: !children
       }
     )
   };
