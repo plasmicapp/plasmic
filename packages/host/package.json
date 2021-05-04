@@ -4,16 +4,16 @@
   "description": "plasmic library for app hosting",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "module": "dist/host.esm.js",
   "files": [
-    "dist"
+    "dist",
+    "lib"
   ],
   "scripts": {
-    "build": "tsdx build",
-    "start": "tsdx watch",
+    "build": "tsc",
+    "start": "yarn build",
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
-    "prepare": "tsdx build",
+    "prepare": "yarn build",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
