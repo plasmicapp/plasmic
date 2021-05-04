@@ -1,4 +1,4 @@
-import React, { isValidElement } from "react";
+import React from "react";
 
 export const isBrowser = typeof window !== "undefined";
 
@@ -40,25 +40,33 @@ export function ensureNotArray(children: React.ReactNode) {
 }
 
 /**
- * Flattens ReactNode into an array of react children, recursively flattening
- * fragments
+ * Flattens ReactNode into an array of ReactChild, but does NOT replace
+ * missing keys with array index, as React.Children.toArray() does.
  */
-export function flattenChildren(children: React.ReactNode) {
-  return React.Children.toArray(children).reduce(
-    (acc: React.ReactChild[], child) => {
-      if (React.isValidElement(child) && child.type === React.Fragment) {
-        acc.push(...flattenChildren(child.props.children));
-      } else if (
-        isValidElement(child) ||
-        typeof child === "string" ||
-        typeof child === "number"
-      ) {
-        acc.push(child);
-      }
-      return acc;
-    },
-    []
-  );
+export function toChildArray(children: React.ReactNode): React.ReactChild[] {
+  if (isReactChild(children)) {
+    return [children];
+  } else if (Array.isArray(children)) {
+    return children.flatMap(toChildArray);
+  } else {
+    return [];
+  }
+}
+
+export function isReactText(child: React.ReactNode): child is React.ReactText {
+  return typeof child === "string" || typeof child === "number";
+}
+
+export function isReactChild(
+  child: React.ReactNode
+): child is React.ReactChild {
+  return React.isValidElement(child) || isReactText(child);
+}
+
+export function isReactFragment(
+  child: React.ReactNode
+): child is React.ReactElement {
+  return React.isValidElement(child) && child.type === React.Fragment;
 }
 
 export function isReactNode(x: any) {

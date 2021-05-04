@@ -58,8 +58,8 @@
 import { Node } from "@react-types/shared";
 import React from "react";
 import { Item, Section } from "react-stately";
-import { ensure, isString } from "../common";
-import { flattenChildren } from "../react-utils";
+import { isString } from "../common";
+import { toChildArray } from "../react-utils";
 import { getPlumeType, PLUME_STRICT_MODE } from "./plume-utils";
 
 /**
@@ -119,6 +119,9 @@ export interface SectionLikeProps {
  * Given children of a component like Select or Menu, derive the items
  * that we will pass into the Collections API.  These will be
  * ReactElement<ItemLikeProps|SectionLikeProps>[].
+ *
+ * Will also assign keys to items by their index in the collection,
+ * and collect the keys of disabled items.
  */
 export function deriveItemsFromChildren<T extends React.ReactElement>(
   children: React.ReactNode,
@@ -127,23 +130,72 @@ export function deriveItemsFromChildren<T extends React.ReactElement>(
     sectionPlumeType?: string;
     invalidChildError?: string;
   }
-): T[] {
+) {
   if (!children) {
-    return [];
+    return {
+      items: [] as T[],
+      disabledKeys: [] as React.Key[],
+    };
   }
 
   const { itemPlumeType, sectionPlumeType, invalidChildError } = opts;
 
-  const isValidChild = (child: React.ReactChild) => {
-    const type = getPlumeType(child);
-    return !!type && (type === itemPlumeType || type === sectionPlumeType);
+  // For Plume items without an explicit key, we assign a key as the index
+  // of the collection.
+  let itemCount = 0;
+  let sectionCount = 0;
+
+  const ensureKey = (element: React.ReactElement) => {
+    if (element.key) {
+      // Still increment count even if key is present, so that the
+      // auto-assigned key really reflects the index
+      itemCount++;
+      return element;
+    } else {
+      return React.cloneElement(element, { key: itemCount++ });
+    }
   };
 
-  const flattened = flattenChildren(children);
-  if (PLUME_STRICT_MODE && flattened.some((child) => !isValidChild(child))) {
-    throw new Error(invalidChildError ?? `Unexpected child`);
-  }
-  return flattenChildren(children).filter(isValidChild) as T[];
+  const disabledKeys: React.Key[] = [];
+
+  const flattenedChildren = (
+    children: React.ReactNode
+  ): React.ReactElement[] => {
+    return toChildArray(children).flatMap((child) => {
+      if (React.isValidElement(child)) {
+        if (child.type === React.Fragment) {
+          return flattenedChildren(child.props.children);
+        }
+        const type = getPlumeType(child);
+        if (type === itemPlumeType) {
+          child = ensureKey(child);
+          const childKey = getItemLikeKey(child);
+          if (child.props.isDisabled && !!childKey) {
+            disabledKeys.push(childKey);
+          }
+          return [child];
+        }
+        if (type === sectionPlumeType) {
+          return [
+            React.cloneElement(child, {
+              // key of section doesn't actually matter, just needs
+              // to be unique
+              key: child.key ?? `section-${sectionCount++}`,
+              children: flattenedChildren(child.props.children),
+            }),
+          ];
+        }
+      }
+
+      if (PLUME_STRICT_MODE) {
+        throw new Error(invalidChildError ?? `Unexpected child`);
+      } else {
+        return [];
+      }
+    });
+  };
+
+  return { items: flattenedChildren(children) as T[], disabledKeys };
 }
 
 /**
@@ -176,9 +228,6 @@ export function renderAsCollectionChild<
   opts: {
     itemPlumeType: string;
     sectionPlumeType?: string;
-    deriveItems?: (
-      children: React.ReactNode
-    ) => React.ReactElement<ItemLikeProps | SectionLikeProps>[];
   }
 ) {
   const plumeType = getPlumeType(child);
@@ -227,8 +276,10 @@ export function renderAsCollectionChild<
         // Plume element to end up as Node.rendered.
         title={group}
         aria-label={group.props["aria-label"]}
-        // We are flattening and deriving the descendant Options as items here
-        items={ensure(opts.deriveItems)(group.props.children)}
+        // We are flattening and deriving the descendant Options as items here.
+        // group.props.children should've already been cleaned up by
+        // deriveItemsFromChildren()
+        items={group.props.children as React.ReactElement[]}
       >
         {
           // We use the same render function to turn descendent Options into Items
@@ -237,44 +288,6 @@ export function renderAsCollectionChild<
       </Section>
     );
   }
-}
-
-/**
- * Given a list of item-like and section-like plume elements, returns a list of keys
- * corresponding to disabled items
- */
-export function extractDisabledKeys(
-  items: React.ReactElement<ItemLikeProps | SectionLikeProps>[],
-  opts: {
-    itemPlumeType: string;
-    sectionPlumeType?: string;
-  }
-) {
-  return flattenItems(items, opts)
-    .filter((x) => x.props.isDisabled)
-    .map((x) => getItemLikeKey(x));
-}
-
-function flattenItems(
-  items: React.ReactElement<ItemLikeProps | SectionLikeProps>[],
-  opts: {
-    itemPlumeType: string;
-    sectionPlumeType?: string;
-  }
-): React.ReactElement<ItemLikeProps>[] {
-  return items.flatMap((item) => {
-    const plumeType = getPlumeType(item);
-    if (plumeType === opts.itemPlumeType) {
-      return [item];
-    } else if (plumeType === opts.sectionPlumeType) {
-      return flattenItems(
-        deriveItemsFromChildren(item.props.children, opts),
-        opts
-      );
-    } else {
-      return [];
-    }
-  });
 }
 
 function getItemLikeKey(element: React.ReactElement<ItemLikeProps>) {

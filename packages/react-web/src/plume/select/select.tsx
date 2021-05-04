@@ -23,7 +23,6 @@ import { mergeProps, pick } from "../../common";
 import { Overrides } from "../../render/elements";
 import {
   deriveItemsFromChildren,
-  extractDisabledKeys,
   renderAsCollectionChild,
   renderCollectionNode,
 } from "../collection-utils";
@@ -179,24 +178,15 @@ function asAriaSelectProps(props: BaseSelectProps) {
     menuWidth,
     ...rest
   } = props;
-  const items = deriveItems(children);
-
-  const disabledKeys = extractDisabledKeys(items, COLLECTION_OPTS);
-
-  /**
-   * Renders an Option or OptionGroup ReactElement into an Item or Section element
-   */
-  const renderAsAriaCollectionChild = (child: AriaSelectItemType) => {
-    return renderAsCollectionChild(child, {
-      ...COLLECTION_OPTS,
-      deriveItems,
-    });
-  };
+  const { items, disabledKeys } = deriveItemsFromChildren(children, {
+    ...COLLECTION_OPTS,
+    invalidChildError: `Can only use Select.Option and Select.OptionGroup as children to Select`,
+  });
 
   return {
     ariaProps: {
       ...rest,
-      children: renderAsAriaCollectionChild,
+      children: (child) => renderAsCollectionChild(child, COLLECTION_OPTS),
       onSelectionChange: onChange,
       items,
       disabledKeys,
@@ -383,11 +373,4 @@ function ListBoxWrapper(props: {
     children,
     mergeProps(children.props, listBoxProps, { style: noOutline(), ref })
   );
-}
-
-function deriveItems(children: React.ReactNode) {
-  return deriveItemsFromChildren<AriaSelectItemType>(children, {
-    ...COLLECTION_OPTS,
-    invalidChildError: `Can only use Select.Option and Select.OptionGroup as children to Select`,
-  });
 }

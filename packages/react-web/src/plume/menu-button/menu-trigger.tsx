@@ -5,6 +5,7 @@ import { usePress } from "react-aria";
 import { MenuTriggerState } from "react-stately";
 import { mergeProps } from "../../common";
 import { BaseMenuProps } from "../menu/menu";
+import { getPlumeType, PLUME_STRICT_MODE } from "../plume-utils";
 import { TriggeredOverlayContextValue } from "../triggered-overlay/context";
 
 /**
@@ -46,6 +47,15 @@ export function useMenuTrigger(
 
   const makeMenu = () => {
     let realMenu = typeof menu === "function" ? menu() : menu;
+    if (!realMenu) {
+      return null;
+    }
+    if (getPlumeType(realMenu) !== "menu") {
+      if (PLUME_STRICT_MODE) {
+        throw new Error(`Must use an instance of the Menu component.`);
+      }
+      return null;
+    }
     return React.cloneElement(
       realMenu,
       mergeProps(realMenu.props, menuProps, {

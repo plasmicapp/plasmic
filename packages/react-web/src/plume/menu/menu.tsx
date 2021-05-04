@@ -11,7 +11,6 @@ import { mergeProps, pick } from "../../common";
 import { Overrides } from "../../render/elements";
 import {
   deriveItemsFromChildren,
-  extractDisabledKeys,
   renderAsCollectionChild,
   renderCollectionNode,
 } from "../collection-utils";
@@ -25,8 +24,6 @@ import {
 } from "../plume-utils";
 import { getStyleProps, StyleProps } from "../props-utils";
 import { MenuContext } from "./context";
-import { BaseMenuGroupProps } from "./menu-group";
-import { BaseMenuItemProps } from "./menu-item";
 
 export interface BaseMenuProps
   extends DOMProps,
@@ -51,10 +48,6 @@ export interface BaseMenuProps
 
 export type MenuRef = React.Ref<HTMLElement>;
 
-type AriaItemType =
-  | React.ReactElement<BaseMenuItemProps>
-  | React.ReactElement<BaseMenuGroupProps>;
-
 const COLLECTION_OPTS = {
   itemPlumeType: "menu-item",
   sectionPlumeType: "menu-group",
@@ -76,19 +69,15 @@ export interface MenuConfig<C extends AnyPlasmicClass> {
  */
 function asAriaMenuProps(props: BaseMenuProps) {
   const { children, ...rest } = props;
-  const items = deriveItems(children);
-  const disabledKeys = extractDisabledKeys(items, COLLECTION_OPTS);
+  const { items, disabledKeys } = deriveItemsFromChildren(children, {
+    ...COLLECTION_OPTS,
+    invalidChildError: `Can only use Menu.Item and Menu.Group as children to Menu`,
+  });
 
-  const renderAsAriaCollectionChild = (child: AriaItemType) => {
-    return renderAsCollectionChild(child, {
-      ...COLLECTION_OPTS,
-      deriveItems,
-    });
-  };
   return {
     ariaProps: {
       ...rest,
-      children: renderAsAriaCollectionChild,
+      children: (child) => renderAsCollectionChild(child, COLLECTION_OPTS),
       items,
       disabledKeys,
     } as AriaMenuProps<any>,
@@ -151,11 +140,4 @@ export function useMenu<P extends BaseMenuProps, C extends AnyPlasmicClass>(
       overrides: overrides as PlasmicClassOverrides<C>,
     },
   };
-}
-
-function deriveItems(children: React.ReactNode) {
-  return deriveItemsFromChildren<AriaItemType>(children, {
-    ...COLLECTION_OPTS,
-    invalidChildError: `Can only use Menu.Item and Menu.Group as children to Menu`,
-  });
 }
