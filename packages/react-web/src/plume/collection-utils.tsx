@@ -152,7 +152,7 @@ export function deriveItemsFromChildren<T extends React.ReactElement>(
       itemCount++;
       return element;
     } else {
-      return React.cloneElement(element, { key: itemCount++ });
+      return React.cloneElement(element, { key: `${itemCount++}` });
     }
   };
 

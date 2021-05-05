@@ -19,6 +19,19 @@ export function pick<T>(
   return res as Partial<T>;
 }
 
+export function pickBy<T>(
+  obj: T,
+  func: (key: string, val: any) => boolean
+): Partial<T> {
+  const res: any = {};
+  for (const [key, val] of Object.entries(obj)) {
+    if (func(key, val)) {
+      res[key] = obj[key as keyof T];
+    }
+  }
+  return res as Partial<T>;
+}
+
 export function omit<T>(obj: T, ...keys: (keyof T)[]): Partial<T> {
   const res: Partial<T> = {};
   for (const key of Object.keys(obj) as (keyof T)[]) {

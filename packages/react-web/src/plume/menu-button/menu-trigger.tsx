@@ -56,13 +56,8 @@ export function useMenuTrigger(
       }
       return null;
     }
-    return React.cloneElement(
-      realMenu,
-      mergeProps(realMenu.props, menuProps, {
-        // onClose: state.close,
-        autoFocus: state.focusStrategy || true,
-      })
-    );
+
+    return React.cloneElement(realMenu, mergeProps(realMenu.props, menuProps));
   };
 
   const triggerContext: TriggeredOverlayContextValue = React.useMemo(

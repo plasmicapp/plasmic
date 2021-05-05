@@ -1,5 +1,5 @@
 import * as React from "react";
-import { pick } from "../common";
+import { pick, pickBy } from "../common";
 import {
   AnyPlasmicClass,
   PlasmicClassArgs,
@@ -33,4 +33,10 @@ export function getDefaultPlasmicProps<C extends AnyPlasmicClass>(
       overrides: {} as PlasmicClassOverrides<C>,
     },
   };
+}
+
+const RE_DATA_PROP = /^(data-.*)$/;
+
+export function getDataProps(props: Record<string, any>) {
+  return pickBy(props, (k) => RE_DATA_PROP.test(k));
 }

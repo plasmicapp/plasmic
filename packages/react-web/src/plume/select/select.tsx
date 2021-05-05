@@ -187,7 +187,11 @@ function asAriaSelectProps(props: BaseSelectProps) {
     ariaProps: {
       ...rest,
       children: (child) => renderAsCollectionChild(child, COLLECTION_OPTS),
-      onSelectionChange: onChange,
+      onSelectionChange: onChange
+        ? (val) => {
+            onChange!((val ?? null) as string | null);
+          }
+        : onChange,
       items,
       disabledKeys,
       defaultSelectedKey: defaultValue,
@@ -242,8 +246,6 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
   const {
     isDisabled,
     name,
-    className,
-    style,
     menuWidth,
     menuMatchTriggerWidth,
     autoFocus,
@@ -287,11 +289,9 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
 
   const overrides: Overrides = {
     [config.root]: {
-      props: {
-        className,
-        style,
+      props: mergeProps(getStyleProps(props), {
         ref: rootRef,
-      },
+      }),
       wrapChildren: (children) => (
         <>
           <HiddenSelect state={state} triggerRef={triggerRef} name={name} />
@@ -300,7 +300,7 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
       ),
     },
     [config.trigger]: {
-      props: mergeProps(triggerProps, triggerHoverProps, getStyleProps(props), {
+      props: mergeProps(triggerProps, triggerHoverProps, {
         ref: triggerRef,
         autoFocus,
       }),
