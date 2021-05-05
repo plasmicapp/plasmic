@@ -15,6 +15,7 @@ import {
   VariantDef,
 } from "../plume-utils";
 import { getDefaultPlasmicProps } from "../props-utils";
+import { TriggeredOverlayContext } from "../triggered-overlay/context";
 import { MenuContext } from "./context";
 
 export interface BaseMenuItemProps extends ItemLikeProps {
@@ -38,9 +39,10 @@ export function useMenuItem<
   P extends BaseMenuItemProps,
   C extends AnyPlasmicClass
 >(plasmicClass: C, props: P, config: MenuItemConfig<C>) {
-  const context = React.useContext(MenuContext);
+  const menuContext = React.useContext(MenuContext);
+  const triggerContext = React.useContext(TriggeredOverlayContext);
 
-  if (!context) {
+  if (!menuContext) {
     if (PLUME_STRICT_MODE) {
       throw new Error("You can only use a Menu.Item within a Menu component.");
     }
@@ -50,7 +52,7 @@ export function useMenuItem<
 
   const { children, onAction } = props;
 
-  const { state, menuProps } = context;
+  const { state, menuProps } = menuContext;
 
   // We pass in the Node secretly as an undocumented prop from <Select />
   const node = (props as any)._node as Node<
@@ -73,7 +75,7 @@ export function useMenuItem<
       },
       {
         onAction: menuProps.onAction,
-        onClose: menuProps.onClose,
+        onClose: triggerContext?.state.close,
       },
       {
         isDisabled,

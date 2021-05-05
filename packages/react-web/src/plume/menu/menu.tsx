@@ -1,11 +1,7 @@
 import { useMenu as useAriaMenu } from "@react-aria/menu";
 import { useTreeState } from "@react-stately/tree";
 import { AriaMenuProps } from "@react-types/menu";
-import {
-  AriaLabelingProps,
-  DOMProps,
-  FocusableProps,
-} from "@react-types/shared";
+import { AriaLabelingProps, DOMProps } from "@react-types/shared";
 import * as React from "react";
 import { mergeProps, pick } from "../../common";
 import { Overrides } from "../../render/elements";
@@ -23,13 +19,10 @@ import {
   VariantDef,
 } from "../plume-utils";
 import { getStyleProps, StyleProps } from "../props-utils";
+import { TriggeredOverlayContext } from "../triggered-overlay/context";
 import { MenuContext } from "./context";
 
-export interface BaseMenuProps
-  extends DOMProps,
-    AriaLabelingProps,
-    FocusableProps,
-    StyleProps {
+export interface BaseMenuProps extends DOMProps, AriaLabelingProps, StyleProps {
   /**
    * List of `Menu.Item`s or `Menu.Group`s that make up the menu
    */
@@ -39,11 +32,6 @@ export interface BaseMenuProps
    * Called with the value or key of a `Menu.Item` when it is selected.
    */
   onAction?: (key: string) => void;
-
-  /**
-   * Called when the menu is closed.
-   */
-  onClose?: () => void;
 }
 
 export type MenuRef = React.Ref<HTMLElement>;
@@ -91,12 +79,20 @@ export function useMenu<P extends BaseMenuProps, C extends AnyPlasmicClass>(
   ref: MenuRef = null
 ) {
   const { ariaProps } = asAriaMenuProps(props);
+  const triggerContext = React.useContext(TriggeredOverlayContext);
 
   const state = useTreeState(ariaProps);
 
   const menuListRef = React.useRef<HTMLUListElement>(null);
 
-  const { menuProps } = useAriaMenu(ariaProps, state, menuListRef);
+  const { menuProps } = useAriaMenu(
+    {
+      ...ariaProps,
+      autoFocus: triggerContext?.autoFocus,
+    },
+    state,
+    menuListRef
+  );
 
   const contextValue = React.useMemo(() => ({ state, menuProps: props }), [
     state,

@@ -59,7 +59,7 @@ export function useMenuTrigger(
     return React.cloneElement(
       realMenu,
       mergeProps(realMenu.props, menuProps, {
-        onClose: state.close,
+        // onClose: state.close,
         autoFocus: state.focusStrategy || true,
       })
     );
@@ -69,6 +69,7 @@ export function useMenuTrigger(
     () => ({
       triggerRef,
       state,
+      autoFocus: state.focusStrategy ?? true,
       placement,
       overlayMatchTriggerWidth: menuMatchTriggerWidth,
       overlayMinTriggerWidth: true,
