@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import { logger } from "../deps";
+import { checkEngineStrict } from "./npm-utils";
 
 /**
  * Represents an error that doesn't need to be forwarded to Sentry.
@@ -21,7 +22,11 @@ export class HandledError extends Error {
 export const handleError = <T>(p: Promise<T>) => {
   return p.catch((e) => {
     logger.error(chalk.bold(chalk.redBright("\nPlasmic error: ")) + e.message);
-    if (e instanceof HandledError) {
+    // Check if we satisfy the engine policy first
+    if (checkEngineStrict()) {
+      // eslint-disable-next-line
+      process.exit(1);
+    } else if (e instanceof HandledError) {
       // eslint-disable-next-line
       process.exit(1);
     } else {

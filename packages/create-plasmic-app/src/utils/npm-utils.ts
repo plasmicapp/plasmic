@@ -3,6 +3,7 @@
 */
 import * as execa from "execa";
 import findupSync from "findup-sync";
+import * as semver from "semver";
 import updateNotifier from "update-notifier";
 
 /**
@@ -18,6 +19,19 @@ export function updateNotify(): string {
   });
   notifier.notify();
   return pkg.version;
+}
+
+/**
+ * Call this to check if we match the engine policy
+ */
+export function checkEngineStrict(): boolean {
+  const pkg = require("../../package.json");
+  const minNodeVersion = pkg?.engines?.node;
+  if (!!minNodeVersion && !semver.satisfies(process.version, minNodeVersion)) {
+    console.error(`create-plasmic-app only works on Node ${minNodeVersion}`);
+    return false;
+  }
+  return true;
 }
 
 /**

@@ -8,7 +8,7 @@ import * as path from "upath";
 import yargs from "yargs";
 import * as cpa from "./lib";
 import { assert, ensure, ensureString } from "./utils/lang-utils";
-import { updateNotify } from "./utils/npm-utils";
+import { checkEngineStrict, updateNotify } from "./utils/npm-utils";
 
 if (process.env.CPA_DEBUG_CHDIR) {
   process.chdir(process.env.CPA_DEBUG_CHDIR);
@@ -237,8 +237,11 @@ run().catch((err) => {
     console.log(`Please remove ${resolvedProjectPath} and try again.`);
   }
 
-  // Log to Sentry
-  if (err) {
+  // Check if we satisfy the engine policy
+  const satisfiesVersion = checkEngineStrict();
+
+  // Log to Sentry only if user has correct Node version
+  if (satisfiesVersion && err) {
     Sentry.captureException(err);
   }
 

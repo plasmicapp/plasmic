@@ -22,6 +22,19 @@ export function getCliVersion() {
   return j.version as string;
 }
 
+/**
+ * Call this to check if we match the engine policy
+ */
+export function checkEngineStrict(): boolean {
+  const pkg = getParsedCliPackageJson();
+  const minNodeVersion = pkg?.engines?.node;
+  if (!!minNodeVersion && !semver.satisfies(process.version, minNodeVersion)) {
+    logger.warn(`Plasmic only works on Node ${minNodeVersion}`);
+    return false;
+  }
+  return true;
+}
+
 export function getParsedPackageJson() {
   const packageJson = findupSync("package.json");
   if (!packageJson) {

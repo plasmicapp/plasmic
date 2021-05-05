@@ -15,8 +15,8 @@ if (process.env.DEBUG_CHDIR) {
   process.chdir(process.env.DEBUG_CHDIR);
 }
 
-const pkg = require("../package.json");
 // Check once an hour
+const pkg = require("../package.json");
 const notifier = updateNotifier({ pkg, updateCheckInterval: 1000 * 60 * 60 });
 // Workaround for this bug
 // https://github.com/yeoman/update-notifier/issues/181
