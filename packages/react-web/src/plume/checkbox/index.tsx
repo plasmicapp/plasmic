@@ -6,7 +6,8 @@ import { useToggleState } from "@react-stately/toggle";
 import { AriaCheckboxProps } from "@react-types/checkbox";
 import { FocusableRef, HoverEvents } from "@react-types/shared";
 import * as React from "react";
-import { mergeProps, pick } from "../../common";
+import { pick } from "../../common";
+import { mergeProps } from "../../react-utils";
 import { Overrides } from "../../render/elements";
 import {
   AnyPlasmicClass,

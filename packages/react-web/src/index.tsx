@@ -11,7 +11,7 @@ export { getDataProps } from "./plume/props-utils";
 export * from "./plume/select";
 export * from "./plume/triggered-overlay";
 // Render
-export { StrictProps } from "./react-utils";
+export { HTMLElementRefOf, StrictProps } from "./react-utils";
 export {
   createPlasmicElementProxy,
   deriveRenderOpts,

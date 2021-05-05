@@ -18,8 +18,8 @@ import {
   InputBase,
 } from "@react-types/shared";
 import * as React from "react";
-import { useHover, usePress } from "react-aria";
-import { mergeProps, pick } from "../../common";
+import { mergeProps, useHover, usePress } from "react-aria";
+import { pick } from "../../common";
 import { Overrides } from "../../render/elements";
 import {
   deriveItemsFromChildren,

@@ -7,8 +7,12 @@ import {
   useOverlayPosition,
 } from "react-aria";
 import * as ReactDOM from "react-dom";
-import { mergeProps, pick } from "../../common";
-import { useIsomorphicLayoutEffect } from "../../react-utils";
+import { pick } from "../../common";
+import {
+  mergeProps,
+  mergeRefs,
+  useIsomorphicLayoutEffect,
+} from "../../react-utils";
 import { Overrides } from "../../render/elements";
 import {
   AnyPlasmicClass,
@@ -17,7 +21,6 @@ import {
   PlasmicClassOverrides,
   PlasmicClassVariants,
   PLUME_STRICT_MODE,
-  useForwardedRef,
   VariantDef,
 } from "../plume-utils";
 import {
@@ -53,7 +56,8 @@ export function useTriggeredOverlay<
   config: TriggeredOverlayConfig<C>,
   outerRef: TriggeredOverlayRef = null
 ) {
-  const { ref: overlayRef, onRef: onOverlayRef } = useForwardedRef(outerRef);
+  const overlayRef = React.useRef<HTMLElement>(null);
+  const onOverlayRef = mergeRefs(overlayRef, outerRef);
 
   const context = React.useContext(TriggeredOverlayContext);
 

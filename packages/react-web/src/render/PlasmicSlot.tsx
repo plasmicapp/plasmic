@@ -1,5 +1,5 @@
 import * as React from "react";
-import { mergeProps } from "../common";
+import { mergeProps } from "../react-utils";
 
 export function PlasmicSlot<T extends keyof JSX.IntrinsicElements = "div">(
   props: React.ComponentProps<T> & {

@@ -13,10 +13,14 @@ import {
   PlasmicClassVariants,
   PLUME_STRICT_MODE,
 } from "../plume-utils";
-import { getDefaultPlasmicProps } from "../props-utils";
+import {
+  getDefaultPlasmicProps,
+  getStyleProps,
+  StyleProps,
+} from "../props-utils";
 import { MenuContext } from "./context";
 
-export interface BaseMenuGroupProps extends SectionLikeProps {}
+export interface BaseMenuGroupProps extends SectionLikeProps, StyleProps {}
 
 interface MenuGroupConfig<C extends AnyPlasmicClass> {
   noTitleVariant: PlasmicClassVariants<C>;
@@ -77,6 +81,9 @@ export function useMenuGroup<
   };
 
   const overrides: Overrides = {
+    [config.root]: {
+      props: getStyleProps(props),
+    },
     [config.separator]: {
       props: {
         ...separatorProps,

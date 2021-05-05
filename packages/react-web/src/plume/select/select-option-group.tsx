@@ -12,10 +12,16 @@ import {
   PlasmicClassVariants,
   PLUME_STRICT_MODE,
 } from "../plume-utils";
-import { getDefaultPlasmicProps } from "../props-utils";
+import {
+  getDefaultPlasmicProps,
+  getStyleProps,
+  StyleProps,
+} from "../props-utils";
 import { SelectContext } from "./context";
 
-export interface BaseSelectOptionGroupProps extends SectionLikeProps {}
+export interface BaseSelectOptionGroupProps
+  extends SectionLikeProps,
+    StyleProps {}
 
 interface SelectOptionGroupConfig<C extends AnyPlasmicClass> {
   noTitleVariant: PlasmicClassVariants<C>;
@@ -80,6 +86,9 @@ export function useSelectOptionGroup<
   };
 
   const overrides: Overrides = {
+    [config.root]: {
+      props: getStyleProps(props),
+    },
     [config.separator]: {
       props: {
         ...separatorProps,

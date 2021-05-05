@@ -1,18 +1,12 @@
 import * as React from "react";
-import {
-  chainSingleArgFuncs,
-  isSubset,
-  mergeProps,
-  mergePropVals,
-  NONE,
-  notNil,
-  omit,
-  pick,
-} from "../common";
+import { chainSingleArgFuncs, isSubset, notNil, omit, pick } from "../common";
 import {
   createElementWithChildren,
   ensureNotArray,
   isReactNode,
+  mergeProps,
+  mergePropVals,
+  NONE,
 } from "../react-utils";
 import { Stack } from "./Stack";
 

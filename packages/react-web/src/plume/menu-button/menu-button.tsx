@@ -2,8 +2,9 @@ import { useMenuTriggerState } from "@react-stately/menu";
 import { Placement } from "@react-types/overlays";
 import { DOMProps, FocusableProps, HoverEvents } from "@react-types/shared";
 import * as React from "react";
-import { useHover } from "react-aria";
-import { mergeProps, pick } from "../../common";
+import { useFocusable, useHover } from "react-aria";
+import { pick } from "../../common";
+import { mergeProps, mergeRefs } from "../../react-utils";
 import { Overrides } from "../../render/elements";
 import { BaseMenuProps } from "../menu/menu";
 import {
@@ -12,7 +13,6 @@ import {
   PlasmicClassArgs,
   PlasmicClassOverrides,
   PlasmicClassVariants,
-  useForwardedRef,
   VariantDef,
 } from "../plume-utils";
 import { getStyleProps, StyleProps } from "../props-utils";
@@ -110,7 +110,8 @@ export function useMenuButton<
     menuWidth,
   } = props;
 
-  const { ref: triggerRef, onRef: triggerOnRef } = useForwardedRef(outerRef);
+  const triggerRef = React.useRef<HTMLButtonElement>(null);
+  const onTriggerRef = mergeRefs(triggerRef, outerRef);
 
   const state = useMenuTriggerState({
     isOpen,
@@ -132,6 +133,8 @@ export function useMenuButton<
   );
 
   const { hoverProps: triggerHoverProps } = useHover(props);
+
+  const { focusableProps: triggerFocusProps } = useFocusable(props, triggerRef);
 
   const variants = {
     ...pick(props, ...plasmicClass.internalVariantProps),
@@ -158,10 +161,11 @@ export function useMenuButton<
       props: mergeProps(
         triggerProps,
         triggerHoverProps,
+        triggerFocusProps,
         getStyleProps(props),
         pick(props, "title"),
         {
-          ref: triggerOnRef,
+          ref: onTriggerRef,
           autoFocus,
         }
       ),

@@ -1,6 +1,8 @@
+import classNames from "classnames";
 import React from "react";
 
 export const isBrowser = typeof window !== "undefined";
+export const NONE = Symbol("NONE");
 
 export const useIsomorphicLayoutEffect = isBrowser
   ? React.useLayoutEffect
@@ -82,3 +84,85 @@ export type StrictProps<T, TExpected> = Exclude<
 > extends never
   ? {}
   : "Unexpected extraneous props";
+
+export type HTMLElementRefOf<T extends keyof JSX.IntrinsicElements> = Exclude<
+  React.ComponentProps<T>["ref"],
+  string
+>;
+
+export function mergeProps(
+  props: Record<string, any>,
+  ...restProps: Record<string, any>[]
+): Record<string, any> {
+  const result = { ...props };
+
+  for (const rest of restProps) {
+    for (const key of Object.keys(rest)) {
+      result[key] = mergePropVals(key, result[key], rest[key]);
+    }
+  }
+
+  return result;
+}
+
+function updateRef<T>(ref: React.Ref<T> | undefined, value: T | null) {
+  if (!ref) {
+    return;
+  }
+
+  if (typeof ref === "function") {
+    ref(value);
+  } else {
+    if (!Object.isFrozen(ref)) {
+      (ref as React.MutableRefObject<T | null>).current = value;
+    }
+  }
+}
+
+export function mergeRefs<T>(...refs: (React.Ref<T> | undefined)[]) {
+  return (value: T) => {
+    for (const ref of refs) {
+      updateRef(ref, value);
+    }
+  };
+}
+
+export function mergePropVals(name: string, val1: any, val2: any): any {
+  if (val1 === NONE || val2 === NONE) {
+    // The NONE sentinel always skips all merging and returns null
+    return null;
+  } else if (val1 == null) {
+    // If either of them is nil, prefer the other
+    return val2;
+  } else if (val2 == null) {
+    return val1;
+  } else if (name === "className") {
+    // Special case for className -- always combine both class names
+    return classNames(val1, val2);
+  } else if (name === "style") {
+    // Special case for style -- always shallow-merge style dicts
+    return { ...val1, ...val2 };
+  } else if (name === "ref") {
+    // Special case for ref
+    return mergeRefs(val1, val2);
+  } else if (typeof val1 !== typeof val2) {
+    // If the type of the two values are different, then no way to merge them.
+    // Prefer val2.
+    return val2;
+  } else if (name.startsWith("on") && typeof val1 === "function") {
+    // Special case for event handlers -- always call both handlers
+    return (...args: any[]) => {
+      let res: any;
+      if (typeof val1 === "function") {
+        res = val1(...args);
+      }
+      if (typeof val2 === "function") {
+        res = val2(...args);
+      }
+      return res;
+    };
+  } else {
+    // For all else, prefer val2
+    return val2;
+  }
+}

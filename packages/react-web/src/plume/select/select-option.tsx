@@ -2,7 +2,8 @@ import { useOption as useAriaOption } from "@react-aria/listbox";
 import { useFocusableRef } from "@react-spectrum/utils";
 import { FocusableRef, Node } from "@react-types/shared";
 import * as React from "react";
-import { mergeProps, pick } from "../../common";
+import { pick } from "../../common";
+import { mergeProps } from "../../react-utils";
 import { Overrides } from "../../render/elements";
 import { ItemLikeProps } from "../collection-utils";
 import {
@@ -15,10 +16,14 @@ import {
   PLUME_STRICT_MODE,
   VariantDef,
 } from "../plume-utils";
-import { getDefaultPlasmicProps } from "../props-utils";
+import {
+  getDefaultPlasmicProps,
+  getStyleProps,
+  StyleProps,
+} from "../props-utils";
 import { SelectContext } from "./context";
 
-export interface BaseSelectOptionProps extends ItemLikeProps {}
+export interface BaseSelectOptionProps extends ItemLikeProps, StyleProps {}
 
 interface SelectOptionConfig<C extends AnyPlasmicClass> {
   isSelectedVariant: VariantDef<PlasmicClassVariants<C>>;
@@ -102,7 +107,10 @@ export function useSelectOption<
 
   const overrides: Overrides = {
     [config.root]: {
-      props: mergeProps(optionProps, { ref, style: noOutline() }),
+      props: mergeProps(optionProps, getStyleProps(props), {
+        ref,
+        style: noOutline(),
+      }),
     },
     [config.labelContainer]: {
       props: labelProps,

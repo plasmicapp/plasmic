@@ -3,7 +3,7 @@ import { Placement } from "@react-types/overlays";
 import * as React from "react";
 import { usePress } from "react-aria";
 import { MenuTriggerState } from "react-stately";
-import { mergeProps } from "../../common";
+import { mergeProps } from "../../react-utils";
 import { BaseMenuProps } from "../menu/menu";
 import { getPlumeType, PLUME_STRICT_MODE } from "../plume-utils";
 import { TriggeredOverlayContextValue } from "../triggered-overlay/context";

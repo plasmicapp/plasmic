@@ -1,7 +1,7 @@
 import { Placement } from "@react-types/overlays";
 import * as React from "react";
 import { useMenuTriggerState } from "react-stately";
-import { mergeProps } from "../../common";
+import { mergeProps } from "../../react-utils";
 import { BaseMenuProps } from "../menu/menu";
 import { TriggeredOverlayContext } from "../triggered-overlay/context";
 import { useMenuTrigger } from "./menu-trigger";

@@ -65,35 +65,6 @@ export function mergeVariantToggles<V>(
   });
 }
 
-export function useForwardedRef<T>(ref?: React.Ref<T>) {
-  const onRef = React.useCallback(
-    (x: T) => {
-      if (ref) {
-        updateRef(ref, x);
-      }
-      ensuredRef.current = x;
-    },
-    [ref]
-  );
-
-  const ensuredRef = React.useRef<T | null>(null);
-  return { ref: ensuredRef, onRef };
-}
-
-function updateRef<T>(ref: React.Ref<T>, value: T | null) {
-  if (!ref) {
-    return;
-  }
-
-  if (typeof ref === "function") {
-    ref(value);
-  } else {
-    if (!Object.isFrozen(ref)) {
-      (ref as React.MutableRefObject<T | null>).current = value;
-    }
-  }
-}
-
 export function noOutline() {
   return { outline: "none" };
 }
