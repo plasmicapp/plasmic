@@ -37,14 +37,14 @@ import CheckIcon from "./icons/PlasmicIcon__Check"; // plasmic-import: 2TUbGrU8N
 import IndeterminateIcon from "./icons/PlasmicIcon__Indeterminate"; // plasmic-import: T-bi-rtb01/icon
 
 export type PlasmicCheckbox__VariantMembers = {
-  hasLabel: "hasLabel";
+  noLabel: "noLabel";
   isDisabled: "isDisabled";
   isChecked: "isChecked";
   isIndeterminate: "isIndeterminate";
 };
 
 export type PlasmicCheckbox__VariantsArgs = {
-  hasLabel?: SingleBooleanChoiceArg<"hasLabel">;
+  noLabel?: SingleBooleanChoiceArg<"noLabel">;
   isDisabled?: SingleBooleanChoiceArg<"isDisabled">;
   isChecked?: SingleBooleanChoiceArg<"isChecked">;
   isIndeterminate?: SingleBooleanChoiceArg<"isIndeterminate">;
@@ -52,7 +52,7 @@ export type PlasmicCheckbox__VariantsArgs = {
 
 type VariantPropType = keyof PlasmicCheckbox__VariantsArgs;
 export const PlasmicCheckbox__VariantProps = new Array<VariantPropType>(
-  "hasLabel",
+  "noLabel",
   "isDisabled",
   "isChecked",
   "isIndeterminate"
@@ -60,10 +60,14 @@ export const PlasmicCheckbox__VariantProps = new Array<VariantPropType>(
 
 export type PlasmicCheckbox__ArgsType = {
   children?: React.ReactNode;
+  name?: string;
 };
 
 type ArgPropType = keyof PlasmicCheckbox__ArgsType;
-export const PlasmicCheckbox__ArgProps = new Array<ArgPropType>("children");
+export const PlasmicCheckbox__ArgProps = new Array<ArgPropType>(
+  "children",
+  "name"
+);
 
 export type PlasmicCheckbox__OverridesType = {
   root?: p.Flex<"div">;
@@ -102,19 +106,18 @@ function PlasmicCheckbox__RenderFunc(props: {
       data-plasmic-for-node={forNode}
       className={classNames(defaultcss.all, projectcss.root_reset, sty.root, {
         [sty.root_____focusVisibleWithin]: triggers.focusVisibleWithin_root,
-        [sty.root__hasLabel]: hasVariant(variants, "hasLabel", "hasLabel"),
         [sty.root__isChecked]: hasVariant(variants, "isChecked", "isChecked"),
         [sty.root__isDisabled]: hasVariant(
           variants,
           "isDisabled",
           "isDisabled"
         ),
-
         [sty.root__isIndeterminate]: hasVariant(
           variants,
           "isIndeterminate",
           "isIndeterminate"
         ),
+        [sty.root__noLabel]: hasVariant(variants, "noLabel", "noLabel"),
       })}
       data-plasmic-trigger-props={[triggerRootFocusVisibleWithinProps]}
     >
@@ -129,7 +132,6 @@ function PlasmicCheckbox__RenderFunc(props: {
             "isDisabled",
             "isDisabled"
           ),
-
           [sty.box__isIndeterminate]: hasVariant(
             variants,
             "isIndeterminate",
@@ -160,7 +162,6 @@ function PlasmicCheckbox__RenderFunc(props: {
                 "isChecked",
                 "isChecked"
               ),
-
               [sty.svg__isIndeterminate]: hasVariant(
                 variants,
                 "isIndeterminate",
@@ -182,24 +183,24 @@ function PlasmicCheckbox__RenderFunc(props: {
         ) : null}
       </div>
 
-      {(hasVariant(variants, "hasLabel", "hasLabel") ? true : false) ? (
+      {(hasVariant(variants, "noLabel", "noLabel") ? false : true) ? (
         <div
           data-plasmic-name={"labelContainer"}
           data-plasmic-override={overrides.labelContainer}
           className={classNames(defaultcss.all, sty.labelContainer, {
             [sty.labelContainer_____focusVisibleWithin]:
               triggers.focusVisibleWithin_root,
-            [sty.labelContainer__hasLabel]: hasVariant(
+            [sty.labelContainer__noLabel]: hasVariant(
               variants,
-              "hasLabel",
-              "hasLabel"
+              "noLabel",
+              "noLabel"
             ),
           })}
         >
-          <p.PlasmicSlot
-            defaultContents={"Enter some text"}
-            value={args.children}
-          />
+          {p.renderPlasmicSlot({
+            defaultContents: "Enter some text",
+            value: args.children,
+          })}
         </div>
       ) : null}
     </div>
@@ -216,9 +217,8 @@ function useBehavior<P extends p.CheckboxProps>(props: P, ref: p.CheckboxRef) {
         group: "isIndeterminate",
         variant: "isIndeterminate",
       },
-
       isDisabledVariant: { group: "isDisabled", variant: "isDisabled" },
-      hasLabelVariant: { group: "hasLabel", variant: "hasLabel" },
+      noLabelVariant: { group: "noLabel", variant: "noLabel" },
       labelSlot: "children",
       root: "root",
     },
@@ -251,7 +251,6 @@ type NodeOverridesType<T extends NodeNameType> = Pick<
   PlasmicCheckbox__OverridesType,
   DescendantsType<T>
 >;
-
 type NodeComponentProps<T extends NodeNameType> = {
   // Explicitly specify variants, args, and overrides as objects
   variants?: PlasmicCheckbox__VariantsArgs;

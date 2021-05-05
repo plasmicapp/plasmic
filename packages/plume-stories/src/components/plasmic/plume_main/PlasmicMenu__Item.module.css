@@ -1,20 +1,21 @@
 .root {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   position: relative;
   width: 100%;
-  height: 32px;
-  align-items: center;
-  justify-content: flex-start;
+  height: auto;
   min-width: 0;
   padding: 4px 8px;
 }
 .root__isHighlighted {
   background: #f5f5f5;
 }
-.root__isDisabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.labelContainer {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
 }
 .slotChildren {
   white-space: pre;
@@ -25,8 +26,4 @@
 .slotChildren > .__wab_slot > .__wab_slot > .__wab_slot > * {
   text-overflow: ellipsis;
   overflow: hidden;
-}
-.slotChildren__isSelected {
-  color: #1976d2 /* plasmic-token: UnHa69oaay */;
-  font-weight: 600;
 }

@@ -1,0 +1,48 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  height: auto;
+  min-width: 0;
+}
+.separator {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  height: 1px;
+  flex-shrink: 0;
+  margin: 4px 0px;
+  border-bottom: 1px solid #cacaca /* plasmic-token: nhesNmtki */;
+}
+.titleContainer {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 4px 8px;
+}
+.slotTitle {
+  color: #8e8e8e /* plasmic-token: qkpYmtuXPi */;
+  white-space: pre;
+}
+.slotTitle > *,
+.slotTitle > .__wab_slot > *,
+.slotTitle > .__wab_slot > .__wab_slot > *,
+.slotTitle > .__wab_slot > .__wab_slot > .__wab_slot > * {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.itemsContainer {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+.item__sGa3W:global(.__wab_instance) {
+  position: relative;
+}

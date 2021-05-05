@@ -1,0 +1,14 @@
+.root:global(.__wab_instance) {
+  position: relative;
+}
+.itemsContainer {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  overflow: auto;
+}
+.item__yqjkU:global(.__wab_instance) {
+  position: relative;
+}

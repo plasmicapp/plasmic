@@ -1,7 +1,7 @@
 import { Meta, Story } from "@storybook/react";
 import React from "react";
-import Checkbox from "../components/Checkbox";
-import { FOCUSABLE_ARGS, HOVERABLE_ARGS } from "./story-utils";
+import { FOCUSABLE_ARGS, HOVERABLE_ARGS } from "../../story-utils";
+import Checkbox from "./Checkbox";
 
 const meta: Meta = {
   title: "Checkbox",

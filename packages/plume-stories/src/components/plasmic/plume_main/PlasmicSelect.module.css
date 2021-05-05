@@ -32,10 +32,15 @@
 }
 .root:focus-within .trigger {
   outline: none;
-  border-color: #91c3ff /* plasmic-token: d6bwNiXd7 */;
+  border-color: #1976d2 /* plasmic-token: UnHa69oaay */;
 }
 .root:hover .trigger {
   background: #ffffff;
+}
+.root .trigger_____focusVisibleWithin {
+  outline: none;
+  border-style: dashed;
+  border-color: #1976d2 /* plasmic-token: UnHa69oaay */;
 }
 .contentContainer {
   display: flex;
@@ -46,9 +51,38 @@
   width: 100%;
   min-width: 0;
 }
+.slotSelectedContent {
+  white-space: pre;
+}
+.slotSelectedContent > *,
+.slotSelectedContent > .__wab_slot > *,
+.slotSelectedContent > .__wab_slot > .__wab_slot > *,
+.slotSelectedContent > .__wab_slot > .__wab_slot > .__wab_slot > * {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
 .slotPlaceholder {
   color: #8e8e8e /* plasmic-token: qkpYmtuXPi */;
   font-style: italic;
+  white-space: pre;
+}
+.slotPlaceholder > *,
+.slotPlaceholder > .__wab_slot > *,
+.slotPlaceholder > .__wab_slot > .__wab_slot > *,
+.slotPlaceholder > .__wab_slot > .__wab_slot > .__wab_slot > * {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.root:focus-within .slotPlaceholder > *,
+.root:focus-within .slotPlaceholder > .__wab_slot > *,
+.root:focus-within .slotPlaceholder > .__wab_slot > .__wab_slot > *,
+.root:focus-within
+  .slotPlaceholder
+  > .__wab_slot
+  > .__wab_slot
+  > .__wab_slot
+  > * {
+  outline: none;
 }
 .dropdownIcon {
   position: relative;
@@ -60,38 +94,26 @@
 .root:focus-within .dropdownIcon {
   outline: none;
 }
-.focusRing {
+.overlay:global(.__wab_instance) {
   position: absolute;
-  bottom: -5px;
-  top: -5px;
-  right: -5px;
-  left: -9px;
-  width: auto;
-  height: auto;
-  pointer-events: none;
-  display: block;
-  border-radius: 4px;
-  border: 2px dashed #1976d2 /* plasmic-token: UnHa69oaay */;
-}
-.root .focusRing_____focusVisibleWithin {
-  outline: none;
-}
-.overlay {
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 1px 1px 4px 0px #00000033;
-  flex-column-gap: 0px;
-  position: relative;
-  align-items: stretch;
-  justify-content: flex-start;
-  border-radius: 4px;
-  background: #ffffff;
+  left: 0px;
+  top: 100%;
 }
 .optionsContainer {
-  display: flex;
+  display: inline-flex;
   position: relative;
   flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
+  width: auto;
+  height: auto;
+  overflow: auto;
+}
+.option__gcPey:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.option__upo2O:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
 }

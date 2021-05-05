@@ -1,9 +1,9 @@
+import { CheckboxRef } from "@plasmicapp/react-web";
 import * as React from "react";
 import {
+  DefaultCheckboxProps,
   PlasmicCheckbox,
-  DefaultCheckboxProps
-} from "./plasmic/plume_main/PlasmicCheckbox";
-import { CheckboxRef } from "@plasmicapp/react-web";
+} from "../plasmic/plume_main/PlasmicCheckbox";
 
 interface CheckboxProps extends DefaultCheckboxProps {}
 
@@ -19,4 +19,6 @@ const Checkbox = React.forwardRef(Checkbox_) as (
   props: CheckboxProps & { ref?: CheckboxRef }
 ) => React.ReactElement | null;
 
-export default Checkbox;
+export default Object.assign(Checkbox, {
+  __plumeType: "checkbox",
+});

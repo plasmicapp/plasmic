@@ -1,0 +1,56 @@
+.root {
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: auto;
+  flex-direction: column;
+  min-width: 0;
+  background: #ffffff;
+}
+.separator {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  height: 0px;
+  width: 100%;
+  min-width: 0;
+  flex-shrink: 0;
+  margin: 4px 0px;
+  border-top: 1px solid #cacaca /* plasmic-token: nhesNmtki */;
+}
+.titleContainer {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 4px 8px;
+}
+.slotTitle {
+  color: #8e8e8e /* plasmic-token: qkpYmtuXPi */;
+  white-space: pre;
+}
+.slotTitle > *,
+.slotTitle > .__wab_slot > *,
+.slotTitle > .__wab_slot > .__wab_slot > *,
+.slotTitle > .__wab_slot > .__wab_slot > .__wab_slot > * {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.optionsContainer {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+.option__dfMu7:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.option__o5R4B:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
