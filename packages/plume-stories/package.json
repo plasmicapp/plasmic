@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@plasmicapp/react-web": "^0.2.40",
+    "@plasmicapp/react-web": "^0.2.43",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -20,7 +20,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "cypress run-ct",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public"
@@ -64,6 +64,8 @@
     "@storybook/react": "^6.2.8",
     "@testing-library/cypress": "^7.0.6",
     "cypress": "^7.2.0",
+    "cypress-real-events": "^1.4.0",
+    "local-cypress": "^1.2.1",
     "webpack-dev-server": "^3.11.2"
   }
 }

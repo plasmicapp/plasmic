@@ -1,4 +1,4 @@
-import { MenuButtonRef } from "@plasmicapp/react-web";
+import { getDataProps, MenuButtonRef } from "@plasmicapp/react-web";
 import * as React from "react";
 import {
   DefaultMenuButtonProps,
@@ -9,7 +9,7 @@ interface MenuButtonProps extends DefaultMenuButtonProps {}
 
 function MenuButton_(props: MenuButtonProps, ref: MenuButtonRef) {
   const { plasmicProps, state } = PlasmicMenuButton.useBehavior(props, ref);
-  return <PlasmicMenuButton {...plasmicProps} />;
+  return <PlasmicMenuButton {...plasmicProps} trigger={getDataProps(props)} />;
 }
 
 const MenuButton = React.forwardRef(MenuButton_);

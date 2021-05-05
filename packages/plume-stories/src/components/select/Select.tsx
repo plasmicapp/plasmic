@@ -1,4 +1,4 @@
-import { SelectRef } from "@plasmicapp/react-web";
+import { getDataProps, SelectRef } from "@plasmicapp/react-web";
 import * as React from "react";
 import {
   DefaultSelectProps,
@@ -11,7 +11,7 @@ interface SelectProps extends DefaultSelectProps {}
 
 function Select_(props: SelectProps, ref: SelectRef) {
   const { plasmicProps, state } = PlasmicSelect.useBehavior(props, ref);
-  return <PlasmicSelect {...plasmicProps} />;
+  return <PlasmicSelect {...plasmicProps} trigger={getDataProps(props)} />;
 }
 
 const Select = React.forwardRef(Select_);
