@@ -175,10 +175,12 @@ export async function overwriteIndex(
   // TODO: find a better way to handle this issue
   if (platform === "gatsby") {
     // Delete the index file
-    deleteGlob(
-      path.join(projectPath, "src/@(pages|components)/*.*"),
-      plasmicFiles.map((f) => path.basename(f))
-    );
+    deleteGlob(path.join(projectPath, "src/@(pages|components)/*.*"), [
+      // Files to ignore
+      ...plasmicFiles.map((f) => path.basename(f)),
+    ]);
+    // Create a blank 404 page - `gatsby build` fails without it
+    await fs.writeFile(path.join(projectPath, "src/pages/404.js"), "");
   }
 
   // We're done if we can already render an index page
