@@ -7,7 +7,10 @@ type ComponentData = {
   name: string;
   projectId: string;
   path: string;
+  type: string;
 };
+
+type PageData = ComponentData & { url: string; type: "page" };
 
 type GenOptions = {
   dir: string;
@@ -45,6 +48,7 @@ async function generatePageComponents(dir: string, config: any) {
         name: component.name,
         projectId: project.projectId,
         path: path.join(dir, componentPath),
+        type: component.componentType,
       });
     }
   }
@@ -62,12 +66,28 @@ async function generatePageComponents(dir: string, config: any) {
   );
 }
 
+function getPageUrl(path: string) {
+  // Convert a page path (like pages/my-page.tsx or ../pages/index.jsx) into their
+  // corresponding path (/my-page).
+  let [_, url] = path.split(/pages(.*)\..*$/);
+
+  // Remove the ending "/index" path, which is required for file routing but not for URLs.
+  // Examples:
+  // /index -> /
+  // /index/index -> /index
+
+  if (url.endsWith("index")) {
+    url = url.slice(0, -6);
+  }
+  return url === "" ? "/" : url;
+}
+
 function generatePlasmicLoader(dir: string, config: any) {
   const entrypointPath = path.join(__dirname, "../", "PlasmicLoader.jsx");
-  const componentData: ComponentData[] = [];
+  const componentData: Array<ComponentData | PageData> = [];
   const componentDataKeyedByName: { [name: string]: ComponentData[] } = {};
 
-  const addToComponentData = (data: ComponentData) => {
+  const addToComponentData = (data: ComponentData | PageData) => {
     if (!componentDataKeyedByName[data.name]) {
       componentDataKeyedByName[data.name] = [];
     }
@@ -76,18 +96,24 @@ function generatePlasmicLoader(dir: string, config: any) {
   };
 
   for (const project of config.projects) {
-    project.components.forEach((component: any) =>
+    project.components.forEach((component: any) => {
       addToComponentData({
         name: component.name,
         projectId: project.projectId,
         path: path.join(dir, config.srcDir, component.renderModuleFilePath),
-      })
-    );
+        type: component.componentType,
+        url:
+          component.componentType === "page"
+            ? getPageUrl(component.importSpec.modulePath)
+            : undefined,
+      });
+    });
     project.icons.forEach((icon: any) =>
       addToComponentData({
         name: icon.name,
         projectId: project.projectId,
         path: path.join(dir, config.srcDir, icon.moduleFilePath),
+        type: icon.componentType,
       })
     );
   }
@@ -101,6 +127,7 @@ function generatePlasmicLoader(dir: string, config: any) {
       projectId: provider.projectId,
       path: path.join(dir, config.srcDir, provider.contextFilePath),
       providerName: provider.name === "Screen" ? "ScreenVariantProvider" : "",
+      type: "provider",
     };
     if (!providersKeyedByName[data.name]) {
       providersKeyedByName[data.name] = [];
@@ -113,6 +140,7 @@ function generatePlasmicLoader(dir: string, config: any) {
     entrypointPath,
     templates.PlasmicLoader({
       componentData,
+      pagesByUrl: componentData.filter((component) => component.type === "page"),
       componentsWithOneProject: Object.values(componentDataKeyedByName)
         .filter((components) => components.length === 1)
         .flat(),

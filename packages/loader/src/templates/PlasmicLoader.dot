@@ -53,6 +53,26 @@ const providerMap = {
   {{~}}
 };
 
+const pagesByUrl = {
+  {{~ it.pagesByUrl :page}}
+    "{{=page.url}}": {name: "{{=page.name}}", projectId: "{{=page.projectId}}" },
+  {{~}}
+};
+
+export function getPageUrls() {
+  return Object.keys(pagesByUrl);
+}
+
+export function getComponentFromUrl(url) {
+  if (Array.isArray(url)) {
+    url = url.join("/");
+  }
+  if (!url.startsWith('/')) {
+    url = '/' + url;
+  }
+  return pagesByUrl[url];
+}
+
 function getComponent(projectId, component) {
   if (componentsWithOneProject[component]) {
     return componentsWithOneProject[component];

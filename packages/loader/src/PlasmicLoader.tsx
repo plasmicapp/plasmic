@@ -17,6 +17,23 @@ type ProviderProps = {
   props: { [name: string]: object };
 };
 
+export const componentsByPath: Record<
+  string,
+  { name: string; projectId: string }
+> = {};
+
+export function getPageUrls(): string[] {
+  return [];
+}
+
+export function getComponentFromUrl(
+  url: string | string[]
+): { name: string; projectId: string } {
+  throw new Error(
+    "This content should be overriden every time you run plasmic loader. If you are seeing this error, please report it as a bug!"
+  );
+}
+
 export function Providers(props: ProviderProps): JSX.Element | null {
   return null;
 }
