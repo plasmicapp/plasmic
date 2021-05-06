@@ -5,7 +5,7 @@
   "description": "Integrate Plasmic codegen via a convenient PlasmicLoader component!",
   "scripts": {
     "build": "node ./build.js",
-    "add-to-yalc": "node ./build.js && cd dist && yalc publish",
+    "yalc:push": "node ./build.js && cd dist && yalc push",
     "release": "node ./build.js --prod && cd dist && npm publish",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

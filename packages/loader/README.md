@@ -8,6 +8,11 @@ To release a new version, run `npm version patch` (or set the proper version in 
 
 Running `node build.js` will create a build with development config. Pass the `--prod` flag to use prod config. This config is available at `src/shared/config`
 
+## Development workflow
+
+When developing, it can be useful to use `yalc` to test development versions of loader. To do so, run `npm run yalc:push`. This will build the project, push the code to yalc, and automatically update any project where you are using yalc.
+
+To add @plasmicapp/loader to a new test project from yalc, run `yalc add @plasmicapp/loader`.
 ## Debugging
 
 Here are some flags that may help with your local development/debugging the CLI+Loader combo.
