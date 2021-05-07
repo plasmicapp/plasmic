@@ -72,59 +72,39 @@ async function syncCatchAllPage(
   pageDir: string,
   fileExtension: string
 ) {
-  const fileName = `[...plasmicLoaderPage].${fileExtension}`;
-  const filePath = path.join(pageDir, fileName);
+  if (!pages.length) {
+    return;
+  }
   const topLevelPages = await fs.readdir(pageDir);
-  const conflictingCatchAll = topLevelPages.find(
-    (page) => page.startsWith("[") && page !== fileName
-  );
+  const catchAllFile = topLevelPages.find((page) => page.startsWith("["));
 
-  if (conflictingCatchAll && !didWarnConflictingCatchAll) {
-    logger.warn(
-      `Top-level ${conflictingCatchAll} detected.\nPlasmic uses a catch-all file to register Plasmic pages. Because of this conflict, Plasmic wont register this page.`
-    );
+  // No catch-all. We'll create our own as a default.
+  if (!catchAllFile) {
+    const fileName = `[...plasmicLoaderPage].${fileExtension}`;
+    const filePath = path.join(pageDir, fileName);
+    await fs.writeFile(filePath, templates.NextPage());
+    return;
+  }
+
+  // Emit a warning if the catch all does not make use of our plasmic pages.
+  const catchAllContent = await fs
+    .readFile(path.join(pageDir, catchAllFile))
+    .then((content) => content.toString());
+
+  if (
+    !catchAllContent.includes("getPageUrls") ||
+    !catchAllContent.includes("@plasmicapp/loader")
+  ) {
+    if (!didWarnConflictingCatchAll) {
+      logger.warn(
+        `To use PlasmicPages, please add it to your top-level catch-all "${catchAllFile}".` +
+          "\n\nHere's an example on how to do it in NextJS: https://github.com/plasmicapp/nextjs-starter/blob/master/pages/[...plasmicLoaderPage].js" +
+          "\n\nAlternatively, you can remove this file."
+      );
+    }
     didWarnConflictingCatchAll = true;
     return;
   }
-
-  const pagesToWrite: Page[] = [];
-  for (const page of pages) {
-    if (page.url === "/") continue;
-    try {
-      const possiblePath =
-        path.join(pageDir, ...page.url.substring(1).split("/")) + `.${fileExtension}`;
-      await fs.access(possiblePath);
-      continue;
-    } catch (error) {
-      if (error.code === "ENOENT") {
-        pagesToWrite.push(page);
-        continue;
-      }
-      throw error;
-    }
-  }
-
-  if (!pagesToWrite.length) {
-    try {
-      await fs.unlink(filePath);
-    } catch (error) {
-      if (error.code !== "ENOENT") {
-        throw error;
-      }
-    }
-    return;
-  }
-
-  await fs.writeFile(
-    filePath,
-    templates.NextPage({
-      pages: pagesToWrite.map((page) => ({
-        ...page,
-        url: page.url.substring(1),
-        urlpaths: page.url.substring(1).split("/"),
-      })),
-    })
-  );
 }
 
 export async function generateNextPages(
@@ -133,13 +113,11 @@ export async function generateNextPages(
   config: any
 ) {
   const extension = config.code.lang === "js" ? "js" : "tsx";
+  const indexPage = pages.find((page) => page.url === "/");
+  const otherPages = pages.filter((page) => page.url !== "/");
 
   await Promise.all([
-    syncIndexPage(
-      pages.find((page) => page.url === "/"),
-      dir,
-      extension
-    ),
-    syncCatchAllPage(pages, dir, extension),
+    syncIndexPage(indexPage, dir, extension),
+    syncCatchAllPage(otherPages, dir, extension),
   ]);
 }
