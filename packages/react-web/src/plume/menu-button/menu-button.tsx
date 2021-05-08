@@ -167,6 +167,7 @@ export function useMenuButton<
         {
           ref: onTriggerRef,
           autoFocus,
+          disabled: !!isDisabled,
         }
       ),
     },

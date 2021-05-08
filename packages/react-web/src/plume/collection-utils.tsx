@@ -70,7 +70,7 @@ export interface ItemLikeProps {
    * value key corresponding to this item. Not required if you use the
    * `key` prop instead.
    */
-  value?: string;
+  value?: string | null;
 
   /**
    * The text string value corresponding to this item. Used to support
