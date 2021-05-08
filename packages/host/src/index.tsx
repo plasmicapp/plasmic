@@ -129,11 +129,15 @@ root.__Sub = {
   registerRenderErrorListener,
 };
 
-export function renderStudioIntoIframe() {
-  const script = document.createElement("script");
+function getPlasmicOrigin() {
   const params = new URL(`https://fakeurl/${location.hash.replace(/#/, "?")}`)
-    .searchParams;
-  const plasmicOrigin = ensure(params.get("origin"));
+  .searchParams;
+  return ensure(params.get("origin"));
+}
+
+function renderStudioIntoIframe() {
+  const script = document.createElement("script");
+  const plasmicOrigin = getPlasmicOrigin();
   script.src = plasmicOrigin + "/static/js/studio.js";
   document.body.appendChild(script);
 }
@@ -163,6 +167,18 @@ export const PlasmicCanvasHost = mobxReactLite.observer(
         renderStudioIntoIframe();
       }
     }, [shouldRenderStudio, isFrameAttached]);
+    React.useEffect(() => {
+      if (!shouldRenderStudio && !document.querySelector("#getlibs")) {
+        const scriptElt = document.createElement("script");
+        scriptElt.id = "getlibs";
+        scriptElt.src = getPlasmicOrigin() + "/static/js/getlibs.js";
+        scriptElt.async = false;
+        scriptElt.onload = () => {
+          (window as any).__GetlibsReadyResolver?.();
+        }
+        document.head.append(scriptElt);
+      }
+    }, [shouldRenderStudio])
     if (!isFrameAttached) {
       return null;
     }
