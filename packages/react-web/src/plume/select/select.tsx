@@ -294,7 +294,12 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
       }),
       wrapChildren: (children) => (
         <>
-          <HiddenSelect state={state} triggerRef={triggerRef} name={name} />
+          <HiddenSelect
+            state={state}
+            triggerRef={triggerRef}
+            name={name}
+            isDisabled={isDisabled}
+          />
           {children}
         </>
       ),
@@ -303,6 +308,7 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
       props: mergeProps(triggerProps, triggerHoverProps, {
         ref: triggerRef,
         autoFocus,
+        disabled: !!isDisabled,
       }),
     },
     [config.overlay]: {
@@ -364,6 +370,7 @@ function ListBoxWrapper(props: {
       ...menuProps,
       isVirtualized: false,
       autoFocus: state.focusStrategy || true,
+      disallowEmptySelection: true,
     },
     state,
     ref

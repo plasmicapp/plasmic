@@ -126,6 +126,7 @@ export function useTriggeredOverlay<
     shouldFlip: true,
     isOpen: state.isOpen,
     onClose: state.close,
+    containerPadding: 0,
   });
 
   useIsomorphicLayoutEffect(() => {

@@ -1,5 +1,5 @@
 import { mount } from "@cypress/react";
-import { expect } from "local-cypress";
+import { cy, expect } from "local-cypress";
 import * as React from "react";
 import Select from "./Select";
 
@@ -134,13 +134,13 @@ describe("Select with options", () => {
       .should("have.attr", "aria-selected", "true")
       .and("have.focus");
 
-    // Close by escape, which clears selection
+    // Close by escape, keeps selection
     cy.focused().type("{esc}");
     listbox().should("not.exist");
     select()
-      .should("include.text", "Select something")
+      .should("include.text", "Red")
       .then(() => {
-        expect(value).to.equal(null);
+        expect(value).to.equal("red");
         expect(isOpen).to.equal(false);
       });
   });
