@@ -59,7 +59,7 @@ import { Node } from "@react-types/shared";
 import React from "react";
 import { Item, Section } from "react-stately";
 import { isString } from "../common";
-import { toChildArray } from "../react-utils";
+import { getElementTypeName, toChildArray } from "../react-utils";
 import { getPlumeType, PLUME_STRICT_MODE } from "./plume-utils";
 
 /**
@@ -129,6 +129,7 @@ export function deriveItemsFromChildren<T extends React.ReactElement>(
     itemPlumeType: string;
     sectionPlumeType?: string;
     invalidChildError?: string;
+    requireItemValue: boolean;
   }
 ) {
   if (!children) {
@@ -145,14 +146,20 @@ export function deriveItemsFromChildren<T extends React.ReactElement>(
   let itemCount = 0;
   let sectionCount = 0;
 
-  const ensureKey = (element: React.ReactElement) => {
-    if (element.key) {
+  const ensureValue = (element: React.ReactElement) => {
+    if (!("value" in element.props)) {
+      if (opts.requireItemValue && PLUME_STRICT_MODE) {
+        throw new Error(
+          `Must specify a "value" prop for ${getElementTypeName(element.type)}`
+        );
+      } else {
+        return React.cloneElement(element, { value: `${itemCount++}` });
+      }
+    } else {
       // Still increment count even if key is present, so that the
       // auto-assigned key really reflects the index
       itemCount++;
       return element;
-    } else {
-      return React.cloneElement(element, { key: `${itemCount++}` });
     }
   };
 
@@ -168,7 +175,7 @@ export function deriveItemsFromChildren<T extends React.ReactElement>(
         }
         const type = getPlumeType(child);
         if (type === itemPlumeType) {
-          child = ensureKey(child);
+          child = ensureValue(child);
           const childKey = getItemLikeKey(child);
           if (child.props.isDisabled && !!childKey) {
             disabledKeys.push(childKey);

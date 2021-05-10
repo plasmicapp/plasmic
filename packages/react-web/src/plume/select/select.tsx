@@ -181,6 +181,7 @@ function asAriaSelectProps(props: BaseSelectProps) {
   const { items, disabledKeys } = deriveItemsFromChildren(children, {
     ...COLLECTION_OPTS,
     invalidChildError: `Can only use Select.Option and Select.OptionGroup as children to Select`,
+    requireItemValue: true,
   });
 
   return {

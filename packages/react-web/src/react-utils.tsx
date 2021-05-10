@@ -166,3 +166,11 @@ export function mergePropVals(name: string, val1: any, val2: any): any {
     return val2;
   }
 }
+
+export function getElementTypeName(comp: string | React.ElementType) {
+  if (typeof comp === "string") {
+    return comp;
+  } else {
+    return comp.displayName ?? "Component";
+  }
+}

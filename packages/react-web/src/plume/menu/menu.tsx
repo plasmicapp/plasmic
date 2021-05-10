@@ -61,6 +61,7 @@ function asAriaMenuProps(props: BaseMenuProps) {
   const { items, disabledKeys } = deriveItemsFromChildren(children, {
     ...COLLECTION_OPTS,
     invalidChildError: `Can only use Menu.Item and Menu.Group as children to Menu`,
+    requireItemValue: false,
   });
 
   return {
