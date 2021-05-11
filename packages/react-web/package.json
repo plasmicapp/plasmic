@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/react-web",
-  "version": "0.2.47",
+  "version": "0.2.48",
   "description": "plasmic library for rendering in the presentational style",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -20,11 +20,11 @@
     "lib"
   ],
   "scripts": {
-    "build": "tsdx build && mkdir -p lib && cp src/styles/plasmic.css lib/",
+    "build": "tsdx build && rollup -c && mkdir -p lib && cp src/styles/plasmic.css lib/",
     "start": "tsdx watch",
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
-    "prepare": "tsdx build",
+    "prepare": "yarn build",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
@@ -52,10 +52,12 @@
     "husky": "^6.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "rollup": "^2.47.0",
+    "rollup-plugin-dts": "^3.0.1",
     "size-limit": "^4.10.2",
     "tsdx": "^0.14.1",
     "tslib": "^2.2.0",
-    "typescript": "^3.9.7"
+    "typescript": "^4.2.4"
   },
   "peerDependencies": {
     "react": ">=16.8.0",
