@@ -109,11 +109,9 @@ export async function checkLoaderConfig(opts: PlasmicOpts) {
       throw error;
     }
     logger.warn(
-      `Unable to clear ${opts.plasmicDir}.\n` +
-        `This may happen due to another process (like an antivirus) reading or locking files while we attempt to remove the directory.\n` +
-        `Please run your command again. If the problem persist, please delete ${opts.plasmicDir}.`
+      `Unable to clear ${opts.plasmicDir}. Error: ${error.message}\n` +
+        "If you made changes to your plasmic configuration, please delete this directory."
     );
-    process.exit(1);
   });
   await fs.mkdir(opts.plasmicDir, { recursive: true });
   await fs.writeFile(savedConfigPath, currentConfig);
