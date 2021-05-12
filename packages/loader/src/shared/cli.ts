@@ -6,6 +6,7 @@ import * as config from "./config";
 import * as logger from "./logger";
 import { setMetadata } from "./metadata";
 import * as semver from "./semver";
+import { captureException } from "./sentry";
 import type { PlasmicOpts } from "./types";
 
 export function getEnv() {
@@ -41,16 +42,25 @@ function objToExecArgs(obj: object) {
     .join(" ");
 }
 
-export async function tryGetCurrentUser(): Promise<string> {
-  try {
-    const { stdout } = await runCommand(
-      "npx -p @plasmicapp/cli@latest plasmic auth --email"
-    );
-    return stdout;
-  } catch (e) {
-    // Fail silently if can't get user.
-    return "";
-  }
+export function getCurrentUser() {
+  return runCommand("npx -p @plasmicapp/cli@latest plasmic auth --email", {
+    hideOutput: true,
+  })
+    .then(({ stdout }) => stdout)
+    .catch((error) => {
+      // We don't want to crash if we're unable to get the user.
+      // Here we'll check if the error is related to auth credentials, if so, ignore it.
+      // Otherwise, log to sentry and return no user.
+      const hasInvalidCredentials = error.message?.includes(
+        "authentication credentials"
+      );
+
+      if (!hasInvalidCredentials) {
+        captureException(error);
+      }
+
+      return "";
+    });
 }
 
 export async function ensureRequiredLoaderVersion() {
