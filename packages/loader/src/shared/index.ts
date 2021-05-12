@@ -105,7 +105,7 @@ export async function checkLoaderConfig(opts: PlasmicOpts) {
 
   // Settings changed, so delete .plasmic dir.
   await rmfr(opts.plasmicDir).catch((error) => {
-    if (error.code !== "ENOTEMPTY" || error.code !== "EBUSY") {
+    if (error.code !== "ENOTEMPTY" && error.code !== "EBUSY") {
       throw error;
     }
     logger.warn(
