@@ -116,7 +116,7 @@ export async function checkLoaderConfig(opts: PlasmicOpts) {
     process.exit(1);
   });
   await fs.mkdir(opts.plasmicDir, { recursive: true });
-  await fs.writeFile(savedConfigPath, JSON.stringify(opts));
+  await fs.writeFile(savedConfigPath, currentConfig);
 }
 
 export async function initLoader(userOpts: PlasmicOpts) {
