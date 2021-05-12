@@ -14,7 +14,11 @@ import { globalHookCtx } from "./globalHook";
 import { ensure } from "./lang-utils";
 const root = require("window-or-global");
 
-type PrimitiveType = "string" | "boolean" | "number" | "object" | "slot";
+export type PrimitiveType = "string" | "boolean" | "number" | "object" | "slot" | {
+  type: "slot";
+  // The unique names of all code components that can be placed in the slot
+  allowedComponents: string[];
+};
 
 export interface ComponentMeta {
   /**
