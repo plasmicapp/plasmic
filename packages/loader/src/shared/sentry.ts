@@ -8,7 +8,7 @@ export async function initSentry(options: PluginOptions) {
     return;
   }
 
-  const email = await cli.tryGetCurrentUser();
+  const email = await cli.getCurrentUser();
 
   Sentry.init({
     dsn: config.sentryDsn,
