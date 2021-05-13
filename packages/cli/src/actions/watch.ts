@@ -20,7 +20,8 @@ export interface WatchArgs extends CommonArgs {
 }
 export async function watchProjects(
   opts: WatchArgs,
-  metadataDefaults?: Metadata
+  metadataDefaults?: Metadata,
+  onProjectUpdate?: () => void
 ): Promise<void> {
   // Perform a sync before watch.
   const syncOpts = {
@@ -84,6 +85,8 @@ export async function watchProjects(
           data.projectId
         } updated to revision ${data.revisionNum}`
       );
+
+      onProjectUpdate?.();
     });
   });
 
