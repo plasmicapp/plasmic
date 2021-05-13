@@ -251,7 +251,7 @@ function createPlasmicElementFromJsx<
     defaultElement,
     mergeProps(
       props,
-      children.length === 0 ? {} : { children },
+      children.length === 0 ? {} : { children: ensureNotArray(children) },
       ...triggerProps
     ) as any,
     wrapFlexChild

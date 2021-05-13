@@ -150,7 +150,7 @@ export function deriveItemsFromChildren<T extends React.ReactElement>(
     if (!("value" in element.props)) {
       if (opts.requireItemValue && PLUME_STRICT_MODE) {
         throw new Error(
-          `Must specify a "value" prop for ${getElementTypeName(element.type)}`
+          `Must specify a "value" prop for ${getElementTypeName(element)}`
         );
       } else {
         return React.cloneElement(element, { value: `${itemCount++}` });

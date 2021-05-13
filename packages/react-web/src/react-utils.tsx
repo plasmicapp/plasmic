@@ -35,7 +35,11 @@ export function createElementWithChildren(
 
 export function ensureNotArray(children: React.ReactNode) {
   if (Array.isArray(children)) {
-    return React.createElement(React.Fragment, {}, ...children);
+    if (children.length === 1) {
+      return children[0];
+    } else {
+      return React.createElement(React.Fragment, {}, ...children);
+    }
   } else {
     return children;
   }
@@ -167,10 +171,11 @@ export function mergePropVals(name: string, val1: any, val2: any): any {
   }
 }
 
-export function getElementTypeName(comp: string | React.ElementType) {
-  if (typeof comp === "string") {
-    return comp;
+export function getElementTypeName(element: React.ReactElement) {
+  if (typeof element.type === "string") {
+    return element.type;
   } else {
-    return comp.displayName ?? "Component";
+    const comp = element.type as any;
+    return comp.displayName ?? comp.name ?? comp.render?.name ?? "Component";
   }
 }
