@@ -17,7 +17,8 @@ export async function syncGlobalVariants(
   context: PlasmicContext,
   projectMeta: ProjectMetaBundle,
   bundles: GlobalVariantBundle[],
-  checksums: ChecksumBundle
+  checksums: ChecksumBundle,
+  baseDir: string,
 ) {
   const projectId = projectMeta.projectId;
   const projectLock = getOrAddProjectLock(context, projectId);
@@ -99,7 +100,7 @@ export async function syncGlobalVariants(
     await writeFileContent(
       context,
       variantConfig.contextFilePath,
-      formatAsLocal(bundle.contextModule, variantConfig.contextFilePath),
+      formatAsLocal(bundle.contextModule, variantConfig.contextFilePath, baseDir),
       { force: !isNew }
     );
   }
