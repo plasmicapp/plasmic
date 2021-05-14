@@ -1,0 +1,5 @@
+{
+  "main": "dist/react-web-runtime-jsx-dev-runtime.cjs.js",
+  "module": "dist/react-web-runtime-jsx-dev-runtime.esm.js",
+  "types": "dist/jsx-dev-runtime.d.ts"
+}
