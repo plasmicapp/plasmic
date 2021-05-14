@@ -114,7 +114,9 @@ function createInitConfig(opts: Omit<InitArgs, "baseDir">): PlasmicConfig {
 }
 
 type DefaultDeriver = {
-  [T in keyof Omit<InitArgs, "baseDir">]?: string | ((srcDir: string) => string);
+  [T in keyof Omit<InitArgs, "baseDir">]?:
+    | string
+    | ((srcDir: string) => string);
 } & {
   alwaysDerived: (keyof Omit<InitArgs, "baseDir">)[];
 };
@@ -186,7 +188,10 @@ async function deriveInitAnswers(
     : getGenericDefaults(plasmicRootDir);
   const srcDir = ensureString(deriver.srcDir);
 
-  const getDefaultAnswer = (name: keyof Omit<InitArgs, "baseDir">, defaultAnswer?: string) => {
+  const getDefaultAnswer = (
+    name: keyof Omit<InitArgs, "baseDir">,
+    defaultAnswer?: string
+  ) => {
     // Try to get the user CLI arg override first
     if (opts[name]) {
       return opts[name];
@@ -234,6 +239,7 @@ async function deriveInitAnswers(
       DEFAULT_CONFIG.defaultPlasmicDir
     ) as any,
     pagesDir: getDefaultAnswer("pagesDir", undefined) as any,
+    reactRuntime: getDefaultAnswer("reactRuntime", "classic") as any,
   };
   const prominentAnswers = L.omit(answers, "codeScheme");
 
@@ -563,7 +569,9 @@ const INIT_ARGS_DESCRIPTION: {
  * @param key
  * @returns
  */
-export function getInitArgsShortDescription(key: keyof Omit<InitArgs, "baseDir">) {
+export function getInitArgsShortDescription(
+  key: keyof Omit<InitArgs, "baseDir">
+) {
   return INIT_ARGS_DESCRIPTION[key]?.shortDescription;
 }
 
@@ -572,7 +580,9 @@ export function getInitArgsShortDescription(key: keyof Omit<InitArgs, "baseDir">
  * @param key
  * @returns
  */
-export function getInitArgsLongDescription(key: keyof Omit<InitArgs, "baseDir">) {
+export function getInitArgsLongDescription(
+  key: keyof Omit<InitArgs, "baseDir">
+) {
   return (
     INIT_ARGS_DESCRIPTION[key]?.longDescription ??
     INIT_ARGS_DESCRIPTION[key]?.shortDescription
@@ -609,7 +619,10 @@ export function getInitArgsChoices(key: keyof Omit<InitArgs, "baseDir">) {
  * @param defaultOverride
  * @returns
  */
-export function getYargsOption(key: keyof Omit<InitArgs, "baseDir">, defaultOverride?: string) {
+export function getYargsOption(
+  key: keyof Omit<InitArgs, "baseDir">,
+  defaultOverride?: string
+) {
   const arg = ensure(INIT_ARGS_DESCRIPTION[key]);
   return !arg.choices
     ? {
