@@ -1,13 +1,13 @@
+import cp from "child_process";
+import path from "upath";
 import { watchForChanges } from "../shared";
-import { spawn } from "../shared/utils";
 import * as logger from "../shared/logger";
 import type {
   PlasmicOpts,
   PluginOptions,
   Substitutions,
 } from "../shared/types";
-import path from "upath";
-import cp from "child_process";
+import { spawn } from "../shared/utils";
 import { generateNextPages } from "./pages";
 
 // From: https://github.com/vercel/next.js/blob/canary/packages/next/next-server/lib/constants.ts.
@@ -41,6 +41,10 @@ function initPlasmicLoader(pluginOptions: PluginOptions) {
   const opts: PlasmicOpts = {
     ...defaultOptions,
     ...pluginOptions,
+    initArgs: {
+      ...defaultOptions.initArgs,
+      ...pluginOptions.initArgs,
+    },
   };
 
   const result = cp.spawnSync(

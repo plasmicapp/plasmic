@@ -1,7 +1,11 @@
 import path from "upath";
-import * as logger from "../shared/logger";
 import { initLoader, onPostInit } from "../shared";
-import type { PlasmicOpts, PluginOptions, Substitutions } from "../shared/types";
+import * as logger from "../shared/logger";
+import type {
+  PlasmicOpts,
+  PluginOptions,
+  Substitutions,
+} from "../shared/types";
 
 let opts: PlasmicOpts;
 
@@ -29,6 +33,10 @@ async function onGatsbyPreBootstrap(pluginOptions: PluginOptions) {
   opts = {
     ...defaultOptions,
     ...pluginOptions,
+    initArgs: {
+      ...defaultOptions.initArgs,
+      ...pluginOptions.initArgs,
+    },
   };
 
   return initLoader(opts);
