@@ -23,7 +23,7 @@ async function getEmail() {
   const authCreds = await getCurrentAuth();
   if (authCreds) {
     logger.info(authCreds.user);
-    return;
+    return authCreds.user;
   }
   throw new HandledError(
     "The authentication credentials are missing or invalid."
