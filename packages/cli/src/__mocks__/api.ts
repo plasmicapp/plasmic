@@ -271,13 +271,16 @@ class PlasmicApi {
 
   async projectComponents(
     projectId: string,
-    platform: string,
-    newCompScheme: "blackbox" | "direct",
-    // The list of existing components as [componentUuid, codeScheme]
-    existingCompScheme: Array<[string, "blackbox" | "direct"]>,
-    componentIdOrNames: readonly string[] | undefined,
-    version: string
+    opts: {
+      platform: string;
+      newCompScheme: "blackbox" | "direct";
+      // The list of existing components as [componentUuid, codeScheme]
+      existingCompScheme: Array<[string, "blackbox" | "direct"]>;
+      componentIdOrNames: readonly string[] | undefined;
+      version: string;
+    }
   ): Promise<ProjectBundle> {
+    const { componentIdOrNames, version } = opts;
     if (PROJECTS.length <= 0) {
       throw new Error("Remember to call __addMockProject first!");
     }
@@ -371,6 +374,7 @@ class PlasmicApi {
       "@plasmicapp/loader": "0.0.1",
       "@plasmicapp/cli": "0.0.1",
       "@plasmicapp/react-web": "0.0.1",
+      "@plasmicapp/react-web-runtime": "0.0.1",
     };
   }
 

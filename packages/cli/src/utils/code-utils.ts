@@ -584,7 +584,7 @@ export const tsxToJsx = (code: string) => {
   // We also need to add the usageMagic to prevent typescript from remove the
   // import of ncreatePlasmicElementProxy.
   const usageMagic = "\ncreatePlasmicElementProxy();";
-  const jsxPragmas = ["jsx", "jsxFrag", "jsxRuntime"];
+  const jsxPragmas = ["jsx", "jsxFrag", "jsxRuntime", "jsxImportSource"];
 
   function prepForTranspile(str: string) {
     for (const p of jsxPragmas) {

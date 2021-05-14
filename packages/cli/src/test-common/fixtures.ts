@@ -15,6 +15,7 @@ export const defaultPlasmicJson: PlasmicConfig = {
   code: {
     lang: "ts",
     scheme: "blackbox",
+    reactRuntime: "classic",
   },
   style: {
     scheme: "css",

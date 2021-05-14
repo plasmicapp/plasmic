@@ -92,6 +92,8 @@ export interface CodeConfig {
 
   /** The default code generation scheme. Each component can override the scheme. */
   scheme: "blackbox" | "direct";
+
+  reactRuntime: "classic" | "automatic";
 }
 
 export interface StyleConfig {
@@ -361,6 +363,7 @@ export const DEFAULT_CONFIG: PlasmicConfig = {
   code: {
     lang: "ts",
     scheme: "blackbox",
+    reactRuntime: "classic",
   },
   style: {
     scheme: "css-modules",

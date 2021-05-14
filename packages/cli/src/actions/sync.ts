@@ -134,6 +134,24 @@ async function ensureRequiredPackages(context: PlasmicContext, baseDir: string, 
       { global: false, dev: false }
     );
   }
+
+  if (context.config.code.reactRuntime === "automatic") {
+    // Using automatic runtime requires installing the @plasmicapp/react-web-runtime package
+    const runtimeVersion = findInstalledVersion(
+      context,
+      "@plasmicapp/react-web-runtime"
+    );
+    if (
+      !runtimeVersion ||
+      semver.gt(requireds["@plasmicapp/react-web-runtime"], runtimeVersion)
+    ) {
+      await confirmInstall(
+        "@plasmicapp/react-web-runtime",
+        requireds["@plasmicapp/react-web-runtime"],
+        { global: false, dev: false }
+      );
+    }
+  }
 }
 
 function getLoaderConfigPath(opts: SyncArgs) {
@@ -469,24 +487,24 @@ async function syncProject(
   );
 
   // Server-side code-gen
-  const projectBundle = await context.api.projectComponents(
-    projectId,
-    context.config.platform,
-    newComponentScheme,
+  const projectBundle = await context.api.projectComponents(projectId, {
+    platform: context.config.platform,
+    newCompScheme: newComponentScheme,
     existingCompScheme,
-    componentIds,
-    projectVersion,
-    context.config.images,
-    context.config.style,
-    existingChecksums,
-    generateMetadata(
+    componentIdOrNames: componentIds,
+    version: projectVersion,
+    imageOpts: context.config.images,
+    stylesOpts: context.config.style,
+    checksums: existingChecksums,
+    codeOpts: context.config.code,
+    metadata: generateMetadata(
       {
         ...metadataDefaults,
         platform: context.config.platform,
       },
       opts.metadata
-    )
-  );
+    ),
+  });
 
   // Convert from TSX => JSX
   if (context.config.code.lang === "js") {
