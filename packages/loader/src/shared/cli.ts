@@ -58,19 +58,17 @@ export function getCurrentUser(plasmicDir: string) {
     "dist",
     "lib.js"
   ));
-  try {
-    return userCli.auth({ email: true, baseDir: plasmicDir });
-  } catch (error) {
-    const hasInvalidCredentials = error.message?.includes(
-      "authentication credentials"
-    );
-
-    if (!hasInvalidCredentials) {
-      captureException(error);
-    }
-
-    return "";
-  }
+  return userCli
+    .auth({ email: true, baseDir: plasmicDir })
+    .catch((error: Error) => {
+      const hasInvalidCredentials = error.message?.includes(
+        "authentication credentials"
+      );
+      if (!hasInvalidCredentials) {
+        captureException(error);
+      }
+      return "";
+    });
 }
 
 export async function ensureRequiredLoaderVersion() {
