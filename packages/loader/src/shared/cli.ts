@@ -6,8 +6,15 @@ import * as config from "./config";
 import * as logger from "./logger";
 import { setMetadata } from "./metadata";
 import * as semver from "./semver";
-import { captureException } from "./sentry";
+import { captureException, setUser } from "./sentry";
 import type { PlasmicOpts } from "./types";
+import { toCamelCase } from "./utils";
+
+Object.assign(process.env, {
+  QUIET: "1",
+  PLASMIC_LOADER: "1",
+  npm_config_yes: "1",
+});
 
 export function getEnv() {
   return {
@@ -42,25 +49,28 @@ function objToExecArgs(obj: object) {
     .join(" ");
 }
 
-export function getCurrentUser() {
-  return runCommand("npx -p @plasmicapp/cli@latest plasmic auth --email", {
-    hideOutput: true,
-  })
-    .then(({ stdout }) => stdout)
-    .catch((error) => {
-      // We don't want to crash if we're unable to get the user.
-      // Here we'll check if the error is related to auth credentials, if so, ignore it.
-      // Otherwise, log to sentry and return no user.
-      const hasInvalidCredentials = error.message?.includes(
-        "authentication credentials"
-      );
+export function getCurrentUser(plasmicDir: string) {
+  const userCli = require(path.join(
+    plasmicDir,
+    "node_modules",
+    "@plasmicapp",
+    "cli",
+    "dist",
+    "lib.js"
+  ));
+  try {
+    return userCli.auth({ email: true });
+  } catch (error) {
+    const hasInvalidCredentials = error.message?.includes(
+      "authentication credentials"
+    );
 
-      if (!hasInvalidCredentials) {
-        captureException(error);
-      }
+    if (!hasInvalidCredentials) {
+      captureException(error);
+    }
 
-      return "";
-    });
+    return "";
+  }
 }
 
 export async function ensureRequiredLoaderVersion() {
@@ -87,7 +97,8 @@ async function installPackages(plasmicDir: string) {
   "name":"plasmic-loader",
   "version":"0.0.1",
   "dependencies": {
-    "@plasmicapp/react-web": "latest"
+    "@plasmicapp/react-web": "latest",
+    "@plasmicapp/cli": "latest"
   }
 }`
   );
@@ -110,7 +121,21 @@ export async function tryInitializePlasmicDir(
 ) {
   await fs.mkdir(plasmicDir, { recursive: true });
   await installPackages(plasmicDir);
+  const currentUser = await getCurrentUser(plasmicDir);
+
+  if (currentUser) {
+    setUser(currentUser);
+  }
+
   const configPath = path.join(plasmicDir, "plasmic.json");
+  const userCli = require(path.join(
+    plasmicDir,
+    "node_modules",
+    "@plasmicapp",
+    "cli",
+    "dist",
+    "lib.js"
+  ));
 
   try {
     await fs.access(configPath);
@@ -118,12 +143,13 @@ export async function tryInitializePlasmicDir(
     if (error.code !== "ENOENT") {
       throw error;
     }
-    await runCommand(
-      `npx -p @plasmicapp/cli@latest plasmic init --enable-skip-auth ${objToExecArgs(
-        initArgs
-      )}`,
-      { dir: plasmicDir }
-    );
+    await userCli.initPlasmic({
+      ...Object.fromEntries(
+        Object.keys(initArgs).map((key) => [toCamelCase(key), initArgs[key]])
+      ),
+      enableSkipAuth: true,
+      yes: true,
+    });
   }
 }
 
@@ -139,9 +165,16 @@ export async function saveConfig(dir: string, config: any) {
 }
 
 export async function fixImports(dir: string) {
-  return runCommand("npx -p @plasmicapp/cli@latest plasmic fix-imports", {
+  const userCli = require(path.join(
     dir,
-  });
+    "node_modules",
+    "@plasmicapp",
+    "cli",
+    "dist",
+    "lib.js"
+  ));
+
+  return userCli.fixImports({ yes: true });
 }
 
 function getPageUrl(path: string) {
@@ -193,17 +226,18 @@ export async function syncProject(
     source: "loader",
     scheme: "loader",
   });
-  return runCommand(
-    [
-      "npx -p @plasmicapp/cli@latest plasmic sync",
-      "--yes",
-      "--loader-config",
-      path.join(userDir, "plasmic-loader.json"),
-      "--projects",
-      ...projects,
-    ].join(" "),
-    {
-      dir,
-    }
-  );
+  const userCli = require(path.join(
+    dir,
+    "node_modules",
+    "@plasmicapp",
+    "cli",
+    "dist",
+    "lib.js"
+  ));
+
+  return userCli.sync({
+    yes: true,
+    loaderConfig: path.join(userDir, "plasmic-loader.json"),
+    projects,
+  });
 }

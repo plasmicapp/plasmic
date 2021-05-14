@@ -30,50 +30,26 @@ export async function watchForChanges(
     source: "loader",
     scheme: "loader",
   });
-  const watchCmd = execa(
-    "npx",
-    [..."-p @plasmicapp/cli@latest plasmic".split(/ /g), "watch", "--yes"],
-    {
-      cwd: plasmicDir,
-      env: cli.getEnv(),
-      stdio: "pipe",
+
+  const userCli = require(path.join(
+    plasmicDir,
+    "node_modules",
+    "@plasmicapp",
+    "cli",
+    "dist",
+    "lib.js"
+  ));
+
+  return userCli.watchProjects({ yes: true, projects: opts.projects }, {}, async function () {
+    await gen.generateAll({ dir: plasmicDir, pageDir });
+    currentConfig = await cli.readConfig(plasmicDir);
+    if (onRegisterPages) {
+      await onRegisterPages(
+        cli.getPagesFromConfig(plasmicDir, currentConfig),
+        currentConfig
+      ).catch((e) => logger.crash(e.message, e));
     }
-  );
-
-  async function handleWatchCliOutput(data: string) {
-    const content = data.toString();
-    content
-      .split("\n")
-      .filter(Boolean)
-      .forEach((text) => logger.cliInfo(text));
-
-    // Once the CLI output this message, we know the components & configs were updated.
-    const didUpdate = content.includes("updated to revision");
-    if (didUpdate) {
-      await gen.generateAll({ dir: plasmicDir, pageDir });
-      currentConfig = await cli.readConfig(plasmicDir);
-      if (onRegisterPages) {
-        await onRegisterPages(
-          cli.getPagesFromConfig(plasmicDir, currentConfig),
-          currentConfig
-        ).catch((e) => logger.crash(e.message, e));
-      }
-    }
-  }
-
-  if (watchCmd.stdout) {
-    watchCmd.stdout.on("data", (data: Buffer) =>
-      handleWatchCliOutput(data.toString()).catch((e) =>
-        logger.crash(e.message, e)
-      )
-    );
-  }
-
-  if (watchCmd.stderr) {
-    watchCmd.stderr.on("data", (data: Buffer) => {
-      logger.cliError(data.toString());
-    });
-  }
+  });
 }
 
 export async function checkLoaderConfig(opts: PlasmicOpts) {
