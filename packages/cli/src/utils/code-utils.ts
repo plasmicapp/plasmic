@@ -36,9 +36,10 @@ import { assert, flatMap } from "./lang-utils";
 export const formatAsLocal = (
   content: string,
   filePath: string,
+  baseDir: string,
   defaultOpts: Options = {}
 ) => {
-  const opts = resolveConfig.sync(process.cwd()) || defaultOpts;
+  const opts = resolveConfig.sync(baseDir) || defaultOpts;
   opts.filepath = filePath;
 
   // Running Prettier multiple times may actually yield different results!
@@ -50,6 +51,7 @@ export const formatAsLocal = (
 
 const nodeToFormattedCode = (
   n: Node,
+  baseDir: string,
   unformatted?: boolean,
   commentsToRemove?: Set<string>
 ) => {
@@ -59,7 +61,7 @@ const nodeToFormattedCode = (
   }).code;
   return unformatted
     ? c
-    : formatAsLocal(c, "/tmp/x.tsx", {
+    : formatAsLocal(c, "/tmp/x.tsx", baseDir, {
         trailingComma: "none",
         arrowParens: "avoid",
       });
@@ -187,6 +189,7 @@ export function replaceImports(
   fromPath: string,
   fixImportContext: FixImportContext,
   removeImportDirective: boolean,
+  baseDir: string,
   changed = false
 ) {
   [code, changed] = filterUnformattedMarker(code, changed);
@@ -339,7 +342,7 @@ export function replaceImports(
     return code;
   }
 
-  return nodeToFormattedCode(file, !changed, commentsToRemove);
+  return nodeToFormattedCode(file, baseDir, !changed, commentsToRemove);
 }
 
 function throwMissingReference(
@@ -443,7 +446,8 @@ export const mkFixImportContext = (config: PlasmicConfig) => {
  */
 export async function fixAllImportStatements(
   context: PlasmicContext,
-  summary?: Map<string, ComponentUpdateSummary>
+  baseDir: string,
+  summary?: Map<string, ComponentUpdateSummary>,
 ) {
   logger.info("Fixing import statements...");
   const config = context.config;
@@ -462,7 +466,8 @@ export async function fixAllImportStatements(
           context,
           compConfig,
           fixImportContext,
-          fixSkeletonModule
+          fixSkeletonModule,
+          baseDir,
         );
       }
     }
@@ -473,7 +478,8 @@ async function fixComponentImportStatements(
   context: PlasmicContext,
   compConfig: ComponentConfig,
   fixImportContext: FixImportContext,
-  fixSkeletonModule: boolean
+  fixSkeletonModule: boolean,
+  baseDir: string,
 ) {
   // If ComponentConfig.importPath is still a local file, we best-effort also fix up the import statements there.
   if (
@@ -484,7 +490,8 @@ async function fixComponentImportStatements(
       context,
       compConfig.importSpec.modulePath,
       fixImportContext,
-      true
+      true,
+      baseDir
     );
   }
 
@@ -511,7 +518,8 @@ async function fixComponentImportStatements(
     compConfig.renderModuleFilePath,
     fixImportContext,
     false,
-    renderModuleChanged
+    baseDir,
+    renderModuleChanged,
   );
 }
 
@@ -520,6 +528,7 @@ async function fixFileImportStatements(
   srcDirFilePath: string,
   fixImportContext: FixImportContext,
   removeImportDirective: boolean,
+  baseDir: string,
   fileHasChanged = false
 ) {
   const filePath = makeFilePath(context, srcDirFilePath);
@@ -538,6 +547,7 @@ async function fixFileImportStatements(
     srcDirFilePath,
     fixImportContext,
     removeImportDirective,
+    baseDir,
     fileHasChanged
   );
   if (prevContent !== newContent) {
@@ -597,16 +607,16 @@ export const tsxToJsx = (code: string) => {
   return fixPostTranspile(result.outputText);
 };
 
-export function maybeConvertTsxToJsx(fileName: string, content: string) {
+export function maybeConvertTsxToJsx(fileName: string, content: string, baseDir: string) {
   if (fileName.endsWith("tsx")) {
     const jsFileName = stripExtension(fileName) + ".jsx";
-    const jsContent = formatScript(tsxToJsx(content));
+    const jsContent = formatScript(tsxToJsx(content), baseDir);
     return [jsFileName, jsContent];
   }
   return [fileName, content];
 }
 
-export const formatScript = (code: string) => {
+export const formatScript = (code: string, baseDir: string) => {
   const file = parser.parse(code, {
     strictMode: true,
     sourceType: "module",
@@ -628,12 +638,12 @@ export const formatScript = (code: string) => {
     },
   });
 
-  const withmarkers = nodeToFormattedCode(file, true);
+  const withmarkers = nodeToFormattedCode(file, baseDir, true);
   const withNewLines = withmarkers.replace(
     new RegExp(`"${newLineMarker}"`, "g"),
     "\n"
   );
-  return formatAsLocal(withNewLines, "/tmp/x.tsx", {
+  return formatAsLocal(withNewLines, "/tmp/x.tsx", baseDir, {
     printWidth: 80,
     tabWidth: 2,
     useTabs: false,

@@ -48,10 +48,11 @@ export interface InitArgs extends CommonArgs {
 export async function initPlasmic(
   opts: InitArgs & { enableSkipAuth?: boolean }
 ) {
+  if (!opts.baseDir) opts.baseDir = process.cwd();
   await getOrStartAuth(opts);
 
   const configFile =
-    opts.config || findConfigFile(process.cwd(), { traverseParents: false });
+    opts.config || findConfigFile(opts.baseDir, { traverseParents: false });
   if (configFile && existsBuffered(configFile)) {
     logger.error(
       "You already have a plasmic.json file! Please either delete or edit it directly."
@@ -61,10 +62,10 @@ export async function initPlasmic(
 
   // path to plasmic.json
   const newConfigFile =
-    opts.config || path.join(process.cwd(), CONFIG_FILE_NAME);
+    opts.config || path.join(opts.baseDir, CONFIG_FILE_NAME);
 
   const answers = await deriveInitAnswers(opts);
-  await writeConfig(newConfigFile, createInitConfig(answers));
+  await writeConfig(newConfigFile, createInitConfig(answers), opts.baseDir);
 
   if (!process.env.QUIET) {
     logger.info("Successfully created plasmic.json.\n");
@@ -75,11 +76,11 @@ export async function initPlasmic(
     opts.yes
   );
   if (answer) {
-    installUpgrade("@plasmicapp/react-web");
+    installUpgrade("@plasmicapp/react-web", opts.baseDir);
   }
 }
 
-function createInitConfig(opts: InitArgs): PlasmicConfig {
+function createInitConfig(opts: Omit<InitArgs, "baseDir">): PlasmicConfig {
   return fillDefaults({
     srcDir: opts.srcDir,
     defaultPlasmicDir: opts.plasmicDir,
@@ -111,9 +112,9 @@ function createInitConfig(opts: InitArgs): PlasmicConfig {
 }
 
 type DefaultDeriver = {
-  [T in keyof InitArgs]?: string | ((srcDir: string) => string);
+  [T in keyof Omit<InitArgs, "baseDir">]?: string | ((srcDir: string) => string);
 } & {
-  alwaysDerived: (keyof InitArgs)[];
+  alwaysDerived: (keyof Omit<InitArgs, "baseDir">)[];
 };
 
 /**
@@ -147,10 +148,10 @@ function simulatePrompt(
   );
 }
 
-async function deriveInitAnswers(opts: Partial<InitArgs>) {
-  const plasmicRootDir = opts.config
-    ? path.dirname(opts.config)
-    : process.cwd();
+async function deriveInitAnswers(
+  opts: Partial<InitArgs> & { baseDir: string }
+) {
+  const plasmicRootDir = opts.config ? path.dirname(opts.config) : opts.baseDir;
 
   const platform = !!opts.platform
     ? opts.platform
@@ -183,7 +184,7 @@ async function deriveInitAnswers(opts: Partial<InitArgs>) {
     : getGenericDefaults(plasmicRootDir);
   const srcDir = ensureString(deriver.srcDir);
 
-  const getDefaultAnswer = (name: keyof InitArgs, defaultAnswer?: string) => {
+  const getDefaultAnswer = (name: keyof Omit<InitArgs, "baseDir">, defaultAnswer?: string) => {
     // Try to get the user CLI arg override first
     if (opts[name]) {
       return opts[name];
@@ -201,7 +202,7 @@ async function deriveInitAnswers(opts: Partial<InitArgs>) {
   };
 
   // Start with a complete set of defaults. Some of these are not worth displaying.
-  const answers: InitArgs = {
+  const answers: Omit<InitArgs, "baseDir"> = {
     host: getDefaultAnswer("host", "") as any,
     platform,
     codeLang: getDefaultAnswer("codeLang", isTypescript ? "ts" : "js") as any,
@@ -281,7 +282,7 @@ async function deriveInitAnswers(opts: Partial<InitArgs>) {
   async function performAsks(express: boolean) {
     // Proceed with platform-specific prompts
     async function maybePrompt(question: SimpleQuestion) {
-      const name = ensure(question.name) as keyof InitArgs;
+      const name = ensure(question.name) as keyof Omit<InitArgs, "baseDir">;
       const message = ensure(question.message) as string;
       if (opts[name]) {
         logger.info(message + answers[name] + "(specified in CLI arg)");
@@ -485,7 +486,7 @@ function getGenericDefaults(plasmicRootDir: string): DefaultDeriver {
  * Consolidating where we are specifying the descriptions of InitArgs
  */
 const INIT_ARGS_DESCRIPTION: {
-  [T in keyof InitArgs]: {
+  [T in keyof Omit<InitArgs, "baseDir">]: {
     shortDescription: string;
     longDescription?: string;
     question?: string;
@@ -560,7 +561,7 @@ const INIT_ARGS_DESCRIPTION: {
  * @param key
  * @returns
  */
-export function getInitArgsShortDescription(key: keyof InitArgs) {
+export function getInitArgsShortDescription(key: keyof Omit<InitArgs, "baseDir">) {
   return INIT_ARGS_DESCRIPTION[key]?.shortDescription;
 }
 
@@ -569,7 +570,7 @@ export function getInitArgsShortDescription(key: keyof InitArgs) {
  * @param key
  * @returns
  */
-export function getInitArgsLongDescription(key: keyof InitArgs) {
+export function getInitArgsLongDescription(key: keyof Omit<InitArgs, "baseDir">) {
   return (
     INIT_ARGS_DESCRIPTION[key]?.longDescription ??
     INIT_ARGS_DESCRIPTION[key]?.shortDescription
@@ -581,7 +582,7 @@ export function getInitArgsLongDescription(key: keyof InitArgs) {
  * @param key
  * @returns
  */
-export function getInitArgsQuestion(key: keyof InitArgs) {
+export function getInitArgsQuestion(key: keyof Omit<InitArgs, "baseDir">) {
   return (
     INIT_ARGS_DESCRIPTION[key]?.question ??
     INIT_ARGS_DESCRIPTION[key]?.longDescription ??
@@ -594,7 +595,7 @@ export function getInitArgsQuestion(key: keyof InitArgs) {
  * @param key
  * @returns
  */
-export function getInitArgsChoices(key: keyof InitArgs) {
+export function getInitArgsChoices(key: keyof Omit<InitArgs, "baseDir">) {
   return INIT_ARGS_DESCRIPTION[key]?.choices;
 }
 
@@ -606,7 +607,7 @@ export function getInitArgsChoices(key: keyof InitArgs) {
  * @param defaultOverride
  * @returns
  */
-export function getYargsOption(key: keyof InitArgs, defaultOverride?: string) {
+export function getYargsOption(key: keyof Omit<InitArgs, "baseDir">, defaultOverride?: string) {
   const arg = ensure(INIT_ARGS_DESCRIPTION[key]);
   return !arg.choices
     ? {

@@ -71,6 +71,7 @@ export const LOCK_MIGRATIONS: Record<string, MigrateLockFunc> = {
 export async function runNecessaryMigrations(
   configFile: string,
   lockFile: string,
+  baseDir: string,
   yes?: boolean
 ) {
   const cliVersion = getCliVersion();
@@ -93,7 +94,7 @@ export async function runNecessaryMigrations(
       throw new HandledError("Upgrading is required to continue.");
     }
 
-    const success = installUpgrade("@plasmicapp/cli", {
+    const success = installUpgrade("@plasmicapp/cli", baseDir, {
       global: isCliGloballyInstalled(path.dirname(configFile)),
       dev: true,
     });
@@ -122,7 +123,7 @@ export async function runNecessaryMigrations(
       const prev = readConfig(configFile, false);
       const next = migrationFunc(prev, context);
       next.cliVersion = version;
-      await writeConfig(configFile, next);
+      await writeConfig(configFile, next, baseDir);
     }
 
     const lockMigrationFunc = LOCK_MIGRATIONS[version];
@@ -130,7 +131,7 @@ export async function runNecessaryMigrations(
       const prev = maybeReadLock();
       if (prev) {
         const next = lockMigrationFunc(prev, context);
-        await writeLock(lockFile, next);
+        await writeLock(lockFile, next, baseDir);
       }
     }
   }
@@ -139,6 +140,6 @@ export async function runNecessaryMigrations(
   const latestConfig = readConfig(configFile, false);
   if (latestConfig.cliVersion !== cliVersion) {
     latestConfig.cliVersion = cliVersion;
-    await writeConfig(configFile, latestConfig);
+    await writeConfig(configFile, latestConfig, baseDir);
   }
 }

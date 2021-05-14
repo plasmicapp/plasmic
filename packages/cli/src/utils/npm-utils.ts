@@ -43,9 +43,11 @@ export function getParsedPackageJson() {
   return parsePackageJson(packageJson);
 }
 
+// @TODO: is this function still used?
 export async function warnLatest(
   context: PlasmicContext,
   pkg: string,
+  baseDir: string,
   msgs: {
     requiredMsg: () => string;
     updateMsg: (curVersion: string, latestVersion: string) => string;
@@ -74,7 +76,7 @@ export async function warnLatest(
       yes
     )
   ) {
-    installUpgrade(pkg);
+    installUpgrade(pkg, baseDir);
   }
 }
 
@@ -161,9 +163,10 @@ function parsePackageJson(path: string) {
 
 export function installUpgrade(
   pkg: string,
+  baseDir: string,
   opts: { global?: boolean; dev?: boolean } = {}
 ) {
-  const cmd = installCommand(pkg, opts);
+  const cmd = installCommand(pkg, baseDir, opts);
   if (!process.env.QUIET) {
     logger.info(cmd);
   }
@@ -186,9 +189,10 @@ export function installUpgrade(
 
 export function installCommand(
   pkg: string,
+  baseDir: string,
   opts: { global?: boolean; dev?: boolean } = {}
 ) {
-  const mgr = detectPackageManager();
+  const mgr = detectPackageManager(baseDir);
   if (mgr === "yarn") {
     if (opts.global) {
       return `yarn global add ${pkg}`;
@@ -208,8 +212,8 @@ export function installCommand(
   }
 }
 
-export function detectPackageManager() {
-  const yarnLock = findupSync("yarn.lock", { cwd: process.cwd() });
+export function detectPackageManager(baseDir: string) {
+  const yarnLock = findupSync("yarn.lock", { cwd: baseDir });
   if (yarnLock) {
     return "yarn";
   } else {

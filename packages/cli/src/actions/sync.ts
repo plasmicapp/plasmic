@@ -81,7 +81,7 @@ export interface SyncArgs extends CommonArgs {
   loaderConfig?: string;
 }
 
-async function ensureRequiredPackages(context: PlasmicContext, yes?: boolean) {
+async function ensureRequiredPackages(context: PlasmicContext, baseDir: string, yes?: boolean) {
   const requireds = await context.api.requiredPackages();
 
   const confirmInstall = async (
@@ -90,13 +90,13 @@ async function ensureRequiredPackages(context: PlasmicContext, yes?: boolean) {
     opts: { global: boolean; dev: boolean }
   ) => {
     let success = false;
-    const command = installCommand(pkg, opts);
+    const command = installCommand(pkg, baseDir, opts);
     const upgrade = await confirmWithUser(
       `A more recent version of ${pkg} >=${requiredVersion} is required. Would you like to upgrade via "${command}"?`,
       yes
     );
     if (upgrade) {
-      success = installUpgrade(pkg, opts);
+      success = installUpgrade(pkg, baseDir, opts);
     } else {
       success = false;
     }
@@ -155,7 +155,7 @@ function writeLoaderConfig(opts: SyncArgs, config: PlasmicLoaderConfig) {
 
   writeFileText(
     loaderConfigPath,
-    formatAsLocal(JSON.stringify(config), loaderConfigPath)
+    formatAsLocal(JSON.stringify(config), loaderConfigPath, opts.baseDir)
   );
 }
 
@@ -172,12 +172,15 @@ export async function sync(
 ): Promise<void> {
   // Initially allow for a missing auth. Only require an auth once we need to fetch new or updated API tokens for any
   // projects.
+
+  if (!opts.baseDir) opts.baseDir = process.cwd();
+  const baseDir = opts.baseDir;
   let context = await getContext(opts, { enableSkipAuth: true });
 
   const isFirstRun = context.config.projects.length === 0;
 
   if (!opts.skipUpgradeCheck) {
-    await ensureRequiredPackages(context, opts.yes);
+    await ensureRequiredPackages(context, opts.baseDir, opts.yes);
   }
 
   fixFileExtension(context);
@@ -336,19 +339,21 @@ export async function sync(
         m.editedSkeletonFile,
         m.skeletonModulePath,
         fixImportContext,
-        true
+        true,
+        baseDir,
       );
       const resolvedNewFile = replaceImports(
         context,
         m.newSkeletonFile,
         m.skeletonModulePath,
         fixImportContext,
-        true
+        true,
+        baseDir,
       );
       await m.merge(resolvedNewFile, resolvedEditedFile);
     }
     // Now we know config.components are all correct, so we can go ahead and fix up all the import statements
-    await fixAllImportStatements(context, summary);
+    await fixAllImportStatements(context, opts.baseDir, summary);
 
     // We don't need to persist codeComponentMeta as it's just used to fix
     // import statements, so just delete it before writing the new components
@@ -375,7 +380,7 @@ export async function sync(
     }
 
     // Write the new ComponentConfigs to disk
-    await updateConfig(context, context.config);
+    await updateConfig(context, context.config, baseDir);
   });
 
   // Post-sync commands
@@ -488,29 +493,34 @@ async function syncProject(
     projectBundle.components.forEach((c) => {
       [c.renderModuleFileName, c.renderModule] = maybeConvertTsxToJsx(
         c.renderModuleFileName,
-        c.renderModule
+        c.renderModule,
+        opts.baseDir,
       );
       [c.skeletonModuleFileName, c.skeletonModule] = maybeConvertTsxToJsx(
         c.skeletonModuleFileName,
-        c.skeletonModule
+        c.skeletonModule,
+        opts.baseDir,
       );
     });
     projectBundle.iconAssets.forEach((icon) => {
       [icon.fileName, icon.module] = maybeConvertTsxToJsx(
         icon.fileName,
-        icon.module
+        icon.module,
+        opts.baseDir,
       );
     });
     projectBundle.globalVariants.forEach((gv) => {
       [gv.contextFileName, gv.contextModule] = maybeConvertTsxToJsx(
         gv.contextFileName,
-        gv.contextModule
+        gv.contextModule,
+        opts.baseDir,
       );
     });
     (projectBundle.projectConfig.jsBundleThemes || []).forEach((theme) => {
       [theme.themeFileName, theme.themeModule] = maybeConvertTsxToJsx(
         theme.themeFileName,
-        theme.themeModule
+        theme.themeModule,
+        opts.baseDir,
       );
     });
   }
@@ -518,7 +528,8 @@ async function syncProject(
     context,
     projectBundle.projectConfig,
     projectBundle.globalVariants,
-    projectBundle.checksums
+    projectBundle.checksums,
+    opts.baseDir,
   );
 
   syncCodeComponentsMeta(context, projectId, projectBundle.codeComponentMetas);
@@ -534,7 +545,8 @@ async function syncProject(
     !!opts.appendJsxOnMissingBase,
     summary,
     pendingMerge,
-    projectBundle.checksums
+    projectBundle.checksums,
+    opts.baseDir,
   );
   await upsertStyleTokens(context, projectBundle.usedTokens);
   await syncProjectIconAssets(
@@ -542,7 +554,8 @@ async function syncProject(
     projectId,
     projectVersion,
     projectBundle.iconAssets,
-    projectBundle.checksums
+    projectBundle.checksums,
+    opts.baseDir,
   );
   await syncProjectImageAssets(
     context,
@@ -580,7 +593,8 @@ async function syncProjectConfig(
   appendJsxOnMissingBase: boolean,
   summary: Map<string, ComponentUpdateSummary>,
   pendingMerge: ComponentPendingMerge[],
-  checksums: ChecksumBundle
+  checksums: ChecksumBundle,
+  baseDir: string,
 ) {
   const defaultCssFilePath = defaultResourcePath(
     context,
@@ -621,7 +635,8 @@ async function syncProjectConfig(
   if (projectBundle.cssRules) {
     const formattedCssRules = formatAsLocal(
       projectBundle.cssRules,
-      projectConfig.cssFilePath
+      projectConfig.cssFilePath,
+      baseDir,
     );
 
     // Write out project css
@@ -688,7 +703,8 @@ async function syncProjectConfig(
     summary,
     pendingMerge,
     projectLock,
-    checksums
+    checksums,
+    baseDir,
   );
 }
 

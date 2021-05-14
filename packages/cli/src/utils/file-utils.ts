@@ -282,7 +282,7 @@ function getAllPaths(context: PlasmicContext): BundleKeyPair[] {
  * Fixes all src-relative file paths in PlasmicConfig by detecting file
  * movement on disk.
  */
-export async function fixAllFilePaths(context: PlasmicContext) {
+export async function fixAllFilePaths(context: PlasmicContext, baseDir: string) {
   const baseNameToFiles = buildBaseNameToFiles(context);
   let changed = false;
 
@@ -311,7 +311,7 @@ export async function fixAllFilePaths(context: PlasmicContext) {
   }
 
   if (changed) {
-    await updateConfig(context, context.config);
+    await updateConfig(context, context.config, baseDir);
   }
 }
 

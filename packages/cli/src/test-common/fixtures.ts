@@ -97,6 +97,7 @@ export function standardTestSetup(includeDep = true) {
     config: tmpRepo.plasmicJsonPath(),
     auth: tmpRepo.plasmicAuthPath(),
     loaderConfig: tmpRepo.plasmicLoaderJsonPath(),
+    baseDir: process.cwd(),
   };
 }
 

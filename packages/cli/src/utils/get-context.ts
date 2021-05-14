@@ -267,6 +267,7 @@ export async function getContext(
   args: CommonArgs,
   { enableSkipAuth = false }: { enableSkipAuth?: boolean } = {}
 ): Promise<PlasmicContext> {
+  if (!args.baseDir) args.baseDir = process.cwd();
   const auth = enableSkipAuth
     ? await getCurrentOrDefaultAuth(args)
     : await getOrInitAuth(args);
@@ -290,11 +291,11 @@ export async function getContext(
 
   /** PlasmicConfig **/
   let configFile =
-    args.config || findConfigFile(process.cwd(), { traverseParents: true });
+    args.config || findConfigFile(args.baseDir, { traverseParents: true });
 
   if (!configFile) {
     await maybeRunPlasmicInit(args, "plasmic.json", enableSkipAuth);
-    configFile = findConfigFile(process.cwd(), { traverseParents: true });
+    configFile = findConfigFile(args.baseDir, { traverseParents: true });
     if (!configFile) {
       const err = new HandledError(
         "No plasmic.json file found. Please run `plasmic init` first."
@@ -306,7 +307,7 @@ export async function getContext(
   // plasmic.lock should be in the same directory as plasmic.json
   const lockFile = path.join(rootDir, LOCK_FILE_NAME);
 
-  await runNecessaryMigrations(configFile, lockFile, args.yes);
+  await runNecessaryMigrations(configFile, lockFile, args.baseDir, args.yes);
   const config = readConfig(configFile, true);
 
   /** PlasmicLock */

@@ -4,6 +4,7 @@ import { HandledError } from "../utils/error";
 
 export type AuthArgs = {
   host: string;
+  baseDir: string;
   check?: boolean;
   email?: boolean;
 };

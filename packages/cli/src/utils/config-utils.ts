@@ -435,7 +435,7 @@ export function readConfig(
   }
 }
 
-export async function writeConfig(configFile: string, config: PlasmicConfig) {
+export async function writeConfig(configFile: string, config: PlasmicConfig, baseDir: string) {
   await writeFileContentRaw(
     configFile,
     formatAsLocal(
@@ -447,7 +447,8 @@ export async function writeConfig(configFile: string, config: PlasmicConfig) {
         undefined,
         2
       ),
-      configFile
+      configFile,
+      baseDir,
     ),
     {
       force: true,
@@ -455,10 +456,10 @@ export async function writeConfig(configFile: string, config: PlasmicConfig) {
   );
 }
 
-export async function writeLock(lockFile: string, lock: PlasmicLock) {
+export async function writeLock(lockFile: string, lock: PlasmicLock, baseDir: string) {
   await writeFileContentRaw(
     lockFile,
-    formatAsLocal(JSON.stringify(lock, undefined, 2), "/tmp/x.json"),
+    formatAsLocal(JSON.stringify(lock, undefined, 2), "/tmp/x.json", baseDir),
     {
       force: true,
     }
@@ -467,14 +468,15 @@ export async function writeLock(lockFile: string, lock: PlasmicLock) {
 
 export async function updateConfig(
   context: PlasmicContext,
-  newConfig: PlasmicConfig
+  newConfig: PlasmicConfig,
+  baseDir: string
 ) {
   // plasmic.json
-  await writeConfig(context.configFile, newConfig);
+  await writeConfig(context.configFile, newConfig, baseDir);
   context.config = newConfig;
 
   // plasmic.lock
-  await writeLock(context.lockFile, context.lock);
+  await writeLock(context.lockFile, context.lock, baseDir);
 }
 
 export function getOrAddProjectConfig(
