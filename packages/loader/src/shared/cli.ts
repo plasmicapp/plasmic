@@ -59,7 +59,7 @@ export function getCurrentUser(plasmicDir: string) {
     "lib.js"
   ));
   try {
-    return userCli.auth({ email: true });
+    return userCli.auth({ email: true, baseDir: plasmicDir });
   } catch (error) {
     const hasInvalidCredentials = error.message?.includes(
       "authentication credentials"
@@ -149,6 +149,7 @@ export async function tryInitializePlasmicDir(
       ),
       enableSkipAuth: true,
       yes: true,
+      baseDir: plasmicDir,
     });
   }
 }
@@ -174,7 +175,7 @@ export async function fixImports(dir: string) {
     "lib.js"
   ));
 
-  return userCli.fixImports({ yes: true });
+  return userCli.fixImports({ yes: true, baseDir: dir });
 }
 
 function getPageUrl(path: string) {
@@ -239,5 +240,6 @@ export async function syncProject(
     yes: true,
     loaderConfig: path.join(userDir, "plasmic-loader.json"),
     projects,
+    baseDir: dir,
   });
 }
