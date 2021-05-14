@@ -1,7 +1,12 @@
 import { ProjectSyncMetadataModel } from "@plasmicapp/code-merger";
 import axios, { AxiosError } from "axios";
 import socketio from "socket.io-client";
-import { AuthConfig, ImagesConfig, StyleConfig } from "./utils/config-utils";
+import {
+  AuthConfig,
+  CodeConfig,
+  ImagesConfig,
+  StyleConfig,
+} from "./utils/config-utils";
 import { HandledError } from "./utils/error";
 import { Metadata } from "./utils/get-context";
 
@@ -81,6 +86,7 @@ export interface RequiredPackages {
   "@plasmicapp/loader": string;
   "@plasmicapp/cli": string;
   "@plasmicapp/react-web": string;
+  "@plasmicapp/react-web-runtime": string;
 }
 
 export interface ProjectBundle {
@@ -216,29 +222,24 @@ export class PlasmicApi {
    */
   async projectComponents(
     projectId: string,
-    platform: string,
-    newCompScheme: "blackbox" | "direct",
-    // The list of existing components as [componentUuid, codeScheme]
-    existingCompScheme: Array<[string, "blackbox" | "direct"]>,
-    componentIdOrNames: readonly string[] | undefined,
-    version: string,
-    imageOpts: ImagesConfig,
-    stylesOpts: StyleConfig,
-    checksums: ChecksumBundle,
-    metadata?: Metadata
+    opts: {
+      platform: string;
+      newCompScheme: "blackbox" | "direct";
+      // The list of existing components as [componentUuid, codeScheme]
+      existingCompScheme: Array<[string, "blackbox" | "direct"]>;
+      componentIdOrNames: readonly string[] | undefined;
+      version: string;
+      imageOpts: ImagesConfig;
+      stylesOpts: StyleConfig;
+      codeOpts: CodeConfig;
+      checksums: ChecksumBundle;
+      metadata?: Metadata;
+    }
   ): Promise<ProjectBundle> {
     const result = await this.post(
       `${this.auth.host}/api/v1/projects/${projectId}/code/components`,
       {
-        platform,
-        newCompScheme,
-        existingCompScheme,
-        componentIdOrNames,
-        version,
-        imageOpts,
-        stylesOpts,
-        checksums,
-        metadata,
+        ...opts,
       }
     );
     return result.data as ProjectBundle;

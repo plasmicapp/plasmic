@@ -43,6 +43,7 @@ export interface InitArgs extends CommonArgs {
   plasmicDir: string;
   pagesDir?: string;
   enableSkipAuth?: boolean;
+  reactRuntime?: "classic" | "automatic";
 }
 
 export async function initPlasmic(
@@ -96,6 +97,7 @@ function createInitConfig(opts: InitArgs): PlasmicConfig {
     code: {
       ...(opts.codeLang && { lang: opts.codeLang }),
       ...(opts.codeScheme && { scheme: opts.codeScheme }),
+      ...(opts.reactRuntime && { reactRuntime: opts.reactRuntime }),
     },
     style: {
       ...(opts.styleScheme && { scheme: opts.styleScheme }),

@@ -56,6 +56,11 @@ yargs
         .option("platform", getYargsOption("platform"))
         .option("code-lang", getYargsOption("codeLang"))
         .option("code-scheme", getYargsOption("codeScheme"))
+        .option("react-runtime", {
+          describe: "React runtime to use; either classic or automatic",
+          choices: ["classic", "automatic"],
+          default: "classic",
+        })
         .option("src-dir", getYargsOption("srcDir"))
         .option("plasmic-dir", getYargsOption("plasmicDir"))
         .option("pages-dir", getYargsOption("pagesDir"))
