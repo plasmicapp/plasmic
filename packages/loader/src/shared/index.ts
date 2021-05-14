@@ -40,16 +40,20 @@ export async function watchForChanges(
     "lib.js"
   ));
 
-  return userCli.watchProjects({ yes: true, projects: opts.projects }, {}, async function () {
-    await gen.generateAll({ dir: plasmicDir, pageDir });
-    currentConfig = await cli.readConfig(plasmicDir);
-    if (onRegisterPages) {
-      await onRegisterPages(
-        cli.getPagesFromConfig(plasmicDir, currentConfig),
-        currentConfig
-      ).catch((e) => logger.crash(e.message, e));
+  return userCli.watchProjects(
+    { yes: true, projects: opts.projects, baseDir: plasmicDir },
+    {},
+    async function () {
+      await gen.generateAll({ dir: plasmicDir, pageDir });
+      currentConfig = await cli.readConfig(plasmicDir);
+      if (onRegisterPages) {
+        await onRegisterPages(
+          cli.getPagesFromConfig(plasmicDir, currentConfig),
+          currentConfig
+        ).catch((e) => logger.crash(e.message, e));
+      }
     }
-  });
+  );
 }
 
 export async function checkLoaderConfig(opts: PlasmicOpts) {
