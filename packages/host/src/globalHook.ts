@@ -95,6 +95,10 @@ if (codeComponents) {
               if (valNodeUid) {
                 officialHook.plasmic.uidToFiber.set(valNodeUid, node);
               }
+            }, {
+              // If several nodes receive the data props, we want the root to
+              // overwrite them, so it should be the last one to be visited.
+              order: ["child", "sibling", "self"]
             });
             lastSynced = officialHook.plasmic.finishedEvalCount;
           }
