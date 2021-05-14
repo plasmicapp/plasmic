@@ -310,6 +310,8 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
         ref: triggerRef,
         autoFocus,
         disabled: !!isDisabled,
+        // Don't trigger form submission!
+        type: "button",
       }),
     },
     [config.overlay]: {

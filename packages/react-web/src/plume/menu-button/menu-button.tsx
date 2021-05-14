@@ -168,6 +168,8 @@ export function useMenuButton<
           ref: onTriggerRef,
           autoFocus,
           disabled: !!isDisabled,
+          // Make sure this button is not interpreted as submit
+          type: "button",
         }
       ),
     },

@@ -110,7 +110,7 @@ export function useTriggeredOverlay<
       isOpen: state.isOpen,
       onClose: state.close,
       isDismissable: true,
-      shouldCloseOnBlur: true,
+      shouldCloseOnBlur: false,
     },
     overlayRef
   );
