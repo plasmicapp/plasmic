@@ -205,6 +205,37 @@ export function deriveItemsFromChildren<T extends React.ReactElement>(
   return { items: flattenedChildren(children) as T[], disabledKeys };
 }
 
+export function useDerivedItemsFromChildren<T extends React.ReactElement>(
+  children: React.ReactNode,
+  opts: {
+    itemPlumeType: string;
+    sectionPlumeType?: string;
+    invalidChildError?: string;
+    requireItemValue: boolean;
+  }
+) {
+  const {
+    itemPlumeType,
+    sectionPlumeType,
+    invalidChildError,
+    requireItemValue,
+  } = opts;
+  return React.useMemo(() => {
+    return deriveItemsFromChildren<T>(children, {
+      itemPlumeType,
+      sectionPlumeType,
+      invalidChildError,
+      requireItemValue,
+    });
+  }, [
+    children,
+    itemPlumeType,
+    sectionPlumeType,
+    invalidChildError,
+    requireItemValue,
+  ]);
+}
+
 /**
  * Given a Collection node, create the React element that we should use
  * to render it.

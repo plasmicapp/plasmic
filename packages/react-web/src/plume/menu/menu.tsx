@@ -7,9 +7,9 @@ import { pick } from "../../common";
 import { mergeProps } from "../../react-utils";
 import { Overrides } from "../../render/elements";
 import {
-  deriveItemsFromChildren,
   renderAsCollectionChild,
   renderCollectionNode,
+  useDerivedItemsFromChildren,
 } from "../collection-utils";
 import {
   AnyPlasmicClass,
@@ -58,16 +58,21 @@ export interface MenuConfig<C extends AnyPlasmicClass> {
  */
 function asAriaMenuProps(props: BaseMenuProps) {
   const { children, ...rest } = props;
-  const { items, disabledKeys } = deriveItemsFromChildren(children, {
+  const { items, disabledKeys } = useDerivedItemsFromChildren(children, {
     ...COLLECTION_OPTS,
     invalidChildError: `Can only use Menu.Item and Menu.Group as children to Menu`,
     requireItemValue: false,
   });
 
+  const collectionChildRenderer = React.useCallback(
+    (child) => renderAsCollectionChild(child, COLLECTION_OPTS),
+    []
+  );
+
   return {
     ariaProps: {
       ...rest,
-      children: (child) => renderAsCollectionChild(child, COLLECTION_OPTS),
+      children: collectionChildRenderer,
       items,
       disabledKeys,
     } as AriaMenuProps<any>,
