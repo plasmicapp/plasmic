@@ -22,9 +22,9 @@ import { mergeProps, useHover, usePress } from "react-aria";
 import { pick } from "../../common";
 import { Overrides } from "../../render/elements";
 import {
-  deriveItemsFromChildren,
   renderAsCollectionChild,
   renderCollectionNode,
+  useDerivedItemsFromChildren,
 } from "../collection-utils";
 import {
   AnyPlasmicClass,
@@ -167,7 +167,7 @@ type AriaSelectItemType = AriaOptionType | AriaGroupType;
  * with the secret derived `_node` prop.  That means Option and OptionGroup
  * render functions can assume that _node is passed in.
  */
-function asAriaSelectProps(props: BaseSelectProps) {
+function useAriaSelectProps(props: BaseSelectProps) {
   let {
     value,
     defaultValue,
@@ -178,21 +178,34 @@ function asAriaSelectProps(props: BaseSelectProps) {
     menuWidth,
     ...rest
   } = props;
-  const { items, disabledKeys } = deriveItemsFromChildren(children, {
+
+  const { items, disabledKeys } = useDerivedItemsFromChildren(children, {
     ...COLLECTION_OPTS,
     invalidChildError: `Can only use Select.Option and Select.OptionGroup as children to Select`,
     requireItemValue: true,
   });
 
+  const collectionChildRenderer = React.useCallback(
+    (child) => renderAsCollectionChild(child, COLLECTION_OPTS),
+    []
+  );
+
+  const onSelectionChange = React.useMemo(() => {
+    if (onChange) {
+      return (val: string | null) =>
+        onChange!(
+          (val == null || val === "null" ? null : val) as string | null
+        );
+    } else {
+      return undefined;
+    }
+  }, [onChange]);
+
   return {
     ariaProps: {
       ...rest,
-      children: (child) => renderAsCollectionChild(child, COLLECTION_OPTS),
-      onSelectionChange: onChange
-        ? (val) => {
-            onChange!((val ?? null) as string | null);
-          }
-        : onChange,
+      children: collectionChildRenderer,
+      onSelectionChange,
       items,
       disabledKeys,
       defaultSelectedKey: defaultValue,
@@ -238,7 +251,7 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
   config: SelectConfig<C>,
   ref: SelectRef = null
 ) {
-  const { ariaProps } = asAriaSelectProps(props);
+  const { ariaProps } = useAriaSelectProps(props);
   const { placement } = props;
   const state = useAriaSelectState<AriaSelectItemType>(ariaProps);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
