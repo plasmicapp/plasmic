@@ -22,6 +22,7 @@ import {
   readFileText,
   writeFileContentRaw,
 } from "./file-utils";
+import open from "open";
 
 export type AuthData = {
   user: string;
@@ -100,10 +101,13 @@ export async function startAuth(opts: CommonArgs & { host: string }) {
     let prompt: CancellablePromise<AuthData>;
 
     const initToken = uuidv4();
+    const url = `${opts.host}/auth/plasmic-init/${initToken}`;
+    open(url);
     logger.info(
-      `Please log into this link: ${opts.host}/auth/plasmic-init/${initToken}`
+      `\nIf your browser doesn't automatically open, enter the following URL:\n${url}\n`
     );
 
+    logger.info(`Please log in and authorize Plasmic CLI.`);
     const polling = authByPolling(opts.host, initToken);
     polling.promise.then((auth) => {
       if (prompt) {
