@@ -28,6 +28,12 @@ export const ENV_AUTH_TOKEN = "PLASMIC_AUTH_TOKEN";
 
 export interface PlasmicLoaderConfig {
   projects: ProjectIdAndToken[];
+  aboutThisFile: string;
+  dir: string;
+  plasmicDir: string;
+  pageDir: string;
+  initArgs: Record<string, string>;
+  substitutions?: Record<string, any>;
 }
 
 export interface PlasmicConfig {
@@ -438,7 +444,11 @@ export function readConfig(
   }
 }
 
-export async function writeConfig(configFile: string, config: PlasmicConfig, baseDir: string) {
+export async function writeConfig(
+  configFile: string,
+  config: PlasmicConfig,
+  baseDir: string
+) {
   await writeFileContentRaw(
     configFile,
     formatAsLocal(
@@ -451,7 +461,7 @@ export async function writeConfig(configFile: string, config: PlasmicConfig, bas
         2
       ),
       configFile,
-      baseDir,
+      baseDir
     ),
     {
       force: true,
@@ -459,7 +469,11 @@ export async function writeConfig(configFile: string, config: PlasmicConfig, bas
   );
 }
 
-export async function writeLock(lockFile: string, lock: PlasmicLock, baseDir: string) {
+export async function writeLock(
+  lockFile: string,
+  lock: PlasmicLock,
+  baseDir: string
+) {
   await writeFileContentRaw(
     lockFile,
     formatAsLocal(JSON.stringify(lock, undefined, 2), "/tmp/x.json", baseDir),

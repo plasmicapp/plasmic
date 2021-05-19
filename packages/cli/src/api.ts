@@ -152,7 +152,7 @@ export interface ProjectIconsResponse {
 
 export interface ProjectIdAndToken {
   projectId: string;
-  projectApiToken: string;
+  projectApiToken?: string;
 }
 
 export class PlasmicApi {

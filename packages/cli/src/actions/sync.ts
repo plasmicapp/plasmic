@@ -81,7 +81,11 @@ export interface SyncArgs extends CommonArgs {
   loaderConfig?: string;
 }
 
-async function ensureRequiredPackages(context: PlasmicContext, baseDir: string, yes?: boolean) {
+async function ensureRequiredPackages(
+  context: PlasmicContext,
+  baseDir: string,
+  yes?: boolean
+) {
   const requireds = await context.api.requiredPackages();
 
   const confirmInstall = async (
@@ -158,17 +162,18 @@ function getLoaderConfigPath(opts: SyncArgs) {
   return opts.loaderConfig || LOADER_CONFIG_FILE_NAME;
 }
 
-function maybeReadLoaderConfig(
-  opts: SyncArgs
-): PlasmicLoaderConfig | undefined {
+function maybeReadLoaderConfig(opts: SyncArgs): Partial<PlasmicLoaderConfig> {
   const path = getLoaderConfigPath(opts);
   if (!existsBuffered(path)) {
-    return undefined;
+    return {};
   }
   return JSON.parse(readFileText(path!));
 }
 
-function writeLoaderConfig(opts: SyncArgs, config: PlasmicLoaderConfig) {
+function writeLoaderConfig(
+  opts: SyncArgs,
+  config: Partial<PlasmicLoaderConfig>
+) {
   const loaderConfigPath = getLoaderConfigPath(opts);
 
   writeFileText(
@@ -204,9 +209,9 @@ export async function sync(
   fixFileExtension(context);
   assertAllPathsInRootDir(context);
 
-  const loaderConfig = process.env.PLASMIC_LOADER
+  const loaderConfig: Partial<PlasmicLoaderConfig> = process.env.PLASMIC_LOADER
     ? maybeReadLoaderConfig(opts)
-    : undefined;
+    : {};
 
   const projectIdToToken = new Map(
     [...context.config.projects, ...(loaderConfig?.projects ?? [])]
@@ -358,7 +363,7 @@ export async function sync(
         m.skeletonModulePath,
         fixImportContext,
         true,
-        baseDir,
+        baseDir
       );
       const resolvedNewFile = replaceImports(
         context,
@@ -366,7 +371,7 @@ export async function sync(
         m.skeletonModulePath,
         fixImportContext,
         true,
-        baseDir,
+        baseDir
       );
       await m.merge(resolvedNewFile, resolvedEditedFile);
     }
@@ -384,7 +389,8 @@ export async function sync(
         .filter((p) => rootProjectIds.has(p.projectId))
         .map((p) => L.pick(p, "projectId", "projectApiToken"));
 
-      const config: PlasmicLoaderConfig = {
+      const config: Partial<PlasmicLoaderConfig> = {
+        ...loaderConfig,
         projects: L.sortBy(
           L.uniqBy(
             [...freshIdsAndTokens, ...(loaderConfig?.projects ?? [])],
@@ -476,8 +482,11 @@ async function syncProject(
   ).map((c) => [c.id, c.scheme]);
 
   const projectApiToken = ensure(
-    projectIdsAndTokens.find((p) => p.projectId === projectId)
-  ).projectApiToken;
+    projectIdsAndTokens.find((p) => p.projectId === projectId)?.projectApiToken,
+    `Could not find the API token for project ${projectId} in list: ${JSON.stringify(
+      projectIdsAndTokens
+    )}`
+  );
 
   const existingChecksums = getChecksums(
     context,
@@ -512,33 +521,33 @@ async function syncProject(
       [c.renderModuleFileName, c.renderModule] = maybeConvertTsxToJsx(
         c.renderModuleFileName,
         c.renderModule,
-        opts.baseDir,
+        opts.baseDir
       );
       [c.skeletonModuleFileName, c.skeletonModule] = maybeConvertTsxToJsx(
         c.skeletonModuleFileName,
         c.skeletonModule,
-        opts.baseDir,
+        opts.baseDir
       );
     });
     projectBundle.iconAssets.forEach((icon) => {
       [icon.fileName, icon.module] = maybeConvertTsxToJsx(
         icon.fileName,
         icon.module,
-        opts.baseDir,
+        opts.baseDir
       );
     });
     projectBundle.globalVariants.forEach((gv) => {
       [gv.contextFileName, gv.contextModule] = maybeConvertTsxToJsx(
         gv.contextFileName,
         gv.contextModule,
-        opts.baseDir,
+        opts.baseDir
       );
     });
     (projectBundle.projectConfig.jsBundleThemes || []).forEach((theme) => {
       [theme.themeFileName, theme.themeModule] = maybeConvertTsxToJsx(
         theme.themeFileName,
         theme.themeModule,
-        opts.baseDir,
+        opts.baseDir
       );
     });
   }
@@ -547,7 +556,7 @@ async function syncProject(
     projectBundle.projectConfig,
     projectBundle.globalVariants,
     projectBundle.checksums,
-    opts.baseDir,
+    opts.baseDir
   );
 
   syncCodeComponentsMeta(context, projectId, projectBundle.codeComponentMetas);
@@ -564,7 +573,7 @@ async function syncProject(
     summary,
     pendingMerge,
     projectBundle.checksums,
-    opts.baseDir,
+    opts.baseDir
   );
   await upsertStyleTokens(context, projectBundle.usedTokens);
   await syncProjectIconAssets(
@@ -573,7 +582,7 @@ async function syncProject(
     projectVersion,
     projectBundle.iconAssets,
     projectBundle.checksums,
-    opts.baseDir,
+    opts.baseDir
   );
   await syncProjectImageAssets(
     context,
@@ -612,7 +621,7 @@ async function syncProjectConfig(
   summary: Map<string, ComponentUpdateSummary>,
   pendingMerge: ComponentPendingMerge[],
   checksums: ChecksumBundle,
-  baseDir: string,
+  baseDir: string
 ) {
   const defaultCssFilePath = defaultResourcePath(
     context,
@@ -654,7 +663,7 @@ async function syncProjectConfig(
     const formattedCssRules = formatAsLocal(
       projectBundle.cssRules,
       projectConfig.cssFilePath,
-      baseDir,
+      baseDir
     );
 
     // Write out project css
@@ -722,7 +731,7 @@ async function syncProjectConfig(
     pendingMerge,
     projectLock,
     checksums,
-    baseDir,
+    baseDir
   );
 }
 
