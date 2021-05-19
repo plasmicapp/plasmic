@@ -10,6 +10,8 @@ import * as substitutions from "./substitutions";
 import type { PlasmicLoaderConfig, PlasmicOpts } from "./types";
 import { PlasmicOptsSchema } from "./validation";
 
+const ABOUT_PAGE_URL = "https://docs.plasmic.app/learn/loader-config";
+
 type onRegisterPages = (
   pages: { name: string; projectId: string; path: string; url: string }[],
   config: any
@@ -143,13 +145,17 @@ export async function convertOptsToLoaderConfig(
     .forEach((projectId) => (currentProjects[projectId] = { projectId }));
 
   currentConfig.projects = Object.values(currentProjects);
-  currentConfig.aboutThisFile = ""; // TODO: add a link explaining what is this file.
+  currentConfig.aboutThisFile = ""; // Will be defined below.
 
   // Save user configuration.
   await fs.writeFile(
     configPath,
     // Sorting trick to have "aboutThisFile" be the first key.
-    JSON.stringify({ aboutThisFile: "", ...currentConfig }, undefined, 2)
+    JSON.stringify(
+      { aboutThisFile: ABOUT_PAGE_URL, ...currentConfig },
+      undefined,
+      2
+    )
   );
 
   // Now create a new configuration, including defaults.
