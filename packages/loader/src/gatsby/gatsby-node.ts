@@ -1,14 +1,15 @@
 import path from "upath";
-import { initLoader, onPostInit } from "../shared";
 import * as logger from "../shared/logger";
+import { initLoader, convertOptsToLoaderConfig, onPostInit } from "../shared";
 import type {
+  PlasmicLoaderConfig,
   PlasmicOpts,
   PluginOptions,
   Substitutions,
 } from "../shared/types";
 
-let opts: PlasmicOpts;
-
+let config: PlasmicLoaderConfig;
+let watch = process.env.NODE_ENV === "development";
 async function onGatsbyPreBootstrap(pluginOptions: PluginOptions) {
   // This is passed by Gatsby, here we're deleting it to make sure
   // the plugin options only contains known keys.
@@ -16,36 +17,33 @@ async function onGatsbyPreBootstrap(pluginOptions: PluginOptions) {
   const defaultDir = pluginOptions.dir || process.cwd();
   const plasmicDir = path.join(defaultDir, ".cache", ".plasmic");
 
-  const defaultOptions = {
+  if (pluginOptions.watch != null) {
+    watch = pluginOptions.watch;
+  }
+
+  const defaultOptions: PlasmicOpts = {
     initArgs: {
       platform: "gatsby",
       "pages-dir": "./pages",
       "images-public-dir": "../../../public",
       "src-dir": "./components",
     },
+    projects: [],
     dir: defaultDir,
-    watch: process.env.NODE_ENV === "development",
+    watch,
     plasmicDir,
     pageDir: path.join(plasmicDir, "pages"),
     substitutions: {} as Substitutions,
   };
 
-  opts = {
-    ...defaultOptions,
-    ...pluginOptions,
-    initArgs: {
-      ...defaultOptions.initArgs,
-      ...pluginOptions.initArgs,
-    },
-  };
-
-  return initLoader(opts);
+  config = await convertOptsToLoaderConfig(pluginOptions, defaultOptions);
+  return initLoader(config);
 }
 
 let createPageParam: any = {};
 
 async function onGatsbyPostBootstrap() {
-  return onPostInit(opts, async (pages) => {
+  return onPostInit(config, watch, async (pages) => {
     const existingPages = await createPageParam.graphql(`
       {
         allSitePage {

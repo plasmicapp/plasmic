@@ -1,4 +1,3 @@
-import execa from "execa";
 import { promises as fs } from "fs";
 import rmfr from "rmfr";
 import path from "upath";
@@ -8,7 +7,7 @@ import * as logger from "./logger";
 import { setMetadata } from "./metadata";
 import { captureException, initSentry } from "./sentry";
 import * as substitutions from "./substitutions";
-import type { PlasmicOpts } from "./types";
+import type { PlasmicLoaderConfig, PlasmicOpts } from "./types";
 import { PlasmicOptsSchema } from "./validation";
 
 type onRegisterPages = (
@@ -17,9 +16,13 @@ type onRegisterPages = (
 ) => Promise<void>;
 
 export async function watchForChanges(
-  opts: PlasmicOpts,
+  opts?: PlasmicLoaderConfig,
   onRegisterPages?: onRegisterPages
 ) {
+  if (!opts) {
+    const configPath = path.join(process.cwd(), "plasmic-loader.json");
+    opts = await readLoaderConfig(configPath);
+  }
   const { plasmicDir, pageDir } = opts;
   let currentConfig = await cli.readConfig(plasmicDir);
 
@@ -56,11 +59,11 @@ export async function watchForChanges(
   );
 }
 
-export async function checkLoaderConfig(opts: PlasmicOpts) {
-  const savedConfigPath = path.join(
-    opts.plasmicDir,
-    ".plasmic-loader-config.json"
-  );
+export async function ensurePlasmicIsNotStale(
+  plasmicDir: string,
+  opts: Partial<PlasmicOpts>
+) {
+  const savedConfigPath = path.join(plasmicDir, ".plasmic-loader-config.json");
 
   const currentConfig = JSON.stringify({ ...opts, watch: false });
   const savedConfig = await fs
@@ -84,7 +87,7 @@ export async function checkLoaderConfig(opts: PlasmicOpts) {
   }
 
   // Settings changed, so delete .plasmic dir.
-  await rmfr(opts.plasmicDir).catch((error) => {
+  await rmfr(plasmicDir).catch((error) => {
     if (error.code !== "ENOTEMPTY" && error.code !== "EBUSY") {
       throw error;
     }
@@ -93,31 +96,110 @@ export async function checkLoaderConfig(opts: PlasmicOpts) {
         "If you made changes to your plasmic configuration, please delete this directory."
     );
   });
-  await fs.mkdir(opts.plasmicDir, { recursive: true });
+  await fs.mkdir(plasmicDir, { recursive: true });
   await fs.writeFile(savedConfigPath, currentConfig);
 }
 
-export async function initLoader(userOpts: PlasmicOpts) {
-  await initSentry(userOpts);
-  const opts: PlasmicOpts = await PlasmicOptsSchema.validateAsync(
-    userOpts
-  ).catch((error) => logger.crash(error.message));
-  const { dir, pageDir, projects, plasmicDir, initArgs = {} } = opts;
+function readLoaderConfig(configPath: string): Promise<PlasmicLoaderConfig> {
+  return fs
+    .readFile(configPath)
+    .then((file) => JSON.parse(file.toString()))
+    .catch((error) => {
+      if (error.code === "ENOENT") {
+        return {};
+      }
+      throw error;
+    });
+}
 
-  await checkLoaderConfig(opts);
+export async function convertOptsToLoaderConfig(
+  userOpts: Partial<PlasmicOpts>,
+  defaultOpts: PlasmicOpts
+): Promise<PlasmicLoaderConfig> {
+  await PlasmicOptsSchema.validateAsync({ ...defaultOpts, ...userOpts }).catch(
+    (error) => logger.crash(error.message)
+  );
+
+  const configPath = path.join(
+    userOpts.dir || defaultOpts.dir,
+    "plasmic-loader.json"
+  );
+  const currentConfig: Partial<PlasmicLoaderConfig> = await readLoaderConfig(
+    configPath
+  );
+  const currentProjects = Object.fromEntries(
+    (currentConfig.projects || []).map((project) => [
+      project.projectId,
+      project,
+    ])
+  );
+
+  // Assigning all the user-assigned props, except projects (since the signature is different)
+  // We'll handle projects below.
+  Object.assign(currentConfig, { ...userOpts, projects: [] });
+
+  userOpts.projects
+    ?.filter((projectId) => !currentProjects[projectId])
+    .forEach((projectId) => (currentProjects[projectId] = { projectId }));
+
+  currentConfig.projects = Object.values(currentProjects);
+  currentConfig.aboutThisFile = ""; // TODO: add a link explaining what is this file.
+
+  // Save user configuration.
+  await fs.writeFile(
+    configPath,
+    // Sorting trick to have "aboutThisFile" be the first key.
+    JSON.stringify({ aboutThisFile: "", ...currentConfig }, undefined, 2)
+  );
+
+  // Now create a new configuration, including defaults.
+
+  const config: PlasmicLoaderConfig = {
+    aboutThisFile: currentConfig.aboutThisFile,
+    projects: currentConfig.projects,
+    watch: currentConfig.watch || defaultOpts.watch,
+    dir: userOpts.dir || currentConfig.dir || defaultOpts.dir,
+    plasmicDir:
+      userOpts.plasmicDir || currentConfig.plasmicDir || defaultOpts.plasmicDir,
+    pageDir: userOpts.pageDir || currentConfig.pageDir || defaultOpts.pageDir,
+    initArgs: {
+      ...(defaultOpts.initArgs || {}),
+      ...(currentConfig.initArgs || {}),
+      ...(userOpts.initArgs || {}),
+    },
+    substitutions:
+      userOpts.substitutions ||
+      currentConfig.substitutions ||
+      defaultOpts.substitutions,
+  };
+
+  // Check if the user opts are up to date
+  await ensurePlasmicIsNotStale(config.plasmicDir, userOpts);
+
+  return config;
+}
+
+export async function initLoader(config: PlasmicLoaderConfig) {
+  await initSentry(config);
+  const { dir, pageDir, projects, plasmicDir, initArgs = {} } = config;
 
   logger.info("Checking that your loader version is up to date.");
   await cli.ensureRequiredLoaderVersion();
-  logger.info(`Syncing plasmic projects: ${projects.join(", ")}`);
+  const projectIds = config.projects.map(({ projectId }) => projectId);
+  logger.info(`Syncing plasmic projects: ${projectIds.join(", ")}`);
 
   await cli.tryInitializePlasmicDir(plasmicDir, initArgs);
-  await cli.syncProject(plasmicDir, dir, projects);
+  await cli.syncProject(plasmicDir, dir, projectIds);
 
-  if (opts.substitutions) {
+  if (config.substitutions) {
     logger.info("Registering substitutions...");
-    const config = await cli.readConfig(plasmicDir);
-    substitutions.registerSubstitutions(plasmicDir, config, opts.substitutions);
-    await cli.saveConfig(plasmicDir, config);
+    const cliConfig = await cli.readConfig(plasmicDir);
+    substitutions.registerSubstitutions(
+      plasmicDir,
+      cliConfig,
+      config.substitutions
+    );
+    await cli.saveConfig(plasmicDir, cliConfig);
     await cli.fixImports(plasmicDir);
   }
 
@@ -127,18 +209,19 @@ export async function initLoader(userOpts: PlasmicOpts) {
 }
 
 export async function onPostInit(
-  opts: PlasmicOpts,
+  config: PlasmicLoaderConfig,
+  watch: boolean,
   onRegisterPages?: onRegisterPages
 ) {
   if (onRegisterPages) {
-    const config = await cli.readConfig(opts.plasmicDir);
+    const userConfig = await cli.readConfig(config.plasmicDir);
     await onRegisterPages(
-      cli.getPagesFromConfig(opts.plasmicDir, config),
+      cli.getPagesFromConfig(config.plasmicDir, userConfig),
       config
     ).catch((e) => logger.crash(e.message, e));
   }
-  if (opts.watch) {
-    await watchForChanges(opts, onRegisterPages);
+  if (watch) {
+    await watchForChanges(config, onRegisterPages);
   }
 }
 
