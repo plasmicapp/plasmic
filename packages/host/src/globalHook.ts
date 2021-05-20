@@ -1,9 +1,23 @@
 import { Fiber } from "./fiber";
 import { ensure } from "./lang-utils";
-import { searchParams } from "./preamble";
 import { traverse, traverseGenerator } from "./traverseFiber";
 
-const root = globalThis;
+const root = require("window-or-global");
+
+const searchParams = (() => {
+  try {
+    return new URLSearchParams(
+      location.search ||
+        new URL(location.toString().replace(/#/, "?")).searchParams.get(
+          "searchParams"
+        ) ||
+        window?.parent?.location.search ||
+        ""
+    );
+  } catch {
+    return new URLSearchParams();
+  }
+})();
 
 // For now we only use our hook when enabling code components as it might
 // impact performance
@@ -20,7 +34,7 @@ if (codeComponents) {
   // with this name. It's not the first element in the React tree because
   // it's below some React context providers for example.
   // It's important to filter canvas frames to avoid performance regressions.
-  function isCanvasFrame(rootNode: Fiber) {
+  const isCanvasFrame = (rootNode: Fiber) => {
     const nodeIterator = traverseGenerator(rootNode, {
       order: ["self", "sibling", "child"],
     });

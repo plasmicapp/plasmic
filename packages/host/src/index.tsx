@@ -1,7 +1,3 @@
-// tslint:disable:ordered-imports
-// organize-imports-ignore
-import "./preamble";
-
 import * as ReactWeb from "@plasmicapp/react-web";
 import * as mobx from "mobx";
 import * as mobxReactLite from "mobx-react-lite";
@@ -98,18 +94,18 @@ declare global {
   }
 }
 
-self.__PlasmicHostVersion = "1";
-self.__PlasmicComponentRegistry = [];
-self.__PlasmicFetcherRegistry = [];
+root.__PlasmicHostVersion = "1";
+root.__PlasmicComponentRegistry = [];
+root.__PlasmicFetcherRegistry = [];
 export function registerComponent(
   component: React.ComponentType<any>,
   meta: ComponentMeta
 ) {
-  self.__PlasmicComponentRegistry.push({ component, meta });
+  root.__PlasmicComponentRegistry.push({ component, meta });
 }
 
 export function registerFetcher(fetcher: Fetcher, meta: FetcherMeta) {
-  self.__PlasmicFetcherRegistry.push({ fetcher, meta });
+  root.__PlasmicFetcherRegistry.push({ fetcher, meta });
 }
 
 const plasmicRootNode: mobx.IObservableValue<React.ReactElement | null> = mobx.observable.box(
@@ -127,7 +123,7 @@ root.__Sub = {
   slate,
   slateReact,
   localObject: Object,
-  localElement: Element,
+  localElement: typeof window !== "undefined" ? Element : undefined,
   globalHookCtx,
   setPlasmicRootNode,
   registerRenderErrorListener,
@@ -172,7 +168,9 @@ export const PlasmicCanvasHost = mobxReactLite.observer(
       }
     }, [shouldRenderStudio, isFrameAttached]);
     React.useEffect(() => {
-      if (!shouldRenderStudio && !document.querySelector("#getlibs")) {
+      if (!shouldRenderStudio &&
+          !document.querySelector("#getlibs") &&
+          location.hash.match(/\blive=true\b/)) {
         const scriptElt = document.createElement("script");
         scriptElt.id = "getlibs";
         scriptElt.src = getPlasmicOrigin() + "/static/js/getlibs.js";
