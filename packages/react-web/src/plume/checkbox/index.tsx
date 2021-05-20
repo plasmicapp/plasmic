@@ -30,11 +30,26 @@ interface CheckboxState {
 }
 
 export interface CheckboxProps
-  extends Omit<AriaCheckboxProps, "selected" | "defaultSelected">,
+  extends Omit<AriaCheckboxProps, "isSelected" | "defaultSelected">,
     StyleProps,
     HoverEvents {
+  /**
+   * Whether the Checkbox is checked or not; controlled
+   */
   isChecked?: boolean;
+
+  /**
+   * Whether the Checkbox is checked by default; uncontrolled
+   */
   defaultChecked?: boolean;
+
+  /**
+   * Whether the Checkbox is in an "indeterminate" state; this usually
+   * refers to a "check all" that is used to check / uncheck many other
+   * checkboxes, and is visually indeterminate if some of its controlled
+   * checkboxes are checked and some are not.
+   */
+  isIndeterminate?: boolean;
 }
 
 function asAriaCheckboxProps(props: CheckboxProps) {

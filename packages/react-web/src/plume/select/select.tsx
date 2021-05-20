@@ -276,7 +276,10 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
     triggerRef
   );
 
-  const { pressProps: triggerProps } = usePress(triggerPressProps);
+  const { pressProps: triggerProps } = usePress({
+    ...triggerPressProps,
+    isDisabled,
+  });
   const { hoverProps: triggerHoverProps } = useHover(ariaProps);
 
   const triggerContent = state.selectedItem
