@@ -1,4 +1,5 @@
 import { mount } from "@cypress/react";
+import { MenuButtonRefValue, MenuRefValue } from "@plasmicapp/react-web";
 import { cy, expect } from "local-cypress";
 import * as React from "react";
 import Menu from "./Menu";
@@ -136,5 +137,55 @@ describe("MenuButton Item.onAction", () => {
         expect(isOpen).to.equal(false);
         expect(value).to.equal("bedroom");
       });
+  });
+});
+
+describe("MenuButton ref", () => {
+  it("works with ref", () => {
+    let value: string | null = null;
+    let isOpen: boolean = false;
+    let buttonRef: MenuButtonRefValue | null = null;
+    let menuRef: MenuRefValue | null = null;
+
+    mount(
+      <MenuButton
+        data-testid="menu-button"
+        onOpenChange={(x) => (isOpen = x)}
+        ref={(x) => (buttonRef = x)}
+        menu={
+          <Menu onAction={(x) => (value = x)} ref={(x) => (menuRef = x)}>
+            <Menu.Item value="shower">Shower</Menu.Item>
+            <Menu.Item value="dishes">Dishes</Menu.Item>
+            <Menu.Group title="Clean up">
+              <Menu.Item value="kitchen">Kitchen</Menu.Item>
+              <Menu.Item value="bedroom">Bedroom</Menu.Item>
+            </Menu.Group>
+          </Menu>
+        }
+      >
+        Do chore
+      </MenuButton>
+    );
+
+    button().then(() => {
+      buttonRef?.focus();
+      button()
+        .should("have.focus")
+        .then(() => {
+          buttonRef?.open();
+          menu()
+            .should("exist")
+            .then(() => {
+              expect(menuRef?.getFocusedValue()).to.be.null;
+              menuRef?.setFocusedValue("kitchen");
+              item("Kitchen")
+                .should("have.focus")
+                .then(() => {
+                  buttonRef?.close();
+                  menu().should("not.exist");
+                });
+            });
+        });
+    });
   });
 });

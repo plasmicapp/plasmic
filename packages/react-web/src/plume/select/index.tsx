@@ -1,4 +1,9 @@
-export { BaseSelectProps, SelectRef, useSelect } from "./select";
+export {
+  BaseSelectProps,
+  SelectRef,
+  SelectRefValue,
+  useSelect,
+} from "./select";
 export {
   BaseSelectOptionProps,
   SelectOptionRef,

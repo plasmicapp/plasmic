@@ -1,9 +1,8 @@
 import { useOption as useAriaOption } from "@react-aria/listbox";
-import { useFocusableRef } from "@react-spectrum/utils";
-import { FocusableRef, Node } from "@react-types/shared";
+import { Node } from "@react-types/shared";
 import * as React from "react";
 import { pick } from "../../common";
-import { mergeProps } from "../../react-utils";
+import { mergeProps, mergeRefs } from "../../react-utils";
 import { Overrides } from "../../render/elements";
 import { ItemLikeProps } from "../collection-utils";
 import {
@@ -36,7 +35,7 @@ interface SelectOptionConfig<C extends AnyPlasmicClass> {
   labelContainer: keyof PlasmicClassOverrides<C>;
 }
 
-export type SelectOptionRef = FocusableRef<HTMLElement>;
+export type SelectOptionRef = React.Ref<HTMLElement>;
 
 export function useSelectOption<
   P extends BaseSelectOptionProps,
@@ -64,6 +63,9 @@ export function useSelectOption<
 
   const { children } = props;
 
+  const rootRef = React.useRef<HTMLElement>(null);
+  const onRef = mergeRefs(rootRef, outerRef);
+
   // We pass in the Node secretly as an undocumented prop from <Select />
   const node = (props as any)._node as Node<
     React.ReactElement<BaseSelectOptionProps>
@@ -74,8 +76,6 @@ export function useSelectOption<
   const isHighlighted =
     state.selectionManager.isFocused &&
     state.selectionManager.focusedKey === node.key;
-
-  const ref = useFocusableRef(outerRef);
 
   const { optionProps, labelProps } = useAriaOption(
     {
@@ -88,7 +88,7 @@ export function useSelectOption<
       isVirtualized: false,
     },
     state,
-    ref
+    rootRef
   );
 
   const variants = {
@@ -108,7 +108,7 @@ export function useSelectOption<
   const overrides: Overrides = {
     [config.root]: {
       props: mergeProps(optionProps, getStyleProps(props), {
-        ref,
+        ref: onRef,
         style: noOutline(),
       }),
     },

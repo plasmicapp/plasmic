@@ -1,4 +1,5 @@
 import { mount } from "@cypress/react";
+import { SelectRefValue } from "@plasmicapp/react-web";
 import { cy, expect } from "local-cypress";
 import * as React from "react";
 import Select from "./Select";
@@ -208,5 +209,58 @@ describe("Select with groups", () => {
 
     cy.focused().type("{downarrow}");
     option("France").should("have.focus");
+  });
+});
+
+describe("SelectRef", () => {
+  it("works with ref", () => {
+    let value: string | null = null;
+    let isOpen = false;
+    let ref: SelectRefValue | null = null;
+    mount(
+      <Select
+        placeholder="Select something"
+        data-testid="select"
+        onOpenChange={(open) => (isOpen = open)}
+        onChange={(val) => {
+          value = val;
+        }}
+        ref={(r) => (ref = r)}
+      >
+        <Select.Option value="blue">Blue</Select.Option>
+        <Select.Option value="green">Green</Select.Option>
+        <Select.Option value="red">Red</Select.Option>
+        <Select.Option value="yellow" isDisabled>
+          Yellow
+        </Select.Option>
+      </Select>
+    );
+
+    select().then(() => {
+      expect(ref).to.not.be.null;
+      select().should("include.text", "Select something");
+      select()
+        .should("not.have.focus")
+        .then(() => {
+          ref?.focus();
+          select()
+            .should("have.focus")
+            .then(() => {
+              ref?.open();
+              listbox().should("exist");
+              select().then(() => {
+                expect(isOpen).to.be.true;
+                ref?.setSelectedValue("red");
+                select()
+                  .should("include.text", "Red")
+                  .then(() => {
+                    expect(isOpen).to.be.false;
+                    expect(value).to.equal("red");
+                    listbox().should("not.exist");
+                  });
+              });
+            });
+        });
+    });
   });
 });

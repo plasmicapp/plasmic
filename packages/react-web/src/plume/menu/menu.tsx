@@ -35,7 +35,10 @@ export interface BaseMenuProps extends DOMProps, AriaLabelingProps, StyleProps {
   onAction?: (key: string) => void;
 }
 
-export type MenuRef = React.Ref<HTMLElement>;
+export type MenuRef = React.Ref<MenuRefValue>;
+export interface MenuRefValue extends MenuState {
+  getRoot: () => HTMLElement | null;
+}
 
 const COLLECTION_OPTS = {
   itemPlumeType: "menu-item",
@@ -79,6 +82,11 @@ function asAriaMenuProps(props: BaseMenuProps) {
   };
 }
 
+export interface MenuState {
+  getFocusedValue: () => string | null;
+  setFocusedValue: (value: string) => void;
+}
+
 export function useMenu<P extends BaseMenuProps, C extends AnyPlasmicClass>(
   plasmicClass: C,
   props: P,
@@ -87,6 +95,7 @@ export function useMenu<P extends BaseMenuProps, C extends AnyPlasmicClass>(
 ) {
   const { ariaProps } = asAriaMenuProps(props);
   const triggerContext = React.useContext(TriggeredOverlayContext);
+  const rootRef = React.useRef<HTMLElement>(null);
 
   const state = useTreeState(ariaProps);
 
@@ -113,7 +122,7 @@ export function useMenu<P extends BaseMenuProps, C extends AnyPlasmicClass>(
   const overrides: Overrides = {
     [config.root]: {
       props: mergeProps(getStyleProps(props), {
-        ref,
+        ref: rootRef,
       }),
     },
     [config.itemsContainer]: {
@@ -136,11 +145,31 @@ export function useMenu<P extends BaseMenuProps, C extends AnyPlasmicClass>(
     ),
   };
 
+  const plumeState: MenuState = React.useMemo(
+    () => ({
+      getFocusedValue: () => state.selectionManager.focusedKey as string | null,
+      setFocusedValue: (value: string) =>
+        state.selectionManager.setFocusedKey(value),
+    }),
+    [state]
+  );
+
+  React.useImperativeHandle(
+    ref,
+    () => ({
+      getRoot: () => rootRef.current,
+      getFocusedValue: () => plumeState.getFocusedValue(),
+      setFocusedValue: (key) => plumeState.setFocusedValue(key),
+    }),
+    [rootRef, plumeState]
+  );
+
   return {
     plasmicProps: {
       variants: variants as PlasmicClassVariants<C>,
       args: args as PlasmicClassArgs<C>,
       overrides: overrides as PlasmicClassOverrides<C>,
     },
+    state: plumeState,
   };
 }

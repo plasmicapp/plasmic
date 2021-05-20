@@ -1,6 +1,5 @@
 import { useListBox } from "@react-aria/listbox";
 import { HiddenSelect, useSelect as useAriaSelect } from "@react-aria/select";
-import { useFocusableRef } from "@react-spectrum/utils";
 import {
   SelectState as AriaSelectState,
   useSelectState as useAriaSelectState,
@@ -12,8 +11,6 @@ import {
   DOMProps,
   FocusableDOMProps,
   FocusableProps,
-  FocusableRef,
-  FocusableRefValue,
   HoverEvents,
   InputBase,
 } from "@react-types/shared";
@@ -219,8 +216,14 @@ function useAriaSelectProps(props: BaseSelectProps) {
   };
 }
 
-export type SelectRef = FocusableRef;
-export type SelectRefValue = FocusableRefValue;
+export type SelectRef = React.Ref<SelectRefValue>;
+
+export interface SelectRefValue extends SelectState {
+  getTrigger: () => HTMLElement | null;
+  getRoot: () => HTMLElement | null;
+  focus: () => void;
+  blur: () => void;
+}
 
 interface SelectConfig<C extends AnyPlasmicClass> {
   placeholderVariant?: VariantDef<PlasmicClassVariants<C>>;
@@ -249,13 +252,13 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
   plasmicClass: C,
   props: P,
   config: SelectConfig<C>,
-  ref: SelectRef = null
+  ref: React.Ref<SelectRefValue> = null
 ) {
   const { ariaProps } = useAriaSelectProps(props);
   const { placement } = props;
   const state = useAriaSelectState<AriaSelectItemType>(ariaProps);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
-  const rootRef = useFocusableRef(ref, triggerRef);
+  const rootRef = React.useRef<HTMLElement>(null);
 
   const {
     isDisabled,
@@ -354,13 +357,33 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
     ),
   };
 
-  const plumeState: SelectState = {
-    open: () => state.open(),
-    close: () => state.close(),
-    isOpen: () => state.isOpen,
-    getSelectedValue: () => (state.selectedKey ? `${state.selectedKey}` : null),
-    setSelectedValue: (key) => state.setSelectedKey(key as any),
-  };
+  const plumeState: SelectState = React.useMemo(
+    () => ({
+      open: () => state.open(),
+      close: () => state.close(),
+      isOpen: () => state.isOpen,
+      getSelectedValue: () =>
+        state.selectedKey ? `${state.selectedKey}` : null,
+      setSelectedValue: (key) => state.setSelectedKey(key as any),
+    }),
+    [state]
+  );
+
+  React.useImperativeHandle(
+    ref,
+    () => ({
+      getRoot: () => rootRef.current,
+      getTrigger: () => triggerRef.current,
+      focus: () => triggerRef.current?.focus(),
+      blur: () => triggerRef.current?.blur(),
+      open: () => plumeState.open(),
+      close: () => plumeState.close(),
+      isOpen: () => plumeState.isOpen(),
+      getSelectedValue: () => plumeState.getSelectedValue(),
+      setSelectedValue: (key) => plumeState.setSelectedValue(key),
+    }),
+    [rootRef, triggerRef, plumeState]
+  );
 
   return {
     plasmicProps: {

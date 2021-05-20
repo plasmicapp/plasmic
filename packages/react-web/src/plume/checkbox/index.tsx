@@ -1,10 +1,9 @@
 import { useCheckbox as useAriaCheckbox } from "@react-aria/checkbox";
 import { useHover } from "@react-aria/interactions";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
-import { useFocusableRef } from "@react-spectrum/utils";
 import { useToggleState } from "@react-stately/toggle";
 import { AriaCheckboxProps } from "@react-types/checkbox";
-import { FocusableRef, HoverEvents } from "@react-types/shared";
+import { HoverEvents } from "@react-types/shared";
 import * as React from "react";
 import { pick } from "../../common";
 import { mergeProps } from "../../react-utils";
@@ -19,7 +18,16 @@ import {
 } from "../plume-utils";
 import { getStyleProps, StyleProps } from "../props-utils";
 
-export type CheckboxRef = FocusableRef<HTMLLabelElement>;
+export type CheckboxRef = React.Ref<CheckboxRefValue>;
+export interface CheckboxRefValue extends CheckboxState {
+  getRoot: () => HTMLElement | null;
+  focus: () => void;
+  blur: () => void;
+}
+
+interface CheckboxState {
+  setChecked: (checked: boolean) => void;
+}
 
 export interface CheckboxProps
   extends Omit<AriaCheckboxProps, "selected" | "defaultSelected">,
@@ -57,7 +65,7 @@ export function useCheckbox<P extends CheckboxProps, C extends AnyPlasmicClass>(
 ) {
   const { children, isDisabled, isIndeterminate } = props;
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const domRef = useFocusableRef(ref, inputRef);
+  const rootRef = React.useRef<HTMLElement>(null);
   const ariaProps = asAriaCheckboxProps(props);
   const state = useToggleState(ariaProps);
   const { hoverProps } = useHover(props);
@@ -87,7 +95,7 @@ export function useCheckbox<P extends CheckboxProps, C extends AnyPlasmicClass>(
     [config.root]: {
       as: "label",
       props: mergeProps(hoverProps, getStyleProps(props), {
-        ref: domRef,
+        ref: rootRef,
       }),
       wrapChildren: (children) => (
         <>
@@ -103,12 +111,31 @@ export function useCheckbox<P extends CheckboxProps, C extends AnyPlasmicClass>(
     ...pick(props, ...plasmicClass.internalArgProps),
     ...(config.labelSlot ? { [config.labelSlot]: children } : {}),
   };
+
+  const plumeState: CheckboxState = React.useMemo(
+    () => ({
+      setChecked: (checked: boolean) => state.setSelected(checked),
+    }),
+    [state]
+  );
+
+  React.useImperativeHandle(
+    ref,
+    () => ({
+      getRoot: () => rootRef.current,
+      focus: () => inputRef.current?.focus(),
+      blur: () => inputRef.current?.blur(),
+      setChecked: (checked) => plumeState.setChecked(checked),
+    }),
+    [rootRef, inputRef, plumeState]
+  );
+
   return {
     plasmicProps: {
       variants: variants as PlasmicClassVariants<C>,
       overrides: overrides as PlasmicClassOverrides<C>,
       args: args as PlasmicClassArgs<C>,
     },
-    state,
+    state: plumeState,
   };
 }

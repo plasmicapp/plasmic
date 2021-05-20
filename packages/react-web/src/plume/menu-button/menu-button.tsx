@@ -4,7 +4,7 @@ import { DOMProps, FocusableProps, HoverEvents } from "@react-types/shared";
 import * as React from "react";
 import { useFocusable, useHover } from "react-aria";
 import { pick } from "../../common";
-import { mergeProps, mergeRefs } from "../../react-utils";
+import { mergeProps } from "../../react-utils";
 import { Overrides } from "../../render/elements";
 import { BaseMenuProps } from "../menu/menu";
 import {
@@ -87,7 +87,14 @@ interface MenuButtonState {
   isOpen: () => boolean;
 }
 
-export type MenuButtonRef = React.Ref<HTMLButtonElement>;
+export type MenuButtonRef = React.Ref<MenuButtonRefValue>;
+
+export interface MenuButtonRefValue extends MenuButtonState {
+  getRoot: () => HTMLElement | null;
+  getTrigger: () => HTMLElement | null;
+  focus: () => void;
+  blur: () => void;
+}
 
 export function useMenuButton<
   P extends BaseMenuButtonProps,
@@ -110,8 +117,8 @@ export function useMenuButton<
     menuWidth,
   } = props;
 
+  const rootRef = React.useRef<HTMLElement>(null);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
-  const onTriggerRef = mergeRefs(triggerRef, outerRef);
 
   const state = useMenuTriggerState({
     isOpen,
@@ -156,6 +163,9 @@ export function useMenuButton<
           {children}
         </TriggeredOverlayContext.Provider>
       ),
+      props: {
+        ref: rootRef,
+      },
     },
     [config.trigger]: {
       props: mergeProps(
@@ -165,7 +175,7 @@ export function useMenuButton<
         getStyleProps(props),
         pick(props, "title"),
         {
-          ref: onTriggerRef,
+          ref: triggerRef,
           autoFocus,
           disabled: !!isDisabled,
           // Make sure this button is not interpreted as submit
@@ -175,11 +185,28 @@ export function useMenuButton<
     },
   };
 
-  const plumeState: MenuButtonState = {
-    open: () => state.open(),
-    close: () => state.close(),
-    isOpen: () => state.isOpen,
-  };
+  const plumeState: MenuButtonState = React.useMemo(
+    () => ({
+      open: () => state.open(),
+      close: () => state.close(),
+      isOpen: () => state.isOpen,
+    }),
+    [state]
+  );
+
+  React.useImperativeHandle(
+    outerRef,
+    () => ({
+      getRoot: () => rootRef.current,
+      getTrigger: () => triggerRef.current,
+      focus: () => triggerRef.current && triggerRef.current.focus(),
+      blur: () => triggerRef.current && triggerRef.current.blur(),
+      open: plumeState.open,
+      close: plumeState.close,
+      isOpen: plumeState.isOpen,
+    }),
+    [rootRef, triggerRef, plumeState]
+  );
 
   return {
     plasmicProps: {
