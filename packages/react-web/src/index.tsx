@@ -9,6 +9,7 @@ export { setPlumeStrictMode } from "./plume/plume-utils";
 export { getDataProps } from "./plume/props-utils";
 // Plume
 export * from "./plume/select";
+export * from "./plume/switch";
 export * from "./plume/triggered-overlay";
 // Render
 export { HTMLElementRefOf, StrictProps } from "./react-utils";
