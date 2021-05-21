@@ -33,6 +33,16 @@ function isPageData(data: ComponentData | PageData): data is PageData {
   return data.type === "page";
 }
 
+function stripExtension(filename: string, removeComposedPath = false) {
+  const ext = removeComposedPath
+    ? filename.substring(filename.indexOf("."))
+    : path.extname(filename);
+  if (!ext || filename === ext) {
+    return filename;
+  }
+  return filename.substring(0, filename.lastIndexOf(ext));
+}
+
 function writeFile(filePath: string, content: string) {
   return fs
     .mkdir(path.dirname(filePath), { recursive: true })
@@ -121,7 +131,48 @@ export async function generateAll(opts: GenOptions) {
   await Promise.all([
     generatePlasmicLoader(configData),
     generatePageComponents(configData),
+    generatePlasmicTypes(configData),
   ]);
+}
+
+function generatePlasmicTypes(config: ConfigData) {
+  const singleComponents = Object.values(config.componentDataKeyedByName)
+    .filter((components) => components.length === 1)
+    .flat()
+    .map((component) => ({
+      ...component,
+      path: stripExtension(component.path),
+    }));
+  const components = config.componentData.map((component) => ({
+    ...component,
+    path: stripExtension(component.path),
+  }));
+  const providersKeyedByProjectId: Record<string, ProviderData[]> = {};
+  config.providerData.forEach((provider) => {
+    if (!providersKeyedByProjectId[provider.projectId]) {
+      providersKeyedByProjectId[provider.projectId] = [];
+    }
+    providersKeyedByProjectId[provider.projectId].push(provider);
+  });
+
+  const providersWithProjects = Object.entries(providersKeyedByProjectId).map(
+    ([projectId, providers]) => ({
+      projectId,
+      providers: providers.map((provider) => ({
+        ...provider,
+        path: stripExtension(provider.path),
+      })),
+    })
+  );
+
+  return writeFile(
+    path.join(__dirname, "../", "loaderTypes.d.ts"),
+    templates.LoaderTypes({
+      singleComponents,
+      components,
+      providersWithProjects,
+    })
+  );
 }
 
 function generatePageComponents(config: ConfigData) {

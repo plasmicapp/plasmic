@@ -35,6 +35,11 @@ fs.copyFileSync(
   path.join("dist", "templates", "NextPage.dot")
 );
 
+fs.copyFileSync(
+  path.join("src", "templates", "LoaderTypes.dot"),
+  path.join("dist", "templates", "LoaderTypes.dot")
+);
+
 if (process.argv.indexOf("--prod") !== -1) {
   fs.copyFileSync(
     path.join("dist", "shared", "config", "staticConfig.prod.js"),
