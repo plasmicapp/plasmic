@@ -42,8 +42,8 @@ if (codeComponents) {
     let count = 0;
     let next: IteratorResult<Fiber, any>;
 
-    // Get first 30 nodes and then stop the generator
-    while (count < 30 && !(next = nodeIterator.next()).done) {
+    // Get first 150 nodes and then stop the generator
+    while (count < 150 && !(next = nodeIterator.next()).done) {
       count++;
       const node: Fiber = next.value;
       if (
