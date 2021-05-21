@@ -1,9 +1,9 @@
-import { useCheckbox as useAriaCheckbox } from "@react-aria/checkbox";
 import { useHover } from "@react-aria/interactions";
+import { useSwitch as useAriaSwitch } from "@react-aria/switch";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
 import { useToggleState } from "@react-stately/toggle";
-import { AriaCheckboxProps } from "@react-types/checkbox";
 import { HoverEvents } from "@react-types/shared";
+import { AriaSwitchProps } from "@react-types/switch";
 import * as React from "react";
 import { pick } from "../../common";
 import { mergeProps } from "../../react-utils";
@@ -18,41 +18,33 @@ import {
 } from "../plume-utils";
 import { getStyleProps, StyleProps } from "../props-utils";
 
-export type CheckboxRef = React.Ref<CheckboxRefValue>;
-export interface CheckboxRefValue extends CheckboxState {
+export type SwitchRef = React.Ref<SwitchRefValue>;
+export interface SwitchRefValue extends SwitchState {
   getRoot: () => HTMLElement | null;
   focus: () => void;
   blur: () => void;
 }
 
-interface CheckboxState {
+interface SwitchState {
   setChecked: (checked: boolean) => void;
 }
 
-export interface CheckboxProps
-  extends Omit<AriaCheckboxProps, "isSelected" | "defaultSelected">,
+export interface SwitchProps
+  extends Omit<AriaSwitchProps, "isSelected" | "defaultSelected">,
     StyleProps,
     HoverEvents {
   /**
-   * Whether the Checkbox is checked or not; controlled
+   * Whether the Switch is checked or not; controlled
    */
   isChecked?: boolean;
 
   /**
-   * Whether the Checkbox is checked by default; uncontrolled
+   * Whether the Switch is checked by default; uncontrolled
    */
   defaultChecked?: boolean;
-
-  /**
-   * Whether the Checkbox is in an "indeterminate" state; this usually
-   * refers to a "check all" that is used to check / uncheck many other
-   * checkboxes, and is visually indeterminate if some of its controlled
-   * checkboxes are checked and some are not.
-   */
-  isIndeterminate?: boolean;
 }
 
-function asAriaCheckboxProps(props: CheckboxProps) {
+function asAriaSwitchProps(props: SwitchProps) {
   const ariaProps = {
     ...props,
     isSelected: props.isChecked,
@@ -63,28 +55,27 @@ function asAriaCheckboxProps(props: CheckboxProps) {
   return ariaProps;
 }
 
-interface CheckboxConfig<C extends AnyPlasmicClass> {
+interface SwitchConfig<C extends AnyPlasmicClass> {
   isCheckedVariant: VariantDef<PlasmicClassVariants<C>>;
-  isIndeterminateVariant?: VariantDef<PlasmicClassVariants<C>>;
   isDisabledVariant?: VariantDef<PlasmicClassVariants<C>>;
   noLabelVariant?: VariantDef<PlasmicClassVariants<C>>;
   labelSlot?: keyof PlasmicClassArgs<C>;
   root: keyof PlasmicClassOverrides<C>;
 }
 
-export function useCheckbox<P extends CheckboxProps, C extends AnyPlasmicClass>(
+export function useSwitch<P extends SwitchProps, C extends AnyPlasmicClass>(
   plasmicClass: C,
   props: P,
-  config: CheckboxConfig<C>,
-  ref: CheckboxRef = null
+  config: SwitchConfig<C>,
+  ref: SwitchRef = null
 ) {
-  const { children, isDisabled, isIndeterminate } = props;
+  const { children, isDisabled } = props;
   const inputRef = React.useRef<HTMLInputElement>(null);
   const rootRef = React.useRef<HTMLElement>(null);
-  const ariaProps = asAriaCheckboxProps(props);
+  const ariaProps = asAriaSwitchProps(props);
   const state = useToggleState(ariaProps);
   const { hoverProps } = useHover(props);
-  const { inputProps } = useAriaCheckbox(ariaProps, state, inputRef);
+  const { inputProps } = useAriaSwitch(ariaProps, state, inputRef);
   const variants = {
     ...pick(props, ...plasmicClass.internalVariantProps),
     ...mergeVariantToggles(
@@ -95,10 +86,6 @@ export function useCheckbox<P extends CheckboxProps, C extends AnyPlasmicClass>(
       {
         def: config.isCheckedVariant,
         active: state.isSelected,
-      },
-      {
-        def: config.isIndeterminateVariant,
-        active: isIndeterminate,
       },
       {
         def: config.noLabelVariant,
@@ -127,7 +114,7 @@ export function useCheckbox<P extends CheckboxProps, C extends AnyPlasmicClass>(
     ...(config.labelSlot ? { [config.labelSlot]: children } : {}),
   };
 
-  const plumeState: CheckboxState = React.useMemo(
+  const plumeState: SwitchState = React.useMemo(
     () => ({
       setChecked: (checked: boolean) => state.setSelected(checked),
     }),

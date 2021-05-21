@@ -43,7 +43,10 @@ export function useMenuTrigger(
     triggerRef
   );
 
-  const { pressProps: triggerProps } = usePress(triggerPressProps);
+  const { pressProps: triggerProps } = usePress({
+    ...triggerPressProps,
+    isDisabled,
+  });
 
   const makeMenu = () => {
     let realMenu = typeof menu === "function" ? menu() : menu;
