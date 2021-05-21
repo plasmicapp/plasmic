@@ -25,7 +25,6 @@ function initPlasmicLoader(pluginOptions: PluginOptions) {
   const plasmicDir = path.join(defaultDir, ".plasmic");
   const nextPageDir = path.join(defaultDir, "pages");
   const defaultOptions = {
-    watch: process.env.NODE_ENV === "development",
     initArgs: {
       platform: "nextjs",
       "pages-dir": "./pages",
@@ -38,18 +37,18 @@ function initPlasmicLoader(pluginOptions: PluginOptions) {
     substitutions: {} as Substitutions,
   };
 
-  const opts: PlasmicOpts = {
-    ...defaultOptions,
-    ...pluginOptions,
-    initArgs: {
-      ...defaultOptions.initArgs,
-      ...pluginOptions.initArgs,
-    },
-  };
+  let watch = process.env.NODE_ENV === "development";
+
+  if (pluginOptions.watch != null) {
+    watch = pluginOptions.watch;
+  }
 
   const result = cp.spawnSync(
     "node",
-    [path.join(__dirname, "sync-next.js"), JSON.stringify(opts)],
+    [
+      path.join(__dirname, "sync-next.js"),
+      JSON.stringify({ pluginOptions, defaultOptions }),
+    ],
     { stdio: "inherit" }
   );
 
@@ -58,9 +57,9 @@ function initPlasmicLoader(pluginOptions: PluginOptions) {
     process.exit(1);
   }
 
-  if (opts.watch) {
+  if (watch) {
     spawn(
-      watchForChanges(opts, (pages, config) =>
+      watchForChanges(undefined, (pages, config) =>
         generateNextPages(pages, nextPageDir, config)
       )
     );
@@ -70,17 +69,18 @@ function initPlasmicLoader(pluginOptions: PluginOptions) {
 type NextConfigExport = (phase: string) => {};
 type NextConfigExportCreator = (nextConfig: any) => NextConfigExport;
 
-const plasmic = (pluginOptions: PluginOptions): NextConfigExportCreator => (
-  nextConfig = {}
-) => (phase) => {
-  try {
-    if (buildPhase.includes(phase)) {
-      initPlasmicLoader(pluginOptions);
+const plasmic =
+  (pluginOptions: PluginOptions): NextConfigExportCreator =>
+  (nextConfig = {}) =>
+  (phase) => {
+    try {
+      if (buildPhase.includes(phase)) {
+        initPlasmicLoader(pluginOptions);
+      }
+      return nextConfig;
+    } catch (e) {
+      logger.crash(e.message, e);
     }
-    return nextConfig;
-  } catch (e) {
-    logger.crash(e.message, e);
-  }
-};
+  };
 
 export = plasmic;

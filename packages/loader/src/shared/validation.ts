@@ -24,7 +24,7 @@ export const PlasmicOptsSchema = Joi.object<PlasmicOpts>({
   plasmicDir: Joi.string().required(),
   pageDir: Joi.string().required(),
   projects: Joi.array().items(Joi.string()).required(),
-  watch: Joi.boolean().required(),
+  watch: Joi.boolean(),
   initArgs: Joi.object().pattern(Joi.string(), Joi.string()),
   substitutions: Joi.object({
     components: Joi.array().items(

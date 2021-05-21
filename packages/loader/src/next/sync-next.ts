@@ -4,7 +4,11 @@
  * initial code syncing.
  */
 
-import { initLoader, maybeAddToGitIgnore } from "../shared";
+import {
+  convertOptsToLoaderConfig,
+  initLoader,
+  maybeAddToGitIgnore,
+} from "../shared";
 import * as logger from "../shared/logger";
 import * as cli from "../shared/cli";
 import type { PlasmicOpts } from "../shared/types";
@@ -13,15 +17,23 @@ import { spawn } from "../shared/utils";
 import { generateNextPages } from "./pages";
 
 async function run() {
-  const opts: PlasmicOpts = JSON.parse(process.argv[2]);
-  const nextPageDir = path.join(opts.dir, "pages");
-  await initLoader(opts);
+  const opts: {
+    pluginOptions: PlasmicOpts;
+    defaultOptions: PlasmicOpts;
+  } = JSON.parse(process.argv[2]);
+
+  const config = await convertOptsToLoaderConfig(
+    opts.pluginOptions,
+    opts.defaultOptions
+  );
+  const nextPageDir = path.join(config.dir, "pages");
+  await initLoader(config);
   await maybeAddToGitIgnore(path.join(process.cwd(), ".gitignore"), ".plasmic");
 
-  const config = await cli.readConfig(opts.plasmicDir);
-  const pages = cli.getPagesFromConfig(opts.plasmicDir, config);
+  const cliConfig = await cli.readConfig(config.plasmicDir);
+  const pages = cli.getPagesFromConfig(config.plasmicDir, cliConfig);
 
-  return generateNextPages(pages, nextPageDir, config);
+  return generateNextPages(pages, nextPageDir, cliConfig);
 }
 
 if (require.main === module) {

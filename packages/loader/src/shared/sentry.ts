@@ -1,6 +1,6 @@
 import * as config from "./config";
 import * as Sentry from "@sentry/node";
-import { PluginOptions } from "./types";
+import { PlasmicLoaderConfig } from "./types";
 
 export async function setUser(email: string) {
   if (!config.sentryDsn) {
@@ -12,7 +12,7 @@ export async function setUser(email: string) {
   });
 }
 
-export async function initSentry(options: PluginOptions) {
+export async function initSentry(options: PlasmicLoaderConfig) {
   if (!config.sentryDsn) {
     return;
   }
