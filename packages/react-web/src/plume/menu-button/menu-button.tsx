@@ -1,8 +1,8 @@
 import { useMenuTriggerState } from "@react-stately/menu";
 import { Placement } from "@react-types/overlays";
-import { DOMProps, FocusableProps, HoverEvents } from "@react-types/shared";
+import { DOMProps, FocusableProps } from "@react-types/shared";
 import * as React from "react";
-import { useFocusable, useHover } from "react-aria";
+import { useFocusable } from "react-aria";
 import { pick } from "../../common";
 import { mergeProps } from "../../react-utils";
 import { Overrides } from "../../render/elements";
@@ -22,7 +22,6 @@ import { useMenuTrigger } from "./menu-trigger";
 export interface BaseMenuButtonProps
   extends DOMProps,
     FocusableProps,
-    HoverEvents,
     StyleProps,
     Pick<React.ComponentProps<"button">, "title"> {
   /**
@@ -139,8 +138,6 @@ export function useMenuButton<
     state
   );
 
-  const { hoverProps: triggerHoverProps } = useHover(props);
-
   const { focusableProps: triggerFocusProps } = useFocusable(props, triggerRef);
 
   const variants = {
@@ -170,7 +167,6 @@ export function useMenuButton<
     [config.trigger]: {
       props: mergeProps(
         triggerProps,
-        triggerHoverProps,
         triggerFocusProps,
         getStyleProps(props),
         pick(props, "title"),
