@@ -1,0 +1,20 @@
+import type React from "react";
+
+export type Providers = {
+  {{~ it.providersWithProjects :providersWithProject}}
+    "{{=providersWithProject.projectId}}": {
+        {{~ providersWithProject.providers :provider}}
+          "{{=provider.name}}"?: React.ContextType<typeof import("{{=provider.path}}").{{=provider.name}}Context>,
+        {{~}}
+    },
+  {{~}}
+};
+
+export type LoaderProps = (
+  {{~ it.singleComponents :component}}
+    | { component: "{{=component.name}}", componentProps?: Parameters<typeof import("{{=component.path}}").default>[0], providerProps?: Providers["{{=component.projectId}}"] }
+  {{~}}
+  {{~ it.components :component}}
+    | { component: "{{=component.name}}", projectId: "{{=component.projectId}}", componentProps?: Parameters<typeof import("{{=component.path}}").default>[0], providerProps?: Providers["{{=component.projectId}}"] }
+  {{~}}
+)
