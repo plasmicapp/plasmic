@@ -7,6 +7,7 @@ import {
   modifyDefaultGatsbyConfig,
   overwriteIndex,
   overwriteReadme,
+  wrapAppRoot,
   writeDefaultNextjsConfig,
   writePlasmicLoaderJson,
 } from "./utils/file-utils";
@@ -159,6 +160,9 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
 
   // Overwrite the index file
   await overwriteIndex(resolvedProjectPath, platform, scheme);
+
+  // Overwrite the wrapper files to wrap PlasmicRootProvider
+  await wrapAppRoot(resolvedProjectPath, platform, scheme);
 
   /**
    * INSTRUCT USER ON NEXT STEPS

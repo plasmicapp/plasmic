@@ -130,20 +130,8 @@ export async function overwriteIndex(
   const isNextjs = platform === "nextjs";
   const isGatsby = platform === "gatsby";
   const isCra = platform === "react";
-  const isLoader = scheme === "loader";
-  const isCodegen = scheme === "codegen";
 
-  const configPath = ensure(
-    isCodegen
-      ? "plasmic.json"
-      : isNextjs && isLoader
-      ? ".plasmic/plasmic.json"
-      : isGatsby && isLoader
-      ? ".cache/.plasmic/plasmic.json"
-      : undefined
-  );
-  const configStr = await fs.readFile(path.join(projectPath, configPath));
-  const config = JSON.parse(configStr.toString());
+  const config = await getPlasmicConfig(projectPath, platform, scheme);
   const plasmicFiles = L.map(
     L.flatMap(config.projects, (p) => p.components),
     (c) => c.importSpec.modulePath
@@ -347,4 +335,74 @@ function Index() {
 export default Index;
   `;
   return content;
+}
+
+async function getPlasmicConfig(
+  projectPath: string,
+  platform: string,
+  scheme: string
+) {
+  const isNextjs = platform === "nextjs";
+  const isGatsby = platform === "gatsby";
+  const isLoader = scheme === "loader";
+  const isCodegen = scheme === "codegen";
+  const configPath = ensure(
+    isCodegen
+      ? "plasmic.json"
+      : isNextjs && isLoader
+      ? ".plasmic/plasmic.json"
+      : isGatsby && isLoader
+      ? ".cache/.plasmic/plasmic.json"
+      : undefined
+  );
+  const configStr = await fs.readFile(path.join(projectPath, configPath));
+  return JSON.parse(configStr.toString());
+}
+
+export async function wrapAppRoot(
+  projectPath: string,
+  platform: string,
+  scheme: string
+): Promise<void> {
+  const isLoader = scheme === "loader";
+  const importPkg = isLoader ? `@plasmicapp/loader` : "@plasmicapp/react-web";
+  if (platform === "nextjs") {
+    const appFilePath = path.join(projectPath, "pages", `_app.js`);
+    await fs.writeFile(
+      appFilePath,
+      `
+import '../styles/globals.css'
+import { PlasmicRootProvider } from "${importPkg}"
+
+function MyApp({ Component, pageProps }) {
+  return (
+    <PlasmicRootProvider>
+      <Component {...pageProps} />
+    </PlasmicRootProvider>
+  )
+}
+
+export default MyApp
+    `.trim()
+    );
+  } else if (platform === "gatsby") {
+    const wrapperContent = `
+import React from "react";
+import { PlasmicRootProvider } from "${importPkg}";
+
+export const wrapRootElement = ({ element }) => {
+  return (
+    <PlasmicRootProvider>
+      {element}
+    </PlasmicRootProvider>
+  );
+}
+    `.trim();
+
+    const browserFilePath = path.join(projectPath, "gatsby-browser.js");
+    await fs.writeFile(browserFilePath, wrapperContent);
+
+    const ssrFilePath = path.join(projectPath, "gatsby-ssr.js");
+    await fs.writeFile(ssrFilePath, wrapperContent);
+  }
 }
