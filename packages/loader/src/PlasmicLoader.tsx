@@ -33,3 +33,7 @@ export function Providers(
 ): JSX.Element | null {
   return null;
 }
+
+export function PlasmicRootProvider(props: { children?: React.ReactNode }) {
+  return props.children;
+}

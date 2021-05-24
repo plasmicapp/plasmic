@@ -24,6 +24,7 @@ type GenOptions = {
 type ProviderData = ComponentData & { providerName?: string };
 
 type ConfigData = {
+  plasmicDir: string;
   componentData: Array<ComponentData | PageData>;
   componentDataKeyedByName: Record<string, (ComponentData | PageData)[]>;
   providerData: ProviderData[];
@@ -142,6 +143,7 @@ export async function getConfigData(opts: GenOptions): Promise<ConfigData> {
   }
 
   return {
+    plasmicDir: opts.dir,
     componentData,
     componentDataKeyedByName,
     providerData,
@@ -241,7 +243,6 @@ function getPageUrl(path: string) {
 
 function generatePlasmicLoader(config: ConfigData) {
   const entrypointPath = path.join(__dirname, "../", "PlasmicLoader.jsx");
-
   return writeFile(
     entrypointPath,
     templates.PlasmicLoader({
@@ -253,16 +254,17 @@ function generatePlasmicLoader(config: ConfigData) {
       componentsWithOneProject: Object.values(config.componentDataKeyedByName)
         .filter((components) => components.length === 1)
         .flat(),
-      componentMap: Object.entries(config.componentDataKeyedByName).map(
-        ([name, projects]) => ({ name, projects })
-      ),
+      componentMap: Object.entries(
+        config.componentDataKeyedByName
+      ).map(([name, projects]) => ({ name, projects })),
       providerData: config.providerData,
       providersWithOneProject: Object.values(config.providersKeyedByName)
         .filter((providers) => providers.length === 1)
         .flat(),
-      providerMap: Object.entries(config.providersKeyedByName).map(
-        ([name, projects]) => ({ name, projects })
-      ),
+      providerMap: Object.entries(
+        config.providersKeyedByName
+      ).map(([name, projects]) => ({ name, projects })),
+      plasmicDir: config.plasmicDir,
     })
   );
 }
