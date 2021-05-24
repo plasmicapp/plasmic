@@ -244,15 +244,10 @@ export function renderCollectionNode(node: Node<any>) {
   // node.rendered should already have our item-like or section-like Plume
   // component elements, so we just need to clone them with a secret
   // _node prop that we use to render.
-  if (node.hasChildNodes) {
-    return React.cloneElement(node.rendered as React.ReactElement, {
-      _node: node,
-    });
-  } else {
-    return React.cloneElement(node.rendered as React.ReactElement, {
-      _node: node,
-    });
-  }
+  return React.cloneElement(node.rendered as React.ReactElement, {
+    _node: node,
+    key: node.key,
+  });
 }
 
 /**

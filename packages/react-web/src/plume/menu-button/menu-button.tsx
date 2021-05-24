@@ -6,6 +6,7 @@ import { useFocusable } from "react-aria";
 import { pick } from "../../common";
 import { mergeProps } from "../../react-utils";
 import { Overrides } from "../../render/elements";
+import { useEnsureSSRProvider } from "../../render/ssr";
 import { BaseMenuProps } from "../menu/menu";
 import {
   AnyPlasmicClass,
@@ -116,6 +117,7 @@ export function useMenuButton<
     menuWidth,
   } = props;
 
+  useEnsureSSRProvider();
   const rootRef = React.useRef<HTMLElement>(null);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
 

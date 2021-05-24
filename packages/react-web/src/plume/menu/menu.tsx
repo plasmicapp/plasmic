@@ -6,6 +6,7 @@ import * as React from "react";
 import { pick } from "../../common";
 import { mergeProps } from "../../react-utils";
 import { Overrides } from "../../render/elements";
+import { useEnsureSSRProvider } from "../../render/ssr";
 import {
   renderAsCollectionChild,
   renderCollectionNode,
@@ -93,6 +94,7 @@ export function useMenu<P extends BaseMenuProps, C extends AnyPlasmicClass>(
   config: MenuConfig<C>,
   ref: MenuRef = null
 ) {
+  useEnsureSSRProvider();
   const { ariaProps } = asAriaMenuProps(props);
   const triggerContext = React.useContext(TriggeredOverlayContext);
   const rootRef = React.useRef<HTMLElement>(null);
