@@ -1,9 +1,7 @@
 import { useCheckbox as useAriaCheckbox } from "@react-aria/checkbox";
-import { useHover } from "@react-aria/interactions";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
 import { useToggleState } from "@react-stately/toggle";
 import { AriaCheckboxProps } from "@react-types/checkbox";
-import { HoverEvents } from "@react-types/shared";
 import * as React from "react";
 import { pick } from "../../common";
 import { mergeProps } from "../../react-utils";
@@ -31,8 +29,7 @@ interface CheckboxState {
 
 export interface CheckboxProps
   extends Omit<AriaCheckboxProps, "isSelected" | "defaultSelected">,
-    StyleProps,
-    HoverEvents {
+    StyleProps {
   /**
    * Whether the Checkbox is checked or not; controlled
    */
@@ -83,7 +80,6 @@ export function useCheckbox<P extends CheckboxProps, C extends AnyPlasmicClass>(
   const rootRef = React.useRef<HTMLElement>(null);
   const ariaProps = asAriaCheckboxProps(props);
   const state = useToggleState(ariaProps);
-  const { hoverProps } = useHover(props);
   const { inputProps } = useAriaCheckbox(ariaProps, state, inputRef);
   const variants = {
     ...pick(props, ...plasmicClass.internalVariantProps),
@@ -109,7 +105,7 @@ export function useCheckbox<P extends CheckboxProps, C extends AnyPlasmicClass>(
   const overrides: Overrides = {
     [config.root]: {
       as: "label",
-      props: mergeProps(hoverProps, getStyleProps(props), {
+      props: mergeProps(getStyleProps(props), {
         ref: rootRef,
       }),
       wrapChildren: (children) => (

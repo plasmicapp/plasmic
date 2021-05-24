@@ -11,11 +11,10 @@ import {
   DOMProps,
   FocusableDOMProps,
   FocusableProps,
-  HoverEvents,
   InputBase,
 } from "@react-types/shared";
 import * as React from "react";
-import { mergeProps, useHover, usePress } from "react-aria";
+import { mergeProps, usePress } from "react-aria";
 import { pick } from "../../common";
 import { Overrides } from "../../render/elements";
 import {
@@ -47,7 +46,6 @@ export interface BaseSelectProps
     FocusableDOMProps,
     InputBase,
     FocusableProps,
-    HoverEvents,
     StyleProps {
   /**
    * Key of the currently selected value
@@ -280,7 +278,6 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
     ...triggerPressProps,
     isDisabled,
   });
-  const { hoverProps: triggerHoverProps } = useHover(ariaProps);
 
   const triggerContent = state.selectedItem
     ? selectedContent ?? state.selectedItem.value.props.children
@@ -325,7 +322,7 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
       ),
     },
     [config.trigger]: {
-      props: mergeProps(triggerProps, triggerHoverProps, {
+      props: mergeProps(triggerProps, {
         ref: triggerRef,
         autoFocus,
         disabled: !!isDisabled,

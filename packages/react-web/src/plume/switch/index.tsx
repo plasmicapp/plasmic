@@ -1,8 +1,6 @@
-import { useHover } from "@react-aria/interactions";
 import { useSwitch as useAriaSwitch } from "@react-aria/switch";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
 import { useToggleState } from "@react-stately/toggle";
-import { HoverEvents } from "@react-types/shared";
 import { AriaSwitchProps } from "@react-types/switch";
 import * as React from "react";
 import { pick } from "../../common";
@@ -31,8 +29,7 @@ interface SwitchState {
 
 export interface SwitchProps
   extends Omit<AriaSwitchProps, "isSelected" | "defaultSelected">,
-    StyleProps,
-    HoverEvents {
+    StyleProps {
   /**
    * Whether the Switch is checked or not; controlled
    */
@@ -74,7 +71,6 @@ export function useSwitch<P extends SwitchProps, C extends AnyPlasmicClass>(
   const rootRef = React.useRef<HTMLElement>(null);
   const ariaProps = asAriaSwitchProps(props);
   const state = useToggleState(ariaProps);
-  const { hoverProps } = useHover(props);
   const { inputProps } = useAriaSwitch(ariaProps, state, inputRef);
   const variants = {
     ...pick(props, ...plasmicClass.internalVariantProps),
@@ -96,7 +92,7 @@ export function useSwitch<P extends SwitchProps, C extends AnyPlasmicClass>(
   const overrides: Overrides = {
     [config.root]: {
       as: "label",
-      props: mergeProps(hoverProps, getStyleProps(props), {
+      props: mergeProps(getStyleProps(props), {
         ref: rootRef,
       }),
       wrapChildren: (children) => (
