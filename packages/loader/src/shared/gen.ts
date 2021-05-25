@@ -175,18 +175,19 @@ function generatePlasmicTypes(config: ConfigData) {
   );
 }
 
-function generatePageComponents(config: ConfigData) {
-  return Promise.all(
-    config.componentData.filter(isPageData).map((data) =>
-      writeFile(
-        data.skeletonPath,
-        templates.PlasmicPage({
-          name: data.name,
-          projectId: data.projectId,
-        })
-      )
-    )
-  );
+async function generatePageComponents(config: ConfigData) {
+  // TODO: doing it sequentially because we may have the same page in multiple
+  // projects. This results in writing to the same file, which may creates wrong file content.
+  // This way, the last page will be synced.
+  for (const data of config.componentData.filter(isPageData)) {
+    await writeFile(
+      data.skeletonPath,
+      templates.PlasmicPage({
+        name: data.name,
+        projectId: data.projectId,
+      })
+    );
+  }
 }
 
 function getPageUrl(path: string) {
