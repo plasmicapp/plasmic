@@ -150,7 +150,7 @@ function setPlasmicRootNode(node: React.ReactElement | null) {
   plasmicRootNode.set(node);
 }
 
-export const PlasmicCanvasHost = mobxReactLite.observer(
+const _PlasmicCanvasHost = mobxReactLite.observer(
   function PlasmicCanvasHost() {
     // If window.parent is null, then this is a window whose containing iframe
     // has been detached from the DOM (for the top window, window.parent === window).
@@ -196,6 +196,14 @@ export const PlasmicCanvasHost = mobxReactLite.observer(
     );
   }
 );
+
+export const PlasmicCanvasHost: React.FunctionComponent = () => {
+  const [node, setNode] = React.useState<React.ReactElement<any, any> | null>(null);
+  React.useEffect(() => {
+    setNode(<_PlasmicCanvasHost/>);
+  }, []);
+  return node;
+}
 
 type RenderErrorListener = (err: Error) => void;
 const renderErrorListeners: RenderErrorListener[] = [];
