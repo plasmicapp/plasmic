@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/host",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "plasmic library for app hosting",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -39,7 +39,7 @@
     "typescript": "^3.9.7"
   },
   "peerDependencies": {
-    "@plasmicapp/react-web": ">= 0.2.45",
+    "@plasmicapp/react-web": ">=0.2.45",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
   }
