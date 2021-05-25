@@ -148,14 +148,17 @@ export async function convertOptsToLoaderConfig(
     .forEach((projectId) => (currentProjects[projectId] = { projectId }));
 
   currentConfig.projects = Object.values(currentProjects);
-  currentConfig.aboutThisFile = ""; // Will be defined below.
+  delete currentConfig.aboutThisFile; // Will be defined below.
 
   // Save user configuration.
   await fs.writeFile(
     configPath,
     // Sorting trick to have "aboutThisFile" be the first key.
     JSON.stringify(
-      { aboutThisFile: ABOUT_PAGE_URL, ...currentConfig },
+      {
+        aboutThisFile: ABOUT_PAGE_URL,
+        ...currentConfig,
+      },
       undefined,
       2
     )
