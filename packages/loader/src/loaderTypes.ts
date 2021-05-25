@@ -1,3 +1,5 @@
-export type LoaderProps = {};
+export type LoaderProps = any;
 
-export type Providers = {};
+export type ProviderProps = any;
+
+export type Providers = any;
