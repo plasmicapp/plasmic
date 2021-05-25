@@ -133,7 +133,7 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
       ? `${projectId}:${projectApiToken}`
       : projectId;
     await spawnOrFail(
-      `npx plasmic sync --yes -p ${project}`,
+      `npx -p @plasmicapp/cli plasmic sync --yes -p ${project}`,
       resolvedProjectPath
     );
   } else if (scheme === "loader") {
