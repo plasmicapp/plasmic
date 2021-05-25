@@ -31,9 +31,9 @@ export interface BaseMenuProps extends DOMProps, AriaLabelingProps, StyleProps {
   children?: React.ReactNode;
 
   /**
-   * Called with the value or key of a `Menu.Item` when it is selected.
+   * Called with the value of a `Menu.Item` when it is selected.
    */
-  onAction?: (key: string) => void;
+  onAction?: (value: string) => void;
 }
 
 export type MenuRef = React.Ref<MenuRefValue>;
