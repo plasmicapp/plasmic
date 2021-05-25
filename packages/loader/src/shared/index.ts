@@ -8,6 +8,7 @@ import { setMetadata } from "./metadata";
 import { captureException, initSentry } from "./sentry";
 import * as substitutions from "./substitutions";
 import type { PlasmicLoaderConfig, PlasmicOpts } from "./types";
+import { spawn } from "./utils";
 import { PlasmicOptsSchema } from "./validation";
 
 const ABOUT_PAGE_URL = "https://docs.plasmic.app/learn/loader-config";
@@ -18,13 +19,9 @@ type onRegisterPages = (
 ) => Promise<void>;
 
 export async function watchForChanges(
-  opts?: PlasmicLoaderConfig,
+  opts: PlasmicLoaderConfig,
   onRegisterPages?: onRegisterPages
 ) {
-  if (!opts) {
-    const configPath = path.join(process.cwd(), "plasmic-loader.json");
-    opts = await readLoaderConfig(configPath);
-  }
   const { plasmicDir, pageDir } = opts;
   let currentConfig = await cli.readConfig(plasmicDir);
 
@@ -45,19 +42,25 @@ export async function watchForChanges(
     "lib.js"
   ));
 
-  return userCli.watchProjects(
-    { yes: true, projects: opts.projects, baseDir: plasmicDir },
-    {},
-    async function () {
-      await gen.generateAll({ dir: plasmicDir, pageDir });
-      currentConfig = await cli.readConfig(plasmicDir);
-      if (onRegisterPages) {
-        await onRegisterPages(
-          cli.getPagesFromConfig(plasmicDir, currentConfig),
-          currentConfig
-        ).catch((e) => logger.crash(e.message, e));
+  spawn(
+    userCli.watchProjects(
+      {
+        yes: true,
+        projects: opts.projects.map(({ projectId }) => projectId),
+        baseDir: plasmicDir,
+      },
+      {},
+      async function () {
+        await gen.generateAll({ dir: plasmicDir, pageDir });
+        currentConfig = await cli.readConfig(plasmicDir);
+        if (onRegisterPages) {
+          await onRegisterPages(
+            cli.getPagesFromConfig(plasmicDir, currentConfig),
+            currentConfig
+          ).catch((e) => logger.crash(e.message, e));
+        }
       }
-    }
+    )
   );
 }
 

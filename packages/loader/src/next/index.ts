@@ -1,12 +1,8 @@
 import cp from "child_process";
 import path from "upath";
-import { watchForChanges } from "../shared";
+import { watchForChanges, convertOptsToLoaderConfig } from "../shared";
 import * as logger from "../shared/logger";
-import type {
-  PlasmicOpts,
-  PluginOptions,
-  Substitutions,
-} from "../shared/types";
+import type { PluginOptions, Substitutions } from "../shared/types";
 import { spawn } from "../shared/utils";
 import { generateNextPages } from "./pages";
 
@@ -33,15 +29,11 @@ function initPlasmicLoader(pluginOptions: PluginOptions) {
     },
     dir: defaultDir,
     plasmicDir,
+    projects: [],
+    watch: process.env.NODE_ENV === "development",
     pageDir: path.join(plasmicDir, "pages"),
     substitutions: {} as Substitutions,
   };
-
-  let watch = process.env.NODE_ENV === "development";
-
-  if (pluginOptions.watch != null) {
-    watch = pluginOptions.watch;
-  }
 
   const result = cp.spawnSync(
     "node",
@@ -57,13 +49,19 @@ function initPlasmicLoader(pluginOptions: PluginOptions) {
     process.exit(1);
   }
 
-  if (watch) {
-    spawn(
-      watchForChanges(undefined, (pages, config) =>
-        generateNextPages(pages, nextPageDir, config)
-      )
-    );
-  }
+  spawn(
+    (async function () {
+      const opts = await convertOptsToLoaderConfig(
+        pluginOptions,
+        defaultOptions
+      );
+      if (opts.watch) {
+        await watchForChanges(opts, (pages, config) =>
+          generateNextPages(pages, nextPageDir, config)
+        );
+      }
+    })()
+  );
 }
 
 type NextConfigExport = (phase: string) => {};
