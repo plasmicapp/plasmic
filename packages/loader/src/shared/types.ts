@@ -70,14 +70,14 @@ type PlasmicBase = {
   /**
    * The directory where loader will store the generated assets.
    *
-   * Default: depends on the environment (`.cache/.plasmic` in Gatsby, `.plasmic` in next).
+   * Default: depends on the environment (`.cache/.plasmic` in Gatsby, `.plasmic` in Next).
    */
   plasmicDir: string;
 
   /**
-   * The directory where loader will store the generated pages.
+   * The directory where you store your pages.
    *
-   * Default: `${plasmicDir}/pages`
+   * Default: depends on the environment (`pages` in Next, `src/pages` in Gatsby). 
    */
   pageDir: string;
 

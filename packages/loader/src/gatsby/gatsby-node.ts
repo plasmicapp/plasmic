@@ -32,7 +32,7 @@ async function onGatsbyPreBootstrap(pluginOptions: PluginOptions) {
     dir: defaultDir,
     watch,
     plasmicDir,
-    pageDir: path.join(plasmicDir, "pages"),
+    pageDir: path.join(defaultDir, "src", "pages"),
     substitutions: {} as Substitutions,
   };
 

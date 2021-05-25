@@ -194,7 +194,7 @@ export async function convertOptsToLoaderConfig(
 
 export async function initLoader(config: PlasmicLoaderConfig) {
   await initSentry(config);
-  const { dir, pageDir, projects, plasmicDir, initArgs = {} } = config;
+  const { dir, pageDir, plasmicDir, initArgs = {} } = config;
 
   logger.info("Checking that your loader version is up to date.");
   await cli.ensureRequiredLoaderVersion();

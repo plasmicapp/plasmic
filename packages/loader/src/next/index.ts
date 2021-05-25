@@ -19,7 +19,6 @@ function initPlasmicLoader(pluginOptions: PluginOptions) {
   isFirstTime = false;
   const defaultDir = pluginOptions.dir || process.cwd();
   const plasmicDir = path.join(defaultDir, ".plasmic");
-  const nextPageDir = path.join(defaultDir, "pages");
   const defaultOptions = {
     initArgs: {
       platform: "nextjs",
@@ -31,7 +30,7 @@ function initPlasmicLoader(pluginOptions: PluginOptions) {
     plasmicDir,
     projects: [],
     watch: process.env.NODE_ENV === "development",
-    pageDir: path.join(plasmicDir, "pages"),
+    pageDir: path.join(defaultDir, "pages"),
     substitutions: {} as Substitutions,
   };
 
@@ -57,7 +56,7 @@ function initPlasmicLoader(pluginOptions: PluginOptions) {
       );
       if (opts.watch) {
         await watchForChanges(opts, (pages, config) =>
-          generateNextPages(pages, nextPageDir, config)
+          generateNextPages(pages, opts.pageDir, config)
         );
       }
     })()

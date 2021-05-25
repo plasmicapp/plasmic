@@ -26,14 +26,13 @@ async function run() {
     opts.pluginOptions,
     opts.defaultOptions
   );
-  const nextPageDir = path.join(config.dir, "pages");
   await initLoader(config);
   await maybeAddToGitIgnore(path.join(process.cwd(), ".gitignore"), ".plasmic");
 
   const cliConfig = await cli.readConfig(config.plasmicDir);
   const pages = cli.getPagesFromConfig(config.plasmicDir, cliConfig);
 
-  return generateNextPages(pages, nextPageDir, cliConfig);
+  return generateNextPages(pages, config.pageDir, cliConfig);
 }
 
 if (require.main === module) {
