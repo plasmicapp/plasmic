@@ -6,6 +6,7 @@ import * as React from "react";
 import { pick } from "../../common";
 import { mergeProps } from "../../react-utils";
 import { Overrides } from "../../render/elements";
+import { useEnsureSSRProvider } from "../../render/ssr";
 import {
   AnyPlasmicClass,
   mergeVariantToggles,
@@ -76,6 +77,7 @@ export function useCheckbox<P extends CheckboxProps, C extends AnyPlasmicClass>(
   ref: CheckboxRef = null
 ) {
   const { children, isDisabled, isIndeterminate } = props;
+  useEnsureSSRProvider();
   const inputRef = React.useRef<HTMLInputElement>(null);
   const rootRef = React.useRef<HTMLElement>(null);
   const ariaProps = asAriaCheckboxProps(props);

@@ -29,5 +29,6 @@ export { PlasmicIcon } from "./render/PlasmicIcon";
 export { PlasmicLink } from "./render/PlasmicLink";
 export { PlasmicSlot, renderPlasmicSlot } from "./render/PlasmicSlot";
 export { createUseScreenVariants } from "./render/screen-variants";
+export { PlasmicRootProvider, useIsSSR } from "./render/ssr";
 export { Stack } from "./render/Stack";
 export { useTrigger } from "./render/triggers";

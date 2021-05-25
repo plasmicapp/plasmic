@@ -17,6 +17,7 @@ import * as React from "react";
 import { mergeProps, usePress } from "react-aria";
 import { pick } from "../../common";
 import { Overrides } from "../../render/elements";
+import { useEnsureSSRProvider } from "../../render/ssr";
 import {
   renderAsCollectionChild,
   renderCollectionNode,
@@ -252,6 +253,7 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
   config: SelectConfig<C>,
   ref: React.Ref<SelectRefValue> = null
 ) {
+  useEnsureSSRProvider();
   const { ariaProps } = useAriaSelectProps(props);
   const { placement } = props;
   const state = useAriaSelectState<AriaSelectItemType>(ariaProps);
