@@ -6,7 +6,7 @@
  */
 import { useRouter } from "next/router";
 import PlasmicLoader, {
-  getPageUrls,
+  getUnregisteredPageUrls,
   getComponentFromUrl,
 } from "@plasmicapp/loader";
 
@@ -26,7 +26,7 @@ export async function getStaticProps() {
 
 export async function getStaticPaths() {
   return {
-    paths: getPageUrls()
+    paths: getUnregisteredPageUrls()
       .filter((url) => url !== "/")
       .map((url) => ({
         params: { plasmicLoaderPage: url.substring(1).split("/") },

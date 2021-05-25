@@ -59,6 +59,27 @@ const pagesByUrl = {
   {{~}}
 };
 
+const unregisteredPagesByUrl = {
+  {{~ it.unregisteredPagesByUrl :page}}
+    "{{=page.url}}": {name: "{{=page.name}}", projectId: "{{=page.projectId}}" },
+  {{~}}
+};
+
+/**
+ * Return a list of pages that do not exist in the given
+ * page directory.
+ */
+export function getUnregisteredPageUrls() {
+  return Object.keys(unregisteredPagesByUrl);
+}
+
+/**
+ * Return an array with all the URL paths that corresponds to Plasmic pages.
+ *
+ * There is also `getUnregisteredPageUrls` (the default, added later on) if
+ * you want Plasmic to inspect your pages directory and return the pages
+ * that are not registered.
+ */
 export function getPageUrls() {
   return Object.keys(pagesByUrl);
 }

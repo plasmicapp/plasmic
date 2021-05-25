@@ -12,6 +12,7 @@ type ComponentData = {
 type PageData = ComponentData & {
   url: string;
   skeletonPath: string;
+  isRegistered: boolean;
   type: "page";
 };
 
@@ -31,6 +32,19 @@ type ConfigData = {
 
 function isPageData(data: ComponentData | PageData): data is PageData {
   return data.type === "page";
+}
+
+function pageExists(pageUrl: string, pageDir: string, extension: string) {
+  const pagePath = path.join(pageDir, ...(pageUrl + extension).split("/"));
+  return fs
+    .access(pagePath)
+    .then(() => true)
+    .catch((error) => {
+      if (error.code === "ENOENT") {
+        return false;
+      }
+      throw error;
+    });
 }
 
 function stripExtension(filename: string, removeComposedPath = false) {
@@ -53,6 +67,7 @@ export async function getConfigData(opts: GenOptions): Promise<ConfigData> {
   const configPath = path.join(opts.dir, "plasmic.json");
   const configData = await fs.readFile(configPath);
   const config = JSON.parse(configData.toString());
+  const extension = config.code.lang === "js" ? ".js" : ".tsx";
 
   const componentData: Array<ComponentData | PageData> = [];
   const componentDataKeyedByName: {
@@ -68,8 +83,8 @@ export async function getConfigData(opts: GenOptions): Promise<ConfigData> {
   };
 
   for (const project of config.projects) {
-    project.components.forEach((component: any) => {
-      addToComponentData({
+    for (const component of project.components) {
+      const componentObj = {
         name: component.name,
         projectId: project.projectId,
         path: path.join(
@@ -83,12 +98,21 @@ export async function getConfigData(opts: GenOptions): Promise<ConfigData> {
           config.srcDir,
           component.importSpec.modulePath
         ),
-        url:
-          component.componentType === "page"
-            ? getPageUrl(component.importSpec.modulePath)
-            : undefined,
-      });
-    });
+      };
+
+      if (isPageData(componentObj)) {
+        componentObj.url = getPageUrl(component.importSpec.modulePath);
+        componentObj.isRegistered = await pageExists(
+          componentObj.url,
+          opts.pageDir,
+          extension
+        );
+      }
+
+      // isRegistered
+      addToComponentData(componentObj);
+    }
+
     project.icons.forEach((icon: any) =>
       addToComponentData({
         name: icon.name,
@@ -172,7 +196,7 @@ function generatePlasmicTypes(config: ConfigData) {
       ...provider,
       path: stripExtension(provider.path),
     }));
-  
+
   return writeFile(
     path.join(__dirname, "../", "loaderTypes.d.ts"),
     templates.LoaderTypes({
@@ -223,6 +247,9 @@ function generatePlasmicLoader(config: ConfigData) {
     templates.PlasmicLoader({
       componentData: config.componentData,
       pagesByUrl: config.componentData.filter(isPageData),
+      unregisteredPagesByUrl: config.componentData
+        .filter(isPageData)
+        .filter((page) => !page.isRegistered),
       componentsWithOneProject: Object.values(config.componentDataKeyedByName)
         .filter((components) => components.length === 1)
         .flat(),

@@ -15,6 +15,10 @@ export function getPageUrls(): string[] {
   return [];
 }
 
+export function getUnregisteredPageUrls(): string[] {
+  return [];
+}
+
 export function getComponentFromUrl(url: string | string[]): {
   name: any;
   projectId: any;

@@ -91,10 +91,12 @@ async function syncCatchAllPage(
     .readFile(path.join(pageDir, catchAllFile))
     .then((content) => content.toString());
 
-  if (
-    !catchAllContent.includes("getPageUrls") ||
-    !catchAllContent.includes("@plasmicapp/loader")
-  ) {
+  const includesPagesFunction =
+    catchAllContent.includes("getPageUrls") ||
+    catchAllContent.includes("getUnregisteredPageUrls");
+  const includesLoaderImport = catchAllContent.includes("@plasmicapp/loader");
+
+  if (!includesPagesFunction || !includesLoaderImport) {
     if (!didWarnConflictingCatchAll) {
       logger.warn(
         `To use PlasmicPages, please add it to your top-level catch-all "${catchAllFile}".` +
