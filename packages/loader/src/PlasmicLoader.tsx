@@ -16,8 +16,8 @@ export function getPageUrls(): string[] {
 }
 
 export function getComponentFromUrl(url: string | string[]): {
-  name: string;
-  projectId: string;
+  name: any;
+  projectId: any;
 } {
   throw new Error(
     "This content should be overriden every time you run plasmic loader. If you are seeing this error, please report it as a bug!"
