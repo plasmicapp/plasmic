@@ -165,12 +165,21 @@ function generatePlasmicTypes(config: ConfigData) {
     })
   );
 
+  const singleProviders = Object.values(config.providersKeyedByName)
+    .filter((providers) => providers.length === 1)
+    .flat()
+    .map((provider) => ({
+      ...provider,
+      path: stripExtension(provider.path),
+    }));
+  
   return writeFile(
     path.join(__dirname, "../", "loaderTypes.d.ts"),
     templates.LoaderTypes({
       singleComponents,
       components,
       providersWithProjects,
+      singleProviders,
     })
   );
 }
