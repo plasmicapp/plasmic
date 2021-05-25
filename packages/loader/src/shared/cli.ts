@@ -95,8 +95,8 @@ async function installPackages(plasmicDir: string) {
   "name":"plasmic-loader",
   "version":"0.0.1",
   "dependencies": {
-    "@plasmicapp/react-web": "latest",
-    "@plasmicapp/cli": "latest"
+    "@plasmicapp/react-web": "*",
+    "@plasmicapp/cli": "*"
   }
 }`
   );
@@ -207,7 +207,11 @@ export function getPagesFromConfig(plasmicDir: string, config: any) {
       componentData.push({
         name: component.name,
         projectId: project.projectId,
-        path: path.join(plasmicDir, "components", component.importSpec.modulePath),
+        path: path.join(
+          plasmicDir,
+          "components",
+          component.importSpec.modulePath
+        ),
         url: getPageUrl(component.importSpec.modulePath),
       });
     }
