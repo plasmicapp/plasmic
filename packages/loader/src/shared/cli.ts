@@ -207,7 +207,7 @@ export function getPagesFromConfig(plasmicDir: string, config: any) {
       componentData.push({
         name: component.name,
         projectId: project.projectId,
-        path: path.join(plasmicDir, component.importSpec.modulePath),
+        path: path.join(plasmicDir, "components", component.importSpec.modulePath),
         url: getPageUrl(component.importSpec.modulePath),
       });
     }
