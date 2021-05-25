@@ -158,6 +158,7 @@ export async function convertOptsToLoaderConfig(
       {
         aboutThisFile: ABOUT_PAGE_URL,
         ...currentConfig,
+        $schema: "./node_modules/@plasmicapp/loader/plasmic-loader.schema.json",
       },
       undefined,
       2

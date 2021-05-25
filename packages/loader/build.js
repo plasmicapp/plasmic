@@ -13,6 +13,16 @@ try {
   process.exit(1);
 }
 
+try {
+  cp.execSync(
+    "typescript-json-schema tsconfig.json 'UserPlasmicLoaderConfig' --excludePrivate --required > ./dist/plasmic-loader.schema.json"
+  );
+} catch (e) {
+  console.log(e.stdout.toString());
+  console.log(e.stderr.toString());
+  process.exit(1);
+}
+
 fs.copyFileSync(
   path.join("src", "gatsby", "package.json"),
   path.join("dist", "gatsby", "package.json")
