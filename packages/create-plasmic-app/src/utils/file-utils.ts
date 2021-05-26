@@ -167,8 +167,18 @@ export async function overwriteIndex(
       // Files to ignore
       ...plasmicFiles.map((f) => path.basename(f)),
     ]);
-    // Create a blank 404 page - `gatsby build` fails without it
-    await fs.writeFile(path.join(projectPath, "src/pages/404.js"), "");
+    // Create a very basic 404 page - `gatsby build` fails without it.
+    // We've deleted the components that the default 404 page depended
+    // on, so
+    await fs.writeFile(
+      path.join(projectPath, "src/pages/404.js"),
+      `
+const NotFound = () => {
+  return "Not Found";
+};
+export default NotFound;
+    `.trim()
+    );
   }
 
   // We're done if we can already render an index page
