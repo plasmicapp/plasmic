@@ -187,12 +187,14 @@ const _PlasmicCanvasHost = mobxReactLite.observer(
     if (shouldRenderStudio) {
       return null;
     }
-    return (
+    return ReactDOM.createPortal(
       <div id="app" className="__wab_user-body">
         <ErrorBoundary key={`${renderCount}`}>
           {plasmicRootNode.get()}
         </ErrorBoundary>
-      </div>
+      </div>,
+      document.body,
+      "app"
     );
   }
 );
