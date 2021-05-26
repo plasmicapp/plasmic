@@ -3,18 +3,24 @@ import * as mobx from "mobx";
 import * as mobxReactLite from "mobx-react-lite";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import ResizeObserver from "resize-observer-polyfill";
 import * as slate from "slate";
 import * as slateReact from "slate-react";
-import ResizeObserver from "resize-observer-polyfill";
 import { globalHookCtx } from "./globalHook";
 import { ensure } from "./lang-utils";
 const root = require("window-or-global");
 
-export type PrimitiveType = "string" | "boolean" | "number" | "object" | "slot" | {
-  type: "slot";
-  // The unique names of all code components that can be placed in the slot
-  allowedComponents: string[];
-};
+export type PrimitiveType =
+  | "string"
+  | "boolean"
+  | "number"
+  | "object"
+  | "slot"
+  | {
+      type: "slot";
+      // The unique names of all code components that can be placed in the slot
+      allowedComponents: string[];
+    };
 
 export interface ComponentMeta {
   /**
@@ -108,10 +114,8 @@ export function registerFetcher(fetcher: Fetcher, meta: FetcherMeta) {
   root.__PlasmicFetcherRegistry.push({ fetcher, meta });
 }
 
-const plasmicRootNode: mobx.IObservableValue<React.ReactElement | null> = mobx.observable.box(
-  null,
-  { deep: false }
-);
+const plasmicRootNode: mobx.IObservableValue<React.ReactElement | null> =
+  mobx.observable.box(null, { deep: false });
 
 root.__Sub = {
   React,
@@ -131,8 +135,11 @@ root.__Sub = {
 
 function getPlasmicOrigin() {
   const params = new URL(`https://fakeurl/${location.hash.replace(/#/, "?")}`)
-  .searchParams;
-  return ensure(params.get("origin"));
+    .searchParams;
+  return ensure(
+    params.get("origin"),
+    "Missing information from Plasmic window."
+  );
 }
 
 function renderStudioIntoIframe() {
@@ -150,62 +157,71 @@ function setPlasmicRootNode(node: React.ReactElement | null) {
   plasmicRootNode.set(node);
 }
 
-const _PlasmicCanvasHost = mobxReactLite.observer(
-  function PlasmicCanvasHost() {
-    // If window.parent is null, then this is a window whose containing iframe
-    // has been detached from the DOM (for the top window, window.parent === window).
-    // In that case, we shouldn't do anything.  If window.parent is null, by the way,
-    // location.hash will also be null.
-    const isFrameAttached = !!window.parent;
-    const shouldRenderStudio =
-      isFrameAttached &&
-      !document.querySelector("#plasmic-studio-tag") &&
-      !location.hash.match(/\bcanvas=true\b/) &&
-      !location.hash.match(/\blive=true\b/);
-    React.useEffect(() => {
-      if (shouldRenderStudio && isFrameAttached) {
-        renderStudioIntoIframe();
-      }
-    }, [shouldRenderStudio, isFrameAttached]);
-    React.useEffect(() => {
-      if (!shouldRenderStudio &&
-          !document.querySelector("#getlibs") &&
-          location.hash.match(/\blive=true\b/)) {
-        const scriptElt = document.createElement("script");
-        scriptElt.id = "getlibs";
-        scriptElt.src = getPlasmicOrigin() + "/static/js/getlibs.js";
-        scriptElt.async = false;
-        scriptElt.onload = () => {
-          (window as any).__GetlibsReadyResolver?.();
-        }
-        document.head.append(scriptElt);
-      }
-    }, [shouldRenderStudio])
-    if (!isFrameAttached) {
-      return null;
+const _PlasmicCanvasHost = mobxReactLite.observer(function PlasmicCanvasHost() {
+  // If window.parent is null, then this is a window whose containing iframe
+  // has been detached from the DOM (for the top window, window.parent === window).
+  // In that case, we shouldn't do anything.  If window.parent is null, by the way,
+  // location.hash will also be null.
+  const isFrameAttached = !!window.parent;
+  const shouldRenderStudio =
+    isFrameAttached &&
+    !document.querySelector("#plasmic-studio-tag") &&
+    !location.hash.match(/\bcanvas=true\b/) &&
+    !location.hash.match(/\blive=true\b/);
+  React.useEffect(() => {
+    if (shouldRenderStudio && isFrameAttached) {
+      renderStudioIntoIframe();
     }
-    if (shouldRenderStudio) {
-      return null;
+  }, [shouldRenderStudio, isFrameAttached]);
+  React.useEffect(() => {
+    if (
+      !shouldRenderStudio &&
+      !document.querySelector("#getlibs") &&
+      location.hash.match(/\blive=true\b/)
+    ) {
+      const scriptElt = document.createElement("script");
+      scriptElt.id = "getlibs";
+      scriptElt.src = getPlasmicOrigin() + "/static/js/getlibs.js";
+      scriptElt.async = false;
+      scriptElt.onload = () => {
+        (window as any).__GetlibsReadyResolver?.();
+      };
+      document.head.append(scriptElt);
+    }
+  }, [shouldRenderStudio]);
+  if (!isFrameAttached) {
+    return null;
+  }
+  if (
+    location.hash.match(/\bcanvas=true\b/) ||
+    location.hash.match(/\blive=true\b/)
+  ) {
+    let appDiv = document.querySelector("#app.__wab_user-body");
+    if (!appDiv) {
+      appDiv = document.createElement("div");
+      appDiv.id = "app";
+      appDiv.classList.add("__wab_user-body");
+      document.body.appendChild(appDiv);
     }
     return ReactDOM.createPortal(
-      <div id="app" className="__wab_user-body">
-        <ErrorBoundary key={`${renderCount}`}>
-          {plasmicRootNode.get()}
-        </ErrorBoundary>
-      </div>,
-      document.body,
+      <ErrorBoundary key={`${renderCount}`}>
+        {plasmicRootNode.get()}
+      </ErrorBoundary>,
+      appDiv,
       "app"
     );
   }
-);
+  return null;
+});
 
 export const PlasmicCanvasHost: React.FunctionComponent = () => {
-  const [node, setNode] = React.useState<React.ReactElement<any, any> | null>(null);
+  const [node, setNode] =
+    React.useState<React.ReactElement<any, any> | null>(null);
   React.useEffect(() => {
-    setNode(<_PlasmicCanvasHost/>);
+    setNode(<_PlasmicCanvasHost />);
   }, []);
   return node;
-}
+};
 
 type RenderErrorListener = (err: Error) => void;
 const renderErrorListeners: RenderErrorListener[] = [];

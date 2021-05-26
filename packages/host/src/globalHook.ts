@@ -59,7 +59,7 @@ if (codeComponents) {
     // Finish generator, to prevent memory leak
     nodeIterator.return?.();
     return false;
-  }
+  };
 
   if (!officialHook.plasmic) {
     const officialHookProps = { ...officialHook };
@@ -104,16 +104,20 @@ if (codeComponents) {
 
           // We only need to traverse canvas frames
           if (isCanvasFrame(rootNode)) {
-            traverse(rootNode, (node: Fiber) => {
-              const valNodeUid = tryGetValNodeUid(node);
-              if (valNodeUid) {
-                officialHook.plasmic.uidToFiber.set(valNodeUid, node);
+            traverse(
+              rootNode,
+              (node: Fiber) => {
+                const valNodeUid = tryGetValNodeUid(node);
+                if (valNodeUid) {
+                  officialHook.plasmic.uidToFiber.set(valNodeUid, node);
+                }
+              },
+              {
+                // If several nodes receive the data props, we want the root to
+                // overwrite them, so it should be the last one to be visited.
+                order: ["child", "sibling", "self"],
               }
-            }, {
-              // If several nodes receive the data props, we want the root to
-              // overwrite them, so it should be the last one to be visited.
-              order: ["child", "sibling", "self"]
-            });
+            );
             lastSynced = officialHook.plasmic.finishedEvalCount;
           }
         }
