@@ -85,20 +85,22 @@ export async function getConfigData(opts: GenOptions): Promise<ConfigData> {
 
   for (const project of config.projects) {
     for (const component of project.components) {
+      const blackboxPath = path.join(
+        opts.dir,
+        config.srcDir,
+        component.renderModuleFilePath
+      );
+      const skeletonPath = path.join(
+        opts.dir,
+        config.srcDir,
+        component.importSpec.modulePath
+      );
+
       const componentObj = {
         name: component.name,
         projectId: project.projectId,
-        path: path.join(
-          opts.dir,
-          config.srcDir,
-          component.renderModuleFilePath
-        ),
+        path: component.plumeType ? skeletonPath : blackboxPath,
         type: component.componentType,
-        skeletonPath: path.join(
-          opts.dir,
-          config.srcDir,
-          component.importSpec.modulePath
-        ),
       };
 
       if (isPageData(componentObj)) {
@@ -108,6 +110,7 @@ export async function getConfigData(opts: GenOptions): Promise<ConfigData> {
           opts.pageDir,
           extension
         );
+        componentObj.skeletonPath = skeletonPath;
       }
 
       // isRegistered
@@ -254,16 +257,16 @@ function generatePlasmicLoader(config: ConfigData) {
       componentsWithOneProject: Object.values(config.componentDataKeyedByName)
         .filter((components) => components.length === 1)
         .flat(),
-      componentMap: Object.entries(
-        config.componentDataKeyedByName
-      ).map(([name, projects]) => ({ name, projects })),
+      componentMap: Object.entries(config.componentDataKeyedByName).map(
+        ([name, projects]) => ({ name, projects })
+      ),
       providerData: config.providerData,
       providersWithOneProject: Object.values(config.providersKeyedByName)
         .filter((providers) => providers.length === 1)
         .flat(),
-      providerMap: Object.entries(
-        config.providersKeyedByName
-      ).map(([name, projects]) => ({ name, projects })),
+      providerMap: Object.entries(config.providersKeyedByName).map(
+        ([name, projects]) => ({ name, projects })
+      ),
       plasmicDir: config.plasmicDir,
     })
   );
