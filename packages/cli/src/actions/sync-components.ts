@@ -115,7 +115,7 @@ export async function syncProjectComponents(
   pendingMerge: ComponentPendingMerge[],
   projectLock: ProjectLock,
   checksums: ChecksumBundle,
-  baseDir: string,
+  baseDir: string
 ) {
   const componentsFromChecksums = new Set([
     ...checksums.cssRulesChecksums.map(([id, _]) => id),
@@ -191,6 +191,7 @@ export async function syncProjectComponents(
       scheme,
       nameInIdToUuid,
       isPage,
+      plumeType,
     } = bundle;
     if (context.cliArgs.quiet !== true) {
       logger.info(
@@ -228,6 +229,7 @@ export async function syncProjectComponents(
         cssFilePath: defaultCssFilePath,
         scheme: scheme as "blackbox" | "direct",
         componentType: isPage ? "page" : "component",
+        plumeType,
       };
       allCompConfigs[id] = compConfig;
       project.components.push(allCompConfigs[id]);
@@ -312,6 +314,8 @@ export async function syncProjectComponents(
         compConfig.importSpec.modulePath = skeletonPath;
       }
 
+      compConfig.plumeType = plumeType;
+
       if (scheme === "direct") {
         // We cannot merge right now, but wait until all the imports are resolved
         pendingMerge.push({
@@ -382,7 +386,11 @@ export async function syncProjectComponents(
           force: !isNew,
         }
       );
-      const formattedCssRules = formatAsLocal(cssRules, compConfig.cssFilePath, baseDir);
+      const formattedCssRules = formatAsLocal(
+        cssRules,
+        compConfig.cssFilePath,
+        baseDir
+      );
       await writeFileContent(
         context,
         compConfig.cssFilePath,
