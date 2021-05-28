@@ -28,6 +28,7 @@ export interface ComponentBundle {
   scheme: string;
   nameInIdToUuid: Array<[string, string]>;
   isPage: boolean;
+  plumeType?: string;
 }
 
 export interface GlobalVariantBundle {

@@ -241,6 +241,9 @@ export interface ComponentConfig {
   scheme: "blackbox" | "direct";
 
   componentType: "page" | "component";
+
+  /** Plume type if component is a Plume component */
+  plumeType?: string;
 }
 
 export interface IconConfig {
