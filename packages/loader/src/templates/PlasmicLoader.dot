@@ -139,3 +139,8 @@ export default function PlasmicLoader({ projectId, component, componentProps = {
   const Component = getComponent(projectId, component);
   return renderWithProviders(React.createElement(Component, componentProps), projectId, providerProps);
 };
+
+PlasmicLoader.getPlumeType = function({ projectId, component }) {
+  const Component = getComponent(projectId, component);
+  return Component.__plumeType;
+}

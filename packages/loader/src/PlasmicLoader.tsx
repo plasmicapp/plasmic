@@ -6,6 +6,12 @@ export default function PlasmicLoader(props: LoaderProps): JSX.Element | null {
   return null;
 }
 
+PlasmicLoader.getPlumeType = function (
+  props: Pick<LoaderProps, "projectId" | "component">
+): string | undefined {
+  return undefined;
+};
+
 export const componentsByPath: Record<
   string,
   { name: string; projectId: string }
