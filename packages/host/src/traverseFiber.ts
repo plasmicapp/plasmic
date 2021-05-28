@@ -57,10 +57,10 @@ export function traverseTree(
   visit: (node: Fiber) => boolean,
   visitChildFirst: boolean,
   visitSiblings: boolean
-) {
+): boolean {
   if (!visitChildFirst) {
     if (visit(node)) {
-      return;
+      return true;
     }
   }
   const isSuspense = node.tag === SuspenseComponent;
@@ -70,18 +70,25 @@ export function traverseTree(
     const fallback = primary ? primary.sibling : null;
     const fallbackChild = fallback ? fallback.child : null;
     if (fallbackChild !== null) {
-      traverseTree(fallbackChild, visit, visitChildFirst, true);
+      if (traverseTree(fallbackChild, visit, visitChildFirst, true)) {
+        return true;
+      }
     }
   } else {
     if (node.child !== null) {
-      traverseTree(node.child, visit, visitChildFirst, true);
+      if (traverseTree(node.child, visit, visitChildFirst, true)) {
+        return true;
+      }
     }
   }
 
   if (visitSiblings && node.sibling !== null) {
-    traverseTree(node.sibling, visit, visitChildFirst, true);
+    if (traverseTree(node.sibling, visit, visitChildFirst, true)) {
+      return true;
+    }
   }
   if (visitChildFirst) {
-    visit(node);
+    return visit(node);
   }
+  return false;
 };
