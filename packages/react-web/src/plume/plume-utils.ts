@@ -69,9 +69,12 @@ export function noOutline() {
   return { outline: "none" };
 }
 
-export function getPlumeType(child: React.ReactChild) {
-  if (React.isValidElement(child)) {
-    return (child.type as any).__plumeType as string | undefined;
+export function getPlumeType(child: React.ReactChild): string | undefined {
+  if (!React.isValidElement(child)) {
+    return undefined;
   }
-  return undefined;
+  const childType = child.type as any;
+  return (childType.__plumeType || childType.getPlumeType?.(child.props)) as
+    | string
+    | undefined;
 }
