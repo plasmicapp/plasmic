@@ -1,6 +1,6 @@
 import { Fiber } from "./fiber";
-import { ensure } from "./lang-utils";
-import { traverse, traverseGenerator } from "./traverseFiber";
+import { assert } from "./lang-utils";
+import { traverseTree, traverseUpdates } from "./traverseFiber";
 
 const root = require("window-or-global");
 
@@ -26,40 +26,7 @@ const codeComponents = searchParams.get("codeComponents") === "true";
 const officialHook = (root as any).__REACT_DEVTOOLS_GLOBAL_HOOK__;
 
 if (codeComponents) {
-  ensure(officialHook);
-  // Return true if this is a canvas frame's tree.
-  // Performs a BFS and checks if any of the first 30 nodes contain the
-  // "frameInfo" property.
-  // Right now we rely on one of the first elements in the tree passing a prop
-  // with this name. It's not the first element in the React tree because
-  // it's below some React context providers for example.
-  // It's important to filter canvas frames to avoid performance regressions.
-  const isCanvasFrame = (rootNode: Fiber) => {
-    const nodeIterator = traverseGenerator(rootNode, {
-      order: ["self", "sibling", "child"],
-    });
-
-    let count = 0;
-    let next: IteratorResult<Fiber, any>;
-
-    // Get first 150 nodes and then stop the generator
-    while (count < 150 && !(next = nodeIterator.next()).done) {
-      count++;
-      const node: Fiber = next.value;
-      if (
-        [
-          ...Object.keys(node.pendingProps || {}),
-          ...Object.keys(node.memoizedProps || {}),
-        ].includes("frameInfo")
-      ) {
-        return true;
-      }
-    }
-
-    // Finish generator, to prevent memory leak
-    nodeIterator.return?.();
-    return false;
-  };
+  assert(!!officialHook);
 
   if (!officialHook.plasmic) {
     const officialHookProps = { ...officialHook };
@@ -67,19 +34,7 @@ if (codeComponents) {
 
     officialHook.plasmic = {
       uidToFiber: new Map<number, Fiber>(),
-      startedEvalCount: 0,
-      finishedEvalCount: 0,
     };
-
-    // To avoid unnecessary traversals, we keep track of the number of evals
-    // that started before the current root commit, and the number of finished
-    // evals before the last time a react tree has been traversed. This way,
-    // we won't miss any change that happended during eval (so we will traverse
-    // on every commit between eval starts and eval finishes) but won't traverse
-    // on changes that didn't happen in the eval phase to avoid performance
-    // regressions.
-    let lastSynced = 0;
-
     const tryGetValNodeUid = (node: Fiber): number | undefined => {
       const hasValNodeData = (v: any) => {
         return typeof v === "object" && v !== null && valNodeData in v;
@@ -87,10 +42,52 @@ if (codeComponents) {
       if (hasValNodeData(node.memoizedProps)) {
         return +node.memoizedProps[valNodeData];
       }
-      if (hasValNodeData(node.pendingProps)) {
-        return +node.pendingProps[valNodeData];
-      }
       return undefined;
+    };
+
+    const traversedFibers = new Set<Fiber>();
+    const nonCanvasFibers = new Set<Fiber>();
+    const canvasRootFiberToUids = new Map<Fiber, number[]>();
+
+    const addNode = (node: Fiber, uids: number[]) => {
+      const valNodeUid = tryGetValNodeUid(node);
+      if (valNodeUid) {
+        officialHook.plasmic.uidToFiber.set(valNodeUid, node);
+        uids.push(valNodeUid);
+      }
+      return false;
+    };
+
+    // Return true if this is a canvas frame's tree.
+    // Performs a BFS and checks if any of the first 150 nodes contain the
+    // "frameInfo" property.
+    // Right now we rely on one of the first elements in the tree passing a prop
+    // with this name. It's not the first element in the React tree because
+    // it's below some React context providers for example.
+    // It's important to filter canvas frames to avoid performance regressions.
+    const isCanvasFrame = (rootNode: Fiber) => {
+      if (canvasRootFiberToUids.has(rootNode)) {
+        return true;
+      }
+      if (nonCanvasFibers.has(rootNode)) {
+        return false;
+      }
+      let count = 0;
+      let result = false;
+      traversedFibers.add(rootNode);
+      traverseTree(rootNode, (node) => {
+        if ([...Object.keys(node.memoizedProps || {})].includes("frameInfo")) {
+          result = true;
+          return true;
+        }
+        count++;
+        return !(count < 150);
+      }, false, false);
+      if (count === 150) {
+        // Likely not canvas
+        nonCanvasFibers.add(rootNode);
+      }
+      return result;
     };
 
     const customHookProps = {
@@ -99,26 +96,42 @@ if (codeComponents) {
         fiberRoot: { current: Fiber },
         priorityLevel: any
       ) => {
-        if (lastSynced < officialHook.plasmic.startedEvalCount) {
-          const { current: rootNode } = fiberRoot;
+        const { current: rootNode } = fiberRoot;
 
-          // We only need to traverse canvas frames
-          if (isCanvasFrame(rootNode)) {
-            traverse(
-              rootNode,
-              (node: Fiber) => {
-                const valNodeUid = tryGetValNodeUid(node);
-                if (valNodeUid) {
-                  officialHook.plasmic.uidToFiber.set(valNodeUid, node);
-                }
-              },
-              {
-                // If several nodes receive the data props, we want the root to
-                // overwrite them, so it should be the last one to be visited.
-                order: ["child", "sibling", "self"],
+        // We only need to traverse canvas frames
+        if (isCanvasFrame(rootNode)) {
+          const wasMounted =
+            rootNode.alternate != null &&
+            rootNode.alternate.memoizedState != null &&
+            rootNode.alternate.memoizedState.element != null;
+          if (!canvasRootFiberToUids.has(rootNode) || !wasMounted) {
+            // New tree, traverse it entirely
+            const uids: number[] = [];
+            canvasRootFiberToUids.set(rootNode, uids);
+            traverseTree(rootNode, (fiber: Fiber) => addNode(fiber, uids), true, false);
+          } else {
+            const isMounted =
+              rootNode.memoizedState != null &&
+              rootNode.memoizedState.element != null;
+            if (isMounted) {
+              const uids = canvasRootFiberToUids.get(rootNode) ?? [];
+              if (!canvasRootFiberToUids.has(rootNode)) {
+                canvasRootFiberToUids.set(rootNode, uids);
               }
-            );
-            lastSynced = officialHook.plasmic.finishedEvalCount;
+              if (rootNode.alternate) {
+                traverseUpdates(rootNode, rootNode.alternate, (fiber: Fiber) =>
+                  addNode(fiber, uids)
+                );
+              } else {
+                // New tree
+                traverseTree(
+                  rootNode,
+                  (fiber: Fiber) => addNode(fiber, uids),
+                  true,
+                  false
+                );
+              }
+            }
           }
         }
         officialHookProps.onCommitFiberRoot(
@@ -140,12 +153,8 @@ if (codeComponents) {
 
 interface GlobalHookCtx {
   uidToFiber: Map<number, Fiber>;
-  startedEvalCount: number;
-  finishedEvalCount: number;
 }
 
 export const globalHookCtx = (officialHook?.plasmic || {
   uidToFiber: new Map<number, Fiber>(),
-  startedEvalCount: 0,
-  finishedEvalCount: 0,
 }) as GlobalHookCtx;
