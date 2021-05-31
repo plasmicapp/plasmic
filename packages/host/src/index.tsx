@@ -10,7 +10,7 @@ import { globalHookCtx } from "./globalHook";
 import { ensure } from "./lang-utils";
 const root = require("window-or-global");
 
-mobx.configure({ isolateGlobalState: true });
+mobx.configure({ isolateGlobalState: true, enforceActions: "never" });
 
 export type PrimitiveType =
   | "string"

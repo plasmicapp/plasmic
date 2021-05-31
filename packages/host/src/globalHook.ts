@@ -59,7 +59,7 @@ if (codeComponents) {
     };
 
     // Return true if this is a canvas frame's tree.
-    // Performs a BFS and checks if any of the first 150 nodes contain the
+    // Performs a BFS and checks if any of the first 100 nodes contain the
     // "frameInfo" property.
     // Right now we rely on one of the first elements in the tree passing a prop
     // with this name. It's not the first element in the React tree because
@@ -81,9 +81,9 @@ if (codeComponents) {
           return true;
         }
         count++;
-        return !(count < 150);
+        return (count >= 100);
       }, false, false);
-      if (count === 150) {
+      if (count >= 100) {
         // Likely not canvas
         nonCanvasFibers.add(rootNode);
       }
