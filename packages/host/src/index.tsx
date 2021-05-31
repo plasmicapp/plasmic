@@ -26,32 +26,43 @@ export type PrimitiveType =
 
 export interface ComponentMeta {
   /**
-   * Any unique identifying string for this fetcher.
+   * Any unique string name used to identify that component. Each component
+   * should be registered with a different `meta.name`, even if they have the
+   * same name in the code.
    */
   name: string;
   /**
-   * The Studio-user-friendly display name.
+   * The name to be displayed for the component in Studio. Optional: if not
+   * specified, `meta.name` is used.
    */
   displayName?: string;
   /**
-   * The symbol to import from the importPath.
+   * The javascript name to be used when generating code. Optional: if not
+   * provided, `meta.name` is used.
    */
   importName?: string;
+  /**
+   * An object describing the component properties to be used in Studio.
+   * For each `prop`, there should be an entry `meta.props[prop]` describing
+   * its type.
+   */
   props: { [prop: string]: PrimitiveType };
   /**
-   * Either the path to the component relative to `rootDir` or the npm
-   * package name
+   * The path to be used when importing the component in the generated code.
+   * It can be the name of the package that contains the component, or the path
+   * to the file in the project (relative to the root directory).
    */
   importPath: string;
   /**
-   * Whether it's a default export or named export
+   *  Whether the component is the default export from that path. Optional: if
+   * not specified, it's considered `false`.
    */
   isDefaultExport?: boolean;
-
   /**
-   * The prop that expects CSS class names, required for styling code component
-   * instances from Plasmic Studio. If not specified, it's assumed to be
-   * "className".
+   * The prop that expects the CSS classes with styles to be applied to the
+   * component. Optional: if not specified, Plasmic will expect it to be
+   * `className`. Notice that if the component does not accept CSS classes, the
+   * component will not be able to receive styles from the Studio.
    */
   classNameProp?: string;
 }
@@ -159,17 +170,24 @@ function setPlasmicRootNode(node: React.ReactElement | null) {
   plasmicRootNode.set(node);
 }
 
+/**
+ * React context to detect whether the component is rendered on Plasmic editor.
+ */
+export const PlasmicCanvasContext = React.createContext<boolean>(false);
+
 const _PlasmicCanvasHost = mobxReactLite.observer(function PlasmicCanvasHost() {
   // If window.parent is null, then this is a window whose containing iframe
   // has been detached from the DOM (for the top window, window.parent === window).
   // In that case, we shouldn't do anything.  If window.parent is null, by the way,
   // location.hash will also be null.
   const isFrameAttached = !!window.parent;
+  const isCanvas = !!location.hash.match(/\bcanvas=true\b/);
+  const isLive = !!location.hash.match(/\blive=true\b/);
   const shouldRenderStudio =
     isFrameAttached &&
     !document.querySelector("#plasmic-studio-tag") &&
-    !location.hash.match(/\bcanvas=true\b/) &&
-    !location.hash.match(/\blive=true\b/);
+    !isCanvas &&
+    !isLive;
   React.useEffect(() => {
     if (shouldRenderStudio && isFrameAttached) {
       renderStudioIntoIframe();
@@ -179,7 +197,7 @@ const _PlasmicCanvasHost = mobxReactLite.observer(function PlasmicCanvasHost() {
     if (
       !shouldRenderStudio &&
       !document.querySelector("#getlibs") &&
-      location.hash.match(/\blive=true\b/)
+      isLive
     ) {
       const scriptElt = document.createElement("script");
       scriptElt.id = "getlibs";
@@ -194,23 +212,22 @@ const _PlasmicCanvasHost = mobxReactLite.observer(function PlasmicCanvasHost() {
   if (!isFrameAttached) {
     return null;
   }
-  if (
-    location.hash.match(/\bcanvas=true\b/) ||
-    location.hash.match(/\blive=true\b/)
-  ) {
-    let appDiv = document.querySelector("#app.__wab_user-body");
+  if (isCanvas || isLive) {
+    let appDiv = document.querySelector("#plasmic-app.__wab_user-body");
     if (!appDiv) {
       appDiv = document.createElement("div");
-      appDiv.id = "app";
+      appDiv.id = "plasmic-app";
       appDiv.classList.add("__wab_user-body");
       document.body.appendChild(appDiv);
     }
     return ReactDOM.createPortal(
       <ErrorBoundary key={`${renderCount}`}>
-        {plasmicRootNode.get()}
+        <PlasmicCanvasContext.Provider value={isCanvas}>
+          {plasmicRootNode.get()}
+        </PlasmicCanvasContext.Provider>
       </ErrorBoundary>,
       appDiv,
-      "app"
+      "plasmic-app"
     );
   }
   return null;
