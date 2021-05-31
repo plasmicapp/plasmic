@@ -62,6 +62,11 @@ import { isString } from "../common";
 import { getElementTypeName, toChildArray } from "../react-utils";
 import { getPlumeType, PLUME_STRICT_MODE } from "./plume-utils";
 
+export interface PlasmicLoaderProps<T> {
+  component: string;
+  componentProps: T;
+}
+
 /**
  * Props for a Plume component that corresponds to an Item
  */
@@ -95,6 +100,10 @@ export interface ItemLikeProps {
   isDisabled?: boolean;
 }
 
+type LoaderAwareItemLikeProps =
+  | ItemLikeProps
+  | PlasmicLoaderProps<ItemLikeProps>;
+
 /**
  * Props for a Plume component that corresponds to a Section
  */
@@ -114,6 +123,10 @@ export interface SectionLikeProps {
    */
   children?: React.ReactNode;
 }
+
+type LoaderAwareSectionLikeProps =
+  | SectionLikeProps
+  | PlasmicLoaderProps<SectionLikeProps>;
 
 /**
  * Given children of a component like Select or Menu, derive the items
@@ -147,13 +160,13 @@ export function deriveItemsFromChildren<T extends React.ReactElement>(
   let sectionCount = 0;
 
   const ensureValue = (element: React.ReactElement) => {
-    if (!("value" in element.props)) {
+    if (!propInChild(element, "value")) {
       if (opts.requireItemValue && PLUME_STRICT_MODE) {
         throw new Error(
           `Must specify a "value" prop for ${getElementTypeName(element)}`
         );
       } else {
-        return React.cloneElement(element, { value: `${itemCount++}` });
+        return cloneChild(element, { value: `${itemCount++}` });
       }
     } else {
       // Still increment count even if key is present, so that the
@@ -177,18 +190,18 @@ export function deriveItemsFromChildren<T extends React.ReactElement>(
         if (type === itemPlumeType) {
           child = ensureValue(child);
           const childKey = getItemLikeKey(child);
-          if (child.props.isDisabled && !!childKey) {
+          if (getChildProp(child, "isDisabled") && !!childKey) {
             disabledKeys.push(childKey);
           }
           return [child];
         }
         if (type === sectionPlumeType) {
           return [
-            React.cloneElement(child, {
+            cloneChild(child, {
               // key of section doesn't actually matter, just needs
               // to be unique
               key: child.key ?? `section-${sectionCount++}`,
-              children: flattenedChildren(child.props.children),
+              children: flattenedChildren(getChildProp(child, "children")),
             }),
           ];
         }
@@ -244,7 +257,7 @@ export function renderCollectionNode(node: Node<any>) {
   // node.rendered should already have our item-like or section-like Plume
   // component elements, so we just need to clone them with a secret
   // _node prop that we use to render.
-  return React.cloneElement(node.rendered as React.ReactElement, {
+  return cloneChild(node.rendered as React.ReactElement, {
     _node: node,
     key: node.key,
   });
@@ -255,7 +268,9 @@ export function renderCollectionNode(node: Node<any>) {
  * Item or a Section element.
  */
 export function renderAsCollectionChild<
-  T extends React.ReactElement<ItemLikeProps | SectionLikeProps>
+  T extends React.ReactElement<
+    LoaderAwareItemLikeProps | LoaderAwareSectionLikeProps
+  >
 >(
   child: T,
   opts: {
@@ -265,11 +280,11 @@ export function renderAsCollectionChild<
 ) {
   const plumeType = getPlumeType(child);
   if (plumeType === opts.itemPlumeType) {
-    const option = child as React.ReactElement<ItemLikeProps>;
+    const option = child as React.ReactElement<LoaderAwareItemLikeProps>;
 
     // We look at the children passed to the item-like element, and derive key
     // or textValue from it if it is a string
-    const content = option.props.children;
+    const content = getChildProp(option, "children");
 
     // The children render prop needs to return an <Item/>
     return (
@@ -281,16 +296,14 @@ export function renderAsCollectionChild<
         // textValue is either explicitly specified by the user, or we
         // try to derive it if `content` is a string.
         textValue={
-          option.props.textValue ??
+          getChildProp(option, "textValue") ??
           (isString(content)
             ? content
-            : option.props.value
-            ? `${option.props.value}`
-            : option.key
-            ? `${option.key}`
-            : undefined)
+            : propInChild(option, "value")
+            ? getChildProp(option, "value")
+            : option.key)
         }
-        aria-label={option.props["aria-label"]}
+        aria-label={getChildProp(option, "aria-label")}
       >
         {
           // Note that what we setting the item-like element as the children
@@ -301,18 +314,18 @@ export function renderAsCollectionChild<
       </Item>
     );
   } else {
-    const group = child as React.ReactElement<SectionLikeProps>;
+    const group = child as React.ReactElement<LoaderAwareSectionLikeProps>;
     return (
       <Section
         // Note that we are using the whole section-like element as the title
         // here, and not group.props.title; we want the entire section-like
         // Plume element to end up as Node.rendered.
         title={group}
-        aria-label={group.props["aria-label"]}
+        aria-label={getChildProp(group, "aria-label")}
         // We are flattening and deriving the descendant Options as items here.
         // group.props.children should've already been cleaned up by
         // deriveItemsFromChildren()
-        items={group.props.children as React.ReactElement[]}
+        items={getChildProp(group, "children") as React.ReactElement[]}
       >
         {
           // We use the same render function to turn descendent Options into Items
@@ -323,6 +336,37 @@ export function renderAsCollectionChild<
   }
 }
 
-function getItemLikeKey(element: React.ReactElement<ItemLikeProps>) {
-  return element.props.value ?? element.key;
+function getItemLikeKey(element: React.ReactElement<LoaderAwareItemLikeProps>) {
+  return getChildProp(element, "value") ?? element.key;
+}
+
+// PlasmicLoader-aware function to get prop from child.
+export function getChildProp(child: React.ReactElement, prop: string) {
+  return "componentProps" in child.props
+    ? child.props.componentProps[prop]
+    : child.props[prop];
+}
+
+// PlasmicLoader-aware function to check `if (prop in element.props)`.
+function propInChild(child: React.ReactElement, prop: string): boolean {
+  return "componentProps" in child.props
+    ? prop in child.props.componentProps
+    : prop in child.props;
+}
+
+// PlasmicLoader-aware function to clone React element.
+function cloneChild(child: React.ReactElement, props: Record<string, any>) {
+  if ((child.type as any).getPlumeType) {
+    // If React element has getPlumeType(), assume that it is PlasmicLoader,
+    // so add nodeProps to componentProps instead of element props.
+    return React.cloneElement(child, {
+      componentProps: {
+        ...child.props.componentProps,
+        ...props,
+      },
+      ...(props.key ? { key: props.key } : {}),
+    });
+  }
+
+  return React.cloneElement(child, props);
 }
