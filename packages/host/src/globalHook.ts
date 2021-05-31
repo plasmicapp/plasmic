@@ -158,3 +158,8 @@ interface GlobalHookCtx {
 export const globalHookCtx = (officialHook?.plasmic || {
   uidToFiber: new Map<number, Fiber>(),
 }) as GlobalHookCtx;
+
+// TODO: remove this later, keeping now to avoid compatibility issues with
+// stale JS bundle
+(globalHookCtx as any).startedEvalCount = 0;
+(globalHookCtx as any).finishedEvalCount = 0;
