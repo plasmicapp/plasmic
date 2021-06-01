@@ -19,6 +19,7 @@ import { pick } from "../../common";
 import { Overrides } from "../../render/elements";
 import { useEnsureSSRProvider } from "../../render/ssr";
 import {
+  getChildProp,
   renderAsCollectionChild,
   renderCollectionNode,
   useDerivedItemsFromChildren,
@@ -282,7 +283,7 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
   });
 
   const triggerContent = state.selectedItem
-    ? selectedContent ?? state.selectedItem.value.props.children
+    ? selectedContent ?? getChildProp(state.selectedItem.value, "children")
     : null;
 
   const variants = {
