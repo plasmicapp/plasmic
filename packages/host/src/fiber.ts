@@ -1,3 +1,5 @@
+export type FiberRoot = { current: Fiber; containerInfo: any };
+
 export type Fiber =
   | FiberForComponentClass
   | FiberForFunctionComponent

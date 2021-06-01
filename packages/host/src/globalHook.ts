@@ -1,4 +1,4 @@
-import { Fiber } from "./fiber";
+import { Fiber, FiberRoot } from "./fiber";
 import { assert } from "./lang-utils";
 import { traverseTree, traverseUpdates } from "./traverseFiber";
 
@@ -31,6 +31,7 @@ if (codeComponents) {
   if (!officialHook.plasmic) {
     const officialHookProps = { ...officialHook };
     const valNodeData = "data-plasmic-valnode";
+    const valNodeDispose = "data-plasmic-dispose";
 
     officialHook.plasmic = {
       uidToFiber: new Map<number, Fiber>(),
@@ -45,99 +46,78 @@ if (codeComponents) {
       return undefined;
     };
 
-    const traversedFibers = new Set<Fiber>();
-    const nonCanvasFibers = new Set<Fiber>();
-    const canvasRootFiberToUids = new Map<Fiber, number[]>();
-
-    const addNode = (node: Fiber, uids: number[]) => {
+    const addNode = (node: Fiber) => {
       const valNodeUid = tryGetValNodeUid(node);
       if (valNodeUid) {
         officialHook.plasmic.uidToFiber.set(valNodeUid, node);
-        uids.push(valNodeUid);
       }
-      return false;
+    };
+
+    const rmNode = (node: Fiber) => {
+      if (valNodeDispose in node.memoizedProps) {
+        const dispose: () => void = node.memoizedProps[valNodeDispose];
+        dispose();
+      }
     };
 
     // Return true if this is a canvas frame's tree.
-    // Performs a BFS and checks if any of the first 100 nodes contain the
-    // "frameInfo" property.
-    // Right now we rely on one of the first elements in the tree passing a prop
-    // with this name. It's not the first element in the React tree because
-    // it's below some React context providers for example.
-    // It's important to filter canvas frames to avoid performance regressions.
-    const isCanvasFrame = (rootNode: Fiber) => {
-      if (canvasRootFiberToUids.has(rootNode)) {
-        return true;
+    const isCanvasFrame = (containerInfo: any) => {
+      const doc: Document | undefined =
+        containerInfo?.ownerDocument || containerInfo;
+      if (doc && doc.getElementById) {
+        return !!doc.getElementById("plasmic-app");
       }
-      if (nonCanvasFibers.has(rootNode)) {
-        return false;
-      }
-      let count = 0;
-      let result = false;
-      traversedFibers.add(rootNode);
-      traverseTree(rootNode, (node) => {
-        if ([...Object.keys(node.memoizedProps || {})].includes("frameInfo")) {
-          result = true;
-          return true;
-        }
-        count++;
-        return (count >= 100);
-      }, false, false);
-      if (count >= 100) {
-        // Likely not canvas
-        nonCanvasFibers.add(rootNode);
-      }
-      return result;
+      assert(false, "Unreachable code");
     };
 
+    const knownRoots = new WeakSet<FiberRoot>();
+
     const customHookProps = {
+      onCommitFiberUnmount: (
+        rendererID: any,
+        node: Fiber,
+        ...otherArgs: any[]
+      ) => {
+        rmNode(node);
+        officialHookProps.onCommitFiberUnmount(rendererID, node, ...otherArgs);
+      },
       onCommitFiberRoot: (
         rendererID: any,
-        fiberRoot: { current: Fiber },
-        priorityLevel: any
+        fiberRoot: FiberRoot,
+        ...otherArgs: any[]
       ) => {
-        const { current: rootNode } = fiberRoot;
+        const { current: rootNode, containerInfo } = fiberRoot;
 
         // We only need to traverse canvas frames
-        if (isCanvasFrame(rootNode)) {
+        const isCanvas = isCanvasFrame(containerInfo);
+        const isMounted =
+          rootNode.memoizedState != null &&
+          rootNode.memoizedState.element != null;
+
+        if (isCanvas && isMounted) {
           const wasMounted =
             rootNode.alternate != null &&
             rootNode.alternate.memoizedState != null &&
             rootNode.alternate.memoizedState.element != null;
-          if (!canvasRootFiberToUids.has(rootNode) || !wasMounted) {
+          if (!knownRoots.has(fiberRoot) || !wasMounted) {
             // New tree, traverse it entirely
-            const uids: number[] = [];
-            canvasRootFiberToUids.set(rootNode, uids);
-            traverseTree(rootNode, (fiber: Fiber) => addNode(fiber, uids), true, false);
+            knownRoots.add(fiberRoot);
+            traverseTree(rootNode, (fiber: Fiber) => addNode(fiber), false);
           } else {
-            const isMounted =
-              rootNode.memoizedState != null &&
-              rootNode.memoizedState.element != null;
-            if (isMounted) {
-              const uids = canvasRootFiberToUids.get(rootNode) ?? [];
-              if (!canvasRootFiberToUids.has(rootNode)) {
-                canvasRootFiberToUids.set(rootNode, uids);
-              }
-              if (rootNode.alternate) {
-                traverseUpdates(rootNode, rootNode.alternate, (fiber: Fiber) =>
-                  addNode(fiber, uids)
-                );
-              } else {
-                // New tree
-                traverseTree(
-                  rootNode,
-                  (fiber: Fiber) => addNode(fiber, uids),
-                  true,
-                  false
-                );
-              }
+            if (rootNode.alternate) {
+              traverseUpdates(rootNode, rootNode.alternate, (fiber: Fiber) =>
+                addNode(fiber)
+              );
+            } else {
+              // New tree
+              traverseTree(rootNode, (fiber: Fiber) => addNode(fiber), false);
             }
           }
         }
         officialHookProps.onCommitFiberRoot(
           rendererID,
           fiberRoot,
-          priorityLevel
+          ...otherArgs
         );
       },
     };

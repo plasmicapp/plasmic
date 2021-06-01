@@ -194,11 +194,7 @@ const _PlasmicCanvasHost = mobxReactLite.observer(function PlasmicCanvasHost() {
     }
   }, [shouldRenderStudio, isFrameAttached]);
   React.useEffect(() => {
-    if (
-      !shouldRenderStudio &&
-      !document.querySelector("#getlibs") &&
-      isLive
-    ) {
+    if (!shouldRenderStudio && !document.querySelector("#getlibs") && isLive) {
       const scriptElt = document.createElement("script");
       scriptElt.id = "getlibs";
       scriptElt.src = getPlasmicOrigin() + "/static/js/getlibs.js";
