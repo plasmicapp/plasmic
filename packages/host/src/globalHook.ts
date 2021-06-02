@@ -79,7 +79,7 @@ if (codeComponents) {
         ...otherArgs: any[]
       ) => {
         rmNode(node);
-        officialHookProps.onCommitFiberUnmount(rendererID, node, ...otherArgs);
+        officialHookProps.onCommitFiberUnmount?.(rendererID, node, ...otherArgs);
       },
       onCommitFiberRoot: (
         rendererID: any,
@@ -114,7 +114,7 @@ if (codeComponents) {
             }
           }
         }
-        officialHookProps.onCommitFiberRoot(
+        officialHookProps.onCommitFiberRoot?.(
           rendererID,
           fiberRoot,
           ...otherArgs
