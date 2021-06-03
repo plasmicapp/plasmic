@@ -192,10 +192,26 @@ export async function convertOptsToLoaderConfig(
   return config;
 }
 
+async function checkNoTopLevelPlasmicJson(config: PlasmicLoaderConfig) {
+  try {
+    await fs.access(path.join(config.dir, "plasmic.json"));
+    logger.crash(
+      'Top-level "plasmic.json" detected. It looks like you may be using Plasmic Codegen. Both codegen and loader are two ways in which you can consume your Plasmic designs. To prevent confusion, you cannot use both approaches.' +
+        "\n\nRead more: https://docs.plasmic.app/learn/loader-vs-codegen/."
+    );
+  } catch (error) {
+    if (error.code === "ENOENT") {
+      return;
+    }
+    throw error;
+  }
+}
+
 export async function initLoader(config: PlasmicLoaderConfig) {
   await initSentry(config);
   const { dir, pageDir, plasmicDir, initArgs = {} } = config;
 
+  await checkNoTopLevelPlasmicJson(config);
   logger.info("Checking that your loader version is up to date.");
   await cli.ensureRequiredLoaderVersion();
   const projectIds = config.projects.map(({ projectId }) => projectId);
