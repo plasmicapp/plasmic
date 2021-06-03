@@ -181,8 +181,8 @@ const _PlasmicCanvasHost = mobxReactLite.observer(function PlasmicCanvasHost() {
   // In that case, we shouldn't do anything.  If window.parent is null, by the way,
   // location.hash will also be null.
   const isFrameAttached = !!window.parent;
-  const isCanvas = !!location.hash.match(/\bcanvas=true\b/);
-  const isLive = !!location.hash.match(/\blive=true\b/);
+  const isCanvas = !!location.hash?.match(/\bcanvas=true\b/);
+  const isLive = !!location.hash?.match(/\blive=true\b/);
   const shouldRenderStudio =
     isFrameAttached &&
     !document.querySelector("#plasmic-studio-tag") &&
