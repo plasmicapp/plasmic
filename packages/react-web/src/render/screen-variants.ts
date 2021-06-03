@@ -49,6 +49,7 @@ export function createUseScreenVariants(
   screenQueries: Queries
 ) {
   Object.assign(queries, screenQueries);
+  curScreenVariants = undefined;
 
   return function () {
     // It is important that upon first render, we return [] or undefined, because
