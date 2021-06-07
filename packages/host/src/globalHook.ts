@@ -19,6 +19,10 @@ const searchParams = (() => {
   }
 })();
 
+function hasKey(v: any, key: string) {
+  return typeof v === "object" && v !== null && key in v; 
+}
+
 // For now we only use our hook when enabling code components as it might
 // impact performance
 const codeComponents = searchParams.get("codeComponents") === "true";
@@ -37,10 +41,7 @@ if (codeComponents) {
       uidToFiber: new Map<number, Fiber>(),
     };
     const tryGetValNodeUid = (node: Fiber): number | undefined => {
-      const hasValNodeData = (v: any) => {
-        return typeof v === "object" && v !== null && valNodeData in v;
-      };
-      if (hasValNodeData(node.memoizedProps)) {
+      if (hasKey(node.memoizedProps, valNodeData)) {
         return +node.memoizedProps[valNodeData];
       }
       return undefined;
@@ -54,7 +55,7 @@ if (codeComponents) {
     };
 
     const rmNode = (node: Fiber) => {
-      if (valNodeDispose in node.memoizedProps) {
+      if (hasKey(node.memoizedProps, valNodeDispose)) {
         const dispose: () => void = node.memoizedProps[valNodeDispose];
         dispose();
       }
