@@ -1,0 +1,8 @@
+Code snippet expected to run before React loads in order to use function
+components on Plasmic without exposing React refs.
+
+Install
+=======
+
+  yarn add @plasmicapp/preamble
+
