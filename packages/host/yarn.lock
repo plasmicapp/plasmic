@@ -1106,10 +1106,10 @@
     "@nodelib/fs.scandir" "2.1.4"
     fastq "^1.6.0"
 
-"@plasmicapp/preamble@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/preamble/-/preamble-0.0.1.tgz#5cea32df40ecab093e8728e4a162f2f12efe5997"
-  integrity sha512-rE1cj4WbT2Gv2/BNOpceTGssDGR1SzdFuA0pDSs73R/lIeiF4cgGeJ4NojSvWoaDpVufGP4Ak8dX/n1apWF1RQ==
+"@plasmicapp/preamble@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/preamble/-/preamble-0.0.2.tgz#658a10b93f327193ac34bfb4a051c402f8962ceb"
+  integrity sha512-TE6MeAqwpmkKF/VIotbBKLyqJLI5/ihAr0YKh0o4IHaIbbUm5g/5ZcBU5WcNDdxD+Nh7AT0bJrrpsqfAaKT6hA==
 
 "@plasmicapp/react-web@^0.2.45":
   version "0.2.45"

@@ -17,5 +17,7 @@ if (typeof window !== "undefined") {
       onCommitFiberUnmount: function () {},
     };
   }
-  (window as any).__REACT_DEVTOOLS_GLOBAL_HOOK__.__PlasmicPreambleVersion = "1";
+  if (!(window as any).__REACT_DEVTOOLS_GLOBAL_HOOK__.__PlasmicPreambleVersion) {
+    (window as any).__REACT_DEVTOOLS_GLOBAL_HOOK__.__PlasmicPreambleVersion = "1";
+  }
 }
