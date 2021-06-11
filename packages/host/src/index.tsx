@@ -10,7 +10,6 @@ import * as ReactDOM from "react-dom";
 import ResizeObserver from "resize-observer-polyfill";
 import * as slate from "slate";
 import * as slateReact from "slate-react";
-import { globalHookCtx } from "./globalHook";
 import { ensure } from "./lang-utils";
 const root = require("window-or-global");
 
@@ -145,7 +144,6 @@ root.__Sub = {
   slateReact,
   localObject: Object,
   localElement: typeof window !== "undefined" ? Element : undefined,
-  globalHookCtx,
   setPlasmicRootNode,
   registerRenderErrorListener,
 };
