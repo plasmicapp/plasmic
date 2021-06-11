@@ -27,7 +27,7 @@ export type PrimitiveType =
       allowedComponents: string[];
     };
 
-export interface ComponentMeta {
+export interface ComponentMeta<P> {
   /**
    * Any unique string name used to identify that component. Each component
    * should be registered with a different `meta.name`, even if they have the
@@ -49,7 +49,7 @@ export interface ComponentMeta {
    * For each `prop`, there should be an entry `meta.props[prop]` describing
    * its type.
    */
-  props: { [prop: string]: PrimitiveType };
+  props: { [prop in keyof P]: PrimitiveType };
   /**
    * The path to be used when importing the component in the generated code.
    * It can be the name of the package that contains the component, or the path
@@ -77,8 +77,8 @@ export interface ComponentMeta {
 }
 
 export interface ComponentRegistration {
-  component: React.ComponentType;
-  meta: ComponentMeta;
+  component: React.ComponentType<any>;
+  meta: ComponentMeta<any>;
 }
 
 export type Fetcher = (...args: any[]) => Promise<any>;
@@ -126,9 +126,9 @@ root.__PlasmicHostVersion = "1";
 root.__PlasmicComponentRegistry = [];
 root.__PlasmicFetcherRegistry = [];
 
-export function registerComponent(
-  component: React.ComponentType<any>,
-  meta: ComponentMeta
+export function registerComponent<P = {}>(
+  component: React.ComponentType<P>,
+  meta: ComponentMeta<P>
 ) {
   root.__PlasmicComponentRegistry.push({ component, meta });
 }
