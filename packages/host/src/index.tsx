@@ -191,7 +191,7 @@ const _PlasmicCanvasHost = mobxReactLite.observer(function PlasmicCanvasHost() {
     !isCanvas &&
     !isLive;
   React.useEffect(() => {
-    if (shouldRenderStudio && isFrameAttached) {
+    if (shouldRenderStudio && isFrameAttached && window.parent !== window) {
       renderStudioIntoIframe();
     }
   }, [shouldRenderStudio, isFrameAttached]);
@@ -226,6 +226,20 @@ const _PlasmicCanvasHost = mobxReactLite.observer(function PlasmicCanvasHost() {
       </ErrorBoundary>,
       appDiv,
       "plasmic-app"
+    );
+  }
+  if (shouldRenderStudio && window.parent === window) {
+    return (
+      <p>
+        Your app is ready to host Plasmic Studio! <br /> <br />
+        On the <a href="https://studio.plasmic.app/">Dashboard</a>, click on the{" "}
+        <i>Config</i> button, and set{" "}
+        <code>{location.origin + location.pathname}</code> as the host URL.
+        <br />
+        <br />
+        You can find more information about app-hosting{" "}
+        <a href="https://www.plasmic.app/learn/app-hosting/">here</a>.
+      </p>
     );
   }
   return null;
