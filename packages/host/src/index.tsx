@@ -68,6 +68,12 @@ export interface ComponentMeta {
    * component will not be able to receive styles from the Studio.
    */
   classNameProp?: string;
+  /**
+   * The prop that receives and forwards a React `ref`. Plasmic only uses `ref`
+   * to interact with components, so it's not used in the generated code.
+   * Optional: If not provided, the usual `ref` is used.
+   */
+  refProp?: string;
 }
 
 export interface ComponentRegistration {
@@ -119,6 +125,7 @@ declare global {
 root.__PlasmicHostVersion = "1";
 root.__PlasmicComponentRegistry = [];
 root.__PlasmicFetcherRegistry = [];
+
 export function registerComponent(
   component: React.ComponentType<any>,
   meta: ComponentMeta
