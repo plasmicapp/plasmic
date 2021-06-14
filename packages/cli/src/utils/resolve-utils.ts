@@ -69,13 +69,26 @@ async function checkProjectMeta(
     );
     const versionOnDisk = projectLock?.version;
 
-    if (semver.isLatest(newVersion)) {
-      // Always sync when version set to "latest"
+    if (!versionOnDisk) {
+      // Always sync if we haven't seen sync'ed before
       return true;
     }
 
-    if (!versionOnDisk) {
-      // Always sync if we haven't seen sync'ed before
+    if (
+      semver.isLatest(versionOnDisk) &&
+      semver.isLatest(newVersion) &&
+      meta !== root
+    ) {
+      // If this is a dependency (not root), and we're dealing with latest dep version
+      // just skip, it's confusing
+      logger.warn(
+        `'${root.projectName}' depends on ${projectName}@${newVersion}. To update this project, explicitly specify this project for sync. Skipping...`
+      );
+      return false;
+    }
+
+    if (semver.isLatest(newVersion)) {
+      // Always sync when version set to "latest"
       return true;
     }
 
