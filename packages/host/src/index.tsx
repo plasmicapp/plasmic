@@ -15,16 +15,37 @@ const root = require("window-or-global");
 
 mobx.configure({ isolateGlobalState: true, enforceActions: "never" });
 
-export type PrimitiveType =
+export type PropType =
   | "string"
   | "boolean"
   | "number"
   | "object"
   | "slot"
   | {
+      type: "string";
+      defaultValue?: string;
+    }
+  | {
+      type: "boolean";
+      defaultValue?: boolean;
+    }
+  | {
+      type: "number";
+      defaultValue?: number;
+    }
+  | {
+      type: "object";
+      /**
+       * Expects a JSON-compatible value
+       */
+      defaultValue?: any;
+    }
+  | {
       type: "slot";
-      // The unique names of all code components that can be placed in the slot
-      allowedComponents: string[];
+      /**
+       * The unique names of all code components that can be placed in the slot
+       */
+      allowedComponents?: string[];
     };
 
 export interface ComponentMeta<P> {
@@ -49,7 +70,7 @@ export interface ComponentMeta<P> {
    * For each `prop`, there should be an entry `meta.props[prop]` describing
    * its type.
    */
-  props: { [prop in keyof P]: PrimitiveType };
+  props: { [prop in keyof P]: PropType } & { [prop: string]: PropType };
   /**
    * The path to be used when importing the component in the generated code.
    * It can be the name of the package that contains the component, or the path
@@ -96,8 +117,8 @@ export interface FetcherMeta {
    * The symbol to import from the importPath.
    */
   importName?: string;
-  args: { name: string; type: PrimitiveType }[];
-  returns: PrimitiveType;
+  args: { name: string; type: PropType }[];
+  returns: PropType;
   /**
    * Either the path to the fetcher relative to `rootDir` or the npm
    * package name
