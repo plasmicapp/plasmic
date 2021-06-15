@@ -10,11 +10,13 @@ import * as ReactDOM from "react-dom";
 import ResizeObserver from "resize-observer-polyfill";
 import * as slate from "slate";
 import * as slateReact from "slate-react";
-import "./data";
+import { registerFetcher as unstable_registerFetcher } from "./data";
 import { ensure } from "./lang-utils";
 const root = require("window-or-global");
 
 mobx.configure({ isolateGlobalState: true, enforceActions: "never" });
+
+export { unstable_registerFetcher };
 
 type StringType =
   | "string"
