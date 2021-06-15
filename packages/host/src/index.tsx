@@ -10,36 +10,45 @@ import * as ReactDOM from "react-dom";
 import ResizeObserver from "resize-observer-polyfill";
 import * as slate from "slate";
 import * as slateReact from "slate-react";
+import "./data";
 import { ensure } from "./lang-utils";
 const root = require("window-or-global");
 
 mobx.configure({ isolateGlobalState: true, enforceActions: "never" });
 
-export type PropType =
+type StringType =
   | "string"
-  | "boolean"
-  | "number"
-  | "object"
-  | "slot"
   | {
       type: "string";
       defaultValue?: string;
-    }
+    };
+
+type BooleanType =
+  | "boolean"
   | {
       type: "boolean";
       defaultValue?: boolean;
-    }
+    };
+
+type NumberType =
+  | "number"
   | {
       type: "number";
       defaultValue?: number;
-    }
+    };
+
+type JSONLikeType =
+  | "object"
   | {
       type: "object";
       /**
        * Expects a JSON-compatible value
        */
       defaultValue?: any;
-    }
+    };
+
+type SlotType =
+  | "slot"
   | {
       type: "slot";
       /**
@@ -47,6 +56,39 @@ export type PropType =
        */
       allowedComponents?: string[];
     };
+
+export type PrimitiveType = Extract<
+  StringType | BooleanType | NumberType | JSONLikeType,
+  String
+>;
+
+type ControlTypeBase =
+  | {
+      editOnly?: false;
+    }
+  | {
+      editOnly: true;
+      /**
+       * The prop where the values should be mapped to
+       */
+      uncontrolledProp?: string;
+    };
+
+type SupportControlled<T> =
+  | Extract<T, String>
+  | (Exclude<T, String> & ControlTypeBase);
+
+export type PropType =
+  | SupportControlled<StringType | BooleanType | NumberType | JSONLikeType>
+  | SlotType;
+
+type RestrictPropType<T> = T extends string
+  ? SupportControlled<StringType | JSONLikeType>
+  : T extends boolean
+  ? SupportControlled<BooleanType | JSONLikeType>
+  : T extends number
+  ? SupportControlled<NumberType | JSONLikeType>
+  : PropType;
 
 export interface ComponentMeta<P> {
   /**
@@ -70,7 +112,9 @@ export interface ComponentMeta<P> {
    * For each `prop`, there should be an entry `meta.props[prop]` describing
    * its type.
    */
-  props: { [prop in keyof P]: PropType } & { [prop: string]: PropType };
+  props: { [prop in keyof Partial<P>]: RestrictPropType<P[prop]> } & {
+    [prop: string]: PropType;
+  };
   /**
    * The path to be used when importing the component in the generated code.
    * It can be the name of the package that contains the component, or the path
@@ -102,60 +146,21 @@ export interface ComponentRegistration {
   meta: ComponentMeta<any>;
 }
 
-export type Fetcher = (...args: any[]) => Promise<any>;
-
-export interface FetcherMeta {
-  /**
-   * Any unique identifying string for this fetcher.
-   */
-  name: string;
-  /**
-   * The Studio-user-friendly display name.
-   */
-  displayName?: string;
-  /**
-   * The symbol to import from the importPath.
-   */
-  importName?: string;
-  args: { name: string; type: PropType }[];
-  returns: PropType;
-  /**
-   * Either the path to the fetcher relative to `rootDir` or the npm
-   * package name
-   */
-  importPath: string;
-  /**
-   * Whether it's a default export or named export
-   */
-  isDefaultExport?: boolean;
-}
-
-export interface FetcherRegistration {
-  fetcher: Fetcher;
-  meta: FetcherMeta;
-}
-
 declare global {
   interface Window {
     __PlasmicHostVersion: string;
     __PlasmicComponentRegistry: ComponentRegistration[];
-    __PlasmicFetcherRegistry: FetcherRegistration[];
   }
 }
 
 root.__PlasmicHostVersion = "1";
 root.__PlasmicComponentRegistry = [];
-root.__PlasmicFetcherRegistry = [];
 
-export function registerComponent<P = {}>(
-  component: React.ComponentType<P>,
-  meta: ComponentMeta<P>
+export function registerComponent<T extends React.ComponentType<any>>(
+  component: T,
+  meta: ComponentMeta<React.ComponentProps<T>>
 ) {
   root.__PlasmicComponentRegistry.push({ component, meta });
-}
-
-export function registerFetcher(fetcher: Fetcher, meta: FetcherMeta) {
-  root.__PlasmicFetcherRegistry.push({ fetcher, meta });
 }
 
 const plasmicRootNode: mobx.IObservableValue<React.ReactElement | null> =
