@@ -49,6 +49,13 @@ type JSONLikeType =
       defaultValue?: any;
     };
 
+type ChoiceType =
+  {
+    type: "choice";
+    options: string[];
+    defaultValue?: string;
+  }
+
 type SlotType =
   | "slot"
   | {
@@ -81,11 +88,11 @@ type SupportControlled<T> =
   | (Exclude<T, String> & ControlTypeBase);
 
 export type PropType =
-  | SupportControlled<StringType | BooleanType | NumberType | JSONLikeType>
+  | SupportControlled<StringType | BooleanType | NumberType | JSONLikeType | ChoiceType>
   | SlotType;
 
 type RestrictPropType<T> = T extends string
-  ? SupportControlled<StringType | JSONLikeType>
+  ? SupportControlled<StringType | ChoiceType | JSONLikeType>
   : T extends boolean
   ? SupportControlled<BooleanType | JSONLikeType>
   : T extends number
