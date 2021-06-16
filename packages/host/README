@@ -1,8 +1,8 @@
-Simple app hosting package for Plasmic.  It contains functions and type
-definitions to allow code components to be used in Plasmic Studio.
+Plasmic is a visual page builder and web design tool that tightly integrates with your codebase.
 
-Install
-=======
+This package contains functions and type definitions to enable code components to be used in Plasmic Studio.
+More generally, it enables "application hosting."
 
-  yarn add @plasmicapp/host
+Please see the docs to learn more!
 
+https://docs.plasmic.app/learn/app-hosting
