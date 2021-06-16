@@ -378,11 +378,6 @@ export async function sync(
     // Now we know config.components are all correct, so we can go ahead and fix up all the import statements
     await fixAllImportStatements(context, opts.baseDir, summary);
 
-    // We don't need to persist codeComponentMeta as it's just used to fix
-    // import statements, so just delete it before writing the new components
-    // config.
-    context.config.projects.forEach((p) => delete p.codeComponents);
-
     if (process.env.PLASMIC_LOADER) {
       const rootProjectIds = new Set(projectSyncParams.map((p) => p.projectId));
       const freshIdsAndTokens = projectIdsAndTokens
