@@ -329,7 +329,7 @@ export function replaceImports(
         // Relative path from the project root
         const toPath = path.join(context.rootDir, meta.componentImportPath);
         assert(path.isAbsolute(toPath));
-        const realPath = makeImportPath(context, fromPath, toPath, true);
+        const realPath = makeImportPath(context, fromPath, toPath, true, true);
         stmt.source.value = realPath;
       } else {
         // npm package
@@ -366,10 +366,11 @@ function makeImportPath(
   context: PlasmicContext,
   fromPath: string,
   toPath: string,
-  stripExt: boolean
+  stripExt: boolean,
+  forceRelative = false,
 ) {
   let result = toPath;
-  if (isLocalModulePath(toPath)) {
+  if (forceRelative || isLocalModulePath(toPath)) {
     result = path.relative(
       makeFilePath(context, path.dirname(fromPath)),
       makeFilePath(context, toPath)
