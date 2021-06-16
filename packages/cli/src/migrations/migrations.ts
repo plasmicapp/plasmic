@@ -101,11 +101,11 @@ export async function runNecessaryMigrations(
       dev: true,
     });
 
-    throw new HandledError(
-      success
-        ? chalk.bold("@plasmicapp/cli has been upgraded; please try again!")
-        : "Error upgrading @plasmicapp/cli"
+    logger.info(
+      chalk.bold("@plasmicapp/cli has been upgraded; please try again!")
     );
+
+    throw new HandledError(success ? "" : "Error upgrading @plasmicapp/cli");
   }
 
   const context: MigrateContext = {

@@ -7,11 +7,7 @@ import { checkEngineStrict } from "./npm-utils";
  * These are errors that are user-fault, for example:
  * - Using an old version of CLI
  */
-export class HandledError extends Error {
-  constructor(msg: string) {
-    super(msg);
-  }
-}
+export class HandledError extends Error {}
 
 /**
  * Catches HandledErrors and just exits
@@ -21,7 +17,11 @@ export class HandledError extends Error {
  */
 export const handleError = <T>(p: Promise<T>) => {
   return p.catch((e) => {
-    logger.error(chalk.bold(chalk.redBright("\nPlasmic error: ")) + e.message);
+    if (e.message) {
+      logger.error(
+        chalk.bold(chalk.redBright("\nPlasmic error: ")) + e.message
+      );
+    }
     // Check if we satisfy the engine policy first
     if (checkEngineStrict()) {
       // eslint-disable-next-line
