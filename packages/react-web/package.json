@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/react-web",
-  "version": "0.2.61",
+  "version": "0.2.62",
   "description": "plasmic library for rendering in the presentational style",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -36,8 +36,8 @@
   "prettier": {},
   "dependencies": {
     "classnames": "^2.2.6",
-    "react-aria": "^3.5.0",
-    "react-stately": "^3.4.0"
+    "react-aria": "^3.7.0",
+    "react-stately": "^3.6.0"
   },
   "devDependencies": {
     "@react-types/overlays": "^3.4.0",
