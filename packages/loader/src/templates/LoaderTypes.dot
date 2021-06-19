@@ -31,7 +31,7 @@ type Providers = {
 };
 
 export type LoaderProps = (
-  {{~ it.singleproviders :component}}
+  {{~ it.singleComponents :component}}
     | { component: "{{=component.name}}", componentProps?: Parameters<typeof import("{{=component.path}}").default>[0], providerProps?: Providers["{{=component.projectId}}"] }
   {{~}}
   {{~ it.components :component}}
