@@ -234,7 +234,10 @@ export async function initLoader(config: PlasmicLoaderConfig) {
 
   logger.info("Generating loader...");
 
-  await gen.generateAll({ dir: plasmicDir, pageDir });
+  return Promise.all([
+    gen.genStaticNodeModuleExports(plasmicDir),
+    gen.generateAll({ dir: plasmicDir, pageDir }),
+  ]);
 }
 
 export async function onPostInit(

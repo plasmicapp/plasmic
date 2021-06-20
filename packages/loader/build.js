@@ -50,6 +50,16 @@ fs.copyFileSync(
   path.join("dist", "templates", "LoaderTypes.dot")
 );
 
+fs.copyFileSync(
+  path.join("src", "templates", "LoaderExport.dot"),
+  path.join("dist", "templates", "LoaderExport.dot")
+);
+
+fs.renameSync(
+  path.join("dist", "PlasmicLoader.d.ts"),
+  path.join("dist", "PlasmicLoaderTypes.d.ts")
+);
+
 if (process.argv.indexOf("--prod") !== -1) {
   fs.copyFileSync(
     path.join("dist", "shared", "config", "staticConfig.prod.js"),

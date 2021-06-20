@@ -77,6 +77,7 @@ const plasmic =
       return nextConfig;
     } catch (e) {
       logger.crash(e.message, e);
+      return nextConfig;
     }
   };
 
