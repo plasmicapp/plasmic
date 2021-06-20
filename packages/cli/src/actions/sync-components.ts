@@ -199,8 +199,11 @@ export async function syncProjectComponents(
       );
     }
     let compConfig = allCompConfigs[id];
-    const isNew = !compConfig;
-    let skeletonModuleModified = isNew;
+
+    // A component should be regenerated if it is new or path-related information (like the name)
+    // changed.
+    const shouldRegenerate = compConfig?.name !== componentName;
+    let skeletonModuleModified = shouldRegenerate;
 
     const skeletonPath = isPage
       ? defaultPagePath(context, skeletonModuleFileName)
@@ -217,8 +220,10 @@ export async function syncProjectComponents(
       cssFileName
     );
 
-    if (isNew) {
-      // This is the first time we're syncing this component
+    if (shouldRegenerate) {
+      project.components = project.components.filter(
+        (existingComponent) => existingComponent.id !== id
+      );
       compConfig = {
         id,
         name: componentName,
@@ -244,11 +249,6 @@ export async function syncProjectComponents(
       // We only bother touching files on disk if this component is managed.
 
       compConfig.componentType = isPage ? "page" : "component";
-
-      // Update config on new name from server
-      if (componentName !== compConfig.name) {
-        compConfig.name = componentName;
-      }
 
       // Read in the existing file
       let editedFile: string;
@@ -383,7 +383,7 @@ export async function syncProjectComponents(
         compConfig.renderModuleFilePath,
         renderModule,
         {
-          force: !isNew,
+          force: !shouldRegenerate,
         }
       );
       const formattedCssRules = formatAsLocal(
@@ -396,7 +396,7 @@ export async function syncProjectComponents(
         compConfig.cssFilePath,
         formattedCssRules,
         {
-          force: !isNew,
+          force: !shouldRegenerate,
         }
       );
     }
