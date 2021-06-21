@@ -164,6 +164,25 @@ export async function generateAll(opts: GenOptions) {
   ]);
 }
 
+/**
+ * This allows folks to import from "@plasmicapp/loader". Dynamic parts
+ * should be kept outside, as node_modules may be cached (e.g by webpack).
+ */
+export async function genStaticNodeModuleExports(plasmicDir: string) {
+  // This content works for both the main file and the typescript types.
+  const fileContent = templates.LoaderExport({
+    path: `${plasmicDir}/PlasmicLoader.jsx`,
+  });
+  return Promise.all([
+    writeFile(path.join(__dirname, "../", "PlasmicLoader.jsx"), fileContent),
+    writeFile(path.join(__dirname, "../", "PlasmicLoader.d.ts"), fileContent),
+    fs.copyFile(
+      path.join(__dirname, "../", "PlasmicLoaderTypes.d.ts"),
+      path.join(plasmicDir, "PlasmicLoader.d.ts")
+    ),
+  ]);
+}
+
 function generatePlasmicTypes(config: ConfigData) {
   const singleComponents = Object.values(config.componentDataKeyedByName)
     .filter((components) => components.length === 1)
@@ -203,7 +222,7 @@ function generatePlasmicTypes(config: ConfigData) {
     }));
 
   return writeFile(
-    path.join(__dirname, "../", "loaderTypes.d.ts"),
+    path.join(config.plasmicDir, "loaderTypes.d.ts"),
     templates.LoaderTypes({
       singleComponents,
       components,
@@ -245,7 +264,7 @@ function getPageUrl(path: string) {
 }
 
 function generatePlasmicLoader(config: ConfigData) {
-  const entrypointPath = path.join(__dirname, "../", "PlasmicLoader.jsx");
+  const entrypointPath = path.join(config.plasmicDir, "PlasmicLoader.jsx");
   return writeFile(
     entrypointPath,
     templates.PlasmicLoader({

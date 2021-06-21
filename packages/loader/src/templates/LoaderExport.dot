@@ -1,0 +1,2 @@
+export {default} from "{{= it.path }}";
+export * from "{{= it.path }}";
