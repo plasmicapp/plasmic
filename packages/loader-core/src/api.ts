@@ -1,7 +1,6 @@
 import fetch from 'isomorphic-fetch';
 
-// TODO: fix this!
-const host = `http://localhost:3003`;
+const host = process.env.PLASMIC_HOST ?? `https://studio.plasmic.app`;
 
 export interface ComponentMeta {
   id: string;

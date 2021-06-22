@@ -1,7 +1,6 @@
 import socketio, { Socket } from 'socket.io-client';
 
-// TODO: FIX THIS!
-const host = `http://localhost:3003`;
+const host = process.env.PLASMIC_HOST ?? `https://studio.plasmic.app`;
 
 export interface PlasmicRemoteChangeListener {
   onChange: (projectId: string) => void;

@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -12,6 +12,7 @@
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
+    "yalc-publish": "PLASMIC_HOST=http://localhost:3003 yalc publish --push",
     "test": "tsdx test",
     "lint": "tsdx lint",
     "prepare": "tsdx build",
