@@ -327,7 +327,7 @@ export function replaceImports(
       const meta = fixImportContext.codeComponentMetas[uuid];
       if (meta.componentImportPath[0] === ".") {
         // Relative path from the project root
-        const toPath = path.join(context.rootDir, meta.componentImportPath);
+        const toPath = path.join(process.cwd(), meta.componentImportPath);
         assert(path.isAbsolute(toPath));
         const realPath = makeImportPath(context, fromPath, toPath, true, true);
         stmt.source.value = realPath;
