@@ -12,9 +12,7 @@ export class PlasmicRemoteChangeWatcher {
 
   constructor(
     private opts: {
-      user: string;
-      token: string;
-      projectIds: string[];
+      projects: { id: string; token: string }[];
       host?: string;
     }
   ) {
@@ -53,9 +51,11 @@ export class PlasmicRemoteChangeWatcher {
   }
 
   private makeAuthHeaders() {
+    const tokens = this.opts.projects
+      .map((p) => `${p.id}:${p.token}`)
+      .join(',');
     return {
-      'x-plasmic-api-user': this.opts.user,
-      'x-plasmic-api-token': this.opts.token,
+      'x-plasmic-api-project-tokens': tokens,
     };
   }
 
@@ -72,7 +72,7 @@ export class PlasmicRemoteChangeWatcher {
     socket.on('initServerInfo', () => {
       socket.emit('subscribe', {
         namespace: 'projects',
-        projectIds: this.opts.projectIds,
+        projectIds: this.opts.projects.map((p) => p.id),
       });
     });
 

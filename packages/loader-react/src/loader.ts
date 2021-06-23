@@ -15,8 +15,6 @@ import { createUseGlobalVariant } from './global-variants';
 import { GlobalVariantSpec } from './PlasmicRootProvider';
 
 export interface InitOptions {
-  user: string;
-  token: string;
   projects: ProjectOption[];
   cache?: LoaderBundleCache;
   platform?: 'react' | 'nextjs' | 'gatsby';
@@ -26,6 +24,7 @@ export interface InitOptions {
 
 interface ProjectOption {
   id: string;
+  token: string;
   version?: string;
 }
 
@@ -67,16 +66,9 @@ export class InternalPlasmicComponentLoader {
     external: [],
   };
 
-  constructor(private opts: InitOptions) {
+  constructor(opts: InitOptions) {
     this.registry = new Registry();
     this.fetcher = new PlasmicModulesFetcher(opts);
-  }
-
-  getAuth() {
-    return {
-      user: this.opts.user,
-      token: this.opts.token,
-    };
   }
 
   setGlobalVariants(globalVariants: GlobalVariantSpec[]) {

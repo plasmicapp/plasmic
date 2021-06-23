@@ -1,11 +1,10 @@
 import { Api, LoaderBundleOutput } from './api';
 
 interface FetcherOptions {
-  user: string;
-  token: string;
   projects: {
     id: string;
     version?: string;
+    token: string;
   }[];
   cache?: LoaderBundleCache;
   platform?: 'react' | 'nextjs' | 'gatsby';
@@ -23,8 +22,7 @@ export class PlasmicModulesFetcher {
   private curFetch: Promise<LoaderBundleOutput> | undefined = undefined;
   constructor(private opts: FetcherOptions) {
     this.api = new Api({
-      user: opts.user,
-      token: opts.token,
+      projects: opts.projects,
       host: opts.host,
     });
   }

@@ -1,5 +1,5 @@
 {
-  "version": "0.1.3",
+  "version": "0.1.4",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -21,7 +21,7 @@
     "analyze": "size-limit --why"
   },
   "dependencies": {
-    "@plasmicapp/loader-core": "^0.1.3"
+    "@plasmicapp/loader-core": "^0.1.4"
   },
   "peerDependencies": {
     "react": ">=16.8.0"

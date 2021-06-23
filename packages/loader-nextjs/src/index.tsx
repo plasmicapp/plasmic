@@ -30,9 +30,8 @@ export function initPlasmicLoader(
 
   if (cache && opts.preview) {
     const watcher = new PlasmicRemoteChangeWatcher({
-      user: opts.user,
-      token: opts.token,
-      projectIds: opts.projects.map((p) => p.id),
+      projects: opts.projects,
+      host: opts.host,
     });
     watcher.subscribe({
       onChange: async (projectId: string) => {

@@ -55,8 +55,7 @@ export class Api {
   private host: string;
   constructor(
     private opts: {
-      user: string;
-      token: string;
+      projects: { id: string; token: string }[];
       host?: string;
     }
   ) {
@@ -126,9 +125,11 @@ export class Api {
   }
 
   private makeAuthHeaders() {
+    const tokens = this.opts.projects
+      .map((p) => `${p.id}:${p.token}`)
+      .join(',');
     return {
-      'x-plasmic-api-user': this.opts.user,
-      'x-plasmic-api-token': this.opts.token,
+      'x-plasmic-api-project-tokens': tokens,
     };
   }
 }
