@@ -17,9 +17,15 @@ import { GlobalVariantSpec } from './PlasmicRootProvider';
 export interface InitOptions {
   user: string;
   token: string;
-  projectIds: string[];
+  projects: ProjectOption[];
   cache?: LoaderBundleCache;
   platform?: 'react' | 'nextjs' | 'gatsby';
+  preview?: boolean;
+}
+
+interface ProjectOption {
+  id: string;
+  version?: string;
 }
 
 export interface ComponentRenderData {
@@ -115,6 +121,16 @@ export class InternalPlasmicComponentLoader {
     if (index >= 0) {
       this.roots.splice(index, 1);
     }
+  }
+
+  clearCache() {
+    this.bundle = {
+      modules: [],
+      components: [],
+      globalGroups: [],
+      external: [],
+    };
+    this.registry.clear();
   }
 
   private maybeGetCompMetas(...specs: ComponentLookupSpec[]) {
@@ -373,5 +389,9 @@ export class PlasmicComponentLoader {
    */
   async fetchPages() {
     return this.__internal.fetchPages();
+  }
+
+  clearCache() {
+    return this.__internal.clearCache();
   }
 }

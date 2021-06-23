@@ -20,10 +20,8 @@
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
-  "dependencies": {
-    "@plasmicapp/loader-core": "^0.1.0"
-  },
   "peerDependencies": {
+    "next": ">=10.2.3",
     "react": ">=16.8.0"
   },
   "husky": {
@@ -37,29 +35,34 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "@plasmicapp/loader-react",
+  "name": "@plasmicapp/loader-nextjs",
   "author": "Chung Wu",
-  "module": "dist/loader-react.esm.js",
+  "module": "dist/loader-nextjs.esm.js",
   "size-limit": [
     {
-      "path": "dist/loader-react.cjs.production.min.js",
+      "path": "dist/loader-nextjs.cjs.production.min.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/loader-react.esm.js",
+      "path": "dist/loader-nextjs.esm.js",
       "limit": "10 KB"
     }
   ],
   "devDependencies": {
     "@size-limit/preset-small-lib": "^4.11.0",
-    "@types/react": "^17.0.9",
-    "@types/react-dom": "^17.0.6",
+    "@types/react": "^17.0.8",
+    "@types/react-dom": "^17.0.5",
     "husky": "^6.0.0",
+    "next": "^11.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "size-limit": "^4.11.0",
     "tsdx": "^0.14.1",
     "tslib": "^2.2.0",
     "typescript": "^4.3.2"
+  },
+  "dependencies": {
+    "@plasmicapp/loader-core": "^0.1.1",
+    "@plasmicapp/loader-react": "^0.1.0"
   }
 }
