@@ -1,11 +1,10 @@
 import { LoaderBundleOutput } from '@plasmicapp/loader-core';
+import type { initPlasmicLoader as initPlasmicLoaderReact } from '@plasmicapp/loader-react';
 import path from 'path';
 import { serverRequireFs } from './server-require';
 
 export class FileCache {
-  private filePath: string;
-  constructor(dir: string) {
-    this.filePath = path.join(dir, 'plasmic-cache.json');
+  constructor(private filePath: string) {
     console.log('USING cache', this.filePath);
   }
 
@@ -37,7 +36,13 @@ export class FileCache {
   }
 }
 
-export function makeCache() {
+export function makeCache(opts: Parameters<typeof initPlasmicLoaderReact>[0]) {
   const cacheDir = path.resolve(process.cwd(), '.next', '.plasmic');
-  return new FileCache(cacheDir);
+  const cachePath = path.join(
+    cacheDir,
+    `plasmic-${[...opts.projects.map((p) => `${p.id}@${p.version ?? ''}`)]
+      .sort()
+      .join('-')}${opts.preview ? '-preview' : ''}-cache.json`
+  );
+  return new FileCache(cachePath);
 }

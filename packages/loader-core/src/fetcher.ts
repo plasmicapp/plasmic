@@ -1,18 +1,15 @@
 import { Api, LoaderBundleOutput } from './api';
 
-export interface InitOptions {
-  user: string;
-  token: string;
-  projectIds: string[];
-  cache?: LoaderBundleCache;
-}
-
 interface FetcherOptions {
   user: string;
   token: string;
-  projectIds: string[];
+  projects: {
+    id: string;
+    version?: string;
+  }[];
   cache?: LoaderBundleCache;
   platform?: 'react' | 'nextjs' | 'gatsby';
+  preview?: boolean;
 }
 
 export interface LoaderBundleCache {
@@ -24,7 +21,7 @@ export class PlasmicModulesFetcher {
   private api: Api;
   private curFetch: Promise<LoaderBundleOutput> | undefined = undefined;
   constructor(private opts: FetcherOptions) {
-    this.api = new Api(opts);
+    this.api = new Api({ user: opts.user, token: opts.token });
   }
 
   async fetchAllData() {
@@ -45,9 +42,15 @@ export class PlasmicModulesFetcher {
   }
 
   private async doFetch() {
-    const data = await this.api.fetchLoaderData(this.opts.projectIds, {
-      platform: this.opts.platform,
-    });
+    const data = await this.api.fetchLoaderData(
+      this.opts.projects.map((p) =>
+        p.version && !this.opts.preview ? `${p.id}@${p.version}` : p.id
+      ),
+      {
+        platform: this.opts.platform,
+        preview: this.opts.preview,
+      }
+    );
     if (this.opts.cache) {
       await this.opts.cache.set(data);
     }

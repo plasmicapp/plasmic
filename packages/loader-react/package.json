@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -24,7 +24,7 @@
     "@plasmicapp/loader-core": "^0.1.0"
   },
   "peerDependencies": {
-    "react": ">=16"
+    "react": ">=16.8.0"
   },
   "husky": {
     "hooks": {

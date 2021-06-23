@@ -68,15 +68,17 @@ export class Api {
       ['platform', platform ?? 'react'],
       ...projectIds.map((projectId) => ['projectId', projectId]),
     ]).toString();
-    const resp = await fetch(
-      `${host}/api/v1/loader/code/${
-        preview ? 'preview' : 'published'
-      }?${query}`,
-      {
-        method: 'GET',
-        headers: this.makeGetHeaders(),
-      }
-    );
+
+    const url = `${host}/api/v1/loader/code/${
+      preview ? 'preview' : 'published'
+    }?${query}`;
+    const resp = await fetch(url, {
+      method: 'GET',
+      headers: this.makeGetHeaders(),
+    });
+    if (resp.status >= 400) {
+      throw new Error(resp.statusText);
+    }
     const json = await resp.json();
     return json as LoaderBundleOutput;
   }

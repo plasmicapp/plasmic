@@ -16,7 +16,7 @@ export function initPlasmicLoader(
   opts: Parameters<typeof initPlasmicLoaderReact>[0]
 ) {
   const isBrowser = typeof window !== 'undefined';
-  const cache = isBrowser ? undefined : makeCache();
+  const cache = isBrowser ? undefined : makeCache(opts);
   const loader = initPlasmicLoaderReact({
     ...opts,
     cache,
@@ -28,14 +28,19 @@ export function initPlasmicLoader(
     'next/link': NextLink,
   });
 
-  if (cache) {
-    const watcher = new PlasmicRemoteChangeWatcher({ ...opts });
+  if (cache && opts.preview) {
+    const watcher = new PlasmicRemoteChangeWatcher({
+      user: opts.user,
+      token: opts.token,
+      projectIds: opts.projects.map((p) => p.id),
+    });
     watcher.subscribe({
       onChange: async (projectId: string) => {
         console.log(
           `Detected update to ${projectId}: ${new Date().toISOString()}`
         );
         await cache.clear();
+        loader.clearCache();
       },
     });
   }
