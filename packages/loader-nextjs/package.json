@@ -1,5 +1,5 @@
 {
-  "version": "0.1.1",
+  "version": "0.1.3",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -13,7 +13,7 @@
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
-    "yalc-publish": "yalc publish --push",
+    "yalcp": "yalc publish --push",
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
     "prepare": "tsdx build",
@@ -62,7 +62,7 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
-    "@plasmicapp/loader-core": "^0.1.1",
-    "@plasmicapp/loader-react": "^0.1.0"
+    "@plasmicapp/loader-core": "^0.1.3",
+    "@plasmicapp/loader-react": "^0.1.3"
   }
 }

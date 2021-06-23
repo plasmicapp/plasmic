@@ -1,7 +1,5 @@
 import fetch from 'isomorphic-fetch';
 
-const host = process.env.PLASMIC_HOST ?? `https://studio.plasmic.app`;
-
 export interface ComponentMeta {
   id: string;
   projectId: string;
@@ -54,7 +52,16 @@ export interface AssetModule {
 }
 
 export class Api {
-  constructor(private opts: { user: string; token: string }) {}
+  private host: string;
+  constructor(
+    private opts: {
+      user: string;
+      token: string;
+      host?: string;
+    }
+  ) {
+    this.host = opts.host ?? 'https://studio.plasmic.app';
+  }
 
   async fetchLoaderData(
     projectIds: string[],
@@ -69,7 +76,7 @@ export class Api {
       ...projectIds.map((projectId) => ['projectId', projectId]),
     ]).toString();
 
-    const url = `${host}/api/v1/loader/code/${
+    const url = `${this.host}/api/v1/loader/code/${
       preview ? 'preview' : 'published'
     }?${query}`;
     const resp = await fetch(url, {
@@ -96,7 +103,7 @@ export class Api {
       ['embedHydrate', embedHydrate ? '1' : '0'],
       ['hydrate', hydrate ? '1' : '0'],
     ]).toString();
-    const resp = await fetch(`${host}/api/v1/loader/html?${query}`, {
+    const resp = await fetch(`${this.host}/api/v1/loader/html?${query}`, {
       method: 'GET',
       headers: this.makeGetHeaders(),
     });

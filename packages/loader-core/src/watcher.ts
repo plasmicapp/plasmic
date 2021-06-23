@@ -1,7 +1,5 @@
 import socketio, { Socket } from 'socket.io-client';
 
-const host = process.env.PLASMIC_HOST ?? `https://studio.plasmic.app`;
-
 export interface PlasmicRemoteChangeListener {
   onChange: (projectId: string) => void;
   onError?: (data: any) => void;
@@ -10,14 +8,18 @@ export interface PlasmicRemoteChangeListener {
 export class PlasmicRemoteChangeWatcher {
   private watchers: PlasmicRemoteChangeListener[] = [];
   private socket: Socket | undefined = undefined;
+  private host: string;
 
   constructor(
     private opts: {
       user: string;
       token: string;
       projectIds: string[];
+      host?: string;
     }
-  ) {}
+  ) {
+    this.host = opts.host ?? 'https://studio.plasmic.app';
+  }
 
   subscribe(watcher: PlasmicRemoteChangeListener) {
     this.watchers.push(watcher);
@@ -39,7 +41,7 @@ export class PlasmicRemoteChangeWatcher {
   }
 
   private async connectSocket() {
-    const socket = socketio(host, {
+    const socket = socketio(this.host, {
       path: `/api/v1/socket`,
       transportOptions: {
         polling: {

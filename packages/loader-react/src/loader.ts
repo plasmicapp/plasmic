@@ -21,6 +21,7 @@ export interface InitOptions {
   cache?: LoaderBundleCache;
   platform?: 'react' | 'nextjs' | 'gatsby';
   preview?: boolean;
+  host?: string;
 }
 
 interface ProjectOption {

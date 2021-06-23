@@ -1197,20 +1197,20 @@
     "@nodelib/fs.scandir" "2.1.4"
     fastq "^1.6.0"
 
-"@plasmicapp/loader-core@^0.1.0", "@plasmicapp/loader-core@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-core/-/loader-core-0.1.1.tgz#a0e980c58e9aa57fc4cb98c1578eea9b53525850"
-  integrity sha512-5JCgJt6BH2NZkdRRo2SB9JF4fwezaTwC8Teqi1PbkH1oc/JbzgcZLPSBj+1e+xVebXmdbuAFSiK8Ezq9VvEITw==
+"@plasmicapp/loader-core@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-core/-/loader-core-0.1.3.tgz#1280026f701c675140aa81c7e7a9f93b8dbd3944"
+  integrity sha512-NCGtTBkM8Zr/zVR5biRqdtmwKDziK22SV0QhhQz3F5sQHs6RggpYnB9jfLBy5lOsJ1MqDn0uRBJ7D4XhTO1ajA==
   dependencies:
     isomorphic-fetch "^3.0.0"
     socket.io-client "^4.1.2"
 
-"@plasmicapp/loader-react@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-react/-/loader-react-0.1.0.tgz#249b7df002f8aec9db6bc2634188fdd533490a34"
-  integrity sha512-FTd1DLmixaAZG3WFbnGSGuLQXtq06M0cljTxCrV1ixDkTaa1hwtzuU/PhdOIBcokDURJmnyyH/OqI2G9RnTa2A==
+"@plasmicapp/loader-react@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-react/-/loader-react-0.1.3.tgz#c2304858e4a2fb6726c9dbc08be45c1fb26de8f7"
+  integrity sha512-JN5bb3e7m7zsOcuTBzRfjIWAQgSiaDzcJwdv4CISg3zamAfYN7337nPDyCAE+/fETcf2nNpOa24/THkswshXkA==
   dependencies:
-    "@plasmicapp/loader-core" "^0.1.0"
+    "@plasmicapp/loader-core" "^0.1.3"
 
 "@polka/url@^1.0.0-next.15":
   version "1.0.0-next.15"

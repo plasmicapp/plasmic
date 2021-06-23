@@ -10,6 +10,7 @@ interface FetcherOptions {
   cache?: LoaderBundleCache;
   platform?: 'react' | 'nextjs' | 'gatsby';
   preview?: boolean;
+  host?: string;
 }
 
 export interface LoaderBundleCache {
@@ -21,7 +22,11 @@ export class PlasmicModulesFetcher {
   private api: Api;
   private curFetch: Promise<LoaderBundleOutput> | undefined = undefined;
   constructor(private opts: FetcherOptions) {
-    this.api = new Api({ user: opts.user, token: opts.token });
+    this.api = new Api({
+      user: opts.user,
+      token: opts.token,
+      host: opts.host,
+    });
   }
 
   async fetchAllData() {
