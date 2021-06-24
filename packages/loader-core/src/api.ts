@@ -27,11 +27,23 @@ export interface GlobalGroupMeta {
   useName: string;
 }
 
+export interface ProjectMeta {
+  id: string;
+  name: string;
+  version: string;
+  remoteFonts: FontMeta[];
+}
+
+export interface FontMeta {
+  url: string;
+}
+
 export interface LoaderBundleOutput {
   modules: (CodeModule | AssetModule)[];
   external: string[];
   components: ComponentMeta[];
   globalGroups: GlobalGroupMeta[];
+  projects: ProjectMeta[];
 }
 
 export interface LoaderHtmlOutput {

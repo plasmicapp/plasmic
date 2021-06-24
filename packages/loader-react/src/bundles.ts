@@ -13,6 +13,15 @@ export function mergeBundles(
     target = { ...target, components: [...target.components, ...newCompMetas] };
   }
 
+  const existingProjects = new Set(target.projects.map((p) => p.id));
+  const newProjects = from.projects.filter((p) => !existingProjects.has(p.id));
+  if (newProjects.length > 0) {
+    target = {
+      ...target,
+      projects: [...target.projects, ...newProjects],
+    };
+  }
+
   const existingModules = new Set(target.modules.map((m) => m.fileName));
   const newModules = from.modules.filter(
     (m) => !existingModules.has(m.fileName)

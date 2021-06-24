@@ -31,6 +31,7 @@ interface ProjectOption {
 export interface ComponentRenderData {
   entryCompMetas: ComponentMeta[];
   bundle: LoaderBundleOutput;
+  remoteFontUrls: string[];
 }
 
 interface ComponentSubstitutionSpec {
@@ -64,6 +65,7 @@ export class InternalPlasmicComponentLoader {
     components: [],
     globalGroups: [],
     external: [],
+    projects: [],
   };
 
   constructor(opts: InitOptions) {
@@ -122,6 +124,7 @@ export class InternalPlasmicComponentLoader {
       components: [],
       globalGroups: [],
       external: [],
+      projects: [],
     };
     this.registry.clear();
   }
@@ -244,6 +247,7 @@ export class InternalPlasmicComponentLoader {
       return {
         entryCompMetas: bundle.components,
         bundle: bundle,
+        remoteFontUrls: [],
       };
     }
 
@@ -255,9 +259,16 @@ export class InternalPlasmicComponentLoader {
       'entrypoint.css',
       ...bundle.globalGroups.map((g) => g.contextFile)
     );
+
+    const remoteFontUrls: string[] = [];
+    subBundle.projects.forEach((p) =>
+      remoteFontUrls.push(...p.remoteFonts.map((f) => f.url))
+    );
+
     return {
       entryCompMetas: compMetas,
       bundle: subBundle,
+      remoteFontUrls,
     };
   }
 

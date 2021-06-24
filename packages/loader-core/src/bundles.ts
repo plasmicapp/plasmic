@@ -14,5 +14,6 @@ export function getBundleSubset(
     external: bundle.external.filter((dep) => deps.has(dep)),
     components: bundle.components,
     globalGroups: bundle.globalGroups,
+    projects: bundle.projects,
   };
 }

@@ -100,7 +100,13 @@ function PlasmicCss(props: { loader: InternalPlasmicComponentLoader }) {
 
 function buildCss(loader: InternalPlasmicComponentLoader) {
   const cssModules = loader.getLookup().getCss();
-  return cssModules.map((mod) => mod.source).join('\n');
+  const remoteFonts = loader.getLookup().getRemoteFonts();
+
+  // Make sure the @import statements come at the front of css
+  return `
+    ${remoteFonts.map((f) => `@import url('${f.url}');`).join('\n')}
+    ${cssModules.map((mod) => mod.source).join('\n')}
+  `;
 }
 
 export function usePlasmicRootContext() {

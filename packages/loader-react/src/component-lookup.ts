@@ -1,5 +1,6 @@
 import {
   AssetModule,
+  FontMeta,
   GlobalGroupMeta,
   LoaderBundleOutput,
   Registry,
@@ -55,5 +56,9 @@ export class ComponentLookup {
     return this.bundle.modules.filter(
       (mod) => mod.type === 'asset' && mod.fileName.endsWith('css')
     ) as AssetModule[];
+  }
+
+  getRemoteFonts(): FontMeta[] {
+    return this.bundle.projects.flatMap((p) => p.remoteFonts);
   }
 }

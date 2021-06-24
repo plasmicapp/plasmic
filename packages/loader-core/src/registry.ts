@@ -59,7 +59,6 @@ export class Registry {
       if (mod.type === 'code' && mod.code !== this.modules[mod.fileName]) {
         this.modules[mod.fileName] = mod.code;
         updated = true;
-        console.log('UPDATED module', mod.fileName);
       }
     }
 

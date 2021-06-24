@@ -1122,10 +1122,10 @@
     "@nodelib/fs.scandir" "2.1.4"
     fastq "^1.6.0"
 
-"@plasmicapp/loader-core@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-core/-/loader-core-0.1.4.tgz#bbf8581124042d265abe4a95d4a87cd3fb2ac940"
-  integrity sha512-ZoFzRnsvUSybW/CYkk5R0JfAFVrZfqUiSjzgzQXVJuSo7tkMzFiP/39pLSCrUfaivhI4YcNaJ5FfFEZplyAsdg==
+"@plasmicapp/loader-core@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-core/-/loader-core-0.1.5.tgz#c8c1bd24a308a6c47ebcc71ccdc72be38395cde6"
+  integrity sha512-yybbbecQIgh/vYP2E8jySh2pTL4Nlmeaa/lmAMzULMXDBCAfgXwB24cCwLp8PaOyE/VFhpcthGdeVIcCDkh/tQ==
   dependencies:
     isomorphic-fetch "^3.0.0"
     socket.io-client "^4.1.2"
