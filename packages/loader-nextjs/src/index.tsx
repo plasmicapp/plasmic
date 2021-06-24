@@ -20,6 +20,7 @@ export function initPlasmicLoader(
   const loader = initPlasmicLoaderReact({
     ...opts,
     cache,
+    platform: 'nextjs',
   });
   loader.registerModules({
     react: React,
