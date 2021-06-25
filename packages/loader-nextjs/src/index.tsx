@@ -1,10 +1,11 @@
-import { PlasmicRemoteChangeWatcher } from '@plasmicapp/loader-core';
 import { initPlasmicLoader as initPlasmicLoaderReact } from '@plasmicapp/loader-react';
+import type { PlasmicRemoteChangeWatcher as Watcher } from '@plasmicapp/watcher';
 import * as NextHead from 'next/head';
 import * as NextLink from 'next/link';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { makeCache } from './cache';
+import serverRequire from './server-require';
 export {
   ComponentRenderData,
   PlasmicLoader,
@@ -29,18 +30,35 @@ export function initPlasmicLoader(
     'next/link': NextLink,
   });
 
-  if (cache && opts.preview) {
+  if (cache && process.env.NODE_ENV !== 'production') {
+    console.log(`Subscribing to Plasmic changes...`);
+
+    // Import using serverRequire, so webpack doesn't bundle us into client bundle
+    const PlasmicRemoteChangeWatcher = serverRequire('@plasmicapp/watcher')
+      .PlasmicRemoteChangeWatcher as typeof Watcher;
     const watcher = new PlasmicRemoteChangeWatcher({
       projects: opts.projects,
       host: opts.host,
     });
+
+    const clearCache = async (projectId: string) => {
+      console.log(
+        `Detected update to ${projectId}; clearing cache: ${new Date().toISOString()}`
+      );
+      await cache.clear();
+      loader.clearCache();
+    };
+
     watcher.subscribe({
-      onChange: async (projectId: string) => {
-        console.log(
-          `Detected update to ${projectId}: ${new Date().toISOString()}`
-        );
-        await cache.clear();
-        loader.clearCache();
+      onUpdate: (projectId) => {
+        if (opts.preview) {
+          clearCache(projectId);
+        }
+      },
+      onPublish: (projectId) => {
+        if (!opts.preview) {
+          clearCache(projectId);
+        }
       },
     });
   }

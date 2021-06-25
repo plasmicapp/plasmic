@@ -1,7 +1,8 @@
 import socketio, { Socket } from 'socket.io-client';
 
 export interface PlasmicRemoteChangeListener {
-  onChange: (projectId: string) => void;
+  onUpdate?: (projectId: string, revision: number) => void;
+  onPublish?: (projectId: string, version: string) => void;
   onError?: (data: any) => void;
 }
 
@@ -89,8 +90,20 @@ export class PlasmicRemoteChangeWatcher {
           data.projectId
         } updated to revision ${data.revisionNum}`
       );
-      console.log('Informing watchers', this.watchers);
-      this.watchers.forEach((watcher) => watcher.onChange(data.projectId));
+      this.watchers.forEach((watcher) =>
+        watcher.onUpdate?.(data.projectId, data.revisionNum)
+      );
+    });
+
+    socket.on('publish', async (data: any) => {
+      console.log(
+        `${new Date().toISOString()}: Project ${
+          data.projectId
+        } updated to version ${data.version}`
+      );
+      this.watchers.forEach((watcher) =>
+        watcher.onPublish?.(data.projectId, data.version)
+      );
     });
   }
 }

@@ -1197,20 +1197,27 @@
     "@nodelib/fs.scandir" "2.1.4"
     fastq "^1.6.0"
 
-"@plasmicapp/loader-core@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-core/-/loader-core-0.1.4.tgz#bbf8581124042d265abe4a95d4a87cd3fb2ac940"
-  integrity sha512-ZoFzRnsvUSybW/CYkk5R0JfAFVrZfqUiSjzgzQXVJuSo7tkMzFiP/39pLSCrUfaivhI4YcNaJ5FfFEZplyAsdg==
+"@plasmicapp/loader-core@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-core/-/loader-core-0.1.6.tgz#aff04c3436c3366b8ba8170225b738403d4da318"
+  integrity sha512-kJO52pwn9sJKLmkGNzzzQ9jRAVpuuc8Y8pvCTt/WUjEOu03m3/whUrjEX37oUXuWr29hNNJiyQiKZl2sUmaK6w==
   dependencies:
     isomorphic-fetch "^3.0.0"
-    socket.io-client "^4.1.2"
 
-"@plasmicapp/loader-react@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-react/-/loader-react-0.1.4.tgz#d6c4ad5f16a088d58b855e76c2f373e8091c3385"
-  integrity sha512-yr/oosflAsD1XiC3qfj0Zph2sgod3LA47Cb6aeRhfObSFn2y0G1AK24ngkm2rEn5MoYPS+XrBSnVtT3Q46BLxg==
+"@plasmicapp/loader-react@^0.1.7":
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-react/-/loader-react-0.1.7.tgz#bab72496e96fe3666bb5f876c13e7389bd0bc0e6"
+  integrity sha512-HS7/YjGsyYEu/p+HETycYk2rD+RmcZz/u+VSd+EK1tjkqP2CJTe8fwBUB1UqqlIcCdXdIvBW88Wyd19l1/HaRA==
   dependencies:
-    "@plasmicapp/loader-core" "^0.1.4"
+    "@plasmicapp/loader-core" "^0.1.6"
+    pascalcase "^1.0.0"
+
+"@plasmicapp/watcher@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/watcher/-/watcher-0.1.0.tgz#b369acf2cfa6ddc0ef78e91108aa399c41b8955d"
+  integrity sha512-Br57QXknrRUmqcF87VPthDjYsKBZwDD9KjF6Q42KlAIJ04pnSVHAMKE+b8g1kFDERtYsP5fwolagrLSO/vdQkQ==
+  dependencies:
+    socket.io-client "^4.1.2"
 
 "@polka/url@^1.0.0-next.15":
   version "1.0.0-next.15"
@@ -6537,6 +6544,11 @@ pascalcase@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/pascalcase/-/pascalcase-0.1.1.tgz#b363e55e8006ca6fe21784d2db22bd15d7917f14"
   integrity sha1-s2PlXoAGym/iF4TS2yK9FdeRfxQ=
+
+pascalcase@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/pascalcase/-/pascalcase-1.0.0.tgz#d2fd7d73f2969606d2b56e17f5261be41c43c381"
+  integrity sha512-BSExi0rRnCHReJys6NocaK+cfTXNinAegfWBvr0JD3hiaEG7Nuc7r0CIdOJunXrs8gU/sbHQ9dxVAtiVQisjmg==
 
 path-browserify@0.0.1:
   version "0.0.1"

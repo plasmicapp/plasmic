@@ -1,8 +1,9 @@
 {
-  "version": "0.1.7",
+  "version": "0.1.0",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
+  "sideEffects": false,
   "files": [
     "dist",
     "src"
@@ -14,19 +15,13 @@
     "start": "tsdx watch",
     "build": "tsdx build",
     "yalcp": "yalc publish --push",
-    "test": "tsdx test --passWithNoTests",
+    "test": "tsdx test",
     "lint": "tsdx lint",
     "prepare": "tsdx build",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
-  "dependencies": {
-    "@plasmicapp/loader-core": "^0.1.6",
-    "pascalcase": "^1.0.0"
-  },
-  "peerDependencies": {
-    "react": ">=16.8.0"
-  },
+  "peerDependencies": {},
   "husky": {
     "hooks": {
       "pre-commit": "tsdx lint"
@@ -38,30 +33,28 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "@plasmicapp/loader-react",
+  "name": "@plasmicapp/watcher",
   "author": "Chung Wu",
-  "module": "dist/loader-react.esm.js",
+  "module": "dist/watcher.esm.js",
   "size-limit": [
     {
-      "path": "dist/loader-react.cjs.production.min.js",
+      "path": "dist/watcher.cjs.production.min.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/loader-react.esm.js",
+      "path": "dist/watcher.esm.js",
       "limit": "10 KB"
     }
   ],
   "devDependencies": {
-    "@size-limit/preset-small-lib": "^4.11.0",
-    "@types/pascalcase": "^1.0.0",
-    "@types/react": "^17.0.9",
-    "@types/react-dom": "^17.0.6",
+    "@size-limit/preset-small-lib": "^4.12.0",
     "husky": "^6.0.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "size-limit": "^4.11.0",
+    "size-limit": "^4.12.0",
     "tsdx": "^0.14.1",
-    "tslib": "^2.2.0",
-    "typescript": "^4.3.2"
+    "tslib": "^2.3.0",
+    "typescript": "^4.3.4"
+  },
+  "dependencies": {
+    "socket.io-client": "^4.1.2"
   }
 }
