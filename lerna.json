@@ -1,0 +1,4 @@
+{
+  "packages": ["packages/loader-*", "packages/watcher"],
+  "version": "independent"
+}
