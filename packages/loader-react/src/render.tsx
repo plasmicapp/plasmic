@@ -1,13 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMServer from 'react-dom/server';
-import {
-  ComponentLookupSpec,
-  ComponentRenderData,
-  PlasmicComponentLoader,
-} from './loader';
+import { ComponentRenderData, PlasmicComponentLoader } from './loader';
 import { PlasmicLoader } from './PlasmicLoader';
 import { GlobalVariantSpec, PlasmicRootProvider } from './PlasmicRootProvider';
+import { ComponentLookupSpec } from './utils';
 
 export async function renderToElement(
   loader: PlasmicComponentLoader,
@@ -66,7 +63,6 @@ function makeElement(
   return (
     <PlasmicRootProvider
       loader={loader}
-      scope={[lookup]}
       prefetchedData={opts.prefetchedData}
       globalVariants={opts.globalVariants}
     >

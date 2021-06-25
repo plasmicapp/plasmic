@@ -1,7 +1,11 @@
 import * as React from 'react';
-import { ComponentLookupSpec } from './loader';
 import { usePlasmicRootContext } from './PlasmicRootProvider';
-import { useForceUpdate, useIsMounted, useStableLookupSpec } from './utils';
+import {
+  ComponentLookupSpec,
+  useForceUpdate,
+  useIsMounted,
+  useStableLookupSpec,
+} from './utils';
 
 /**
  * Hook that fetches and returns a React component for rendering the argument

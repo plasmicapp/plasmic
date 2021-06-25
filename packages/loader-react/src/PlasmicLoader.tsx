@@ -5,8 +5,20 @@ import { usePlasmicComponent } from './usePlasmicComponent';
 const PlasmicLoaderContext = React.createContext(false);
 
 export function PlasmicLoader(props: {
+  /**
+   * Name of the component to render, or the path of the page component
+   */
   component: string;
+  /**
+   * Optionally specify a projectId if there are multiple components
+   * of the same name from different projects
+   */
   projectId?: string;
+  /**
+   * If you used registerComponent(), then if the name matches a registered
+   * component, that component is used.  If you want the Plasmic-generated
+   * component instead, specify forceOriginal.
+   */
   forceOriginal?: boolean;
   componentProps?: any;
 }): React.ReactElement | null {
@@ -28,6 +40,7 @@ export function PlasmicLoader(props: {
     { name: component, projectId },
     { forceOriginal }
   );
+
   if (!Component) {
     return null;
   }

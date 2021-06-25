@@ -6,7 +6,7 @@ import {
   Registry,
 } from '@plasmicapp/loader-core';
 import * as React from 'react';
-import { ComponentLookupSpec, getCompMeta } from './loader';
+import { ComponentLookupSpec, getCompMeta } from './utils';
 
 export class ComponentLookup {
   constructor(private bundle: LoaderBundleOutput, private registry: Registry) {}

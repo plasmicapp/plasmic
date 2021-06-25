@@ -13,6 +13,7 @@ import { mergeBundles } from './bundles';
 import { ComponentLookup } from './component-lookup';
 import { createUseGlobalVariant } from './global-variants';
 import { GlobalVariantSpec } from './PlasmicRootProvider';
+import { ComponentLookupSpec, getCompMeta } from './utils';
 
 export interface InitOptions {
   projects: ProjectOption[];
@@ -38,8 +39,6 @@ interface ComponentSubstitutionSpec {
   lookup: ComponentLookupSpec;
   component: React.ComponentType;
 }
-
-export type ComponentLookupSpec = string | { name: string; projectId?: string };
 
 export function initPlasmicLoader(opts: InitOptions): PlasmicComponentLoader {
   const internal = new InternalPlasmicComponentLoader(opts);
@@ -151,31 +150,6 @@ export class InternalPlasmicComponentLoader {
     return await this.fetchComponentData(...specs);
   }
 
-  async fetchComponentDataByPath(
-    path: string | string[],
-    ...otherSpecs: ComponentLookupSpec[]
-  ): Promise<ComponentRenderData> {
-    const normPath = normalizePath(path);
-
-    const compMeta = this.bundle.components.find(
-      (comp) => comp.isPage && comp.path === normPath
-    );
-    const { found: otherMetas, missing: missingSpecs } = this.maybeGetCompMetas(
-      ...otherSpecs
-    );
-
-    if (compMeta && missingSpecs.length === 0) {
-      return this.prepComponentData(this.bundle, compMeta, ...otherMetas);
-    }
-
-    await this.fetchMissingData({
-      missingSpecs,
-      missingPaths: compMeta ? [] : [normPath],
-    });
-
-    return await this.fetchComponentDataByPath(path, ...otherSpecs);
-  }
-
   async fetchPages() {
     const data = await this.fetchAllData();
     return data.components.filter(
@@ -189,7 +163,6 @@ export class InternalPlasmicComponentLoader {
 
   // @ts-ignore
   private async fetchMissingData(opts: {
-    missingPaths?: string[];
     missingSpecs?: ComponentLookupSpec[];
   }) {
     // TODO: do better than just fetching everything
@@ -280,18 +253,6 @@ export class InternalPlasmicComponentLoader {
   }
 }
 
-export function getCompMeta(
-  metas: ComponentMeta[],
-  lookup: ComponentLookupSpec
-) {
-  const spec = typeof lookup === 'string' ? { name: lookup } : lookup;
-  return metas.find(
-    (meta) =>
-      meta.name === spec.name &&
-      (!spec.projectId || meta.projectId === spec.projectId)
-  );
-}
-
 function maybeGetCompMetas(
   metas: ComponentMeta[],
   specs: ComponentLookupSpec[]
@@ -307,26 +268,6 @@ function maybeGetCompMetas(
     }
   }
   return { found, missing };
-}
-
-function normalizePath(path: string | string[]) {
-  if (Array.isArray(path)) {
-    path = path.join('/');
-  }
-  if (!path.startsWith('/')) {
-    path = `/${path}`;
-  }
-  return path;
-}
-
-export function getComponentLookupName(spec: ComponentLookupSpec) {
-  if (typeof spec === 'string') {
-    return spec;
-  } else if (!spec.projectId) {
-    return spec.name;
-  } else {
-    return `${spec.name} (project ${spec.projectId})`;
-  }
 }
 
 /**
@@ -369,23 +310,18 @@ export class PlasmicComponentLoader {
    * Pre-fetches component data needed to for PlasmicLoader to render
    * these components.  Should be passed into PlasmicRootProvider as
    * the prefetchedData prop.
+   *
+   * You can look up a component either by:
+   * - the name of the component
+   * - the path for a page component
+   * - an array of strings that make up parts of the path
+   * - object { name: "name_or_path", projectId: ...}, to specify which project
+   *   to use, if multiple projects have the same component name
    */
   async fetchComponentData(
     ...specs: ComponentLookupSpec[]
   ): Promise<ComponentRenderData> {
     return this.__internal.fetchComponentData(...specs);
-  }
-
-  /**
-   * Pre-fetches component data needed for PlasmicLoader to render
-   * the page component at the argument path.  Should be passed into
-   * PlasmicRootProvider as the prefetchedData prop.
-   */
-  async fetchComponentDataByPath(
-    path: string | string[],
-    ...otherSpecs: ComponentLookupSpec[]
-  ): Promise<ComponentRenderData> {
-    return this.__internal.fetchComponentDataByPath(path, ...otherSpecs);
   }
 
   /**

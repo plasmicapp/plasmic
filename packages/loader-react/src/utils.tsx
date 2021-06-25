@@ -1,5 +1,20 @@
+import { ComponentMeta } from '@plasmicapp/loader-core';
+import pascalcase from 'pascalcase';
 import * as React from 'react';
-import { ComponentLookupSpec } from './loader';
+
+export type ComponentLookupSpec = string | { name: string; projectId?: string };
+
+interface FullNameLookupSpec {
+  name: string;
+  projectId?: string;
+}
+
+interface FullPathLookupSpec {
+  path: string;
+  projectId?: string;
+}
+
+type FullLookupSpec = FullNameLookupSpec | FullPathLookupSpec;
 
 export function useForceUpdate() {
   const [, setTick] = React.useState(0);
@@ -38,20 +53,45 @@ function areLookupSpecsEqual(
     return false;
   }
 
-  const fullSpec1 = getFullLookupSpec(spec1);
-  const fullSpec2 = getFullLookupSpec(spec2);
+  const fullSpec1 = toFullLookup(spec1);
+  const fullSpec2 = toFullLookup(spec2);
   return (
-    fullSpec1.name === fullSpec2.name &&
+    ((isNameSpec(fullSpec1) &&
+      isNameSpec(fullSpec2) &&
+      fullSpec1.name === fullSpec2.name) ||
+      (isPathSpec(fullSpec1) &&
+        isPathSpec(fullSpec2) &&
+        fullSpec1.path === fullSpec2.path)) &&
     fullSpec1.projectId === fullSpec2.projectId
   );
 }
 
-function getFullLookupSpec(spec: ComponentLookupSpec) {
-  if (typeof spec === 'string') {
-    return { name: spec };
+function isNameSpec(lookup: FullLookupSpec): lookup is FullNameLookupSpec {
+  return 'name' in lookup;
+}
+
+function isPathSpec(lookup: FullLookupSpec): lookup is FullPathLookupSpec {
+  return 'path' in lookup;
+}
+
+function toFullLookup(lookup: ComponentLookupSpec): FullLookupSpec {
+  const namePart = typeof lookup === 'string' ? lookup : lookup.name;
+  const projectId = typeof lookup === 'string' ? undefined : lookup.projectId;
+
+  if (namePart.startsWith('/')) {
+    return { path: normalizePath(namePart), projectId };
   } else {
-    return spec;
+    return { name: normalizeName(namePart), projectId };
   }
+}
+
+function normalizePath(path: string) {
+  return path.trim();
+}
+
+function normalizeName(name: string) {
+  // Not a full normalization, but should be good enough
+  return pascalcase(name).trim();
 }
 
 export function useIsMounted(): () => boolean {
@@ -66,4 +106,22 @@ export function useIsMounted(): () => boolean {
   }, []);
 
   return isMounted;
+}
+
+function matchesCompMeta(lookup: FullLookupSpec, meta: ComponentMeta) {
+  if (lookup.projectId && meta.projectId !== lookup.projectId) {
+    return false;
+  }
+
+  return isNameSpec(lookup)
+    ? lookup.name === meta.name
+    : lookup.path === meta.path;
+}
+
+export function getCompMeta(
+  metas: ComponentMeta[],
+  lookup: ComponentLookupSpec
+) {
+  const full = toFullLookup(lookup);
+  return metas.find((meta) => matchesCompMeta(full, meta));
 }
