@@ -13,7 +13,7 @@ import { mergeBundles } from './bundles';
 import { ComponentLookup } from './component-lookup';
 import { createUseGlobalVariant } from './global-variants';
 import { GlobalVariantSpec } from './PlasmicRootProvider';
-import { ComponentLookupSpec, getCompMeta } from './utils';
+import { ComponentLookupSpec, getCompMeta, getLookupSpecName } from './utils';
 
 export interface InitOptions {
   projects: ProjectOption[];
@@ -146,8 +146,17 @@ export class InternalPlasmicComponentLoader {
     // TODO: incrementally fetch only what's needed, instead of fetching all
     await this.fetchMissingData({ missingSpecs });
 
-    // Now we should have all the data we need
-    return await this.fetchComponentData(...specs);
+    const {
+      found: existingMetas2,
+      missing: missingSpecs2,
+    } = this.maybeGetCompMetas(...specs);
+    if (missingSpecs2.length > 0) {
+      throw new Error(
+        `Unnable to find components ${missingSpecs2.map(getLookupSpecName)}`
+      );
+    }
+
+    return this.prepComponentData(this.bundle, ...existingMetas2);
   }
 
   async fetchPages() {

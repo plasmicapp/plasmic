@@ -125,3 +125,13 @@ export function getCompMeta(
   const full = toFullLookup(lookup);
   return metas.find((meta) => matchesCompMeta(full, meta));
 }
+
+export function getLookupSpecName(lookup: ComponentLookupSpec) {
+  if (typeof lookup === 'string') {
+    return lookup;
+  } else if (lookup.projectId) {
+    return `${lookup} (project ${lookup.projectId})`;
+  } else {
+    return lookup.name;
+  }
+}
