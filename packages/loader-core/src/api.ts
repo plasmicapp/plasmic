@@ -95,7 +95,8 @@ export class Api {
       headers: this.makeGetHeaders(),
     });
     if (resp.status >= 400) {
-      throw new Error(resp.statusText);
+      const error = await resp.json();
+      throw new Error(error?.error?.message ?? resp.statusText);
     }
     const json = await resp.json();
     return json as LoaderBundleOutput;
