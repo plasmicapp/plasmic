@@ -52,6 +52,6 @@ packages:
 
 3. Install the canary version into wherever you're trying to test, via `yarn add ... --registry=http://localhost:4873`
 
-4. Once you're done, commit your changes, go through code reviews, etc.
+4. Once you're done making your changes, you can run `yarn bump` to bump the versions of the changed packages.  If you already have an existing git commit you wawnt to use, do `yarn bump --amend`.  Submit for code review.
 
-5. When you're ready to do a release, run `yarn release`.  This will amend your commit that bumps all the changed package versions, and add also tag the git commit.
+5. Once your change has been approved and you're ready to release to npm, run `yarn release`.  This will individually publish each package to npm.
