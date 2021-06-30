@@ -314,7 +314,10 @@ export class PlasmicComponentLoader {
    * swap in / substitute a Plasmic component with a "real" component.
    * You can also use this to register your code components.
    */
-  registerComponent(component: React.ComponentType, name: ComponentLookupSpec) {
+  registerComponent<P>(
+    component: React.ComponentType<P>,
+    name: ComponentLookupSpec
+  ) {
     this.__internal.registerComponent(component, name);
   }
 
