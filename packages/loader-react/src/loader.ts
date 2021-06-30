@@ -37,7 +37,7 @@ export interface ComponentRenderData {
 
 interface ComponentSubstitutionSpec {
   lookup: ComponentLookupSpec;
-  component: React.ComponentType;
+  component: React.ComponentType<any>;
 }
 
 export function initPlasmicLoader(opts: InitOptions): PlasmicComponentLoader {
@@ -92,7 +92,10 @@ export class InternalPlasmicComponentLoader {
     }
   }
 
-  registerComponent(component: React.ComponentType, name: ComponentLookupSpec) {
+  registerComponent<P>(
+    component: React.ComponentType<P>,
+    name: ComponentLookupSpec
+  ) {
     if (!this.registry.isEmpty()) {
       console.warn(
         'Calling PlasmicComponentLoader.registerSubstitution() after Plasmic component has rendered; starting over.'
