@@ -1,4 +1,6 @@
 {
   "packages": ["packages/loader-*", "packages/watcher"],
-  "version": "independent"
+  "version": "independent",
+  "npmClient": "yarn",
+  "useWorkspaces": true
 }

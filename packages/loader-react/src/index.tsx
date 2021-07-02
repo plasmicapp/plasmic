@@ -1,4 +1,8 @@
-export { ComponentRenderData, initPlasmicLoader } from './loader';
+export {
+  ComponentRenderData,
+  initPlasmicLoader,
+  PlasmicComponentLoader,
+} from './loader';
 export { PlasmicLoader } from './PlasmicLoader';
 export { GlobalVariantSpec, PlasmicRootProvider } from './PlasmicRootProvider';
 export { hydrateFromElement, renderToElement, renderToString } from './render';

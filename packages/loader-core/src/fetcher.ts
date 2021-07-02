@@ -31,15 +31,13 @@ export class PlasmicModulesFetcher {
     if (this.opts.cache) {
       const cachedData = await this.opts.cache.get();
       if (cachedData) {
-        console.log('Using cached data');
         return cachedData;
       }
     }
     if (this.curFetch) {
-      console.log('Awaiting in-process fetch');
       return await this.curFetch;
     }
-    console.log('Doing a fresh fetch...');
+    console.debug('PlasmicLoader: doing a fresh fetch...');
     this.curFetch = this.doFetch();
     return await this.curFetch;
   }
@@ -57,7 +55,6 @@ export class PlasmicModulesFetcher {
     if (this.opts.cache) {
       await this.opts.cache.set(data);
     }
-    console.log('Finished fresh fetch');
     return data;
   }
 }

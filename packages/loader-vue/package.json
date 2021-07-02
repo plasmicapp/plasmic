@@ -1,0 +1,38 @@
+{
+  "name": "@plasmicapp/loader-vue",
+  "version": "0.1.1",
+  "main": "./dist/index.js",
+  "typings": "./dist/main.d.ts",
+  "module": "./dist/loader-vue.esm.js",
+  "scripts": {
+    "build": "tsdx build --entry src/main.ts",
+    "prepare": "yarn build"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=12"
+  },
+  "dependencies": {
+    "@plasmicapp/loader-react": "1.0.4",
+    "core-js": "^3.6.5",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "vue": "^2.6.11",
+    "vue-class-component": "^7.2.6",
+    "vue-property-decorator": "^9.1.2"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-typescript": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "rollup-plugin-typescript2": "^0.30.0",
+    "rollup-plugin-vue": "^5.1.9",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.3.0",
+    "typescript": "^4.3.5",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "gitHead": "fa53f7d79f0e26d8b061102fda0c06788da6f8a7"
+}

@@ -1,6 +1,7 @@
 {
-  "version": "1.0.3",
-  "license": "MIT",
+  "name": "@plasmicapp/loader-react",
+  "version": "1.0.4",
+  "module": "dist/loader-react.esm.js",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
@@ -21,7 +22,7 @@
     "analyze": "size-limit --why"
   },
   "dependencies": {
-    "@plasmicapp/loader-core": "1.0.2",
+    "@plasmicapp/loader-core": "1.0.3",
     "pascalcase": "^1.0.0"
   },
   "peerDependencies": {
@@ -38,9 +39,6 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "@plasmicapp/loader-react",
-  "author": "Chung Wu",
-  "module": "dist/loader-react.esm.js",
   "size-limit": [
     {
       "path": "dist/loader-react.cjs.production.min.js",
@@ -63,5 +61,7 @@
     "tsdx": "^0.14.1",
     "tslib": "^2.2.0",
     "typescript": "^4.3.2"
-  }
+  },
+  "license": "MIT",
+  "gitHead": "fa53f7d79f0e26d8b061102fda0c06788da6f8a7"
 }
