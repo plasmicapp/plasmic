@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMServer from 'react-dom/server';
 import { ComponentRenderData, PlasmicComponentLoader } from './loader';
-import { PlasmicLoader } from './PlasmicLoader';
+import { PlasmicComponent } from './PlasmicComponent';
 import { GlobalVariantSpec, PlasmicRootProvider } from './PlasmicRootProvider';
 import { ComponentLookupSpec } from './utils';
 
@@ -66,7 +66,7 @@ function makeElement(
       prefetchedData={opts.prefetchedData}
       globalVariants={opts.globalVariants}
     >
-      <PlasmicLoader
+      <PlasmicComponent
         component={typeof lookup === 'string' ? lookup : lookup.name}
         projectId={typeof lookup === 'string' ? undefined : lookup.projectId}
         componentProps={opts.componentProps}

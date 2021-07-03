@@ -4,5 +4,5 @@ export {
   initPlasmicLoader,
   PlasmicComponentLoader,
 } from "@plasmicapp/loader-react";
-export { default as PlasmicLoader } from "./components/PlasmicLoader";
-export { default as PlasmicRootProvider } from "./components/PlasmicRootProvider";
+export { default as PlasmicComponent } from "./components/plasmic-component";
+export { default as PlasmicRootProvider } from "./components/plasmic-root-provider";

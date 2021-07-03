@@ -27,7 +27,7 @@ export interface GlobalVariantSpec {
 export function PlasmicRootProvider(props: {
   /**
    * If you have pre-fetched component data via PlasmicComponentLoader,
-   * you can pass them in here; PlasmicLoader will avoid fetching
+   * you can pass them in here; PlasmicComponent will avoid fetching
    * component data that have already been pre-fetched.
    */
   prefetchedData?: ComponentRenderData;

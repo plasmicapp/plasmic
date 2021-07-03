@@ -8,7 +8,7 @@ import { makeCache } from './cache';
 import serverRequire from './server-require';
 export {
   ComponentRenderData,
-  PlasmicLoader,
+  PlasmicComponent,
   PlasmicRootProvider,
   usePlasmicComponent,
 } from '@plasmicapp/loader-react';

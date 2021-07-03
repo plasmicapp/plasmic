@@ -10,7 +10,7 @@ export default (Vue as VueConstructor<
     updateElement: () => void;
   }
 >).extend({
-  name: "PlasmicLoader",
+  name: "PlasmicComponent",
   props: {
     component: {
       type: String,
