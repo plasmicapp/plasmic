@@ -135,9 +135,9 @@ export class InternalPlasmicComponentLoader {
     return maybeGetCompMetas(this.bundle.components, specs);
   }
 
-  async fetchComponentData(
+  async maybeFetchComponentData(
     ...specs: ComponentLookupSpec[]
-  ): Promise<ComponentRenderData> {
+  ): Promise<ComponentRenderData | null> {
     const {
       found: existingMetas,
       missing: missingSpecs,
@@ -154,12 +154,25 @@ export class InternalPlasmicComponentLoader {
       missing: missingSpecs2,
     } = this.maybeGetCompMetas(...specs);
     if (missingSpecs2.length > 0) {
-      throw new Error(
-        `Unnable to find components ${missingSpecs2.map(getLookupSpecName)}`
-      );
+      return null;
     }
 
     return this.prepComponentData(this.bundle, ...existingMetas2);
+  }
+
+  async fetchComponentData(
+    ...specs: ComponentLookupSpec[]
+  ): Promise<ComponentRenderData> {
+    const data = await this.maybeFetchComponentData(...specs);
+
+    if (!data) {
+      const { missing: missingSpecs } = this.maybeGetCompMetas(...specs);
+      throw new Error(
+        `Unable to find components ${missingSpecs.map(getLookupSpecName)}`
+      );
+    }
+
+    return data;
   }
 
   async fetchPages() {
@@ -332,11 +345,25 @@ export class PlasmicComponentLoader {
    * - an array of strings that make up parts of the path
    * - object { name: "name_or_path", projectId: ...}, to specify which project
    *   to use, if multiple projects have the same component name
+   *
+   * Throws an Error if a specified component to fetch does not exist in
+   * the Plasmic project.
    */
   async fetchComponentData(
     ...specs: ComponentLookupSpec[]
   ): Promise<ComponentRenderData> {
     return this.__internal.fetchComponentData(...specs);
+  }
+
+  /**
+   * Like fetchComponentData(), but returns null instead of throwing an Error
+   * when a component is not found.  Useful when you are implementing a catch-all
+   * page and want to check if a specific path had been defined for Plasmic.
+   */
+  async maybeFetchComponentData(
+    ...specs: ComponentLookupSpec[]
+  ): Promise<ComponentRenderData | null> {
+    return this.__internal.maybeFetchComponentData(...specs);
   }
 
   /**
