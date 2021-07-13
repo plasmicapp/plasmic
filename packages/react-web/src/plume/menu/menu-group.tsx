@@ -1,7 +1,6 @@
-import { useMenuSection } from "@react-aria/menu";
 import { Node } from "@react-types/shared";
 import * as React from "react";
-import { useSeparator } from "react-aria";
+import { useMenuSection, useSeparator } from "react-aria";
 import { pick } from "../../common";
 import { Overrides } from "../../render/elements";
 import { renderCollectionNode, SectionLikeProps } from "../collection-utils";

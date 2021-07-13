@@ -1,9 +1,3 @@
-import { useListBox } from "@react-aria/listbox";
-import { HiddenSelect, useSelect as useAriaSelect } from "@react-aria/select";
-import {
-  SelectState as AriaSelectState,
-  useSelectState as useAriaSelectState,
-} from "@react-stately/select";
 import { Placement } from "@react-types/overlays";
 import { AriaSelectProps } from "@react-types/select";
 import {
@@ -14,8 +8,18 @@ import {
   InputBase,
 } from "@react-types/shared";
 import * as React from "react";
-import { mergeProps, usePress } from "react-aria";
+import {
+  HiddenSelect,
+  useListBox,
+  usePress,
+  useSelect as useAriaSelect,
+} from "react-aria";
+import {
+  SelectState as AriaSelectState,
+  useSelectState as useAriaSelectState,
+} from "react-stately";
 import { pick } from "../../common";
+import { mergeProps } from "../../react-utils";
 import { Overrides } from "../../render/elements";
 import { useEnsureSSRProvider } from "../../render/ssr";
 import {

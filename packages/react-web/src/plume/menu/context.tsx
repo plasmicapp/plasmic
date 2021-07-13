@@ -1,5 +1,5 @@
-import { TreeState } from "@react-stately/tree";
 import * as React from "react";
+import { TreeState } from "react-stately";
 import { BaseMenuProps } from "./menu";
 
 export interface MenuContextValue {

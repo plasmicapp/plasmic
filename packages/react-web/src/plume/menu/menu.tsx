@@ -1,8 +1,8 @@
-import { useMenu as useAriaMenu } from "@react-aria/menu";
-import { useTreeState } from "@react-stately/tree";
 import { AriaMenuProps } from "@react-types/menu";
 import { AriaLabelingProps, DOMProps } from "@react-types/shared";
 import * as React from "react";
+import { useMenu as useAriaMenu } from "react-aria";
+import { useTreeState } from "react-stately";
 import { pick } from "../../common";
 import { mergeProps } from "../../react-utils";
 import { Overrides } from "../../render/elements";
@@ -112,10 +112,10 @@ export function useMenu<P extends BaseMenuProps, C extends AnyPlasmicClass>(
     menuListRef
   );
 
-  const contextValue = React.useMemo(() => ({ state, menuProps: props }), [
-    state,
-    props,
-  ]);
+  const contextValue = React.useMemo(
+    () => ({ state, menuProps: props }),
+    [state, props]
+  );
 
   const variants = {
     ...pick(props, ...plasmicClass.internalVariantProps),
