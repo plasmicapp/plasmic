@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/react-web",
-  "version": "0.2.63",
+  "version": "0.2.64",
   "description": "plasmic library for rendering in the presentational style",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,7 +17,8 @@
   ],
   "files": [
     "dist",
-    "lib"
+    "lib",
+    "skinny"
   ],
   "scripts": {
     "build": "tsdx build && rollup -c && mkdir -p lib && cp src/styles/plasmic.css lib/",
@@ -43,6 +44,9 @@
     "@react-types/overlays": "^3.4.0",
     "@react-types/select": "^3.2.0",
     "@react-types/shared": "^3.5.0",
+    "@rollup/plugin-commonjs": "^19.0.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.0.0",
     "@size-limit/preset-small-lib": "^4.10.2",
     "@types/classnames": "^2.2.9",
     "@types/react": "^16.9.46",
@@ -53,6 +57,7 @@
     "react-dom": "^16.13.1",
     "rollup": "^2.47.0",
     "rollup-plugin-dts": "^3.0.1",
+    "rollup-plugin-typescript2": "^0.30.0",
     "size-limit": "^4.10.2",
     "tsdx": "^0.14.1",
     "tslib": "^2.2.0",
