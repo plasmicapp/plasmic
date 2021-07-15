@@ -4,6 +4,7 @@ import {
   InternalPlasmicComponentLoader,
   PlasmicComponentLoader,
 } from './loader';
+import { useForceUpdate } from './utils';
 
 interface PlasmicRootContextValue {
   globalVariants?: GlobalVariantSpec[];
@@ -72,31 +73,26 @@ export function PlasmicRootProvider(props: {
  * Inject all css modules as <style/> tags. We can't use the usual styleInjector postcss
  * uses because that doesn't work on the server side for SSR.
  */
-function PlasmicCss(props: { loader: InternalPlasmicComponentLoader }) {
+const PlasmicCss = React.memo(function PlasmicCss(props: {
+  loader: InternalPlasmicComponentLoader;
+}) {
   const { loader } = props;
-  const [css, setCss] = React.useState(buildCss(loader));
-
+  const builtCss = buildCss(loader);
+  const forceUpdate = useForceUpdate();
   const watcher = React.useMemo(
     () => ({
-      onDataFetched: () => setCss(buildCss(loader)),
+      onDataFetched: () => forceUpdate(),
     }),
-    [loader]
+    [loader, forceUpdate]
   );
+
   React.useEffect(() => {
     loader.subscribePlasmicRoot(watcher);
     return () => loader.unsubscribePlasmicRoot(watcher);
   }, [watcher, loader]);
 
-  // We always render the style tag, even when data is not yet ready, to avoid
-  // mutating the React tree and invalidating the children when the data does come in
-  return (
-    <style
-      key="plasmic-css"
-      dangerouslySetInnerHTML={{ __html: css }}
-      suppressHydrationWarning
-    />
-  );
-}
+  return <style dangerouslySetInnerHTML={{ __html: builtCss }} />;
+});
 
 function buildCss(loader: InternalPlasmicComponentLoader) {
   const cssModules = loader.getLookup().getCss();
@@ -104,8 +100,8 @@ function buildCss(loader: InternalPlasmicComponentLoader) {
 
   // Make sure the @import statements come at the front of css
   return `
-    ${remoteFonts.map((f) => `@import url('${f.url}');`).join('\n')}
-    ${cssModules.map((mod) => mod.source).join('\n')}
+    ${remoteFonts.map(f => `@import url('${f.url}');`).join('\n')}
+    ${cssModules.map(mod => mod.source).join('\n')}
   `;
 }
 

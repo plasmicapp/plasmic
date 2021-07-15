@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "lib": ["dom", "esnext"],
+    "importHelpers": true,
+    "declaration": true,
+    "sourceMap": true,
+    "rootDir": "./src",
+    "strict": true,
+    "jsx": "react",
+    "noImplicitThis": false,
+    "noImplicitAny": false,
+    "noUnusedLocals": true,
+    "forceConsistentCasingInFileNames": true,
+    "strictNullChecks": true,
+    "typeRoots": ["./node_modules/@types"],
+    "types": ["node"],
+    "esModuleInterop": true,
+    "noEmit": false,
+    "noEmitOnError": true,
+    "moduleResolution": "node",
+    "outDir": ".",
+    "skipLibCheck": true
+  }
+}
