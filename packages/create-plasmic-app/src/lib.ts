@@ -132,13 +132,16 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
     const project = projectApiToken
       ? `${projectId}:${projectApiToken}`
       : projectId;
+    if (platform === "nextjs") {
+      await writeDefaultNextjsConfig(resolvedProjectPath, projectId, false);
+    }
     await spawnOrFail(
       `npx -p @plasmicapp/cli plasmic sync --yes -p ${project}`,
       resolvedProjectPath
     );
   } else if (scheme === "loader") {
     if (platform === "nextjs") {
-      await writeDefaultNextjsConfig(resolvedProjectPath, projectId);
+      await writeDefaultNextjsConfig(resolvedProjectPath, projectId, true);
     } else if (platform === "gatsby") {
       await modifyDefaultGatsbyConfig(resolvedProjectPath, projectId);
     } else {

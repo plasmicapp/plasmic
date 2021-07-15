@@ -46,9 +46,27 @@ export function stripExtension(
  */
 export async function writeDefaultNextjsConfig(
   projectDir: string,
-  projectId: string
+  projectId: string,
+  loader: boolean
 ): Promise<void> {
   const nextjsConfigFile = path.join(projectDir, "next.config.js");
+
+  if (!loader) {
+    await fs.writeFile(
+      nextjsConfigFile,
+      `
+module.exports = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  trailingSlash: true,
+  // Your NextJS config.
+};
+  `
+    );
+    return;
+  }
+
   await fs.writeFile(
     nextjsConfigFile,
     `
@@ -57,6 +75,9 @@ const withPlasmic = plasmic({
   projects: ['${projectId}'] // An array of project ids.
 });
 module.exports = withPlasmic({
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   trailingSlash: true,
   // Your NextJS config.
 });
