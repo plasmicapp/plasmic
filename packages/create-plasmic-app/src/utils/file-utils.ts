@@ -221,7 +221,7 @@ export default NotFound;
   const content =
     isCra && homeFilePossibilities.length > 0
       ? generateHomePage(homeFilePossibilities[0], indexAbsPath)
-      : generateWelcomePage(config, isCra);
+      : generateWelcomePage(config, platform);
   await fs.writeFile(indexAbsPath, content);
 }
 
@@ -304,30 +304,28 @@ export default App;
  * @param noPages - don't render links to pages
  * @returns
  */
-function generateWelcomePage(config: any, noPages?: boolean): string {
+function generateWelcomePage(config: any, platform: string): string {
+  let hasPages = false;
+  let pageComponents: any[];
+  let pagesDir: string;
+  const linkTag = platform === "nextjs" ? "Link" : "a";
+  if (platform !== "react" && config && L.isArray(config.projects)) {
+    pageComponents = L.flatMap(config.projects, (p) => p.components).filter(
+      (c) => c.componentType === "page"
+    );
+    pagesDir = config?.nextjsConfig?.pagesDir ?? config?.gatsbyConfig?.pagesDir;
+    if (pageComponents.length > 0 && pagesDir) {
+      hasPages = true;
+    }
+  }
   const getPageSection = () => {
-    if (noPages || !config || !L.isArray(config.projects)) {
-      return "";
-    }
-
-    const pageComponents = L.flatMap(
-      config.projects,
-      (p) => p.components
-    ).filter((c) => c.componentType === "page");
-    const pagesDir =
-      config?.nextjsConfig?.pagesDir ?? config?.gatsbyConfig?.pagesDir;
-
-    if (pageComponents.length <= 0 || !pagesDir) {
-      return "";
-    }
-
     const pageLinks = pageComponents
       .map((pc) => {
         // Get the relative path on the filesystem
         const relativePath = path.relative(pagesDir, pc.importSpec.modulePath);
         // Format as an absolute path without the extension name
         const relativeLink = "/" + stripExtension(relativePath);
-        return `<li><a style={{ color: "blue" }} href="${relativeLink}">${pc.name} - ${relativeLink}</a></li>`;
+        return `<li><${linkTag} style={{ color: "blue" }} href="${relativeLink}">${pc.name} - ${relativeLink}</${linkTag}></li>`;
       })
       .join("\n");
     return `
@@ -340,11 +338,75 @@ function generateWelcomePage(config: any, noPages?: boolean): string {
 
   const content = `
 import React from "react";
+${hasPages && platform === "nextjs" ? `import Link from "next/link";` : ""}
+
+function PlasmicLogo() {
+  return (
+    <svg
+      width={40}
+      height={40}
+      viewBox="0 0 40 40"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M34 26h-2v-1c0-6.627-5.373-12-12-12S8 18.374 8 25v1H6a1 1 0 01-1-1c0-8.284 6.716-15 15-15 8.284 0 15 6.716 15 15a1 1 0 01-1 1z"
+        fill="url(#paint0_linear)"
+      />
+      <path
+        d="M27 25a7 7 0 00-14 0v1h2a1 1 0 001-1 4 4 0 018 0 1 1 0 001 1h2v-1z"
+        fill="url(#paint1_linear)"
+      />
+      <path
+        d="M30.999 25C30.999 18.925 26.075 14 20 14S9.001 18.926 9.001 25H9v1h3v-1a8 8 0 0116 0v1h3v-1h-.001z"
+        fill="url(#paint2_linear)"
+      />
+      <defs>
+        <linearGradient
+          id="paint0_linear"
+          x1={5}
+          y1={26}
+          x2={35}
+          y2={26}
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#1877F2" />
+          <stop offset={1} stopColor="#04A4F4" />
+        </linearGradient>
+        <linearGradient
+          id="paint1_linear"
+          x1={13}
+          y1={26}
+          x2={27}
+          y2={26}
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#F02849" />
+          <stop offset={1} stopColor="#F5533D" />
+        </linearGradient>
+        <linearGradient
+          id="paint2_linear"
+          x1={9}
+          y1={26}
+          x2={31}
+          y2={26}
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#45BD62" />
+          <stop offset={1} stopColor="#2ABBA7" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}
+
 function Index() {
   return (
     <div style={{ width: "100%", padding: "100px", alignContent: "center" }}>
       <header>
-        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0zNCAyNkgzMlYyNUMzMiAxOC4zNzI5IDI2LjYyNzEgMTMuMDAwNiAyMCAxMy4wMDA2QzEzLjM3MjkgMTMuMDAwNiA4LjAwMDU1IDE4LjM3MjkgOC4wMDA1NSAyNUw4IDI2SDZDNS40NDc3MSAyNiA1IDI1LjU1MjMgNSAyNUM1IDE2LjcxNTkgMTEuNzE2IDEwLjAwMDQgMjAgMTAuMDAwNEMyOC4yODQxIDEwLjAwMDQgMzQuOTk5NiAxNi43MTU5IDM0Ljk5OTYgMjVDMzQuOTk5NiAyNS41NTIzIDM0LjU1MjMgMjYgMzQgMjZaIiBmaWxsPSJ1cmwoI3BhaW50MF9saW5lYXIpIi8+CjxwYXRoIGQ9Ik0yNi45OTkxIDI1QzI2Ljk5OTEgMjEuMTM0NiAyMy44NjU1IDE4LjAwMSAyMCAxOC4wMDFDMTYuMTM0NSAxOC4wMDExIDEzIDIxLjEzNDYgMTMgMjVWMjZIMTVDMTUuNTUyMyAyNiAxNiAyNS41NTIzIDE2IDI1QzE2IDIyLjc5MDkgMTcuNzkwOSAyMSAyMCAyMUMyMi4yMDkxIDIxIDI0IDIyLjc5MDkgMjQgMjVDMjQgMjUuNTUyMyAyNC40NDc3IDI2IDI1IDI2SDI3TDI2Ljk5OTEgMjVaIiBmaWxsPSJ1cmwoI3BhaW50MV9saW5lYXIpIi8+CjxwYXRoIGQ9Ik0zMC45OTkgMjQuOTk5OUMzMC45OTkgMTguOTI1NCAyNi4wNzQ2IDE0LjAwMSAyMCAxNC4wMDFDMTMuOTI1NCAxNC4wMDEgOS4wMDEwNSAxOC45MjU1IDkuMDAxMDUgMjVIOVYyNkgxMi4wMDA0VjI1QzEyLjAwMDQgMjAuNTgyIDE1LjU4MiAxNy4wMDA1IDIwIDE3LjAwMDVDMjQuNDE4IDE3LjAwMDUgMjggMjAuNTgyIDI4IDI1VjI2SDMxVjI1TDMwLjk5OSAyNC45OTk5WiIgZmlsbD0idXJsKCNwYWludDJfbGluZWFyKSIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyIiB4MT0iNSIgeTE9IjI2IiB4Mj0iMzUiIHkyPSIyNiIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjMTg3N0YyIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzA0QTRGNCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MV9saW5lYXIiIHgxPSIxMyIgeTE9IjI2IiB4Mj0iMjciIHkyPSIyNiIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjRjAyODQ5Ii8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0Y1NTMzRCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50Ml9saW5lYXIiIHgxPSI5IiB5MT0iMjYiIHgyPSIzMSIgeTI9IjI2IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiM0NUJENjIiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMkFCQkE3Ii8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPC9zdmc+Cg==" alt="" />
+        <PlasmicLogo />
         <h1 style={{ margin: 0 }}>
           Welcome to Plasmic!
         </h1>
@@ -358,8 +420,8 @@ function Index() {
             Learn Plasmic
           </a>
         </h4>
-        ${getPageSection()}
-        <p><i>Note: Remember to remove this file if you introduce a Page component at the '/' path.</i></p>
+        ${hasPages ? getPageSection() : ""}
+        <p><i>Note: Remember to remove this file if you introduce a Page component at the &#39;/&#39; path.</i></p>
       </header>
     </div>
   );
