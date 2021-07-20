@@ -308,7 +308,6 @@ function generateWelcomePage(config: any, platform: string): string {
   let hasPages = false;
   let pageComponents: any[];
   let pagesDir: string;
-  const linkTag = platform === "nextjs" ? "Link" : "a";
   if (platform !== "react" && config && L.isArray(config.projects)) {
     pageComponents = L.flatMap(config.projects, (p) => p.components).filter(
       (c) => c.componentType === "page"
@@ -325,7 +324,11 @@ function generateWelcomePage(config: any, platform: string): string {
         const relativePath = path.relative(pagesDir, pc.importSpec.modulePath);
         // Format as an absolute path without the extension name
         const relativeLink = "/" + stripExtension(relativePath);
-        return `<li><${linkTag} style={{ color: "blue" }} href="${relativeLink}">${pc.name} - ${relativeLink}</${linkTag}></li>`;
+        if (platform === "nextjs") {
+          return `<li><Link href="${relativeLink}"><a style={{ color: "blue" }}>${pc.name} - ${relativeLink}</a></Link></li>`;
+        } else {
+          return `<li><a style={{ color: "blue" }} href="${relativeLink}">${pc.name} - ${relativeLink}</a></li>`;
+        }
       })
       .join("\n");
     return `
