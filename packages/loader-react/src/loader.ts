@@ -178,8 +178,13 @@ export class InternalPlasmicComponentLoader {
   async fetchPages() {
     const data = await this.fetchAllData();
     return data.components.filter(
-      (comp) => comp.isPage && comp.path
+      comp => comp.isPage && comp.path
     ) as PageMeta[];
+  }
+
+  async fetchComponents() {
+    const data = await this.fetchAllData();
+    return data.components;
   }
 
   getLookup() {
@@ -197,12 +202,12 @@ export class InternalPlasmicComponentLoader {
   private async fetchAllData() {
     const bundle = await this.ensureFetcher().fetchAllData();
     this.mergeBundle(bundle);
-    this.roots.forEach((watcher) => watcher.onDataFetched?.());
+    this.roots.forEach(watcher => watcher.onDataFetched?.());
     return bundle;
   }
 
   private mergeBundle(bundle: LoaderBundleOutput) {
-    this.bundle = mergeBundles(this.bundle, bundle);
+    this.bundle = mergeBundles(bundle, this.bundle);
     this.refreshRegistry();
   }
 
@@ -249,18 +254,18 @@ export class InternalPlasmicComponentLoader {
       };
     }
 
-    const compPaths = compMetas.map((compMeta) => compMeta.entry);
+    const compPaths = compMetas.map(compMeta => compMeta.entry);
     const subBundle = getBundleSubset(
       bundle,
       ...compPaths,
       'root-provider.js',
       'entrypoint.css',
-      ...bundle.globalGroups.map((g) => g.contextFile)
+      ...bundle.globalGroups.map(g => g.contextFile)
     );
 
     const remoteFontUrls: string[] = [];
-    subBundle.projects.forEach((p) =>
-      remoteFontUrls.push(...p.remoteFonts.map((f) => f.url))
+    subBundle.projects.forEach(p =>
+      remoteFontUrls.push(...p.remoteFonts.map(f => f.url))
     );
 
     return {
@@ -371,6 +376,13 @@ export class PlasmicComponentLoader {
    */
   async fetchPages() {
     return this.__internal.fetchPages();
+  }
+
+  /**
+   * Returns all components metadata for these projects.
+   */
+  async fetchComponents() {
+    return this.__internal.fetchComponents();
   }
 
   clearCache() {

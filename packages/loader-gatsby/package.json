@@ -1,0 +1,33 @@
+{
+  "name": "@plasmicapp/loader-gatsby",
+  "version": "1.0.1",
+  "main": "gatsby-node.js",
+  "typings": "dist/gatsby-node.d.ts",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdx build --entry src/gatsby-node.ts --name gatsby-node",
+    "yalcp": "yalc publish --push",
+    "prepare": "yarn build"
+  },
+  "keywords": [
+    "gatsby",
+    "gatsby-plugin"
+  ],
+  "peerDependencies": {
+    "gatsby": "^2.0.15 || ^3.0.0"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.171",
+    "tsdx": "^0.14.1",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "@plasmicapp/loader-core": "1.0.4",
+    "@plasmicapp/loader-react": "1.0.9",
+    "@plasmicapp/watcher": "1.0.4",
+    "lodash": "^4.17.21"
+  }
+}

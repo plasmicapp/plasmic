@@ -1,0 +1,172 @@
+import { initPlasmicLoader } from "@plasmicapp/loader-react";
+import { InitOptions } from "@plasmicapp/loader-react/dist/loader";
+import type { PlasmicRemoteChangeWatcher as Watcher } from "@plasmicapp/watcher";
+
+import serverRequire from "./server-require";
+
+export const onPreInit = ({ reporter }) =>
+  reporter.success("Loaded @plasmicapp/loader-gatsby");
+
+type GatsbyPluginOptions = InitOptions & {
+  defaultPlasmicPage?: string;
+};
+
+const PLASMIC_NODE_NAME = "PlasmicData";
+
+const PLASMIC_DATA_TYPE = `
+  type ${PLASMIC_NODE_NAME} implements Node {
+    name: String!
+    projectId: String!
+    path: String
+    isPage: Boolean!
+    renderData: JSON!
+  }
+`;
+
+const SOURCE_WAIT_TIME = 3000; // 3 seconds
+const SOURCE_MAX_WAIT_TIME = 10000; // 10 seconds
+
+let allPaths: string[] = [];
+
+export const sourceNodes = async (
+  { actions, createNodeId, createContentDigest, reporter }: any,
+  opts: GatsbyPluginOptions
+) => {
+  const { createNode, createTypes, deleteNode } = actions;
+
+  createTypes(PLASMIC_DATA_TYPE);
+
+  let allComponents: any[] = [];
+
+  const refreshData = async () => {
+    reporter.info("[Plasmic Loader] - Sourcing nodes");
+
+    const PLASMIC = initPlasmicLoader({
+      projects: opts.projects,
+      preview: opts.preview,
+      host: opts.host,
+      platform: "gatsby",
+    });
+
+    const components = await PLASMIC.fetchComponents();
+
+    const getNodeId = (projectId, componentName) =>
+      createNodeId(`@plasmicapp/loader-gatsby/${projectId}-${componentName}`);
+
+    for (const component of allComponents) {
+      const hasComponent = components.some(c => c.name === component.name);
+      /**
+       * We shouldn't delete nodes that will be updated, if we delete all nodes
+       * and then create it again, this could case the graphql layer to have no
+       * plasmic data for some time, but this can be enough time to a re render
+       * causing components that call a graphql query to plasmic data to crash
+       * */
+      if (!hasComponent) {
+        deleteNode(component);
+        reporter.success(`[Plasmic Loader] - Deleted node ${component.name}`);
+      }
+    }
+
+    allComponents = [];
+    for (const component of components) {
+      const renderData = await PLASMIC.fetchComponentData({
+        name: component.name,
+        projectId: component.projectId,
+      });
+
+      const curComponent = {
+        ...component,
+        renderData,
+      };
+
+      const componentMeta = {
+        id: getNodeId(component.projectId, component.name),
+        parent: null,
+        children: [],
+        internal: {
+          type: PLASMIC_NODE_NAME,
+          contentDigest: createContentDigest(curComponent),
+        },
+      };
+
+      const componentNode = Object.assign({}, curComponent, componentMeta);
+
+      createNode(componentNode);
+      reporter.success(
+        `[Plasmic Loader] - Created component node ${component.name}`
+      );
+      allComponents.push(componentNode);
+    }
+  };
+
+  if (process.env.NODE_ENV !== "production") {
+    const debounce = serverRequire("lodash/debounce");
+    const triggerSourcing = debounce(refreshData, SOURCE_WAIT_TIME, {
+      maxWait: SOURCE_MAX_WAIT_TIME,
+    });
+
+    const PlasmicRemoteChangeWatcher = serverRequire("@plasmicapp/watcher")
+      .PlasmicRemoteChangeWatcher as typeof Watcher;
+
+    const watcher = new PlasmicRemoteChangeWatcher({
+      projects: opts.projects,
+      host: opts.host,
+    });
+
+    watcher.subscribe({
+      onUpdate: () => {
+        if (opts.preview) {
+          triggerSourcing();
+        }
+      },
+      onPublish: () => {
+        if (!opts.preview) {
+          triggerSourcing();
+        }
+      },
+    });
+  }
+
+  await refreshData();
+};
+
+export const createPages = async (
+  { graphql, actions, reporter }: any,
+  opts: GatsbyPluginOptions
+) => {
+  const { defaultPlasmicPage } = opts;
+
+  if (defaultPlasmicPage) {
+    const { createPage, deletePage } = actions;
+    const result = await graphql(`
+      query {
+        allPlasmicData(filter: { isPage: { eq: true } }) {
+          nodes {
+            path
+          }
+        }
+      }
+    `);
+
+    const pages = result.data.allPlasmicData.nodes;
+
+    for (const path of allPaths) {
+      await deletePage({
+        path,
+        component: defaultPlasmicPage,
+      });
+      reporter.success(`[Plasmic Loader] - Deleted page ${path}`);
+    }
+
+    allPaths = [];
+
+    for (const page of pages) {
+      allPaths.push(page.path);
+      await createPage({
+        path: page.path,
+        component: defaultPlasmicPage,
+      });
+      reporter.success(`[Plasmic Loader] - Created page ${page.path}`);
+    }
+  }
+};
