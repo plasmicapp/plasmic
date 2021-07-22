@@ -1,14 +1,15 @@
 {
   "name": "@plasmicapp/loader-gatsby",
-  "version": "1.0.1",
-  "main": "gatsby-node.js",
-  "typings": "dist/gatsby-node.d.ts",
+  "version": "1.0.3",
+  "typings": "dist/index.d.ts",
   "license": "MIT",
   "files": [
-    "dist"
+    "dist",
+    "gatsby-node.js"
   ],
+  "main": "dist/index.js",
   "scripts": {
-    "build": "tsdx build --entry src/gatsby-node.ts --name gatsby-node",
+    "build": "tsdx build --entry src/index.ts",
     "yalcp": "yalc publish --push",
     "prepare": "yarn build"
   },
@@ -21,6 +22,8 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.171",
+    "gatsby": "^3.10.1",
+    "react": "^17.0.2",
     "tsdx": "^0.14.1",
     "typescript": "^4.3.5"
   },

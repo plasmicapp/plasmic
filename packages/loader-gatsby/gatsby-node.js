@@ -1,3 +1,8 @@
 "use strict";
 
-module.exports = require("./dist");
+const { sourceNodes, createPages } = require("./dist");
+
+module.exports = {
+  sourceNodes,
+  createPages,
+};
