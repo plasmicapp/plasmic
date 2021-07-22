@@ -9,6 +9,7 @@ export const onPreInit = ({ reporter }) =>
 
 type GatsbyPluginOptions = InitOptions & {
   defaultPlasmicPage?: string;
+  ignorePaths?: string[];
 };
 
 const PLASMIC_NODE_NAME = "PlasmicData";
@@ -39,7 +40,7 @@ export const sourceNodes = async (
   let allComponents: any[] = [];
 
   const refreshData = async () => {
-    reporter.info("[Plasmic Loader] - Sourcing nodes");
+    reporter.info(`[Plasmic Loader] - Creating nodes`);
 
     const PLASMIC = initPlasmicLoader({
       projects: opts.projects,
@@ -63,7 +64,7 @@ export const sourceNodes = async (
        * */
       if (!hasComponent) {
         deleteNode(component);
-        reporter.success(`[Plasmic Loader] - Deleted node ${component.name}`);
+        reporter.verbose(`[Plasmic Loader] - Deleted node ${component.name}`); 
       }
     }
 
@@ -92,9 +93,7 @@ export const sourceNodes = async (
       const componentNode = Object.assign({}, curComponent, componentMeta);
 
       createNode(componentNode);
-      reporter.success(
-        `[Plasmic Loader] - Created component node ${component.name}`
-      );
+      reporter.verbose(`[Plasmic Loader] - Created component node ${component.name}`);
       allComponents.push(componentNode);
     }
   };
@@ -136,7 +135,11 @@ export const createPages = async (
 ) => {
   const { defaultPlasmicPage } = opts;
 
+  const ignorePaths = opts.ignorePaths || [];
+
   if (defaultPlasmicPage) {
+    reporter.info(`[Plasmic Loader] - Creating pages`);
+
     const { createPage, deletePage } = actions;
     const result = await graphql(`
       query {
@@ -155,18 +158,23 @@ export const createPages = async (
         path,
         component: defaultPlasmicPage,
       });
-      reporter.success(`[Plasmic Loader] - Deleted page ${path}`);
+      reporter.verbose(`[Plasmic Loader] - Deleted page ${path}`);
     }
 
     allPaths = [];
 
     for (const page of pages) {
+      const path = page.path;
+      if (ignorePaths.includes(path) || ignorePaths.includes(path + '/')) {
+        continue;
+      }
       allPaths.push(page.path);
+
       await createPage({
         path: page.path,
         component: defaultPlasmicPage,
       });
-      reporter.success(`[Plasmic Loader] - Created page ${page.path}`);
+      reporter.verbose(`[Plasmic Loader] - Created page ${page.path}`);
     }
   }
 };
