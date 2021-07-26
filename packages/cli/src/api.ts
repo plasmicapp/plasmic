@@ -179,7 +179,7 @@ export class PlasmicApi {
   async resolveSync(
     projects: {
       projectId: string;
-      versionRange: string;
+      versionRange?: string;
       componentIdOrNames: readonly string[] | undefined;
       projectApiToken?: string;
     }[],

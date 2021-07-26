@@ -5,6 +5,7 @@ import yargs from "yargs";
 import * as auth from "./actions/auth";
 import { fixImports, FixImportsArgs } from "./actions/fix-imports";
 import { getYargsOption, InitArgs, initPlasmic } from "./actions/init";
+import * as projectToken from "./actions/project-token";
 import { sync, SyncArgs } from "./actions/sync";
 import { UploadBundleArgs, uploadJsBundle } from "./actions/upload-bundle";
 import { WatchArgs, watchProjects } from "./actions/watch";
@@ -193,6 +194,22 @@ yargs
           default: [],
         }),
     (argv) => handleError(uploadJsBundle(argv))
+  )
+  .command<projectToken.ProjectTokenArgs>(
+    "project-token <projectId>",
+    "Get projectApiToken for a given project",
+    (yargs) =>
+      yargs
+        .positional("projectId", {
+          describe: "projectId",
+          type: "string",
+        })
+        .option("host", {
+          describe: "Plasmic host to use",
+          type: "string",
+          default: "https://studio.plasmic.app",
+        }),
+    (argv) => handleError(projectToken.projectToken(argv))
   )
   .demandCommand()
   .strict()
