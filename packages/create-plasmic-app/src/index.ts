@@ -198,15 +198,15 @@ async function run(): Promise<void> {
     }
   }
 
-  const template = argv["template"];
-  const projectApiToken = argv["projectApiToken"];
-
   // RUN IT
   console.log();
   assert(
     platform === "nextjs" || platform === "gatsby" || platform === "react",
     "platform must be one of ['nextjs', 'gatsby', 'react']"
   );
+
+  const template = argv["template"];
+  const projectApiToken = argv["projectApiToken"];
 
   // Set the metadata environment variable to tag the future Segment codegen event
   setMetadataEnv({

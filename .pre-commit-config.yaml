@@ -1,12 +1,12 @@
 repos:
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v2.2.0
+    rev: v2.3.1
     hooks:
       - id: prettier
         files: ^.*\.(js|jsx|ts|tsx|json|css|scss|md|toml|xml)$
         exclude: (^.*/plasmic/.*$|.md$)
         additional_dependencies:
-          - prettier
+          - prettier@2.2.1
           - prettier-plugin-organize-imports
           - typescript
   - repo: https://github.com/pre-commit/mirrors-prettier

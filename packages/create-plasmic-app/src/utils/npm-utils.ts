@@ -2,7 +2,8 @@
 @typescript-eslint/no-var-requires: 0,
 */
 import * as execa from "execa";
-import findupSync from "findup-sync";
+import { existsSync } from "fs";
+import path from "path";
 import * as semver from "semver";
 import updateNotifier from "update-notifier";
 
@@ -112,7 +113,12 @@ function installCommand(
  * @returns
  */
 export function detectPackageManager(dir?: string): "yarn" | "npm" {
-  const yarnLock = findupSync("yarn.lock", { cwd: dir });
+  // We should look only inside the directory instead of looking to the ancestors
+  // with findupSync, the reason for this is that the current gatsby template
+  // uses npm, so if the user has some yarn.lock in a parent directory it's
+  // going to run yarn commands, this is going to trigger an error with sharp
+
+  const yarnLock = existsSync(path.join(dir ? dir : "", "yarn.lock"));
   if (yarnLock) {
     return "yarn";
   } else {
