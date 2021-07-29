@@ -1,7 +1,10 @@
-import { initPlasmicLoader } from "@plasmicapp/loader-react";
+import { ComponentMeta, LoaderBundleOutput } from "@plasmicapp/loader-core";
+import {
+  convertBundlesToComponentRenderData,
+  initPlasmicLoader,
+} from "@plasmicapp/loader-react";
 import { InitOptions } from "@plasmicapp/loader-react/dist/loader";
 import type { PlasmicRemoteChangeWatcher as Watcher } from "@plasmicapp/watcher";
-
 import serverRequire from "./server-require";
 
 export const onPreInit = ({ reporter }) =>
@@ -12,7 +15,7 @@ type GatsbyPluginOptions = InitOptions & {
   ignorePaths?: string[];
 };
 
-const PLASMIC_NODE_NAME = "PlasmicData";
+const PLASMIC_NODE_NAME = "plasmicData";
 
 const PLASMIC_DATA_TYPE = `
   type ${PLASMIC_NODE_NAME} implements Node {
@@ -21,6 +24,10 @@ const PLASMIC_DATA_TYPE = `
     path: String
     isPage: Boolean!
     renderData: JSON!
+  }
+
+  type Query {
+    plasmicComponents(componentNames: [String]!): JSON
   }
 `;
 
@@ -55,7 +62,7 @@ export const sourceNodes = async (
       createNodeId(`@plasmicapp/loader-gatsby/${projectId}-${componentName}`);
 
     for (const component of allComponents) {
-      const hasComponent = components.some(c => c.name === component.name);
+      const hasComponent = components.some((c) => c.name === component.name);
       /**
        * We shouldn't delete nodes that will be updated, if we delete all nodes
        * and then create it again, this could case the graphql layer to have no
@@ -64,7 +71,7 @@ export const sourceNodes = async (
        * */
       if (!hasComponent) {
         deleteNode(component);
-        reporter.verbose(`[Plasmic Loader] - Deleted node ${component.name}`); 
+        reporter.verbose(`[Plasmic Loader] - Deleted node ${component.name}`);
       }
     }
 
@@ -93,7 +100,9 @@ export const sourceNodes = async (
       const componentNode = Object.assign({}, curComponent, componentMeta);
 
       createNode(componentNode);
-      reporter.verbose(`[Plasmic Loader] - Created component node ${component.name}`);
+      reporter.verbose(
+        `[Plasmic Loader] - Created component node ${component.name}`
+      );
       allComponents.push(componentNode);
     }
   };
@@ -127,6 +136,39 @@ export const sourceNodes = async (
   }
 
   await refreshData();
+};
+
+export const createResolvers = ({ createResolvers }) => {
+  createResolvers({
+    Query: {
+      plasmicComponents: {
+        resolve(source, args, context, info) {
+          const { componentNames } = args;
+          const components = context.nodeModel.getAllNodes({
+            type: PLASMIC_NODE_NAME,
+          });
+
+          const bundles: LoaderBundleOutput[] = [];
+          const compMetas: ComponentMeta[] = [];
+          for (const component of components) {
+            if (
+              componentNames.includes(component.name) ||
+              componentNames.includes(component.path) ||
+              componentNames.includes(component.path + "/")
+            ) {
+              const bundle = component.renderData?.bundle;
+              if (bundle) {
+                bundles.push(bundle);
+                compMetas.push(component);
+              }
+            }
+          }
+
+          return convertBundlesToComponentRenderData(bundles, compMetas);
+        },
+      },
+    },
+  });
 };
 
 export const createPages = async (
@@ -165,7 +207,7 @@ export const createPages = async (
 
     for (const page of pages) {
       const path = page.path;
-      if (ignorePaths.includes(path) || ignorePaths.includes(path + '/')) {
+      if (ignorePaths.includes(path) || ignorePaths.includes(path + "/")) {
         continue;
       }
       allPaths.push(page.path);

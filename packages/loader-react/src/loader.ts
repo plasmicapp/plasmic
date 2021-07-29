@@ -1,6 +1,5 @@
 import {
   ComponentMeta,
-  getBundleSubset,
   LoaderBundleCache,
   LoaderBundleOutput,
   PageMeta,
@@ -9,7 +8,7 @@ import {
 } from '@plasmicapp/loader-core';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { mergeBundles } from './bundles';
+import { mergeBundles, prepComponentData } from './bundles';
 import { ComponentLookup } from './component-lookup';
 import { createUseGlobalVariant } from './global-variants';
 import { GlobalVariantSpec } from './PlasmicRootProvider';
@@ -138,26 +137,22 @@ export class InternalPlasmicComponentLoader {
   async maybeFetchComponentData(
     ...specs: ComponentLookupSpec[]
   ): Promise<ComponentRenderData | null> {
-    const {
-      found: existingMetas,
-      missing: missingSpecs,
-    } = this.maybeGetCompMetas(...specs);
+    const { found: existingMetas, missing: missingSpecs } =
+      this.maybeGetCompMetas(...specs);
     if (missingSpecs.length === 0) {
-      return this.prepComponentData(this.bundle, ...existingMetas);
+      return prepComponentData(this.bundle, ...existingMetas);
     }
 
     // TODO: incrementally fetch only what's needed, instead of fetching all
     await this.fetchMissingData({ missingSpecs });
 
-    const {
-      found: existingMetas2,
-      missing: missingSpecs2,
-    } = this.maybeGetCompMetas(...specs);
+    const { found: existingMetas2, missing: missingSpecs2 } =
+      this.maybeGetCompMetas(...specs);
     if (missingSpecs2.length > 0) {
       return null;
     }
 
-    return this.prepComponentData(this.bundle, ...existingMetas2);
+    return prepComponentData(this.bundle, ...existingMetas2);
   }
 
   async fetchComponentData(
@@ -178,7 +173,7 @@ export class InternalPlasmicComponentLoader {
   async fetchPages() {
     const data = await this.fetchAllData();
     return data.components.filter(
-      comp => comp.isPage && comp.path
+      (comp) => comp.isPage && comp.path
     ) as PageMeta[];
   }
 
@@ -202,7 +197,7 @@ export class InternalPlasmicComponentLoader {
   private async fetchAllData() {
     const bundle = await this.ensureFetcher().fetchAllData();
     this.mergeBundle(bundle);
-    this.roots.forEach(watcher => watcher.onDataFetched?.());
+    this.roots.forEach((watcher) => watcher.onDataFetched?.());
     return bundle;
   }
 
@@ -240,39 +235,6 @@ export class InternalPlasmicComponentLoader {
       }
     }
     this.registry.updateModules(this.bundle);
-  }
-
-  private prepComponentData(
-    bundle: LoaderBundleOutput,
-    ...compMetas: ComponentMeta[]
-  ): ComponentRenderData {
-    if (compMetas.length === 0) {
-      return {
-        entryCompMetas: bundle.components,
-        bundle: bundle,
-        remoteFontUrls: [],
-      };
-    }
-
-    const compPaths = compMetas.map(compMeta => compMeta.entry);
-    const subBundle = getBundleSubset(
-      bundle,
-      ...compPaths,
-      'root-provider.js',
-      'entrypoint.css',
-      ...bundle.globalGroups.map(g => g.contextFile)
-    );
-
-    const remoteFontUrls: string[] = [];
-    subBundle.projects.forEach(p =>
-      remoteFontUrls.push(...p.remoteFonts.map(f => f.url))
-    );
-
-    return {
-      entryCompMetas: compMetas,
-      bundle: subBundle,
-      remoteFontUrls,
-    };
   }
 
   private ensureFetcher() {

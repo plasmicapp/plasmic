@@ -1,4 +1,42 @@
-import { LoaderBundleOutput } from '@plasmicapp/loader-core';
+import {
+  ComponentMeta,
+  getBundleSubset,
+  LoaderBundleOutput,
+} from '@plasmicapp/loader-core';
+import type { ComponentRenderData } from './loader';
+
+export function prepComponentData(
+  bundle: LoaderBundleOutput,
+  ...compMetas: ComponentMeta[]
+): ComponentRenderData {
+  if (compMetas.length === 0) {
+    return {
+      entryCompMetas: bundle.components,
+      bundle: bundle,
+      remoteFontUrls: [],
+    };
+  }
+
+  const compPaths = compMetas.map((compMeta) => compMeta.entry);
+  const subBundle = getBundleSubset(
+    bundle,
+    ...compPaths,
+    'root-provider.js',
+    'entrypoint.css',
+    ...bundle.globalGroups.map((g) => g.contextFile)
+  );
+
+  const remoteFontUrls: string[] = [];
+  subBundle.projects.forEach((p) =>
+    remoteFontUrls.push(...p.remoteFonts.map((f) => f.url))
+  );
+
+  return {
+    entryCompMetas: compMetas,
+    bundle: subBundle,
+    remoteFontUrls,
+  };
+}
 
 export function mergeBundles(
   target: LoaderBundleOutput,
@@ -49,3 +87,15 @@ export function mergeBundles(
 
   return target;
 }
+
+export const convertBundlesToComponentRenderData = (
+  bundles: LoaderBundleOutput[],
+  compMetas: ComponentMeta[]
+): ComponentRenderData | null => {
+  if (bundles.length === 0) {
+    return null;
+  }
+
+  const mergedBundles = bundles.reduce((prev, cur) => mergeBundles(prev, cur));
+  return prepComponentData(mergedBundles, ...compMetas);
+};
