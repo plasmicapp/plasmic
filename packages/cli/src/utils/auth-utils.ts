@@ -1,5 +1,6 @@
 import fs from "fs";
 import inquirer from "inquirer";
+import open from "open";
 import os from "os";
 import socketio from "socket.io-client";
 import path from "upath";
@@ -22,7 +23,6 @@ import {
   readFileText,
   writeFileContentRaw,
 } from "./file-utils";
-import open from "open";
 
 export type AuthData = {
   user: string;
@@ -92,7 +92,7 @@ function authByPrompt(host: string) {
   return { promise, cancel };
 }
 
-export async function startAuth(opts: CommonArgs & { host: string }) {
+export async function startAuth(opts: Partial<CommonArgs> & { host: string }) {
   if (opts.yes) {
     throw new HandledError("Plasmic credentials could not be found.");
   }
