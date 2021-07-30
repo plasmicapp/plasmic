@@ -16,6 +16,7 @@ export {
 } from "./render/elements";
 export { ensureGlobalVariants } from "./render/global-variants";
 export { PlasmicIcon } from "./render/PlasmicIcon";
+export { PlasmicImg } from "./render/PlasmicImg";
 export { PlasmicLink } from "./render/PlasmicLink";
 export { PlasmicSlot, renderPlasmicSlot } from "./render/PlasmicSlot";
 export { createUseScreenVariants } from "./render/screen-variants";

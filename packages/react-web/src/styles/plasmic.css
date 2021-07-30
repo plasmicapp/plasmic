@@ -20,3 +20,36 @@
 .__wab_passthrough {
   display: contents;
 }
+
+.__wab_img-wrapper {
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  display: block;
+}
+
+.__wab_img-spacer {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.__wab_img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  display: block;
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 100%;
+  max-height: 100%;
+  box-sizing: border-box;
+}
+
+.__wab_picture {
+  display: contents;
+}
