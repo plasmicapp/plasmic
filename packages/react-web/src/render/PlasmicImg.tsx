@@ -16,7 +16,7 @@ export type ImageLoader = (opts: {
 
 type ImgTagProps = Omit<
   React.ComponentProps<"img">,
-  "src" | "srcSet" | "ref" | "width" | "height" | "style"
+  "src" | "srcSet" | "ref" | "style"
 >;
 
 // Default image sizes to snap to
@@ -40,12 +40,12 @@ export interface PlasmicImgProps extends ImgTagProps {
   /**
    * css width
    */
-  width?: number | string;
+   displayWidth?: number | string;
 
-  /**
-   * css height
-   */
-  height?: number | string;
+   /**
+    * css height
+    */
+    displayHeight?: number | string;
 
   /**
    * For variable quality formats like jpg, the quality from 0 to 100
@@ -78,8 +78,8 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
   const {
     src,
     className,
-    width,
-    height,
+    displayWidth,
+    displayHeight,
     quality,
     loader,
     containerRef,
@@ -92,8 +92,23 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
       ? { fullWidth: undefined, fullHeight: undefined }
       : src;
   const srcStr = typeof src === "string" ? src : src.src;
-  const { sizes, widthDescs } = getWidths(width, fullWidth);
-  const isAutoHeight = height == null || height === "" || height === "auto";
+  const spacerRef = React.useRef<HTMLDivElement>(null);
+
+  if (fullHeight == null || fullWidth == null) {
+    // Assume external image; use usual <img> and early exit
+    return (
+      <img
+        src={srcStr}
+        className={className}
+        style={style}
+        {...rest}
+        ref={outerRef}
+      />
+    )
+  }
+
+  const { sizes, widthDescs } = getWidths(displayWidth, fullWidth);
+  const isAutoHeight = displayHeight == null || displayHeight === "" || displayHeight === "auto";
   const imageLoader = getImageLoader(loader);
 
   const onImgRef = (img: HTMLImageElement | null) => {
@@ -111,14 +126,13 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
       img.addEventListener("load", () => handleImageLoaded(img));
     }
   };
-  const spacerRef = React.useRef<HTMLDivElement>(null);
   const ref = mergeRefs(onImgRef, outerRef);
 
   // We use a spacer if the height is not specified and must be
   // proportional to the width.  We can only do so if we know the
   // original width/height (so we can compute the aspect ratio), and
   // the width is specified.
-  const useSpacer = isAutoHeight && !!fullWidth && !!fullHeight && !!width;
+  const useSpacer = isAutoHeight && !!displayWidth;
 
   const handleImageLoaded = (img: HTMLImageElement) => {
     if (img.clientWidth === 0) {
@@ -150,8 +164,8 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
         className={classNames("__wab_img-wrapper", className)}
         style={{
           ...style,
-          width,
-          height,
+          width: displayWidth,
+          height: displayHeight,
         }}
         ref={containerRef}
       >
