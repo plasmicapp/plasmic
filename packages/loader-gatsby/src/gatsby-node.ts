@@ -28,6 +28,7 @@ const PLASMIC_DATA_TYPE = `
 
   type Query {
     plasmicComponents(componentNames: [String]!): JSON
+    plasmicOptions: JSON
   }
 `;
 
@@ -138,7 +139,10 @@ export const sourceNodes = async (
   await refreshData();
 };
 
-export const createResolvers = ({ createResolvers }) => {
+export const createResolvers = (
+  { createResolvers },
+  opts: GatsbyPluginOptions
+) => {
   createResolvers({
     Query: {
       plasmicComponents: {
@@ -165,6 +169,15 @@ export const createResolvers = ({ createResolvers }) => {
           }
 
           return convertBundlesToComponentRenderData(bundles, compMetas);
+        },
+      },
+      plasmicOptions: {
+        resolve() {
+          return {
+            projects: opts.projects,
+            preview: opts.preview,
+            host: opts.host,
+          };
         },
       },
     },
