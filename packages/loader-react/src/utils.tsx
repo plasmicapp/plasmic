@@ -130,7 +130,7 @@ export function getLookupSpecName(lookup: ComponentLookupSpec) {
   if (typeof lookup === 'string') {
     return lookup;
   } else if (lookup.projectId) {
-    return `${lookup} (project ${lookup.projectId})`;
+    return `${lookup.name} (project ${lookup.projectId})`;
   } else {
     return lookup.name;
   }

@@ -163,7 +163,9 @@ export class InternalPlasmicComponentLoader {
     if (!data) {
       const { missing: missingSpecs } = this.maybeGetCompMetas(...specs);
       throw new Error(
-        `Unable to find components ${missingSpecs.map(getLookupSpecName)}`
+        `Unable to find components ${missingSpecs
+          .map(getLookupSpecName)
+          .join(', ')}`
       );
     }
 
