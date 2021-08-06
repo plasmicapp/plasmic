@@ -1,5 +1,7 @@
-import { initPlasmicLoader as initPlasmicLoaderReact } from "@plasmicapp/loader-react";
-import { InitOptions } from "@plasmicapp/loader-react/dist/loader";
+import {
+  InitOptions,
+  initPlasmicLoader as initPlasmicLoaderReact,
+} from "@plasmicapp/loader-react";
 import * as Gatsby from "gatsby";
 import * as React from "react";
 import * as ReactDom from "react-dom";

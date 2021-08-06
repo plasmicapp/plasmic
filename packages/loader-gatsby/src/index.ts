@@ -1,5 +1,6 @@
 export {
   ComponentRenderData,
+  InitOptions,
   PlasmicComponent,
   PlasmicRootProvider,
   usePlasmicComponent,

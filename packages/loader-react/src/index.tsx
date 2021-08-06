@@ -1,6 +1,7 @@
 export { convertBundlesToComponentRenderData } from './bundles';
 export {
   ComponentRenderData,
+  InitOptions,
   initPlasmicLoader,
   PlasmicComponentLoader,
 } from './loader';

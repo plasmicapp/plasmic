@@ -8,6 +8,7 @@ import { makeCache } from './cache';
 import serverRequire from './server-require';
 export {
   ComponentRenderData,
+  InitOptions,
   PlasmicComponent,
   PlasmicRootProvider,
   usePlasmicComponent,
