@@ -22,15 +22,28 @@
 }
 
 .__wab_img-wrapper {
+  display: inline-block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
   position: relative;
   overflow: hidden;
   box-sizing: border-box;
-  display: block;
+  margin: 0;
 }
 
 .__wab_img-spacer {
+  display: block;
   max-width: 100%;
   box-sizing: border-box;
+}
+
+.__wab_img-spacer-svg {
+  display: block;
+  max-width: 100%;
+  margin: 0;
+  border: none;
+  padding: 0;
 }
 
 .__wab_img {
@@ -43,6 +56,7 @@
   padding: 0;
   border: none;
   display: block;
+  width: 100%;
   min-width: 100%;
   max-width: 100%;
   min-height: 100%;

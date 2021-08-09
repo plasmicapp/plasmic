@@ -4,8 +4,7 @@
 
 import classNames from "classnames";
 import React from "react";
-import { ensure, pick } from "../common";
-import { mergeRefs } from "../react-utils";
+import { omit, pick } from "../common";
 
 export type ImageLoader = (opts: {
   src: string;
@@ -40,12 +39,12 @@ export interface PlasmicImgProps extends ImgTagProps {
   /**
    * css width
    */
-   displayWidth?: number | string;
+  displayWidth?: number | string;
 
-   /**
-    * css height
-    */
-    displayHeight?: number | string;
+  /**
+   * css height
+   */
+  displayHeight?: number | string;
 
   /**
    * For variable quality formats like jpg, the quality from 0 to 100
@@ -73,7 +72,7 @@ export interface PlasmicImgProps extends ImgTagProps {
 
 export const PlasmicImg = React.forwardRef(function PlasmicImg(
   props: PlasmicImgProps,
-  outerRef: React.Ref<HTMLImageElement>
+  ref: React.Ref<HTMLImageElement>
 ) {
   const {
     src,
@@ -92,117 +91,63 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
       ? { fullWidth: undefined, fullHeight: undefined }
       : src;
   const srcStr = typeof src === "string" ? src : src.src;
-  const spacerRef = React.useRef<HTMLDivElement>(null);
 
-  if (fullHeight == null || fullWidth == null) {
-    // Assume external image; use usual <img> and early exit
+  // Assume external image if either dimension is null and use usual <img>
+  // (or if the image is an SVG)
+  if (fullHeight == null || fullWidth == null || srcStr.endsWith(".svg")) {
     return (
       <img
         src={srcStr}
         className={className}
         style={style}
         {...rest}
-        ref={outerRef}
+        ref={ref}
       />
-    )
+    );
   }
 
   const { sizes, widthDescs } = getWidths(displayWidth, fullWidth);
-  const isAutoHeight = displayHeight == null || displayHeight === "" || displayHeight === "auto";
   const imageLoader = getImageLoader(loader);
+  const spacerSvg = `<svg width="${fullWidth}" height="${fullHeight}" xmlns="http://www.w3.org/2000/svg" version="1.1"/>`;
+  const spacerSvgBase64 =
+    typeof window === "undefined"
+      ? Buffer.from(spacerSvg).toString("base64")
+      : window.btoa(spacerSvg);
 
-  const onImgRef = (img: HTMLImageElement | null) => {
-    // Called when the img has been mounted
-    if (!img) {
-      return;
-    }
-    if (img.complete) {
-      // If img has already been loaded (via pre-loading, or just has
-      // loaded before hydration completed), then immediately call
-      // handleImageLoaded
-      handleImageLoaded(img);
-    } else {
-      // Otherwise, do so onload
-      img.addEventListener("load", () => handleImageLoaded(img));
-    }
-  };
-  const ref = mergeRefs(onImgRef, outerRef);
-
-  // We use a spacer if the height is not specified and must be
-  // proportional to the width.  We can only do so if we know the
-  // original width/height (so we can compute the aspect ratio), and
-  // the width is specified.
-  const useSpacer = isAutoHeight && !!displayWidth;
-
-  const handleImageLoaded = (img: HTMLImageElement) => {
-    if (img.clientWidth === 0) {
-      // If we find that the image has been loaded but the img clientWidth
-      // is 0, then we are likely somewhere in the DOM where we have 0 width.
-      // This can happen if we are using the spacer to reserve space for
-      // aspect ratio -- the img is now absolutely positioned, and so does
-      // not take up intrinsic width.
-      // See https://coda.io/d/Plasmic-Wiki_dHQygjmQczq/Image-Optimization_suOOu#_lu5OU
-      // In that case, it is better to show the image and cause a layout
-      // shift than to hide the image, so we hide the spacer and make the
-      // img relatively instead of absolutely positioned, so that it does
-      // take up the necessary space.
-      if (spacerRef.current) {
-        spacerRef.current.style.display = "none";
-      }
-      img.style.position = "relative";
-    }
-  };
-
-  if (useSpacer) {
-    // If we are using spacer to reserve height by its aspect ratio,
-    // we use a wrapper containing a spacer, and have the img be
-    // absolutely positioned covering the wrapper (and taking up the
-    // same amount of space as the spacer)
-    const aspectRatio = ensure(fullHeight) / ensure(fullWidth);
-    return (
-      <div
-        className={classNames("__wab_img-wrapper", className)}
-        style={{
-          ...style,
-          width: displayWidth,
-          height: displayHeight,
-        }}
-        ref={containerRef}
-      >
-        <div
-          className="__wab_img-spacer"
+  return (
+    <div
+      className={classNames(className, "__wab_img-wrapper")}
+      ref={containerRef}
+      style={style && omit(style, "width", "height")}
+    >
+      <div className="__wab_img-spacer">
+        <img
+          alt=""
+          aria-hidden={true}
+          className="__wab_img-spacer-svg"
+          src={`data:image/svg+xml;base64,${spacerSvgBase64}`}
           style={{
-            paddingTop: `${aspectRatio * 100}%`,
+            width: displayWidth,
+            height: displayHeight,
+            ...(style
+              ? pick(style, "objectFit", "objectPosition", "width", "height")
+              : {}),
           }}
-          ref={spacerRef}
         />
-        {makePicture({
-          imageLoader,
-          widthDescs,
-          sizes,
-          src: srcStr,
-          quality,
-          ref,
-          style: style ? pick(style, "objectFit", "objectPosition") : undefined,
-          imgProps: rest,
-          className: "__wab_img",
-        })}
       </div>
-    );
-  } else {
-    // Otherwise, just make the usual <picture/> without a wrapper.
-    return makePicture({
-      imageLoader,
-      widthDescs,
-      sizes,
-      src: srcStr,
-      quality,
-      ref,
-      style,
-      imgProps: rest,
-      className,
-    });
-  }
+      {makePicture({
+        imageLoader,
+        widthDescs,
+        sizes,
+        src: srcStr,
+        quality,
+        ref,
+        style: style ? pick(style, "objectFit", "objectPosition") : undefined,
+        imgProps: rest,
+        className: "__wab_img",
+      })}
+    </div>
+  );
 });
 
 function makePicture(opts: {
