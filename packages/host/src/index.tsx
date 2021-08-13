@@ -12,11 +12,13 @@ import * as slate from "slate";
 import * as slateReact from "slate-react";
 import { registerFetcher as unstable_registerFetcher } from "./data";
 import { ensure } from "./lang-utils";
+import repeatedElement, { setRepeatedElementFn } from "./repeatedElement";
 const root = require("window-or-global");
 
 mobx.configure({ isolateGlobalState: true, enforceActions: "never" });
 
 export { unstable_registerFetcher };
+export { repeatedElement };
 
 type StringType =
   | "string"
@@ -49,12 +51,11 @@ type JSONLikeType =
       defaultValue?: any;
     };
 
-type ChoiceType =
-  {
-    type: "choice";
-    options: string[];
-    defaultValue?: string;
-  }
+type ChoiceType = {
+  type: "choice";
+  options: string[];
+  defaultValue?: string;
+};
 
 type SlotType =
   | "slot"
@@ -88,7 +89,9 @@ type SupportControlled<T> =
   | (Exclude<T, String> & ControlTypeBase);
 
 export type PropType =
-  | SupportControlled<StringType | BooleanType | NumberType | JSONLikeType | ChoiceType>
+  | SupportControlled<
+      StringType | BooleanType | NumberType | JSONLikeType | ChoiceType
+    >
   | SlotType;
 
 type RestrictPropType<T> = T extends string
@@ -188,6 +191,8 @@ root.__Sub = {
   localElement: typeof window !== "undefined" ? Element : undefined,
   setPlasmicRootNode,
   registerRenderErrorListener,
+  repeatedElement,
+  setRepeatedElementFn
 };
 
 function getPlasmicOrigin() {
