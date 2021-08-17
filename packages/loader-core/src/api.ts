@@ -6,6 +6,7 @@ export interface ComponentMeta {
   name: string;
   renderFile: string;
   skeletonFile: string;
+  cssFile: string;
   path: string | undefined;
   isPage: boolean;
   plumeType?: string;
@@ -62,6 +63,8 @@ export interface AssetModule {
   source: string;
   type: 'asset';
 }
+
+const VERSION = '1';
 
 export class Api {
   private host: string;
@@ -125,6 +128,7 @@ export class Api {
 
   private makeGetHeaders() {
     return {
+      'x-plasmic-loader-version': VERSION,
       ...this.makeAuthHeaders(),
     };
   }
@@ -132,6 +136,7 @@ export class Api {
   // @ts-ignore
   private makePostHeaders() {
     return {
+      'x-plasmic-loader-version': VERSION,
       'Content-Type': 'application/json',
       ...this.makeAuthHeaders(),
     };

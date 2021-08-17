@@ -20,9 +20,9 @@ export function prepComponentData(
   const compPaths = compMetas.map((compMeta) => compMeta.entry);
   const subBundle = getBundleSubset(
     bundle,
+    'entrypoint.css',
     ...compPaths,
     'root-provider.js',
-    'entrypoint.css',
     ...bundle.globalGroups.map((g) => g.contextFile)
   );
 
