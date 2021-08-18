@@ -1,4 +1,6 @@
 module.exports = {
+  // Make sure we don't end up using .eslintrc.js from our cicd repo
+  root: true,
   env: {
     browser: true,
     es2020: true,

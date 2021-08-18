@@ -4,6 +4,7 @@ import socketio from "socket.io-client";
 import {
   AuthConfig,
   CodeConfig,
+  DEFAULT_HOST,
   ImagesConfig,
   StyleConfig,
 } from "./utils/config-utils";
@@ -161,7 +162,7 @@ export class PlasmicApi {
 
   async genStyleConfig(styleOpts?: StyleConfig): Promise<StyleConfigResponse> {
     const result = await this.post(
-      `${this.auth.host}/api/v1/code/style-config`,
+      `${this.codegenHost}/api/v1/code/style-config`,
       styleOpts
     );
     return result.data as StyleConfigResponse;
@@ -186,7 +187,7 @@ export class PlasmicApi {
     recursive?: boolean
   ): Promise<VersionResolution> {
     const resp: any = await this.post(
-      `${this.auth.host}/api/v1/code/resolve-sync`,
+      `${this.codegenHost}/api/v1/code/resolve-sync`,
       {
         projects,
         recursive,
@@ -197,14 +198,14 @@ export class PlasmicApi {
   }
 
   async getCurrentUser() {
-    return await axios.get(`${this.auth.host}/api/v1/auth/self`, {
+    return await axios.get(`${this.studioHost}/api/v1/auth/self`, {
       headers: this.makeHeaders(),
     });
   }
 
   async requiredPackages(): Promise<RequiredPackages> {
     const resp = await this.post(
-      `${this.auth.host}/api/v1/code/required-packages`
+      `${this.codegenHost}/api/v1/code/required-packages`
     );
     return { ...resp.data } as RequiredPackages;
   }
@@ -238,7 +239,7 @@ export class PlasmicApi {
     }
   ): Promise<ProjectBundle> {
     const result = await this.post(
-      `${this.auth.host}/api/v1/projects/${projectId}/code/components`,
+      `${this.codegenHost}/api/v1/projects/${projectId}/code/components`,
       {
         ...opts,
       }
@@ -260,7 +261,7 @@ export class PlasmicApi {
     themeModule: string | undefined
   ): Promise<StyleTokensMap> {
     const result = await this.post(
-      `${this.auth.host}/api/v1/projects/${projectId}/jsbundle/upload`,
+      `${this.codegenHost}/api/v1/projects/${projectId}/jsbundle/upload`,
       {
         projectId,
         bundleName,
@@ -283,7 +284,7 @@ export class PlasmicApi {
     versionRange?: string
   ): Promise<StyleTokensMap> {
     const result = await this.post(
-      `${this.auth.host}/api/v1/projects/${projectId}/code/tokens`,
+      `${this.codegenHost}/api/v1/projects/${projectId}/code/tokens`,
       { versionRange }
     );
     return result.data as StyleTokensMap;
@@ -295,7 +296,7 @@ export class PlasmicApi {
     iconIds?: string[]
   ): Promise<ProjectIconsResponse> {
     const result = await this.post(
-      `${this.auth.host}/api/v1/projects/${projectId}/code/icons`,
+      `${this.codegenHost}/api/v1/projects/${projectId}/code/icons`,
       { versionRange, iconIds }
     );
     return result.data as ProjectIconsResponse;
@@ -307,7 +308,7 @@ export class PlasmicApi {
     rethrowAppError: boolean
   ): Promise<ProjectSyncMetadataModel> {
     const result = await this.post(
-      `${this.auth.host}/api/v1/projects/${projectId}/code/project-sync-metadata`,
+      `${this.codegenHost}/api/v1/projects/${projectId}/code/project-sync-metadata`,
       { revision },
       rethrowAppError
     );
@@ -315,7 +316,7 @@ export class PlasmicApi {
   }
 
   connectSocket(): SocketIOClient.Socket {
-    const socket = socketio.connect(this.auth.host, {
+    const socket = socketio.connect(this.studioHost, {
       path: `/api/v1/socket`,
       transportOptions: {
         polling: {
@@ -390,5 +391,17 @@ export class PlasmicApi {
   private projectIdsAndTokens?: ProjectIdAndToken[];
   attachProjectIdsAndTokens(idsAndTokens: ProjectIdAndToken[]) {
     this.projectIdsAndTokens = idsAndTokens;
+  }
+
+  private get studioHost() {
+    return this.auth.host;
+  }
+
+  private get codegenHost() {
+    if (!this.auth.host || this.auth.host === DEFAULT_HOST) {
+      return "https://codegen.plasmic.app";
+    } else {
+      return this.auth.host;
+    }
   }
 }
