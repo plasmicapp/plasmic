@@ -1,3 +1,4 @@
+import { AssetModule, ComponentMeta } from '@plasmicapp/loader-core';
 import * as React from 'react';
 import {
   ComponentRenderData,
@@ -11,9 +12,8 @@ interface PlasmicRootContextValue {
   loader: InternalPlasmicComponentLoader;
 }
 
-const PlasmicRootContext = React.createContext<
-  PlasmicRootContextValue | undefined
->(undefined);
+const PlasmicRootContext =
+  React.createContext<PlasmicRootContextValue | undefined>(undefined);
 
 export interface GlobalVariantSpec {
   name: string;
@@ -63,7 +63,7 @@ export function PlasmicRootProvider(props: {
 
   return (
     <PlasmicRootContext.Provider value={value}>
-      <PlasmicCss loader={loader} />
+      <PlasmicCss loader={loader} prefetchedData={prefetchedData} />
       {children}
     </PlasmicRootContext.Provider>
   );
@@ -75,13 +75,24 @@ export function PlasmicRootProvider(props: {
  */
 const PlasmicCss = React.memo(function PlasmicCss(props: {
   loader: InternalPlasmicComponentLoader;
+  prefetchedData?: ComponentRenderData;
 }) {
-  const { loader } = props;
-  const builtCss = buildCss(loader);
+  const { loader, prefetchedData } = props;
+  const [useScopedCss, setUseScopedCss] = React.useState(!!prefetchedData);
+  const builtCss = buildCss(
+    loader,
+    useScopedCss && prefetchedData
+      ? prefetchedData.bundle.components
+      : undefined
+  );
   const forceUpdate = useForceUpdate();
   const watcher = React.useMemo(
     () => ({
-      onDataFetched: () => forceUpdate(),
+      onDataFetched: () => {
+        // If new data has been fetched, then use all the fetched css
+        setUseScopedCss(false);
+        forceUpdate();
+      },
     }),
     [loader, forceUpdate]
   );
@@ -94,14 +105,34 @@ const PlasmicCss = React.memo(function PlasmicCss(props: {
   return <style dangerouslySetInnerHTML={{ __html: builtCss }} />;
 });
 
-function buildCss(loader: InternalPlasmicComponentLoader) {
-  const cssModules = loader.getLookup().getCss();
+function buildCss(
+  loader: InternalPlasmicComponentLoader,
+  scopedCompMetas?: ComponentMeta[]
+) {
+  const cssFiles =
+    scopedCompMetas &&
+    new Set<string>([
+      'entrypoint.css',
+      ...scopedCompMetas.map((c) => c.cssFile),
+    ]);
+  const cssModules = loader
+    .getLookup()
+    .getCss()
+    .filter((f) => !cssFiles || cssFiles.has(f.fileName));
+
+  const getPri = (fileName: string) => (fileName === 'entrypoint.css' ? 0 : 1);
+  const compareModules = (a: AssetModule, b: AssetModule) =>
+    getPri(a.fileName) !== getPri(b.fileName)
+      ? getPri(a.fileName) - getPri(b.fileName)
+      : a.fileName.localeCompare(b.fileName);
+  cssModules.sort(compareModules);
+
   const remoteFonts = loader.getLookup().getRemoteFonts();
 
   // Make sure the @import statements come at the front of css
   return `
-    ${remoteFonts.map(f => `@import url('${f.url}');`).join('\n')}
-    ${cssModules.map(mod => mod.source).join('\n')}
+    ${remoteFonts.map((f) => `@import url('${f.url}');`).join('\n')}
+    ${cssModules.map((mod) => mod.source).join('\n')}
   `;
 }
 
