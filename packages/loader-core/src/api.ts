@@ -2,10 +2,9 @@ import fetch from 'isomorphic-unfetch';
 
 export interface ComponentMeta {
   id: string;
+  usedComponents: string[];
   projectId: string;
   name: string;
-  renderFile: string;
-  skeletonFile: string;
   cssFile: string;
   path: string | undefined;
   isPage: boolean;
@@ -65,7 +64,7 @@ export interface AssetModule {
   type: 'asset';
 }
 
-const VERSION = '1';
+const VERSION = '2';
 
 export class Api {
   private host: string;

@@ -38,7 +38,7 @@ const SOURCE_MAX_WAIT_TIME = 10000; // 10 seconds
 let allPaths: string[] = [];
 
 export const sourceNodes = async (
-  { actions, createNodeId, createContentDigest, reporter }: any,
+  { actions, /* createNodeId, */ createContentDigest, reporter }: any,
   opts: GatsbyPluginOptions
 ) => {
   const { createNode, createTypes, deleteNode } = actions;
@@ -59,8 +59,8 @@ export const sourceNodes = async (
 
     const components = await PLASMIC.fetchComponents();
 
-    const getNodeId = (projectId, componentName) =>
-      createNodeId(`@plasmicapp/loader-gatsby/${projectId}-${componentName}`);
+    // const getNodeId = (projectId, componentName) =>
+    // createNodeId(`@plasmicapp/loader-gatsby/${projectId}-${componentName}`);
 
     for (const component of allComponents) {
       const hasComponent = components.some((c) => c.name === component.name);
@@ -89,7 +89,9 @@ export const sourceNodes = async (
       };
 
       const componentMeta = {
-        id: getNodeId(component.projectId, component.name),
+        // We use the same id as curComponent.id since loader-react might
+        // expect the id to match plasmic component uuid.
+        // id: getNodeId(component.projectId, component.name),
         parent: null,
         children: [],
         internal: {

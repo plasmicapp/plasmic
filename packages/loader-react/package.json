@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@plasmicapp/host": "0.0.19",
-    "@plasmicapp/loader-core": "1.0.9",
+    "@plasmicapp/loader-core": "1.0.10",
     "pascalcase": "^1.0.0"
   },
   "peerDependencies": {

@@ -5,6 +5,28 @@ import {
 } from '@plasmicapp/loader-core';
 import type { ComponentRenderData } from './loader';
 
+function getUsedComps(allComponents: ComponentMeta[], entryCompIds: string[]) {
+  const q: string[] = [...entryCompIds];
+  const seenIds = new Set<string>(entryCompIds);
+  const componentMetaById = new Map<string, ComponentMeta>(allComponents.map((meta) => [meta.id, meta]));
+  const usedComps: ComponentMeta[] = [];
+  while (q.length > 0) {
+    const [id] = q.splice(0, 1);
+    const meta = componentMetaById.get(id);
+    if (!meta) {
+      continue;
+    }
+    usedComps.push(meta);
+    meta.usedComponents.forEach((usedCompId) => {
+      if (!seenIds.has(usedCompId)) {
+        seenIds.add(usedCompId);
+        q.push(usedCompId);
+      }
+    });
+  }
+  return usedComps;
+}
+
 export function prepComponentData(
   bundle: LoaderBundleOutput,
   ...compMetas: ComponentMeta[]
@@ -17,7 +39,8 @@ export function prepComponentData(
     };
   }
 
-  const compPaths = compMetas.map((compMeta) => compMeta.entry);
+  const usedComps = getUsedComps(bundle.components, compMetas.map((compMeta) => compMeta.id));
+  const compPaths = usedComps.map((compMeta) => compMeta.entry);
   const subBundle = getBundleSubset(
     bundle,
     'entrypoint.css',
