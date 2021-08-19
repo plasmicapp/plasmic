@@ -98,6 +98,10 @@ export function mergeProps(
   props: Record<string, any>,
   ...restProps: Record<string, any>[]
 ): Record<string, any> {
+  if (restProps.every((rest) => Object.keys(rest).length === 0)) {
+    return props;
+  }
+
   const result = { ...props };
 
   for (const rest of restProps) {

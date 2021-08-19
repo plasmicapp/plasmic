@@ -132,6 +132,9 @@ function createPlasmicElement<DefaultElementType extends React.ElementType>(
   defaultProps: Partial<React.ComponentProps<DefaultElementType>>,
   wrapChildrenInFlex?: boolean
 ): React.ReactNode | null {
+  if (!override || Object.keys(override).length === 0) {
+    return createElementWithChildren(defaultRoot, defaultProps, defaultProps.children)
+  }
   const override2 = deriveOverride(override);
   const props = mergeOverrideProps(defaultProps, override2.props);
   if (override2.type === "render") {
@@ -377,20 +380,29 @@ function deriveOverride<C extends React.ElementType>(x: Flex<C>): Override<C> {
 }
 
 function mergeVariants<V extends Variants>(
-  v1: Partial<V>,
-  v2: Partial<V>
+  v1: Partial<V> | undefined,
+  v2: Partial<V> | undefined
 ): Partial<V> {
+  if (!v1 || !v2) {
+    return v1 || v2 || {};
+  }
   return { ...v1, ...v2 };
 }
 
-function mergeArgs<A extends Args>(a1: Partial<A>, a2: Partial<A>): Partial<A> {
+function mergeArgs<A extends Args>(a1: Partial<A> | undefined, a2: Partial<A> | undefined): Partial<A> {
+  if (!a1 || !a2) {
+    return a1 || a2 || {};
+  }
   return { ...a1, ...a2 };
 }
 
 function mergeFlexOverrides<O extends Overrides>(
   o1: Partial<O>,
-  o2: Partial<O>
+  o2: Partial<O> | undefined
 ): Partial<O> {
+  if (!o2) {
+    return o1;
+  }
   const keys = Array.from(new Set([...Object.keys(o1), ...Object.keys(o2)]));
   const merged: Record<string, any> = {};
   for (const key of keys) {
@@ -470,11 +482,11 @@ export function deriveRenderOpts(
   const reservedPropNames = ["variants", "args", "overrides"];
   const variants = mergeVariants(
     omit(pick(props, ...internalVariantPropNames), ...reservedPropNames),
-    props.variants ?? {}
+    props.variants
   );
   const args = mergeArgs(
     omit(pick(props, ...internalArgPropNames), ...reservedPropNames),
-    props.args ?? {}
+    props.args
   );
   let overrides = mergeFlexOverrides(
     omit(
@@ -483,7 +495,7 @@ export function deriveRenderOpts(
       ...internalVariantPropNames,
       ...reservedPropNames
     ),
-    props.overrides ?? {}
+    props.overrides
   );
 
   const leftoverProps = omit(

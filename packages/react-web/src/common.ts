@@ -6,6 +6,9 @@ export function pick<T>(
   obj: T,
   ...keys: (string | number | symbol)[]
 ): Partial<T> {
+  if (Object.keys(obj).length === 0) {
+    return obj;
+  }
   const res: any = {};
   for (const key of keys) {
     if (key in obj) {
@@ -29,6 +32,9 @@ export function pickBy<T>(
 }
 
 export function omit<T>(obj: T, ...keys: (keyof T)[]): Partial<T> {
+  if (Object.keys(obj).length === 0) {
+    return obj;
+  }
   const res: Partial<T> = {};
   for (const key of Object.keys(obj) as (keyof T)[]) {
     if (!keys.includes(key)) {
