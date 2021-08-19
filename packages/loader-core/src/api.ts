@@ -74,7 +74,7 @@ export class Api {
       host?: string;
     }
   ) {
-    this.host = opts.host ?? 'https://studio.plasmic.app';
+    this.host = opts.host ?? 'https://codegen.plasmic.app';
   }
 
   async fetchLoaderData(
