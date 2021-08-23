@@ -1,17 +1,17 @@
-import { auth, setMetadataEnv } from "@plasmicapp/cli";
+import { auth, getProjectApiToken, setMetadataEnv } from "@plasmicapp/cli";
 import chalk from "chalk";
-import * as fs from "fs";
 import * as path from "upath";
 import validateProjectName from "validate-npm-package-name";
+import { getCPAStrategy } from "./strategies";
+import { spawnOrFail } from "./utils/cmd-utils";
 import {
-  modifyDefaultGatsbyConfig,
+  ensureTsconfig,
   overwriteIndex,
   overwriteReadme,
   wrapAppRoot,
   writeDefaultNextjsConfig,
-  writePlasmicLoaderJson,
 } from "./utils/file-utils";
-import { detectPackageManager, installUpgrade, spawn } from "./utils/npm-utils";
+import { detectPackageManager, installUpgrade } from "./utils/npm-utils";
 
 export type PlatformType = "nextjs" | "gatsby" | "react";
 export type SchemeType = "codegen" | "loader";
@@ -36,10 +36,10 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
     projectId,
     platform,
     scheme,
-    projectApiToken,
     useTypescript,
     template,
   } = args;
+  let { projectApiToken } = args;
   console.log("Let's get started! Here's what we'll do: ");
   console.log("1. Authenticate with Plasmic");
   console.log("2. Create a React/Next/Gatsby repo");
@@ -70,102 +70,83 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
   if (!["nextjs", "gatsby", "react"].includes(platform)) {
     throw new Error(`Unrecognized platform: ${platform}`);
   }
-  let createCommand = "";
-  if (platform === "nextjs") {
-    createCommand += `npx -p create-next-app create-next-app ${resolvedProjectPath}`;
-    if (template) {
-      createCommand += ` --example ${template}`;
-    }
-    // Default Next.js starter already supports Typescript
-    // See where we `touch tsconfig.json` later on
-  } else if (platform === "gatsby") {
-    createCommand += `npx -p gatsby gatsby new ${resolvedProjectPath}`;
-    if (template) {
-      createCommand += ` ${template}`;
-    }
-    // Default Gatsby starter already supports Typescript
-    // See where we `touch tsconfig.json` later on
-  } else if (platform === "react") {
-    createCommand += `npx -p create-react-app create-react-app ${resolvedProjectPath}`;
-    if (template) {
-      createCommand += ` --template ${template}`;
-    } else if (useTypescript) {
-      createCommand += " --template typescript";
-    }
-  } else {
-    throw new Error(`Unrecognized platform: ${platform}`);
-  }
-  await spawnOrFail(createCommand);
 
-  // Create tsconfig.json if it doesn't exist
-  // this will force Plasmic to recognize Typescript
-  const tsconfigPath = path.join(resolvedProjectPath, "tsconfig.json");
-  if (useTypescript && !fs.existsSync(tsconfigPath)) {
-    fs.writeFileSync(tsconfigPath, "");
-    const installTsResult = await installUpgrade("typescript @types/react", {
-      workingDir: resolvedProjectPath,
-    });
-    if (!installTsResult) {
-      throw new Error("Failed to install Typescript");
-    }
+  if (!["codegen", "loader"].includes(scheme)) {
+    throw new Error(`Unrecognized Plasmic scheme: ${scheme}`);
+  }
+
+  const cpaStrategy = getCPAStrategy(platform);
+
+  // Create project using strategy for platform
+  await cpaStrategy.create({
+    projectPath: resolvedProjectPath,
+    useTypescript,
+    template,
+  });
+
+  // Ensure that
+  if (useTypescript) {
+    await ensureTsconfig(resolvedProjectPath);
   }
 
   // Install dependency
   banner("INSTALLING THE PLASMIC DEPENDENCY");
-  const installResult =
-    scheme === "loader"
-      ? await installUpgrade("@plasmicapp/loader", {
-          workingDir: resolvedProjectPath,
-        })
-      : await installUpgrade("@plasmicapp/cli", {
-          workingDir: resolvedProjectPath,
-        });
-  if (!installResult) {
-    throw new Error("Failed to install the Plasmic dependency");
+  if (scheme === "codegen") {
+    const installResult = await installUpgrade("@plasmicapp/cli", {
+      workingDir: resolvedProjectPath,
+    });
+    if (!installResult) {
+      throw new Error("Failed to install the Plasmic dependency");
+    }
   }
 
   // Trigger a sync
   const pkgMgr = detectPackageManager(resolvedProjectPath);
   const npmRunCmd = pkgMgr === "yarn" ? "yarn" : "npm run";
+
   if (scheme === "codegen") {
     banner("SYNCING PLASMIC COMPONENTS");
+
     const project = projectApiToken
       ? `${projectId}:${projectApiToken}`
       : projectId;
+
     if (platform === "nextjs") {
       await writeDefaultNextjsConfig(resolvedProjectPath, projectId, false);
     }
+
     await spawnOrFail(
       `npx -p @plasmicapp/cli plasmic sync --yes -p ${project}`,
       resolvedProjectPath
     );
   } else if (scheme === "loader") {
-    if (platform === "nextjs") {
-      await writeDefaultNextjsConfig(resolvedProjectPath, projectId, true);
-    } else if (platform === "gatsby") {
-      await modifyDefaultGatsbyConfig(resolvedProjectPath, projectId);
-    } else {
-      throw new Error(
-        "PlasmicLoader is only compatible with either Next.js or Gatsby"
-      );
+    if (!projectApiToken) {
+      projectApiToken = await getProjectApiToken(projectId);
     }
-    if (projectApiToken) {
-      await writePlasmicLoaderJson(
-        resolvedProjectPath,
-        projectId,
-        projectApiToken
-      );
+    if (!projectApiToken) {
+      throw new Error(`Failed to get projectApiToken for ${projectId}`);
     }
-    await spawnOrFail(`${npmRunCmd} build`, resolvedProjectPath);
-  } else {
-    throw new Error(`Unrecognized Plasmic scheme: ${scheme}`);
+
+    await cpaStrategy.configLoader({
+      projectPath: resolvedProjectPath,
+      projectId,
+      projectApiToken,
+      useTypescript,
+    });
   }
 
-  // Overwrite the index file
-  await overwriteIndex(resolvedProjectPath, platform, scheme);
+  if (scheme === "loader") {
+    await cpaStrategy.overwriteFiles({ projectPath: resolvedProjectPath });
+  } else if (scheme === "codegen") {
+    // The loader files to be overwritten are handled by cpaStrategy
+    // but for codegen we still have to run it
 
-  // Overwrite the wrapper files to wrap PlasmicRootProvider
-  await wrapAppRoot(resolvedProjectPath, platform, scheme);
+    // Overwrite the index file
+    await overwriteIndex(resolvedProjectPath, platform, scheme);
+
+    // Overwrite the wrapper files to wrap PlasmicRootProvider
+    await wrapAppRoot(resolvedProjectPath, platform, scheme);
+  }
 
   /**
    * INSTRUCT USER ON NEXT STEPS
@@ -243,21 +224,6 @@ export function banner(message: string): void {
   console.log("==================================================");
   console.log(chalk.bold(message));
   console.log("==================================================");
-}
-
-/**
- * Run a command synchronously
- * @returns
- */
-async function spawnOrFail(
-  cmd: string,
-  workingDir?: string,
-  customErrorMsg?: string
-) {
-  const result = await spawn(cmd, workingDir);
-  if (!result) {
-    throw new Error(customErrorMsg ?? `Failed to run "${cmd}"`);
-  }
 }
 
 /**

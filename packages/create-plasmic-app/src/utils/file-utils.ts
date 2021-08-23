@@ -1,10 +1,23 @@
-import { createReadStream, promises as fs, unlinkSync } from "fs";
+import { createReadStream, existsSync, promises as fs, unlinkSync } from "fs";
 import glob from "glob";
 import L from "lodash";
 import * as readline from "readline";
 import * as path from "upath";
-import { PlatformType, toString } from "../lib";
+import { PlatformType } from "../lib";
+import {
+  GATSBY_404,
+  GATSBY_DEFAULT_PAGE,
+  GATSBY_PLUGIN_CONFIG,
+} from "../templates/gatsby";
+import {
+  NEXTJS_DEFAULT_PAGE_JS,
+  NEXTJS_DEFAULT_PAGE_TS,
+  NEXTJS_INIT,
+} from "../templates/nextjs";
+import { README } from "../templates/readme";
+import { WELCOME_PAGE } from "../templates/welcomePage";
 import { ensure, ensureString } from "./lang-utils";
+import { installUpgrade } from "./npm-utils";
 
 /**
  * Runs the search pattern through `glob` and deletes all resulting files
@@ -47,7 +60,9 @@ export function stripExtension(
 export async function writeDefaultNextjsConfig(
   projectDir: string,
   projectId: string,
-  loader: boolean
+  loader: boolean,
+  projectApiToken?: string,
+  useTypescript?: boolean
 ): Promise<void> {
   const nextjsConfigFile = path.join(projectDir, "next.config.js");
 
@@ -67,22 +82,21 @@ module.exports = {
     return;
   }
 
-  await fs.writeFile(
-    nextjsConfigFile,
-    `
-const plasmic = require('@plasmicapp/loader/next');
-const withPlasmic = plasmic({
-  projects: ['${projectId}'] // An array of project ids.
-});
-module.exports = withPlasmic({
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  trailingSlash: true,
-  // Your NextJS config.
-});
-  `
-  );
+  if (loader && projectApiToken) {
+    const initFile = path.join(projectDir, "init.js");
+    await fs.writeFile(initFile, NEXTJS_INIT(projectId, projectApiToken));
+
+    const pagesFolder = path.join(projectDir, "pages");
+    const loaderPage = path.join(
+      pagesFolder,
+      `[[...plasmicLoaderPage]].${useTypescript ? "tsx" : "jsx"}`
+    );
+
+    await fs.writeFile(
+      loaderPage,
+      useTypescript ? NEXTJS_DEFAULT_PAGE_TS : NEXTJS_DEFAULT_PAGE_JS
+    );
+  }
 }
 
 export async function writePlasmicLoaderJson(
@@ -110,7 +124,8 @@ export async function writePlasmicLoaderJson(
  */
 export async function modifyDefaultGatsbyConfig(
   projectDir: string,
-  projectId: string
+  projectId: string,
+  projectApiToken: string
 ): Promise<void> {
   const gatsbyConfigFile = path.join(projectDir, "gatsby-config.js");
   const rl = readline.createInterface({
@@ -122,17 +137,16 @@ export async function modifyDefaultGatsbyConfig(
     result += line + "\n";
     // Prepend PlasmicLoader to list of plugins
     if (line.includes("plugins:")) {
-      result +=
-        `
-    {
-      resolve: "@plasmicapp/loader/gatsby",
-      options: {
-        projects: ["${projectId}"], // An array of project ids.
-      },
-    },` + "\n";
+      result += GATSBY_PLUGIN_CONFIG(projectId, projectApiToken);
     }
   }
   await fs.writeFile(gatsbyConfigFile, result);
+
+  const templatesFolder = path.join(projectDir, "src/templates");
+  const defaultPagePath = path.join(templatesFolder, "defaultPlasmicPage.js");
+
+  await fs.mkdir(templatesFolder);
+  await fs.writeFile(defaultPagePath, GATSBY_DEFAULT_PAGE);
 }
 
 /**
@@ -191,15 +205,7 @@ export async function overwriteIndex(
     // Create a very basic 404 page - `gatsby build` fails without it.
     // We've deleted the components that the default 404 page depended
     // on, so
-    await fs.writeFile(
-      path.join(projectPath, "src/pages/404.js"),
-      `
-const NotFound = () => {
-  return "Not Found";
-};
-export default NotFound;
-    `.trim()
-    );
+    await fs.writeFile(path.join(projectPath, "src/pages/404.js"), GATSBY_404);
   }
 
   // We're done if we can already render an index page
@@ -237,35 +243,7 @@ export async function overwriteReadme(
   buildCommand: string
 ): Promise<void> {
   const readmeFile = path.join(projectPath, "README.md");
-  const contents = `
-This is a ${toString(
-    platform
-  )} project bootstrapped with [\`create-plasmic-app\`](https://www.npmjs.com/package/create-plasmic-app).
-
-## Getting Started
-
-First, run the development server:
-
-\`\`\`bash
-${buildCommand}
-\`\`\`
-
-Open your browser to see the result.
-
-You can start editing your project in Plasmic Studio. The page auto-updates as you edit the project.
-
-## Learn More
-
-With Plasmic, you can enable non-developers on your team to publish pages and content into your website or app.
-
-To learn more about Plasmic, take a look at the following resources:
-
-- [Plasmic Website](https://www.plasmic.app/)
-- [Plasmic Documentation](https://docs.plasmic.app/learn/)
-- [Plasmic Slack Community](https://www.plasmic.app/slack)
-
-You can check out [the Plasmic GitHub repository](https://github.com/plasmicapp/plasmic) - your feedback and contributions are welcome!
-  `.trim();
+  const contents = README(platform, buildCommand);
   await fs.writeFile(readmeFile, contents);
 }
 
@@ -339,99 +317,11 @@ function generateWelcomePage(config: any, platform: string): string {
     `;
   };
 
-  const content = `
-import React from "react";
-${hasPages && platform === "nextjs" ? `import Link from "next/link";` : ""}
-
-function PlasmicLogo() {
-  return (
-    <svg
-      width={40}
-      height={40}
-      viewBox="0 0 40 40"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M34 26h-2v-1c0-6.627-5.373-12-12-12S8 18.374 8 25v1H6a1 1 0 01-1-1c0-8.284 6.716-15 15-15 8.284 0 15 6.716 15 15a1 1 0 01-1 1z"
-        fill="url(#paint0_linear)"
-      />
-      <path
-        d="M27 25a7 7 0 00-14 0v1h2a1 1 0 001-1 4 4 0 018 0 1 1 0 001 1h2v-1z"
-        fill="url(#paint1_linear)"
-      />
-      <path
-        d="M30.999 25C30.999 18.925 26.075 14 20 14S9.001 18.926 9.001 25H9v1h3v-1a8 8 0 0116 0v1h3v-1h-.001z"
-        fill="url(#paint2_linear)"
-      />
-      <defs>
-        <linearGradient
-          id="paint0_linear"
-          x1={5}
-          y1={26}
-          x2={35}
-          y2={26}
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop stopColor="#1877F2" />
-          <stop offset={1} stopColor="#04A4F4" />
-        </linearGradient>
-        <linearGradient
-          id="paint1_linear"
-          x1={13}
-          y1={26}
-          x2={27}
-          y2={26}
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop stopColor="#F02849" />
-          <stop offset={1} stopColor="#F5533D" />
-        </linearGradient>
-        <linearGradient
-          id="paint2_linear"
-          x1={9}
-          y1={26}
-          x2={31}
-          y2={26}
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop stopColor="#45BD62" />
-          <stop offset={1} stopColor="#2ABBA7" />
-        </linearGradient>
-      </defs>
-    </svg>
+  const content = WELCOME_PAGE(
+    hasPages,
+    platform,
+    hasPages ? getPageSection() : ""
   );
-}
-
-function Index() {
-  return (
-    <div style={{ width: "100%", padding: "100px", alignContent: "center" }}>
-      <header>
-        <PlasmicLogo />
-        <h1 style={{ margin: 0 }}>
-          Welcome to Plasmic!
-        </h1>
-        <h4>
-          <a
-            style={{ color: "blue" }}
-            href="https://www.plasmic.app/learn/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn Plasmic
-          </a>
-        </h4>
-        ${hasPages ? getPageSection() : ""}
-        <p><i>Note: Remember to remove this file if you introduce a Page component at the &#39;/&#39; path.</i></p>
-      </header>
-    </div>
-  );
-}
-
-export default Index;
-  `;
   return content;
 }
 
@@ -457,11 +347,27 @@ async function getPlasmicConfig(
   return JSON.parse(configStr.toString());
 }
 
+// Create tsconfig.json if it doesn't exist
+// this will force Plasmic to recognize Typescript
+export async function ensureTsconfig(projectPath: string): Promise<void> {
+  const tsconfigPath = path.join(projectPath, "tsconfig.json");
+  if (!existsSync(tsconfigPath)) {
+    await fs.writeFile(tsconfigPath, "");
+    const installTsResult = await installUpgrade("typescript @types/react", {
+      workingDir: projectPath,
+    });
+    if (!installTsResult) {
+      throw new Error("Failed to install Typescript");
+    }
+  }
+}
+
 export async function wrapAppRoot(
   projectPath: string,
   platform: string,
   scheme: string
 ): Promise<void> {
+  // with create-plasmic-app v2, isLoader=false
   const isLoader = scheme === "loader";
   const importPkg = isLoader ? `@plasmicapp/loader` : "@plasmicapp/react-web";
   if (platform === "nextjs") {
