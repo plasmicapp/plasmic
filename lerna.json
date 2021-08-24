@@ -1,5 +1,11 @@
 {
-  "packages": ["packages/loader-*", "packages/watcher"],
+  "packages": [
+    "packages/loader-*",
+    "packages/watcher",
+    "packages/host",
+    "packages/react-web",
+    "packages/preamble"
+  ],
   "version": "independent",
   "npmClient": "yarn",
   "useWorkspaces": true

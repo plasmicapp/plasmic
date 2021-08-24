@@ -14,6 +14,9 @@
   },
   "workspaces": [
     "packages/loader-*",
-    "packages/watcher"
+    "packages/watcher",
+    "packages/host",
+    "packages/react-web",
+    "packages/preamble"
   ]
 }

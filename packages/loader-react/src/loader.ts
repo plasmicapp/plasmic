@@ -1,3 +1,6 @@
+import registerComponent, {
+  ComponentMeta as InternalCodeComponentMeta,
+} from '@plasmicapp/host/registerComponent';
 import {
   ComponentMeta,
   LoaderBundleCache,
@@ -52,6 +55,19 @@ interface PlasmicRootWatcher {
   onDataFetched?: () => void;
 }
 
+export type CodeComponentMeta<P> = Omit<
+  InternalCodeComponentMeta<P>,
+  'importPath'
+> & {
+  /**
+   * The path to be used when importing the component in the generated code.
+   * It can be the name of the package that contains the component, or the path
+   * to the file in the project (relative to the root directory).
+   * Optional: not used by Plasmic headless API, only by codegen.
+   */
+  importPath?: string;
+};
+
 export class InternalPlasmicComponentLoader {
   private fetcher: PlasmicModulesFetcher;
   private registry: Registry;
@@ -91,7 +107,7 @@ export class InternalPlasmicComponentLoader {
     }
   }
 
-  registerComponent<P>(
+  substituteComponent<P>(
     component: React.ComponentType<P>,
     name: ComponentLookupSpec
   ) {
@@ -102,6 +118,18 @@ export class InternalPlasmicComponentLoader {
       this.registry.clear();
     }
     this.subs.push({ lookup: name, component });
+  }
+
+  registerComponent<T extends React.ComponentType<any>>(
+    component: T,
+    meta: CodeComponentMeta<React.ComponentProps<T>>
+  ) {
+    this.substituteComponent(component, meta.name);
+    // Import path is not used as we will use component substitution
+    registerComponent(component, {
+      ...meta,
+      importPath: meta.importPath ?? '',
+    });
   }
 
   registerPrefetchedBundle(bundle: LoaderBundleOutput) {
@@ -137,8 +165,10 @@ export class InternalPlasmicComponentLoader {
   async maybeFetchComponentData(
     ...specs: ComponentLookupSpec[]
   ): Promise<ComponentRenderData | null> {
-    const { found: existingMetas, missing: missingSpecs } =
-      this.maybeGetCompMetas(...specs);
+    const {
+      found: existingMetas,
+      missing: missingSpecs,
+    } = this.maybeGetCompMetas(...specs);
     if (missingSpecs.length === 0) {
       return prepComponentData(this.bundle, ...existingMetas);
     }
@@ -146,8 +176,10 @@ export class InternalPlasmicComponentLoader {
     // TODO: incrementally fetch only what's needed, instead of fetching all
     await this.fetchMissingData({ missingSpecs });
 
-    const { found: existingMetas2, missing: missingSpecs2 } =
-      this.maybeGetCompMetas(...specs);
+    const {
+      found: existingMetas2,
+      missing: missingSpecs2,
+    } = this.maybeGetCompMetas(...specs);
     if (missingSpecs2.length > 0) {
       return null;
     }
@@ -294,14 +326,59 @@ export class PlasmicComponentLoader {
    * Register custom components that should be swapped in for
    * components defined in your project.  You can use this to
    * swap in / substitute a Plasmic component with a "real" component.
-   * You can also use this to register your code components.
    */
-  registerComponent<P>(
+  substituteComponent<P>(
     component: React.ComponentType<P>,
     name: ComponentLookupSpec
   ) {
-    this.__internal.registerComponent(component, name);
+    this.__internal.substituteComponent(component, name);
   }
+
+  /**
+   * Register code components to be used on Plasmic Editor.
+   */
+  registerComponent<T extends React.ComponentType<any>>(
+    component: T,
+    meta: CodeComponentMeta<React.ComponentProps<T>>
+  ): void;
+
+  /**
+   * @deprecated
+   *
+   * Please use `substituteComponent` instead for component
+   * substitution, or the other `registerComponent` overload to register
+   * code components to be used on Plasmic Editor.
+   *
+   * @see `substituteComponent`
+   */
+  registerComponent<T extends React.ComponentType<any>>(
+    component: T,
+    name: ComponentLookupSpec
+  ): void;
+
+  registerComponent<T extends React.ComponentType<any>>(
+    component: T,
+    metaOrName: ComponentLookupSpec | CodeComponentMeta<React.ComponentProps<T>>
+  ) {
+    // 'props' is a required field in CodeComponentMeta
+    if (metaOrName && typeof metaOrName === 'object' && 'props' in metaOrName) {
+      this.__internal.registerComponent(component, metaOrName);
+    } else {
+      // Deprecated call
+      if (
+        process.env.NODE_ENV === 'development' &&
+        !this.warnedRegisterComponent
+      ) {
+        console.warn(
+          `PlasmicLoader: Using deprecated method \`registerComponent\` for component substitution. ` +
+            `Please consider using \`substituteComponent\` instead.`
+        );
+        this.warnedRegisterComponent = true;
+      }
+      this.substituteComponent(component, metaOrName);
+    }
+  }
+  private warnedRegisterComponent = false;
 
   /**
    * Pre-fetches component data needed to for PlasmicLoader to render

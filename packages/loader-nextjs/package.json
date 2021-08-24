@@ -1,22 +1,22 @@
 {
-  "version": "1.0.14",
+  "version": "1.0.15",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
-    "src"
+    "host"
   ],
   "engines": {
     "node": ">=10"
   },
   "scripts": {
     "start": "tsdx watch",
-    "build": "tsdx build",
+    "build": "tsdx build && rollup -c",
     "yalcp": "yalc publish --push",
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
-    "prepare": "tsdx build",
+    "prepare": "yarn build",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
@@ -49,6 +49,9 @@
     }
   ],
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^19.0.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.0.0",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/react": "^17.0.8",
     "@types/react-dom": "^17.0.5",
@@ -56,6 +59,9 @@
     "next": "^11.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "rollup": "^2.47.0",
+    "rollup-plugin-dts": "^3.0.1",
+    "rollup-plugin-typescript2": "^0.30.0",
     "size-limit": "^4.11.0",
     "tsdx": "^0.14.1",
     "tslib": "^2.2.0",
@@ -63,7 +69,7 @@
   },
   "dependencies": {
     "@plasmicapp/loader-core": "1.0.7",
-    "@plasmicapp/loader-react": "1.0.14",
+    "@plasmicapp/loader-react": "1.0.15",
     "@plasmicapp/watcher": "1.0.7"
   },
   "gitHead": "fa53f7d79f0e26d8b061102fda0c06788da6f8a7"

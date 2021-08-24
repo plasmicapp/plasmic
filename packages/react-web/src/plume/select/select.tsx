@@ -404,7 +404,7 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
 
 function ListBoxWrapper(props: {
   state: AriaSelectState<any>;
-  menuProps: React.HTMLAttributes<HTMLElement>;
+  menuProps: React.HTMLAttributes<Element>;
   children: React.ReactElement;
 }) {
   const { state, menuProps, children } = props;

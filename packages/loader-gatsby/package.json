@@ -1,15 +1,16 @@
 {
   "name": "@plasmicapp/loader-gatsby",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "typings": "dist/index.d.ts",
   "license": "MIT",
   "files": [
     "dist",
-    "gatsby-node.js"
+    "gatsby-node.js",
+    "host"
   ],
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsdx build --entry src/index.ts",
+    "build": "tsdx build --entry src/index.ts && rollup -c",
     "yalcp": "yalc publish --push",
     "prepare": "yarn build"
   },
@@ -21,15 +22,21 @@
     "gatsby": "^2.0.15 || ^3.0.0"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^19.0.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.0.0",
     "@types/lodash": "^4.14.171",
     "gatsby": "^3.10.1",
     "react": "^17.0.2",
+    "rollup": "^2.47.0",
+    "rollup-plugin-dts": "^3.0.1",
+    "rollup-plugin-typescript2": "^0.30.0",
     "tsdx": "^0.14.1",
     "typescript": "^4.3.5"
   },
   "dependencies": {
     "@plasmicapp/loader-core": "1.0.7",
-    "@plasmicapp/loader-react": "1.0.14",
+    "@plasmicapp/loader-react": "1.0.15",
     "@plasmicapp/watcher": "1.0.7",
     "lodash": "^4.17.21"
   }

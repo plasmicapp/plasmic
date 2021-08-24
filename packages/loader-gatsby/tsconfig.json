@@ -1,4 +1,6 @@
 {
+  "include": ["src"],
+  "exclude": ["src/host.ts"],
   "compilerOptions": {
     "module": "esnext",
     "lib": ["dom", "esnext"],
