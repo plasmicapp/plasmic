@@ -1,15 +1,10 @@
 import { renderToElement, renderToString } from "@plasmicapp/loader-react";
-import Vue, { VueConstructor } from "vue";
+import { defineComponent, h, inject, ref } from "vue-demi";
 import { PlasmicContextValue, PLASMIC_CONTEXT } from "../context";
 
 const isServer = typeof window === "undefined";
 
-export default (Vue as VueConstructor<
-  Vue & {
-    context: PlasmicContextValue;
-    updateElement: () => void;
-  }
->).extend({
+export default defineComponent({
   name: "PlasmicComponent",
   props: {
     component: {
@@ -20,12 +15,9 @@ export default (Vue as VueConstructor<
       type: Object,
     },
   },
-  inject: {
-    context: PLASMIC_CONTEXT,
-  },
   methods: {
     updateElement() {
-      const element = this.$refs["root"];
+      const element = this.root;
       if (element && element instanceof HTMLElement) {
         // renderToElement() also works for hydration
         renderToElement(this.context.loader, element, this.$props.component, {
@@ -36,8 +28,18 @@ export default (Vue as VueConstructor<
       }
     },
   },
-  mounted() {
-    this.updateElement();
+  setup() {
+    const context = inject(PLASMIC_CONTEXT) as PlasmicContextValue | undefined;
+    const root = ref<HTMLElement | null>(null);
+    if (!context) {
+      throw new Error(
+        "<PlasmicComponent> should be wrapped inside a <PlasmicRootProvider>"
+      );
+    }
+    return {
+      root,
+      context,
+    };
   },
   watch: {
     component: function () {
@@ -47,7 +49,10 @@ export default (Vue as VueConstructor<
       this.updateElement();
     },
   },
-  render(h) {
+  mounted() {
+    this.updateElement();
+  },
+  render() {
     return h("div", {
       ref: "root",
       ...(isServer && {

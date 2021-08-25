@@ -3,10 +3,10 @@ import {
   GlobalVariantSpec,
   PlasmicComponentLoader,
 } from "@plasmicapp/loader-react";
-import Vue, { PropType } from "vue";
+import { defineComponent, h, PropType, provide } from "vue-demi";
 import { PLASMIC_CONTEXT } from "../context";
 
-export default Vue.extend({
+export default defineComponent({
   name: "PlasmicRootProvider",
   props: {
     loader: {
@@ -20,16 +20,12 @@ export default Vue.extend({
       type: Object as PropType<ComponentRenderData>,
     },
   },
-  provide() {
-    return {
-      [PLASMIC_CONTEXT]: {
-        loader: this.$props.loader,
-        globalVariants: this.$props.globalVariants,
-        prefetchedData: this.$props.prefetchedData,
-      },
-    };
-  },
-  render(h) {
-    return h("div", this.$slots.default);
+  setup(props, { slots }) {
+    provide(PLASMIC_CONTEXT, {
+      loader: props.loader,
+      globalVariants: props.globalVariants,
+      prefetchedData: props.prefetchedData,
+    });
+    return () => h("div", (slots as any).default());
   },
 });
