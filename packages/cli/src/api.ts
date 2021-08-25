@@ -399,7 +399,7 @@ export class PlasmicApi {
 
   private get codegenHost() {
     if (!this.auth.host || this.auth.host === DEFAULT_HOST) {
-      return this.auth.host;
+      return "https://codegen.plasmic.app";
     } else {
       return this.auth.host;
     }
