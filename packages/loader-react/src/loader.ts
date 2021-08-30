@@ -124,7 +124,7 @@ export class InternalPlasmicComponentLoader {
     component: T,
     meta: CodeComponentMeta<React.ComponentProps<T>>
   ) {
-    this.substituteComponent(component, meta.name);
+    this.substituteComponent(component, { name: meta.name, isCode: true } );
     // Import path is not used as we will use component substitution
     registerComponent(component, {
       ...meta,

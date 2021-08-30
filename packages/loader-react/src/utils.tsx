@@ -2,11 +2,12 @@ import { ComponentMeta } from '@plasmicapp/loader-core';
 import pascalcase from 'pascalcase';
 import * as React from 'react';
 
-export type ComponentLookupSpec = string | { name: string; projectId?: string };
+export type ComponentLookupSpec = string | { name: string; projectId?: string; isCode?: boolean; };
 
 interface FullNameLookupSpec {
   name: string;
   projectId?: string;
+  isCode?: boolean;
 }
 
 interface FullPathLookupSpec {
@@ -58,7 +59,8 @@ function areLookupSpecsEqual(
   return (
     ((isNameSpec(fullSpec1) &&
       isNameSpec(fullSpec2) &&
-      fullSpec1.name === fullSpec2.name) ||
+      fullSpec1.name === fullSpec2.name &&
+      fullSpec1.isCode === fullSpec2.isCode) ||
       (isPathSpec(fullSpec1) &&
         isPathSpec(fullSpec2) &&
         fullSpec1.path === fullSpec2.path)) &&
@@ -77,11 +79,12 @@ function isPathSpec(lookup: FullLookupSpec): lookup is FullPathLookupSpec {
 function toFullLookup(lookup: ComponentLookupSpec): FullLookupSpec {
   const namePart = typeof lookup === 'string' ? lookup : lookup.name;
   const projectId = typeof lookup === 'string' ? undefined : lookup.projectId;
+  const codeComponent = typeof lookup === 'string' ? undefined : lookup.isCode;
 
-  if (namePart.startsWith('/')) {
+  if (codeComponent !== true && namePart.startsWith('/')) {
     return { path: normalizePath(namePart), projectId };
   } else {
-    return { name: normalizeName(namePart), projectId };
+    return { name: normalizeName(namePart), projectId, isCode: codeComponent };
   }
 }
 
@@ -114,7 +117,7 @@ function matchesCompMeta(lookup: FullLookupSpec, meta: ComponentMeta) {
   }
 
   return isNameSpec(lookup)
-    ? lookup.name === meta.name
+    ? (lookup.name === meta.name && (lookup.isCode == null || lookup.isCode === meta.isCode))
     : lookup.path === meta.path;
 }
 
