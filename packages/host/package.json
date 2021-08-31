@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/host",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "plasmic library for app hosting",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -19,7 +19,7 @@
     "analyze": "size-limit --why"
   },
   "dependencies": {
-    "@plasmicapp/preamble": "^0.0.2",
+    "@plasmicapp/preamble": "^0.0.3",
     "mobx": ">=5.15.4",
     "mobx-react-lite": ">=2.0.7",
     "resize-observer-polyfill": "^1.5.1",

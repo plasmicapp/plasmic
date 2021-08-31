@@ -22,7 +22,7 @@
     "analyze": "size-limit --why"
   },
   "dependencies": {
-    "@plasmicapp/host": "0.0.16",
+    "@plasmicapp/host": "0.0.17",
     "@plasmicapp/loader-core": "1.0.8",
     "@plasmicapp/react-web": "^0.2.68",
     "pascalcase": "^1.0.0"

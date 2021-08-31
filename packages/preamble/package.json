@@ -1,10 +1,10 @@
 {
   "name": "@plasmicapp/preamble",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "plasmic snippet for function components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "module": "dist/host.esm.js",
+  "module": "dist/preamble.esm.js",
   "files": [
     "dist"
   ],
