@@ -1,0 +1,13 @@
+{
+  "$schema": "../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../dist",
+  "lib": {
+    "entryFile": "lib/public-api.ts"
+  },
+  "allowedNonPeerDependencies": [
+    "@plasmicapp/loader-react",
+    "react",
+    "react-dom",
+    "@types/react"
+  ]
+}

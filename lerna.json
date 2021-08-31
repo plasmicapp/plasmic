@@ -1,6 +1,10 @@
 {
   "packages": [
-    "packages/loader-*",
+    "packages/loader-core",
+    "packages/loader-gatsby",
+    "packages/loader-nextjs",
+    "packages/loader-react",
+    "packages/loader-vue",
     "packages/watcher",
     "packages/host",
     "packages/react-web",
