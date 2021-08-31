@@ -15,25 +15,37 @@
     "node": ">=12"
   },
   "dependencies": {
-    "@plasmicapp/loader-react": "1.0.14",
+    "@plasmicapp/loader-react": "1.0.18",
     "core-js": "^3.6.5",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
     "vue-demi": "^0.11.3"
   },
   "devDependencies": {
+    "@size-limit/preset-small-lib": "^4.11.0",
+    "size-limit": "^4.11.0",
     "tsdx": "^0.14.1",
     "typescript": "4.0.2",
     "vue": "3.0.2"
   },
   "peerDependencies": {
     "@vue/composition-api": "^1.1.3",
-    "vue": "^2.0.0 || >=3.0.2"
+    "vue": "^2.0.0 || >=3.0.2",
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
   },
   "peerDependenciesMeta": {
     "@vue/composition-api": {
       "optional": true
     }
   },
+  "size-limit": [
+    {
+      "path": "dist/loader-vue.cjs.production.min.js",
+      "limit": "15 KB"
+    },
+    {
+      "path": "dist/loader-vue.esm.js",
+      "limit": "15 KB"
+    }
+  ],
   "gitHead": "fa53f7d79f0e26d8b061102fda0c06788da6f8a7"
 }

@@ -20,7 +20,6 @@
     "packages/loader-vue",
     "packages/watcher",
     "packages/host",
-    "packages/react-web",
     "packages/preamble"
   ]
 }

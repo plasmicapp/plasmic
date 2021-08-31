@@ -1,3 +1,10 @@
+export {
+  PlasmicCanvasContext,
+  PlasmicCanvasHost,
+  PrimitiveType,
+  PropType,
+  repeatedElement,
+} from '@plasmicapp/host';
 export { convertBundlesToComponentRenderData } from './bundles';
 export {
   ComponentRenderData,

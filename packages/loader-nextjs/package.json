@@ -1,18 +1,15 @@
 {
-  "version": "1.0.17",
+  "version": "1.0.18",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
-  "files": [
-    "dist",
-    "host"
-  ],
+  "files": ["dist"],
   "engines": {
     "node": ">=10"
   },
   "scripts": {
     "start": "tsdx watch",
-    "build": "tsdx build && rollup -c",
+    "build": "tsdx build",
     "yalcp": "yalc publish --push",
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
@@ -22,7 +19,8 @@
   },
   "peerDependencies": {
     "next": ">=10.2.3",
-    "react": ">=16.8.0"
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
   },
   "husky": {
     "hooks": {
@@ -41,11 +39,11 @@
   "size-limit": [
     {
       "path": "dist/loader-nextjs.cjs.production.min.js",
-      "limit": "10 KB"
+      "limit": "15 KB"
     },
     {
       "path": "dist/loader-nextjs.esm.js",
-      "limit": "10 KB"
+      "limit": "15 KB"
     }
   ],
   "devDependencies": {
@@ -57,8 +55,6 @@
     "@types/react-dom": "^17.0.5",
     "husky": "^6.0.0",
     "next": "^11.0.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
     "rollup": "^2.47.0",
     "rollup-plugin-dts": "^3.0.1",
     "rollup-plugin-typescript2": "^0.30.0",
@@ -69,7 +65,7 @@
   },
   "dependencies": {
     "@plasmicapp/loader-core": "1.0.9",
-    "@plasmicapp/loader-react": "1.0.17",
+    "@plasmicapp/loader-react": "1.0.18",
     "@plasmicapp/watcher": "1.0.8"
   },
   "gitHead": "fa53f7d79f0e26d8b061102fda0c06788da6f8a7"

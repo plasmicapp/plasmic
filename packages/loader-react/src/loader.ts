@@ -1,6 +1,6 @@
-import registerComponent, {
+import { registerComponent,
   ComponentMeta as InternalCodeComponentMeta,
-} from '@plasmicapp/host/registerComponent';
+} from '@plasmicapp/host';
 import {
   ComponentMeta,
   LoaderBundleCache,

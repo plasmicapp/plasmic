@@ -12,6 +12,11 @@ export {
   PlasmicComponent,
   PlasmicRootProvider,
   usePlasmicComponent,
+  PlasmicCanvasContext,
+  PlasmicCanvasHost,
+  PrimitiveType,
+  PropType,
+  repeatedElement,
 } from '@plasmicapp/loader-react';
 
 export function initPlasmicLoader(

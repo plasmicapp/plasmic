@@ -1,12 +1,22 @@
 {
   "name": "@plasmicapp/preamble",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "plasmic snippet for function components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/preamble.esm.js",
   "files": [
     "dist"
+  ],
+  "size-limit": [
+    {
+      "path": "dist/preamble.cjs.production.min.js",
+      "limit": "1 KB"
+    },
+    {
+      "path": "dist/preamble.esm.js",
+      "limit": "1 KB"
+    }
   ],
   "scripts": {
     "build": "tsdx build",
@@ -18,7 +28,9 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
+    "@size-limit/preset-small-lib": "^4.11.0",
     "@types/node": "^14.0.26",
+    "size-limit": "^4.11.0",
     "tsdx": "^0.14.1",
     "tslib": "^2.2.0",
     "typescript": "^3.9.7"

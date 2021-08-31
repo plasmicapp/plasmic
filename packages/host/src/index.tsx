@@ -2,14 +2,8 @@
 // organize-imports-ignore
 import "@plasmicapp/preamble";
 
-import * as ReactWeb from "@plasmicapp/react-web";
-import * as mobx from "mobx";
-import * as mobxReactLite from "mobx-react-lite";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import ResizeObserver from "resize-observer-polyfill";
-import * as slate from "slate";
-import * as slateReact from "slate-react";
 import { registerFetcher as unstable_registerFetcher } from "./data";
 import { ensure } from "./lang-utils";
 import registerComponent, {
@@ -18,9 +12,8 @@ import registerComponent, {
   PropType,
 } from "./registerComponent";
 import repeatedElement, { setRepeatedElementFn } from "./repeatedElement";
+import useForceUpdate from "./useForceUpdate";
 const root = require("window-or-global");
-
-mobx.configure({ isolateGlobalState: true, enforceActions: "never" });
 
 export { unstable_registerFetcher };
 export { repeatedElement };
@@ -34,22 +27,21 @@ declare global {
 
 root.__PlasmicHostVersion = "1";
 
-const plasmicRootNode: mobx.IObservableValue<React.ReactElement | null> = mobx.observable.box(
-  null,
-  { deep: false }
-);
+const rootChangeListeners: (() => void)[] = [];
+class PlasmicRootNodeWrapper {
+  constructor(private value: null | React.ReactElement) {}
+  set = (val: null | React.ReactElement) => {
+    this.value = val;
+    rootChangeListeners.forEach((f) => f());
+  }
+  get = () => this.value;
+}
+
+const plasmicRootNode = new PlasmicRootNodeWrapper(null);
 
 root.__Sub = {
   React,
   ReactDOM,
-  ReactWeb,
-  ResizeObserver,
-  mobx,
-  mobxReactLite,
-  slate,
-  slateReact,
-  localObject: Object,
-  localElement: typeof window !== "undefined" ? Element : undefined,
   setPlasmicRootNode,
   registerRenderErrorListener,
   repeatedElement,
@@ -85,7 +77,7 @@ function setPlasmicRootNode(node: React.ReactElement | null) {
  */
 export const PlasmicCanvasContext = React.createContext<boolean>(false);
 
-const _PlasmicCanvasHost = mobxReactLite.observer(function PlasmicCanvasHost() {
+function _PlasmicCanvasHost() {
   // If window.parent is null, then this is a window whose containing iframe
   // has been detached from the DOM (for the top window, window.parent === window).
   // In that case, we shouldn't do anything.  If window.parent is null, by the way,
@@ -98,6 +90,16 @@ const _PlasmicCanvasHost = mobxReactLite.observer(function PlasmicCanvasHost() {
     !document.querySelector("#plasmic-studio-tag") &&
     !isCanvas &&
     !isLive;
+  const forceUpdate = useForceUpdate();
+  React.useEffect(() => {
+    rootChangeListeners.push(forceUpdate);
+    return () => {
+      const index = rootChangeListeners.indexOf(forceUpdate);
+      if (index >= 0) {
+        rootChangeListeners.splice(index, 1);
+      }
+    };
+  });
   React.useEffect(() => {
     if (shouldRenderStudio && isFrameAttached && window.parent !== window) {
       renderStudioIntoIframe();
@@ -151,7 +153,7 @@ const _PlasmicCanvasHost = mobxReactLite.observer(function PlasmicCanvasHost() {
     );
   }
   return null;
-});
+};
 
 interface PlasmicCanvasHostProps {
   /**
@@ -235,8 +237,6 @@ class ErrorBoundary extends React.Component<
     }
   }
 }
-
-ReactWeb.setPlumeStrictMode(false);
 
 function DisableWebpackHmr() {
   if (process.env.NODE_ENV === "production") {
