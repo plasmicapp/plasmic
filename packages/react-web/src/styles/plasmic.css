@@ -29,6 +29,7 @@
   position: relative;
   overflow: hidden;
   box-sizing: border-box;
+  flex-shrink: 0;
   margin: 0;
 }
 
