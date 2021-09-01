@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/preamble",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "plasmic snippet for function components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,12 +17,10 @@
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
-  "dependencies": {},
   "devDependencies": {
     "@types/node": "^14.0.26",
     "tsdx": "^0.14.1",
     "tslib": "^2.2.0",
     "typescript": "^3.9.7"
-  },
-  "peerDependencies": {}
+  }
 }
