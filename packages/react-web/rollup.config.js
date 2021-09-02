@@ -34,7 +34,7 @@ export default [
         "./src/plume/triggered-overlay/index.tsx",
     },
     external: (id) => {
-      if (id.startsWith("regenerator-runtime")) {
+      if (id.startsWith("regenerator-runtime") || id.startsWith("tslib")) {
         return false;
       }
       return !id.startsWith(".") && !path.isAbsolute(id);
