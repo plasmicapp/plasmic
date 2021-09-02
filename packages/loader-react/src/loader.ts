@@ -343,9 +343,7 @@ export class PlasmicComponentLoader {
   ): void;
 
   /**
-   * @deprecated
-   *
-   * Please use `substituteComponent` instead for component
+   * [[deprecated]] Please use `substituteComponent` instead for component
    * substitution, or the other `registerComponent` overload to register
    * code components to be used on Plasmic Editor.
    *
