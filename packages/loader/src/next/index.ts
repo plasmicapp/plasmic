@@ -1,6 +1,6 @@
 import cp from "child_process";
 import path from "upath";
-import { watchForChanges, convertOptsToLoaderConfig } from "../shared";
+import { convertOptsToLoaderConfig, watchForChanges } from "../shared";
 import * as logger from "../shared/logger";
 import type { PluginOptions, Substitutions } from "../shared/types";
 import { spawn } from "../shared/utils";
@@ -66,19 +66,21 @@ function initPlasmicLoader(pluginOptions: PluginOptions) {
 type NextConfigExport = (phase: string) => {};
 type NextConfigExportCreator = (nextConfig: any) => NextConfigExport;
 
-const plasmic =
-  (pluginOptions: PluginOptions): NextConfigExportCreator =>
-  (nextConfig = {}) =>
-  (phase) => {
-    try {
-      if (buildPhase.includes(phase)) {
-        initPlasmicLoader(pluginOptions);
-      }
-      return nextConfig;
-    } catch (e) {
-      logger.crash(e.message, e);
-      return nextConfig;
+/**
+ * @deprecated This package is no longer supported. We recommend updating to new version of the Headless API. https://docs.plasmic.app/learn/upgrading-to-loader-v2
+ */
+const plasmic = (pluginOptions: PluginOptions): NextConfigExportCreator => (
+  nextConfig = {}
+) => (phase) => {
+  try {
+    if (buildPhase.includes(phase)) {
+      initPlasmicLoader(pluginOptions);
     }
-  };
+    return nextConfig;
+  } catch (e) {
+    logger.crash(e.message, e);
+    return nextConfig;
+  }
+};
 
 export = plasmic;

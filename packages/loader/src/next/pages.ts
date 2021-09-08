@@ -1,7 +1,7 @@
 import { promises as fs } from "fs";
 import path from "upath";
-import templates from "../templates";
 import * as logger from "../shared/logger";
+import templates from "../templates";
 
 type Page = {
   name: string;

@@ -15,6 +15,7 @@ export default function PlasmicLoaderPage() {
   const { name, projectId } = getComponentFromUrl(
     router.query.plasmicLoaderPage
   );
+  console.warn("@plasmicapp/loader package is no longer supported. We recommend updating to new version of the Headless API. https://docs.plasmic.app/learn/upgrading-to-loader-v2");
   return <PlasmicLoader component={name} projectId={projectId} />;
 }
 

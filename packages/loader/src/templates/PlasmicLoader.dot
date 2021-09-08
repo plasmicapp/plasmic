@@ -135,8 +135,12 @@ export function Providers({projectId, props = {}, children}) {
   return renderWithProviders(children, projectId, props);
 }
 
+/**
+ * @deprecated This package is no longer supported. We recommend updating to new version of the Headless API. https://docs.plasmic.app/learn/upgrading-to-loader-v2
+ */
 export default function PlasmicLoader({ projectId, component, componentProps = {}, providerProps = {} }) {
   const Component = getComponent(projectId, component);
+  console.warn("@plasmicapp/loader package is no longer supported. We recommend updating to new version of the Headless API. https://docs.plasmic.app/learn/upgrading-to-loader-v2");
   return renderWithProviders(React.createElement(Component, componentProps), projectId, providerProps);
 };
 
