@@ -1,3 +1,9 @@
+import {
+  CodeComponentElement,
+  CommonStyles as ComponentStyles,
+  PlasmicElement,
+} from "./element-types";
+
 const root = require("window-or-global");
 
 type StringType =
@@ -45,6 +51,7 @@ type SlotType =
        * The unique names of all code components that can be placed in the slot
        */
       allowedComponents?: string[];
+      __unstable_defaultValue?: PlasmicElement;
     };
 
 export type PrimitiveType = Extract<
@@ -81,6 +88,18 @@ type RestrictPropType<T> = T extends string
   : T extends number
   ? SupportControlled<NumberType | JSONLikeType>
   : PropType;
+
+interface ComponentTemplate<P>
+  extends Omit<CodeComponentElement<P>, "type" | "name"> {
+  /**
+   * A preview picture for the template.
+   */
+  previewImg?: string;
+}
+
+export interface ComponentTemplates<P> {
+  [name: string]: ComponentTemplate<P>;
+}
 
 export interface ComponentMeta<P> {
   /**
@@ -131,6 +150,14 @@ export interface ComponentMeta<P> {
    * Optional: If not provided, the usual `ref` is used.
    */
   refProp?: string;
+  /**
+   * Default styles to start with when instantiating the component in Plasmic.
+   */
+  __unstable_defaultStyles?: ComponentStyles;
+  /**
+   * Component templates to start with on Plasmic.
+   */
+  __unstable_templates?: ComponentTemplates<P>;
 }
 
 export interface ComponentRegistration {

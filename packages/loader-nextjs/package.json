@@ -1,9 +1,11 @@
 {
-  "version": "1.0.18",
+  "version": "1.0.19",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "engines": {
     "node": ">=10"
   },
@@ -65,7 +67,7 @@
   },
   "dependencies": {
     "@plasmicapp/loader-core": "1.0.10",
-    "@plasmicapp/loader-react": "1.0.18",
+    "@plasmicapp/loader-react": "1.0.19",
     "@plasmicapp/watcher": "1.0.8"
   },
   "gitHead": "fa53f7d79f0e26d8b061102fda0c06788da6f8a7"

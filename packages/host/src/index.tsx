@@ -5,9 +5,12 @@ import "@plasmicapp/preamble";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { registerFetcher as unstable_registerFetcher } from "./data";
+import { PlasmicElement } from "./element-types";
 import { ensure } from "./lang-utils";
 import registerComponent, {
   ComponentMeta,
+  ComponentRegistration,
+  ComponentTemplates,
   PrimitiveType,
   PropType,
 } from "./registerComponent";
@@ -17,7 +20,15 @@ const root = require("window-or-global");
 
 export { unstable_registerFetcher };
 export { repeatedElement };
-export { registerComponent, ComponentMeta, PrimitiveType, PropType };
+export {
+  registerComponent,
+  ComponentMeta,
+  ComponentRegistration,
+  ComponentTemplates,
+  PrimitiveType,
+  PropType,
+};
+export { PlasmicElement };
 
 declare global {
   interface Window {
@@ -33,7 +44,7 @@ class PlasmicRootNodeWrapper {
   set = (val: null | React.ReactElement) => {
     this.value = val;
     rootChangeListeners.forEach((f) => f());
-  }
+  };
   get = () => this.value;
 }
 
@@ -153,7 +164,7 @@ function _PlasmicCanvasHost() {
     );
   }
   return null;
-};
+}
 
 interface PlasmicCanvasHostProps {
   /**
