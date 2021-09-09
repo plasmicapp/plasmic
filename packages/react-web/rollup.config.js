@@ -32,6 +32,7 @@ export default [
       "plume/switch/index": "./src/plume/switch/index.tsx",
       "plume/triggered-overlay/index":
         "./src/plume/triggered-overlay/index.tsx",
+      "render/PlasmicImg/index": "./src/render/PlasmicImg/index.tsx",
     },
     external: (id) => {
       if (id.startsWith("regenerator-runtime") || id.startsWith("tslib")) {

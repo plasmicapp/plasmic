@@ -4,7 +4,7 @@
 
 import classNames from "classnames";
 import React from "react";
-import { omit, pick } from "../common";
+import { omit, pick } from "../../common";
 
 export type ImageLoader = (opts: {
   src: string;
