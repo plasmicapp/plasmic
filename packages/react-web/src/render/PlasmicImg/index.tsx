@@ -120,21 +120,19 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
       ref={containerRef}
       style={style && omit(style, "width", "height")}
     >
-      <div className="__wab_img-spacer">
-        <img
-          alt=""
-          aria-hidden={true}
-          className="__wab_img-spacer-svg"
-          src={`data:image/svg+xml;base64,${spacerSvgBase64}`}
-          style={{
-            width: displayWidth,
-            height: displayHeight,
-            ...(style
-              ? pick(style, "objectFit", "objectPosition", "width", "height")
-              : {}),
-          }}
-        />
-      </div>
+      <img
+        alt=""
+        aria-hidden
+        className="__wab_img-spacer-svg"
+        src={`data:image/svg+xml;base64,${spacerSvgBase64}`}
+        style={{
+          width: displayWidth,
+          height: displayHeight,
+          ...(style
+            ? pick(style, "objectFit", "objectPosition", "width", "height")
+            : {}),
+        }}
+      />
       {makePicture({
         imageLoader,
         widthDescs,
