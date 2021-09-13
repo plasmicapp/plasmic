@@ -4,7 +4,7 @@
 
 import classNames from "classnames";
 import React from "react";
-import { omit, pick } from "../../common";
+import { pick } from "../../common";
 
 export type ImageLoader = (opts: {
   src: string;
@@ -118,7 +118,11 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
     <div
       className={classNames(className, "__wab_img-wrapper")}
       ref={containerRef}
-      style={style && omit(style, "width", "height")}
+      style={{
+        ...style,
+        width: isPercentage(displayWidth) ? displayWidth : undefined,
+        height: isPercentage(displayHeight) ? displayHeight : undefined,
+      }}
     >
       <img
         alt=""
@@ -126,11 +130,9 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
         className="__wab_img-spacer-svg"
         src={`data:image/svg+xml;base64,${spacerSvgBase64}`}
         style={{
-          width: displayWidth,
-          height: displayHeight,
-          ...(style
-            ? pick(style, "objectFit", "objectPosition", "width", "height")
-            : {}),
+          width: isPercentage(displayWidth) ? "100%" : displayWidth,
+          height: isPercentage(displayHeight) ? "100%" : displayHeight,
+          ...(style ? pick(style, "objectFit", "objectPosition") : {}),
         }}
       />
       {makePicture({
@@ -284,6 +286,13 @@ function getWidths(
     })),
     sizes: "100vw",
   };
+}
+
+function isPercentage(width: number | string | undefined) {
+  if (typeof width !== "string") {
+    return false;
+  }
+  return parseNumeric(width)?.units === "%";
 }
 
 function getPixelWidth(width: number | string | undefined) {
