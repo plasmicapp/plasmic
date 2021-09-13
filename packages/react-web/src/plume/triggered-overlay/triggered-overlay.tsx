@@ -180,7 +180,15 @@ export function useTriggeredOverlay<
       props: mergeProps(overlayProps, getStyleProps(props), {
         ref: onOverlayRef,
       }),
-      wrap: (root) => ReactDOM.createPortal(root, document.body),
+      wrap: (root) => {
+        if (typeof document !== "undefined") {
+          return ReactDOM.createPortal(root, document.body);
+        } else {
+          // Possibly being invoked on the server during SSR; no need to
+          // bother with a portal in that case.
+          return root;
+        }
+      },
     },
   };
 
