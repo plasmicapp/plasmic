@@ -22,6 +22,7 @@
 }
 
 .__wab_img-wrapper {
+  position: relative;
   display: inherit;
   flex-direction: inherit;
   width: auto;
