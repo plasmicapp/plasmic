@@ -22,7 +22,7 @@
 }
 
 .__wab_img-wrapper {
-  display: inherit !important;
+  display: inherit;
   flex-direction: inherit;
   width: auto;
   height: auto;
@@ -32,11 +32,11 @@
 }
 
 .__wab_slot > .__wab_img-wrapper {
-  display: block !important;
+  display: block;
 }
 
 .__wab_passthrough > .__wab_img-wrapper {
-  display: block !important;
+  display: block;
 }
 
 .__wab_img-spacer-svg {
