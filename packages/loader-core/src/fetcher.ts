@@ -37,7 +37,7 @@ export class PlasmicModulesFetcher {
     if (this.curFetch) {
       return await this.curFetch;
     }
-    console.debug('PlasmicLoader: doing a fresh fetch...');
+    console.debug('Plasmic: doing a fresh fetch...');
     this.curFetch = this.doFetch();
     return await this.curFetch;
   }
@@ -55,6 +55,11 @@ export class PlasmicModulesFetcher {
     if (this.opts.cache) {
       await this.opts.cache.set(data);
     }
+    console.debug(
+      `Plasmic: fetched designs for ${data.projects
+        .map((p) => `"${p.name}" (${p.id}@${p.version})`)
+        .join(', ')}`
+    );
     return data;
   }
 }
