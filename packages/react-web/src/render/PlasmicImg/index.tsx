@@ -10,7 +10,7 @@ export interface ImageLoader {
   supportsUrl: (url: string) => boolean;
   transformUrl: (opts: {
     src: string;
-    width: number;
+    width?: number;
     quality?: number;
     format?: "webp";
   }) => string;
@@ -232,12 +232,19 @@ function makePicture(opts: {
 }
 
 interface WidthDesc {
-  width: number;
+  width?: number;
   desc: string;
 }
 
-function getClosestPresetSize(width: number) {
-  return ALL_SIZES.find((w) => w >= width) ?? ALL_SIZES[ALL_SIZES.length - 1];
+function getClosestPresetSize(width: number, fullWidth: number) {
+  const nextBigger =
+    ALL_SIZES.find((w) => w >= width) ?? ALL_SIZES[ALL_SIZES.length - 1];
+  if (nextBigger >= fullWidth / 2) {
+    // If the requested width is larger than half the fullWidth,
+    // we just use the original width instead
+    return undefined;
+  }
+  return nextBigger;
 }
 
 /**
@@ -245,7 +252,7 @@ function getClosestPresetSize(width: number) {
  */
 function getWidths(
   width: number | string | undefined,
-  fullWidth: number | undefined
+  fullWidth: number
 ): { sizes: string | undefined; widthDescs: WidthDesc[] } {
   const pixelWidth = getPixelWidth(width);
   if (pixelWidth != null) {
@@ -253,11 +260,11 @@ function getWidths(
     return {
       widthDescs: [
         {
-          width: getClosestPresetSize(pixelWidth),
+          width: getClosestPresetSize(pixelWidth, fullWidth),
           desc: "1x",
         },
         {
-          width: getClosestPresetSize(pixelWidth * 2),
+          width: getClosestPresetSize(pixelWidth * 2, fullWidth),
           desc: "2x",
         },
       ],
@@ -275,7 +282,7 @@ function getWidths(
     return {
       widthDescs: [
         {
-          width: getClosestPresetSize(fullWidth),
+          width: getClosestPresetSize(fullWidth, fullWidth),
           desc: "1x",
         },
       ],
@@ -283,8 +290,18 @@ function getWidths(
     };
   }
   return {
-    widthDescs: usefulSizes.map((size) => ({
-      width: size,
+    widthDescs: usefulSizes.map((size, i) => ({
+      width:
+        // If this is the last (buggest) useful width, but it is
+        // still within the bounds set by DEVICE_SIZES, then just
+        // use the original, unresized image.  This means if we match
+        // the largest size, we use unresized and best quality image.
+        // We only do this, though, if fullWidth is "reasonable" --
+        // smaller than the largest size we would consider.
+        i === usefulSizes.length - 1 &&
+        fullWidth < DEVICE_SIZES[DEVICE_SIZES.length - 1]
+          ? undefined
+          : size,
       desc: `${size}w`,
     })),
     sizes: "100vw",
@@ -343,8 +360,11 @@ const PLASMIC_IMAGE_LOADER: ImageLoader = {
     return src.startsWith("https://img.plasmic.app");
   },
   transformUrl: (opts) => {
-    return `${opts.src}?w=${opts.width}&q=${opts.quality ?? 75}${
-      opts.format ? `&f=${opts.format}` : ""
-    }`;
+    const params = [
+      opts.width ? `w=${opts.width}` : undefined,
+      `q=${opts.quality ?? 75}`,
+      opts.format ? `f=${opts.format}` : undefined,
+    ].filter((x) => !!x);
+    return `${opts.src}?${params.join("&")}`;
   },
 };
