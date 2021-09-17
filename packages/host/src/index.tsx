@@ -102,7 +102,7 @@ function _PlasmicCanvasHost() {
     !isCanvas &&
     !isLive;
   const forceUpdate = useForceUpdate();
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     rootChangeListeners.push(forceUpdate);
     return () => {
       const index = rootChangeListeners.indexOf(forceUpdate);
@@ -110,7 +110,7 @@ function _PlasmicCanvasHost() {
         rootChangeListeners.splice(index, 1);
       }
     };
-  });
+  }, [forceUpdate]);
   React.useEffect(() => {
     if (shouldRenderStudio && isFrameAttached && window.parent !== window) {
       renderStudioIntoIframe();
