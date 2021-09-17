@@ -237,13 +237,25 @@ interface WidthDesc {
 }
 
 function getClosestPresetSize(width: number, fullWidth: number) {
-  const nextBigger =
-    ALL_SIZES.find((w) => w >= width) ?? ALL_SIZES[ALL_SIZES.length - 1];
-  if (nextBigger >= fullWidth / 2) {
-    // If the requested width is larger than half the fullWidth,
-    // we just use the original width instead
+  const nextBiggerIndex =
+    ALL_SIZES.findIndex((w) => w >= width) ?? ALL_SIZES.length - 1;
+  const nextBigger = ALL_SIZES[nextBiggerIndex];
+  if (nextBigger >= fullWidth) {
+    // If the requested width is larger than the fullWidth,
+    // we just use the original width instead. It's impossible
+    // to make an image bigger than fullWidth!
+    return undefined;
+  } else if (
+    nextBiggerIndex + 1 < ALL_SIZES.length &&
+    fullWidth <= ALL_SIZES[nextBiggerIndex + 1]
+  ) {
+    // If the fullWidth is just between nextBigger and the one after that,
+    // then also might as well just use the original size (so, width is 30,
+    // nextBigger is 32, then we just use the original as long as fullWidth is
+    // less than 48)
     return undefined;
   }
+
   return nextBigger;
 }
 
