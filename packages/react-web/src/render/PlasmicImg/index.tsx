@@ -6,12 +6,15 @@ import classNames from "classnames";
 import React from "react";
 import { pick } from "../../common";
 
-export type ImageLoader = (opts: {
-  src: string;
-  width: number;
-  quality?: number;
-  format?: "webp";
-}) => string;
+export interface ImageLoader {
+  supportsUrl: (url: string) => boolean;
+  transformUrl: (opts: {
+    src: string;
+    width: number;
+    quality?: number;
+    format?: "webp";
+  }) => string;
+}
 
 type ImgTagProps = Omit<
   React.ComponentProps<"img">,
@@ -177,13 +180,13 @@ function makePicture(opts: {
   } = opts;
   return (
     <picture className="__wab_picture">
-      {imageLoader && (
+      {imageLoader && imageLoader.supportsUrl(src) && (
         <source
           type="image/webp"
           srcSet={widthDescs
             .map(
               (wd) =>
-                `${imageLoader({
+                `${imageLoader.transformUrl({
                   src,
                   quality,
                   width: wd.width,
@@ -199,8 +202,8 @@ function makePicture(opts: {
         className={className}
         decoding="async"
         src={
-          imageLoader
-            ? imageLoader({
+          imageLoader && imageLoader.supportsUrl(src)
+            ? imageLoader.transformUrl({
                 src,
                 quality,
                 width: widthDescs[widthDescs.length - 1].width,
@@ -208,11 +211,11 @@ function makePicture(opts: {
             : src
         }
         srcSet={
-          imageLoader
+          imageLoader && imageLoader.supportsUrl(src)
             ? widthDescs
                 .map(
                   (wd) =>
-                    `${imageLoader({
+                    `${imageLoader.transformUrl({
                       src,
                       quality,
                       width: wd.width,
@@ -335,8 +338,13 @@ function getImageLoader(loader: "plasmic" | ImageLoader | undefined) {
   }
 }
 
-const PLASMIC_IMAGE_LOADER: ImageLoader = (opts) => {
-  return `${opts.src}?w=${opts.width}&q=${opts.quality ?? 75}${
-    opts.format ? `&f=${opts.format}` : ""
-  }`;
+const PLASMIC_IMAGE_LOADER: ImageLoader = {
+  supportsUrl: (src) => {
+    return src.startsWith("https://img.plasmic.app");
+  },
+  transformUrl: (opts) => {
+    return `${opts.src}?w=${opts.width}&q=${opts.quality ?? 75}${
+      opts.format ? `&f=${opts.format}` : ""
+    }`;
+  },
 };
