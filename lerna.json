@@ -4,6 +4,7 @@
     "packages/loader-gatsby",
     "packages/loader-nextjs",
     "packages/loader-react",
+    "packages/loader-svelte",
     "packages/loader-vue",
     "packages/watcher",
     "packages/host",
