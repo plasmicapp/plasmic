@@ -11,8 +11,8 @@ export class FileCache {
   async get() {
     const fs = serverRequireFs();
     try {
-      await fs.mkdir(path.dirname(this.filePath), { recursive: true });
-      const data = (await fs.readFile(this.filePath)).toString();
+      await fs.promises.mkdir(path.dirname(this.filePath), { recursive: true });
+      const data = (await fs.promises.readFile(this.filePath)).toString();
       return JSON.parse(data);
     } catch {
       return undefined;
@@ -22,16 +22,16 @@ export class FileCache {
   async set(data: LoaderBundleOutput) {
     const fs = serverRequireFs();
     try {
-      await fs.writeFile(this.filePath, JSON.stringify(data));
+      await fs.promises.writeFile(this.filePath, JSON.stringify(data));
     } catch (err) {
       console.warn(`Error writing to Plasmic cache: ${err}`);
     }
   }
 
-  async clear() {
+  clear() {
     const fs = serverRequireFs();
     try {
-      await fs.unlink(this.filePath);
+      fs.unlinkSync(this.filePath);
     } catch (err) {}
   }
 }

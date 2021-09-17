@@ -1,4 +1,4 @@
-import type { promises as FS } from 'fs';
+import type FS from 'fs';
 
 let secretRequire: NodeRequire | undefined;
 try {
@@ -18,5 +18,5 @@ export default function serverRequire(module: string) {
 }
 
 export function serverRequireFs() {
-  return serverRequire('fs').promises as typeof FS;
+  return serverRequire('fs') as typeof FS;
 }

@@ -9,14 +9,14 @@ import serverRequire from './server-require';
 export {
   ComponentRenderData,
   InitOptions,
-  PlasmicComponent,
-  PlasmicRootProvider,
-  usePlasmicComponent,
   PlasmicCanvasContext,
   PlasmicCanvasHost,
+  PlasmicComponent,
+  PlasmicRootProvider,
   PrimitiveType,
   PropType,
   repeatedElement,
+  usePlasmicComponent,
 } from '@plasmicapp/loader-react';
 
 export function initPlasmicLoader(
@@ -36,37 +36,42 @@ export function initPlasmicLoader(
     'next/link': NextLink,
   });
 
-  if (cache && process.env.NODE_ENV !== 'production') {
-    console.log(`Subscribing to Plasmic changes...`);
+  if (cache) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`Subscribing to Plasmic changes...`);
 
-    // Import using serverRequire, so webpack doesn't bundle us into client bundle
-    const PlasmicRemoteChangeWatcher = serverRequire('@plasmicapp/watcher')
-      .PlasmicRemoteChangeWatcher as typeof Watcher;
-    const watcher = new PlasmicRemoteChangeWatcher({
-      projects: opts.projects,
-      host: opts.host,
-    });
+      // Import using serverRequire, so webpack doesn't bundle us into client bundle
+      const PlasmicRemoteChangeWatcher = serverRequire('@plasmicapp/watcher')
+        .PlasmicRemoteChangeWatcher as typeof Watcher;
+      const watcher = new PlasmicRemoteChangeWatcher({
+        projects: opts.projects,
+        host: opts.host,
+      });
 
-    const clearCache = async (projectId: string) => {
-      console.log(
-        `Detected update to ${projectId}; clearing cache: ${new Date().toISOString()}`
-      );
-      await cache.clear();
+      const clearCache = (projectId: string) => {
+        console.log(
+          `Detected update to ${projectId}; clearing cache: ${new Date().toISOString()}`
+        );
+        cache.clear();
+        loader.clearCache();
+      };
+
+      watcher.subscribe({
+        onUpdate: (projectId) => {
+          if (opts.preview) {
+            clearCache(projectId);
+          }
+        },
+        onPublish: (projectId) => {
+          if (!opts.preview) {
+            clearCache(projectId);
+          }
+        },
+      });
+    } else {
+      cache.clear();
       loader.clearCache();
-    };
-
-    watcher.subscribe({
-      onUpdate: (projectId) => {
-        if (opts.preview) {
-          clearCache(projectId);
-        }
-      },
-      onPublish: (projectId) => {
-        if (!opts.preview) {
-          clearCache(projectId);
-        }
-      },
-    });
+    }
   }
   return loader;
 }
