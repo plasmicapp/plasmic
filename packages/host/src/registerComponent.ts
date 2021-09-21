@@ -51,7 +51,7 @@ type SlotType =
        * The unique names of all code components that can be placed in the slot
        */
       allowedComponents?: string[];
-      __unstable_defaultValue?: PlasmicElement;
+      __unstable_defaultValue?: PlasmicElement | PlasmicElement[];
     };
 
 export type PrimitiveType = Extract<

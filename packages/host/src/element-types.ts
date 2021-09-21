@@ -175,7 +175,7 @@ type InputAttrKeys =
 
 type ButtonAttrKeys = "disabled" | CommonAttrKeys;
 
-type Attrs<Keys extends string> = Record<Keys, string>;
+type Attrs<Keys extends string> = Partial<Record<Keys, string>>;
 
 //
 // Elements
@@ -188,19 +188,21 @@ export interface PictureElement {
   attrs?: Attrs<PictureAttrKeys>;
 }
 
+/*
 export interface SvgElement {
   type: "icon";
   src: string;
   styles?: CommonStyles;
   attrs?: Attrs<CommonAttrKeys>;
 }
+*/
 
-export type ImageElement = PictureElement | SvgElement;
+export type ImageElement = PictureElement;
 
 interface LinkTextElement {
   type: "text";
   tag: "a";
-  value: TextElement | TextElement[];
+  value: string;
   styles?: CommonStyles & TypographyStyles;
   attrs?: Attrs<LinkAttrKeys>;
 }
@@ -208,7 +210,7 @@ interface LinkTextElement {
 interface ButtonTextElement {
   type: "text";
   tag: "button";
-  value: TextElement | TextElement[];
+  value: string;
   styles?: CommonStyles & TypographyStyles;
   attrs?: Attrs<ButtonAttrKeys>;
 }
@@ -219,7 +221,7 @@ interface GenericTextElement {
    * Default: "div"
    */
   tag?: Exclude<ContainerTags, "a" | "button">;
-  value: TextElement | TextElement[];
+  value: string;
   styles?: CommonStyles & TypographyStyles;
   attrs?: Attrs<CommonAttrKeys>;
 }
@@ -265,7 +267,7 @@ export type ContainerElement =
 // Equivalent to ButtonTextElement
 export interface ButtonElement {
   type: "button";
-  value: TextElement;
+  value: string;
   styles?: CommonStyles & TypographyStyles;
   attrs?: Attrs<ButtonAttrKeys>;
 }
@@ -305,7 +307,8 @@ export interface CodeComponentElement<P> {
       | null
       | undefined
       | JsonElement
-      | PlasmicElement;
+      | PlasmicElement
+      | PlasmicElement[];
   } & {
     [prop: string]:
       | number
@@ -314,7 +317,8 @@ export interface CodeComponentElement<P> {
       | null
       | undefined
       | JsonElement
-      | PlasmicElement;
+      | PlasmicElement
+      | PlasmicElement[];
   };
 }
 
