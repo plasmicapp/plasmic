@@ -32,7 +32,7 @@ export interface PlasmicImgProps extends ImgTagProps {
    * Either an object with the src string, and its full width and height,
    * or just a src string with unknown intrinsic dimensions.
    */
-  src: string | { src: string; fullHeight: number; fullWidth: number };
+  src?: string | { src: string; fullHeight: number; fullWidth: number };
 
   /**
    * className applied to the wrapper element if one is used.
@@ -90,10 +90,10 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
   } = props;
 
   const { fullWidth, fullHeight } =
-    typeof src === "string"
+    typeof src === "string" || !src
       ? { fullWidth: undefined, fullHeight: undefined }
       : src;
-  const srcStr = typeof src === "string" ? src : src.src;
+  const srcStr = src ? (typeof src === "string" ? src : src.src) : "";
 
   // Assume external image if either dimension is null and use usual <img>
   // (or if the image is an SVG)
