@@ -14,6 +14,9 @@ export const query = graphql\`
   }
 \`;
 
+const removeTrailingSlash = path =>
+  path === "/" ? "/" : path.replace(/\\/+$/, "");
+
 const PlasmicGatsbyPage = ({ data, location }) => {
   const {
     plasmicComponents,
@@ -24,7 +27,7 @@ const PlasmicGatsbyPage = ({ data, location }) => {
       loader={initPlasmicLoader(plasmicOptions)}
       prefetchedData={plasmicComponents}
     >
-      <PlasmicComponent component={location.pathname} />
+      <PlasmicComponent component={removeTrailingSlash(location.pathname)} />
     </PlasmicRootProvider>
   );
 };
