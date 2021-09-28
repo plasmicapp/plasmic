@@ -238,7 +238,11 @@ function makePicture(opts: {
             : undefined
         }
         sizes={imageLoader ? sizes : undefined}
-        style={style ? pick(style, "objectFit", "objectPosition") : undefined}
+        style={{
+          ...(style ? pick(style, "objectFit", "objectPosition") : {}),
+          width: 0,
+          height: 0,
+        }}
       />
     </picture>
   );
