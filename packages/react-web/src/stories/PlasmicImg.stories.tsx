@@ -21,10 +21,10 @@ export default {
   title: "PlasmicImg",
   component: PlasmicImg,
   argTypes: {
-    width: {
+    displayWidth: {
       control: "text",
     },
-    height: {
+    displayHeight: {
       control: "text",
     },
     containerWidth: {
@@ -37,8 +37,12 @@ export default {
     },
   },
   args: {
-    src: "https://images.theconversation.com/files/223729/original/file-20180619-126566-1jxjod2.jpg",
-    fullWidth: 3840,
-    fullHeight: 2160,
+    src: {
+      src:
+        "https://img.plasmic.app/img-optimizer/v1/img/07a7153536a89fef14e0075c7632d6b3.jpg",
+      fullWidth: 3840,
+      fullHeight: 2160,
+    },
+    loader: "plasmic",
   },
 } as ComponentMeta<typeof PlasmicImg>;

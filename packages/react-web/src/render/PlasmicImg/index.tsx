@@ -77,7 +77,7 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
   props: PlasmicImgProps,
   ref: React.Ref<HTMLImageElement>
 ) {
-  const {
+  let {
     src,
     className,
     displayWidth,
@@ -107,6 +107,19 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
         ref={ref}
       />
     );
+  }
+
+  if (
+    fullWidth &&
+    fullHeight &&
+    (!displayWidth || displayWidth === "auto") &&
+    !!getPixelLength(displayHeight)
+  ) {
+    // If there's a pixel length specified for displayHeight but not displayWidth,
+    // then we can derive the pixel length for displayWidth.  Having an explicit
+    // displayWidth makes this a fixed-size image, which makes it possible for us to
+    // generate better markup!
+    displayWidth = (getPixelLength(displayHeight)! * fullWidth) / fullHeight;
   }
 
   const { sizes, widthDescs } = getWidths(displayWidth, fullWidth);
@@ -266,7 +279,7 @@ function getWidths(
   width: number | string | undefined,
   fullWidth: number
 ): { sizes: string | undefined; widthDescs: WidthDesc[] } {
-  const pixelWidth = getPixelWidth(width);
+  const pixelWidth = getPixelLength(width);
   if (pixelWidth != null) {
     // If there's an exact width, then we just need to display it at 1x and 2x density
     return {
@@ -302,18 +315,18 @@ function getWidths(
     };
   }
   return {
-    widthDescs: usefulSizes.map((size, i) => ({
-      width:
-        // If this is the last (buggest) useful width, but it is
-        // still within the bounds set by DEVICE_SIZES, then just
-        // use the original, unresized image.  This means if we match
-        // the largest size, we use unresized and best quality image.
-        // We only do this, though, if fullWidth is "reasonable" --
-        // smaller than the largest size we would consider.
-        i === usefulSizes.length - 1 &&
-        fullWidth < DEVICE_SIZES[DEVICE_SIZES.length - 1]
-          ? undefined
-          : size,
+    widthDescs: usefulSizes.map((size) => ({
+      width: getClosestPresetSize(size, fullWidth),
+      // If this is the last (buggest) useful width, but it is
+      // still within the bounds set by DEVICE_SIZES, then just
+      // use the original, unresized image.  This means if we match
+      // the largest size, we use unresized and best quality image.
+      // We only do this, though, if fullWidth is "reasonable" --
+      // smaller than the largest size we would consider.
+      // i === usefulSizes.length - 1 &&
+      // fullWidth < DEVICE_SIZES[DEVICE_SIZES.length - 1]
+      //   ? undefined
+      //   : size,
       desc: `${size}w`,
     })),
     sizes: "100vw",
@@ -327,16 +340,16 @@ function isPercentage(width: number | string | undefined) {
   return parseNumeric(width)?.units === "%";
 }
 
-function getPixelWidth(width: number | string | undefined) {
-  if (width == null || width == "") {
+function getPixelLength(length: number | string | undefined) {
+  if (length == null || length == "") {
     return undefined;
   }
 
-  if (typeof width === "number") {
-    return width;
+  if (typeof length === "number") {
+    return length;
   }
 
-  const parsed = parseNumeric(width);
+  const parsed = parseNumeric(length);
   if (parsed && (!parsed.units || parsed.units === "px")) {
     return parsed.num;
   }
