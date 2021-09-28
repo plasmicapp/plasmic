@@ -1,6 +1,6 @@
 import type { Properties } from "csstype";
 
-type CSSProperties = Properties<string | number>;
+export type CSSProperties = Properties<string | number>;
 
 //
 // Tags
@@ -38,103 +38,6 @@ type ContainerTags =
   | "section"
   | "span"
   | "ul";
-
-//
-// Props
-//
-
-type TypographyProps =
-  | "fontFamily"
-  | "fontSize"
-  | "fontWeight"
-  | "fontStyle"
-  | "textAlign"
-  | "textTransform"
-  | "lineHeight"
-  | "letterSpacing"
-  | "whiteSpace"
-  | "userSelect";
-
-type LayoutProps =
-  | "overflow"
-  | "flexDirection"
-  | "justifyContent"
-  | "alignItems"
-  | "alignContent"
-  | "flexWrap"
-  | "flex-column-gap"
-  | "flex-row-gap";
-
-type SizeProps =
-  | "width"
-  | "height"
-  | "minWidth"
-  | "minHeight"
-  | "maxWidth"
-  | "maxHeight";
-
-type PositioningProps =
-  | "position"
-  | "top"
-  | "left"
-  | "bottom"
-  | "right"
-  | "zIndex"
-  | "alignSelf"
-  | "justifySelf"
-  | "verticalAlign"
-  | "order"
-  | "margin"
-  | "marginTop"
-  | "marginBottom"
-  | "marginLeft"
-  | "marginRight"
-  | "paddingLeft"
-  | "paddingRight"
-  | "paddingTop"
-  | "paddingBottom";
-
-type EffectProps = "cursor" | "pointerEvents" | "mixBlendMode" | "isolation";
-
-type BorderProps =
-  | "borderTopColor"
-  | "borderRightColor"
-  | "borderBottomColor"
-  | "borderLeftColor"
-  | "borderTopStyle"
-  | "borderRightStyle"
-  | "borderBottomStyle"
-  | "borderLeftStyle"
-  | "borderTopWidth"
-  | "borderRightWidth"
-  | "borderBottomWidth"
-  | "borderLeftWidth"
-  | "borderTopLeftRadius"
-  | "borderTopRightRadius"
-  | "borderBottomRightRadius"
-  | "borderBottomLeftRadius";
-
-// TODO: Maybe allow Plasmic unsupported props as well?
-// TODO: Still missing styles that can stack several layers (+ shorthanded):
-//   Background, Shadow, Filter, Backdrop Filter, Transitions, Transforms
-type CommonProps =
-  | SizeProps
-  | PositioningProps
-  | EffectProps
-  | BorderProps
-  | "opacity";
-
-//
-// Style objects
-//
-
-export type TypographyStyles = Pick<CSSProperties, TypographyProps>;
-export type ContainerStyles = {
-  [P in LayoutProps]?: P extends keyof CSSProperties
-    ? CSSProperties[P]
-    : string;
-};
-export type CommonStyles = Pick<CSSProperties, CommonProps>;
 
 //
 // Attrs
@@ -184,7 +87,7 @@ type Attrs<Keys extends string> = Partial<Record<Keys, string>>;
 export interface PictureElement {
   type: "img";
   src: string;
-  styles?: CommonStyles;
+  styles?: CSSProperties;
   attrs?: Attrs<PictureAttrKeys>;
 }
 
@@ -203,7 +106,7 @@ interface LinkTextElement {
   type: "text";
   tag: "a";
   value: string;
-  styles?: CommonStyles & TypographyStyles;
+  styles?: CSSProperties;
   attrs?: Attrs<LinkAttrKeys>;
 }
 
@@ -211,7 +114,7 @@ interface ButtonTextElement {
   type: "text";
   tag: "button";
   value: string;
-  styles?: CommonStyles & TypographyStyles;
+  styles?: CSSProperties;
   attrs?: Attrs<ButtonAttrKeys>;
 }
 
@@ -222,7 +125,7 @@ interface GenericTextElement {
    */
   tag?: Exclude<ContainerTags, "a" | "button">;
   value: string;
-  styles?: CommonStyles & TypographyStyles;
+  styles?: CSSProperties;
   attrs?: Attrs<CommonAttrKeys>;
 }
 
@@ -236,7 +139,7 @@ interface LinkContainerElement {
   type: "box" | "vbox" | "hbox";
   tag: "a";
   children?: PlasmicElement | PlasmicElement[];
-  styles?: CommonStyles & ContainerStyles;
+  styles?: CSSProperties;
   attrs?: Attrs<LinkAttrKeys>;
 }
 
@@ -244,7 +147,7 @@ interface ButtonContainerElement {
   type: "box" | "vbox" | "hbox";
   tag: "button";
   children?: PlasmicElement | PlasmicElement[];
-  styles?: CommonStyles & ContainerStyles;
+  styles?: CSSProperties;
   attrs?: Attrs<ButtonAttrKeys>;
 }
 
@@ -255,7 +158,7 @@ interface GenericContainerElement {
    */
   tag?: Exclude<ContainerTags, "a" | "button">;
   children?: PlasmicElement | PlasmicElement[];
-  styles?: CommonStyles & ContainerStyles;
+  styles?: CSSProperties;
   attrs?: Attrs<CommonAttrKeys>;
 }
 
@@ -268,19 +171,19 @@ export type ContainerElement =
 export interface ButtonElement {
   type: "button";
   value: string;
-  styles?: CommonStyles & TypographyStyles;
+  styles?: CSSProperties;
   attrs?: Attrs<ButtonAttrKeys>;
 }
 
 interface InputElement {
   type: "input" | "password";
-  styles?: CommonStyles & TypographyStyles;
+  styles?: CSSProperties;
   attrs?: Attrs<InputAttrKeys>;
 }
 
 interface TextAreaElement {
   type: "textarea";
-  styles?: CommonStyles & TypographyStyles;
+  styles?: CSSProperties;
   attrs?: Attrs<TextAreaAttrKeys>;
 }
 
@@ -297,7 +200,7 @@ export interface CodeComponentElement<P> {
    * The registered component name
    */
   name: string;
-  styles?: CommonStyles;
+  styles?: CSSProperties;
   props?: {
     // For auto-completion
     [prop in keyof Partial<P>]:

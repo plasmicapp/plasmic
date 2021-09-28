@@ -1,6 +1,6 @@
 import {
   CodeComponentElement,
-  CommonStyles as ComponentStyles,
+  CSSProperties,
   PlasmicElement,
 } from "./element-types";
 
@@ -153,7 +153,7 @@ export interface ComponentMeta<P> {
   /**
    * Default styles to start with when instantiating the component in Plasmic.
    */
-  __unstable_defaultStyles?: ComponentStyles;
+  __unstable_defaultStyles?: CSSProperties;
   /**
    * Component templates to start with on Plasmic.
    */
