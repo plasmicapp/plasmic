@@ -12,8 +12,9 @@ interface PlasmicRootContextValue {
   loader: InternalPlasmicComponentLoader;
 }
 
-const PlasmicRootContext =
-  React.createContext<PlasmicRootContextValue | undefined>(undefined);
+const PlasmicRootContext = React.createContext<
+  PlasmicRootContextValue | undefined
+>(undefined);
 
 export interface GlobalVariantSpec {
   name: string;
@@ -45,8 +46,24 @@ export function PlasmicRootProvider(props: {
   globalVariants?: GlobalVariantSpec[];
 
   children?: React.ReactNode;
+
+  /**
+   * If true, will skip rendering css
+   */
+  skipCss?: boolean;
+
+  /**
+   * If true, will skip installing fonts
+   */
+  skipFonts?: boolean;
 }) {
-  const { globalVariants, prefetchedData, children } = props;
+  const {
+    globalVariants,
+    prefetchedData,
+    children,
+    skipCss,
+    skipFonts,
+  } = props;
   const loader = (props.loader as any)
     .__internal as InternalPlasmicComponentLoader;
 
@@ -63,7 +80,13 @@ export function PlasmicRootProvider(props: {
 
   return (
     <PlasmicRootContext.Provider value={value}>
-      <PlasmicCss loader={loader} prefetchedData={prefetchedData} />
+      {!skipCss && (
+        <PlasmicCss
+          loader={loader}
+          prefetchedData={prefetchedData}
+          skipFonts={skipFonts}
+        />
+      )}
       {children}
     </PlasmicRootContext.Provider>
   );
@@ -76,15 +99,17 @@ export function PlasmicRootProvider(props: {
 const PlasmicCss = React.memo(function PlasmicCss(props: {
   loader: InternalPlasmicComponentLoader;
   prefetchedData?: ComponentRenderData;
+  skipFonts?: boolean;
 }) {
-  const { loader, prefetchedData } = props;
+  const { loader, prefetchedData, skipFonts } = props;
   const [useScopedCss, setUseScopedCss] = React.useState(!!prefetchedData);
-  const builtCss = buildCss(
-    loader,
-    useScopedCss && prefetchedData
-      ? prefetchedData.bundle.components
-      : undefined
-  );
+  const builtCss = buildCss(loader, {
+    scopedCompMetas:
+      useScopedCss && prefetchedData
+        ? prefetchedData.bundle.components
+        : undefined,
+    skipFonts,
+  });
   const forceUpdate = useForceUpdate();
   const watcher = React.useMemo(
     () => ({
@@ -107,8 +132,12 @@ const PlasmicCss = React.memo(function PlasmicCss(props: {
 
 function buildCss(
   loader: InternalPlasmicComponentLoader,
-  scopedCompMetas?: ComponentMeta[]
+  opts: {
+    scopedCompMetas?: ComponentMeta[];
+    skipFonts?: boolean;
+  }
 ) {
+  const { scopedCompMetas, skipFonts } = opts;
   const cssFiles =
     scopedCompMetas &&
     new Set<string>([
@@ -131,7 +160,11 @@ function buildCss(
 
   // Make sure the @import statements come at the front of css
   return `
-    ${remoteFonts.map((f) => `@import url('${f.url}');`).join('\n')}
+    ${
+      skipFonts
+        ? ''
+        : remoteFonts.map((f) => `@import url('${f.url}');`).join('\n')
+    }
     ${cssModules.map((mod) => mod.source).join('\n')}
   `;
 }
