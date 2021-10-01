@@ -17,6 +17,14 @@ export interface PageMeta extends ComponentMeta {
   isPage: true;
   path: string;
   plumeType: never;
+  pageMetadata: PageMetadata;
+}
+
+export interface PageMetadata {
+  path: string;
+  title?: string | null;
+  description?: string | null;
+  openGraphImageUrl?: string | null;
 }
 
 export interface GlobalGroupMeta {
