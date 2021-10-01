@@ -16,7 +16,7 @@ import registerComponent, {
 } from "./registerComponent";
 import repeatedElement, { setRepeatedElementFn } from "./repeatedElement";
 import useForceUpdate from "./useForceUpdate";
-const root = require("window-or-global");
+const root = globalThis as any;
 
 export { unstable_registerFetcher };
 export { repeatedElement };

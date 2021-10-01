@@ -1,5 +1,5 @@
 import { PrimitiveType } from "./index";
-const root = require("window-or-global");
+const root = globalThis as any;
 
 export type Fetcher = (...args: any[]) => Promise<any>;
 

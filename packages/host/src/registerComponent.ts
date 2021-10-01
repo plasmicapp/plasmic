@@ -4,7 +4,7 @@ import {
   PlasmicElement,
 } from "./element-types";
 
-const root = require("window-or-global");
+const root = globalThis as any;
 
 type StringType =
   | "string"
