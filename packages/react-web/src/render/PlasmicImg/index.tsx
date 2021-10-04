@@ -3,7 +3,7 @@
  */
 
 import classNames from "classnames";
-import React from "react";
+import React, { CSSProperties } from "react";
 import { pick } from "../../common";
 
 export interface ImageLoader {
@@ -50,6 +50,26 @@ export interface PlasmicImgProps extends ImgTagProps {
   displayHeight?: number | string;
 
   /**
+   * css min-width
+   */
+   displayMinWidth?: number | string;
+
+   /**
+   * css min-height
+   */
+  displayMinHeight?: number | string;
+
+  /**
+   * css max-width
+   */
+   displayMaxWidth?: number | string;
+
+   /**
+   * css max-height
+   */
+  displayMaxHeight?: number | string;
+
+  /**
    * For variable quality formats like jpg, the quality from 0 to 100
    */
   quality?: number;
@@ -82,6 +102,10 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
     className,
     displayWidth,
     displayHeight,
+    displayMinWidth,
+    displayMinHeight,
+    displayMaxWidth,
+    displayMaxHeight,
     quality,
     loader,
     containerRef,
@@ -122,34 +146,74 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
     displayWidth = (getPixelLength(displayHeight)! * fullWidth) / fullHeight;
   }
 
-  const { sizes, widthDescs } = getWidths(displayWidth, fullWidth);
+  const { sizes, widthDescs } = getWidths(displayWidth, fullWidth, {minWidth: displayMinWidth} );
   const imageLoader = getImageLoader(loader);
   const spacerSvg = `<svg width="${fullWidth}" height="${fullHeight}" xmlns="http://www.w3.org/2000/svg" version="1.1"/>`;
   const spacerSvgBase64 =
     typeof window === "undefined"
       ? Buffer.from(spacerSvg).toString("base64")
       : window.btoa(spacerSvg);
+  
+  let wrapperStyle: CSSProperties = {...(style || {})};
+  let spacerStyle: CSSProperties = pick(style || {}, "objectFit", "objectPosition");
+
+  if (displayWidth != null && displayWidth !== "auto") {
+    // If width is set, set it on the wrapper along with min/max width
+    // and just use `width: 100%` on the spacer
+    spacerStyle.width = "100%";
+    wrapperStyle.width = displayWidth;
+    wrapperStyle.minWidth = displayMinWidth;
+    wrapperStyle.maxWidth = displayMaxWidth;
+  } else {
+    // Otherwise, we want auto sizing from the spacer, so set width there.
+    //
+    // But if we have min/max width, it should be set in the wrapper and it
+    // can be percentage values (and we add corresponding min/max width to
+    // 100% in the spacer). In general it ends up with the correct effect,
+    // but some edge cases might make `min-width: 100%` shrink the image more
+    // than it should.
+    spacerStyle.width = displayWidth;
+    wrapperStyle.width = "auto";
+    if (displayMinWidth) {
+      spacerStyle.minWidth = "100%";
+      wrapperStyle.minWidth = displayMinWidth;
+    }
+    if (displayMaxWidth != null && displayMaxWidth !== "none") {
+      spacerStyle.maxWidth = "100%";
+      wrapperStyle.maxWidth = displayMaxWidth;
+    }
+  }
+
+  if (displayHeight != null && displayHeight !== "auto") {
+    spacerStyle.height = "100%";
+    wrapperStyle.height = displayHeight;
+    wrapperStyle.minHeight = displayMinHeight;
+    wrapperStyle.maxHeight = displayMaxHeight;
+  } else {
+    spacerStyle.height = displayHeight;
+    wrapperStyle.height = "auto";
+    if (displayMinHeight) {
+      spacerStyle.minHeight = "100%";
+      wrapperStyle.minHeight = displayMinHeight;
+    }
+    if (displayMaxHeight != null && displayMaxHeight !== "none") {
+      spacerStyle.maxHeight = "100%";
+      wrapperStyle.maxHeight = displayMaxHeight;
+    }
+  }
 
   return (
     <div
       className={classNames(className, "__wab_img-wrapper")}
       ref={containerRef}
-      style={{
-        ...style,
-        width: isPercentage(displayWidth) ? displayWidth : undefined,
-        height: isPercentage(displayHeight) ? displayHeight : undefined,
-      }}
+      style={wrapperStyle}
     >
       <img
         alt=""
         aria-hidden
         className="__wab_img-spacer-svg"
         src={`data:image/svg+xml;base64,${spacerSvgBase64}`}
-        style={{
-          width: isPercentage(displayWidth) ? "100%" : displayWidth,
-          height: isPercentage(displayHeight) ? "100%" : displayHeight,
-          ...(style ? pick(style, "objectFit", "objectPosition") : {}),
-        }}
+        style={spacerStyle}
       />
       {makePicture({
         imageLoader,
@@ -281,19 +345,22 @@ function getClosestPresetSize(width: number, fullWidth: number) {
  */
 function getWidths(
   width: number | string | undefined,
-  fullWidth: number
+  fullWidth: number,
+  extra?: {minWidth: string | number | undefined }
 ): { sizes: string | undefined; widthDescs: WidthDesc[] } {
+  const minWidth = extra?.minWidth;
   const pixelWidth = getPixelLength(width);
-  if (pixelWidth != null) {
+  const pixelMinWidth = getPixelLength(minWidth);
+  if (pixelWidth != null && (!minWidth || pixelMinWidth != null)) {
     // If there's an exact width, then we just need to display it at 1x and 2x density
     return {
       widthDescs: [
         {
-          width: getClosestPresetSize(pixelWidth, fullWidth),
+          width: getClosestPresetSize(Math.max(pixelWidth, pixelMinWidth ?? 0), fullWidth),
           desc: "1x",
         },
         {
-          width: getClosestPresetSize(pixelWidth * 2, fullWidth),
+          width: getClosestPresetSize(Math.max(pixelWidth, pixelMinWidth ?? 0) * 2, fullWidth),
           desc: "2x",
         },
       ],
@@ -335,13 +402,6 @@ function getWidths(
     })),
     sizes: "100vw",
   };
-}
-
-function isPercentage(width: number | string | undefined) {
-  if (typeof width !== "string") {
-    return false;
-  }
-  return parseNumeric(width)?.units === "%";
 }
 
 function getPixelLength(length: number | string | undefined) {
