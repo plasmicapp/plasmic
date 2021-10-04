@@ -120,8 +120,7 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
   const srcStr = src ? (typeof src === "string" ? src : src.src) : "";
 
   // Assume external image if either dimension is null and use usual <img>
-  // (or if the image is an SVG)
-  if (fullHeight == null || fullWidth == null || srcStr.endsWith(".svg")) {
+  if (fullHeight == null || fullWidth == null) {
     return (
       <img
         src={srcStr}
@@ -131,6 +130,10 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
         ref={ref}
       />
     );
+  }
+
+  if (isSvg(srcStr) && displayHeight == null && displayWidth == null) {
+    displayWidth = "100%";
   }
 
   if (
@@ -301,7 +304,7 @@ function makePicture(opts: {
                 .join(", ")
             : undefined
         }
-        sizes={imageLoader ? sizes : undefined}
+        sizes={imageLoader && imageLoader.supportsUrl(src) ? sizes : undefined}
         style={{
           ...(style ? pick(style, "objectFit", "objectPosition") : {}),
           width: 0,
@@ -310,6 +313,10 @@ function makePicture(opts: {
       />
     </picture>
   );
+}
+
+function isSvg(src: string) {
+  return (src.endsWith(".svg") || src.startsWith("data:image/svg"));
 }
 
 interface WidthDesc {
@@ -446,7 +453,7 @@ function getImageLoader(loader: "plasmic" | ImageLoader | undefined) {
 
 const PLASMIC_IMAGE_LOADER: ImageLoader = {
   supportsUrl: (src) => {
-    return src.startsWith("https://img.plasmic.app");
+    return src.startsWith("https://img.plasmic.app") && !isSvg(src);
   },
   transformUrl: (opts) => {
     const params = [
