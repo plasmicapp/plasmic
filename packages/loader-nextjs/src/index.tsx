@@ -7,8 +7,11 @@ import * as ReactDOM from 'react-dom';
 import { makeCache } from './cache';
 import serverRequire from './server-require';
 export {
+  ComponentMeta,
   ComponentRenderData,
   InitOptions,
+  PageMeta,
+  PageMetadata,
   PlasmicCanvasContext,
   PlasmicCanvasHost,
   PlasmicComponent,

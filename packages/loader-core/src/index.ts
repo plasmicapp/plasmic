@@ -8,6 +8,7 @@ export {
   LoaderBundleOutput,
   LoaderHtmlOutput,
   PageMeta,
+  PageMetadata,
   ProjectMeta,
 } from './api';
 export { getBundleSubset } from './bundles';

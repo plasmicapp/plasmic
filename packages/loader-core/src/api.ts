@@ -11,6 +11,7 @@ export interface ComponentMeta {
   plumeType?: string;
   entry: string;
   isCode: boolean;
+  pageMetadata?: PageMetadata;
 }
 
 export interface PageMeta extends ComponentMeta {

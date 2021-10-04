@@ -1,14 +1,17 @@
 export {
+  ComponentMeta,
   ComponentRenderData,
   InitOptions,
-  PlasmicComponent,
-  PlasmicRootProvider,
-  usePlasmicComponent,
+  PageMeta,
+  PageMetadata,
   PlasmicCanvasContext,
   PlasmicCanvasHost,
+  PlasmicComponent,
+  PlasmicRootProvider,
   PrimitiveType,
   PropType,
   repeatedElement,
+  usePlasmicComponent,
 } from "@plasmicapp/loader-react";
 export { createPages, createResolvers, sourceNodes } from "./gatsby-node";
 export { initPlasmicLoader } from "./loader";

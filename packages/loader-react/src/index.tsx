@@ -5,6 +5,7 @@ export {
   PropType,
   repeatedElement,
 } from '@plasmicapp/host';
+export { ComponentMeta, PageMeta, PageMetadata } from '@plasmicapp/loader-core';
 export { convertBundlesToComponentRenderData } from './bundles';
 export {
   ComponentRenderData,
