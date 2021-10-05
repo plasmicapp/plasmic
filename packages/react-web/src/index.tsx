@@ -1,4 +1,5 @@
 export * from "./index-common";
+export * from "./plume/button";
 export * from "./plume/checkbox";
 export * from "./plume/menu";
 export * from "./plume/menu-button";
