@@ -132,7 +132,7 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
     );
   }
 
-  if (isSvg(srcStr) && displayHeight == null && displayWidth == null) {
+  if (isSvg(srcStr) && (displayHeight == null || displayHeight === "auto") && (displayWidth == null || displayWidth === "auto")) {
     displayWidth = "100%";
   }
 
