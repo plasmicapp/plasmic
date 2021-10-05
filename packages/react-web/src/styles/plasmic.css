@@ -25,10 +25,7 @@
   position: relative;
   display: inherit;
   flex-direction: inherit;
-  width: auto;
-  height: auto;
   overflow: hidden;
-  max-width: 100%;
   flex-shrink: 0;
 }
 
