@@ -31,6 +31,7 @@ export default [
       "plume/menu-button/index": "./src/plume/menu-button/index.tsx",
       "plume/select/index": "./src/plume/select/index.tsx",
       "plume/switch/index": "./src/plume/switch/index.tsx",
+      "plume/text-input/index": "./src/plume/text-input/index.tsx",
       "plume/triggered-overlay/index":
         "./src/plume/triggered-overlay/index.tsx",
       "render/PlasmicImg/index": "./src/render/PlasmicImg/index.tsx",

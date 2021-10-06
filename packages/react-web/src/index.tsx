@@ -7,4 +7,5 @@ export { setPlumeStrictMode } from "./plume/plume-utils";
 export { getDataProps } from "./plume/props-utils";
 export * from "./plume/select";
 export * from "./plume/switch";
+export * from "./plume/text-input";
 export * from "./plume/triggered-overlay";
