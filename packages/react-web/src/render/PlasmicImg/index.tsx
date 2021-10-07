@@ -32,7 +32,17 @@ export interface PlasmicImgProps extends ImgTagProps {
    * Either an object with the src string, and its full width and height,
    * or just a src string with unknown intrinsic dimensions.
    */
-  src?: string | { src: string; fullHeight: number; fullWidth: number };
+  src?:
+    | string
+    | {
+        src: string;
+        fullHeight: number;
+        fullWidth: number;
+        // We might also get a more precise aspectRatio for SVGs
+        // instead of relyiing on fullWidth / fullHeight, because
+        // those values might be rounded and not so accurate.
+        aspectRatio?: number;
+      };
 
   /**
    * className applied to the wrapper element if one is used.
@@ -52,9 +62,9 @@ export interface PlasmicImgProps extends ImgTagProps {
   /**
    * css min-width
    */
-   displayMinWidth?: number | string;
+  displayMinWidth?: number | string;
 
-   /**
+  /**
    * css min-height
    */
   displayMinHeight?: number | string;
@@ -62,9 +72,9 @@ export interface PlasmicImgProps extends ImgTagProps {
   /**
    * css max-width
    */
-   displayMaxWidth?: number | string;
+  displayMaxWidth?: number | string;
 
-   /**
+  /**
    * css max-height
    */
   displayMaxHeight?: number | string;
@@ -113,9 +123,9 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
     ...rest
   } = props;
 
-  const { fullWidth, fullHeight } =
+  const { fullWidth, fullHeight, aspectRatio } =
     typeof src === "string" || !src
-      ? { fullWidth: undefined, fullHeight: undefined }
+      ? { fullWidth: undefined, fullHeight: undefined, aspectRatio: undefined }
       : src;
   const srcStr = src ? (typeof src === "string" ? src : src.src) : "";
 
@@ -132,7 +142,11 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
     );
   }
 
-  if (isSvg(srcStr) && (displayHeight == null || displayHeight === "auto") && (displayWidth == null || displayWidth === "auto")) {
+  if (
+    isSvg(srcStr) &&
+    (displayHeight == null || displayHeight === "auto") &&
+    (displayWidth == null || displayWidth === "auto")
+  ) {
     displayWidth = "100%";
   }
 
@@ -146,19 +160,41 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
     // then we can derive the pixel length for displayWidth.  Having an explicit
     // displayWidth makes this a fixed-size image, which makes it possible for us to
     // generate better markup!
-    displayWidth = (getPixelLength(displayHeight)! * fullWidth) / fullHeight;
+    if (!isSvg(srcStr)) {
+      // We shouldn't do it for SVGs though, because `fullWidth` and
+      // `fullHeight` might have rounded values so the final
+      // `displayWidth` could differ by 1px or so.
+      displayWidth = (getPixelLength(displayHeight)! * fullWidth) / fullHeight;
+    }
   }
 
-  const { sizes, widthDescs } = getWidths(displayWidth, fullWidth, {minWidth: displayMinWidth} );
+  let spacerWidth = fullWidth;
+  let spacerHeight = fullHeight;
+  if (aspectRatio && isFinite(aspectRatio) && isSvg(srcStr)) {
+    // For SVGs, fullWidth and fullHeight can be rounded values, which would
+    // cause some discrepancy between the actual aspect ratio and the aspect
+    // ratio from those values. So, for those cases, we set large width / height
+    // values to get a more precise ratio from the spacer.
+    spacerWidth = DEFAULT_SVG_WIDTH;
+    spacerHeight = Math.round(spacerWidth / aspectRatio);
+  }
+
+  const { sizes, widthDescs } = getWidths(displayWidth, fullWidth, {
+    minWidth: displayMinWidth,
+  });
   const imageLoader = getImageLoader(loader);
-  const spacerSvg = `<svg width="${fullWidth}" height="${fullHeight}" xmlns="http://www.w3.org/2000/svg" version="1.1"/>`;
+  const spacerSvg = `<svg width="${spacerWidth}" height="${spacerHeight}" xmlns="http://www.w3.org/2000/svg" version="1.1"/>`;
   const spacerSvgBase64 =
     typeof window === "undefined"
       ? Buffer.from(spacerSvg).toString("base64")
       : window.btoa(spacerSvg);
-  
-  let wrapperStyle: CSSProperties = {...(style || {})};
-  let spacerStyle: CSSProperties = pick(style || {}, "objectFit", "objectPosition");
+
+  let wrapperStyle: CSSProperties = { ...(style || {}) };
+  let spacerStyle: CSSProperties = pick(
+    style || {},
+    "objectFit",
+    "objectPosition"
+  );
 
   if (displayWidth != null && displayWidth !== "auto") {
     // If width is set, set it on the wrapper along with min/max width
@@ -315,8 +351,10 @@ function makePicture(opts: {
   );
 }
 
+const DEFAULT_SVG_WIDTH = 10000;
+
 function isSvg(src: string) {
-  return (src.endsWith(".svg") || src.startsWith("data:image/svg"));
+  return src.endsWith(".svg") || src.startsWith("data:image/svg");
 }
 
 interface WidthDesc {
@@ -353,7 +391,7 @@ function getClosestPresetSize(width: number, fullWidth: number) {
 function getWidths(
   width: number | string | undefined,
   fullWidth: number,
-  extra?: {minWidth: string | number | undefined }
+  extra?: { minWidth: string | number | undefined }
 ): { sizes: string | undefined; widthDescs: WidthDesc[] } {
   const minWidth = extra?.minWidth;
   const pixelWidth = getPixelLength(width);
@@ -363,11 +401,17 @@ function getWidths(
     return {
       widthDescs: [
         {
-          width: getClosestPresetSize(Math.max(pixelWidth, pixelMinWidth ?? 0), fullWidth),
+          width: getClosestPresetSize(
+            Math.max(pixelWidth, pixelMinWidth ?? 0),
+            fullWidth
+          ),
           desc: "1x",
         },
         {
-          width: getClosestPresetSize(Math.max(pixelWidth, pixelMinWidth ?? 0) * 2, fullWidth),
+          width: getClosestPresetSize(
+            Math.max(pixelWidth, pixelMinWidth ?? 0) * 2,
+            fullWidth
+          ),
           desc: "2x",
         },
       ],
