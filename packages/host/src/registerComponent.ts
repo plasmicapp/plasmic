@@ -51,7 +51,7 @@ type SlotType =
        * The unique names of all code components that can be placed in the slot
        */
       allowedComponents?: string[];
-      __unstable_defaultValue?: PlasmicElement | PlasmicElement[];
+      defaultValue?: PlasmicElement | PlasmicElement[];
     };
 
 export type PrimitiveType = Extract<
@@ -153,11 +153,11 @@ export interface ComponentMeta<P> {
   /**
    * Default styles to start with when instantiating the component in Plasmic.
    */
-  __unstable_defaultStyles?: CSSProperties;
+  defaultStyles?: CSSProperties;
   /**
    * Component templates to start with on Plasmic.
    */
-  __unstable_templates?: ComponentTemplates<P>;
+  templates?: ComponentTemplates<P>;
 }
 
 export interface ComponentRegistration {
