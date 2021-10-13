@@ -6,42 +6,46 @@ import {
 
 const root = globalThis as any;
 
+type PropTypeBase = {
+  displayName?: string;
+};
+
 type StringType =
   | "string"
-  | {
+  | ({
       type: "string";
       defaultValue?: string;
-    };
+    } & PropTypeBase);
 
 type BooleanType =
   | "boolean"
-  | {
+  | ({
       type: "boolean";
       defaultValue?: boolean;
-    };
+    } & PropTypeBase);
 
 type NumberType =
   | "number"
-  | {
+  | ({
       type: "number";
       defaultValue?: number;
-    };
+    } & PropTypeBase);
 
 type JSONLikeType =
   | "object"
-  | {
+  | ({
       type: "object";
       /**
        * Expects a JSON-compatible value
        */
       defaultValue?: any;
-    };
+    } & PropTypeBase);
 
 type ChoiceType = {
   type: "choice";
   options: string[];
   defaultValue?: string;
-};
+} & PropTypeBase;
 
 type SlotType =
   | "slot"
