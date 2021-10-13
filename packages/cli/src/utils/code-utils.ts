@@ -367,7 +367,7 @@ function makeImportPath(
   fromPath: string,
   toPath: string,
   stripExt: boolean,
-  forceRelative = false,
+  forceRelative = false
 ) {
   let result = toPath;
   if (forceRelative || isLocalModulePath(toPath)) {
@@ -448,7 +448,7 @@ export const mkFixImportContext = (config: PlasmicConfig) => {
 export async function fixAllImportStatements(
   context: PlasmicContext,
   baseDir: string,
-  summary?: Map<string, ComponentUpdateSummary>,
+  summary?: Map<string, ComponentUpdateSummary>
 ) {
   logger.info("Fixing import statements...");
   const config = context.config;
@@ -468,7 +468,7 @@ export async function fixAllImportStatements(
           compConfig,
           fixImportContext,
           fixSkeletonModule,
-          baseDir,
+          baseDir
         );
       }
     }
@@ -480,7 +480,7 @@ async function fixComponentImportStatements(
   compConfig: ComponentConfig,
   fixImportContext: FixImportContext,
   fixSkeletonModule: boolean,
-  baseDir: string,
+  baseDir: string
 ) {
   // If ComponentConfig.importPath is still a local file, we best-effort also fix up the import statements there.
   if (
@@ -498,7 +498,7 @@ async function fixComponentImportStatements(
 
   let renderModuleChanged = false;
 
-  if (context.config.images.scheme !== "inlined") {
+  if (["files", "public-files"].includes(context.config.images.scheme)) {
     await fixComponentCssReferences(
       context,
       fixImportContext,
@@ -520,7 +520,7 @@ async function fixComponentImportStatements(
     fixImportContext,
     false,
     baseDir,
-    renderModuleChanged,
+    renderModuleChanged
   );
 }
 
@@ -608,7 +608,11 @@ export const tsxToJsx = (code: string) => {
   return fixPostTranspile(result.outputText);
 };
 
-export function maybeConvertTsxToJsx(fileName: string, content: string, baseDir: string) {
+export function maybeConvertTsxToJsx(
+  fileName: string,
+  content: string,
+  baseDir: string
+) {
   if (fileName.endsWith("tsx")) {
     const jsFileName = stripExtension(fileName) + ".jsx";
     const jsContent = formatScript(tsxToJsx(content), baseDir);

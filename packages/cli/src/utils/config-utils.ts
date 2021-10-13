@@ -116,8 +116,10 @@ export interface ImagesConfig {
    * * "files" - imported as relative files, like "import img from './image.png'". Not all bundlers support this.
    * * "public-files" - images are stored in a public folder, and referenced from some url prefix, like `<img src="/static/image.png"/>`.
    * * "inlined" - inlined directly into React files and css files as base64-encoded data-URIs.
+   * * "cdn" - images are served from Plasmic's CDN.  Allows for dynamic resizing of images for
+   *   serving the optimal file size given browser viewport.
    */
-  scheme: "inlined" | "files" | "public-files";
+  scheme: "inlined" | "files" | "public-files" | "cdn";
 
   /**
    * The folder where "public" static files are stored. Plasmic-managed image files will be stored as "plasmic/project-name/image-name" under this folder.  Relative to srcDir; for example, "../public"
