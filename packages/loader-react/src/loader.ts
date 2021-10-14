@@ -1,5 +1,6 @@
-import { registerComponent,
+import {
   ComponentMeta as InternalCodeComponentMeta,
+  registerComponent,
 } from '@plasmicapp/host';
 import {
   ComponentMeta,
@@ -23,7 +24,10 @@ export interface InitOptions {
   platform?: 'react' | 'nextjs' | 'gatsby';
   preview?: boolean;
   host?: string;
+  onClientSideFetch?: 'warn' | 'error';
 }
+
+const isBrowser = typeof window !== 'undefined';
 
 interface ProjectOption {
   id: string;
@@ -82,7 +86,7 @@ export class InternalPlasmicComponentLoader {
     projects: [],
   };
 
-  constructor(opts: InitOptions) {
+  constructor(private opts: InitOptions) {
     this.registry = new Registry();
     this.fetcher = new PlasmicModulesFetcher(opts);
   }
@@ -124,7 +128,7 @@ export class InternalPlasmicComponentLoader {
     component: T,
     meta: CodeComponentMeta<React.ComponentProps<T>>
   ) {
-    this.substituteComponent(component, { name: meta.name, isCode: true } );
+    this.substituteComponent(component, { name: meta.name, isCode: true });
     // Import path is not used as we will use component substitution
     registerComponent(component, {
       ...meta,
@@ -205,6 +209,9 @@ export class InternalPlasmicComponentLoader {
   }
 
   async fetchPages() {
+    this.maybeReportClientSideFetch(
+      () => `Plasmic: fetching all page metadata in the browser`
+    );
     const data = await this.fetchAllData();
     return data.components.filter(
       (comp) => comp.isPage && comp.path
@@ -212,6 +219,9 @@ export class InternalPlasmicComponentLoader {
   }
 
   async fetchComponents() {
+    this.maybeReportClientSideFetch(
+      () => `Plasmic: fetching all component metadata in the browser`
+    );
     const data = await this.fetchAllData();
     return data.components;
   }
@@ -222,10 +232,27 @@ export class InternalPlasmicComponentLoader {
 
   // @ts-ignore
   private async fetchMissingData(opts: {
-    missingSpecs?: ComponentLookupSpec[];
+    missingSpecs: ComponentLookupSpec[];
   }) {
     // TODO: do better than just fetching everything
+    this.maybeReportClientSideFetch(
+      () =>
+        `Plasmic: fetching missing components in the browser: ${opts.missingSpecs
+          .map((spec) => getLookupSpecName(spec))
+          .join(', ')}`
+    );
     return this.fetchAllData();
+  }
+
+  private maybeReportClientSideFetch(mkMsg: () => string) {
+    if (isBrowser && this.opts.onClientSideFetch) {
+      const msg = mkMsg();
+      if (this.opts.onClientSideFetch === 'warn') {
+        console.warn(msg);
+      } else {
+        throw new Error(msg);
+      }
+    }
   }
 
   private async fetchAllData() {

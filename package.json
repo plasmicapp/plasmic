@@ -5,7 +5,7 @@
     "lerna": "^4.0.0"
   },
   "scripts": {
-    "bootstrap": "lerna bootstrap --force-local",
+    "bootstrap": "lerna bootstrap --force-local && lerna link && lerna run build",
     "release": "lerna exec --no-bail -- npm publish --registry=https://registry.npmjs.org --access=public",
     "bump": "lerna version --no-push --exact --include-merged-tags",
     "local-canary": "yarn local-unpublish && lerna publish --canary --yes --no-git-tag-version --no-push --registry=http://localhost:4873 --force-publish",

@@ -28,6 +28,7 @@ export function initPlasmicLoader(
   const isBrowser = typeof window !== 'undefined';
   const cache = isBrowser ? undefined : makeCache(opts);
   const loader = initPlasmicLoaderReact({
+    onClientSideFetch: 'warn',
     ...opts,
     cache,
     platform: 'nextjs',
