@@ -5,6 +5,7 @@
 import classNames from "classnames";
 import React, { CSSProperties } from "react";
 import { pick } from "../../common";
+import { mergeRefs } from "../../react-utils";
 
 export interface ImageLoader {
   supportsUrl: (url: string) => boolean;
@@ -97,15 +98,16 @@ export interface PlasmicImgProps extends ImgTagProps {
   style?: React.CSSProperties;
 
   /**
-   * Ref for the wrapper element.  The normal <PlasmicImg ref={...} />
-   * prop gives you the wrap to the img element.
+   * Ref for the img element.  The normal <PlasmicImg ref={...} />
+   * prop gives the root element instead, which may be the img element
+   * or a wrapper element
    */
-  containerRef?: React.Ref<HTMLDivElement>;
+  imgRef?: React.Ref<HTMLImageElement>;
 }
 
 export const PlasmicImg = React.forwardRef(function PlasmicImg(
   props: PlasmicImgProps,
-  ref: React.Ref<HTMLImageElement>
+  outerRef: React.Ref<HTMLElement>
 ) {
   let {
     src,
@@ -118,7 +120,7 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
     displayMaxHeight,
     quality,
     loader,
-    containerRef,
+    imgRef,
     style,
     ...rest
   } = props;
@@ -137,7 +139,7 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
         className={className}
         style={style}
         {...rest}
-        ref={ref}
+        ref={mergeRefs(imgRef, outerRef) as any}
       />
     );
   }
@@ -244,7 +246,7 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
   return (
     <div
       className={classNames(className, "__wab_img-wrapper")}
-      ref={containerRef}
+      ref={outerRef as any}
       style={wrapperStyle}
     >
       <img
@@ -260,7 +262,7 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
         sizes,
         src: srcStr,
         quality,
-        ref,
+        ref: imgRef,
         style: style ? pick(style, "objectFit", "objectPosition") : undefined,
         imgProps: rest,
         className: "__wab_img",
