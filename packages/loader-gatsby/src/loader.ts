@@ -8,6 +8,7 @@ import * as ReactDom from "react-dom";
 
 export function initPlasmicLoader(opts: InitOptions) {
   const loader = initPlasmicLoaderReact({
+    onClientSideFetch: "warn",
     ...opts,
     platform: "gatsby",
   });
