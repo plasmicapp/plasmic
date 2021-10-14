@@ -79,7 +79,7 @@ function removeMissingFilesFromLock(
         ])
       );
       const knownIcons = Object.fromEntries(
-        knownProjects[project.projectId].images.map((icons) => [
+        knownProjects[project.projectId].icons.map((icons) => [
           icons.id,
           icons,
         ])
