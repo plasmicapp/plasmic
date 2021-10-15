@@ -122,8 +122,15 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
     loader,
     imgRef,
     style,
+    loading,
     ...rest
   } = props;
+
+  const imgProps = Object.assign({}, rest, {
+    // Default loading to "lazy" if not specified (which is different from the
+    // html img, which defaults to eager!)
+    loading: loading ?? "lazy",
+  });
 
   const { fullWidth, fullHeight, aspectRatio } =
     typeof src === "string" || !src
@@ -138,7 +145,8 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
         src={srcStr}
         className={className}
         style={style}
-        {...rest}
+        {...imgProps}
+        loading={loading}
         ref={mergeRefs(imgRef, outerRef) as any}
       />
     );
@@ -264,7 +272,7 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
         quality,
         ref: imgRef,
         style: style ? pick(style, "objectFit", "objectPosition") : undefined,
-        imgProps: rest,
+        imgProps,
         className: "__wab_img",
       })}
     </div>
