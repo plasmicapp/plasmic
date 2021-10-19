@@ -82,12 +82,13 @@ export function isReactNode(x: any) {
 }
 
 // From https://stackoverflow.com/questions/54775790/forcing-excess-property-checking-on-variable-passed-to-typescript-function
+// We also wrap the error message in a Partial<> because otherwise Jetbrains IDEs will autocomplete the component with all the string methods as props - see https://github.com/plasmicapp/plasmic/issues/16.
 export type StrictProps<T, TExpected> = Exclude<
   keyof T,
   keyof TExpected
 > extends never
   ? {}
-  : "Unexpected extraneous props";
+  : Partial<"Unexpected extraneous props">;
 
 export type HTMLElementRefOf<T extends keyof JSX.IntrinsicElements> = Exclude<
   React.ComponentProps<T>["ref"],
