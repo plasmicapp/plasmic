@@ -14,17 +14,14 @@
 - [Documentation](https://www.plasmic.app/learn/)
 - [Quickstart](https://www.plasmic.app/learn/quickstart/)
 
-## Building packages
+## Contributing
 
 We use `lerna` to help us manage dependencies between the `@plasmicapp/loader-*` packages, (though we may pull in more packages to be managed by lerna, right now those are the ones with tight dependencies on each other).
 
 ### Getting started
 
-Make sure you have `lerna` installed:
-
 ```
-yarn global add lerna
-lerna bootstrap  # inter-links all the lerna-managed packages together
+yarn lerna bootstrap  # inter-links all the lerna-managed packages together
 ```
 
 We also make use of [Verdaccio](https://verdaccio.org/) to locally test packages.  This just stands up an npm registry that you can publish your test packages to.
@@ -44,7 +41,7 @@ packages:
     unpublish: $all
 ```
 
-### Workflow
+### Development workflow
 
 1. Make some changes!
 
@@ -52,6 +49,17 @@ packages:
 
 3. Install the canary version into wherever you're trying to test, via `yarn add ... --registry=http://localhost:4873`
 
-4. Once you're done making your changes, you can run `yarn bump` to bump the versions of the changed packages.  If you already have an existing git commit you wawnt to use, do `yarn bump --amend`.  Submit for code review.
+### Release workflow
 
-5. Once your change has been approved and you're ready to release to npm, run `yarn release`.  This will individually publish each package to npm.
+Run `yarn bump` to bump the versions of the changed packages.  If you already have an existing git commit you want to use, do `yarn bump --amend`.  Submit for code review.
+
+Make user you are authenticating with npm as the plasmicapp user.
+
+    npm whoami # check who you are currently
+    npm login # if you were not plasmicapp
+
+Ensure you have no outstanding unmerged commits or uncommitted changes.
+
+Ensure you have pulled the latest changes from master.
+
+Once your change has been approved and you're ready to release to npm, run `yarn release`.  This will individually publish each package to npm.
