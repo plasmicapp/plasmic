@@ -556,8 +556,6 @@ async function syncProject(
     opts.baseDir
   );
 
-  syncCodeComponentsMeta(context, projectId, projectBundle.codeComponentMetas);
-
   await syncProjectConfig(
     context,
     projectBundle.projectConfig,
@@ -572,6 +570,7 @@ async function syncProject(
     projectBundle.checksums,
     opts.baseDir
   );
+  syncCodeComponentsMeta(context, projectId, projectBundle.codeComponentMetas);
   await upsertStyleTokens(context, projectBundle.usedTokens);
   await syncProjectIconAssets(
     context,
@@ -629,8 +628,6 @@ async function syncProjectConfig(
     (p) => p.projectId === projectBundle.projectId
   );
 
-  // If latest, use that as the range, otherwise set to latest published (>=0.0.0)
-  const versionRange = semver.isLatest(version) ? version : ">=0.0.0";
   const projectConfig = getOrAddProjectConfig(
     context,
     projectBundle.projectId,
@@ -638,7 +635,7 @@ async function syncProjectConfig(
       projectId: projectBundle.projectId,
       projectApiToken,
       projectName: projectBundle.projectName,
-      version: versionRange,
+      version,
       cssFilePath: defaultCssFilePath,
     })
   );
