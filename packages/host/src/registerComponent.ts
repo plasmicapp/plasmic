@@ -8,6 +8,7 @@ const root = globalThis as any;
 
 type PropTypeBase = {
   displayName?: string;
+  description?: string;
 };
 
 type StringType =
