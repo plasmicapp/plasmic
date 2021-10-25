@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/code-merger",
-  "version": "0.0.32",
+  "version": "0.0.33",
   "description": "plasmic library for updating code generated in direct-edit scheme",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -11,14 +11,15 @@
     "wtest": "jest --colors --watchAll",
     "test": "jest --colors",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
-    "build": "tsc"
+    "build": "tsc",
+    "prepare": "yarn build"
   },
   "dependencies": {
     "@babel/core": "^7.12.3",
     "@babel/generator": "^7.12.1",
     "@babel/parser": "^7.12.3",
     "@babel/traverse": "^7.12.1",
-    "@babel/types": "^7.15.6",
+    "@babel/types": "^7.12.1",
     "@types/babel__core": "^7.1.14",
     "@types/babel__generator": "^7.6.2",
     "@types/babel__parser": "^7.1.1",

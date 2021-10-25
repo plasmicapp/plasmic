@@ -68,21 +68,22 @@ const parseJsxElement = (
   plasmicId: string,
   parent: Node | undefined
 ): PlasmicJsxElement => {
-  const attrs: Array<
-    [string, PlasmicASTNode | null] | PlasmicASTNode
-  > = n.openingElement.attributes.map((attr) => {
-    if (attr.type === "JSXAttribute") {
-      const name = getAttrName(attr);
-      assert(L.isString(name));
-      return [
-        name,
-        attr.value === null ? null : parseNode(attr.value, attr, false),
-      ];
-    } else {
-      // spreador
-      return parseNode(attr.argument, attr, false);
-    }
-  });
+  const attrs: Array<[string, PlasmicASTNode | null] | PlasmicASTNode> =
+    n.openingElement.attributes.map((attr) => {
+      if (attr.type === "JSXAttribute") {
+        const name = getAttrName(attr);
+        assert(L.isString(name));
+        return [
+          name,
+          attr.value === null
+            ? null
+            : parseNode(attr.value as any, attr, false),
+        ];
+      } else {
+        // spreador
+        return parseNode(attr.argument, attr, false);
+      }
+    });
   const children = parseChildren(n);
   return {
     attrs,
