@@ -1,4 +1,4 @@
-import { spawnSync } from "child_process";
+import { exec, execSync, spawnSync } from "child_process";
 import glob from "fast-glob";
 import findupSync from "findup-sync";
 import latest from "latest-version";
@@ -54,7 +54,7 @@ export async function warnLatest(
   },
   yes?: boolean
 ) {
-  const check = await checkVersion(context, pkg);
+  const check = await checkVersion(context, baseDir, pkg);
   if (check.type === "up-to-date") {
     return;
   } else if (check.type === "wrong-npm-registry") {
@@ -80,7 +80,11 @@ export async function warnLatest(
   }
 }
 
-async function checkVersion(context: PlasmicContext, pkg: string) {
+async function checkVersion(
+  context: PlasmicContext,
+  baseDir: string,
+  pkg: string
+) {
   // Try to get the latest version from npm
   let last = null;
   try {
@@ -90,7 +94,7 @@ async function checkVersion(context: PlasmicContext, pkg: string) {
     return { type: "wrong-npm-registry" } as const;
   }
 
-  const cur = findInstalledVersion(context, pkg);
+  const cur = findInstalledVersion(context, baseDir, pkg);
   if (!cur) {
     return { type: "not-installed" } as const;
   }
@@ -104,7 +108,23 @@ async function checkVersion(context: PlasmicContext, pkg: string) {
   return { type: "up-to-date" } as const;
 }
 
-export function findInstalledVersion(context: PlasmicContext, pkg: string) {
+export function findInstalledVersion(
+  context: PlasmicContext,
+  baseDir: string,
+  pkg: string
+) {
+  const pm = detectPackageManager(baseDir);
+  if (pm === "yarn2") {
+    try {
+      const pkgInfo = JSON.parse(
+        execSync(`yarn info --json ${pkg}`).toString().trim()
+      );
+      return pkgInfo?.children?.Version;
+    } catch (_) {
+      return undefined;
+    }
+  }
+
   const filename = findInstalledPackageJsonFile(context, pkg);
   if (filename) {
     const json = parsePackageJson(filename);
@@ -202,6 +222,15 @@ export function installCommand(
     } else {
       return `yarn add --ignore-scripts -W ${pkg}`;
     }
+  } else if (mgr === "yarn2") {
+    if (opts.global) {
+      // yarn2 does not support global.
+      return `npm install -g ${pkg}`;
+    } else if (opts.dev) {
+      return `yarn add -D ${pkg}`;
+    } else {
+      return `yarn add ${pkg}`;
+    }
   } else {
     if (opts.global) {
       return `npm install -g ${pkg}`;
@@ -216,8 +245,9 @@ export function installCommand(
 export function detectPackageManager(baseDir: string) {
   const yarnLock = findupSync("yarn.lock", { cwd: baseDir });
   if (yarnLock) {
-    return "yarn";
-  } else {
-    return "npm";
+    const yarnVersion = execSync(`yarn --version`).toString().trim();
+    return semver.gte(yarnVersion, "2.0.0") ? "yarn2" : "yarn";
   }
+
+  return "npm";
 }

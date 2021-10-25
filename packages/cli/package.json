@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/cli",
-  "version": "0.1.164",
+  "version": "0.1.165",
   "description": "plasmic cli for syncing local code with Plasmic designs",
   "engines": {
     "node": ">=12"
@@ -49,7 +49,9 @@
   "dependencies": {
     "@babel/core": "^7.12.3",
     "@babel/generator": "^7.12.1",
-    "@plasmicapp/code-merger": "^0.0.31",
+    "@babel/parser": "^7.12.3",
+    "@babel/traverse": "^7.12.1",
+    "@plasmicapp/code-merger": "^0.0.33",
     "@sentry/node": "^5.19.2",
     "@types/socket.io-client": "^1.4.34",
     "axios": "^0.21.1",

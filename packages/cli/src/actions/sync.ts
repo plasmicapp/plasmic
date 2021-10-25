@@ -128,6 +128,7 @@ async function ensureRequiredPackages(
 
   const reactWebVersion = findInstalledVersion(
     context,
+    baseDir,
     "@plasmicapp/react-web"
   );
   if (
@@ -145,6 +146,7 @@ async function ensureRequiredPackages(
     // Using automatic runtime requires installing the @plasmicapp/react-web-runtime package
     const runtimeVersion = findInstalledVersion(
       context,
+      baseDir,
       "@plasmicapp/react-web-runtime"
     );
     if (
