@@ -35,6 +35,7 @@ import {
 import { confirmWithUser } from "../utils/user-utils";
 import { ensureFileLocks } from "./0.1.110-fileLocks";
 import { ensureReactRuntime } from "./0.1.146-addReactRuntime";
+import { ensureIndirect } from "./0.1.166-indirect";
 import { migrateInit } from "./0.1.27-migrateInit";
 import { tsToTsx } from "./0.1.28-tsToTsx";
 import { ensureProjectIcons } from "./0.1.31-ensureProjectIcons";
@@ -64,6 +65,7 @@ export const MIGRATIONS: Record<string, MigrateConfigFunc> = {
   "0.1.64": ensureImageFiles,
   "0.1.95": ensureComponentType,
   "0.1.146": ensureReactRuntime,
+  "0.1.166": ensureIndirect,
 };
 
 export const LOCK_MIGRATIONS: Record<string, MigrateLockFunc> = {

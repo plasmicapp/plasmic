@@ -1,4 +1,5 @@
 import L from "lodash";
+import { InvalidatedProjectKind } from "typescript";
 import { SyncArgs } from "../actions/sync";
 import { ProjectVersionMeta, VersionResolution } from "../api";
 import { logger } from "../deps";
@@ -19,6 +20,7 @@ function walkDependencyTree(
   root: ProjectVersionMeta,
   available: ProjectVersionMeta[]
 ): ProjectVersionMeta[] {
+  root.indirect = false;
   const queue: ProjectVersionMeta[] = [root];
   const result: ProjectVersionMeta[] = [];
 
@@ -31,7 +33,10 @@ function walkDependencyTree(
         `Cannot find projectId=${projectId}, version=${version} in the sync resolution results.`
       );
     }
-    return meta;
+    return {
+      ...meta,
+      indirect: meta.projectId !== root.projectId,
+    };
   };
 
   while (queue.length > 0) {
@@ -61,6 +66,7 @@ async function checkProjectMeta(
   const projectId = meta.projectId;
   const projectName = meta.projectName;
   const newVersion = meta.version;
+  const indirect = meta.indirect;
 
   // Checks newVersion against plasmic.lock
   const checkVersionLock = async (): Promise<boolean> => {
@@ -177,6 +183,24 @@ async function checkProjectMeta(
     );
   };
 
+  const checkIndirect = async (): Promise<boolean> => {
+    const projectConfig = context.config.projects.find(
+      (p) => p.projectId === projectId
+    );
+    const configIndirect = projectConfig?.indirect;
+    if (configIndirect && !indirect) {
+      logger.warn(
+        `'${projectName}' was synced indirectly before, but a direct sync was requested. If it has page components, they will be synced and saved to plasmic.json.`
+      );
+      return await confirmWithUser(
+        "Do you want to confirm it?",
+        opts.force || opts.yes,
+        "n"
+      );
+    }
+    return true;
+  };
+
   const projectIds =
     opts.projects.length > 0
       ? opts.projects
@@ -188,7 +212,11 @@ async function checkProjectMeta(
     return true;
   }
 
-  return (await checkVersionLock()) && (await checkVersionRange());
+  return (
+    (await checkVersionLock()) &&
+    (await checkVersionRange()) &&
+    (await checkIndirect())
+  );
 }
 
 /**
@@ -216,12 +244,16 @@ export async function checkVersionResolution(
       ? [root]
       : walkDependencyTree(root, versionResolution.dependencies).reverse();
     for (const m of queue) {
-      // If we haven't seen this yet
       if (!seen.find((p) => p.projectId === m.projectId)) {
         if (await checkProjectMeta(m, root, context, opts)) {
           result.push(m);
         }
         seen.push(m);
+      } else if (root.projectId === m.projectId) {
+        // If m is the root project and it was already seen (maybe as a dep
+        // for another project), set indirect = false.
+        const project = ensure(seen.find((p) => p.projectId === m.projectId));
+        project.indirect = false;
       }
     }
   }

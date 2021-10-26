@@ -234,6 +234,7 @@ export async function sync(
         versionRange || projectConfigMap[projectId]?.version || "latest",
       componentIdOrNames: undefined, // Get all components!
       projectApiToken: projectApiToken || projectIdToToken.get(projectId),
+      indirect: false,
     };
   });
 
@@ -244,6 +245,7 @@ export async function sync(
         versionRange: p.version,
         componentIdOrNames: undefined, // Get all components!
         projectApiToken: p.projectApiToken,
+        indirect: !!p.indirect,
       }));
 
   // Short-circuit if nothing to sync
@@ -259,7 +261,7 @@ export async function sync(
     try {
       context = await getContext(opts);
     } catch (e) {
-      if (e.message.includes("Unable to authenticate Plasmic")) {
+      if ((e as any).message.includes("Unable to authenticate Plasmic")) {
         const configFileName = process.env.PLASMIC_LOADER
           ? LOADER_CONFIG_FILE_NAME
           : CONFIG_FILE_NAME;
@@ -329,6 +331,7 @@ export async function sync(
         projectMeta.dependencies,
         summary,
         pendingMerge,
+        projectMeta.indirect,
         metadataDefaults
       );
     }
@@ -347,15 +350,22 @@ export async function sync(
       await context.api.genStyleConfig(context.config.style)
     );
 
-    // Update project version if specified and successfully synced.
+    // Update project version and indirect status if specified and
+    // successfully synced.
     if (projectWithVersion.length) {
       const versionMap: Record<string, string> = {};
       projectWithVersion.forEach(
         (p) => (versionMap[p.projectId] = p.versionRange)
       );
-      context.config.projects.forEach(
-        (p) => (p.version = versionMap[p.projectId] || p.version)
-      );
+      const indirectMap: Record<string, boolean> = {};
+      projectsToSync.forEach((p) => (indirectMap[p.projectId] = p.indirect));
+      context.config.projects.forEach((p) => {
+        p.version = versionMap[p.projectId] || p.version;
+        // Only update `indirect` if it is set in current config.
+        if (p.projectId in indirectMap && p.indirect) {
+          p.indirect = indirectMap[p.projectId];
+        }
+      });
     }
 
     // Fix imports
@@ -469,6 +479,7 @@ async function syncProject(
   dependencies: { [projectId: string]: string },
   summary: Map<string, ComponentUpdateSummary>,
   pendingMerge: ComponentPendingMerge[],
+  indirect: boolean,
   metadataDefaults?: Metadata
 ): Promise<void> {
   const newComponentScheme =
@@ -512,6 +523,7 @@ async function syncProject(
       },
       opts.metadata
     ),
+    indirect,
   });
 
   // Convert from TSX => JSX
@@ -570,7 +582,8 @@ async function syncProject(
     summary,
     pendingMerge,
     projectBundle.checksums,
-    opts.baseDir
+    opts.baseDir,
+    indirect
   );
   syncCodeComponentsMeta(context, projectId, projectBundle.codeComponentMetas);
   await upsertStyleTokens(context, projectBundle.usedTokens);
@@ -619,7 +632,8 @@ async function syncProjectConfig(
   summary: Map<string, ComponentUpdateSummary>,
   pendingMerge: ComponentPendingMerge[],
   checksums: ChecksumBundle,
-  baseDir: string
+  baseDir: string,
+  indirect: boolean
 ) {
   const defaultCssFilePath = defaultResourcePath(
     context,
@@ -639,6 +653,7 @@ async function syncProjectConfig(
       projectName: projectBundle.projectName,
       version,
       cssFilePath: defaultCssFilePath,
+      indirect,
     })
   );
 

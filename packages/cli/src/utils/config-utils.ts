@@ -171,6 +171,12 @@ export interface ProjectConfig {
   icons: IconConfig[];
   /** Metadata for each synced image in this project */
   images: ImageConfig[];
+
+  /**
+   * True if the project was installed indirectly (as a dependency); if set,
+   * codegen will not generate pages.
+   */
+  indirect: boolean;
 }
 
 export function createProjectConfig(base: {
@@ -179,6 +185,7 @@ export function createProjectConfig(base: {
   projectName: string;
   version: string;
   cssFilePath: string;
+  indirect: boolean;
 }): ProjectConfig {
   return {
     projectId: base.projectId,
@@ -189,6 +196,7 @@ export function createProjectConfig(base: {
     components: [],
     icons: [],
     images: [],
+    indirect: base.indirect,
   };
 }
 
@@ -519,6 +527,7 @@ export function getOrAddProjectConfig(
           icons: [],
           images: [],
           jsBundleThemes: [],
+          indirect: false,
         };
     context.config.projects.push(project);
   }
