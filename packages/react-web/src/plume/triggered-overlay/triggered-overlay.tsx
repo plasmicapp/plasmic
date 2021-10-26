@@ -170,7 +170,8 @@ export function useTriggeredOverlay<
       <FocusScope restoreFocus>
         <DismissButton onDismiss={state.close} />
         {children}
-        <DismissButton onDismiss={state.close} />
+        {/* We don't use the DismissButton at the end because it ends up taking up 1px space :-/ */}
+        {/* <DismissButton onDismiss={state.close} /> */}
       </FocusScope>
     ),
   };
