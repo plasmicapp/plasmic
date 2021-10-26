@@ -1,12 +1,13 @@
 {
   "name": "@plasmicapp/host",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "description": "plasmic library for app hosting",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/host.esm.js",
   "files": [
-    "dist"
+    "dist",
+    "registerComponent"
   ],
   "size-limit": [
     {
@@ -19,7 +20,7 @@
     }
   ],
   "scripts": {
-    "build": "tsdx build",
+    "build": "tsdx build && rollup -c",
     "start": "tsdx watch",
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
@@ -28,7 +29,7 @@
     "analyze": "size-limit --why"
   },
   "dependencies": {
-    "@plasmicapp/preamble": "0.0.16",
+    "@plasmicapp/preamble": "0.0.17",
     "window-or-global": "^1.0.1"
   },
   "devDependencies": {

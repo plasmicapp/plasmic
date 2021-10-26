@@ -36,7 +36,9 @@ declare global {
   }
 }
 
-root.__PlasmicHostVersion = "1";
+if (root.__PlasmicHostVersion == null) {
+  root.__PlasmicHostVersion = "1";
+}
 
 const rootChangeListeners: (() => void)[] = [];
 class PlasmicRootNodeWrapper {
@@ -50,14 +52,16 @@ class PlasmicRootNodeWrapper {
 
 const plasmicRootNode = new PlasmicRootNodeWrapper(null);
 
-root.__Sub = {
-  React,
-  ReactDOM,
-  setPlasmicRootNode,
-  registerRenderErrorListener,
-  repeatedElement,
-  setRepeatedElementFn,
-};
+if (root.__Sub == null) {
+  root.__Sub = {
+    React,
+    ReactDOM,
+    setPlasmicRootNode,
+    registerRenderErrorListener,
+    repeatedElement,
+    setRepeatedElementFn,
+  };
+}
 
 function getPlasmicOrigin() {
   const params = new URL(`https://fakeurl/${location.hash.replace(/#/, "?")}`)
