@@ -61,6 +61,7 @@ function mockProjectToProjectVersionMeta(
           componentIdOrNames.includes(c.id)
       )
       .map((c) => c.id),
+    indirect: false,
   };
 }
 

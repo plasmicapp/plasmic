@@ -76,6 +76,7 @@ export interface ProjectVersionMeta {
   dependencies: {
     [projectId: string]: string;
   };
+  indirect: boolean;
 }
 
 export interface VersionResolution {
@@ -235,6 +236,7 @@ export class PlasmicApi {
       stylesOpts: StyleConfig;
       codeOpts: CodeConfig;
       checksums: ChecksumBundle;
+      indirect: boolean;
       metadata?: Metadata;
     }
   ): Promise<ProjectBundle> {

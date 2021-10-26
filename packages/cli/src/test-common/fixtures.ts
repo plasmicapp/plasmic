@@ -147,6 +147,7 @@ export const project1Config: ProjectConfig = {
   icons: [],
   images: [],
   jsBundleThemes: [],
+  indirect: false,
 };
 
 export function expectProject1PlasmicJson() {

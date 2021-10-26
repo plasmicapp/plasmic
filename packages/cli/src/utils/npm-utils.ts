@@ -1,4 +1,4 @@
-import { exec, execSync, spawnSync } from "child_process";
+import { execSync, spawnSync } from "child_process";
 import glob from "fast-glob";
 import findupSync from "findup-sync";
 import latest from "latest-version";
