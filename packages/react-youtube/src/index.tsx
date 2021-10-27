@@ -1,5 +1,5 @@
 import YouTube from "react-youtube";
-import { registerComponent } from "@plasmicapp/host";
+import registerComponent from "@plasmicapp/host/registerComponent";
 
 registerComponent(YouTube, {
   name: "YouTube",

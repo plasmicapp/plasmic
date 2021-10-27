@@ -1084,18 +1084,18 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@plasmicapp/host@^0.0.31":
-  version "0.0.31"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-0.0.31.tgz#1725f813c8eaae1710dcbae75fcbac16cafc19f7"
-  integrity sha512-LNO6wBjG3yxOJ8/DqVIowtq5V/kQoyseyP+C4zrzfD0YcMJudVR3tSncEoTzFXIUl9vT5qXNciPUHJ8804/2vg==
+"@plasmicapp/host@^0.0.32":
+  version "0.0.32"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-0.0.32.tgz#234f1e14c1de5702ae4ab012f9884691e180db5a"
+  integrity sha512-mXdFYEDnJnMwH/Q7yrGQ2tWDQl+d4Stkd0flI3Mqy9a++pl2Hwj7S7Mr6OPj1k4ohG9nCJZNUJNalxROTsfknA==
   dependencies:
-    "@plasmicapp/preamble" "0.0.16"
+    "@plasmicapp/preamble" "0.0.17"
     window-or-global "^1.0.1"
 
-"@plasmicapp/preamble@0.0.16":
-  version "0.0.16"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/preamble/-/preamble-0.0.16.tgz#795ea0f8b6e96f6fc67d40a52863a0144b31ca56"
-  integrity sha512-GLEHUQMF50XVqvPTTlk+h7UFD7YcuDjiSITeHei0JPdQG9QX3PtA2QRrOQ6uwX0gIZCTyuWqr/GpclJjxBLkgA==
+"@plasmicapp/preamble@0.0.17":
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/preamble/-/preamble-0.0.17.tgz#1216ed3867168b00f40ba301c5cb77fffa92df47"
+  integrity sha512-MOJaXP7/2NJU27qxzlnczQi9V/wSYp/H4TcYC3FRWPcqq4mWYjk3+hynJqPjKUosWnsAqEVBtFCaP/nG5ZURDg==
 
 "@polka/url@^1.0.0-next.20":
   version "1.0.0-next.21"
