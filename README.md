@@ -11,7 +11,7 @@
   The visual web design tool and frontend builder that works with your codebase.
 </h3>
 
-## Quick links
+# Quick links
 
 - [Website](https://www.plasmic.app/)
 - [Documentation](docs)
@@ -20,7 +20,7 @@
 
 [docs]: https://www.plasmic.app/learn/
 
-## Overview
+# Overview
 
 Plasmic is a visual builder for the web.
 Developers integrate this into their codebase,
@@ -40,13 +40,13 @@ Or check out our [Next.js-based talk and demo at Next.js Conf 2021](nextconf-tal
 
 [nextconf-talk]: https://www.youtube.com/watch?v=fhEwNlzzobE
 
-## Get help and join our community
+# Get help and join our community
 
 Connect with the Plasmic team and with other Plasmic users on the [Plasmic Community Slack](slack).
 
 [slack]: https://www.plasmic.app/slack
 
-## Features
+# Features
 
 A smattering of interesting highlights about Plasmic:
 
@@ -57,7 +57,7 @@ A smattering of interesting highlights about Plasmic:
 - **Design fully functional and accessible design system components**. For designers, you can craft completely bespoke, complex design system components like dropdowns, and we wire it up to [react-aria](https://react-spectrum.adobe.com/react-aria/). Most component libraries give you variables to tweak, but here you can completely change the structure and layout of these components.
 - **Versatility in use cases**. Use it as a page builder to create simple static content like marketing/landing pages and promotional sections, or use it as a development tool for visually building complex, stateful React UIs.
 
-## Quickstart
+# Quickstart
 
 In short:
 
@@ -66,13 +66,13 @@ In short:
 
 See the appropriate [quickstart docs](https://www.plasmic.app/learn/quickstart/) for your framework.
 
-## Framework integrations
+# Framework integrations
 
 You can use dedicated client libraries for your specific framework, or you can directly query the REST API to fetch HTML/CSS/JS that you can render in any environment.
 
 ![Frameworks](https://user-images.githubusercontent.com/7129/139351025-8acd6f6d-8e32-4486-982e-a6f26a53d865.png)
 
-## Users of Plasmic
+# Users of Plasmic
 
 Plasmic is used by companies ranging from Fortune 500s to boutique brands to solo makers.
 It's used for headless commerce storefronts to marketing websites.
@@ -85,7 +85,7 @@ Check out the [Case Studies and Community Showcase](customers).
 
 [customers]: https://www.plasmic.app/casestudies
 
-## Technical overview
+# Technical overview
 
 (Read [the full technical overview](https://docs.plasmic.app/learn/technical-overview/).)
 
@@ -110,22 +110,22 @@ The codebase integration can be configured such that
 as users create pages and routes in Plasmic Studio,
 they will be auto-loaded into your app without developer involvement.
 
-### Bring your own React components
+## Bring your own React components
 
 You can register your own arbitrary custom React components for use as building blocks within Plasmic Studio.
 [Learn more about code components](https://code-components.plasmic.site).
 
-### Codegen
+## Codegen
 
 Besides the Headless API, you can also [generate React code](https://docs.plasmic.app/learn/codegen-guide) into your codebase.
-This is a powerful way to use Plasmic as a UI builder for creating rich interactive web applications--one example of this is Plasmic Studio itself.
+This is a powerful way to use Plasmic as a UI builder for creating rich interactive web applications—one example of this is Plasmic Studio itself.
 See the [application development tutorials](https://docs.plasmic.app/learn/minitwitter-tutorial) to learn more.
 
-## Contributing
+# Contributing
 
 We use `lerna` to help us manage dependencies between the `@plasmicapp/loader-*` packages, (though we may pull in more packages to be managed by lerna, right now those are the ones with tight dependencies on each other).
 
-### Getting started
+## Getting started
 
 ```
 yarn lerna bootstrap  # inter-links all the lerna-managed packages together
@@ -148,7 +148,7 @@ packages:
     unpublish: $all
 ```
 
-### Development workflow
+## Development workflow
 
 1. Make some changes!
 
@@ -156,7 +156,7 @@ packages:
 
 3. Install the canary version into wherever you're trying to test, via `yarn add ... --registry=http://localhost:4873`
 
-### Release workflow
+## Release workflow
 
 Run `yarn bump` to bump the versions of the changed packages.  If you already have an existing git commit you want to use, do `yarn bump --amend`.  Submit for code review.
 
