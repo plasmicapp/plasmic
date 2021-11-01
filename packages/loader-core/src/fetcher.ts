@@ -39,7 +39,9 @@ export class PlasmicModulesFetcher {
     }
     console.debug('Plasmic: doing a fresh fetch...');
     this.curFetch = this.doFetch();
-    return await this.curFetch;
+    const data = await this.curFetch;
+    this.curFetch = undefined;
+    return data;
   }
 
   private async doFetch() {

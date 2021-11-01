@@ -26,12 +26,17 @@ export function initPlasmicLoader(
   opts: Parameters<typeof initPlasmicLoaderReact>[0]
 ) {
   const isBrowser = typeof window !== 'undefined';
-  const cache = isBrowser ? undefined : makeCache(opts);
+  const isProd = process.env.NODE_ENV === 'production';
+  const cache = isBrowser || isProd ? undefined : makeCache(opts);
   const loader = initPlasmicLoaderReact({
     onClientSideFetch: 'warn',
     ...opts,
     cache,
     platform: 'nextjs',
+    // For Nextjs 12, revalidate may in fact re-use an existing instance
+    // of PlasmicComponentLoader that's already in memory, so we need to
+    // make sure we don't re-use the data cached in memory.
+    alwaysFresh: isProd && !isBrowser,
   });
   loader.registerModules({
     react: React,
@@ -41,7 +46,7 @@ export function initPlasmicLoader(
   });
 
   if (cache) {
-    if (process.env.NODE_ENV !== 'production') {
+    if (!isProd) {
       console.log(`Subscribing to Plasmic changes...`);
 
       // Import using serverRequire, so webpack doesn't bundle us into client bundle

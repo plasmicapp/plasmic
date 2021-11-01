@@ -25,6 +25,13 @@ export interface InitOptions {
   preview?: boolean;
   host?: string;
   onClientSideFetch?: 'warn' | 'error';
+
+  /**
+   * By default, fetchComponentData() and fetchPages() calls cached in memory
+   * with the PlasmicComponentLoader instance.  If alwaysFresh is true, then
+   * data is always freshly fetched over the network.
+   */
+  alwaysFresh?: boolean;
 }
 
 const isBrowser = typeof window !== 'undefined';
@@ -169,6 +176,27 @@ export class InternalPlasmicComponentLoader {
   async maybeFetchComponentData(
     ...specs: ComponentLookupSpec[]
   ): Promise<ComponentRenderData | null> {
+    const returnWithSpecsToFetch = async (
+      specsToFetch: ComponentLookupSpec[]
+    ) => {
+      await this.fetchMissingData({ missingSpecs: specsToFetch });
+      const {
+        found: existingMetas2,
+        missing: missingSpecs2,
+      } = this.maybeGetCompMetas(...specs);
+      if (missingSpecs2.length > 0) {
+        return null;
+      }
+
+      return prepComponentData(this.bundle, ...existingMetas2);
+    };
+
+    if (this.opts.alwaysFresh) {
+      // If alwaysFresh, then we treat all specs as missing
+      return await returnWithSpecsToFetch(specs);
+    }
+
+    // Else we only fetch actually missing specs
     const {
       found: existingMetas,
       missing: missingSpecs,
@@ -177,18 +205,7 @@ export class InternalPlasmicComponentLoader {
       return prepComponentData(this.bundle, ...existingMetas);
     }
 
-    // TODO: incrementally fetch only what's needed, instead of fetching all
-    await this.fetchMissingData({ missingSpecs });
-
-    const {
-      found: existingMetas2,
-      missing: missingSpecs2,
-    } = this.maybeGetCompMetas(...specs);
-    if (missingSpecs2.length > 0) {
-      return null;
-    }
-
-    return prepComponentData(this.bundle, ...existingMetas2);
+    return await returnWithSpecsToFetch(missingSpecs);
   }
 
   async fetchComponentData(
