@@ -1,5 +1,5 @@
 import * as React from "react";
-import { pick } from "../../common";
+import { omit, pick } from "../../common";
 import { Overrides } from "../../render/elements";
 import {
   AnyPlasmicClass,
@@ -109,11 +109,15 @@ export function useTextInput<
     },
     [config.input]: {
       props: {
+        ...omit(
+          rest as any,
+          ...plasmicClass.internalArgProps,
+          ...plasmicClass.internalVariantProps
+        ),
         disabled: isDisabled,
         ref: inputRef,
         className: inputClassName,
         style: inputStyle,
-        ...rest,
       },
     },
   };
