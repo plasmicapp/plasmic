@@ -1,5 +1,5 @@
 import * as React from "react";
-import { pick } from "../../common";
+import { omit, pick } from "../../common";
 import { Overrides } from "../../render/elements";
 import {
   AnyPlasmicClass,
@@ -86,10 +86,14 @@ export function useButton<P extends BaseButtonProps, C extends AnyPlasmicClass>(
     [config.root]: {
       as: !!link ? "a" : "button",
       props: {
+        ...omit(
+          rest as any,
+          ...plasmicClass.internalArgProps,
+          ...plasmicClass.internalVariantProps
+        ),
         ref: ref,
         disabled: isDisabled,
         ...(!!link && { href: link }),
-        ...rest,
       },
     },
   };
