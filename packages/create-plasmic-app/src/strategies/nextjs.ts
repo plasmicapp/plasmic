@@ -41,7 +41,10 @@ const nextjsStrategy: CPAStrategy = {
     const { projectPath } = args;
 
     const pagesPath = path.join(projectPath, "pages");
-    deleteGlob(path.join(pagesPath, `*.*`), ["[[...plasmicLoaderPage]]"]);
+    deleteGlob(path.join(pagesPath, `*.*`), [
+      "[[...catchall]]",
+      "plasmic-host",
+    ]);
   },
   build: async (args) => {
     const { npmRunCmd, projectPath } = args;

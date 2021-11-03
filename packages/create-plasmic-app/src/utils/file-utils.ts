@@ -10,9 +10,9 @@ import {
   GATSBY_PLUGIN_CONFIG,
 } from "../templates/gatsby";
 import {
-  NEXTJS_DEFAULT_PAGE_JS,
-  NEXTJS_DEFAULT_PAGE_TS,
-  NEXTJS_INIT,
+  makeNextjsCatchallPage,
+  makeNextjsHostPage,
+  makeNextjsInitPage,
 } from "../templates/nextjs";
 import { README } from "../templates/readme";
 import { WELCOME_PAGE } from "../templates/welcomePage";
@@ -83,19 +83,31 @@ module.exports = {
   }
 
   if (loader && projectApiToken) {
-    const initFile = path.join(projectDir, "init.js");
-    await fs.writeFile(initFile, NEXTJS_INIT(projectId, projectApiToken));
+    const initFile = path.join(
+      projectDir,
+      `plasmic-init.${useTypescript ? "ts" : "js"}`
+    );
+    await fs.writeFile(
+      initFile,
+      makeNextjsInitPage(projectId, projectApiToken)
+    );
 
     const pagesFolder = path.join(projectDir, "pages");
     const loaderPage = path.join(
       pagesFolder,
-      `[[...plasmicLoaderPage]].${useTypescript ? "tsx" : "jsx"}`
+      `[[...catchall]].${useTypescript ? "tsx" : "jsx"}`
     );
-
     await fs.writeFile(
       loaderPage,
-      useTypescript ? NEXTJS_DEFAULT_PAGE_TS : NEXTJS_DEFAULT_PAGE_JS
+      makeNextjsCatchallPage(useTypescript ? "ts" : "js")
     );
+
+    const hostPage = path.join(
+      pagesFolder,
+      `plasmic-host.${useTypescript ? "tsx" : "jsx"}`
+    );
+
+    await fs.writeFile(hostPage, makeNextjsHostPage());
   }
 }
 

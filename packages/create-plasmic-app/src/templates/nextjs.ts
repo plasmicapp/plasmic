@@ -1,4 +1,4 @@
-export const NEXTJS_INIT = (
+export const makeNextjsInitPage = (
   projectId: string,
   projectApiToken: string
 ): string =>
@@ -12,23 +12,47 @@ export const PLASMIC = initPlasmicLoader({
       token: "${projectApiToken}",
     },
   ],
+
+  // By default Plasmic will use the last published version of your project.
+  // For development, you can set preview to true, which will use the unpublished
+  // project, allowing you to see your designs without publishing.  Please
+  // only use this for development, as this is significantly slower.
+  preview: false,
 });
+
+// You can register any code components that you want to use here; see
+// https://docs.plasmic.app/learn/code-components-ref/
+// And configure your Plasmic project to use the host url pointing at
+// the /plasmic-host page of your nextjs app (for example,
+// http://localhost:3000/plasmic-host).  See
+// https://docs.plasmic.app/learn/app-hosting/#set-a-plasmic-project-to-use-your-app-host
+
+// PLASMIC.registerComponent(...);
 `.trim();
 
-export const NEXTJS_DEFAULT_PAGE_TS = `
+function ifTs(ts: boolean, str: string) {
+  return ts ? str : "";
+}
+
+export function makeNextjsCatchallPage(format: "ts" | "js"): string {
+  const ts = format === "ts";
+  return `
 import * as React from "react";
 import { PlasmicComponent } from "@plasmicapp/loader-nextjs";
-import { GetStaticPaths, GetStaticProps } from "next";
+${ifTs(ts, `import { GetStaticPaths, GetStaticProps } from "next";\n`)}
 import {
   ComponentRenderData,
   PlasmicRootProvider,
 } from "@plasmicapp/loader-react";
 import Error from "next/error";
-import { PLASMIC } from "../init";
+import { PLASMIC } from "../plasmic-init";
 
-export default function PlasmicLoaderPage(props: {
-  plasmicData?: ComponentRenderData
-}) {
+export default function PlasmicLoaderPage(props${ifTs(
+    ts,
+    `: {
+  plasmicData?: ComponentRenderData;
+}`
+  )}) {
   const { plasmicData } = props;
   if (!plasmicData || plasmicData.entryCompMetas.length === 0) {
     return <Error statusCode={404} />;
@@ -43,13 +67,19 @@ export default function PlasmicLoaderPage(props: {
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const { plasmicLoaderPage } = context.params ?? {};
-  const plasmicPath = typeof plasmicLoaderPage === 'string' ? plasmicLoaderPage : Array.isArray(plasmicLoaderPage) ? \`/\${plasmicLoaderPage.join('/')}\` : '/';
+export const getStaticProps${ifTs(
+    ts,
+    `: GetStaticProps`
+  )} = async (context) => {
+  const { catchall } = context.params ?? {};
+  const plasmicPath = typeof catchall === 'string' ? catchall : Array.isArray(catchall) ? \`/\${catchall.join('/')}\` : '/';
   const plasmicData = await PLASMIC.maybeFetchComponentData(plasmicPath);
   if (plasmicData) {
     return {
       props: { plasmicData },
+
+      // Use revalidate if you want incremental static regeneration
+      revalidate: 60
     };
   }
   return {
@@ -58,65 +88,36 @@ export const getStaticProps: GetStaticProps = async (context) => {
   };
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
+export const getStaticPaths${ifTs(ts, `: GetStaticPaths`)} = async () => {
   const pageModules = await PLASMIC.fetchPages();
   return {
     paths: pageModules.map((mod) => ({
       params: {
-        plasmicLoaderPage: mod.path.substring(1).split("/"),
+        catchall: mod.path.substring(1).split("/"),
       },
     })),
-    fallback: false,
+    fallback: "blocking"
   };
 }
-`.trim();
+  `.trim();
+}
 
-export const NEXTJS_DEFAULT_PAGE_JS = `
-import * as React from "react";
-import { initPlasmicLoader, PlasmicComponent } from "@plasmicapp/loader-nextjs";
-import { PlasmicRootProvider } from "@plasmicapp/loader-react";
-import Error from "next/error";
-import { PLASMIC } from "../init";
+export function makeNextjsHostPage(): string {
+  return `
+import * as React from 'react';
+import { PlasmicCanvasHost } from '@plasmicapp/loader-nextjs';
+import Head from 'next/head';
+import { PLASMIC } from '../plasmic-init';
 
-export default function PlasmicLoaderPage(props) {
-  const { plasmicData } = props;
-  if (!plasmicData || plasmicData.entryCompMetas.length === 0) {
-    return <Error statusCode={404} />;
-  }
-  return (
-    <PlasmicRootProvider
-      loader={PLASMIC}
-      prefetchedData={plasmicData}
-    >
-      <PlasmicComponent component={plasmicData.entryCompMetas[0].name} />
-    </PlasmicRootProvider>
+export default function Host() {
+  return PLASMIC && (
+    <div>
+      <Head>
+        <script src="https://static1.plasmic.app/preamble.js" />
+      </Head>
+      <PlasmicCanvasHost />
+    </div>
   );
 }
-
-export const getStaticProps = async (context) => {
-  const { plasmicLoaderPage } = context.params ?? {};
-  const plasmicPath = typeof plasmicLoaderPage === 'string' ? plasmicLoaderPage : Array.isArray(plasmicLoaderPage) ? \`/\${plasmicLoaderPage.join('/')}\` : '/';
-  const plasmicData = await PLASMIC.maybeFetchComponentData(plasmicPath);
-  if (plasmicData) {
-    return {
-      props: { plasmicData },
-    };
-  }
-  return {
-    // non-Plasmic catch-all
-    props: {},
-  };
+  `.trim();
 }
-
-export const getStaticPaths = async () => {
-  const pageModules = await PLASMIC.fetchPages();
-  return {
-    paths: pageModules.map((mod) => ({
-      params: {
-        plasmicLoaderPage: mod.path.substring(1).split("/"),
-      },
-    })),
-    fallback: false,
-  };
-}
-`.trim();
