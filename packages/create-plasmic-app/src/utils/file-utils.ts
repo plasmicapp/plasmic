@@ -1,14 +1,9 @@
-import { createReadStream, existsSync, promises as fs, unlinkSync } from "fs";
+import { existsSync, promises as fs, unlinkSync } from "fs";
 import glob from "glob";
 import L from "lodash";
-import * as readline from "readline";
 import * as path from "upath";
 import { PlatformType } from "../lib";
-import {
-  GATSBY_404,
-  GATSBY_DEFAULT_PAGE,
-  GATSBY_PLUGIN_CONFIG,
-} from "../templates/gatsby";
+import { GATSBY_404 } from "../templates/gatsby";
 import {
   makeNextjsCatchallPage,
   makeNextjsHostPage,
@@ -126,39 +121,6 @@ export async function writePlasmicLoaderJson(
     ],
   };
   await fs.writeFile(plasmicLoaderJson, JSON.stringify(content));
-}
-
-/**
- * create-gatsby will create a default gatsby-config.js that we need to modify
- * @param absPath
- * @param projectId
- * @returns
- */
-export async function modifyDefaultGatsbyConfig(
-  projectDir: string,
-  projectId: string,
-  projectApiToken: string
-): Promise<void> {
-  const gatsbyConfigFile = path.join(projectDir, "gatsby-config.js");
-  const rl = readline.createInterface({
-    input: createReadStream(gatsbyConfigFile),
-    crlfDelay: Infinity,
-  });
-  let result = "";
-  for await (const line of rl) {
-    result += line + "\n";
-    // Prepend PlasmicLoader to list of plugins
-    if (line.includes("plugins:")) {
-      result += GATSBY_PLUGIN_CONFIG(projectId, projectApiToken);
-    }
-  }
-  await fs.writeFile(gatsbyConfigFile, result);
-
-  const templatesFolder = path.join(projectDir, "src/templates");
-  const defaultPagePath = path.join(templatesFolder, "defaultPlasmicPage.js");
-
-  await fs.mkdir(templatesFolder);
-  await fs.writeFile(defaultPagePath, GATSBY_DEFAULT_PAGE);
 }
 
 /**

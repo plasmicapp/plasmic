@@ -1,5 +1,6 @@
 export const GATSBY_DEFAULT_PAGE = `
 import React from "react";
+import Helmet from "react-helmet";
 import {
   initPlasmicLoader,
   PlasmicComponent,
@@ -14,20 +15,25 @@ export const query = graphql\`
   }
 \`;
 
-const removeTrailingSlash = path =>
-  path === "/" ? "/" : path.replace(/\\/+$/, "");
-
 const PlasmicGatsbyPage = ({ data, location }) => {
   const {
     plasmicComponents,
     plasmicOptions,
   } = data;
+  const pageMeta = plasmicComponents.entryCompMetas[0];
+  const pageMetadata = pageMeta.pageMetadata;
   return (
     <PlasmicRootProvider
       loader={initPlasmicLoader(plasmicOptions)}
       prefetchedData={plasmicComponents}
     >
-      <PlasmicComponent component={removeTrailingSlash(location.pathname)} />
+      <Helmet>
+        {pageMetadata.title && <title>{pageMetadata.title}</title>}
+        {pageMetadata.title && <meta property="og:title" content={pageMetadata.title} /> }
+        {pageMetadata.description && <meta property="og:description" content={pageMetadata.description} />}
+        {pageMetadata.openGraphImageUrl && <meta property="og:image" content={pageMetadata.openGraphImageUrl} />}
+      </Helmet>
+      <PlasmicComponent component={pageMeta.name} />
     </PlasmicRootProvider>
   );
 };
