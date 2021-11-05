@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/loader-gatsby",
-  "version": "1.0.29",
+  "version": "1.0.30",
   "typings": "dist/index.d.ts",
   "license": "MIT",
   "files": [
@@ -9,7 +9,7 @@
   ],
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsdx build --entry src/index.ts",
+    "build": "tsc --outDir ./dist",
     "yalcp": "yalc publish --push",
     "prepare": "yarn build"
   },
@@ -19,16 +19,12 @@
   ],
   "size-limit": [
     {
-      "path": "dist/loader-gatsby.cjs.production.min.js",
-      "limit": "15 KB"
-    },
-    {
-      "path": "dist/loader-gatsby.esm.js",
+      "path": "dist/gatsby-node.js",
       "limit": "15 KB"
     }
   ],
   "peerDependencies": {
-    "gatsby": "^2.0.15 || ^3.0.0",
+    "gatsby": "^2.0.15 || ^3.0.0 || ^4.0.0",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
   },
@@ -38,7 +34,7 @@
     "@rollup/plugin-node-resolve": "^13.0.0",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/lodash": "^4.14.171",
-    "gatsby": "^3.10.1",
+    "gatsby": "^4.0.0",
     "rollup": "^2.47.0",
     "rollup-plugin-dts": "^3.0.1",
     "rollup-plugin-typescript2": "^0.30.0",
@@ -47,9 +43,9 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "@plasmicapp/loader-core": "1.0.24",
-    "@plasmicapp/loader-react": "1.0.34",
-    "@plasmicapp/watcher": "1.0.20",
+    "@plasmicapp/loader-core": "1.0.25",
+    "@plasmicapp/loader-react": "1.0.35",
+    "@plasmicapp/watcher": "1.0.21",
     "lodash": "^4.17.21"
   }
 }

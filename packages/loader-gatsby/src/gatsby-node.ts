@@ -38,12 +38,10 @@ const SOURCE_MAX_WAIT_TIME = 10000; // 10 seconds
 let allPaths: string[] = [];
 
 export const sourceNodes = async (
-  { actions, /* createNodeId, */ createContentDigest, reporter }: any,
+  { actions, createContentDigest, reporter }: any,
   opts: GatsbyPluginOptions
 ) => {
-  const { createNode, createTypes, deleteNode } = actions;
-
-  createTypes(PLASMIC_DATA_TYPE);
+  const { createNode, deleteNode } = actions;
 
   let allComponents: any[] = [];
 
@@ -58,9 +56,6 @@ export const sourceNodes = async (
     });
 
     const components = await PLASMIC.fetchComponents();
-
-    // const getNodeId = (projectId, componentName) =>
-    // createNodeId(`@plasmicapp/loader-gatsby/${projectId}-${componentName}`);
 
     for (const component of allComponents) {
       const hasComponent = components.some((c) => c.name === component.name);
@@ -148,8 +143,14 @@ export const createResolvers = (
   createResolvers({
     Query: {
       plasmicComponents: {
+        type: "JSON",
+        args: {
+          componentNames: `[String]!`,
+        },
         resolve(source, args, context, info) {
           const { componentNames } = args;
+          // `getAllNodes` is a deprecated function that is going to be a breaking change
+          // in Gatsby v5, for now is being maintained to keep support for < v4 projects
           const components = context.nodeModel.getAllNodes({
             type: PLASMIC_NODE_NAME,
           });
@@ -174,6 +175,7 @@ export const createResolvers = (
         },
       },
       plasmicOptions: {
+        type: "JSON",
         resolve() {
           return {
             projects: opts.projects,
@@ -184,6 +186,11 @@ export const createResolvers = (
       },
     },
   });
+};
+
+export const createSchemaCustomization = ({ actions }) => {
+  const { createTypes } = actions;
+  createTypes(PLASMIC_DATA_TYPE);
 };
 
 export const createPages = async (

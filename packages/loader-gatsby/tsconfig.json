@@ -1,7 +1,8 @@
 {
-  "include": ["src"],
+  "include": ["src/*.ts"],
+  "exclude": ["node_modules"],
   "compilerOptions": {
-    "module": "esnext",
+    "module": "commonjs",
     "lib": ["dom", "esnext"],
     "importHelpers": true,
     "declaration": true,
