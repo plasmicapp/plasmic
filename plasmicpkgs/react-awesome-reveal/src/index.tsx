@@ -6,7 +6,6 @@ import {
   Flip,
   Hinge,
   JackInTheBox,
-  Roll,
   Rotate,
   Slide,
   Zoom,
@@ -18,7 +17,9 @@ const effectNameToComponent = {
   flip: Flip,
   hinge: Hinge,
   jackinthebox: JackInTheBox,
-  roll: Roll,
+  // Roll seems not to be working properly in the canvas as of
+  // `react-awesome-reveal@3.8.1`
+  /* roll: Roll, */
   rotate: Rotate,
   slide: Slide,
   zoom: Zoom,
@@ -50,7 +51,7 @@ export function Reveal({
     ) : (
       <div> {props.children} </div>
     );
-  return <Comp {...props} children={children} />;
+  return <Comp className={className} {...props} children={children} />;
 }
 
 registerComponent(Reveal, {
@@ -72,13 +73,12 @@ registerComponent(Reveal, {
       type: "slot",
       defaultValue: "Reveal text",
     },
-    // Keeping only basic props for now
-    /* damping: {
+    damping: {
       type: "number",
       displayName: "Damping",
       description:
         "Factor that affects the delay that each animated element in a cascade animation will be assigned (defaults to 0.5)",
-    }, */
+    },
     delay: {
       type: "number",
       displayName: "Delay",
