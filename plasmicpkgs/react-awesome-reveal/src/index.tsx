@@ -57,11 +57,12 @@ registerComponent(Reveal, {
   name: "Reveal",
   importPath: "@plasmicpkgs/react-awesome-reveal",
   props: {
-    big: {
+    // `big` seems not to be working properly as of `react-awesome-reveal@3.8.1`
+    /* big: {
       type: "boolean",
       displayName: "Big",
       description: `Causes the animation to start farther. Only applied to "fade" Effect and "down", "left", "right" and "up" directions`,
-    },
+    }, */
     cascade: {
       type: "boolean",
       displayName: "Cascade",
@@ -71,12 +72,13 @@ registerComponent(Reveal, {
       type: "slot",
       defaultValue: "Reveal text",
     },
-    damping: {
+    // Keeping only basic props for now
+    /* damping: {
       type: "number",
       displayName: "Damping",
       description:
         "Factor that affects the delay that each animated element in a cascade animation will be assigned (defaults to 0.5)",
-    },
+    }, */
     delay: {
       type: "number",
       displayName: "Delay",
@@ -111,12 +113,13 @@ registerComponent(Reveal, {
       displayName: "Effect",
       description: "The Reveal animation effect to be applied",
     },
-    fraction: {
+    // `fraction` seems not to be working properly as of `react-awesome-reveal@3.8.1`
+    /* fraction: {
       type: "number",
       displayName: "Fraction",
       description:
         "Float number between 0 and 1 indicating how much the element should be in viewport before the animation is triggered",
-    },
+    }, */
     reverse: {
       type: "boolean",
       displayName: "Reverse",
