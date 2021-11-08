@@ -51,34 +51,35 @@ const booleanParamsSet = new Set<string>(booleanParams);
 
 const YouTube = React.forwardRef<YouTubeImpl, YouTubeProps>(
   (props: YouTubeProps, ref) => {
+    const finalProps = { ...props };
     for (const prop of playerParams) {
-      if (prop in props) {
-        const value = props[prop];
-        delete props[prop];
-        if (!props.opts) {
-          props.opts = {};
+      if (prop in finalProps) {
+        const value = finalProps[prop];
+        delete finalProps[prop];
+        if (!finalProps.opts) {
+          finalProps.opts = {};
         }
-        if (!props.opts.playerVars) {
-          props.opts.playerVars = {};
+        if (!finalProps.opts.playerVars) {
+          finalProps.opts.playerVars = {};
         }
         if (booleanParamsSet.has(prop)) {
           if (prop === "cc_load_policy" || prop === "modestbranding") {
             // undefined or 1
             if (value) {
-              props.opts.playerVars[prop] = 1;
+              finalProps.opts.playerVars[prop] = 1;
             } else {
-              delete props.opts.playerVars[prop];
+              delete finalProps.opts.playerVars[prop];
             }
           } else {
             // 0 or 1
-            props.opts.playerVars[prop] = (value ? 1 : 0) as any;
+            finalProps.opts.playerVars[prop] = (value ? 1 : 0) as any;
           }
         } else {
-          props.opts.playerVars[prop] = value as any;
+          finalProps.opts.playerVars[prop] = value as any;
         }
       }
     }
-    return <YouTubeImpl ref={ref} {...props} />;
+    return <YouTubeImpl ref={ref} {...finalProps} />;
   }
 );
 
