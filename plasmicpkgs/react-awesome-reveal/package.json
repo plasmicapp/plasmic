@@ -1,21 +1,21 @@
 {
   "name": "@plasmicpkgs/react-awesome-reveal",
-  "version": "3.8.0",
-  "description": "Plasmic registration call for react-youtube",
+  "version": "3.8.1",
+  "description": "Plasmic registration call for react-awesome-reveal",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "module": "dist/react-youtube.esm.js",
+  "module": "dist/react-awesome-reveal.esm.js",
   "files": [
     "dist"
   ],
   "size-limit": [
     {
-      "path": "dist/react-youtube.cjs.production.min.js",
-      "limit": "10 KB"
+      "path": "dist/react-awesome-reveal.cjs.production.min.js",
+      "limit": "15 KB"
     },
     {
-      "path": "dist/react-youtube.esm.js",
-      "limit": "10 KB"
+      "path": "dist/react-awesome-reveal.esm.js",
+      "limit": "15 KB"
     }
   ],
   "scripts": {
