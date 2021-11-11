@@ -1,3 +1,5 @@
+import { ifTs } from "../utils/file-utils";
+
 export const makeNextjsInitPage = (
   projectId: string,
   projectApiToken: string
@@ -29,10 +31,6 @@ export const PLASMIC = initPlasmicLoader({
 
 // PLASMIC.registerComponent(...);
 `.trim();
-
-function ifTs(ts: boolean, str: string) {
-  return ts ? str : "";
-}
 
 export function makeNextjsCatchallPage(format: "ts" | "js"): string {
   const ts = format === "ts";

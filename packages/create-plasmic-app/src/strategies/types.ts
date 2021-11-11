@@ -13,6 +13,7 @@ interface ConfigArgs {
 
 interface OverwriteFilesArgs {
   projectPath: string;
+  useTypescript: boolean;
 }
 
 interface BuildArgs {

@@ -3,8 +3,11 @@ import path from "path";
 import * as readline from "readline";
 import {
   GATSBY_404,
-  GATSBY_DEFAULT_PAGE,
   GATSBY_PLUGIN_CONFIG,
+  GATSBY_SSR_CONFIG,
+  makeGatsbyDefaultPage,
+  makeGatsbyHostPage,
+  makeGatsbyPlasmicInit,
 } from "../templates/gatsby";
 import { spawnOrFail } from "../utils/cmd-utils";
 import { deleteGlob } from "../utils/file-utils";
@@ -17,12 +20,10 @@ const gatsbyStrategy: CPAStrategy = {
     const createCommand = `npx -p gatsby gatsby new ${projectPath}`;
     const templateArg = template ? ` ${template}` : "";
 
-    // Default Gatsby starter already supports Typescript
-    // See where we `touch tsconfig.json` later on
     await spawnOrFail(`${createCommand}${templateArg}`);
   },
   configLoader: async (args) => {
-    const { projectId, projectPath, projectApiToken } = args;
+    const { projectId, projectPath, projectApiToken, useTypescript } = args;
 
     const installResult = await installUpgrade("@plasmicapp/loader-gatsby", {
       workingDir: projectPath,
@@ -43,7 +44,11 @@ const gatsbyStrategy: CPAStrategy = {
       result += line + "\n";
       // Prepend PlasmicLoader to list of plugins
       if (line.includes("plugins:")) {
-        result += GATSBY_PLUGIN_CONFIG(projectId, projectApiToken);
+        result += GATSBY_PLUGIN_CONFIG(
+          projectId,
+          projectApiToken,
+          useTypescript
+        );
       }
     }
     await fs.writeFile(gatsbyConfigFile, result);
@@ -51,25 +56,45 @@ const gatsbyStrategy: CPAStrategy = {
   overwriteFiles: async (args) => {
     // in gatsby we can delete all existing pages/components, since all pages are going
     // to be handled by templates/defaultPlasmicPage
-    const { projectPath } = args;
+    const { projectPath, useTypescript } = args;
+
+    const extension = useTypescript ? "ts" : "js";
 
     deleteGlob(path.join(projectPath, "src/@(pages|components|templates)/*.*"));
 
     // Create a very basic 404 page - `gatsby build` fails without it.
-    // We've deleted the components that the default 404 page depended
-    // on, so
-    await fs.writeFile(path.join(projectPath, "src/pages/404.js"), GATSBY_404);
+    await fs.writeFile(path.join(projectPath, `src/pages/404.js`), GATSBY_404);
+
+    await fs.writeFile(
+      path.join(projectPath, `src/plasmic-init.${extension}`),
+      makeGatsbyPlasmicInit(extension)
+    );
+
+    // Add plasmic-host page
+    await fs.writeFile(
+      path.join(projectPath, `src/pages/plasmic-host.${extension}x`),
+      makeGatsbyHostPage(extension)
+    );
 
     // Start with an empty gatsby-node.js
     await fs.writeFile(path.join(projectPath, "gatsby-node.js"), "");
 
+    // Updates `gatsby-ssr` to include script tag for preamble
+    await fs.writeFile(
+      path.join(projectPath, "gatsby-ssr.js"),
+      GATSBY_SSR_CONFIG
+    );
+
     const templatesFolder = path.join(projectPath, "src/templates");
-    const defaultPagePath = path.join(templatesFolder, "defaultPlasmicPage.js");
+    const defaultPagePath = path.join(
+      templatesFolder,
+      `defaultPlasmicPage.${extension}x`
+    );
 
     if (!existsSync(templatesFolder)) {
       await fs.mkdir(templatesFolder);
     }
-    await fs.writeFile(defaultPagePath, GATSBY_DEFAULT_PAGE);
+    await fs.writeFile(defaultPagePath, makeGatsbyDefaultPage(extension));
   },
   build: async (args) => {
     const { npmRunCmd, projectPath } = args;

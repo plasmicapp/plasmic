@@ -84,8 +84,10 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
     template,
   });
 
-  // Ensure that
-  if (useTypescript) {
+  // Ensure that we have a empty tsconfig and @types packages
+  // Gatsby by default supports typescript handling internally
+  // tsconfig so we don't have to ensure it
+  if (useTypescript && platform !== "gatsby") {
     await ensureTsconfig(resolvedProjectPath);
   }
 
@@ -136,7 +138,10 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
   }
 
   if (scheme === "loader") {
-    await cpaStrategy.overwriteFiles({ projectPath: resolvedProjectPath });
+    await cpaStrategy.overwriteFiles({
+      projectPath: resolvedProjectPath,
+      useTypescript,
+    });
   } else if (scheme === "codegen") {
     // The loader files to be overwritten are handled by cpaStrategy
     // but for codegen we still have to run it

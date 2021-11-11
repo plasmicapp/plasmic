@@ -384,3 +384,7 @@ export const wrapRootElement = ({ element }) => {
     await fs.writeFile(ssrFilePath, wrapperContent);
   }
 }
+
+export function ifTs(ts: boolean, str: string) {
+  return ts ? str : "";
+}
