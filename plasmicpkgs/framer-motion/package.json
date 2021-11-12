@@ -1,0 +1,46 @@
+{
+  "name": "@plasmicpkgs/framer-motion",
+  "version": "0.0.1",
+  "description": "Plasmic registration call for Framer Motion",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/framer-motion.esm.js",
+  "files": [
+    "dist"
+  ],
+  "size-limit": [
+    {
+      "path": "dist/framer-motion.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/framer-motion.esm.js",
+      "limit": "10 KB"
+    }
+  ],
+  "scripts": {
+    "build": "tsdx build",
+    "start": "tsdx watch",
+    "test": "tsdx test --passWithNoTests",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
+  },
+  "devDependencies": {
+    "@size-limit/preset-small-lib": "^4.11.0",
+    "@types/node": "^14.0.26",
+    "size-limit": "^4.11.0",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.2.0",
+    "typescript": "^3.9.7"
+  },
+  "dependencies": {
+    "@plasmicapp/host": "^0.0.32",
+    "framer-motion": "^5.3.0"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  }
+}
