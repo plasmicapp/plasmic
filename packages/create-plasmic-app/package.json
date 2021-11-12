@@ -1,6 +1,6 @@
 {
   "name": "create-plasmic-app",
-  "version": "0.0.34",
+  "version": "0.0.35",
   "description": "Create Plasmic-powered React apps",
   "main": "./dist/lib.js",
   "types": "./dist/lib.d.ts",

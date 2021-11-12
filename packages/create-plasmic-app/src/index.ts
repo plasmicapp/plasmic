@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import { setMetadataEnv } from "@plasmicapp/cli";
 import * as Sentry from "@sentry/node";
-import chalk from "chalk";
 import * as fs from "fs";
 import inquirer, { DistinctQuestion } from "inquirer";
 import * as path from "upath";
@@ -179,16 +178,14 @@ async function run(): Promise<void> {
 
   // Get the projectId
   console.log();
-  console.log(chalk.green.bold("Go to this URL and **clone** the project:"));
-  console.log("https://studio.plasmic.app/starters/simple-light");
-  console.log();
-  console.log("  Note the project ID in the URL redirect");
-  console.log("  (e.g. https://studio.plasmic.app/projects/PROJECT_ID)");
   let projectId: string | undefined;
   while (!projectId) {
     const rawProjectId = await maybePrompt({
       name: "projectId",
-      message: "What is the project ID of your project?",
+      message: `What is the URL of your project?
+(If you don't have a project yet, create one by going to
+https://studio.plasmic.app/starters/simple-light):
+`,
     });
     projectId = rawProjectId
       .replace("https://studio.plasmic.app/projects/", "")

@@ -94,7 +94,7 @@ export const getStaticPaths${ifTs(ts, `: GetStaticPaths`)} = async () => {
         catchall: mod.path.substring(1).split("/"),
       },
     })),
-    fallback: "blocking"
+    fallback: process.env.STATIC_EXPORT ? false : "blocking"
   };
 }
   `.trim();
