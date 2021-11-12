@@ -21,7 +21,7 @@ const Video = React.forwardRef<HTMLVideoElement, VideoProps>(
 
 registerComponent(Video, {
   name: "Video",
-  importPath: "@plasmicpkgs/html-video",
+  importPath: "@plasmicpkgs/plasmic-basic-components",
   props: {
     src: {
       type: "string",

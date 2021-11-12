@@ -1,20 +1,20 @@
 {
-  "name": "@plasmicpkgs/html-video",
+  "name": "@plasmicpkgs/plasmic-basic-components",
   "version": "0.0.1",
   "description": "Plasmic registration call for the HTML5 video element",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "module": "dist/html-video.esm.js",
+  "module": "dist/plasmic-basic-components.esm.js",
   "files": [
     "dist"
   ],
   "size-limit": [
     {
-      "path": "dist/html-video.cjs.production.min.js",
+      "path": "dist/plasmic-basic-components.cjs.production.min.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/html-video.esm.js",
+      "path": "dist/plasmic-basic-components.esm.js",
       "limit": "10 KB"
     }
   ],
