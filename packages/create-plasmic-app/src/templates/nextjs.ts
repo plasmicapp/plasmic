@@ -94,7 +94,10 @@ export const getStaticPaths${ifTs(ts, `: GetStaticPaths`)} = async () => {
         catchall: mod.path.substring(1).split("/"),
       },
     })),
-    fallback: process.env.STATIC_EXPORT ? false : "blocking"
+
+    // Turn on "fallback: 'blocking'" if you would like new paths created
+    // in Plasmic to be automatically available
+    fallback: false,
   };
 }
   `.trim();
