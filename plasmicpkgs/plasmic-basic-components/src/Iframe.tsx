@@ -6,17 +6,13 @@ import React, { useContext } from "react";
 
 export interface IframeProps {
   src: string;
-  previewWhileEditing?: boolean;
+  hideInEditor?: boolean;
   className?: string;
 }
 
-export default function Iframe({
-  previewWhileEditing,
-  src,
-  className,
-}: IframeProps) {
+export default function Iframe({ hideInEditor, src, className }: IframeProps) {
   const isEditing = useContext(PlasmicCanvasContext);
-  if (isEditing && !previewWhileEditing) {
+  if (isEditing && !hideInEditor) {
     return (
       <div className={className}>
         <div
@@ -53,10 +49,10 @@ registerComponent(Iframe, {
       type: "string",
       defaultValue: "https://www.example.com",
     },
-    previewWhileEditing: {
+    hideInEditor: {
       type: "boolean",
       displayName: "Preview",
-      description: "Load the iframe even while editing in Plasmic Studio",
+      description: "Load the iframe while editing in Plasmic Studio",
     },
   },
   isDefaultExport: true,
