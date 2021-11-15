@@ -71,7 +71,12 @@ registerComponent(Reveal, {
     },
     children: {
       type: "slot",
-      defaultValue: "Reveal text",
+      defaultValue: [
+        {
+          type: "img",
+          src: "https://placekitten.com/300/200",
+        },
+      ],
     },
     damping: {
       type: "number",
@@ -98,6 +103,7 @@ registerComponent(Reveal, {
         "top-right",
         "up",
       ],
+      defaultValue: "up",
       displayName: "Direction",
       description:
         "Origin of the animation (the valid values depend on the chosen Effect)",
