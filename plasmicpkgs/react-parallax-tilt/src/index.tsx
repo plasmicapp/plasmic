@@ -18,7 +18,16 @@ registerComponent(Tilt, {
   name: "Tilt",
   importPath: "@plasmicpkgs/react-parallax-tilt",
   props: {
-    children: "slot",
+    children: {
+      type: "slot",
+      defaultValue: {
+        type: "img",
+        src: "https://placekitten.com/300/200",
+        style: {
+          maxWidth: "100%",
+        },
+      },
+    },
     tiltEnable: {
       type: "boolean",
       // defaultValueHint: true,
