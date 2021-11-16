@@ -1,10 +1,26 @@
 import { LoaderBundleOutput } from './api';
 
+const isBrowser =
+  typeof window !== 'undefined' &&
+  window != null &&
+  typeof window.document !== 'undefined';
+
 export class Registry {
+  // Singleton
+  private static instance: Registry | undefined = undefined;
+
   private loadedModules: Record<string, any> = {};
   private registeredModules: Record<string, any> = {};
   private modules: Record<string, string> = {};
-  constructor() {}
+  private constructor() {}
+
+  public static getInstance() {
+    if (!Registry.instance) {
+      Registry.instance = new Registry();
+    }
+
+    return Registry.instance;
+  }
 
   register(name: string, module: any) {
     this.registeredModules[name] = module;
@@ -16,6 +32,10 @@ export class Registry {
 
   clear() {
     this.loadedModules = {};
+  }
+
+  getRegisteredModule(name: string) {
+    return this.registeredModules[name];
   }
 
   hasModule(name: string, opts: { forceOriginal?: boolean } = {}) {
@@ -41,21 +61,37 @@ export class Registry {
 
     const code = this.modules[name];
 
-    const require = (dep: string) => {
-      const normalizedDep = resolvePath(dep, name);
-      return this.load(normalizedDep);
-    };
+    const requireFn = isBrowser
+      ? (dep: string) => {
+          const normalizedDep = resolvePath(dep, name);
+          return this.load(normalizedDep);
+        }
+      : (dep: string) => {
+          try {
+            const normalizedDep = resolvePath(dep, name);
+            return this.load(normalizedDep);
+          } catch (err) {
+            try {
+              // Might be a nodeJs module such as tty
+              return eval('require')(dep);
+            } catch {
+              throw err;
+            }
+          }
+        };
 
     const func = new Function('require', 'exports', code);
     const exports = {};
     this.loadedModules[name] = exports;
-    func(require, exports);
+    func(requireFn, exports);
     return exports;
   }
 
   updateModules(bundle: LoaderBundleOutput) {
     let updated = false;
-    for (const mod of bundle.modules) {
+    for (const mod of isBrowser
+      ? bundle.modules.browser
+      : bundle.modules.server) {
       if (mod.type === 'code' && mod.code !== this.modules[mod.fileName]) {
         this.modules[mod.fileName] = mod.code;
         updated = true;

@@ -49,7 +49,10 @@ export interface FontMeta {
 }
 
 export interface LoaderBundleOutput {
-  modules: (CodeModule | AssetModule)[];
+  modules: {
+    browser: (CodeModule | AssetModule)[];
+    server: (CodeModule | AssetModule)[];
+  };
   external: string[];
   components: ComponentMeta[];
   globalGroups: GlobalGroupMeta[];
@@ -73,7 +76,7 @@ export interface AssetModule {
   type: 'asset';
 }
 
-const VERSION = '2';
+const VERSION = '3';
 
 export class Api {
   private host: string;

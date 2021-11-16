@@ -53,7 +53,8 @@ export class ComponentLookup {
   }
 
   getCss(): AssetModule[] {
-    return this.bundle.modules.filter(
+    // We can probably always get the modules from the browser build
+    return this.bundle.modules.browser.filter(
       (mod) => mod.type === 'asset' && mod.fileName.endsWith('css')
     ) as AssetModule[];
   }

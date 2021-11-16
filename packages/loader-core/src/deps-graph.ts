@@ -3,7 +3,7 @@ import { LoaderBundleOutput } from './api';
 export class DepsGraph {
   private dependsOn: Record<string, string[]> = {};
   private dependedBy: Record<string, string[]> = {};
-  constructor(private bundle: LoaderBundleOutput) {
+  constructor(private bundle: LoaderBundleOutput, private browserBuild = true) {
     this.rebuildGraph();
   }
 
@@ -41,7 +41,9 @@ export class DepsGraph {
   private rebuildGraph() {
     this.dependedBy = {};
     this.dependsOn = {};
-    for (const mod of this.bundle.modules) {
+    for (const mod of this.browserBuild
+      ? this.bundle.modules.browser
+      : this.bundle.modules.server) {
       if (mod.type === 'code') {
         for (const imported of mod.imports) {
           if (!(mod.fileName in this.dependsOn)) {

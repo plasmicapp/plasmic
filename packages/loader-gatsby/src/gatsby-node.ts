@@ -10,7 +10,7 @@ import serverRequire from "./server-require";
 export const onPreInit = ({ reporter }) =>
   reporter.success("Loaded @plasmicapp/loader-gatsby");
 
-type GatsbyPluginOptions = InitOptions & {
+export type GatsbyPluginOptions = InitOptions & {
   defaultPlasmicPage?: string;
   ignorePaths?: string[];
 };

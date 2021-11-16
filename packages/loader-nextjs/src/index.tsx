@@ -4,6 +4,8 @@ import * as NextHead from 'next/head';
 import * as NextLink from 'next/link';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import * as jsxDevRuntime from 'react/jsx-dev-runtime';
+import * as jsxRuntime from 'react/jsx-runtime';
 import { makeCache } from './cache';
 import serverRequire from './server-require';
 export {
@@ -43,6 +45,8 @@ export function initPlasmicLoader(
     'react-dom': ReactDOM,
     'next/head': NextHead,
     'next/link': NextLink,
+    'react/jsx-runtime': jsxRuntime,
+    'react/jsx-dev-runtime': jsxDevRuntime,
   });
 
   if (cache) {

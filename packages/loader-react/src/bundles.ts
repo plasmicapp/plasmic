@@ -8,7 +8,9 @@ import type { ComponentRenderData } from './loader';
 function getUsedComps(allComponents: ComponentMeta[], entryCompIds: string[]) {
   const q: string[] = [...entryCompIds];
   const seenIds = new Set<string>(entryCompIds);
-  const componentMetaById = new Map<string, ComponentMeta>(allComponents.map((meta) => [meta.id, meta]));
+  const componentMetaById = new Map<string, ComponentMeta>(
+    allComponents.map((meta) => [meta.id, meta])
+  );
   const usedComps: ComponentMeta[] = [];
   while (q.length > 0) {
     const [id] = q.splice(0, 1);
@@ -39,7 +41,10 @@ export function prepComponentData(
     };
   }
 
-  const usedComps = getUsedComps(bundle.components, compMetas.map((compMeta) => compMeta.id));
+  const usedComps = getUsedComps(
+    bundle.components,
+    compMetas.map((compMeta) => compMeta.id)
+  );
   const compPaths = usedComps.map((compMeta) => compMeta.entry);
   const subBundle = getBundleSubset(
     bundle,
@@ -83,12 +88,26 @@ export function mergeBundles(
     };
   }
 
-  const existingModules = new Set(target.modules.map((m) => m.fileName));
-  const newModules = from.modules.filter(
-    (m) => !existingModules.has(m.fileName)
-  );
-  if (newModules.length > 0) {
-    target = { ...target, modules: [...target.modules, ...newModules] };
+  const existingModules = {
+    browser: new Set(target.modules.browser.map((m) => m.fileName)),
+    server: new Set(target.modules.server.map((m) => m.fileName)),
+  };
+  const newModules = {
+    browser: from.modules.browser.filter(
+      (m) => !existingModules.browser.has(m.fileName)
+    ),
+    server: from.modules.server.filter(
+      (m) => !existingModules.server.has(m.fileName)
+    ),
+  };
+  if (newModules.browser.length > 0 || newModules.server.length > 0) {
+    target = {
+      ...target,
+      modules: {
+        browser: [...target.modules.browser, ...newModules.browser],
+        server: [...target.modules.server, ...newModules.server],
+      },
+    };
   }
 
   const existingGlobalIds = new Set(target.globalGroups.map((g) => g.id));

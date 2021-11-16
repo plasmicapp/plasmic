@@ -12,6 +12,8 @@ import {
 } from '@plasmicapp/loader-core';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import * as jsxDevRuntime from 'react/jsx-dev-runtime';
+import * as jsxRuntime from 'react/jsx-runtime';
 import { mergeBundles, prepComponentData } from './bundles';
 import { ComponentLookup } from './component-lookup';
 import { createUseGlobalVariant } from './global-variants';
@@ -58,6 +60,8 @@ export function initPlasmicLoader(opts: InitOptions): PlasmicComponentLoader {
   internal.registerModules({
     react: React,
     'react-dom': ReactDOM,
+    'react/jsx-runtime': jsxRuntime,
+    'react/jsx-dev-runtime': jsxDevRuntime,
   });
   return new PlasmicComponentLoader(internal);
 }
@@ -86,7 +90,10 @@ export class InternalPlasmicComponentLoader {
   private roots: PlasmicRootWatcher[] = [];
   private globalVariants: GlobalVariantSpec[] = [];
   private bundle: LoaderBundleOutput = {
-    modules: [],
+    modules: {
+      browser: [],
+      server: [],
+    },
     components: [],
     globalGroups: [],
     external: [],
@@ -94,7 +101,7 @@ export class InternalPlasmicComponentLoader {
   };
 
   constructor(private opts: InitOptions) {
-    this.registry = new Registry();
+    this.registry = Registry.getInstance();
     this.fetcher = new PlasmicModulesFetcher(opts);
   }
 
@@ -107,14 +114,20 @@ export class InternalPlasmicComponentLoader {
   }
 
   registerModules(modules: Record<string, any>) {
-    if (!this.registry.isEmpty()) {
-      console.warn(
-        'Calling PlasmicComponentLoader.registerModules() after Plasmic component has rendered; starting over.'
-      );
-      this.registry.clear();
-    }
-    for (const key of Object.keys(modules)) {
-      this.registry.register(key, modules[key]);
+    if (
+      Object.keys(modules).some(
+        (name) => this.registry.getRegisteredModule(name) !== modules[name]
+      )
+    ) {
+      if (!this.registry.isEmpty()) {
+        console.warn(
+          'Calling PlasmicComponentLoader.registerModules() after Plasmic component has rendered; starting over.'
+        );
+        this.registry.clear();
+      }
+      for (const key of Object.keys(modules)) {
+        this.registry.register(key, modules[key]);
+      }
     }
   }
 
@@ -160,7 +173,10 @@ export class InternalPlasmicComponentLoader {
 
   clearCache() {
     this.bundle = {
-      modules: [],
+      modules: {
+        browser: [],
+        server: [],
+      },
       components: [],
       globalGroups: [],
       external: [],

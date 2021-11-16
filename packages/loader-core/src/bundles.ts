@@ -1,6 +1,8 @@
 import { LoaderBundleOutput } from './api';
 import { DepsGraph } from './deps-graph';
 
+// Get sub-bundle including only modules from browser build that are reachable
+// from `names`.
 export function getBundleSubset(
   bundle: LoaderBundleOutput,
   ...names: string[]
@@ -11,11 +13,14 @@ export function getBundleSubset(
   const isSubModule = (fileName: string) =>
     deps.has(fileName) || namesSet.has(fileName);
   return {
-    modules: bundle.modules.filter((mod) => isSubModule(mod.fileName)),
+    modules: {
+      browser: bundle.modules.browser.filter((mod) =>
+        isSubModule(mod.fileName)
+      ),
+      server: [],
+    },
     external: bundle.external.filter((dep) => deps.has(dep)),
-    components: bundle.components.filter(
-      (c) => isSubModule(c.entry)
-    ),
+    components: bundle.components.filter((c) => isSubModule(c.entry)),
     globalGroups: bundle.globalGroups,
     projects: bundle.projects,
   };
