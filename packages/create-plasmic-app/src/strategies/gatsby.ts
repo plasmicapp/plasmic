@@ -8,10 +8,13 @@ import {
   makeGatsbyDefaultPage,
   makeGatsbyHostPage,
   makeGatsbyPlasmicInit,
+  wrapAppRootForCodegen,
 } from "../templates/gatsby";
 import { spawnOrFail } from "../utils/cmd-utils";
-import { deleteGlob } from "../utils/file-utils";
+import { deleteGlob, overwriteIndex } from "../utils/file-utils";
+import { ensure } from "../utils/lang-utils";
 import { installUpgrade } from "../utils/npm-utils";
+import { installCodegenDeps, runCodegenSync } from "./common";
 import { CPAStrategy } from "./types";
 
 const gatsbyStrategy: CPAStrategy = {
@@ -22,41 +25,56 @@ const gatsbyStrategy: CPAStrategy = {
 
     await spawnOrFail(`${createCommand}${templateArg}`);
   },
-  configLoader: async (args) => {
-    const { projectId, projectPath, projectApiToken, useTypescript } = args;
-
-    const installResult = await installUpgrade("@plasmicapp/loader-gatsby", {
-      workingDir: projectPath,
-    });
-
-    if (!installResult) {
-      throw new Error("Failed to install the Plasmic dependency");
+  installDeps: async ({ projectPath, scheme }) => {
+    if (scheme === "loader") {
+      return await installUpgrade("@plasmicapp/loader-gatsby", {
+        workingDir: projectPath,
+      });
+    } else {
+      return await installCodegenDeps({ projectPath });
     }
-
-    // create-gatsby will create a default gatsby-config.js that we need to modify
-    const gatsbyConfigFile = path.join(projectPath, "gatsby-config.js");
-    const rl = readline.createInterface({
-      input: createReadStream(gatsbyConfigFile),
-      crlfDelay: Infinity,
-    });
-    let result = "";
-    for await (const line of rl) {
-      result += line + "\n";
-      // Prepend PlasmicLoader to list of plugins
-      if (line.includes("plugins:")) {
-        result += GATSBY_PLUGIN_CONFIG(
-          projectId,
-          projectApiToken,
-          useTypescript
-        );
-      }
-    }
-    await fs.writeFile(gatsbyConfigFile, result);
   },
-  overwriteFiles: async (args) => {
+  overwriteConfig: async (args) => {
+    const {
+      projectId,
+      projectPath,
+      projectApiToken,
+      useTypescript,
+      scheme,
+    } = args;
+
+    if (scheme === "loader") {
+      // create-gatsby will create a default gatsby-config.js that we need to modify
+      const gatsbyConfigFile = path.join(projectPath, "gatsby-config.js");
+      const rl = readline.createInterface({
+        input: createReadStream(gatsbyConfigFile),
+        crlfDelay: Infinity,
+      });
+      let result = "";
+      for await (const line of rl) {
+        result += line + "\n";
+        // Prepend PlasmicLoader to list of plugins
+        if (line.includes("plugins:")) {
+          result += GATSBY_PLUGIN_CONFIG(
+            projectId,
+            ensure(projectApiToken),
+            useTypescript
+          );
+        }
+      }
+      await fs.writeFile(gatsbyConfigFile, result);
+    }
+  },
+  generateFiles: async (args) => {
     // in gatsby we can delete all existing pages/components, since all pages are going
     // to be handled by templates/defaultPlasmicPage
-    const { projectPath, useTypescript } = args;
+    const {
+      projectId,
+      projectApiToken,
+      projectPath,
+      useTypescript,
+      scheme,
+    } = args;
 
     const extension = useTypescript ? "ts" : "js";
 
@@ -65,15 +83,13 @@ const gatsbyStrategy: CPAStrategy = {
     // Create a very basic 404 page - `gatsby build` fails without it.
     await fs.writeFile(path.join(projectPath, `src/pages/404.js`), GATSBY_404);
 
-    await fs.writeFile(
-      path.join(projectPath, `src/plasmic-init.${extension}`),
-      makeGatsbyPlasmicInit(extension)
-    );
-
     // Add plasmic-host page
     await fs.writeFile(
       path.join(projectPath, `src/pages/plasmic-host.${extension}x`),
-      makeGatsbyHostPage(extension)
+      makeGatsbyHostPage({
+        useTypescript,
+        scheme,
+      })
     );
 
     // Start with an empty gatsby-node.js
@@ -85,16 +101,39 @@ const gatsbyStrategy: CPAStrategy = {
       GATSBY_SSR_CONFIG
     );
 
-    const templatesFolder = path.join(projectPath, "src/templates");
-    const defaultPagePath = path.join(
-      templatesFolder,
-      `defaultPlasmicPage.${extension}x`
-    );
+    if (scheme === "loader") {
+      await fs.writeFile(
+        path.join(projectPath, `src/plasmic-init.${extension}`),
+        makeGatsbyPlasmicInit(extension)
+      );
 
-    if (!existsSync(templatesFolder)) {
-      await fs.mkdir(templatesFolder);
+      const templatesFolder = path.join(projectPath, "src/templates");
+      if (!existsSync(templatesFolder)) {
+        await fs.mkdir(templatesFolder);
+      }
+      const defaultPagePath = path.join(
+        templatesFolder,
+        `defaultPlasmicPage.${extension}x`
+      );
+      await fs.writeFile(defaultPagePath, makeGatsbyDefaultPage(extension));
+    } else {
+      await runCodegenSync({
+        projectId,
+        projectApiToken,
+        projectPath,
+      });
+
+      // Overwrite the index file
+      await overwriteIndex(projectPath, "gatsby", scheme);
+
+      // Overwrite the wrapper files to wrap PlasmicRootProvider
+      const wrapperContent = wrapAppRootForCodegen();
+      const browserFilePath = path.join(projectPath, "gatsby-browser.js");
+      await fs.writeFile(browserFilePath, wrapperContent);
+
+      const ssrFilePath = path.join(projectPath, "gatsby-ssr.js");
+      await fs.writeFile(ssrFilePath, wrapperContent);
     }
-    await fs.writeFile(defaultPagePath, makeGatsbyDefaultPage(extension));
   },
   build: async (args) => {
     const { npmRunCmd, projectPath } = args;

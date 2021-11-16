@@ -13,6 +13,8 @@ if (process.env.CPA_DEBUG_CHDIR) {
   process.chdir(process.env.CPA_DEBUG_CHDIR);
 }
 
+export type CodeScheme = "codegen" | "loader";
+
 // Check for updates
 const createPlasmicAppVersion = updateNotify();
 
@@ -154,7 +156,7 @@ async function run(): Promise<void> {
 
   // Scheme to use for Plasmic integration
   // - loader only available for gatsby/next.js
-  const scheme: "codegen" | "loader" =
+  const scheme: CodeScheme =
     platform === "nextjs" || platform === "gatsby"
       ? await maybePrompt({
           name: "scheme",

@@ -1,3 +1,4 @@
+import { CodeScheme } from "..";
 import { ifTs } from "../utils/file-utils";
 
 export const makeGatsbyDefaultPage = (format: "ts" | "js"): string => {
@@ -89,16 +90,16 @@ export const GATSBY_PLUGIN_CONFIG = (
 },
 `;
 
-export const makeGatsbyHostPage = (format: "ts" | "js"): string => {
-  const ts = format === "ts";
-  return `
+export const makeGatsbyHostPage = (opts: {
+  useTypescript: boolean;
+  scheme: CodeScheme;
+}): string => {
+  const { useTypescript, scheme } = opts;
+  if (scheme === "loader") {
+    return `
 import * as React from "react"
 import {
-  PlasmicCanvasHost,${ifTs(
-    ts,
-    `
-  InitOptions,`
-  )}
+  PlasmicCanvasHost${ifTs(useTypescript, `, InitOptions`)}
 } from "@plasmicapp/loader-gatsby"
 import { graphql } from "gatsby"
 import { initPlasmicLoaderWithRegistrations } from "../plasmic-init"
@@ -110,7 +111,7 @@ export const query = graphql\`
 \`
 
 ${ifTs(
-  ts,
+  useTypescript,
   `interface HostProps {
   data: {
     plasmicOptions: InitOptions;
@@ -118,12 +119,33 @@ ${ifTs(
 }
 `
 )}
-export default function Host({ data }${ifTs(ts, ": HostProps")}) {
+export default function Host({ data }${ifTs(useTypescript, ": HostProps")}) {
   const { plasmicOptions } = data
   initPlasmicLoaderWithRegistrations(plasmicOptions)
   return <PlasmicCanvasHost />
 }
-`.trim();
+    `.trim();
+  } else {
+    return `
+import * as React from "react"
+import { PlasmicCanvasHost, registerComponent } from "@plasmicapp/host";
+
+// You can register any code components that you want to use here; see
+// https://docs.plasmic.app/learn/code-components-ref/
+// And configure your Plasmic project to use the host url pointing at
+// the /plasmic-host page of your nextjs app (for example,
+// http://localhost:3000/plasmic-host).  See
+// https://docs.plasmic.app/learn/app-hosting/#set-a-plasmic-project-to-use-your-app-host
+
+// registerComponent(...)
+
+export default function PlasmicHost() {
+  return (
+    <PlasmicCanvasHost />
+  );
+}
+    `;
+  }
 };
 
 export const GATSBY_SSR_CONFIG = `
@@ -191,3 +213,18 @@ export function initPlasmicLoaderWithRegistrations(plasmicOptions${ifTs(
 }
 `.trim();
 };
+
+export function wrapAppRootForCodegen() {
+  return `
+import React from "react";
+import { PlasmicRootProvider } from "@plasmicapp/react-web";
+
+export const wrapRootElement = ({ element }) => {
+  return (
+    <PlasmicRootProvider>
+      {element}
+    </PlasmicRootProvider>
+  );
+}
+  `;
+}

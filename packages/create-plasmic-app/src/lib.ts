@@ -3,15 +3,8 @@ import chalk from "chalk";
 import * as path from "upath";
 import validateProjectName from "validate-npm-package-name";
 import { getCPAStrategy } from "./strategies";
-import { spawnOrFail } from "./utils/cmd-utils";
-import {
-  ensureTsconfig,
-  overwriteIndex,
-  overwriteReadme,
-  wrapAppRoot,
-  writeDefaultNextjsConfig,
-} from "./utils/file-utils";
-import { detectPackageManager, installUpgrade } from "./utils/npm-utils";
+import { ensureTsconfig, overwriteReadme } from "./utils/file-utils";
+import { detectPackageManager } from "./utils/npm-utils";
 
 export type PlatformType = "nextjs" | "gatsby" | "react";
 export type SchemeType = "codegen" | "loader";
@@ -91,71 +84,48 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
     await ensureTsconfig(resolvedProjectPath);
   }
 
-  // Install dependency
-  banner("INSTALLING THE PLASMIC DEPENDENCY");
-  if (scheme === "codegen") {
-    const installResult = await installUpgrade("@plasmicapp/cli", {
-      workingDir: resolvedProjectPath,
-    });
-    if (!installResult) {
-      throw new Error("Failed to install the Plasmic dependency");
-    }
-  }
-
-  // Trigger a sync
-  const pkgMgr = detectPackageManager(resolvedProjectPath);
-  const npmRunCmd = pkgMgr === "yarn" ? "yarn" : "npm run";
-
-  if (scheme === "codegen") {
-    banner("SYNCING PLASMIC COMPONENTS");
-
-    const project = projectApiToken
-      ? `${projectId}:${projectApiToken}`
-      : projectId;
-
-    if (platform === "nextjs") {
-      await writeDefaultNextjsConfig(resolvedProjectPath, projectId, false);
-    }
-
-    await spawnOrFail(
-      `npx -p @plasmicapp/cli plasmic sync --yes -p ${project}`,
-      resolvedProjectPath
-    );
-  } else if (scheme === "loader") {
-    if (!projectApiToken) {
-      projectApiToken = await getProjectApiToken(projectId);
-    }
+  // Make sure we have an api token for loader
+  if (scheme === "loader" && !projectApiToken) {
+    projectApiToken = await getProjectApiToken(projectId);
     if (!projectApiToken) {
       throw new Error(`Failed to get projectApiToken for ${projectId}`);
     }
-
-    await cpaStrategy.configLoader({
-      projectPath: resolvedProjectPath,
-      projectId,
-      projectApiToken,
-      useTypescript,
-    });
   }
 
-  if (scheme === "loader") {
-    await cpaStrategy.overwriteFiles({
-      projectPath: resolvedProjectPath,
-      useTypescript,
-    });
-  } else if (scheme === "codegen") {
-    // The loader files to be overwritten are handled by cpaStrategy
-    // but for codegen we still have to run it
+  // Install dependency
+  banner("INSTALLING THE PLASMIC DEPENDENCY");
+  const installResult = await cpaStrategy.installDeps({
+    scheme,
+    projectPath: resolvedProjectPath,
+  });
 
-    // Overwrite the index file
-    await overwriteIndex(resolvedProjectPath, platform, scheme);
-
-    // Overwrite the wrapper files to wrap PlasmicRootProvider
-    await wrapAppRoot(resolvedProjectPath, platform, scheme);
+  if (!installResult) {
+    throw new Error("Failed to install the Plasmic dependency");
   }
+
+  // Configure
+  await cpaStrategy.overwriteConfig({
+    projectId,
+    projectPath: resolvedProjectPath,
+    projectApiToken,
+    useTypescript,
+    scheme,
+  });
+
+  // Generate files
+  await cpaStrategy.generateFiles({
+    projectPath: resolvedProjectPath,
+    useTypescript,
+    scheme,
+    projectId,
+    projectApiToken,
+  });
 
   /**
    * INSTRUCT USER ON NEXT STEPS
    */
+  const pkgMgr = detectPackageManager(resolvedProjectPath);
+  const npmRunCmd = pkgMgr === "yarn" ? "yarn" : "npm run";
   const command =
     platform === "nextjs"
       ? `${npmRunCmd} dev`
