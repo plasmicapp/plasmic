@@ -193,7 +193,7 @@ export function DynamicCollectionGrid({
   );
 }
 
-const thisModule = "@plasmicpkgs/plasmic-basic-components/dist/Data";
+const thisModule = "@plasmicpkgs/plasmic-basic-components/Data";
 
 registerComponent(DataProvider, {
   name: "DataProvider",

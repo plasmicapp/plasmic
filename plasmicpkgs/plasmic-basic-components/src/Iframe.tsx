@@ -43,7 +43,7 @@ export default function Iframe({ hideInEditor, src, className }: IframeProps) {
 
 registerComponent(Iframe, {
   name: "Iframe",
-  importPath: "@plasmicpkgs/plasmic-basic-components/dist/Iframe",
+  importPath: "@plasmicpkgs/plasmic-basic-components/Iframe",
   props: {
     src: {
       type: "string",

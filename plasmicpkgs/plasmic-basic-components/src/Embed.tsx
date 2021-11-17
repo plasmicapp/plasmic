@@ -43,7 +43,7 @@ export default function Embed({
 
 registerComponent(Embed, {
   name: "Embed",
-  importPath: "@plasmicpkgs/plasmic-basic-components/dist/Embed",
+  importPath: "@plasmicpkgs/plasmic-basic-components/Embed",
   props: {
     code: {
       type: "string",

@@ -4,7 +4,7 @@ import {
   DynamicCollectionGrid,
   dynamicCollectionGridProps,
   useSelector,
-} from "../../plasmic-basic-components/src/Data";
+} from "@plasmicpkgs/plasmic-basic-components/Data";
 
 const productFragment = `
 fragment ProductFragment on Product {
@@ -337,6 +337,9 @@ registerComponent(ProductCollectionGrid, {
   },
 });
 
+/*
+TODO
+
 registerComponent(ProductTitle, {
   name: "ProductTitle",
   importPath: thisModule,
@@ -354,3 +357,4 @@ registerComponent(ProductPrice, {
   importPath: thisModule,
   props: {},
 });
+*/

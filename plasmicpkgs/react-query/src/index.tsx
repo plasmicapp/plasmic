@@ -1,1 +1,1 @@
-import "./Fetcher";
+export * from "./Fetcher";

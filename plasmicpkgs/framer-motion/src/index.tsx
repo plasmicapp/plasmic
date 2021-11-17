@@ -1,1 +1,1 @@
-import "./AnimatedLetters";
+export { default as AnimatedLetters } from "./AnimatedLetters";

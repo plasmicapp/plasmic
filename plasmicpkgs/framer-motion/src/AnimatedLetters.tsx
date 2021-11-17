@@ -71,7 +71,7 @@ export default function AnimatedLetters({
 registerComponent(AnimatedLetters, {
   name: "AnimatedLetters",
   displayName: "Animated Letters",
-  importPath: "@plasmicpkgs/framer-motion/dist/AnimatedLetters",
+  importPath: "@plasmicpkgs/framer-motion/AnimatedLetters",
   props: {
     text: {
       type: "string",

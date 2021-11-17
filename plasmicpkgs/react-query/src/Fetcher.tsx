@@ -1,7 +1,7 @@
 import registerComponent from "@plasmicapp/host/registerComponent";
 import React, { ReactNode } from "react";
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
-import { DataProvider } from "../../plasmic-basic-components/src/Data";
+import { DataProvider } from "@plasmicpkgs/plasmic-basic-components/Data";
 
 export interface FetchProps {
   url: string;

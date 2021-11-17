@@ -7,7 +7,7 @@ import React, {
   useState,
 } from "react";
 
-export default function useDirectionalIntersection({
+export function useDirectionalIntersection({
   ref,
   scrollDownThreshold = 0.5,
   scrollUpThreshold = 0,
@@ -52,7 +52,7 @@ export default function useDirectionalIntersection({
  *
  * TODO: Merge this inta a general Reveal component, perhaps forking react-awesome-reveal, so that we don't have two different reveal components for users.
  */
-export function ScrollRevealer({
+export default function ScrollRevealer({
   children,
   className,
   scrollDownThreshold = 0.5,
@@ -79,7 +79,7 @@ export function ScrollRevealer({
 registerComponent(ScrollRevealer, {
   name: "ScrollRevealer",
   displayName: "Scroll Revealer",
-  importPath: "@plasmicpkgs/plasmic-basic-components/dist/ScrollRevealer",
+  importPath: "@plasmicpkgs/plasmic-basic-components/ScrollRevealer",
   props: {
     children: "slot",
     scrollDownThreshold: {

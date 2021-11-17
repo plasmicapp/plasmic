@@ -32,7 +32,7 @@ export default function ParallaxWrapper({
 
 registerComponent(ParallaxWrapper, {
   name: "Parallax",
-  importPath: "@plasmicpkgs/react-scroll-parallax/dist/ParallaxWrapper",
+  importPath: "@plasmicpkgs/react-scroll-parallax/ParallaxWrapper",
   props: {
     children: "slot",
     yStart: {

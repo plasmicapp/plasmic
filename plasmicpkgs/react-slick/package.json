@@ -11,11 +11,11 @@
   "size-limit": [
     {
       "path": "dist/react-slick.cjs.production.min.js",
-      "limit": "10 KB"
+      "limit": "20 KB"
     },
     {
       "path": "dist/react-slick.esm.js",
-      "limit": "10 KB"
+      "limit": "20 KB"
     }
   ],
   "scripts": {
