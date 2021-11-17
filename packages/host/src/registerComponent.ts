@@ -59,6 +59,13 @@ type SlotType =
       defaultValue?: PlasmicElement | PlasmicElement[];
     };
 
+type ImageUrlType =
+  | "imageUrl"
+  | ({
+      type: "imageUrl";
+      defaultValue?: string;
+    } & PropTypeBase);
+
 export type PrimitiveType = Extract<
   StringType | BooleanType | NumberType | JSONLikeType,
   String
@@ -82,12 +89,17 @@ type SupportControlled<T> =
 
 export type PropType =
   | SupportControlled<
-      StringType | BooleanType | NumberType | JSONLikeType | ChoiceType
+      | StringType
+      | BooleanType
+      | NumberType
+      | JSONLikeType
+      | ChoiceType
+      | ImageUrlType
     >
   | SlotType;
 
 type RestrictPropType<T> = T extends string
-  ? SupportControlled<StringType | ChoiceType | JSONLikeType>
+  ? SupportControlled<StringType | ChoiceType | JSONLikeType | ImageUrlType>
   : T extends boolean
   ? SupportControlled<BooleanType | JSONLikeType>
   : T extends number
