@@ -1,5 +1,5 @@
 import registerComponent from "@plasmicapp/host/registerComponent";
-import { PlasmicCanvasContext } from "@plasmicapp/loader-nextjs";
+import { PlasmicCanvasContext } from "@plasmicapp/host";
 import React, { useContext } from "react";
 import { Parallax } from "react-scroll-parallax";
 
