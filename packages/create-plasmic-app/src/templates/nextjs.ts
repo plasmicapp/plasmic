@@ -1,3 +1,4 @@
+import { CodeScheme } from "..";
 import { ifTs } from "../utils/file-utils";
 
 export const makeNextjsInitPage = (
@@ -103,14 +104,19 @@ export const getStaticPaths${ifTs(ts, `: GetStaticPaths`)} = async () => {
   `.trim();
 }
 
-export function makeNextjsHostPage(): string {
-  return `
+export function makeNextjsHostPage(scheme: CodeScheme): string {
+  const commonImports = `
 import * as React from 'react';
-import { PlasmicCanvasHost } from '@plasmicapp/loader-nextjs';
 import Script from 'next/script';
+  `.trim();
+
+  if (scheme === "loader") {
+    return `
+${commonImports}
+import { PlasmicCanvasHost } from '@plasmicapp/loader-nextjs';
 import { PLASMIC } from '../plasmic-init';
 
-export default function Host() {
+export default function PlasmicHost() {
   return PLASMIC && (
     <div>
       <Script
@@ -121,5 +127,49 @@ export default function Host() {
     </div>
   );
 }
-  `.trim();
+    `;
+  } else {
+    return `
+${commonImports}
+import { PlasmicCanvasHost, registerComponent } from '@plasmicapp/host';
+
+// You can register any code components that you want to use here; see
+// https://docs.plasmic.app/learn/code-components-ref/
+// And configure your Plasmic project to use the host url pointing at
+// the /plasmic-host page of your nextjs app (for example,
+// http://localhost:3000/plasmic-host).  See
+// https://docs.plasmic.app/learn/app-hosting/#set-a-plasmic-project-to-use-your-app-host
+
+// registerComponent(...)
+
+export default function PlasmicHost() {
+  return (
+    <div>
+      <Script
+        src="https://static1.plasmic.app/preamble.js"
+        strategy="beforeInteractive"
+      />
+      <PlasmicCanvasHost />
+    </div>
+  );
+}
+    `;
+  }
+}
+
+export function wrapAppRootForCodegen() {
+  return `
+import '../styles/globals.css'
+import { PlasmicRootProvider } from "@plasmicapp/react-web";
+
+function MyApp({ Component, pageProps }) {
+  return (
+    <PlasmicRootProvider>
+      <Component {...pageProps} />
+    </PlasmicRootProvider>
+  );
+}
+
+export default MyApp
+  `;
 }

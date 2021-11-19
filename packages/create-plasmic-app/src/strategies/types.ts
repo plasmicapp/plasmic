@@ -1,3 +1,5 @@
+import { CodeScheme } from "..";
+
 interface CreateArgs {
   projectPath: string;
   template?: string;
@@ -7,13 +9,17 @@ interface CreateArgs {
 interface ConfigArgs {
   projectId: string;
   projectPath: string;
-  projectApiToken: string;
   useTypescript: boolean;
+  scheme: CodeScheme;
+  projectApiToken: string | undefined;
 }
 
-interface OverwriteFilesArgs {
+interface GenerateFilesArgs {
   projectPath: string;
   useTypescript: boolean;
+  scheme: CodeScheme;
+  projectId: string;
+  projectApiToken: string | undefined;
 }
 
 interface BuildArgs {
@@ -21,9 +27,15 @@ interface BuildArgs {
   npmRunCmd: string;
 }
 
+interface InstallArgs {
+  scheme: CodeScheme;
+  projectPath: string;
+}
+
 export interface CPAStrategy {
   create: (args: CreateArgs) => Promise<void>;
-  configLoader: (args: ConfigArgs) => Promise<void>;
-  overwriteFiles: (args: OverwriteFilesArgs) => Promise<void>;
+  installDeps: (args: InstallArgs) => Promise<boolean>;
+  overwriteConfig: (args: ConfigArgs) => Promise<void>;
+  generateFiles: (args: GenerateFilesArgs) => Promise<void>;
   build: (args: BuildArgs) => Promise<void>;
 }

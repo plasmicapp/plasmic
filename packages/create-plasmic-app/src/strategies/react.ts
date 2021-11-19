@@ -1,5 +1,7 @@
 import { spawnOrFail } from "../utils/cmd-utils";
+import { overwriteIndex } from "../utils/file-utils";
 import { installUpgrade } from "../utils/npm-utils";
+import { installCodegenDeps, runCodegenSync } from "./common";
 import { CPAStrategy } from "./types";
 
 const reactStrategy: CPAStrategy = {
@@ -15,19 +17,36 @@ const reactStrategy: CPAStrategy = {
     const templateArg = template ? ` --template ${template}` : "";
     await spawnOrFail(`${createCommand}${templateArg}`);
   },
-  configLoader: async (args) => {
-    // this is unreachable for now, but should we have it ??
-    const { projectPath } = args;
-
-    const installResult = await installUpgrade("@plasmicapp/loader-react", {
-      workingDir: projectPath,
-    });
-
-    if (!installResult) {
-      throw new Error("Failed to install the Plasmic dependency");
+  installDeps: async ({ projectPath, scheme }) => {
+    if (scheme === "loader") {
+      return await installUpgrade("@plasmicapp/loader-react", {
+        workingDir: projectPath,
+      });
+    } else {
+      return await installCodegenDeps({ projectPath });
     }
   },
-  overwriteFiles: async () => {
+  overwriteConfig: async (args) => {
+    // No config to overwrite
+  },
+  generateFiles: async ({
+    scheme,
+    projectApiToken,
+    projectId,
+    projectPath,
+  }) => {
+    if (scheme === "loader") {
+      // Nothing to do
+    } else {
+      await runCodegenSync({
+        projectId,
+        projectApiToken,
+        projectPath,
+      });
+
+      // Overwrite the index file
+      await overwriteIndex(projectPath, "react", scheme);
+    }
     return;
   },
   build: async (args) => {

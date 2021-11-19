@@ -4,11 +4,6 @@ import L from "lodash";
 import * as path from "upath";
 import { PlatformType } from "../lib";
 import { GATSBY_404 } from "../templates/gatsby";
-import {
-  makeNextjsCatchallPage,
-  makeNextjsHostPage,
-  makeNextjsInitPage,
-} from "../templates/nextjs";
 import { README } from "../templates/readme";
 import { WELCOME_PAGE } from "../templates/welcomePage";
 import { ensure, ensureString } from "./lang-utils";
@@ -43,67 +38,6 @@ export function stripExtension(
     return filename;
   }
   return filename.substring(0, filename.lastIndexOf(ext));
-}
-
-/**
- * create-next-app doesn't create next.config.js,
- * so it's safe to just write the file
- * @param absPath
- * @param projectId
- * @returns
- */
-export async function writeDefaultNextjsConfig(
-  projectDir: string,
-  projectId: string,
-  loader: boolean,
-  projectApiToken?: string,
-  useTypescript?: boolean
-): Promise<void> {
-  const nextjsConfigFile = path.join(projectDir, "next.config.js");
-
-  if (!loader) {
-    await fs.writeFile(
-      nextjsConfigFile,
-      `
-module.exports = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  trailingSlash: true,
-  // Your NextJS config.
-};
-  `
-    );
-    return;
-  }
-
-  if (loader && projectApiToken) {
-    const initFile = path.join(
-      projectDir,
-      `plasmic-init.${useTypescript ? "ts" : "js"}`
-    );
-    await fs.writeFile(
-      initFile,
-      makeNextjsInitPage(projectId, projectApiToken)
-    );
-
-    const pagesFolder = path.join(projectDir, "pages");
-    const loaderPage = path.join(
-      pagesFolder,
-      `[[...catchall]].${useTypescript ? "tsx" : "jsx"}`
-    );
-    await fs.writeFile(
-      loaderPage,
-      makeNextjsCatchallPage(useTypescript ? "ts" : "js")
-    );
-
-    const hostPage = path.join(
-      pagesFolder,
-      `plasmic-host.${useTypescript ? "tsx" : "jsx"}`
-    );
-
-    await fs.writeFile(hostPage, makeNextjsHostPage());
-  }
 }
 
 export async function writePlasmicLoaderJson(
@@ -333,55 +267,6 @@ export async function ensureTsconfig(projectPath: string): Promise<void> {
     if (!installTsResult) {
       throw new Error("Failed to install Typescript");
     }
-  }
-}
-
-export async function wrapAppRoot(
-  projectPath: string,
-  platform: string,
-  scheme: string
-): Promise<void> {
-  // with create-plasmic-app v2, isLoader=false
-  const isLoader = scheme === "loader";
-  const importPkg = isLoader ? `@plasmicapp/loader` : "@plasmicapp/react-web";
-  if (platform === "nextjs") {
-    const appFilePath = path.join(projectPath, "pages", `_app.js`);
-    await fs.writeFile(
-      appFilePath,
-      `
-import '../styles/globals.css'
-import { PlasmicRootProvider } from "${importPkg}"
-
-function MyApp({ Component, pageProps }) {
-  return (
-    <PlasmicRootProvider>
-      <Component {...pageProps} />
-    </PlasmicRootProvider>
-  )
-}
-
-export default MyApp
-    `.trim()
-    );
-  } else if (platform === "gatsby") {
-    const wrapperContent = `
-import React from "react";
-import { PlasmicRootProvider } from "${importPkg}";
-
-export const wrapRootElement = ({ element }) => {
-  return (
-    <PlasmicRootProvider>
-      {element}
-    </PlasmicRootProvider>
-  );
-}
-    `.trim();
-
-    const browserFilePath = path.join(projectPath, "gatsby-browser.js");
-    await fs.writeFile(browserFilePath, wrapperContent);
-
-    const ssrFilePath = path.join(projectPath, "gatsby-ssr.js");
-    await fs.writeFile(ssrFilePath, wrapperContent);
   }
 }
 
