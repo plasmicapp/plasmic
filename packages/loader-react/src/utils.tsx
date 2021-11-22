@@ -2,7 +2,9 @@ import { ComponentMeta } from '@plasmicapp/loader-core';
 import pascalcase from 'pascalcase';
 import * as React from 'react';
 
-export type ComponentLookupSpec = string | { name: string; projectId?: string; isCode?: boolean; };
+export type ComponentLookupSpec =
+  | string
+  | { name: string; projectId?: string; isCode?: boolean };
 
 interface FullNameLookupSpec {
   name: string;
@@ -84,7 +86,11 @@ function toFullLookup(lookup: ComponentLookupSpec): FullLookupSpec {
   if (codeComponent !== true && namePart.startsWith('/')) {
     return { path: normalizePath(namePart), projectId };
   } else {
-    return { name: normalizeName(namePart), projectId, isCode: codeComponent };
+    return {
+      name: codeComponent ? namePart : normalizeName(namePart),
+      projectId,
+      isCode: codeComponent,
+    };
   }
 }
 
@@ -117,7 +123,8 @@ function matchesCompMeta(lookup: FullLookupSpec, meta: ComponentMeta) {
   }
 
   return isNameSpec(lookup)
-    ? (lookup.name === meta.name && (lookup.isCode == null || lookup.isCode === meta.isCode))
+    ? lookup.name === meta.name &&
+        (lookup.isCode == null || lookup.isCode === meta.isCode)
     : lookup.path === meta.path;
 }
 
