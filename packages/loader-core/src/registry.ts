@@ -1,9 +1,4 @@
-import { LoaderBundleOutput } from './api';
-
-const isBrowser =
-  typeof window !== 'undefined' &&
-  window != null &&
-  typeof window.document !== 'undefined';
+import { isBrowser, LoaderBundleOutput } from './api';
 
 export class Registry {
   // Singleton

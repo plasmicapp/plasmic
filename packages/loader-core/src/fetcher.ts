@@ -1,4 +1,4 @@
-import { Api, LoaderBundleOutput } from './api';
+import { Api, isBrowser, LoaderBundleOutput } from './api';
 
 interface FetcherOptions {
   projects: {
@@ -52,6 +52,7 @@ export class PlasmicModulesFetcher {
       {
         platform: this.opts.platform,
         preview: this.opts.preview,
+        browserOnly: isBrowser,
       }
     );
     if (this.opts.cache) {

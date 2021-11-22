@@ -78,6 +78,11 @@ export interface AssetModule {
 
 const VERSION = '3';
 
+export const isBrowser =
+  typeof window !== 'undefined' &&
+  window != null &&
+  typeof window.document !== 'undefined';
+
 export class Api {
   private host: string;
   constructor(
@@ -94,12 +99,14 @@ export class Api {
     opts: {
       platform?: 'react' | 'nextjs' | 'gatsby';
       preview?: boolean;
+      browserOnly?: boolean;
     }
   ) {
     const { platform, preview } = opts;
     const query = new URLSearchParams([
       ['platform', platform ?? 'react'],
       ...projectIds.map((projectId) => ['projectId', projectId]),
+      ...(opts.browserOnly ? [['browserOnly', 'true']] : []),
     ]).toString();
 
     const url = `${this.host}/api/v1/loader/code/${
