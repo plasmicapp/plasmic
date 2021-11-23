@@ -1,8 +1,3 @@
-import { Registerable } from "./registerable";
-import { registerButton } from "./registerButton";
-
-export default registerButton;
-
-export function registerAll(loader?: Registerable) {
-  registerButton(loader);
-}
+export { Registerable, registerAll } from "./registerable";
+export { buttonMeta, registerButton } from "./registerButton";
+export { sliderMeta, registerSlider } from "./registerSlider";
