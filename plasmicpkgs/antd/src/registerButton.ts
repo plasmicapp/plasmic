@@ -53,7 +53,15 @@ export const buttonMeta: ComponentMeta<ButtonProps> = {
       description:
         "Same as target attribute of a, works when href is specified",
     },
-    children: "slot",
+    children: {
+      type: "slot",
+      defaultValue: [
+        {
+          type: "text",
+          value: "Button",
+        },
+      ],
+    },
   },
   importPath: "antd",
   importName: "Button",
