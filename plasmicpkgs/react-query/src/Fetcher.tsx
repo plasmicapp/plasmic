@@ -1,7 +1,9 @@
-import registerComponent from "@plasmicapp/host/registerComponent";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
+import { DataProvider } from "@plasmicpkgs/plasmic-basic-components/Data";
 import React, { ReactNode } from "react";
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
-import { DataProvider } from "@plasmicpkgs/plasmic-basic-components/Data";
 
 export interface FetchProps {
   url: string;
@@ -70,9 +72,9 @@ export function PlasmicQueryProvider({ children }: { children: ReactNode }) {
   );
 }
 
-registerComponent(DataFetcher, {
+export const dataFetcherMeta: ComponentMeta<DataFetcherProps> = {
   name: "DataFetcher",
-  importPath: "@plasmicpkgs/react-query/dist/Fetcher",
+  importPath: "@plasmicpkgs/react-query",
   props: {
     src: {
       type: "string",
@@ -82,15 +84,25 @@ registerComponent(DataFetcher, {
   defaultStyles: {
     maxWidth: "100%",
   },
-});
+};
+
+export function registerDataFetcher(
+  loader?: { registerComponent: typeof registerComponent },
+  customDataFetcherMeta?: ComponentMeta<DataFetcherProps>
+) {
+  if (loader) {
+    loader.registerComponent(
+      DataFetcher,
+      customDataFetcherMeta ?? dataFetcherMeta
+    );
+  } else {
+    registerComponent(DataFetcher, customDataFetcherMeta ?? dataFetcherMeta);
+  }
+}
 
 /*
 
 TODO
 
-registerContext(PlasmicQueryProvider, {
-  name: "React Query",
-  description: "React Query Context",
-  defaultValue: ReactQueryContext,
-})
+registerPlasmicQueryProvider
  */

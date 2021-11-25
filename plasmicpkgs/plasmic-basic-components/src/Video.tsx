@@ -1,7 +1,9 @@
-import registerComponent from "@plasmicapp/host/registerComponent";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import React from "react";
 
-type VideoProps = Pick<
+export type VideoProps = Pick<
   React.ComponentProps<"video">,
   | "autoPlay"
   | "controls"
@@ -21,9 +23,9 @@ const Video = React.forwardRef<HTMLVideoElement, VideoProps>(
 
 export default Video;
 
-registerComponent(Video, {
+export const videoMeta: ComponentMeta<VideoProps> = {
   name: "Video",
-  importPath: "@plasmicpkgs/plasmic-basic-components/Video",
+  importPath: "@plasmicpkgs/plasmic-basic-components",
   props: {
     src: {
       type: "string",
@@ -74,10 +76,20 @@ registerComponent(Video, {
         "Whether to preload nothing, metadata only, or the full video",
     },
   },
-  isDefaultExport: true,
   defaultStyles: {
     height: "hug",
     width: "640px",
     maxWidth: "100%",
   },
-});
+};
+
+export function registerVideo(
+  loader?: { registerComponent: typeof registerComponent },
+  customVideoMeta?: ComponentMeta<VideoProps>
+) {
+  if (loader) {
+    loader.registerComponent(Video, customVideoMeta ?? videoMeta);
+  } else {
+    registerComponent(Video, customVideoMeta ?? videoMeta);
+  }
+}

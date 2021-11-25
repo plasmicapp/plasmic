@@ -1,6 +1,4 @@
-/** @format */
-
-import { PlasmicCanvasContext } from "@plasmicapp/host";
+import { ComponentMeta, PlasmicCanvasContext } from "@plasmicapp/host";
 import registerComponent from "@plasmicapp/host/registerComponent";
 import React, { useContext } from "react";
 
@@ -41,9 +39,9 @@ export default function Iframe({ hideInEditor, src, className }: IframeProps) {
   return <iframe src={src} className={className} />;
 }
 
-registerComponent(Iframe, {
+export const iframeMeta: ComponentMeta<IframeProps> = {
   name: "Iframe",
-  importPath: "@plasmicpkgs/plasmic-basic-components/Iframe",
+  importPath: "@plasmicpkgs/plasmic-basic-components",
   props: {
     src: {
       type: "string",
@@ -55,10 +53,20 @@ registerComponent(Iframe, {
       description: "Load the iframe while editing in Plasmic Studio",
     },
   },
-  isDefaultExport: true,
   defaultStyles: {
     width: "300px",
     height: "150px",
     maxWidth: "100%",
   },
-});
+};
+
+export function registerIframe(
+  loader?: { registerComponent: typeof registerComponent },
+  customIframeMeta?: ComponentMeta<IframeProps>
+) {
+  if (loader) {
+    loader.registerComponent(Iframe, customIframeMeta ?? iframeMeta);
+  } else {
+    registerComponent(Iframe, customIframeMeta ?? iframeMeta);
+  }
+}

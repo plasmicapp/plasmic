@@ -1,4 +1,6 @@
-import registerComponent from "@plasmicapp/host/registerComponent";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import React, {
   ReactNode,
   RefObject,
@@ -44,6 +46,13 @@ export function useDirectionalIntersection({
   return revealed;
 }
 
+export interface ScrollRevealerProps {
+  children?: ReactNode;
+  className?: string;
+  scrollUpThreshold?: number;
+  scrollDownThreshold?: number;
+}
+
 /**
  * Unlike react-awesome-reveal, ScrollRevealer:
  *
@@ -57,12 +66,7 @@ export default function ScrollRevealer({
   className,
   scrollDownThreshold = 0.5,
   scrollUpThreshold = 0,
-}: {
-  children?: ReactNode;
-  className?: string;
-  scrollUpThreshold?: number;
-  scrollDownThreshold?: number;
-}) {
+}: ScrollRevealerProps) {
   const intersectionRef = useRef<HTMLDivElement>(null);
   const revealed = useDirectionalIntersection({
     ref: intersectionRef,
@@ -76,10 +80,10 @@ export default function ScrollRevealer({
   );
 }
 
-registerComponent(ScrollRevealer, {
+export const scrollRevealerMeta: ComponentMeta<ScrollRevealerProps> = {
   name: "ScrollRevealer",
   displayName: "Scroll Revealer",
-  importPath: "@plasmicpkgs/plasmic-basic-components/ScrollRevealer",
+  importPath: "@plasmicpkgs/plasmic-basic-components",
   props: {
     children: "slot",
     scrollDownThreshold: {
@@ -97,9 +101,25 @@ registerComponent(ScrollRevealer, {
         "While scrolling up, how much of the element (as a fraction) can still be scrolled in view before it disappears (defaults to 0, meaning you must scroll up until it's completely out of view)",
     },
   },
-  isDefaultExport: true,
   defaultStyles: {
     width: "stretch",
     maxWidth: "100%",
   },
-});
+};
+
+export function registerScrollRevealer(
+  loader?: { registerComponent: typeof registerComponent },
+  customScrollRevealerMeta?: ComponentMeta<ScrollRevealerProps>
+) {
+  if (loader) {
+    loader.registerComponent(
+      ScrollRevealer,
+      customScrollRevealerMeta ?? scrollRevealerMeta
+    );
+  } else {
+    registerComponent(
+      ScrollRevealer,
+      customScrollRevealerMeta ?? scrollRevealerMeta
+    );
+  }
+}

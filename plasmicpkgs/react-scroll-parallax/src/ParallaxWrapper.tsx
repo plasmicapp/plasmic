@@ -1,5 +1,7 @@
-import registerComponent from "@plasmicapp/host/registerComponent";
 import { PlasmicCanvasContext } from "@plasmicapp/host";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import React, { useContext } from "react";
 import { Parallax } from "react-scroll-parallax";
 
@@ -30,9 +32,9 @@ export default function ParallaxWrapper({
   );
 }
 
-registerComponent(ParallaxWrapper, {
+const parallaxWrapperMeta: ComponentMeta<ParallaxWrapperProps> = {
   name: "Parallax",
-  importPath: "@plasmicpkgs/react-scroll-parallax/ParallaxWrapper",
+  importPath: "@plasmicpkgs/react-scroll-parallax",
   props: {
     children: "slot",
     yStart: {
@@ -68,8 +70,24 @@ registerComponent(ParallaxWrapper, {
       description: "Enable the parallax effect in the editor.",
     },
   },
-  isDefaultExport: true,
   defaultStyles: {
     maxWidth: "100%",
   },
-});
+};
+
+export function registerParallaxWrapper(
+  loader?: { registerComponent: typeof registerComponent },
+  customParallaxWrapperMeta?: ComponentMeta<ParallaxWrapperProps>
+) {
+  if (loader) {
+    loader.registerComponent(
+      ParallaxWrapper,
+      customParallaxWrapperMeta ?? parallaxWrapperMeta
+    );
+  } else {
+    registerComponent(
+      ParallaxWrapper,
+      customParallaxWrapperMeta ?? parallaxWrapperMeta
+    );
+  }
+}

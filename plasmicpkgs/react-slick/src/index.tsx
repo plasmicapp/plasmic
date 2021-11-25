@@ -1,9 +1,9 @@
-import registerComponent from "@plasmicapp/host/registerComponent";
-import Slider from "react-slick";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
+import Slider, { Settings } from "react-slick";
 
-// TODO Do not actually provide defaultValues everywhere.
-
-registerComponent(Slider, {
+export const sliderMeta: ComponentMeta<Settings> = {
   name: "Slider",
   importPath: "react-slick",
   props: {
@@ -35,62 +35,51 @@ registerComponent(Slider, {
     },
     accessibility: {
       type: "boolean",
-      defaultValue: true,
-      description: "Enables tabbing and arrow key navigation",
+      description: "Enables tabbing and arrow key navigation (default: true)",
     },
     adaptiveHeight: {
       type: "boolean",
-      defaultValue: false,
-      description: "Adjust the slide's height automatically",
+      description: "Adjust the slide's height automatically (default: false)",
     },
     arrows: {
       type: "boolean",
-      defaultValue: true,
-      description: "Show next/prev arrows",
+      description: "Show next/prev arrows (default: true)",
     },
     autoplay: {
       type: "boolean",
-      defaultValue: false,
     },
     autoplaySpeed: {
       type: "number",
-      defaultValue: 3000,
-      description: "Delay between each auto scroll (in milliseconds)",
+      description:
+        "Delay between each auto scroll, in milliseconds (default: 3000)",
     },
     centerMode: {
       type: "boolean",
-      defaultValue: false,
       description:
-        "Enables centered view with partial prev/next slides. Use with odd numbered slidesToShow counts",
+        "Enables centered view with partial prev/next slides. Use with odd numbered slidesToShow counts (default: false)",
     },
     centerPadding: {
       type: "string",
-      defaultValue: "50px",
       description: "Side padding when in center mode (px or %)",
     },
     dots: {
       type: "boolean",
-      defaultValue: false,
       description: "Show dots for each slide",
     },
     draggable: {
       type: "boolean",
-      defaultValue: true,
-      description: "Enables mouse dragging on desktop",
+      description: "Enables mouse dragging on desktop (default: true)",
     },
     easing: {
       type: "string",
-      defaultValue: "linear",
       description: "Easing method for transition",
     },
     fade: {
       type: "boolean",
-      defaultValue: false,
       description: "Cross-fade between slides",
     },
     focusOnSelect: {
       type: "boolean",
-      defaultValue: false,
       description: "Go to slide on click",
     },
     infinite: {
@@ -100,7 +89,6 @@ registerComponent(Slider, {
     },
     initialSlide: {
       type: "number",
-      defaultValue: 0,
       description: "Index of initial slide",
     },
     lazyLoad: {
@@ -111,68 +99,55 @@ registerComponent(Slider, {
     },
     pauseOnDotsHover: {
       type: "boolean",
-      defaultValue: false,
       description: "Prevents autoplay while hovering on dots",
     },
     pauseOnFocus: {
       type: "boolean",
-      defaultValue: true,
       description: "Prevents autoplay while focused on slides",
     },
     pauseOnHover: {
       type: "boolean",
-      defaultValue: true,
       description: "Prevents autoplay while hovering on track",
     },
     rows: {
       type: "number",
-      defaultValue: 1,
       description: "Number of rows per slide (enables grid mode)",
     },
     rtl: {
       type: "boolean",
-      defaultValue: false,
       description: "Reverses the slide order",
     },
     slide: {
       type: "string",
-      defaultValue: "div",
-      description: "Slide container element type",
+      description: 'Slide container element type (defaults to "div")',
     },
     slidesPerRow: {
       type: "number",
-      defaultValue: 1,
       description:
         "Number of slides to display in grid mode, this is useful with rows option",
     },
     slidesToScroll: {
       type: "number",
-      defaultValue: 1,
       description: "Number of slides to scroll at once",
     },
     slidesToShow: {
       type: "number",
-      defaultValue: 1,
       description: "Number of slides to show in one frame",
     },
     speed: {
       type: "number",
-      defaultValue: 500,
-      description: "Transition speed in milliseconds",
+      description: "Transition speed in milliseconds (defaults to 500)",
     },
     swipe: {
       type: "boolean",
-      defaultValue: true,
       description: "Enable swiping to change slides",
     },
     swipeToSlide: {
       type: "boolean",
-      defaultValue: false,
       description: "Enable drag/swipe irrespective of 'slidesToScroll'",
     },
     touchMove: {
       type: "boolean",
-      defaultValue: true,
       description: "Enable slide moving on touch",
     },
     touchThreshold: {
@@ -182,22 +157,18 @@ registerComponent(Slider, {
     },
     useCSS: {
       type: "boolean",
-      defaultValue: true,
       description: "Enable/Disable CSS Transitions",
     },
     useTransform: {
       type: "boolean",
-      defaultValue: true,
       description: "Enable/Disable CSS Transforms",
     },
     variableWidth: {
       type: "boolean",
-      defaultValue: false,
       description: "Variable width slides",
     },
     vertical: {
       type: "boolean",
-      defaultValue: false,
       description: "Vertical slide mode",
     },
   },
@@ -206,4 +177,15 @@ registerComponent(Slider, {
     width: "stretch",
     maxWidth: "100%",
   },
-});
+};
+
+export function registerSlider(
+  loader?: { registerComponent: typeof registerComponent },
+  customSliderMeta?: ComponentMeta<Settings>
+) {
+  if (loader) {
+    loader.registerComponent(Slider, customSliderMeta ?? sliderMeta);
+  } else {
+    registerComponent(Slider, customSliderMeta ?? sliderMeta);
+  }
+}

@@ -1,10 +1,12 @@
-import registerComponent from "@plasmicapp/host/registerComponent";
-import React, { ReactNode, useEffect, useState } from "react";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import {
   DynamicCollectionGrid,
   dynamicCollectionGridProps,
   useSelector,
 } from "@plasmicpkgs/plasmic-basic-components/Data";
+import React, { ReactNode, useEffect, useState } from "react";
 
 const productFragment = `
 fragment ProductFragment on Product {
@@ -316,9 +318,9 @@ export function ProductImage({ className }: { className?: string }) {
 
 const { columns, columnGap, rowGap, children } = dynamicCollectionGridProps;
 
-const thisModule = "@plasmicpkgs/plasmic-shopify/ProductData";
+const thisModule = "@plasmicpkgs/plasmic-shopify";
 
-registerComponent(ProductCollectionGrid, {
+export const productCollectionGridMeta: ComponentMeta<ProductCollectionGridProps> = {
   name: "ProductCollectionGrid",
   importPath: thisModule,
   props: {
@@ -335,26 +337,31 @@ registerComponent(ProductCollectionGrid, {
     rowGap,
     children,
   },
-});
+};
+
+export function registerProductCollectionGrid(
+  loader?: { registerComponent: typeof registerComponent },
+  customProductCollectionGridMeta?: ComponentMeta<ProductCollectionGridProps>
+) {
+  if (loader) {
+    loader.registerComponent(
+      ProductCollectionGrid,
+      customProductCollectionGridMeta ?? productCollectionGridMeta
+    );
+  } else {
+    registerComponent(
+      ProductCollectionGrid,
+      customProductCollectionGridMeta ?? productCollectionGridMeta
+    );
+  }
+}
 
 /*
 TODO
 
-registerComponent(ProductTitle, {
-  name: "ProductTitle",
-  importPath: thisModule,
-  props: {},
-});
+registerProductTitle
 
-registerComponent(ProductImage, {
-  name: "ProductImage",
-  importPath: thisModule,
-  props: {},
-});
+registerProductImage
 
-registerComponent(ProductPrice, {
-  name: "ProductPrice",
-  importPath: thisModule,
-  props: {},
-});
+registerProductPrice
 */

@@ -1,6 +1,4 @@
-/** @format */
-
-import { repeatedElement } from "@plasmicapp/host";
+import { ComponentMeta, repeatedElement } from "@plasmicapp/host";
 import registerComponent from "@plasmicapp/host/registerComponent";
 import React, {
   ComponentProps,
@@ -93,13 +91,15 @@ export function DynamicElement<
   });
 }
 
+export interface DynamicTextProps extends CommonDynamicProps {
+  selector?: string;
+}
+
 export function DynamicText({
   selector,
   propSelectors,
   ...props
-}: CommonDynamicProps & {
-  selector?: string;
-}) {
+}: DynamicTextProps) {
   return (
     <DynamicElement
       {...props}
@@ -111,14 +111,17 @@ export function DynamicText({
   );
 }
 
+export interface DynamicImageProps
+  extends CommonDynamicProps,
+    ComponentProps<"img"> {
+  selector?: string;
+}
+
 export function DynamicImage({
   selector,
   propSelectors,
   ...props
-}: CommonDynamicProps &
-  ComponentProps<"img"> & {
-    selector?: string;
-  }) {
+}: DynamicImageProps) {
   return (
     <DynamicElement<"img">
       tag={"img"}
@@ -193,9 +196,9 @@ export function DynamicCollectionGrid({
   );
 }
 
-const thisModule = "@plasmicpkgs/plasmic-basic-components/Data";
+const thisModule = "@plasmicpkgs/plasmic-basic-components";
 
-registerComponent(DataProvider, {
+export const dataProviderMeta: ComponentMeta<DataProviderProps> = {
   name: "DataProvider",
   importPath: thisModule,
   // description: "Makes some specified data available to the subtree in a context",
@@ -240,7 +243,21 @@ registerComponent(DataProvider, {
       ],
     },
   },
-});
+};
+
+export function registerDataProvider(
+  loader?: { registerComponent: typeof registerComponent },
+  customDataProviderMeta?: ComponentMeta<DataProviderProps>
+) {
+  if (loader) {
+    loader.registerComponent(
+      DataProvider,
+      customDataProviderMeta ?? dataProviderMeta
+    );
+  } else {
+    registerComponent(DataProvider, customDataProviderMeta ?? dataProviderMeta);
+  }
+}
 
 const dynamicPropsWithoutTag = {
   propSelectors: {
@@ -262,13 +279,30 @@ const dynamicProps = {
 
 // TODO Eventually we'll want to expose all the base HTML properties, but in the nicer way that we do within the studio.
 
-registerComponent(DynamicElement, {
+export const dynamicElementMeta: ComponentMeta<CommonDynamicProps> = {
   name: "DynamicElement",
   importPath: thisModule,
   props: { ...dynamicProps, children: "slot" },
-});
+};
 
-registerComponent(DynamicText, {
+export function registerDynamicElement(
+  loader?: { registerComponent: typeof registerComponent },
+  customDynamicElementMeta?: ComponentMeta<CommonDynamicProps>
+) {
+  if (loader) {
+    loader.registerComponent(
+      DynamicElement,
+      customDynamicElementMeta ?? dynamicElementMeta
+    );
+  } else {
+    registerComponent(
+      DynamicElement,
+      customDynamicElementMeta ?? dynamicElementMeta
+    );
+  }
+}
+
+export const dynamicTextMeta: ComponentMeta<DynamicTextProps> = {
   name: "DynamicText",
   importPath: thisModule,
   props: {
@@ -279,9 +313,23 @@ registerComponent(DynamicText, {
         "The selector expression to use to get the text, such as: someVariable.0.someField",
     },
   },
-});
+};
 
-registerComponent(DynamicImage, {
+export function registerDynamicText(
+  loader?: { registerComponent: typeof registerComponent },
+  customDynamicTextMeta?: ComponentMeta<DynamicTextProps>
+) {
+  if (loader) {
+    loader.registerComponent(
+      DynamicText,
+      customDynamicTextMeta ?? dynamicTextMeta
+    );
+  } else {
+    registerComponent(DynamicText, customDynamicTextMeta ?? dynamicTextMeta);
+  }
+}
+
+export const dynamicImageMeta: ComponentMeta<DynamicImageProps> = {
   name: "DynamicImage",
   importPath: thisModule,
   props: {
@@ -292,7 +340,21 @@ registerComponent(DynamicImage, {
         "The selector expression to use to get the image source URL, such as: someVariable.0.someField",
     },
   },
-});
+};
+
+export function registerDynamicImage(
+  loader?: { registerComponent: typeof registerComponent },
+  customDynamicImageMeta?: ComponentMeta<DynamicImageProps>
+) {
+  if (loader) {
+    loader.registerComponent(
+      DynamicImage,
+      customDynamicImageMeta ?? dynamicImageMeta
+    );
+  } else {
+    registerComponent(DynamicImage, customDynamicImageMeta ?? dynamicImageMeta);
+  }
+}
 
 export const dynamicCollectionProps = {
   ...dynamicProps,
@@ -310,11 +372,28 @@ export const dynamicCollectionProps = {
   children: "slot",
 } as const;
 
-registerComponent(DynamicCollection, {
+export const dynamicCollectionMeta: ComponentMeta<DynamicCollectionProps> = {
   name: "DynamicCollection",
   importPath: thisModule,
   props: dynamicCollectionProps,
-});
+};
+
+export function registerDynamicCollection(
+  loader?: { registerComponent: typeof registerComponent },
+  customDynamicCollectionMeta?: ComponentMeta<DynamicCollectionProps>
+) {
+  if (loader) {
+    loader.registerComponent(
+      DynamicCollection,
+      customDynamicCollectionMeta ?? dynamicCollectionMeta
+    );
+  } else {
+    registerComponent(
+      DynamicCollection,
+      customDynamicCollectionMeta ?? dynamicCollectionMeta
+    );
+  }
+}
 
 export const dynamicCollectionGridProps = {
   ...dynamicCollectionProps,
@@ -335,8 +414,25 @@ export const dynamicCollectionGridProps = {
   },
 } as const;
 
-registerComponent(DynamicCollectionGrid, {
+export const dynamicCollectionGridMeta: ComponentMeta<DynamicCollectionGridProps> = {
   name: "DynamicCollectionGrid",
   importPath: thisModule,
   props: dynamicCollectionGridProps,
-});
+};
+
+export function registerDynamicCollectionGrid(
+  loader?: { registerComponent: typeof registerComponent },
+  customDynamicCollectionGridMeta?: ComponentMeta<DynamicCollectionGridProps>
+) {
+  if (loader) {
+    loader.registerComponent(
+      DynamicCollectionGrid,
+      customDynamicCollectionGridMeta ?? dynamicCollectionGridMeta
+    );
+  } else {
+    registerComponent(
+      DynamicCollectionGrid,
+      customDynamicCollectionGridMeta ?? dynamicCollectionGridMeta
+    );
+  }
+}

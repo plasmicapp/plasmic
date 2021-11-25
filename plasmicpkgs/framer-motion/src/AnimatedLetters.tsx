@@ -1,6 +1,17 @@
-import registerComponent from "@plasmicapp/host/registerComponent";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import { motion, Variants } from "framer-motion";
 import React from "react";
+
+export interface AnimatedLettersProps {
+  className?: string;
+  text?: string;
+  stagger?: number;
+  initial?: any;
+  visible?: any;
+  exit?: any;
+}
 
 export default function AnimatedLetters({
   className,
@@ -21,14 +32,7 @@ export default function AnimatedLetters({
     opacity: 0,
     y: "-100%",
   },
-}: {
-  className?: string;
-  text?: string;
-  stagger?: number;
-  initial?: any;
-  visible?: any;
-  exit?: any;
-}) {
+}: AnimatedLettersProps) {
   const letterVariants: Variants = {
     initial: initial,
     visible: (i) => ({
@@ -68,10 +72,10 @@ export default function AnimatedLetters({
   );
 }
 
-registerComponent(AnimatedLetters, {
+export const animatedLettersMeta: ComponentMeta<AnimatedLettersProps> = {
   name: "AnimatedLetters",
   displayName: "Animated Letters",
-  importPath: "@plasmicpkgs/framer-motion/AnimatedLetters",
+  importPath: "@plasmicpkgs/framer-motion",
   props: {
     text: {
       type: "string",
@@ -100,9 +104,25 @@ registerComponent(AnimatedLetters, {
       description: "What the letters look like after exit animation",
     },
   },
-  isDefaultExport: true,
   defaultStyles: {
     width: "stretch",
     maxWidth: "800px",
   },
-});
+};
+
+export function registerAnimatedLetters(
+  loader?: { registerComponent: typeof registerComponent },
+  customAnimatedLettersMeta?: ComponentMeta<AnimatedLettersProps>
+) {
+  if (loader) {
+    loader.registerComponent(
+      AnimatedLetters,
+      customAnimatedLettersMeta ?? animatedLettersMeta
+    );
+  } else {
+    registerComponent(
+      AnimatedLetters,
+      customAnimatedLettersMeta ?? animatedLettersMeta
+    );
+  }
+}

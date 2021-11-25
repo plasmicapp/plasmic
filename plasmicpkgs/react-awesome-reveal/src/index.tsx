@@ -1,4 +1,6 @@
-import registerComponent from "@plasmicapp/host/registerComponent";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import React from "react";
 import {
   Bounce,
@@ -29,14 +31,12 @@ type Effect = keyof typeof effectNameToComponent;
 
 const effects = Object.keys(effectNameToComponent);
 
-export function Reveal({
-  effect = "fade",
-  className,
-  ...props
-}: React.ComponentProps<typeof Fade> & {
+export interface RevealProps extends React.ComponentProps<typeof Fade> {
   className?: string;
   effect?: Effect;
-}) {
+}
+
+export function Reveal({ effect = "fade", className, ...props }: RevealProps) {
   const Comp = effectNameToComponent[effect] as any;
   if (!Comp) {
     throw new Error(`Please specify a valid effect: ${effects.join(", ")}`);
@@ -54,7 +54,7 @@ export function Reveal({
   return <Comp className={className} {...props} children={children} />;
 }
 
-registerComponent(Reveal, {
+export const revealMeta: ComponentMeta<RevealProps> = {
   name: "Reveal",
   importPath: "@plasmicpkgs/react-awesome-reveal",
   props: {
@@ -138,4 +138,15 @@ registerComponent(Reveal, {
         "Whether the animation should run only once, instead of everytime the element enters, exits and re-enters the viewport",
     },
   },
-});
+};
+
+export function registerReveal(
+  loader?: { registerComponent: typeof registerComponent },
+  customRevealMeta?: ComponentMeta<RevealProps>
+) {
+  if (loader) {
+    loader.registerComponent(Reveal, customRevealMeta ?? revealMeta);
+  } else {
+    registerComponent(Reveal, customRevealMeta ?? revealMeta);
+  }
+}
