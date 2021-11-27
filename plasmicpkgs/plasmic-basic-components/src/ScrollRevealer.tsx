@@ -81,7 +81,8 @@ export default function ScrollRevealer({
 }
 
 export const scrollRevealerMeta: ComponentMeta<ScrollRevealerProps> = {
-  name: "ScrollRevealer",
+  name: "hostless-scroll-revealer",
+  importName: "ScrollRevealer",
   displayName: "Scroll Revealer",
   importPath: "@plasmicpkgs/plasmic-basic-components",
   props: {

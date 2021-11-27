@@ -19,7 +19,9 @@ export default function Tilt(props: TiltProps) {
 }
 
 const parallaxTiltMeta: ComponentMeta<TiltProps> = {
-  name: "Tilt",
+  name: "hostless-parallax-tilt",
+  displayName: "Tilt",
+  importName: "Tilt",
   importPath: "@plasmicpkgs/react-parallax-tilt",
   props: {
     children: {

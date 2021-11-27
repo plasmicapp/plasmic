@@ -73,8 +73,9 @@ export default function AnimatedLetters({
 }
 
 export const animatedLettersMeta: ComponentMeta<AnimatedLettersProps> = {
-  name: "AnimatedLetters",
+  name: "hostless-animated-letters",
   displayName: "Animated Letters",
+  importName: "AnimatedLetters",
   importPath: "@plasmicpkgs/framer-motion",
   props: {
     text: {

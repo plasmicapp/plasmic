@@ -24,7 +24,9 @@ const Video = React.forwardRef<HTMLVideoElement, VideoProps>(
 export default Video;
 
 export const videoMeta: ComponentMeta<VideoProps> = {
-  name: "Video",
+  name: "hostless-html-video",
+  importName: "Video",
+  displayName: "HTML Video",
   importPath: "@plasmicpkgs/plasmic-basic-components",
   props: {
     src: {
@@ -61,13 +63,11 @@ export const videoMeta: ComponentMeta<VideoProps> = {
       displayName: "Muted",
       description: "Whether audio should be muted",
     },
-    // TODO enable this once image is a type
-    // poster: {
-    //   type: "image",
-    //   displayName: "Poster (placeholder) image",
-    //   description:
-    //     "Image to show while video is downloading",
-    // },
+    poster: {
+      type: "imageUrl",
+      displayName: "Poster (placeholder) image",
+      description: "Image to show while video is downloading",
+    },
     preload: {
       type: "choice",
       options: ["none", "metadata", "auto"],

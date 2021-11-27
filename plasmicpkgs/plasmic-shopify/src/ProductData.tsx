@@ -5,7 +5,7 @@ import {
   DynamicCollectionGrid,
   dynamicCollectionGridProps,
   useSelector,
-} from "@plasmicpkgs/plasmic-basic-components/Data";
+} from "@plasmicpkgs/plasmic-basic-components";
 import React, { ReactNode, useEffect, useState } from "react";
 
 const productFragment = `

@@ -38,7 +38,7 @@
   "dependencies": {
     "@plasmicapp/host": "^0.0.32",
     "react-query": "^3.32.3",
-    "@plasmicpkgs/plasmic-basic-components": "0.0.2"
+    "@plasmicpkgs/plasmic-basic-components": "0.0.3"
   },
   "peerDependencies": {
     "react": ">=16.8.0",

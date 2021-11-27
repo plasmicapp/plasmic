@@ -42,7 +42,9 @@ export default function Embed({
 }
 
 export const embedMeta: ComponentMeta<EmbedProps> = {
-  name: "Embed",
+  name: "hostless-embed",
+  displayName: "Embed",
+  importName: "Embed",
   importPath: "@plasmicpkgs/plasmic-basic-components",
   props: {
     code: {
@@ -54,6 +56,7 @@ export const embedMeta: ComponentMeta<EmbedProps> = {
       displayName: "Hide in editor",
       description:
         "Disable running the code while editing in Plasmic Studio (may require reload)",
+      editOnly: true,
     },
   },
   defaultStyles: {

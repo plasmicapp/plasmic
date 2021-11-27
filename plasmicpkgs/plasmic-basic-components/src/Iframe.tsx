@@ -4,13 +4,13 @@ import React, { useContext } from "react";
 
 export interface IframeProps {
   src: string;
-  hideInEditor?: boolean;
+  preview?: boolean;
   className?: string;
 }
 
-export default function Iframe({ hideInEditor, src, className }: IframeProps) {
+export default function Iframe({ preview, src, className }: IframeProps) {
   const isEditing = useContext(PlasmicCanvasContext);
-  if (isEditing && !hideInEditor) {
+  if (isEditing && !preview) {
     return (
       <div className={className}>
         <div
@@ -40,16 +40,17 @@ export default function Iframe({ hideInEditor, src, className }: IframeProps) {
 }
 
 export const iframeMeta: ComponentMeta<IframeProps> = {
-  name: "Iframe",
+  name: "hostless-iframe",
+  displayName: "Iframe",
+  importName: "Iframe",
   importPath: "@plasmicpkgs/plasmic-basic-components",
   props: {
     src: {
       type: "string",
       defaultValue: "https://www.example.com",
     },
-    hideInEditor: {
+    preview: {
       type: "boolean",
-      displayName: "Preview",
       description: "Load the iframe while editing in Plasmic Studio",
     },
   },

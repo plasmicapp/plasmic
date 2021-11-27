@@ -86,7 +86,9 @@ const YouTube = React.forwardRef<YouTubeImpl, YouTubeProps>(
 );
 
 export const youtubeMeta: ComponentMeta<YouTubeProps> = {
-  name: "YouTube",
+  name: "hostless-youtube",
+  displayName: "YouTube",
+  importName: "YouTube",
   importPath: "@plasmicpkgs/react-youtube",
   props: {
     videoId: {

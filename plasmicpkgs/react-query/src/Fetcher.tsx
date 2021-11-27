@@ -1,7 +1,7 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { DataProvider } from "@plasmicpkgs/plasmic-basic-components/Data";
+import { DataProvider } from "@plasmicpkgs/plasmic-basic-components";
 import React, { ReactNode } from "react";
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 
@@ -65,7 +65,11 @@ export function DataFetcher({
   }
 }
 
-export function PlasmicQueryProvider({ children }: { children: ReactNode }) {
+export interface PlasmicQueryProviderProps {
+  children: ReactNode;
+}
+
+export function PlasmicQueryProvider({ children }: PlasmicQueryProviderProps) {
   const queryClient = new QueryClient({});
   return (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
@@ -73,13 +77,29 @@ export function PlasmicQueryProvider({ children }: { children: ReactNode }) {
 }
 
 export const dataFetcherMeta: ComponentMeta<DataFetcherProps> = {
-  name: "DataFetcher",
+  name: "hostless-data-fetcher",
+  displayName: "Data Fetcher",
+  importName: "DataFetcher",
   importPath: "@plasmicpkgs/react-query",
   props: {
-    src: {
+    url: {
       type: "string",
-      defaultValue: "https://www.example.com",
+      defaultValue: "https://api.github.com/users/plasmicapp/repos",
+      description: "Where to fetch the data from"
     },
+    method: {
+      type: "choice",
+      options: ["GET", "DELETE", "CONNECT", "HEAD", "OPTIONS", "POST", "PUT", "TRACE"],
+      description: "Method to be used when fetching"
+    },
+    headers: "object",
+    body: "object",
+    dataName: {
+      type: "string",
+      defaultValue: "myVariable",
+      description: "Variable name to store the fetched data in"
+    },
+    children: "slot",
   },
   defaultStyles: {
     maxWidth: "100%",
@@ -100,9 +120,23 @@ export function registerDataFetcher(
   }
 }
 
-/*
+export const plasmicQueryProviderMeta: ComponentMeta<PlasmicQueryProviderProps> = {
+  name: "hostless-plasmic-query-provider",
+  displayName: "Query Client Provider",
+  importName: "PlasmicQueryProvider",
+  importPath: "@plasmicpkgs/react-query",
+  props: {
+    children: "slot"
+  }
+}
 
-TODO
-
-registerPlasmicQueryProvider
- */
+export function registerPlasmicQueryProvider(
+  loader?: { registerComponent: typeof registerComponent },
+  customPlasmicQueryProviderMeta?: ComponentMeta<PlasmicQueryProviderProps>
+) {
+  if (loader) {
+    loader.registerComponent(PlasmicQueryProvider, customPlasmicQueryProviderMeta ?? plasmicQueryProviderMeta);
+  } else {
+    registerComponent(PlasmicQueryProvider, customPlasmicQueryProviderMeta ?? plasmicQueryProviderMeta);
+  }
+}

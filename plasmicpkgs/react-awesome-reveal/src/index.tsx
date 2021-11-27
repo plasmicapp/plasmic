@@ -55,7 +55,9 @@ export function Reveal({ effect = "fade", className, ...props }: RevealProps) {
 }
 
 export const revealMeta: ComponentMeta<RevealProps> = {
-  name: "Reveal",
+  name: "hostless-reveal",
+  importName: "Reveal",
+  displayName: "Reveal",
   importPath: "@plasmicpkgs/react-awesome-reveal",
   props: {
     // `big` seems not to be working properly as of `react-awesome-reveal@3.8.1`

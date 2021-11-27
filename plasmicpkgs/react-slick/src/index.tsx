@@ -4,7 +4,9 @@ import registerComponent, {
 import Slider, { Settings } from "react-slick";
 
 export const sliderMeta: ComponentMeta<Settings> = {
-  name: "Slider",
+  name: "hostless-slider",
+  displayName: "Slider",
+  importName: "Slider",
   importPath: "react-slick",
   props: {
     children: {
@@ -12,21 +14,21 @@ export const sliderMeta: ComponentMeta<Settings> = {
       defaultValue: [
         {
           type: "img",
-          src: "https://via.placeholder.com/350x150",
+          src: "https://via.placeholder.com/150/FF0000/FFFFFF/?text=Slide_1",
           style: {
             maxWidth: "100%",
           },
         },
         {
           type: "img",
-          src: "https://via.placeholder.com/350x150",
+          src: "https://via.placeholder.com/150/00FF00/FFFFFF/?text=Slide_2",
           style: {
             maxWidth: "100%",
           },
         },
         {
           type: "img",
-          src: "https://via.placeholder.com/350x150",
+          src: "https://via.placeholder.com/150/0000FF/FFFFFF/?text=Slide_3",
           style: {
             maxWidth: "100%",
           },
@@ -76,6 +78,7 @@ export const sliderMeta: ComponentMeta<Settings> = {
     },
     fade: {
       type: "boolean",
+      defaultValue: true,
       description: "Cross-fade between slides",
     },
     focusOnSelect: {
@@ -169,6 +172,7 @@ export const sliderMeta: ComponentMeta<Settings> = {
     },
     vertical: {
       type: "boolean",
+      defaultValue: true,
       description: "Vertical slide mode",
     },
   },

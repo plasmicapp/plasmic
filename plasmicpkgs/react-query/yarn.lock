@@ -1099,17 +1099,30 @@
     "@plasmicapp/preamble" "0.0.17"
     window-or-global "^1.0.1"
 
+"@plasmicapp/host@^0.0.37":
+  version "0.0.37"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-0.0.37.tgz#1ccf313379c85368a75e47a9b047f92cce6ee954"
+  integrity sha512-cqquckj3+xRTUXC3mDYDrp0V+9UD8WHhvVuK9Ami+Lmsl111kBbJsTo23G4FLcIdS2HxBxqOdyuq6vAPbSgwFA==
+  dependencies:
+    "@plasmicapp/preamble" "0.0.21"
+    window-or-global "^1.0.1"
+
 "@plasmicapp/preamble@0.0.17":
   version "0.0.17"
   resolved "https://registry.yarnpkg.com/@plasmicapp/preamble/-/preamble-0.0.17.tgz#1216ed3867168b00f40ba301c5cb77fffa92df47"
   integrity sha512-MOJaXP7/2NJU27qxzlnczQi9V/wSYp/H4TcYC3FRWPcqq4mWYjk3+hynJqPjKUosWnsAqEVBtFCaP/nG5ZURDg==
 
-"@plasmicpkgs/plasmic-basic-components@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-basic-components/-/plasmic-basic-components-0.0.2.tgz#694237ab3bda7e051def22408d878f785cb96178"
-  integrity sha512-2uD0TikVSzmMz36HmENkA1k4Pf8QHztRXsDfxp7i0vCVvqpUamYSqA/OssLmdpKoB/BiF9x+uBsInO7KV3Dtaw==
+"@plasmicapp/preamble@0.0.21":
+  version "0.0.21"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/preamble/-/preamble-0.0.21.tgz#0c028ecf54f7c6489ae1a2b86c232702e79ef22c"
+  integrity sha512-qiJRZ4MQEv2WQb7Xq8a+1U0ArmxtrpIWvbHgc3Ul8ki4mbfHMYTljafTnygwJLLFUxKDwb6UuNl+x+no5T1LtQ==
+
+"@plasmicpkgs/plasmic-basic-components@0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-basic-components/-/plasmic-basic-components-0.0.3.tgz#4a14ddb58ba9a54b5f62415ec61307c9e5b8ffcf"
+  integrity sha512-V42KGKKwXsZH+RaFH3pOTGyD/R/KZRF02o8MNaGA0aW9cGm7yoq0ycQs3dzSoF0u+CeQH/YmgDc/YaSp6w8/aw==
   dependencies:
-    "@plasmicapp/host" "^0.0.32"
+    "@plasmicapp/host" "^0.0.37"
 
 "@polka/url@^1.0.0-next.20":
   version "1.0.0-next.21"

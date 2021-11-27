@@ -36,7 +36,7 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "@plasmicapp/host": "^0.0.32"
+    "@plasmicapp/host": "^0.0.37"
   },
   "peerDependencies": {
     "react": ">=16.8.0",

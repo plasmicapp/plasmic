@@ -199,7 +199,9 @@ export function DynamicCollectionGrid({
 const thisModule = "@plasmicpkgs/plasmic-basic-components";
 
 export const dataProviderMeta: ComponentMeta<DataProviderProps> = {
-  name: "DataProvider",
+  name: "hostless-data-provider",
+  displayName: "Data Provider",
+  importName: "DataProvider",
   importPath: thisModule,
   // description: "Makes some specified data available to the subtree in a context",
   props: {
@@ -228,14 +230,14 @@ export const dataProviderMeta: ComponentMeta<DataProviderProps> = {
       defaultValue: [
         {
           type: "component",
-          name: "DynamicText",
+          name: "hostless-dynamic-text",
           props: {
             selector: "celebrities.0.name",
           },
         },
         {
           type: "component",
-          name: "DynamicImage",
+          name: "hostless-dynamic-image",
           props: {
             selector: "celebrities.0.profilePicture",
           },
@@ -280,7 +282,9 @@ const dynamicProps = {
 // TODO Eventually we'll want to expose all the base HTML properties, but in the nicer way that we do within the studio.
 
 export const dynamicElementMeta: ComponentMeta<CommonDynamicProps> = {
-  name: "DynamicElement",
+  name: "hostless-dynamic-element",
+  displayName: "Dynamic Element",
+  importName: "DynamicElement",
   importPath: thisModule,
   props: { ...dynamicProps, children: "slot" },
 };
@@ -303,7 +307,9 @@ export function registerDynamicElement(
 }
 
 export const dynamicTextMeta: ComponentMeta<DynamicTextProps> = {
-  name: "DynamicText",
+  name: "hostless-dynamic-text",
+  importName: "DynamicText",
+  displayName: "Dynamic Text",
   importPath: thisModule,
   props: {
     ...dynamicProps,
@@ -330,7 +336,9 @@ export function registerDynamicText(
 }
 
 export const dynamicImageMeta: ComponentMeta<DynamicImageProps> = {
-  name: "DynamicImage",
+  name: "hostless-dynamic-image",
+  displayName: "Dynamic Image",
+  importName: "DynamicImage",
   importPath: thisModule,
   props: {
     ...dynamicPropsWithoutTag,
@@ -373,7 +381,9 @@ export const dynamicCollectionProps = {
 } as const;
 
 export const dynamicCollectionMeta: ComponentMeta<DynamicCollectionProps> = {
-  name: "DynamicCollection",
+  name: "hostless-dynamic-collection",
+  displayName: "Dynamic Collection",
+  importName: "DynamicCollection",
   importPath: thisModule,
   props: dynamicCollectionProps,
 };
@@ -415,7 +425,9 @@ export const dynamicCollectionGridProps = {
 } as const;
 
 export const dynamicCollectionGridMeta: ComponentMeta<DynamicCollectionGridProps> = {
-  name: "DynamicCollectionGrid",
+  name: "hostless-dynamic-collection-grid",
+  displayName: "Dynamic Collection Grid",
+  importName: "DynamicCollectionGrid",
   importPath: thisModule,
   props: dynamicCollectionGridProps,
 };
