@@ -1,4 +1,6 @@
-import registerComponent from "@plasmicapp/host/registerComponent";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import React from "react";
 import YouTubeImpl, {
   PlayerVars,
@@ -83,8 +85,10 @@ const YouTube = React.forwardRef<YouTubeImpl, YouTubeProps>(
   }
 );
 
-registerComponent(YouTube, {
-  name: "YouTube",
+export const youtubeMeta: ComponentMeta<YouTubeProps> = {
+  name: "hostless-youtube",
+  displayName: "YouTube",
+  importName: "YouTube",
   importPath: "@plasmicpkgs/react-youtube",
   props: {
     videoId: {
@@ -170,6 +174,17 @@ registerComponent(YouTube, {
     maxHeight: "100%",
     maxWidth: "100%",
   },
-});
+};
+
+export function registerYouTube(
+  loader?: { registerComponent: typeof registerComponent },
+  customYouTubeMeta?: ComponentMeta<YouTubeProps>
+) {
+  if (loader) {
+    loader.registerComponent(YouTube, customYouTubeMeta ?? youtubeMeta);
+  } else {
+    registerComponent(YouTube, customYouTubeMeta ?? youtubeMeta);
+  }
+}
 
 export default YouTube;

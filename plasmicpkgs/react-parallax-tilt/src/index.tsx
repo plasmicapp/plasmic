@@ -1,8 +1,12 @@
-import registerComponent from "@plasmicapp/host/registerComponent";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import React, { ComponentProps } from "react";
 import ReactParallaxTilt from "react-parallax-tilt";
 
-export default function Tilt(props: ComponentProps<typeof ReactParallaxTilt>) {
+export type TiltProps = ComponentProps<typeof ReactParallaxTilt>;
+
+export default function Tilt(props: TiltProps) {
   return (
     <ReactParallaxTilt
       {...props}
@@ -14,8 +18,10 @@ export default function Tilt(props: ComponentProps<typeof ReactParallaxTilt>) {
   );
 }
 
-registerComponent(Tilt, {
-  name: "Tilt",
+const parallaxTiltMeta: ComponentMeta<TiltProps> = {
+  name: "hostless-parallax-tilt",
+  displayName: "Tilt",
+  importName: "Tilt",
   importPath: "@plasmicpkgs/react-parallax-tilt",
   props: {
     children: {
@@ -148,4 +154,15 @@ registerComponent(Tilt, {
   defaultStyles: {
     maxWidth: "100%",
   },
-});
+};
+
+export function registerTilt(
+  loader?: { registerComponent: typeof registerComponent },
+  customTiltMeta?: ComponentMeta<TiltProps>
+) {
+  if (loader) {
+    loader.registerComponent(Tilt, customTiltMeta ?? parallaxTiltMeta);
+  } else {
+    registerComponent(Tilt, customTiltMeta ?? parallaxTiltMeta);
+  }
+}

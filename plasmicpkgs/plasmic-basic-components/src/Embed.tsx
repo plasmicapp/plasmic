@@ -1,6 +1,6 @@
-/** @format */
-
-import registerComponent from "@plasmicapp/host/registerComponent";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import React, { useEffect, useRef } from "react";
 import { ensure } from "./common";
 
@@ -41,9 +41,11 @@ export default function Embed({
   );
 }
 
-registerComponent(Embed, {
-  name: "Embed",
-  importPath: "@plasmicpkgs/plasmic-basic-components/Embed",
+export const embedMeta: ComponentMeta<EmbedProps> = {
+  name: "hostless-embed",
+  displayName: "Embed",
+  importName: "Embed",
+  importPath: "@plasmicpkgs/plasmic-basic-components",
   props: {
     code: {
       type: "string",
@@ -54,10 +56,21 @@ registerComponent(Embed, {
       displayName: "Hide in editor",
       description:
         "Disable running the code while editing in Plasmic Studio (may require reload)",
+      editOnly: true,
     },
   },
-  isDefaultExport: true,
   defaultStyles: {
     maxWidth: "100%",
   },
-});
+};
+
+export function registerEmbed(
+  loader?: { registerComponent: typeof registerComponent },
+  customEmbedMeta?: ComponentMeta<EmbedProps>
+) {
+  if (loader) {
+    loader.registerComponent(Embed, customEmbedMeta ?? embedMeta);
+  } else {
+    registerComponent(Embed, customEmbedMeta ?? embedMeta);
+  }
+}
