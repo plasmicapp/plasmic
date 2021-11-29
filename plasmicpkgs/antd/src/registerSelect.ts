@@ -5,7 +5,8 @@ import { SelectProps } from "rc-select";
 import { Registerable } from "./registerable";
 
 export const selectMeta: ComponentMeta<SelectProps> = {
-  name: "Antd Select",
+  name: "AntdSelect",
+  displayName: "Antd Select",
   props: {
     autoFocus: {
       type: "boolean",
@@ -72,11 +73,11 @@ export const selectMeta: ComponentMeta<SelectProps> = {
     },
     children: {
       type: "slot",
-      allowedComponents: ["Option"],
+      allowedComponents: ["AntdOption, AntdOptionGroup"],
       defaultValue: [
         {
           type: "component",
-          name: "Antd Option",
+          name: "AntdOption",
           props: {
             value: "Option",
             children: {

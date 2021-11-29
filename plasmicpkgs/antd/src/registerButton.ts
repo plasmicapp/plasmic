@@ -4,7 +4,8 @@ import { Button, ButtonProps } from "antd";
 import { Registerable } from "./registerable";
 
 export const buttonMeta: ComponentMeta<ButtonProps> = {
-  name: "Antd Button",
+  name: "AntdButton",
+  displayName: "Antd Button",
   props: {
     type: {
       type: "choice",
