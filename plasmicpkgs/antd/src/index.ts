@@ -1,5 +1,6 @@
 import { Registerable } from "./registerable";
 import { registerButton } from "./registerButton";
+import { registerCheckbox, registerCheckboxGroup } from "./registerCheckbox";
 import { registerCollapse, registerCollapsePanel } from "./registerCollapse";
 import { registerOptGroup, registerOption } from "./registerOption";
 import { registerSelect } from "./registerSelect";
@@ -8,6 +9,12 @@ import { registerSwitch } from "./registerSwitch";
 
 export { Registerable } from "./registerable";
 export { buttonMeta, registerButton } from "./registerButton";
+export {
+  checkboxMeta,
+  registerCheckbox,
+  checkboxGroupMeta,
+  registerCheckboxGroup,
+} from "./registerCheckbox";
 export {
   collapstePanelMeta,
   registerCollapsePanel,
@@ -33,4 +40,6 @@ export function registerAll(loader?: Registerable) {
   registerSelect(loader);
   registerCollapsePanel(loader);
   registerCollapse(loader);
+  registerCheckbox(loader);
+  registerCheckboxGroup(loader);
 }
