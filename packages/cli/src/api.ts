@@ -101,6 +101,8 @@ export interface ProjectBundle {
   iconAssets: IconBundle[];
   imageAssets: ImageBundle[];
   checksums: ChecksumBundle;
+  usedNpmPackages: string[];
+  externalCssImports: string[];
 }
 
 export type ProjectMeta = Omit<ProjectBundle, "projectConfig">;

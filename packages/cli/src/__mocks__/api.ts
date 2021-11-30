@@ -340,6 +340,8 @@ class PlasmicApi {
         globalVariantChecksums: [],
         projectCssChecksum: "",
       } as ChecksumBundle,
+      usedNpmPackages: [],
+      externalCssImports: [],
     };
     return result;
   }
