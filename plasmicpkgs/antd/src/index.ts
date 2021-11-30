@@ -1,6 +1,7 @@
 import { Registerable } from "./registerable";
 import { registerButton } from "./registerButton";
 import { registerCheckbox, registerCheckboxGroup } from "./registerCheckbox";
+import { registerCarousel } from "./registerCarousel";
 import { registerCollapse, registerCollapsePanel } from "./registerCollapse";
 import { registerDropdown, registerDropdownButton } from "./registerDropdown";
 import {
@@ -25,6 +26,7 @@ export * from "./registerOption";
 export * from "./registerSelect";
 export * from "./registerSlider";
 export * from "./registerSwitch";
+export * from "./registerCarousel";
 
 export function registerAll(loader?: Registerable) {
   registerButton(loader);
@@ -44,4 +46,5 @@ export function registerAll(loader?: Registerable) {
   registerMenu(loader);
   registerDropdown(loader);
   registerDropdownButton(loader);
+  registerCarousel(loader);
 }
