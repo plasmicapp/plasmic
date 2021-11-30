@@ -1,13 +1,13 @@
 import { ComponentMeta } from "@plasmicapp/host";
 import registerComponent from "@plasmicapp/host/registerComponent";
 import { OptGroupProps } from "rc-select/lib/OptGroup";
-import Select, { OptionProps } from "antd/lib/select";
+import { OptionProps } from "rc-select/lib/Option";
+import { Option, OptGroup } from "rc-select";
 import { Registerable } from "./registerable";
 
-const { Option, OptGroup } = Select;
-
 export const optionMeta: ComponentMeta<OptionProps> = {
-  name: "Antd Option",
+  name: "AntdOption",
+  displayName: "Antd Option",
   props: {
     disabled: {
       type: "boolean",
@@ -21,6 +21,10 @@ export const optionMeta: ComponentMeta<OptionProps> = {
       type: "string",
       description: "Default to filter with this property",
     },
+    key: {
+      type: "string",
+      description: "Option key",
+    },
     children: {
       type: "slot",
       defaultValue: [
@@ -31,7 +35,7 @@ export const optionMeta: ComponentMeta<OptionProps> = {
       ],
     },
   },
-  importPath: "antd/lib/select",
+  importPath: "rc-select",
   importName: "Option",
 };
 
@@ -45,7 +49,8 @@ export function registerOption(
 }
 
 export const optGroupMeta: ComponentMeta<OptGroupProps> = {
-  name: "Antd Option Group",
+  name: "AntdOptionGroup",
+  displayName: "Antd Option Group",
   props: {
     key: {
       type: "string",
@@ -57,16 +62,16 @@ export const optGroupMeta: ComponentMeta<OptGroupProps> = {
     },
     children: {
       type: "slot",
-      allowedComponents: ["Option"],
+      allowedComponents: ["AntdOption"],
       defaultValue: [
         {
           type: "component",
-          name: "Antd Option",
+          name: "AntdOption",
         },
       ],
     },
   },
-  importPath: "antd/lib/select",
+  importPath: "rc-select",
   importName: "OptGroup",
 };
 

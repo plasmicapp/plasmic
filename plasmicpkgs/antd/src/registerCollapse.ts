@@ -1,12 +1,13 @@
 import { ComponentMeta } from "@plasmicapp/host";
 import registerComponent from "@plasmicapp/host/registerComponent";
-import { Collapse, CollapseProps, CollapsePanelProps } from "antd";
+import { CollapseProps, CollapsePanelProps } from "antd";
+import CollapsePanel from "antd/lib/collapse/CollapsePanel";
+import Collapse from "antd/lib/collapse/Collapse";
 import { Registerable } from "./registerable";
 
-const { Panel } = Collapse;
-
 export const collapstePanelMeta: ComponentMeta<CollapsePanelProps> = {
-  name: "Antd Collapse Panel",
+  name: "AntdCollapsePanel",
+  displayName: "Antd Collapse Panel",
   props: {
     collapsible: {
       type: "choice",
@@ -46,8 +47,9 @@ export const collapstePanelMeta: ComponentMeta<CollapsePanelProps> = {
       ],
     },
   },
-  importPath: "antd",
-  importName: "Panel",
+  importPath: "antd/lib/collapse/CollapsePanel",
+  importName: "CollapsePanel",
+  isDefaultExport: true,
 };
 
 export function registerCollapsePanel(
@@ -56,11 +58,15 @@ export function registerCollapsePanel(
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Panel, customCollapsePanelMeta ?? collapstePanelMeta);
+  doRegisterComponent(
+    CollapsePanel,
+    customCollapsePanelMeta ?? collapstePanelMeta
+  );
 }
 
 export const collapsteMeta: ComponentMeta<CollapseProps> = {
-  name: "Antd Collapse",
+  name: "AntdCollapse",
+  displayName: "Antd Collapse",
   props: {
     accordion: {
       type: "boolean",
@@ -94,17 +100,18 @@ export const collapsteMeta: ComponentMeta<CollapseProps> = {
     },
     children: {
       type: "slot",
-      allowedComponents: ["Antd Collapse Panel"],
+      allowedComponents: ["AntdCollapsePanel"],
       defaultValue: [
         {
           type: "component",
-          name: "Antd Collapse Panel",
+          name: "AntdCollapsePanel",
         },
       ],
     },
   },
-  importPath: "antd",
+  importPath: "antd/lib/collapse/Collapse",
   importName: "Collapse",
+  isDefaultExport: true,
 };
 
 export function registerCollapse(

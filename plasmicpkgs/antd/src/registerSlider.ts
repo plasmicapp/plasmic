@@ -4,7 +4,8 @@ import { Slider, SliderSingleProps } from "antd";
 import { Registerable } from "./registerable";
 
 export const sliderMeta: ComponentMeta<SliderSingleProps> = {
-  name: "Antd Slider",
+  name: "AntdSlider",
+  displayName: "Antd Slider",
   props: {
     max: {
       type: "number",

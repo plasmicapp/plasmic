@@ -4,7 +4,8 @@ import { Switch, SwitchProps } from "antd";
 import { Registerable } from "./registerable";
 
 export const switchMeta: ComponentMeta<SwitchProps> = {
-  name: "Antd Switch",
+  name: "AntdSwitch",
+  displayName: "Antd Switch",
   props: {
     autoFocus: {
       type: "boolean",

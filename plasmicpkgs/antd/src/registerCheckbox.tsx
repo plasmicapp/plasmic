@@ -12,7 +12,8 @@ class CheckboxWrapper extends React.Component<CheckboxProps> {
 }
 
 export const checkboxMeta: ComponentMeta<CheckboxProps> = {
-  name: "Antd Checkbox",
+  name: "AntdCheckbox",
+  displayName: "Antd Checkbox",
   props: {
     autoFocus: {
       type: "boolean",
@@ -65,7 +66,8 @@ export function registerCheckbox(
 }
 
 export const checkboxGroupMeta: ComponentMeta<CheckboxGroupProps> = {
-  name: "Antd Checkbox Group",
+  name: "AntdCheckboxGroup",
+  displayName: "Antd Checkbox Group",
   props: {
     disabled: {
       type: "boolean",
@@ -79,11 +81,11 @@ export const checkboxGroupMeta: ComponentMeta<CheckboxGroupProps> = {
     },
     children: {
       type: "slot",
-      allowedComponents: ["Antd Checkbox"],
+      allowedComponents: ["AntdCheckbox"],
       defaultValue: [
         {
           type: "component",
-          name: "Antd Checkbox",
+          name: "AntdCheckbox",
         },
       ],
     },
