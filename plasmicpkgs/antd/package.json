@@ -39,7 +39,7 @@
     "@plasmicapp/host": "0.0.32"
   },
   "peerDependencies": {
-    "react": ">=16.8.0",
-    "antd": "^4.17.0"
+    "antd": "^4.0.0",
+    "react": ">=16.8.0"
   }
 }
