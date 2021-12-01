@@ -315,6 +315,8 @@ export async function sync(
   ].map((p) => L.pick(p, "projectId", "projectApiToken"));
 
   context.api.attachProjectIdsAndTokens(projectIdsAndTokens);
+  const externalNpmPackages = new Set<string>();
+  const externalCssImports = new Set<string>();
 
   // Perform the actual sync
   await withBufferedFs(async () => {
@@ -332,6 +334,8 @@ export async function sync(
         summary,
         pendingMerge,
         projectMeta.indirect,
+        externalNpmPackages,
+        externalCssImports,
         metadataDefaults
       );
     }
@@ -416,6 +420,22 @@ export async function sync(
     await updateConfig(context, context.config, baseDir);
   });
 
+  await checkExternalPkgs(
+    context,
+    baseDir,
+    opts,
+    Array.from(externalNpmPackages.keys())
+  );
+
+  if (!opts.quiet && externalCssImports.size > 0) {
+    logger.info(
+      `This project uses external packages and styles. Make sure to import the following global CSS: ` +
+        Array.from(externalCssImports.keys())
+          .map((stmt) => `"${stmt}"`)
+          .join(", ")
+    );
+  }
+
   // Post-sync commands
   if (!opts.ignorePostSync) {
     for (const cmd of context.config.postSyncCommands || []) {
@@ -426,6 +446,30 @@ export async function sync(
   if (isFirstRun) {
     if (!process.env.QUIET) {
       printFirstSyncInfo(context);
+    }
+  }
+}
+
+async function checkExternalPkgs(
+  context: PlasmicContext,
+  baseDir: string,
+  opts: SyncArgs,
+  pkgs: string[]
+) {
+  const missingPkgs = pkgs.filter((pkg) => {
+    const installedPkg = findInstalledVersion(context, baseDir, pkg);
+    return !installedPkg;
+  });
+  if (missingPkgs.length > 0) {
+    const upgrade = await confirmWithUser(
+      `The following packages aren't installed but are required by some projects, would you like to install them? ${missingPkgs.join(
+        ", "
+      )}`,
+      opts.yes
+    );
+
+    if (upgrade) {
+      installUpgrade(missingPkgs.join(" "), baseDir);
     }
   }
 }
@@ -480,6 +524,8 @@ async function syncProject(
   summary: Map<string, ComponentUpdateSummary>,
   pendingMerge: ComponentPendingMerge[],
   indirect: boolean,
+  externalNpmPackages: Set<string>,
+  externalCssImports: Set<string>,
   metadataDefaults?: Metadata
 ): Promise<void> {
   const newComponentScheme =
@@ -601,6 +647,12 @@ async function syncProject(
     projectVersion,
     projectBundle.imageAssets,
     projectBundle.checksums
+  );
+  (projectBundle.usedNpmPackages || []).forEach((pkg) =>
+    externalNpmPackages.add(pkg)
+  );
+  (projectBundle.externalCssImports || []).forEach((css) =>
+    externalCssImports.add(css)
   );
 }
 
