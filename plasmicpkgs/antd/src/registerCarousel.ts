@@ -1,14 +1,15 @@
 import { ComponentMeta } from "@plasmicapp/host";
 import registerComponent from "@plasmicapp/host/registerComponent";
 import { Carousel, CarouselProps } from "antd";
+import { CSSProperties } from "react";
 import { Registerable } from "./registerable";
 
-const contentStyle = {
-  height: '160px',
-  color: '#fff',
-  lineHeight: '160px',
-  textAlign: 'center',
-  backgroundColor: '#364d79',
+const contentStyle: CSSProperties = {
+  height: "160px",
+  color: "#fff",
+  lineHeight: "160px",
+  textAlign: "center",
+  backgroundColor: "#364d79",
 };
 
 export const carouselMeta: ComponentMeta<CarouselProps> = {
@@ -40,8 +41,8 @@ export const carouselMeta: ComponentMeta<CarouselProps> = {
           children: {
             type: "text",
             value: "1",
-            styles: contentStyle
-          }
+            styles: contentStyle,
+          },
         },
         {
           type: "vbox",
@@ -49,10 +50,10 @@ export const carouselMeta: ComponentMeta<CarouselProps> = {
             type: "text",
             value: "2",
             styles: contentStyle,
-          }
-        }
+          },
+        },
       ],
-    }
+    },
   },
   importPath: "antd",
   importName: "Carousel",
