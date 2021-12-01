@@ -2,6 +2,7 @@ import { Registerable } from "./registerable";
 import { registerButton } from "./registerButton";
 import { registerCheckbox, registerCheckboxGroup } from "./registerCheckbox";
 import { registerCollapse, registerCollapsePanel } from "./registerCollapse";
+import { registerDropdown, registerDropdownButton } from "./registerDropdown";
 import {
   registerMenu,
   registerMenuDivider,
@@ -18,6 +19,7 @@ export * from "./registerable";
 export * from "./registerButton";
 export * from "./registerCheckbox";
 export * from "./registerCollapse";
+export * from "./registerDropdown";
 export * from "./registerMenu";
 export * from "./registerOption";
 export * from "./registerSelect";
@@ -40,4 +42,6 @@ export function registerAll(loader?: Registerable) {
   registerMenuItemGroup(loader);
   registerSubMenu(loader);
   registerMenu(loader);
+  registerDropdown(loader);
+  registerDropdownButton(loader);
 }
