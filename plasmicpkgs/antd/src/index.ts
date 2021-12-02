@@ -5,6 +5,13 @@ import { registerCarousel } from "./registerCarousel";
 import { registerCollapse, registerCollapsePanel } from "./registerCollapse";
 import { registerDropdown, registerDropdownButton } from "./registerDropdown";
 import {
+  registerInput,
+  registerInputTextArea,
+  registerInputSearch,
+  registerInputPassword,
+  registerInputGroup,
+} from "./registerInput";
+import {
   registerMenu,
   registerMenuDivider,
   registerMenuItem,
@@ -21,6 +28,7 @@ export * from "./registerButton";
 export * from "./registerCheckbox";
 export * from "./registerCollapse";
 export * from "./registerDropdown";
+export * from "./registerInput";
 export * from "./registerMenu";
 export * from "./registerOption";
 export * from "./registerSelect";
@@ -47,4 +55,9 @@ export function registerAll(loader?: Registerable) {
   registerDropdown(loader);
   registerDropdownButton(loader);
   registerCarousel(loader);
+  registerInput(loader);
+  registerInputTextArea(loader);
+  registerInputSearch(loader);
+  registerInputPassword(loader);
+  registerInputGroup(loader);
 }
