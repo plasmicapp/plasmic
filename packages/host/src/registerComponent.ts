@@ -6,33 +6,34 @@ import {
 
 const root = globalThis as any;
 
-type PropTypeBase = {
+type PropTypeBase<P> = {
   displayName?: string;
   description?: string;
+  hidden?: (props: P) => boolean;
 };
 
-type StringType =
+type StringType<P> =
   | "string"
   | ({
       type: "string";
       defaultValue?: string;
-    } & PropTypeBase);
+    } & PropTypeBase<P>);
 
-type BooleanType =
+type BooleanType<P> =
   | "boolean"
   | ({
       type: "boolean";
       defaultValue?: boolean;
-    } & PropTypeBase);
+    } & PropTypeBase<P>);
 
-type NumberType =
+type NumberType<P> =
   | "number"
   | ({
       type: "number";
       defaultValue?: number;
-    } & PropTypeBase);
+    } & PropTypeBase<P>);
 
-type JSONLikeType =
+type JSONLikeType<P> =
   | "object"
   | ({
       type: "object";
@@ -40,13 +41,13 @@ type JSONLikeType =
        * Expects a JSON-compatible value
        */
       defaultValue?: any;
-    } & PropTypeBase);
+    } & PropTypeBase<P>);
 
-type ChoiceType = {
+type ChoiceType<P> = {
   type: "choice";
-  options: string[];
+  options: string[] | ((props: P) => string[]);
   defaultValue?: string;
-} & PropTypeBase;
+} & PropTypeBase<P>;
 
 type SlotType =
   | "slot"
@@ -59,15 +60,15 @@ type SlotType =
       defaultValue?: PlasmicElement | PlasmicElement[];
     };
 
-type ImageUrlType =
+type ImageUrlType<P> =
   | "imageUrl"
   | ({
       type: "imageUrl";
       defaultValue?: string;
-    } & PropTypeBase);
+    } & PropTypeBase<P>);
 
-export type PrimitiveType = Extract<
-  StringType | BooleanType | NumberType | JSONLikeType,
+export type PrimitiveType<P = any> = Extract<
+  StringType<P> | BooleanType<P> | NumberType<P> | JSONLikeType<P>,
   String
 >;
 
@@ -87,24 +88,26 @@ type SupportControlled<T> =
   | Extract<T, String>
   | (Exclude<T, String> & ControlTypeBase);
 
-export type PropType =
+export type PropType<P> =
   | SupportControlled<
-      | StringType
-      | BooleanType
-      | NumberType
-      | JSONLikeType
-      | ChoiceType
-      | ImageUrlType
+      | StringType<P>
+      | BooleanType<P>
+      | NumberType<P>
+      | JSONLikeType<P>
+      | ChoiceType<P>
+      | ImageUrlType<P>
     >
   | SlotType;
 
-type RestrictPropType<T> = T extends string
-  ? SupportControlled<StringType | ChoiceType | JSONLikeType | ImageUrlType>
+type RestrictPropType<T, P> = T extends string
+  ? SupportControlled<
+      StringType<P> | ChoiceType<P> | JSONLikeType<P> | ImageUrlType<P>
+    >
   : T extends boolean
-  ? SupportControlled<BooleanType | JSONLikeType>
+  ? SupportControlled<BooleanType<P> | JSONLikeType<P>>
   : T extends number
-  ? SupportControlled<NumberType | JSONLikeType>
-  : PropType;
+  ? SupportControlled<NumberType<P> | JSONLikeType<P>>
+  : PropType<P>;
 
 interface ComponentTemplate<P>
   extends Omit<CodeComponentElement<P>, "type" | "name"> {
@@ -140,8 +143,8 @@ export interface ComponentMeta<P> {
    * For each `prop`, there should be an entry `meta.props[prop]` describing
    * its type.
    */
-  props: { [prop in keyof Partial<P>]: RestrictPropType<P[prop]> } & {
-    [prop: string]: PropType;
+  props: { [prop in keyof Partial<P>]: RestrictPropType<P[prop], P> } & {
+    [prop: string]: PropType<P>;
   };
   /**
    * The path to be used when importing the component in the generated code.
