@@ -44,9 +44,6 @@ export const menuItemMeta: ComponentMeta<MenuItemProps> = {
       type: "boolean",
       description: "Whether disabled select",
     },
-    icon: {
-      type: "slot",
-    },
     key: {
       type: "string",
       description: "Unique ID of the menu item",
@@ -127,9 +124,6 @@ export const subMenuMeta: ComponentMeta<SubMenuProps> = {
     disabled: {
       type: "boolean",
       description: "Whether sub-menu is disabled",
-    },
-    icon: {
-      type: "slot",
     },
     key: {
       type: "string",

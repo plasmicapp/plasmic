@@ -12,7 +12,6 @@ export const buttonMeta: ComponentMeta<ButtonProps> = {
       options: ["default", "primary", "ghost", "dashed", "link", "text"],
       description: "Can be set to primary, ghost, dashed, link, text, default",
     },
-    icon: "slot",
     size: {
       type: "choice",
       options: ["small", "medium", "large"],
