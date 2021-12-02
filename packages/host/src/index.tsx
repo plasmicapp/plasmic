@@ -53,6 +53,9 @@ class PlasmicRootNodeWrapper {
 const plasmicRootNode = new PlasmicRootNodeWrapper(null);
 
 if (root.__Sub == null) {
+  // Creating a side effect here by logging, so that vite won't
+  // ignore this block for whatever reason
+  console.log("Plasmic: Setting up app host dependencies");
   root.__Sub = {
     React,
     ReactDOM,
