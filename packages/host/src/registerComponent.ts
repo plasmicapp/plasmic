@@ -64,11 +64,22 @@ type JSONLikeType<P> =
       defaultValue?: any;
     } & PropTypeBase<P>);
 
-type ChoiceType<P> = {
+interface ChoiceTypeBase<P> extends PropTypeBase<P> {
   type: "choice";
-  options: string[] | ((props: P) => string[]);
-  defaultValue?: string;
-} & PropTypeBase<P>;
+  options: string[] | ContextDependentConfig<P, string[]>;
+}
+
+type ChoiceType<P> = (
+  | {
+      defaultValue?: string;
+      multiSelect?: false;
+    }
+  | {
+      defaultValue?: string[];
+      multiSelect: true;
+    }
+) &
+  ChoiceTypeBase<P>;
 
 type SlotType =
   | "slot"
