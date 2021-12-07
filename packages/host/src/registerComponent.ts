@@ -81,6 +81,27 @@ type ChoiceType<P> = (
 ) &
   ChoiceTypeBase<P>;
 
+interface CustomControlProps<P> {
+  componentProps: P;
+  value: any;
+  /**
+   * Sets the value to be passed to the prop. Expects a JSON-compatible value.
+   */
+  updateValue: (newVal: any) => void;
+}
+export type CustomControl<P> = React.ComponentType<CustomControlProps<P>>;
+
+export type CustomType<P> =
+  | CustomControl<P>
+  | ({
+      type: "custom";
+      control: CustomControl<P>;
+      /**
+       * Expects a JSON-compatible value
+       */
+      defaultValue?: any;
+    } & PropTypeBase<P>);
+
 type SlotType =
   | "slot"
   | {
@@ -117,8 +138,8 @@ type ControlTypeBase =
     };
 
 type SupportControlled<T> =
-  | Extract<T, String>
-  | (Exclude<T, String> & ControlTypeBase);
+  | Extract<T, String | CustomControl<any>>
+  | (Exclude<T, String | CustomControl<any>> & ControlTypeBase);
 
 export type PropType<P> =
   | SupportControlled<
@@ -128,17 +149,22 @@ export type PropType<P> =
       | JSONLikeType<P>
       | ChoiceType<P>
       | ImageUrlType<P>
+      | CustomType<P>
     >
   | SlotType;
 
 type RestrictPropType<T, P> = T extends string
   ? SupportControlled<
-      StringType<P> | ChoiceType<P> | JSONLikeType<P> | ImageUrlType<P>
+      | StringType<P>
+      | ChoiceType<P>
+      | JSONLikeType<P>
+      | ImageUrlType<P>
+      | CustomType<P>
     >
   : T extends boolean
-  ? SupportControlled<BooleanType<P> | JSONLikeType<P>>
+  ? SupportControlled<BooleanType<P> | JSONLikeType<P> | CustomType<P>>
   : T extends number
-  ? SupportControlled<NumberType<P> | JSONLikeType<P>>
+  ? SupportControlled<NumberType<P> | JSONLikeType<P> | CustomType<P>>
   : PropType<P>;
 
 interface ComponentTemplate<P>
