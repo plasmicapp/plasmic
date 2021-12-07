@@ -6,11 +6,17 @@ import {
 
 const root = globalThis as any;
 
-type PropTypeBase<P> = {
+/**
+ * Config option that takes the context (e.g., props) of the component instance
+ * to dynamically set its value
+ */
+type ContextDependentConfig<P, R> = (props: P) => R;
+
+interface PropTypeBase<P> {
   displayName?: string;
   description?: string;
-  hidden?: (props: P) => boolean;
-};
+  hidden?: ContextDependentConfig<P, boolean>;
+}
 
 type StringType<P> =
   | "string"
@@ -26,12 +32,27 @@ type BooleanType<P> =
       defaultValue?: boolean;
     } & PropTypeBase<P>);
 
+interface NumberTypeBase<P> extends PropTypeBase<P> {
+  type: "number";
+  defaultValue?: number;
+}
+
 type NumberType<P> =
   | "number"
-  | ({
-      type: "number";
-      defaultValue?: number;
-    } & PropTypeBase<P>);
+  | ((
+      | {
+          control?: "default";
+          min?: number | ContextDependentConfig<P, number>;
+          max?: number | ContextDependentConfig<P, number>;
+        }
+      | {
+          control: "slider";
+          min: number | ContextDependentConfig<P, number>;
+          max: number | ContextDependentConfig<P, number>;
+          step?: number | ContextDependentConfig<P, number>;
+        }
+    ) &
+      NumberTypeBase<P>);
 
 type JSONLikeType<P> =
   | "object"
