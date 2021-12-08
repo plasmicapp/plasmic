@@ -6,11 +6,29 @@ import {
 
 const root = globalThis as any;
 
+export interface CanvasComponentProps<Data = any> {
+  /**
+   * This prop is only provided within the canvas of Plasmic Studio.
+   * Allows the component to set data to be consumed by the props' controls.
+   */
+  setControlContextData?: (data: Data) => void;
+}
+
+type InferDataType<P> = P extends CanvasComponentProps<infer Data> ? Data : any;
+
 /**
  * Config option that takes the context (e.g., props) of the component instance
- * to dynamically set its value
+ * to dynamically set its value.
  */
-type ContextDependentConfig<P, R> = (props: P) => R;
+type ContextDependentConfig<P, R> = (
+  props: P,
+  /**
+   * `contextData` can be `null` if the prop controls are rendering before
+   * the component instance itself (it will re-render once the component
+   * calls `setControlContextData`)
+   */
+  contextData: InferDataType<P> | null
+) => R;
 
 interface PropTypeBase<P> {
   displayName?: string;
@@ -83,6 +101,12 @@ type ChoiceType<P> = (
 
 interface CustomControlProps<P> {
   componentProps: P;
+  /**
+   * `contextData` can be `null` if the prop controls are rendering before
+   * the component instance itself (it will re-render once the component
+   * calls `setControlContextData`)
+   */
+  contextData: InferDataType<P> | null;
   value: any;
   /**
    * Sets the value to be passed to the prop. Expects a JSON-compatible value.
