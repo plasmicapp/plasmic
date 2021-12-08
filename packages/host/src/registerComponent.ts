@@ -135,6 +135,10 @@ type SlotType =
        */
       allowedComponents?: string[];
       defaultValue?: PlasmicElement | PlasmicElement[];
+      /**
+       * Whether the "empty slot" placeholder should be hidden in the canvas.
+       */
+      hidePlaceholder?: boolean;
     };
 
 type ImageUrlType<P> =
