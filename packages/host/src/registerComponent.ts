@@ -195,6 +195,8 @@ type RestrictPropType<T, P> = T extends string
   ? SupportControlled<NumberType<P> | JSONLikeType<P> | CustomType<P>>
   : PropType<P>;
 
+type DistributedKeyOf<T> = T extends any ? keyof T : never;
+
 interface ComponentTemplate<P>
   extends Omit<CodeComponentElement<P>, "type" | "name"> {
   /**
@@ -229,7 +231,7 @@ export interface ComponentMeta<P> {
    * For each `prop`, there should be an entry `meta.props[prop]` describing
    * its type.
    */
-  props: { [prop in keyof Partial<P>]: RestrictPropType<P[prop], P> } & {
+  props: { [prop in DistributedKeyOf<P>]?: RestrictPropType<P[prop], P> } & {
     [prop: string]: PropType<P>;
   };
   /**
