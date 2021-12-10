@@ -1,8 +1,9 @@
-import { ComponentMeta } from "@plasmicapp/host";
-import registerComponent from "@plasmicapp/host/registerComponent";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
+import { OptGroup, Option } from "rc-select";
 import { OptGroupProps } from "rc-select/lib/OptGroup";
 import { OptionProps } from "rc-select/lib/Option";
-import { Option, OptGroup } from "rc-select";
 import { Registerable } from "./registerable";
 
 export const optionMeta: ComponentMeta<OptionProps> = {

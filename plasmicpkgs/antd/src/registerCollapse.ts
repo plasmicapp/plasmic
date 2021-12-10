@@ -1,8 +1,10 @@
-import { ComponentMeta } from "@plasmicapp/host";
-import registerComponent from "@plasmicapp/host/registerComponent";
-import { CollapseProps, CollapsePanelProps } from "antd";
-import CollapsePanel from "antd/lib/collapse/CollapsePanel";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
+import { CollapsePanelProps, CollapseProps } from "antd";
 import Collapse from "antd/lib/collapse/Collapse";
+import CollapsePanel from "antd/lib/collapse/CollapsePanel";
+import { traverseReactEltTree } from "./customControls";
 import { Registerable } from "./registerable";
 
 export const collapstePanelMeta: ComponentMeta<CollapsePanelProps> = {
@@ -73,10 +75,21 @@ export const collapsteMeta: ComponentMeta<CollapseProps> = {
       description: "If true, Collapse renders as Accordion",
     },
     activeKey: {
-      type: "object",
+      type: "choice",
       editOnly: true,
       uncontrolledProp: "defaultActiveKey",
       description: "Key of the active panel",
+      multiSelect: true,
+      options: (componentProps) => {
+        const options = new Set<string>();
+        // `children` is not defined in the Collapse props
+        traverseReactEltTree((componentProps as any).children, (elt) => {
+          if (elt?.type === CollapsePanel && typeof elt?.key === "string") {
+            options.add(elt.key);
+          }
+        });
+        return Array.from(options.keys());
+      },
     },
     bordered: {
       type: "boolean",

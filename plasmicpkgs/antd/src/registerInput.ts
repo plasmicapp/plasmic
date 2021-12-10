@@ -1,5 +1,6 @@
-import { ComponentMeta } from "@plasmicapp/host";
-import registerComponent from "@plasmicapp/host/registerComponent";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import { Input, InputProps } from "antd";
 import {
   GroupProps,
@@ -7,18 +8,24 @@ import {
   SearchProps,
   TextAreaProps,
 } from "antd/lib/input";
-import TextArea from "antd/lib/input/TextArea";
-import Search from "antd/lib/input/Search";
-import Password from "antd/lib/input/Password";
 import InputGroup from "antd/lib/input/Group";
+import Password from "antd/lib/input/Password";
+import Search from "antd/lib/input/Search";
+import TextArea from "antd/lib/input/TextArea";
 import { Registerable } from "./registerable";
 
 export const inputMeta: ComponentMeta<InputProps> = {
   name: "AntdInput",
   displayName: "Antd Input",
   props: {
-    addonAfter: "slot",
-    addonBefore: "slot",
+    addonAfter: {
+      type: "slot",
+      hidePlaceholder: true,
+    },
+    addonBefore: {
+      type: "slot",
+      hidePlaceholder: true,
+    },
     allowClear: {
       type: "boolean",
       description: "If allow to remove input content with clear icon",
@@ -43,13 +50,19 @@ export const inputMeta: ComponentMeta<InputProps> = {
       type: "string",
       description: "Placeholder for the input",
     },
-    prefix: "slot",
+    prefix: {
+      type: "slot",
+      hidePlaceholder: true,
+    },
     size: {
       type: "choice",
       options: ["small", "middle", "large"],
       description: "The size of the input box",
     },
-    suffix: "slot",
+    suffix: {
+      type: "slot",
+      hidePlaceholder: true,
+    },
     type: {
       type: "string",
       description: "The type of input",
@@ -134,7 +147,10 @@ export const inputSearchMeta: ComponentMeta<SearchProps> = {
   name: "AntdInputSearch",
   displayName: "Antd Input Search",
   props: {
-    addonBefore: "slot",
+    addonBefore: {
+      type: "slot",
+      hidePlaceholder: true,
+    },
     allowClear: {
       type: "boolean",
       description: "If allow to remove input content with clear icon",
@@ -147,7 +163,10 @@ export const inputSearchMeta: ComponentMeta<SearchProps> = {
       type: "boolean",
       description: "Whether the input is disabled",
     },
-    enterButton: "slot",
+    enterButton: {
+      type: "slot",
+      hidePlaceholder: true,
+    },
     id: {
       type: "string",
       description: "The ID for input",
@@ -164,13 +183,19 @@ export const inputSearchMeta: ComponentMeta<SearchProps> = {
       type: "string",
       description: "Placeholder for the input",
     },
-    prefix: "slot",
+    prefix: {
+      type: "slot",
+      hidePlaceholder: true,
+    },
     size: {
       type: "choice",
       options: ["small", "middle", "large"],
       description: "The size of the input box",
     },
-    suffix: "slot",
+    suffix: {
+      type: "slot",
+      hidePlaceholder: true,
+    },
     type: {
       type: "string",
       description: "The type of input",
@@ -199,8 +224,14 @@ export const inputPasswordMeta: ComponentMeta<PasswordProps> = {
   name: "AntdInputPassword",
   displayName: "Antd Input Password",
   props: {
-    addonAfter: "slot",
-    addonBefore: "slot",
+    addonAfter: {
+      type: "slot",
+      hidePlaceholder: true,
+    },
+    addonBefore: {
+      type: "slot",
+      hidePlaceholder: true,
+    },
     allowClear: {
       type: "boolean",
       description: "If allow to remove input content with clear icon",
@@ -225,13 +256,15 @@ export const inputPasswordMeta: ComponentMeta<PasswordProps> = {
       type: "string",
       description: "Placeholder for the input",
     },
-    prefix: "slot",
+    prefix: {
+      type: "slot",
+      hidePlaceholder: true,
+    },
     size: {
       type: "choice",
       options: ["small", "middle", "large"],
       description: "The size of the input box",
     },
-    suffix: "slot",
     type: {
       type: "string",
       description: "The type of input",

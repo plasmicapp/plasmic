@@ -1,12 +1,14 @@
-import { ComponentMeta } from "@plasmicapp/host";
-import registerComponent from "@plasmicapp/host/registerComponent";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import { MenuItemProps, MenuProps, SubMenuProps } from "antd";
 import { MenuDividerProps } from "antd/lib/menu";
+import Menu from "antd/lib/menu/index";
 import MenuDivider from "antd/lib/menu/MenuDivider";
 import MenuItem from "antd/lib/menu/MenuItem";
 import SubMenu from "antd/lib/menu/SubMenu";
-import Menu from "antd/lib/menu/index";
 import { ItemGroup, MenuItemGroupProps } from "rc-menu";
+import { traverseReactEltTree } from "./customControls";
 import { Registerable } from "./registerable";
 
 export const menuDividerMeta: ComponentMeta<MenuDividerProps> = {
@@ -193,10 +195,23 @@ export const menuMeta: ComponentMeta<MenuProps> = {
       description: "Allows selection of multiple items",
     },
     openKeys: {
-      type: "object",
+      type: "choice",
       editOnly: true,
       uncontrolledProp: "defaultOpenKeys",
       description: "Array with the keys of default opened sub menus",
+      multiSelect: true,
+      options: (componentProps) => {
+        const options = new Set<string>();
+        traverseReactEltTree(componentProps.children, (elt) => {
+          if (
+            [SubMenu, MenuItem as any].includes(elt?.type) &&
+            typeof elt?.key === "string"
+          ) {
+            options.add(elt.key);
+          }
+        });
+        return Array.from(options.keys());
+      },
     },
     overflowedIndicator: {
       type: "slot",
@@ -206,10 +221,23 @@ export const menuMeta: ComponentMeta<MenuProps> = {
       description: "Allows selecting menu items",
     },
     selectedKeys: {
-      type: "object",
+      type: "choice",
       editOnly: true,
       uncontrolledProp: "defaultSelectedKeys",
       description: "Array with the keys of default selected menu items",
+      multiSelect: true,
+      options: (componentProps) => {
+        const options = new Set<string>();
+        traverseReactEltTree(componentProps.children, (elt) => {
+          if (
+            [SubMenu, MenuItem as any].includes(elt?.type) &&
+            typeof elt?.key === "string"
+          ) {
+            options.add(elt.key);
+          }
+        });
+        return Array.from(options.keys());
+      },
     },
     subMenuCloseDelay: {
       type: "number",

@@ -1,12 +1,13 @@
-import { ComponentMeta } from "@plasmicapp/host";
-import React from "react";
-import registerComponent from "@plasmicapp/host/registerComponent";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import AntdDropdown, {
   DropdownButtonProps,
   DropDownProps,
 } from "antd/lib/dropdown";
-import { Registerable } from "./registerable";
 import DropdownButton from "antd/lib/dropdown/dropdown-button";
+import React from "react";
+import { Registerable } from "./registerable";
 
 export class Dropdown extends React.Component<DropDownProps> {
   render() {

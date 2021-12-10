@@ -1,5 +1,6 @@
-import { ComponentMeta } from "@plasmicapp/host";
-import registerComponent from "@plasmicapp/host/registerComponent";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import { Switch, SwitchProps } from "antd";
 import { Registerable } from "./registerable";
 
@@ -27,21 +28,13 @@ export const switchMeta: ComponentMeta<SwitchProps> = {
     },
     checkedChildren: {
       type: "slot",
-      defaultValue: [
-        {
-          type: "text",
-          value: "1",
-        },
-      ],
+      defaultValue: [],
+      hidePlaceholder: true,
     },
     unCheckedChildren: {
       type: "slot",
-      defaultValue: [
-        {
-          type: "text",
-          value: "0",
-        },
-      ],
+      defaultValue: [],
+      hidePlaceholder: true,
     },
     size: {
       type: "choice",

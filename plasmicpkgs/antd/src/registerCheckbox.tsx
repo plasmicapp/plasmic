@@ -1,8 +1,10 @@
-import { ComponentMeta } from "@plasmicapp/host";
-import React from "react";
-import registerComponent from "@plasmicapp/host/registerComponent";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import Checkbox, { CheckboxProps } from "antd/lib/checkbox/Checkbox";
 import CheckboxGroup, { CheckboxGroupProps } from "antd/lib/checkbox/Group";
+import React from "react";
+import { traverseReactEltTree } from "./customControls";
 import { Registerable } from "./registerable";
 
 class CheckboxWrapper extends React.Component<CheckboxProps> {
@@ -74,10 +76,23 @@ export const checkboxGroupMeta: ComponentMeta<CheckboxGroupProps> = {
       description: "If disable all checkboxes",
     },
     value: {
-      type: "object",
+      type: "choice",
       editOnly: true,
       uncontrolledProp: "defaultValue",
       description: "Default selected value",
+      multiSelect: true,
+      options: (componentProps) => {
+        const options = new Set<string>();
+        traverseReactEltTree(componentProps.children, (elt) => {
+          if (
+            elt?.type === CheckboxWrapper &&
+            typeof elt?.props?.value === "string"
+          ) {
+            options.add(elt.props.value);
+          }
+        });
+        return Array.from(options.keys());
+      },
     },
     children: {
       type: "slot",

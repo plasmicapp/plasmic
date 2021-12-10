@@ -1,5 +1,6 @@
-import { ComponentMeta } from "@plasmicapp/host";
-import registerComponent from "@plasmicapp/host/registerComponent";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import { Carousel, CarouselProps } from "antd";
 import { CSSProperties } from "react";
 import { Registerable } from "./registerable";

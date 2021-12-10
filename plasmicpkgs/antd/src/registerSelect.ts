@@ -1,8 +1,13 @@
-import { ComponentMeta } from "@plasmicapp/host";
-import registerComponent from "@plasmicapp/host/registerComponent";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import { Select } from "antd";
-import { SelectProps } from "rc-select";
+import { Option } from "rc-select";
+import React from "react";
+import { traverseReactEltTree } from "./customControls";
 import { Registerable } from "./registerable";
+
+type SelectProps = React.ComponentProps<typeof Select>;
 
 export const selectMeta: ComponentMeta<SelectProps> = {
   name: "AntdSelect",
@@ -62,10 +67,19 @@ export const selectMeta: ComponentMeta<SelectProps> = {
       description: "Set mode of Select",
     },
     value: {
-      type: "object",
+      type: "choice",
       editOnly: true,
       uncontrolledProp: "defaultValue",
       description: "Initial selected option",
+      options: (componentProps) => {
+        const options = new Set<string>();
+        traverseReactEltTree(componentProps.children, (elt) => {
+          if (elt?.type === Option && typeof elt?.props?.value === "string") {
+            options.add(elt.props.value);
+          }
+        });
+        return Array.from(options.keys());
+      },
     },
     virtual: {
       type: "boolean",
