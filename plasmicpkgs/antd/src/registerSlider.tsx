@@ -1,12 +1,41 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { Slider } from "antd";
+import { Slider as AntdSlider } from "antd";
+import type { SliderRangeProps, SliderSingleProps } from "antd/lib/slider";
 import React from "react";
-import { NumPropEditor } from "./customControls";
 import { Registerable } from "./registerable";
 
-type SliderProps = React.ComponentProps<typeof Slider>;
+type SliderProps = Omit<
+  SliderSingleProps | SliderRangeProps,
+  "value" | "defaultValue"
+> & {
+  value?: number;
+  defaultValue?: number;
+  value2?: number;
+  defaultValue2?: number;
+};
+
+export const Slider = React.forwardRef<unknown, SliderProps>(
+  ({ value, defaultValue, value2, defaultValue2, ...props }, ref) => {
+    const newProps = { ...props } as SliderSingleProps | SliderRangeProps;
+    if (props.range) {
+      if (typeof value === "number" || typeof value2 === "number") {
+        newProps.value = [value ?? 0, value2 ?? 0];
+      }
+      if (
+        typeof defaultValue === "number" ||
+        typeof defaultValue2 === "number"
+      ) {
+        newProps.defaultValue = [defaultValue ?? 0, defaultValue2 ?? 0];
+      }
+    } else {
+      newProps.value = value;
+      newProps.defaultValue = defaultValue;
+    }
+    return <AntdSlider {...newProps} ref={ref} />;
+  }
+);
 
 export const sliderMeta: ComponentMeta<SliderProps> = {
   name: "AntdSlider",
@@ -42,37 +71,18 @@ export const sliderMeta: ComponentMeta<SliderProps> = {
       description: "If true, the slider will be vertical",
     },
     value: {
-      type: "custom",
+      type: "number",
       editOnly: true,
       uncontrolledProp: "defaultValue",
       description: "The default value of slider",
-      control: ({ componentProps, updateValue, value }) => {
-        React.useEffect(() => {
-          if (componentProps.range && typeof value === "number") {
-            updateValue([null, value]);
-          }
-        }, [componentProps.range, value, updateValue]);
-        if (!componentProps.range) {
-          return <NumPropEditor onChange={updateValue} value={value} />;
-        } else {
-          const val1 = value?.[0];
-          const val2 = value?.[1];
-          return (
-            <>
-              <NumPropEditor
-                key="val1"
-                onChange={(v) => updateValue([v, val2])}
-                value={val1}
-              />
-              <NumPropEditor
-                key="val2"
-                onChange={(v) => updateValue([val1, v])}
-                value={val2}
-              />
-            </>
-          );
-        }
-      },
+    },
+    value2: {
+      type: "number",
+      displayName: "value 2",
+      editOnly: true,
+      uncontrolledProp: "defaultValue2",
+      description: "The default value for the second value of the slider",
+      hidden: (props) => !props.range,
     },
     step: {
       type: "number",
@@ -92,7 +102,7 @@ export const sliderMeta: ComponentMeta<SliderProps> = {
     width: "200px",
     maxWidth: "100%",
   },
-  importPath: "antd",
+  importPath: "@plasmicpkgs/antd",
   importName: "Slider",
 };
 
