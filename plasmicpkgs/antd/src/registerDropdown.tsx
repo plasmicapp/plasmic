@@ -96,7 +96,10 @@ export const dropdownButtonMeta: ComponentMeta<DropdownButtonProps> = {
       type: "boolean",
       description: "Whether the dropdown menu is disabled",
     },
-    icon: "slot",
+    icon: {
+      type: "slot",
+      hidePlaceholder: true,
+    },
     overlay: {
       type: "slot",
       allowedComponents: ["AntdMenu"],
