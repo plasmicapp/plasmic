@@ -1,9 +1,8 @@
 {
-  "version": "1.0.30",
+  "version": "0.1.2",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
-  "sideEffects": false,
   "files": [
     "dist",
     "src"
@@ -14,12 +13,14 @@
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
-    "yalcp": "yalc publish --push",
-    "test": "tsdx test",
+    "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
     "prepare": "tsdx build",
     "size": "size-limit",
     "analyze": "size-limit --why"
+  },
+  "peerDependencies": {
+    "react": ">=16"
   },
   "husky": {
     "hooks": {
@@ -32,29 +33,32 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "@plasmicapp/watcher",
+  "name": "@plasmicapp/query",
   "author": "Chung Wu",
-  "module": "dist/watcher.esm.js",
+  "module": "dist/fetcher.esm.js",
   "size-limit": [
     {
-      "path": "dist/watcher.cjs.production.min.js",
+      "path": "dist/fetcher.cjs.production.min.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/watcher.esm.js",
+      "path": "dist/fetcher.esm.js",
       "limit": "10 KB"
     }
   ],
   "devDependencies": {
-    "@size-limit/preset-small-lib": "^4.12.0",
-    "husky": "^6.0.0",
-    "size-limit": "^4.12.0",
+    "@size-limit/preset-small-lib": "^7.0.4",
+    "@types/react": "^17.0.37",
+    "@types/react-dom": "^17.0.11",
+    "husky": "^7.0.4",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "size-limit": "^7.0.4",
     "tsdx": "^0.14.1",
-    "tslib": "^2.3.0",
-    "typescript": "^4.3.4"
+    "tslib": "^2.3.1",
+    "typescript": "^4.5.4"
   },
   "dependencies": {
-    "socket.io-client": "^4.1.2"
-  },
-  "gitHead": "fa53f7d79f0e26d8b061102fda0c06788da6f8a7"
+    "react-ssr-prepass": "^1.4.0"
+  }
 }

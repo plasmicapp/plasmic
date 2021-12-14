@@ -21,6 +21,7 @@
     "packages/loader-vue",
     "packages/watcher",
     "packages/host",
-    "packages/preamble"
+    "packages/preamble",
+    "packages/query"
   ]
 }

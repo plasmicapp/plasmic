@@ -11,17 +11,20 @@ import serverRequire from './server-require';
 export {
   ComponentMeta,
   ComponentRenderData,
+  extractPlasmicQueryData,
   InitOptions,
   PageMeta,
   PageMetadata,
   PlasmicCanvasContext,
   PlasmicCanvasHost,
   PlasmicComponent,
+  plasmicPrepass,
   PlasmicRootProvider,
   PrimitiveType,
   PropType,
   repeatedElement,
   usePlasmicComponent,
+  usePlasmicQueryData,
 } from '@plasmicapp/loader-react';
 
 export function initPlasmicLoader(

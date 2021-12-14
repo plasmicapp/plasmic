@@ -1,5 +1,6 @@
 {
   "packages": [
+    "packages/query",
     "packages/loader-core",
     "packages/loader-gatsby",
     "packages/loader-nextjs",

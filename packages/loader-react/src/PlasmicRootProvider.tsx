@@ -1,4 +1,5 @@
 import { AssetModule, ComponentMeta } from '@plasmicapp/loader-core';
+import { PlasmicQueryDataProvider } from '@plasmicapp/query';
 import * as React from 'react';
 import {
   ComponentRenderData,
@@ -28,13 +29,6 @@ export interface GlobalVariantSpec {
  */
 export function PlasmicRootProvider(props: {
   /**
-   * If you have pre-fetched component data via PlasmicComponentLoader,
-   * you can pass them in here; PlasmicComponent will avoid fetching
-   * component data that have already been pre-fetched.
-   */
-  prefetchedData?: ComponentRenderData;
-
-  /**
    * The global PlasmicComponentLoader instance you created via
    * initPlasmicLoader().
    */
@@ -56,6 +50,25 @@ export function PlasmicRootProvider(props: {
    * If true, will skip installing fonts
    */
   skipFonts?: boolean;
+
+  /**
+   * If you have pre-fetched component data via PlasmicComponentLoader,
+   * you can pass them in here; PlasmicComponent will avoid fetching
+   * component data that have already been pre-fetched.
+   */
+  prefetchedData?: ComponentRenderData;
+
+  /**
+   * If you have pre-fetched data that are needed by usePlasmicQueryData(),
+   * then pass in the pre-fetched cache here, mapping query key to fetched data.
+   */
+  prefetchedQueryData?: Record<string, any>;
+
+  /**
+   * Specifies whether usePlasmicQueryData() should be operating in suspense mode
+   * (throwing promises).
+   */
+  suspenseForQueryData?: boolean;
 }) {
   const {
     globalVariants,
@@ -63,6 +76,8 @@ export function PlasmicRootProvider(props: {
     children,
     skipCss,
     skipFonts,
+    prefetchedQueryData,
+    suspenseForQueryData,
   } = props;
   const loader = (props.loader as any)
     .__internal as InternalPlasmicComponentLoader;
@@ -79,16 +94,21 @@ export function PlasmicRootProvider(props: {
   );
 
   return (
-    <PlasmicRootContext.Provider value={value}>
-      {!skipCss && (
-        <PlasmicCss
-          loader={loader}
-          prefetchedData={prefetchedData}
-          skipFonts={skipFonts}
-        />
-      )}
-      {children}
-    </PlasmicRootContext.Provider>
+    <PlasmicQueryDataProvider
+      prefetchedCache={prefetchedQueryData}
+      suspense={suspenseForQueryData}
+    >
+      <PlasmicRootContext.Provider value={value}>
+        {!skipCss && (
+          <PlasmicCss
+            loader={loader}
+            prefetchedData={prefetchedData}
+            skipFonts={skipFonts}
+          />
+        )}
+        {children}
+      </PlasmicRootContext.Provider>
+    </PlasmicQueryDataProvider>
   );
 }
 
