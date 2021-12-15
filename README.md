@@ -106,7 +106,7 @@ Plasmic as a page builder and “visual CMS” is its simplest and most common u
 
 Beyond website content, Plasmic can even be used to create frontends for complex web applications (such as Plasmic itself, which was built in Plasmic). This is possible because—despite being easy to start with—Plasmic gives you full visual control and works deeply with code.
 
-Learn more on [our website][website] and [our docs][docs].
+Learn more on [our website](https://www.plasmic.app/) and [our docs](https://docs.plasmic.app/learn/).
 
 Or check out our [Next.js-based talk and demo at Next.js Conf 2021][nextconf-talk]:
 
