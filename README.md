@@ -8,7 +8,7 @@
   Plasmic
 </h1>
 <h3 align="center">
-  The visual page builder + web design tool for React, Vue, Angular, PHP, vanilla JS, and more.
+  The headless page builder + web design tool for React, Vue, Angular, PHP, vanilla JS, and more.
 </h3>
 <p align="center">
   Drag and drop your own code components.
