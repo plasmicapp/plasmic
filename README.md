@@ -12,7 +12,8 @@
 </h3>
 <p align="center">
   Drag and drop your own code components.
-  Free yourself from pixel-pushing.
+  Let non-developers create stunning content,
+  and free up developers from pixel-pushing.
 </p>
 
 <p>&nbsp;</p>
