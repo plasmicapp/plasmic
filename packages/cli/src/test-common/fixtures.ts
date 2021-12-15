@@ -150,11 +150,15 @@ export const project1Config: ProjectConfig = {
   indirect: false,
 };
 
-export function expectProject1PlasmicJson() {
+export function expectProject1PlasmicJson(
+  optional?: { [k in keyof ProjectConfig]?: boolean }
+) {
   const plasmicJson = tmpRepo.readPlasmicJson();
   expect(plasmicJson.projects.length).toEqual(1);
   const projectConfig = plasmicJson.projects[0];
-  expect(projectConfig.projectApiToken).toBe("abc");
+  if (!optional?.projectApiToken) {
+    expect(projectConfig.projectApiToken).toBe("abc");
+  }
   expect(projectConfig.components.length).toEqual(2);
   const componentNames = projectConfig.components.map((c) => c.name);
   expect(componentNames).toContain("Button");

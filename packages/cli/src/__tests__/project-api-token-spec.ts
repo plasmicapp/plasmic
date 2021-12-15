@@ -71,11 +71,13 @@ describe("Project API tokens", () => {
 
     expectProject1Components();
 
-    expectProject1PlasmicJson();
+    expectProject1PlasmicJson({ projectApiToken: true });
 
     // Re-run, this time with no auth.
     removeAuth();
-    await expect(sync(opts)).resolves.toBeUndefined();
+    await expect(sync(opts)).rejects.toThrow(
+      "No user+token, and project API tokens don't match"
+    );
   });
 
   test("is filled in by auth'd user if project exists but token was initially missing", async () => {
@@ -88,11 +90,13 @@ describe("Project API tokens", () => {
 
     expectProject1Components();
 
-    expectProject1PlasmicJson();
+    expectProject1PlasmicJson({ projectApiToken: true });
 
     // Re-run, this time with no auth.
     removeAuth();
-    await expect(sync(opts)).resolves.toBeUndefined();
+    await expect(sync(opts)).rejects.toThrow(
+      "Unable to authenticate Plasmic. Please run 'plasmic auth' or check the projectApiTokens in your plasmic.json, and try again."
+    );
   });
 
   test("when not available, should prompt for auth", async () => {
