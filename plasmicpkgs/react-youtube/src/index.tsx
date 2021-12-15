@@ -95,25 +95,28 @@ export const youtubeMeta: ComponentMeta<YouTubeProps> = {
       type: "string",
       defaultValue: "R6MeLqRQzYw",
       displayName: "Video ID",
-      description: "The ID for the YouTube video.",
+      description: "The ID for the YouTube video",
     },
     autoplay: {
       type: "boolean",
       displayName: "Auto Play",
       description:
-        "Whether the video show automatically start playing when the player loads",
+        "Whether the video should automatically start playing when the player loads",
+      // defaultValueHint: false,
     },
     cc_load_policy: {
       type: "boolean",
       displayName: "Show Captions",
       description:
         "Whether the captions should be shown by default, even if the user has turned captions off",
+      // defaultValueHint: false,
     },
     start: {
       type: "number",
       displayName: "Start",
       description:
         "The video should begin at this amount of seconds from the start of the video",
+      // defaultValueHint: 0,
     },
     end: {
       type: "number",
@@ -127,44 +130,52 @@ export const youtubeMeta: ComponentMeta<YouTubeProps> = {
       options: ["red", "white"],
       description:
         "The color used in the display bar to highlight how much of the video the viewer has already seen",
+      // defaultValueHint: "red",
     },
     controls: {
       type: "boolean",
       displayName: "Show Controls",
       description:
         "Whether the YouTube video player controls should be displayed",
+      // defaultValueHint: true,
     },
     disablekb: {
       type: "boolean",
       displayName: "Disable Keyboard",
       description: "Whether the keyboard controls should be disabled",
+      // defaultValueHint: false,
     },
     fs: {
       type: "boolean",
       displayName: "FullScreen Button",
       description: "Whether the fullscreen button should be displayed",
+      // defaultValueHint: true,
     },
     loop: {
       type: "boolean",
       displayName: "Loop",
       description: "Whether the video should be played again after it finishes",
+      // defaultValueHint: false,
     },
     modestbranding: {
       type: "boolean",
       displayName: "Hide Logo",
-      description: "Hide the YouTube logo",
+      description: "Hide the YouTube logo in the control bar",
+      // defaultValueHint: false,
     },
     playsinline: {
       type: "boolean",
       displayName: "Play Inline",
       description:
         "Whether the video should be played inline or fullscreen on iOS",
+      // defaultValueHint: false,
     },
     rel: {
       type: "boolean",
       displayName: "Related Videos",
       description:
         "Whether it should show related videos when the video ends (if false, it shows other videos from the same channel)",
+      // defaultValueHint: true,
     },
   },
   isDefaultExport: true,

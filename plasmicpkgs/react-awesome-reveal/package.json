@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/react-awesome-reveal",
-  "version": "3.8.4",
+  "version": "3.8.5",
   "description": "Plasmic registration call for react-awesome-reveal",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -36,7 +36,7 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "@plasmicapp/host": "^0.0.32",
+    "@plasmicapp/host": "^0.0.42",
     "react-awesome-reveal": "^3.8.0"
   },
   "peerDependencies": {
