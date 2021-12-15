@@ -8,11 +8,12 @@
   Plasmic
 </h1>
 <h3 align="center">
-  The visual page builder + web design tool for React, Vue, Angular, PHP, vanilla JS, and more.
+  The headless page builder + web design tool for React, Vue, Angular, PHP, vanilla JS, and more.
 </h3>
 <p align="center">
   Drag and drop your own code components.
-  Free yourself from pixel-pushing.
+  Let non-developers create stunning content,
+  and free up developers from pixel-pushing.
 </p>
 
 <p>&nbsp;</p>
@@ -39,16 +40,16 @@
 # Quick links
 
 - [Website](https://www.plasmic.app/)
-- [Documentation](docs)
-- [Quickstart](quickstart)
-- [Slack Community](slack)
+- [Documentation][docs]
+- [Quickstart][quickstart]
+- [Slack Community][slack]
 
 [docs]: https://www.plasmic.app/learn/
 [quickstart]: https://www.plasmic.app/learn/quickstart/
 
 # The gist
 
-**Step 1.** Install Plasmic into your codebase (exact package [depends on your framework](quickstart)).
+**Step 1.** Install Plasmic into your codebase (exact package [depends on your framework][quickstart]).
 
 ```
 npm install @plasmicapp/loader-nextjs
@@ -105,17 +106,17 @@ Plasmic as a page builder and “visual CMS” is its simplest and most common u
 
 Beyond website content, Plasmic can even be used to create frontends for complex web applications (such as Plasmic itself, which was built in Plasmic). This is possible because—despite being easy to start with—Plasmic gives you full visual control and works deeply with code.
 
-Learn more on [our website](website) and [our docs](docs).
+Learn more on [our website][website] and [our docs][docs].
 
-Or check out our [Next.js-based talk and demo at Next.js Conf 2021](nextconf-talk):
+Or check out our [Next.js-based talk and demo at Next.js Conf 2021][nextconf-talk]:
 
-[![Next.js-based talk and demo at Next.js Conf 2021](https://user-images.githubusercontent.com/7129/139349085-0e72defe-89c2-47c4-8915-b92143fbb33c.png)](nextconf-talk)
+[![Next.js-based talk and demo at Next.js Conf 2021](https://user-images.githubusercontent.com/7129/139349085-0e72defe-89c2-47c4-8915-b92143fbb33c.png)][nextconf-talk]
 
 [nextconf-talk]: https://www.youtube.com/watch?v=fhEwNlzzobE
 
 # Get help and join our community
 
-Connect with the Plasmic team and with other Plasmic users on the [Plasmic Community Slack](slack).
+Connect with the Plasmic team and with other Plasmic users on the [Plasmic Community Slack][slack].
 
 [slack]: https://www.plasmic.app/slack
 
@@ -135,7 +136,7 @@ A smattering of interesting highlights about Plasmic:
 Plasmic is used by companies ranging from Fortune 500s to boutique brands to solo makers.
 It's used for websites ranging from headless commerce storefronts to marketing websites to logged-in app content.
 
-Check out the [Case Studies and Community Showcase](customers).
+Check out the [Case Studies and Community Showcase][customers].
 
 <p align="center">
   <a href="https://www.plasmic.app/casestudies">
