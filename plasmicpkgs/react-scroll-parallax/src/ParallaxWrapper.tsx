@@ -3,7 +3,7 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React, { useContext } from "react";
-import { Parallax } from "react-scroll-parallax";
+import { Parallax, ParallaxContext } from "react-scroll-parallax";
 
 export interface ParallaxWrapperProps {
   xStart?: string;
@@ -25,6 +25,12 @@ export default function ParallaxWrapper({
   children,
 }: ParallaxWrapperProps) {
   const inEditor = useContext(PlasmicCanvasContext);
+  const hasContext = useContext(ParallaxContext) != null;
+  if (!hasContext) {
+    throw new Error(
+      "Scroll Parallax can only be instantiated somewhere inside the Parallax Provider"
+    );
+  }
   return (
     <Parallax
       disabled={disabled || (inEditor && !previewInEditor)}
@@ -38,9 +44,19 @@ export default function ParallaxWrapper({
 
 const parallaxWrapperMeta: ComponentMeta<ParallaxWrapperProps> = {
   name: "Parallax",
+  displayName: "Scroll Parallax",
   importPath: "@plasmicpkgs/react-scroll-parallax",
   props: {
-    children: "slot",
+    children: {
+      type: "slot",
+      defaultValue: {
+        type: "img",
+        src: "https://placekitten.com/300/200",
+        style: {
+          maxWidth: "100%",
+        },
+      },
+    },
     yStart: {
       type: "string",
       defaultValue: "-50%",

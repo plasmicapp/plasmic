@@ -8,6 +8,7 @@ import {
   Flip,
   Hinge,
   JackInTheBox,
+  Roll,
   Rotate,
   Slide,
   Zoom,
@@ -19,9 +20,7 @@ const effectNameToComponent = {
   flip: Flip,
   hinge: Hinge,
   jackinthebox: JackInTheBox,
-  // Roll seems not to be working properly in the canvas as of
-  // `react-awesome-reveal@3.8.1`
-  /* roll: Roll, */
+  roll: Roll,
   rotate: Rotate,
   slide: Slide,
   zoom: Zoom,
@@ -60,12 +59,14 @@ export const revealMeta: ComponentMeta<RevealProps> = {
   displayName: "Reveal",
   importPath: "@plasmicpkgs/react-awesome-reveal",
   props: {
-    // `big` seems not to be working properly as of `react-awesome-reveal@3.8.1`
-    /* big: {
+    big: {
       type: "boolean",
       displayName: "Big",
-      description: `Causes the animation to start farther. Only applied to "fade" Effect and "down", "left", "right" and "up" directions`,
-    }, */
+      description: `Causes the animation to start farther`,
+      hidden: (props) =>
+        (props.effect || "fade") !== "fade" ||
+        !["down", "left", "up", "right"].includes(props.direction as string),
+    },
     cascade: {
       type: "boolean",
       displayName: "Cascade",
@@ -84,28 +85,40 @@ export const revealMeta: ComponentMeta<RevealProps> = {
       type: "number",
       displayName: "Damping",
       description:
-        "Factor that affects the delay that each animated element in a cascade animation will be assigned (defaults to 0.5)",
+        "Factor that affects the delay that each animated element in a cascade animation will be assigned",
+      // defaultValueHint: 0.5
     },
     delay: {
       type: "number",
       displayName: "Delay",
       description: "Initial delay, in milliseconds",
+      // defaultValueHint: 0,
     },
     direction: {
       type: "choice",
-      options: [
-        "horizontal",
-        "vertical",
-        "bottom-left",
-        "bottom-right",
-        "down",
-        "left",
-        "right",
-        "top-left",
-        "top-right",
-        "up",
-      ],
-      defaultValue: "up",
+      options: (props) => {
+        const effect = props.effect || "fade";
+        const maybeAddOptions = (effects: Effect[], options: string[]) =>
+          effects.includes(effect) ? options : [];
+        return ([] as string[])
+          .concat(maybeAddOptions(["flip"], ["horizontal", "vertical"]))
+          .concat(
+            maybeAddOptions(
+              ["bounce", "fade", "slide", "zoom"],
+              ["down", "left", "right", "up"]
+            )
+          )
+          .concat(
+            maybeAddOptions(
+              ["fade", "rotate"],
+              ["bottom-left", "bottom-right", "top-left", "top-right"]
+            )
+          );
+      },
+      hidden: (props) => {
+        const effect = props.effect || "fade";
+        return ["hinge", "jackinthebox", "roll"].includes(effect);
+      },
       displayName: "Direction",
       description:
         "Origin of the animation (the valid values depend on the chosen Effect)",
@@ -113,13 +126,15 @@ export const revealMeta: ComponentMeta<RevealProps> = {
     duration: {
       type: "number",
       displayName: "Duration",
-      description: "Animation duration, in milliseconds (defaults to 1000)",
+      description: "Animation duration, in milliseconds",
+      // defaultValueHint: 1000,
     },
     effect: {
       type: "choice",
       options: effects.map((v) => v),
       displayName: "Effect",
       description: "The Reveal animation effect to be applied",
+      // defaultValueHint: "fade"
     },
     // `fraction` seems not to be working properly as of `react-awesome-reveal@3.8.1`
     /* fraction: {
@@ -131,13 +146,17 @@ export const revealMeta: ComponentMeta<RevealProps> = {
     reverse: {
       type: "boolean",
       displayName: "Reverse",
-      description: `Whether the animation should make element(s) disappear. Not applied to "hinge" and "jackinthebox" effects`,
+      description: `Whether the animation should make element(s) disappear`,
+      hidden: (props) =>
+        ["hinge", "jackinthebox"].includes(props.effect || "fade"),
     },
     triggerOnce: {
       type: "boolean",
       displayName: "Trigger Once",
       description:
         "Whether the animation should run only once, instead of everytime the element enters, exits and re-enters the viewport",
+      // Some effects don't work correctly when `false`
+      defaultValue: true,
     },
   },
 };
