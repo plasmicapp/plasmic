@@ -10,7 +10,7 @@ export interface EmbedProps {
   hideInEditor?: boolean;
 }
 
-export default function Embed({
+/* export default */ function Embed({
   className,
   code,
   hideInEditor = false,
