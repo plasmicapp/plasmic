@@ -188,6 +188,8 @@ See the [application development tutorials](https://docs.plasmic.app/learn/minit
 
 # Contributing
 
+This repo contains the code for all Plasmic core code component packages (`plasmicpkgs`), client libraries, and examples.
+
 We use `lerna` to help us manage dependencies between the `@plasmicapp/loader-*` packages, (though we may pull in more packages to be managed by lerna, right now those are the ones with tight dependencies on each other).
 
 ## Getting started
