@@ -41,6 +41,7 @@ type StringType<P> =
   | ({
       type: "string";
       defaultValue?: string;
+      defaultValueHint?: string;
     } & PropTypeBase<P>);
 
 type BooleanType<P> =
@@ -48,11 +49,13 @@ type BooleanType<P> =
   | ({
       type: "boolean";
       defaultValue?: boolean;
+      defaultValueHint?: boolean;
     } & PropTypeBase<P>);
 
 interface NumberTypeBase<P> extends PropTypeBase<P> {
   type: "number";
   defaultValue?: number;
+  defaultValueHint?: number;
 }
 
 type NumberType<P> =
@@ -80,6 +83,7 @@ type JSONLikeType<P> =
        * Expects a JSON-compatible value
        */
       defaultValue?: any;
+      defaultValueHint?: any;
     } & PropTypeBase<P>);
 
 interface ChoiceTypeBase<P> extends PropTypeBase<P> {
@@ -90,10 +94,12 @@ interface ChoiceTypeBase<P> extends PropTypeBase<P> {
 type ChoiceType<P> = (
   | {
       defaultValue?: string;
+      defaultValueHint?: string;
       multiSelect?: false;
     }
   | {
       defaultValue?: string[];
+      defaultValueHint?: string[];
       multiSelect: true;
     }
 ) &
@@ -146,6 +152,7 @@ type ImageUrlType<P> =
   | ({
       type: "imageUrl";
       defaultValue?: string;
+      defaultValueHint?: string;
     } & PropTypeBase<P>);
 
 export type PrimitiveType<P = any> = Extract<
