@@ -90,14 +90,14 @@ export const scrollRevealerMeta: ComponentMeta<ScrollRevealerProps> = {
     scrollDownThreshold: {
       type: "number",
       displayName: "Scroll down threshold",
-      // defaultValueHint: 0.5,
+      defaultValueHint: 0.5,
       description:
         "How much of the element (as a fraction) must you scroll into view for it to appear (defaults to 0.5)",
     },
     scrollUpThreshold: {
       type: "number",
       displayName: "Scroll up threshold",
-      // defaultValueHint: 0,
+      defaultValueHint: 0,
       description:
         "While scrolling up, how much of the element (as a fraction) can still be scrolled in view before it disappears (defaults to 0, meaning you must scroll up until it's completely out of view)",
     },

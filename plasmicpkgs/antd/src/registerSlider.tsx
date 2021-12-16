@@ -89,7 +89,7 @@ export const sliderMeta: ComponentMeta<SliderProps> = {
       description:
         "The granularity the slider can step through values. Must greater than 0, and be divided by (max - min)." +
         " When marks no null, step can be null",
-      // defaultValueHint: 1,
+      defaultValueHint: 1,
     },
     marks: {
       type: "object",

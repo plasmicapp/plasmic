@@ -37,7 +37,7 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "@plasmicapp/host": "^0.0.42",
+    "@plasmicapp/host": "^0.0.44",
     "react-slick": "^0.28.1",
     "slick-carousel": "^1.8.1"
   },

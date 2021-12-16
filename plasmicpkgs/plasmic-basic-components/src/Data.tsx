@@ -264,7 +264,7 @@ export function registerDataProvider(
 const dynamicPropsWithoutTag = {
   propSelectors: {
     type: "object",
-    // defaultValueHint: {},
+    defaultValueHint: {},
     description:
       "An object whose keys are prop names and values are selector expressions. Use this to set any prop to a dynamic value.",
   },
@@ -274,7 +274,7 @@ const dynamicProps = {
   ...dynamicPropsWithoutTag,
   tag: {
     type: "string",
-    // defaultValueHint: "div",
+    defaultValueHint: "div",
     description: "The HTML tag to use",
   },
 } as const;

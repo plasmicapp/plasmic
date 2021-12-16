@@ -86,13 +86,13 @@ export const revealMeta: ComponentMeta<RevealProps> = {
       displayName: "Damping",
       description:
         "Factor that affects the delay that each animated element in a cascade animation will be assigned",
-      // defaultValueHint: 0.5
+      defaultValueHint: 0.5
     },
     delay: {
       type: "number",
       displayName: "Delay",
       description: "Initial delay, in milliseconds",
-      // defaultValueHint: 0,
+      defaultValueHint: 0,
     },
     direction: {
       type: "choice",
@@ -127,14 +127,14 @@ export const revealMeta: ComponentMeta<RevealProps> = {
       type: "number",
       displayName: "Duration",
       description: "Animation duration, in milliseconds",
-      // defaultValueHint: 1000,
+      defaultValueHint: 1000,
     },
     effect: {
       type: "choice",
       options: effects.map((v) => v),
       displayName: "Effect",
       description: "The Reveal animation effect to be applied",
-      // defaultValueHint: "fade"
+      defaultValueHint: "fade"
     },
     // `fraction` seems not to be working properly as of `react-awesome-reveal@3.8.1`
     /* fraction: {
