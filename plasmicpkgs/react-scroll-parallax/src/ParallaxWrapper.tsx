@@ -13,6 +13,7 @@ export interface ParallaxWrapperProps {
   disabled?: boolean;
   previewInEditor?: boolean;
   children: React.ReactNode;
+  className?: string;
 }
 
 export default function ParallaxWrapper({
@@ -23,6 +24,7 @@ export default function ParallaxWrapper({
   disabled,
   previewInEditor,
   children,
+  className,
 }: ParallaxWrapperProps) {
   const inEditor = useContext(PlasmicCanvasContext);
   const hasContext = useContext(ParallaxContext) != null;
@@ -36,6 +38,7 @@ export default function ParallaxWrapper({
       disabled={disabled || (inEditor && !previewInEditor)}
       x={[xStart, xEnd]}
       y={[yStart, yEnd]}
+      className={className}
     >
       {children}
     </Parallax>

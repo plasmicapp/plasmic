@@ -49,6 +49,7 @@ export const menuItemMeta: ComponentMeta<MenuItemProps> = {
     key: {
       type: "string",
       description: "Unique ID of the menu item",
+      defaultValue: "menuItemKey",
     },
     title: {
       type: "string",
@@ -130,6 +131,7 @@ export const subMenuMeta: ComponentMeta<SubMenuProps> = {
     key: {
       type: "string",
       description: "Unique ID of the sub-menu",
+      defaultValue: "subMenuKey",
     },
     title: {
       type: "slot",
@@ -152,6 +154,9 @@ export const subMenuMeta: ComponentMeta<SubMenuProps> = {
         {
           type: "component",
           name: "AntdMenuItem",
+          props: {
+            key: "subMenuItemKey",
+          },
         },
       ],
     },
@@ -176,6 +181,7 @@ export const menuMeta: ComponentMeta<MenuProps> = {
   props: {
     expandIcon: {
       type: "slot",
+      hidePlaceholder: true,
     },
     forceSubMenuRender: {
       type: "boolean",
@@ -203,10 +209,7 @@ export const menuMeta: ComponentMeta<MenuProps> = {
       options: (componentProps) => {
         const options = new Set<string>();
         traverseReactEltTree(componentProps.children, (elt) => {
-          if (
-            [SubMenu, MenuItem as any].includes(elt?.type) &&
-            typeof elt?.key === "string"
-          ) {
+          if (elt?.type === SubMenu && typeof elt?.key === "string") {
             options.add(elt.key);
           }
         });
@@ -215,6 +218,7 @@ export const menuMeta: ComponentMeta<MenuProps> = {
     },
     overflowedIndicator: {
       type: "slot",
+      hidePlaceholder: true,
     },
     selectable: {
       type: "boolean",
