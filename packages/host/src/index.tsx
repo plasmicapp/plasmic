@@ -37,7 +37,7 @@ declare global {
 }
 
 if (root.__PlasmicHostVersion == null) {
-  root.__PlasmicHostVersion = "1";
+  root.__PlasmicHostVersion = "2";
 }
 
 const rootChangeListeners: (() => void)[] = [];
@@ -51,20 +51,6 @@ class PlasmicRootNodeWrapper {
 }
 
 const plasmicRootNode = new PlasmicRootNodeWrapper(null);
-
-if (root.__Sub == null) {
-  // Creating a side effect here by logging, so that vite won't
-  // ignore this block for whatever reason
-  console.log("Plasmic: Setting up app host dependencies");
-  root.__Sub = {
-    React,
-    ReactDOM,
-    setPlasmicRootNode,
-    registerRenderErrorListener,
-    repeatedElement,
-    setRepeatedElementFn,
-  };
-}
 
 function getPlasmicOrigin() {
   const params = new URL(`https://fakeurl/${location.hash.replace(/#/, "?")}`)
@@ -209,6 +195,21 @@ export const PlasmicCanvasHost: React.FunctionComponent<PlasmicCanvasHostProps> 
     </>
   );
 };
+
+if (root.__Sub == null) {
+  // Creating a side effect here by logging, so that vite won't
+  // ignore this block for whatever reason
+  console.log("Plasmic: Setting up app host dependencies");
+  root.__Sub = {
+    React,
+    ReactDOM,
+    setPlasmicRootNode,
+    registerRenderErrorListener,
+    repeatedElement,
+    setRepeatedElementFn,
+    PlasmicCanvasContext,
+  };
+}
 
 type RenderErrorListener = (err: Error) => void;
 const renderErrorListeners: RenderErrorListener[] = [];
