@@ -27,7 +27,7 @@ function useForceUpdate() {
     return () => {
       mountedRef.current = false;
     };
-  });
+  }, []);
   const callback = React.useCallback(() => {
     if (mountedRef.current) {
       setState({});
@@ -86,6 +86,9 @@ export function usePlasmicQueryData<T>(key: string, fetcher: () => Promise<T>) {
   const promise = fetcher().then((data) => {
     cache[key].data = data;
     return data;
+  }).catch((err) => {
+    cache[key].error = err;
+    throw err;
   });
   cache[key] = {
     promise,
