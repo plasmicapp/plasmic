@@ -85,9 +85,15 @@ export function usePlasmicQueryData<T>(key: string, fetcher: () => Promise<T>) {
 
   const promise = fetcher().then((data) => {
     cache[key].data = data;
+    if (!suspense) {
+      forceUpdate();
+    }
     return data;
   }).catch((err) => {
     cache[key].error = err;
+    if (!suspense) {
+      forceUpdate();
+    }
     throw err;
   });
   cache[key] = {

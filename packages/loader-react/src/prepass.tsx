@@ -98,14 +98,17 @@ function processComponentProps(
     return props;
   }
 
-  const processValue = (value: any): any => {
+  const processValue = (value: any, depth: number): any => {
+    if (depth > 2) {
+      return value;
+    }
     if (React.isValidElement(value as any)) {
       return processReactElement(value);
     } else if (Array.isArray(value)) {
-      return value.map((v) => processValue(v));
+      return value.map((v) => processValue(v, depth + 1));
     } else if (isLiteralObject(value)) {
       return Object.fromEntries(
-        Object.entries(value).map(([k, v]) => [k, processValue(v)])
+        Object.entries(value).map(([k, v]) => [k, processValue(v, depth + 1)])
       );
     } else {
       return value;
@@ -114,7 +117,7 @@ function processComponentProps(
 
   return Object.fromEntries(
     Object.entries(props).map(([k, v]) => {
-      return [k, processValue(v)];
+      return [k, processValue(v, 1)];
     })
   );
 }
