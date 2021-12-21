@@ -46,7 +46,7 @@ export default function ParallaxWrapper({
 }
 
 const parallaxWrapperMeta: ComponentMeta<ParallaxWrapperProps> = {
-  name: "Parallax",
+  name: "hostless-scroll-parallax",
   displayName: "Scroll Parallax",
   importPath: "@plasmicpkgs/react-scroll-parallax",
   props: {
