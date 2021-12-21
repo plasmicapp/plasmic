@@ -10,25 +10,26 @@ import { cloneElement, isValidElement } from "react";
  * from Plasmic Studio. Otherwise, if `elt` is not a React element, the original
  * value is returned.
  */
-export default function repeatedElement<T,>(isPrimary: boolean, elt: T): T {
+export default function repeatedElement<T>(isPrimary: boolean, elt: T): T {
   return repeatedElementFn(isPrimary, elt);
 }
 
-let repeatedElementFn = <T,>(isPrimary: boolean, elt: T): T => {
+let repeatedElementFn = <T>(isPrimary: boolean, elt: T): T => {
   if (isPrimary) {
     return elt;
   }
   if (Array.isArray(elt)) {
-    return elt.map((v) => repeatedElement(isPrimary, v)) as any as T;
+    return (elt.map((v) => repeatedElement(isPrimary, v)) as any) as T;
   }
   if (elt && isValidElement(elt) && typeof elt !== "string") {
-    return cloneElement(elt) as any as T;
+    return (cloneElement(elt) as any) as T;
   }
   return elt;
-}
+};
 
-export function setRepeatedElementFn(fn: typeof repeatedElement) {
-  repeatedElementFn = fn;
-}
-
-
+const root = globalThis as any;
+export const setRepeatedElementFn: (fn: typeof repeatedElement) => void =
+  root?.__Sub?.setRepeatedElementFn ??
+  function (fn: typeof repeatedElement) {
+    repeatedElementFn = fn;
+  };
