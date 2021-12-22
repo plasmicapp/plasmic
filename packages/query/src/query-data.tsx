@@ -64,14 +64,14 @@ export function usePlasmicQueryData<T>(key: string, fetcher: () => Promise<T>) {
   const suspense = !!prepassCtx || dataCtx?.suspense;
 
   if (key in cache) {
-    const { promise, data, error } = cache[key];
-    if (data) {
-      return { data: data as T };
-    } else if (error) {
+    const { promise } = cache[key];
+    if ("data" in cache[key]) {
+      return { data: cache[key].data as T };
+    } else if ("error" in cache[key]) {
       if (suspense) {
-        throw error;
+        throw cache[key].error;
       } else {
-        return { error };
+        return { error: cache[key].error };
       }
     } else if (promise) {
       if (suspense) {

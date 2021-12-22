@@ -41,7 +41,7 @@ export default [
         typescript: ts,
         check: false,
         tsconfigOverride: {
-          include: ["src/registerComponent.ts"],
+          include: ["src/registerComponent.ts", "src/element-types.ts"],
         },
       }),
     ],
