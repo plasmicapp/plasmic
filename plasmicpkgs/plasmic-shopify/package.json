@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-shopify",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Plasmic registration call for the HTML5 video element",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -32,12 +32,13 @@
     "@types/node": "^14.0.26",
     "size-limit": "^4.11.0",
     "tsdx": "^0.14.1",
-    "tslib": "^2.2.0",
+    "tslib": "^2.3.1",
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "@plasmicapp/host": "^0.0.32",
-    "@plasmicpkgs/plasmic-basic-components": "0.0.3"
+    "@plasmicapp/host": "^0.0.47",
+    "@plasmicapp/query": "^0.1.5",
+    "@plasmicpkgs/plasmic-basic-components": "^0.0.5"
   },
   "peerDependencies": {
     "react": ">=16.8.0",

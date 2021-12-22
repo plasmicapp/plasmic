@@ -1084,38 +1084,32 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@plasmicapp/host@^0.0.32":
-  version "0.0.32"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-0.0.32.tgz#234f1e14c1de5702ae4ab012f9884691e180db5a"
-  integrity sha512-mXdFYEDnJnMwH/Q7yrGQ2tWDQl+d4Stkd0flI3Mqy9a++pl2Hwj7S7Mr6OPj1k4ohG9nCJZNUJNalxROTsfknA==
+"@plasmicapp/host@^0.0.47":
+  version "0.0.47"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-0.0.47.tgz#060b5a424aa2ebb3c98d5fef6da4a218dc31cc27"
+  integrity sha512-rCevsvr06F9SIDmf0kWN15Pte5t7XA62qcqeM2i4G60hnuNlO2rBZVFqciBlGY3RwYgFE52+nctczlv6vWeMFg==
   dependencies:
-    "@plasmicapp/preamble" "0.0.17"
+    "@plasmicapp/preamble" "0.0.31"
     window-or-global "^1.0.1"
 
-"@plasmicapp/host@^0.0.37":
-  version "0.0.37"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-0.0.37.tgz#1ccf313379c85368a75e47a9b047f92cce6ee954"
-  integrity sha512-cqquckj3+xRTUXC3mDYDrp0V+9UD8WHhvVuK9Ami+Lmsl111kBbJsTo23G4FLcIdS2HxBxqOdyuq6vAPbSgwFA==
+"@plasmicapp/preamble@0.0.31":
+  version "0.0.31"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/preamble/-/preamble-0.0.31.tgz#45085326e24982a8b84a149439d22f6f40535bdb"
+  integrity sha512-NFX/vDsGRF7Pc/UxAgaFbmPxCkTMbZhNYadXf7mgXYmw7CBS/KIXafhwF8V+jaeNPnxaoAeoKstHgYJd6FPrOw==
+
+"@plasmicapp/query@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.5.tgz#7e6394a0cbc3164c8e07c1ddb9e6c447fa3a20ff"
+  integrity sha512-c5EcffgmXJVdjiOenW7eXy471KHD5/r7ezzdhyMO0fZLQrfDICQEOY2po5MR4HXfCG1ClI5zKDpfvr7OcKfwgw==
   dependencies:
-    "@plasmicapp/preamble" "0.0.21"
-    window-or-global "^1.0.1"
+    react-ssr-prepass "^1.4.0"
 
-"@plasmicapp/preamble@0.0.17":
-  version "0.0.17"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/preamble/-/preamble-0.0.17.tgz#1216ed3867168b00f40ba301c5cb77fffa92df47"
-  integrity sha512-MOJaXP7/2NJU27qxzlnczQi9V/wSYp/H4TcYC3FRWPcqq4mWYjk3+hynJqPjKUosWnsAqEVBtFCaP/nG5ZURDg==
-
-"@plasmicapp/preamble@0.0.21":
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/preamble/-/preamble-0.0.21.tgz#0c028ecf54f7c6489ae1a2b86c232702e79ef22c"
-  integrity sha512-qiJRZ4MQEv2WQb7Xq8a+1U0ArmxtrpIWvbHgc3Ul8ki4mbfHMYTljafTnygwJLLFUxKDwb6UuNl+x+no5T1LtQ==
-
-"@plasmicpkgs/plasmic-basic-components@0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-basic-components/-/plasmic-basic-components-0.0.3.tgz#4a14ddb58ba9a54b5f62415ec61307c9e5b8ffcf"
-  integrity sha512-V42KGKKwXsZH+RaFH3pOTGyD/R/KZRF02o8MNaGA0aW9cGm7yoq0ycQs3dzSoF0u+CeQH/YmgDc/YaSp6w8/aw==
+"@plasmicpkgs/plasmic-basic-components@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-basic-components/-/plasmic-basic-components-0.0.5.tgz#152cc7ee057ab8d28815cd4b881ca4453959f08c"
+  integrity sha512-ip1VJJR02jL+T1SWmUiYp59OQUtjpSnGo5EAksRH33WznV5DTGMNPZazdPHhHEXkaOgNgfIDvR+6VW8ooiKtGQ==
   dependencies:
-    "@plasmicapp/host" "^0.0.37"
+    "@plasmicapp/host" "^0.0.47"
 
 "@polka/url@^1.0.0-next.20":
   version "1.0.0-next.21"
@@ -6636,6 +6630,11 @@ react-is@^16.12.0, react-is@^16.8.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
+react-ssr-prepass@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/react-ssr-prepass/-/react-ssr-prepass-1.4.0.tgz#33a3db19414f0f8f9f3f781c88f760ae366b4f51"
+  integrity sha512-0SzdmiQUtHvhxCabHg9BI/pkJfijGkQ0jQL6fC4YFy7idaDOuaiQLsajIkkNxffFXtJFHIWFITlve2WB88e0Jw==
+
 read-pkg-up@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/read-pkg-up/-/read-pkg-up-2.0.0.tgz#6b72a8048984e0c41e79510fd5e9fa99b3b549be"
@@ -7945,10 +7944,15 @@ tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.3:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
-tslib@^2.0.3, tslib@^2.2.0:
+tslib@^2.0.3:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.2.0.tgz#fb2c475977e35e241311ede2693cee1ec6698f5c"
   integrity sha512-gS9GVHRU+RGn5KQM2rllAlR3dU6m7AcpJKdtH8gFvQiC4Otgk98XnmMU+nZenHt/+VhnBPWwgrJsyrdcw6i23w==
+
+tslib@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.1.tgz#e8a335add5ceae51aa261d32a490158ef042ef01"
+  integrity sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==
 
 tsutils@^3.17.1:
   version "3.21.0"
