@@ -36,7 +36,7 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "@plasmicapp/host": "^0.0.42",
+    "@plasmicapp/host": "^0.0.47",
     "react-scroll-parallax": "^2.4.0"
   },
   "peerDependencies": {
