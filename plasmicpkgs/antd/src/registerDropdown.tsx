@@ -63,7 +63,8 @@ export const dropdownMeta: ComponentMeta<DropDownProps> = {
     },
     visible: {
       type: "boolean",
-      description: "Whether the dropdown menu is currently visible",
+      description: "Toggle visibility of dropdown menu in Plasmic Editor",
+      editOnly: true,
     },
     children: {
       type: "slot",
@@ -139,7 +140,8 @@ export const dropdownButtonMeta: ComponentMeta<DropdownButtonProps> = {
     },
     visible: {
       type: "boolean",
-      description: "Whether the dropdown menu is currently visible",
+      description: "Toggle visibility of dropdown menu in Plasmic Editor",
+      editOnly: true,
     },
     children: {
       type: "slot",
