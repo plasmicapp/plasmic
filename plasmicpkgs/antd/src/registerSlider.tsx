@@ -30,8 +30,12 @@ export const Slider = React.forwardRef<unknown, SliderProps>(
         newProps.defaultValue = [defaultValue ?? 0, defaultValue2 ?? 0];
       }
     } else {
-      newProps.value = value;
-      newProps.defaultValue = defaultValue;
+      if (typeof value === "number") {
+        newProps.value = value;
+      }
+      if(typeof defaultValue === "number") {
+        newProps.defaultValue = defaultValue;
+      }
     }
     return <AntdSlider {...newProps} ref={ref} />;
   }
