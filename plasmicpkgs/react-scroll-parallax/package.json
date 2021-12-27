@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@plasmicapp/host": "^0.0.47",
-    "react-scroll-parallax": "^2.4.0"
+    "react-scroll-parallax": "3.0.0-alpha.14"
   },
   "peerDependencies": {
     "react": ">=16.8.0",

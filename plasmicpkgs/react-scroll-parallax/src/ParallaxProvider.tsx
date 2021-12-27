@@ -1,13 +1,50 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { ParallaxProvider, ParallaxProviderProps } from "react-scroll-parallax";
+import React, { useEffect } from "react";
+import { ParallaxProvider, useController } from "react-scroll-parallax";
+import { ParallaxProviderProps } from "react-scroll-parallax/dist/components/ParallaxProvider/types";
+
+/**
+ * This is required to ensure the parallax scrolling works correctly, since if
+ * (for instance) images load after the parallax wrapper has calculated the
+ * dimensions of the space, it will result in incorrect parallax scrolling
+ * amounts.
+ *
+ * This is not great since we need to mutation-observe the whole section of the
+ * document (which may be large), but we can probably optimize this in the
+ * future.
+ */
+function ParallaxCacheUpdate(props: React.PropsWithChildren<{}>) {
+  const parallaxController = useController();
+
+  useEffect(() => {
+    const targetNode = document.body;
+    const observer = new ResizeObserver(() => {
+      if (parallaxController) {
+        parallaxController.update();
+      }
+    });
+    observer.observe(targetNode);
+  });
+
+  return null;
+}
+
+export function ParallaxProviderWrapper(props: React.PropsWithChildren<{}>) {
+  return (
+    <ParallaxProvider {...props}>
+      <ParallaxCacheUpdate />
+      {props.children}
+    </ParallaxProvider>
+  );
+}
 
 export const parallaxProviderMeta: ComponentMeta<ParallaxProviderProps> = {
   name: "hostless-parallax-provider",
   displayName: "Parallax Provider",
-  importName: "ParallaxProvider",
-  importPath: "react-scroll-parallax",
+  importName: "ParallaxProviderWrapper",
+  importPath: "@plasmicpkgs/react-scroll-parallax",
   props: {
     children: "slot",
     scrollAxis: {

@@ -6,10 +6,7 @@ import React, { useContext } from "react";
 import { Parallax, ParallaxContext } from "react-scroll-parallax";
 
 export interface ParallaxWrapperProps {
-  xStart?: string;
-  xEnd?: string;
-  yStart?: string;
-  yEnd?: string;
+  speed?: number;
   disabled?: boolean;
   previewInEditor?: boolean;
   children: React.ReactNode;
@@ -17,10 +14,7 @@ export interface ParallaxWrapperProps {
 }
 
 export default function ParallaxWrapper({
-  xStart = "0",
-  xEnd = "0",
-  yStart = "0",
-  yEnd = "0",
+  speed,
   disabled,
   previewInEditor,
   children,
@@ -36,8 +30,7 @@ export default function ParallaxWrapper({
   return (
     <Parallax
       disabled={disabled || (inEditor && !previewInEditor)}
-      x={[xStart, xEnd]}
-      y={[yStart, yEnd]}
+      speed={speed}
       className={className}
     >
       {children}
@@ -60,29 +53,10 @@ const parallaxWrapperMeta: ComponentMeta<ParallaxWrapperProps> = {
         },
       },
     },
-    yStart: {
-      type: "string",
-      defaultValue: "-50%",
+    speed: {
+      type: "number",
       description:
-        "The vertical offset at the start (when just scrolling into view). Can be % or px.",
-    },
-    yEnd: {
-      type: "string",
-      defaultValue: "50%",
-      description:
-        "The vertical offset at the end (when just scrolling out of view). Can be % or px.",
-    },
-    xStart: {
-      type: "string",
-      defaultValue: "50%",
-      description:
-        "The horizontal offset at the start (when just scrolling into view). Can be % or px.",
-    },
-    xEnd: {
-      type: "string",
-      defaultValue: "-50%",
-      description:
-        "The horizontal offset at the end (when just scrolling out of view). Can be % or px.",
+        "How much to speed up or slow down this element while scrolling. Try -20 for slower, 20 for faster.",
     },
     disabled: {
       type: "boolean",
