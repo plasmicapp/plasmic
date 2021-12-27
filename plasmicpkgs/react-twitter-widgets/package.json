@@ -1,0 +1,46 @@
+{
+  "name": "@plasmicpkgs/react-twitter-widgets",
+  "version": "0.0.1",
+  "description": "Plasmic registration calls for react-twitter-widgets",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/react-twitter-widgets.esm.js",
+  "files": [
+    "dist"
+  ],
+  "size-limit": [
+    {
+      "path": "dist/react-twitter-widgets.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/react-twitter-widgets.esm.js",
+      "limit": "10 KB"
+    }
+  ],
+  "scripts": {
+    "build": "tsdx build",
+    "start": "tsdx watch",
+    "test": "tsdx test --passWithNoTests",
+    "lint": "tsdx lint",
+    "prepare": "yarn build",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
+  },
+  "devDependencies": {
+    "@size-limit/preset-small-lib": "^4.11.0",
+    "@types/node": "^14.0.26",
+    "size-limit": "^4.11.0",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.2.0",
+    "typescript": "^3.9.7"
+  },
+  "dependencies": {
+    "@plasmicapp/host": "^0.0.47",
+    "react-twitter-widgets": "^1.10.0"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  }
+}
