@@ -15,7 +15,7 @@ import { ParallaxProviderProps } from "react-scroll-parallax/dist/components/Par
  * document (which may be large), but we can probably optimize this in the
  * future.
  */
-function ParallaxCacheUpdate(props: React.PropsWithChildren<{}>) {
+function ParallaxCacheUpdate() {
   const parallaxController = useController();
 
   useEffect(() => {

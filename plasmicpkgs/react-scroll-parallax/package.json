@@ -30,6 +30,7 @@
   "devDependencies": {
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/node": "^14.0.26",
+    "@types/resize-observer-browser": "^0.1.6",
     "size-limit": "^4.11.0",
     "tsdx": "^0.14.1",
     "tslib": "^2.2.0",

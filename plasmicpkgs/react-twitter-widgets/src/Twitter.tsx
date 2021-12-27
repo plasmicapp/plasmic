@@ -8,15 +8,23 @@ import { Follow, Timeline, Tweet } from "react-twitter-widgets";
 // Mention / Share components (would be easy additions).
 //
 
-export function TimelineWrapper({ url }: { url?: string }) {
+export function TimelineWrapper({
+  className,
+  url,
+}: {
+  className?: string;
+  url?: string;
+}) {
   if (!url) {
     throw new Error("Timeline component requires a URL");
   }
   return (
-    <Timeline
-      dataSource={{ sourceType: "url", url }}
-      options={{ width: "100%", height: "100%" }}
-    />
+    <div className={className}>
+      <Timeline
+        dataSource={{ sourceType: "url", url }}
+        options={{ width: "100%", height: "100%" }}
+      />
+    </div>
   );
 }
 
@@ -53,12 +61,20 @@ export function registerTimelineWrapper(
   }
 }
 
-export function TweetWrapper({ tweetId }: { tweetId?: string }) {
+export function TweetWrapper({
+  className,
+  tweetId,
+}: {
+  className?: string;
+  tweetId?: string;
+}) {
   if (!tweetId) {
     throw new Error("Tweet component requires a tweetId");
   }
   return (
-    <Tweet tweetId={tweetId} options={{ width: "100%", height: "100%" }} />
+    <div className={className}>
+      <Tweet tweetId={tweetId} options={{ width: "100%", height: "100%" }} />
+    </div>
   );
 }
 
@@ -89,11 +105,21 @@ export function registerTweetWrapper(
   }
 }
 
-export function FollowWrapper({ username }: { username?: string }) {
+export function FollowWrapper({
+  className,
+  username,
+}: {
+  className?: string;
+  username?: string;
+}) {
   if (!username) {
     throw new Error("Follow component requires a username");
   }
-  return <Follow username={username} />;
+  return (
+    <div className={className}>
+      <Follow username={username} />
+    </div>
+  );
 }
 
 export const followWrapper: ComponentMeta<
