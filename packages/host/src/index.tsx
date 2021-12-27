@@ -14,6 +14,11 @@ import registerComponent, {
   PrimitiveType,
   PropType,
 } from "./registerComponent";
+import registerContext, {
+  ContextMeta,
+  ContextRegistration,
+  PropType as ContextPropType,
+} from "./registerContext";
 import repeatedElement, { setRepeatedElementFn } from "./repeatedElement";
 import useForceUpdate from "./useForceUpdate";
 const root = globalThis as any;
@@ -28,6 +33,7 @@ export {
   PrimitiveType,
   PropType,
 };
+export { registerContext, ContextMeta, ContextRegistration, ContextPropType };
 export { PlasmicElement };
 
 declare global {
@@ -45,7 +51,7 @@ class PlasmicRootNodeWrapper {
   constructor(private value: null | React.ReactElement) {}
   set = (val: null | React.ReactElement) => {
     this.value = val;
-    rootChangeListeners.forEach((f) => f());
+    rootChangeListeners.forEach(f => f());
   };
   get = () => this.value;
 }
@@ -178,9 +184,7 @@ interface PlasmicCanvasHostProps {
   enableWebpackHmr?: boolean;
 }
 
-export const PlasmicCanvasHost: React.FunctionComponent<PlasmicCanvasHostProps> = (
-  props
-) => {
+export const PlasmicCanvasHost: React.FunctionComponent<PlasmicCanvasHostProps> = props => {
   const { enableWebpackHmr } = props;
   const [node, setNode] = React.useState<React.ReactElement<any, any> | null>(
     null
@@ -245,7 +249,7 @@ class ErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error) {
-    renderErrorListeners.forEach((listener) => listener(error));
+    renderErrorListeners.forEach(listener => listener(error));
   }
 
   render() {

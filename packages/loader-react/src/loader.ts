@@ -1,6 +1,8 @@
 import {
   ComponentMeta as InternalCodeComponentMeta,
+  ContextMeta,
   registerComponent,
+  registerContext,
 } from '@plasmicapp/host';
 import {
   ComponentMeta,
@@ -116,7 +118,7 @@ export class InternalPlasmicComponentLoader {
   registerModules(modules: Record<string, any>) {
     if (
       Object.keys(modules).some(
-        (name) => this.registry.getRegisteredModule(name) !== modules[name]
+        name => this.registry.getRegisteredModule(name) !== modules[name]
       )
     ) {
       if (!this.registry.isEmpty()) {
@@ -151,6 +153,18 @@ export class InternalPlasmicComponentLoader {
     this.substituteComponent(component, { name: meta.name, isCode: true });
     // Import path is not used as we will use component substitution
     registerComponent(component, {
+      ...meta,
+      importPath: meta.importPath ?? '',
+    });
+  }
+
+  registerContext<T extends React.ComponentType<any>>(
+    context: T,
+    meta: ContextMeta<React.ComponentProps<T>>
+  ) {
+    this.substituteComponent(context, { name: meta.name, isCode: true });
+    // Import path is not used as we will use component substitution
+    registerContext(context, {
       ...meta,
       importPath: meta.importPath ?? '',
     });
@@ -247,7 +261,7 @@ export class InternalPlasmicComponentLoader {
     );
     const data = await this.fetchAllData();
     return data.components.filter(
-      (comp) => comp.isPage && comp.path
+      comp => comp.isPage && comp.path
     ) as PageMeta[];
   }
 
@@ -271,7 +285,7 @@ export class InternalPlasmicComponentLoader {
     this.maybeReportClientSideFetch(
       () =>
         `Plasmic: fetching missing components in the browser: ${opts.missingSpecs
-          .map((spec) => getLookupSpecName(spec))
+          .map(spec => getLookupSpecName(spec))
           .join(', ')}`
     );
     return this.fetchAllData();
@@ -291,7 +305,7 @@ export class InternalPlasmicComponentLoader {
   private async fetchAllData() {
     const bundle = await this.ensureFetcher().fetchAllData();
     this.mergeBundle(bundle);
-    this.roots.forEach((watcher) => watcher.onDataFetched?.());
+    this.roots.forEach(watcher => watcher.onDataFetched?.());
     return bundle;
   }
 

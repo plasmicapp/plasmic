@@ -36,7 +36,7 @@ interface PropTypeBase<P> {
   hidden?: ContextDependentConfig<P, boolean>;
 }
 
-type StringType<P> =
+export type StringType<P> =
   | "string"
   | ({
       type: "string";
@@ -44,7 +44,7 @@ type StringType<P> =
       defaultValueHint?: string;
     } & PropTypeBase<P>);
 
-type BooleanType<P> =
+export type BooleanType<P> =
   | "boolean"
   | ({
       type: "boolean";
@@ -58,7 +58,7 @@ interface NumberTypeBase<P> extends PropTypeBase<P> {
   defaultValueHint?: number;
 }
 
-type NumberType<P> =
+export type NumberType<P> =
   | "number"
   | ((
       | {
@@ -75,7 +75,7 @@ type NumberType<P> =
     ) &
       NumberTypeBase<P>);
 
-type JSONLikeType<P> =
+export type JSONLikeType<P> =
   | "object"
   | ({
       type: "object";
@@ -91,7 +91,7 @@ interface ChoiceTypeBase<P> extends PropTypeBase<P> {
   options: string[] | ContextDependentConfig<P, string[]>;
 }
 
-type ChoiceType<P> = (
+export type ChoiceType<P> = (
   | {
       defaultValue?: string;
       defaultValueHint?: string;
@@ -172,7 +172,7 @@ type ControlTypeBase =
       uncontrolledProp?: string;
     };
 
-type SupportControlled<T> =
+export type SupportControlled<T> =
   | Extract<T, String | CustomControl<any>>
   | (Exclude<T, String | CustomControl<any>> & ControlTypeBase);
 
