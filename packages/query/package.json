@@ -34,14 +34,14 @@
   },
   "name": "@plasmicapp/query",
   "author": "Chung Wu",
-  "module": "dist/fetcher.esm.js",
+  "module": "dist/query.esm.js",
   "size-limit": [
     {
-      "path": "dist/fetcher.cjs.production.min.js",
+      "path": "dist/query.cjs.production.min.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/fetcher.esm.js",
+      "path": "dist/query.esm.js",
       "limit": "10 KB"
     }
   ],
