@@ -38,6 +38,7 @@ export const optionMeta: ComponentMeta<OptionProps> = {
   },
   importPath: "rc-select",
   importName: "Option",
+  parentComponentName: "AntdSelect",
 };
 
 export function registerOption(
@@ -74,6 +75,7 @@ export const optGroupMeta: ComponentMeta<OptGroupProps> = {
   },
   importPath: "rc-select",
   importName: "OptGroup",
+  parentComponentName: "AntdSelect",
 };
 
 export function registerOptGroup(

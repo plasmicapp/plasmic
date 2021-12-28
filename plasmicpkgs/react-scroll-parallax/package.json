@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/react-scroll-parallax",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Plasmic registration call for the HTML5 video element",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -36,7 +36,7 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "@plasmicapp/host": "^0.0.47",
+    "@plasmicapp/host": "^0.0.50",
     "react-scroll-parallax": "3.0.0-alpha.14",
     "resize-observer-polyfill": "^1.5.1"
   },

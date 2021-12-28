@@ -132,6 +132,7 @@ export const inputTextAreaMeta: ComponentMeta<TextAreaProps> = {
   importPath: "antd/lib/input/TextArea",
   importName: "TextArea",
   isDefaultExport: true,
+  parentComponentName: "AntdInput",
 };
 
 export function registerInputTextArea(
@@ -209,6 +210,7 @@ export const inputSearchMeta: ComponentMeta<SearchProps> = {
   importPath: "antd/lib/input/Search",
   importName: "Search",
   isDefaultExport: true,
+  parentComponentName: "AntdInput",
 };
 
 export function registerInputSearch(
@@ -282,6 +284,7 @@ export const inputPasswordMeta: ComponentMeta<PasswordProps> = {
   importPath: "antd/lib/input/Password",
   importName: "Password",
   isDefaultExport: true,
+  parentComponentName: "AntdInput",
 };
 
 export function registerInputPassword(
@@ -324,6 +327,7 @@ export const inputGroupMeta: ComponentMeta<GroupProps> = {
   importPath: "antd/lib/input/Group",
   importName: "InputGroup",
   isDefaultExport: true,
+  parentComponentName: "AntdInput",
 };
 
 export function registerInputGroup(

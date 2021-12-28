@@ -107,6 +107,7 @@ export const checkboxGroupMeta: ComponentMeta<CheckboxGroupProps> = {
   },
   importPath: "antd/lib/checkbox/Group",
   importName: "CheckboxGroup",
+  parentComponentName: "AntdCheckbox",
   isDefaultExport: true,
 };
 

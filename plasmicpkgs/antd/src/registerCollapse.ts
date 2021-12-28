@@ -51,6 +51,7 @@ export const collapstePanelMeta: ComponentMeta<CollapsePanelProps> = {
   },
   importPath: "antd/lib/collapse/CollapsePanel",
   importName: "CollapsePanel",
+  parentComponentName: "AntdCollapse",
   isDefaultExport: true,
 };
 

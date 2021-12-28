@@ -68,6 +68,7 @@ export const parallaxProviderMeta: ComponentMeta<ParallaxProviderProps> = {
       displayName: "Scroll Axis",
     },
   },
+  parentComponentName: "hostless-scroll-parallax",
 };
 
 export function registerParallaxProvider(
