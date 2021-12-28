@@ -276,6 +276,10 @@ export interface ComponentMeta<P> {
    * Component templates to start with on Plasmic.
    */
   templates?: ComponentTemplates<P>;
+  /**
+   * Registered name of parent component, used for grouping related components.
+   */
+  parentComponentName?: string;
 }
 
 export interface ComponentRegistration {
