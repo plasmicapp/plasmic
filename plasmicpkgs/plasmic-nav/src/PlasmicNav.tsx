@@ -14,11 +14,11 @@ export interface NavContextValue {
 
 export const NavContext = createContext<undefined | NavContextValue>(undefined);
 
-export const useNavContext = () => {
+export const useNavContext = (componentName: string) => {
   const context = useContext(NavContext);
   if (!context) {
     throw new Error(
-      "NavToggle can only be instantiated somewhere inside a NavContainer"
+      `${componentName} can only be instantiated somewhere inside a NavContainer`
     );
   }
   return context;
@@ -45,32 +45,6 @@ export function NavContainer({
   );
 }
 
-export function NavMenu({
-  className,
-  children,
-}: {
-  className?: string;
-  children: React.ReactNode;
-}) {
-  const { isShown } = useNavContext();
-  return isShown && <div className={className}>{children}</div>;
-}
-
-export function NavToggle({
-  className,
-  children,
-}: {
-  className?: string;
-  children: React.ReactNode;
-}) {
-  const { toggleNav } = useNavContext();
-  return (
-    <button className={className} onClick={toggleNav}>
-      {children}
-    </button>
-  );
-}
-
 export const navContainer: ComponentMeta<
   ComponentProps<typeof NavContainer>
 > = {
@@ -91,5 +65,73 @@ export function registerNavContainer(
     loader.registerComponent(NavContainer, customNavContainer ?? navContainer);
   } else {
     registerComponent(NavContainer, customNavContainer ?? navContainer);
+  }
+}
+
+export function NavMenu({
+  className,
+  children,
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) {
+  const { isShown } = useNavContext("NavMenu");
+  return isShown ? <div className={className}>{children}</div> : null;
+}
+
+export const navMenu: ComponentMeta<ComponentProps<typeof NavMenu>> = {
+  name: "hostless-plasmic-nav-container",
+  displayName: "Nav Container",
+  importName: "NavMenu",
+  importPath: "@plasmicpkgs/plasmic-nav",
+  props: {
+    children: "slot",
+  },
+};
+
+export function registerNavMenu(
+  loader?: { registerComponent: typeof registerComponent },
+  customNavMenu?: ComponentMeta<ComponentProps<typeof NavMenu>>
+) {
+  if (loader) {
+    loader.registerComponent(NavMenu, customNavMenu ?? navMenu);
+  } else {
+    registerComponent(NavMenu, customNavMenu ?? navMenu);
+  }
+}
+
+export function NavToggle({
+  className,
+  children,
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) {
+  const { toggleNav } = useNavContext("NavToggle");
+  return (
+    <button className={className} onClick={toggleNav}>
+      {children}
+    </button>
+  );
+}
+
+export const navToggle: ComponentMeta<ComponentProps<typeof NavToggle>> = {
+  name: "hostless-plasmic-nav-container",
+  displayName: "Nav Container",
+  importName: "NavToggle",
+  importPath: "@plasmicpkgs/plasmic-nav",
+  props: {
+    children: "slot",
+  },
+};
+
+export function registerNavToggle(
+  loader?: { registerComponent: typeof registerComponent },
+  customNavToggle?: ComponentMeta<ComponentProps<typeof NavToggle>>
+) {
+  if (loader) {
+    loader.registerComponent(NavToggle, customNavToggle ?? navToggle);
+  } else {
+    registerComponent(NavToggle, customNavToggle ?? navToggle);
   }
 }
