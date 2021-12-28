@@ -45,11 +45,7 @@ export async function extractPlasmicQueryData(
 ): Promise<Record<string, any>> {
   const cache: Record<string, DataCacheEntry<any>> = {};
   try {
-    await plasmicPrepass(
-      <PrepassContext.Provider value={{ cache }}>
-        {element}
-      </PrepassContext.Provider>
-    );
+    await plasmicPrepass(element, cache);
   } catch (err) {
     console.warn(`PLASMIC: Error encountered while pre-rendering`, err);
   }
@@ -64,8 +60,15 @@ export async function extractPlasmicQueryData(
  * Runs react-ssr-prepass on `element`, while isolating rendering errors
  * as much as possible for each PlasmicComponent instance.
  */
-export async function plasmicPrepass(element: React.ReactElement) {
-  await prepass(buildPlasmicPrepassElement(element));
+export async function plasmicPrepass(
+  element: React.ReactElement,
+  plasmicCache?: Record<string, DataCacheEntry<any>>
+) {
+  await prepass(
+    <PrepassContext.Provider value={{ cache: plasmicCache ?? {} }}>
+      {buildPlasmicPrepassElement(element)}
+    </PrepassContext.Provider>
+  );
 }
 
 /**
