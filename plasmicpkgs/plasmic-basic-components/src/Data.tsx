@@ -14,6 +14,8 @@ export type DataDict = Record<string, any>;
 
 export const DataContext = createContext<DataDict | undefined>(undefined);
 
+const thisModule = "@plasmicpkgs/plasmic-basic-components";
+
 export function applySelector(
   rawData: DataDict | undefined,
   selector: string | undefined
@@ -137,6 +139,78 @@ export function DynamicImage({
   );
 }
 
+export interface DynamicRepeaterProps {
+  children?: ReactNode;
+  loopItemName?: string;
+  keySelector?: string;
+  selector?: string;
+  data?: any;
+}
+
+export function DynamicRepeater({
+  children,
+  loopItemName,
+  keySelector,
+  selector,
+  data,
+}: DynamicRepeaterProps) {
+  // Defaults to an array of three items.
+  const finalData = data ?? useSelector(selector) ?? [1, 2, 3];
+  return (
+    <>
+      {finalData?.map?.((item: any, index: number) => (
+        <DataProvider
+          key={applySelector(item, keySelector) ?? index}
+          name={loopItemName}
+          data={item}
+        >
+          {repeatedElement(index === 0, children)}
+        </DataProvider>
+      ))}
+    </>
+  );
+}
+
+export const dynamicRepeaterProps = {
+  selector: {
+    type: "string",
+    description:
+      "The selector expression to use to get the array of data to loop over, such as: someVariable.0.someField",
+  },
+  loopItemName: {
+    type: "string",
+    defaultValue: "item",
+    description:
+      "The name of the variable to use to store the current item in the loop",
+  },
+  children: "slot",
+} as const;
+
+export const dynamicRepeaterMeta: ComponentMeta<DynamicRepeaterProps> = {
+  name: "hostless-dynamic-repeater",
+  displayName: "Dynamic Repeater",
+  importName: "DynamicRepeater",
+  importPath: thisModule,
+  props: dynamicRepeaterProps,
+};
+
+export function registerDynamicRepeater(
+  loader?: { registerComponent: typeof registerComponent },
+  customDynamicRepeaterMeta?: ComponentMeta<DynamicRepeaterProps>
+) {
+  if (loader) {
+    loader.registerComponent(
+      DynamicRepeater,
+      customDynamicRepeaterMeta ?? dynamicRepeaterMeta
+    );
+  } else {
+    registerComponent(
+      DynamicRepeater,
+      customDynamicRepeaterMeta ?? dynamicRepeaterMeta
+    );
+  }
+}
+
 export interface DynamicCollectionProps extends CommonDynamicProps {
   children?: ReactNode;
   style?: CSSProperties;
@@ -195,8 +269,6 @@ export function DynamicCollectionGrid({
     />
   );
 }
-
-const thisModule = "@plasmicpkgs/plasmic-basic-components";
 
 export const dataProviderMeta: ComponentMeta<DataProviderProps> = {
   name: "hostless-data-provider",
