@@ -1,20 +1,20 @@
 {
-  "name": "@plasmicpkgs/react-query",
-  "version": "0.0.2",
-  "description": "Plasmic registration call for the HTML5 video element",
+  "name": "@plasmicpkgs/plasmic-query",
+  "version": "0.0.1",
+  "description": "Plasmic components and registration calls for data fetching",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "module": "dist/react-query.esm.js",
+  "module": "dist/plasmic-query.esm.js",
   "files": [
     "dist"
   ],
   "size-limit": [
     {
-      "path": "dist/react-query.cjs.production.min.js",
+      "path": "dist/plasmic-query.cjs.production.min.js",
       "limit": "20 KB"
     },
     {
-      "path": "dist/react-query.esm.js",
+      "path": "dist/plasmic-query.esm.js",
       "limit": "20 KB"
     }
   ],
@@ -37,8 +37,8 @@
   },
   "dependencies": {
     "@plasmicapp/host": "^0.0.32",
-    "react-query": "^3.32.3",
-    "@plasmicpkgs/plasmic-basic-components": "0.0.3"
+    "@plasmicapp/query": "^0.1.6",
+    "@plasmicpkgs/plasmic-basic-components": "0.0.5"
   },
   "peerDependencies": {
     "react": ">=16.8.0",

@@ -1,9 +1,9 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
+import { usePlasmicQueryData } from "@plasmicapp/query";
 import { DataProvider } from "@plasmicpkgs/plasmic-basic-components";
 import React, { ReactNode } from "react";
-import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 
 export interface FetchProps {
   url: string;
@@ -49,12 +49,13 @@ export function DataFetcher({
   dataName,
   ...fetchProps
 }: DataFetcherProps) {
-  const query = useQuery(queryKey ?? JSON.stringify(fetchProps), () =>
-    performFetch(fetchProps)
+  const query = usePlasmicQueryData(
+    queryKey ?? JSON.stringify(fetchProps),
+    () => performFetch(fetchProps)
   );
-  if (query.status === "loading") {
+  if (!("error" in query) && !("data" in query)) {
     return <>{spinner ?? null}</>;
-  } else if (query.status === "error") {
+  } else if ("error" in query) {
     return <>{errorDisplay ?? null}</>;
   } else {
     return (
@@ -69,15 +70,8 @@ export interface PlasmicQueryProviderProps {
   children: ReactNode;
 }
 
-export function PlasmicQueryProvider({ children }: PlasmicQueryProviderProps) {
-  const queryClient = new QueryClient({});
-  return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
-}
-
 export const dataFetcherMeta: ComponentMeta<DataFetcherProps> = {
-  name: "hostless-data-fetcher",
+  name: "hostless-plasmic-query-data-fetcher",
   displayName: "Data Fetcher",
   importName: "DataFetcher",
   importPath: "@plasmicpkgs/react-query",
@@ -85,19 +79,35 @@ export const dataFetcherMeta: ComponentMeta<DataFetcherProps> = {
     url: {
       type: "string",
       defaultValue: "https://api.github.com/users/plasmicapp/repos",
-      description: "Where to fetch the data from"
+      description: "Where to fetch the data from",
     },
     method: {
       type: "choice",
-      options: ["GET", "DELETE", "CONNECT", "HEAD", "OPTIONS", "POST", "PUT", "TRACE"],
-      description: "Method to be used when fetching"
+      options: [
+        "GET",
+        "DELETE",
+        "CONNECT",
+        "HEAD",
+        "OPTIONS",
+        "POST",
+        "PUT",
+        "TRACE",
+      ],
+      defaultValue: "GET",
+      description: "Method to be used when fetching",
     },
-    headers: "object",
-    body: "object",
+    headers: {
+      type: "object",
+      description: "JSON object of the headers to be sent with the request",
+    },
+    body: {
+      type: "object",
+      description: "JSON object of the body to be sent with the request",
+    },
     dataName: {
       type: "string",
       defaultValue: "myVariable",
-      description: "Variable name to store the fetched data in"
+      description: "Variable name to store the fetched data in",
     },
     children: "slot",
   },
@@ -117,26 +127,5 @@ export function registerDataFetcher(
     );
   } else {
     registerComponent(DataFetcher, customDataFetcherMeta ?? dataFetcherMeta);
-  }
-}
-
-export const plasmicQueryProviderMeta: ComponentMeta<PlasmicQueryProviderProps> = {
-  name: "hostless-plasmic-query-provider",
-  displayName: "Query Client Provider",
-  importName: "PlasmicQueryProvider",
-  importPath: "@plasmicpkgs/react-query",
-  props: {
-    children: "slot"
-  }
-}
-
-export function registerPlasmicQueryProvider(
-  loader?: { registerComponent: typeof registerComponent },
-  customPlasmicQueryProviderMeta?: ComponentMeta<PlasmicQueryProviderProps>
-) {
-  if (loader) {
-    loader.registerComponent(PlasmicQueryProvider, customPlasmicQueryProviderMeta ?? plasmicQueryProviderMeta);
-  } else {
-    registerComponent(PlasmicQueryProvider, customPlasmicQueryProviderMeta ?? plasmicQueryProviderMeta);
   }
 }
