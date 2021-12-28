@@ -7,6 +7,9 @@ import { Follow, Timeline, Tweet } from "react-twitter-widgets";
 // This module registers Timeline, Tweet, and Follow, but not yet the Hashtag /
 // Mention / Share components (would be easy additions).
 //
+// The components auto-size their heights by default, so it's actually
+// sufficient to rely on just layout out an enclosing div.
+//
 
 export function TimelineWrapper({
   className,
@@ -20,10 +23,7 @@ export function TimelineWrapper({
   }
   return (
     <div className={className}>
-      <Timeline
-        dataSource={{ sourceType: "url", url }}
-        options={{ width: "100%", height: "100%" }}
-      />
+      <Timeline dataSource={{ sourceType: "url", url }} />
     </div>
   );
 }
@@ -73,7 +73,7 @@ export function TweetWrapper({
   }
   return (
     <div className={className}>
-      <Tweet tweetId={tweetId} options={{ width: "100%", height: "100%" }} />
+      <Tweet tweetId={tweetId} />
     </div>
   );
 }
