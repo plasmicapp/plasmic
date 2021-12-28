@@ -1,9 +1,10 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { ParallaxProvider, useController } from "react-scroll-parallax";
 import { ParallaxProviderProps } from "react-scroll-parallax/dist/components/ParallaxProvider/types";
+import ResizeObserver from "resize-observer-polyfill";
 
 /**
  * This is required to ensure the parallax scrolling works correctly, since if
@@ -15,27 +16,40 @@ import { ParallaxProviderProps } from "react-scroll-parallax/dist/components/Par
  * document (which may be large), but we can probably optimize this in the
  * future.
  */
-function ParallaxCacheUpdate() {
+function ParallaxCacheUpdate({ children }: React.PropsWithChildren<{}>) {
   const parallaxController = useController();
+  const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const targetNode = document.body;
-    const observer = new ResizeObserver(() => {
-      if (parallaxController) {
-        parallaxController.update();
-      }
-    });
-    observer.observe(targetNode);
-  });
+    if (ref.current?.parentElement) {
+      const targetNode = ref.current.parentElement;
+      const observer = new ResizeObserver(() => {
+        if (parallaxController) {
+          parallaxController.update();
+        }
+      });
+      observer.observe(targetNode);
+      return () => {
+        observer.disconnect();
+      };
+    }
+    return () => {};
+  }, [ref.current]);
 
-  return null;
+  return (
+    <div style={{ display: "contents" }} ref={ref}>
+      {children}
+    </div>
+  );
 }
 
-export function ParallaxProviderWrapper(props: React.PropsWithChildren<{}>) {
+export function ParallaxProviderWrapper({
+  children,
+  ...props
+}: React.PropsWithChildren<ParallaxProviderProps>) {
   return (
     <ParallaxProvider {...props}>
-      <ParallaxCacheUpdate />
-      {props.children}
+      <ParallaxCacheUpdate>{children}</ParallaxCacheUpdate>
     </ParallaxProvider>
   );
 }
@@ -62,12 +76,12 @@ export function registerParallaxProvider(
 ) {
   if (loader) {
     loader.registerComponent(
-      ParallaxProvider,
+      ParallaxProviderWrapper,
       customParallaxProviderMeta ?? parallaxProviderMeta
     );
   } else {
     registerComponent(
-      ParallaxProvider,
+      ParallaxProviderWrapper,
       customParallaxProviderMeta ?? parallaxProviderMeta
     );
   }

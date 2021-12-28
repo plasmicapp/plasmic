@@ -38,9 +38,10 @@ export default function ParallaxWrapper({
   );
 }
 
-const parallaxWrapperMeta: ComponentMeta<ParallaxWrapperProps> = {
+export const parallaxWrapperMeta: ComponentMeta<ParallaxWrapperProps> = {
   name: "hostless-scroll-parallax",
   displayName: "Scroll Parallax",
+  importName: "ParallaxWrapper",
   importPath: "@plasmicpkgs/react-scroll-parallax",
   props: {
     children: {
@@ -57,6 +58,7 @@ const parallaxWrapperMeta: ComponentMeta<ParallaxWrapperProps> = {
       type: "number",
       description:
         "How much to speed up or slow down this element while scrolling. Try -20 for slower, 20 for faster.",
+      defaultValue: 20,
     },
     disabled: {
       type: "boolean",
