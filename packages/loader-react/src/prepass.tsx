@@ -40,12 +40,16 @@ import { PlasmicComponent } from './PlasmicComponent';
  *   in this element tree.
  * @returns an object mapping query key to fetched data
  */
-export async function extractPlasmicQueryData(
+ export async function extractPlasmicQueryData(
   element: React.ReactElement
 ): Promise<Record<string, any>> {
   const cache: Record<string, DataCacheEntry<any>> = {};
   try {
-    await plasmicPrepass(element, cache);
+    await plasmicPrepass(
+      <PrepassContext.Provider value={{ cache }}>
+        {element}
+      </PrepassContext.Provider>
+    );
   } catch (err) {
     console.warn(`PLASMIC: Error encountered while pre-rendering`, err);
   }
@@ -60,15 +64,8 @@ export async function extractPlasmicQueryData(
  * Runs react-ssr-prepass on `element`, while isolating rendering errors
  * as much as possible for each PlasmicComponent instance.
  */
-export async function plasmicPrepass(
-  element: React.ReactElement,
-  plasmicCache?: Record<string, DataCacheEntry<any>>
-) {
-  await prepass(
-    <PrepassContext.Provider value={{ cache: plasmicCache ?? {} }}>
-      {buildPlasmicPrepassElement(element)}
-    </PrepassContext.Provider>
-  );
+export async function plasmicPrepass(element: React.ReactElement) {
+  await prepass(buildPlasmicPrepassElement(element));
 }
 
 /**
@@ -101,26 +98,9 @@ function processComponentProps(
     return props;
   }
 
-  const processValue = (value: any, depth: number): any => {
-    if (depth > 2) {
-      return value;
-    }
-    if (React.isValidElement(value as any)) {
-      return processReactElement(value);
-    } else if (Array.isArray(value)) {
-      return value.map((v) => processValue(v, depth + 1));
-    } else if (isLiteralObject(value)) {
-      return Object.fromEntries(
-        Object.entries(value).map(([k, v]) => [k, processValue(v, depth + 1)])
-      );
-    } else {
-      return value;
-    }
-  };
-
   return Object.fromEntries(
     Object.entries(props).map(([k, v]) => {
-      return [k, processValue(v, 1)];
+      return [k, React.isValidElement(v) ? processReactElement(v) : v];
     })
   );
 }
