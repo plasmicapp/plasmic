@@ -155,6 +155,7 @@ export const dropdownButtonMeta: ComponentMeta<DropdownButtonProps> = {
   },
   importPath: "antd/lib/dropdown/dropdown-button",
   importName: "DropdownButton",
+  parentComponentName: "AntdDropdown",
   isDefaultExport: true,
 };
 

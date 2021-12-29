@@ -23,6 +23,7 @@ export const menuDividerMeta: ComponentMeta<MenuDividerProps> = {
   importPath: "antd/lib/menu/MenuDivider",
   importName: "MenuDivider",
   isDefaultExport: true,
+  parentComponentName: "AntdMenu",
 };
 
 export function registerMenuDivider(
@@ -68,6 +69,7 @@ export const menuItemMeta: ComponentMeta<MenuItemProps> = {
   importPath: "antd/lib/menu/MenuItem",
   importName: "MenuItem",
   isDefaultExport: true,
+  parentComponentName: "AntdMenu",
 };
 
 export function registerMenuItem(
@@ -109,6 +111,7 @@ export const menuItemGroupMeta: ComponentMeta<MenuItemGroupProps> = {
   },
   importPath: "rc-menu",
   importName: "ItemGroup",
+  parentComponentName: "AntdMenu",
 };
 
 export function registerMenuItemGroup(
@@ -164,6 +167,7 @@ export const subMenuMeta: ComponentMeta<SubMenuProps> = {
   importPath: "antd/lib/menu/SubMenu",
   importName: "SubMenu",
   isDefaultExport: true,
+  parentComponentName: "AntdMenu",
 };
 
 export function registerSubMenu(
