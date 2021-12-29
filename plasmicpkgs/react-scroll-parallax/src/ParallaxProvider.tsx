@@ -60,7 +60,18 @@ export const parallaxProviderMeta: ComponentMeta<ParallaxProviderProps> = {
   importName: "ParallaxProviderWrapper",
   importPath: "@plasmicpkgs/react-scroll-parallax",
   props: {
-    children: "slot",
+    children: {
+      type: "slot",
+      defaultValue: {
+        type: "vbox",
+        children: [
+          {
+            type: "component",
+            name: "ParallaxWrapper",
+          },
+        ],
+      },
+    },
     scrollAxis: {
       type: "choice",
       description: "Scroll axis for setting horizontal/vertical scrolling",
@@ -68,7 +79,6 @@ export const parallaxProviderMeta: ComponentMeta<ParallaxProviderProps> = {
       displayName: "Scroll Axis",
     },
   },
-  parentComponentName: "hostless-scroll-parallax",
 };
 
 export function registerParallaxProvider(
