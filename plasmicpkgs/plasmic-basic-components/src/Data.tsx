@@ -4,7 +4,6 @@ import React, {
   ComponentProps,
   createContext,
   createElement,
-  CSSProperties,
   ReactNode,
   useContext,
 } from "react";
@@ -211,65 +210,6 @@ export function registerDynamicRepeater(
   }
 }
 
-export interface DynamicCollectionProps extends CommonDynamicProps {
-  children?: ReactNode;
-  style?: CSSProperties;
-  loopItemName?: string;
-  keySelector?: string;
-  selector?: string;
-  data?: any;
-}
-
-export function DynamicCollection({
-  selector,
-  loopItemName,
-  children,
-  data,
-  keySelector,
-  ...props
-}: DynamicCollectionProps) {
-  // Defaults to an array of three items.
-  const finalData = data ?? useSelector(selector) ?? [1, 2, 3];
-  return (
-    <DynamicElement {...props}>
-      {finalData?.map?.((item: any, index: number) => (
-        <DataProvider
-          key={applySelector(item, keySelector) ?? index}
-          name={loopItemName}
-          data={item}
-        >
-          {repeatedElement(index === 0, children)}
-        </DataProvider>
-      ))}
-    </DynamicElement>
-  );
-}
-
-export interface DynamicCollectionGridProps extends DynamicCollectionProps {
-  columns?: number;
-  columnGap?: number;
-  rowGap?: number;
-}
-
-export function DynamicCollectionGrid({
-  columns,
-  columnGap = 0,
-  rowGap = 0,
-  ...props
-}: DynamicCollectionGridProps) {
-  return (
-    <DynamicCollection
-      {...props}
-      style={{
-        display: "grid",
-        gridTemplateColumns: `repeat(${columns}, 1fr)`,
-        columnGap: `${columnGap}px`,
-        rowGap: `${rowGap}px`,
-      }}
-    />
-  );
-}
-
 export const dataProviderMeta: ComponentMeta<DataProviderProps> = {
   name: "hostless-data-provider",
   displayName: "Data Provider",
@@ -433,90 +373,5 @@ export function registerDynamicImage(
     );
   } else {
     registerComponent(DynamicImage, customDynamicImageMeta ?? dynamicImageMeta);
-  }
-}
-
-export const dynamicCollectionProps = {
-  ...dynamicProps,
-  selector: {
-    type: "string",
-    description:
-      "The selector expression to use to get the array of data to loop over, such as: someVariable.0.someField",
-  },
-  loopItemName: {
-    type: "string",
-    defaultValue: "item",
-    description:
-      "The name of the variable to use to store the current item in the loop",
-  },
-  children: "slot",
-} as const;
-
-export const dynamicCollectionMeta: ComponentMeta<DynamicCollectionProps> = {
-  name: "hostless-dynamic-collection",
-  displayName: "Dynamic Collection",
-  importName: "DynamicCollection",
-  importPath: thisModule,
-  props: dynamicCollectionProps,
-};
-
-export function registerDynamicCollection(
-  loader?: { registerComponent: typeof registerComponent },
-  customDynamicCollectionMeta?: ComponentMeta<DynamicCollectionProps>
-) {
-  if (loader) {
-    loader.registerComponent(
-      DynamicCollection,
-      customDynamicCollectionMeta ?? dynamicCollectionMeta
-    );
-  } else {
-    registerComponent(
-      DynamicCollection,
-      customDynamicCollectionMeta ?? dynamicCollectionMeta
-    );
-  }
-}
-
-export const dynamicCollectionGridProps = {
-  ...dynamicCollectionProps,
-  columns: {
-    type: "number",
-    defaultValue: 2,
-    description: "The number of columns to use in the grid",
-  },
-  columnGap: {
-    type: "number",
-    defaultValue: 8,
-    description: "The gap between columns",
-  },
-  rowGap: {
-    type: "number",
-    defaultValue: 8,
-    description: "The gap between rows",
-  },
-} as const;
-
-export const dynamicCollectionGridMeta: ComponentMeta<DynamicCollectionGridProps> = {
-  name: "hostless-dynamic-collection-grid",
-  displayName: "Dynamic Collection Grid",
-  importName: "DynamicCollectionGrid",
-  importPath: thisModule,
-  props: dynamicCollectionGridProps,
-};
-
-export function registerDynamicCollectionGrid(
-  loader?: { registerComponent: typeof registerComponent },
-  customDynamicCollectionGridMeta?: ComponentMeta<DynamicCollectionGridProps>
-) {
-  if (loader) {
-    loader.registerComponent(
-      DynamicCollectionGrid,
-      customDynamicCollectionGridMeta ?? dynamicCollectionGridMeta
-    );
-  } else {
-    registerComponent(
-      DynamicCollectionGrid,
-      customDynamicCollectionGridMeta ?? dynamicCollectionGridMeta
-    );
   }
 }
