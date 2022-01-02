@@ -1,4 +1,4 @@
-import { repeatedElement } from "@plasmicapp/host";
+import { PlasmicCanvasContext, repeatedElement } from "@plasmicapp/host";
 import registerComponent, {
   CanvasComponentProps,
   ComponentMeta,
@@ -8,7 +8,25 @@ import {
   DataProvider,
   useSelector,
 } from "@plasmicpkgs/plasmic-basic-components";
-import React, { CSSProperties, ReactNode } from "react";
+import React, {
+  createContext,
+  CSSProperties,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+
+export const tuple = <T extends any[]>(...args: T): T => args;
+
+export function ensure<T>(x: T | null | undefined): T {
+  if (x === null || x === undefined) {
+    debugger;
+    throw new Error(`Value must not be undefined or null`);
+  } else {
+    return x;
+  }
+}
 
 interface QueryParams {
   collection_handle?: string;
@@ -127,7 +145,7 @@ fragment ProductFragment on Product {
 
 const buildProductsQuery = (params: QueryParams) => {
   const products = `
-    products(first: $first, reverse: $reverse${
+    products(first: $first, sortKey: $sortKey, reverse: $reverse${
       params.collection_handle
         ? ", filters: $product_filters"
         : ", query: $query"
@@ -148,7 +166,9 @@ const buildProductsQuery = (params: QueryParams) => {
 `;
   }
   return `
-query Products($first: Int!, $reverse: Boolean${
+query Products($first: Int!, $sortKey: ${
+    params.collection_handle ? "ProductCollectionSortKeys" : "ProductSortKeys"
+  }, $reverse: Boolean${
     params.collection_handle
       ? ", $collection_handle: String!, $product_filters: [ProductFilter!]"
       : ", $query: String"
@@ -186,6 +206,20 @@ const buildProductQuery = (
     ${productFragment}
   `;
 };
+
+const getCollectionsQuery = `
+  query getSiteCollections($first: Int!, $sortKey: CollectionSortKeys, $reverse: Boolean) {
+    collections(first: $first, sortKey: $sortKey, reverse: $reverse) {
+      edges {
+        node {
+          id
+          title
+          handle
+        }
+      }
+    }
+  }
+`;
 
 export interface ProductData {
   availableForSale: boolean;
@@ -254,6 +288,80 @@ interface ShopifyCredentialsProviderProps {
   storefrontAccessToken: string;
 }
 
+export interface CollectionInfo {
+  id: string;
+  handle: string;
+  title: string;
+}
+
+export interface ProductInfo {
+  handle: string;
+  title: string;
+}
+
+export interface ShopInfo {
+  collections: CollectionInfo[];
+  products: ProductInfo[];
+}
+
+export const ShopInfoContext = createContext<ShopInfo | undefined>(undefined);
+
+function useFetch<T>(key: string, fetch: () => Promise<T>) {
+  const [data, setData] = useState<T | undefined>(undefined);
+  useEffect(() => {
+    fetch().then((res) => setData(res));
+  }, [key]);
+  return data;
+}
+
+function ShopInfoFetcher({ children }: { children: ReactNode }) {
+  const creds = ensure(useContext(CredentialsContext));
+  const shopInfo = useFetch<ShopInfo>("", async () => {
+    // 250 is the max.
+    // We sort for most recently updated first.
+    const collections = await graphqlQuery(
+      creds.shop,
+      creds.storefrontAccessToken,
+      {
+        query: getCollectionsQuery,
+        variables: {
+          first: 250,
+          sortKeys: "UPDATED_AT",
+          reverse: true,
+        },
+      }
+    );
+    // We could request just the needed data here.
+    const products = await graphqlQuery(
+      creds.shop,
+      creds.storefrontAccessToken,
+      {
+        query: buildProductsQuery({
+          first: 250,
+        }),
+        variables: {
+          first: 250,
+          sortKeys: "UPDATED_AT",
+          reverse: true,
+        },
+      }
+    );
+    const collectionEdges: { node: CollectionInfo }[] =
+      collections?.data?.collections.edges ?? [];
+    const productEdges: { node: ProductData }[] =
+      (products?.data).products.edges ?? [];
+    return {
+      collections: collectionEdges.map((edge) => edge.node),
+      products: productEdges.map((edge) => edge.node),
+    };
+  });
+  return (
+    <ShopInfoContext.Provider value={shopInfo}>
+      {children}
+    </ShopInfoContext.Provider>
+  );
+}
+
 export function ShopifyCredentialsProvider({
   shop,
   storefrontAccessToken,
@@ -267,9 +375,10 @@ export function ShopifyCredentialsProvider({
       </div>
     );
   }
+  const inEditor = useContext(PlasmicCanvasContext);
   return (
     <CredentialsContext.Provider value={{ shop, storefrontAccessToken }}>
-      {children}
+      {inEditor ? <ShopInfoFetcher>{children}</ShopInfoFetcher> : children}
     </CredentialsContext.Provider>
   );
 }
@@ -343,7 +452,7 @@ function useProductData(
 
 const contextKey = "__shopifyProduct";
 
-interface ProductCollectionProps {
+interface ProductCollectionProps extends CanvasComponentProps<ShopInfo> {
   children?: ReactNode;
   count?: number;
   reverse?: boolean;
@@ -372,6 +481,7 @@ export function ProductCollection({
   minPrice,
   maxPrice,
   variantOptions,
+  setControlContextData,
 }: ProductCollectionProps) {
   const context = React.useContext(CredentialsContext);
   if (!context) {
@@ -379,6 +489,12 @@ export function ProductCollection({
       "Shopify products must be wrapped in `Shopify Credentials Provider`"
     );
   }
+
+  const shopInfo = useContext(ShopInfoContext);
+  if (shopInfo) {
+    setControlContextData?.(shopInfo);
+  }
+
   const shop = context.shop;
   const storefrontAccessToken = context.storefrontAccessToken;
   const params: QueryParams = { first: count, product_filters: [] };
@@ -441,18 +557,27 @@ export function ProductCollection({
   );
 }
 
-interface ShopifyProductProps {
+interface ShopifyProductProps extends CanvasComponentProps<ShopInfo> {
   children?: ReactNode;
   handle?: string;
   id?: string;
 }
 
-export function ShopifyProduct({ children, handle, id }: ShopifyProductProps) {
+export function ShopifyProduct({
+  children,
+  handle,
+  id,
+  setControlContextData,
+}: ShopifyProductProps) {
   const context = React.useContext(CredentialsContext);
   if (!context) {
     throw new Error(
       "Shopify products must be wrapped in `Shopify Credentials Provider`"
     );
+  }
+  const shopInfo = useContext(ShopInfoContext);
+  if (shopInfo) {
+    setControlContextData?.(shopInfo);
   }
   const shop = context.shop;
   const storefrontAccessToken = context.storefrontAccessToken;
@@ -600,9 +725,14 @@ export const productCollectionMeta: ComponentMeta<ProductCollectionProps> = {
       hidden: (props) => props.collectionHandle != null,
     },
     collectionHandle: {
-      type: "string",
+      type: "choice",
       displayName: "Collection Handle",
       description: "The handle of the Collection",
+      options: (_props, shopInfo: ShopInfo | null) =>
+        shopInfo?.collections.map((c) => ({
+          value: c.handle,
+          label: c.title,
+        })) ?? [],
     },
     // productType: {
     //   type: "string",
@@ -775,10 +905,15 @@ export const shopifyProductMeta: ComponentMeta<ShopifyProductProps> = {
   importPath: thisModule,
   props: {
     handle: {
-      type: "string",
+      type: "choice",
       displayName: "Product Handle",
       description: "The handle of the product",
       defaultValue: "monte-shirt",
+      options: (_props, shopInfo: ShopInfo | null) =>
+        shopInfo?.products.map((p) => ({
+          value: p.handle,
+          label: p.title,
+        })) ?? [],
     },
     id: {
       type: "string",
@@ -961,4 +1096,15 @@ export function registerProductImage(
   } else {
     registerComponent(ProductImage, customProductImageMeta ?? productImageMeta);
   }
+}
+
+export function registerAllShopifyComponents(loader?: {
+  registerComponent: typeof registerComponent;
+}) {
+  registerShopifyCredentialsProvider(loader);
+  registerShopifyProduct(loader);
+  registerProductCollection(loader);
+  registerProductTitle(loader);
+  registerProductPrice(loader);
+  registerProductImage(loader);
 }
