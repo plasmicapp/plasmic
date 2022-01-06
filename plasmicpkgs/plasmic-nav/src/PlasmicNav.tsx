@@ -24,19 +24,12 @@ export const useNavContext = (componentName: string) => {
   return context;
 };
 
-export function NavContainer({
-  previewOpen = false,
-  children,
-}: {
-  previewOpen?: boolean;
-  children: React.ReactNode;
-}) {
+export function NavProvider({ children }: { children: React.ReactNode }) {
   const [isShown, setShown] = useState(false);
-  const inEditor = useContext(PlasmicCanvasContext);
   return (
     <NavContext.Provider
       value={{
-        isShown: isShown || (inEditor && previewOpen),
+        isShown: isShown,
         toggleNav: () => setShown(!isShown),
       }}
     >
@@ -45,47 +38,100 @@ export function NavContainer({
   );
 }
 
-export const navContainer: ComponentMeta<
-  ComponentProps<typeof NavContainer>
-> = {
-  name: "hostless-plasmic-nav-container",
-  displayName: "Nav Container",
-  importName: "NavContainer",
+export const navProvider: ComponentMeta<ComponentProps<typeof NavProvider>> = {
+  name: "hostless-plasmic-nav-provider",
+  displayName: "Nav Provider",
+  importName: "NavProvider",
   importPath: "@plasmicpkgs/plasmic-nav",
   props: {
-    children: "slot",
+    children: {
+      type: "slot",
+      defaultValue: {
+        type: "vbox",
+        children: [
+          {
+            type: "component",
+            name: "NavToggle",
+          },
+          {
+            type: "component",
+            name: "NavMenu",
+          },
+        ],
+      },
+    },
   },
 };
 
-export function registerNavContainer(
+export function registerNavProvider(
   loader?: { registerComponent: typeof registerComponent },
-  customNavContainer?: ComponentMeta<ComponentProps<typeof NavContainer>>
+  customNavProvider?: ComponentMeta<ComponentProps<typeof NavProvider>>
 ) {
   if (loader) {
-    loader.registerComponent(NavContainer, customNavContainer ?? navContainer);
+    loader.registerComponent(NavProvider, customNavProvider ?? navProvider);
   } else {
-    registerComponent(NavContainer, customNavContainer ?? navContainer);
+    registerComponent(NavProvider, customNavProvider ?? navProvider);
   }
 }
 
 export function NavMenu({
   className,
   children,
+  showInEditor,
 }: {
   className?: string;
   children: React.ReactNode;
+  showInEditor?: boolean;
 }) {
   const { isShown } = useNavContext("NavMenu");
-  return isShown ? <div className={className}>{children}</div> : null;
+  const inEditor = useContext(PlasmicCanvasContext);
+  return isShown || (inEditor && showInEditor) ? (
+    <div className={className}>{children}</div>
+  ) : null;
 }
 
 export const navMenu: ComponentMeta<ComponentProps<typeof NavMenu>> = {
-  name: "hostless-plasmic-nav-container",
-  displayName: "Nav Container",
+  name: "hostless-plasmic-nav-menu",
+  displayName: "Nav Menu",
   importName: "NavMenu",
   importPath: "@plasmicpkgs/plasmic-nav",
+  parentComponentName: "NavProvider",
   props: {
-    children: "slot",
+    showInEditor: {
+      type: "boolean",
+      defaultValue: true,
+      description: "Force open the menu when in the Plasmic editor.",
+      displayName: "Show in editor",
+    },
+    children: {
+      type: "slot",
+      defaultValue: [
+        {
+          type: "text",
+          tag: "a",
+          value: "Home",
+          attrs: {
+            href: "https://www.plasmic.app",
+          },
+        },
+        {
+          type: "text",
+          tag: "a",
+          value: "About",
+          attrs: {
+            href: "https://www.plasmic.app",
+          },
+        },
+        {
+          type: "text",
+          tag: "a",
+          value: "Contact",
+          attrs: {
+            href: "https://www.plasmic.app",
+          },
+        },
+      ],
+    },
   },
 };
 
@@ -102,26 +148,47 @@ export function registerNavMenu(
 
 export function NavToggle({
   className,
-  children,
+  show,
+  hide,
 }: {
   className?: string;
-  children: React.ReactNode;
+  show: React.ReactNode;
+  hide: React.ReactNode;
 }) {
-  const { toggleNav } = useNavContext("NavToggle");
+  const { toggleNav, isShown } = useNavContext("NavToggle");
   return (
     <button className={className} onClick={toggleNav}>
-      {children}
+      {isShown ? hide : show}
     </button>
   );
 }
 
 export const navToggle: ComponentMeta<ComponentProps<typeof NavToggle>> = {
-  name: "hostless-plasmic-nav-container",
-  displayName: "Nav Container",
+  name: "hostless-plasmic-nav-toggle",
+  displayName: "Nav Toggle",
   importName: "NavToggle",
   importPath: "@plasmicpkgs/plasmic-nav",
+  parentComponentName: "NavProvider",
   props: {
-    children: "slot",
+    show: {
+      type: "slot",
+      defaultValue: {
+        type: "img",
+        src: "https://static1.plasmic.app/menu.svg",
+      },
+    },
+    hide: {
+      type: "slot",
+      defaultValue: {
+        type: "img",
+        src: "https://static1.plasmic.app/close.svg",
+      },
+    },
+  },
+  defaultStyles: {
+    padding: 0,
+    border: "0px none rgba(0,0,0,0)",
+    background: "rgba(0,0,0,0)",
   },
 };
 
