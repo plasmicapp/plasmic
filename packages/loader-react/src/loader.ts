@@ -452,6 +452,13 @@ export class PlasmicComponentLoader {
   }
   private warnedRegisterComponent = false;
 
+  registerContext<T extends React.ComponentType<any>>(
+    context: T,
+    meta: ContextMeta<React.ComponentProps<T>>
+  ) {
+    this.__internal.registerContext(context, meta);
+  }
+
   /**
    * Pre-fetches component data needed to for PlasmicLoader to render
    * these components.  Should be passed into PlasmicRootProvider as
