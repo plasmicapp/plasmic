@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/react-parallax-tilt",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Plasmic registration call for the HTML5 video element",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -36,7 +36,7 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "@plasmicapp/host": "^0.0.44",
+    "@plasmicapp/host": "^1.0.0",
     "react-parallax-tilt": "^1.5.74"
   },
   "peerDependencies": {
