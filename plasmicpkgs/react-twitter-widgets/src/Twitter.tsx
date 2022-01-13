@@ -14,23 +14,36 @@ import { Follow, Timeline, Tweet } from "react-twitter-widgets";
 export function TimelineWrapper({
   className,
   url,
+  tweetLimit,
+  chrome,
+  theme,
 }: {
   className?: string;
   url?: string;
+  tweetLimit?: number;
+  chrome?: string;
+  theme?: string;
 }) {
   if (!url) {
     throw new Error("Timeline component requires a URL");
   }
   return (
     <div className={className}>
-      <Timeline dataSource={{ sourceType: "url", url }} />
+      <Timeline
+        dataSource={{ sourceType: "url", url }}
+        options={{
+          tweetLimit: tweetLimit,
+          chrome: chrome,
+          theme: theme,
+        }}
+      />
     </div>
   );
 }
 
-export const timelineWrapper: ComponentMeta<
-  ComponentProps<typeof TimelineWrapper>
-> = {
+export const timelineWrapper: ComponentMeta<ComponentProps<
+  typeof TimelineWrapper
+>> = {
   name: "hostless-react-twitter-widgets-timeline",
   displayName: "Timeline",
   importName: "TimelineWrapper",
@@ -41,6 +54,35 @@ export const timelineWrapper: ComponentMeta<
       description: "URL to a Twitter user or list",
       defaultValue: "https://twitter.com/plasmicapp",
     },
+    tweetLimit: {
+      type: "number",
+      description: "Number of tweets to be displayed. Between 1 and 20",
+      min: 1,
+      max: 20,
+    },
+    chrome: {
+      type: "choice",
+      description: "Toggle the display of design elements in the widget",
+      multiSelect: true,
+      options: [
+        "noheader",
+        "nofooter",
+        "noborders",
+        "transparent",
+        "noscrollbar",
+      ],
+    },
+    theme: {
+      type: "choice",
+      description: "Toggle the default color scheme",
+      options: ["dark", "light"],
+      defaultValueHint: "light",
+    },
+  },
+  defaultStyles: {
+    display: "flex",
+    flexDirection: "column",
+    overflowY: "auto",
   },
 };
 
@@ -64,23 +106,25 @@ export function registerTimelineWrapper(
 export function TweetWrapper({
   className,
   tweetId,
+  theme,
 }: {
   className?: string;
   tweetId?: string;
+  theme?: string;
 }) {
   if (!tweetId) {
     throw new Error("Tweet component requires a tweetId");
   }
   return (
     <div className={className}>
-      <Tweet tweetId={tweetId} />
+      <Tweet tweetId={tweetId} options={{ theme: theme }} />
     </div>
   );
 }
 
-export const tweetWrapper: ComponentMeta<
-  ComponentProps<typeof TweetWrapper>
-> = {
+export const tweetWrapper: ComponentMeta<ComponentProps<
+  typeof TweetWrapper
+>> = {
   name: "hostless-react-twitter-widgets-tweet",
   displayName: "Tweet",
   importName: "TweetWrapper",
@@ -91,6 +135,17 @@ export const tweetWrapper: ComponentMeta<
       description: "The tweet ID",
       defaultValue: "1381980305305694209",
     },
+    theme: {
+      type: "choice",
+      description: "Toggle the default color scheme",
+      options: ["dark", "light"],
+      defaultValueHint: "light",
+    },
+  },
+  defaultStyles: {
+    display: "flex",
+    flexDirection: "column",
+    overflowY: "auto",
   },
 };
 
@@ -108,23 +163,28 @@ export function registerTweetWrapper(
 export function FollowWrapper({
   className,
   username,
+  large,
 }: {
   className?: string;
   username?: string;
+  large?: boolean;
 }) {
   if (!username) {
     throw new Error("Follow component requires a username");
   }
   return (
     <div className={className}>
-      <Follow username={username} />
+      <Follow
+        username={username}
+        options={{ size: large ? "large" : undefined }}
+      />
     </div>
   );
 }
 
-export const followWrapper: ComponentMeta<
-  ComponentProps<typeof FollowWrapper>
-> = {
+export const followWrapper: ComponentMeta<ComponentProps<
+  typeof FollowWrapper
+>> = {
   name: "hostless-react-twitter-widgets-follow",
   displayName: "Follow",
   importName: "FollowWrapper",
@@ -134,6 +194,10 @@ export const followWrapper: ComponentMeta<
       type: "string",
       description: "Twitter username to follow",
       defaultValue: "plasmicapp",
+    },
+    large: {
+      type: "boolean",
+      description: "Toggle the button size",
     },
   },
 };
