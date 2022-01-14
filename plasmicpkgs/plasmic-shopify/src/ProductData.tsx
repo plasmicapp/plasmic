@@ -274,6 +274,27 @@ export function ShopifyCredentialsProvider({
   );
 }
 
+async function graphqlQuery(
+  shop: string,
+  storefrontAccessToken: string,
+  body: { variables: {}; query: string }
+) {
+  const response = await fetch(`https://${shop}/api/2022-01/graphql.json`, {
+    headers: {
+      accept: "*/*",
+      "content-type": "application/json",
+      "x-shopify-storefront-access-token": storefrontAccessToken,
+    },
+    referrer: "https://shopify.dev/",
+    referrerPolicy: "strict-origin-when-cross-origin",
+    body: JSON.stringify(body),
+    method: "POST",
+    mode: "cors",
+    credentials: "omit",
+  });
+  return await response.json();
+}
+
 function useProductCollectionData(
   shop: string,
   storefrontAccessToken: string,
@@ -282,31 +303,10 @@ function useProductCollectionData(
   const maybeData = usePlasmicQueryData(
     JSON.stringify([shop, storefrontAccessToken, params]),
     async () => {
-      const response = await fetch(`https://${shop}/api/2022-01/graphql.json`, {
-        headers: {
-          accept: "*/*",
-          "accept-language": "en-US,en;q=0.9",
-          "content-type": "application/json",
-          "sec-ch-ua":
-            '" Not A;Brand";v="99", "Chromium";v="90", "Google Chrome";v="90"',
-          "sec-ch-ua-mobile": "?0",
-          "sec-fetch-dest": "empty",
-          "sec-fetch-mode": "cors",
-          "sec-fetch-site": "cross-site",
-          "x-shopify-storefront-access-token": storefrontAccessToken,
-        },
-        referrer: "https://shopify.dev/",
-        referrerPolicy: "strict-origin-when-cross-origin",
-        body: JSON.stringify({
-          query: buildProductsQuery(params),
-          variables: params,
-        }),
-
-        method: "POST",
-        mode: "cors",
-        credentials: "omit",
+      const data = await graphqlQuery(shop, storefrontAccessToken, {
+        query: buildProductsQuery(params),
+        variables: params,
       });
-      const data = await response.json();
       const productEdges:
         | undefined
         | { node: ProductData }[] = (params.collection_handle
@@ -329,31 +329,10 @@ function useProductData(
   const maybeData = usePlasmicQueryData(
     JSON.stringify([shop, storefrontAccessToken, productIdOrHandle]),
     async () => {
-      const response = await fetch(`https://${shop}/api/2022-01/graphql.json`, {
-        headers: {
-          accept: "*/*",
-          "accept-language": "en-US,en;q=0.9",
-          "content-type": "application/json",
-          "sec-ch-ua":
-            '" Not A;Brand";v="99", "Chromium";v="90", "Google Chrome";v="90"',
-          "sec-ch-ua-mobile": "?0",
-          "sec-fetch-dest": "empty",
-          "sec-fetch-mode": "cors",
-          "sec-fetch-site": "cross-site",
-          "x-shopify-storefront-access-token": storefrontAccessToken,
-        },
-        referrer: "https://shopify.dev/",
-        referrerPolicy: "strict-origin-when-cross-origin",
-        body: JSON.stringify({
-          query: buildProductQuery(productIdOrHandle),
-          variables: productIdOrHandle,
-        }),
-
-        method: "POST",
-        mode: "cors",
-        credentials: "omit",
+      const data = await graphqlQuery(shop, storefrontAccessToken, {
+        query: buildProductQuery(productIdOrHandle),
+        variables: productIdOrHandle,
       });
-      const data = await response.json();
       return (productIdOrHandle.id
         ? data?.data?.product
         : data?.data?.productByHandle) as ProductData | undefined;
