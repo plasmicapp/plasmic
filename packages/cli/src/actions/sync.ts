@@ -714,7 +714,6 @@ async function syncProjectConfig(
   if (!projectConfig.cssFilePath) {
     projectConfig.cssFilePath = defaultCssFilePath;
   }
-  projectConfig.projectApiToken = projectApiToken;
 
   // plasmic.lock
   const projectLock = getOrAddProjectLock(context, projectConfig.projectId);
