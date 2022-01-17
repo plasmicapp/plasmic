@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/react-twitter-widgets",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Plasmic registration calls for react-twitter-widgets",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -36,10 +36,10 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "@plasmicapp/host": "^1.0.0",
     "react-twitter-widgets": "^1.10.0"
   },
   "peerDependencies": {
+    "@plasmicapp/host": "^1.0.0",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
   }

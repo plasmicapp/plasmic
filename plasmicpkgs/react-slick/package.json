@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/react-slick",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Plasmic registration call for the HTML5 video element",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -37,11 +37,11 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "@plasmicapp/host": "^1.0.0",
     "react-slick": "^0.28.1",
     "slick-carousel": "^1.8.1"
   },
   "peerDependencies": {
+    "@plasmicapp/host": "^1.0.0",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
   }
