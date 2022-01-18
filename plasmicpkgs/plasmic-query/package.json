@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-query",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Plasmic components and registration calls for data fetching",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@plasmicapp/query": "^0.1.6",
-    "@plasmicpkgs/plasmic-basic-components": "0.0.5"
+    "@plasmicpkgs/plasmic-basic-components": "^0.0.7"
   },
   "peerDependencies": {
     "@plasmicapp/host": "^1.0.0",
