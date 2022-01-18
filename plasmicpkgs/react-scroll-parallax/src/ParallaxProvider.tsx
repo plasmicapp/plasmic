@@ -66,8 +66,16 @@ export const parallaxProviderMeta: ComponentMeta<ParallaxProviderProps> = {
         type: "vbox",
         children: [
           {
+            type: "text",
+            value:
+              "Wrap any element in a Scroll Parallax component. Ensure they're all inside this Parallax Provider. Example:",
+            styles: {
+              marginBottom: "20px",
+            },
+          },
+          {
             type: "component",
-            name: "ParallaxWrapper",
+            name: "hostless-scroll-parallax",
           },
         ],
       },
