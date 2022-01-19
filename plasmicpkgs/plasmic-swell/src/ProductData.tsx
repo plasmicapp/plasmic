@@ -1,11 +1,11 @@
-import { repeatedElement } from "@plasmicapp/host";
+import { PlasmicCanvasContext, repeatedElement } from "@plasmicapp/host";
 import registerComponent, {
   CanvasComponentProps,
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import { DataProvider, useSelector } from "@plasmicpkgs/plasmic-basic-components";
-import React, { CSSProperties, ReactNode } from "react";
+import React, { CSSProperties, ReactNode, useContext } from "react";
 const swell = require('swell-js');
 
 interface QueryParams {
@@ -19,6 +19,7 @@ interface QueryParams {
 export interface ProductData {
   id: string,
   name: string,
+  slug: string,
   currency: string,
   price: string,
   images: {
@@ -43,6 +44,73 @@ interface SwellCredentialsProviderProps {
   publicKey: string;
 }
 
+export interface CategoryInfo {
+  slug: string;
+  name: string;
+}
+
+export interface ProductInfo {
+  slug: string;
+  name: string;
+}
+
+export interface ShopInfo {
+  categories: CategoryInfo[];
+  products: ProductInfo[];
+}
+
+export const ShopInfoContext = React.createContext<ShopInfo | undefined>(undefined);
+
+function useShopInfoData(
+  storeId: string,
+  publicKey: string,
+) {
+  const maybeData = usePlasmicQueryData(JSON.stringify([storeId, publicKey]), async () => {
+    // 100 is the max.
+    const responseCategories = await swell.categories.list({
+      limit: 100
+    });
+    const categories: CategoryInfo[] = responseCategories.results;
+    const responseProducts = await swell.products.list({
+      limit: 100
+    });
+    const products: ProductData[] = responseProducts.results;
+    return {
+      categories: categories,
+      products: products,
+    };
+  });
+  return maybeData;
+}
+
+function ShopInfoFetcher({ children }: { children: ReactNode }) {
+  const context = React.useContext(CredentialsContext);
+  if (!context) {
+    throw new Error(
+      "Shop Info Fetcher must be wrapped in `Swell Credentials Provider`"
+    );
+  }
+  const storeId = context.storeId;
+  const publicKey = context.publicKey;
+  const maybeData = useShopInfoData(
+    storeId,
+    publicKey,
+  );
+
+  if ("error" in maybeData) {
+    return <div>Error: {maybeData.error?.message}</div>;
+  }
+  if (!("data" in maybeData)) {
+    return <div>Loading...</div>;
+  }
+  const shopInfo = maybeData.data;
+  return (
+    <ShopInfoContext.Provider value={shopInfo}>
+      {children}
+    </ShopInfoContext.Provider>
+  );
+}
+
 export function SwellCredentialsProvider({
   storeId,
   publicKey,
@@ -57,9 +125,10 @@ export function SwellCredentialsProvider({
     );
   }
   swell.init(storeId, publicKey);
+  const inEditor = React.useContext(PlasmicCanvasContext);
   return (
     <CredentialsContext.Provider value={{ storeId, publicKey }}>
-      {children}
+      {inEditor ? <ShopInfoFetcher>{children}</ShopInfoFetcher> : children}
     </CredentialsContext.Provider>
   );
 }
@@ -102,7 +171,7 @@ function useProductData(
 
 const contextKey = "__swellProduct";
 
-interface ProductCollectionProps {
+interface ProductCollectionProps extends CanvasComponentProps<ShopInfo> {
   children?: ReactNode;
   limit?: number;
   page?: number;
@@ -116,12 +185,17 @@ export function ProductCollection({
   page = 1,
   category,
   search,
+  setControlContextData,
 }: ProductCollectionProps) {
   const context = React.useContext(CredentialsContext);
   if (!context) {
     throw new Error(
       "Swell products must be wrapped in `Swell Credentials Provider`"
     );
+  }
+  const shopInfo = useContext(ShopInfoContext);
+  if (shopInfo) {
+    setControlContextData?.(shopInfo);
   }
   const storeId = context.storeId;
   const publicKey = context.publicKey;
@@ -151,22 +225,26 @@ export function ProductCollection({
 }
 
 
-interface SwellProductProps {
+interface SwellProductProps extends CanvasComponentProps<ShopInfo> {
   children?: ReactNode;
-  productIdOrSlug: string;
+  product: string;
 }
 
-export function SwellProduct({ children, productIdOrSlug }: SwellProductProps) {
+export function SwellProduct({ children, product, setControlContextData }: SwellProductProps) {
   const context = React.useContext(CredentialsContext);
   if (!context) {
     throw new Error(
       "Swell products must be wrapped in `Swell Credentials Provider`"
     );
   }
+  const shopInfo = useContext(ShopInfoContext);
+  if (shopInfo) {
+    setControlContextData?.(shopInfo);
+  }
   const storeId = context.storeId;
   const publicKey = context.publicKey;
 
-  const maybeData = useProductData(storeId, publicKey, productIdOrSlug);
+  const maybeData = useProductData(storeId, publicKey, product);
 
   if ("error" in maybeData) {
     return <div>Error: {maybeData.error?.message}</div>;
@@ -174,10 +252,10 @@ export function SwellProduct({ children, productIdOrSlug }: SwellProductProps) {
   if (!("data" in maybeData)) {
     return <div>Loading...</div>;
   }
-  const product = maybeData.data;
+  const productData = maybeData.data;
 
   return (
-    <DataProvider name={contextKey} data={product}>
+    <DataProvider name={contextKey} data={productData}>
       {children}
     </DataProvider>
   );
@@ -300,9 +378,14 @@ export const productCollectionMeta: ComponentMeta<ProductCollectionProps> = {
       min: 1,
     },
     category: {
-      type: "string",
+      type: "choice",
       displayName: "Category",
-      description: "Can be slug or ID, Filter products by category",
+      description: "Filter products by category",
+      options: (_props, shopInfo: ShopInfo | null) =>
+      shopInfo?.categories.map((c) => ({
+        value: c.slug,
+        label: c.name,
+      })) ?? [],
     },
     search: {
       type: "string",
@@ -447,10 +530,17 @@ export const swellProductMeta: ComponentMeta<SwellProductProps> = {
   importName: "SwellProduct",
   importPath: thisModule,
   props: {
-    productIdOrSlug: {
-      type: "string",
-      displayName: "Product ID/Slug",
-      description: "The ID or the Slug of the product",
+    product: {
+      type: "choice",
+      displayName: "Product",
+      description: "The product slug",
+      options: (_props, shopInfo: ShopInfo | null) =>
+      shopInfo?.products.map((p) => 
+        ({
+        value: p.slug,
+        label: p.name,
+      })
+    ) ?? [],
     },
     children: {
       type: "slot",
@@ -515,7 +605,6 @@ export function registerProductTitle(
   loader?: { registerComponent: typeof registerComponent },
   customProductTitleMeta?: ComponentMeta<ProductTitleProps>,
 ) {
-  console.log(loader);
   if (loader) {
     loader.registerComponent(
       ProductTitle,
