@@ -318,6 +318,8 @@ export interface ProjectLock {
   lang: "ts" | "js";
   // One for each file whose checksum is computed
   fileLocks: FileLock[];
+  // The version of Codegen when this project was written
+  codegenVersion?: string;
 }
 
 export interface PlasmicLock {
