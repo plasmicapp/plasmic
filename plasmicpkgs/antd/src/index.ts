@@ -22,6 +22,7 @@ import { registerOptGroup, registerOption } from "./registerOption";
 import { registerSelect } from "./registerSelect";
 import { registerSlider } from "./registerSlider";
 import { registerSwitch } from "./registerSwitch";
+import { registerTabPane, registerTabs } from "./registerTabs";
 
 export * from "./registerable";
 export * from "./registerButton";
@@ -35,6 +36,7 @@ export * from "./registerSelect";
 export * from "./registerSlider";
 export * from "./registerSwitch";
 export * from "./registerCarousel";
+export * from "./registerTabs";
 
 export function registerAll(loader?: Registerable) {
   registerButton(loader);
@@ -60,4 +62,6 @@ export function registerAll(loader?: Registerable) {
   registerInputSearch(loader);
   registerInputPassword(loader);
   registerInputGroup(loader);
+  registerTabPane(loader);
+  registerTabs(loader);
 }
