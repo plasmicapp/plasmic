@@ -416,6 +416,12 @@ export async function sync(
       writeLoaderConfig(opts, config);
     }
 
+    const codegenVersion = await context.api.latestCodegenVersion();
+    context.lock.projects.forEach(p => {
+      if (projectsToSync.some(syncedProject => syncedProject.projectId === p.projectId)) {
+        p.codegenVersion = codegenVersion;
+      }
+    })
     // Write the new ComponentConfigs to disk
     await updateConfig(context, context.config, baseDir);
   });

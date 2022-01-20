@@ -161,6 +161,7 @@ export interface ProjectIdAndToken {
 }
 
 export class PlasmicApi {
+  private codegenVersion?: string;
   constructor(private auth: AuthConfig) {}
 
   async genStyleConfig(styleOpts?: StyleConfig): Promise<StyleConfigResponse> {
@@ -211,6 +212,16 @@ export class PlasmicApi {
       `${this.codegenHost}/api/v1/code/required-packages`
     );
     return { ...resp.data } as RequiredPackages;
+  }
+
+  async latestCodegenVersion(): Promise<string> {
+    if (!this.codegenVersion) {
+      const resp = await this.post(
+        `${this.codegenHost}/api/v1/code/latest-codegen-version`
+      );
+      this.codegenVersion = resp.data as string;
+    }
+    return this.codegenVersion;
   }
 
   /**

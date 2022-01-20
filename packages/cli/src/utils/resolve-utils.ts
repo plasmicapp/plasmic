@@ -68,6 +68,21 @@ async function checkProjectMeta(
   const newVersion = meta.version;
   const indirect = meta.indirect;
 
+  // If the codegen version on-disk is invalid, we will sync again the project.
+  const checkCodegenVersion = async (): Promise<boolean> => {
+    const projectLock = context.lock.projects.find(
+      (p) => p.projectId === projectId
+    );
+
+    if (!!projectLock?.codegenVersion && semver.gte(projectLock.codegenVersion, await context.api.latestCodegenVersion())) {
+      return false;
+    }
+
+    return true;
+  };
+
+  const isOnDiskCodeInvalid = await checkCodegenVersion();
+
   // Checks newVersion against plasmic.lock
   const checkVersionLock = async (): Promise<boolean> => {
     const projectLock = context.lock.projects.find(
@@ -87,9 +102,11 @@ async function checkProjectMeta(
     ) {
       // If this is a dependency (not root), and we're dealing with latest dep version
       // just skip, it's confusing
-      logger.warn(
-        `'${root.projectName}' depends on ${projectName}@${newVersion}. To update this project, explicitly specify this project for sync. Skipping...`
-      );
+      if (!isOnDiskCodeInvalid) {
+        logger.warn(
+          `'${root.projectName}' depends on ${projectName}@${newVersion}. To update this project, explicitly specify this project for sync. Skipping...`
+        );
+      }
       return false;
     }
 
@@ -111,9 +128,11 @@ async function checkProjectMeta(
         );
         return true;
       } else {
-        logger.info(
-          `Project '${projectName}'@${newVersion} is already up to date; skipping. (To force an update, run again with "--force")`
-        );
+        if (!isOnDiskCodeInvalid) { 
+          logger.info(
+            `Project '${projectName}'@${newVersion} is already up to date; skipping. (To force an update, run again with "--force")`
+          );
+        }
         return false;
       }
     }
@@ -211,12 +230,29 @@ async function checkProjectMeta(
     // we should always sync it, even if nothing has changed
     return true;
   }
-
-  return (
+  const checkedVersion = 
     (await checkVersionLock()) &&
     (await checkVersionRange()) &&
-    (await checkIndirect())
-  );
+    (await checkIndirect());
+
+ if(!checkedVersion && isOnDiskCodeInvalid) {
+    // sync, but try to keep the current version on disk
+    const projectLock = context.lock.projects.find(
+      (p) => p.projectId === projectId
+    );
+    const versionOnDisk = projectLock?.version;
+    logger.warn(
+      `Project '${projectName}' was synced by an incompatible version of Plasmic Codegen. Syncing again on the same version ${projectName}@${versionOnDisk}`
+    );
+    
+    meta.version = versionOnDisk ?? meta.version;
+    return true;
+  } else if (checkedVersion) {
+    // sync and upgrade the version
+    return true;
+  } else {
+    return false;
+  }
 }
 
 /**

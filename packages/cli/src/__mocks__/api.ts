@@ -372,6 +372,10 @@ class PlasmicApi {
     throw new Error("Unimplemented");
   }
 
+  async latestCodegenVersion(): Promise<string> {
+    return "0.0.1";
+  };
+
   async requiredPackages(): Promise<RequiredPackages> {
     return {
       "@plasmicapp/loader": "0.0.1",
