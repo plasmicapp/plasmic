@@ -35,6 +35,17 @@ export const tabPaneMeta: ComponentMeta<TabPaneProps> = {
         "Wether the tab can be closed or not. Only works for editable tabs",
       defaultValueHint: true,
     },
+    disabled: {
+      type: "boolean",
+      description: "Disabled state of tab",
+      defaultValueHint: false,
+    },
+    forceRender: {
+      type: "boolean",
+      description:
+        "Forced render of content in tabs, not lazy render after clicking on tabs",
+      defaultValueHint: false,
+    },
     closeIcon: {
       type: "slot",
       hidePlaceholder: true,
