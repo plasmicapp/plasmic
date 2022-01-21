@@ -108,6 +108,13 @@ export type ChoiceType<P> = (
 ) &
   ChoiceTypeBase<P>;
 
+export interface ModalProps {
+  show?: boolean;
+  children?: React.ReactNode;
+  onClose: () => void;
+  style?: CSSProperties;
+}
+
 interface CustomControlProps<P> {
   componentProps: P;
   /**
@@ -121,6 +128,14 @@ interface CustomControlProps<P> {
    * Sets the value to be passed to the prop. Expects a JSON-compatible value.
    */
   updateValue: (newVal: any) => void;
+  /**
+   * Full screen modal component
+   */
+  FullscreenModal: React.ComponentType<ModalProps>;
+  /**
+   * Modal component for the side pane
+   */
+  SideModal: React.ComponentType<ModalProps>;
 }
 export type CustomControl<P> = React.ComponentType<CustomControlProps<P>>;
 
