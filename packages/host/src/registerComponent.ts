@@ -89,9 +89,19 @@ export type JSONLikeType<P> =
 interface ChoiceTypeBase<P> extends PropTypeBase<P> {
   type: "choice";
   options:
-    | string[] 
-    | {label:string, value:string}[] 
-    | ContextDependentConfig<P, string[] | {label:string, value:string}[]>;
+    | string[]
+    | {
+        label: string;
+        value: string | number | boolean;
+      }[]
+    | ContextDependentConfig<
+        P,
+        | string[]
+        | {
+            label: string;
+            value: string | number | boolean;
+          }[]
+      >;
 }
 
 export type ChoiceType<P> = (
