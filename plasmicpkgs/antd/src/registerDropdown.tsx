@@ -29,10 +29,12 @@ export const dropdownMeta: ComponentMeta<DropDownProps> = {
     arrow: {
       type: "boolean",
       description: "Whether the dropdown arrow should be visible",
+      defaultValueHint: false,
     },
     disabled: {
       type: "boolean",
       description: "Whether the dropdown menu is disabled",
+      defaultValueHint: false,
     },
     overlay: {
       type: "slot",
@@ -55,16 +57,19 @@ export const dropdownMeta: ComponentMeta<DropDownProps> = {
         "topRight",
       ],
       description: "Placement of popup menu",
+      defaultValueHint: "bottomLeft",
     },
     trigger: {
       type: "choice",
       options: ["click", "hover", "contextMenu"],
       description: "The trigger mode which executes the dropdown action",
+      defaultValueHint: "hover",
     },
     visible: {
       type: "boolean",
       description: "Toggle visibility of dropdown menu in Plasmic Editor",
       editOnly: true,
+      defaultValueHint: false,
     },
     children: {
       type: "slot",
@@ -96,6 +101,7 @@ export const dropdownButtonMeta: ComponentMeta<DropdownButtonProps> = {
     disabled: {
       type: "boolean",
       description: "Whether the dropdown menu is disabled",
+      defaultValueHint: false,
     },
     icon: {
       type: "slot",
@@ -122,26 +128,31 @@ export const dropdownButtonMeta: ComponentMeta<DropdownButtonProps> = {
         "topRight",
       ],
       description: "Placement of popup menu",
+      defaultValueHint: "bottomLeft",
     },
     size: {
       type: "choice",
       options: ["small", "medium", "large"],
       description: "Set the size of button",
+      defaultValueHint: "medium",
     },
     trigger: {
       type: "choice",
       options: ["click", "hover", "contextMenu"],
       description: "The trigger mode which executes the dropdown action",
+      defaultValueHint: "hover",
     },
     type: {
       type: "choice",
       options: ["default", "primary", "ghost", "dashed", "link", "text"],
       description: "Can be set to primary, ghost, dashed, link, text, default",
+      defaultValueHint: "default",
     },
     visible: {
       type: "boolean",
       description: "Toggle visibility of dropdown menu in Plasmic Editor",
       editOnly: true,
+      defaultValueHint: false,
     },
     children: {
       type: "slot",

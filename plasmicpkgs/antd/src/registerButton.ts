@@ -12,37 +12,45 @@ export const buttonMeta: ComponentMeta<ButtonProps> = {
       type: "choice",
       options: ["default", "primary", "ghost", "dashed", "link", "text"],
       description: "Can be set to primary, ghost, dashed, link, text, default",
+      defaultValueHint: "default",
     },
     size: {
       type: "choice",
       options: ["small", "medium", "large"],
       description: "Set the size of button",
+      defaultValueHint: "medium",
     },
     shape: {
       type: "choice",
       options: ["default", "circle", "round"],
       description: "Can be set button shape",
+      defaultValueHint: "default",
     },
     disabled: {
       type: "boolean",
       description: "Disabled state of button",
+      defaultValueHint: false,
     },
     ghost: {
       type: "boolean",
       description:
         "Make background transparent and invert text and border colors",
+      defaultValueHint: false,
     },
     danger: {
       type: "boolean",
       description: "Set the danger status of button",
+      defaultValueHint: false,
     },
     block: {
       type: "boolean",
       description: "Option to fit button width to its parent width",
+      defaultValueHint: false,
     },
     loading: {
       type: "boolean",
       description: "Set the loading status of button",
+      defaultValueHint: false,
     },
     href: {
       type: "string",
@@ -53,6 +61,8 @@ export const buttonMeta: ComponentMeta<ButtonProps> = {
       options: ["_blank", "_self", "_parent", "_top"],
       description:
         "Same as target attribute of a, works when href is specified",
+      hidden: props => !props.href,
+      defaultValueHint: "_self",
     },
     children: {
       type: "slot",

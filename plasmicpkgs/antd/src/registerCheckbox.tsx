@@ -20,6 +20,7 @@ export const checkboxMeta: ComponentMeta<CheckboxProps> = {
     autoFocus: {
       type: "boolean",
       description: "If get focus when component mounted",
+      defaultValueHint: false,
     },
     checked: {
       type: "boolean",
@@ -27,14 +28,17 @@ export const checkboxMeta: ComponentMeta<CheckboxProps> = {
       uncontrolledProp: "defaultChecked",
       description:
         "Specifies the initial state: whether or not the checkbox is selected",
+      defaultValueHint: false,
     },
     disabled: {
       type: "boolean",
       description: "If disable checkbox",
+      defaultValueHint: false,
     },
     indeterminate: {
       type: "boolean",
       description: "The indeterminate checked state of checkbox",
+      defaultValueHint: false,
     },
     value: {
       type: "string",
@@ -74,6 +78,7 @@ export const checkboxGroupMeta: ComponentMeta<CheckboxGroupProps> = {
     disabled: {
       type: "boolean",
       description: "If disable all checkboxes",
+      defaultValueHint: false,
     },
     value: {
       type: "choice",
@@ -81,9 +86,9 @@ export const checkboxGroupMeta: ComponentMeta<CheckboxGroupProps> = {
       uncontrolledProp: "defaultValue",
       description: "Default selected value",
       multiSelect: true,
-      options: (componentProps) => {
+      options: componentProps => {
         const options = new Set<string>();
-        traverseReactEltTree(componentProps.children, (elt) => {
+        traverseReactEltTree(componentProps.children, elt => {
           if (
             elt?.type === CheckboxWrapper &&
             typeof elt?.props?.value === "string"

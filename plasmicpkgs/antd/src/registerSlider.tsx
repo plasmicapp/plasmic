@@ -48,31 +48,38 @@ export const sliderMeta: ComponentMeta<SliderProps> = {
     max: {
       type: "number",
       description: "The maximum value the slider can slide to",
+      defaultValueHint: 100,
     },
     min: {
       type: "number",
       description: "The minimum value the slider can slide to",
+      defaultValueHint: 0,
     },
     included: {
       type: "boolean",
       description:
         "Make effect when marks not null, true means containment and false means coordinative",
+        defaultValueHint: true,
     },
     disabled: {
       type: "boolean",
       description: "If true, the slider will not be interactable",
+      defaultValueHint: false,
     },
     range: {
       type: "boolean",
       description: "Dual thumb mode",
+      defaultValueHint: false,
     },
     reverse: {
       type: "boolean",
       description: "Reverse the component",
+      defaultValueHint: false,
     },
     vertical: {
       type: "boolean",
       description: "If true, the slider will be vertical",
+      defaultValueHint: false,
     },
     value: {
       type: "number",

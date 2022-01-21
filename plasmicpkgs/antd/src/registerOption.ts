@@ -13,6 +13,7 @@ export const optionMeta: ComponentMeta<OptionProps> = {
     disabled: {
       type: "boolean",
       description: "Disable this option",
+      defaultValueHint: false,
     },
     title: {
       type: "string",

@@ -21,6 +21,7 @@ export const collapstePanelMeta: ComponentMeta<CollapsePanelProps> = {
       type: "boolean",
       description:
         "Forced render of content on panel, instead of lazy rending after clicking on header",
+      defaultValueHint: false,
     },
     header: {
       type: "slot",
@@ -38,6 +39,7 @@ export const collapstePanelMeta: ComponentMeta<CollapsePanelProps> = {
     showArrow: {
       type: "boolean",
       description: "If false, panel will not show arrow icon",
+      defaultValueHint: true,
     },
     children: {
       type: "slot",
@@ -74,6 +76,7 @@ export const collapsteMeta: ComponentMeta<CollapseProps> = {
     accordion: {
       type: "boolean",
       description: "If true, Collapse renders as Accordion",
+      defaultValueHint: false,
     },
     activeKey: {
       type: "choice",
@@ -81,10 +84,10 @@ export const collapsteMeta: ComponentMeta<CollapseProps> = {
       uncontrolledProp: "defaultActiveKey",
       description: "Key of the active panel",
       multiSelect: true,
-      options: (componentProps) => {
+      options: componentProps => {
         const options = new Set<string>();
         // `children` is not defined in the Collapse props
-        traverseReactEltTree((componentProps as any).children, (elt) => {
+        traverseReactEltTree((componentProps as any).children, elt => {
           if (elt?.type === CollapsePanel && typeof elt?.key === "string") {
             options.add(elt.key);
           }
@@ -95,6 +98,7 @@ export const collapsteMeta: ComponentMeta<CollapseProps> = {
     bordered: {
       type: "boolean",
       description: "Toggles rendering of the border around the collapse block",
+      defaultValueHint: true,
     },
     collapsible: {
       type: "choice",
@@ -106,11 +110,13 @@ export const collapsteMeta: ComponentMeta<CollapseProps> = {
       type: "choice",
       options: ["left", "right"],
       description: "Set expand icon position",
+      defaultValueHint: "left",
     },
     ghost: {
       type: "boolean",
       description:
         "Make the collapse borderless and its background transparent",
+      defaultValueHint: false,
     },
     children: {
       type: "slot",
