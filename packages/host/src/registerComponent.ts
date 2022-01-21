@@ -36,13 +36,23 @@ interface PropTypeBase<P> {
   hidden?: ContextDependentConfig<P, boolean>;
 }
 
+interface StringTypeBase<P> extends PropTypeBase<P> {
+  defaultValue?: string;
+  defaultValueHint?: string;
+}
+
 export type StringType<P> =
   | "string"
-  | ({
-      type: "string";
-      defaultValue?: string;
-      defaultValueHint?: string;
-    } & PropTypeBase<P>);
+  | ((
+      | {
+          type: "string";
+        }
+      | {
+          type: "code";
+          lang: "css" | "html" | "javascript" | "json";
+        }
+    ) &
+      StringTypeBase<P>);
 
 export type BooleanType<P> =
   | "boolean"
