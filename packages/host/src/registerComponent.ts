@@ -46,6 +46,7 @@ export type StringType<P> =
   | ((
       | {
           type: "string";
+          control?: "default" | "large";
         }
       | {
           type: "code";
