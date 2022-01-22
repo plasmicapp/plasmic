@@ -153,15 +153,19 @@ export const subMenuMeta: ComponentMeta<SubMenuProps> = {
         "AntdMenuItemGroup",
         "AntdSubMenu",
       ],
-      defaultValue: [
-        {
-          type: "component",
-          name: "AntdMenuItem",
-          props: {
-            key: "subMenuItemKey",
-          },
+      defaultValue: [1, 2].map((i) => ({
+        type: "component",
+        name: "AntdMenuItem",
+        props: {
+          key: `subMenuItemKey${i}`,
+          children: [
+            {
+              type: "text",
+              value: `Sub-menu item ${i}`,
+            },
+          ],
         },
-      ],
+      })),
     },
   },
   importPath: "antd/lib/menu/SubMenu",
