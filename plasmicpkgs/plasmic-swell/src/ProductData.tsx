@@ -4,9 +4,12 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { usePlasmicQueryData } from "@plasmicapp/query";
-import { DataProvider, useSelector } from "@plasmicpkgs/plasmic-basic-components";
+import {
+  DataProvider,
+  useSelector,
+} from "@plasmicpkgs/plasmic-basic-components";
 import React, { CSSProperties, ReactNode, useContext } from "react";
-const swell = require('swell-js');
+const swell = require("swell-js");
 
 interface QueryParams {
   collection_handle?: string;
@@ -17,23 +20,24 @@ interface QueryParams {
 }
 
 export interface ProductData {
-  id: string,
-  name: string,
-  slug: string,
-  currency: string,
-  price: string,
+  id: string;
+  name: string;
+  slug: string;
+  currency: string;
+  price: string;
+  description: string;
   images: {
+    id: string;
+    caption: string;
+    file: {
       id: string;
-      caption: string;
-      file: {
-        id: string;
-        width: number;
-        height: number;
-        url: string; 
-      };
+      width: number;
       height: number;
+      url: string;
+    };
   }[];
-};
+  options: ProductOptionData[];
+}
 
 const CredentialsContext = React.createContext<
   SwellCredentialsProviderProps | undefined
@@ -59,27 +63,40 @@ export interface ShopInfo {
   products: ProductInfo[];
 }
 
-export const ShopInfoContext = React.createContext<ShopInfo | undefined>(undefined);
+export interface ProductOptionData {
+  id: string;
+  name: string;
+  values: ProductOptionValueData[];
+}
 
-function useShopInfoData(
-  storeId: string,
-  publicKey: string,
-) {
-  const maybeData = usePlasmicQueryData(JSON.stringify([storeId, publicKey]), async () => {
-    // 100 is the max.
-    const responseCategories = await swell.categories.list({
-      limit: 100
-    });
-    const categories: CategoryInfo[] = responseCategories.results;
-    const responseProducts = await swell.products.list({
-      limit: 100
-    });
-    const products: ProductData[] = responseProducts.results;
-    return {
-      categories: categories,
-      products: products,
-    };
-  });
+export interface ProductOptionValueData {
+  id: string;
+  name: string;
+}
+
+export const ShopInfoContext = React.createContext<ShopInfo | undefined>(
+  undefined
+);
+
+function useShopInfoData(storeId: string, publicKey: string) {
+  const maybeData = usePlasmicQueryData(
+    JSON.stringify([storeId, publicKey]),
+    async () => {
+      // 100 is the max.
+      const responseCategories = await swell.categories.list({
+        limit: 100,
+      });
+      const categories: CategoryInfo[] = responseCategories.results;
+      const responseProducts = await swell.products.list({
+        limit: 100,
+      });
+      const products: ProductData[] = responseProducts.results;
+      return {
+        categories: categories,
+        products: products,
+      };
+    }
+  );
   return maybeData;
 }
 
@@ -92,10 +109,7 @@ function ShopInfoFetcher({ children }: { children: ReactNode }) {
   }
   const storeId = context.storeId;
   const publicKey = context.publicKey;
-  const maybeData = useShopInfoData(
-    storeId,
-    publicKey,
-  );
+  const maybeData = useShopInfoData(storeId, publicKey);
 
   if ("error" in maybeData) {
     return <div>Error: {maybeData.error?.message}</div>;
@@ -133,7 +147,6 @@ export function SwellCredentialsProvider({
   );
 }
 
-
 function useProductCollectionData(
   storeId: string,
   publicKey: string,
@@ -157,12 +170,12 @@ function useProductCollectionData(
 function useProductData(
   storeId: string,
   publicKey: string,
-  productIdOrSlug: string,
+  productIdOrSlug: string
 ) {
   const maybeData = usePlasmicQueryData(
     JSON.stringify([storeId, publicKey, productIdOrSlug]),
     async () => {
-      const response = await swell.products.get(productIdOrSlug)
+      const response = await swell.products.get(productIdOrSlug);
       return response as ProductData;
     }
   );
@@ -171,7 +184,7 @@ function useProductData(
 
 const contextKey = "__swellProduct";
 
-interface ProductCollectionProps extends CanvasComponentProps<ShopInfo> {
+interface ProductCollectionFetcherProps extends CanvasComponentProps<ShopInfo> {
   children?: ReactNode;
   limit?: number;
   page?: number;
@@ -179,14 +192,14 @@ interface ProductCollectionProps extends CanvasComponentProps<ShopInfo> {
   search?: string;
 }
 
-export function ProductCollection({
+export function ProductCollectionFetcher({
   children,
   limit = 25, // max 100
   page = 1,
   category,
   search,
   setControlContextData,
-}: ProductCollectionProps) {
+}: ProductCollectionFetcherProps) {
   const context = React.useContext(CredentialsContext);
   if (!context) {
     throw new Error(
@@ -200,11 +213,7 @@ export function ProductCollection({
   const storeId = context.storeId;
   const publicKey = context.publicKey;
   const params: QueryParams = { limit, page, category, search };
-  const maybeData = useProductCollectionData(
-    storeId,
-    publicKey,
-    params
-  );
+  const maybeData = useProductCollectionData(storeId, publicKey, params);
 
   if ("error" in maybeData) {
     return <div>Error: {maybeData.error?.message}</div>;
@@ -224,13 +233,16 @@ export function ProductCollection({
   );
 }
 
-
-interface SwellProductProps extends CanvasComponentProps<ShopInfo> {
+interface ProductFetcherProps extends CanvasComponentProps<ShopInfo> {
   children?: ReactNode;
   product: string;
 }
 
-export function SwellProduct({ children, product, setControlContextData }: SwellProductProps) {
+export function ProductFetcher({
+  children,
+  product,
+  setControlContextData,
+}: ProductFetcherProps) {
   const context = React.useContext(CredentialsContext);
   if (!context) {
     throw new Error(
@@ -276,33 +288,110 @@ export function ProductTitle({ className, style }: ProductTitleProps) {
   const product = useProduct();
   return (
     <div className={className} style={style}>
-      {product?.name ?? dataUnavailableError}
+      {product?.name ?? "Fake Product"}
     </div>
   );
 }
-
 
 export interface ProductPriceProps {
   className?: string;
   style?: CSSProperties;
 }
 
-export function ProductPrice({
-  className,
-  style,
-}: ProductPriceProps) {
+export function ProductPrice({ className, style }: ProductPriceProps) {
   const product = useProduct();
   const formattedPrice = new Intl.NumberFormat(undefined, {
     style: "currency",
-    currency: product?.currency ?? "USD"
+    currency: product?.currency ?? "USD",
   }).format(parseFloat(product?.price ?? "100"));
   return (
     <div className={className} style={style}>
-      {product
-        ? formattedPrice
-        : dataUnavailableError}
+      {formattedPrice}
     </div>
   );
+}
+
+export function ProductDescription({ className }: { className?: string }) {
+  const product = useProduct();
+  return (
+    <div
+      className={className}
+      dangerouslySetInnerHTML={{
+        __html: product?.description ?? "Fake product description",
+      }}
+    ></div>
+  );
+}
+
+const ProductOptionContext = React.createContext<ProductOptionData | undefined>(
+  undefined
+);
+
+const FAKE_OPTION: ProductOptionData = {
+  id: "fake",
+  name: "Fake Option",
+  values: [
+    {
+      id: "fake-value1",
+      name: "Fake value 1",
+    },
+    {
+      id: "fake-value2",
+      name: "Fake value 2",
+    },
+  ],
+};
+
+export function ProductOptionRepeater({
+  children,
+}: React.PropsWithChildren<{}>) {
+  const product = useProduct();
+  const options: ProductOptionData[] = product?.options ?? [FAKE_OPTION];
+  return (
+    <>
+      {options.map((option, i) => (
+        <ProductOptionContext.Provider value={option}>
+          {repeatedElement(i === 0, children)}
+        </ProductOptionContext.Provider>
+      ))}
+    </>
+  );
+}
+
+function useProductOption() {
+  return React.useContext(ProductOptionContext) ?? FAKE_OPTION;
+}
+
+export function ProductOptionName({ className }: { className?: string }) {
+  const option = useProductOption();
+  return <div className={className}>{option.name}</div>;
+}
+
+const ProductOptionValueContext = React.createContext<
+  ProductOptionValueData | undefined
+>(undefined);
+export function ProductOptionValueRepeater({
+  children,
+}: React.PropsWithChildren<{}>) {
+  const option = useProductOption();
+  return (
+    <>
+      {option.values.map((value, i) => (
+        <ProductOptionValueContext.Provider value={value}>
+          {repeatedElement(i === 0, children)}
+        </ProductOptionValueContext.Provider>
+      ))}
+    </>
+  );
+}
+
+function useProductOptionValue() {
+  return React.useContext(ProductOptionValueContext) ?? FAKE_OPTION.values[0];
+}
+
+export function ProductOptionValueName({ className }: { className?: string }) {
+  const value = useProductOptionValue();
+  return <div className={className}>{value.name}</div>;
 }
 
 export interface ProductImageProps
@@ -334,8 +423,7 @@ export function ProductImage({
   }
   const imageCount = product.images?.length ?? 0;
   setControlContextData?.({ length: imageCount });
-  const image =
-    product.images?.[imageIndex >= imageCount ? 0 : imageIndex];
+  const image = product.images?.[imageIndex >= imageCount ? 0 : imageIndex];
   return (
     <img
       alt={product.name}
@@ -355,179 +443,150 @@ export function ProductImage({
 
 const thisModule = "@plasmicpkgs/plasmic-swell";
 
-
-export const productCollectionMeta: ComponentMeta<ProductCollectionProps> = {
-  name: "swell-product-collection",
-  importName: "ProductCollection",
-  displayName: "Product Collection",
-  importPath: thisModule,
-  props: {
-    limit: {
-      type: "number",
-      displayName: "Product Count",
-      description: "The number of products to display",
-      defaultValueHint: 25,
-      max: 100,
-      min: 1,
-    },
-    page: {
-      type: "number",
-      displayName: "Page",
-      description: "The page for the list",
-      defaultValue: 1,
-      min: 1,
-    },
-    category: {
-      type: "choice",
-      displayName: "Category",
-      description: "Filter products by category",
-      options: (_props, shopInfo: ShopInfo | null) =>
-      shopInfo?.categories.map((c) => ({
-        value: c.slug,
-        label: c.name,
-      })) ?? [],
-    },
-    search: {
-      type: "string",
-      displayName: "Search String",
-      description: "Returns products matching the search query string."
-    },
-    children: {
-      type: "slot",
-      defaultValue: {
-        type: "vbox",
-        children: [
-          {
-            type: "component",
-            name: "swell-product-title",
-          },
-          {
-            type: "component",
-            name: "swell-product-image",
-            styles: {
-              width: "auto",
-              height: "auto",
-              maxWidth: "100%",
-            },
-          },
-          {
-            type: "component",
-            name: "swell-product-price",
-          },
-        ],
-        styles: {
-          width: "300px",
-          maxWidth: "100%",
-          alignItems: "center",
-          rowGap: "20px",
-        },
+export const registerProductCollectionFetcher = _makeRegisterComponent(
+  ProductCollectionFetcher,
+  {
+    name: "swell-product-collection-fetcher",
+    importName: "ProductCollectionFetcher",
+    displayName: "Product Collection Fetcher",
+    importPath: thisModule,
+    props: {
+      limit: {
+        type: "number",
+        displayName: "Product Count",
+        description: "The number of products to display",
+        defaultValueHint: 25,
+        max: 100,
+        min: 1,
       },
-    },
-  },
-};
-
-export function registerProductCollection(
-  loader?: { registerComponent: typeof registerComponent },
-  customProductCollectionMeta?: ComponentMeta<ProductCollectionProps>
-) {
-  if (loader) {
-    loader.registerComponent(
-      ProductCollection,
-      customProductCollectionMeta ?? productCollectionMeta
-    );
-  } else {
-    registerComponent(
-      ProductCollection,
-      customProductCollectionMeta ?? productCollectionMeta
-    );
-  }
-}
-
-export const swellCredentialsProviderMeta: ComponentMeta<SwellCredentialsProviderProps> = {
-  name: "swell-credentials-provider",
-  importName: "SwellCredentialsProvider",
-  displayName: "Credentials Provider",
-  props: {
-    storeId: {
-      type: "string",
-      description:
-        "Your swell store id. You can find it in your swell dashboard under Settings > API.",
-      defaultValue: "my-store",
-    },
-    publicKey: {
-      type: "string",
-      description:
-        "Your swell public key. You can find it in your swell dashboard under Settings > API.",
-      defaultValue: "pk_md0JkpLnp9gBjkQ085oiebb0XBuwqZX9",
-    },
-    children: {
-      type: "slot",
-      defaultValue: {
-        type: "vbox",
-        children: [
-          {
-            type: "text",
-            tag: "h2",
-            value: "Single Product",
-          },
-          {
-            type: "component",
-            name: "swell-product",
-          },
-          {
-            type: "text",
-            tag: "h2",
-            value: "Product Collection",
-            styles: {
-              marginTop: "30px",
-            },
-          },
-          {
-            type: "hbox",
-            children: {
+      page: {
+        type: "number",
+        displayName: "Page",
+        description: "The page for the list",
+        defaultValue: 1,
+        min: 1,
+      },
+      category: {
+        type: "choice",
+        displayName: "Category",
+        description: "Filter products by category",
+        options: (_props, shopInfo: ShopInfo | null) =>
+          shopInfo?.categories.map((c) => ({
+            value: c.slug,
+            label: c.name,
+          })) ?? [],
+      },
+      search: {
+        type: "string",
+        displayName: "Search String",
+        description: "Returns products matching the search query string.",
+      },
+      children: {
+        type: "slot",
+        defaultValue: {
+          type: "vbox",
+          children: [
+            {
               type: "component",
-              name: "swell-product-collection",
-              props: {
-                limit: 8,
+              name: "swell-product-title",
+            },
+            {
+              type: "component",
+              name: "swell-product-image",
+              styles: {
+                width: "auto",
+                height: "auto",
+                maxWidth: "100%",
               },
             },
-            styles: {
-              alignItems: "stretch",
-              justifyContent: "space-between",
-              flexWrap: "wrap",
+            {
+              type: "component",
+              name: "swell-product-price",
             },
+          ],
+          styles: {
+            width: "300px",
+            maxWidth: "100%",
+            alignItems: "center",
+            rowGap: "20px",
           },
-        ],
-        styles: {
-          alignItems: "center",
         },
       },
     },
-  },
-  importPath: thisModule,
-};
-
-export function registerSwellCredentialsProvider(
-  loader?: { registerComponent: typeof registerComponent },
-  customSwellCredentialsProviderMeta?: ComponentMeta<SwellCredentialsProviderProps>
-) {
-  if (loader) {
-    loader.registerComponent(
-      SwellCredentialsProvider,
-      customSwellCredentialsProviderMeta ?? swellCredentialsProviderMeta
-    );
-  } else {
-    registerComponent(
-      SwellCredentialsProvider,
-      customSwellCredentialsProviderMeta ?? swellCredentialsProviderMeta
-    );
   }
-}
+);
 
-export const swellProductMeta: ComponentMeta<SwellProductProps> = {
-  name: "swell-product",
-  displayName: "Swell Product",
-  importName: "SwellProduct",
+export const registerSwellCredentialsProvider = _makeRegisterComponent(
+  SwellCredentialsProvider,
+  {
+    name: "swell-credentials-provider",
+    importName: "SwellCredentialsProvider",
+    displayName: "Credentials Provider",
+    props: {
+      storeId: {
+        type: "string",
+        description:
+          "Your swell store id. You can find it in your swell dashboard under Settings > API.",
+        defaultValue: "my-store",
+      },
+      publicKey: {
+        type: "string",
+        description:
+          "Your swell public key. You can find it in your swell dashboard under Settings > API.",
+        defaultValue: "pk_md0JkpLnp9gBjkQ085oiebb0XBuwqZX9",
+      },
+      children: {
+        type: "slot",
+        defaultValue: {
+          type: "vbox",
+          children: [
+            {
+              type: "text",
+              tag: "h2",
+              value: "Single Product",
+            },
+            {
+              type: "component",
+              name: "swell-product",
+            },
+            {
+              type: "text",
+              tag: "h2",
+              value: "Product Collection",
+              styles: {
+                marginTop: "30px",
+              },
+            },
+            {
+              type: "hbox",
+              children: {
+                type: "component",
+                name: "swell-product-collection",
+                props: {
+                  limit: 8,
+                },
+              },
+              styles: {
+                alignItems: "stretch",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
+              },
+            },
+          ],
+          styles: {
+            alignItems: "center",
+          },
+        },
+      },
+    },
+    importPath: thisModule,
+  }
+);
+
+export const registerProductFetcher = _makeRegisterComponent(ProductFetcher, {
+  name: "swell-product-fetcher",
+  displayName: "Product Fetcher",
+  importName: "ProductFetcher",
   importPath: thisModule,
   props: {
     product: {
@@ -535,12 +594,10 @@ export const swellProductMeta: ComponentMeta<SwellProductProps> = {
       displayName: "Product",
       description: "The product slug",
       options: (_props, shopInfo: ShopInfo | null) =>
-      shopInfo?.products.map((p) => 
-        ({
-        value: p.slug,
-        label: p.name,
-      })
-    ) ?? [],
+        shopInfo?.products.map((p) => ({
+          value: p.slug,
+          label: p.name,
+        })) ?? [],
     },
     children: {
       type: "slot",
@@ -574,70 +631,25 @@ export const swellProductMeta: ComponentMeta<SwellProductProps> = {
       },
     },
   },
-};
+});
 
-export function registerSwellProduct(
-  loader?: { registerComponent: typeof registerComponent },
-  customSwellProductMeta?: ComponentMeta<SwellProductProps>
-) {
-  if (loader) {
-    loader.registerComponent(
-      SwellProduct,
-      customSwellProductMeta ?? swellProductMeta
-    );
-  } else {
-    registerComponent(
-      SwellProduct,
-      customSwellProductMeta ?? swellProductMeta
-    );
-  }
-}
-
-export const productTitleMeta: ComponentMeta<ProductTitleProps> = {
+export const registerProductTitle = _makeRegisterComponent(ProductTitle, {
   name: "swell-product-title",
   importName: "ProductTitle",
   displayName: "Product Title",
   props: {},
   importPath: thisModule,
-};
+});
 
-export function registerProductTitle(
-  loader?: { registerComponent: typeof registerComponent },
-  customProductTitleMeta?: ComponentMeta<ProductTitleProps>,
-) {
-  if (loader) {
-    loader.registerComponent(
-      ProductTitle,
-      customProductTitleMeta ?? productTitleMeta
-    );
-  } else {
-    registerComponent(ProductTitle, customProductTitleMeta ?? productTitleMeta);
-  }
-}
-
-export const productPriceMeta: ComponentMeta<ProductPriceProps> = {
+export const registerProductPrice = _makeRegisterComponent(ProductPrice, {
   name: "swell-product-price",
   importName: "ProductPrice",
   displayName: "Product Price",
   props: {},
   importPath: thisModule,
-};
+});
 
-export function registerProductPrice(
-  loader?: { registerComponent: typeof registerComponent },
-  customProductPriceMeta?: ComponentMeta<ProductPriceProps>
-) {
-  if (loader) {
-    loader.registerComponent(
-      ProductPrice,
-      customProductPriceMeta ?? productPriceMeta
-    );
-  } else {
-    registerComponent(ProductPrice, customProductPriceMeta ?? productPriceMeta);
-  }
-}
-
-export const productImageMeta: ComponentMeta<ProductImageProps> = {
+export const registerProductImage = _makeRegisterComponent(ProductImage, {
   name: "swell-product-image",
   importName: "ProductImage",
   displayName: "Product Image",
@@ -697,29 +709,97 @@ export const productImageMeta: ComponentMeta<ProductImageProps> = {
     height: "auto",
   },
   importPath: thisModule,
-};
+});
 
-export function registerProductImage(
-  loader?: { registerComponent: typeof registerComponent },
-  customProductImageMeta?: ComponentMeta<ProductImageProps>
-) {
-  if (loader) {
-    loader.registerComponent(
-      ProductImage,
-      customProductImageMeta ?? productImageMeta
-    );
-  } else {
-    registerComponent(ProductImage, customProductImageMeta ?? productImageMeta);
+export const registerProductDescription = _makeRegisterComponent(
+  ProductDescription,
+  {
+    name: "swell-product-description",
+    importName: "ProductDescription",
+    displayName: "Product Description",
+    props: {},
+    importPath: thisModule,
   }
+);
+
+export const registerProductOptionRepeater = _makeRegisterComponent(
+  ProductOptionRepeater,
+  {
+    name: "swell-product-option-repeater",
+    importName: "ProductOptionRepeater",
+    displayName: "Product Option Repeater",
+    props: {
+      children: "slot",
+    },
+    importPath: thisModule,
+  }
+);
+
+export const registerProductOptionName = _makeRegisterComponent(
+  ProductOptionName,
+  {
+    name: "swell-product-option-name",
+    importName: "ProductOptionName",
+    displayName: "Product Option Name",
+    props: {},
+    importPath: thisModule,
+  }
+);
+
+export const registerProductOptionValueName = _makeRegisterComponent(
+  ProductOptionValueName,
+  {
+    name: "swell-product-option-value-name",
+    importName: "ProductOptionValueName",
+    displayName: "Product Option Value Name",
+    props: {},
+    importPath: thisModule,
+  }
+);
+
+export const registerProductOptionValueRepeater = _makeRegisterComponent(
+  ProductOptionValueRepeater,
+  {
+    name: "swell-product-option-value-repeater",
+    importName: "ProductOptionValueRepeater",
+    displayName: "Product Option Value Repeater",
+    props: {
+      children: "slot",
+    },
+    importPath: thisModule,
+  }
+);
+
+function _makeRegisterComponent<T extends React.ComponentType<any>>(
+  Component: T,
+  defaultMeta: ComponentMeta<React.ComponentProps<T>>
+) {
+  return (
+    loader?: { registerComponent: typeof registerComponent },
+    customMeta?: ComponentMeta<React.ComponentProps<T>>
+  ) => {
+    const meta = customMeta ?? defaultMeta;
+    if (loader) {
+      loader.registerComponent(Component, meta);
+    } else {
+      registerComponent(Component, meta);
+    }
+  };
 }
 
 export function registerAllSwellComponents(loader?: {
   registerComponent: typeof registerComponent;
 }) {
   registerSwellCredentialsProvider(loader);
-  registerSwellProduct(loader);
-  registerProductCollection(loader);
+  registerProductFetcher(loader);
+  registerProductCollectionFetcher(loader);
+  registerProductImage(loader);
   registerProductTitle(loader);
   registerProductPrice(loader);
   registerProductImage(loader);
+  registerProductDescription(loader);
+  registerProductOptionName(loader);
+  registerProductOptionRepeater(loader);
+  registerProductOptionValueRepeater(loader);
+  registerProductOptionValueName(loader);
 }

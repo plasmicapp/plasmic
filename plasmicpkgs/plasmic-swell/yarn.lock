@@ -1149,14 +1149,6 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@plasmicapp/host@^0.0.47":
-  version "0.0.47"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-0.0.47.tgz#060b5a424aa2ebb3c98d5fef6da4a218dc31cc27"
-  integrity sha512-rCevsvr06F9SIDmf0kWN15Pte5t7XA62qcqeM2i4G60hnuNlO2rBZVFqciBlGY3RwYgFE52+nctczlv6vWeMFg==
-  dependencies:
-    "@plasmicapp/preamble" "0.0.31"
-    window-or-global "^1.0.1"
-
 "@plasmicapp/host@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.0.tgz#e0cf8b4dff4090c1f2cbc2f76f87613c98fee00f"
@@ -1165,29 +1157,24 @@
     "@plasmicapp/preamble" "0.0.35"
     window-or-global "^1.0.1"
 
-"@plasmicapp/preamble@0.0.31":
-  version "0.0.31"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/preamble/-/preamble-0.0.31.tgz#45085326e24982a8b84a149439d22f6f40535bdb"
-  integrity sha512-NFX/vDsGRF7Pc/UxAgaFbmPxCkTMbZhNYadXf7mgXYmw7CBS/KIXafhwF8V+jaeNPnxaoAeoKstHgYJd6FPrOw==
-
 "@plasmicapp/preamble@0.0.35":
   version "0.0.35"
   resolved "https://registry.yarnpkg.com/@plasmicapp/preamble/-/preamble-0.0.35.tgz#a8df97a1bd35d3f8c2a331be954b8ffedc8ea654"
   integrity sha512-xpGuqBTx38vEVELmE+GsK5aWxCrxUXQJvgQLN/x8wVxX2ZsAYgQ6yDywy9kry9dRDNIN8Xm77dkILx2Df+H/ww==
 
-"@plasmicapp/query@^0.1.8":
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.9.tgz#07daddbe0a8722fedd38a315adcec1ef10dbc3e4"
-  integrity sha512-0T04UR8n8vTk5K6juGUzzucGzTkXloarxhjpUjnZWZc39bfS83aq78Jn4wv0lqK3XuL3Ec5JufJyZOMV5V90rA==
+"@plasmicapp/query@^0.1.9":
+  version "0.1.10"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.10.tgz#c4924d4be096eb92a7cd5bc55a524a03536ca5d2"
+  integrity sha512-5B0sDRB/KWfT4YWGEan7in8YpTxSzu2eFsGGvkG8tG6I4zC0KMDtlMSobpvux4Qn+yEhiYQBWI5ahIRXryud7A==
   dependencies:
     react-ssr-prepass "^1.4.0"
 
-"@plasmicpkgs/plasmic-basic-components@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-basic-components/-/plasmic-basic-components-0.0.5.tgz#152cc7ee057ab8d28815cd4b881ca4453959f08c"
-  integrity sha512-ip1VJJR02jL+T1SWmUiYp59OQUtjpSnGo5EAksRH33WznV5DTGMNPZazdPHhHEXkaOgNgfIDvR+6VW8ooiKtGQ==
+"@plasmicpkgs/plasmic-basic-components@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-basic-components/-/plasmic-basic-components-0.0.6.tgz#ed2bcf0cb0c6150c2c54adc2fa4ee9ece30d2cb2"
+  integrity sha512-Hr4tjrOo0+qb3j5W9qMdyOxKLpk7S7CLGbAw2QfJFHxXG/Uv5HZRbVYpDSWT4ObEXS3IXyX0sP00CNJuyJuavQ==
   dependencies:
-    "@plasmicapp/host" "^0.0.47"
+    "@plasmicapp/host" "^1.0.0"
 
 "@polka/url@^1.0.0-next.20":
   version "1.0.0-next.21"
