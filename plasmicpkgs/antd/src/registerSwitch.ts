@@ -11,20 +11,24 @@ export const switchMeta: ComponentMeta<SwitchProps> = {
     autoFocus: {
       type: "boolean",
       description: "Whether get focus when component mounted",
+      defaultValueHint: false,
     },
     checked: {
       type: "boolean",
       editOnly: true,
       uncontrolledProp: "defaultChecked",
       description: "Whether to set the initial state",
+      defaultValueHint: false,
     },
     disabled: {
       type: "boolean",
       description: "Disable switch",
+      defaultValueHint: false,
     },
     loading: {
       type: "boolean",
       description: "Loading state of switch",
+      defaultValueHint: false,
     },
     checkedChildren: {
       type: "slot",
@@ -40,6 +44,7 @@ export const switchMeta: ComponentMeta<SwitchProps> = {
       type: "choice",
       options: ["small", "default"],
       description: "The size of the Switch",
+      defaultValueHint: "default",
     },
   },
   importPath: "antd",

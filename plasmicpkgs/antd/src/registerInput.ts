@@ -29,14 +29,17 @@ export const inputMeta: ComponentMeta<InputProps> = {
     allowClear: {
       type: "boolean",
       description: "If allow to remove input content with clear icon",
+      defaultValueHint: false,
     },
     bordered: {
       type: "boolean",
       description: "Whether has border style",
+      defaultValueHint: true,
     },
     disabled: {
       type: "boolean",
       description: "Whether the input is disabled",
+      defaultValueHint: false,
     },
     id: {
       type: "string",
@@ -58,6 +61,7 @@ export const inputMeta: ComponentMeta<InputProps> = {
       type: "choice",
       options: ["small", "middle", "large"],
       description: "The size of the input box",
+      defaultValueHint: "middle,",
     },
     suffix: {
       type: "slot",
@@ -66,6 +70,7 @@ export const inputMeta: ComponentMeta<InputProps> = {
     type: {
       type: "string",
       description: "The type of input",
+      defaultValueHint: "text",
     },
     value: {
       type: "string",
@@ -93,6 +98,7 @@ export const inputTextAreaMeta: ComponentMeta<TextAreaProps> = {
     allowClear: {
       type: "boolean",
       description: "If allow to remove input content with clear icon",
+      defaultValueHint: false,
     },
     autoSize: {
       type: "object",
@@ -102,14 +108,17 @@ export const inputTextAreaMeta: ComponentMeta<TextAreaProps> = {
     disabled: {
       type: "boolean",
       description: "Whether the input is disabled",
+      defaultValueHint: false,
     },
     bordered: {
       type: "boolean",
       description: "Whether has border style",
+      defaultValueHint: true,
     },
     showCount: {
       type: "boolean",
       description: "Whether show text count",
+      defaultValueHint: false,
     },
     id: {
       type: "string",
@@ -155,14 +164,17 @@ export const inputSearchMeta: ComponentMeta<SearchProps> = {
     allowClear: {
       type: "boolean",
       description: "If allow to remove input content with clear icon",
+      defaultValueHint: false,
     },
     bordered: {
       type: "boolean",
       description: "Whether has border style",
+      defaultValueHint: true,
     },
     disabled: {
       type: "boolean",
       description: "Whether the input is disabled",
+      defaultValueHint: false,
     },
     enterButton: {
       type: "slot",
@@ -175,6 +187,7 @@ export const inputSearchMeta: ComponentMeta<SearchProps> = {
     loading: {
       type: "boolean",
       description: "Search box with loading",
+      defaultValueHint: false,
     },
     maxLength: {
       type: "number",
@@ -192,6 +205,7 @@ export const inputSearchMeta: ComponentMeta<SearchProps> = {
       type: "choice",
       options: ["small", "middle", "large"],
       description: "The size of the input box",
+      defaultValueHint: "middle",
     },
     suffix: {
       type: "slot",
@@ -237,14 +251,17 @@ export const inputPasswordMeta: ComponentMeta<PasswordProps> = {
     allowClear: {
       type: "boolean",
       description: "If allow to remove input content with clear icon",
+      defaultValueHint: false,
     },
     bordered: {
       type: "boolean",
       description: "Whether has border style",
+      defaultValueHint: true,
     },
     disabled: {
       type: "boolean",
       description: "Whether the input is disabled",
+      defaultValueHint: false,
     },
     id: {
       type: "string",
@@ -266,6 +283,7 @@ export const inputPasswordMeta: ComponentMeta<PasswordProps> = {
       type: "choice",
       options: ["small", "middle", "large"],
       description: "The size of the input box",
+      defaultValueHint: "middle",
     },
     type: {
       type: "string",
@@ -279,6 +297,7 @@ export const inputPasswordMeta: ComponentMeta<PasswordProps> = {
     visibilityToggle: {
       type: "boolean",
       description: "Whether show toggle button",
+      defaultValueHint: true,
     },
   },
   importPath: "antd/lib/input/Password",
@@ -303,12 +322,14 @@ export const inputGroupMeta: ComponentMeta<GroupProps> = {
     compact: {
       type: "boolean",
       description: "Whether use compact style",
+      defaultValueHint: false,
     },
     size: {
       type: "choice",
       options: ["small", "default", "large"],
       description:
         "The size of Input.Group specifies the size of the included Input fields",
+      defaultValueHint: "default",
     },
     children: {
       type: "slot",

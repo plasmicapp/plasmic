@@ -18,6 +18,7 @@ export const menuDividerMeta: ComponentMeta<MenuDividerProps> = {
     dashed: {
       type: "boolean",
       description: "Whether line is dashed",
+      defaultValueHint: false,
     },
   },
   importPath: "antd/lib/menu/MenuDivider",
@@ -42,10 +43,12 @@ export const menuItemMeta: ComponentMeta<MenuItemProps> = {
     danger: {
       type: "boolean",
       description: "Display the danger style",
+      defaultValueHint: false,
     },
     disabled: {
       type: "boolean",
       description: "Whether disabled select",
+      defaultValueHint: false,
     },
     key: {
       type: "string",
@@ -130,6 +133,7 @@ export const subMenuMeta: ComponentMeta<SubMenuProps> = {
     disabled: {
       type: "boolean",
       description: "Whether sub-menu is disabled",
+      defaultValueHint: false,
     },
     key: {
       type: "string",
@@ -190,19 +194,23 @@ export const menuMeta: ComponentMeta<MenuProps> = {
     forceSubMenuRender: {
       type: "boolean",
       description: "Render submenu into DOM before it becomes visible",
+      defaultValueHint: false,
     },
     inlineIndent: {
       type: "number",
       description: "Indent (in pixels) of inline menu items on each level",
+      defaultValueHint: 24,
     },
     mode: {
       type: "choice",
       options: ["horizontal", "vertical", "inline"],
       description: "Type of menu",
+      defaultValueHint: "vertical",
     },
     multiple: {
       type: "boolean",
       description: "Allows selection of multiple items",
+      defaultValueHint: false,
     },
     openKeys: {
       type: "choice",
@@ -210,9 +218,9 @@ export const menuMeta: ComponentMeta<MenuProps> = {
       uncontrolledProp: "defaultOpenKeys",
       description: "Array with the keys of default opened sub menus",
       multiSelect: true,
-      options: (componentProps) => {
+      options: componentProps => {
         const options = new Set<string>();
-        traverseReactEltTree(componentProps.children, (elt) => {
+        traverseReactEltTree(componentProps.children, elt => {
           if (elt?.type === SubMenu && typeof elt?.key === "string") {
             options.add(elt.key);
           }
@@ -227,6 +235,7 @@ export const menuMeta: ComponentMeta<MenuProps> = {
     selectable: {
       type: "boolean",
       description: "Allows selecting menu items",
+      defaultValueHint: true,
     },
     selectedKeys: {
       type: "choice",
@@ -234,9 +243,9 @@ export const menuMeta: ComponentMeta<MenuProps> = {
       uncontrolledProp: "defaultSelectedKeys",
       description: "Array with the keys of default selected menu items",
       multiSelect: true,
-      options: (componentProps) => {
+      options: componentProps => {
         const options = new Set<string>();
-        traverseReactEltTree(componentProps.children, (elt) => {
+        traverseReactEltTree(componentProps.children, elt => {
           if (
             [SubMenu, MenuItem as any].includes(elt?.type) &&
             typeof elt?.key === "string"
@@ -250,20 +259,24 @@ export const menuMeta: ComponentMeta<MenuProps> = {
     subMenuCloseDelay: {
       type: "number",
       description: "Delay time to hide submenu when mouse leaves (in seconds)",
+      defaultValueHint: 0.1,
     },
     subMenuOpenDelay: {
       type: "number",
       description: "Delay time to show submenu when mouse enters, (in seconds)",
+      defaultValueHint: 0,
     },
     theme: {
       type: "choice",
       options: ["light", "dark"],
       description: "Color theme of the menu",
+      defaultValueHint: "light",
     },
     triggerSubMenuAction: {
       type: "choice",
       options: ["hover", "click"],
       description: "Which action can trigger submenu open/close",
+      defaultValueHint: "hover",
     },
     children: {
       type: "slot",

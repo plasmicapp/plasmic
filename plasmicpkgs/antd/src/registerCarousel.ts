@@ -20,19 +20,23 @@ export const carouselMeta: ComponentMeta<CarouselProps> = {
     autoplay: {
       type: "boolean",
       description: "Whether to scroll automatically",
+      defaultValueHint: false,
     },
     dotPosition: {
       type: "choice",
       options: ["top", "bottom", "left", "right"],
       description: "The position of the dots",
+      defaultValueHint: "bottom",
     },
     dots: {
       type: "boolean",
       description: "Whether to show the dots at the bottom of the gallery",
+      defaultValueHint: true,
     },
     effect: {
       type: "choice",
       options: ["scrollx", "fade"],
+      defaultValueHint: "scrollx",
     },
     children: {
       type: "slot",
