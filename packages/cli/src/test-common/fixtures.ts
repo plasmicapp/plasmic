@@ -148,6 +148,7 @@ export const project1Config: ProjectConfig = {
   images: [],
   jsBundleThemes: [],
   indirect: false,
+  globalContextsFilePath: "",
 };
 
 export function expectProject1PlasmicJson(

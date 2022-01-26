@@ -79,10 +79,7 @@ function removeMissingFilesFromLock(
         ])
       );
       const knownIcons = Object.fromEntries(
-        knownProjects[project.projectId].icons.map((icons) => [
-          icons.id,
-          icons,
-        ])
+        knownProjects[project.projectId].icons.map((icons) => [icons.id, icons])
       );
 
       project.fileLocks = project.fileLocks.filter((lock) => {
@@ -100,6 +97,8 @@ function removeMissingFilesFromLock(
             return knownImages[lock.assetId];
           case "icon":
             return knownIcons[lock.assetId];
+          case "globalContexts":
+            return knownProjects[project.projectId].globalContextsFilePath;
         }
       });
 
@@ -206,6 +205,16 @@ async function resolveMissingFilesInConfig(
       (await attemptToRestoreFilePath(
         context,
         project.cssFilePath,
+        baseNameToFiles
+      )) || "";
+
+    if (!project.globalContextsFilePath) {
+      project.globalContextsFilePath = "";
+    }
+    project.globalContextsFilePath =
+      (await attemptToRestoreFilePath(
+        context,
+        project.globalContextsFilePath,
         baseNameToFiles
       )) || "";
 

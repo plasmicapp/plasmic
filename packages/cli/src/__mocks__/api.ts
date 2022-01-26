@@ -339,6 +339,7 @@ class PlasmicApi {
         iconChecksums: [],
         globalVariantChecksums: [],
         projectCssChecksum: "",
+        globalContextsChecksum: "",
       } as ChecksumBundle,
       usedNpmPackages: [],
       externalCssImports: [],
@@ -374,7 +375,7 @@ class PlasmicApi {
 
   async latestCodegenVersion(): Promise<string> {
     return "0.0.1";
-  };
+  }
 
   async requiredPackages(): Promise<RequiredPackages> {
     return {

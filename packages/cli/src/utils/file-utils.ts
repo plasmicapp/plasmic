@@ -242,6 +242,7 @@ function getAllPaths(context: PlasmicContext): BundleKeyPair[] {
 
   const pushProject = (proj: ProjectConfig) => {
     pushPath(proj, "cssFilePath");
+    pushPath(proj, "globalContextsFilePath");
     for (const component of proj.components) {
       pushComponent(component);
     }
@@ -282,7 +283,10 @@ function getAllPaths(context: PlasmicContext): BundleKeyPair[] {
  * Fixes all src-relative file paths in PlasmicConfig by detecting file
  * movement on disk.
  */
-export async function fixAllFilePaths(context: PlasmicContext, baseDir: string) {
+export async function fixAllFilePaths(
+  context: PlasmicContext,
+  baseDir: string
+) {
   const baseNameToFiles = buildBaseNameToFiles(context);
   let changed = false;
 
