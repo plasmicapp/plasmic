@@ -31,7 +31,7 @@ type RestrictPropType<T, P> = T extends string
 
 type DistributedKeyOf<T> = T extends any ? keyof T : never;
 
-export interface ContextMeta<P> {
+export interface GlobalContextMeta<P> {
   /**
    * Any unique string name used to identify that context. Each context
    * should be registered with a different `meta.name`, even if they have the
@@ -75,14 +75,14 @@ export interface ContextMeta<P> {
   refProp?: string;
 }
 
-export interface ContextRegistration {
+export interface GlobalContextRegistration {
   component: React.ComponentType<any>;
-  meta: ContextMeta<any>;
+  meta: GlobalContextMeta<any>;
 }
 
 declare global {
   interface Window {
-    __PlasmicContextRegistry: ContextRegistration[];
+    __PlasmicContextRegistry: GlobalContextRegistration[];
   }
 }
 
@@ -90,9 +90,8 @@ if (root.__PlasmicContextRegistry == null) {
   root.__PlasmicContextRegistry = [];
 }
 
-export default function registerContext<T extends React.ComponentType<any>>(
-  component: T,
-  meta: ContextMeta<React.ComponentProps<T>>
-) {
+export default function registerGlobalContext<
+  T extends React.ComponentType<any>
+>(component: T, meta: GlobalContextMeta<React.ComponentProps<T>>) {
   root.__PlasmicContextRegistry.push({ component, meta });
 }
