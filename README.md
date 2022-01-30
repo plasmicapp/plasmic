@@ -223,6 +223,12 @@ packages:
     unpublish: $all
 ```
 
+Then kill and restart the verdaccio server:
+
+```
+verdaccio &
+```
+
 ## Development workflow
 
 1. Make some changes!
