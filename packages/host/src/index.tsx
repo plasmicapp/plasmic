@@ -51,7 +51,7 @@ class PlasmicRootNodeWrapper {
   constructor(private value: null | React.ReactElement) {}
   set = (val: null | React.ReactElement) => {
     this.value = val;
-    rootChangeListeners.forEach(f => f());
+    rootChangeListeners.forEach((f) => f());
   };
   get = () => this.value;
 }
@@ -150,16 +150,20 @@ function _PlasmicCanvasHost() {
   }
   if (shouldRenderStudio && window.parent === window) {
     return (
-      <p>
-        Your app is ready to host Plasmic Studio! <br /> <br />
-        On the <a href="https://studio.plasmic.app/">Dashboard</a>, click on the{" "}
-        <i>Config</i> button, and set{" "}
-        <code>{location.origin + location.pathname}</code> as the host URL.
-        <br />
-        <br />
-        You can find more information about app-hosting{" "}
-        <a href="https://www.plasmic.app/learn/app-hosting/">here</a>.
-      </p>
+      <iframe
+        src={`https://docs.plasmic.app/app-content/app-host-ready#appHostUrl=${encodeURIComponent(
+          location.href
+        )}`}
+        style={{
+          width: "100vw",
+          height: "100vh",
+          border: "none",
+          position: "fixed",
+          top: 0,
+          left: 0,
+          zIndex: 99999999,
+        }}
+      ></iframe>
     );
   }
   return null;
@@ -184,7 +188,9 @@ interface PlasmicCanvasHostProps {
   enableWebpackHmr?: boolean;
 }
 
-export const PlasmicCanvasHost: React.FunctionComponent<PlasmicCanvasHostProps> = props => {
+export const PlasmicCanvasHost: React.FunctionComponent<PlasmicCanvasHostProps> = (
+  props
+) => {
   const { enableWebpackHmr } = props;
   const [node, setNode] = React.useState<React.ReactElement<any, any> | null>(
     null
@@ -249,7 +255,7 @@ class ErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error) {
-    renderErrorListeners.forEach(listener => listener(error));
+    renderErrorListeners.forEach((listener) => listener(error));
   }
 
   render() {
