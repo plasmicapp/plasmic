@@ -22,7 +22,8 @@ export default function ParallaxWrapper({
 }: ParallaxWrapperProps) {
   const inEditor = useContext(PlasmicCanvasContext);
   const hasContext = useContext(ParallaxContext) != null;
-  if (!hasContext) {
+  const isServer = typeof window === "undefined";
+  if (!hasContext && !isServer) {
     throw new Error(
       "Scroll Parallax can only be instantiated somewhere inside the Parallax Provider"
     );
