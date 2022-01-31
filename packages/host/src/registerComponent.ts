@@ -268,6 +268,10 @@ export interface ComponentMeta<P> {
    */
   displayName?: string;
   /**
+   * The description of the component to be shown in Studio.
+   */
+  description?: string;
+  /**
    * The javascript name to be used when generating code. Optional: if not
    * provided, `meta.name` is used.
    */
