@@ -1,4 +1,4 @@
-import { ApiCmsRow, ApiCmsTable } from "./schema";
+import { ApiCmsQuery, ApiCmsRow, ApiCmsTable } from "./schema";
 
 export interface DatabaseConfig {
   apiUrl: string;
@@ -8,26 +8,42 @@ export interface DatabaseConfig {
 }
 
 export interface QueryParams {
-  offset: number;
+  useDraft: boolean;
+  where: {};
+  orderBy: string;
+  desc: boolean;
   limit: number;
-  filter: {};
+}
+
+function queryParamsToApi(params: QueryParams): ApiCmsQuery {
+  return {
+    where: params.where,
+    limit: params.limit,
+    order: [
+      {
+        field: params.orderBy,
+        dir: params.desc ? "desc" : "asc",
+      },
+    ],
+  };
 }
 
 class API {
   constructor(private config: DatabaseConfig) {}
 
   async get(endpoint: string, params: {} = {}) {
-    const response = await fetch(
-      `${this.config.apiUrl}/cms/databases/${this.config.databaseId}${endpoint}`,
-      {
-        method: "GET",
-        headers: {
-          "content-type": "application/json",
-          "x-plasmic-api-project-tokens": `${this.config.projectId}:${this.config.projectApiToken}`,
-        },
-        body: JSON.stringify(params),
-      }
+    const url = new URL(
+      `${this.config.apiUrl}/cms/databases/${this.config.databaseId}${endpoint}`
     );
+    url.search = new URLSearchParams(params).toString();
+    const response = await fetch(url.toString(), {
+      method: "GET",
+      headers: {
+        accept: "*/*",
+        "x-plasmic-api-project-tokens": `${this.config.projectId}:${this.config.projectApiToken}`,
+      },
+      mode: "cors",
+    });
 
     return await response.json();
   }
@@ -38,12 +54,22 @@ class API {
   }
 
   async query(table: string, params: QueryParams): Promise<ApiCmsRow[]> {
-    const response = await this.get(`/tables/${table}/query`, params);
+    const response = await this.get(`/tables/${table}/query`, {
+      q: JSON.stringify(queryParamsToApi(params)),
+      useDraft: Number(params.useDraft),
+    });
     return response.rows;
   }
 
-  async fetchRow(table: string, row: string): Promise<ApiCmsRow> {
-    const response = await this.get(`/tables/${table}/rows/${row}`);
+  async fetchRow(
+    table: string,
+    row: string,
+    useDraft: boolean
+  ): Promise<ApiCmsRow> {
+    const maybeUseDraft = useDraft ? `?useDraft=1` : ``;
+    const response = await this.get(
+      `/tables/${table}/rows/${row}${maybeUseDraft}`
+    );
     return response;
   }
 }

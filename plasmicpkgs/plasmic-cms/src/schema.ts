@@ -50,6 +50,8 @@ export type CmsFieldMeta =
   | CmsImage
   | CmsDateTime;
 
+export type CmsType = CmsFieldMeta["type"];
+
 export interface CmsTableSchema {
   fields: CmsFieldMeta[];
 }
@@ -63,4 +65,12 @@ export interface ApiCmsTable {
 export interface ApiCmsRow {
   identifier: string;
   data: Record<string, any>;
+}
+
+type FilterClause = any;
+
+export interface ApiCmsQuery {
+  where?: FilterClause;
+  limit?: number;
+  order?: (string | { field: string; dir: "asc" | "desc" })[];
 }

@@ -12,7 +12,7 @@ import {
   useRow,
   useTables,
 } from "./context";
-import { ApiCmsRow, ApiCmsTable } from "./schema";
+import { ApiCmsRow, ApiCmsTable, CmsType } from "./schema";
 import { CanvasComponentProps } from "@plasmicapp/host/registerComponent";
 import { mkFieldOptions, mkTableOptions } from "./util";
 
@@ -124,18 +124,28 @@ export const cmsQueryLoaderMeta: ComponentMeta<CmsQueryLoaderProps> = {
       description: "Table identifier",
       options: (_, ctx) => mkTableOptions(ctx?.tables),
     },
-    limit: {
-      type: "number",
-      description: "Limit",
+    useDraft: {
+      type: "boolean",
+      description: "Use drafts?",
+      defaultValue: false,
+    },
+    where: {
+      type: "object",
+      description: "Filter",
     },
     orderBy: {
       type: "choice",
       description: "Order by",
       options: ({ table }, ctx) => mkFieldOptions(ctx?.tables, table),
     },
-    filter: {
-      type: "object",
-      description: "Filter",
+    desc: {
+      type: "boolean",
+      description: "Descending order?",
+      defaultValue: false,
+    },
+    limit: {
+      type: "number",
+      description: "Limit",
     },
   },
 };
@@ -148,6 +158,10 @@ export function CmsQueryLoader({
 }: CmsQueryLoaderProps) {
   const databaseConfig = useDatabase();
   const tables = useTables();
+  if (tables) {
+    // TODO: Only include table if __plasmic_cms_row_{table} exists.
+    setControlContextData?.({ tables });
+  }
 
   const cacheKey = JSON.stringify({
     component: "CmsQueryLoader",
@@ -157,11 +171,6 @@ export function CmsQueryLoader({
   const maybeData = usePlasmicQueryData(cacheKey, async () =>
     mkApi(databaseConfig).query(table, params)
   );
-
-  if (tables) {
-    // TODO: Only include table if __plasmic_cms_row_{table} exists.
-    setControlContextData?.({ tables });
-  }
 
   return renderMaybeData<ApiCmsRow[]>(maybeData, rows => (
     <QueryProvider table={table} rows={rows}>
@@ -201,14 +210,18 @@ export function CmsRowRepeater({
   children,
   setControlContextData,
 }: CmsRowRepeaterProps) {
-  const rows = useQuery(table);
-  if (!rows) {
-    throw new Error("Component must be wrapped in 'CMS Query Loader'.");
-  }
-
   const tables = useTables();
   if (tables) {
     setControlContextData?.({ tables });
+  }
+
+  const rows = useQuery(table);
+  if (!rows) {
+    return (
+      <div>
+        Error: You must select a table for which there is a CMS Query Loader.
+      </div>
+    );
   }
 
   return (
@@ -253,21 +266,47 @@ export function CmsRowField({
   field,
   setControlContextData,
 }: CmsRowFieldProps) {
-  const row = useRow(table);
-  if (!row) {
-    throw new Error(
-      "Component must be wrapped in 'CMS Row Repeater' or 'CMS Row Loader'."
-    );
-  }
-
   const tables = useTables();
   if (tables) {
     // TODO: Only include table if __plasmic_cms_row_{table} exists.
     setControlContextData?.({ tables });
   }
 
-  const value = row.data[field];
+  const row = useRow(table);
+  if (!row) {
+    return (
+      <div>
+        Error: You must select a table for which there is a CMS Query Loader or
+        a CMS Row Loader.
+      </div>
+    );
+  }
+
+  const value = renderValue(
+    row.data[field],
+    tables
+      ?.find(t => t.identifier === table)
+      ?.schema.fields.find(f => f.identifier === field)?.type || "text"
+  );
   return <div className={className}>{value}</div>;
+}
+
+function assertNever(_: never): never {
+  throw new Error("unexpected branch taken");
+}
+
+function renderValue(value: any, type: CmsType) {
+  switch (type) {
+    case "number":
+    case "boolean":
+    case "text":
+    case "long-text":
+    case "image":
+    case "date-time":
+      return `${value}`;
+    default:
+      assertNever(type);
+  }
 }
 
 interface CmsRowLinkProps extends CanvasComponentProps<TablesContextData> {
@@ -316,29 +355,39 @@ export function CmsRowLink({
   children,
   setControlContextData,
 }: CmsRowLinkProps) {
-  const row = useRow(table);
-  if (!row) {
-    throw new Error(
-      "Component must be wrapped in 'CMS Row Repeater' or 'CMS Row Loader'."
-    );
-  }
-
   const tables = useTables();
   if (tables) {
     // TODO: Only include table if __plasmic_cms_row_{table} exists.
     setControlContextData?.({ tables });
   }
 
-  const value = row.data[field];
-  console.log(`TODO: Add "${value}" to "${hrefProp}" prop.`);
+  const row = useRow(table);
+  if (!row) {
+    return (
+      <div>
+        Error: You must select a table for which there is a CMS Query Loader or
+        a CMS Row Loader.
+      </div>
+    );
+  }
 
-  return <>{children}</>;
+  const value = row.data[field];
+
+  const childrenWithProps = React.Children.map(children, child => {
+    if (React.isValidElement(child)) {
+      return React.cloneElement(child, { [hrefProp]: value });
+    }
+    return child;
+  });
+
+  return <>{childrenWithProps}</>;
 }
 
 interface CmsRowLoaderProps extends CanvasComponentProps<TablesContextData> {
   table: string;
   row: string;
   children: React.ReactNode;
+  useDraft: boolean;
 }
 
 export const cmsRowLoaderMeta: ComponentMeta<CmsRowLoaderProps> = {
@@ -363,6 +412,11 @@ export const cmsRowLoaderMeta: ComponentMeta<CmsRowLoaderProps> = {
       type: "string",
       description: "Row identifier",
     },
+    useDraft: {
+      type: "boolean",
+      description: "Use drafts?",
+      defaultValue: false,
+    },
   },
 };
 
@@ -370,6 +424,7 @@ export function CmsRowLoader({
   table,
   row,
   children,
+  useDraft,
   setControlContextData,
 }: CmsRowLoaderProps) {
   const databaseConfig = useDatabase();
@@ -386,7 +441,7 @@ export function CmsRowLoader({
     databaseConfig,
   });
   const maybeData = usePlasmicQueryData(cacheKey, async () =>
-    mkApi(databaseConfig).fetchRow(table, row)
+    mkApi(databaseConfig).fetchRow(table, row, useDraft)
   );
   return renderMaybeData<ApiCmsRow>(maybeData, row => (
     <RowProvider table={table} row={row}>
