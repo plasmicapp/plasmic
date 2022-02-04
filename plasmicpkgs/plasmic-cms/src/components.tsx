@@ -182,6 +182,7 @@ export function CmsQueryLoader({
     component: "CmsQueryLoader",
     table,
     databaseConfig,
+    params,
   });
   const maybeData = usePlasmicQueryData(cacheKey, async () => {
     if (!table) {
@@ -484,6 +485,7 @@ export function CmsRowLoader({
     table,
     row,
     databaseConfig,
+    useDraft,
   });
   const maybeData = usePlasmicQueryData(cacheKey, async () =>
     mkApi(databaseConfig).fetchRow(table, row, useDraft)
