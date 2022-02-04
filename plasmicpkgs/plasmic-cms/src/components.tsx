@@ -2,7 +2,7 @@ import { ComponentMeta, repeatedElement } from "@plasmicapp/host";
 import { CanvasComponentProps } from "@plasmicapp/host/registerComponent";
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import React from "react";
-import { DatabaseConfig, mkApi, QueryParams } from "./api";
+import { DatabaseConfig, HttpError, mkApi, QueryParams } from "./api";
 import {
   DatabaseProvider,
   QueryResultProvider,
@@ -19,12 +19,34 @@ import { mkFieldOptions, mkTableOptions } from "./util";
 const modulePath = "@plasmicpkgs/plasmic-cms";
 const componentPrefix = "hostless-plasmic-cms";
 
+interface FetcherComponentProps {
+  hideIfNotFound?: boolean;
+}
+
+const fetcherComponentPropMetas = {
+  hideIfNotFound: {
+    type: "boolean",
+    defaultValue: false,
+    description: "Whether to show an error if no result is found",
+  },
+} as const;
+
 function renderMaybeData<T>(
   maybeData: ReturnType<typeof usePlasmicQueryData>,
-  renderFn: (data: T) => JSX.Element
-): JSX.Element {
+  renderFn: (data: T) => JSX.Element,
+  loaderProps: FetcherComponentProps
+): React.ReactElement | null {
   if ("error" in maybeData) {
-    return <div>Error: {maybeData.error?.message}</div>;
+    const error = maybeData.error;
+    if (error && error instanceof HttpError && error.status === 404) {
+      if (loaderProps.hideIfNotFound) {
+        return null;
+      } else {
+        return <div>Error: Data not found</div>;
+      }
+    } else {
+      return <div>Error: {error?.message}</div>;
+    }
   }
   if (!("data" in maybeData)) {
     return <div>Loading...</div>;
@@ -98,9 +120,11 @@ function TablesFetcher({ children }: { children: React.ReactNode }) {
     mkApi(databaseConfig).fetchTables()
   );
 
-  return renderMaybeData<ApiCmsTable[]>(maybeData, tables => (
-    <TablesProvider tables={tables}>{children}</TablesProvider>
-  ));
+  return renderMaybeData<ApiCmsTable[]>(
+    maybeData,
+    (tables) => <TablesProvider tables={tables}>{children}</TablesProvider>,
+    { hideIfNotFound: false }
+  );
 }
 
 type TablesContextData = {
@@ -187,17 +211,21 @@ export function CmsQueryLoader({
   const maybeData = usePlasmicQueryData(cacheKey, async () => {
     if (!table) {
       throw new Error(`You must select a table to query`);
-    } else if (tables && !tables.find(t => t.identifier === table)) {
+    } else if (tables && !tables.find((t) => t.identifier === table)) {
       throw new Error(`There is no table called "${table}"`);
     }
     return mkApi(databaseConfig).query(table, params);
   });
 
-  return renderMaybeData<ApiCmsRow[]>(maybeData, rows => (
-    <QueryResultProvider table={table!} rows={rows}>
-      {children}
-    </QueryResultProvider>
-  ));
+  return renderMaybeData<ApiCmsRow[]>(
+    maybeData,
+    (rows) => (
+      <QueryResultProvider table={table!} rows={rows}>
+        {children}
+      </QueryResultProvider>
+    ),
+    { hideIfNotFound: false }
+  );
 }
 
 interface CmsRowRepeaterProps extends CanvasComponentProps<TablesContextData> {
@@ -300,9 +328,9 @@ export function CmsRowField({
     setControlContextData?.({ tables, table: res.table });
   }
 
-  const schema = tables?.find(t => t.identifier === res.table)?.schema;
+  const schema = tables?.find((t) => t.identifier === res.table)?.schema;
   const fieldMeta = field
-    ? schema?.fields.find(f => f.identifier === field)
+    ? schema?.fields.find((f) => f.identifier === field)
     : schema?.fields[0];
 
   if (!fieldMeta) {
@@ -411,17 +439,17 @@ export function CmsRowLink({
     setControlContextData?.({ tables, table: res.table });
   }
 
-  const schema = tables?.find(t => t.identifier === res.table)?.schema;
+  const schema = tables?.find((t) => t.identifier === res.table)?.schema;
   const fieldMeta = field
-    ? schema?.fields.find(f => f.identifier === field)
-    : schema?.fields.find(f => f.type === "text");
+    ? schema?.fields.find((f) => f.identifier === field)
+    : schema?.fields.find((f) => f.type === "text");
 
   if (!fieldMeta) {
     return <div>Error: No field to display</div>;
   }
 
   const value = res.row.data?.[fieldMeta.identifier] || "";
-  const childrenWithProps = React.Children.map(children, child => {
+  const childrenWithProps = React.Children.map(children, (child) => {
     if (React.isValidElement(child)) {
       return React.cloneElement(child, { [hrefProp]: value });
     }
@@ -431,7 +459,9 @@ export function CmsRowLink({
   return <>{childrenWithProps}</>;
 }
 
-interface CmsRowLoaderProps extends CanvasComponentProps<TablesContextData> {
+interface CmsRowLoaderProps
+  extends CanvasComponentProps<TablesContextData>,
+    FetcherComponentProps {
   table: string;
   row: string;
   children: React.ReactNode;
@@ -468,6 +498,7 @@ export const cmsRowLoaderMeta: ComponentMeta<CmsRowLoaderProps> = {
       description: "If set, also query unpublished content.",
       defaultValue: false,
     },
+    ...fetcherComponentPropMetas,
   },
 };
 
@@ -476,6 +507,7 @@ export function CmsRowLoader({
   row,
   children,
   useDraft,
+  hideIfNotFound,
   setControlContextData,
 }: CmsRowLoaderProps) {
   const databaseConfig = useDatabase();
@@ -492,12 +524,22 @@ export function CmsRowLoader({
     databaseConfig,
     useDraft,
   });
-  const maybeData = usePlasmicQueryData(cacheKey, async () =>
-    mkApi(databaseConfig).fetchRow(table, row, useDraft)
+  const maybeData = usePlasmicQueryData(cacheKey, async () => {
+    if (!table) {
+      throw new Error("You must specify a model to fetch from.");
+    }
+    if (!row) {
+      throw new Error("You must specify an entry name to fetch.");
+    }
+    return await mkApi(databaseConfig).fetchRow(table, row, useDraft);
+  });
+  return renderMaybeData<ApiCmsRow>(
+    maybeData,
+    (row) => (
+      <RowProvider table={table} row={row}>
+        {children}
+      </RowProvider>
+    ),
+    { hideIfNotFound }
   );
-  return renderMaybeData<ApiCmsRow>(maybeData, row => (
-    <RowProvider table={table} row={row}>
-      {children}
-    </RowProvider>
-  ));
 }

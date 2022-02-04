@@ -28,6 +28,12 @@ function queryParamsToApi(params: QueryParams): ApiCmsQuery {
   };
 }
 
+export class HttpError extends Error {
+  constructor(public status: number, message: string) {
+    super(message);
+  }
+}
+
 class API {
   constructor(private config: DatabaseConfig) {}
 
@@ -45,6 +51,16 @@ class API {
       mode: "cors",
     });
 
+    if (response.status !== 200) {
+      let message;
+      try {
+        message = (await response.json())?.error?.message;
+      } catch {
+        message = await response.text();
+      }
+      throw new HttpError(response.status, message);
+    }
+
     return await response.json();
   }
 
@@ -54,7 +70,7 @@ class API {
       return response.tables;
     } catch (e) {
       console.error(e);
-      throw new Error("Cannot fetch CMS models.");
+      throw e;
     }
   }
 
@@ -67,7 +83,7 @@ class API {
       return response.rows;
     } catch (e) {
       console.error(e);
-      throw new Error("Query returned invalid response.");
+      throw e;
     }
   }
 
@@ -77,14 +93,14 @@ class API {
     useDraft: boolean
   ): Promise<ApiCmsRow> {
     try {
-      const maybeUseDraft = useDraft ? `?useDraft=1` : ``;
+      const maybeUseDraft = useDraft ? `?draft=1` : ``;
       const response = await this.get(
         `/tables/${table}/rows/${row}${maybeUseDraft}`
       );
       return response;
     } catch (e) {
       console.error(e);
-      throw new Error("Query returned invalid response.");
+      throw e;
     }
   }
 }
