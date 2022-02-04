@@ -1,16 +1,20 @@
-import React from "react";
 import {
+  DataDict,
   DataProvider,
+  useDataEnv,
   useSelector,
 } from "@plasmicpkgs/plasmic-basic-components";
+import React from "react";
 import { DatabaseConfig } from "./api";
 import { ApiCmsRow, ApiCmsTable } from "./schema";
 
 const contextPrefix = "__plasmic_cms";
 const databaseContextKey = `${contextPrefix}_database`;
 const tablesContextKey = `${contextPrefix}_tables`;
-const mkQueryContextKey = (table: string) => `${contextPrefix}_query_${table}`;
-const mkRowContextKey = (table: string) => `${contextPrefix}_row_${table}`;
+const queryResultPrefix = `${contextPrefix}_query_`;
+const mkQueryContextKey = (table: string) => `${queryResultPrefix}${table}`;
+const rowContextPrefix = `${contextPrefix}_row_`;
+const mkRowContextKey = (table: string) => `${rowContextPrefix}${table}`;
 
 export function useDatabase() {
   return useSelector(databaseContextKey) as DatabaseConfig | undefined;
@@ -48,11 +52,44 @@ export function TablesProvider({
   );
 }
 
-export function useQuery(table: string) {
-  return useSelector(mkQueryContextKey(table)) as ApiCmsRow[] | undefined;
+export function useQueryResults(table?: string) {
+  const env = useDataEnv();
+  const tables = useTables();
+
+  if (!env) {
+    return undefined;
+  }
+
+  if (table) {
+    return {
+      table,
+      rows: (env[mkQueryContextKey(table)] ?? []) as ApiCmsRow[],
+    };
+  }
+  if (!tables) {
+    return undefined;
+  }
+
+  const matchingKeys = getClosestMatchingKeys(env, queryResultPrefix);
+  for (const key of matchingKeys) {
+    const inferredTable = tables.find(
+      (t) => mkQueryContextKey(t.identifier) === key
+    );
+    if (inferredTable) {
+      return {
+        table: inferredTable.identifier,
+        rows: (env[key] ?? []) as ApiCmsRow[],
+      };
+    }
+  }
+  return undefined;
 }
 
-export function QueryProvider({
+function getClosestMatchingKeys(env: DataDict, prefix: string) {
+  return [...Object.keys(env).reverse()].filter((k) => k.startsWith(prefix));
+}
+
+export function QueryResultProvider({
   children,
   table,
   rows,
@@ -68,8 +105,38 @@ export function QueryProvider({
   );
 }
 
-export function useRow(table: string) {
-  return useSelector(mkRowContextKey(table)) as ApiCmsRow | undefined;
+export function useRow(table?: string) {
+  const env = useDataEnv();
+  const tables = useTables();
+
+  if (!env) {
+    return undefined;
+  }
+
+  if (table) {
+    return {
+      table,
+      row: env[mkRowContextKey(table)] as ApiCmsRow | undefined,
+    };
+  }
+
+  if (!tables) {
+    return undefined;
+  }
+
+  const matchingKeys = getClosestMatchingKeys(env, rowContextPrefix);
+  for (const key of matchingKeys) {
+    const inferredTable = tables.find(
+      (t) => mkRowContextKey(t.identifier) === key
+    );
+    if (inferredTable) {
+      return {
+        table: inferredTable.identifier,
+        row: env[key] as ApiCmsRow | undefined,
+      };
+    }
+  }
+  return undefined;
 }
 
 export function RowProvider({
