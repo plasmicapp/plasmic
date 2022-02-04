@@ -56,7 +56,7 @@ export function usePlasmicQueryData<T>(key: string, fetcher: () => Promise<T>) {
   // explicitly for prepass so that if there are intervening PlasmicDataContext
   // in the tree, we don't miss out on those cache writes.  The data we collect
   // here will eventually be passed to initialize the cache in PlasmicDataContext
-  // when we do the real rendering.
+  // when we do the real rendering
   const cache = prepassCtx?.cache ?? dataCtx?.cache;
 
   // If we're doing prepass, then we are always in suspense mode, because
