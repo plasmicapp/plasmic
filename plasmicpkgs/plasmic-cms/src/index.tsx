@@ -24,7 +24,9 @@ export function registerAll(loader?: {
   //const registerContext = loader?.registerContext ?? hostRegisterContext;
   //registerContext(CmsDataProvider, cmsDataProviderMeta);
 
-  const registerComponent = loader?.registerComponent ?? hostRegisterComponent;
+  const registerComponent =
+    loader?.registerComponent.bind(loader) ?? hostRegisterComponent;
+
   registerComponent(CmsDataProvider, cmsDataProviderMeta);
   registerComponent(CmsQueryLoader, cmsQueryLoaderMeta);
   registerComponent(CmsRowRepeater, cmsRowRepeaterMeta);

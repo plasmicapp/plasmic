@@ -1163,10 +1163,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@plasmicapp/query@^0.1.12":
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.12.tgz#3107e1b3172925071552918d1b839efe484ae3f7"
-  integrity sha512-XX1Ku+7+tzR70/UFWYyp11BSF/g6SxvzYqLrfhdeiFyHCoCOrh9kaFEltVshfL78vNyQREtGFPsoJNQe+DzwPg==
+"@plasmicapp/query@^0.1.14":
+  version "0.1.14"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.14.tgz#2dd920b6817fb0bc076b7671a511db1939f2e584"
+  integrity sha512-tsgvcThkUcwlpGKbnie+T52tc9Vjo6KVH3oGejdMNwm3EjHuYBKC9tgWIweXPomxv7E+YOEbQdgBxHRrZUbogg==
   dependencies:
     react-ssr-prepass "^1.4.0"
 
