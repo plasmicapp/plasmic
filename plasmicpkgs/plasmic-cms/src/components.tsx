@@ -309,9 +309,14 @@ export function CmsRowField({
     return <div>Error: No field to display</div>;
   }
 
-  return renderValue(res.row.data[fieldMeta.identifier], fieldMeta.type, {
-    className,
-  });
+  const data = res.row.data?.[fieldMeta.identifier];
+  return data ? (
+    renderValue(data, fieldMeta.type, {
+      className,
+    })
+  ) : (
+    <div>(no data returned)</div>
+  );
 }
 
 function assertNever(_: never): never {
@@ -415,7 +420,7 @@ export function CmsRowLink({
     return <div>Error: No field to display</div>;
   }
 
-  const value = res.row.data[fieldMeta.identifier];
+  const value = res.row.data?.[fieldMeta.identifier] || "";
   const childrenWithProps = React.Children.map(children, child => {
     if (React.isValidElement(child)) {
       return React.cloneElement(child, { [hrefProp]: value });

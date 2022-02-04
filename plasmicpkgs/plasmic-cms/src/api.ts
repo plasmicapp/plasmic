@@ -49,16 +49,26 @@ class API {
   }
 
   async fetchTables(): Promise<ApiCmsTable[]> {
-    const response = await this.get(``);
-    return response.tables;
+    try {
+      const response = await this.get(``);
+      return response.tables;
+    } catch (e) {
+      console.error(e);
+      throw new Error("Cannot fetch CMS models.");
+    }
   }
 
   async query(table: string, params: QueryParams): Promise<ApiCmsRow[]> {
-    const response = await this.get(`/tables/${table}/query`, {
-      q: JSON.stringify(queryParamsToApi(params)),
-      useDraft: Number(params.useDraft),
-    });
-    return response.rows;
+    try {
+      const response = await this.get(`/tables/${table}/query`, {
+        q: JSON.stringify(queryParamsToApi(params)),
+        useDraft: Number(params.useDraft),
+      });
+      return response.rows;
+    } catch (e) {
+      console.error(e);
+      throw new Error("Query returned invalid response.");
+    }
   }
 
   async fetchRow(
@@ -66,11 +76,16 @@ class API {
     row: string,
     useDraft: boolean
   ): Promise<ApiCmsRow> {
-    const maybeUseDraft = useDraft ? `?useDraft=1` : ``;
-    const response = await this.get(
-      `/tables/${table}/rows/${row}${maybeUseDraft}`
-    );
-    return response;
+    try {
+      const maybeUseDraft = useDraft ? `?useDraft=1` : ``;
+      const response = await this.get(
+        `/tables/${table}/rows/${row}${maybeUseDraft}`
+      );
+      return response;
+    } catch (e) {
+      console.error(e);
+      throw new Error("Query returned invalid response.");
+    }
   }
 }
 

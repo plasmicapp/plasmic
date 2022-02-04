@@ -64,7 +64,7 @@ export interface ApiCmsTable {
 
 export interface ApiCmsRow {
   identifier: string;
-  data: Record<string, any>;
+  data: Record<string, any> | null;
 }
 
 type FilterClause = any;
