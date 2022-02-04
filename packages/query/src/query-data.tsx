@@ -65,9 +65,9 @@ export function usePlasmicQueryData<T>(key: string, fetcher: () => Promise<T>) {
 
   if (key in cache) {
     const { promise } = cache[key];
-    if ("data" in cache[key]) {
+    if ('data' in cache[key]) {
       return { data: cache[key].data as T };
-    } else if ("error" in cache[key]) {
+    } else if ('error' in cache[key]) {
       if (suspense) {
         throw cache[key].error;
       } else {
@@ -83,19 +83,19 @@ export function usePlasmicQueryData<T>(key: string, fetcher: () => Promise<T>) {
     }
   }
 
-  const promise = fetcher().then((data) => {
-    cache[key].data = data;
-    if (!suspense) {
-      forceUpdate();
-    }
-    return data;
-  }).catch((err) => {
-    cache[key].error = err;
-    if (!suspense) {
-      forceUpdate();
-    }
-    throw err;
-  });
+  const promise = fetcher()
+    .then((data) => {
+      cache[key].data = data;
+      if (!suspense) {
+        forceUpdate();
+      }
+    })
+    .catch((err) => {
+      cache[key].error = err;
+      if (!suspense) {
+        forceUpdate();
+      }
+    });
   cache[key] = {
     promise,
   };
