@@ -36,6 +36,8 @@ interface CmsDataProviderProps extends DatabaseConfig {
   children?: React.ReactNode;
 }
 
+const defaultHost = "https://studio.plasmic.app";
+
 // TODO: Remove `children` from props and make cmsDataProviderMeta a
 // ContextMeta.
 export const cmsDataProviderMeta: ComponentMeta<CmsDataProviderProps> = {
@@ -44,22 +46,27 @@ export const cmsDataProviderMeta: ComponentMeta<CmsDataProviderProps> = {
   importName: "CmsDataProvider",
   importPath: modulePath,
   props: {
-    apiUrl: {
+    host: {
       type: "string",
-      description: "API URL",
-      defaultValue: "https://studio.plasmic.app/api/v1",
+      displayName: "Studio URL",
+      description: `The default host for use in production is ${defaultHost}.`,
+      defaultValue: defaultHost,
+      defaultValueHint: defaultHost,
     },
     databaseId: {
       type: "string",
-      description: "Database ID",
+      displayName: "CMS ID",
+      description: "The ID of the CMS (database) to use.",
     },
     projectId: {
       type: "string",
-      description: "Project ID",
+      displayName: "Project ID",
+      description: "This project's ID.",
     },
     projectApiToken: {
       type: "string",
-      description: "Project API token",
+      displayName: "Project API token",
+      description: "This project's API token.",
     },
     children: {
       type: "slot",
@@ -72,6 +79,7 @@ export const cmsDataProviderMeta: ComponentMeta<CmsDataProviderProps> = {
 };
 
 export function CmsDataProvider({ children, ...config }: CmsDataProviderProps) {
+  config.host = config.host || defaultHost;
   return (
     <DatabaseProvider config={config}>
       <TablesFetcher>{children}</TablesFetcher>
@@ -90,7 +98,7 @@ function TablesFetcher({ children }: { children: React.ReactNode }) {
     mkApi(databaseConfig).fetchTables()
   );
 
-  return renderMaybeData<ApiCmsTable[]>(maybeData, (tables) => (
+  return renderMaybeData<ApiCmsTable[]>(maybeData, tables => (
     <TablesProvider tables={tables}>{children}</TablesProvider>
   ));
 }
@@ -121,31 +129,38 @@ export const cmsQueryLoaderMeta: ComponentMeta<CmsQueryLoaderProps> = {
     },
     table: {
       type: "choice",
-      description: "Table identifier",
+      displayName: "Model",
+      description: "CMS model (table) to query.",
       options: (_, ctx) => mkTableOptions(ctx?.tables),
     },
     useDraft: {
       type: "boolean",
-      description: "Use drafts?",
+      displayName: "Use drafts?",
+      description: "If set, also query unpublished content.",
       defaultValue: false,
     },
     where: {
       type: "object",
-      description: "Filter",
+      displayName: "Filter",
+      description: "Filter clause, in JSON format.",
     },
     orderBy: {
       type: "choice",
-      description: "Order by",
+      displayName: "Order by",
+      description: "Field to order by.",
       options: ({ table }, ctx) => mkFieldOptions(ctx?.tables, table),
     },
     desc: {
       type: "boolean",
-      description: "Descending order?",
+      displayName: "Sort descending?",
+      description: 'Sort descending by "Order by" field.',
       defaultValue: false,
     },
     limit: {
       type: "number",
-      description: "Limit",
+      displayName: "Limit",
+      description: "Maximum number of entries to fetch (0 for unlimited).",
+      defaultValue: 0,
     },
   },
 };
@@ -171,13 +186,13 @@ export function CmsQueryLoader({
   const maybeData = usePlasmicQueryData(cacheKey, async () => {
     if (!table) {
       throw new Error(`You must select a table to query`);
-    } else if (tables && !tables.find((t) => t.identifier === table)) {
+    } else if (tables && !tables.find(t => t.identifier === table)) {
       throw new Error(`There is no table called "${table}"`);
     }
     return mkApi(databaseConfig).query(table, params);
   });
 
-  return renderMaybeData<ApiCmsRow[]>(maybeData, (rows) => (
+  return renderMaybeData<ApiCmsRow[]>(maybeData, rows => (
     <QueryResultProvider table={table!} rows={rows}>
       {children}
     </QueryResultProvider>
@@ -204,7 +219,8 @@ export const cmsRowRepeaterMeta: ComponentMeta<CmsRowRepeaterProps> = {
     },
     table: {
       type: "choice",
-      description: "Table identifier",
+      displayName: "Model",
+      description: "CMS model (table) to use.",
       options: (_, ctx) => mkTableOptions(ctx?.tables),
     },
   },
@@ -251,12 +267,14 @@ export const cmsRowFieldMeta: ComponentMeta<CmsRowFieldProps> = {
   props: {
     table: {
       type: "choice",
-      description: "Table identifier",
+      displayName: "Model",
+      description: "CMS model (table) to use.",
       options: (_, ctx) => mkTableOptions(ctx?.tables),
     },
     field: {
       type: "choice",
-      description: "Field identifier",
+      displayName: "Field",
+      description: "Field (from model schema) to use.",
       options: ({ table }, ctx) =>
         mkFieldOptions(ctx?.tables, ctx?.table ?? table),
     },
@@ -281,9 +299,9 @@ export function CmsRowField({
     setControlContextData?.({ tables, table: res.table });
   }
 
-  const schema = tables?.find((t) => t.identifier === res.table)?.schema;
+  const schema = tables?.find(t => t.identifier === res.table)?.schema;
   const fieldMeta = field
-    ? schema?.fields.find((f) => f.identifier === field)
+    ? schema?.fields.find(f => f.identifier === field)
     : schema?.fields[0];
 
   if (!fieldMeta) {
@@ -324,7 +342,8 @@ function renderValue(value: any, type: CmsType, props: { className?: string }) {
   }
 }
 
-interface CmsRowLinkProps extends CanvasComponentProps<TablesContextData> {
+interface CmsRowLinkProps
+  extends CanvasComponentProps<TablesContextData & { table: string }> {
   table: string;
   field: string;
   hrefProp: string;
@@ -347,16 +366,20 @@ export const cmsRowLinkMeta: ComponentMeta<CmsRowLinkProps> = {
     },
     table: {
       type: "choice",
-      description: "Table identifier",
+      displayName: "Model",
+      description: "CMS model (table) to use.",
       options: (_, ctx) => mkTableOptions(ctx?.tables),
     },
     field: {
       type: "choice",
-      description: "Field identifier",
-      options: ({ table }, ctx) => mkFieldOptions(ctx?.tables, table),
+      displayName: "Field",
+      description: "Field (from model schema) to use.",
+      options: ({ table }, ctx) =>
+        mkFieldOptions(ctx?.tables, ctx?.table ?? table),
     },
     hrefProp: {
       type: "string",
+      displayName: '"href" prop',
       description: "Prop to inject into children",
       defaultValue: "href",
     },
@@ -371,27 +394,28 @@ export function CmsRowLink({
   setControlContextData,
 }: CmsRowLinkProps) {
   const tables = useTables();
-  if (tables) {
-    // TODO: Only include table if __plasmic_cms_row_{table} exists.
-    setControlContextData?.({ tables });
-  }
 
   const res = useRow(table);
   if (!res || !res.row) {
     return <div>Error: No CMS row found</div>;
   }
 
-  const schema = tables?.find((t) => t.identifier === res.table)?.schema;
+  if (tables) {
+    // TODO: Only include table if __plasmic_cms_row_{table} exists.
+    setControlContextData?.({ tables, table: res.table });
+  }
+
+  const schema = tables?.find(t => t.identifier === res.table)?.schema;
   const fieldMeta = field
-    ? schema?.fields.find((f) => f.identifier === field)
-    : schema?.fields.find((f) => f.type === "text");
+    ? schema?.fields.find(f => f.identifier === field)
+    : schema?.fields.find(f => f.type === "text");
 
   if (!fieldMeta) {
     return <div>Error: No field to display</div>;
   }
 
   const value = res.row.data[fieldMeta.identifier];
-  const childrenWithProps = React.Children.map(children, (child) => {
+  const childrenWithProps = React.Children.map(children, child => {
     if (React.isValidElement(child)) {
       return React.cloneElement(child, { [hrefProp]: value });
     }
@@ -421,18 +445,21 @@ export const cmsRowLoaderMeta: ComponentMeta<CmsRowLoaderProps> = {
         name: `${componentPrefix}-row-field`,
       },
     },
-    table: {
-      type: "choice",
-      description: "Table identifier",
-      options: (_, ctx) => mkTableOptions(ctx?.tables),
-    },
     row: {
       type: "string",
-      description: "Row identifier",
+      displayName: "Entry ID",
+      description: "Row identifier to query.",
+    },
+    table: {
+      type: "choice",
+      displayName: "Model",
+      description: "CMS model (table) to query.",
+      options: (_, ctx) => mkTableOptions(ctx?.tables),
     },
     useDraft: {
       type: "boolean",
-      description: "Use drafts?",
+      displayName: "Use drafts?",
+      description: "If set, also query unpublished content.",
       defaultValue: false,
     },
   },
@@ -461,7 +488,7 @@ export function CmsRowLoader({
   const maybeData = usePlasmicQueryData(cacheKey, async () =>
     mkApi(databaseConfig).fetchRow(table, row, useDraft)
   );
-  return renderMaybeData<ApiCmsRow>(maybeData, (row) => (
+  return renderMaybeData<ApiCmsRow>(maybeData, row => (
     <RowProvider table={table} row={row}>
       {children}
     </RowProvider>

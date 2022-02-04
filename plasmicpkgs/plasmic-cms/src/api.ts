@@ -1,7 +1,7 @@
 import { ApiCmsQuery, ApiCmsRow, ApiCmsTable } from "./schema";
 
 export interface DatabaseConfig {
-  apiUrl: string;
+  host: string;
   projectId: string;
   projectApiToken: string;
   databaseId: string;
@@ -33,7 +33,7 @@ class API {
 
   async get(endpoint: string, params: {} = {}) {
     const url = new URL(
-      `${this.config.apiUrl}/cms/databases/${this.config.databaseId}${endpoint}`
+      `${this.config.host}/api/v1/cms/databases/${this.config.databaseId}${endpoint}`
     );
     url.search = new URLSearchParams(params).toString();
     const response = await fetch(url.toString(), {
