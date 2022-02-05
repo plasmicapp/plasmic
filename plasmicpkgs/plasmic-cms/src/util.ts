@@ -12,7 +12,7 @@ export function mkTableOptions(
     return [];
   }
 
-  return tables.map(table => ({
+  return tables.map((table) => ({
     value: table.identifier,
     label: table.name,
   }));
@@ -26,13 +26,13 @@ export function mkFieldOptions(
     return [];
   }
 
-  const table = tables.find(t => t.identifier === tableId);
+  const table = tables.find((t) => t.identifier === tableId);
   if (!table) {
     return [];
   }
 
-  return table.schema.fields.map(f => ({
+  return table.schema.fields.map((f) => ({
     value: f.identifier,
-    label: f.name,
+    label: f.name ?? f.identifier,
   }));
 }
