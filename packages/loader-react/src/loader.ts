@@ -12,6 +12,7 @@ import {
   PlasmicModulesFetcher,
   Registry,
 } from '@plasmicapp/loader-core';
+import * as PlasmicQuery from '@plasmicapp/query';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import * as jsxDevRuntime from 'react/jsx-dev-runtime';
@@ -64,6 +65,10 @@ export function initPlasmicLoader(opts: InitOptions): PlasmicComponentLoader {
     'react-dom': ReactDOM,
     'react/jsx-runtime': jsxRuntime,
     'react/jsx-dev-runtime': jsxDevRuntime,
+
+    // Also inject @plasmicapp/query at run time, so that the same
+    // context is used here and in loader-downloaded code
+    '@plasmicapp/query': PlasmicQuery,
   });
   return new PlasmicComponentLoader(internal);
 }
@@ -118,7 +123,7 @@ export class InternalPlasmicComponentLoader {
   registerModules(modules: Record<string, any>) {
     if (
       Object.keys(modules).some(
-        name => this.registry.getRegisteredModule(name) !== modules[name]
+        (name) => this.registry.getRegisteredModule(name) !== modules[name]
       )
     ) {
       if (!this.registry.isEmpty()) {
@@ -261,7 +266,7 @@ export class InternalPlasmicComponentLoader {
     );
     const data = await this.fetchAllData();
     return data.components.filter(
-      comp => comp.isPage && comp.path
+      (comp) => comp.isPage && comp.path
     ) as PageMeta[];
   }
 
@@ -285,7 +290,7 @@ export class InternalPlasmicComponentLoader {
     this.maybeReportClientSideFetch(
       () =>
         `Plasmic: fetching missing components in the browser: ${opts.missingSpecs
-          .map(spec => getLookupSpecName(spec))
+          .map((spec) => getLookupSpecName(spec))
           .join(', ')}`
     );
     return this.fetchAllData();
@@ -305,7 +310,7 @@ export class InternalPlasmicComponentLoader {
   private async fetchAllData() {
     const bundle = await this.ensureFetcher().fetchAllData();
     this.mergeBundle(bundle);
-    this.roots.forEach(watcher => watcher.onDataFetched?.());
+    this.roots.forEach((watcher) => watcher.onDataFetched?.());
     return bundle;
   }
 
