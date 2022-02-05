@@ -33,6 +33,6 @@ export function mkFieldOptions(
 
   return table.schema.fields.map((f) => ({
     value: f.identifier,
-    label: f.name ?? f.identifier,
+    label: f.name || f.identifier,
   }));
 }
