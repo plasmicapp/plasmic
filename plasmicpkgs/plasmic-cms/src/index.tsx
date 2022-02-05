@@ -1,7 +1,6 @@
-import {
-  registerComponent as hostRegisterComponent,
-  registerContext as hostRegisterContext,
-} from "@plasmicapp/host";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import {
   CmsDataProvider,
   cmsDataProviderMeta,
@@ -18,19 +17,26 @@ import {
 } from "./components";
 
 export function registerAll(loader?: {
-  registerComponent: typeof hostRegisterComponent;
-  registerContext: typeof hostRegisterContext;
+  registerComponent: typeof registerComponent;
 }) {
   //const registerContext = loader?.registerContext ?? hostRegisterContext;
   //registerContext(CmsDataProvider, cmsDataProviderMeta);
 
-  const registerComponent =
-    loader?.registerComponent.bind(loader) ?? hostRegisterComponent;
+  const _registerComponent = <T extends React.ComponentType<any>>(
+    Component: T,
+    defaultMeta: ComponentMeta<React.ComponentProps<T>>
+  ) => {
+    if (loader) {
+      loader.registerComponent(Component, defaultMeta);
+    } else {
+      registerComponent(Component, defaultMeta);
+    }
+  };
 
-  registerComponent(CmsDataProvider, cmsDataProviderMeta);
-  registerComponent(CmsQueryLoader, cmsQueryLoaderMeta);
-  registerComponent(CmsRowRepeater, cmsRowRepeaterMeta);
-  registerComponent(CmsRowField, cmsRowFieldMeta);
-  registerComponent(CmsRowLink, cmsRowLinkMeta);
-  registerComponent(CmsRowLoader, cmsRowLoaderMeta);
+  _registerComponent(CmsDataProvider, cmsDataProviderMeta);
+  _registerComponent(CmsQueryLoader, cmsQueryLoaderMeta);
+  _registerComponent(CmsRowRepeater, cmsRowRepeaterMeta);
+  _registerComponent(CmsRowField, cmsRowFieldMeta);
+  _registerComponent(CmsRowLink, cmsRowLinkMeta);
+  _registerComponent(CmsRowLoader, cmsRowLoaderMeta);
 }
