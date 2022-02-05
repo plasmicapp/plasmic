@@ -40,3 +40,5 @@ export function registerAll(loader?: {
   _registerComponent(CmsRowLink, cmsRowLinkMeta);
   _registerComponent(CmsRowLoader, cmsRowLoaderMeta);
 }
+
+export * from "./components";
