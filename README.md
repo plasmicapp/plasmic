@@ -194,7 +194,7 @@ This repo contains the code for all Plasmic component store packages (`plasmicpk
 
 These are the code component registrations that are available in Plasmic's central component store.
 
-See the contributor instructions in [plasmicpkgs/README](plasmicpkgs/README).
+See the contributor instructions in [plasmicpkgs/README.md](plasmicpkgs/README.md).
 
 # Contributing to client libraries/SDKs (`packages`)
 
