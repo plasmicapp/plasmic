@@ -1,6 +1,6 @@
 export * from "./Data";
-// export * from "./Embed";
-// export { default as Embed } from "./Embed";
+export * from "./Embed";
+export { default as Embed } from "./Embed";
 export * from "./Iframe";
 export { default as Iframe } from "./Iframe";
 export * from "./ScrollRevealer";

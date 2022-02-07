@@ -10,7 +10,7 @@ export interface EmbedProps {
   hideInEditor?: boolean;
 }
 
-/* export default */ function Embed({
+export default function Embed({
   className,
   code,
   hideInEditor = false,
@@ -43,7 +43,7 @@ export interface EmbedProps {
 
 export const embedMeta: ComponentMeta<EmbedProps> = {
   name: "hostless-embed",
-  displayName: "Embed",
+  displayName: "Embed HTML",
   importName: "Embed",
   importPath: "@plasmicpkgs/plasmic-basic-components",
   props: {
