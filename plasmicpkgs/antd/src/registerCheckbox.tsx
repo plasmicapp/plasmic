@@ -57,7 +57,7 @@ export const checkboxMeta: ComponentMeta<CheckboxProps> = {
   importPath: "antd/lib/checkbox/Checkbox",
   importName: "Checkbox",
   defaultStyles: {
-    marginLeft: "0",
+    marginLeft: 0,
   },
   isDefaultExport: true,
 };
