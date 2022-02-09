@@ -17,7 +17,7 @@ export interface BaseTextInputProps
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
   isDisabled?: boolean;
-  type?: "text" | "password" | "email" | "url";
+  type?: "text" | "password" | "email" | "url" | string;
   inputClassName?: string;
   inputStyle?: React.CSSProperties;
 }
