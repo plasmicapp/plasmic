@@ -4,7 +4,7 @@ import "@plasmicapp/preamble";
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { registerFetcher as unstable_registerFetcher } from "./data";
+import { registerFetcher as unstable_registerFetcher } from "./fetcher";
 import { PlasmicElement } from "./element-types";
 import { ensure } from "./lang-utils";
 import registerComponent, {
@@ -40,6 +40,7 @@ export {
   GlobalContextPropType,
 };
 export { PlasmicElement };
+export * from "./data";
 
 declare global {
   interface Window {
