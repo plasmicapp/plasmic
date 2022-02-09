@@ -39,6 +39,11 @@ export interface GlobalVariantBundle {
   contextFileName: string;
 }
 
+export interface GlobalContextBundle {
+  id: string;
+  contextModule: string;
+}
+
 export interface JsBundleTheme {
   themeFileName: string;
   themeModule: string;
@@ -51,6 +56,7 @@ export interface ProjectMetaBundle {
   cssFileName: string;
   cssRules: string;
   jsBundleThemes?: JsBundleTheme[];
+  globalContextBundle?: GlobalContextBundle;
 }
 
 export interface IconBundle {
@@ -142,6 +148,8 @@ export interface ChecksumBundle {
   globalVariantChecksums: Array<[string, string]>;
   // Checksum of projectCss file
   projectCssChecksum: string;
+  // Checksum of project global contexts
+  globalContextsChecksum: string;
 }
 
 export interface CodeComponentMeta {

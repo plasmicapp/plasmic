@@ -8,6 +8,7 @@ import * as Prettier from "prettier";
 import { Options, resolveConfig } from "prettier";
 import * as ts from "typescript";
 import path from "upath";
+import { getGlobalContextsResourcePath } from "../actions/sync-global-contexts";
 import {
   fixComponentCssReferences,
   fixComponentImagesReferences,
@@ -17,6 +18,7 @@ import { HandledError } from "../utils/error";
 import {
   CodeComponentConfig,
   ComponentConfig,
+  CONFIG_FILE_NAME,
   GlobalVariantGroupConfig,
   IconConfig,
   ImageConfig,
@@ -473,6 +475,7 @@ export async function fixAllImportStatements(
       }
     }
   }
+  fixGlobalContextImportStatements(context, fixImportContext, baseDir);
 }
 
 async function fixComponentImportStatements(
@@ -654,3 +657,42 @@ export const formatScript = (code: string, baseDir: string) => {
     useTabs: false,
   });
 };
+
+async function fixGlobalContextImportStatements(
+  context: PlasmicContext,
+  fixImportContext: FixImportContext,
+  baseDir: string
+) {
+  for (const project of context.config.projects) {
+    if (!project.globalContextsFilePath) continue;
+    const resourcePath = getGlobalContextsResourcePath(context, project);
+
+    let prevContent: string;
+    try {
+      prevContent = readFileText(
+        makeFilePath(context, resourcePath)
+      ).toString();
+    } catch (e) {
+      logger.warn(
+        `${resourcePath} is missing. If you deleted this component, remember to remove the component from ${CONFIG_FILE_NAME}`
+      );
+      throw e;
+    }
+
+    const newContent = replaceImports(
+      context,
+      prevContent,
+      resourcePath,
+      fixImportContext,
+      false,
+      baseDir,
+      true
+    );
+
+    if (prevContent !== newContent) {
+      await writeFileContent(context, resourcePath, newContent, {
+        force: true,
+      });
+    }
+  }
+}

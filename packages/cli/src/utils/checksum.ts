@@ -25,6 +25,7 @@ export function getChecksums(
       cssRulesChecksums: [],
       globalVariantChecksums: [],
       projectCssChecksum: "",
+      globalContextsChecksum: "",
     };
   }
 
@@ -95,6 +96,16 @@ export function getChecksums(
   const projectCssChecksum =
     projectCssChecksums.length > 0 ? projectCssChecksums[0].checksum : "";
 
+  const globalContextsChecksums = fileLocks.filter(
+    (fileLock) =>
+      fileLock.type === "globalContexts" && fileLock.assetId === projectId
+  );
+  assert(globalContextsChecksums.length < 2);
+  const globalContextsChecksum =
+    globalContextsChecksums.length > 0
+      ? globalContextsChecksums[0].checksum
+      : "";
+
   return {
     imageChecksums,
     iconChecksums,
@@ -102,5 +113,6 @@ export function getChecksums(
     cssRulesChecksums,
     globalVariantChecksums,
     projectCssChecksum,
+    globalContextsChecksum,
   };
 }

@@ -159,6 +159,8 @@ export interface ProjectConfig {
   version: string;
   /** File location for the project-wide css styles. Relative to srcDir */
   cssFilePath: string;
+  /** File location for the project-wide global contexts. Relative to srcDir */
+  globalContextsFilePath: string;
 
   // Code-component-related fields can be treated as optional not to be shown
   // to the users nor appear to be missing in the documentation.
@@ -197,6 +199,7 @@ export function createProjectConfig(base: {
     icons: [],
     images: [],
     indirect: base.indirect,
+    globalContextsFilePath: "",
   };
 }
 
@@ -299,7 +302,8 @@ export interface FileLock {
     | "icon"
     | "image"
     | "projectCss"
-    | "globalVariant";
+    | "globalVariant"
+    | "globalContexts";
   // The checksum value for the file
   checksum: string;
   // The component id, or the image asset id
@@ -530,6 +534,7 @@ export function getOrAddProjectConfig(
           images: [],
           jsBundleThemes: [],
           indirect: false,
+          globalContextsFilePath: "",
         };
     context.config.projects.push(project);
   }
