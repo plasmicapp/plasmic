@@ -320,6 +320,10 @@ export interface ComponentMeta<P> {
    * Registered name of parent component, used for grouping related components.
    */
   parentComponentName?: string;
+  /**
+   * Whether the component can be used as an attachment to an element.
+   */
+  isAttachment?: boolean;
 }
 
 export interface ComponentRegistration {
