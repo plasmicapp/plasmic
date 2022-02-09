@@ -19,13 +19,14 @@ export default function EmbedCss({
 
 export const embedCssMeta: ComponentMeta<EmbedCssProps> = { 
   name: "hostless-embed-css",
-  displayName: "EmbedCss",
+  displayName: "Embed Css",
   importName: "EmbedCss",
   importPath: "@plasmicpkgs/plasmic-basic-components",
   props: {
     css: {
-      type: "string",
-      defaultValueHint: "Some CSS snippet",
+      type: "code",
+      lang: "css",
+      defaultValueHint: "/* CSS snippet */",
       description: "CSS rules to be inserted",
     },
   },
