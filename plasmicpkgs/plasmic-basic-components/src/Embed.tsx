@@ -48,8 +48,10 @@ export const embedMeta: ComponentMeta<EmbedProps> = {
   importPath: "@plasmicpkgs/plasmic-basic-components",
   props: {
     code: {
-      type: "string",
-      defaultValue: "https://www.example.com",
+      type: "code",
+      lang: "html",
+      defaultValueHint: "<!-- HTML snippet -->",
+      description: "The HTML code to be embedded",
     },
     hideInEditor: {
       type: "boolean",
