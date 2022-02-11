@@ -2,8 +2,8 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import {
-  CmsDataProvider,
-  cmsDataProviderMeta,
+  CmsCredentialsProvider,
+  cmsCredentialsProviderMeta,
   CmsQueryLoader,
   cmsQueryLoaderMeta,
   CmsRowField,
@@ -33,7 +33,7 @@ export function registerAll(loader?: {
     }
   };
 
-  _registerComponent(CmsDataProvider, cmsDataProviderMeta);
+  _registerComponent(CmsCredentialsProvider, cmsCredentialsProviderMeta);
   _registerComponent(CmsQueryLoader, cmsQueryLoaderMeta);
   _registerComponent(CmsRowRepeater, cmsRowRepeaterMeta);
   _registerComponent(CmsRowField, cmsRowFieldMeta);
