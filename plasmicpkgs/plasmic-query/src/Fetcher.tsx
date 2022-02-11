@@ -2,7 +2,7 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { usePlasmicQueryData } from "@plasmicapp/query";
-import { DataProvider } from "@plasmicpkgs/plasmic-basic-components";
+import { DataProvider } from "@plasmicapp/host";
 import React, { ReactNode } from "react";
 
 export interface FetchProps {

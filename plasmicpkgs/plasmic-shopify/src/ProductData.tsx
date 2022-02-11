@@ -1,13 +1,14 @@
-import { PlasmicCanvasContext, repeatedElement } from "@plasmicapp/host";
+import {
+  PlasmicCanvasContext,
+  repeatedElement,
+  DataProvider,
+  useSelector,
+} from "@plasmicapp/host";
 import registerComponent, {
   CanvasComponentProps,
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { usePlasmicQueryData } from "@plasmicapp/query";
-import {
-  DataProvider,
-  useSelector,
-} from "@plasmicpkgs/plasmic-basic-components";
 import React, {
   createContext,
   CSSProperties,
@@ -309,7 +310,7 @@ export const ShopInfoContext = createContext<ShopInfo | undefined>(undefined);
 function useFetch<T>(key: string, fetch: () => Promise<T>) {
   const [data, setData] = useState<T | undefined>(undefined);
   useEffect(() => {
-    fetch().then((res) => setData(res));
+    fetch().then(res => setData(res));
   }, [key]);
   return data;
 }
@@ -351,8 +352,8 @@ function ShopInfoFetcher({ children }: { children: ReactNode }) {
     const productEdges: { node: ProductData }[] =
       (products?.data).products.edges ?? [];
     return {
-      collections: collectionEdges.map((edge) => edge.node),
-      products: productEdges.map((edge) => edge.node),
+      collections: collectionEdges.map(edge => edge.node),
+      products: productEdges.map(edge => edge.node),
     };
   });
   return (
@@ -422,7 +423,7 @@ function useProductCollectionData(
         ? data?.data.collectionByHandle
         : data?.data
       ).products.edges;
-      return productEdges?.map((edge) => edge.node);
+      return productEdges?.map(edge => edge.node);
     }
   );
   return maybeData;
@@ -525,7 +526,7 @@ export function ProductCollection({
     });
   }
   if (variantOptions != null) {
-    variantOptions.forEach((opt) =>
+    variantOptions.forEach(opt =>
       params.product_filters?.push({ variantOption: opt })
     );
   }
@@ -722,14 +723,14 @@ export const productCollectionMeta: ComponentMeta<ProductCollectionProps> = {
       type: "string",
       displayName: "Query",
       description: "Query string that uses Shopify's search syntax",
-      hidden: (props) => props.collectionHandle != null,
+      hidden: props => props.collectionHandle != null,
     },
     collectionHandle: {
       type: "choice",
       displayName: "Collection Handle",
       description: "The handle of the Collection",
       options: (_props, shopInfo: ShopInfo | null) =>
-        shopInfo?.collections.map((c) => ({
+        shopInfo?.collections.map(c => ({
           value: c.handle,
           label: c.title,
         })) ?? [],
@@ -750,19 +751,19 @@ export const productCollectionMeta: ComponentMeta<ProductCollectionProps> = {
       type: "boolean",
       displayName: "Available",
       description: "Filter products by availability",
-      hidden: (props) => props.collectionHandle == null,
+      hidden: props => props.collectionHandle == null,
     },
     minPrice: {
       type: "number",
       displayName: "Min Price",
       description: "Filter products by price range",
-      hidden: (props) => props.collectionHandle == null,
+      hidden: props => props.collectionHandle == null,
     },
     maxPrice: {
       type: "number",
       displayName: "Max Price",
       description: "Filter products by price range",
-      hidden: (props) => props.collectionHandle == null,
+      hidden: props => props.collectionHandle == null,
     },
     children: {
       type: "slot",
@@ -883,7 +884,9 @@ export const shopifyCredentialsProviderMeta: ComponentMeta<ShopifyCredentialsPro
 
 export function registerShopifyCredentialsProvider(
   loader?: { registerComponent: typeof registerComponent },
-  customShopifyCredentialsProviderMeta?: ComponentMeta<ShopifyCredentialsProviderProps>
+  customShopifyCredentialsProviderMeta?: ComponentMeta<
+    ShopifyCredentialsProviderProps
+  >
 ) {
   if (loader) {
     loader.registerComponent(
@@ -910,7 +913,7 @@ export const shopifyProductMeta: ComponentMeta<ShopifyProductProps> = {
       description: "The handle of the product",
       defaultValue: "monte-shirt",
       options: (_props, shopInfo: ShopInfo | null) =>
-        shopInfo?.products.map((p) => ({
+        shopInfo?.products.map(p => ({
           value: p.handle,
           label: p.title,
         })) ?? [],

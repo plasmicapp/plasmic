@@ -3,7 +3,7 @@ import {
   DataProvider,
   useDataEnv,
   useSelector,
-} from "@plasmicpkgs/plasmic-basic-components";
+} from "@plasmicapp/host";
 import React from "react";
 import { DatabaseConfig } from "./api";
 import { ApiCmsRow, ApiCmsTable } from "./schema";
@@ -73,7 +73,7 @@ export function useQueryResults(table?: string) {
   const matchingKeys = getClosestMatchingKeys(env, queryResultPrefix);
   for (const key of matchingKeys) {
     const inferredTable = tables.find(
-      (t) => mkQueryContextKey(t.identifier) === key
+      t => mkQueryContextKey(t.identifier) === key
     );
     if (inferredTable) {
       return {
@@ -86,7 +86,7 @@ export function useQueryResults(table?: string) {
 }
 
 function getClosestMatchingKeys(env: DataDict, prefix: string) {
-  return [...Object.keys(env).reverse()].filter((k) => k.startsWith(prefix));
+  return [...Object.keys(env).reverse()].filter(k => k.startsWith(prefix));
 }
 
 export function QueryResultProvider({
@@ -127,7 +127,7 @@ export function useRow(table?: string) {
   const matchingKeys = getClosestMatchingKeys(env, rowContextPrefix);
   for (const key of matchingKeys) {
     const inferredTable = tables.find(
-      (t) => mkRowContextKey(t.identifier) === key
+      t => mkRowContextKey(t.identifier) === key
     );
     if (inferredTable) {
       return {

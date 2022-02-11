@@ -1,13 +1,14 @@
-import { PlasmicCanvasContext, repeatedElement } from "@plasmicapp/host";
+import {
+  PlasmicCanvasContext,
+  repeatedElement,
+  DataProvider,
+  useSelector,
+} from "@plasmicapp/host";
 import registerComponent, {
   CanvasComponentProps,
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { usePlasmicQueryData } from "@plasmicapp/query";
-import {
-  DataProvider,
-  useSelector,
-} from "@plasmicpkgs/plasmic-basic-components";
 import React, { CSSProperties, ReactNode, useContext } from "react";
 const swell = require("swell-js");
 
@@ -471,7 +472,7 @@ export const registerProductCollectionFetcher = _makeRegisterComponent(
         displayName: "Category",
         description: "Filter products by category",
         options: (_props, shopInfo: ShopInfo | null) =>
-          shopInfo?.categories.map((c) => ({
+          shopInfo?.categories.map(c => ({
             value: c.slug,
             label: c.name,
           })) ?? [],
@@ -594,7 +595,7 @@ export const registerProductFetcher = _makeRegisterComponent(ProductFetcher, {
       displayName: "Product",
       description: "The product slug",
       options: (_props, shopInfo: ShopInfo | null) =>
-        shopInfo?.products.map((p) => ({
+        shopInfo?.products.map(p => ({
           value: p.slug,
           label: p.name,
         })) ?? [],
