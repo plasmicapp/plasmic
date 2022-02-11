@@ -51,6 +51,7 @@ export function prepComponentData(
     'entrypoint.css',
     ...compPaths,
     'root-provider.js',
+    ...bundle.projects.map(x => x.globalContextsProviderFileName).filter(x => !!x),
     ...bundle.globalGroups.map((g) => g.contextFile)
   );
 

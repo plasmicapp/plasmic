@@ -10,6 +10,7 @@ import { useForceUpdate } from './utils';
 
 interface PlasmicRootContextValue {
   globalVariants?: GlobalVariantSpec[];
+  globalContextsProps?: Record<string, any>;
   loader: InternalPlasmicComponentLoader;
 }
 
@@ -69,6 +70,13 @@ export function PlasmicRootProvider(props: {
    * (throwing promises).
    */
   suspenseForQueryData?: boolean;
+
+  /**
+   * Override your Global Contexts Provider props. This is a map from
+   * globalContextComponentNameProps to object of props to use for that
+   * component.
+   */
+  globalContextsProps?: Record<string, any>;
 }) {
   const {
     globalVariants,
@@ -78,6 +86,7 @@ export function PlasmicRootProvider(props: {
     skipFonts,
     prefetchedQueryData,
     suspenseForQueryData,
+    globalContextsProps,
   } = props;
   const loader = (props.loader as any)
     .__internal as InternalPlasmicComponentLoader;
@@ -88,9 +97,10 @@ export function PlasmicRootProvider(props: {
   const value = React.useMemo<PlasmicRootContextValue>(
     () => ({
       globalVariants,
+      globalContextsProps,
       loader,
     }),
-    [globalVariants, loader]
+    [globalVariants, globalContextsProps, loader]
   );
 
   return (
@@ -160,14 +170,11 @@ function buildCss(
   const { scopedCompMetas, skipFonts } = opts;
   const cssFiles =
     scopedCompMetas &&
-    new Set<string>([
-      'entrypoint.css',
-      ...scopedCompMetas.map((c) => c.cssFile),
-    ]);
+    new Set<string>(['entrypoint.css', ...scopedCompMetas.map(c => c.cssFile)]);
   const cssModules = loader
     .getLookup()
     .getCss()
-    .filter((f) => !cssFiles || cssFiles.has(f.fileName));
+    .filter(f => !cssFiles || cssFiles.has(f.fileName));
 
   const getPri = (fileName: string) => (fileName === 'entrypoint.css' ? 0 : 1);
   const compareModules = (a: AssetModule, b: AssetModule) =>
@@ -183,9 +190,9 @@ function buildCss(
     ${
       skipFonts
         ? ''
-        : remoteFonts.map((f) => `@import url('${f.url}');`).join('\n')
+        : remoteFonts.map(f => `@import url('${f.url}');`).join('\n')
     }
-    ${cssModules.map((mod) => mod.source).join('\n')}
+    ${cssModules.map(mod => mod.source).join('\n')}
   `;
 }
 

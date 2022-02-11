@@ -1,5 +1,8 @@
 import * as React from 'react';
-import { usePlasmicRootContext } from './PlasmicRootProvider';
+import {
+  usePlasmicRootContext,
+  PlasmicRootProvider,
+} from './PlasmicRootProvider';
 import { usePlasmicComponent } from './usePlasmicComponent';
 
 const PlasmicComponentContext = React.createContext(false);
@@ -57,13 +60,33 @@ export function PlasmicComponent(props: {
     // "root-most PlasmicComponent"; we won't risk invalidating the sub-tree
     // here because there were no children before the data came in.
     const ReactWebRootProvider = lookup.getRootProvider();
+    const GlobalContextsProvider = lookup.getGlobalContextsProvider(projectId);
     element = (
       <ReactWebRootProvider>
-        <PlasmicComponentContext.Provider value={true}>
-          {element}
-        </PlasmicComponentContext.Provider>
+        <MaybeWrap
+          cond={!!GlobalContextsProvider}
+          wrapper={children => (
+            <GlobalContextsProvider {...rootContext.globalContextsProps}>
+              {children}
+            </GlobalContextsProvider>
+          )}
+        >
+          <PlasmicComponentContext.Provider value={true}>
+            {element}
+          </PlasmicComponentContext.Provider>
+        </MaybeWrap>
       </ReactWebRootProvider>
     );
   }
   return element;
+}
+
+function MaybeWrap(props: {
+  children: React.ReactNode;
+  cond: boolean;
+  wrapper: (children: React.ReactNode) => React.ReactElement;
+}) {
+  return (props.cond
+    ? props.wrapper(props.children)
+    : props.children) as React.ReactElement;
 }
