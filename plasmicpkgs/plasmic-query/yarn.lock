@@ -1084,17 +1084,25 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@plasmicapp/host@^1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.7.tgz#dce1f83ceab2ad8f7513d1855b643015cdebdf0e"
+  integrity sha512-ia9yBitIkBFdnvcjIV7yGmXpOAG8Nr4i/j+ORBvhnaeF90FoMSAkaFMACwojrMZvpcL3nevXf7v3Rk5urgTicA==
+  dependencies:
+    "@plasmicapp/preamble" "0.0.42"
+    window-or-global "^1.0.1"
+
+"@plasmicapp/preamble@0.0.42":
+  version "0.0.42"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/preamble/-/preamble-0.0.42.tgz#76925a2c42b3d00280a8f5baf8e84477c581f0cb"
+  integrity sha512-tj1KbrPKBenWi/R7smzacBGRrgSEFHgG4Kjo2Ba1LoJXam0/B/j4rvzNwI7ejReg8J7ZqNG7F/XlQUDknDNzLg==
+
 "@plasmicapp/query@^0.1.6":
   version "0.1.6"
   resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.6.tgz#b3ffb6f1058f836e6f19eebfaa895a3f9e3395fa"
   integrity sha512-vAEofRnx2d2MT4Ut1tLsVjd2AWZ6x4DMHdq8ZoVH+3hfhXBzaHg+EY1zNuB7wIphq6vNq1qTqxPVxxDtz5eS5Q==
   dependencies:
     react-ssr-prepass "^1.4.0"
-
-"@plasmicpkgs/plasmic-basic-components@^0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-basic-components/-/plasmic-basic-components-0.0.7.tgz#16031ed95c32d3f4bc39011bdd5ba0740808c676"
-  integrity sha512-FrgXfr61gRhSOUa+Uib74BYLXmxKIfzqI8AmNcnh/JtYL3uPpMnkt0Jaev83HFYbQVccJM9kz2EBo8HQIcdC/w==
 
 "@polka/url@^1.0.0-next.20":
   version "1.0.0-next.21"
@@ -8332,6 +8340,11 @@ which@^2.0.1, which@^2.0.2:
   integrity sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==
   dependencies:
     isexe "^2.0.0"
+
+window-or-global@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/window-or-global/-/window-or-global-1.0.1.tgz#dbe45ba2a291aabc56d62cf66c45b7fa322946de"
+  integrity sha1-2+RboqKRqrxW1iz2bEW3+jIpRt4=
 
 word-wrap@~1.2.3:
   version "1.2.3"

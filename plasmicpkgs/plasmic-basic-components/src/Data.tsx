@@ -1,72 +1,64 @@
-import { ComponentMeta, repeatedElement } from "@plasmicapp/host";
+import {
+  ComponentMeta,
+  repeatedElement,
+  SelectorDict,
+  useSelectors as _useSelectors,
+  useSelector as _useSelector,
+  DataProvider as _DataProvider,
+  DataProviderProps,
+  applySelector as _applySelector,
+  useDataEnv as _useDataEnv,
+} from "@plasmicapp/host";
 import registerComponent from "@plasmicapp/host/registerComponent";
-import React, {
-  ComponentProps,
-  createContext,
-  createElement,
-  ReactNode,
-  useContext,
-} from "react";
-import { tuple } from "./common";
-
-export type DataDict = Record<string, any>;
-
-export const DataContext = createContext<DataDict | undefined>(undefined);
+import React, { ComponentProps, createElement, ReactNode } from "react";
 
 const thisModule = "@plasmicpkgs/plasmic-basic-components";
 
-export function applySelector(
-  rawData: DataDict | undefined,
-  selector: string | undefined
-): any {
-  if (!selector) {
-    return undefined;
-  }
-  let curData = rawData;
-  for (const key of selector.split(".")) {
-    curData = curData?.[key];
-  }
-  return curData;
-}
-
-export type SelectorDict = Record<string, string | undefined>;
-
-export function useSelector(selector: string | undefined): any {
-  const rawData = useDataEnv();
-  return applySelector(rawData, selector);
-}
-
-export function useSelectors(selectors: SelectorDict = {}): any {
-  const rawData = useDataEnv();
-  return Object.fromEntries(
-    Object.entries(selectors)
-      .filter(([key, selector]) => !!key && !!selector)
-      .map(([key, selector]) => tuple(key, applySelector(rawData, selector)))
+/**
+ * @deprecated This should be imported from @plasmicapp/host instead.
+ */
+export const applySelector: typeof _applySelector = function(...args) {
+  console.warn(
+    "DEPRECATED: Import applySelector from @plasmicapp/host instead."
   );
-}
+  return _applySelector(...args);
+};
 
-export function useDataEnv() {
-  return useContext(DataContext);
-}
+/**
+ * @deprecated This should be imported from @plasmicapp/host instead.
+ */
+export const useSelector: typeof _useSelector = function(...args) {
+  console.warn("DEPRECATED: Import useSelector from @plasmicapp/host instead.");
+  return _useSelector(...args);
+};
 
-export interface DataProviderProps {
-  name?: string;
-  data?: any;
-  children?: ReactNode;
-}
+/**
+ * @deprecated This should be imported from @plasmicapp/host instead.
+ */
+export const useSelectors: typeof _useSelectors = function(...args) {
+  console.warn(
+    "DEPRECATED: Import useSelectors from @plasmicapp/host instead."
+  );
+  return _useSelectors(...args);
+};
 
-export function DataProvider({ name, data, children }: DataProviderProps) {
-  const existingEnv = useDataEnv() ?? {};
-  if (!name) {
-    return <>{children}</>;
-  } else {
-    return (
-      <DataContext.Provider value={{ ...existingEnv, [name]: data }}>
-        {children}
-      </DataContext.Provider>
-    );
-  }
-}
+/**
+ * @deprecated This should be imported from @plasmicapp/host instead.
+ */
+export const useDataEnv: typeof _useDataEnv = function(...args) {
+  console.warn("DEPRECATED: Import useDataEnv from @plasmicapp/host instead.");
+  return _useDataEnv(...args);
+};
+
+/**
+ * @deprecated This should be imported from @plasmicapp/host instead.
+ */
+export const DataProvider: typeof _DataProvider = function(...args) {
+  console.warn(
+    "DEPRECATED: Import DataProvider from @plasmicapp/host instead."
+  );
+  return _DataProvider(...args);
+};
 
 export interface CommonDynamicProps {
   className?: string;
@@ -83,7 +75,7 @@ export function DynamicElement<
   propSelectors,
   ...props
 }: CommonDynamicProps & ComponentProps<Tag>) {
-  const computed = useSelectors(propSelectors);
+  const computed = _useSelectors(propSelectors);
   return createElement(tag, {
     children,
     ...props,
@@ -154,17 +146,17 @@ export function DynamicRepeater({
   data,
 }: DynamicRepeaterProps) {
   // Defaults to an array of three items.
-  const finalData = data ?? useSelector(selector) ?? [1, 2, 3];
+  const finalData = data ?? _useSelector(selector) ?? [1, 2, 3];
   return (
     <>
       {finalData?.map?.((item: any, index: number) => (
-        <DataProvider
-          key={applySelector(item, keySelector) ?? index}
+        <_DataProvider
+          key={_applySelector(item, keySelector) ?? index}
           name={loopItemName}
           data={item}
         >
           {repeatedElement(index === 0, children)}
-        </DataProvider>
+        </_DataProvider>
       ))}
     </>
   );
@@ -265,11 +257,14 @@ export function registerDataProvider(
 ) {
   if (loader) {
     loader.registerComponent(
-      DataProvider,
+      _DataProvider,
       customDataProviderMeta ?? dataProviderMeta
     );
   } else {
-    registerComponent(DataProvider, customDataProviderMeta ?? dataProviderMeta);
+    registerComponent(
+      _DataProvider,
+      customDataProviderMeta ?? dataProviderMeta
+    );
   }
 }
 
