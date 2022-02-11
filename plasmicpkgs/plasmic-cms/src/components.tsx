@@ -54,7 +54,7 @@ function renderMaybeData<T>(
   return renderFn(maybeData.data as T);
 }
 
-interface CmsDataProviderProps extends DatabaseConfig {
+interface CmsCredentialsProviderProps extends DatabaseConfig {
   children?: React.ReactNode;
 }
 
@@ -62,10 +62,10 @@ const defaultHost = "https://studio.plasmic.app";
 
 // TODO: Remove `children` from props and make cmsDataProviderMeta a
 // ContextMeta.
-export const cmsDataProviderMeta: ComponentMeta<CmsDataProviderProps> = {
-  name: `${componentPrefix}-data-provider`,
-  displayName: "CMS Data Provider",
-  importName: "CmsDataProvider",
+export const cmsCredentialsProviderMeta: ComponentMeta<CmsCredentialsProviderProps> = {
+  name: `${componentPrefix}-credentials-provider`,
+  displayName: "CMS Credentials Provider",
+  importName: "CmsCredentialsProvider",
   importPath: modulePath,
   props: {
     host: {
@@ -100,7 +100,10 @@ export const cmsDataProviderMeta: ComponentMeta<CmsDataProviderProps> = {
   },
 };
 
-export function CmsDataProvider({ children, ...config }: CmsDataProviderProps) {
+export function CmsCredentialsProvider({
+  children,
+  ...config
+}: CmsCredentialsProviderProps) {
   config.host = config.host || defaultHost;
   return (
     <DatabaseProvider config={config}>
