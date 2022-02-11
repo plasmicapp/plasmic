@@ -21,6 +21,7 @@ import registerGlobalContext, {
 } from "./registerGlobalContext";
 import repeatedElement, { setRepeatedElementFn } from "./repeatedElement";
 import useForceUpdate from "./useForceUpdate";
+import { DataProvider, useDataEnv } from "./data";
 const root = globalThis as any;
 
 export { unstable_registerFetcher };
@@ -222,6 +223,8 @@ if (root.__Sub == null) {
     repeatedElement,
     setRepeatedElementFn,
     PlasmicCanvasContext,
+    DataProvider,
+    useDataEnv,
   };
 }
 
