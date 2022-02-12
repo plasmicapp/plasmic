@@ -63,48 +63,73 @@ export function usePlasmicQueryData<T>(key: string, fetcher: () => Promise<T>) {
   // react-ssr-prepass only works with suspense-throwing data fetching.
   const suspense = !!prepassCtx || dataCtx?.suspense;
 
-  if (key in cache) {
-    const { promise } = cache[key];
-    if ('data' in cache[key]) {
-      return { data: cache[key].data as T };
-    } else if ('error' in cache[key]) {
+  React.useEffect(
+    () => {
+      // If we're using suspense, we don't fetch in effect
       if (suspense) {
-        throw cache[key].error;
-      } else {
-        return { error: cache[key].error };
+        return;
       }
-    } else if (promise) {
+
+      // Otherwise, we need to kick off the fetch in effect,
+      // and force a re-render once we get the result.
+      const promise = fetcher()
+        .then((data) => {
+          cache[key].data = data;
+          forceUpdate();
+        })
+        .catch((err) => {
+          cache[key].error = err;
+          forceUpdate();
+        });
+      cache[key] = { promise };
+    },
+    // Intentionally leaving `fetcher()` out of here; makes it possibly incorrect,
+    // but most of the time users will not be passing in fetchers that do different things.
+    [key, suspense, cache, forceUpdate]
+  );
+
+  if (key in cache) {
+    // We've fetched for this key before! Just return what we can
+    const entry = cache[key];
+    if ('data' in entry) {
+      return { data: entry.data as T };
+    } else if ('error' in entry) {
       if (suspense) {
-        throw promise;
+        // For suspense, we throw the fetch error to the error boundary
+        throw entry.error;
       } else {
-        promise.then(forceUpdate);
+        // For non-suspense, we return the fetch error
+        return { error: entry.error };
+      }
+    } else if (entry.promise) {
+      // Fetching is still happening!
+      if (suspense) {
+        // For suspense, we throw the promise as usual
+        throw entry.promise;
+      } else {
+        // For non-suspense, we return the empty object to indicate loading
+        // is in progress.
         return {};
       }
     }
   }
 
-  const promise = fetcher()
-    .then((data) => {
-      cache[key].data = data;
-      if (!suspense) {
-        forceUpdate();
-      }
-    })
-    .catch((err) => {
-      cache[key].error = err;
-      if (!suspense) {
-        forceUpdate();
-      }
-    });
-  cache[key] = {
-    promise,
-  };
-
   if (suspense) {
+    // For Suspense, if no entry yet, we start the fetch, create a promise,
+    // cache it, and throw the promise
+    const promise = fetcher()
+      .then((data) => {
+        cache[key].data = data;
+      })
+      .catch((err) => {
+        cache[key].error = err;
+      });
+    cache[key] = { promise };
     throw promise;
+  } else {
+    // Otherwise, we return empty object, signaling loading
+    return {};
   }
-
-  return {};
 }
 
 export function PlasmicQueryDataProvider(props: {

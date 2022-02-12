@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/preamble",
-  "version": "0.0.42",
+  "version": "0.0.43",
   "description": "plasmic snippet for function components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
