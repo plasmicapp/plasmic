@@ -1163,10 +1163,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@plasmicapp/host@^1.0.7":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.7.tgz#dce1f83ceab2ad8f7513d1855b643015cdebdf0e"
-  integrity sha512-ia9yBitIkBFdnvcjIV7yGmXpOAG8Nr4i/j+ORBvhnaeF90FoMSAkaFMACwojrMZvpcL3nevXf7v3Rk5urgTicA==
+"@plasmicapp/host@^1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.8.tgz#fbed5ea67d6f9be154f6986217542e66d3b87dbe"
+  integrity sha512-1mcrKU1fXGxzc1CyeRjnjFPvjKgdDy0yN/l/0UOJcCzPnok/BScPTfb4+QgQ4ujxwzSgguZ6QUnX0pKs6fgsfQ==
   dependencies:
     "@plasmicapp/preamble" "0.0.42"
     window-or-global "^1.0.1"
@@ -1176,10 +1176,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/preamble/-/preamble-0.0.42.tgz#76925a2c42b3d00280a8f5baf8e84477c581f0cb"
   integrity sha512-tj1KbrPKBenWi/R7smzacBGRrgSEFHgG4Kjo2Ba1LoJXam0/B/j4rvzNwI7ejReg8J7ZqNG7F/XlQUDknDNzLg==
 
-"@plasmicapp/query@^0.1.14":
-  version "0.1.14"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.14.tgz#2dd920b6817fb0bc076b7671a511db1939f2e584"
-  integrity sha512-tsgvcThkUcwlpGKbnie+T52tc9Vjo6KVH3oGejdMNwm3EjHuYBKC9tgWIweXPomxv7E+YOEbQdgBxHRrZUbogg==
+"@plasmicapp/query@^0.1.18":
+  version "0.1.18"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.18.tgz#8b15e94cdcadc0137f7cb81f50cf2adffa765660"
+  integrity sha512-mGXSC6SHOsr08jnv1lM45RHM40aqdlqAlB+MFpzkaGwi37Ot9rRqbIRNBsmU193snMMnGxaDQFiToPsNN37YiA==
   dependencies:
     react-ssr-prepass "^1.4.0"
 

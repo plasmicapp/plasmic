@@ -1,5 +1,8 @@
-import { ComponentMeta, repeatedElement } from "@plasmicapp/host";
-import { CanvasComponentProps } from "@plasmicapp/host/registerComponent";
+import { repeatedElement } from "@plasmicapp/host";
+import {
+  CanvasComponentProps,
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import React from "react";
 import { DatabaseConfig, HttpError, mkApi, QueryParams } from "./api";
@@ -105,6 +108,19 @@ export function CmsCredentialsProvider({
   ...config
 }: CmsCredentialsProviderProps) {
   config.host = config.host || defaultHost;
+  if (!config.databaseId) {
+    throw new Error(`You must specify the CMS database ID to use.`);
+  }
+  if (!config.projectId) {
+    throw new Error(
+      `You must specify the project you are using this CMS from.`
+    );
+  }
+  if (!config.projectApiToken) {
+    throw new Error(
+      `You must specify the token of the project you are using this CMS from.`
+    );
+  }
   return (
     <DatabaseProvider config={config}>
       <TablesFetcher>{children}</TablesFetcher>
@@ -131,7 +147,7 @@ function TablesFetcher({ children }: { children: React.ReactNode }) {
 }
 
 type TablesContextData = {
-  tables: ApiCmsTable[];
+  tables?: ApiCmsTable[];
 };
 
 interface CmsQueryLoaderProps
@@ -196,7 +212,11 @@ export function CmsQueryLoader({
   table,
   children,
   setControlContextData,
-  ...params
+  where,
+  useDraft,
+  orderBy,
+  desc,
+  limit,
 }: CmsQueryLoaderProps) {
   const databaseConfig = useDatabase();
   const tables = useTables();
@@ -204,6 +224,8 @@ export function CmsQueryLoader({
     // TODO: Only include table if __plasmic_cms_row_{table} exists.
     setControlContextData?.({ tables });
   }
+
+  const params = { where, useDraft, orderBy, desc, limit };
 
   const cacheKey = JSON.stringify({
     component: "CmsQueryLoader",
@@ -308,7 +330,13 @@ export const cmsRowFieldMeta: ComponentMeta<CmsRowFieldProps> = {
       displayName: "Field",
       description: "Field (from model schema) to use.",
       options: ({ table }, ctx) =>
-        mkFieldOptions(ctx?.tables, ctx?.table ?? table),
+        mkFieldOptions(ctx?.tables, ctx?.table ?? table, [
+          "number",
+          "boolean",
+          "text",
+          "long-text",
+          "date-time",
+        ]),
     },
   },
 };
@@ -318,6 +346,7 @@ export function CmsRowField({
   table,
   field,
   setControlContextData,
+  ...rest
 }: CmsRowFieldProps) {
   const tables = useTables();
 
@@ -331,23 +360,41 @@ export function CmsRowField({
     setControlContextData?.({ tables, table: res.table });
   }
 
-  const schema = tables?.find((t) => t.identifier === res.table)?.schema;
-  const fieldMeta = field
-    ? schema?.fields.find((f) => f.identifier === field)
-    : schema?.fields[0];
+  const fieldMeta = deriveInferredTableField({
+    table: res.table,
+    tables,
+    field,
+    typeFilters: ["text"],
+  });
 
   if (!fieldMeta) {
     return <div>Error: No field to display</div>;
   }
 
   const data = res.row.data?.[fieldMeta.identifier];
-  return data ? (
-    renderValue(data, fieldMeta.type, {
-      className,
-    })
-  ) : (
-    <div>(no data returned)</div>
-  );
+  return data
+    ? renderValue(data, fieldMeta.type, {
+        className,
+        ...rest,
+      })
+    : null;
+}
+
+const DEFAULT_TYPE_FILTERS = ["text"];
+function deriveInferredTableField(opts: {
+  table: string;
+  tables?: ApiCmsTable[];
+  field?: string;
+  typeFilters?: CmsType[];
+}) {
+  const { table, tables, field, typeFilters } = opts;
+  const schema = tables?.find((t) => t.identifier === table)?.schema;
+  const fieldMeta = field
+    ? schema?.fields.find((f) => f.identifier === field)
+    : schema?.fields.find((f) =>
+        (typeFilters ?? DEFAULT_TYPE_FILTERS).includes(f.type)
+      );
+  return fieldMeta;
 }
 
 function assertNever(_: never): never {
@@ -361,7 +408,7 @@ function renderValue(value: any, type: CmsType, props: { className?: string }) {
     case "text":
     case "long-text":
     case "date-time":
-      return <div className={props.className}>{value}</div>;
+      return <div {...props}>{value}</div>;
     case "image":
       if (value && typeof value === "object" && value.url && value.imageMeta) {
         return (
@@ -369,7 +416,7 @@ function renderValue(value: any, type: CmsType, props: { className?: string }) {
             src={value.url}
             width={value.imageMeta.height}
             height={value.imageMeta.height}
-            className={props.className}
+            {...props}
           />
         );
       }
@@ -379,8 +426,11 @@ function renderValue(value: any, type: CmsType, props: { className?: string }) {
   }
 }
 
-interface CmsRowLinkProps
-  extends CanvasComponentProps<TablesContextData & { table: string }> {
+interface TableContextData extends TablesContextData {
+  table?: string;
+}
+
+interface CmsRowLinkProps extends CanvasComponentProps<TableContextData> {
   table: string;
   field: string;
   hrefProp: string;
@@ -396,7 +446,7 @@ export const cmsRowLinkMeta: ComponentMeta<CmsRowLinkProps> = {
     children: {
       type: "slot",
       defaultValue: {
-        type: "vbox",
+        type: "text",
         tag: "a",
         value: "Link",
       },
@@ -405,13 +455,14 @@ export const cmsRowLinkMeta: ComponentMeta<CmsRowLinkProps> = {
       type: "choice",
       displayName: "Model",
       description: "CMS model (table) to use.",
-      options: (_, ctx) => mkTableOptions(ctx?.tables),
+      options: (_: any, ctx: TableContextData | null) =>
+        mkTableOptions(ctx?.tables),
     },
     field: {
       type: "choice",
       displayName: "Field",
       description: "Field (from model schema) to use.",
-      options: ({ table }, ctx) =>
+      options: ({ table }: CmsRowLinkProps, ctx: TableContextData | null) =>
         mkFieldOptions(ctx?.tables, ctx?.table ?? table),
     },
     hrefProp: {
@@ -429,12 +480,12 @@ export function CmsRowLink({
   hrefProp,
   children,
   setControlContextData,
-}: CmsRowLinkProps) {
+}: CmsRowLinkProps): React.ReactElement | null {
   const tables = useTables();
 
   const res = useRow(table);
   if (!res || !res.row) {
-    return <div>Error: No CMS row found</div>;
+    return <>{children}</>;
   }
 
   if (tables) {
@@ -442,19 +493,198 @@ export function CmsRowLink({
     setControlContextData?.({ tables, table: res.table });
   }
 
-  const schema = tables?.find((t) => t.identifier === res.table)?.schema;
-  const fieldMeta = field
-    ? schema?.fields.find((f) => f.identifier === field)
-    : schema?.fields.find((f) => f.type === "text");
-
+  const fieldMeta = deriveInferredTableField({
+    table: res.table,
+    tables,
+    field,
+    typeFilters: ["text"],
+  });
   if (!fieldMeta) {
-    return <div>Error: No field to display</div>;
+    return <>{children}</>;
+  }
+
+  if (!children) {
+    return null;
   }
 
   const value = res.row.data?.[fieldMeta.identifier] || "";
   const childrenWithProps = React.Children.map(children, (child) => {
     if (React.isValidElement(child)) {
       return React.cloneElement(child, { [hrefProp]: value });
+    }
+    return child;
+  });
+
+  return <>{childrenWithProps ?? null}</>;
+}
+
+interface CmsRowImageProps extends CanvasComponentProps<TableContextData> {
+  table: string;
+  field: string;
+  srcProp: string;
+  children: React.ReactNode;
+}
+
+export const cmsRowImageMeta: ComponentMeta<CmsRowImageProps> = {
+  name: `${componentPrefix}-row-image`,
+  displayName: "CMS Row Image",
+  importName: "CmsRowImage",
+  importPath: modulePath,
+  props: {
+    children: {
+      type: "slot",
+      defaultValue: {
+        type: "img",
+        src: "https://studio.plasmic.app/static/img/placeholder-full.png",
+      },
+    },
+    table: {
+      type: "choice",
+      displayName: "Model",
+      description: "CMS model (table) to use.",
+      options: (_: any, ctx: TableContextData | null) =>
+        mkTableOptions(ctx?.tables),
+    },
+    field: {
+      type: "choice",
+      displayName: "Field",
+      description: "Field (from model schema) to use.",
+      options: ({ table }: CmsRowImageProps, ctx: TableContextData | null) =>
+        mkFieldOptions(ctx?.tables, ctx?.table ?? table),
+    },
+    srcProp: {
+      type: "string",
+      displayName: 'Image "src" prop',
+      description: "Prop to inject into children",
+      defaultValue: "src",
+    },
+  },
+};
+
+export function CmsRowImage({
+  table,
+  field,
+  srcProp,
+  children,
+  setControlContextData,
+}: CmsRowImageProps): React.ReactElement | null {
+  const tables = useTables();
+
+  const res = useRow(table);
+  if (!res || !res.row) {
+    return <>{children}</>;
+  }
+
+  if (tables) {
+    // TODO: Only include table if __plasmic_cms_row_{table} exists.
+    setControlContextData?.({ tables, table: res.table });
+  }
+
+  const fieldMeta = deriveInferredTableField({
+    table: res.table,
+    tables,
+    field,
+    typeFilters: ["image"],
+  });
+  if (!fieldMeta) {
+    return <>{children}</>;
+  }
+
+  const value = res.row.data?.[fieldMeta.identifier] || "";
+  const childrenWithProps = React.Children.map(children, (child) => {
+    if (React.isValidElement(child) && value) {
+      if (typeof value === "object" && value.url && value.imageMeta) {
+        return React.cloneElement(child, {
+          [srcProp]: {
+            src: value.url,
+            fullHeight: value.imageMeta.height,
+            fullWidth: value.imageMeta.width,
+          },
+        });
+      }
+      return React.cloneElement(child, { [srcProp]: value });
+    }
+    return child;
+  });
+
+  return <>{childrenWithProps}</>;
+}
+
+interface CmsRowFieldValueProps extends CanvasComponentProps<TableContextData> {
+  table: string;
+  field: string;
+  valueProp: string;
+  children: React.ReactNode;
+}
+
+export const cmsRowFieldValueMeta: ComponentMeta<CmsRowFieldValueProps> = {
+  name: `${componentPrefix}-row-value`,
+  displayName: "CMS Row Value",
+  importName: "CmsRowValue",
+  importPath: modulePath,
+  props: {
+    children: {
+      type: "slot",
+    },
+    table: {
+      type: "choice",
+      displayName: "Model",
+      description: "CMS model (table) to use.",
+      options: (_: any, ctx: TableContextData | null) =>
+        mkTableOptions(ctx?.tables),
+    },
+    field: {
+      type: "choice",
+      displayName: "Field",
+      description: "Field (from model schema) to use.",
+      options: (
+        { table }: CmsRowFieldValueProps,
+        ctx: TableContextData | null
+      ) => mkFieldOptions(ctx?.tables, ctx?.table ?? table),
+    },
+    valueProp: {
+      type: "string",
+      displayName: "Value prop",
+      description: "Prop to inject into children as",
+      defaultValue: "children",
+    },
+  },
+};
+
+export function CmsRowFieldValue({
+  table,
+  field,
+  valueProp,
+  children,
+  setControlContextData,
+}: CmsRowFieldValueProps): React.ReactElement | null {
+  const tables = useTables();
+
+  const res = useRow(table);
+  if (!res || !res.row) {
+    return <>{children}</>;
+  }
+
+  if (tables) {
+    // TODO: Only include table if __plasmic_cms_row_{table} exists.
+    setControlContextData?.({ tables, table: res.table });
+  }
+
+  const fieldMeta = deriveInferredTableField({
+    table: res.table,
+    tables,
+    field,
+    typeFilters: ["text"],
+  });
+
+  if (!fieldMeta) {
+    return <>{children}</>;
+  }
+
+  const value = res.row.data?.[fieldMeta.identifier] || "";
+  const childrenWithProps = React.Children.map(children, (child) => {
+    if (React.isValidElement(child)) {
+      return React.cloneElement(child, { [valueProp]: value });
     }
     return child;
   });

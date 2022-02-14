@@ -8,6 +8,10 @@ import {
   cmsQueryLoaderMeta,
   CmsRowField,
   cmsRowFieldMeta,
+  CmsRowFieldValue,
+  cmsRowFieldValueMeta,
+  CmsRowImage,
+  cmsRowImageMeta,
   CmsRowLink,
   cmsRowLinkMeta,
   CmsRowLoader,
@@ -38,6 +42,8 @@ export function registerAll(loader?: {
   _registerComponent(CmsRowRepeater, cmsRowRepeaterMeta);
   _registerComponent(CmsRowField, cmsRowFieldMeta);
   _registerComponent(CmsRowLink, cmsRowLinkMeta);
+  _registerComponent(CmsRowImage, cmsRowImageMeta);
+  _registerComponent(CmsRowFieldValue, cmsRowFieldValueMeta);
   _registerComponent(CmsRowLoader, cmsRowLoaderMeta);
 }
 

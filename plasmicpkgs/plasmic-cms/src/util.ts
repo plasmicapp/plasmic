@@ -1,4 +1,4 @@
-import { ApiCmsTable } from "./schema";
+import { ApiCmsTable, CmsType } from "./schema";
 
 type ValueLabelPair = {
   value: string;
@@ -20,7 +20,8 @@ export function mkTableOptions(
 
 export function mkFieldOptions(
   tables: ApiCmsTable[] | undefined,
-  tableId: string | undefined
+  tableId: string | undefined,
+  types?: CmsType[]
 ): ValueLabelPair[] {
   if (!tables) {
     return [];
@@ -31,7 +32,11 @@ export function mkFieldOptions(
     return [];
   }
 
-  return table.schema.fields.map((f) => ({
+  let fields = table.schema.fields;
+  if (types) {
+    fields = fields.filter((f) => types.includes(f.type));
+  }
+  return fields.map((f) => ({
     value: f.identifier,
     label: f.name || f.identifier,
   }));
