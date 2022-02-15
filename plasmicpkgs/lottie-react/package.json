@@ -34,7 +34,7 @@
     "tsdx": "^0.14.1",
     "tslib": "^2.2.0",
     "typescript": "^3.9.7",
-    "@plasmicapp/host": "^1.0.0"
+    "@plasmicapp/host": "1.0.9"
   },
   "dependencies": {
     "lottie-react": "^2.1.0"
