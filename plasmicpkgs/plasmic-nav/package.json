@@ -33,7 +33,8 @@
     "size-limit": "^4.11.0",
     "tsdx": "^0.14.1",
     "tslib": "^2.2.0",
-    "typescript": "^3.9.7"
+    "typescript": "^3.9.7",
+    "@plasmicapp/host": "^1.0.0"
   },
   "dependencies": {},
   "peerDependencies": {

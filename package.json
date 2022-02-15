@@ -22,6 +22,19 @@
     "packages/watcher",
     "packages/host",
     "packages/preamble",
-    "packages/query"
+    "packages/query",
+    "plasmicpkgs/antd",
+    "plasmicpkgs/framer-motion",
+    "plasmicpkgs/plasmic-basic-components",
+    "plasmicpkgs/plasmic-cms",
+    "plasmicpkgs/plasmic-query",
+    "plasmicpkgs/plasmic-shopify",
+    "plasmicpkgs/plasmic-swell",
+    "plasmicpkgs/react-awesome-reveal",
+    "plasmicpkgs/react-parallax-tilt",
+    "plasmicpkgs/react-scroll-parallax",
+    "plasmicpkgs/react-slick",
+    "plasmicpkgs/react-twitter-widgets",
+    "plasmicpkgs/react-youtube"
   ]
 }

@@ -15,21 +15,21 @@ export const sliderMeta: ComponentMeta<Settings> = {
         {
           type: "img",
           src: "https://via.placeholder.com/150x90/FF0000/FFFFFF/?text=Slide_1",
-          style: {
+          styles: {
             maxWidth: "100%",
           },
         },
         {
           type: "img",
           src: "https://via.placeholder.com/150x90/00FF00/FFFFFF/?text=Slide_2",
-          style: {
+          styles: {
             maxWidth: "100%",
           },
         },
         {
           type: "img",
           src: "https://via.placeholder.com/150x90/0000FF/FFFFFF/?text=Slide_3",
-          style: {
+          styles: {
             maxWidth: "100%",
           },
         },
