@@ -55,7 +55,7 @@
 npm install @plasmicapp/loader-nextjs
 ```
 
-**Step 2.** Make components from your app or design system available for drag-and-drop in the visual editor:
+**Step 2 (optional).** Make components from your app or design system available for drag-and-drop in the visual editor:
 
 ```tsx
 // Take any component from your app or design system...
@@ -84,7 +84,8 @@ import {
 import { PLASMIC } from "../plasmic-init";
 
 // Here we fetch dynamically on the client, but you can also fetch and render
-// components server-side in SSG/SSR frameworks.
+// components server-side in SSG/SSR frameworks, such as via getStaticProps
+// in Next.js.
 export default function IndexPage() {
   return (
     <PlasmicRootProvider plasmic={PLASMIC}>
@@ -93,6 +94,11 @@ export default function IndexPage() {
   );
 }
 ```
+
+**Step 4.** Non-developers (or developers!) can now create new pages, sections, or components that ship directly into the app/website.
+
+**Step 5.** When you hit Publish, changes get picked up via webhooks that trigger rebuilds,
+or more specific mechanisms such as incremental static revalidation or dynamic fetching from the Plasmic CDN.
 
 # Overview
 
@@ -106,7 +112,10 @@ Plasmic as a page builder and “visual CMS” is its simplest and most common u
 
 Beyond website content, Plasmic can even be used to create frontends for complex web applications (such as Plasmic itself, which was built in Plasmic). This is possible because—despite being easy to start with—Plasmic gives you full visual control and works deeply with code.
 
-Learn more on [our website][website] and [our docs][docs].
+Learn more on [our website][website] and [our docs][docs]. Or check out [comparisons of Plasmic vs other tools][comparisons].
+
+[website]: https://www.plasmic.app
+[comparisons]: https://docs.plasmic.app/learn/comparisons/
 
 Or check out our [Next.js-based talk and demo at Next.js Conf 2021][nextconf-talk]:
 
@@ -137,6 +146,8 @@ Plasmic is used by companies ranging from Fortune 500s to boutique brands to sol
 It's used for websites ranging from headless commerce storefronts to marketing websites to logged-in app content.
 
 Check out the [Case Studies and Community Showcase][customers].
+
+[customers]: https://www.plasmic.app/casestudies
 
 <p align="center">
   <a href="https://www.plasmic.app/casestudies">
