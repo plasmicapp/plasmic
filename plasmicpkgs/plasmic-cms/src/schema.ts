@@ -42,13 +42,19 @@ export interface CmsDateTime extends CmsBaseType {
   defaultValue?: string;
 }
 
+export interface CmsRichText extends CmsBaseType {
+  type: "rich-text";
+  defaultValue?: string;
+}
+
 export type CmsFieldMeta =
   | CmsText
   | CmsLongText
   | CmsNumber
   | CmsBoolean
   | CmsImage
-  | CmsDateTime;
+  | CmsDateTime
+  | CmsRichText;
 
 export type CmsType = CmsFieldMeta["type"];
 
