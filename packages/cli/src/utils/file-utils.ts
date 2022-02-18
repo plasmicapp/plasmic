@@ -11,7 +11,6 @@ import {
   CONFIG_FILE_NAME,
   PlasmicContext,
   ProjectConfig,
-  updateConfig,
 } from "./config-utils";
 import { ensureString } from "./lang-utils";
 import { confirmWithUser } from "./user-utils";
@@ -277,46 +276,6 @@ function getAllPaths(context: PlasmicContext): BundleKeyPair[] {
   }
 
   return pairs;
-}
-
-/**
- * Fixes all src-relative file paths in PlasmicConfig by detecting file
- * movement on disk.
- */
-export async function fixAllFilePaths(
-  context: PlasmicContext,
-  baseDir: string
-) {
-  const baseNameToFiles = buildBaseNameToFiles(context);
-  let changed = false;
-
-  const paths = getAllPaths(context);
-  for (const { bundle, key } of paths) {
-    const known = bundle[key];
-    // Check null and undefined
-    if (known == null) {
-      throw new HandledError(
-        `"${key} is required, but missing in ${CONFIG_FILE_NAME}. Please restore the file or delete from ${CONFIG_FILE_NAME} and run plasmic sync: ${bundle}"`
-      );
-    }
-    // Check falsey values (e.g. "")
-    if (!known) {
-      continue;
-    }
-    const found = findSrcDirPath(
-      context.absoluteSrcDir,
-      known,
-      baseNameToFiles
-    );
-    if (known !== found) {
-      bundle[key] = found;
-      changed = true;
-    }
-  }
-
-  if (changed) {
-    await updateConfig(context, context.config, baseDir);
-  }
 }
 
 /**
