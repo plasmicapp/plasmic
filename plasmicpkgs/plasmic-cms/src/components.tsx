@@ -336,6 +336,7 @@ export const cmsRowFieldMeta: ComponentMeta<CmsRowFieldProps> = {
           "text",
           "long-text",
           "date-time",
+          "rich-text",
         ]),
     },
   },
