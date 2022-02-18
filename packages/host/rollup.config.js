@@ -12,7 +12,7 @@ export default [
     input: {
       index: "./src/registerComponent.ts",
     },
-    external: (id) => {
+    external: id => {
       if (id.startsWith("regenerator-runtime")) {
         return false;
       }
@@ -42,6 +42,48 @@ export default [
         check: false,
         tsconfigOverride: {
           include: ["src/registerComponent.ts", "src/element-types.ts"],
+        },
+      }),
+    ],
+  },
+  {
+    input: {
+      index: "./src/registerGlobalContext.ts",
+    },
+    external: id => {
+      if (id.startsWith("regenerator-runtime")) {
+        return false;
+      }
+      return !id.startsWith(".") && !path.isAbsolute(id);
+    },
+    output: [
+      {
+        dir: "registerGlobalContext/dist",
+        entryFileNames: "index.esm.js",
+        format: "esm",
+        sourcemap: true,
+      },
+      {
+        dir: "registerGlobalContext/dist",
+        entryFileNames: "index.cjs.js",
+        format: "cjs",
+        sourcemap: true,
+        exports: "named",
+      },
+    ],
+    plugins: [
+      resolve(),
+      commonjs(),
+      json(),
+      typescript({
+        typescript: ts,
+        check: false,
+        tsconfigOverride: {
+          include: [
+            "src/registerGlobalContext.ts",
+            "src/registerComponent.ts",
+            "src/element-types.ts",
+          ],
         },
       }),
     ],
