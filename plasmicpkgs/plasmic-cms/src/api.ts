@@ -5,6 +5,7 @@ export interface DatabaseConfig {
   projectId: string;
   projectApiToken: string;
   databaseId: string;
+  locale: string;
 }
 
 export interface QueryParams {
@@ -78,7 +79,8 @@ class API {
     try {
       const response = await this.get(`/tables/${table}/query`, {
         q: JSON.stringify(queryParamsToApi(params)),
-        useDraft: Number(params.useDraft),
+        draft: Number(params.useDraft),
+        locale: this.config.locale,
       });
       return response.rows;
     } catch (e) {
@@ -93,9 +95,11 @@ class API {
     useDraft: boolean
   ): Promise<ApiCmsRow> {
     try {
-      const maybeUseDraft = useDraft ? `?draft=1` : ``;
       const response = await this.get(
-        `/tables/${table}/rows/${row}${maybeUseDraft}`
+        `/tables/${table}/rows/${row}`, {
+          draft: Number(useDraft),
+          locale: this.config.locale,
+        }
       );
       return response;
     } catch (e) {

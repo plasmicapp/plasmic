@@ -93,6 +93,11 @@ export const cmsCredentialsProviderMeta: ComponentMeta<CmsCredentialsProviderPro
       displayName: "Project API token",
       description: "This project's API token.",
     },
+    locale: {
+      type: "string",
+      displayName: "Locale",
+      description: "The locale to use for localized values, leave empty for the default locale.",
+    },
     children: {
       type: "slot",
       defaultValue: {
