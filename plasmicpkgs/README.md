@@ -80,4 +80,4 @@ After testing in the Studio, it's also good to test both the available code opti
 
 ---
 
-Feel free to join our [Slack Community](slack) and ask us anything! We're here to help and always welcome contributions.
+Feel free to join our [Slack Community][slack] and ask us anything! We're here to help and always welcome contributions.
