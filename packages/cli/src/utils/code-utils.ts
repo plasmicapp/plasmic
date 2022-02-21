@@ -487,6 +487,7 @@ async function fixComponentImportStatements(
 ) {
   // If ComponentConfig.importPath is still a local file, we best-effort also fix up the import statements there.
   if (
+    compConfig.type !== "mapped" &&
     isLocalModulePath(compConfig.importSpec.modulePath) &&
     fixSkeletonModule
   ) {
