@@ -2,9 +2,8 @@ import { ApiCmsQuery, ApiCmsRow, ApiCmsTable } from "./schema";
 
 export interface DatabaseConfig {
   host: string;
-  projectId: string;
-  projectApiToken: string;
   databaseId: string;
+  databaseToken: string;
   locale: string;
 }
 
@@ -47,7 +46,7 @@ class API {
       method: "GET",
       headers: {
         accept: "*/*",
-        "x-plasmic-api-project-tokens": `${this.config.projectId}:${this.config.projectApiToken}`,
+        "x-plasmic-api-cms-tokens": `${this.config.databaseId}:${this.config.databaseToken}`,
       },
       mode: "cors",
     });

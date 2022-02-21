@@ -80,17 +80,12 @@ export const cmsCredentialsProviderMeta: GlobalContextMeta<CmsCredentialsProvide
     databaseId: {
       type: "string",
       displayName: "CMS ID",
-      description: "The ID of the CMS (database) to use.",
+      description: "The ID of the CMS (database) to use. (Can get on the CMS settings page)",
     },
-    projectId: {
+    databaseToken: {
       type: "string",
-      displayName: "Project ID",
-      description: "This project's ID.",
-    },
-    projectApiToken: {
-      type: "string",
-      displayName: "Project API token",
-      description: "This project's API token.",
+      displayName: "CMS Public Token",
+      description: "The Public Token of the CMS (database) you are using. (Can get on the CMS settings page)",
     },
     locale: {
       type: "string",
@@ -109,14 +104,9 @@ export function CmsCredentialsProvider({
   if (!config.databaseId) {
     throw new Error(`You must specify the CMS database ID to use.`);
   }
-  if (!config.projectId) {
+  if (!config.databaseToken) {
     throw new Error(
-      `You must specify the project you are using this CMS from.`
-    );
-  }
-  if (!config.projectApiToken) {
-    throw new Error(
-      `You must specify the token of the project you are using this CMS from.`
+      `You must specify the token of the CMS database you are using.`
     );
   }
   return (
