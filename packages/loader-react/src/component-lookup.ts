@@ -39,18 +39,20 @@ export class ComponentLookup {
 
   getGlobalContexts(): { meta: GlobalGroupMeta; context: any }[] {
     const customGlobalMetas = this.bundle.globalGroups.filter(
-      (m) => m.type === 'global-user-defined'
+      m => m.type === 'global-user-defined'
     );
-    return customGlobalMetas.map((meta) => ({
+    return customGlobalMetas.map(meta => ({
       meta,
       context: this.registry.load(meta.contextFile).default,
     }));
   }
 
-  getGlobalContextsProvider(projectId: string | undefined) {
-    const projectMeta = projectId
-      ? this.bundle.projects.find((x) => x.id === projectId)
-      : this.bundle.projects.find((x) => !!x.globalContextsProviderFileName);
+  getGlobalContextsProvider(spec: ComponentLookupSpec) {
+    const compMeta = getCompMeta(this.bundle.components, spec);
+    const projectMeta = compMeta
+      ? this.bundle.projects.find(x => x.id === compMeta.projectId)
+      : undefined;
+
     if (
       !projectMeta ||
       !projectMeta.globalContextsProviderFileName ||
@@ -73,11 +75,11 @@ export class ComponentLookup {
   getCss(): AssetModule[] {
     // We can probably always get the modules from the browser build
     return this.bundle.modules.browser.filter(
-      (mod) => mod.type === 'asset' && mod.fileName.endsWith('css')
+      mod => mod.type === 'asset' && mod.fileName.endsWith('css')
     ) as AssetModule[];
   }
 
   getRemoteFonts(): FontMeta[] {
-    return this.bundle.projects.flatMap((p) => p.remoteFonts);
+    return this.bundle.projects.flatMap(p => p.remoteFonts);
   }
 }

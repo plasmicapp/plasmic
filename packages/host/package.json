@@ -7,7 +7,8 @@
   "module": "dist/host.esm.js",
   "files": [
     "dist",
-    "registerComponent"
+    "registerComponent",
+    "registerGlobalContext"
   ],
   "size-limit": [
     {

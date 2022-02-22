@@ -60,7 +60,10 @@ export function PlasmicComponent(props: {
     // "root-most PlasmicComponent"; we won't risk invalidating the sub-tree
     // here because there were no children before the data came in.
     const ReactWebRootProvider = lookup.getRootProvider();
-    const GlobalContextsProvider = lookup.getGlobalContextsProvider(projectId);
+    const GlobalContextsProvider = lookup.getGlobalContextsProvider({
+      name: component,
+      projectId,
+    });
     element = (
       <ReactWebRootProvider>
         <MaybeWrap
