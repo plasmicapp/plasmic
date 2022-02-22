@@ -8,6 +8,9 @@ import registerComponent, {
   CanvasComponentProps,
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
+import registerGlobalContext, {
+  GlobalContextMeta,
+} from "@plasmicapp/host/registerGlobalContext";
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import React, {
   createContext,
@@ -816,7 +819,7 @@ export function registerProductCollection(
   }
 }
 
-export const shopifyCredentialsProviderMeta: ComponentMeta<ShopifyCredentialsProviderProps> = {
+export const shopifyCredentialsProviderMeta: GlobalContextMeta<ShopifyCredentialsProviderProps> = {
   name: "shopify-credentials-provider",
   importName: "ShopifyCredentialsProvider",
   displayName: "Credentials Provider",
@@ -834,67 +837,23 @@ export const shopifyCredentialsProviderMeta: ComponentMeta<ShopifyCredentialsPro
         "The storefront API access token. Follow instructions here to get one: https://docs.plasmic.app/learn/shopify-storefront-access-token",
       defaultValue: "ecdc7f91ed0970e733268535c828fbbe",
     },
-    children: {
-      type: "slot",
-      defaultValue: {
-        type: "vbox",
-        children: [
-          {
-            type: "text",
-            tag: "h2",
-            value: "Single Product",
-          },
-          {
-            type: "component",
-            name: "shopify-product",
-          },
-          {
-            type: "text",
-            tag: "h2",
-            value: "Product Collection",
-            styles: {
-              marginTop: "30px",
-            },
-          },
-          {
-            type: "hbox",
-            children: {
-              type: "component",
-              name: "shopify-product-collection",
-              props: {
-                count: 8,
-                collectionHandle: "casual-things",
-              },
-            },
-            styles: {
-              alignItems: "stretch",
-              justifyContent: "space-between",
-              flexWrap: "wrap",
-            },
-          },
-        ],
-        styles: {
-          alignItems: "center",
-        },
-      },
-    },
   },
   importPath: thisModule,
 };
 
 export function registerShopifyCredentialsProvider(
-  loader?: { registerComponent: typeof registerComponent },
-  customShopifyCredentialsProviderMeta?: ComponentMeta<
+  loader?: { registerGlobalContext: typeof registerGlobalContext },
+  customShopifyCredentialsProviderMeta?: GlobalContextMeta<
     ShopifyCredentialsProviderProps
   >
 ) {
   if (loader) {
-    loader.registerComponent(
+    loader.registerGlobalContext(
       ShopifyCredentialsProvider,
       customShopifyCredentialsProviderMeta ?? shopifyCredentialsProviderMeta
     );
   } else {
-    registerComponent(
+    registerGlobalContext(
       ShopifyCredentialsProvider,
       customShopifyCredentialsProviderMeta ?? shopifyCredentialsProviderMeta
     );
@@ -1103,6 +1062,7 @@ export function registerProductImage(
 
 export function registerAllShopifyComponents(loader?: {
   registerComponent: typeof registerComponent;
+  registerGlobalContext: typeof registerGlobalContext;
 }) {
   registerShopifyCredentialsProvider(loader);
   registerShopifyProduct(loader);

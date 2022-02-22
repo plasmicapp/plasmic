@@ -1,6 +1,9 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
+import registerGlobalContext, {
+  GlobalContextMeta,
+} from "@plasmicapp/host/registerGlobalContext";
 import React, { useEffect, useRef } from "react";
 import { ParallaxProvider, useController } from "react-scroll-parallax";
 import { ParallaxProviderProps } from "react-scroll-parallax/dist/components/ParallaxProvider/types";
@@ -102,6 +105,38 @@ export function registerParallaxProvider(
     registerComponent(
       ParallaxProviderWrapper,
       customParallaxProviderMeta ?? parallaxProviderMeta
+    );
+  }
+}
+
+export const globalParallaxProviderMeta: GlobalContextMeta<ParallaxProviderProps> = {
+  name: "global-parallax-provider",
+  displayName: "Parallax Provider",
+  importName: "ParallaxProviderWrapper",
+  importPath: "@plasmicpkgs/react-scroll-parallax",
+  props: {
+    scrollAxis: {
+      type: "choice",
+      description: "Scroll axis for setting horizontal/vertical scrolling",
+      options: ["vertical", "horizontal"],
+      displayName: "Scroll Axis",
+    },
+  },
+};
+
+export function registerGlobalParallaxProvider(
+  loader?: { registerGlobalContext: typeof registerGlobalContext },
+  customParallaxProviderMeta?: GlobalContextMeta<ParallaxProviderProps>
+) {
+  if (loader) {
+    loader.registerGlobalContext(
+      ParallaxProviderWrapper,
+      customParallaxProviderMeta ?? globalParallaxProviderMeta
+    );
+  } else {
+    registerGlobalContext(
+      ParallaxProviderWrapper,
+      customParallaxProviderMeta ?? globalParallaxProviderMeta
     );
   }
 }

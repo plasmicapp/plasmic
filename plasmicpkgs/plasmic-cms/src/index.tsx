@@ -1,3 +1,6 @@
+import registerGlobalContext, {
+  GlobalContextMeta,
+} from "@plasmicapp/host/registerGlobalContext";
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
@@ -22,6 +25,7 @@ import {
 
 export function registerAll(loader?: {
   registerComponent: typeof registerComponent;
+  registerGlobalContext: typeof registerGlobalContext;
 }) {
   //const registerContext = loader?.registerContext ?? hostRegisterContext;
   //registerContext(CmsDataProvider, cmsDataProviderMeta);
@@ -37,7 +41,18 @@ export function registerAll(loader?: {
     }
   };
 
-  _registerComponent(CmsCredentialsProvider, cmsCredentialsProviderMeta);
+  const _registerGlobalContext = <T extends React.ComponentType<any>>(
+    Component: T,
+    defaultMeta: GlobalContextMeta<React.ComponentProps<T>>
+  ) => {
+    if (loader) {
+      loader.registerGlobalContext(Component, defaultMeta);
+    } else {
+      registerGlobalContext(Component, defaultMeta);
+    }
+  };
+
+  _registerGlobalContext(CmsCredentialsProvider, cmsCredentialsProviderMeta);
   _registerComponent(CmsQueryLoader, cmsQueryLoaderMeta);
   _registerComponent(CmsRowRepeater, cmsRowRepeaterMeta);
   _registerComponent(CmsRowField, cmsRowFieldMeta);

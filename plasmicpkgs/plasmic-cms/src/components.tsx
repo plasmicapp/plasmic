@@ -3,6 +3,7 @@ import {
   CanvasComponentProps,
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
+import { GlobalContextMeta } from "@plasmicapp/host/registerGlobalContext";
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import React from "react";
 import { DatabaseConfig, HttpError, mkApi, QueryParams } from "./api";
@@ -63,9 +64,7 @@ interface CmsCredentialsProviderProps extends DatabaseConfig {
 
 const defaultHost = "https://studio.plasmic.app";
 
-// TODO: Remove `children` from props and make cmsDataProviderMeta a
-// ContextMeta.
-export const cmsCredentialsProviderMeta: ComponentMeta<CmsCredentialsProviderProps> = {
+export const cmsCredentialsProviderMeta: GlobalContextMeta<CmsCredentialsProviderProps> = {
   name: `${componentPrefix}-credentials-provider`,
   displayName: "CMS Credentials Provider",
   importName: "CmsCredentialsProvider",
@@ -96,14 +95,8 @@ export const cmsCredentialsProviderMeta: ComponentMeta<CmsCredentialsProviderPro
     locale: {
       type: "string",
       displayName: "Locale",
-      description: "The locale to use for localized values, leave empty for the default locale.",
-    },
-    children: {
-      type: "slot",
-      defaultValue: {
-        type: "vbox",
-        children: [],
-      },
+      description:
+        "The locale to use for localized values, leave empty for the default locale.",
     },
   },
 };
@@ -146,7 +139,7 @@ function TablesFetcher({ children }: { children: React.ReactNode }) {
 
   return renderMaybeData<ApiCmsTable[]>(
     maybeData,
-    (tables) => <TablesProvider tables={tables}>{children}</TablesProvider>,
+    tables => <TablesProvider tables={tables}>{children}</TablesProvider>,
     { hideIfNotFound: false }
   );
 }
@@ -241,7 +234,7 @@ export function CmsQueryLoader({
   const maybeData = usePlasmicQueryData(cacheKey, async () => {
     if (!table) {
       throw new Error(`You must select a table to query`);
-    } else if (tables && !tables.find((t) => t.identifier === table)) {
+    } else if (tables && !tables.find(t => t.identifier === table)) {
       throw new Error(`There is no table called "${table}"`);
     }
     return mkApi(databaseConfig).query(table, params);
@@ -249,7 +242,7 @@ export function CmsQueryLoader({
 
   return renderMaybeData<ApiCmsRow[]>(
     maybeData,
-    (rows) => (
+    rows => (
       <QueryResultProvider table={table!} rows={rows}>
         {children}
       </QueryResultProvider>
@@ -394,10 +387,10 @@ function deriveInferredTableField(opts: {
   typeFilters?: CmsType[];
 }) {
   const { table, tables, field, typeFilters } = opts;
-  const schema = tables?.find((t) => t.identifier === table)?.schema;
+  const schema = tables?.find(t => t.identifier === table)?.schema;
   const fieldMeta = field
-    ? schema?.fields.find((f) => f.identifier === field)
-    : schema?.fields.find((f) =>
+    ? schema?.fields.find(f => f.identifier === field)
+    : schema?.fields.find(f =>
         (typeFilters ?? DEFAULT_TYPE_FILTERS).includes(f.type)
       );
   return fieldMeta;
@@ -416,7 +409,7 @@ function renderValue(value: any, type: CmsType, props: { className?: string }) {
     case "date-time":
       return <div {...props}>{value}</div>;
     case "rich-text":
-      return <div dangerouslySetInnerHTML={{__html: value}}{...props}/>;
+      return <div dangerouslySetInnerHTML={{ __html: value }} {...props} />;
     case "image":
       if (value && typeof value === "object" && value.url && value.imageMeta) {
         return (
@@ -516,7 +509,7 @@ export function CmsRowLink({
   }
 
   const value = res.row.data?.[fieldMeta.identifier] || "";
-  const childrenWithProps = React.Children.map(children, (child) => {
+  const childrenWithProps = React.Children.map(children, child => {
     if (React.isValidElement(child)) {
       return React.cloneElement(child, { [hrefProp]: value });
     }
@@ -599,7 +592,7 @@ export function CmsRowImage({
   }
 
   const value = res.row.data?.[fieldMeta.identifier] || "";
-  const childrenWithProps = React.Children.map(children, (child) => {
+  const childrenWithProps = React.Children.map(children, child => {
     if (React.isValidElement(child) && value) {
       if (typeof value === "object" && value.url && value.imageMeta) {
         return React.cloneElement(child, {
@@ -690,7 +683,7 @@ export function CmsRowFieldValue({
   }
 
   const value = res.row.data?.[fieldMeta.identifier] || "";
-  const childrenWithProps = React.Children.map(children, (child) => {
+  const childrenWithProps = React.Children.map(children, child => {
     if (React.isValidElement(child)) {
       return React.cloneElement(child, { [valueProp]: value });
     }
@@ -776,7 +769,7 @@ export function CmsRowLoader({
   });
   return renderMaybeData<ApiCmsRow>(
     maybeData,
-    (row) => (
+    row => (
       <RowProvider table={table} row={row}>
         {children}
       </RowProvider>

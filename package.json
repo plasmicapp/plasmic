@@ -27,6 +27,7 @@
     "plasmicpkgs/framer-motion",
     "plasmicpkgs/plasmic-basic-components",
     "plasmicpkgs/plasmic-cms",
+    "plasmicpkgs/plasmic-embed-css",
     "plasmicpkgs/plasmic-query",
     "plasmicpkgs/plasmic-shopify",
     "plasmicpkgs/plasmic-swell",

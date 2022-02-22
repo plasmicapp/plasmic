@@ -7,5 +7,3 @@ export * from "./ScrollRevealer";
 export { default as ScrollRevealer } from "./ScrollRevealer";
 export * from "./Video";
 export { default as Video } from "./Video";
-export * from "./EmbedCss";
-export { default as EmbedCss } from "./EmbedCss";

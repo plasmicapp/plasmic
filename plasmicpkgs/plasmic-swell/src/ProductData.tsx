@@ -8,6 +8,9 @@ import registerComponent, {
   CanvasComponentProps,
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
+import registerGlobalContext, {
+  GlobalContextMeta,
+} from "@plasmicapp/host/registerGlobalContext";
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import React, { CSSProperties, ReactNode, useContext } from "react";
 const swell = require("swell-js");
@@ -517,72 +520,45 @@ export const registerProductCollectionFetcher = _makeRegisterComponent(
   }
 );
 
-export const registerSwellCredentialsProvider = _makeRegisterComponent(
-  SwellCredentialsProvider,
-  {
-    name: "swell-credentials-provider",
-    importName: "SwellCredentialsProvider",
-    displayName: "Credentials Provider",
-    props: {
-      storeId: {
-        type: "string",
-        description:
-          "Your swell store id. You can find it in your swell dashboard under Settings > API.",
-        defaultValue: "my-store",
-      },
-      publicKey: {
-        type: "string",
-        description:
-          "Your swell public key. You can find it in your swell dashboard under Settings > API.",
-        defaultValue: "pk_md0JkpLnp9gBjkQ085oiebb0XBuwqZX9",
-      },
-      children: {
-        type: "slot",
-        defaultValue: {
-          type: "vbox",
-          children: [
-            {
-              type: "text",
-              tag: "h2",
-              value: "Single Product",
-            },
-            {
-              type: "component",
-              name: "swell-product",
-            },
-            {
-              type: "text",
-              tag: "h2",
-              value: "Product Collection",
-              styles: {
-                marginTop: "30px",
-              },
-            },
-            {
-              type: "hbox",
-              children: {
-                type: "component",
-                name: "swell-product-collection",
-                props: {
-                  limit: 8,
-                },
-              },
-              styles: {
-                alignItems: "stretch",
-                justifyContent: "space-between",
-                flexWrap: "wrap",
-              },
-            },
-          ],
-          styles: {
-            alignItems: "center",
-          },
-        },
-      },
+export const swellCredentialsProviderMeta: GlobalContextMeta<SwellCredentialsProviderProps> = {
+  name: "swell-credentials-provider",
+  importName: "SwellCredentialsProvider",
+  displayName: "Credentials Provider",
+  props: {
+    storeId: {
+      type: "string",
+      description:
+        "Your swell store id. You can find it in your swell dashboard under Settings > API.",
+      defaultValue: "my-store",
     },
-    importPath: thisModule,
+    publicKey: {
+      type: "string",
+      description:
+        "Your swell public key. You can find it in your swell dashboard under Settings > API.",
+      defaultValue: "pk_md0JkpLnp9gBjkQ085oiebb0XBuwqZX9",
+    },
+  },
+  importPath: thisModule,
+};
+
+export function registerSwellCredentialsProvider(
+  loader?: { registerGlobalContext: typeof registerGlobalContext },
+  customSwellCredentialsProviderMeta?: GlobalContextMeta<
+    SwellCredentialsProviderProps
+  >
+) {
+  if (loader) {
+    loader.registerGlobalContext(
+      SwellCredentialsProvider,
+      customSwellCredentialsProviderMeta ?? swellCredentialsProviderMeta
+    );
+  } else {
+    registerGlobalContext(
+      SwellCredentialsProvider,
+      customSwellCredentialsProviderMeta ?? swellCredentialsProviderMeta
+    );
   }
-);
+}
 
 export const registerProductFetcher = _makeRegisterComponent(ProductFetcher, {
   name: "swell-product-fetcher",
@@ -790,6 +766,7 @@ function _makeRegisterComponent<T extends React.ComponentType<any>>(
 
 export function registerAllSwellComponents(loader?: {
   registerComponent: typeof registerComponent;
+  registerGlobalContext: typeof registerGlobalContext;
 }) {
   registerSwellCredentialsProvider(loader);
   registerProductFetcher(loader);
