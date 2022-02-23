@@ -409,8 +409,8 @@ export interface LottieWrapperProps {
 export function LottieWrapper({
   className,
   animationData,
-  loop,
-  autoplay,
+  loop = true,
+  autoplay = true,
   preview = false,
 }: LottieWrapperProps) {
   const inEditor = useContext(PlasmicCanvasContext);
