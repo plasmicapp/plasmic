@@ -57,3 +57,12 @@ export function DataProvider({ name, data, children }: DataProviderProps) {
     );
   }
 }
+
+export function DataCtxReader({
+  children,
+}: {
+  children: ($ctx: DataDict | undefined) => ReactNode;
+}) {
+  const $ctx = useDataEnv();
+  return children($ctx);
+}
