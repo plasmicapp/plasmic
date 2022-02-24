@@ -25,6 +25,7 @@
     "packages/query",
     "plasmicpkgs/antd",
     "plasmicpkgs/framer-motion",
+    "plasmicpkgs/lottie-react",
     "plasmicpkgs/plasmic-basic-components",
     "plasmicpkgs/plasmic-cms",
     "plasmicpkgs/plasmic-embed-css",
