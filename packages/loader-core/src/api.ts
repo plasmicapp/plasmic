@@ -5,6 +5,7 @@ export interface ComponentMeta {
   usedComponents: string[];
   projectId: string;
   name: string;
+  displayName: string;
   cssFile: string;
   path: string | undefined;
   isPage: boolean;
@@ -12,6 +13,7 @@ export interface ComponentMeta {
   entry: string;
   isCode: boolean;
   pageMetadata?: PageMetadata;
+  metadata?: Record<string, string>;
 }
 
 export interface PageMeta extends ComponentMeta {
@@ -106,7 +108,7 @@ export class Api {
     const { platform, preview } = opts;
     const query = new URLSearchParams([
       ['platform', platform ?? 'react'],
-      ...projectIds.map(projectId => ['projectId', projectId]),
+      ...projectIds.map((projectId) => ['projectId', projectId]),
       ...(opts.browserOnly ? [['browserOnly', 'true']] : []),
     ]).toString();
 
@@ -163,7 +165,9 @@ export class Api {
   }
 
   private makeAuthHeaders() {
-    const tokens = this.opts.projects.map(p => `${p.id}:${p.token}`).join(',');
+    const tokens = this.opts.projects
+      .map((p) => `${p.id}:${p.token}`)
+      .join(',');
     return {
       'x-plasmic-api-project-tokens': tokens,
     };
