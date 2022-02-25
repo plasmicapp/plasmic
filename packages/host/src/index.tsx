@@ -27,6 +27,7 @@ import {
   useSelector,
   useSelectors,
   applySelector,
+  DataCtxReader,
 } from "./data";
 const root = globalThis as any;
 
@@ -64,7 +65,7 @@ class PlasmicRootNodeWrapper {
   constructor(private value: null | React.ReactElement) {}
   set = (val: null | React.ReactElement) => {
     this.value = val;
-    rootChangeListeners.forEach((f) => f());
+    rootChangeListeners.forEach(f => f());
   };
   get = () => this.value;
 }
@@ -201,9 +202,7 @@ interface PlasmicCanvasHostProps {
   enableWebpackHmr?: boolean;
 }
 
-export const PlasmicCanvasHost: React.FunctionComponent<PlasmicCanvasHostProps> = (
-  props
-) => {
+export const PlasmicCanvasHost: React.FunctionComponent<PlasmicCanvasHostProps> = props => {
   const { enableWebpackHmr } = props;
   const [node, setNode] = React.useState<React.ReactElement<any, any> | null>(
     null
@@ -239,6 +238,7 @@ if (root.__Sub == null) {
     useSelector,
     useSelectors,
     applySelector,
+    DataCtxReader,
   };
 }
 
@@ -276,7 +276,7 @@ class ErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error) {
-    renderErrorListeners.forEach((listener) => listener(error));
+    renderErrorListeners.forEach(listener => listener(error));
   }
 
   render() {
