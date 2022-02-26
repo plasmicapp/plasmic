@@ -20,14 +20,14 @@ export function mkTableOptions(
 
 export function mkFieldOptions(
   tables: ApiCmsTable[] | undefined,
-  tableId: string | undefined,
+  tableIdentifier: string | undefined,
   types?: CmsType[]
 ): ValueLabelPair[] {
   if (!tables) {
     return [];
   }
 
-  const table = tables.find((t) => t.identifier === tableId);
+  const table = tables.find((t) => t.identifier === tableIdentifier);
   if (!table) {
     return [];
   }

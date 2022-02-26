@@ -5,6 +5,7 @@ import {
 } from "@plasmicapp/host/registerComponent";
 import { GlobalContextMeta } from "@plasmicapp/host/registerGlobalContext";
 import { usePlasmicQueryData } from "@plasmicapp/query";
+import dayjs from "dayjs";
 import React from "react";
 import { DatabaseConfig, HttpError, mkApi, QueryParams } from "./api";
 import {
@@ -80,12 +81,14 @@ export const cmsCredentialsProviderMeta: GlobalContextMeta<CmsCredentialsProvide
     databaseId: {
       type: "string",
       displayName: "CMS ID",
-      description: "The ID of the CMS (database) to use. (Can get on the CMS settings page)",
+      description:
+        "The ID of the CMS (database) to use. (Can get on the CMS settings page)",
     },
     databaseToken: {
       type: "string",
       displayName: "CMS Public Token",
-      description: "The Public Token of the CMS (database) you are using. (Can get on the CMS settings page)",
+      description:
+        "The Public Token of the CMS (database) you are using. (Can get on the CMS settings page)",
     },
     locale: {
       type: "string",
@@ -129,7 +132,7 @@ function TablesFetcher({ children }: { children: React.ReactNode }) {
 
   return renderMaybeData<ApiCmsTable[]>(
     maybeData,
-    tables => <TablesProvider tables={tables}>{children}</TablesProvider>,
+    (tables) => <TablesProvider tables={tables}>{children}</TablesProvider>,
     { hideIfNotFound: false }
   );
 }
@@ -224,7 +227,7 @@ export function CmsQueryLoader({
   const maybeData = usePlasmicQueryData(cacheKey, async () => {
     if (!table) {
       throw new Error(`You must select a table to query`);
-    } else if (tables && !tables.find(t => t.identifier === table)) {
+    } else if (tables && !tables.find((t) => t.identifier === table)) {
       throw new Error(`There is no table called "${table}"`);
     }
     return mkApi(databaseConfig).query(table, params);
@@ -232,7 +235,7 @@ export function CmsQueryLoader({
 
   return renderMaybeData<ApiCmsRow[]>(
     maybeData,
-    rows => (
+    (rows) => (
       <QueryResultProvider table={table!} rows={rows}>
         {children}
       </QueryResultProvider>
@@ -294,11 +297,124 @@ export function CmsRowRepeater({
   );
 }
 
+interface CmsQueryRepeaterProps
+  extends QueryParams,
+    CanvasComponentProps<TablesContextData> {
+  children?: React.ReactNode;
+  table?: string;
+}
+
+export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
+  name: `${componentPrefix}-query-repeater`,
+  displayName: "CMS Query Loader",
+  description:
+    "Fetches CMS data and repeats content of children once for every row fetched.",
+  importName: "CmsQueryRepeater",
+  importPath: modulePath,
+  props: {
+    children: {
+      type: "slot",
+
+      defaultValue: {
+        type: "component",
+        name: `${componentPrefix}-row-field`,
+      },
+    },
+    table: {
+      type: "choice",
+      displayName: "Model",
+      description: "CMS model (table) to query.",
+      options: (_, ctx) => mkTableOptions(ctx?.tables),
+    },
+    useDraft: {
+      type: "boolean",
+      displayName: "Use drafts?",
+      description: "If set, also query unpublished content.",
+      defaultValue: false,
+    },
+    where: {
+      type: "object",
+      displayName: "Filter",
+      description: "Filter clause, in JSON format.",
+    },
+    orderBy: {
+      type: "choice",
+      displayName: "Order by",
+      description: "Field to order by.",
+      options: ({ table }, ctx) => mkFieldOptions(ctx?.tables, table),
+    },
+    desc: {
+      type: "boolean",
+      displayName: "Sort descending?",
+      description: 'Sort descending by "Order by" field.',
+      defaultValue: false,
+    },
+    limit: {
+      type: "number",
+      displayName: "Limit",
+      description: "Maximum number of entries to fetch (0 for unlimited).",
+      defaultValue: 0,
+    },
+  },
+};
+
+export function CmsQueryRepeater({
+  table,
+  children,
+  setControlContextData,
+  where,
+  useDraft,
+  orderBy,
+  desc,
+  limit,
+}: CmsQueryLoaderProps) {
+  const databaseConfig = useDatabase();
+  const tables = useTables();
+  if (tables) {
+    // TODO: Only include table if __plasmic_cms_row_{table} exists.
+    setControlContextData?.({ tables });
+  }
+
+  const params = { where, useDraft, orderBy, desc, limit };
+
+  const cacheKey = JSON.stringify({
+    component: "CmsQueryLoader",
+    table,
+    databaseConfig,
+    params,
+  });
+  const maybeData = usePlasmicQueryData(cacheKey, async () => {
+    if (!table) {
+      throw new Error(`You must select a table to query`);
+    } else if (tables && !tables.find((t) => t.identifier === table)) {
+      throw new Error(`There is no table called "${table}"`);
+    }
+    return mkApi(databaseConfig).query(table, params);
+  });
+
+  return renderMaybeData<ApiCmsRow[]>(
+    maybeData,
+    (rows) => (
+      <QueryResultProvider table={table!} rows={rows}>
+        {rows.map((row, index) => (
+          <RowProvider table={table!} row={row}>
+            {repeatedElement(index === 0, children)}
+          </RowProvider>
+        ))}
+      </QueryResultProvider>
+    ),
+    { hideIfNotFound: false }
+  );
+}
+
 interface CmsRowFieldProps
-  extends CanvasComponentProps<TablesContextData & { table: string }> {
+  extends CanvasComponentProps<
+    TablesContextData & { table: string; row: ApiCmsRow }
+  > {
   table?: string;
   field?: string;
   className?: string;
+  dateFormat?: string;
 }
 
 export const cmsRowFieldMeta: ComponentMeta<CmsRowFieldProps> = {
@@ -327,6 +443,81 @@ export const cmsRowFieldMeta: ComponentMeta<CmsRowFieldProps> = {
           "rich-text",
         ]),
     },
+    dateFormat: {
+      type: "choice",
+      displayName: "Date Format",
+      hidden: ({ field }, ctx) => {
+        if (!ctx) {
+          return true;
+        }
+        const { table: tableIdentifier, tables } = ctx;
+        const table = tables?.find((t) => t.identifier === tableIdentifier);
+        if (!table) {
+          return true;
+        }
+        const fieldMeta = table.schema.fields.find(
+          (f) => f.identifier === field
+        );
+        if (!fieldMeta) {
+          return true;
+        }
+        return fieldMeta.type !== "date-time";
+      },
+      options: [
+        {
+          label: "July 26, 2014",
+          value: "MMMM D, YYYY",
+        },
+        {
+          label: "July 26, 2014 10:02 PM",
+          value: "MMMM D, YYYY h:mm A",
+        },
+        {
+          label: "Jul 26, 2014",
+          value: "MMM D, YYYY",
+        },
+        {
+          label: "Jul 26, 2014 10:02 PM",
+          value: "MMM D, YYYY h:mm A",
+        },
+        {
+          label: "Saturday, July 26, 2014",
+          value: "dddd, MMMM D, YYYY",
+        },
+        {
+          label: "7/26/2014",
+          value: "M/D/YYYY",
+        },
+        {
+          label: "7/26/2014 10:02 PM",
+          value: "M/D/YYYY h:mm A",
+        },
+        {
+          label: "26/7/2014",
+          value: "D/M/YYYY",
+        },
+        {
+          label: "26/7/2014 10:02 PM",
+          value: "D/M/YYYY h:mm A",
+        },
+        {
+          label: "7/26/14",
+          value: "M/D/YY",
+        },
+        {
+          label: "7/26/14 10:02 PM",
+          value: "M/D/YY h:mm A",
+        },
+        {
+          label: "26/7/14",
+          value: "D/M/YY",
+        },
+        {
+          label: "26/7/14 10:02 PM",
+          value: "D/M/YY h:mm A",
+        },
+      ],
+    },
   },
 };
 
@@ -334,6 +525,7 @@ export function CmsRowField({
   className,
   table,
   field,
+  dateFormat,
   setControlContextData,
   ...rest
 }: CmsRowFieldProps) {
@@ -346,7 +538,7 @@ export function CmsRowField({
 
   if (tables) {
     // TODO: Only include table if __plasmic_cms_row_{table} exists.
-    setControlContextData?.({ tables, table: res.table });
+    setControlContextData?.({ tables, table: res.table, row: res.row });
   }
 
   const fieldMeta = deriveInferredTableField({
@@ -360,7 +552,13 @@ export function CmsRowField({
     return <div>Error: No field to display</div>;
   }
 
-  const data = res.row.data?.[fieldMeta.identifier];
+  let data = res.row.data?.[fieldMeta.identifier];
+  if (!data) {
+    return null;
+  }
+  if (fieldMeta.type === "date-time" && dateFormat) {
+    data = dayjs(data).format(dateFormat);
+  }
   return data
     ? renderValue(data, fieldMeta.type, {
         className,
@@ -377,10 +575,10 @@ function deriveInferredTableField(opts: {
   typeFilters?: CmsType[];
 }) {
   const { table, tables, field, typeFilters } = opts;
-  const schema = tables?.find(t => t.identifier === table)?.schema;
+  const schema = tables?.find((t) => t.identifier === table)?.schema;
   const fieldMeta = field
-    ? schema?.fields.find(f => f.identifier === field)
-    : schema?.fields.find(f =>
+    ? schema?.fields.find((f) => f.identifier === field)
+    : schema?.fields.find((f) =>
         (typeFilters ?? DEFAULT_TYPE_FILTERS).includes(f.type)
       );
   return fieldMeta;
@@ -499,7 +697,7 @@ export function CmsRowLink({
   }
 
   const value = res.row.data?.[fieldMeta.identifier] || "";
-  const childrenWithProps = React.Children.map(children, child => {
+  const childrenWithProps = React.Children.map(children, (child) => {
     if (React.isValidElement(child)) {
       return React.cloneElement(child, { [hrefProp]: value });
     }
@@ -582,7 +780,7 @@ export function CmsRowImage({
   }
 
   const value = res.row.data?.[fieldMeta.identifier] || "";
-  const childrenWithProps = React.Children.map(children, child => {
+  const childrenWithProps = React.Children.map(children, (child) => {
     if (React.isValidElement(child) && value) {
       if (typeof value === "object" && value.url && value.imageMeta) {
         return React.cloneElement(child, {
@@ -648,6 +846,7 @@ export function CmsRowFieldValue({
   valueProp,
   children,
   setControlContextData,
+  ...rest
 }: CmsRowFieldValueProps): React.ReactElement | null {
   const tables = useTables();
 
@@ -673,9 +872,9 @@ export function CmsRowFieldValue({
   }
 
   const value = res.row.data?.[fieldMeta.identifier] || "";
-  const childrenWithProps = React.Children.map(children, child => {
+  const childrenWithProps = React.Children.map(children, (child) => {
     if (React.isValidElement(child)) {
-      return React.cloneElement(child, { [valueProp]: value });
+      return React.cloneElement(child, { ...rest, [valueProp]: value });
     }
     return child;
   });
@@ -759,7 +958,7 @@ export function CmsRowLoader({
   });
   return renderMaybeData<ApiCmsRow>(
     maybeData,
-    row => (
+    (row) => (
       <RowProvider table={table} row={row}>
         {children}
       </RowProvider>

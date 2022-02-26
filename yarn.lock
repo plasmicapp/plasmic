@@ -3488,6 +3488,19 @@
   dependencies:
     "@octokit/openapi-types" "^8.1.4"
 
+"@plasmicapp/host@1.0.9":
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.9.tgz#44d778ab82b0d58e54b94b38b8825f40797494e8"
+  integrity sha512-7it0Xutsw8ARLRCZBTWKY73vT8Hp5AF+UtASKwFxvGNAwvQrPs9ximx+e2dpZf7czK5mwMjD1SQbwBHPlne+wg==
+  dependencies:
+    "@plasmicapp/preamble" "0.0.43"
+    window-or-global "^1.0.1"
+
+"@plasmicapp/preamble@0.0.43":
+  version "0.0.43"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/preamble/-/preamble-0.0.43.tgz#2109df63b40c298df909e06f9959e0d98aff290a"
+  integrity sha512-UtY6XC9kVpdIvfFtN6gceLMOzNr0325scGoOWc1a+FnVvudwOJ1uLNuB/RHKnEt7TQkBhfkdxup674SPKK4tPQ==
+
 "@pmmmwh/react-refresh-webpack-plugin@^0.4.3":
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/@pmmmwh/react-refresh-webpack-plugin/-/react-refresh-webpack-plugin-0.4.3.tgz#1eec460596d200c0236bf195b078a5d1df89b766"
@@ -7326,7 +7339,7 @@ dateformat@^3.0.0:
   resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-3.0.3.tgz#a6e37499a4d9a9cf85ef5872044d62901c9889ae"
   integrity sha512-jyCETtSl3VMZMWeRo7iY1FL19ges1t55hMo5yaam4Jrsm5EPL89UQkoQRyiI+Yf4k8r2ZpdngkV8hr1lIdjb3Q==
 
-dayjs@1.x:
+dayjs@1.x, dayjs@^1.10.7:
   version "1.10.7"
   resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.10.7.tgz#2cf5f91add28116748440866a0a1d26f3a6ce468"
   integrity sha512-P6twpd70BcPK34K26uJ1KT3wlhpuOAPoMwJzpsIWUxHZ7wpmbdZL/hQqBDfz7hGurYSa5PhzdhDHtt319hL3ig==
@@ -12619,6 +12632,18 @@ loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.4.0:
   integrity sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
+
+lottie-react@^2.1.0:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/lottie-react/-/lottie-react-2.2.1.tgz#27fbb85a11000557d7166c36a630fe1e5ce07028"
+  integrity sha512-lAdIUw+zeHLX3gtyLkisa4QM9NkTUUeZTsEL53laBEsjIH4JibgwkioZuza8CtwZ7/cpPZRbCRXWKfiuaDZWww==
+  dependencies:
+    lottie-web "^5.8.1"
+
+lottie-web@^5.8.1:
+  version "5.8.1"
+  resolved "https://registry.yarnpkg.com/lottie-web/-/lottie-web-5.8.1.tgz#807e0af0ad22b59bf867d964eb684cb3368da0ef"
+  integrity sha512-9gIizWADlaHC2GCt+D+yNpk5l2clZQFqnVWWIVdY0LnxC/uLa39dYltAe3fcmC/hrZ2IUQ8dLlY0O934Npjs7Q==
 
 loud-rejection@^1.0.0:
   version "1.6.0"
