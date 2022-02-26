@@ -108,6 +108,8 @@ export interface StyleConfig {
 
   /** File location for global css styles shared by all components. Relative to srcDir */
   defaultStyleCssFilePath: string;
+
+  skipGlobalCssImport?: boolean;
 }
 
 export interface ImagesConfig {
