@@ -1,6 +1,8 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
+import composeRefs from "@seznam/compose-react-refs";
+import React, { forwardRef, Ref, useEffect, useRef } from "react";
 import Slider, { Settings } from "react-slick";
 
 export const sliderMeta: ComponentMeta<Settings> = {
@@ -35,6 +37,27 @@ export const sliderMeta: ComponentMeta<Settings> = {
         },
       ],
     },
+    editingSlide: {
+      displayName: "Currently edited slide",
+      type: "number",
+      description:
+        "Switch to the specified slide (first is 0). Only affects the editor, not the final page.",
+      defaultValueHint: 0,
+      editOnly: true,
+    },
+    // TODO Ideally, we are not showing any labels on these buttons, and we can place them in the same row.
+    // insertSlide: {
+    //   displayName: "",
+    //   type: "custom",
+    //   description: "Insert a new slide right after the current slide.",
+    //   control: MyReactComponent,
+    // },
+    // deleteSlide: {
+    //   displayName: "",
+    //   type: "custom",
+    //   description: "Delete the current slide.",
+    //   control: MyReactComponent,
+    // },
     accessibility: {
       displayName: "Accessibility",
       type: "boolean",
@@ -251,13 +274,26 @@ export const sliderMeta: ComponentMeta<Settings> = {
   },
 };
 
+export const SliderWrapper = forwardRef(function SliderWrapper_(
+  { editingSlide, ...props }: Settings & { editingSlide?: number },
+  userRef?: Ref<Slider>
+) {
+  const slider = useRef<Slider>(null);
+  useEffect(() => {
+    if (editingSlide !== undefined) {
+      slider.current!.slickGoTo(editingSlide);
+    }
+  }, [editingSlide]);
+  return <Slider ref={composeRefs(slider, userRef)} {...props} />;
+});
+
 export function registerSlider(
   loader?: { registerComponent: typeof registerComponent },
   customSliderMeta?: ComponentMeta<Settings>
 ) {
   if (loader) {
-    loader.registerComponent(Slider, customSliderMeta ?? sliderMeta);
+    loader.registerComponent(SliderWrapper, customSliderMeta ?? sliderMeta);
   } else {
-    registerComponent(Slider, customSliderMeta ?? sliderMeta);
+    registerComponent(SliderWrapper, customSliderMeta ?? sliderMeta);
   }
 }

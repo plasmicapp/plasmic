@@ -38,6 +38,7 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
+    "@seznam/compose-react-refs": "^1.0.6",
     "react-slick": "^0.28.1",
     "slick-carousel": "^1.8.1"
   },
