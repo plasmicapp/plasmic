@@ -98,6 +98,14 @@ export interface RequiredPackages {
   "@plasmicapp/react-web-runtime": string;
 }
 
+export interface ProjectMetaInfo {
+  id: string;
+  name: string;
+  workspaceId?: string;
+  hostUrl?: string;
+  lastPublishedVersion?: string;
+}
+
 export interface ProjectBundle {
   components: ComponentBundle[];
   codeComponentMetas: CodeComponentMeta[];
@@ -268,6 +276,13 @@ export class PlasmicApi {
       }
     );
     return result.data as ProjectBundle;
+  }
+
+  async projectMeta(projectId: string) {
+    const result = await this.post(
+      `${this.codegenHost}/api/v1/projects/${projectId}/code/meta`
+    );
+    return result.data as ProjectMetaInfo;
   }
 
   async uploadBundle(

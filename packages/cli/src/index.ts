@@ -4,6 +4,7 @@ import updateNotifier from "update-notifier";
 import yargs from "yargs";
 import * as auth from "./actions/auth";
 import { fixImports, FixImportsArgs } from "./actions/fix-imports";
+import { InfoArgs, printProjectInfo } from "./actions/info";
 import { getYargsOption, InitArgs, initPlasmic } from "./actions/init";
 import * as projectToken from "./actions/project-token";
 import { sync, SyncArgs } from "./actions/sync";
@@ -133,6 +134,20 @@ yargs
     "Fixes import paths after you've moved around Plasmic blackbox files",
     (yags) => 0,
     (argv) => handleError(fixImports(argv))
+  )
+  .command<InfoArgs>(
+    "info",
+    "Fetches metadata for projects",
+    (yags) =>
+      yags.option("projects", {
+        alias: "p",
+        describe: "ID of plasmic project to check",
+        type: "array",
+        default: [],
+      }),
+    (argv) => {
+      handleError(printProjectInfo(argv));
+    }
   )
   .command<UploadBundleArgs>(
     "upload-bundle",
