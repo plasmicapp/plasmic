@@ -50,7 +50,8 @@ export const embedMeta: ComponentMeta<EmbedProps> = {
     code: {
       type: "code",
       lang: "html",
-      defaultValueHint: "<!-- HTML snippet -->",
+      defaultValueHint:
+        "<div>Paste your embed code via the right sidebar</div>",
       description: "The HTML code to be embedded",
     },
     hideInEditor: {
