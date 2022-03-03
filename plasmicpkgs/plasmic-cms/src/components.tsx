@@ -104,14 +104,6 @@ export function CmsCredentialsProvider({
   ...config
 }: CmsCredentialsProviderProps) {
   config.host = config.host || defaultHost;
-  if (!config.databaseId) {
-    throw new Error(`You must specify the CMS database ID to use.`);
-  }
-  if (!config.databaseToken) {
-    throw new Error(
-      `You must specify the token of the CMS database you are using.`
-    );
-  }
   return (
     <DatabaseProvider config={config}>
       <TablesFetcher>{children}</TablesFetcher>
@@ -126,9 +118,12 @@ function TablesFetcher({ children }: { children: React.ReactNode }) {
     component: "TablesFetcher",
     databaseConfig,
   });
-  const maybeData = usePlasmicQueryData(cacheKey, async () =>
-    mkApi(databaseConfig).fetchTables()
-  );
+  const maybeData = usePlasmicQueryData(cacheKey, async () => {
+    if (!isDatabaseConfigured(databaseConfig)) {
+      return [];
+    }
+    return await mkApi(databaseConfig).fetchTables();
+  });
 
   return renderMaybeData<ApiCmsTable[]>(
     maybeData,
@@ -150,7 +145,7 @@ interface CmsQueryLoaderProps
 
 export const cmsQueryLoaderMeta: ComponentMeta<CmsQueryLoaderProps> = {
   name: `${componentPrefix}-query-loader`,
-  displayName: "CMS Query Loader",
+  displayName: "CMS Data Loader",
   importName: "CmsQueryLoader",
   importPath: modulePath,
   props: {
@@ -199,6 +194,10 @@ export const cmsQueryLoaderMeta: ComponentMeta<CmsQueryLoaderProps> = {
   },
 };
 
+function isDatabaseConfigured(config?: DatabaseConfig) {
+  return config?.databaseId && config?.databaseToken;
+}
+
 export function CmsQueryLoader({
   table,
   children,
@@ -225,10 +224,13 @@ export function CmsQueryLoader({
     params,
   });
   const maybeData = usePlasmicQueryData(cacheKey, async () => {
+    if (!isDatabaseConfigured(databaseConfig)) {
+      throw new Error(`You must specify the CMS ID and API key`);
+    }
     if (!table) {
-      throw new Error(`You must select a table to query`);
+      throw new Error(`You must select a model to query`);
     } else if (tables && !tables.find((t) => t.identifier === table)) {
-      throw new Error(`There is no table called "${table}"`);
+      throw new Error(`There is no model called "${table}"`);
     }
     return mkApi(databaseConfig).query(table, params);
   });
@@ -251,7 +253,7 @@ interface CmsRowRepeaterProps extends CanvasComponentProps<TablesContextData> {
 
 export const cmsRowRepeaterMeta: ComponentMeta<CmsRowRepeaterProps> = {
   name: `${componentPrefix}-row-repeater`,
-  displayName: "CMS Row Repeater",
+  displayName: "CMS Entry Repeater",
   importName: "CmsRowRepeater",
   importPath: modulePath,
   props: {
@@ -306,7 +308,7 @@ interface CmsQueryRepeaterProps
 
 export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
   name: `${componentPrefix}-query-repeater`,
-  displayName: "CMS Query Loader",
+  displayName: "CMS Data Loader",
   description:
     "Fetches CMS data and repeats content of children once for every row fetched.",
   importName: "CmsQueryRepeater",
@@ -316,8 +318,13 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
       type: "slot",
 
       defaultValue: {
-        type: "component",
-        name: `${componentPrefix}-row-field`,
+        type: "vbox",
+        children: [
+          {
+            type: "component",
+            name: `${componentPrefix}-row-field`,
+          },
+        ],
       },
     },
     table: {
@@ -336,6 +343,7 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
       type: "object",
       displayName: "Filter",
       description: "Filter clause, in JSON format.",
+      hidden: () => true,
     },
     orderBy: {
       type: "choice",
@@ -384,25 +392,37 @@ export function CmsQueryRepeater({
     params,
   });
   const maybeData = usePlasmicQueryData(cacheKey, async () => {
+    if (!isDatabaseConfigured(databaseConfig)) {
+      throw new Error(`You must specify a CMS ID and API key`);
+    }
     if (!table) {
-      throw new Error(`You must select a table to query`);
-    } else if (tables && !tables.find((t) => t.identifier === table)) {
-      throw new Error(`There is no table called "${table}"`);
+      if (!tables || tables.length === 0) {
+        throw new Error(`You must select a model to query`);
+      }
+      table = tables[0].identifier;
+    }
+    if (tables && !tables.find((t) => t.identifier === table)) {
+      throw new Error(`There is no model called "${table}"`);
     }
     return mkApi(databaseConfig).query(table, params);
   });
 
   return renderMaybeData<ApiCmsRow[]>(
     maybeData,
-    (rows) => (
-      <QueryResultProvider table={table!} rows={rows}>
-        {rows.map((row, index) => (
-          <RowProvider table={table!} row={row}>
-            {repeatedElement(index === 0, children)}
-          </RowProvider>
-        ))}
-      </QueryResultProvider>
-    ),
+    (rows) => {
+      if (rows.length === 0) {
+        return <div>No matching entries found.</div>;
+      }
+      return (
+        <QueryResultProvider table={table!} rows={rows}>
+          {rows.map((row, index) => (
+            <RowProvider table={table!} row={row}>
+              {repeatedElement(index === 0, children)}
+            </RowProvider>
+          ))}
+        </QueryResultProvider>
+      );
+    },
     { hideIfNotFound: false }
   );
 }
@@ -419,7 +439,7 @@ interface CmsRowFieldProps
 
 export const cmsRowFieldMeta: ComponentMeta<CmsRowFieldProps> = {
   name: `${componentPrefix}-row-field`,
-  displayName: "CMS Row Field",
+  displayName: "CMS Entry Field",
   importName: "CmsRowField",
   importPath: modulePath,
   props: {
@@ -533,8 +553,16 @@ export function CmsRowField({
   const tables = useTables();
 
   const res = useRow(table);
-  if (!res || !res.row) {
-    return <div>Error: No CMS Row found</div>;
+  if (!res) {
+    return (
+      <div className={className}>
+        Field {table ?? "Unknown Model"}.{field ?? "Unknown Field"}
+      </div>
+    );
+  }
+
+  if (!res.row) {
+    return <div className={className}>Error: No CMS Entry found</div>;
   }
 
   if (tables) {
@@ -546,11 +574,11 @@ export function CmsRowField({
     table: res.table,
     tables,
     field,
-    typeFilters: ["text"],
+    typeFilters: ["text", "long-text", "rich-text"],
   });
 
   if (!fieldMeta) {
-    return <div>Error: No field to display</div>;
+    throw new Error(`Please select an entry field to display.`);
   }
 
   let data = res.row.data?.[fieldMeta.identifier];
@@ -600,7 +628,17 @@ function renderValue(value: any, type: CmsType, props: { className?: string }) {
     case "rich-text":
       return <div dangerouslySetInnerHTML={{ __html: value }} {...props} />;
     case "image":
-      throw new Error("CmsRowImage should be used for image fields");
+      if (value && typeof value === "object" && value.url && value.imageMeta) {
+        return (
+          <img
+            src={value.url}
+            width={value.imageMeta.height}
+            height={value.imageMeta.height}
+            {...props}
+          />
+        );
+      }
+      return null;
     default:
       assertNever(type);
   }
@@ -619,7 +657,7 @@ interface CmsRowLinkProps extends CanvasComponentProps<TableContextData> {
 
 export const cmsRowLinkMeta: ComponentMeta<CmsRowLinkProps> = {
   name: `${componentPrefix}-row-link`,
-  displayName: "CMS Row Link",
+  displayName: "CMS Entry Link",
   importName: "CmsRowLink",
   importPath: modulePath,
   props: {
@@ -707,7 +745,7 @@ interface CmsRowImageProps extends CanvasComponentProps<TableContextData> {
 
 export const cmsRowImageMeta: ComponentMeta<CmsRowImageProps> = {
   name: `${componentPrefix}-row-image`,
-  displayName: "CMS Row Image",
+  displayName: "CMS Entry Image",
   importName: "CmsRowImage",
   importPath: modulePath,
   props: {
@@ -799,7 +837,7 @@ interface CmsRowFieldValueProps extends CanvasComponentProps<TableContextData> {
 
 export const cmsRowFieldValueMeta: ComponentMeta<CmsRowFieldValueProps> = {
   name: `${componentPrefix}-row-value`,
-  displayName: "CMS Row Value",
+  displayName: "CMS Entry Value",
   importName: "CmsRowValue",
   importPath: modulePath,
   props: {
