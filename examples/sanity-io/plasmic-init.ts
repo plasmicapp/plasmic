@@ -1,4 +1,5 @@
 import { initPlasmicLoader } from "@plasmicapp/loader-nextjs";
+import { SanityFetcher, SanityField } from "./components/sanity";
 
 export const PLASMIC = initPlasmicLoader({
   projects: [
@@ -23,4 +24,29 @@ export const PLASMIC = initPlasmicLoader({
 // http://localhost:3000/plasmic-host).  See
 // https://docs.plasmic.app/learn/app-hosting/#set-a-plasmic-project-to-use-your-app-host
 
-// PLASMIC.registerComponent(...);
+PLASMIC.registerComponent(SanityFetcher, {
+  name: "SanityFetcher",
+  props: {
+    children: {
+      type: "slot",
+      defaultValue: {
+        type: "component",
+        name: "SanityField",
+      },
+    },
+    groq: {
+      type: "string",
+      defaultValue: "*[_type == 'movie']",
+    },
+  },
+});
+
+PLASMIC.registerComponent(SanityField, {
+  name: "SanityField",
+  props: {
+    path: {
+      type: "string",
+      defaultValue: "_id",
+    },
+  },
+});
