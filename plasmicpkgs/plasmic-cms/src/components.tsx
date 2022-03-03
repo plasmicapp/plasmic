@@ -599,17 +599,7 @@ function renderValue(value: any, type: CmsType, props: { className?: string }) {
     case "rich-text":
       return <div dangerouslySetInnerHTML={{ __html: value }} {...props} />;
     case "image":
-      if (value && typeof value === "object" && value.url && value.imageMeta) {
-        return (
-          <img
-            src={value.url}
-            width={value.imageMeta.height}
-            height={value.imageMeta.height}
-            {...props}
-          />
-        );
-      }
-      return null;
+      throw new Error("CmsRowImage should be used for image fields");
     default:
       assertNever(type);
   }
