@@ -441,6 +441,7 @@ export const cmsRowFieldMeta: ComponentMeta<CmsRowFieldProps> = {
           "long-text",
           "date-time",
           "rich-text",
+          "image",
         ]),
     },
     dateFormat: {
