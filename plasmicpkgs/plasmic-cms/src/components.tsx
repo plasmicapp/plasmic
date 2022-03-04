@@ -391,20 +391,21 @@ export function CmsQueryRepeater({
     databaseConfig,
     params,
   });
+
+  if (!table && tables && tables.length > 0) {
+    table = tables[0].identifier;
+  }
   const maybeData = usePlasmicQueryData(cacheKey, async () => {
     if (!isDatabaseConfigured(databaseConfig)) {
       throw new Error(`You must specify a CMS ID and API key`);
     }
     if (!table) {
-      if (!tables || tables.length === 0) {
-        throw new Error(`You must select a model to query`);
-      }
-      table = tables[0].identifier;
-    }
-    if (tables && !tables.find((t) => t.identifier === table)) {
+      throw new Error(`You must select a model to query`);
+    } else if (tables && !tables.find((t) => t.identifier === table)) {
       throw new Error(`There is no model called "${table}"`);
+    } else {
+      return mkApi(databaseConfig).query(table, params);
     }
-    return mkApi(databaseConfig).query(table, params);
   });
 
   return renderMaybeData<ApiCmsRow[]>(
