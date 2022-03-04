@@ -81,14 +81,12 @@ export const cmsCredentialsProviderMeta: GlobalContextMeta<CmsCredentialsProvide
     databaseId: {
       type: "string",
       displayName: "CMS ID",
-      description:
-        "The ID of the CMS (database) to use. (Can get on the CMS settings page)",
+      description: "The ID of the CMS (database) to use. (Can get on the CMS settings page)",
     },
     databaseToken: {
       type: "string",
       displayName: "CMS Public Token",
-      description:
-        "The Public Token of the CMS (database) you are using. (Can get on the CMS settings page)",
+      description: "The Public Token of the CMS (database) you are using. (Can get on the CMS settings page)",
     },
     locale: {
       type: "string",
