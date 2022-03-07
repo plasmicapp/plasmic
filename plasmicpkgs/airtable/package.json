@@ -1,0 +1,47 @@
+{
+  "name": "@plasmicpkgs/airtable",
+  "version": "0.0.19",
+  "description": "Plasmic registration call for the HTML5 video element",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/airtable.esm.js",
+  "files": [
+    "dist"
+  ],
+  "size-limit": [
+    {
+      "path": "dist/airtable.cjs.production.min.js",
+      "limit": "20 KB"
+    },
+    {
+      "path": "dist/airtable.esm.js",
+      "limit": "20 KB"
+    }
+  ],
+  "scripts": {
+    "build": "tsdx build",
+    "start": "tsdx watch",
+    "test": "tsdx test --passWithNoTests",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
+  },
+  "devDependencies": {
+    "@plasmicapp/host": "^1.0.21",
+    "@size-limit/preset-small-lib": "^4.11.0",
+    "@types/node": "^14.0.26",
+    "size-limit": "^4.11.0",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.2.0",
+    "typescript": "^3.9.7"
+  },
+  "dependencies": {
+    "@plasmicapp/query": "^0.1.28"
+  },
+  "peerDependencies": {
+    "@plasmicapp/host": "^1.0.0",
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  }
+}

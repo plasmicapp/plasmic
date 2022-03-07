@@ -2,7 +2,8 @@
   "name": "root",
   "private": true,
   "devDependencies": {
-    "lerna": "^4.0.0"
+    "lerna": "^4.0.0",
+    "prettier": "2.3.0"
   },
   "scripts": {
     "bootstrap": "lerna bootstrap --force-local && lerna link && lerna run build",
@@ -23,6 +24,7 @@
     "packages/host",
     "packages/preamble",
     "packages/query",
+    "plasmicpkgs/airtable",
     "plasmicpkgs/antd",
     "plasmicpkgs/framer-motion",
     "plasmicpkgs/lottie-react",
