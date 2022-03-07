@@ -8,6 +8,7 @@ export type ComponentLookupSpec =
 
 interface FullNameLookupSpec {
   name: string;
+  rawName?: string;
   projectId?: string;
   isCode?: boolean;
 }
@@ -88,6 +89,7 @@ function toFullLookup(lookup: ComponentLookupSpec): FullLookupSpec {
   } else {
     return {
       name: codeComponent ? namePart : normalizeName(namePart),
+      rawName: namePart.trim(),
       projectId,
       isCode: codeComponent,
     };
@@ -123,7 +125,7 @@ function matchesCompMeta(lookup: FullLookupSpec, meta: ComponentMeta) {
   }
 
   return isNameSpec(lookup)
-    ? lookup.name === meta.name &&
+    ? (lookup.name === meta.name || lookup.rawName === meta.displayName) &&
         (lookup.isCode == null || lookup.isCode === meta.isCode)
     : lookup.path === meta.path;
 }
