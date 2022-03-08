@@ -1,5 +1,12 @@
-import { initPlasmicLoader as initPlasmicLoaderReact } from '@plasmicapp/loader-react';
+import {
+  InitOptions,
+  initPlasmicLoader as initPlasmicLoaderReact,
+  InternalPlasmicComponentLoader,
+  PlasmicComponentLoader,
+} from '@plasmicapp/loader-react';
+import * as PlasmicQuery from '@plasmicapp/query';
 import type { PlasmicRemoteChangeWatcher as Watcher } from '@plasmicapp/watcher';
+import { IncomingMessage, ServerResponse } from 'http';
 import * as NextHead from 'next/head';
 import * as NextLink from 'next/link';
 import * as React from 'react';
@@ -28,13 +35,61 @@ export {
   usePlasmicQueryData,
 } from '@plasmicapp/loader-react';
 
+type ServerRequest = IncomingMessage & {
+  cookies: {
+    [key: string]: string;
+  };
+};
+class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
+  constructor(internal: InternalPlasmicComponentLoader) {
+    super(internal);
+  }
+
+  async getActiveVariation(opts: {
+    req?: ServerRequest;
+    res?: ServerResponse;
+    known?: Record<string, string>;
+    traits: Record<string, string>;
+  }) {
+    return this._getActiveVariation({
+      traits: opts.traits,
+      getKnownValue: (key: string) => {
+        if (opts.known) {
+          return opts.known[key];
+        } else {
+          return opts.req?.cookies[`plasmic:${key}`] ?? undefined;
+        }
+      },
+      updateKnownValue: (key: string, value: string) => {
+        if (opts.res) {
+          const cookie = `plasmic:${key}=${value}`;
+          const resCookie = opts.res?.getHeader('Set-Cookie') ?? [];
+          let newCookies: string[] = [];
+          if (Array.isArray(resCookie)) {
+            newCookies = [...resCookie, `plasmic:${key}=${value}`];
+          } else {
+            newCookies = [`${resCookie}`, cookie];
+          }
+
+          opts.res?.setHeader('Set-Cookie', newCookies);
+        }
+      },
+    });
+  }
+}
+
+const initPlasmicLoaderNext = (opts: InitOptions) => {
+  const internal = new InternalPlasmicComponentLoader(opts);
+  return new NextJsPlasmicComponentLoader(internal);
+};
+
 export function initPlasmicLoader(
   opts: Parameters<typeof initPlasmicLoaderReact>[0]
 ) {
   const isBrowser = typeof window !== 'undefined';
   const isProd = process.env.NODE_ENV === 'production';
   const cache = isBrowser || isProd ? undefined : makeCache(opts);
-  const loader = initPlasmicLoaderReact({
+  const loader = initPlasmicLoaderNext({
     onClientSideFetch: 'warn',
     ...opts,
     cache,
@@ -51,6 +106,10 @@ export function initPlasmicLoader(
     'next/link': NextLink,
     'react/jsx-runtime': jsxRuntime,
     'react/jsx-dev-runtime': jsxDevRuntime,
+
+    // Also inject @plasmicapp/query at run time, so that the same
+    // context is used here and in loader-downloaded code
+    '@plasmicapp/query': PlasmicQuery,
   });
 
   if (cache) {

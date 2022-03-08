@@ -1,4 +1,9 @@
-import { isBrowser, LoaderBundleOutput } from './api';
+import { LoaderBundleOutput } from '@plasmicapp/loader-fetcher';
+
+const isBrowser =
+  typeof window !== 'undefined' &&
+  window != null &&
+  typeof window.document !== 'undefined';
 
 export class Registry {
   // Singleton

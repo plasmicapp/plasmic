@@ -1,4 +1,4 @@
-import { LoaderBundleOutput } from './api';
+import { LoaderBundleOutput } from '@plasmicapp/loader-fetcher';
 import { DepsGraph } from './deps-graph';
 
 // Get sub-bundle including only modules from browser build that are reachable
@@ -23,5 +23,6 @@ export function getBundleSubset(
     components: bundle.components.filter((c) => isSubModule(c.entry)),
     globalGroups: bundle.globalGroups,
     projects: bundle.projects,
+    activeSplits: bundle.activeSplits,
   };
 }

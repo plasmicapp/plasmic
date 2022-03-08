@@ -1,4 +1,4 @@
-import { AssetModule, ComponentMeta } from '@plasmicapp/loader-core';
+import { AssetModule, ComponentMeta, Split } from '@plasmicapp/loader-core';
 import { PlasmicQueryDataProvider } from '@plasmicapp/query';
 import * as React from 'react';
 import {
@@ -7,11 +7,16 @@ import {
   PlasmicComponentLoader,
 } from './loader';
 import { useForceUpdate } from './utils';
+import {
+  getGlobalVariantsFromSplits,
+  mergeGlobalVariantsSpec,
+} from './variation';
 
 interface PlasmicRootContextValue {
   globalVariants?: GlobalVariantSpec[];
   globalContextsProps?: Record<string, any>;
   loader: InternalPlasmicComponentLoader;
+  variation?: Record<string, string>;
 }
 
 const PlasmicRootContext = React.createContext<
@@ -77,6 +82,11 @@ export function PlasmicRootProvider(props: {
    * component.
    */
   globalContextsProps?: Record<string, any>;
+
+  /**
+   * Specifies a mapping of split id to slice id that should be activated
+   */
+  variation?: Record<string, string>;
 }) {
   const {
     globalVariants,
@@ -87,6 +97,7 @@ export function PlasmicRootProvider(props: {
     prefetchedQueryData,
     suspenseForQueryData,
     globalContextsProps,
+    variation,
   } = props;
   const loader = (props.loader as any)
     .__internal as InternalPlasmicComponentLoader;
@@ -94,13 +105,35 @@ export function PlasmicRootProvider(props: {
   if (prefetchedData) {
     loader.registerPrefetchedBundle(prefetchedData?.bundle);
   }
+
+  const [splits, setSplits] = React.useState<Split[]>(loader.getActiveSplits());
+  const forceUpdate = useForceUpdate();
+  const watcher = React.useMemo(
+    () => ({
+      onDataFetched: () => {
+        setSplits(loader.getActiveSplits());
+        forceUpdate();
+      },
+    }),
+    [loader, forceUpdate]
+  );
+
+  React.useEffect(() => {
+    loader.subscribePlasmicRoot(watcher);
+    return () => loader.unsubscribePlasmicRoot(watcher);
+  }, [watcher, loader]);
+
   const value = React.useMemo<PlasmicRootContextValue>(
     () => ({
-      globalVariants,
+      globalVariants: mergeGlobalVariantsSpec(
+        globalVariants ?? [],
+        getGlobalVariantsFromSplits(splits, variation ?? {})
+      ),
       globalContextsProps,
       loader,
+      variation,
     }),
-    [globalVariants, globalContextsProps, loader]
+    [globalVariants, variation, globalContextsProps, loader, splits]
   );
 
   return (
@@ -170,11 +203,14 @@ function buildCss(
   const { scopedCompMetas, skipFonts } = opts;
   const cssFiles =
     scopedCompMetas &&
-    new Set<string>(['entrypoint.css', ...scopedCompMetas.map(c => c.cssFile)]);
+    new Set<string>([
+      'entrypoint.css',
+      ...scopedCompMetas.map((c) => c.cssFile),
+    ]);
   const cssModules = loader
     .getLookup()
     .getCss()
-    .filter(f => !cssFiles || cssFiles.has(f.fileName));
+    .filter((f) => !cssFiles || cssFiles.has(f.fileName));
 
   const getPri = (fileName: string) => (fileName === 'entrypoint.css' ? 0 : 1);
   const compareModules = (a: AssetModule, b: AssetModule) =>
@@ -190,9 +226,9 @@ function buildCss(
     ${
       skipFonts
         ? ''
-        : remoteFonts.map(f => `@import url('${f.url}');`).join('\n')
+        : remoteFonts.map((f) => `@import url('${f.url}');`).join('\n')
     }
-    ${cssModules.map(mod => mod.source).join('\n')}
+    ${cssModules.map((mod) => mod.source).join('\n')}
   `;
 }
 

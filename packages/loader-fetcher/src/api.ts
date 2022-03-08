@@ -51,6 +51,43 @@ export interface FontMeta {
   url: string;
 }
 
+interface GlobalVariantSplitContent {
+  type: 'global-variant';
+  projectId: string;
+  group: string;
+  variant: string;
+}
+
+interface Slice {
+  id: string;
+  contents: GlobalVariantSplitContent[];
+  externalId?: string;
+}
+
+export interface ExperimentSlice extends Slice {
+  prob: number;
+}
+
+export interface SegmentSlice extends Slice {
+  cond: any;
+}
+
+export interface ExperimentSplit {
+  id: string;
+  externalId?: string;
+  type: 'experiment';
+  slices: ExperimentSlice[];
+}
+
+export interface SegmentSplit {
+  id: string;
+  externalId?: string;
+  type: 'segment';
+  slices: SegmentSlice[];
+}
+
+export type Split = ExperimentSplit | SegmentSplit;
+
 export interface LoaderBundleOutput {
   modules: {
     browser: (CodeModule | AssetModule)[];
@@ -60,6 +97,7 @@ export interface LoaderBundleOutput {
   components: ComponentMeta[];
   globalGroups: GlobalGroupMeta[];
   projects: ProjectMeta[];
+  activeSplits: Split[];
 }
 
 export interface LoaderHtmlOutput {

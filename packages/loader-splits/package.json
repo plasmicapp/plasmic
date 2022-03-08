@@ -1,5 +1,5 @@
 {
-  "version": "1.0.70",
+  "version": "1.0.0",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -30,22 +30,21 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "@plasmicapp/loader-core",
+  "name": "@plasmicapp/loader-splits",
   "author": "Chung Wu",
-  "module": "dist/loader-core.esm.js",
+  "module": "dist/loader-splits.esm.js",
   "size-limit": [
     {
-      "path": "dist/loader-core.cjs.production.min.js",
+      "path": "dist/loader-splits.cjs.production.min.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/loader-core.esm.js",
+      "path": "dist/loader-splits.esm.js",
       "limit": "10 KB"
     }
   ],
   "devDependencies": {
     "@size-limit/preset-small-lib": "^4.11.0",
-    "@types/isomorphic-fetch": "^0.0.35",
     "husky": "^6.0.0",
     "size-limit": "^4.11.0",
     "tsdx": "^0.14.1",
@@ -54,6 +53,9 @@
   },
   "dependencies": {
     "@plasmicapp/loader-fetcher": "^1.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "gitHead": "fa53f7d79f0e26d8b061102fda0c06788da6f8a7"
 }

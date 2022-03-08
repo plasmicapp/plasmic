@@ -51,7 +51,9 @@ export function prepComponentData(
     'entrypoint.css',
     ...compPaths,
     'root-provider.js',
-    ...bundle.projects.map(x => x.globalContextsProviderFileName).filter(x => !!x),
+    ...bundle.projects
+      .map((x) => x.globalContextsProviderFileName)
+      .filter((x) => !!x),
     ...bundle.globalGroups.map((g) => g.contextFile)
   );
 
@@ -126,6 +128,16 @@ export function mergeBundles(
   const newExternals = target.external.filter((x) => !existingExternals.has(x));
   if (newExternals.length > 0) {
     target = { ...target, external: [...target.external, ...newExternals] };
+  }
+
+  const existingSplitIds = new Set(target.activeSplits.map((s) => s.id));
+  const newSplits =
+    from.activeSplits.filter((s) => !existingSplitIds.has(s.id)) ?? [];
+  if (newSplits.length > 0) {
+    target = {
+      ...target,
+      activeSplits: [...target.activeSplits, ...newSplits],
+    };
   }
 
   return target;

@@ -1,4 +1,4 @@
-import { LoaderBundleOutput } from './api';
+import { LoaderBundleOutput } from '@plasmicapp/loader-fetcher';
 
 export class DepsGraph {
   private dependsOn: Record<string, string[]> = {};

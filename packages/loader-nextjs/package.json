@@ -4,7 +4,9 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "edge.d.ts",
+    "edge.js"
   ],
   "engines": {
     "node": ">=10"
@@ -20,7 +22,7 @@
     "analyze": "size-limit --why"
   },
   "peerDependencies": {
-    "next": ">=10.2.3",
+    "next": ">=10.1.0",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
   },
@@ -68,6 +70,7 @@
   "dependencies": {
     "@plasmicapp/loader-core": "1.0.70",
     "@plasmicapp/loader-react": "1.0.93",
+    "@plasmicapp/loader-edge": "1.0.0",
     "@plasmicapp/watcher": "1.0.66"
   },
   "gitHead": "fa53f7d79f0e26d8b061102fda0c06788da6f8a7"

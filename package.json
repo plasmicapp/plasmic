@@ -15,9 +15,12 @@
   },
   "workspaces": [
     "packages/loader-core",
+    "packages/loader-edge",
+    "packages/loader-fetcher",
     "packages/loader-gatsby",
     "packages/loader-nextjs",
     "packages/loader-react",
+    "packages/loader-splits",
     "packages/loader-svelte",
     "packages/loader-vue",
     "packages/watcher",

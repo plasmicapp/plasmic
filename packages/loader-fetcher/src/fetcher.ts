@@ -1,6 +1,6 @@
 import { Api, isBrowser, LoaderBundleOutput } from './api';
 
-interface FetcherOptions {
+export interface FetcherOptions {
   projects: {
     id: string;
     version?: string;

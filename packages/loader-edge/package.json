@@ -1,5 +1,5 @@
 {
-  "version": "1.0.70",
+  "version": "1.0.0",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -11,11 +11,11 @@
   },
   "scripts": {
     "start": "tsdx watch",
-    "build": "tsdx build",
+    "build": "tsdx build --target node",
     "yalcp": "yalc publish --push",
     "test": "tsdx test",
     "lint": "tsdx lint",
-    "prepare": "tsdx build",
+    "prepare": "tsdx build --target node",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
@@ -30,22 +30,21 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "@plasmicapp/loader-core",
+  "name": "@plasmicapp/loader-edge",
   "author": "Chung Wu",
-  "module": "dist/loader-core.esm.js",
+  "module": "dist/loader-edge.esm.js",
   "size-limit": [
     {
-      "path": "dist/loader-core.cjs.production.min.js",
+      "path": "dist/loader-edge.cjs.production.min.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/loader-core.esm.js",
+      "path": "dist/loader-edge.esm.js",
       "limit": "10 KB"
     }
   ],
   "devDependencies": {
     "@size-limit/preset-small-lib": "^4.11.0",
-    "@types/isomorphic-fetch": "^0.0.35",
     "husky": "^6.0.0",
     "size-limit": "^4.11.0",
     "tsdx": "^0.14.1",
@@ -53,7 +52,11 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
-    "@plasmicapp/loader-fetcher": "^1.0.0"
+    "@plasmicapp/loader-fetcher": "^1.0.0",
+    "@plasmicapp/loader-splits": "^1.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "gitHead": "fa53f7d79f0e26d8b061102fda0c06788da6f8a7"
 }

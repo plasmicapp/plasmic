@@ -23,6 +23,7 @@
   "dependencies": {
     "@plasmicapp/host": "1.0.36",
     "@plasmicapp/loader-core": "1.0.70",
+    "@plasmicapp/loader-splits": "1.0.0",
     "@plasmicapp/query": "0.1.41",
     "pascalcase": "^1.0.0",
     "react-is": "^17.0.2",

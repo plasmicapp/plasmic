@@ -13,6 +13,7 @@ export {
   ComponentRenderData,
   InitOptions,
   initPlasmicLoader,
+  InternalPlasmicComponentLoader,
   PlasmicComponentLoader,
 } from './loader';
 export { PlasmicComponent } from './PlasmicComponent';

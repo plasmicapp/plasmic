@@ -12,6 +12,7 @@ import {
   PlasmicModulesFetcher,
   Registry,
 } from '@plasmicapp/loader-core';
+import { getActiveVariation } from '@plasmicapp/loader-splits';
 import * as PlasmicQuery from '@plasmicapp/query';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -22,6 +23,7 @@ import { ComponentLookup } from './component-lookup';
 import { createUseGlobalVariant } from './global-variants';
 import { GlobalVariantSpec } from './PlasmicRootProvider';
 import { ComponentLookupSpec, getCompMeta, getLookupSpecName } from './utils';
+import { getPlasmicCookieValues, updatePlasmicCookieValue } from './variation';
 
 export interface InitOptions {
   projects: ProjectOption[];
@@ -118,6 +120,7 @@ export class InternalPlasmicComponentLoader {
     globalGroups: [],
     external: [],
     projects: [],
+    activeSplits: [],
   };
 
   constructor(private opts: InitOptions) {
@@ -136,7 +139,7 @@ export class InternalPlasmicComponentLoader {
   registerModules(modules: Record<string, any>) {
     if (
       Object.keys(modules).some(
-        name => this.registry.getRegisteredModule(name) !== modules[name]
+        (name) => this.registry.getRegisteredModule(name) !== modules[name]
       )
     ) {
       if (!this.registry.isEmpty()) {
@@ -213,6 +216,7 @@ export class InternalPlasmicComponentLoader {
       globalGroups: [],
       external: [],
       projects: [],
+      activeSplits: [],
     };
     this.registry.clear();
   }
@@ -279,7 +283,7 @@ export class InternalPlasmicComponentLoader {
     );
     const data = await this.fetchAllData();
     return data.components.filter(
-      comp => comp.isPage && comp.path
+      (comp) => comp.isPage && comp.path
     ) as PageMeta[];
   }
 
@@ -295,6 +299,10 @@ export class InternalPlasmicComponentLoader {
     return new ComponentLookup(this.bundle, this.registry);
   }
 
+  getActiveSplits() {
+    return this.bundle.activeSplits;
+  }
+
   // @ts-ignore
   private async fetchMissingData(opts: {
     missingSpecs: ComponentLookupSpec[];
@@ -303,7 +311,7 @@ export class InternalPlasmicComponentLoader {
     this.maybeReportClientSideFetch(
       () =>
         `Plasmic: fetching missing components in the browser: ${opts.missingSpecs
-          .map(spec => getLookupSpecName(spec))
+          .map((spec) => getLookupSpecName(spec))
           .join(', ')}`
     );
     return this.fetchAllData();
@@ -320,10 +328,22 @@ export class InternalPlasmicComponentLoader {
     }
   }
 
+  public async getActiveVariation(opts: {
+    traits: Record<string, string | number>;
+    getKnownValue: (key: string) => string | undefined;
+    updateKnownValue: (key: string, value: string) => void;
+  }) {
+    await this.fetchAllData();
+    return getActiveVariation({
+      ...opts,
+      splits: this.bundle.activeSplits,
+    });
+  }
+
   private async fetchAllData() {
     const bundle = await this.ensureFetcher().fetchAllData();
     this.mergeBundle(bundle);
-    this.roots.forEach(watcher => watcher.onDataFetched?.());
+    this.roots.forEach((watcher) => watcher.onDataFetched?.());
     return bundle;
   }
 
@@ -521,6 +541,40 @@ export class PlasmicComponentLoader {
    */
   async fetchComponents() {
     return this.__internal.fetchComponents();
+  }
+
+  protected async _getActiveVariation(opts: {
+    traits: Record<string, string | number>;
+    getKnownValue: (key: string) => string | undefined;
+    updateKnownValue: (key: string, value: string) => void;
+  }) {
+    return this.__internal.getActiveVariation(opts);
+  }
+
+  async getActiveVariation(opts: {
+    known?: Record<string, string>;
+    traits: Record<string, string | number>;
+  }) {
+    return this._getActiveVariation({
+      traits: opts.traits,
+      getKnownValue: (key: string) => {
+        if (opts.known) {
+          return opts.known[key];
+        } else {
+          const cookies = getPlasmicCookieValues();
+          return cookies[key];
+        }
+      },
+      updateKnownValue: (key: string, value: string) => {
+        if (!opts.known) {
+          updatePlasmicCookieValue(key, value);
+        }
+      },
+    });
+  }
+
+  getActiveSplits() {
+    return this.__internal.getActiveSplits();
   }
 
   clearCache() {
