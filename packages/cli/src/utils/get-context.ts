@@ -106,6 +106,14 @@ function removeMissingFilesFromLock(
     });
 }
 
+/**
+ *
+ * @param context
+ * @param expectedPath
+ * @param baseNameToFiles
+ * @returns The path if we are able to find the file, undefined if we need to recreate it
+ * @throws if the user interrupts flow
+ */
 async function attemptToRestoreFilePath(
   context: PlasmicContext,
   expectedPath: string,
@@ -193,30 +201,34 @@ async function resolveMissingFilesInConfig(
     "contextFilePath"
   );
 
+  // Try to find the file, otherwise recreate at either the specified path or default path (if both are falsey)
   context.config.style.defaultStyleCssFilePath =
     (await attemptToRestoreFilePath(
       context,
       context.config.style.defaultStyleCssFilePath,
       baseNameToFiles
-    )) || "";
+    )) || context.config.style.defaultStyleCssFilePath;
 
+  // Try to find the file, otherwise recreate at either the specified path or default path (if both are falsey)
   for (const project of config.projects) {
     project.cssFilePath =
       (await attemptToRestoreFilePath(
         context,
         project.cssFilePath,
         baseNameToFiles
-      )) || "";
+      )) || project.cssFilePath;
 
     if (!project.globalContextsFilePath) {
       project.globalContextsFilePath = "";
     }
+
+    // Try to find the file, otherwise recreate at either the specified path or default path (if both are falsey)
     project.globalContextsFilePath =
       (await attemptToRestoreFilePath(
         context,
         project.globalContextsFilePath,
         baseNameToFiles
-      )) || "";
+      )) || project.globalContextsFilePath;
 
     project.images = await filterFiles(project.images, "filePath");
     project.icons = await filterFiles(project.icons, "moduleFilePath");

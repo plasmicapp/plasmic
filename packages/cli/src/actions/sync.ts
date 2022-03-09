@@ -60,11 +60,11 @@ import {
   ComponentPendingMerge,
   syncProjectComponents,
 } from "./sync-components";
+import { syncGlobalContexts } from "./sync-global-contexts";
 import { syncGlobalVariants } from "./sync-global-variants";
 import { syncProjectIconAssets } from "./sync-icons";
 import { syncProjectImageAssets } from "./sync-images";
 import { upsertStyleTokens } from "./sync-styles";
-import { syncGlobalContexts } from "./sync-global-contexts";
 
 export interface SyncArgs extends CommonArgs {
   projects: readonly string[];
@@ -488,14 +488,25 @@ async function checkExternalPkgs(
 function maybeRenamePathExt(
   context: PlasmicContext,
   path: string,
-  ext: string
+  ext: string,
+  opts?: {
+    continueOnFailure?: boolean;
+  }
 ) {
   if (!path) {
     return path;
   }
   const correctPath = `${stripExtension(path, true)}${ext}`;
   if (path !== correctPath) {
-    renameFile(context, path, correctPath);
+    try {
+      renameFile(context, path, correctPath);
+    } catch (e) {
+      if (!opts?.continueOnFailure) {
+        throw e;
+      } else {
+        logger.warn(e);
+      }
+    }
   }
   return correctPath;
 }
@@ -506,19 +517,22 @@ function fixFileExtension(context: PlasmicContext) {
   context.config.style.defaultStyleCssFilePath = maybeRenamePathExt(
     context,
     context.config.style.defaultStyleCssFilePath,
-    cssExt
+    cssExt,
+    { continueOnFailure: true }
   );
   context.config.projects.forEach((project) => {
     project.cssFilePath = maybeRenamePathExt(
       context,
       project.cssFilePath,
-      cssExt
+      cssExt,
+      { continueOnFailure: true }
     );
     project.components.forEach((component) => {
       component.cssFilePath = maybeRenamePathExt(
         context,
         component.cssFilePath,
-        cssExt
+        cssExt,
+        { continueOnFailure: true }
       );
     });
   });
