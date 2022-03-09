@@ -232,6 +232,10 @@ packages:
     access: $all
     publish: $all
     unpublish: $all
+  '@plasmicpkgs/*':
+    access: $all
+    publish: $all
+    unpublish: $all
 ```
 
 Then kill and restart the verdaccio server:

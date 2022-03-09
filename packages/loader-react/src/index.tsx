@@ -4,6 +4,7 @@ export {
   PrimitiveType,
   PropType,
   repeatedElement,
+  usePlasmicCanvasContext,
 } from '@plasmicapp/host';
 export { ComponentMeta, PageMeta, PageMetadata } from '@plasmicapp/loader-core';
 export { usePlasmicQueryData } from '@plasmicapp/query';

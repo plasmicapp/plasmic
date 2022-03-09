@@ -11,6 +11,7 @@ export {
   PrimitiveType,
   PropType,
   repeatedElement,
+  usePlasmicCanvasContext,
   usePlasmicComponent,
 } from "@plasmicapp/loader-react";
 export { createPages, createResolvers, sourceNodes } from "./gatsby-node";
