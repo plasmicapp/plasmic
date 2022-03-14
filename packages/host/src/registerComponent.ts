@@ -36,10 +36,21 @@ interface PropTypeBase<P> {
   hidden?: ContextDependentConfig<P, boolean>;
 }
 
-interface StringTypeBase<P> extends PropTypeBase<P> {
-  defaultValue?: string;
-  defaultValueHint?: string;
-}
+type DefaultValueOrExpr<T> =
+  | {
+      defaultExpr?: undefined;
+      defaultExprHint?: undefined;
+      defaultValue?: T;
+      defaultValueHint?: T;
+    }
+  | {
+      defaultValue?: undefined;
+      defaultValueHint?: undefined;
+      defaultExpr?: string;
+      defaultExprHint?: string;
+    };
+
+type StringTypeBase<P> = PropTypeBase<P> & DefaultValueOrExpr<string>;
 
 export type StringType<P> =
   | "string"
@@ -59,15 +70,13 @@ export type BooleanType<P> =
   | "boolean"
   | ({
       type: "boolean";
-      defaultValue?: boolean;
-      defaultValueHint?: boolean;
-    } & PropTypeBase<P>);
+    } & DefaultValueOrExpr<boolean> &
+      PropTypeBase<P>);
 
-interface NumberTypeBase<P> extends PropTypeBase<P> {
-  type: "number";
-  defaultValue?: number;
-  defaultValueHint?: number;
-}
+type NumberTypeBase<P> = PropTypeBase<P> &
+  DefaultValueOrExpr<number> & {
+    type: "number";
+  };
 
 export type NumberType<P> =
   | "number"
@@ -86,16 +95,19 @@ export type NumberType<P> =
     ) &
       NumberTypeBase<P>);
 
+/**
+ * Expects defaultValue to be a JSON-compatible value
+ */
 export type JSONLikeType<P> =
   | "object"
   | ({
       type: "object";
-      /**
-       * Expects a JSON-compatible value
-       */
-      defaultValue?: any;
-      defaultValueHint?: any;
-    } & PropTypeBase<P>);
+    } & DefaultValueOrExpr<any> &
+      PropTypeBase<P>)
+  | ({
+      type: "array";
+    } & DefaultValueOrExpr<any[]> &
+      PropTypeBase<P>);
 
 interface ChoiceTypeBase<P> extends PropTypeBase<P> {
   type: "choice";
@@ -116,16 +128,12 @@ interface ChoiceTypeBase<P> extends PropTypeBase<P> {
 }
 
 export type ChoiceType<P> = (
-  | {
-      defaultValue?: string;
-      defaultValueHint?: string;
+  | ({
       multiSelect?: false;
-    }
-  | {
-      defaultValue?: string[];
-      defaultValueHint?: string[];
+    } & DefaultValueOrExpr<string>)
+  | ({
       multiSelect: true;
-    }
+    } & DefaultValueOrExpr<string[]>)
 ) &
   ChoiceTypeBase<P>;
 
@@ -160,39 +168,45 @@ interface CustomControlProps<P> {
 }
 export type CustomControl<P> = React.ComponentType<CustomControlProps<P>>;
 
+/**
+ * Expects defaultValue to be a JSON-compatible value
+ */
 export type CustomType<P> =
   | CustomControl<P>
   | ({
       type: "custom";
       control: CustomControl<P>;
-      /**
-       * Expects a JSON-compatible value
-       */
-      defaultValue?: any;
-    } & PropTypeBase<P>);
+    } & PropTypeBase<P> &
+      DefaultValueOrExpr<any>);
 
 type SlotType =
   | "slot"
-  | {
+  | ({
       type: "slot";
       /**
        * The unique names of all code components that can be placed in the slot
        */
       allowedComponents?: string[];
-      defaultValue?: PlasmicElement | PlasmicElement[];
       /**
        * Whether the "empty slot" placeholder should be hidden in the canvas.
        */
       hidePlaceholder?: boolean;
-    };
+      /**
+       * Whether the slot is repeated, i.e., is rendered multiple times using
+       * repeatedElement().
+       */
+      isRepeated?: boolean;
+    } & Omit<
+      DefaultValueOrExpr<PlasmicElement | PlasmicElement[]>,
+      "defaultValueHint" | "defaultExpr" | "defaultExprHint"
+    >);
 
 type ImageUrlType<P> =
   | "imageUrl"
   | ({
       type: "imageUrl";
-      defaultValue?: string;
-      defaultValueHint?: string;
-    } & PropTypeBase<P>);
+    } & DefaultValueOrExpr<string> &
+      PropTypeBase<P>);
 
 export type PrimitiveType<P = any> = Extract<
   StringType<P> | BooleanType<P> | NumberType<P> | JSONLikeType<P>,
