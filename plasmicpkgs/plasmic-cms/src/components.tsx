@@ -65,37 +65,40 @@ interface CmsCredentialsProviderProps extends DatabaseConfig {
 
 const defaultHost = "https://studio.plasmic.app";
 
-export const cmsCredentialsProviderMeta: GlobalContextMeta<CmsCredentialsProviderProps> = {
-  name: `${componentPrefix}-credentials-provider`,
-  displayName: "CMS Credentials Provider",
-  importName: "CmsCredentialsProvider",
-  importPath: modulePath,
-  props: {
-    host: {
-      type: "string",
-      displayName: "Studio URL",
-      description: `The default host for use in production is ${defaultHost}.`,
-      defaultValue: defaultHost,
-      defaultValueHint: defaultHost,
+export const cmsCredentialsProviderMeta: GlobalContextMeta<CmsCredentialsProviderProps> =
+  {
+    name: `${componentPrefix}-credentials-provider`,
+    displayName: "CMS Credentials Provider",
+    importName: "CmsCredentialsProvider",
+    importPath: modulePath,
+    props: {
+      host: {
+        type: "string",
+        displayName: "Studio URL",
+        description: `The default host for use in production is ${defaultHost}.`,
+        defaultValue: defaultHost,
+        defaultValueHint: defaultHost,
+      },
+      databaseId: {
+        type: "string",
+        displayName: "CMS ID",
+        description:
+          "The ID of the CMS (database) to use. (Can get on the CMS settings page)",
+      },
+      databaseToken: {
+        type: "string",
+        displayName: "CMS Public Token",
+        description:
+          "The Public Token of the CMS (database) you are using. (Can get on the CMS settings page)",
+      },
+      locale: {
+        type: "string",
+        displayName: "Locale",
+        description:
+          "The locale to use for localized values, leave empty for the default locale.",
+      },
     },
-    databaseId: {
-      type: "string",
-      displayName: "CMS ID",
-      description: "The ID of the CMS (database) to use. (Can get on the CMS settings page)",
-    },
-    databaseToken: {
-      type: "string",
-      displayName: "CMS Public Token",
-      description: "The Public Token of the CMS (database) you are using. (Can get on the CMS settings page)",
-    },
-    locale: {
-      type: "string",
-      displayName: "Locale",
-      description:
-        "The locale to use for localized values, leave empty for the default locale.",
-    },
-  },
-};
+  };
 
 export function CmsCredentialsProvider({
   children,
@@ -652,6 +655,8 @@ interface CmsRowLinkProps extends CanvasComponentProps<TableContextData> {
   field: string;
   hrefProp: string;
   children: React.ReactNode;
+  prefix?: string;
+  suffix?: string;
 }
 
 export const cmsRowLinkMeta: ComponentMeta<CmsRowLinkProps> = {
@@ -688,6 +693,16 @@ export const cmsRowLinkMeta: ComponentMeta<CmsRowLinkProps> = {
       description: "Prop to inject into children",
       defaultValue: "href",
     },
+    prefix: {
+      type: "string",
+      displayName: "Optional prefix",
+      description: "Prefix to prepend to prop value.",
+    },
+    suffix: {
+      type: "string",
+      displayName: "Optional suffix",
+      description: "Suffix to append to prop value.",
+    },
   },
 };
 
@@ -697,6 +712,8 @@ export function CmsRowLink({
   hrefProp,
   children,
   setControlContextData,
+  prefix,
+  suffix,
 }: CmsRowLinkProps): React.ReactElement | null {
   const tables = useTables();
 
@@ -727,7 +744,10 @@ export function CmsRowLink({
   const value = res.row.data?.[fieldMeta.identifier] || "";
   const childrenWithProps = React.Children.map(children, (child) => {
     if (React.isValidElement(child)) {
-      return React.cloneElement(child, { [hrefProp]: value });
+      return React.cloneElement(child, {
+        [hrefProp]:
+          prefix || suffix ? `${prefix || ""}${value}${suffix || ""}` : value,
+      });
     }
     return child;
   });
