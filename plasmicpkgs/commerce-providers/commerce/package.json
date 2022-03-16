@@ -1,0 +1,42 @@
+{
+  "name": "@plasmicpkgs/commerce",
+  "version": "0.0.2",
+  "description": "Plasmic registration calls for commerce components",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/commerce.esm.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdx build",
+    "start": "tsdx watch",
+    "test": "tsdx test --passWithNoTests",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
+  },
+  "devDependencies": {
+    "@plasmicapp/host": "1.0.21",
+    "@size-limit/preset-small-lib": "^4.11.0",
+    "@types/js-cookie": "^3.0.1",
+    "@types/node": "^14.0.26",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "size-limit": "^4.11.0",
+    "tsdx": "^0.14.1",
+    "typescript": "^3.9.7"
+  },
+  "peerDependencies": {
+    "@plasmicapp/host": "^1.0.0",
+    "react": ">=16.8.0"
+  },
+  "dependencies": {
+    "@types/react": "^17.0.40",
+    "@vercel/fetch": "^6.2.0",
+    "js-cookie": "^3.0.1",
+    "react-hook-form": "^7.28.0",
+    "swr": "^1.2.2"
+  }
+}
