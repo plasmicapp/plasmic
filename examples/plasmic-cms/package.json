@@ -1,0 +1,27 @@
+{
+  "name": "plasmic-cms-example",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@plasmicapp/host": "^1.0.21",
+    "@plasmicapp/loader-nextjs": "^1.0.78",
+    "@plasmicapp/react-web": "^0.2.91",
+    "@plasmicpkgs/plasmic-cms": "^0.0.39",
+    "next": "12.1.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "17.0.21",
+    "@types/react": "17.0.40",
+    "eslint": "8.10.0",
+    "eslint-config-next": "12.1.0",
+    "typescript": "4.6.2"
+  }
+}
