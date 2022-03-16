@@ -65,7 +65,7 @@ class PlasmicRootNodeWrapper {
   constructor(private value: null | React.ReactElement) {}
   set = (val: null | React.ReactElement) => {
     this.value = val;
-    rootChangeListeners.forEach(f => f());
+    rootChangeListeners.forEach((f) => f());
   };
   get = () => this.value;
 }
@@ -98,8 +98,17 @@ function setPlasmicRootNode(node: React.ReactElement | null) {
 
 /**
  * React context to detect whether the component is rendered on Plasmic editor.
+ * If not, return false.
+ * If so, return an object with more information about the component
  */
-export const PlasmicCanvasContext = React.createContext<boolean>(false);
+export const PlasmicCanvasContext = React.createContext<
+  | {
+      componentName: string | null;
+    }
+  | boolean
+>(false);
+export const usePlasmicCanvasContext = () =>
+  React.useContext(PlasmicCanvasContext);
 
 function _PlasmicCanvasHost() {
   // If window.parent is null, then this is a window whose containing iframe
@@ -152,9 +161,15 @@ function _PlasmicCanvasHost() {
       appDiv.classList.add("__wab_user-body");
       document.body.appendChild(appDiv);
     }
+    const locationHash = new URLSearchParams(location.hash);
+    const plasmicContextValue = isCanvas
+      ? {
+          componentName: locationHash.get("componentName"),
+        }
+      : false;
     return ReactDOM.createPortal(
       <ErrorBoundary key={`${renderCount}`}>
-        <PlasmicCanvasContext.Provider value={isCanvas}>
+        <PlasmicCanvasContext.Provider value={plasmicContextValue}>
           {plasmicRootNode.get()}
         </PlasmicCanvasContext.Provider>
       </ErrorBoundary>,
@@ -202,7 +217,9 @@ interface PlasmicCanvasHostProps {
   enableWebpackHmr?: boolean;
 }
 
-export const PlasmicCanvasHost: React.FunctionComponent<PlasmicCanvasHostProps> = props => {
+export const PlasmicCanvasHost: React.FunctionComponent<PlasmicCanvasHostProps> = (
+  props
+) => {
   const { enableWebpackHmr } = props;
   const [node, setNode] = React.useState<React.ReactElement<any, any> | null>(
     null
@@ -276,7 +293,7 @@ class ErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error) {
-    renderErrorListeners.forEach(listener => listener(error));
+    renderErrorListeners.forEach((listener) => listener(error));
   }
 
   render() {

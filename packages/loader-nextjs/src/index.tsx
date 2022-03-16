@@ -23,6 +23,7 @@ export {
   PrimitiveType,
   PropType,
   repeatedElement,
+  usePlasmicCanvasContext,
   usePlasmicComponent,
   usePlasmicQueryData,
 } from '@plasmicapp/loader-react';
