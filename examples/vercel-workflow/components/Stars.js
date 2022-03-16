@@ -541,6 +541,8 @@ class App {
 
     this.renderer.setSize(this.width, this.height);
     container.appendChild(this.renderer.domElement);
+    this.renderer.domElement.style.width = "100%";
+    this.renderer.domElement.style.height = "100%";
 
     this.renderer.domElement.addEventListener("mousedown", () => {
       this.mousePosition.setZ(1);
@@ -635,8 +637,24 @@ class App {
     this.animate();
   }
 
+  resizeCanvasToDisplaySize() {
+    const canvas = this.renderer.domElement;
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+    if (canvas.width !== this.width || canvas.height !== height) {
+      // you must pass false here or three.js sadly fights the browser
+      this.renderer.setSize(width, height, false);
+      // camera.aspect = width / height;
+      // camera.updateProjectionMatrix();
+
+      // set render target sizes here
+    }
+  }
+
   animate() {
     requestAnimationFrame(() => {
+      this.resizeCanvasToDisplaySize();
+
       this.bufferA.uniforms["iFrame"].value = this.counter++;
 
       this.bufferA.uniforms[
