@@ -1,5 +1,10 @@
 This is a Next.js project bootstrapped with [`create-plasmic-app`](https://www.npmjs.com/package/create-plasmic-app).
 
+It includes a couple of code components:
+
+- SanityFetcher, which fetches Sanity data by GROQ and repeats some elements
+- SanityField, which renders a specific text or image field
+
 ## Getting Started
 
 First, run the development server:
@@ -8,9 +13,11 @@ First, run the development server:
 yarn dev
 ```
 
-Open your browser to see the result.
+Then open the corresponding Plasmic project (cloning it if you wish):
 
-You can start editing your project in Plasmic Studio. The page auto-updates as you edit the project.
+https://studio.plasmic.app/projects/KvH4HMs91XCoTmeRY5e5v
+
+You can start editing your project in Plasmic Studio.
 
 ## Learn More
 
