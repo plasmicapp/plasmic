@@ -1,8 +1,5 @@
 import * as React from 'react';
-import {
-  usePlasmicRootContext,
-  PlasmicRootProvider,
-} from './PlasmicRootProvider';
+import { usePlasmicRootContext } from './PlasmicRootProvider';
 import { usePlasmicComponent } from './usePlasmicComponent';
 
 const PlasmicComponentContext = React.createContext(false);
@@ -37,50 +34,62 @@ export function PlasmicComponent(props: {
     );
   }
 
-  const lookup = rootContext.loader.getLookup();
+  const { loader, globalContextsProps } = rootContext;
 
   const Component = usePlasmicComponent(
     { name: component, projectId },
     { forceOriginal }
   );
 
-  if (!Component) {
-    return null;
-  }
+  const element = React.useMemo(() => {
+    if (!Component) {
+      return null;
+    }
 
-  let element = <Component {...componentProps} />;
+    let element = <Component {...componentProps} />;
 
-  if (isRootLoader) {
-    // If this is the root PlasmicComponent, then wrap the content with the
-    // react-web's PlasmicRootProvider.  We are doing this here, instead of
-    // say PlasmicRootProvider, because we don't have access to this context
-    // provider until data has been loaded.  If we insert this provider into
-    // the tree at the root after data is loaded, then we'll invalidate the
-    // React tree and tree state, which is bad.  Instead, we do it at the
-    // "root-most PlasmicComponent"; we won't risk invalidating the sub-tree
-    // here because there were no children before the data came in.
-    const ReactWebRootProvider = lookup.getRootProvider();
-    const GlobalContextsProvider = lookup.getGlobalContextsProvider({
-      name: component,
-      projectId,
-    });
-    element = (
-      <ReactWebRootProvider>
-        <MaybeWrap
-          cond={!!GlobalContextsProvider}
-          wrapper={children => (
-            <GlobalContextsProvider {...rootContext.globalContextsProps}>
-              {children}
-            </GlobalContextsProvider>
-          )}
-        >
-          <PlasmicComponentContext.Provider value={true}>
-            {element}
-          </PlasmicComponentContext.Provider>
-        </MaybeWrap>
-      </ReactWebRootProvider>
-    );
-  }
+    if (isRootLoader) {
+      // If this is the root PlasmicComponent, then wrap the content with the
+      // react-web's PlasmicRootProvider.  We are doing this here, instead of
+      // say PlasmicRootProvider, because we don't have access to this context
+      // provider until data has been loaded.  If we insert this provider into
+      // the tree at the root after data is loaded, then we'll invalidate the
+      // React tree and tree state, which is bad.  Instead, we do it at the
+      // "root-most PlasmicComponent"; we won't risk invalidating the sub-tree
+      // here because there were no children before the data came in.
+      const lookup = loader.getLookup();
+      const ReactWebRootProvider = lookup.getRootProvider();
+      const GlobalContextsProvider = lookup.getGlobalContextsProvider({
+        name: component,
+        projectId,
+      });
+      element = (
+        <ReactWebRootProvider>
+          <MaybeWrap
+            cond={!!GlobalContextsProvider}
+            wrapper={(children) => (
+              <GlobalContextsProvider {...globalContextsProps}>
+                {children}
+              </GlobalContextsProvider>
+            )}
+          >
+            <PlasmicComponentContext.Provider value={true}>
+              {element}
+            </PlasmicComponentContext.Provider>
+          </MaybeWrap>
+        </ReactWebRootProvider>
+      );
+    }
+    return element;
+  }, [
+    Component,
+    componentProps,
+    loader,
+    isRootLoader,
+    component,
+    projectId,
+    globalContextsProps,
+  ]);
   return element;
 }
 
