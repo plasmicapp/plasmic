@@ -70,6 +70,12 @@ export function usePlasmicQueryData<T>(key: string, fetcher: () => Promise<T>) {
         return;
       }
 
+      if (key in cache) {
+        // Either fetch is already on-going or result is already cached;
+        // either way, we don't need to kick off another fetch.
+        return;
+      }
+
       // Otherwise, we need to kick off the fetch in effect,
       // and force a re-render once we get the result.
       const promise = fetcher()

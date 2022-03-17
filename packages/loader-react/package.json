@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/loader-react",
-  "version": "1.0.81",
+  "version": "1.0.82",
   "module": "dist/loader-react.esm.js",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -23,7 +23,7 @@
   "dependencies": {
     "@plasmicapp/host": "1.0.26",
     "@plasmicapp/loader-core": "1.0.64",
-    "@plasmicapp/query": "0.1.33",
+    "@plasmicapp/query": "0.1.34",
     "pascalcase": "^1.0.0",
     "react-is": "^17.0.2",
     "react-ssr-prepass": "^1.4.0"
