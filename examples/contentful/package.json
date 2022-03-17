@@ -12,11 +12,13 @@
     "@contentful/rich-text-react-renderer": "^15.11.1",
     "@plasmicapp/loader-nextjs": "^1.0.76",
     "@plasmicapp/query": "^0.1.28",
+    "lodash": "^4.17.21",
     "next": "12.1.0",
     "react": "17.0.2",
     "react-dom": "17.0.2"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.180",
     "@types/node": "17.0.21",
     "@types/react": "17.0.39",
     "eslint": "8.10.0",
