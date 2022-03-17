@@ -1,5 +1,7 @@
 # Contentful + Plasmic example
 
+Here we demo how you can make data from Contentful available for drag-and-drop for your content editors in the Plasmic Studio visual editor.
+
 This is a Next.js project bootstrapped with [`create-plasmic-app`](https://www.npmjs.com/package/create-plasmic-app).
 
 To play with the live Plasmic project:
@@ -11,19 +13,25 @@ It includes a couple of code components:
 - ContenfulFetcher, which fetches Contenful data (type and schema hard-coded for this app) and repeats some elements
 - ContenfulField, which renders a specific text or image field (you pick from a dropdown)
 
-## Getting Started
+## Getting started with local development
 
-First, run the development server:
+1. Run the development server (make sure it's listening on port 3000):
 
 ```bash
 yarn dev
 ```
 
-Then open the corresponding Plasmic project (cloning it if you wish):
+2. Open the corresponding Plasmic project:
 
-https://studio.plasmic.app/projects/KvH4HMs91XCoTmeRY5e5v
+https://studio.plasmic.app/projects/8ibg42QGrW4vGT7WCuKLAF
 
-You can start editing your project in Plasmic Studio.
+3. Clone it from the menu by the title:
+
+![clone it](https://user-images.githubusercontent.com/7129/158907103-3e603baa-b2fd-4a34-9755-c90f2a4eedc0.png)
+
+4. In your clone, configure it to use http://localhost:3000 as your app host.
+
+You can now start making changes to the way the code components work, and trying out the changes in the editor.
 
 ## Learn More
 
