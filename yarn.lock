@@ -3488,26 +3488,6 @@
   dependencies:
     "@octokit/openapi-types" "^8.1.4"
 
-"@plasmicapp/host@1.0.22":
-  version "1.0.22"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.22.tgz#46ca0f73fed73af2da92e1ad3319dfdfc9901c2f"
-  integrity sha512-GJVrm0k3jZnneqqX7k5Pkz4BR8B5LuLJBlijsIRWdfJn80wO2tC3r/LMEEvFQkXJ4TvOsdXnaFGJYm1/NsRO9A==
-  dependencies:
-    "@plasmicapp/preamble" "0.0.54"
-    window-or-global "^1.0.1"
-
-"@plasmicapp/loader-react@1.0.77":
-  version "1.0.77"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-react/-/loader-react-1.0.77.tgz#8bb3c4ed0e8bf2be0ed93e7642a6b3f025ab7ae5"
-  integrity sha512-cwllCYFVrCx/JLsmw0yySEx03zdEzJIgfsDKXyNmGuU4CeQH/9n11WoBTSl2c8pehdxVQJAQVXF+LMdqS/iFow==
-  dependencies:
-    "@plasmicapp/host" "1.0.22"
-    "@plasmicapp/loader-core" "1.0.60"
-    "@plasmicapp/query" "0.1.29"
-    pascalcase "^1.0.0"
-    react-is "^17.0.2"
-    react-ssr-prepass "^1.4.0"
-
 "@pmmmwh/react-refresh-webpack-plugin@^0.4.3":
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/@pmmmwh/react-refresh-webpack-plugin/-/react-refresh-webpack-plugin-0.4.3.tgz#1eec460596d200c0236bf195b078a5d1df89b766"
