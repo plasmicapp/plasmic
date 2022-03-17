@@ -8,7 +8,7 @@
   Plasmic
 </h1>
 <h3 align="center">
-  The headless page builder + web design tool for React, Vue, Angular, PHP, vanilla JS, and more.
+  The headless page builder + CMS for React, Vue, Angular, PHP, vanilla JS, and more.
 </h3>
 <p align="center">
   Drag and drop your own code components.
@@ -47,7 +47,7 @@
 [docs]: https://www.plasmic.app/learn/
 [quickstart]: https://www.plasmic.app/learn/quickstart/
 
-# The gist
+# How it works
 
 **Step 1.** Install Plasmic into your codebase (exact package [depends on your framework][quickstart]).
 
@@ -102,7 +102,13 @@ or more specific mechanisms such as incremental static revalidation or dynamic f
 
 # Overview
 
-Plasmic is a visual builder for the web.
+Plasmic is a platform that contains a few things:
+
+- Visual builder / web design tool--**this is the heart of Plasmic**
+- Headless CMS for structured content (or bring your own CMS)
+- Growth optimization tools (A/B testing, personalization, analytics)
+
+Plasmic's main feature is its visual builder for the web.
 Developers integrate this into their codebase,
 and anyone (including non-developers) can build pages or parts of pages.
 
@@ -110,7 +116,15 @@ The goal is to empower and unblock non-developers such as marketers and designer
 
 Plasmic as a page builder and “visual CMS” is its simplest and most common use case. Editors can create and update content in Plasmic without code, and publish this into their production site without needing to block on developers.
 
-Beyond website content, Plasmic can even be used to create frontends for complex web applications (such as Plasmic itself, which was built in Plasmic). This is possible because—despite being easy to start with—Plasmic gives you full visual control and works deeply with code.
+A key capability is that **Plasmic lets you drag and drop your own components**.
+There are multiple ways to use Plasmic--editors can:
+
+- Design and build from scratch entirely in the visual tool, as a freeform page builder. No developer code needed.
+- Exclusively use existing components as building blocks (this can be enforced). This ensures consistency and makes editing easier for non-designer/non-developers.
+- Anything in between.
+
+Beyond website content, Plasmic can even be used to create frontends for complex web applications (such as Plasmic itself, which was built in Plasmic).
+This is a more advanced use case.
 
 Learn more on [our website][website] and [our docs][docs]. Or check out [comparisons of Plasmic vs other tools][comparisons].
 
