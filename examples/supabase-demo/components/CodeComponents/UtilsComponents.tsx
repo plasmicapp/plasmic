@@ -120,7 +120,9 @@ export function SupabaseModal(props: SupabaseModalProps) {
     if (props.onOk && onOkCtx) {
       onOkCtx(e);
     }
-    mutationCtx.onSubmit({});
+    if (mutationCtx) {
+      mutationCtx.onSubmit({});
+    }
     e.stopPropagation();
   };
 
