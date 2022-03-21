@@ -271,6 +271,7 @@ export const sliderMeta: ComponentMeta<Settings> = {
   defaultStyles: {
     width: "stretch",
     maxWidth: "100%",
+    flexDirection: "column",
   },
 };
 
