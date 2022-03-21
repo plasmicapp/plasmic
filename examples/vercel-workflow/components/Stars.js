@@ -285,7 +285,7 @@ const float DRAW_DISTANCE = 60.0; // Lower this to increase framerate
 const float FADEOUT_DISTANCE = 10.0; // must be < DRAW_DISTANCE
 const float FIELD_OF_VIEW = 1.05;
 
-const float STAR_SIZE = 0.6; // must be > 0 and < 1
+const float STAR_SIZE = 0.2; // must be > 0 and < 1
 const float STAR_CORE_SIZE = 0.14;
 
 const float CLUSTER_SCALE = 0.02;
@@ -456,7 +456,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     fragColor = vec4(0.0);
 
 
-    for (int i = 0; i < 200; i++) {
+    for (int i = 0; i < 50; i++) {
         move(localPosition, rayDirection, directionBound);
         moveInsideBox(localPosition, chunk, directionSign, directionBound);
 
@@ -570,6 +570,7 @@ class App {
       width: this.width,
       height: this.height,
     });
+    this.scrollTop = 0;
   }
 
   start() {
@@ -632,6 +633,9 @@ class App {
       iTime: {
         value: 0.0,
       },
+      speed: {
+        value: 8,
+      },
     });
 
     this.animate();
@@ -674,8 +678,20 @@ class App {
         "iChannel0"
       ].value = this.targetA.readBuffer.texture;
 
+      // We distort the time on the final texture based on the scroll position.
+      // We smooth out the scroll position using an EWMA with alpha = 0.2 (just based on what looked good), assuming 60fps (16.667 ms per frame).
+      // Also must scale down the scroll position to the expected unit scale of the starfield speed (resting is 8.0).
+
+      const currentTime = +new Date();
+      const elapsed = currentTime - (this.lastTime ?? startTime);
+      this.lastTime = currentTime;
+
+      const alpha = 0.02 * (elapsed / 16.666667);
+      this.ewma =
+        (alpha * getScrollTop()) / 100 + (this.ewma ?? 0) * (1.0 - alpha);
+
       this.bufferImage.uniforms["iTime"].value =
-        (+new Date() - startTime) / 1000;
+        (+new Date() - startTime) / 1000 + this.ewma;
       this.targetC.render(this.bufferImage.scene, this.orthoCamera, true);
 
       this.animate();
@@ -732,13 +748,23 @@ class BufferManager {
   }
 }
 
+function getScrollTop() {
+  const scrollTop =
+    window.pageYOffset !== undefined
+      ? window.pageYOffset
+      : (document.documentElement || document.body.parentNode || document.body)
+          .scrollTop;
+  return scrollTop;
+}
+
 export default function Stars({ className }) {
   const ref = useRef(null);
   const inEditor = useContext(PlasmicCanvasContext);
   useEffect(() => {
     if (!inEditor) {
-      new App(ref.current).start();
+      const app = new App(ref.current);
+      app.start();
     }
-  });
+  }, []);
   return <div className={className} ref={ref}></div>;
 }
