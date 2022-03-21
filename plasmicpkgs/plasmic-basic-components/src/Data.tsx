@@ -1,13 +1,13 @@
 import {
+  applySelector as _applySelector,
   ComponentMeta,
-  repeatedElement,
-  SelectorDict,
-  useSelectors as _useSelectors,
-  useSelector as _useSelector,
   DataProvider as _DataProvider,
   DataProviderProps,
-  applySelector as _applySelector,
+  repeatedElement,
+  SelectorDict,
   useDataEnv as _useDataEnv,
+  useSelector as _useSelector,
+  useSelectors as _useSelectors,
 } from "@plasmicapp/host";
 import registerComponent from "@plasmicapp/host/registerComponent";
 import React, { ComponentProps, createElement, ReactNode } from "react";
@@ -17,7 +17,7 @@ const thisModule = "@plasmicpkgs/plasmic-basic-components";
 /**
  * @deprecated This should be imported from @plasmicapp/host instead.
  */
-export const applySelector: typeof _applySelector = function(...args) {
+export const applySelector: typeof _applySelector = function (...args) {
   console.warn(
     "DEPRECATED: Import applySelector from @plasmicapp/host instead."
   );
@@ -27,7 +27,7 @@ export const applySelector: typeof _applySelector = function(...args) {
 /**
  * @deprecated This should be imported from @plasmicapp/host instead.
  */
-export const useSelector: typeof _useSelector = function(...args) {
+export const useSelector: typeof _useSelector = function (...args) {
   console.warn("DEPRECATED: Import useSelector from @plasmicapp/host instead.");
   return _useSelector(...args);
 };
@@ -35,7 +35,7 @@ export const useSelector: typeof _useSelector = function(...args) {
 /**
  * @deprecated This should be imported from @plasmicapp/host instead.
  */
-export const useSelectors: typeof _useSelectors = function(...args) {
+export const useSelectors: typeof _useSelectors = function (...args) {
   console.warn(
     "DEPRECATED: Import useSelectors from @plasmicapp/host instead."
   );
@@ -45,7 +45,7 @@ export const useSelectors: typeof _useSelectors = function(...args) {
 /**
  * @deprecated This should be imported from @plasmicapp/host instead.
  */
-export const useDataEnv: typeof _useDataEnv = function(...args) {
+export const useDataEnv: typeof _useDataEnv = function (...args) {
   console.warn("DEPRECATED: Import useDataEnv from @plasmicapp/host instead.");
   return _useDataEnv(...args);
 };
@@ -53,7 +53,7 @@ export const useDataEnv: typeof _useDataEnv = function(...args) {
 /**
  * @deprecated This should be imported from @plasmicapp/host instead.
  */
-export const DataProvider: typeof _DataProvider = function(...args) {
+export const DataProvider: typeof _DataProvider = function (...args) {
   console.warn(
     "DEPRECATED: Import DataProvider from @plasmicapp/host instead."
   );
@@ -174,7 +174,10 @@ export const dynamicRepeaterProps = {
     description:
       "The name of the variable to use to store the current item in the loop",
   },
-  children: "slot",
+  children: {
+    type: "slot",
+    isRepeated: true,
+  },
 } as const;
 
 export const dynamicRepeaterMeta: ComponentMeta<DynamicRepeaterProps> = {

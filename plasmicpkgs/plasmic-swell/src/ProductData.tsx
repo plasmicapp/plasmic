@@ -1,7 +1,7 @@
 import {
+  DataProvider,
   PlasmicCanvasContext,
   repeatedElement,
-  DataProvider,
   useSelector,
 } from "@plasmicapp/host";
 import registerComponent, {
@@ -475,7 +475,7 @@ export const registerProductCollectionFetcher = _makeRegisterComponent(
         displayName: "Category",
         description: "Filter products by category",
         options: (_props, shopInfo: ShopInfo | null) =>
-          shopInfo?.categories.map(c => ({
+          shopInfo?.categories.map((c) => ({
             value: c.slug,
             label: c.name,
           })) ?? [],
@@ -487,6 +487,7 @@ export const registerProductCollectionFetcher = _makeRegisterComponent(
       },
       children: {
         type: "slot",
+        isRepeated: true,
         defaultValue: {
           type: "vbox",
           children: [
@@ -543,9 +544,7 @@ export const swellCredentialsProviderMeta: GlobalContextMeta<SwellCredentialsPro
 
 export function registerSwellCredentialsProvider(
   loader?: { registerGlobalContext: typeof registerGlobalContext },
-  customSwellCredentialsProviderMeta?: GlobalContextMeta<
-    SwellCredentialsProviderProps
-  >
+  customSwellCredentialsProviderMeta?: GlobalContextMeta<SwellCredentialsProviderProps>
 ) {
   if (loader) {
     loader.registerGlobalContext(
@@ -571,7 +570,7 @@ export const registerProductFetcher = _makeRegisterComponent(ProductFetcher, {
       displayName: "Product",
       description: "The product slug",
       options: (_props, shopInfo: ShopInfo | null) =>
-        shopInfo?.products.map(p => ({
+        shopInfo?.products.map((p) => ({
           value: p.slug,
           label: p.name,
         })) ?? [],
@@ -706,7 +705,10 @@ export const registerProductOptionRepeater = _makeRegisterComponent(
     importName: "ProductOptionRepeater",
     displayName: "Product Option Repeater",
     props: {
-      children: "slot",
+      children: {
+        type: "slot",
+        isRepeated: true,
+      },
     },
     importPath: thisModule,
   }
@@ -741,7 +743,10 @@ export const registerProductOptionValueRepeater = _makeRegisterComponent(
     importName: "ProductOptionValueRepeater",
     displayName: "Product Option Value Repeater",
     props: {
-      children: "slot",
+      children: {
+        type: "slot",
+        isRepeated: true,
+      },
     },
     importPath: thisModule,
   }

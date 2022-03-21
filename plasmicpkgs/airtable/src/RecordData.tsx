@@ -13,8 +13,9 @@ import React from "react";
 
 const defaultHost = "https://studio.plasmic.app";
 
-const CredentialsContext =
-  React.createContext<AirtableCredentialsProviderProps | undefined>(undefined);
+const CredentialsContext = React.createContext<
+  AirtableCredentialsProviderProps | undefined
+>(undefined);
 
 interface RecordData {
   [field: string]: string | { id: string; url: string; filename: string }[];
@@ -293,23 +294,22 @@ export function registerAirtableRecord(
   }
 }
 
-export const airtableRecordFieldMeta: ComponentMeta<AirtableRecordFieldProps> =
-  {
-    name: "hostless-airtable-record-field",
-    displayName: "Airtable Record Field",
-    importPath: thisModule,
-    importName: "AirtableRecordField",
-    props: {
-      field: {
-        type: "choice",
-        displayName: "Field Name",
-        defaultValueHint: "The first field",
-        options: (_props, data) => {
-          return data ? Object.keys(data) : ["Data unavailable"];
-        },
+export const airtableRecordFieldMeta: ComponentMeta<AirtableRecordFieldProps> = {
+  name: "hostless-airtable-record-field",
+  displayName: "Airtable Record Field",
+  importPath: thisModule,
+  importName: "AirtableRecordField",
+  props: {
+    field: {
+      type: "choice",
+      displayName: "Field Name",
+      defaultValueHint: "The first field",
+      options: (_props, data) => {
+        return data ? Object.keys(data) : ["Data unavailable"];
       },
     },
-  };
+  },
+};
 
 export function registerAirtableRecordField(
   loader?: { registerComponent: typeof registerComponent },
@@ -336,6 +336,7 @@ export const airtableCollectionMeta: ComponentMeta<AirtableCollectionProps> = {
   props: {
     children: {
       type: "slot",
+      isRepeated: true,
       defaultValue: {
         type: "component",
         name: "hostless-airtable-record-field",
@@ -409,31 +410,30 @@ export function registerAirtableCollection(
   }
 }
 
-export const airtableCredentialsProviderMeta: GlobalContextMeta<AirtableCredentialsProviderProps> =
-  {
-    name: "hostless-airtable-credentials-provider",
-    displayName: "Airtable Credentials Provider",
-    importPath: thisModule,
-    importName: "AirtableCredentialsProvider",
-    props: {
-      base: {
-        type: "string",
-        displayName: "Base",
-        description: "The Airtable Base",
-      },
-      dataSourceId: {
-        type: "string",
-        displayName: "Data Source ID",
-        description: "The Data Source ID",
-      },
-      host: {
-        type: "string",
-        displayName: "Host",
-        description: "Plasmic Server-Data URL",
-        defaultValueHint: defaultHost,
-      },
+export const airtableCredentialsProviderMeta: GlobalContextMeta<AirtableCredentialsProviderProps> = {
+  name: "hostless-airtable-credentials-provider",
+  displayName: "Airtable Credentials Provider",
+  importPath: thisModule,
+  importName: "AirtableCredentialsProvider",
+  props: {
+    base: {
+      type: "string",
+      displayName: "Base",
+      description: "The Airtable Base",
     },
-  };
+    dataSourceId: {
+      type: "string",
+      displayName: "Data Source ID",
+      description: "The Data Source ID",
+    },
+    host: {
+      type: "string",
+      displayName: "Host",
+      description: "Plasmic Server-Data URL",
+      defaultValueHint: defaultHost,
+    },
+  },
+};
 
 export function registerAirtableCredentialsProvider(
   loader?: { registerGlobalContext: typeof registerGlobalContext },
