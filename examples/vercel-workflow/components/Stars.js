@@ -15,41 +15,6 @@ const VERTEX_SHADER = `
     }
 `;
 
-const BUFFER_A_FRAG0 = `
-    uniform vec4 iMouse;
-    uniform sampler2D iChannel0;
-    uniform sampler2D iChannel1;
-    uniform vec2 iResolution;
-    uniform float iFrame;
-    varying vec2 vUv;
-
-    #define mousedata(a,b) texture2D( iChannel1, (0.5+vec2(a,b)) / iResolution.xy, -0.0 )
-    #define backbuffer(uv) texture2D( iChannel0, uv ).xy
-
-    float lineDist(vec2 p, vec2 start, vec2 end, float width) {
-        vec2 dir = start - end;
-        float lngth = length(dir);
-        dir /= lngth;
-        vec2 proj = max(0.0, min(lngth, dot((start - p), dir))) * dir;
-        return length( (start - p) - proj ) - (width / 2.0);
-    }
-
-    void main() {
-        vec2 uv = vUv;
-        vec2 col = uv;
-        if (iFrame > 2.) {
-            col = texture2D(iChannel0,uv).xy;
-            vec2 mouse = iMouse.xy/iResolution.xy;
-            vec2 p_mouse = mousedata(2.,0.).xy;
-            if (mousedata(4.,0.).x > 0.) {
-                col = backbuffer(uv+((p_mouse-mouse)*clamp(1.-(lineDist(uv,mouse,p_mouse,0.)*20.),0.,1.)*.7));
-            }
-        }
-        gl_FragColor = vec4(col,0.0,1.0);
-    }
-
-`;
-
 const BUFFER_B_FRAG = `
     uniform vec4 iMouse;
     uniform sampler2D iChannel0;
@@ -247,18 +212,6 @@ void main( void ){
 
 `;
 
-const BUFFER_FINAL_FRAG0 = `
-    uniform sampler2D iChannel0;
-    uniform sampler2D iChannel1;
-    varying vec2 vUv;
-
-    void main() {
-        vec2 uv = vUv;
-        vec2 a = texture2D(iChannel1,uv).xy;
-        gl_FragColor = vec4(texture2D(iChannel0,a).rgb,1.0);
-    }
-`;
-
 const BUFFER_FINAL_FRAG = `
 uniform vec3      iResolution;           // viewport resolution (in pixels)
 uniform float     iTime;                 // shader playback time (in seconds)
@@ -270,6 +223,10 @@ uniform vec4      iMouse;                // mouse pixel coords. xy: current (if 
 uniform sampler2D iChannel0;          // input channel. XX = 2D/Cube
 uniform vec4      iDate;                 // (year, month, day, time in seconds)
 uniform float     iSampleRate;           // sound sample rate (i.e., 44100)
+
+uniform int       numStars;
+uniform float     starSize;
+uniform float     bgLightness;
 
     varying vec2 vUv;
 
@@ -285,7 +242,6 @@ const float DRAW_DISTANCE = 60.0; // Lower this to increase framerate
 const float FADEOUT_DISTANCE = 10.0; // must be < DRAW_DISTANCE
 const float FIELD_OF_VIEW = 1.05;
 
-const float STAR_SIZE = 0.6; // must be > 0 and < 1
 const float STAR_CORE_SIZE = 0.14;
 
 const float CLUSTER_SCALE = 0.02;
@@ -384,7 +340,7 @@ vec4 getNebulaColor(vec3 globalPosition, vec3 rayDirection) {
     	noiseeval.xy += noiseeval.z;
 
 
-        float value = 0.06 * texture(iChannel0, fract(noiseeval.xy / 60.0)).r;
+        float value = bgLightness * texture(iChannel0, fract(noiseeval.xy / 60.0)).r;
 
         if (i == 0) {
             value *= 1.0 - fract(globalPosition.z / layerDistance);
@@ -456,12 +412,12 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     fragColor = vec4(0.0);
 
 
-    for (int i = 0; i < 200; i++) {
+    for (int i = 0; i < numStars; i++) {
         move(localPosition, rayDirection, directionBound);
         moveInsideBox(localPosition, chunk, directionSign, directionBound);
 
         if (hasStar(chunk)) {
-            vec3 starPosition = getStarPosition(chunk, 0.5 * STAR_SIZE);
+            vec3 starPosition = getStarPosition(chunk, 0.5 * starSize);
 			float currentDistance = getDistance(chunk - startChunk, localStart, starPosition);
             if (currentDistance > DRAW_DISTANCE && false) {
                 break;
@@ -473,18 +429,18 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
             float distanceToStar = length(starToRayVector);
             distanceToStar *= 2.0;
 
-            if (distanceToStar < STAR_SIZE) {
+            if (distanceToStar < starSize) {
                 float starMaxBrightness = clamp((DRAW_DISTANCE - currentDistance) / FADEOUT_DISTANCE, 0.001, 1.0);
 
                 float starColorSeed = (float(chunk.x) + 13.0 * float(chunk.y) + 7.0 * float(chunk.z)) * 0.00453;
-                if (distanceToStar < STAR_SIZE * STAR_CORE_SIZE) {
+                if (distanceToStar < starSize * STAR_CORE_SIZE) {
                     // This vector points from the center of the star to the point of the star sphere surface that this ray hits
-            		vec3 starSurfaceVector = normalize(starToRayVector + rayDirection * sqrt(pow(STAR_CORE_SIZE * STAR_SIZE, 2.0) - pow(distanceToStar, 2.0)));
+            		vec3 starSurfaceVector = normalize(starToRayVector + rayDirection * sqrt(pow(STAR_CORE_SIZE * starSize, 2.0) - pow(distanceToStar, 2.0)));
 
                     fragColor = blendColors(fragColor, vec4(getStarColor(starSurfaceVector, starColorSeed, currentDistance), starMaxBrightness));
                     break;
                 } else {
-                    float localStarDistance = ((distanceToStar / STAR_SIZE) - STAR_CORE_SIZE) / (1.0 - STAR_CORE_SIZE);
+                    float localStarDistance = ((distanceToStar / starSize) - STAR_CORE_SIZE) / (1.0 - STAR_CORE_SIZE);
                     vec4 glowColor = getStarGlowColor(localStarDistance, atan2(starToRayVector.xy), starColorSeed);
                     glowColor.a *= starMaxBrightness;
                 	fragColor = blendColors(fragColor, glowColor);
@@ -528,9 +484,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 const startTime = +new Date();
 
 class App {
-  constructor(container) {
+  constructor(container, params) {
     this.width = 1024;
     this.height = 512;
+
+    this.setParams(params);
 
     this.renderer = new THREE.WebGLRenderer();
     this.loader = new THREE.TextureLoader();
@@ -570,6 +528,11 @@ class App {
       width: this.width,
       height: this.height,
     });
+    this.scrollTop = 0;
+  }
+
+  setParams(params) {
+    this.params = params;
   }
 
   start() {
@@ -632,6 +595,15 @@ class App {
       iTime: {
         value: 0.0,
       },
+      starSize: {
+        value: this.params.starSize,
+      },
+      numStars: {
+        value: this.params.starSize,
+      },
+      bgLightness: {
+        value: this.params.bgLightness,
+      },
     });
 
     this.animate();
@@ -674,8 +646,24 @@ class App {
         "iChannel0"
       ].value = this.targetA.readBuffer.texture;
 
+      // We distort the time on the final texture based on the scroll position.
+      // We smooth out the scroll position using an EWMA with alpha = 0.2 (just based on what looked good), assuming 60fps (16.667 ms per frame).
+      // Also must scale down the scroll position to the expected unit scale of the starfield speed (resting is 8.0).
+
+      const currentTime = +new Date();
+      const elapsed = currentTime - (this.lastTime ?? startTime);
+      this.lastTime = currentTime;
+
+      const alpha = 0.02 * (elapsed / 16.666667);
+      this.ewma =
+        (alpha * getScrollTop()) / 100 + (this.ewma ?? 0) * (1.0 - alpha);
+
       this.bufferImage.uniforms["iTime"].value =
-        (+new Date() - startTime) / 1000;
+        (+new Date() - startTime) / 1000 + this.ewma;
+      this.bufferImage.uniforms["numStars"].value = this.params.numStars;
+      this.bufferImage.uniforms["starSize"].value = this.params.starSize;
+      this.bufferImage.uniforms["bgLightness"].value = this.params.bgLightness;
+
       this.targetC.render(this.bufferImage.scene, this.orthoCamera, true);
 
       this.animate();
@@ -732,13 +720,36 @@ class BufferManager {
   }
 }
 
-export default function Stars({ className }) {
+function getScrollTop() {
+  const scrollTop =
+    window.pageYOffset !== undefined
+      ? window.pageYOffset
+      : (document.documentElement || document.body.parentNode || document.body)
+          .scrollTop;
+  return scrollTop;
+}
+
+export default function Stars({
+  className,
+  numStars = 50,
+  starSize = 0.2,
+  bgLightness = 0.06,
+  forcePreview = false,
+}) {
   const ref = useRef(null);
   const inEditor = useContext(PlasmicCanvasContext);
+  const appRef = useRef(null);
   useEffect(() => {
-    if (!inEditor) {
-      new App(ref.current).start();
+    if (!inEditor || forcePreview) {
+      let app = appRef.current;
+      if (!app) {
+        app = new App(ref.current, { numStars, starSize, bgLightness });
+        app.start();
+        appRef.current = app;
+      } else {
+        app.setParams({ numStars, starSize, bgLightness });
+      }
     }
-  });
+  }, [numStars, starSize, bgLightness, forcePreview]);
   return <div className={className} ref={ref}></div>;
 }

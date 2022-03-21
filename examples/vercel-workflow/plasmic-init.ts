@@ -28,5 +28,19 @@ export const PLASMIC = initPlasmicLoader({
 
 PLASMIC.registerComponent(Stars, {
   name: "Stars",
-  props: {},
+  props: {
+    forcePreview: "boolean",
+    numStars: {
+      type: "number",
+      defaultValueHint: 50,
+    },
+    starSize: {
+      type: "number",
+      defaultValueHint: 0.2,
+    },
+    bgLightness: {
+      type: "number",
+      defaultValueHint: 0.06,
+    },
+  },
 });
