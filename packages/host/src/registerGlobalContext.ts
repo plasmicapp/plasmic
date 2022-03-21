@@ -44,6 +44,10 @@ export interface GlobalContextMeta<P> {
    */
   displayName?: string;
   /**
+   * The description of the context to be shown in Studio.
+   */
+  description?: string;
+  /**
    * The javascript name to be used when generating code. Optional: if not
    * provided, `meta.name` is used.
    */
