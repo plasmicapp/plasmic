@@ -36,12 +36,12 @@ interface PropTypeBase<P> {
   hidden?: ContextDependentConfig<P, boolean>;
 }
 
-type DefaultValueOrExpr<T> =
+type DefaultValueOrExpr<P, T> =
   | {
       defaultExpr?: undefined;
       defaultExprHint?: undefined;
       defaultValue?: T;
-      defaultValueHint?: T;
+      defaultValueHint?: T | ContextDependentConfig<P, T | undefined>;
     }
   | {
       defaultValue?: undefined;
@@ -50,7 +50,7 @@ type DefaultValueOrExpr<T> =
       defaultExprHint?: string;
     };
 
-type StringTypeBase<P> = PropTypeBase<P> & DefaultValueOrExpr<string>;
+type StringTypeBase<P> = PropTypeBase<P> & DefaultValueOrExpr<P, string>;
 
 export type StringType<P> =
   | "string"
@@ -70,11 +70,11 @@ export type BooleanType<P> =
   | "boolean"
   | ({
       type: "boolean";
-    } & DefaultValueOrExpr<boolean> &
+    } & DefaultValueOrExpr<P, boolean> &
       PropTypeBase<P>);
 
 type NumberTypeBase<P> = PropTypeBase<P> &
-  DefaultValueOrExpr<number> & {
+  DefaultValueOrExpr<P, number> & {
     type: "number";
   };
 
@@ -102,11 +102,11 @@ export type JSONLikeType<P> =
   | "object"
   | ({
       type: "object";
-    } & DefaultValueOrExpr<any> &
+    } & DefaultValueOrExpr<P, any> &
       PropTypeBase<P>)
   | ({
       type: "array";
-    } & DefaultValueOrExpr<any[]> &
+    } & DefaultValueOrExpr<P, any[]> &
       PropTypeBase<P>);
 
 interface ChoiceTypeBase<P> extends PropTypeBase<P> {
@@ -130,10 +130,10 @@ interface ChoiceTypeBase<P> extends PropTypeBase<P> {
 export type ChoiceType<P> = (
   | ({
       multiSelect?: false;
-    } & DefaultValueOrExpr<string>)
+    } & DefaultValueOrExpr<P, string>)
   | ({
       multiSelect: true;
-    } & DefaultValueOrExpr<string[]>)
+    } & DefaultValueOrExpr<P, string[]>)
 ) &
   ChoiceTypeBase<P>;
 
@@ -177,9 +177,9 @@ export type CustomType<P> =
       type: "custom";
       control: CustomControl<P>;
     } & PropTypeBase<P> &
-      DefaultValueOrExpr<any>);
+      DefaultValueOrExpr<P, any>);
 
-type SlotType =
+type SlotType<P> =
   | "slot"
   | ({
       type: "slot";
@@ -197,7 +197,7 @@ type SlotType =
        */
       isRepeated?: boolean;
     } & Omit<
-      DefaultValueOrExpr<PlasmicElement | PlasmicElement[]>,
+      DefaultValueOrExpr<P, PlasmicElement | PlasmicElement[]>,
       "defaultValueHint" | "defaultExpr" | "defaultExprHint"
     >);
 
@@ -205,7 +205,7 @@ type ImageUrlType<P> =
   | "imageUrl"
   | ({
       type: "imageUrl";
-    } & DefaultValueOrExpr<string> &
+    } & DefaultValueOrExpr<P, string> &
       PropTypeBase<P>);
 
 export type PrimitiveType<P = any> = Extract<
@@ -239,7 +239,7 @@ export type PropType<P> =
       | ImageUrlType<P>
       | CustomType<P>
     >
-  | SlotType;
+  | SlotType<P>;
 
 type RestrictPropType<T, P> = T extends string
   ? SupportControlled<
