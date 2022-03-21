@@ -14,7 +14,7 @@ repos:
     hooks:
       - id: prettier
         files: ^.*/plasmic/.*\.(js|jsx|ts|tsx|json|css|scss|md|toml|xml)$
-  - repo: git://github.com/pre-commit/pre-commit-hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.3.0
     hooks:
       - id: check-merge-conflict
