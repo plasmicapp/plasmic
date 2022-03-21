@@ -224,6 +224,10 @@ uniform sampler2D iChannel0;          // input channel. XX = 2D/Cube
 uniform vec4      iDate;                 // (year, month, day, time in seconds)
 uniform float     iSampleRate;           // sound sample rate (i.e., 44100)
 
+uniform int       numStars;
+uniform float     starSize;
+uniform float     bgLightness;
+
     varying vec2 vUv;
 
     // void main() {
@@ -238,7 +242,6 @@ const float DRAW_DISTANCE = 60.0; // Lower this to increase framerate
 const float FADEOUT_DISTANCE = 10.0; // must be < DRAW_DISTANCE
 const float FIELD_OF_VIEW = 1.05;
 
-const float STAR_SIZE = 0.2; // must be > 0 and < 1
 const float STAR_CORE_SIZE = 0.14;
 
 const float CLUSTER_SCALE = 0.02;
@@ -337,7 +340,7 @@ vec4 getNebulaColor(vec3 globalPosition, vec3 rayDirection) {
     	noiseeval.xy += noiseeval.z;
 
 
-        float value = 0.06 * texture(iChannel0, fract(noiseeval.xy / 60.0)).r;
+        float value = bgLightness * texture(iChannel0, fract(noiseeval.xy / 60.0)).r;
 
         if (i == 0) {
             value *= 1.0 - fract(globalPosition.z / layerDistance);
@@ -409,12 +412,12 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     fragColor = vec4(0.0);
 
 
-    for (int i = 0; i < 50; i++) {
+    for (int i = 0; i < numStars; i++) {
         move(localPosition, rayDirection, directionBound);
         moveInsideBox(localPosition, chunk, directionSign, directionBound);
 
         if (hasStar(chunk)) {
-            vec3 starPosition = getStarPosition(chunk, 0.5 * STAR_SIZE);
+            vec3 starPosition = getStarPosition(chunk, 0.5 * starSize);
 			float currentDistance = getDistance(chunk - startChunk, localStart, starPosition);
             if (currentDistance > DRAW_DISTANCE && false) {
                 break;
@@ -426,18 +429,18 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
             float distanceToStar = length(starToRayVector);
             distanceToStar *= 2.0;
 
-            if (distanceToStar < STAR_SIZE) {
+            if (distanceToStar < starSize) {
                 float starMaxBrightness = clamp((DRAW_DISTANCE - currentDistance) / FADEOUT_DISTANCE, 0.001, 1.0);
 
                 float starColorSeed = (float(chunk.x) + 13.0 * float(chunk.y) + 7.0 * float(chunk.z)) * 0.00453;
-                if (distanceToStar < STAR_SIZE * STAR_CORE_SIZE) {
+                if (distanceToStar < starSize * STAR_CORE_SIZE) {
                     // This vector points from the center of the star to the point of the star sphere surface that this ray hits
-            		vec3 starSurfaceVector = normalize(starToRayVector + rayDirection * sqrt(pow(STAR_CORE_SIZE * STAR_SIZE, 2.0) - pow(distanceToStar, 2.0)));
+            		vec3 starSurfaceVector = normalize(starToRayVector + rayDirection * sqrt(pow(STAR_CORE_SIZE * starSize, 2.0) - pow(distanceToStar, 2.0)));
 
                     fragColor = blendColors(fragColor, vec4(getStarColor(starSurfaceVector, starColorSeed, currentDistance), starMaxBrightness));
                     break;
                 } else {
-                    float localStarDistance = ((distanceToStar / STAR_SIZE) - STAR_CORE_SIZE) / (1.0 - STAR_CORE_SIZE);
+                    float localStarDistance = ((distanceToStar / starSize) - STAR_CORE_SIZE) / (1.0 - STAR_CORE_SIZE);
                     vec4 glowColor = getStarGlowColor(localStarDistance, atan2(starToRayVector.xy), starColorSeed);
                     glowColor.a *= starMaxBrightness;
                 	fragColor = blendColors(fragColor, glowColor);
@@ -481,9 +484,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 const startTime = +new Date();
 
 class App {
-  constructor(container) {
+  constructor(container, params) {
     this.width = 1024;
     this.height = 512;
+
+    this.setParams(params);
 
     this.renderer = new THREE.WebGLRenderer();
     this.loader = new THREE.TextureLoader();
@@ -524,6 +529,10 @@ class App {
       height: this.height,
     });
     this.scrollTop = 0;
+  }
+
+  setParams(params) {
+    this.params = params;
   }
 
   start() {
@@ -586,8 +595,14 @@ class App {
       iTime: {
         value: 0.0,
       },
-      speed: {
-        value: 8,
+      starSize: {
+        value: this.params.starSize,
+      },
+      numStars: {
+        value: this.params.starSize,
+      },
+      bgLightness: {
+        value: this.params.bgLightness,
       },
     });
 
@@ -645,6 +660,10 @@ class App {
 
       this.bufferImage.uniforms["iTime"].value =
         (+new Date() - startTime) / 1000 + this.ewma;
+      this.bufferImage.uniforms["numStars"].value = this.params.numStars;
+      this.bufferImage.uniforms["starSize"].value = this.params.starSize;
+      this.bufferImage.uniforms["bgLightness"].value = this.params.bgLightness;
+
       this.targetC.render(this.bufferImage.scene, this.orthoCamera, true);
 
       this.animate();
@@ -710,14 +729,27 @@ function getScrollTop() {
   return scrollTop;
 }
 
-export default function Stars({ className }) {
+export default function Stars({
+  className,
+  numStars = 50,
+  starSize = 0.2,
+  bgLightness = 0.06,
+  forcePreview = false,
+}) {
   const ref = useRef(null);
   const inEditor = useContext(PlasmicCanvasContext);
+  const appRef = useRef(null);
   useEffect(() => {
-    if (!inEditor) {
-      const app = new App(ref.current);
-      app.start();
+    if (!inEditor || forcePreview) {
+      let app = appRef.current;
+      if (!app) {
+        app = new App(ref.current, { numStars, starSize, bgLightness });
+        app.start();
+        appRef.current = app;
+      } else {
+        app.setParams({ numStars, starSize, bgLightness });
+      }
     }
-  }, []);
+  }, [numStars, starSize, bgLightness, forcePreview]);
   return <div className={className} ref={ref}></div>;
 }
