@@ -39,7 +39,9 @@ const fetcherComponentPropMetas = {
 function renderMaybeData<T>(
   maybeData: ReturnType<typeof usePlasmicQueryData>,
   renderFn: (data: T) => JSX.Element,
-  loaderProps: FetcherComponentProps
+  loaderProps: FetcherComponentProps,
+  loadingMessage?: React.ReactNode,
+  forceLoadingState?: boolean
 ): React.ReactElement | null {
   if ("error" in maybeData) {
     const error = maybeData.error;
@@ -53,8 +55,8 @@ function renderMaybeData<T>(
       return <div>Error: {error?.message}</div>;
     }
   }
-  if (!("data" in maybeData)) {
-    return <div>Loading...</div>;
+  if (!("data" in maybeData) || forceLoadingState) {
+    return <>{loadingMessage ?? <div>Loading...</div>}</>;
   }
   return renderFn(maybeData.data as T);
 }
@@ -65,39 +67,40 @@ interface CmsCredentialsProviderProps extends DatabaseConfig {
 
 const defaultHost = "https://studio.plasmic.app";
 
-export const cmsCredentialsProviderMeta: GlobalContextMeta<CmsCredentialsProviderProps> = {
-  name: `${componentPrefix}-credentials-provider`,
-  displayName: "CMS Credentials Provider",
-  importName: "CmsCredentialsProvider",
-  importPath: modulePath,
-  props: {
-    host: {
-      type: "string",
-      displayName: "Studio URL",
-      description: `The default host for use in production is ${defaultHost}.`,
-      defaultValue: defaultHost,
-      defaultValueHint: defaultHost,
+export const cmsCredentialsProviderMeta: GlobalContextMeta<CmsCredentialsProviderProps> =
+  {
+    name: `${componentPrefix}-credentials-provider`,
+    displayName: "CMS Credentials Provider",
+    importName: "CmsCredentialsProvider",
+    importPath: modulePath,
+    props: {
+      host: {
+        type: "string",
+        displayName: "Studio URL",
+        description: `The default host for use in production is ${defaultHost}.`,
+        defaultValue: defaultHost,
+        defaultValueHint: defaultHost,
+      },
+      databaseId: {
+        type: "string",
+        displayName: "CMS ID",
+        description:
+          "The ID of the CMS (database) to use. (Can get on the CMS settings page)",
+      },
+      databaseToken: {
+        type: "string",
+        displayName: "CMS Public Token",
+        description:
+          "The Public Token of the CMS (database) you are using. (Can get on the CMS settings page)",
+      },
+      locale: {
+        type: "string",
+        displayName: "Locale",
+        description:
+          "The locale to use for localized values, leave empty for the default locale.",
+      },
     },
-    databaseId: {
-      type: "string",
-      displayName: "CMS ID",
-      description:
-        "The ID of the CMS (database) to use. (Can get on the CMS settings page)",
-    },
-    databaseToken: {
-      type: "string",
-      displayName: "CMS Public Token",
-      description:
-        "The Public Token of the CMS (database) you are using. (Can get on the CMS settings page)",
-    },
-    locale: {
-      type: "string",
-      displayName: "Locale",
-      description:
-        "The locale to use for localized values, leave empty for the default locale.",
-    },
-  },
-};
+  };
 
 export function CmsCredentialsProvider({
   children,
@@ -304,6 +307,10 @@ interface CmsQueryRepeaterProps
     CanvasComponentProps<TablesContextData> {
   children?: React.ReactNode;
   table?: string;
+  emptyMessage?: React.ReactNode;
+  forceEmptyState?: boolean;
+  loadingMessage?: React.ReactNode;
+  forceLoadingState?: boolean;
 }
 
 export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
@@ -363,6 +370,33 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
       description: "Maximum number of entries to fetch (0 for unlimited).",
       defaultValue: 0,
     },
+    emptyMessage: {
+      type: "slot",
+      defaultValue: {
+        type: "text",
+        value: "No matching entries found.",
+      },
+    },
+    forceEmptyState: {
+      type: "boolean",
+      displayName: "Force empty state",
+      description: "If set, will render as if no matching entries were found.",
+      defaultValue: false,
+    },
+    loadingMessage: {
+      type: "slot",
+      defaultValue: {
+        type: "text",
+        value: "Loading...",
+      },
+    },
+    forceLoadingState: {
+      type: "boolean",
+      displayName: "Force loading state",
+      description:
+        "If set, will render as if it is waiting for the query to run.",
+      defaultValue: false,
+    },
   },
 };
 
@@ -375,7 +409,11 @@ export function CmsQueryRepeater({
   orderBy,
   desc,
   limit,
-}: CmsQueryLoaderProps) {
+  emptyMessage,
+  forceEmptyState,
+  loadingMessage,
+  forceLoadingState,
+}: CmsQueryRepeaterProps) {
   const databaseConfig = useDatabase();
   const tables = useTables();
   if (tables) {
@@ -411,8 +449,8 @@ export function CmsQueryRepeater({
   return renderMaybeData<ApiCmsRow[]>(
     maybeData,
     (rows) => {
-      if (rows.length === 0) {
-        return <div>No matching entries found.</div>;
+      if (rows.length === 0 || forceEmptyState) {
+        return <> {emptyMessage} </>;
       }
       return (
         <QueryResultProvider table={table!} rows={rows}>
@@ -424,7 +462,9 @@ export function CmsQueryRepeater({
         </QueryResultProvider>
       );
     },
-    { hideIfNotFound: false }
+    { hideIfNotFound: false },
+    loadingMessage,
+    forceLoadingState
   );
 }
 
