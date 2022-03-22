@@ -595,6 +595,7 @@ async function syncProject(
       opts.metadata
     ),
     indirect,
+    wrapPagesWithGlobalContexts: context.config.wrapPagesWithGlobalContexts,
   });
 
   // Convert from TSX => JSX
