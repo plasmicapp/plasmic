@@ -845,7 +845,7 @@ export const cmsRowImageMeta: ComponentMeta<CmsRowImageProps> = {
       displayName: "Field",
       description: "Field (from model schema) to use.",
       options: ({ table }: CmsRowImageProps, ctx: TableContextData | null) =>
-        mkFieldOptions(ctx?.tables, ctx?.table ?? table),
+        mkFieldOptions(ctx?.tables, ctx?.table ?? table, ["image"]),
       defaultValueHint: (_, ctx) =>
         ctx?.fieldMeta?.name || ctx?.fieldMeta?.identifier,
     },
