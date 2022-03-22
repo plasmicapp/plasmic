@@ -105,12 +105,34 @@ export function QueryResultProvider({
   );
 }
 
-export function useRow(table?: string) {
+export function useTablesWithDataLoaded() {
   const env = useDataEnv();
   const tables = useTables();
 
   if (!env) {
     return undefined;
+  }
+
+  if (!tables) {
+    return undefined;
+  }
+
+  const matchingKeys = getClosestMatchingKeys(env, rowContextPrefix);
+
+  return tables.filter((table) =>
+    matchingKeys.some((key) => mkRowContextKey(table.identifier) === key)
+  );
+}
+
+export function useRow(tables?: ApiCmsTable[], table?: string) {
+  const env = useDataEnv();
+
+  if (!env) {
+    return undefined;
+  }
+
+  if (!table && tables && tables.length > 0) {
+    table = tables[0].identifier;
   }
 
   if (table) {
@@ -120,22 +142,6 @@ export function useRow(table?: string) {
     };
   }
 
-  if (!tables) {
-    return undefined;
-  }
-
-  const matchingKeys = getClosestMatchingKeys(env, rowContextPrefix);
-  for (const key of matchingKeys) {
-    const inferredTable = tables.find(
-      (t) => mkRowContextKey(t.identifier) === key
-    );
-    if (inferredTable) {
-      return {
-        table: inferredTable.identifier,
-        row: env[key] as ApiCmsRow | undefined,
-      };
-    }
-  }
   return undefined;
 }
 

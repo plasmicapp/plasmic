@@ -17,6 +17,7 @@ import {
   useQueryResults,
   useRow,
   useTables,
+  useTablesWithDataLoaded,
 } from "./context";
 import { ApiCmsRow, ApiCmsTable, CmsFieldMeta, CmsType } from "./schema";
 import { mkFieldOptions, mkTableOptions } from "./util";
@@ -599,9 +600,9 @@ export function CmsRowField({
   setControlContextData,
   ...rest
 }: CmsRowFieldProps) {
-  const tables = useTables();
+  const tables = useTablesWithDataLoaded();
 
-  const res = useRow(table);
+  const res = useRow(tables, table);
   if (!res) {
     return (
       <div className={className}>
@@ -767,9 +768,9 @@ export function CmsRowLink({
   prefix,
   suffix,
 }: CmsRowLinkProps): React.ReactElement | null {
-  const tables = useTables();
+  const tables = useTablesWithDataLoaded();
 
-  const res = useRow(table);
+  const res = useRow(tables, table);
   if (!res || !res.row) {
     return <>{children}</>;
   }
@@ -865,9 +866,9 @@ export function CmsRowImage({
   children,
   setControlContextData,
 }: CmsRowImageProps): React.ReactElement | null {
-  const tables = useTables();
+  const tables = useTablesWithDataLoaded();
 
-  const res = useRow(table);
+  const res = useRow(tables, table);
   if (!res || !res.row) {
     return <>{children}</>;
   }
@@ -965,9 +966,9 @@ export function CmsRowFieldValue({
   setControlContextData,
   ...rest
 }: CmsRowFieldValueProps): React.ReactElement | null {
-  const tables = useTables();
+  const tables = useTablesWithDataLoaded();
 
-  const res = useRow(table);
+  const res = useRow(tables, table);
   if (!res || !res.row) {
     return <>{children}</>;
   }
