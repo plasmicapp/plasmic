@@ -1,6 +1,6 @@
 import {
   ComponentMeta as InternalCodeComponentMeta,
-  GlobalContextMeta,
+  GlobalContextMeta as InternalGlobalContextMeta,
   registerComponent,
   registerGlobalContext,
 } from '@plasmicapp/host';
@@ -88,7 +88,20 @@ export type CodeComponentMeta<P> = Omit<
    * Optional: not used by Plasmic headless API, only by codegen.
    */
   importPath?: string;
-};
+}
+
+export type GlobalContextMeta<P> = Omit<
+  InternalGlobalContextMeta<P>,
+  'importPath'
+> & {
+  /**
+   * The path to be used when importing the component in the generated code.
+   * It can be the name of the package that contains the component, or the path
+   * to the file in the project (relative to the root directory).
+   * Optional: not used by Plasmic headless API, only by codegen.
+   */
+  importPath?: string;
+};;
 
 export class InternalPlasmicComponentLoader {
   private fetcher: PlasmicModulesFetcher;
