@@ -1,6 +1,5 @@
 export {
-  DataCacheEntry,
+  PlasmicPrepassContext,
   PlasmicQueryDataProvider,
-  PrepassContext,
   usePlasmicQueryData,
 } from './query-data';
