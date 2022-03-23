@@ -1,0 +1,96 @@
+.img {
+  object-fit: fill;
+  max-width: 100%;
+  width: auto;
+  height: 100%;
+  position: relative;
+  left: auto;
+  top: auto;
+  bottom: auto;
+  right: auto;
+  min-height: 0;
+  display: inline-block !important;
+}
+
+.slider_img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.slider_img_left {
+  object-position: 100% 50%;
+}
+
+.slider_img_right {
+  object-position: 0% 50%;
+}
+
+.wab_flex_container {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+  margin-left: calc(0px - 10px);
+  width: calc(100% + 10px);
+}
+
+.all {
+  display: block;
+  white-space: inherit;
+  grid-row: auto;
+  grid-column: auto;
+  position: relative;
+  background: none;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  box-shadow: none;
+  box-sizing: border-box;
+  text-decoration-line: none;
+  margin: 0;
+  border-width: 0px;
+}
+
+.text {
+  position: relative;
+  width: auto;
+  height: auto;
+  max-width: 800px;
+  font-size: 16px /* plasmic-token: hHAGbw6z- */;
+}
+
+.movieList {
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: 150px;
+  max-width: 100%;
+  background: none;
+  left: auto;
+  top: auto;
+  flex-direction: row;
+  min-width: 0;
+  flex-shrink: 0;
+  padding: 0px;
+}
+
+.moviePage {
+  display: flex;
+  position: absolute;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  top: 0px;
+  left: 0px;
+  transition-property: all;
+  transition-duration: 1s;
+  min-width: 0;
+  padding: 0px;
+}
+
+.moviePage:hover {
+  z-index: 50;
+}

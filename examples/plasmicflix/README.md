@@ -4,13 +4,12 @@
   </a>
 </p>
 
-# Plasmic+Supabase Demo
-This is a demo of building a Pokedex on top of Plasmic (for frontend), Supabase (for backend), and Next.js (platform). To read more about how this works, check out our tutorial [here](https://supabase.com/docs/guides/integrations/plasmic).
+# PlasmicFlix Demo
+This is a demo of building a video streaming service on top of Plasmic and Next.js. To read more about how this works, check out our tutorial [here]().
 
 ## Getting Started
 
-1. Copy `.env.example` to `.env.local` and populate your Supabase credentials.
-The tutorial above will show you how to properly set up a compatible Supabase project.
+1. Copy `.env.example` to `.env.local`.
 
 2. Run the development server:
 
@@ -20,7 +19,7 @@ yarn dev
 
 3. Open your browser to see the result.
 
-4. You can view the Plasmic-built frontend [here](https://studio.plasmic.app/projects/i6YZmFxPJB69NEUgdf79ap). If you want to make edits, clone the Plasmic project and note the new
+4. You can view the Plasmic-built frontend [here](https://studio.plasmic.app/projects/eqrDNQBEf6ytvNJgLEmjN2). If you want to make edits, clone the Plasmic project and note the new
 project ID and token. These fields will need to be updated in `.env.local` to reflect your changes.
 
 ## Learn More

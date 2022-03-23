@@ -1,0 +1,80 @@
+{
+  "adult": false,
+  "backdrop_path": "/iQFcwSGbZXMkeyKrxbPnwnRo5fl.jpg",
+  "genre_ids": [28, 12, 878],
+  "id": 634649,
+  "original_language": "en",
+  "original_title": "Spider-Man: No Way Home",
+  "overview": "Peter Parker is unmasked and no longer able to separate his normal life from the high-stakes of being a super-hero. When he asks for help from Doctor Strange the stakes become even more dangerous, forcing him to discover what it truly means to be Spider-Man.",
+  "popularity": 7902.493,
+  "poster_path": "/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg",
+  "release_date": "2021-12-15",
+  "title": "Spider-Man: No Way Home",
+  "video": false,
+  "vote_average": 8.4,
+  "vote_count": 7810,
+  "videoId": "pBvH8hvnJPk",
+  "cast": ["Tom Holland", "Zendaya", "Benedict Cumberbatch", "Jacob Batalon"],
+  "runtime": "2h 28m",
+  "certification": "PG-13",
+  "trailers": [
+    {
+      "videoId": "GGe_h2MWMrs",
+      "title": "Walking Corpses Clip"
+    },
+    {
+      "videoId": "Bh8NeyejykU",
+      "title": "Mirror Dimension Clip"
+    },
+    {
+      "videoId": "aC40LnWR9TE",
+      "title": "Behind-The-Scenes"
+    },
+    {
+      "videoId": "lQS7isohBCg",
+      "title": "Catch Clip"
+    },
+    {
+      "videoId": "eH_QbFQFyMg",
+      "title": "Peter Ruins Runes Clip"
+    }
+  ],
+  "similar": [
+    {
+      "title": "The Matrix Reloaded",
+      "poster_path": "/9TGHDvWrqKBzwDxDodHYXEmOE6J.jpg",
+      "overview": "Six months after the events depicted in The Matrix, Neo has proved to be a good omen for the free humans, as more and more humans are being freed from the matrix and brought to Zion, the one and only stronghold of the Resistance.  Neo himself has discovered his superpowers including super speed, ability to see the codes of the things inside the matrix and a certain degree of pre-cognition. But a nasty piece of news hits the human resistance: 250,000 machine sentinels are digging to Zion and would reach them in 72 hours. As Zion prepares for the ultimate war, Neo, Morpheus and Trinity are advised by the Oracle to find the Keymaker who would help them reach the Source.  Meanwhile Neo's recurrent dreams depicting Trinity's death have got him worried and as if it was not enough, Agent Smith has somehow escaped deletion, has become more powerful than before and has fixed Neo as his next target.",
+      "videoId": "zsgrsiZoymA"
+    },
+    {
+      "title": "The Matrix Revolutions",
+      "poster_path": "/fgm8OZ7o4G1G1I9EeGcb85Noe6L.jpg",
+      "overview": "The human city of Zion defends itself against the massive invasion of the machines as Neo fights to end the war at another front while also opposing the rogue Agent Smith.",
+      "videoId": "hMbexEPAOQI"
+    },
+    {
+      "title": "Men in Black",
+      "poster_path": "/uLOmOF5IzWoyrgIF5MfUnh5pa1X.jpg",
+      "overview": "After a police chase with an otherworldly being, a New York City cop is recruited as an agent in a top-secret organization established to monitor and police alien activity on Earth: the Men in Black. Agent Kay and new recruit Agent Jay find themselves in the middle of a deadly plot by an intergalactic terrorist who has arrived on Earth to assassinate two ambassadors from opposing galaxies.",
+      "videoId": "HYUd7AOw_lk"
+    },
+    {
+      "title": "Men in Black II",
+      "poster_path": "/enA22EPyzc2WQ1VVyY7zxresQQr.jpg",
+      "overview": "Kay and Jay reunite to provide our best, last and only line of defense against a sinister seductress who levels the toughest challenge yet to the MIB's untarnished mission statement – protecting Earth from the scum of the universe. It's been four years since the alien-seeking agents averted an intergalactic disaster of epic proportions. Now it's a race against the clock as Jay must convince Kay – who not only has absolutely no memory of his time spent with the MIB, but is also the only living person left with the expertise to save the galaxy – to reunite with the MIB before the earth submits to ultimate destruction.",
+      "videoId": "p4NJHqoojOU"
+    },
+    {
+      "title": "The Lost Boys",
+      "poster_path": "/nH1lvyQvfbL5GKScTtT6zkIvDEn.jpg",
+      "overview": "A mother and her two teenage sons move to a seemingly nice and quiet small coastal California town yet soon find out that it's overrun by bike gangs and vampires. A couple of teenage friends take it upon themselves to hunt down the vampires that they suspect of a few mysterious murders and restore peace and calm to their town.",
+      "videoId": "hsv_NQFbQzo"
+    },
+    {
+      "title": "Spider-Man",
+      "poster_path": "/gh4cZbhZxyTbgxQPxD0dOudNPTn.jpg",
+      "overview": "After being bitten by a genetically altered spider at Oscorp, nerdy but endearing high school student Peter Parker is endowed with amazing powers to become the superhero known as Spider-Man.",
+      "videoId": "Ozz8uxW733Q"
+    }
+  ]
+}
