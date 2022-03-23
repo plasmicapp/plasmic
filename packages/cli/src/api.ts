@@ -266,6 +266,7 @@ export class PlasmicApi {
       codeOpts: CodeConfig;
       checksums: ChecksumBundle;
       indirect: boolean;
+      wrapPagesWithGlobalContexts: boolean;
       metadata?: Metadata;
     }
   ): Promise<ProjectBundle> {

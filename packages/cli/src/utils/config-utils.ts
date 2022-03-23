@@ -85,6 +85,9 @@ export interface PlasmicConfig {
   /** Metadata for each project that has been synced */
   projects: ProjectConfig[];
 
+  /** Wether we should wrap the pages with the project global contexts or not */
+  wrapPagesWithGlobalContexts: boolean;
+
   /** The version of cli when this file was written */
   cliVersion?: string;
 
@@ -411,6 +414,7 @@ export const DEFAULT_CONFIG: PlasmicConfig = {
   globalVariants: {
     variantGroups: [],
   },
+  wrapPagesWithGlobalContexts: true,
 };
 
 export const DEFAULT_PUBLIC_FILES_CONFIG: ImagesConfig = {

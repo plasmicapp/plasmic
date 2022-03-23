@@ -156,6 +156,7 @@ type PlasmicImportType =
   | "picture"
   | "jsBundle"
   | "codeComponent"
+  | "globalContext"
   | undefined;
 
 function tryParsePlasmicImportSpec(node: ImportDeclaration) {
@@ -164,7 +165,7 @@ function tryParsePlasmicImportSpec(node: ImportDeclaration) {
     return undefined;
   }
   const m = c.value.match(
-    /plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss|defaultcss|icon|picture|jsBundle|codeComponent))?/
+    /plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss|defaultcss|icon|picture|jsBundle|codeComponent|globalContext))?/
   );
   if (m) {
     return { id: m[1], type: m[2] as PlasmicImportType } as PlasmicImportSpec;
@@ -337,6 +338,18 @@ export function replaceImports(
         // npm package
         stmt.source.value = meta.componentImportPath;
       }
+    } else if (type === "globalContext") {
+      const projectConfig = fixImportContext.projects[uuid];
+      if (!projectConfig) {
+        throwMissingReference(context, "project", uuid, fromPath);
+      }
+      const realPath = makeImportPath(
+        context,
+        fromPath,
+        projectConfig.globalContextsFilePath,
+        true
+      );
+      stmt.source.value = realPath;
     }
   });
 
