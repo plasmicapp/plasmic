@@ -1,0 +1,28 @@
+{
+  "name": "plasmicflix",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@plasmicapp/loader-nextjs": "^1.0.74",
+    "@plasmicapp/react-web": "^0.2.91",
+    "antd": "^4.18.8",
+    "axios": "^0.26.0",
+    "next": "12.1.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-youtube": "^7.14.0"
+  },
+  "devDependencies": {
+    "@types/node": "17.0.21",
+    "@types/react": "17.0.39",
+    "eslint": "8.9.0",
+    "eslint-config-next": "12.1.0",
+    "typescript": "4.5.5"
+  }
+}

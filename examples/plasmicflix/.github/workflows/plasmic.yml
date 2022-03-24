@@ -1,0 +1,82 @@
+# Plasmic workflow v3
+name: Sync, build and deploy Plasmic app
+
+on:
+  repository_dispatch:
+    types: [plasmic]
+
+jobs:
+  job:
+    name: Sync, build and deploy
+    runs-on: ubuntu-latest
+    steps:
+      - id: checkout
+        name: Checking out repository...
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - id: node
+        name: Setting up node v14...
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+      - id: cache
+        name: Recovering cache...
+        uses: actions/cache@v2
+        with:
+          key: lock-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}
+          path: ${{ github.event.client_payload.data.directory }}/node_modules
+      - id: init
+        name: Initializing Plasmic app...
+        uses: plasmicapp/plasmic-action@master
+        with:
+          run: init
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.event.client_payload.data.branch }}
+          directory: ${{ github.event.client_payload.data.directory }}
+          project_id: ${{ github.event.client_payload.data.projectId }}
+          project_api_token: ${{ github.event.client_payload.data.projectApiToken }}
+          platform: ${{ github.event.client_payload.data.platform }}
+          language: ${{ github.event.client_payload.data.language }}
+          scheme: ${{ github.event.client_payload.data.scheme }}
+          title: ${{ github.event.client_payload.data.title }}
+          description: ${{ github.event.client_payload.data.description }}
+      - id: sync
+        name: Syncing Plasmic project...
+        if: ${{ github.event.client_payload.data.scheme == 'codegen' && steps.init.outputs.synced != 'true' }}
+        uses: plasmicapp/plasmic-action@master
+        with:
+          run: sync
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.event.client_payload.data.branch }}
+          directory: ${{ github.event.client_payload.data.directory }}
+          project_id: ${{ github.event.client_payload.data.projectId }}
+          project_api_token: ${{ github.event.client_payload.data.projectApiToken }}
+          sync_action: ${{ github.event.client_payload.data.syncAction }}
+          title: ${{ github.event.client_payload.data.title }}
+          description: ${{ github.event.client_payload.data.description }}
+      - id: build
+        name: Building Plasmic app...
+        if: ${{ github.event.client_payload.data.publish }}
+        uses: plasmicapp/plasmic-action@master
+        with:
+          run: build
+          branch: ${{ github.event.client_payload.data.branch }}
+          directory: ${{ github.event.client_payload.data.directory }}
+          platform: ${{ github.event.client_payload.data.platform }}
+      - id: gh-pages
+        name: Publishing to GitHub Pages...
+        uses: JamesIves/github-pages-deploy-action@4.1.0
+        if: ${{ steps.build.outputs.publish_dir }}
+        with:
+          branch: gh-pages
+          folder: ${{ steps.build.outputs.publish_dir }}
+      - id: pr
+        name: Creating pull request...
+        uses: repo-sync/pull-request@v2
+        if: ${{ steps.sync.outputs.new_branch }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          source_branch: ${{ steps.sync.outputs.new_branch }}
+          destination_branch: ${{ github.event.client_payload.data.branch }}
