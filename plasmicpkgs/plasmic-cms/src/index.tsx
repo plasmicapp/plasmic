@@ -49,14 +49,11 @@ export function registerAll(loader?: {
   };
 
   _registerGlobalContext(CmsCredentialsProvider, cmsCredentialsProviderMeta);
-  // _registerComponent(CmsQueryLoader, cmsQueryLoaderMeta);
-  // _registerComponent(CmsRowRepeater, cmsRowRepeaterMeta);
   _registerComponent(CmsQueryRepeater, cmsQueryRepeaterMeta);
   _registerComponent(CmsRowField, cmsRowFieldMeta);
   _registerComponent(CmsRowLink, cmsRowLinkMeta);
   _registerComponent(CmsRowImage, cmsRowImageMeta);
   _registerComponent(CmsRowFieldValue, cmsRowFieldValueMeta);
-  // _registerComponent(CmsRowLoader, cmsRowLoaderMeta);
 }
 
 export * from "./components";
