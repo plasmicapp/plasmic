@@ -405,8 +405,10 @@ function makeImportPath(
  * a local file
  */
 export function isLocalModulePath(modulePath: string) {
-  // It is a local file reference if the importPath includes the file extension
-  return !!path.extname(modulePath);
+  // It is a local file reference if the importPath includes the file extension, and
+  // modulePath doesn't start with "@" (like an alias by convention, or scoped npm
+  // package). This is not a reliable way to detect scoped npm package, but :shrug:
+  return !!path.extname(modulePath) && !modulePath.startsWith("@");
 }
 
 export interface ComponentUpdateSummary {
