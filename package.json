@@ -32,6 +32,7 @@
     "plasmicpkgs/plasmic-cms",
     "plasmicpkgs/plasmic-embed-css",
     "plasmicpkgs/plasmic-query",
+    "plasmicpkgs/plasmic-sanity-io",
     "plasmicpkgs/plasmic-shopify",
     "plasmicpkgs/plasmic-swell",
     "plasmicpkgs/react-awesome-reveal",
