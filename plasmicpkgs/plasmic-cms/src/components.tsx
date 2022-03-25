@@ -71,6 +71,8 @@ const defaultHost = "https://studio.plasmic.app";
 export const cmsCredentialsProviderMeta: GlobalContextMeta<CmsCredentialsProviderProps> = {
   name: `${componentPrefix}-credentials-provider`,
   displayName: "CMS Credentials Provider",
+  description:
+    "Find your CMS in the [dashboard](https://studio.plasmic.app), and go to the Settings tab for the ID and token.",
   importName: "CmsCredentialsProvider",
   importPath: modulePath,
   props: {
