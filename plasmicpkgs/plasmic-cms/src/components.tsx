@@ -225,7 +225,7 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
       type: "slot",
       defaultValue: {
         type: "text",
-        value: "No matching entries found.",
+        value: "No matching published entries found.",
       },
     },
     forceEmptyState: {
