@@ -690,8 +690,9 @@ function renderValue(value: any, type: CmsType, props: { className?: string }) {
         return (
           <img
             src={value.url}
-            width={value.imageMeta.height}
+            width={value.imageMeta.width}
             height={value.imageMeta.height}
+            style={{ objectFit: "cover" }}
             {...props}
           />
         );
