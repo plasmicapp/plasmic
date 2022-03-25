@@ -321,6 +321,7 @@ interface CmsQueryRepeaterProps
   forceEmptyState?: boolean;
   loadingMessage?: React.ReactNode;
   forceLoadingState?: boolean;
+  className?: string;
 }
 
 export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
@@ -330,6 +331,12 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
     "Fetches CMS data and repeats content of children once for every row fetched.",
   importName: "CmsQueryRepeater",
   importPath: modulePath,
+  defaultStyles: {
+    display: "flex",
+    width: "stretch",
+    maxWidth: "100%",
+    flexDirection: "column",
+  },
   props: {
     children: {
       type: "slot",
@@ -424,6 +431,7 @@ export function CmsQueryRepeater({
   forceEmptyState,
   loadingMessage,
   forceLoadingState,
+  className,
 }: CmsQueryRepeaterProps) {
   const databaseConfig = useDatabase();
   const tables = useTables();
@@ -459,25 +467,29 @@ export function CmsQueryRepeater({
     }
   });
 
-  return renderMaybeData<ApiCmsRow[]>(
-    maybeData,
-    rows => {
-      if (rows.length === 0 || forceEmptyState) {
-        return <> {emptyMessage} </>;
-      }
-      return (
-        <QueryResultProvider table={table!} rows={rows}>
-          {rows.map((row, index) => (
-            <RowProvider table={table!} row={row}>
-              {repeatedElement(index === 0, children)}
-            </RowProvider>
-          ))}
-        </QueryResultProvider>
-      );
-    },
-    { hideIfNotFound: false },
-    loadingMessage,
-    forceLoadingState
+  return (
+    <div className={className}>
+      {renderMaybeData<ApiCmsRow[]>(
+        maybeData,
+        rows => {
+          if (rows.length === 0 || forceEmptyState) {
+            return <> {emptyMessage} </>;
+          }
+          return (
+            <QueryResultProvider table={table!} rows={rows}>
+              {rows.map((row, index) => (
+                <RowProvider table={table!} row={row}>
+                  {repeatedElement(index === 0, children)}
+                </RowProvider>
+              ))}
+            </QueryResultProvider>
+          );
+        },
+        { hideIfNotFound: false },
+        loadingMessage,
+        forceLoadingState
+      )}
+    </div>
   );
 }
 
