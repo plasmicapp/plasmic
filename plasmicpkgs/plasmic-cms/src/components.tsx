@@ -473,7 +473,11 @@ export function CmsQueryRepeater({
         maybeData,
         rows => {
           if (rows.length === 0 || forceEmptyState) {
-            return <> {emptyMessage} </>;
+            return (
+              <QueryResultProvider table={table!} rows={rows}>
+                {emptyMessage}
+              </QueryResultProvider>
+            );
           }
           return (
             <QueryResultProvider table={table!} rows={rows}>
