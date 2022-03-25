@@ -195,6 +195,7 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
       displayName: "Use drafts?",
       description: "If set, also query unpublished content.",
       defaultValue: false,
+      hidden: () => true,
     },
     where: {
       type: "object",
