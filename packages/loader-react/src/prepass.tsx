@@ -1,4 +1,4 @@
-import { DataCacheEntry, PrepassContext } from '@plasmicapp/query';
+import { PlasmicPrepassContext } from '@plasmicapp/query';
 import React from 'react';
 import { isFragment } from 'react-is';
 import prepass from 'react-ssr-prepass';
@@ -40,23 +40,21 @@ import { PlasmicComponent } from './PlasmicComponent';
  *   in this element tree.
  * @returns an object mapping query key to fetched data
  */
- export async function extractPlasmicQueryData(
+export async function extractPlasmicQueryData(
   element: React.ReactElement
 ): Promise<Record<string, any>> {
-  const cache: Record<string, DataCacheEntry<any>> = {};
+  const cache = new Map<string, any>();
   try {
     await plasmicPrepass(
-      <PrepassContext.Provider value={{ cache }}>
-        {element}
-      </PrepassContext.Provider>
+      <PlasmicPrepassContext cache={cache}>{element}</PlasmicPrepassContext>
     );
   } catch (err) {
     console.warn(`PLASMIC: Error encountered while pre-rendering`, err);
   }
   return Object.fromEntries(
-    Array.from(Object.entries(cache))
-      .map(([key, { data }]) => [key, data])
-      .filter(([key, data]) => !!data)
+    Array.from(cache.entries()).filter(
+      ([key, val]) => !key.startsWith('$swr$') && val !== undefined
+    )
   );
 }
 

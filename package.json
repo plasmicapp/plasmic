@@ -9,7 +9,7 @@
     "bootstrap": "lerna bootstrap --force-local && lerna link && lerna run build",
     "release": "lerna exec --no-bail -- npm publish --registry=https://registry.npmjs.org --access=public",
     "bump": "lerna version --no-push --exact --include-merged-tags",
-    "local-canary": "yarn local-unpublish && lerna publish --canary --yes --no-git-tag-version --no-push --registry=http://localhost:4873 --force-publish",
+    "local-canary": "yarn local-unpublish && lerna publish --canary --yes --include-merged-tags --no-git-tag-version --no-push --registry=http://localhost:4873 --force-publish",
     "local-publish": "lerna exec -- npm publish --registry=http://localhost:4873",
     "local-unpublish": "lerna exec -- npm unpublish -f --registry=\"http://localhost:4873/\" \"\\${LERNA_PACKAGE_NAME}\""
   },

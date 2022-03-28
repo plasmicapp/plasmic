@@ -58,6 +58,7 @@
     "typescript": "^4.5.4"
   },
   "dependencies": {
-    "react-ssr-prepass": "^1.4.0"
+    "react-ssr-prepass": "^1.4.0",
+    "swr": ">1.0.0"
   }
 }
