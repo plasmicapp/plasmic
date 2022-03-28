@@ -6,6 +6,7 @@ import defaultMovie from "../helper/default_movie.json";
 import { getGenre, getVideoId, imagePath } from "../helper/utils";
 import { ReactYoutube } from "./Youtube";
 
+export const VIDEOID_PARAM = "videoId";
 interface MoviePosterProps {
   customStyle: object;
   className: string;
@@ -104,16 +105,24 @@ export const MovieVideo = ({
   width: string;
   height: string;
 }) => {
-  const movieContext = useMovie();
   const inEditor = usePlasmicCanvas();
-  const movie = inEditor && useDefaultMovie ? defaultMovie : movieContext;
-  if (!movie) {
+  const movieContext = useMovie();
+  const queryParams = new URLSearchParams(window.location.search);
+  const videoIdFromQuery = queryParams.get(VIDEOID_PARAM);
+
+  // Use default movie if in Studio
+  const videoId =
+    inEditor && useDefaultMovie
+      ? defaultMovie.videoId
+      : // Then either get it from the URL or the MovieContext
+        videoIdFromQuery ?? movieContext?.videoId;
+  if (!videoId) {
     return null;
   }
 
   return (
     <ReactYoutube
-      videoId={movie.videoId ?? ""}
+      videoId={videoId ?? ""}
       lazyLoading={lazyLoading}
       className={className}
       width={width}
@@ -254,23 +263,3 @@ interface LoadMovieProps {
   className: string;
   useDefaultMovie: boolean;
 }
-
-export const LoadMovie = (props: LoadMovieProps) => {
-  const { children, className, useDefaultMovie } = props;
-  const movieJson = localStorage.getItem("movie");
-  const inEditor = usePlasmicCanvas();
-  const movie =
-    inEditor && useDefaultMovie
-      ? defaultMovie
-      : movieJson
-      ? JSON.parse(movieJson)
-      : undefined;
-  if (!movie) {
-    return null;
-  }
-  return (
-    <div className={className}>
-      <MovieContext.Provider value={movie}>{children}</MovieContext.Provider>
-    </div>
-  );
-};

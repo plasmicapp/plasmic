@@ -9,7 +9,6 @@ import { Loading } from "./code-components/Loading";
 import { Modal } from "./code-components/Modal";
 import {
   FetchMovie,
-  LoadMovie,
   MoviePoster,
   MovieSimilars,
   MovieTextInfo,
@@ -226,15 +225,6 @@ PLASMIC.registerComponent(FetchMovie, {
   props: {
     children: "slot",
     id: "number",
-  },
-  importPath: "./code-components/Movie",
-});
-
-PLASMIC.registerComponent(LoadMovie, {
-  name: "LoadMovie",
-  props: {
-    children: "slot",
-    useDefaultMovie: "boolean",
   },
   importPath: "./code-components/Movie",
 });

@@ -7,6 +7,7 @@ import {
 } from "../helper/contexts";
 import defaultMovie from "../helper/default_movie.json";
 import { Modal } from "./Modal";
+import { VIDEOID_PARAM } from "./Movie";
 
 interface WatchButtonProps {
   children: ReactNode;
@@ -25,11 +26,15 @@ export const WatchButton = (props: WatchButtonProps) => {
     return null;
   }
 
-  localStorage.setItem("movie", JSON.stringify(movie));
+  const url = new URL(watchPage, window.location.origin);
+  if (movie.videoId) {
+    url.searchParams.append(VIDEOID_PARAM, movie.videoId);
+  }
+
   return (
     <div className={className} onClick={() => ref?.current?.click()}>
       {children}
-      <a href={watchPage} ref={ref} hidden={true} />
+      <a href={url.href} ref={ref} hidden={true} />
     </div>
   );
 };
@@ -45,11 +50,11 @@ export const PageChangeButton = (props: PageChangeButtonProps) => {
   const isRightButton = type === "right";
 
   const offset = isRightButton ? 1 : -1;
-  const movie = isRightButton ? pageContext.nextMovie : pageContext.prevMovie;
+  const movie = isRightButton ? pageContext?.nextMovie : pageContext?.prevMovie;
 
   if (
-    (isRightButton && pageContext.isLast) ||
-    (!isRightButton && pageContext.isFirst)
+    (isRightButton && pageContext?.isLast) ||
+    (!isRightButton && pageContext?.isFirst)
   ) {
     return null;
   }
@@ -58,7 +63,7 @@ export const PageChangeButton = (props: PageChangeButtonProps) => {
     <MovieContext.Provider value={movie}>
       <div
         className={className}
-        onClick={() => pageContext.onPageChange(offset)}
+        onClick={() => pageContext?.onPageChange(offset)}
       >
         {children}
       </div>

@@ -1,8 +1,8 @@
 import { PlasmicCanvasContext } from "@plasmicapp/loader-nextjs";
 import React, { useContext } from "react";
-import { Movie } from "./interfaces";
+import { Movie, Page } from "./interfaces";
 
-export const PageContext = React.createContext<any>(undefined);
+export const PageContext = React.createContext<Page | undefined>(undefined);
 export function usePage() {
   return useContext(PageContext);
 }
