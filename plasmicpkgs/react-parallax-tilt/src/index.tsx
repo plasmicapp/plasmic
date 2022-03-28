@@ -23,6 +23,7 @@ const parallaxTiltMeta: ComponentMeta<TiltProps> = {
   displayName: "Tilt",
   importName: "Tilt",
   importPath: "@plasmicpkgs/react-parallax-tilt",
+  isAttachment: true,
   props: {
     children: {
       type: "slot",

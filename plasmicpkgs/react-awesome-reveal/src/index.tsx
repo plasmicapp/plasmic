@@ -58,6 +58,7 @@ export const revealMeta: ComponentMeta<RevealProps> = {
   importName: "Reveal",
   displayName: "Reveal",
   importPath: "@plasmicpkgs/react-awesome-reveal",
+  isAttachment: true,
   props: {
     big: {
       type: "boolean",
