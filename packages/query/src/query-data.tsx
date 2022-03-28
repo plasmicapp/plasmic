@@ -14,7 +14,7 @@ import useSWR, { SWRConfig, SWRConfiguration } from 'swr';
 export function usePlasmicQueryData<T>(
   key: string,
   fetcher: () => Promise<T>
-): { data?: T } | { error: Error } {
+): { data?: T } | { error: Error; data?: undefined } {
   const prepassCtx = React.useContext(PrepassContext);
 
   // @plasmicapp/query is optimized for SSR, so we do not revalidate
