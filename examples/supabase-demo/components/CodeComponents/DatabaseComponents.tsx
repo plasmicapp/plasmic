@@ -116,8 +116,9 @@ export function SupabaseQuery(props: SupabaseQueryProps) {
   // Only query if the user is logged in
   React.useEffect(() => {
     const user = supabase.auth.user();
-    if (user) {
-      makeQuery(user);
+    if (user || true) {
+      // Bypass the user check for now
+      makeQuery();
     } else {
       setResult(undefined);
     }
@@ -131,7 +132,7 @@ export function SupabaseQuery(props: SupabaseQueryProps) {
   }
 
   // Performs the Supabase query
-  async function makeQuery(user: User) {
+  async function makeQuery() {
     try {
       setLoading(true);
       let query = supabase.from(tableName!).select(columns + ",id");
