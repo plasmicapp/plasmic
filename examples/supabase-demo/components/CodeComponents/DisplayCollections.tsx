@@ -62,7 +62,7 @@ export interface SupabaseGridProps {
 
   // Query
   tableName?: string;
-  tableColumns?: string;
+  tableColumns?: string[];
   queryFilters?: any;
 
   // Grid
@@ -90,7 +90,7 @@ export function SupabaseGrid(props: SupabaseGridProps) {
     <SupabaseQuery
       className={className}
       tableName={tableName}
-      columns={tableColumns}
+      columns={tableColumns?.join(",")}
       filters={queryFilters}
     >
       <SupabaseGridCollection

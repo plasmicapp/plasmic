@@ -77,8 +77,23 @@ PLASMIC.registerComponent(SupabaseImgField, {
 PLASMIC.registerComponent(SupabaseGrid, {
   name: "SupabaseGrid",
   props: {
-    tableName: "string",
-    tableColumns: "string",
+    tableName: {
+      type: "choice",
+      defaultValue: "entries",
+      options: ["entries"],
+    },
+    tableColumns: {
+      type: "choice",
+      multiSelect: true,
+      options: [
+        "id",
+        "user_id",
+        "name",
+        "imageUrl",
+        "inserted_at",
+        "description",
+      ],
+    },
     queryFilters: "object",
     children: {
       type: "slot",
