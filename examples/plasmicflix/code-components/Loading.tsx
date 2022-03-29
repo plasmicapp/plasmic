@@ -14,7 +14,7 @@ export function Loading(props: LoadingProps) {
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
-    setTimeout(() => setIsLoading(false), loadingTime ?? 5000);
+    setTimeout(() => setIsLoading(false), loadingTime ?? 3000);
   }, [isLoading]);
 
   return (

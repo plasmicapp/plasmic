@@ -22,3 +22,12 @@ export interface Movie {
     videoId: string;
   }[];
 }
+
+export interface Page {
+  onPageChange: (offset: number) => void;
+  page: Movie[];
+  prevMovie?: Movie;
+  nextMovie?: Movie;
+  isFirst: boolean;
+  isLast: boolean;
+}
