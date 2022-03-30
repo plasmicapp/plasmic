@@ -37,7 +37,10 @@ export function makeNextjsCatchallPage(format: "ts" | "js"): string {
   const ts = format === "ts";
   return `
 import * as React from "react";
-import { PlasmicComponent } from "@plasmicapp/loader-nextjs";
+import { 
+  PlasmicComponent,
+  extractPlasmicQueryData,
+} from "@plasmicapp/loader-nextjs";
 ${ifTs(ts, `import { GetStaticPaths, GetStaticProps } from "next";\n`)}
 import {
   ComponentRenderData,
@@ -50,9 +53,10 @@ export default function PlasmicLoaderPage(props${ifTs(
     ts,
     `: {
   plasmicData?: ComponentRenderData;
+  queryCache?: Record<string, any>;
 }`
   )}) {
-  const { plasmicData } = props;
+  const { plasmicData, queryCache } = props;
   if (!plasmicData || plasmicData.entryCompMetas.length === 0) {
     return <Error statusCode={404} />;
   }
@@ -60,6 +64,7 @@ export default function PlasmicLoaderPage(props${ifTs(
     <PlasmicRootProvider
       loader={PLASMIC}
       prefetchedData={plasmicData}
+      prefetchedQueryData={queryCache}
     >
       <PlasmicComponent component={plasmicData.entryCompMetas[0].name} />
     </PlasmicRootProvider>
@@ -73,18 +78,18 @@ export const getStaticProps${ifTs(
   const { catchall } = context.params ?? {};
   const plasmicPath = typeof catchall === 'string' ? catchall : Array.isArray(catchall) ? \`/\${catchall.join('/')}\` : '/';
   const plasmicData = await PLASMIC.maybeFetchComponentData(plasmicPath);
-  if (plasmicData) {
-    return {
-      props: { plasmicData },
-
-      // Use revalidate if you want incremental static regeneration
-      revalidate: 60
-    };
-  }
-  return {
+  if (!plasmicData) {
     // non-Plasmic catch-all
-    props: {},
-  };
+    return { props: {} };
+  }
+  // Cache the necessary data fetched for the page
+  const queryCache = await extractPlasmicQueryData(
+    <PlasmicRootProvider loader={PLASMIC} prefetchedData={plasmicData}>
+      <PlasmicComponent component={plasmicData.entryCompMetas[0].name} />
+    </PlasmicRootProvider>
+  );
+  // Use revalidate if you want incremental static regeneration
+  return { props: { plasmicData, queryCache }, revalidate: 60 };
 }
 
 export const getStaticPaths${ifTs(ts, `: GetStaticPaths`)} = async () => {
