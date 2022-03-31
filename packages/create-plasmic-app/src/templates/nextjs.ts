@@ -37,15 +37,13 @@ export function makeNextjsCatchallPage(format: "ts" | "js"): string {
   const ts = format === "ts";
   return `
 import * as React from "react";
-import { 
+import {
   PlasmicComponent,
   extractPlasmicQueryData,
-} from "@plasmicapp/loader-nextjs";
-${ifTs(ts, `import { GetStaticPaths, GetStaticProps } from "next";\n`)}
-import {
   ComponentRenderData,
   PlasmicRootProvider,
-} from "@plasmicapp/loader-react";
+} from "@plasmicapp/loader-nextjs";
+${ifTs(ts, `import { GetStaticPaths, GetStaticProps } from "next";\n`)}
 import Error from "next/error";
 import { PLASMIC } from "../plasmic-init";
 
