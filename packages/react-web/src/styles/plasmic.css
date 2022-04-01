@@ -24,7 +24,7 @@
 .__wab_img-wrapper {
   position: relative;
   display: inherit;
-  flex-direction: inherit;
+  flex-direction: column;
   overflow: hidden;
   flex-shrink: 0;
 }
