@@ -63,7 +63,7 @@ export const handler: SWRHook<SearchProductsHook> = {
             ({ node: { vendor } }: ProductEdge) =>
               vendor.replace(/\s+/g, '-').toLowerCase() === `${brandId}`.toLowerCase()
           ).slice(0, input.count)
-        : data.node?.products?.edges
+        : data.node?.products?.edges.slice(0, input.count);
     } else {
       const data = await fetch<GetAllProductsQuery>({
         query: options.query,

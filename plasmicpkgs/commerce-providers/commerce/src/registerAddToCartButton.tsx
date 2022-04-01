@@ -9,7 +9,6 @@ import { useFormContext, Controller } from "react-hook-form";
 import { CommerceError } from "./utils/errors";
 
 interface AddToCartButtonProps {
-  className?: string;
   children?: React.ReactNode;
 }
 
@@ -32,7 +31,7 @@ export const addToCartButtonMeta: ComponentMeta<AddToCartButtonProps> = {
 };
 
 function AddToCartButton(props: AddToCartButtonProps) {
-  const { className, children } = props;
+  const { children } = props;
 
   const product = useProduct();
   const form = useFormContext();

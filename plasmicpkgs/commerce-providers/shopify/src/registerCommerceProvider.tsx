@@ -1,23 +1,19 @@
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
 import React from "react";
 import { getCommerceProvider } from "./shopify";
+import { GlobalContextMeta } from "@plasmicapp/host";
+import registerGlobalContext from "@plasmicapp/host/registerGlobalContext";
 
 interface CommerceProviderProps {
   children?: React.ReactNode;
-  storeDomain?: string;
-  accessToken?: string;
+  storeDomain: string;
+  accessToken: string;
 
 }
-export const commerceProviderMeta: ComponentMeta<CommerceProviderProps> = {
+export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
   name: "plasmic-commerce-shopify-provider",
   displayName: "Shopify Provider",
   props: {
-    children: {
-      type: "slot"
-    },
     storeDomain: "string",
     accessToken: "string"
 
@@ -29,26 +25,20 @@ export const commerceProviderMeta: ComponentMeta<CommerceProviderProps> = {
 function CommerceProviderComponent(props: CommerceProviderProps) {
   const { storeDomain, accessToken, children } = props;
 
-  if (!storeDomain) {
-    return <p> You must set the store domain url </p>
-  } else if (!accessToken) {
-    return <p> You must set the access token </p>
-  }
-  
   const CommerceProvider = getCommerceProvider(storeDomain, accessToken);
 
   return (
     <CommerceProvider>
-      <div>{children}</div>
+      {children}
     </CommerceProvider>
   )
 }
 
 export function registerCommerceProvider(
   loader?: Registerable,
-  customCommerceProviderMeta?: ComponentMeta<CommerceProviderProps>
+  customCommerceProviderMeta?: GlobalContextMeta<CommerceProviderProps>
 ) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
+  const doRegisterComponent: typeof registerGlobalContext = (...args) =>
+    loader ? loader.registerGlobalContext(...args) : registerGlobalContext(...args);
   doRegisterComponent(CommerceProviderComponent, customCommerceProviderMeta ?? commerceProviderMeta);
 }

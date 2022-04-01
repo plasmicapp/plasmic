@@ -12,6 +12,8 @@ import { handler as useAddItem } from './cart/use-add-item'
 import { handler as useUpdateItem } from './cart/use-update-item'
 import { handler as useRemoveItem } from './cart/use-remove-item'
 import { handler as useSearch } from './product/use-search'
+import { handler as useCategories } from "./site/use-categories"
+import { handler as useBrands } from "./site/use-brands"
 import fetcher from './fetcher'
 import { Fetcher } from '@plasmicpkgs/commerce'
 
@@ -25,6 +27,7 @@ export const getSwellProvider = (storeId: string, publicKey: string) => {
     fetcher,
     cart: { useCart, useAddItem, useUpdateItem, useRemoveItem },
     products: { useSearch },
+    site: { useCategories, useBrands }
   }
 }
 
@@ -41,6 +44,10 @@ export type SwellProvider = {
   products: {
     useSearch: typeof useSearch
   };
+  site: {
+    useCategories: typeof useCategories
+    useBrands: typeof useBrands
+  }
   swell: any
 }
 

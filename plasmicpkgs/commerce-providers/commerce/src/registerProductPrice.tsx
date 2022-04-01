@@ -26,6 +26,9 @@ export function ProductPrice(props: ProductPriceProps) {
   const product = useProduct();
   const form = useFormContext();
 
+  if (!product) {
+    throw new Error("This component must be within a product context.")
+  }
   const watchProductVariant = form.watch("ProductVariant", product?.variants[0].id);
 
   const { price } = usePrice({ 

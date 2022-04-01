@@ -12,7 +12,8 @@ import React, {
 } from 'react';
 import type {
   Product,
-  Cart
+  Cart,
+  Site
 } from './types'
 import type { Fetcher, SWRHook, MutationHook } from './utils/types';
 
@@ -28,6 +29,10 @@ export type Provider = CommerceConfig & {
   }
   products?: {
     useSearch?: SWRHook<Product.SearchProductsHook>
+  }
+  site?: {
+    useCategories?: SWRHook<Site.GetCategoriesHook>
+    useBrands?: SWRHook<Site.GetBrandsHook>
   }
 }
 

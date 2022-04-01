@@ -15,6 +15,8 @@ export const productConnectionFragment = /* GraphQL */ `
         title
         vendor
         handle
+        description
+        descriptionHtml
         priceRange {
           minVariantPrice {
             amount

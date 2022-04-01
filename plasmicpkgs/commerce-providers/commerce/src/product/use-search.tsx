@@ -18,7 +18,6 @@ const fn = (provider: Provider) => provider.products?.useSearch!
 
 const useSearch: UseSearch = (input) => {
   const hook = useHook(fn)
-  console.log("dale", "commerce", input);
   return useSWRHook({ fetcher, ...hook })(input)
 }
 

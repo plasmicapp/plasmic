@@ -16,12 +16,16 @@ export * from "./utils/errors";
 export * from "./types/product";
 
 export * from "./product/use-search";
+export * from "./site/use-categories";
+export * from "./site/use-brands";
 export * from "./cart/use-cart";
 export * from "./cart/use-add-item";
 export * from "./cart/use-remove-item";
 export * from "./cart/use-update-item";
 
 export { default as useSearch } from "./product/use-search";
+export { default as useCategories } from "./site/use-categories";
+export { default as useBrands } from "./site/use-brands";
 export { default as useCart } from "./cart/use-cart";
 export { default as useAddItem } from "./cart/use-add-item";
 export { default as useRemoveItem } from "./cart/use-remove-item";

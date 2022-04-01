@@ -9,11 +9,20 @@ export type Category = {
   path: string
 }
 
-export type Brand = any
+export type Brand = {
+  name: string
+  entityId: string
+  path: string
+}
+
+export type SearchSiteInfoBody = {
+  locale?: string
+}
 
 export type SiteTypes = {
   category: Category
   brand: Brand
+  searchBody: SearchSiteInfoBody
 }
 
 export type GetSiteInfoOperation<T extends SiteTypes = SiteTypes> = {
@@ -21,4 +30,18 @@ export type GetSiteInfoOperation<T extends SiteTypes = SiteTypes> = {
     categories: T['category'][]
     brands: T['brand'][]
   }
+}
+
+export type GetCategoriesHook<T extends SiteTypes = SiteTypes> = {
+  data: T['category'][] | null
+  input: { }
+  fetcherInput: { }
+  swrState: { isEmpty: boolean }
+}
+
+export type GetBrandsHook<T extends SiteTypes = SiteTypes> = {
+  data: T['brand'][] | null
+  input: { }
+  fetcherInput: { }
+  swrState: { isEmpty: boolean }
 }

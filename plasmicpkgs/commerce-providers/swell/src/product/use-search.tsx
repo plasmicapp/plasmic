@@ -30,13 +30,14 @@ export const handler: SWRHook<SearchProductsHook> = {
       ['price-desc', 'price_desc'],
       ['trending-desc', 'popularity'],
     ])
-    const { categoryId, search, sort = 'latest-desc', count } = input
+    const { categoryId, brandId, search, sort = 'latest-desc', count } = input
     const mappedSort = sortMap.get(sort)
     const { results, count: found } = await fetch({
       query: 'products',
       method: 'list',
       variables: {
         category: categoryId,
+        brand: brandId,
         search,
         sort: mappedSort,
         expand: ["variants"],

@@ -8,7 +8,6 @@ const placeholderImage = "https://static1.plasmic.app/commerce/lightweight-jacke
 
 interface ProductMediaProps {
   className: string;
-  style?: CSSProperties;
   mediaIndex?: number;
 }
 
@@ -16,8 +15,6 @@ export const productMediaMeta: ComponentMeta<ProductMediaProps> = {
   name: "plasmic-commerce-product-media",
   displayName: "Product Media",
   props: {
-    children: "slot",
-    style: "object",
     mediaIndex: "number",
   },
   importPath: "commerce-providers/commerce",
@@ -25,7 +22,7 @@ export const productMediaMeta: ComponentMeta<ProductMediaProps> = {
 };
 
 export function ProductMedia(props: ProductMediaProps) {
-  const { className, style, mediaIndex = 0 } = props;
+  const { className, mediaIndex = 0 } = props;
 
   const product = useProduct();
 
@@ -36,7 +33,6 @@ export function ProductMedia(props: ProductMediaProps) {
       src={product ? (image?.url ?? "") : placeholderImage}
       loading={'lazy'}
       className={className}
-      style={style}
     />
   )
 }

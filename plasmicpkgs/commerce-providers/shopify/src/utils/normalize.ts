@@ -22,6 +22,7 @@ import {
   Collection,
 } from '../schema'
 import { colorMap } from './colors'
+import { Category } from '../types/site'
 
 const money = ({ amount, currencyCode }: MoneyV2) => {
   return {
@@ -192,7 +193,7 @@ export const normalizePage = (
 
 export const normalizePages = (edges: PageEdge[], locale?: string): Page[] =>
   edges?.map((edge) => normalizePage(edge.node, locale))
-
+*/
 export const normalizeCategory = ({
   title: name,
   handle,
@@ -203,4 +204,3 @@ export const normalizeCategory = ({
   slug: handle,
   path: `/${handle}`,
 })
-*/
