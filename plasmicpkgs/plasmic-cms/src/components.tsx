@@ -59,41 +59,42 @@ interface CmsCredentialsProviderProps extends DatabaseConfig {
 
 const defaultHost = "https://studio.plasmic.app";
 
-export const cmsCredentialsProviderMeta: GlobalContextMeta<CmsCredentialsProviderProps> = {
-  name: `${componentPrefix}-credentials-provider`,
-  displayName: "CMS Credentials Provider",
-  description:
-    "Find your CMS in the [dashboard](https://studio.plasmic.app), and go to the Settings tab for the ID and token.",
-  importName: "CmsCredentialsProvider",
-  importPath: modulePath,
-  props: {
-    host: {
-      type: "string",
-      displayName: "Studio URL",
-      description: `The default host for use in production is ${defaultHost}.`,
-      defaultValue: defaultHost,
-      defaultValueHint: defaultHost,
+export const cmsCredentialsProviderMeta: GlobalContextMeta<CmsCredentialsProviderProps> =
+  {
+    name: `${componentPrefix}-credentials-provider`,
+    displayName: "CMS Credentials Provider",
+    description:
+      "Find your CMS in the [dashboard](https://studio.plasmic.app), and go to the Settings tab for the ID and token.",
+    importName: "CmsCredentialsProvider",
+    importPath: modulePath,
+    props: {
+      host: {
+        type: "string",
+        displayName: "Studio URL",
+        description: `The default host for use in production is ${defaultHost}.`,
+        defaultValue: defaultHost,
+        defaultValueHint: defaultHost,
+      },
+      databaseId: {
+        type: "string",
+        displayName: "CMS ID",
+        description:
+          "The ID of the CMS (database) to use. (Can get on the CMS settings page)",
+      },
+      databaseToken: {
+        type: "string",
+        displayName: "CMS Public Token",
+        description:
+          "The Public Token of the CMS (database) you are using. (Can get on the CMS settings page)",
+      },
+      locale: {
+        type: "string",
+        displayName: "Locale",
+        description:
+          "The locale to use for localized values, leave empty for the default locale.",
+      },
     },
-    databaseId: {
-      type: "string",
-      displayName: "CMS ID",
-      description:
-        "The ID of the CMS (database) to use. (Can get on the CMS settings page)",
-    },
-    databaseToken: {
-      type: "string",
-      displayName: "CMS Public Token",
-      description:
-        "The Public Token of the CMS (database) you are using. (Can get on the CMS settings page)",
-    },
-    locale: {
-      type: "string",
-      displayName: "Locale",
-      description:
-        "The locale to use for localized values, leave empty for the default locale.",
-    },
-  },
-};
+  };
 
 export function CmsCredentialsProvider({
   children,
@@ -123,8 +124,9 @@ function TablesFetcher({ children }: { children: React.ReactNode }) {
 
   return renderMaybeData<ApiCmsTable[]>(
     maybeData,
-    tables => <TablesProvider tables={tables}>{children}</TablesProvider>,
-    { hideIfNotFound: false }
+    (tables) => <TablesProvider tables={tables}>{children}</TablesProvider>,
+    { hideIfNotFound: false },
+    children
   );
 }
 
@@ -153,6 +155,7 @@ interface CmsQueryRepeaterProps
   forceEmptyState?: boolean;
   loadingMessage?: React.ReactNode;
   forceLoadingState?: boolean;
+  noLayout?: boolean;
   className?: string;
 }
 
@@ -248,6 +251,13 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
         "If set, will render as if it is waiting for the query to run.",
       defaultValue: false,
     },
+    noLayout: {
+      type: "boolean",
+      displayName: "No layout",
+      description:
+        "When set, CMS Data Loader will not layout its children; instead, the layout set on its parent element will be used. Useful if you want to set flex gap or control container tag type.",
+      defaultValue: false,
+    },
   },
 };
 
@@ -264,6 +274,7 @@ export function CmsQueryRepeater({
   forceEmptyState,
   loadingMessage,
   forceLoadingState,
+  noLayout,
   className,
 }: CmsQueryRepeaterProps) {
   const databaseConfig = useDatabase();
@@ -293,41 +304,38 @@ export function CmsQueryRepeater({
     }
     if (!table) {
       throw new Error(`You must select a model to query`);
-    } else if (tables && !tables.find(t => t.identifier === table)) {
+    } else if (tables && !tables.find((t) => t.identifier === table)) {
       throw new Error(`There is no model called "${table}"`);
     } else {
       return mkApi(databaseConfig).query(table, params);
     }
   });
 
-  return (
-    <div className={className}>
-      {renderMaybeData<ApiCmsRow[]>(
-        maybeData,
-        rows => {
-          if (rows.length === 0 || forceEmptyState) {
-            return (
-              <QueryResultProvider table={table!} rows={rows}>
-                {emptyMessage}
-              </QueryResultProvider>
-            );
-          }
-          return (
-            <QueryResultProvider table={table!} rows={rows}>
-              {rows.map((row, index) => (
-                <RowProvider table={table!} row={row}>
-                  {repeatedElement(index === 0, children)}
-                </RowProvider>
-              ))}
-            </QueryResultProvider>
-          );
-        },
-        { hideIfNotFound: false },
-        loadingMessage,
-        forceLoadingState
-      )}
-    </div>
+  const node = renderMaybeData<ApiCmsRow[]>(
+    maybeData,
+    (rows) => {
+      if (rows.length === 0 || forceEmptyState) {
+        return (
+          <QueryResultProvider table={table!} rows={rows}>
+            {emptyMessage}
+          </QueryResultProvider>
+        );
+      }
+      return (
+        <QueryResultProvider table={table!} rows={rows}>
+          {rows.map((row, index) => (
+            <RowProvider table={table!} row={row}>
+              {repeatedElement(index === 0, children)}
+            </RowProvider>
+          ))}
+        </QueryResultProvider>
+      );
+    },
+    { hideIfNotFound: false },
+    loadingMessage,
+    forceLoadingState
   );
+  return noLayout ? <> {node} </> : <div className={className}> {node} </div>;
 }
 
 interface CmsRowFieldProps extends CanvasComponentProps<RowContextData> {
@@ -375,11 +383,13 @@ export const cmsRowFieldMeta: ComponentMeta<CmsRowFieldProps> = {
           return true;
         }
         const { table: tableIdentifier, tables } = ctx;
-        const table = tables?.find(t => t.identifier === tableIdentifier);
+        const table = tables?.find((t) => t.identifier === tableIdentifier);
         if (!table) {
           return true;
         }
-        const fieldMeta = table.schema.fields.find(f => f.identifier === field);
+        const fieldMeta = table.schema.fields.find(
+          (f) => f.identifier === field
+        );
         if (!fieldMeta) {
           return true;
         }
@@ -511,10 +521,10 @@ function deriveInferredTableField(opts: {
 }) {
   const { table, tables, field, typeFilters } = opts;
   if (!table) return undefined;
-  const schema = tables?.find(t => t.identifier === table)?.schema;
+  const schema = tables?.find((t) => t.identifier === table)?.schema;
   const fieldMeta = field
-    ? schema?.fields.find(f => f.identifier === field)
-    : schema?.fields.find(f =>
+    ? schema?.fields.find((f) => f.identifier === field)
+    : schema?.fields.find((f) =>
         (typeFilters ?? DEFAULT_TYPE_FILTERS).includes(f.type)
       );
   return fieldMeta;
@@ -652,7 +662,7 @@ export function CmsRowLink({
   }
 
   const value = res.row.data?.[fieldMeta.identifier] || "";
-  const childrenWithProps = React.Children.map(children, child => {
+  const childrenWithProps = React.Children.map(children, (child) => {
     if (React.isValidElement(child)) {
       return React.cloneElement(child, {
         [hrefProp]:
@@ -747,7 +757,7 @@ export function CmsRowImage({
   }
 
   const value = res.row.data?.[fieldMeta.identifier] || "";
-  const childrenWithProps = React.Children.map(children, child => {
+  const childrenWithProps = React.Children.map(children, (child) => {
     if (React.isValidElement(child) && value) {
       if (typeof value === "object" && value.url && value.imageMeta) {
         return React.cloneElement(child, {
@@ -847,7 +857,7 @@ export function CmsRowFieldValue({
   }
 
   const value = res.row.data?.[fieldMeta.identifier] || "";
-  const childrenWithProps = React.Children.map(children, child => {
+  const childrenWithProps = React.Children.map(children, (child) => {
     if (React.isValidElement(child)) {
       return React.cloneElement(child, { ...rest, [valueProp]: value });
     }
