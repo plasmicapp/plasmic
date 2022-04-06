@@ -7,6 +7,30 @@ import { getGenre, getVideoId, imagePath } from "../helper/utils";
 import { ReactYoutube } from "./Youtube";
 
 export const VIDEOID_PARAM = "videoId";
+
+interface MovieFieldProps {
+  className: string;
+  customStyle: object;
+  useDefaultMovie: boolean;
+  fieldName: string;
+  itemLimit?: number;
+}
+
+export function MovieField(props: MovieFieldProps) {
+  const { className, customStyle, useDefaultMovie, fieldName } = props;
+  if (fieldName === "poster") {
+    return <MoviePoster className={className} customStyle={customStyle} />;
+  }
+  return (
+    <MovieTextInfo
+      className={className}
+      customStyle={customStyle}
+      useDefaultMovie={useDefaultMovie}
+      info={fieldName}
+    />
+  );
+}
+
 interface MoviePosterProps {
   customStyle: object;
   className: string;
@@ -28,10 +52,10 @@ interface MovieTextInfoProps {
   className: string;
   customStyle: object;
   useDefaultMovie: boolean;
-  separator: string;
   info: string;
-  maximumLength: number;
-  itemsLimit: number;
+  separator?: string;
+  maximumLength?: number;
+  itemsLimit?: number;
 }
 
 enum MOVIE_INFO_TYPE {
@@ -168,6 +192,7 @@ export const MovieTrailers = (props: MovieTrailersProps) => {
     >
       {movie.trailers?.map((trailer, i) => (
         <MovieContext.Provider
+          key={trailer.videoId}
           value={{ ...movie, title: trailer.title, videoId: trailer.videoId }}
         >
           {repeatedElement(i === 0, children)}
@@ -214,6 +239,7 @@ export const MovieSimilars = (props: MovieSimilarsProps) => {
     >
       {movie.similar?.map((similar, i) => (
         <MovieContext.Provider
+          key={similar.videoId}
           value={{
             ...movie,
             title: similar.title,
@@ -263,3 +289,23 @@ interface LoadMovieProps {
   className: string;
   useDefaultMovie: boolean;
 }
+
+export const LoadMovie = (props: LoadMovieProps) => {
+  const { children, className, useDefaultMovie } = props;
+  const movieJson = localStorage.getItem("movie");
+  const inEditor = usePlasmicCanvas();
+  const movie =
+    inEditor && useDefaultMovie
+      ? defaultMovie
+      : movieJson
+      ? JSON.parse(movieJson)
+      : undefined;
+  if (!movie) {
+    return null;
+  }
+  return (
+    <div className={className}>
+      <MovieContext.Provider value={movie}>{children}</MovieContext.Provider>
+    </div>
+  );
+};

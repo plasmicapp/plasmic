@@ -4,11 +4,17 @@ import {
   PageChangeButton,
   WatchButton,
 } from "./code-components/Button";
-import { Collection, CollectionPage } from "./code-components/Collection";
+import {
+  Collection,
+  CollectionPage,
+  MovieGrid,
+} from "./code-components/Collection";
 import { Loading } from "./code-components/Loading";
 import { Modal } from "./code-components/Modal";
 import {
   FetchMovie,
+  LoadMovie,
+  MovieField,
   MoviePoster,
   MovieSimilars,
   MovieTextInfo,
@@ -33,10 +39,35 @@ export const PLASMIC = initPlasmicLoader({
   preview: true,
 });
 
+PLASMIC.registerComponent(MovieGrid, {
+  name: "MovieGrid",
+  props: {
+    category_id: {
+      type: "string",
+      defaultValue: "popular",
+    },
+    children: {
+      type: "slot",
+      defaultValue: {
+        type: "text",
+        value: "Placeholder",
+      },
+    },
+    loading: {
+      type: "slot",
+      defaultValue: {
+        type: "text",
+        value: "Loading...",
+      },
+    },
+    itemLimit: "number",
+  },
+  importPath: "./code-components/Collection",
+});
+
 PLASMIC.registerComponent(Collection, {
   name: "Collection",
   props: {
-    category: "string",
     category_id: "string",
     children: {
       type: "slot",
@@ -55,6 +86,10 @@ PLASMIC.registerComponent(CollectionPage, {
         value: "Placeholder",
       },
     },
+    numColumns: {
+      type: "number",
+      defaultValue: 6,
+    },
     columnGap: {
       type: "number",
       defaultValue: 16,
@@ -69,6 +104,29 @@ PLASMIC.registerComponent(CollectionPage, {
     testLoading: "boolean",
   },
   importPath: "./code-components/Collection",
+});
+
+PLASMIC.registerComponent(MovieField, {
+  name: "MovieField",
+  props: {
+    customStyle: "object",
+    useDefaultMovie: "boolean",
+    fieldName: {
+      type: "choice",
+      options: [
+        "cast",
+        "title",
+        "release_year",
+        "overview",
+        "cast",
+        "genres",
+        "runtime",
+        "certification",
+        "poster",
+      ],
+    },
+  },
+  importPath: "./code-components/Movie",
 });
 
 PLASMIC.registerComponent(MoviePoster, {
@@ -225,6 +283,15 @@ PLASMIC.registerComponent(FetchMovie, {
   props: {
     children: "slot",
     id: "number",
+  },
+  importPath: "./code-components/Movie",
+});
+
+PLASMIC.registerComponent(LoadMovie, {
+  name: "LoadMovie",
+  props: {
+    children: "slot",
+    useDefaultMovie: "boolean",
   },
   importPath: "./code-components/Movie",
 });
