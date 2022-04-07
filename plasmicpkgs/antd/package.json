@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/antd",
-  "version": "0.0.41",
+  "version": "0.0.42",
   "description": "Plasmic registration calls for antd components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -24,7 +24,7 @@
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
     "prepare": "tsdx build && yarn copy_css_files",
-    "copy_css_files": "cp src/*.css dist/", 
+    "copy_css_files": "cp src/*.css dist/",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
