@@ -4,51 +4,9 @@ import "@plasmicapp/preamble";
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { registerFetcher as unstable_registerFetcher } from "./fetcher";
-import { PlasmicElement } from "./element-types";
 import { ensure } from "./lang-utils";
-import registerComponent, {
-  ComponentMeta,
-  ComponentRegistration,
-  ComponentTemplates,
-  PrimitiveType,
-  PropType,
-} from "./registerComponent";
-import registerGlobalContext, {
-  GlobalContextMeta,
-  GlobalContextRegistration,
-  PropType as GlobalContextPropType,
-} from "./registerGlobalContext";
-import repeatedElement, { setRepeatedElementFn } from "./repeatedElement";
 import useForceUpdate from "./useForceUpdate";
-import {
-  DataProvider,
-  useDataEnv,
-  useSelector,
-  useSelectors,
-  applySelector,
-  DataCtxReader,
-} from "./data";
 const root = globalThis as any;
-
-export { unstable_registerFetcher };
-export { repeatedElement };
-export {
-  registerComponent,
-  ComponentMeta,
-  ComponentRegistration,
-  ComponentTemplates,
-  PrimitiveType,
-  PropType,
-};
-export {
-  registerGlobalContext,
-  GlobalContextMeta,
-  GlobalContextRegistration,
-  GlobalContextPropType,
-};
-export { PlasmicElement };
-export * from "./data";
 
 declare global {
   interface Window {
@@ -89,7 +47,7 @@ function renderStudioIntoIframe() {
 }
 
 let renderCount = 0;
-function setPlasmicRootNode(node: React.ReactElement | null) {
+export function setPlasmicRootNode(node: React.ReactElement | null) {
   // Keep track of renderCount, which we use as key to ErrorBoundary, so
   // we can reset the error on each render
   renderCount++;
@@ -101,12 +59,13 @@ function setPlasmicRootNode(node: React.ReactElement | null) {
  * If not, return false.
  * If so, return an object with more information about the component
  */
-export const PlasmicCanvasContext = React.createContext<
-  | {
-      componentName: string | null;
-    }
-  | boolean
->(false);
+export const PlasmicCanvasContext =
+  React.createContext<
+    | {
+        componentName: string | null;
+      }
+    | boolean
+  >(false);
 export const usePlasmicCanvasContext = () =>
   React.useContext(PlasmicCanvasContext);
 
@@ -217,51 +176,25 @@ interface PlasmicCanvasHostProps {
   enableWebpackHmr?: boolean;
 }
 
-export const PlasmicCanvasHost: React.FunctionComponent<PlasmicCanvasHostProps> = (
-  props
-) => {
-  const { enableWebpackHmr } = props;
-  const [node, setNode] = React.useState<React.ReactElement<any, any> | null>(
-    null
-  );
-  React.useEffect(() => {
-    setNode(<_PlasmicCanvasHost />);
-  }, []);
-  return (
-    <>
-      {!enableWebpackHmr && <DisableWebpackHmr />}
-      {node}
-    </>
-  );
-};
-
-if (root.__Sub == null) {
-  // Creating a side effect here by logging, so that vite won't
-  // ignore this block for whatever reason
-  console.log("Plasmic: Setting up app host dependencies");
-  root.__Sub = {
-    React,
-    ReactDOM,
-
-    // Must include all the dependencies used by canvas rendering,
-    // and canvas-package (all hostless packages) from host
-    setPlasmicRootNode,
-    registerRenderErrorListener,
-    repeatedElement,
-    setRepeatedElementFn,
-    PlasmicCanvasContext,
-    DataProvider,
-    useDataEnv,
-    useSelector,
-    useSelectors,
-    applySelector,
-    DataCtxReader,
+export const PlasmicCanvasHost: React.FunctionComponent<PlasmicCanvasHostProps> =
+  (props) => {
+    const { enableWebpackHmr } = props;
+    const [node, setNode] =
+      React.useState<React.ReactElement<any, any> | null>(null);
+    React.useEffect(() => {
+      setNode(<_PlasmicCanvasHost />);
+    }, []);
+    return (
+      <>
+        {!enableWebpackHmr && <DisableWebpackHmr />}
+        {node}
+      </>
+    );
   };
-}
 
 type RenderErrorListener = (err: Error) => void;
 const renderErrorListeners: RenderErrorListener[] = [];
-function registerRenderErrorListener(listener: RenderErrorListener) {
+export function registerRenderErrorListener(listener: RenderErrorListener) {
   renderErrorListeners.push(listener);
   return () => {
     const index = renderErrorListeners.indexOf(listener);
