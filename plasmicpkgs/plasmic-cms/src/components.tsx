@@ -157,6 +157,8 @@ interface CmsQueryRepeaterProps
   forceLoadingState?: boolean;
   noLayout?: boolean;
   className?: string;
+  filterField?: string;
+  filterValue?: string;
 }
 
 export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
@@ -205,6 +207,24 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
       displayName: "Filter",
       description: "Filter clause, in JSON format.",
       hidden: () => true,
+    },
+    filterField: {
+      type: "choice",
+      displayName: "Filter field",
+      description: "Field (from model schema) to filter by",
+      options: ({ table }, ctx) =>
+        mkFieldOptions(ctx?.tables, ctx?.table ?? table, [
+          "number",
+          "boolean",
+          "text",
+          "long-text",
+          "rich-text",
+        ]),
+    },
+    filterValue: {
+      type: "string",
+      displayName: "Filter value",
+      description: "Value to filter by, should be of filter field type",
     },
     orderBy: {
       type: "choice",
@@ -276,10 +296,17 @@ export function CmsQueryRepeater({
   forceLoadingState,
   noLayout,
   className,
+  filterField,
+  filterValue,
 }: CmsQueryRepeaterProps) {
   const databaseConfig = useDatabase();
   const tables = useTables();
 
+  if (filterField && filterValue) {
+    where = {
+      [filterField]: filterValue,
+    };
+  }
   const params = { where, useDraft, orderBy, desc, limit };
 
   const cacheKey = JSON.stringify({
