@@ -19,11 +19,12 @@
     }
   ],
   "scripts": {
-    "build": "tsdx build",
+    "build": "tsdx build && yarn copy_css_files",
     "start": "tsdx watch",
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
-    "prepare": "tsdx build",
+    "prepare": "tsdx build && yarn copy_css_files",
+    "copy_css_files": "cp src/*.css dist/", 
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
