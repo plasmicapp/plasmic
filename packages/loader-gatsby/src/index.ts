@@ -8,6 +8,7 @@ export {
   PlasmicCanvasHost,
   PlasmicComponent,
   PlasmicRootProvider,
+  PlasmicTranslator,
   PrimitiveType,
   PropType,
   repeatedElement,

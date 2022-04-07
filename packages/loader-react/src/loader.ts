@@ -1,3 +1,4 @@
+import * as PlasmicHost from '@plasmicapp/host';
 import {
   ComponentMeta as InternalCodeComponentMeta,
   GlobalContextMeta as InternalGlobalContextMeta,
@@ -90,7 +91,7 @@ export type CodeComponentMeta<P> = Omit<
    * Optional: not used by Plasmic headless API, only by codegen.
    */
   importPath?: string;
-}
+};
 
 export type GlobalContextMeta<P> = Omit<
   InternalGlobalContextMeta<P>,
@@ -103,7 +104,7 @@ export type GlobalContextMeta<P> = Omit<
    * Optional: not used by Plasmic headless API, only by codegen.
    */
   importPath?: string;
-};;
+};
 
 export class InternalPlasmicComponentLoader {
   private fetcher: PlasmicModulesFetcher;
@@ -232,10 +233,8 @@ export class InternalPlasmicComponentLoader {
       specsToFetch: ComponentLookupSpec[]
     ) => {
       await this.fetchMissingData({ missingSpecs: specsToFetch });
-      const {
-        found: existingMetas2,
-        missing: missingSpecs2,
-      } = this.maybeGetCompMetas(...specs);
+      const { found: existingMetas2, missing: missingSpecs2 } =
+        this.maybeGetCompMetas(...specs);
       if (missingSpecs2.length > 0) {
         return null;
       }
@@ -249,10 +248,8 @@ export class InternalPlasmicComponentLoader {
     }
 
     // Else we only fetch actually missing specs
-    const {
-      found: existingMetas,
-      missing: missingSpecs,
-    } = this.maybeGetCompMetas(...specs);
+    const { found: existingMetas, missing: missingSpecs } =
+      this.maybeGetCompMetas(...specs);
     if (missingSpecs.length === 0) {
       return prepComponentData(this.bundle, ...existingMetas);
     }

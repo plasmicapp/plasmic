@@ -34,7 +34,7 @@ export function PlasmicComponent(props: {
     );
   }
 
-  const { loader, globalContextsProps } = rootContext;
+  const { loader, globalContextsProps, translator } = rootContext;
 
   const Component = usePlasmicComponent(
     { name: component, projectId },
@@ -64,7 +64,7 @@ export function PlasmicComponent(props: {
         projectId,
       });
       element = (
-        <ReactWebRootProvider>
+        <ReactWebRootProvider translator={translator}>
           <MaybeWrap
             cond={!!GlobalContextsProvider}
             wrapper={(children) => (

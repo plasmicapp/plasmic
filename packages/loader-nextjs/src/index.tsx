@@ -27,6 +27,7 @@ export {
   PlasmicComponent,
   plasmicPrepass,
   PlasmicRootProvider,
+  PlasmicTranslator,
   PrimitiveType,
   PropType,
   repeatedElement,

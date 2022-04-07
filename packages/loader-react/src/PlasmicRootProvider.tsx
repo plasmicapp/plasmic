@@ -17,17 +17,26 @@ interface PlasmicRootContextValue {
   globalContextsProps?: Record<string, any>;
   loader: InternalPlasmicComponentLoader;
   variation?: Record<string, string>;
+  translator?: PlasmicTranslator;
 }
 
-const PlasmicRootContext = React.createContext<
-  PlasmicRootContextValue | undefined
->(undefined);
+const PlasmicRootContext =
+  React.createContext<PlasmicRootContextValue | undefined>(undefined);
 
 export interface GlobalVariantSpec {
   name: string;
   projectId?: string;
   value: any;
 }
+
+export type PlasmicTranslator = (
+  str: string,
+  opts?: {
+    components?: {
+      [key: string]: React.ReactElement | React.ReactFragment;
+    };
+  }
+) => React.ReactNode;
 
 /**
  * PlasmicRootProvider should be used at the root of your page
@@ -87,6 +96,11 @@ export function PlasmicRootProvider(props: {
    * Specifies a mapping of split id to slice id that should be activated
    */
   variation?: Record<string, string>;
+
+  /**
+   * Translator function to be used for text blocks
+   */
+  translator?: PlasmicTranslator;
 }) {
   const {
     globalVariants,
@@ -98,6 +112,7 @@ export function PlasmicRootProvider(props: {
     suspenseForQueryData,
     globalContextsProps,
     variation,
+    translator,
   } = props;
   const loader = (props.loader as any)
     .__internal as InternalPlasmicComponentLoader;
@@ -132,8 +147,9 @@ export function PlasmicRootProvider(props: {
       globalContextsProps,
       loader,
       variation,
+      translator,
     }),
-    [globalVariants, variation, globalContextsProps, loader, splits]
+    [globalVariants, variation, globalContextsProps, loader, splits, translator]
   );
 
   return (

@@ -7,10 +7,10 @@ export * from "./data";
 export { PlasmicElement } from "./element-types";
 export { registerFetcher as unstable_registerFetcher } from "./fetcher";
 export {
-  default as registerComponent,
   ComponentMeta,
   ComponentRegistration,
   ComponentTemplates,
+  default as registerComponent,
   PrimitiveType,
   PropType,
 } from "./registerComponent";
