@@ -16,6 +16,7 @@ interface ProductCollectionProps {
   count?: number;
   category?: string;
   brand?: string;
+  noLayout?: boolean;
   setControlContextData?: (
     data: {
       categories: Category[],
@@ -72,6 +73,7 @@ export const productCollectionMeta: ComponentMeta<ProductCollectionProps> = {
         })) ?? [];
       }
     },
+    noLayout: "boolean"
   },
   defaultStyles: {
     display: "grid",
@@ -86,12 +88,13 @@ export const productCollectionMeta: ComponentMeta<ProductCollectionProps> = {
 };
 
 function ProductCollection(props: ProductCollectionProps) {
-  const { 
-    className, 
-    children, 
-    count, 
+  const {
+    className,
+    children,
+    count,
     category,
     brand,
+    noLayout,
     setControlContextData
   } = props;
 
@@ -112,15 +115,17 @@ function ProductCollection(props: ProductCollectionProps) {
     });
   }
 
-  return (
-    <div className={className}>
-      {data?.products.map((product: Product, i: number) =>
-        <ProductProvider product={product} key={product.id}>
-          {repeatedElement(i === 0, children)}
-        </ProductProvider>
-      )}
-    </div>
-  )
+  const renderedData = (
+    data?.products.map((product: Product, i: number) =>
+      <ProductProvider product={product} key={product.id}>
+        {repeatedElement(i === 0, children)}
+      </ProductProvider>
+    )
+  );
+
+  return noLayout
+    ? <React.Fragment>{renderedData}</React.Fragment>
+    : <div className={className}>{renderedData}</div>
 }
 
 export function registerProductCollection(
