@@ -3,13 +3,13 @@
   Changes: None
 */
 import { useCallback } from 'react'
-import debounce from 'lodash.debounce'
+import debounce from 'lodash/debounce'
 import type {
   HookFetcherContext,
   MutationHookContext,
 } from '@plasmicpkgs/commerce'
 import { ValidationError } from '@plasmicpkgs/commerce'
-import { useUpdateItem, 
+import { useUpdateItem,
   UseUpdateItem,
 } from '@plasmicpkgs/commerce'
 

@@ -3,7 +3,7 @@
   Changes: None
 */
 import { useCallback } from 'react'
-import debounce from 'lodash.debounce'
+import debounce from 'lodash/debounce'
 import type {
   HookFetcherContext,
   MutationHook,
