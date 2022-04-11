@@ -1,1 +1,1 @@
-export * from "./PlasmicNav";
+export * from "./PlasmicNavigationBar";
