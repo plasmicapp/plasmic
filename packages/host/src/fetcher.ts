@@ -1,4 +1,5 @@
-import { PrimitiveType } from "./index";
+import { PrimitiveType } from "./registerComponent";
+
 const root = globalThis as any;
 
 export type Fetcher = (...args: any[]) => Promise<any>;
