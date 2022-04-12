@@ -17,7 +17,11 @@ export {
   PlasmicComponentLoader,
 } from './loader';
 export { PlasmicComponent } from './PlasmicComponent';
-export { GlobalVariantSpec, PlasmicRootProvider } from './PlasmicRootProvider';
+export {
+  GlobalVariantSpec,
+  PlasmicRootProvider,
+  PlasmicTranslator,
+} from './PlasmicRootProvider';
 export { extractPlasmicQueryData, plasmicPrepass } from './prepass';
 export { hydrateFromElement, renderToElement, renderToString } from './render';
 export { usePlasmicComponent } from './usePlasmicComponent';

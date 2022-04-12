@@ -1,17 +1,18 @@
 import * as React from "react";
 import { SSRProvider, useIsSSR as useAriaIsSSR } from "react-aria";
+import { PlasmicTranslator, PlasmicTranslatorContext } from "./translation";
 
 export interface PlasmicRootContextValue {
   platform?: "nextjs" | "gatsby";
 }
 
-const PlasmicRootContext = React.createContext<
-  PlasmicRootContextValue | undefined
->(undefined);
+const PlasmicRootContext =
+  React.createContext<PlasmicRootContextValue | undefined>(undefined);
 
 export interface PlasmicRootProviderProps {
   platform?: "nextjs" | "gatsby";
   children?: React.ReactNode;
+  translator?: PlasmicTranslator;
 }
 
 export function PlasmicRootProvider(props: PlasmicRootProviderProps) {
@@ -24,7 +25,11 @@ export function PlasmicRootProvider(props: PlasmicRootProviderProps) {
   );
   return (
     <PlasmicRootContext.Provider value={context}>
-      <SSRProvider>{children}</SSRProvider>
+      <SSRProvider>
+        <PlasmicTranslatorContext.Provider value={props.translator}>
+          {children}
+        </PlasmicTranslatorContext.Provider>
+      </SSRProvider>
     </PlasmicRootContext.Provider>
   );
 }
