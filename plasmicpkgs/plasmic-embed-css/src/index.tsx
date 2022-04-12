@@ -4,13 +4,16 @@ import registerGlobalContext, {
 import React from "react";
 
 export interface EmbedCssProps {
-  css: string;
+  css?: string;
 }
 
 export function EmbedCss({
   css,
   children,
 }: React.PropsWithChildren<EmbedCssProps>) {
+  if (!css) {
+    return <>{children}</>;
+  }
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: css }} /> {children}
