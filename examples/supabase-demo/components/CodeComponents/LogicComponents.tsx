@@ -79,9 +79,13 @@ export function RedirectIf(props: RedirectIfProps) {
     }
   }
 
+  if (!loaded) {
+    return null;
+  }
+
   return (
     <div className={className}>
-      {children}
+      {loaded && !condition && children}
       <a href={redirectUrl} hidden={true} ref={ref} />
     </div>
   );
