@@ -3546,14 +3546,6 @@
   dependencies:
     "@octokit/openapi-types" "^8.1.4"
 
-"@plasmicapp/host@1.0.21":
-  version "1.0.21"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.21.tgz#3adb7cf3ad5e031c6c3209d4381bafde22936610"
-  integrity sha512-/PJEydx22GzUIuhbzoxW4gec9kU5Brysh5bbwXqI0Fdzzvi6Kt/m0xlQKzk1vTJpmHGKWWF44pAKgLJHZJ0AYg==
-  dependencies:
-    "@plasmicapp/preamble" "0.0.53"
-    window-or-global "^1.0.1"
-
 "@plasmicapp/host@1.0.9":
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.9.tgz#44d778ab82b0d58e54b94b38b8825f40797494e8"
@@ -3566,11 +3558,6 @@
   version "0.0.43"
   resolved "https://registry.yarnpkg.com/@plasmicapp/preamble/-/preamble-0.0.43.tgz#2109df63b40c298df909e06f9959e0d98aff290a"
   integrity sha512-UtY6XC9kVpdIvfFtN6gceLMOzNr0325scGoOWc1a+FnVvudwOJ1uLNuB/RHKnEt7TQkBhfkdxup674SPKK4tPQ==
-
-"@plasmicapp/preamble@0.0.53":
-  version "0.0.53"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/preamble/-/preamble-0.0.53.tgz#018763ca2caab27569982a5701d55812caa9d7f7"
-  integrity sha512-zjqwkz56KG7ifou466JlsDxqFhACPGsgR7hUuLeEeu1fqWnhAgcB65ffIf1PzFiYlhuZ6v7X1x6s9pHpwQqi1w==
 
 "@pmmmwh/react-refresh-webpack-plugin@^0.4.3":
   version "0.4.3"
