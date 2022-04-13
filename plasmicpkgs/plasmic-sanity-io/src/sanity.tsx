@@ -14,7 +14,7 @@ export function ensure<T>(x: T | null | undefined): T {
   }
 }
 
-const modulePath = "@plasmicpkgs/sanity-io";
+const modulePath = "@plasmicpkgs/plasmic-sanity-io";
 
 interface SanityCredentialsProviderProps {
   projectId?: string;
@@ -95,6 +95,7 @@ interface SanityFetcherProps {
   groq?: string;
   children?: ReactNode;
   className?: string;
+  noLayout?: boolean;
 }
 
 export const sanityFetcherMeta: ComponentMeta<SanityFetcherProps> = {
@@ -123,6 +124,13 @@ export const sanityFetcherMeta: ComponentMeta<SanityFetcherProps> = {
       description: "Query in GROQ.",
       defaultValueHint: "*[_type == 'movie']",
     },
+    noLayout: {
+      type: "boolean",
+      displayName: "No layout",
+      description:
+        "When set, Sanity Fetcher will not layout its children; instead, the layout set on its parent element will be used. Useful if you want to set flex gap or control container tag type.",
+      defaultValue: false,
+    },
   },
 };
 
@@ -130,38 +138,55 @@ export function SanityFetcher({
   groq,
   children,
   className,
+  noLayout,
 }: SanityFetcherProps) {
-  const creds = ensure(useContext(CredentialsContext));
-  const sanity = useSanityClient(creds);
+  const projectIdRegex = new RegExp(/^[-a-z0-9]+$/i);
+  const datasetRegex = new RegExp(/^(~[a-z0-9]{1}[-\w]{0,63}|[a-z0-9]{1}[-\w]{0,63})$/);
+  const dateRegex = new RegExp(/^\d{4}-\d{2}-\d{2}$/);
 
-  if (!creds.dataset) {
-    return <div>Please specify a dataset.</div>;
+  const creds = ensure(useContext(CredentialsContext));
+
+  if (!creds.projectId || !projectIdRegex.test(creds.projectId)) {
+    return <div>Please specify a valid projectId, it can only contain only a-z, 0-9 and dashes.</div>;
+  } else if (!creds.dataset || !datasetRegex.test(creds.dataset)) {
+    return <div>Please specify a valid dataset, they can only contain lowercase characters, numbers, underscores and dashes, and start with tilde, and be maximum 64 characters.</div>;
+  } else if (creds.apiVersion)  {
+    if (creds.apiVersion !== "v1" && creds.apiVersion !== "1" && creds.apiVersion !== "X") {
+      const date = new Date(creds.apiVersion);
+      if (!(dateRegex.test(creds.apiVersion) && date instanceof Date && date.getTime() > 0)) {
+        return <div>Please specify a valid API version, expected `v1`, `1` or date in format `YYYY-MM-DD`"</div>;
+      }
+    }
   }
 
+  const cacheKey = JSON.stringify({
+    groq,
+    creds,
+  });
+
   const data = usePlasmicQueryData<any[] | null>(
-    JSON.stringify({ groq }),
+    cacheKey,
     async () => {
       if (!groq) {
         return null;
       }
+      const sanity = useSanityClient(creds);
       const resp = await sanity.fetch(groq);
       return resp;
     }
   );
 
   if (!data?.data) {
-    return <div>Please specify a GROQ query, such as *[_type == "movie"].</div>;
+    return <div>Data not found. Please specify valid projectId, dataset, GROQ query and token (if necessary).</div>;
   }
 
-  return (
-    <div className={className}>
-      {data?.data.map((item, index) => (
-        <DataProvider key={item._id} name={"sanityItem"} data={item}>
-          {repeatedElement(index === 0, children)}
-        </DataProvider>
-      ))}
-    </div>
-  );
+  const repElements = data?.data.map((item, index) => (
+    <DataProvider key={item._id} name={"sanityItem"} data={item}>
+      {repeatedElement(index === 0, children)}
+    </DataProvider>
+  ))
+
+  return noLayout ? <> {repElements} </> : <div className={className}> {repElements} </div>;
 }
 
 interface SanityFieldProps {
