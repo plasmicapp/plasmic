@@ -16,8 +16,9 @@ export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
   props: {
     storeDomain: "string",
     accessToken: "string"
-
   },
+  description: `Your store domain should look like **storename.myshopify.com**.
+    For your access token, get it by following [this video](https://www.youtube.com/watch?v=wB_6cM7tdv4).`,
   importPath: "commerce-providers/shopify",
   importName: "ShopifyProvider",
 };

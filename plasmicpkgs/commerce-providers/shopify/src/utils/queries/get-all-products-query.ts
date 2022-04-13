@@ -12,6 +12,7 @@ export const productConnectionFragment = /* GraphQL */ `
     edges {
       node {
         id
+        handle
         title
         vendor
         handle

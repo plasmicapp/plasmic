@@ -17,7 +17,7 @@ export const productMediaMeta: ComponentMeta<ProductMediaProps> = {
   props: {
     mediaIndex: "number",
   },
-  importPath: "commerce-providers/commerce",
+  importPath: "@plasmicpkgs/commerce",
   importName: "ProductMedia",
 };
 

@@ -5583,6 +5583,87 @@ export type GetProductBySlugQuery = { __typename?: 'QueryRoot' } & {
   >
 }
 
+export type GetProductByIdQueryVariables = Exact<{
+  id: Scalars['String']
+}>
+
+export type GetProductByIdQuery = { __typename?: 'QueryRoot' } & {
+  product?: Maybe<
+    { __typename?: 'Product' } & Pick<
+      Product,
+      | 'id'
+      | 'handle'
+      | 'title'
+      | 'productType'
+      | 'vendor'
+      | 'description'
+      | 'descriptionHtml'
+    > & {
+        options: Array<
+          { __typename?: 'ProductOption' } & Pick<
+            ProductOption,
+            'id' | 'name' | 'values'
+          >
+        >
+        priceRange: { __typename?: 'ProductPriceRange' } & {
+          maxVariantPrice: { __typename?: 'MoneyV2' } & Pick<
+            MoneyV2,
+            'amount' | 'currencyCode'
+          >
+          minVariantPrice: { __typename?: 'MoneyV2' } & Pick<
+            MoneyV2,
+            'amount' | 'currencyCode'
+          >
+        }
+        variants: { __typename?: 'ProductVariantConnection' } & {
+          pageInfo: { __typename?: 'PageInfo' } & Pick<
+            PageInfo,
+            'hasNextPage' | 'hasPreviousPage'
+          >
+          edges: Array<
+            { __typename?: 'ProductVariantEdge' } & {
+              node: { __typename?: 'ProductVariant' } & Pick<
+                ProductVariant,
+                'id' | 'title' | 'sku'
+              > & {
+                  selectedOptions: Array<
+                    { __typename?: 'SelectedOption' } & Pick<
+                      SelectedOption,
+                      'name' | 'value'
+                    >
+                  >
+                  priceV2: { __typename?: 'MoneyV2' } & Pick<
+                    MoneyV2,
+                    'amount' | 'currencyCode'
+                  >
+                  compareAtPriceV2?: Maybe<
+                    { __typename?: 'MoneyV2' } & Pick<
+                      MoneyV2,
+                      'amount' | 'currencyCode'
+                    >
+                  >
+                }
+            }
+          >
+        }
+        images: { __typename?: 'ImageConnection' } & {
+          pageInfo: { __typename?: 'PageInfo' } & Pick<
+            PageInfo,
+            'hasNextPage' | 'hasPreviousPage'
+          >
+          edges: Array<
+            { __typename?: 'ImageEdge' } & {
+              node: { __typename?: 'Image' } & Pick<
+                Image,
+                'originalSrc' | 'altText' | 'width' | 'height'
+              >
+            }
+          >
+        }
+      }
+  >
+}
+
 export type GetSiteInfoQueryVariables = Exact<{ [key: string]: never }>
 
 export type GetSiteInfoQuery = { __typename?: 'QueryRoot' } & {

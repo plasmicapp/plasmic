@@ -7,8 +7,9 @@ import { repeatedElement } from "@plasmicapp/host";
 import { ProductProvider } from "./contexts";
 import useSearch from "./product/use-search";
 import { Product } from "./types/product";
-import { useCategories, useBrands } from ".";
 import { Brand, Category } from "./types/site";
+import useCategories from "./site/use-categories";
+import useBrands from "./site/use-brands";
 
 interface ProductCollectionProps {
   className?: string;
@@ -83,11 +84,11 @@ export const productCollectionMeta: ComponentMeta<ProductCollectionProps> = {
     padding: "8px",
     maxWidth: "100%"
   },
-  importPath: "commerce-providers/commerce",
+  importPath: "@plasmicpkgs/commerce",
   importName: "ProductCollection",
 };
 
-function ProductCollection(props: ProductCollectionProps) {
+export function ProductCollection(props: ProductCollectionProps) {
   const {
     className,
     children,
@@ -104,9 +105,9 @@ function ProductCollection(props: ProductCollectionProps) {
     count
   });
 
-  const { data: categories } = useCategories({})
+  const { data: categories } = useCategories()
 
-  const { data: brands } = useBrands({})
+  const { data: brands } = useBrands()
 
   if (categories && brands) {
     setControlContextData?.({

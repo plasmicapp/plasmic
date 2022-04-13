@@ -6,25 +6,25 @@ import React from "react";
 import useCart from "./cart/use-cart";
 import usePrice from "./product/use-price";
 
-interface UseCartProps {
+interface CartProps {
   className?: string;
   field: string;
 }
 
-export const useCartMeta: ComponentMeta<UseCartProps> = {
-  name: "plasmic-commerce-use-cart",
-  displayName: "Use Cart",
+export const cartMeta: ComponentMeta<CartProps> = {
+  name: "plasmic-commerce-cart",
+  displayName: "Cart",
   props: {
     field: {
       type: "choice",
       options: ["Size", "Total Price"],
     },
   },
-  importPath: "commerce-providers/commerce",
-  importName: "UseCart",
+  importPath: "@plasmicpkgs/commerce",
+  importName: "Cart",
 };
 
-function UseCartComponent(props: UseCartProps) {
+export function CartComponent(props: CartProps) {
   const { className, field } = props;
 
   const { data } = useCart();
@@ -48,11 +48,11 @@ function UseCartComponent(props: UseCartProps) {
   )
 }
 
-export function registerUseCart(
+export function registerCart(
   loader?: Registerable,
-  customUseCartMeta?: ComponentMeta<UseCartProps>
+  customCartMeta?: ComponentMeta<CartProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(UseCartComponent, customUseCartMeta ?? useCartMeta);
+  doRegisterComponent(CartComponent, customCartMeta ?? cartMeta);
 }

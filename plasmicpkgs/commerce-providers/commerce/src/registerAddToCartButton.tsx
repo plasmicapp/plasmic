@@ -26,11 +26,11 @@ export const addToCartButtonMeta: ComponentMeta<AddToCartButtonProps> = {
       ]
     }
   },
-  importPath: "commerce-providers/commerce",
+  importPath: "@plasmicpkgs/commerce",
   importName: "AddToCartButton",
 };
 
-function AddToCartButton(props: AddToCartButtonProps) {
+export function AddToCartButton(props: AddToCartButtonProps) {
   const { children } = props;
 
   const product = useProduct();

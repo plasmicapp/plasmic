@@ -18,7 +18,7 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.21",
+    "@plasmicapp/host": "^1.0.36",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/js-cookie": "^3.0.1",
     "@types/lodash.debounce": "^4.0.6",

@@ -28,7 +28,8 @@ export type Provider = CommerceConfig & {
     useRemoveItem?: MutationHook<Cart.RemoveItemHook>
   }
   products?: {
-    useSearch?: SWRHook<Product.SearchProductsHook>
+    useSearch?: SWRHook<Product.SearchProductsHook>,
+    useProduct?: SWRHook<Product.GetProductHook>,
   }
   site?: {
     useCategories?: SWRHook<Site.GetCategoriesHook>

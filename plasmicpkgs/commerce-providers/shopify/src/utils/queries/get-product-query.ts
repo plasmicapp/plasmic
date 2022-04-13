@@ -1,76 +1,96 @@
 /*
   Forked from https://github.com/vercel/commerce/tree/main/packages/shopify/src
-  Changes: None
+  Changes: Added query by product id
 */
-const getProductQuery = /* GraphQL */ `
-  query getProductBySlug($slug: String!) {
-    productByHandle(handle: $slug) {
+
+const productFieldsFragment = `
+  fragment productFields on Product {
+    id
+    handle
+    availableForSale
+    title
+    productType
+    vendor
+    description
+    descriptionHtml
+    options {
       id
-      handle
-      availableForSale
-      title
-      productType
-      vendor
-      description
-      descriptionHtml
-      options {
-        id
-        name
-        values
+      name
+      values
+    }
+    priceRange {
+      maxVariantPrice {
+        amount
+        currencyCode
       }
-      priceRange {
-        maxVariantPrice {
-          amount
-          currencyCode
-        }
-        minVariantPrice {
-          amount
-          currencyCode
-        }
+      minVariantPrice {
+        amount
+        currencyCode
       }
-      variants(first: 250) {
-        pageInfo {
-          hasNextPage
-          hasPreviousPage
-        }
-        edges {
-          node {
-            id
-            title
-            sku
-            availableForSale
-            requiresShipping
-            selectedOptions {
-              name
-              value
-            }
-            priceV2 {
-              amount
-              currencyCode
-            }
-            compareAtPriceV2 {
-              amount
-              currencyCode
-            }
+    }
+    variants(first: 250) {
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          title
+          sku
+          availableForSale
+          requiresShipping
+          selectedOptions {
+            name
+            value
+          }
+          priceV2 {
+            amount
+            currencyCode
+          }
+          compareAtPriceV2 {
+            amount
+            currencyCode
           }
         }
       }
-      images(first: 250) {
-        pageInfo {
-          hasNextPage
-          hasPreviousPage
-        }
-        edges {
-          node {
-            originalSrc
-            altText
-            width
-            height
-          }
+    }
+    images(first: 250) {
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          originalSrc
+          altText
+          width
+          height
         }
       }
     }
   }
 `
 
-export default getProductQuery
+export const getProductQueryBySlug = /* GraphQL */ `
+  query getProductBySlug($slug: String!) {
+    productByHandle(handle: $slug) {
+      ...productFields
+    }
+  }
+
+  ${productFieldsFragment}
+`
+
+
+export const getProductQueryById = /* GraphQL */ `
+  query getProductById($id: ID!) {
+    product(id: $id) {
+      ...productFields
+    }
+  }
+
+  ${productFieldsFragment}
+`
+
+export default getProductQueryBySlug;
