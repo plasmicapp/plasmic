@@ -6,6 +6,7 @@
 */
 import { SHOPIFY_CHECKOUT_ID_COOKIE } from './const'
 import { handler as useSearch } from './product/use-search'
+import { handler as useProduct } from './product/use-product'
 import { handler as useCart } from './cart/use-cart'
 import { handler as useAddItem } from './cart/use-add-item'
 import { handler as useUpdateItem } from './cart/use-update-item'
@@ -21,7 +22,7 @@ export const getShopifyProvider = (storeDomain: string, accessToken: string) => 
     cartCookie: SHOPIFY_CHECKOUT_ID_COOKIE,
     cart: { useCart, useAddItem, useUpdateItem, useRemoveItem },
     fetcher: getFetcher(storeDomain, accessToken),
-    products: { useSearch },
+    products: { useSearch, useProduct },
     site: { useCategories, useBrands }
   }
 )
@@ -38,6 +39,7 @@ export type ShopifyProvider = {
   };
   products: {
     useSearch: typeof useSearch
+    useProduct: typeof useProduct
   };
   site: {
     useCategories: typeof useCategories

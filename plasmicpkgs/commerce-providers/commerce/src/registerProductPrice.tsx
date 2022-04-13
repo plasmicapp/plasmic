@@ -16,11 +16,11 @@ export const productPriceMeta: ComponentMeta<ProductPriceProps> = {
   name: "plasmic-commerce-product-price",
   displayName: "Product Price",
   props: { },
-  importPath: "commerce-providers/commerce",
+  importPath: "@plasmicpkgs/commerce",
   importName: "ProductPrice",
 };
 
-export function ProductPrice(props: ProductPriceProps) {
+export function ProductPriceComponent(props: ProductPriceProps) {
   const { className } = props;
 
   const product = useProduct();
@@ -45,5 +45,5 @@ export function registerProductPrice(
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(ProductPrice, customProductPriceMeta ?? productPriceMeta);
+  doRegisterComponent(ProductPriceComponent, customProductPriceMeta ?? productPriceMeta);
 }

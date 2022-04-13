@@ -19,7 +19,7 @@ export const productTextFieldMeta: ComponentMeta<ProductTextFieldProps> = {
       options: ["id", "name", "description", "sku", "slug", "path"]
     }
   },
-  importPath: "commerce-providers/commerce",
+  importPath: "@plasmicpkgs/commerce",
   importName: "ProductTextField",
 };
 

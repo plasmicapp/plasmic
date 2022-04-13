@@ -62,9 +62,14 @@ export type SearchProductsBody = {
   count?: number
 }
 
+export type GetProductBody = {
+  id?: string
+}
+
 export type ProductTypes = {
   product: Product
   searchBody: SearchProductsBody
+  getProductBody: GetProductBody
 }
 
 export type SearchProductsHook<T extends ProductTypes = ProductTypes> = {
@@ -75,6 +80,13 @@ export type SearchProductsHook<T extends ProductTypes = ProductTypes> = {
   body: T['searchBody']
   input: T['searchBody']
   fetcherInput: T['searchBody']
+}
+
+export type GetProductHook<T extends ProductTypes = ProductTypes> = {
+  data: T['product'] | null
+  body: T['getProductBody']
+  input: T['getProductBody']
+  fetcherInput: T['getProductBody']
 }
 
 export type ProductsSchema<T extends ProductTypes = ProductTypes> = {

@@ -13,7 +13,7 @@ export const getFetcher:
   (storeDomain: string, accessToken: string) => Fetcher =
   (storeDomain, accessToken) => {
     return async ({
-      url = `https://${storeDomain}/api/2021-07/graphql.json`,
+      url = `https://${storeDomain}/api/2022-04/graphql.json`,
       method = 'POST',
       variables,
       query,

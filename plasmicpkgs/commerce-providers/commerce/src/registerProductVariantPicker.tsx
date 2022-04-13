@@ -14,7 +14,7 @@ export const productVariantPickerMeta: ComponentMeta<ProductVariantPickerProps> 
   name: "plasmic-commerce-product-variant-picker",
   displayName: "Product Variant Picker",
   props: { },
-  importPath: "commerce-providers/commerce",
+  importPath: "@plasmicpkgs/commerce",
   importName: "ProductVariantPicker",
 };
 

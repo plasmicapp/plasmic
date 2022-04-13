@@ -27,7 +27,7 @@ export const productQuantityMeta: ComponentMeta<ProductQuantityProps> = {
       ]
     }
   },
-  importPath: "commerce-providers/commerce",
+  importPath: "@plasmicpkgs/commerce",
   importName: "ProductQuantity",
 };
 
