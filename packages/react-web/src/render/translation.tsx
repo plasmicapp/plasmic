@@ -16,12 +16,7 @@ export interface TransProps {
   children?: React.ReactNode;
 }
 
-export function Trans({ children }: TransProps) {
-  const _t = React.useContext(PlasmicTranslatorContext);
-  if (!_t) {
-    warnNoTranslationFunctionAtMostOnce();
-    return children;
-  }
+export function genTranslatableString(elt: React.ReactNode) {
   const components: {
     [key: string]: React.ReactElement;
   } = {};
@@ -71,8 +66,22 @@ export function Trans({ children }: TransProps) {
     return `<t${componentId}>${contents}</t${componentId}>`;
   };
 
-  const str = getText(children);
+  const str = getText(elt);
+  return {
+    str,
+    components,
+    componentsCount,
+  };
+}
 
+export function Trans({ children }: TransProps) {
+  const _t = React.useContext(PlasmicTranslatorContext);
+  if (!_t) {
+    warnNoTranslationFunctionAtMostOnce();
+    return children;
+  }
+
+  const { str, components, componentsCount } = genTranslatableString(children);
   return _t(str, componentsCount > 0 ? { components } : undefined);
 }
 
