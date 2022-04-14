@@ -16,6 +16,10 @@ export interface TransProps {
   children?: React.ReactNode;
 }
 
+function isIterable(val: any): val is Iterable<any> {
+  return val != null && typeof val[Symbol.iterator] === "function";
+}
+
 export function genTranslatableString(elt: React.ReactNode) {
   const components: {
     [key: string]: React.ReactElement;
@@ -36,8 +40,8 @@ export function genTranslatableString(elt: React.ReactNode) {
     if (typeof node !== "object") {
       return "";
     }
-    if (Array.isArray(node)) {
-      return node
+    if (Array.isArray(node) || isIterable(node)) {
+      return Array.from(node)
         .map((child) => getText(child))
         .filter((child) => !!child)
         .join("");
