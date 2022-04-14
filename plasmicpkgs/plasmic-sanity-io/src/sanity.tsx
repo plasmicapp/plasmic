@@ -48,7 +48,7 @@ export const sanityCredentialsProviderMeta: GlobalContextMeta<SanityCredentialsP
     projectId: {
       type: "string",
       displayName: "Project ID",
-      defaultValueHint: "zp7mbokg",
+      defaultValueHint: "b2gfz67v",
       description: "The ID of the project to use.",
     },
     dataset: {
@@ -177,7 +177,7 @@ export function SanityFetcher({
   );
 
   if (!data?.data) {
-    return <div>Data not found. Please specify valid projectId, dataset, GROQ query and token (if necessary).</div>;
+    return <div>Data not found. Please specify valid projectId, dataset, GROQ query and token (if necessary). Don't forget to put 'https://host.plasmicdev.com' as an authorized host on CORS origins section of your project.</div>;
   }
 
   const repElements = data?.data.map((item, index) => (
