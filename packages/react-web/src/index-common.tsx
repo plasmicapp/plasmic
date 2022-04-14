@@ -23,4 +23,4 @@ export { createUseScreenVariants } from "./render/screen-variants";
 export { PlasmicRootProvider, useIsSSR } from "./render/ssr";
 export { Stack } from "./render/Stack";
 export { useTrigger } from "./render/triggers";
-export { Trans } from "./render/translation";
+export { Trans, genTranslatableString } from "./render/translation";
