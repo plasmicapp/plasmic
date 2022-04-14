@@ -2,8 +2,10 @@
   Forked from https://github.com/vercel/commerce/tree/main/packages/commerce/src
   Changes:
     - Added name and price to ProductVariant
-    - Added count to SearchProductsBody
+    - Added count and includeSubCategories to SearchProductsBody
 */
+import { Category } from "./site"
+
 export type ProductImage = {
   url: string
   alt?: string
@@ -60,6 +62,8 @@ export type SearchProductsBody = {
   sort?: string
   locale?: string
   count?: number
+  includeSubCategories?: boolean
+  categories?: Category[]
 }
 
 export type GetProductBody = {

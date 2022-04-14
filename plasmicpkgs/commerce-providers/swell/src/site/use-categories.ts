@@ -14,14 +14,18 @@ export const handler: SWRHook<GetCategoriesHook> = {
   async fetcher({ fetch }) {
     const data = await fetch({
       query: 'categories',
-      method: 'get'
+      method: 'get',
+      variables: {
+        expand: ["children"]
+      }
     });
     return (
-      data.results.map(({ id, name, slug }: any) => ({
+      data.results.map(({ id, name, slug, children }: any) => ({
         id,
         name,
         slug,
         path: `/${slug}`,
+        children: children.results,
       })) ?? []
     )
   },

@@ -1,6 +1,6 @@
 /*
   Forked from https://github.com/vercel/commerce/tree/main/packages/commerce/src
-  Changes: None
+  Changes: Added CommerceExtraFeatures
 */
 import type { SWRConfiguration } from 'swr'
 import type { CommerceError } from './errors'
@@ -150,4 +150,6 @@ export type SwrOptions<Data, Input = null, Result = any> = SWRConfiguration<
   HookFetcher<Data, Input, Result>
 >
 
-export const x = () => 2;
+export type CommerceExtraFeatures = {
+  includeSubCategories?: boolean;
+}

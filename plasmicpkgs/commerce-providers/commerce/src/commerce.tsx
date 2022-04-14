@@ -15,7 +15,7 @@ import type {
   Cart,
   Site
 } from './types'
-import type { Fetcher, SWRHook, MutationHook } from './utils/types';
+import type { Fetcher, SWRHook, MutationHook, CommerceExtraFeatures } from './utils/types';
 
 const Commerce = createContext<CommerceContextValue<any> | {}>({})
 
@@ -35,6 +35,7 @@ export type Provider = CommerceConfig & {
     useCategories?: SWRHook<Site.GetCategoriesHook>
     useBrands?: SWRHook<Site.GetBrandsHook>
   }
+  extraFeatures?: CommerceExtraFeatures
 }
 
 export type CommerceConfig = {

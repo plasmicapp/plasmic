@@ -10,18 +10,22 @@ import { Product } from "./types/product";
 import { Brand, Category } from "./types/site";
 import useCategories from "./site/use-categories";
 import useBrands from "./site/use-brands";
+import { CommerceExtraFeatures } from "./utils/types";
+import { useCommerceExtraFeatures } from "./utils/use-extra-features";
 
 interface ProductCollectionProps {
   className?: string;
   children?: React.ReactNode;
   count?: number;
   category?: string;
+  includeSubCategories?: boolean;
   brand?: string;
   noLayout?: boolean;
   setControlContextData?: (
     data: {
       categories: Category[],
       brands: Brand[],
+      features?: CommerceExtraFeatures,
     }
   ) => void;
 }
@@ -65,6 +69,11 @@ export const productCollectionMeta: ComponentMeta<ProductCollectionProps> = {
         })) ?? [];
       }
     },
+    includeSubCategories: {
+      type: "boolean",
+      hidden: (props, ctx) =>
+        !ctx?.features?.includeSubCategories
+    },
     brand: {
       type: "choice",
       options: (props, ctx) => {
@@ -94,25 +103,31 @@ export function ProductCollection(props: ProductCollectionProps) {
     children,
     count,
     category,
+    includeSubCategories,
     brand,
     noLayout,
     setControlContextData
   } = props;
 
+  const { data: categories } = useCategories();
+
+  const { data: brands } = useBrands();
+
   const { data } = useSearch({
     categoryId: category,
     brandId: brand,
-    count
+    count,
+    categories: categories ?? [],
+    includeSubCategories
   });
 
-  const { data: categories } = useCategories()
-
-  const { data: brands } = useBrands()
+  const features = useCommerceExtraFeatures();
 
   if (categories && brands) {
     setControlContextData?.({
       categories,
       brands,
+      features,
     });
   }
 

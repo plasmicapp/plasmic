@@ -5,7 +5,7 @@
 // @ts-ignore
 import swell from 'swell-js'
 
-import { Provider } from '@plasmicpkgs/commerce'
+import { CommerceExtraFeatures, Provider } from '@plasmicpkgs/commerce'
 import { SWELL_CHECKOUT_ID_COOKIE } from './const'
 import { handler as useCart } from './cart/use-cart'
 import { handler as useAddItem } from './cart/use-add-item'
@@ -28,7 +28,10 @@ export const getSwellProvider = (storeId: string, publicKey: string) => {
     fetcher,
     cart: { useCart, useAddItem, useUpdateItem, useRemoveItem },
     products: { useSearch, useProduct },
-    site: { useCategories, useBrands }
+    site: { useCategories, useBrands },
+    extraFeatures: { 
+      includeSubCategories: true
+    }
   }
 }
 
@@ -48,7 +51,8 @@ export type SwellProvider = {
   site: {
     useCategories: typeof useCategories
     useBrands: typeof useBrands
-  }
+  };
+  extraFeatures: CommerceExtraFeatures
   swell: any
 }
 
