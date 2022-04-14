@@ -24,6 +24,8 @@ export const rewriteWithoutVariation = (url: string) => {
 
 const expandVariation = (variation: Record<string, string>) => {
   return Object.keys(variation)
+    .filter((key) => !key.startsWith('ext')) // remove external variations
+    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
     .map((key) => `${DELIMITER}${key}=${variation[key]}`)
     .join('');
 };
@@ -59,9 +61,9 @@ const generateAllSplitPaths = (splits: Split[]): string[] => {
 };
 
 export const generateAllPaths = (path: string, splits: Split[]) => {
-  return generateAllSplitPaths(splits).map(
-    (meta) => `${path}${path.endsWith('/') ? '' : '/'}${meta}`
-  );
+  return generateAllSplitPaths(
+    splits.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+  ).map((meta) => `${path}${path.endsWith('/') ? '' : '/'}${meta}`);
 };
 
 type MiddlewareOptions = Pick<FetcherOptions, 'projects' | 'host' | 'preview'>;
