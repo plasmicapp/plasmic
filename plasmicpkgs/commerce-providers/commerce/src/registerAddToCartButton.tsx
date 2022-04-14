@@ -38,14 +38,14 @@ export function AddToCartButton(props: AddToCartButtonProps) {
   const addItem = useAddItem();
 
   const addToCart = async() => {
-    const quantity = +form.getValues()["ProductQuantity"] ?? 1;
+    const quantity = +(form.getValues()["ProductQuantity"] ?? 1);
     if (isNaN(quantity) || quantity < 1) {
       throw new CommerceError({
         message: 'The item quantity has to be a valid integer greater than 0',
       })
     }
     if (product) {
-      const variantId = form.getValues()["ProductVariant"];
+      const variantId = form.getValues()["ProductVariant"] ?? product.variants[0].id;
       await addItem({
         productId: product.id,
         variantId: variantId,
