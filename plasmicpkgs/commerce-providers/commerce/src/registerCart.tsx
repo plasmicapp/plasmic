@@ -9,6 +9,7 @@ import usePrice from "./product/use-price";
 interface CartProps {
   className?: string;
   field: string;
+  hideIfIsEmpty?: boolean;
 }
 
 export const cartMeta: ComponentMeta<CartProps> = {
@@ -19,13 +20,16 @@ export const cartMeta: ComponentMeta<CartProps> = {
       type: "choice",
       options: ["Size", "Total Price"],
     },
+    hideIfIsEmpty: {
+      type: "boolean"
+    }
   },
   importPath: "@plasmicpkgs/commerce",
   importName: "Cart",
 };
 
 export function CartComponent(props: CartProps) {
-  const { className, field } = props;
+  const { className, field, hideIfIsEmpty } = props;
 
   const { data } = useCart();
   const { price } = usePrice({
@@ -38,13 +42,15 @@ export function CartComponent(props: CartProps) {
 
   let value;
   if (field === "Size") {
-    value = `${data?.lineItems.length ?? 0}`;
+    value = data?.lineItems.length ?? 0;
   } else if (field === "Total Price") {
-    value = `${price}`;
+    value = price ?? 0;
   }
 
   return (
-    <span className={className}>{value}</span>
+    hideIfIsEmpty && value === 0
+      ? null
+      : <span className={className}>{value}</span>
   )
 }
 

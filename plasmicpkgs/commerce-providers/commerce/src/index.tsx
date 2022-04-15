@@ -9,6 +9,8 @@ import { registerProductQuantity } from "./registerProductQuantity";
 import { registerTextField } from "./registerProductTextField";
 import { registerProductVariantPicker } from "./registerProductVariantPicker";
 import { registerCart } from "./registerCart";
+import { registerCategoryCollection } from "./registerCategoryCollection";
+import { registerCategoryField } from "./registerCategoryField";
 
 export * from "./registerable";
 
@@ -51,6 +53,8 @@ export * from "./registerProductPrice";
 export * from "./registerProductQuantity";
 export * from "./registerProductTextField";
 export * from "./registerProductVariantPicker";
+export * from "./registerCategoryCollection";
+export * from "./registerCategoryField";
 
 export function registerAll(loader?: Registerable) {
   registerProductCollection(loader);
@@ -63,4 +67,6 @@ export function registerAll(loader?: Registerable) {
   registerProductVariantPicker(loader);
   registerProductBox(loader);
   registerProductLink(loader);
+  registerCategoryCollection(loader);
+  registerCategoryField(loader);
 }

@@ -4,7 +4,7 @@ import registerComponent, {
 import { Registerable } from "./registerable";
 import React from "react";
 import { repeatedElement } from "@plasmicapp/host";
-import { ProductProvider } from "./contexts";
+import { ProductProvider, useCategoryContext } from "./contexts";
 import useSearch from "./product/use-search";
 import { Product } from "./types/product";
 import { Brand, Category } from "./types/site";
@@ -16,6 +16,8 @@ import { useCommerceExtraFeatures } from "./utils/use-extra-features";
 interface ProductCollectionProps {
   className?: string;
   children?: React.ReactNode;
+  emptyMessage?: React.ReactNode;
+  loadingMessage?: React.ReactNode;
   count?: number;
   category?: string;
   includeSubCategories?: boolean;
@@ -26,6 +28,7 @@ interface ProductCollectionProps {
       categories: Category[],
       brands: Brand[],
       features?: CommerceExtraFeatures,
+      hasCategoryCtx?: boolean,
     }
   ) => void;
 }
@@ -59,6 +62,20 @@ export const productCollectionMeta: ComponentMeta<ProductCollectionProps> = {
         },
       ]
     },
+    emptyMessage: {
+      type: "slot",
+      defaultValue: {
+        type: "text",
+        value: "No product found!"
+      }
+    },
+    loadingMessage: {
+      type: "slot",
+      defaultValue: {
+        type: "text",
+        value: "Loading..."
+      }
+    },
     count: "number",
     category: {
       type: "choice",
@@ -67,7 +84,8 @@ export const productCollectionMeta: ComponentMeta<ProductCollectionProps> = {
           label: category.name,
           value: category.id
         })) ?? [];
-      }
+      },
+      hidden: (props, ctx) => !!ctx?.hasCategoryCtx, 
     },
     includeSubCategories: {
       type: "boolean",
@@ -106,15 +124,19 @@ export function ProductCollection(props: ProductCollectionProps) {
     includeSubCategories,
     brand,
     noLayout,
-    setControlContextData
+    setControlContextData,
+    emptyMessage,
+    loadingMessage,
   } = props;
 
-  const { data: categories } = useCategories();
+  const { data: categories, isLoading : isCategoriesLoading } = useCategories();
 
-  const { data: brands } = useBrands();
+  const { data: brands, isLoading : isBrandsLoading } = useBrands();
 
-  const { data } = useSearch({
-    categoryId: category,
+  const categoryCtx = useCategoryContext();
+
+  const { data, isLoading : isSearchLoading } = useSearch({
+    categoryId: categoryCtx?.id ?? category,
     brandId: brand,
     count,
     categories: categories ?? [],
@@ -128,6 +150,7 @@ export function ProductCollection(props: ProductCollectionProps) {
       categories,
       brands,
       features,
+      hasCategoryCtx: !!categoryCtx
     });
   }
 
@@ -138,6 +161,18 @@ export function ProductCollection(props: ProductCollectionProps) {
       </ProductProvider>
     )
   );
+
+  if ([isSearchLoading, isBrandsLoading, isCategoriesLoading].includes(true)) {
+    return React.isValidElement(loadingMessage) 
+      ? loadingMessage
+      : null;
+  }
+
+  if (!data || data.products.length === 0) {
+    return React.isValidElement(emptyMessage)
+      ? emptyMessage
+      : null;
+  }
 
   return noLayout
     ? <React.Fragment>{renderedData}</React.Fragment>

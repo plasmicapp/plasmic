@@ -1,3 +1,5 @@
+import { collectionFieldsFragment } from "./get-collection-query"
+
 /*
   Forked from https://github.com/vercel/commerce/tree/main/packages/shopify/src
   Changes: None
@@ -7,12 +9,12 @@ const getSiteCollectionsQuery = /* GraphQL */ `
     collections(first: $first) {
       edges {
         node {
-          id
-          title
-          handle
+          ...collectionFieldsFragment
         }
       }
     }
   }
+
+  ${collectionFieldsFragment}
 `
 export default getSiteCollectionsQuery

@@ -17,6 +17,7 @@ import type {
   SwellCart,
   LineItem,
 } from '../types'
+import { Category } from '../types/site'
 
 const money = ({ amount, currencyCode }: MoneyV2) => {
   return {
@@ -226,4 +227,19 @@ function normalizeLineItem({
     ],
   }
   return item
+}
+
+export function normalizeCategory({
+  id, 
+  name, 
+  slug, 
+  products,
+}: any): Category {
+  return {
+    id,
+    name,
+    slug,
+    path: `/${slug}`,
+    isEmpty: products?.length === 0
+  }
 }

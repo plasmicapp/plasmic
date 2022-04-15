@@ -7,6 +7,7 @@ export type Category = {
   name: string
   slug: string
   path: string
+  isEmpty?: boolean
 }
 
 export type Brand = {
@@ -23,6 +24,7 @@ export type SiteTypes = {
   category: Category
   brand: Brand
   searchBody: SearchSiteInfoBody
+  getCategoriesBody: GetCategoriesBody
 }
 
 export type GetSiteInfoOperation<T extends SiteTypes = SiteTypes> = {
@@ -32,10 +34,16 @@ export type GetSiteInfoOperation<T extends SiteTypes = SiteTypes> = {
   }
 }
 
+export type GetCategoriesBody = {
+  topologicalSort?: boolean
+  addIsEmptyField?: boolean
+  categoryId?: string
+}
+
 export type GetCategoriesHook<T extends SiteTypes = SiteTypes> = {
-  data: T['category'][] | null
-  input: { }
-  fetcherInput: { }
+  data: T['category'][]
+  input: T['getCategoriesBody']
+  fetcherInput: T['getCategoriesBody']
   swrState: { isEmpty: boolean }
 }
 

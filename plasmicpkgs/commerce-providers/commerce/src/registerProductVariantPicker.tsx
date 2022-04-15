@@ -4,7 +4,7 @@ import registerComponent, {
 import { Registerable } from "./registerable";
 import React from "react";
 import { useProduct, useProductForm } from "./contexts";
-import { useFormContext, Controller } from "react-hook-form";
+import { useFormContext, Controller, useForm } from "react-hook-form";
 
 interface ProductVariantPickerProps {
   className: string;
@@ -22,7 +22,7 @@ export function ProductVariantPicker(props: ProductVariantPickerProps) {
   const { className } = props;
 
   const product = useProduct();
-  const form = useFormContext();
+  const form = useFormContext() ?? useForm();
 
   return (
     <Controller
@@ -38,7 +38,7 @@ export function ProductVariantPicker(props: ProductVariantPickerProps) {
             <option value={variant.id}>
               {variant.name}
             </option>
-          ) ?? <option>Fake Product Variant</option>}
+          ) ?? <option>Product Variant Placeholder</option>}
         </select>
       }
     />
