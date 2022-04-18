@@ -59,15 +59,15 @@ export function genTranslatableString(elt: React.ReactNode) {
     if (React.isValidElement(node) && node.type === React.Fragment) {
       return contents;
     }
-    const componentId = componentsCount;
+    const componentId = componentsCount + 1;
     componentsCount++;
-    components[`t${componentId}`] = React.isValidElement(node)
+    components[componentId] = React.isValidElement(node)
       ? React.cloneElement(node as any, {
           key: componentId,
           children: undefined,
         })
       : (node as never);
-    return `<t${componentId}>${contents}</t${componentId}>`;
+    return `<${componentId}>${contents}</${componentId}>`;
   };
 
   const str = getText(elt);
