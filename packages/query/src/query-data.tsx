@@ -54,7 +54,7 @@ export function PlasmicQueryDataProvider(props: {
     return (
       <SWRConfig
         value={{
-          fallback: prefetchedCache,
+          fallback: prefetchedCache ?? {},
           suspense,
         }}
       >
