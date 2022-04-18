@@ -34,6 +34,7 @@ interface PropTypeBase<P> {
   displayName?: string;
   description?: string;
   hidden?: ContextDependentConfig<P, boolean>;
+  readOnly?: boolean | ContextDependentConfig<P, boolean>;
 }
 
 type DefaultValueOrExpr<P, T> =
