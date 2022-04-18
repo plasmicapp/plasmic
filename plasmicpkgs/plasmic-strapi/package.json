@@ -5,6 +5,9 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "module": "dist/plasmic-strapi.esm.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "dist"
   ],
