@@ -1,4 +1,4 @@
-import { repeatedElement, usePlasmicCanvasContext } from "@plasmicapp/host";
+import { PlasmicCanvasContext, repeatedElement } from "@plasmicapp/host";
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
@@ -101,7 +101,7 @@ export function CategoryCollection(props: CategoryCollectionProps) {
 
   const features = useCommerceExtraFeatures();
 
-  const inEditor = usePlasmicCanvasContext();
+  const inEditor = React.useContext(PlasmicCanvasContext);
 
   const {
     data: allCategories,
