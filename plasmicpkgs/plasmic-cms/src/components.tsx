@@ -230,7 +230,14 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
       type: "choice",
       displayName: "Order by",
       description: "Field to order by.",
-      options: (_, ctx) => mkFieldOptions(ctx?.tables, ctx?.table),
+      options: (_, ctx) =>
+        mkFieldOptions(ctx?.tables, ctx?.table, [
+          "number",
+          "boolean",
+          "date-time",
+          "long-text",
+          "text",
+        ]),
     },
     desc: {
       type: "boolean",
