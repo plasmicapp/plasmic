@@ -6,6 +6,10 @@ import * as auth from "./actions/auth";
 import { fixImports, FixImportsArgs } from "./actions/fix-imports";
 import { InfoArgs, printProjectInfo } from "./actions/info";
 import { getYargsOption, InitArgs, initPlasmic } from "./actions/init";
+import {
+  localizationStrings,
+  LocalizationStringsArgs,
+} from "./actions/localization-strings";
 import * as projectToken from "./actions/project-token";
 import { sync, SyncArgs } from "./actions/sync";
 import { UploadBundleArgs, uploadJsBundle } from "./actions/upload-bundle";
@@ -225,6 +229,40 @@ yargs
           default: "https://studio.plasmic.app",
         }),
     (argv) => handleError(projectToken.projectToken(argv))
+  )
+  .command<LocalizationStringsArgs>(
+    "localization-strings",
+    false,
+    (yargs) =>
+      yargs
+        .option("projects", {
+          alias: "p",
+          describe:
+            "One or more projects to generate localization strings, separated by comma. Version constraints can be specified using @. Example: projectid, projectid@>=version",
+          type: "array",
+        })
+        .option("host", {
+          describe: "Plasmic host to use",
+          type: "string",
+          default: "https://studio.plasmic.app",
+        })
+        .option("format", {
+          describe: 'Output format. Either "json", "po" or "lingui"',
+          type: "string",
+          choices: ["json", "po", "lingui"],
+          default: "json",
+        })
+        .option("output", {
+          alias: "o",
+          describe: "Output file",
+          type: "string",
+        })
+        .option("force-overwrite", {
+          type: "boolean",
+          describe: "Overwrite the output file.",
+          default: false,
+        }),
+    (argv) => handleError(localizationStrings(argv))
   )
   .demandCommand()
   .strict()
