@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { CollectionEdge } from "../schema";
 import { GetCategoriesHook } from "../types/site"
 import { getSiteCollectionsQuery, normalizeCategory } from "../utils"
+import { getCollectionQueryById } from '../utils/queries/get-collection-query';
 
 export default useCategories as UseCategories<typeof handler>
 
@@ -12,23 +13,39 @@ export const handler: SWRHook<GetCategoriesHook> = {
     query: getSiteCollectionsQuery,
   },
   async fetcher({ input, options, fetch }) {
-    const data = await fetch({
-      query: getSiteCollectionsQuery,
-      variables: {
-        first: 250,
-      },
-    });
-    console.log("dale", "useCategories", data);
-    return (
-      data.collections?.edges?.map(({ node }: CollectionEdge) =>
-        normalizeCategory(node)
-      ) ?? []
-    )
+    const { categoryId } = input;
+
+    if (!categoryId) {
+      const data = await fetch({
+        query: options.query,
+        variables: {
+          first: 250,
+        },
+      });
+      return (
+        data?.collections?.edges?.map(({ node }: CollectionEdge) =>
+          normalizeCategory(node)
+        ) ?? []
+      )
+    } else {
+      const data = await fetch({
+        query: getCollectionQueryById,
+        variables: {
+          id: categoryId
+        }
+      })
+      return !!data?.collection
+        ? [normalizeCategory(data?.collection)]
+        : [];
+    }
   },
   useHook:
     ({ useData }) =>
     (input) => {
       const response = useData({
+        input: [
+          ['categoryId', input?.categoryId],
+        ],
         swrOptions: { revalidateOnFocus: false, ...input?.swrOptions },
       })
       return useMemo(

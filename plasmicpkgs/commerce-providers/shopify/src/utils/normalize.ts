@@ -198,9 +198,11 @@ export const normalizeCategory = ({
   title: name,
   handle,
   id,
+  products,
 }: Collection): Category => ({
   id,
   name,
   slug: handle,
   path: `/${handle}`,
+  isEmpty: products.edges.length === 0
 })

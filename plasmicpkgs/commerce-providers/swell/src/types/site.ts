@@ -7,7 +7,10 @@ import { SiteTypes } from "@plasmicpkgs/commerce"
 export type Category = SiteTypes.Category;
 
 export type SwellCategory = Category & {
-  children?: Category[]
+  parent_id?: string
+  children?: {
+    results: Category[]
+  }
 }
 
 export type Brand = SiteTypes.Brand;
