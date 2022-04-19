@@ -286,6 +286,20 @@ export class PlasmicApi {
     return result.data as ProjectMetaInfo;
   }
 
+  async genLocalizationStrings(
+    projects: readonly string[],
+    format: "po" | "json" | "lingui"
+  ) {
+    const result = await this.get(
+      `${
+        this.codegenHost
+      }/api/v1/localization/gen-texts?format=${format}&preview=true&${projects
+        .map((p) => `projectId=${p}`)
+        .join("&")}`
+    );
+    return result.data as string;
+  }
+
   async uploadBundle(
     projectId: string,
     bundleName: string,
@@ -377,6 +391,27 @@ export class PlasmicApi {
           headers: this.makeHeaders(),
         }
       );
+    } catch (e) {
+      const error = e as AxiosError;
+      const errorMsg = this.makeErrorMessage(error);
+
+      if (rethrowAppError) {
+        throw new AppServerError(errorMsg);
+      }
+
+      if (!errorMsg) {
+        throw e;
+      }
+
+      throw new HandledError(errorMsg);
+    }
+  }
+
+  private async get(url: string, rethrowAppError?: boolean) {
+    try {
+      return await axios.get(url, {
+        headers: this.makeHeaders(),
+      });
     } catch (e) {
       const error = e as AxiosError;
       const errorMsg = this.makeErrorMessage(error);
