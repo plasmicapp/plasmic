@@ -130,12 +130,12 @@ function matchesCompMeta(lookup: FullLookupSpec, meta: ComponentMeta) {
     : lookup.path === meta.path;
 }
 
-export function getCompMeta(
+export function getCompMetas(
   metas: ComponentMeta[],
   lookup: ComponentLookupSpec
 ) {
   const full = toFullLookup(lookup);
-  return metas.find((meta) => matchesCompMeta(full, meta));
+  return metas.filter((meta) => matchesCompMeta(full, meta));
 }
 
 export function getLookupSpecName(lookup: ComponentLookupSpec) {

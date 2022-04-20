@@ -23,7 +23,7 @@ import { mergeBundles, prepComponentData } from './bundles';
 import { ComponentLookup } from './component-lookup';
 import { createUseGlobalVariant } from './global-variants';
 import { GlobalVariantSpec } from './PlasmicRootProvider';
-import { ComponentLookupSpec, getCompMeta, getLookupSpecName } from './utils';
+import { ComponentLookupSpec, getCompMetas, getLookupSpecName } from './utils';
 import { getPlasmicCookieValues, updatePlasmicCookieValue } from './variation';
 
 export interface InitOptions {
@@ -355,10 +355,10 @@ export class InternalPlasmicComponentLoader {
     // that we can look up the right module name to substitute
     // in component meta.
     for (const sub of this.subs) {
-      const meta = getCompMeta(this.bundle.components, sub.lookup);
-      if (meta) {
-        this.registry.register(meta.entry, { default: sub.component });
-      }
+      const metas = getCompMetas(this.bundle.components, sub.lookup);
+      metas.forEach((meta) =>
+        this.registry.register(meta.entry, { default: sub.component })
+      );
     }
 
     // We also swap global variants' useXXXGlobalVariant() hook with
@@ -392,17 +392,17 @@ function maybeGetCompMetas(
   metas: ComponentMeta[],
   specs: ComponentLookupSpec[]
 ) {
-  const found: ComponentMeta[] = [];
+  const found = new Set<ComponentMeta>();
   const missing: ComponentLookupSpec[] = [];
   for (const spec of specs) {
-    const meta = getCompMeta(metas, spec);
-    if (meta) {
-      found.push(meta);
+    const filteredMetas = getCompMetas(metas, spec);
+    if (filteredMetas.length > 0) {
+      filteredMetas.forEach((meta) => found.add(meta));
     } else {
       missing.push(spec);
     }
   }
-  return { found, missing };
+  return { found: Array.from(found.keys()), missing };
 }
 
 /**
