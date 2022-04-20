@@ -1,7 +1,7 @@
+import L from "lodash";
 import { ChecksumBundle, ProjectMetaBundle } from "../api";
 import { logger } from "../deps";
 import { formatScript, tsxToJsx } from "../utils/code-utils";
-import L from "lodash";
 import {
   PlasmicContext,
   ProjectConfig,
@@ -41,7 +41,7 @@ export async function syncGlobalContexts(
       context,
       resourcePath,
       projectMeta.globalContextBundle.contextModule,
-      { force: false }
+      { force: true }
     );
     projectConfig.globalContextsFilePath = resourcePath;
     const fl = projectLock.fileLocks.find(
