@@ -23,9 +23,14 @@ export const rewriteWithoutVariation = (url: string) => {
 };
 
 const expandVariation = (variation: Record<string, string>) => {
+  const cmp = (a: string, b: string) => {
+    const idA = a.split('.')[1];
+    const idB = b.split('.')[1];
+    return idA < idB ? -1 : idA > idB ? 1 : 0;
+  };
   return Object.keys(variation)
     .filter((key) => !key.startsWith('ext')) // remove external variations
-    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
+    .sort(cmp)
     .map((key) => `${DELIMITER}${key}=${variation[key]}`)
     .join('');
 };
