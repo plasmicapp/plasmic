@@ -163,6 +163,7 @@ export function StrapiCollection({
 interface StrapiFieldProps {
   className?: string;
   path?: string;
+  setControlContextData?: (data: { fields: string[] }) => void;
 }
 
 export const strapiFieldMeta: ComponentMeta<StrapiFieldProps> = {
@@ -172,19 +173,40 @@ export const strapiFieldMeta: ComponentMeta<StrapiFieldProps> = {
   importPath: modulePath,
   props: {
     path: {
-      type: "string",
+      type: "choice",
+      options: (props, ctx) => {
+        return ctx?.fields ?? [];
+      },
       displayName: "Field",
       description: "Field name",
-      defaultValueHint: "description",
     },
   },
 };
 
-export function StrapiField({ className, path }: StrapiFieldProps) {
+export function StrapiField({
+  className,
+  path,
+  setControlContextData,
+}: StrapiFieldProps) {
   const item = useSelector("strapiItem");
   if (!item) {
     return <div>StrapiField must be used within a StrapiCollection</div>;
   }
+
+  // Getting only fields that aren't objects
+  const attributes = L.get(item, ["attributes"]);
+  const displayableFields = Object.keys(attributes).filter((field) => {
+    const value = attributes[field];
+    return (
+      typeof value !== "object" ||
+      value.data?.attributes?.mime.startsWith("image")
+    );
+  });
+
+  setControlContextData?.({
+    fields: displayableFields,
+  });
+
   if (!path) {
     return <div>StrapiField must specify a field name.</div>;
   }
