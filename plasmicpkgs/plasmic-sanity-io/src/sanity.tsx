@@ -106,9 +106,11 @@ export function SanityCredentialsProvider({
 
 interface SanityFetcherProps {
   groq?: string;
+  docType?: string;
   children?: ReactNode;
   className?: string;
   noLayout?: boolean;
+  setControlContextData?: (data: { docTypes: string[] }) => void;
 }
 
 export const sanityFetcherMeta: ComponentMeta<SanityFetcherProps> = {
@@ -138,6 +140,15 @@ export const sanityFetcherMeta: ComponentMeta<SanityFetcherProps> = {
       description: "Query in GROQ.",
       defaultValueHint: "*[_type == 'movie']",
     },
+    docType: {
+      type: "choice",
+      options: (props, ctx) => {
+        return ctx?.docTypes ?? [];
+      },
+      displayName: "Document type",
+      description:
+        "Document type to be queried (*[_type == DOC_TYPE] shortcut).",
+    },
     noLayout: {
       type: "boolean",
       displayName: "No layout",
@@ -150,9 +161,11 @@ export const sanityFetcherMeta: ComponentMeta<SanityFetcherProps> = {
 
 export function SanityFetcher({
   groq,
+  docType,
   children,
   className,
   noLayout,
+  setControlContextData,
 }: SanityFetcherProps) {
   const projectIdRegex = new RegExp(/^[-a-z0-9]+$/i);
   const datasetRegex = new RegExp(
@@ -199,8 +212,35 @@ export function SanityFetcher({
         );
       }
     }
-  } else if (!groq) {
-    return <div>Please specify a GROQ query.</div>;
+  } else if (!groq && !docType) {
+    return <div>Please specify a GROQ query or select a Document type.</div>;
+  }
+
+  const allData = usePlasmicQueryData<any[] | null>("ALL_TYPES", async () => {
+    const sanity = useSanityClient(creds);
+    const resp = await sanity.fetch("*");
+    return resp;
+  });
+
+  if (allData.error) {
+    return (
+      <div>
+        Please configure the Sanity provider with a valid projectId, dataset,
+        and token (if necessary). Don't forget to add
+        'https://host.plasmicdev.com' as an authorized host on the CORS origins
+        section of your project.
+      </div>
+    );
+  }
+
+  const existingTypes = new Set(allData.data?.map((doc) => doc._type));
+
+  setControlContextData?.({
+    docTypes: Array.from(existingTypes),
+  });
+
+  if (!groq) {
+    groq = "*[_type=='" + docType + "']";
   }
 
   const cacheKey = JSON.stringify({
@@ -216,17 +256,6 @@ export function SanityFetcher({
     const resp = await sanity.fetch(groq);
     return resp;
   });
-
-  if (data.error) {
-    return (
-      <div>
-        Please configure the Sanity provider with a valid projectId, dataset,
-        and token (if necessary). Don't forget to add
-        'https://host.plasmicdev.com' as an authorized host on the CORS origins
-        section of your project.
-      </div>
-    );
-  }
 
   if (!data?.data) {
     return <div>Please specify a valid GROQ query.</div>;
@@ -248,6 +277,8 @@ export function SanityFetcher({
 interface SanityFieldProps {
   className?: string;
   path?: string;
+  field?: string;
+  setControlContextData?: (data: { fields: string[] }) => void;
 }
 
 export const sanityFieldMeta: ComponentMeta<SanityFieldProps> = {
@@ -262,10 +293,23 @@ export const sanityFieldMeta: ComponentMeta<SanityFieldProps> = {
       description: "Field path - see https://www.sanity.io/docs/ids.",
       defaultValueHint: "castMembers.0._key",
     },
+    field: {
+      type: "choice",
+      options: (props, ctx) => {
+        return ctx?.fields ?? [];
+      },
+      displayName: "Field",
+      description: "Field to be displayed.",
+    },
   },
 };
 
-export function SanityField({ className, path }: SanityFieldProps) {
+export function SanityField({
+  className,
+  path,
+  field,
+  setControlContextData,
+}: SanityFieldProps) {
   const creds = ensure(useContext(CredentialsContext));
   const sanity = useSanityClient(creds);
   const imageBuilder = imageUrlBuilder(sanity);
@@ -274,10 +318,25 @@ export function SanityField({ className, path }: SanityFieldProps) {
   if (!item) {
     return <div>SanityField must be used within a SanityFetcher</div>;
   }
-  if (!path) {
-    return <div>SanityField must specify a path.</div>;
+
+  // Getting only fields that aren't objects
+  const displayableFields = Object.keys(item).filter((field) => {
+    const value = L.get(item, field);
+    return typeof value !== "object" || value._type === "image";
+  });
+  setControlContextData?.({
+    fields: displayableFields,
+  });
+
+  if (!path && !field) {
+    return <div>Please specify a valid path or select a field.</div>;
   }
-  const data = L.get(item, path);
+
+  if (!path) {
+    path = field;
+  }
+
+  const data = L.get(item, path as string);
   if (!data) {
     return <div>Please specify a valid path.</div>;
   } else if (data?._type === "image") {
