@@ -108,7 +108,11 @@ export type JSONLikeType<P> =
   | ({
       type: "array";
     } & DefaultValueOrExpr<P, any[]> &
-      PropTypeBase<P>);
+      PropTypeBase<P>)
+  | ({
+      type: "dataSource";
+      dataSource: "airtable" | "cms";
+    } & PropTypeBase<P>);
 
 interface ChoiceTypeBase<P> extends PropTypeBase<P> {
   type: "choice";
