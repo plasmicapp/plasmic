@@ -18,6 +18,7 @@ interface Props extends CanvasComponentProps {
 }
 
 const CSSClasses = {
+  container: "plasmic-nav-container",
   menuButton: "plasmic-nav-menu-button",
   menuItemsContainer: "plasmic-nav-menu-items",
   menuItemsContainerOpen: "plasmic-nav-menu-items-open",
@@ -52,7 +53,12 @@ export function NavigationBar(props: Props) {
     () =>
     minifyCss(`
     /* Shared Styles */
+    .${CSSClasses.container} {
+      box-sizing: border-box;
+    }
+
     .${CSSClasses.menuItemsContainer} {
+      box-sizing: border-box;
       display: flex;
     }
     
@@ -112,7 +118,7 @@ export function NavigationBar(props: Props) {
   );
 
   return (
-    <div className={props.className}>
+    <div className={`${CSSClasses.container} ${props.className}`}>
       <style dangerouslySetInnerHTML={{ __html: cssStyles }} />
       <div>{props.brand}</div>
       <button
@@ -147,7 +153,7 @@ function minifyCss(input: string) {
 }
 
 export const navigationBarComponentMeta: ComponentMeta<Props> = {
-  name: `plasmic-navigation-bar`,
+  name: `hostless-plasmic-navigation-bar`,
   displayName: "Navigation Bar",
   importName: "NavigationBar",
   importPath: "@plasmicpkgs/plasmic-nav",
@@ -184,8 +190,8 @@ export const navigationBarComponentMeta: ComponentMeta<Props> = {
           styles: { padding: "0px" },
           children: {
             type: "img",
-            src: "",
-            styles: { height: "50px" },
+            src: "https://static1.plasmic.app/nav-logo-placeholder.svg",
+            styles: { height: "40px" },
           },
         },
       ],
