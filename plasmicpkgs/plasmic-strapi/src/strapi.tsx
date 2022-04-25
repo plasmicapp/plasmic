@@ -32,6 +32,8 @@ const CredentialsContext = React.createContext<
 export const strapiCredentialsProviderMeta: GlobalContextMeta<StrapiCredentialsProviderProps> = {
   name: "StrapiCredentialsProvider",
   displayName: "Strapi Credentials Provider",
+  description:
+    "API token is needed only if data is not publicly readable. Learn how to [get your API token](https://docs.strapi.io/user-docs/latest/settings/managing-global-settings.html#managing-api-tokens).",
   importName: "StrapiCredentialsProvider",
   importPath: modulePath,
   props: {
@@ -137,12 +139,16 @@ export function StrapiCollection({
     return resp.json();
   });
 
-  if (!data?.data || !L.get(data.data, ["data"])) {
+  if (!data?.data) {
     return (
       <div>
-        Please specify valid host, token (if necessary) and collection name.
+        Please configure the Strapi provider with a valid host and token.
       </div>
     );
+  }
+
+  if (!L.get(data.data, ["data"])) {
+    return <div>Please specify a valid collection.</div>;
   }
 
   const collection = L.get(data.data, ["data"]) as any[];
