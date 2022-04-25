@@ -21,8 +21,8 @@ export const collectionFieldsFragment = `
 `;
 
 export const getCollectionQueryById = /* GraphQL */ `
-  query getSiteCollection($id: ID!, $first: Int = 1) {
-    collection(id: $id) {
+  query getSiteCollection($id: ID, $handle: String, $first: Int = 1) {
+    collection(id: $id, handle: $handle) {
       ...collectionFieldsFragment
     }
   }

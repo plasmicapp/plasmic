@@ -1,11 +1,11 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
 import React from "react";
+import { useFormContext } from "react-hook-form";
 import { useProduct } from "./contexts";
 import usePrice from "./product/use-price";
-import { useFormContext } from "react-hook-form";
+import { Registerable } from "./registerable";
 import { getProductPrice } from "./utils/get-product-price";
 
 interface ProductPriceProps {
@@ -15,9 +15,9 @@ interface ProductPriceProps {
 export const productPriceMeta: ComponentMeta<ProductPriceProps> = {
   name: "plasmic-commerce-product-price",
   displayName: "Product Price",
-  props: { },
+  props: {},
   importPath: "@plasmicpkgs/commerce",
-  importName: "ProductPrice",
+  importName: "ProductPriceComponent",
 };
 
 export function ProductPriceComponent(props: ProductPriceProps) {
@@ -26,14 +26,17 @@ export function ProductPriceComponent(props: ProductPriceProps) {
   const product = useProduct();
   const form = useFormContext();
 
-  const watchProductVariant = form?.watch("ProductVariant", product.variants[0].id ?? "");
+  const watchProductVariant = form?.watch(
+    "ProductVariant",
+    product.price ?? ""
+  );
 
-  const { price } = usePrice({ 
+  const { price } = usePrice({
     amount: product ? getProductPrice(product, watchProductVariant) : 0,
-    currencyCode: product ? product.price.currencyCode! : 'USD'
-  })
+    currencyCode: product ? product.price.currencyCode! : "USD",
+  });
 
-  return <span className={className}>{price}</span>
+  return <span className={className}>{price}</span>;
 }
 
 export function registerProductPrice(
@@ -42,5 +45,8 @@ export function registerProductPrice(
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(ProductPriceComponent, customProductPriceMeta ?? productPriceMeta);
+  doRegisterComponent(
+    ProductPriceComponent,
+    customProductPriceMeta ?? productPriceMeta
+  );
 }
