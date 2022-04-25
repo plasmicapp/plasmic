@@ -1,15 +1,15 @@
+import { repeatedElement } from "@plasmicapp/host";
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
 import React from "react";
-import { repeatedElement } from "@plasmicapp/host";
 import { ProductProvider, useCategoryContext } from "./contexts";
 import useSearch from "./product/use-search";
+import { Registerable } from "./registerable";
+import useBrands from "./site/use-brands";
+import useCategories from "./site/use-categories";
 import { Product } from "./types/product";
 import { Brand, Category } from "./types/site";
-import useCategories from "./site/use-categories";
-import useBrands from "./site/use-brands";
 import { CommerceExtraFeatures } from "./utils/types";
 import { useCommerceExtraFeatures } from "./utils/use-extra-features";
 
@@ -23,14 +23,14 @@ interface ProductCollectionProps {
   includeSubCategories?: boolean;
   brand?: string;
   noLayout?: boolean;
-  setControlContextData?: (
-    data: {
-      categories: Category[],
-      brands: Brand[],
-      features?: CommerceExtraFeatures,
-      hasCategoryCtx?: boolean,
-    }
-  ) => void;
+  search?: string;
+  sort?: string;
+  setControlContextData?: (data: {
+    categories: Category[];
+    brands: Brand[];
+    features?: CommerceExtraFeatures;
+    hasCategoryCtx?: boolean;
+  }) => void;
 }
 
 export const productCollectionMeta: ComponentMeta<ProductCollectionProps> = {
@@ -47,61 +47,88 @@ export const productCollectionMeta: ComponentMeta<ProductCollectionProps> = {
               type: "component",
               name: "plasmic-commerce-product-text-field",
               props: {
-                field: "name"
-              }
+                field: "name",
+              },
             },
             {
               type: "component",
-              name: "plasmic-commerce-product-media"
-            }
+              name: "plasmic-commerce-product-media",
+            },
           ],
           styles: {
             width: "100%",
             minWidth: 0,
-          }
+          },
         },
-      ]
+      ],
     },
     emptyMessage: {
       type: "slot",
       defaultValue: {
         type: "text",
-        value: "No product found!"
-      }
+        value: "No product found!",
+      },
     },
     loadingMessage: {
       type: "slot",
       defaultValue: {
         type: "text",
-        value: "Loading..."
-      }
+        value: "Loading...",
+      },
     },
     count: "number",
     category: {
       type: "choice",
       options: (props, ctx) => {
-        return ctx?.categories.map(category => ({
-          label: category.name,
-          value: category.id
-        })) ?? [];
+        return (
+          ctx?.categories.map((category) => ({
+            label: category.name,
+            value: category.id,
+          })) ?? []
+        );
       },
-      hidden: (props, ctx) => !!ctx?.hasCategoryCtx, 
+      hidden: (props, ctx) => !!ctx?.hasCategoryCtx,
     },
     includeSubCategories: {
       type: "boolean",
-      hidden: (props, ctx) =>
-        !ctx?.features?.includeSubCategories
+      hidden: (props, ctx) => !ctx?.features?.includeSubCategories,
     },
     brand: {
       type: "choice",
       options: (props, ctx) => {
-        return ctx?.brands.map((brand: Brand) => ({
-          label: brand.name,
-          value: brand.entityId,
-        })) ?? [];
-      }
+        return (
+          ctx?.brands.map((brand: Brand) => ({
+            label: brand.name,
+            value: brand.entityId,
+          })) ?? []
+        );
+      },
     },
-    noLayout: "boolean"
+    search: {
+      type: "string",
+    },
+    sort: {
+      type: "choice",
+      options: [
+        {
+          label: "Trending",
+          value: "trending-desc",
+        },
+        {
+          label: "New Arrivals",
+          value: "latest-desc",
+        },
+        {
+          label: "Price: Low to High",
+          value: "price-asc",
+        },
+        {
+          label: "Price: High to Low",
+          value: "price-desc",
+        },
+      ],
+    },
+    noLayout: "boolean",
   },
   defaultStyles: {
     display: "grid",
@@ -109,7 +136,7 @@ export const productCollectionMeta: ComponentMeta<ProductCollectionProps> = {
     gridRowGap: "8px",
     gridColumnGap: "8px",
     padding: "8px",
-    maxWidth: "100%"
+    maxWidth: "100%",
   },
   importPath: "@plasmicpkgs/commerce",
   importName: "ProductCollection",
@@ -127,20 +154,24 @@ export function ProductCollection(props: ProductCollectionProps) {
     setControlContextData,
     emptyMessage,
     loadingMessage,
+    search,
+    sort,
   } = props;
 
-  const { data: categories, isLoading : isCategoriesLoading } = useCategories();
+  const { data: categories, isLoading: isCategoriesLoading } = useCategories();
 
-  const { data: brands, isLoading : isBrandsLoading } = useBrands();
+  const { data: brands, isLoading: isBrandsLoading } = useBrands();
 
   const categoryCtx = useCategoryContext();
 
-  const { data, isLoading : isSearchLoading } = useSearch({
+  const { data, isLoading: isSearchLoading } = useSearch({
     categoryId: categoryCtx?.id ?? category,
     brandId: brand,
     count,
     categories: categories ?? [],
-    includeSubCategories
+    includeSubCategories,
+    search,
+    sort,
   });
 
   const features = useCommerceExtraFeatures();
@@ -150,33 +181,29 @@ export function ProductCollection(props: ProductCollectionProps) {
       categories,
       brands,
       features,
-      hasCategoryCtx: !!categoryCtx
+      hasCategoryCtx: !!categoryCtx,
     });
   }
 
-  const renderedData = (
-    data?.products.map((product: Product, i: number) =>
-      <ProductProvider product={product} key={product.id}>
-        {repeatedElement(i === 0, children)}
-      </ProductProvider>
-    )
-  );
+  const renderedData = data?.products.map((product: Product, i: number) => (
+    <ProductProvider product={product} key={product.id}>
+      {repeatedElement(i === 0, children)}
+    </ProductProvider>
+  ));
 
   if ([isSearchLoading, isBrandsLoading, isCategoriesLoading].includes(true)) {
-    return React.isValidElement(loadingMessage) 
-      ? loadingMessage
-      : null;
+    return React.isValidElement(loadingMessage) ? loadingMessage : null;
   }
 
   if (!data || data.products.length === 0) {
-    return React.isValidElement(emptyMessage)
-      ? emptyMessage
-      : null;
+    return React.isValidElement(emptyMessage) ? emptyMessage : null;
   }
 
-  return noLayout
-    ? <React.Fragment>{renderedData}</React.Fragment>
-    : <div className={className}>{renderedData}</div>
+  return noLayout ? (
+    <React.Fragment>{renderedData}</React.Fragment>
+  ) : (
+    <div className={className}>{renderedData}</div>
+  );
 }
 
 export function registerProductCollection(
@@ -185,5 +212,8 @@ export function registerProductCollection(
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(ProductCollection, customProductCollectionMeta ?? productCollectionMeta);
+  doRegisterComponent(
+    ProductCollection,
+    customProductCollectionMeta ?? productCollectionMeta
+  );
 }

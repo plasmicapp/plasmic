@@ -1,12 +1,11 @@
-import { SWRHook } from '@plasmicpkgs/commerce'
-import { UseCategories, useCategories } from '@plasmicpkgs/commerce'
+import { SWRHook, UseCategories, useCategories } from "@plasmicpkgs/commerce";
 import { useMemo } from "react";
 import { CollectionEdge } from "../schema";
-import { GetCategoriesHook } from "../types/site"
-import { getSiteCollectionsQuery, normalizeCategory } from "../utils"
-import { getCollectionQueryById } from '../utils/queries/get-collection-query';
+import { GetCategoriesHook } from "../types/site";
+import { getSiteCollectionsQuery, normalizeCategory } from "../utils";
+import { getCollectionQueryById } from "../utils/queries/get-collection-query";
 
-export default useCategories as UseCategories<typeof handler>
+export default useCategories as UseCategories<typeof handler>;
 
 export const handler: SWRHook<GetCategoriesHook> = {
   fetchOptions: {
@@ -26,39 +25,35 @@ export const handler: SWRHook<GetCategoriesHook> = {
         data?.collections?.edges?.map(({ node }: CollectionEdge) =>
           normalizeCategory(node)
         ) ?? []
-      )
+      );
     } else {
       const data = await fetch({
         query: getCollectionQueryById,
         variables: {
-          id: categoryId
-        }
-      })
-      return !!data?.collection
-        ? [normalizeCategory(data?.collection)]
-        : [];
+          ...(categoryId.startsWith("gid://")
+            ? { id: categoryId }
+            : { handle: categoryId }),
+        },
+      });
+      return !!data?.collection ? [normalizeCategory(data?.collection)] : [];
     }
   },
-  useHook:
-    ({ useData }) =>
-    (input) => {
-      const response = useData({
-        input: [
-          ['categoryId', input?.categoryId],
-        ],
-        swrOptions: { revalidateOnFocus: false, ...input?.swrOptions },
-      })
-      return useMemo(
-        () =>
-          Object.create(response, {
-            isEmpty: {
-              get() {
-                return (response.data?.length ?? 0) <= 0
-              },
-              enumerable: true,
+  useHook: ({ useData }) => (input) => {
+    const response = useData({
+      input: [["categoryId", input?.categoryId]],
+      swrOptions: { revalidateOnFocus: false, ...input?.swrOptions },
+    });
+    return useMemo(
+      () =>
+        Object.create(response, {
+          isEmpty: {
+            get() {
+              return (response.data?.length ?? 0) <= 0;
             },
-          }),
-        [response]
-      )
-    },
-}
+            enumerable: true,
+          },
+        }),
+      [response]
+    );
+  },
+};

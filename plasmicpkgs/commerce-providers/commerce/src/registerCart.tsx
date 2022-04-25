@@ -1,10 +1,10 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
 import React from "react";
 import useCart from "./cart/use-cart";
 import usePrice from "./product/use-price";
+import { Registerable } from "./registerable";
 
 interface CartProps {
   className?: string;
@@ -21,11 +21,11 @@ export const cartMeta: ComponentMeta<CartProps> = {
       options: ["Size", "Total Price"],
     },
     hideIfIsEmpty: {
-      type: "boolean"
-    }
+      type: "boolean",
+    },
   },
   importPath: "@plasmicpkgs/commerce",
-  importName: "Cart",
+  importName: "CartComponent",
 };
 
 export function CartComponent(props: CartProps) {
@@ -34,10 +34,10 @@ export function CartComponent(props: CartProps) {
   const { data } = useCart();
   const { price } = usePrice({
     amount: data?.totalPrice ?? 0,
-    currencyCode: data?.currency.code ?? "USD"
-  })
+    currencyCode: data?.currency.code ?? "USD",
+  });
   if (!field) {
-    return <p>You must set the field prop</p>
+    return <p>You must set the field prop</p>;
   }
 
   let value;
@@ -47,11 +47,9 @@ export function CartComponent(props: CartProps) {
     value = price ?? 0;
   }
 
-  return (
-    hideIfIsEmpty && value === 0
-      ? null
-      : <span className={className}>{value}</span>
-  )
+  return hideIfIsEmpty && value === 0 ? null : (
+    <span className={className}>{value}</span>
+  );
 }
 
 export function registerCart(

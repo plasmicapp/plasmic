@@ -2,35 +2,35 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
-import { useProduct } from "./contexts";
+import { useCategoryContext } from "./contexts";
 import { Registerable } from "./registerable";
 
-interface ProductLinkProps {
+interface CategoryLinkProps {
   className?: string;
   children?: React.ReactNode;
   linkDest?: string;
 }
 
-export const productLinkMeta: ComponentMeta<ProductLinkProps> = {
-  name: "plasmic-commerce-product-link",
-  displayName: "Product Link",
+export const categoryLinkMeta: ComponentMeta<CategoryLinkProps> = {
+  name: "plasmic-commerce-category-link",
+  displayName: "Category Link",
   props: {
     children: "slot",
     linkDest: {
       type: "string",
-      defaultValueHint: "products/{slug}",
+      defaultValueHint: "category/{slug}",
       description:
-        "Set the link destination. You can use {slug} to replace by the product slug",
+        "Set the link destination. You can use {slug} to replace by the category slug",
     },
   },
   importPath: "@plasmicpkgs/commerce",
-  importName: "ProductLink",
+  importName: "CategoryLink",
 };
 
-export function ProductLink(props: ProductLinkProps) {
+export function CategoryLink(props: CategoryLinkProps) {
   const { className, children, linkDest } = props;
 
-  const product = useProduct();
+  const category = useCategoryContext();
 
   const resolveLink = (linkDest: string | undefined) => {
     if (!linkDest) {
@@ -42,10 +42,10 @@ export function ProductLink(props: ProductLinkProps) {
     let resolvedLink = linkDest;
     for (const match of matches) {
       const field = match.slice(1, -1);
-      if (!product || !(field in product)) {
+      if (!category || !(field in category)) {
         return undefined;
       }
-      resolvedLink = resolvedLink.replace(regex, (product as any)[field]);
+      resolvedLink = resolvedLink.replace(regex, (category as any)[field]);
     }
     return resolvedLink;
   };
@@ -64,11 +64,11 @@ export function ProductLink(props: ProductLinkProps) {
   );
 }
 
-export function registerProductLink(
+export function registerCategoryLink(
   loader?: Registerable,
-  customProductLinkMeta?: ComponentMeta<ProductLinkProps>
+  customCategoryLinkMeta?: ComponentMeta<CategoryLinkProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(ProductLink, customProductLinkMeta ?? productLinkMeta);
+  doRegisterComponent(CategoryLink, customCategoryLinkMeta ?? categoryLinkMeta);
 }
