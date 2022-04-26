@@ -2,79 +2,77 @@
   Forked from https://github.com/vercel/commerce/tree/main/packages/swell/src
   Changes: Added "Default Variant" to default title when there's no product variant
 */
-import { Product, ProductOption } from '../types/product'
-import { MoneyV2 } from '../schema'
-
+import { MoneyV2 } from "../schema";
 import type {
   Cart,
   CartLineItem,
-  SwellCustomer,
-  SwellProduct,
-  SwellImage,
-  SwellVariant,
-  ProductOptionValue,
-  SwellProductOptionValue,
-  SwellCart,
   LineItem,
-} from '../types'
-import { Category } from '../types/site'
+  ProductOptionValue,
+  SwellCart,
+  SwellImage,
+  SwellProduct,
+  SwellProductOptionValue,
+  SwellVariant,
+} from "../types";
+import { Product, ProductOption } from "../types/product";
+import { Category } from "../types/site";
 
 const money = ({ amount, currencyCode }: MoneyV2) => {
   return {
     value: +amount,
     currencyCode,
-  }
-}
+  };
+};
 
 type swellProductOption = {
-  id: string
-  name: string
-  values: any[]
-}
+  id: string;
+  name: string;
+  values: any[];
+};
 
 type normalizedProductOption = {
-  id: string
-  displayName: string
-  values: ProductOptionValue[]
-}
+  id: string;
+  displayName: string;
+  values: ProductOptionValue[];
+};
 
 const normalizeProductOption = ({
   id,
-  name: displayName = '',
+  name: displayName = "",
   values = [],
 }: swellProductOption): ProductOption => {
   let returnValues = values.map((value) => {
     let output: any = {
       label: value.name,
       // id: value?.id || id,
-    }
+    };
     if (displayName.match(/colou?r/gi)) {
       output = {
         ...output,
         hexColors: [value.name],
-      }
+      };
     }
-    return output
-  })
+    return output;
+  });
   return {
-    __typename: 'MultipleChoiceOption',
+    __typename: "MultipleChoiceOption",
     id,
     displayName,
     values: returnValues,
-  }
-}
+  };
+};
 
 const normalizeProductImages = (images: SwellImage[]) => {
   if (!images || images.length < 1) {
-    return [{ url: '/' }]
+    return [{ url: "/" }];
   }
   return images?.map(({ file, ...rest }: SwellImage) => ({
-    url: file?.url + '',
+    url: file?.url + "",
     height: Number(file?.height),
     width: Number(file?.width),
     ...rest,
-  }))
-}
+  }));
+};
 
 const normalizeProductVariants = (
   variants: SwellVariant[],
@@ -83,21 +81,21 @@ const normalizeProductVariants = (
   return variants?.map(
     ({ id, name, price, option_value_ids: optionValueIds = [] }) => {
       const values = name
-        .split(',')
-        .map((i) => ({ name: i.trim(), label: i.trim() }))
+        .split(",")
+        .map((i) => ({ name: i.trim(), label: i.trim() }));
 
       const options = optionValueIds.map((id) => {
         const matchingOption = productOptions.find((option) => {
           return option.values.find(
             (value: SwellProductOptionValue) => value.id == id
-          )
-        })
+          );
+        });
         return normalizeProductOption({
           id,
-          name: matchingOption?.name ?? '',
+          name: matchingOption?.name ?? "",
           values,
-        })
-      })
+        });
+      });
 
       return {
         id,
@@ -107,10 +105,10 @@ const normalizeProductVariants = (
         // listPrice: price ?? null,
         // requiresShipping: true,
         options,
-      }
+      };
     }
-  )
-}
+  );
+};
 
 export function normalizeProduct(swellProduct: SwellProduct): Product {
   const {
@@ -123,23 +121,23 @@ export function normalizeProduct(swellProduct: SwellProduct): Product {
     variants,
     price: value,
     currency: currencyCode,
-  } = swellProduct
+  } = swellProduct;
   // ProductView accesses variants for each product
-  const emptyVariants = [{ options: [], id, name: "Default variant" }]
+  const emptyVariants = [{ options: [], id, name: "Default variant" }];
 
   const productOptions = options
     ? options.map((o) => normalizeProductOption(o))
-    : []
+    : [];
   const productVariants = variants
     ? normalizeProductVariants(variants.results, options)
-    : []
+    : [];
 
-  const productImages = normalizeProductImages(images)
+  const productImages = normalizeProductImages(images);
   const product = {
     ...swellProduct,
     description,
     id,
-    vendor: '',
+    vendor: "",
     path: `/${slug}`,
     images: productImages,
     variants:
@@ -151,8 +149,8 @@ export function normalizeProduct(swellProduct: SwellProduct): Product {
       value,
       currencyCode,
     },
-  }
-  return product
+  };
+  return product;
 }
 
 export function normalizeCart({
@@ -168,8 +166,8 @@ export function normalizeCart({
 }: SwellCart) {
   const cart: Cart = {
     id: id,
-    customerId: account_id + '',
-    email: '',
+    customerId: account_id + "",
+    email: "",
     createdAt: date_created,
     currency: { code: currency },
     taxesIncluded: tax_included_total > 0,
@@ -178,8 +176,8 @@ export function normalizeCart({
     subtotalPrice: +sub_total,
     totalPrice: grand_total,
     discounts: discounts?.map((discount) => ({ value: discount.amount })),
-  }
-  return cart
+  };
+  return cart;
 }
 /*
 export function normalizeCustomer(customer: SwellCustomer): Customer {
@@ -201,45 +199,49 @@ function normalizeLineItem({
   const item = {
     id,
     variantId: variant?.id,
-    productId: product.id ?? '',
-    name: product?.name ?? '',
+    productId: product.id ?? "",
+    name: product?.name ?? "",
     quantity,
     variant: {
-      id: variant?.id ?? '',
-      sku: variant?.sku ?? '',
+      id: variant?.id ?? "",
+      sku: variant?.sku ?? "",
       name: variant?.name!,
       image: {
         url:
           product?.images && product.images.length > 0
             ? product?.images[0].file.url
-            : '/',
+            : "/",
       },
       requiresShipping: false,
       price: price,
       listPrice: price,
     },
-    path: '',
+    path: "",
     discounts: [],
     options: [
       {
         value: variant?.name,
       },
     ],
-  }
-  return item
+  };
+  return item;
 }
 
 export function normalizeCategory({
-  id, 
-  name, 
-  slug, 
+  id,
+  name,
+  slug,
   products,
+  images,
 }: any): Category {
   return {
     id,
     name,
     slug,
     path: `/${slug}`,
-    isEmpty: products?.length === 0
-  }
+    isEmpty: products?.length === 0,
+    images: images?.map((image: any) => ({
+      url: image.file.url,
+    })),
+  };
 }
