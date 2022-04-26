@@ -13,8 +13,14 @@ export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
   name: "plasmic-commerce-swell-provider",
   displayName: "Swell Provider",
   props: {
-    storeId: "string",
-    publicKey: "string",
+    storeId: {
+      type: "string",
+      defaultValue: "plasmic-sandbox",
+    },
+    publicKey: {
+      type: "string",
+      defaultValue: "pk_QaZeGhtpQaVbNQnWJdRlE1abE6Ezf9U9",
+    },
   },
   importPath: "commerce-providers/swell",
   importName: "CommerceProviderComponent",
