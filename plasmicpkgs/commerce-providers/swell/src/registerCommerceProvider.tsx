@@ -16,7 +16,7 @@ export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
     storeId: "string",
     publicKey: "string",
   },
-  importPath: "commerce-providers/swell",
+  importPath: "@plasmicpkgs/commerce-swell",
   importName: "CommerceProviderComponent",
 };
 
