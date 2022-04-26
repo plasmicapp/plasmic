@@ -1,6 +1,6 @@
 /*
   Forked from https://github.com/vercel/commerce/tree/main/packages/commerce/src
-  Changes: Added CategoryImage
+  Changes: Added CategoryImage and depth/children/parent_id to Category
 */
 
 export type CategoryImage = {
@@ -15,6 +15,10 @@ export type Category = {
   path: string;
   isEmpty?: boolean;
   images?: CategoryImage[];
+  // available for commerce providers with category tree structure
+  depth?: number;
+  children?: string[];
+  parentId?: string;
 };
 
 export type Brand = {
@@ -42,7 +46,6 @@ export type GetSiteInfoOperation<T extends SiteTypes = SiteTypes> = {
 };
 
 export type GetCategoriesBody = {
-  topologicalSort?: boolean;
   addIsEmptyField?: boolean;
   categoryId?: string;
 };

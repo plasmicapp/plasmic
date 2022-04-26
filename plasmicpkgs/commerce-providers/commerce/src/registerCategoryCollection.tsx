@@ -7,7 +7,6 @@ import { CategoryProvider } from "./contexts";
 import { Registerable } from "./registerable";
 import useCategories from "./site/use-categories";
 import { Category } from "./types/site";
-import { useCommerceExtraFeatures } from "./utils/use-extra-features";
 
 interface CategoryCollectionProps {
   className?: string;
@@ -70,7 +69,7 @@ export const categoryCollectionMeta: ComponentMeta<CategoryCollectionProps> = {
       options: (props, ctx) => {
         return (
           ctx?.categories.map((category) => ({
-            label: category.name,
+            label: `${"  ".repeat(category.depth ?? 0)}${category.name}`,
             value: category.id,
           })) ?? []
         );
@@ -99,8 +98,6 @@ export function CategoryCollection(props: CategoryCollectionProps) {
     setControlContextData,
   } = props;
 
-  const features = useCommerceExtraFeatures();
-
   const inEditor = React.useContext(PlasmicCanvasContext);
 
   const {
@@ -110,7 +107,6 @@ export function CategoryCollection(props: CategoryCollectionProps) {
 
   const { data: categories, isLoading } = useCategories({
     categoryId: selectedCategory,
-    topologicalSort: !selectedCategory && features?.includeSubCategories,
     addIsEmptyField: !!inEditor,
   });
 

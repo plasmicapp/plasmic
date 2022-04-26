@@ -1,25 +1,30 @@
-import { SwellCategory } from "../types/site";
+import { Category } from "../types/site";
 import { ensure } from "./common";
 
-export const walkCategoryTree = (category?: SwellCategory, categories?: SwellCategory[]) => {
+export const walkCategoryTree = (
+  category?: Category,
+  categories?: Category[]
+) => {
   if (!category || !categories) {
     return [];
   }
 
-  const queue: SwellCategory[] = [category];
-  const result: SwellCategory[] = [];
+  const queue: Category[] = [category];
+  const result: Category[] = [];
   while (queue.length > 0) {
     const curr = ensure(queue.shift());
     result.push(curr);
-    queue.push(...(curr.children?.results.map(
-      (child) => ensure(categories.find(category => category.id === child.id))
-    ) ?? []));
+    queue.push(
+      ...(curr.children?.map((child) =>
+        ensure(categories.find((category) => category.id === child))
+      ) ?? [])
+    );
   }
   return result;
-}
+};
 
-export const topologicalSortForCategoryTree = (categories: SwellCategory[]) => {
-  return categories.filter(category => !category.parent_id).flatMap(category => walkCategoryTree(
-    category, categories
-  ));
-}
+export const topologicalSortForCategoryTree = (categories: Category[]) => {
+  return categories
+    .filter((category) => !category.parentId)
+    .flatMap((category) => walkCategoryTree(category, categories));
+};

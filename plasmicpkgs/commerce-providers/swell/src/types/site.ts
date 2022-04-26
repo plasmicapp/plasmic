@@ -2,16 +2,13 @@
   Forked from https://github.com/vercel/commerce/tree/main/packages/swell/src
   Changes: None
 */
-import { SiteTypes } from "@plasmicpkgs/commerce"
+import { SiteTypes } from "@plasmicpkgs/commerce";
 
 export type Category = SiteTypes.Category;
 
-export type SwellCategory = Category & {
-  parent_id?: string
-  children?: {
-    results: Category[]
-  }
-}
+export type SwellCategoryChildren = {
+  results: Category[];
+};
 
 export type Brand = SiteTypes.Brand;
 

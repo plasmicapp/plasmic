@@ -82,7 +82,7 @@ export const productCollectionMeta: ComponentMeta<ProductCollectionProps> = {
       options: (props, ctx) => {
         return (
           ctx?.categories.map((category) => ({
-            label: category.name,
+            label: `${"  ".repeat(category.depth ?? 0)}${category.name}`,
             value: category.id,
           })) ?? []
         );

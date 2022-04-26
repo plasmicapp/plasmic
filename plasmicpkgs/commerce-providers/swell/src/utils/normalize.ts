@@ -15,7 +15,7 @@ import type {
   SwellVariant,
 } from "../types";
 import { Product, ProductOption } from "../types/product";
-import { Category } from "../types/site";
+import { Category, SwellCategoryChildren } from "../types/site";
 
 const money = ({ amount, currencyCode }: MoneyV2) => {
   return {
@@ -227,12 +227,19 @@ function normalizeLineItem({
   return item;
 }
 
+export function normalizeChildren(children: SwellCategoryChildren) {
+  return children?.results.map((ch) => ch.id);
+}
+
 export function normalizeCategory({
   id,
   name,
   slug,
   products,
   images,
+  depth,
+  children,
+  parent_id,
 }: any): Category {
   return {
     id,
@@ -243,5 +250,8 @@ export function normalizeCategory({
     images: images?.map((image: any) => ({
       url: image.file.url,
     })),
+    depth,
+    children: normalizeChildren(children),
+    parentId: parent_id,
   };
 }
