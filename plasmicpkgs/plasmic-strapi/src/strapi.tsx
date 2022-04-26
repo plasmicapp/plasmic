@@ -41,6 +41,7 @@ export const strapiCredentialsProviderMeta: GlobalContextMeta<StrapiCredentialsP
       type: "string",
       displayName: "Host",
       defaultValueHint: "https://strapi-plasmic.herokuapp.com",
+      defaultValue: "https://strapi-plasmic.herokuapp.com",
       description: "Server where you application is hosted.",
     },
     token: {
@@ -79,6 +80,14 @@ export const strapiCollectionMeta: ComponentMeta<StrapiCollectionProps> = {
   importPath: modulePath,
   description:
     "Fetches Strapi data of a given collection and repeats content of children once for every row fetched.",
+  defaultStyles: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr 1fr 1fr",
+    gridRowGap: "8px",
+    gridColumnGap: "8px",
+    padding: "8px",
+    maxWidth: "100%",
+  },
   props: {
     children: {
       type: "slot",

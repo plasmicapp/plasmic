@@ -57,11 +57,14 @@ export const sanityCredentialsProviderMeta: GlobalContextMeta<SanityCredentialsP
       type: "string",
       displayName: "Project ID",
       defaultValueHint: "b2gfz67v",
+      defaultValue: "b2gfz67v",
       description: "The ID of the project to use.",
     },
     dataset: {
       type: "string",
       displayName: "Dataset",
+      defaultValueHint: "production",
+      defaultValue: "production",
       description: "The dataset to use.",
     },
     apiVersion: {
@@ -120,6 +123,14 @@ export const sanityFetcherMeta: ComponentMeta<SanityFetcherProps> = {
   importPath: modulePath,
   description:
     "Fetches Sanity data and repeats content of children once for every row fetched. Query Cheat Sheet - GROQ <https://www.sanity.io/docs/query-cheat-sheet>",
+  defaultStyles: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr 1fr 1fr",
+    gridRowGap: "8px",
+    gridColumnGap: "8px",
+    padding: "8px",
+    maxWidth: "100%",
+  },
   props: {
     children: {
       type: "slot",
