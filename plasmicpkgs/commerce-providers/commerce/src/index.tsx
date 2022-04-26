@@ -4,12 +4,14 @@ import { registerCart } from "./registerCart";
 import { registerCategoryCollection } from "./registerCategoryCollection";
 import { registerCategoryField } from "./registerCategoryField";
 import { registerCategoryLink } from "./registerCategoryLink";
+import { registerCategoryMedia } from "./registerCategoryMedia";
 import { registerProductBox } from "./registerProductBox";
 import { registerProductCollection } from "./registerProductCollection";
 import { registerProductLink } from "./registerProductLink";
 import { registerProductMedia } from "./registerProductMedia";
 import { registerProductPrice } from "./registerProductPrice";
 import { registerProductQuantity } from "./registerProductQuantity";
+import { registerProductSlider } from "./registerProductSlider";
 import { registerTextField } from "./registerProductTextField";
 import { registerProductVariantPicker } from "./registerProductVariantPicker";
 
@@ -63,8 +65,10 @@ export function registerAll(loader?: Registerable) {
   registerProductQuantity(loader);
   registerProductVariantPicker(loader);
   registerProductBox(loader);
+  registerProductSlider(loader);
   registerProductLink(loader);
   registerCategoryCollection(loader);
   registerCategoryField(loader);
   registerCategoryLink(loader);
+  registerCategoryMedia(loader);
 }

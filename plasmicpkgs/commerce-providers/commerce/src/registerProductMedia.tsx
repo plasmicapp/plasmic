@@ -1,10 +1,12 @@
-import { CSSProperties } from "@plasmicapp/host/dist/element-types";
-import registerComponent, { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import React from "react";
-import { useProduct } from "./contexts";
+import { useProduct, useProductSliderContext } from "./contexts";
 import { Registerable } from "./registerable";
 
-const placeholderImage = "https://static1.plasmic.app/commerce/lightweight-jacket-0.png"
+const placeholderImage =
+  "https://static1.plasmic.app/commerce/lightweight-jacket-0.png";
 
 interface ProductMediaProps {
   className: string;
@@ -25,16 +27,17 @@ export function ProductMedia(props: ProductMediaProps) {
   const { className, mediaIndex = 0 } = props;
 
   const product = useProduct();
+  const sliderContext = useProductSliderContext();
 
-  const image = product?.images[mediaIndex];
+  const image = product?.images[sliderContext ?? mediaIndex];
   return (
     <img
-      alt={product?.name || 'Product Image'}
-      src={product ? (image?.url ?? "") : placeholderImage}
-      loading={'lazy'}
+      alt={product?.name || "Product Image"}
+      src={product ? image?.url ?? "" : placeholderImage}
+      loading={"lazy"}
       className={className}
     />
-  )
+  );
 }
 
 export function registerProductMedia(
