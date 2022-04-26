@@ -222,9 +222,12 @@ export function StrapiField({
     return <div>Please specify a valid field name.</div>;
   } else if (data?.data?.attributes?.mime.startsWith("image")) {
     const creds = ensure(useContext(CredentialsContext));
-    const img_url = creds.host + data.data.attributes.url;
-    const img_width = data.data.attributes.width;
-    const img_height = data.data.attributes.height;
+    const attrs = data.data.attributes;
+    const img_url = attrs.url.startsWith("http")
+      ? attrs.url
+      : creds.host + attrs.url;
+    const img_width = attrs.width;
+    const img_height = attrs.height;
     return (
       <img src={img_url} width={300} height={(300 * img_height) / img_width} />
     );
