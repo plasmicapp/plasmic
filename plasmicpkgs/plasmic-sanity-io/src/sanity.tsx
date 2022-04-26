@@ -212,8 +212,6 @@ export function SanityFetcher({
         );
       }
     }
-  } else if (!groq && !docType) {
-    return <div>Please specify a GROQ query or select a Document type.</div>;
   }
 
   const allData = usePlasmicQueryData<any[] | null>(
@@ -225,7 +223,7 @@ export function SanityFetcher({
     }
   );
 
-  if (!groq) {
+  if (!groq && docType) {
     groq = "*[_type=='" + docType + "']";
   }
 
@@ -261,7 +259,9 @@ export function SanityFetcher({
   });
 
   if (!data?.data) {
-    return <div>Please specify a valid GROQ query.</div>;
+    return (
+      <div>Please specify a valid GROQ query or select a Document type.</div>
+    );
   }
 
   const repElements = data?.data.map((item, index) => (
