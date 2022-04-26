@@ -216,28 +216,14 @@ export function SanityFetcher({
     return <div>Please specify a GROQ query or select a Document type.</div>;
   }
 
-  const allData = usePlasmicQueryData<any[] | null>("ALL_TYPES", async () => {
-    const sanity = useSanityClient(creds);
-    const resp = await sanity.fetch("*");
-    return resp;
-  });
-
-  if (allData.error) {
-    return (
-      <div>
-        Please configure the Sanity provider with a valid projectId, dataset,
-        and token (if necessary). Don't forget to add
-        'https://host.plasmicdev.com' as an authorized host on the CORS origins
-        section of your project.
-      </div>
-    );
-  }
-
-  const existingTypes = new Set(allData.data?.map((doc) => doc._type));
-
-  setControlContextData?.({
-    docTypes: Array.from(existingTypes),
-  });
+  const allData = usePlasmicQueryData<any[] | null>(
+    JSON.stringify(creds),
+    async () => {
+      const sanity = useSanityClient(creds);
+      const resp = await sanity.fetch("*");
+      return resp;
+    }
+  );
 
   if (!groq) {
     groq = "*[_type=='" + docType + "']";
@@ -255,6 +241,23 @@ export function SanityFetcher({
     const sanity = useSanityClient(creds);
     const resp = await sanity.fetch(groq);
     return resp;
+  });
+
+  if (!allData?.data) {
+    return (
+      <div>
+        Please configure the Sanity provider with a valid projectId, dataset,
+        and token (if necessary). Don't forget to add
+        'https://host.plasmicdev.com' as an authorized host on the CORS origins
+        section of your project.
+      </div>
+    );
+  }
+
+  const existingTypes = new Set(allData.data?.map((doc) => doc._type));
+
+  setControlContextData?.({
+    docTypes: Array.from(existingTypes),
   });
 
   if (!data?.data) {
