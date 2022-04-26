@@ -11,6 +11,7 @@ const placeholderImage =
 interface ProductMediaProps {
   className: string;
   mediaIndex?: number;
+  mediaSize?: string;
 }
 
 export const productMediaMeta: ComponentMeta<ProductMediaProps> = {
@@ -18,13 +19,23 @@ export const productMediaMeta: ComponentMeta<ProductMediaProps> = {
   displayName: "Product Media",
   props: {
     mediaIndex: "number",
+    mediaSize: {
+      type: "choice",
+      options: [
+        { label: "Fill", value: "fill" },
+        { label: "Container", value: "contain" },
+        { label: "Cover", value: "cover" },
+        { label: "None", value: "none" },
+        { label: "Scale down", value: "scale-down" },
+      ],
+    },
   },
   importPath: "@plasmicpkgs/commerce",
   importName: "ProductMedia",
 };
 
 export function ProductMedia(props: ProductMediaProps) {
-  const { className, mediaIndex = 0 } = props;
+  const { className, mediaIndex = 0, mediaSize } = props;
 
   const product = useProduct();
   const sliderContext = useProductSliderContext();
@@ -36,6 +47,9 @@ export function ProductMedia(props: ProductMediaProps) {
       src={product ? image?.url ?? "" : placeholderImage}
       loading={"lazy"}
       className={className}
+      style={{
+        objectFit: mediaSize as any,
+      }}
     />
   );
 }

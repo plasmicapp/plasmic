@@ -8,6 +8,7 @@ import { Registerable } from "./registerable";
 interface CategoryMediaProps {
   className: string;
   mediaIndex?: number;
+  mediaSize?: string;
 }
 
 export const categoryMediaMeta: ComponentMeta<CategoryMediaProps> = {
@@ -15,13 +16,23 @@ export const categoryMediaMeta: ComponentMeta<CategoryMediaProps> = {
   displayName: "Category Media",
   props: {
     mediaIndex: "number",
+    mediaSize: {
+      type: "choice",
+      options: [
+        { label: "Fill", value: "fill" },
+        { label: "Container", value: "contain" },
+        { label: "Cover", value: "cover" },
+        { label: "None", value: "none" },
+        { label: "Scale down", value: "scale-down" },
+      ],
+    },
   },
   importPath: "@plasmicpkgs/commerce",
   importName: "CategoryMedia",
 };
 
 export function CategoryMedia(props: CategoryMediaProps) {
-  const { className, mediaIndex = 0 } = props;
+  const { className, mediaIndex = 0, mediaSize } = props;
 
   const category = useCategoryContext();
 
@@ -32,6 +43,9 @@ export function CategoryMedia(props: CategoryMediaProps) {
       src={image?.url ?? ""}
       loading={"lazy"}
       className={className}
+      style={{
+        objectFit: mediaSize as any,
+      }}
     />
   );
 }
