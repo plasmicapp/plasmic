@@ -22,6 +22,8 @@ export const cartMeta: ComponentMeta<CartProps> = {
     },
     hideIfIsEmpty: {
       type: "boolean",
+      defaultValue: false,
+      description: "You can hide this component if the cart is empty",
     },
   },
   importPath: "@plasmicpkgs/commerce",
