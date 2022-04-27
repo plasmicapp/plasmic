@@ -13,8 +13,14 @@ export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
   name: "plasmic-commerce-shopify-provider",
   displayName: "Shopify Provider",
   props: {
-    storeDomain: "string",
-    accessToken: "string",
+    storeDomain: {
+      type: "string",
+      defaultValue: "next-js-store.myshopify.com",
+    },
+    accessToken: {
+      type: "string",
+      defaultValue: "ef7d41c7bf7e1c214074d0d3047bcd7b",
+    },
   },
   description: `Your store domain should look like **storename.myshopify.com**.
     For your access token, get it by following [this video](https://www.youtube.com/watch?v=wB_6cM7tdv4).`,
