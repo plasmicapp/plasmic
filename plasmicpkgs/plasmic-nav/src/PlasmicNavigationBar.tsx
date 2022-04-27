@@ -1,10 +1,8 @@
+import { ComponentMeta, PlasmicCanvasContext } from "@plasmicapp/host";
+import registerComponent, {
+  CanvasComponentProps,
+} from "@plasmicapp/host/registerComponent";
 import React from "react";
-import {
-  ComponentMeta,
-  registerComponent,
-  PlasmicCanvasContext,
-} from "@plasmicapp/host";
-import { CanvasComponentProps } from "@plasmicapp/host/registerComponent";
 
 interface Props extends CanvasComponentProps {
   brand?: React.ReactNode;
@@ -51,7 +49,7 @@ export function NavigationBar(props: Props) {
 
   const cssStyles = React.useMemo(
     () =>
-    minifyCss(`
+      minifyCss(`
     /* Shared Styles */
     .${CSSClasses.container} {
       box-sizing: border-box;
@@ -61,17 +59,17 @@ export function NavigationBar(props: Props) {
       box-sizing: border-box;
       display: flex;
     }
-    
+
     .${CSSClasses.menuItemsContainer} > * {
       flex: 0 0 auto;
     }
-    
+
     /* Desktop Styles */
     @media (min-width: ${responsiveBreakpoint + 1}px) {
       .${CSSClasses.menuButton} {
         display: none;
       }
-    
+
       .${CSSClasses.menuItemsContainer} {
         flex-direction: row;
         align-items: center;
@@ -81,7 +79,7 @@ export function NavigationBar(props: Props) {
         margin-inline-start: ${gap}px;
       }
     }
-    
+
     /* Mobile Styles */
     @media (max-width: ${responsiveBreakpoint}px) {
       .${CSSClasses.menuButton} {
@@ -98,11 +96,13 @@ export function NavigationBar(props: Props) {
         background: none;
         cursor: pointer;
       }
-    
-      .${CSSClasses.menuItemsContainer}:not(.${CSSClasses.menuItemsContainerOpen}) {
+
+      .${CSSClasses.menuItemsContainer}:not(.${
+        CSSClasses.menuItemsContainerOpen
+      }) {
         display: none;
       }
-    
+
       .${CSSClasses.menuItemsContainer} {
         margin-top: 10px;
         flex-direction: column;
@@ -161,7 +161,8 @@ export const navigationBarComponentMeta: ComponentMeta<Props> = {
     // Properties
     forceOpenMenu: {
       displayName: "Force Open Menu",
-      description: "Use this option to open the menu during design time so you can easily customize the close button and menu items for small screens. This option is ignored when publishing the page.",
+      description:
+        "Use this option to open the menu during design time so you can easily customize the close button and menu items for small screens. This option is ignored when publishing the page.",
       type: "boolean",
     },
     itemsGap: {
@@ -173,7 +174,8 @@ export const navigationBarComponentMeta: ComponentMeta<Props> = {
     },
     responsiveBreakpoint: {
       displayName: "Small Screens Breakpoint",
-      description: "The maximum screen width used for showing the small screens version of the menu.",
+      description:
+        "The maximum screen width used for showing the small screens version of the menu.",
       type: "number",
       min: 0,
       defaultValue: DEFAULT_RESPONSIVE_BREAKPOINT,
