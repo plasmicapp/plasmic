@@ -8,10 +8,6 @@ export const ProductContext = React.createContext<Product | undefined>(
   undefined
 );
 export const ProductFormContext = React.createContext<any>(undefined);
-export const CategoryContext = React.createContext<Category | undefined>(
-  undefined
-);
-export const SliderContext = React.createContext<number | undefined>(undefined);
 
 export function ProductProvider({
   product,
@@ -35,6 +31,13 @@ export const useProduct = () => {
 
 export const useProductForm = () => useContext(ProductFormContext);
 
+export const CategoryContext = React.createContext<Category | undefined>(
+  undefined
+);
+export const PrimaryCategoryContext = React.createContext<Category | undefined>(
+  undefined
+); //used to render correctly the defaultValueHint in ProductCollection
+
 export function CategoryProvider({
   category,
   children,
@@ -50,6 +53,8 @@ export function CategoryProvider({
 }
 
 export const useCategoryContext = () => useContext(CategoryContext);
+export const usePrimaryCategory = () => useContext(PrimaryCategoryContext);
+export const SliderContext = React.createContext<number | undefined>(undefined);
 
 export function ProductSliderProvider({
   mediaIndex,

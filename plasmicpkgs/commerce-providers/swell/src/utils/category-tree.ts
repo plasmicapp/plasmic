@@ -16,7 +16,10 @@ export const walkCategoryTree = (
     result.push(curr);
     queue.push(
       ...(curr.children?.map((child) =>
-        ensure(categories.find((category) => category.id === child))
+        ensure(
+          categories.find((category) => category.id === child),
+          "The child category must always exist in the categories list"
+        )
       ) ?? [])
     );
   }

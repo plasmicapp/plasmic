@@ -3,7 +3,7 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
-import { CategoryProvider } from "./contexts";
+import { CategoryProvider, PrimaryCategoryContext } from "./contexts";
 import { Registerable } from "./registerable";
 import useCategories from "./site/use-categories";
 import { Category } from "./types/site";
@@ -137,10 +137,16 @@ export function CategoryCollection(props: CategoryCollectionProps) {
     return React.isValidElement(emptyMessage) ? emptyMessage : null;
   }
 
-  return noLayout ? (
-    <React.Fragment>{renderedData}</React.Fragment>
-  ) : (
-    <div className={className}>{renderedData}</div>
+  return (
+    <PrimaryCategoryContext.Provider
+      value={firstCategoryNotEmpty ?? categories[0]}
+    >
+      {noLayout ? (
+        <React.Fragment>{renderedData}</React.Fragment>
+      ) : (
+        <div className={className}>{renderedData}</div>
+      )}
+    </PrimaryCategoryContext.Provider>
   );
 }
 

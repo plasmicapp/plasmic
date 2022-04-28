@@ -3,7 +3,11 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
-import { ProductProvider, useCategoryContext } from "./contexts";
+import {
+  ProductProvider,
+  useCategoryContext,
+  usePrimaryCategory,
+} from "./contexts";
 import useSearch from "./product/use-search";
 import { Registerable } from "./registerable";
 import useBrands from "./site/use-brands";
@@ -29,7 +33,7 @@ interface ProductCollectionProps {
     categories: Category[];
     brands: Brand[];
     features?: CommerceExtraFeatures;
-    hasCategoryCtx?: boolean;
+    categoryCtx?: Category;
   }) => void;
 }
 
@@ -87,7 +91,8 @@ export const productCollectionMeta: ComponentMeta<ProductCollectionProps> = {
           })) ?? []
         );
       },
-      hidden: (props, ctx) => !!ctx?.hasCategoryCtx,
+      defaultValueHint: (props, ctx) => ctx?.categoryCtx?.name,
+      readOnly: (props, ctx) => !!ctx?.categoryCtx,
     },
     includeSubCategories: {
       type: "boolean",
@@ -175,13 +180,13 @@ export function ProductCollection(props: ProductCollectionProps) {
   });
 
   const features = useCommerceExtraFeatures();
-
+  const primaryCategory = usePrimaryCategory();
   if (categories && brands) {
     setControlContextData?.({
       categories,
       brands,
       features,
-      hasCategoryCtx: !!categoryCtx,
+      categoryCtx: primaryCategory,
     });
   }
 

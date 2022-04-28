@@ -5,6 +5,7 @@ import {
   UseCategories,
 } from "@plasmicpkgs/commerce";
 import { useMemo } from "react";
+import { Category } from "../types/site";
 import { normalizeCategory } from "../utils";
 import { topologicalSortForCategoryTree } from "../utils/category-tree";
 
@@ -48,9 +49,10 @@ export const handler: SWRHook<GetCategoriesHook> = {
       );
     }
 
-    const normalizedCategories = topologicalSortForCategoryTree(
-      categories.map(normalizeCategory)
-    );
+    const normalizedCategories: Category[] = !categoryId
+      ? topologicalSortForCategoryTree(categories.map(normalizeCategory))
+      : categories.map(normalizeCategory);
+
     for (const category of normalizedCategories) {
       category.depth =
         (normalizedCategories.find((c) => c.id === category.parentId)?.depth ??
