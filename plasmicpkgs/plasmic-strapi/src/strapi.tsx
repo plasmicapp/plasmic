@@ -178,7 +178,11 @@ export function StrapiCollection({
 interface StrapiFieldProps {
   className?: string;
   path?: string;
-  setControlContextData?: (data: { fields: string[] }) => void;
+  mediaSize?: string;
+  setControlContextData?: (data: {
+    fields: string[];
+    isImage: boolean;
+  }) => void;
 }
 
 export const strapiFieldMeta: ComponentMeta<StrapiFieldProps> = {
@@ -195,12 +199,26 @@ export const strapiFieldMeta: ComponentMeta<StrapiFieldProps> = {
       displayName: "Field",
       description: "Field name",
     },
+    mediaSize: {
+      type: "choice",
+      options: [
+        { label: "Fill", value: "fill" },
+        { label: "Contain", value: "contain" },
+        { label: "Cover", value: "cover" },
+        { label: "None", value: "none" },
+        { label: "Scale down", value: "scale-down" },
+      ],
+      defaultValue: "cover",
+      hidden: (props, ctx) => !ctx?.isImage,
+      displayName: "Media Size",
+    },
   },
 };
 
 export function StrapiField({
   className,
   path,
+  mediaSize,
   setControlContextData,
 }: StrapiFieldProps) {
   const item = useSelector("strapiItem");
@@ -220,6 +238,7 @@ export function StrapiField({
 
   setControlContextData?.({
     fields: displayableFields,
+    isImage: false,
   });
 
   if (!path) {
@@ -227,6 +246,12 @@ export function StrapiField({
   }
 
   const data = L.get(item, ["attributes", path]);
+
+  setControlContextData?.({
+    fields: displayableFields,
+    isImage: data?.data?.attributes?.mime.startsWith("image"),
+  });
+
   if (!data) {
     return <div>Please specify a valid field name.</div>;
   } else if (data?.data?.attributes?.mime.startsWith("image")) {
@@ -240,6 +265,9 @@ export function StrapiField({
     return (
       <img
         className={className}
+        style={{
+          objectFit: mediaSize as any,
+        }}
         src={img_url}
         width={300}
         height={(300 * img_height) / img_width}
