@@ -238,7 +238,12 @@ export function StrapiField({
     const img_width = attrs.width;
     const img_height = attrs.height;
     return (
-      <img src={img_url} width={300} height={(300 * img_height) / img_width} />
+      <img
+        className={className}
+        src={img_url}
+        width={300}
+        height={(300 * img_height) / img_width}
+      />
     );
   } else {
     return <div className={className}>{data}</div>;

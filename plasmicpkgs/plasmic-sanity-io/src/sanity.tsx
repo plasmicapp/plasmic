@@ -356,6 +356,7 @@ export function SanityField({
   } else if (data?._type === "image") {
     return (
       <img
+        className={className}
         src={imageBuilder.image(data).ignoreImageParams().width(300).toString()}
       />
     );
