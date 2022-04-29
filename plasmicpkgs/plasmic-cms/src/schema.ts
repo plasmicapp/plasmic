@@ -47,12 +47,18 @@ export interface CmsRichText extends CmsBaseType {
   defaultValue?: string;
 }
 
+export interface CmsFile extends CmsBaseType {
+  type: "file";
+  defaultValue?: string;
+}
+
 export type CmsFieldMeta =
   | CmsText
   | CmsLongText
   | CmsNumber
   | CmsBoolean
   | CmsImage
+  | CmsFile
   | CmsDateTime
   | CmsRichText;
 

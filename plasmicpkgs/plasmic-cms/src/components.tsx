@@ -405,6 +405,7 @@ export const cmsRowFieldMeta: ComponentMeta<CmsRowFieldProps> = {
           "date-time",
           "rich-text",
           "image",
+          "file",
         ]),
       defaultValueHint: (_, ctx) =>
         ctx?.fieldMeta?.name || ctx?.fieldMeta?.identifier,
@@ -591,6 +592,15 @@ function renderValue(value: any, type: CmsType, props: { className?: string }) {
         );
       }
       return null;
+    case "file":
+      if (value && typeof value === "object" && value.url && value.name) {
+        return (
+          <a href={value.url} target="_blank" {...props}>
+            {value.name}
+          </a>
+        );
+      }
+      return null;
     default:
       assertNever(type);
   }
@@ -646,11 +656,13 @@ export const cmsRowLinkMeta: ComponentMeta<CmsRowLinkProps> = {
       type: "string",
       displayName: "Optional prefix",
       description: "Prefix to prepend to prop value.",
+      hidden: (_, ctx) => ctx?.fieldMeta?.type === "file",
     },
     suffix: {
       type: "string",
       displayName: "Optional suffix",
       description: "Suffix to append to prop value.",
+      hidden: (_, ctx) => ctx?.fieldMeta?.type === "file",
     },
   },
 };
@@ -675,7 +687,7 @@ export function CmsRowLink({
     table: res.table,
     tables,
     field,
-    typeFilters: ["text"],
+    typeFilters: ["file", "text"],
   });
 
   if (tables) {
@@ -700,7 +712,11 @@ export function CmsRowLink({
     if (React.isValidElement(child)) {
       return React.cloneElement(child, {
         [hrefProp]:
-          prefix || suffix ? `${prefix || ""}${value}${suffix || ""}` : value,
+          fieldMeta.type === "file"
+            ? value.url
+            : prefix || suffix
+            ? `${prefix || ""}${value}${suffix || ""}`
+            : value,
       });
     }
     return child;
