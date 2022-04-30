@@ -194,6 +194,34 @@ interface JsonElement {
   value: any;
 }
 
+export interface DefaultComponentElement<P> {
+  type: "default-component";
+  kind: "button" | "text-input";
+  props?: {
+    // For auto-completion
+    [prop in keyof Partial<P>]:
+      | number
+      | string
+      | boolean
+      | null
+      | undefined
+      | JsonElement
+      | PlasmicElement
+      | PlasmicElement[];
+  } & {
+    [prop: string]:
+      | number
+      | string
+      | boolean
+      | null
+      | undefined
+      | JsonElement
+      | PlasmicElement
+      | PlasmicElement[];
+  };
+  styles?: CSSProperties;
+}
+
 export interface CodeComponentElement<P> {
   type: "component";
   /**
@@ -231,4 +259,5 @@ export type PlasmicElement =
   | ContainerElement
   | ButtonElement
   | TextInputElement
-  | CodeComponentElement<{}>;
+  | CodeComponentElement<{}>
+  | DefaultComponentElement<{}>;
