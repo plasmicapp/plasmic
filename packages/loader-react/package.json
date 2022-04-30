@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/loader-react",
-  "version": "1.0.102",
+  "version": "1.0.103",
   "module": "dist/loader-react.esm.js",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -21,7 +21,7 @@
     "analyze": "size-limit --why"
   },
   "dependencies": {
-    "@plasmicapp/host": "1.0.40",
+    "@plasmicapp/host": "1.0.41",
     "@plasmicapp/loader-core": "1.0.72",
     "@plasmicapp/loader-splits": "1.0.3",
     "@plasmicapp/query": "0.1.42",
