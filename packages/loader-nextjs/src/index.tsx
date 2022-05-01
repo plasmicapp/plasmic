@@ -41,7 +41,7 @@ type ServerRequest = IncomingMessage & {
     [key: string]: string;
   };
 };
-class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
+export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
   constructor(internal: InternalPlasmicComponentLoader) {
     super(internal);
   }
