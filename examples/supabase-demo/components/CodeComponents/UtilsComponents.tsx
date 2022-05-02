@@ -1,5 +1,4 @@
 import { Modal } from "antd";
-import "antd/dist/antd.css";
 import React, { MouseEvent, ReactNode, useContext } from "react";
 import {
   DeleteButtonContext,

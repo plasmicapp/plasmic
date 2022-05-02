@@ -1,6 +1,5 @@
 import { repeatedElement } from "@plasmicapp/host";
 import { Table } from "antd";
-import "antd/dist/antd.css";
 import L from "lodash";
 import React, { ReactNode } from "react";
 import { assertNever } from "../common";
