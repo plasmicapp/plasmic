@@ -18,6 +18,7 @@ import {
   registerMenuItemGroup,
   registerSubMenu,
 } from "./registerMenu";
+import { registerRate } from "./registerRate";
 import { registerOptGroup, registerOption } from "./registerOption";
 import { registerSelect } from "./registerSelect";
 import { registerSlider } from "./registerSlider";
@@ -37,6 +38,7 @@ export * from "./registerSlider";
 export * from "./registerSwitch";
 export * from "./registerCarousel";
 export * from "./registerTabs";
+export * from "./registerRate";
 
 export function registerAll(loader?: Registerable) {
   registerButton(loader);
@@ -64,4 +66,5 @@ export function registerAll(loader?: Registerable) {
   registerInputGroup(loader);
   registerTabPane(loader);
   registerTabs(loader);
+  registerRate(loader);
 }
