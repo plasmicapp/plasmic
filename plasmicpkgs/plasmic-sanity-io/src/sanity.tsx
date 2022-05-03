@@ -292,7 +292,6 @@ interface SanityFieldProps {
   className?: string;
   path?: string;
   field?: string;
-  mediaSize?: string;
   setControlContextData?: (data: {
     fields: string[];
     isImage: boolean;
@@ -319,19 +318,6 @@ export const sanityFieldMeta: ComponentMeta<SanityFieldProps> = {
       displayName: "Field",
       description: "Field to be displayed.",
     },
-    mediaSize: {
-      type: "choice",
-      options: [
-        { label: "Fill", value: "fill" },
-        { label: "Contain", value: "contain" },
-        { label: "Cover", value: "cover" },
-        { label: "None", value: "none" },
-        { label: "Scale down", value: "scale-down" },
-      ],
-      defaultValue: "cover",
-      hidden: (props, ctx) => !ctx?.isImage,
-      displayName: "Media Size",
-    },
   },
 };
 
@@ -339,7 +325,6 @@ export function SanityField({
   className,
   path,
   field,
-  mediaSize,
   setControlContextData,
 }: SanityFieldProps) {
   const creds = ensure(useContext(CredentialsContext));
@@ -382,9 +367,6 @@ export function SanityField({
     return (
       <img
         className={className}
-        style={{
-          objectFit: mediaSize as any,
-        }}
         src={imageBuilder.image(data).ignoreImageParams().width(300).toString()}
       />
     );
