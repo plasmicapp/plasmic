@@ -3,7 +3,7 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
-import { ProductSliderProvider, useProduct } from "./contexts";
+import { ProductMediaProvider, useProduct } from "./contexts";
 import { Registerable } from "./registerable";
 
 interface ProductSliderProps {
@@ -76,12 +76,7 @@ export function ProductSlider(props: ProductSliderProps) {
   const leftIndex = Math.min(maximumRight, Math.max(0, selected - 1));
   return (
     <div className={className}>
-      {
-        <ProductSliderProvider
-          mediaIndex={selected}
-          children={slideContainer}
-        />
-      }
+      {<ProductMediaProvider mediaIndex={selected} children={slideContainer} />}
       <div
         style={{
           display: "grid",
@@ -93,7 +88,7 @@ export function ProductSlider(props: ProductSliderProps) {
           .map((image, i) =>
             repeatedElement(
               i === 0,
-              <ProductSliderProvider
+              <ProductMediaProvider
                 mediaIndex={leftIndex + i}
                 children={thumbsContainer}
                 onClick={() => setSelected(leftIndex + i)}

@@ -54,9 +54,11 @@ export function CategoryProvider({
 
 export const useCategoryContext = () => useContext(CategoryContext);
 export const usePrimaryCategory = () => useContext(PrimaryCategoryContext);
-export const SliderContext = React.createContext<number | undefined>(undefined);
 
-export function ProductSliderProvider({
+export const ProductMediaContext = React.createContext<number | undefined>(
+  undefined
+);
+export function ProductMediaProvider({
   mediaIndex,
   onClick,
   children,
@@ -66,12 +68,11 @@ export function ProductSliderProvider({
   onClick?: () => void;
 }) {
   return (
-    <SliderContext.Provider value={mediaIndex} key={mediaIndex}>
+    <ProductMediaContext.Provider value={mediaIndex} key={mediaIndex}>
       {React.cloneElement(React.isValidElement(children) ? children : <></>, {
         onClick,
       })}
-    </SliderContext.Provider>
+    </ProductMediaContext.Provider>
   );
 }
-
-export const useProductSliderContext = () => useContext(SliderContext);
+export const useProductMediaContext = () => useContext(ProductMediaContext);

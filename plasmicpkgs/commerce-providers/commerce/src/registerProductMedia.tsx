@@ -2,7 +2,7 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
-import { useProduct, useProductSliderContext } from "./contexts";
+import { useProduct, useProductMediaContext } from "./contexts";
 import { Registerable } from "./registerable";
 
 const placeholderImage =
@@ -11,25 +11,34 @@ const placeholderImage =
 interface ProductMediaProps {
   className: string;
   mediaIndex?: number;
+  setControlContextData: (data: { inMediaContext: boolean }) => void;
 }
 
 export const productMediaMeta: ComponentMeta<ProductMediaProps> = {
   name: "plasmic-commerce-product-media",
   displayName: "Product Media",
   props: {
-    mediaIndex: "number",
+    mediaIndex: {
+      type: "number",
+      min: 0,
+      hidden: (_, ctx) => !!ctx?.inMediaContext,
+    },
   },
   importPath: "@plasmicpkgs/commerce",
   importName: "ProductMedia",
 };
 
 export function ProductMedia(props: ProductMediaProps) {
-  const { className, mediaIndex = 0 } = props;
+  const { className, mediaIndex = 0, setControlContextData } = props;
 
   const product = useProduct();
-  const sliderContext = useProductSliderContext();
+  const mediaContext = useProductMediaContext();
 
-  const image = product?.images[sliderContext ?? mediaIndex];
+  setControlContextData?.({
+    inMediaContext: mediaContext !== undefined,
+  });
+
+  const image = product?.images[mediaContext ?? mediaIndex];
   return (
     <img
       alt={product?.name || "Product Image"}
