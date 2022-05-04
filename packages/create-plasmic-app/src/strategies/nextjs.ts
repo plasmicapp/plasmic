@@ -36,9 +36,8 @@ const nextjsStrategy: CPAStrategy = {
   },
   overwriteConfig: async (args) => {
     const { projectPath, scheme } = args;
-
+    const nextjsConfigFile = path.join(projectPath, "next.config.js");
     if (scheme === "codegen") {
-      const nextjsConfigFile = path.join(projectPath, "next.config.js");
       await fs.writeFile(
         nextjsConfigFile,
         `
@@ -51,6 +50,21 @@ module.exports = {
 };
     `
       );
+    } else {
+      await fs.writeFile(
+        nextjsConfigFile, 
+        `
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  // Turn off React StrictMode for now, as react-aria (used by Plasmic) 
+  // has some troubles with it. See
+  // https://github.com/adobe/react-spectrum/labels/strict%20mode
+  reactStrictMode: false,
+}
+
+module.exports = nextConfig
+        `
+      )
     }
   },
   generateFiles: async (args) => {
