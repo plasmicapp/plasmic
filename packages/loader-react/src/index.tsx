@@ -23,5 +23,10 @@ export {
   PlasmicTranslator,
 } from './PlasmicRootProvider';
 export { extractPlasmicQueryData, plasmicPrepass } from './prepass';
-export { hydrateFromElement, renderToElement, renderToString } from './render';
+export {
+  extractPlasmicQueryDataFromElement,
+  hydrateFromElement,
+  renderToElement,
+  renderToString,
+} from './render';
 export { usePlasmicComponent } from './usePlasmicComponent';
