@@ -72,8 +72,8 @@ export function ProductSlider(props: ProductSliderProps) {
 
   const [selected, setSelected] = React.useState<number>(slideSelected);
 
-  const maximumRight = product.images.length - thumbsVisible;
-  const leftIndex = Math.min(maximumRight, Math.max(0, selected - 1));
+  const maximumLeft = Math.max(0, product.images.length - thumbsVisible);
+  const leftIndex = Math.min(maximumLeft, Math.max(0, selected - 1));
   return (
     <div className={className}>
       {<ProductMediaProvider mediaIndex={selected} children={slideContainer} />}
