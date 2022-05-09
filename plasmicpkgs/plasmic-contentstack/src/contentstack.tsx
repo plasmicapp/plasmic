@@ -1,0 +1,299 @@
+import {
+  ComponentMeta,
+  DataProvider,
+  GlobalContextMeta,
+  repeatedElement,
+  useSelector,
+} from "@plasmicapp/host";
+import { usePlasmicQueryData } from "@plasmicapp/query";
+import L from "lodash";
+import React, { ReactNode, useContext } from "react";
+
+import * as ContentStack from "contentstack";
+
+export function ensure<T>(x: T | null | undefined): T {
+  if (x === null || x === undefined) {
+    debugger;
+    throw new Error(`Value must not be undefined or null`);
+  } else {
+    return x;
+  }
+}
+
+const modulePath = "@plasmicpkgs/plasmic-contentstack";
+
+interface ContentStackCredentialsProviderProps {
+  apiKey: string;
+  accessToken: string;
+  environment: string;
+}
+
+const CredentialsContext =
+  React.createContext<ContentStackCredentialsProviderProps | undefined>(
+    undefined
+  );
+
+export const ContentStackCredentialsProviderMeta: GlobalContextMeta<ContentStackCredentialsProviderProps> =
+  {
+    name: "ContentStackCredentialsProvider",
+    displayName: "ContentStack Credentials Provider",
+    description:
+      "The API key is a unique key assigned to each stack. Learn how to [get your API key](https://www.contentstack.com/docs/developers/apis/content-management-api/#how-to-get-stack-api-key).",
+    importName: "ContentStackCredentialsProvider",
+    importPath: modulePath,
+    props: {
+      apiKey: {
+        type: "string",
+        displayName: "API Key",
+        description: "API Key of your Stack ",
+        defaultValue: "blt37e5d9fa4b15e084",
+      },
+      accessToken: {
+        type: "string",
+        displayName: "Access Token ",
+        description: "Access Token",
+        defaultValue: "cs3239b47b1c353a942a73e686",
+      },
+      environment: {
+        type: "string",
+        displayName: "Environment",
+        description:
+          "(https://www.contentstack.com/docs/developers/set-up-environments/add-an-environment/).",
+        defaultValue: "development",
+      },
+    },
+  };
+
+export function ContentStackCredentialsProvider({
+  apiKey,
+  accessToken,
+  environment,
+  children,
+}: React.PropsWithChildren<ContentStackCredentialsProviderProps>) {
+  return (
+    <CredentialsContext.Provider value={{ apiKey, accessToken, environment }}>
+      {children}
+    </CredentialsContext.Provider>
+  );
+}
+
+interface ContentStackFetcherProps {
+  entryUID?: string;
+  contentType?: string;
+  children?: ReactNode;
+  className?: string;
+  noLayout?: boolean;
+  setControlContextData?: (data: {
+    types?: { title: string; uid: string }[];
+    entries?: { title: string; uid: string }[];
+  }) => void;
+}
+
+export const ContentStackFetcherMeta: ComponentMeta<ContentStackFetcherProps> =
+  {
+    name: "ContentStackFetcher",
+    displayName: "ContentStack Fetcher",
+    importName: "ContentStackFetcher",
+    importPath: modulePath,
+    description:
+      "Fetches ContentStack data and repeats content of children once for every row fetched. ",
+    defaultStyles: {
+      display: "grid",
+      gridTemplateColumns: "1fr 1fr 1fr 1fr",
+      gridRowGap: "8px",
+      gridColumnGap: "8px",
+      padding: "8px",
+      maxWidth: "100%",
+    },
+    props: {
+      children: {
+        type: "slot",
+        defaultValue: {
+          type: "vbox",
+          styles: {
+            padding: "8px",
+          },
+          children: {
+            type: "component",
+            name: "ContentStackField",
+          },
+        },
+      },
+      contentType: {
+        type: "choice",
+        options: (props, ctx) =>
+          ctx?.types?.map((type) => ({
+            label: type.title,
+            value: type.uid,
+          })) ?? [],
+        displayName: "Content type",
+        description: "Content type to be queried.",
+      },
+      entryUID: {
+        type: "choice",
+        options: (props, ctx) =>
+          ctx?.entries?.map((entry) => ({
+            label: entry.title,
+            value: entry.uid,
+          })) ?? [],
+        displayName: "ENTRY UID",
+        description: "Query in Content Type.",
+      },
+      noLayout: {
+        type: "boolean",
+        displayName: "No layout",
+        description:
+          "When set, ContentStack Fetcher will not layout its children; instead, the layout set on its parent element will be used. Useful if you want to set flex gap or control container tag type.",
+        defaultValue: false,
+      },
+    },
+  };
+
+export function ContentStackFetcher({
+  entryUID,
+  contentType,
+  children,
+  className,
+  noLayout,
+  setControlContextData,
+}: ContentStackFetcherProps) {
+  const creds = ensure(useContext(CredentialsContext));
+  const cacheKey = JSON.stringify({
+    creds,
+    contentType,
+    entryUID,
+  });
+  const Stack = ContentStack.Stack({
+    api_key: creds.apiKey,
+    delivery_token: creds.accessToken,
+    environment: creds.environment,
+  });
+
+  const { data: entryData } = usePlasmicQueryData<any | null>(
+    cacheKey,
+    async () => {
+      if (!contentType || !entryUID) {
+        return undefined;
+      }
+      const Query = Stack.ContentType(`${contentType}`).Entry(`${entryUID}`);
+      const result = await Query.fetch();
+      const response = await result.toJSON();
+      return response;
+    }
+  );
+
+  const { data: contentTypes } = usePlasmicQueryData<any | null>(
+    `${cacheKey}/contentTypes`,
+    async () => {
+      return (
+        await Stack.getContentTypes({ include_global_field_schema: true })
+      ).content_types;
+    }
+  );
+
+  const { data: entriesData } = usePlasmicQueryData<any | null>(
+    `${cacheKey}/entries`,
+    async () => {
+      if (!contentType) {
+        return undefined;
+      }
+      return await Stack.ContentType(`${contentType}`).Query().toJSON().find();
+    }
+  );
+
+  setControlContextData?.({
+    types: contentTypes,
+    entries: entriesData?.[0],
+  });
+
+  if (!creds.apiKey || !creds.accessToken) {
+    return <div>Please specify a valid API Key Access Token</div>;
+  }
+
+  let renderedData;
+  if (contentType && entryUID) {
+    renderedData = (
+      <DataProvider name={"contentStackItem"} data={entryData}>
+        {children}
+      </DataProvider>
+    );
+  } else if (contentType && !entryUID) {
+    const entries = entriesData?.flat();
+    renderedData = entries?.map((item: any, index: any) => (
+      <DataProvider key={item._id} name={"contentStackItem"} data={item}>
+        {repeatedElement(index === 0, children)}
+      </DataProvider>
+    ));
+  } else {
+    return <div>Please select a content type.</div>;
+  }
+  return noLayout ? (
+    <> {renderedData} </>
+  ) : (
+    <div className={className}> {renderedData} </div>
+  );
+}
+
+interface ContentStackFieldProps {
+  className?: string;
+  field?: string;
+
+  setControlContextData?: (data: { fields: string[] }) => void;
+}
+export const ContentStackFieldMeta: ComponentMeta<ContentStackFieldProps> = {
+  name: "ContentStackField",
+  displayName: "ContentStack Field",
+  importName: "ContentStackField",
+  importPath: modulePath,
+  props: {
+    field: {
+      type: "choice",
+      options: (props: any, ctx: any) => {
+        return ctx?.fields ?? [];
+      },
+      displayName: "Field",
+      description: "Field to be displayed.",
+    },
+  },
+};
+export function ContentStackField({
+  className,
+  field,
+
+  setControlContextData,
+}: ContentStackFieldProps) {
+  const creds = ensure(useContext(CredentialsContext));
+  const item = useSelector("contentStackItem");
+  if (!item) {
+    return (
+      <div>ContentStackField must be used within a ContentStackFetcher </div>
+    );
+  }
+  // Getting only fields that aren’t objects
+  const displayableFields = Object.keys(item).filter((field) => {
+    const value = L.get(item, field);
+    return typeof value !== "object" || value._type === "image";
+  });
+  setControlContextData?.({
+    fields: displayableFields,
+  });
+  if (!field) {
+    return <div>Please specify a valid path or select a field.</div>;
+  }
+  const data = L.get(item, field as string);
+  setControlContextData?.({
+    fields: displayableFields,
+  });
+  if (!data) {
+    return <div>Please specify a valid field.</div>;
+  } else if (data?._type === "image") {
+    return (
+      <img
+        className={className}
+        src={`https://images.contentstack.io/v3/assets/${creds.apiKey}/${item?.asset_uid}/${item?.version_uid}/filename`}
+      />
+    );
+  } else {
+    return <div className={className}> {data} </div>;
+  }
+}
