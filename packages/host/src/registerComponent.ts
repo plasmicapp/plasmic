@@ -64,6 +64,14 @@ export type StringType<P> =
           type: "code";
           lang: "css" | "html" | "javascript" | "json";
         }
+      | {
+          type: "code";
+          lang: "graphql";
+          endpoint: string | ContextDependentConfig<P, string>;
+          method?: string | ContextDependentConfig<P, string>;
+          headers?: object | ContextDependentConfig<P, object>;
+          variables?: object | ContextDependentConfig<P, object>;
+        }
     ) &
       StringTypeBase<P>);
 
