@@ -1,9 +1,8 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { Button, ButtonProps } from "antd";
+import Button, { ButtonProps } from "antd/lib/button";
 import { Registerable } from "./registerable";
-
 export const buttonMeta: ComponentMeta<ButtonProps> = {
   name: "AntdButton",
   displayName: "Antd Button",
@@ -74,7 +73,8 @@ export const buttonMeta: ComponentMeta<ButtonProps> = {
       ],
     },
   },
-  importPath: "antd",
+  importPath: "antd/lib/button",
+  isDefaultExport: true,
   importName: "Button",
 };
 

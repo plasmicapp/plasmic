@@ -1,7 +1,7 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { MenuItemProps, MenuProps, SubMenuProps } from "antd";
+import { MenuItemProps, MenuProps, SubMenuProps } from "antd/lib/menu";
 import { MenuDividerProps } from "antd/lib/menu";
 import Menu from "antd/lib/menu/index";
 import MenuDivider from "antd/lib/menu/MenuDivider";

@@ -1,7 +1,7 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { CollapsePanelProps, CollapseProps } from "antd";
+import { CollapsePanelProps, CollapseProps } from "antd/lib/collapse";
 import Collapse from "antd/lib/collapse/Collapse";
 import CollapsePanel from "antd/lib/collapse/CollapsePanel";
 import { traverseReactEltTree } from "./customControls";
