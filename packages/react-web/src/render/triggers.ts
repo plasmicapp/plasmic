@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useFocusRing as useAriaFocusRing } from "react-aria";
+import { useFocusRing as useAriaFocusRing } from "@react-aria/focus";
 
 function useFocused(opts: { isTextInput?: boolean }) {
   const { isFocused, focusProps } = useAriaFocusRing({

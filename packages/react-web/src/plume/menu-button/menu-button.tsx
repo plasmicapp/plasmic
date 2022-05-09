@@ -1,8 +1,8 @@
 import { Placement } from "@react-types/overlays";
 import { DOMProps, FocusableProps } from "@react-types/shared";
 import * as React from "react";
-import { useFocusable } from "react-aria";
-import { useMenuTriggerState } from "react-stately";
+import { useFocusable } from "@react-aria/focus";
+import { useMenuTriggerState } from "@react-stately/menu";
 import { pick } from "../../common";
 import { mergeProps } from "../../react-utils";
 import { Overrides } from "../../render/elements";

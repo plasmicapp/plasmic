@@ -2,10 +2,10 @@ import { DOMProps } from "@react-types/shared";
 import * as React from "react";
 import {
   DismissButton,
-  FocusScope,
   useOverlay,
   useOverlayPosition,
-} from "react-aria";
+} from "@react-aria/overlays";
+import { FocusScope } from "@react-aria/focus";
 import * as ReactDOM from "react-dom";
 import { pick } from "../../common";
 import {
