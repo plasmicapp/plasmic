@@ -1,7 +1,8 @@
 import { AriaSwitchProps } from "@react-types/switch";
 import * as React from "react";
-import { useSwitch as useAriaSwitch, VisuallyHidden } from "react-aria";
-import { useToggleState } from "react-stately";
+import { useSwitch as useAriaSwitch } from "@react-aria/switch";
+import { VisuallyHidden } from "@react-aria/visually-hidden";
+import { useToggleState } from "@react-stately/toggle";
 import { pick } from "../../common";
 import { mergeProps } from "../../react-utils";
 import { Overrides } from "../../render/elements";

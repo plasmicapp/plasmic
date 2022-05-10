@@ -1,6 +1,6 @@
 import { Node } from "@react-types/shared";
 import * as React from "react";
-import { useMenuItem as useAriaMenuItem } from "react-aria";
+import { useMenuItem as useAriaMenuItem } from "@react-aria/menu";
 import { pick } from "../../common";
 import { mergeProps } from "../../react-utils";
 import { Overrides } from "../../render/elements";

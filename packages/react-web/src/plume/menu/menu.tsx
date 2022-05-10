@@ -1,8 +1,8 @@
 import { AriaMenuProps } from "@react-types/menu";
 import { AriaLabelingProps, DOMProps } from "@react-types/shared";
 import * as React from "react";
-import { useMenu as useAriaMenu } from "react-aria";
-import { useTreeState } from "react-stately";
+import { useMenu as useAriaMenu } from "@react-aria/menu";
+import { useTreeState } from "@react-stately/tree";
 import { pick } from "../../common";
 import { mergeProps } from "../../react-utils";
 import { Overrides } from "../../render/elements";

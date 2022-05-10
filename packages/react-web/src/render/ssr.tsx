@@ -1,5 +1,5 @@
 import * as React from "react";
-import { SSRProvider, useIsSSR as useAriaIsSSR } from "react-aria";
+import { SSRProvider, useIsSSR as useAriaIsSSR } from "@react-aria/ssr";
 import { PlasmicTranslator, PlasmicTranslatorContext } from "./translation";
 
 export interface PlasmicRootContextValue {

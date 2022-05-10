@@ -10,14 +10,18 @@ import {
 import * as React from "react";
 import {
   HiddenSelect,
-  useListBox,
-  usePress,
   useSelect as useAriaSelect,
-} from "react-aria";
+} from "@react-aria/select";
+import {
+  useListBox
+} from "@react-aria/listbox";
+import {
+  usePress
+} from "@react-aria/interactions";
 import {
   SelectState as AriaSelectState,
   useSelectState as useAriaSelectState,
-} from "react-stately";
+} from "@react-stately/select";
 import { pick } from "../../common";
 import { mergeProps } from "../../react-utils";
 import { Overrides } from "../../render/elements";
