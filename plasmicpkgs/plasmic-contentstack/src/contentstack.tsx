@@ -43,18 +43,18 @@ export const ContentStackCredentialsProviderMeta: GlobalContextMeta<ContentStack
       type: "string",
       displayName: "API Key",
       description: "API Key of your Stack ",
-      defaultValue: "blt37e5d9fa4b15e084",
+      defaultValue: "blt02f7b45378b008ee",
     },
     accessToken: {
       type: "string",
       displayName: "Access Token ",
       description: "Access Token",
-      defaultValue: "cs3239b47b1c353a942a73e686",
+      defaultValue: "cs5b69faf35efdebd91d08bcf4",
     },
     environment: {
       type: "string",
       displayName: "Environment",
-      defaultValue: "development",
+      defaultValue: "production",
     },
   },
 };
