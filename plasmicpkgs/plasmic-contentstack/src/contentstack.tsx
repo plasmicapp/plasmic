@@ -6,10 +6,9 @@ import {
   useSelector,
 } from "@plasmicapp/host";
 import { usePlasmicQueryData } from "@plasmicapp/query";
+import * as ContentStack from "contentstack";
 import L from "lodash";
 import React, { ReactNode, useContext } from "react";
-
-import * as ContentStack from "contentstack";
 
 export function ensure<T>(x: T | null | undefined): T {
   if (x === null || x === undefined) {
@@ -28,41 +27,37 @@ interface ContentStackCredentialsProviderProps {
   environment: string;
 }
 
-const CredentialsContext =
-  React.createContext<ContentStackCredentialsProviderProps | undefined>(
-    undefined
-  );
+const CredentialsContext = React.createContext<
+  ContentStackCredentialsProviderProps | undefined
+>(undefined);
 
-export const ContentStackCredentialsProviderMeta: GlobalContextMeta<ContentStackCredentialsProviderProps> =
-  {
-    name: "ContentStackCredentialsProvider",
-    displayName: "ContentStack Credentials Provider",
-    description:
-      "The API key is a unique key assigned to each stack. Learn how to [get your API key](https://www.contentstack.com/docs/developers/apis/content-management-api/#how-to-get-stack-api-key).",
-    importName: "ContentStackCredentialsProvider",
-    importPath: modulePath,
-    props: {
-      apiKey: {
-        type: "string",
-        displayName: "API Key",
-        description: "API Key of your Stack ",
-        defaultValue: "blt37e5d9fa4b15e084",
-      },
-      accessToken: {
-        type: "string",
-        displayName: "Access Token ",
-        description: "Access Token",
-        defaultValue: "cs3239b47b1c353a942a73e686",
-      },
-      environment: {
-        type: "string",
-        displayName: "Environment",
-        description:
-          "(https://www.contentstack.com/docs/developers/set-up-environments/add-an-environment/).",
-        defaultValue: "development",
-      },
+export const ContentStackCredentialsProviderMeta: GlobalContextMeta<ContentStackCredentialsProviderProps> = {
+  name: "ContentStackCredentialsProvider",
+  displayName: "ContentStack Credentials Provider",
+  description:
+    "The API key is a unique key assigned to each stack. Learn how to [get your API key](https://www.contentstack.com/docs/developers/apis/content-management-api/#how-to-get-stack-api-key).",
+  importName: "ContentStackCredentialsProvider",
+  importPath: modulePath,
+  props: {
+    apiKey: {
+      type: "string",
+      displayName: "API Key",
+      description: "API Key of your Stack ",
+      defaultValue: "blt37e5d9fa4b15e084",
     },
-  };
+    accessToken: {
+      type: "string",
+      displayName: "Access Token ",
+      description: "Access Token",
+      defaultValue: "cs3239b47b1c353a942a73e686",
+    },
+    environment: {
+      type: "string",
+      displayName: "Environment",
+      defaultValue: "development",
+    },
+  },
+};
 
 export function ContentStackCredentialsProvider({
   apiKey,
@@ -89,65 +84,64 @@ interface ContentStackFetcherProps {
   }) => void;
 }
 
-export const ContentStackFetcherMeta: ComponentMeta<ContentStackFetcherProps> =
-  {
-    name: "ContentStackFetcher",
-    displayName: "ContentStack Fetcher",
-    importName: "ContentStackFetcher",
-    importPath: modulePath,
-    description:
-      "Fetches ContentStack data and repeats content of children once for every row fetched. ",
-    defaultStyles: {
-      display: "grid",
-      gridTemplateColumns: "1fr 1fr 1fr 1fr",
-      gridRowGap: "8px",
-      gridColumnGap: "8px",
-      padding: "8px",
-      maxWidth: "100%",
-    },
-    props: {
-      children: {
-        type: "slot",
-        defaultValue: {
-          type: "vbox",
-          styles: {
-            padding: "8px",
-          },
-          children: {
-            type: "component",
-            name: "ContentStackField",
-          },
+export const ContentStackFetcherMeta: ComponentMeta<ContentStackFetcherProps> = {
+  name: "ContentStackFetcher",
+  displayName: "ContentStack Fetcher",
+  importName: "ContentStackFetcher",
+  importPath: modulePath,
+  description:
+    "Fetches ContentStack data and repeats content of children once for every row fetched. ",
+  defaultStyles: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr 1fr 1fr",
+    gridRowGap: "8px",
+    gridColumnGap: "8px",
+    padding: "8px",
+    maxWidth: "100%",
+  },
+  props: {
+    children: {
+      type: "slot",
+      defaultValue: {
+        type: "vbox",
+        styles: {
+          padding: "8px",
+        },
+        children: {
+          type: "component",
+          name: "ContentStackField",
         },
       },
-      contentType: {
-        type: "choice",
-        options: (props, ctx) =>
-          ctx?.types?.map((type) => ({
-            label: type.title,
-            value: type.uid,
-          })) ?? [],
-        displayName: "Content type",
-        description: "Content type to be queried.",
-      },
-      entryUID: {
-        type: "choice",
-        options: (props, ctx) =>
-          ctx?.entries?.map((entry) => ({
-            label: entry.title,
-            value: entry.uid,
-          })) ?? [],
-        displayName: "ENTRY UID",
-        description: "Query in Content Type.",
-      },
-      noLayout: {
-        type: "boolean",
-        displayName: "No layout",
-        description:
-          "When set, ContentStack Fetcher will not layout its children; instead, the layout set on its parent element will be used. Useful if you want to set flex gap or control container tag type.",
-        defaultValue: false,
-      },
     },
-  };
+    contentType: {
+      type: "choice",
+      options: (props, ctx) =>
+        ctx?.types?.map((type) => ({
+          label: type.title,
+          value: type.uid,
+        })) ?? [],
+      displayName: "Content type",
+      description: "Content type to be queried.",
+    },
+    entryUID: {
+      type: "choice",
+      options: (props, ctx) =>
+        ctx?.entries?.map((entry) => ({
+          label: entry.title,
+          value: entry.uid,
+        })) ?? [],
+      displayName: "Entry UID",
+      description: "Query in Content Type.",
+    },
+    noLayout: {
+      type: "boolean",
+      displayName: "No layout",
+      description:
+        "When set, ContentStack Fetcher will not layout its children; instead, the layout set on its parent element will be used. Useful if you want to set flex gap or control container tag type.",
+      defaultValue: false,
+    },
+  },
+};
 
 export function ContentStackFetcher({
   entryUID,
@@ -206,8 +200,13 @@ export function ContentStackFetcher({
     entries: entriesData?.[0],
   });
 
-  if (!creds.apiKey || !creds.accessToken) {
-    return <div>Please specify a valid API Key Access Token</div>;
+  if (!creds.apiKey || !creds.accessToken || !creds.environment) {
+    return (
+      <div>
+        Please specify a valid API Credentials: API Key, Access Token and
+        Environment
+      </div>
+    );
   }
 
   let renderedData;
@@ -219,7 +218,7 @@ export function ContentStackFetcher({
     );
   } else if (contentType && !entryUID) {
     const entries = entriesData?.flat();
-    renderedData = entries?.map((item: any, index: any) => (
+    renderedData = entries?.map((item: any, index: number) => (
       <DataProvider key={item._id} name={"contentStackItem"} data={item}>
         {repeatedElement(index === 0, children)}
       </DataProvider>
@@ -227,6 +226,7 @@ export function ContentStackFetcher({
   } else {
     return <div>Please select a content type.</div>;
   }
+
   return noLayout ? (
     <> {renderedData} </>
   ) : (
@@ -237,7 +237,6 @@ export function ContentStackFetcher({
 interface ContentStackFieldProps {
   className?: string;
   field?: string;
-
   setControlContextData?: (data: { fields: string[] }) => void;
 }
 export const ContentStackFieldMeta: ComponentMeta<ContentStackFieldProps> = {
@@ -262,7 +261,6 @@ export function ContentStackField({
 
   setControlContextData,
 }: ContentStackFieldProps) {
-  const creds = ensure(useContext(CredentialsContext));
   const item = useSelector("contentStackItem");
   if (!item) {
     return (
@@ -272,7 +270,7 @@ export function ContentStackField({
   // Getting only fields that aren’t objects
   const displayableFields = Object.keys(item).filter((field) => {
     const value = L.get(item, field);
-    return typeof value !== "object" || value._type === "image";
+    return typeof value !== "object" || value?.content_type?.includes("image");
   });
   setControlContextData?.({
     fields: displayableFields,
@@ -280,19 +278,12 @@ export function ContentStackField({
   if (!field) {
     return <div>Please specify a valid path or select a field.</div>;
   }
+
   const data = L.get(item, field as string);
-  setControlContextData?.({
-    fields: displayableFields,
-  });
   if (!data) {
     return <div>Please specify a valid field.</div>;
-  } else if (data?._type === "image") {
-    return (
-      <img
-        className={className}
-        src={`https://images.contentstack.io/v3/assets/${creds.apiKey}/${item?.asset_uid}/${item?.version_uid}/filename`}
-      />
-    );
+  } else if (data?.content_type?.includes("image")) {
+    return <img className={className} src={data.url} />;
   } else {
     return <div className={className}> {data} </div>;
   }
