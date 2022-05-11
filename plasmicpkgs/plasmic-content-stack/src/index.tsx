@@ -3,14 +3,13 @@ import registerComponent, {
 } from "@plasmicapp/host/registerComponent";
 import registerGlobalContext from "@plasmicapp/host/registerGlobalContext";
 import {
-    ContentStackCredentialsProvider,
-    ContentStackCredentialsProviderMeta,
-    ContentStackFetcher,
-    ContentStackFetcherMeta,
-    ContentStackField,
-    ContentStackFieldMeta,
+  ContentStackCredentialsProvider,
+  ContentStackCredentialsProviderMeta,
+  ContentStackFetcher,
+  ContentStackFetcherMeta,
+  ContentStackField,
+  ContentStackFieldMeta,
 } from "./contentstack";
-
 
 export function registerAll(loader?: {
   registerComponent: typeof registerComponent;
@@ -28,9 +27,15 @@ export function registerAll(loader?: {
   };
 
   if (loader) {
-    loader.registerGlobalContext(ContentStackCredentialsProvider, ContentStackCredentialsProviderMeta);
+    loader.registerGlobalContext(
+      ContentStackCredentialsProvider,
+      ContentStackCredentialsProviderMeta
+    );
   } else {
-    registerGlobalContext(ContentStackCredentialsProvider, ContentStackCredentialsProviderMeta);
+    registerGlobalContext(
+      ContentStackCredentialsProvider,
+      ContentStackCredentialsProviderMeta
+    );
   }
 
   _registerComponent(ContentStackFetcher, ContentStackFetcherMeta);
