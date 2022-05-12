@@ -218,7 +218,6 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
           "boolean",
           "text",
           "long-text",
-          "rich-text",
         ]),
     },
     filterValue: {
