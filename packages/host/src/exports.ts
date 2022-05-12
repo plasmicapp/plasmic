@@ -20,4 +20,11 @@ export {
   GlobalContextRegistration,
   PropType as GlobalContextPropType,
 } from "./registerGlobalContext";
+export {
+  BasicTrait,
+  ChoiceTrait,
+  default as registerTrait,
+  TraitMeta,
+  TraitRegistration,
+} from "./registerTrait";
 export { default as repeatedElement } from "./repeatedElement";
