@@ -1,9 +1,10 @@
-import * as PlasmicHost from '@plasmicapp/host';
 import {
   ComponentMeta as InternalCodeComponentMeta,
   GlobalContextMeta as InternalGlobalContextMeta,
   registerComponent,
   registerGlobalContext,
+  registerTrait,
+  TraitMeta,
 } from '@plasmicapp/host';
 import {
   ComponentMeta,
@@ -192,6 +193,10 @@ export class InternalPlasmicComponentLoader {
     });
   }
 
+  registerTrait(trait: string, meta: TraitMeta) {
+    registerTrait(trait, meta);
+  }
+
   registerPrefetchedBundle(bundle: LoaderBundleOutput) {
     this.mergeBundle(bundle);
   }
@@ -233,8 +238,10 @@ export class InternalPlasmicComponentLoader {
       specsToFetch: ComponentLookupSpec[]
     ) => {
       await this.fetchMissingData({ missingSpecs: specsToFetch });
-      const { found: existingMetas2, missing: missingSpecs2 } =
-        this.maybeGetCompMetas(...specs);
+      const {
+        found: existingMetas2,
+        missing: missingSpecs2,
+      } = this.maybeGetCompMetas(...specs);
       if (missingSpecs2.length > 0) {
         return null;
       }
@@ -248,8 +255,10 @@ export class InternalPlasmicComponentLoader {
     }
 
     // Else we only fetch actually missing specs
-    const { found: existingMetas, missing: missingSpecs } =
-      this.maybeGetCompMetas(...specs);
+    const {
+      found: existingMetas,
+      missing: missingSpecs,
+    } = this.maybeGetCompMetas(...specs);
     if (missingSpecs.length === 0) {
       return prepComponentData(this.bundle, ...existingMetas);
     }
@@ -492,6 +501,10 @@ export class PlasmicComponentLoader {
     meta: GlobalContextMeta<React.ComponentProps<T>>
   ) {
     this.__internal.registerGlobalContext(context, meta);
+  }
+
+  registerTrait(trait: string, meta: TraitMeta) {
+    this.__internal.registerTrait(trait, meta);
   }
 
   /**
