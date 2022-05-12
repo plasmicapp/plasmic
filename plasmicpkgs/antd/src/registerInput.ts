@@ -1,7 +1,7 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { Input, InputProps } from "antd";
+import Input, { InputProps } from "antd/lib/input";
 import {
   GroupProps,
   PasswordProps,
@@ -78,8 +78,9 @@ export const inputMeta: ComponentMeta<InputProps> = {
       uncontrolledProp: "defaultValue",
     },
   },
-  importPath: "antd",
+  importPath: "antd/lib/input",
   importName: "Input",
+  isDefaultExport: true,
 };
 
 export function registerInput(

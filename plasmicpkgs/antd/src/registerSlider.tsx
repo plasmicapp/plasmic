@@ -1,7 +1,7 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { Slider as AntdSlider } from "antd";
+import { default as AntdSlider } from "antd/lib/slider";
 import type { SliderRangeProps, SliderSingleProps } from "antd/lib/slider";
 import React from "react";
 import { Registerable } from "./registerable";

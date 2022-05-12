@@ -4,8 +4,8 @@ import registerComponent, {
 import {
   TabsProps as AntdTabsProps,
   TabPaneProps,
-  Tabs as AntdTabs,
-} from "antd";
+  default as AntdTabs,
+} from "antd/lib/tabs";
 import { TabPane } from "rc-tabs";
 import { Registerable } from "./registerable";
 import React from "react";
