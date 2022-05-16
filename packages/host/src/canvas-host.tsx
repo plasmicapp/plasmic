@@ -1,7 +1,3 @@
-// tslint:disable:ordered-imports
-// organize-imports-ignore
-import "@plasmicapp/preamble";
-
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { ensure } from "./lang-utils";
@@ -59,13 +55,12 @@ export function setPlasmicRootNode(node: React.ReactElement | null) {
  * If not, return false.
  * If so, return an object with more information about the component
  */
-export const PlasmicCanvasContext =
-  React.createContext<
-    | {
-        componentName: string | null;
-      }
-    | boolean
-  >(false);
+export const PlasmicCanvasContext = React.createContext<
+  | {
+      componentName: string | null;
+    }
+  | boolean
+>(false);
 export const usePlasmicCanvasContext = () =>
   React.useContext(PlasmicCanvasContext);
 
@@ -176,21 +171,23 @@ interface PlasmicCanvasHostProps {
   enableWebpackHmr?: boolean;
 }
 
-export const PlasmicCanvasHost: React.FunctionComponent<PlasmicCanvasHostProps> =
-  (props) => {
-    const { enableWebpackHmr } = props;
-    const [node, setNode] =
-      React.useState<React.ReactElement<any, any> | null>(null);
-    React.useEffect(() => {
-      setNode(<_PlasmicCanvasHost />);
-    }, []);
-    return (
-      <>
-        {!enableWebpackHmr && <DisableWebpackHmr />}
-        {node}
-      </>
-    );
-  };
+export const PlasmicCanvasHost: React.FunctionComponent<PlasmicCanvasHostProps> = (
+  props
+) => {
+  const { enableWebpackHmr } = props;
+  const [node, setNode] = React.useState<React.ReactElement<any, any> | null>(
+    null
+  );
+  React.useEffect(() => {
+    setNode(<_PlasmicCanvasHost />);
+  }, []);
+  return (
+    <>
+      {!enableWebpackHmr && <DisableWebpackHmr />}
+      {node}
+    </>
+  );
+};
 
 type RenderErrorListener = (err: Error) => void;
 const renderErrorListeners: RenderErrorListener[] = [];

@@ -31,7 +31,6 @@
     "analyze": "size-limit --why"
   },
   "dependencies": {
-    "@plasmicapp/preamble": "0.0.64",
     "window-or-global": "^1.0.1"
   },
   "devDependencies": {

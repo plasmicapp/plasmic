@@ -1,5 +1,4 @@
 import { PlasmicCanvasHost } from "@plasmicapp/loader-nextjs";
-import Script from "next/script";
 import * as React from "react";
 import { PLASMIC } from "../plasmic-init";
 
@@ -9,15 +8,5 @@ import { PLASMIC } from "../plasmic-init";
 // https://docs.plasmic.app/learn/app-hosting/#set-a-plasmic-project-to-use-your-app-host
 
 export default function PlasmicHost() {
-  return (
-    PLASMIC && (
-      <div>
-        <Script
-          src="https://static1.plasmic.app/preamble.js"
-          strategy="beforeInteractive"
-        />
-        <PlasmicCanvasHost />
-      </div>
-    )
-  );
+  return PLASMIC && <PlasmicCanvasHost />;
 }

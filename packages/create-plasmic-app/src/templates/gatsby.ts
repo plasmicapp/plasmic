@@ -157,16 +157,7 @@ export const GATSBY_SSR_CONFIG = `
 
 const React = require("react")
 
-/**
- * Add preamble to allow functional code components in studio.
- *
- * See: https://docs.plasmic.app/learn/functional-code-components/
- */
 const HeadComponents = [
-  <script
-    key="plasmic-preamble"
-    src="https://static1.plasmic.app/preamble.js"
-  />,
   <script
     key="plasmic-hmr"
     type="text/javascript"
