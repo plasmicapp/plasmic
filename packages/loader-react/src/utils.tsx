@@ -125,7 +125,9 @@ function matchesCompMeta(lookup: FullLookupSpec, meta: ComponentMeta) {
   }
 
   return isNameSpec(lookup)
-    ? (lookup.name === meta.name || lookup.rawName === meta.displayName) &&
+    ? (lookup.name === meta.name ||
+        lookup.rawName === meta.name ||
+        lookup.rawName === meta.displayName) &&
         (lookup.isCode == null || lookup.isCode === meta.isCode)
     : lookup.path === meta.path;
 }
