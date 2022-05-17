@@ -64,7 +64,7 @@ export default function PlasmicLoaderPage(props${ifTs(
       prefetchedData={plasmicData}
       prefetchedQueryData={queryCache}
     >
-      <PlasmicComponent component={plasmicData.entryCompMetas[0].name} />
+      <PlasmicComponent component={plasmicData.entryCompMetas[0].displayName} />
     </PlasmicRootProvider>
   );
 }
@@ -144,7 +144,7 @@ export default function PlasmicHost() {
   }
 }
 
-export function wrapAppRootForCodegen() {
+export function wrapAppRootForCodegen(): string {
   return `
 import '../styles/globals.css'
 import { PlasmicRootProvider } from "@plasmicapp/react-web";
