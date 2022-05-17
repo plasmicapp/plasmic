@@ -111,7 +111,13 @@ export function useTextInput<
       props: {
         ...omit(
           rest as any,
-          ...plasmicClass.internalArgProps,
+          // We need to remove `required` from the list of internalArgProps to
+          // be omitted in the props being passed through because Plume pkg
+          // <= 19.1.1 had a bug: input[required] was not linked to the
+          // `required` arg as it should.
+          ...plasmicClass.internalArgProps.filter(
+            (prop) => prop !== "required"
+          ),
           ...plasmicClass.internalVariantProps
         ),
         disabled: isDisabled,
