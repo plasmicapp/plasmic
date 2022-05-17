@@ -1,7 +1,7 @@
 import { repeatedElement } from "@plasmicapp/host";
 import {
   CanvasComponentProps,
-  ComponentMeta,
+  ComponentMeta
 } from "@plasmicapp/host/registerComponent";
 import { GlobalContextMeta } from "@plasmicapp/host/registerGlobalContext";
 import { usePlasmicQueryData } from "@plasmicapp/query";
@@ -16,7 +16,7 @@ import {
   useDatabase,
   useRow,
   useTables,
-  useTablesWithDataLoaded,
+  useTablesWithDataLoaded
 } from "./context";
 import { ApiCmsRow, ApiCmsTable, CmsFieldMeta, CmsType } from "./schema";
 import { mkFieldOptions, mkTableOptions } from "./util";
@@ -498,12 +498,13 @@ export function CmsRowField({
   const tables = useTablesWithDataLoaded();
 
   const res = useRow(tables, table);
+  const unknown = (
+    <div className={className} {...rest}>
+      Field {table ?? "Unknown Model"}.{field ?? "Unknown Field"}
+    </div>
+  );
   if (!res) {
-    return (
-      <div className={className}>
-        Field {table ?? "Unknown Model"}.{field ?? "Unknown Field"}
-      </div>
-    );
+    return unknown;
   }
 
   if (!res.row) {
@@ -528,7 +529,7 @@ export function CmsRowField({
   }
 
   if (!fieldMeta) {
-    throw new Error(`Please select an entry field to display.`);
+    return unknown;
   }
 
   let data = res.row.data?.[fieldMeta.identifier];
