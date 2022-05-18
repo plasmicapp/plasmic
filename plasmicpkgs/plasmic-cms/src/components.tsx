@@ -1,12 +1,12 @@
-import { repeatedElement } from "@plasmicapp/host";
+import { PlasmicCanvasContext, repeatedElement } from "@plasmicapp/host";
 import {
   CanvasComponentProps,
-  ComponentMeta
+  ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { GlobalContextMeta } from "@plasmicapp/host/registerGlobalContext";
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import dayjs from "dayjs";
-import React from "react";
+import React, { useContext } from "react";
 import { DatabaseConfig, HttpError, mkApi, QueryParams } from "./api";
 import {
   DatabaseProvider,
@@ -16,7 +16,7 @@ import {
   useDatabase,
   useRow,
   useTables,
-  useTablesWithDataLoaded
+  useTablesWithDataLoaded,
 } from "./context";
 import { ApiCmsRow, ApiCmsTable, CmsFieldMeta, CmsType } from "./schema";
 import { mkFieldOptions, mkTableOptions } from "./util";
@@ -32,11 +32,15 @@ function renderMaybeData<T>(
   maybeData: ReturnType<typeof usePlasmicQueryData>,
   renderFn: (data: T) => JSX.Element,
   loaderProps: FetcherComponentProps,
+  inEditor: boolean,
   loadingMessage?: React.ReactNode,
   forceLoadingState?: boolean
 ): React.ReactElement | null {
   if ("error" in maybeData) {
     const error = maybeData.error;
+    if (!inEditor) {
+      return <>{loadingMessage ?? <div>Loading...</div>}</>;
+    }
     if (error && error instanceof HttpError && error.status === 404) {
       if (loaderProps.hideIfNotFound) {
         return null;
@@ -121,11 +125,13 @@ function TablesFetcher({ children }: { children: React.ReactNode }) {
     }
     return await mkApi(databaseConfig).fetchTables();
   });
+  const inEditor = !!useContext(PlasmicCanvasContext);
 
   return renderMaybeData<ApiCmsTable[]>(
     maybeData,
     (tables) => <TablesProvider tables={tables}>{children}</TablesProvider>,
     { hideIfNotFound: false },
+    inEditor,
     children
   );
 }
@@ -343,6 +349,7 @@ export function CmsQueryRepeater({
       return mkApi(databaseConfig).query(table, params);
     }
   });
+  const inEditor = !!useContext(PlasmicCanvasContext);
 
   const node = renderMaybeData<ApiCmsRow[]>(
     maybeData,
@@ -365,6 +372,7 @@ export function CmsQueryRepeater({
       );
     },
     { hideIfNotFound: false },
+    inEditor,
     loadingMessage,
     forceLoadingState
   );
