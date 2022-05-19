@@ -87,25 +87,6 @@ class API {
       throw e;
     }
   }
-
-  async fetchRow(
-    table: string,
-    row: string,
-    useDraft: boolean
-  ): Promise<ApiCmsRow> {
-    try {
-      const response = await this.get(
-        `/tables/${table}/rows/${row}`, {
-          draft: Number(useDraft),
-          locale: this.config.locale,
-        }
-      );
-      return response;
-    } catch (e) {
-      console.error(e);
-      throw e;
-    }
-  }
 }
 
 export function mkApi(config: DatabaseConfig | undefined) {
