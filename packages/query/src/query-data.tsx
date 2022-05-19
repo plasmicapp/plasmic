@@ -1,5 +1,16 @@
 import React, { PropsWithChildren } from 'react';
-import useSWR, { SWRConfig, SWRConfiguration } from 'swr';
+import useSWR, { SWRConfig, SWRConfiguration, useSWRConfig } from 'swr';
+import { FullConfiguration } from 'swr/dist/types';
+
+let __SWRConfig: FullConfiguration | undefined = undefined;
+export const mutateAllKeys = () => {
+  if (__SWRConfig) {
+    const { cache, mutate } = __SWRConfig;
+    Array.from((cache as Map<string, any>).keys()).forEach((key) => {
+      mutate(key);
+    });
+  }
+};
 
 /**
  * Fetches data asynchronously. This data should be considered immutable for the
@@ -29,6 +40,12 @@ export function usePlasmicQueryData<T>(
     // react-ssr-prepass only works with suspense-throwing data fetching.
     opts.suspense = true;
   }
+
+  const config = useSWRConfig();
+  React.useEffect(() => {
+    __SWRConfig = config;
+  }, [config]);
+
   const resp = useSWR(key, fetcher, opts);
   if (resp.data) {
     return { data: resp.data };
