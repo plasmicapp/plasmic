@@ -58,6 +58,26 @@ export function DataProvider({ name, data, children }: DataProviderProps) {
   }
 }
 
+export interface PageParamsProviderProps {
+  params?: Record<string, string>;
+  query?: Record<string, string>;
+  children?: ReactNode;
+}
+
+export function PageParamsProvider({
+  children,
+  params = {},
+  query = {},
+}: PageParamsProviderProps) {
+  return (
+    <DataProvider name={"params"} data={params}>
+      <DataProvider name={"query"} data={query}>
+        {children}
+      </DataProvider>
+    </DataProvider>
+  );
+}
+
 export function DataCtxReader({
   children,
 }: {
