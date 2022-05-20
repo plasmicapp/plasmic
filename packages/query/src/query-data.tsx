@@ -1,5 +1,11 @@
 import React, { PropsWithChildren } from 'react';
-import useSWR, { Key, SWRConfig, SWRConfiguration, useSWRConfig } from 'swr';
+import useSWR, {
+  Fetcher,
+  Key,
+  SWRConfig,
+  SWRConfiguration,
+  useSWRConfig,
+} from 'swr';
 import { FullConfiguration } from 'swr/dist/types';
 
 let __SWRConfig: FullConfiguration | undefined = undefined;
@@ -24,7 +30,7 @@ export const mutateAllKeys = () => {
  */
 export function usePlasmicQueryData<T>(
   key: Key,
-  fetcher: () => Promise<T>
+  fetcher: Fetcher
 ): { data?: T; error?: Error; isLoading?: boolean } {
   const prepassCtx = React.useContext(PrepassContext);
 
@@ -68,7 +74,7 @@ export function usePlasmicQueryData<T>(
  */
 export function useMutablePlasmicQueryData<T>(
   key: Key,
-  fetcher: () => Promise<T>,
+  fetcher: Fetcher,
   options?: SWRConfiguration
 ) {
   const prepassCtx = React.useContext(PrepassContext);
