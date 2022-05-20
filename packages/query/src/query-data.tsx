@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import useSWR, { SWRConfig, SWRConfiguration, useSWRConfig } from 'swr';
+import useSWR, { Key, SWRConfig, SWRConfiguration, useSWRConfig } from 'swr';
 import { FullConfiguration } from 'swr/dist/types';
 
 let __SWRConfig: FullConfiguration | undefined = undefined;
@@ -23,7 +23,7 @@ export const mutateAllKeys = () => {
  *   was successful, or an "error" key with the thrown Error if the fetch failed.
  */
 export function usePlasmicQueryData<T>(
-  key: string,
+  key: Key,
   fetcher: () => Promise<T>
 ): { data?: T; error?: Error; isLoading?: boolean } {
   const prepassCtx = React.useContext(PrepassContext);
@@ -54,6 +54,33 @@ export function usePlasmicQueryData<T>(
   } else {
     return { isLoading: true };
   }
+}
+
+/**
+ * Fetches data asynchronously using SWR Hook (https://swr.vercel.app/)
+ *
+ * @param key a unique key for this data fetch; if data already exists under this
+ *   key, that data is returned immediately.
+ * @param fetcher an async function that resolves to the fetched data.
+ * @param options (optional) an object of options for this hook (https://swr.vercel.app/docs/options).
+ * @returns an object with either a "data" key with the fetched data if the fetch
+ *   was successful, or an "error" key with the thrown Error if the fetch failed.
+ */
+export function useMutablePlasmicQueryData<T>(
+  key: Key,
+  fetcher: () => Promise<T>,
+  options?: SWRConfiguration
+) {
+  const prepassCtx = React.useContext(PrepassContext);
+
+  const opts: SWRConfiguration = prepassCtx ? { suspense: true } : {};
+
+  const config = useSWRConfig();
+  React.useEffect(() => {
+    __SWRConfig = config;
+  }, [config]);
+
+  return useSWR(key, fetcher, { ...options, ...opts });
 }
 
 export function PlasmicQueryDataProvider(props: {
