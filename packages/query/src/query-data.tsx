@@ -30,7 +30,7 @@ export const mutateAllKeys = () => {
  */
 export function usePlasmicQueryData<T>(
   key: Key,
-  fetcher: Fetcher
+  fetcher: Fetcher<T>
 ): { data?: T; error?: Error; isLoading?: boolean } {
   const prepassCtx = React.useContext(PrepassContext);
 
