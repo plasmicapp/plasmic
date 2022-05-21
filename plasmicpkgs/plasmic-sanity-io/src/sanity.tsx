@@ -48,8 +48,11 @@ const CredentialsContext = React.createContext<
 export const sanityCredentialsProviderMeta: GlobalContextMeta<SanityCredentialsProviderProps> = {
   name: "SanityCredentialsProvider",
   displayName: "Sanity Credentials Provider",
-  description:
-    "Get your project ID, dataset, and token [here](https://www.sanity.io/manage). Please also add 'https://host.plasmicdev.com' (or your app host origin) as an authorized host on the CORS origins section of your project.",
+  description: `Get your project ID, dataset, and token [here](https://www.sanity.io/manage).
+
+Please also add 'https://host.plasmicdev.com' (or your app host origin) as an authorized host on the CORS origins section of your project.
+
+[Watch how to add Sanity data](https://www.youtube.com/watch?v=dLeu7I4RsYg).`,
   importName: "SanityCredentialsProvider",
   importPath: modulePath,
   props: {
