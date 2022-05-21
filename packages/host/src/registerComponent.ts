@@ -120,7 +120,12 @@ export type JSONLikeType<P> =
   | ({
       type: "dataSource";
       dataSource: "airtable" | "cms";
-    } & PropTypeBase<P>);
+    } & PropTypeBase<P>)
+  | ({
+      type: "dataSelector";
+      data: any | ContextDependentConfig<P, any>;
+    } & DefaultValueOrExpr<P, any> &
+      PropTypeBase<P>);
 
 interface ChoiceTypeBase<P> extends PropTypeBase<P> {
   type: "choice";
