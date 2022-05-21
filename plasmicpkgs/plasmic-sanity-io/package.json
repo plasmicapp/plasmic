@@ -37,6 +37,7 @@
     "typescript": "^4.5.5"
   },
   "dependencies": {
+    "@plasmicapp/query": "^0.1.46",
     "@sanity/client": "^3.3.0",
     "@sanity/image-url": "^1.0.1",
     "lodash": "^4.17.21",
