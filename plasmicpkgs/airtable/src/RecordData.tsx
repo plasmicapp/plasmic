@@ -1,8 +1,8 @@
 import {
   DataProvider,
   repeatedElement,
-  useSelector,
   usePlasmicCanvasContext,
+  useSelector,
 } from "@plasmicapp/host";
 import registerComponent, {
   CanvasComponentProps,
@@ -22,8 +22,9 @@ export interface DataSourceInfo {
   host?: string;
 }
 
-const CredentialsContext =
-  React.createContext<DataSourceInfo | undefined>(undefined);
+const CredentialsContext = React.createContext<DataSourceInfo | undefined>(
+  undefined
+);
 
 interface RecordData {
   [field: string]: string | { id: string; url: string; filename: string }[];
@@ -182,7 +183,7 @@ export function AirtableCollection({
 
   const search = searchArray.length === 0 ? "" : "?" + searchArray.join("&");
 
-  const data = usePlasmicQueryData(
+  const { data, error, isLoading } = usePlasmicQueryData(
     JSON.stringify([
       "AirtableCollection",
       host,
@@ -211,17 +212,17 @@ export function AirtableCollection({
     }
   );
 
-  if ("error" in data) {
-    return <p>Error: {data.error?.message}</p>;
+  if (error) {
+    return <p>Error: {error.message}</p>;
   }
 
-  if (!("data" in data)) {
+  if (isLoading) {
     return <p>Loading...</p>;
   }
 
   return (
     <>
-      {data.data!.map((record, index) => (
+      {(data ?? []).map((record, index) => (
         <DataProvider key={record.id} name={contextKey} data={record.fields}>
           {repeatedElement(index === 0, children)}
         </DataProvider>
@@ -302,23 +303,22 @@ export function registerAirtableRecord(
   }
 }
 
-export const airtableRecordFieldMeta: ComponentMeta<AirtableRecordFieldProps> =
-  {
-    name: "hostless-airtable-record-field",
-    displayName: "Airtable Record Field",
-    importPath: thisModule,
-    importName: "AirtableRecordField",
-    props: {
-      field: {
-        type: "choice",
-        displayName: "Field Name",
-        defaultValueHint: "The first field",
-        options: (_props, data) => {
-          return data ? Object.keys(data) : ["Data unavailable"];
-        },
+export const airtableRecordFieldMeta: ComponentMeta<AirtableRecordFieldProps> = {
+  name: "hostless-airtable-record-field",
+  displayName: "Airtable Record Field",
+  importPath: thisModule,
+  importName: "AirtableRecordField",
+  props: {
+    field: {
+      type: "choice",
+      displayName: "Field Name",
+      defaultValueHint: "The first field",
+      options: (_props, data) => {
+        return data ? Object.keys(data) : ["Data unavailable"];
       },
     },
-  };
+  },
+};
 
 export function registerAirtableRecordField(
   loader?: { registerComponent: typeof registerComponent },
@@ -406,27 +406,26 @@ export function registerAirtableCollection(
   }
 }
 
-export const airtableCredentialsProviderMeta: GlobalContextMeta<AirtableCredentialsProviderProps> =
-  {
-    name: "hostless-airtable-credentials-provider",
-    displayName: "Airtable Credentials Provider",
-    importPath: thisModule,
-    importName: "AirtableCredentialsProvider",
-    props: {
-      dataSource: {
-        type: "dataSource",
-        dataSource: "airtable",
-        displayName: "Data Source",
-        description: "The Airtable Data Source to use",
-      },
-      host: {
-        type: "string",
-        displayName: "Host",
-        description: "Plasmic Server-Data URL",
-        defaultValueHint: defaultHost,
-      },
+export const airtableCredentialsProviderMeta: GlobalContextMeta<AirtableCredentialsProviderProps> = {
+  name: "hostless-airtable-credentials-provider",
+  displayName: "Airtable Credentials Provider",
+  importPath: thisModule,
+  importName: "AirtableCredentialsProvider",
+  props: {
+    dataSource: {
+      type: "dataSource",
+      dataSource: "airtable",
+      displayName: "Data Source",
+      description: "The Airtable Data Source to use",
     },
-  };
+    host: {
+      type: "string",
+      displayName: "Host",
+      description: "Plasmic Server-Data URL",
+      defaultValueHint: defaultHost,
+    },
+  },
+};
 
 export function registerAirtableCredentialsProvider(
   loader?: { registerGlobalContext: typeof registerGlobalContext },
