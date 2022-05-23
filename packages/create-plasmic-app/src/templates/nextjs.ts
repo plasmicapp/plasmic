@@ -83,7 +83,7 @@ export const getStaticProps${ifTs(
   // Cache the necessary data fetched for the page
   const queryCache = await extractPlasmicQueryData(
     <PlasmicRootProvider loader={PLASMIC} prefetchedData={plasmicData}>
-      <PlasmicComponent component={plasmicData.entryCompMetas[0].name} />
+      <PlasmicComponent component={plasmicData.entryCompMetas[0].displayName} />
     </PlasmicRootProvider>
   );
   // Use revalidate if you want incremental static regeneration
