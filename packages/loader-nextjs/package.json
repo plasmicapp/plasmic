@@ -16,6 +16,7 @@
     "build": "tsdx build",
     "yalcp": "yalc publish --push",
     "test": "tsdx test --passWithNoTests",
+    "coverage": "tsdx test --coverage --passWithNoTests",
     "lint": "tsdx lint",
     "prepare": "yarn build",
     "size": "size-limit",

@@ -5,7 +5,7 @@ import {
 } from '@plasmicapp/loader-fetcher';
 import { getActiveVariation, getSplitKey } from '@plasmicapp/loader-splits';
 
-const DELIMITER = '__pm__';
+export const DELIMITER = '__pm__';
 
 export const rewriteWithoutVariation = (url: string) => {
   const [path, ...variationsArr] = url.split(DELIMITER);
@@ -71,7 +71,10 @@ export const generateAllPaths = (path: string, splits: Split[]) => {
   ).map((meta) => `${path}${path.endsWith('/') ? '' : '/'}${meta}`);
 };
 
-type MiddlewareOptions = Pick<FetcherOptions, 'projects' | 'host' | 'preview'>;
+export type MiddlewareOptions = Pick<
+  FetcherOptions,
+  'projects' | 'host' | 'preview'
+>;
 
 export const getActiveSplits = async (opts: MiddlewareOptions) => {
   const fetcher = new PlasmicModulesFetcher(opts);
