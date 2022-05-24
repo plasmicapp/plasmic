@@ -72,10 +72,10 @@ export function usePlasmicQueryData<T>(
  * @returns an object with either a "data" key with the fetched data if the fetch
  *   was successful, or an "error" key with the thrown Error if the fetch failed.
  */
-export function useMutablePlasmicQueryData<T>(
+export function useMutablePlasmicQueryData<T, E>(
   key: Key,
-  fetcher: Fetcher,
-  options?: SWRConfiguration
+  fetcher: Fetcher<T>,
+  options?: SWRConfiguration<T, E>
 ) {
   const prepassCtx = React.useContext(PrepassContext);
 
