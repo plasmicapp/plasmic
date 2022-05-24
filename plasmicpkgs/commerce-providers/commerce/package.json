@@ -33,7 +33,7 @@
     "react": ">=16.8.0"
   },
   "dependencies": {
-    "@plasmicapp/query": "^0.1.49",
+    "@plasmicapp/query": "^0.1.48",
     "@types/react": "^17.0.40",
     "@vercel/fetch": "^6.2.0",
     "js-cookie": "^3.0.1",
