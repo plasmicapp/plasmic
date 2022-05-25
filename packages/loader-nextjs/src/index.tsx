@@ -4,15 +4,10 @@ import {
   InternalPlasmicComponentLoader,
   PlasmicComponentLoader,
 } from '@plasmicapp/loader-react';
-import * as PlasmicQuery from '@plasmicapp/query';
 import type { PlasmicRemoteChangeWatcher as Watcher } from '@plasmicapp/watcher';
 import { IncomingMessage, ServerResponse } from 'http';
 import * as NextHead from 'next/head';
 import * as NextLink from 'next/link';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import * as jsxDevRuntime from 'react/jsx-dev-runtime';
-import * as jsxRuntime from 'react/jsx-runtime';
 import { makeCache } from './cache';
 import serverRequire from './server-require';
 export {
@@ -101,16 +96,8 @@ export function initPlasmicLoader(
     alwaysFresh: isProd && !isBrowser,
   });
   loader.registerModules({
-    react: React,
-    'react-dom': ReactDOM,
     'next/head': NextHead,
     'next/link': NextLink,
-    'react/jsx-runtime': jsxRuntime,
-    'react/jsx-dev-runtime': jsxDevRuntime,
-
-    // Also inject @plasmicapp/query at run time, so that the same
-    // context is used here and in loader-downloaded code
-    '@plasmicapp/query': PlasmicQuery,
   });
 
   if (cache) {

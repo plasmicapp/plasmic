@@ -1,3 +1,4 @@
+import * as PlasmicHost from '@plasmicapp/host';
 import {
   ComponentMeta as InternalCodeComponentMeta,
   GlobalContextMeta as InternalGlobalContextMeta,
@@ -64,16 +65,6 @@ interface ComponentSubstitutionSpec {
 
 export function initPlasmicLoader(opts: InitOptions): PlasmicComponentLoader {
   const internal = new InternalPlasmicComponentLoader(opts);
-  internal.registerModules({
-    react: React,
-    'react-dom': ReactDOM,
-    'react/jsx-runtime': jsxRuntime,
-    'react/jsx-dev-runtime': jsxDevRuntime,
-
-    // Also inject @plasmicapp/query at run time, so that the same
-    // context is used here and in loader-downloaded code
-    '@plasmicapp/query': PlasmicQuery,
-  });
   return new PlasmicComponentLoader(internal);
 }
 
@@ -128,6 +119,18 @@ export class InternalPlasmicComponentLoader {
   constructor(private opts: InitOptions) {
     this.registry = Registry.getInstance();
     this.fetcher = new PlasmicModulesFetcher(opts);
+
+    this.registerModules({
+      react: React,
+      'react-dom': ReactDOM,
+      'react/jsx-runtime': jsxRuntime,
+      'react/jsx-dev-runtime': jsxDevRuntime,
+
+      // Also inject @plasmicapp/query and @plasmicapp/host to use the
+      // same contexts here and in loader-downloaded code.
+      '@plasmicapp/query': PlasmicQuery,
+      '@plasmicapp/host': PlasmicHost,
+    });
   }
 
   setGlobalVariants(globalVariants: GlobalVariantSpec[]) {
