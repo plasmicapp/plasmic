@@ -22,8 +22,11 @@ export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
       defaultValue: "ef7d41c7bf7e1c214074d0d3047bcd7b",
     },
   },
-  description: `Your store domain should look like **storename.myshopify.com**.
-    For your access token, get it by following [this video](https://www.youtube.com/watch?v=wB_6cM7tdv4).`,
+  description: `Your store domain usually looks like **storename.myshopify.com**.
+
+For your access token, get it by following [this video](https://www.youtube.com/watch?v=wB_6cM7tdv4).
+
+See also the [getting started video](https://www.youtube.com/watch?v=1OJ_gXmta2Q).`,
   importPath: "@plasmicpkgs/commerce-shopify",
   importName: "CommerceProviderComponent",
 };

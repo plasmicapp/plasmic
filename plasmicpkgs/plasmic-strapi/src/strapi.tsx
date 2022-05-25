@@ -32,8 +32,11 @@ const CredentialsContext = React.createContext<
 export const strapiCredentialsProviderMeta: GlobalContextMeta<StrapiCredentialsProviderProps> = {
   name: "StrapiCredentialsProvider",
   displayName: "Strapi Credentials Provider",
-  description:
-    "API token is needed only if data is not publicly readable. Learn how to [get your API token](https://docs.strapi.io/user-docs/latest/settings/managing-global-settings.html#managing-api-tokens).",
+  description: `[Watch how to add Strapi data](https://www.youtube.com/watch?v=1SLoVY3hkQ4).
+
+API token is needed only if data is not publicly readable.
+
+Learn how to [get your API token](https://docs.strapi.io/user-docs/latest/settings/managing-global-settings.html#managing-api-tokens).`,
   importName: "StrapiCredentialsProvider",
   importPath: modulePath,
   props: {
