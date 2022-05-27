@@ -1,9 +1,13 @@
 export {
   ComponentMeta,
   ComponentRenderData,
+  // Data context helpers.
+  DataCtxReader,
+  DataProvider,
   InitOptions,
   PageMeta,
   PageMetadata,
+  PageParamsProvider,
   PlasmicCanvasContext,
   PlasmicCanvasHost,
   PlasmicComponent,
@@ -12,8 +16,11 @@ export {
   PrimitiveType,
   PropType,
   repeatedElement,
+  useDataEnv,
   usePlasmicCanvasContext,
   usePlasmicComponent,
+  useSelector,
+  useSelectors,
 } from "@plasmicapp/loader-react";
 export { createPages, createResolvers, sourceNodes } from "./gatsby-node";
 export { replaceRenderer } from "./gatsby-ssr";
