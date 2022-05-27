@@ -11,6 +11,7 @@ export interface RedirectIfProps {
   operator?: any;
   redirectUrl?: string;
   rightExpression?: string;
+  testCondition?: boolean;
 }
 
 export function RedirectIf(props: RedirectIfProps) {
@@ -21,6 +22,7 @@ export function RedirectIf(props: RedirectIfProps) {
     operator,
     redirectUrl,
     rightExpression,
+    testCondition,
   } = props;
   const [loaded, setLoaded] = React.useState<boolean>(false);
   const contexts = useAllContexts();
@@ -45,12 +47,15 @@ export function RedirectIf(props: RedirectIfProps) {
     });
   }, []);
 
+  const shouldRedirect = () =>
+    inEditor && testCondition !== undefined ? testCondition : condition;
+
   // Perform redirect
   React.useEffect(() => {
-    if (condition && loaded && !inEditor) {
+    if (shouldRedirect() && loaded && !inEditor) {
       ref.current?.click();
     }
-  }, [loaded, condition, ref, inEditor]);
+  }, [loaded, condition, ref, inEditor, testCondition]);
 
   // Validation
   if (!leftExpression) {
@@ -85,7 +90,8 @@ export function RedirectIf(props: RedirectIfProps) {
 
   return (
     <div className={className}>
-      {loaded && !condition && children}
+      {loaded && !shouldRedirect() && children}
+      {shouldRedirect() && inEditor && <span>Redirecting...</span>}
       <a href={redirectUrl} hidden={true} ref={ref} />
     </div>
   );

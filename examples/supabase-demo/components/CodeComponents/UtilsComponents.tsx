@@ -1,3 +1,4 @@
+import "@plasmicpkgs/antd/dist/antd.css";
 import { Modal } from "antd";
 import React, { MouseEvent, ReactNode, useContext } from "react";
 import {

@@ -66,9 +66,6 @@ export interface SupabaseGridProps {
 
   // Grid
   children?: ReactNode;
-  numColumns?: number;
-  columnGap?: number;
-  rowGap?: number;
   count?: number;
   loading?: any;
 }
@@ -79,9 +76,6 @@ export function SupabaseGrid(props: SupabaseGridProps) {
     tableColumns,
     queryFilters,
     children,
-    numColumns,
-    columnGap,
-    rowGap,
     count,
     loading,
   } = props;
@@ -93,9 +87,7 @@ export function SupabaseGrid(props: SupabaseGridProps) {
       filters={queryFilters}
     >
       <SupabaseGridCollection
-        columns={numColumns}
-        columnGap={columnGap}
-        rowGap={rowGap}
+        className={className}
         count={count}
         loading={loading}
       >
@@ -107,9 +99,6 @@ export function SupabaseGrid(props: SupabaseGridProps) {
 
 export interface SupabaseGridCollectionProps {
   children?: ReactNode;
-  columns?: number;
-  columnGap?: number;
-  rowGap?: number;
   count?: number;
   className?: string;
   loading?: any;
@@ -118,16 +107,7 @@ export interface SupabaseGridCollectionProps {
 
 export function SupabaseGridCollection(props: SupabaseGridCollectionProps) {
   const supabaseQuery = React.useContext(SupabaseQueryContext);
-  const {
-    children,
-    columns,
-    columnGap,
-    rowGap,
-    count,
-    className,
-    loading,
-    testLoading,
-  } = props;
+  const { children, count, className, loading, testLoading } = props;
 
   const result = supabaseQuery;
   if (!result || testLoading) {
@@ -135,15 +115,7 @@ export function SupabaseGridCollection(props: SupabaseGridCollectionProps) {
   }
 
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: `repeat(${columns}, 1fr)`,
-        columnGap: `${columnGap}px`,
-        rowGap: `${rowGap}px`,
-      }}
-      className={className}
-    >
+    <div className={className}>
       {result.slice(0, count).map((row: any, i: any) => (
         <RowContext.Provider value={row} key={row.id}>
           <div key={row.id}>{repeatedElement(i === 0, children)}</div>
