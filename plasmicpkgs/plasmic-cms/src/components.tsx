@@ -103,9 +103,17 @@ See also the [getting started video](https://www.youtube.com/watch?v=-Rrn92VtRBc
 
 export function CmsCredentialsProvider({
   children,
-  ...config
+  databaseId,
+  databaseToken,
+  host,
+  locale,
 }: CmsCredentialsProviderProps) {
-  config.host = config.host || defaultHost;
+  const config: DatabaseConfig = {
+    databaseId,
+    databaseToken,
+    locale,
+    host: host || defaultHost,
+  };
   return (
     <DatabaseProvider config={config}>
       <TablesFetcher>{children}</TablesFetcher>
