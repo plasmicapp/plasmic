@@ -13,10 +13,14 @@ import serverRequire from './server-require';
 export {
   ComponentMeta,
   ComponentRenderData,
+  // Data context helpers.
+  DataCtxReader,
+  DataProvider,
   extractPlasmicQueryData,
   InitOptions,
   PageMeta,
   PageMetadata,
+  PageParamsProvider,
   PlasmicCanvasContext,
   PlasmicCanvasHost,
   PlasmicComponent,
@@ -26,9 +30,12 @@ export {
   PrimitiveType,
   PropType,
   repeatedElement,
+  useDataEnv,
   usePlasmicCanvasContext,
   usePlasmicComponent,
   usePlasmicQueryData,
+  useSelector,
+  useSelectors,
 } from '@plasmicapp/loader-react';
 
 type ServerRequest = IncomingMessage & {

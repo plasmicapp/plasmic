@@ -1,10 +1,16 @@
 export {
+  DataCtxReader,
+  DataProvider,
+  PageParamsProvider,
   PlasmicCanvasContext,
   PlasmicCanvasHost,
   PrimitiveType,
   PropType,
   repeatedElement,
+  useDataEnv,
   usePlasmicCanvasContext,
+  useSelector,
+  useSelectors,
 } from '@plasmicapp/host';
 export { ComponentMeta, PageMeta, PageMetadata } from '@plasmicapp/loader-core';
 export { usePlasmicQueryData } from '@plasmicapp/query';
