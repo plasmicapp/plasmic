@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/react-awesome-reveal",
-  "version": "3.8.48",
+  "version": "3.8.49",
   "description": "Plasmic registration call for react-awesome-reveal",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,7 +28,7 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.48",
+    "@plasmicapp/host": "1.0.49",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/node": "^14.0.26",
     "size-limit": "^4.11.0",
