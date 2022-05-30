@@ -5,6 +5,18 @@ export type DataDict = Record<string, any>;
 
 export const DataContext = createContext<DataDict | undefined>(undefined);
 
+export type DataMeta = {
+  hidden?: boolean;
+};
+
+export function mkMetaName(name: string) {
+  return `__plasmic_meta_${name}`;
+}
+
+export function mkMetaValue(meta: Partial<DataMeta>): DataMeta {
+  return meta;
+}
+
 export function applySelector(
   rawData: DataDict | undefined,
   selector: string | undefined
@@ -40,18 +52,39 @@ export function useDataEnv() {
 }
 
 export interface DataProviderProps {
+  /**
+   * Key to set in data context.
+   */
   name?: string;
+  /**
+   * Value to set for `name` in data context.
+   */
   data?: any;
+  /**
+   * If true, hide this entry in studio (data binding).
+   */
+  hidden?: boolean;
   children?: ReactNode;
 }
 
-export function DataProvider({ name, data, children }: DataProviderProps) {
+export function DataProvider({
+  name,
+  data,
+  hidden,
+  children,
+}: DataProviderProps) {
   const existingEnv = useDataEnv() ?? {};
   if (!name) {
     return <>{children}</>;
   } else {
     return (
-      <DataContext.Provider value={{ ...existingEnv, [name]: data }}>
+      <DataContext.Provider
+        value={{
+          ...existingEnv,
+          [name]: data,
+          [mkMetaName(name)]: mkMetaValue({ hidden }),
+        }}
+      >
         {children}
       </DataContext.Provider>
     );
