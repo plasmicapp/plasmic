@@ -6,7 +6,6 @@ import {
   useSelector,
 } from "@plasmicapp/host";
 import { usePlasmicQueryData } from "@plasmicapp/query";
-import { gql, GraphQLClient } from "graphql-request";
 import L from "lodash";
 import React, { ReactNode, useContext } from "react";
 
@@ -138,17 +137,25 @@ export function GraphCMSFetcher({
   const headers = {
     Authorization: `Bearer ${creds.authToken}`,
   };
-  const client = new GraphQLClient(creds.apiUrl, { headers });
 
-  const { data } = usePlasmicQueryData<any | null>(cacheKey, async () => {
-    if (!query) {
-      return null;
+  const { data, error } = usePlasmicQueryData<any | null>(
+    cacheKey,
+    async () => {
+      if (!query) {
+        return null;
+      }
+
+      const data = await fetch(creds.apiUrl, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          query,
+        }),
+      });
+
+      return await data.json();
     }
-    const entryRequest = gql`
-      ${query}
-    `;
-    return await client.request(entryRequest);
-  });
+  );
 
   setControlContextData?.({
     endpoint: creds.apiUrl,
@@ -165,7 +172,11 @@ export function GraphCMSFetcher({
     );
   }
 
-  const renderedData = Object.values(data ?? {}).flatMap(
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  const renderedData = Object.values(data?.data ?? {}).flatMap(
     (model: any, i: number) =>
       model.map((item: any, j: number) => (
         <DataProvider
