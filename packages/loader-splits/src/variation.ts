@@ -1,4 +1,8 @@
-import { Split } from '@plasmicapp/loader-fetcher';
+import {
+  ExperimentSlice,
+  SegmentSlice,
+  Split,
+} from '@plasmicapp/loader-fetcher';
 import jsonLogic from 'json-logic-js';
 
 export const getSplitKey = (split: Split) => {
@@ -7,7 +11,7 @@ export const getSplitKey = (split: Split) => {
 
 export function getActiveVariation(opts: {
   splits: Split[];
-  traits: Record<string, string | number>;
+  traits: Record<string, string | number | boolean>;
   getKnownValue: (key: string) => string | undefined;
   updateKnownValue: (key: string, value: string) => void;
 }) {
@@ -57,4 +61,28 @@ export function getActiveVariation(opts: {
   });
 
   return variation;
+}
+
+export function getExternalIds(
+  splits: Split[],
+  variation: Record<string, string>
+) {
+  const externalVariation: Record<string, string> = {};
+  Object.keys(variation).forEach((variationKey) => {
+    const [, splitId] = variationKey.split('.');
+    const sliceId = variation[variationKey];
+    const split = splits.find(
+      (s) => s.id === splitId || s.externalId === splitId
+    );
+    if (split && split.externalId) {
+      const slice = (split.slices as Array<
+        ExperimentSlice | SegmentSlice
+      >).find((s) => s.id === sliceId || s.externalId === sliceId);
+      if (slice?.externalId) {
+        // Save variation without ext prefix
+        externalVariation[`${split.externalId}`] = slice.externalId;
+      }
+    }
+  });
+  return externalVariation;
 }
