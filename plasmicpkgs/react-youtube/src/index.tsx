@@ -163,6 +163,12 @@ export const youtubeMeta: ComponentMeta<YouTubeProps> = {
       description: "Hide the YouTube logo in the control bar",
       defaultValueHint: false,
     },
+    mute: {
+      type: "boolean",
+      displayName: "Mute",
+      description: "Whether the video should be muted",
+      defaultValueHint: false,
+    },
     playsinline: {
       type: "boolean",
       displayName: "Play Inline",
