@@ -853,7 +853,7 @@ interface CmsRowFieldValueProps extends CanvasComponentProps<RowContextData> {
 export const cmsRowFieldValueMeta: ComponentMeta<CmsRowFieldValueProps> = {
   name: `${componentPrefix}-row-value`,
   displayName: "CMS Entry Value",
-  importName: "CmsRowValue",
+  importName: "CmsRowFieldValue",
   importPath: modulePath,
   props: {
     children: {
