@@ -35,6 +35,7 @@
     "plasmicpkgs/plasmic-cms",
     "plasmicpkgs/plasmic-content-stack",
     "plasmicpkgs/plasmic-embed-css",
+    "plasmicpkgs/plasmic-graphcms",
     "plasmicpkgs/plasmic-nav",
     "plasmicpkgs/plasmic-query",
     "plasmicpkgs/plasmic-sanity-io",
