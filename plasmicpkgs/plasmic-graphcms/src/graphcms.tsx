@@ -138,7 +138,7 @@ export function GraphCMSFetcher({
     Authorization: `Bearer ${creds.authToken}`,
   };
 
-  const { data, error } = usePlasmicQueryData<any | null>(
+  const { data, error, isLoading } = usePlasmicQueryData<any | null>(
     cacheKey,
     async () => {
       if (!query) {
@@ -148,9 +148,7 @@ export function GraphCMSFetcher({
       const data = await fetch(creds.apiUrl, {
         method: "POST",
         headers,
-        body: JSON.stringify({
-          query,
-        }),
+        body: JSON.stringify(query),
       });
 
       return await data.json();
@@ -176,9 +174,17 @@ export function GraphCMSFetcher({
     return <div>Error: {error.message}</div>;
   }
 
-  const renderedData = Object.values(data?.data ?? {}).flatMap(
+  if (isLoading) {
+    return null;
+  }
+
+  if (!data?.data || L.compact(Object.values(data?.data)).length === 0) {
+    return <div>Data not found</div>;
+  }
+
+  const renderedData = Object.values(data?.data).flatMap(
     (model: any, i: number) =>
-      model.map((item: any, j: number) => (
+      (L.isArray(model) ? model : [model]).map((item: any, j: number) => (
         <DataProvider
           key={JSON.stringify(item)}
           name={"GraphCMSItem"}
