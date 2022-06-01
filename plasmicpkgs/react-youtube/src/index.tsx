@@ -2,17 +2,16 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
-import YouTubeImpl, {
-  PlayerVars,
-  YouTubeProps as YouTubeImplProps,
-} from "react-youtube";
+import YouTubeImpl, { YouTubeProps as YouTubeImplProps } from "react-youtube";
+import type { Options } from "youtube-player/dist/types";
 
+type PlayerVars = Exclude<Options["playerVars"], undefined>;
 export type YouTubeProps = YouTubeImplProps &
   {
     [prop in keyof PlayerVars]:
       | PlayerVars[prop]
       | (prop extends typeof booleanParams[number] ? boolean : never);
-  };
+  } & { mute?: boolean };
 const playerParams = [
   "autoplay",
   "cc_load_policy",
@@ -32,9 +31,7 @@ const playerParams = [
   "playlist",
   "playsinline",
   "rel",
-  "showinfo",
   "start",
-  "mute",
 ] as const;
 
 const booleanParams = [
@@ -53,6 +50,32 @@ const booleanParamsSet = new Set<string>(booleanParams);
 
 const YouTube = React.forwardRef<YouTubeImpl, YouTubeProps>(
   (props: YouTubeProps, ref) => {
+    const internalRef = React.useRef<YouTubeImpl | null>(null);
+
+    const onRef = React.useCallback(
+      (player: YouTubeImpl | null) => {
+        internalRef.current = player;
+        if (ref) {
+          if (typeof ref === "function") {
+            ref(player);
+          } else {
+            ref.current = player;
+          }
+        }
+      },
+      [ref]
+    );
+
+    React.useEffect(() => {
+      if (props.mute !== undefined) {
+        if (props.mute) {
+          internalRef.current?.getInternalPlayer()?.mute();
+        } else {
+          internalRef.current?.getInternalPlayer()?.unMute();
+        }
+      }
+    }, [props.mute, internalRef]);
+
     const finalProps = { ...props };
     for (const prop of playerParams) {
       if (prop in finalProps) {
@@ -81,7 +104,13 @@ const YouTube = React.forwardRef<YouTubeImpl, YouTubeProps>(
         }
       }
     }
-    return <YouTubeImpl ref={ref} {...finalProps} />;
+    return (
+      <YouTubeImpl
+        ref={onRef}
+        {...finalProps}
+        iframeClassName={props.className}
+      />
+    );
   }
 );
 
@@ -103,6 +132,7 @@ export const youtubeMeta: ComponentMeta<YouTubeProps> = {
       description:
         "Whether the video should automatically start playing when the player loads",
       defaultValueHint: false,
+      hidden: (props) => !props.mute,
     },
     cc_load_policy: {
       type: "boolean",
