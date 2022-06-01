@@ -210,9 +210,10 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
     // If width is set, set it on the wrapper along with min/max width
     // and just use `width: 100%` on the spacer
     spacerStyle.width = "100%";
-    wrapperStyle.width = displayWidth;
-    wrapperStyle.minWidth = displayMinWidth;
-    wrapperStyle.maxWidth = displayMaxWidth;
+    // Rely on the styles set by `classname` on the wrapper:
+    // wrapperStyle.width = displayWidth;
+    // wrapperStyle.minWidth = displayMinWidth;
+    // wrapperStyle.maxWidth = displayMaxWidth;
   } else {
     // Otherwise, we want auto sizing from the spacer, so set width there.
     //
@@ -225,11 +226,13 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
     wrapperStyle.width = "auto";
     if (displayMinWidth) {
       spacerStyle.minWidth = "100%";
-      wrapperStyle.minWidth = displayMinWidth;
+      // Rely on min-width set by `classname` on the wrapper:
+      // wrapperStyle.minWidth = displayMinWidth;
     }
     if (displayMaxWidth != null && displayMaxWidth !== "none") {
       spacerStyle.maxWidth = "100%";
-      wrapperStyle.maxWidth = displayMaxWidth;
+      // Rely on max-width set by `classname` on the wrapper:
+      // wrapperStyle.maxWidth = displayMaxWidth;
     }
   }
 
