@@ -52,7 +52,7 @@ export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
     req?: ServerRequest;
     res?: ServerResponse;
     known?: Record<string, string>;
-    traits: Record<string, string>;
+    traits: Record<string, string | number | boolean>;
   }) {
     return this._getActiveVariation({
       traits: opts.traits,

@@ -1,1 +1,1 @@
-export { getActiveVariation, getSplitKey } from './variation';
+export { getActiveVariation, getExternalIds, getSplitKey } from './variation';

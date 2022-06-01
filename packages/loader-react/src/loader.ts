@@ -15,7 +15,7 @@ import {
   PlasmicModulesFetcher,
   Registry,
 } from '@plasmicapp/loader-core';
-import { getActiveVariation } from '@plasmicapp/loader-splits';
+import { getActiveVariation, getExternalIds } from '@plasmicapp/loader-splits';
 import * as PlasmicQuery from '@plasmicapp/query';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -338,7 +338,7 @@ export class InternalPlasmicComponentLoader {
   }
 
   public async getActiveVariation(opts: {
-    traits: Record<string, string | number>;
+    traits: Record<string, string | number | boolean>;
     getKnownValue: (key: string) => string | undefined;
     updateKnownValue: (key: string, value: string) => void;
   }) {
@@ -557,7 +557,7 @@ export class PlasmicComponentLoader {
   }
 
   protected async _getActiveVariation(opts: {
-    traits: Record<string, string | number>;
+    traits: Record<string, string | number | boolean>;
     getKnownValue: (key: string) => string | undefined;
     updateKnownValue: (key: string, value: string) => void;
   }) {
@@ -566,7 +566,7 @@ export class PlasmicComponentLoader {
 
   async getActiveVariation(opts: {
     known?: Record<string, string>;
-    traits: Record<string, string | number>;
+    traits: Record<string, string | number | boolean>;
   }) {
     return this._getActiveVariation({
       traits: opts.traits,
@@ -584,6 +584,10 @@ export class PlasmicComponentLoader {
         }
       },
     });
+  }
+
+  getExternalVariation(variation: Record<string, string>) {
+    return getExternalIds(this.getActiveSplits(), variation);
   }
 
   getActiveSplits() {
