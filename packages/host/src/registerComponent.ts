@@ -273,7 +273,7 @@ type RestrictPropType<T, P> = T extends string
   ? SupportControlled<NumberType<P> | JSONLikeType<P> | CustomType<P>>
   : PropType<P>;
 
-interface ActionProps<P> {
+export interface ActionProps<P> {
   componentProps: P;
   /**
    * `contextData` can be `null` if the prop controls are rendering before
