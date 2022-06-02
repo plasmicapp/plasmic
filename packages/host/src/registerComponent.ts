@@ -273,6 +273,26 @@ type RestrictPropType<T, P> = T extends string
   ? SupportControlled<NumberType<P> | JSONLikeType<P> | CustomType<P>>
   : PropType<P>;
 
+interface ActionProps<P> {
+  componentProps: P;
+  /**
+   * `contextData` can be `null` if the prop controls are rendering before
+   * the component instance itself (it will re-render once the component
+   * calls `setControlContextData`)
+   */
+  contextData: InferDataType<P> | null;
+  studioOps: {
+    showModal: (modalProps: ModalProps) => void;
+    refreshQueryData: () => void;
+  };
+}
+
+interface Action<P> {
+  type: "button-action";
+  label: string;
+  onClick: (props: ActionProps<P>) => void;
+}
+
 type DistributedKeyOf<T> = T extends any ? keyof T : never;
 
 interface ComponentTemplate<P>
@@ -316,6 +336,10 @@ export interface ComponentMeta<P> {
   props: { [prop in DistributedKeyOf<P>]?: RestrictPropType<P[prop], P> } & {
     [prop: string]: PropType<P>;
   };
+  /**
+   * An array describing the component actions to be used in Studio.
+   */
+  actions?: Action<P>[];
   /**
    * The path to be used when importing the component in the generated code.
    * It can be the name of the package that contains the component, or the path
