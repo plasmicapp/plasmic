@@ -289,7 +289,7 @@ interface ActionProps<P> {
   };
 }
 
-type Action<P> =
+export type Action<P> =
   | {
       type: "button-action";
       label: string;
