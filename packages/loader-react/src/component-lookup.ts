@@ -17,6 +17,11 @@ function getFirstCompMeta(metas: ComponentMeta[], lookup: ComponentLookupSpec) {
 export class ComponentLookup {
   constructor(private bundle: LoaderBundleOutput, private registry: Registry) {}
 
+  getComponentMeta(spec: ComponentLookupSpec): ComponentMeta | undefined {
+    const compMeta = getFirstCompMeta(this.bundle.components, spec);
+    return compMeta;
+  }
+
   getComponent<P extends React.ComponentType = any>(
     spec: ComponentLookupSpec,
     opts: { forceOriginal?: boolean } = {}

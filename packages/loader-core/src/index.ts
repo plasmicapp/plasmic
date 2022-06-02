@@ -18,3 +18,4 @@ export {
 } from '@plasmicapp/loader-fetcher';
 export { getBundleSubset } from './bundles';
 export { Registry } from './registry';
+export { PlasmicTracker, TrackRenderOptions } from './tracker';
