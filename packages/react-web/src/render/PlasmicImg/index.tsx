@@ -238,19 +238,19 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
 
   if (displayHeight != null && displayHeight !== "auto") {
     spacerStyle.height = "100%";
-    wrapperStyle.height = displayHeight;
-    wrapperStyle.minHeight = displayMinHeight;
-    wrapperStyle.maxHeight = displayMaxHeight;
+    // wrapperStyle.height = displayHeight;
+    // wrapperStyle.minHeight = displayMinHeight;
+    // wrapperStyle.maxHeight = displayMaxHeight;
   } else {
     spacerStyle.height = displayHeight;
     wrapperStyle.height = "auto";
     if (displayMinHeight) {
       spacerStyle.minHeight = "100%";
-      wrapperStyle.minHeight = displayMinHeight;
+      // wrapperStyle.minHeight = displayMinHeight;
     }
     if (displayMaxHeight != null && displayMaxHeight !== "none") {
       spacerStyle.maxHeight = "100%";
-      wrapperStyle.maxHeight = displayMaxHeight;
+      // wrapperStyle.maxHeight = displayMaxHeight;
     }
   }
 
