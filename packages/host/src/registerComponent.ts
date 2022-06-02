@@ -282,16 +282,23 @@ interface ActionProps<P> {
    */
   contextData: InferDataType<P> | null;
   studioOps: {
-    showModal: (modalProps: ModalProps) => void;
+    showModal: (
+      modalProps: Omit<ModalProps, "onClose"> & { onClose?: () => void }
+    ) => void;
     refreshQueryData: () => void;
   };
 }
 
-interface Action<P> {
-  type: "button-action";
-  label: string;
-  onClick: (props: ActionProps<P>) => void;
-}
+type Action<P> =
+  | {
+      type: "button-action";
+      label: string;
+      onClick: (props: ActionProps<P>) => void;
+    }
+  | {
+      type: "custom-action";
+      comp: React.ComponentType<ActionProps<P>>;
+    };
 
 type DistributedKeyOf<T> = T extends any ? keyof T : never;
 
