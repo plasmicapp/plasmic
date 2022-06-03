@@ -155,11 +155,11 @@ export function SupabaseQuery(props: SupabaseQueryProps) {
   }
 
   return (
-    <>
+    <div className={className}>
       <SupabaseQueryContext.Provider value={result}>
         {children}
       </SupabaseQueryContext.Provider>
-    </>
+    </div>
   );
 }
 
