@@ -81,7 +81,6 @@ export function SupabaseGrid(props: SupabaseGridProps) {
   } = props;
   return (
     <SupabaseQuery
-      className={className}
       tableName={tableName}
       columns={tableColumns?.join(",")}
       filters={queryFilters}

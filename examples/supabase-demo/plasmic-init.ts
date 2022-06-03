@@ -112,9 +112,12 @@ PLASMIC.registerComponent(SupabaseGrid, {
     },
   },
   defaultStyles: {
+    display: "grid",
     gridTemplateColumns: "1fr 1fr 1fr",
     gridRowGap: "30px",
     gridColumnGap: "50px",
+    padding: "8px",
+    maxWidth: "100%",
   },
   importPath: "./components/CodeComponents/DisplayCollections",
 });
@@ -140,9 +143,12 @@ PLASMIC.registerComponent(SupabaseGridCollection, {
     testLoading: "boolean",
   },
   defaultStyles: {
+    display: "grid",
     gridTemplateColumns: "1fr 1fr 1fr",
     gridRowGap: "30px",
     gridColumnGap: "50px",
+    padding: "8px",
+    maxWidth: "100%",
   },
   importPath: "./components/CodeComponents/DisplayCollections",
 });
