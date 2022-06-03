@@ -200,11 +200,11 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
       : window.btoa(spacerSvg);
 
   let wrapperStyle: CSSProperties = { ...(style || {}) };
-  let spacerStyle: CSSProperties = pick(
+  let spacerStyle: CSSProperties = {...pick(
     style || {},
     "objectFit",
     "objectPosition"
-  );
+  )};
 
   if (displayWidth != null && displayWidth !== "auto") {
     // If width is set, set it on the wrapper along with min/max width
