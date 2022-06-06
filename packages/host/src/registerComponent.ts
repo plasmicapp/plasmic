@@ -387,6 +387,10 @@ export interface ComponentMeta<P> {
    * Whether the component can be used as an attachment to an element.
    */
   isAttachment?: boolean;
+  /**
+   * Whether the component provides data to its slots using DataProvider.
+   */
+  providesData?: boolean;
 }
 
 export interface ComponentRegistration {
