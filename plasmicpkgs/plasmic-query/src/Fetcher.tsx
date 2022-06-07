@@ -1,8 +1,8 @@
+import { DataProvider } from "@plasmicapp/host";
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { usePlasmicQueryData } from "@plasmicapp/query";
-import { DataProvider } from "@plasmicapp/host";
 import React, { ReactNode } from "react";
 
 export interface FetchProps {
@@ -75,6 +75,7 @@ export const dataFetcherMeta: ComponentMeta<DataFetcherProps> = {
   displayName: "Data Fetcher",
   importName: "DataFetcher",
   importPath: "@plasmicpkgs/react-query",
+  providesData: true,
   props: {
     url: {
       type: "string",

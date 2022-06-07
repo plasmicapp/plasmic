@@ -44,7 +44,7 @@
     "lodash-es": "^4.17.21"
   },
   "peerDependencies": {
-    "@plasmicapp/host": "^1.0.29",
+    "@plasmicapp/host": "^1.0.54",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
   }

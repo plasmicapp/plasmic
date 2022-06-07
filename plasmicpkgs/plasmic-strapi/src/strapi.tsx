@@ -81,6 +81,7 @@ export const strapiCollectionMeta: ComponentMeta<StrapiCollectionProps> = {
   displayName: "Strapi Collection",
   importName: "StrapiCollection",
   importPath: modulePath,
+  providesData: true,
   description:
     "Fetches Strapi data of a given collection and repeats content of children once for every row fetched.",
   defaultStyles: {

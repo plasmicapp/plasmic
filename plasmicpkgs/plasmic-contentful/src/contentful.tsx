@@ -43,14 +43,13 @@ export const ContentfulCredentialsProviderMeta: GlobalContextMeta<ContentfulCred
       type: "string",
       displayName: "Space",
       description: "Name of your space",
-      defaultValue: 'esjp7d70hc5f'
+      defaultValue: "esjp7d70hc5f",
     },
     accessToken: {
       type: "string",
       displayName: "Access Token ",
       description: "Access Token",
-      defaultValue: 'eNN04tTEhz0iTFvx5_03m43jRrqsplKUzLhLLesqZyc'
-
+      defaultValue: "eNN04tTEhz0iTFvx5_03m43jRrqsplKUzLhLLesqZyc",
     },
     environment: {
       type: "string",
@@ -89,6 +88,7 @@ export const ContentfulFetcherMeta: ComponentMeta<ContentfulFetcherProps> = {
   displayName: "Contentful Fetcher",
   importName: "ContentfulFetcher",
   importPath: modulePath,
+  providesData: true,
   description:
     "Fetches Contentful data and repeats content of children once for every row fetched. ",
   defaultStyles: {
@@ -118,7 +118,7 @@ export const ContentfulFetcherMeta: ComponentMeta<ContentfulFetcherProps> = {
       options: (props, ctx) =>
         ctx?.types?.map((type: any) => ({
           label: type?.name,
-          value: type?.sys?.id
+          value: type?.sys?.id,
         })) ?? [],
       displayName: "Content type",
       description: "Content type to be queried.",
@@ -128,11 +128,11 @@ export const ContentfulFetcherMeta: ComponentMeta<ContentfulFetcherProps> = {
       options: (props, ctx) =>
         ctx?.entries?.map((entry: any) => ({
           label: entry?.sys?.id,
-          value: entry?.sys?.id
+          value: entry?.sys?.id,
         })) ?? [],
       displayName: "Entry ID",
       description: "Query in Content Type.",
-      defaultValueHint: 'all'
+      defaultValueHint: "all",
     },
     noLayout: {
       type: "boolean",
@@ -166,8 +166,8 @@ export function ContentfulFetcher({
   const { data: contentTypes } = usePlasmicQueryData<any | null>(
     `${cacheKey}/contentTypes`,
     async () => {
-      const response = await client.getContentTypes()
-      return response
+      const response = await client.getContentTypes();
+      return response;
     }
   );
 
@@ -178,9 +178,9 @@ export function ContentfulFetcher({
         return undefined;
       }
       const response = await client.getEntries({
-        content_type: `${contentType?.toString()}`
+        content_type: `${contentType?.toString()}`,
       });
-      return response
+      return response;
     }
   );
 
@@ -188,10 +188,10 @@ export function ContentfulFetcher({
     `${cacheKey}/entry`,
     async () => {
       if (!entryID) {
-        return undefined
+        return undefined;
       }
-      const response = await client.getEntry(`${entryID}`)
-      return response
+      const response = await client.getEntry(`${entryID}`);
+      return response;
     }
   );
 
@@ -215,7 +215,7 @@ export function ContentfulFetcher({
       <DataProvider name={"contentfulItem"} data={entryData}>
         {children}
       </DataProvider>
-    )
+    );
   } else if (contentType) {
     renderedData = entriesData?.items?.map((item: any, index: number) => (
       <DataProvider key={item?.sys?.id} name={"contentfulItem"} data={item}>
@@ -223,9 +223,9 @@ export function ContentfulFetcher({
       </DataProvider>
     ));
   } else {
-    return <div> Please choose the Content Type</div>
+    return <div> Please choose the Content Type</div>;
   }
-  
+
   return noLayout ? (
     <> {renderedData} </>
   ) : (
@@ -263,9 +263,7 @@ export function ContentfulField({
 }: ContentfulFieldProps) {
   const item = useSelector("contentfulItem");
   if (!item) {
-    return (
-      <div>ContentfulField must be used within a ContentfulFetcher </div>
-    );
+    return <div>ContentfulField must be used within a ContentfulFetcher </div>;
   }
   // Getting only fields that aren’t objects
   const displayableFields = Object.keys(item?.fields).filter((field) => {
@@ -282,7 +280,6 @@ export function ContentfulField({
   const data = L.get(item?.fields, field as string);
   if (!data) {
     return <div>Please specify a valid field.</div>;
-
   } else {
     return <div className={className}> {data} </div>;
   }

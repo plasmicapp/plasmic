@@ -46,7 +46,7 @@
     "typescript": "^4.6.3"
   },
   "dependencies": {
-    "@plasmicapp/host": "^1.0.41",
+    "@plasmicapp/host": "^1.0.54",
     "@plasmicapp/query": "^0.1.42",
     "@types/lodash-es": "^4.17.6",
     "contentful": "^9.1.28",
