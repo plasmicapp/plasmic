@@ -1,9 +1,13 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { CollapsePanelProps, CollapseProps } from "antd/lib/collapse";
-import Collapse from "antd/lib/collapse/Collapse";
+import {
+  CollapsePanelProps,
+  CollapseProps as AntdCollapseProps,
+} from "antd/lib/collapse";
+import AntdCollapse from "antd/lib/collapse/Collapse";
 import CollapsePanel from "antd/lib/collapse/CollapsePanel";
+import React from "react";
 import { traverseReactEltTree } from "./customControls";
 import { Registerable } from "./registerable";
 
@@ -41,6 +45,10 @@ export const collapstePanelMeta: ComponentMeta<CollapsePanelProps> = {
       description: "If false, panel will not show arrow icon",
       defaultValueHint: true,
     },
+    extra: {
+      type: "slot",
+      hidePlaceholder: true,
+    },
     children: {
       type: "slot",
       defaultValue: [
@@ -69,6 +77,11 @@ export function registerCollapsePanel(
   );
 }
 
+type CollapseProps = {
+  openIcon?: React.ReactNode;
+  closeIcon?: React.ReactNode;
+} & AntdCollapseProps;
+
 export const collapsteMeta: ComponentMeta<CollapseProps> = {
   name: "AntdCollapse",
   displayName: "Antd Collapse",
@@ -84,10 +97,10 @@ export const collapsteMeta: ComponentMeta<CollapseProps> = {
       uncontrolledProp: "defaultActiveKey",
       description: "Key of the active panel",
       multiSelect: true,
-      options: componentProps => {
+      options: (componentProps) => {
         const options = new Set<string>();
         // `children` is not defined in the Collapse props
-        traverseReactEltTree((componentProps as any).children, elt => {
+        traverseReactEltTree((componentProps as any).children, (elt) => {
           if (elt?.type === CollapsePanel && typeof elt?.key === "string") {
             options.add(elt.key);
           }
@@ -125,14 +138,38 @@ export const collapsteMeta: ComponentMeta<CollapseProps> = {
         {
           type: "component",
           name: "AntdCollapsePanel",
+          props: {
+            key: "1",
+          },
         },
       ],
     },
+    openIcon: {
+      type: "slot",
+      hidePlaceholder: true,
+    },
+    closeIcon: {
+      type: "slot",
+      hidePlaceholder: true,
+    },
   },
-  importPath: "antd/lib/collapse/Collapse",
+  importPath: "@plasmicpkgs/antd",
   importName: "Collapse",
-  isDefaultExport: true,
 };
+
+export function Collapse(props: CollapseProps) {
+  const { openIcon, closeIcon, ...rest } = props;
+  return (
+    <AntdCollapse
+      {...rest}
+      expandIcon={
+        openIcon || closeIcon
+          ? ({ isActive }) => (isActive ? openIcon : closeIcon)
+          : undefined
+      }
+    />
+  );
+}
 
 export function registerCollapse(
   loader?: Registerable,
