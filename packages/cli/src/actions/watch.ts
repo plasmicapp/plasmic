@@ -75,21 +75,72 @@ export async function watchProjects(
     socket.on("error", (data: any) => {
       reject(new HandledError(data));
     });
-    socket.on("update", async (data: any) => {
-      // Just run syncProjects() for now when any project has been updated
-      // Note on the 'updated to revision' part: this is parsed by the
-      // loader package to know that we finished updating the components.
-      await sync(syncOpts, syncMetadata);
-      logger.info(
-        `[${moment().format("HH:mm:ss")}] Project ${
-          data.projectId
-        } updated to revision ${data.revisionNum}`
-      );
+    socket.on(
+      "update",
+      asyncOneAtATime(async (data: any) => {
+        // Just run syncProjects() for now when any project has been updated
+        // Note on the 'updated to revision' part: this is parsed by the
+        // loader package to know that we finished updating the components.
+        await sync(syncOpts, syncMetadata);
+        logger.info(
+          `[${moment().format("HH:mm:ss")}] Project ${
+            data.projectId
+          } updated to revision ${data.revisionNum}`
+        );
 
-      onProjectUpdate?.();
-    });
+        onProjectUpdate?.();
+      }, true)
+    );
   });
 
   logger.info(`Watching projects ${latestProjects} ...`);
   return promise;
+}
+
+/**
+ * Throttle invocations of a function to allow a single outstanding invocation
+ * at a time.
+ *
+ * But, has a buffer of size one, so that after the current invocation
+ * completes, it calls the last attempted invocation.
+ *
+ * Other invocations that get evicted from the buffer get returned bounceValue
+ * upon eviction.
+ */
+type AsyncCallable = (...args: any[]) => Promise<any>;
+
+function asyncOneAtATime(f: AsyncCallable, bounceValue: any): AsyncCallable {
+  interface CallInfo {
+    args: any[];
+    resolve: any;
+    reject: any;
+  }
+  let waitingCall: CallInfo | undefined = undefined,
+    currentPromise: Promise<any> | undefined = undefined;
+  function invoke({ args, resolve, reject }: CallInfo) {
+    const onCompletion = () => {
+      currentPromise = undefined;
+      if (waitingCall) {
+        invoke(waitingCall);
+        waitingCall = undefined;
+      }
+    };
+    currentPromise = f(...args);
+    currentPromise.then(onCompletion, onCompletion);
+    currentPromise.then(resolve, reject);
+  }
+  return (...args: any[]) => {
+    return new Promise((resolve, reject) => {
+      if (!currentPromise) {
+        // Free to proceed.
+        invoke({ args, resolve, reject });
+      } else {
+        // Evict current waiter, and enqueue self.
+        if (waitingCall) {
+          waitingCall.resolve(bounceValue);
+        }
+        waitingCall = { args, resolve, reject };
+      }
+    });
+  };
 }
