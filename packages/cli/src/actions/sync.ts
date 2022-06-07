@@ -440,10 +440,12 @@ export async function sync(
 
   if (!opts.quiet && externalCssImports.size > 0) {
     logger.info(
-      `This project uses external packages and styles. Make sure to import the following global CSS: ` +
-        Array.from(externalCssImports.keys())
-          .map((stmt) => `"${stmt}"`)
-          .join(", ")
+      chalk.cyanBright.bold(
+        `IMPORTANT: This project uses external packages and styles. Make sure to import the following global CSS: ` +
+          Array.from(externalCssImports.keys())
+            .map((stmt) => `"${stmt}"`)
+            .join(", ")
+      )
     );
   }
 
