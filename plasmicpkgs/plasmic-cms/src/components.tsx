@@ -72,6 +72,7 @@ Find your CMS in the [dashboard](https://studio.plasmic.app), and go to the Sett
 See also the [getting started video](https://www.youtube.com/watch?v=-Rrn92VtRBc).`,
   importName: "CmsCredentialsProvider",
   importPath: modulePath,
+  providesData: true,
   props: {
     host: {
       type: "string",
@@ -183,6 +184,7 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
     "Fetches CMS data and repeats content of children once for every row fetched.",
   importName: "CmsQueryRepeater",
   importPath: modulePath,
+  providesData: true,
   defaultStyles: {
     display: "flex",
     width: "stretch",

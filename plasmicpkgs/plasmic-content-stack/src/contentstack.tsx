@@ -89,6 +89,7 @@ export const ContentStackFetcherMeta: ComponentMeta<ContentStackFetcherProps> = 
   displayName: "ContentStack Fetcher",
   importName: "ContentStackFetcher",
   importPath: modulePath,
+  providesData: true,
   description:
     "Fetches ContentStack data and repeats content of children once for every row fetched. ",
   defaultStyles: {

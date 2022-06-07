@@ -1,10 +1,10 @@
-import React from "react";
 import {
   ComponentMeta,
   DataProvider,
   registerComponent,
   repeatedElement,
 } from "@plasmicapp/host";
+import React from "react";
 
 const thisModule = "@plasmicpkgs/plasmic-basic-components";
 
@@ -47,6 +47,7 @@ export const repeaterMeta: ComponentMeta<RepeaterProps<any>> = {
   displayName: "Repeater",
   importName: "Repeater",
   importPath: thisModule,
+  providesData: true,
   props: {
     children: {
       type: "slot",

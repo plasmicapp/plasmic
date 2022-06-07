@@ -230,7 +230,7 @@ class ErrorBoundary extends React.Component<
     if (this.state.error) {
       return <div>Error: {`${this.state.error.message}`}</div>;
     } else {
-      return this.props.children;
+      return <>{this.props.children}</>;
     }
   }
 }

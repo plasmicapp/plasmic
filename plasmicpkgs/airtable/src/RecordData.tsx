@@ -265,6 +265,7 @@ export const airtableRecordMeta: ComponentMeta<AirtableRecordProps> = {
   displayName: "Airtable Record",
   importPath: thisModule,
   importName: "AirtableRecord",
+  providesData: true,
   props: {
     children: {
       type: "slot",
@@ -342,6 +343,7 @@ export const airtableCollectionMeta: ComponentMeta<AirtableCollectionProps> = {
   displayName: "Airtable Collection",
   importPath: thisModule,
   importName: "AirtableCollection",
+  providesData: true,
   props: {
     children: {
       type: "slot",

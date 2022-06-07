@@ -124,6 +124,7 @@ export const sanityFetcherMeta: ComponentMeta<SanityFetcherProps> = {
   displayName: "Sanity Fetcher",
   importName: "SanityFetcher",
   importPath: modulePath,
+  providesData: true,
   description:
     "Fetches Sanity data and repeats content of children once for every row fetched. Query Cheat Sheet - GROQ <https://www.sanity.io/docs/query-cheat-sheet>",
   defaultStyles: {

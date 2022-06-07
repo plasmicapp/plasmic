@@ -40,7 +40,7 @@
     "@plasmicapp/query": "0.1.49"
   },
   "peerDependencies": {
-    "@plasmicapp/host": "^1.0.0",
+    "@plasmicapp/host": "^1.0.54",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
   }

@@ -82,6 +82,7 @@ export const GraphCMSFetcherMeta: ComponentMeta<GraphCMSFetcherProps> = {
   displayName: "GraphCMS Fetcher",
   importName: "GraphCMSFetcher",
   importPath: modulePath,
+  providesData: true,
   description:
     "Fetches GraphCMS data and repeats content of children once for every row fetched. ",
   defaultStyles: {
