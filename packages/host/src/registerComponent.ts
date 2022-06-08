@@ -286,6 +286,8 @@ export interface ActionProps<P> {
       modalProps: Omit<ModalProps, "onClose"> & { onClose?: () => void }
     ) => void;
     refreshQueryData: () => void;
+    appendToChildren: (element: PlasmicElement) => void;
+    removeChildAt: (pos: number) => void;
   };
 }
 
