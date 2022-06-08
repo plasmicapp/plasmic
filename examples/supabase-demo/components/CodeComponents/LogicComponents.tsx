@@ -12,6 +12,7 @@ export interface RedirectIfProps {
   redirectUrl?: string;
   rightExpression?: string;
   testCondition?: boolean;
+  forcePreview?: boolean;
 }
 
 export function RedirectIf(props: RedirectIfProps) {
@@ -23,6 +24,7 @@ export function RedirectIf(props: RedirectIfProps) {
     redirectUrl,
     rightExpression,
     testCondition,
+    forcePreview,
   } = props;
   const [loaded, setLoaded] = React.useState<boolean>(false);
   const contexts = useAllContexts();
@@ -88,10 +90,11 @@ export function RedirectIf(props: RedirectIfProps) {
     return null;
   }
 
+  const showChildren = !shouldRedirect() || (inEditor && forcePreview);
+
   return (
     <div className={className}>
-      {loaded && !shouldRedirect() && children}
-      {shouldRedirect() && inEditor && <span>Redirecting...</span>}
+      {showChildren && children}
       <a href={redirectUrl} hidden={true} ref={ref} />
     </div>
   );

@@ -348,6 +348,7 @@ PLASMIC.registerComponent(RedirectIf, {
         { label: "FALSY", value: false },
       ],
     },
+    forcePreview: "boolean",
   },
   importPath: "./components/CodeComponents/LogicComponents",
 });
