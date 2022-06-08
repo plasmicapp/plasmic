@@ -153,8 +153,6 @@ export function SupabaseTableCollection(props: SupabaseTableCollectionProps) {
     editPage,
   } = props;
 
-  const ref = React.createRef<HTMLAnchorElement>();
-
   const result = supabaseQuery;
   if (!result || testLoading) {
     return loading;
@@ -179,13 +177,12 @@ export function SupabaseTableCollection(props: SupabaseTableCollectionProps) {
             dataIndex: "edit",
             key: "edit",
             render: (id: any) => (
-              <div
-                onClick={() => {
-                  localStorage.setItem("id", id);
-                  ref.current?.click();
-                }}
-              >
-                {editSlot}
+              <div onClick={() => console.log(id)}>
+                <RowContext.Provider
+                  value={result.filter((row: any) => row.id === id)[0]}
+                >
+                  {editSlot}
+                </RowContext.Provider>
               </div>
             ),
           },
@@ -235,7 +232,6 @@ export function SupabaseTableCollection(props: SupabaseTableCollectionProps) {
         className={className}
         pagination={false}
       />
-      {editPage && <a href={editPage} hidden={true} ref={ref} />}
     </div>
   );
 }
