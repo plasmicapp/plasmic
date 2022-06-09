@@ -36,7 +36,14 @@ export interface PlasmicImgProps extends ImgTagProps {
   src?:
     | string
     | {
-        src: string;
+        src:
+          | string
+          | {
+              src: string;
+              height: number;
+              width: number;
+              blurDataURL?: string;
+            };
         fullHeight: number;
         fullWidth: number;
         // We might also get a more precise aspectRatio for SVGs
@@ -136,7 +143,13 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
     typeof src === "string" || !src
       ? { fullWidth: undefined, fullHeight: undefined, aspectRatio: undefined }
       : src;
-  const srcStr = src ? (typeof src === "string" ? src : src.src) : "";
+  const srcStr = src
+    ? typeof src === "string"
+      ? src
+      : typeof src.src === "string"
+      ? src.src
+      : src.src.src
+    : "";
 
   // Assume external image if either dimension is null and use usual <img>
   if (fullHeight == null || fullWidth == null) {
@@ -200,11 +213,9 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
       : window.btoa(spacerSvg);
 
   let wrapperStyle: CSSProperties = { ...(style || {}) };
-  let spacerStyle: CSSProperties = {...pick(
-    style || {},
-    "objectFit",
-    "objectPosition"
-  )};
+  let spacerStyle: CSSProperties = {
+    ...pick(style || {}, "objectFit", "objectPosition"),
+  };
 
   if (displayWidth != null && displayWidth !== "auto") {
     // If width is set, set it on the wrapper along with min/max width
