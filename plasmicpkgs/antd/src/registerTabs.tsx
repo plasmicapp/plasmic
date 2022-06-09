@@ -1,15 +1,17 @@
 import registerComponent, {
+  ActionProps,
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
+import { Button, Input } from "antd";
 import {
-  TabsProps as AntdTabsProps,
-  TabPaneProps,
   default as AntdTabs,
+  TabPaneProps,
+  TabsProps as AntdTabsProps,
 } from "antd/lib/tabs";
 import { TabPane } from "rc-tabs";
-import { Registerable } from "./registerable";
 import React from "react";
 import { traverseReactEltTree } from "./customControls";
+import { Registerable } from "./registerable";
 
 export const tabPaneMeta: ComponentMeta<TabPaneProps> = {
   name: "AntdTabPane",
@@ -96,6 +98,48 @@ export function Tabs(props: TabsProps) {
   );
 }
 
+function AddTab({ studioOps }: ActionProps<any>) {
+  const [tabKey, setTabKey] = React.useState<string>("");
+
+  const appendNewTab = (tabKey: string) => {
+    if (tabKey !== "") {
+      studioOps.appendToChildren({
+        type: "component",
+        name: "AntdTabPane",
+        props: {
+          key: tabKey,
+        },
+      });
+    }
+  };
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "row",
+        gap: "10px",
+        justifyContent: "space-between",
+      }}
+    >
+      <Input
+        placeholder="Tab key"
+        onChange={(e) => setTabKey(e.target.value)}
+        value={tabKey}
+      />
+      <Button
+        onClick={() => {
+          appendNewTab(tabKey);
+          setTabKey("");
+        }}
+      >
+        Add tab
+      </Button>
+    </div>
+  );
+}
+
 export const tabsMeta: ComponentMeta<TabsProps> = {
   name: "AntdTabs",
   displayName: "Antd Tabs",
@@ -112,14 +156,14 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
     },
     animated: {
       type: "object",
-      hidden: props => props.tabPosition !== "top" && !!props.tabPosition,
+      hidden: (props) => props.tabPosition !== "top" && !!props.tabPosition,
       defaultValueHint: { inkBar: true, tabPane: false },
       description:
         "Whether to change tabs with animation. Can be either a boolean or specify for inkBar and tabPane",
     },
     hideAdd: {
       type: "boolean",
-      hidden: props => props.type !== "editable-card",
+      hidden: (props) => props.type !== "editable-card",
       defaultValueHint: false,
       description: "Hide plus icon or not",
     },
@@ -165,9 +209,9 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
       editOnly: true,
       uncontrolledProp: "defaultActiveKey",
       description: "Initial active TabPane's key",
-      options: props => {
+      options: (props) => {
         const options = new Set<string>();
-        traverseReactEltTree(props.children, elt => {
+        traverseReactEltTree(props.children, (elt) => {
           if (elt?.type === TabPane && typeof elt?.key === "string") {
             options.add(elt.key);
           }
@@ -196,6 +240,32 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
       ],
     },
   },
+  actions: [
+    {
+      type: "custom-action",
+      comp: AddTab,
+    },
+    {
+      type: "button-action",
+      label: "Delete current tab",
+      onClick: ({ componentProps, studioOps }) => {
+        if (componentProps.activeKey) {
+          const tabPanes: string[] = [];
+          traverseReactEltTree(componentProps.children, (elt) => {
+            if (elt?.type === TabPane && typeof elt?.key === "string") {
+              tabPanes.push(elt.key);
+            }
+          });
+          const currentTabPos = tabPanes.findIndex((tabKey) => {
+            return tabKey === componentProps.activeKey;
+          });
+          if (currentTabPos !== -1) {
+            studioOps.removeChildAt(currentTabPos);
+          }
+        }
+      },
+    },
+  ],
   importPath: "@plasmicpkgs/antd",
   importName: "Tabs",
 };
