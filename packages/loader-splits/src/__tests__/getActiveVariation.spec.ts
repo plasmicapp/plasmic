@@ -204,5 +204,27 @@ describe('getActiveVariation', () => {
     expect(updateKnownValue).not.toBeCalled();
   });
 
-  // TODO: Test Scheduling
+  it('should handle custom random value functions', () => {
+    const getKnownValue = jest.fn();
+    const updateKnownValue = jest.fn();
+    const getRandomValue = jest
+      .fn()
+      .mockReturnValueOnce(0.7)
+      .mockReturnValueOnce(0.1);
+
+    expect(
+      // rand = 0.7, 0.1
+      getActiveVariation({
+        splits: [EXPERIMENT_SPLIT, EXTERNAL_SPLIT], // p = [0.5, 0.5], [0.65, 0.35]
+        traits: {},
+        getRandomValue,
+        getKnownValue,
+        updateKnownValue,
+      })
+    ).toMatchObject({
+      'exp.split-1': 'slice-1',
+      'exp.split-2': 'slice-0',
+      'ext.EXTSPLIT': 'EXTSLICE0',
+    });
+  });
 });

@@ -1,15 +1,20 @@
-import {
-  FetcherOptions,
-  PlasmicModulesFetcher,
-  Split,
-} from '@plasmicapp/loader-fetcher';
-import { getActiveVariation, getSplitKey } from '@plasmicapp/loader-splits';
+import { Split } from '@plasmicapp/loader-fetcher';
+import { getActiveVariation as getActiveVariationSplits } from '@plasmicapp/loader-splits';
+import { getSeededRandomFunction } from './random';
 
-export const DELIMITER = '__pm__';
+const DELIMITER = '__pm__';
+const PLASMIC_SEED = 'plasmic_seed';
+const SEED_RANGE = 16;
 
-export const rewriteWithoutVariation = (url: string) => {
-  const [path, ...variationsArr] = url.split(DELIMITER);
-  const variation = variationsArr.reduce((acc, elem) => {
+type Traits = Record<string, string | number | boolean>;
+
+const getSeed = () => {
+  return `${Math.floor(Math.random() * SEED_RANGE)}`;
+};
+
+export const rewriteWithoutTraits = (url: string) => {
+  const [path, ...traitssArr] = url.split(DELIMITER);
+  const traits = traitssArr.reduce((acc, elem) => {
     const [key, value] = elem.split('=');
     return {
       ...acc,
@@ -17,111 +22,82 @@ export const rewriteWithoutVariation = (url: string) => {
     };
   }, {});
   return {
-    path,
-    variation,
+    path:
+      path === '/'
+        ? path
+        : path.endsWith('/')
+        ? path.substring(0, path.length - 1)
+        : path,
+    traits,
   };
 };
 
-const expandVariation = (variation: Record<string, string>) => {
+const expandTraits = (traits: Traits) => {
   const cmp = (a: string, b: string) => {
-    const idA = a.split('.')[1];
-    const idB = b.split('.')[1];
-    return idA < idB ? -1 : idA > idB ? 1 : 0;
+    return a < b ? -1 : a > b ? 1 : 0;
   };
-  return Object.keys(variation)
-    .filter((key) => !key.startsWith('ext')) // remove external variations
+  return Object.keys(traits)
     .sort(cmp)
-    .map((key) => `${DELIMITER}${key}=${variation[key]}`)
+    .map((key) => `${DELIMITER}${key}=${traits[key]}`)
     .join('');
 };
 
-export const rewriteWithVariation = (
-  url: string,
-  variation: Record<string, string>
-) => {
-  return `${url}${url.endsWith('/') ? '' : '/'}${expandVariation(variation)}`;
+export const rewriteWithTraits = (path: string, traits: Traits) => {
+  return `${path}${path.endsWith('/') ? '' : '/'}${expandTraits(traits)}`;
 };
 
-const generateAllSplitPaths = (splits: Split[]): string[] => {
-  if (splits.length === 0) {
-    return [''];
-  }
-  const [curSplit, ...tail] = splits;
-  const tailPaths = generateAllSplitPaths(tail);
-  const curPaths = [
-    '',
-    ...(curSplit.slices as Array<{ id: string }>).map((slice) =>
-      expandVariation({
-        [getSplitKey(curSplit)]: slice.id,
-      })
-    ),
+export const generateAllPaths = (path: string) => {
+  const paths = [
+    path,
+    ...Array(SEED_RANGE)
+      .fill(0)
+      .map(
+        (_, idx) =>
+          `${path}${path.endsWith('/') ? '' : '/'}__pm__${PLASMIC_SEED}=${idx}`
+      ),
   ];
-  const paths: string[] = [];
-  for (let i = 0; i < curPaths.length; i++) {
-    for (let j = 0; j < tailPaths.length; j++) {
-      paths.push(curPaths[i] + tailPaths[j]);
-    }
-  }
   return paths;
 };
 
-export const generateAllPaths = (path: string, splits: Split[]) => {
-  return generateAllSplitPaths(
-    splits.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
-  ).map((meta) => `${path}${path.endsWith('/') ? '' : '/'}${meta}`);
-};
-
-export type MiddlewareOptions = Pick<
-  FetcherOptions,
-  'projects' | 'host' | 'preview'
->;
-
-export const getActiveSplits = async (opts: MiddlewareOptions) => {
-  const fetcher = new PlasmicModulesFetcher(opts);
-  const all = await fetcher.fetchAllData();
-  const splits = all.activeSplits;
-  const paths = all.components
-    .filter((comp) => comp.isPage && comp.path)
-    .map((comp) => comp.path);
-  return {
-    splits,
-    paths,
-  };
-};
-
-export const getMiddlewareResponse = async ({
-  opts,
-  cookies,
-  traits,
-  url,
-}: {
-  opts: MiddlewareOptions;
+export const getMiddlewareResponse = (opts: {
+  path: string;
+  traits: Traits;
   cookies: Record<string, string>;
-  traits: Record<string, string>;
-  url: string;
 }) => {
-  const { splits } = await getActiveSplits(opts);
-
   const newCookies: { key: string; value: string }[] = [];
-
-  const variation = getActiveVariation({
-    splits,
-    traits,
-    getKnownValue: (key) => {
-      return cookies[`plasmic:${key}`];
-    },
-    updateKnownValue: (key, value) => {
-      newCookies.push({ key: `plasmic:${key}`, value });
-    },
-  });
-
-  let newUrl = url;
-  if (Object.keys(variation).length) {
-    newUrl = rewriteWithVariation(url, variation);
+  const seed = opts.cookies[PLASMIC_SEED] || getSeed();
+  if (!opts.cookies[PLASMIC_SEED]) {
+    newCookies.push({
+      key: PLASMIC_SEED,
+      value: seed,
+    });
   }
-
   return {
-    url: newUrl,
+    pathname: rewriteWithTraits(opts.path, {
+      [PLASMIC_SEED]: seed,
+      ...opts.traits,
+    }),
     cookies: newCookies,
   };
+};
+
+export const getActiveVariation = (opts: {
+  splits: Split[];
+  traits: Record<string, string | number | boolean>;
+  path: string;
+}) => {
+  const { splits, traits, path } = opts;
+  return getActiveVariationSplits({
+    splits,
+    traits: {
+      pageUrl: path,
+      ...traits,
+    },
+    getKnownValue: () => undefined,
+    updateKnownValue: () => null,
+    getRandomValue: (key) => {
+      const rand = getSeededRandomFunction((traits[PLASMIC_SEED] ?? '') + key);
+      return rand();
+    },
+  });
 };

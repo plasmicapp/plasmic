@@ -1,7 +1,7 @@
 export {
   generateAllPaths,
-  getActiveSplits,
+  getActiveVariation,
   getMiddlewareResponse,
-  rewriteWithoutVariation,
-  rewriteWithVariation,
+  rewriteWithoutTraits,
+  rewriteWithTraits,
 } from './variation';
