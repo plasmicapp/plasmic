@@ -10,6 +10,27 @@ export const sliderMeta: ComponentMeta<Settings> = {
   displayName: "Slider",
   importName: "Slider",
   importPath: "react-slick",
+  actions: [
+    {
+      type: "button-action",
+      label: "Append new slide",
+      onClick: ({ studioOps }) => {
+        studioOps.appendToChildren({
+          type: "img",
+          src: "",
+          styles: {
+            maxWidth: "100%",
+          },
+        });
+      },
+    },
+    {
+      type: "button-action",
+      label: "Delete current slide",
+      onClick: ({ contextData, studioOps }) =>
+        studioOps.removeChildAt(contextData.editingSlide ?? 0),
+    },
+  ],
   props: {
     children: {
       type: "slot",
@@ -276,9 +297,19 @@ export const sliderMeta: ComponentMeta<Settings> = {
 };
 
 export const SliderWrapper = forwardRef(function SliderWrapper_(
-  { editingSlide, ...props }: Settings & { editingSlide?: number },
+  {
+    editingSlide,
+    setControlContextData,
+    ...props
+  }: Settings & {
+    editingSlide?: number;
+    setControlContextData?: (data: {
+      editingSlide: number | undefined;
+    }) => void;
+  },
   userRef?: Ref<Slider>
 ) {
+  setControlContextData?.({ editingSlide: editingSlide });
   const slider = useRef<Slider>(null);
   useEffect(() => {
     if (editingSlide !== undefined) {
