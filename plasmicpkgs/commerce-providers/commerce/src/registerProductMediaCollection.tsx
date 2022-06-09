@@ -47,7 +47,7 @@ export function ProductMediaCollection(props: ProductMediaCollectionProps) {
     <div className={className}>
       {product?.images.map((image, i) =>
         repeatedElement(
-          i === 0,
+          i,
           <ProductMediaProvider mediaIndex={i} children={media} />
         )
       )}

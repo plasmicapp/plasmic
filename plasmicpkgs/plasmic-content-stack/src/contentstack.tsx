@@ -221,7 +221,7 @@ export function ContentStackFetcher({
     const entries = entriesData?.flat();
     renderedData = entries?.map((item: any, index: number) => (
       <DataProvider key={item._id} name={"contentStackItem"} data={item}>
-        {repeatedElement(index === 0, children)}
+        {repeatedElement(index, children)}
       </DataProvider>
     ));
   } else {

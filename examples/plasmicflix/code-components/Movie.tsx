@@ -195,7 +195,7 @@ export const MovieTrailers = (props: MovieTrailersProps) => {
           key={trailer.videoId}
           value={{ ...movie, title: trailer.title, videoId: trailer.videoId }}
         >
-          {repeatedElement(i === 0, children)}
+          {repeatedElement(i, children)}
         </MovieContext.Provider>
       ))}
     </div>
@@ -247,7 +247,7 @@ export const MovieSimilars = (props: MovieSimilarsProps) => {
             overview: similar.overview,
           }}
         >
-          {repeatedElement(i === 0, children)}
+          {repeatedElement(i, children)}
         </MovieContext.Provider>
       ))}
     </div>

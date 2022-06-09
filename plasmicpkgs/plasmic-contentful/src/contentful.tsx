@@ -267,7 +267,7 @@ export function ContentfulFetcher({
         name={"contentfulItem"}
         data={parseContentfulData(item)}
       >
-        {repeatedElement(index === 0, children)}
+        {repeatedElement(index, children)}
       </DataProvider>
     ));
   } else {

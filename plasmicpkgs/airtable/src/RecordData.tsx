@@ -224,7 +224,7 @@ export function AirtableCollection({
     <>
       {(data ?? []).map((record, index) => (
         <DataProvider key={record.id} name={contextKey} data={record.fields}>
-          {repeatedElement(index === 0, children)}
+          {repeatedElement(index, children)}
         </DataProvider>
       ))}
     </>

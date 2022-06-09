@@ -87,7 +87,7 @@ export function ProductSlider(props: ProductSliderProps) {
           .slice(leftIndex, leftIndex + thumbsVisible)
           .map((image, i) =>
             repeatedElement(
-              i === 0,
+              i,
               <ProductMediaProvider
                 mediaIndex={leftIndex + i}
                 children={thumbsContainer}

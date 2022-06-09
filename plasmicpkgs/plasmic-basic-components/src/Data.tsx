@@ -155,7 +155,7 @@ export function DynamicRepeater({
           name={loopItemName}
           data={item}
         >
-          {repeatedElement(index === 0, children)}
+          {repeatedElement(index, children)}
         </_DataProvider>
       ))}
     </>

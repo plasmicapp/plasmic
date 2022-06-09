@@ -119,11 +119,17 @@ export function CategoryCollection(props: CategoryCollectionProps) {
   const firstCategoryNotEmpty = categories?.find(
     (category) => !category.isEmpty
   );
+  const firstCategoryNotEmptyIndex =
+    categories?.findIndex((category) => !category.isEmpty) ?? -1;
 
   const renderedData = categories?.map((category, i) => (
     <CategoryProvider category={category} key={category.id}>
       {repeatedElement(
-        firstCategoryNotEmpty ? category === firstCategoryNotEmpty : i === 0,
+        i < firstCategoryNotEmptyIndex
+          ? i + 1
+          : i === firstCategoryNotEmptyIndex
+          ? 0
+          : i,
         children
       )}
     </CategoryProvider>
