@@ -44,17 +44,18 @@ export const ContentfulCredentialsProviderMeta: GlobalContextMeta<ContentfulCred
       type: "string",
       displayName: "Space",
       description: "Name of your space",
-      defaultValue: "esjp7d70hc5f",
+      defaultValue: "lmfbwqzbh93n",
     },
     accessToken: {
       type: "string",
       displayName: "Access Token ",
       description: "Access Token",
-      defaultValue: "eNN04tTEhz0iTFvx5_03m43jRrqsplKUzLhLLesqZyc",
+      defaultValue: "aWvf6oSLTuqxKCxSUpokajdQr84hGQFE6zoJG7DVVLg",
     },
     environment: {
       type: "string",
       displayName: "Environment",
+      defaultValue: "master",
     },
   },
 };
