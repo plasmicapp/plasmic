@@ -1166,27 +1166,6 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@plasmicapp/host@^1.0.41":
-  version "1.0.41"
-  resolved "https://registry.npmjs.org/@plasmicapp/host/-/host-1.0.41.tgz"
-  integrity sha512-/lE5TOKY6p0/ZSB9dL86zVKhBs3uxOc06wPef7W736KBn5zqdTYWyvW8nlnYa9E0W82P10Q2QelvbVNbXIFxKw==
-  dependencies:
-    "@plasmicapp/preamble" "0.0.64"
-    window-or-global "^1.0.1"
-
-"@plasmicapp/preamble@0.0.64":
-  version "0.0.64"
-  resolved "https://registry.npmjs.org/@plasmicapp/preamble/-/preamble-0.0.64.tgz"
-  integrity sha512-qKhr4suLfBDAzpoRNVm2ZY7xJzZBUHoiuXgLzuEpBn+AHQpM2XRlhwRf7+z2iWozf6DA2qR8C5Uj27EFD7JR9g==
-
-"@plasmicapp/query@^0.1.42":
-  version "0.1.42"
-  resolved "https://registry.npmjs.org/@plasmicapp/query/-/query-0.1.42.tgz"
-  integrity sha512-CJGTe5D6obfT8tEFY9zLWtMMB74Xl/N3yilQRridF7nNQjosogI7pI3iEFhnk87/Ayer3XEBtEegMUmQ3seZjA==
-  dependencies:
-    react-ssr-prepass "^1.4.0"
-    swr ">1.0.0"
-
 "@rollup/plugin-babel@^5.1.0":
   version "5.3.1"
   resolved "https://registry.npmjs.org/@rollup/plugin-babel/-/plugin-babel-5.3.1.tgz"

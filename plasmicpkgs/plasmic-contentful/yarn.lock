@@ -936,6 +936,26 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@contentful/rich-text-html-renderer@^15.13.1":
+  version "15.13.1"
+  resolved "https://registry.yarnpkg.com/@contentful/rich-text-html-renderer/-/rich-text-html-renderer-15.13.1.tgz#f51d55765066f751157c74f71f826f34f84d5745"
+  integrity sha512-FcQSMvWy8RQ4CggbpaXQ4Hrfx/APemJufcmzIF0kDmBBq5VACVo5jX2E35s+/GShz++JlTBFCAKoyMhbNKZuSw==
+  dependencies:
+    "@contentful/rich-text-types" "^15.12.1"
+    escape-html "^1.0.3"
+
+"@contentful/rich-text-react-renderer@^15.12.1":
+  version "15.12.1"
+  resolved "https://registry.yarnpkg.com/@contentful/rich-text-react-renderer/-/rich-text-react-renderer-15.12.1.tgz#978c335e7ad5284dc6790a6a8c0ec16878b957b0"
+  integrity sha512-bQ69cN51iGBTF3/nYi5MGUaDJ/lnrEXtCUBCxulIZ0fLS/AAEledZTJcEKs+PKeYYgDqiUVDsmx2xZP2QsJJ+Q==
+  dependencies:
+    "@contentful/rich-text-types" "^15.12.1"
+
+"@contentful/rich-text-types@^15.12.1":
+  version "15.12.1"
+  resolved "https://registry.yarnpkg.com/@contentful/rich-text-types/-/rich-text-types-15.12.1.tgz#3b131f03fc55b6001f6eb5f5615aefb22678b3d3"
+  integrity sha512-WQJic0fnAbTa8xzO3Z+aVqDmA5+JMNQlATQMVJ40GoOrnM8YoJZsKGf6xX/O6Y6Eq10T1LrpxIOslODFI9qFgg==
+
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.npmjs.org/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz"
@@ -1159,18 +1179,12 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@plasmicapp/host@^1.0.41":
-  version "1.0.41"
-  resolved "https://registry.npmjs.org/@plasmicapp/host/-/host-1.0.41.tgz"
-  integrity sha512-/lE5TOKY6p0/ZSB9dL86zVKhBs3uxOc06wPef7W736KBn5zqdTYWyvW8nlnYa9E0W82P10Q2QelvbVNbXIFxKw==
+"@plasmicapp/host@^1.0.57":
+  version "1.0.57"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.57.tgz#c7a38de1f8628865b174037ae910caa0e766df9e"
+  integrity sha512-cigfyWqipqanSbK8us1bl/5HjQp2jy/4XwmLbbfOD5H05eeUGxj7Od8nQN/4CbBxC/iJ7WNWjD/pEp4vR6NiHg==
   dependencies:
-    "@plasmicapp/preamble" "0.0.64"
     window-or-global "^1.0.1"
-
-"@plasmicapp/preamble@0.0.64":
-  version "0.0.64"
-  resolved "https://registry.npmjs.org/@plasmicapp/preamble/-/preamble-0.0.64.tgz"
-  integrity sha512-qKhr4suLfBDAzpoRNVm2ZY7xJzZBUHoiuXgLzuEpBn+AHQpM2XRlhwRf7+z2iWozf6DA2qR8C5Uj27EFD7JR9g==
 
 "@plasmicapp/query@^0.1.42":
   version "0.1.42"
@@ -2684,6 +2698,11 @@ escalade@^3.1.1:
   version "3.1.1"
   resolved "https://registry.npmjs.org/escalade/-/escalade-3.1.1.tgz"
   integrity sha512-k0er2gUkLf8O0zKJiAhmkTnJlTvINGv7ygDNPbeIsX/TJjGJZHuh9B2UxbsaEkmlEo9MfhrSzmhIlhRlI2GXnw==
+
+escape-html@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/escape-html/-/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
+  integrity sha512-NiSupZ4OeuGwr68lGIeym/ksIZMJodUGOSCZ/FSnTxcrekbvqrgdUxlJOMpijaKZVjAJrWrGs/6Jy8OMuyj9ow==
 
 escape-string-regexp@^1.0.5:
   version "1.0.5"

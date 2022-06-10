@@ -228,17 +228,24 @@ export function ContentStackFetcher({
     return <div>Please select a content type.</div>;
   }
 
-  return noLayout ? (
-    <> {renderedData} </>
-  ) : (
-    <div className={className}> {renderedData} </div>
+  return (
+    <DataProvider
+      name={"contentStackSchema"}
+      data={contentTypes?.find((type: any) => type.uid === contentType)?.schema}
+    >
+      {noLayout ? (
+        <> {renderedData} </>
+      ) : (
+        <div className={className}> {renderedData} </div>
+      )}
+    </DataProvider>
   );
 }
 
 interface ContentStackFieldProps {
   className?: string;
-  field?: string;
-  setControlContextData?: (data: { fields: string[] }) => void;
+  objectPath?: (string | number)[];
+  setControlContextData?: (data: { data: Record<string, any> }) => void;
 }
 export const ContentStackFieldMeta: ComponentMeta<ContentStackFieldProps> = {
   name: "ContentStackField",
@@ -246,21 +253,18 @@ export const ContentStackFieldMeta: ComponentMeta<ContentStackFieldProps> = {
   importName: "ContentStackField",
   importPath: modulePath,
   props: {
-    field: {
-      type: "choice",
-      options: (props: any, ctx: any) => {
-        return ctx?.fields ?? [];
-      },
+    objectPath: {
+      type: "dataSelector",
+      data: (props, ctx) => ctx?.data ?? {},
       displayName: "Field",
       description: "Field to be displayed.",
     },
   },
 };
 export function ContentStackField({
-  className,
-  field,
-
+  objectPath,
   setControlContextData,
+  ...rest
 }: ContentStackFieldProps) {
   const item = useSelector("contentStackItem");
   if (!item) {
@@ -268,24 +272,28 @@ export function ContentStackField({
       <div>ContentStackField must be used within a ContentStackFetcher </div>
     );
   }
-  // Getting only fields that aren’t objects
-  const displayableFields = Object.keys(item).filter((field) => {
-    const value = L.get(item, field);
-    return typeof value !== "object" || value?.content_type?.includes("image");
-  });
+  const schema = useSelector("contentStackSchema");
+
   setControlContextData?.({
-    fields: displayableFields,
+    data: item,
   });
-  if (!field) {
+
+  if (!objectPath) {
     return <div>Please specify a valid path or select a field.</div>;
   }
 
-  const data = L.get(item, field as string);
-  if (!data) {
-    return <div>Please specify a valid field.</div>;
-  } else if (data?.content_type?.includes("image")) {
-    return <img className={className} src={data.url} />;
+  const isRichText = () =>
+    schema?.find((field: any) => field.uid === L.get(objectPath, 0))
+      ?.field_metadata?.allow_rich_text;
+
+  const data = L.get(item, objectPath);
+  if (typeof data === "object" && data?.content_type?.startsWith("image")) {
+    return <img {...rest} src={data.url} />;
+  } else if (!data || typeof data === "object") {
+    return <div {...rest}>Please specify a valid field.</div>;
+  } else if (isRichText()) {
+    return <div {...rest} dangerouslySetInnerHTML={{ __html: data }} />;
   } else {
-    return <div className={className}> {data} </div>;
+    return <div {...rest}> {data} </div>;
   }
 }
