@@ -15,9 +15,12 @@ import {
 import { ensureString } from "./lang-utils";
 import { confirmWithUser } from "./user-utils";
 
+const findExtension = (filename?: string) =>
+  filename?.substring(filename.indexOf(".")) ?? filename;
+
 export function stripExtension(filename: string, removeComposedPath = false) {
   const ext = removeComposedPath
-    ? filename.substring(filename.indexOf("."))
+    ? findExtension(L.last(filename.split("/")))
     : path.extname(filename);
   if (!ext || filename === ext) {
     return filename;
