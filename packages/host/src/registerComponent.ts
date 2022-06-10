@@ -123,8 +123,10 @@ export type JSONLikeType<P> =
     } & PropTypeBase<P>)
   | ({
       type: "dataSelector";
-      data: any | ContextDependentConfig<P, any>;
-    } & DefaultValueOrExpr<P, any> &
+      data:
+        | Record<string, any>
+        | ContextDependentConfig<P, Record<string, any>>;
+    } & DefaultValueOrExpr<P, Record<string, any>> &
       PropTypeBase<P>);
 
 interface ChoiceTypeBase<P> extends PropTypeBase<P> {
