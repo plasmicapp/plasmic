@@ -44,57 +44,57 @@ function makeSanityClient(creds: SanityCredentialsProviderProps) {
   return sanity;
 }
 
-const CredentialsContext = React.createContext<
-  SanityCredentialsProviderProps | undefined
->(undefined);
+const CredentialsContext =
+  React.createContext<SanityCredentialsProviderProps | undefined>(undefined);
 
-export const sanityCredentialsProviderMeta: GlobalContextMeta<SanityCredentialsProviderProps> = {
-  name: "SanityCredentialsProvider",
-  displayName: "Sanity Credentials Provider",
-  description: `Get your project ID, dataset, and token [here](https://www.sanity.io/manage).
+export const sanityCredentialsProviderMeta: GlobalContextMeta<SanityCredentialsProviderProps> =
+  {
+    name: "SanityCredentialsProvider",
+    displayName: "Sanity Credentials Provider",
+    description: `Get your project ID, dataset, and token [here](https://www.sanity.io/manage).
 
 Please also add 'https://host.plasmicdev.com' (or your app host origin) as an authorized host on the CORS origins section of your project.
 
 [Watch how to add Sanity data](https://www.youtube.com/watch?v=dLeu7I4RsYg).`,
-  importName: "SanityCredentialsProvider",
-  importPath: modulePath,
-  props: {
-    projectId: {
-      type: "string",
-      displayName: "Project ID",
-      defaultValueHint: "b2gfz67v",
-      defaultValue: "b2gfz67v",
-      description: "The ID of the project to use.",
+    importName: "SanityCredentialsProvider",
+    importPath: modulePath,
+    props: {
+      projectId: {
+        type: "string",
+        displayName: "Project ID",
+        defaultValueHint: "b2gfz67v",
+        defaultValue: "b2gfz67v",
+        description: "The ID of the project to use.",
+      },
+      dataset: {
+        type: "string",
+        displayName: "Dataset",
+        defaultValueHint: "production",
+        defaultValue: "production",
+        description: "The dataset to use.",
+      },
+      apiVersion: {
+        type: "string",
+        displayName: "API Version",
+        defaultValueHint: "v1",
+        description:
+          "The API version to use (if not set, 'v1' will be used) - see https://www.sanity.io/docs/js-client#specifying-api-version.",
+      },
+      token: {
+        type: "string",
+        displayName: "Token",
+        description:
+          "The token to use (or leave blank for unauthenticated usage) - you can create tokens in the API section of your project (i.e. https://www.sanity.io/manage/personal/project/PROJECT_ID/api#tokens).",
+      },
+      useCdn: {
+        type: "boolean",
+        displayName: "Use CDN?",
+        defaultValueHint: false,
+        description:
+          "Whether you want to use CDN ('false' if you want to ensure fresh data).",
+      },
     },
-    dataset: {
-      type: "string",
-      displayName: "Dataset",
-      defaultValueHint: "production",
-      defaultValue: "production",
-      description: "The dataset to use.",
-    },
-    apiVersion: {
-      type: "string",
-      displayName: "API Version",
-      defaultValueHint: "v1",
-      description:
-        "The API version to use (if not set, 'v1' will be used) - see https://www.sanity.io/docs/js-client#specifying-api-version.",
-    },
-    token: {
-      type: "string",
-      displayName: "Token",
-      description:
-        "The token to use (or leave blank for unauthenticated usage) - you can create tokens in the API section of your project (i.e. https://www.sanity.io/manage/personal/project/PROJECT_ID/api#tokens).",
-    },
-    useCdn: {
-      type: "boolean",
-      displayName: "Use CDN?",
-      defaultValueHint: false,
-      description:
-        "Whether you want to use CDN ('false' if you want to ensure fresh data).",
-    },
-  },
-};
+  };
 
 export function SanityCredentialsProvider({
   projectId,
@@ -232,14 +232,25 @@ export function SanityFetcher({
     }
   }
 
-  const allData = usePlasmicQueryData<any[] | null>(
-    JSON.stringify(creds),
+  const filterUniqueDocTypes = (records: { _type: string }[]): string[] =>
+    records
+      .map((record) => record._type)
+      .reduce((acc, type) => {
+        if (!acc.includes(type)) {
+          acc.push(type);
+        }
+        return acc;
+      }, [] as string[]);
+
+  const allDataTypes = usePlasmicQueryData<any[] | null>(
+    JSON.stringify(creds) + "/SANITY_DOCTYPES",
     async () => {
       const sanity = makeSanityClient(creds);
-      const resp = await sanity.fetch("*");
+      const resp = await sanity.fetch("*{_type}").then(filterUniqueDocTypes);
       return resp;
     }
   );
+  const docTypes = allDataTypes.data ?? false;
 
   if (!groq && docType) {
     groq = "*[_type=='" + docType + "']";
@@ -260,7 +271,7 @@ export function SanityFetcher({
     return resp;
   });
 
-  if (!allData?.data) {
+  if (!docTypes) {
     return (
       <div>
         Please configure the Sanity provider with a valid projectId, dataset,
@@ -271,10 +282,8 @@ export function SanityFetcher({
     );
   }
 
-  const existingTypes = new Set(allData.data?.map((doc) => doc._type));
-
   setControlContextData?.({
-    docTypes: Array.from(existingTypes),
+    docTypes,
   });
 
   if (!data?.data) {
