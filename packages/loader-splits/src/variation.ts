@@ -5,6 +5,24 @@ import {
 } from '@plasmicapp/loader-fetcher';
 import jsonLogic from 'json-logic-js';
 
+const isBrowser =
+  typeof window !== 'undefined' &&
+  window != null &&
+  typeof window.document !== 'undefined';
+
+const BUILTIN_TRAITS_UNKNOWN = {
+  pageUrl: 'unknown',
+};
+
+const getBrowserBuiltinTraits = () => {
+  if (!isBrowser) {
+    return {};
+  }
+  return {
+    pageUrl: document.location.href,
+  };
+};
+
 export const getSplitKey = (split: Split) => {
   return `${split.type === 'experiment' ? 'exp.' : 'seg.'}${split.id}`;
 };
@@ -48,6 +66,8 @@ export function getActiveVariation(opts: {
         if (
           jsonLogic.apply(split.slices[i].cond, {
             time: new Date().toISOString(),
+            ...BUILTIN_TRAITS_UNKNOWN,
+            ...getBrowserBuiltinTraits(),
             ...opts.traits,
           })
         ) {

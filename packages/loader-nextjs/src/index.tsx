@@ -54,8 +54,21 @@ export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
     known?: Record<string, string>;
     traits: Record<string, string | number | boolean>;
   }) {
+    const extractBuiltinTraits = () => {
+      const url = new URL(
+        opts.req?.url ?? '/',
+        `https://${opts.req?.headers.host ?? 'server.side'}`
+      );
+      return {
+        pageUrl: url.href,
+      };
+    };
+
     return this._getActiveVariation({
-      traits: opts.traits,
+      traits: {
+        ...extractBuiltinTraits(),
+        ...opts.traits,
+      },
       getKnownValue: (key: string) => {
         if (opts.known) {
           return opts.known[key];
