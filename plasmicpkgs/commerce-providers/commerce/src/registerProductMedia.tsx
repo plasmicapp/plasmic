@@ -28,26 +28,29 @@ export const productMediaMeta: ComponentMeta<ProductMediaProps> = {
   importName: "ProductMedia",
 };
 
-export function ProductMedia(props: ProductMediaProps) {
-  const { className, mediaIndex = 0, setControlContextData } = props;
+export const ProductMedia = React.forwardRef(
+  (props: ProductMediaProps, ref: React.ForwardedRef<HTMLImageElement>) => {
+    const { className, mediaIndex = 0, setControlContextData } = props;
 
-  const product = useProduct();
-  const mediaContext = useProductMediaContext();
+    const product = useProduct();
+    const mediaContext = useProductMediaContext();
 
-  setControlContextData?.({
-    inMediaContext: mediaContext !== undefined,
-  });
+    setControlContextData?.({
+      inMediaContext: mediaContext !== undefined,
+    });
 
-  const image = product?.images[mediaContext ?? mediaIndex];
-  return (
-    <img
-      alt={product?.name || "Product Image"}
-      src={product ? image?.url ?? "" : placeholderImage}
-      loading={"lazy"}
-      className={className}
-    />
-  );
-}
+    const image = product?.images[mediaContext ?? mediaIndex];
+    return (
+      <img
+        ref={ref}
+        alt={product?.name || "Product Image"}
+        src={product ? image?.url ?? "" : placeholderImage}
+        loading={"lazy"}
+        className={className}
+      />
+    );
+  }
+);
 
 export function registerProductMedia(
   loader?: Registerable,

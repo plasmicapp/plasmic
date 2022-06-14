@@ -20,21 +20,24 @@ export const categoryMediaMeta: ComponentMeta<CategoryMediaProps> = {
   importName: "CategoryMedia",
 };
 
-export function CategoryMedia(props: CategoryMediaProps) {
-  const { className, mediaIndex = 0 } = props;
+export const CategoryMedia = React.forwardRef(
+  (props: CategoryMediaProps, ref: React.ForwardedRef<HTMLImageElement>) => {
+    const { className, mediaIndex = 0 } = props;
 
-  const category = useCategoryContext();
+    const category = useCategoryContext();
 
-  const image = category?.images ? category.images[mediaIndex] : undefined;
-  return (
-    <img
-      alt={category?.name || "Category Image"}
-      src={image?.url ?? ""}
-      loading={"lazy"}
-      className={className}
-    />
-  );
-}
+    const image = category?.images ? category.images[mediaIndex] : undefined;
+    return (
+      <img
+        ref={ref}
+        alt={category?.name || "Category Image"}
+        src={image?.url ?? ""}
+        loading={"lazy"}
+        className={className}
+      />
+    );
+  }
+);
 
 export function registerCategoryMedia(
   loader?: Registerable,
