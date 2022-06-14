@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/commerce-shopify",
-  "version": "0.0.42",
+  "version": "0.0.43",
   "description": "Plasmic registration calls for shopify commerce provider",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -34,7 +34,7 @@
     "react": ">=16.8.0"
   },
   "dependencies": {
-    "@plasmicpkgs/commerce": "0.0.39",
+    "@plasmicpkgs/commerce": "0.0.40",
     "@types/react": "^17.0.40",
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.21"
