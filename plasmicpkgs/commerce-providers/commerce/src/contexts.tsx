@@ -1,13 +1,11 @@
+import { DataProvider, useSelector } from "@plasmicapp/host";
 import React, { useContext } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Product } from "./types/product";
 import { Category } from "./types/site";
 import { defaultProduct } from "./utils/default-product";
 
-export const ProductContext = React.createContext<Product | undefined>(
-  undefined
-);
-export const ProductFormContext = React.createContext<any>(undefined);
+const productSelector = "product";
 
 export function ProductProvider({
   product,
@@ -18,25 +16,22 @@ export function ProductProvider({
 }) {
   const methods = useForm();
   return (
-    <ProductContext.Provider value={product} key={product.id}>
+    <DataProvider name={productSelector} data={product} key={product.id}>
       <FormProvider {...methods}>{children}</FormProvider>
-    </ProductContext.Provider>
+    </DataProvider>
   );
 }
 
 export const useProduct = () => {
-  const product = useContext(ProductContext);
+  const product = useSelector(productSelector) as Product | undefined;
   return product ?? defaultProduct;
 };
 
-export const useProductForm = () => useContext(ProductFormContext);
-
-export const CategoryContext = React.createContext<Category | undefined>(
-  undefined
-);
 export const PrimaryCategoryContext = React.createContext<Category | undefined>(
   undefined
 ); //used to render correctly the defaultValueHint in ProductCollection
+
+const categorySelector = "category";
 
 export function CategoryProvider({
   category,
@@ -46,18 +41,17 @@ export function CategoryProvider({
   children: React.ReactNode;
 }) {
   return (
-    <CategoryContext.Provider value={category} key={category.id}>
+    <DataProvider name={categorySelector} data={category} key={category.id}>
       {children}
-    </CategoryContext.Provider>
+    </DataProvider>
   );
 }
 
-export const useCategoryContext = () => useContext(CategoryContext);
+export const useCategoryContext = () =>
+  useSelector(categorySelector) as Category | undefined;
 export const usePrimaryCategory = () => useContext(PrimaryCategoryContext);
 
-export const ProductMediaContext = React.createContext<number | undefined>(
-  undefined
-);
+const mediaSelector = "currentMedia";
 export function ProductMediaProvider({
   mediaIndex,
   onClick,
@@ -68,11 +62,12 @@ export function ProductMediaProvider({
   onClick?: () => void;
 }) {
   return (
-    <ProductMediaContext.Provider value={mediaIndex} key={mediaIndex}>
+    <DataProvider name={mediaSelector} data={mediaIndex} key={mediaIndex}>
       {React.cloneElement(React.isValidElement(children) ? children : <></>, {
         onClick,
       })}
-    </ProductMediaContext.Provider>
+    </DataProvider>
   );
 }
-export const useProductMediaContext = () => useContext(ProductMediaContext);
+export const useProductMediaContext = () =>
+  useSelector(mediaSelector) as number | undefined;
