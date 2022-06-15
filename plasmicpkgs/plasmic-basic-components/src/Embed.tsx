@@ -37,6 +37,7 @@ export default function Embed({
       ref={rootElt}
       className={className}
       dangerouslySetInnerHTML={{ __html: effectiveCode }}
+      style={{ whiteSpace: "normal" }}
     />
   );
 }
