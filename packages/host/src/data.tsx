@@ -7,6 +7,7 @@ export const DataContext = createContext<DataDict | undefined>(undefined);
 
 export type DataMeta = {
   hidden?: boolean;
+  label?: string;
 };
 
 export function mkMetaName(name: string) {
@@ -64,6 +65,10 @@ export interface DataProviderProps {
    * If true, hide this entry in studio (data binding).
    */
   hidden?: boolean;
+  /**
+   * Label to be shown in the studio data picker for easier navigation (data binding).
+   */
+  label?: string;
   children?: ReactNode;
 }
 
@@ -71,6 +76,7 @@ export function DataProvider({
   name,
   data,
   hidden,
+  label,
   children,
 }: DataProviderProps) {
   const existingEnv = useDataEnv() ?? {};
@@ -82,7 +88,7 @@ export function DataProvider({
         value={{
           ...existingEnv,
           [name]: data,
-          [mkMetaName(name)]: mkMetaValue({ hidden }),
+          [mkMetaName(name)]: mkMetaValue({ hidden, label }),
         }}
       >
         {children}
