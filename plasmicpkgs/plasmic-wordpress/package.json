@@ -1,0 +1,58 @@
+{
+  "name": "@plasmicpkgs/plasmic-wordpress",
+  "version": "0.0.34",
+  "description": "Plasmic Wordpress components.",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "module": "dist/plasmic-wordpress.esm.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "private":"false",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test --passWithNoTests",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
+  },
+  "peerDependencies": {
+    "react": ">=16"
+  },
+  "size-limit": [
+    {
+      "path": "dist/plasmic-wordpress.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/plasmic-wordpress.esm.js",
+      "limit": "10 KB"
+    }
+  ],
+  "devDependencies": {
+    "@size-limit/preset-small-lib": "^7.0.8",
+    "@types/react": "^17.0.43",
+    "@types/react-dom": "^17.0.14",
+    "husky": "^7.0.4",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "size-limit": "^7.0.8",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.3.1",
+    "typescript": "^4.6.3"
+  },
+  "dependencies": {
+    "@plasmicapp/host": "^1.0.41",
+    "@plasmicapp/query": "^0.1.48",
+    "@types/lodash-es": "^4.17.6",
+    "graphql": "^16.5.0",
+    "graphql-request": "^4.2.0",
+    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21"
+  }
+}
