@@ -1,10 +1,10 @@
 /*
   Forked from https://github.com/vercel/commerce/tree/main/packages/shopify/src
-  Changes: 
+  Changes:
     - Added count as a parameter
 */
-import getSortVariables from './get-sort-variables'
-import { SearchProductsBody } from '@plasmicpkgs/commerce'
+import { SearchProductsBody } from "@plasmicpkgs/commerce";
+import getSortVariables from "./get-sort-variables";
 
 export const getSearchVariables = ({
   brandId,
@@ -14,14 +14,15 @@ export const getSearchVariables = ({
   locale,
   count,
 }: SearchProductsBody) => {
-  let query = ''
+  let query = "";
 
+  const searchQuery = `${search}*`;
   if (search) {
-    query += `product_type:${search} OR title:${search} OR tag:${search} `
+    query += `product_type:${searchQuery} OR title:${searchQuery} OR tag:${searchQuery}`;
   }
 
   if (brandId) {
-    query += `${search ? 'AND ' : ''}vendor:${brandId}`
+    query += `${search ? "AND " : ""}vendor:${brandId}`;
   }
 
   return {
@@ -32,7 +33,7 @@ export const getSearchVariables = ({
       locale,
     }),
     first: count,
-  }
-}
+  };
+};
 
-export default getSearchVariables
+export default getSearchVariables;
