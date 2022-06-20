@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/commerce-swell",
-  "version": "0.0.44",
+  "version": "0.0.45",
   "description": "Plasmic registration calls for swell commerce provider",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,7 +18,7 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.58",
+    "@plasmicapp/host": "1.0.59",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/js-cookie": "^3.0.1",
     "@types/lodash.debounce": "^4.0.6",
@@ -34,7 +34,7 @@
     "react": ">=16.8.0"
   },
   "dependencies": {
-    "@plasmicpkgs/commerce": "0.0.41",
+    "@plasmicpkgs/commerce": "0.0.42",
     "@types/react": "^17.0.40",
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.21",
