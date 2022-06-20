@@ -109,8 +109,8 @@ export function PageParamsProvider({
   query = {},
 }: PageParamsProviderProps) {
   return (
-    <DataProvider name={"params"} data={params}>
-      <DataProvider name={"query"} data={query}>
+    <DataProvider name={"params"} data={params} label={"Page route params"}>
+      <DataProvider name={"query"} data={query} label={"Page query params"}>
         {children}
       </DataProvider>
     </DataProvider>
