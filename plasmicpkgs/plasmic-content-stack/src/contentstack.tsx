@@ -19,7 +19,7 @@ export function ensure<T>(x: T | null | undefined): T {
   }
 }
 
-const modulePath = "@plasmicpkgs/plasmic-contentstack";
+const modulePath = "@plasmicpkgs/plasmic-content-stack";
 
 interface ContentStackCredentialsProviderProps {
   apiKey: string;
