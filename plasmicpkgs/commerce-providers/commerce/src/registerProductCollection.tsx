@@ -192,7 +192,7 @@ export function ProductCollection(props: ProductCollectionProps) {
 
   const renderedData = data?.products.map((product: Product, i: number) => (
     <ProductProvider product={product} key={product.id}>
-      {repeatedElement(i === 0, children)}
+      {repeatedElement(i, children)}
     </ProductProvider>
   ));
 

@@ -40,7 +40,7 @@ export function MovieGrid(props: MovieGridProps) {
     <div className={className}>
       {items.map((movie: Movie, i: number) => (
         <MovieContext.Provider value={movie} key={movie.id}>
-          {repeatedElement(i === 0, children)}
+          {repeatedElement(i, children)}
         </MovieContext.Provider>
       ))}
     </div>
@@ -214,7 +214,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
     >
       {pageContext.page.map((movie: Movie, i: number) => (
         <MovieContext.Provider value={movie} key={movie.id}>
-          {repeatedElement(i === 0, children)}
+          {repeatedElement(i, children)}
         </MovieContext.Provider>
       ))}
     </div>

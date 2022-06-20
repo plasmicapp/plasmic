@@ -168,7 +168,7 @@ export function StrapiCollection({
 
   const repElements = collection.map((item, index) => (
     <DataProvider key={item.id} name={"strapiItem"} data={item}>
-      {repeatedElement(index === 0, children)}
+      {repeatedElement(index, children)}
     </DataProvider>
   ));
 

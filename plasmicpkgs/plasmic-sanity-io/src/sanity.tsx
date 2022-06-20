@@ -281,7 +281,7 @@ export function SanityFetcher({
 
   const repElements = data?.data.map((item, index) => (
     <DataProvider key={item._id} name={"sanityItem"} data={item}>
-      {repeatedElement(index === 0, children)}
+      {repeatedElement(index, children)}
     </DataProvider>
   ));
 

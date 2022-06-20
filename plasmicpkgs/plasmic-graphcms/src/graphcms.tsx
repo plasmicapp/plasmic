@@ -183,19 +183,17 @@ export function GraphCMSFetcher({
     return <div>Data not found</div>;
   }
 
-  const renderedData = Object.values(data?.data).flatMap(
-    (model: any, i: number) =>
-      (L.isArray(model) ? model : [model]).map((item: any, j: number) => (
-        <DataProvider
-          key={JSON.stringify(item)}
-          name={"GraphCMSItem"}
-          data={item}
-        >
-          {repeatedElement(i === 0 && j === 0, children)}
-        </DataProvider>
-      ))
-  );
-
+  const renderedData = Object.values(data?.data)
+    .flatMap((model: any) => (L.isArray(model) ? model : [model]))
+    .map((item: any, i: number) => (
+      <DataProvider
+        key={JSON.stringify(item)}
+        name={"GraphCMSItem"}
+        data={item}
+      >
+        {repeatedElement(i, children)}
+      </DataProvider>
+    ));
   return noLayout ? (
     <> {renderedData} </>
   ) : (

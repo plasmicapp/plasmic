@@ -117,7 +117,7 @@ export function SupabaseGridCollection(props: SupabaseGridCollectionProps) {
     <div className={className}>
       {result.slice(0, count).map((row: any, i: any) => (
         <RowContext.Provider value={row} key={row.id}>
-          <div key={row.id}>{repeatedElement(i === 0, children)}</div>
+          <div key={row.id}>{repeatedElement(i, children)}</div>
         </RowContext.Provider>
       ))}
     </div>

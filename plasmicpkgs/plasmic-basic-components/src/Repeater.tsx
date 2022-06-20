@@ -34,7 +34,7 @@ function Repeater<T>(props: RepeaterProps<T>) {
           data={item}
         >
           <DataProvider name={indexName || defaultIndexName} data={index}>
-            {repeatedElement(index === 0, children)}
+            {repeatedElement(index, children)}
           </DataProvider>
         </DataProvider>
       ))}
