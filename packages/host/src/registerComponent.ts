@@ -65,6 +65,29 @@ export type StringType<P> =
           lang: "css" | "html" | "javascript" | "json";
         }
       | {
+          type: "cardPicker";
+          modalTitle?: string | ContextDependentConfig<P, string>;
+          cards:
+            | {
+                value: string;
+                imgUrl: string;
+                footer?: React.ReactNode;
+              }[]
+            | ContextDependentConfig<
+                P,
+                {
+                  value: string;
+                  imgUrl: string;
+                  footer?: React.ReactNode;
+                }[]
+              >;
+          showInput?: boolean | ContextDependentConfig<P, boolean>;
+          onSearch?: ContextDependentConfig<
+            P,
+            ((value: string) => void) | undefined
+          >;
+        }
+      | {
           type: "code";
           lang: "graphql";
           endpoint: string | ContextDependentConfig<P, string>;
@@ -145,15 +168,18 @@ interface ChoiceTypeBase<P> extends PropTypeBase<P> {
             value: string | number | boolean;
           }[]
       >;
+  allowSearch?: boolean;
+  filterOption?: boolean;
+  onSearch?: ContextDependentConfig<P, ((value: string) => void) | undefined>;
 }
 
 export type ChoiceType<P> = (
   | ({
       multiSelect?: false;
-    } & DefaultValueOrExpr<P, string>)
+    } & DefaultValueOrExpr<P, string | number | boolean>)
   | ({
       multiSelect: true;
-    } & DefaultValueOrExpr<P, string[]>)
+    } & DefaultValueOrExpr<P, (string | number | boolean)[]>)
 ) &
   ChoiceTypeBase<P>;
 
