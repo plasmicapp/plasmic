@@ -21,6 +21,7 @@
     "@plasmicapp/host": "1.0.65",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/js-cookie": "^3.0.1",
+    "@types/lodash.debounce": "^4.0.7",
     "@types/node": "^14.0.26",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -37,6 +38,7 @@
     "@types/react": "^17.0.40",
     "@vercel/fetch": "^6.2.0",
     "js-cookie": "^3.0.1",
+    "lodash.debounce": "^4.0.8",
     "react-hook-form": "^7.28.0",
     "swr": "^1.2.2"
   }
