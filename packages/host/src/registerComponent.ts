@@ -316,6 +316,8 @@ export interface ActionProps<P> {
     refreshQueryData: () => void;
     appendToChildren: (element: PlasmicElement) => void;
     removeChildAt: (pos: number) => void;
+    appendToSlot: (element: PlasmicElement, slotName: string) => void;
+    removeFromSlotAt: (pos: number, slotName: string) => void;
   };
 }
 
