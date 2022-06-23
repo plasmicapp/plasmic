@@ -211,62 +211,16 @@ export function ContentfulFetcher({
     );
   }
 
-  const parseContentfulData = (data: Record<string, any>) => {
-    if (!data?.fields) {
-      return undefined;
-    }
-
-    const parsedData: any = {};
-    const schema: any = {};
-    for (const [key, field] of Object.entries<any>(data.fields)) {
-      if (typeof field !== "object") {
-        parsedData[key] = field;
-        schema[key] = typeof field;
-      } else if (Array.isArray(field)) {
-        parsedData[key] = [];
-        schema[key] = [];
-        for (const item of field) {
-          parsedData[key].push({
-            title: item.fields.title,
-            description: item.fields.description,
-            url: item.fields.file.url,
-            contentType: item.fields.file.contentType,
-            fileName: item.fields.file.fileName,
-            size: item.fields.file.size,
-            height: item.fields.file.details.image.height,
-            width: item.fields.file.details.image.width,
-          });
-          schema[key].push("image");
-        }
-      } else if (field.nodeType === "document") {
-        parsedData[key] = documentToHtmlString(field);
-        schema[key] = "rich-text";
-      } else {
-        parsedData[key] = field;
-        schema[key] = typeof field;
-      }
-    }
-
-    return { data: parsedData, schema };
-  };
-
   let renderedData;
   if (contentType && entryID) {
     renderedData = (
-      <DataProvider
-        name={"contentfulItem"}
-        data={parseContentfulData(entryData)}
-      >
+      <DataProvider name={"contentfulItem"} data={entryData}>
         {children}
       </DataProvider>
     );
   } else if (contentType) {
     renderedData = entriesData?.items?.map((item: any, index: number) => (
-      <DataProvider
-        key={item?.sys?.id}
-        name={"contentfulItem"}
-        data={parseContentfulData(item)}
-      >
+      <DataProvider key={item?.sys?.id} name={"contentfulItem"} data={item}>
         {repeatedElement(index, children)}
       </DataProvider>
     ));
@@ -307,28 +261,37 @@ export function ContentfulField({
   objectPath,
   setControlContextData,
 }: ContentfulFieldProps) {
-  const item = useSelector("contentfulItem");
+  const item = useSelector("contentfulItem")?.fields;
   if (!item) {
     return <div>ContentfulField must be used within a ContentfulFetcher </div>;
   }
-  console.log("dale", "contentfulItem", item);
   setControlContextData?.({
-    data: item.data,
+    data: item,
   });
   if (!objectPath) {
     return <div>Please specify a valid path or select a field.</div>;
   }
 
-  const data = L.get(item.data, objectPath);
-  const type = L.get(item.schema, objectPath);
-  if (!data) {
-    return <div>Please specify a valid field.</div>;
-  } else if (type === "rich-text") {
+  const data = L.get(item, objectPath);
+  if (
+    typeof data === "object" &&
+    "nodeType" in data &&
+    data.nodeType === "document"
+  ) {
     return (
-      <div className={className} dangerouslySetInnerHTML={{ __html: data }} />
+      <div
+        className={className}
+        dangerouslySetInnerHTML={{ __html: documentToHtmlString(data) }}
+      />
     );
-  } else if (type === "image") {
+  } else if (
+    typeof data === "object" &&
+    "contentType" in data &&
+    data.contentType.includes("image")
+  ) {
     return <img className={className} src={data.url} />;
+  } else if (!data) {
+    return <div>Please specify a valid field.</div>;
   } else if (typeof data !== "object") {
     return <div className={className}>{data}</div>;
   } else {
