@@ -103,13 +103,16 @@ function AddTab({ studioOps }: ActionProps<any>) {
 
   const appendNewTab = (tabKey: string) => {
     if (tabKey !== "") {
-      studioOps.appendToChildren({
-        type: "component",
-        name: "AntdTabPane",
-        props: {
-          key: tabKey,
+      studioOps.appendToSlot(
+        {
+          type: "component",
+          name: "AntdTabPane",
+          props: {
+            key: tabKey,
+          },
         },
-      });
+        "children"
+      );
     }
   };
 
@@ -260,7 +263,7 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
             return tabKey === componentProps.activeKey;
           });
           if (currentTabPos !== -1) {
-            studioOps.removeChildAt(currentTabPos);
+            studioOps.removeFromSlotAt(currentTabPos, "children");
           }
         }
       },
