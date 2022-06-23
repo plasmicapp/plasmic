@@ -15,20 +15,23 @@ export const sliderMeta: ComponentMeta<Settings> = {
       type: "button-action",
       label: "Append new slide",
       onClick: ({ studioOps }) => {
-        studioOps.appendToChildren({
-          type: "img",
-          src: "",
-          styles: {
-            maxWidth: "100%",
+        studioOps.appendToSlot(
+          {
+            type: "img",
+            src: "",
+            styles: {
+              maxWidth: "100%",
+            },
           },
-        });
+          "children"
+        );
       },
     },
     {
       type: "button-action",
       label: "Delete current slide",
       onClick: ({ contextData, studioOps }) =>
-        studioOps.removeChildAt(contextData.editingSlide ?? 0),
+        studioOps.removeFromSlotAt(contextData.editingSlide ?? 0, "children"),
     },
   ],
   props: {
