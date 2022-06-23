@@ -78,6 +78,8 @@ interface ContentfulFetcherProps {
   contentType?: string;
   children?: ReactNode;
   className?: string;
+  limit?: number;
+  order?: string;
   noLayout?: boolean;
   setControlContextData?: (data: {
     types?: { name: string; id: string }[];
@@ -136,6 +138,17 @@ export const ContentfulFetcherMeta: ComponentMeta<ContentfulFetcherProps> = {
       description: "Query in Content Type.",
       defaultValueHint: "all",
     },
+    limit: {
+      type: "number",
+      displayName: "Limit",
+      description: "Limit the number of entries that are returned.",
+      defaultValue: 1000,
+    },
+    order: {
+      type: "string",
+      displayName: "Order",
+      description: "Order entries with a specific attribute.",
+    },
     noLayout: {
       type: "boolean",
       displayName: "No layout",
@@ -151,7 +164,9 @@ export function ContentfulFetcher({
   contentType,
   children,
   className,
+  limit,
   noLayout,
+  order,
   setControlContextData,
 }: ContentfulFetcherProps) {
   const creds = ensure(useContext(CredentialsContext));
@@ -181,6 +196,8 @@ export function ContentfulFetcher({
       }
       const response = await client.getEntries({
         content_type: `${contentType?.toString()}`,
+        limit,
+        order,
       });
       return response;
     }
