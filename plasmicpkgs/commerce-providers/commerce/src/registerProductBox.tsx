@@ -51,6 +51,7 @@ export const productBoxMeta: ComponentMeta<ProductBoxProps> = {
   },
   importPath: "@plasmicpkgs/commerce",
   importName: "ProductBox",
+  providesData: true
 };
 
 export function ProductBox(props: ProductBoxProps) {

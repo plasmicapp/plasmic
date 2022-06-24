@@ -37,6 +37,7 @@ export const productMediaCollectionMeta: ComponentMeta<ProductMediaCollectionPro
   },
   importPath: "@plasmicpkgs/commerce",
   importName: "ProductMediaCollection",
+  providesData: true,
 };
 
 export function ProductMediaCollection(props: ProductMediaCollectionProps) {
