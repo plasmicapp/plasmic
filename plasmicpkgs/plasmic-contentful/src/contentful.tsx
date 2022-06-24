@@ -180,39 +180,36 @@ export function ContentfulFetcher({
     accessToken: creds.accessToken,
   });
 
-  const { data: contentTypes } = usePlasmicQueryData<any | null>(
-    `${cacheKey}/contentTypes`,
-    async () => {
-      const response = await client.getContentTypes();
-      return response;
-    }
-  );
+  const { data: contentTypes, error: contentTypesError } = usePlasmicQueryData<
+    any | null
+  >(`${cacheKey}/contentTypes`, async () => {
+    const response = await client.getContentTypes();
+    return response;
+  });
 
-  const { data: entriesData } = usePlasmicQueryData<any | null>(
-    `${cacheKey}/entriesData`,
-    async () => {
-      if (!contentType) {
-        return undefined;
-      }
-      const response = await client.getEntries({
-        content_type: `${contentType?.toString()}`,
-        limit,
-        order,
-      });
-      return response;
+  const { data: entriesData, error: entriesDataError } = usePlasmicQueryData<
+    any | null
+  >(`${cacheKey}/entriesData`, async () => {
+    if (!contentType) {
+      return undefined;
     }
-  );
+    const response = await client.getEntries({
+      content_type: `${contentType?.toString()}`,
+      limit,
+      order,
+    });
+    return response;
+  });
 
-  const { data: entryData } = usePlasmicQueryData<any | null>(
-    `${cacheKey}/entry`,
-    async () => {
-      if (!entryID) {
-        return undefined;
-      }
-      const response = await client.getEntry(`${entryID}`);
-      return response;
+  const { data: entryData, error: entryDataError } = usePlasmicQueryData<
+    any | null
+  >(`${cacheKey}/entry`, async () => {
+    if (!entryID) {
+      return undefined;
     }
-  );
+    const response = await client.getEntry(`${entryID}`);
+    return response;
+  });
 
   setControlContextData?.({
     types: contentTypes?.items,
@@ -228,6 +225,20 @@ export function ContentfulFetcher({
     );
   }
 
+  if (contentTypesError || entriesDataError || entryDataError) {
+    if (contentTypesError) {
+      return (
+        <div className={className}>Error: {contentTypesError.message}</div>
+      );
+    } else if (entriesDataError) {
+      return <div className={className}>Error: {entriesDataError.message}</div>;
+    } else {
+      return (
+        <div className={className}>Error: {entriesDataError!.message}</div>
+      );
+    }
+  }
+
   let renderedData;
   if (contentType && entryID) {
     renderedData = (
@@ -236,6 +247,9 @@ export function ContentfulFetcher({
       </DataProvider>
     );
   } else if (contentType) {
+    if (entriesData?.items?.length === 0) {
+      return <div className={className}>{contentType} is empty</div>;
+    }
     renderedData = entriesData?.items?.map((item: any, index: number) => (
       <DataProvider key={item?.sys?.id} name={"contentfulItem"} data={item}>
         {repeatedElement(index, children)}
