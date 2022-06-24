@@ -327,7 +327,7 @@ export type Action<P> =
     }
   | {
       type: "custom-action";
-      comp: React.ComponentType<ActionProps<P>>;
+      control: React.ComponentType<ActionProps<P>>;
     };
 
 type DistributedKeyOf<T> = T extends any ? keyof T : never;
