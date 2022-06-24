@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/loader-svelte",
-  "version": "0.0.122",
+  "version": "0.0.123",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "svelte": "src/index.js",
@@ -40,7 +40,7 @@
     "typescript": "^4.4.2"
   },
   "dependencies": {
-    "@plasmicapp/loader-react": "1.0.142",
+    "@plasmicapp/loader-react": "1.0.143",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   }
