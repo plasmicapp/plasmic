@@ -67,7 +67,7 @@ export type StringType<P> =
       | {
           type: "cardPicker";
           modalTitle?: string | ContextDependentConfig<P, string>;
-          cards:
+          options:
             | {
                 value: string;
                 imgUrl: string;
