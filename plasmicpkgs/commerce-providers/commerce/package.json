@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/commerce",
-  "version": "0.0.47",
+  "version": "0.0.48",
   "description": "Plasmic registration calls for commerce components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
