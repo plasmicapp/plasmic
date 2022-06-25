@@ -153,7 +153,7 @@ export const collapsteMeta: ComponentMeta<CollapseProps> = {
       hidePlaceholder: true,
     },
   },
-  importPath: "@plasmicpkgs/antd",
+  importPath: "@plasmicpkgs/antd/skinny/registerCollapse",
   importName: "Collapse",
 };
 

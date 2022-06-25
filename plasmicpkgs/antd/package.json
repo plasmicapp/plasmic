@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "module": "dist/antd.esm.js",
   "files": [
-    "dist"
+    "dist", "skinny"
   ],
   "size-limit": [
     {
@@ -19,11 +19,11 @@
     }
   ],
   "scripts": {
-    "build": "tsdx build && yarn copy_css_files",
+    "build": "tsdx build && yarn copy_css_files && rollup -c rollup.config.js",
     "start": "tsdx watch",
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
-    "prepare": "tsdx build && yarn copy_css_files",
+    "prepare": "tsdx build && yarn copy_css_files && yarn rollup -c rollup.config.js",
     "copy_css_files": "cp src/*.css dist/",
     "size": "size-limit",
     "analyze": "size-limit --why"

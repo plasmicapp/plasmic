@@ -113,7 +113,7 @@ export const sliderMeta: ComponentMeta<SliderProps> = {
     width: "200px",
     maxWidth: "100%",
   },
-  importPath: "@plasmicpkgs/antd",
+  importPath: "@plasmicpkgs/antd/skinny/registerSlider",
   importName: "Slider",
 };
 
