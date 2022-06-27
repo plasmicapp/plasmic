@@ -246,7 +246,7 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
   actions: [
     {
       type: "custom-action",
-      comp: AddTab,
+      control: AddTab,
     },
     {
       type: "button-action",
