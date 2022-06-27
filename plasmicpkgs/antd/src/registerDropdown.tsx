@@ -81,7 +81,7 @@ export const dropdownMeta: ComponentMeta<DropDownProps> = {
       ],
     },
   },
-  importPath: "@plasmicpkgs/antd",
+  importPath: "@plasmicpkgs/antd/skinny/registerDropdown",
   importName: "Dropdown",
 };
 

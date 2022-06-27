@@ -269,7 +269,7 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
       },
     },
   ],
-  importPath: "@plasmicpkgs/antd",
+  importPath: "@plasmicpkgs/antd/skinny/registerTabs",
   importName: "Tabs",
 };
 
