@@ -32,7 +32,10 @@ export class ComponentLookup {
     const entry = this.registry.load(moduleName, {
       forceOriginal: opts.forceOriginal,
     });
-    return entry.default as P;
+    return !opts.forceOriginal &&
+      typeof entry?.getPlasmicComponent === 'function'
+      ? entry.getPlasmicComponent()
+      : (entry.default as P);
   }
 
   hasComponent(spec: ComponentLookupSpec) {
@@ -70,7 +73,9 @@ export class ComponentLookup {
       projectMeta.globalContextsProviderFileName
     );
 
-    return entry.default;
+    return typeof entry?.getPlasmicComponent === 'function'
+      ? entry.getPlasmicComponent()
+      : entry.default;
   }
 
   getRootProvider() {

@@ -116,6 +116,8 @@ export class InternalPlasmicComponentLoader {
     activeSplits: [],
   };
 
+  private substitutedComponents: Record<string, React.ComponentType<any>> = {};
+
   constructor(private opts: InitOptions) {
     this.registry = Registry.getInstance();
     this.fetcher = new PlasmicModulesFetcher(opts);
@@ -130,6 +132,9 @@ export class InternalPlasmicComponentLoader {
       // same contexts here and in loader-downloaded code.
       '@plasmicapp/query': PlasmicQuery,
       '@plasmicapp/host': PlasmicHost,
+      '@plasmicapp/loader-runtime-registry': {
+        components: this.substitutedComponents,
+      },
     });
   }
 
@@ -368,9 +373,9 @@ export class InternalPlasmicComponentLoader {
     // in component meta.
     for (const sub of this.subs) {
       const metas = getCompMetas(this.bundle.components, sub.lookup);
-      metas.forEach((meta) =>
-        this.registry.register(meta.entry, { default: sub.component })
-      );
+      metas.forEach((meta) => {
+        this.substitutedComponents[meta.id] = sub.component;
+      });
     }
 
     // We also swap global variants' useXXXGlobalVariant() hook with
