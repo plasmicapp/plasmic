@@ -58,7 +58,8 @@ export const productBoxMeta: ComponentMeta<ProductBoxProps> = {
       options: (props, ctx) =>
         ctx?.products.map((product) => ({
           imgUrl: product.images[0].url,
-          value: product.slug ?? product.name,
+          value: product.id,
+          label: product.slug ?? product.name,
           footer: (
             <div>
               <div>
