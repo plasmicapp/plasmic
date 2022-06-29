@@ -1,9 +1,10 @@
 /*
   Forked from https://github.com/vercel/commerce/tree/main/packages/commerce/src
-  Changes: Replaced useSWR for useMutablePlasmicQueryData
+  Changes: Replaced useSWR for useMutablePlasmicQueryData and add provider to useData
 */
 import { useMutablePlasmicQueryData } from "@plasmicapp/query";
 import { SWRResponse } from "swr";
+import { Provider } from "../commerce";
 import defineProperty from "./define-property";
 import { CommerceError } from "./errors";
 import type {
@@ -27,10 +28,11 @@ export type UseData = <H extends SWRHookSchemaBase>(
   },
   input: HookFetchInput | HookSWRInput,
   fetcherFn: Fetcher,
-  swrOptions?: SwrOptions<H["data"], H["fetcherInput"]>
+  swrOptions?: SwrOptions<H["data"], H["fetcherInput"]>,
+  provider?: Provider
 ) => ResponseState<H["data"]>;
 
-const useData: UseData = (options, input, fetcherFn, swrOptions) => {
+const useData: UseData = (options, input, fetcherFn, swrOptions, provider) => {
   const hookInput = Array.isArray(input) ? input : Object.entries(input);
   const fetcher = async (
     url: string,
@@ -47,6 +49,7 @@ const useData: UseData = (options, input, fetcherFn, swrOptions) => {
           return obj;
         }, {}),
         fetch: fetcherFn,
+        provider
       });
     } catch (error) {
       // SWR will not log errors, but any error that's not an instance
