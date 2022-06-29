@@ -70,6 +70,7 @@ export type StringType<P> =
           options:
             | {
                 value: string;
+                label?: string;
                 imgUrl: string;
                 footer?: React.ReactNode;
               }[]
@@ -77,6 +78,7 @@ export type StringType<P> =
                 P,
                 {
                   value: string;
+                  label?: string;
                   imgUrl: string;
                   footer?: React.ReactNode;
                 }[]
