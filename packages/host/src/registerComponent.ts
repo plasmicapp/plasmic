@@ -316,6 +316,7 @@ export interface ActionProps<P> {
     refreshQueryData: () => void;
     appendToSlot: (element: PlasmicElement, slotName: string) => void;
     removeFromSlotAt: (pos: number, slotName: string) => void;
+    updateProps: (newValues: any) => void;
   };
 }
 
