@@ -1,9 +1,91 @@
 import registerComponent, {
+  ActionProps,
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import composeRefs from "@seznam/compose-react-refs";
+import { Button, Select } from "antd";
 import React, { forwardRef, Ref, useEffect, useRef } from "react";
 import Slider, { Settings } from "react-slick";
+
+const { Option } = Select;
+
+function CurrentSlideDropdown({ componentProps, studioOps }: ActionProps<any>) {
+  const editingSlide = componentProps.editingSlide ?? 0;
+  const slidesCnt =
+    componentProps.children.length ??
+    (componentProps.children.type === "img" ? 1 : 0);
+
+  const options = Array.from({ length: slidesCnt }, (_, i) => i).map((i) => {
+    return <Option value={i.toString()}>Slide {i}</Option>;
+  });
+
+  const handleChange = (value: string) => {
+    const slideIdx = Number(value);
+    studioOps.updateProps({ editingSlide: slideIdx % slidesCnt });
+  };
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "row",
+        gap: "10px",
+        justifyContent: "space-between",
+      }}
+    >
+      <div>Current slide:</div>
+      <Select
+        defaultValue={editingSlide.toString()}
+        style={{ width: "100%" }}
+        onChange={handleChange}
+        value={editingSlide.toString()}
+      >
+        {options}
+      </Select>
+    </div>
+  );
+}
+
+function NavigateSlides({ componentProps, studioOps }: ActionProps<any>) {
+  const slidesCnt = componentProps.children.length;
+  const editingSlide = componentProps.editingSlide ?? 0;
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "row",
+        gap: "10px",
+        justifyContent: "space-between",
+      }}
+    >
+      <Button
+        style={{ width: "100%" }}
+        onClick={() => {
+          const prevSlide = (editingSlide - 1 + slidesCnt) % slidesCnt;
+          studioOps.updateProps({ editingSlide: prevSlide });
+        }}
+      >
+        Prev slide
+      </Button>
+      <Button
+        style={{ width: "100%" }}
+        onClick={() => {
+          const nextSlide = (editingSlide + 1) % slidesCnt;
+          studioOps.updateProps({ editingSlide: nextSlide });
+        }}
+      >
+        Next slide
+      </Button>
+    </div>
+  );
+}
+
+function OutlineMessage() {
+  return <div>* To re-arrange slides, use the Outline panel</div>;
+}
 
 export const sliderMeta: ComponentMeta<Settings> = {
   name: "hostless-slider",
@@ -12,9 +94,18 @@ export const sliderMeta: ComponentMeta<Settings> = {
   importPath: "react-slick",
   actions: [
     {
+      type: "custom-action",
+      control: CurrentSlideDropdown,
+    },
+    {
+      type: "custom-action",
+      control: NavigateSlides,
+    },
+    {
       type: "button-action",
       label: "Append new slide",
-      onClick: ({ studioOps }) => {
+      onClick: ({ componentProps, studioOps }: ActionProps<any>) => {
+        const slidesCnt = componentProps.children.length;
         studioOps.appendToSlot(
           {
             type: "img",
@@ -25,13 +116,28 @@ export const sliderMeta: ComponentMeta<Settings> = {
           },
           "children"
         );
+        studioOps.updateProps({ editingSlide: slidesCnt });
       },
     },
     {
       type: "button-action",
       label: "Delete current slide",
-      onClick: ({ contextData, studioOps }) =>
-        studioOps.removeFromSlotAt(contextData.editingSlide ?? 0, "children"),
+      onClick: ({
+        componentProps,
+        contextData,
+        studioOps,
+      }: ActionProps<any>) => {
+        const editingSlide = contextData.editingSlide ?? 0;
+        studioOps.removeFromSlotAt(editingSlide, "children");
+        const slidesCnt = componentProps.children.length - 1;
+        studioOps.updateProps({
+          editingSlide: (editingSlide - 1 + slidesCnt) % slidesCnt,
+        });
+      },
+    },
+    {
+      type: "custom-action",
+      control: OutlineMessage,
     },
   ],
   props: {
