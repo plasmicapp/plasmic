@@ -2,7 +2,7 @@ import registerComponent, {
   ActionProps,
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { Button, Input } from "antd";
+import { Button } from "antd";
 import {
   default as AntdTabs,
   TabPaneProps,
@@ -98,23 +98,20 @@ export function Tabs(props: TabsProps) {
   );
 }
 
-function AddTab({ studioOps }: ActionProps<any>) {
-  const [tabKey, setTabKey] = React.useState<string>("");
-
-  const appendNewTab = (tabKey: string) => {
-    if (tabKey !== "") {
-      studioOps.appendToSlot(
-        {
-          type: "component",
-          name: "AntdTabPane",
-          props: {
-            key: tabKey,
-          },
-        },
-        "children"
-      );
+function NavigateTabs({ componentProps, studioOps }: ActionProps<any>) {
+  const tabPanes: string[] = [];
+  traverseReactEltTree(componentProps.children, (elt) => {
+    if (elt?.type === TabPane && typeof elt?.key === "string") {
+      tabPanes.push(elt.key);
     }
-  };
+  });
+
+  const activeKey = componentProps.activeKey;
+  const currTabPos = activeKey
+    ? tabPanes.findIndex((tabKey) => {
+        return tabKey === activeKey;
+      })
+    : 0;
 
   return (
     <div
@@ -126,21 +123,35 @@ function AddTab({ studioOps }: ActionProps<any>) {
         justifyContent: "space-between",
       }}
     >
-      <Input
-        placeholder="Tab key"
-        onChange={(e) => setTabKey(e.target.value)}
-        value={tabKey}
-      />
       <Button
+        style={{ width: "100%" }}
         onClick={() => {
-          appendNewTab(tabKey);
-          setTabKey("");
+          if (tabPanes.length > 0) {
+            const prevTabPos =
+              (currTabPos - 1 + tabPanes.length) % tabPanes.length;
+            studioOps.updateProps({ activeKey: tabPanes[prevTabPos] });
+          }
         }}
       >
-        Add tab
+        Prev tab
+      </Button>
+      <Button
+        style={{ width: "100%" }}
+        onClick={() => {
+          if (tabPanes.length > 0) {
+            const nextTabPos = (currTabPos + 1) % tabPanes.length;
+            studioOps.updateProps({ activeKey: tabPanes[nextTabPos] });
+          }
+        }}
+      >
+        Next tab
       </Button>
     </div>
   );
+}
+
+function OutlineMessage() {
+  return <div>* To re-arrange tab panes, use the Outline panel</div>;
 }
 
 export const tabsMeta: ComponentMeta<TabsProps> = {
@@ -246,12 +257,53 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
   actions: [
     {
       type: "custom-action",
-      control: AddTab,
+      control: NavigateTabs,
+    },
+    {
+      type: "button-action",
+      label: "Add new tab",
+      onClick: ({ componentProps, studioOps }: ActionProps<any>) => {
+        // Get the first positive integer that isn't already a key
+        const generateNewKey = () => {
+          let keysSet = new Set<string>();
+          traverseReactEltTree(componentProps.children, (elt) => {
+            if (elt?.type === TabPane && typeof elt?.key === "string") {
+              keysSet.add(elt.key);
+            }
+          });
+
+          for (
+            let keyCandidate = 1;
+            keyCandidate <= keysSet.size + 1;
+            keyCandidate++
+          ) {
+            const strKey = keyCandidate.toString();
+            if (!keysSet.has(strKey)) {
+              return strKey;
+            }
+          }
+
+          return undefined;
+        };
+
+        const tabKey = generateNewKey();
+        studioOps.appendToSlot(
+          {
+            type: "component",
+            name: "AntdTabPane",
+            props: {
+              key: tabKey,
+            },
+          },
+          "children"
+        );
+        studioOps.updateProps({ activeKey: tabKey });
+      },
     },
     {
       type: "button-action",
       label: "Delete current tab",
-      onClick: ({ componentProps, studioOps }) => {
+      onClick: ({ componentProps, studioOps }: ActionProps<any>) => {
         if (componentProps.activeKey) {
           const tabPanes: string[] = [];
           traverseReactEltTree(componentProps.children, (elt) => {
@@ -259,14 +311,26 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
               tabPanes.push(elt.key);
             }
           });
-          const currentTabPos = tabPanes.findIndex((tabKey) => {
-            return tabKey === componentProps.activeKey;
+
+          const activeKey = componentProps.activeKey;
+          const currTabPos = tabPanes.findIndex((tabKey) => {
+            return tabKey === activeKey;
           });
-          if (currentTabPos !== -1) {
-            studioOps.removeFromSlotAt(currentTabPos, "children");
+
+          if (currTabPos !== -1) {
+            studioOps.removeFromSlotAt(currTabPos, "children");
+            if (tabPanes.length - 1 > 0) {
+              const prevTabPos =
+                (currTabPos - 1 + tabPanes.length) % tabPanes.length;
+              studioOps.updateProps({ activeKey: tabPanes[prevTabPos] });
+            }
           }
         }
       },
+    },
+    {
+      type: "custom-action",
+      control: OutlineMessage,
     },
   ],
   importPath: "@plasmicpkgs/antd/skinny/registerTabs",
