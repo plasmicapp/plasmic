@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-wordpress-rest",
-  "version": "0.0.10",
+  "version": "0.0.1",
   "description": "Plasmic Wordpress components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -49,7 +49,6 @@
   "dependencies": {
     "@plasmicapp/query": "^0.1.48",
     "@types/lodash-es": "^4.17.6",
-    "axios": "^0.27.2",
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.21"
   }
