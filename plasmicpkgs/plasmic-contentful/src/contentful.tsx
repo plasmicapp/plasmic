@@ -172,8 +172,6 @@ export function ContentfulFetcher({
   const creds = ensure(useContext(CredentialsContext));
   const cacheKey = JSON.stringify({
     creds,
-    contentType,
-    entryID,
   });
   const client = Contentful.createClient({
     space: creds.space,
@@ -189,10 +187,7 @@ export function ContentfulFetcher({
 
   const { data: entriesData, error: entriesDataError } = usePlasmicQueryData<
     any | null
-  >(`${cacheKey}/entriesData`, async () => {
-    if (!contentType) {
-      return undefined;
-    }
+  >(contentType && !entryID ? `${cacheKey}/${contentType}/entriesData/${limit}/${order}` : null, async () => {
     const response = await client.getEntries({
       content_type: `${contentType?.toString()}`,
       limit,
@@ -203,10 +198,7 @@ export function ContentfulFetcher({
 
   const { data: entryData, error: entryDataError } = usePlasmicQueryData<
     any | null
-  >(`${cacheKey}/entry`, async () => {
-    if (!entryID) {
-      return undefined;
-    }
+  >(entryID ? `${cacheKey}/entry/${entryID}` : null, async () => {
     const response = await client.getEntry(`${entryID}`);
     return response;
   });

@@ -30,7 +30,7 @@ interface SanityCredentialsProviderProps {
   useCdn?: boolean;
 }
 
-function useSanityClient(creds: SanityCredentialsProviderProps) {
+function makeSanityClient(creds: SanityCredentialsProviderProps) {
   const sanity = sanityClient({
     projectId: creds.projectId,
     dataset: creds.dataset,
@@ -232,7 +232,7 @@ export function SanityFetcher({
   const allData = usePlasmicQueryData<any[] | null>(
     JSON.stringify(creds),
     async () => {
-      const sanity = useSanityClient(creds);
+      const sanity = makeSanityClient(creds);
       const resp = await sanity.fetch("*");
       return resp;
     }
@@ -251,7 +251,7 @@ export function SanityFetcher({
     if (!groq) {
       return null;
     }
-    const sanity = useSanityClient(creds);
+    const sanity = makeSanityClient(creds);
     const resp = await sanity.fetch(groq);
     return resp;
   });
@@ -332,7 +332,7 @@ export function SanityField({
   setControlContextData,
 }: SanityFieldProps) {
   const creds = ensure(useContext(CredentialsContext));
-  const sanity = useSanityClient(creds);
+  const sanity = makeSanityClient(creds);
   const imageBuilder = imageUrlBuilder(sanity);
 
   const item = useSelector("sanityItem");

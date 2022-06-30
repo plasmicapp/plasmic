@@ -155,8 +155,6 @@ export function ContentStackFetcher({
   const creds = ensure(useContext(CredentialsContext));
   const cacheKey = JSON.stringify({
     creds,
-    contentType,
-    entryUID,
   });
   const Stack = ContentStack.Stack({
     api_key: creds.apiKey,
@@ -165,12 +163,9 @@ export function ContentStackFetcher({
   });
 
   const { data: entryData } = usePlasmicQueryData<any | null>(
-    cacheKey,
+    contentType && entryUID ? `${cacheKey}/${contentType}/entry/${entryUID}` : null,
     async () => {
-      if (!contentType || !entryUID) {
-        return undefined;
-      }
-      const Query = Stack.ContentType(`${contentType}`).Entry(`${entryUID}`);
+      const Query = Stack.ContentType(`${contentType!}`).Entry(`${entryUID!}`);
       const result = await Query.fetch();
       const response = await result.toJSON();
       return response;
@@ -187,12 +182,9 @@ export function ContentStackFetcher({
   );
 
   const { data: entriesData } = usePlasmicQueryData<any | null>(
-    `${cacheKey}/entries`,
+    contentType && !entryUID ? `${cacheKey}/${contentType}/entries` : null,
     async () => {
-      if (!contentType) {
-        return undefined;
-      }
-      return await Stack.ContentType(`${contentType}`).Query().toJSON().find();
+      return await Stack.ContentType(`${contentType!}`).Query().toJSON().find();
     }
   );
 
