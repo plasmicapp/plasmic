@@ -20,6 +20,7 @@ export type SearchProductsInput = {
   categoryId?: string | number;
   brandId?: string | number;
   sort?: string;
+  count?: number;
 };
 
 export type SearchProductsData = {
@@ -71,6 +72,7 @@ export const handler: SWRHook<SearchProductsHook> = {
           ["categoryId", input.categoryId],
           ["brandId", input.brandId],
           ["sort", input.sort],
+          ["count", input.count],
         ],
         swrOptions: {
           revalidateOnFocus: false,

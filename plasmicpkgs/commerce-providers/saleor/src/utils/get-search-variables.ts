@@ -6,7 +6,7 @@
 import { getSortVariables } from './get-sort-variables'
 import type { SearchProductsInput } from '../product/use-search'
 
-export const getSearchVariables = ({ brandId, search, categoryId, sort }: SearchProductsInput) => {
+export const getSearchVariables = ({ brandId, search, categoryId, sort, count }: SearchProductsInput) => {
   const sortBy = {
     field: 'NAME',
     direction: 'ASC',
@@ -17,6 +17,7 @@ export const getSearchVariables = ({ brandId, search, categoryId, sort }: Search
     categoryId,
     filter: { search },
     sortBy,
+    first: count
   }
 }
 

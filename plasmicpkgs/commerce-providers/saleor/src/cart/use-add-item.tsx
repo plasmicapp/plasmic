@@ -55,7 +55,11 @@ export const handler: MutationHook<AddItemHook> = {
       return useCallback(
         async function addItem(input) {
           const data = await fetch({ input });
-          await mutate(data, false);
+          if (data) {
+            await mutate(data, false);
+          } else {
+            await mutate();
+          }
           return data;
         },
         [fetch, mutate]

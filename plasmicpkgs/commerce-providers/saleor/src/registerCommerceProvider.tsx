@@ -12,8 +12,10 @@ export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
   name: "plasmic-commerce-saleor-provider",
   displayName: "Saleor Provider",
   props: {
-    saleorApiUrl: "string",
-    defaultValue: 'https://vercel.saleor.cloud/graphql/'
+    saleorApiUrl: {
+      type: "string",
+      defaultValue: 'https://vercel.saleor.cloud/graphql/'
+    }
   },
   importPath: "commerce-providers/saleor",
   importName: "SaleorProvider",
@@ -31,7 +33,7 @@ export function registerCommerceProvider(
   loader?: Registerable,
   customCommerceProviderMeta?: GlobalContextMeta<CommerceProviderProps>
 ) {
-  const doRegisterComponent: typeof registerGlobalContext = (...args: any) =>
+  const doRegisterComponent: typeof registerGlobalContext = (...args) =>
     loader
       ? loader.registerGlobalContext(...args)
       : registerGlobalContext(...args);

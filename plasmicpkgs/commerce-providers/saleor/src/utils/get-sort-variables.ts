@@ -18,11 +18,8 @@ export const getSortVariables = (sort?: string, isCategory: boolean = false) => 
         direction: 'DESC',
       }
       break
-    case 'trending-desc':
-      output = {
-        field: 'RANK',
-        direction: 'DESC',
-      }
+    case 'trending-desc': //default
+      output = {} 
       break
     case 'latest-desc':
       output = {

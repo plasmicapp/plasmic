@@ -15,27 +15,7 @@ export const handler: SWRHook<GetBrandsHook> = {
     query: getAllProductVendors,
   },
   async fetcher({ input, options, fetch }) {
-    const data = await fetch<
-      GetAllProductPathsQuery,
-      GetAllProductPathsQueryVariables
-    >({
-      query: getAllProductVendors,
-      variables: {
-        first: 250,
-      },
-    });
-
-    let vendorsStrings = data?.products?.edges.map(
-      ({ node: { slug } }) => slug
-    );
-    return Array.from(new Set(vendorsStrings).values()).map((v) => {
-      const id = v.replace(/\s+/g, "-").toLowerCase();
-      return {
-        entityId: id,
-        name: v,
-        path: `brands/${id}`,
-      };
-    });
+    return []; // brands it's not available on saleor
   },
   useHook:
     ({ useData }) =>

@@ -31,7 +31,7 @@ export type CheckoutPayload =
   | CheckoutQuery
   | CheckoutLineDelete
 
-const checkoutToCart = (checkoutPayload?: Maybe<CheckoutPayload>): Cart => {
+const checkoutToCart = (checkoutPayload?: Maybe<CheckoutPayload>): Cart | undefined => {
   if (!checkoutPayload) {
     throw new CommerceError({
       message: 'Missing checkout payload from response',
@@ -39,7 +39,14 @@ const checkoutToCart = (checkoutPayload?: Maybe<CheckoutPayload>): Cart => {
   }
 
   const checkout = checkoutPayload?.checkout
-  throwUserErrors(checkoutPayload?.errors)
+  if (checkoutPayload?.errors?.length === 1 && checkoutPayload.errors[0].code === "PRODUCT_UNAVAILABLE_FOR_PURCHASE") {
+    console.error(checkoutPayload.errors[0]);
+    return undefined;
+  }
+
+  if (checkoutPayload?.errors) {
+    throwUserErrors(checkoutPayload?.errors)
+  }
 
   if (!checkout) {
     throw new CommerceError({
