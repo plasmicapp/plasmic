@@ -117,6 +117,7 @@ export class InternalPlasmicComponentLoader {
   };
 
   private substitutedComponents: Record<string, React.ComponentType<any>> = {};
+  private substitutedGlobalVariantHooks: Record<string, () => any> = {};
 
   constructor(private opts: InitOptions) {
     this.registry = Registry.getInstance();
@@ -134,6 +135,7 @@ export class InternalPlasmicComponentLoader {
       '@plasmicapp/host': PlasmicHost,
       '@plasmicapp/loader-runtime-registry': {
         components: this.substitutedComponents,
+        globalVariantHooks: this.substitutedGlobalVariantHooks,
       },
     });
   }
@@ -246,10 +248,8 @@ export class InternalPlasmicComponentLoader {
       specsToFetch: ComponentLookupSpec[]
     ) => {
       await this.fetchMissingData({ missingSpecs: specsToFetch });
-      const {
-        found: existingMetas2,
-        missing: missingSpecs2,
-      } = this.maybeGetCompMetas(...specs);
+      const { found: existingMetas2, missing: missingSpecs2 } =
+        this.maybeGetCompMetas(...specs);
       if (missingSpecs2.length > 0) {
         return null;
       }
@@ -263,10 +263,8 @@ export class InternalPlasmicComponentLoader {
     }
 
     // Else we only fetch actually missing specs
-    const {
-      found: existingMetas,
-      missing: missingSpecs,
-    } = this.maybeGetCompMetas(...specs);
+    const { found: existingMetas, missing: missingSpecs } =
+      this.maybeGetCompMetas(...specs);
     if (missingSpecs.length === 0) {
       return prepComponentData(this.bundle, ...existingMetas);
     }
@@ -386,12 +384,8 @@ export class InternalPlasmicComponentLoader {
     // hooks to read from them instead.
     for (const globalGroup of this.bundle.globalGroups) {
       if (globalGroup.type !== 'global-screen') {
-        this.registry.register(globalGroup.contextFile, {
-          [globalGroup.useName]: createUseGlobalVariant(
-            globalGroup.name,
-            globalGroup.projectId
-          ),
-        });
+        this.substitutedGlobalVariantHooks[globalGroup.id] =
+          createUseGlobalVariant(globalGroup.name, globalGroup.projectId);
       }
     }
     this.registry.updateModules(this.bundle);
