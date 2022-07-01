@@ -750,6 +750,6 @@ export default function Stars({
         app.setParams({ numStars, starSize, bgLightness });
       }
     }
-  }, [numStars, starSize, bgLightness, forcePreview]);
+  }, [numStars, starSize, bgLightness, forcePreview, inEditor]);
   return <div className={className} ref={ref}></div>;
 }
