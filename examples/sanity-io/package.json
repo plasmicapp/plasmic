@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@plasmicapp/loader-nextjs": "^1.0.76",
+    "@plasmicapp/loader-nextjs": "^1.0.152",
     "@plasmicapp/query": "^0.1.28",
     "@sanity/client": "^3.1.0",
     "@sanity/image-url": "^1.0.1",

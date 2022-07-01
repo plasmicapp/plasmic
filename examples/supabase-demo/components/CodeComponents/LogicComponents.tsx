@@ -49,15 +49,17 @@ export function RedirectIf(props: RedirectIfProps) {
     });
   }, []);
 
-  const shouldRedirect = () =>
-    inEditor && testCondition !== undefined ? testCondition : condition;
+  const shouldRedirect = React.useCallback(
+    () => inEditor && testCondition !== undefined ? testCondition : condition,
+    [inEditor, testCondition, condition]
+  );
 
   // Perform redirect
   React.useEffect(() => {
     if (shouldRedirect() && loaded && !inEditor) {
       ref.current?.click();
     }
-  }, [loaded, condition, ref, inEditor, testCondition]);
+  }, [loaded, condition, ref, inEditor, testCondition, shouldRedirect]);
 
   // Validation
   if (!leftExpression) {
