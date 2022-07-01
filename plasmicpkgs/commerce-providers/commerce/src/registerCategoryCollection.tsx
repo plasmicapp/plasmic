@@ -85,6 +85,7 @@ export const categoryCollectionMeta: ComponentMeta<CategoryCollectionProps> = {
   },
   importPath: "@plasmicpkgs/commerce",
   importName: "CategoryCollection",
+  providesData: true,
 };
 
 export function CategoryCollection(props: CategoryCollectionProps) {

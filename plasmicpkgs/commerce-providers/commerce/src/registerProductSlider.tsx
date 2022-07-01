@@ -17,6 +17,7 @@ interface ProductSliderProps {
 export const productSliderMeta: ComponentMeta<ProductSliderProps> = {
   name: "plasmic-commerce-product-slider",
   displayName: "Product Slider",
+  providesData: true,
   props: {
     thumbsVisible: {
       type: "number",

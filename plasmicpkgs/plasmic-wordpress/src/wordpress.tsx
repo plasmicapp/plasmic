@@ -22,7 +22,7 @@ export function ensure<T>(x: T | null | undefined): T {
 const modulePath = "@plasmicpkgs/plasmic-wordpress";
 
 interface WordpressCredentialsProviderProps {
-  graphqlEndpoint: string
+  graphqlEndpoint: string;
 }
 
 const CredentialsContext = React.createContext<
@@ -32,8 +32,7 @@ const CredentialsContext = React.createContext<
 export const WordpressCredentialsProviderMeta: GlobalContextMeta<WordpressCredentialsProviderProps> = {
   name: "WordpressCredentialsProvider",
   displayName: "Wordpress Credentials Provider",
-  description:
-    "The GraphQL API Endpoint of your Wordpress",
+  description: "The GraphQL API Endpoint of your Wordpress",
   importName: "WordpressCredentialsProvider",
   importPath: modulePath,
   props: {
@@ -60,10 +59,8 @@ interface WordpressFetcherProps {
   children?: ReactNode;
   className?: string;
   noLayout?: boolean;
-  query?: string,
-  setControlContextData?: (data: {
-    endpoint?: string
-  }) => void;
+  query?: string;
+  setControlContextData?: (data: { endpoint?: string }) => void;
 }
 
 export const WordpressFetcherMeta: ComponentMeta<WordpressFetcherProps> = {
@@ -71,6 +68,7 @@ export const WordpressFetcherMeta: ComponentMeta<WordpressFetcherProps> = {
   displayName: "Wordpress Fetcher",
   importName: "WordpressFetcher",
   importPath: modulePath,
+  providesData: true,
   description:
     "Fetches Wordpress data and repeats content of children once for every row fetched. ",
   defaultStyles: {
@@ -120,40 +118,35 @@ export function WordpressFetcher({
   const creds = ensure(useContext(CredentialsContext));
   const cacheKey = JSON.stringify({
     query,
-    creds
-
+    creds,
   });
-  const { data } = usePlasmicQueryData<any | null>(
-    cacheKey,
-    async () => {
-      if (!query) {
-        return null;
-      }
-      const data = await fetch(creds.graphqlEndpoint, {
-        method: "POST",
-        body: JSON.stringify(query),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
-      return await data.json();
+  const { data } = usePlasmicQueryData<any | null>(cacheKey, async () => {
+    if (!query) {
+      return null;
     }
-  );
+    const data = await fetch(creds.graphqlEndpoint, {
+      method: "POST",
+      body: JSON.stringify(query),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return await data.json();
+  });
 
   setControlContextData?.({
     endpoint: creds.graphqlEndpoint,
   });
 
   if (!query) {
-    return (
-      <div>Please make a query in order to fetch data</div>
-    )
+    return <div>Please make a query in order to fetch data</div>;
   }
 
   if (!creds.graphqlEndpoint) {
     return (
       <div>
-        Please specify a valid API Credentials: GraphQL Endpoint of your Wordpress project
+        Please specify a valid API Credentials: GraphQL Endpoint of your
+        Wordpress project
       </div>
     );
   }
@@ -208,9 +201,7 @@ export function WordpressField({
   const item = useSelector("wordpressItem");
 
   if (!item) {
-    return (
-      <div>WordpressField must be used within a WordpressFetcher </div>
-    );
+    return <div>WordpressField must be used within a WordpressFetcher </div>;
   }
 
   setControlContextData?.({
@@ -221,22 +212,24 @@ export function WordpressField({
     return <div>Please specify a valid path or select a field.</div>;
   }
   const data = L.get(item, path as string);
-  console.log(data)
+  console.log(data);
 
   if (typeof data === "object" && data.mediaType === "image") {
-    return <div><img src={data.mediaItemUrl} srcSet={data.srcSet} /><h1>Image Tag</h1> </div>
+    return (
+      <div>
+        <img src={data.mediaItemUrl} srcSet={data.srcSet} />
+        <h1>Image Tag</h1>{" "}
+      </div>
+    );
   }
 
-  if (path === 'content' || path === 'excerpt') {
-    return <div dangerouslySetInnerHTML={{ __html: data }} />
+  if (path === "content" || path === "excerpt") {
+    return <div dangerouslySetInnerHTML={{ __html: data }} />;
   }
 
   if (!data || typeof data === "object") {
     return <div className={className}>Please specify a valid field.</div>;
-  }
-  else {
+  } else {
     return <div className={className}> {data} </div>;
   }
 }
-
-
