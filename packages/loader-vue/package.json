@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/loader-vue",
-  "version": "0.1.142",
+  "version": "0.1.143",
   "main": "./dist/index.js",
   "typings": "./dist/main.d.ts",
   "module": "./dist/loader-vue.esm.js",
@@ -15,7 +15,7 @@
     "node": ">=12"
   },
   "dependencies": {
-    "@plasmicapp/loader-react": "1.0.148",
+    "@plasmicapp/loader-react": "1.0.149",
     "core-js": "^3.6.5",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0",
