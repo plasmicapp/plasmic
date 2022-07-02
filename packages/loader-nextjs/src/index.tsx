@@ -122,36 +122,36 @@ export function initPlasmicLoader(
 
   if (cache) {
     if (!isProd) {
-      console.log(`Subscribing to Plasmic changes...`);
+      if (process.env.PLASMIC_WATCHED !== 'true') {
+        process.env.PLASMIC_WATCHED = 'true';
+        console.log(`Subscribing to Plasmic changes...`);
 
-      // Import using serverRequire, so webpack doesn't bundle us into client bundle
-      const PlasmicRemoteChangeWatcher = serverRequire('@plasmicapp/watcher')
-        .PlasmicRemoteChangeWatcher as typeof Watcher;
-      const watcher = new PlasmicRemoteChangeWatcher({
-        projects: opts.projects,
-        host: opts.host,
-      });
+        // Import using serverRequire, so webpack doesn't bundle us into client bundle
+        const PlasmicRemoteChangeWatcher = serverRequire('@plasmicapp/watcher')
+          .PlasmicRemoteChangeWatcher as typeof Watcher;
+        const watcher = new PlasmicRemoteChangeWatcher({
+          projects: opts.projects,
+          host: opts.host,
+        });
 
-      const clearCache = (projectId: string) => {
-        console.log(
-          `Detected update to ${projectId}; clearing cache: ${new Date().toISOString()}`
-        );
-        cache.clear();
-        loader.clearCache();
-      };
+        const clearCache = () => {
+          cache.clear();
+          loader.clearCache();
+        };
 
-      watcher.subscribe({
-        onUpdate: (projectId) => {
-          if (opts.preview) {
-            clearCache(projectId);
-          }
-        },
-        onPublish: (projectId) => {
-          if (!opts.preview) {
-            clearCache(projectId);
-          }
-        },
-      });
+        watcher.subscribe({
+          onUpdate: () => {
+            if (opts.preview) {
+              clearCache();
+            }
+          },
+          onPublish: () => {
+            if (!opts.preview) {
+              clearCache();
+            }
+          },
+        });
+      }
     } else {
       cache.clear();
       loader.clearCache();
