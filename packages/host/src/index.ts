@@ -13,8 +13,10 @@ const root = globalThis as any;
 
 if (root.__Sub == null) {
   // Creating a side effect here by logging, so that vite won't
-  // ignore this block for whatever reason
-  console.log("Plasmic: Setting up app host dependencies");
+  // ignore this block for whatever reason. Hiding this for now
+  // as users are complaining; will have to check if this has
+  // been fixed with vite.
+  // console.log("Plasmic: Setting up app host dependencies");
   root.__Sub = {
     React,
     ReactDOM,
