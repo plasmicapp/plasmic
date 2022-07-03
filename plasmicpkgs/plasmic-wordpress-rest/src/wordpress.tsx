@@ -181,34 +181,44 @@ export function WordpressFetcher({
   let renderedData;
   if (queryType === "posts" && post) {
     renderedData = (
-      <DataProvider name={"wordpressItem"} data={post}>
-        {children}
+      <DataProvider name={"wordpressItem"} data={post} hidden={true}>
+        <DataProvider name={"wordpressPostItem"} data={post}>
+          {children}
+        </DataProvider>
       </DataProvider>
     );
   } else if (queryType === "pages" && page) {
     renderedData = (
-      <DataProvider name={"wordpressItem"} data={page}>
-        {children}
+      <DataProvider name={"wordpressItem"} data={page} hidden={true}>
+        <DataProvider name={"wordpressPageItem"} data={page}>
+          {children}
+        </DataProvider>
       </DataProvider>
     );
   } else if (queryType === "posts" && posts) {
-    renderedData = posts?.map((item: any, j: number) => (
+    renderedData = posts?.map((post: any, i: number) => (
       <DataProvider
-        key={JSON.stringify(item)}
+        key={post.id}
         name={"wordpressItem"}
-        data={item}
+        data={post}
+        hidden={true}
       >
-        {repeatedElement(j, children)}
+        <DataProvider name={"wordpressPostItem"} data={post}>
+          {repeatedElement(i, children)}
+        </DataProvider>
       </DataProvider>
     ));
   } else if (queryType === "pages" && pages) {
-    renderedData = pages?.map((item: any, j: number) => (
+    renderedData = pages?.map((page: any, i: number) => (
       <DataProvider
-        key={JSON.stringify(item)}
+        key={page.id}
         name={"wordpressItem"}
-        data={item}
+        data={page}
+        hidden={true}
       >
-        {repeatedElement(j, children)}
+        <DataProvider name={"wordpressPageItem"} data={page}>
+          {repeatedElement(i, children)}
+        </DataProvider>
       </DataProvider>
     ));
   } else {

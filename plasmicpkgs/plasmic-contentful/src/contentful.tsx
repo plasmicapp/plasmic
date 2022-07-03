@@ -22,6 +22,9 @@ export function ensure<T>(x: T | null | undefined): T {
 
 const modulePath = "@plasmicpkgs/plasmic-contentful";
 
+const makeDataProviderName = (contentType: string) =>
+  `contentful${L.capitalize(L.camelCase(contentType))}Item`;
+
 interface ContentfulCredentialsProviderProps {
   space: string;
   accessToken: string;
@@ -187,14 +190,19 @@ export function ContentfulFetcher({
 
   const { data: entriesData, error: entriesDataError } = usePlasmicQueryData<
     any | null
-  >(contentType && !entryID ? `${cacheKey}/${contentType}/entriesData/${limit}/${order}` : null, async () => {
-    const response = await client.getEntries({
-      content_type: `${contentType?.toString()}`,
-      limit,
-      order,
-    });
-    return response;
-  });
+  >(
+    contentType && !entryID
+      ? `${cacheKey}/${contentType}/entriesData/${limit}/${order}`
+      : null,
+    async () => {
+      const response = await client.getEntries({
+        content_type: `${contentType?.toString()}`,
+        limit,
+        order,
+      });
+      return response;
+    }
+  );
 
   const { data: entryData, error: entryDataError } = usePlasmicQueryData<
     any | null
@@ -234,8 +242,10 @@ export function ContentfulFetcher({
   let renderedData;
   if (contentType && entryID) {
     renderedData = (
-      <DataProvider name={"contentfulItem"} data={entryData}>
-        {children}
+      <DataProvider name={"contentfulItem"} data={entryData} hidden={true}>
+        <DataProvider name={makeDataProviderName(contentType)} data={entryData}>
+          {children}
+        </DataProvider>
       </DataProvider>
     );
   } else if (contentType) {
@@ -243,8 +253,15 @@ export function ContentfulFetcher({
       return <div className={className}>{contentType} is empty</div>;
     }
     renderedData = entriesData?.items?.map((item: any, index: number) => (
-      <DataProvider key={item?.sys?.id} name={"contentfulItem"} data={item}>
-        {repeatedElement(index, children)}
+      <DataProvider
+        key={item?.sys?.id}
+        name={"contentfulItem"}
+        data={item}
+        hidden={true}
+      >
+        <DataProvider name={makeDataProviderName(contentType)} data={item}>
+          {repeatedElement(index, children)}
+        </DataProvider>
       </DataProvider>
     ));
   } else {
