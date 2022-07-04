@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-wordpress",
-  "version": "0.0.34",
+  "version": "0.0.35",
   "description": "Plasmic Wordpress components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -8,7 +8,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "private":"false",
+  "private": "false",
   "files": [
     "dist"
   ],
