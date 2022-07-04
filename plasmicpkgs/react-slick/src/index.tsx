@@ -16,7 +16,7 @@ function CurrentSlideDropdown({ componentProps, studioOps }: ActionProps<any>) {
     (componentProps.children.type === "img" ? 1 : 0);
 
   const options = Array.from({ length: slidesCnt }, (_, i) => i).map((i) => {
-    return <Option value={i.toString()}>Slide {i}</Option>;
+    return <Option value={i.toString()}>Slide {i + 1}</Option>;
   });
 
   const handleChange = (value: string) => {
@@ -174,20 +174,8 @@ export const sliderMeta: ComponentMeta<Settings> = {
         "Switch to the specified slide (first is 0). Only affects the editor, not the final page.",
       defaultValueHint: 0,
       editOnly: true,
+      hidden: () => true,
     },
-    // TODO Ideally, we are not showing any labels on these buttons, and we can place them in the same row.
-    // insertSlide: {
-    //   displayName: "",
-    //   type: "custom",
-    //   description: "Insert a new slide right after the current slide.",
-    //   control: MyReactComponent,
-    // },
-    // deleteSlide: {
-    //   displayName: "",
-    //   type: "custom",
-    //   description: "Delete the current slide.",
-    //   control: MyReactComponent,
-    // },
     accessibility: {
       displayName: "Accessibility",
       type: "boolean",
