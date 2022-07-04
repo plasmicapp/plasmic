@@ -21,6 +21,9 @@ export function ensure<T>(x: T | null | undefined): T {
 
 const modulePath = "@plasmicpkgs/plasmic-content-stack";
 
+const makeDataProviderName = (contentType: string) =>
+  `contentstack${L.capitalize(L.camelCase(contentType))}Item`;
+
 interface ContentStackCredentialsProviderProps {
   apiKey: string;
   accessToken: string;
@@ -163,7 +166,9 @@ export function ContentStackFetcher({
   });
 
   const { data: entryData } = usePlasmicQueryData<any | null>(
-    contentType && entryUID ? `${cacheKey}/${contentType}/entry/${entryUID}` : null,
+    contentType && entryUID
+      ? `${cacheKey}/${contentType}/entry/${entryUID}`
+      : null,
     async () => {
       const Query = Stack.ContentType(`${contentType!}`).Entry(`${entryUID!}`);
       const result = await Query.fetch();
@@ -205,15 +210,24 @@ export function ContentStackFetcher({
   let renderedData;
   if (contentType && entryUID) {
     renderedData = (
-      <DataProvider name={"contentStackItem"} data={entryData}>
-        {children}
+      <DataProvider name={"contentstackItem"} data={entryData} hidden={true}>
+        <DataProvider name={makeDataProviderName(contentType)} data={entryData}>
+          {children}
+        </DataProvider>
       </DataProvider>
     );
   } else if (contentType && !entryUID) {
     const entries = entriesData?.flat();
     renderedData = entries?.map((item: any, index: number) => (
-      <DataProvider key={item._id} name={"contentStackItem"} data={item}>
-        {repeatedElement(index, children)}
+      <DataProvider
+        key={item._id}
+        name={"contentstackItem"}
+        data={item}
+        hidden={true}
+      >
+        <DataProvider name={makeDataProviderName(contentType)} data={item}>
+          {repeatedElement(index, children)}
+        </DataProvider>
       </DataProvider>
     ));
   } else {
@@ -222,8 +236,9 @@ export function ContentStackFetcher({
 
   return (
     <DataProvider
-      name={"contentStackSchema"}
+      name={"contentstackSchema"}
       data={contentTypes?.find((type: any) => type.uid === contentType)?.schema}
+      hidden={true}
     >
       {noLayout ? (
         <> {renderedData} </>
@@ -258,13 +273,13 @@ export function ContentStackField({
   setControlContextData,
   ...rest
 }: ContentStackFieldProps) {
-  const item = useSelector("contentStackItem");
+  const item = useSelector("contentstackItem");
   if (!item) {
     return (
       <div>ContentStackField must be used within a ContentStackFetcher </div>
     );
   }
-  const schema = useSelector("contentStackSchema");
+  const schema = useSelector("contentstackSchema");
 
   setControlContextData?.({
     data: item,

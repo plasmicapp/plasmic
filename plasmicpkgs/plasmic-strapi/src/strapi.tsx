@@ -20,6 +20,9 @@ export function ensure<T>(x: T | null | undefined): T {
 
 const modulePath = "@plasmicpkgs/plasmic-strapi";
 
+const makeDataProviderName = (collection: string) =>
+  `strapi${L.capitalize(L.camelCase(collection))}Item`;
+
 interface StrapiCredentialsProviderProps {
   host?: string;
   token?: string;
@@ -167,8 +170,10 @@ export function StrapiCollection({
   const collection = L.get(data.data, ["data"]) as any[];
 
   const repElements = collection.map((item, index) => (
-    <DataProvider key={item.id} name={"strapiItem"} data={item}>
-      {repeatedElement(index, children)}
+    <DataProvider key={item.id} name={"strapiItem"} data={item} hidden={true}>
+      <DataProvider name={makeDataProviderName(name!)} data={item}>
+        {repeatedElement(index, children)}
+      </DataProvider>
     </DataProvider>
   ));
 

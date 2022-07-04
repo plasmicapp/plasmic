@@ -212,22 +212,15 @@ export function WordpressField({
     return <div>Please specify a valid path or select a field.</div>;
   }
   const data = L.get(item, path as string);
-  console.log(data);
-
   if (typeof data === "object" && data.mediaType === "image") {
     return (
-      <div>
-        <img src={data.mediaItemUrl} srcSet={data.srcSet} />
-        <h1>Image Tag</h1>{" "}
-      </div>
+      <img className={className} src={data.mediaItemUrl} srcSet={data.srcSet} />
     );
-  }
-
-  if (path === "content" || path === "excerpt") {
-    return <div dangerouslySetInnerHTML={{ __html: data }} />;
-  }
-
-  if (!data || typeof data === "object") {
+  } else if (path === "content" || path === "excerpt") {
+    return (
+      <div className={className} dangerouslySetInnerHTML={{ __html: data }} />
+    );
+  } else if (!data || typeof data === "object") {
     return <div className={className}>Please specify a valid field.</div>;
   } else {
     return <div className={className}> {data} </div>;
