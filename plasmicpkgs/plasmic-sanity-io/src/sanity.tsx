@@ -22,6 +22,9 @@ export function ensure<T>(x: T | null | undefined): T {
 
 const modulePath = "@plasmicpkgs/plasmic-sanity-io";
 
+const makeDataProviderName = (docType: string) =>
+  `sanity${L.capitalize(L.camelCase(docType))}Item`;
+
 interface SanityCredentialsProviderProps {
   projectId?: string;
   dataset?: string;
@@ -279,11 +282,24 @@ export function SanityFetcher({
     );
   }
 
-  const repElements = data?.data.map((item, index) => (
-    <DataProvider key={item._id} name={"sanityItem"} data={item}>
-      {repeatedElement(index, children)}
-    </DataProvider>
-  ));
+  const repElements = data?.data.map((item, index) =>
+    docType ? (
+      <DataProvider
+        key={item._id}
+        name={"sanityItem"}
+        data={item}
+        hidden={true}
+      >
+        <DataProvider name={makeDataProviderName(docType)} data={item}>
+          {repeatedElement(index, children)}
+        </DataProvider>
+      </DataProvider>
+    ) : (
+      <DataProvider key={item._id} name={"sanityItem"} data={item}>
+        {repeatedElement(index, children)}
+      </DataProvider>
+    )
+  );
 
   return noLayout ? (
     <> {repElements} </>
