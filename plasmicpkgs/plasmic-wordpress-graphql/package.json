@@ -1,10 +1,10 @@
 {
-  "name": "@plasmicpkgs/plasmic-wordpress-rest",
-  "version": "0.0.2",
-  "description": "Plasmic Wordpress components.",
+  "name": "@plasmicpkgs/plasmic-wordpress-graphql",
+  "version": "0.0.1",
+  "description": "Plasmic Wordpress GraphQL components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
-  "module": "dist/plasmic-wordpress-rest.esm.js",
+  "module": "dist/plasmic-wordpress-graphql.esm.js",
   "publishConfig": {
     "access": "public"
   },
@@ -25,17 +25,18 @@
   },
   "size-limit": [
     {
-      "path": "dist/plasmic-wordpress-rest.cjs.production.min.js",
+      "path": "dist/plasmic-wordpress-graphql.cjs.production.min.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/plasmic-wordpress-rest.esm.js",
+      "path": "dist/plasmic-wordpress-graphql.esm.js",
       "limit": "10 KB"
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "^1.0.65",
+    "@plasmicapp/host": "^1.0.68",
     "@size-limit/preset-small-lib": "^7.0.8",
+    "@types/lodash-es": "^4.17.6",
     "@types/react": "^17.0.43",
     "@types/react-dom": "^17.0.14",
     "husky": "^7.0.4",
@@ -48,7 +49,6 @@
   },
   "dependencies": {
     "@plasmicapp/query": "^0.1.48",
-    "@types/lodash-es": "^4.17.6",
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.21"
   }

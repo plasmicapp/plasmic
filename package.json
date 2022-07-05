@@ -50,7 +50,7 @@
     "plasmicpkgs/react-twitter-widgets",
     "plasmicpkgs/react-youtube",
     "plasmicpkgs/plasmic-wordpress",
-    "plasmicpkgs/plasmic-wordpress-rest",
+    "plasmicpkgs/plasmic-wordpress-graphql",
     "plasmicpkgs/commerce-providers/*"
   ]
 }

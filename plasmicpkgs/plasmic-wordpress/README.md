@@ -1,1 +1,1 @@
-Plasmic components and registration calls for Wordpress
+Plasmic components and registration calls for Wordpress REST API

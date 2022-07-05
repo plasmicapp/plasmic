@@ -1,9 +1,0 @@
-{
-  "version": "v1",
-  "packages": {
-    "@plasmicpkgs/plasmic-wordpress-rest": {
-      "signature": "0f47906e0430e99935c571346ae11d70",
-      "file": true
-    }
-  }
-}

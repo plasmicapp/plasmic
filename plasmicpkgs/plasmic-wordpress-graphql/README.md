@@ -1,0 +1,1 @@
+Plasmic components and registration calls for Wordpress GraphQL API
