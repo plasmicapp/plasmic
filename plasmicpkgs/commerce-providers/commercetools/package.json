@@ -1,6 +1,6 @@
 {
-  "name": "@plasmicpkgs/commercetools",
-  "version": "0.0.5",
+  "name": "@plasmicpkgs/commerce-commercetools",
+  "version": "0.0.1",
   "description": "Plasmic registration calls for commercetools commerce provider",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
