@@ -9,3 +9,4 @@ export * from "./plume/select";
 export * from "./plume/switch";
 export * from "./plume/text-input";
 export * from "./plume/triggered-overlay";
+export { default as useDollarState } from "./states/index";

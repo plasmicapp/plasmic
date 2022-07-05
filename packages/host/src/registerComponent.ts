@@ -348,6 +348,29 @@ interface ComponentTemplate<P>
 export interface ComponentTemplates<P> {
   [name: string]: ComponentTemplate<P>;
 }
+interface $State {
+  [key: string]: any;
+}
+
+interface $StateSpec<T> {
+  // Whether this state is private, readonly, or writable in
+  // this component
+  type: "private" | "readonly" | "writable";
+  // if initial value is defined by a js expression
+  initFunc?: ($props: Record<string, any>, $state: $State) => T;
+  // if initial value is a hard-coded value
+  initVal?: T;
+  // Whether this state is private, readonly, or writable in
+  // this component
+
+  // If writable, there should be a valueProp that maps props[valueProp]
+  // to the value of the state
+  valueProp?: string;
+
+  // If writable or readonly, there should be an onChangeProp where
+  // props[onChangeProp] is invoked whenever the value changes
+  onChangeProp?: string;
+}
 
 export interface ComponentMeta<P> {
   /**
@@ -378,6 +401,10 @@ export interface ComponentMeta<P> {
   props: { [prop in DistributedKeyOf<P>]?: RestrictPropType<P[prop], P> } & {
     [prop: string]: PropType<P>;
   };
+  /**
+   * WIP: An object describing the component states to be used in Studio.
+   */
+  unstable__states?: Record<string, $StateSpec<any>>;
   /**
    * An array describing the component actions to be used in Studio.
    */
