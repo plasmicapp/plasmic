@@ -188,7 +188,7 @@ export function GraphCMSFetcher({
     .map((item: any, i: number) => (
       <DataProvider
         key={JSON.stringify(item)}
-        name={"GraphCMSItem"}
+        name={"graphCmsItem"}
         data={item}
       >
         {repeatedElement(i, children)}
@@ -225,7 +225,7 @@ export function GraphCMSField({
   path,
   setControlContextData,
 }: GraphCMSFieldProps) {
-  const item = useSelector("GraphCMSItem");
+  const item = useSelector("graphCmsItem");
   if (!item) {
     return <div>GraphCMSField must be used within a GraphCMSFetcher </div>;
   }
