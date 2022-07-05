@@ -87,6 +87,37 @@ export function defaultPagePath(context: PlasmicContext, fileName: string) {
   return fileName;
 }
 
+/**
+ * Returns true iff paths `a` and `b` resolve to the same page URI. For
+ * example:
+ *
+ * - pages/about.tsx and pages/about.js resolve to the same URI (/about).
+ * - pages/about/index.tsx and pages/about.tsx resolve to the same URI (/about).
+ * - pages/index.tsx and pages/index/index.tsx do not resolve to the same URI
+ * (they resolve, respectively, to / and /index).
+ */
+export function eqPagePath(a: string, b: string) {
+  // Remove extension and ensure that a.length < b.length.
+  a = stripExtension(a);
+  b = stripExtension(b);
+  if (a.length > b.length) {
+    [a, b] = [b, a];
+  }
+
+  // pages/about.tsx and pages/about.js resolve to the same page URI.
+  if (a === b) {
+    return true;
+  }
+
+  // pages/about.* and pages/about/index.* resolve to the same URI, but
+  // pages/index.* and pages/index/index.* do not.
+  if (!a.endsWith("/index") && `${a}/index` === b) {
+    return true;
+  }
+
+  return false;
+}
+
 export async function writeFileContent(
   context: PlasmicContext,
   srcDirFilePath: string,
