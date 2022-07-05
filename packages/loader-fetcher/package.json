@@ -15,7 +15,7 @@
     "yalcp": "yalc publish --push",
     "test": "tsdx test",
     "lint": "tsdx lint",
-    "prepare": "tsdx build --target node",
+    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },

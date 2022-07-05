@@ -12,7 +12,7 @@
   "scripts": {
     "build": "tsc --outDir ./dist",
     "yalcp": "yalc publish --push",
-    "prepare": "yarn build"
+    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
   },
   "keywords": [
     "gatsby",

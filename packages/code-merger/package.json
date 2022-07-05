@@ -12,7 +12,7 @@
     "test": "jest --colors",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
     "build": "tsc",
-    "prepare": "yarn build"
+    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
   },
   "dependencies": {
     "@babel/core": "^7.12.3",
