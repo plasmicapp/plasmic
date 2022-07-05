@@ -89,7 +89,7 @@ export const WordpressFetcherMeta: ComponentMeta<WordpressFetcherProps> = {
         },
         children: {
           type: "component",
-          name: "WordpressField",
+          name: "WordpressGraphQLField",
         },
       },
     },
