@@ -24,7 +24,7 @@
     "start": "tsdx watch",
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
-    "prepare": "tsdx build && yarn copy_css_files && yarn rollup -c rollup.config.js",
+    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "copy_css_files": "cp src/*.css dist/",
     "size": "size-limit",
     "analyze": "size-limit --why"

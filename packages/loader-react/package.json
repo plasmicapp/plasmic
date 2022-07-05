@@ -17,7 +17,7 @@
     "test": "tsdx test --passWithNoTests",
     "coverage": "tsdx test --coverage --passWithNoTests",
     "lint": "tsdx lint",
-    "prepare": "yarn build",
+    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },

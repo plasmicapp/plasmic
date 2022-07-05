@@ -6,7 +6,7 @@
   "module": "./dist/loader-vue.esm.js",
   "scripts": {
     "build": "tsdx build --entry src/main.ts",
-    "prepare": "yarn build"
+    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
   },
   "files": [
     "dist"

@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "rollup -c",
-    "prepare": "yarn build"
+    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
   },
   "devDependencies": {
     "@plasmicapp/react-web": "^0.2.48",

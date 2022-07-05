@@ -16,7 +16,7 @@
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
     "build": "bash build.sh",
     "plasmic": "ts-node src/index.ts",
-    "prepare": "yarn build"
+    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.12.1",

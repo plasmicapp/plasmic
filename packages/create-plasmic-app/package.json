@@ -17,7 +17,7 @@
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
     "build": "eslint 'src/**' && tsc",
     "create-plasmic-app": "ts-node src/index.ts",
-    "prepare": "yarn build"
+    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
   },
   "devDependencies": {
     "@types/findup-sync": "^2.0.2",
