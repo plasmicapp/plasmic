@@ -66,7 +66,9 @@ export type StringType<P> =
         }
       | {
           type: "cardPicker";
-          modalTitle?: string | ContextDependentConfig<P, string>;
+          modalTitle?:
+            | React.ReactNode
+            | ContextDependentConfig<P, React.ReactNode>;
           options:
             | {
                 value: string;
