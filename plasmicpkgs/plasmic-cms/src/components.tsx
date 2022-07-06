@@ -137,12 +137,14 @@ function TablesFetcher({ children }: { children: React.ReactNode }) {
   });
   const inEditor = !!useContext(PlasmicCanvasContext);
 
-  return renderMaybeData<ApiCmsTable[]>(
-    maybeData,
-    (tables) => <TablesProvider tables={tables}>{children}</TablesProvider>,
-    { hideIfNotFound: false },
-    inEditor,
-    children
+  return (
+    <TablesProvider tables={maybeData.data}>
+      {inEditor && maybeData.error ? (
+        <div>CMS Error: {maybeData.error.message}</div>
+      ) : (
+        children
+      )}
+    </TablesProvider>
   );
 }
 

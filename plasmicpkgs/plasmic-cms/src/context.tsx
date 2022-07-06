@@ -45,7 +45,7 @@ export function TablesProvider({
   tables,
 }: {
   children?: React.ReactNode;
-  tables: ApiCmsTable[];
+  tables?: ApiCmsTable[];
 }) {
   return (
     <DataProvider name={tablesContextKey} data={tables}>
