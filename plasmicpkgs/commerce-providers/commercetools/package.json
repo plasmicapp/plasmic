@@ -39,7 +39,8 @@
     "@plasmicpkgs/commerce": "0.0.57",
     "@types/react": "^17.0.40",
     "lodash": "^4.17.21",
-    "lodash-es": "^4.17.21"
+    "lodash-es": "^4.17.21",
+    "qs": "^6.11.0"
   },
   "publishConfig": {
     "access": "public"
