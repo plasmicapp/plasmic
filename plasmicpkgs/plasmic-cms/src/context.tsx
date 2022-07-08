@@ -30,7 +30,7 @@ export function DatabaseProvider({
   children?: React.ReactNode;
 }) {
   return (
-    <DataProvider name={databaseContextKey} data={config}>
+    <DataProvider name={databaseContextKey} data={config} hidden={true}>
       {children}
     </DataProvider>
   );
@@ -48,7 +48,7 @@ export function TablesProvider({
   tables?: ApiCmsTable[];
 }) {
   return (
-    <DataProvider name={tablesContextKey} data={tables}>
+    <DataProvider name={tablesContextKey} data={tables} hidden={true}>
       {children}
     </DataProvider>
   );
