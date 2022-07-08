@@ -1,4 +1,4 @@
-import { repeatedElement } from "@plasmicapp/host";
+import { DataProvider, repeatedElement } from "@plasmicapp/host";
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
@@ -27,6 +27,7 @@ interface ProductCollectionProps {
   includeSubCategories?: boolean;
   brand?: string;
   noLayout?: boolean;
+  noAutoRepeat?: boolean;
   search?: string;
   sort?: string;
   setControlContextData?: (data: {
@@ -133,7 +134,16 @@ export const productCollectionMeta: ComponentMeta<ProductCollectionProps> = {
         },
       ],
     },
-    noLayout: "boolean",
+    noLayout: {
+      type: "boolean",
+      displayName: "No layout",
+      description: "Do not render a container element.",
+    },
+    noAutoRepeat: {
+      type: "boolean",
+      displayName: "No auto-repeat",
+      description: "Do not automatically repeat children for every category.",
+    },
   },
   defaultStyles: {
     display: "grid",
@@ -145,7 +155,7 @@ export const productCollectionMeta: ComponentMeta<ProductCollectionProps> = {
   },
   importPath: "@plasmicpkgs/commerce",
   importName: "ProductCollection",
-  providesData: true
+  providesData: true,
 };
 
 export function ProductCollection(props: ProductCollectionProps) {
@@ -157,6 +167,7 @@ export function ProductCollection(props: ProductCollectionProps) {
     includeSubCategories,
     brand,
     noLayout,
+    noAutoRepeat,
     setControlContextData,
     emptyMessage,
     loadingMessage,
@@ -191,11 +202,13 @@ export function ProductCollection(props: ProductCollectionProps) {
     });
   }
 
-  const renderedData = data?.products.map((product: Product, i: number) => (
-    <ProductProvider product={product} key={product.id}>
-      {repeatedElement(i, children)}
-    </ProductProvider>
-  ));
+  const renderedData = noAutoRepeat
+    ? children
+    : data?.products.map((product: Product, i: number) => (
+        <ProductProvider product={product} key={product.id}>
+          {repeatedElement(i, children)}
+        </ProductProvider>
+      ));
 
   if ([isSearchLoading, isBrandsLoading, isCategoriesLoading].includes(true)) {
     return React.isValidElement(loadingMessage) ? loadingMessage : null;
@@ -205,10 +218,14 @@ export function ProductCollection(props: ProductCollectionProps) {
     return React.isValidElement(emptyMessage) ? emptyMessage : null;
   }
 
-  return noLayout ? (
-    <React.Fragment>{renderedData}</React.Fragment>
-  ) : (
-    <div className={className}>{renderedData}</div>
+  return (
+    <DataProvider name="products" data={data?.products}>
+      {noLayout ? (
+        <React.Fragment>{renderedData}</React.Fragment>
+      ) : (
+        <div className={className}>{renderedData}</div>
+      )}
+    </DataProvider>
   );
 }
 
