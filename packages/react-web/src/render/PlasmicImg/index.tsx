@@ -173,6 +173,7 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
     displayWidth = "100%";
   }
 
+  let computedDisplayWidth = displayWidth;
   if (
     fullWidth &&
     fullHeight &&
@@ -187,7 +188,8 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
       // We shouldn't do it for SVGs though, because `fullWidth` and
       // `fullHeight` might have rounded values so the final
       // `displayWidth` could differ by 1px or so.
-      displayWidth = (getPixelLength(displayHeight)! * fullWidth) / fullHeight;
+      computedDisplayWidth =
+        (getPixelLength(displayHeight)! * fullWidth) / fullHeight;
     }
   }
 
@@ -202,7 +204,7 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
     spacerHeight = Math.round(spacerWidth / aspectRatio);
   }
 
-  const { sizes, widthDescs } = getWidths(displayWidth, fullWidth, {
+  const { sizes, widthDescs } = getWidths(computedDisplayWidth, fullWidth, {
     minWidth: displayMinWidth,
   });
   const imageLoader = getImageLoader(loader);
