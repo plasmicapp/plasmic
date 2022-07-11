@@ -23,7 +23,7 @@ export function ensure<T>(x: T | null | undefined): T {
 const modulePath = "@plasmicpkgs/plasmic-contentful";
 
 const makeDataProviderName = (contentType: string) =>
-  `contentful${L.capitalize(L.camelCase(contentType))}Item`;
+  `currentContentful${L.capitalize(L.camelCase(contentType))}Item`;
 
 interface ContentfulCredentialsProviderProps {
   space: string;

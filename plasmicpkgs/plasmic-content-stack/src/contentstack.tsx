@@ -22,7 +22,7 @@ export function ensure<T>(x: T | null | undefined): T {
 const modulePath = "@plasmicpkgs/plasmic-content-stack";
 
 const makeDataProviderName = (contentType: string) =>
-  `contentstack${L.capitalize(L.camelCase(contentType))}Item`;
+  `currentContentstack${L.capitalize(L.camelCase(contentType))}Item`;
 
 interface ContentStackCredentialsProviderProps {
   apiKey: string;

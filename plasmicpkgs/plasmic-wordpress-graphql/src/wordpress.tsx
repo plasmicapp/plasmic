@@ -6,7 +6,6 @@ import {
   useSelector,
 } from "@plasmicapp/host";
 import { usePlasmicQueryData } from "@plasmicapp/query";
-
 import L from "lodash";
 import React, { ReactNode, useContext } from "react";
 
@@ -160,7 +159,7 @@ export function WordpressFetcher({
       (L.isArray(model) ? model : [model]).map((item: any, j: number) => (
         <DataProvider
           key={JSON.stringify(item)}
-          name={"wordpressItem"}
+          name={"currentWordpressItem"}
           data={item}
         >
           {repeatedElement(i === 0 && j === 0, children)}

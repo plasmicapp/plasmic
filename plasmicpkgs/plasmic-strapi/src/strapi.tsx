@@ -21,7 +21,7 @@ export function ensure<T>(x: T | null | undefined): T {
 const modulePath = "@plasmicpkgs/plasmic-strapi";
 
 const makeDataProviderName = (collection: string) =>
-  `strapi${L.capitalize(L.camelCase(collection))}Item`;
+  `currentStrapi${L.capitalize(L.camelCase(collection))}Item`;
 
 interface StrapiCredentialsProviderProps {
   host?: string;

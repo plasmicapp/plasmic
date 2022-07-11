@@ -5,7 +5,7 @@ import { Product } from "./types/product";
 import { Category } from "./types/site";
 import { defaultProduct } from "./utils/default-product";
 
-const productSelector = "product";
+const productSelector = "currentProduct";
 
 export function ProductProvider({
   product,
@@ -31,7 +31,7 @@ export const PrimaryCategoryContext = React.createContext<Category | undefined>(
   undefined
 ); //used to render correctly the defaultValueHint in ProductCollection
 
-const categorySelector = "category";
+const categorySelector = "currentCategory";
 
 export function CategoryProvider({
   category,

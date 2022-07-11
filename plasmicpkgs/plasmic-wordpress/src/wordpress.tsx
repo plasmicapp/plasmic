@@ -182,7 +182,7 @@ export function WordpressFetcher({
   if (queryType === "posts" && post) {
     renderedData = (
       <DataProvider name={"wordpressItem"} data={post} hidden={true}>
-        <DataProvider name={"wordpressPostItem"} data={post}>
+        <DataProvider name={"currentWordpressPost"} data={post}>
           {children}
         </DataProvider>
       </DataProvider>
@@ -190,7 +190,7 @@ export function WordpressFetcher({
   } else if (queryType === "pages" && page) {
     renderedData = (
       <DataProvider name={"wordpressItem"} data={page} hidden={true}>
-        <DataProvider name={"wordpressPageItem"} data={page}>
+        <DataProvider name={"currentWordpressPage"} data={page}>
           {children}
         </DataProvider>
       </DataProvider>
@@ -203,7 +203,7 @@ export function WordpressFetcher({
         data={post}
         hidden={true}
       >
-        <DataProvider name={"wordpressPostItem"} data={post}>
+        <DataProvider name={"currentWordpressPost"} data={post}>
           {repeatedElement(i, children)}
         </DataProvider>
       </DataProvider>
@@ -216,7 +216,7 @@ export function WordpressFetcher({
         data={page}
         hidden={true}
       >
-        <DataProvider name={"wordpressPageItem"} data={page}>
+        <DataProvider name={"currentWordpressPage"} data={page}>
           {repeatedElement(i, children)}
         </DataProvider>
       </DataProvider>

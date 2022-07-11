@@ -13,10 +13,14 @@ const databaseContextKey = `${contextPrefix}Database`;
 const tablesContextKey = `${contextPrefix}Tables`;
 const collectionResultSuffix = `Collection`;
 const mkQueryContextKey = (table: string) =>
-  `${contextPrefix}${table}${collectionResultSuffix}`;
+  `${contextPrefix}${capitalizeFirst(table)}${collectionResultSuffix}`;
 const itemContextSuffix = `Item`;
 const mkRowContextKey = (table: string) =>
-  `${contextPrefix}${table}${itemContextSuffix}`;
+  `${contextPrefix}${capitalizeFirst(table)}${itemContextSuffix}`;
+
+function capitalizeFirst(str: string): string {
+  return str.at(0)?.toUpperCase() + str.slice(1);
+}
 
 export function useDatabase() {
   return useSelector(databaseContextKey) as DatabaseConfig | undefined;

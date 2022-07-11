@@ -23,7 +23,7 @@ export function ensure<T>(x: T | null | undefined): T {
 const modulePath = "@plasmicpkgs/plasmic-sanity-io";
 
 const makeDataProviderName = (docType: string) =>
-  `sanity${L.capitalize(L.camelCase(docType))}Item`;
+  `currentSanity${L.capitalize(L.camelCase(docType))}Item`;
 
 interface SanityCredentialsProviderProps {
   projectId?: string;
