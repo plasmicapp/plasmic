@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-wordpress-graphql",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Plasmic Wordpress GraphQL components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
