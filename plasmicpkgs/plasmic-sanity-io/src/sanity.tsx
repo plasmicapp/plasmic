@@ -250,11 +250,12 @@ export function SanityFetcher({
     creds,
   });
 
+  const sanity = makeSanityClient(creds);
+
   const data = usePlasmicQueryData<any[] | null>(cacheKey, async () => {
     if (!groq) {
       return null;
     }
-    const sanity = makeSanityClient(creds);
     const resp = await sanity.fetch(groq);
     return resp;
   });
@@ -282,8 +283,20 @@ export function SanityFetcher({
     );
   }
 
-  const repElements = data?.data.map((item, index) =>
-    docType ? (
+  const imageBuilder = imageUrlBuilder(sanity);
+
+  const repElements = data?.data.map((item, index) => {
+    // Adding the img src for the image fields
+    Object.keys(item).forEach((field) => {
+      if (item[field]._type === "image") {
+        item[field].imgUrl = imageBuilder
+          .image(item[field])
+          .ignoreImageParams()
+          .toString();
+      }
+    });
+
+    return docType ? (
       <DataProvider
         key={item._id}
         name={"sanityItem"}
@@ -298,8 +311,8 @@ export function SanityFetcher({
       <DataProvider key={item._id} name={"sanityItem"} data={item}>
         {repeatedElement(index, children)}
       </DataProvider>
-    )
-  );
+    );
+  });
 
   return noLayout ? (
     <> {repElements} </>
@@ -347,10 +360,6 @@ export function SanityField({
   field,
   setControlContextData,
 }: SanityFieldProps) {
-  const creds = ensure(useContext(CredentialsContext));
-  const sanity = makeSanityClient(creds);
-  const imageBuilder = imageUrlBuilder(sanity);
-
   const item = useSelector("sanityItem");
   if (!item) {
     return <div>SanityField must be used within a SanityFetcher</div>;
@@ -384,12 +393,7 @@ export function SanityField({
   if (!data) {
     return <div>Please specify a valid path.</div>;
   } else if (data?._type === "image") {
-    return (
-      <img
-        className={className}
-        src={imageBuilder.image(data).ignoreImageParams().width(300).toString()}
-      />
-    );
+    return <img className={className} src={data.imgUrl} />;
   } else {
     return <div className={className}>{data}</div>;
   }
