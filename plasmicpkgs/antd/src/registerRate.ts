@@ -51,8 +51,9 @@ props: {
         description: "The current value",
     },
 },
-importPath: "antd",
-importName: "Rate",
+  importPath: "antd/lib/rate",
+  importName: "Rate",
+  isDefaultExport: true,
 };
 
 export function registerRate(
