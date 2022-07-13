@@ -191,7 +191,7 @@ export function ContentfulFetcher({
   const { data: entriesData, error: entriesDataError } = usePlasmicQueryData<
     any | null
   >(
-    contentType && !entryID
+    contentType
       ? `${cacheKey}/${contentType}/entriesData/${limit}/${order}`
       : null,
     async () => {

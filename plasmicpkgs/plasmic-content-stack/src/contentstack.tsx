@@ -187,7 +187,7 @@ export function ContentStackFetcher({
   );
 
   const { data: entriesData } = usePlasmicQueryData<any | null>(
-    contentType && !entryUID ? `${cacheKey}/${contentType}/entries` : null,
+    contentType ? `${cacheKey}/${contentType}/entries` : null,
     async () => {
       return await Stack.ContentType(`${contentType!}`).Query().toJSON().find();
     }
