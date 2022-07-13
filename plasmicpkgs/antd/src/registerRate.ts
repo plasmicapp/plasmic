@@ -17,7 +17,7 @@ props: {
     allowHalf: {
         type: "boolean",
         description: "Whether to allow semi selection",
-        default: false
+        defaultValueHint: false
     },
     autoFocus: {
         type: "boolean",
