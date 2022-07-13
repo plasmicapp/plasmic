@@ -1,7 +1,7 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { Rate, RateProps } from "antd";
+import Rate, { RateProps } from "antd/lib/rate"
 import { Registerable } from "./registerable";
 
 
@@ -12,35 +12,27 @@ props: {
     allowClear: {
         type: "boolean",
         description: "Whether to allow clear when click again",
-        defaultValue: true
+        defaultValueHint: true
     },
     allowHalf: {
         type: "boolean",
         description: "Whether to allow semi selection",
-        default: false
+        defaultValueHint: false
     },
     autoFocus: {
         type: "boolean",
         description: "If get focus when component mounted",
-        default: false
+        defaultValueHint: false
     },
     count: {
         type: "number",
         description: "Star count"
     },
-    className: {
-        type: "string",
-        description: "The custom class name of rate"
-    },
-    defaultValue: {
-        type: "number",
-        description: "The default value",
-        default: 0
-    },
+  
     disabled: {
         type: "boolean",
         description: "If read only, unable to interact",
-        default: false
+        defaultValueHint: false
     },
     tooltips: {
         type: "array",
@@ -48,11 +40,15 @@ props: {
     },
     value: {
         type: "number",
-        description: "The current value",
-    },
+        description: "The default value",
+        editOnly: true,
+        uncontrolledProp: "defaultValue",
+        defaultValueHint: 0
+      },
 },
-importPath: "antd",
-importName: "Rate",
+  importPath: "antd/lib/rate",
+  importName: "Rate",
+  isDefaultExport: true,
 };
 
 export function registerRate(
