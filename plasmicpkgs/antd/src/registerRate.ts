@@ -1,7 +1,7 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { Rate, RateProps } from "antd";
+import Rate, { RateProps } from "antd/lib/rate"
 import { Registerable } from "./registerable";
 
 
