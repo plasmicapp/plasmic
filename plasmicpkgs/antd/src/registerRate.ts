@@ -22,7 +22,7 @@ props: {
     autoFocus: {
         type: "boolean",
         description: "If get focus when component mounted",
-        default: false
+        defaultValueHint: false
     },
     count: {
         type: "number",
