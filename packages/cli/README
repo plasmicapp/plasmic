@@ -1,16 +1,19 @@
-Public plasmic cli for syncing designs to local code.
+Plasmic CLI for syncing Plasmic designs down into your local repo as generated React code.
 
-Install
-=======
+Plasmic is the visual builder for React. Learn more at <https://plasmic.app>.
 
-`yarn global add @plasmicapp/cli`
+# Install
 
-Usage
-=====
+```bash
+npm install -g @plasmicapp/cli
+```
+
+# Usage
+
+See <https://docs.plasmic.app/learn/codegen-guide/> for the full docs to get started with Plasmic codegen.
 
 `plasmic init` creates the initial plasmic.json file, pointing to your local dev host.
 
 `plasmic sync --projects ...` allows you to sync all components in the specified projects
-down as code files to your current folder.  Once you've run `plasmic init`, you can run
+down as code files to your current folder. Once you've run `plasmic init`, you can run
 `plasmic sync` from any subfolder of the folder with the `plasmic.json` file.
-
