@@ -19,7 +19,7 @@ const mkRowContextKey = (table: string) =>
   `${contextPrefix}${capitalizeFirst(table)}${itemContextSuffix}`;
 
 function capitalizeFirst(str: string): string {
-  return str.at(0)?.toUpperCase() + str.slice(1);
+  return str[0]?.toUpperCase() + str.slice(1);
 }
 
 export function useDatabase() {
