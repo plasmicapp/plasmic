@@ -242,6 +242,18 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
           name: "AntdTabPane",
           props: {
             key: "1",
+            tab: [
+              {
+                type: "text",
+                value: "Tab",
+              },
+            ],
+            children: [
+              {
+                type: "text",
+                value: "Tab content",
+              },
+            ],
           },
         },
         {
@@ -249,6 +261,18 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
           name: "AntdTabPane",
           props: {
             key: "2",
+            tab: [
+              {
+                type: "text",
+                value: "Tab",
+              },
+            ],
+            children: [
+              {
+                type: "text",
+                value: "Tab content",
+              },
+            ],
           },
         },
       ],
