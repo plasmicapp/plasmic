@@ -1,7 +1,0 @@
-[template]
-  incoming-hooks = ["Plasmic"]
-
-[template.environment]
-  NEXT_PUBLIC_PLASMIC_PROJECT_ID = "the project ID of your Plasmic project"
-  NEXT_PUBLIC_PLASMIC_PROJECT_API_TOKEN = "the API token of your Plasmic project"
-  PLASMIC_PREVIEW_SECRET = "choose a secret used for Next.js preview mode"
