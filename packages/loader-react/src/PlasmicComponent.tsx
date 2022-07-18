@@ -37,7 +37,7 @@ export function PlasmicComponent(props: {
   const { loader, globalContextsProps, translator } = rootContext;
 
   const Component = usePlasmicComponent(
-    { name: component, projectId },
+    { name: component, projectId, isCode: false },
     { forceOriginal }
   );
 
