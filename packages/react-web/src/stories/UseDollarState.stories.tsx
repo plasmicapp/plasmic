@@ -2,7 +2,7 @@ import { expect } from "@storybook/jest";
 import { Story } from "@storybook/react";
 import { userEvent, within } from "@storybook/testing-library";
 import React from "react";
-import useDollarState from "../states";
+import useDollarState, { $StateSpec } from "../states";
 
 export default {
   title: "UseDollarState",
@@ -14,12 +14,15 @@ interface CounterArgs {
   onChange?: (val: number) => void;
   initCount?: number;
   useInitalFunction?: boolean;
+  "data-testid"?: string;
+  title?: React.ReactNode;
 }
 const Counter: Story<CounterArgs> = (args) => {
   const {
     stateType = "private" as const,
     showCount = true,
     useInitalFunction,
+    title,
   } = args;
 
   const $state = useDollarState(
@@ -51,13 +54,24 @@ const Counter: Story<CounterArgs> = (args) => {
 
   return (
     <div>
+      {title}
       <button
         onClick={() => ($state.count = $state.count + 1)}
-        data-testid="counter-btn"
+        data-testid={
+          "data-testid" in args ? `${args["data-testid"]}-btn` : "counter-btn"
+        }
       >
         Counter Increment
       </button>
-      {showCount && <p>Counter: {$state.count}</p>}
+      {showCount && (
+        <p
+          data-testid={
+            "data-testid" in args ? `${args["data-testid"]}-label` : "label-btn"
+          }
+        >
+          Counter: {$state.count}
+        </p>
+      )}
     </div>
   );
 };
@@ -384,4 +398,103 @@ ResetInput.play = async ({ canvasElement }) => {
   await expect(
     (canvas.getByTestId("people_1") as HTMLLinkElement).textContent
   ).toEqual(`${peopleList[1].firstName}abc ${peopleList[1].lastName}def`);
+};
+
+const getAllSubsets = (set: number[]) =>
+  set.reduce(
+    (subsets, value) => [...subsets, ...subsets.map((set) => [...set, value])],
+    [[]] as number[][]
+  );
+
+const _RepeatedStates: Story<{
+  size: number;
+}> = (args) => {
+  const set = [...Array(args.size).keys()];
+  const subsets = getAllSubsets(set)
+    .sort((a, b) => a.length - b.length)
+    .filter((set) => set.length);
+  const $state = useDollarState(
+    [
+      {
+        path: "counter[].count",
+        type: "private",
+        initVal: 0,
+      },
+      ...subsets.map(
+        (set, i) =>
+          ({
+            path: `test${i}.count`,
+            type: "private" as const,
+            initFunc: (_$props, $state) =>
+              set.reduce((acc, el) => acc + $state.counter[el].count, 0),
+          } as $StateSpec<any>)
+      ),
+    ],
+    args
+  );
+
+  return (
+    <div>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr 1fr",
+          gridColumnGap: "10px",
+          gridRowGap: "30px",
+        }}
+      >
+        {set.map((idx) => (
+          <Counter
+            title={<p>{`counter[${idx}]`}</p>}
+            stateType="readonly"
+            onChange={(val) => ($state.counter[idx].count = val)}
+            data-testid={`counter[${idx}]`}
+          />
+        ))}
+        {subsets.map((set, i) => (
+          <Counter
+            title={<p>= {set.map((el) => `counter[${el}]`).join(" + ")}</p>}
+            stateType="writable"
+            initCount={$state[`test${i}`].count}
+            onChange={(val) => ($state[`test${i}`].count = val)}
+            data-testid={`test${i}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export const RepeatedStates = _RepeatedStates.bind({});
+RepeatedStates.args = { size: 3 };
+RepeatedStates.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  const click = async (el: HTMLElement, count: number = 1) => {
+    while (count--) {
+      await userEvent.click(el);
+    }
+  };
+  const expectedCount = [1, 2, 4];
+  for (let i = 0; i < expectedCount.length; i++) {
+    await click(canvas.getByTestId(`counter[${i}]-btn`), expectedCount[i]);
+  }
+
+  for (let i = 0; i < expectedCount.length; i++) {
+    await expect(
+      (canvas.getByTestId(`counter[${i}]-label`) as HTMLParagraphElement)
+        .textContent
+    ).toEqual(`Counter: ${expectedCount[i]}`);
+  }
+
+  const subsets = getAllSubsets([0, 1, 2])
+    .sort((a, b) => a.length - b.length)
+    .filter((set) => set.length);
+  for (let i = 0; i < subsets.length; i++) {
+    await expect(
+      (canvas.getByTestId(`test${i}-label`) as HTMLParagraphElement).textContent
+    ).toEqual(
+      `Counter: ${subsets[i].reduce((acc, el) => acc + expectedCount[el], 0)}`
+    );
+  }
 };

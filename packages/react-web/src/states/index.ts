@@ -7,7 +7,7 @@ interface $State {
   [key: string]: any;
 }
 
-interface $StateSpec<T> {
+export interface $StateSpec<T> {
   // path of the state, like `count` or `list.selectedIndex`
   path: string;
   // if initial value is defined by a js expression
@@ -29,27 +29,19 @@ interface $StateSpec<T> {
 
 const UNINITIALIZED = Symbol("plasmic.unitialized");
 
-function pick<T extends object | undefined>(obj: T, ...paths: string[]) {
-  const newObj: Record<string, any> = {};
-  for (const path of paths) {
-    newObj[path] = (obj ?? ({} as any))[path];
-  }
-  return newObj;
+interface Internal$StateSpec<T> {
+  path: string[]; // ["counter", "[]", "count"]
+  pathStr: string; // "counter[].count"
+  initFunc?: ($props: Record<string, any>, $state: $State) => T;
+  initVal?: T;
+  valueProp?: string;
+  onChangeProp?: string;
+  isRepeated: boolean;
 }
 
-function getObjectAtPath($state: $State, path: string) {
-  const parts = path.split(".");
-  const parts2 = parts.slice(0, parts.length - 1);
-  if (parts2.length === 0) {
-    return $state;
-  }
-  const existing = get($state, parts2);
-  if (existing) {
-    return existing;
-  }
-  const newObj = {};
-  set($state, parts2, newObj);
-  return newObj;
+interface Internal$StateInstance<T> {
+  path: (string | number)[]; // ["counter", 0, "count"]
+  spec: Internal$StateSpec<T>;
 }
 
 interface Internal$State {
@@ -58,89 +50,254 @@ interface Internal$State {
   // from path with an initFunc, to the state paths that it uses
   // in the initFunc
   initStateDeps: Record<string, string[]>;
+  states: Record<string, Internal$StateInstance<any>>;
 }
 
-function useVanillaDollarState(
-  specs: $StateSpec<any>[],
-  props: Record<string, any>
-) {
-  const [$$state, set$$State] = React.useState<Internal$State>(() => {
-    const stateValues: Record<string, any> = {};
-    for (const spec of specs) {
-      if (spec.valueProp) {
-        continue;
-      } else if (spec.initFunc) {
-        stateValues[spec.path] = UNINITIALIZED;
-      } else {
-        stateValues[spec.path] = spec.initVal ?? undefined;
-      }
+function shallowEqual<T>(a1: T[], a2: T[]) {
+  if (a1.length !== a2.length) {
+    return false;
+  }
+  for (let i = 0; i < a1.length; i++) {
+    if (a1[i] !== a2[i]) {
+      return false;
     }
-    const deps = fillUninitializedStateValues(specs, props, stateValues);
-    return {
-      stateValues,
-      initStateDeps: deps,
-      initStateValues: { ...stateValues },
-    };
-  });
+  }
+  return true;
+}
 
-  const $state: $State = {};
-  for (const spec of specs) {
-    const parts = spec.path.split(".");
-    const name = parts[parts.length - 1];
-    const obj = getObjectAtPath($state, spec.path);
-    // Define get() and set() for this state cell
-    Object.defineProperty(obj, name, {
-      get() {
-        if (spec.valueProp) {
-          return props[spec.valueProp];
-        } else {
-          return $$state.stateValues[spec.path];
-        }
+const isNum = (value: string | number | symbol) =>
+  typeof value === "symbol" ? false : !isNaN(+value);
+
+function mkProxy(
+  specs: Internal$StateSpec<any>[],
+  maybeHandlers?: (state: Internal$StateInstance<any>) => ProxyHandler<any>
+): Record<string, any> {
+  const handlers =
+    maybeHandlers ??
+    ((): ProxyHandler<any> => ({
+      get: (target, property) => {
+        return target[property];
       },
-      set(newValue) {
-        if (newValue !== $$state.stateValues[spec.path]) {
-          $$state.stateValues[spec.path] = newValue;
-          for (const [key, deps] of Object.entries($$state.initStateDeps)) {
-            if (deps.includes(spec.path)) {
-              $$state.stateValues[key] = UNINITIALIZED;
-            }
+      set: (target, property, value) => {
+        return (target[property] = value) || true;
+      },
+    }));
+
+  const rec = (currPath: string[]) => {
+    const nextParts = Object.fromEntries(
+      specs
+        .filter((spec) =>
+          shallowEqual(
+            currPath.map((p) => (isNum(p) ? "[]" : p)),
+            spec.path.slice(0, currPath.length)
+          )
+        )
+        .map((spec) => {
+          const nextPart = spec.path[currPath.length];
+          if (spec.path.length === currPath.length + 1) {
+            return [nextPart, { isLast: true, spec }];
+          } else {
+            return [nextPart, { isLast: false, spec }];
           }
-          const newDeps = fillUninitializedStateValues(
-            specs,
-            props,
-            $$state.stateValues
-          );
-          set$$State((prev) => ({
-            ...prev,
-            stateValues: { ...$$state.stateValues },
-            initStateDeps: { ...prev.initStateDeps, ...newDeps },
-          }));
-          if (spec.onChangeProp) {
-            props[spec.onChangeProp]?.(newValue);
+        })
+    );
+    return new Proxy("[]" in nextParts ? ([] as any) : ({} as any), {
+      get: (target, property, receiver) => {
+        if ("[]" in nextParts && isNum(property as string)) {
+          if (!(property in target)) {
+            target[property] = rec([...currPath, property as string]);
           }
+        } else if (property in nextParts) {
+          if (nextParts[property as string].isLast) {
+            return handlers?.({
+              path: [...currPath, property as string],
+              spec: nextParts[property as string].spec,
+            }).get?.(target, property, receiver);
+          } else if (!(property in target)) {
+            target[property] = rec([...currPath, property as string]);
+          }
+        }
+        return target[property];
+      },
+      set: (target, property, value, receiver) => {
+        if (!(property in target) && property in nextParts) {
+          if (nextParts[property as string].isLast) {
+            return (
+              handlers({
+                path: [...currPath, property as string],
+                spec: nextParts[property as string].spec,
+              }).set?.(target, property, value, receiver) ?? false
+            );
+          } else {
+            throw new Error("You can't set a value in the middle of the path");
+          }
+        } else {
+          target[property] = value;
+          return true;
         }
       },
     });
-  }
+  };
 
+  return rec([]);
+}
+
+function cloneProxy(
+  specs: Internal$StateSpec<any>[],
+  states: Record<string, Internal$StateInstance<any>>,
+  obj: Record<string, any>
+) {
+  const newObj = mkProxy(specs);
+  Object.values(states).forEach(({ path }) => {
+    set(newObj, path, get(obj, path));
+  });
+  return newObj;
+}
+
+function saveState<T>(
+  state: Internal$StateInstance<T>,
+  states: Record<string, Internal$StateInstance<T>>
+) {
+  states[JSON.stringify(state.path)] = state;
+}
+
+function hasState(
+  state: Internal$StateInstance<any>,
+  states: Record<string, Internal$StateInstance<any>>
+) {
+  return JSON.stringify(state.path) in states;
+}
+
+function useVanillaDollarState(
+  _specs: $StateSpec<any>[],
+  props: Record<string, any>
+) {
+  const specs: Internal$StateSpec<any>[] = _specs.map(
+    ({ path: pathStr, ...spec }) => ({
+      ...spec,
+      pathStr,
+      path: pathStr
+        .split(".")
+        .flatMap((part) =>
+          part.endsWith("[]") ? [part.slice(0, -2), "[]"] : [part]
+        ),
+      isRepeated: pathStr.split(".").some((part) => part.endsWith("[]")),
+    })
+  );
+
+  const [$$state, set$$State] = React.useState<Internal$State>(() => {
+    const stateValues: Record<string, any> = mkProxy(specs);
+    const initStates: Record<string, Internal$StateInstance<any>> = {};
+
+    for (const spec of specs) {
+      if (spec.valueProp || spec.isRepeated) {
+        continue;
+      } else if (spec.initFunc) {
+        set(stateValues, spec.path, UNINITIALIZED);
+      } else {
+        set(stateValues, spec.path, spec.initVal ?? undefined);
+      }
+      saveState({ path: spec.path, spec }, initStates);
+    }
+    const deps = fillUninitializedStateValues(
+      specs,
+      props,
+      stateValues,
+      initStates
+    );
+    return {
+      stateValues,
+      initStateDeps: deps,
+      initStateValues: cloneProxy(specs, initStates, stateValues),
+      states: initStates,
+    };
+  });
+
+  const $state: $State = mkProxy(specs, (state) => ({
+    get(_target, _property) {
+      if (state.spec.valueProp) {
+        return props[state.spec.valueProp];
+      }
+      if (!hasState(state, $$state.states)) {
+        saveState(state, $$state.states);
+        set(
+          $$state.stateValues,
+          state.path,
+          state.spec.initFunc ? UNINITIALIZED : state.spec.initVal ?? undefined
+        );
+        const deps = state.spec.initFunc
+          ? fillUninitializedStateValues(
+              specs,
+              props,
+              $$state.stateValues,
+              $$state.states
+            )
+          : {};
+        set(
+          $$state.initStateValues,
+          state.path,
+          get($$state.stateValues, state.path)
+        );
+        set$$State((prev) => ({
+          initStateValues: cloneProxy(specs, prev.states, prev.stateValues),
+          stateValues: cloneProxy(specs, prev.states, prev.initStateValues),
+          initStateDeps: { ...prev.initStateDeps, ...deps },
+          states: { ...prev.states },
+        }));
+      }
+      return get($$state.stateValues, state.path);
+    },
+    set(_target, _property, newValue) {
+      saveState(state, $$state.states);
+      if (newValue !== get($$state.stateValues, state.path)) {
+        set($$state.stateValues, state.path, newValue);
+        for (const [key, deps] of Object.entries($$state.initStateDeps)) {
+          if (deps.includes(JSON.stringify(state.path))) {
+            set($$state.stateValues, JSON.parse(key), UNINITIALIZED);
+          }
+        }
+        const newDeps = fillUninitializedStateValues(
+          specs,
+          props,
+          $$state.stateValues,
+          $$state.states
+        );
+        set$$State((prev) => ({
+          initStateValues: { ...prev.initStateValues },
+          stateValues: cloneProxy(specs, prev.states, prev.stateValues),
+          initStateDeps: { ...prev.initStateDeps, ...newDeps },
+          states: { ...prev.states },
+        }));
+        if (state.spec.onChangeProp) {
+          props[state.spec.onChangeProp]?.(newValue);
+        }
+      }
+      return true;
+    },
+  }));
   // For each spec with an initFunc, evaluate it and see if
   // the init value has changed. If so, reset its state.
   let newStateValues: Record<string, any> | undefined = undefined;
-  const resetSpecs: $StateSpec<any>[] = [];
-  for (const spec of specs) {
+  const resetSpecs: Internal$StateInstance<any>[] = [];
+  for (const { path, spec } of Object.values($$state.states)) {
     if (spec.initFunc) {
       const newInit = spec.initFunc(props, $state);
-      if (newInit !== $$state.initStateValues[spec.path]) {
+      if (newInit !== get($$state.initStateValues, path)) {
         console.log(
-          `init changed for ${spec.path} from ${
-            $$state.initStateValues[spec.path]
-          } to ${newInit}; resetting state`
+          `init changed for ${JSON.stringify(path)} from ${get(
+            $$state.initStateValues,
+            path
+          )} to ${newInit}; resetting state`
         );
-        resetSpecs.push(spec);
+        resetSpecs.push({ path, spec });
         if (!newStateValues) {
-          newStateValues = { ...$$state.stateValues };
+          newStateValues = cloneProxy(
+            specs,
+            $$state.states,
+            $$state.stateValues
+          );
         }
-        newStateValues[spec.path] = UNINITIALIZED;
+        set(newStateValues, path, UNINITIALIZED);
       }
     }
   }
@@ -149,76 +306,81 @@ function useVanillaDollarState(
       const newDeps = fillUninitializedStateValues(
         specs,
         props,
-        newStateValues
+        newStateValues,
+        $$state.states
       );
-      set$$State((prev) => ({
-        ...prev,
-        stateValues: newStateValues!,
-        initStateDeps: { ...prev.initStateDeps, ...newDeps },
-        initStateValues: {
-          ...prev.initStateValues,
-          ...pick(newStateValues, ...resetSpecs.map((spec) => spec.path)),
-        },
-      }));
-      for (const spec of resetSpecs) {
+      set$$State((prev) => {
+        const initStateValues = cloneProxy(
+          specs,
+          prev.states,
+          prev.initStateValues
+        );
+        resetSpecs.forEach(({ path }) => {
+          set(initStateValues, path, get(newStateValues!, path));
+        });
+        return {
+          stateValues: cloneProxy(specs, prev.states, newStateValues!),
+          initStateDeps: { ...prev.initStateDeps, ...newDeps },
+          initStateValues,
+          states: { ...prev.states },
+        };
+      });
+      for (const { path, spec } of resetSpecs) {
         if (spec.onChangeProp) {
           console.log(
             `Firing onChange for reset init value: ${spec.path}`,
-            newStateValues[spec.path]
+            get(newStateValues, path)
           );
-          props[spec.onChangeProp]?.(newStateValues[spec.path]);
+          props[spec.onChangeProp]?.(get(newStateValues, path));
         }
       }
     }
   }, [newStateValues, props, resetSpecs, specs]);
+
   return $state;
 }
 
 function fillUninitializedStateValues(
-  specs: $StateSpec<any>[],
+  specs: Internal$StateSpec<any>[],
   props: Record<string, any>,
-  stateValues: Record<string, any>
+  stateValues: Record<string, any>,
+  states: Record<string, Internal$StateInstance<any>>
 ) {
-  const $state: $State = {};
-  const stateAccessStack: Record<string, boolean>[] = [{}];
+  const stateAccessStack: Set<string>[] = [new Set()];
   const initFuncDeps: Record<string, string[]> = {};
-  function tracked<T>(spec: $StateSpec<T>) {
-    stateAccessStack.push({});
-    const res = spec.initFunc!(props, $state);
-    const deps = Object.keys(stateAccessStack.pop()!);
-    initFuncDeps[spec.path] = deps;
+  const $state: $State = mkProxy(specs, (state) => ({
+    get(_target, _property) {
+      if (state.spec.valueProp) {
+        return props[state.spec.valueProp];
+      }
+      let value = get(stateValues, state.path);
+      if (value === UNINITIALIZED) {
+        // This value has a init expression; need to be evaluated.
+        value = tracked(state);
+        set(stateValues, state.path, value);
+      }
+      // Record that this field had just been accessed; for
+      // trackInit() to know what fields were used to compute
+      // the init value
+      stateAccessStack[stateAccessStack.length - 1].add(
+        JSON.stringify(state.path)
+      );
+      return value;
+    },
+    set() {
+      throw new Error(`Cannot update state values during initialization`);
+    },
+  }));
+  function tracked<T>(state: Internal$StateInstance<T>) {
+    stateAccessStack.push(new Set());
+    const res = state.spec.initFunc!(props, $state);
+    const deps = stateAccessStack.pop()!;
+    initFuncDeps[JSON.stringify(state.path)] = [...deps.values()];
     return res;
   }
-  for (const spec of specs) {
-    const parts = spec.path.split(".");
-    const name = parts[parts.length - 1];
-    const obj = getObjectAtPath($state, spec.path);
-    // Define get() and set() for this state cell
-    Object.defineProperty(obj, name, {
-      get() {
-        if (spec.valueProp) {
-          return props[spec.valueProp];
-        }
-        let value = stateValues[spec.path];
-        if (value === UNINITIALIZED) {
-          // This value has a init expression; need to be evaluated.
-          value = tracked(spec);
-          stateValues[spec.path] = value;
-        }
-        // Record that this field had just been accessed; for
-        // trackInit() to know what fields were used to compute
-        // the init value
-        stateAccessStack[stateAccessStack.length - 1][spec.path] = true;
-        return value;
-      },
-      set() {
-        throw new Error(`Cannot update state values during initialization`);
-      },
-    });
-  }
-  for (const [key, val] of Object.entries(stateValues)) {
-    if (val === UNINITIALIZED) {
-      get($state, key);
+  for (const { path } of Object.values(states)) {
+    if (get(stateValues, path) === UNINITIALIZED) {
+      get($state, path);
     }
   }
   return initFuncDeps;
