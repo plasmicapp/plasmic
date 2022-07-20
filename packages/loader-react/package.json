@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/loader-react",
-  "version": "1.0.153",
+  "version": "1.0.154",
   "module": "dist/loader-react.esm.js",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
