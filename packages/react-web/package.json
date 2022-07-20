@@ -29,7 +29,8 @@
     "size": "size-limit",
     "analyze": "size-limit --why",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "test-storybook": "test-storybook"
   },
   "husky": {
     "hooks": {
@@ -71,8 +72,12 @@
     "@size-limit/preset-small-lib": "^4.10.2",
     "@storybook/addon-actions": "^6.3.4",
     "@storybook/addon-essentials": "^6.3.4",
+    "@storybook/addon-interactions": "^6.5.9",
     "@storybook/addon-links": "^6.3.4",
-    "@storybook/react": "^6.3.4",
+    "@storybook/jest": "^0.0.10",
+    "@storybook/react": "^6.5.9",
+    "@storybook/test-runner": "^0.5.0",
+    "@storybook/testing-library": "^0.0.13",
     "@types/classnames": "^2.2.9",
     "@types/dlv": "^1.1.2",
     "@types/react": "^17.0.39",
