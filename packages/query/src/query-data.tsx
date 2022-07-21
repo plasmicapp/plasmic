@@ -18,6 +18,17 @@ export const mutateAllKeys = () => {
   }
 };
 
+// @plasmicapp/query is optimized for SSR, so we do not revalidate
+// automatically upon hydration; as if the data is immutable.
+function getPlasmicDefaultSWROptions(): SWRConfiguration {
+  return {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    revalidateOnMount: false,
+  };
+}
+
 /**
  * Fetches data asynchronously. This data should be considered immutable for the
  * session -- there is no way to invalidate or re-fetch this data.
@@ -34,13 +45,7 @@ export function usePlasmicQueryData<T>(
 ): { data?: T; error?: Error; isLoading?: boolean } {
   const prepassCtx = React.useContext(PrepassContext);
 
-  // @plasmicapp/query is optimized for SSR, so we do not revalidate
-  // automatically upon hydration; as if the data is immutable.
-  const opts: SWRConfiguration = {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-  };
+  const opts = getPlasmicDefaultSWROptions();
   if (prepassCtx) {
     // If we're doing prepass, then we are always in suspense mode, because
     // react-ssr-prepass only works with suspense-throwing data fetching.
@@ -79,14 +84,20 @@ export function useMutablePlasmicQueryData<T, E>(
 ) {
   const prepassCtx = React.useContext(PrepassContext);
 
-  const opts: SWRConfiguration = prepassCtx ? { suspense: true } : {};
+  const opts = {
+    ...getPlasmicDefaultSWROptions(),
+    ...options,
+  };
+  if (prepassCtx) {
+    opts.suspense = true;
+  }
 
   const config = useSWRConfig();
   React.useEffect(() => {
     __SWRConfig = config;
   }, [config]);
 
-  return useSWR(key, fetcher, { ...options, ...opts });
+  return useSWR(key, fetcher, opts);
 }
 
 export function PlasmicQueryDataProvider(props: {
