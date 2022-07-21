@@ -8,6 +8,7 @@ import {
 } from './loader';
 import { useForceUpdate } from './utils';
 import {
+  ensureVariationCookies,
   getGlobalVariantsFromSplits,
   mergeGlobalVariantsSpec,
 } from './variation';
@@ -20,8 +21,9 @@ interface PlasmicRootContextValue {
   translator?: PlasmicTranslator;
 }
 
-const PlasmicRootContext =
-  React.createContext<PlasmicRootContextValue | undefined>(undefined);
+const PlasmicRootContext = React.createContext<
+  PlasmicRootContextValue | undefined
+>(undefined);
 
 export interface GlobalVariantSpec {
   name: string;
@@ -137,6 +139,18 @@ export function PlasmicRootProvider(props: {
     loader.subscribePlasmicRoot(watcher);
     return () => loader.unsubscribePlasmicRoot(watcher);
   }, [watcher, loader]);
+
+  React.useEffect(() => {
+    ensureVariationCookies(variation);
+    loader.trackRender({
+      renderCtx: {
+        // We track the provider as a single entity
+        rootComponentId: 'provider',
+        teamIds: loader.getTeamIds(),
+      },
+      variation,
+    });
+  }, [loader, variation]);
 
   const value = React.useMemo<PlasmicRootContextValue>(
     () => ({

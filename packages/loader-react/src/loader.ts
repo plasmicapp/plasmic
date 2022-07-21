@@ -13,7 +13,9 @@ import {
   LoaderBundleOutput,
   PageMeta,
   PlasmicModulesFetcher,
+  PlasmicTracker,
   Registry,
+  TrackRenderOptions,
 } from '@plasmicapp/loader-core';
 import { getActiveVariation, getExternalIds } from '@plasmicapp/loader-splits';
 import * as PlasmicQuery from '@plasmicapp/query';
@@ -115,6 +117,7 @@ export class InternalPlasmicComponentLoader {
     projects: [],
     activeSplits: [],
   };
+  private tracker: PlasmicTracker;
 
   private substitutedComponents: Record<string, React.ComponentType<any>> = {};
   private substitutedGlobalVariantHooks: Record<string, () => any> = {};
@@ -122,6 +125,11 @@ export class InternalPlasmicComponentLoader {
   constructor(private opts: InitOptions) {
     this.registry = Registry.getInstance();
     this.fetcher = new PlasmicModulesFetcher(opts);
+    this.tracker = new PlasmicTracker({
+      projectIds: opts.projects.map((p) => p.id),
+      platform: opts.platform,
+      preview: opts.preview,
+    });
 
     this.registerModules({
       react: React,
@@ -248,8 +256,10 @@ export class InternalPlasmicComponentLoader {
       specsToFetch: ComponentLookupSpec[]
     ) => {
       await this.fetchMissingData({ missingSpecs: specsToFetch });
-      const { found: existingMetas2, missing: missingSpecs2 } =
-        this.maybeGetCompMetas(...specs);
+      const {
+        found: existingMetas2,
+        missing: missingSpecs2,
+      } = this.maybeGetCompMetas(...specs);
       if (missingSpecs2.length > 0) {
         return null;
       }
@@ -263,8 +273,10 @@ export class InternalPlasmicComponentLoader {
     }
 
     // Else we only fetch actually missing specs
-    const { found: existingMetas, missing: missingSpecs } =
-      this.maybeGetCompMetas(...specs);
+    const {
+      found: existingMetas,
+      missing: missingSpecs,
+    } = this.maybeGetCompMetas(...specs);
     if (missingSpecs.length === 0) {
       return prepComponentData(this.bundle, ...existingMetas);
     }
@@ -315,6 +327,10 @@ export class InternalPlasmicComponentLoader {
     return this.bundle.activeSplits;
   }
 
+  trackConversion(value: number = 0) {
+    this.tracker.trackConversion(value);
+  }
+
   // @ts-ignore
   private async fetchMissingData(opts: {
     missingSpecs: ComponentLookupSpec[];
@@ -352,8 +368,19 @@ export class InternalPlasmicComponentLoader {
     });
   }
 
+  public getTeamIds(): string[] {
+    return this.bundle.projects
+      .map((p) => p.teamId)
+      .filter((x): x is string => !!x);
+  }
+
+  public trackRender(opts?: TrackRenderOptions) {
+    this.tracker.trackRender(opts);
+  }
+
   private async fetchAllData() {
     const bundle = await this.ensureFetcher().fetchAllData();
+    this.tracker.trackFetch();
     this.mergeBundle(bundle);
     this.roots.forEach((watcher) => watcher.onDataFetched?.());
     return bundle;
@@ -384,8 +411,9 @@ export class InternalPlasmicComponentLoader {
     // hooks to read from them instead.
     for (const globalGroup of this.bundle.globalGroups) {
       if (globalGroup.type !== 'global-screen') {
-        this.substitutedGlobalVariantHooks[globalGroup.id] =
-          createUseGlobalVariant(globalGroup.name, globalGroup.projectId);
+        this.substitutedGlobalVariantHooks[
+          globalGroup.id
+        ] = createUseGlobalVariant(globalGroup.name, globalGroup.projectId);
       }
     }
     this.registry.updateModules(this.bundle);
@@ -591,6 +619,10 @@ export class PlasmicComponentLoader {
 
   getActiveSplits() {
     return this.__internal.getActiveSplits();
+  }
+
+  trackConversion(value: number = 0) {
+    this.__internal.trackConversion(value);
   }
 
   clearCache() {
