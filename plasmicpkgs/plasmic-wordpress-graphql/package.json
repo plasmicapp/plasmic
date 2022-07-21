@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-wordpress-graphql",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Plasmic Wordpress GraphQL components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -48,7 +48,7 @@
     "typescript": "^4.6.3"
   },
   "dependencies": {
-    "@plasmicapp/query": "0.1.51",
+    "@plasmicapp/query": "0.1.52",
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.21"
   }
