@@ -26,6 +26,7 @@ export interface TrackerRenderProperties {
   rootComponentId?: string;
   rootComponentName?: string;
   teamIds: string[];
+  projectIds: string[];
 }
 
 export interface TrackRenderOptions {

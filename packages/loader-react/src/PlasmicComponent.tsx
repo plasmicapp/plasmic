@@ -54,6 +54,7 @@ export function PlasmicComponent(props: {
             rootComponentId: meta.id,
             rootComponentName: component,
             teamIds: loader.getTeamIds(),
+            projectIds: loader.getProjectIds(),
           },
           variation,
         });

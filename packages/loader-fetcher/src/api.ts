@@ -42,6 +42,7 @@ export interface GlobalGroupMeta {
 export interface ProjectMeta {
   id: string;
   teamId?: string;
+  indirect?: boolean;
   name: string;
   version: string;
   remoteFonts: FontMeta[];
