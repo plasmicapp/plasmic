@@ -153,6 +153,7 @@ export type JSONLikeType<P> =
       data:
         | Record<string, any>
         | ContextDependentConfig<P, Record<string, any>>;
+      alwaysShowValuePathAsLabel?: boolean;
     } & DefaultValueOrExpr<P, Record<string, any>> &
       PropTypeBase<P>);
 
