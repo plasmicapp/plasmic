@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-sanity-io",
-  "version": "1.0.61",
+  "version": "1.0.62",
   "description": "Plasmic Sanity.io components.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -37,7 +37,7 @@
     "typescript": "^4.5.5"
   },
   "dependencies": {
-    "@plasmicapp/query": "0.1.52",
+    "@plasmicapp/query": "0.1.53",
     "@sanity/client": "^3.3.0",
     "@sanity/image-url": "^1.0.1",
     "lodash": "^4.17.21",
