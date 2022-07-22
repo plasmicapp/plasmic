@@ -25,7 +25,6 @@ function getPlasmicDefaultSWROptions(): SWRConfiguration {
     revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
-    revalidateOnMount: false,
   };
 }
 
