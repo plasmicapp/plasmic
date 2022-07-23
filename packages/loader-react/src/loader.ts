@@ -27,7 +27,12 @@ import { mergeBundles, prepComponentData } from './bundles';
 import { ComponentLookup } from './component-lookup';
 import { createUseGlobalVariant } from './global-variants';
 import { GlobalVariantSpec } from './PlasmicRootProvider';
-import { ComponentLookupSpec, getCompMetas, getLookupSpecName } from './utils';
+import {
+  ComponentLookupSpec,
+  getCompMetas,
+  getLookupSpecName,
+  uniq,
+} from './utils';
 import { getPlasmicCookieValues, updatePlasmicCookieValue } from './variation';
 
 export interface InitOptions {
@@ -369,9 +374,19 @@ export class InternalPlasmicComponentLoader {
   }
 
   public getTeamIds(): string[] {
-    return this.bundle.projects
-      .map((p) => p.teamId)
-      .filter((x): x is string => !!x);
+    return uniq(
+      this.bundle.projects
+        .map((p) =>
+          p.teamId ? `${p.teamId}${p.indirect ? '@indirect' : ''}` : null
+        )
+        .filter((x): x is string => !!x)
+    );
+  }
+
+  public getProjectIds(): string[] {
+    return uniq(
+      this.bundle.projects.map((p) => `${p.id}${p.indirect ? '@indirect' : ''}`)
+    );
   }
 
   public trackRender(opts?: TrackRenderOptions) {

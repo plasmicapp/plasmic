@@ -149,3 +149,7 @@ export function getLookupSpecName(lookup: ComponentLookupSpec) {
     return lookup.name;
   }
 }
+
+export function uniq<T>(elements: T[]): T[] {
+  return new Array(...new Set(elements));
+}

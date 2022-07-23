@@ -147,6 +147,7 @@ export function PlasmicRootProvider(props: {
         // We track the provider as a single entity
         rootComponentId: 'provider',
         teamIds: loader.getTeamIds(),
+        projectIds: loader.getProjectIds(),
       },
       variation,
     });
