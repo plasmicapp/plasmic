@@ -3,7 +3,7 @@ import get from "dlv";
 import { dset as set } from "dset";
 import React from "react";
 
-interface $State {
+export interface $State {
   [key: string]: any;
 }
 
@@ -83,7 +83,7 @@ function mkProxy(
       },
     }));
 
-  const rec = (currPath: string[]) => {
+  const rec = (currPath: (string | number)[]) => {
     const nextParts = Object.fromEntries(
       specs
         .filter((spec) =>
@@ -105,7 +105,7 @@ function mkProxy(
       get: (target, property, receiver) => {
         if ("[]" in nextParts && isNum(property as string)) {
           if (!(property in target)) {
-            target[property] = rec([...currPath, property as string]);
+            target[property] = rec([...currPath, +(property as string)]);
           }
         } else if (property in nextParts) {
           if (nextParts[property as string].isLast) {
@@ -168,6 +168,15 @@ function hasState(
   return JSON.stringify(state.path) in states;
 }
 
+const transformPathStringToObj = (str: string) => {
+  // "c[][]" -> ["c", "[]", "[]"]
+  const splitStatePathPart = (state: string): string[] =>
+    state.endsWith("[]")
+      ? [...splitStatePathPart(state.slice(0, -2)), "[]"]
+      : [state];
+  return str.split(".").flatMap(splitStatePathPart);
+};
+
 function useVanillaDollarState(
   _specs: $StateSpec<any>[],
   props: Record<string, any>
@@ -176,11 +185,7 @@ function useVanillaDollarState(
     ({ path: pathStr, ...spec }) => ({
       ...spec,
       pathStr,
-      path: pathStr
-        .split(".")
-        .flatMap((part) =>
-          part.endsWith("[]") ? [part.slice(0, -2), "[]"] : [part]
-        ),
+      path: transformPathStringToObj(pathStr),
       isRepeated: pathStr.split(".").some((part) => part.endsWith("[]")),
     })
   );
@@ -216,7 +221,11 @@ function useVanillaDollarState(
   const $state: $State = mkProxy(specs, (state) => ({
     get(_target, _property) {
       if (state.spec.valueProp) {
-        return props[state.spec.valueProp];
+        if (!state.spec.isRepeated) {
+          return props[state.spec.valueProp];
+        } else {
+          return get(props[state.spec.valueProp], state.path.slice(1));
+        }
       }
       if (!hasState(state, $$state.states)) {
         saveState(state, $$state.states);
@@ -269,7 +278,7 @@ function useVanillaDollarState(
           states: { ...prev.states },
         }));
         if (state.spec.onChangeProp) {
-          props[state.spec.onChangeProp]?.(newValue);
+          props[state.spec.onChangeProp]?.(newValue, state.path);
         }
       }
       return true;
@@ -351,7 +360,11 @@ function fillUninitializedStateValues(
   const $state: $State = mkProxy(specs, (state) => ({
     get(_target, _property) {
       if (state.spec.valueProp) {
-        return props[state.spec.valueProp];
+        if (!state.spec.isRepeated) {
+          return props[state.spec.valueProp];
+        } else {
+          return get(props[state.spec.valueProp], state.path.slice(1));
+        }
       }
       let value = get(stateValues, state.path);
       if (value === UNINITIALIZED) {
