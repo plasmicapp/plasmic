@@ -52,9 +52,7 @@ const Counter: Story<CounterArgs> = (args) => {
   return (
     <div>
       <button
-        onClick={() => {
-          $state.count = $state.count + 1;
-        }}
+        onClick={() => ($state.count = $state.count + 1)}
         data-testid="counter-btn"
       >
         Counter Increment
@@ -260,79 +258,87 @@ function PeopleList(props: {
 const _ResetInput: Story<{
   peopleList: { firstName: string; lastName: string }[];
 }> = (args) => {
-  const $state = useDollarState(
-    [
-      {
-        path: "peopleList",
-        type: "private",
-        initFunc: ($props) => $props.peopleList,
-      },
-      {
-        path: "list.selectedIndex",
-        type: "private",
-      },
-      {
-        path: "textInputFirstName.value",
-        initFunc: (_$props, $state) =>
-          // user-defined
-          $state.list.selectedIndex == null
-            ? undefined
-            : $state.peopleList[$state.list.selectedIndex].firstName,
-        type: "private",
-      },
-      {
-        path: "textInputLastName.value",
-        initFunc: (_$props, $state) =>
-          $state.list.selectedIndex == null
-            ? undefined
-            : $state.peopleList[$state.list.selectedIndex].lastName,
-        type: "private",
-      },
-      {
-        path: "textInputUpper.value",
-        initFunc: (_$props, $state) =>
-          $state.textInputFirstName.value?.toUpperCase(),
-        type: "private",
-      },
-    ],
-    args
-  );
+  const InternalResetInput = (props: {
+    peopleList: { firstName: string; lastName: string }[];
+  }) => {
+    const $state = useDollarState(
+      [
+        {
+          path: "peopleList",
+          type: "private",
+          initFunc: ($props) => $props.peopleList,
+        },
+        {
+          path: "list.selectedIndex",
+          type: "private",
+        },
+        {
+          path: "textInputFirstName.value",
+          initFunc: (_$props, $state) =>
+            $state.list.selectedIndex == null
+              ? undefined
+              : $state.peopleList[$state.list.selectedIndex].firstName,
+          type: "private",
+        },
+        {
+          path: "textInputLastName.value",
+          initFunc: (_$props, $state) =>
+            $state.list.selectedIndex == null
+              ? undefined
+              : $state.peopleList[$state.list.selectedIndex].lastName,
+          type: "private",
+        },
+        {
+          path: "textInputUpper.value",
+          initFunc: (_$props, $state) =>
+            $state.textInputFirstName.value?.toUpperCase(),
+          type: "private",
+        },
+      ],
+      props
+    );
 
-  return (
-    <div>
-      <PeopleList
-        data={$state.peopleList ?? []}
-        onIndexSelected={(x) => ($state.list.selectedIndex = x)}
-      />
+    return (
       <div>
-        <TextInput
-          value={$state.textInputFirstName.value}
-          onChange={(val) => ($state.textInputFirstName.value = val)}
-          data-testid={"textInputFirstName"}
+        <PeopleList
+          data={$state.peopleList ?? []}
+          onIndexSelected={(x) => ($state.list.selectedIndex = x)}
         />
-        <TextInput
-          value={$state.textInputLastName.value}
-          onChange={(val) => ($state.textInputLastName.value = val)}
-          data-testid={"textInputLastName"}
-        />
-        <TextInput
-          value={$state.textInputUpper.value}
-          onChange={(val) => ($state.textInputUpper.value = val)}
-          data-testid={"textInputUpper"}
-        />
+        <div>
+          <TextInput
+            value={$state.textInputFirstName.value}
+            onChange={(val) => ($state.textInputFirstName.value = val)}
+            data-testid={"textInputFirstName"}
+          />
+          <TextInput
+            value={$state.textInputLastName.value}
+            onChange={(val) => ($state.textInputLastName.value = val)}
+            data-testid={"textInputLastName"}
+          />
+          <TextInput
+            value={$state.textInputUpper.value}
+            onChange={(val) => ($state.textInputUpper.value = val)}
+            data-testid={"textInputUpper"}
+          />
+        </div>
+        <button
+          onClick={() => {
+            $state.peopleList[$state.list.selectedIndex] = {
+              firstName: $state.textInputFirstName.value,
+              lastName: $state.textInputLastName.value,
+            };
+            $state.peopleList = [...$state.peopleList];
+          }}
+        >
+          Submit
+        </button>
       </div>
-      <button
-        onClick={() => {
-          $state.peopleList[$state.list.selectedIndex] = {
-            firstName: $state.textInputFirstName.value,
-            lastName: $state.textInputLastName.value,
-          };
-          $state.peopleList = [...$state.peopleList];
-        }}
-      >
-        Submit
-      </button>
-    </div>
+    );
+  };
+  return (
+    <InternalResetInput
+      peopleList={[...args.peopleList.map((person) => ({ ...person }))]}
+    />
   );
 };
 
@@ -351,7 +357,7 @@ const peopleList = [
   },
 ];
 export const ResetInput = _ResetInput.bind({});
-ResetInput.args = { peopleList: [...peopleList] };
+ResetInput.args = { peopleList };
 ResetInput.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
 
@@ -361,6 +367,7 @@ ResetInput.play = async ({ canvasElement }) => {
     (canvas.getByTestId("textInputUpper") as HTMLInputElement).value
   ).toEqual(`${peopleList[0].firstName}ABC`.toUpperCase());
 
+  // text input isn't updated after clicking on the same item
   await userEvent.click(canvas.getByTestId("people_0"));
   await expect(
     (canvas.getByTestId("textInputUpper") as HTMLInputElement).value
