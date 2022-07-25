@@ -1,15 +1,12 @@
+import { ClientResponse, Project } from "@commercetools/platform-sdk";
 import { GlobalContextMeta } from "@plasmicapp/host";
 import registerGlobalContext from "@plasmicapp/host/registerGlobalContext";
+import { usePlasmicQueryData } from "@plasmicapp/query";
 import React from "react";
-import { Registerable } from "./registerable";
 import { getCommerceProvider } from "./commercetools";
-import { CommercetoolsCredentials } from "./provider";
-import { usePlasmicQueryData } from "@plasmicapp/query"
 import { getFetcher } from "./fetcher";
-import {
-  ClientResponse,
-  Project
-} from '@commercetools/platform-sdk'
+import { CommercetoolsCredentials } from "./provider";
+import { Registerable } from "./registerable";
 
 interface CommerceProviderProps extends CommercetoolsCredentials {
   children?: React.ReactNode;
@@ -33,7 +30,13 @@ export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
     },
     region: {
       type: "choice",
-      options: ["us-central1.gcp", "us-east-2.aws", "europe-west1.gcp", "eu-central-1.aws", "australia-southeast1.gcp"],
+      options: [
+        "us-central1.gcp",
+        "us-east-2.aws",
+        "europe-west1.gcp",
+        "eu-central-1.aws",
+        "australia-southeast1.gcp",
+      ],
       defaultValue: "us-central1.gcp",
     },
   },
@@ -44,23 +47,31 @@ export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
 export function CommerceProviderComponent(props: CommerceProviderProps) {
   const { children, projectKey, clientId, clientSecret, region } = props;
 
-  const creds = { projectKey, clientId, clientSecret, region };
+  const creds = React.useMemo(
+    () => ({ projectKey, clientId, clientSecret, region }),
+    [projectKey, clientId, clientSecret, region]
+  );
 
-  const { data: locale, error, isLoading } = usePlasmicQueryData(JSON.stringify({creds}) + "locale", async () => {
-    const fetcher = getFetcher(creds);
-    const project: ClientResponse<Project> = await fetcher({ method: "get"});
-    return project.body ? project.body.languages[0] : undefined;
-  });
-  
-  const CommerceProvider = getCommerceProvider(creds, locale ?? "");
+  const { data: locale, error, isLoading } = usePlasmicQueryData(
+    JSON.stringify({ creds }) + "locale",
+    async () => {
+      const fetcher = getFetcher(creds);
+      const project: ClientResponse<Project> = await fetcher({ method: "get" });
+      return project.body ? project.body.languages[0] : undefined;
+    }
+  );
+
+  const CommerceProvider = React.useMemo(
+    () => getCommerceProvider(creds, locale ?? ""),
+    [creds, locale]
+  );
 
   if (isLoading) {
     return null;
   } else if (error || !locale) {
-    throw new Error(
-      error ? error.message : "Project language not found"
-    )
+    throw new Error(error ? error.message : "Project language not found");
   }
+
   return <CommerceProvider>{children}</CommerceProvider>;
 }
 

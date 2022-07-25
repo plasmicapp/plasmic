@@ -34,7 +34,10 @@ See also the [getting started video](https://www.youtube.com/watch?v=1OJ_gXmta2Q
 export function CommerceProviderComponent(props: CommerceProviderProps) {
   const { storeDomain, accessToken, children } = props;
 
-  const CommerceProvider = getCommerceProvider(storeDomain, accessToken);
+  const CommerceProvider = React.useMemo(
+    () => getCommerceProvider(storeDomain, accessToken),
+    [storeDomain, accessToken]
+  );
 
   return <CommerceProvider>{children}</CommerceProvider>;
 }

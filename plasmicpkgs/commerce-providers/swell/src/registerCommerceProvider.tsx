@@ -32,7 +32,10 @@ export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
 export function CommerceProviderComponent(props: CommerceProviderProps) {
   const { storeId, publicKey, children } = props;
 
-  const CommerceProvider = getCommerceProvider(storeId, publicKey);
+  const CommerceProvider = React.useMemo(
+    () => getCommerceProvider(storeId, publicKey),
+    [storeId, publicKey]
+  );
 
   return <CommerceProvider>{children}</CommerceProvider>;
 }

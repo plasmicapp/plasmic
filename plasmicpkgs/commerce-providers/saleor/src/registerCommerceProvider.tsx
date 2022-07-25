@@ -1,8 +1,8 @@
-import { Registerable } from "./registerable";
-import React from "react";
-import { getCommerceProvider } from "./saleor";
 import { GlobalContextMeta } from "@plasmicapp/host";
 import registerGlobalContext from "@plasmicapp/host/registerGlobalContext";
+import React from "react";
+import { Registerable } from "./registerable";
+import { getCommerceProvider } from "./saleor";
 
 interface CommerceProviderProps {
   children?: React.ReactNode;
@@ -14,8 +14,8 @@ export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
   props: {
     saleorApiUrl: {
       type: "string",
-      defaultValue: 'https://vercel.saleor.cloud/graphql/'
-    }
+      defaultValue: "https://vercel.saleor.cloud/graphql/",
+    },
   },
   importPath: "commerce-providers/saleor",
   importName: "SaleorProvider",
@@ -24,7 +24,10 @@ export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
 function CommerceProviderComponent(props: CommerceProviderProps) {
   const { saleorApiUrl, children } = props;
 
-  const CommerceProvider = getCommerceProvider(saleorApiUrl);
+  const CommerceProvider = React.useMemo(
+    () => getCommerceProvider(saleorApiUrl),
+    [saleorApiUrl]
+  );
 
   return <CommerceProvider>{children}</CommerceProvider>;
 }
