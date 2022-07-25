@@ -54,6 +54,18 @@ export function prepComponentData(
     ...bundle.projects
       .map((x) => x.globalContextsProviderFileName)
       .filter((x) => !!x),
+    // We need to explicitly include global context provider components
+    // to make sure they are kept in bundle.components. That's because
+    // for esbuild, just the globalContextsProviderFileName is not enough,
+    // because it will import a chunk that includes the global context
+    // component, instead of importing that global context component's
+    // entry file. And because nothing depends on the global context component's
+    // entry file, we end up excluding the global context component from
+    // bundle.components, which then makes its substitution not work.
+    // Instead, we forcibly include it here (we'll definitely need it anyway!).
+    ...bundle.components
+      .filter((c) => c.isGlobalContextProvider)
+      .map((c) => c.entry),
     ...bundle.globalGroups.map((g) => g.contextFile)
   );
 

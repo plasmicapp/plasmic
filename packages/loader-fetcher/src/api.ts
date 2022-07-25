@@ -12,6 +12,7 @@ export interface ComponentMeta {
   plumeType?: string;
   entry: string;
   isCode: boolean;
+  isGlobalContextProvider: boolean;
   pageMetadata?: PageMetadata;
   metadata?: Record<string, string>;
 }
