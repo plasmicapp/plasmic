@@ -151,5 +151,5 @@ export function getLookupSpecName(lookup: ComponentLookupSpec) {
 }
 
 export function uniq<T>(elements: T[]): T[] {
-  return new Array(...new Set(elements));
+  return Array.from(new Set(elements));
 }

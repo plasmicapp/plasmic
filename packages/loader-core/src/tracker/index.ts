@@ -36,6 +36,7 @@ export interface TrackRenderOptions {
 
 const API_ENDPOINT = 'https://posthog.plasmic.app/capture';
 const API_PUBLIC_KEY = 'phc_BRvYTAoMoam9fDHfrIneF67KdtMJagLVVCM6ELNYd4n';
+const TRACKER_VERSION = 1;
 
 export class PlasmicTracker {
   private eventQueue: Event[] = [];
@@ -78,6 +79,7 @@ export class PlasmicTracker {
       ...this.getContextMeta(),
       ...getVariationCookieValues(),
       timestamp: Date.now() ?? +new Date(),
+      trackerVersion: TRACKER_VERSION,
     };
   }
 
