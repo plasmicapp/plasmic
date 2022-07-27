@@ -216,6 +216,13 @@ interface CustomControlProps<P> {
    * Modal component for the side pane
    */
   SideModal: React.ComponentType<ModalProps>;
+
+  /**
+   * The document that the component will be rendered into; instead of using
+   * `document` directly (for, say, `document.querySelector()` etc.), you
+   * should use this instead.
+   */
+  studioDocument: typeof document;
 }
 export type CustomControl<P> = React.ComponentType<CustomControlProps<P>>;
 
@@ -323,6 +330,12 @@ export interface ActionProps<P> {
     removeFromSlotAt: (pos: number, slotName: string) => void;
     updateProps: (newValues: any) => void;
   };
+  /**
+   * The document that the component will be rendered into; instead of using
+   * `document` directly (for, say, `document.querySelector()` etc.), you
+   * should use this instead.
+   */
+  studioDocument: typeof document;
 }
 
 export type Action<P> =
