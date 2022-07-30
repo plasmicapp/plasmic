@@ -186,7 +186,7 @@ async function run(): Promise<void> {
       name: "projectId",
       message: `What is the URL of your project?
 If you don't have a project yet, create one by going to
-https://studio.plasmic.app/starters/simple-light
+https://studio.plasmic.app/starters/blank
 `,
     });
     projectId = rawProjectId
