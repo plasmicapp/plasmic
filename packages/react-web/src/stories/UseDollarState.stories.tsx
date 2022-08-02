@@ -1,8 +1,9 @@
 import { expect } from "@storybook/jest";
 import { Story } from "@storybook/react";
 import { userEvent, within } from "@storybook/testing-library";
+import { dset as set } from "dset";
 import React from "react";
-import useDollarState from "../states";
+import useDollarState, { $StateSpec } from "../states";
 
 export default {
   title: "UseDollarState",
@@ -14,12 +15,15 @@ interface CounterArgs {
   onChange?: (val: number) => void;
   initCount?: number;
   useInitalFunction?: boolean;
+  "data-testid"?: string;
+  title?: React.ReactNode;
 }
 const Counter: Story<CounterArgs> = (args) => {
   const {
     stateType = "private" as const,
     showCount = true,
     useInitalFunction,
+    title,
   } = args;
 
   const $state = useDollarState(
@@ -51,13 +55,24 @@ const Counter: Story<CounterArgs> = (args) => {
 
   return (
     <div>
+      {title}
       <button
         onClick={() => ($state.count = $state.count + 1)}
-        data-testid="counter-btn"
+        data-testid={
+          "data-testid" in args ? `${args["data-testid"]}-btn` : "counter-btn"
+        }
       >
         Counter Increment
       </button>
-      {showCount && <p>Counter: {$state.count}</p>}
+      {showCount && (
+        <p
+          data-testid={
+            "data-testid" in args ? `${args["data-testid"]}-label` : "label-btn"
+          }
+        >
+          Counter: {$state.count}
+        </p>
+      )}
     </div>
   );
 };
@@ -384,4 +399,397 @@ ResetInput.play = async ({ canvasElement }) => {
   await expect(
     (canvas.getByTestId("people_1") as HTMLLinkElement).textContent
   ).toEqual(`${peopleList[1].firstName}abc ${peopleList[1].lastName}def`);
+};
+
+const getAllSubsets = (set: number[]) =>
+  set.reduce(
+    (subsets, value) => [...subsets, ...subsets.map((set) => [...set, value])],
+    [[]] as number[][]
+  );
+
+const _RepeatedStates: Story<{
+  size: number;
+}> = (args) => {
+  const set = [...Array(args.size).keys()];
+  const subsets = getAllSubsets(set)
+    .sort((a, b) => a.length - b.length)
+    .filter((set) => set.length);
+  const $state = useDollarState(
+    [
+      {
+        path: "counter[].count",
+        type: "private",
+        initVal: 0,
+      },
+      ...subsets.map(
+        (set, i) =>
+          ({
+            path: `test${i}.count`,
+            type: "private" as const,
+            initFunc: (_$props, $state) =>
+              set.reduce((acc, el) => acc + $state.counter[el].count, 0),
+          } as $StateSpec<any>)
+      ),
+    ],
+    args
+  );
+
+  return (
+    <div>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr 1fr",
+          gridColumnGap: "10px",
+          gridRowGap: "30px",
+        }}
+      >
+        {set.map((idx) => (
+          <Counter
+            title={<p>{`counter[${idx}]`}</p>}
+            stateType="readonly"
+            onChange={(val) => ($state.counter[idx].count = val)}
+            data-testid={`counter[${idx}]`}
+          />
+        ))}
+        {subsets.map((set, i) => (
+          <Counter
+            title={<p>= {set.map((el) => `counter[${el}]`).join(" + ")}</p>}
+            stateType="writable"
+            initCount={$state[`test${i}`].count}
+            onChange={(val) => ($state[`test${i}`].count = val)}
+            data-testid={`test${i}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const click = async (el: HTMLElement, count: number = 1) => {
+  while (count--) {
+    await userEvent.click(el);
+  }
+};
+
+export const RepeatedStates = _RepeatedStates.bind({});
+RepeatedStates.args = { size: 3 };
+RepeatedStates.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  const expectedCount = [1, 2, 4];
+  for (let i = 0; i < expectedCount.length; i++) {
+    await click(canvas.getByTestId(`counter[${i}]-btn`), expectedCount[i]);
+  }
+
+  for (let i = 0; i < expectedCount.length; i++) {
+    await expect(
+      (canvas.getByTestId(`counter[${i}]-label`) as HTMLParagraphElement)
+        .textContent
+    ).toEqual(`Counter: ${expectedCount[i]}`);
+  }
+
+  const subsets = getAllSubsets([0, 1, 2])
+    .sort((a, b) => a.length - b.length)
+    .filter((set) => set.length);
+  for (let i = 0; i < subsets.length; i++) {
+    await expect(
+      (canvas.getByTestId(`test${i}-label`) as HTMLParagraphElement).textContent
+    ).toEqual(
+      `Counter: ${subsets[i].reduce((acc, el) => acc + expectedCount[el], 0)}`
+    );
+  }
+};
+
+const _NestedRepeatedCounter: Story<{}> = () => {
+  const Parent = (args: {
+    grandParentIndex: number;
+    onChange: (newVal: number, path: (string | number)[]) => void;
+    initCount: any;
+  }) => {
+    const { grandParentIndex } = args;
+    const $state = useDollarState(
+      [
+        {
+          path: "counter[].count",
+          type: "writable",
+          onChangeProp: "onChange",
+          valueProp: "initCount",
+        },
+      ],
+      args
+    );
+    return (
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr 1fr",
+          gridColumnGap: "10px",
+          gridRowGap: "30px",
+        }}
+      >
+        {[0, 1, 2].map((index) => (
+          <div key={index}>
+            <Counter
+              data-testid={`counter[${grandParentIndex}][${index}]`}
+              title={<p>{`counter[${grandParentIndex}][${index}]`}</p>}
+              stateType="writable"
+              onChange={(val) => ($state.counter[index].count = val)}
+              initCount={$state.counter[index].count}
+            />
+            <span
+              data-testid={`parentLabel[${grandParentIndex}][${index}]`}
+            >{`parentCounter: ${$state.counter[index].count}`}</span>
+          </div>
+        ))}
+      </div>
+    );
+  };
+  const GrandParent = (args: {}) => {
+    const $state = useDollarState(
+      [
+        {
+          path: "parent[].counter[].count",
+          type: "private" as const,
+          initFunc: () => 0,
+        },
+      ],
+      args
+    );
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          rowGap: "25px",
+        }}
+      >
+        {[0, 1, 2].map((index) => (
+          <div key={index}>
+            <Parent
+              grandParentIndex={index}
+              onChange={(val, path) => set($state.parent[index], path, val)}
+              initCount={$state.parent[index].counter}
+            />
+          </div>
+        ))}
+        <div>
+          {[0, 1].map((idx) => (
+            <select
+              key={idx}
+              id={`select_${idx}`}
+              data-testid={`select_${idx}`}
+            >
+              {[0, 1, 2].map((idx2) => (
+                <option key={idx2} value={idx2}>
+                  {idx2}
+                </option>
+              ))}
+            </select>
+          ))}
+          <button
+            onClick={() => {
+              const selector = [
+                +(document.getElementById("select_0") as HTMLSelectElement)!
+                  .value,
+                +(document.getElementById("select_1") as HTMLSelectElement)!
+                  .value,
+              ];
+              $state.parent[selector[0]].counter[selector[1]].count += 1;
+            }}
+            data-testid="increment-btn"
+          >
+            Increment
+          </button>
+          <br />
+          <button
+            data-testid="clear-btn"
+            onClick={() =>
+              [0, 1, 2].map((i: any) =>
+                [0, 1, 2].map(
+                  (j: any) => ($state.parent[i].counter[j].count = 0)
+                )
+              )
+            }
+          >
+            Clear all
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  return <GrandParent />;
+};
+export const NestedRepeatedCounter = _NestedRepeatedCounter.bind({});
+NestedRepeatedCounter.args = {};
+NestedRepeatedCounter.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  const expected = [];
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      expected.push(i * 3 + j + 1);
+      await click(
+        canvas.getByTestId(`counter[${i}][${j}]-btn`),
+        expected.slice(-1)[0]
+      );
+      await expect(
+        (canvas.getByTestId(
+          `counter[${i}][${j}]-label`
+        ) as HTMLParagraphElement).textContent
+      ).toEqual(`Counter: ${expected.slice(-1)[0]}`);
+      await expect(
+        (canvas.getByTestId(`parentLabel[${i}][${j}]`) as HTMLParagraphElement)
+          .textContent
+      ).toEqual(`parentCounter: ${expected.slice(-1)[0]}`);
+    }
+  }
+
+  await userEvent.click(canvas.getByTestId("clear-btn"));
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      await expect(
+        (canvas.getByTestId(
+          `counter[${i}][${j}]-label`
+        ) as HTMLParagraphElement).textContent
+      ).toEqual(`Counter: 0`);
+      await expect(
+        (canvas.getByTestId(`parentLabel[${i}][${j}]`) as HTMLParagraphElement)
+          .textContent
+      ).toEqual(`parentCounter: 0`);
+    }
+  }
+
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      await userEvent.selectOptions(canvas.getByTestId("select_0"), [`${i}`]);
+      await userEvent.selectOptions(canvas.getByTestId("select_1"), [`${j}`]);
+      await click(canvas.getByTestId(`increment-btn`), expected[i * 3 + j]);
+      await expect(
+        (canvas.getByTestId(
+          `counter[${i}][${j}]-label`
+        ) as HTMLParagraphElement).textContent
+      ).toEqual(`Counter: ${expected[i * 3 + j]}`);
+      await expect(
+        (canvas.getByTestId(`parentLabel[${i}][${j}]`) as HTMLParagraphElement)
+          .textContent
+      ).toEqual(`parentCounter: ${expected[i * 3 + j]}`);
+    }
+  }
+};
+
+const _MatrixRepeatedCounter: Story<{}> = () => {
+  const $state = useDollarState(
+    [
+      {
+        path: "counter[][].count",
+        type: "private" as const,
+        initFunc: () => 0,
+      },
+    ],
+    {}
+  );
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr 1fr",
+        gridRowGap: "20px",
+        gridColumnGap: "20px",
+      }}
+    >
+      {[0, 1, 2].flatMap((i) =>
+        [0, 1, 2].map((j) => (
+          <Counter
+            stateType="writable"
+            initCount={$state.counter[i][j].count}
+            onChange={(val) => ($state.counter[i][j].count = val)}
+            data-testid={`counter[${i}][${j}]`}
+          />
+        ))
+      )}
+      <div>
+        {[0, 1].map((idx) => (
+          <select key={idx} id={`select_${idx}`} data-testid={`select_${idx}`}>
+            {[0, 1, 2].map((idx2) => (
+              <option key={idx2} value={idx2}>
+                {idx2}
+              </option>
+            ))}
+          </select>
+        ))}
+        <button
+          onClick={() => {
+            const selector = [
+              +(document.getElementById("select_0") as HTMLSelectElement)!
+                .value,
+              +(document.getElementById("select_1") as HTMLSelectElement)!
+                .value,
+            ];
+            $state.counter[selector[0]][selector[1]].count += 1;
+          }}
+          data-testid="increment-btn"
+        >
+          Increment
+        </button>
+        <br />
+        <button
+          data-testid="clear-btn"
+          onClick={() =>
+            [0, 1, 2].map((i: any) =>
+              [0, 1, 2].map((j: any) => ($state.counter[i][j].count = 0))
+            )
+          }
+        >
+          Clear all
+        </button>
+      </div>
+    </div>
+  );
+};
+export const MatrixRepeatedCounter = _MatrixRepeatedCounter.bind({});
+MatrixRepeatedCounter.args = {};
+MatrixRepeatedCounter.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  const expected = [];
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      expected.push(i * 3 + j + 1);
+      await click(
+        canvas.getByTestId(`counter[${i}][${j}]-btn`),
+        expected.slice(-1)[0]
+      );
+      await expect(
+        (canvas.getByTestId(
+          `counter[${i}][${j}]-label`
+        ) as HTMLParagraphElement).textContent
+      ).toEqual(`Counter: ${expected.slice(-1)[0]}`);
+    }
+  }
+
+  await userEvent.click(canvas.getByTestId("clear-btn"));
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      await expect(
+        (canvas.getByTestId(
+          `counter[${i}][${j}]-label`
+        ) as HTMLParagraphElement).textContent
+      ).toEqual(`Counter: 0`);
+    }
+  }
+
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      await userEvent.selectOptions(canvas.getByTestId("select_0"), [`${i}`]);
+      await userEvent.selectOptions(canvas.getByTestId("select_1"), [`${j}`]);
+      await click(canvas.getByTestId(`increment-btn`), expected[i * 3 + j]);
+      await expect(
+        (canvas.getByTestId(
+          `counter[${i}][${j}]-label`
+        ) as HTMLParagraphElement).textContent
+      ).toEqual(`Counter: ${expected[i * 3 + j]}`);
+    }
+  }
 };
