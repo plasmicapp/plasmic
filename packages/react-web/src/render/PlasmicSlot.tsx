@@ -1,5 +1,6 @@
 import * as React from "react";
 import { mergeProps } from "../react-utils";
+import { Trans } from "./translation";
 
 export function PlasmicSlot<T extends keyof JSX.IntrinsicElements = "div">(
   props: React.ComponentProps<T> & {
@@ -49,7 +50,11 @@ export function renderPlasmicSlot<
 
 function maybeAsString(node: React.ReactNode): string | undefined {
   // Unwrap fragments
-  if (React.isValidElement(node) && node.type === React.Fragment) {
+  if (
+    React.isValidElement(node) &&
+    // Fragment and Trans don't render DOM elements
+    (node.type === React.Fragment || node.type === Trans)
+  ) {
     return maybeAsString(node.props.children);
   }
 
