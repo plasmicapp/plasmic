@@ -108,9 +108,18 @@ export function PageParamsProvider({
   params = {},
   query = {},
 }: PageParamsProviderProps) {
+  const $ctx = useDataEnv() || {};
   return (
-    <DataProvider name={"params"} data={params} label={"Page route params"}>
-      <DataProvider name={"query"} data={query} label={"Page query params"}>
+    <DataProvider
+      name={"params"}
+      data={{ ...$ctx.params, ...params }}
+      label={"Page route params"}
+    >
+      <DataProvider
+        name={"query"}
+        data={{ ...$ctx.query, ...query }}
+        label={"Page query params"}
+      >
         {children}
       </DataProvider>
     </DataProvider>
