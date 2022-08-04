@@ -859,6 +859,7 @@ const _InitFuncFromContextData: Story<{
     ],
     args
   );
+
   return (
     <div
       style={{
@@ -928,4 +929,108 @@ InitFuncFromContextData.play = async ({ canvasElement }) => {
       (canvas.getByTestId("product_price") as HTMLHeadingElement).textContent
     ).toEqual(`Price: ${products[i].price * 10}`);
   }
+};
+
+const _RepeatedImplicitState: Story<{}> = (args) => {
+  const [usedValuesCount, setUsedValuesCount] = React.useState(0);
+  const [removeIndex, setRemoveIndex] = React.useState(0);
+
+  const $state = useDollarState(
+    [
+      {
+        path: "counter[].count",
+        type: "private" as const,
+        initVal: 0,
+      },
+    ],
+    args
+  );
+  return (
+    <div>
+      <ul data-testid={"list"}>
+        {$state.counter.map((currentItem: any, currentIndex: number) => (
+          <li key={currentIndex} data-testid={`list-item-${currentItem.count}`}>
+            {currentItem.count}
+          </li>
+        ))}
+      </ul>
+      <button
+        onClick={() => {
+          $state.counter.push({ count: usedValuesCount });
+          setUsedValuesCount((c) => c + 1);
+        }}
+        data-testid={"push-btn"}
+      >
+        AddItem using push
+      </button>
+      <button
+        onClick={() => {
+          $state.counter = [...$state.counter, { count: usedValuesCount }];
+          setUsedValuesCount((c) => c + 1);
+        }}
+        data-testid={"spread-btn"}
+      >
+        AddItem using spread operator
+      </button>
+      <input
+        type="text"
+        value={removeIndex}
+        onChange={(e) => setRemoveIndex(+e.target.value)}
+        data-testid={"remove-input"}
+      />
+      <button
+        onClick={() => $state.counter.splice(removeIndex, 1)}
+        data-testid={"remove-btn"}
+      >
+        Remove
+      </button>
+    </div>
+  );
+};
+export const RepeatedImplicitState = _RepeatedImplicitState.bind({});
+RepeatedImplicitState.args = {};
+RepeatedImplicitState.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  await click(canvas.getByTestId(`push-btn`), 3);
+  await click(canvas.getByTestId(`spread-btn`), 3);
+
+  const expected = [0, 1, 2, 3, 4, 5];
+  expect(
+    (canvas.getByTestId("list") as HTMLUListElement).children.length
+  ).toEqual(expected.length);
+  expected.forEach((val) =>
+    expect(
+      (canvas.getByTestId(`list-item-${val}`) as HTMLLIElement).textContent
+    ).toEqual(`${val}`)
+  );
+
+  await click(canvas.getByTestId("remove-btn"));
+  await userEvent.type(canvas.getByTestId("remove-input"), "2");
+  await click(canvas.getByTestId("remove-btn"));
+
+  expected.splice(0, 1);
+  expected.splice(2, 1);
+  expect(
+    (canvas.getByTestId("list") as HTMLUListElement).children.length
+  ).toEqual(expected.length);
+  expected.forEach((val) =>
+    expect(
+      (canvas.getByTestId(`list-item-${val}`) as HTMLLIElement).textContent
+    ).toEqual(`${val}`)
+  );
+
+  await userEvent.type(canvas.getByTestId("remove-input"), "{backspace}3");
+  await click(canvas.getByTestId("remove-btn"), 3);
+  expected.splice(3, 1);
+  expected.splice(3, 1);
+  expected.splice(3, 1);
+  expect(
+    (canvas.getByTestId("list") as HTMLUListElement).children.length
+  ).toEqual(expected.length);
+  expected.forEach((val) =>
+    expect(
+      (canvas.getByTestId(`list-item-${val}`) as HTMLLIElement).textContent
+    ).toEqual(`${val}`)
+  );
 };
