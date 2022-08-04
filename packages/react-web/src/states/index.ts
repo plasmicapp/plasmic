@@ -263,30 +263,11 @@ function useVanillaDollarState(
         },
       ])
     );
-    const stateValues: Record<string, any> = mkProxy(specs);
-    const initStates: Record<string, Internal$StateInstance> = {};
-
-    for (const spec of Object.values(specs)) {
-      if (spec.valueProp || spec.isRepeated) {
-        continue;
-      } else if (spec.initFunc) {
-        set(stateValues, spec.path, UNINITIALIZED);
-      } else {
-        set(stateValues, spec.path, spec.initVal ?? undefined);
-      }
-      saveState({ path: spec.path, specKey: spec.pathStr }, initStates);
-    }
-    const deps = fillUninitializedStateValues(
-      specs,
-      props,
-      stateValues,
-      initStates
-    );
     return {
-      stateValues,
-      initStateDeps: deps,
-      initStateValues: cloneProxy(specs, initStates, stateValues),
-      states: initStates,
+      stateValues: mkProxy(specs),
+      initStateDeps: {},
+      initStateValues: mkProxy(specs),
+      states: {},
       specs,
     };
   }, []);
