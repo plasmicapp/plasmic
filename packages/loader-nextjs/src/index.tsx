@@ -8,6 +8,7 @@ import type { PlasmicRemoteChangeWatcher as Watcher } from '@plasmicapp/watcher'
 import { IncomingMessage, ServerResponse } from 'http';
 import * as NextHead from 'next/head';
 import * as NextLink from 'next/link';
+import * as NextRouter from 'next/router';
 import { makeCache } from './cache';
 import serverRequire from './server-require';
 export {
@@ -118,6 +119,7 @@ export function initPlasmicLoader(
   loader.registerModules({
     'next/head': NextHead,
     'next/link': NextLink,
+    'next/router': NextRouter,
   });
 
   if (cache) {

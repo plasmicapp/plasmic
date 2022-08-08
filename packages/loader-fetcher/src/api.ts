@@ -120,7 +120,7 @@ export interface AssetModule {
   type: 'asset';
 }
 
-const VERSION = '7';
+const VERSION = '8';
 
 export const isBrowser =
   typeof window !== 'undefined' &&
