@@ -265,18 +265,3 @@ verdaccio &
 2. If you're ready to test, run `yarn local-canary`. This builds canary versions of your packages to your local registry.
 
 3. Install the canary version into wherever you're trying to test, via `yarn add ... --registry=http://localhost:4873`
-
-### Release workflow
-
-Run `yarn bump` to bump the versions of the changed packages. If you already have an existing git commit you want to use, do `yarn bump --amend`. Submit for code review.
-
-Make user you are authenticating with npm as the plasmicapp user.
-
-    npm whoami # check who you are currently
-    npm login # if you were not plasmicapp
-
-Ensure you have no outstanding unmerged commits or uncommitted changes.
-
-Ensure you have pulled the latest changes from master.
-
-Once your change has been approved and you're ready to release to npm, run `yarn release`. This will individually publish each package to npm.
