@@ -38,7 +38,8 @@ export const WordpressProviderMeta: GlobalContextMeta<WordpressProviderProps> = 
     graphqlEndpoint: {
       type: "string",
       displayName: "GraphQL API Endpoint",
-      description: "GraphQL API Endpoint of your Wordpress ",
+      description: "GraphQL API Endpoint of your Wordpress",
+      defaultValue: "https://demo.wpgraphql.com/graphql",
     },
   },
 };
@@ -197,7 +198,7 @@ export function WordpressField({
   path,
   setControlContextData,
 }: WordpressFieldProps) {
-  const item = useSelector("wordpressItem");
+  const item = useSelector("currentWordpressItem");
 
   if (!item) {
     return <div>WordpressField must be used within a WordpressFetcher </div>;
@@ -215,7 +216,10 @@ export function WordpressField({
     return (
       <img className={className} src={data.mediaItemUrl} srcSet={data.srcSet} />
     );
-  } else if (path === "content" || path === "excerpt") {
+  } else if (
+    path.slice(-1)[0] === "content" ||
+    path.slice(-1)[0] === "excerpt"
+  ) {
     return (
       <div className={className} dangerouslySetInnerHTML={{ __html: data }} />
     );
