@@ -793,3 +793,244 @@ MatrixRepeatedCounter.play = async ({ canvasElement }) => {
     }
   }
 };
+
+const _InitFuncFromContextData: Story<{
+  products: { price: number; name: string }[];
+}> = (args) => {
+  const ProductContext = React.createContext<
+    | {
+        price: number;
+        name: string;
+      }
+    | undefined
+  >(undefined);
+  const InternalComponent = (props: {
+    quantity: number;
+    onProductChange: (product: any) => void;
+  }) => {
+    const $state = useDollarState(
+      [
+        {
+          path: "price",
+          type: "private",
+          initFunc: ($props, $state) =>
+            $props.quantity * ($state.product?.price ?? 0),
+        },
+        {
+          path: "product",
+          type: "readonly",
+          onChangeProp: "onProductChange",
+        },
+      ],
+      props
+    );
+    return (
+      <>
+        <ProductContext.Consumer>
+          {($ctx) => {
+            $state.registerInitFunc("product", () => $ctx);
+            return (
+              <>
+                <p data-testid="product_price">Price: {$state.price}</p>
+              </>
+            );
+          }}
+        </ProductContext.Consumer>
+      </>
+    );
+  };
+
+  const $state = useDollarState(
+    [
+      {
+        path: "selectedIndex",
+        type: "private",
+        initVal: undefined,
+      },
+      {
+        path: "quantity",
+        type: "private",
+        initVal: 1,
+      },
+      {
+        path: "ctx.product",
+        type: "private",
+      },
+    ],
+    args
+  );
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <ul>
+        {args.products?.map((product, index) => (
+          <li
+            data-testid={`product_${index}`}
+            key={index}
+            onClick={() => ($state.selectedIndex = index)}
+          >
+            {product.name}
+          </li>
+        ))}
+      </ul>
+      <h1 data-testid="product_name">{$state.ctx.product?.name}</h1>
+      <ProductContext.Provider
+        value={
+          $state.selectedIndex !== undefined
+            ? args.products[$state.selectedIndex]
+            : undefined
+        }
+      >
+        <InternalComponent
+          quantity={$state.quantity}
+          onProductChange={(val) => ($state.ctx.product = val)}
+        />
+      </ProductContext.Provider>
+      <input
+        data-testid="product_quantity-input"
+        type="text"
+        onChange={(e) => ($state.quantity = +e.target.value)}
+        value={$state.quantity}
+      />
+    </div>
+  );
+};
+
+const products = [
+  { name: "Shirt 1", price: 10 },
+  { name: "Shirt 2", price: 20 },
+  { name: "Shirt 3", price: 30 },
+];
+export const InitFuncFromContextData = _InitFuncFromContextData.bind({});
+InitFuncFromContextData.args = { products };
+InitFuncFromContextData.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  for (let i = 0; i < products.length; i++) {
+    click(canvas.getByTestId(`product_${i}`));
+    expect(
+      (canvas.getByTestId("product_name") as HTMLHeadingElement).textContent
+    ).toEqual(products[i].name);
+  }
+
+  await userEvent.type(
+    canvas.getByTestId("product_quantity-input"),
+    "{backspace}10"
+  );
+
+  for (let i = 0; i < products.length; i++) {
+    click(canvas.getByTestId(`product_${i}`));
+    expect(
+      (canvas.getByTestId("product_price") as HTMLHeadingElement).textContent
+    ).toEqual(`Price: ${products[i].price * 10}`);
+  }
+};
+
+const _RepeatedImplicitState: Story<{}> = (args) => {
+  const [usedValuesCount, setUsedValuesCount] = React.useState(0);
+  const [removeIndex, setRemoveIndex] = React.useState(0);
+
+  const $state = useDollarState(
+    [
+      {
+        path: "counter[].count",
+        type: "private" as const,
+        initVal: 0,
+      },
+    ],
+    args
+  );
+  return (
+    <div>
+      <ul data-testid={"list"}>
+        {$state.counter.map((currentItem: any, currentIndex: number) => (
+          <li key={currentIndex} data-testid={`list-item-${currentItem.count}`}>
+            {currentItem.count}
+          </li>
+        ))}
+      </ul>
+      <button
+        onClick={() => {
+          $state.counter.push({ count: usedValuesCount });
+          setUsedValuesCount((c) => c + 1);
+        }}
+        data-testid={"push-btn"}
+      >
+        AddItem using push
+      </button>
+      <button
+        onClick={() => {
+          $state.counter = [...$state.counter, { count: usedValuesCount }];
+          setUsedValuesCount((c) => c + 1);
+        }}
+        data-testid={"spread-btn"}
+      >
+        AddItem using spread operator
+      </button>
+      <input
+        type="text"
+        value={removeIndex}
+        onChange={(e) => setRemoveIndex(+e.target.value)}
+        data-testid={"remove-input"}
+      />
+      <button
+        onClick={() => $state.counter.splice(removeIndex, 1)}
+        data-testid={"remove-btn"}
+      >
+        Remove
+      </button>
+    </div>
+  );
+};
+export const RepeatedImplicitState = _RepeatedImplicitState.bind({});
+RepeatedImplicitState.args = {};
+RepeatedImplicitState.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  await click(canvas.getByTestId(`push-btn`), 3);
+  await click(canvas.getByTestId(`spread-btn`), 3);
+
+  const expected = [0, 1, 2, 3, 4, 5];
+  expect(
+    (canvas.getByTestId("list") as HTMLUListElement).children.length
+  ).toEqual(expected.length);
+  expected.forEach((val) =>
+    expect(
+      (canvas.getByTestId(`list-item-${val}`) as HTMLLIElement).textContent
+    ).toEqual(`${val}`)
+  );
+
+  await click(canvas.getByTestId("remove-btn"));
+  await userEvent.type(canvas.getByTestId("remove-input"), "2");
+  await click(canvas.getByTestId("remove-btn"));
+
+  expected.splice(0, 1);
+  expected.splice(2, 1);
+  expect(
+    (canvas.getByTestId("list") as HTMLUListElement).children.length
+  ).toEqual(expected.length);
+  expected.forEach((val) =>
+    expect(
+      (canvas.getByTestId(`list-item-${val}`) as HTMLLIElement).textContent
+    ).toEqual(`${val}`)
+  );
+
+  await userEvent.type(canvas.getByTestId("remove-input"), "{backspace}3");
+  await click(canvas.getByTestId("remove-btn"), 3);
+  expected.splice(3, 1);
+  expected.splice(3, 1);
+  expected.splice(3, 1);
+  expect(
+    (canvas.getByTestId("list") as HTMLUListElement).children.length
+  ).toEqual(expected.length);
+  expected.forEach((val) =>
+    expect(
+      (canvas.getByTestId(`list-item-${val}`) as HTMLLIElement).textContent
+    ).toEqual(`${val}`)
+  );
+};
