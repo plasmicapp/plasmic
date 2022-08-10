@@ -58,8 +58,9 @@ export function setPlasmicRootNode(node: React.ReactElement | null) {
 export const PlasmicCanvasContext = React.createContext<
   | {
       componentName: string | null;
+      globalVariants: Record<string, string>;
     }
-  | boolean
+  | false
 >(false);
 export const usePlasmicCanvasContext = () =>
   React.useContext(PlasmicCanvasContext);
@@ -119,6 +120,9 @@ function _PlasmicCanvasHost() {
     const plasmicContextValue = isCanvas
       ? {
           componentName: locationHash.get("componentName"),
+          globalVariants: JSON.parse(
+            locationHash.get("globalVariants") ?? "{}"
+          ),
         }
       : false;
     return ReactDOM.createPortal(
