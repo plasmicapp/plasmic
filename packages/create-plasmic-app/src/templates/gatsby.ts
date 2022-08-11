@@ -83,11 +83,15 @@ export const GATSBY_PLUGIN_CONFIG = (
         token: "${projectApiToken}",
       },
     ], // An array of project ids.
+    preview: false,
     defaultPlasmicPage: require.resolve("./src/templates/defaultPlasmicPage.${
       useTypescript ? "tsx" : "jsx"
     }"),
   },
 },
+{
+  resolve: "gatsby-plugin-react-helmet",
+}
 `;
 
 export const makeGatsbyHostPage = (opts: {

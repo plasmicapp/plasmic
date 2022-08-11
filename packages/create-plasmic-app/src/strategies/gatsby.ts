@@ -19,17 +19,34 @@ import { CPAStrategy } from "./types";
 
 const gatsbyStrategy: CPAStrategy = {
   create: async (args) => {
-    const { projectPath, template } = args;
-    const createCommand = `npx -p gatsby gatsby new ${projectPath}`;
-    const templateArg = template ? ` ${template}` : "";
+    const { projectPath, template, useTypescript } = args;
+    if (template) {
+      console.log(
+        `Warning: Ignoring template '${template}' (argument is not supported by Gatsby).`
+      );
+    }
 
-    await spawnOrFail(`${createCommand}${templateArg}`);
+    // create-gatsby does not support absolute paths as of 2022-08-12
+    // (see https://github.com/gatsbyjs/gatsby/issues/36381).
+    const parent = path.dirname(projectPath);
+    await fs.mkdir(parent, { recursive: true });
+    const dir = path.basename(projectPath);
+    const createCommand = `npx -p create-gatsby create-gatsby ${
+      useTypescript ? "-ts" : ""
+    } -y ${dir}`;
+    await spawnOrFail(`${createCommand}`, parent);
   },
   installDeps: async ({ projectPath, scheme }) => {
     if (scheme === "loader") {
-      return await installUpgrade("@plasmicapp/loader-gatsby", {
-        workingDir: projectPath,
-      });
+      return (
+        (await installUpgrade("@plasmicapp/loader-gatsby", {
+          workingDir: projectPath,
+        })) &&
+        (await installUpgrade("react-helmet", { workingDir: projectPath })) &&
+        (await installUpgrade("gatsby-plugin-react-helmet", {
+          workingDir: projectPath,
+        }))
+      );
     } else {
       return await installCodegenDeps({ projectPath });
     }
@@ -42,24 +59,31 @@ const gatsbyStrategy: CPAStrategy = {
       useTypescript,
       scheme,
     } = args;
+    const extension = useTypescript ? "ts" : "js";
 
     if (scheme === "loader") {
-      // create-gatsby will create a default gatsby-config.js that we need to modify
-      const gatsbyConfigFile = path.join(projectPath, "gatsby-config.js");
+      // create-gatsby will create a default gatsby-config that we need to modify
+      const gatsbyConfigFile = path.join(
+        projectPath,
+        `gatsby-config.${extension}`
+      );
       const rl = readline.createInterface({
         input: createReadStream(gatsbyConfigFile),
         crlfDelay: Infinity,
       });
       let result = "";
+      const pluginConfig = GATSBY_PLUGIN_CONFIG(
+        projectId,
+        ensure(projectApiToken),
+        useTypescript
+      );
       for await (const line of rl) {
-        result += line + "\n";
-        // Prepend PlasmicLoader to list of plugins
-        if (line.includes("plugins:")) {
-          result += GATSBY_PLUGIN_CONFIG(
-            projectId,
-            ensure(projectApiToken),
-            useTypescript
-          );
+        if (line.includes("plugins: []")) {
+          result += "  plugins: [" + pluginConfig + "]\n";
+        } else if (line.includes("plugins: [")) {
+          result += line + pluginConfig + "\n";
+        } else {
+          result += line + "\n";
         }
       }
       await fs.writeFile(gatsbyConfigFile, result);
@@ -81,7 +105,10 @@ const gatsbyStrategy: CPAStrategy = {
     deleteGlob(path.join(projectPath, "src/@(pages|components|templates)/*.*"));
 
     // Create a very basic 404 page - `gatsby build` fails without it.
-    await fs.writeFile(path.join(projectPath, `src/pages/404.js`), GATSBY_404);
+    await fs.writeFile(
+      path.join(projectPath, `src/pages/404.${extension}`),
+      GATSBY_404
+    );
 
     // Add plasmic-host page
     await fs.writeFile(
@@ -92,12 +119,12 @@ const gatsbyStrategy: CPAStrategy = {
       })
     );
 
-    // Start with an empty gatsby-node.js
-    await fs.writeFile(path.join(projectPath, "gatsby-node.js"), "");
+    // Start with an empty gatsby-node
+    await fs.writeFile(path.join(projectPath, `gatsby-node.${extension}`), "");
 
     // Updates `gatsby-ssr` to include script tag for preamble
     await fs.writeFile(
-      path.join(projectPath, "gatsby-ssr.js"),
+      path.join(projectPath, `gatsby-ssr.${extension}x`),
       GATSBY_SSR_CONFIG
     );
 
@@ -128,10 +155,13 @@ const gatsbyStrategy: CPAStrategy = {
 
       // Overwrite the wrapper files to wrap PlasmicRootProvider
       const wrapperContent = wrapAppRootForCodegen();
-      const browserFilePath = path.join(projectPath, "gatsby-browser.js");
+      const browserFilePath = path.join(
+        projectPath,
+        `gatsby-browser.${extension}x`
+      );
       await fs.writeFile(browserFilePath, wrapperContent);
 
-      const ssrFilePath = path.join(projectPath, "gatsby-ssr.js");
+      const ssrFilePath = path.join(projectPath, `gatsby-ssr.${extension}x`);
       await fs.writeFile(ssrFilePath, wrapperContent);
     }
   },
