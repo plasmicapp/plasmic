@@ -20,6 +20,7 @@ export default [
       "./src/registerSlider.tsx",
       "./src/registerSwitch.ts",
       "./src/registerTabs.tsx",
+      "./src/registerTable.tsx",
     ],
     external: (id) => {
       if (id.startsWith("regenerator-runtime") || id.startsWith("tslib")) {
@@ -33,7 +34,7 @@ export default [
         format: "cjs",
         sourcemap: true,
         exports: "named",
-      }
+      },
     ],
     plugins: [
       resolve(),
@@ -44,5 +45,5 @@ export default [
         check: false,
       }),
     ],
-  }
-]
+  },
+];

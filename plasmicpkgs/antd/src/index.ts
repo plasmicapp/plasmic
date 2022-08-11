@@ -1,15 +1,15 @@
 import { Registerable } from "./registerable";
 import { registerButton } from "./registerButton";
-import { registerCheckbox, registerCheckboxGroup } from "./registerCheckbox";
 import { registerCarousel } from "./registerCarousel";
+import { registerCheckbox, registerCheckboxGroup } from "./registerCheckbox";
 import { registerCollapse, registerCollapsePanel } from "./registerCollapse";
 import { registerDropdown, registerDropdownButton } from "./registerDropdown";
 import {
   registerInput,
-  registerInputTextArea,
-  registerInputSearch,
-  registerInputPassword,
   registerInputGroup,
+  registerInputPassword,
+  registerInputSearch,
+  registerInputTextArea,
 } from "./registerInput";
 import {
   registerMenu,
@@ -18,27 +18,32 @@ import {
   registerMenuItemGroup,
   registerSubMenu,
 } from "./registerMenu";
-import { registerRate } from "./registerRate";
 import { registerOptGroup, registerOption } from "./registerOption";
+import { registerRate } from "./registerRate";
 import { registerSelect } from "./registerSelect";
 import { registerSlider } from "./registerSlider";
 import { registerSwitch } from "./registerSwitch";
+import {
+  registerTable,
+  registerTableColumn,
+  registerTableValue,
+} from "./registerTable";
 import { registerTabPane, registerTabs } from "./registerTabs";
 
 export * from "./registerable";
 export * from "./registerButton";
+export * from "./registerCarousel";
 export * from "./registerCheckbox";
 export * from "./registerCollapse";
 export * from "./registerDropdown";
 export * from "./registerInput";
 export * from "./registerMenu";
 export * from "./registerOption";
+export * from "./registerRate";
 export * from "./registerSelect";
 export * from "./registerSlider";
 export * from "./registerSwitch";
-export * from "./registerCarousel";
 export * from "./registerTabs";
-export * from "./registerRate";
 
 export function registerAll(loader?: Registerable) {
   registerButton(loader);
@@ -65,6 +70,9 @@ export function registerAll(loader?: Registerable) {
   registerInputPassword(loader);
   registerInputGroup(loader);
   registerTabPane(loader);
+  registerTable(loader);
+  registerTableColumn(loader);
+  registerTableValue(loader);
   registerTabs(loader);
   registerRate(loader);
 }
