@@ -42,7 +42,6 @@ import {
   extractPlasmicQueryData,
   ComponentRenderData,
   PlasmicRootProvider,
-  PageParamsProvider,
 } from "@plasmicapp/loader-nextjs";
 ${ifTs(ts, `import type { GetStaticPaths, GetStaticProps } from "next";\n`)}
 import Error from "next/error";
@@ -61,18 +60,16 @@ export default function PlasmicLoaderPage(props${ifTs(
   if (!plasmicData || plasmicData.entryCompMetas.length === 0) {
     return <Error statusCode={404} />;
   }
+  const pageMeta = plasmicData.entryCompMetas[0];
   return (
     <PlasmicRootProvider
       loader={PLASMIC}
       prefetchedData={plasmicData}
       prefetchedQueryData={queryCache}
+      pageParams={pageMeta.params}
+      pageQuery={router.query${ifTs(ts, " as Record<string, string>")}}
     >
-      <PageParamsProvider
-        params={plasmicData.entryCompMetas[0].params}
-        query={router.query${ifTs(ts, " as Record<string, string>")}}
-      >
-        <PlasmicComponent component={plasmicData.entryCompMetas[0].displayName} />
-      </PageParamsProvider>
+      <PlasmicComponent component={pageMeta.displayName} />
     </PlasmicRootProvider>
   );
 }
@@ -88,12 +85,15 @@ export const getStaticProps${ifTs(
     // non-Plasmic catch-all
     return { props: {} };
   }
+  const pageMeta = plasmicData.entryCompMetas[0];
   // Cache the necessary data fetched for the page
   const queryCache = await extractPlasmicQueryData(
-    <PlasmicRootProvider loader={PLASMIC} prefetchedData={plasmicData}>
-      <PageParamsProvider params={plasmicData.entryCompMetas[0].params}>
-        <PlasmicComponent component={plasmicData.entryCompMetas[0].displayName} />
-      </PageParamsProvider>
+    <PlasmicRootProvider
+      loader={PLASMIC}
+      prefetchedData={plasmicData}
+      pageParams={pageMeta.params}
+    >
+      <PlasmicComponent component={pageMeta.displayName} />
     </PlasmicRootProvider>
   );
   // Use revalidate if you want incremental static regeneration
