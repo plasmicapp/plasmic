@@ -60,7 +60,7 @@ interface ProjectOption {
 }
 
 export interface ComponentRenderData {
-  entryCompMetas: ComponentMeta[];
+  entryCompMetas: (ComponentMeta & { params?: Record<string, string> })[];
   bundle: LoaderBundleOutput;
   remoteFontUrls: string[];
 }
