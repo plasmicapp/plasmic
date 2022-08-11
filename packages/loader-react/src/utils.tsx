@@ -119,6 +119,46 @@ export function useIsMounted(): () => boolean {
   return isMounted;
 }
 
+/**
+ * Check if `lookup` resolves to `pagePath`. If it's a match, return an object
+ * containing path params; otherwise, returns false.
+ *
+ * For example,
+ * - `matchesPagePath("/hello/[name]", "/hello/world")` -> `{params: {name:
+ *   "world"}}`
+ * - `matchesPagePath("/hello/[name]", "/")` -> `false`
+ * - `matchesPagePath("/", "")` -> `{params: {}}`
+ */
+function matchesPagePath(
+  pagePath: string,
+  lookup: string
+): { params: Record<string, string> } | false {
+  // Remove trailing slashes from both `pagePath` and `lookup`.
+  pagePath = pagePath.replace(/^\/*/, '').replace(/\/*$/, '');
+  lookup = lookup.replace(/^\/*/, '').replace(/\/*$/, '');
+
+  // paramNames will contain a list of parameter names; e.g. if pagePath
+  // is "/products/[slug]/[variant]" it will contain ["slug", "variant"].
+  const paramNames = (pagePath.match(/\[([^\]]*)\]/g) || []).map((group) =>
+    group.slice(1, -1)
+  );
+
+  const pagePathRegExp = new RegExp(
+    '^' + pagePath.replace(/\[[^\]]*\]/g, '([^/]+)') + '$'
+  );
+  const maybeVals = lookup.match(pagePathRegExp)?.slice(1);
+  if (!maybeVals) {
+    return false;
+  }
+
+  const params: Record<string, string> = {};
+  for (let i = 0; i < paramNames.length; i++) {
+    params[paramNames[i]] = maybeVals[i];
+  }
+
+  return { params };
+}
+
 function matchesCompMeta(lookup: FullLookupSpec, meta: ComponentMeta) {
   if (lookup.projectId && meta.projectId !== lookup.projectId) {
     return false;
@@ -129,7 +169,7 @@ function matchesCompMeta(lookup: FullLookupSpec, meta: ComponentMeta) {
         lookup.rawName === meta.name ||
         lookup.rawName === meta.displayName) &&
         (lookup.isCode == null || lookup.isCode === meta.isCode)
-    : lookup.path === meta.path;
+    : !!(meta.path && matchesPagePath(meta.path, lookup.path));
 }
 
 export function getCompMetas(
@@ -137,7 +177,20 @@ export function getCompMetas(
   lookup: ComponentLookupSpec
 ) {
   const full = toFullLookup(lookup);
-  return metas.filter((meta) => matchesCompMeta(full, meta));
+  return metas
+    .filter((meta) => matchesCompMeta(full, meta))
+    .map((meta) => {
+      if (isNameSpec(full) || !meta.path) {
+        return meta;
+      }
+
+      const match = matchesPagePath(meta.path, full.path);
+      if (!match) {
+        return meta;
+      }
+
+      return { ...meta, params: match.params };
+    });
 }
 
 export function getLookupSpecName(lookup: ComponentLookupSpec) {
