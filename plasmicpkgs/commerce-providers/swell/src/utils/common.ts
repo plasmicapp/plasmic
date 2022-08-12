@@ -1,3 +1,5 @@
+import isNil from "lodash-es/isNil";
+
 export function ensure<T>(x: T | null | undefined, msg = ""): T {
   if (x === null || x === undefined) {
     debugger;
@@ -8,3 +10,8 @@ export function ensure<T>(x: T | null | undefined, msg = ""): T {
     return x;
   }
 }
+
+export const ensureNoNilFields = (
+  o: Record<string, any>
+): Record<string, any> =>
+  Object.fromEntries(Object.entries(o).filter(([k, v]) => !isNil(v)));
