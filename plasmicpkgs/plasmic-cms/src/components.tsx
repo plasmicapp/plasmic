@@ -599,7 +599,13 @@ function renderValue(value: any, type: CmsType, props: { className?: string }) {
     case "date-time":
       return <div {...props}>{value}</div>;
     case "rich-text":
-      return <div dangerouslySetInnerHTML={{ __html: value }} {...props} />;
+      return (
+        <div
+          dangerouslySetInnerHTML={{ __html: value }}
+          style={{ whiteSpace: "normal" }}
+          {...props}
+        />
+      );
     case "image":
       if (value && typeof value === "object" && value.url && value.imageMeta) {
         return (
