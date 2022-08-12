@@ -236,7 +236,7 @@ export const graphqlFetcherMeta: ComponentMeta<GraphqlFetcherProps> = {
         type: "code",
         lang: "graphql",
         endpoint: (props) => props.url ?? "",
-        defaultValue: JSON.stringify({
+        defaultValue: {
           query: `{
   allPokemon {
     name
@@ -245,7 +245,7 @@ export const graphqlFetcherMeta: ComponentMeta<GraphqlFetcherProps> = {
     }
   }
 }`,
-        }),
+        },
       },
     };
     // Reorder the props
@@ -285,8 +285,9 @@ export function registerGraphqlFetcher(
   }
 }
 
-export function registerAll(  loader?: { registerComponent: typeof registerComponent },
-) {
+export function registerAll(loader?: {
+  registerComponent: typeof registerComponent;
+}) {
   registerDataFetcher(loader);
   registerGraphqlFetcher(loader);
 }

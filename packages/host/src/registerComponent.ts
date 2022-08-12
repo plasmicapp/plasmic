@@ -91,14 +91,6 @@ export type StringType<P> =
             ((value: string) => void) | undefined
           >;
         }
-      | {
-          type: "code";
-          lang: "graphql";
-          endpoint: string | ContextDependentConfig<P, string>;
-          method?: string | ContextDependentConfig<P, string>;
-          headers?: object | ContextDependentConfig<P, object>;
-          variables?: object | ContextDependentConfig<P, object>;
-        }
     ) &
       StringTypeBase<P>);
 
@@ -108,6 +100,20 @@ export type BooleanType<P> =
       type: "boolean";
     } & DefaultValueOrExpr<P, boolean> &
       PropTypeBase<P>);
+
+type GraphQLValue = {
+  query: string;
+  variables?: Record<string, any>;
+};
+
+export type GraphQLType<P> = {
+  type: "code";
+  lang: "graphql";
+  endpoint: string | ContextDependentConfig<P, string>;
+  method?: string | ContextDependentConfig<P, string>;
+  headers?: object | ContextDependentConfig<P, object>;
+} & DefaultValueOrExpr<P, GraphQLValue> &
+  PropTypeBase<P>;
 
 type NumberTypeBase<P> = PropTypeBase<P> &
   DefaultValueOrExpr<P, number> & {
@@ -289,6 +295,7 @@ export type PropType<P> =
       | ChoiceType<P>
       | ImageUrlType<P>
       | CustomType<P>
+      | GraphQLType<P>
     >
   | SlotType<P>;
 
