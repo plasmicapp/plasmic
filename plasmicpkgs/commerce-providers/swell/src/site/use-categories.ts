@@ -8,6 +8,7 @@ import { useMemo } from "react";
 import { Category } from "../types/site";
 import { normalizeCategory } from "../utils";
 import { topologicalSortForCategoryTree } from "../utils/category-tree";
+import { ensureNoNilFields } from "../utils/common";
 
 export default useCategories as UseCategories<typeof handler>;
 
@@ -24,10 +25,10 @@ export const handler: SWRHook<GetCategoriesHook> = {
     const data = await fetch({
       query: options.query,
       method: options.method,
-      variables: {
+      variables: ensureNoNilFields({
         expand: ["children", "parent_id"],
         id: categoryId,
-      },
+      }),
     });
 
     let categories = data?.results ?? [];
@@ -39,10 +40,10 @@ export const handler: SWRHook<GetCategoriesHook> = {
             await fetch({
               query: "products",
               method: "list",
-              variables: {
+              variables: ensureNoNilFields({
                 limit: 1,
                 category: category.id,
-              },
+              }),
             })
           ).results,
         }))
