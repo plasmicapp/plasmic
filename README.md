@@ -213,17 +213,21 @@ See the [application development tutorials](https://docs.plasmic.app/learn/minit
 
 ## Contributing
 
-This repo contains the code for all Plasmic component store packages (`plasmicpkgs`), client libraries/SDKs, and examples.
+This repo contains the code for all Plasmic component store packages (`@plasmicpkgs/*`), client libraries/SDKs (`@plasmicapp/*`), and examples (under the `examples/` dir).
 
-## Contributing to component store packages (`plasmicpkgs`)
+(For hacking on code components or `plasmicpkgs`, see specific additional instructions further down.)
 
-These are the code component registrations that are available in Plasmic's central component store.
+We use `lerna` to help us manage dependencies among all the packages.
 
-See the contributor instructions in [plasmicpkgs/README.md](plasmicpkgs/README.md).
+In general, we follow the "fork-and-pull" Git workflow.
 
-## Contributing to client libraries/SDKs (`packages`)
+1. Fork the repo on GitHub
+2. Clone the project to your own machine
+3. Commit changes to your own branch
+4. Push your work back up to your fork
+5. Submit a Pull request so that we can review your changes
 
-We use `lerna` to help us manage dependencies between the `@plasmicapp/loader-*` packages, (though we may pull in more packages to be managed by lerna, right now those are the ones with tight dependencies on each other).
+NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 
 ### Getting started
 
@@ -231,7 +235,7 @@ We use `lerna` to help us manage dependencies between the `@plasmicapp/loader-*`
 yarn lerna bootstrap  # inter-links all the lerna-managed packages together
 ```
 
-We also make use of [Verdaccio](https://verdaccio.org/) to locally test packages. This just stands up an npm registry that you can publish your test packages to.
+We also make use of [Verdaccio](https://verdaccio.org/) to locally test packages. This just stands up a local npm registry that you can publish your test packages to.
 
 ```
 yarn global add verdaccio
@@ -262,21 +266,119 @@ verdaccio &
 
 1. Make some changes!
 
-2. If you're ready to test, run `yarn local-canary`. This builds canary versions of your packages to your local registry.
+1. If you're ready to test, run `yarn local-canary`. This builds canary versions of your packages to your local registry.
 
-3. Install the canary version into wherever you're trying to test, via `yarn add ... --registry=http://localhost:4873`
+1. Install the canary version into wherever you're trying to test, via `yarn add ... --registry=http://localhost:4873`
 
-### Release workflow
+(You can quickly create a test target app to install into with `npx create-plasmic-app`).
 
-Run `yarn bump` to bump the versions of the changed packages. If you already have an existing git commit you want to use, do `yarn bump --amend`. Submit for code review.
+### Development tips
 
-Make user you are authenticating with npm as the plasmicapp user.
+You can publish an individual package with, for instance:
 
-    npm whoami # check who you are currently
-    npm login # if you were not plasmicapp
+```
+cd plasmicpkgs/SOMETHING
+yarn publish --registry=http://localhost:4873
+```
 
-Ensure you have no outstanding unmerged commits or uncommitted changes.
+As a hack, you can also temporarily edit `package.json` to list just the desired project + dependencies, if you need to develop/test across multiple.
 
-Ensure you have pulled the latest changes from master.
+As an alternative to verdaccio, you can also use `yalc`.
+Your mileage may vary.
+It tends to work when there are fewer dependencies/moving parts.
 
-Once your change has been approved and you're ready to release to npm, run `yarn release`. This will individually publish each package to npm.
+```
+yalc publish  # from the packages/ or plasmicpkgs/ dir
+
+yalc add @plasmicpkgs/PACKAGENAME  # from your test app
+npm i
+npm run dev
+```
+
+## Contributing code components (`plasmicpkgs`)
+
+The above general contribution instructions also apply to plasmicpkgs, so read that if you haven't done so.
+
+Before starting, we recommend reading our docs for Code Components:
+
+- [Docs on code components][code component docs]
+
+### Creating a new package
+
+Skip this if you are just updating an existing package.
+
+To create a new plasmicpkg, the easiest approach is to clone one of the existing packages (like react-slick) and fix up the names in package.json and README. Then author your registration code in src. Please use `yarn` for package management.
+
+The directory name should be the same name as the main package you'll be using to import the React components. Your package must be named `@plasmicpkgs/{package-name}` and start with version 1.0.0. It should have the most recent version of `@plasmicapp/host` as a peerDependency.
+
+### Testing changes
+
+Ensure you can start running/testing a package before starting to make any code changes.
+
+1. (One-time) Set up a normal repo with an app host, as [documented here](https://docs.plasmic.app/learn/app-hosting/). You can do this with:
+
+   ```
+   npx create-plasmic-app # Just create a Next.js app using PlasmicLoader
+   ```
+
+1. Now each time you want to try out a change, install your plasmicpkg into the app host repo using `yalc`.
+
+    1. From your plasmicpkg/PACKAGENAME directory, run:
+
+       ```
+       npm run local-canary
+       ```
+
+    2. From your app host directory, run:
+
+       ```
+       npm install @plasmicpkgs/PACKAGENAME@latest
+       ```
+
+    3. Restart your app host, and reload the project in Studio:
+
+       ```
+       npm run dev
+       ```
+
+### Note on registration functions
+
+The package must work for both codegen and loader users. This means that the register functions must have a optional parameter for the loader. It should also have an optional metadata parameter for users that want to use their own custom metadata.
+
+```typescript
+export function registerFooBar(
+  loader?: { registerComponent: typeof registerComponent },
+  customFooBarMeta?: ComponentMeta<FooBarProps>
+) {
+  if (loader) {
+    loader.registerComponent(FooBar, customFooBarMeta ?? FooBarMeta);
+  } else {
+    registerComponent(FooBar, customFooBarMeta ?? FooBarMeta);
+  }
+}
+```
+
+Feel free to create wrapper components if it makes the final result better for the user. You also don't need to register all the props available for the component, only the ones that will be used in the studio.
+
+Remember to export any wrapper components/types used to register the component. Everything should be also exported from the `index.ts` file, so all the imports are from `@plasmicpkgs/{package-name}`.
+
+We recommend a `registerAll()` function for an easy way to register all the available components in the package.
+
+### Submitting changes
+
+Checklist to test:
+
+- Does your component behave well in the Studio in **both** editing and live preview modes?
+- Do _all_ of the props and slots work correctly?
+
+Remember that your package will be used by a wide variety of users, so it's important to have easy-to-use components, with good descriptions.
+
+After testing in the Studio, it's also good to test both the available code options: loader and codegen.
+Testing codegen ensures your import paths are correct.
+
+- [Codegen guide](https://docs.plasmic.app/learn/codegen-guide/)
+- [Next.js loader guide](https://docs.plasmic.app/learn/nextjs-quickstart/)
+
+## Getting help
+
+Feel free to join our [Slack Community][slack] and ask us anything! We're here to help and always welcome contributions.

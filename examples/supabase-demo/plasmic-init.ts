@@ -102,18 +102,6 @@ PLASMIC.registerComponent(SupabaseGrid, {
         value: "Placeholder",
       },
     },
-    numColumns: {
-      type: "number",
-      defaultValue: 4,
-    },
-    columnGap: {
-      type: "number",
-      defaultValue: 16,
-    },
-    rowGap: {
-      type: "number",
-      defaultValue: 16,
-    },
     count: "number",
     loading: {
       type: "slot",
@@ -122,6 +110,14 @@ PLASMIC.registerComponent(SupabaseGrid, {
         value: "Loading...",
       },
     },
+  },
+  defaultStyles: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr 1fr",
+    gridRowGap: "30px",
+    gridColumnGap: "50px",
+    padding: "8px",
+    maxWidth: "100%",
   },
   importPath: "./components/CodeComponents/DisplayCollections",
 });
@@ -137,18 +133,6 @@ PLASMIC.registerComponent(SupabaseGridCollection, {
         value: "Placeholder",
       },
     },
-    columns: {
-      type: "number",
-      defaultValue: 4,
-    },
-    columnGap: {
-      type: "number",
-      defaultValue: 16,
-    },
-    rowGap: {
-      type: "number",
-      defaultValue: 16,
-    },
     loading: {
       type: "slot",
       defaultValue: {
@@ -157,6 +141,14 @@ PLASMIC.registerComponent(SupabaseGridCollection, {
       },
     },
     testLoading: "boolean",
+  },
+  defaultStyles: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr 1fr",
+    gridRowGap: "30px",
+    gridColumnGap: "50px",
+    padding: "8px",
+    maxWidth: "100%",
   },
   importPath: "./components/CodeComponents/DisplayCollections",
 });
@@ -349,6 +341,14 @@ PLASMIC.registerComponent(RedirectIf, {
     redirectUrl: "string",
     leftExpression: "string",
     rightExpression: "string",
+    testCondition: {
+      type: "choice",
+      options: [
+        { label: "TRUTHY", value: true },
+        { label: "FALSY", value: false },
+      ],
+    },
+    forcePreview: "boolean",
   },
   importPath: "./components/CodeComponents/LogicComponents",
 });

@@ -1,5 +1,5 @@
 {
-  "version": "1.0.2",
+  "version": "1.0.10",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -15,7 +15,7 @@
     "yalcp": "yalc publish --push",
     "test": "tsdx test",
     "lint": "tsdx lint",
-    "prepare": "tsdx build --target node",
+    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },

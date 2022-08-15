@@ -1,10 +1,11 @@
 /*
   Forked from https://github.com/vercel/commerce/tree/main/packages/commerce/src
-  Changes: Added CommerceExtraFeatures
+  Changes: Added CommerceExtraFeatures and provider to HookFetcherContext
 */
 import type { SWRConfiguration } from 'swr'
 import type { CommerceError } from './errors'
 import type { ResponseState } from './use-data'
+import { Provider } from '../commerce'
 
 /**
  * Returns the properties in T with the properties in type K, overriding properties defined in T
@@ -52,6 +53,7 @@ export type HookFetcherContext<H extends HookSchemaBase> = {
   >(
     options: FetcherOptions<B>
   ) => Promise<T>
+  provider?: Provider
 }
 
 export type HookFetcherOptions = { method?: string } & (

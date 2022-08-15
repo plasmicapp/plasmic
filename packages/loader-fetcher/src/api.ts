@@ -12,6 +12,7 @@ export interface ComponentMeta {
   plumeType?: string;
   entry: string;
   isCode: boolean;
+  isGlobalContextProvider: boolean;
   pageMetadata?: PageMetadata;
   metadata?: Record<string, string>;
 }
@@ -41,6 +42,8 @@ export interface GlobalGroupMeta {
 
 export interface ProjectMeta {
   id: string;
+  teamId?: string;
+  indirect?: boolean;
   name: string;
   version: string;
   remoteFonts: FontMeta[];
@@ -117,7 +120,7 @@ export interface AssetModule {
   type: 'asset';
 }
 
-const VERSION = '4';
+const VERSION = '8';
 
 export const isBrowser =
   typeof window !== 'undefined' &&

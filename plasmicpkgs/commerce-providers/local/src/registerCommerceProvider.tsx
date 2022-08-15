@@ -1,38 +1,35 @@
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
+import { GlobalContextMeta } from "@plasmicapp/host";
+import registerGlobalContext from "@plasmicapp/host/registerGlobalContext";
 import React from "react";
 import { CommerceProvider } from "./local";
+import { Registerable } from "./registerable";
 
 interface CommerceProviderProps {
   children?: React.ReactNode;
 }
-export const commerceProviderMeta: ComponentMeta<CommerceProviderProps> = {
+
+export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
   name: "plasmic-commerce-local-provider",
   displayName: "Local Provider",
-  props: {
-    children: {
-      type: "slot"
-    },
-  },
-  importPath: "commerce-providers/local",
-  importName: "LocalProvider",
+  props: {},
+  importPath: "@plasmicpkgs/commerce-local",
+  importName: "CommerceProviderComponent",
 };
 
 function CommerceProviderComponent(props: CommerceProviderProps) {
-  return (
-    <CommerceProvider>
-      {props.children}
-    </CommerceProvider>
-  )
+  return <CommerceProvider>{props.children}</CommerceProvider>;
 }
 
 export function registerCommerceProvider(
   loader?: Registerable,
-  customCommerceProviderMeta?: ComponentMeta<CommerceProviderProps>
+  customCommerceProviderMeta?: GlobalContextMeta<CommerceProviderProps>
 ) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(CommerceProviderComponent, customCommerceProviderMeta ?? commerceProviderMeta);
+  const doRegisterComponent: typeof registerGlobalContext = (...args) =>
+    loader
+      ? loader.registerGlobalContext(...args)
+      : registerGlobalContext(...args);
+  doRegisterComponent(
+    CommerceProviderComponent,
+    customCommerceProviderMeta ?? commerceProviderMeta
+  );
 }

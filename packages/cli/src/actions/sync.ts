@@ -143,6 +143,18 @@ async function ensureRequiredPackages(
     );
   }
 
+  const hostVersion = findInstalledVersion(
+    context,
+    baseDir,
+    "@plasmicapp/host"
+  );
+  if (!hostVersion || semver.gt(requireds["@plasmicapp/host"], hostVersion)) {
+    await confirmInstall("@plasmicapp/host", requireds["@plasmicapp/host"], {
+      global: false,
+      dev: false,
+    });
+  }
+
   if (context.config.code.reactRuntime === "automatic") {
     // Using automatic runtime requires installing the @plasmicapp/react-web-runtime package
     const runtimeVersion = findInstalledVersion(
@@ -440,10 +452,12 @@ export async function sync(
 
   if (!opts.quiet && externalCssImports.size > 0) {
     logger.info(
-      `This project uses external packages and styles. Make sure to import the following global CSS: ` +
-        Array.from(externalCssImports.keys())
-          .map((stmt) => `"${stmt}"`)
-          .join(", ")
+      chalk.cyanBright.bold(
+        `IMPORTANT: This project uses external packages and styles. Make sure to import the following global CSS: ` +
+          Array.from(externalCssImports.keys())
+            .map((stmt) => `"${stmt}"`)
+            .join(", ")
+      )
     );
   }
 

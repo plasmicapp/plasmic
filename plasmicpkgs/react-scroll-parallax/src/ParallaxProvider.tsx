@@ -57,6 +57,9 @@ export function ParallaxProviderWrapper({
   );
 }
 
+/**
+ * @deprecated use `globalParallaxProviderMeta` instead.
+ */
 export const parallaxProviderMeta: ComponentMeta<ParallaxProviderProps> = {
   name: "hostless-parallax-provider",
   displayName: "Parallax Provider",
@@ -92,6 +95,9 @@ export const parallaxProviderMeta: ComponentMeta<ParallaxProviderProps> = {
   },
 };
 
+/**
+ * @deprecated use `registerGlobalParallaxProvider` instead.
+ */
 export function registerParallaxProvider(
   loader?: { registerComponent: typeof registerComponent },
   customParallaxProviderMeta?: ComponentMeta<ParallaxProviderProps>
@@ -109,20 +115,21 @@ export function registerParallaxProvider(
   }
 }
 
-export const globalParallaxProviderMeta: GlobalContextMeta<ParallaxProviderProps> = {
-  name: "global-parallax-provider",
-  displayName: "Parallax Provider",
-  importName: "ParallaxProviderWrapper",
-  importPath: "@plasmicpkgs/react-scroll-parallax",
-  props: {
-    scrollAxis: {
-      type: "choice",
-      description: "Scroll axis for setting horizontal/vertical scrolling",
-      options: ["vertical", "horizontal"],
-      displayName: "Scroll Axis",
+export const globalParallaxProviderMeta: GlobalContextMeta<ParallaxProviderProps> =
+  {
+    name: "global-parallax-provider",
+    displayName: "Parallax Provider",
+    importName: "ParallaxProviderWrapper",
+    importPath: "@plasmicpkgs/react-scroll-parallax",
+    props: {
+      scrollAxis: {
+        type: "choice",
+        description: "Scroll axis for setting horizontal/vertical scrolling",
+        options: ["vertical", "horizontal"],
+        displayName: "Scroll Axis",
+      },
     },
-  },
-};
+  };
 
 export function registerGlobalParallaxProvider(
   loader?: { registerGlobalContext: typeof registerGlobalContext },

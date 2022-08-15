@@ -4,27 +4,34 @@
     - Before: just returned an empty cart.
     - Now: Read cart from local storage.
 */
-import { SWRHook } from '@plasmicpkgs/commerce'
-import { useCart, UseCart } from '@plasmicpkgs/commerce'
-import { LOCAL_CART_URL } from '../const'
+import { SWRHook, useCart, UseCart } from "@plasmicpkgs/commerce";
+import React from "react";
+import { getCart } from "../utils/cart";
 
-export default useCart as UseCart<typeof handler>
+export default useCart as UseCart<typeof handler>;
 
 export const handler: SWRHook<any> = {
   fetchOptions: {
-    query: '',
+    query: "use-cart",
   },
-  async fetcher({ input: { cartId }, options, fetch }) {
-    if (!cartId) {
-      cartId = LOCAL_CART_URL;
-    }
-    return JSON.parse(localStorage.getItem(cartId) ?? "null")
+  async fetcher({ input, options, fetch }) {
+    return getCart(input.cartId);
   },
-  useHook:
-    ({ useData }) =>
-    (input) => {
-      return useData({
-        swrOptions: { revalidateOnFocus: false, ...input?.swrOptions },
-      })
-    },
-}
+  useHook: ({ useData }) => (input) => {
+    const response = useData({
+      swrOptions: { revalidateOnFocus: false, ...input?.swrOptions },
+    });
+    return React.useMemo(
+      () =>
+        Object.create(response, {
+          isEmpty: {
+            get() {
+              return (response.data?.lineItems.length ?? 0) <= 0;
+            },
+            enumerable: true,
+          },
+        }),
+      [response]
+    );
+  },
+};

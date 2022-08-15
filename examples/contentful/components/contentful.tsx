@@ -27,7 +27,7 @@ export function ContentfulFetcher({
     <div className={className}>
       {data?.data.map((item, index) => (
         <DataProvider key={item.slug} name={"contenfulItem"} data={item}>
-          {repeatedElement(index === 0, children)}
+          {repeatedElement(index, children)}
         </DataProvider>
       ))}
     </div>

@@ -1,6 +1,7 @@
 import { Node } from "@react-types/shared";
 import * as React from "react";
-import { useListBoxSection, useSeparator } from "react-aria";
+import { useListBoxSection } from "@react-aria/listbox";
+import { useSeparator } from "@react-aria/separator";
 import { pick } from "../../common";
 import { Overrides } from "../../render/elements";
 import { renderCollectionNode, SectionLikeProps } from "../collection-utils";

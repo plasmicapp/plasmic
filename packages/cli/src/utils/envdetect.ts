@@ -26,7 +26,7 @@ export function detectNextJs() {
 }
 
 export function detectGatsby() {
-  return findupSync("gatsby-config.js");
+  return findupSync("gatsby-config.js") || findupSync("gatsby-config.ts");
 }
 
 export function detectCreateReactApp() {

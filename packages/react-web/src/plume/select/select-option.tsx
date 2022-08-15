@@ -1,6 +1,6 @@
 import { Node } from "@react-types/shared";
 import * as React from "react";
-import { useOption as useAriaOption } from "react-aria";
+import { useOption as useAriaOption } from "@react-aria/listbox";
 import { pick } from "../../common";
 import { mergeProps, mergeRefs } from "../../react-utils";
 import { Overrides } from "../../render/elements";

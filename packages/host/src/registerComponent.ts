@@ -64,6 +64,33 @@ export type StringType<P> =
           type: "code";
           lang: "css" | "html" | "javascript" | "json";
         }
+      | {
+          type: "cardPicker";
+          modalTitle?:
+            | React.ReactNode
+            | ContextDependentConfig<P, React.ReactNode>;
+          options:
+            | {
+                value: string;
+                label?: string;
+                imgUrl: string;
+                footer?: React.ReactNode;
+              }[]
+            | ContextDependentConfig<
+                P,
+                {
+                  value: string;
+                  label?: string;
+                  imgUrl: string;
+                  footer?: React.ReactNode;
+                }[]
+              >;
+          showInput?: boolean | ContextDependentConfig<P, boolean>;
+          onSearch?: ContextDependentConfig<
+            P,
+            ((value: string) => void) | undefined
+          >;
+        }
     ) &
       StringTypeBase<P>);
 
@@ -73,6 +100,20 @@ export type BooleanType<P> =
       type: "boolean";
     } & DefaultValueOrExpr<P, boolean> &
       PropTypeBase<P>);
+
+type GraphQLValue = {
+  query: string;
+  variables?: Record<string, any>;
+};
+
+export type GraphQLType<P> = {
+  type: "code";
+  lang: "graphql";
+  endpoint: string | ContextDependentConfig<P, string>;
+  method?: string | ContextDependentConfig<P, string>;
+  headers?: object | ContextDependentConfig<P, object>;
+} & DefaultValueOrExpr<P, GraphQLValue> &
+  PropTypeBase<P>;
 
 type NumberTypeBase<P> = PropTypeBase<P> &
   DefaultValueOrExpr<P, number> & {
@@ -108,6 +149,18 @@ export type JSONLikeType<P> =
   | ({
       type: "array";
     } & DefaultValueOrExpr<P, any[]> &
+      PropTypeBase<P>)
+  | ({
+      type: "dataSource";
+      dataSource: "airtable" | "cms";
+    } & PropTypeBase<P>)
+  | ({
+      type: "dataSelector";
+      data:
+        | Record<string, any>
+        | ContextDependentConfig<P, Record<string, any>>;
+      alwaysShowValuePathAsLabel?: boolean;
+    } & DefaultValueOrExpr<P, Record<string, any>> &
       PropTypeBase<P>);
 
 interface ChoiceTypeBase<P> extends PropTypeBase<P> {
@@ -126,15 +179,18 @@ interface ChoiceTypeBase<P> extends PropTypeBase<P> {
             value: string | number | boolean;
           }[]
       >;
+  allowSearch?: boolean;
+  filterOption?: boolean;
+  onSearch?: ContextDependentConfig<P, ((value: string) => void) | undefined>;
 }
 
 export type ChoiceType<P> = (
   | ({
       multiSelect?: false;
-    } & DefaultValueOrExpr<P, string>)
+    } & DefaultValueOrExpr<P, string | number | boolean>)
   | ({
       multiSelect: true;
-    } & DefaultValueOrExpr<P, string[]>)
+    } & DefaultValueOrExpr<P, (string | number | boolean)[]>)
 ) &
   ChoiceTypeBase<P>;
 
@@ -239,6 +295,7 @@ export type PropType<P> =
       | ChoiceType<P>
       | ImageUrlType<P>
       | CustomType<P>
+      | GraphQLType<P>
     >
   | SlotType<P>;
 
@@ -256,6 +313,36 @@ type RestrictPropType<T, P> = T extends string
   ? SupportControlled<NumberType<P> | JSONLikeType<P> | CustomType<P>>
   : PropType<P>;
 
+export interface ActionProps<P> {
+  componentProps: P;
+  /**
+   * `contextData` can be `null` if the prop controls are rendering before
+   * the component instance itself (it will re-render once the component
+   * calls `setControlContextData`)
+   */
+  contextData: InferDataType<P> | null;
+  studioOps: {
+    showModal: (
+      modalProps: Omit<ModalProps, "onClose"> & { onClose?: () => void }
+    ) => void;
+    refreshQueryData: () => void;
+    appendToSlot: (element: PlasmicElement, slotName: string) => void;
+    removeFromSlotAt: (pos: number, slotName: string) => void;
+    updateProps: (newValues: any) => void;
+  };
+}
+
+export type Action<P> =
+  | {
+      type: "button-action";
+      label: string;
+      onClick: (props: ActionProps<P>) => void;
+    }
+  | {
+      type: "custom-action";
+      control: React.ComponentType<ActionProps<P>>;
+    };
+
 type DistributedKeyOf<T> = T extends any ? keyof T : never;
 
 interface ComponentTemplate<P>
@@ -268,6 +355,29 @@ interface ComponentTemplate<P>
 
 export interface ComponentTemplates<P> {
   [name: string]: ComponentTemplate<P>;
+}
+interface $State {
+  [key: string]: any;
+}
+
+interface $StateSpec<T> {
+  // Whether this state is private, readonly, or writable in
+  // this component
+  type: "private" | "readonly" | "writable";
+  // if initial value is defined by a js expression
+  initFunc?: ($props: Record<string, any>, $state: $State) => T;
+  // if initial value is a hard-coded value
+  initVal?: T;
+  // Whether this state is private, readonly, or writable in
+  // this component
+
+  // If writable, there should be a valueProp that maps props[valueProp]
+  // to the value of the state
+  valueProp?: string;
+
+  // If writable or readonly, there should be an onChangeProp where
+  // props[onChangeProp] is invoked whenever the value changes
+  onChangeProp?: string;
 }
 
 export interface ComponentMeta<P> {
@@ -299,6 +409,14 @@ export interface ComponentMeta<P> {
   props: { [prop in DistributedKeyOf<P>]?: RestrictPropType<P[prop], P> } & {
     [prop: string]: PropType<P>;
   };
+  /**
+   * WIP: An object describing the component states to be used in Studio.
+   */
+  unstable__states?: Record<string, $StateSpec<any>>;
+  /**
+   * An array describing the component actions to be used in Studio.
+   */
+  actions?: Action<P>[];
   /**
    * The path to be used when importing the component in the generated code.
    * It can be the name of the package that contains the component, or the path
@@ -339,6 +457,10 @@ export interface ComponentMeta<P> {
    * Whether the component can be used as an attachment to an element.
    */
   isAttachment?: boolean;
+  /**
+   * Whether the component provides data to its slots using DataProvider.
+   */
+  providesData?: boolean;
 }
 
 export interface ComponentRegistration {

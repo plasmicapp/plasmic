@@ -4,6 +4,7 @@ import ReactDOMServer from 'react-dom/server';
 import { ComponentRenderData, PlasmicComponentLoader } from './loader';
 import { PlasmicComponent } from './PlasmicComponent';
 import { GlobalVariantSpec, PlasmicRootProvider } from './PlasmicRootProvider';
+import { extractPlasmicQueryData } from './prepass';
 import { ComponentLookupSpec } from './utils';
 
 export async function renderToElement(
@@ -14,6 +15,7 @@ export async function renderToElement(
     prefetchedData?: ComponentRenderData;
     componentProps?: any;
     globalVariants?: GlobalVariantSpec[];
+    prefetchedQueryData?: Record<string, any>;
   } = {}
 ) {
   return new Promise<void>((resolve) => {
@@ -29,10 +31,25 @@ export function renderToString(
     prefetchedData?: ComponentRenderData;
     componentProps?: any;
     globalVariants?: GlobalVariantSpec[];
+    prefetchedQueryData?: Record<string, any>;
   } = {}
 ) {
   const element = makeElement(loader, lookup, opts);
   return ReactDOMServer.renderToString(element);
+}
+
+export async function extractPlasmicQueryDataFromElement(
+  loader: PlasmicComponentLoader,
+  lookup: ComponentLookupSpec,
+  opts: {
+    prefetchedData?: ComponentRenderData;
+    componentProps?: any;
+    globalVariants?: GlobalVariantSpec[];
+    prefetchedQueryData?: Record<string, any>;
+  } = {}
+) {
+  const element = makeElement(loader, lookup, opts);
+  return extractPlasmicQueryData(element);
 }
 
 export async function hydrateFromElement(
@@ -43,6 +60,7 @@ export async function hydrateFromElement(
     prefetchedData?: ComponentRenderData;
     componentProps?: any;
     globalVariants?: GlobalVariantSpec[];
+    prefetchedQueryData?: Record<string, any>;
   } = {}
 ) {
   return new Promise<void>((resolve) => {
@@ -58,6 +76,7 @@ function makeElement(
     prefetchedData?: ComponentRenderData;
     componentProps?: any;
     globalVariants?: GlobalVariantSpec[];
+    prefetchedQueryData?: Record<string, any>;
   } = {}
 ) {
   return (
@@ -65,6 +84,7 @@ function makeElement(
       loader={loader}
       prefetchedData={opts.prefetchedData}
       globalVariants={opts.globalVariants}
+      prefetchedQueryData={opts.prefetchedQueryData}
     >
       <PlasmicComponent
         component={typeof lookup === 'string' ? lookup : lookup.name}

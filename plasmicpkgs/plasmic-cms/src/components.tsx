@@ -1,4 +1,4 @@
-import { repeatedElement } from "@plasmicapp/host";
+import { PlasmicCanvasContext, repeatedElement } from "@plasmicapp/host";
 import {
   CanvasComponentProps,
   ComponentMeta,
@@ -6,7 +6,7 @@ import {
 import { GlobalContextMeta } from "@plasmicapp/host/registerGlobalContext";
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import dayjs from "dayjs";
-import React from "react";
+import React, { useContext } from "react";
 import { DatabaseConfig, HttpError, mkApi, QueryParams } from "./api";
 import {
   DatabaseProvider,
@@ -32,11 +32,15 @@ function renderMaybeData<T>(
   maybeData: ReturnType<typeof usePlasmicQueryData>,
   renderFn: (data: T) => JSX.Element,
   loaderProps: FetcherComponentProps,
+  inEditor: boolean,
   loadingMessage?: React.ReactNode,
   forceLoadingState?: boolean
 ): React.ReactElement | null {
   if ("error" in maybeData) {
     const error = maybeData.error;
+    if (!inEditor) {
+      return <>{loadingMessage ?? <div>Loading...</div>}</>;
+    }
     if (error && error instanceof HttpError && error.status === 404) {
       if (loaderProps.hideIfNotFound) {
         return null;
@@ -59,48 +63,58 @@ interface CmsCredentialsProviderProps extends DatabaseConfig {
 
 const defaultHost = "https://studio.plasmic.app";
 
-export const cmsCredentialsProviderMeta: GlobalContextMeta<CmsCredentialsProviderProps> =
-  {
-    name: `${componentPrefix}-credentials-provider`,
-    displayName: "CMS Credentials Provider",
-    description:
-      "Find your CMS in the [dashboard](https://studio.plasmic.app), and go to the Settings tab for the ID and token.",
-    importName: "CmsCredentialsProvider",
-    importPath: modulePath,
-    props: {
-      host: {
-        type: "string",
-        displayName: "Studio URL",
-        description: `The default host for use in production is ${defaultHost}.`,
-        defaultValue: defaultHost,
-        defaultValueHint: defaultHost,
-      },
-      databaseId: {
-        type: "string",
-        displayName: "CMS ID",
-        description:
-          "The ID of the CMS (database) to use. (Can get on the CMS settings page)",
-      },
-      databaseToken: {
-        type: "string",
-        displayName: "CMS Public Token",
-        description:
-          "The Public Token of the CMS (database) you are using. (Can get on the CMS settings page)",
-      },
-      locale: {
-        type: "string",
-        displayName: "Locale",
-        description:
-          "The locale to use for localized values, leave empty for the default locale.",
-      },
+export const cmsCredentialsProviderMeta: GlobalContextMeta<CmsCredentialsProviderProps> = {
+  name: `${componentPrefix}-credentials-provider`,
+  displayName: "CMS Credentials Provider",
+  description: `
+Find your CMS in the [dashboard](https://studio.plasmic.app), and go to the Settings tab for the ID and token.
+
+See also the [getting started video](https://www.youtube.com/watch?v=-Rrn92VtRBc).`,
+  importName: "CmsCredentialsProvider",
+  importPath: modulePath,
+  providesData: true,
+  props: {
+    host: {
+      type: "string",
+      displayName: "Studio URL",
+      description: `The default host for use in production is ${defaultHost}.`,
+      defaultValue: defaultHost,
+      defaultValueHint: defaultHost,
     },
-  };
+    databaseId: {
+      type: "string",
+      displayName: "CMS ID",
+      description:
+        "The ID of the CMS (database) to use. (Can get on the CMS settings page)",
+    },
+    databaseToken: {
+      type: "string",
+      displayName: "CMS Public Token",
+      description:
+        "The Public Token of the CMS (database) you are using. (Can get on the CMS settings page)",
+    },
+    locale: {
+      type: "string",
+      displayName: "Locale",
+      description:
+        "The locale to use for localized values, leave empty for the default locale.",
+    },
+  },
+};
 
 export function CmsCredentialsProvider({
   children,
-  ...config
+  databaseId,
+  databaseToken,
+  host,
+  locale,
 }: CmsCredentialsProviderProps) {
-  config.host = config.host || defaultHost;
+  const config: DatabaseConfig = {
+    databaseId,
+    databaseToken,
+    locale,
+    host: host || defaultHost,
+  };
   return (
     <DatabaseProvider config={config}>
       <TablesFetcher>{children}</TablesFetcher>
@@ -121,12 +135,16 @@ function TablesFetcher({ children }: { children: React.ReactNode }) {
     }
     return await mkApi(databaseConfig).fetchTables();
   });
+  const inEditor = !!useContext(PlasmicCanvasContext);
 
-  return renderMaybeData<ApiCmsTable[]>(
-    maybeData,
-    (tables) => <TablesProvider tables={tables}>{children}</TablesProvider>,
-    { hideIfNotFound: false },
-    children
+  return (
+    <TablesProvider tables={maybeData.data}>
+      {inEditor && maybeData.error ? (
+        <div>CMS Error: {maybeData.error.message}</div>
+      ) : (
+        children
+      )}
+    </TablesProvider>
   );
 }
 
@@ -168,6 +186,7 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
     "Fetches CMS data and repeats content of children once for every row fetched.",
   importName: "CmsQueryRepeater",
   importPath: modulePath,
+  providesData: true,
   defaultStyles: {
     display: "flex",
     width: "stretch",
@@ -218,7 +237,6 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
           "boolean",
           "text",
           "long-text",
-          "rich-text",
         ]),
     },
     filterValue: {
@@ -344,6 +362,7 @@ export function CmsQueryRepeater({
       return mkApi(databaseConfig).query(table, params);
     }
   });
+  const inEditor = !!useContext(PlasmicCanvasContext);
 
   const node = renderMaybeData<ApiCmsRow[]>(
     maybeData,
@@ -359,13 +378,14 @@ export function CmsQueryRepeater({
         <QueryResultProvider table={table!} rows={rows}>
           {rows.map((row, index) => (
             <RowProvider table={table!} row={row}>
-              {repeatedElement(index === 0, children)}
+              {repeatedElement(index, children)}
             </RowProvider>
           ))}
         </QueryResultProvider>
       );
     },
     { hideIfNotFound: false },
+    inEditor,
     loadingMessage,
     forceLoadingState
   );
@@ -499,12 +519,13 @@ export function CmsRowField({
   const tables = useTablesWithDataLoaded();
 
   const res = useRow(tables, table);
+  const unknown = (
+    <div className={className} {...rest}>
+      Field {table ?? "Unknown Model"}.{field ?? "Unknown Field"}
+    </div>
+  );
   if (!res) {
-    return (
-      <div className={className}>
-        Field {table ?? "Unknown Model"}.{field ?? "Unknown Field"}
-      </div>
-    );
+    return unknown;
   }
 
   if (!res.row) {
@@ -529,7 +550,7 @@ export function CmsRowField({
   }
 
   if (!fieldMeta) {
-    throw new Error(`Please select an entry field to display.`);
+    return unknown;
   }
 
   let data = res.row.data?.[fieldMeta.identifier];
@@ -578,7 +599,13 @@ function renderValue(value: any, type: CmsType, props: { className?: string }) {
     case "date-time":
       return <div {...props}>{value}</div>;
     case "rich-text":
-      return <div dangerouslySetInnerHTML={{ __html: value }} {...props} />;
+      return (
+        <div
+          dangerouslySetInnerHTML={{ __html: value }}
+          style={{ whiteSpace: "normal" }}
+          {...props}
+        />
+      );
     case "image":
       if (value && typeof value === "object" && value.url && value.imageMeta) {
         return (
@@ -836,7 +863,7 @@ interface CmsRowFieldValueProps extends CanvasComponentProps<RowContextData> {
 export const cmsRowFieldValueMeta: ComponentMeta<CmsRowFieldValueProps> = {
   name: `${componentPrefix}-row-value`,
   displayName: "CMS Entry Value",
-  importName: "CmsRowValue",
+  importName: "CmsRowFieldValue",
   importPath: modulePath,
   props: {
     children: {

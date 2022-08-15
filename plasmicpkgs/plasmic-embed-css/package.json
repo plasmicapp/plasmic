@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-embed-css",
-  "version": "0.1.25",
+  "version": "0.1.58",
   "description": "Plasmic embed css code components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -23,12 +23,12 @@
     "start": "tsdx watch",
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
-    "prepare": "yarn build",
+    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.41",
+    "@plasmicapp/host": "1.0.74",
     "@size-limit/preset-small-lib": "^7.0.8",
     "@types/node": "^17.0.14",
     "size-limit": "^7.0.8",

@@ -1,3 +1,4 @@
+import { PageParamsProvider } from '@plasmicapp/host';
 import { AssetModule, ComponentMeta, Split } from '@plasmicapp/loader-core';
 import { PlasmicQueryDataProvider } from '@plasmicapp/query';
 import * as React from 'react';
@@ -8,6 +9,7 @@ import {
 } from './loader';
 import { useForceUpdate } from './utils';
 import {
+  ensureVariationCookies,
   getGlobalVariantsFromSplits,
   mergeGlobalVariantsSpec,
 } from './variation';
@@ -20,8 +22,9 @@ interface PlasmicRootContextValue {
   translator?: PlasmicTranslator;
 }
 
-const PlasmicRootContext =
-  React.createContext<PlasmicRootContextValue | undefined>(undefined);
+const PlasmicRootContext = React.createContext<
+  PlasmicRootContextValue | undefined
+>(undefined);
 
 export interface GlobalVariantSpec {
   name: string;
@@ -101,6 +104,18 @@ export function PlasmicRootProvider(props: {
    * Translator function to be used for text blocks
    */
   translator?: PlasmicTranslator;
+
+  /**
+   * Page path parameters (e.g. {slug: "foo"} if page path is
+   * /products/[slug] and URI is /products/foo).
+   */
+  pageParams?: Record<string, string>;
+
+  /**
+   * Page query parameters (e.g. {q: "foo"} if page path is
+   * /some/path?q=foo).
+   */
+  pageQuery?: Record<string, string>;
 }) {
   const {
     globalVariants,
@@ -113,6 +128,8 @@ export function PlasmicRootProvider(props: {
     globalContextsProps,
     variation,
     translator,
+    pageParams,
+    pageQuery,
   } = props;
   const loader = (props.loader as any)
     .__internal as InternalPlasmicComponentLoader;
@@ -137,6 +154,19 @@ export function PlasmicRootProvider(props: {
     loader.subscribePlasmicRoot(watcher);
     return () => loader.unsubscribePlasmicRoot(watcher);
   }, [watcher, loader]);
+
+  React.useEffect(() => {
+    ensureVariationCookies(variation);
+    loader.trackRender({
+      renderCtx: {
+        // We track the provider as a single entity
+        rootComponentId: 'provider',
+        teamIds: loader.getTeamIds(),
+        projectIds: loader.getProjectIds(),
+      },
+      variation,
+    });
+  }, [loader, variation]);
 
   const value = React.useMemo<PlasmicRootContextValue>(
     () => ({
@@ -165,7 +195,9 @@ export function PlasmicRootProvider(props: {
             skipFonts={skipFonts}
           />
         )}
-        {children}
+        <PageParamsProvider params={pageParams} query={pageQuery}>
+          {children}
+        </PageParamsProvider>
       </PlasmicRootContext.Provider>
     </PlasmicQueryDataProvider>
   );

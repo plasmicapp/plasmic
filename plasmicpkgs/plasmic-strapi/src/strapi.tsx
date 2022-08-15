@@ -20,6 +20,9 @@ export function ensure<T>(x: T | null | undefined): T {
 
 const modulePath = "@plasmicpkgs/plasmic-strapi";
 
+const makeDataProviderName = (collection: string) =>
+  `currentStrapi${L.capitalize(L.camelCase(collection))}Item`;
+
 interface StrapiCredentialsProviderProps {
   host?: string;
   token?: string;
@@ -32,8 +35,11 @@ const CredentialsContext = React.createContext<
 export const strapiCredentialsProviderMeta: GlobalContextMeta<StrapiCredentialsProviderProps> = {
   name: "StrapiCredentialsProvider",
   displayName: "Strapi Credentials Provider",
-  description:
-    "API token is needed only if data is not publicly readable. Learn how to [get your API token](https://docs.strapi.io/user-docs/latest/settings/managing-global-settings.html#managing-api-tokens).",
+  description: `[Watch how to add Strapi data](https://www.youtube.com/watch?v=1SLoVY3hkQ4).
+
+API token is needed only if data is not publicly readable.
+
+Learn how to [get your API token](https://docs.strapi.io/user-docs/latest/settings/managing-global-settings.html#managing-api-tokens).`,
   importName: "StrapiCredentialsProvider",
   importPath: modulePath,
   props: {
@@ -78,6 +84,7 @@ export const strapiCollectionMeta: ComponentMeta<StrapiCollectionProps> = {
   displayName: "Strapi Collection",
   importName: "StrapiCollection",
   importPath: modulePath,
+  providesData: true,
   description:
     "Fetches Strapi data of a given collection and repeats content of children once for every row fetched.",
   defaultStyles: {
@@ -163,8 +170,10 @@ export function StrapiCollection({
   const collection = L.get(data.data, ["data"]) as any[];
 
   const repElements = collection.map((item, index) => (
-    <DataProvider key={item.id} name={"strapiItem"} data={item}>
-      {repeatedElement(index === 0, children)}
+    <DataProvider key={item.id} name={"strapiItem"} data={item} hidden={true}>
+      <DataProvider name={makeDataProviderName(name!)} data={item}>
+        {repeatedElement(index, children)}
+      </DataProvider>
     </DataProvider>
   ));
 
@@ -178,7 +187,6 @@ export function StrapiCollection({
 interface StrapiFieldProps {
   className?: string;
   path?: string;
-  mediaSize?: string;
   setControlContextData?: (data: {
     fields: string[];
     isImage: boolean;
@@ -199,26 +207,12 @@ export const strapiFieldMeta: ComponentMeta<StrapiFieldProps> = {
       displayName: "Field",
       description: "Field name",
     },
-    mediaSize: {
-      type: "choice",
-      options: [
-        { label: "Fill", value: "fill" },
-        { label: "Contain", value: "contain" },
-        { label: "Cover", value: "cover" },
-        { label: "None", value: "none" },
-        { label: "Scale down", value: "scale-down" },
-      ],
-      defaultValue: "cover",
-      hidden: (props, ctx) => !ctx?.isImage,
-      displayName: "Media Size",
-    },
   },
 };
 
 export function StrapiField({
   className,
   path,
-  mediaSize,
   setControlContextData,
 }: StrapiFieldProps) {
   const item = useSelector("strapiItem");
@@ -265,9 +259,6 @@ export function StrapiField({
     return (
       <img
         className={className}
-        style={{
-          objectFit: mediaSize as any,
-        }}
         src={img_url}
         width={300}
         height={(300 * img_height) / img_width}

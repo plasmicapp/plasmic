@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@contentful/rich-text-react-renderer": "^15.11.1",
-    "@plasmicapp/loader-nextjs": "^1.0.76",
+    "@plasmicapp/loader-nextjs": "^1.0.152",
     "@plasmicapp/query": "^0.1.28",
     "lodash": "^4.17.21",
     "next": "12.1.0",

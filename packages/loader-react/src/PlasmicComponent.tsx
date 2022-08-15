@@ -34,12 +34,33 @@ export function PlasmicComponent(props: {
     );
   }
 
-  const { loader, globalContextsProps, translator } = rootContext;
+  const { loader, globalContextsProps, variation, translator } = rootContext;
 
   const Component = usePlasmicComponent(
-    { name: component, projectId },
+    { name: component, projectId, isCode: false },
     { forceOriginal }
   );
+
+  React.useEffect(() => {
+    if (isRootLoader) {
+      const meta = loader
+        .getLookup()
+        .getComponentMeta({ name: component, projectId });
+
+      if (meta) {
+        loader.trackRender({
+          renderCtx: {
+            rootProjectId: meta.projectId,
+            rootComponentId: meta.id,
+            rootComponentName: component,
+            teamIds: loader.getTeamIds(),
+            projectIds: loader.getProjectIds(),
+          },
+          variation,
+        });
+      }
+    }
+  }, [component, projectId, loader, variation]);
 
   const element = React.useMemo(() => {
     if (!Component) {
@@ -98,7 +119,7 @@ function MaybeWrap(props: {
   cond: boolean;
   wrapper: (children: React.ReactNode) => React.ReactElement;
 }) {
-  return (
-    props.cond ? props.wrapper(props.children) : props.children
-  ) as React.ReactElement;
+  return (props.cond
+    ? props.wrapper(props.children)
+    : props.children) as React.ReactElement;
 }

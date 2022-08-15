@@ -1,13 +1,13 @@
 {
   "name": "@plasmicapp/loader-svelte",
-  "version": "0.0.84",
+  "version": "0.0.146",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "svelte": "src/index.js",
   "scripts": {
     "build": "NODE_ENV=production rollup -c",
     "dev": "rollup -c",
-    "prepare": "yarn build"
+    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
   },
   "files": [
     "dist",
@@ -40,7 +40,7 @@
     "typescript": "^4.4.2"
   },
   "dependencies": {
-    "@plasmicapp/loader-react": "1.0.103",
+    "@plasmicapp/loader-react": "1.0.166",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   }

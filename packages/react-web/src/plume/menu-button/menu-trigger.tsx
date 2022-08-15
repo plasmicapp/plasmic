@@ -1,7 +1,8 @@
 import { Placement } from "@react-types/overlays";
 import * as React from "react";
-import { useMenuTrigger as useAriaMenuTrigger, usePress } from "react-aria";
-import { MenuTriggerState } from "react-stately";
+import { useMenuTrigger as useAriaMenuTrigger } from "@react-aria/menu";
+import { usePress } from "@react-aria/interactions";
+import { MenuTriggerState } from "@react-stately/menu";
 import { mergeProps } from "../../react-utils";
 import { BaseMenuProps } from "../menu/menu";
 import { getPlumeType, PLUME_STRICT_MODE } from "../plume-utils";

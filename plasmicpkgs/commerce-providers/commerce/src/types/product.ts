@@ -3,121 +3,125 @@
   Changes:
     - Added name and price to ProductVariant
     - Added count and includeSubCategories to SearchProductsBody
+    - Added width and height to ProductImage
 */
-import { Category } from "./site"
+import { Category } from "./site";
 
 export type ProductImage = {
-  url: string
-  alt?: string
-}
+  url: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+};
 
 export type ProductPrice = {
-  value: number
-  currencyCode?: 'USD' | 'EUR' | 'ARS' | string
-  retailPrice?: number
-  salePrice?: number
-  listPrice?: number
-  extendedSalePrice?: number
-  extendedListPrice?: number
-}
+  value: number;
+  currencyCode?: "USD" | "EUR" | "ARS" | string;
+  retailPrice?: number;
+  salePrice?: number;
+  listPrice?: number;
+  extendedSalePrice?: number;
+  extendedListPrice?: number;
+};
 
 export type ProductOption = {
-  __typename?: 'MultipleChoiceOption'
-  id: string
-  displayName: string
-  values: ProductOptionValues[]
-}
+  __typename?: "MultipleChoiceOption";
+  id: string;
+  displayName: string;
+  values: ProductOptionValues[];
+};
 
 export type ProductOptionValues = {
-  label: string
-  hexColors?: string[]
-}
+  label: string;
+  hexColors?: string[];
+};
 
 export type ProductVariant = {
-  id: string | number
-  options: ProductOption[]
-  availableForSale?: boolean
-  name: string
-  price?: number
-}
+  id: string | number;
+  options: ProductOption[];
+  availableForSale?: boolean;
+  name: string;
+  price?: number;
+};
 
 export type Product = {
-  id: string
-  name: string
-  description: string
-  descriptionHtml?: string
-  sku?: string
-  slug?: string
-  path?: string
-  images: ProductImage[]
-  variants: ProductVariant[]
-  price: ProductPrice
-  options: ProductOption[]
-}
+  id: string;
+  name: string;
+  description: string;
+  descriptionHtml?: string;
+  sku?: string;
+  slug?: string;
+  path?: string;
+  images: ProductImage[];
+  variants: ProductVariant[];
+  price: ProductPrice;
+  options: ProductOption[];
+};
 
 export type SearchProductsBody = {
-  search?: string
-  categoryId?: string | number
-  brandId?: string | number
-  sort?: string
-  locale?: string
-  count?: number
-  includeSubCategories?: boolean
-  categories?: Category[]
-}
+  search?: string;
+  categoryId?: string | number;
+  brandId?: string | number;
+  sort?: string;
+  locale?: string;
+  count?: number;
+  includeSubCategories?: boolean;
+  categories?: Category[];
+};
 
 export type GetProductBody = {
-  id?: string
-}
+  id?: string;
+};
 
 export type ProductTypes = {
-  product: Product
-  searchBody: SearchProductsBody
-  getProductBody: GetProductBody
-}
+  product: Product;
+  searchBody: SearchProductsBody;
+  getProductBody: GetProductBody;
+};
 
 export type SearchProductsHook<T extends ProductTypes = ProductTypes> = {
   data: {
-    products: T['product'][]
-    found: boolean
-  }
-  body: T['searchBody']
-  input: T['searchBody']
-  fetcherInput: T['searchBody']
-}
+    products: T["product"][];
+    found: boolean;
+  };
+  body: T["searchBody"];
+  input: T["searchBody"];
+  fetcherInput: T["searchBody"];
+};
 
 export type GetProductHook<T extends ProductTypes = ProductTypes> = {
-  data: T['product'] | null
-  body: T['getProductBody']
-  input: T['getProductBody']
-  fetcherInput: T['getProductBody']
-}
+  data: T["product"] | null;
+  body: T["getProductBody"];
+  input: T["getProductBody"];
+  fetcherInput: T["getProductBody"];
+};
 
 export type ProductsSchema<T extends ProductTypes = ProductTypes> = {
   endpoint: {
-    options: {}
+    options: {};
     handlers: {
-      getProducts: SearchProductsHook<T>
-    }
-  }
-}
+      getProducts: SearchProductsHook<T>;
+    };
+  };
+};
 
-export type GetAllProductPathsOperation<T extends ProductTypes = ProductTypes> =
-  {
-    data: { products: Pick<T['product'], 'path'>[] }
-    variables: { first?: number }
-  }
+export type GetAllProductPathsOperation<
+  T extends ProductTypes = ProductTypes
+> = {
+  data: { products: Pick<T["product"], "path">[] };
+  variables: { first?: number };
+};
 
 export type GetAllProductsOperation<T extends ProductTypes = ProductTypes> = {
-  data: { products: T['product'][] }
+  data: { products: T["product"][] };
   variables: {
-    relevance?: 'featured' | 'best_selling' | 'newest'
-    ids?: string[]
-    first?: number
-  }
-}
+    relevance?: "featured" | "best_selling" | "newest";
+    ids?: string[];
+    first?: number;
+  };
+};
 
 export type GetProductOperation<T extends ProductTypes = ProductTypes> = {
-  data: { product?: T['product'] }
-  variables: { path: string; slug?: never } | { path?: never; slug: string }
-}
+  data: { product?: T["product"] };
+  variables: { path: string; slug?: never } | { path?: never; slug: string };
+};

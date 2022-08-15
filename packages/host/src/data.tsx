@@ -5,6 +5,19 @@ export type DataDict = Record<string, any>;
 
 export const DataContext = createContext<DataDict | undefined>(undefined);
 
+export type DataMeta = {
+  hidden?: boolean;
+  label?: string;
+};
+
+export function mkMetaName(name: string) {
+  return `__plasmic_meta_${name}`;
+}
+
+export function mkMetaValue(meta: Partial<DataMeta>): DataMeta {
+  return meta;
+}
+
 export function applySelector(
   rawData: DataDict | undefined,
   selector: string | undefined
@@ -40,22 +53,77 @@ export function useDataEnv() {
 }
 
 export interface DataProviderProps {
+  /**
+   * Key to set in data context.
+   */
   name?: string;
+  /**
+   * Value to set for `name` in data context.
+   */
   data?: any;
+  /**
+   * If true, hide this entry in studio (data binding).
+   */
+  hidden?: boolean;
+  /**
+   * Label to be shown in the studio data picker for easier navigation (data binding).
+   */
+  label?: string;
   children?: ReactNode;
 }
 
-export function DataProvider({ name, data, children }: DataProviderProps) {
+export function DataProvider({
+  name,
+  data,
+  hidden,
+  label,
+  children,
+}: DataProviderProps) {
   const existingEnv = useDataEnv() ?? {};
   if (!name) {
     return <>{children}</>;
   } else {
     return (
-      <DataContext.Provider value={{ ...existingEnv, [name]: data }}>
+      <DataContext.Provider
+        value={{
+          ...existingEnv,
+          [name]: data,
+          [mkMetaName(name)]: mkMetaValue({ hidden, label }),
+        }}
+      >
         {children}
       </DataContext.Provider>
     );
   }
+}
+
+export interface PageParamsProviderProps {
+  params?: Record<string, string>;
+  query?: Record<string, string>;
+  children?: ReactNode;
+}
+
+export function PageParamsProvider({
+  children,
+  params = {},
+  query = {},
+}: PageParamsProviderProps) {
+  const $ctx = useDataEnv() || {};
+  return (
+    <DataProvider
+      name={"params"}
+      data={{ ...$ctx.params, ...params }}
+      label={"Page route params"}
+    >
+      <DataProvider
+        name={"query"}
+        data={{ ...$ctx.query, ...query }}
+        label={"Page query params"}
+      >
+        {children}
+      </DataProvider>
+    </DataProvider>
+  );
 }
 
 export function DataCtxReader({

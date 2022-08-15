@@ -1,22 +1,105 @@
+import { DataProvider, usePlasmicCanvasContext } from "@plasmicapp/host";
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { usePlasmicQueryData } from "@plasmicapp/query";
-import { DataProvider } from "@plasmicapp/host";
 import React, { ReactNode } from "react";
 
-export interface FetchProps {
-  url: string;
-  method?: string;
-  body?: any;
-  headers?: any;
+export interface GenericFetcherProps {
+  children?: ReactNode;
+  loadingDisplay?: ReactNode;
+  previewSpinner?: boolean;
+  errorDisplay?: ReactNode;
+  previewErrorDisplay?: boolean;
+  dataName?: string;
+  noLayout?: boolean;
+  className?: string;
 }
 
+type PropMetas<P> = ComponentMeta<P>["props"];
+
+export const genericFetcherPropsMeta: PropMetas<GenericFetcherProps> = {
+  children: "slot",
+  loadingDisplay: { type: "slot", defaultValue: "Loading..." },
+  errorDisplay: { type: "slot", defaultValue: "Error fetching data" },
+  dataName: {
+    type: "string",
+    defaultValue: "myVariable",
+    description: "Variable name to store the fetched data in",
+  },
+  previewSpinner: {
+    type: "boolean",
+    description: "Force preview the loading state",
+    displayName: "Preview loading",
+  },
+  previewErrorDisplay: {
+    type: "boolean",
+    description: "Force preview the error display",
+    displayName: "Preview error",
+  },
+  noLayout: {
+    type: "boolean",
+    displayName: "No layout",
+    description:
+      "When set, CMS Data Loader will not layout its children; instead, the layout set on its parent element will be used. Useful if you want to set flex gap or control container tag type.",
+    defaultValue: false,
+  },
+};
+
+export function GenericFetcherShell<T>({
+  result,
+  children,
+  loadingDisplay,
+  previewSpinner,
+  errorDisplay,
+  previewErrorDisplay,
+  dataName,
+  noLayout,
+  className,
+}: GenericFetcherProps & {
+  result: { data?: T; error?: Error; isLoading?: boolean };
+}) {
+  const inEditor = !!usePlasmicCanvasContext();
+  if (
+    (inEditor && previewSpinner) ||
+    (!("error" in result) && !("data" in result))
+  ) {
+    return <>{loadingDisplay ?? null}</>;
+  } else if ((inEditor && previewErrorDisplay) || "error" in result) {
+    return <>{errorDisplay ?? null}</>;
+  } else {
+    const content = (
+      <DataProvider name={dataName} data={result.data}>
+        {children}
+      </DataProvider>
+    );
+    return noLayout ? content : <div className={className}>{content}</div>;
+  }
+}
+
+export interface FetchProps {
+  url?: string;
+  method?: string;
+  body?: string | {};
+  headers?: Record<string, string>;
+}
+
+/**
+ * Tries to return the JSON response, or else returns an object with a text key containing the response body text.
+ */
 async function performFetch({ url, method, body, headers }: FetchProps) {
+  if (!url) {
+    throw new Error("Please specify a URL to fetch");
+  }
   const response = await fetch(url, {
     method,
     headers,
-    body,
+    body:
+      body === undefined
+        ? body
+        : typeof body === "string"
+        ? body
+        : JSON.stringify(body),
   });
   if (!response.ok) {
     throw new Error(response.statusText);
@@ -29,56 +112,28 @@ async function performFetch({ url, method, body, headers }: FetchProps) {
   }
 }
 
-export interface DataFetcherProps extends FetchProps {
-  children?: ReactNode;
-  spinner?: ReactNode;
-  previewSpinner?: boolean;
-  errorDisplay?: ReactNode;
-  previewErrorDisplay?: boolean;
+export interface DataFetcherProps extends FetchProps, GenericFetcherProps {
   queryKey?: string;
-  dataName?: string;
 }
 
-export function DataFetcher({
-  queryKey,
-  children,
-  spinner,
-  previewSpinner,
-  errorDisplay,
-  previewErrorDisplay,
-  dataName,
-  ...fetchProps
-}: DataFetcherProps) {
-  const query = usePlasmicQueryData(
-    queryKey ?? JSON.stringify(fetchProps),
+export function DataFetcher(props: DataFetcherProps) {
+  const { url, method, body, headers, queryKey } = props;
+  const fetchProps: FetchProps = { url, method, body, headers };
+  const result = usePlasmicQueryData(
+    queryKey ?? JSON.stringify({ type: "DataFetcher", ...fetchProps }),
     () => performFetch(fetchProps)
   );
-  if (!("error" in query) && !("data" in query)) {
-    return <>{spinner ?? null}</>;
-  } else if ("error" in query) {
-    return <>{errorDisplay ?? null}</>;
-  } else {
-    return (
-      <DataProvider name={dataName ?? queryKey} data={query.data}>
-        {children}
-      </DataProvider>
-    );
-  }
+  return <GenericFetcherShell result={result} {...props} />;
 }
 
-export interface PlasmicQueryProviderProps {
-  children: ReactNode;
-}
-
-export const dataFetcherMeta: ComponentMeta<DataFetcherProps> = {
-  name: "hostless-plasmic-query-data-fetcher",
-  displayName: "Data Fetcher",
-  importName: "DataFetcher",
-  importPath: "@plasmicpkgs/react-query",
-  props: {
+function mkFetchProps(
+  defaultUrl: string,
+  defaultMethod: string
+): PropMetas<FetchProps & { queryKey?: string }> {
+  return {
     url: {
       type: "string",
-      defaultValue: "https://api.github.com/users/plasmicapp/repos",
+      defaultValue: defaultUrl,
       description: "Where to fetch the data from",
     },
     method: {
@@ -93,23 +148,40 @@ export const dataFetcherMeta: ComponentMeta<DataFetcherProps> = {
         "PUT",
         "TRACE",
       ],
-      defaultValue: "GET",
-      description: "Method to be used when fetching",
+      defaultValue: defaultMethod,
+      description: "Method to use when fetching",
     },
     headers: {
       type: "object",
       description: "JSON object of the headers to be sent with the request",
+      defaultValue: {
+        "Content-type": "application/json",
+      },
     },
+    queryKey: {
+      type: "string",
+      description:
+        "A globally unique ID for this query, used for invalidating queries",
+    },
+  };
+}
+
+export const dataFetcherMeta: ComponentMeta<DataFetcherProps> = {
+  name: "hostless-plasmic-query-data-fetcher",
+  displayName: "Data Fetcher",
+  importName: "DataFetcher",
+  importPath: "@plasmicpkgs/plasmic-query",
+  providesData: true,
+  props: {
+    ...(mkFetchProps(
+      "https://api.github.com/users/plasmicapp/repos",
+      "GET"
+    ) as any),
     body: {
       type: "object",
       description: "JSON object of the body to be sent with the request",
     },
-    dataName: {
-      type: "string",
-      defaultValue: "myVariable",
-      description: "Variable name to store the fetched data in",
-    },
-    children: "slot",
+    ...(genericFetcherPropsMeta as any),
   },
   defaultStyles: {
     maxWidth: "100%",
@@ -128,4 +200,94 @@ export function registerDataFetcher(
   } else {
     registerComponent(DataFetcher, customDataFetcherMeta ?? dataFetcherMeta);
   }
+}
+
+export interface GraphqlFetcherProps
+  extends GenericFetcherProps,
+    Omit<FetchProps, "body"> {
+  query?: string;
+  queryKey?: string;
+}
+
+export function GraphqlFetcher(props: GraphqlFetcherProps) {
+  const { query, url, method, headers, queryKey } = props;
+  const fetchProps: FetchProps = {
+    body: query,
+    url,
+    method,
+    headers,
+  };
+  const result = usePlasmicQueryData(
+    queryKey ?? JSON.stringify({ type: "GraphqlFetcher", ...fetchProps }),
+    () => performFetch(fetchProps)
+  );
+  return <GenericFetcherShell result={result} {...props} />;
+}
+
+export const graphqlFetcherMeta: ComponentMeta<GraphqlFetcherProps> = {
+  name: "hostless-plasmic-query-graphql-fetcher",
+  displayName: "GraphQL Fetcher",
+  importName: "GraphqlFetcher",
+  importPath: "@plasmicpkgs/plasmic-query",
+  providesData: true,
+  props: (() => {
+    const gqlMetas: PropMetas<GraphqlFetcherProps> = {
+      query: {
+        type: "code",
+        lang: "graphql",
+        endpoint: (props) => props.url ?? "",
+        defaultValue: {
+          query: `{
+  allPokemon {
+    name
+    sprites {
+      front_default
+    }
+  }
+}`,
+        },
+      },
+    };
+    // Reorder the props
+    const { url, query, method, headers, queryKey, ...rest } = {
+      ...mkFetchProps("https://dex-server.herokuapp.com/", "POST"),
+      ...gqlMetas,
+      ...genericFetcherPropsMeta,
+    };
+    return {
+      url,
+      query,
+      method,
+      headers,
+      queryKey,
+      ...rest,
+    } as any;
+  })(),
+  defaultStyles: {
+    maxWidth: "100%",
+  },
+};
+
+export function registerGraphqlFetcher(
+  loader?: { registerComponent: typeof registerComponent },
+  customDataFetcherMeta?: ComponentMeta<GraphqlFetcherProps>
+) {
+  if (loader) {
+    loader.registerComponent(
+      GraphqlFetcher,
+      customDataFetcherMeta ?? graphqlFetcherMeta
+    );
+  } else {
+    registerComponent(
+      GraphqlFetcher,
+      customDataFetcherMeta ?? graphqlFetcherMeta
+    );
+  }
+}
+
+export function registerAll(loader?: {
+  registerComponent: typeof registerComponent;
+}) {
+  registerDataFetcher(loader);
+  registerGraphqlFetcher(loader);
 }

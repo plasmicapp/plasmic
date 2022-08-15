@@ -4,6 +4,8 @@ import {
   GlobalContextMeta as InternalGlobalContextMeta,
   registerComponent,
   registerGlobalContext,
+  registerTrait,
+  TraitMeta,
 } from '@plasmicapp/host';
 import {
   ComponentMeta,
@@ -11,9 +13,11 @@ import {
   LoaderBundleOutput,
   PageMeta,
   PlasmicModulesFetcher,
+  PlasmicTracker,
   Registry,
+  TrackRenderOptions,
 } from '@plasmicapp/loader-core';
-import { getActiveVariation } from '@plasmicapp/loader-splits';
+import { getActiveVariation, getExternalIds } from '@plasmicapp/loader-splits';
 import * as PlasmicQuery from '@plasmicapp/query';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -23,7 +27,12 @@ import { mergeBundles, prepComponentData } from './bundles';
 import { ComponentLookup } from './component-lookup';
 import { createUseGlobalVariant } from './global-variants';
 import { GlobalVariantSpec } from './PlasmicRootProvider';
-import { ComponentLookupSpec, getCompMetas, getLookupSpecName } from './utils';
+import {
+  ComponentLookupSpec,
+  getCompMetas,
+  getLookupSpecName,
+  uniq,
+} from './utils';
 import { getPlasmicCookieValues, updatePlasmicCookieValue } from './variation';
 
 export interface InitOptions {
@@ -51,7 +60,7 @@ interface ProjectOption {
 }
 
 export interface ComponentRenderData {
-  entryCompMetas: ComponentMeta[];
+  entryCompMetas: (ComponentMeta & { params?: Record<string, string> })[];
   bundle: LoaderBundleOutput;
   remoteFontUrls: string[];
 }
@@ -63,16 +72,6 @@ interface ComponentSubstitutionSpec {
 
 export function initPlasmicLoader(opts: InitOptions): PlasmicComponentLoader {
   const internal = new InternalPlasmicComponentLoader(opts);
-  internal.registerModules({
-    react: React,
-    'react-dom': ReactDOM,
-    'react/jsx-runtime': jsxRuntime,
-    'react/jsx-dev-runtime': jsxDevRuntime,
-
-    // Also inject @plasmicapp/query at run time, so that the same
-    // context is used here and in loader-downloaded code
-    '@plasmicapp/query': PlasmicQuery,
-  });
   return new PlasmicComponentLoader(internal);
 }
 
@@ -123,10 +122,35 @@ export class InternalPlasmicComponentLoader {
     projects: [],
     activeSplits: [],
   };
+  private tracker: PlasmicTracker;
+
+  private substitutedComponents: Record<string, React.ComponentType<any>> = {};
+  private substitutedGlobalVariantHooks: Record<string, () => any> = {};
 
   constructor(private opts: InitOptions) {
     this.registry = Registry.getInstance();
     this.fetcher = new PlasmicModulesFetcher(opts);
+    this.tracker = new PlasmicTracker({
+      projectIds: opts.projects.map((p) => p.id),
+      platform: opts.platform,
+      preview: opts.preview,
+    });
+
+    this.registerModules({
+      react: React,
+      'react-dom': ReactDOM,
+      'react/jsx-runtime': jsxRuntime,
+      'react/jsx-dev-runtime': jsxDevRuntime,
+
+      // Also inject @plasmicapp/query and @plasmicapp/host to use the
+      // same contexts here and in loader-downloaded code.
+      '@plasmicapp/query': PlasmicQuery,
+      '@plasmicapp/host': PlasmicHost,
+      '@plasmicapp/loader-runtime-registry': {
+        components: this.substitutedComponents,
+        globalVariantHooks: this.substitutedGlobalVariantHooks,
+      },
+    });
   }
 
   setGlobalVariants(globalVariants: GlobalVariantSpec[]) {
@@ -192,6 +216,10 @@ export class InternalPlasmicComponentLoader {
     });
   }
 
+  registerTrait(trait: string, meta: TraitMeta) {
+    registerTrait(trait, meta);
+  }
+
   registerPrefetchedBundle(bundle: LoaderBundleOutput) {
     this.mergeBundle(bundle);
   }
@@ -233,8 +261,10 @@ export class InternalPlasmicComponentLoader {
       specsToFetch: ComponentLookupSpec[]
     ) => {
       await this.fetchMissingData({ missingSpecs: specsToFetch });
-      const { found: existingMetas2, missing: missingSpecs2 } =
-        this.maybeGetCompMetas(...specs);
+      const {
+        found: existingMetas2,
+        missing: missingSpecs2,
+      } = this.maybeGetCompMetas(...specs);
       if (missingSpecs2.length > 0) {
         return null;
       }
@@ -248,8 +278,10 @@ export class InternalPlasmicComponentLoader {
     }
 
     // Else we only fetch actually missing specs
-    const { found: existingMetas, missing: missingSpecs } =
-      this.maybeGetCompMetas(...specs);
+    const {
+      found: existingMetas,
+      missing: missingSpecs,
+    } = this.maybeGetCompMetas(...specs);
     if (missingSpecs.length === 0) {
       return prepComponentData(this.bundle, ...existingMetas);
     }
@@ -300,6 +332,10 @@ export class InternalPlasmicComponentLoader {
     return this.bundle.activeSplits;
   }
 
+  trackConversion(value: number = 0) {
+    this.tracker.trackConversion(value);
+  }
+
   // @ts-ignore
   private async fetchMissingData(opts: {
     missingSpecs: ComponentLookupSpec[];
@@ -326,7 +362,7 @@ export class InternalPlasmicComponentLoader {
   }
 
   public async getActiveVariation(opts: {
-    traits: Record<string, string | number>;
+    traits: Record<string, string | number | boolean>;
     getKnownValue: (key: string) => string | undefined;
     updateKnownValue: (key: string, value: string) => void;
   }) {
@@ -337,8 +373,29 @@ export class InternalPlasmicComponentLoader {
     });
   }
 
+  public getTeamIds(): string[] {
+    return uniq(
+      this.bundle.projects
+        .map((p) =>
+          p.teamId ? `${p.teamId}${p.indirect ? '@indirect' : ''}` : null
+        )
+        .filter((x): x is string => !!x)
+    );
+  }
+
+  public getProjectIds(): string[] {
+    return uniq(
+      this.bundle.projects.map((p) => `${p.id}${p.indirect ? '@indirect' : ''}`)
+    );
+  }
+
+  public trackRender(opts?: TrackRenderOptions) {
+    this.tracker.trackRender(opts);
+  }
+
   private async fetchAllData() {
     const bundle = await this.ensureFetcher().fetchAllData();
+    this.tracker.trackFetch();
     this.mergeBundle(bundle);
     this.roots.forEach((watcher) => watcher.onDataFetched?.());
     return bundle;
@@ -356,9 +413,9 @@ export class InternalPlasmicComponentLoader {
     // in component meta.
     for (const sub of this.subs) {
       const metas = getCompMetas(this.bundle.components, sub.lookup);
-      metas.forEach((meta) =>
-        this.registry.register(meta.entry, { default: sub.component })
-      );
+      metas.forEach((meta) => {
+        this.substitutedComponents[meta.id] = sub.component;
+      });
     }
 
     // We also swap global variants' useXXXGlobalVariant() hook with
@@ -369,12 +426,9 @@ export class InternalPlasmicComponentLoader {
     // hooks to read from them instead.
     for (const globalGroup of this.bundle.globalGroups) {
       if (globalGroup.type !== 'global-screen') {
-        this.registry.register(globalGroup.contextFile, {
-          [globalGroup.useName]: createUseGlobalVariant(
-            globalGroup.name,
-            globalGroup.projectId
-          ),
-        });
+        this.substitutedGlobalVariantHooks[
+          globalGroup.id
+        ] = createUseGlobalVariant(globalGroup.name, globalGroup.projectId);
       }
     }
     this.registry.updateModules(this.bundle);
@@ -494,6 +548,10 @@ export class PlasmicComponentLoader {
     this.__internal.registerGlobalContext(context, meta);
   }
 
+  registerTrait(trait: string, meta: TraitMeta) {
+    this.__internal.registerTrait(trait, meta);
+  }
+
   /**
    * Pre-fetches component data needed to for PlasmicLoader to render
    * these components.  Should be passed into PlasmicRootProvider as
@@ -541,7 +599,7 @@ export class PlasmicComponentLoader {
   }
 
   protected async _getActiveVariation(opts: {
-    traits: Record<string, string | number>;
+    traits: Record<string, string | number | boolean>;
     getKnownValue: (key: string) => string | undefined;
     updateKnownValue: (key: string, value: string) => void;
   }) {
@@ -550,7 +608,7 @@ export class PlasmicComponentLoader {
 
   async getActiveVariation(opts: {
     known?: Record<string, string>;
-    traits: Record<string, string | number>;
+    traits: Record<string, string | number | boolean>;
   }) {
     return this._getActiveVariation({
       traits: opts.traits,
@@ -570,8 +628,16 @@ export class PlasmicComponentLoader {
     });
   }
 
+  getExternalVariation(variation: Record<string, string>) {
+    return getExternalIds(this.getActiveSplits(), variation);
+  }
+
   getActiveSplits() {
     return this.__internal.getActiveSplits();
+  }
+
+  trackConversion(value: number = 0) {
+    this.__internal.trackConversion(value);
   }
 
   clearCache() {

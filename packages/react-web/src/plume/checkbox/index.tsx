@@ -1,7 +1,8 @@
 import { AriaCheckboxProps } from "@react-types/checkbox";
 import * as React from "react";
-import { useCheckbox as useAriaCheckbox, VisuallyHidden } from "react-aria";
-import { useToggleState } from "react-stately";
+import { useCheckbox as useAriaCheckbox } from "@react-aria/checkbox";
+import { VisuallyHidden } from "@react-aria/visually-hidden";
+import { useToggleState } from "@react-stately/toggle";
 import { pick } from "../../common";
 import { mergeProps } from "../../react-utils";
 import { Overrides } from "../../render/elements";

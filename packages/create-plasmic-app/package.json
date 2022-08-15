@@ -1,6 +1,6 @@
 {
   "name": "create-plasmic-app",
-  "version": "0.0.41",
+  "version": "0.0.46",
   "description": "Create Plasmic-powered React apps",
   "main": "./dist/lib.js",
   "types": "./dist/lib.d.ts",
@@ -17,7 +17,7 @@
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
     "build": "eslint 'src/**' && tsc",
     "create-plasmic-app": "ts-node src/index.ts",
-    "prepare": "yarn build"
+    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
   },
   "devDependencies": {
     "@types/findup-sync": "^2.0.2",
@@ -40,7 +40,7 @@
     "typescript": "^4.2.3"
   },
   "dependencies": {
-    "@plasmicapp/cli": "^0.1.166",
+    "@plasmicapp/cli": "^0.1.185",
     "@sentry/node": "^6.2.2",
     "chalk": "^4.1.0",
     "execa": "^5.0.0",

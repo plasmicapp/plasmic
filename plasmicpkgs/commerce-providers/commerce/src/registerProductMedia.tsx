@@ -2,7 +2,7 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
-import { useProduct, useProductSliderContext } from "./contexts";
+import { useProduct, useProductMediaContext } from "./contexts";
 import { Registerable } from "./registerable";
 
 const placeholderImage =
@@ -11,48 +11,46 @@ const placeholderImage =
 interface ProductMediaProps {
   className: string;
   mediaIndex?: number;
-  mediaSize?: string;
+  setControlContextData: (data: { inMediaContext: boolean }) => void;
 }
 
 export const productMediaMeta: ComponentMeta<ProductMediaProps> = {
   name: "plasmic-commerce-product-media",
   displayName: "Product Media",
   props: {
-    mediaIndex: "number",
-    mediaSize: {
-      type: "choice",
-      options: [
-        { label: "Fill", value: "fill" },
-        { label: "Container", value: "contain" },
-        { label: "Cover", value: "cover" },
-        { label: "None", value: "none" },
-        { label: "Scale down", value: "scale-down" },
-      ],
+    mediaIndex: {
+      type: "number",
+      min: 0,
+      hidden: (_, ctx) => !!ctx?.inMediaContext,
     },
   },
   importPath: "@plasmicpkgs/commerce",
   importName: "ProductMedia",
 };
 
-export function ProductMedia(props: ProductMediaProps) {
-  const { className, mediaIndex = 0, mediaSize } = props;
+export const ProductMedia = React.forwardRef(
+  (props: ProductMediaProps, ref: React.ForwardedRef<HTMLImageElement>) => {
+    const { className, mediaIndex = 0, setControlContextData } = props;
 
-  const product = useProduct();
-  const sliderContext = useProductSliderContext();
+    const product = useProduct();
+    const mediaContext = useProductMediaContext();
 
-  const image = product?.images[sliderContext ?? mediaIndex];
-  return (
-    <img
-      alt={product?.name || "Product Image"}
-      src={product ? image?.url ?? "" : placeholderImage}
-      loading={"lazy"}
-      className={className}
-      style={{
-        objectFit: mediaSize as any,
-      }}
-    />
-  );
-}
+    setControlContextData?.({
+      inMediaContext: mediaContext !== undefined,
+    });
+
+    const image = product?.images[mediaContext ?? mediaIndex];
+    return (
+      <img
+        ref={ref}
+        alt={product?.name || "Product Image"}
+        src={product ? image?.url ?? "" : placeholderImage}
+        loading={"lazy"}
+        className={className}
+      />
+    );
+  }
+);
 
 export function registerProductMedia(
   loader?: Registerable,

@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@plasmicapp/host": "^1.0.21",
-    "@plasmicapp/loader-nextjs": "^1.0.78",
+    "@plasmicapp/loader-nextjs": "^1.0.152",
     "@plasmicapp/react-web": "^0.2.91",
     "@plasmicpkgs/plasmic-cms": "^0.0.39",
     "next": "12.1.0",

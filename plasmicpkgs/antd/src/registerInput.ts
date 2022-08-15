@@ -1,7 +1,7 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { Input, InputProps } from "antd";
+import Input, { InputProps } from "antd/lib/input";
 import {
   GroupProps,
   PasswordProps,
@@ -14,10 +14,36 @@ import Search from "antd/lib/input/Search";
 import TextArea from "antd/lib/input/TextArea";
 import { Registerable } from "./registerable";
 
+function sortObjectKeys<T extends {}>(obj: T): T {
+  return Object.fromEntries(Object.entries(obj).sort()) as T;
+}
+
+type PropSpec<T> = ComponentMeta<T>["props"];
+
+function sortProps<T>(props: PropSpec<T>): PropSpec<T> {
+  return sortObjectKeys(props);
+}
+
+const commonHtmlAttributes = {
+  "aria-label": {
+    type: "string",
+    description: "The ARIA label for this input",
+  },
+  "aria-labelledby": {
+    type: "string",
+    description: "Identifies the element(s) that labels this input",
+  },
+  name: {
+    type: "string",
+    description: "The HTML name of the input",
+  },
+} as const;
+
 export const inputMeta: ComponentMeta<InputProps> = {
   name: "AntdInput",
   displayName: "Antd Input",
-  props: {
+  props: sortProps<InputProps>({
+    ...commonHtmlAttributes,
     addonAfter: {
       type: "slot",
       hidePlaceholder: true,
@@ -77,9 +103,10 @@ export const inputMeta: ComponentMeta<InputProps> = {
       editOnly: true,
       uncontrolledProp: "defaultValue",
     },
-  },
-  importPath: "antd",
+  }),
+  importPath: "antd/lib/input",
   importName: "Input",
+  isDefaultExport: true,
 };
 
 export function registerInput(
@@ -94,7 +121,8 @@ export function registerInput(
 export const inputTextAreaMeta: ComponentMeta<TextAreaProps> = {
   name: "AntdInputTextArea",
   displayName: "Antd Input Text Area",
-  props: {
+  props: sortProps<TextAreaProps>({
+    ...commonHtmlAttributes,
     allowClear: {
       type: "boolean",
       description: "If allow to remove input content with clear icon",
@@ -137,7 +165,7 @@ export const inputTextAreaMeta: ComponentMeta<TextAreaProps> = {
       editOnly: true,
       uncontrolledProp: "defaultValue",
     },
-  },
+  }),
   importPath: "antd/lib/input/TextArea",
   importName: "TextArea",
   isDefaultExport: true,
@@ -156,7 +184,8 @@ export function registerInputTextArea(
 export const inputSearchMeta: ComponentMeta<SearchProps> = {
   name: "AntdInputSearch",
   displayName: "Antd Input Search",
-  props: {
+  props: sortProps<SearchProps>({
+    ...commonHtmlAttributes,
     addonBefore: {
       type: "slot",
       hidePlaceholder: true,
@@ -220,7 +249,7 @@ export const inputSearchMeta: ComponentMeta<SearchProps> = {
       editOnly: true,
       uncontrolledProp: "defaultValue",
     },
-  },
+  }),
   importPath: "antd/lib/input/Search",
   importName: "Search",
   isDefaultExport: true,
@@ -239,7 +268,8 @@ export function registerInputSearch(
 export const inputPasswordMeta: ComponentMeta<PasswordProps> = {
   name: "AntdInputPassword",
   displayName: "Antd Input Password",
-  props: {
+  props: sortProps<PasswordProps>({
+    ...commonHtmlAttributes,
     addonAfter: {
       type: "slot",
       hidePlaceholder: true,
@@ -299,7 +329,7 @@ export const inputPasswordMeta: ComponentMeta<PasswordProps> = {
       description: "Whether show toggle button",
       defaultValueHint: true,
     },
-  },
+  }),
   importPath: "antd/lib/input/Password",
   importName: "Password",
   isDefaultExport: true,

@@ -3,7 +3,7 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
-import { ProductSliderProvider, useProduct } from "./contexts";
+import { ProductMediaProvider, useProduct } from "./contexts";
 import { Registerable } from "./registerable";
 
 interface ProductSliderProps {
@@ -17,6 +17,7 @@ interface ProductSliderProps {
 export const productSliderMeta: ComponentMeta<ProductSliderProps> = {
   name: "plasmic-commerce-product-slider",
   displayName: "Product Slider",
+  providesData: true,
   props: {
     thumbsVisible: {
       type: "number",
@@ -72,16 +73,11 @@ export function ProductSlider(props: ProductSliderProps) {
 
   const [selected, setSelected] = React.useState<number>(slideSelected);
 
-  const maximumRight = product.images.length - thumbsVisible;
-  const leftIndex = Math.min(maximumRight, Math.max(0, selected - 1));
+  const maximumLeft = Math.max(0, product.images.length - thumbsVisible);
+  const leftIndex = Math.min(maximumLeft, Math.max(0, selected - 1));
   return (
     <div className={className}>
-      {
-        <ProductSliderProvider
-          mediaIndex={selected}
-          children={slideContainer}
-        />
-      }
+      {<ProductMediaProvider mediaIndex={selected} children={slideContainer} />}
       <div
         style={{
           display: "grid",
@@ -92,8 +88,8 @@ export function ProductSlider(props: ProductSliderProps) {
           .slice(leftIndex, leftIndex + thumbsVisible)
           .map((image, i) =>
             repeatedElement(
-              i === 0,
-              <ProductSliderProvider
+              i,
+              <ProductMediaProvider
                 mediaIndex={leftIndex + i}
                 children={thumbsContainer}
                 onClick={() => setSelected(leftIndex + i)}

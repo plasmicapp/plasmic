@@ -1,7 +1,7 @@
-import { Placement } from "@react-types/overlays";
-import { FocusStrategy } from "@react-types/shared";
+import type { Placement } from "@react-types/overlays";
+import type { FocusStrategy } from "@react-types/shared";
 import * as React from "react";
-import { OverlayTriggerState } from "react-stately";
+import type { OverlayTriggerState } from "@react-stately/overlays";
 
 export interface TriggeredOverlayContextValue {
   triggerRef: React.RefObject<HTMLElement>;

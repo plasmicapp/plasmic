@@ -43,8 +43,9 @@ import {
   ComponentRenderData,
   PlasmicRootProvider,
 } from "@plasmicapp/loader-nextjs";
-${ifTs(ts, `import { GetStaticPaths, GetStaticProps } from "next";\n`)}
+${ifTs(ts, `import type { GetStaticPaths, GetStaticProps } from "next";\n`)}
 import Error from "next/error";
+import { useRouter } from "next/router";
 import { PLASMIC } from "../plasmic-init";
 
 export default function PlasmicLoaderPage(props${ifTs(
@@ -55,16 +56,20 @@ export default function PlasmicLoaderPage(props${ifTs(
 }`
   )}) {
   const { plasmicData, queryCache } = props;
+  const router = useRouter();
   if (!plasmicData || plasmicData.entryCompMetas.length === 0) {
     return <Error statusCode={404} />;
   }
+  const pageMeta = plasmicData.entryCompMetas[0];
   return (
     <PlasmicRootProvider
       loader={PLASMIC}
       prefetchedData={plasmicData}
       prefetchedQueryData={queryCache}
+      pageParams={pageMeta.params}
+      pageQuery={router.query${ifTs(ts, " as Record<string, string>")}}
     >
-      <PlasmicComponent component={plasmicData.entryCompMetas[0].name} />
+      <PlasmicComponent component={pageMeta.displayName} />
     </PlasmicRootProvider>
   );
 }
@@ -80,10 +85,15 @@ export const getStaticProps${ifTs(
     // non-Plasmic catch-all
     return { props: {} };
   }
+  const pageMeta = plasmicData.entryCompMetas[0];
   // Cache the necessary data fetched for the page
   const queryCache = await extractPlasmicQueryData(
-    <PlasmicRootProvider loader={PLASMIC} prefetchedData={plasmicData}>
-      <PlasmicComponent component={plasmicData.entryCompMetas[0].name} />
+    <PlasmicRootProvider
+      loader={PLASMIC}
+      prefetchedData={plasmicData}
+      pageParams={pageMeta.params}
+    >
+      <PlasmicComponent component={pageMeta.displayName} />
     </PlasmicRootProvider>
   );
   // Use revalidate if you want incremental static regeneration
@@ -98,10 +108,7 @@ export const getStaticPaths${ifTs(ts, `: GetStaticPaths`)} = async () => {
         catchall: mod.path.substring(1).split("/"),
       },
     })),
-
-    // Turn on "fallback: 'blocking'" if you would like new paths created
-    // in Plasmic to be automatically available
-    fallback: false,
+    fallback: "blocking",
   };
 }
   `.trim();
@@ -120,15 +127,7 @@ import { PlasmicCanvasHost } from '@plasmicapp/loader-nextjs';
 import { PLASMIC } from '../plasmic-init';
 
 export default function PlasmicHost() {
-  return PLASMIC && (
-    <div>
-      <Script
-        src="https://static1.plasmic.app/preamble.js"
-        strategy="beforeInteractive"
-      />
-      <PlasmicCanvasHost />
-    </div>
-  );
+  return PLASMIC && <PlasmicCanvasHost />;
 }
     `;
   } else {
@@ -146,21 +145,13 @@ import { PlasmicCanvasHost, registerComponent } from '@plasmicapp/host';
 // registerComponent(...)
 
 export default function PlasmicHost() {
-  return (
-    <div>
-      <Script
-        src="https://static1.plasmic.app/preamble.js"
-        strategy="beforeInteractive"
-      />
-      <PlasmicCanvasHost />
-    </div>
-  );
+  return <PlasmicCanvasHost />;
 }
     `;
   }
 }
 
-export function wrapAppRootForCodegen() {
+export function wrapAppRootForCodegen(): string {
   return `
 import '../styles/globals.css'
 import { PlasmicRootProvider } from "@plasmicapp/react-web";

@@ -381,6 +381,7 @@ class PlasmicApi {
     return {
       "@plasmicapp/loader": "0.0.1",
       "@plasmicapp/cli": "0.0.1",
+      "@plasmicapp/host": "0.0.1",
       "@plasmicapp/react-web": "0.0.1",
       "@plasmicapp/react-web-runtime": "0.0.1",
     };

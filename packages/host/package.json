@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/host",
-  "version": "1.0.41",
+  "version": "1.0.74",
   "description": "plasmic library for app hosting",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,7 +8,8 @@
   "files": [
     "dist",
     "registerComponent",
-    "registerGlobalContext"
+    "registerGlobalContext",
+    "registerTrait"
   ],
   "size-limit": [
     {
@@ -21,16 +22,15 @@
     }
   ],
   "scripts": {
-    "build": "tsdx build && rollup -c",
+    "build": "./update_version.sh && tsdx build && rollup -c",
     "start": "tsdx watch",
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
-    "prepare": "yarn build",
+    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
   "dependencies": {
-    "@plasmicapp/preamble": "0.0.64",
     "window-or-global": "^1.0.1"
   },
   "devDependencies": {

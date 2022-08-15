@@ -1,29 +1,36 @@
 import {
-  ComponentMeta,
   DataProvider,
-  GlobalContextMeta,
-  registerComponent,
-  registerGlobalContext,
   repeatedElement,
+  usePlasmicCanvasContext,
   useSelector,
 } from "@plasmicapp/host";
-import { CanvasComponentProps } from "@plasmicapp/host/dist/registerComponent";
+import registerComponent, {
+  CanvasComponentProps,
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
+import registerGlobalContext, {
+  GlobalContextMeta,
+} from "@plasmicapp/host/registerGlobalContext";
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import React from "react";
 
 const defaultHost = "https://studio.plasmic.app";
 
-const CredentialsContext = React.createContext<
-  AirtableCredentialsProviderProps | undefined
->(undefined);
+export interface DataSourceInfo {
+  id: string;
+  base: string;
+  host?: string;
+}
+
+const CredentialsContext = React.createContext<DataSourceInfo | undefined>(
+  undefined
+);
 
 interface RecordData {
   [field: string]: string | { id: string; url: string; filename: string }[];
 }
 
 export interface AirtableRecordProps {
-  dataSourceId?: string;
-  base?: string;
   table: string;
   record: string;
 }
@@ -32,23 +39,29 @@ export function AirtableRecord({
   table,
   record,
   children,
-  ...props
 }: React.PropsWithChildren<AirtableRecordProps>) {
   const credentialsContext = React.useContext(CredentialsContext);
-  const base = props.base ?? credentialsContext?.base;
-  const dataSourceId = props.dataSourceId ?? credentialsContext?.dataSourceId;
-  const host = credentialsContext?.host ?? defaultHost;
+
+  const dataSourceId = credentialsContext && credentialsContext.id;
+  const base = credentialsContext && credentialsContext.base;
+  const host = (credentialsContext && credentialsContext.host) || defaultHost;
 
   const data = usePlasmicQueryData(
     JSON.stringify(["AirtableRecord", host, base, table, record, dataSourceId]),
     async () => {
-      if (!base || !dataSourceId || !table) {
+      if (!base || !dataSourceId) {
         throw new Error(
-          "AirtableRecord needs base ID, table and Data Source ID"
+          "Missing Data Source. Please select a Data Source from the Airtable Credentials Provider"
         );
       }
+      if (!table) {
+        throw new Error("AirtableRecord is missing the table name");
+      }
+      if (!record) {
+        throw new Error("AirtableRecord is missing the record ID");
+      }
       const pathname = `/${base}/${table}/${record}`;
-      const url = `${host}/api/v1/server-data-sources/query?pathname=${encodeURIComponent(
+      const url = `${host}/api/v1/server-data/query?pathname=${encodeURIComponent(
         pathname
       )}&dataSourceId=${dataSourceId}`;
       return (await (await fetch(url, { method: "GET" })).json())
@@ -109,8 +122,6 @@ export function AirtableRecordField({
 }
 
 export interface AirtableCollectionProps {
-  dataSourceId?: string;
-  base?: string;
   table: string;
   fields?: string[];
   filterByFormula?: string;
@@ -129,9 +140,10 @@ export function AirtableCollection({
   ...props
 }: React.PropsWithChildren<AirtableCollectionProps>) {
   const credentialsContext = React.useContext(CredentialsContext);
-  const base = props.base ?? credentialsContext?.base;
-  const dataSourceId = props.dataSourceId ?? credentialsContext?.dataSourceId;
-  const host = credentialsContext?.host ?? defaultHost;
+
+  const dataSourceId = credentialsContext && credentialsContext.id;
+  const base = credentialsContext && credentialsContext.base;
+  const host = (credentialsContext && credentialsContext.host) || defaultHost;
 
   const searchArray: string[] = [];
   if (props.fields) {
@@ -171,7 +183,7 @@ export function AirtableCollection({
 
   const search = searchArray.length === 0 ? "" : "?" + searchArray.join("&");
 
-  const data = usePlasmicQueryData(
+  const { data, error, isLoading } = usePlasmicQueryData(
     JSON.stringify([
       "AirtableCollection",
       host,
@@ -181,13 +193,16 @@ export function AirtableCollection({
       dataSourceId,
     ]),
     async () => {
-      if (!base || !dataSourceId || !table) {
+      if (!base || !dataSourceId) {
         throw new Error(
-          "AirtableRecord needs base ID, table and Data Source ID"
+          "Missing Data Source. Please select a Data Source from the Airtable Credentials Provider"
         );
       }
+      if (!table) {
+        throw new Error("AirtableCollection is missing the table name");
+      }
       const pathname = `/${base}/${table}${search}`;
-      const url = `${host}/api/v1/server-data-sources/query?pathname=${encodeURIComponent(
+      const url = `${host}/api/v1/server-data/query?pathname=${encodeURIComponent(
         pathname
       )}&dataSourceId=${dataSourceId}`;
       return (await (await fetch(url, { method: "GET" })).json()).records as {
@@ -197,19 +212,19 @@ export function AirtableCollection({
     }
   );
 
-  if ("error" in data) {
-    return <p>Error: {data.error?.message}</p>;
+  if (error) {
+    return <p>Error: {error.message}</p>;
   }
 
-  if (!("data" in data)) {
+  if (isLoading) {
     return <p>Loading...</p>;
   }
 
   return (
     <>
-      {data.data!.map((record, index) => (
+      {(data ?? []).map((record, index) => (
         <DataProvider key={record.id} name={contextKey} data={record.fields}>
-          {repeatedElement(index === 0, children)}
+          {repeatedElement(index, children)}
         </DataProvider>
       ))}
     </>
@@ -217,20 +232,27 @@ export function AirtableCollection({
 }
 
 interface AirtableCredentialsProviderProps {
-  dataSourceId: string;
-  base: string;
+  dataSource: DataSourceInfo;
   host?: string;
 }
 
 export function AirtableCredentialsProvider({
-  base,
-  dataSourceId,
+  dataSource,
   host: maybeHost,
   children,
 }: React.PropsWithChildren<AirtableCredentialsProviderProps>) {
+  const inCanvas = usePlasmicCanvasContext();
+  if (inCanvas && (!dataSource || !dataSource.id || !dataSource.base)) {
+    return (
+      <p>
+        Error: Missing Data Source. Please select a Data Source from the
+        Airtable Credentials Provider
+      </p>
+    );
+  }
   const host = maybeHost || defaultHost;
   return (
-    <CredentialsContext.Provider value={{ base, dataSourceId, host }}>
+    <CredentialsContext.Provider value={{ ...dataSource, host }}>
       {children}
     </CredentialsContext.Provider>
   );
@@ -243,6 +265,7 @@ export const airtableRecordMeta: ComponentMeta<AirtableRecordProps> = {
   displayName: "Airtable Record",
   importPath: thisModule,
   importName: "AirtableRecord",
+  providesData: true,
   props: {
     children: {
       type: "slot",
@@ -260,19 +283,6 @@ export const airtableRecordMeta: ComponentMeta<AirtableRecordProps> = {
       type: "string",
       displayName: "Record",
       description: "The table record ID",
-    },
-    base: {
-      type: "string",
-      displayName: "Base",
-      defaultValueHint: "Read from Credentials Provider",
-      description:
-        "The Airtable Base (if not provided by the Credentials Provider)",
-    },
-    dataSourceId: {
-      type: "string",
-      displayName: "Data Source ID",
-      defaultValueHint: "Read from Credentials Provider",
-      description: "The Data Source ID with the Airtable secrets",
     },
   },
 };
@@ -333,6 +343,7 @@ export const airtableCollectionMeta: ComponentMeta<AirtableCollectionProps> = {
   displayName: "Airtable Collection",
   importPath: thisModule,
   importName: "AirtableCollection",
+  providesData: true,
   props: {
     children: {
       type: "slot",
@@ -377,19 +388,6 @@ export const airtableCollectionMeta: ComponentMeta<AirtableCollectionProps> = {
       displayName: "Filter by Formula",
       description: "An Airtable formula used to filter records",
     },
-    base: {
-      type: "string",
-      displayName: "Base",
-      defaultValueHint: "Read from Credentials Provider",
-      description:
-        "The Airtable Base (if not provided by the Credentials Provider)",
-    },
-    dataSourceId: {
-      type: "string",
-      displayName: "Data Source ID",
-      defaultValueHint: "Read from Credentials Provider",
-      description: "The Data Source ID with the Airtable secrets",
-    },
   },
 };
 
@@ -416,15 +414,11 @@ export const airtableCredentialsProviderMeta: GlobalContextMeta<AirtableCredenti
   importPath: thisModule,
   importName: "AirtableCredentialsProvider",
   props: {
-    base: {
-      type: "string",
-      displayName: "Base",
-      description: "The Airtable Base",
-    },
-    dataSourceId: {
-      type: "string",
-      displayName: "Data Source ID",
-      description: "The Data Source ID",
+    dataSource: {
+      type: "dataSource",
+      dataSource: "airtable",
+      displayName: "Data Source",
+      description: "The Airtable Data Source to use",
     },
     host: {
       type: "string",

@@ -1,12 +1,10 @@
 import { Product } from "../types/product";
 export const defaultProduct: Product = {
   id: "123456789",
-  name: "Product Placeholder",
+  name: "Product name",
   description: "",
   descriptionHtml: `
     <p>This is a <strong>placeholder</strong>.</p>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
   `,
   images: [
     {
@@ -24,13 +22,13 @@ export const defaultProduct: Product = {
   ],
   variants: [
     {
-      id: "variiant1",
-      name: "Variant Placeholder",
+      id: "variant1",
+      name: "Variant 1",
       options: [],
     },
     {
       id: "variant2",
-      name: "Variant Placeholder 2",
+      name: "Variant 2",
       options: [],
     },
   ],

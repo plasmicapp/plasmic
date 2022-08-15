@@ -21,6 +21,7 @@ import {
   defaultPagePath,
   defaultResourcePath,
   deleteFile,
+  eqPagePath,
   fileExists,
   readFileContent,
   renameFile,
@@ -71,7 +72,8 @@ const updateDirectSkeleton = async (
         ) {
           throw e;
         } else {
-          throw new HandledError(e.messag);
+          assert(e instanceof Error);
+          throw new HandledError(e.message);
         }
       }
     }),
@@ -302,7 +304,7 @@ export async function syncProjectComponents(
       if (
         isPage &&
         isPageAwarePlatform(context.config.platform) &&
-        skeletonPath !== compConfig.importSpec.modulePath &&
+        !eqPagePath(skeletonPath, compConfig.importSpec.modulePath) &&
         fileExists(context, compConfig.importSpec.modulePath)
       ) {
         if (context.cliArgs.quiet !== true) {

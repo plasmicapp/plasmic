@@ -17,6 +17,11 @@ function getFirstCompMeta(metas: ComponentMeta[], lookup: ComponentLookupSpec) {
 export class ComponentLookup {
   constructor(private bundle: LoaderBundleOutput, private registry: Registry) {}
 
+  getComponentMeta(spec: ComponentLookupSpec): ComponentMeta | undefined {
+    const compMeta = getFirstCompMeta(this.bundle.components, spec);
+    return compMeta;
+  }
+
   getComponent<P extends React.ComponentType = any>(
     spec: ComponentLookupSpec,
     opts: { forceOriginal?: boolean } = {}
@@ -32,7 +37,10 @@ export class ComponentLookup {
     const entry = this.registry.load(moduleName, {
       forceOriginal: opts.forceOriginal,
     });
-    return entry.default as P;
+    return !opts.forceOriginal &&
+      typeof entry?.getPlasmicComponent === 'function'
+      ? entry.getPlasmicComponent()
+      : (entry.default as P);
   }
 
   hasComponent(spec: ComponentLookupSpec) {
@@ -70,7 +78,9 @@ export class ComponentLookup {
       projectMeta.globalContextsProviderFileName
     );
 
-    return entry.default;
+    return typeof entry?.getPlasmicComponent === 'function'
+      ? entry.getPlasmicComponent()
+      : entry.default;
   }
 
   getRootProvider() {

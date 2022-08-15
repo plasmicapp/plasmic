@@ -1,10 +1,13 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
+import debounce from "lodash.debounce";
 import React from "react";
 import { ProductProvider } from "./contexts";
 import useProduct from "./product/use-product";
+import useSearch from "./product/use-search";
+import { Registerable } from "./registerable";
+import { Product } from "./types/product";
 import { CommerceError } from "./utils/errors";
 
 interface ProductBoxProps {
@@ -12,6 +15,10 @@ interface ProductBoxProps {
   children?: React.ReactNode;
   id?: string;
   noLayout?: boolean;
+  setControlContextData?: (data: {
+    products: Product[];
+    onSearch?: (value: string) => void;
+  }) => void;
 }
 
 export const productBoxMeta: ComponentMeta<ProductBoxProps> = {
@@ -28,56 +35,83 @@ export const productBoxMeta: ComponentMeta<ProductBoxProps> = {
               type: "component",
               name: "plasmic-commerce-product-text-field",
               props: {
-                field: "name"
-              }
+                field: "name",
+              },
             },
             {
               type: "component",
-              name: "plasmic-commerce-product-media"
-            }
+              name: "plasmic-commerce-product-media",
+            },
           ],
           styles: {
             width: "100%",
             minWidth: 0,
-          }
+          },
         },
-      ]
+      ],
     },
     noLayout: "boolean",
     id: {
-      type: "string",
-      description: "Fetch a product by its slug or ID"
-    }
+      type: "cardPicker",
+      modalTitle: "Product",
+      onSearch: (props, ctx) => ctx?.onSearch,
+      options: (props, ctx) =>
+        ctx?.products.map((product) => ({
+          imgUrl: product.images[0].url,
+          value: product.id,
+          label: product.slug ?? product.name,
+          footer: (
+            <div>
+              <div>
+                <strong>{product.name}</strong>
+              </div>
+              <div>{product.slug}</div>
+            </div>
+          ),
+        })) ?? [],
+    },
   },
   importPath: "@plasmicpkgs/commerce",
   importName: "ProductBox",
+  providesData: true
 };
 
 export function ProductBox(props: ProductBoxProps) {
-  const {
-    className,
-    children,
-    noLayout,
-    id,
-  } = props;
+  const { className, children, noLayout, id, setControlContextData } = props;
+
+  const [productSearch, setProductSearch] = React.useState("");
+
+  const { data: allProducts } = useSearch({
+    search: productSearch !== "" ? productSearch : undefined,
+  });
+  const onSearch = React.useCallback(
+    debounce((value: string) => setProductSearch(value), 300),
+    []
+  );
+  if (allProducts) {
+    setControlContextData?.({
+      products: allProducts.products,
+      onSearch,
+    });
+  }
 
   const { data, error, isLoading } = useProduct({
-    id
+    id,
   });
 
   if (!id) {
-    return <span>You must set the id prop</span>
+    return <span>You must set the id prop</span>;
   }
 
   if (error) {
     throw new CommerceError({
       message: error.message,
-      code: error.code
+      code: error.code,
     });
   }
 
   if (isLoading) {
-    return <span>Loading...</span>
+    return <span>Loading...</span>;
   }
 
   if (!data) {
@@ -85,14 +119,14 @@ export function ProductBox(props: ProductBoxProps) {
   }
 
   const renderedData = (
-    <ProductProvider product={data}>
-      {children}
-    </ProductProvider>
+    <ProductProvider product={data}>{children}</ProductProvider>
   );
 
-  return noLayout
-    ? <React.Fragment>{renderedData}</React.Fragment>
-    : <div className={className}>{renderedData}</div>
+  return noLayout ? (
+    <React.Fragment>{renderedData}</React.Fragment>
+  ) : (
+    <div className={className}>{renderedData}</div>
+  );
 }
 
 export function registerProductBox(

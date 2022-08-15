@@ -1,44 +1,1947 @@
 {
+  "categories": [
+    {
+      "id": "id::270412710052",
+      "name": "New Arrivals",
+      "slug": "clothes",
+      "path": "/clothes",
+      "isEmpty": false,
+      "products": [
+        "id::5447323812004",
+        "id::5447324270756",
+        "id::5447324729508",
+        "id::5447325024420",
+        "id::6621772644516"
+      ]
+    },
+    {
+      "id": "id::271211167908",
+      "name": "Featured",
+      "slug": "featured",
+      "path": "/featured",
+      "isEmpty": false,
+      "products": [
+        "id::5447323156644",
+        "id::5447323812004",
+        "id::6621772644516"
+      ]
+    }
+  ],
   "products": [
     {
-      "id": "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzU0NDczMjUwMjQ0MjA=",
+      "id": "id::5447322697892",
+      "name": "Special Edition T-Shirt",
+      "vendor": "ACME",
+      "path": "/conf-shirt",
+      "slug": "conf-shirt",
+      "price": {
+        "value": 50,
+        "currencyCode": "USD"
+      },
+      "images": [
+        {
+          "url": "https://static1.plasmic.app/commerce/conf-shirt-0.png",
+          "altText": null,
+          "width": 958,
+          "height": 1000
+        },
+        {
+          "url": "https://static1.plasmic.app/commerce/conf-shirt-1.png",
+          "altText": null,
+          "width": 1000,
+          "height": 1000
+        },
+        {
+          "url": "https://static1.plasmic.app/commerce/conf-shirt-2.png",
+          "altText": null,
+          "width": 1000,
+          "height": 1000
+        },
+        {
+          "url": "https://static1.plasmic.app/commerce/conf-shirt-3.png",
+          "altText": null,
+          "width": 1000,
+          "height": 1000
+        }
+      ],
+      "variants": [
+        {
+          "id": "id::40047332688036",
+          "name": "Black / S",
+          "sku": "",
+          "price": 200,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40047332688036",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "Black",
+                  "hexColors": ["#000000"]
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40047332688036",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "S"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40009056387236",
+          "name": "Black / M",
+          "sku": "",
+          "price": 200,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40009056387236",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "Black",
+                  "hexColors": ["#000000"]
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40009056387236",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "M"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40064229212324",
+          "name": "Black / L",
+          "sku": "",
+          "price": 200,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40064229212324",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "Black",
+                  "hexColors": ["#000000"]
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40064229212324",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "L"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40073451602084",
+          "name": "Black / XL",
+          "sku": "",
+          "price": 50,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40073451602084",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "Black",
+                  "hexColors": ["#000000"]
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40073451602084",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "XL"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40073450061988",
+          "name": "Black / XXL",
+          "sku": "",
+          "price": 50,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40073450061988",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "Black",
+                  "hexColors": ["#000000"]
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40073450061988",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "XXL"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "options": [
+        {
+          "__typename": "MultipleChoiceOption",
+          "id": "id::6940501311652",
+          "displayName": "color",
+          "values": [
+            {
+              "label": "Black",
+              "hexColors": ["#000000"]
+            }
+          ]
+        },
+        {
+          "__typename": "MultipleChoiceOption",
+          "id": "id::6940501278884",
+          "displayName": "size",
+          "values": [
+            {
+              "label": "S"
+            },
+            {
+              "label": "M"
+            },
+            {
+              "label": "L"
+            },
+            {
+              "label": "XL"
+            },
+            {
+              "label": "XXL"
+            }
+          ]
+        }
+      ],
+      "description": "Show off your love for Next.js and Vercel with this unique, limited edition t-shirt. This design is part of a limited run, numbered drop at the June 2021 Next.js Conf. It features a unique, handcrafted triangle design. Get it while supplies last \u2013 only 200 of these shirts will be made! All proceeds will be donated to charity.",
+      "descriptionHtml": "<p><meta charset=\"utf-8\"><span>Show off your love for Next.js and Vercel with this unique,\u00a0</span><strong>limited edition</strong><span>\u00a0t-shirt. This design is part of a limited run, numbered drop at the June 2021 Next.js Conf. It features a unique, handcrafted triangle design. Get it while supplies last \u2013 only 200 of these shirts will be made!\u00a0</span><strong>All proceeds will be donated to charity.</strong></p>"
+    },
+    {
+      "id": "id::5447323156644",
+      "name": "Quarter Zip",
+      "vendor": "ACME",
+      "path": "/quarter-zip",
+      "slug": "quarter-zip",
+      "price": {
+        "value": 90,
+        "currencyCode": "USD"
+      },
+      "images": [
+        {
+          "url": "https://static1.plasmic.app/commerce/quarter-zip-0.png",
+          "altText": null,
+          "width": 1000,
+          "height": 1000
+        },
+        {
+          "url": "https://static1.plasmic.app/commerce/quarter-zip-1.png",
+          "altText": null,
+          "width": 1000,
+          "height": 1000
+        },
+        {
+          "url": "https://static1.plasmic.app/commerce/quarter-zip-2.png",
+          "altText": null,
+          "width": 1000,
+          "height": 1000
+        }
+      ],
+      "variants": [
+        {
+          "id": "id::40065999569060",
+          "name": "Black / S",
+          "sku": "",
+          "price": 90,
+          "listPrice": 20,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40065999569060",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "Black",
+                  "hexColors": ["#000000"]
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40065999569060",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "S"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40008984756388",
+          "name": "Black / M",
+          "sku": "",
+          "price": 90,
+          "listPrice": 20,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40008984756388",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "Black",
+                  "hexColors": ["#000000"]
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40008984756388",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "M"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40065122828452",
+          "name": "Black / L",
+          "sku": "",
+          "price": 90,
+          "listPrice": 20,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40065122828452",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "Black",
+                  "hexColors": ["#000000"]
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40065122828452",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "L"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40065123713188",
+          "name": "Black / XL",
+          "sku": "",
+          "price": 90,
+          "listPrice": 20,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40065123713188",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "Black",
+                  "hexColors": ["#000000"]
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40065123713188",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "XL"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40065125286052",
+          "name": "Black / XXL",
+          "sku": "",
+          "price": 90,
+          "listPrice": 20,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40065125286052",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "Black",
+                  "hexColors": ["#000000"]
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40065125286052",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "XXL"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "options": [
+        {
+          "__typename": "MultipleChoiceOption",
+          "id": "id::6940501835940",
+          "displayName": "color",
+          "values": [
+            {
+              "label": "Black",
+              "hexColors": ["#000000"]
+            }
+          ]
+        },
+        {
+          "__typename": "MultipleChoiceOption",
+          "id": "id::6940501803172",
+          "displayName": "size",
+          "values": [
+            {
+              "label": "S"
+            },
+            {
+              "label": "M"
+            },
+            {
+              "label": "L"
+            },
+            {
+              "label": "XL"
+            },
+            {
+              "label": "XXL"
+            }
+          ]
+        }
+      ],
+      "description": "Show off your love for Next.js and Vercel with this unique, limited edition quarter zip. This design is part of a limited run, numbered drop at the June 2021 Next.js Conf. It features a unique, handcrafted triangle design. Get it while supplies last \u2013 only 200 of these shirts will be made! All proceeds will be donated to charity.",
+      "descriptionHtml": "<p>Show off your love for Next.js and Vercel with this unique, <strong>limited edition</strong>\u00a0quarter zip. This design is part of a limited run, numbered drop at the June 2021 Next.js Conf. It features a unique, handcrafted triangle design. Get it while supplies last \u2013 only 200 of these shirts will be made! <strong>All proceeds will be donated to charity.</strong></p>"
+    },
+    {
+      "id": "id::5447323812004",
+      "name": "Sticker",
+      "vendor": "ACME",
+      "path": "/sticker",
+      "slug": "sticker",
+      "price": {
+        "value": 0,
+        "currencyCode": "USD"
+      },
+      "images": [
+        {
+          "url": "https://static1.plasmic.app/commerce/sticker-0.png",
+          "altText": null,
+          "width": 900,
+          "height": 900
+        }
+      ],
+      "variants": [
+        {
+          "id": "id::40008892580004",
+          "name": "Gradient",
+          "sku": "",
+          "price": 0,
+          "listPrice": 60,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40008892580004",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "Gradient"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "options": [
+        {
+          "__typename": "MultipleChoiceOption",
+          "id": "id::6940502524068",
+          "displayName": "color",
+          "values": [
+            {
+              "label": "Gradient"
+            }
+          ]
+        }
+      ],
+      "description": "Wafer cupcake candy macaroon bonbon candy canes cheesecake candy. Donut chupa chups sesame snaps candy chocolate cake chocolate cake danish. Tart cotton candy gummies cotton candy sweet roll. Wafer pie chocolate cake. Caramels toffee gummies. Liquorice sweet oat cake chocolate candy canes toffee bear claw. Chocolate cupcake wafer. Halvah souffl\u00e9 halvah. Dessert pastry toffee apple pie chocolate cake lemon drops. Tart carrot cake wafer halvah tiramisu fruitcake.",
+      "descriptionHtml": "<p><meta charset=\"utf-8\">Wafer cupcake candy macaroon bonbon candy canes cheesecake candy. Donut chupa chups sesame snaps candy chocolate cake chocolate cake danish. Tart cotton candy gummies cotton candy sweet roll. Wafer pie chocolate cake. Caramels toffee gummies. Liquorice sweet oat cake chocolate candy canes toffee bear claw. Chocolate cupcake wafer. Halvah souffl\u00e9 halvah. Dessert pastry toffee apple pie chocolate cake lemon drops. Tart carrot cake wafer halvah tiramisu fruitcake.<br></p>"
+    },
+    {
+      "id": "id::5447324270756",
+      "name": "Bomber Jacket",
+      "vendor": "Next.js",
+      "path": "/bomber-jacket",
+      "slug": "bomber-jacket",
+      "price": {
+        "value": 635.99,
+        "currencyCode": "USD"
+      },
+      "images": [
+        {
+          "url": "https://static1.plasmic.app/commerce/bomber-jacket-0.png",
+          "altText": null,
+          "width": 1000,
+          "height": 1000
+        },
+        {
+          "url": "https://static1.plasmic.app/commerce/bomber-jacket-1.png",
+          "altText": null,
+          "width": 1000,
+          "height": 1000
+        }
+      ],
+      "variants": [
+        {
+          "id": "id::40046243905700",
+          "name": "L / Black",
+          "sku": "",
+          "price": 635.99,
+          "listPrice": 5200,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046243905700",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "L"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046243905700",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "Black",
+                  "hexColors": ["#000000"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046243938468",
+          "name": "L / DarkOliveGreen",
+          "sku": "",
+          "price": 635.99,
+          "listPrice": 5200,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046243938468",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "L"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046243938468",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "DarkOliveGreen",
+                  "hexColors": ["#556B2F"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046243971236",
+          "name": "XL / Black",
+          "sku": "",
+          "price": 635.99,
+          "listPrice": 5200,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046243971236",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "XL"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046243971236",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "Black",
+                  "hexColors": ["#000000"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046244004004",
+          "name": "XL / DarkOliveGreen",
+          "sku": "",
+          "price": 635.99,
+          "listPrice": 5200,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046244004004",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "XL"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046244004004",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "DarkOliveGreen",
+                  "hexColors": ["#556B2F"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046244036772",
+          "name": "XXL / Black",
+          "sku": "",
+          "price": 635.99,
+          "listPrice": 5200,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046244036772",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "XXL"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046244036772",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "Black",
+                  "hexColors": ["#000000"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046244069540",
+          "name": "XXL / DarkOliveGreen",
+          "sku": "",
+          "price": 635.99,
+          "listPrice": 5200,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046244069540",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "XXL"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046244069540",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "DarkOliveGreen",
+                  "hexColors": ["#556B2F"]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "options": [
+        {
+          "__typename": "MultipleChoiceOption",
+          "id": "id::6940503015588",
+          "displayName": "size",
+          "values": [
+            {
+              "label": "L"
+            },
+            {
+              "label": "XL"
+            },
+            {
+              "label": "XXL"
+            }
+          ]
+        },
+        {
+          "__typename": "MultipleChoiceOption",
+          "id": "id::8655769764004",
+          "displayName": "color",
+          "values": [
+            {
+              "label": "Black",
+              "hexColors": ["#000000"]
+            },
+            {
+              "label": "DarkOliveGreen",
+              "hexColors": ["#556B2F"]
+            }
+          ]
+        }
+      ],
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.",
+      "descriptionHtml": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.</p>"
+    },
+    {
+      "id": "id::5447324729508",
+      "name": "Short Sleeve T-Shirt",
+      "vendor": "Next.js",
+      "path": "/short-sleeve-t-shirt",
+      "slug": "short-sleeve-t-shirt",
+      "price": {
+        "value": 35,
+        "currencyCode": "USD"
+      },
+      "images": [
+        {
+          "url": "https://static1.plasmic.app/commerce/short-sleeve-t-shirt-0.png",
+          "altText": null,
+          "width": 1000,
+          "height": 1000
+        },
+        {
+          "url": "https://static1.plasmic.app/commerce/short-sleeve-t-shirt-1.png",
+          "altText": null,
+          "width": 1000,
+          "height": 1000
+        },
+        {
+          "url": "https://static1.plasmic.app/commerce/short-sleeve-t-shirt-2.png",
+          "altText": null,
+          "width": 1000,
+          "height": 1000
+        },
+        {
+          "url": "https://static1.plasmic.app/commerce/short-sleeve-t-shirt-3.png",
+          "altText": null,
+          "width": 1000,
+          "height": 1000
+        }
+      ],
+      "variants": [
+        {
+          "id": "id::35180690669732",
+          "name": "M / gray",
+          "sku": "",
+          "price": 35,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::35180690669732",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "M"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::35180690669732",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "gray",
+                  "hexColors": ["#808080"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::35180690702500",
+          "name": "L / gray",
+          "sku": "",
+          "price": 35,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::35180690702500",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "L"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::35180690702500",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "gray",
+                  "hexColors": ["#808080"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::35180690735268",
+          "name": "XL / gray",
+          "sku": "",
+          "price": 35,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::35180690735268",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "XL"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::35180690735268",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "gray",
+                  "hexColors": ["#808080"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046203437220",
+          "name": "M / beige",
+          "sku": "",
+          "price": 35,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046203437220",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "M"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046203437220",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "beige",
+                  "hexColors": ["#F5F5DC"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046207369380",
+          "name": "L / beige",
+          "sku": "",
+          "price": 35,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046207369380",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "L"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046207369380",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "beige",
+                  "hexColors": ["#F5F5DC"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046207729828",
+          "name": "XL / beige",
+          "sku": "",
+          "price": 35,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046207729828",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "XL"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046207729828",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "beige",
+                  "hexColors": ["#F5F5DC"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046212612260",
+          "name": "M / white",
+          "sku": "",
+          "price": 35,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046212612260",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "M"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046212612260",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "white",
+                  "hexColors": ["#FFFFFF"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046212907172",
+          "name": "L / white",
+          "sku": "",
+          "price": 35,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046212907172",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "L"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046212907172",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "white",
+                  "hexColors": ["#FFFFFF"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046213300388",
+          "name": "XL / white",
+          "sku": "",
+          "price": 35,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046213300388",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "XL"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046213300388",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "white",
+                  "hexColors": ["#FFFFFF"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046214742180",
+          "name": "M / DarkTurquoise",
+          "sku": "",
+          "price": 35,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046214742180",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "M"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046214742180",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "DarkTurquoise",
+                  "hexColors": ["#00CED1"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046218346660",
+          "name": "L / DarkTurquoise",
+          "sku": "",
+          "price": 35,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046218346660",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "L"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046218346660",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "DarkTurquoise",
+                  "hexColors": ["#00CED1"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046220214436",
+          "name": "XL / DarkTurquoise",
+          "sku": "",
+          "price": 35,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046220214436",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "XL"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046220214436",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "DarkTurquoise",
+                  "hexColors": ["#00CED1"]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "options": [
+        {
+          "__typename": "MultipleChoiceOption",
+          "id": "id::6940503474340",
+          "displayName": "size",
+          "values": [
+            {
+              "label": "M"
+            },
+            {
+              "label": "L"
+            },
+            {
+              "label": "XL"
+            }
+          ]
+        },
+        {
+          "__typename": "MultipleChoiceOption",
+          "id": "id::8655761178788",
+          "displayName": "color",
+          "values": [
+            {
+              "label": "gray",
+              "hexColors": ["#808080"]
+            },
+            {
+              "label": "beige",
+              "hexColors": ["#F5F5DC"]
+            },
+            {
+              "label": "white",
+              "hexColors": ["#FFFFFF"]
+            },
+            {
+              "label": "DarkTurquoise",
+              "hexColors": ["#00CED1"]
+            }
+          ]
+        }
+      ],
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.",
+      "descriptionHtml": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.</p>"
+    },
+    {
+      "id": "id::5447325024420",
       "name": "New Short Sleeve T-Shirt",
       "vendor": "Next.js",
       "path": "/new-short-sleeve-t-shirt",
       "slug": "new-short-sleeve-t-shirt",
-      "price": { "value": 25, "currencyCode": "USD" },
-      "descriptionHtml": "<p><span>Show off your love for Next.js and Vercel with this unique,&nbsp;</span><strong>limited edition</strong><span>&nbsp;t-shirt. This design is part of a limited run, numbered drop at the June 2021 Next.js Conf. It features a unique, handcrafted triangle design. Get it while supplies last – only 200 of these shirts will be made!&nbsp;</span><strong>All proceeds will be donated to charity.</strong></p>",
+      "price": {
+        "value": 25,
+        "currencyCode": "USD"
+      },
       "images": [
         {
-          "url": "https://static1.plasmic.app/commerce/drop-shirt-0.png",
-          "altText": "Shirt",
+          "url": "https://static1.plasmic.app/commerce/new-short-sleeve-t-shirt-0.png",
+          "altText": null,
           "width": 1000,
           "height": 1000
         },
         {
-          "url": "https://static1.plasmic.app/commerce/drop-shirt-1.png",
-          "altText": "Shirt",
+          "url": "https://static1.plasmic.app/commerce/new-short-sleeve-t-shirt-1.png",
+          "altText": null,
           "width": 1000,
           "height": 1000
         },
         {
-          "url": "https://static1.plasmic.app/commerce/drop-shirt-2.png",
-          "altText": "Shirt",
+          "url": "https://static1.plasmic.app/commerce/new-short-sleeve-t-shirt-2.png",
+          "altText": null,
+          "width": 1000,
+          "height": 1000
+        },
+        {
+          "url": "https://static1.plasmic.app/commerce/new-short-sleeve-t-shirt-3.png",
+          "altText": null,
           "width": 1000,
           "height": 1000
         }
       ],
       "variants": [
         {
-          "id": "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzU0NDczMjUwMjQ0MjAss=",
+          "id": "id::40046230962340",
+          "name": "XS / white",
+          "sku": "",
+          "price": 25,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
           "options": [
             {
               "__typename": "MultipleChoiceOption",
-              "id": "asd",
-              "displayName": "Size",
+              "id": "id::40046230962340",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "XS"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046230962340",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "white",
+                  "hexColors": ["#FFFFFF"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046230995108",
+          "name": "XS / grey",
+          "sku": "",
+          "price": 25,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046230995108",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "XS"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046230995108",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "grey",
+                  "hexColors": ["#808080"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046231027876",
+          "name": "XS / DarkTurquoise",
+          "sku": "",
+          "price": 25,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231027876",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "XS"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231027876",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "DarkTurquoise",
+                  "hexColors": ["#00CED1"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046231060644",
+          "name": "XS / LightSalmon",
+          "sku": "",
+          "price": 25,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231060644",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "XS"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231060644",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "LightSalmon",
+                  "hexColors": ["#FFA07A"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046231093412",
+          "name": "S / white",
+          "sku": "",
+          "price": 25,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231093412",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "S"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231093412",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "white",
+                  "hexColors": ["#FFFFFF"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046231126180",
+          "name": "S / grey",
+          "sku": "",
+          "price": 25,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231126180",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "S"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231126180",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "grey",
+                  "hexColors": ["#808080"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046231158948",
+          "name": "S / DarkTurquoise",
+          "sku": "",
+          "price": 25,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231158948",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "S"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231158948",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "DarkTurquoise",
+                  "hexColors": ["#00CED1"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046231191716",
+          "name": "S / LightSalmon",
+          "sku": "",
+          "price": 25,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231191716",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "S"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231191716",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "LightSalmon",
+                  "hexColors": ["#FFA07A"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046231224484",
+          "name": "M / white",
+          "sku": "",
+          "price": 25,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231224484",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "M"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231224484",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "white",
+                  "hexColors": ["#FFFFFF"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046231257252",
+          "name": "M / grey",
+          "sku": "",
+          "price": 25,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231257252",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "M"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231257252",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "grey",
+                  "hexColors": ["#808080"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046231290020",
+          "name": "M / DarkTurquoise",
+          "sku": "",
+          "price": 25,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231290020",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "M"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231290020",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "DarkTurquoise",
+                  "hexColors": ["#00CED1"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046231322788",
+          "name": "M / LightSalmon",
+          "sku": "",
+          "price": 25,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231322788",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "M"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231322788",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "LightSalmon",
+                  "hexColors": ["#FFA07A"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046231355556",
+          "name": "L / white",
+          "sku": "",
+          "price": 25,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231355556",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "L"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231355556",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "white",
+                  "hexColors": ["#FFFFFF"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046231388324",
+          "name": "L / grey",
+          "sku": "",
+          "price": 25,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231388324",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "L"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231388324",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "grey",
+                  "hexColors": ["#808080"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046231421092",
+          "name": "L / DarkTurquoise",
+          "sku": "",
+          "price": 25,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231421092",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "L"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231421092",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "DarkTurquoise",
+                  "hexColors": ["#00CED1"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046231453860",
+          "name": "L / LightSalmon",
+          "sku": "",
+          "price": 25,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231453860",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "L"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231453860",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "LightSalmon",
+                  "hexColors": ["#FFA07A"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046231486628",
+          "name": "XL / white",
+          "sku": "",
+          "price": 25,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231486628",
+              "displayName": "size",
               "values": [
                 {
                   "label": "XL"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231486628",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "white",
+                  "hexColors": ["#FFFFFF"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046231519396",
+          "name": "XL / grey",
+          "sku": "",
+          "price": 25,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231519396",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "XL"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231519396",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "grey",
+                  "hexColors": ["#808080"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046231552164",
+          "name": "XL / DarkTurquoise",
+          "sku": "",
+          "price": 25,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231552164",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "XL"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231552164",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "DarkTurquoise",
+                  "hexColors": ["#00CED1"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40046231584932",
+          "name": "XL / LightSalmon",
+          "sku": "",
+          "price": 25,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231584932",
+              "displayName": "size",
+              "values": [
+                {
+                  "label": "XL"
+                }
+              ]
+            },
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40046231584932",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "LightSalmon",
+                  "hexColors": ["#FFA07A"]
                 }
               ]
             }
@@ -47,19 +1950,13 @@
       ],
       "options": [
         {
-          "id": "option-color",
-          "displayName": "Color",
+          "__typename": "MultipleChoiceOption",
+          "id": "id::6940503769252",
+          "displayName": "size",
           "values": [
             {
-              "label": "color",
-              "hexColors": ["#222"]
-            }
-          ]
-        },
-        {
-          "id": "option-size",
-          "displayName": "Size",
-          "values": [
+              "label": "XS"
+            },
             {
               "label": "S"
             },
@@ -68,50 +1965,103 @@
             },
             {
               "label": "L"
+            },
+            {
+              "label": "XL"
+            }
+          ]
+        },
+        {
+          "__typename": "MultipleChoiceOption",
+          "id": "id::8655765471396",
+          "displayName": "color",
+          "values": [
+            {
+              "label": "white",
+              "hexColors": ["#FFFFFF"]
+            },
+            {
+              "label": "grey",
+              "hexColors": ["#808080"]
+            },
+            {
+              "label": "DarkTurquoise",
+              "hexColors": ["#00CED1"]
+            },
+            {
+              "label": "LightSalmon",
+              "hexColors": ["#FFA07A"]
             }
           ]
         }
-      ]
+      ],
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.",
+      "descriptionHtml": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.<br></p>"
     },
     {
-      "id": "Z2lkOi8vc2hvcGlmeS9Qcm9ksdWN0LzU0NDczMjUwMjQ0MjA=",
-      "name": "Lightweight Jacket",
-      "vendor": "Next.js",
-      "path": "/lightweight-jacket",
-      "slug": "lightweight-jacket",
-      "price": { "value": 249.99, "currencyCode": "USD" },
-      "descriptionHtml": "<p><span>Show off your love for Next.js and Vercel with this unique,&nbsp;</span><strong>limited edition</strong><span>&nbsp;t-shirt. This design is part of a limited run, numbered drop at the June 2021 Next.js Conf. It features a unique, handcrafted triangle design. Get it while supplies last – only 200 of these shirts will be made!&nbsp;</span><strong>All proceeds will be donated to charity.</strong></p>",
+      "id": "id::6621772644516",
+      "name": "ACME Cup",
+      "vendor": "ACME",
+      "path": "/acme-cup",
+      "slug": "acme-cup",
+      "price": {
+        "value": 25,
+        "currencyCode": "USD"
+      },
       "images": [
         {
-          "url": "https://static1.plasmic.app/commerce/lightweight-jacket-0.png",
-          "altText": "Lightweight Jacket",
-          "width": 1000,
-          "height": 1000
+          "url": "https://static1.plasmic.app/commerce/acme-cup-0.png",
+          "altText": null,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "url": "https://static1.plasmic.app/commerce/lightweight-jacket-1.png",
-          "altText": "Lightweight Jacket",
-          "width": 1000,
-          "height": 1000
-        },
-        {
-          "url": "https://static1.plasmic.app/commerce/lightweight-jacket-2.png",
-          "altText": "Lightweight Jacket",
-          "width": 1000,
-          "height": 1000
+          "url": "https://static1.plasmic.app/commerce/acme-cup-1.png",
+          "altText": null,
+          "width": 2048,
+          "height": 2048
         }
       ],
       "variants": [
         {
-          "id": "Z2lkOid8vc2hvcGlmeS9Qcm9kdWN0LzU0NDczMjUwMjQ0MjAss=",
+          "id": "id::40064679805092",
+          "name": "White",
+          "sku": "200",
+          "price": 25,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": true,
           "options": [
             {
               "__typename": "MultipleChoiceOption",
-              "id": "asd",
-              "displayName": "Size",
+              "id": "id::40064679805092",
+              "displayName": "color",
               "values": [
                 {
-                  "label": "XL"
+                  "label": "White",
+                  "hexColors": ["#FFFFFF"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "id::40064679837860",
+          "name": "Black",
+          "sku": "201",
+          "price": 25,
+          "listPrice": null,
+          "requiresShipping": true,
+          "availableForSale": false,
+          "options": [
+            {
+              "__typename": "MultipleChoiceOption",
+              "id": "id::40064679837860",
+              "displayName": "color",
+              "values": [
+                {
+                  "label": "Black",
+                  "hexColors": ["#000000"]
                 }
               ]
             }
@@ -120,116 +2070,23 @@
       ],
       "options": [
         {
-          "id": "option-color",
-          "displayName": "Color",
+          "__typename": "MultipleChoiceOption",
+          "id": "id::8505918849188",
+          "displayName": "color",
           "values": [
             {
-              "label": "color",
-              "hexColors": ["#222"]
-            }
-          ]
-        },
-        {
-          "id": "option-size",
-          "displayName": "Size",
-          "values": [
-            {
-              "label": "S"
+              "label": "White",
+              "hexColors": ["#FFFFFF"]
             },
             {
-              "label": "M"
-            },
-            {
-              "label": "L"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "Z2lkOis8vc2hvcGlmsddeS9Qcm9kdWN0LzU0NDczMjUwMjQ0MjA=",
-      "name": "Shirt",
-      "vendor": "Next.js",
-      "path": "/shirt",
-      "slug": "shirt",
-      "price": { "value": 25, "currencyCode": "USD" },
-      "descriptionHtml": "<p><span>Show off your love for Next.js and Vercel with this unique,&nbsp;</span><strong>limited edition</strong><span>&nbsp;t-shirt. This design is part of a limited run, numbered drop at the June 2021 Next.js Conf. It features a unique, handcrafted triangle design. Get it while supplies last – only 200 of these shirts will be made!&nbsp;</span><strong>All proceeds will be donated to charity.</strong></p>",
-      "images": [
-        {
-          "url": "https://static1.plasmic.app/commerce/t-shirt-0.png",
-          "altText": "Shirt",
-          "width": 1000,
-          "height": 1000
-        },
-        {
-          "url": "https://static1.plasmic.app/commerce/t-shirt-1.png",
-          "altText": "Shirt",
-          "width": 1000,
-          "height": 1000
-        },
-        {
-          "url": "https://static1.plasmic.app/commerce/t-shirt-2.png",
-          "altText": "Shirt",
-          "width": 1000,
-          "height": 1000
-        },
-        {
-          "url": "https://static1.plasmic.app/commerce/t-shirt-3.png",
-          "altText": "Shirt",
-          "width": 1000,
-          "height": 1000
-        },
-        {
-          "url": "https://static1.plasmic.app/commerce/t-shirt-4.png",
-          "altText": "Shirt",
-          "width": 1000,
-          "height": 1000
-        }
-      ],
-      "variants": [
-        {
-          "id": "Z2lkOi8vc2hvcGlmeS9Qcms9kdWN0LzU0NDczMjUwMjQ0MjAss=",
-          "options": [
-            {
-              "__typename": "MultipleChoiceOption",
-              "id": "asd",
-              "displayName": "Size",
-              "values": [
-                {
-                  "label": "XL"
-                }
-              ]
+              "label": "Black",
+              "hexColors": ["#000000"]
             }
           ]
         }
       ],
-      "options": [
-        {
-          "id": "option-color",
-          "displayName": "Color",
-          "values": [
-            {
-              "label": "color",
-              "hexColors": ["#222"]
-            }
-          ]
-        },
-        {
-          "id": "option-size",
-          "displayName": "Size",
-          "values": [
-            {
-              "label": "S"
-            },
-            {
-              "label": "M"
-            },
-            {
-              "label": "L"
-            }
-          ]
-        }
-      ]
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.",
+      "descriptionHtml": "<meta charset=\"utf-8\"><span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilisi morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.</span>"
     }
   ]
 }

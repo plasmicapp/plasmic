@@ -57,7 +57,7 @@
 
 import { Node } from "@react-types/shared";
 import React from "react";
-import { Item, Section } from "react-stately";
+import { Item, Section } from "@react-stately/collections";
 import { isString } from "../common";
 import { getElementTypeName, toChildArray } from "../react-utils";
 import { getPlumeType, PLUME_STRICT_MODE } from "./plume-utils";

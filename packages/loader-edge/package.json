@@ -1,5 +1,5 @@
 {
-  "version": "1.0.4",
+  "version": "1.0.16",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -13,9 +13,10 @@
     "start": "tsdx watch",
     "build": "tsdx build --target node",
     "yalcp": "yalc publish --push",
-    "test": "tsdx test",
+    "test": "tsdx test --passWithNoTests",
+    "coverage": "tsdx test --coverage --passWithNoTests",
     "lint": "tsdx lint",
-    "prepare": "tsdx build --target node",
+    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
@@ -52,8 +53,8 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
-    "@plasmicapp/loader-fetcher": "1.0.2",
-    "@plasmicapp/loader-splits": "1.0.3"
+    "@plasmicapp/loader-fetcher": "1.0.10",
+    "@plasmicapp/loader-splits": "1.0.15"
   },
   "publishConfig": {
     "access": "public"

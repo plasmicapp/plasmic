@@ -39,40 +39,73 @@ export default function ParallaxWrapper({
   );
 }
 
-export const parallaxWrapperMeta: ComponentMeta<ParallaxWrapperProps> = {
-  name: "hostless-scroll-parallax",
-  displayName: "Scroll Parallax",
-  importName: "ParallaxWrapper",
-  importPath: "@plasmicpkgs/react-scroll-parallax",
-  props: {
-    children: {
-      type: "slot",
-      defaultValue: {
-        type: "img",
-        src: "https://placekitten.com/300/200",
-        style: {
-          maxWidth: "100%",
+/**
+ * We're keeping the old registration without attachments to avoid confusion
+ * due to the parallax custom behavior not working in old projects that didn't
+ * make use of global contexts (so simply adding the custom behavior would
+ * break it and it wouldn't be clear that the user should also add a
+ * `ParallaxProvider`).
+ */
+export const deprecated_parallaxWrapperMeta: ComponentMeta<ParallaxWrapperProps> =
+  {
+    name: "hostless-scroll-parallax",
+    displayName: "Scroll Parallax",
+    importName: "ParallaxWrapper",
+    importPath: "@plasmicpkgs/react-scroll-parallax",
+    props: {
+      children: {
+        type: "slot",
+        defaultValue: {
+          type: "img",
+          src: "https://placekitten.com/300/200",
+          style: {
+            maxWidth: "100%",
+          },
         },
       },
+      speed: {
+        type: "number",
+        description:
+          "How much to speed up or slow down this element while scrolling. Try -20 for slower, 20 for faster.",
+        defaultValue: 20,
+      },
+      disabled: {
+        type: "boolean",
+        description: "Disables the parallax effect.",
+      },
+      previewInEditor: {
+        type: "boolean",
+        description: "Enable the parallax effect in the editor.",
+      },
     },
-    speed: {
-      type: "number",
-      description:
-        "How much to speed up or slow down this element while scrolling. Try -20 for slower, 20 for faster.",
-      defaultValue: 20,
+    defaultStyles: {
+      maxWidth: "100%",
     },
-    disabled: {
-      type: "boolean",
-      description: "Disables the parallax effect.",
-    },
-    previewInEditor: {
-      type: "boolean",
-      description: "Enable the parallax effect in the editor.",
-    },
-  },
-  defaultStyles: {
-    maxWidth: "100%",
-  },
+  };
+
+export function deprecated_registerParallaxWrapper(
+  loader?: { registerComponent: typeof registerComponent },
+  customParallaxWrapperMeta?: ComponentMeta<ParallaxWrapperProps>
+) {
+  if (loader) {
+    loader.registerComponent(
+      ParallaxWrapper,
+      customParallaxWrapperMeta ?? deprecated_parallaxWrapperMeta
+    );
+  } else {
+    registerComponent(
+      ParallaxWrapper,
+      customParallaxWrapperMeta ?? deprecated_parallaxWrapperMeta
+    );
+  }
+}
+
+/**
+ * The new registration is only setting `isAttachment: true`.
+ */
+export const parallaxWrapperMeta: ComponentMeta<ParallaxWrapperProps> = {
+  ...deprecated_parallaxWrapperMeta,
+  isAttachment: true,
 };
 
 export function registerParallaxWrapper(

@@ -4,24 +4,24 @@ import {
   InternalPlasmicComponentLoader,
   PlasmicComponentLoader,
 } from '@plasmicapp/loader-react';
-import * as PlasmicQuery from '@plasmicapp/query';
 import type { PlasmicRemoteChangeWatcher as Watcher } from '@plasmicapp/watcher';
 import { IncomingMessage, ServerResponse } from 'http';
 import * as NextHead from 'next/head';
 import * as NextLink from 'next/link';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import * as jsxDevRuntime from 'react/jsx-dev-runtime';
-import * as jsxRuntime from 'react/jsx-runtime';
+import * as NextRouter from 'next/router';
 import { makeCache } from './cache';
 import serverRequire from './server-require';
 export {
   ComponentMeta,
   ComponentRenderData,
+  // Data context helpers.
+  DataCtxReader,
+  DataProvider,
   extractPlasmicQueryData,
   InitOptions,
   PageMeta,
   PageMetadata,
+  PageParamsProvider,
   PlasmicCanvasContext,
   PlasmicCanvasHost,
   PlasmicComponent,
@@ -31,9 +31,12 @@ export {
   PrimitiveType,
   PropType,
   repeatedElement,
+  useDataEnv,
   usePlasmicCanvasContext,
   usePlasmicComponent,
   usePlasmicQueryData,
+  useSelector,
+  useSelectors,
 } from '@plasmicapp/loader-react';
 
 type ServerRequest = IncomingMessage & {
@@ -50,10 +53,23 @@ export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
     req?: ServerRequest;
     res?: ServerResponse;
     known?: Record<string, string>;
-    traits: Record<string, string>;
+    traits: Record<string, string | number | boolean>;
   }) {
+    const extractBuiltinTraits = () => {
+      const url = new URL(
+        opts.req?.url ?? '/',
+        `https://${opts.req?.headers.host ?? 'server.side'}`
+      );
+      return {
+        pageUrl: url.href,
+      };
+    };
+
     return this._getActiveVariation({
-      traits: opts.traits,
+      traits: {
+        ...extractBuiltinTraits(),
+        ...opts.traits,
+      },
       getKnownValue: (key: string) => {
         if (opts.known) {
           return opts.known[key];
@@ -101,50 +117,43 @@ export function initPlasmicLoader(
     alwaysFresh: isProd && !isBrowser,
   });
   loader.registerModules({
-    react: React,
-    'react-dom': ReactDOM,
     'next/head': NextHead,
     'next/link': NextLink,
-    'react/jsx-runtime': jsxRuntime,
-    'react/jsx-dev-runtime': jsxDevRuntime,
-
-    // Also inject @plasmicapp/query at run time, so that the same
-    // context is used here and in loader-downloaded code
-    '@plasmicapp/query': PlasmicQuery,
+    'next/router': NextRouter,
   });
 
   if (cache) {
     if (!isProd) {
-      console.log(`Subscribing to Plasmic changes...`);
+      if (process.env.PLASMIC_WATCHED !== 'true') {
+        process.env.PLASMIC_WATCHED = 'true';
+        console.log(`Subscribing to Plasmic changes...`);
 
-      // Import using serverRequire, so webpack doesn't bundle us into client bundle
-      const PlasmicRemoteChangeWatcher = serverRequire('@plasmicapp/watcher')
-        .PlasmicRemoteChangeWatcher as typeof Watcher;
-      const watcher = new PlasmicRemoteChangeWatcher({
-        projects: opts.projects,
-        host: opts.host,
-      });
+        // Import using serverRequire, so webpack doesn't bundle us into client bundle
+        const PlasmicRemoteChangeWatcher = serverRequire('@plasmicapp/watcher')
+          .PlasmicRemoteChangeWatcher as typeof Watcher;
+        const watcher = new PlasmicRemoteChangeWatcher({
+          projects: opts.projects,
+          host: opts.host,
+        });
 
-      const clearCache = (projectId: string) => {
-        console.log(
-          `Detected update to ${projectId}; clearing cache: ${new Date().toISOString()}`
-        );
-        cache.clear();
-        loader.clearCache();
-      };
+        const clearCache = () => {
+          cache.clear();
+          loader.clearCache();
+        };
 
-      watcher.subscribe({
-        onUpdate: (projectId) => {
-          if (opts.preview) {
-            clearCache(projectId);
-          }
-        },
-        onPublish: (projectId) => {
-          if (!opts.preview) {
-            clearCache(projectId);
-          }
-        },
-      });
+        watcher.subscribe({
+          onUpdate: () => {
+            if (opts.preview) {
+              clearCache();
+            }
+          },
+          onPublish: () => {
+            if (!opts.preview) {
+              clearCache();
+            }
+          },
+        });
+      }
     } else {
       cache.clear();
       loader.clearCache();

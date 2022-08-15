@@ -77,6 +77,10 @@ export interface GlobalContextMeta<P> {
    * Optional: If not provided, the usual `ref` is used.
    */
   refProp?: string;
+  /**
+   * Whether the global context provides data to its children using DataProvider.
+   */
+  providesData?: boolean;
 }
 
 export interface GlobalContextRegistration {

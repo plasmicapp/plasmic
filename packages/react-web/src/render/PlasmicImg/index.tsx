@@ -36,7 +36,14 @@ export interface PlasmicImgProps extends ImgTagProps {
   src?:
     | string
     | {
-        src: string;
+        src:
+          | string
+          | {
+              src: string;
+              height: number;
+              width: number;
+              blurDataURL?: string;
+            };
         fullHeight: number;
         fullWidth: number;
         // We might also get a more precise aspectRatio for SVGs
@@ -136,7 +143,13 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
     typeof src === "string" || !src
       ? { fullWidth: undefined, fullHeight: undefined, aspectRatio: undefined }
       : src;
-  const srcStr = src ? (typeof src === "string" ? src : src.src) : "";
+  const srcStr = src
+    ? typeof src === "string"
+      ? src
+      : typeof src.src === "string"
+      ? src.src
+      : src.src.src
+    : "";
 
   // Assume external image if either dimension is null and use usual <img>
   if (fullHeight == null || fullWidth == null) {
@@ -160,6 +173,7 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
     displayWidth = "100%";
   }
 
+  let computedDisplayWidth = displayWidth;
   if (
     fullWidth &&
     fullHeight &&
@@ -174,7 +188,8 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
       // We shouldn't do it for SVGs though, because `fullWidth` and
       // `fullHeight` might have rounded values so the final
       // `displayWidth` could differ by 1px or so.
-      displayWidth = (getPixelLength(displayHeight)! * fullWidth) / fullHeight;
+      computedDisplayWidth =
+        (getPixelLength(displayHeight)! * fullWidth) / fullHeight;
     }
   }
 
@@ -189,7 +204,7 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
     spacerHeight = Math.round(spacerWidth / aspectRatio);
   }
 
-  const { sizes, widthDescs } = getWidths(displayWidth, fullWidth, {
+  const { sizes, widthDescs } = getWidths(computedDisplayWidth, fullWidth, {
     minWidth: displayMinWidth,
   });
   const imageLoader = getImageLoader(loader);
@@ -200,19 +215,18 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
       : window.btoa(spacerSvg);
 
   let wrapperStyle: CSSProperties = { ...(style || {}) };
-  let spacerStyle: CSSProperties = pick(
-    style || {},
-    "objectFit",
-    "objectPosition"
-  );
+  let spacerStyle: CSSProperties = {
+    ...pick(style || {}, "objectFit", "objectPosition"),
+  };
 
   if (displayWidth != null && displayWidth !== "auto") {
     // If width is set, set it on the wrapper along with min/max width
     // and just use `width: 100%` on the spacer
     spacerStyle.width = "100%";
-    wrapperStyle.width = displayWidth;
-    wrapperStyle.minWidth = displayMinWidth;
-    wrapperStyle.maxWidth = displayMaxWidth;
+    // Rely on the styles set by `classname` on the wrapper:
+    // wrapperStyle.width = displayWidth;
+    // wrapperStyle.minWidth = displayMinWidth;
+    // wrapperStyle.maxWidth = displayMaxWidth;
   } else {
     // Otherwise, we want auto sizing from the spacer, so set width there.
     //
@@ -225,29 +239,31 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
     wrapperStyle.width = "auto";
     if (displayMinWidth) {
       spacerStyle.minWidth = "100%";
-      wrapperStyle.minWidth = displayMinWidth;
+      // Rely on min-width set by `classname` on the wrapper:
+      // wrapperStyle.minWidth = displayMinWidth;
     }
     if (displayMaxWidth != null && displayMaxWidth !== "none") {
       spacerStyle.maxWidth = "100%";
-      wrapperStyle.maxWidth = displayMaxWidth;
+      // Rely on max-width set by `classname` on the wrapper:
+      // wrapperStyle.maxWidth = displayMaxWidth;
     }
   }
 
   if (displayHeight != null && displayHeight !== "auto") {
     spacerStyle.height = "100%";
-    wrapperStyle.height = displayHeight;
-    wrapperStyle.minHeight = displayMinHeight;
-    wrapperStyle.maxHeight = displayMaxHeight;
+    // wrapperStyle.height = displayHeight;
+    // wrapperStyle.minHeight = displayMinHeight;
+    // wrapperStyle.maxHeight = displayMaxHeight;
   } else {
     spacerStyle.height = displayHeight;
     wrapperStyle.height = "auto";
     if (displayMinHeight) {
       spacerStyle.minHeight = "100%";
-      wrapperStyle.minHeight = displayMinHeight;
+      // wrapperStyle.minHeight = displayMinHeight;
     }
     if (displayMaxHeight != null && displayMaxHeight !== "none") {
       spacerStyle.maxHeight = "100%";
-      wrapperStyle.maxHeight = displayMaxHeight;
+      // wrapperStyle.maxHeight = displayMaxHeight;
     }
   }
 

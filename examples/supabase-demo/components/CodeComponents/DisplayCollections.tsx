@@ -1,6 +1,5 @@
 import { repeatedElement } from "@plasmicapp/host";
 import { Table } from "antd";
-import "antd/dist/antd.css";
 import L from "lodash";
 import React, { ReactNode } from "react";
 import { assertNever } from "../common";
@@ -67,9 +66,6 @@ export interface SupabaseGridProps {
 
   // Grid
   children?: ReactNode;
-  numColumns?: number;
-  columnGap?: number;
-  rowGap?: number;
   count?: number;
   loading?: any;
 }
@@ -80,23 +76,17 @@ export function SupabaseGrid(props: SupabaseGridProps) {
     tableColumns,
     queryFilters,
     children,
-    numColumns,
-    columnGap,
-    rowGap,
     count,
     loading,
   } = props;
   return (
     <SupabaseQuery
-      className={className}
       tableName={tableName}
       columns={tableColumns?.join(",")}
       filters={queryFilters}
     >
       <SupabaseGridCollection
-        columns={numColumns}
-        columnGap={columnGap}
-        rowGap={rowGap}
+        className={className}
         count={count}
         loading={loading}
       >
@@ -108,9 +98,6 @@ export function SupabaseGrid(props: SupabaseGridProps) {
 
 export interface SupabaseGridCollectionProps {
   children?: ReactNode;
-  columns?: number;
-  columnGap?: number;
-  rowGap?: number;
   count?: number;
   className?: string;
   loading?: any;
@@ -119,16 +106,7 @@ export interface SupabaseGridCollectionProps {
 
 export function SupabaseGridCollection(props: SupabaseGridCollectionProps) {
   const supabaseQuery = React.useContext(SupabaseQueryContext);
-  const {
-    children,
-    columns,
-    columnGap,
-    rowGap,
-    count,
-    className,
-    loading,
-    testLoading,
-  } = props;
+  const { children, count, className, loading, testLoading } = props;
 
   const result = supabaseQuery;
   if (!result || testLoading) {
@@ -136,18 +114,10 @@ export function SupabaseGridCollection(props: SupabaseGridCollectionProps) {
   }
 
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: `repeat(${columns}, 1fr)`,
-        columnGap: `${columnGap}px`,
-        rowGap: `${rowGap}px`,
-      }}
-      className={className}
-    >
+    <div className={className}>
       {result.slice(0, count).map((row: any, i: any) => (
         <RowContext.Provider value={row} key={row.id}>
-          <div key={row.id}>{repeatedElement(i === 0, children)}</div>
+          <div key={row.id}>{repeatedElement(i, children)}</div>
         </RowContext.Provider>
       ))}
     </div>
@@ -183,8 +153,6 @@ export function SupabaseTableCollection(props: SupabaseTableCollectionProps) {
     editPage,
   } = props;
 
-  const ref = React.createRef<HTMLAnchorElement>();
-
   const result = supabaseQuery;
   if (!result || testLoading) {
     return loading;
@@ -209,13 +177,12 @@ export function SupabaseTableCollection(props: SupabaseTableCollectionProps) {
             dataIndex: "edit",
             key: "edit",
             render: (id: any) => (
-              <div
-                onClick={() => {
-                  localStorage.setItem("id", id);
-                  ref.current?.click();
-                }}
-              >
-                {editSlot}
+              <div onClick={() => console.log(id)}>
+                <RowContext.Provider
+                  value={result.filter((row: any) => row.id === id)[0]}
+                >
+                  {editSlot}
+                </RowContext.Provider>
               </div>
             ),
           },
@@ -265,7 +232,6 @@ export function SupabaseTableCollection(props: SupabaseTableCollectionProps) {
         className={className}
         pagination={false}
       />
-      {editPage && <a href={editPage} hidden={true} ref={ref} />}
     </div>
   );
 }

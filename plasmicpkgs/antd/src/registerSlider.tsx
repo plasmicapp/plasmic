@@ -1,7 +1,7 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { Slider as AntdSlider } from "antd";
+import { default as AntdSlider } from "antd/lib/slider";
 import type { SliderRangeProps, SliderSingleProps } from "antd/lib/slider";
 import React from "react";
 import { Registerable } from "./registerable";
@@ -113,7 +113,7 @@ export const sliderMeta: ComponentMeta<SliderProps> = {
     width: "200px",
     maxWidth: "100%",
   },
-  importPath: "@plasmicpkgs/antd",
+  importPath: "@plasmicpkgs/antd/skinny/registerSlider",
   importName: "Slider",
 };
 

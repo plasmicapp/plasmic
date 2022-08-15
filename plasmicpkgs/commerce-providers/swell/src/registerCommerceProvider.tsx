@@ -22,6 +22,9 @@ export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
       defaultValue: "pk_QaZeGhtpQaVbNQnWJdRlE1abE6Ezf9U9",
     },
   },
+  description: `Get your store ID and public storefront API key from the Swell admin UI under Developer > API Keys.
+
+[Watch how to use this integration](https://plasmic-sandbox.swell.store/admin/settings/api).`,
   importPath: "@plasmicpkgs/commerce-swell",
   importName: "CommerceProviderComponent",
 };
@@ -29,7 +32,10 @@ export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
 export function CommerceProviderComponent(props: CommerceProviderProps) {
   const { storeId, publicKey, children } = props;
 
-  const CommerceProvider = getCommerceProvider(storeId, publicKey);
+  const CommerceProvider = React.useMemo(
+    () => getCommerceProvider(storeId, publicKey),
+    [storeId, publicKey]
+  );
 
   return <CommerceProvider>{children}</CommerceProvider>;
 }

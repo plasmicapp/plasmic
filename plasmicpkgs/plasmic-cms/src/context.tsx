@@ -8,13 +8,19 @@ import React from "react";
 import { DatabaseConfig } from "./api";
 import { ApiCmsRow, ApiCmsTable } from "./schema";
 
-const contextPrefix = "__plasmic_cms";
-const databaseContextKey = `${contextPrefix}_database`;
-const tablesContextKey = `${contextPrefix}_tables`;
-const queryResultPrefix = `${contextPrefix}_query_`;
-const mkQueryContextKey = (table: string) => `${queryResultPrefix}${table}`;
-const rowContextPrefix = `${contextPrefix}_row_`;
-const mkRowContextKey = (table: string) => `${rowContextPrefix}${table}`;
+const contextPrefix = "plasmicCms";
+const databaseContextKey = `${contextPrefix}Database`;
+const tablesContextKey = `${contextPrefix}Tables`;
+const collectionResultSuffix = `Collection`;
+const mkQueryContextKey = (table: string) =>
+  `${contextPrefix}${capitalizeFirst(table)}${collectionResultSuffix}`;
+const itemContextSuffix = `Item`;
+const mkRowContextKey = (table: string) =>
+  `${contextPrefix}${capitalizeFirst(table)}${itemContextSuffix}`;
+
+function capitalizeFirst(str: string): string {
+  return str[0]?.toUpperCase() + str.slice(1);
+}
 
 export function useDatabase() {
   return useSelector(databaseContextKey) as DatabaseConfig | undefined;
@@ -28,7 +34,7 @@ export function DatabaseProvider({
   children?: React.ReactNode;
 }) {
   return (
-    <DataProvider name={databaseContextKey} data={config}>
+    <DataProvider name={databaseContextKey} data={config} hidden={true}>
       {children}
     </DataProvider>
   );
@@ -43,10 +49,10 @@ export function TablesProvider({
   tables,
 }: {
   children?: React.ReactNode;
-  tables: ApiCmsTable[];
+  tables?: ApiCmsTable[];
 }) {
   return (
-    <DataProvider name={tablesContextKey} data={tables}>
+    <DataProvider name={tablesContextKey} data={tables} hidden={true}>
       {children}
     </DataProvider>
   );
@@ -70,7 +76,7 @@ export function useQueryResults(table?: string) {
     return undefined;
   }
 
-  const matchingKeys = getClosestMatchingKeys(env, queryResultPrefix);
+  const matchingKeys = getClosestMatchingKeys(env, collectionResultSuffix);
   for (const key of matchingKeys) {
     const inferredTable = tables.find(
       (t) => mkQueryContextKey(t.identifier) === key
@@ -85,8 +91,8 @@ export function useQueryResults(table?: string) {
   return undefined;
 }
 
-function getClosestMatchingKeys(env: DataDict, prefix: string) {
-  return [...Object.keys(env).reverse()].filter((k) => k.startsWith(prefix));
+function getClosestMatchingKeys(env: DataDict, suffix: string) {
+  return [...Object.keys(env).reverse()].filter((k) => k.endsWith(suffix));
 }
 
 export function QueryResultProvider({
@@ -117,7 +123,7 @@ export function useTablesWithDataLoaded() {
     return undefined;
   }
 
-  const matchingKeys = getClosestMatchingKeys(env, rowContextPrefix);
+  const matchingKeys = getClosestMatchingKeys(env, itemContextSuffix);
 
   return tables.filter((table) =>
     matchingKeys.some((key) => mkRowContextKey(table.identifier) === key)

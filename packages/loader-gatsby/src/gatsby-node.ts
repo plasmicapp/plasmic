@@ -20,6 +20,7 @@ const PLASMIC_NODE_NAME = "plasmicData";
 const PLASMIC_DATA_TYPE = `
   type ${PLASMIC_NODE_NAME} implements Node {
     name: String!
+    displayName: String!
     projectId: String!
     path: String
     isPage: Boolean!
@@ -160,6 +161,7 @@ export const createResolvers = (
           for (const component of components) {
             if (
               componentNames.includes(component.name) ||
+              componentNames.includes(component.displayName) ||
               componentNames.includes(component.path) ||
               componentNames.includes(component.path + "/")
             ) {

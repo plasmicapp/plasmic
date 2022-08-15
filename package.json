@@ -2,6 +2,7 @@
   "name": "root",
   "private": true,
   "devDependencies": {
+    "if-env": "^1.0.4",
     "lerna": "^4.0.0",
     "prettier": "2.3.0"
   },
@@ -11,7 +12,8 @@
     "bump": "echo 'Use the jenkins job release_public_packages instead: https://jenkins.aws.plasmic.app/job/release_public_packages/'",
     "local-canary": "yarn local-unpublish && lerna publish --canary --yes --include-merged-tags --no-git-tag-version --no-push --registry=http://localhost:4873 --force-publish",
     "local-publish": "lerna exec -- npm publish --registry=http://localhost:4873",
-    "local-unpublish": "lerna exec -- npm unpublish -f --registry=\"http://localhost:4873/\" \"\\${LERNA_PACKAGE_NAME}\""
+    "local-unpublish": "lerna exec -- npm unpublish -f --registry=\"http://localhost:4873/\" \"\\${LERNA_PACKAGE_NAME}\"",
+    "deps": "lerna list --include-dependencies --scope"
   },
   "workspaces": [
     "packages/loader-core",
@@ -33,7 +35,10 @@
     "plasmicpkgs/lottie-react",
     "plasmicpkgs/plasmic-basic-components",
     "plasmicpkgs/plasmic-cms",
+    "plasmicpkgs/plasmic-content-stack",
+    "plasmicpkgs/plasmic-contentful",
     "plasmicpkgs/plasmic-embed-css",
+    "plasmicpkgs/plasmic-graphcms",
     "plasmicpkgs/plasmic-nav",
     "plasmicpkgs/plasmic-query",
     "plasmicpkgs/plasmic-sanity-io",
@@ -46,6 +51,8 @@
     "plasmicpkgs/react-slick",
     "plasmicpkgs/react-twitter-widgets",
     "plasmicpkgs/react-youtube",
+    "plasmicpkgs/plasmic-wordpress",
+    "plasmicpkgs/plasmic-wordpress-graphql",
     "plasmicpkgs/commerce-providers/*"
   ]
 }

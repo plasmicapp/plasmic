@@ -13,6 +13,7 @@ import { SwellProduct } from "../types";
 import { Category } from "../types/site";
 import { normalizeProduct } from "../utils";
 import { walkCategoryTree } from "../utils/category-tree";
+import { ensureNoNilFields } from "../utils/common";
 
 export type SearchProductsInput = {
   search?: string;
@@ -59,7 +60,7 @@ export const handler: SWRHook<SearchProductsHook> = {
     const { results: products } = await fetch({
       query: options.query,
       method: options.method,
-      variables: {
+      variables: ensureNoNilFields({
         category: !includeSubCategories ? categoryId : undefined,
         brand: brandId,
         search,
@@ -71,7 +72,7 @@ export const handler: SWRHook<SearchProductsHook> = {
             ? { category: includedCategories?.map((c) => c.id) }
             : {}),
         },
-      },
+      }),
     });
 
     return {

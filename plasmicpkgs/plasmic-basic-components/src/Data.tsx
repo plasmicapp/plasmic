@@ -155,7 +155,7 @@ export function DynamicRepeater({
           name={loopItemName}
           data={item}
         >
-          {repeatedElement(index === 0, children)}
+          {repeatedElement(index, children)}
         </_DataProvider>
       ))}
     </>
@@ -234,22 +234,6 @@ export const dataProviderMeta: ComponentMeta<DataProviderProps> = {
     },
     children: {
       type: "slot",
-      defaultValue: [
-        {
-          type: "component",
-          name: "hostless-dynamic-text",
-          props: {
-            selector: "celebrities.0.name",
-          },
-        },
-        {
-          type: "component",
-          name: "hostless-dynamic-image",
-          props: {
-            selector: "celebrities.0.profilePicture",
-          },
-        },
-      ],
     },
   },
 };

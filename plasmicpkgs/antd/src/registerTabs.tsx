@@ -1,15 +1,17 @@
 import registerComponent, {
+  ActionProps,
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
+import { Button } from "antd";
 import {
-  TabsProps as AntdTabsProps,
+  default as AntdTabs,
   TabPaneProps,
-  Tabs as AntdTabs,
-} from "antd";
+  TabsProps as AntdTabsProps,
+} from "antd/lib/tabs";
 import { TabPane } from "rc-tabs";
-import { Registerable } from "./registerable";
 import React from "react";
 import { traverseReactEltTree } from "./customControls";
+import { Registerable } from "./registerable";
 
 export const tabPaneMeta: ComponentMeta<TabPaneProps> = {
   name: "AntdTabPane",
@@ -96,6 +98,62 @@ export function Tabs(props: TabsProps) {
   );
 }
 
+function NavigateTabs({ componentProps, studioOps }: ActionProps<any>) {
+  const tabPanes: string[] = [];
+  traverseReactEltTree(componentProps.children, (elt) => {
+    if (elt?.type === TabPane && typeof elt?.key === "string") {
+      tabPanes.push(elt.key);
+    }
+  });
+
+  const activeKey = componentProps.activeKey;
+  const currTabPos = activeKey
+    ? tabPanes.findIndex((tabKey) => {
+        return tabKey === activeKey;
+      })
+    : 0;
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "row",
+        gap: "10px",
+        justifyContent: "space-between",
+      }}
+    >
+      <Button
+        style={{ width: "100%" }}
+        onClick={() => {
+          if (tabPanes.length > 0) {
+            const prevTabPos =
+              (currTabPos - 1 + tabPanes.length) % tabPanes.length;
+            studioOps.updateProps({ activeKey: tabPanes[prevTabPos] });
+          }
+        }}
+      >
+        Prev tab
+      </Button>
+      <Button
+        style={{ width: "100%" }}
+        onClick={() => {
+          if (tabPanes.length > 0) {
+            const nextTabPos = (currTabPos + 1) % tabPanes.length;
+            studioOps.updateProps({ activeKey: tabPanes[nextTabPos] });
+          }
+        }}
+      >
+        Next tab
+      </Button>
+    </div>
+  );
+}
+
+function OutlineMessage() {
+  return <div>* To re-arrange tab panes, use the Outline panel</div>;
+}
+
 export const tabsMeta: ComponentMeta<TabsProps> = {
   name: "AntdTabs",
   displayName: "Antd Tabs",
@@ -112,14 +170,14 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
     },
     animated: {
       type: "object",
-      hidden: props => props.tabPosition !== "top" && !!props.tabPosition,
+      hidden: (props) => props.tabPosition !== "top" && !!props.tabPosition,
       defaultValueHint: { inkBar: true, tabPane: false },
       description:
         "Whether to change tabs with animation. Can be either a boolean or specify for inkBar and tabPane",
     },
     hideAdd: {
       type: "boolean",
-      hidden: props => props.type !== "editable-card",
+      hidden: (props) => props.type !== "editable-card",
       defaultValueHint: false,
       description: "Hide plus icon or not",
     },
@@ -165,9 +223,9 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
       editOnly: true,
       uncontrolledProp: "defaultActiveKey",
       description: "Initial active TabPane's key",
-      options: props => {
+      options: (props) => {
         const options = new Set<string>();
-        traverseReactEltTree(props.children, elt => {
+        traverseReactEltTree(props.children, (elt) => {
           if (elt?.type === TabPane && typeof elt?.key === "string") {
             options.add(elt.key);
           }
@@ -184,6 +242,18 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
           name: "AntdTabPane",
           props: {
             key: "1",
+            tab: [
+              {
+                type: "text",
+                value: "Tab",
+              },
+            ],
+            children: [
+              {
+                type: "text",
+                value: "Tab content",
+              },
+            ],
           },
         },
         {
@@ -191,12 +261,103 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
           name: "AntdTabPane",
           props: {
             key: "2",
+            tab: [
+              {
+                type: "text",
+                value: "Tab",
+              },
+            ],
+            children: [
+              {
+                type: "text",
+                value: "Tab content",
+              },
+            ],
           },
         },
       ],
     },
   },
-  importPath: "@plasmicpkgs/antd",
+  actions: [
+    {
+      type: "custom-action",
+      control: NavigateTabs,
+    },
+    {
+      type: "button-action",
+      label: "Add new tab",
+      onClick: ({ componentProps, studioOps }: ActionProps<any>) => {
+        // Get the first positive integer that isn't already a key
+        const generateNewKey = () => {
+          let keysSet = new Set<string>();
+          traverseReactEltTree(componentProps.children, (elt) => {
+            if (elt?.type === TabPane && typeof elt?.key === "string") {
+              keysSet.add(elt.key);
+            }
+          });
+
+          for (
+            let keyCandidate = 1;
+            keyCandidate <= keysSet.size + 1;
+            keyCandidate++
+          ) {
+            const strKey = keyCandidate.toString();
+            if (!keysSet.has(strKey)) {
+              return strKey;
+            }
+          }
+
+          return undefined;
+        };
+
+        const tabKey = generateNewKey();
+        studioOps.appendToSlot(
+          {
+            type: "component",
+            name: "AntdTabPane",
+            props: {
+              key: tabKey,
+            },
+          },
+          "children"
+        );
+        studioOps.updateProps({ activeKey: tabKey });
+      },
+    },
+    {
+      type: "button-action",
+      label: "Delete current tab",
+      onClick: ({ componentProps, studioOps }: ActionProps<any>) => {
+        if (componentProps.activeKey) {
+          const tabPanes: string[] = [];
+          traverseReactEltTree(componentProps.children, (elt) => {
+            if (elt?.type === TabPane && typeof elt?.key === "string") {
+              tabPanes.push(elt.key);
+            }
+          });
+
+          const activeKey = componentProps.activeKey;
+          const currTabPos = tabPanes.findIndex((tabKey) => {
+            return tabKey === activeKey;
+          });
+
+          if (currTabPos !== -1) {
+            studioOps.removeFromSlotAt(currTabPos, "children");
+            if (tabPanes.length - 1 > 0) {
+              const prevTabPos =
+                (currTabPos - 1 + tabPanes.length) % tabPanes.length;
+              studioOps.updateProps({ activeKey: tabPanes[prevTabPos] });
+            }
+          }
+        }
+      },
+    },
+    {
+      type: "custom-action",
+      control: OutlineMessage,
+    },
+  ],
+  importPath: "@plasmicpkgs/antd/skinny/registerTabs",
   importName: "Tabs",
 };
 

@@ -51,11 +51,22 @@ export async function extractPlasmicQueryData(
   } catch (err) {
     console.warn(`PLASMIC: Error encountered while pre-rendering`, err);
   }
-  return Object.fromEntries(
+
+  const queryCache = Object.fromEntries(
     Array.from(cache.entries()).filter(
       ([key, val]) => !key.startsWith('$swr$') && val !== undefined
     )
   );
+
+  try {
+    return JSON.parse(
+      JSON.stringify(queryCache, (key, value) =>
+        value !== undefined ? value : null
+      )
+    );
+  } catch {
+    return queryCache;
+  }
 }
 
 /**
@@ -115,7 +126,7 @@ class GenericErrorBoundary extends React.Component<{
   }
 
   render() {
-    return this.props.children;
+    return <>{this.props.children}</>;
   }
 }
 

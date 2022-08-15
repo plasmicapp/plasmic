@@ -1,4 +1,8 @@
-import { PlasmicCanvasContext, repeatedElement } from "@plasmicapp/host";
+import {
+  DataProvider,
+  PlasmicCanvasContext,
+  repeatedElement,
+} from "@plasmicapp/host";
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
@@ -14,6 +18,7 @@ interface CategoryCollectionProps {
   emptyMessage?: React.ReactNode;
   loadingMessage?: React.ReactNode;
   noLayout?: boolean;
+  noAutoRepeat?: boolean;
   category?: string;
   setControlContextData?: (data: { categories: Category[] }) => void;
 }
@@ -47,9 +52,6 @@ export const categoryCollectionMeta: ComponentMeta<CategoryCollectionProps> = {
         },
       ],
     },
-    noLayout: {
-      type: "boolean",
-    },
     emptyMessage: {
       type: "slot",
       defaultValue: {
@@ -75,6 +77,16 @@ export const categoryCollectionMeta: ComponentMeta<CategoryCollectionProps> = {
         );
       },
     },
+    noLayout: {
+      type: "boolean",
+      displayName: "No layout",
+      description: "Do not render a container element.",
+    },
+    noAutoRepeat: {
+      type: "boolean",
+      displayName: "No auto-repeat",
+      description: "Do not automatically repeat children for every category.",
+    },
   },
   defaultStyles: {
     display: "grid",
@@ -85,12 +97,14 @@ export const categoryCollectionMeta: ComponentMeta<CategoryCollectionProps> = {
   },
   importPath: "@plasmicpkgs/commerce",
   importName: "CategoryCollection",
+  providesData: true,
 };
 
 export function CategoryCollection(props: CategoryCollectionProps) {
   const {
     children,
     noLayout,
+    noAutoRepeat,
     className,
     loadingMessage,
     emptyMessage,
@@ -119,15 +133,23 @@ export function CategoryCollection(props: CategoryCollectionProps) {
   const firstCategoryNotEmpty = categories?.find(
     (category) => !category.isEmpty
   );
+  const firstCategoryNotEmptyIndex =
+    categories?.findIndex((category) => !category.isEmpty) ?? -1;
 
-  const renderedData = categories?.map((category, i) => (
-    <CategoryProvider category={category} key={category.id}>
-      {repeatedElement(
-        firstCategoryNotEmpty ? category === firstCategoryNotEmpty : i === 0,
-        children
-      )}
-    </CategoryProvider>
-  ));
+  const renderedData = noAutoRepeat
+    ? children
+    : categories?.map((category, i) => (
+        <CategoryProvider category={category} key={category.id}>
+          {repeatedElement(
+            i < firstCategoryNotEmptyIndex
+              ? i + 1
+              : i === firstCategoryNotEmptyIndex
+              ? 0
+              : i,
+            children
+          )}
+        </CategoryProvider>
+      ));
 
   if ([isAllCategoriesLoading, isLoading].includes(true)) {
     return React.isValidElement(loadingMessage) ? loadingMessage : null;
@@ -138,15 +160,17 @@ export function CategoryCollection(props: CategoryCollectionProps) {
   }
 
   return (
-    <PrimaryCategoryContext.Provider
-      value={firstCategoryNotEmpty ?? categories[0]}
-    >
-      {noLayout ? (
-        <React.Fragment>{renderedData}</React.Fragment>
-      ) : (
-        <div className={className}>{renderedData}</div>
-      )}
-    </PrimaryCategoryContext.Provider>
+    <DataProvider name="categories" data={categories}>
+      <PrimaryCategoryContext.Provider
+        value={firstCategoryNotEmpty ?? categories[0]}
+      >
+        {noLayout ? (
+          <React.Fragment>{renderedData}</React.Fragment>
+        ) : (
+          <div className={className}>{renderedData}</div>
+        )}
+      </PrimaryCategoryContext.Provider>
+    </DataProvider>
   );
 }
 
