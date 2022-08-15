@@ -48,10 +48,10 @@ const PlasmicGatsbyPage = ({ data }${ifTs(ts, ": PlasmicGatsbyPageProps")}) => {
       prefetchedData={plasmicComponents}
     >
       <Helmet>
-        {pageMetadata.title && <title>{pageMetadata.title}</title>}
-        {pageMetadata.title && <meta property="og:title" content={pageMetadata.title} /> }
-        {pageMetadata.description && <meta property="og:description" content={pageMetadata.description} />}
-        {pageMetadata.openGraphImageUrl && <meta property="og:image" content={pageMetadata.openGraphImageUrl} />}
+        {pageMetadata?.title && <title>{pageMetadata.title}</title>}
+        {pageMetadata?.title && <meta property="og:title" content={pageMetadata.title} /> }
+        {pageMetadata?.description && <meta property="og:description" content={pageMetadata.description} />}
+        {pageMetadata?.openGraphImageUrl && <meta property="og:image" content={pageMetadata.openGraphImageUrl} />}
       </Helmet>
       <PlasmicComponent component={pageMeta.displayName} />
     </PlasmicRootProvider>
@@ -84,9 +84,11 @@ export const GATSBY_PLUGIN_CONFIG = (
       },
     ], // An array of project ids.
     preview: false,
-    defaultPlasmicPage: require.resolve("./src/templates/defaultPlasmicPage.${
-      useTypescript ? "tsx" : "jsx"
-    }"),
+    defaultPlasmicPage: ${
+      useTypescript ? "path" : "require"
+    }.resolve("./src/templates/defaultPlasmicPage.${
+  useTypescript ? "tsx" : "jsx"
+}"),
   },
 },
 {

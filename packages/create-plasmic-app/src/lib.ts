@@ -97,6 +97,7 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
   const installResult = await cpaStrategy.installDeps({
     scheme,
     projectPath: resolvedProjectPath,
+    useTypescript,
   });
 
   if (!installResult) {
