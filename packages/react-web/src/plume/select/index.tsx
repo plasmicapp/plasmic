@@ -13,3 +13,4 @@ export {
   BaseSelectOptionGroupProps,
   useSelectOptionGroup,
 } from "./select-option-group";
+export { SelectContext } from "./context";
