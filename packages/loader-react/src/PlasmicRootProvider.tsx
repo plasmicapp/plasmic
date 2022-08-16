@@ -109,13 +109,13 @@ export function PlasmicRootProvider(props: {
    * Page path parameters (e.g. {slug: "foo"} if page path is
    * /products/[slug] and URI is /products/foo).
    */
-  pageParams?: Record<string, string>;
+  pageParams?: Record<string, string | string[] | undefined>;
 
   /**
    * Page query parameters (e.g. {q: "foo"} if page path is
    * /some/path?q=foo).
    */
-  pageQuery?: Record<string, string>;
+  pageQuery?: Record<string, string | string[] | undefined>;
 }) {
   const {
     globalVariants,
