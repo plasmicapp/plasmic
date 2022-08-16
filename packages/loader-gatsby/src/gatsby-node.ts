@@ -1,10 +1,12 @@
 import { ComponentMeta, LoaderBundleOutput } from "@plasmicapp/loader-core";
 import {
   convertBundlesToComponentRenderData,
+  InitOptions,
   initPlasmicLoader,
+  matchesPagePath,
 } from "@plasmicapp/loader-react";
-import { InitOptions } from "@plasmicapp/loader-react/dist/loader";
 import type { PlasmicRemoteChangeWatcher as Watcher } from "@plasmicapp/watcher";
+import { CreatePagesArgs } from "gatsby";
 import serverRequire from "./server-require";
 
 export const onPreInit = ({ reporter }) =>
@@ -148,7 +150,7 @@ export const createResolvers = (
         args: {
           componentNames: `[String]!`,
         },
-        resolve(source, args, context, info) {
+        resolve(_source, args: { componentNames: string[] }, context, _info) {
           const { componentNames } = args;
           // `getAllNodes` is a deprecated function that is going to be a breaking change
           // in Gatsby v5, for now is being maintained to keep support for < v4 projects
@@ -162,13 +164,31 @@ export const createResolvers = (
             if (
               componentNames.includes(component.name) ||
               componentNames.includes(component.displayName) ||
-              componentNames.includes(component.path) ||
-              componentNames.includes(component.path + "/")
+              !!(
+                component.path &&
+                componentNames.some((lookup) =>
+                  matchesPagePath(component.path, lookup)
+                )
+              )
             ) {
               const bundle = component.renderData?.bundle;
               if (bundle) {
                 bundles.push(bundle);
-                compMetas.push(component);
+
+                let meta = component;
+
+                // If component is a page, try to parse dynamic params.
+                if (component.path) {
+                  for (const lookup of componentNames) {
+                    const match = matchesPagePath(component.path, lookup);
+                    if (match) {
+                      meta = { ...meta, params: match.params };
+                      break;
+                    }
+                  }
+                }
+
+                compMetas.push(meta);
               }
             }
           }
@@ -195,9 +215,13 @@ export const createSchemaCustomization = ({ actions }) => {
   createTypes(PLASMIC_DATA_TYPE);
 };
 
+interface LoaderGatsbyPluginOptions extends GatsbyPluginOptions {
+  defaultPlasmicPage: string;
+}
+
 export const createPages = async (
-  { graphql, actions, reporter }: any,
-  opts: GatsbyPluginOptions
+  { graphql, actions, reporter }: CreatePagesArgs,
+  opts: LoaderGatsbyPluginOptions
 ) => {
   const { defaultPlasmicPage } = opts;
 
@@ -207,7 +231,9 @@ export const createPages = async (
     reporter.info(`[Plasmic Loader] - Creating pages`);
 
     const { createPage, deletePage } = actions;
-    const result = await graphql(`
+    const result = await graphql<{
+      allPlasmicData: { nodes: Array<{ path: string }> };
+    }>(`
       query {
         allPlasmicData(filter: { isPage: { eq: true } }) {
           nodes {
@@ -217,10 +243,14 @@ export const createPages = async (
       }
     `);
 
-    const pages = result.data.allPlasmicData.nodes;
+    const pages = result.data?.allPlasmicData.nodes;
+    if (!pages) {
+      reporter.error(`[Plasmic Loader] - GraphQL did not return pages`);
+      return;
+    }
 
     for (const path of allPaths) {
-      await deletePage({
+      deletePage({
         path,
         component: defaultPlasmicPage,
       });
@@ -236,9 +266,10 @@ export const createPages = async (
       }
       allPaths.push(page.path);
 
-      await createPage({
+      createPage({
         path: page.path,
         component: defaultPlasmicPage,
+        context: {},
       });
       reporter.verbose(`[Plasmic Loader] - Created page ${page.path}`);
     }

@@ -36,3 +36,4 @@ export {
   renderToString,
 } from './render';
 export { usePlasmicComponent } from './usePlasmicComponent';
+export { matchesPagePath } from './utils';
