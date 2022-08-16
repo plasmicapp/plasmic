@@ -31,6 +31,7 @@ import {
   ComponentLookupSpec,
   getCompMetas,
   getLookupSpecName,
+  isDynamicPagePath,
   uniq,
 } from './utils';
 import { getPlasmicCookieValues, updatePlasmicCookieValue } from './variation';
@@ -103,6 +104,15 @@ export type GlobalContextMeta<P> = Omit<
    * Optional: not used by Plasmic headless API, only by codegen.
    */
   importPath?: string;
+};
+
+export type FetchPagesOpts = {
+  /**
+   * Whether to include dynamic pages in fetchPages() output. A page is
+   * considered dynamic if its path contains some param between brackets,
+   * e.g. "[slug]".
+   */
+  includeDynamicPages?: boolean;
 };
 
 export class InternalPlasmicComponentLoader {
@@ -306,13 +316,16 @@ export class InternalPlasmicComponentLoader {
     return data;
   }
 
-  async fetchPages() {
+  async fetchPages(opts?: FetchPagesOpts) {
     this.maybeReportClientSideFetch(
       () => `Plasmic: fetching all page metadata in the browser`
     );
     const data = await this.fetchAllData();
     return data.components.filter(
-      (comp) => comp.isPage && comp.path
+      (comp) =>
+        comp.isPage &&
+        comp.path &&
+        (opts?.includeDynamicPages || !isDynamicPagePath(comp.path))
     ) as PageMeta[];
   }
 
@@ -587,8 +600,8 @@ export class PlasmicComponentLoader {
   /**
    * Returns all the page component metadata for these projects.
    */
-  async fetchPages() {
-    return this.__internal.fetchPages();
+  async fetchPages(opts?: FetchPagesOpts) {
+    return this.__internal.fetchPages(opts);
   }
 
   /**
