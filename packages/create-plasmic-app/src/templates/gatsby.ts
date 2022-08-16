@@ -15,7 +15,7 @@ import {
   ComponentRenderData,`
   )}
 } from "@plasmicapp/loader-gatsby";
-import { graphql } from "gatsby";
+import { graphql${ifTs(ts, ", PageProps")} } from "gatsby";
 import { initPlasmicLoaderWithRegistrations } from "../plasmic-init";
 
 export const query = graphql\`
@@ -27,7 +27,7 @@ export const query = graphql\`
 
 ${ifTs(
   ts,
-  `interface PlasmicGatsbyPageProps {
+  `interface PlasmicGatsbyPageProps extends PageProps {
   data: {
     plasmicOptions: InitOptions
     plasmicComponents: ComponentRenderData
@@ -35,7 +35,10 @@ ${ifTs(
 }
 `
 )}
-const PlasmicGatsbyPage = ({ data }${ifTs(ts, ": PlasmicGatsbyPageProps")}) => {
+const PlasmicGatsbyPage = ({ data, location }${ifTs(
+    ts,
+    ": PlasmicGatsbyPageProps"
+  )}) => {
   const {
     plasmicComponents,
     plasmicOptions,
@@ -46,6 +49,8 @@ const PlasmicGatsbyPage = ({ data }${ifTs(ts, ": PlasmicGatsbyPageProps")}) => {
     <PlasmicRootProvider
       loader={initPlasmicLoaderWithRegistrations(plasmicOptions)}
       prefetchedData={plasmicComponents}
+      pageParams={pageMeta.params}
+      pageQuery={Object.fromEntries(new URLSearchParams(location.search))}
     >
       <Helmet>
         {pageMetadata?.title && <title>{pageMetadata.title}</title>}
