@@ -159,6 +159,10 @@ export function matchesPagePath(
   return { params };
 }
 
+export function isDynamicPagePath(path: string): boolean {
+  return !!path.match(/\[[^/]*\]/);
+}
+
 function matchesCompMeta(lookup: FullLookupSpec, meta: ComponentMeta) {
   if (lookup.projectId && meta.projectId !== lookup.projectId) {
     return false;
