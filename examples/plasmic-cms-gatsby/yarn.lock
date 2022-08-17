@@ -2360,6 +2360,14 @@
   dependencies:
     socket.io-client "^4.1.2"
 
+"@plasmicpkgs/plasmic-cms@^0.0.117":
+  version "0.0.117"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-cms/-/plasmic-cms-0.0.117.tgz#95f492e63578c56fa25adbfcdd711c68050a6312"
+  integrity sha512-49mefIp8EnNRRHiUanq/LmGU5FtcgoMlMrUjUQfSj1lcJVUG+wDdmBbv+bo4HaxIpkPDDEuLn+JhAIPaaxGEmg==
+  dependencies:
+    "@plasmicapp/query" "0.1.53"
+    dayjs "^1.10.7"
+
 "@pmmmwh/react-refresh-webpack-plugin@^0.4.3":
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/@pmmmwh/react-refresh-webpack-plugin/-/react-refresh-webpack-plugin-0.4.3.tgz#1eec460596d200c0236bf195b078a5d1df89b766"
@@ -4293,6 +4301,11 @@ date-fns@^2.25.0:
   version "2.29.1"
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.29.1.tgz#9667c2615525e552b5135a3116b95b1961456e60"
   integrity sha512-dlLD5rKaKxpFdnjrs+5azHDFOPEu4ANy/LTh04A1DTzMM7qoajmKCBc8pkKRFT41CNzw+4gQh79X5C+Jq27HAw==
+
+dayjs@^1.10.7:
+  version "1.11.5"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.5.tgz#00e8cc627f231f9499c19b38af49f56dc0ac5e93"
+  integrity sha512-CAdX5Q3YW3Gclyo5Vpqkgpj8fSdLQcRuzfX6mC6Phy0nfJ0eGYOeS7m4mt2plDWLAtA4TqTakvbboHvUxfe4iA==
 
 debug@2.6.9, debug@^2.6.0, debug@^2.6.9:
   version "2.6.9"
