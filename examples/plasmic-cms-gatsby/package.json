@@ -1,0 +1,33 @@
+{
+  "name": "plasmic-cms-gatsby",
+  "version": "1.0.0",
+  "private": true,
+  "description": "plasmic-cms-gatsby",
+  "author": "Tiago Madeira",
+  "keywords": [
+    "gatsby"
+  ],
+  "scripts": {
+    "develop": "gatsby develop",
+    "start": "gatsby develop",
+    "build": "gatsby build",
+    "serve": "gatsby serve",
+    "clean": "gatsby clean",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@plasmicapp/loader-gatsby": "^1.0.164",
+    "gatsby": "^4.21.0",
+    "gatsby-plugin-react-helmet": "^5.21.0",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-helmet": "^6.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.45",
+    "@types/react": "^18.0.17",
+    "@types/react-dom": "^18.0.6",
+    "@types/react-helmet": "^6.1.5",
+    "typescript": "^4.7.4"
+  }
+}
