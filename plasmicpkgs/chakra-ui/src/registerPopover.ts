@@ -1,10 +1,24 @@
+import {
+  Popover,
+  PopoverArrow,
+  PopoverArrowProps,
+  PopoverBody,
+  PopoverBodyProps,
+  PopoverCloseButton,
+  PopoverCloseButtonProps,
+  PopoverContent,
+  PopoverContentProps,
+  PopoverHeader,
+  PopoverHeaderProps,
+  PopoverProps,
+  PopoverTrigger,
+} from "@chakra-ui/react";
 import registerComponent, {
-    ComponentMeta,
-  } from "@plasmicapp/host/registerComponent";
-  import { Popover, PopoverProps,PopoverContent, PopoverContentProps,PopoverArrow, PopoverArrowProps,PopoverCloseButton, PopoverCloseButtonProps,PopoverHeader, PopoverHeaderProps,PopoverBody, PopoverBodyProps,PopoverTrigger, PopoverTriggerProps } from "@chakra-ui/react";
-  import { Registerable } from "./registerable";
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
+import { Registerable } from "./registerable";
 
-export const popoverMeta: ComponentMeta<PopoverProps>={
+export const popoverMeta: ComponentMeta<PopoverProps> = {
   name: "Popover",
   importPath: "@chakra-ui/react",
   props: {
@@ -66,18 +80,16 @@ export const popoverMeta: ComponentMeta<PopoverProps>={
   },
 };
 
-  export function registerPopover(loader?: Registerable,  customPopoverMeta?: ComponentMeta<PopoverProps>
-    ) {
-    const doRegisterComponent: typeof registerComponent = (...args) =>
-      loader ? loader.registerComponent(...args) : registerComponent(...args);
-      doRegisterComponent(Popover, customPopoverMeta ?? popoverMeta);
-  }
-  
+export function registerPopover(
+  loader?: Registerable,
+  customPopoverMeta?: ComponentMeta<PopoverProps>
+) {
+  const doRegisterComponent: typeof registerComponent = (...args) =>
+    loader ? loader.registerComponent(...args) : registerComponent(...args);
+  doRegisterComponent(Popover, customPopoverMeta ?? popoverMeta);
+}
 
-
-
-
-export const popoverContentMeta: ComponentMeta<PopoverContentProps>={
+export const popoverContentMeta: ComponentMeta<PopoverContentProps> = {
   name: "PopoverContent",
   importPath: "@chakra-ui/react",
   parentComponentName: "Popover",
@@ -118,34 +130,35 @@ export const popoverContentMeta: ComponentMeta<PopoverContentProps>={
   },
 };
 
-  export function registerPopoverContent(loader?: Registerable,  customPopoverContentMeta?: ComponentMeta<PopoverContentProps>
-    ) {
-    const doRegisterComponent: typeof registerComponent = (...args) =>
-      loader ? loader.registerComponent(...args) : registerComponent(...args);
-      doRegisterComponent(PopoverContent, customPopoverContentMeta ?? popoverContentMeta);
-  }
-  
+export function registerPopoverContent(
+  loader?: Registerable,
+  customPopoverContentMeta?: ComponentMeta<PopoverContentProps>
+) {
+  const doRegisterComponent: typeof registerComponent = (...args) =>
+    loader ? loader.registerComponent(...args) : registerComponent(...args);
+  doRegisterComponent(
+    PopoverContent,
+    customPopoverContentMeta ?? popoverContentMeta
+  );
+}
 
-
-export const popoverArrowMeta: ComponentMeta<PopoverArrowProps>={
+export const popoverArrowMeta: ComponentMeta<PopoverArrowProps> = {
   name: "PopoverArrow",
   importPath: "@chakra-ui/react",
   parentComponentName: "PopoverContent",
   props: {},
 };
 
-  export function registerPopoverArrow(loader?: Registerable,  customPopoverArrowMeta?: ComponentMeta<PopoverArrowProps>
-    ) {
-    const doRegisterComponent: typeof registerComponent = (...args) =>
-      loader ? loader.registerComponent(...args) : registerComponent(...args);
-      doRegisterComponent(PopoverArrow, customPopoverArrowMeta ?? popoverArrowMeta);
-  }
-  
+export function registerPopoverArrow(
+  loader?: Registerable,
+  customPopoverArrowMeta?: ComponentMeta<PopoverArrowProps>
+) {
+  const doRegisterComponent: typeof registerComponent = (...args) =>
+    loader ? loader.registerComponent(...args) : registerComponent(...args);
+  doRegisterComponent(PopoverArrow, customPopoverArrowMeta ?? popoverArrowMeta);
+}
 
-
-
-
-export const popoverCloseButtonMeta: ComponentMeta<PopoverCloseButtonProps>={
+export const popoverCloseButtonMeta: ComponentMeta<PopoverCloseButtonProps> = {
   name: "PopoverCloseButton",
   importPath: "@chakra-ui/react",
   parentComponentName: "PopoverContent",
@@ -153,16 +166,19 @@ export const popoverCloseButtonMeta: ComponentMeta<PopoverCloseButtonProps>={
   props: {},
 };
 
-  export function registerPopoverCloseButton(loader?: Registerable,  customPopoverCloseButtonMeta?: ComponentMeta<PopoverCloseButtonProps>
-    ) {
-    const doRegisterComponent: typeof registerComponent = (...args) =>
-      loader ? loader.registerComponent(...args) : registerComponent(...args);
-      doRegisterComponent(PopoverCloseButton, customPopoverCloseButtonMeta ?? popoverCloseButtonMeta);
-  }
-  
+export function registerPopoverCloseButton(
+  loader?: Registerable,
+  customPopoverCloseButtonMeta?: ComponentMeta<PopoverCloseButtonProps>
+) {
+  const doRegisterComponent: typeof registerComponent = (...args) =>
+    loader ? loader.registerComponent(...args) : registerComponent(...args);
+  doRegisterComponent(
+    PopoverCloseButton,
+    customPopoverCloseButtonMeta ?? popoverCloseButtonMeta
+  );
+}
 
-
-export const popoverHeaderMeta: ComponentMeta<PopoverHeaderProps>={
+export const popoverHeaderMeta: ComponentMeta<PopoverHeaderProps> = {
   name: "PopoverHeader",
   importPath: "@chakra-ui/react",
   parentComponentName: "PopoverContent",
@@ -177,18 +193,19 @@ export const popoverHeaderMeta: ComponentMeta<PopoverHeaderProps>={
   },
 };
 
-  export function registerPopoverHeader(loader?: Registerable,  customPopoverHeaderMeta?: ComponentMeta<PopoverHeaderProps>
-    ) {
-    const doRegisterComponent: typeof registerComponent = (...args) =>
-      loader ? loader.registerComponent(...args) : registerComponent(...args);
-      doRegisterComponent(PopoverHeader, customPopoverHeaderMeta ?? popoverHeaderMeta);
-  }
-  
+export function registerPopoverHeader(
+  loader?: Registerable,
+  customPopoverHeaderMeta?: ComponentMeta<PopoverHeaderProps>
+) {
+  const doRegisterComponent: typeof registerComponent = (...args) =>
+    loader ? loader.registerComponent(...args) : registerComponent(...args);
+  doRegisterComponent(
+    PopoverHeader,
+    customPopoverHeaderMeta ?? popoverHeaderMeta
+  );
+}
 
-
-
-
-export const popoverBodyMeta: ComponentMeta<PopoverBodyProps>={
+export const popoverBodyMeta: ComponentMeta<PopoverBodyProps> = {
   name: "PopoverBody",
   importPath: "@chakra-ui/react",
   parentComponentName: "PopoverContent",
@@ -204,17 +221,20 @@ export const popoverBodyMeta: ComponentMeta<PopoverBodyProps>={
   },
 };
 
-  export function registerPopoverBody(loader?: Registerable,  customPopoverBodyMeta?: ComponentMeta<PopoverBodyProps>
-    ) {
-    const doRegisterComponent: typeof registerComponent = (...args) =>
-      loader ? loader.registerComponent(...args) : registerComponent(...args);
-      doRegisterComponent(PopoverBody, customPopoverBodyMeta ?? popoverBodyMeta);
-  }
-  
+export function registerPopoverBody(
+  loader?: Registerable,
+  customPopoverBodyMeta?: ComponentMeta<PopoverBodyProps>
+) {
+  const doRegisterComponent: typeof registerComponent = (...args) =>
+    loader ? loader.registerComponent(...args) : registerComponent(...args);
+  doRegisterComponent(PopoverBody, customPopoverBodyMeta ?? popoverBodyMeta);
+}
 
+interface PopoverTriggerProps {
+  children: React.ReactNode;
+}
 
-
-export const popoverTriggerMeta: ComponentMeta<PopoverTriggerProps>={
+export const popoverTriggerMeta: ComponentMeta<PopoverTriggerProps> = {
   name: "PopoverTrigger",
   importPath: "@chakra-ui/react",
   parentComponentName: "Popover",
@@ -235,10 +255,14 @@ export const popoverTriggerMeta: ComponentMeta<PopoverTriggerProps>={
   },
 };
 
-  export function registerPopoverTrigger(loader?: Registerable,  customPopoverTriggerMeta?: ComponentMeta<PopoverTriggerProps>
-    ) {
-    const doRegisterComponent: typeof registerComponent = (...args) =>
-      loader ? loader.registerComponent(...args) : registerComponent(...args);
-      doRegisterComponent(PopoverTrigger, customPopoverTriggerMeta ?? popoverTriggerMeta);
-  }
-  
+export function registerPopoverTrigger(
+  loader?: Registerable,
+  customPopoverTriggerMeta?: ComponentMeta<PopoverTriggerProps>
+) {
+  const doRegisterComponent: typeof registerComponent = (...args) =>
+    loader ? loader.registerComponent(...args) : registerComponent(...args);
+  doRegisterComponent(
+    PopoverTrigger,
+    customPopoverTriggerMeta ?? popoverTriggerMeta
+  );
+}

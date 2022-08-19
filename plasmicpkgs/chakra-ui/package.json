@@ -1,0 +1,51 @@
+{
+  "name": "@plasmicpkgs/plasmic-chakra-ui",
+  "version": "0.0.1",
+  "description": "Plasmic registration calls for chakra ui components.",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "module": "dist/plasmic-chakra-ui.esm.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test --passWithNoTests",
+    "lint": "tsdx lint",
+    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
+  },
+  "peerDependencies": {
+    "react": ">=16"
+  },
+  "size-limit": [
+    {
+      "path": "dist/plasmic-chakra-ui.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/plasmic-chakra-ui.esm.js",
+      "limit": "10 KB"
+    }
+  ],
+  "devDependencies": {
+    "@plasmicapp/host": "1.0.76",
+    "@size-limit/preset-small-lib": "^4.11.0",
+    "@types/node": "^14.0.26",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "size-limit": "^4.11.0",
+    "tsdx": "^0.14.1",
+    "typescript": "^3.9.7"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^2.2.8",
+    "@plasmicapp/host": "1.0.76",
+    "react": ">=16.8.0"
+  }
+}
