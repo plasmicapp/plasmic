@@ -54,7 +54,8 @@ export function useTriggeredOverlay<
   plasmicClass: C,
   props: P,
   config: TriggeredOverlayConfig<C>,
-  outerRef: TriggeredOverlayRef = null
+  outerRef: TriggeredOverlayRef = null,
+  isDismissable = true
 ) {
   const overlayRef = React.useRef<HTMLElement>(null);
   const onOverlayRef = mergeRefs(overlayRef, outerRef);
@@ -109,7 +110,7 @@ export function useTriggeredOverlay<
     {
       isOpen: state.isOpen,
       onClose: state.close,
-      isDismissable: true,
+      isDismissable,
       shouldCloseOnBlur: true,
     },
     overlayRef
