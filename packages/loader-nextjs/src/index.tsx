@@ -122,6 +122,18 @@ export function initPlasmicLoader(
     'next/router': NextRouter,
   });
 
+  if (!isProd) {
+    const stringOpts = JSON.stringify(opts);
+
+    if (process.env.PLASMIC_OPTS && process.env.PLASMIC_OPTS !== stringOpts) {
+      throw new Error(
+        `We detected that your Plasmic configuration has changed. Please restart your dev server.\n`
+      );
+    }
+
+    process.env.PLASMIC_OPTS = stringOpts;
+  }
+
   if (cache) {
     if (!isProd) {
       if (process.env.PLASMIC_WATCHED !== 'true') {
