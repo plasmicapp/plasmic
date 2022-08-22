@@ -1,9 +1,14 @@
 import { expect } from "@storybook/jest";
 import { Story } from "@storybook/react";
 import { userEvent, within } from "@storybook/testing-library";
-import { dset as set } from "dset";
 import React from "react";
-import useDollarState, { $StateSpec } from "../states";
+import { set } from "../states/helpers";
+import useDollarState, { $StateSpec } from "../states/valtio";
+
+const deepClone = function <T>(o: T): T {
+  console.log("dale", "cloning", o);
+  return JSON.parse(JSON.stringify(o));
+};
 
 export default {
   title: "UseDollarState",
@@ -291,7 +296,7 @@ const _ResetInput: Story<{
           path: "textInputFirstName.value",
           initFunc: (_$props, $state) =>
             $state.list.selectedIndex == null
-              ? undefined
+              ? ""
               : $state.peopleList[$state.list.selectedIndex].firstName,
           type: "private",
         },
@@ -299,7 +304,7 @@ const _ResetInput: Story<{
           path: "textInputLastName.value",
           initFunc: (_$props, $state) =>
             $state.list.selectedIndex == null
-              ? undefined
+              ? ""
               : $state.peopleList[$state.list.selectedIndex].lastName,
           type: "private",
         },
@@ -361,18 +366,21 @@ const peopleList = [
   {
     firstName: "Jonny",
     lastName: "Greenwood",
+    nicknames: [],
   },
   {
     firstName: "Thom",
     lastName: "Yorke",
+    nicknames: ["thomthom"],
   },
   {
     firstName: "Colin",
     lastName: "Greenwood",
+    nicknames: ["lin", "rgb"],
   },
 ];
 export const ResetInput = _ResetInput.bind({});
-ResetInput.args = { peopleList };
+ResetInput.args = { peopleList: deepClone(peopleList) };
 ResetInput.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
 
@@ -425,7 +433,7 @@ const _RepeatedStates: Story<{
         (set, i) =>
           ({
             path: `test${i}.count`,
-            type: "private" as const,
+            type: "private",
             initFunc: (_$props, $state) =>
               set.reduce((acc, el) => acc + $state.counter[el].count, 0),
           } as $StateSpec<any>)
@@ -446,6 +454,7 @@ const _RepeatedStates: Story<{
       >
         {set.map((idx) => (
           <Counter
+            key={idx}
             title={<p>{`counter[${idx}]`}</p>}
             stateType="readonly"
             onChange={(val) => ($state.counter[idx].count = val)}
@@ -454,6 +463,7 @@ const _RepeatedStates: Story<{
         ))}
         {subsets.map((set, i) => (
           <Counter
+            key={i}
             title={<p>= {set.map((el) => `counter[${el}]`).join(" + ")}</p>}
             stateType="writable"
             initCount={$state[`test${i}`].count}
@@ -550,7 +560,7 @@ const _NestedRepeatedCounter: Story<{}> = () => {
       [
         {
           path: "parent[].counter[].count",
-          type: "private" as const,
+          type: "private",
           initFunc: () => 0,
         },
       ],
@@ -684,7 +694,7 @@ const _MatrixRepeatedCounter: Story<{}> = () => {
     [
       {
         path: "counter[][].count",
-        type: "private" as const,
+        type: "private",
         initFunc: () => 0,
       },
     ],
@@ -700,8 +710,9 @@ const _MatrixRepeatedCounter: Story<{}> = () => {
       }}
     >
       {[0, 1, 2].flatMap((i) =>
-        [0, 1, 2].map((j) => (
+        [0, 1, 2].map((j, _, arr) => (
           <Counter
+            key={i * arr.length + j}
             stateType="writable"
             initCount={$state.counter[i][j].count}
             onChange={(val) => ($state.counter[i][j].count = val)}
@@ -939,7 +950,17 @@ const _RepeatedImplicitState: Story<{}> = (args) => {
     [
       {
         path: "counter[].count",
-        type: "private" as const,
+        type: "private",
+        initVal: 0,
+      },
+      {
+        path: "removeIndex",
+        type: "private",
+        initVal: 0,
+      },
+      {
+        path: "usedValuesCount",
+        type: "private",
         initVal: 0,
       },
     ],
@@ -1033,4 +1054,572 @@ RepeatedImplicitState.play = async ({ canvasElement }) => {
       (canvas.getByTestId(`list-item-${val}`) as HTMLLIElement).textContent
     ).toEqual(`${val}`)
   );
+};
+
+interface Person {
+  firstName: string;
+  lastName: string;
+  nicknames: string[];
+}
+
+const _FormBuilder: Story<{ people: Person[] }> = (props: {
+  people: Person[];
+}) => {
+  const Nickname = React.useMemo(
+    () => (props: {
+      nickname: string;
+      onChangeNickname: (nickname: string) => void;
+      onDeleteNickname: () => void;
+      "data-test-index": string;
+    }) => {
+      const $state = useDollarState(
+        [
+          {
+            path: "nickname",
+            type: "private",
+            initFunc: (props) => props.nickname,
+          },
+        ],
+        props
+      );
+      return (
+        <div>
+          <input
+            type="text"
+            value={$state.nickname}
+            onChange={(e) => {
+              $state.nickname = e.target.value;
+              props.onChangeNickname($state.nickname);
+            }}
+            data-testid={`nickname-input${props["data-test-index"]}`}
+          />
+          <button
+            onClick={() => props.onDeleteNickname()}
+            data-testid={`remove-nickname-btn${props["data-test-index"]}`}
+          >
+            X
+          </button>
+        </div>
+      );
+    },
+    []
+  );
+
+  const Person = React.useMemo(
+    () => (props: {
+      person: Person;
+      onChangePerson: (person: Person) => void;
+      onDeletePerson: () => void;
+      "data-test-index": string;
+    }) => {
+      const $state = useDollarState(
+        [
+          {
+            path: "nicknames",
+            type: "private",
+            initFunc: (props) => props.person.nicknames,
+          },
+          {
+            path: "firstName",
+            type: "private",
+            initFunc: (props) => props.person.firstName,
+          },
+          {
+            path: "lastName",
+            type: "private",
+            initFunc: (props) => props.person.lastName,
+          },
+        ],
+        props
+      );
+
+      const onChangePersonHandler = (
+        field: "firstName" | "lastName" | "nicknames"
+      ) => {
+        props.onChangePerson({
+          ...props.person,
+          [field]: $state[field],
+        });
+      };
+
+      const mkDataTestIdAttr = (label: string) => ({
+        "data-testid": `${label}${props["data-test-index"]}`,
+      });
+
+      return (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            borderBottom: "1px solid #000",
+          }}
+        >
+          <div>
+            <label>First Name</label>
+            <input
+              type="text"
+              value={$state.firstName}
+              onChange={(e) => {
+                $state.firstName = e.target.value;
+                onChangePersonHandler("firstName");
+              }}
+              {...mkDataTestIdAttr("firstName-input")}
+            />
+          </div>
+          <div>
+            <label>Last Name</label>
+            <input
+              type="text"
+              value={$state.lastName}
+              onChange={(e) => {
+                $state.lastName = e.target.value;
+                onChangePersonHandler("lastName");
+              }}
+              {...mkDataTestIdAttr("lastName-input")}
+            />
+          </div>
+          <div
+            style={{
+              display: "flex",
+            }}
+          >
+            <label>Nicknames</label>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              {$state.nicknames.map((nickname: any, i: number) => (
+                <Nickname
+                  key={i}
+                  nickname={nickname}
+                  onChangeNickname={(newNickname) => {
+                    $state.nicknames[i] = newNickname;
+                    onChangePersonHandler("nicknames");
+                  }}
+                  onDeleteNickname={() => {
+                    $state.nicknames.splice(i, 1);
+                    $state.nicknames = [...$state.nicknames];
+                    onChangePersonHandler("nicknames");
+                  }}
+                  data-test-index={`${props["data-test-index"]}[${i}]`}
+                />
+              ))}
+              <button
+                onClick={() => ($state.nicknames = [...$state.nicknames, ""])}
+                {...mkDataTestIdAttr("add-nickname-btn")}
+              >
+                Add nickname
+              </button>
+            </div>
+          </div>
+          <button
+            data-testid={`remove-person-btn${props["data-test-index"]}`}
+            onClick={() => props.onDeletePerson()}
+          >
+            Remove person
+          </button>
+        </div>
+      );
+    },
+    []
+  );
+
+  const $state = useDollarState(
+    [
+      {
+        path: "people",
+        type: "private",
+        initFunc: (props) => props.people,
+      },
+    ],
+    props
+  );
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "20px",
+      }}
+    >
+      {$state.people.map((person: any, i: number) => (
+        <Person
+          person={person}
+          key={i}
+          onChangePerson={(person) => {
+            $state.people[i] = person;
+            $state.people = [...$state.people];
+          }}
+          onDeletePerson={() => {
+            $state.people.splice(i, 1);
+            $state.people = [...$state.people];
+          }}
+          data-test-index={`[${i}]`}
+        />
+      ))}
+      <button
+        data-testid={"add-person-btn"}
+        onClick={() =>
+          ($state.people = [
+            ...$state.people,
+            {
+              firstName: "",
+              lastName: "",
+              nicknames: [],
+            },
+          ])
+        }
+      >
+        Add person
+      </button>
+      <br />
+      <p data-testid={"stringified-people"}>{JSON.stringify($state.people)}</p>
+    </div>
+  );
+};
+
+export const FormBuilder = _FormBuilder.bind({});
+FormBuilder.args = {
+  people: deepClone(peopleList),
+};
+FormBuilder.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  const testPeopleList = async (expectedPeople: Person[]) => {
+    await expect(canvas.getByTestId("stringified-people").textContent).toEqual(
+      JSON.stringify(expectedPeople)
+    );
+    for (let i = 0; i < expectedPeople.length; i++) {
+      await expect(
+        (canvas.getByTestId(`firstName-input[${i}]`) as HTMLInputElement).value
+      ).toEqual(expectedPeople[i].firstName);
+      await expect(
+        (canvas.getByTestId(`lastName-input[${i}]`) as HTMLInputElement).value
+      ).toEqual(expectedPeople[i].lastName);
+      for (let j = 0; j < expectedPeople[i].nicknames.length; j++) {
+        await expect(
+          (canvas.getByTestId(`nickname-input[${i}][${j}]`) as HTMLInputElement)
+            .value
+        ).toEqual(expectedPeople[i].nicknames[j]);
+      }
+    }
+  };
+  const expectedPeople = deepClone(peopleList);
+  await testPeopleList(expectedPeople);
+
+  expectedPeople[0].firstName += "abc";
+  expectedPeople[2].lastName += "xyz";
+  expectedPeople[0].nicknames.push("nickname1");
+  expectedPeople[1].nicknames.push("nickname2");
+  expectedPeople[1].nicknames.push("nickname3");
+  expectedPeople[2].nicknames.push("nickname4");
+  await userEvent.type(canvas.getByTestId("firstName-input[0]"), "abc");
+  await userEvent.type(canvas.getByTestId("lastName-input[2]"), "xyz");
+  await click(canvas.getByTestId("add-nickname-btn[0]"));
+  await userEvent.type(canvas.getByTestId("nickname-input[0][0]"), "nickname1");
+  await click(canvas.getByTestId("add-nickname-btn[1]"));
+  await userEvent.type(canvas.getByTestId("nickname-input[1][1]"), "nickname2");
+  await click(canvas.getByTestId("add-nickname-btn[1]"));
+  await userEvent.type(canvas.getByTestId("nickname-input[1][2]"), "nickname3");
+  await click(canvas.getByTestId("add-nickname-btn[2]"));
+  await userEvent.type(canvas.getByTestId("nickname-input[2][2]"), "nickname4");
+  await testPeopleList(expectedPeople);
+
+  const newPerson = {
+    firstName: "John",
+    lastName: "Doe",
+    nicknames: ["little john", "big john"],
+  };
+  expectedPeople.push(newPerson);
+  await click(canvas.getByTestId("add-person-btn"));
+  await userEvent.type(
+    canvas.getByTestId("firstName-input[3]"),
+    newPerson.firstName
+  );
+  await userEvent.type(
+    canvas.getByTestId("lastName-input[3]"),
+    newPerson.lastName
+  );
+  await click(
+    canvas.getByTestId("add-nickname-btn[3]"),
+    newPerson.nicknames.length
+  );
+  await userEvent.type(
+    canvas.getByTestId("nickname-input[3][0]"),
+    newPerson.nicknames[0]
+  );
+  await userEvent.type(
+    canvas.getByTestId("nickname-input[3][1]"),
+    newPerson.nicknames[1]
+  );
+  await testPeopleList(expectedPeople);
+
+  expectedPeople.splice(2, 1);
+  await click(canvas.getByTestId("remove-person-btn[2]"));
+  await testPeopleList(expectedPeople);
+
+  expectedPeople[0].nicknames.splice(0, 1);
+  expectedPeople[1].nicknames.splice(1, 1);
+  expectedPeople[2].nicknames.splice(0, 2);
+  await click(canvas.getByTestId("remove-nickname-btn[0][0]"));
+  await click(canvas.getByTestId("remove-nickname-btn[1][1]"));
+  await click(canvas.getByTestId("remove-nickname-btn[2][1]"));
+  await click(canvas.getByTestId("remove-nickname-btn[2][0]"));
+  await testPeopleList(expectedPeople);
+
+  expectedPeople[1].firstName += "abc";
+  expectedPeople[2].lastName += "xyz";
+  expectedPeople[0].nicknames.push("nickname11");
+  expectedPeople[1].nicknames.push("nickname12");
+  expectedPeople[1].nicknames.push("nickname13");
+  expectedPeople[2].nicknames.push("nickname14");
+  await userEvent.type(canvas.getByTestId("firstName-input[1]"), "abc");
+  await userEvent.type(canvas.getByTestId("lastName-input[2]"), "xyz");
+  await click(canvas.getByTestId("add-nickname-btn[0]"));
+  await userEvent.type(
+    canvas.getByTestId("nickname-input[0][0]"),
+    "nickname11"
+  );
+  await click(canvas.getByTestId("add-nickname-btn[1]"));
+  await userEvent.type(
+    canvas.getByTestId("nickname-input[1][2]"),
+    "nickname12"
+  );
+  await click(canvas.getByTestId("add-nickname-btn[1]"));
+  await userEvent.type(
+    canvas.getByTestId("nickname-input[1][3]"),
+    "nickname13"
+  );
+  await click(canvas.getByTestId("add-nickname-btn[2]"));
+  await userEvent.type(
+    canvas.getByTestId("nickname-input[2][0]"),
+    "nickname14"
+  );
+  await testPeopleList(expectedPeople);
+};
+
+//---------------------------
+//----------------------------
+
+const _FormBuilderImplicitStates: Story<{ people: Person[] }> = (props: {
+  people: Person[];
+}) => {
+  const Nickname = React.useMemo(
+    () => (props: {
+      nickname: string;
+      onChangeNickname: (nickname: string) => void;
+      onDeleteNickname: () => void;
+      "data-test-index": string;
+    }) => {
+      return (
+        <div>
+          <input
+            type="text"
+            value={props.nickname}
+            onChange={(e) => props.onChangeNickname(e.target.value)}
+            data-testid={`nickname-input${props["data-test-index"]}`}
+          />
+          <button
+            onClick={() => props.onDeleteNickname()}
+            data-testid={`remove-nickname-btn${props["data-test-index"]}`}
+          >
+            X
+          </button>
+        </div>
+      );
+    },
+    []
+  );
+
+  const Person = React.useMemo(
+    () => (props: {
+      firstName: string;
+      onFirstNameChange: (value: string) => void;
+      lastName: string;
+      onLastNameChange: (value: string) => void;
+      nicknames: string[];
+      onNicknamesChange: (value: string, path: (string | number)[]) => void;
+      onDeletePerson: () => void;
+      "data-test-index": string;
+    }) => {
+      const $state = useDollarState(
+        [
+          {
+            path: "nicknames[]",
+            type: "readonly",
+            onChangeProp: "onNicknamesChange",
+            initFunc: (props, _, indexes) => props.nicknames[indexes[0]],
+          },
+          {
+            path: "firstName",
+            type: "readonly",
+            onChangeProp: "onFirstNameChange",
+            initFunc: (props) => props.firstName,
+          },
+          {
+            path: "lastName",
+            type: "readonly",
+            onChangeProp: "onLastNameChange",
+            initFunc: (props) => props.lastName,
+          },
+        ],
+        props
+      );
+
+      const mkDataTestIdAttr = (label: string) => ({
+        "data-testid": `${label}${props["data-test-index"]}`,
+      });
+
+      return (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            borderBottom: "1px solid #000",
+          }}
+        >
+          <div>
+            <label>First Name</label>
+            <input
+              type="text"
+              value={$state.firstName}
+              onChange={(e) => ($state.firstName = e.target.value)}
+              {...mkDataTestIdAttr("firstName-input")}
+            />
+          </div>
+          <div>
+            <label>Last Name</label>
+            <input
+              type="text"
+              value={$state.lastName}
+              onChange={(e) => ($state.lastName = e.target.value)}
+              {...mkDataTestIdAttr("lastName-input")}
+            />
+          </div>
+          <div
+            style={{
+              display: "flex",
+            }}
+          >
+            <label>Nicknames</label>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              {$state.nicknames.map((nickname: any, i: number) => (
+                <Nickname
+                  key={i}
+                  nickname={nickname}
+                  onChangeNickname={(newNickname) => {
+                    $state.nicknames[i] = newNickname;
+                  }}
+                  onDeleteNickname={() => {
+                    $state.nicknames.splice(i, 1);
+                  }}
+                  data-test-index={`${props["data-test-index"]}[${i}]`}
+                />
+              ))}
+              <button
+                onClick={() => {
+                  $state.nicknames.push("salve");
+                }}
+                {...mkDataTestIdAttr("add-nickname-btn")}
+              >
+                Add nickname
+              </button>
+            </div>
+          </div>
+          <button
+            data-testid={`remove-person-btn${props["data-test-index"]}`}
+            onClick={() => props.onDeletePerson()}
+          >
+            Remove person
+          </button>
+        </div>
+      );
+    },
+    []
+  );
+
+  const $state = useDollarState(
+    [
+      {
+        path: "people[].firstName",
+        type: "private",
+        initFunc: (props, _, indexes) => props.people[indexes[0]].firstName,
+      },
+      {
+        path: "people[].lastName",
+        type: "private",
+        initFunc: (props, _, indexes) => props.people[indexes[0]].lastName,
+      },
+      {
+        path: "people[].nicknames[]",
+        type: "private",
+        initFunc: (props, _, indexes) =>
+          props.people[indexes[0]].nicknames[indexes[1]],
+      },
+    ],
+    props
+  );
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "20px",
+      }}
+    >
+      {$state.people.map((person: any, i: number) => (
+        <Person
+          key={i}
+          firstName={person.firstName}
+          onFirstNameChange={(value) => ($state.people[i].firstName = value)}
+          lastName={person.lastName}
+          onLastNameChange={(value) => ($state.people[i].lastName = value)}
+          nicknames={person.nicknames}
+          onNicknamesChange={(value, path) => {
+            set($state.people[i], path, value);
+            console.log("dale", $state.people[i].nicknames.length);
+            console.log("nickname changed", value, $state.people[i]);
+          }}
+          onDeletePerson={() => $state.people.splice(i, 1)}
+          data-test-index={`[${i}]`}
+        />
+      ))}
+      <button
+        data-testid={"add-person-btn"}
+        onClick={() =>
+          ($state.people = [
+            ...$state.people,
+            {
+              firstName: "",
+              lastName: "",
+              nicknames: [],
+            },
+          ])
+        }
+      >
+        Add person
+      </button>
+      <br />
+      <p data-testid={"stringified-people"}>{JSON.stringify($state.people)}</p>
+    </div>
+  );
+};
+
+export const FormBuilderImplicitStates = _FormBuilderImplicitStates.bind({});
+FormBuilderImplicitStates.args = {
+  people: deepClone(peopleList),
+};
+FormBuilderImplicitStates.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  // TODO: skipping repeated implicit states for now
 };
