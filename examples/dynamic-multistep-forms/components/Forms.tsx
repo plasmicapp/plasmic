@@ -201,9 +201,6 @@ export function RadioInput({ children, value, className }: RadioInputProps) {
   const itemCtx = useContext(FormItemContext);
   const formCtx = useFormContext();
   const inEditor = usePlasmicCanvasContext();
-  if (!itemCtx) {
-    return <div>MUST BE INSIDE A FORM ITEM</div>;
-  }
   useEffect(() => {
     if (inEditor && itemCtx?.name) {
       // Just a placeholder. For ex if users create a data bound text like:
@@ -214,6 +211,9 @@ export function RadioInput({ children, value, className }: RadioInputProps) {
       formCtx.setValue(itemCtx.name, `(${itemCtx.name})`);
     }
   }, [inEditor, itemCtx?.name]);
+  if (!itemCtx) {
+    return <div>MUST BE INSIDE A FORM ITEM</div>;
+  }
   return (
     <label className={className}>
       <input
