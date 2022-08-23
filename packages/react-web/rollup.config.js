@@ -34,6 +34,7 @@ export default [
       "plume/text-input/index": "./src/plume/text-input/index.tsx",
       "plume/triggered-overlay/index":
         "./src/plume/triggered-overlay/index.tsx",
+      "render/PlasmicHead/index": "./src/render/PlasmicHead/index.tsx",
       "render/PlasmicImg/index": "./src/render/PlasmicImg/index.tsx",
     },
     external: (id) => {
