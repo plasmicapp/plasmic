@@ -52,6 +52,7 @@ import {
   registerTd,
   registerTh,
   registerTableContainer,
+  registerTfoot
 } from "./registerTable";
 import {
   registerTabList,
@@ -63,6 +64,18 @@ import {
 
 import { registerText } from "./registerText";
 
+import { registerHighlight } from "./registerHighlight";
+
+import { registerHeading } from "./registerHeading";
+
+import { registerToast } from "./registerToast";
+
+import { registerTooltip } from "./registerTooltip";
+
+import { registerAvatar,registerAvatarGroup,registerAvatarBadge } from "./registerAvatar";
+import { registerAccordion,registerAccordionItem,registerAccordionButton,registerAccordionPanel,registerAccordionIcon } from "./registerAccordion";
+import { registerFormControl,registerFormLabel,registerFormHelperText,registerFormErrorMessage } from "./registerFormControl";
+import { registerProgress } from "./registerProgress";
 
 export * from "./registerable";
 export * from "./registerAspectRatio";
@@ -85,6 +98,14 @@ export * from "./registerSwitch";
 export * from "./registerTable";
 export * from "./registerTabs";
 export * from "./registerText";
+export * from "./registerHighlight";
+export * from "./registerHeading";
+export * from "./registerToast"
+export * from "./registerTooltip"
+export * from "./registerAvatar"
+export * from "./registerAccordion"
+export * from "./registerFormControl"
+export * from "./registerProgress"
 
 
 export function registerAll(loader?: Registerable) {
@@ -141,5 +162,24 @@ export function registerAll(loader?: Registerable) {
     registerTabPanels(loader);
     registerTabPanel(loader);
     registerText(loader);
+    registerTfoot(loader)
+    registerHighlight(loader)
+    registerHeading(loader)
+    registerToast(loader)
+    registerTooltip(loader)
+    registerAvatarBadge(loader)
+    registerAvatar(loader)
+    registerAvatarGroup(loader)
+    registerAccordion(loader)
+    registerAccordionItem(loader)
+    registerAccordionButton(loader)
+    registerAccordionPanel(loader)
+    registerAccordionIcon(loader)
+    registerFormControl(loader)
+    registerFormLabel(loader)
+    registerFormHelperText(loader)
+    registerFormErrorMessage(loader)
+    registerProgress(loader)
+
   
   }
