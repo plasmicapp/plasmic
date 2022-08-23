@@ -1,5 +1,6 @@
 import { DataProvider, usePlasmicCanvasContext } from "@plasmicapp/host";
 import constate from "constate";
+import produce from "immer";
 import React, {
   cloneElement,
   createContext,
@@ -10,40 +11,66 @@ import React, {
   useState,
 } from "react";
 
-interface FormContainerData {
+interface FormData {
   steps: Record<string, number>;
   step: number;
   values: Record<string, string>;
+  items: Record<string, FormItemMeta>;
+}
+
+interface FormItemMeta {
+  required: boolean;
+}
+
+function isValidated(data: FormData) {
+  return Object.entries(data.items).every(
+    ([name, meta]) => !meta.required || data.values[name] !== undefined
+  );
 }
 
 function useFormData() {
-  const [values, setValues] = useState<FormContainerData>({
+  const [values, setValues] = useState<FormData>({
     step: 0,
     steps: {},
     values: {},
+    items: {},
   });
   return {
     values,
-    setValue(field: string, value: string) {
-      setValues((prev) => ({
-        ...prev,
-        values: {
-          ...prev.values,
-          [field]: value,
-        },
-      }));
+    registerFormItem(name: string, meta: FormItemMeta) {
+      setValues((prev) =>
+        produce(prev, (draft) => {
+          draft.items[name] = meta;
+        })
+      );
+    },
+    unregisterFormItem(name: string) {
+      setValues((prev) =>
+        produce(prev, (draft) => {
+          delete draft.items[name];
+        })
+      );
+    },
+    setValue(name: string, value: string) {
+      setValues((prev) =>
+        produce(prev, (draft) => {
+          draft.values[name] = value;
+        })
+      );
     },
     prev() {
-      setValues((prev) => ({
-        ...prev,
-        step: prev.step - 1,
-      }));
+      setValues((prev) =>
+        produce(prev, (draft) => {
+          draft.step = draft.step - 1;
+        })
+      );
     },
     next() {
-      setValues((prev) => ({
-        ...prev,
-        step: prev.step + 1,
-      }));
+      setValues((prev) =>
+        produce(prev, (draft) => {
+          draft.step = draft.step + 1;
+        })
+      );
     },
   };
 }
@@ -75,6 +102,8 @@ function FormContainerInner({
   const step = formCtx.values.step;
   const inEditor = usePlasmicCanvasContext();
   const steps = React.Children.toArray(children);
+  // Important to make FormStep the DataProvider, since the child of a DataProvider is always a DataCtxReader, which
+  // would interfere with our ability to directly interact with the children array.
   return (
     <form
       className={className}
@@ -122,6 +151,7 @@ export interface FormItemProps {
   name?: string;
   revealName?: string;
   revealValue?: string;
+  required?: boolean;
 }
 
 export function FormItem({
@@ -130,9 +160,16 @@ export function FormItem({
   name = "",
   revealName,
   revealValue,
+  required = false,
 }: FormItemProps) {
   const formCtx = useFormContext();
   const inEditor = usePlasmicCanvasContext();
+  useEffect(() => {
+    formCtx.registerFormItem(name, {
+      required,
+    });
+    () => formCtx.unregisterFormItem(name);
+  }, [name, required]);
   const actualShown =
     inEditor ||
     !revealName ||
@@ -163,14 +200,20 @@ export interface RadioInputProps {
 export function RadioInput({ children, value, className }: RadioInputProps) {
   const itemCtx = useContext(FormItemContext);
   const formCtx = useFormContext();
+  const inEditor = usePlasmicCanvasContext();
   if (!itemCtx) {
     return <div>MUST BE INSIDE A FORM ITEM</div>;
   }
   useEffect(() => {
-    if (itemCtx?.name) {
+    if (inEditor && itemCtx?.name) {
+      // Just a placeholder. For ex if users create a data bound text like:
+      //
+      // `You chose ${carMake}`
+      //
+      // They won't just see the empty string, they'll see "You chose (carMake)."
       formCtx.setValue(itemCtx.name, `(${itemCtx.name})`);
     }
-  }, [itemCtx?.name, value]);
+  }, [inEditor, itemCtx?.name]);
   return (
     <label className={className}>
       <input
@@ -193,6 +236,9 @@ interface FormActionProps {
 export function FormAction({ children, action }: FormActionProps) {
   const formCtx = useFormContext();
   return cloneElement(React.Children.only(children) as ReactElement, {
+    isDisabled:
+      (action === "next" || action === "submit") &&
+      !isValidated(formCtx.values),
     onClick: () => {
       if (action === "prev") {
         formCtx.prev();

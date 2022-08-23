@@ -103,6 +103,10 @@ PLASMIC.registerComponent(FormItem, {
       defaultValue: "someQuestion",
       description: "The question name this radio group controls",
     },
+    required: {
+      type: "boolean",
+      description: "Is this field required before advancing",
+    },
     revealName: {
       type: "string",
       displayName: "Reveal when",
