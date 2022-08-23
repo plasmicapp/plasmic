@@ -10,9 +10,9 @@ import {
 export const PLASMIC = initPlasmicLoader({
   projects: [
     {
-      id: "81UzsU3sMnC3naLLoxnWPW",
+      id: "235aWciVosZstZCfWGvZW3",
       token:
-        "6ZraEm1meM28JUlLwr5ZQXW0TOpxQX4V9X0f155Ci9wPPfgehODydyTEruLFG0Spv0LzU3SKqBPhGDXaCRsw",
+        "jmK93hiQ0kuCa51daQ8dNpCKhL2qvFSjy0JZmFZ2qtjwdxeaBdxX4ZeOceMgZHEWRGCk80QM8pznuzDsjQ",
     },
   ],
 
