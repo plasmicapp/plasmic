@@ -36,16 +36,34 @@ const gatsbyStrategy: CPAStrategy = {
     } -y ${dir}`;
     await spawnOrFail(`${createCommand}`, parent);
   },
-  installDeps: async ({ projectPath, scheme }) => {
+  installDeps: async ({ projectPath, scheme, useTypescript }) => {
     if (scheme === "loader") {
+      const installedLoader = await installUpgrade(
+        "@plasmicapp/loader-gatsby",
+        {
+          workingDir: projectPath,
+        }
+      );
+      const installedHelmet = await installUpgrade("react-helmet", {
+        workingDir: projectPath,
+      });
+      const installedHelmetTypes =
+        !useTypescript ||
+        (await installUpgrade("@types/react-helmet", {
+          workingDir: projectPath,
+          dev: true,
+        }));
+      const installedHelmetPlugin = await installUpgrade(
+        "gatsby-plugin-react-helmet",
+        {
+          workingDir: projectPath,
+        }
+      );
       return (
-        (await installUpgrade("@plasmicapp/loader-gatsby", {
-          workingDir: projectPath,
-        })) &&
-        (await installUpgrade("react-helmet", { workingDir: projectPath })) &&
-        (await installUpgrade("gatsby-plugin-react-helmet", {
-          workingDir: projectPath,
-        }))
+        installedLoader &&
+        installedHelmet &&
+        installedHelmetPlugin &&
+        installedHelmetTypes
       );
     } else {
       return await installCodegenDeps({ projectPath });
@@ -71,7 +89,9 @@ const gatsbyStrategy: CPAStrategy = {
         input: createReadStream(gatsbyConfigFile),
         crlfDelay: Infinity,
       });
-      let result = "";
+      // Typescript doesn't accept require.resolve
+      // https://www.gatsbyjs.com/docs/how-to/custom-configuration/typescript/#requireresolve
+      let result = useTypescript ? `import path from "path";\n` : "";
       const pluginConfig = GATSBY_PLUGIN_CONFIG(
         projectId,
         ensure(projectApiToken),

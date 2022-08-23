@@ -98,8 +98,8 @@ export function DataProvider({
 }
 
 export interface PageParamsProviderProps {
-  params?: Record<string, string>;
-  query?: Record<string, string>;
+  params?: Record<string, string | string[] | undefined>;
+  query?: Record<string, string | string[] | undefined>;
   children?: ReactNode;
 }
 

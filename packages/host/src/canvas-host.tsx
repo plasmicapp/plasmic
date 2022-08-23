@@ -78,6 +78,11 @@ function _PlasmicCanvasHost() {
     !document.querySelector("#plasmic-studio-tag") &&
     !isCanvas &&
     !isLive;
+  const locationHash = new URLSearchParams(location.hash);
+
+  const [activeGlobalVariants, setActiveGlobalVariants] = React.useState<
+    Record<string, string>
+  >(() => JSON.parse(locationHash.get("globalVariants") ?? "{}"));
   const forceUpdate = useForceUpdate();
   React.useLayoutEffect(() => {
     rootChangeListeners.push(forceUpdate);
@@ -105,6 +110,18 @@ function _PlasmicCanvasHost() {
       document.head.append(scriptElt);
     }
   }, [shouldRenderStudio]);
+  React.useEffect(() => {
+    const listener = (event: MessageEvent) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.source === "canvas-frame") {
+          setActiveGlobalVariants(data.activeGlobalVariants);
+        }
+      } catch {}
+    };
+    window.addEventListener("message", listener);
+    return () => window.removeEventListener("message", listener);
+  }, []);
   if (!isFrameAttached) {
     return null;
   }
@@ -116,13 +133,10 @@ function _PlasmicCanvasHost() {
       appDiv.classList.add("__wab_user-body");
       document.body.appendChild(appDiv);
     }
-    const locationHash = new URLSearchParams(location.hash);
     const plasmicContextValue = isCanvas
       ? {
           componentName: locationHash.get("componentName"),
-          globalVariants: JSON.parse(
-            locationHash.get("globalVariants") ?? "{}"
-          ),
+          globalVariants: activeGlobalVariants,
         }
       : false;
     return ReactDOM.createPortal(

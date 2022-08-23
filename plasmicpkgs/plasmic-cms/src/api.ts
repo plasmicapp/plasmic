@@ -8,23 +8,25 @@ export interface DatabaseConfig {
 }
 
 export interface QueryParams {
-  useDraft: boolean;
-  where: {};
-  orderBy: string;
-  desc: boolean;
-  limit: number;
+  useDraft?: boolean;
+  where?: {};
+  orderBy?: string;
+  desc?: boolean;
+  limit?: number;
 }
 
 function queryParamsToApi(params: QueryParams): ApiCmsQuery {
   return {
     where: params.where,
     limit: params.limit,
-    order: [
-      {
-        field: params.orderBy,
-        dir: params.desc ? "desc" : "asc",
-      },
-    ],
+    order: params.orderBy
+      ? [
+          {
+            field: params.orderBy,
+            dir: params.desc ? "desc" : "asc",
+          },
+        ]
+      : undefined,
   };
 }
 
@@ -34,7 +36,7 @@ export class HttpError extends Error {
   }
 }
 
-class API {
+export class API {
   constructor(private config: DatabaseConfig) {}
 
   async get(endpoint: string, params: {} = {}) {
@@ -52,12 +54,13 @@ class API {
     });
 
     if (response.status !== 200) {
-      let message;
+      let message = await response.text();
       try {
-        message = (await response.json())?.error?.message;
-      } catch {
-        message = await response.text();
-      }
+        const json = JSON.parse(message);
+        if (json.error?.message) {
+          message = json.error.message;
+        }
+      } catch {}
       throw new HttpError(response.status, message);
     }
 
@@ -74,7 +77,7 @@ class API {
     }
   }
 
-  async query(table: string, params: QueryParams): Promise<ApiCmsRow[]> {
+  async query(table: string, params: QueryParams = {}): Promise<ApiCmsRow[]> {
     try {
       const response = await this.get(`/tables/${table}/query`, {
         q: JSON.stringify(queryParamsToApi(params)),

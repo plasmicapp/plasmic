@@ -129,7 +129,7 @@ export function useIsMounted(): () => boolean {
  * - `matchesPagePath("/hello/[name]", "/")` -> `false`
  * - `matchesPagePath("/", "")` -> `{params: {}}`
  */
-function matchesPagePath(
+export function matchesPagePath(
   pagePath: string,
   lookup: string
 ): { params: Record<string, string> } | false {
@@ -157,6 +157,10 @@ function matchesPagePath(
   }
 
   return { params };
+}
+
+export function isDynamicPagePath(path: string): boolean {
+  return !!path.match(/\[[^/]*\]/);
 }
 
 function matchesCompMeta(lookup: FullLookupSpec, meta: ComponentMeta) {

@@ -20,6 +20,7 @@ interface PlasmicRootContextValue {
   loader: InternalPlasmicComponentLoader;
   variation?: Record<string, string>;
   translator?: PlasmicTranslator;
+  Head?: React.ComponentType<any>;
 }
 
 const PlasmicRootContext = React.createContext<
@@ -106,16 +107,22 @@ export function PlasmicRootProvider(props: {
   translator?: PlasmicTranslator;
 
   /**
+   * Head component to use in PlasmicHead component (e.g. Head from next/head
+   * or Helmet from react-helmet).
+   */
+  Head?: React.ComponentType<any>;
+
+  /**
    * Page path parameters (e.g. {slug: "foo"} if page path is
    * /products/[slug] and URI is /products/foo).
    */
-  pageParams?: Record<string, string>;
+  pageParams?: Record<string, string | string[] | undefined>;
 
   /**
    * Page query parameters (e.g. {q: "foo"} if page path is
    * /some/path?q=foo).
    */
-  pageQuery?: Record<string, string>;
+  pageQuery?: Record<string, string | string[] | undefined>;
 }) {
   const {
     globalVariants,
@@ -128,6 +135,7 @@ export function PlasmicRootProvider(props: {
     globalContextsProps,
     variation,
     translator,
+    Head,
     pageParams,
     pageQuery,
   } = props;
@@ -178,8 +186,17 @@ export function PlasmicRootProvider(props: {
       loader,
       variation,
       translator,
+      Head,
     }),
-    [globalVariants, variation, globalContextsProps, loader, splits, translator]
+    [
+      globalVariants,
+      variation,
+      globalContextsProps,
+      loader,
+      splits,
+      translator,
+      Head,
+    ]
   );
 
   return (

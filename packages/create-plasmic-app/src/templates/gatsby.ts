@@ -15,7 +15,7 @@ import {
   ComponentRenderData,`
   )}
 } from "@plasmicapp/loader-gatsby";
-import { graphql } from "gatsby";
+import { graphql${ifTs(ts, ", PageProps")} } from "gatsby";
 import { initPlasmicLoaderWithRegistrations } from "../plasmic-init";
 
 export const query = graphql\`
@@ -27,7 +27,7 @@ export const query = graphql\`
 
 ${ifTs(
   ts,
-  `interface PlasmicGatsbyPageProps {
+  `interface PlasmicGatsbyPageProps extends PageProps {
   data: {
     plasmicOptions: InitOptions
     plasmicComponents: ComponentRenderData
@@ -35,7 +35,10 @@ ${ifTs(
 }
 `
 )}
-const PlasmicGatsbyPage = ({ data }${ifTs(ts, ": PlasmicGatsbyPageProps")}) => {
+const PlasmicGatsbyPage = ({ data, location }${ifTs(
+    ts,
+    ": PlasmicGatsbyPageProps"
+  )}) => {
   const {
     plasmicComponents,
     plasmicOptions,
@@ -46,12 +49,14 @@ const PlasmicGatsbyPage = ({ data }${ifTs(ts, ": PlasmicGatsbyPageProps")}) => {
     <PlasmicRootProvider
       loader={initPlasmicLoaderWithRegistrations(plasmicOptions)}
       prefetchedData={plasmicComponents}
+      pageParams={pageMeta.params}
+      pageQuery={Object.fromEntries(new URLSearchParams(location.search))}
     >
       <Helmet>
-        {pageMetadata.title && <title>{pageMetadata.title}</title>}
-        {pageMetadata.title && <meta property="og:title" content={pageMetadata.title} /> }
-        {pageMetadata.description && <meta property="og:description" content={pageMetadata.description} />}
-        {pageMetadata.openGraphImageUrl && <meta property="og:image" content={pageMetadata.openGraphImageUrl} />}
+        {pageMetadata?.title && <title>{pageMetadata.title}</title>}
+        {pageMetadata?.title && <meta property="og:title" content={pageMetadata.title} /> }
+        {pageMetadata?.description && <meta property="og:description" content={pageMetadata.description} />}
+        {pageMetadata?.openGraphImageUrl && <meta property="og:image" content={pageMetadata.openGraphImageUrl} />}
       </Helmet>
       <PlasmicComponent component={pageMeta.displayName} />
     </PlasmicRootProvider>
@@ -84,9 +89,11 @@ export const GATSBY_PLUGIN_CONFIG = (
       },
     ], // An array of project ids.
     preview: false,
-    defaultPlasmicPage: require.resolve("./src/templates/defaultPlasmicPage.${
-      useTypescript ? "tsx" : "jsx"
-    }"),
+    defaultPlasmicPage: ${
+      useTypescript ? "path" : "require"
+    }.resolve("./src/templates/defaultPlasmicPage.${
+  useTypescript ? "tsx" : "jsx"
+}"),
   },
 },
 {

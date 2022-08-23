@@ -30,6 +30,7 @@ interface BuildArgs {
 interface InstallArgs {
   scheme: CodeScheme;
   projectPath: string;
+  useTypescript: boolean;
 }
 
 export interface CPAStrategy {

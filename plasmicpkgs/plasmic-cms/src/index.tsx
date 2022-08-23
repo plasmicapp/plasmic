@@ -56,4 +56,5 @@ export function registerAll(loader?: {
   _registerComponent(CmsRowFieldValue, cmsRowFieldValueMeta);
 }
 
+export * from "./api";
 export * from "./components";

@@ -67,7 +67,7 @@ export default function PlasmicLoaderPage(props${ifTs(
       prefetchedData={plasmicData}
       prefetchedQueryData={queryCache}
       pageParams={pageMeta.params}
-      pageQuery={router.query${ifTs(ts, " as Record<string, string>")}}
+      pageQuery={router.query}
     >
       <PlasmicComponent component={pageMeta.displayName} />
     </PlasmicRootProvider>

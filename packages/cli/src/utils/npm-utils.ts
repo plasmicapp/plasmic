@@ -169,7 +169,9 @@ function findInstalledPackageJsonFile(context: PlasmicContext, pkg: string) {
   const rootDir = packageJsonPath
     ? path.dirname(packageJsonPath)
     : context.rootDir;
-  const files = glob.sync(`${rootDir}/**/node_modules/${pkg}/package.json`);
+  const files = glob.sync(`${rootDir}/**/node_modules/${pkg}/package.json`, {
+    ignore: [`**/node_modules/**/node_modules/**`],
+  });
   return files.length > 0 ? files[0] : undefined;
 }
 
