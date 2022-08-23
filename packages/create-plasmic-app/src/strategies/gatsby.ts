@@ -37,34 +37,29 @@ const gatsbyStrategy: CPAStrategy = {
     await spawnOrFail(`${createCommand}`, parent);
   },
   installDeps: async ({ projectPath, scheme, useTypescript }) => {
+    const installedHelmet = await installUpgrade("react-helmet", {
+      workingDir: projectPath,
+    });
+    const installedHelmetTypes =
+      !useTypescript ||
+      (await installUpgrade("@types/react-helmet", {
+        workingDir: projectPath,
+        dev: true,
+      }));
+    const installedHelmetPlugin = await installUpgrade(
+      "gatsby-plugin-react-helmet",
+      {
+        workingDir: projectPath,
+      }
+    );
+    if (!installedHelmet || !installedHelmetPlugin || !installedHelmetTypes) {
+      return false;
+    }
+
     if (scheme === "loader") {
-      const installedLoader = await installUpgrade(
-        "@plasmicapp/loader-gatsby",
-        {
-          workingDir: projectPath,
-        }
-      );
-      const installedHelmet = await installUpgrade("react-helmet", {
+      return await installUpgrade("@plasmicapp/loader-gatsby", {
         workingDir: projectPath,
       });
-      const installedHelmetTypes =
-        !useTypescript ||
-        (await installUpgrade("@types/react-helmet", {
-          workingDir: projectPath,
-          dev: true,
-        }));
-      const installedHelmetPlugin = await installUpgrade(
-        "gatsby-plugin-react-helmet",
-        {
-          workingDir: projectPath,
-        }
-      );
-      return (
-        installedLoader &&
-        installedHelmet &&
-        installedHelmetPlugin &&
-        installedHelmetTypes
-      );
     } else {
       return await installCodegenDeps({ projectPath });
     }

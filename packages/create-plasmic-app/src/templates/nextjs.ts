@@ -45,6 +45,7 @@ import {
 } from "@plasmicapp/loader-nextjs";
 ${ifTs(ts, `import type { GetStaticPaths, GetStaticProps } from "next";\n`)}
 import Error from "next/error";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { PLASMIC } from "../plasmic-init";
 
@@ -68,6 +69,7 @@ export default function PlasmicLoaderPage(props${ifTs(
       prefetchedQueryData={queryCache}
       pageParams={pageMeta.params}
       pageQuery={router.query}
+      Head={Head}
     >
       <PlasmicComponent component={pageMeta.displayName} />
     </PlasmicRootProvider>
@@ -92,6 +94,7 @@ export const getStaticProps${ifTs(
       loader={PLASMIC}
       prefetchedData={plasmicData}
       pageParams={pageMeta.params}
+      Head={Head}
     >
       <PlasmicComponent component={pageMeta.displayName} />
     </PlasmicRootProvider>
@@ -155,10 +158,11 @@ export function wrapAppRootForCodegen(): string {
   return `
 import '../styles/globals.css'
 import { PlasmicRootProvider } from "@plasmicapp/react-web";
+import Head from "next/head";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <PlasmicRootProvider>
+    <PlasmicRootProvider Head={Head}>
       <Component {...pageProps} />
     </PlasmicRootProvider>
   );

@@ -51,6 +51,7 @@ const PlasmicGatsbyPage = ({ data, location }${ifTs(
       prefetchedData={plasmicComponents}
       pageParams={pageMeta.params}
       pageQuery={Object.fromEntries(new URLSearchParams(location.search))}
+      Head={Helmet}
     >
       <Helmet>
         {pageMetadata?.title && <title>{pageMetadata.title}</title>}
@@ -241,10 +242,11 @@ export function wrapAppRootForCodegen(): string {
   return `
 import React from "react";
 import { PlasmicRootProvider } from "@plasmicapp/react-web";
+import Helmet from "react-helmet";
 
 export const wrapRootElement = ({ element }) => {
   return (
-    <PlasmicRootProvider>
+    <PlasmicRootProvider Head={Helmet}>
       {element}
     </PlasmicRootProvider>
   );
