@@ -181,5 +181,4 @@ export function registerAll(loader?: Registerable) {
     registerFormErrorMessage(loader)
     registerProgress(loader)
 
-  
   }
