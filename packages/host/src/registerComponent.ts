@@ -419,6 +419,15 @@ export interface ComponentMeta<P> {
    */
   actions?: Action<P>[];
   /**
+   * Whether style sections should be shown in Studio. For styles to work, the
+   * component must accept a `className` prop. If unset, defaults to true.
+   */
+  styleSections?: boolean;
+  /**
+   * Whether the element can be repeated in Studio. If unset, defaults to true.
+   */
+  isRepeatable?: boolean;
+  /**
    * The path to be used when importing the component in the generated code.
    * It can be the name of the package that contains the component, or the path
    * to the file in the project (relative to the root directory).
