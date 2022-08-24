@@ -77,6 +77,8 @@ export const plasmicHeadMeta = {
   description: "Used to add page metadata to HEAD tag",
   importName: "PlasmicHead",
   importPath: "@plasmicapp/react-web",
+  isRepeatable: false,
+  styleSections: false,
   props: {
     title: {
       type: "string",
