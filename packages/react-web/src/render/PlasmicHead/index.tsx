@@ -21,52 +21,56 @@ export function PlasmicHead(props: PlasmicHeadProps) {
     return null;
   }
 
+  // Helmet does not support React.Fragments, so we need to use `[<meta />,
+  // <meta />]` instead of `<><meta /><meta /></>`.
   return (
     <Head>
       {props.image ? (
-        <>
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta key="og:image" property="og:image" content={props.image} />
+        [
+          <meta
+            key="twitter:card"
+            name="twitter:card"
+            content="summary_large_image"
+          />,
+          <meta key="og:image" property="og:image" content={props.image} />,
           <meta
             key="twitter:image"
             name="twitter:image"
             content={props.image}
-          />
-        </>
+          />,
+        ]
       ) : (
-        <meta name="twitter:card" content="summary" />
+        <meta key="twitter:card" name="twitter:card" content="summary" />
       )}
-      {props.title && (
-        <>
-          <title key="title">{props.title}</title>
-          <meta key="og:title" property="og:title" content={props.title} />
-          <meta
-            key="twitter:title"
-            property="twitter:title"
-            content={props.title}
-          />
-        </>
+      {props.title && [
+        <title key="title">{props.title}</title>,
+        <meta key="og:title" property="og:title" content={props.title} />,
+        <meta
+          key="twitter:title"
+          property="twitter:title"
+          content={props.title}
+        />,
+      ]}
+      {props.description && [
+        <meta
+          key="description"
+          name="description"
+          content={props.description}
+        />,
+        <meta
+          key="og:description"
+          property="og:description"
+          content={props.description}
+        />,
+        <meta
+          key="twitter:description"
+          name="twitter:description"
+          content={props.description}
+        />,
+      ]}
+      {props.canonical && (
+        <link key="canonical" ref="canonical" href={props.canonical} />
       )}
-      {props.description && (
-        <>
-          <meta
-            key="description"
-            name="description"
-            content={props.description}
-          />
-          <meta
-            key="og:description"
-            property="og:description"
-            content={props.description}
-          />
-          <meta
-            key="twitter:description"
-            name="twitter:description"
-            content={props.description}
-          />
-        </>
-      )}
-      {props.canonical && <link ref="canonical" href={props.canonical} />}
     </Head>
   );
 }
@@ -74,7 +78,7 @@ export function PlasmicHead(props: PlasmicHeadProps) {
 export const plasmicHeadMeta = {
   name: "hostless-plasmic-head",
   displayName: "Head",
-  description: "Used to add page metadata to HEAD tag",
+  description: "Used to add page metadata to HTML <head />.",
   importName: "PlasmicHead",
   importPath: "@plasmicapp/react-web",
   isRepeatable: false,
