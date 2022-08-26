@@ -33,6 +33,7 @@ const PlasmicGatsbyPage = ({ data, location }: PlasmicGatsbyPageProps) => {
       prefetchedData={plasmicComponents}
       pageParams={pageMeta.params}
       pageQuery={Object.fromEntries(new URLSearchParams(location.search))}
+      Head={Helmet}
     >
       <Helmet>
         {pageMetadata?.title && <title>{pageMetadata.title}</title>}

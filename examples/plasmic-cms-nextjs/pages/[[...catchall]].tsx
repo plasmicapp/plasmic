@@ -6,8 +6,8 @@ import {
 } from "@plasmicapp/loader-nextjs";
 import { API } from "@plasmicpkgs/plasmic-cms";
 import type { GetStaticPaths, GetStaticProps } from "next";
-
 import Error from "next/error";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { PLASMIC } from "../plasmic-init";
 
@@ -39,6 +39,7 @@ export default function PlasmicLoaderPage(props: {
       prefetchedQueryData={queryCache}
       pageParams={pageMeta.params}
       pageQuery={router.query}
+      Head={Head}
     >
       <PlasmicComponent component={pageMeta.displayName} />
     </PlasmicRootProvider>
@@ -65,6 +66,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       loader={PLASMIC}
       prefetchedData={plasmicData}
       pageParams={pageMeta.params}
+      Head={Head}
     >
       <PlasmicComponent component={pageMeta.displayName} />
     </PlasmicRootProvider>
