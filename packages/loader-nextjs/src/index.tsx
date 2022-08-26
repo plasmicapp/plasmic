@@ -3,12 +3,14 @@ import {
   initPlasmicLoader as initPlasmicLoaderReact,
   InternalPlasmicComponentLoader,
   PlasmicComponentLoader,
+  PlasmicRootProvider as CommonPlasmicRootProvider,
 } from '@plasmicapp/loader-react';
 import type { PlasmicRemoteChangeWatcher as Watcher } from '@plasmicapp/watcher';
 import { IncomingMessage, ServerResponse } from 'http';
 import * as NextHead from 'next/head';
 import * as NextLink from 'next/link';
 import * as NextRouter from 'next/router';
+import * as React from 'react';
 import { makeCache } from './cache';
 import serverRequire from './server-require';
 export {
@@ -26,7 +28,6 @@ export {
   PlasmicCanvasHost,
   PlasmicComponent,
   plasmicPrepass,
-  PlasmicRootProvider,
   PlasmicTranslator,
   PrimitiveType,
   PropType,
@@ -172,4 +173,10 @@ export function initPlasmicLoader(
     }
   }
   return loader;
+}
+
+export function PlasmicRootProvider(
+  props: Omit<React.ComponentProps<typeof CommonPlasmicRootProvider>, 'Head'>
+) {
+  return <CommonPlasmicRootProvider Head={NextHead.default} {...props} />;
 }
