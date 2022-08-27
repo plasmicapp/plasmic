@@ -53,23 +53,7 @@ export function getDistinctId(): string {
   if (!isBrowser) {
     return 'LOADER-SERVER';
   }
-  try {
-    // we try to store data in sessionStorage so that the id is persisted between loads/reloads
-    const cookies = getPlasmicCookieValues();
-    let uuid = cookies['user_id'];
-    if (uuid) {
-      return uuid;
-    }
-    uuid = generateUUID();
-    document.cookie = `plasmic:user_id=${uuid}`;
-    return uuid;
-  } catch (err) {
-    // if we are not able to use cookies for some reason we fallback to window, which is going to be lost on reloads
-    if (!(window as any).__plasmicPageSessionId) {
-      (window as any).__plasmicPageSessionId = generateUUID();
-    }
-    return (window as any).__plasmicPageSessionId;
-  }
+  return generateUUID();
 }
 
 function getCampaignParams() {
