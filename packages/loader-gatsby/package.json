@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/loader-gatsby",
-  "version": "1.0.169",
+  "version": "1.0.170",
   "typings": "dist/index.d.ts",
   "license": "MIT",
   "files": [
@@ -44,8 +44,8 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "@plasmicapp/loader-core": "1.0.81",
-    "@plasmicapp/loader-react": "1.0.174",
+    "@plasmicapp/loader-core": "1.0.82",
+    "@plasmicapp/loader-react": "1.0.175",
     "@plasmicapp/watcher": "1.0.67",
     "lodash": "^4.17.21"
   }
