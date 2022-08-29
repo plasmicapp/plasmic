@@ -378,7 +378,7 @@ export function CmsQueryRepeater({
       return (
         <QueryResultProvider table={table!} rows={rows}>
           {rows.map((row, index) => (
-            <RowProvider table={table!} row={row}>
+            <RowProvider key={index} table={table!} row={row}>
               {repeatedElement(index, children)}
             </RowProvider>
           ))}

@@ -75,7 +75,7 @@ export interface ApiCmsTable {
 }
 
 export interface ApiCmsRow {
-  identifier: string;
+  identifier: string | null;
   data: Record<string, any> | null;
 }
 
