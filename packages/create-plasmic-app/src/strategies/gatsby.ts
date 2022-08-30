@@ -17,6 +17,11 @@ import { installUpgrade } from "../utils/npm-utils";
 import { installCodegenDeps, runCodegenSync } from "./common";
 import { CPAStrategy } from "./types";
 
+export const GATSBY_TEMPLATES = {
+  js: `https://github.com/gatsbyjs/gatsby-starter-minimal.git`,
+  ts: `https://github.com/gatsbyjs/gatsby-starter-minimal-ts.git`,
+};
+
 const gatsbyStrategy: CPAStrategy = {
   create: async (args) => {
     const { projectPath, template, useTypescript } = args;
@@ -25,16 +30,12 @@ const gatsbyStrategy: CPAStrategy = {
         `Warning: Ignoring template '${template}' (argument is not supported by Gatsby).`
       );
     }
-
-    // create-gatsby does not support absolute paths as of 2022-08-12
-    // (see https://github.com/gatsbyjs/gatsby/issues/36381).
-    const parent = path.dirname(projectPath);
-    await fs.mkdir(parent, { recursive: true });
-    const dir = path.basename(projectPath);
-    const createCommand = `npx -p create-gatsby create-gatsby ${
-      useTypescript ? "-ts" : ""
-    } -y ${dir}`;
-    await spawnOrFail(`${createCommand}`, parent);
+    const gatsbyTemplate = GATSBY_TEMPLATES[useTypescript ? "ts" : "js"];
+    const createCommand = `git clone ${gatsbyTemplate} ${projectPath} --recursive --depth 1 --quiet`;
+    await spawnOrFail(`${createCommand}`);
+    // Remove .git and LICENSE so that we don't generate linked outputs
+    await spawnOrFail(`rm -rf ${projectPath}/.git`);
+    await spawnOrFail(`rm -rf ${projectPath}/LICENSE`);
   },
   installDeps: async ({ projectPath, scheme, useTypescript }) => {
     const installedHelmet = await installUpgrade("react-helmet", {
@@ -73,6 +74,21 @@ const gatsbyStrategy: CPAStrategy = {
       scheme,
     } = args;
     const extension = useTypescript ? "ts" : "js";
+
+    const packageName = path.basename(projectPath);
+
+    // Update package.json: adding name and description, removing license and author
+    const packageJsonPath = path.join(projectPath, "package.json");
+    const packageJson = await fs.readFile(packageJsonPath, "utf8");
+    const packageJsonObject = JSON.parse(packageJson);
+    packageJsonObject.name = packageName;
+    packageJsonObject.description = `Plasmic app for ${projectId}`;
+    delete packageJsonObject.license;
+    delete packageJsonObject.author;
+    await fs.writeFile(
+      packageJsonPath,
+      JSON.stringify(packageJsonObject, null, 2)
+    );
 
     if (scheme === "loader") {
       // create-gatsby will create a default gatsby-config that we need to modify
