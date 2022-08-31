@@ -16,7 +16,7 @@ import { CPAStrategy } from "./types";
 const nextjsStrategy: CPAStrategy = {
   create: async (args) => {
     const { projectPath, template, useTypescript } = args;
-    const createCommand = `npx -p create-next-app create-next-app ${
+    const createCommand = `npx create-next-app@latest ${
       useTypescript ? "--typescript" : ""
     } ${projectPath}`;
     const templateArg = template ? ` --template ${template}` : "";
@@ -52,11 +52,11 @@ module.exports = {
       );
     } else {
       await fs.writeFile(
-        nextjsConfigFile, 
+        nextjsConfigFile,
         `
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Turn off React StrictMode for now, as react-aria (used by Plasmic) 
+  // Turn off React StrictMode for now, as react-aria (used by Plasmic)
   // has some troubles with it. See
   // https://github.com/adobe/react-spectrum/labels/strict%20mode
   reactStrictMode: false,
@@ -64,7 +64,7 @@ const nextConfig = {
 
 module.exports = nextConfig
         `
-      )
+      );
     }
   },
   generateFiles: async (args) => {
