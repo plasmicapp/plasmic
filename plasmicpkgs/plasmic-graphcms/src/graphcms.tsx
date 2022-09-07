@@ -6,7 +6,8 @@ import {
   useSelector,
 } from "@plasmicapp/host";
 import { usePlasmicQueryData } from "@plasmicapp/query";
-import L from "lodash";
+import compact from "lodash/compact";
+import get from "lodash/get";
 import React, { ReactNode, useContext } from "react";
 
 export function ensure<T>(x: T | null | undefined): T {
@@ -179,12 +180,12 @@ export function GraphCMSFetcher({
     return null;
   }
 
-  if (!data?.data || L.compact(Object.values(data?.data)).length === 0) {
+  if (!data?.data || compact(Object.values(data?.data)).length === 0) {
     return <div>Data not found</div>;
   }
 
   const renderedData = Object.values(data?.data)
-    .flatMap((model: any) => (L.isArray(model) ? model : [model]))
+    .flatMap((model: any) => (Array.isArray(model) ? model : [model]))
     .map((item: any, i: number) => (
       <DataProvider
         key={JSON.stringify(item)}
@@ -239,7 +240,7 @@ export function GraphCMSField({
   // We need to improve this check by making an introspection query
   const isRichText = (data: any) => "html" in data;
 
-  const data = L.get(item, path);
+  const data = get(item, path);
   if (typeof data === "object" && data.mimeType?.startsWith("image")) {
     return <img src={data.url} className={className} />;
   } else if (typeof data === "object" && isRichText(data)) {

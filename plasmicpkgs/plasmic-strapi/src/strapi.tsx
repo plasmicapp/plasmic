@@ -6,7 +6,9 @@ import {
   useSelector,
 } from "@plasmicapp/host";
 import { usePlasmicQueryData } from "@plasmicapp/query";
-import L from "lodash";
+import camelCase from "lodash/camelCase";
+import capitalize from "lodash/capitalize";
+import get from "lodash/get";
 import React, { ReactNode, useContext } from "react";
 
 export function ensure<T>(x: T | null | undefined): T {
@@ -21,7 +23,7 @@ export function ensure<T>(x: T | null | undefined): T {
 const modulePath = "@plasmicpkgs/plasmic-strapi";
 
 const makeDataProviderName = (collection: string) =>
-  `currentStrapi${L.capitalize(L.camelCase(collection))}Item`;
+  `currentStrapi${capitalize(camelCase(collection))}Item`;
 
 interface StrapiCredentialsProviderProps {
   host?: string;
@@ -163,11 +165,11 @@ export function StrapiCollection({
     );
   }
 
-  if (!L.get(data.data, ["data"])) {
+  if (!get(data.data, ["data"])) {
     return <div>Please specify a valid collection.</div>;
   }
 
-  const collection = L.get(data.data, ["data"]) as any[];
+  const collection = get(data.data, ["data"]) as any[];
 
   const repElements = collection.map((item, index) => (
     <DataProvider key={item.id} name={"strapiItem"} data={item} hidden={true}>
@@ -221,7 +223,7 @@ export function StrapiField({
   }
 
   // Getting only fields that aren't objects
-  const attributes = L.get(item, ["attributes"]);
+  const attributes = get(item, ["attributes"]);
   const displayableFields = Object.keys(attributes).filter((field) => {
     const value = attributes[field];
     return (
@@ -239,7 +241,7 @@ export function StrapiField({
     return <div>StrapiField must specify a field name.</div>;
   }
 
-  const data = L.get(item, ["attributes", path]);
+  const data = get(item, ["attributes", path]);
 
   setControlContextData?.({
     fields: displayableFields,

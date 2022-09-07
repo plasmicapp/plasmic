@@ -19,8 +19,7 @@
   },
   "dependencies": {
     "@plasmicpkgs/commerce": "0.0.69",
-    "lodash-es": "^4.17.21",
-    "lodash.debounce": "^4.0.8"
+    "lodash": "^4.17.21"
   },
   "peerDependencies": {
     "next": "^12",

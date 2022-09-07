@@ -8,7 +8,10 @@ import {
 } from "@plasmicapp/host";
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import * as Contentful from "contentful";
-import L from "lodash";
+import camelCase from "lodash/camelCase";
+import capitalize from "lodash/capitalize";
+import get from "lodash/get";
+
 import React, { ReactNode, useContext } from "react";
 
 export function ensure<T>(x: T | null | undefined): T {
@@ -23,7 +26,7 @@ export function ensure<T>(x: T | null | undefined): T {
 const modulePath = "@plasmicpkgs/plasmic-contentful";
 
 const makeDataProviderName = (contentType: string) =>
-  `currentContentful${L.capitalize(L.camelCase(contentType))}Item`;
+  `currentContentful${capitalize(camelCase(contentType))}Item`;
 
 interface ContentfulCredentialsProviderProps {
   space: string;
@@ -312,7 +315,7 @@ export function ContentfulField({
     return <div>Please specify a valid path or select a field.</div>;
   }
 
-  const data = L.get(item, objectPath);
+  const data = get(item, objectPath);
   if (
     typeof data === "object" &&
     "nodeType" in data &&

@@ -48,7 +48,6 @@
   "dependencies": {
     "@plasmicapp/host": "1.0.78",
     "@plasmicapp/query": "0.1.53",
-    "lodash": "^4.17.21",
-    "lodash-es": "^4.17.21"
+    "lodash": "^4.17.21"
   }
 }

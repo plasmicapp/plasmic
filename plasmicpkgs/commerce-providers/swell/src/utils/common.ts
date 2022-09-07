@@ -1,4 +1,4 @@
-import isNil from "lodash-es/isNil";
+import isNil from "lodash/isNil";
 
 export function ensure<T>(x: T | null | undefined, msg = ""): T {
   if (x === null || x === undefined) {

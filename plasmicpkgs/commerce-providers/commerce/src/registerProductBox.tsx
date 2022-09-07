@@ -1,7 +1,7 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import debounce from "lodash.debounce";
+import debounce from "lodash/debounce";
 import React from "react";
 import { ProductProvider } from "./contexts";
 import useProduct from "./product/use-product";
@@ -73,7 +73,7 @@ export const productBoxMeta: ComponentMeta<ProductBoxProps> = {
   },
   importPath: "@plasmicpkgs/commerce",
   importName: "ProductBox",
-  providesData: true
+  providesData: true,
 };
 
 export function ProductBox(props: ProductBoxProps) {

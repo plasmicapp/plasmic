@@ -50,9 +50,8 @@
     "@contentful/rich-text-react-renderer": "^15.12.1",
     "@plasmicapp/host": "1.0.78",
     "@plasmicapp/query": "0.1.53",
-    "@types/lodash-es": "^4.17.6",
+    "@types/lodash": "^4.14.184",
     "contentful": "^9.1.28",
-    "lodash": "^4.17.21",
-    "lodash-es": "^4.17.21"
+    "lodash": "^4.17.21"
   }
 }

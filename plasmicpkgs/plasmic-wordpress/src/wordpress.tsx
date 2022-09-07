@@ -7,7 +7,7 @@ import {
   useSelector,
 } from "@plasmicapp/host";
 import { usePlasmicQueryData } from "@plasmicapp/query";
-import L from "lodash";
+import get from "lodash/get";
 import React, { ReactNode, useContext } from "react";
 
 export function ensure<T>(x: T | null | undefined): T {
@@ -279,7 +279,7 @@ export function WordpressField({
     return <div>Please specify a valid path or select a field.</div>;
   }
 
-  const data = L.get(item, field as string);
+  const data = get(item, field as string);
 
   if (typeof data === "object" && "rendered" in data) {
     return (

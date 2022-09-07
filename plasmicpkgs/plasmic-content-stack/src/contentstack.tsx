@@ -7,8 +7,10 @@ import {
 } from "@plasmicapp/host";
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import * as ContentStack from "contentstack";
-import L from "lodash";
 import React, { ReactNode, useContext } from "react";
+import camelCase from "lodash/camelCase";
+import capitalize from "lodash/capitalize";
+import get from "lodash/get";
 
 export function ensure<T>(x: T | null | undefined): T {
   if (x === null || x === undefined) {
@@ -22,7 +24,7 @@ export function ensure<T>(x: T | null | undefined): T {
 const modulePath = "@plasmicpkgs/plasmic-content-stack";
 
 const makeDataProviderName = (contentType: string) =>
-  `currentContentstack${L.capitalize(L.camelCase(contentType))}Item`;
+  `currentContentstack${capitalize(camelCase(contentType))}Item`;
 
 interface ContentStackCredentialsProviderProps {
   apiKey: string;
@@ -290,10 +292,10 @@ export function ContentStackField({
   }
 
   const isRichText = () =>
-    schema?.find((field: any) => field.uid === L.get(objectPath, 0))
+    schema?.find((field: any) => field.uid === get(objectPath, 0))
       ?.field_metadata?.allow_rich_text;
 
-  const data = L.get(item, objectPath);
+  const data = get(item, objectPath);
   if (typeof data === "object" && data?.content_type?.startsWith("image")) {
     return <img {...rest} src={data.url} />;
   } else if (!data || typeof data === "object") {

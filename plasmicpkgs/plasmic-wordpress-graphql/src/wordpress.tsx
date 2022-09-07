@@ -6,7 +6,8 @@ import {
   useSelector,
 } from "@plasmicapp/host";
 import { usePlasmicQueryData } from "@plasmicapp/query";
-import L from "lodash";
+import compact from "lodash/compact";
+import get from "lodash/get";
 import React, { ReactNode, useContext } from "react";
 
 export function ensure<T>(x: T | null | undefined): T {
@@ -151,13 +152,13 @@ export function WordpressFetcher({
     );
   }
 
-  if (!data?.data || L.compact(Object.values(data?.data)).length === 0) {
+  if (!data?.data || compact(Object.values(data?.data)).length === 0) {
     return <div>Data not found</div>;
   }
 
   const renderedData = Object.values(data?.data).flatMap(
     (model: any, i: number) =>
-      (L.isArray(model) ? model : [model]).map((item: any, j: number) => (
+      (Array.isArray(model) ? model : [model]).map((item: any, j: number) => (
         <DataProvider
           key={JSON.stringify(item)}
           name={"currentWordpressItem"}
@@ -211,7 +212,7 @@ export function WordpressField({
   if (!path) {
     return <div>Please specify a valid path or select a field.</div>;
   }
-  const data = L.get(item, path as string);
+  const data = get(item, path as string);
   if (typeof data === "object" && data.mediaType === "image") {
     return (
       <img className={className} src={data.mediaItemUrl} srcSet={data.srcSet} />
