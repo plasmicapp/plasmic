@@ -16,6 +16,8 @@
     "deps": "lerna list --include-dependencies --scope"
   },
   "workspaces": [
+    "packages/data-sources",
+    "packages/data-sources-context",
     "packages/loader-core",
     "packages/loader-edge",
     "packages/loader-fetcher",
