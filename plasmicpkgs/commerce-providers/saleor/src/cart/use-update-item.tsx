@@ -1,23 +1,25 @@
 /*
   Forked from https://github.com/vercel/commerce/tree/main/packages/saleor/src
-  Changes: None 
+  Changes: None
 */
 
-import { useCallback } from "react";
-import debounce from "lodash/debounce";
 import type {
   HookFetcherContext,
   MutationHookContext,
 } from "@plasmicpkgs/commerce";
-import { ValidationError } from "@plasmicpkgs/commerce";
-import { useUpdateItem, UseUpdateItem } from "@plasmicpkgs/commerce";
+import {
+  useUpdateItem,
+  UseUpdateItem,
+  ValidationError,
+} from "@plasmicpkgs/commerce";
+import debounce from "debounce";
+import { useCallback } from "react";
 
+import { Mutation, MutationCheckoutLinesUpdateArgs } from "../schema";
+import type { LineItem } from "../types/cart";
+import { checkoutToCart, getCheckoutId } from "../utils";
 import useCart from "./use-cart";
 import { handler as removeItemHandler } from "./use-remove-item";
-import type { LineItem } from "../types/cart";
-import { checkoutToCart } from "../utils";
-import { getCheckoutId } from "../utils";
-import { Mutation, MutationCheckoutLinesUpdateArgs } from "../schema";
 
 import * as mutation from "../utils/mutations";
 
@@ -70,42 +72,42 @@ export const handler = {
 
     return checkoutToCart(checkoutLinesUpdate);
   },
-  useHook:
-    ({ fetch }: MutationHookContext<UpdateItemHook>) =>
-    <T extends LineItem | undefined = undefined>(
-      ctx: {
-        item?: T;
-        wait?: number;
-      } = {}
-    ) => {
-      const { item } = ctx;
-      const { mutate } = useCart() as any;
+  useHook: ({ fetch }: MutationHookContext<UpdateItemHook>) => <
+    T extends LineItem | undefined = undefined
+  >(
+    ctx: {
+      item?: T;
+      wait?: number;
+    } = {}
+  ) => {
+    const { item } = ctx;
+    const { mutate } = useCart() as any;
 
-      return useCallback(
-        debounce(async (input: UpdateItemActionInput<T>) => {
-          const itemId = input.id ?? item?.id;
-          const productId = input.productId ?? item?.productId;
-          const variantId = input.productId ?? item?.variantId;
-          if (!itemId || !productId || !variantId) {
-            throw new ValidationError({
-              message: "Invalid input used for this operation",
-            });
-          }
-
-          const data = await fetch({
-            input: {
-              item: {
-                productId,
-                variantId,
-                quantity: input.quantity,
-              },
-              itemId,
-            },
+    return useCallback(
+      debounce(async (input: UpdateItemActionInput<T>) => {
+        const itemId = input.id ?? item?.id;
+        const productId = input.productId ?? item?.productId;
+        const variantId = input.productId ?? item?.variantId;
+        if (!itemId || !productId || !variantId) {
+          throw new ValidationError({
+            message: "Invalid input used for this operation",
           });
-          await mutate(data, false);
-          return data;
-        }, ctx.wait ?? 500),
-        [fetch, mutate]
-      );
-    },
+        }
+
+        const data = await fetch({
+          input: {
+            item: {
+              productId,
+              variantId,
+              quantity: input.quantity,
+            },
+            itemId,
+          },
+        });
+        await mutate(data, false);
+        return data;
+      }, ctx.wait ?? 500),
+      [fetch, mutate]
+    );
+  },
 };

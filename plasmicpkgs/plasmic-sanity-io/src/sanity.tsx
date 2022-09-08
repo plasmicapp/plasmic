@@ -8,9 +8,8 @@ import {
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import sanityClient from "@sanity/client";
 import imageUrlBuilder from "@sanity/image-url";
-import camelCase from "lodash/camelCase";
-import capitalize from "lodash/capitalize";
-import get from "lodash/get";
+import camelCase from "camelcase";
+import get from "dlv";
 import React, { ReactNode, useContext } from "react";
 
 export function ensure<T>(x: T | null | undefined): T {
@@ -25,7 +24,7 @@ export function ensure<T>(x: T | null | undefined): T {
 const modulePath = "@plasmicpkgs/plasmic-sanity-io";
 
 const makeDataProviderName = (docType: string) =>
-  `currentSanity${capitalize(camelCase(docType))}Item`;
+  `currentSanity${camelCase(docType, { pascalCase: true })}Item`;
 
 interface SanityCredentialsProviderProps {
   projectId?: string;

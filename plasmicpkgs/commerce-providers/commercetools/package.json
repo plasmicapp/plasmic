@@ -21,7 +21,6 @@
     "@plasmicapp/host": "1.0.65",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/js-cookie": "^3.0.1",
-    "@types/lodash.debounce": "^4.0.6",
     "@types/node": "^14.0.26",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -38,7 +37,6 @@
     "@plasmicapp/query": "0.1.53",
     "@plasmicpkgs/commerce": "0.0.70",
     "@types/react": "^17.0.40",
-    "lodash": "^4.17.21",
     "qs": "^6.11.0"
   },
   "publishConfig": {

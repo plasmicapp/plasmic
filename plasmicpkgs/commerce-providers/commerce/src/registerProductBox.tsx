@@ -1,7 +1,7 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import debounce from "lodash/debounce";
+import debounce from "debounce";
 import React from "react";
 import { ProductProvider } from "./contexts";
 import useProduct from "./product/use-product";

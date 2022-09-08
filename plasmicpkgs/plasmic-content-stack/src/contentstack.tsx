@@ -6,11 +6,10 @@ import {
   useSelector,
 } from "@plasmicapp/host";
 import { usePlasmicQueryData } from "@plasmicapp/query";
+import camelCase from "camelcase";
 import * as ContentStack from "contentstack";
+import get from "dlv";
 import React, { ReactNode, useContext } from "react";
-import camelCase from "lodash/camelCase";
-import capitalize from "lodash/capitalize";
-import get from "lodash/get";
 
 export function ensure<T>(x: T | null | undefined): T {
   if (x === null || x === undefined) {
@@ -24,7 +23,7 @@ export function ensure<T>(x: T | null | undefined): T {
 const modulePath = "@plasmicpkgs/plasmic-content-stack";
 
 const makeDataProviderName = (contentType: string) =>
-  `currentContentstack${capitalize(camelCase(contentType))}Item`;
+  `currentContentstack${camelCase(contentType, { pascalCase: true })}Item`;
 
 interface ContentStackCredentialsProviderProps {
   apiKey: string;
@@ -292,7 +291,7 @@ export function ContentStackField({
   }
 
   const isRichText = () =>
-    schema?.find((field: any) => field.uid === get(objectPath, 0))
+    schema?.find((field: any) => field.uid === get(objectPath, [0]))
       ?.field_metadata?.allow_rich_text;
 
   const data = get(item, objectPath);

@@ -6,9 +6,8 @@ import {
   useSelector,
 } from "@plasmicapp/host";
 import { usePlasmicQueryData } from "@plasmicapp/query";
-import camelCase from "lodash/camelCase";
-import capitalize from "lodash/capitalize";
-import get from "lodash/get";
+import camelCase from "camelcase";
+import get from "dlv";
 import React, { ReactNode, useContext } from "react";
 
 export function ensure<T>(x: T | null | undefined): T {
@@ -23,7 +22,7 @@ export function ensure<T>(x: T | null | undefined): T {
 const modulePath = "@plasmicpkgs/plasmic-strapi";
 
 const makeDataProviderName = (collection: string) =>
-  `currentStrapi${capitalize(camelCase(collection))}Item`;
+  `currentStrapi${camelCase(collection, { pascalCase: true })}Item`;
 
 interface StrapiCredentialsProviderProps {
   host?: string;

@@ -36,7 +36,6 @@
   "devDependencies": {
     "@plasmicapp/host": "1.0.79",
     "@size-limit/preset-small-lib": "^7.0.8",
-    "@types/lodash": "^4.14.184",
     "@types/react": "^17.0.43",
     "@types/react-dom": "^17.0.14",
     "husky": "^7.0.4",
@@ -49,6 +48,7 @@
   },
   "dependencies": {
     "@plasmicapp/query": "0.1.53",
-    "lodash": "^4.17.21"
+    "@types/dlv": "^1.1.2",
+    "dlv": "^1.1.3"
   }
 }

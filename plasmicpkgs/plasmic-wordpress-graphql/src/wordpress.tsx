@@ -6,8 +6,7 @@ import {
   useSelector,
 } from "@plasmicapp/host";
 import { usePlasmicQueryData } from "@plasmicapp/query";
-import compact from "lodash/compact";
-import get from "lodash/get";
+import get from "dlv";
 import React, { ReactNode, useContext } from "react";
 
 export function ensure<T>(x: T | null | undefined): T {
@@ -108,6 +107,10 @@ export const WordpressFetcherMeta: ComponentMeta<WordpressFetcherProps> = {
     },
   },
 };
+
+function compact(arr: any[]) {
+  return arr.filter((x) => !!x);
+}
 
 export function WordpressFetcher({
   query,

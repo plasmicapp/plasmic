@@ -48,6 +48,8 @@
   "dependencies": {
     "@plasmicapp/host": "1.0.79",
     "@plasmicapp/query": "0.1.53",
-    "lodash": "^4.17.21"
+    "@types/dlv": "^1.1.2",
+    "camelcase": "^7.0.0",
+    "dlv": "^1.1.3"
   }
 }

@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "@plasmicapp/query": "0.1.53",
-    "@types/lodash": "^4.14.184",
-    "lodash": "^4.17.21"
+    "@types/dlv": "^1.1.2",
+    "dlv": "^1.1.3"
   }
 }
