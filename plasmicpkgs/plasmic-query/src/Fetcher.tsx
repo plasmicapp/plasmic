@@ -24,7 +24,8 @@ export const genericFetcherPropsMeta: PropMetas<GenericFetcherProps> = {
   errorDisplay: { type: "slot", defaultValue: "Error fetching data" },
   dataName: {
     type: "string",
-    defaultValue: "myVariable",
+    displayName: "Variable name",
+    defaultValue: "fetchedData",
     description: "Variable name to store the fetched data in",
   },
   previewSpinner: {
@@ -168,7 +169,7 @@ function mkFetchProps(
 
 export const dataFetcherMeta: ComponentMeta<DataFetcherProps> = {
   name: "hostless-plasmic-query-data-fetcher",
-  displayName: "Data Fetcher",
+  displayName: "REST API Fetcher",
   importName: "DataFetcher",
   importPath: "@plasmicpkgs/plasmic-query",
   providesData: true,
@@ -185,6 +186,7 @@ export const dataFetcherMeta: ComponentMeta<DataFetcherProps> = {
   },
   defaultStyles: {
     maxWidth: "100%",
+    width: "stretch",
   },
 };
 
@@ -265,6 +267,7 @@ export const graphqlFetcherMeta: ComponentMeta<GraphqlFetcherProps> = {
   })(),
   defaultStyles: {
     maxWidth: "100%",
+    width: "stretch",
   },
 };
 
