@@ -240,19 +240,21 @@ export const graphqlFetcherMeta: ComponentMeta<GraphqlFetcherProps> = {
         endpoint: (props) => props.url ?? "",
         defaultValue: {
           query: `{
-  allPokemon {
-    name
-    sprites {
-      front_default
+  characters {
+    results {
+      name
+      species
+      image
     }
   }
-}`,
+}
+`,
         },
       },
     };
     // Reorder the props
     const { url, query, method, headers, queryKey, ...rest } = {
-      ...mkFetchProps("https://dex-server.herokuapp.com/", "POST"),
+      ...mkFetchProps("https://rickandmortyapi.com/graphql", "POST"),
       ...gqlMetas,
       ...genericFetcherPropsMeta,
     };
