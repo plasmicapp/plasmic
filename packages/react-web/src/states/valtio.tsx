@@ -15,7 +15,7 @@ type ObjectPath = (string | number)[];
 
 export interface $State {
   [key: string]: any;
-  registerInitFunc: (path: string, f: InitFunc<any>) => any;
+  registerInitFunc?: (path: string, f: InitFunc<any>) => any;
 }
 
 interface Internal$StateSpec<T> extends $StateSpec<T> {
@@ -427,3 +427,57 @@ export function useDollarState(
 }
 
 export default useDollarState;
+
+// Simple version of $state useDollarState for read-only
+export function useCanvasDollarState(
+  specs: $StateSpec<any>[],
+  props: Record<string, any>
+) {
+  const $$state = createValtioProxy<Internal$State>({
+    stateValues: {},
+    initStateValues: {},
+    specsByKey: Object.fromEntries(
+      specs.map((spec) => [
+        spec.path,
+        {
+          ...spec,
+          pathObj: transformPathStringToObj(spec.path),
+          isRepeated: spec.path.split(".").some((part) => part.endsWith("[]")),
+        },
+      ])
+    ),
+    statesInstanceBySpec: new Map<string, Internal$StateInstance[]>(),
+    existingStates: new Map<string, Internal$StateInstance>(),
+    unsubscriptionsByState: {},
+    props: undefined,
+    registrationsQueue: [],
+  });
+  $$state.props = mkUntrackedValue(props);
+
+  const $state = create$StateProxy($$state, (path, spec) => {
+    return {
+      get() {
+        return get($$state.stateValues, path);
+      },
+      set(_t, _p, value) {
+        set($$state.stateValues, path, mkUntrackedValue(value));
+        if (spec.onChangeProp) {
+          $$state.props[spec.onChangeProp]?.(value, path);
+        }
+        return true;
+      },
+    };
+  });
+  for (const spec of specs) {
+    const path = transformPathStringToObj(spec.path);
+    const init = spec.valueProp
+      ? $$state.props[spec.valueProp]
+      : spec.initVal
+      ? spec.initVal
+      : spec.initFunc
+      ? initializeStateValue($$state, path, $$state.specsByKey[spec.path])
+      : undefined;
+    set($state, path, init);
+  }
+  return $state;
+}

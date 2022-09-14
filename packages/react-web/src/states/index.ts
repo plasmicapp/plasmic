@@ -7,7 +7,7 @@ type InitFunc<T> = ($props: Record<string, any>, $state: $State) => T;
 
 export interface $State {
   [key: string]: any;
-  registerInitFunc: (path: string, f: InitFunc<any>) => any;
+  registerInitFunc?: (path: string, f: InitFunc<any>) => any;
 }
 
 export interface $StateSpec<T> {

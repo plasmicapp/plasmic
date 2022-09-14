@@ -10,4 +10,8 @@ export * from "./plume/switch";
 export * from "./plume/text-input";
 export * from "./plume/triggered-overlay";
 export * from "./states/helpers";
-export { default as useDollarState } from "./states/valtio";
+export {
+  $State,
+  default as useDollarState,
+  useCanvasDollarState,
+} from "./states/valtio";
