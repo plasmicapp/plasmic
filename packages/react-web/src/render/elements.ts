@@ -1,3 +1,4 @@
+import get from "dlv";
 import * as React from "react";
 import { chainSingleArgFuncs, isSubset, notNil, omit, pick } from "../common";
 import {
@@ -8,6 +9,7 @@ import {
   mergePropVals,
   NONE,
 } from "../react-utils";
+import { $State } from "../states/valtio";
 import { Stack } from "./Stack";
 
 interface Variants {
@@ -133,7 +135,11 @@ function createPlasmicElement<DefaultElementType extends React.ElementType>(
   wrapChildrenInFlex?: boolean
 ): React.ReactNode | null {
   if (!override || Object.keys(override).length === 0) {
-    return createElementWithChildren(defaultRoot, defaultProps, defaultProps.children)
+    return createElementWithChildren(
+      defaultRoot,
+      defaultProps,
+      defaultProps.children
+    );
   }
   const override2 = deriveOverride(override);
   const props = mergeOverrideProps(defaultProps, override2.props);
@@ -254,7 +260,9 @@ function createPlasmicElementFromJsx<
     defaultElement,
     mergeProps(
       props,
-      children.length === 0 ? {} : { children: children.length === 1 ? children[0] : children },
+      children.length === 0
+        ? {}
+        : { children: children.length === 1 ? children[0] : children },
       ...triggerProps
     ) as any,
     wrapFlexChild
@@ -389,7 +397,29 @@ function mergeVariants<V extends Variants>(
   return { ...v1, ...v2 };
 }
 
-function mergeArgs<A extends Args>(a1: Partial<A> | undefined, a2: Partial<A> | undefined): Partial<A> {
+export function mergeVariantsWithStates(
+  variants: Variants,
+  $state: $State,
+  linkedStates: {
+    variantGroup: string;
+    statePath: (string | number)[];
+  }[]
+): Variants {
+  return {
+    ...variants,
+    ...Object.fromEntries(
+      linkedStates.map(({ variantGroup, statePath }) => [
+        variantGroup,
+        get($state, statePath),
+      ])
+    ),
+  };
+}
+
+function mergeArgs<A extends Args>(
+  a1: Partial<A> | undefined,
+  a2: Partial<A> | undefined
+): Partial<A> {
   if (!a1 || !a2) {
     return a1 || a2 || {};
   }

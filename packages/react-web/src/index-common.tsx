@@ -9,6 +9,7 @@ export {
   Flex,
   hasVariant,
   makeFragment,
+  mergeVariantsWithStates,
   MultiChoiceArg,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
