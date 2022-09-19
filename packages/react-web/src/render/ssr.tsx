@@ -1,3 +1,4 @@
+import { PlasmicDataSourceContextProvider } from "@plasmicapp/data-sources-context";
 import { SSRProvider, useIsSSR as useAriaIsSSR } from "@react-aria/ssr";
 import * as React from "react";
 import { PlasmicHeadContext } from "./PlasmicHead";
@@ -19,21 +20,29 @@ export interface PlasmicRootProviderProps {
 }
 
 export function PlasmicRootProvider(props: PlasmicRootProviderProps) {
-  const { platform, children } = props;
+  const { platform, children, userAuthToken } = props as any;
   const context = React.useMemo(
     () => ({
       platform,
     }),
     [platform]
   );
+  const dataSourceContextValue = React.useMemo(
+    () => ({
+      userAuthToken,
+    }),
+    [userAuthToken]
+  );
   return (
     <PlasmicRootContext.Provider value={context}>
       <SSRProvider>
-        <PlasmicTranslatorContext.Provider value={props.translator}>
-          <PlasmicHeadContext.Provider value={props.Head}>
-            {children}
-          </PlasmicHeadContext.Provider>
-        </PlasmicTranslatorContext.Provider>
+        <PlasmicDataSourceContextProvider value={dataSourceContextValue}>
+          <PlasmicTranslatorContext.Provider value={props.translator}>
+            <PlasmicHeadContext.Provider value={props.Head}>
+              {children}
+            </PlasmicHeadContext.Provider>
+          </PlasmicTranslatorContext.Provider>
+        </PlasmicDataSourceContextProvider>
       </SSRProvider>
     </PlasmicRootContext.Provider>
   );

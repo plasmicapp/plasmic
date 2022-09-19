@@ -2751,6 +2751,11 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
+"@plasmicapp/data-sources-context@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources-context/-/data-sources-context-0.1.1.tgz#8d55d070598b4cd592a4152b42431351d9f9af28"
+  integrity sha512-RVmg+ymgVrqtpBp9AN3+u9ikXmwhJ9uA2ksjr7327sP2xwjNGdIdUwdwrzV2t+fhV7djbjut5msS+sjOdiI6WA==
+
 "@pmmmwh/react-refresh-webpack-plugin@^0.5.3":
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/@pmmmwh/react-refresh-webpack-plugin/-/react-refresh-webpack-plugin-0.5.7.tgz#58f8217ba70069cc6a73f5d7e05e85b458c150e2"
