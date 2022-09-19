@@ -1,4 +1,5 @@
 import get from "dlv";
+import deepEqual from "fast-deep-equal";
 import React from "react";
 import { proxy as createValtioProxy, ref, useSnapshot } from "valtio";
 import { subscribeKey } from "valtio/utils";
@@ -377,11 +378,13 @@ export function useDollarState(
               .get(pathStr)
               ?.some(
                 ({ path, specKey }) =>
-                  get($$state.initStateValues, path) !==
-                  f(
-                    props,
-                    $state,
-                    getIndexes(path, $$state.specsByKey[specKey])
+                  !deepEqual(
+                    get($$state.initStateValues, path),
+                    f(
+                      props,
+                      $state,
+                      getIndexes(path, $$state.specsByKey[specKey])
+                    )
                   )
               )
           ) {
@@ -399,7 +402,7 @@ export function useDollarState(
     const spec = $$state.specsByKey[specKey];
     if (spec.initFunc) {
       const newInit = spec.initFunc(props, $state, getIndexes(path, spec));
-      if (newInit !== get($$state.initStateValues, path)) {
+      if (!deepEqual(newInit, get($$state.initStateValues, path))) {
         resetSpecs.push({ path, spec });
       }
     }
