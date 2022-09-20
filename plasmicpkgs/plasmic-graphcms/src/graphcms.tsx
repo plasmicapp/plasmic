@@ -256,6 +256,6 @@ export function GraphCMSField({
   } else if (!data || typeof data === "object") {
     return <div className={className}>Please specify a valid field.</div>;
   } else {
-    return <div className={className}> {data} </div>;
+    return <div className={className}>{data}</div>;
   }
 }
