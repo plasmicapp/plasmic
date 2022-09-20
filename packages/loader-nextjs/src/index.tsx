@@ -127,8 +127,8 @@ export function initPlasmicLoader(
     const stringOpts = JSON.stringify(opts);
 
     if (process.env.PLASMIC_OPTS && process.env.PLASMIC_OPTS !== stringOpts) {
-      throw new Error(
-        `We detected that your Plasmic configuration has changed. Please restart your dev server.\n`
+      console.warn(
+        `PLASMIC: We detected that you created a new PlasmicLoader with different configurations. You may need to restart your dev server.\n`
       );
     }
 
