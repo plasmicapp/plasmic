@@ -35,9 +35,12 @@
   ],
   "devDependencies": {
     "@size-limit/preset-small-lib": "^7.0.8",
+    "@types/dlv": "^1.1.2",
+    "@types/qs": "^6.9.7",
     "@types/react": "^17.0.43",
     "@types/react-dom": "^17.0.14",
     "husky": "^7.0.4",
+    "qs": "^6.11.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "size-limit": "^7.0.8",

@@ -1,9 +1,0 @@
-{
-  "version": "v1",
-  "packages": {
-    "@plasmicpkgs/plasmic-sanity-io": {
-      "signature": "4c86a00da558a026b453bb1f0e7cedc1",
-      "file": true
-    }
-  }
-}
