@@ -21788,17 +21788,6 @@ rc-collapse@~3.1.0:
     rc-util "^5.2.1"
     shallowequal "^1.1.0"
 
-rc-collapse@~3.4.2:
-  version "3.4.2"
-  resolved "https://registry.yarnpkg.com/rc-collapse/-/rc-collapse-3.4.2.tgz#1310be7ad4cd0dcfc622c45f6c3b5ffdee403ad7"
-  integrity sha512-jpTwLgJzkhAgp2Wpi3xmbTbbYExg6fkptL67Uu5LCRVEj6wqmy0DHTjjeynsjOLsppHGHu41t1ELntZ0lEvS/Q==
-  dependencies:
-    "@babel/runtime" "^7.10.1"
-    classnames "2.x"
-    rc-motion "^2.3.4"
-    rc-util "^5.2.1"
-    shallowequal "^1.1.0"
-
 rc-dialog@~8.6.0:
   version "8.6.0"
   resolved "https://registry.yarnpkg.com/rc-dialog/-/rc-dialog-8.6.0.tgz#3b228dac085de5eed8c6237f31162104687442e7"
@@ -21867,7 +21856,7 @@ rc-dropdown@~4.0.0:
   dependencies:
     "@babel/runtime" "^7.18.3"
     classnames "^2.2.6"
-    rc-trigger "^5.3.1"
+    rc-trigger "^5.0.4"
     rc-util "^5.17.0"
 
 rc-field-form@~1.25.0:
@@ -21925,7 +21914,7 @@ rc-input-number@~7.3.9:
   dependencies:
     "@babel/runtime" "^7.10.1"
     classnames "^2.2.5"
-    rc-util "^5.23.0"
+    rc-util "^5.9.8"
 
 rc-input@~0.0.1-alpha.5:
   version "0.0.1-alpha.6"
@@ -22227,7 +22216,7 @@ rc-table@~7.26.0:
     "@babel/runtime" "^7.10.1"
     classnames "^2.2.5"
     rc-resize-observer "^1.1.0"
-    rc-util "^5.22.5"
+    rc-util "^5.14.0"
     shallowequal "^1.1.0"
 
 rc-tabs@~11.10.0:

@@ -11,6 +11,7 @@ import imageUrlBuilder from "@sanity/image-url";
 import { pascalCase } from "change-case";
 import get from "dlv";
 import React, { ReactNode, useContext } from "react";
+import { comparisonParameters } from "./utils";
 
 export function ensure<T>(x: T | null | undefined): T {
   if (x === null || x === undefined) {
@@ -45,11 +46,11 @@ function makeSanityClient(creds: SanityCredentialsProviderProps) {
   return sanity;
 }
 
-const CredentialsContext = React.createContext<
-  SanityCredentialsProviderProps | undefined
->(undefined);
+const CredentialsContext =
+  React.createContext<SanityCredentialsProviderProps | undefined>(undefined);
 
-export const sanityCredentialsProviderMeta: GlobalContextMeta<SanityCredentialsProviderProps> = {
+export const sanityCredentialsProviderMeta: GlobalContextMeta<SanityCredentialsProviderProps> =
+{
   name: "SanityCredentialsProvider",
   displayName: "Sanity Credentials Provider",
   description: `Get your project ID, dataset, and token [here](https://www.sanity.io/manage).
@@ -116,11 +117,19 @@ export function SanityCredentialsProvider({
 
 interface SanityFetcherProps {
   groq?: string;
-  docType?: string;
+  docType: string;
+  filterField?: string;
+  filterValue?: string
+  filterParameter?: string;
+  noAutoRepeat?: boolean;
+  limit?: string;
   children?: ReactNode;
   className?: string;
   noLayout?: boolean;
-  setControlContextData?: (data: { docTypes: string[] }) => void;
+  setControlContextData?: (data: {
+    docTypes?: string[];
+    sanityFields?: string[];
+  }) => void;
 }
 
 export const sanityFetcherMeta: ComponentMeta<SanityFetcherProps> = {
@@ -168,6 +177,47 @@ export const sanityFetcherMeta: ComponentMeta<SanityFetcherProps> = {
       description:
         "Document type to be queried (*[_type == DOC_TYPE] shortcut).",
     },
+
+    filterField: {
+      type: "choice",
+      displayName: "Filter field",
+      description: "Field (from Collection) to filter by",
+      options: (props, ctx) => ctx?.sanityFields ?? [],
+      hidden: (props, ctx) => !props.docType && !props.groq
+    },
+    filterParameter: {
+      type: "choice",
+      displayName: "Filter Parameter",
+      description:
+        "Filter Parameter filter by.Read more (https://www.sanity.io/docs/groq-operators#3b7211e976f6)",
+      options: (props, ctx) => {
+        return comparisonParameters.map((item: any) => ({
+          label: item?.label,
+          value: item?.value,
+        }));
+      },
+      hidden: (props, ctx) => !props.filterField
+    },
+    filterValue: {
+      type: "string",
+      displayName: "Filter value",
+      description: "Value to filter by, should be of filter field type",
+      hidden: (props, ctx) => !props.filterParameter
+    },
+
+    limit: {
+      type: "string",
+      displayName: "Limit",
+      description:
+        "Limit",
+      
+    },
+    noAutoRepeat: {
+      type: "boolean",
+      displayName: "No auto-repeat",
+      description: "Do not automatically repeat children for every category.",
+      defaultValue: false,
+    },
     noLayout: {
       type: "boolean",
       displayName: "No layout",
@@ -181,9 +231,15 @@ export const sanityFetcherMeta: ComponentMeta<SanityFetcherProps> = {
 export function SanityFetcher({
   groq,
   docType,
+  filterField,
+  filterValue,
+  filterParameter,
+  limit,
+  noAutoRepeat,
   children,
   className,
   noLayout,
+
   setControlContextData,
 }: SanityFetcherProps) {
   const projectIdRegex = new RegExp(/^[-a-z0-9]+$/i);
@@ -254,10 +310,15 @@ export function SanityFetcher({
   const docTypes = allDataTypes.data ?? false;
 
   if (!groq && docType) {
-    groq = "*[_type=='" + docType + "']";
+    groq = "*[_type=='" + docType + "'";
   }
 
   const cacheKey = JSON.stringify({
+    docType,
+    filterField,
+    filterValue,
+    filterParameter,
+    limit,
     groq,
     creds,
   });
@@ -268,7 +329,21 @@ export function SanityFetcher({
     if (!groq) {
       return null;
     }
-    const resp = await sanity.fetch(groq);
+    let query;
+    if (
+      docType &&
+      filterField &&
+      filterValue &&
+      filterParameter
+    ) {
+      query = `${groq} && ${filterField} ${filterParameter} "${filterValue}"]`;
+    } else if(limit) {
+      query = `${groq}][${limit!}]`;
+    } else {
+      query = `${groq}]`
+    }
+
+    const resp = await sanity.fetch(query);
     return resp;
   });
 
@@ -293,41 +368,119 @@ export function SanityFetcher({
     );
   }
 
-  const imageBuilder = imageUrlBuilder(sanity);
-
-  const repElements = data?.data.map((item, index) => {
-    // Adding the img src for the image fields
-    Object.keys(item).forEach((field) => {
-      if (item[field]._type === "image") {
-        item[field].imgUrl = imageBuilder
-          .image(item[field])
-          .ignoreImageParams()
-          .toString();
-      }
+  let sanityFields = data.data?.map((item) => {
+    const fields = Object.keys(item).filter((field) => {
+      const value = get(item, field);
+      return typeof value !== "object" || value._type !== "image";
     });
 
-    return docType ? (
-      <DataProvider
-        key={item._id}
-        name={"sanityItem"}
-        data={item}
-        hidden={true}
-      >
-        <DataProvider name={makeDataProviderName(docType)} data={item}>
-          {repeatedElement(index, children)}
-        </DataProvider>
-      </DataProvider>
-    ) : (
-      <DataProvider key={item._id} name={"sanityItem"} data={item}>
-        {repeatedElement(index, children)}
-      </DataProvider>
-    );
+    return fields;
+  });
+  
+
+  setControlContextData?.({
+    docTypes,
+    sanityFields: sanityFields[0]!,
   });
 
-  return noLayout ? (
-    <> {repElements} </>
-  ) : (
-    <div className={className}> {repElements} </div>
+  if (filterField && !filterParameter && !filterValue) {
+    return (
+      <div>
+        Please specify a Filter Parameter and a Filter Value
+      </div>
+    );
+  }
+  if (filterField && filterParameter && !filterValue) {
+    return (
+      <div>
+        Please specify a Filter Value
+      </div>
+    );
+  }
+  if (!filterField && !filterParameter && filterValue) {
+    return (
+      <div>
+        Please specify a Filter Field and a Filter Parameter
+      </div>
+    );
+  }
+  if (!filterField && filterParameter && !filterValue) {
+    return (
+      <div>
+        Please specify a Filter Field and a Filter Value
+      </div>
+    );
+  }
+
+
+  let repElements;
+
+  const imageBuilder = imageUrlBuilder(sanity);
+  if (filterParameter && filterField && filterValue) {
+    if (data.data.length === 0) {
+      return <div>No published types found</div>;
+    }
+    repElements = data?.data.map((item, index) => {
+      Object.keys(item).forEach((field) => {
+        if (item[field]._type === "image") {
+          item[field].imgUrl = imageBuilder
+            .image(item[field])
+            .ignoreImageParams()
+            .toString();
+        }
+      });
+
+      return (
+        <DataProvider
+          key={item._id}
+          name={"sanityItem"}
+          data={item}
+          hidden={true}
+        >
+          <DataProvider name={makeDataProviderName(docType)} data={item}>
+            {repeatedElement(index, children)}
+          </DataProvider>
+        </DataProvider>
+      );
+    });
+  } else {
+    repElements = noAutoRepeat ? children : data?.data.map((item, index) => {
+      Object.keys(item).forEach((field) => {
+        if (item[field]._type === "image") {
+          item[field].imgUrl = imageBuilder
+            .image(item[field])
+            .ignoreImageParams()
+            .toString();
+        }
+      });
+
+      return docType ? (
+        <DataProvider
+          key={item._id}
+          name={"sanityItem"}
+          data={item}
+          hidden={true}
+        >
+          <DataProvider name={makeDataProviderName(docType)} data={item}>
+            {repeatedElement(index, children)}
+          </DataProvider>
+        </DataProvider>
+      ) : (
+        <DataProvider key={item._id} name={"sanityItem"} data={item}>
+          {repeatedElement(index, children)}
+        </DataProvider>
+      );
+    });
+  }
+
+  return (
+    <DataProvider name="sanityItems" data={data.data}>
+      {noLayout ? (
+        <> {repElements} </>
+      ) : (
+        <div className={className}> {repElements} </div>
+      )}
+    </DataProvider>
   );
 }
 
