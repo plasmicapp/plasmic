@@ -1,3 +1,7 @@
+# react-dnd custom controls in Plasmic
+
+This is a demo of how to register [custom controls](https://docs.plasmic.app/learn/custom-controls) that use react-dnd.
+
 This is a Next.js project bootstrapped with [`create-plasmic-app`](https://www.npmjs.com/package/create-plasmic-app).
 
 ## Getting Started

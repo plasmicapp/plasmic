@@ -1,3 +1,7 @@
+# react-dnd example with Plasmic
+
+This is a demo of how to register [code components](https://docs.plasmic.app/learn/code-components) that use react-dnd to provide your app with drag-and-drop interactivity.
+
 This is a Next.js project bootstrapped with [`create-plasmic-app`](https://www.npmjs.com/package/create-plasmic-app).
 
 ## Getting Started

@@ -1,3 +1,8 @@
+# Sanity integration with Plasmic
+
+Note that there is now a more up-to-date, built-in version of this in Plasmic, and its source lives in the `plasmicpkgs` directory.
+But this project still serves as a simple example of how to make simple [data-fetching code components](https://docs.plasmic.app/learn/data-code-components).
+
 This is a Next.js project bootstrapped with [`create-plasmic-app`](https://www.npmjs.com/package/create-plasmic-app).
 
 It includes a couple of code components:

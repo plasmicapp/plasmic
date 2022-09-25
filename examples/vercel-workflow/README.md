@@ -1,3 +1,7 @@
+# Vercel landing page built in Plasmic
+
+This is the example landing page built in the [video tutorial](https://www.youtube.com/watch?v=itvbmgLZvcM) on how to re-create the Vercel Workflows landing page in Plasmic.
+
 This is a Next.js project bootstrapped with [`create-plasmic-app`](https://www.npmjs.com/package/create-plasmic-app).
 
 ## Getting Started
