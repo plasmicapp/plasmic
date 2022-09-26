@@ -1,1 +1,1 @@
-Plasmic components and registration calls for Strapi
+Plasmic components and registration calls for ContentStack
