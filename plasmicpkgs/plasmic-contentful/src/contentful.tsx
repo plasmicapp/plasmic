@@ -8,10 +8,9 @@ import {
 } from "@plasmicapp/host";
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import { pascalCase } from "change-case";
-import * as Contentful from "contentful";
 import get from "dlv";
-
 import React, { ReactNode, useContext } from "react";
+import { searchParameters, uniq } from "./utils";
 
 export function ensure<T>(x: T | null | undefined): T {
   if (x === null || x === undefined) {
@@ -33,37 +32,39 @@ interface ContentfulCredentialsProviderProps {
   environment?: string;
 }
 
-const CredentialsContext = React.createContext<
-  ContentfulCredentialsProviderProps | undefined
->(undefined);
+const CredentialsContext =
+  React.createContext<ContentfulCredentialsProviderProps | undefined>(
+    undefined
+  );
 
-export const ContentfulCredentialsProviderMeta: GlobalContextMeta<ContentfulCredentialsProviderProps> = {
-  name: "Contentful CredentialsProvider",
-  displayName: "Contentful Credentials Provider",
-  description:
-    "Any client requesting content from the CDA needs to provide an access token that has access to the environment you're requesting content from. Learn how to [get your API key](https://www.contentful.com/developers/docs/references/authentication/).",
-  importName: "ContentfulCredentialsProvider",
-  importPath: modulePath,
-  props: {
-    space: {
-      type: "string",
-      displayName: "Space",
-      description: "Name of your space",
-      defaultValue: "lmfbwqzbh93n",
+export const ContentfulCredentialsProviderMeta: GlobalContextMeta<ContentfulCredentialsProviderProps> =
+  {
+    name: "Contentful CredentialsProvider",
+    displayName: "Contentful Credentials Provider",
+    description:
+      "Any client requesting content from the CDA needs to provide an access token that has access to the environment you're requesting content from. Learn how to [get your API key](https://www.contentful.com/developers/docs/references/authentication/).",
+    importName: "ContentfulCredentialsProvider",
+    importPath: modulePath,
+    props: {
+      space: {
+        type: "string",
+        displayName: "Space",
+        description: "Name of your space",
+        defaultValue: "lmfbwqzbh93n",
+      },
+      accessToken: {
+        type: "string",
+        displayName: "Access Token ",
+        description: "Access Token",
+        defaultValue: "aWvf6oSLTuqxKCxSUpokajdQr84hGQFE6zoJG7DVVLg",
+      },
+      environment: {
+        type: "string",
+        displayName: "Environment",
+        defaultValue: "master",
+      },
     },
-    accessToken: {
-      type: "string",
-      displayName: "Access Token ",
-      description: "Access Token",
-      defaultValue: "aWvf6oSLTuqxKCxSUpokajdQr84hGQFE6zoJG7DVVLg",
-    },
-    environment: {
-      type: "string",
-      displayName: "Environment",
-      defaultValue: "master",
-    },
-  },
-};
+  };
 
 export function ContentfulCredentialsProvider({
   accessToken,
@@ -79,16 +80,19 @@ export function ContentfulCredentialsProvider({
 }
 
 interface ContentfulFetcherProps {
-  entryID?: string;
-  contentType?: string;
+  contentType: string;
   children?: ReactNode;
   className?: string;
   limit?: number;
   order?: string;
+  filterField?: string;
+  searchParameter?: string;
+  filterValue?: string;
+  noAutoRepeat?: boolean;
   noLayout?: boolean;
   setControlContextData?: (data: {
     types?: { name: string; id: string }[];
-    entries?: { id: string }[];
+    fields?: string[];
   }) => void;
 }
 
@@ -132,27 +136,43 @@ export const ContentfulFetcherMeta: ComponentMeta<ContentfulFetcherProps> = {
       displayName: "Content type",
       description: "Content type to be queried.",
     },
-    entryID: {
+
+    filterField: {
       type: "choice",
-      options: (props, ctx) =>
-        ctx?.entries?.map((entry: any) => ({
-          label: entry?.sys?.id,
-          value: entry?.sys?.id,
-        })) ?? [],
-      displayName: "Entry ID",
-      description: "Query in Content Type.",
-      defaultValueHint: "all",
+      displayName: "Filter field",
+      description: "Field (from Collection) to filter by",
+      options: (props, ctx) => ctx?.fields ?? [],
+      hidden: (props, ctx) => !props.contentType,
+    },
+    searchParameter: {
+      type: "choice",
+      displayName: "Search Parameter",
+      description:
+        "Search Parameter to filter by.Read more (https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/search-parameters/)",
+      options: (props, ctx) => {
+        return searchParameters.map((item: any) => ({
+          label: item?.label,
+          value: item?.value,
+        }));
+      },
+      hidden: (props, ctx) => !props.filterField,
+    },
+    filterValue: {
+      type: "string",
+      displayName: "Filter value",
+      description: "Value to filter by, should be of filter field type",
+      hidden: (props, ctx) => !props.searchParameter,
     },
     limit: {
       type: "number",
       displayName: "Limit",
       description: "Limit the number of entries that are returned.",
-      defaultValue: 1000,
     },
-    order: {
-      type: "string",
-      displayName: "Order",
-      description: "Order entries with a specific attribute.",
+    noAutoRepeat: {
+      type: "boolean",
+      displayName: "No auto-repeat",
+      description: "Do not automatically repeat children for every entry.",
+      defaultValue: false,
     },
     noLayout: {
       type: "boolean",
@@ -165,57 +185,77 @@ export const ContentfulFetcherMeta: ComponentMeta<ContentfulFetcherProps> = {
 };
 
 export function ContentfulFetcher({
-  entryID,
+  filterField,
+  filterValue,
+  searchParameter,
+  noAutoRepeat,
   contentType,
   children,
   className,
   limit,
   noLayout,
-  order,
   setControlContextData,
 }: ContentfulFetcherProps) {
   const creds = ensure(useContext(CredentialsContext));
   const cacheKey = JSON.stringify({
+    limit,
+    filterField,
+    filterValue,
+    searchParameter,
     creds,
   });
-  const client = Contentful.createClient({
-    space: creds.space,
-    accessToken: creds.accessToken,
-  });
 
-  const { data: contentTypes, error: contentTypesError } = usePlasmicQueryData<
-    any | null
-  >(`${cacheKey}/contentTypes`, async () => {
-    const response = await client.getContentTypes();
-    return response;
-  });
+  const baseUrl = "https://cdn.contentful.com";
 
-  const { data: entriesData, error: entriesDataError } = usePlasmicQueryData<
-    any | null
-  >(
-    contentType
-      ? `${cacheKey}/${contentType}/entriesData/${limit}/${order}`
-      : null,
+  const { data: contentTypes } = usePlasmicQueryData<any | null>(
+    `${cacheKey}/contentTypes`,
     async () => {
-      const response = await client.getEntries({
-        content_type: `${contentType?.toString()}`,
-        limit,
-        order,
-      });
-      return response;
+      const resp = await fetch(
+        `${baseUrl}/spaces/${creds.space}/environments/${creds.environment}/content_types?access_token=${creds.accessToken}`
+      );
+      return resp.json();
     }
   );
 
-  const { data: entryData, error: entryDataError } = usePlasmicQueryData<
-    any | null
-  >(entryID ? `${cacheKey}/entry/${entryID}` : null, async () => {
-    const response = await client.getEntry(`${entryID}`);
-    return response;
+  const { data: entriesData } = usePlasmicQueryData<any | null>(
+    contentType ? `${cacheKey}/${contentType}/entriesData` : null,
+    async () => {
+      
+      const url = `/spaces/${creds.space}/environments/${creds.environment}/entries?access_token=${creds.accessToken}&content_type=${contentType}`;
+      let query;
+
+      if (limit) {
+        query = `${url}&limit=${limit}`;
+      } else {
+        query = url;
+      }
+      const resp = await fetch(`${baseUrl}${query}`);
+      return resp.json();
+    }
+  );
+
+  const { data: filteredData } = usePlasmicQueryData<any | null>(
+    contentType && filterField && filterValue
+      ? `${cacheKey}/${contentType}/filteredData`
+      : null,
+    async () => {
+      const queryPath = `/spaces/${creds.space}/environments/${creds.environment}/entries?access_token=${creds.accessToken}&content_type=${contentType}&fields.${filterField}${searchParameter}=${filterValue}}`;
+      const resp = await fetch(`${baseUrl}${queryPath}`);
+      return resp.json();
+    }
+  );
+
+  const filterFields: string[] = entriesData?.items.flatMap((item: any) => {
+    const fields = Object.keys(item.fields).filter((field) => {
+      const value = get(item, field);
+      return typeof value !== "object" && field !== "photos";
+    });
+    return fields;
   });
 
   setControlContextData?.({
-    types: contentTypes?.items,
-    entries: entriesData?.items,
+    types: contentTypes?.items ?? [],
+    fields: uniq(filterFields ?? []),
   });
 
   if (!creds.space || !creds.accessToken) {
@@ -226,57 +266,69 @@ export function ContentfulFetcher({
       </div>
     );
   }
+  if (!entriesData) {
+    return <div>Please select a content type</div>;
+  }
 
-  if (contentTypesError || entriesDataError || entryDataError) {
-    if (contentTypesError) {
-      return (
-        <div className={className}>Error: {contentTypesError.message}</div>
-      );
-    } else if (entriesDataError) {
-      return <div className={className}>Error: {entriesDataError.message}</div>;
-    } else {
-      return (
-        <div className={className}>Error: {entriesDataError!.message}</div>
-      );
-    }
+  if (filterField && !searchParameter) {
+    return <div>Please specify a Search Parameter</div>;
+  }
+  if (searchParameter && !filterValue) {
+    return <div>Please specify a Filter value</div>;
   }
 
   let renderedData;
-  if (contentType && entryID) {
-    renderedData = (
-      <DataProvider name={"contentfulItem"} data={entryData} hidden={true}>
-        <DataProvider name={makeDataProviderName(contentType)} data={entryData}>
-          {children}
-        </DataProvider>
-      </DataProvider>
-    );
-  } else if (contentType) {
+
+  if (filteredData) {
+    if (filteredData?.items?.length === 0) {
+      return <div className={className}>No published entry found</div>;
+    }
+
+    renderedData = noAutoRepeat
+      ? children
+      : filteredData?.items?.map((item: any, index: number) => (
+          <DataProvider
+            key={item?.sys?.id}
+            name={"contentfulItem"}
+            data={item}
+            hidden={true}
+          >
+            <DataProvider name={makeDataProviderName(contentType)} data={item}>
+              {repeatedElement(index, children)}
+            </DataProvider>
+          </DataProvider>
+        ));
+  } else {
     if (entriesData?.items?.length === 0) {
       return <div className={className}>{contentType} is empty</div>;
     }
-    renderedData = entriesData?.items?.map((item: any, index: number) => (
-      <DataProvider
-        key={item?.sys?.id}
-        name={"contentfulItem"}
-        data={item}
-        hidden={true}
-      >
-        <DataProvider name={makeDataProviderName(contentType)} data={item}>
-          {repeatedElement(index, children)}
-        </DataProvider>
-      </DataProvider>
-    ));
-  } else {
-    return <div> Please choose the Content Type</div>;
+
+    renderedData = noAutoRepeat
+      ? children
+      : entriesData?.items?.map((item: any, index: number) => (
+          <DataProvider
+            key={item?.sys?.id}
+            name={"contentfulItem"}
+            data={item}
+            hidden={true}
+          >
+            <DataProvider name={makeDataProviderName(contentType)} data={item}>
+              {repeatedElement(index, children)}
+            </DataProvider>
+          </DataProvider>
+        ));
   }
 
-  return noLayout ? (
-    <> {renderedData} </>
-  ) : (
-    <div className={className}> {renderedData} </div>
+  return (
+    <DataProvider name="contentfulItems" data={entriesData?.items}>
+      {noLayout ? (
+        <> {renderedData} </>
+      ) : (
+        <div className={className}> {renderedData} </div>
+      )}
+    </DataProvider>
   );
 }
-
 interface ContentfulFieldProps {
   className?: string;
   objectPath?: (string | number)[];
