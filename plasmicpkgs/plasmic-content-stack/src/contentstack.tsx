@@ -79,12 +79,16 @@ export function ContentStackCredentialsProvider({
 interface ContentStackFetcherProps {
   entryUID?: string;
   contentType?: string;
+  limit?: number;
+  orderBy?: string;
+  ascending?: boolean;
   children?: ReactNode;
   className?: string;
   noLayout?: boolean;
   setControlContextData?: (data: {
     types?: { title: string; uid: string }[];
     entries?: { title: string; uid: string }[];
+    fields?: { display_name: string; uid: string}[];
   }) => void;
 }
 
@@ -138,6 +142,24 @@ export const ContentStackFetcherMeta: ComponentMeta<ContentStackFetcherProps> = 
       displayName: "Entry UID",
       description: "Query in Content Type.",
     },
+    limit: {
+      type: "number",
+      displayName: "Limit Results",
+    },
+    orderBy: {
+      type: "choice",
+      options: (props, ctx) => 
+        ctx?.fields?.map((field) => ({
+          label: field.display_name,
+          value: field.uid,
+        })) ?? [],
+      displayName: "Order By",
+    },
+    ascending: {
+      type: "choice",
+      options: [{label: 'Ascending', value: true}, {label: 'Descending', value: false}],
+      displayName: "Order Direction",
+    },
     noLayout: {
       type: "boolean",
       displayName: "No layout",
@@ -151,6 +173,9 @@ export const ContentStackFetcherMeta: ComponentMeta<ContentStackFetcherProps> = 
 export function ContentStackFetcher({
   entryUID,
   contentType,
+  limit,
+  orderBy,
+  ascending,
   children,
   className,
   noLayout,
@@ -188,15 +213,28 @@ export function ContentStackFetcher({
   );
 
   const { data: entriesData } = usePlasmicQueryData<any | null>(
-    contentType ? `${cacheKey}/${contentType}/entries` : null,
+    contentType ? `${cacheKey}/${contentType}/entries${limit ? "/limit/" + limit : ''}${orderBy ? "/order/" + orderBy + (ascending ? '/ascending' : '') : ''}` : null,
     async () => {
-      return await Stack.ContentType(`${contentType!}`).Query().toJSON().find();
+      let Query = Stack.ContentType(`${contentType!}`).Query();
+      if(orderBy){
+        Query = Query[ascending ? 'ascending' : 'descending'](orderBy);
+      }
+      if(limit){
+        Query = Query.limit(limit);
+      }
+      return await Query.toJSON().find();
     }
   );
+
+  const schema = [{display_name: 'Created At', uid: 'created_at'}, {display_name: 'Updated At', uid: 'updated_at'}];
+  if(contentTypes){
+    schema.push(...contentTypes?.filter((x: any) => x.uid === contentType)?.[0]?.schema);
+  }
 
   setControlContextData?.({
     types: contentTypes,
     entries: entriesData?.[0],
+    fields: schema,
   });
 
   if (!creds.apiKey || !creds.accessToken || !creds.environment) {
