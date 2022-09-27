@@ -3,6 +3,10 @@ import { SSRProvider, useIsSSR as useAriaIsSSR } from "@react-aria/ssr";
 import * as React from "react";
 import { PlasmicHeadContext } from "./PlasmicHead";
 import { PlasmicTranslator, PlasmicTranslatorContext } from "./translation";
+export {
+  PlasmicDataSourceContextProvider,
+  useCurrentUser,
+} from "@plasmicapp/data-sources-context";
 
 export interface PlasmicRootContextValue {
   platform?: "nextjs" | "gatsby";
@@ -20,7 +24,7 @@ export interface PlasmicRootProviderProps {
 }
 
 export function PlasmicRootProvider(props: PlasmicRootProviderProps) {
-  const { platform, children, userAuthToken } = props as any;
+  const { platform, children, userAuthToken, user } = props as any;
   const context = React.useMemo(
     () => ({
       platform,
@@ -30,8 +34,9 @@ export function PlasmicRootProvider(props: PlasmicRootProviderProps) {
   const dataSourceContextValue = React.useMemo(
     () => ({
       userAuthToken,
+      user,
     }),
-    [userAuthToken]
+    [userAuthToken, user]
   );
   return (
     <PlasmicRootContext.Provider value={context}>
