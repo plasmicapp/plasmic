@@ -22023,16 +22023,6 @@ rc-notification@~4.6.0:
     rc-motion "^2.2.0"
     rc-util "^5.0.1"
 
-rc-notification@~5.0.0-alpha.9:
-  version "5.0.0-alpha.9"
-  resolved "https://registry.yarnpkg.com/rc-notification/-/rc-notification-5.0.0-alpha.9.tgz#e6fbf5cc786e508f022691a61a03c0473f5ca7b0"
-  integrity sha512-QPvq8VHe2M0SE5DHJf7ADWlvfWKnTsj5FVxcu39gdjX98kKmi+BHY1eTPAQkkdGqd6ZXv6xXHl8qKHyWhQcFPA==
-  dependencies:
-    "@babel/runtime" "^7.10.1"
-    classnames "2.x"
-    rc-motion "^2.6.0"
-    rc-util "^5.20.1"
-
 rc-overflow@^1.0.0:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/rc-overflow/-/rc-overflow-1.2.4.tgz#e25cd3c4a98b4f8233a8dab7172ab2dbcc83b45e"
@@ -22650,6 +22640,11 @@ react-slick@^0.28.1:
     json2mq "^0.2.0"
     lodash.debounce "^4.0.8"
     resize-observer-polyfill "^1.5.0"
+
+react-ssr-prepass@^1.4.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/react-ssr-prepass/-/react-ssr-prepass-1.5.0.tgz#bc4ca7fcb52365e6aea11cc254a3d1bdcbd030c5"
+  integrity sha512-yFNHrlVEReVYKsLI5lF05tZoHveA5pGzjFbFJY/3pOqqjGOmMmqx83N4hIjN2n6E1AOa+eQEUxs3CgRnPmT0RQ==
 
 react-style-singleton@^2.2.1:
   version "2.2.1"
