@@ -12,7 +12,8 @@
     "packages/loader-vue",
     "packages/watcher",
     "packages/host",
-    "packages/preamble"
+    "packages/preamble",
+    "packages/react-web"
   ],
   "version": "independent",
   "npmClient": "yarn",
