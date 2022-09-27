@@ -154,9 +154,10 @@ function mkFetchProps(
     },
     headers: {
       type: "object",
-      description: "JSON object of the headers to be sent with the request",
+      description: "Request headers (as JSON object) to send",
       defaultValue: {
-        "Content-type": "application/json",
+        "Content-Type": "application/json",
+        "Accept": "application/json",
       },
     },
     queryKey: {
@@ -169,7 +170,7 @@ function mkFetchProps(
 
 export const dataFetcherMeta: ComponentMeta<DataFetcherProps> = {
   name: "hostless-plasmic-query-data-fetcher",
-  displayName: "REST API Fetcher",
+  displayName: "HTTP API Fetcher",
   importName: "DataFetcher",
   importPath: "@plasmicpkgs/plasmic-query",
   providesData: true,
@@ -180,7 +181,7 @@ export const dataFetcherMeta: ComponentMeta<DataFetcherProps> = {
     ) as any),
     body: {
       type: "object",
-      description: "JSON object of the body to be sent with the request",
+      description: "JSON object to be sent in the request body",
     },
     ...(genericFetcherPropsMeta as any),
   },
