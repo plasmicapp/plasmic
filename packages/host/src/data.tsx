@@ -1,4 +1,9 @@
-import React, { createContext, ReactNode, useContext } from "react";
+import React, {
+  createContext,
+  ReactElement,
+  ReactNode,
+  useContext,
+} from "react";
 import { tuple } from "./common";
 
 export type DataDict = Record<string, any>;
@@ -132,5 +137,5 @@ export function DataCtxReader({
   children: ($ctx: DataDict | undefined) => ReactNode;
 }) {
   const $ctx = useDataEnv();
-  return children($ctx);
+  return children($ctx) as ReactElement | null;
 }
