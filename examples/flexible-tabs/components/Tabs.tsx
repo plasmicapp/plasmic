@@ -2,8 +2,10 @@ import { DataProvider, usePlasmicCanvasContext } from "@plasmicapp/host";
 import constate from "constate";
 import React, {
   cloneElement,
+  createContext,
   ReactElement,
   ReactNode,
+  useContext,
   useEffect,
   useRef,
   useState,
@@ -13,7 +15,10 @@ export interface TabsProviderProps {
   children?: ReactNode;
   initialKey?: string;
   previewKey?: string;
+  previewAll?: boolean;
 }
+
+const DebugContext = createContext(false);
 
 function useTabsData({ initialKey }: { initialKey?: string }) {
   const [tabKey, setTabKey] = useState<string | undefined>(initialKey);
@@ -34,10 +39,14 @@ export function TabsContainer({
   children,
   initialKey,
   previewKey,
+  previewAll = false,
 }: TabsProviderProps) {
+  const inEditor = !!usePlasmicCanvasContext();
   return (
     <TabsProvider initialKey={initialKey}>
-      <Helper previewKey={previewKey || initialKey}>{children}</Helper>
+      <DebugContext.Provider value={inEditor && previewAll}>
+        <Helper previewKey={previewKey || initialKey}>{children}</Helper>
+      </DebugContext.Provider>
     </TabsProvider>
   );
 }
@@ -107,4 +116,15 @@ export function TabButton({ className, children, tabKey }: TabButtonProps) {
       })}
     </div>
   );
+}
+
+export interface TabContentProps {
+  children?: ReactNode;
+  tabKey?: string;
+}
+
+export function TabContent({ children, tabKey }: TabContentProps) {
+  const { tabKey: activeKey } = useTabsContext();
+  const previewAll = useContext(DebugContext);
+  return <>{activeKey === tabKey || previewAll ? children : null}</>;
 }

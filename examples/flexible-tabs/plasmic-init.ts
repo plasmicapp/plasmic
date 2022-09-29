@@ -1,5 +1,10 @@
 import { initPlasmicLoader } from "@plasmicapp/loader-nextjs";
-import { TabButton, TabsContainer, TabUnderline } from "./components/Tabs";
+import {
+  TabButton,
+  TabContent,
+  TabsContainer,
+  TabUnderline,
+} from "./components/Tabs";
 
 export const PLASMIC = initPlasmicLoader({
   projects: [
@@ -31,6 +36,7 @@ PLASMIC.registerComponent(TabsContainer, {
     initialKey: {
       type: "string",
       description: "Key of the initially selected tab",
+      defaultValue: "tab1",
     },
     previewKey: {
       type: "string",
@@ -47,10 +53,16 @@ PLASMIC.registerComponent(TabsContainer, {
               {
                 type: "component",
                 name: "TabButton",
+                props: {
+                  tabKey: "tab1",
+                },
               },
               {
                 type: "component",
                 name: "TabButton",
+                props: {
+                  tabKey: "tab2",
+                },
               },
               {
                 type: "component",
@@ -59,9 +71,35 @@ PLASMIC.registerComponent(TabsContainer, {
             ],
           },
           {
-            type: "text",
-            value:
-              "You can insert tab contents here and update them based on dynamic values.",
+            type: "vbox",
+            children: [
+              {
+                type: "component",
+                name: "TabContent",
+                props: {
+                  tabKey: "tab1",
+                  children: [
+                    {
+                      type: "vbox",
+                      children: ["Some content for tab 1"],
+                    },
+                  ],
+                },
+              },
+              {
+                type: "component",
+                name: "TabContent",
+                props: {
+                  tabKey: "tab2",
+                  children: [
+                    {
+                      type: "vbox",
+                      children: ["Some content for tab 2"],
+                    },
+                  ],
+                },
+              },
+            ],
           },
         ],
       },
@@ -110,5 +148,29 @@ PLASMIC.registerComponent(TabButton, {
   },
   defaultStyles: {
     width: "hug",
+  },
+});
+
+PLASMIC.registerComponent(TabContent, {
+  name: "TabContent",
+  isAttachment: true,
+  props: {
+    tabKey: {
+      type: "string",
+      description: "The answer value selecting this choice sets",
+    },
+    children: {
+      type: "slot",
+      defaultValue: {
+        type: "default-component",
+        kind: "button",
+        props: {
+          children: {
+            type: "text",
+            value: "This is some tab content",
+          },
+        },
+      },
+    },
   },
 });

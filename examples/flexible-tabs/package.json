@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@plasmicapp/loader-nextjs": "^1.0.184",
+    "@plasmicapp/loader-nextjs": "^1.0.185",
     "constate": "^3.3.2",
     "immer": "^9.0.15",
     "next": "12.2.5",

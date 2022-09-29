@@ -149,10 +149,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@plasmicapp/host@1.0.79":
-  version "1.0.79"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.79.tgz#063eac8fcb69f3f8d3d60025a76a3247611c5691"
-  integrity sha512-X4ilSwf4haYzyhznekwAGfH6AJEz6mBgtFI0U/s+D8ykixbrN/tfIEWmedDF/EYIvn5ILhcTDUJ4xQOESvat7w==
+"@plasmicapp/host@1.0.80":
+  version "1.0.80"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.80.tgz#dda0c659adb9879a4709eb42b0f091cceeffbc2d"
+  integrity sha512-93qIwTL4j1gogrLBVU9x2AL6uAB5SL5HmsWeQ/+nq4B1xSBEpmFhuHZmZifKhqf1WYuTchNR5kcfwVBBJjvqqw==
   dependencies:
     window-or-global "^1.0.1"
 
@@ -178,22 +178,22 @@
   dependencies:
     isomorphic-unfetch "^3.1.0"
 
-"@plasmicapp/loader-nextjs@^1.0.184":
-  version "1.0.184"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-nextjs/-/loader-nextjs-1.0.184.tgz#5f2aafdbe71a49d818d478614127b3fbfc42e92f"
-  integrity sha512-Ipg2QOEs096WTHSX4q6QQ6C1TvMNmdR1SueO2+Mrc5c8M3wRUnKt26LBLoMdqA6xSk07YXpWfPsLTOEvJmg/bQ==
+"@plasmicapp/loader-nextjs@^1.0.185":
+  version "1.0.185"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-nextjs/-/loader-nextjs-1.0.185.tgz#c9f875f3873bbe86d2a7b3d2b7a5bf9ec2db1067"
+  integrity sha512-h7Xb4QMMKuYJCUCQ3cl+prnpxaGvNnX47hD/JzhPj/XwaSIgOLHMZ3JmIBVe0Gmm6ox8IvhrYH1H+DX2aapcQQ==
   dependencies:
     "@plasmicapp/loader-core" "1.0.82"
     "@plasmicapp/loader-edge" "1.0.16"
-    "@plasmicapp/loader-react" "1.0.177"
+    "@plasmicapp/loader-react" "1.0.178"
     "@plasmicapp/watcher" "1.0.67"
 
-"@plasmicapp/loader-react@1.0.177":
-  version "1.0.177"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-react/-/loader-react-1.0.177.tgz#facec4faacad69b1fd216520fe92741301b071ea"
-  integrity sha512-kwCklWty6f9RALwTdtVhIw6NTfmynP4ksiN4Y025iinqI17ntw2M4jc/FiXeOnPWDxhiyy2n6V26bc3fFwvKeQ==
+"@plasmicapp/loader-react@1.0.178":
+  version "1.0.178"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-react/-/loader-react-1.0.178.tgz#f27686a13daf544639f530a5518574120e66dc79"
+  integrity sha512-+WK57TRLHCwK8J2RyXpjjpYpu1WsyyiesD+sncAIek2833Z4i/7FqbL/2XSDSdtZJguyYDdhH2HD7H2simmCJg==
   dependencies:
-    "@plasmicapp/host" "1.0.79"
+    "@plasmicapp/host" "1.0.80"
     "@plasmicapp/loader-core" "1.0.82"
     "@plasmicapp/loader-splits" "1.0.15"
     "@plasmicapp/query" "0.1.53"

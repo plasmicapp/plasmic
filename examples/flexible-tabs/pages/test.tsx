@@ -1,7 +1,10 @@
-import { DataCtxReader as Orig } from "@plasmicapp/host";
-import { TabButton, TabsContainer, TabUnderline } from "../components/Tabs";
-
-const DataCtxReader: any = Orig;
+import { DataCtxReader } from "@plasmicapp/host";
+import {
+  TabButton,
+  TabContent,
+  TabsContainer,
+  TabUnderline,
+} from "../components/Tabs";
 
 export default function Page() {
   return (
@@ -39,6 +42,14 @@ export default function Page() {
         }
         `}</style>
         <div>
+          <div>
+            <TabContent tabKey={"a"}>
+              <div>Tab a</div>
+            </TabContent>
+            <TabContent tabKey={"b"}>
+              <div>Tab b</div>
+            </TabContent>
+          </div>
           <DataCtxReader>
             {(ctx: any) => (
               <>
