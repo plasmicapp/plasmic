@@ -11,6 +11,8 @@ import React, {
   useState,
 } from "react";
 
+const noop = () => {};
+
 export interface TabsProviderProps {
   children?: ReactNode;
   initialKey?: string;
@@ -111,9 +113,9 @@ export function TabButton({ className, children, tabKey }: TabButtonProps) {
   const ref = useRef<HTMLDivElement>(null);
   const { tabKey: activeKey, setTabKey, bbox, setBbox } = tabsContext ?? {
     tabKey: undefined,
-    setTabKey: () => {},
+    setTabKey: noop,
     bbox: undefined,
-    setBbox: () => {},
+    setBbox: noop,
   };
   useEffect(() => {
     if (tabKey === activeKey) {
@@ -122,7 +124,7 @@ export function TabButton({ className, children, tabKey }: TabButtonProps) {
         left: ref.current!.offsetLeft,
       });
     }
-  }, [tabsContext, JSON.stringify(bbox), tabKey === activeKey]);
+  }, [ref.current, setBbox, JSON.stringify(bbox), tabKey, activeKey]);
   return (
     <div className={className} ref={ref}>
       {cloneElement(React.Children.toArray(children)[0] as ReactElement, {

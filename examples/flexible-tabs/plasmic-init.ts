@@ -29,8 +29,22 @@ export const PLASMIC = initPlasmicLoader({
 // http://localhost:3000/plasmic-host).  See
 // https://docs.plasmic.app/learn/app-hosting/#set-a-plasmic-project-to-use-your-app-host
 
+function defaultButtonChildren(label: string) {
+  return {
+    type: "default-component",
+    kind: "button",
+    props: {
+      children: {
+        type: "text",
+        value: label,
+      },
+    },
+  } as const;
+}
+
 PLASMIC.registerComponent(TabsContainer, {
   name: "TabsContainer",
+  displayName: "Tabs Container",
   providesData: true,
   props: {
     initialKey: {
@@ -40,7 +54,11 @@ PLASMIC.registerComponent(TabsContainer, {
     },
     previewKey: {
       type: "string",
-      description: "Show this key while editing",
+      description: "Show this key while editing in Plasmic Studio",
+    },
+    previewAll: {
+      type: "boolean",
+      description: "Reveal all tab contents while editing in Plasmic Studio",
     },
     children: {
       type: "slot",
@@ -55,6 +73,7 @@ PLASMIC.registerComponent(TabsContainer, {
                 name: "TabButton",
                 props: {
                   tabKey: "tab1",
+                  children: defaultButtonChildren("Tab 1"),
                 },
               },
               {
@@ -62,6 +81,7 @@ PLASMIC.registerComponent(TabsContainer, {
                 name: "TabButton",
                 props: {
                   tabKey: "tab2",
+                  children: defaultButtonChildren("Tab 2"),
                 },
               },
               {
@@ -113,6 +133,7 @@ PLASMIC.registerComponent(TabsContainer, {
 
 PLASMIC.registerComponent(TabUnderline, {
   name: "TabUnderline",
+  displayName: "Tab Underline",
   props: {
     children: {
       type: "slot",
@@ -126,6 +147,7 @@ PLASMIC.registerComponent(TabUnderline, {
 
 PLASMIC.registerComponent(TabButton, {
   name: "TabButton",
+  displayName: "Tab Button",
   isAttachment: true,
   props: {
     tabKey: {
@@ -134,16 +156,7 @@ PLASMIC.registerComponent(TabButton, {
     },
     children: {
       type: "slot",
-      defaultValue: {
-        type: "default-component",
-        kind: "button",
-        props: {
-          children: {
-            type: "text",
-            value: "Some tab",
-          },
-        },
-      },
+      defaultValue: defaultButtonChildren("Some tab"),
     },
   },
   defaultStyles: {
@@ -153,6 +166,7 @@ PLASMIC.registerComponent(TabButton, {
 
 PLASMIC.registerComponent(TabContent, {
   name: "TabContent",
+  displayName: "Tab Content",
   isAttachment: true,
   props: {
     tabKey: {
@@ -162,13 +176,10 @@ PLASMIC.registerComponent(TabContent, {
     children: {
       type: "slot",
       defaultValue: {
-        type: "default-component",
-        kind: "button",
-        props: {
-          children: {
-            type: "text",
-            value: "This is some tab content",
-          },
+        type: "vbox",
+        children: {
+          type: "text",
+          value: "This is some tab content",
         },
       },
     },
