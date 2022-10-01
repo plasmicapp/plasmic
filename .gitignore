@@ -17,3 +17,4 @@ node_modules/
 .cache
 .idea
 .env
+/.direnv/

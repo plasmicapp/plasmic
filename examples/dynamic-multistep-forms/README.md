@@ -1,3 +1,15 @@
+# Dynamic multi-step form example with Plasmic
+
+This is an example of a dynamic multi-step form with validation.
+
+Links:
+
+- Plasmic project: https://studio.plasmic.app/projects/235aWciVosZstZCfWGvZW3
+- Live published app: https://dynamic-multistep-forms.vercel.app/
+
+See the Forms.tsx file for all the React components that serve as the building blocks of this form.
+Customize and extend these to fit your app, and enable anyone on your team to build similar forms.
+
 This is a Next.js project bootstrapped with [`create-plasmic-app`](https://www.npmjs.com/package/create-plasmic-app).
 
 ## Getting Started
