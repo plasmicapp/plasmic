@@ -33,7 +33,12 @@ function useTabsData({ initialKey }: { initialKey?: string }) {
   };
 }
 
-const [TabsProvider, useTabsContext] = constate(useTabsData);
+const [TabsProvider, useTabsContextUnsafe] = constate(useTabsData);
+
+function useTabsContext() {
+  const result = useTabsContextUnsafe();
+  return "setTabKey" in result ? result : undefined;
+}
 
 export function TabsContainer({
   children,
@@ -51,6 +56,13 @@ export function TabsContainer({
   );
 }
 
+function ensure<T>(x: T | undefined | null) {
+  if (!x) {
+    throw new Error("unexpected nil");
+  }
+  return x;
+}
+
 function Helper({
   children,
   previewKey,
@@ -58,8 +70,8 @@ function Helper({
   previewKey?: string;
   children?: ReactNode;
 }) {
-  const { tabKey } = useTabsContext();
   const inEditor = usePlasmicCanvasContext();
+  const { tabKey } = ensure(useTabsContext());
   const effectiveKey = inEditor ? previewKey || tabKey : tabKey;
   return (
     <DataProvider name={"currentTabKey"} data={effectiveKey}>
@@ -73,8 +85,7 @@ export interface TabUnderlineProps {
 }
 
 export function TabUnderline({ className }: TabUnderlineProps) {
-  const { bbox } = useTabsContext();
-  console.log(bbox);
+  const { bbox } = useTabsContext() ?? { bbox: undefined };
   return bbox ? (
     <div
       className={className}
@@ -96,8 +107,14 @@ export interface TabButtonProps {
 }
 
 export function TabButton({ className, children, tabKey }: TabButtonProps) {
-  const { tabKey: activeKey, setTabKey, bbox, setBbox } = useTabsContext();
+  const tabsContext = useTabsContext();
   const ref = useRef<HTMLDivElement>(null);
+  const { tabKey: activeKey, setTabKey, bbox, setBbox } = tabsContext ?? {
+    tabKey: undefined,
+    setTabKey: () => {},
+    bbox: undefined,
+    setBbox: () => {},
+  };
   useEffect(() => {
     if (tabKey === activeKey) {
       setBbox({
@@ -105,7 +122,7 @@ export function TabButton({ className, children, tabKey }: TabButtonProps) {
         left: ref.current!.offsetLeft,
       });
     }
-  }, [JSON.stringify(bbox), tabKey === activeKey]);
+  }, [tabsContext, JSON.stringify(bbox), tabKey === activeKey]);
   return (
     <div className={className} ref={ref}>
       {cloneElement(React.Children.toArray(children)[0] as ReactElement, {
@@ -124,7 +141,14 @@ export interface TabContentProps {
 }
 
 export function TabContent({ children, tabKey }: TabContentProps) {
-  const { tabKey: activeKey } = useTabsContext();
+  const tabsContext = useTabsContext();
   const previewAll = useContext(DebugContext);
-  return <>{activeKey === tabKey || previewAll ? children : null}</>;
+  const { tabKey: activeKey } = tabsContext ?? { tabKey: undefined };
+  return (
+    <>
+      {tabsContext === undefined || activeKey === tabKey || previewAll
+        ? children
+        : null}
+    </>
+  );
 }
