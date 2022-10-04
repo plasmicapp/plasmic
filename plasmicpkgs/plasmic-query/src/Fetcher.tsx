@@ -157,7 +157,7 @@ function mkFetchProps(
       description: "Request headers (as JSON object) to send",
       defaultValue: {
         "Content-Type": "application/json",
-        "Accept": "application/json",
+        Accept: "application/json",
       },
     },
     queryKey: {
@@ -238,6 +238,7 @@ export const graphqlFetcherMeta: ComponentMeta<GraphqlFetcherProps> = {
       query: {
         type: "code",
         lang: "graphql",
+        headers: (props) => props.headers,
         endpoint: (props) => props.url ?? "",
         defaultValue: {
           query: `{
