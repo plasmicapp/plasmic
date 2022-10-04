@@ -27,6 +27,7 @@
     "packages/loader-splits",
     "packages/loader-svelte",
     "packages/loader-vue",
+    "packages/react-web",
     "packages/watcher",
     "packages/host",
     "packages/preamble",
