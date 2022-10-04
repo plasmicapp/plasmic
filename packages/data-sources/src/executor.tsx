@@ -51,9 +51,9 @@ async function _executePlasmicDataOp<T = any>(
 }
 
 function getConfig<T>(key: string, defaultValue: T) {
-  if (typeof window === 'undefined') {
+  if (typeof globalThis === 'undefined') {
     return defaultValue;
   } else {
-    return (window as any)[key] ?? defaultValue;
+    return (globalThis as any)[key] ?? defaultValue;
   }
 }
