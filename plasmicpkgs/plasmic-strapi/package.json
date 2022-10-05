@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-strapi",
-  "version": "0.1.45",
+  "version": "0.1.46",
   "description": "Plasmic Strapi components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "@plasmicapp/host": "1.0.80",
-    "@plasmicapp/query": "0.1.53",
+    "@plasmicapp/query": "0.1.54",
     "@types/dlv": "^1.1.2",
     "camelcase": "^7.0.0",
     "dlv": "^1.1.3"

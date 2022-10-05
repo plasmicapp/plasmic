@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-cms",
-  "version": "0.0.123",
+  "version": "0.0.124",
   "description": "Plasmic CMS components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -37,7 +37,7 @@
     "typescript": "^4.5.5"
   },
   "dependencies": {
-    "@plasmicapp/query": "0.1.53",
+    "@plasmicapp/query": "0.1.54",
     "dayjs": "^1.10.7"
   },
   "peerDependencies": {

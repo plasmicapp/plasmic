@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/commerce-saleor",
-  "version": "0.0.32",
+  "version": "0.0.33",
   "description": "Plasmic registration calls for saleor commerce provider",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,7 +18,7 @@
     "analyze": "size-limit --why"
   },
   "dependencies": {
-    "@plasmicpkgs/commerce": "0.0.72",
+    "@plasmicpkgs/commerce": "0.0.73",
     "debounce": "^1.2.1"
   },
   "peerDependencies": {
