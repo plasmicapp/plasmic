@@ -24,7 +24,7 @@ export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
   },
   description: `Get your store ID and public storefront API key from the Swell admin UI under Developer > API Keys.
 
-[Watch how to use this integration](https://plasmic-sandbox.swell.store/admin/settings/api).`,
+[Watch how to use this integration](https://www.youtube.com/watch?v=b2mgOTbP2_8).`,
   importPath: "@plasmicpkgs/commerce-swell",
   importName: "CommerceProviderComponent",
 };
