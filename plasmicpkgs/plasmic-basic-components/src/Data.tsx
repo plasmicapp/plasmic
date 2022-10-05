@@ -210,6 +210,7 @@ export const dataProviderMeta: ComponentMeta<DataProviderProps> = {
   displayName: "Data Provider",
   importName: "DataProvider",
   importPath: thisModule,
+  providesData: true,
   // description: "Makes some specified data available to the subtree in a context",
   props: {
     name: {
