@@ -3,6 +3,7 @@ import { mutateAllKeys } from './query-data';
 export {
   PlasmicPrepassContext,
   PlasmicQueryDataProvider,
+  SWRResponse,
   useMutablePlasmicQueryData,
   usePlasmicQueryData,
 } from './query-data';

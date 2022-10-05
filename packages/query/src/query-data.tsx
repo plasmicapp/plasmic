@@ -4,9 +4,12 @@ import useSWR, {
   Key,
   SWRConfig,
   SWRConfiguration,
+  SWRResponse,
   useSWRConfig,
 } from 'swr';
 import { FullConfiguration } from 'swr/dist/types';
+
+export type { SWRResponse } from 'swr';
 
 let __SWRConfig: FullConfiguration | undefined = undefined;
 export const mutateAllKeys = () => {
@@ -80,7 +83,7 @@ export function useMutablePlasmicQueryData<T, E>(
   key: Key,
   fetcher: Fetcher<T>,
   options?: SWRConfiguration<T, E>
-) {
+): SWRResponse<T, E> {
   const prepassCtx = React.useContext(PrepassContext);
 
   const opts = {

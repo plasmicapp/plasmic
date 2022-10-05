@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "@seznam/compose-react-refs": "^1.0.6",
+    "antd": "^4.23.4",
     "react-slick": "^0.28.1",
     "slick-carousel": "^1.8.1"
   },
