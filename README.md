@@ -262,6 +262,13 @@ Then kill and restart the verdaccio server:
 verdaccio &
 ```
 
+Finally, in order to publish, you may be required to have a user login.
+Create this one-time in your Verdaccio--it doesn't matter what user/password/email you input:
+
+```
+npm --registry=http://localhost:4873 adduser
+```
+
 ### Development workflow
 
 1. Make some changes!
@@ -279,9 +286,10 @@ You can publish an individual package with, for instance:
 ```
 cd plasmicpkgs/SOMETHING
 yarn publish --registry=http://localhost:4873
+# Or with more options: yarn publish --canary --yes --include-merged-tags --no-git-tag-version --no-push --registry=http://localhost:4873 --force-publish
 ```
 
-As a hack, you can also temporarily edit `package.json` to list just the desired project + dependencies, if you need to develop/test across multiple.
+As a hack, you can also temporarily edit `package.json` to list just the desired project + dependencies in `workspaces`, if you need to develop/test across multiple packages.
 
 As an alternative to verdaccio, you can also use `yalc`.
 Your mileage may vary.
