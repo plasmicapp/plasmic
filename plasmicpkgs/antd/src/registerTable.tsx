@@ -39,6 +39,13 @@ export function TableValue(props: TableValueProps) {
   return <div className={className}>{column?.toString() ?? ""}</div>;
 }
 
+/**
+ * Wrapper used to consume internal canvas props
+ */
+function ColumnWrapper(props: { children: React.ReactNode }) {
+  return props.children as React.ReactElement | null;
+}
+
 export interface TableWrapperProps {
   className?: string;
   items: Array<any>;
@@ -68,7 +75,7 @@ export function TableWrapper(props: TableWrapperProps) {
           return undefined;
         }
 
-        const { columnTemplate, title, dataIndex } = column.props;
+        const { columnTemplate, title, dataIndex, ...rest } = column.props;
 
         const columnDefinition = {
           columnIndex,
@@ -80,7 +87,10 @@ export function TableWrapper(props: TableWrapperProps) {
               <DataProvider name="currentRow" data={record}>
                 <DataProvider name="currentRowIndex" data={rowIndex}>
                   <DataProvider name="currentColumn" data={value}>
-                    {repeatedElement(rowIndex, columnTemplate)}
+                    {repeatedElement(
+                      rowIndex,
+                      <ColumnWrapper {...rest}>{columnTemplate}</ColumnWrapper>
+                    )}
                   </DataProvider>
                 </DataProvider>
               </DataProvider>
