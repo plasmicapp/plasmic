@@ -153,7 +153,7 @@ export const tableMeta: ComponentMeta<TableWrapperProps> = {
       allowedComponents: ["AntdTableColumn"],
       defaultValue: Object.keys(DEFAULT_ITEMS[0]).map((columnName) => ({
         type: "component",
-        name: "PlasmicAntDesignTableColumn",
+        name: "AntdTableColumn",
         props: {
           title: capitalize(columnName),
           dataIndex: columnName,
