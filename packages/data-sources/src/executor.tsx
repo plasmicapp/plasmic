@@ -8,10 +8,17 @@ export interface DataOp {
   userArgs?: Record<string, any>;
 }
 
+export interface Pagination {
+  pageSize: number;
+  pageIndex: number;
+}
+
 export async function executePlasmicDataOp<T = any>(
   op: DataOp,
   opts?: {
     userAuthToken?: string;
+    includeSchema?: boolean;
+    paginate?: Pagination;
   }
 ) {
   const func = getConfig(
@@ -25,6 +32,8 @@ async function _executePlasmicDataOp<T = any>(
   op: DataOp,
   opts?: {
     userAuthToken?: string;
+    includeSchema?: boolean;
+    paginate?: Pagination;
   }
 ) {
   const host = getConfig('__PLASMIC_DATA_HOST', DEFAULT_HOST);
@@ -41,6 +50,8 @@ async function _executePlasmicDataOp<T = any>(
     body: JSON.stringify({
       opId: op.opId,
       userArgs: op.userArgs ?? {},
+      includeSchema: opts?.includeSchema,
+      paginate: opts?.paginate,
     }),
   });
   if (resp.status !== 200) {
