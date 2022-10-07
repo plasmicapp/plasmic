@@ -7,9 +7,18 @@ export function Fetcher(props: {
   dataOp?: DataOp;
   name?: string;
   children?: React.ReactNode;
+  includeSchema?: boolean;
+  pageIndex?: number;
+  pageSize?: number;
 }) {
-  const { dataOp, children, name } = props;
-  const { data, error } = usePlasmicDataOp(dataOp);
+  const { dataOp, children, name, includeSchema, pageIndex, pageSize } = props;
+  const { data, error } = usePlasmicDataOp(dataOp, {
+    includeSchema,
+    ...(!!pageIndex &&
+      !!pageSize && {
+        paginate: { pageIndex, pageSize },
+      }),
+  });
   return (
     <DataProvider name={name ?? 'data'} data={data}>
       {error || data?.error ? (
