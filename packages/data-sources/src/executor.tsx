@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-unfetch';
+import { Pagination } from './types';
 
 const DEFAULT_HOST = 'https://studio.plasmic.app';
 
@@ -6,11 +7,6 @@ export interface DataOp {
   sourceId: string;
   opId: string;
   userArgs?: Record<string, any>;
-}
-
-export interface Pagination {
-  pageSize: number;
-  pageIndex: number;
 }
 
 export async function executePlasmicDataOp<T = any>(

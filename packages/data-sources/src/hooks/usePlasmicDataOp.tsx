@@ -1,7 +1,8 @@
 import { usePlasmicDataSourceContext } from '@plasmicapp/data-sources-context';
 import { useMutablePlasmicQueryData } from '@plasmicapp/query';
 import React from 'react';
-import { DataOp, executePlasmicDataOp, Pagination } from '../executor';
+import { DataOp, executePlasmicDataOp } from '../executor';
+import { Pagination } from '../types';
 
 export function usePlasmicDataOp<T = any, E = any>(
   dataOp: DataOp | undefined,
