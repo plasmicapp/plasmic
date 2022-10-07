@@ -121,7 +121,7 @@ export function DataFetcher(props: DataFetcherProps) {
   const { url, method, body, headers, queryKey } = props;
   const fetchProps: FetchProps = { url, method, body, headers };
   const result = usePlasmicQueryData(
-    queryKey ?? JSON.stringify({ type: "DataFetcher", ...fetchProps }),
+    queryKey || JSON.stringify({ type: "DataFetcher", ...fetchProps }),
     () => performFetch(fetchProps)
   );
   return <GenericFetcherShell result={result} {...props} />;
@@ -221,7 +221,7 @@ export function GraphqlFetcher(props: GraphqlFetcherProps) {
     headers,
   };
   const result = usePlasmicQueryData(
-    queryKey ?? JSON.stringify({ type: "GraphqlFetcher", ...fetchProps }),
+    queryKey || JSON.stringify({ type: "GraphqlFetcher", ...fetchProps }),
     () => performFetch(fetchProps)
   );
   return <GenericFetcherShell result={result} {...props} />;
