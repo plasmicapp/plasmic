@@ -2,7 +2,7 @@ export function notNil<T>(x: T | undefined | null): x is T {
   return x != null;
 }
 
-export function pick<T>(
+export function pick<T extends {}>(
   obj: T,
   ...keys: (string | number | symbol)[]
 ): Partial<T> {
@@ -18,7 +18,7 @@ export function pick<T>(
   return res as Partial<T>;
 }
 
-export function pickBy<T>(
+export function pickBy<T extends {}>(
   obj: T,
   func: (key: string, val: any) => boolean
 ): Partial<T> {
@@ -31,7 +31,7 @@ export function pickBy<T>(
   return res as Partial<T>;
 }
 
-export function omit<T>(obj: T, ...keys: (keyof T)[]): Partial<T> {
+export function omit<T extends {}>(obj: T, ...keys: (keyof T)[]): Partial<T> {
   if (Object.keys(obj).length === 0) {
     return obj;
   }
