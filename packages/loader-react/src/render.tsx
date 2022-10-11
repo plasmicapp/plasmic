@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ReactDOMServer from 'react-dom/server';
+import { renderToString as reactRenderToString } from 'react-dom/server';
 import { ComponentRenderData, PlasmicComponentLoader } from './loader';
 import { PlasmicComponent } from './PlasmicComponent';
 import { GlobalVariantSpec, PlasmicRootProvider } from './PlasmicRootProvider';
@@ -35,7 +35,7 @@ export function renderToString(
   } = {}
 ) {
   const element = makeElement(loader, lookup, opts);
-  return ReactDOMServer.renderToString(element);
+  return reactRenderToString(element);
 }
 
 export async function extractPlasmicQueryDataFromElement(
