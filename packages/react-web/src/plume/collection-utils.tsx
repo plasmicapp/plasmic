@@ -55,9 +55,9 @@
  * to only support the composite-component pattern for now for simplicity.
  */
 
+import { Item, Section } from "@react-stately/collections";
 import { Node } from "@react-types/shared";
 import React from "react";
-import { Item, Section } from "@react-stately/collections";
 import { isString } from "../common";
 import { getElementTypeName, toChildArray } from "../react-utils";
 import { getPlumeType, PLUME_STRICT_MODE } from "./plume-utils";
@@ -184,7 +184,10 @@ export function deriveItemsFromChildren<T extends React.ReactElement>(
     return toChildArray(children).flatMap((child) => {
       if (React.isValidElement(child)) {
         if (child.type === React.Fragment) {
-          return flattenedChildren(child.props.children);
+          return flattenedChildren(
+            (child as React.ReactElement<{ children: React.ReactNode }>).props
+              .children
+          );
         }
         const type = getPlumeType(child);
         if (type === itemPlumeType) {
