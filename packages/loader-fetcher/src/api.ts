@@ -29,6 +29,7 @@ export interface PageMetadata {
   title?: string | null;
   description?: string | null;
   openGraphImageUrl?: string | null;
+  canonical?: string | null;
 }
 
 export interface GlobalGroupMeta {
