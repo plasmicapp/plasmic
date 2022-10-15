@@ -1,16 +1,16 @@
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
 import {
+  Breadcrumb,
   BreadcrumbItem,
   BreadcrumbItemProps,
   BreadcrumbLink,
   BreadcrumbLinkProps,
-  Breadcrumb,
   BreadcrumbProps,
   BreadcrumbSeparator,
   BreadcrumbSeparatorProps,
 } from "@chakra-ui/react";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
 
 export const breadcrumbItemMeta: ComponentMeta<BreadcrumbItemProps> = {
@@ -175,21 +175,20 @@ export function registerBreadcrumb(
   doRegisterComponent(Breadcrumb, customBreadcrumbMeta ?? breadcrumbMeta);
 }
 
-export const breadcrumbSeparatorMeta: ComponentMeta<BreadcrumbSeparatorProps> =
-  {
-    name: "BreadcrumbSeparator",
-    importPath: "@chakra-ui/react",
-    parentComponentName: "Breadcrumb",
-    props: {
-      children: {
-        type: "slot",
-        defaultValue: {
-          type: "text",
-          value: "/",
-        },
+export const breadcrumbSeparatorMeta: ComponentMeta<BreadcrumbSeparatorProps> = {
+  name: "BreadcrumbSeparator",
+  importPath: "@chakra-ui/react",
+  parentComponentName: "Breadcrumb",
+  props: {
+    children: {
+      type: "slot",
+      defaultValue: {
+        type: "text",
+        value: "/",
       },
     },
-  };
+  },
+};
 
 export function registerBreadcrumbSeparator(
   loader?: Registerable,

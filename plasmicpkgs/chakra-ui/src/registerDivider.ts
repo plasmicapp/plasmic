@@ -1,10 +1,10 @@
+import { Divider, DividerProps } from "@chakra-ui/react";
 import registerComponent, {
-    ComponentMeta,
-  } from "@plasmicapp/host/registerComponent";
-  import { Divider, DividerProps } from "@chakra-ui/react";
-  import { Registerable } from "./registerable";
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
+import { Registerable } from "./registerable";
 
-export const dividerMeta: ComponentMeta<DividerProps>={
+export const dividerMeta: ComponentMeta<DividerProps> = {
   name: "Divider",
   importPath: "@chakra-ui/react",
   props: {
@@ -19,10 +19,11 @@ export const dividerMeta: ComponentMeta<DividerProps>={
   },
 };
 
-  export function registerDivider(loader?: Registerable,  customDividerMeta?: ComponentMeta<DividerProps>
-    ) {
-    const doRegisterComponent: typeof registerComponent = (...args) =>
-      loader ? loader.registerComponent(...args) : registerComponent(...args);
-      doRegisterComponent(Divider, customDividerMeta ?? dividerMeta);
-  }
-  
+export function registerDivider(
+  loader?: Registerable,
+  customDividerMeta?: ComponentMeta<DividerProps>
+) {
+  const doRegisterComponent: typeof registerComponent = (...args) =>
+    loader ? loader.registerComponent(...args) : registerComponent(...args);
+  doRegisterComponent(Divider, customDividerMeta ?? dividerMeta);
+}

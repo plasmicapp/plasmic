@@ -1,7 +1,7 @@
+import { Text, TextProps } from "@chakra-ui/react";
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { Text, TextProps } from "@chakra-ui/react";
 import { Registerable } from "./registerable";
 
 export const textMeta: ComponentMeta<TextProps> = {

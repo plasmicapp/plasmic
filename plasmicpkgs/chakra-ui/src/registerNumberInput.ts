@@ -1,17 +1,18 @@
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
 import {
-  NumberInput,
-  NumberInputProps,
-  NumberInputStepper,
-  NumberInputStepperProps,
   NumberDecrementStepper,
   NumberDecrementStepperProps,
   NumberIncrementStepper,
   NumberIncrementStepperProps,
-  NumberInputField, NumberInputFieldProps
+  NumberInput,
+  NumberInputField,
+  NumberInputFieldProps,
+  NumberInputProps,
+  NumberInputStepper,
+  NumberInputStepperProps,
 } from "@chakra-ui/react";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
 
 export const numberInputMeta: ComponentMeta<NumberInputProps> = {
@@ -137,13 +138,12 @@ export function registerNumberInputStepper(
   );
 }
 
-export const numberDecrementStepperMeta: ComponentMeta<NumberDecrementStepperProps> =
-  {
-    name: "NumberDecrementStepper",
-    importPath: "@chakra-ui/react",
-    parentComponentName: "NumberInputStepper",
-    props: {},
-  };
+export const numberDecrementStepperMeta: ComponentMeta<NumberDecrementStepperProps> = {
+  name: "NumberDecrementStepper",
+  importPath: "@chakra-ui/react",
+  parentComponentName: "NumberInputStepper",
+  props: {},
+};
 
 export function registerNumberDecrementStepper(
   loader?: Registerable,
@@ -157,13 +157,12 @@ export function registerNumberDecrementStepper(
   );
 }
 
-export const numberIncrementStepperMeta: ComponentMeta<NumberIncrementStepperProps> =
-  {
-    name: "NumberIncrementStepper",
-    importPath: "@chakra-ui/react",
-    parentComponentName: "NumberInputStepper",
-    props: {},
-  };
+export const numberIncrementStepperMeta: ComponentMeta<NumberIncrementStepperProps> = {
+  name: "NumberIncrementStepper",
+  importPath: "@chakra-ui/react",
+  parentComponentName: "NumberInputStepper",
+  props: {},
+};
 
 export function registerNumberIncrementStepper(
   loader?: Registerable,
@@ -177,18 +176,21 @@ export function registerNumberIncrementStepper(
   );
 }
 
-
-export const numberInputFieldMeta: ComponentMeta<NumberInputFieldProps>={
+export const numberInputFieldMeta: ComponentMeta<NumberInputFieldProps> = {
   name: "NumberInputField",
   importPath: "@chakra-ui/react",
   parentComponentName: "NumberInput",
   props: {},
 };
 
-  export function registerNumberInputField(loader?: Registerable,  customNumberInputFieldMeta?: ComponentMeta<NumberInputFieldProps>
-    ) {
-    const doRegisterComponent: typeof registerComponent = (...args) =>
-      loader ? loader.registerComponent(...args) : registerComponent(...args);
-      doRegisterComponent(NumberInputField, customNumberInputFieldMeta ?? numberInputFieldMeta);
-  }
-  
+export function registerNumberInputField(
+  loader?: Registerable,
+  customNumberInputFieldMeta?: ComponentMeta<NumberInputFieldProps>
+) {
+  const doRegisterComponent: typeof registerComponent = (...args) =>
+    loader ? loader.registerComponent(...args) : registerComponent(...args);
+  doRegisterComponent(
+    NumberInputField,
+    customNumberInputFieldMeta ?? numberInputFieldMeta
+  );
+}

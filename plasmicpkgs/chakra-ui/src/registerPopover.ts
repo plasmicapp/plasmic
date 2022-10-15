@@ -230,10 +230,6 @@ export function registerPopoverBody(
   doRegisterComponent(PopoverBody, customPopoverBodyMeta ?? popoverBodyMeta);
 }
 
-interface PopoverTriggerProps {
-  children: React.ReactNode;
-}
-
 export const popoverTriggerMeta: ComponentMeta<PopoverTriggerProps> = {
   name: "PopoverTrigger",
   importPath: "@chakra-ui/react",
@@ -255,6 +251,9 @@ export const popoverTriggerMeta: ComponentMeta<PopoverTriggerProps> = {
   },
 };
 
+export interface PopoverTriggerProps {
+  children: React.ReactNode;
+}
 export function registerPopoverTrigger(
   loader?: Registerable,
   customPopoverTriggerMeta?: ComponentMeta<PopoverTriggerProps>

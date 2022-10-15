@@ -1,12 +1,12 @@
+import {
+  Checkbox,
+  CheckboxGroup,
+  CheckboxGroupProps,
+  CheckboxProps,
+} from "@chakra-ui/react";
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import {
-  Checkbox,
-  CheckboxProps,
-  CheckboxGroup,
-  CheckboxGroupProps,
-} from "@chakra-ui/react";
 import { Registerable } from "./registerable";
 
 export const checkboxMeta: ComponentMeta<CheckboxProps> = {

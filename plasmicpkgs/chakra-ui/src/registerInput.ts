@@ -1,10 +1,10 @@
+import { Input, InputProps } from "@chakra-ui/react";
 import registerComponent, {
-    ComponentMeta,
-  } from "@plasmicapp/host/registerComponent";
-  import { Input, InputProps } from "@chakra-ui/react";
-  import { Registerable } from "./registerable";
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
+import { Registerable } from "./registerable";
 
-export const inputMeta: ComponentMeta<InputProps>={
+export const inputMeta: ComponentMeta<InputProps> = {
   name: "Input",
   importPath: "@chakra-ui/react",
   props: {
@@ -39,10 +39,11 @@ export const inputMeta: ComponentMeta<InputProps>={
   },
 };
 
-  export function registerInput(loader?: Registerable,  customInputMeta?: ComponentMeta<InputProps>
-    ) {
-    const doRegisterComponent: typeof registerComponent = (...args) =>
-      loader ? loader.registerComponent(...args) : registerComponent(...args);
-      doRegisterComponent(Input, customInputMeta ?? inputMeta);
-  }
-  
+export function registerInput(
+  loader?: Registerable,
+  customInputMeta?: ComponentMeta<InputProps>
+) {
+  const doRegisterComponent: typeof registerComponent = (...args) =>
+    loader ? loader.registerComponent(...args) : registerComponent(...args);
+  doRegisterComponent(Input, customInputMeta ?? inputMeta);
+}

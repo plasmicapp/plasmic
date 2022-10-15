@@ -1,14 +1,13 @@
-import { Switch, SwitchProps } from "@chakra-ui/react";
+import { Progress, ProgressProps } from "@chakra-ui/react";
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
 
-export const switchMeta: ComponentMeta<SwitchProps> = {
-  name: "Switch",
+export const progressMeta: ComponentMeta<ProgressProps> = {
+  name: "Progress",
   importPath: "@chakra-ui/react",
   props: {
-    isChecked: "boolean",
     colorScheme: {
       type: "choice",
       options: [
@@ -35,26 +34,37 @@ export const switchMeta: ComponentMeta<SwitchProps> = {
     },
     size: {
       type: "choice",
-      options: ["sm", "md", "lg"],
+      options: ["xs", "sm", "md", "lg"],
       defaultValue: "md",
     },
-    spacing: {
-      type: "string",
-      defaultValue: "0.5rem",
+    max: {
+      type: "number",
+      defaultValue: 100,
     },
-    id: "string",
-    isDisabled: "boolean",
-    isInvalid: "boolean",
-    isReadOnly: "boolean",
-    isRequired: "boolean",
+    min: {
+      type: "number",
+      defaultValue: 0,
+    },
+    value: "number",
+
+    isIndeterminate: {
+      type: "boolean",
+    },
+    hasStripe: {
+      type: "boolean",
+    },
+    isAnimated: {
+      type: "boolean",
+      hidden: (props) => !props.hasStripe,
+    },
   },
 };
 
-export function registerSwitch(
+export function registerProgress(
   loader?: Registerable,
-  customSwitchMeta?: ComponentMeta<SwitchProps>
+  customProgressMeta?: ComponentMeta<ProgressProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Switch, customSwitchMeta ?? switchMeta);
+  doRegisterComponent(Progress, customProgressMeta ?? progressMeta);
 }

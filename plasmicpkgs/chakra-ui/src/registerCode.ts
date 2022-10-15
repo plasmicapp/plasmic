@@ -1,7 +1,7 @@
+import { Code, CodeProps } from "@chakra-ui/react";
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { Code, CodeProps } from "@chakra-ui/react";
 import { Registerable } from "./registerable";
 
 export const codeMeta: ComponentMeta<CodeProps> = {

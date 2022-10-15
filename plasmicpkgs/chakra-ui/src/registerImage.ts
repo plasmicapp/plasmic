@@ -1,7 +1,7 @@
+import { Image, ImageProps } from "@chakra-ui/react";
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { Image, ImageProps } from "@chakra-ui/react";
 import { Registerable } from "./registerable";
 
 export const imageMeta: ComponentMeta<ImageProps> = {
