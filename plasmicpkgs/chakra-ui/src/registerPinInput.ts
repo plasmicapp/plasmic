@@ -1,10 +1,15 @@
+import {
+  PinInput,
+  PinInputField,
+  PinInputFieldProps,
+  PinInputProps,
+} from "@chakra-ui/react";
 import registerComponent, {
-    ComponentMeta,
-  } from "@plasmicapp/host/registerComponent";
-  import { PinInput, PinInputProps,PinInputField, PinInputFieldProps } from "@chakra-ui/react";
-  import { Registerable } from "./registerable";
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
+import { Registerable } from "./registerable";
 
-export const pinInputMeta: ComponentMeta<PinInputProps>={
+export const pinInputMeta: ComponentMeta<PinInputProps> = {
   name: "PinInput",
   importPath: "@chakra-ui/react",
   props: {
@@ -79,25 +84,30 @@ export const pinInputMeta: ComponentMeta<PinInputProps>={
   },
 };
 
-  export function registerPinInput(loader?: Registerable,  customPinInputMeta?: ComponentMeta<PinInputProps>
-    ) {
-    const doRegisterComponent: typeof registerComponent = (...args) =>
-      loader ? loader.registerComponent(...args) : registerComponent(...args);
-      doRegisterComponent(PinInput, customPinInputMeta ?? pinInputMeta);
-  }
+export function registerPinInput(
+  loader?: Registerable,
+  customPinInputMeta?: ComponentMeta<PinInputProps>
+) {
+  const doRegisterComponent: typeof registerComponent = (...args) =>
+    loader ? loader.registerComponent(...args) : registerComponent(...args);
+  doRegisterComponent(PinInput, customPinInputMeta ?? pinInputMeta);
+}
 
-
-export const pinInputFieldMeta: ComponentMeta<PinInputFieldProps>={
+export const pinInputFieldMeta: ComponentMeta<PinInputFieldProps> = {
   name: "PinInputField",
   importPath: "@chakra-ui/react",
   parentComponentName: "PinInput",
   props: {},
 };
 
-  export function registerPinInputField(loader?: Registerable,  customPinInputFieldMeta?: ComponentMeta<PinInputFieldProps>
-    ) {
-    const doRegisterComponent: typeof registerComponent = (...args) =>
-      loader ? loader.registerComponent(...args) : registerComponent(...args);
-      doRegisterComponent(PinInputField, customPinInputFieldMeta ?? pinInputFieldMeta);
-  }
-  
+export function registerPinInputField(
+  loader?: Registerable,
+  customPinInputFieldMeta?: ComponentMeta<PinInputFieldProps>
+) {
+  const doRegisterComponent: typeof registerComponent = (...args) =>
+    loader ? loader.registerComponent(...args) : registerComponent(...args);
+  doRegisterComponent(
+    PinInputField,
+    customPinInputFieldMeta ?? pinInputFieldMeta
+  );
+}

@@ -1,12 +1,12 @@
+import {
+  Button,
+  ButtonGroup,
+  ButtonGroupProps,
+  ButtonProps,
+} from "@chakra-ui/react";
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import {
-  ButtonGroup,
-  ButtonGroupProps,
-  Button,
-  ButtonProps,
-} from "@chakra-ui/react";
 import { Registerable } from "./registerable";
 
 export const buttonGroupMeta: ComponentMeta<ButtonGroupProps> = {

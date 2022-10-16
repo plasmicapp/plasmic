@@ -49,6 +49,7 @@ import {
   registerTableContainer,
   registerTbody,
   registerTd,
+  registerTfoot,
   registerTh,
   registerThead,
   registerTr,
@@ -63,20 +64,54 @@ import {
 
 import { registerText } from "./registerText";
 
+import { registerHighlight } from "./registerHighlight";
+
+import { registerHeading } from "./registerHeading";
+
+import { registerToast } from "./registerToast";
+
+import { registerTooltip } from "./registerTooltip";
+
+import {
+  registerAccordion,
+  registerAccordionButton,
+  registerAccordionIcon,
+  registerAccordionItem,
+  registerAccordionPanel,
+} from "./registerAccordion";
+import {
+  registerAvatar,
+  registerAvatarBadge,
+  registerAvatarGroup,
+} from "./registerAvatar";
+import {
+  registerFormControl,
+  registerFormErrorMessage,
+  registerFormHelperText,
+  registerFormLabel,
+} from "./registerFormControl";
+import { registerProgress } from "./registerProgress";
+
 export * from "./registerable";
+export * from "./registerAccordion";
 export * from "./registerAspectRatio";
+export * from "./registerAvatar";
 export * from "./registerBadge";
 export * from "./registerBreadcrumb";
 export * from "./registerButton";
 export * from "./registerCheckBox";
 export * from "./registerCode";
 export * from "./registerDivider";
+export * from "./registerFormControl";
+export * from "./registerHeading";
+export * from "./registerHighlight";
 export * from "./registerImage";
 export * from "./registerInput";
 export * from "./registerKbd";
 export * from "./registerNumberInput";
 export * from "./registerPinInput";
 export * from "./registerPopover";
+export * from "./registerProgress";
 export * from "./registerRadio";
 export * from "./registerSelect";
 export * from "./registerStat";
@@ -84,6 +119,8 @@ export * from "./registerSwitch";
 export * from "./registerTable";
 export * from "./registerTabs";
 export * from "./registerText";
+export * from "./registerToast";
+export * from "./registerTooltip";
 
 export function registerAll(loader?: Registerable) {
   registerAspectRatio(loader);
@@ -139,4 +176,22 @@ export function registerAll(loader?: Registerable) {
   registerTabPanels(loader);
   registerTabPanel(loader);
   registerText(loader);
+  registerTfoot(loader);
+  registerHighlight(loader);
+  registerHeading(loader);
+  registerToast(loader);
+  registerTooltip(loader);
+  registerAvatarBadge(loader);
+  registerAvatar(loader);
+  registerAvatarGroup(loader);
+  registerAccordion(loader);
+  registerAccordionItem(loader);
+  registerAccordionButton(loader);
+  registerAccordionPanel(loader);
+  registerAccordionIcon(loader);
+  registerFormControl(loader);
+  registerFormLabel(loader);
+  registerFormHelperText(loader);
+  registerFormErrorMessage(loader);
+  registerProgress(loader);
 }

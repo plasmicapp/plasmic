@@ -1,18 +1,18 @@
+import {
+  Stat,
+  StatArrow,
+  StatArrowProps,
+  StatHelpText,
+  StatHelpTextProps,
+  StatLabel,
+  StatLabelProps,
+  StatNumber,
+  StatNumberProps,
+  StatProps,
+} from "@chakra-ui/react";
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import {
-  Stat,
-  StatProps,
-  StatHelpText,
-  StatHelpTextProps,
-  StatArrow,
-  StatArrowProps,
-  StatNumber,
-  StatNumberProps,
-  StatLabel,
-  StatLabelProps,
-} from "@chakra-ui/react";
 import { Registerable } from "./registerable";
 
 export const statMeta: ComponentMeta<StatProps> = {

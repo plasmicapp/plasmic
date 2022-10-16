@@ -1,18 +1,18 @@
+import {
+  Tab,
+  TabList,
+  TabListProps,
+  TabPanel,
+  TabPanelProps,
+  TabPanels,
+  TabPanelsProps,
+  TabProps,
+  Tabs,
+  TabsProps,
+} from "@chakra-ui/react";
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import {
-  TabList,
-  TabListProps,
-  Tabs,
-  TabsProps,
-  Tab,
-  TabProps,
-  TabPanels,
-  TabPanelsProps,
-  TabPanel,
-  TabPanelProps,
-} from "@chakra-ui/react";
 import { Registerable } from "./registerable";
 
 export const tabListMeta: ComponentMeta<TabListProps> = {

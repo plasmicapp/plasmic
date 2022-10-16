@@ -1,12 +1,12 @@
+import {
+  Radio,
+  RadioGroup,
+  RadioGroupProps,
+  RadioProps,
+} from "@chakra-ui/react";
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import {
-  RadioGroup,
-  RadioGroupProps,
-  Radio,
-  RadioProps,
-} from "@chakra-ui/react";
 import { Registerable } from "./registerable";
 
 export const radioGroupMeta: ComponentMeta<RadioGroupProps> = {

@@ -7,11 +7,13 @@ import {
   TableColumnHeaderProps,
   TableContainer,
   TableContainerProps,
+  TableFooterProps,
   TableHeadProps,
   TableProps,
   TableRowProps,
   Tbody,
   Td,
+  Tfoot,
   Th,
   Thead,
   Tr,
@@ -348,4 +350,44 @@ export function registerTableContainer(
     TableContainer,
     customTableContainerMeta ?? tableContainerMeta
   );
+}
+
+export const tfootMeta: ComponentMeta<TableFooterProps> = {
+  name: "Tfoot",
+  importPath: "@chakra-ui/react",
+  parentComponentName: "Table",
+  props: {
+    children: {
+      type: "slot",
+      defaultValue: [
+        {
+          type: "component",
+          name: "Tr",
+          props: {
+            children: [
+              {
+                type: "component",
+                name: "Th",
+                props: {
+                  children: {
+                    type: "text",
+                    value: "Name",
+                  },
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
+  },
+};
+
+export function registerTfoot(
+  loader?: Registerable,
+  customTfootMeta?: ComponentMeta<TableFooterProps>
+) {
+  const doRegisterComponent: typeof registerComponent = (...args) =>
+    loader ? loader.registerComponent(...args) : registerComponent(...args);
+  doRegisterComponent(Tfoot, customTfootMeta ?? tfootMeta);
 }

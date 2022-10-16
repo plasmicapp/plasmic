@@ -1,7 +1,7 @@
+import { AspectRatio, AspectRatioProps } from "@chakra-ui/react";
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { AspectRatio, AspectRatioProps } from "@chakra-ui/react";
 import { Registerable } from "./registerable";
 
 export const aspectRatioMeta: ComponentMeta<AspectRatioProps> = {
