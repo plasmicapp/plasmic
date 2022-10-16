@@ -1,7 +1,7 @@
 import registerComponent, {
     ComponentMeta,
   } from "@plasmicapp/host/registerComponent";
-  import { Popover, PopoverProps,PopoverContent, PopoverContentProps,PopoverArrow, PopoverArrowProps,PopoverCloseButton, PopoverCloseButtonProps,PopoverHeader, PopoverHeaderProps,PopoverBody, PopoverBodyProps,PopoverTrigger, PopoverTriggerProps } from "@chakra-ui/react";
+  import { Popover, PopoverProps,PopoverContent, PopoverContentProps,PopoverArrow, PopoverArrowProps,PopoverCloseButton, PopoverCloseButtonProps,PopoverHeader, PopoverHeaderProps,PopoverBody, PopoverBodyProps,PopoverTrigger } from "@chakra-ui/react";
   import { Registerable } from "./registerable";
 
 export const popoverMeta: ComponentMeta<PopoverProps>={
@@ -214,7 +214,7 @@ export const popoverBodyMeta: ComponentMeta<PopoverBodyProps>={
 
 
 
-export const popoverTriggerMeta: ComponentMeta<PopoverTriggerProps>={
+export const popoverTriggerMeta={
   name: "PopoverTrigger",
   importPath: "@chakra-ui/react",
   parentComponentName: "Popover",
@@ -235,7 +235,7 @@ export const popoverTriggerMeta: ComponentMeta<PopoverTriggerProps>={
   },
 };
 
-  export function registerPopoverTrigger(loader?: Registerable,  customPopoverTriggerMeta?: ComponentMeta<PopoverTriggerProps>
+  export function registerPopoverTrigger(loader?: Registerable,  customPopoverTriggerMeta?:any
     ) {
     const doRegisterComponent: typeof registerComponent = (...args) =>
       loader ? loader.registerComponent(...args) : registerComponent(...args);

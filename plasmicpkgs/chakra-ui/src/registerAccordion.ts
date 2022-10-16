@@ -1,7 +1,7 @@
 import registerComponent, {
     ComponentMeta,
   } from "@plasmicapp/host/registerComponent";
-  import { Accordion, AccordionProps,AccordionItem, AccordionItemProps,AccordionButton, AccordionButtonProps,AccordionPanel, AccordionPanelProps,AccordionIcon, AccordionIconProps} from "@chakra-ui/react";
+  import { Accordion, AccordionProps,AccordionItem, AccordionItemProps,AccordionButton, AccordionButtonProps,AccordionPanel, AccordionPanelProps,AccordionIcon, IconProps} from "@chakra-ui/react";
   import { Registerable } from "./registerable";
 
 export const accordionMeta: ComponentMeta<AccordionProps>={
@@ -163,14 +163,14 @@ export const accordionPanelMeta: ComponentMeta<AccordionPanelProps>={
 
 
 
-export const accordionIconMeta: ComponentMeta<AccordionIconProps>={
+export const accordionIconMeta: ComponentMeta<IconProps>={
   name: "AccordionIcon",
   importPath: "@chakra-ui/react",
   parentComponentName: "AccordionButton",
   props: {},
 };
 
-  export function registerAccordionIcon(loader?: Registerable,  customAccordionIconMeta?: ComponentMeta<AccordionIconProps>
+  export function registerAccordionIcon(loader?: Registerable,  customAccordionIconMeta?: ComponentMeta<IconProps>
     ) {
     const doRegisterComponent: typeof registerComponent = (...args) =>
       loader ? loader.registerComponent(...args) : registerComponent(...args);

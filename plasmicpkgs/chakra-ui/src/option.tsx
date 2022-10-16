@@ -18,9 +18,9 @@ export function Option({
 
 interface RootProps extends Omit<HTMLChakraProps<"div">, "color"> {}
 
-export interface OptionProps {
-  /**
-   * Props to forward to the root `div` element
-   */
+export interface OptionProps extends RootProps {
+  value:string;
+  className?:string;
+  children:any;
   rootProps?: RootProps;
 }

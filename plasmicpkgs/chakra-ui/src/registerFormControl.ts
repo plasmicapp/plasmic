@@ -1,7 +1,7 @@
 import registerComponent, {
     ComponentMeta,
   } from "@plasmicapp/host/registerComponent";
-  import { FormControl, FormControlProps,FormLabel, FormLabelProps,FormHelperText, FormHelperTextProps,FormErrorMessage, FormErrorMessageProps } from "@chakra-ui/react";
+  import { FormControl, FormControlProps,FormLabel, FormLabelProps,FormHelperText, HelpTextProps,FormErrorMessage, FormErrorMessageProps } from "@chakra-ui/react";
   import { Registerable } from "./registerable";
 
 export const formControlMeta: ComponentMeta<FormControlProps>={
@@ -66,7 +66,7 @@ export const formLabelMeta: ComponentMeta<FormLabelProps>={
   }
   
  
-export const formHelperTextMeta: ComponentMeta<FormHelperTextProps>={
+export const formHelperTextMeta: ComponentMeta<HelpTextProps>={
   name: "FormHelperText",
   importPath: "@chakra-ui/react",
   parentComponentName: "FormControl",
@@ -81,7 +81,7 @@ export const formHelperTextMeta: ComponentMeta<FormHelperTextProps>={
   },
 };
 
-  export function registerFormHelperText(loader?: Registerable,  customFormHelperTextMeta?: ComponentMeta<FormHelperTextProps>
+  export function registerFormHelperText(loader?: Registerable,  customFormHelperTextMeta?: ComponentMeta<HelpTextProps>
     ) {
     const doRegisterComponent: typeof registerComponent = (...args) =>
       loader ? loader.registerComponent(...args) : registerComponent(...args);

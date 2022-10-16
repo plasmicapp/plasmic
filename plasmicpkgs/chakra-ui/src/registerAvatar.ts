@@ -1,10 +1,17 @@
 import registerComponent, {
-    ComponentMeta,
-  } from "@plasmicapp/host/registerComponent";
-  import { AvatarBadge, AvatarBadgeProps,Avatar, AvatarProps,AvatarGroup, AvatarGroupProps } from "@chakra-ui/react";
-  import { Registerable } from "./registerable";
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
+import {
+  AvatarBadge,
+  AvatarBadgeProps,
+  Avatar,
+  AvatarProps,
+  AvatarGroup,
+  AvatarGroupProps,
+} from "@chakra-ui/react";
+import { Registerable } from "./registerable";
 
-export const avatarBadgeMeta: ComponentMeta<AvatarBadgeProps>={
+export const avatarBadgeMeta: ComponentMeta<AvatarBadgeProps> = {
   name: "AvatarBadge",
   importPath: "@chakra-ui/react",
   parentComponentName: "Avatar",
@@ -21,16 +28,16 @@ export const avatarBadgeMeta: ComponentMeta<AvatarBadgeProps>={
   },
 };
 
-  export function registerAvatarBadge(loader?: Registerable,  customAvatarBadgeMeta?: ComponentMeta<AvatarBadgeProps>
-    ) {
-    const doRegisterComponent: typeof registerComponent = (...args) =>
-      loader ? loader.registerComponent(...args) : registerComponent(...args);
-      doRegisterComponent(AvatarBadge, customAvatarBadgeMeta ?? avatarBadgeMeta);
-  }
-  
+export function registerAvatarBadge(
+  loader?: Registerable,
+  customAvatarBadgeMeta?: ComponentMeta<AvatarBadgeProps>
+) {
+  const doRegisterComponent: typeof registerComponent = (...args) =>
+    loader ? loader.registerComponent(...args) : registerComponent(...args);
+  doRegisterComponent(AvatarBadge, customAvatarBadgeMeta ?? avatarBadgeMeta);
+}
 
-
-export const avatarMeta: ComponentMeta<AvatarProps>={
+export const avatarMeta: ComponentMeta<AvatarProps> = {
   name: "Avatar",
   importPath: "@chakra-ui/react",
   parentComponentName: "AvatarGroup",
@@ -56,21 +63,26 @@ export const avatarMeta: ComponentMeta<AvatarProps>={
       type: "slot",
       hidePlaceholder: true,
       allowedComponents: ["AvatarBadge"],
-      name: "Badge",
+      defaultValue: [
+        {
+          type: "component",
+          name: "AvatarBadge",
+        },
+      ],
     },
   },
 };
 
-  export function registerAvatar(loader?: Registerable,  customAvatarMeta?: ComponentMeta<AvatarProps>
-    ) {
-    const doRegisterComponent: typeof registerComponent = (...args) =>
-      loader ? loader.registerComponent(...args) : registerComponent(...args);
-      doRegisterComponent(Avatar, customAvatarMeta ?? avatarMeta);
-  }
-  
+export function registerAvatar(
+  loader?: Registerable,
+  customAvatarMeta?: ComponentMeta<AvatarProps>
+) {
+  const doRegisterComponent: typeof registerComponent = (...args) =>
+    loader ? loader.registerComponent(...args) : registerComponent(...args);
+  doRegisterComponent(Avatar, customAvatarMeta ?? avatarMeta);
+}
 
-
-export const avatarGroupMeta: ComponentMeta<AvatarGroupProps>={
+export const avatarGroupMeta: ComponentMeta<AvatarGroupProps> = {
   name: "AvatarGroup",
   importPath: "@chakra-ui/react",
   props: {
@@ -151,10 +163,11 @@ export const avatarGroupMeta: ComponentMeta<AvatarGroupProps>={
   },
 };
 
-  export function registerAvatarGroup(loader?: Registerable,  customAvatarGroupMeta?: ComponentMeta<AvatarGroupProps>
-    ) {
-    const doRegisterComponent: typeof registerComponent = (...args) =>
-      loader ? loader.registerComponent(...args) : registerComponent(...args);
-      doRegisterComponent(AvatarGroup, customAvatarGroupMeta ?? avatarGroupMeta);
-  }
-  
+export function registerAvatarGroup(
+  loader?: Registerable,
+  customAvatarGroupMeta?: ComponentMeta<AvatarGroupProps>
+) {
+  const doRegisterComponent: typeof registerComponent = (...args) =>
+    loader ? loader.registerComponent(...args) : registerComponent(...args);
+  doRegisterComponent(AvatarGroup, customAvatarGroupMeta ?? avatarGroupMeta);
+}

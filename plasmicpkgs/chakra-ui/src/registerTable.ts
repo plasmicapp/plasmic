@@ -7,16 +7,17 @@ import {
   TableCaption,
   TableCaptionProps,
   Thead,
-  TheadProps,
+  TableHeadProps,
   Tbody,
-  TbodyProps,
+  TableBodyProps,
   Tr,
-  TrProps,
+  TableRowProps,
   Td,
-  TdProps,
+  TableCellProps,
   Th,
-  ThProps,
-  Tfoot, TfootProps,
+  TableColumnHeaderProps,
+  Tfoot, 
+  TableFooterProps,
   TableContainer,
   TableContainerProps,
 } from "@chakra-ui/react";
@@ -105,7 +106,7 @@ export function registerTableCaption(
   doRegisterComponent(TableCaption, customTableCaptionMeta ?? tableCaptionMeta);
 }
 
-export const theadMeta: ComponentMeta<TheadProps> = {
+export const theadMeta: ComponentMeta<TableHeadProps> = {
   name: "Thead",
   importPath: "@chakra-ui/react",
   parentComponentName: "Table",
@@ -119,14 +120,14 @@ export const theadMeta: ComponentMeta<TheadProps> = {
 
 export function registerThead(
   loader?: Registerable,
-  customTheadMeta?: ComponentMeta<TheadProps>
+  customTheadMeta?: ComponentMeta<TableHeadProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
   doRegisterComponent(Thead, customTheadMeta ?? theadMeta);
 }
 
-export const tbodyMeta: ComponentMeta<TbodyProps> = {
+export const tbodyMeta: ComponentMeta<TableBodyProps> = {
   name: "Tbody",
   importPath: "@chakra-ui/react",
   parentComponentName: "Table",
@@ -140,14 +141,14 @@ export const tbodyMeta: ComponentMeta<TbodyProps> = {
 
 export function registerTbody(
   loader?: Registerable,
-  customTbodyMeta?: ComponentMeta<TbodyProps>
+  customTbodyMeta?: ComponentMeta<TableBodyProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
   doRegisterComponent(Tbody, customTbodyMeta ?? tbodyMeta);
 }
 
-export const trMeta: ComponentMeta<TrProps> = {
+export const trMeta: ComponentMeta<TableRowProps> = {
   name: "Tr",
   importPath: "@chakra-ui/react",
   parentComponentName: "Table",
@@ -161,14 +162,14 @@ export const trMeta: ComponentMeta<TrProps> = {
 
 export function registerTr(
   loader?: Registerable,
-  customTrMeta?: ComponentMeta<TrProps>
+  customTrMeta?: ComponentMeta<TableRowProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
   doRegisterComponent(Tr, customTrMeta ?? trMeta);
 }
 
-export const tdMeta: ComponentMeta<TdProps> = {
+export const tdMeta: ComponentMeta<TableCellProps> = {
   name: "Td",
   importPath: "@chakra-ui/react",
   parentComponentName: "Tr",
@@ -186,14 +187,14 @@ export const tdMeta: ComponentMeta<TdProps> = {
 
 export function registerTd(
   loader?: Registerable,
-  customTdMeta?: ComponentMeta<TdProps>
+  customTdMeta?: ComponentMeta<TableCellProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
   doRegisterComponent(Td, customTdMeta ?? tdMeta);
 }
 
-export const thMeta: ComponentMeta<ThProps> = {
+export const thMeta: ComponentMeta<TableColumnHeaderProps> = {
   name: "Th",
   importPath: "@chakra-ui/react",
   parentComponentName: "Tr",
@@ -211,7 +212,7 @@ export const thMeta: ComponentMeta<ThProps> = {
 
 export function registerTh(
   loader?: Registerable,
-  customThMeta?: ComponentMeta<ThProps>
+  customThMeta?: ComponentMeta<TableColumnHeaderProps>
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
@@ -353,7 +354,7 @@ export function registerTableContainer(
 
 
 
-export const tfootMeta: ComponentMeta<TfootProps>={
+export const tfootMeta: ComponentMeta<TableFooterProps>={
 name: "Tfoot",
 importPath: "@chakra-ui/react",
 parentComponentName: "Table",
@@ -384,7 +385,7 @@ props: {
 },
 };
 
-export function registerTfoot(loader?: Registerable,  customTfootMeta?: ComponentMeta<TfootProps>
+export function registerTfoot(loader?: Registerable,  customTfootMeta?: ComponentMeta<TableFooterProps>
   ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
