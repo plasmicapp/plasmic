@@ -1,9 +1,11 @@
 import {
   initPlasmicLoader,
-  PlasmicComponent,
+  PlasmicCanvasHost,
   PlasmicRootProvider,
 } from "@plasmicapp/loader-react";
-import * as React from "React";
+import * as React from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Homepage } from "./Homepage";
 
 const LOADER = initPlasmicLoader({
   projects: [
@@ -18,10 +20,12 @@ const LOADER = initPlasmicLoader({
 export function App() {
   return (
     <PlasmicRootProvider loader={LOADER}>
-      <PlasmicComponent
-        component="Homepage"
-        componentProps={{ title: "Minimal React app" }}
-      />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Homepage />} />
+          <Route path="/plasmic-host" element={<PlasmicCanvasHost />} />
+        </Routes>
+      </BrowserRouter>
     </PlasmicRootProvider>
   );
 }
