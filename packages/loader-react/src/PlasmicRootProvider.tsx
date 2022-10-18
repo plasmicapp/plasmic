@@ -176,6 +176,9 @@ export function PlasmicRootProvider(props: {
     });
   }, [loader, variation]);
 
+  // @ts-ignore
+  const { user, userAuthToken } = props;
+
   const value = React.useMemo<PlasmicRootContextValue>(
     () => ({
       globalVariants: mergeGlobalVariantsSpec(
@@ -187,6 +190,8 @@ export function PlasmicRootProvider(props: {
       variation,
       translator,
       Head,
+      user,
+      userAuthToken,
     }),
     [
       globalVariants,
@@ -196,6 +201,8 @@ export function PlasmicRootProvider(props: {
       splits,
       translator,
       Head,
+      user,
+      userAuthToken,
     ]
   );
 
