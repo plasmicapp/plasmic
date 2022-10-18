@@ -1,5 +1,5 @@
 {
-  "version": "0.1.6",
+  "version": "0.1.7",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -58,7 +58,7 @@
     "typescript": "^4.5.4"
   },
   "dependencies": {
-    "@plasmicapp/data-sources-context": "0.1.1",
+    "@plasmicapp/data-sources-context": "0.1.2",
     "@plasmicapp/host": "1.0.80",
     "@plasmicapp/query": "0.1.54",
     "isomorphic-unfetch": "^3.1.0"
