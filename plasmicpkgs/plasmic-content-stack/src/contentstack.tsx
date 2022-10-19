@@ -275,23 +275,25 @@ export function ContentStackFetcher({
   );
 
   const { data: entriesData } = usePlasmicQueryData<any | null>(
-    contentType && fetchType === 'all' ? `${cacheKey}/${contentType}/entries${
+    contentType ? `${cacheKey}/${contentType}/entries` + (fetchType === 'all' ? `${
       limit ? "/limit/" + limit : ''
     }${
       order && orderBy ? "/order/" + orderBy + (ascending ? '/ascending' : '') : ''
     }${
       filter && filterField && filterType && filterValue ? `/filter/${filterField}/${filterType}/${filterValue}` : ''
-    }` : null,
+    }` : '') : null,
     async () => {
       let Query = Stack.ContentType(`${contentType!}`).Query();
-      if (filter && filterField && filterType && filterValue) {
-        Query = Query[filterType](filterField, filterValue);
-      }
-      if (order && orderBy){
-        Query = Query[ascending ? 'ascending' : 'descending'](orderBy);
-      }
-      if (limit){
-        Query = Query.limit(limit);
+      if(fetchType === 'all'){
+        if (filter && filterField && filterType && filterValue) {
+          Query = Query[filterType](filterField, filterValue);
+        }
+        if (order && orderBy){
+          Query = Query[ascending ? 'ascending' : 'descending'](orderBy);
+        }
+        if (limit){
+          Query = Query.limit(limit);
+        }
       }
       return await Query.toJSON().find();
     }
@@ -314,7 +316,8 @@ export function ContentStackFetcher({
   }
 
   let renderedData;
-  if (contentType && entryUID) {
+  if (contentType && fetchType === 'single') {
+    if (!entryUID) return <div>Please select an entry</div>;
     renderedData = (
       <DataProvider name={"contentstackItem"} data={entryData} hidden={true}>
         <DataProvider name={makeDataProviderName(contentType)} data={entryData}>
@@ -322,7 +325,7 @@ export function ContentStackFetcher({
         </DataProvider>
       </DataProvider>
     );
-  } else if (contentType && !entryUID) {
+  } else if (contentType && fetchType === 'all') {
     const entries = entriesData?.flat();
     renderedData = entries?.map((item: any, index: number) => (
       <DataProvider
