@@ -154,14 +154,25 @@ export type JSONLikeType<P> =
   | ({
       type: "dataSource";
       dataSource: "airtable" | "cms";
-    } & PropTypeBase<P>)
+    } & PropTypeBase<P>);
+
+type DataPickerValueType = string | number | (string | number)[];
+
+export type DataPickerType<P> =
   | ({
       type: "dataSelector";
       data:
         | Record<string, any>
         | ContextDependentConfig<P, Record<string, any>>;
       alwaysShowValuePathAsLabel?: boolean;
-    } & DefaultValueOrExpr<P, Record<string, any>> &
+    } & DefaultValueOrExpr<P, DataPickerValueType> &
+      PropTypeBase<P>)
+  | ({
+      type: "exprEditor";
+      data:
+        | Record<string, any>
+        | ContextDependentConfig<P, Record<string, any>>;
+    } & DefaultValueOrExpr<P, DataPickerValueType> &
       PropTypeBase<P>);
 
 interface ChoiceTypeBase<P> extends PropTypeBase<P> {
@@ -304,6 +315,7 @@ export type PropType<P> =
       | ImageUrlType<P>
       | CustomType<P>
       | GraphQLType<P>
+      | DataPickerType<P>
     >
   | SlotType<P>;
 
@@ -314,11 +326,16 @@ type RestrictPropType<T, P> = T extends string
       | JSONLikeType<P>
       | ImageUrlType<P>
       | CustomType<P>
+      | DataPickerType<P>
     >
   : T extends boolean
-  ? SupportControlled<BooleanType<P> | JSONLikeType<P> | CustomType<P>>
+  ? SupportControlled<
+      BooleanType<P> | JSONLikeType<P> | CustomType<P> | DataPickerType<P>
+    >
   : T extends number
-  ? SupportControlled<NumberType<P> | JSONLikeType<P> | CustomType<P>>
+  ? SupportControlled<
+      NumberType<P> | JSONLikeType<P> | CustomType<P> | DataPickerType<P>
+    >
   : PropType<P>;
 
 export interface ActionProps<P> {
