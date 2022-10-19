@@ -52,3 +52,5 @@ export function set(obj: any, keys: any, val: any) {
     }
   }
 }
+
+export { get };
