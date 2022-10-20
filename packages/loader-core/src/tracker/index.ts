@@ -34,9 +34,9 @@ export interface TrackRenderOptions {
   variation?: Record<string, string>;
 }
 
-const API_ENDPOINT = 'https://posthog.plasmic.app/capture';
+const API_ENDPOINT = 'https://analytics.plasmic.app/capture';
 const API_PUBLIC_KEY = 'phc_BRvYTAoMoam9fDHfrIneF67KdtMJagLVVCM6ELNYd4n';
-const TRACKER_VERSION = 2;
+const TRACKER_VERSION = 3;
 
 export class PlasmicTracker {
   private eventQueue: Event[] = [];
