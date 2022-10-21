@@ -2,7 +2,7 @@ import { Select, SelectProps } from "@chakra-ui/react";
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { Option } from "./option";
+import React from "react";
 import { Registerable } from "./registerable";
 
 export const selectMeta: ComponentMeta<SelectProps> = {
@@ -85,15 +85,24 @@ export function registerSelect(
   doRegisterComponent(Select, customSelectMeta ?? selectMeta);
 }
 
-interface OptionProps {
+export interface OptionProps {
   value: string;
   className?: string;
   children: any;
 }
 
+export function Option(props: OptionProps) {
+  const { value, className, children } = props;
+  return (
+    <option className={className} value={value}>
+      {children}
+    </option>
+  );
+}
+
 export const optionMeta: ComponentMeta<OptionProps> = {
   name: "Option",
-  importPath: "./components/option",
+  importPath: "@plasmicpkgs/plasmic-chakra-ui",
   parentComponentName: "Select",
   props: {
     value: "string",
