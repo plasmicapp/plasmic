@@ -41,7 +41,6 @@
     "dayjs": "^1.10.7"
   },
   "peerDependencies": {
-    "@plasmicapp/host": "^1.0.54",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
   }
