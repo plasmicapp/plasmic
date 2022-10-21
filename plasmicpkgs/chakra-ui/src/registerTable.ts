@@ -22,11 +22,13 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
+import {
+  getComponentNameAndImportMeta,
+  getPlasmicComponentName,
+} from "./utils";
 
 export const tableMeta: ComponentMeta<TableProps> = {
-  name: "Table",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "TableContainer",
+  ...getComponentNameAndImportMeta("Table", "TableContainer"),
   props: {
     colorScheme: {
       type: "choice",
@@ -78,9 +80,7 @@ export function registerTable(
 }
 
 export const tableCaptionMeta: ComponentMeta<TableCaptionProps> = {
-  name: "TableCaption",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "Table",
+  ...getComponentNameAndImportMeta("TableCaption", "Table"),
   props: {
     placement: {
       type: "choice",
@@ -107,13 +107,14 @@ export function registerTableCaption(
 }
 
 export const theadMeta: ComponentMeta<TableHeadProps> = {
-  name: "Thead",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "Table",
+  ...getComponentNameAndImportMeta("Thead", "Table"),
   props: {
     children: {
       type: "slot",
-      allowedComponents: ["Th", "Tr"],
+      allowedComponents: [
+        getPlasmicComponentName("Th"),
+        getPlasmicComponentName("Tr"),
+      ],
     },
   },
 };
@@ -128,13 +129,14 @@ export function registerThead(
 }
 
 export const tbodyMeta: ComponentMeta<TableBodyProps> = {
-  name: "Tbody",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "Table",
+  ...getComponentNameAndImportMeta("Tbody", "Table"),
   props: {
     children: {
       type: "slot",
-      allowedComponents: ["Td", "Tr"],
+      allowedComponents: [
+        getPlasmicComponentName("Td"),
+        getPlasmicComponentName("Tr"),
+      ],
     },
   },
 };
@@ -149,13 +151,14 @@ export function registerTbody(
 }
 
 export const trMeta: ComponentMeta<TableRowProps> = {
-  name: "Tr",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "Table",
+  ...getComponentNameAndImportMeta("Tr", "Table"),
   props: {
     children: {
       type: "slot",
-      allowedComponents: ["Td", "Th"],
+      allowedComponents: [
+        getPlasmicComponentName("Td"),
+        getPlasmicComponentName("Th"),
+      ],
     },
   },
 };
@@ -170,9 +173,7 @@ export function registerTr(
 }
 
 export const tdMeta: ComponentMeta<TableCellProps> = {
-  name: "Td",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "Tr",
+  ...getComponentNameAndImportMeta("Td", "Tr"),
   props: {
     isNumeric: "boolean",
     children: {
@@ -195,9 +196,7 @@ export function registerTd(
 }
 
 export const thMeta: ComponentMeta<TableColumnHeaderProps> = {
-  name: "Th",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "Tr",
+  ...getComponentNameAndImportMeta("Th", "Tr"),
   props: {
     isNumeric: "boolean",
     children: {
@@ -220,8 +219,7 @@ export function registerTh(
 }
 
 export const tableContainerMeta: ComponentMeta<TableContainerProps> = {
-  name: "TableContainer",
-  importPath: "@chakra-ui/react",
+  ...getComponentNameAndImportMeta("TableContainer"),
   props: {
     overflowX: {
       type: "choice",
@@ -237,24 +235,24 @@ export const tableContainerMeta: ComponentMeta<TableContainerProps> = {
     },
     children: {
       type: "slot",
-      allowedComponents: ["Table"],
+      allowedComponents: [getPlasmicComponentName("Table")],
       defaultValue: {
         type: "component",
-        name: "Table",
+        name: getPlasmicComponentName("Table"),
         props: {
           children: [
             {
               type: "component",
-              name: "Thead",
+              name: getPlasmicComponentName("Thead"),
               props: {
                 children: {
                   type: "component",
-                  name: "Tr",
+                  name: getPlasmicComponentName("Tr"),
                   props: {
                     children: [
                       {
                         type: "component",
-                        name: "Th",
+                        name: getPlasmicComponentName("Th"),
                         props: {
                           children: {
                             type: "text",
@@ -264,7 +262,7 @@ export const tableContainerMeta: ComponentMeta<TableContainerProps> = {
                       },
                       {
                         type: "component",
-                        name: "Th",
+                        name: getPlasmicComponentName("Th"),
                         props: {
                           children: {
                             type: "text",
@@ -274,7 +272,7 @@ export const tableContainerMeta: ComponentMeta<TableContainerProps> = {
                       },
                       {
                         type: "component",
-                        name: "Th",
+                        name: getPlasmicComponentName("Th"),
                         props: {
                           children: {
                             type: "text",
@@ -289,17 +287,17 @@ export const tableContainerMeta: ComponentMeta<TableContainerProps> = {
             },
             {
               type: "component",
-              name: "Tbody",
+              name: getPlasmicComponentName("Tbody"),
               props: {
                 children: [
                   {
                     type: "component",
-                    name: "Tr",
+                    name: getPlasmicComponentName("Tr"),
                     props: {
                       children: [
                         {
                           type: "component",
-                          name: "Td",
+                          name: getPlasmicComponentName("Td"),
                           props: {
                             children: {
                               type: "text",
@@ -309,7 +307,7 @@ export const tableContainerMeta: ComponentMeta<TableContainerProps> = {
                         },
                         {
                           type: "component",
-                          name: "Td",
+                          name: getPlasmicComponentName("Td"),
                           props: {
                             children: {
                               type: "text",
@@ -319,7 +317,7 @@ export const tableContainerMeta: ComponentMeta<TableContainerProps> = {
                         },
                         {
                           type: "component",
-                          name: "Td",
+                          name: getPlasmicComponentName("Td"),
                           props: {
                             children: {
                               type: "text",
@@ -353,21 +351,19 @@ export function registerTableContainer(
 }
 
 export const tfootMeta: ComponentMeta<TableFooterProps> = {
-  name: "Tfoot",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "Table",
+  ...getComponentNameAndImportMeta("Tfoot", "Table"),
   props: {
     children: {
       type: "slot",
       defaultValue: [
         {
           type: "component",
-          name: "Tr",
+          name: getPlasmicComponentName("Tr"),
           props: {
             children: [
               {
                 type: "component",
-                name: "Th",
+                name: getPlasmicComponentName("Th"),
                 props: {
                   children: {
                     type: "text",

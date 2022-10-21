@@ -3,10 +3,10 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
+import { getComponentNameAndImportMeta } from "./utils";
 
 export const highlightMeta: ComponentMeta<HighlightProps> = {
-  name: "Highlight",
-  importPath: "@chakra-ui/react",
+  ...getComponentNameAndImportMeta("Highlight"),
   props: {
     children: {
       displayName: "text",

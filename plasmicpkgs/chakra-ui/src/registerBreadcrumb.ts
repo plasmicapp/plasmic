@@ -12,11 +12,13 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
+import {
+  getComponentNameAndImportMeta,
+  getPlasmicComponentName,
+} from "./utils";
 
 export const breadcrumbItemMeta: ComponentMeta<BreadcrumbItemProps> = {
-  name: "BreadcrumbItem",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "Breadcrumb",
+  ...getComponentNameAndImportMeta("BreadcrumbItem", "Breadcrumb"),
   props: {
     isCurrentPage: {
       type: "boolean",
@@ -37,7 +39,7 @@ export const breadcrumbItemMeta: ComponentMeta<BreadcrumbItemProps> = {
       defaultValue: [
         {
           type: "component",
-          name: "BreadcrumbLink",
+          name: getPlasmicComponentName("BreadcrumbLink"),
           props: {
             children: {
               type: "text",
@@ -63,10 +65,7 @@ export function registerBreadcrumbItem(
 }
 
 export const breadcrumbLinkMeta: ComponentMeta<BreadcrumbLinkProps> = {
-  name: "BreadcrumbLink",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "BreadcrumbItem",
-
+  ...getComponentNameAndImportMeta("BreadcrumbLink", "BreadcrumbItem"),
   props: {
     href: {
       type: "string",
@@ -97,8 +96,7 @@ export function registerBreadcrumbLink(
 }
 
 export const breadcrumbMeta: ComponentMeta<BreadcrumbProps> = {
-  name: "Breadcrumb",
-  importPath: "@chakra-ui/react",
+  ...getComponentNameAndImportMeta("Breadcrumb"),
   props: {
     separator: {
       type: "string",
@@ -113,11 +111,11 @@ export const breadcrumbMeta: ComponentMeta<BreadcrumbProps> = {
       defaultValue: [
         {
           type: "component",
-          name: "BreadcrumbItem",
+          name: getPlasmicComponentName("BreadcrumbItem"),
           props: {
             children: {
               type: "component",
-              name: "BreadcrumbLink",
+              name: getPlasmicComponentName("BreadcrumbLink"),
               props: {
                 children: {
                   type: "text",
@@ -129,11 +127,11 @@ export const breadcrumbMeta: ComponentMeta<BreadcrumbProps> = {
         },
         {
           type: "component",
-          name: "BreadcrumbItem",
+          name: getPlasmicComponentName("BreadcrumbItem"),
           props: {
             children: {
               type: "component",
-              name: "BreadcrumbLink",
+              name: getPlasmicComponentName("BreadcrumbLink"),
               props: {
                 children: {
                   type: "text",
@@ -145,13 +143,13 @@ export const breadcrumbMeta: ComponentMeta<BreadcrumbProps> = {
         },
         {
           type: "component",
-          name: "BreadcrumbItem",
+          name: getPlasmicComponentName("BreadcrumbItem"),
           props: {
             isLastChild: true,
             isCurrentPage: true,
             children: {
               type: "component",
-              name: "BreadcrumbLink",
+              name: getPlasmicComponentName("BreadcrumbLink"),
               props: {
                 children: {
                   type: "text",
@@ -176,9 +174,7 @@ export function registerBreadcrumb(
 }
 
 export const breadcrumbSeparatorMeta: ComponentMeta<BreadcrumbSeparatorProps> = {
-  name: "BreadcrumbSeparator",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "Breadcrumb",
+  ...getComponentNameAndImportMeta("BreadcrumbSeparator", "Breadcrumb"),
   props: {
     children: {
       type: "slot",

@@ -3,10 +3,10 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
+import { getComponentNameAndImportMeta } from "./utils";
 
 export const imageMeta: ComponentMeta<ImageProps> = {
-  name: "Image",
-  importPath: "@chakra-ui/react",
+  ...getComponentNameAndImportMeta("Image"),
   props: {
     src: {
       type: "string",

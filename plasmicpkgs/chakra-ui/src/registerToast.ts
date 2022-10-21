@@ -3,10 +3,10 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
+import { getComponentNameAndImportMeta } from "./utils";
 
 export const toastMeta: ComponentMeta<ToastProps> = {
-  name: "Toast",
-  importPath: "@chakra-ui/react",
+  ...getComponentNameAndImportMeta("Toast"),
   props: {
     title: {
       type: "string",

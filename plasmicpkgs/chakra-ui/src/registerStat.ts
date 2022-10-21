@@ -14,27 +14,30 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
+import {
+  getComponentNameAndImportMeta,
+  getPlasmicComponentName,
+} from "./utils";
 
 export const statMeta: ComponentMeta<StatProps> = {
-  name: "Stat",
-  importPath: "@chakra-ui/react",
+  ...getComponentNameAndImportMeta("Stat"),
   props: {
     children: {
       type: "slot",
       defaultValue: [
         {
           type: "component",
-          name: "StatLabel",
+          name: getPlasmicComponentName("StatLabel"),
           props: { children: { type: "text", value: "Collected Fees" } },
         },
         {
           type: "component",
-          name: "StatNumber",
+          name: getPlasmicComponentName("StatNumber"),
           props: { children: { type: "text", value: "£345,670" } },
         },
         {
           type: "component",
-          name: "StatHelpText",
+          name: getPlasmicComponentName("StatHelpText"),
           props: {
             children: {
               type: "hbox",
@@ -45,7 +48,7 @@ export const statMeta: ComponentMeta<StatProps> = {
               children: [
                 {
                   type: "component",
-                  name: "StatArrow",
+                  name: getPlasmicComponentName("StatArrow"),
                   props: { type: "increase" },
                 },
                 { type: "text", value: "Last 7 days" },
@@ -68,9 +71,7 @@ export function registerStat(
 }
 
 export const statHelpTextMeta: ComponentMeta<StatHelpTextProps> = {
-  name: "StatHelpText",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "Stat",
+  ...getComponentNameAndImportMeta("StatHelpText", "Stat"),
   props: {
     children: {
       type: "slot",
@@ -94,9 +95,7 @@ export function registerStatHelpText(
 }
 
 export const statArrowMeta: ComponentMeta<StatArrowProps> = {
-  name: "StatArrow",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "Stat",
+  ...getComponentNameAndImportMeta("StatArrow", "Stat"),
   props: {
     type: {
       type: "choice",
@@ -115,9 +114,7 @@ export function registerStatArrow(
 }
 
 export const statNumberMeta: ComponentMeta<StatNumberProps> = {
-  name: "StatNumber",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "Stat",
+  ...getComponentNameAndImportMeta("StatNumber", "Stat"),
   props: {
     children: {
       type: "slot",
@@ -141,9 +138,7 @@ export function registerStatNumber(
 }
 
 export const statLabelMeta: ComponentMeta<StatLabelProps> = {
-  name: "StatLabel",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "Stat",
+  ...getComponentNameAndImportMeta("StatLabel", "Stat"),
   props: {
     children: {
       type: "slot",

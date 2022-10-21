@@ -3,16 +3,19 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
+import {
+  getComponentNameAndImportMeta,
+  getPlasmicComponentName,
+} from "./utils";
 
 export const tooltipMeta: ComponentMeta<TooltipProps> = {
-  name: "Tooltip",
-  importPath: "@chakra-ui/react",
+  ...getComponentNameAndImportMeta("Tooltip"),
   props: {
     children: {
       type: "slot",
       defaultValue: {
         type: "component",
-        name: "Button",
+        name: getPlasmicComponentName("Button"),
         props: {
           children: {
             type: "text",

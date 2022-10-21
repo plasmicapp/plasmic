@@ -3,10 +3,10 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
+import { getComponentNameAndImportMeta } from "./utils";
 
 export const switchMeta: ComponentMeta<SwitchProps> = {
-  name: "Switch",
-  importPath: "@chakra-ui/react",
+  ...getComponentNameAndImportMeta("Switch"),
   props: {
     isChecked: "boolean",
     colorScheme: {

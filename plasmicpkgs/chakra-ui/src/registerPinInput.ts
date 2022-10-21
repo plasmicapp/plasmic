@@ -8,10 +8,13 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
+import {
+  getComponentNameAndImportMeta,
+  getPlasmicComponentName,
+} from "./utils";
 
 export const pinInputMeta: ComponentMeta<PinInputProps> = {
-  name: "PinInput",
-  importPath: "@chakra-ui/react",
+  ...getComponentNameAndImportMeta("PinInput"),
   props: {
     size: {
       type: "choice",
@@ -61,23 +64,23 @@ export const pinInputMeta: ComponentMeta<PinInputProps> = {
 
     children: {
       type: "slot",
-      allowedComponents: ["PintInputField"],
+      allowedComponents: [getPlasmicComponentName("PinInputField")],
       defaultValue: [
         {
           type: "component",
-          name: "PinInputField",
+          name: getPlasmicComponentName("PinInputField"),
         },
         {
           type: "component",
-          name: "PinInputField",
+          name: getPlasmicComponentName("PinInputField"),
         },
         {
           type: "component",
-          name: "PinInputField",
+          name: getPlasmicComponentName("PinInputField"),
         },
         {
           type: "component",
-          name: "PinInputField",
+          name: getPlasmicComponentName("PinInputField"),
         },
       ],
     },
@@ -94,9 +97,7 @@ export function registerPinInput(
 }
 
 export const pinInputFieldMeta: ComponentMeta<PinInputFieldProps> = {
-  name: "PinInputField",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "PinInput",
+  ...getComponentNameAndImportMeta("PinInputField", "PinInput"),
   props: {},
 };
 

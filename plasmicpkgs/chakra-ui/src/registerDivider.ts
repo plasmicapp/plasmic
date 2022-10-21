@@ -3,10 +3,10 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
+import { getComponentNameAndImportMeta } from "./utils";
 
 export const dividerMeta: ComponentMeta<DividerProps> = {
-  name: "Divider",
-  importPath: "@chakra-ui/react",
+  ...getComponentNameAndImportMeta("Divider"),
   props: {
     orientation: {
       type: "choice",

@@ -3,11 +3,12 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
+import { getComponentNameAndImportMeta } from "./utils";
 
 export const kbdMeta: ComponentMeta<KbdProps> = {
-  name: "Kbd",
-  importPath: "@chakra-ui/react",
-  displayName: "Keyboard Key",
+  ...getComponentNameAndImportMeta("Kbd", undefined, {
+    displayName: "Chakra-UI Keyboard Key",
+  }),
   props: {
     children: {
       type: "slot",

@@ -8,11 +8,13 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
+import {
+  getComponentNameAndImportMeta,
+  getPlasmicComponentName,
+} from "./utils";
 
 export const checkboxMeta: ComponentMeta<CheckboxProps> = {
-  name: "Checkbox",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "CheckboxGroup",
+  ...getComponentNameAndImportMeta("Checkbox", "CheckboxGroup"),
   props: {
     colorScheme: {
       type: "choice",
@@ -84,8 +86,7 @@ export function registerCheckbox(
 }
 
 export const checkboxGroupMeta: ComponentMeta<CheckboxGroupProps> = {
-  name: "CheckboxGroup",
-  importPath: "@chakra-ui/react",
+  ...getComponentNameAndImportMeta("CheckboxGroup"),
   props: {
     size: {
       type: "choice",
@@ -97,11 +98,11 @@ export const checkboxGroupMeta: ComponentMeta<CheckboxGroupProps> = {
     },
     children: {
       type: "slot",
-      allowedComponents: ["Checkbox"],
+      allowedComponents: [getPlasmicComponentName("Checkbox")],
       defaultValue: [
         {
           type: "component",
-          name: "Checkbox",
+          name: getPlasmicComponentName("Checkbox"),
           props: {
             value: "1",
             children: {
@@ -112,7 +113,7 @@ export const checkboxGroupMeta: ComponentMeta<CheckboxGroupProps> = {
         },
         {
           type: "component",
-          name: "Checkbox",
+          name: getPlasmicComponentName("Checkbox"),
           props: {
             value: "2",
             children: {
@@ -123,7 +124,7 @@ export const checkboxGroupMeta: ComponentMeta<CheckboxGroupProps> = {
         },
         {
           type: "component",
-          name: "Checkbox",
+          name: getPlasmicComponentName("Checkbox"),
           props: {
             value: "3",
             children: {

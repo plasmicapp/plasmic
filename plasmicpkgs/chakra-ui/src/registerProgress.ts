@@ -3,10 +3,10 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
+import { getComponentNameAndImportMeta } from "./utils";
 
 export const progressMeta: ComponentMeta<ProgressProps> = {
-  name: "Progress",
-  importPath: "@chakra-ui/react",
+  ...getComponentNameAndImportMeta("Progress"),
   props: {
     colorScheme: {
       type: "choice",

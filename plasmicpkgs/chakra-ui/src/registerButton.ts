@@ -8,10 +8,13 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
+import {
+  getComponentNameAndImportMeta,
+  getPlasmicComponentName,
+} from "./utils";
 
 export const buttonGroupMeta: ComponentMeta<ButtonGroupProps> = {
-  name: "ButtonGroup",
-  importPath: "@chakra-ui/react",
+  ...getComponentNameAndImportMeta("ButtonGroup"),
   props: {
     colorScheme: {
       type: "choice",
@@ -58,7 +61,7 @@ export const buttonGroupMeta: ComponentMeta<ButtonGroupProps> = {
       defaultValue: [
         {
           type: "component",
-          name: "Button",
+          name: getPlasmicComponentName("Button"),
           props: {
             children: {
               type: "text",
@@ -68,7 +71,7 @@ export const buttonGroupMeta: ComponentMeta<ButtonGroupProps> = {
         },
         {
           type: "component",
-          name: "Button",
+          name: getPlasmicComponentName("Button"),
           props: {
             children: {
               type: "text",
@@ -91,9 +94,7 @@ export function registerButtonGroup(
 }
 
 export const buttonMeta: ComponentMeta<ButtonProps> = {
-  name: "Button",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "ButtonGroup",
+  ...getComponentNameAndImportMeta("Button", "ButtonGroup"),
   props: {
     size: {
       type: "choice",

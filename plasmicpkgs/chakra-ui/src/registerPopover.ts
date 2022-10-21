@@ -17,10 +17,13 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
+import {
+  getComponentNameAndImportMeta,
+  getPlasmicComponentName,
+} from "./utils";
 
 export const popoverMeta: ComponentMeta<PopoverProps> = {
-  name: "Popover",
-  importPath: "@chakra-ui/react",
+  ...getComponentNameAndImportMeta("Popover"),
   props: {
     gutter: {
       type: "number",
@@ -69,11 +72,11 @@ export const popoverMeta: ComponentMeta<PopoverProps> = {
       defaultValue: [
         {
           type: "component",
-          name: "PopoverTrigger",
+          name: getPlasmicComponentName("PopoverTrigger"),
         },
         {
           type: "component",
-          name: "PopoverContent",
+          name: getPlasmicComponentName("PopoverContent"),
         },
       ],
     },
@@ -90,24 +93,22 @@ export function registerPopover(
 }
 
 export const popoverContentMeta: ComponentMeta<PopoverContentProps> = {
-  name: "PopoverContent",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "Popover",
+  ...getComponentNameAndImportMeta("PopoverContent", "Popover"),
   props: {
     children: {
       type: "slot",
       defaultValue: [
         {
           type: "component",
-          name: "PopoverArrow",
+          name: getPlasmicComponentName("PopoverArrow"),
         },
         {
           type: "component",
-          name: "PopoverCloseButton",
+          name: getPlasmicComponentName("PopoverCloseButton"),
         },
         {
           type: "component",
-          name: "PopoverHeader",
+          name: getPlasmicComponentName("PopoverHeader"),
           props: {
             children: {
               type: "text",
@@ -117,7 +118,7 @@ export const popoverContentMeta: ComponentMeta<PopoverContentProps> = {
         },
         {
           type: "component",
-          name: "PopoverBody",
+          name: getPlasmicComponentName("PopoverBody"),
           props: {
             children: {
               type: "text",
@@ -143,9 +144,7 @@ export function registerPopoverContent(
 }
 
 export const popoverArrowMeta: ComponentMeta<PopoverArrowProps> = {
-  name: "PopoverArrow",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "PopoverContent",
+  ...getComponentNameAndImportMeta("PopoverArrow", "PopoverContent"),
   props: {},
 };
 
@@ -159,10 +158,7 @@ export function registerPopoverArrow(
 }
 
 export const popoverCloseButtonMeta: ComponentMeta<PopoverCloseButtonProps> = {
-  name: "PopoverCloseButton",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "PopoverContent",
-
+  ...getComponentNameAndImportMeta("PopoverCloseButton", "PopoverContent"),
   props: {},
 };
 
@@ -179,9 +175,7 @@ export function registerPopoverCloseButton(
 }
 
 export const popoverHeaderMeta: ComponentMeta<PopoverHeaderProps> = {
-  name: "PopoverHeader",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "PopoverContent",
+  ...getComponentNameAndImportMeta("PopoverHeader", "PopoverContent"),
   props: {
     children: {
       type: "slot",
@@ -206,10 +200,7 @@ export function registerPopoverHeader(
 }
 
 export const popoverBodyMeta: ComponentMeta<PopoverBodyProps> = {
-  name: "PopoverBody",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "PopoverContent",
-
+  ...getComponentNameAndImportMeta("PopoverBody", "PopoverContent"),
   props: {
     children: {
       type: "slot",
@@ -231,15 +222,13 @@ export function registerPopoverBody(
 }
 
 export const popoverTriggerMeta: ComponentMeta<PopoverTriggerProps> = {
-  name: "PopoverTrigger",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "Popover",
+  ...getComponentNameAndImportMeta("PopoverTrigger", "Popover"),
   props: {
     children: {
       type: "slot",
       defaultValue: {
         type: "component",
-        name: "Button",
+        name: getPlasmicComponentName("Button"),
         props: {
           children: {
             type: "text",

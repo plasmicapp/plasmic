@@ -12,10 +12,13 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
+import {
+  getComponentNameAndImportMeta,
+  getPlasmicComponentName,
+} from "./utils";
 
 export const formControlMeta: ComponentMeta<FormControlProps> = {
-  name: "FormControl",
-  importPath: "@chakra-ui/react",
+  ...getComponentNameAndImportMeta("FormControl"),
   props: {
     label: "string",
     isDisabled: "boolean",
@@ -27,11 +30,11 @@ export const formControlMeta: ComponentMeta<FormControlProps> = {
       defaultValue: [
         {
           type: "component",
-          name: "FormLabel",
+          name: getPlasmicComponentName("FormLabel"),
         },
         {
           type: "component",
-          name: "Input",
+          name: getPlasmicComponentName("Input"),
         },
       ],
     },
@@ -48,9 +51,7 @@ export function registerFormControl(
 }
 
 export const formLabelMeta: ComponentMeta<FormLabelProps> = {
-  name: "FormLabel",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "FormControl",
+  ...getComponentNameAndImportMeta("FormLabel", "FormControl"),
   props: {
     children: {
       type: "slot",
@@ -76,9 +77,7 @@ export function registerFormLabel(
 }
 
 export const formHelperTextMeta: ComponentMeta<HelpTextProps> = {
-  name: "FormHelperText",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "FormControl",
+  ...getComponentNameAndImportMeta("FormHelperText", "FormControl"),
   props: {
     children: {
       type: "slot",
@@ -103,9 +102,7 @@ export function registerFormHelperText(
 }
 
 export const formErrorMessageMeta: ComponentMeta<FormErrorMessageProps> = {
-  name: "FormErrorMessage",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "FormControl",
+  ...getComponentNameAndImportMeta("FormErrorMessage", "FormControl"),
   props: {
     children: {
       type: "slot",

@@ -14,15 +14,17 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
+import {
+  getComponentNameAndImportMeta,
+  getPlasmicComponentName,
+} from "./utils";
 
 export const tabListMeta: ComponentMeta<TabListProps> = {
-  name: "TabList",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "Tabs",
+  ...getComponentNameAndImportMeta("TabList", "Tabs"),
   props: {
     children: {
       type: "slot",
-      allowedComponents: ["Tab"],
+      allowedComponents: [getPlasmicComponentName("Tab")],
     },
   },
 };
@@ -37,8 +39,7 @@ export function registerTabList(
 }
 
 export const tabsMeta: ComponentMeta<TabsProps> = {
-  name: "Tabs",
-  importPath: "@chakra-ui/react",
+  ...getComponentNameAndImportMeta("Tabs"),
   props: {
     align: {
       type: "choice",
@@ -99,16 +100,19 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
     isManual: "boolean",
     children: {
       type: "slot",
-      allowedComponents: ["TabList", "TabPanels"],
+      allowedComponents: [
+        getPlasmicComponentName("TabList"),
+        getPlasmicComponentName("TabPanels"),
+      ],
       defaultValue: [
         {
           type: "component",
-          name: "TabList",
+          name: getPlasmicComponentName("TabList"),
           props: {
             children: [
               {
                 type: "component",
-                name: "Tab",
+                name: getPlasmicComponentName("Tab"),
                 props: {
                   children: {
                     type: "text",
@@ -118,7 +122,7 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
               },
               {
                 type: "component",
-                name: "Tab",
+                name: getPlasmicComponentName("Tab"),
                 props: {
                   children: {
                     type: "text",
@@ -128,7 +132,7 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
               },
               {
                 type: "component",
-                name: "Tab",
+                name: getPlasmicComponentName("Tab"),
                 props: {
                   children: {
                     type: "text",
@@ -141,12 +145,12 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
         },
         {
           type: "component",
-          name: "TabPanels",
+          name: getPlasmicComponentName("TabPanels"),
           props: {
             children: [
               {
                 type: "component",
-                name: "TabPanel",
+                name: getPlasmicComponentName("TabPanel"),
                 props: {
                   children: {
                     type: "text",
@@ -156,7 +160,7 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
               },
               {
                 type: "component",
-                name: "TabPanel",
+                name: getPlasmicComponentName("TabPanel"),
                 props: {
                   children: {
                     type: "text",
@@ -166,7 +170,7 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
               },
               {
                 type: "component",
-                name: "TabPanel",
+                name: getPlasmicComponentName("TabPanel"),
                 props: {
                   children: {
                     type: "text",
@@ -192,9 +196,7 @@ export function registerTabs(
 }
 
 export const tabMeta: ComponentMeta<TabProps> = {
-  name: "Tab",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "TabList",
+  ...getComponentNameAndImportMeta("Tab", "TabList"),
   props: {
     id: "string",
     isDisabled: "boolean",
@@ -219,13 +221,11 @@ export function registerTab(
 }
 
 export const tabPanelsMeta: ComponentMeta<TabPanelsProps> = {
-  name: "TabPanels",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "Tabs",
+  ...getComponentNameAndImportMeta("TabPanels", "Tabs"),
   props: {
     children: {
       type: "slot",
-      allowedComponents: ["TabPanel"],
+      allowedComponents: [getPlasmicComponentName("TabPanel")],
     },
   },
 };
@@ -240,9 +240,7 @@ export function registerTabPanels(
 }
 
 export const tabPanelMeta: ComponentMeta<TabPanelProps> = {
-  name: "TabPanel",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "TabPanels",
+  ...getComponentNameAndImportMeta("TabPanel", "TabPanels"),
   props: {
     children: {
       type: "slot",

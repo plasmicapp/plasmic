@@ -14,10 +14,13 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
+import {
+  getComponentNameAndImportMeta,
+  getPlasmicComponentName,
+} from "./utils";
 
 export const accordionMeta: ComponentMeta<AccordionProps> = {
-  name: "Accordion",
-  importPath: "@chakra-ui/react",
+  ...getComponentNameAndImportMeta("Accordion"),
   props: {
     allowMultiple: {
       type: "boolean",
@@ -41,10 +44,10 @@ export const accordionMeta: ComponentMeta<AccordionProps> = {
     },
     children: {
       type: "slot",
-      allowedComponents: ["AccordionItem"],
+      allowedComponents: [getPlasmicComponentName("AccordionItem")],
       defaultValue: [
-        { type: "component", name: "AccordionItem" },
-        { type: "component", name: "AccordionItem" },
+        { type: "component", name: getPlasmicComponentName("AccordionItem") },
+        { type: "component", name: getPlasmicComponentName("AccordionItem") },
       ],
     },
   },
@@ -60,9 +63,7 @@ export function registerAccordion(
 }
 
 export const accordionItemMeta: ComponentMeta<AccordionItemProps> = {
-  name: "AccordionItem",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "Accordion",
+  ...getComponentNameAndImportMeta("AccordionItem", "Accordion"),
   props: {
     id: {
       type: "string",
@@ -78,15 +79,18 @@ export const accordionItemMeta: ComponentMeta<AccordionItemProps> = {
     },
     children: {
       type: "slot",
-      allowedComponents: ["AccordionButton", "AccordionPanel"],
+      allowedComponents: [
+        getPlasmicComponentName("AccordionButton"),
+        getPlasmicComponentName("AccordionPanel"),
+      ],
       defaultValue: [
         {
           type: "component",
-          name: "AccordionButton",
+          name: getPlasmicComponentName("AccordionButton"),
         },
         {
           type: "component",
-          name: "AccordionPanel",
+          name: getPlasmicComponentName("AccordionPanel"),
         },
       ],
     },
@@ -106,9 +110,7 @@ export function registerAccordionItem(
 }
 
 export const accordionButtonMeta: ComponentMeta<AccordionButtonProps> = {
-  name: "AccordionButton",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "AccordionItem",
+  ...getComponentNameAndImportMeta("AccordionButton", "AccordionItem"),
   props: {
     _expanded: {
       type: "object",
@@ -130,7 +132,7 @@ export const accordionButtonMeta: ComponentMeta<AccordionButtonProps> = {
         },
         {
           type: "component",
-          name: "AccordionIcon",
+          name: getPlasmicComponentName("AccordionIcon"),
         },
       ],
     },
@@ -150,15 +152,13 @@ export function registerAccordionButton(
 }
 
 export const accordionPanelMeta: ComponentMeta<AccordionPanelProps> = {
-  name: "AccordionPanel",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "AccordionItem",
+  ...getComponentNameAndImportMeta("AccordionPanel", "AccordionItem"),
   props: {
     children: {
       type: "slot",
       defaultValue: {
         type: "component",
-        name: "Text",
+        name: getPlasmicComponentName("Text"),
         props: {
           children: {
             type: "text",
@@ -184,9 +184,7 @@ export function registerAccordionPanel(
 }
 
 export const accordionIconMeta: ComponentMeta<IconProps> = {
-  name: "AccordionIcon",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "AccordionButton",
+  ...getComponentNameAndImportMeta("AccordionIcon", "AccordionButton"),
   props: {},
 };
 

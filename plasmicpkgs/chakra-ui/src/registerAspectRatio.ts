@@ -3,10 +3,13 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
+import {
+  getComponentNameAndImportMeta,
+  getPlasmicComponentName,
+} from "./utils";
 
 export const aspectRatioMeta: ComponentMeta<AspectRatioProps> = {
-  name: "AspectRatio",
-  importPath: "@chakra-ui/react",
+  ...getComponentNameAndImportMeta("AspectRatio"),
   defaultStyles: {
     width: "320px",
   },
@@ -19,7 +22,7 @@ export const aspectRatioMeta: ComponentMeta<AspectRatioProps> = {
       type: "slot",
       defaultValue: {
         type: "component",
-        name: "Image",
+        name: getPlasmicComponentName("Image"),
       },
     },
   },

@@ -10,11 +10,13 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
+import {
+  getComponentNameAndImportMeta,
+  getPlasmicComponentName,
+} from "./utils";
 
 export const avatarBadgeMeta: ComponentMeta<AvatarBadgeProps> = {
-  name: "AvatarBadge",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "Avatar",
+  ...getComponentNameAndImportMeta("AvatarBadge", "Avatar"),
   props: {
     boxSize: {
       type: "string",
@@ -38,9 +40,7 @@ export function registerAvatarBadge(
 }
 
 export const avatarMeta: ComponentMeta<AvatarProps> = {
-  name: "Avatar",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "AvatarGroup",
+  ...getComponentNameAndImportMeta("Avatar", "AvatarGroup"),
   props: {
     name: {
       type: "string",
@@ -62,10 +62,10 @@ export const avatarMeta: ComponentMeta<AvatarProps> = {
     children: {
       type: "slot",
       hidePlaceholder: true,
-      allowedComponents: ["AvatarBadge"],
+      allowedComponents: [getPlasmicComponentName("AvatarBadge")],
       defaultValue: {
         type: "component",
-        name: "Badge",
+        name: getPlasmicComponentName("AvatarBadge"),
       },
     },
   },
@@ -81,8 +81,7 @@ export function registerAvatar(
 }
 
 export const avatarGroupMeta: ComponentMeta<AvatarGroupProps> = {
-  name: "AvatarGroup",
-  importPath: "@chakra-ui/react",
+  ...getComponentNameAndImportMeta("AvatarGroup"),
   props: {
     size: {
       type: "choice",
@@ -98,11 +97,11 @@ export const avatarGroupMeta: ComponentMeta<AvatarGroupProps> = {
     },
     children: {
       type: "slot",
-      allowedComponents: ["Avatar"],
+      allowedComponents: [getPlasmicComponentName("Avatar")],
       defaultValue: [
         {
           type: "component",
-          name: "Avatar",
+          name: getPlasmicComponentName("Avatar"),
           props: {
             name: "Dan Abrahmov",
             src: "https://bit.ly/dan-abramov",
@@ -110,7 +109,7 @@ export const avatarGroupMeta: ComponentMeta<AvatarGroupProps> = {
         },
         {
           type: "component",
-          name: "Avatar",
+          name: getPlasmicComponentName("Avatar"),
           props: {
             name: "Kola Tioluwani",
             src: "https://bit.ly/tioluwani-kolawole",
@@ -118,7 +117,7 @@ export const avatarGroupMeta: ComponentMeta<AvatarGroupProps> = {
         },
         {
           type: "component",
-          name: "Avatar",
+          name: getPlasmicComponentName("Avatar"),
           props: {
             name: "Kent Dodds",
             src: "https://bit.ly/kent-c-dodds",
@@ -126,7 +125,7 @@ export const avatarGroupMeta: ComponentMeta<AvatarGroupProps> = {
         },
         {
           type: "component",
-          name: "Avatar",
+          name: getPlasmicComponentName("Avatar"),
           props: {
             name: "Ryan Florence",
             src: "https://bit.ly/ryan-florence",
@@ -134,7 +133,7 @@ export const avatarGroupMeta: ComponentMeta<AvatarGroupProps> = {
         },
         {
           type: "component",
-          name: "Avatar",
+          name: getPlasmicComponentName("Avatar"),
           props: {
             name: "Prosper Otemuyiwa",
             src: "https://bit.ly/prosper-baba",
@@ -142,7 +141,7 @@ export const avatarGroupMeta: ComponentMeta<AvatarGroupProps> = {
         },
         {
           type: "component",
-          name: "Avatar",
+          name: getPlasmicComponentName("Avatar"),
           props: {
             name: "Christian Nwamba",
             src: "https://bit.ly/code-beast",
@@ -150,7 +149,7 @@ export const avatarGroupMeta: ComponentMeta<AvatarGroupProps> = {
         },
         {
           type: "component",
-          name: "Avatar",
+          name: getPlasmicComponentName("Avatar"),
           props: {
             name: "Segun Adebayo",
             src: "https://bit.ly/sage-adebayo",

@@ -3,10 +3,10 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
+import { getComponentNameAndImportMeta } from "./utils";
 
 export const inputMeta: ComponentMeta<InputProps> = {
-  name: "Input",
-  importPath: "@chakra-ui/react",
+  ...getComponentNameAndImportMeta("Input"),
   props: {
     size: {
       type: "choice",

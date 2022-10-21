@@ -4,10 +4,13 @@ import registerComponent, {
 } from "@plasmicapp/host/registerComponent";
 import React from "react";
 import { Registerable } from "./registerable";
+import {
+  getComponentNameAndImportMeta,
+  getPlasmicComponentName,
+} from "./utils";
 
 export const selectMeta: ComponentMeta<SelectProps> = {
-  name: "Select",
-  importPath: "@chakra-ui/react",
+  ...getComponentNameAndImportMeta("Select"),
   props: {
     size: {
       type: "choice",
@@ -43,7 +46,7 @@ export const selectMeta: ComponentMeta<SelectProps> = {
       defaultValue: [
         {
           type: "component",
-          name: "Option",
+          name: getPlasmicComponentName("Option"),
           props: {
             children: {
               type: "text",
@@ -53,7 +56,7 @@ export const selectMeta: ComponentMeta<SelectProps> = {
         },
         {
           type: "component",
-          name: "Option",
+          name: getPlasmicComponentName("Option"),
           props: {
             children: {
               type: "text",
@@ -63,7 +66,7 @@ export const selectMeta: ComponentMeta<SelectProps> = {
         },
         {
           type: "component",
-          name: "Option",
+          name: getPlasmicComponentName("Option"),
           props: {
             children: {
               type: "text",
@@ -101,9 +104,9 @@ export function Option(props: OptionProps) {
 }
 
 export const optionMeta: ComponentMeta<OptionProps> = {
-  name: "Option",
-  importPath: "@plasmicpkgs/plasmic-chakra-ui",
-  parentComponentName: "Select",
+  ...getComponentNameAndImportMeta("Option", "Select", {
+    importPath: "@plasmicpkgs/plasmic-chakra-ui",
+  }),
   props: {
     value: "string",
     children: {

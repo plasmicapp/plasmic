@@ -8,10 +8,13 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Registerable } from "./registerable";
+import {
+  getComponentNameAndImportMeta,
+  getPlasmicComponentName,
+} from "./utils";
 
 export const radioGroupMeta: ComponentMeta<RadioGroupProps> = {
-  name: "RadioGroup",
-  importPath: "@chakra-ui/react",
+  ...getComponentNameAndImportMeta("RadioGroup"),
   props: {
     value: {
       type: "string",
@@ -43,17 +46,17 @@ export const radioGroupMeta: ComponentMeta<RadioGroupProps> = {
         children: [
           {
             type: "component",
-            name: "Radio",
+            name: getPlasmicComponentName("Radio"),
             props: { value: "1", children: { type: "text", value: "Radio 1" } },
           },
           {
             type: "component",
-            name: "Radio",
+            name: getPlasmicComponentName("Radio"),
             props: { value: "2", children: { type: "text", value: "Radio 2" } },
           },
           {
             type: "component",
-            name: "Radio",
+            name: getPlasmicComponentName("Radio"),
             props: { value: "3", children: { type: "text", value: "Radio 3" } },
           },
         ],
@@ -72,9 +75,7 @@ export function registerRadioGroup(
 }
 
 export const radioMeta: ComponentMeta<RadioProps> = {
-  name: "Radio",
-  importPath: "@chakra-ui/react",
-  parentComponentName: "RadioGroup",
+  ...getComponentNameAndImportMeta("Radio", "RadioGroup"),
   props: {
     value: {
       type: "string",
