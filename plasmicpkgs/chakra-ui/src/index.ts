@@ -1,5 +1,17 @@
 import { Registerable } from "./registerable";
+import {
+  registerAccordion,
+  registerAccordionButton,
+  registerAccordionIcon,
+  registerAccordionItem,
+  registerAccordionPanel,
+} from "./registerAccordion";
 import { registerAspectRatio } from "./registerAspectRatio";
+import {
+  registerAvatar,
+  registerAvatarBadge,
+  registerAvatarGroup,
+} from "./registerAvatar";
 import { registerBadge } from "./registerBadge";
 import {
   registerBreadcrumb,
@@ -8,9 +20,18 @@ import {
   registerBreadcrumbSeparator,
 } from "./registerBreadcrumb";
 import { registerButton, registerButtonGroup } from "./registerButton";
+import { registerChakraProvider } from "./registerChakraProvider";
 import { registerCheckbox, registerCheckboxGroup } from "./registerCheckBox";
 import { registerCode } from "./registerCode";
 import { registerDivider } from "./registerDivider";
+import {
+  registerFormControl,
+  registerFormErrorMessage,
+  registerFormHelperText,
+  registerFormLabel,
+} from "./registerFormControl";
+import { registerHeading } from "./registerHeading";
+import { registerHighlight } from "./registerHighlight";
 import { registerImage } from "./registerImage";
 import { registerInput } from "./registerInput";
 import { registerKbd } from "./registerKbd";
@@ -31,9 +52,9 @@ import {
   registerPopoverHeader,
   registerPopoverTrigger,
 } from "./registerPopover";
+import { registerProgress } from "./registerProgress";
 import { registerRadio, registerRadioGroup } from "./registerRadio";
 import { registerOption, registerSelect } from "./registerSelect";
-
 import {
   registerStat,
   registerStatArrow,
@@ -42,7 +63,6 @@ import {
   registerStatNumber,
 } from "./registerStat";
 import { registerSwitch } from "./registerSwitch";
-
 import {
   registerTable,
   registerTableCaption,
@@ -61,36 +81,9 @@ import {
   registerTabPanels,
   registerTabs,
 } from "./registerTabs";
-
 import { registerText } from "./registerText";
-
-import { registerHighlight } from "./registerHighlight";
-
-import { registerHeading } from "./registerHeading";
-
 import { registerToast } from "./registerToast";
-
 import { registerTooltip } from "./registerTooltip";
-
-import {
-  registerAccordion,
-  registerAccordionButton,
-  registerAccordionIcon,
-  registerAccordionItem,
-  registerAccordionPanel,
-} from "./registerAccordion";
-import {
-  registerAvatar,
-  registerAvatarBadge,
-  registerAvatarGroup,
-} from "./registerAvatar";
-import {
-  registerFormControl,
-  registerFormErrorMessage,
-  registerFormHelperText,
-  registerFormLabel,
-} from "./registerFormControl";
-import { registerProgress } from "./registerProgress";
 
 export * from "./registerable";
 export * from "./registerAccordion";
@@ -99,6 +92,7 @@ export * from "./registerAvatar";
 export * from "./registerBadge";
 export * from "./registerBreadcrumb";
 export * from "./registerButton";
+export * from "./registerChakraProvider";
 export * from "./registerCheckBox";
 export * from "./registerCode";
 export * from "./registerDivider";
@@ -123,6 +117,14 @@ export * from "./registerToast";
 export * from "./registerTooltip";
 
 export function registerAll(loader?: Registerable) {
+  registerAccordion(loader);
+  registerAccordionButton(loader);
+  registerAccordionIcon(loader);
+  registerAccordionItem(loader);
+  registerAccordionPanel(loader);
+  registerAvatar(loader);
+  registerAvatarBadge(loader);
+  registerAvatarGroup(loader);
   registerAspectRatio(loader);
   registerBadge(loader);
   registerBreadcrumb(loader);
@@ -131,67 +133,60 @@ export function registerAll(loader?: Registerable) {
   registerBreadcrumbSeparator(loader);
   registerButton(loader);
   registerButtonGroup(loader);
+  registerChakraProvider(loader);
   registerCheckbox(loader);
   registerCheckboxGroup(loader);
   registerCode(loader);
   registerDivider(loader);
+  registerFormControl(loader);
+  registerFormErrorMessage(loader);
+  registerFormHelperText(loader);
+  registerFormLabel(loader);
+  registerHeading(loader);
+  registerHighlight(loader);
   registerImage(loader);
   registerInput(loader);
   registerKbd(loader);
   registerNumberInput(loader);
-  registerNumberInputStepper(loader);
   registerNumberDecrementStepper(loader);
   registerNumberIncrementStepper(loader);
   registerNumberInputField(loader);
+  registerNumberInputStepper(loader);
+  registerOption(loader);
   registerPinInput(loader);
   registerPinInputField(loader);
   registerPopover(loader);
-  registerPopoverContent(loader);
+  registerPopoverBody(loader);
   registerPopoverArrow(loader);
   registerPopoverCloseButton(loader);
+  registerPopoverContent(loader);
   registerPopoverHeader(loader);
-  registerPopoverBody(loader);
   registerPopoverTrigger(loader);
+  registerProgress(loader);
   registerRadio(loader);
   registerRadioGroup(loader);
   registerSelect(loader);
-  registerOption(loader);
   registerStat(loader);
-  registerStatHelpText(loader);
   registerStatArrow(loader);
-  registerStatNumber(loader);
+  registerStatHelpText(loader);
   registerStatLabel(loader);
+  registerStatNumber(loader);
   registerSwitch(loader);
   registerTable(loader);
   registerTableCaption(loader);
-  registerThead(loader);
   registerTbody(loader);
-  registerTr(loader);
+  registerTfoot(loader);
+  registerThead(loader);
   registerTd(loader);
   registerTh(loader);
+  registerTr(loader);
   registerTableContainer(loader);
   registerTabList(loader);
-  registerTabs(loader);
   registerTab(loader);
-  registerTabPanels(loader);
   registerTabPanel(loader);
+  registerTabPanels(loader);
+  registerTabs(loader);
   registerText(loader);
-  registerTfoot(loader);
-  registerHighlight(loader);
-  registerHeading(loader);
   registerToast(loader);
   registerTooltip(loader);
-  registerAvatarBadge(loader);
-  registerAvatar(loader);
-  registerAvatarGroup(loader);
-  registerAccordion(loader);
-  registerAccordionItem(loader);
-  registerAccordionButton(loader);
-  registerAccordionPanel(loader);
-  registerAccordionIcon(loader);
-  registerFormControl(loader);
-  registerFormLabel(loader);
-  registerFormHelperText(loader);
-  registerFormErrorMessage(loader);
-  registerProgress(loader);
 }
