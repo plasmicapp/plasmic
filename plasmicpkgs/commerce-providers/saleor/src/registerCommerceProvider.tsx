@@ -17,7 +17,7 @@ export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
       defaultValue: "https://vercel.saleor.cloud/graphql/",
     },
   },
-  importPath: "commerce-providers/saleor",
+  importPath: "@plasmicpkgs/commerce-saleor",
   importName: "SaleorProvider",
 };
 
