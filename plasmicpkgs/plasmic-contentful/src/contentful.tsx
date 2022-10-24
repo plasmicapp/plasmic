@@ -7,7 +7,7 @@ import {
   useSelector,
 } from "@plasmicapp/host";
 import { usePlasmicQueryData } from "@plasmicapp/query";
-import camelCase from "camelcase";
+import { pascalCase } from "change-case";
 import * as Contentful from "contentful";
 import get from "dlv";
 
@@ -25,7 +25,7 @@ export function ensure<T>(x: T | null | undefined): T {
 const modulePath = "@plasmicpkgs/plasmic-contentful";
 
 const makeDataProviderName = (contentType: string) =>
-  `currentContentful${camelCase(contentType, { pascalCase: true })}Item`;
+  `currentContentful${pascalCase(contentType)}Item`;
 
 interface ContentfulCredentialsProviderProps {
   space: string;
