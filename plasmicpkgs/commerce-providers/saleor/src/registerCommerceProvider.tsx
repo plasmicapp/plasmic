@@ -18,10 +18,10 @@ export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
     },
   },
   importPath: "@plasmicpkgs/commerce-saleor",
-  importName: "SaleorProvider",
+  importName: "CommerceProviderComponent",
 };
 
-function CommerceProviderComponent(props: CommerceProviderProps) {
+export function CommerceProviderComponent(props: CommerceProviderProps) {
   const { saleorApiUrl, children } = props;
 
   const CommerceProvider = React.useMemo(
