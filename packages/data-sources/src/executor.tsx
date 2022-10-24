@@ -7,6 +7,8 @@ export interface DataOp {
   sourceId: string;
   opId: string;
   userArgs?: Record<string, any>;
+  cacheKey?: string;
+  invalidatedKeys?: string[];
 }
 
 export async function executePlasmicDataOp<T = any>(

@@ -15,14 +15,16 @@ export function usePlasmicDataOp<T = any, E = any>(
   return useMutablePlasmicQueryData<T, E>(
     () =>
       dataOp
-        ? JSON.stringify({
-            sourceId: dataOp.sourceId,
-            opId: dataOp.opId,
-            args: dataOp.userArgs,
-            userAuthToken: ctx?.userAuthToken,
-            includeSchema: opts?.includeSchema,
-            paginate: opts?.paginate,
-          })
+        ? dataOp.cacheKey
+          ? dataOp.cacheKey
+          : JSON.stringify({
+              sourceId: dataOp.sourceId,
+              opId: dataOp.opId,
+              args: dataOp.userArgs,
+              userAuthToken: ctx?.userAuthToken,
+              includeSchema: opts?.includeSchema,
+              paginate: opts?.paginate,
+            })
         : null,
     async () => {
       return await executePlasmicDataOp<T>(dataOp!, {
