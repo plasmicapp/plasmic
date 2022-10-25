@@ -20,7 +20,7 @@ export const PlasmicLink = React.forwardRef(function PlasmicLink(
 
     return React.createElement(
       props.component,
-      pick(props, ...nextjsProps),
+      { ...pick(props, ...nextjsProps), legacyBehavior: true },
       <a {...omit(props, "component", "platform", ...nextjsProps)} ref={ref} />
     );
   }
