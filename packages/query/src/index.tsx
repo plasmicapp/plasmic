@@ -5,6 +5,7 @@ export {
   PlasmicQueryDataProvider,
   SWRResponse,
   useMutablePlasmicQueryData,
+  usePlasmicDataConfig,
   usePlasmicQueryData,
 } from './query-data';
 
