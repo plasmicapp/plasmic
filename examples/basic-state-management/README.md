@@ -4,7 +4,7 @@ This is an example of code components that let you create simple interactions in
 
 Specifically, it lets you make a button toggle whether something is displayed.
 
-Usage:
+Usage (see [video](https://youtu.be/hWLKyPKnOTc)):
 
 - Select a Button (or any element where you want clicking it to trigger the visibility change), and in the Custom Behaviors section in the right sidebar, select "Show/Hide Action"
 - Select the content you want to show/hide, and in the Custom Behaviors section, select "Show/Hide Content".
