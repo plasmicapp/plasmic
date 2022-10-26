@@ -23,7 +23,6 @@ export interface ShowHideButtonProps {
 export function ShowHideAction({ children, ...props }: ShowHideButtonProps) {
   const ctx = useContext(ShowHideContext);
   return cloneElement(React.Children.toArray(children)[0] as ReactElement, {
-    ...props,
     onClick: () => {
       ctx.setShown(!ctx.shown);
     },
