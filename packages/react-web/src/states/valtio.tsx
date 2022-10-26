@@ -47,6 +47,8 @@ export interface $StateSpec<T> {
   // If writable or readonly, there should be an onChangeProp where
   // props[onChangeProp] is invoked whenever the value changes
   onChangeProp?: string;
+
+  isArray?: boolean;
 }
 
 interface Internal$State {
@@ -298,16 +300,36 @@ function initializeStateValue(
     $$state.unsubscriptionsByState[initialStateKey].push(unsubscribe);
   });
 
-  const untrackedInitialValue = mkUntrackedValue(
-    initialSpec.initFunc!(
-      $$state.props,
-      $state,
-      getIndexes(initialStatePath, initialSpec)
-    )
+  const initialValue = initialSpec.initFunc!(
+    $$state.props,
+    $state,
+    getIndexes(initialStatePath, initialSpec)
   );
-  set($$state.initStateValues, initialStatePath, untrackedInitialValue);
-  set($$state.stateValues, initialStatePath, untrackedInitialValue);
-  return untrackedInitialValue;
+  saveStateInitialValue($$state, initialStatePath, initialSpec, initialValue);
+  return initialValue;
+}
+
+function saveStateInitialValue(
+  $$state: Internal$State,
+  path: ObjectPath,
+  spec: Internal$StateSpec<any>,
+  initialValue: any
+) {
+  // array states are a special case.Wwe listen for changes in the array and in the array cells.
+  // for example: $state.people.push(...), $state.people.splice(...), $state.people[0] = ...
+  // that's why we need to track the array object
+  if (spec.isArray && Array.isArray(initialValue)) {
+    const array = initialValue.map((val) => mkUntrackedValue(val));
+    set($$state.stateValues, path, array);
+    // we need to make the array untracked for initStateValues
+    // so we can distinguish between stateValue and initStateValue.
+    // otherwise they would reference the same array.
+    set($$state.initStateValues, path, mkUntrackedValue(array));
+  } else {
+    const untrackedValue = mkUntrackedValue(initialValue);
+    set($$state.stateValues, path, untrackedValue);
+    set($$state.initStateValues, path, untrackedValue);
+  }
 }
 
 export function useDollarState(
@@ -345,11 +367,10 @@ export function useDollarState(
         const key = JSON.stringify(path);
         if (!$$state.existingStates.has(key)) {
           saveNewState($$state, path, spec);
-          const untrackedValue = !spec.initFunc
-            ? mkUntrackedValue(spec.initVal ?? undefined)
+          const initialValue = !spec.initFunc
+            ? spec.initVal ?? undefined
             : initializeStateValue($$state, path, spec);
-          set($$state.stateValues, path, untrackedValue);
-          set($$state.initStateValues, path, untrackedValue);
+          saveStateInitialValue($$state, path, spec, initialValue);
         }
         return {
           get() {

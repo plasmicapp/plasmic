@@ -6,7 +6,6 @@ import { set } from "../states/helpers";
 import useDollarState, { $StateSpec } from "../states/valtio";
 
 const deepClone = function <T>(o: T): T {
-  console.log("dale", "cloning", o);
   return JSON.parse(JSON.stringify(o));
 };
 
@@ -1586,8 +1585,6 @@ const _FormBuilderImplicitStates: Story<{ people: Person[] }> = (props: {
           nicknames={person.nicknames}
           onNicknamesChange={(value, path) => {
             set($state.people[i], path, value);
-            console.log("dale", $state.people[i].nicknames.length);
-            console.log("nickname changed", value, $state.people[i]);
           }}
           onDeletePerson={() => $state.people.splice(i, 1)}
           data-test-index={`[${i}]`}
@@ -1622,4 +1619,143 @@ FormBuilderImplicitStates.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
 
   // TODO: skipping repeated implicit states for now
+};
+
+const _VariableCellIsArray: Story<{ people: Person[] }> = (props: {
+  people: Person[];
+}) => {
+  const $state = useDollarState(
+    [
+      {
+        path: "people",
+        type: "private",
+        initFunc: (props) => props.people,
+        isArray: true,
+      },
+      {
+        path: "firstName",
+        type: "private",
+      },
+      {
+        path: "lastName",
+        type: "private",
+      },
+    ],
+    props
+  );
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "20px",
+      }}
+    >
+      <ul data-testid={"people-list"}>
+        {$state.people.map((person: any, i: number) => (
+          <li key={i}>
+            <span>
+              {person.firstName} {person.lastName}
+            </span>
+            <button
+              onClick={() => $state.people.splice(i, 1)}
+              data-testid={`remove-${person.firstName}-${person.lastName}`}
+            >
+              X
+            </button>
+          </li>
+        ))}
+      </ul>
+      <div>
+        <input
+          value={$state.firstName}
+          onChange={(e) => ($state.firstName = e.target.value)}
+          data-testid={"first-name-input"}
+        />
+        <input
+          value={$state.lastName}
+          onChange={(e) => ($state.lastName = e.target.value)}
+          data-testid={"last-name-input"}
+        />
+        <button
+          data-testid={"add-person-btn"}
+          onClick={() => {
+            $state.people.push({
+              firstName: $state.firstName,
+              lastName: $state.lastName,
+            });
+          }}
+        >
+          Add person
+        </button>
+        <br />
+      </div>
+    </div>
+  );
+};
+
+export const VariableCellIsArray = _VariableCellIsArray.bind({});
+VariableCellIsArray.args = {
+  people: deepClone(peopleList),
+};
+VariableCellIsArray.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+  const expectedPeople = deepClone(peopleList);
+
+  const removePerson = async (i: number) => {
+    await userEvent.click(
+      canvas.getByTestId(
+        `remove-${expectedPeople[i].firstName}-${expectedPeople[i].lastName}`
+      )
+    );
+    expectedPeople.splice(i, 1);
+  };
+
+  const addPerson = async (firstName: string, lastName: string) => {
+    await userEvent.clear(canvas.getByTestId("first-name-input"));
+    await userEvent.clear(canvas.getByTestId("last-name-input"));
+
+    await userEvent.type(canvas.getByTestId("first-name-input"), firstName);
+    await userEvent.type(canvas.getByTestId("last-name-input"), lastName);
+    await userEvent.click(canvas.getByTestId("add-person-btn"));
+    expectedPeople.push({ firstName, lastName, nicknames: [] });
+  };
+
+  const testPeopleList = async () => {
+    const peopleList = (canvas.getByTestId("people-list") as HTMLUListElement)
+      .children;
+    expect(peopleList.length).toEqual(expectedPeople.length);
+    for (let i = 0; i < peopleList.length; i++) {
+      const person = peopleList[i] as HTMLLIElement;
+      const personName = (person.children[0] as HTMLSpanElement).textContent;
+      expect(personName).toEqual(
+        `${expectedPeople[i].firstName} ${expectedPeople[i].lastName}`
+      );
+    }
+  };
+  await testPeopleList();
+
+  // add a person
+  await addPerson("Roger", "Federer");
+  await testPeopleList();
+
+  // remove first and third person
+  await removePerson(2);
+  await removePerson(0);
+
+  // add two more
+  await addPerson("Serena", "Williams");
+  await addPerson("Novak", "Djokovic");
+  await testPeopleList();
+
+  //remove all
+  for (let i = expectedPeople.length - 1; i >= 0; i--) {
+    await removePerson(i);
+  }
+  await testPeopleList();
+
+  // add a person
+  await addPerson("Rafael", "Nadal");
+  await testPeopleList();
 };
