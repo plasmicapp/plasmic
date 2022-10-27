@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-wordpress",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "Plasmic Wordpress components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -47,7 +47,7 @@
     "typescript": "^4.6.3"
   },
   "dependencies": {
-    "@plasmicapp/query": "0.1.54",
+    "@plasmicapp/query": "0.1.55",
     "@types/dlv": "^1.1.2",
     "dlv": "^1.1.3"
   }

@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-graphcms",
-  "version": "0.0.50",
+  "version": "0.0.51",
   "description": "Plasmic ContentStack components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "@plasmicapp/host": "1.0.81",
-    "@plasmicapp/query": "0.1.54",
+    "@plasmicapp/query": "0.1.55",
     "dlv": "^1.1.3"
   }
 }

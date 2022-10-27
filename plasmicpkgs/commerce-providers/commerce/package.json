@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/commerce",
-  "version": "0.0.74",
+  "version": "0.0.75",
   "description": "Plasmic registration calls for commerce components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -35,7 +35,7 @@
     "react": ">=16.8.0"
   },
   "dependencies": {
-    "@plasmicapp/query": "0.1.54",
+    "@plasmicapp/query": "0.1.55",
     "@types/react": "^17.0.40",
     "@vercel/fetch": "^6.2.0",
     "debounce": "^1.2.1",
