@@ -149,3 +149,7 @@ export function PlasmicPrepassContext(
     </PrepassContext.Provider>
   );
 }
+
+export function usePlasmicDataConfig() {
+  return useSWRConfig();
+}
