@@ -1,17 +1,10 @@
 import {
-  FormControl,
   FormControlProps,
-  FormErrorMessage,
   FormErrorMessageProps,
-  FormHelperText,
-  FormLabel,
   FormLabelProps,
   HelpTextProps,
 } from "@chakra-ui/react";
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
+import { ComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
@@ -41,15 +34,6 @@ export const formControlMeta: ComponentMeta<FormControlProps> = {
   },
 };
 
-export function registerFormControl(
-  loader?: Registerable,
-  customFormControlMeta?: ComponentMeta<FormControlProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(FormControl, customFormControlMeta ?? formControlMeta);
-}
-
 export const formLabelMeta: ComponentMeta<FormLabelProps> = {
   ...getComponentNameAndImportMeta("FormLabel", "FormControl"),
   props: {
@@ -67,15 +51,6 @@ export const formLabelMeta: ComponentMeta<FormLabelProps> = {
   },
 };
 
-export function registerFormLabel(
-  loader?: Registerable,
-  customFormLabelMeta?: ComponentMeta<FormLabelProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(FormLabel, customFormLabelMeta ?? formLabelMeta);
-}
-
 export const formHelperTextMeta: ComponentMeta<HelpTextProps> = {
   ...getComponentNameAndImportMeta("FormHelperText", "FormControl"),
   props: {
@@ -89,18 +64,6 @@ export const formHelperTextMeta: ComponentMeta<HelpTextProps> = {
   },
 };
 
-export function registerFormHelperText(
-  loader?: Registerable,
-  customFormHelperTextMeta?: ComponentMeta<HelpTextProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(
-    FormHelperText,
-    customFormHelperTextMeta ?? formHelperTextMeta
-  );
-}
-
 export const formErrorMessageMeta: ComponentMeta<FormErrorMessageProps> = {
   ...getComponentNameAndImportMeta("FormErrorMessage", "FormControl"),
   props: {
@@ -113,15 +76,3 @@ export const formErrorMessageMeta: ComponentMeta<FormErrorMessageProps> = {
     },
   },
 };
-
-export function registerFormErrorMessage(
-  loader?: Registerable,
-  customFormErrorMessageMeta?: ComponentMeta<FormErrorMessageProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(
-    FormErrorMessage,
-    customFormErrorMessageMeta ?? formErrorMessageMeta
-  );
-}

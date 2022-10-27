@@ -1,13 +1,5 @@
-import {
-  Radio,
-  RadioGroup,
-  RadioGroupProps,
-  RadioProps,
-} from "@chakra-ui/react";
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
+import { RadioGroupProps, RadioProps } from "@chakra-ui/react";
+import { ComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
@@ -65,15 +57,6 @@ export const radioGroupMeta: ComponentMeta<RadioGroupProps> = {
   },
 };
 
-export function registerRadioGroup(
-  loader?: Registerable,
-  customRadioGroupMeta?: ComponentMeta<RadioGroupProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(RadioGroup, customRadioGroupMeta ?? radioGroupMeta);
-}
-
 export const radioMeta: ComponentMeta<RadioProps> = {
   ...getComponentNameAndImportMeta("Radio", "RadioGroup"),
   props: {
@@ -114,12 +97,3 @@ export const radioMeta: ComponentMeta<RadioProps> = {
     },
   },
 };
-
-export function registerRadio(
-  loader?: Registerable,
-  customRadioMeta?: ComponentMeta<RadioProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Radio, customRadioMeta ?? radioMeta);
-}

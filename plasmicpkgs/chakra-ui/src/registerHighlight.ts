@@ -1,8 +1,5 @@
-import { Highlight, HighlightProps } from "@chakra-ui/react";
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
+import { HighlightProps } from "@chakra-ui/react";
+import { ComponentMeta } from "@plasmicapp/host/registerComponent";
 import { getComponentNameAndImportMeta } from "./utils";
 
 export const highlightMeta: ComponentMeta<HighlightProps> = {
@@ -28,12 +25,3 @@ export const highlightMeta: ComponentMeta<HighlightProps> = {
     },
   },
 };
-
-export function registerHighlight(
-  loader?: Registerable,
-  customHighlightMeta?: ComponentMeta<HighlightProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Highlight, customHighlightMeta ?? highlightMeta);
-}

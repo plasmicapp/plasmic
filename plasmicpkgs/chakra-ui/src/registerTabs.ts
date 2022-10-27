@@ -1,19 +1,11 @@
 import {
-  Tab,
-  TabList,
   TabListProps,
-  TabPanel,
   TabPanelProps,
-  TabPanels,
   TabPanelsProps,
   TabProps,
-  Tabs,
   TabsProps,
 } from "@chakra-ui/react";
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
+import { ComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
@@ -28,15 +20,6 @@ export const tabListMeta: ComponentMeta<TabListProps> = {
     },
   },
 };
-
-export function registerTabList(
-  loader?: Registerable,
-  customTabListMeta?: ComponentMeta<TabListProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(TabList, customTabListMeta ?? tabListMeta);
-}
 
 export const tabsMeta: ComponentMeta<TabsProps> = {
   ...getComponentNameAndImportMeta("Tabs"),
@@ -186,15 +169,6 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
   },
 };
 
-export function registerTabs(
-  loader?: Registerable,
-  customTabsMeta?: ComponentMeta<TabsProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Tabs, customTabsMeta ?? tabsMeta);
-}
-
 export const tabMeta: ComponentMeta<TabProps> = {
   ...getComponentNameAndImportMeta("Tab", "TabList"),
   props: {
@@ -211,15 +185,6 @@ export const tabMeta: ComponentMeta<TabProps> = {
   },
 };
 
-export function registerTab(
-  loader?: Registerable,
-  customTabMeta?: ComponentMeta<TabProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Tab, customTabMeta ?? tabMeta);
-}
-
 export const tabPanelsMeta: ComponentMeta<TabPanelsProps> = {
   ...getComponentNameAndImportMeta("TabPanels", "Tabs"),
   props: {
@@ -229,15 +194,6 @@ export const tabPanelsMeta: ComponentMeta<TabPanelsProps> = {
     },
   },
 };
-
-export function registerTabPanels(
-  loader?: Registerable,
-  customTabPanelsMeta?: ComponentMeta<TabPanelsProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(TabPanels, customTabPanelsMeta ?? tabPanelsMeta);
-}
 
 export const tabPanelMeta: ComponentMeta<TabPanelProps> = {
   ...getComponentNameAndImportMeta("TabPanel", "TabPanels"),
@@ -251,12 +207,3 @@ export const tabPanelMeta: ComponentMeta<TabPanelProps> = {
     },
   },
 };
-
-export function registerTabPanel(
-  loader?: Registerable,
-  customTabPanelMeta?: ComponentMeta<TabPanelProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(TabPanel, customTabPanelMeta ?? tabPanelMeta);
-}

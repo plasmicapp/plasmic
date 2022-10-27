@@ -1,8 +1,5 @@
-import { Heading, HeadingProps } from "@chakra-ui/react";
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
+import { HeadingProps } from "@chakra-ui/react";
+import { ComponentMeta } from "@plasmicapp/host/registerComponent";
 import { getComponentNameAndImportMeta } from "./utils";
 
 export const headingMeta: ComponentMeta<HeadingProps> = {
@@ -27,12 +24,3 @@ export const headingMeta: ComponentMeta<HeadingProps> = {
     },
   },
 };
-
-export function registerHeading(
-  loader?: Registerable,
-  customHeadingMeta?: ComponentMeta<HeadingProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Heading, customHeadingMeta ?? headingMeta);
-}

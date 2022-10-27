@@ -1,19 +1,11 @@
 import {
-  Stat,
-  StatArrow,
   StatArrowProps,
-  StatHelpText,
   StatHelpTextProps,
-  StatLabel,
   StatLabelProps,
-  StatNumber,
   StatNumberProps,
   StatProps,
 } from "@chakra-ui/react";
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
+import { ComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
@@ -61,15 +53,6 @@ export const statMeta: ComponentMeta<StatProps> = {
   },
 };
 
-export function registerStat(
-  loader?: Registerable,
-  customStatMeta?: ComponentMeta<StatProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Stat, customStatMeta ?? statMeta);
-}
-
 export const statHelpTextMeta: ComponentMeta<StatHelpTextProps> = {
   ...getComponentNameAndImportMeta("StatHelpText", "Stat"),
   props: {
@@ -85,15 +68,6 @@ export const statHelpTextMeta: ComponentMeta<StatHelpTextProps> = {
   },
 };
 
-export function registerStatHelpText(
-  loader?: Registerable,
-  customStatHelpTextMeta?: ComponentMeta<StatHelpTextProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(StatHelpText, customStatHelpTextMeta ?? statHelpTextMeta);
-}
-
 export const statArrowMeta: ComponentMeta<StatArrowProps> = {
   ...getComponentNameAndImportMeta("StatArrow", "Stat"),
   props: {
@@ -103,15 +77,6 @@ export const statArrowMeta: ComponentMeta<StatArrowProps> = {
     },
   },
 };
-
-export function registerStatArrow(
-  loader?: Registerable,
-  customStatArrowMeta?: ComponentMeta<StatArrowProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(StatArrow, customStatArrowMeta ?? statArrowMeta);
-}
 
 export const statNumberMeta: ComponentMeta<StatNumberProps> = {
   ...getComponentNameAndImportMeta("StatNumber", "Stat"),
@@ -128,15 +93,6 @@ export const statNumberMeta: ComponentMeta<StatNumberProps> = {
   },
 };
 
-export function registerStatNumber(
-  loader?: Registerable,
-  customStatNumberMeta?: ComponentMeta<StatNumberProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(StatNumber, customStatNumberMeta ?? statNumberMeta);
-}
-
 export const statLabelMeta: ComponentMeta<StatLabelProps> = {
   ...getComponentNameAndImportMeta("StatLabel", "Stat"),
   props: {
@@ -151,12 +107,3 @@ export const statLabelMeta: ComponentMeta<StatLabelProps> = {
     },
   },
 };
-
-export function registerStatLabel(
-  loader?: Registerable,
-  customStatLabelMeta?: ComponentMeta<StatLabelProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(StatLabel, customStatLabelMeta ?? statLabelMeta);
-}

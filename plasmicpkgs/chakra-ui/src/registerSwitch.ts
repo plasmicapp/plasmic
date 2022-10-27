@@ -1,8 +1,5 @@
-import { Switch, SwitchProps } from "@chakra-ui/react";
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
+import { SwitchProps } from "@chakra-ui/react";
+import { ComponentMeta } from "@plasmicapp/host/registerComponent";
 import { getComponentNameAndImportMeta } from "./utils";
 
 export const switchMeta: ComponentMeta<SwitchProps> = {
@@ -49,12 +46,3 @@ export const switchMeta: ComponentMeta<SwitchProps> = {
     isRequired: "boolean",
   },
 };
-
-export function registerSwitch(
-  loader?: Registerable,
-  customSwitchMeta?: ComponentMeta<SwitchProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Switch, customSwitchMeta ?? switchMeta);
-}

@@ -1,8 +1,5 @@
-import { Progress, ProgressProps } from "@chakra-ui/react";
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
+import { ProgressProps } from "@chakra-ui/react";
+import { ComponentMeta } from "@plasmicapp/host/registerComponent";
 import { getComponentNameAndImportMeta } from "./utils";
 
 export const progressMeta: ComponentMeta<ProgressProps> = {
@@ -59,12 +56,3 @@ export const progressMeta: ComponentMeta<ProgressProps> = {
     },
   },
 };
-
-export function registerProgress(
-  loader?: Registerable,
-  customProgressMeta?: ComponentMeta<ProgressProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Progress, customProgressMeta ?? progressMeta);
-}

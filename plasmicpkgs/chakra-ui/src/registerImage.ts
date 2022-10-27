@@ -1,8 +1,5 @@
-import { Image, ImageProps } from "@chakra-ui/react";
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
+import { ImageProps } from "@chakra-ui/react";
+import { ComponentMeta } from "@plasmicapp/host/registerComponent";
 import { getComponentNameAndImportMeta } from "./utils";
 
 export const imageMeta: ComponentMeta<ImageProps> = {
@@ -26,12 +23,3 @@ export const imageMeta: ComponentMeta<ImageProps> = {
     },
   },
 };
-
-export function registerImage(
-  loader?: Registerable,
-  customImageMeta?: ComponentMeta<ImageProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Image, customImageMeta ?? imageMeta);
-}

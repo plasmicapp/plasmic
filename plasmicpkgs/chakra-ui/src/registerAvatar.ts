@@ -1,15 +1,9 @@
 import {
-  Avatar,
-  AvatarBadge,
   AvatarBadgeProps,
-  AvatarGroup,
   AvatarGroupProps,
   AvatarProps,
 } from "@chakra-ui/react";
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
+import { ComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
@@ -29,15 +23,6 @@ export const avatarBadgeMeta: ComponentMeta<AvatarBadgeProps> = {
     borderColor: "string",
   },
 };
-
-export function registerAvatarBadge(
-  loader?: Registerable,
-  customAvatarBadgeMeta?: ComponentMeta<AvatarBadgeProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(AvatarBadge, customAvatarBadgeMeta ?? avatarBadgeMeta);
-}
 
 export const avatarMeta: ComponentMeta<AvatarProps> = {
   ...getComponentNameAndImportMeta("Avatar", "AvatarGroup"),
@@ -70,15 +55,6 @@ export const avatarMeta: ComponentMeta<AvatarProps> = {
     },
   },
 };
-
-export function registerAvatar(
-  loader?: Registerable,
-  customAvatarMeta?: ComponentMeta<AvatarProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Avatar, customAvatarMeta ?? avatarMeta);
-}
 
 export const avatarGroupMeta: ComponentMeta<AvatarGroupProps> = {
   ...getComponentNameAndImportMeta("AvatarGroup"),
@@ -159,12 +135,3 @@ export const avatarGroupMeta: ComponentMeta<AvatarGroupProps> = {
     },
   },
 };
-
-export function registerAvatarGroup(
-  loader?: Registerable,
-  customAvatarGroupMeta?: ComponentMeta<AvatarGroupProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(AvatarGroup, customAvatarGroupMeta ?? avatarGroupMeta);
-}

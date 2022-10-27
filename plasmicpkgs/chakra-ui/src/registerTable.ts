@@ -1,27 +1,15 @@
 import {
-  Table,
   TableBodyProps,
-  TableCaption,
   TableCaptionProps,
   TableCellProps,
   TableColumnHeaderProps,
-  TableContainer,
   TableContainerProps,
   TableFooterProps,
   TableHeadProps,
   TableProps,
   TableRowProps,
-  Tbody,
-  Td,
-  Tfoot,
-  Th,
-  Thead,
-  Tr,
 } from "@chakra-ui/react";
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
+import { ComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
@@ -70,15 +58,6 @@ export const tableMeta: ComponentMeta<TableProps> = {
   },
 };
 
-export function registerTable(
-  loader?: Registerable,
-  customTableMeta?: ComponentMeta<TableProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Table, customTableMeta ?? tableMeta);
-}
-
 export const tableCaptionMeta: ComponentMeta<TableCaptionProps> = {
   ...getComponentNameAndImportMeta("TableCaption", "Table"),
   props: {
@@ -97,15 +76,6 @@ export const tableCaptionMeta: ComponentMeta<TableCaptionProps> = {
   },
 };
 
-export function registerTableCaption(
-  loader?: Registerable,
-  customTableCaptionMeta?: ComponentMeta<TableCaptionProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(TableCaption, customTableCaptionMeta ?? tableCaptionMeta);
-}
-
 export const theadMeta: ComponentMeta<TableHeadProps> = {
   ...getComponentNameAndImportMeta("Thead", "Table"),
   props: {
@@ -118,15 +88,6 @@ export const theadMeta: ComponentMeta<TableHeadProps> = {
     },
   },
 };
-
-export function registerThead(
-  loader?: Registerable,
-  customTheadMeta?: ComponentMeta<TableHeadProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Thead, customTheadMeta ?? theadMeta);
-}
 
 export const tbodyMeta: ComponentMeta<TableBodyProps> = {
   ...getComponentNameAndImportMeta("Tbody", "Table"),
@@ -141,15 +102,6 @@ export const tbodyMeta: ComponentMeta<TableBodyProps> = {
   },
 };
 
-export function registerTbody(
-  loader?: Registerable,
-  customTbodyMeta?: ComponentMeta<TableBodyProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Tbody, customTbodyMeta ?? tbodyMeta);
-}
-
 export const trMeta: ComponentMeta<TableRowProps> = {
   ...getComponentNameAndImportMeta("Tr", "Table"),
   props: {
@@ -162,15 +114,6 @@ export const trMeta: ComponentMeta<TableRowProps> = {
     },
   },
 };
-
-export function registerTr(
-  loader?: Registerable,
-  customTrMeta?: ComponentMeta<TableRowProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Tr, customTrMeta ?? trMeta);
-}
 
 export const tdMeta: ComponentMeta<TableCellProps> = {
   ...getComponentNameAndImportMeta("Td", "Tr"),
@@ -186,15 +129,6 @@ export const tdMeta: ComponentMeta<TableCellProps> = {
   },
 };
 
-export function registerTd(
-  loader?: Registerable,
-  customTdMeta?: ComponentMeta<TableCellProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Td, customTdMeta ?? tdMeta);
-}
-
 export const thMeta: ComponentMeta<TableColumnHeaderProps> = {
   ...getComponentNameAndImportMeta("Th", "Tr"),
   props: {
@@ -208,15 +142,6 @@ export const thMeta: ComponentMeta<TableColumnHeaderProps> = {
     },
   },
 };
-
-export function registerTh(
-  loader?: Registerable,
-  customThMeta?: ComponentMeta<TableColumnHeaderProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Th, customThMeta ?? thMeta);
-}
 
 export const tableContainerMeta: ComponentMeta<TableContainerProps> = {
   ...getComponentNameAndImportMeta("TableContainer"),
@@ -338,18 +263,6 @@ export const tableContainerMeta: ComponentMeta<TableContainerProps> = {
   },
 };
 
-export function registerTableContainer(
-  loader?: Registerable,
-  customTableContainerMeta?: ComponentMeta<TableContainerProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(
-    TableContainer,
-    customTableContainerMeta ?? tableContainerMeta
-  );
-}
-
 export const tfootMeta: ComponentMeta<TableFooterProps> = {
   ...getComponentNameAndImportMeta("Tfoot", "Table"),
   props: {
@@ -378,12 +291,3 @@ export const tfootMeta: ComponentMeta<TableFooterProps> = {
     },
   },
 };
-
-export function registerTfoot(
-  loader?: Registerable,
-  customTfootMeta?: ComponentMeta<TableFooterProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Tfoot, customTfootMeta ?? tfootMeta);
-}

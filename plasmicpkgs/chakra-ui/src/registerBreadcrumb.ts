@@ -1,17 +1,10 @@
 import {
-  Breadcrumb,
-  BreadcrumbItem,
   BreadcrumbItemProps,
-  BreadcrumbLink,
   BreadcrumbLinkProps,
   BreadcrumbProps,
-  BreadcrumbSeparator,
   BreadcrumbSeparatorProps,
 } from "@chakra-ui/react";
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
+import { ComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
@@ -52,18 +45,6 @@ export const breadcrumbItemMeta: ComponentMeta<BreadcrumbItemProps> = {
   },
 };
 
-export function registerBreadcrumbItem(
-  loader?: Registerable,
-  customBreadcrumbItemMeta?: ComponentMeta<BreadcrumbItemProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(
-    BreadcrumbItem,
-    customBreadcrumbItemMeta ?? breadcrumbItemMeta
-  );
-}
-
 export const breadcrumbLinkMeta: ComponentMeta<BreadcrumbLinkProps> = {
   ...getComponentNameAndImportMeta("BreadcrumbLink", "BreadcrumbItem"),
   props: {
@@ -82,18 +63,6 @@ export const breadcrumbLinkMeta: ComponentMeta<BreadcrumbLinkProps> = {
     },
   },
 };
-
-export function registerBreadcrumbLink(
-  loader?: Registerable,
-  customBreadcrumbLinkMeta?: ComponentMeta<BreadcrumbLinkProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(
-    BreadcrumbLink,
-    customBreadcrumbLinkMeta ?? breadcrumbLinkMeta
-  );
-}
 
 export const breadcrumbMeta: ComponentMeta<BreadcrumbProps> = {
   ...getComponentNameAndImportMeta("Breadcrumb"),
@@ -164,15 +133,6 @@ export const breadcrumbMeta: ComponentMeta<BreadcrumbProps> = {
   },
 };
 
-export function registerBreadcrumb(
-  loader?: Registerable,
-  customBreadcrumbMeta?: ComponentMeta<BreadcrumbProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Breadcrumb, customBreadcrumbMeta ?? breadcrumbMeta);
-}
-
 export const breadcrumbSeparatorMeta: ComponentMeta<BreadcrumbSeparatorProps> = {
   ...getComponentNameAndImportMeta("BreadcrumbSeparator", "Breadcrumb"),
   props: {
@@ -185,15 +145,3 @@ export const breadcrumbSeparatorMeta: ComponentMeta<BreadcrumbSeparatorProps> = 
     },
   },
 };
-
-export function registerBreadcrumbSeparator(
-  loader?: Registerable,
-  customBreadcrumbSeparatorMeta?: ComponentMeta<BreadcrumbSeparatorProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(
-    BreadcrumbSeparator,
-    customBreadcrumbSeparatorMeta ?? breadcrumbSeparatorMeta
-  );
-}

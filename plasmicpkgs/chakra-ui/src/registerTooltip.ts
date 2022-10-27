@@ -1,8 +1,5 @@
-import { Tooltip, TooltipProps } from "@chakra-ui/react";
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
+import { TooltipProps } from "@chakra-ui/react";
+import { ComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
@@ -78,12 +75,3 @@ export const tooltipMeta: ComponentMeta<TooltipProps> = {
     },
   },
 };
-
-export function registerTooltip(
-  loader?: Registerable,
-  customTooltipMeta?: ComponentMeta<TooltipProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Tooltip, customTooltipMeta ?? tooltipMeta);
-}

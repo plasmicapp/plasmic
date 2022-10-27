@@ -1,19 +1,11 @@
 import {
-  NumberDecrementStepper,
   NumberDecrementStepperProps,
-  NumberIncrementStepper,
   NumberIncrementStepperProps,
-  NumberInput,
-  NumberInputField,
   NumberInputFieldProps,
   NumberInputProps,
-  NumberInputStepper,
   NumberInputStepperProps,
 } from "@chakra-ui/react";
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
+import { ComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
@@ -98,15 +90,6 @@ export const numberInputMeta: ComponentMeta<NumberInputProps> = {
   },
 };
 
-export function registerNumberInput(
-  loader?: Registerable,
-  customNumberInputMeta?: ComponentMeta<NumberInputProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(NumberInput, customNumberInputMeta ?? numberInputMeta);
-}
-
 export const numberInputStepperMeta: ComponentMeta<NumberInputStepperProps> = {
   ...getComponentNameAndImportMeta("NumberInputStepper", "NumberInput"),
   props: {
@@ -130,18 +113,6 @@ export const numberInputStepperMeta: ComponentMeta<NumberInputStepperProps> = {
   },
 };
 
-export function registerNumberInputStepper(
-  loader?: Registerable,
-  customNumberInputStepperMeta?: ComponentMeta<NumberInputStepperProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(
-    NumberInputStepper,
-    customNumberInputStepperMeta ?? numberInputStepperMeta
-  );
-}
-
 export const numberDecrementStepperMeta: ComponentMeta<NumberDecrementStepperProps> = {
   ...getComponentNameAndImportMeta(
     "NumberDecrementStepper",
@@ -149,18 +120,6 @@ export const numberDecrementStepperMeta: ComponentMeta<NumberDecrementStepperPro
   ),
   props: {},
 };
-
-export function registerNumberDecrementStepper(
-  loader?: Registerable,
-  customNumberDecrementStepperMeta?: ComponentMeta<NumberDecrementStepperProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(
-    NumberDecrementStepper,
-    customNumberDecrementStepperMeta ?? numberDecrementStepperMeta
-  );
-}
 
 export const numberIncrementStepperMeta: ComponentMeta<NumberIncrementStepperProps> = {
   ...getComponentNameAndImportMeta(
@@ -170,31 +129,7 @@ export const numberIncrementStepperMeta: ComponentMeta<NumberIncrementStepperPro
   props: {},
 };
 
-export function registerNumberIncrementStepper(
-  loader?: Registerable,
-  customNumberIncrementStepperMeta?: ComponentMeta<NumberIncrementStepperProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(
-    NumberIncrementStepper,
-    customNumberIncrementStepperMeta ?? numberIncrementStepperMeta
-  );
-}
-
 export const numberInputFieldMeta: ComponentMeta<NumberInputFieldProps> = {
   ...getComponentNameAndImportMeta("NumberInputField", "NumberInput"),
   props: {},
 };
-
-export function registerNumberInputField(
-  loader?: Registerable,
-  customNumberInputFieldMeta?: ComponentMeta<NumberInputFieldProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(
-    NumberInputField,
-    customNumberInputFieldMeta ?? numberInputFieldMeta
-  );
-}

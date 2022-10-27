@@ -1,19 +1,11 @@
 import {
-  Accordion,
-  AccordionButton,
   AccordionButtonProps,
-  AccordionIcon,
-  AccordionItem,
   AccordionItemProps,
-  AccordionPanel,
   AccordionPanelProps,
   AccordionProps,
   IconProps,
 } from "@chakra-ui/react";
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
+import { ComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
@@ -53,15 +45,6 @@ export const accordionMeta: ComponentMeta<AccordionProps> = {
   },
 };
 
-export function registerAccordion(
-  loader?: Registerable,
-  customAccordionMeta?: ComponentMeta<AccordionProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Accordion, customAccordionMeta ?? accordionMeta);
-}
-
 export const accordionItemMeta: ComponentMeta<AccordionItemProps> = {
   ...getComponentNameAndImportMeta("AccordionItem", "Accordion"),
   props: {
@@ -97,18 +80,6 @@ export const accordionItemMeta: ComponentMeta<AccordionItemProps> = {
   },
 };
 
-export function registerAccordionItem(
-  loader?: Registerable,
-  customAccordionItemMeta?: ComponentMeta<AccordionItemProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(
-    AccordionItem,
-    customAccordionItemMeta ?? accordionItemMeta
-  );
-}
-
 export const accordionButtonMeta: ComponentMeta<AccordionButtonProps> = {
   ...getComponentNameAndImportMeta("AccordionButton", "AccordionItem"),
   props: {
@@ -139,18 +110,6 @@ export const accordionButtonMeta: ComponentMeta<AccordionButtonProps> = {
   },
 };
 
-export function registerAccordionButton(
-  loader?: Registerable,
-  customAccordionButtonMeta?: ComponentMeta<AccordionButtonProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(
-    AccordionButton,
-    customAccordionButtonMeta ?? accordionButtonMeta
-  );
-}
-
 export const accordionPanelMeta: ComponentMeta<AccordionPanelProps> = {
   ...getComponentNameAndImportMeta("AccordionPanel", "AccordionItem"),
   props: {
@@ -171,31 +130,7 @@ export const accordionPanelMeta: ComponentMeta<AccordionPanelProps> = {
   },
 };
 
-export function registerAccordionPanel(
-  loader?: Registerable,
-  customAccordionPanelMeta?: ComponentMeta<AccordionPanelProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(
-    AccordionPanel,
-    customAccordionPanelMeta ?? accordionPanelMeta
-  );
-}
-
 export const accordionIconMeta: ComponentMeta<IconProps> = {
   ...getComponentNameAndImportMeta("AccordionIcon", "AccordionButton"),
   props: {},
 };
-
-export function registerAccordionIcon(
-  loader?: Registerable,
-  customAccordionIconMeta?: ComponentMeta<IconProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(
-    AccordionIcon,
-    customAccordionIconMeta ?? accordionIconMeta
-  );
-}

@@ -1,89 +1,161 @@
+import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  AspectRatio,
+  Avatar,
+  AvatarBadge,
+  AvatarGroup,
+  Badge,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+  Button,
+  ButtonGroup,
+  Checkbox,
+  CheckboxGroup,
+  Code,
+  Divider,
+  FormControl,
+  FormErrorMessage,
+  FormHelperText,
+  FormLabel,
+  Heading,
+  Highlight,
+  Image,
+  Input,
+  Kbd,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  PinInput,
+  PinInputField,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
+  Progress,
+  Radio,
+  RadioGroup,
+  Select,
+  Stat,
+  StatArrow,
+  StatHelpText,
+  StatLabel,
+  StatNumber,
+  Switch,
+  Tab,
+  Table,
+  TableCaption,
+  TableContainer,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Tbody,
+  Td,
+  Text,
+  Tfoot,
+  Th,
+  Thead,
+  Toast,
+  Tooltip,
+  Tr,
+} from "@chakra-ui/react";
 import { Registerable } from "./registerable";
+
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import {
-  registerAccordion,
-  registerAccordionButton,
-  registerAccordionIcon,
-  registerAccordionItem,
-  registerAccordionPanel,
+  accordionButtonMeta,
+  accordionIconMeta,
+  accordionItemMeta,
+  accordionMeta,
+  accordionPanelMeta,
 } from "./registerAccordion";
-import { registerAspectRatio } from "./registerAspectRatio";
+import { aspectRatioMeta } from "./registerAspectRatio";
+import { avatarBadgeMeta, avatarGroupMeta, avatarMeta } from "./registerAvatar";
+import { badgeMeta } from "./registerBadge";
 import {
-  registerAvatar,
-  registerAvatarBadge,
-  registerAvatarGroup,
-} from "./registerAvatar";
-import { registerBadge } from "./registerBadge";
-import {
-  registerBreadcrumb,
-  registerBreadcrumbItem,
-  registerBreadcrumbLink,
-  registerBreadcrumbSeparator,
+  breadcrumbItemMeta,
+  breadcrumbLinkMeta,
+  breadcrumbMeta,
+  breadcrumbSeparatorMeta,
 } from "./registerBreadcrumb";
-import { registerButton, registerButtonGroup } from "./registerButton";
+import { buttonGroupMeta, buttonMeta } from "./registerButton";
 import { registerChakraProvider } from "./registerChakraProvider";
-import { registerCheckbox, registerCheckboxGroup } from "./registerCheckBox";
-import { registerCode } from "./registerCode";
-import { registerDivider } from "./registerDivider";
+import { checkboxGroupMeta, checkboxMeta } from "./registerCheckBox";
+import { codeMeta } from "./registerCode";
+import { dividerMeta } from "./registerDivider";
 import {
-  registerFormControl,
-  registerFormErrorMessage,
-  registerFormHelperText,
-  registerFormLabel,
+  formControlMeta,
+  formErrorMessageMeta,
+  formHelperTextMeta,
+  formLabelMeta,
 } from "./registerFormControl";
-import { registerHeading } from "./registerHeading";
-import { registerHighlight } from "./registerHighlight";
-import { registerImage } from "./registerImage";
-import { registerInput } from "./registerInput";
-import { registerKbd } from "./registerKbd";
+import { headingMeta } from "./registerHeading";
+import { highlightMeta } from "./registerHighlight";
+import { imageMeta } from "./registerImage";
+import { inputMeta } from "./registerInput";
+import { kbdMeta } from "./registerKbd";
 import {
-  registerNumberDecrementStepper,
-  registerNumberIncrementStepper,
-  registerNumberInput,
-  registerNumberInputField,
-  registerNumberInputStepper,
+  numberDecrementStepperMeta,
+  numberIncrementStepperMeta,
+  numberInputFieldMeta,
+  numberInputMeta,
+  numberInputStepperMeta,
 } from "./registerNumberInput";
-import { registerPinInput, registerPinInputField } from "./registerPinInput";
+import { pinInputFieldMeta, pinInputMeta } from "./registerPinInput";
 import {
-  registerPopover,
-  registerPopoverArrow,
-  registerPopoverBody,
-  registerPopoverCloseButton,
-  registerPopoverContent,
-  registerPopoverHeader,
-  registerPopoverTrigger,
+  popoverArrowMeta,
+  popoverBodyMeta,
+  popoverCloseButtonMeta,
+  popoverContentMeta,
+  popoverHeaderMeta,
+  popoverMeta,
+  popoverTriggerMeta,
 } from "./registerPopover";
-import { registerProgress } from "./registerProgress";
-import { registerRadio, registerRadioGroup } from "./registerRadio";
-import { registerOption, registerSelect } from "./registerSelect";
+import { progressMeta } from "./registerProgress";
+import { radioGroupMeta, radioMeta } from "./registerRadio";
+import { Option, optionMeta, selectMeta } from "./registerSelect";
 import {
-  registerStat,
-  registerStatArrow,
-  registerStatHelpText,
-  registerStatLabel,
-  registerStatNumber,
+  statArrowMeta,
+  statHelpTextMeta,
+  statLabelMeta,
+  statMeta,
+  statNumberMeta,
 } from "./registerStat";
-import { registerSwitch } from "./registerSwitch";
+import { switchMeta } from "./registerSwitch";
 import {
-  registerTable,
-  registerTableCaption,
-  registerTableContainer,
-  registerTbody,
-  registerTd,
-  registerTfoot,
-  registerTh,
-  registerThead,
-  registerTr,
+  tableCaptionMeta,
+  tableContainerMeta,
+  tableMeta,
+  tbodyMeta,
+  tdMeta,
+  tfootMeta,
+  theadMeta,
+  thMeta,
+  trMeta,
 } from "./registerTable";
 import {
-  registerTab,
-  registerTabList,
-  registerTabPanel,
-  registerTabPanels,
-  registerTabs,
+  tabListMeta,
+  tabMeta,
+  tabPanelMeta,
+  tabPanelsMeta,
+  tabsMeta,
 } from "./registerTabs";
-import { registerText } from "./registerText";
-import { registerToast } from "./registerToast";
-import { registerTooltip } from "./registerTooltip";
+import { textMeta } from "./registerText";
+import { toastMeta } from "./registerToast";
+import { tooltipMeta } from "./registerTooltip";
 
 export * from "./registerable";
 export * from "./registerAccordion";
@@ -117,76 +189,87 @@ export * from "./registerToast";
 export * from "./registerTooltip";
 
 export function registerAll(loader?: Registerable) {
-  registerAccordion(loader);
-  registerAccordionButton(loader);
-  registerAccordionIcon(loader);
-  registerAccordionItem(loader);
-  registerAccordionPanel(loader);
-  registerAvatar(loader);
-  registerAvatarBadge(loader);
-  registerAvatarGroup(loader);
-  registerAspectRatio(loader);
-  registerBadge(loader);
-  registerBreadcrumb(loader);
-  registerBreadcrumbItem(loader);
-  registerBreadcrumbLink(loader);
-  registerBreadcrumbSeparator(loader);
-  registerButton(loader);
-  registerButtonGroup(loader);
+  const _registerComponent = <T extends React.ComponentType<any>>(
+    Component: T,
+    defaultMeta: ComponentMeta<React.ComponentProps<T>>
+  ) => {
+    if (loader) {
+      loader.registerComponent(Component, defaultMeta);
+    } else {
+      registerComponent(Component, defaultMeta);
+    }
+  };
   registerChakraProvider(loader);
-  registerCheckbox(loader);
-  registerCheckboxGroup(loader);
-  registerCode(loader);
-  registerDivider(loader);
-  registerFormControl(loader);
-  registerFormErrorMessage(loader);
-  registerFormHelperText(loader);
-  registerFormLabel(loader);
-  registerHeading(loader);
-  registerHighlight(loader);
-  registerImage(loader);
-  registerInput(loader);
-  registerKbd(loader);
-  registerNumberInput(loader);
-  registerNumberDecrementStepper(loader);
-  registerNumberIncrementStepper(loader);
-  registerNumberInputField(loader);
-  registerNumberInputStepper(loader);
-  registerOption(loader);
-  registerPinInput(loader);
-  registerPinInputField(loader);
-  registerPopover(loader);
-  registerPopoverBody(loader);
-  registerPopoverArrow(loader);
-  registerPopoverCloseButton(loader);
-  registerPopoverContent(loader);
-  registerPopoverHeader(loader);
-  registerPopoverTrigger(loader);
-  registerProgress(loader);
-  registerRadio(loader);
-  registerRadioGroup(loader);
-  registerSelect(loader);
-  registerStat(loader);
-  registerStatArrow(loader);
-  registerStatHelpText(loader);
-  registerStatLabel(loader);
-  registerStatNumber(loader);
-  registerSwitch(loader);
-  registerTable(loader);
-  registerTableCaption(loader);
-  registerTbody(loader);
-  registerTfoot(loader);
-  registerThead(loader);
-  registerTd(loader);
-  registerTh(loader);
-  registerTr(loader);
-  registerTableContainer(loader);
-  registerTabList(loader);
-  registerTab(loader);
-  registerTabPanel(loader);
-  registerTabPanels(loader);
-  registerTabs(loader);
-  registerText(loader);
-  registerToast(loader);
-  registerTooltip(loader);
+
+  _registerComponent(Accordion, accordionMeta);
+  _registerComponent(AccordionButton, accordionButtonMeta);
+  _registerComponent(AccordionIcon, accordionIconMeta);
+  _registerComponent(AccordionItem, accordionItemMeta);
+  _registerComponent(AccordionPanel, accordionPanelMeta);
+  _registerComponent(AspectRatio, aspectRatioMeta);
+  _registerComponent(Avatar, avatarMeta);
+  _registerComponent(AvatarBadge, avatarBadgeMeta);
+  _registerComponent(AvatarGroup, avatarGroupMeta);
+  _registerComponent(Badge, badgeMeta);
+  _registerComponent(Breadcrumb, breadcrumbMeta);
+  _registerComponent(BreadcrumbItem, breadcrumbItemMeta);
+  _registerComponent(BreadcrumbLink, breadcrumbLinkMeta);
+  _registerComponent(BreadcrumbSeparator, breadcrumbSeparatorMeta);
+  _registerComponent(Button, buttonMeta);
+  _registerComponent(ButtonGroup, buttonGroupMeta);
+  _registerComponent(Checkbox, checkboxMeta);
+  _registerComponent(CheckboxGroup, checkboxGroupMeta);
+  _registerComponent(Code, codeMeta);
+  _registerComponent(Divider, dividerMeta);
+  _registerComponent(FormControl, formControlMeta);
+  _registerComponent(FormErrorMessage, formErrorMessageMeta);
+  _registerComponent(FormHelperText, formHelperTextMeta);
+  _registerComponent(FormLabel, formLabelMeta);
+  _registerComponent(Heading, headingMeta);
+  _registerComponent(Highlight, highlightMeta);
+  _registerComponent(Image, imageMeta);
+  _registerComponent(Input, inputMeta);
+  _registerComponent(Kbd, kbdMeta);
+  _registerComponent(NumberInput, numberInputMeta);
+  _registerComponent(NumberDecrementStepper, numberDecrementStepperMeta);
+  _registerComponent(NumberIncrementStepper, numberIncrementStepperMeta);
+  _registerComponent(NumberInputField, numberInputFieldMeta);
+  _registerComponent(NumberInputStepper, numberInputStepperMeta);
+  _registerComponent(Option, optionMeta);
+  _registerComponent(Select, selectMeta);
+  _registerComponent(PinInput, pinInputMeta);
+  _registerComponent(PinInputField, pinInputFieldMeta);
+  _registerComponent(Popover, popoverMeta);
+  _registerComponent(PopoverBody, popoverBodyMeta);
+  _registerComponent(PopoverArrow, popoverArrowMeta);
+  _registerComponent(PopoverCloseButton, popoverCloseButtonMeta);
+  _registerComponent(PopoverContent, popoverContentMeta);
+  _registerComponent(PopoverHeader, popoverHeaderMeta);
+  _registerComponent(PopoverTrigger, popoverTriggerMeta);
+  _registerComponent(Progress, progressMeta);
+  _registerComponent(Radio, radioMeta);
+  _registerComponent(RadioGroup, radioGroupMeta);
+  _registerComponent(Stat, statMeta);
+  _registerComponent(StatArrow, statArrowMeta);
+  _registerComponent(StatHelpText, statHelpTextMeta);
+  _registerComponent(StatLabel, statLabelMeta);
+  _registerComponent(StatNumber, statNumberMeta);
+  _registerComponent(Switch, switchMeta);
+  _registerComponent(Table, tableMeta);
+  _registerComponent(TableCaption, tableCaptionMeta);
+  _registerComponent(Tbody, tbodyMeta);
+  _registerComponent(Thead, theadMeta);
+  _registerComponent(Tfoot, tfootMeta);
+  _registerComponent(Td, tdMeta);
+  _registerComponent(Th, thMeta);
+  _registerComponent(Tr, trMeta);
+  _registerComponent(TableContainer, tableContainerMeta);
+  _registerComponent(Text, textMeta);
+  _registerComponent(Toast, toastMeta);
+  _registerComponent(Tooltip, tooltipMeta);
+  _registerComponent(TabList, tabListMeta);
+  _registerComponent(Tab, tabMeta);
+  _registerComponent(Tabs, tabsMeta);
+  _registerComponent(TabPanel, tabPanelMeta);
+  _registerComponent(TabPanels, tabPanelsMeta);
 }

@@ -1,8 +1,5 @@
-import { Toast, ToastProps } from "@chakra-ui/react";
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
+import { ToastProps } from "@chakra-ui/react";
+import { ComponentMeta } from "@plasmicapp/host/registerComponent";
 import { getComponentNameAndImportMeta } from "./utils";
 
 export const toastMeta: ComponentMeta<ToastProps> = {
@@ -44,12 +41,3 @@ export const toastMeta: ComponentMeta<ToastProps> = {
     },
   },
 };
-
-export function registerToast(
-  loader?: Registerable,
-  customToastMeta?: ComponentMeta<ToastProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Toast, customToastMeta ?? toastMeta);
-}
