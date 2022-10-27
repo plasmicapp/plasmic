@@ -28,6 +28,12 @@ import {
   Image,
   Input,
   Kbd,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   NumberDecrementStepper,
   NumberIncrementStepper,
   NumberInput,
@@ -107,6 +113,16 @@ import { highlightMeta } from "./registerHighlight";
 import { imageMeta } from "./registerImage";
 import { inputMeta } from "./registerInput";
 import { kbdMeta } from "./registerKbd";
+import {
+  Modal,
+  modalBodyMeta,
+  modalCloseButtonMeta,
+  modalContentMeta,
+  modalFooterMeta,
+  modalHeaderMeta,
+  modalMeta,
+  modalOverlayMeta,
+} from "./registerModal";
 import {
   numberDecrementStepperMeta,
   numberIncrementStepperMeta,
@@ -230,6 +246,13 @@ export function registerAll(loader?: Registerable) {
   _registerComponent(Image, imageMeta);
   _registerComponent(Input, inputMeta);
   _registerComponent(Kbd, kbdMeta);
+  _registerComponent(Modal, modalMeta);
+  _registerComponent(ModalOverlay, modalOverlayMeta);
+  _registerComponent(ModalContent, modalContentMeta);
+  _registerComponent(ModalHeader, modalHeaderMeta);
+  _registerComponent(ModalBody, modalBodyMeta);
+  _registerComponent(ModalFooter, modalFooterMeta);
+  _registerComponent(ModalCloseButton, modalCloseButtonMeta);
   _registerComponent(NumberInput, numberInputMeta);
   _registerComponent(NumberDecrementStepper, numberDecrementStepperMeta);
   _registerComponent(NumberIncrementStepper, numberIncrementStepperMeta);
