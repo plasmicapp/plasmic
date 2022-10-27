@@ -289,14 +289,24 @@ export class PlasmicApi {
 
   async genLocalizationStrings(
     projects: readonly string[],
-    format: "po" | "json" | "lingui"
+    format: "po" | "json" | "lingui",
+    projectIdsAndTokens: ProjectIdAndToken[]
   ) {
     const result = await this.get(
       `${
         this.codegenHost
       }/api/v1/localization/gen-texts?format=${format}&preview=true&${projects
         .map((p) => `projectId=${p}`)
-        .join("&")}`
+        .join("&")}`,
+      undefined,
+      {
+        "x-plasmic-api-project-tokens": projectIdsAndTokens
+          .map(
+            ({ projectId, projectApiToken }) =>
+              `${projectId}:${projectApiToken}`
+          )
+          .join(","),
+      }
     );
     return result.data as string;
   }
@@ -408,10 +418,10 @@ export class PlasmicApi {
     }
   }
 
-  private async get(url: string, rethrowAppError?: boolean) {
+  private async get(url: string, rethrowAppError?: boolean, extraHeaders?: {}) {
     try {
       return await axios.get(url, {
-        headers: this.makeHeaders(),
+        headers: { ...this.makeHeaders(), ...(extraHeaders ?? {}) },
       });
     } catch (e) {
       const error = e as AxiosError;

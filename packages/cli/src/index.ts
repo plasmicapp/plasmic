@@ -261,6 +261,12 @@ yargs
           type: "boolean",
           describe: "Overwrite the output file.",
           default: false,
+        })
+        .option("project-tokens", {
+          type: "array",
+          default: [],
+          describe:
+            "(Optional) List of project API tokens to be used for auth, in the format PROJECT_ID:PROJECT_API_TOKEN (the pairs should be separated by comma)",
         }),
     (argv) => handleError(localizationStrings(argv))
   )

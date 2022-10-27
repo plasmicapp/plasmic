@@ -9,7 +9,8 @@ import {
 
 export async function upsertStyleTokens(
   context: PlasmicContext,
-  newStyleMap: StyleTokensMap
+  newStyleMap: StyleTokensMap,
+  projectId: string
 ) {
   const curStyleMap = await readCurStyleMap(context);
   for (const prop of newStyleMap.props) {
@@ -22,6 +23,19 @@ export async function upsertStyleTokens(
       curStyleMap.props.push(prop);
     }
   }
+  const allNewPropIds = new Set(newStyleMap.props.map((prop) => prop.meta.id));
+  curStyleMap.props = curStyleMap.props.filter((prop) => {
+    if (prop.meta.projectId !== projectId) {
+      // Keep all tokens from other projects
+      return true;
+    }
+    if (allNewPropIds.has(prop.meta.id)) {
+      // Keep the current tokens in this project
+      return true;
+    }
+    // Delete the tokens that have been removed from the project
+    return false;
+  });
   curStyleMap.props.sort((prop1, prop2) =>
     prop1.name === prop2.name ? 0 : prop1.name < prop2.name ? -1 : 1
   );

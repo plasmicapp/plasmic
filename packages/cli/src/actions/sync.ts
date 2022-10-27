@@ -672,7 +672,11 @@ async function syncProject(
     indirect
   );
   syncCodeComponentsMeta(context, projectId, projectBundle.codeComponentMetas);
-  await upsertStyleTokens(context, projectBundle.usedTokens);
+  await upsertStyleTokens(
+    context,
+    projectBundle.usedTokens,
+    projectBundle.projectConfig.projectId
+  );
   await syncProjectIconAssets(
     context,
     projectId,
