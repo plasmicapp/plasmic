@@ -1,8 +1,5 @@
-import { Badge, BadgeProps } from "@chakra-ui/react";
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
+import { BadgeProps } from "@chakra-ui/react";
+import { ComponentMeta } from "@plasmicapp/host/registerComponent";
 import { getComponentNameAndImportMeta } from "./utils";
 
 export const badgeMeta: ComponentMeta<BadgeProps> = {
@@ -40,12 +37,3 @@ export const badgeMeta: ComponentMeta<BadgeProps> = {
     },
   },
 };
-
-export function registerBadge(
-  loader?: Registerable,
-  customBadgeMeta?: ComponentMeta<BadgeProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Badge, customBadgeMeta ?? badgeMeta);
-}

@@ -1,13 +1,5 @@
-import {
-  PinInput,
-  PinInputField,
-  PinInputFieldProps,
-  PinInputProps,
-} from "@chakra-ui/react";
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
+import { PinInputFieldProps, PinInputProps } from "@chakra-ui/react";
+import { ComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
@@ -87,28 +79,7 @@ export const pinInputMeta: ComponentMeta<PinInputProps> = {
   },
 };
 
-export function registerPinInput(
-  loader?: Registerable,
-  customPinInputMeta?: ComponentMeta<PinInputProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(PinInput, customPinInputMeta ?? pinInputMeta);
-}
-
 export const pinInputFieldMeta: ComponentMeta<PinInputFieldProps> = {
   ...getComponentNameAndImportMeta("PinInputField", "PinInput"),
   props: {},
 };
-
-export function registerPinInputField(
-  loader?: Registerable,
-  customPinInputFieldMeta?: ComponentMeta<PinInputFieldProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(
-    PinInputField,
-    customPinInputFieldMeta ?? pinInputFieldMeta
-  );
-}

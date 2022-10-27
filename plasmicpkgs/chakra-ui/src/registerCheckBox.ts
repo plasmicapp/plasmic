@@ -1,13 +1,5 @@
-import {
-  Checkbox,
-  CheckboxGroup,
-  CheckboxGroupProps,
-  CheckboxProps,
-} from "@chakra-ui/react";
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
+import { CheckboxGroupProps, CheckboxProps } from "@chakra-ui/react";
+import { ComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
@@ -76,15 +68,6 @@ export const checkboxMeta: ComponentMeta<CheckboxProps> = {
   },
 };
 
-export function registerCheckbox(
-  loader?: Registerable,
-  customCheckboxMeta?: ComponentMeta<CheckboxProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Checkbox, customCheckboxMeta ?? checkboxMeta);
-}
-
 export const checkboxGroupMeta: ComponentMeta<CheckboxGroupProps> = {
   ...getComponentNameAndImportMeta("CheckboxGroup"),
   props: {
@@ -137,15 +120,3 @@ export const checkboxGroupMeta: ComponentMeta<CheckboxGroupProps> = {
     },
   },
 };
-
-export function registerCheckboxGroup(
-  loader?: Registerable,
-  customCheckboxGroupMeta?: ComponentMeta<CheckboxGroupProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(
-    CheckboxGroup,
-    customCheckboxGroupMeta ?? checkboxGroupMeta
-  );
-}

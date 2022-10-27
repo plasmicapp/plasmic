@@ -1,13 +1,5 @@
-import {
-  Button,
-  ButtonGroup,
-  ButtonGroupProps,
-  ButtonProps,
-} from "@chakra-ui/react";
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
+import { ButtonGroupProps, ButtonProps } from "@chakra-ui/react";
+import { ComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
@@ -84,15 +76,6 @@ export const buttonGroupMeta: ComponentMeta<ButtonGroupProps> = {
   },
 };
 
-export function registerButtonGroup(
-  loader?: Registerable,
-  customButtonGroupMeta?: ComponentMeta<ButtonGroupProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(ButtonGroup, customButtonGroupMeta ?? buttonGroupMeta);
-}
-
 export const buttonMeta: ComponentMeta<ButtonProps> = {
   ...getComponentNameAndImportMeta("Button", "ButtonGroup"),
   props: {
@@ -147,12 +130,3 @@ export const buttonMeta: ComponentMeta<ButtonProps> = {
     },
   },
 };
-
-export function registerButton(
-  loader?: Registerable,
-  customButtonMeta?: ComponentMeta<ButtonProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Button, customButtonMeta ?? buttonMeta);
-}

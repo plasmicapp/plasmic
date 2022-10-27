@@ -1,8 +1,5 @@
-import { Code, CodeProps } from "@chakra-ui/react";
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
-import { Registerable } from "./registerable";
+import { CodeProps } from "@chakra-ui/react";
+import { ComponentMeta } from "@plasmicapp/host/registerComponent";
 import { getComponentNameAndImportMeta } from "./utils";
 
 export const codeMeta: ComponentMeta<CodeProps> = {
@@ -48,12 +45,3 @@ export const codeMeta: ComponentMeta<CodeProps> = {
     },
   },
 };
-
-export function registerCode(
-  loader?: Registerable,
-  customCodeMeta?: ComponentMeta<CodeProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Code, customCodeMeta ?? codeMeta);
-}

@@ -1,9 +1,6 @@
-import { Select, SelectProps } from "@chakra-ui/react";
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
+import { SelectProps } from "@chakra-ui/react";
+import { ComponentMeta } from "@plasmicapp/host/registerComponent";
 import React from "react";
-import { Registerable } from "./registerable";
 import {
   getComponentNameAndImportMeta,
   getPlasmicComponentName,
@@ -79,15 +76,6 @@ export const selectMeta: ComponentMeta<SelectProps> = {
   },
 };
 
-export function registerSelect(
-  loader?: Registerable,
-  customSelectMeta?: ComponentMeta<SelectProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Select, customSelectMeta ?? selectMeta);
-}
-
 export interface OptionProps {
   value: string;
   className?: string;
@@ -118,12 +106,3 @@ export const optionMeta: ComponentMeta<OptionProps> = {
     },
   },
 };
-
-export function registerOption(
-  loader?: Registerable,
-  customOptionMeta?: ComponentMeta<OptionProps>
-) {
-  const doRegisterComponent: typeof registerComponent = (...args) =>
-    loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Option, customOptionMeta ?? optionMeta);
-}
