@@ -1,0 +1,53 @@
+{
+  "name": "@plasmicpkgs/plasmic-pigeon-maps",
+  "version": "0.0.1",
+  "description": "Plasmic Pigeon Maps components.",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "module": "dist/plasmic-pigeon-maps.esm.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test --passWithNoTests",
+    "lint": "tsdx lint",
+    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
+  },
+  "peerDependencies": {
+    "react": ">=16"
+  },
+  "size-limit": [
+    {
+      "path": "dist/plasmic-pigeon-maps.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/plasmic-pigeon-maps.esm.js",
+      "limit": "10 KB"
+    }
+  ],
+  "devDependencies": {
+    "@plasmicapp/host": "^1.0.117",
+    "@plasmicapp/query": "^0.1.61",
+    "@size-limit/preset-small-lib": "^7.0.8",
+    "@types/react": "^17.0.43",
+    "@types/react-dom": "^17.0.14",
+    "husky": "^7.0.4",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "size-limit": "^7.0.8",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.3.1",
+    "typescript": "^4.6.3"
+  },
+  "dependencies": {
+    "pigeon-maps": "^0.21.3"
+  }
+}
