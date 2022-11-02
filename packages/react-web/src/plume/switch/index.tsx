@@ -1,8 +1,8 @@
-import { AriaSwitchProps } from "@react-types/switch";
-import * as React from "react";
 import { useSwitch as useAriaSwitch } from "@react-aria/switch";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
 import { useToggleState } from "@react-stately/toggle";
+import { AriaSwitchProps } from "@react-types/switch";
+import * as React from "react";
 import { pick } from "../../common";
 import { mergeProps } from "../../react-utils";
 import { Overrides } from "../../render/elements";
@@ -97,9 +97,9 @@ export function useSwitch<P extends SwitchProps, C extends AnyPlasmicClass>(
       props: mergeProps(getStyleProps(props), {
         ref: rootRef,
       }),
-      wrapChildren: (children) => (
+      wrapChildren: (children: React.ReactNode) => (
         <>
-          <VisuallyHidden isFocusable>
+          <VisuallyHidden>
             <input {...inputProps} ref={inputRef} />
           </VisuallyHidden>
           {children}

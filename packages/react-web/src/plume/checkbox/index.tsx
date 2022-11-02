@@ -1,8 +1,8 @@
-import { AriaCheckboxProps } from "@react-types/checkbox";
-import * as React from "react";
 import { useCheckbox as useAriaCheckbox } from "@react-aria/checkbox";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
 import { useToggleState } from "@react-stately/toggle";
+import { AriaCheckboxProps } from "@react-types/checkbox";
+import * as React from "react";
 import { pick } from "../../common";
 import { mergeProps } from "../../react-utils";
 import { Overrides } from "../../render/elements";
@@ -110,9 +110,9 @@ export function useCheckbox<P extends CheckboxProps, C extends AnyPlasmicClass>(
       props: mergeProps(getStyleProps(props), {
         ref: rootRef,
       }),
-      wrapChildren: (children) => (
+      wrapChildren: (children: React.ReactNode) => (
         <>
-          <VisuallyHidden isFocusable>
+          <VisuallyHidden>
             <input {...inputProps} ref={inputRef} />
           </VisuallyHidden>
           {children}
