@@ -3,7 +3,10 @@ import { LoaderBundleOutput } from '@plasmicapp/loader-fetcher';
 export class DepsGraph {
   private dependsOn: Record<string, string[]> = {};
   private dependedBy: Record<string, string[]> = {};
-  constructor(private bundle: LoaderBundleOutput, private browserBuild = true) {
+  constructor(
+    private bundle: LoaderBundleOutput,
+    private browserBuild: boolean
+  ) {
     this.rebuildGraph();
   }
 

@@ -265,8 +265,16 @@ export class InternalPlasmicComponentLoader {
   }
 
   async maybeFetchComponentData(
+    specs: ComponentLookupSpec[],
+    opts?: FetchComponentDataOpts
+  ): Promise<ComponentRenderData | null>;
+  async maybeFetchComponentData(
     ...specs: ComponentLookupSpec[]
+  ): Promise<ComponentRenderData | null>;
+  async maybeFetchComponentData(
+    ...args: any[]
   ): Promise<ComponentRenderData | null> {
+    const { specs, opts } = parseFetchComponentDataArgs(...args);
     const returnWithSpecsToFetch = async (
       specsToFetch: ComponentLookupSpec[]
     ) => {
@@ -279,7 +287,7 @@ export class InternalPlasmicComponentLoader {
         return null;
       }
 
-      return prepComponentData(this.bundle, ...existingMetas2);
+      return prepComponentData(this.bundle, existingMetas2, opts);
     };
 
     if (this.opts.alwaysFresh) {
@@ -293,16 +301,22 @@ export class InternalPlasmicComponentLoader {
       missing: missingSpecs,
     } = this.maybeGetCompMetas(...specs);
     if (missingSpecs.length === 0) {
-      return prepComponentData(this.bundle, ...existingMetas);
+      return prepComponentData(this.bundle, existingMetas, opts);
     }
 
     return await returnWithSpecsToFetch(missingSpecs);
   }
 
   async fetchComponentData(
+    specs: ComponentLookupSpec[],
+    opts?: FetchComponentDataOpts
+  ): Promise<ComponentRenderData>;
+  async fetchComponentData(
     ...specs: ComponentLookupSpec[]
-  ): Promise<ComponentRenderData> {
-    const data = await this.maybeFetchComponentData(...specs);
+  ): Promise<ComponentRenderData>;
+  async fetchComponentData(...args: any[]): Promise<ComponentRenderData> {
+    const { specs, opts } = parseFetchComponentDataArgs(...args);
+    const data = await this.maybeFetchComponentData(specs, opts);
 
     if (!data) {
       const { missing: missingSpecs } = this.maybeGetCompMetas(...specs);
@@ -656,4 +670,42 @@ export class PlasmicComponentLoader {
   clearCache() {
     return this.__internal.clearCache();
   }
+}
+
+interface FetchComponentDataOpts {
+  /**
+   * Will fetch either code targeting SSR or browser hydration in the
+   * returned bundle.
+   *
+   * By default, the target is browser. That's okay, because even when
+   * doing SSR, as long as you are using the same instance of PlasmicLoader
+   * that was used to fetch component data, it will still know how to get at
+   * the server code.
+   *
+   * But, if you are building your own SSR solution, where fetching and rendering
+   * are using different instances of PlasmicLoader, then you'll want to make
+   * sure that when you fetch, you are fetching the right one to be used in the
+   * right environment for either SSR or browser hydration.
+   */
+  target?: 'server' | 'browser';
+}
+
+function parseFetchComponentDataArgs(
+  specs: ComponentLookupSpec[],
+  opts?: FetchComponentDataOpts
+): { specs: ComponentLookupSpec[]; opts?: FetchComponentDataOpts };
+function parseFetchComponentDataArgs(
+  ...specs: ComponentLookupSpec[]
+): { specs: ComponentLookupSpec[]; opts?: FetchComponentDataOpts };
+function parseFetchComponentDataArgs(...args: any[]) {
+  let specs: ComponentLookupSpec[];
+  let opts: FetchComponentDataOpts | undefined;
+  if (Array.isArray(args[0])) {
+    specs = args[0];
+    opts = args[1];
+  } else {
+    specs = args;
+    opts = undefined;
+  }
+  return { specs, opts };
 }
