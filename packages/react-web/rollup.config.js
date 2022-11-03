@@ -25,6 +25,7 @@ export default [
   {
     input: {
       index: "./src/index-skinny.tsx",
+      "data-sources/index": "./src/data-sources/index.ts",
       "plume/button/index": "./src/plume/button/index.tsx",
       "plume/checkbox/index": "./src/plume/checkbox/index.tsx",
       "plume/menu/index": "./src/plume/menu/index.ts",
