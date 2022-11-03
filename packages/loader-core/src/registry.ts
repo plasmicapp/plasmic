@@ -80,10 +80,19 @@ export class Registry {
           }
         };
 
-    const func = new Function('require', 'exports', code);
+    let func;
+    try {
+      func = new Function('require', 'exports', code);
+    } catch (err) {
+      throw new Error(`PLASMIC: Failed to create function for ${name}: ${err}`);
+    }
     const exports = {};
     this.loadedModules[name] = exports;
-    func(requireFn, exports);
+    try {
+      func(requireFn, exports);
+    } catch (err) {
+      throw new Error(`PLASMIC: Failed to load ${name}: ${err}`);
+    }
     return exports;
   }
 
