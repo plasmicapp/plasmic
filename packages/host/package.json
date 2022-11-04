@@ -31,6 +31,7 @@
     "analyze": "size-limit --why"
   },
   "dependencies": {
+    "@plasmicapp/query": "^0.1.55",
     "window-or-global": "^1.0.1"
   },
   "devDependencies": {
