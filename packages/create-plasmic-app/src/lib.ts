@@ -77,10 +77,10 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
     template,
   });
 
-  // Ensure that we have a empty tsconfig and @types packages
-  // Gatsby by default supports typescript handling internally
-  // tsconfig so we don't have to ensure it
-  if (useTypescript && platform !== "gatsby") {
+  // Ensure that we have a empty tsconfig and @types packages.
+  // Gatsby and Next.js by default support typescript handling internally
+  // tsconfig so we don't have to ensure it.
+  if (useTypescript && platform === "react") {
     await ensureTsconfig(resolvedProjectPath);
   }
 

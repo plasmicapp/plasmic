@@ -17,8 +17,8 @@ const nextjsStrategy: CPAStrategy = {
   create: async (args) => {
     const { projectPath, template, useTypescript } = args;
     const createCommand = `npx create-next-app@latest ${
-      useTypescript ? "--typescript" : ""
-    } ${projectPath}`;
+      useTypescript ? "--ts" : "--js"
+    } --eslint ${projectPath}`;
     const templateArg = template ? ` --template ${template}` : "";
 
     // Default Next.js starter already supports Typescript
