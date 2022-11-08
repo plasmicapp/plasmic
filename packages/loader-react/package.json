@@ -22,6 +22,7 @@
     "analyze": "size-limit --why"
   },
   "dependencies": {
+    "@plasmicapp/data-sources-context": "^0.1.2",
     "@plasmicapp/host": "1.0.81",
     "@plasmicapp/loader-core": "1.0.84",
     "@plasmicapp/loader-splits": "1.0.15",

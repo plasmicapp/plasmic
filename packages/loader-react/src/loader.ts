@@ -1,3 +1,4 @@
+import * as PlasmicDataSourcesContext from '@plasmicapp/data-sources-context';
 import * as PlasmicHost from '@plasmicapp/host';
 import {
   ComponentMeta as InternalCodeComponentMeta,
@@ -155,6 +156,7 @@ export class InternalPlasmicComponentLoader {
       // Also inject @plasmicapp/query and @plasmicapp/host to use the
       // same contexts here and in loader-downloaded code.
       '@plasmicapp/query': PlasmicQuery,
+      '@plasmicapp/data-sources-context': PlasmicDataSourcesContext,
       '@plasmicapp/host': PlasmicHost,
       '@plasmicapp/loader-runtime-registry': {
         components: this.substitutedComponents,
