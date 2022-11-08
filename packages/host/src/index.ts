@@ -1,3 +1,4 @@
+import * as PlasmicQuery from "@plasmicapp/query";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { registerRenderErrorListener, setPlasmicRootNode } from "./canvas-host";
@@ -20,6 +21,7 @@ if (root.__Sub == null) {
   root.__Sub = {
     React,
     ReactDOM,
+    PlasmicQuery,
     hostModule,
     hostVersion,
     hostUtils: {
