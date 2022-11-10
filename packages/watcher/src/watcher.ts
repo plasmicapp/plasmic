@@ -1,4 +1,5 @@
-import socketio, { Socket } from 'socket.io-client';
+import type { Socket } from 'socket.io-client';
+import socketio from 'socket.io-client';
 
 export interface PlasmicRemoteChangeListener {
   onUpdate?: (projectId: string, revision: number) => void;
