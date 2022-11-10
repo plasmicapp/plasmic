@@ -129,7 +129,7 @@ export async function overwriteIndex(
       projectPath,
       ensureString(config.srcDir),
       "**",
-      "@(index|Home|home).*"
+      "@(index|Home|home|Homepage).*"
     )
   );
   const content =
