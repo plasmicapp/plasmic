@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import { spawnOrFail } from "../utils/cmd-utils";
 import { overwriteIndex } from "../utils/file-utils";
 import { installUpgrade } from "../utils/npm-utils";
@@ -34,6 +36,7 @@ const reactStrategy: CPAStrategy = {
     projectApiToken,
     projectId,
     projectPath,
+    useTypescript,
   }) => {
     if (scheme === "loader") {
       // Nothing to do
@@ -44,9 +47,21 @@ const reactStrategy: CPAStrategy = {
         projectPath,
       });
 
-      // Overwrite the index file
+      // Overwrite the App.tsx
       await overwriteIndex(projectPath, "react", scheme);
     }
+
+    // Deactivate React.StrictMode from index.tsx
+    const indexFileName = path.join(
+      projectPath,
+      "src",
+      `index.${useTypescript ? "tsx" : "ts"}`
+    );
+    let indexFile = fs.readFileSync(indexFileName).toString();
+    indexFile = indexFile.replace("<React.StrictMode>", "");
+    indexFile = indexFile.replace("</React.StrictMode>", "");
+    fs.writeFileSync(indexFileName, indexFile);
+
     return;
   },
   build: async (args) => {
