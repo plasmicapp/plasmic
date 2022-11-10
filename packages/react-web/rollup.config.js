@@ -25,7 +25,6 @@ export default [
   {
     input: {
       index: "./src/index-skinny.tsx",
-      "data-sources/index": "./src/data-sources/index.ts",
       "plume/button/index": "./src/plume/button/index.tsx",
       "plume/checkbox/index": "./src/plume/checkbox/index.tsx",
       "plume/menu/index": "./src/plume/menu/index.ts",
@@ -60,6 +59,42 @@ export default [
       typescript({
         typescript: ts,
         check: false,
+      }),
+    ],
+  },
+  // We build packages under lib/ that just re-exports some other @plasmicapp packages.
+  // This makes sure they don't end up in the main package (which loader will embed).
+  {
+    input: {
+      "data-sources/index": "./src/data-sources/index.ts",
+      "host/index": "./src/host/index.ts",
+      "query/index": "./src/query/index.ts",
+    },
+    external: (id) => {
+      if (id.startsWith("regenerator-runtime") || id.startsWith("tslib")) {
+        return false;
+      }
+      return !id.startsWith(".") && !path.isAbsolute(id);
+    },
+    output: [
+      {
+        dir: "lib",
+        format: "esm",
+        sourcemap: true,
+        globals: { react: "React" },
+        exports: "named",
+      },
+    ],
+    plugins: [
+      resolve(),
+      commonjs(),
+      json(),
+      typescript({
+        typescript: ts,
+        check: false,
+        tsconfigOverride: {
+          include: ["src/data-sources", "src/host", "src/query"],
+        },
       }),
     ],
   },

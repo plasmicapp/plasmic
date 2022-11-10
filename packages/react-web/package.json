@@ -42,6 +42,8 @@
   "dependencies": {
     "@plasmicapp/data-sources": "0.1.11",
     "@plasmicapp/data-sources-context": "0.1.2",
+    "@plasmicapp/host": "1.0.82",
+    "@plasmicapp/query": "0.1.55",
     "@react-aria/checkbox": "^3.5.0",
     "@react-aria/focus": "^3.7.0",
     "@react-aria/interactions": "^3.10.0",
