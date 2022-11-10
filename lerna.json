@@ -1,6 +1,7 @@
 {
   "packages": [
-    "packages/query",
+    "packages/create-plasmic-app",
+    "packages/host",
     "packages/loader-core",
     "packages/loader-edge",
     "packages/loader-fetcher",
@@ -10,10 +11,10 @@
     "packages/loader-splits",
     "packages/loader-svelte",
     "packages/loader-vue",
-    "packages/watcher",
-    "packages/host",
     "packages/preamble",
-    "packages/react-web"
+    "packages/query",
+    "packages/react-web",
+    "packages/watcher"
   ],
   "version": "independent",
   "npmClient": "yarn",
