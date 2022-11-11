@@ -1,6 +1,6 @@
 import { ProjectSyncMetadataModel } from "@plasmicapp/code-merger";
 import axios, { AxiosError } from "axios";
-import socketio from "socket.io-client";
+import socketio, { Socket } from "socket.io-client";
 import {
   AuthConfig,
   CodeConfig,
@@ -379,8 +379,8 @@ export class PlasmicApi {
     return ProjectSyncMetadataModel.fromJson(result.data);
   }
 
-  connectSocket(): SocketIOClient.Socket {
-    const socket = socketio.connect(this.studioHost, {
+  connectSocket(): Socket {
+    const socket = socketio(this.studioHost, {
       path: `/api/v1/socket`,
       transportOptions: {
         polling: {
