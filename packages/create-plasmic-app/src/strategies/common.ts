@@ -23,8 +23,5 @@ export async function runCodegenSync(opts: {
     ? `${projectId}:${projectApiToken}`
     : projectId;
 
-  await spawnOrFail(
-    `npx -p @plasmicapp/cli plasmic sync --yes -p ${project}`,
-    projectPath
-  );
+  await spawnOrFail(`npx plasmic sync --yes -p ${project}`, projectPath);
 }

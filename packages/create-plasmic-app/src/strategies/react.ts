@@ -10,7 +10,7 @@ const reactStrategy: CPAStrategy = {
   create: async (args) => {
     const { projectPath, useTypescript } = args;
     let { template } = args;
-    const createCommand = `npx -p create-react-app create-react-app ${projectPath}`;
+    const createCommand = `npx create-react-app@latest ${projectPath}`;
 
     if (!template && useTypescript) {
       template = "typescript";
