@@ -38,7 +38,7 @@ export function authByPolling(
   host: string,
   initToken: string
 ): CancellablePromise<AuthData> {
-  const socket = socketio.connect(host, {
+  const socket = socketio(host, {
     path: `/api/v1/init-token`,
     transportOptions: {
       polling: {
@@ -50,7 +50,7 @@ export function authByPolling(
   });
 
   const promise = new Promise<AuthData>((resolve, reject) => {
-    socket.on("connect", (reason: string) => {
+    socket.on("connect", () => {
       logger.info("Waiting for token...");
     });
 
@@ -219,7 +219,7 @@ export async function getCurrentAuth(authPath?: string) {
     await api.getCurrentUser();
     return auth;
   } catch (e) {
-    if (e.response?.status === 401) {
+    if ((e as any).response?.status === 401) {
       logger.error(`The current credentials expired or are not valid.`);
       return undefined;
     }

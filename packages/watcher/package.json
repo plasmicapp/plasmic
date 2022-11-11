@@ -47,6 +47,7 @@
   ],
   "devDependencies": {
     "@size-limit/preset-small-lib": "^4.12.0",
+    "@types/socket.io-client": "^3.0.0",
     "husky": "^6.0.0",
     "size-limit": "^4.12.0",
     "tsdx": "^0.14.1",

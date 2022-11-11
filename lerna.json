@@ -1,5 +1,6 @@
 {
   "packages": [
+    "packages/cli",
     "packages/create-plasmic-app",
     "packages/host",
     "packages/loader-core",
