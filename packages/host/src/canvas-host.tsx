@@ -35,10 +35,18 @@ function getPlasmicOrigin() {
   );
 }
 
+function getStudioHash() {
+  const params = new URL(location.href).searchParams;
+  return params.get("studio-hash");
+}
+
 function renderStudioIntoIframe() {
   const script = document.createElement("script");
   const plasmicOrigin = getPlasmicOrigin();
-  script.src = plasmicOrigin + "/static/js/studio.js";
+  const hash = getStudioHash();
+  script.src = `${plasmicOrigin}/static/js/studio${
+    hash ? `.${hash}.js` : `.js`
+  }`;
   document.body.appendChild(script);
 }
 
