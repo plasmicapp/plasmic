@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-contentful",
-  "version": "0.0.40",
+  "version": "0.0.41",
   "description": "Plasmic Contentful components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -49,7 +49,7 @@
   "dependencies": {
     "@contentful/rich-text-html-renderer": "^15.13.1",
     "@contentful/rich-text-react-renderer": "^15.12.1",
-    "@plasmicapp/host": "1.0.82",
+    "@plasmicapp/host": "1.0.83",
     "@plasmicapp/query": "0.1.55",
     "contentful": "^9.1.28",
     "dlv": "^1.1.3"
