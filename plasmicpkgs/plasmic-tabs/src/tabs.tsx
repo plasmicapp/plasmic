@@ -57,7 +57,7 @@ function useTabsContext() {
 const modulePath="@plasmicpkgs/plasmic-tabs"
 
 export const TabsContainerMeta: ComponentMeta<TabsProviderProps> = {
-    name: "TabsContainer",
+    name: "hostless-tabs-container",
     displayName: "Tabs Container",
     importName: "TabsContainer",
     importPath: modulePath,
@@ -90,7 +90,7 @@ export const TabsContainerMeta: ComponentMeta<TabsProviderProps> = {
             children: [
               {
                 type: "component",
-                name: "TabButton",
+                name: "hostless-tab-button",
                 props: {
                   tabKey: "tab1",
                   children:defaultButtonChildren("Tab 1")
@@ -98,7 +98,7 @@ export const TabsContainerMeta: ComponentMeta<TabsProviderProps> = {
               },
               {
                 type: "component",
-                name: "TabButton",
+                name: "hostless-tab-button",
                 props: {
                   tabKey: "tab2",
                   children:defaultButtonChildren("Tab 2")
@@ -106,7 +106,7 @@ export const TabsContainerMeta: ComponentMeta<TabsProviderProps> = {
               },
               {
                 type: "component",
-                name: "TabUnderline",
+                name: "hostless-tab-underline",
               },
             ],
           },
@@ -115,7 +115,7 @@ export const TabsContainerMeta: ComponentMeta<TabsProviderProps> = {
             children: [
               {
                 type: "component",
-                name: "TabContent",
+                name: "hostless-tab-content",
                 props: {
                   tabKey: "tab1",
                   children: [
@@ -128,7 +128,7 @@ export const TabsContainerMeta: ComponentMeta<TabsProviderProps> = {
               },
               {
                 type: "component",
-                name: "TabContent",
+                name: "hostless-tab-content",
                 props: {
                   tabKey: "tab2",
                   children: [
@@ -193,7 +193,7 @@ export interface TabUnderlineProps {
 }
 
 export const TabUnderlineMeta:ComponentMeta <TabUnderlineProps>={
-    name: "TabUnderline",
+    name: "hostless-tab-underline",
     displayName: "Tab Underline",
     importName: "TabUnderline",
     importPath: modulePath,
@@ -232,7 +232,7 @@ export interface TabButtonProps {
 }
 
 export const TabButtonMeta:ComponentMeta<TabButtonProps>={
-    name: "TabButton",
+    name: "hostless-tab-button",
     isAttachment: true,
     displayName: "Tab Button",
     importName: "TabButton",
@@ -287,7 +287,7 @@ export interface TabContentProps {
 }
 
 export const TabContentMeta:ComponentMeta<TabContentProps>={
-  name: "TabContent",
+  name: "hostless-tab-content",
   isAttachment: true,
   displayName: "Tab Content",
   importName: "TabContent",
