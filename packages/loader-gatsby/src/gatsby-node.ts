@@ -6,7 +6,7 @@ import {
   matchesPagePath,
 } from "@plasmicapp/loader-react";
 import type { PlasmicRemoteChangeWatcher as Watcher } from "@plasmicapp/watcher";
-import { CreatePagesArgs } from "gatsby";
+import { CreatePagesArgs, GatsbyNode } from "gatsby";
 import serverRequire from "./server-require";
 
 export const onPreInit = ({ reporter }) =>
@@ -139,9 +139,20 @@ export const sourceNodes = async (
   await refreshData();
 };
 
-export const createResolvers = (
+async function getAllNodes(nodeModel, type) {
+  try {
+    const { entries } = await nodeModel.findAll({ type });
+    return entries;
+  } catch (_) {
+    // Gatsby < v4 does not have `nodeModel.findAll`, so we try to use the
+    // deprecated `nodeModel.getAllNodes` instead.
+    return nodeModel.getAllNodes({ type });
+  }
+}
+
+export const createResolvers: GatsbyNode["createResolvers"] = (
   { createResolvers },
-  opts: GatsbyPluginOptions
+  opts
 ) => {
   createResolvers({
     Query: {
@@ -150,13 +161,18 @@ export const createResolvers = (
         args: {
           componentNames: `[String]!`,
         },
-        resolve(_source, args: { componentNames: string[] }, context, _info) {
+        async resolve(
+          _source,
+          args: { componentNames: string[] },
+          context,
+          _info
+        ) {
           const { componentNames } = args;
-          // `getAllNodes` is a deprecated function that is going to be a breaking change
-          // in Gatsby v5, for now is being maintained to keep support for < v4 projects
-          const components = context.nodeModel.getAllNodes({
-            type: PLASMIC_NODE_NAME,
-          });
+
+          const components = await getAllNodes(
+            context.nodeModel,
+            PLASMIC_NODE_NAME
+          );
 
           const bundles: LoaderBundleOutput[] = [];
           const compMetas: ComponentMeta[] = [];
