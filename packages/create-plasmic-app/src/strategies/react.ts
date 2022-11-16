@@ -55,7 +55,7 @@ const reactStrategy: CPAStrategy = {
     const indexFileName = path.join(
       projectPath,
       "src",
-      `index.${useTypescript ? "tsx" : "ts"}`
+      `index.${useTypescript ? "tsx" : "js"}`
     );
     let indexFile = fs.readFileSync(indexFileName).toString();
     indexFile = indexFile.replace("<React.StrictMode>", "");
