@@ -142,7 +142,7 @@ export const sourceNodes = async (
 async function getAllNodes(nodeModel, type) {
   try {
     const { entries } = await nodeModel.findAll({ type });
-    return entries;
+    return Array.from(entries);
   } catch (_) {
     // Gatsby < v4 does not have `nodeModel.findAll`, so we try to use the
     // deprecated `nodeModel.getAllNodes` instead.
