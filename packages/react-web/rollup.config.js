@@ -84,6 +84,14 @@ export default [
         globals: { react: "React" },
         exports: "named",
       },
+      {
+        dir: "lib",
+        entryFileNames: "[name].cjs.js",
+        format: "cjs",
+        sourcemap: true,
+        globals: { react: "React" },
+        exports: "named",
+      },
     ],
     plugins: [
       resolve(),

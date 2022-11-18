@@ -1,4 +1,7 @@
 {
   "type": "module",
-  "module": "index.js"
+  "exports": {
+    "import": "./index.js",
+    "require": "./index.cjs.js"
+  }
 }
