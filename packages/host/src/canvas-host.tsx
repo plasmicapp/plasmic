@@ -26,9 +26,12 @@ class PlasmicRootNodeWrapper {
 
 const plasmicRootNode = new PlasmicRootNodeWrapper(null);
 
+function getHashParams() {
+  return new URLSearchParams(location.hash.replace(/^#/, "?"));
+}
+
 function getPlasmicOrigin() {
-  const params = new URL(`https://fakeurl/${location.hash.replace(/#/, "?")}`)
-    .searchParams;
+  const params = getHashParams();
   return ensure(
     params.get("origin"),
     "Missing information from Plasmic window."
@@ -36,8 +39,12 @@ function getPlasmicOrigin() {
 }
 
 function getStudioHash() {
-  const params = new URL(location.href).searchParams;
-  return params.get("studio-hash");
+  const hashParams = getHashParams();
+  if (hashParams.has("studioHash")) {
+    return hashParams.get("studioHash");
+  }
+  const urlParams = new URL(location.href).searchParams;
+  return urlParams.get("studio-hash");
 }
 
 function renderStudioIntoIframe() {
