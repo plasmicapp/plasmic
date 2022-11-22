@@ -203,6 +203,12 @@ export type ChoiceType<P> = (
   | ({
       multiSelect: true;
     } & DefaultValueOrExpr<P, (string | number | boolean)[]>)
+  | ({
+      multiSelect: ContextDependentConfig<P, boolean>;
+    } & DefaultValueOrExpr<
+      P,
+      string | number | boolean | (string | number | boolean)[]
+    >)
 ) &
   ChoiceTypeBase<P>;
 
