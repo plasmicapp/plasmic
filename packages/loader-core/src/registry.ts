@@ -91,6 +91,9 @@ export class Registry {
     try {
       func(requireFn, exports);
     } catch (err) {
+      // Delete exports from loadedModules, so subsequent uses don't incorrectly
+      // believe that this module has been loaded.
+      delete this.loadedModules[name];
       throw new Error(`PLASMIC: Failed to load ${name}: ${err}`);
     }
     return exports;
