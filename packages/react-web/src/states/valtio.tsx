@@ -3,7 +3,7 @@ import deepEqual from "fast-deep-equal";
 import React from "react";
 import { proxy as createValtioProxy, ref, useSnapshot } from "valtio";
 import { subscribeKey } from "valtio/utils";
-import { set } from "./helpers";
+import { set, useIsomorphicLayoutEffect } from "./helpers";
 
 const mkUntrackedValue = (o: any) => (typeof o === "object" ? ref(o) : o);
 
@@ -428,7 +428,7 @@ export function useDollarState(
       }
     }
   });
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     resetSpecs.forEach(({ path, spec }) => {
       const newInit = initializeStateValue($$state, path, spec);
       if (spec.onChangeProp) {
@@ -436,7 +436,7 @@ export function useDollarState(
       }
     });
   }, [props, resetSpecs]);
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     $$state.registrationsQueue.forEach(({ f, pathStr }) => {
       $$state.specsByKey[pathStr].initFunc = f;
     });

@@ -1,4 +1,5 @@
 import get from "dlv";
+import { useEffect, useLayoutEffect } from "react";
 import { $State } from ".";
 
 export function generateStateOnChangeProp(
@@ -52,5 +53,8 @@ export function set(obj: any, keys: any, val: any) {
     }
   }
 }
+
+export const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 export { get };
