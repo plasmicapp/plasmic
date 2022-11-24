@@ -804,7 +804,7 @@ MatrixRepeatedCounter.play = async ({ canvasElement }) => {
   }
 };
 
-const _InitFuncFromContextData: Story<{
+const _InitFuncFromInternalContextData: Story<{
   products: { price: number; name: string }[];
 }> = (args) => {
   const ProductContext = React.createContext<
@@ -916,9 +916,131 @@ const products = [
   { name: "Shirt 2", price: 20 },
   { name: "Shirt 3", price: 30 },
 ];
-export const InitFuncFromContextData = _InitFuncFromContextData.bind({});
-InitFuncFromContextData.args = { products };
-InitFuncFromContextData.play = async ({ canvasElement }) => {
+export const InitFuncFromInternalContextData = _InitFuncFromInternalContextData.bind(
+  {}
+);
+InitFuncFromInternalContextData.args = { products };
+InitFuncFromInternalContextData.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  for (let i = 0; i < products.length; i++) {
+    click(canvas.getByTestId(`product_${i}`));
+    expect(
+      (canvas.getByTestId("product_name") as HTMLHeadingElement).textContent
+    ).toEqual(products[i].name);
+  }
+
+  await userEvent.type(
+    canvas.getByTestId("product_quantity-input"),
+    "{backspace}10"
+  );
+
+  for (let i = 0; i < products.length; i++) {
+    click(canvas.getByTestId(`product_${i}`));
+    expect(
+      (canvas.getByTestId("product_price") as HTMLHeadingElement).textContent
+    ).toEqual(`Price: ${products[i].price * 10}`);
+  }
+};
+
+const _InitFuncFromRootContextData: Story<{
+  products: { price: number; name: string }[];
+}> = (args) => {
+  const ProductContext = React.createContext<
+    | {
+        price: number;
+        name: string;
+      }
+    | undefined
+  >(undefined);
+  const InternalComponent = (props: {
+    quantity: number;
+    onProductChange: (product: any) => void;
+  }) => {
+    const $ctx = React.useContext(ProductContext);
+    const $state = useDollarState(
+      [
+        {
+          path: "price",
+          type: "private",
+          initFunc: ($props, _$state, $ctx) =>
+            $props.quantity * ($ctx.price ?? 0),
+        },
+      ],
+      props,
+      $ctx
+    );
+    return <p data-testid="product_price">Price: {$state.price}</p>;
+  };
+
+  const $state = useDollarState(
+    [
+      {
+        path: "selectedIndex",
+        type: "private",
+        initVal: undefined,
+      },
+      {
+        path: "quantity",
+        type: "private",
+        initVal: 1,
+      },
+      {
+        path: "ctx.product",
+        type: "private",
+      },
+    ],
+    args
+  );
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <ul>
+        {args.products?.map((product, index) => (
+          <li
+            data-testid={`product_${index}`}
+            key={index}
+            onClick={() => ($state.selectedIndex = index)}
+          >
+            {product.name}
+          </li>
+        ))}
+      </ul>
+      <h1 data-testid="product_name">
+        {args.products?.[$state.selectedIndex]?.name}
+      </h1>
+      <ProductContext.Provider
+        value={
+          $state.selectedIndex !== undefined
+            ? args.products[$state.selectedIndex]
+            : undefined
+        }
+      >
+        <InternalComponent
+          quantity={$state.quantity}
+          onProductChange={(val) => ($state.ctx.product = val)}
+        />
+      </ProductContext.Provider>
+      <input
+        data-testid="product_quantity-input"
+        type="text"
+        onChange={(e) => ($state.quantity = +e.target.value)}
+        value={$state.quantity}
+      />
+    </div>
+  );
+};
+
+export const InitFuncFromRootContextData = _InitFuncFromRootContextData.bind(
+  {}
+);
+InitFuncFromRootContextData.args = { products };
+InitFuncFromRootContextData.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
 
   for (let i = 0; i < products.length; i++) {
