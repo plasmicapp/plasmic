@@ -43,6 +43,7 @@ export function standardTestSetup(includeDep = true) {
   // Setup server-side mock data
   const project1: MockProject = {
     projectId: "projectId1",
+    branchName: "main",
     projectApiToken: "abc",
     version: "1.2.3",
     projectName: "project1",
@@ -64,6 +65,7 @@ export function standardTestSetup(includeDep = true) {
   };
   const dependency: MockProject = {
     projectId: "dependencyId1",
+    branchName: "main",
     projectApiToken: "def",
     version: "2.3.4",
     projectName: "dependency1",
@@ -128,6 +130,7 @@ export function expectProject1Components() {
 export const project1Config: ProjectConfig = {
   projectId: "projectId1",
   projectName: "Project 1",
+  projectBranchName: "main",
   version: "latest",
   cssFilePath: "plasmic/PP__demo.css",
   components: [

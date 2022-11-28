@@ -54,7 +54,7 @@ describe("versioned-sync", () => {
     opts.projects = ["projectId1"];
     await expect(sync(opts)).resolves.toBeUndefined();
     // Change component name server-side
-    const mockProject = mockApi.getMockProject("projectId1", "1.2.3");
+    const mockProject = mockApi.getMockProject("projectId1", "main", "1.2.3");
     const buttonData = mockProject.components.find(
       (c: MockComponent) => c.id === "buttonId"
     );
@@ -79,7 +79,7 @@ describe("versioned-sync", () => {
     opts.projects = ["projectId1"];
     await expect(sync(opts)).resolves.toBeUndefined();
     // Change component version server-side
-    const mockProject = mockApi.getMockProject("projectId1", "1.2.3");
+    const mockProject = mockApi.getMockProject("projectId1", "main", "1.2.3");
     mockProject.version = "1.3.4";
     mockApi.addMockProject(mockProject);
     // Try syncing again and see if things show up
@@ -97,7 +97,7 @@ describe("versioned-sync", () => {
     opts.nonRecursive = true;
     await expect(sync(opts)).resolves.toBeUndefined();
     // Change component version server-side
-    const mockProject = mockApi.getMockProject("projectId1", "1.2.3");
+    const mockProject = mockApi.getMockProject("projectId1", "main", "1.2.3");
     mockProject.version = "2.0.0";
     mockApi.addMockProject(mockProject);
     // Read in updated plasmic.json post-sync
@@ -125,7 +125,7 @@ describe("versioned-sync", () => {
     opts.nonRecursive = true;
     await expect(sync(opts)).resolves.toBeUndefined();
     // Change component version server-side
-    const mockProject = mockApi.getMockProject("projectId1", "1.2.3");
+    const mockProject = mockApi.getMockProject("projectId1", "main", "1.2.3");
     mockProject.version = "1.10.1";
     mockApi.addMockProject(mockProject);
     // Update plasmic.json to use semver

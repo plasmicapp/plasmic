@@ -155,6 +155,8 @@ export interface ProjectConfig {
   projectApiToken?: string;
   /** Project name synced down from Studio */
   projectName: string;
+  /** Project branch to be synced */
+  projectBranchName?: string;
   /**
    * A version range for syncing this project. Can be:
    * * "latest" - always syncs down whatever has been saved in the project.
@@ -317,6 +319,7 @@ export interface FileLock {
 
 export interface ProjectLock {
   projectId: string;
+  branchName: string;
   // The exact version that was last synced
   version: string;
   dependencies: {
@@ -550,6 +553,7 @@ export function getOrAddProjectConfig(
 export function getOrAddProjectLock(
   context: PlasmicContext,
   projectId: string,
+  branchName: string,
   base?: ProjectLock // if one doesn't exist, start with this
 ): ProjectLock {
   let project = context.lock.projects.find((p) => p.projectId === projectId);
@@ -558,6 +562,7 @@ export function getOrAddProjectLock(
       ? L.cloneDeep(base)
       : {
           projectId,
+          branchName,
           version: "",
           dependencies: {},
           lang: context.config.code.lang,

@@ -26,6 +26,7 @@ const api: any = jest.genMockFromModule("../api");
 const PROJECTS: MockProject[] = [];
 export interface MockProject {
   projectId: string;
+  branchName: string;
   projectApiToken: string;
   version: string;
   projectName: string;
@@ -38,6 +39,7 @@ export interface MockComponent {
   id: string;
   name: string;
   projectId?: string;
+  branchName?: string;
   version?: string;
 }
 
@@ -72,6 +74,7 @@ function mockProjectToProjectVersionMeta(
  */
 function addMockProject(proj: MockProject) {
   const projectId = proj.projectId;
+  const branchName = proj.branchName;
   const version = proj.version;
   // Populate projectId and version into each component
   // will be useful when reading / writing components to files
@@ -79,11 +82,12 @@ function addMockProject(proj: MockProject) {
     return {
       ...c,
       projectId,
+      branchName,
       version,
     };
   });
 
-  const existing = getMockProject(projectId, version);
+  const existing = getMockProject(projectId, branchName, version);
   if (!existing) {
     PROJECTS.push(proj);
   } else {
@@ -117,10 +121,14 @@ function mockComponentToString(component: MockComponent): string {
 
 function getMockProject(
   projectId: string,
+  branchName: string,
   version: string
 ): MockProject | undefined {
   return PROJECTS.find(
-    (m) => m.projectId === projectId && m.version === version
+    (m) =>
+      m.projectId === projectId &&
+      m.branchName === branchName &&
+      m.version === version
   );
 }
 
@@ -128,15 +136,17 @@ function getMockProject(
  * Only fetch top-level components that match the projectId (optionally also componentIdOrNames + version)
  * Does not crawl the dependency tree
  * @param projectId
+ * @param branchName
  * @param componentIdOrNames
  * @param versionRange
  */
 function getMockComponents(
   projectId: string,
+  branchName: string,
   version: string,
   componentIdOrNames: readonly string[] | undefined
 ): MockComponent[] {
-  const project = getMockProject(projectId, version);
+  const project = getMockProject(projectId, branchName, version);
   return !project
     ? []
     : project.components.filter(
@@ -193,7 +203,7 @@ function* getDeps(projects: ProjectVersionMeta[]) {
   while (queue.length > 0) {
     const curr = ensure(queue.shift());
     for (const [projectId, version] of L.toPairs(curr.dependencies)) {
-      const mockProject = ensure(getMockProject(projectId, version));
+      const mockProject = ensure(getMockProject(projectId, "main", version));
       const projectMeta = mockProjectToProjectVersionMeta(mockProject);
       yield projectMeta;
       queue.push(projectMeta);
@@ -215,6 +225,7 @@ class PlasmicApi {
   async resolveSync(
     projects: {
       projectId: string;
+      branchName: string;
       versionRange: string;
       componentIdOrNames: readonly string[] | undefined;
       projectApiToken?: string;
@@ -248,7 +259,9 @@ class PlasmicApi {
         proj.versionRange
       );
       if (version) {
-        const mockProject = ensure(getMockProject(proj.projectId, version));
+        const mockProject = ensure(
+          getMockProject(proj.projectId, proj.branchName, version)
+        );
         const projectMeta = mockProjectToProjectVersionMeta(
           mockProject,
           proj.componentIdOrNames
@@ -272,6 +285,7 @@ class PlasmicApi {
 
   async projectComponents(
     projectId: string,
+    branchName: string,
     opts: {
       platform: string;
       newCompScheme: "blackbox" | "direct";
@@ -310,6 +324,7 @@ class PlasmicApi {
     }
     const mockComponents = getMockComponents(
       projectId,
+      branchName,
       version,
       componentIdOrNames
     );
@@ -357,11 +372,17 @@ class PlasmicApi {
     throw new Error("Unimplemented");
   }
 
-  async projectStyleTokens(projectId: string): Promise<StyleTokensMap> {
+  async projectStyleTokens(
+    projectId: string,
+    branchName: string
+  ): Promise<StyleTokensMap> {
     throw new Error("Unimplemented");
   }
 
-  async projectIcons(projectId: string): Promise<ProjectIconsResponse> {
+  async projectIcons(
+    projectId: string,
+    branchName: string
+  ): Promise<ProjectIconsResponse> {
     throw new Error("Unimplemented");
   }
 

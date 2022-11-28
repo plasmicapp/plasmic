@@ -243,6 +243,7 @@ export async function sync(
     const [projectId, projectApiToken] = projectIdToken.split(":");
     return {
       projectId,
+      branchName: projectConfigMap[projectId]?.projectBranchName ?? "main",
       versionRange:
         versionRange || projectConfigMap[projectId]?.version || "latest",
       componentIdOrNames: undefined, // Get all components!
@@ -255,6 +256,7 @@ export async function sync(
     ? projectWithVersion
     : context.config.projects.map((p) => ({
         projectId: p.projectId,
+        branchName: p.projectBranchName ?? "main",
         versionRange: p.version,
         componentIdOrNames: undefined, // Get all components!
         projectApiToken: p.projectApiToken,
@@ -341,6 +343,7 @@ export async function sync(
         opts,
         projectIdsAndTokens,
         projectMeta.projectId,
+        projectMeta.branchName,
         projectMeta.componentIds,
         projectMeta.version,
         projectMeta.dependencies,
@@ -557,6 +560,7 @@ async function syncProject(
   opts: SyncArgs,
   projectIdsAndTokens: ProjectIdAndToken[],
   projectId: string,
+  branchName: string,
   componentIds: string[],
   projectVersion: string,
   dependencies: { [projectId: string]: string },
@@ -591,26 +595,30 @@ async function syncProject(
   );
 
   // Server-side code-gen
-  const projectBundle = await context.api.projectComponents(projectId, {
-    platform: context.config.platform,
-    newCompScheme: newComponentScheme,
-    existingCompScheme,
-    componentIdOrNames: componentIds,
-    version: projectVersion,
-    imageOpts: context.config.images,
-    stylesOpts: context.config.style,
-    checksums: existingChecksums,
-    codeOpts: context.config.code,
-    metadata: generateMetadata(
-      {
-        ...metadataDefaults,
-        platform: context.config.platform,
-      },
-      opts.metadata
-    ),
-    indirect,
-    wrapPagesWithGlobalContexts: context.config.wrapPagesWithGlobalContexts,
-  });
+  const projectBundle = await context.api.projectComponents(
+    projectId,
+    branchName,
+    {
+      platform: context.config.platform,
+      newCompScheme: newComponentScheme,
+      existingCompScheme,
+      componentIdOrNames: componentIds,
+      version: projectVersion,
+      imageOpts: context.config.images,
+      stylesOpts: context.config.style,
+      checksums: existingChecksums,
+      codeOpts: context.config.code,
+      metadata: generateMetadata(
+        {
+          ...metadataDefaults,
+          platform: context.config.platform,
+        },
+        opts.metadata
+      ),
+      indirect,
+      wrapPagesWithGlobalContexts: context.config.wrapPagesWithGlobalContexts,
+    }
+  );
 
   // Convert from TSX => JSX
   if (context.config.code.lang === "js") {
@@ -653,6 +661,7 @@ async function syncProject(
     projectBundle.projectConfig,
     projectBundle.globalVariants,
     projectBundle.checksums,
+    branchName,
     opts.baseDir
   );
 
@@ -660,6 +669,7 @@ async function syncProject(
     context,
     projectBundle.projectConfig,
     projectApiToken,
+    branchName,
     projectVersion,
     dependencies,
     projectBundle.components,
@@ -680,6 +690,7 @@ async function syncProject(
   await syncProjectIconAssets(
     context,
     projectId,
+    branchName,
     projectVersion,
     projectBundle.iconAssets,
     projectBundle.checksums,
@@ -688,6 +699,7 @@ async function syncProject(
   await syncProjectImageAssets(
     context,
     projectId,
+    branchName,
     projectVersion,
     projectBundle.imageAssets,
     projectBundle.checksums
@@ -720,6 +732,7 @@ async function syncProjectConfig(
   context: PlasmicContext,
   projectBundle: ProjectMetaBundle,
   projectApiToken: string,
+  branchName: string,
   version: string,
   dependencies: { [projectId: string]: string },
   componentBundles: ComponentBundle[],
@@ -760,7 +773,11 @@ async function syncProjectConfig(
   }
 
   // plasmic.lock
-  const projectLock = getOrAddProjectLock(context, projectConfig.projectId);
+  const projectLock = getOrAddProjectLock(
+    context,
+    projectConfig.projectId,
+    branchName
+  );
   projectLock.version = version;
   projectLock.dependencies = dependencies;
   projectLock.lang = context.config.code.lang;

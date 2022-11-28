@@ -18,7 +18,7 @@ export const getProjectApiToken = async (projectId: string, host?: string) => {
   if (auth) {
     const api = new PlasmicApi(auth);
     const versionResolution = await api.resolveSync([
-      { projectId, componentIdOrNames: undefined },
+      { projectId, branchName: "main", componentIdOrNames: undefined },
     ]);
     return versionResolution.projects[0]?.projectApiToken;
   }

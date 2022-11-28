@@ -25,17 +25,18 @@ export interface SyncIconsArgs extends CommonArgs {
 export async function syncProjectIconAssets(
   context: PlasmicContext,
   projectId: string,
+  branchName: string,
   version: string,
   iconBundles: IconBundle[],
   checksums: ChecksumBundle,
-  baseDir: string,
+  baseDir: string
 ) {
   const project = getOrAddProjectConfig(context, projectId);
   if (!project.icons) {
     project.icons = [];
   }
 
-  const projectLock = getOrAddProjectLock(context, projectId);
+  const projectLock = getOrAddProjectLock(context, projectId, branchName);
   const knownIconConfigs = L.keyBy(project.icons, (i) => i.id);
   const iconFileLocks = L.keyBy(
     projectLock.fileLocks.filter((fileLock) => fileLock.type === "icon"),
