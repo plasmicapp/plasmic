@@ -5,7 +5,8 @@ import { proxy as createValtioProxy, ref, useSnapshot } from "valtio";
 import { subscribeKey } from "valtio/utils";
 import { set, useIsomorphicLayoutEffect } from "./helpers";
 
-const mkUntrackedValue = (o: any) => (typeof o === "object" ? ref(o) : o);
+const mkUntrackedValue = (o: any) =>
+  o != null && typeof o === "object" ? ref(o) : o;
 
 type InitFunc<T> = (
   $props: Record<string, any>,
