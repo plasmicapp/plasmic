@@ -173,15 +173,11 @@ export class Api {
   }
 
   private async parseJsonResponse(resp: Response) {
+    const text = await resp.text();
     try {
-      return await resp.json();
+      return JSON.parse(text);
     } catch (err) {
-      try {
-        const body = await resp.text();
-        throw new Error(`Unknown error: ${body}`);
-      } catch (err2) {
-        throw new Error(`Unknown error; cannot read response: ${err2}`);
-      }
+      throw new Error(`Error parsing JSON response: ${err}; response: ${text}`);
     }
   }
 
