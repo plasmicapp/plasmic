@@ -20,8 +20,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "cypress run-ct",
-    "cypress": "cypress open-ct",
+    "test": "cypress run --component",
+    "cypress": "cypress open --component",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public"
@@ -55,7 +55,7 @@
     ]
   },
   "devDependencies": {
-    "@cypress/react": "^5.4.2",
+    "@cypress/react": "^7.0.1",
     "@cypress/webpack-dev-server": "^1.1.6",
     "@storybook/addon-actions": "^6.2.8",
     "@storybook/addon-essentials": "^6.2.8",
@@ -63,9 +63,9 @@
     "@storybook/node-logger": "^6.2.8",
     "@storybook/preset-create-react-app": "^3.1.7",
     "@storybook/react": "^6.2.8",
-    "@testing-library/cypress": "^7.0.6",
-    "cypress": "^7.2.0",
-    "cypress-real-events": "^1.4.0",
+    "@testing-library/cypress": "^8.0.7",
+    "cypress": "^11.2.0",
+    "cypress-real-events": "^1.7.4",
     "local-cypress": "^1.2.1",
     "webpack-dev-server": "^3.11.2"
   }
