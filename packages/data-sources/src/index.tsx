@@ -1,5 +1,5 @@
 export { usePlasmicDataConfig } from '@plasmicapp/query';
-export { Fetcher } from './components/Fetcher';
+export { Fetcher, FetcherMeta, FetcherProps } from './components/Fetcher';
 export { DataOp, executePlasmicDataOp } from './executor';
 export {
   usePlasmicDataMutationOp,
