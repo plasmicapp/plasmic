@@ -161,11 +161,28 @@ export class Api {
       headers: this.makeGetHeaders(),
     });
     if (resp.status >= 400) {
-      const error = await resp.json();
-      throw new Error(error?.error?.message ?? resp.statusText);
+      const error = await this.parseJsonResponse(resp);
+      throw new Error(
+        `Error fetching loader data: ${
+          error?.error?.message ?? resp.statusText
+        }`
+      );
     }
-    const json = await resp.json();
+    const json = await this.parseJsonResponse(resp);
     return json as LoaderBundleOutput;
+  }
+
+  private async parseJsonResponse(resp: Response) {
+    try {
+      return await resp.json();
+    } catch (err) {
+      try {
+        const body = await resp.text();
+        throw new Error(`Unknown error: ${body}`);
+      } catch (err2) {
+        throw new Error(`Unknown error; cannot read response: ${err2}`);
+      }
+    }
   }
 
   async fetchHtmlData(opts: {
