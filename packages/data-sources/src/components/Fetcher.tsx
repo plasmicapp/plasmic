@@ -3,14 +3,17 @@ import React from 'react';
 import { DataOp } from '../executor';
 import { usePlasmicDataOp } from '../hooks/usePlasmicDataOp';
 
-export interface FetcherProps {
-  dataOp?: DataOp;
+export interface DataOpConfig {
   name?: string;
-  children?: ($queries: Record<string, any>) => React.ReactElement | null;
-  queries?: Record<string, any>;
   includeSchema?: boolean;
   pageIndex?: number;
   pageSize?: number;
+}
+
+export interface FetcherProps extends DataOpConfig {
+  dataOp?: DataOp;
+  children?: ($queries: Record<string, any>) => React.ReactElement | null;
+  queries?: Record<string, any>;
 }
 
 export function Fetcher(props: FetcherProps): React.ReactElement | null {
