@@ -18,10 +18,11 @@ export async function syncGlobalVariants(
   projectMeta: ProjectMetaBundle,
   bundles: GlobalVariantBundle[],
   checksums: ChecksumBundle,
-  baseDir: string,
+  branchName: string,
+  baseDir: string
 ) {
   const projectId = projectMeta.projectId;
-  const projectLock = getOrAddProjectLock(context, projectId);
+  const projectLock = getOrAddProjectLock(context, projectId, branchName);
   const existingVariantConfigs = L.keyBy(
     context.config.globalVariants.variantGroups.filter(
       (group) => group.projectId === projectId
@@ -100,7 +101,11 @@ export async function syncGlobalVariants(
     await writeFileContent(
       context,
       variantConfig.contextFilePath,
-      formatAsLocal(bundle.contextModule, variantConfig.contextFilePath, baseDir),
+      formatAsLocal(
+        bundle.contextModule,
+        variantConfig.contextFilePath,
+        baseDir
+      ),
       { force: !isNew }
     );
   }

@@ -75,6 +75,7 @@ export interface ImageBundle {
 
 export interface ProjectVersionMeta {
   projectId: string;
+  branchName: string;
   projectApiToken: string;
   version: string;
   projectName: string;
@@ -201,6 +202,7 @@ export class PlasmicApi {
   async resolveSync(
     projects: {
       projectId: string;
+      branchName: string;
       versionRange?: string;
       componentIdOrNames: readonly string[] | undefined;
       projectApiToken?: string;
@@ -243,9 +245,10 @@ export class PlasmicApi {
 
   /**
    * Code-gen endpoint.
-   * This will fetch components at an exact specified version.
+   * This will fetch components from a given branch at an exact specified version.
    * If you don't know what version should be used, call `resolveSync` first.
    * @param projectId
+   * @param branchName
    * @param cliVersion
    * @param reactWebVersion
    * @param newCompScheme
@@ -255,6 +258,7 @@ export class PlasmicApi {
    */
   async projectComponents(
     projectId: string,
+    branchName: string,
     opts: {
       platform: string;
       newCompScheme: "blackbox" | "direct";
@@ -272,7 +276,7 @@ export class PlasmicApi {
     }
   ): Promise<ProjectBundle> {
     const result = await this.post(
-      `${this.codegenHost}/api/v1/projects/${projectId}/code/components`,
+      `${this.codegenHost}/api/v1/projects/${projectId}/code/components?branchName=${branchName}`,
       {
         ...opts,
       }
@@ -345,10 +349,11 @@ export class PlasmicApi {
 
   async projectStyleTokens(
     projectId: string,
+    branchName: string,
     versionRange?: string
   ): Promise<StyleTokensMap> {
     const result = await this.post(
-      `${this.codegenHost}/api/v1/projects/${projectId}/code/tokens`,
+      `${this.codegenHost}/api/v1/projects/${projectId}/code/tokens?branchName=${branchName}`,
       { versionRange }
     );
     return result.data as StyleTokensMap;
@@ -356,11 +361,12 @@ export class PlasmicApi {
 
   async projectIcons(
     projectId: string,
+    branchName: string,
     versionRange?: string,
     iconIds?: string[]
   ): Promise<ProjectIconsResponse> {
     const result = await this.post(
-      `${this.codegenHost}/api/v1/projects/${projectId}/code/icons`,
+      `${this.codegenHost}/api/v1/projects/${projectId}/code/icons?branchName=${branchName}`,
       { versionRange, iconIds }
     );
     return result.data as ProjectIconsResponse;
@@ -368,11 +374,12 @@ export class PlasmicApi {
 
   async projectSyncMetadata(
     projectId: string,
+    branchName: string,
     revision: number,
     rethrowAppError: boolean
   ): Promise<ProjectSyncMetadataModel> {
     const result = await this.post(
-      `${this.codegenHost}/api/v1/projects/${projectId}/code/project-sync-metadata`,
+      `${this.codegenHost}/api/v1/projects/${projectId}/code/project-sync-metadata?branchName=${branchName}`,
       { revision },
       rethrowAppError
     );

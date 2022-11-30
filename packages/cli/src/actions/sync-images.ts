@@ -22,12 +22,13 @@ import { ensure } from "../utils/lang-utils";
 export async function syncProjectImageAssets(
   context: PlasmicContext,
   projectId: string,
+  branchName: string,
   version: string,
   imageBundles: ImageBundle[],
   checksums: ChecksumBundle
 ) {
   const project = getOrAddProjectConfig(context, projectId);
-  const projectLock = getOrAddProjectLock(context, projectId);
+  const projectLock = getOrAddProjectLock(context, projectId, branchName);
   const knownImageConfigs = L.keyBy(project.images, (i) => i.id);
   const imageBundleIds = L.keyBy(imageBundles, (i) => i.id);
   const imageFileLocks = L.keyBy(

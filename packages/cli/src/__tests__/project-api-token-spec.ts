@@ -145,7 +145,7 @@ describe("Project API tokens", () => {
     // We sync project1 which got updated, but the dependency is still same version.
     opts.force = false;
     removeAuth();
-    mockApi.getMockProject("projectId1", "1.2.3").version = "1.2.4";
+    mockApi.getMockProject("projectId1", "main", "1.2.3").version = "1.2.4";
     await expect(sync(opts)).resolves.toBeUndefined();
   });
 
@@ -196,7 +196,7 @@ describe("Project API tokens", () => {
     // We sync project1 which got updated, but the dependency is still same version.
     opts.force = false;
     removeAuth();
-    mockApi.getMockProject("projectId1", "1.2.3").version = "1.2.4";
+    mockApi.getMockProject("projectId1", "main", "1.2.3").version = "1.2.4";
     await expect(sync(opts)).resolves.toBeUndefined();
   });
 

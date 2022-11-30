@@ -64,7 +64,12 @@ const updateDirectSkeleton = async (
     compConfig.projectId,
     makeCachedProjectSyncDataProvider(async (projectId, revision) => {
       try {
-        return await context.api.projectSyncMetadata(projectId, revision, true);
+        return await context.api.projectSyncMetadata(
+          projectId,
+          "main",
+          revision,
+          true
+        );
       } catch (e) {
         if (
           e instanceof AppServerError &&
