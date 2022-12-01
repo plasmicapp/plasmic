@@ -65,6 +65,10 @@ export type StringType<P> =
           type: "code";
           lang: "css" | "html" | "javascript" | "json";
         }
+        | {
+          type: "color";
+          format:"rgb" | "hex";
+        }
       | {
           type: "cardPicker";
           modalTitle?:
