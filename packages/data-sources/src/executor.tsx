@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-unfetch';
-import { Pagination } from './types';
+import { ManyRowsResult, Pagination, SingleRowResult } from './types';
 
 const DEFAULT_HOST = 'https://studio.plasmic.app';
 
@@ -11,11 +11,12 @@ export interface DataOp {
   invalidatedKeys?: string[];
 }
 
-export async function executePlasmicDataOp<T = any>(
+export async function executePlasmicDataOp<
+  T extends SingleRowResult | ManyRowsResult
+>(
   op: DataOp,
   opts?: {
     userAuthToken?: string;
-    includeSchema?: boolean;
     paginate?: Pagination;
   }
 ) {
@@ -26,11 +27,12 @@ export async function executePlasmicDataOp<T = any>(
   return await func<T>(op, opts);
 }
 
-async function _executePlasmicDataOp<T = any>(
+async function _executePlasmicDataOp<
+  T extends SingleRowResult | ManyRowsResult
+>(
   op: DataOp,
   opts?: {
     userAuthToken?: string;
-    includeSchema?: boolean;
     paginate?: Pagination;
   }
 ) {
@@ -48,7 +50,6 @@ async function _executePlasmicDataOp<T = any>(
     body: JSON.stringify({
       opId: op.opId,
       userArgs: op.userArgs ?? {},
-      includeSchema: opts?.includeSchema,
       paginate: opts?.paginate,
     }),
   });

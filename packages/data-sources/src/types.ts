@@ -28,12 +28,12 @@ export type TableFieldType =
 
 export interface SingleRowResult<T = any> {
   data: T;
-  schema?: TableSchema;
+  schema: TableSchema;
 }
 
 export interface ManyRowsResult<T = any> {
   data: T[];
   total?: number;
-  schema?: TableSchema;
+  schema: TableSchema;
   paginate?: Pagination;
 }

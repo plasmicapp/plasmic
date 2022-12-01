@@ -83,7 +83,7 @@ export function useMutablePlasmicQueryData<T, E>(
   key: Key,
   fetcher: Fetcher<T>,
   options?: SWRConfiguration<T, E>
-): SWRResponse<T, E> {
+): SWRResponse<T, E> & { isLoading?: boolean } {
   const prepassCtx = React.useContext(PrepassContext);
 
   const opts = {
@@ -99,7 +99,34 @@ export function useMutablePlasmicQueryData<T, E>(
     __SWRConfig = config;
   }, [config]);
 
-  return useSWR(key, fetcher, opts);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const fetcherWrapper = React.useCallback(
+    async (...args: any[]) => {
+      setIsLoading(true);
+      try {
+        return await fetcher(...args);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [fetcher]
+  );
+
+  const { isValidating, mutate, data, error } = useSWR(
+    key,
+    fetcherWrapper,
+    opts
+  );
+  return React.useMemo(
+    () => ({
+      isValidating,
+      mutate,
+      isLoading: (data === undefined && error === undefined) || isLoading,
+      ...(data !== undefined ? { data } : {}),
+      ...(error !== undefined ? { error } : {}),
+    }),
+    [isValidating, mutate, data, error, isLoading]
+  );
 }
 
 export function PlasmicQueryDataProvider(props: {

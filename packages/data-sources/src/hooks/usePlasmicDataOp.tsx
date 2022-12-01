@@ -1,18 +1,24 @@
 import { usePlasmicDataSourceContext } from '@plasmicapp/data-sources-context';
-import { useMutablePlasmicQueryData } from '@plasmicapp/query';
+import { SWRResponse, useMutablePlasmicQueryData } from '@plasmicapp/query';
 import React from 'react';
 import { DataOp, executePlasmicDataOp } from '../executor';
-import { Pagination } from '../types';
+import { ManyRowsResult, Pagination, SingleRowResult } from '../types';
+import { pick } from '../utils';
 
-export function usePlasmicDataOp<T = any, E = any>(
+export function usePlasmicDataOp<
+  T extends SingleRowResult | ManyRowsResult,
+  E = any
+>(
   dataOp: DataOp | undefined,
   opts?: {
-    includeSchema?: boolean;
     paginate?: Pagination;
   }
-) {
+): Partial<T> & {
+  error?: E;
+  isLoading?: boolean;
+} {
   const ctx = usePlasmicDataSourceContext();
-  return useMutablePlasmicQueryData<T, E>(
+  const res = useMutablePlasmicQueryData<T, E>(
     () =>
       dataOp
         ? dataOp.cacheKey
@@ -22,26 +28,29 @@ export function usePlasmicDataOp<T = any, E = any>(
               opId: dataOp.opId,
               args: dataOp.userArgs,
               userAuthToken: ctx?.userAuthToken,
-              includeSchema: opts?.includeSchema,
               paginate: opts?.paginate,
             })
         : null,
     async () => {
       return await executePlasmicDataOp<T>(dataOp!, {
         userAuthToken: ctx?.userAuthToken,
-        includeSchema: opts?.includeSchema,
         paginate: opts?.paginate,
       });
     }
   );
+  const { data, error, isLoading } = res;
+  return React.useMemo(
+    () => ({
+      ...(data ?? ({} as Partial<T>)),
+      ...pick(res, 'isLoading', 'error'),
+    }),
+    [data, error, isLoading]
+  );
 }
 
-export function usePlasmicDataMutationOp<T = any>(
-  dataOp: DataOp | undefined,
-  opts?: {
-    includeSchema?: boolean;
-  }
-) {
+export function usePlasmicDataMutationOp<
+  T extends SingleRowResult | ManyRowsResult
+>(dataOp: DataOp | undefined, opts?: {}) {
   const { sourceId, opId, userArgs } = dataOp ?? {};
   const ctx = usePlasmicDataSourceContext();
   const userToken = ctx?.userAuthToken;
@@ -53,7 +62,6 @@ export function usePlasmicDataMutationOp<T = any>(
       { sourceId, opId, userArgs },
       {
         userAuthToken: userToken,
-        includeSchema: opts?.includeSchema,
       }
     );
   }, [sourceId, opId, userArgs, userToken]);
