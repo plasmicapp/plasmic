@@ -14,26 +14,16 @@ export function useDependencyAwareQuery({
   $queries,
   getDataOp,
   setDollarQueries,
-  includeSchema,
   name,
   pageIndex,
   pageSize,
 }: DependencyAwareQueryConfig) {
-  const { data, error } = usePlasmicDataOp(swallow(getDataOp), {
-    includeSchema,
+  const data = usePlasmicDataOp(swallow(getDataOp), {
     ...(!!pageIndex &&
       !!pageSize && {
         paginate: { pageIndex, pageSize },
       }),
   });
-  React.useEffect(() => {
-    if (error) {
-      console.error(
-        `Error while executing data source operation${name ? ` ${name}` : ''}:`,
-        error
-      );
-    }
-  }, [error]);
   React.useEffect(() => {
     const finalName = name ?? 'data';
     if (!(finalName in $queries) || $queries[finalName] !== data) {
