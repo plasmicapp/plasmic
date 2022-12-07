@@ -74,17 +74,23 @@ Sentry.configureScope((scope) => {
  * @param question instance of a question formatted for `inquirer`
  * @returns
  */
-async function maybePrompt(question: DistinctQuestion) {
-  const name = ensure(question.name) as string;
+async function maybePrompt<T>(
+  question: DistinctQuestion<Record<string, T>>,
+  checkCliAnswer = true
+): Promise<T> {
+  const name = ensure(question.name);
   const message = ensure(question.message);
-  const maybeAnswer = argv[name];
-  if (maybeAnswer === null || maybeAnswer === undefined || maybeAnswer === "") {
-    const ans = await inquirer.prompt({ ...question });
-    return ans[name];
-  } else {
-    console.log(`${message}: ${maybeAnswer} (specified in CLI arg)`);
-    return ensure(argv[name]);
+
+  if (checkCliAnswer) {
+    const cliAnswer = argv[name];
+    if (cliAnswer !== null && cliAnswer !== undefined && cliAnswer !== "") {
+      console.log(`${message}: ${cliAnswer} (specified in CLI arg)`);
+      return cliAnswer as T; // assume it's the correct type
+    }
   }
+
+  const ans = await inquirer.prompt<Record<string, T>>(question);
+  return ans[name];
 }
 
 // Keeping these as globals to easily share with our `crash` function
@@ -132,7 +138,7 @@ async function run(): Promise<void> {
 
   // Prompt for the platform
   const platform = ensureString(
-    await maybePrompt({
+    await maybePrompt<string>({
       name: "platform",
       message: "What React framework do you want to use?",
       type: "list",
@@ -181,20 +187,34 @@ async function run(): Promise<void> {
   // Get the projectId
   console.log();
   let projectId: string | undefined;
+  let firstPrompt = true;
   while (!projectId) {
-    const rawProjectId = await maybePrompt({
-      name: "projectId",
-      message: `What is the URL of your project?
-If you don't have a project yet, create one by going to
-https://studio.plasmic.app/starters/blank
-`,
-    });
-    projectId = rawProjectId
-      .replace("https://studio.plasmic.app/projects/", "")
-      .trim();
-    if (!projectId) {
-      console.error(`"${rawProjectId}" is not a valid project ID.`);
+    const rawProjectId = await maybePrompt<string>(
+      {
+        name: "projectId",
+        message: `If you don't have a project yet, create one by going to https://studio.plasmic.app/starters/blank.
+What is the URL of your project?`,
+      },
+      firstPrompt
+    );
+    firstPrompt = false; // avoid infinite loop with an invalid CLI answer
+
+    const matchUrl = rawProjectId.match(
+      /studio\.plasmic\.app\/projects\/([a-z0-9]{5,})\//i
+    );
+    if (matchUrl) {
+      projectId = matchUrl[1];
+      continue;
     }
+
+    // allow passing in a project ID
+    const matchId = rawProjectId.match(/([a-z0-9]{5,})/i);
+    if (matchId) {
+      projectId = matchId[1];
+      continue;
+    }
+
+    console.error(`"${rawProjectId}" is not a valid project URL nor ID.`);
   }
 
   // RUN IT
