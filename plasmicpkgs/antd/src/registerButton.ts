@@ -1,7 +1,7 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import Button, { ButtonProps } from "antd/lib/button";
+import Button, { ButtonProps } from "antd/es/button";
 import { Registerable } from "./registerable";
 export const buttonMeta: ComponentMeta<ButtonProps> = {
   name: "AntdButton",
@@ -60,7 +60,7 @@ export const buttonMeta: ComponentMeta<ButtonProps> = {
       options: ["_blank", "_self", "_parent", "_top"],
       description:
         "Same as target attribute of a, works when href is specified",
-      hidden: props => !props.href,
+      hidden: (props) => !props.href,
       defaultValueHint: "_self",
     },
     children: {
@@ -73,7 +73,7 @@ export const buttonMeta: ComponentMeta<ButtonProps> = {
       ],
     },
   },
-  importPath: "antd/lib/button",
+  importPath: "antd/es/button",
   isDefaultExport: true,
   importName: "Button",
 };

@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/antd",
-  "version": "0.0.106",
+  "version": "2.0.0",
   "description": "Plasmic registration calls for antd components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -11,7 +11,7 @@
   ],
   "size-limit": [
     {
-      "path": "dist/antd.cjs.production.min.js",
+      "path": "dist/index.js",
       "limit": "10 KB"
     },
     {
@@ -20,12 +20,12 @@
     }
   ],
   "scripts": {
-    "build": "tsdx build && yarn copy_css_files && rollup -c rollup.config.js",
+    "build": "rollup -c rollup.config.js && yarn copy_css_files && ./node_modules/.bin/tsc --emitDeclarationOnly --declaration src/index.ts  --skipLibCheck --jsx react --esModuleInterop --strict --outDir ./dist/ && cp ./dist/*.d.ts skinny/ && rm skinny/index.d.ts",
     "start": "tsdx watch",
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
-    "copy_css_files": "cp src/*.css dist/",
+    "copy_css_files": "mkdir -p dist/ && cp src/*.css dist/",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
@@ -33,16 +33,21 @@
     "@plasmicapp/host": "1.0.88",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/node": "^14.0.26",
-    "antd": "^4.17.2",
+    "antd": "^5.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "rollup-plugin-dts": "^5.0.0",
+    "rollup-plugin-esbuild": "^5.0.0",
     "size-limit": "^4.11.0",
     "tsdx": "^0.14.1",
-    "typescript": "^3.9.7"
+    "typescript": "^4.6.4"
   },
   "peerDependencies": {
     "@plasmicapp/host": "^1.0.0",
-    "antd": "^4.0.0",
+    "antd": "^5.0.0",
     "react": ">=16.8.0"
+  },
+  "dependencies": {
+    "antd": "^5.0.4"
   }
 }

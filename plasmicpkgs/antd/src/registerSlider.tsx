@@ -1,8 +1,8 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { default as AntdSlider } from "antd/lib/slider";
-import type { SliderRangeProps, SliderSingleProps } from "antd/lib/slider";
+import type { SliderRangeProps, SliderSingleProps } from "antd/es/slider";
+import { default as AntdSlider } from "antd/es/slider";
 import React from "react";
 import { Registerable } from "./registerable";
 
@@ -33,7 +33,7 @@ export const Slider = React.forwardRef<unknown, SliderProps>(
       if (typeof value === "number") {
         newProps.value = value;
       }
-      if(typeof defaultValue === "number") {
+      if (typeof defaultValue === "number") {
         newProps.defaultValue = defaultValue;
       }
     }
@@ -59,7 +59,7 @@ export const sliderMeta: ComponentMeta<SliderProps> = {
       type: "boolean",
       description:
         "Make effect when marks not null, true means containment and false means coordinative",
-        defaultValueHint: true,
+      defaultValueHint: true,
     },
     disabled: {
       type: "boolean",

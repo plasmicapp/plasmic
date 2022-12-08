@@ -1,8 +1,8 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import Checkbox, { CheckboxProps } from "antd/lib/checkbox/Checkbox";
-import CheckboxGroup, { CheckboxGroupProps } from "antd/lib/checkbox/Group";
+import Checkbox, { CheckboxProps } from "antd/es/checkbox/Checkbox";
+import CheckboxGroup, { CheckboxGroupProps } from "antd/es/checkbox/Group";
 import React from "react";
 import { traverseReactEltTree } from "./customControls";
 import { Registerable } from "./registerable";
@@ -54,7 +54,7 @@ export const checkboxMeta: ComponentMeta<CheckboxProps> = {
       ],
     },
   },
-  importPath: "antd/lib/checkbox/Checkbox",
+  importPath: "antd/es/checkbox/Checkbox",
   importName: "Checkbox",
   defaultStyles: {
     marginLeft: 0,
@@ -86,9 +86,9 @@ export const checkboxGroupMeta: ComponentMeta<CheckboxGroupProps> = {
       uncontrolledProp: "defaultValue",
       description: "Default selected value",
       multiSelect: true,
-      options: componentProps => {
+      options: (componentProps) => {
         const options = new Set<string>();
-        traverseReactEltTree(componentProps.children, elt => {
+        traverseReactEltTree(componentProps.children, (elt) => {
           if (
             elt?.type === CheckboxWrapper &&
             typeof elt?.props?.value === "string"
@@ -110,7 +110,7 @@ export const checkboxGroupMeta: ComponentMeta<CheckboxGroupProps> = {
       ],
     },
   },
-  importPath: "antd/lib/checkbox/Group",
+  importPath: "antd/es/checkbox/Group",
   importName: "CheckboxGroup",
   parentComponentName: "AntdCheckbox",
   isDefaultExport: true,
