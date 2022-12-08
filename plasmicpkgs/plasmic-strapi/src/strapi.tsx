@@ -47,8 +47,8 @@ Learn how to [get your API token](https://docs.strapi.io/user-docs/latest/settin
     host: {
       type: "string",
       displayName: "Host",
-      defaultValueHint: "https://strapi-plasmic.herokuapp.com",
-      defaultValue: "https://strapi-plasmic.herokuapp.com",
+      defaultValueHint: "https://strapi-app.plasmic.app",
+      defaultValue: "https://strapi-app.plasmic.app",
       description: "Server where you application is hosted.",
     },
     token: {
@@ -225,9 +225,10 @@ export function StrapiField({
   const attributes = get(item, ["attributes"]);
   const displayableFields = Object.keys(attributes).filter((field) => {
     const value = attributes[field];
+    const maybeMime = value.data?.attributes?.mime;
     return (
       typeof value !== "object" ||
-      value.data?.attributes?.mime.startsWith("image")
+      (typeof maybeMime === "string" && maybeMime.startsWith("image"))
     );
   });
 
@@ -241,15 +242,16 @@ export function StrapiField({
   }
 
   const data = get(item, ["attributes", path]);
+  const maybeMime = data?.data?.attributes?.mime;
 
   setControlContextData?.({
     fields: displayableFields,
-    isImage: data?.data?.attributes?.mime.startsWith("image"),
+    isImage: typeof maybeMime === "string" && maybeMime.startsWith("image"),
   });
 
   if (!data) {
     return <div>Please specify a valid field name.</div>;
-  } else if (data?.data?.attributes?.mime.startsWith("image")) {
+  } else if (typeof maybeMime === "string" && maybeMime.startsWith("image")) {
     const creds = ensure(useContext(CredentialsContext));
     const attrs = data.data.attributes;
     const img_url = attrs.url.startsWith("http")
