@@ -47,7 +47,7 @@ export class PlasmicModulesFetcher {
   private async doFetch() {
     const data = await this.api.fetchLoaderData(
       this.opts.projects.map((p) =>
-        p.version && !this.opts.preview ? `${p.id}@${p.version}` : p.id
+        p.version ? `${p.id}@${p.version}` : p.id
       ),
       {
         platform: this.opts.platform,
