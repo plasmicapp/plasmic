@@ -1,5 +1,4 @@
 import L from "lodash";
-import { InvalidatedProjectKind } from "typescript";
 import { SyncArgs } from "../actions/sync";
 import { ProjectVersionMeta, VersionResolution } from "../api";
 import { logger } from "../deps";
@@ -74,7 +73,13 @@ async function checkProjectMeta(
       (p) => p.projectId === projectId
     );
 
-    if (!!projectLock?.codegenVersion && semver.gte(projectLock.codegenVersion, await context.api.latestCodegenVersion())) {
+    if (
+      !!projectLock?.codegenVersion &&
+      semver.gte(
+        projectLock.codegenVersion,
+        await context.api.latestCodegenVersion()
+      )
+    ) {
       return false;
     }
 
@@ -95,11 +100,13 @@ async function checkProjectMeta(
       return true;
     }
 
-    if (
-      semver.isLatest(versionOnDisk) &&
-      semver.isLatest(newVersion) &&
-      meta !== root
-    ) {
+    // If version is a branch name, we want to get the latest of the branch
+    const newVersionIsLatest =
+      semver.isLatest(newVersion) || !semver.valid(newVersion);
+    const versionOnDiskIsLatest =
+      semver.isLatest(versionOnDisk) || !semver.valid(versionOnDisk);
+
+    if (versionOnDiskIsLatest && newVersionIsLatest && meta !== root) {
       // If this is a dependency (not root), and we're dealing with latest dep version
       // just skip, it's confusing
       if (!isOnDiskCodeInvalid) {
@@ -110,12 +117,12 @@ async function checkProjectMeta(
       return false;
     }
 
-    if (semver.isLatest(newVersion)) {
+    if (newVersionIsLatest) {
       // Always sync when version set to "latest"
       return true;
     }
 
-    if (semver.isLatest(versionOnDisk)) {
+    if (versionOnDiskIsLatest) {
       // Explicitly allow downgrades from "latest" to published version
       return true;
     }
@@ -128,7 +135,7 @@ async function checkProjectMeta(
         );
         return true;
       } else {
-        if (!isOnDiskCodeInvalid) { 
+        if (!isOnDiskCodeInvalid) {
           logger.info(
             `Project '${projectName}'@${newVersion} is already up to date; skipping. (To force an update, run again with "--force")`
           );
@@ -186,8 +193,12 @@ async function checkProjectMeta(
       return true;
     }
 
+    // If version is a branch name, we want to get the latest of the branch
+    const versionRangeIsLatest =
+      semver.isLatest(versionRange) || !semver.valid(versionRange);
+
     // If satisfies range in plasmic.json
-    if (semver.satisfies(newVersion, versionRange)) {
+    if (versionRangeIsLatest || semver.satisfies(newVersion, versionRange)) {
       logger.info(`Updating project '${projectName}' to ${newVersion}`);
       return true;
     }
@@ -230,12 +241,12 @@ async function checkProjectMeta(
     // we should always sync it, even if nothing has changed
     return true;
   }
-  const checkedVersion = 
+  const checkedVersion =
     (await checkVersionLock()) &&
     (await checkVersionRange()) &&
     (await checkIndirect());
 
- if(!checkedVersion && isOnDiskCodeInvalid) {
+  if (!checkedVersion && isOnDiskCodeInvalid) {
     // sync, but try to keep the current version on disk
     const projectLock = context.lock.projects.find(
       (p) => p.projectId === projectId
@@ -244,7 +255,7 @@ async function checkProjectMeta(
     logger.warn(
       `Project '${projectName}' was synced by an incompatible version of Plasmic Codegen. Syncing again on the same version ${projectName}@${versionOnDisk}`
     );
-    
+
     meta.version = versionOnDisk ?? meta.version;
     return true;
   } else if (checkedVersion) {
