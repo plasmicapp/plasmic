@@ -165,10 +165,10 @@ function isDatabaseConfigured(config?: DatabaseConfig) {
   return config?.databaseId && config?.databaseToken;
 }
 
-interface CmsQueryRepeaterProps
+interface CmsQueryProps
   extends QueryParams,
     CanvasComponentProps<TableContextData> {
-  children?: React.ReactNode;
+  children: (rows: ApiCmsRow[]) => React.ReactNode;
   table?: string;
   emptyMessage?: React.ReactNode;
   forceEmptyState?: boolean;
@@ -178,6 +178,10 @@ interface CmsQueryRepeaterProps
   className?: string;
   filterField?: string;
   filterValue?: string;
+}
+
+interface CmsQueryRepeaterProps extends Omit<CmsQueryProps, "children"> {
+  children?: React.ReactNode;
 }
 
 export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
@@ -307,7 +311,7 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
   },
 };
 
-export function CmsQueryRepeater({
+export function CmsQuery({
   table,
   children,
   setControlContextData,
@@ -324,7 +328,7 @@ export function CmsQueryRepeater({
   className,
   filterField,
   filterValue,
-}: CmsQueryRepeaterProps) {
+}: CmsQueryProps) {
   const databaseConfig = useDatabase();
   const tables = useTables();
 
@@ -377,11 +381,7 @@ export function CmsQueryRepeater({
       }
       return (
         <QueryResultProvider table={table!} rows={rows}>
-          {rows.map((row, index) => (
-            <RowProvider key={index} table={table!} row={row}>
-              {repeatedElement(index, children)}
-            </RowProvider>
-          ))}
+          {children(rows)}
         </QueryResultProvider>
       );
     },
@@ -391,6 +391,23 @@ export function CmsQueryRepeater({
     forceLoadingState
   );
   return noLayout ? <> {node} </> : <div className={className}> {node} </div>;
+}
+
+export function CmsQueryRepeater({
+  children,
+  ...query
+}: CmsQueryRepeaterProps) {
+  return (
+    <CmsQuery {...query}>
+      {(rows) =>
+        rows.map((row, index) => (
+          <RowProvider key={index} table={query.table!} row={row}>
+            {repeatedElement(index, children)}
+          </RowProvider>
+        ))
+      }
+    </CmsQuery>
+  );
 }
 
 interface CmsRowFieldProps extends CanvasComponentProps<RowContextData> {
