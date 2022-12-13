@@ -1,7 +1,7 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import Switch, { SwitchProps } from "antd/lib/switch";
+import Switch, { SwitchProps } from "antd/es/switch";
 import { Registerable } from "./registerable";
 
 export const switchMeta: ComponentMeta<SwitchProps> = {
@@ -47,7 +47,7 @@ export const switchMeta: ComponentMeta<SwitchProps> = {
       defaultValueHint: "default",
     },
   },
-  importPath: "antd/lib/switch",
+  importPath: "antd/es/switch",
   importName: "Switch",
   isDefaultExport: true,
 };

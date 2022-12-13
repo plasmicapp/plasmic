@@ -1,12 +1,16 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { MenuItemProps, MenuProps, SubMenuProps } from "antd/lib/menu";
-import { MenuDividerProps } from "antd/lib/menu";
-import Menu from "antd/lib/menu/index";
-import MenuDivider from "antd/lib/menu/MenuDivider";
-import MenuItem from "antd/lib/menu/MenuItem";
-import SubMenu from "antd/lib/menu/SubMenu";
+import {
+  MenuDividerProps,
+  MenuItemProps,
+  MenuProps,
+  SubMenuProps,
+} from "antd/es/menu";
+import Menu from "antd/es/menu/index";
+import MenuDivider from "antd/es/menu/MenuDivider";
+import MenuItem from "antd/es/menu/MenuItem";
+import SubMenu from "antd/es/menu/SubMenu";
 import { ItemGroup, MenuItemGroupProps } from "rc-menu";
 import { traverseReactEltTree } from "./customControls";
 import { Registerable } from "./registerable";
@@ -21,7 +25,7 @@ export const menuDividerMeta: ComponentMeta<MenuDividerProps> = {
       defaultValueHint: false,
     },
   },
-  importPath: "antd/lib/menu/MenuDivider",
+  importPath: "antd/es/menu/MenuDivider",
   importName: "MenuDivider",
   isDefaultExport: true,
   parentComponentName: "AntdMenu",
@@ -69,7 +73,7 @@ export const menuItemMeta: ComponentMeta<MenuItemProps> = {
       ],
     },
   },
-  importPath: "antd/lib/menu/MenuItem",
+  importPath: "antd/es/menu/MenuItem",
   importName: "MenuItem",
   isDefaultExport: true,
   parentComponentName: "AntdMenu",
@@ -172,7 +176,7 @@ export const subMenuMeta: ComponentMeta<SubMenuProps> = {
       })),
     },
   },
-  importPath: "antd/lib/menu/SubMenu",
+  importPath: "antd/es/menu/SubMenu",
   importName: "SubMenu",
   isDefaultExport: true,
   parentComponentName: "AntdMenu",
@@ -222,9 +226,9 @@ export const menuMeta: ComponentMeta<MenuProps> = {
       uncontrolledProp: "defaultOpenKeys",
       description: "Array with the keys of default opened sub menus",
       multiSelect: true,
-      options: componentProps => {
+      options: (componentProps) => {
         const options = new Set<string>();
-        traverseReactEltTree(componentProps.children, elt => {
+        traverseReactEltTree(componentProps.children, (elt) => {
           if (elt?.type === SubMenu && typeof elt?.key === "string") {
             options.add(elt.key);
           }
@@ -247,9 +251,9 @@ export const menuMeta: ComponentMeta<MenuProps> = {
       uncontrolledProp: "defaultSelectedKeys",
       description: "Array with the keys of default selected menu items",
       multiSelect: true,
-      options: componentProps => {
+      options: (componentProps) => {
         const options = new Set<string>();
-        traverseReactEltTree(componentProps.children, elt => {
+        traverseReactEltTree(componentProps.children, (elt) => {
           if (
             [SubMenu, MenuItem as any].includes(elt?.type) &&
             typeof elt?.key === "string"
@@ -297,7 +301,7 @@ export const menuMeta: ComponentMeta<MenuProps> = {
       ],
     },
   },
-  importPath: "antd/lib/menu/index",
+  importPath: "antd/es/menu/index",
   importName: "Menu",
   isDefaultExport: true,
 };

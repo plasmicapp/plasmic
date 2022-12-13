@@ -1,7 +1,7 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import Select from "antd/lib/select";
+import Select from "antd/es/select";
 import { Option } from "rc-select";
 import React from "react";
 import { traverseReactEltTree } from "./customControls";
@@ -23,7 +23,7 @@ export const selectMeta: ComponentMeta<SelectProps> = {
       description:
         "Whether the current search will be cleared on selecting an item",
       defaultValueHint: true,
-      hidden: props => props.mode !== "multiple" && props.mode !== "tags",
+      hidden: (props) => props.mode !== "multiple" && props.mode !== "tags",
     },
     autoFocus: {
       type: "boolean",
@@ -92,9 +92,9 @@ export const selectMeta: ComponentMeta<SelectProps> = {
       editOnly: true,
       uncontrolledProp: "defaultValue",
       description: "Initial selected option",
-      options: componentProps => {
+      options: (componentProps) => {
         const options = new Set<string>();
-        traverseReactEltTree(componentProps.children, elt => {
+        traverseReactEltTree(componentProps.children, (elt) => {
           if (elt?.type === Option && typeof elt?.props?.value === "string") {
             options.add(elt.props.value);
           }
@@ -125,7 +125,7 @@ export const selectMeta: ComponentMeta<SelectProps> = {
       ],
     },
   },
-  importPath: "antd/lib/select",
+  importPath: "antd/es/select",
   importName: "Select",
   isDefaultExport: true,
 };

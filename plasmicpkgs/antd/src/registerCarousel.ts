@@ -1,7 +1,7 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import Carousel, { CarouselProps } from "antd/lib/carousel";
+import Carousel, { CarouselProps } from "antd/es/carousel";
 import { CSSProperties } from "react";
 import { Registerable } from "./registerable";
 
@@ -60,7 +60,7 @@ export const carouselMeta: ComponentMeta<CarouselProps> = {
       ],
     },
   },
-  importPath: "antd/lib/carousel",
+  importPath: "antd/es/carousel",
   importName: "Carousel",
   isDefaultExport: true,
 };
