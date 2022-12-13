@@ -33,6 +33,7 @@ type ContextDependentConfig<P, R> = (
 interface PropTypeBase<P> {
   displayName?: string;
   description?: string;
+  helpText?:string;
   hidden?: ContextDependentConfig<P, boolean>;
   readOnly?: boolean | ContextDependentConfig<P, boolean>;
   advanced?: boolean;
@@ -407,6 +408,7 @@ interface $StateSpec<T> {
   type: "private" | "readonly" | "writable";
   // if initial value is defined by a js expression
   initFunc?: ($props: Record<string, any>, $state: $State) => T;
+  
   // if initial value is a hard-coded value
   initVal?: T;
   // Whether this state is private, readonly, or writable in
