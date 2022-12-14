@@ -12,7 +12,7 @@ const contextPrefix = "plasmicCms";
 const databaseContextKey = `${contextPrefix}Database`;
 const tablesContextKey = `${contextPrefix}Tables`;
 const collectionResultSuffix = `Collection`;
-const mkQueryContextKey = (table: string) =>
+export const mkQueryContextKey = (table: string) =>
   `${contextPrefix}${capitalizeFirst(table)}${collectionResultSuffix}`;
 const itemContextSuffix = `Item`;
 const mkRowContextKey = (table: string) =>
@@ -99,13 +99,15 @@ export function QueryResultProvider({
   children,
   table,
   rows,
+  hidden
 }: {
   children?: React.ReactNode;
   table: string;
   rows: ApiCmsRow[];
+  hidden?:boolean
 }) {
   return (
-    <DataProvider name={mkQueryContextKey(table)} data={rows}>
+    <DataProvider name={mkQueryContextKey(table)} data={rows} hidden={hidden}>
       {children}
     </DataProvider>
   );

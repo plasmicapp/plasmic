@@ -1,4 +1,4 @@
-import { PlasmicCanvasContext, repeatedElement } from "@plasmicapp/host";
+import {DataProvider, PlasmicCanvasContext, repeatedElement } from "@plasmicapp/host";
 import {
   CanvasComponentProps,
   ComponentMeta,
@@ -10,6 +10,7 @@ import React, { useContext } from "react";
 import { DatabaseConfig, HttpError, mkApi, QueryParams } from "./api";
 import {
   DatabaseProvider,
+  mkQueryContextKey,
   QueryResultProvider,
   RowProvider,
   TablesProvider,
@@ -30,7 +31,7 @@ interface FetcherComponentProps {
 
 function renderMaybeData<T>(
   maybeData: ReturnType<typeof usePlasmicQueryData>,
-  renderFn: (data: T) => JSX.Element,
+  renderFn: (data: T) => JSX.Element | any,
   loaderProps: FetcherComponentProps,
   inEditor: boolean,
   loadingMessage?: React.ReactNode,
@@ -64,44 +65,44 @@ interface CmsCredentialsProviderProps extends DatabaseConfig {
 const defaultHost = "https://studio.plasmic.app";
 
 export const cmsCredentialsProviderMeta: GlobalContextMeta<CmsCredentialsProviderProps> =
-  {
-    name: `${componentPrefix}-credentials-provider`,
-    displayName: "CMS Credentials Provider",
-    description: `
+{
+  name: `${componentPrefix}-credentials-provider`,
+  displayName: "CMS Credentials Provider",
+  description: `
 Find your CMS in the [dashboard](https://studio.plasmic.app), and go to the Settings tab for the ID and token.
 
 See also the [getting started video](https://www.youtube.com/watch?v=-Rrn92VtRBc).`,
-    importName: "CmsCredentialsProvider",
-    importPath: modulePath,
-    providesData: true,
-    props: {
-      host: {
-        type: "string",
-        displayName: "Studio URL",
-        description: `The default host for use in production is ${defaultHost}.`,
-        defaultValue: defaultHost,
-        defaultValueHint: defaultHost,
-      },
-      databaseId: {
-        type: "string",
-        displayName: "CMS ID",
-        description:
-          "The ID of the CMS (database) to use. (Can get on the CMS settings page)",
-      },
-      databaseToken: {
-        type: "string",
-        displayName: "CMS Public Token",
-        description:
-          "The Public Token of the CMS (database) you are using. (Can get on the CMS settings page)",
-      },
-      locale: {
-        type: "string",
-        displayName: "Locale",
-        description:
-          "The locale to use for localized values, leave empty for the default locale.",
-      },
+  importName: "CmsCredentialsProvider",
+  importPath: modulePath,
+  providesData: true,
+  props: {
+    host: {
+      type: "string",
+      displayName: "Studio URL",
+      description: `The default host for use in production is ${defaultHost}.`,
+      defaultValue: defaultHost,
+      defaultValueHint: defaultHost,
     },
-  };
+    databaseId: {
+      type: "string",
+      displayName: "CMS ID",
+      description:
+        "The ID of the CMS (database) to use. (Can get on the CMS settings page)",
+    },
+    databaseToken: {
+      type: "string",
+      displayName: "CMS Public Token",
+      description:
+        "The Public Token of the CMS (database) you are using. (Can get on the CMS settings page)",
+    },
+    locale: {
+      type: "string",
+      displayName: "Locale",
+      description:
+        "The locale to use for localized values, leave empty for the default locale.",
+    },
+  },
+};
 
 export function CmsCredentialsProvider({
   children,
@@ -167,14 +168,15 @@ function isDatabaseConfigured(config?: DatabaseConfig) {
 
 interface CmsQueryRepeaterProps
   extends QueryParams,
-    CanvasComponentProps<TableContextData> {
-  children?: React.ReactNode;
+  CanvasComponentProps<TableContextData> {
+  children: React.ReactNode;
   table?: string;
   emptyMessage?: React.ReactNode;
   forceEmptyState?: boolean;
   loadingMessage?: React.ReactNode;
   forceLoadingState?: boolean;
   noLayout?: boolean;
+  noAutoRepeat?: boolean;
   className?: string;
   filterField?: string;
   filterValue?: string;
@@ -304,6 +306,12 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
         "When set, CMS Data Loader will not layout its children; instead, the layout set on its parent element will be used. Useful if you want to set flex gap or control container tag type.",
       defaultValue: false,
     },
+    noAutoRepeat: {
+      type: "boolean",
+      displayName: "No auto-repeat",
+      description: "Do not automatically repeat children for every entry.",
+      defaultValue: false,
+    },
   },
 };
 
@@ -321,6 +329,7 @@ export function CmsQueryRepeater({
   loadingMessage,
   forceLoadingState,
   noLayout,
+  noAutoRepeat,
   className,
   filterField,
   filterValue,
@@ -375,7 +384,10 @@ export function CmsQueryRepeater({
           </QueryResultProvider>
         );
       }
-      return (
+
+      return noAutoRepeat ? (
+        children
+      ) : (
         <QueryResultProvider table={table!} rows={rows}>
           {rows.map((row, index) => (
             <RowProvider key={index} table={table!} row={row}>
@@ -390,7 +402,11 @@ export function CmsQueryRepeater({
     loadingMessage,
     forceLoadingState
   );
-  return noLayout ? <> {node} </> : <div className={className}> {node} </div>;
+  return (
+    <DataProvider data={maybeData?.data} name={`${mkQueryContextKey(table!)}s`}>
+      {noLayout ? <> {node} </> : <div className={className}> {node} </div>}
+    </DataProvider>
+  );
 }
 
 interface CmsRowFieldProps extends CanvasComponentProps<RowContextData> {
@@ -563,9 +579,9 @@ export function CmsRowField({
   }
   return data
     ? renderValue(data, fieldMeta.type, {
-        className,
-        ...rest,
-      })
+      className,
+      ...rest,
+    })
     : null;
 }
 
@@ -582,8 +598,8 @@ function deriveInferredTableField(opts: {
   const fieldMeta = field
     ? schema?.fields.find((f) => f.identifier === field)
     : schema?.fields.find((f) =>
-        (typeFilters ?? DEFAULT_TYPE_FILTERS).includes(f.type)
-      );
+      (typeFilters ?? DEFAULT_TYPE_FILTERS).includes(f.type)
+    );
   return fieldMeta;
 }
 
@@ -743,8 +759,8 @@ export function CmsRowLink({
           fieldMeta.type === "file"
             ? value.url
             : prefix || suffix
-            ? `${prefix || ""}${value}${suffix || ""}`
-            : value,
+              ? `${prefix || ""}${value}${suffix || ""}`
+              : value,
       });
     }
     return child;
