@@ -46,6 +46,7 @@ export const videoMeta: ComponentMeta<VideoProps> = {
       type: "boolean",
       displayName: "Show Controls",
       description: "Whether the video player controls should be displayed",
+      defaultValue: true,
     },
     playsInline: {
       type: "boolean",
