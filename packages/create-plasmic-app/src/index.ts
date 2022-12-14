@@ -200,7 +200,7 @@ What is the URL of your project?`,
     firstPrompt = false; // avoid infinite loop with an invalid CLI answer
 
     const matchUrl = rawProjectId.match(
-      /studio\.plasmic\.app\/projects\/([a-z0-9]{5,})\//i
+      /studio\.plasmic\.app\/projects\/([a-z0-9]{5,})(\/|$)/i
     );
     if (matchUrl) {
       projectId = matchUrl[1];
