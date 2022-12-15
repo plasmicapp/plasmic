@@ -20,7 +20,7 @@ type InferDataType<P> = P extends CanvasComponentProps<infer Data> ? Data : any;
  * Config option that takes the context (e.g., props) of the component instance
  * to dynamically set its value.
  */
-type ContextDependentConfig<P, R> = (
+export type ContextDependentConfig<P, R> = (
   props: P,
   /**
    * `contextData` can be `null` if the prop controls are rendering before
@@ -30,16 +30,16 @@ type ContextDependentConfig<P, R> = (
   contextData: InferDataType<P> | null
 ) => R;
 
-interface PropTypeBase<P> {
+export interface PropTypeBase<P> {
   displayName?: string;
   description?: string;
-  helpText?:string;
+  helpText?: string;
   hidden?: ContextDependentConfig<P, boolean>;
   readOnly?: boolean | ContextDependentConfig<P, boolean>;
   advanced?: boolean;
 }
 
-type DefaultValueOrExpr<P, T> =
+export type DefaultValueOrExpr<P, T> =
   | {
       defaultExpr?: undefined;
       defaultExprHint?: undefined;
@@ -66,9 +66,9 @@ export type StringType<P> =
           type: "code";
           lang: "css" | "html" | "javascript" | "json";
         }
-        | {
+      | {
           type: "color";
-          format:"rgb" | "hex";
+          format: "rgb" | "hex";
         }
       | {
           type: "cardPicker";
@@ -408,7 +408,7 @@ interface $StateSpec<T> {
   type: "private" | "readonly" | "writable";
   // if initial value is defined by a js expression
   initFunc?: ($props: Record<string, any>, $state: $State) => T;
-  
+
   // if initial value is a hard-coded value
   initVal?: T;
   // Whether this state is private, readonly, or writable in

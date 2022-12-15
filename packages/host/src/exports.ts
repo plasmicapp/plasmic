@@ -12,9 +12,12 @@ export {
   ComponentMeta,
   ComponentRegistration,
   ComponentTemplates,
+  ContextDependentConfig,
   default as registerComponent,
+  DefaultValueOrExpr,
   PrimitiveType,
   PropType,
+  PropTypeBase,
 } from "./registerComponent";
 export {
   default as registerGlobalContext,
