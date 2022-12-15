@@ -276,88 +276,78 @@ function PeopleList(props: {
 
 const _ResetInput: Story<{
   peopleList: { firstName: string; lastName: string }[];
-}> = (args) => {
-  const InternalResetInput = (props: {
-    peopleList: { firstName: string; lastName: string }[];
-  }) => {
-    const $state = useDollarState(
-      [
-        {
-          path: "peopleList",
-          type: "private",
-          initFunc: ($props) => $props.peopleList,
-        },
-        {
-          path: "list.selectedIndex",
-          type: "private",
-        },
-        {
-          path: "textInputFirstName.value",
-          initFunc: (_$props, $state) =>
-            $state.list.selectedIndex == null
-              ? ""
-              : $state.peopleList[$state.list.selectedIndex].firstName,
-          type: "private",
-        },
-        {
-          path: "textInputLastName.value",
-          initFunc: (_$props, $state) =>
-            $state.list.selectedIndex == null
-              ? ""
-              : $state.peopleList[$state.list.selectedIndex].lastName,
-          type: "private",
-        },
-        {
-          path: "textInputUpper.value",
-          initFunc: (_$props, $state) =>
-            $state.textInputFirstName.value?.toUpperCase(),
-          type: "private",
-        },
-      ],
-      props
-    );
+}> = (props) => {
+  const $state = useDollarState(
+    [
+      {
+        path: "peopleList",
+        type: "private",
+        initFunc: ($props) => $props.peopleList,
+      },
+      {
+        path: "list.selectedIndex",
+        type: "private",
+      },
+      {
+        path: "textInputFirstName.value",
+        initFunc: (_$props, $state) =>
+          $state.list.selectedIndex == null
+            ? ""
+            : $state.peopleList[$state.list.selectedIndex].firstName,
+        type: "private",
+      },
+      {
+        path: "textInputLastName.value",
+        initFunc: (_$props, $state) =>
+          $state.list.selectedIndex == null
+            ? ""
+            : $state.peopleList[$state.list.selectedIndex].lastName,
+        type: "private",
+      },
+      {
+        path: "textInputUpper.value",
+        initFunc: (_$props, $state) =>
+          $state.textInputFirstName.value?.toUpperCase(),
+        type: "private",
+      },
+    ],
+    props
+  );
 
-    return (
-      <div>
-        <PeopleList
-          data={$state.peopleList ?? []}
-          onIndexSelected={(x) => ($state.list.selectedIndex = x)}
-        />
-        <div>
-          <TextInput
-            value={$state.textInputFirstName.value}
-            onChange={(val) => ($state.textInputFirstName.value = val)}
-            data-testid={"textInputFirstName"}
-          />
-          <TextInput
-            value={$state.textInputLastName.value}
-            onChange={(val) => ($state.textInputLastName.value = val)}
-            data-testid={"textInputLastName"}
-          />
-          <TextInput
-            value={$state.textInputUpper.value}
-            onChange={(val) => ($state.textInputUpper.value = val)}
-            data-testid={"textInputUpper"}
-          />
-        </div>
-        <button
-          onClick={() => {
-            $state.peopleList[$state.list.selectedIndex] = {
-              firstName: $state.textInputFirstName.value,
-              lastName: $state.textInputLastName.value,
-            };
-            $state.peopleList = [...$state.peopleList];
-          }}
-        >
-          Submit
-        </button>
-      </div>
-    );
-  };
   return (
-    <InternalResetInput
-      peopleList={[...args.peopleList.map((person) => ({ ...person }))]}
-    />
+    <div>
+      <PeopleList
+        data={$state.peopleList ?? []}
+        onIndexSelected={(x) => ($state.list.selectedIndex = x)}
+      />
+      <div>
+        <TextInput
+          value={$state.textInputFirstName.value}
+          onChange={(val) => ($state.textInputFirstName.value = val)}
+          data-testid={"textInputFirstName"}
+        />
+        <TextInput
+          value={$state.textInputLastName.value}
+          onChange={(val) => ($state.textInputLastName.value = val)}
+          data-testid={"textInputLastName"}
+        />
+        <TextInput
+          value={$state.textInputUpper.value}
+          onChange={(val) => ($state.textInputUpper.value = val)}
+          data-testid={"textInputUpper"}
+        />
+      </div>
+      <button
+        onClick={() => {
+          $state.peopleList[$state.list.selectedIndex].firstName =
+            $state.textInputFirstName.value;
+          $state.peopleList[$state.list.selectedIndex].lastName =
+            $state.textInputLastName.value;
+        }}
+      >
+        Submit
+      </button>
+    </div>
   );
 };
 
@@ -807,48 +797,52 @@ MatrixRepeatedCounter.play = async ({ canvasElement }) => {
 const _InitFuncFromInternalContextData: Story<{
   products: { price: number; name: string }[];
 }> = (args) => {
-  const ProductContext = React.createContext<
-    | {
-        price: number;
-        name: string;
-      }
-    | undefined
-  >(undefined);
-  const InternalComponent = (props: {
-    quantity: number;
-    onProductChange: (product: any) => void;
-  }) => {
-    const $state = useDollarState(
-      [
-        {
-          path: "price",
-          type: "private",
-          initFunc: ($props, $state) =>
-            $props.quantity * ($state.product?.price ?? 0),
-        },
-        {
-          path: "product",
-          type: "readonly",
-          onChangeProp: "onProductChange",
-        },
-      ],
-      props
-    );
-    return (
-      <>
-        <ProductContext.Consumer>
-          {($ctx) => {
-            $state.registerInitFunc("product", () => $ctx);
-            return (
-              <>
-                <p data-testid="product_price">Price: {$state.price}</p>
-              </>
-            );
-          }}
-        </ProductContext.Consumer>
-      </>
-    );
-  };
+  const ProductContext = React.useMemo(
+    () =>
+      React.createContext<
+        | {
+            price: number;
+            name: string;
+          }
+        | undefined
+      >(undefined),
+    []
+  );
+  const InternalComponent = React.useCallback(
+    (props: { quantity: number; onProductChange: (product: any) => void }) => {
+      const $state = useDollarState(
+        [
+          {
+            path: "price",
+            type: "private",
+            initFunc: ($props, $state) =>
+              $props.quantity * ($state.product?.price ?? 0),
+          },
+          {
+            path: "product",
+            type: "readonly",
+            onChangeProp: "onProductChange",
+          },
+        ],
+        props
+      );
+      return (
+        <>
+          <ProductContext.Consumer>
+            {($ctx) => {
+              $state.registerInitFunc("product", () => $ctx);
+              return (
+                <>
+                  <p data-testid="product_price">Price: {$state.price}</p>
+                </>
+              );
+            }}
+          </ProductContext.Consumer>
+        </>
+      );
+    },
+    []
+  );
 
   const $state = useDollarState(
     [
@@ -1183,11 +1177,9 @@ interface Person {
   nicknames: string[];
 }
 
-const _FormBuilder: Story<{ people: Person[] }> = (props: {
-  people: Person[];
-}) => {
-  const Nickname = React.useMemo(
-    () => (props: {
+const _FormBuilder: Story<{ people: Person[] }> = (props) => {
+  const Nickname = React.useCallback(
+    (props: {
       nickname: string;
       onChangeNickname: (nickname: string) => void;
       onDeleteNickname: () => void;
@@ -1226,8 +1218,8 @@ const _FormBuilder: Story<{ people: Person[] }> = (props: {
     []
   );
 
-  const Person = React.useMemo(
-    () => (props: {
+  const Person = React.useCallback(
+    (props: {
       person: Person;
       onChangePerson: (person: Person) => void;
       onDeletePerson: () => void;
@@ -1370,28 +1362,19 @@ const _FormBuilder: Story<{ people: Person[] }> = (props: {
         <Person
           person={person}
           key={i}
-          onChangePerson={(person) => {
-            $state.people[i] = person;
-            $state.people = [...$state.people];
-          }}
-          onDeletePerson={() => {
-            $state.people.splice(i, 1);
-            $state.people = [...$state.people];
-          }}
+          onChangePerson={(person) => ($state.people[i] = person)}
+          onDeletePerson={() => $state.people.splice(i, 1)}
           data-test-index={`[${i}]`}
         />
       ))}
       <button
         data-testid={"add-person-btn"}
         onClick={() =>
-          ($state.people = [
-            ...$state.people,
-            {
-              firstName: "",
-              lastName: "",
-              nicknames: [],
-            },
-          ])
+          $state.people.push({
+            firstName: "",
+            lastName: "",
+            nicknames: [],
+          })
         }
       >
         Add person
@@ -1528,8 +1511,8 @@ FormBuilder.play = async ({ canvasElement }) => {
 const _FormBuilderImplicitStates: Story<{ people: Person[] }> = (props: {
   people: Person[];
 }) => {
-  const Nickname = React.useMemo(
-    () => (props: {
+  const Nickname = React.useCallback(
+    (props: {
       nickname: string;
       onChangeNickname: (nickname: string) => void;
       onDeleteNickname: () => void;
@@ -1555,8 +1538,8 @@ const _FormBuilderImplicitStates: Story<{ people: Person[] }> = (props: {
     []
   );
 
-  const Person = React.useMemo(
-    () => (props: {
+  const Person = React.useCallback(
+    (props: {
       firstName: string;
       onFirstNameChange: (value: string) => void;
       lastName: string;
@@ -1733,17 +1716,17 @@ const _FormBuilderImplicitStates: Story<{ people: Person[] }> = (props: {
   );
 };
 
-export const FormBuilderImplicitStates = _FormBuilderImplicitStates.bind({});
-FormBuilderImplicitStates.args = {
-  people: deepClone(peopleList),
-};
-FormBuilderImplicitStates.play = async ({ canvasElement }) => {
-  const canvas = within(canvasElement);
+// export const FormBuilderImplicitStates = _FormBuilderImplicitStates.bind({});
+// FormBuilderImplicitStates.args = {
+//   people: deepClone(peopleList),
+// };
+// FormBuilderImplicitStates.play = async ({ canvasElement }) => {
+//   const canvas = within(canvasElement);
 
-  // TODO: skipping repeated implicit states for now
-};
+//   // TODO: skipping repeated implicit states for now
+// };
 
-const _VariableCellIsArray: Story<{ people: Person[] }> = (props: {
+const _StateCellIsArray: Story<{ people: Person[] }> = (props: {
   people: Person[];
 }) => {
   const $state = useDollarState(
@@ -1817,11 +1800,11 @@ const _VariableCellIsArray: Story<{ people: Person[] }> = (props: {
   );
 };
 
-export const VariableCellIsArray = _VariableCellIsArray.bind({});
-VariableCellIsArray.args = {
+export const StateCellIsArray = _StateCellIsArray.bind({});
+StateCellIsArray.args = {
   people: deepClone(peopleList),
 };
-VariableCellIsArray.play = async ({ canvasElement }) => {
+StateCellIsArray.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
   const expectedPeople = deepClone(peopleList);
 
@@ -1880,4 +1863,264 @@ VariableCellIsArray.play = async ({ canvasElement }) => {
   // add a person
   await addPerson("Rafael", "Nadal");
   await testPeopleList();
+};
+
+const _StateCellIsAMatrix: Story<{ board: number[][] }> = (props) => {
+  const $state = useDollarState(
+    [
+      {
+        path: "board",
+        type: "private",
+        initFunc: ($props, $state, $ctx) => props.board,
+      },
+      {
+        path: "selectedRow",
+        type: "private",
+      },
+      {
+        path: "selectedCol",
+        type: "private",
+      },
+    ],
+    props
+  );
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "20px",
+      }}
+    >
+      {$state.board.map((item: number[], row: number) => (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            gap: "20px",
+          }}
+        >
+          {item.map((item, col) => (
+            <div
+              onClick={() => {
+                if (
+                  $state.selectedRow !== undefined &&
+                  $state.selectedCol !== undefined
+                ) {
+                  [
+                    $state.board[row][col],
+                    $state.board[$state.selectedRow][$state.selectedCol],
+                  ] = [
+                    $state.board[$state.selectedRow][$state.selectedCol],
+                    $state.board[row][col],
+                  ];
+                  $state.selectedRow = $state.selectedCol = undefined;
+                } else {
+                  $state.selectedRow = row;
+                  $state.selectedCol = col;
+                }
+              }}
+              data-testid={`board-${row}-${col}`}
+            >
+              {item}
+            </div>
+          ))}
+        </div>
+      ))}
+      <div data-testid={"stringified-state"}></div>
+      {JSON.stringify($state)}
+    </div>
+  );
+};
+const initialBoard = [
+  [0, 1],
+  [2, 3],
+];
+export const StateCellIsMatrix = _StateCellIsAMatrix.bind({});
+StateCellIsMatrix.args = {
+  board: initialBoard,
+};
+StateCellIsMatrix.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  const expectedState = deepClone<{
+    board: number[][];
+    selectedRow?: number;
+    selectedCol?: number;
+  }>({ board: initialBoard });
+
+  const testBoard = async () => {
+    await expect(
+      canvas.getByText(JSON.stringify(expectedState))
+    ).toBeInTheDocument();
+  };
+  const selectCell = async (row: number, col: number) => {
+    await userEvent.click(canvas.getByTestId(`board-${row}-${col}`));
+    if (
+      expectedState.selectedRow !== undefined &&
+      expectedState.selectedCol !== undefined
+    ) {
+      [
+        expectedState.board[row][col],
+        expectedState.board[expectedState.selectedRow][
+          expectedState.selectedCol
+        ],
+      ] = [
+        expectedState.board[expectedState.selectedRow][
+          expectedState.selectedCol
+        ],
+        expectedState.board[row][col],
+      ];
+      delete expectedState.selectedRow;
+      delete expectedState.selectedCol;
+    } else {
+      expectedState.selectedRow = row;
+      expectedState.selectedCol = col;
+    }
+  };
+
+  await testBoard();
+
+  await selectCell(0, 0);
+  await selectCell(0, 1);
+  await testBoard();
+
+  await selectCell(1, 0);
+  await selectCell(1, 1);
+  await testBoard();
+
+  await selectCell(0, 0);
+  await testBoard();
+  await selectCell(1, 1);
+  await testBoard();
+};
+
+const _ImmutableStateCells: Story<{ people: Person[] }> = (props) => {
+  const $state = useDollarState(
+    [
+      {
+        path: "peopleList",
+        type: "private",
+        initFunc: (props) => props.people,
+        isImmutable: true,
+      },
+      {
+        path: "list.selectedIndex",
+        type: "private",
+      },
+      {
+        path: "textInputFirstName.value",
+        initFunc: (_$props, $state) =>
+          $state.list.selectedIndex == null
+            ? ""
+            : $state.peopleList[$state.list.selectedIndex].firstName,
+        type: "private",
+      },
+      {
+        path: "textInputLastName.value",
+        initFunc: (_$props, $state) =>
+          $state.list.selectedIndex == null
+            ? ""
+            : $state.peopleList[$state.list.selectedIndex].lastName,
+        type: "private",
+      },
+      {
+        path: "textInputUpper.value",
+        initFunc: (_$props, $state) =>
+          $state.textInputFirstName.value?.toUpperCase(),
+        type: "private",
+      },
+    ],
+    props
+  );
+
+  return (
+    <div>
+      <PeopleList
+        data={$state.peopleList ?? []}
+        onIndexSelected={(x) => ($state.list.selectedIndex = x)}
+      />
+      <div>
+        <TextInput
+          value={$state.textInputFirstName.value}
+          onChange={(val) => ($state.textInputFirstName.value = val)}
+          data-testid={"textInputFirstName"}
+        />
+        <TextInput
+          value={$state.textInputLastName.value}
+          onChange={(val) => ($state.textInputLastName.value = val)}
+          data-testid={"textInputLastName"}
+        />
+        <TextInput
+          value={$state.textInputUpper.value}
+          onChange={(val) => ($state.textInputUpper.value = val)}
+          data-testid={"textInputUpper"}
+        />
+      </div>
+      <button
+        onClick={() => {
+          $state.peopleList[$state.list.selectedIndex].firstName =
+            $state.textInputFirstName.value;
+          $state.peopleList[$state.list.selectedIndex].lastName =
+            $state.textInputLastName.value;
+        }}
+        data-testid={"submit"}
+      >
+        Submit
+      </button>
+      <button
+        onClick={() => {
+          $state.peopleList[$state.list.selectedIndex].firstName =
+            $state.textInputFirstName.value;
+          $state.peopleList[$state.list.selectedIndex].lastName =
+            $state.textInputLastName.value;
+          $state.peopleList = [...$state.peopleList];
+        }}
+        data-testid={"submit-assignment"}
+      >
+        Submit -- New assignment
+      </button>
+    </div>
+  );
+};
+
+export const ImmutableStateCells = _ImmutableStateCells.bind({});
+ImmutableStateCells.args = {
+  people: deepClone(peopleList),
+};
+ImmutableStateCells.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  await userEvent.click(canvas.getByTestId("people_0"));
+  await userEvent.type(canvas.getByTestId("textInputFirstName"), "abc");
+  await expect(
+    (canvas.getByTestId("textInputUpper") as HTMLInputElement).value
+  ).toEqual(`${peopleList[0].firstName}ABC`.toUpperCase());
+
+  // text input isn't updated after clicking on the same item
+  await userEvent.click(canvas.getByTestId("people_0"));
+  await expect(
+    (canvas.getByTestId("textInputUpper") as HTMLInputElement).value
+  ).toEqual(`${peopleList[0].firstName}ABC`.toUpperCase());
+
+  await userEvent.click(canvas.getByTestId("people_1"));
+  await expect(
+    (canvas.getByTestId("textInputFirstName") as HTMLInputElement).value
+  ).toEqual(peopleList[1].firstName);
+
+  await userEvent.type(canvas.getByTestId("textInputFirstName"), "abc");
+  await userEvent.type(canvas.getByTestId("textInputLastName"), "def");
+
+  // shouldn't mutate state cell
+  await userEvent.click(canvas.getByTestId("submit"));
+  await expect(
+    (canvas.getByTestId("people_1") as HTMLLinkElement).textContent
+  ).toEqual(`${peopleList[1].firstName} ${peopleList[1].lastName}`);
+
+  // should mutate state cell
+  await userEvent.click(canvas.getByTestId("submit-assignment"));
+  await expect(
+    (canvas.getByTestId("people_1") as HTMLLinkElement).textContent
+  ).toEqual(`${peopleList[1].firstName}abc ${peopleList[1].lastName}def`);
 };
