@@ -175,7 +175,9 @@ export const createResolvers: GatsbyNode["createResolvers"] = (
           );
 
           const bundles: LoaderBundleOutput[] = [];
-          const compMetas: ComponentMeta[] = [];
+          const compMetas: (ComponentMeta & {
+            params?: Record<string, string>;
+          })[] = [];
           for (const component of components) {
             if (
               componentNames.includes(component.name) ||
@@ -209,7 +211,21 @@ export const createResolvers: GatsbyNode["createResolvers"] = (
             }
           }
 
-          return convertBundlesToComponentRenderData(bundles, compMetas);
+          const renderData = convertBundlesToComponentRenderData(
+            bundles,
+            compMetas
+          );
+
+          renderData?.entryCompMetas.sort(
+            (meta1, meta2) =>
+              // We sort the matched component metas by the number of path params, so
+              // if there are two pages `/products/foo` and `/products/[slug]`,
+              // the first one will have higher precedence.
+              Array.from(Object.keys(meta1.params || {})).length -
+              Array.from(Object.keys(meta2.params || {})).length
+          );
+
+          return renderData;
         },
       },
       plasmicOptions: {

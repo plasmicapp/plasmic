@@ -183,7 +183,7 @@ export function getCompMetas(
   const full = toFullLookup(lookup);
   return metas
     .filter((meta) => matchesCompMeta(full, meta))
-    .map((meta) => {
+    .map<ComponentMeta & { params?: Record<string, string> }>((meta) => {
       if (isNameSpec(full) || !meta.path) {
         return meta;
       }
@@ -194,7 +194,15 @@ export function getCompMetas(
       }
 
       return { ...meta, params: match.params };
-    });
+    })
+    .sort(
+      (meta1, meta2) =>
+        // We sort the matched component metas by the number of path params, so
+        // if there are two pages `/products/foo` and `/products/[slug]`,
+        // the first one will have higher precedence.
+        Array.from(Object.keys(meta1.params || {})).length -
+        Array.from(Object.keys(meta2.params || {})).length
+    );
 }
 
 export function getLookupSpecName(lookup: ComponentLookupSpec) {
