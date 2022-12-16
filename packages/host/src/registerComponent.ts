@@ -70,6 +70,9 @@ export type StringType<P> =
           type: "color";
           format: "rgb" | "hex";
         }
+        | {
+          type: "cssColor";
+        }
       | {
           type: "cardPicker";
           modalTitle?:
