@@ -34,7 +34,13 @@ export function PlasmicComponent(props: {
     );
   }
 
-  const { loader, globalContextsProps, variation, ...rest } = rootContext;
+  const {
+    loader,
+    globalContextsProps,
+    variation,
+    userAuthToken,
+    ...rest
+  } = rootContext;
 
   const Component = usePlasmicComponent(
     { name: component, projectId, isCode: false },
@@ -110,6 +116,7 @@ export function PlasmicComponent(props: {
     component,
     projectId,
     globalContextsProps,
+    userAuthToken, // Just use the token to memo, `user` should be derived from it
   ]);
   return element;
 }

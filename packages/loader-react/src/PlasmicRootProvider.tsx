@@ -1,3 +1,4 @@
+import { PlasmicDataSourceContextValue } from '@plasmicapp/data-sources-context';
 import { PageParamsProvider } from '@plasmicapp/host';
 import { AssetModule, ComponentMeta, Split } from '@plasmicapp/loader-core';
 import { PlasmicQueryDataProvider } from '@plasmicapp/query';
@@ -14,7 +15,7 @@ import {
   mergeGlobalVariantsSpec,
 } from './variation';
 
-interface PlasmicRootContextValue {
+interface PlasmicRootContextValue extends PlasmicDataSourceContextValue {
   globalVariants?: GlobalVariantSpec[];
   globalContextsProps?: Record<string, any>;
   loader: InternalPlasmicComponentLoader;
