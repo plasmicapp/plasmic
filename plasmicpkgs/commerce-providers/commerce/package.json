@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/commerce",
-  "version": "0.0.83",
+  "version": "0.0.84",
   "description": "Plasmic registration calls for commerce components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,7 +18,7 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.89",
+    "@plasmicapp/host": "1.0.90",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/debounce": "^1.2.1",
     "@types/js-cookie": "^3.0.1",
@@ -35,7 +35,7 @@
     "react": ">=16.8.0"
   },
   "dependencies": {
-    "@plasmicapp/query": "0.1.56",
+    "@plasmicapp/query": "0.1.57",
     "@types/react": "^17.0.40",
     "@vercel/fetch": "^6.2.0",
     "debounce": "^1.2.1",
