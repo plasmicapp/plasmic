@@ -50,13 +50,7 @@ export const useDataEnv: typeof _useDataEnv = function (...args) {
   return _useDataEnv(...args);
 };
 
-/**
- * @deprecated This should be imported from @plasmicapp/host instead.
- */
 export const DataProvider: typeof _DataProvider = function (...args) {
-  console.warn(
-    "DEPRECATED: Import DataProvider from @plasmicapp/host instead."
-  );
   return _DataProvider(...args);
 };
 
