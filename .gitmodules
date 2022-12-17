@@ -1,0 +1,3 @@
+[submodule "packages/react-ssr-prepass"]
+	path = packages/react-ssr-prepass
+	url = ssh://gerrit.aws.plasmic.app:29418/react-ssr-prepass
