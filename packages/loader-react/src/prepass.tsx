@@ -1,7 +1,7 @@
 import { PlasmicPrepassContext } from '@plasmicapp/query';
+import prepass from '@plasmicapp/react-ssr-prepass';
 import React from 'react';
 import { isFragment } from 'react-is';
-import prepass from 'react-ssr-prepass';
 import { PlasmicComponent } from './PlasmicComponent';
 
 /**
