@@ -1,3 +1,4 @@
+import clone from "clone";
 import get from "dlv";
 import deepEqual from "fast-deep-equal";
 import React from "react";
@@ -51,6 +52,8 @@ export interface $StateSpec<T> {
   onChangeProp?: string;
 
   isArray?: boolean;
+
+  isImmutable?: boolean;
 }
 
 interface Internal$State {
@@ -292,16 +295,15 @@ function initializeStateValue(
       get($$state.stateValues, path.slice(-1)),
       path.slice(-1)[0],
       () =>
-        set(
-          $$state.stateValues,
+        saveValue(
+          $$state,
           initialStatePath,
-          mkUntrackedValue(
-            initialSpec.initFunc!(
-              $$state.props,
-              $state,
-              $$state.ctx,
-              getIndexes(path, spec)
-            )
+          initialSpec,
+          initialSpec.initFunc!(
+            $$state.props,
+            $state,
+            $$state.ctx,
+            getIndexes(path, spec)
           )
         )
     );
@@ -318,26 +320,32 @@ function initializeStateValue(
   return initialValue;
 }
 
+function saveValue(
+  $$state: Internal$State,
+  path: ObjectPath,
+  spec: Internal$StateSpec<any>,
+  value: any
+) {
+  if (spec.isImmutable) {
+    set($$state.stateValues, path, mkUntrackedValue(value));
+  } else {
+    set($$state.stateValues, path, value);
+  }
+}
+
 function saveStateInitialValue(
   $$state: Internal$State,
   path: ObjectPath,
   spec: Internal$StateSpec<any>,
   initialValue: any
 ) {
-  // array states are a special case.Wwe listen for changes in the array and in the array cells.
-  // for example: $state.people.push(...), $state.people.splice(...), $state.people[0] = ...
-  // that's why we need to track the array object
-  if (spec.isArray && Array.isArray(initialValue)) {
-    const array = initialValue.map((val) => mkUntrackedValue(val));
-    set($$state.stateValues, path, array);
-    // we need to make the array untracked for initStateValues
-    // so we can distinguish between stateValue and initStateValue.
-    // otherwise they would reference the same array.
-    set($$state.initStateValues, path, mkUntrackedValue(array));
-  } else {
+  if (spec.isImmutable) {
     const untrackedValue = mkUntrackedValue(initialValue);
     set($$state.stateValues, path, untrackedValue);
-    set($$state.initStateValues, path, untrackedValue);
+    set($$state.initStateValues, path, clone(untrackedValue));
+  } else {
+    set($$state.stateValues, path, clone(initialValue));
+    set($$state.initStateValues, path, clone(initialValue));
   }
 }
 
@@ -396,7 +404,7 @@ export function useDollarState(
             }
           },
           set(_t, _p, value) {
-            set($$state.stateValues, path, mkUntrackedValue(value));
+            saveValue($$state, path, spec, value);
             if (spec.onChangeProp) {
               $$state.props[spec.onChangeProp]?.(value, path);
             }
@@ -504,7 +512,7 @@ export function useCanvasDollarState(
         return get($$state.stateValues, path);
       },
       set(_t, _p, value) {
-        set($$state.stateValues, path, mkUntrackedValue(value));
+        saveValue($$state, path, spec, value);
         if (spec.onChangeProp) {
           $$state.props[spec.onChangeProp]?.(value, path);
         }

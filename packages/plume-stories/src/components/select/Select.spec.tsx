@@ -177,7 +177,8 @@ describe("Select with groups", () => {
     );
   });
 
-  it("works with mouse", () => {
+  // skipping: https://app.shortcut.com/plasmic/story/29547/
+  it.skip("works with mouse", () => {
     select().should("include.text", "Pick a country");
     select().click();
     listbox().should("exist");
