@@ -252,6 +252,13 @@ yargs
           choices: ["json", "po", "lingui"],
           default: "json",
         })
+        .option("key-scheme", {
+          describe:
+            "What value to use as message keys; either the message content itself, or a hash of it",
+          type: "string",
+          choices: ["content", "hash"],
+          default: "content",
+        })
         .option("output", {
           alias: "o",
           describe: "Output file",
