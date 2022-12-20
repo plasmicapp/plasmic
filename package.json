@@ -31,7 +31,6 @@
     "packages/loader-vue",
     "packages/preamble",
     "packages/query",
-    "packages/react-ssr-prepass",
     "packages/react-web",
     "packages/watcher",
     "plasmicpkgs/airtable",
