@@ -4,12 +4,8 @@ import { CommonArgs } from "..";
 import { PlasmicApi, ProjectIdAndToken } from "../api";
 import { logger } from "../deps";
 import { HandledError } from "../lib";
-import { getCurrentAuth, getOrStartAuth } from "../utils/auth-utils";
-import {
-  DEFAULT_HOST,
-  findConfigFile,
-  PlasmicContext,
-} from "../utils/config-utils";
+import { getCurrentAuth } from "../utils/auth-utils";
+import { DEFAULT_HOST, findConfigFile } from "../utils/config-utils";
 import { existsBuffered, writeFileText } from "../utils/file-utils";
 import { getContext } from "../utils/get-context";
 import { confirmWithUser } from "../utils/user-utils";
@@ -21,6 +17,7 @@ export interface LocalizationStringsArgs extends CommonArgs {
   format: "po" | "json" | "lingui";
   output: string;
   forceOverwrite: boolean;
+  keyScheme: "content" | "hash";
 }
 
 export async function localizationStrings(
@@ -81,6 +78,7 @@ export async function localizationStrings(
     const data = await api.genLocalizationStrings(
       opts.projects,
       opts.format,
+      opts.keyScheme,
       projectIdsAndTokens
     );
     if (existsBuffered(output)) {
