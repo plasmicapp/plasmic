@@ -1,17 +1,17 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import Input, {
+import Input, { InputProps } from "antd/lib/input";
+import {
   GroupProps,
-  InputProps,
   PasswordProps,
   SearchProps,
   TextAreaProps,
-} from "antd/es/input";
-import InputGroup from "antd/es/input/Group";
-import Password from "antd/es/input/Password";
-import Search from "antd/es/input/Search";
-import TextArea from "antd/es/input/TextArea";
+} from "antd/lib/input";
+import InputGroup from "antd/lib/input/Group";
+import Password from "antd/lib/input/Password";
+import Search from "antd/lib/input/Search";
+import TextArea from "antd/lib/input/TextArea";
 import { Registerable } from "./registerable";
 
 function sortObjectKeys<T extends {}>(obj: T): T {
@@ -104,7 +104,7 @@ export const inputMeta: ComponentMeta<InputProps> = {
       uncontrolledProp: "defaultValue",
     },
   }),
-  importPath: "antd/es/input",
+  importPath: "antd/lib/input",
   importName: "Input",
   isDefaultExport: true,
 };
@@ -166,7 +166,7 @@ export const inputTextAreaMeta: ComponentMeta<TextAreaProps> = {
       uncontrolledProp: "defaultValue",
     },
   }),
-  importPath: "antd/es/input/TextArea",
+  importPath: "antd/lib/input/TextArea",
   importName: "TextArea",
   isDefaultExport: true,
   parentComponentName: "AntdInput",
@@ -250,7 +250,7 @@ export const inputSearchMeta: ComponentMeta<SearchProps> = {
       uncontrolledProp: "defaultValue",
     },
   }),
-  importPath: "antd/es/input/Search",
+  importPath: "antd/lib/input/Search",
   importName: "Search",
   isDefaultExport: true,
   parentComponentName: "AntdInput",
@@ -330,7 +330,7 @@ export const inputPasswordMeta: ComponentMeta<PasswordProps> = {
       defaultValueHint: true,
     },
   }),
-  importPath: "antd/es/input/Password",
+  importPath: "antd/lib/input/Password",
   importName: "Password",
   isDefaultExport: true,
   parentComponentName: "AntdInput",
@@ -375,7 +375,7 @@ export const inputGroupMeta: ComponentMeta<GroupProps> = {
       ],
     },
   },
-  importPath: "antd/es/input/Group",
+  importPath: "antd/lib/input/Group",
   importName: "InputGroup",
   isDefaultExport: true,
   parentComponentName: "AntdInput",

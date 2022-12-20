@@ -4,9 +4,9 @@ import registerComponent, {
 import {
   CollapsePanelProps,
   CollapseProps as AntdCollapseProps,
-} from "antd/es/collapse";
-import AntdCollapse from "antd/es/collapse/Collapse";
-import CollapsePanel from "antd/es/collapse/CollapsePanel";
+} from "antd/lib/collapse";
+import AntdCollapse from "antd/lib/collapse/Collapse";
+import CollapsePanel from "antd/lib/collapse/CollapsePanel";
 import React from "react";
 import { traverseReactEltTree } from "./customControls";
 import { Registerable } from "./registerable";
@@ -59,7 +59,7 @@ export const collapstePanelMeta: ComponentMeta<CollapsePanelProps> = {
       ],
     },
   },
-  importPath: "antd/es/collapse/CollapsePanel",
+  importPath: "antd/lib/collapse/CollapsePanel",
   importName: "CollapsePanel",
   parentComponentName: "AntdCollapse",
   isDefaultExport: true,

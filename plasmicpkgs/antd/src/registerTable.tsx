@@ -5,8 +5,8 @@ import {
   repeatedElement,
   useSelector,
 } from "@plasmicapp/host";
-import { SizeType } from "antd/es/config-provider/SizeContext";
-import Table from "antd/es/table/Table";
+import { SizeType } from "antd/lib/config-provider/SizeContext";
+import Table from "antd/lib/table/Table";
 import React from "react";
 import { Registerable } from "./registerable";
 

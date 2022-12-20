@@ -7,7 +7,8 @@ import {
   default as AntdTabs,
   TabPaneProps,
   TabsProps as AntdTabsProps,
-} from "antd/es/tabs";
+} from "antd/lib/tabs";
+import { TabPane } from "rc-tabs";
 import React from "react";
 import { traverseReactEltTree } from "./customControls";
 import { Registerable } from "./registerable";
@@ -62,11 +63,9 @@ export const tabPaneMeta: ComponentMeta<TabPaneProps> = {
     },
   },
   parentComponentName: "AntdTabs",
-  importPath: "antd/es/tabs/TabPane",
-  isDefaultExport: true,
+  importPath: "rc-tabs",
+  importName: "TabPane",
 };
-
-export const TabPane = AntdTabs.TabPane;
 
 export function registerTabPane(
   loader?: Registerable,
@@ -74,7 +73,7 @@ export function registerTabPane(
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(AntdTabs.TabPane, customTabPaneMeta ?? tabPaneMeta);
+  doRegisterComponent(TabPane, customTabPaneMeta ?? tabPaneMeta);
 }
 
 export type TabsProps = Omit<AntdTabsProps, "tabBarExtraContent"> & {
@@ -102,7 +101,7 @@ export function Tabs(props: TabsProps) {
 function NavigateTabs({ componentProps, studioOps }: ActionProps<any>) {
   const tabPanes: string[] = [];
   traverseReactEltTree(componentProps.children, (elt) => {
-    if (elt?.type === AntdTabs.TabPane && typeof elt?.key === "string") {
+    if (elt?.type === TabPane && typeof elt?.key === "string") {
       tabPanes.push(elt.key);
     }
   });
@@ -227,7 +226,7 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
       options: (props) => {
         const options = new Set<string>();
         traverseReactEltTree(props.children, (elt) => {
-          if (elt?.type === AntdTabs.TabPane && typeof elt?.key === "string") {
+          if (elt?.type === TabPane && typeof elt?.key === "string") {
             options.add(elt.key);
           }
         });
@@ -292,10 +291,7 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
         const generateNewKey = () => {
           let keysSet = new Set<string>();
           traverseReactEltTree(componentProps.children, (elt) => {
-            if (
-              elt?.type === AntdTabs.TabPane &&
-              typeof elt?.key === "string"
-            ) {
+            if (elt?.type === TabPane && typeof elt?.key === "string") {
               keysSet.add(elt.key);
             }
           });
@@ -335,10 +331,7 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
         if (componentProps.activeKey) {
           const tabPanes: string[] = [];
           traverseReactEltTree(componentProps.children, (elt) => {
-            if (
-              elt?.type === AntdTabs.TabPane &&
-              typeof elt?.key === "string"
-            ) {
+            if (elt?.type === TabPane && typeof elt?.key === "string") {
               tabPanes.push(elt.key);
             }
           });

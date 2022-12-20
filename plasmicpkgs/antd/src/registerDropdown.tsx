@@ -4,8 +4,8 @@ import registerComponent, {
 import AntdDropdown, {
   DropdownButtonProps,
   DropDownProps,
-} from "antd/es/dropdown";
-import DropdownButton from "antd/es/dropdown/dropdown-button";
+} from "antd/lib/dropdown";
+import DropdownButton from "antd/lib/dropdown/dropdown-button";
 import React from "react";
 import { Registerable } from "./registerable";
 
@@ -164,7 +164,7 @@ export const dropdownButtonMeta: ComponentMeta<DropdownButtonProps> = {
       ],
     },
   },
-  importPath: "antd/es/dropdown/dropdown-button",
+  importPath: "antd/lib/dropdown/dropdown-button",
   importName: "DropdownButton",
   parentComponentName: "AntdDropdown",
   isDefaultExport: true,
