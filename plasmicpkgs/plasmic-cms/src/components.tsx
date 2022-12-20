@@ -1,4 +1,8 @@
-import {DataProvider, PlasmicCanvasContext, repeatedElement } from "@plasmicapp/host";
+import {
+  DataProvider,
+  PlasmicCanvasContext,
+  repeatedElement,
+} from "@plasmicapp/host";
 import {
   CanvasComponentProps,
   ComponentMeta,
@@ -64,8 +68,7 @@ interface CmsCredentialsProviderProps extends DatabaseConfig {
 
 const defaultHost = "https://studio.plasmic.app";
 
-export const cmsCredentialsProviderMeta: GlobalContextMeta<CmsCredentialsProviderProps> =
-{
+export const cmsCredentialsProviderMeta: GlobalContextMeta<CmsCredentialsProviderProps> = {
   name: `${componentPrefix}-credentials-provider`,
   displayName: "CMS Credentials Provider",
   description: `
@@ -168,7 +171,7 @@ function isDatabaseConfigured(config?: DatabaseConfig) {
 
 interface CmsQueryRepeaterProps
   extends QueryParams,
-  CanvasComponentProps<TableContextData> {
+    CanvasComponentProps<TableContextData> {
   children: React.ReactNode;
   table?: string;
   emptyMessage?: React.ReactNode;
@@ -523,6 +526,9 @@ export const cmsRowFieldMeta: ComponentMeta<CmsRowFieldProps> = {
       ],
     },
   },
+  defaultStyles: {
+    objectFit: "cover",
+  },
 };
 
 export function CmsRowField({
@@ -579,9 +585,9 @@ export function CmsRowField({
   }
   return data
     ? renderValue(data, fieldMeta.type, {
-      className,
-      ...rest,
-    })
+        className,
+        ...rest,
+      })
     : null;
 }
 
@@ -598,8 +604,8 @@ function deriveInferredTableField(opts: {
   const fieldMeta = field
     ? schema?.fields.find((f) => f.identifier === field)
     : schema?.fields.find((f) =>
-      (typeFilters ?? DEFAULT_TYPE_FILTERS).includes(f.type)
-    );
+        (typeFilters ?? DEFAULT_TYPE_FILTERS).includes(f.type)
+      );
   return fieldMeta;
 }
 
@@ -630,7 +636,6 @@ function renderValue(value: any, type: CmsType, props: { className?: string }) {
             src={value.url}
             width={value.imageMeta.width}
             height={value.imageMeta.height}
-            style={{ objectFit: "cover" }}
             {...props}
           />
         );
@@ -759,8 +764,8 @@ export function CmsRowLink({
           fieldMeta.type === "file"
             ? value.url
             : prefix || suffix
-              ? `${prefix || ""}${value}${suffix || ""}`
-              : value,
+            ? `${prefix || ""}${value}${suffix || ""}`
+            : value,
       });
     }
     return child;
