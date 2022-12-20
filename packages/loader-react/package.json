@@ -29,7 +29,7 @@
     "@plasmicapp/query": "0.1.57",
     "pascalcase": "^1.0.0",
     "react-is": "^17.0.2",
-    "react-ssr-prepass": "^1.4.0"
+    "@plasmicapp/react-ssr-prepass": "2.0.0"
   },
   "peerDependencies": {
     "react": ">=16.8.0",
