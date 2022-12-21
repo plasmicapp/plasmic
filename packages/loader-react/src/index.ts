@@ -1,3 +1,9 @@
+import {
+  InternalPlasmicComponentLoader,
+  PlasmicComponentLoader,
+} from './loader';
+import type { InitOptions } from './loader-react-server';
+
 export {
   DataCtxReader,
   DataProvider,
@@ -12,16 +18,8 @@ export {
   useSelector,
   useSelectors,
 } from '@plasmicapp/host';
-export { ComponentMeta, PageMeta, PageMetadata } from '@plasmicapp/loader-core';
 export { usePlasmicQueryData } from '@plasmicapp/query';
-export { convertBundlesToComponentRenderData } from './bundles';
-export {
-  ComponentRenderData,
-  InitOptions,
-  initPlasmicLoader,
-  InternalPlasmicComponentLoader,
-  PlasmicComponentLoader,
-} from './loader';
+export * from './index-shared';
 export { PlasmicComponent } from './PlasmicComponent';
 export {
   GlobalVariantSpec,
@@ -36,4 +34,9 @@ export {
   renderToString,
 } from './render';
 export { usePlasmicComponent } from './usePlasmicComponent';
-export { matchesPagePath } from './utils';
+export { InternalPlasmicComponentLoader, PlasmicComponentLoader };
+
+export function initPlasmicLoader(opts: InitOptions): PlasmicComponentLoader {
+  const internal = new InternalPlasmicComponentLoader(opts);
+  return new PlasmicComponentLoader(internal);
+}

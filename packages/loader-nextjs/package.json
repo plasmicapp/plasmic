@@ -2,9 +2,37 @@
   "version": "1.0.215",
   "license": "MIT",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./react-server": {
+      "types": "./dist-react-server/index.d.ts",
+      "default": "./dist-react-server/index.js"
+    },
+    "./react-server-conditional": {
+      "react-server": {
+        "types": "./dist-react-server/index.d.ts",
+        "default": "./dist-react-server/index.js"
+      },
+      "default": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "./edge": {
+      "types": "./edge.d.ts",
+      "default": "./edge.js"
+    }
+  },
   "files": [
     "dist",
+    "dist-react-server",
+    "index.d.ts",
+    "react-server.d.ts",
+    "react-server-conditional.d.ts",
     "edge.d.ts",
     "edge.js"
   ],
@@ -13,8 +41,12 @@
   },
   "scripts": {
     "start": "tsdx watch",
-    "build": "tsdx build",
-    "postbuild": "node ../../print-module-api.js ./packages/loader-nextjs/dist/index.js > index-api.txt",
+    "build": "yarn build:react-server && yarn build:default",
+    "build:default": "tsdx build --entry src/index.tsx",
+    "build:react-server": "rm -rf dist-react-server && tsdx build --entry src/index-react-server.ts && mv dist dist-react-server",
+    "postbuild": "yarn postbuild:react-server && yarn postbuild:default",
+    "postbuild:default": "node ../../print-module-api.js ./packages/loader-nextjs/dist/index.js > index-api.txt",
+    "postbuild:react-server": "node ../../print-module-api.js ./packages/loader-nextjs/dist-react-server/index.js > index-react-server-api.txt",
     "yalcp": "yalc publish --push",
     "test": "tsdx test --passWithNoTests",
     "coverage": "tsdx test --coverage --passWithNoTests",
@@ -50,6 +82,14 @@
     {
       "path": "dist/loader-nextjs.esm.js",
       "limit": "15 KB"
+    },
+    {
+      "path": "dist-react-server/loader-nextjs.cjs.production.min.js",
+      "limit": "15 KB"
+    },
+    {
+      "path": "dist-react-server/loader-nextjs.esm.js",
+      "limit": "15 KB"
     }
   ],
   "devDependencies": {
@@ -73,7 +113,8 @@
     "@plasmicapp/loader-core": "1.0.91",
     "@plasmicapp/loader-edge": "1.0.22",
     "@plasmicapp/loader-react": "1.0.205",
-    "@plasmicapp/watcher": "1.0.70"
+    "@plasmicapp/watcher": "1.0.70",
+    "server-only": "0.0.1"
   },
   "gitHead": "fa53f7d79f0e26d8b061102fda0c06788da6f8a7"
 }

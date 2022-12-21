@@ -8,7 +8,7 @@ try {
   secretRequire = undefined;
 }
 
-export default function serverRequire(module: string) {
+export function serverRequire(module: string) {
   if (!secretRequire) {
     throw new Error(
       `Unexpected serverRequire() -- can only do this from a Node server!`

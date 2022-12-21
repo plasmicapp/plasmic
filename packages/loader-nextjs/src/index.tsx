@@ -1,28 +1,20 @@
 import {
   InitOptions,
-  initPlasmicLoader as initPlasmicLoaderReact,
   InternalPlasmicComponentLoader,
   PlasmicComponentLoader,
   PlasmicRootProvider as CommonPlasmicRootProvider,
 } from '@plasmicapp/loader-react';
-import type { PlasmicRemoteChangeWatcher as Watcher } from '@plasmicapp/watcher';
 import { IncomingMessage, ServerResponse } from 'http';
 import * as NextHead from 'next/head';
 import * as NextLink from 'next/link';
 import * as NextRouter from 'next/router';
 import * as React from 'react';
-import { makeCache } from './cache';
-import serverRequire from './server-require';
+import { initPlasmicLoaderWithCache } from './cache';
+
 export {
-  ComponentMeta,
-  ComponentRenderData,
-  // Data context helpers.
   DataCtxReader,
   DataProvider,
   extractPlasmicQueryData,
-  InitOptions,
-  PageMeta,
-  PageMetadata,
   PageParamsProvider,
   PlasmicCanvasContext,
   PlasmicCanvasHost,
@@ -39,6 +31,7 @@ export {
   useSelector,
   useSelectors,
 } from '@plasmicapp/loader-react';
+export * from './index-shared';
 
 type ServerRequest = IncomingMessage & {
   cookies: {
@@ -48,6 +41,11 @@ type ServerRequest = IncomingMessage & {
 export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
   constructor(internal: InternalPlasmicComponentLoader) {
     super(internal);
+    this.registerModules({
+      'next/head': NextHead,
+      'next/link': NextLink,
+      'next/router': NextRouter,
+    });
   }
 
   async getActiveVariation(opts: {
@@ -101,78 +99,11 @@ const initPlasmicLoaderNext = (opts: InitOptions) => {
   return new NextJsPlasmicComponentLoader(internal);
 };
 
-export function initPlasmicLoader(
-  opts: Parameters<typeof initPlasmicLoaderReact>[0]
-) {
-  const isBrowser = typeof window !== 'undefined';
-  const isProd = process.env.NODE_ENV === 'production';
-  const cache = isBrowser || isProd ? undefined : makeCache(opts);
-  const loader = initPlasmicLoaderNext({
-    onClientSideFetch: 'warn',
-    ...opts,
-    cache,
-    platform: 'nextjs',
-    // For Nextjs 12, revalidate may in fact re-use an existing instance
-    // of PlasmicComponentLoader that's already in memory, so we need to
-    // make sure we don't re-use the data cached in memory.
-    alwaysFresh: isProd && !isBrowser,
-  });
-  loader.registerModules({
-    'next/head': NextHead,
-    'next/link': NextLink,
-    'next/router': NextRouter,
-  });
-
-  if (!isProd) {
-    const stringOpts = JSON.stringify(opts);
-
-    if (process.env.PLASMIC_OPTS && process.env.PLASMIC_OPTS !== stringOpts) {
-      console.warn(
-        `PLASMIC: We detected that you created a new PlasmicLoader with different configurations. You may need to restart your dev server.\n`
-      );
-    }
-
-    process.env.PLASMIC_OPTS = stringOpts;
-  }
-
-  if (cache) {
-    if (!isProd) {
-      if (process.env.PLASMIC_WATCHED !== 'true') {
-        process.env.PLASMIC_WATCHED = 'true';
-        console.log(`Subscribing to Plasmic changes...`);
-
-        // Import using serverRequire, so webpack doesn't bundle us into client bundle
-        const PlasmicRemoteChangeWatcher = serverRequire('@plasmicapp/watcher')
-          .PlasmicRemoteChangeWatcher as typeof Watcher;
-        const watcher = new PlasmicRemoteChangeWatcher({
-          projects: opts.projects,
-          host: opts.host,
-        });
-
-        const clearCache = () => {
-          cache.clear();
-          loader.clearCache();
-        };
-
-        watcher.subscribe({
-          onUpdate: () => {
-            if (opts.preview) {
-              clearCache();
-            }
-          },
-          onPublish: () => {
-            if (!opts.preview) {
-              clearCache();
-            }
-          },
-        });
-      }
-    } else {
-      cache.clear();
-      loader.clearCache();
-    }
-  }
-  return loader;
+export function initPlasmicLoader(opts: InitOptions) {
+  return initPlasmicLoaderWithCache<NextJsPlasmicComponentLoader>(
+    initPlasmicLoaderNext,
+    opts
+  );
 }
 
 export function PlasmicRootProvider(

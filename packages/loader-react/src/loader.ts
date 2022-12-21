@@ -10,9 +10,7 @@ import {
 } from '@plasmicapp/host';
 import {
   ComponentMeta,
-  LoaderBundleCache,
   LoaderBundleOutput,
-  PageMeta,
   PlasmicModulesFetcher,
   PlasmicTracker,
   Registry,
@@ -24,43 +22,16 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as jsxDevRuntime from 'react/jsx-dev-runtime';
 import * as jsxRuntime from 'react/jsx-runtime';
-import { mergeBundles, prepComponentData } from './bundles';
 import { ComponentLookup } from './component-lookup';
 import { createUseGlobalVariant } from './global-variants';
-import { GlobalVariantSpec } from './PlasmicRootProvider';
 import {
-  ComponentLookupSpec,
-  getCompMetas,
-  getLookupSpecName,
-  isDynamicPagePath,
-  uniq,
-} from './utils';
+  FetchComponentDataOpts,
+  InitOptions,
+  ReactServerPlasmicComponentLoader,
+} from './loader-react-server';
+import type { GlobalVariantSpec } from './PlasmicRootProvider';
+import { ComponentLookupSpec, getCompMetas, uniq } from './utils';
 import { getPlasmicCookieValues, updatePlasmicCookieValue } from './variation';
-
-export interface InitOptions {
-  projects: ProjectOption[];
-  cache?: LoaderBundleCache;
-  platform?: 'react' | 'nextjs' | 'gatsby';
-  preview?: boolean;
-  host?: string;
-  onClientSideFetch?: 'warn' | 'error';
-  i18nKeyScheme?: 'content' | 'hash';
-
-  /**
-   * By default, fetchComponentData() and fetchPages() calls cached in memory
-   * with the PlasmicComponentLoader instance.  If alwaysFresh is true, then
-   * data is always freshly fetched over the network.
-   */
-  alwaysFresh?: boolean;
-}
-
-const isBrowser = typeof window !== 'undefined';
-
-interface ProjectOption {
-  id: string;
-  token: string;
-  version?: string;
-}
 
 export interface ComponentRenderData {
   entryCompMetas: (ComponentMeta & { params?: Record<string, string> })[];
@@ -71,11 +42,6 @@ export interface ComponentRenderData {
 interface ComponentSubstitutionSpec {
   lookup: ComponentLookupSpec;
   component: React.ComponentType<any>;
-}
-
-export function initPlasmicLoader(opts: InitOptions): PlasmicComponentLoader {
-  const internal = new InternalPlasmicComponentLoader(opts);
-  return new PlasmicComponentLoader(internal);
 }
 
 interface PlasmicRootWatcher {
@@ -118,22 +84,11 @@ export type FetchPagesOpts = {
 };
 
 export class InternalPlasmicComponentLoader {
-  private fetcher: PlasmicModulesFetcher;
+  private readonly reactServerLoader: ReactServerPlasmicComponentLoader;
   private registry: Registry;
   private subs: ComponentSubstitutionSpec[] = [];
   private roots: PlasmicRootWatcher[] = [];
   private globalVariants: GlobalVariantSpec[] = [];
-  private bundle: LoaderBundleOutput = {
-    modules: {
-      browser: [],
-      server: [],
-    },
-    components: [],
-    globalGroups: [],
-    external: [],
-    projects: [],
-    activeSplits: [],
-  };
   private tracker: PlasmicTracker;
 
   private substitutedComponents: Record<string, React.ComponentType<any>> = {};
@@ -141,11 +96,21 @@ export class InternalPlasmicComponentLoader {
 
   constructor(private opts: InitOptions) {
     this.registry = Registry.getInstance();
-    this.fetcher = new PlasmicModulesFetcher(opts);
     this.tracker = new PlasmicTracker({
       projectIds: opts.projects.map((p) => p.id),
       platform: opts.platform,
       preview: opts.preview,
+    });
+    this.reactServerLoader = new ReactServerPlasmicComponentLoader({
+      opts,
+      fetcher: new PlasmicModulesFetcher(opts),
+      tracker: this.tracker,
+      onBundleMerged: () => {
+        this.refreshRegistry();
+      },
+      onBundleFetched: () => {
+        this.roots.forEach((watcher) => watcher.onDataFetched?.());
+      },
     });
 
     this.registerModules({
@@ -164,6 +129,10 @@ export class InternalPlasmicComponentLoader {
         globalVariantHooks: this.substitutedGlobalVariantHooks,
       },
     });
+  }
+
+  getBundle() {
+    return this.reactServerLoader.getBundle();
   }
 
   setGlobalVariants(globalVariants: GlobalVariantSpec[]) {
@@ -234,7 +203,7 @@ export class InternalPlasmicComponentLoader {
   }
 
   registerPrefetchedBundle(bundle: LoaderBundleOutput) {
-    this.mergeBundle(bundle);
+    this.reactServerLoader.mergeBundle(bundle);
   }
 
   subscribePlasmicRoot(watcher: PlasmicRootWatcher) {
@@ -249,146 +218,52 @@ export class InternalPlasmicComponentLoader {
   }
 
   clearCache() {
-    this.bundle = {
-      modules: {
-        browser: [],
-        server: [],
-      },
-      components: [],
-      globalGroups: [],
-      external: [],
-      projects: [],
-      activeSplits: [],
-    };
+    this.reactServerLoader.clearCache();
     this.registry.clear();
   }
 
-  private maybeGetCompMetas(...specs: ComponentLookupSpec[]) {
-    return maybeGetCompMetas(this.bundle.components, specs);
-  }
-
-  async maybeFetchComponentData(
-    specs: ComponentLookupSpec[],
-    opts?: FetchComponentDataOpts
-  ): Promise<ComponentRenderData | null>;
-  async maybeFetchComponentData(
-    ...specs: ComponentLookupSpec[]
-  ): Promise<ComponentRenderData | null>;
-  async maybeFetchComponentData(
-    ...args: any[]
-  ): Promise<ComponentRenderData | null> {
-    const { specs, opts } = parseFetchComponentDataArgs(...args);
-    const returnWithSpecsToFetch = async (
-      specsToFetch: ComponentLookupSpec[]
-    ) => {
-      await this.fetchMissingData({ missingSpecs: specsToFetch });
-      const {
-        found: existingMetas2,
-        missing: missingSpecs2,
-      } = this.maybeGetCompMetas(...specs);
-      if (missingSpecs2.length > 0) {
-        return null;
-      }
-
-      return prepComponentData(this.bundle, existingMetas2, opts);
-    };
-
-    if (this.opts.alwaysFresh) {
-      // If alwaysFresh, then we treat all specs as missing
-      return await returnWithSpecsToFetch(specs);
-    }
-
-    // Else we only fetch actually missing specs
-    const {
-      found: existingMetas,
-      missing: missingSpecs,
-    } = this.maybeGetCompMetas(...specs);
-    if (missingSpecs.length === 0) {
-      return prepComponentData(this.bundle, existingMetas, opts);
-    }
-
-    return await returnWithSpecsToFetch(missingSpecs);
-  }
-
-  async fetchComponentData(
-    specs: ComponentLookupSpec[],
-    opts?: FetchComponentDataOpts
-  ): Promise<ComponentRenderData>;
-  async fetchComponentData(
-    ...specs: ComponentLookupSpec[]
-  ): Promise<ComponentRenderData>;
-  async fetchComponentData(...args: any[]): Promise<ComponentRenderData> {
-    const { specs, opts } = parseFetchComponentDataArgs(...args);
-    const data = await this.maybeFetchComponentData(specs, opts);
-
-    if (!data) {
-      const { missing: missingSpecs } = this.maybeGetCompMetas(...specs);
-      throw new Error(
-        `Unable to find components ${missingSpecs
-          .map(getLookupSpecName)
-          .join(', ')}`
-      );
-    }
-
-    return data;
-  }
-
-  async fetchPages(opts?: FetchPagesOpts) {
-    this.maybeReportClientSideFetch(
-      () => `Plasmic: fetching all page metadata in the browser`
-    );
-    const data = await this.fetchAllData();
-    return data.components.filter(
-      (comp) =>
-        comp.isPage &&
-        comp.path &&
-        (opts?.includeDynamicPages || !isDynamicPagePath(comp.path))
-    ) as PageMeta[];
-  }
-
-  async fetchComponents() {
-    this.maybeReportClientSideFetch(
-      () => `Plasmic: fetching all component metadata in the browser`
-    );
-    const data = await this.fetchAllData();
-    return data.components;
-  }
-
   getLookup() {
-    return new ComponentLookup(this.bundle, this.registry);
+    return new ComponentLookup(this.getBundle(), this.registry);
+  }
+
+  // ReactServerLoader methods
+
+  maybeFetchComponentData(
+    specs: ComponentLookupSpec[],
+    opts?: FetchComponentDataOpts
+  ): Promise<ComponentRenderData | null>;
+  maybeFetchComponentData(
+    ...specs: ComponentLookupSpec[]
+  ): Promise<ComponentRenderData | null>;
+  maybeFetchComponentData(...args: any[]): Promise<ComponentRenderData | null> {
+    return this.reactServerLoader.maybeFetchComponentData(...args);
+  }
+
+  fetchComponentData(
+    specs: ComponentLookupSpec[],
+    opts?: FetchComponentDataOpts
+  ): Promise<ComponentRenderData>;
+  fetchComponentData(
+    ...specs: ComponentLookupSpec[]
+  ): Promise<ComponentRenderData>;
+  fetchComponentData(...args: any[]): Promise<ComponentRenderData> {
+    return this.reactServerLoader.fetchComponentData(...args);
+  }
+
+  fetchPages(opts?: FetchPagesOpts) {
+    return this.reactServerLoader.fetchPages(opts);
+  }
+
+  fetchComponents() {
+    return this.reactServerLoader.fetchComponents();
   }
 
   getActiveSplits() {
-    return this.bundle.activeSplits;
+    return this.reactServerLoader.getActiveSplits();
   }
 
   trackConversion(value: number = 0) {
     this.tracker.trackConversion(value);
-  }
-
-  // @ts-ignore
-  private async fetchMissingData(opts: {
-    missingSpecs: ComponentLookupSpec[];
-  }) {
-    // TODO: do better than just fetching everything
-    this.maybeReportClientSideFetch(
-      () =>
-        `Plasmic: fetching missing components in the browser: ${opts.missingSpecs
-          .map((spec) => getLookupSpecName(spec))
-          .join(', ')}`
-    );
-    return this.fetchAllData();
-  }
-
-  private maybeReportClientSideFetch(mkMsg: () => string) {
-    if (isBrowser && this.opts.onClientSideFetch) {
-      const msg = mkMsg();
-      if (this.opts.onClientSideFetch === 'warn') {
-        console.warn(msg);
-      } else {
-        throw new Error(msg);
-      }
-    }
   }
 
   public async getActiveVariation(opts: {
@@ -396,17 +271,17 @@ export class InternalPlasmicComponentLoader {
     getKnownValue: (key: string) => string | undefined;
     updateKnownValue: (key: string, value: string) => void;
   }) {
-    await this.fetchAllData();
+    await this.reactServerLoader.fetchComponents();
     return getActiveVariation({
       ...opts,
-      splits: this.bundle.activeSplits,
+      splits: this.getBundle().activeSplits,
     });
   }
 
   public getTeamIds(): string[] {
     return uniq(
-      this.bundle.projects
-        .map((p) =>
+      this.getBundle()
+        .projects.map((p) =>
           p.teamId ? `${p.teamId}${p.indirect ? '@indirect' : ''}` : null
         )
         .filter((x): x is string => !!x)
@@ -415,25 +290,14 @@ export class InternalPlasmicComponentLoader {
 
   public getProjectIds(): string[] {
     return uniq(
-      this.bundle.projects.map((p) => `${p.id}${p.indirect ? '@indirect' : ''}`)
+      this.getBundle().projects.map(
+        (p) => `${p.id}${p.indirect ? '@indirect' : ''}`
+      )
     );
   }
 
   public trackRender(opts?: TrackRenderOptions) {
     this.tracker.trackRender(opts);
-  }
-
-  private async fetchAllData() {
-    const bundle = await this.ensureFetcher().fetchAllData();
-    this.tracker.trackFetch();
-    this.mergeBundle(bundle);
-    this.roots.forEach((watcher) => watcher.onDataFetched?.());
-    return bundle;
-  }
-
-  private mergeBundle(bundle: LoaderBundleOutput) {
-    this.bundle = mergeBundles(bundle, this.bundle);
-    this.refreshRegistry();
   }
 
   private refreshRegistry() {
@@ -442,7 +306,7 @@ export class InternalPlasmicComponentLoader {
     // that we can look up the right module name to substitute
     // in component meta.
     for (const sub of this.subs) {
-      const metas = getCompMetas(this.bundle.components, sub.lookup);
+      const metas = getCompMetas(this.getBundle().components, sub.lookup);
       metas.forEach((meta) => {
         this.substitutedComponents[meta.id] = sub.component;
       });
@@ -454,39 +318,15 @@ export class InternalPlasmicComponentLoader {
     // context providers, but instead by <PlasmicRootProvider/> and by
     // PlasmicComponentLoader.setGlobalVariants(), we redirect these
     // hooks to read from them instead.
-    for (const globalGroup of this.bundle.globalGroups) {
+    for (const globalGroup of this.getBundle().globalGroups) {
       if (globalGroup.type !== 'global-screen') {
         this.substitutedGlobalVariantHooks[
           globalGroup.id
         ] = createUseGlobalVariant(globalGroup.name, globalGroup.projectId);
       }
     }
-    this.registry.updateModules(this.bundle);
+    this.registry.updateModules(this.getBundle());
   }
-
-  private ensureFetcher() {
-    if (!this.fetcher) {
-      throw new Error(`You must first call PlasmicComponentLoader.init()`);
-    }
-    return this.fetcher;
-  }
-}
-
-function maybeGetCompMetas(
-  metas: ComponentMeta[],
-  specs: ComponentLookupSpec[]
-) {
-  const found = new Set<ComponentMeta>();
-  const missing: ComponentLookupSpec[] = [];
-  for (const spec of specs) {
-    const filteredMetas = getCompMetas(metas, spec);
-    if (filteredMetas.length > 0) {
-      filteredMetas.forEach((meta) => found.add(meta));
-    } else {
-      missing.push(spec);
-    }
-  }
-  return { found: Array.from(found.keys()), missing };
 }
 
 /**
@@ -673,42 +513,4 @@ export class PlasmicComponentLoader {
   clearCache() {
     return this.__internal.clearCache();
   }
-}
-
-interface FetchComponentDataOpts {
-  /**
-   * Will fetch either code targeting SSR or browser hydration in the
-   * returned bundle.
-   *
-   * By default, the target is browser. That's okay, because even when
-   * doing SSR, as long as you are using the same instance of PlasmicLoader
-   * that was used to fetch component data, it will still know how to get at
-   * the server code.
-   *
-   * But, if you are building your own SSR solution, where fetching and rendering
-   * are using different instances of PlasmicLoader, then you'll want to make
-   * sure that when you fetch, you are fetching the right one to be used in the
-   * right environment for either SSR or browser hydration.
-   */
-  target?: 'server' | 'browser';
-}
-
-function parseFetchComponentDataArgs(
-  specs: ComponentLookupSpec[],
-  opts?: FetchComponentDataOpts
-): { specs: ComponentLookupSpec[]; opts?: FetchComponentDataOpts };
-function parseFetchComponentDataArgs(
-  ...specs: ComponentLookupSpec[]
-): { specs: ComponentLookupSpec[]; opts?: FetchComponentDataOpts };
-function parseFetchComponentDataArgs(...args: any[]) {
-  let specs: ComponentLookupSpec[];
-  let opts: FetchComponentDataOpts | undefined;
-  if (Array.isArray(args[0])) {
-    specs = args[0];
-    opts = args[1];
-  } else {
-    specs = args;
-    opts = undefined;
-  }
-  return { specs, opts };
 }

@@ -3,17 +3,45 @@
   "version": "1.0.205",
   "module": "dist/loader-react.esm.js",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./react-server": {
+      "types": "./dist-react-server/index.d.ts",
+      "default": "./dist-react-server/index.js"
+    },
+    "./react-server-conditional": {
+      "react-server": {
+        "types": "./dist-react-server/index.d.ts",
+        "default": "./dist-react-server/index.js"
+      },
+      "default": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
   "files": [
-    "dist"
+    "dist",
+    "dist-react-server",
+    "index.d.ts",
+    "react-server.d.ts",
+    "react-server-conditional.d.ts"
   ],
   "engines": {
     "node": ">=12"
   },
   "scripts": {
     "start": "tsdx watch",
-    "build": "tsdx build",
-    "postbuild": "node ../../print-module-api.js ./packages/loader-react/dist/index.js > index-api.txt",
+    "build": "yarn build:react-server && yarn build:default",
+    "build:default": "tsdx build --entry src/index.ts",
+    "build:react-server": "rm -rf dist-react-server && tsdx build --entry src/index-react-server.ts && mv dist dist-react-server",
+    "postbuild": "yarn postbuild:react-server && yarn postbuild:default",
+    "postbuild:default": "node ../../print-module-api.js ./packages/loader-react/dist/index.js > index-api.txt",
+    "postbuild:react-server": "node ../../print-module-api.js ./packages/loader-react/dist-react-server/index.js > index-react-server-api.txt",
     "yalcp": "yalc publish --push",
     "test": "tsdx test --passWithNoTests",
     "coverage": "tsdx test --coverage --passWithNoTests",
@@ -30,7 +58,8 @@
     "@plasmicapp/query": "0.1.59",
     "@plasmicapp/react-ssr-prepass": "2.0.0",
     "pascalcase": "^1.0.0",
-    "react-is": "^17.0.2"
+    "react-is": "^17.0.2",
+    "server-only": "0.0.1"
   },
   "peerDependencies": {
     "react": ">=16.8.0",
@@ -54,6 +83,14 @@
     },
     {
       "path": "dist/loader-react.esm.js",
+      "limit": "15 KB"
+    },
+    {
+      "path": "dist-react-server/loader-react.cjs.production.min.js",
+      "limit": "15 KB"
+    },
+    {
+      "path": "dist-react-server/loader-react.esm.js",
       "limit": "15 KB"
     }
   ],

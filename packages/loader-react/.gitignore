@@ -3,4 +3,5 @@
 node_modules
 .cache
 dist
+dist-react-server
 coverage
