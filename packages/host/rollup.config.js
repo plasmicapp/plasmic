@@ -6,7 +6,7 @@ import typescript from "rollup-plugin-typescript2";
 import ts from "typescript";
 
 export default [
-  // We provide a light-weigth module for component registration which can be
+  // We provide a light-weight module for component registration which can be
   // used for component substitution of code components by loader
   {
     input: {
@@ -24,6 +24,7 @@ export default [
         entryFileNames: "index.esm.js",
         format: "esm",
         sourcemap: true,
+        banner: "'use client';",
       },
       {
         dir: "registerComponent/dist",
@@ -31,6 +32,7 @@ export default [
         format: "cjs",
         sourcemap: true,
         exports: "named",
+        banner: "'use client';",
       },
     ],
     plugins: [
@@ -62,6 +64,7 @@ export default [
         entryFileNames: "index.esm.js",
         format: "esm",
         sourcemap: true,
+        banner: "'use client';",
       },
       {
         dir: "registerGlobalContext/dist",
@@ -69,6 +72,7 @@ export default [
         format: "cjs",
         sourcemap: true,
         exports: "named",
+        banner: "'use client';",
       },
     ],
     plugins: [
@@ -104,6 +108,7 @@ export default [
         entryFileNames: "index.esm.js",
         format: "esm",
         sourcemap: true,
+        banner: "'use client';",
       },
       {
         dir: "registerTrait/dist",
@@ -111,6 +116,7 @@ export default [
         format: "cjs",
         sourcemap: true,
         exports: "named",
+        banner: "'use client';",
       },
     ],
     plugins: [
