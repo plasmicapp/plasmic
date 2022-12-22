@@ -4,13 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3013",
+    "dev-inspect": "NODE_OPTIONS='--inspect' next dev --port 3013",
     "build": "next build",
     "start": "next start --port 4013",
     "lint": "next lint"
   },
   "dependencies": {
-    "@plasmicapp/loader-nextjs": "^1.0.187",
-    "next": "13.0.8-canary.1",
+    "@plasmicapp/loader-nextjs": "^1.0.217",
+    "next": "13.1.1",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
@@ -19,7 +20,7 @@
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",
     "eslint": "8.25.0",
-    "eslint-config-next": "13.0.8-canary.1",
+    "eslint-config-next": "13.1.1",
     "typescript": "4.9.4"
   }
 }

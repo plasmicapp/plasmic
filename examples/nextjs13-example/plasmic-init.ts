@@ -1,4 +1,4 @@
-import { initPlasmicLoader } from "@plasmicapp/loader-nextjs";
+import { initPlasmicLoader } from "@plasmicapp/loader-nextjs/react-server-conditional";
 
 export const PLASMIC = initPlasmicLoader({
   projects: [

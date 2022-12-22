@@ -5,10 +5,9 @@ import {
   PlasmicRootProvider,
 } from "@plasmicapp/loader-nextjs";
 import type { GetStaticPaths, GetStaticProps } from "next";
-
-import Error from "next/error";
+import { notFound } from "next/navigation";
 import { useRouter } from "next/router";
-import { PLASMIC } from "../plasmic-init";
+import { PLASMIC } from "plasmic-init";
 
 export default function PlasmicLoaderPage(props: {
   plasmicData?: ComponentRenderData;
@@ -17,7 +16,7 @@ export default function PlasmicLoaderPage(props: {
   const { plasmicData, queryCache } = props;
   const router = useRouter();
   if (!plasmicData || plasmicData.entryCompMetas.length === 0) {
-    return <Error statusCode={404} />;
+    notFound();
   }
   const pageMeta = plasmicData.entryCompMetas[0];
   return (
@@ -28,7 +27,32 @@ export default function PlasmicLoaderPage(props: {
       pageParams={pageMeta.params}
       pageQuery={router.query}
     >
-      <PlasmicComponent component={pageMeta.displayName} />
+      <PlasmicComponent
+        component={pageMeta.displayName}
+        componentProps={
+          pageMeta.path === "/"
+            ? {
+                children: (
+                  <>
+                    <span>
+                      This page is from the pages/ directory (works for all
+                      Next.js versions).
+                    </span>
+                    <span>
+                      {
+                        // Can't use next/link for client-side navigation between pages/ and app/.
+                        // https://github.com/vercel/next.js/issues/42513#issuecomment-1315006245
+                      }
+                      {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+                      <a href="/nextjs13">Click here</a> to view pages from the
+                      app/ directory (new Next.js 13 feature).
+                    </span>
+                  </>
+                ),
+              }
+            : undefined
+        }
+      />
     </PlasmicRootProvider>
   );
 }
@@ -43,8 +67,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       : "/";
   const plasmicData = await PLASMIC.maybeFetchComponentData(plasmicPath);
   if (!plasmicData) {
-    // non-Plasmic catch-all
-    return { props: {} };
+    notFound();
   }
   const pageMeta = plasmicData.entryCompMetas[0];
   // Cache the necessary data fetched for the page
