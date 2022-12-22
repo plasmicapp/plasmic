@@ -4,6 +4,10 @@ const nextConfig = {
   // has some troubles with it. See
   // https://github.com/adobe/react-spectrum/labels/strict%20mode
   reactStrictMode: false,
+
+  experimental: {
+    appDir: true,
+  },
 };
 
 module.exports = nextConfig;
