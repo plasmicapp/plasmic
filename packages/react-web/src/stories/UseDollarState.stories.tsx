@@ -2,8 +2,9 @@ import { expect } from "@storybook/jest";
 import { Story } from "@storybook/react";
 import { userEvent, within } from "@storybook/testing-library";
 import React from "react";
+import { $StateSpec } from "../states";
 import { set } from "../states/helpers";
-import useDollarState, { $StateSpec } from "../states/valtio";
+import useDollarState from "../states/valtio";
 
 const deepClone = function <T>(o: T): T {
   return JSON.parse(JSON.stringify(o));
@@ -1735,7 +1736,6 @@ const _StateCellIsArray: Story<{ people: Person[] }> = (props: {
         path: "people",
         type: "private",
         initFunc: (props) => props.people,
-        isArray: true,
       },
       {
         path: "firstName",

@@ -4,57 +4,19 @@ import deepEqual from "fast-deep-equal";
 import React from "react";
 import { proxy as createValtioProxy, ref, useSnapshot } from "valtio";
 import { subscribeKey } from "valtio/utils";
+import {
+  $StateSpec,
+  ARRAY_SYMBOL,
+  InitFunc,
+  Internal$StateInstance,
+  Internal$StateSpec,
+  ObjectPath,
+} from ".";
+import { buildGraph, StateSpecNode, transformPathStringToObj } from "./graph";
 import { set, useIsomorphicLayoutEffect } from "./helpers";
 
 const mkUntrackedValue = (o: any) =>
   o != null && typeof o === "object" ? ref(o) : o;
-
-type InitFunc<T> = (
-  $props: Record<string, any>,
-  $state: $State,
-  $ctx: Record<string, any>,
-  indexes: number[]
-) => T;
-type ObjectPath = (string | number)[];
-
-export interface $State {
-  [key: string]: any;
-  registerInitFunc?: (path: string, f: InitFunc<any>) => any;
-}
-
-interface Internal$StateSpec<T> extends $StateSpec<T> {
-  isRepeated: boolean;
-  pathObj: ObjectPath;
-}
-
-interface Internal$StateInstance {
-  path: ObjectPath; // ["counter", 0, "count"]
-  specKey: string;
-}
-
-export interface $StateSpec<T> {
-  // path of the state, like `count` or `list.selectedIndex`
-  path: string;
-  // if initial value is defined by a js expression
-  initFunc?: InitFunc<T>;
-  // if initial value is a hard-coded value
-  initVal?: T;
-  // Whether this state is private, readonly, or writable in
-  // this component
-  type: "private" | "readonly" | "writable";
-
-  // If writable, there should be a valueProp that maps props[valueProp]
-  // to the value of the state
-  valueProp?: string;
-
-  // If writable or readonly, there should be an onChangeProp where
-  // props[onChangeProp] is invoked whenever the value changes
-  onChangeProp?: string;
-
-  isArray?: boolean;
-
-  isImmutable?: boolean;
-}
 
 interface Internal$State {
   stateValues: Record<string, any>;
@@ -66,15 +28,8 @@ interface Internal$State {
   registrationsQueue: { pathStr: string; f: InitFunc<any> }[];
   props: Record<string, any>;
   ctx: Record<string, any>;
+  rootStateSpec: StateSpecNode<any>;
 }
-
-const transformPathStringToObj = (str: string) => {
-  const splitStatePathPart = (state: string): string[] =>
-    state.endsWith("[]")
-      ? [...splitStatePathPart(state.slice(0, -2)), "[]"]
-      : [state];
-  return str.split(".").flatMap(splitStatePathPart);
-};
 
 function shallowEqual<T>(a1: T[], a2: T[]) {
   if (a1.length !== a2.length) {
@@ -114,121 +69,97 @@ function create$StateProxy(
     spec: Internal$StateSpec<any>
   ) => ProxyHandler<any>
 ) {
-  const getNextKeyToSpecMap = (currPath: ObjectPath) =>
-    new Map(
-      Object.entries(
-        Object.values($$state.specsByKey)
-          .filter((spec) =>
-            shallowEqual(
-              currPath.map((p) => (isNum(p) ? "[]" : p)),
-              spec.pathObj.slice(0, currPath.length)
-            )
-          )
-          .reduce((agg, spec) => {
-            const nextKey = spec.pathObj[currPath.length];
-            if (!(nextKey in agg)) {
-              agg[nextKey] = [];
-            }
-            agg[nextKey].push(spec);
-            return agg;
-          }, {} as Record<string, Internal$StateSpec<any>[]>)
-      )
-    );
-  const rec = (currPath: ObjectPath) => {
-    const nextKeyToSpecs = getNextKeyToSpecMap(currPath);
-    const getSpecForProperty = (property: string | number | symbol) => {
-      return nextKeyToSpecs.has("[]") && isNum(property)
-        ? nextKeyToSpecs.get("[]")?.[0]
-        : typeof property === "string" && nextKeyToSpecs.has(property)
-        ? nextKeyToSpecs.get(property)?.[0]
-        : undefined;
-    };
+  const rec = (currPath: ObjectPath, currNode: StateSpecNode<any>) => {
     const getNextPath = (property: string | number | symbol) => [
       ...currPath,
       isNum(property) ? +property : (property as string),
     ];
-
-    return new Proxy(nextKeyToSpecs.has("[]") ? ([] as any) : ({} as any), {
-      deleteProperty(target, property) {
-        const prefixPath = getNextPath(property);
-        const specKeysToUpdate = new Set<string>();
-        $$state.existingStates.forEach(({ path, specKey }) => {
-          if (
-            path.length >= prefixPath.length &&
-            shallowEqual(path.slice(0, prefixPath.length), prefixPath)
-          ) {
-            deleteState($$state, path);
-            specKeysToUpdate.add(specKey);
-          }
-        });
-        specKeysToUpdate.forEach((specKey) => {
-          const spec = $$state.specsByKey[specKey];
-          if (spec.onChangeProp) {
-            $$state.props[spec.onChangeProp]?.(
-              get($$state.stateValues, currPath),
-              currPath
-            );
-          }
-        });
-        return Reflect.deleteProperty(target, property);
-      },
-      get(target, property, receiver) {
-        const spec = getSpecForProperty(property);
-        if (spec && typeof property !== "symbol") {
-          const nextPath = getNextPath(property);
-          if (spec.pathObj.length === currPath.length + 1) {
-            // reached the end of the spec
-            target[property] = handlers(nextPath, spec).get?.(
-              target,
-              property,
-              receiver
-            );
-          } else if (!(property in target)) {
-            target[property] = rec(nextPath);
-          }
-        }
-        return Reflect.get(target, property, receiver);
-      },
-      set(target, property, value, receiver) {
-        const spec = getSpecForProperty(property);
-        const nextPath = getNextPath(property);
-        if (spec && typeof property !== "symbol") {
-          if (spec.pathObj.length === currPath.length + 1) {
-            // reached the end of the spec
-            target[property] = handlers(nextPath, spec).set?.(
-              target,
-              property,
-              value,
-              receiver
-            );
-            return Reflect.set(target, property, value, receiver);
-          } else if (typeof value === "object") {
-            target[property] = rec(nextPath);
-            for (const key of Object.keys(value)) {
-              target[property][key] = value[key];
-            }
-            return true;
-          }
-        }
-        if (property === "registerInitFunc" && currPath.length === 0) {
-          return Reflect.set(target, property, value, receiver);
-        }
-        if (nextKeyToSpecs.has("[]")) {
-          set($$state.stateValues, nextPath, value);
-          nextKeyToSpecs.get("[]")?.forEach((spec) => {
-            if (spec?.onChangeProp) {
-              $$state.props[spec.onChangeProp]?.(value, nextPath);
+    return new Proxy(
+      currNode.hasArrayTransition() ? ([] as any) : ({} as any),
+      {
+        deleteProperty(target, property) {
+          const prefixPath = getNextPath(property);
+          const specKeysToUpdate = new Set<string>();
+          $$state.existingStates.forEach(({ path, specKey }) => {
+            if (
+              path.length >= prefixPath.length &&
+              shallowEqual(path.slice(0, prefixPath.length), prefixPath)
+            ) {
+              deleteState($$state, path);
+              specKeysToUpdate.add(specKey);
             }
           });
-          return Reflect.set(target, property, value, receiver);
-        }
-        // invalid setting a value that doesn't make part of the spec
-        return false;
-      },
-    });
+          specKeysToUpdate.forEach((specKey) => {
+            const spec = $$state.specsByKey[specKey];
+            if (spec.onChangeProp) {
+              $$state.props[spec.onChangeProp]?.(
+                get($$state.stateValues, currPath),
+                currPath
+              );
+            }
+          });
+          return Reflect.deleteProperty(target, property);
+        },
+        get(target, property, receiver) {
+          const nextPath = getNextPath(property);
+          const nextNode = currNode.makeTransition(property);
+          if (nextNode) {
+            if (nextNode.isLeaf()) {
+              target[property] = handlers(nextPath, nextNode.getSpec()).get?.(
+                target,
+                property,
+                receiver
+              );
+            } else if (!(property in target)) {
+              target[property] = rec(nextPath, nextNode);
+            }
+          }
+          return Reflect.get(target, property, receiver);
+        },
+        set(target, property, value, receiver) {
+          const nextPath = getNextPath(property);
+          const nextNode = currNode.makeTransition(property);
+          if (nextNode && typeof property !== "symbol") {
+            if (nextNode.isLeaf()) {
+              // reached the end of the spec
+              target[property] = handlers(nextPath, nextNode.getSpec()).set?.(
+                target,
+                property,
+                value,
+                receiver
+              );
+              return Reflect.set(target, property, value, receiver);
+            } else if (typeof value === "object") {
+              target[property] = rec(nextPath, nextNode);
+              for (const key of Object.keys(value)) {
+                target[property][key] = value[key];
+              }
+              return true;
+            }
+          }
+          if (property === "registerInitFunc" && currPath.length === 0) {
+            return Reflect.set(target, property, value, receiver);
+          }
+          if (currNode.hasArrayTransition()) {
+            set($$state.stateValues, nextPath, value);
+            currNode
+              .makeTransition(ARRAY_SYMBOL)
+              ?.getAllSpecs()
+              ?.forEach((spec) => {
+                if (spec.onChangeProp) {
+                  $$state.props[spec.onChangeProp]?.(value, nextPath);
+                }
+              });
+            return Reflect.set(target, property, value, receiver);
+          }
+          // invalid setting a value that doesn't make part of the spec
+          return false;
+        },
+      }
+    );
   };
 
-  return rec([]);
+  return rec([], $$state.rootStateSpec);
 }
 
 const deleteState = ($$state: Internal$State, path: ObjectPath) => {
@@ -376,6 +307,7 @@ export function useDollarState(
       props: {},
       ctx: {},
       registrationsQueue: [],
+      rootStateSpec: buildGraph(specs),
     })
   ).current;
   $$state.props = mkUntrackedValue(props);
@@ -503,6 +435,7 @@ export function useCanvasDollarState(
     props: {},
     ctx: {},
     registrationsQueue: [],
+    rootStateSpec: buildGraph(specs),
   });
   $$state.props = mkUntrackedValue(props);
   $$state.ctx = mkUntrackedValue($ctx);
@@ -527,7 +460,11 @@ export function useCanvasDollarState(
       : spec.initVal
       ? spec.initVal
       : spec.initFunc
-      ? initializeStateValue($$state, path, $$state.specsByKey[spec.path])
+      ? initializeStateValue(
+          $$state,
+          path as any,
+          $$state.specsByKey[spec.path]
+        )
       : undefined;
     set($state, path, init);
   }

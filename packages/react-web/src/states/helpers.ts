@@ -57,4 +57,20 @@ export function set(obj: any, keys: any, val: any) {
 export const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
+export function shallowEqual<T>(a1: T[], a2: T[]) {
+  if (a1.length !== a2.length) {
+    return false;
+  }
+  for (let i = 0; i < a1.length; i++) {
+    if (a1[i] !== a2[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+export function isNum(value: string | number | symbol): value is number {
+  return typeof value === "symbol" ? false : !isNaN(+value);
+}
+
 export { get };

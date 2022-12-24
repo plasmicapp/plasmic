@@ -9,7 +9,7 @@ import {
   mergePropVals,
   NONE,
 } from "../react-utils";
-import { $State } from "../states/valtio";
+import { $State } from "../states";
 import { Stack } from "./Stack";
 
 interface Variants {
