@@ -77,14 +77,24 @@ export function ContentStackCredentialsProvider({
 }
 
 interface ContentStackFetcherProps {
-  entryUID?: string;
   contentType?: string;
+  fetchType?: string;
+  entryUID?: string;
+  filter?: boolean;
+  filterField?: string;
+  filterType?: 'where' | 'greaterThanOrEqualTo' | 'lessThanOrEqualTo';
+  filterValue?: string;
+  order: boolean;
+  orderBy?: string;
+  ascending?: boolean;
+  limit?: number;
   children?: ReactNode;
   className?: string;
   noLayout?: boolean;
   setControlContextData?: (data: {
     types?: { title: string; uid: string }[];
     entries?: { title: string; uid: string }[];
+    fields?: { display_name: string; uid: string }[];
   }) => void;
 }
 
@@ -128,6 +138,15 @@ export const ContentStackFetcherMeta: ComponentMeta<ContentStackFetcherProps> = 
       displayName: "Content type",
       description: "Content type to be queried.",
     },
+    fetchType: {
+      type: "choice",
+      options: [
+        { label: 'Single Entry', value: 'single' },
+        { label: 'All Entries', value: 'all' },
+      ],
+      displayName: "Fetch type",
+      description: "What type of query to use.",
+    },
     entryUID: {
       type: "choice",
       options: (props, ctx) =>
@@ -136,7 +155,66 @@ export const ContentStackFetcherMeta: ComponentMeta<ContentStackFetcherProps> = 
           value: entry.uid,
         })) ?? [],
       displayName: "Entry UID",
-      description: "Query in Content Type.",
+      description: "Select a single entry.",
+      hidden: props => props.fetchType !== 'single',
+    },
+    filter: {
+      type: "boolean",
+      displayName: "Filter Entries",
+      hidden: props => props.fetchType !== 'all',
+    },
+    filterField: {
+      type: "choice",
+      options: (props, ctx) => 
+        ctx?.fields?.map((field) => ({
+          label: field.display_name,
+          value: field.uid,
+        })) ?? [],
+      displayName: "Filter On",
+      description: "For Created/Updated At, YYYY-MM-DD is supported",
+      hidden: props => !props.filter || props.fetchType !== 'all',
+    },
+    filterType: {
+      type: "choice",
+      options: [
+        { label: 'Equals', value: 'where' },
+        { label: 'Greater Than', value: 'greaterThanOrEqualTo' },
+        { label: 'Less Than', value: 'lessThanOrEqualTo' }
+      ],
+      displayName: "Filter Type",
+      hidden: props => !props.filter || props.fetchType !== 'all',
+    },
+    filterValue: {
+      type: "string",
+      displayName: "Filter Value",
+      description: "May not work on non-string fields.",
+      hidden: props => !props.filter || props.fetchType !== 'all',
+    },
+    order: {
+      type: "boolean",
+      displayName: "Order Entries",
+      hidden: props => props.fetchType !== 'all',
+    },
+    orderBy: {
+      type: "choice",
+      options: (props, ctx) => 
+        ctx?.fields?.map((field) => ({
+          label: field.display_name,
+          value: field.uid,
+        })) ?? [],
+      displayName: "Order By",
+      hidden: props => !props.order || props.fetchType !== 'all',
+    },
+    ascending: {
+      type: "choice",
+      options: [{ label: 'Ascending', value: true}, {label: 'Descending', value: false }],
+      displayName: "Order Direction",
+      hidden: props => !props.order || props.fetchType !== 'all',
+    },
+    limit: {
+      type: "number",
+      displayName: "Limit Results",
+      hidden: props => props.fetchType === 'single',
     },
     noLayout: {
       type: "boolean",
@@ -149,8 +227,17 @@ export const ContentStackFetcherMeta: ComponentMeta<ContentStackFetcherProps> = 
 };
 
 export function ContentStackFetcher({
-  entryUID,
   contentType,
+  fetchType,
+  entryUID,
+  filter,
+  filterField,
+  filterType,
+  filterValue,
+  order,
+  orderBy,
+  ascending,
+  limit,
   children,
   className,
   noLayout,
@@ -167,7 +254,7 @@ export function ContentStackFetcher({
   });
 
   const { data: entryData } = usePlasmicQueryData<any | null>(
-    contentType && entryUID
+    contentType && entryUID && fetchType === 'single'
       ? `${cacheKey}/${contentType}/entry/${entryUID}`
       : null,
     async () => {
@@ -188,15 +275,35 @@ export function ContentStackFetcher({
   );
 
   const { data: entriesData } = usePlasmicQueryData<any | null>(
-    contentType ? `${cacheKey}/${contentType}/entries` : null,
+    contentType ? `${cacheKey}/${contentType}/entries` + (fetchType === 'all' ? `${
+      limit ? "/limit/" + limit : ''
+    }${
+      order && orderBy ? "/order/" + orderBy + (ascending ? '/ascending' : '') : ''
+    }${
+      filter && filterField && filterType && filterValue ? `/filter/${filterField}/${filterType}/${filterValue}` : ''
+    }` : '') : null,
     async () => {
-      return await Stack.ContentType(`${contentType!}`).Query().toJSON().find();
+      let Query = Stack.ContentType(`${contentType!}`).Query();
+      if(fetchType === 'all'){
+        if (filter && filterField && filterType && filterValue) {
+          Query = Query[filterType](filterField, filterValue);
+        }
+        if (order && orderBy){
+          Query = Query[ascending ? 'ascending' : 'descending'](orderBy);
+        }
+        if (limit){
+          Query = Query.limit(limit);
+        }
+      }
+      return await Query.toJSON().find();
     }
   );
 
+  const schema = [{display_name: 'Created At', uid: 'created_at'}, {display_name: 'Updated At', uid: 'updated_at'}, ...(contentTypes?.filter((x: any) => x.uid === contentType)?.[0]?.schema ?? [])];
   setControlContextData?.({
     types: contentTypes,
     entries: entriesData?.[0],
+    fields: schema,
   });
 
   if (!creds.apiKey || !creds.accessToken || !creds.environment) {
@@ -209,7 +316,8 @@ export function ContentStackFetcher({
   }
 
   let renderedData;
-  if (contentType && entryUID) {
+  if (contentType && fetchType === 'single') {
+    if (!entryUID) return <div>Please select an entry</div>;
     renderedData = (
       <DataProvider name={"contentstackItem"} data={entryData} hidden={true}>
         <DataProvider name={makeDataProviderName(contentType)} data={entryData}>
@@ -217,7 +325,7 @@ export function ContentStackFetcher({
         </DataProvider>
       </DataProvider>
     );
-  } else if (contentType && !entryUID) {
+  } else if (contentType && fetchType === 'all') {
     const entries = entriesData?.flat();
     renderedData = entries?.map((item: any, index: number) => (
       <DataProvider
