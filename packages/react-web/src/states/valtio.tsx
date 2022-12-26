@@ -439,20 +439,7 @@ export function useCanvasDollarState(
   });
   $$state.props = mkUntrackedValue(props);
   $$state.ctx = mkUntrackedValue($ctx);
-  const $state = create$StateProxy($$state, (path, spec) => {
-    return {
-      get() {
-        return get($$state.stateValues, path);
-      },
-      set(_t, _p, value) {
-        saveValue($$state, path, spec, value);
-        if (spec.onChangeProp) {
-          $$state.props[spec.onChangeProp]?.(value, path);
-        }
-        return true;
-      },
-    };
-  });
+  const $state = {};
   for (const spec of specs) {
     const path = transformPathStringToObj(spec.path);
     const init = spec.valueProp
