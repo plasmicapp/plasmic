@@ -11,10 +11,9 @@ import {
   ComponentLookupSpec,
   getCompMetas,
   getLookupSpecName,
+  isBrowser,
   isDynamicPagePath,
 } from './utils';
-
-const isBrowser = typeof window !== 'undefined';
 
 export interface InitOptions {
   projects: {

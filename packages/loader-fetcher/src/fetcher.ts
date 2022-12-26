@@ -1,4 +1,5 @@
 import { Api, isBrowser, LoaderBundleOutput } from './api';
+import { uniqueLocalId } from './uniqueLocalId';
 
 export interface FetcherOptions {
   projects: {
@@ -29,6 +30,16 @@ export class PlasmicModulesFetcher {
   }
 
   async fetchAllData() {
+    const bundle = await this.getCachedOrFetch();
+
+    // Assign a local ID AFTER caching. If the local ID were cached, it may no longer be unique.
+    bundle.localId = uniqueLocalId();
+    this.storeGlobally(bundle);
+
+    return bundle;
+  }
+
+  private async getCachedOrFetch() {
     if (this.opts.cache) {
       const cachedData = await this.opts.cache.get();
       if (cachedData) {
@@ -67,4 +78,26 @@ export class PlasmicModulesFetcher {
     );
     return data;
   }
+
+  // For React Server Components (Next.js 13+),
+  // we need to pass server modules in LoaderBundleOutput from Server Components to Client Components.
+  // We don't want to pass them via normal page props because that will be serialized to the browser.
+  // Instead, we pass the bundle (including the server modules) via the Node `global` variable.
+  //
+  // This is the code that stores the bundle.
+  private storeGlobally(bundle: LoaderBundleOutput) {
+    if (bundle.localId === undefined) {
+      return;
+    }
+
+    if (global.__PLASMIC_BUNDLES === undefined) {
+      global.__PLASMIC_BUNDLES = {};
+    }
+    global.__PLASMIC_BUNDLES[bundle.localId] = bundle;
+  }
 }
+
+interface GlobalWithBundles {
+  __PLASMIC_BUNDLES?: { [localId: number]: LoaderBundleOutput };
+}
+const global = globalThis as GlobalWithBundles;

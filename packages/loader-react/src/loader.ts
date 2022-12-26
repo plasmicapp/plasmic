@@ -30,7 +30,7 @@ import {
   ReactServerPlasmicComponentLoader,
 } from './loader-react-server';
 import type { GlobalVariantSpec } from './PlasmicRootProvider';
-import { ComponentLookupSpec, getCompMetas, uniq } from './utils';
+import { ComponentLookupSpec, getCompMetas, isBrowser, uniq } from './utils';
 import { getPlasmicCookieValues, updatePlasmicCookieValue } from './variation';
 
 export interface ComponentRenderData {
@@ -203,6 +203,22 @@ export class InternalPlasmicComponentLoader {
   }
 
   registerPrefetchedBundle(bundle: LoaderBundleOutput) {
+    // For React Server Components (Next.js 13+),
+    // we need to pass server modules in LoaderBundleOutput from Server Components to Client Components.
+    // We don't want to pass them via normal page props because that will be serialized to the browser.
+    // Instead, we pass the bundle (including the server modules) via the Node `global` variable.
+    //
+    // This is the code that reads the stored bundle and merges it back into the loader.
+    if (!isBrowser) {
+      // Check if a bundle is stored with the corresponding ID.
+      if (bundle.localId !== undefined) {
+        // If it's there, merge this bundle first.
+        const storedBundle = global.__PLASMIC_BUNDLES?.[bundle.localId];
+        if (storedBundle) {
+          this.reactServerLoader.mergeBundle(storedBundle);
+        }
+      }
+    }
     this.reactServerLoader.mergeBundle(bundle);
   }
 
@@ -514,3 +530,8 @@ export class PlasmicComponentLoader {
     return this.__internal.clearCache();
   }
 }
+
+interface GlobalWithBundles {
+  __PLASMIC_BUNDLES?: { [localId: number]: LoaderBundleOutput };
+}
+const global = globalThis as GlobalWithBundles;

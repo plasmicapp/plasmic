@@ -2,6 +2,8 @@ import { ComponentMeta } from '@plasmicapp/loader-core';
 import pascalcase from 'pascalcase';
 import * as React from 'react';
 
+export const isBrowser = typeof window !== 'undefined';
+
 export type ComponentLookupSpec =
   | string
   | { name: string; projectId?: string; isCode?: boolean };
