@@ -3,12 +3,12 @@ import {
   DataProvider,
   GlobalContextMeta,
   repeatedElement,
-  usePlasmicCanvasContext,
   useSelector,
 } from "@plasmicapp/host";
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import get from "dlv";
 import React, { ReactNode, useContext } from "react";
+import { queryOperators } from "./utils";
 
 export function ensure<T>(x: T | null | undefined): T {
   if (x === null || x === undefined) {
@@ -25,25 +25,25 @@ interface WordpressProviderProps {
   wordpressUrl?: string;
 }
 
-const CredentialsContext = React.createContext<
-  WordpressProviderProps | undefined
->(undefined);
+const CredentialsContext =
+  React.createContext<WordpressProviderProps | undefined>(undefined);
 
-export const WordpressProviderMeta: GlobalContextMeta<WordpressProviderProps> = {
-  name: "WordpressProvider",
-  displayName: "Wordpress Provider",
-  description: "The endpoint of your Wordpress",
-  importName: "WordpressProvider",
-  importPath: modulePath,
-  props: {
-    wordpressUrl: {
-      type: "string",
-      displayName: "Wordpress URL",
-      description: "URL of your Wordpress ",
-      defaultValue: "https://techcrunch.com/",
+export const WordpressProviderMeta: GlobalContextMeta<WordpressProviderProps> =
+  {
+    name: "WordpressProvider",
+    displayName: "Wordpress Provider",
+    description: "The endpoint of your Wordpress",
+    importName: "WordpressProvider",
+    importPath: modulePath,
+    props: {
+      wordpressUrl: {
+        type: "string",
+        displayName: "Wordpress URL",
+        description: "URL of your Wordpress ",
+        defaultValue: "https://techcrunch.com/",
+      },
     },
-  },
-};
+  };
 
 export function WordpressProvider({
   wordpressUrl,
@@ -60,9 +60,11 @@ interface WordpressFetcherProps {
   children?: ReactNode;
   className?: string;
   noLayout?: boolean;
-  postId?: string;
-  pageId?: string;
   queryType?: string;
+  noAutoRepeat?: boolean;
+  limit?: number;
+  queryOperator?: string;
+  filterValue?: string;
   setControlContextData?: (data: {
     posts?: { value: string; label: string }[];
     pages?: { value: string; label: string }[];
@@ -102,21 +104,36 @@ export const WordpressFetcherMeta: ComponentMeta<WordpressFetcherProps> = {
       type: "choice",
       options: ["posts", "pages"],
     },
-    postId: {
+    queryOperator: {
       type: "choice",
-      options: (props, ctx) => ctx?.posts ?? [],
-      displayName: "Post Id",
-      description: "Post Id to be queried.",
-      defaultValueHint: "all",
-      hidden: (props, ctx) => props?.queryType !== "posts",
+      displayName: "Query Operator",
+      description: "Filter Parameter filter by",
+      options: (props, ctx) => {
+        return queryOperators.map((item: any) => ({
+          label: item?.label,
+          value: item?.value,
+        }));
+      },
+      hidden: (props, ctx) => !props.queryType,
     },
-    pageId: {
-      type: "choice",
-      options: (props, ctx) => ctx?.posts ?? [],
-      displayName: "Page Id",
-      description: "Id of the Page to be queried",
-      defaultValueHint: "all",
-      hidden: (props, ctx) => props?.queryType !== "pages",
+
+    filterValue: {
+      type: "string",
+      displayName: "Filter value",
+      description: "Value to filter",
+      hidden: (props, ctx) => !props.queryOperator,
+    },
+    limit: {
+      type: "number",
+      displayName: "Limit",
+      description: "Limit",
+    },
+    noAutoRepeat: {
+      type: "boolean",
+      displayName: "No auto-repeat",
+      description:
+        "Do not automatically repeat children for every posts or pages.",
+      defaultValue: false,
     },
     noLayout: {
       type: "boolean",
@@ -129,8 +146,10 @@ export const WordpressFetcherMeta: ComponentMeta<WordpressFetcherProps> = {
 };
 
 export function WordpressFetcher({
-  postId,
-  pageId,
+  queryOperator,
+  filterValue,
+  noAutoRepeat,
+  limit,
   queryType,
   children,
   className,
@@ -139,84 +158,166 @@ export function WordpressFetcher({
 }: WordpressFetcherProps) {
   const creds = ensure(useContext(CredentialsContext));
   const cacheKey = JSON.stringify({
+    queryOperator,
+    filterValue,
+    limit,
     queryType,
     creds,
   });
 
-  const inEditor = !!usePlasmicCanvasContext();
-
   const { data: posts } = usePlasmicQueryData<any | null>(
-    queryType === "posts" && (inEditor || !postId) ? `${cacheKey}/posts` : null,
-    async () =>
-      await (await fetch(`${creds.wordpressUrl}/wp-json/wp/v2/posts`)).json()
+    queryType === "posts" ? `${cacheKey}/posts` : null,
+    async () => {
+      const url = `${creds.wordpressUrl}/wp-json/wp/v2/posts`;
+      let query;
+      if (limit) {
+        query = `${url}?per_page=${limit}`;
+      } else {
+        query = url;
+      }
+
+      const resp = await fetch(query);
+      return await resp.json();
+    }
   );
 
   const { data: pages } = usePlasmicQueryData<any | null>(
-    queryType === "pages" && (inEditor || !pageId) ? `${cacheKey}/pages` : null,
-    async () =>
-      await (await fetch(`${creds.wordpressUrl}/wp-json/wp/v2/pages`)).json()
-  );
+    queryType === "pages" ? `${cacheKey}/pages` : null,
+    async () => {
+      const url = `${creds.wordpressUrl}/wp-json/wp/v2/pages`;
+      let query;
+      if (limit) {
+        query = `${url}?per_page=${limit}`;
+      } else {
+        query = url;
+      }
 
-  const { data: post } = usePlasmicQueryData<any | null>(
-    queryType === "posts" && postId ? `${cacheKey}/posts/${postId}` : null,
-    async () =>
-      await (
-        await fetch(`${creds.wordpressUrl}/wp-json/wp/v2/posts/${postId}`)
-      ).json()
+      const resp = await fetch(query);
+      return await resp.json();
+    }
   );
-
-  const { data: page } = usePlasmicQueryData<any | null>(
-    queryType === "pages" && pageId ? `${cacheKey}/pages/${pageId}` : null,
-    async () =>
-      await (
-        await fetch(`${creds.wordpressUrl}/wp-json/wp/v2/pages/${pageId}`)
-      ).json()
-  );
-
+  
   setControlContextData?.({
     posts: posts?.map((post: any) => ({ value: post.id, label: post.slug })),
     pages: pages?.map((page: any) => ({ value: page.id, label: page.slug })),
   });
 
+  const { data: filteredPages } = usePlasmicQueryData<any | null>(
+    queryType === "pages" && queryOperator && filterValue
+      ? `${cacheKey}/pages/filtered`
+      : null,
+    async () => {
+      const url = `${creds.wordpressUrl}/wp-json/wp/v2/pages?${queryOperator}=${filterValue}`;
+      let query;
+      if (limit) {
+        query = `${url}&per_page=${limit}`;
+      } else {
+        query = url;
+      }
+
+      const resp = await fetch(query);
+      return await resp.json();
+    }
+  );
+  const { data: filteredPosts } = usePlasmicQueryData<any | null>(
+    queryType === "posts" && queryOperator && filterValue
+      ? `${cacheKey}/posts/filtered`
+      : null,
+    async () => {
+      const url = `${creds.wordpressUrl}/wp-json/wp/v2/posts?${queryOperator}=${filterValue}`;
+      let query;
+      if (limit) {
+        query = `${url}&per_page=${limit}`;
+      } else {
+        query = url;
+      }
+
+      const resp = await fetch(query);
+      return await resp.json();
+    }
+  );
+
+  if (!queryType) {
+    return <div>Please specify query type</div>;
+  }
+
+  if (queryOperator && !filterValue) {
+    return <div>Please specify Filter Value</div>;
+  }
+  if (!queryOperator && filterValue) {
+    return <div>Please specify Query Operator</div>;
+  }
+
   let renderedData;
-  if (queryType === "posts" && post) {
-    renderedData = (
-      <DataProvider name={"wordpressItem"} data={post} hidden={true}>
-        <DataProvider name={"currentWordpressPost"} data={post}>
-          {children}
-        </DataProvider>
-      </DataProvider>
-    );
-  } else if (queryType === "pages" && page) {
-    renderedData = (
-      <DataProvider name={"wordpressItem"} data={page} hidden={true}>
-        <DataProvider name={"currentWordpressPage"} data={page}>
-          {children}
-        </DataProvider>
-      </DataProvider>
-    );
-  } else if (queryType === "posts" && posts) {
-    renderedData = posts?.map((post: any, i: number) => (
-      <DataProvider
-        key={post.id}
-        name={"wordpressItem"}
-        data={post}
-        hidden={true}
-      >
-        <DataProvider name={"currentWordpressPost"} data={post}>
-          {repeatedElement(i, children)}
-        </DataProvider>
-      </DataProvider>
-    ));
-  } else if (queryType === "pages" && pages) {
-    renderedData = pages?.map((page: any, i: number) => (
+
+  if (queryType === "posts" && posts && !filteredPosts) {
+    renderedData = noAutoRepeat
+      ? children
+      : posts?.map((post: any, i: number) => (
+          <DataProvider
+            key={post.id}
+            name={"wordpressItem"}
+            data={post}
+            hidden={true}
+          >
+            <DataProvider name={"currentWordpressPost"} data={post}>
+              {repeatedElement(i, children)}
+            </DataProvider>
+          </DataProvider>
+        ));
+  } else if (queryType === "pages" && pages && !filteredPages) {
+    renderedData = noAutoRepeat
+      ? children
+      : pages?.map((page: any, i: number) => (
+          <DataProvider
+            key={page.id}
+            name={"wordpressItem"}
+            data={page}
+            hidden={true}
+          >
+            <DataProvider name={"currentWordpressPage"} data={page}>
+              {repeatedElement(i, children)}
+            </DataProvider>
+          </DataProvider>
+        ));
+  } else if (queryType === "pages" && filteredPages) {
+    if (!filteredPages && queryOperator === "pages") {
+      return <div>Please make sure queryType is pages</div>;
+    }
+    if (filteredPages.length === 0) {
+      return <div>No published pages found</div>;
+    }
+    renderedData = noAutoRepeat
+      ? children
+      : filteredPages?.map((page: any, i: number) => (
+          <DataProvider
+            key={page.id}
+            name={"wordpressItem"}
+            data={page}
+            hidden={true}
+          >
+            <DataProvider name={"currentWordpressPage"} data={page}>
+              {repeatedElement(i, children)}
+            </DataProvider>
+          </DataProvider>
+        ));
+  } else if (queryType === "posts" && filteredPosts) {
+    if (!filteredPosts && queryOperator === "posts") {
+      return <div>Please make sure queryType is posts</div>;
+    }
+
+    if (filteredPosts.length === 0) {
+      return <div>No published posts found</div>;
+    }
+
+    renderedData = filteredPosts?.map((page: any, i: number) => (
       <DataProvider
         key={page.id}
         name={"wordpressItem"}
         data={page}
         hidden={true}
       >
-        <DataProvider name={"currentWordpressPage"} data={page}>
+        <DataProvider name={"currentWordpressPost"} data={page}>
           {repeatedElement(i, children)}
         </DataProvider>
       </DataProvider>
@@ -225,10 +326,15 @@ export function WordpressFetcher({
     return <div>Please choose the Query Type in order to render the data</div>;
   }
 
-  return noLayout ? (
-    <> {renderedData} </>
-  ) : (
-    <div className={className}> {renderedData} </div>
+  const response = [pages, posts];
+  return (
+    <DataProvider data={response} name="wordpressItems">
+      {noLayout ? (
+        <> {renderedData} </>
+      ) : (
+        <div className={className}> {renderedData} </div>
+      )}
+    </DataProvider>
   );
 }
 
