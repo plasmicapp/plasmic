@@ -37,7 +37,6 @@ export function registerAll(loader?: {
       ContentfulCredentialsProviderMeta
     );
   }
-
   _registerComponent(ContentfulFetcher, ContentfulFetcherMeta);
   _registerComponent(ContentfulField, ContentfulFieldMeta);
 }
