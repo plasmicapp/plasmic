@@ -37,6 +37,7 @@
     "plasmicpkgs/antd",
     "plasmicpkgs/chakra-ui",
     "plasmicpkgs/commerce-providers/*",
+    "plasmicpkgs/data-table",
     "plasmicpkgs/framer-motion",
     "plasmicpkgs/lottie-react",
     "plasmicpkgs/plasmic-basic-components",
