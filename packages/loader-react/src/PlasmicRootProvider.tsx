@@ -178,7 +178,7 @@ export function PlasmicRootProvider(props: {
   }, [loader, variation]);
 
   // @ts-ignore
-  const { user, userAuthToken } = props;
+  const { user, userAuthToken, isUserLoading } = props;
 
   const value = React.useMemo<PlasmicRootContextValue>(
     () => ({
@@ -193,6 +193,7 @@ export function PlasmicRootProvider(props: {
       Head,
       user,
       userAuthToken,
+      isUserLoading,
     }),
     [
       globalVariants,
@@ -204,6 +205,7 @@ export function PlasmicRootProvider(props: {
       Head,
       user,
       userAuthToken,
+      isUserLoading,
     ]
   );
 

@@ -39,6 +39,7 @@ export function PlasmicComponent(props: {
     globalContextsProps,
     variation,
     userAuthToken,
+    isUserLoading,
     ...rest
   } = rootContext;
 
@@ -91,7 +92,11 @@ export function PlasmicComponent(props: {
         projectId,
       });
       element = (
-        <ReactWebRootProvider {...rest}>
+        <ReactWebRootProvider
+          {...rest}
+          userAuthToken={userAuthToken}
+          isUserLoading={isUserLoading}
+        >
           <MaybeWrap
             cond={!!GlobalContextsProvider}
             wrapper={(children) => (
@@ -117,6 +122,7 @@ export function PlasmicComponent(props: {
     projectId,
     globalContextsProps,
     userAuthToken, // Just use the token to memo, `user` should be derived from it
+    isUserLoading,
   ]);
   return element;
 }
