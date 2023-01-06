@@ -273,7 +273,7 @@ npm --registry=http://localhost:4873 adduser
 
 1. Make some changes!
 
-1. If you're ready to test, run `yarn local-canary`. This builds canary versions of your packages to your local registry.
+1. If you're ready to test, run `yarn local-publish YOURPKG`. This unpublishes YOURPKG and its dependencies from your verdaccio, re-builds them, and publishes them to your local verdaccio. Note that this does not bump versions!  We are using nx under the hood, so if your dependencies haven't changed, this should be fast.
 
 1. Install the canary version into wherever you're trying to test, via `yarn add ... --registry=http://localhost:4873`
 

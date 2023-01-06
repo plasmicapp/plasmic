@@ -3,7 +3,7 @@
   "private": true,
   "devDependencies": {
     "if-env": "^1.0.4",
-    "lerna": "^4.0.0",
+    "lerna": "^6.3.0",
     "prettier": "2.3.0"
   },
   "scripts": {
@@ -11,7 +11,7 @@
     "release": "echo 'Use the jenkins job release_public_packages instead: https://jenkins.aws.plasmic.app/job/release_public_packages/'",
     "bump": "echo 'Use the jenkins job release_public_packages instead: https://jenkins.aws.plasmic.app/job/release_public_packages/'",
     "local-canary": "yarn local-unpublish && lerna publish --canary --yes --include-merged-tags --no-git-tag-version --no-push --registry=http://localhost:4873 --force-publish",
-    "local-publish": "lerna exec -- npm publish --registry=http://localhost:4873",
+    "local-publish": "./scripts/local-publish.sh",
     "local-unpublish": "lerna exec -- npm unpublish -f --registry=\"http://localhost:4873/\" \"\\${LERNA_PACKAGE_NAME}\"",
     "deps": "lerna list --include-dependencies --scope"
   },
