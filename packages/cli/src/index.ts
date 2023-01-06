@@ -254,10 +254,9 @@ yargs
         })
         .option("key-scheme", {
           describe:
-            "What value to use as message keys; either the message content itself, or a hash of it",
+            "What value to use as message keys; either the message content itself, or a hash of it. Defaults to whatever is specified in plasmic.json, or `content`",
           type: "string",
           choices: ["content", "hash"],
-          default: "content",
         })
         .option("output", {
           alias: "o",

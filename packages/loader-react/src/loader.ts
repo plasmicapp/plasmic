@@ -44,6 +44,7 @@ export interface InitOptions {
   preview?: boolean;
   host?: string;
   onClientSideFetch?: 'warn' | 'error';
+  i18nKeyScheme?: 'content' | 'hash';
 
   /**
    * By default, fetchComponentData() and fetchPages() calls cached in memory

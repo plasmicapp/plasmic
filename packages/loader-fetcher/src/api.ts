@@ -144,6 +144,7 @@ export class Api {
       platform?: 'react' | 'nextjs' | 'gatsby';
       preview?: boolean;
       browserOnly?: boolean;
+      i18nKeyScheme?: 'content' | 'hash';
     }
   ) {
     const { platform, preview } = opts;
@@ -151,6 +152,7 @@ export class Api {
       ['platform', platform ?? 'react'],
       ...projectIds.map((projectId) => ['projectId', projectId]),
       ...(opts.browserOnly ? [['browserOnly', 'true']] : []),
+      ...(opts.i18nKeyScheme ? [['i18nKeyScheme', opts.i18nKeyScheme]] : []),
     ]).toString();
 
     const url = `${this.host}/api/v1/loader/code/${

@@ -5,6 +5,7 @@ import {
   AuthConfig,
   CodeConfig,
   DEFAULT_HOST,
+  I18NConfig,
   ImagesConfig,
   StyleConfig,
 } from "./utils/config-utils";
@@ -268,6 +269,7 @@ export class PlasmicApi {
       version: string;
       imageOpts: ImagesConfig;
       stylesOpts: StyleConfig;
+      i18nOpts?: I18NConfig;
       codeOpts: CodeConfig;
       checksums: ChecksumBundle;
       indirect: boolean;

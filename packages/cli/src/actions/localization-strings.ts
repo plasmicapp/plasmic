@@ -17,7 +17,7 @@ export interface LocalizationStringsArgs extends CommonArgs {
   format: "po" | "json" | "lingui";
   output: string;
   forceOverwrite: boolean;
-  keyScheme: "content" | "hash";
+  keyScheme: "content" | "hash" | undefined;
 }
 
 export async function localizationStrings(
@@ -46,6 +46,7 @@ export async function localizationStrings(
       ? "data.po"
       : "data.json"
     : opts.output;
+  let keyScheme = opts.keyScheme;
   const projectTokensFromConfig: ProjectIdAndToken[] = [];
   const auth = await getCurrentAuth(opts.auth);
   const maybeConfigFile =
@@ -55,6 +56,9 @@ export async function localizationStrings(
     context.config.projects.forEach((p) => {
       projectTokensFromConfig.push(pick(p, "projectId", "projectApiToken"));
     });
+    if (!keyScheme) {
+      keyScheme = context.config.i18n?.keyScheme;
+    }
   }
 
   const projectIdsAndTokens = [
@@ -78,7 +82,7 @@ export async function localizationStrings(
     const data = await api.genLocalizationStrings(
       opts.projects,
       opts.format,
-      opts.keyScheme,
+      keyScheme ?? "content",
       projectIdsAndTokens
     );
     if (existsBuffered(output)) {
