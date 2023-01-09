@@ -2,10 +2,11 @@ import React from 'react';
 
 export interface PlasmicDataSourceContextValue {
   userAuthToken?: string;
+  isUserLoading?: boolean;
   user?: {
-    userId: string;
+    id: string;
     email: string;
-    roles: string[];
+    roleId: string;
     properties: Record<string, unknown> | null;
   };
 }
