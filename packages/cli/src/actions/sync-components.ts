@@ -1,22 +1,15 @@
-import {
-  ComponentInfoForMerge,
-  makeCachedProjectSyncDataProvider,
-  mergeFiles,
-} from "@plasmicapp/code-merger";
 import L from "lodash";
 import path from "upath";
-import { AppServerError, ChecksumBundle, ComponentBundle } from "../api";
+import { ChecksumBundle, ComponentBundle } from "../api";
 import { logger } from "../deps";
 import { ComponentUpdateSummary, formatAsLocal } from "../utils/code-utils";
 import {
-  ComponentConfig,
   CONFIG_FILE_NAME,
   isPageAwarePlatform,
   PlasmicContext,
   ProjectConfig,
   ProjectLock,
 } from "../utils/config-utils";
-import { HandledError } from "../utils/error";
 import {
   defaultPagePath,
   defaultResourcePath,
@@ -30,96 +23,13 @@ import {
 import { assert, ensure } from "../utils/lang-utils";
 import { confirmWithUser } from "../utils/user-utils";
 
-export interface ComponentPendingMerge {
-  // path of the skeleton module
-  skeletonModulePath: string;
-  editedSkeletonFile: string;
-  newSkeletonFile: string;
-  // function to perform code merger using input whose import has been resolved.
-  merge: (
-    resolvedNewSkeletonFile: string,
-    resolvedEditedSkeletonFile: string
-  ) => Promise<void>;
-}
-
-const updateDirectSkeleton = async (
-  newFileContent: string,
-  editedFileContent: string,
-  context: PlasmicContext,
-  compConfig: ComponentConfig,
-  forceOverwrite: boolean,
-  nameInIdToUuid: [string, string][],
-  appendJsxOnMissingBase: boolean
-) => {
-  // merge code!
-  const componentByUuid = new Map<string, ComponentInfoForMerge>();
-
-  componentByUuid.set(compConfig.id, {
-    editedFile: editedFileContent,
-    newFile: newFileContent,
-    newNameInIdToUuid: new Map(nameInIdToUuid),
-  });
-  const mergedFiles = await mergeFiles(
-    componentByUuid,
-    compConfig.projectId,
-    makeCachedProjectSyncDataProvider(async (projectId, revision) => {
-      try {
-        return await context.api.projectSyncMetadata(
-          projectId,
-          "main",
-          revision,
-          true
-        );
-      } catch (e) {
-        if (
-          e instanceof AppServerError &&
-          /revision \d+ not found/.test(e.message)
-        ) {
-          throw e;
-        } else {
-          assert(e instanceof Error);
-          throw new HandledError(e.message);
-        }
-      }
-    }),
-    () => {},
-    appendJsxOnMissingBase
-  );
-  const merged = mergedFiles?.get(compConfig.id);
-  if (merged) {
-    await writeFileContent(context, compConfig.importSpec.modulePath, merged, {
-      force: true,
-    });
-  } else {
-    if (!forceOverwrite) {
-      throw new HandledError(
-        `Cannot merge ${compConfig.importSpec.modulePath}. If you just switched the code scheme for the component from blackbox to direct, use --force-overwrite option to force the switch.`
-      );
-    } else {
-      logger.warn(
-        `Overwrite ${compConfig.importSpec.modulePath} despite merge failure`
-      );
-      await writeFileContent(
-        context,
-        compConfig.importSpec.modulePath,
-        newFileContent,
-        {
-          force: true,
-        }
-      );
-    }
-  }
-};
-
 export async function syncProjectComponents(
   context: PlasmicContext,
   project: ProjectConfig,
   version: string,
   componentBundles: ComponentBundle[],
   forceOverwrite: boolean,
-  appendJsxOnMissingBase: boolean,
   summary: Map<string, ComponentUpdateSummary>,
-  pendingMerge: ComponentPendingMerge[],
   projectLock: ProjectLock,
   checksums: ChecksumBundle,
   baseDir: string
@@ -324,23 +234,7 @@ export async function syncProjectComponents(
       compConfig.plumeType = plumeType;
 
       if (scheme === "direct") {
-        // We cannot merge right now, but wait until all the imports are resolved
-        pendingMerge.push({
-          skeletonModulePath: compConfig.importSpec.modulePath,
-          editedSkeletonFile: editedFile,
-          newSkeletonFile: skeletonModule,
-          merge: async (resolvedNewFile, resolvedEditedFile) =>
-            updateDirectSkeleton(
-              resolvedNewFile,
-              resolvedEditedFile,
-              context,
-              compConfig,
-              forceOverwrite,
-              nameInIdToUuid,
-              appendJsxOnMissingBase
-            ),
-        });
-        skeletonModuleModified = true;
+        throw new Error(`Direct update codegen scheme is no longer supported`);
       } else if (/\/\/\s*plasmic-managed-jsx\/\d+/.test(editedFile)) {
         if (forceOverwrite) {
           skeletonModuleModified = true;

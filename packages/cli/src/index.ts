@@ -317,18 +317,6 @@ function configureSyncArgs(
         "Overwrite the skeleton file with newly generated version. Useful when switching between codegen schemes.",
       default: false,
     })
-    .option("append-jsx-on-missing-base", {
-      type: "boolean",
-      describe:
-        "When the base metadata is missing to perform the three-way merge for direct edit component, append the jsx of the new version so that user can perform manual merge.",
-      default: false,
-    })
-    .option("new-component-scheme", {
-      type: "string",
-      choices: ["blackbox", "direct"],
-      describe:
-        "Sync the new components using this code scheme rather than the default code scheme.",
-    })
     .option("ignore-post-sync", {
       type: "boolean",
       describe: "Ignore post-sync commands in plasmic.json",

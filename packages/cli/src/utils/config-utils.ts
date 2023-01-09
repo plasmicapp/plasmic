@@ -103,7 +103,7 @@ export interface CodeConfig {
   lang: "ts" | "js";
 
   /** The default code generation scheme. Each component can override the scheme. */
-  scheme: "blackbox" | "direct";
+  scheme: "blackbox";
 
   reactRuntime: "classic" | "automatic";
 }
