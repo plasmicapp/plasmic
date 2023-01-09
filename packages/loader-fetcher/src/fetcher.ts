@@ -10,6 +10,7 @@ export interface FetcherOptions {
   platform?: 'react' | 'nextjs' | 'gatsby';
   preview?: boolean;
   host?: string;
+  i18nKeyScheme?: 'content' | 'hash';
 }
 
 export interface LoaderBundleCache {
@@ -52,6 +53,7 @@ export class PlasmicModulesFetcher {
       {
         platform: this.opts.platform,
         preview: this.opts.preview,
+        i18nKeyScheme: this.opts.i18nKeyScheme,
         browserOnly: isBrowser,
       }
     );

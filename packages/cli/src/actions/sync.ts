@@ -606,6 +606,7 @@ async function syncProject(
       version: projectVersion,
       imageOpts: context.config.images,
       stylesOpts: context.config.style,
+      i18nOpts: context.config.i18n,
       checksums: existingChecksums,
       codeOpts: context.config.code,
       metadata: generateMetadata(

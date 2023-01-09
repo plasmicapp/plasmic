@@ -91,6 +91,9 @@ export interface PlasmicConfig {
   /** The version of cli when this file was written */
   cliVersion?: string;
 
+  /** Configuration for localization */
+  i18n?: I18NConfig;
+
   /** Arbitrary command to run after `plasmic sync` has run; useful for linting and code formatting synced files */
   postSyncCommands?: string[];
 }
@@ -332,6 +335,14 @@ export interface ProjectLock {
   fileLocks: FileLock[];
   // The version of Codegen when this project was written
   codegenVersion?: string;
+}
+
+export interface I18NConfig {
+  /**
+   * For localization, whether the extracted strings are keyed by its content
+   * or by a hash of its content
+   */
+  keyScheme: "content" | "hash";
 }
 
 export interface PlasmicLock {

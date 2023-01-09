@@ -9,10 +9,12 @@ export type PlasmicTranslator = (
   }
 ) => React.ReactNode;
 
-export const PlasmicTranslatorContext =
-  React.createContext<PlasmicTranslator | undefined>(undefined);
+export const PlasmicTranslatorContext = React.createContext<
+  PlasmicTranslator | undefined
+>(undefined);
 
 export interface TransProps {
+  transKey?: string;
   children?: React.ReactNode;
 }
 
@@ -78,7 +80,7 @@ export function genTranslatableString(elt: React.ReactNode) {
   };
 }
 
-export function Trans({ children }: TransProps) {
+export function Trans({ transKey, children }: TransProps) {
   const _t = React.useContext(PlasmicTranslatorContext);
   if (!_t) {
     warnNoTranslationFunctionAtMostOnce();
@@ -86,7 +88,7 @@ export function Trans({ children }: TransProps) {
   }
 
   const { str, components, componentsCount } = genTranslatableString(children);
-  return _t(str, componentsCount > 0 ? { components } : undefined);
+  return _t(transKey ?? str, componentsCount > 0 ? { components } : undefined);
 }
 
 let hasWarned = false;
