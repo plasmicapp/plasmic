@@ -1,3 +1,4 @@
+/// <reference types="@types/jest" />
 import L from "lodash";
 import { SyncArgs } from "../actions/sync";
 import { PlasmicConfig, ProjectConfig } from "../utils/config-utils";
