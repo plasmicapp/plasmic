@@ -13,6 +13,7 @@
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
+    "postbuild": "node ../../print-module-api.js ./packages/loader-react/dist/index.js > index-api.txt",
     "yalcp": "yalc publish --push",
     "test": "tsdx test --passWithNoTests",
     "coverage": "tsdx test --coverage --passWithNoTests",
