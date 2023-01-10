@@ -1,22 +1,4 @@
 {
-  "packages": [
-    "packages/cli",
-    "packages/create-plasmic-app",
-    "packages/host",
-    "packages/loader-core",
-    "packages/loader-edge",
-    "packages/loader-fetcher",
-    "packages/loader-gatsby",
-    "packages/loader-nextjs",
-    "packages/loader-react",
-    "packages/loader-splits",
-    "packages/loader-svelte",
-    "packages/loader-vue",
-    "packages/preamble",
-    "packages/query",
-    "packages/react-web",
-    "packages/watcher"
-  ],
   "version": "independent",
   "npmClient": "yarn",
   "useWorkspaces": true
