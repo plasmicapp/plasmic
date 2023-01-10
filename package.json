@@ -16,6 +16,7 @@
     "deps": "lerna list --include-dependencies --scope"
   },
   "workspaces": [
+    "packages/cli",
     "packages/create-plasmic-app",
     "packages/data-sources",
     "packages/data-sources-context",
