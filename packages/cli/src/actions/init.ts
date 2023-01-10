@@ -34,7 +34,7 @@ export interface InitArgs extends CommonArgs {
   host: string;
   platform: "" | "react" | "nextjs" | "gatsby";
   codeLang: "" | "ts" | "js";
-  codeScheme: "" | "blackbox" | "direct";
+  codeScheme: "" | "blackbox";
   styleScheme: "" | "css" | "css-modules";
   imagesScheme: "" | "inlined" | "files" | "public-files";
   imagesPublicDir: string;

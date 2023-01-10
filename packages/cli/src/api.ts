@@ -1,4 +1,3 @@
-import { ProjectSyncMetadataModel } from "@plasmicapp/code-merger";
 import axios, { AxiosError } from "axios";
 import socketio, { Socket } from "socket.io-client";
 import {
@@ -262,9 +261,6 @@ export class PlasmicApi {
     branchName: string,
     opts: {
       platform: string;
-      newCompScheme: "blackbox" | "direct";
-      // The list of existing components as [componentUuid, codeScheme]
-      existingCompScheme: Array<[string, "blackbox" | "direct"]>;
       componentIdOrNames: readonly string[] | undefined;
       version: string;
       imageOpts: ImagesConfig;
@@ -373,20 +369,6 @@ export class PlasmicApi {
       { versionRange, iconIds }
     );
     return result.data as ProjectIconsResponse;
-  }
-
-  async projectSyncMetadata(
-    projectId: string,
-    branchName: string,
-    revision: number,
-    rethrowAppError: boolean
-  ): Promise<ProjectSyncMetadataModel> {
-    const result = await this.post(
-      `${this.codegenHost}/api/v1/projects/${projectId}/code/project-sync-metadata?branchName=${branchName}`,
-      { revision },
-      rethrowAppError
-    );
-    return ProjectSyncMetadataModel.fromJson(result.data);
   }
 
   connectSocket(): Socket {

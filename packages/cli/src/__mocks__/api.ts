@@ -1,4 +1,3 @@
-import { ProjectSyncMetadataModel } from "@plasmicapp/code-merger";
 import L from "lodash";
 import {
   ChecksumBundle,
@@ -383,14 +382,6 @@ class PlasmicApi {
     projectId: string,
     branchName: string
   ): Promise<ProjectIconsResponse> {
-    throw new Error("Unimplemented");
-  }
-
-  async projectSyncMetadata(
-    projectId: string,
-    revision: number,
-    rethrowAppError: boolean
-  ): Promise<ProjectSyncMetadataModel> {
     throw new Error("Unimplemented");
   }
 

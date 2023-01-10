@@ -18,8 +18,6 @@ import {
   fixAllImportStatements,
   formatAsLocal,
   maybeConvertTsxToJsx,
-  mkFixImportContext,
-  replaceImports,
 } from "../utils/code-utils";
 import {
   CONFIG_FILE_NAME,
@@ -56,10 +54,7 @@ import {
 import { checkVersionResolution } from "../utils/resolve-utils";
 import * as semver from "../utils/semver";
 import { confirmWithUser } from "../utils/user-utils";
-import {
-  ComponentPendingMerge,
-  syncProjectComponents,
-} from "./sync-components";
+import { syncProjectComponents } from "./sync-components";
 import { syncGlobalContexts } from "./sync-global-contexts";
 import { syncGlobalVariants } from "./sync-global-variants";
 import { syncProjectIconAssets } from "./sync-icons";
@@ -69,8 +64,6 @@ import { upsertStyleTokens } from "./sync-styles";
 export interface SyncArgs extends CommonArgs {
   projects: readonly string[];
   forceOverwrite: boolean;
-  newComponentScheme?: "blackbox" | "direct";
-  appendJsxOnMissingBase?: boolean;
   yes?: boolean;
   force?: boolean;
   nonRecursive?: boolean;
@@ -315,7 +308,6 @@ export async function sync(
     return;
   }
   const summary = new Map<string, ComponentUpdateSummary>();
-  const pendingMerge = new Array<ComponentPendingMerge>();
 
   // The resolveSync call returns the project API tokens for all relevant projects (sources and dependencies).
   // resolveSync is what does this because it's what is computing all concrete versions to sync, and the dependency
@@ -348,7 +340,6 @@ export async function sync(
         projectMeta.version,
         projectMeta.dependencies,
         summary,
-        pendingMerge,
         projectMeta.indirect,
         externalNpmPackages,
         externalCssImports,
@@ -388,27 +379,6 @@ export async function sync(
       });
     }
 
-    // Fix imports
-    const fixImportContext = mkFixImportContext(context.config);
-    for (const m of pendingMerge) {
-      const resolvedEditedFile = replaceImports(
-        context,
-        m.editedSkeletonFile,
-        m.skeletonModulePath,
-        fixImportContext,
-        true,
-        baseDir
-      );
-      const resolvedNewFile = replaceImports(
-        context,
-        m.newSkeletonFile,
-        m.skeletonModulePath,
-        fixImportContext,
-        true,
-        baseDir
-      );
-      await m.merge(resolvedNewFile, resolvedEditedFile);
-    }
     // Now we know config.components are all correct, so we can go ahead and fix up all the import statements
     await fixAllImportStatements(context, opts.baseDir, summary);
 
@@ -565,14 +535,11 @@ async function syncProject(
   projectVersion: string,
   dependencies: { [projectId: string]: string },
   summary: Map<string, ComponentUpdateSummary>,
-  pendingMerge: ComponentPendingMerge[],
   indirect: boolean,
   externalNpmPackages: Set<string>,
   externalCssImports: Set<string>,
   metadataDefaults?: Metadata
 ): Promise<void> {
-  const newComponentScheme =
-    opts.newComponentScheme || context.config.code.scheme;
   const existingProject = context.config.projects.find(
     (p) => p.projectId === projectId
   );
@@ -600,8 +567,6 @@ async function syncProject(
     branchName,
     {
       platform: context.config.platform,
-      newCompScheme: newComponentScheme,
-      existingCompScheme,
       componentIdOrNames: componentIds,
       version: projectVersion,
       imageOpts: context.config.images,
@@ -675,9 +640,7 @@ async function syncProject(
     dependencies,
     projectBundle.components,
     opts.forceOverwrite,
-    !!opts.appendJsxOnMissingBase,
     summary,
-    pendingMerge,
     projectBundle.checksums,
     opts.baseDir,
     indirect
@@ -738,9 +701,7 @@ async function syncProjectConfig(
   dependencies: { [projectId: string]: string },
   componentBundles: ComponentBundle[],
   forceOverwrite: boolean,
-  appendJsxOnMissingBase: boolean,
   summary: Map<string, ComponentUpdateSummary>,
-  pendingMerge: ComponentPendingMerge[],
   checksums: ChecksumBundle,
   baseDir: string,
   indirect: boolean
@@ -859,9 +820,7 @@ async function syncProjectConfig(
     version,
     componentBundles,
     forceOverwrite,
-    appendJsxOnMissingBase,
     summary,
-    pendingMerge,
     projectLock,
     checksums,
     baseDir
