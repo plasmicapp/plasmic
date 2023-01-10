@@ -2,9 +2,8 @@ import { expect } from "@storybook/jest";
 import { Story } from "@storybook/react";
 import { userEvent, within } from "@storybook/testing-library";
 import React from "react";
-import { $StateSpec } from "../states";
-import { set } from "../states/helpers";
-import useDollarState from "../states/valtio";
+import { set, useDollarState } from "../states";
+import { $StateSpec } from "../states/types";
 
 const deepClone = function <T>(o: T): T {
   return JSON.parse(JSON.stringify(o));
@@ -502,56 +501,71 @@ RepeatedStates.play = async ({ canvasElement }) => {
 };
 
 const _NestedRepeatedCounter: Story<{}> = () => {
-  const Parent = (args: {
-    grandParentIndex: number;
-    onChange: (newVal: number, path: (string | number)[]) => void;
-    initCount: any;
-  }) => {
-    const { grandParentIndex } = args;
+  const Parent = React.useCallback(
+    (args: {
+      grandParentIndex: number;
+      onChange: (newVal: number[]) => void;
+      initCount: any;
+    }) => {
+      const { grandParentIndex } = args;
+      const $state = useDollarState(
+        [
+          {
+            path: "counter[].count",
+            type: "private",
+          },
+        ],
+        args
+      );
+      return (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr 1fr",
+            gridColumnGap: "10px",
+            gridRowGap: "30px",
+          }}
+        >
+          {[0, 1, 2].map((index) => {
+            $state.registerInitFunc(
+              "counter[].count",
+              () => args.initCount[index],
+              [index]
+            );
+            return (
+              <div key={index}>
+                <Counter
+                  data-testid={`counter[${grandParentIndex}][${index}]`}
+                  title={<p>{`counter[${grandParentIndex}][${index}]`}</p>}
+                  stateType="writable"
+                  onChange={(val) => {
+                    $state.counter[index].count = val;
+                    args.onChange($state.counter.map((c: any) => c.count));
+                  }}
+                  initCount={$state.counter[index].count}
+                />
+                <span
+                  data-testid={`parentLabel[${grandParentIndex}][${index}]`}
+                >{`parentCounter: ${$state.counter[index].count}`}</span>
+              </div>
+            );
+          })}
+        </div>
+      );
+    },
+    []
+  );
+  const GrandParent = React.useCallback((args: {}) => {
     const $state = useDollarState(
       [
         {
-          path: "counter[].count",
-          type: "writable",
-          onChangeProp: "onChange",
-          valueProp: "initCount",
-        },
-      ],
-      args
-    );
-    return (
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          gridColumnGap: "10px",
-          gridRowGap: "30px",
-        }}
-      >
-        {[0, 1, 2].map((index) => (
-          <div key={index}>
-            <Counter
-              data-testid={`counter[${grandParentIndex}][${index}]`}
-              title={<p>{`counter[${grandParentIndex}][${index}]`}</p>}
-              stateType="writable"
-              onChange={(val) => ($state.counter[index].count = val)}
-              initCount={$state.counter[index].count}
-            />
-            <span
-              data-testid={`parentLabel[${grandParentIndex}][${index}]`}
-            >{`parentCounter: ${$state.counter[index].count}`}</span>
-          </div>
-        ))}
-      </div>
-    );
-  };
-  const GrandParent = (args: {}) => {
-    const $state = useDollarState(
-      [
-        {
-          path: "parent[].counter[].count",
+          path: "counters",
           type: "private",
-          initFunc: () => 0,
+          initFunc: () => [
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+          ],
         },
       ],
       args
@@ -568,8 +582,8 @@ const _NestedRepeatedCounter: Story<{}> = () => {
           <div key={index}>
             <Parent
               grandParentIndex={index}
-              onChange={(val, path) => set($state.parent[index], path, val)}
-              initCount={$state.parent[index].counter}
+              onChange={(val) => ($state.counters[index] = val)}
+              initCount={$state.counters[index]}
             />
           </div>
         ))}
@@ -595,7 +609,7 @@ const _NestedRepeatedCounter: Story<{}> = () => {
                 +(document.getElementById("select_1") as HTMLSelectElement)!
                   .value,
               ];
-              $state.parent[selector[0]].counter[selector[1]].count += 1;
+              $state.counters[selector[0]][selector[1]]++;
             }}
             data-testid="increment-btn"
           >
@@ -606,9 +620,7 @@ const _NestedRepeatedCounter: Story<{}> = () => {
             data-testid="clear-btn"
             onClick={() =>
               [0, 1, 2].map((i: any) =>
-                [0, 1, 2].map(
-                  (j: any) => ($state.parent[i].counter[j].count = 0)
-                )
+                [0, 1, 2].map((j: any) => ($state.counters[i][j] = 0))
               )
             }
           >
@@ -617,7 +629,7 @@ const _NestedRepeatedCounter: Story<{}> = () => {
         </div>
       </div>
     );
-  };
+  }, []);
 
   return <GrandParent />;
 };
@@ -919,7 +931,7 @@ InitFuncFromInternalContextData.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
 
   for (let i = 0; i < products.length; i++) {
-    click(canvas.getByTestId(`product_${i}`));
+    await click(canvas.getByTestId(`product_${i}`));
     expect(
       (canvas.getByTestId("product_name") as HTMLHeadingElement).textContent
     ).toEqual(products[i].name);
@@ -931,7 +943,7 @@ InitFuncFromInternalContextData.play = async ({ canvasElement }) => {
   );
 
   for (let i = 0; i < products.length; i++) {
-    click(canvas.getByTestId(`product_${i}`));
+    await click(canvas.getByTestId(`product_${i}`));
     expect(
       (canvas.getByTestId("product_price") as HTMLHeadingElement).textContent
     ).toEqual(`Price: ${products[i].price * 10}`);
@@ -1039,7 +1051,7 @@ InitFuncFromRootContextData.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
 
   for (let i = 0; i < products.length; i++) {
-    click(canvas.getByTestId(`product_${i}`));
+    await click(canvas.getByTestId(`product_${i}`));
     expect(
       (canvas.getByTestId("product_name") as HTMLHeadingElement).textContent
     ).toEqual(products[i].name);
@@ -1051,7 +1063,7 @@ InitFuncFromRootContextData.play = async ({ canvasElement }) => {
   );
 
   for (let i = 0; i < products.length; i++) {
-    click(canvas.getByTestId(`product_${i}`));
+    await click(canvas.getByTestId(`product_${i}`));
     expect(
       (canvas.getByTestId("product_price") as HTMLHeadingElement).textContent
     ).toEqual(`Price: ${products[i].price * 10}`);
@@ -1059,15 +1071,11 @@ InitFuncFromRootContextData.play = async ({ canvasElement }) => {
 };
 
 const _RepeatedImplicitState: Story<{}> = (args) => {
-  const [usedValuesCount, setUsedValuesCount] = React.useState(0);
-  const [removeIndex, setRemoveIndex] = React.useState(0);
-
   const $state = useDollarState(
     [
       {
         path: "counter[].count",
         type: "private",
-        initVal: 0,
       },
       {
         path: "removeIndex",
@@ -1093,8 +1101,8 @@ const _RepeatedImplicitState: Story<{}> = (args) => {
       </ul>
       <button
         onClick={() => {
-          $state.counter.push({ count: usedValuesCount });
-          setUsedValuesCount((c) => c + 1);
+          $state.counter.push({ count: $state.usedValuesCount });
+          $state.usedValuesCount++;
         }}
         data-testid={"push-btn"}
       >
@@ -1102,8 +1110,11 @@ const _RepeatedImplicitState: Story<{}> = (args) => {
       </button>
       <button
         onClick={() => {
-          $state.counter = [...$state.counter, { count: usedValuesCount }];
-          setUsedValuesCount((c) => c + 1);
+          $state.counter = [
+            ...$state.counter,
+            { count: $state.usedValuesCount },
+          ];
+          $state.usedValuesCount++;
         }}
         data-testid={"spread-btn"}
       >
@@ -1111,12 +1122,12 @@ const _RepeatedImplicitState: Story<{}> = (args) => {
       </button>
       <input
         type="text"
-        value={removeIndex}
-        onChange={(e) => setRemoveIndex(+e.target.value)}
+        value={$state.removeIndex}
+        onChange={(e) => ($state.removeIndex = +e.target.value)}
         data-testid={"remove-input"}
       />
       <button
-        onClick={() => $state.counter.splice(removeIndex, 1)}
+        onClick={() => $state.counter.splice($state.removeIndex, 1)}
         data-testid={"remove-btn"}
       >
         Remove
@@ -1994,6 +2005,86 @@ StateCellIsMatrix.play = async ({ canvasElement }) => {
   await testBoard();
   await selectCell(1, 1);
   await testBoard();
+};
+
+const _IsOnChangePropImmediatelyFired: Story<{}> = (props) => {
+  const Counter = React.useCallback(
+    (props: {
+      onCountChange: (val: number) => void;
+      onIsOddChange: (val: boolean) => void;
+    }) => {
+      const $state = useDollarState(
+        [
+          {
+            path: "count",
+            type: "readonly",
+            onChangeProp: "onCountChange",
+            initVal: 5,
+          },
+          {
+            path: "isOdd",
+            type: "readonly",
+            onChangeProp: "onIsOddChange",
+            initFunc: (props, $state) => !!($state.count % 2),
+          },
+        ],
+        props
+      );
+      return (
+        <div>
+          <button
+            onClick={() => ($state.count = $state.count + 1)}
+            data-testid={"counter-btn"}
+          >
+            Counter Increment
+          </button>
+        </div>
+      );
+    },
+    []
+  );
+  const $state = useDollarState(
+    [
+      {
+        path: "counter.count",
+        type: "private",
+      },
+      {
+        path: "counter.isOdd",
+        type: "private",
+      },
+    ],
+    props
+  );
+  return (
+    <div>
+      <Counter
+        onCountChange={(val) => ($state.counter.count = val)}
+        onIsOddChange={(val) => ($state.counter.isOdd = val)}
+      />
+      <br />
+      <span data-testid="counter-span">{$state.counter.count}</span>
+      <br />
+      <span data-testid="isOdd-span">
+        {$state.counter.isOdd ? "true" : "false"}
+      </span>
+    </div>
+  );
+};
+
+export const IsOnChangePropImmediatelyFired = _IsOnChangePropImmediatelyFired.bind(
+  {}
+);
+IsOnChangePropImmediatelyFired.args = {};
+IsOnChangePropImmediatelyFired.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  await expect(
+    (canvas.getByTestId(`counter-span`) as HTMLSpanElement).textContent
+  ).toEqual(`5`);
+  await expect(
+    (canvas.getByTestId(`isOdd-span`) as HTMLSpanElement).textContent
+  ).toEqual(`true`);
 };
 
 const _ImmutableStateCells: Story<{ people: Person[] }> = (props) => {

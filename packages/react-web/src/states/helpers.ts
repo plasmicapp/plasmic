@@ -1,6 +1,6 @@
 import get from "dlv";
 import { useEffect, useLayoutEffect } from "react";
-import { $State } from ".";
+import { $State } from "./types";
 
 export function generateStateOnChangeProp(
   $state: $State,
@@ -23,37 +23,6 @@ export function generateStateValueProp(
   return get($state, path);
 }
 
-/**
- * Forked from https://github.com/lukeed/dset
- * Changes: fixed setting a deep value to a proxy object
- */
-export function set(obj: any, keys: any, val: any) {
-  keys = keys.split ? keys.split(".") : keys;
-  var i = 0,
-    l = keys.length,
-    t = obj,
-    x,
-    k;
-  while (i < l) {
-    k = keys[i++];
-    if (k === "__proto__" || k === "constructor" || k === "prototype") break;
-    if (i === l) {
-      t[k] = val;
-      t = t[k];
-    } else {
-      if (typeof (x = t[k]) === typeof keys) {
-        t = t[k] = x;
-      } else if (keys[i] * 0 !== 0 || !!~("" + keys[i]).indexOf(".")) {
-        t[k] = {};
-        t = t[k];
-      } else {
-        t[k] = [];
-        t = t[k];
-      }
-    }
-  }
-}
-
 export const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
@@ -73,4 +42,75 @@ export function isNum(value: string | number | symbol): value is number {
   return typeof value === "symbol" ? false : !isNaN(+value);
 }
 
-export { get };
+type StringGen = string | (() => string);
+export function assert<T>(
+  cond: T,
+  msg: StringGen = "Assertion failed"
+): asserts cond {
+  if (!cond) {
+    // We always generate an non empty message so that it doesn't get swallowed
+    // by the async library.
+    msg = (typeof msg === "string" ? msg : msg()) || "Assertion failed";
+    debugger;
+    throw new Error(msg);
+  }
+}
+
+/**
+ * Forked from https://github.com/lukeed/dset
+ * Changes: fixed setting a deep value to a proxy object
+ */
+export function set(obj: any, keys: any, val: any) {
+  keys = keys.split ? keys.split(".") : keys;
+  var i = 0,
+    l = keys.length,
+    t = obj,
+    x,
+    k;
+  while (i < l) {
+    k = keys[i++];
+    if (k === "__proto__" || k === "constructor" || k === "prototype") break;
+    const newValue =
+      i === l
+        ? val
+        : typeof (x = t[k]) === typeof keys
+        ? x
+        : keys[i] * 0 !== 0 || !!~("" + keys[i]).indexOf(".")
+        ? {}
+        : [];
+    assignValue(t, k, newValue);
+    t = t[k];
+  }
+}
+
+/**
+ * Forked from lodash
+ */
+function baseAssignValue(object: any, key: any, value: any) {
+  if (key == "__proto__") {
+    Object.defineProperty(object, key, {
+      configurable: true,
+      enumerable: true,
+      value: value,
+      writable: true,
+    });
+  } else {
+    object[key] = value;
+  }
+}
+
+function eq(value: any, other: any) {
+  return value === other || (value !== value && other !== other);
+}
+
+function assignValue(object: any, key: any, value: any) {
+  const objValue = object[key];
+  if (
+    !(
+      Object.prototype.hasOwnProperty.call(object, key) && eq(objValue, value)
+    ) ||
+    (value === undefined && !(key in object))
+  ) {
+    baseAssignValue(object, key, value);
+  }
+}

@@ -3,457 +3,372 @@ import get from "dlv";
 import deepEqual from "fast-deep-equal";
 import React from "react";
 import { proxy as createValtioProxy, ref, useSnapshot } from "valtio";
-import { subscribeKey } from "valtio/utils";
 import {
-  $StateSpec,
-  ARRAY_SYMBOL,
-  InitFunc,
-  Internal$StateInstance,
-  Internal$StateSpec,
-  ObjectPath,
-} from ".";
-import { buildGraph, StateSpecNode, transformPathStringToObj } from "./graph";
-import { set, useIsomorphicLayoutEffect } from "./helpers";
-
-const mkUntrackedValue = (o: any) =>
-  o != null && typeof o === "object" ? ref(o) : o;
-
-interface Internal$State {
-  stateValues: Record<string, any>;
-  initStateValues: Record<string, any>;
-  unsubscriptionsByState: Record<string, (() => void)[]>;
-  specsByKey: Record<string, Internal$StateSpec<any>>;
-  statesInstanceBySpec: Map<string, Internal$StateInstance[]>;
-  existingStates: Map<string, Internal$StateInstance>;
-  registrationsQueue: { pathStr: string; f: InitFunc<any> }[];
-  props: Record<string, any>;
-  ctx: Record<string, any>;
-  rootStateSpec: StateSpecNode<any>;
-}
-
-function shallowEqual<T>(a1: T[], a2: T[]) {
-  if (a1.length !== a2.length) {
-    return false;
-  }
-  for (let i = 0; i < a1.length; i++) {
-    if (a1[i] !== a2[i]) {
-      return false;
-    }
-  }
-  return true;
-}
+  buildTree,
+  findStateCell,
+  getLeaves,
+  StateCell,
+  StateSpecNode,
+} from "./graph";
+import { assert, set, useIsomorphicLayoutEffect } from "./helpers";
+import { $State, $StateSpec, InitFunc, ObjectPath } from "./types";
 
 function isNum(value: string | number | symbol): value is number {
   return typeof value === "symbol" ? false : !isNaN(+value);
 }
 
-function saveNewState<T>(
-  $$state: Internal$State,
-  path: ObjectPath,
-  spec: Internal$StateSpec<T>
-) {
-  const key = JSON.stringify(path);
-  $$state.existingStates.set(key, { path, specKey: spec.path });
-  if (!$$state.statesInstanceBySpec.has(spec.path)) {
-    $$state.statesInstanceBySpec.set(spec.path, []);
-  }
-  $$state.statesInstanceBySpec
-    .get(spec.path)!
-    .push({ path, specKey: spec.path });
+function canProxy(value: any) {
+  return typeof value === "object" && value != null;
 }
 
-function create$StateProxy(
-  $$state: Internal$State,
-  handlers: (
-    path: ObjectPath,
-    spec: Internal$StateSpec<any>
-  ) => ProxyHandler<any>
-) {
-  const rec = (currPath: ObjectPath, currNode: StateSpecNode<any>) => {
-    const getNextPath = (property: string | number | symbol) => [
-      ...currPath,
-      isNum(property) ? +property : (property as string),
-    ];
-    return new Proxy(
-      currNode.hasArrayTransition() ? ([] as any) : ({} as any),
-      {
-        deleteProperty(target, property) {
-          const prefixPath = getNextPath(property);
-          const specKeysToUpdate = new Set<string>();
-          $$state.existingStates.forEach(({ path, specKey }) => {
-            if (
-              path.length >= prefixPath.length &&
-              shallowEqual(path.slice(0, prefixPath.length), prefixPath)
-            ) {
-              deleteState($$state, path);
-              specKeysToUpdate.add(specKey);
-            }
-          });
-          specKeysToUpdate.forEach((specKey) => {
-            const spec = $$state.specsByKey[specKey];
-            if (spec.onChangeProp) {
-              $$state.props[spec.onChangeProp]?.(
-                get($$state.stateValues, currPath),
-                currPath
-              );
-            }
-          });
-          return Reflect.deleteProperty(target, property);
-        },
-        get(target, property, receiver) {
-          const nextPath = getNextPath(property);
-          const nextNode = currNode.makeTransition(property);
-          if (nextNode) {
-            if (nextNode.isLeaf()) {
-              target[property] = handlers(nextPath, nextNode.getSpec()).get?.(
-                target,
-                property,
-                receiver
-              );
-            } else if (!(property in target)) {
-              target[property] = rec(nextPath, nextNode);
-            }
-          }
-          return Reflect.get(target, property, receiver);
-        },
-        set(target, property, value, receiver) {
-          const nextPath = getNextPath(property);
-          const nextNode = currNode.makeTransition(property);
-          if (nextNode && typeof property !== "symbol") {
-            if (nextNode.isLeaf()) {
-              // reached the end of the spec
-              target[property] = handlers(nextPath, nextNode.getSpec()).set?.(
-                target,
-                property,
-                value,
-                receiver
-              );
-              return Reflect.set(target, property, value, receiver);
-            } else if (typeof value === "object") {
-              target[property] = rec(nextPath, nextNode);
-              for (const key of Object.keys(value)) {
-                target[property][key] = value[key];
-              }
-              return true;
-            }
-          }
-          if (property === "registerInitFunc" && currPath.length === 0) {
-            return Reflect.set(target, property, value, receiver);
-          }
-          if (currNode.hasArrayTransition()) {
-            set($$state.stateValues, nextPath, value);
-            currNode
-              .makeTransition(ARRAY_SYMBOL)
-              ?.getAllSpecs()
-              ?.forEach((spec) => {
-                if (spec.onChangeProp) {
-                  $$state.props[spec.onChangeProp]?.(value, nextPath);
-                }
-              });
-            return Reflect.set(target, property, value, receiver);
-          }
-          // invalid setting a value that doesn't make part of the spec
-          return false;
-        },
-      }
-    );
-  };
-
-  return rec([], $$state.rootStateSpec);
+interface Internal$State {
+  registrationsQueue: {
+    node: StateSpecNode<any>;
+    path: ObjectPath;
+    f: InitFunc<any>;
+  }[];
+  stateValues: Record<string, any>;
+  props: Record<string, any>;
+  ctx: Record<string, any>;
+  rootSpecTree: StateSpecNode<any>;
+  specTreeLeaves: StateSpecNode<any>[];
 }
-
-const deleteState = ($$state: Internal$State, path: ObjectPath) => {
-  const key = JSON.stringify(path);
-  $$state.unsubscriptionsByState[key]?.forEach((f: any) => f());
-  delete $$state.unsubscriptionsByState[key];
-  $$state.existingStates.delete(key);
-
-  // delete get($$state.stateValues, path.slice(-1))[path.slice(-1)[0]];
-  // delete get($$state.initStateValues, path.slice(-1))[path.slice(-1)[0]];
-};
-
-const getIndexes = (path: ObjectPath, spec: Internal$StateSpec<any>) => {
-  const indexes = [];
-  if (path.length !== spec.pathObj.length) {
-    throw new Error(
-      "Unexpected error: state path and spec path have different lengths"
-    );
-  }
-  for (let i = 0; i < spec.pathObj.length; i++) {
-    if (spec.pathObj[i] === "[]") {
-      indexes.push(path[i] as number);
-    }
-  }
-  return indexes;
-};
 
 function initializeStateValue(
   $$state: Internal$State,
+  initialSpecNode: StateSpecNode<any>,
   initialStatePath: ObjectPath,
-  initialSpec: Internal$StateSpec<any>
+  proxyRoot: any
 ) {
-  const initialStateKey = JSON.stringify(initialStatePath);
   const stateAccess: Set<{
+    node: StateSpecNode<any>;
     path: ObjectPath;
-    spec: Internal$StateSpec<any>;
   }> = new Set();
-  const $state = create$StateProxy($$state, (path, spec) => ({
+  const $state = create$StateProxy($$state, (node, path) => ({
     get() {
-      const key = JSON.stringify(path);
-      stateAccess.add({ path, spec });
+      stateAccess.add({ path, node });
+      const spec = node.getSpec();
       if (spec.valueProp) {
-        return !spec.isRepeated
-          ? $$state.props[spec.valueProp]
-          : get($$state.props[spec.valueProp], path.slice(1));
+        return $$state.props[spec.valueProp];
+      } else if (!node.hasState(path) && spec.initFunc) {
+        return initializeStateValue($$state, node, path, proxyRoot);
       }
-      if ($$state.existingStates.has(key)) {
-        // is already initialized
-        return get($$state.stateValues, path);
-      } else if (spec.initFunc) {
-        initializeStateValue($$state, path, spec);
-      }
-      return get($$state.stateValues, path);
+      return get(proxyRoot, path);
     },
     set() {
       throw new Error(`Cannot update state values during initialization`);
     },
   }));
 
-  $$state.unsubscriptionsByState[initialStateKey]?.forEach((f: any) => f());
-  $$state.unsubscriptionsByState[initialStateKey] = [];
-  stateAccess.forEach(({ path, spec }) => {
-    const unsubscribe = subscribeKey(
-      get($$state.stateValues, path.slice(-1)),
-      path.slice(-1)[0],
-      () =>
-        saveValue(
-          $$state,
-          initialStatePath,
-          initialSpec,
-          initialSpec.initFunc!(
-            $$state.props,
-            $state,
-            $$state.ctx,
-            getIndexes(path, spec)
-          )
-        )
-    );
-    $$state.unsubscriptionsByState[initialStateKey].push(unsubscribe);
+  stateAccess.forEach(({ node, path }) => {
+    node.addListener(path, () => {
+      const newValue = initialSpecNode.getSpec().initFunc!(
+        $$state.props,
+        $state,
+        $$state.ctx
+      );
+      set(proxyRoot, initialStatePath, newValue);
+    });
   });
 
-  const initialValue = initialSpec.initFunc!(
-    $$state.props,
-    $state,
-    $$state.ctx,
-    getIndexes(initialStatePath, initialSpec)
-  );
-  saveStateInitialValue($$state, initialStatePath, initialSpec, initialValue);
+  const initialValue = initialSpecNode.getState(initialStatePath)
+    .registeredInitFunc!($$state.props, $state, $$state.ctx);
+  initialSpecNode.setInitialValue(initialStatePath, clone(initialValue));
+
+  const initialSpec = initialSpecNode.getSpec();
+  const value = initialSpec.isImmutable
+    ? mkUntrackedValue(initialValue)
+    : clone(initialValue);
+  set(proxyRoot, initialStatePath, value);
+  //immediately fire onChange
+  if (initialSpec.onChangeProp) {
+    $$state.props[initialSpec.onChangeProp]?.(initialValue);
+  }
+
   return initialValue;
 }
 
-function saveValue(
+function create$StateProxy(
   $$state: Internal$State,
-  path: ObjectPath,
-  spec: Internal$StateSpec<any>,
-  value: any
+  leafHandlers: (
+    node: StateSpecNode<any>,
+    path: ObjectPath,
+    proxyRoot: any
+  ) => ProxyHandler<any>
 ) {
-  if (spec.isImmutable) {
-    set($$state.stateValues, path, mkUntrackedValue(value));
-  } else {
-    set($$state.stateValues, path, value);
-  }
+  const rec = (
+    currPath: ObjectPath,
+    currNode: StateSpecNode<any>,
+    isOutside: boolean,
+    proxyRoot: any,
+    initialObject?: any
+  ) => {
+    const getNextPath = (property: string | number | symbol) => [
+      ...currPath,
+      isNum(property) ? +property : (property as string),
+    ];
+    const spec = currNode.getSpec();
+    const handlers: ProxyHandler<any> = {
+      deleteProperty(target, property) {
+        if (
+          !isOutside &&
+          !currNode.isLeaf() &&
+          !currNode.hasArrayTransition() &&
+          !isNum(property)
+        ) {
+          throw new Error(
+            "Can't delete a property in the middle of the state spec"
+          );
+        }
+        delete get($$state.stateValues, currPath)[property];
+        if (spec.onChangeProp) {
+          //we are always in a leaf, since we only have two cases:
+          // 1 - delete properties outside the state tree
+          // 2 - delete indices in repeated implicit states, but these can't be exposed, so they don't have onChangeProp
+          $$state.props[spec.onChangeProp]?.(
+            get($$state.stateValues, currPath.slice(spec.pathObj.length))
+          );
+        }
+        return Reflect.deleteProperty(target, property);
+      },
+      get(target, property, receiver) {
+        proxyRoot = proxyRoot == null ? receiver : proxyRoot;
+        const nextPath = getNextPath(property);
+
+        if (isOutside || currNode.isLeaf()) {
+          return Reflect.get(target, property, receiver);
+        }
+        const nextNode = currNode.makeTransition(property);
+        if (nextNode?.isLeaf()) {
+          return leafHandlers(nextNode, nextPath, proxyRoot).get?.(
+            target,
+            property,
+            receiver
+          );
+        } else if (nextNode && !(property in target)) {
+          target[property] = rec(
+            nextPath,
+            nextNode,
+            false,
+            proxyRoot,
+            undefined
+          );
+        }
+        return Reflect.get(target, property, receiver);
+      },
+      set(target, property, value, receiver) {
+        proxyRoot = proxyRoot == null ? receiver : proxyRoot;
+        const nextPath = getNextPath(property);
+        let nextNode = currNode.makeTransition(property);
+
+        if (property === "registerInitFunc" && currPath.length === 0) {
+          return Reflect.set(target, property, value, receiver);
+        }
+        if (!nextNode && currNode.hasArrayTransition()) {
+          set($$state.stateValues, nextPath, value);
+          //array can set his own properties such as length, map, ...
+          return Reflect.set(target, property, value, receiver);
+        }
+        if (nextNode?.isLeaf()) {
+          leafHandlers(nextNode, nextPath, proxyRoot).set?.(
+            target,
+            property,
+            value,
+            receiver
+          );
+        }
+        if (!isOutside && !currNode.isLeaf() && !nextNode) {
+          // can't set an unknown field in $state
+          return false;
+        }
+        // we keep pointing to the leaf
+        if (!nextNode) {
+          assert(isOutside || currNode.isLeaf, "unexpected update in nextNode");
+          nextNode = currNode;
+        }
+        if (canProxy(value)) {
+          target[property] = rec(
+            nextPath,
+            nextNode,
+            isOutside || currNode.isLeaf(),
+            proxyRoot,
+            value
+          );
+        } else if (!isOutside && !currNode.isLeaf() && !nextNode?.isLeaf()) {
+          throw new Error("inserting a primitive value into a non-leaf");
+        } else {
+          Reflect.set(target, property, value, receiver);
+        }
+        nextNode.getAllSpecs().forEach((spec) => {
+          if (spec.onChangeProp) {
+            $$state.props[spec.onChangeProp]?.(value);
+          }
+        });
+        const newValue =
+          (isOutside || currNode.isLeaf()) && currNode.getSpec().isImmutable
+            ? mkUntrackedValue(value)
+            : value;
+        set($$state.stateValues, nextPath, newValue);
+        return true;
+      },
+    };
+    const baseObject =
+      !isOutside && !currNode.isLeaf()
+        ? currNode.hasArrayTransition()
+          ? []
+          : {}
+        : Array.isArray(initialObject)
+        ? []
+        : Object.create(Object.getPrototypeOf(initialObject));
+    const proxyObj = new Proxy(baseObject, handlers);
+    if (initialObject) {
+      Reflect.ownKeys(initialObject).forEach((key) => {
+        const desc = Object.getOwnPropertyDescriptor(
+          initialObject,
+          key
+        ) as PropertyDescriptor;
+        if (desc.get || desc.set) {
+          Object.defineProperty(baseObject, key, desc);
+        } else {
+          proxyObj[key] = initialObject[key];
+        }
+      });
+    }
+    return proxyObj;
+  };
+
+  return rec([], $$state.rootSpecTree, false, undefined, undefined);
 }
 
-function saveStateInitialValue(
-  $$state: Internal$State,
-  path: ObjectPath,
-  spec: Internal$StateSpec<any>,
-  initialValue: any
-) {
-  if (spec.isImmutable) {
-    const untrackedValue = mkUntrackedValue(initialValue);
-    set($$state.stateValues, path, untrackedValue);
-    set($$state.initStateValues, path, clone(untrackedValue));
-  } else {
-    set($$state.stateValues, path, clone(initialValue));
-    set($$state.initStateValues, path, clone(initialValue));
-  }
-}
+const mkUntrackedValue = (o: any) =>
+  o != null && typeof o === "object" ? ref(o) : o;
 
 export function useDollarState(
   specs: $StateSpec<any>[],
   props: Record<string, any>,
   $ctx?: Record<string, any>
-) {
-  const $$state = React.useRef(
-    createValtioProxy<Internal$State>({
-      stateValues: {},
-      initStateValues: {},
-      specsByKey: Object.fromEntries(
-        specs.map((spec) => [
-          spec.path,
-          {
-            ...spec,
-            pathObj: transformPathStringToObj(spec.path),
-            isRepeated: spec.path
-              .split(".")
-              .some((part) => part.endsWith("[]")),
-          },
-        ])
-      ),
-      statesInstanceBySpec: new Map<string, Internal$StateInstance[]>(),
-      existingStates: new Map<string, Internal$StateInstance>(),
-      unsubscriptionsByState: {},
-      props: {},
-      ctx: {},
-      registrationsQueue: [],
-      rootStateSpec: buildGraph(specs),
-    })
+): $State {
+  const $$state = React.useRef<Internal$State>(
+    (() => {
+      const rootSpecTree = buildTree(specs);
+      return {
+        rootSpecTree: rootSpecTree,
+        specTreeLeaves: getLeaves(rootSpecTree),
+        stateValues: createValtioProxy({}),
+        props: {},
+        ctx: {},
+        registrationsQueue: [],
+      };
+    })()
   ).current;
-  $$state.props = mkUntrackedValue(props);
-  $$state.ctx = mkUntrackedValue($ctx ?? {});
-
+  $$state.props = props;
+  $$state.ctx = $ctx ?? {};
   const $state = React.useRef(
-    Object.assign(
-      create$StateProxy($$state, (path, spec) => {
-        const key = JSON.stringify(path);
-        if (!$$state.existingStates.has(key)) {
-          saveNewState($$state, path, spec);
-          const initialValue = !spec.initFunc
-            ? spec.initVal ?? undefined
-            : initializeStateValue($$state, path, spec);
-          saveStateInitialValue($$state, path, spec, initialValue);
-        }
-        return {
-          get() {
-            if (spec.valueProp) {
-              const value = !spec.isRepeated
-                ? $$state.props[spec.valueProp]
-                : get($$state.props[spec.valueProp], path.slice(1));
-              return value;
-            } else {
-              return get($$state.stateValues, path);
+    (() => {
+      const useRef$state = Object.assign(
+        create$StateProxy($$state, (node, path, proxyRoot) => {
+          if (!node.hasState(path)) {
+            node.createStateCell(path);
+            const spec = node.getSpec();
+            if (spec.initFunc) {
+              initializeStateValue($$state, node, path, proxyRoot);
+            } else if (!spec.valueProp) {
+              set(proxyRoot, path, spec.initVal);
             }
-          },
-          set(_t, _p, value) {
-            saveValue($$state, path, spec, value);
-            if (spec.onChangeProp) {
-              $$state.props[spec.onChangeProp]?.(value, path);
-            }
-            return true;
-          },
-        };
-      }),
-      {
-        registerInitFunc: function <T>(pathStr: string, f: InitFunc<T>) {
-          if (
-            $$state.statesInstanceBySpec
-              .get(pathStr)
-              ?.some(
-                ({ path, specKey }) =>
-                  !deepEqual(
-                    get($$state.initStateValues, path),
-                    f(
-                      props,
-                      $state,
-                      $ctx ?? {},
-                      getIndexes(path, $$state.specsByKey[specKey])
-                    )
-                  )
-              )
-          ) {
-            $$state.registrationsQueue.push({ pathStr, f });
           }
-        },
-      }
-    )
+          return {
+            get(target, property, receiver) {
+              const spec = node.getSpec();
+              if (spec.valueProp) {
+                return $$state.props[spec.valueProp];
+              } else {
+                return Reflect.get(target, property, receiver);
+              }
+            },
+          };
+        }),
+        {
+          registerInitFunc: function <T>(
+            pathStr: string,
+            f: InitFunc<T>,
+            repetitionIndex?: number[]
+          ) {
+            const { node, realPath } = findStateCell(
+              $$state.rootSpecTree,
+              pathStr,
+              repetitionIndex
+            );
+            if (!node.hasState(realPath)) {
+              node.createStateCell(realPath);
+            }
+            if (
+              !deepEqual(
+                node.getState(realPath).initialValue,
+                f($$state.props, useRef$state, $$state.ctx)
+              )
+            ) {
+              $$state.registrationsQueue.push({ node, path: realPath, f });
+            }
+          },
+        }
+      );
+      return useRef$state;
+    })()
   ).current;
 
   // For each spec with an initFunc, evaluate it and see if
   // the init value has changed. If so, reset its state.
-  const resetSpecs: { path: ObjectPath; spec: Internal$StateSpec<any> }[] = [];
-  $$state.existingStates.forEach(({ path, specKey }) => {
-    const spec = $$state.specsByKey[specKey];
-    if (spec.initFunc) {
-      const newInit = spec.initFunc(
-        props,
-        $state,
-        $ctx ?? {},
-        getIndexes(path, spec)
-      );
-      if (!deepEqual(newInit, get($$state.initStateValues, path))) {
-        resetSpecs.push({ path, spec });
+  const resetSpecs: {
+    stateCell: StateCell<any>;
+    node: StateSpecNode<any>;
+  }[] = [];
+  $$state.specTreeLeaves
+    .flatMap((node) => node.states().map((stateCell) => ({ stateCell, node })))
+    .forEach(({ stateCell, node }) => {
+      if (stateCell.registeredInitFunc) {
+        const newInit = stateCell.registeredInitFunc(props, $state, $ctx ?? {});
+        if (!deepEqual(newInit, stateCell.initialValue)) {
+          resetSpecs.push({ stateCell, node });
+        }
       }
+    });
+  const reInitializeState = (
+    node: StateSpecNode<any>,
+    stateCell: StateCell<any>
+  ) => {
+    const newInit = initializeStateValue($$state, node, stateCell.path, $state);
+    const spec = node.getSpec();
+    if (spec.onChangeProp) {
+      $$state.props[spec.onChangeProp]?.(newInit);
     }
-  });
+  };
   useIsomorphicLayoutEffect(() => {
-    resetSpecs.forEach(({ path, spec }) => {
-      const newInit = initializeStateValue($$state, path, spec);
-      if (spec.onChangeProp) {
-        $$state.props[spec.onChangeProp]?.(newInit, path);
-      }
+    resetSpecs.forEach(({ stateCell, node }) => {
+      reInitializeState(node, stateCell);
     });
   }, [props, resetSpecs]);
   useIsomorphicLayoutEffect(() => {
-    $$state.registrationsQueue.forEach(({ f, pathStr }) => {
-      $$state.specsByKey[pathStr].initFunc = f;
+    $$state.registrationsQueue.forEach(({ node, path, f }) => {
+      const stateCell = node.getState(path);
+      stateCell.registeredInitFunc = f;
+      reInitializeState(node, stateCell);
     });
     $$state.registrationsQueue = [];
   }, [$$state.registrationsQueue]);
+  // immediately initialize exposed non-private states
+  useIsomorphicLayoutEffect(() => {
+    $$state.specTreeLeaves.forEach((node) => {
+      const spec = node.getSpec();
+      if (!spec.isRepeated && spec.type !== "private" && spec.initFunc) {
+        node.createStateCell(spec.pathObj as string[]);
+        initializeStateValue($$state, node, spec.pathObj as string[], $state);
+      }
+    });
+  }, []);
 
   // Re-render if any value changed in one of these objects
   useSnapshot($$state.stateValues, { sync: true });
-  useSnapshot($$state.specsByKey, { sync: true });
-
   return $state;
 }
 
 export default useDollarState;
-
-// Simple version of $state useDollarState for read-only
-export function useCanvasDollarState(
-  specs: $StateSpec<any>[],
-  props: Record<string, any>,
-  $ctx?: Record<string, any>
-) {
-  const $$state = createValtioProxy<Internal$State>({
-    stateValues: {},
-    initStateValues: {},
-    specsByKey: Object.fromEntries(
-      specs.map((spec) => [
-        spec.path,
-        {
-          ...spec,
-          pathObj: transformPathStringToObj(spec.path),
-          isRepeated: spec.path.split(".").some((part) => part.endsWith("[]")),
-        },
-      ])
-    ),
-    statesInstanceBySpec: new Map<string, Internal$StateInstance[]>(),
-    existingStates: new Map<string, Internal$StateInstance>(),
-    unsubscriptionsByState: {},
-    props: {},
-    ctx: {},
-    registrationsQueue: [],
-    rootStateSpec: buildGraph(specs),
-  });
-  $$state.props = mkUntrackedValue(props);
-  $$state.ctx = mkUntrackedValue($ctx);
-  const $state = {};
-  for (const spec of specs) {
-    const path = transformPathStringToObj(spec.path);
-    const init = spec.valueProp
-      ? $$state.props[spec.valueProp]
-      : spec.initVal
-      ? spec.initVal
-      : spec.initFunc
-      ? initializeStateValue(
-          $$state,
-          path as any,
-          $$state.specsByKey[spec.path]
-        )
-      : undefined;
-    set($state, path, init);
-  }
-  return $state;
-}
