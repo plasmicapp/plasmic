@@ -85,7 +85,7 @@ export type FetchPagesOpts = {
 
 export class InternalPlasmicComponentLoader {
   private readonly reactServerLoader: ReactServerPlasmicComponentLoader;
-  private registry: Registry;
+  private readonly registry = new Registry();
   private subs: ComponentSubstitutionSpec[] = [];
   private roots: PlasmicRootWatcher[] = [];
   private globalVariants: GlobalVariantSpec[] = [];
@@ -95,7 +95,6 @@ export class InternalPlasmicComponentLoader {
   private substitutedGlobalVariantHooks: Record<string, () => any> = {};
 
   constructor(private opts: InitOptions) {
-    this.registry = Registry.getInstance();
     this.tracker = new PlasmicTracker({
       projectIds: opts.projects.map((p) => p.id),
       platform: opts.platform,

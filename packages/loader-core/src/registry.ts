@@ -6,21 +6,11 @@ const isBrowser =
   typeof window.document !== 'undefined';
 
 export class Registry {
-  // Singleton
-  private static instance: Registry | undefined = undefined;
-
   private loadedModules: Record<string, any> = {};
   private registeredModules: Record<string, any> = {};
   private modules: Record<string, string> = {};
-  private constructor() {}
 
-  public static getInstance() {
-    if (!Registry.instance) {
-      Registry.instance = new Registry();
-    }
-
-    return Registry.instance;
-  }
+  constructor() {}
 
   register(name: string, module: any) {
     this.registeredModules[name] = module;
