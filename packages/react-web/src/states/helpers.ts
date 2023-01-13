@@ -1,6 +1,6 @@
 import get from "dlv";
 import { useEffect, useLayoutEffect } from "react";
-import { $State } from "./types";
+import { $State, PLASMIC_STATE_PROXY_SYMBOL } from "./types";
 
 export function generateStateOnChangeProp(
   $state: $State,
@@ -25,6 +25,12 @@ export function generateStateValueProp(
 
 export const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
+export function isPlasmicStateProxy(obj: any) {
+  return (
+    obj != null && typeof obj === "object" && obj[PLASMIC_STATE_PROXY_SYMBOL]
+  );
+}
 
 export function shallowEqual<T>(a1: T[], a2: T[]) {
   if (a1.length !== a2.length) {

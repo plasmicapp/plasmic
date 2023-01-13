@@ -527,7 +527,7 @@ const _NestedRepeatedCounter: Story<{}> = () => {
           }}
         >
           {[0, 1, 2].map((index) => {
-            $state.registerInitFunc(
+            $state.registerInitFunc?.(
               "counter[].count",
               () => args.initCount[index],
               [index]
@@ -843,7 +843,7 @@ const _InitFuncFromInternalContextData: Story<{
         <>
           <ProductContext.Consumer>
             {($ctx) => {
-              $state.registerInitFunc("product", () => $ctx);
+              $state.registerInitFunc?.("product", () => $ctx);
               return (
                 <>
                   <p data-testid="product_price">Price: {$state.price}</p>
