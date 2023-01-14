@@ -11,7 +11,13 @@ import {
   StateSpecNode,
 } from "./graph";
 import { assert, set, useIsomorphicLayoutEffect } from "./helpers";
-import { $State, $StateSpec, InitFunc, ObjectPath } from "./types";
+import {
+  $State,
+  $StateSpec,
+  InitFunc,
+  ObjectPath,
+  PLASMIC_STATE_PROXY_SYMBOL,
+} from "./types";
 
 function isNum(value: string | number | symbol): value is number {
   return typeof value === "symbol" ? false : !isNaN(+value);
@@ -132,6 +138,10 @@ function create$StateProxy(
         return Reflect.deleteProperty(target, property);
       },
       get(target, property, receiver) {
+        if (property === PLASMIC_STATE_PROXY_SYMBOL) {
+          return true;
+        }
+
         proxyRoot = proxyRoot == null ? receiver : proxyRoot;
         const nextPath = getNextPath(property);
 
