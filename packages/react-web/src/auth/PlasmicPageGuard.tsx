@@ -1,15 +1,57 @@
-import { PlasmicDataSourceContextValue } from "@plasmicapp/data-sources-context";
+import { usePlasmicDataSourceContext } from "@plasmicapp/data-sources-context";
 import React from "react";
 
-export function PlasmicPageGuard(props: {
-  children: React.ReactNode;
-  dataSourceCtxValue: PlasmicDataSourceContextValue | undefined;
-  validRoles: string[];
-}) {
-  const { children, dataSourceCtxValue, validRoles } = props;
-  if (!dataSourceCtxValue || dataSourceCtxValue.isUserLoading) {
-    return null;
+async function triggerLogin(appId: string, authorizeEndpoint: string) {
+  async function sha256(text: string) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+    return hashHex;
   }
+
+  const continueTo = window.location.href;
+  const state = JSON.stringify({ continueTo });
+  const code_verifier = (crypto as any).randomUUID();
+  localStorage.setItem("code_verifier", code_verifier);
+  const code_challenge = await sha256(code_verifier);
+
+  const params = new URLSearchParams();
+  params.set("client_id", appId);
+  params.set("state", state);
+  params.set("response_type", "code");
+  params.set("code_challenge", code_challenge);
+  params.set("code_challenge_method", "S256");
+
+  const url = `${authorizeEndpoint}?${params.toString()}`;
+  window.location.href = url;
+}
+
+interface PlasmicPageGuardProps {
+  appId: string;
+  authorizeEndpoint: string;
+  children: React.ReactNode;
+  validRoles: string[];
+}
+
+export function PlasmicPageGuard(props: PlasmicPageGuardProps) {
+  const { appId, authorizeEndpoint, validRoles, children } = props;
+
+  const dataSourceCtxValue = usePlasmicDataSourceContext();
+
+  React.useEffect(() => {
+    if (
+      dataSourceCtxValue &&
+      "isUserLoading" in dataSourceCtxValue &&
+      !dataSourceCtxValue.isUserLoading &&
+      !dataSourceCtxValue.user
+    ) {
+      triggerLogin(appId, authorizeEndpoint);
+    }
+  }, [dataSourceCtxValue, appId, authorizeEndpoint]);
 
   function canUserViewPage() {
     if (!dataSourceCtxValue) {
@@ -22,6 +64,14 @@ export function PlasmicPageGuard(props: {
       return false;
     }
     return validRoles.includes(dataSourceCtxValue.user.roleId);
+  }
+
+  if (
+    !dataSourceCtxValue ||
+    dataSourceCtxValue.isUserLoading ||
+    !dataSourceCtxValue.user
+  ) {
+    return null;
   }
 
   if (!canUserViewPage()) {
