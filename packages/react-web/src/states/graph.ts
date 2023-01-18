@@ -17,89 +17,108 @@ export interface StateCell<T> {
 }
 
 export class StateSpecNode<T> {
-  private specs: Internal$StateSpec<T>[];
-  private edges: Map<string | symbol, StateSpecNode<any>>;
-  private state: Record<string, StateCell<T>>;
+  private _specs: Internal$StateSpec<T>[];
+  private _edges: Map<string | symbol, StateSpecNode<any>>;
+  private _state: Record<string, StateCell<T>>;
 
   constructor(specs: Internal$StateSpec<T>[]) {
-    this.specs = specs;
-    this.edges = new Map();
-    this.state = {};
+    this._specs = specs;
+    this._edges = new Map();
+    this._state = {};
+  }
+
+  setSpecs(specs: Internal$StateSpec<T>[]) {
+    this._specs = specs;
+  }
+
+  edges() {
+    return this._edges;
+  }
+
+  state() {
+    return this._state;
   }
 
   hasEdge(key: string | symbol) {
-    return this.edges.has(key);
+    return this._edges.has(key);
   }
 
   addEdge(key: string | symbol, node: StateSpecNode<any>) {
-    this.edges.set(key, node);
+    this._edges.set(key, node);
+  }
+
+  clearEdges() {
+    this._edges = new Map();
   }
 
   children() {
-    return this.edges.values();
+    return this._edges.values();
   }
 
   makeTransition(key: string | symbol | number) {
     key = isNum(key) ? ARRAY_SYMBOL : key;
-    return this.edges.get(key);
+    return this._edges.get(key);
   }
 
   isLeaf() {
-    return this.edges.size === 0;
+    return this._edges.size === 0;
   }
 
   hasArrayTransition() {
-    return this.edges.has(ARRAY_SYMBOL);
+    return this._edges.has(ARRAY_SYMBOL);
   }
 
   getSpec() {
-    return this.specs[0];
+    return this._specs[0];
   }
 
   getAllSpecs() {
-    return this.specs;
+    return this._specs;
   }
 
   getState(path: ObjectPath) {
-    return this.state[JSON.stringify(path)];
+    return this._state[JSON.stringify(path)];
+  }
+
+  getInitFunc(stateCell: StateCell<any>) {
+    return stateCell.registeredInitFunc ?? this.getSpec().initFunc;
   }
 
   clearStates() {
-    this.state = {};
+    this._state = {};
   }
 
   states() {
-    return Object.values(this.state);
+    return Object.values(this._state);
   }
 
   hasState(path: ObjectPath) {
     const key = JSON.stringify(path);
-    return key in this.state;
+    return key in this._state;
   }
 
   createStateCell(path: ObjectPath) {
     const key = JSON.stringify(path);
-    this.state[key] = {
+    this._state[key] = {
       listeners: [],
       initialValue: UNINITIALIZED,
-      registeredInitFunc: this.getSpec().initFunc,
       path,
     };
   }
 
   setInitialValue(path: ObjectPath, value: any) {
     const key = JSON.stringify(path);
-    this.state[key].initialValue = value;
+    this._state[key].initialValue = value;
   }
 
   getInitialValue(path: ObjectPath) {
     const key = JSON.stringify(path);
-    return this.state[key].initialValue;
+    return this._state[key].initialValue;
   }
 
   addListener(path: ObjectPath, f: () => void) {
     const key = JSON.stringify(path);
-    this.state[key].listeners.push(f);
+    this._state[key].listeners.push(f);
   }
 }
 
@@ -141,13 +160,51 @@ export function buildTree(specs: $StateSpec<any>[]) {
   return rec([]);
 }
 
-export function getLeaves(root: StateSpecNode<any>) {
+export function updateTree(root: StateSpecNode<any>, specs: $StateSpec<any>[]) {
+  const internalSpec = specs.map(
+    (spec) =>
+      ({
+        ...spec,
+        pathObj: transformPathStringToObj(spec.path),
+        isRepeated: spec.path.split(".").some((part) => part.endsWith("[]")),
+      } as Internal$StateSpec<any>)
+  );
+
+  const rec = (
+    oldNode: StateSpecNode<any> | undefined,
+    currentPath: (string | symbol)[]
+  ): StateSpecNode<any> => {
+    const nodeSpecs = internalSpec.filter((spec) =>
+      shallowEqual(currentPath, spec.pathObj.slice(0, currentPath.length))
+    )!;
+    const node = oldNode ?? new StateSpecNode(nodeSpecs);
+    node.setSpecs(nodeSpecs);
+    const oldEdges = oldNode?.edges();
+    node.clearEdges();
+    node.getAllSpecs().forEach((spec) => {
+      if (spec.pathObj.length > currentPath.length) {
+        const nextKey = spec.pathObj[currentPath.length];
+        if (!node.hasEdge(nextKey)) {
+          node.addEdge(
+            nextKey,
+            rec(oldEdges?.get(nextKey), [...currentPath, nextKey])
+          );
+        }
+      }
+    });
+    return node;
+  };
+
+  return rec(root, []);
+}
+
+export function getStateCells(root: StateSpecNode<any>) {
   const leaves: StateSpecNode<any>[] = [];
   const rec = (node: StateSpecNode<any>) => {
     for (const child of node.children()) {
       rec(child);
     }
-    if (node.isLeaf()) {
+    if (node.isLeaf() && node.getAllSpecs().length > 0) {
       leaves.push(node);
     }
   };
@@ -170,7 +227,6 @@ export function findStateCell(
         !repetitionIndex ||
         currRepIndex > repetitionIndex.length
       ) {
-        console.log(root);
         throw new Error(
           `transition not found: pathStr ${pathStr} part ${
             typeof part === "symbol" ? "[]" : part

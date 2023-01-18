@@ -2,7 +2,7 @@ import { expect } from "@storybook/jest";
 import { Story } from "@storybook/react";
 import { userEvent, within } from "@storybook/testing-library";
 import React from "react";
-import { set, useDollarState } from "../states";
+import { get, set, useDollarState } from "../states";
 import { $StateSpec } from "../states/types";
 
 const deepClone = function <T>(o: T): T {
@@ -220,7 +220,7 @@ DynamicInitCount.play = async ({ canvasElement }) => {
 function TextInput(props: {
   value: string | undefined;
   onChange: (val: string) => void;
-  "data-testid": string;
+  "data-testid"?: string;
 }) {
   const $state = useDollarState(
     [
@@ -237,7 +237,7 @@ function TextInput(props: {
     <input
       value={$state.value}
       onChange={(event) => ($state.value = event.target.value)}
-      data-testid={props["data-testid"]}
+      data-testid={props["data-testid"] ?? "text-input"}
     />
   );
 }
@@ -1068,6 +1068,98 @@ InitFuncFromRootContextData.play = async ({ canvasElement }) => {
       (canvas.getByTestId("product_price") as HTMLHeadingElement).textContent
     ).toEqual(`Price: ${products[i].price * 10}`);
   }
+};
+
+const _InitFuncFromInternalContextDataWithDelay: Story<{
+  products: { price: number; name: string }[];
+}> = (args) => {
+  const ProductContext = React.useMemo(
+    () =>
+      React.createContext<
+        | {
+            price: number;
+            name: string;
+          }
+        | undefined
+      >(undefined),
+    []
+  );
+  const ProductBox = React.useCallback((props: any) => {
+    const [data, setData] = React.useState<any>(undefined);
+    React.useEffect(() => {
+      setTimeout(() => {
+        setData(products[0]);
+      }, 3000);
+    }, []);
+    return (
+      <div>
+        <h1 data-testid="product-name">{data ? data.name : "Loading..."}</h1>
+        <ProductContext.Provider value={data}>
+          {props.children}
+        </ProductContext.Provider>
+      </div>
+    );
+  }, []);
+  const $state = useDollarState(
+    [
+      {
+        path: "counter.count",
+        type: "private",
+      },
+    ],
+    args
+  );
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <ProductBox>
+        <ProductContext.Consumer>
+          {($ctx) => {
+            $state.registerInitFunc?.("counter.count", () => $ctx?.price);
+            return (
+              <div>
+                {(() => {
+                  return (
+                    <Counter
+                      initCount={$state.counter.count}
+                      onChange={(val) => ($state.counter.count = val)}
+                      stateType={"writable"}
+                    />
+                  );
+                })()}
+              </div>
+            );
+          }}
+        </ProductContext.Consumer>
+      </ProductBox>
+      <button onClick={() => ($state.counter.count = 0)}>Zero</button>
+    </div>
+  );
+};
+export const InitFuncFromInternalContextDataWithDelay = _InitFuncFromInternalContextDataWithDelay.bind(
+  {}
+);
+InitFuncFromInternalContextDataWithDelay.args = { products };
+InitFuncFromInternalContextDataWithDelay.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+  expect(
+    (canvas.getByTestId("product-name") as HTMLHeadingElement).textContent
+  ).toEqual("Loading...");
+  expect(
+    (canvas.getByTestId("label-btn") as HTMLHeadingElement).textContent
+  ).toEqual("Counter: ");
+  await new Promise((r) => setTimeout(r, 5000));
+  expect(
+    (canvas.getByTestId("product-name") as HTMLHeadingElement).textContent
+  ).toEqual("Shirt 1");
+  expect(
+    (canvas.getByTestId("label-btn") as HTMLHeadingElement).textContent
+  ).toEqual("Counter: 10");
 };
 
 const _RepeatedImplicitState: Story<{}> = (args) => {
@@ -2028,7 +2120,9 @@ const _IsOnChangePropImmediatelyFired: Story<{}> = (props) => {
             initFunc: (props, $state) => !!($state.count % 2),
           },
         ],
-        props
+        props,
+        {},
+        { inCanvas: true }
       );
       return (
         <div>
@@ -2214,4 +2308,165 @@ ImmutableStateCells.play = async ({ canvasElement }) => {
   await expect(
     (canvas.getByTestId("people_1") as HTMLLinkElement).textContent
   ).toEqual(`${peopleList[1].firstName}abc ${peopleList[1].lastName}def`);
+};
+
+const _InCanvasDollarState: Story<{}> = (props) => {
+  type ActiveVariables = {
+    type: "single" | "repeated";
+    id: number;
+  };
+  const [activeVariables, setActiveVariables] = React.useState<
+    ActiveVariables[]
+  >([]);
+
+  const specs = activeVariables.map(
+    ({ type, id }) =>
+      ({
+        path:
+          type === "single" ? `textInput${id}.value` : `textInput${id}[].value`,
+        type: "private",
+        initFunc: type === "single" ? () => "0" : undefined,
+      } as const)
+  );
+  const $state = useDollarState(specs, props, {}, { inCanvas: true });
+  console.log("dale", specs, $state);
+  return (
+    <div>
+      {activeVariables.map(({ id, type }) => {
+        if (type === "single") {
+          return (
+            <div key={id}>
+              <h1>
+                {id} {type}
+              </h1>
+              <TextInput
+                value={get($state, `textInput${id}.value`)}
+                onChange={(val) => set($state, `textInput${id}.value`, val)}
+              />
+            </div>
+          );
+        } else {
+          return (
+            <div key={id}>
+              <h1>
+                {id} {type}
+              </h1>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: "10px",
+                }}
+              >
+                {[0, 1, 2].map((currItem, currIndex) => {
+                  $state.registerInitFunc?.(
+                    `textInput${id}[].value`,
+                    () => "hello",
+                    [currIndex]
+                  );
+                  console.log(
+                    "dale3",
+                    get($state, `textInput${id}.${currIndex}.value`)
+                  );
+                  return (
+                    <div key={currItem}>
+                      <h2>{currItem}</h2>
+                      <TextInput
+                        value={get($state, `textInput${id}.${currIndex}.value`)}
+                        onChange={(val) =>
+                          set($state, `textInput${id}.${currIndex}.value`, val)
+                        }
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        }
+      })}
+      <button
+        onClick={() => {
+          setActiveVariables((curr) => [
+            ...curr,
+            {
+              type: "single",
+              id: activeVariables.length + 1,
+            },
+          ]);
+        }}
+      >
+        Add variable
+      </button>
+      <div>
+        <select id={"repeatable-select"}>
+          {activeVariables.map(
+            ({ id, type }) =>
+              type === "single" && (
+                <option key={id} value={id}>
+                  {id}
+                </option>
+              )
+          )}
+        </select>
+        <button
+          onClick={() => {
+            setActiveVariables((curr) =>
+              curr.map((currItem) =>
+                currItem.id ===
+                +(document.getElementById(
+                  "repeatable-select"
+                ) as HTMLSelectElement).value
+                  ? {
+                      id: currItem.id,
+                      type: "repeated",
+                    }
+                  : currItem
+              )
+            );
+          }}
+        >
+          Make repeatable
+        </button>
+      </div>
+      <div>
+        <select id={"single-select"}>
+          {activeVariables.map(
+            ({ id, type }) =>
+              type === "repeated" && (
+                <option key={id} value={id}>
+                  {id}
+                </option>
+              )
+          )}
+        </select>
+        <button
+          onClick={() => {
+            setActiveVariables((curr) =>
+              curr.map((currItem) =>
+                currItem.id ===
+                +(document.getElementById("single-select") as HTMLSelectElement)
+                  .value
+                  ? {
+                      id: currItem.id,
+                      type: "single",
+                    }
+                  : currItem
+              )
+            );
+          }}
+        >
+          Make single
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export const InCanvasDollarState = _InCanvasDollarState.bind({});
+_InCanvasDollarState.args = {
+  people: deepClone(peopleList),
+};
+_InCanvasDollarState.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
 };
