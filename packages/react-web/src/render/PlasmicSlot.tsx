@@ -48,14 +48,20 @@ export function renderPlasmicSlot<
   );
 }
 
-function maybeAsString(node: React.ReactNode): string | undefined {
+function maybeAsString(
+  node: React.ReactNode
+): string | React.ReactElement | undefined {
   // Unwrap fragments
-  if (
-    React.isValidElement(node) &&
-    // Fragment and Trans don't render DOM elements
-    (node.type === React.Fragment || node.type === Trans)
-  ) {
-    return maybeAsString(node.props.children);
+  if (React.isValidElement(node)) {
+    // Fragment doesn't render DOM elements
+    if (node.type === React.Fragment) {
+      return maybeAsString(node.props.children);
+    } else if (node.type === Trans) {
+      // Trans also doesn't render DOM elements. But we don't want to just render
+      // its content string, because we want to keep the <Trans/> for the localization.
+      // So we render the same node, to be wrapped into __wab_slot-string-wrapper.
+      return node;
+    }
   }
 
   if (typeof node === "string") {
