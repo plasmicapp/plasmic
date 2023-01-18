@@ -55,6 +55,7 @@
     "@types/react-dom": "^17.0.11",
     "csstype": "^3.0.8",
     "rollup": "^2.47.0",
+    "rollup-plugin-banner2": "^1.2.2",
     "rollup-plugin-dts": "^3.0.1",
     "rollup-plugin-typescript2": "^0.30.0",
     "size-limit": "^4.11.0",
