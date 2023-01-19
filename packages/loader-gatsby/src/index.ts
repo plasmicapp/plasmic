@@ -16,6 +16,7 @@ export {
   PrimitiveType,
   PropType,
   repeatedElement,
+  TokenRegistration,
   useDataEnv,
   usePlasmicCanvasContext,
   usePlasmicComponent,

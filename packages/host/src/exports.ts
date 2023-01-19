@@ -26,6 +26,11 @@ export {
   PropType as GlobalContextPropType,
 } from "./registerGlobalContext";
 export {
+  default as registerToken,
+  TokenRegistration,
+  TokenType,
+} from "./registerToken";
+export {
   BasicTrait,
   ChoiceTrait,
   default as registerTrait,

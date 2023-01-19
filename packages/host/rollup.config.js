@@ -132,4 +132,42 @@ export default [
       }),
     ],
   },
+  {
+    input: {
+      index: "./src/registerToken.ts",
+    },
+    external: (id) => {
+      if (id.startsWith("regenerator-runtime")) {
+        return false;
+      }
+      return !id.startsWith(".") && !path.isAbsolute(id);
+    },
+    output: [
+      {
+        dir: "registerToken/dist",
+        entryFileNames: "index.esm.js",
+        format: "esm",
+        sourcemap: true,
+      },
+      {
+        dir: "registerToken/dist",
+        entryFileNames: "index.cjs.js",
+        format: "cjs",
+        sourcemap: true,
+        exports: "named",
+      },
+    ],
+    plugins: [
+      resolve(),
+      commonjs(),
+      json(),
+      typescript({
+        typescript: ts,
+        check: false,
+        tsconfigOverride: {
+          include: ["src/registerToken.ts"],
+        },
+      }),
+    ],
+  },
 ];
