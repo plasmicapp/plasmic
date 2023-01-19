@@ -1,4 +1,4 @@
-import fetch from 'isomorphic-unfetch';
+import fetch from '@plasmicapp/isomorphic-unfetch';
 
 export interface ComponentMeta {
   id: string;

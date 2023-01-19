@@ -1,3 +1,4 @@
+import fetch from '@plasmicapp/isomorphic-unfetch';
 import {
   getDistinctId,
   getEnvMeta,
