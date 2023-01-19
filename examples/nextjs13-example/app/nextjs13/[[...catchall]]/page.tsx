@@ -1,17 +1,25 @@
 import { PlasmicComponent } from "@plasmicapp/loader-nextjs";
-import { ClientPlasmicRootProvider } from "components/ClientPlasmicRootProvider";
 import { notFound } from "next/navigation";
 import { PLASMIC } from "plasmic-init";
+import { ClientPlasmicRootProvider } from "plasmic-init-client";
 
 export const revalidate = 60;
+
+interface Params {
+  /**
+   * Array of path segments (e.g. `["a", "b"]` for "/a/b", or `undefined` if path is empty (i.e. "/").
+   *
+   * Note we use `undefined` instead of an empty array `[]` because
+   * Next.js would convert the empty array to `undefined` (not sure why they do that).
+   */
+  catchall: string[] | undefined;
+}
 
 export default async function PlasmicLoaderPage({
   params,
   searchParams,
 }: {
-  params?: {
-    catchall: string[] | undefined;
-  };
+  params?: Params;
   searchParams?: Record<string, string | string[]>;
 }) {
   const staticProps = await fetchData(params?.catchall);
@@ -71,7 +79,7 @@ async function fetchData(catchall: string[] | undefined) {
   return { prefetchedData, prefetchedQueryData };
 }
 
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<Params[]> {
   const pageModules = await PLASMIC.fetchPages();
   return pageModules.map((mod) => {
     const catchall =
