@@ -1,6 +1,6 @@
 import { PlasmicCanvasHost } from "@plasmicapp/loader-nextjs";
-import { PLASMIC } from "../plasmic-init";
+import "plasmic-init-client";
 
 export default function PlasmicHost() {
-  return PLASMIC && <PlasmicCanvasHost />;
+  return <PlasmicCanvasHost />;
 }

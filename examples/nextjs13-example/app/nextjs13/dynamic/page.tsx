@@ -1,6 +1,6 @@
 import { PlasmicComponent } from "@plasmicapp/loader-nextjs";
-import { ClientPlasmicRootProvider } from "components/ClientPlasmicRootProvider";
-import { PLASMIC } from "../../../plasmic-init";
+import { PLASMIC } from "plasmic-init";
+import { ClientPlasmicRootProvider } from "plasmic-init-client";
 
 const ipUrl = "https://worldtimeapi.org/api/ip";
 const timezoneUrl = "https://worldtimeapi.org/api/timezone";
