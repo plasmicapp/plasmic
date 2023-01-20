@@ -5359,6 +5359,14 @@
     "@plasmicapp/query" "0.1.57"
     window-or-global "^1.0.1"
 
+"@plasmicapp/isomorphic-unfetch@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/isomorphic-unfetch/-/isomorphic-unfetch-1.0.1.tgz#e2dfdc8d23d9d1c82f5596986fe8c09013ec8eec"
+  integrity sha512-V1PBEQjypQ47zO0ggI7B46o0WL2I4y5nmv4rdCGVA9oVCAHHPt7kcOxDak9cj/ryQocLEU8YC6Uwqz+hYL5YAw==
+  dependencies:
+    node-fetch "^2.6.1"
+    unfetch "^4.2.0"
+
 "@plasmicapp/query@0.1.57":
   version "0.1.57"
   resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.57.tgz#98f4f81305adfaac12cb69fc791dcc15bedcab52"
@@ -7593,11 +7601,6 @@
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@types/is-function/-/is-function-1.0.1.tgz#2d024eace950c836d9e3335a66b97960ae41d022"
   integrity sha512-A79HEEiwXTFtfY+Bcbo58M2GRYzCr9itHWzbzHVFNEYCcoU/MMGwYYf721gBrnhpj1s6RGVVha/IgNFnR0Iw/Q==
-
-"@types/isomorphic-fetch@^0.0.35":
-  version "0.0.35"
-  resolved "https://registry.yarnpkg.com/@types/isomorphic-fetch/-/isomorphic-fetch-0.0.35.tgz#c1c0d402daac324582b6186b91f8905340ea3361"
-  integrity sha512-DaZNUvLDCAnCTjgwxgiL1eQdxIKEpNLOlTNtAgnZc50bG2copGhRrFN9/PxPBuJe+tZVLCbQ7ls0xveXVRPkvw==
 
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0", "@types/istanbul-lib-coverage@^2.0.1":
   version "2.0.3"

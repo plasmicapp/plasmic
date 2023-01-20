@@ -1,4 +1,4 @@
-import fetch from 'isomorphic-unfetch';
+import fetch from '@plasmicapp/isomorphic-unfetch';
 import { ManyRowsResult, Pagination, SingleRowResult } from './types';
 
 const DEFAULT_HOST = 'https://studio.plasmic.app';
