@@ -44,7 +44,10 @@ export const FetcherMeta: ComponentMeta<FetcherProps> = {
       type: 'string',
       displayName: 'Variable name',
     },
-    children: 'slot',
+    children: {
+      type: 'slot',
+      renderPropParams: ['$queries'],
+    },
     pageSize: {
       type: 'number',
       advanced: true,

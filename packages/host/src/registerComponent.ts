@@ -283,6 +283,13 @@ type SlotType<P> =
        * repeatedElement().
        */
       isRepeated?: boolean;
+
+      /**
+       * If slot is a render prop (accepts a function that takes in some
+       * arguments and returns some JSX), then specify the names of the
+       * arguments expected by the render prop function.
+       */
+      renderPropParams?: string[];
     } & Omit<
       DefaultValueOrExpr<P, PlasmicElement | PlasmicElement[]>,
       "defaultValueHint" | "defaultExpr" | "defaultExprHint"
