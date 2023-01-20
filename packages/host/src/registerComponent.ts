@@ -68,10 +68,7 @@ export type StringType<P> =
         }
       | {
           type: "color";
-          format: "rgb" | "hex";
-        }
-        | {
-          type: "cssColor";
+          noDeref: boolean;
         }
       | {
           type: "cardPicker";
