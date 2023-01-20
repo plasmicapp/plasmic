@@ -335,8 +335,14 @@ export function useDollarState(
     $$state.rootSpecTree = updateTree($$state.rootSpecTree, specs);
     const newLeaves = getStateCells($$state.rootSpecTree);
     if (!arrayEq(newLeaves, $$state.specTreeLeaves)) {
+      const old$State = $state;
       $state = ref.current = create$State();
       $$state.specTreeLeaves = newLeaves;
+      $$state.specTreeLeaves
+        .flatMap((node) => node.states())
+        .forEach(({ path }) => {
+          set($state, path, get(old$State, path));
+        });
     }
     // we need to eager initialize all states in canvas to populate the data picker
     $$state.specTreeLeaves.forEach((node) => {
@@ -361,7 +367,9 @@ export function useDollarState(
     node: StateSpecNode<any>;
   }[] = [];
   $$state.specTreeLeaves
-    .flatMap((node) => node.states().map((stateCell) => ({ stateCell, node })))
+    .flatMap((node) =>
+      node.states().map(({ stateCell }) => ({ stateCell, node }))
+    )
     .forEach(({ node, stateCell }) => {
       const initFunc = node.getInitFunc(stateCell);
       if (initFunc) {
