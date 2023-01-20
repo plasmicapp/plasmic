@@ -89,7 +89,10 @@ export class StateSpecNode<T> {
   }
 
   states() {
-    return Object.values(this._state);
+    return Object.entries(this._state).map(([key, stateCell]) => ({
+      path: JSON.parse(key),
+      stateCell,
+    }));
   }
 
   hasState(path: ObjectPath) {
