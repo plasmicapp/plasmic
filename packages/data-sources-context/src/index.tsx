@@ -4,10 +4,12 @@ export interface PlasmicDataSourceContextValue {
   userAuthToken?: string;
   isUserLoading?: boolean;
   user?: {
-    id: string;
     email: string;
-    roleId: string;
     properties: Record<string, unknown> | null;
+    roleId: string;
+    roleName: string;
+    roleIds: string[];
+    roleNames: string[];
   };
 }
 
