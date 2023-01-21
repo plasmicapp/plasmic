@@ -246,6 +246,11 @@ You'll need to update the verdaccio config file, at `~/.config/verdaccio/config.
 
 ```
 packages:
+  '@plasmicapp/isomorphic-unfetch':
+    access: $all
+    publish: $authenticated
+    unpublish: $authenticated
+    proxy: npmjs
   '@plasmicapp/*':
     access: $all
     publish: $all
@@ -273,7 +278,7 @@ npm --registry=http://localhost:4873 adduser
 
 1. Make some changes!
 
-1. If you're ready to test, run `yarn local-publish YOURPKG`. This unpublishes YOURPKG and its dependencies from your verdaccio, re-builds them, and publishes them to your local verdaccio. Note that this does not bump versions!  We are using nx under the hood, so if your dependencies haven't changed, this should be fast.
+1. If you're ready to test, run `yarn local-publish YOURPKG`. This unpublishes YOURPKG and its dependencies from your verdaccio, re-builds them, and publishes them to your local verdaccio. Note that this does not bump versions! We are using nx under the hood, so if your dependencies haven't changed, this should be fast.
 
 1. Install the canary version into wherever you're trying to test, via `yarn add ... --registry=http://localhost:4873`
 
@@ -331,23 +336,23 @@ Ensure you can start running/testing a package before starting to make any code 
 
 1. Now each time you want to try out a change, install your plasmicpkg into the app host repo using `yalc`.
 
-    1. From your plasmicpkg/PACKAGENAME directory, run:
+   1. From your plasmicpkg/PACKAGENAME directory, run:
 
-       ```
-       npm run local-canary
-       ```
+      ```
+      npm run local-canary
+      ```
 
-    2. From your app host directory, run:
+   2. From your app host directory, run:
 
-       ```
-       npm install @plasmicpkgs/PACKAGENAME@latest
-       ```
+      ```
+      npm install @plasmicpkgs/PACKAGENAME@latest
+      ```
 
-    3. Restart your app host, and reload the project in Studio:
+   3. Restart your app host, and reload the project in Studio:
 
-       ```
-       npm run dev
-       ```
+      ```
+      npm run dev
+      ```
 
 ### Note on registration functions
 
