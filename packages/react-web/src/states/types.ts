@@ -40,6 +40,7 @@ export interface $State {
 
 export const ARRAY_SYMBOL = Symbol("[]");
 export const PLASMIC_STATE_PROXY_SYMBOL = Symbol("plasmic.state.proxy");
+export const PLASMIC_GET_NODE_SYMBOL = Symbol("plasmic.get.node");
 
 export interface Internal$StateSpec<T> extends $StateSpec<T> {
   isRepeated: boolean;

@@ -2,6 +2,7 @@ export { default as get } from "dlv";
 export {
   generateStateOnChangeProp,
   generateStateValueProp,
+  getStateCellsInPlasmicProxy,
   isPlasmicStateProxy,
   set,
 } from "./helpers";

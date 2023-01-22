@@ -1,6 +1,12 @@
 import get from "dlv";
 import { useEffect, useLayoutEffect } from "react";
-import { $State, ObjectPath, PLASMIC_STATE_PROXY_SYMBOL } from "./types";
+import { getStateCells } from "./graph";
+import {
+  $State,
+  ObjectPath,
+  PLASMIC_GET_NODE_SYMBOL,
+  PLASMIC_STATE_PROXY_SYMBOL,
+} from "./types";
 
 export function generateStateOnChangeProp(
   $state: $State,
@@ -19,6 +25,26 @@ export const useIsomorphicLayoutEffect =
 export function isPlasmicStateProxy(obj: any) {
   return (
     obj != null && typeof obj === "object" && obj[PLASMIC_STATE_PROXY_SYMBOL]
+  );
+}
+
+export function getStateCellsInPlasmicProxy(
+  obj: any
+): { realPath: ObjectPath; path: string }[] {
+  if (!isPlasmicStateProxy(obj)) {
+    return [];
+  }
+  const { node: rootNode, path: rootPath, isOutside } = obj[
+    PLASMIC_GET_NODE_SYMBOL
+  ];
+  if (isOutside) {
+    return [];
+  }
+  return getStateCells(rootNode).flatMap((node) =>
+    node.states().map((stateCell) => ({
+      path: node.getSpec().path,
+      realPath: stateCell.path.slice(rootPath.length),
+    }))
   );
 }
 
