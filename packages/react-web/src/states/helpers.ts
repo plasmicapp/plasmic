@@ -1,12 +1,7 @@
 import get from "dlv";
 import { useEffect, useLayoutEffect } from "react";
-import { getStateCells } from "./graph";
-import {
-  $State,
-  ObjectPath,
-  PLASMIC_GET_NODE_SYMBOL,
-  PLASMIC_STATE_PROXY_SYMBOL,
-} from "./types";
+import { getStateCells, StateSpecNode } from "./graph";
+import { $State, ObjectPath, PLASMIC_STATE_PROXY_SYMBOL } from "./types";
 
 export function generateStateOnChangeProp(
   $state: $State,
@@ -24,7 +19,7 @@ export const useIsomorphicLayoutEffect =
 
 export function isPlasmicStateProxy(obj: any) {
   return (
-    obj != null && typeof obj === "object" && obj[PLASMIC_STATE_PROXY_SYMBOL]
+    obj != null && typeof obj === "object" && !!obj[PLASMIC_STATE_PROXY_SYMBOL]
   );
 }
 
@@ -35,7 +30,7 @@ export function getStateCellsInPlasmicProxy(
     return [];
   }
   const { node: rootNode, path: rootPath, isOutside } = obj[
-    PLASMIC_GET_NODE_SYMBOL
+    PLASMIC_STATE_PROXY_SYMBOL
   ];
   if (isOutside) {
     return [];
@@ -46,6 +41,25 @@ export function getStateCellsInPlasmicProxy(
       realPath: stateCell.path.slice(rootPath.length),
     }))
   );
+}
+
+export function getStateSpecInPlasmicProxy(obj: any, path: ObjectPath) {
+  obj = get(obj, path.slice(0, path.length - 1));
+  if (!isPlasmicStateProxy(obj)) {
+    return undefined;
+  }
+  const { node, isOutside } = obj[PLASMIC_STATE_PROXY_SYMBOL] as {
+    node: StateSpecNode<any>;
+    isOutside: boolean;
+  };
+  const nextNode = node.makeTransition(path[path.length - 1]);
+  if (isOutside || node.isLeaf() || !nextNode) {
+    return undefined;
+  }
+  return {
+    spec: nextNode.getSpec(),
+    isImplicitStateArray: nextNode.hasArrayTransition(),
+  };
 }
 
 export function shallowEqual<T>(a1: T[], a2: T[]) {

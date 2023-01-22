@@ -17,7 +17,6 @@ import {
   $StateSpec,
   InitFunc,
   ObjectPath,
-  PLASMIC_GET_NODE_SYMBOL,
   PLASMIC_STATE_PROXY_SYMBOL,
 } from "./types";
 
@@ -142,10 +141,11 @@ function create$StateProxy(
       },
       get(target, property, receiver) {
         if (property === PLASMIC_STATE_PROXY_SYMBOL) {
-          return true;
-        }
-        if (property === PLASMIC_GET_NODE_SYMBOL) {
-          return { node: currNode, path: currPath, isOutside };
+          return {
+            node: currNode,
+            path: currPath,
+            isOutside,
+          };
         }
         const nextPath = getNextPath(property);
 
