@@ -16,7 +16,7 @@ import { CPAStrategy } from "./types";
 const nextjsStrategy: CPAStrategy = {
   create: async (args) => {
     const { projectPath, template, useTypescript } = args;
-    const createCommand = `npx @latest ${
+    const createCommand = `npx create-next-app@latest ${
       useTypescript ? "--ts" : "--js"
     } --eslint --no-src-dir --no-experimental-app --import-alias "@/*" ${projectPath}`;
     const templateArg = template ? ` --template ${template}` : "";
