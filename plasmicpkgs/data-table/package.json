@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/data-table",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Table component to consume query data",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -37,7 +37,7 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "@plasmicapp/data-sources": "0.1.27"
+    "@plasmicapp/data-sources": "0.1.28"
   },
   "peerDependencies": {
     "@plasmicapp/host": "^1.0.0",
