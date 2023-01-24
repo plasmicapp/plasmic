@@ -68,7 +68,7 @@ export type StringType<P> =
         }
       | {
           type: "color";
-          noDeref: boolean;
+          noDeref?: boolean;
         }
       | {
           type: "cardPicker";
