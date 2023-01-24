@@ -1,3 +1,4 @@
+import { usePlasmicCanvasContext } from "@plasmicapp/host";
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
@@ -16,8 +17,9 @@ export default function Embed({
   hideInEditor = false,
 }: EmbedProps) {
   const rootElt = useRef<HTMLDivElement>(null);
+  const inEditor = usePlasmicCanvasContext();
   useEffect(() => {
-    if (hideInEditor) {
+    if (hideInEditor && inEditor) {
       return;
     }
     Array.from(ensure(rootElt.current).querySelectorAll("script")).forEach(
@@ -31,7 +33,7 @@ export default function Embed({
       }
     );
   }, [code, hideInEditor]);
-  const effectiveCode = hideInEditor ? "" : code;
+  const effectiveCode = hideInEditor && inEditor ? "" : code;
   return (
     <div
       ref={rootElt}
