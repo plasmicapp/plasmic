@@ -5,7 +5,9 @@ import {
   GlobalContextMeta as InternalGlobalContextMeta,
   registerComponent,
   registerGlobalContext,
+  registerToken,
   registerTrait,
+  TokenRegistration,
   TraitMeta,
 } from '@plasmicapp/host';
 import {
@@ -199,6 +201,10 @@ export class InternalPlasmicComponentLoader {
 
   registerTrait(trait: string, meta: TraitMeta) {
     registerTrait(trait, meta);
+  }
+
+  registerToken(token: TokenRegistration) {
+    registerToken(token);
   }
 
   registerPrefetchedBundle(bundle: LoaderBundleOutput) {
@@ -435,6 +441,10 @@ export class PlasmicComponentLoader {
 
   registerTrait(trait: string, meta: TraitMeta) {
     this.__internal.registerTrait(trait, meta);
+  }
+
+  registerToken(token: TokenRegistration) {
+    this.__internal.registerToken(token);
   }
 
   /**
