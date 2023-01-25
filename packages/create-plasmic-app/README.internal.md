@@ -1,5 +1,9 @@
-Debugging
-=========
+# Testing
+
+Use `yarn run-cpa` to run CPA with predefined sets of args.
+This will update the files in cpa-out, allowing us to review any diffs.
+
+# Debugging
 
 Example invocation:
 

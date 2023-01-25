@@ -104,7 +104,7 @@ async function maybePrompt<T>(
 }
 
 // Keeping these as globals to easily share with our `crash` function
-let projectName: string | undefined =
+const projectName: string | undefined =
   argv._.length > 0 ? argv._[0] + "" : undefined;
 let resolvedProjectPath: string;
 

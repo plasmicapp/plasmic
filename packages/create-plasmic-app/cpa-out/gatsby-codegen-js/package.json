@@ -1,0 +1,26 @@
+{
+  "name": "gatsby-codegen-js",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Plasmic app for 47tFXWjN2C4NyHFGGpaYQ3",
+  "keywords": [
+    "gatsby"
+  ],
+  "scripts": {
+    "develop": "gatsby develop",
+    "start": "gatsby develop",
+    "build": "gatsby build",
+    "serve": "gatsby serve",
+    "clean": "gatsby clean"
+  },
+  "dependencies": {
+    "@plasmicapp/cli": "^0.1.203",
+    "@plasmicapp/host": "^1.0.98",
+    "@plasmicapp/react-web": "^0.2.148",
+    "gatsby": "^5.5.0",
+    "gatsby-plugin-react-helmet": "^6.5.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-helmet": "^6.1.0"
+  }
+}

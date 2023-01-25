@@ -1,0 +1,15 @@
+# https://jasonstitt.com/gitignore-whitelisting-patterns
+# Ignore everything
+*
+# But descend into directories
+!*/
+
+# Whitelist - only add files that we want to track
+!/.gitignore
+!**/package.json
+!**/plasmic.json
+!**/tsconfig.json
+!**/*.js
+!**/*.jsx
+!**/*.ts
+!**/*.tsx

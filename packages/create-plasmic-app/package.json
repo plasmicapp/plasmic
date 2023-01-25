@@ -16,6 +16,7 @@
     "test": "jest --colors",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
     "build": "eslint 'src/**' && tsc",
+    "run-cpa": "yarn build && ts-node run-cpa.ts",
     "create-plasmic-app": "ts-node src/index.ts",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
   },

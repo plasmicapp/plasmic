@@ -145,8 +145,7 @@ export default function PlasmicHost() {
 }
 
 export function wrapAppRootForCodegen(): string {
-  return `
-import '../styles/globals.css'
+  return `import '../styles/globals.css'
 import { PlasmicRootProvider } from "@plasmicapp/react-web";
 import Head from "next/head";
 
@@ -159,5 +158,5 @@ function MyApp({ Component, pageProps }) {
 }
 
 export default MyApp
-  `;
+`;
 }
