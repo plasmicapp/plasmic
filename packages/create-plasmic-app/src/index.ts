@@ -19,10 +19,18 @@ const createPlasmicAppVersion = updateNotify();
 
 // Specify command-line args
 const argv = yargs
-  .usage("Usage: $0 [options] <project-directory>")
-  .example([
-    ["$0 my-plasmic-app", "--- Create the project in `my-plasmic-app/`"],
-  ])
+  .command(
+    "$0 [projectName]",
+    "Create a Plasmic app with Next.js, Gatsby, or Create React App",
+    (yargs) => {
+      yargs
+        .usage("Usage: $0 [projectName] [options]")
+        .positional("projectName", {
+          describe: "Project and NPM package name",
+          string: true,
+        });
+    }
+  )
   .option("platform", {
     describe: "Target platform",
     choices: ["", "nextjs", "gatsby", "react"],
@@ -80,7 +88,12 @@ async function maybePrompt<T>(
 
   if (checkCliAnswer) {
     const cliAnswer = argv[name];
-    if (cliAnswer !== null && cliAnswer !== undefined && cliAnswer !== "") {
+    if (
+      cliAnswer !== null &&
+      cliAnswer !== undefined &&
+      cliAnswer !== "" &&
+      (!question.validate || question.validate(cliAnswer))
+    ) {
       console.log(`${message}: ${cliAnswer} (specified in CLI arg)`);
       return cliAnswer as T; // assume it's the correct type
     }
@@ -102,16 +115,13 @@ async function run(): Promise<void> {
   /**
    * PROMPT USER
    */
-  // User-specified project path/directory
-  while (!cpa.checkValidName(projectName)) {
-    projectName = (
-      await inquirer.prompt({
-        name: "projectPath",
-        message: "What is your project named?",
-        default: "my-app",
-      })
-    ).projectPath.trim();
-  }
+  // User-specified project name
+  const projectName = await maybePrompt({
+    name: "projectName",
+    message: "What is your project named?",
+    default: "my-app",
+    validate: cpa.checkValidName,
+  });
   // Absolute path to the new project
   resolvedProjectPath = path.resolve(projectName);
 
