@@ -7,7 +7,7 @@ import * as path from "upath";
 import yargs from "yargs";
 import * as cpa from "./lib";
 import { PlatformOptions, PlatformType, SchemeType } from "./lib";
-import { assert, ensure } from "./utils/lang-utils";
+import { ensure } from "./utils/lang-utils";
 import { checkEngineStrict, updateNotify } from "./utils/npm-utils";
 
 if (process.env.CPA_DEBUG_CHDIR) {
@@ -126,7 +126,7 @@ async function run(): Promise<void> {
   resolvedProjectPath = path.resolve(projectName);
 
   // Prompt for Typescript
-  const useTypescript: boolean = await maybePrompt({
+  const jsOrTs = (await maybePrompt({
     name: "typescript",
     message: "What language do you want to use?",
     type: "list",
@@ -141,7 +141,9 @@ async function run(): Promise<void> {
       },
     ],
     default: true,
-  });
+  }))
+    ? "ts"
+    : "js";
 
   // Prompt for the platform
   const platform = await maybePrompt<PlatformType>({
@@ -250,10 +252,6 @@ What is the URL of your project?`,
 
   // RUN IT
   console.log();
-  assert(
-    platform === "nextjs" || platform === "gatsby" || platform === "react",
-    "platform must be one of ['nextjs', 'gatsby', 'react']"
-  );
 
   const template = argv["template"];
   const projectApiToken = argv["projectApiToken"];
@@ -268,7 +266,7 @@ What is the URL of your project?`,
     platform,
     platformOptions,
     scheme,
-    useTypescript,
+    jsOrTs,
     projectApiToken,
     template,
   });

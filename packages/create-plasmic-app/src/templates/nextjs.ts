@@ -1,4 +1,4 @@
-import { SchemeType } from "../lib";
+import { JsOrTs, SchemeType } from "../lib";
 import { ifTs } from "../utils/file-utils";
 
 export const makeNextjsInitPage = (
@@ -33,8 +33,7 @@ export const PLASMIC = initPlasmicLoader({
 // PLASMIC.registerComponent(...);
 `.trim();
 
-export function makeNextjsCatchallPage(format: "ts" | "js"): string {
-  const ts = format === "ts";
+export function makeNextjsCatchallPage(jsOrTs: JsOrTs): string {
   return `
 import * as React from "react";
 import {
@@ -43,13 +42,13 @@ import {
   ComponentRenderData,
   PlasmicRootProvider,
 } from "@plasmicapp/loader-nextjs";
-${ifTs(ts, `import type { GetStaticPaths, GetStaticProps } from "next";\n`)}
+${ifTs(jsOrTs, `import type { GetStaticPaths, GetStaticProps } from "next";\n`)}
 import Error from "next/error";
 import { useRouter } from "next/router";
-import { PLASMIC } from "../plasmic-init";
+import { PLASMIC } from "plasmic-init";
 
 export default function PlasmicLoaderPage(props${ifTs(
-    ts,
+    jsOrTs,
     `: {
   plasmicData?: ComponentRenderData;
   queryCache?: Record<string, any>;
@@ -75,7 +74,7 @@ export default function PlasmicLoaderPage(props${ifTs(
 }
 
 export const getStaticProps${ifTs(
-    ts,
+    jsOrTs,
     `: GetStaticProps`
   )} = async (context) => {
   const { catchall } = context.params ?? {};
@@ -100,7 +99,7 @@ export const getStaticProps${ifTs(
   return { props: { plasmicData, queryCache }, revalidate: 60 };
 }
 
-export const getStaticPaths${ifTs(ts, `: GetStaticPaths`)} = async () => {
+export const getStaticPaths${ifTs(jsOrTs, `: GetStaticPaths`)} = async () => {
   const pageModules = await PLASMIC.fetchPages();
   return {
     paths: pageModules.map((mod) => ({
@@ -144,19 +143,21 @@ export default function PlasmicHost() {
   }
 }
 
-export function wrapAppRootForCodegen(): string {
-  return `import '../styles/globals.css'
+export function wrapAppRootForCodegen(jsOrTs: JsOrTs): string {
+  return `import 'styles/globals.css'
 import { PlasmicRootProvider } from "@plasmicapp/react-web";
+import { AppProps } from "next/app";
 import Head from "next/head";
 
-function MyApp({ Component, pageProps }) {
+export default function MyApp({ Component, pageProps }${ifTs(
+    jsOrTs,
+    `: AppProps`
+  )}) {
   return (
     <PlasmicRootProvider Head={Head}>
       <Component {...pageProps} />
     </PlasmicRootProvider>
   );
 }
-
-export default MyApp
 `;
 }

@@ -6,6 +6,7 @@ import { getCPAStrategy } from "./strategies";
 import { ensureTsconfig, overwriteReadme } from "./utils/file-utils";
 import { detectPackageManager } from "./utils/npm-utils";
 
+export type JsOrTs = "js" | "ts";
 export type PlatformType = "nextjs" | "gatsby" | "react";
 export type PlatformOptions = {
   nextjs?: {
@@ -24,7 +25,7 @@ export interface CreatePlasmicAppArgs {
   platform: PlatformType;
   platformOptions: PlatformOptions;
   scheme: SchemeType;
-  useTypescript: boolean;
+  jsOrTs: JsOrTs;
   projectApiToken?: string;
   template?: string;
 }
@@ -36,7 +37,7 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
     platform,
     platformOptions,
     scheme,
-    useTypescript,
+    jsOrTs,
     template,
   } = args;
   let { projectApiToken } = args;
@@ -80,7 +81,7 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
   // Create project using strategy for platform
   await cpaStrategy.create({
     projectPath: resolvedProjectPath,
-    useTypescript,
+    jsOrTs,
     template,
     platformOptions,
   });
@@ -88,7 +89,7 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
   // Ensure that we have a empty tsconfig and @types packages.
   // Gatsby and Next.js by default support typescript handling internally
   // tsconfig so we don't have to ensure it.
-  if (useTypescript && platform === "react") {
+  if (jsOrTs === "ts" && platform === "react") {
     await ensureTsconfig(resolvedProjectPath);
   }
 
@@ -105,7 +106,7 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
   const installResult = await cpaStrategy.installDeps({
     scheme,
     projectPath: resolvedProjectPath,
-    useTypescript,
+    jsOrTs,
   });
 
   if (!installResult) {
@@ -117,7 +118,7 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
     projectId,
     projectPath: resolvedProjectPath,
     projectApiToken,
-    useTypescript,
+    jsOrTs,
     scheme,
     platformOptions,
   });
@@ -125,7 +126,7 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
   // Generate files
   await cpaStrategy.generateFiles({
     projectPath: resolvedProjectPath,
-    useTypescript,
+    jsOrTs,
     scheme,
     projectId,
     projectApiToken,

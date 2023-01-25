@@ -19,8 +19,8 @@ import { CPAStrategy, GenerateFilesArgs } from "./types";
 
 const nextjsStrategy: CPAStrategy = {
   create: async (args) => {
-    const { projectPath, template, useTypescript, platformOptions } = args;
-    const typescriptArg = useTypescript ? "--ts" : "--js";
+    const { projectPath, template, jsOrTs, platformOptions } = args;
+    const typescriptArg = `--${jsOrTs}`;
     const experimentalAppArg = platformOptions.nextjs?.appDir
       ? "--experimental-app"
       : "--no-experimental-app";
@@ -97,16 +97,13 @@ module.exports = nextConfig;`
 export default nextjsStrategy;
 
 async function generateFilesAppDir(args: GenerateFilesArgs) {
-  const { projectPath, useTypescript, projectId, projectApiToken } = args;
+  const { projectPath, jsOrTs, projectId, projectApiToken } = args;
 
   // Always start fresh
   const appPath = path.join(projectPath, "app");
   deleteGlob(path.join(appPath, "page.*"));
 
-  const initFile = path.join(
-    projectPath,
-    `plasmic-init.${useTypescript ? "ts" : "js"}`
-  );
+  const initFile = path.join(projectPath, `plasmic-init.${jsOrTs}`);
   await fs.writeFile(
     initFile,
     makeNextjsAppDirPlasmicInit(projectId, ensure(projectApiToken))
@@ -114,39 +111,26 @@ async function generateFilesAppDir(args: GenerateFilesArgs) {
 
   const initClientFile = path.join(
     projectPath,
-    `plasmic-init-client.${useTypescript ? "tsx" : "jsx"}`
+    `plasmic-init-client.${jsOrTs}x`
   );
-  await fs.writeFile(
-    initClientFile,
-    makeNextjsAppDirPlasmicInitClient(useTypescript)
-  );
+  await fs.writeFile(initClientFile, makeNextjsAppDirPlasmicInitClient(jsOrTs));
 
   const hostPage = path.join(
     appPath,
     "plasmic-host",
-    `page.${useTypescript ? "tsx" : "jsx"}`
+    `page.${jsOrTs}x`
   );
   await fs.mkdir(path.join(appPath, "plasmic-host"));
   await fs.writeFile(hostPage, makeNextjsAppDirPlasmicHostPage());
 
   // Write catch-all page for loader
-  const loaderPage = path.join(
-    appPath,
-    "[[...catchall]]",
-    `page.${useTypescript ? "tsx" : "jsx"}`
-  );
+  const loaderPage = path.join(appPath, "[[...catchall]]", `page.${jsOrTs}x`);
   await fs.mkdir(path.join(appPath, "[[...catchall]]"));
-  await fs.writeFile(loaderPage, makeNextjsAppDirCatchallPage(useTypescript));
+  await fs.writeFile(loaderPage, makeNextjsAppDirCatchallPage(jsOrTs));
 }
 
 async function generateFilesPagesDir(args: GenerateFilesArgs) {
-  const {
-    projectPath,
-    scheme,
-    useTypescript,
-    projectId,
-    projectApiToken,
-  } = args;
+  const { projectPath, scheme, jsOrTs, projectId, projectApiToken } = args;
 
   // this is supposed to be called for loader case, so we are supposed to remove
   // all the files from pages/ since we have inserted a optional catch all
@@ -154,31 +138,19 @@ async function generateFilesPagesDir(args: GenerateFilesArgs) {
   const pagesPath = path.join(projectPath, "pages");
   deleteGlob(path.join(pagesPath, `*.*`));
 
-  const hostPage = path.join(
-    pagesPath,
-    `plasmic-host.${useTypescript ? "tsx" : "jsx"}`
-  );
+  const hostPage = path.join(pagesPath, `plasmic-host.${jsOrTs}x`);
   await fs.writeFile(hostPage, makeNextjsHostPage(scheme));
 
   if (scheme === "loader") {
-    const initFile = path.join(
-      projectPath,
-      `plasmic-init.${useTypescript ? "ts" : "js"}`
-    );
+    const initFile = path.join(projectPath, `plasmic-init.${jsOrTs}`);
     await fs.writeFile(
       initFile,
       makeNextjsInitPage(projectId, ensure(projectApiToken))
     );
 
     // Write catch-all page for loader
-    const loaderPage = path.join(
-      pagesPath,
-      `[[...catchall]].${useTypescript ? "tsx" : "jsx"}`
-    );
-    await fs.writeFile(
-      loaderPage,
-      makeNextjsCatchallPage(useTypescript ? "ts" : "js")
-    );
+    const loaderPage = path.join(pagesPath, `[[...catchall]].${jsOrTs}x`);
+    await fs.writeFile(loaderPage, makeNextjsCatchallPage(jsOrTs));
   } else {
     await runCodegenSync({
       projectId,
@@ -190,7 +162,7 @@ async function generateFilesPagesDir(args: GenerateFilesArgs) {
     await overwriteIndex(projectPath, "nextjs", scheme);
 
     // Overwrite the wrapper files to wrap PlasmicRootProvider
-    const appFilePath = path.join(projectPath, "pages", `_app.js`);
-    await fs.writeFile(appFilePath, wrapAppRootForCodegen());
+    const appFilePath = path.join(projectPath, "pages", `_app.${jsOrTs}x`);
+    await fs.writeFile(appFilePath, wrapAppRootForCodegen(jsOrTs));
   }
 }

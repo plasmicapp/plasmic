@@ -11,7 +11,7 @@ import {
   wrapAppRootForCodegen,
 } from "../templates/gatsby";
 import { spawnOrFail } from "../utils/cmd-utils";
-import { deleteGlob, overwriteIndex } from "../utils/file-utils";
+import { deleteGlob, ifTs, overwriteIndex } from "../utils/file-utils";
 import { ensure } from "../utils/lang-utils";
 import { installUpgrade } from "../utils/npm-utils";
 import { installCodegenDeps, runCodegenSync } from "./common";
@@ -24,25 +24,25 @@ export const GATSBY_TEMPLATES = {
 
 const gatsbyStrategy: CPAStrategy = {
   create: async (args) => {
-    const { projectPath, template, useTypescript } = args;
+    const { projectPath, template, jsOrTs } = args;
     if (template) {
       console.log(
         `Warning: Ignoring template '${template}' (argument is not supported by Gatsby).`
       );
     }
-    const gatsbyTemplate = GATSBY_TEMPLATES[useTypescript ? "ts" : "js"];
+    const gatsbyTemplate = GATSBY_TEMPLATES[jsOrTs];
     const createCommand = `git clone ${gatsbyTemplate} ${projectPath} --recursive --depth 1 --quiet`;
     await spawnOrFail(`${createCommand}`);
     // Remove .git and LICENSE so that we don't generate linked outputs
     await spawnOrFail(`rm -rf ${projectPath}/.git`);
     await spawnOrFail(`rm -rf ${projectPath}/LICENSE`);
   },
-  installDeps: async ({ projectPath, scheme, useTypescript }) => {
+  installDeps: async ({ projectPath, scheme, jsOrTs }) => {
     const installedHelmet = await installUpgrade("react-helmet", {
       workingDir: projectPath,
     });
     const installedHelmetTypes =
-      !useTypescript ||
+      jsOrTs === "js" ||
       (await installUpgrade("@types/react-helmet", {
         workingDir: projectPath,
         dev: true,
@@ -66,15 +66,7 @@ const gatsbyStrategy: CPAStrategy = {
     }
   },
   overwriteConfig: async (args) => {
-    const {
-      projectId,
-      projectPath,
-      projectApiToken,
-      useTypescript,
-      scheme,
-    } = args;
-    const extension = useTypescript ? "ts" : "js";
-
+    const { projectId, projectPath, projectApiToken, jsOrTs, scheme } = args;
     const packageName = path.basename(projectPath);
 
     // Update package.json: adding name and description, removing license and author
@@ -94,7 +86,7 @@ const gatsbyStrategy: CPAStrategy = {
       // create-gatsby will create a default gatsby-config that we need to modify
       const gatsbyConfigFile = path.join(
         projectPath,
-        `gatsby-config.${extension}`
+        `gatsby-config.${jsOrTs}`
       );
       const rl = readline.createInterface({
         input: createReadStream(gatsbyConfigFile),
@@ -102,11 +94,11 @@ const gatsbyStrategy: CPAStrategy = {
       });
       // Typescript doesn't accept require.resolve
       // https://www.gatsbyjs.com/docs/how-to/custom-configuration/typescript/#requireresolve
-      let result = useTypescript ? `import path from "path";\n` : "";
+      let result = ifTs(jsOrTs, `import path from "path";\n`);
       const pluginConfig = GATSBY_PLUGIN_CONFIG(
         projectId,
         ensure(projectApiToken),
-        useTypescript
+        jsOrTs
       );
       for await (const line of rl) {
         if (line.includes("plugins: []")) {
@@ -123,46 +115,38 @@ const gatsbyStrategy: CPAStrategy = {
   generateFiles: async (args) => {
     // in gatsby we can delete all existing pages/components, since all pages are going
     // to be handled by templates/defaultPlasmicPage
-    const {
-      projectId,
-      projectApiToken,
-      projectPath,
-      useTypescript,
-      scheme,
-    } = args;
-
-    const extension = useTypescript ? "ts" : "js";
+    const { projectId, projectApiToken, projectPath, jsOrTs, scheme } = args;
 
     deleteGlob(path.join(projectPath, "src/@(pages|components|templates)/*.*"));
 
     // Create a very basic 404 page - `gatsby build` fails without it.
     await fs.writeFile(
-      path.join(projectPath, `src/pages/404.${extension}`),
+      path.join(projectPath, `src/pages/404.${jsOrTs}`),
       GATSBY_404
     );
 
     // Add plasmic-host page
     await fs.writeFile(
-      path.join(projectPath, `src/pages/plasmic-host.${extension}x`),
+      path.join(projectPath, `src/pages/plasmic-host.${jsOrTs}x`),
       makeGatsbyHostPage({
-        useTypescript,
+        jsOrTs,
         scheme,
       })
     );
 
     // Start with an empty gatsby-node
-    await fs.writeFile(path.join(projectPath, `gatsby-node.${extension}`), "");
+    await fs.writeFile(path.join(projectPath, `gatsby-node.${jsOrTs}`), "");
 
     // Updates `gatsby-ssr` to include script tag for preamble
     await fs.writeFile(
-      path.join(projectPath, `gatsby-ssr.${extension}x`),
+      path.join(projectPath, `gatsby-ssr.${jsOrTs}x`),
       GATSBY_SSR_CONFIG
     );
 
     if (scheme === "loader") {
       await fs.writeFile(
-        path.join(projectPath, `src/plasmic-init.${extension}`),
-        makeGatsbyPlasmicInit(extension)
+        path.join(projectPath, `src/plasmic-init.${jsOrTs}`),
+        makeGatsbyPlasmicInit(jsOrTs)
       );
 
       const templatesFolder = path.join(projectPath, "src/templates");
@@ -171,9 +155,9 @@ const gatsbyStrategy: CPAStrategy = {
       }
       const defaultPagePath = path.join(
         templatesFolder,
-        `defaultPlasmicPage.${extension}x`
+        `defaultPlasmicPage.${jsOrTs}x`
       );
-      await fs.writeFile(defaultPagePath, makeGatsbyDefaultPage(extension));
+      await fs.writeFile(defaultPagePath, makeGatsbyDefaultPage(jsOrTs));
     } else {
       await runCodegenSync({
         projectId,
@@ -188,11 +172,11 @@ const gatsbyStrategy: CPAStrategy = {
       const wrapperContent = wrapAppRootForCodegen();
       const browserFilePath = path.join(
         projectPath,
-        `gatsby-browser.${extension}x`
+        `gatsby-browser.${jsOrTs}x`
       );
       await fs.writeFile(browserFilePath, wrapperContent);
 
-      const ssrFilePath = path.join(projectPath, `gatsby-ssr.${extension}x`);
+      const ssrFilePath = path.join(projectPath, `gatsby-ssr.${jsOrTs}x`);
       await fs.writeFile(ssrFilePath, wrapperContent);
     }
   },

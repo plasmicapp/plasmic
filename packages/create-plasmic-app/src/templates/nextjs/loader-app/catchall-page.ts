@@ -1,6 +1,7 @@
+import { JsOrTs } from "../../../lib";
 import { ifTs } from "../../../utils/file-utils";
 
-export function makeNextjsAppDirCatchallPage(ts: boolean) {
+export function makeNextjsAppDirCatchallPage(jsOrTs: JsOrTs) {
   return `import { PlasmicComponent } from "@plasmicapp/loader-nextjs";
 import { notFound } from "next/navigation";
 import { PLASMIC } from "plasmic-init";
@@ -13,7 +14,7 @@ export default async function PlasmicLoaderPage({
   params,
   searchParams,
 }${ifTs(
-    ts,
+    jsOrTs,
     `: {
   params?: { catchall: string[] | undefined };
   searchParams?: Record<string, string | string[]>;
@@ -44,7 +45,7 @@ export default async function PlasmicLoaderPage({
 }
 
 async function fetchPlasmicComponentData(catchall${ifTs(
-    ts,
+    jsOrTs,
     ": string[] | undefined"
   )}) {
   const plasmicPath = "/" + (catchall ? catchall.join("/") : "");

@@ -1,13 +1,12 @@
-import '../styles/globals.css'
+import 'styles/globals.css'
 import { PlasmicRootProvider } from "@plasmicapp/react-web";
+import { AppProps } from "next/app";
 import Head from "next/head";
 
-function MyApp({ Component, pageProps }) {
+export default function MyApp({ Component, pageProps }) {
   return (
     <PlasmicRootProvider Head={Head}>
       <Component {...pageProps} />
     </PlasmicRootProvider>
   );
 }
-
-export default MyApp

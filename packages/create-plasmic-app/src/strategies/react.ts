@@ -8,11 +8,11 @@ import { CPAStrategy } from "./types";
 
 const reactStrategy: CPAStrategy = {
   create: async (args) => {
-    const { projectPath, useTypescript } = args;
+    const { projectPath, jsOrTs } = args;
     let { template } = args;
     const createCommand = `npx create-react-app@latest ${projectPath}`;
 
-    if (!template && useTypescript) {
+    if (!template && jsOrTs === "ts") {
       template = "typescript";
     }
 
@@ -36,7 +36,7 @@ const reactStrategy: CPAStrategy = {
     projectApiToken,
     projectId,
     projectPath,
-    useTypescript,
+    jsOrTs,
   }) => {
     if (scheme === "loader") {
       // Nothing to do
@@ -51,11 +51,11 @@ const reactStrategy: CPAStrategy = {
       await overwriteIndex(projectPath, "react", scheme);
     }
 
-    // Deactivate React.StrictMode from index.tsx
+    // Deactivate React.StrictMode from index.js or index.tsx
     const indexFileName = path.join(
       projectPath,
       "src",
-      `index.${useTypescript ? "tsx" : "js"}`
+      `index.${jsOrTs === "js" ? "js" : "tsx"}`
     );
     let indexFile = fs.readFileSync(indexFileName).toString();
     indexFile = indexFile.replace("<React.StrictMode>", "");

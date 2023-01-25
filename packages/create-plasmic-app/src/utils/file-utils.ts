@@ -2,7 +2,7 @@ import { existsSync, promises as fs, unlinkSync } from "fs";
 import glob from "glob";
 import L from "lodash";
 import * as path from "upath";
-import { PlatformType } from "../lib";
+import { JsOrTs, PlatformType } from "../lib";
 import { GATSBY_404 } from "../templates/gatsby";
 import { README } from "../templates/readme";
 import { WELCOME_PAGE } from "../templates/welcomePage";
@@ -270,6 +270,6 @@ export async function ensureTsconfig(projectPath: string): Promise<void> {
   }
 }
 
-export function ifTs(ts: boolean, str: string) {
-  return ts ? str : "";
+export function ifTs(ts: JsOrTs, str: string) {
+  return ts === "ts" ? str : "";
 }

@@ -1,16 +1,16 @@
-import { PlatformOptions, SchemeType } from "../lib";
+import { JsOrTs, PlatformOptions, SchemeType } from "../lib";
 
 export interface CreateArgs {
   projectPath: string;
   template?: string;
-  useTypescript: boolean;
+  jsOrTs: JsOrTs;
   platformOptions: PlatformOptions;
 }
 
 export interface ConfigArgs {
   projectId: string;
   projectPath: string;
-  useTypescript: boolean;
+  jsOrTs: JsOrTs;
   scheme: SchemeType;
   projectApiToken: string | undefined;
   platformOptions: PlatformOptions;
@@ -18,7 +18,7 @@ export interface ConfigArgs {
 
 export interface GenerateFilesArgs {
   projectPath: string;
-  useTypescript: boolean;
+  jsOrTs: JsOrTs;
   scheme: SchemeType;
   projectId: string;
   projectApiToken: string | undefined;
@@ -33,7 +33,7 @@ export interface BuildArgs {
 export interface InstallArgs {
   scheme: SchemeType;
   projectPath: string;
-  useTypescript: boolean;
+  jsOrTs: JsOrTs;
 }
 
 export interface CPAStrategy {

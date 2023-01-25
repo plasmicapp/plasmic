@@ -1,6 +1,7 @@
+import { JsOrTs } from "../../../lib";
 import { ifTs } from "../../../utils/file-utils";
 
-export function makeNextjsAppDirPlasmicInitClient(ts: boolean) {
+export function makeNextjsAppDirPlasmicInitClient(jsOrTs: JsOrTs) {
   return `"use client";
 
 import { PlasmicRootProvider } from "@plasmicapp/loader-nextjs";
@@ -61,7 +62,7 @@ import { PLASMIC } from "plasmic-init";
  */
 export function ClientPlasmicRootProvider(
   props${ifTs(
-    ts,
+    jsOrTs,
     ': Omit<React.ComponentProps<typeof PlasmicRootProvider>, "loader">'
   )}
 ) {

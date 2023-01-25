@@ -1,21 +1,20 @@
-import { SchemeType } from "../lib";
+import { JsOrTs, SchemeType } from "../lib";
 import { ifTs } from "../utils/file-utils";
 
-export const makeGatsbyDefaultPage = (format: "ts" | "js"): string => {
-  const ts = format === "ts";
+export const makeGatsbyDefaultPage = (jsOrTs: JsOrTs): string => {
   return `
 import React from "react";
 import Helmet from "react-helmet";
 import {
   PlasmicComponent,
   PlasmicRootProvider,${ifTs(
-    ts,
+    jsOrTs,
     `
   InitOptions,
   ComponentRenderData,`
   )}
 } from "@plasmicapp/loader-gatsby";
-import { graphql${ifTs(ts, ", PageProps")} } from "gatsby";
+import { graphql${ifTs(jsOrTs, ", PageProps")} } from "gatsby";
 import { initPlasmicLoaderWithRegistrations } from "../plasmic-init";
 
 export const query = graphql\`
@@ -26,7 +25,7 @@ export const query = graphql\`
 \`;
 
 ${ifTs(
-  ts,
+  jsOrTs,
   `interface PlasmicGatsbyPageProps extends PageProps {
   data: {
     plasmicOptions: InitOptions
@@ -36,7 +35,7 @@ ${ifTs(
 `
 )}
 const PlasmicGatsbyPage = ({ data, location }${ifTs(
-    ts,
+    jsOrTs,
     ": PlasmicGatsbyPageProps"
   )}) => {
   const {
@@ -78,7 +77,7 @@ export default NotFound;
 export const GATSBY_PLUGIN_CONFIG = (
   projectId: string,
   projectApiToken: string,
-  useTypescript: boolean
+  jsOrTs: JsOrTs
 ): string => `
 {
   resolve: "@plasmicapp/loader-gatsby",
@@ -91,10 +90,8 @@ export const GATSBY_PLUGIN_CONFIG = (
     ], // An array of project ids.
     preview: false,
     defaultPlasmicPage: ${
-      useTypescript ? "path" : "require"
-    }.resolve("./src/templates/defaultPlasmicPage.${
-  useTypescript ? "tsx" : "jsx"
-}"),
+      jsOrTs === "ts" ? "path" : "require"
+    }.resolve("./src/templates/defaultPlasmicPage.${jsOrTs}x"),
   },
 },
 {
@@ -103,15 +100,15 @@ export const GATSBY_PLUGIN_CONFIG = (
 `;
 
 export const makeGatsbyHostPage = (opts: {
-  useTypescript: boolean;
+  jsOrTs: JsOrTs;
   scheme: SchemeType;
 }): string => {
-  const { useTypescript, scheme } = opts;
+  const { jsOrTs, scheme } = opts;
   if (scheme === "loader") {
     return `
 import * as React from "react"
 import {
-  PlasmicCanvasHost${ifTs(useTypescript, `, InitOptions`)}
+  PlasmicCanvasHost${ifTs(jsOrTs, `, InitOptions`)}
 } from "@plasmicapp/loader-gatsby"
 import { graphql } from "gatsby"
 import { initPlasmicLoaderWithRegistrations } from "../plasmic-init"
@@ -123,7 +120,7 @@ export const query = graphql\`
 \`
 
 ${ifTs(
-  useTypescript,
+  jsOrTs,
   `interface HostProps {
   data: {
     plasmicOptions: InitOptions;
@@ -131,7 +128,7 @@ ${ifTs(
 }
 `
 )}
-export default function Host({ data }${ifTs(useTypescript, ": HostProps")}) {
+export default function Host({ data }${ifTs(jsOrTs, ": HostProps")}) {
   const { plasmicOptions } = data
   initPlasmicLoaderWithRegistrations(plasmicOptions)
   return <PlasmicCanvasHost />
@@ -207,19 +204,18 @@ exports.onRenderBody = ({ pathname, setHeadComponents }) => {
 }
 `.trim();
 
-export const makeGatsbyPlasmicInit = (format: "ts" | "js"): string => {
-  const ts = format === "ts";
+export const makeGatsbyPlasmicInit = (jsOrTs: JsOrTs): string => {
   return `
 import {
   initPlasmicLoader,${ifTs(
-    ts,
+    jsOrTs,
     `
   InitOptions,`
   )}
 } from "@plasmicapp/loader-gatsby";
 
 export function initPlasmicLoaderWithRegistrations(plasmicOptions${ifTs(
-    ts,
+    jsOrTs,
     ": InitOptions"
   )}) {
   const PLASMIC = initPlasmicLoader(plasmicOptions);
