@@ -1,4 +1,4 @@
-import { CodeScheme } from "..";
+import { SchemeType } from "../lib";
 import { ifTs } from "../utils/file-utils";
 
 export const makeGatsbyDefaultPage = (format: "ts" | "js"): string => {
@@ -104,7 +104,7 @@ export const GATSBY_PLUGIN_CONFIG = (
 
 export const makeGatsbyHostPage = (opts: {
   useTypescript: boolean;
-  scheme: CodeScheme;
+  scheme: SchemeType;
 }): string => {
   const { useTypescript, scheme } = opts;
   if (scheme === "loader") {

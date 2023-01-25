@@ -1,34 +1,37 @@
-import { CodeScheme } from "..";
+import { PlatformOptions, SchemeType } from "../lib";
 
-interface CreateArgs {
+export interface CreateArgs {
   projectPath: string;
   template?: string;
   useTypescript: boolean;
+  platformOptions: PlatformOptions;
 }
 
-interface ConfigArgs {
+export interface ConfigArgs {
   projectId: string;
   projectPath: string;
   useTypescript: boolean;
-  scheme: CodeScheme;
+  scheme: SchemeType;
   projectApiToken: string | undefined;
+  platformOptions: PlatformOptions;
 }
 
-interface GenerateFilesArgs {
+export interface GenerateFilesArgs {
   projectPath: string;
   useTypescript: boolean;
-  scheme: CodeScheme;
+  scheme: SchemeType;
   projectId: string;
   projectApiToken: string | undefined;
+  platformOptions: PlatformOptions;
 }
 
-interface BuildArgs {
+export interface BuildArgs {
   projectPath: string;
   npmRunCmd: string;
 }
 
-interface InstallArgs {
-  scheme: CodeScheme;
+export interface InstallArgs {
+  scheme: SchemeType;
   projectPath: string;
   useTypescript: boolean;
 }

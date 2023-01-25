@@ -6,14 +6,13 @@ import inquirer, { DistinctQuestion } from "inquirer";
 import * as path from "upath";
 import yargs from "yargs";
 import * as cpa from "./lib";
-import { assert, ensure, ensureString } from "./utils/lang-utils";
+import { PlatformOptions, PlatformType, SchemeType } from "./lib";
+import { assert, ensure } from "./utils/lang-utils";
 import { checkEngineStrict, updateNotify } from "./utils/npm-utils";
 
 if (process.env.CPA_DEBUG_CHDIR) {
   process.chdir(process.env.CPA_DEBUG_CHDIR);
 }
-
-export type CodeScheme = "codegen" | "loader";
 
 // Check for updates
 const createPlasmicAppVersion = updateNotify();
@@ -27,32 +26,30 @@ const argv = yargs
   .option("platform", {
     describe: "Target platform",
     choices: ["", "nextjs", "gatsby", "react"],
-    default: "",
   })
   .option("scheme", {
     describe: "Plasmic integration scheme",
     choices: ["", "codegen", "loader"],
-    default: "",
   })
   .option("projectId", {
     describe: "Plasmic project ID",
     string: true,
-    default: "",
   })
   .option("projectApiToken", {
     describe: "Plasmic project API token (optional, to bypass standard auth)",
     string: true,
-    default: "",
   })
   .option("template", {
     describe: "Specify a template for the created project",
     string: true,
-    default: "",
   })
   .option("typescript", {
-    describe: "Use the default Typescript template",
+    describe: "Use Typescript?",
     boolean: true,
-    default: "",
+  })
+  .option("appDir", {
+    describe: "(Next.js) Use app directory (experimental)?",
+    boolean: true,
   })
   .strict()
   .help("h")
@@ -137,32 +134,30 @@ async function run(): Promise<void> {
   });
 
   // Prompt for the platform
-  const platform = ensureString(
-    await maybePrompt<string>({
-      name: "platform",
-      message: "What React framework do you want to use?",
-      type: "list",
-      choices: () => [
-        {
-          name: "Next.js",
-          value: "nextjs",
-        },
-        {
-          name: "Gatsby",
-          value: "gatsby",
-        },
-        {
-          name: "Create React App",
-          value: "react",
-        },
-      ],
-      default: "nextjs",
-    })
-  );
+  const platform = await maybePrompt<PlatformType>({
+    name: "platform",
+    message: "What React framework do you want to use?",
+    type: "list",
+    choices: () => [
+      {
+        name: "Next.js",
+        value: "nextjs",
+      },
+      {
+        name: "Gatsby",
+        value: "gatsby",
+      },
+      {
+        name: "Create React App",
+        value: "react",
+      },
+    ],
+    default: "nextjs",
+  });
 
   // Scheme to use for Plasmic integration
   // - loader only available for gatsby/next.js
-  const scheme: CodeScheme =
+  const scheme: SchemeType =
     platform === "nextjs" || platform === "gatsby"
       ? await maybePrompt({
           name: "scheme",
@@ -183,6 +178,32 @@ async function run(): Promise<void> {
           default: "loader",
         })
       : "codegen";
+
+  // TODO: Support nextjs + codegen
+  const platformOptions: PlatformOptions = {};
+  if (platform === "nextjs" && scheme === "loader") {
+    platformOptions.nextjs = {
+      appDir: await maybePrompt({
+        name: "appDir",
+        message:
+          "Do you want to use the app/ directory and React Server Components? (see https://beta.nextjs.org/docs/app-directory-roadmap)",
+        type: "list",
+        choices: () => [
+          {
+            name: "No, use pages/ directory",
+            short: "No",
+            value: false,
+          },
+          {
+            name: "Yes, use app/ directory (experimental)",
+            short: "Yes",
+            value: true,
+          },
+        ],
+        default: false,
+      }),
+    };
+  }
 
   // Get the projectId
   console.log();
@@ -235,6 +256,7 @@ What is the URL of your project?`,
     resolvedProjectPath,
     projectId,
     platform,
+    platformOptions,
     scheme,
     useTypescript,
     projectApiToken,

@@ -1,4 +1,4 @@
-import { CodeScheme } from "..";
+import { SchemeType } from "../lib";
 import { ifTs } from "../utils/file-utils";
 
 export const makeNextjsInitPage = (
@@ -114,25 +114,18 @@ export const getStaticPaths${ifTs(ts, `: GetStaticPaths`)} = async () => {
   `.trim();
 }
 
-export function makeNextjsHostPage(scheme: CodeScheme): string {
-  const commonImports = `
-import * as React from 'react';
-import Script from 'next/script';
-  `.trim();
-
+export function makeNextjsHostPage(scheme: SchemeType): string {
   if (scheme === "loader") {
-    return `
-${commonImports}
+    return `import * as React from 'react';
 import { PlasmicCanvasHost } from '@plasmicapp/loader-nextjs';
-import { PLASMIC } from '../plasmic-init';
+import { PLASMIC } from 'plasmic-init';
 
 export default function PlasmicHost() {
   return PLASMIC && <PlasmicCanvasHost />;
 }
-    `;
+`;
   } else {
-    return `
-${commonImports}
+    return `import * as React from 'react';
 import { PlasmicCanvasHost, registerComponent } from '@plasmicapp/host';
 
 // You can register any code components that you want to use here; see
@@ -147,7 +140,7 @@ import { PlasmicCanvasHost, registerComponent } from '@plasmicapp/host';
 export default function PlasmicHost() {
   return <PlasmicCanvasHost />;
 }
-    `;
+`;
   }
 }
 

@@ -7,6 +7,11 @@ import { ensureTsconfig, overwriteReadme } from "./utils/file-utils";
 import { detectPackageManager } from "./utils/npm-utils";
 
 export type PlatformType = "nextjs" | "gatsby" | "react";
+export type PlatformOptions = {
+  nextjs?: {
+    appDir: boolean;
+  };
+};
 export type SchemeType = "codegen" | "loader";
 
 export function toString(s: PlatformType): string {
@@ -17,6 +22,7 @@ export interface CreatePlasmicAppArgs {
   resolvedProjectPath: string;
   projectId: string;
   platform: PlatformType;
+  platformOptions: PlatformOptions;
   scheme: SchemeType;
   useTypescript: boolean;
   projectApiToken?: string;
@@ -28,6 +34,7 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
     resolvedProjectPath,
     projectId,
     platform,
+    platformOptions,
     scheme,
     useTypescript,
     template,
@@ -75,6 +82,7 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
     projectPath: resolvedProjectPath,
     useTypescript,
     template,
+    platformOptions,
   });
 
   // Ensure that we have a empty tsconfig and @types packages.
@@ -111,6 +119,7 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
     projectApiToken,
     useTypescript,
     scheme,
+    platformOptions,
   });
 
   // Generate files
@@ -120,6 +129,7 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
     scheme,
     projectId,
     projectApiToken,
+    platformOptions,
   });
 
   /**
