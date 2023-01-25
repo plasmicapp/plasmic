@@ -1,0 +1,27 @@
+{
+  "name": "nextjs-i18n-lingui",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "lingui compile && next build",
+    "start": "next start",
+    "lint": "next lint",
+    "plasmic-i18n": "plasmic localization-strings --output locales/en/messages.po --format=po --force-overwrite --projects=fjKQstuhKKVhuH5dkNkNtj",
+    "i18n-compile": "lingui compile"
+  },
+  "dependencies": {
+    "@lingui/cli": "^3.16.1",
+    "@lingui/react": "^3.16.1",
+    "@next/font": "13.1.5",
+    "@plasmicapp/cli": "^0.1.203",
+    "@plasmicapp/loader-nextjs": "^1.0.222",
+    "@types/node": "18.11.18",
+    "@types/react": "18.0.27",
+    "@types/react-dom": "18.0.10",
+    "next": "13.1.5",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "typescript": "4.9.4"
+  }
+}

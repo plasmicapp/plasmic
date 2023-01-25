@@ -1,0 +1,6 @@
+{
+  "locales": ["es", "en"],
+  "catalogs": [{
+    "path": "locales/{locale}/messages"
+  }]
+}
