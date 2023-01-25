@@ -33,25 +33,34 @@ async function triggerLogin(appId: string, authorizeEndpoint: string) {
 interface PlasmicPageGuardProps {
   appId: string;
   authorizeEndpoint: string;
+  minRole: string;
+  canTriggerLogin: boolean;
   children: React.ReactNode;
-  validRoles: string[];
 }
 
 export function PlasmicPageGuard(props: PlasmicPageGuardProps) {
-  const { appId, authorizeEndpoint, validRoles, children } = props;
+  const {
+    appId,
+    authorizeEndpoint,
+    minRole,
+    canTriggerLogin,
+    children,
+  } = props;
 
   const dataSourceCtxValue = usePlasmicDataSourceContext();
 
   React.useEffect(() => {
-    if (
-      dataSourceCtxValue &&
-      "isUserLoading" in dataSourceCtxValue &&
-      !dataSourceCtxValue.isUserLoading &&
-      !dataSourceCtxValue.user
-    ) {
-      triggerLogin(appId, authorizeEndpoint);
+    if (canTriggerLogin) {
+      if (
+        dataSourceCtxValue &&
+        "isUserLoading" in dataSourceCtxValue &&
+        !dataSourceCtxValue.isUserLoading &&
+        !dataSourceCtxValue.user
+      ) {
+        triggerLogin(appId, authorizeEndpoint);
+      }
     }
-  }, [dataSourceCtxValue, appId, authorizeEndpoint]);
+  }, [dataSourceCtxValue, appId, authorizeEndpoint, canTriggerLogin]);
 
   function canUserViewPage() {
     if (!dataSourceCtxValue) {
@@ -60,16 +69,19 @@ export function PlasmicPageGuard(props: PlasmicPageGuardProps) {
     if (!dataSourceCtxValue.user) {
       return false;
     }
-    if (!("roleId" in dataSourceCtxValue.user)) {
+    if (!("roleIds" in dataSourceCtxValue.user)) {
       return false;
     }
-    return validRoles.includes(dataSourceCtxValue.user.roleId);
+    if (!Array.isArray(dataSourceCtxValue.user.roleIds)) {
+      return false;
+    }
+    return dataSourceCtxValue.user.roleIds.includes(minRole);
   }
 
   if (
     !dataSourceCtxValue ||
     dataSourceCtxValue.isUserLoading ||
-    !dataSourceCtxValue.user
+    (!dataSourceCtxValue.user && canTriggerLogin)
   ) {
     return null;
   }
