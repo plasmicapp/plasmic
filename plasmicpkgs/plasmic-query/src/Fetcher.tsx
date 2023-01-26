@@ -1,9 +1,7 @@
-import { DataProvider, usePlasmicCanvasContext } from "@plasmicapp/host";
-import registerComponent, {
-  ComponentMeta,
-} from "@plasmicapp/host/registerComponent";
-import { usePlasmicQueryData } from "@plasmicapp/query";
-import React, { ReactNode } from "react";
+import {DataProvider, usePlasmicCanvasContext} from "@plasmicapp/host";
+import registerComponent, {ComponentMeta,} from "@plasmicapp/host/registerComponent";
+import {usePlasmicQueryData} from "@plasmicapp/query";
+import React, {ReactNode} from "react";
 
 export interface GenericFetcherProps {
   children?: ReactNode;
@@ -208,14 +206,15 @@ export function registerDataFetcher(
 export interface GraphqlFetcherProps
   extends GenericFetcherProps,
     Omit<FetchProps, "body"> {
-  query?: string;
+  query?: {query?: string, variables?: {}};
   queryKey?: string;
+  varOverrides?: {};
 }
 
 export function GraphqlFetcher(props: GraphqlFetcherProps) {
-  const { query, url, method, headers, queryKey } = props;
+  const { query, url, method, headers, queryKey, varOverrides } = props;
   const fetchProps: FetchProps = {
-    body: query,
+    body: ({...query, variables: {...query?.variables, ...varOverrides}}),
     url,
     method,
     headers,
@@ -241,8 +240,8 @@ export const graphqlFetcherMeta: ComponentMeta<GraphqlFetcherProps> = {
         headers: (props) => props.headers,
         endpoint: (props) => props.url ?? "",
         defaultValue: {
-          query: `{
-  characters {
+          query: `query MyQuery($name: String) {
+  characters(filter: {name: $name}) {
     results {
       name
       species
@@ -251,8 +250,17 @@ export const graphqlFetcherMeta: ComponentMeta<GraphqlFetcherProps> = {
   }
 }
 `,
+          variables: {
+            name: "Rick Sanchez"
+          }
         },
       },
+      varOverrides: {
+        type: 'object',
+        displayName: 'Override variables',
+        description: "Pass in dynamic values for your query variables, as an object of key-values",
+        defaultValue: {}
+      }
     };
     // Reorder the props
     const { url, query, method, headers, queryKey, ...rest } = {
