@@ -541,5 +541,14 @@ export default function registerComponent<T extends React.ComponentType<any>>(
   component: T,
   meta: ComponentMeta<React.ComponentProps<T>>
 ) {
+  // Check for duplicates
+  if (
+    root.__PlasmicComponentRegistry.some(
+      (r: ComponentRegistration) =>
+        r.component === component && r.meta.name === meta.name
+    )
+  ) {
+    return;
+  }
   root.__PlasmicComponentRegistry.push({ component, meta });
 }

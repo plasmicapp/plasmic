@@ -101,5 +101,14 @@ if (root.__PlasmicContextRegistry == null) {
 export default function registerGlobalContext<
   T extends React.ComponentType<any>
 >(component: T, meta: GlobalContextMeta<React.ComponentProps<T>>) {
+  // Check for duplicates
+  if (
+    root.__PlasmicContextRegistry.some(
+      (r: GlobalContextRegistration) =>
+        r.component === component && r.meta.name === meta.name
+    )
+  ) {
+    return;
+  }
   root.__PlasmicContextRegistry.push({ component, meta });
 }

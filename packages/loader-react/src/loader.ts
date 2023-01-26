@@ -85,6 +85,9 @@ export type FetchPagesOpts = {
   includeDynamicPages?: boolean;
 };
 
+const SUBSTITUTED_COMPONENTS: Record<string, React.ComponentType<any>> = {};
+const SUBSTITUTED_GLOBAL_VARIANT_HOOKS: Record<string, () => any> = {};
+
 export class InternalPlasmicComponentLoader {
   private readonly reactServerLoader: ReactServerPlasmicComponentLoader;
   private readonly registry = new Registry();
@@ -92,9 +95,6 @@ export class InternalPlasmicComponentLoader {
   private roots: PlasmicRootWatcher[] = [];
   private globalVariants: GlobalVariantSpec[] = [];
   private tracker: PlasmicTracker;
-
-  private substitutedComponents: Record<string, React.ComponentType<any>> = {};
-  private substitutedGlobalVariantHooks: Record<string, () => any> = {};
 
   constructor(private opts: InitOptions) {
     this.tracker = new PlasmicTracker({
@@ -126,8 +126,8 @@ export class InternalPlasmicComponentLoader {
       '@plasmicapp/data-sources-context': PlasmicDataSourcesContext,
       '@plasmicapp/host': PlasmicHost,
       '@plasmicapp/loader-runtime-registry': {
-        components: this.substitutedComponents,
-        globalVariantHooks: this.substitutedGlobalVariantHooks,
+        components: SUBSTITUTED_COMPONENTS,
+        globalVariantHooks: SUBSTITUTED_GLOBAL_VARIANT_HOOKS,
       },
     });
   }
@@ -329,7 +329,7 @@ export class InternalPlasmicComponentLoader {
     for (const sub of this.subs) {
       const metas = getCompMetas(this.getBundle().components, sub.lookup);
       metas.forEach((meta) => {
-        this.substitutedComponents[meta.id] = sub.component;
+        SUBSTITUTED_COMPONENTS[meta.id] = sub.component;
       });
     }
 
@@ -341,7 +341,7 @@ export class InternalPlasmicComponentLoader {
     // hooks to read from them instead.
     for (const globalGroup of this.getBundle().globalGroups) {
       if (globalGroup.type !== 'global-screen') {
-        this.substitutedGlobalVariantHooks[
+        SUBSTITUTED_GLOBAL_VARIANT_HOOKS[
           globalGroup.id
         ] = createUseGlobalVariant(globalGroup.name, globalGroup.projectId);
       }
