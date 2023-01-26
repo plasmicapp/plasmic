@@ -406,7 +406,10 @@ export function CmsQueryRepeater({
     forceLoadingState
   );
   return (
-    <DataProvider data={maybeData?.data} name={`${mkQueryContextKey(table!)}s`}>
+    <DataProvider
+      data={maybeData?.data}
+      name={table ? `${mkQueryContextKey(table)}s` : undefined}
+    >
       {noLayout ? <> {node} </> : <div className={className}> {node} </div>}
     </DataProvider>
   );
