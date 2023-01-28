@@ -28,6 +28,9 @@ function tryGetSchema(data?: QueryResult): TableSchema | undefined {
   if (data?.schema) {
     return data.schema;
   }
+  if (Array.isArray(data)) {
+    data = { data };
+  }
   if (!data?.data || !Array.isArray(data.data) || data.data.length === 0) {
     return undefined;
   }
