@@ -24,8 +24,8 @@
     "@types/js-cookie": "^3.0.1",
     "@types/lodash.debounce": "^4.0.7",
     "@types/node": "^14.0.26",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "size-limit": "^4.11.0",
     "tsdx": "^0.14.1",
     "typescript": "^3.9.7"
@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@plasmicapp/query": "0.1.59",
-    "@types/react": "^17.0.40",
+    "@types/react": "^18.0.27",
     "@vercel/fetch": "^6.2.0",
     "debounce": "^1.2.1",
     "js-cookie": "^3.0.1",

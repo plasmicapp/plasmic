@@ -33,6 +33,7 @@ const effects = Object.keys(effectNameToComponent);
 export interface RevealProps extends React.ComponentProps<typeof Fade> {
   className?: string;
   effect?: Effect;
+  children?: React.ReactNode;
 }
 
 export function Reveal({ effect = "fade", className, ...props }: RevealProps) {
@@ -87,7 +88,7 @@ export const revealMeta: ComponentMeta<RevealProps> = {
       displayName: "Damping",
       description:
         "Factor that affects the delay that each animated element in a cascade animation will be assigned",
-      defaultValueHint: 0.5
+      defaultValueHint: 0.5,
     },
     delay: {
       type: "number",
@@ -135,7 +136,7 @@ export const revealMeta: ComponentMeta<RevealProps> = {
       options: effects.map((v) => v),
       displayName: "Effect",
       description: "The Reveal animation effect to be applied",
-      defaultValueHint: "fade"
+      defaultValueHint: "fade",
     },
     // `fraction` seems not to be working properly as of `react-awesome-reveal@3.8.1`
     /* fraction: {

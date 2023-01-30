@@ -2,18 +2,15 @@
   Forked from https://github.com/vercel/commerce/tree/main/packages/swell/src
   Changes: None
 */
-import { useCallback } from 'react'
 import type {
-  MutationHookContext,
   HookFetcherContext,
-} from '@plasmicpkgs/commerce'
+  MutationHookContext,
+} from "@plasmicpkgs/commerce";
+import { useCallback } from "react";
 
-import { useRemoveItem, 
-  UseRemoveItem,
-} from '@plasmicpkgs/commerce'
-import { CartType } from '@plasmicpkgs/commerce'
-import useCart from './use-cart'
-import { checkoutToCart } from './utils'
+import { CartType, useRemoveItem, UseRemoveItem } from "@plasmicpkgs/commerce";
+import useCart from "./use-cart";
+import { checkoutToCart } from "./utils";
 
 type Cart = CartType.Cart;
 type LineItem = CartType.LineItem;
@@ -21,41 +18,39 @@ type RemoveItemHook = CartType.RemoveItemHook;
 
 export type RemoveItemFn<T = any> = T extends LineItem
   ? (input?: RemoveItemActionInput<T>) => Promise<Cart | null | undefined>
-  : (input: RemoveItemActionInput<T>) => Promise<Cart | null>
+  : (input: RemoveItemActionInput<T>) => Promise<Cart | null>;
 
 export type RemoveItemActionInput<T = any> = T extends LineItem
-  ? Partial<RemoveItemHook['actionInput']>
-  : RemoveItemHook['actionInput']
+  ? Partial<RemoveItemHook["actionInput"]>
+  : RemoveItemHook["actionInput"];
 
-export default useRemoveItem as UseRemoveItem<typeof handler>
+export default useRemoveItem as UseRemoveItem<typeof handler>;
 
 export const handler = {
   fetchOptions: {
-    query: 'cart',
-    method: 'removeItem',
+    query: "cart",
+    method: "removeItem",
   },
   async fetcher({
     input: { itemId },
     options,
     fetch,
   }: HookFetcherContext<RemoveItemHook>) {
-    const response = await fetch({ ...options, variables: [itemId] })
+    const response = await fetch({ ...options, variables: [itemId] });
 
-    return checkoutToCart(response)
+    return checkoutToCart(response);
   },
-  useHook:
-    ({ fetch }: MutationHookContext<RemoveItemHook>) =>
-    () => {
-      const { mutate } = useCart()
+  useHook: ({ fetch }: MutationHookContext<RemoveItemHook>) => () => {
+    const { mutate } = useCart();
 
-      return useCallback(
-        async function removeItem(input) {
-          const data = await fetch({ input: { itemId: input.id } })
-          await mutate(data, false)
+    return useCallback(
+      async function removeItem(input: { id: string }) {
+        const data = await fetch({ input: { itemId: input.id } });
+        await mutate(data, false);
 
-          return data
-        },
-        [fetch, mutate]
-      )
-    },
-}
+        return data;
+      },
+      [fetch, mutate]
+    );
+  },
+};

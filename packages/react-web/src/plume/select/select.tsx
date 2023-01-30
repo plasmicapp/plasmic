@@ -1,3 +1,10 @@
+import { usePress } from "@react-aria/interactions";
+import { useListBox } from "@react-aria/listbox";
+import { HiddenSelect, useSelect as useAriaSelect } from "@react-aria/select";
+import {
+  SelectState as AriaSelectState,
+  useSelectState as useAriaSelectState,
+} from "@react-stately/select";
 import { Placement } from "@react-types/overlays";
 import { AriaSelectProps } from "@react-types/select";
 import {
@@ -8,20 +15,6 @@ import {
   InputBase,
 } from "@react-types/shared";
 import * as React from "react";
-import {
-  HiddenSelect,
-  useSelect as useAriaSelect,
-} from "@react-aria/select";
-import {
-  useListBox
-} from "@react-aria/listbox";
-import {
-  usePress
-} from "@react-aria/interactions";
-import {
-  SelectState as AriaSelectState,
-  useSelectState as useAriaSelectState,
-} from "@react-stately/select";
 import { pick } from "../../common";
 import { mergeProps } from "../../react-utils";
 import { Overrides } from "../../render/elements";
@@ -191,7 +184,7 @@ function useAriaSelectProps(props: BaseSelectProps) {
   });
 
   const collectionChildRenderer = React.useCallback(
-    (child) => renderAsCollectionChild(child, COLLECTION_OPTS),
+    (child: any) => renderAsCollectionChild(child, COLLECTION_OPTS),
     []
   );
 

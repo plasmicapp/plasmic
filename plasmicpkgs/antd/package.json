@@ -20,7 +20,7 @@
     }
   ],
   "scripts": {
-    "build": "tsdx build && yarn copy_css_files && rollup -c rollup.config.js",
+    "build": "tsdx build && yarn copy_css_files && rollup -c rollup.config.mjs",
     "start": "tsdx watch",
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
@@ -34,8 +34,8 @@
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/node": "^14.0.26",
     "antd": "^4.17.2",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "size-limit": "^4.11.0",
     "tsdx": "^0.14.1",
     "typescript": "^3.9.7"

@@ -23,8 +23,8 @@
     "@types/js-cookie": "^3.0.1",
     "@types/node": "^14.0.26",
     "js-cookie": "^3.0.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "size-limit": "^4.11.0",
     "tsdx": "^0.14.1",
     "typescript": "^3.9.7"
@@ -35,6 +35,6 @@
   },
   "dependencies": {
     "@plasmicpkgs/commerce": "0.0.95",
-    "@types/react": "^17.0.40"
+    "@types/react": "^18.0.27"
   }
 }

@@ -11,12 +11,13 @@ import { Registerable } from "./registerable";
 
 export class Dropdown extends React.Component<DropDownProps> {
   render() {
-    const finalProps = { ...this.props };
+    const thisProps = this.props as any;
+    const finalProps = { ...thisProps };
     finalProps.children =
-      typeof this.props.children === "string" ? (
-        <div>{this.props.children}</div>
+      typeof thisProps.children === "string" ? (
+        <div>{thisProps.children}</div>
       ) : (
-        this.props.children
+        thisProps.children
       );
     return <AntdDropdown {...finalProps}>{}</AntdDropdown>;
   }
