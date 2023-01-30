@@ -1,9 +1,8 @@
-import { JsOrTs, SchemeType } from "../lib";
 import { ifTs } from "../utils/file-utils";
+import { JsOrTs, SchemeType } from "../utils/types";
 
-export const makeGatsbyDefaultPage = (jsOrTs: JsOrTs): string => {
-  return `
-import React from "react";
+export function makeGatsbyDefaultPage(jsOrTs: JsOrTs): string {
+  return `import React from "react";
 import Helmet from "react-helmet";
 import {
   PlasmicComponent,
@@ -64,22 +63,21 @@ const PlasmicGatsbyPage = ({ data, location }${ifTs(
 };
 
 export default PlasmicGatsbyPage;
-`.trim();
-};
+`;
+}
 
-export const GATSBY_404 = `
-const NotFound = () => {
+export const GATSBY_404 = `const NotFound = () => {
   return "Not Found";
 };
 export default NotFound;
-`.trim();
+`;
 
-export const GATSBY_PLUGIN_CONFIG = (
+export function GATSBY_PLUGIN_CONFIG(
   projectId: string,
   projectApiToken: string,
   jsOrTs: JsOrTs
-): string => `
-{
+): string {
+  return `{
   resolve: "@plasmicapp/loader-gatsby",
   options: {
     projects: [
@@ -98,15 +96,15 @@ export const GATSBY_PLUGIN_CONFIG = (
   resolve: "gatsby-plugin-react-helmet",
 }
 `;
+}
 
-export const makeGatsbyHostPage = (opts: {
+export function makeGatsbyHostPage(opts: {
   jsOrTs: JsOrTs;
   scheme: SchemeType;
-}): string => {
+}): string {
   const { jsOrTs, scheme } = opts;
   if (scheme === "loader") {
-    return `
-import * as React from "react"
+    return `import * as React from "react"
 import {
   PlasmicCanvasHost${ifTs(jsOrTs, `, InitOptions`)}
 } from "@plasmicapp/loader-gatsby"
@@ -133,10 +131,9 @@ export default function Host({ data }${ifTs(jsOrTs, ": HostProps")}) {
   initPlasmicLoaderWithRegistrations(plasmicOptions)
   return <PlasmicCanvasHost />
 }
-    `.trim();
+`;
   } else {
-    return `
-import * as React from "react"
+    return `import * as React from "react"
 import { PlasmicCanvasHost, registerComponent } from "@plasmicapp/host";
 
 // You can register any code components that you want to use here; see
@@ -153,12 +150,11 @@ export default function PlasmicHost() {
     <PlasmicCanvasHost />
   );
 }
-    `;
+`;
   }
-};
+}
 
-export const GATSBY_SSR_CONFIG = `
-/**
+export const GATSBY_SSR_CONFIG = `/**
  * Implement Gatsby's SSR (Server Side Rendering) APIs in this file.
  *
  * See: https://www.gatsbyjs.com/docs/ssr-apis/
@@ -202,11 +198,10 @@ exports.onRenderBody = ({ pathname, setHeadComponents }) => {
     setHeadComponents(HeadComponents)
   }
 }
-`.trim();
+`;
 
-export const makeGatsbyPlasmicInit = (jsOrTs: JsOrTs): string => {
-  return `
-import {
+export function makeGatsbyPlasmicInit(jsOrTs: JsOrTs): string {
+  return `import {
   initPlasmicLoader,${ifTs(
     jsOrTs,
     `
@@ -231,12 +226,11 @@ export function initPlasmicLoaderWithRegistrations(plasmicOptions${ifTs(
 
   return PLASMIC;
 }
-`.trim();
-};
+`;
+}
 
 export function wrapAppRootForCodegen(): string {
-  return `
-import React from "react";
+  return `import React from "react";
 import { PlasmicRootProvider } from "@plasmicapp/react-web";
 import Helmet from "react-helmet";
 
@@ -247,5 +241,5 @@ export const wrapRootElement = ({ element }) => {
     </PlasmicRootProvider>
   );
 }
-  `;
+`;
 }

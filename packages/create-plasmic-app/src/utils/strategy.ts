@@ -1,4 +1,4 @@
-import { JsOrTs, PlatformOptions, SchemeType } from "../lib";
+import { JsOrTs, PlatformOptions, SchemeType } from "./types";
 
 export interface CreateArgs {
   projectPath: string;
@@ -36,6 +36,9 @@ export interface InstallArgs {
   jsOrTs: JsOrTs;
 }
 
+// TODO: Remove this interface and use a single "create" entry point.
+// It forces us to make all strategies follow the same steps, even though each strategy has its own quirks.
+// For example, this results in platform-specific conditionals in the utils files which is hard to follow.
 export interface CPAStrategy {
   create: (args: CreateArgs) => Promise<void>;
   installDeps: (args: InstallArgs) => Promise<boolean>;

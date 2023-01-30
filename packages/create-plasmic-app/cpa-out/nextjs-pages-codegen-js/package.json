@@ -9,13 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@next/font": "13.1.5",
-    "@plasmicapp/cli": "^0.1.203",
-    "@plasmicapp/host": "^1.0.98",
-    "@plasmicapp/react-web": "^0.2.148",
-    "eslint": "8.32.0",
-    "eslint-config-next": "13.1.5",
-    "next": "13.1.5",
+    "@next/font": "13.1.6",
+    "@plasmicapp/cli": "^0.1.205",
+    "@plasmicapp/host": "^1.0.100",
+    "@plasmicapp/react-web": "^0.2.150",
+    "eslint": "8.33.0",
+    "eslint-config-next": "13.1.6",
+    "next": "13.1.6",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   }

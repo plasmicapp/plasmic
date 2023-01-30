@@ -1,5 +1,5 @@
-import { JsOrTs } from "../../../lib";
 import { ifTs } from "../../../utils/file-utils";
+import { JsOrTs } from "../../../utils/types";
 
 export function makeNextjsAppDirCatchallPage(jsOrTs: JsOrTs) {
   return `import { PlasmicComponent } from "@plasmicapp/loader-nextjs";

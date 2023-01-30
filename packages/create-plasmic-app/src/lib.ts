@@ -2,21 +2,25 @@ import { auth, getProjectApiToken, setMetadataEnv } from "@plasmicapp/cli";
 import chalk from "chalk";
 import * as path from "upath";
 import validateProjectName from "validate-npm-package-name";
-import { getCPAStrategy } from "./strategies";
 import { ensureTsconfig, overwriteReadme } from "./utils/file-utils";
 import { detectPackageManager } from "./utils/npm-utils";
+import { CPAStrategy } from "./utils/strategy";
+import {
+  JsOrTs,
+  PlatformOptions,
+  PlatformType,
+  SchemeType,
+} from "./utils/types";
 
-export type JsOrTs = "js" | "ts";
-export type PlatformType = "nextjs" | "gatsby" | "react";
-export type PlatformOptions = {
-  nextjs?: {
-    appDir: boolean;
-  };
-};
-export type SchemeType = "codegen" | "loader";
-
-export function toString(s: PlatformType): string {
-  return s === "nextjs" ? "Next.js" : s === "gatsby" ? "Gatsby" : "React";
+async function getCPAStrategy(platform: PlatformType): Promise<CPAStrategy> {
+  switch (platform) {
+    case "nextjs":
+      return (await import("./nextjs/nextjs")).nextjsStrategy;
+    case "gatsby":
+      return (await import("./gatsby/gatsby")).gatsbyStrategy;
+    case "react":
+      return (await import("./react/react")).reactStrategy;
+  }
 }
 
 export interface CreatePlasmicAppArgs {
@@ -76,7 +80,7 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
     throw new Error(`Unrecognized Plasmic scheme: ${scheme}`);
   }
 
-  const cpaStrategy = getCPAStrategy(platform);
+  const cpaStrategy = await getCPAStrategy(platform);
 
   // Create project using strategy for platform
   await cpaStrategy.create({

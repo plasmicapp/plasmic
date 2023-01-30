@@ -1,8 +1,7 @@
-import { PlatformType, toString } from "../lib";
+import { PlatformType, platformTypeToString } from "../utils/types";
 
-export const README = (platform: PlatformType, buildCommand: string): string =>
-  `
-This is a ${toString(
+export function README(platform: PlatformType, buildCommand: string): string {
+  return `This is a ${platformTypeToString(
     platform
   )} project bootstrapped with [\`create-plasmic-app\`](https://www.npmjs.com/package/create-plasmic-app).
 
@@ -29,4 +28,5 @@ To learn more about Plasmic, take a look at the following resources:
 - [Plasmic Slack Community](https://www.plasmic.app/slack)
 
 You can check out [the Plasmic GitHub repository](https://github.com/plasmicapp/plasmic) - your feedback and contributions are welcome!
-  `.trim();
+`;
+}

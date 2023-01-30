@@ -1,12 +1,12 @@
 import fs from "fs";
 import path from "path";
 import { spawnOrFail } from "../utils/cmd-utils";
+import { installCodegenDeps, runCodegenSync } from "../utils/codegen";
 import { overwriteIndex } from "../utils/file-utils";
 import { installUpgrade } from "../utils/npm-utils";
-import { installCodegenDeps, runCodegenSync } from "./common";
-import { CPAStrategy } from "./types";
+import { CPAStrategy } from "../utils/strategy";
 
-const reactStrategy: CPAStrategy = {
+export const reactStrategy: CPAStrategy = {
   create: async (args) => {
     const { projectPath, jsOrTs } = args;
     let { template } = args;
@@ -69,5 +69,3 @@ const reactStrategy: CPAStrategy = {
     await spawnOrFail(`${npmRunCmd} build`, projectPath);
   },
 };
-
-export default reactStrategy;

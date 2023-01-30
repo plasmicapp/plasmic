@@ -2,10 +2,10 @@ import { existsSync, promises as fs, unlinkSync } from "fs";
 import glob from "glob";
 import L from "lodash";
 import * as path from "upath";
-import { JsOrTs, PlatformType } from "../lib";
-import { GATSBY_404 } from "../templates/gatsby";
+import { GATSBY_404 } from "../gatsby/template";
 import { README } from "../templates/readme";
 import { WELCOME_PAGE } from "../templates/welcomePage";
+import { JsOrTs, PlatformType } from "../utils/types";
 import { ensure, ensureString } from "./lang-utils";
 import { installUpgrade } from "./npm-utils";
 

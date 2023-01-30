@@ -5,8 +5,7 @@ module.exports = {
   siteMetadata: {
     siteUrl: `https://www.yourdomain.tld`,
   },
-  plugins: [
-{
+  plugins: [{
   resolve: "@plasmicapp/loader-gatsby",
   options: {
     projects: [

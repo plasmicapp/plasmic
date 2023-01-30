@@ -1,23 +1,23 @@
 import { promises as fs } from "fs";
 import path from "path";
+import { spawnOrFail } from "../utils/cmd-utils";
+import { installCodegenDeps, runCodegenSync } from "../utils/codegen";
+import { deleteGlob, overwriteIndex } from "../utils/file-utils";
+import { ensure } from "../utils/lang-utils";
+import { installUpgrade } from "../utils/npm-utils";
+import { CPAStrategy, GenerateFilesArgs } from "../utils/strategy";
 import {
   makeNextjsCatchallPage,
   makeNextjsHostPage,
   makeNextjsInitPage,
   wrapAppRootForCodegen,
-} from "../templates/nextjs";
-import { makeNextjsAppDirCatchallPage } from "../templates/nextjs/loader-app/catchall-page";
-import { makeNextjsAppDirPlasmicHostPage } from "../templates/nextjs/loader-app/plasmic-host";
-import { makeNextjsAppDirPlasmicInit } from "../templates/nextjs/loader-app/plasmic-init";
-import { makeNextjsAppDirPlasmicInitClient } from "../templates/nextjs/loader-app/plasmic-init-client";
-import { spawnOrFail } from "../utils/cmd-utils";
-import { deleteGlob, overwriteIndex } from "../utils/file-utils";
-import { ensure } from "../utils/lang-utils";
-import { installUpgrade } from "../utils/npm-utils";
-import { installCodegenDeps, runCodegenSync } from "./common";
-import { CPAStrategy, GenerateFilesArgs } from "./types";
+} from "./template";
+import { makeNextjsAppDirCatchallPage } from "./templates/loader-app/catchall-page";
+import { makeNextjsAppDirPlasmicHostPage } from "./templates/loader-app/plasmic-host";
+import { makeNextjsAppDirPlasmicInit } from "./templates/loader-app/plasmic-init";
+import { makeNextjsAppDirPlasmicInitClient } from "./templates/loader-app/plasmic-init-client";
 
-const nextjsStrategy: CPAStrategy = {
+export const nextjsStrategy: CPAStrategy = {
   create: async (args) => {
     const { projectPath, template, jsOrTs, platformOptions } = args;
     const typescriptArg = `--${jsOrTs}`;
@@ -93,8 +93,6 @@ module.exports = nextConfig;`
     await spawnOrFail(`${npmRunCmd} build`, projectPath);
   },
 };
-
-export default nextjsStrategy;
 
 async function generateFilesAppDir(args: GenerateFilesArgs) {
   const { projectPath, jsOrTs, projectId, projectApiToken } = args;

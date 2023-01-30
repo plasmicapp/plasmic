@@ -1,5 +1,5 @@
-import { JsOrTs } from "../../../lib";
 import { ifTs } from "../../../utils/file-utils";
+import { JsOrTs } from "../../../utils/types";
 
 export function makeNextjsAppDirPlasmicInitClient(jsOrTs: JsOrTs) {
   return `"use client";

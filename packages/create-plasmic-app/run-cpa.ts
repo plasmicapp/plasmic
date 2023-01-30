@@ -2,8 +2,8 @@ import * as fs from "fs";
 import * as inquirer from "inquirer";
 import * as path from "path";
 import yargs from "yargs";
-import { PlatformType, SchemeType } from "./src/lib";
 import { spawnOrFail } from "./src/utils/cmd-utils";
+import { PlatformType, SchemeType } from "./src/utils/types";
 
 // https://studio.plasmic.app/projects/47tFXWjN2C4NyHFGGpaYQ3
 const projectId = "47tFXWjN2C4NyHFGGpaYQ3";

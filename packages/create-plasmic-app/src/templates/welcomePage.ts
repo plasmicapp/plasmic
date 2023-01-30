@@ -1,5 +1,4 @@
-export const PLASMIC_LOGO = `
-function PlasmicLogo() {
+export const PLASMIC_LOGO = `function PlasmicLogo() {
   return (
     <svg
       width={40}
@@ -62,13 +61,12 @@ function PlasmicLogo() {
 }
 `;
 
-export const WELCOME_PAGE = (
+export function WELCOME_PAGE(
   hasPages: boolean,
   platform: string,
   pageSection: string
-): string =>
-  `
-import React from "react";
+): string {
+  return `import React from "react";
 ${hasPages && platform === "nextjs" ? `import Link from "next/link";` : ""}
 ${PLASMIC_LOGO}
 
@@ -98,4 +96,5 @@ function Index() {
 }
 
 export default Index;
-`.trim();
+`;
+}

@@ -6,9 +6,9 @@ import inquirer, { DistinctQuestion } from "inquirer";
 import * as path from "upath";
 import yargs from "yargs";
 import * as cpa from "./lib";
-import { PlatformOptions, PlatformType, SchemeType } from "./lib";
 import { ensure } from "./utils/lang-utils";
 import { checkEngineStrict, updateNotify } from "./utils/npm-utils";
+import { PlatformOptions, PlatformType, SchemeType } from "./utils/types";
 
 if (process.env.CPA_DEBUG_CHDIR) {
   process.chdir(process.env.CPA_DEBUG_CHDIR);

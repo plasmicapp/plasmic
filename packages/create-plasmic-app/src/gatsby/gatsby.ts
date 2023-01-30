@@ -1,6 +1,12 @@
 import { createReadStream, existsSync, promises as fs } from "fs";
 import path from "path";
 import * as readline from "readline";
+import { spawnOrFail } from "../utils/cmd-utils";
+import { installCodegenDeps, runCodegenSync } from "../utils/codegen";
+import { deleteGlob, ifTs, overwriteIndex } from "../utils/file-utils";
+import { ensure } from "../utils/lang-utils";
+import { installUpgrade } from "../utils/npm-utils";
+import { CPAStrategy } from "../utils/strategy";
 import {
   GATSBY_404,
   GATSBY_PLUGIN_CONFIG,
@@ -9,20 +15,14 @@ import {
   makeGatsbyHostPage,
   makeGatsbyPlasmicInit,
   wrapAppRootForCodegen,
-} from "../templates/gatsby";
-import { spawnOrFail } from "../utils/cmd-utils";
-import { deleteGlob, ifTs, overwriteIndex } from "../utils/file-utils";
-import { ensure } from "../utils/lang-utils";
-import { installUpgrade } from "../utils/npm-utils";
-import { installCodegenDeps, runCodegenSync } from "./common";
-import { CPAStrategy } from "./types";
+} from "./template";
 
 export const GATSBY_TEMPLATES = {
   js: `https://github.com/gatsbyjs/gatsby-starter-minimal.git`,
   ts: `https://github.com/gatsbyjs/gatsby-starter-minimal-ts.git`,
 };
 
-const gatsbyStrategy: CPAStrategy = {
+export const gatsbyStrategy: CPAStrategy = {
   create: async (args) => {
     const { projectPath, template, jsOrTs } = args;
     if (template) {
@@ -189,5 +189,3 @@ const gatsbyStrategy: CPAStrategy = {
     await spawnOrFail(`${npmRunCmd} build`, projectPath);
   },
 };
-
-export default gatsbyStrategy;

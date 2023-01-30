@@ -1,12 +1,11 @@
-import { JsOrTs, SchemeType } from "../lib";
 import { ifTs } from "../utils/file-utils";
+import { JsOrTs, SchemeType } from "../utils/types";
 
 export const makeNextjsInitPage = (
   projectId: string,
   projectApiToken: string
 ): string =>
-  `
-import { initPlasmicLoader } from "@plasmicapp/loader-nextjs";
+  `import { initPlasmicLoader } from "@plasmicapp/loader-nextjs";
 
 export const PLASMIC = initPlasmicLoader({
   projects: [
@@ -31,11 +30,10 @@ export const PLASMIC = initPlasmicLoader({
 // https://docs.plasmic.app/learn/app-hosting/#set-a-plasmic-project-to-use-your-app-host
 
 // PLASMIC.registerComponent(...);
-`.trim();
+`;
 
 export function makeNextjsCatchallPage(jsOrTs: JsOrTs): string {
-  return `
-import * as React from "react";
+  return `import * as React from "react";
 import {
   PlasmicComponent,
   extractPlasmicQueryData,
@@ -110,7 +108,7 @@ export const getStaticPaths${ifTs(jsOrTs, `: GetStaticPaths`)} = async () => {
     fallback: "blocking",
   };
 }
-  `.trim();
+`;
 }
 
 export function makeNextjsHostPage(scheme: SchemeType): string {
