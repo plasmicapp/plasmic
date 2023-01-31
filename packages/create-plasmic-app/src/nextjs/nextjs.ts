@@ -6,16 +6,15 @@ import { deleteGlob, overwriteIndex } from "../utils/file-utils";
 import { ensure } from "../utils/lang-utils";
 import { installUpgrade } from "../utils/npm-utils";
 import { CPAStrategy, GenerateFilesArgs } from "../utils/strategy";
-import {
-  makeNextjsCatchallPage,
-  makeNextjsHostPage,
-  makeNextjsInitPage,
-  wrapAppRootForCodegen,
-} from "./template";
-import { makeNextjsAppDirCatchallPage } from "./templates/loader-app/catchall-page";
-import { makeNextjsAppDirPlasmicHostPage } from "./templates/loader-app/plasmic-host";
-import { makeNextjsAppDirPlasmicInit } from "./templates/loader-app/plasmic-init";
-import { makeNextjsAppDirPlasmicInitClient } from "./templates/loader-app/plasmic-init-client";
+import { makeCatchallPage_app_loader } from "./templates/app-loader/catchall-page";
+import { makePlasmicInit_app_loader } from "./templates/app-loader/plasmic-init";
+import { makePlasmicInitClient_app_loader } from "./templates/app-loader/plasmic-init-client";
+import { makeCustomApp_pages_codegen } from "./templates/pages-codegen/app";
+import { makePlasmicHostPage_pages_codegen } from "./templates/pages-codegen/plasmic-host";
+import { makeCatchallPage_pages_loader } from "./templates/pages-loader/catchall-page";
+import { makePlasmicHostPage_app_loader } from "./templates/app-loader/plasmic-host";
+import { makePlasmicHostPage_pages_loader } from "./templates/pages-loader/plasmic-host";
+import { makePlasmicInit_pages_loader } from "./templates/pages-loader/plasmic-init";
 
 export const nextjsStrategy: CPAStrategy = {
   create: async (args) => {
@@ -97,70 +96,85 @@ module.exports = nextConfig;`
 async function generateFilesAppDir(args: GenerateFilesArgs) {
   const { projectPath, jsOrTs, projectId, projectApiToken } = args;
 
-  // Always start fresh
-  const appPath = path.join(projectPath, "app");
-  deleteGlob(path.join(appPath, "page.*"));
+  // Delete existing pages
+  deleteGlob(path.join(projectPath, "app", "page.*"));
 
-  const initFile = path.join(projectPath, `plasmic-init.${jsOrTs}`);
+  // ./plasmic-init.ts
   await fs.writeFile(
-    initFile,
-    makeNextjsAppDirPlasmicInit(projectId, ensure(projectApiToken))
+    path.join(projectPath, `plasmic-init.${jsOrTs}`),
+    makePlasmicInit_app_loader(projectId, ensure(projectApiToken))
   );
 
-  const initClientFile = path.join(
-    projectPath,
-    `plasmic-init-client.${jsOrTs}x`
+  // ./plasmic-init-client.ts
+  await fs.writeFile(
+    path.join(projectPath, `plasmic-init-client.${jsOrTs}x`),
+    makePlasmicInitClient_app_loader(jsOrTs)
   );
-  await fs.writeFile(initClientFile, makeNextjsAppDirPlasmicInitClient(jsOrTs));
 
-  const hostPage = path.join(
-    appPath,
-    "plasmic-host",
-    `page.${jsOrTs}x`
+  // ./app/plasmic-host/page.tsx
+  await fs.mkdir(path.join(projectPath, "app", "plasmic-host"));
+  await fs.writeFile(
+    path.join(projectPath, "app", "plasmic-host", `page.${jsOrTs}x`),
+    makePlasmicHostPage_app_loader()
   );
-  await fs.mkdir(path.join(appPath, "plasmic-host"));
-  await fs.writeFile(hostPage, makeNextjsAppDirPlasmicHostPage());
 
-  // Write catch-all page for loader
-  const loaderPage = path.join(appPath, "[[...catchall]]", `page.${jsOrTs}x`);
-  await fs.mkdir(path.join(appPath, "[[...catchall]]"));
-  await fs.writeFile(loaderPage, makeNextjsAppDirCatchallPage(jsOrTs));
+  // ./app/[[...catchall]]/page.tsx
+  await fs.mkdir(path.join(projectPath, "app", "[[...catchall]]"));
+  await fs.writeFile(
+    path.join(projectPath, "app", "[[...catchall]]", `page.${jsOrTs}x`),
+    makeCatchallPage_app_loader(jsOrTs)
+  );
 }
 
 async function generateFilesPagesDir(args: GenerateFilesArgs) {
   const { projectPath, scheme, jsOrTs, projectId, projectApiToken } = args;
 
-  // this is supposed to be called for loader case, so we are supposed to remove
-  // all the files from pages/ since we have inserted a optional catch all
-  // Always start fresh
-  const pagesPath = path.join(projectPath, "pages");
-  deleteGlob(path.join(pagesPath, `*.*`));
-
-  const hostPage = path.join(pagesPath, `plasmic-host.${jsOrTs}x`);
-  await fs.writeFile(hostPage, makeNextjsHostPage(scheme));
+  // Delete existing pages
+  deleteGlob(path.join(projectPath, "pages", "*.*"));
 
   if (scheme === "loader") {
-    const initFile = path.join(projectPath, `plasmic-init.${jsOrTs}`);
+    // ./plasmic-init.ts
     await fs.writeFile(
-      initFile,
-      makeNextjsInitPage(projectId, ensure(projectApiToken))
+      path.join(projectPath, `plasmic-init.${jsOrTs}`),
+      makePlasmicInit_pages_loader(projectId, ensure(projectApiToken))
     );
 
-    // Write catch-all page for loader
-    const loaderPage = path.join(pagesPath, `[[...catchall]].${jsOrTs}x`);
-    await fs.writeFile(loaderPage, makeNextjsCatchallPage(jsOrTs));
+    // ./pages/plasmic-host.tsx
+    await fs.writeFile(
+      path.join(projectPath, "pages", `plasmic-host.${jsOrTs}x`),
+      makePlasmicHostPage_pages_loader()
+    );
+
+    // ./pages/[[...catchall]].tsx
+    await fs.writeFile(
+      path.join(projectPath, "pages", `[[...catchall]].${jsOrTs}x`),
+      makeCatchallPage_pages_loader(jsOrTs)
+    );
   } else {
+    // ./pages/_app.tsx
+    await fs.writeFile(
+      path.join(projectPath, "pages", `_app.${jsOrTs}x`),
+      makeCustomApp_pages_codegen(jsOrTs)
+    );
+
+    // ./pages/plasmic-host.tsx
+    await fs.writeFile(
+      path.join(projectPath, "pages", `plasmic-host.${jsOrTs}x`),
+      makePlasmicHostPage_pages_codegen()
+    );
+
+    // This should generate
+    // ./plasmic.json
+    // ./pages/index.tsx
+    // ./components/plasmic/**
     await runCodegenSync({
       projectId,
       projectApiToken,
       projectPath,
     });
 
-    // Overwrite the index file
+    // This should overwrite
+    // ./pages/index.tsx
     await overwriteIndex(projectPath, "nextjs", scheme);
-
-    // Overwrite the wrapper files to wrap PlasmicRootProvider
-    const appFilePath = path.join(projectPath, "pages", `_app.${jsOrTs}x`);
-    await fs.writeFile(appFilePath, wrapAppRootForCodegen(jsOrTs));
   }
 }

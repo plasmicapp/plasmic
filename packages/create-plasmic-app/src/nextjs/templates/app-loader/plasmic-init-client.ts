@@ -1,7 +1,7 @@
 import { ifTs } from "../../../utils/file-utils";
 import { JsOrTs } from "../../../utils/types";
 
-export function makeNextjsAppDirPlasmicInitClient(jsOrTs: JsOrTs) {
+export function makePlasmicInitClient_app_loader(jsOrTs: JsOrTs): string {
   return `"use client";
 
 import { PlasmicRootProvider } from "@plasmicapp/loader-nextjs";

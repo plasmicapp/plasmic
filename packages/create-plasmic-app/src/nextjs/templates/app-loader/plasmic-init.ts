@@ -1,7 +1,7 @@
-export function makeNextjsAppDirPlasmicInit(
+export function makePlasmicInit_app_loader(
   projectId: string,
   projectApiToken: string
-) {
+): string {
   return `import { initPlasmicLoader } from "@plasmicapp/loader-nextjs/react-server-conditional";
 
 export const PLASMIC = initPlasmicLoader({

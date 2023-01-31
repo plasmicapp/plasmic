@@ -1,4 +1,4 @@
-export function makeNextjsAppDirPlasmicHostPage() {
+export function makePlasmicHostPage_app_loader(): string {
   return `import { PlasmicCanvasHost } from "@plasmicapp/loader-nextjs";
 import "plasmic-init-client";
 
