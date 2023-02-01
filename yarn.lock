@@ -5423,14 +5423,6 @@
     "@plasmicapp/query" "0.1.57"
     window-or-global "^1.0.1"
 
-"@plasmicapp/host@1.0.98":
-  version "1.0.98"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.98.tgz#57111c564a7955745c6897e638e6355c0f7da99a"
-  integrity sha512-kadvNoVMOcX8oc8Cs0Ryc02odNc5QdjCpo35o7SjJK1+AbDWtzKtKgdTQl8zr1WMTR1MlKFFN5IyHww+H7GnYw==
-  dependencies:
-    "@plasmicapp/query" "0.1.59"
-    window-or-global "^1.0.1"
-
 "@plasmicapp/isomorphic-unfetch@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@plasmicapp/isomorphic-unfetch/-/isomorphic-unfetch-1.0.1.tgz#e2dfdc8d23d9d1c82f5596986fe8c09013ec8eec"

@@ -6,6 +6,7 @@ export {
 export * from "./data";
 export { PlasmicElement } from "./element-types";
 export { registerFetcher as unstable_registerFetcher } from "./fetcher";
+export * from "./global-actions";
 export {
   Action,
   ActionProps,

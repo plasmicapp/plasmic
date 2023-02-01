@@ -1,9 +1,11 @@
+import { GlobalActionsProvider } from "@plasmicapp/host";
 import {
   default as registerToken,
   TokenRegistration,
 } from "@plasmicapp/host/registerToken";
 import App from "antd/es/app";
 import ConfigProvider from "antd/es/config-provider";
+import type { NotificationPlacement } from "antd/es/notification/interface";
 import theme from "antd/es/theme";
 import React from "react";
 import { makeRegisterGlobalContext, Registerable } from "./utils";
@@ -113,12 +115,53 @@ function InnerConfigProvider(props: { children?: React.ReactNode }) {
   `,
     [token]
   );
+  const app = App.useApp();
+  const actions = React.useMemo(
+    () => ({
+      showNotification: (opts: {
+        type: "success" | "error" | "info" | "warning";
+        message: React.ReactNode;
+        description?: React.ReactNode;
+        duration?: number;
+        placement?: NotificationPlacement;
+      }) => {
+        const { type, ...rest } = opts;
+        app.notification[opts.type ?? "info"](rest);
+      },
+      hideNotifications: () => {
+        app.notification.destroy();
+      },
+    }),
+    [app]
+  );
+
+  if (!GlobalActionsProvider) {
+    warnOutdatedHost();
+  }
   return (
     <>
       <style>{cssStyles}</style>
-      {children}
+      {/* GlobalActionsProvider may not exist for older host */}
+      {GlobalActionsProvider && (
+        <GlobalActionsProvider
+          contextName="plasmic-antd5-config-provider"
+          actions={actions}
+        >
+          {children}
+        </GlobalActionsProvider>
+      )}
     </>
   );
+}
+
+let warned = false;
+function warnOutdatedHost() {
+  if (!warned) {
+    console.log(
+      `You are using a version of @plasmicapp/* that is too old. Please upgrade to the latest version.`
+    );
+    warned = true;
+  }
 }
 
 export function registerTokens(loader?: Registerable) {
@@ -421,6 +464,29 @@ export const registerConfigProvider = makeRegisterGlobalContext(
         type: "themeStyles",
       } as any,
     },
+    ...({
+      unstable__globalActions: {
+        showNotification: {
+          displayName: "Show notification",
+          parameters: {
+            type: {
+              type: "choice",
+              options: ["success", "error", "info", "warning"],
+              defaultValue: "info",
+            },
+            message: {
+              type: "string",
+            },
+            description: {
+              type: "string",
+            },
+          },
+        },
+        hideNotifications: {
+          displayName: "Hide notifications",
+        },
+      },
+    } as any),
     importPath: "@plasmicpkgs/antd5/skinny/registerConfigProvider",
     importName: "AntdConfigProvider",
   }

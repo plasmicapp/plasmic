@@ -81,11 +81,25 @@ export interface GlobalContextMeta<P> {
    * Whether the global context provides data to its children using DataProvider.
    */
   providesData?: boolean;
+
+  unstable__globalActions?: Record<string, GlobalActionRegistration<P>>;
 }
 
 export interface GlobalContextRegistration {
   component: React.ComponentType<any>;
   meta: GlobalContextMeta<any>;
+}
+
+export interface FunctionParam<P> {
+  name: "string";
+  displayName?: string;
+  type: PropType<P>;
+}
+
+export interface GlobalActionRegistration<P> {
+  displayName?: string;
+  description?: string;
+  params: FunctionParam<P>[];
 }
 
 declare global {
