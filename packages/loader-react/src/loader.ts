@@ -18,6 +18,7 @@ import {
   Registry,
   TrackRenderOptions,
 } from '@plasmicapp/loader-core';
+import { internal_getCachedBundleInNodeServer } from '@plasmicapp/loader-fetcher';
 import { getActiveVariation, getExternalIds } from '@plasmicapp/loader-splits';
 import * as PlasmicQuery from '@plasmicapp/query';
 import React from 'react';
@@ -215,13 +216,11 @@ export class InternalPlasmicComponentLoader {
     //
     // This is the code that reads the stored bundle and merges it back into the loader.
     if (!isBrowser) {
-      // Check if a bundle is stored with the corresponding ID.
-      if (bundle.localId !== undefined) {
-        // If it's there, merge this bundle first.
-        const storedBundle = global.__PLASMIC_BUNDLES?.[bundle.localId];
-        if (storedBundle) {
-          this.reactServerLoader.mergeBundle(storedBundle);
-        }
+      // Check if we have a cached bundle on this Node server.
+      const cachedBundle = internal_getCachedBundleInNodeServer(this.opts);
+      if (cachedBundle) {
+        // If it's there, merge the cached bundle first.
+        this.reactServerLoader.mergeBundle(cachedBundle);
       }
     }
     this.reactServerLoader.mergeBundle(bundle);
@@ -539,8 +538,3 @@ export class PlasmicComponentLoader {
     return this.__internal.clearCache();
   }
 }
-
-interface GlobalWithBundles {
-  __PLASMIC_BUNDLES?: { [localId: number]: LoaderBundleOutput };
-}
-const global = globalThis as GlobalWithBundles;

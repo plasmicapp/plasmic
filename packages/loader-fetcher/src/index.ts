@@ -16,6 +16,7 @@ export {
 } from './api';
 export {
   FetcherOptions,
+  internal_getCachedBundleInNodeServer,
   LoaderBundleCache,
   PlasmicModulesFetcher,
 } from './fetcher';

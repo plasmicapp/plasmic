@@ -1,5 +1,4 @@
 import { Api, isBrowser, LoaderBundleOutput } from './api';
-import { uniqueLocalId } from './uniqueLocalId';
 
 export interface FetcherOptions {
   projects: {
@@ -30,11 +29,16 @@ export class PlasmicModulesFetcher {
   }
 
   async fetchAllData() {
+    // getCachedOrFetched uses a cache defined by the user.
     const bundle = await this.getCachedOrFetch();
 
-    // Assign a local ID AFTER caching. If the local ID were cached, it may no longer be unique.
-    bundle.localId = uniqueLocalId();
-    this.storeGlobally(bundle);
+    // For React Server Components (Next.js 13+),
+    // we need to pass server modules in LoaderBundleOutput from Server Components to Client Components.
+    // We don't want to pass them via normal page props because that will be serialized to the browser.
+    // Instead, we pass the bundle (including the server modules) via the Node `global` variable.
+    //
+    // cacheBundleInNodeServer caches a bundle in the Node server process.
+    this.cacheBundleInNodeServer(bundle);
 
     return bundle;
   }
@@ -79,25 +83,45 @@ export class PlasmicModulesFetcher {
     return data;
   }
 
-  // For React Server Components (Next.js 13+),
-  // we need to pass server modules in LoaderBundleOutput from Server Components to Client Components.
-  // We don't want to pass them via normal page props because that will be serialized to the browser.
-  // Instead, we pass the bundle (including the server modules) via the Node `global` variable.
-  //
-  // This is the code that stores the bundle.
-  private storeGlobally(bundle: LoaderBundleOutput) {
-    if (bundle.localId === undefined) {
+  private cacheBundleInNodeServer(bundle: LoaderBundleOutput) {
+    if (isBrowser) {
       return;
     }
 
     if (global.__PLASMIC_BUNDLES === undefined) {
       global.__PLASMIC_BUNDLES = {};
     }
-    global.__PLASMIC_BUNDLES[bundle.localId] = bundle;
+    global.__PLASMIC_BUNDLES[getBundleKey(this.opts)] = bundle;
   }
 }
 
+export function internal_getCachedBundleInNodeServer(
+  opts: FetcherOptions
+): LoaderBundleOutput | undefined {
+  if (isBrowser) {
+    throw new Error(`Should not be consulting Node server cache in browser`);
+  }
+
+  return global.__PLASMIC_BUNDLES?.[getBundleKey(opts)];
+}
+
+function getBundleKey({
+  host,
+  platform,
+  i18nKeyScheme,
+  preview,
+  projects,
+}: FetcherOptions) {
+  return JSON.stringify({
+    host,
+    platform,
+    i18nKeyScheme,
+    preview,
+    projects,
+  });
+}
+
 interface GlobalWithBundles {
-  __PLASMIC_BUNDLES?: { [localId: number]: LoaderBundleOutput };
+  __PLASMIC_BUNDLES?: { [bundleKey: string]: LoaderBundleOutput };
 }
 const global = globalThis as GlobalWithBundles;
