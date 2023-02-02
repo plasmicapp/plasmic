@@ -162,7 +162,7 @@ export type JSONLikeType<P> =
       type: "array";
       itemType?: {
         type: "object",
-        fields?: {
+        fields: {
           [p: string]: PropType<P>
         }
       }
