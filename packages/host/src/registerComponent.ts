@@ -520,6 +520,9 @@ export interface ComponentMeta<P> {
    * Whether the component provides data to its slots using DataProvider.
    */
   providesData?: boolean;
+  figmaMappings?: {
+    figmaComponentName: string;
+  }[];
 }
 
 export interface ComponentRegistration {
