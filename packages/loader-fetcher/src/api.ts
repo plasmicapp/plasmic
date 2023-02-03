@@ -101,14 +101,6 @@ export interface LoaderBundleOutput {
   globalGroups: GlobalGroupMeta[];
   projects: ProjectMeta[];
   activeSplits: Split[];
-
-  // Note this property doesn't come from the API but is generated locally by this module.
-  /**
-   * ID used to identify LoaderBundleOutputs locally within a process.
-   *
-   * This property may be unset or `undefined` to indicate an "empty" LoaderBundleOutput.
-   */
-  localId?: number | undefined;
 }
 
 export interface LoaderHtmlOutput {
