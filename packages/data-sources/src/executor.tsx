@@ -1,4 +1,5 @@
 import fetch from '@plasmicapp/isomorphic-unfetch';
+import { wrapLoadingFetcher } from '@plasmicapp/query';
 import { ManyRowsResult, Pagination, SingleRowResult } from './types';
 
 const DEFAULT_HOST = 'https://studio.plasmic.app';
@@ -24,7 +25,8 @@ export async function executePlasmicDataOp<
     '__PLASMIC_EXECUTE_DATA_OP',
     _executePlasmicDataOp
   ) as typeof _executePlasmicDataOp;
-  return await func<T>(op, opts);
+  const res = await wrapLoadingFetcher(func)(op, opts);
+  return res as T;
 }
 
 async function _executePlasmicDataOp<

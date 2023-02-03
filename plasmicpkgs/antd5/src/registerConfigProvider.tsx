@@ -3,6 +3,7 @@ import {
   default as registerToken,
   TokenRegistration,
 } from "@plasmicapp/host/registerToken";
+import { addLoadingStateListener } from "@plasmicapp/query";
 import App from "antd/es/app";
 import ConfigProvider from "antd/es/config-provider";
 import type { NotificationPlacement } from "antd/es/notification/interface";
@@ -126,7 +127,7 @@ function InnerConfigProvider(props: { children?: React.ReactNode }) {
         placement?: NotificationPlacement;
       }) => {
         const { type, ...rest } = opts;
-        app.notification[opts.type ?? "info"](rest);
+        app.notification[opts.type ?? "info"]({ ...rest });
       },
       hideNotifications: () => {
         app.notification.destroy();
@@ -136,7 +137,7 @@ function InnerConfigProvider(props: { children?: React.ReactNode }) {
   );
 
   if (!GlobalActionsProvider) {
-    warnOutdatedHost();
+    warnOutdatedDeps();
   }
   return (
     <>
@@ -150,18 +151,45 @@ function InnerConfigProvider(props: { children?: React.ReactNode }) {
           {children}
         </GlobalActionsProvider>
       )}
+      <GlobalLoadingIndicator />
     </>
   );
 }
 
 let warned = false;
-function warnOutdatedHost() {
+function warnOutdatedDeps() {
   if (!warned) {
     console.log(
       `You are using a version of @plasmicapp/* that is too old. Please upgrade to the latest version.`
     );
     warned = true;
   }
+}
+
+function GlobalLoadingIndicator() {
+  const app = App.useApp();
+  React.useEffect(() => {
+    if (addLoadingStateListener) {
+      return addLoadingStateListener(
+        (isLoading) => {
+          if (isLoading) {
+            app.message.open({
+              content: "Loading...",
+              duration: 0,
+              key: `plasmic-antd5-global-loading-indicator`,
+            });
+          } else {
+            app.message.destroy(`plasmic-antd5-global-loading-indicator`);
+          }
+        },
+        { immediate: true }
+      );
+    } else {
+      warnOutdatedDeps();
+      return () => {};
+    }
+  }, [app]);
+  return null;
 }
 
 export function registerTokens(loader?: Registerable) {
@@ -476,9 +504,27 @@ export const registerConfigProvider = makeRegisterGlobalContext(
             },
             message: {
               type: "string",
+              defaultValue: "A message for you!",
             },
             description: {
               type: "string",
+              defaultValue: "Would you like to learn more?",
+            },
+            duration: {
+              type: "number",
+              defaultValueHint: 5,
+            },
+            placement: {
+              type: "choice",
+              options: [
+                "top",
+                "topLeft",
+                "topRight",
+                "bottom",
+                "bottomLeft",
+                "bottomRight",
+              ],
+              defaultValueHint: "topRight",
             },
           },
         },

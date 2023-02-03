@@ -23,16 +23,15 @@ export function AntdTable(
     ...rest
   } = props;
   setControlContextData?.(data);
-  const selection: TableRowSelection<any> | undefined =
-    isSelectable && onSelectionChange
-      ? {
-          onChange: (rowKeys, rows) => {
-            onSelectionChange?.(rowKeys, rows);
-          },
-          type: isSelectable === "single" ? "radio" : "checkbox",
-          selectedRowKeys: asArray(selectedRowKeys) ?? [],
-        }
-      : undefined;
+  const selection: TableRowSelection<any> | undefined = isSelectable
+    ? {
+        onChange: (rowKeys, rows) => {
+          onSelectionChange?.(rowKeys, rows);
+        },
+        type: isSelectable === "single" ? "radio" : "checkbox",
+        selectedRowKeys: asArray(selectedRowKeys) ?? [],
+      }
+    : undefined;
   return (
     <Table
       loading={data?.isLoading}

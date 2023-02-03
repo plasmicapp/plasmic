@@ -59,7 +59,11 @@ export function usePlasmicQueryData<T>(
     __SWRConfig = config;
   }, [config]);
 
-  const resp = useSWR(key, fetcher, opts);
+  const wrappedFetcher = React.useMemo(() => wrapLoadingFetcher(fetcher), [
+    fetcher,
+  ]);
+
+  const resp = useSWR(key, wrappedFetcher, opts);
   if (resp.data) {
     return { data: resp.data };
   } else if (resp.error) {
@@ -104,7 +108,7 @@ export function useMutablePlasmicQueryData<T, E>(
     async (...args: any[]) => {
       setIsLoading(true);
       try {
-        return await fetcher(...args);
+        return await wrapLoadingFetcher(fetcher)(...args);
       } finally {
         setIsLoading(false);
       }
@@ -179,4 +183,56 @@ export function PlasmicPrepassContext(
 
 export function usePlasmicDataConfig() {
   return useSWRConfig();
+}
+
+let loadingCount = 0;
+export type LoadingStateListener = (isLoading: boolean) => void;
+const listeners: LoadingStateListener[] = [];
+
+/**
+ * Subscribes to whether any loading is happening via @plasmicapp/query.
+ * Returns a function to unsubscribe.
+ */
+export function addLoadingStateListener(
+  listener: LoadingStateListener,
+  opts?: { immediate?: boolean }
+) {
+  listeners.push(listener);
+  if (opts?.immediate) {
+    listener(loadingCount > 0);
+  }
+  return () => {
+    listeners.splice(listeners.indexOf(listener), 1);
+  };
+}
+
+/**
+ * Instruments an async function to increment and decrement the number of
+ * simultaneous async loads. You can then subscribe to whether there
+ * are any loads happening via addLoadingStateListener().
+ */
+export function wrapLoadingFetcher<
+  T extends (...args: any[]) => Promise<any> | any
+>(fetcher: T): T {
+  return (async (...args: any) => {
+    if (loadingCount === 0) {
+      listeners.forEach((listener) => listener(true));
+    }
+    loadingCount += 1;
+    try {
+      const res = fetcher(...args);
+      return isPromiseLike(res) ? await res : res;
+    } finally {
+      loadingCount -= 1;
+      if (loadingCount === 0) {
+        listeners.forEach((listener) => listener(false));
+      }
+    }
+  }) as T;
+}
+
+function isPromiseLike(x: any) {
+  return (
+    !!x && typeof x === 'object' && 'then' in x && typeof x.then === 'function'
+  );
 }
