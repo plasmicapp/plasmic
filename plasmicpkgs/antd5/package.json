@@ -44,5 +44,8 @@
     "@plasmicapp/query": "0.1.59",
     "antd": ">=5.1.0",
     "react": ">=16.8.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
