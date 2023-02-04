@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/host",
-  "version": "1.0.102",
+  "version": "1.0.103",
   "description": "plasmic library for app hosting",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -42,7 +42,7 @@
     "analyze": "size-limit --why"
   },
   "dependencies": {
-    "@plasmicapp/query": "0.1.60",
+    "@plasmicapp/query": "0.1.61",
     "window-or-global": "^1.0.1"
   },
   "devDependencies": {
