@@ -2,6 +2,7 @@ import {
   BooleanType,
   ChoiceType,
   CustomType,
+  FunctionParam,
   JSONLikeType,
   NumberType,
   StringType,
@@ -90,16 +91,10 @@ export interface GlobalContextRegistration {
   meta: GlobalContextMeta<any>;
 }
 
-export interface FunctionParam<P> {
-  name: "string";
-  displayName?: string;
-  type: PropType<P>;
-}
-
 export interface GlobalActionRegistration<P> {
   displayName?: string;
   description?: string;
-  params: FunctionParam<P>[];
+  parameters: FunctionParam<P>[];
 }
 
 declare global {

@@ -3,35 +3,102 @@ import type { TableRowSelection } from "antd/es/table/interface";
 import React from "react";
 import { asArray, Registerable, registerComponentHelper } from "./utils";
 
-export function AntdTable(
+export interface TableRef {
+  selectRowByKey: (key: string) => void;
+  selectRowByIndex: (index: number) => void;
+  selectRowsByKeys: (keys: string[]) => void;
+  selectRowsByIndexes: (indexs: number[]) => void;
+  clearSelection: () => void;
+}
+
+export const AntdTable = React.forwardRef(function AntdTable(
   props: React.ComponentProps<typeof Table> & {
     data: any;
     rowKey?: string;
     isSelectable?: undefined | "single" | "multiple";
     selectedRowKeys?: string[];
-    onSelectionChange?: (keys: React.Key[], rows: any[]) => void;
+    defaultSelectedRowKeys?: string[];
+    onSelectedRowKeysChange?: (keys: string[]) => void;
+    onSelectedRowsChange?: (rows: any[]) => void;
     setControlContextData?: (ctx: any) => void;
-  }
+  },
+  ref: React.Ref<TableRef>
 ) {
   const {
     data,
-    onSelectionChange,
+    onSelectedRowKeysChange,
+    onSelectedRowsChange,
     isSelectable,
     rowKey,
     setControlContextData,
     selectedRowKeys,
+    defaultSelectedRowKeys,
     ...rest
   } = props;
   setControlContextData?.(data);
-  const selection: TableRowSelection<any> | undefined = isSelectable
-    ? {
-        onChange: (rowKeys, rows) => {
-          onSelectionChange?.(rowKeys, rows);
-        },
-        type: isSelectable === "single" ? "radio" : "checkbox",
-        selectedRowKeys: asArray(selectedRowKeys) ?? [],
-      }
-    : undefined;
+
+  const isControlled = !!selectedRowKeys;
+  const [
+    uncontrolledSelectedRowKeys,
+    setUncontrolledSelectedRowKeys,
+  ] = React.useState<string[]>(defaultSelectedRowKeys ?? []);
+  const selection: TableRowSelection<any> | undefined =
+    isSelectable && rowKey
+      ? {
+          onChange: (rowKeys, rows) => {
+            onSelectedRowsChange?.(rows);
+            onSelectedRowKeysChange?.(rowKeys as string[]);
+          },
+          type: isSelectable === "single" ? "radio" : "checkbox",
+          selectedRowKeys: isControlled
+            ? asArray(selectedRowKeys)
+            : uncontrolledSelectedRowKeys,
+        }
+      : undefined;
+
+  React.useImperativeHandle(
+    ref,
+    () => ({
+      selectRowByIndex(index: number) {
+        if (data.data && rowKey) {
+          const row = data.data[index];
+          const rows = row ? [row] : [];
+          this._setSelectedRows(rows);
+        }
+      },
+      selectRowsByIndexes(indexes: number[]) {
+        if (data.data && rowKey) {
+          const rows = indexes.map((x) => data.data[x]).filter((x) => !!x);
+          this._setSelectedRows(rows);
+        }
+      },
+      selectRowByKey(key: string) {
+        if (data.data && rowKey) {
+          const rows = data.data.filter((r: any) => r[rowKey] === key);
+          this._setSelectedRows(rows);
+        }
+      },
+      selectRowsByKeys(keys: string[]) {
+        if (data.data && rowKey) {
+          const rows = data.data.filter((r: any) => keys.includes(r[rowKey]));
+          this._setSelectedRows(rows);
+        }
+      },
+      clearSelection() {
+        this._setSelectedRows([]);
+      },
+      _setSelectedRows(rows: any[]) {
+        onSelectedRowsChange?.(rows);
+        if (rowKey) {
+          onSelectedRowKeysChange?.(rows.map((r) => r[rowKey]));
+        }
+        if (!isControlled) {
+          setUncontrolledSelectedRowKeys(rows.map((r) => r[rowKey!]));
+        }
+      },
+    }),
+    [data, onSelectedRowKeysChange, onSelectedRowsChange, isSelectable, rowKey]
+  );
   return (
     <Table
       loading={data?.isLoading}
@@ -41,7 +108,7 @@ export function AntdTable(
       {...rest}
     />
   );
-}
+});
 
 export const AntdColumnGroup = Table.ColumnGroup;
 export const AntdColumn = Table.Column;
@@ -97,22 +164,50 @@ export function registerTable(loader?: Registerable) {
         },
         hidden: (ps) => !ps.rowKey,
       },
-      onSelectionChange: {
+      onSelectedRowKeysChange: {
         type: "eventHandler",
-        argTypes: [
-          { name: "keys", type: "object" },
-          { name: "rows", type: "object" },
-        ],
+        argTypes: [{ name: "keys", type: "object" }],
+        hidden: (ps: any) => !ps.isSelectable,
+      } as any,
+      onSelectedRowsChange: {
+        type: "eventHandler",
+        argTypes: [{ name: "rows", type: "object" }],
         hidden: (ps: any) => !ps.isSelectable,
       } as any,
     },
     importPath: "@plasmicpkgs/antd5/registerTable",
     importName: "AntdTable",
     unstable__states: {
-      selectedRows: {
+      selectedRowKeys: {
         type: "writable",
         valueProp: "selectedRowKeys",
-        onChangeProp: "onSelectionChange",
+        onChangeProp: "onSelectedRowKeysChange",
+      },
+      // selectedRows: {
+      //   type: "readonly",
+      //   onChangeProp: "onSelectedRowsChange",
+      // },
+    },
+    unstable__refActions: {
+      selectRowByIndex: {
+        displayName: "Select row by index",
+        parameters: [
+          {
+            name: "index",
+            displayName: "Index",
+            type: "number",
+          },
+        ],
+      },
+      selectRowByKey: {
+        displayName: "Select row by key",
+        parameters: [
+          {
+            name: "key",
+            displayName: "Row key",
+            type: "string",
+          },
+        ],
       },
     },
   });
@@ -132,7 +227,7 @@ export function registerTable(loader?: Registerable) {
       render: {
         type: "slot",
         renderPropParams: ["cell", "row", "index"],
-      } as any,
+      },
       align: {
         type: "choice",
         options: ["left", "right", "center"],

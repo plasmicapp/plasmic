@@ -154,18 +154,18 @@ export type JSONLikeType<P> =
   | ({
       type: "object";
       fields?: {
-        [p: string]: PropType<P>
-      }
+        [p: string]: PropType<P>;
+      };
     } & DefaultValueOrExpr<P, any> &
       PropTypeBase<P>)
   | ({
       type: "array";
       itemType?: {
-        type: "object",
+        type: "object";
         fields: {
-          [p: string]: PropType<P>
-        }
-      }
+          [p: string]: PropType<P>;
+        };
+      };
     } & DefaultValueOrExpr<P, any[]> &
       PropTypeBase<P>)
   | ({
@@ -535,6 +535,20 @@ export interface ComponentMeta<P> {
   figmaMappings?: {
     figmaComponentName: string;
   }[];
+
+  unstable__refActions?: Record<string, RefActionRegistration<P>>;
+}
+
+export interface FunctionParam<P> {
+  name: string;
+  displayName?: string;
+  type: PropType<P>;
+}
+
+export interface RefActionRegistration<P> {
+  displayName?: string;
+  description?: string;
+  parameters: FunctionParam<P>[];
 }
 
 export interface ComponentRegistration {
