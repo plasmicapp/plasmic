@@ -5401,6 +5401,14 @@
     lodash "^4.17.19"
     prettier "^2.0.5"
 
+"@plasmicapp/host@1.0.100":
+  version "1.0.100"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.100.tgz#fc2a6d52e7b0b4ba1e858c610fd9944ef13bc7d8"
+  integrity sha512-9Cv5VRPfbqxOaW+VrTD8aISmMh8HLKkH4jtn3xDZrb9IwqPgOvEr8n/KXoLSkcM7svTL1SCwHAPF6PpUJACnKQ==
+  dependencies:
+    "@plasmicapp/query" "0.1.59"
+    window-or-global "^1.0.1"
+
 "@plasmicapp/host@1.0.65":
   version "1.0.65"
   resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.65.tgz#ae3f7f9c583a1549556b05d0f9b21e2046e4d26f"
