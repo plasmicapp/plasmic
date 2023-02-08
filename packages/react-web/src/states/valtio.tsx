@@ -59,6 +59,7 @@ function initializeStateValue(
       if (spec.valueProp) {
         return $$state.props[spec.valueProp];
       } else if (!node.hasState(path) && spec.initFunc) {
+        node.createStateCell(path);
         return initializeStateValue($$state, node, path, proxyRoot);
       }
       return get(proxyRoot, path);
