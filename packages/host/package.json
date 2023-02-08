@@ -34,6 +34,12 @@
   ],
   "scripts": {
     "build": "./update_version.sh && tsdx build && rollup -c",
+    "postbuild": "yarn postbuild:default && yarn postbuild:registerComponent && yarn postbuild:registerGlobalContext && yarn postbuild:registerToken && yarn postbuild:registerTrait",
+    "postbuild:default": "node ../../print-module-api.js ./packages/host/dist/index.js > index-api.txt",
+    "postbuild:registerComponent": "node ../../print-module-api.js ./packages/host/registerComponent/dist/index.cjs.js > registerComponent-api.txt",
+    "postbuild:registerGlobalContext": "node ../../print-module-api.js ./packages/host/registerGlobalContext/dist/index.cjs.js > registerGlobalContext-api.txt",
+    "postbuild:registerToken": "node ../../print-module-api.js ./packages/host/registerToken/dist/index.cjs.js > registerToken-api.txt",
+    "postbuild:registerTrait": "node ../../print-module-api.js ./packages/host/registerTrait/dist/index.cjs.js > registerTrait-api.txt",
     "start": "tsdx watch",
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
