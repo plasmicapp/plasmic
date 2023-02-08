@@ -41,6 +41,7 @@ export const videoMeta: ComponentMeta<VideoProps> = {
       displayName: "Auto Play",
       description:
         "Whether the video show automatically start playing when the player loads. Chrome and other browsers require 'muted' to also be set for 'autoplay' to work.",
+      helpText: "Requires 'Muted' to also be set for 'Auto Play' to work.",
     },
     controls: {
       type: "boolean",
