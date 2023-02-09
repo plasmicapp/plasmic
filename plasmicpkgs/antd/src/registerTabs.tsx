@@ -8,10 +8,11 @@ import {
   TabPaneProps,
   TabsProps as AntdTabsProps,
 } from "antd/lib/tabs";
-import { TabPane } from "rc-tabs";
 import React from "react";
 import { traverseReactEltTree } from "./customControls";
 import { Registerable } from "./registerable";
+
+export const TabPane = AntdTabs.TabPane;
 
 export const tabPaneMeta: ComponentMeta<TabPaneProps> = {
   name: "AntdTabPane",
@@ -63,7 +64,7 @@ export const tabPaneMeta: ComponentMeta<TabPaneProps> = {
     },
   },
   parentComponentName: "AntdTabs",
-  importPath: "rc-tabs",
+  importPath: "@plasmicpkgs/antd/skinny/registerTabs",
   importName: "TabPane",
 };
 

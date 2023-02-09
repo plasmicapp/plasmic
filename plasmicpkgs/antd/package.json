@@ -20,29 +20,30 @@
     }
   ],
   "scripts": {
-    "build": "tsdx build && yarn copy_css_files && rollup -c rollup.config.mjs",
-    "start": "tsdx watch",
-    "test": "tsdx test --passWithNoTests",
-    "lint": "tsdx lint",
+    "build": "rollup -c rollup.config.mjs && yarn copy_css_files && yarn gentypes",
+    "gentypes": "./node_modules/.bin/tsc --emitDeclarationOnly --declaration src/index.ts --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --jsx react --esModuleInterop --strict --outDir ./dist/ && cp ./dist/*.d.ts skinny/ && rm skinny/index.d.ts",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "copy_css_files": "cp src/*.css dist/",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
+  "dependencies": {
+    "antd": "^4.19.5"
+  },
   "devDependencies": {
     "@plasmicapp/host": "1.0.105",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/node": "^14.0.26",
-    "antd": "^4.17.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "rollup-plugin-esbuild": "^5.0.0",
+    "rollup-plugin-replace-imports": "^1.0.0",
     "size-limit": "^4.11.0",
     "tsdx": "^0.14.1",
-    "typescript": "^3.9.7"
+    "typescript": "^4.6.4"
   },
   "peerDependencies": {
     "@plasmicapp/host": "^1.0.0",
-    "antd": "^4.0.0",
     "react": ">=16.8.0"
   }
 }
