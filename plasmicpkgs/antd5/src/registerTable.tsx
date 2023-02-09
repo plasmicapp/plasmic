@@ -175,7 +175,7 @@ export function registerTable(loader?: Registerable) {
         hidden: (ps: any) => !ps.isSelectable,
       } as any,
     },
-    importPath: "@plasmicpkgs/antd5/registerTable",
+    importPath: "@plasmicpkgs/antd5/skinny/registerTable",
     importName: "AntdTable",
     unstable__states: {
       selectedRowKeys: {
@@ -223,10 +223,13 @@ export function registerTable(loader?: Registerable) {
       },
       dataIndex: {
         type: "string",
+        displayName: "Column key",
       },
       render: {
         type: "slot",
         renderPropParams: ["cell", "row", "index"],
+        hidePlaceholder: true,
+        displayName: "Custom render",
       },
       align: {
         type: "choice",
@@ -243,7 +246,7 @@ export function registerTable(loader?: Registerable) {
         advanced: true,
       },
     },
-    importPath: "@plasmicpkgs/antd5/registerTable",
+    importPath: "@plasmicpkgs/antd5/skinny/registerTable",
     importName: "AntdColumn",
     ...({ isRenderless: true } as any),
   });

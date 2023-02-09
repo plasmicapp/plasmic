@@ -4,9 +4,14 @@ import {
   TokenRegistration,
 } from "@plasmicapp/host/registerToken";
 import { addLoadingStateListener } from "@plasmicapp/query";
-import App from "antd/es/app";
 import ConfigProvider from "antd/es/config-provider";
-import type { NotificationPlacement } from "antd/es/notification/interface";
+import type { MessageInstance } from "antd/es/message/interface";
+import useMessage from "antd/es/message/useMessage";
+import type {
+  NotificationInstance,
+  NotificationPlacement,
+} from "antd/es/notification/interface";
+import useNotification from "antd/es/notification/useNotification";
 import theme from "antd/es/theme";
 import React from "react";
 import { makeRegisterGlobalContext, Registerable } from "./utils";
@@ -92,9 +97,9 @@ export function AntdConfigProvider(
         colorTextBase: themeStyles.color,
       })}
     >
-      <App>
+      <ForkedApp>
         <InnerConfigProvider>{children}</InnerConfigProvider>
-      </App>
+      </ForkedApp>
     </ConfigProvider>
   );
 }
@@ -116,7 +121,7 @@ function InnerConfigProvider(props: { children?: React.ReactNode }) {
   `,
     [token]
   );
-  const app = App.useApp();
+  const app = useAppContext();
   const actions = React.useMemo(
     () => ({
       showNotification: (opts: {
@@ -143,13 +148,15 @@ function InnerConfigProvider(props: { children?: React.ReactNode }) {
     <>
       <style>{cssStyles}</style>
       {/* GlobalActionsProvider may not exist for older host */}
-      {GlobalActionsProvider && (
+      {GlobalActionsProvider ? (
         <GlobalActionsProvider
           contextName="plasmic-antd5-config-provider"
           actions={actions}
         >
           {children}
         </GlobalActionsProvider>
+      ) : (
+        children
       )}
       <GlobalLoadingIndicator />
     </>
@@ -167,7 +174,7 @@ function warnOutdatedDeps() {
 }
 
 function GlobalLoadingIndicator() {
-  const app = App.useApp();
+  const app = useAppContext();
   React.useEffect(() => {
     if (addLoadingStateListener) {
       return addLoadingStateListener(
@@ -190,6 +197,46 @@ function GlobalLoadingIndicator() {
     }
   }, [app]);
   return null;
+}
+
+const ForkedAppContext = React.createContext<
+  | {
+      message: MessageInstance;
+      notification: NotificationInstance;
+    }
+  | undefined
+>(undefined);
+
+function useAppContext() {
+  const context = React.useContext(ForkedAppContext);
+  if (!context) {
+    throw new Error("Must call useAppContext from under ForkedApp");
+  }
+  return context;
+}
+
+/**
+ * Forking antd's App, to avoid rendering an extra <div/>
+ */
+function ForkedApp(props: { children?: React.ReactNode }) {
+  const [messageApi, messageContextHolder] = useMessage();
+  const [notificationApi, notificationContextHolder] = useNotification();
+
+  const appContext = React.useMemo(
+    () => ({
+      message: messageApi,
+      notification: notificationApi,
+    }),
+    [messageApi, notificationApi]
+  );
+
+  return (
+    <ForkedAppContext.Provider value={appContext}>
+      {messageContextHolder}
+      {notificationContextHolder}
+      {props.children}
+    </ForkedAppContext.Provider>
+  );
 }
 
 export function registerTokens(loader?: Registerable) {
