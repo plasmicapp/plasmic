@@ -84,6 +84,10 @@ export function registerSelect(loader?: Registerable) {
         type: "choice",
         options: ["small", "middle", "large"],
       },
+      disabled: {
+        type: "boolean",
+        defaultValueHint: false,
+      },
       showSearch: {
         type: "boolean",
         defaultValueHint: false,
@@ -101,6 +105,7 @@ export function registerSelect(loader?: Registerable) {
       autoFocus: {
         type: "boolean",
         displayName: "Focus automatically",
+        defaultValueHint: false,
         advanced: true,
       },
       onChange: {
