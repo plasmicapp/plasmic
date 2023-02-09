@@ -138,6 +138,13 @@ function create$StateProxy(
             get(proxyRoot, currPath.slice(spec.pathObj.length))
           );
         }
+        const nextPath = getNextPath(property);
+        const nextNode = currNode.makeTransition(property);
+        if (nextNode) {
+          getStateCells(nextNode).forEach((node) => {
+            node.deleteStateCell(nextPath);
+          });
+        }
         return Reflect.deleteProperty(target, property);
       },
       get(target, property, receiver) {

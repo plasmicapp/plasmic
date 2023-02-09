@@ -106,6 +106,15 @@ export class StateSpecNode<T> {
     };
   }
 
+  deleteStateCell(prefixPath: ObjectPath) {
+    [...Object.keys(this._state)].forEach((key) => {
+      const path = JSON.parse(key);
+      if (shallowEqual(prefixPath, path.slice(0, prefixPath.length))) {
+        delete this._state[key];
+      }
+    });
+  }
+
   setInitialValue(path: ObjectPath, value: any) {
     const key = JSON.stringify(path);
     this._state[key].initialValue = value;
