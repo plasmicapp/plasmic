@@ -1,6 +1,6 @@
 import { PlasmicComponent } from "@plasmicapp/loader-nextjs";
 import { PLASMIC } from "plasmic-init";
-import { ClientPlasmicRootProvider } from "plasmic-init-client";
+import { PlasmicClientRootProvider } from "plasmic-init-client";
 
 const ipUrl = "https://worldtimeapi.org/api/ip";
 const timezoneUrl = "https://worldtimeapi.org/api/timezone";
@@ -10,7 +10,7 @@ export const revalidate = 10;
 export default async function DynamicPage() {
   const { prefetchedData, prefetchedQueryData } = await fetchData();
   return (
-    <ClientPlasmicRootProvider
+    <PlasmicClientRootProvider
       prefetchedData={prefetchedData}
       prefetchedQueryData={prefetchedQueryData}
     >
@@ -21,7 +21,7 @@ export default async function DynamicPage() {
           content: <Content />,
         }}
       />
-    </ClientPlasmicRootProvider>
+    </PlasmicClientRootProvider>
   );
 }
 
