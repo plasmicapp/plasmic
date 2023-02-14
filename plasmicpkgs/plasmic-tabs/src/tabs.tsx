@@ -1,5 +1,9 @@
-import { DataProvider, usePlasmicCanvasContext,ComponentMeta } from "@plasmicapp/host";
-import constate from "constate";
+import {
+  ComponentMeta,
+  DataProvider,
+  usePlasmicCanvasContext,
+} from '@plasmicapp/host';
+import constate from 'constate';
 import React, {
   cloneElement,
   createContext,
@@ -9,18 +13,17 @@ import React, {
   useEffect,
   useRef,
   useState,
-} from "react";
+} from 'react';
 
-
-const noop = ()=>{};
+const noop = () => {};
 
 function defaultButtonChildren(label: string) {
   return {
-    type: "default-component",
-    kind: "button",
+    type: 'default-component',
+    kind: 'button',
     props: {
       children: {
-        type: "text",
+        type: 'text',
         value: label,
       },
     },
@@ -52,89 +55,89 @@ const [TabsProvider, useTabsContextUnsafe] = constate(useTabsData);
 
 function useTabsContext() {
   const result = useTabsContextUnsafe();
-  return "setTabKey" in result ? result : undefined;
+  return 'setTabKey' in result ? result : undefined;
 }
-const modulePath="@plasmicpkgs/plasmic-tabs"
+const modulePath = '@plasmicpkgs/plasmic-tabs';
 
 export const TabsContainerMeta: ComponentMeta<TabsProviderProps> = {
-    name: "hostless-tabs-container",
-    displayName: "Tabs Container",
-    importName: "TabsContainer",
-    importPath: modulePath,
-    providesData:true,
-    defaultStyles: {
-    width: "stretch",
-    padding: "8px",
-    },
-    props: {
+  name: 'hostless-tabs-container',
+  displayName: 'Tabs Container',
+  importName: 'TabsContainer',
+  importPath: modulePath,
+  providesData: true,
+  defaultStyles: {
+    width: 'stretch',
+    padding: '8px',
+  },
+  props: {
     initialKey: {
-      type: "string",
-      description: "Key of the initially selected tab",
-      defaultValue: "tab1",
+      type: 'string',
+      description: 'Key of the initially selected tab',
+      defaultValue: 'tab1',
     },
     previewKey: {
-      type: "string",
-      description: "SShow this key while editing in Plasmic Studio",
+      type: 'string',
+      description: 'SShow this key while editing in Plasmic Studio',
     },
     previewAll: {
-      type: "boolean",
-      description: "Reveal all tab contents while editing in Plasmic Studio",
+      type: 'boolean',
+      description: 'Reveal all tab contents while editing in Plasmic Studio',
     },
     children: {
-      type: "slot",
+      type: 'slot',
       defaultValue: {
-        type: "vbox",
+        type: 'vbox',
         children: [
           {
-            type: "hbox",
+            type: 'hbox',
             children: [
               {
-                type: "component",
-                name: "hostless-tab-button",
+                type: 'component',
+                name: 'hostless-tab-button',
                 props: {
-                  tabKey: "tab1",
-                  children:defaultButtonChildren("Tab 1")
+                  tabKey: 'tab1',
+                  children: defaultButtonChildren('Tab 1'),
                 },
               },
               {
-                type: "component",
-                name: "hostless-tab-button",
+                type: 'component',
+                name: 'hostless-tab-button',
                 props: {
-                  tabKey: "tab2",
-                  children:defaultButtonChildren("Tab 2")
+                  tabKey: 'tab2',
+                  children: defaultButtonChildren('Tab 2'),
                 },
               },
               {
-                type: "component",
-                name: "hostless-tab-underline",
+                type: 'component',
+                name: 'hostless-tab-underline',
               },
             ],
           },
           {
-            type: "vbox",
+            type: 'vbox',
             children: [
               {
-                type: "component",
-                name: "hostless-tab-content",
+                type: 'component',
+                name: 'hostless-tab-content',
                 props: {
-                  tabKey: "tab1",
+                  tabKey: 'tab1',
                   children: [
                     {
-                      type: "vbox",
-                      children: ["Some content for tab 1"],
+                      type: 'vbox',
+                      children: ['Some content for tab 1'],
                     },
                   ],
                 },
               },
               {
-                type: "component",
-                name: "hostless-tab-content",
+                type: 'component',
+                name: 'hostless-tab-content',
                 props: {
-                  tabKey: "tab2",
+                  tabKey: 'tab2',
                   children: [
                     {
-                      type: "vbox",
-                      children: ["Some content for tab 2"],
+                      type: 'vbox',
+                      children: ['Some content for tab 2'],
                     },
                   ],
                 },
@@ -145,8 +148,7 @@ export const TabsContainerMeta: ComponentMeta<TabsProviderProps> = {
       },
     },
   },
-  };
-
+};
 
 export function TabsContainer({
   children,
@@ -166,7 +168,7 @@ export function TabsContainer({
 
 function ensure<T>(x: T | undefined | null) {
   if (!x) {
-    throw new Error("unexpected nil");
+    throw new Error('unexpected nil');
   }
   return x;
 }
@@ -182,7 +184,7 @@ function Helper({
   const { tabKey } = ensure(useTabsContext());
   const effectiveKey = inEditor ? previewKey || tabKey : tabKey;
   return (
-    <DataProvider name={"currentTabKey"} data={effectiveKey}>
+    <DataProvider name={'currentTabKey'} data={effectiveKey}>
       {children}
     </DataProvider>
   );
@@ -192,22 +194,21 @@ export interface TabUnderlineProps {
   className?: string;
 }
 
-export const TabUnderlineMeta:ComponentMeta <TabUnderlineProps>={
-    name: "hostless-tab-underline",
-    displayName: "Tab Underline",
-    importName: "TabUnderline",
-    importPath: modulePath,
-    props: {
+export const TabUnderlineMeta: ComponentMeta<TabUnderlineProps> = {
+  name: 'hostless-tab-underline',
+  displayName: 'Tab Underline',
+  importName: 'TabUnderline',
+  importPath: modulePath,
+  props: {
     children: {
-      type: "slot",
+      type: 'slot',
     },
-    },
-    defaultStyles: {
-    background: "#7777ff",
-    height: "2px",
-    },
-}
-
+  },
+  defaultStyles: {
+    background: '#7777ff',
+    height: '2px',
+  },
+};
 
 export function TabUnderline({ className }: TabUnderlineProps) {
   const { bbox } = useTabsContext() ?? { bbox: undefined };
@@ -218,8 +219,8 @@ export function TabUnderline({ className }: TabUnderlineProps) {
         ...JSON.parse(JSON.stringify(bbox)),
         top: undefined,
         bottom: 0,
-        position: "absolute",
-        transition: ".4s ease all",
+        position: 'absolute',
+        transition: '.4s ease all',
       }}
     ></div>
   ) : null;
@@ -231,26 +232,26 @@ export interface TabButtonProps {
   tabKey?: string;
 }
 
-export const TabButtonMeta:ComponentMeta<TabButtonProps>={
-    name: "hostless-tab-button",
-    isAttachment: true,
-    displayName: "Tab Button",
-    importName: "TabButton",
-    importPath: modulePath,
-    props: {
+export const TabButtonMeta: ComponentMeta<TabButtonProps> = {
+  name: 'hostless-tab-button',
+  isAttachment: true,
+  displayName: 'Tab Button',
+  importName: 'TabButton',
+  importPath: modulePath,
+  props: {
     tabKey: {
-      type: "string",
-      description: "The answer value selecting this choice sets",
+      type: 'string',
+      description: 'The answer value selecting this choice sets',
     },
     children: {
-      type: "slot",
-      defaultValue:defaultButtonChildren("Some tab")
+      type: 'slot',
+      defaultValue: defaultButtonChildren('Some tab'),
     },
   },
   defaultStyles: {
-    width: "hug",
+    width: 'hug',
   },
-}
+};
 
 export function TabButton({ className, children, tabKey }: TabButtonProps) {
   const tabsContext = useTabsContext();
@@ -259,7 +260,7 @@ export function TabButton({ className, children, tabKey }: TabButtonProps) {
     tabKey: undefined,
     setTabKey: noop,
     bbox: undefined,
-    setBbox:noop,
+    setBbox: noop,
   };
   useEffect(() => {
     if (tabKey === activeKey) {
@@ -286,29 +287,29 @@ export interface TabContentProps {
   tabKey?: string;
 }
 
-export const TabContentMeta:ComponentMeta<TabContentProps>={
-  name: "hostless-tab-content",
+export const TabContentMeta: ComponentMeta<TabContentProps> = {
+  name: 'hostless-tab-content',
   isAttachment: true,
-  displayName: "Tab Content",
-  importName: "TabContent",
+  displayName: 'Tab Content',
+  importName: 'TabContent',
   importPath: modulePath,
   props: {
     tabKey: {
-      type: "string",
-      description: "The answer value selecting this choice sets",
+      type: 'string',
+      description: 'The answer value selecting this choice sets',
     },
     children: {
-      type: "slot",
+      type: 'slot',
       defaultValue: {
-      type:"vbox",
-      children:{
-        type:"text",
-        value:"This is some tab content"
-      }
+        type: 'vbox',
+        children: {
+          type: 'text',
+          value: 'This is some tab content',
+        },
       },
     },
   },
-}
+};
 export function TabContent({ children, tabKey }: TabContentProps) {
   const tabsContext = useTabsContext();
   const previewAll = useContext(DebugContext);
