@@ -199,11 +199,7 @@ export const TabUnderlineMeta: ComponentMeta<TabUnderlineProps> = {
   displayName: 'Tab Underline',
   importName: 'TabUnderline',
   importPath: modulePath,
-  props: {
-    children: {
-      type: 'slot',
-    },
-  },
+  props: {},
   defaultStyles: {
     background: '#7777ff',
     height: '2px',
