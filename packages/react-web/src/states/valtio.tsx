@@ -15,7 +15,9 @@ import { arrayEq, assert, set, useIsomorphicLayoutEffect } from "./helpers";
 import {
   $State,
   $StateSpec,
+  DollarStateEnv,
   InitFunc,
+  NoUndefinedField,
   ObjectPath,
   PLASMIC_STATE_PROXY_SYMBOL,
 } from "./types";
@@ -35,8 +37,7 @@ interface Internal$State {
     f: InitFunc<any>;
   }[];
   stateValues: Record<string, any>;
-  props: Record<string, any>;
-  ctx: Record<string, any>;
+  env: NoUndefinedField<DollarStateEnv>;
   rootSpecTree: StateSpecNode<any>;
   specTreeLeaves: StateSpecNode<any>[];
   specs: $StateSpec<any>[];
@@ -57,7 +58,7 @@ function initializeStateValue(
       stateAccess.add({ path, node });
       const spec = node.getSpec();
       if (spec.valueProp) {
-        return $$state.props[spec.valueProp];
+        return $$state.env.$props[spec.valueProp];
       } else if (!node.hasState(path) && spec.initFunc) {
         node.createStateCell(path);
         return initializeStateValue($$state, node, path, proxyRoot);
@@ -71,18 +72,17 @@ function initializeStateValue(
 
   stateAccess.forEach(({ node, path }) => {
     node.addListener(path, () => {
-      const newValue = initialSpecNode.getSpec().initFunc!(
-        $$state.props,
+      const newValue = initialSpecNode.getSpec().initFunc!({
         $state,
-        $$state.ctx
-      );
+        ...$$state.env,
+      });
       set(proxyRoot, initialStatePath, newValue);
     });
   });
 
   const initialValue = initialSpecNode.getInitFunc(
     initialSpecNode.getState(initialStatePath)
-  )!($$state.props, $state, $$state.ctx);
+  )!({ $state, ...$$state.env });
   initialSpecNode.setInitialValue(initialStatePath, clone(initialValue));
 
   const initialSpec = initialSpecNode.getSpec();
@@ -92,7 +92,7 @@ function initializeStateValue(
   set(proxyRoot, initialStatePath, value);
   //immediately fire onChange
   if (initialSpec.onChangeProp) {
-    $$state.props[initialSpec.onChangeProp]?.(initialValue);
+    $$state.env.$props[initialSpec.onChangeProp]?.(initialValue);
   }
 
   return initialValue;
@@ -134,7 +134,7 @@ function create$StateProxy(
           //we are always in a leaf, since we only have two cases:
           // 1 - delete properties outside the state tree
           // 2 - delete indices in repeated implicit states, but these can't be exposed, so they don't have onChangeProp
-          $$state.props[spec.onChangeProp]?.(
+          $$state.env.$props[spec.onChangeProp]?.(
             get(proxyRoot, currPath.slice(spec.pathObj.length))
           );
         }
@@ -213,11 +213,17 @@ function create$StateProxy(
         } else {
           Reflect.set(target, property, value, receiver);
         }
-        nextNode.getAllSpecs().forEach((spec) => {
+        if (currNode.isLeaf()) {
           if (spec.onChangeProp) {
-            $$state.props[spec.onChangeProp]?.(value);
+            $$state.env.$props[spec.onChangeProp]?.(target);
           }
-        });
+        } else {
+          nextNode.getAllSpecs().forEach((spec) => {
+            if (spec.onChangeProp) {
+              $$state.env.$props[spec.onChangeProp]?.(value);
+            }
+          });
+        }
         const newValue =
           (isOutside || currNode.isLeaf()) && currNode.getSpec().isImmutable
             ? mkUntrackedValue(value)
@@ -260,10 +266,17 @@ function create$StateProxy(
 const mkUntrackedValue = (o: any) =>
   o != null && typeof o === "object" ? ref(o) : o;
 
+const envFieldsAreNonNill = (
+  env: DollarStateEnv
+): NoUndefinedField<DollarStateEnv> => ({
+  $props: env.$props,
+  $ctx: env.$ctx ?? {},
+  $queries: env.$queries ?? {},
+});
+
 export function useDollarState(
   specs: $StateSpec<any>[],
-  props: Record<string, any>,
-  $ctx?: Record<string, any>,
+  env: DollarStateEnv,
   opts?: {
     inCanvas: boolean;
   }
@@ -275,16 +288,13 @@ export function useDollarState(
         rootSpecTree: rootSpecTree,
         specTreeLeaves: getStateCells(rootSpecTree),
         stateValues: createValtioProxy({}),
-        props: {},
-        ctx: {},
+        env: envFieldsAreNonNill(env),
         specs: [],
         registrationsQueue: createValtioProxy([]),
       };
     })()
   ).current;
-  $$state.props = props;
-  $$state.ctx = $ctx ?? {};
-  $$state.specs = specs;
+  ($$state.env = envFieldsAreNonNill(env)), ($$state.specs = specs);
 
   const create$State = () => {
     const $state = Object.assign(
@@ -302,7 +312,7 @@ export function useDollarState(
           get(target, property, receiver) {
             const spec = node.getSpec();
             if (spec.valueProp) {
-              return $$state.props[spec.valueProp];
+              return $$state.env.$props[spec.valueProp];
             } else {
               return Reflect.get(target, property, receiver);
             }
@@ -326,7 +336,7 @@ export function useDollarState(
           if (
             !deepEqual(
               node.getState(realPath).initialValue,
-              f($$state.props, $state, $$state.ctx)
+              f({ $state, ...$$state.env })
             )
           ) {
             $$state.registrationsQueue.push(
@@ -364,7 +374,7 @@ export function useDollarState(
       }
       node.createStateCell(spec.pathObj as string[]);
       const init = spec.valueProp
-        ? $$state.props[spec.valueProp]
+        ? $$state.env.$props[spec.valueProp]
         : spec.initFunc
         ? initializeStateValue($$state, node, spec.pathObj as string[], $state)
         : spec.initVal;
@@ -383,7 +393,7 @@ export function useDollarState(
     .forEach(({ node, stateCell }) => {
       const initFunc = node.getInitFunc(stateCell);
       if (initFunc) {
-        const newInit = initFunc(props, $state, $ctx ?? {});
+        const newInit = initFunc({ $state, ...envFieldsAreNonNill(env) });
         if (!deepEqual(newInit, stateCell.initialValue)) {
           resetSpecs.push({ stateCell, node });
         }
@@ -396,14 +406,14 @@ export function useDollarState(
     const newInit = initializeStateValue($$state, node, stateCell.path, $state);
     const spec = node.getSpec();
     if (spec.onChangeProp) {
-      $$state.props[spec.onChangeProp]?.(newInit);
+      $$state.env.$props[spec.onChangeProp]?.(newInit);
     }
   };
   useIsomorphicLayoutEffect(() => {
     resetSpecs.forEach(({ stateCell, node }) => {
       reInitializeState(node, stateCell);
     });
-  }, [props, resetSpecs]);
+  }, [env.$props, resetSpecs]);
   useIsomorphicLayoutEffect(() => {
     while ($$state.registrationsQueue.length) {
       const { node, path, f } = $$state.registrationsQueue.shift()!;
