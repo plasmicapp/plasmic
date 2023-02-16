@@ -28,6 +28,7 @@ export default [
         format: "cjs",
         sourcemap: true,
         exports: "named",
+        interop: "auto",
         plugins: [
           replaceImports(n => {
             // Swap antd/es/* with antd/lib/* to use commonjs versions
