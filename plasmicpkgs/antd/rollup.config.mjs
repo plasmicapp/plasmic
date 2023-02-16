@@ -40,6 +40,7 @@ export default [
         format: "cjs",
         sourcemap: true,
         exports: "named",
+        interop: "auto"
       },
     ],
     plugins: [
