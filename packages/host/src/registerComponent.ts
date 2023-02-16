@@ -37,6 +37,7 @@ export interface PropTypeBase<P> {
   hidden?: ContextDependentConfig<P, boolean>;
   readOnly?: boolean | ContextDependentConfig<P, boolean>;
   advanced?: boolean;
+  disableDynamicValue?: boolean;
 }
 
 export type DefaultValueOrExpr<P, T> =
