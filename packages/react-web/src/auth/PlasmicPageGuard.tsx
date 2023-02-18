@@ -33,19 +33,14 @@ async function triggerLogin(appId: string, authorizeEndpoint: string) {
 interface PlasmicPageGuardProps {
   appId: string;
   authorizeEndpoint: string;
-  minRole: string;
+  minRole?: string;
   canTriggerLogin: boolean;
   children: React.ReactNode;
 }
 
 export function PlasmicPageGuard(props: PlasmicPageGuardProps) {
-  const {
-    appId,
-    authorizeEndpoint,
-    minRole,
-    canTriggerLogin,
-    children,
-  } = props;
+  const { appId, authorizeEndpoint, minRole, canTriggerLogin, children } =
+    props;
 
   const dataSourceCtxValue = usePlasmicDataSourceContext();
 
@@ -63,6 +58,9 @@ export function PlasmicPageGuard(props: PlasmicPageGuardProps) {
   }, [dataSourceCtxValue, appId, authorizeEndpoint, canTriggerLogin]);
 
   function canUserViewPage() {
+    if (!minRole) {
+      return true;
+    }
     if (!dataSourceCtxValue) {
       return false;
     }
