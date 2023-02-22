@@ -179,7 +179,9 @@ export class Api {
     try {
       return JSON.parse(text);
     } catch (err) {
-      throw new Error(`Error parsing JSON response: ${err}; response: ${text}`);
+      throw new Error(
+        `Error parsing JSON response: ${err}; status: ${resp.status}; response: ${text}`
+      );
     }
   }
 
