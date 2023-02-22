@@ -533,9 +533,20 @@ export interface ComponentMeta<P> {
    * Whether the component provides data to its slots using DataProvider.
    */
   providesData?: boolean;
+
+  /**
+   * If specified, then Figma components with the specified names will be mapped
+   * to this component when you paste Figma content into Plasmic
+   */
   figmaMappings?: {
     figmaComponentName: string;
   }[];
+
+  /**
+   * If true, when an instance of this component is added, the element
+   * will always be named by the name of this component.
+   */
+  alwaysAutoName?: boolean;
 
   unstable__refActions?: Record<string, RefActionRegistration<P>>;
 }
