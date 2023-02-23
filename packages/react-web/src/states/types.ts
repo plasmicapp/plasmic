@@ -1,9 +1,15 @@
-export type InitFunc<T> = (
-  $props: Record<string, any>,
-  $state: $State,
-  $ctx: Record<string, any>,
-  indexes?: number[]
-) => T;
+export type InitFuncEnv = {
+  $props: Record<string, any>;
+  $state: Record<string, any>;
+  $queries?: Record<string, any>;
+  $ctx?: Record<string, any>;
+};
+
+export type DollarStateEnv = Omit<InitFuncEnv, "$state">;
+
+export type NoUndefinedField<T> = { [P in keyof T]-?: T[P] };
+
+export type InitFunc<T> = (env: NoUndefinedField<InitFuncEnv>) => T;
 
 export type ObjectPath = (string | number)[];
 
