@@ -9,6 +9,8 @@ const deepClone = function <T>(o: T): T {
   return JSON.parse(JSON.stringify(o));
 };
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export default {
   title: "UseDollarState",
 };
@@ -38,7 +40,7 @@ const Counter: Story<CounterArgs> = (args) => {
         ...(stateType !== "writable"
           ? {
               ...(useInitalFunction
-                ? { initFunc: ($props) => $props.initCount ?? 0 }
+                ? { initFunc: ({ $props }) => $props.initCount ?? 0 }
                 : { initVal: 0 }),
             }
           : {}),
@@ -52,9 +54,12 @@ const Counter: Story<CounterArgs> = (args) => {
               valueProp: "initCount",
             }
           : {}),
+        variableType: "number",
       },
     ],
-    args
+    {
+      $props: args,
+    }
   );
 
   return (
@@ -92,9 +97,12 @@ const ParentCounter: Story<{
         path: "counter.count",
         type: "private",
         initVal: 0,
+        variableType: "number",
       },
     ],
-    args
+    {
+      $props: args,
+    }
   );
 
   return (
@@ -125,7 +133,7 @@ PrivateCounter.args = {
 PrivateCounter.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
   await userEvent.click(canvas.getByRole("button"));
-
+  await sleep(100);
   await expect(canvas.getByText("Counter: 1")).toBeInTheDocument();
 };
 
@@ -135,7 +143,7 @@ ReadonlyCounter.args = {
 };
 ReadonlyCounter.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
-
+  await sleep(1);
   await userEvent.click(canvas.getByTestId("counter-btn"));
   await expect(canvas.getByText("Counter: 1")).toBeInTheDocument();
   await expect(canvas.getByText("ParentCounter: 1")).toBeInTheDocument();
@@ -152,7 +160,7 @@ WritableCounter.args = {
 };
 WritableCounter.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
-
+  await sleep(1);
   await userEvent.click(canvas.getByTestId("counter-btn"));
   await expect(canvas.getByText("Counter: 1")).toBeInTheDocument();
   await expect(canvas.getByText("ParentCounter: 1")).toBeInTheDocument();
@@ -169,14 +177,18 @@ const _DynamicInitCount: Story = (args) => {
         path: "initCount",
         type: "private",
         initVal: 0,
+        variableType: "number",
       },
       {
         path: "counter.count",
         type: "private",
         initVal: 0,
+        variableType: "number",
       },
     ],
-    args
+    {
+      $props: args,
+    }
   );
 
   return (
@@ -229,9 +241,12 @@ function TextInput(props: {
         type: "writable",
         valueProp: "value",
         onChangeProp: "onChange",
+        variableType: "text",
       },
     ],
-    props
+    {
+      $props: props,
+    }
   );
   return (
     <input
@@ -252,9 +267,12 @@ function PeopleList(props: {
         path: "selectedIndex",
         type: "readonly",
         onChangeProp: "onIndexSelected",
+        variableType: "number",
       },
     ],
-    props
+    {
+      $props: props,
+    }
   );
   return (
     <ul>
@@ -282,36 +300,43 @@ const _ResetInput: Story<{
       {
         path: "peopleList",
         type: "private",
-        initFunc: ($props) => $props.peopleList,
+        initFunc: ({ $props }) => $props.peopleList,
+        variableType: "array",
       },
       {
         path: "list.selectedIndex",
         type: "private",
+        variableType: "number",
       },
       {
         path: "textInputFirstName.value",
-        initFunc: (_$props, $state) =>
+        initFunc: ({ $state }) =>
           $state.list.selectedIndex == null
             ? ""
             : $state.peopleList[$state.list.selectedIndex].firstName,
         type: "private",
+        variableType: "text",
       },
       {
         path: "textInputLastName.value",
-        initFunc: (_$props, $state) =>
+        initFunc: ({ $state }) =>
           $state.list.selectedIndex == null
             ? ""
             : $state.peopleList[$state.list.selectedIndex].lastName,
         type: "private",
+        variableType: "text",
       },
       {
         path: "textInputUpper.value",
-        initFunc: (_$props, $state) =>
+        initFunc: ({ $state }) =>
           $state.textInputFirstName.value?.toUpperCase(),
         type: "private",
+        variableType: "text",
       },
     ],
-    props
+    {
+      $props: props,
+    }
   );
 
   return (
@@ -417,18 +442,22 @@ const _RepeatedStates: Story<{
         path: "counter[].count",
         type: "private",
         initVal: 0,
+        variableType: "number",
       },
       ...subsets.map(
         (set, i) =>
           ({
             path: `test${i}.count`,
             type: "private",
-            initFunc: (_$props, $state) =>
+            initFunc: ({ $state }) =>
               set.reduce((acc, el) => acc + $state.counter[el].count, 0),
+            variableType: "number",
           } as $StateSpec<any>)
       ),
     ],
-    args
+    {
+      $props: args,
+    }
   );
 
   return (
@@ -513,9 +542,12 @@ const _NestedRepeatedCounter: Story<{}> = () => {
           {
             path: "counter[].count",
             type: "private",
+            variableType: "number",
           },
         ],
-        args
+        {
+          $props: args,
+        }
       );
       return (
         <div
@@ -566,9 +598,12 @@ const _NestedRepeatedCounter: Story<{}> = () => {
             [0, 0, 0],
             [0, 0, 0],
           ],
+          variableType: "array",
         },
       ],
-      args
+      {
+        $props: args,
+      }
     );
     return (
       <div
@@ -698,9 +733,12 @@ const _MatrixRepeatedCounter: Story<{}> = () => {
         path: "counter[][].count",
         type: "private",
         initFunc: () => 0,
+        variableType: "number",
       },
     ],
-    {}
+    {
+      $props: {},
+    }
   );
   return (
     <div
@@ -828,16 +866,20 @@ const _InitFuncFromInternalContextData: Story<{
           {
             path: "price",
             type: "private",
-            initFunc: ($props, $state) =>
+            initFunc: ({ $state, $props }) =>
               $props.quantity * ($state.product?.price ?? 0),
+            variableType: "number",
           },
           {
             path: "product",
             type: "readonly",
             onChangeProp: "onProductChange",
+            variableType: "object",
           },
         ],
-        props
+        {
+          $props: props,
+        }
       );
       return (
         <>
@@ -863,18 +905,23 @@ const _InitFuncFromInternalContextData: Story<{
         path: "selectedIndex",
         type: "private",
         initVal: undefined,
+        variableType: "number",
       },
       {
         path: "quantity",
         type: "private",
         initVal: 1,
+        variableType: "number",
       },
       {
         path: "ctx.product",
         type: "private",
+        variableType: "object",
       },
     ],
-    args
+    {
+      $props: args,
+    }
   );
 
   return (
@@ -970,12 +1017,14 @@ const _InitFuncFromRootContextData: Story<{
         {
           path: "price",
           type: "private",
-          initFunc: ($props, _$state, $ctx) =>
-            $props.quantity * ($ctx.price ?? 0),
+          initFunc: ({ $props, $ctx }) => $props.quantity * ($ctx.price ?? 0),
+          variableType: "number",
         },
       ],
-      props,
-      $ctx
+      {
+        $props: props,
+        $ctx: $ctx ?? {},
+      }
     );
     return <p data-testid="product_price">Price: {$state.price}</p>;
   };
@@ -986,18 +1035,23 @@ const _InitFuncFromRootContextData: Story<{
         path: "selectedIndex",
         type: "private",
         initVal: undefined,
+        variableType: "number",
       },
       {
         path: "quantity",
         type: "private",
         initVal: 1,
+        variableType: "number",
       },
       {
         path: "ctx.product",
         type: "private",
+        variableType: "object",
       },
     ],
-    args
+    {
+      $props: args,
+    }
   );
 
   return (
@@ -1089,7 +1143,7 @@ const _InitFuncFromInternalContextDataWithDelay: Story<{
     React.useEffect(() => {
       setTimeout(() => {
         setData(products[0]);
-      }, 3000);
+      }, 2000);
     }, []);
     return (
       <div>
@@ -1105,9 +1159,12 @@ const _InitFuncFromInternalContextDataWithDelay: Story<{
       {
         path: "counter.count",
         type: "private",
+        variableType: "number",
       },
     ],
-    args
+    {
+      $props: args,
+    }
   );
 
   return (
@@ -1153,7 +1210,7 @@ InitFuncFromInternalContextDataWithDelay.play = async ({ canvasElement }) => {
   expect(
     (canvas.getByTestId("label-btn") as HTMLHeadingElement).textContent
   ).toEqual("Counter: ");
-  await new Promise((r) => setTimeout(r, 5000));
+  await new Promise((r) => setTimeout(r, 3000));
   expect(
     (canvas.getByTestId("product-name") as HTMLHeadingElement).textContent
   ).toEqual("Shirt 1");
@@ -1168,19 +1225,24 @@ const _RepeatedImplicitState: Story<{}> = (args) => {
       {
         path: "counter[].count",
         type: "private",
+        variableType: "number",
       },
       {
         path: "removeIndex",
         type: "private",
         initVal: 0,
+        variableType: "number",
       },
       {
         path: "usedValuesCount",
         type: "private",
         initVal: 0,
+        variableType: "number",
       },
     ],
-    args
+    {
+      $props: args,
+    }
   );
   return (
     <div>
@@ -1294,10 +1356,13 @@ const _FormBuilder: Story<{ people: Person[] }> = (props) => {
           {
             path: "nickname",
             type: "private",
-            initFunc: (props) => props.nickname,
+            initFunc: ({ $props }) => $props.nickname,
+            variableType: "text",
           },
         ],
-        props
+        {
+          $props: props,
+        }
       );
       return (
         <div>
@@ -1334,20 +1399,25 @@ const _FormBuilder: Story<{ people: Person[] }> = (props) => {
           {
             path: "nicknames",
             type: "private",
-            initFunc: (props) => props.person.nicknames,
+            initFunc: ({ $props }) => $props.person.nicknames,
+            variableType: "array",
           },
           {
             path: "firstName",
             type: "private",
-            initFunc: (props) => props.person.firstName,
+            initFunc: ({ $props }) => $props.person.firstName,
+            variableType: "text",
           },
           {
             path: "lastName",
             type: "private",
-            initFunc: (props) => props.person.lastName,
+            initFunc: ({ $props }) => $props.person.lastName,
+            variableType: "text",
           },
         ],
-        props
+        {
+          $props: props,
+        }
       );
 
       const onChangePersonHandler = (
@@ -1448,10 +1518,13 @@ const _FormBuilder: Story<{ people: Person[] }> = (props) => {
       {
         path: "people",
         type: "private",
-        initFunc: (props) => props.people,
+        initFunc: ({ $props }) => $props.people,
+        variableType: "array",
       },
     ],
-    props
+    {
+      $props: props,
+    }
   );
 
   return (
@@ -1656,27 +1729,32 @@ const _FormBuilderImplicitStates: Story<{ people: Person[] }> = (props: {
       const $state = useDollarState(
         [
           {
-            path: "nicknames[]",
+            path: "nicknames",
             type: "readonly",
             onChangeProp: "onNicknamesChange",
-            initFunc: (props, _, indexes) => props.nicknames[indexes[0]],
+            initFunc: ({ $props }) => $props.nicknames,
+            variableType: "array",
           },
           {
             path: "firstName",
             type: "readonly",
             onChangeProp: "onFirstNameChange",
-            initFunc: (props) => props.firstName,
+            initFunc: ({ $props }) => $props.firstName,
+            variableType: "text",
           },
           {
             path: "lastName",
             type: "readonly",
             onChangeProp: "onLastNameChange",
-            initFunc: (props) => props.lastName,
+            initFunc: ({ $props }) => $props.lastName,
+            variableType: "text",
           },
         ],
-        props
+        {
+          $props: props,
+        }
       );
-
+      console.log("dale", props, $state);
       const mkDataTestIdAttr = (label: string) => ({
         "data-testid": `${label}${props["data-test-index"]}`,
       });
@@ -1759,21 +1837,22 @@ const _FormBuilderImplicitStates: Story<{ people: Person[] }> = (props: {
       {
         path: "people[].firstName",
         type: "private",
-        initFunc: (props, _, indexes) => props.people[indexes[0]].firstName,
+        variableType: "text",
       },
       {
         path: "people[].lastName",
         type: "private",
-        initFunc: (props, _, indexes) => props.people[indexes[0]].lastName,
+        variableType: "text",
       },
       {
-        path: "people[].nicknames[]",
+        path: "people[].nicknames",
         type: "private",
-        initFunc: (props, _, indexes) =>
-          props.people[indexes[0]].nicknames[indexes[1]],
+        variableType: "array",
       },
     ],
-    props
+    {
+      $props: props,
+    }
   );
 
   return (
@@ -1784,21 +1863,38 @@ const _FormBuilderImplicitStates: Story<{ people: Person[] }> = (props: {
         gap: "20px",
       }}
     >
-      {$state.people.map((person: any, i: number) => (
-        <Person
-          key={i}
-          firstName={person.firstName}
-          onFirstNameChange={(value) => ($state.people[i].firstName = value)}
-          lastName={person.lastName}
-          onLastNameChange={(value) => ($state.people[i].lastName = value)}
-          nicknames={person.nicknames}
-          onNicknamesChange={(value, path) => {
-            set($state.people[i], path, value);
-          }}
-          onDeletePerson={() => $state.people.splice(i, 1)}
-          data-test-index={`[${i}]`}
-        />
-      ))}
+      {$state.people.map((person: any, i: number) => {
+        $state.registerInitFunc?.(
+          "people[].firstName",
+          ({ $props }) => $props.people[i].firstName,
+          [i]
+        );
+        $state.registerInitFunc?.(
+          "people[].lastName",
+          ({ $props }) => $props.people[i].lastName,
+          [i]
+        );
+        $state.registerInitFunc?.(
+          "people[].nicknames",
+          ({ $props }) => $props.people[i].nicknames,
+          [i]
+        );
+        return (
+          <Person
+            key={i}
+            firstName={person.firstName}
+            onFirstNameChange={(value) => ($state.people[i].firstName = value)}
+            lastName={person.lastName}
+            onLastNameChange={(value) => ($state.people[i].lastName = value)}
+            nicknames={person.nicknames}
+            onNicknamesChange={(value) => {
+              $state.people[i].nicknames = value;
+            }}
+            onDeletePerson={() => $state.people.splice(i, 1)}
+            data-test-index={`[${i}]`}
+          />
+        );
+      })}
       <button
         data-testid={"add-person-btn"}
         onClick={() =>
@@ -1820,15 +1916,15 @@ const _FormBuilderImplicitStates: Story<{ people: Person[] }> = (props: {
   );
 };
 
-// export const FormBuilderImplicitStates = _FormBuilderImplicitStates.bind({});
-// FormBuilderImplicitStates.args = {
-//   people: deepClone(peopleList),
-// };
-// FormBuilderImplicitStates.play = async ({ canvasElement }) => {
-//   const canvas = within(canvasElement);
+export const FormBuilderImplicitStates = _FormBuilderImplicitStates.bind({});
+FormBuilderImplicitStates.args = {
+  people: deepClone(peopleList),
+};
+FormBuilderImplicitStates.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
 
-//   // TODO: skipping repeated implicit states for now
-// };
+  // TODO: skipping repeated implicit states for now
+};
 
 const _StateCellIsArray: Story<{ people: Person[] }> = (props: {
   people: Person[];
@@ -1838,18 +1934,23 @@ const _StateCellIsArray: Story<{ people: Person[] }> = (props: {
       {
         path: "people",
         type: "private",
-        initFunc: (props) => props.people,
+        initFunc: ({ $props }) => $props.people,
+        variableType: "array",
       },
       {
         path: "firstName",
         type: "private",
+        variableType: "text",
       },
       {
         path: "lastName",
         type: "private",
+        variableType: "text",
       },
     ],
-    props
+    {
+      $props: props,
+    }
   );
 
   return (
@@ -1974,18 +2075,23 @@ const _StateCellIsAMatrix: Story<{ board: number[][] }> = (props) => {
       {
         path: "board",
         type: "private",
-        initFunc: ($props, $state, $ctx) => props.board,
+        initFunc: ({ $props }) => $props.board,
+        variableType: "array",
       },
       {
         path: "selectedRow",
         type: "private",
+        variableType: "number",
       },
       {
         path: "selectedCol",
         type: "private",
+        variableType: "number",
       },
     ],
-    props
+    {
+      $props: props,
+    }
   );
 
   return (
@@ -2082,7 +2188,6 @@ StateCellIsMatrix.play = async ({ canvasElement }) => {
       expectedState.selectedCol = col;
     }
   };
-
   await testBoard();
 
   await selectCell(0, 0);
@@ -2112,16 +2217,19 @@ const _IsOnChangePropImmediatelyFired: Story<{}> = (props) => {
             type: "readonly",
             onChangeProp: "onCountChange",
             initVal: 5,
+            variableType: "number",
           },
           {
             path: "isOdd",
             type: "readonly",
             onChangeProp: "onIsOddChange",
-            initFunc: (props, $state) => !!($state.count % 2),
+            initFunc: ({ $state }) => !!($state.count % 2),
+            variableType: "boolean",
           },
         ],
-        props,
-        {},
+        {
+          $props: props,
+        },
         { inCanvas: true }
       );
       return (
@@ -2142,13 +2250,17 @@ const _IsOnChangePropImmediatelyFired: Story<{}> = (props) => {
       {
         path: "counter.count",
         type: "private",
+        variableType: "number",
       },
       {
         path: "counter.isOdd",
         type: "private",
+        variableType: "boolean",
       },
     ],
-    props
+    {
+      $props: props,
+    }
   );
   return (
     <div>
@@ -2187,37 +2299,44 @@ const _ImmutableStateCells: Story<{ people: Person[] }> = (props) => {
       {
         path: "peopleList",
         type: "private",
-        initFunc: (props) => props.people,
+        initFunc: ({ $props }) => $props.people,
         isImmutable: true,
+        variableType: "array",
       },
       {
         path: "list.selectedIndex",
         type: "private",
+        variableType: "number",
       },
       {
         path: "textInputFirstName.value",
-        initFunc: (_$props, $state) =>
+        initFunc: ({ $state }) =>
           $state.list.selectedIndex == null
             ? ""
             : $state.peopleList[$state.list.selectedIndex].firstName,
         type: "private",
+        variableType: "text",
       },
       {
         path: "textInputLastName.value",
-        initFunc: (_$props, $state) =>
+        initFunc: ({ $state }) =>
           $state.list.selectedIndex == null
             ? ""
             : $state.peopleList[$state.list.selectedIndex].lastName,
         type: "private",
+        variableType: "text",
       },
       {
         path: "textInputUpper.value",
-        initFunc: (_$props, $state) =>
+        initFunc: ({ $state }) =>
           $state.textInputFirstName.value?.toUpperCase(),
         type: "private",
+        variableType: "text",
       },
     ],
-    props
+    {
+      $props: props,
+    }
   );
 
   return (
@@ -2326,10 +2445,10 @@ const _InCanvasDollarState: Story<{}> = (props) => {
           type === "single" ? `textInput${id}.value` : `textInput${id}[].value`,
         type: "private",
         initFunc: type === "single" ? () => "0" : undefined,
+        variableType: "text",
       } as const)
   );
-  const $state = useDollarState(specs, props, {}, { inCanvas: true });
-  console.log("dale", specs, $state);
+  const $state = useDollarState(specs, { $props: props }, { inCanvas: true });
   return (
     <div>
       {activeVariables.map(({ id, type }) => {
