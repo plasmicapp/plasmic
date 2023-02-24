@@ -64,7 +64,9 @@ export function initPlasmicLoaderWithCache<
     // For Nextjs 12, revalidate may in fact re-use an existing instance
     // of PlasmicComponentLoader that's already in memory, so we need to
     // make sure we don't re-use the data cached in memory.
-    alwaysFresh: isProd && !isBrowser,
+    // We also enforce this for dev mode, so that we don't have to restart
+    // the dev server, in case getStaticProps() re-uses the same PlasmicComponentLoader
+    alwaysFresh: !isBrowser,
   });
 
   if (!isProd) {
