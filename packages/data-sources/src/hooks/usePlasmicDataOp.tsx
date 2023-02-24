@@ -1,5 +1,5 @@
 import { usePlasmicDataSourceContext } from '@plasmicapp/data-sources-context';
-import { SWRResponse, useMutablePlasmicQueryData } from '@plasmicapp/query';
+import { useMutablePlasmicQueryData } from '@plasmicapp/query';
 import React from 'react';
 import { DataOp, executePlasmicDataOp } from '../executor';
 import { ManyRowsResult, Pagination, SingleRowResult } from '../types';
@@ -19,18 +19,21 @@ export function usePlasmicDataOp<
 } {
   const ctx = usePlasmicDataSourceContext();
   const res = useMutablePlasmicQueryData<T, E>(
-    () =>
-      dataOp
-        ? dataOp.cacheKey
-          ? dataOp.cacheKey
-          : JSON.stringify({
-              sourceId: dataOp.sourceId,
-              opId: dataOp.opId,
-              args: dataOp.userArgs,
-              userAuthToken: ctx?.userAuthToken,
-              paginate: opts?.paginate,
-            })
-        : null,
+    () => {
+      if (!dataOp) {
+        return null;
+      }
+      const queryDependencies = JSON.stringify({
+        sourceId: dataOp.sourceId,
+        opId: dataOp.opId,
+        args: dataOp.userArgs,
+        userAuthToken: ctx?.userAuthToken,
+        paginate: opts?.paginate,
+      });
+      return dataOp.cacheKey
+        ? `${dataOp.cacheKey}${queryDependencies}`
+        : queryDependencies;
+    },
     async () => {
       return await executePlasmicDataOp<T>(dataOp!, {
         userAuthToken: ctx?.userAuthToken,
