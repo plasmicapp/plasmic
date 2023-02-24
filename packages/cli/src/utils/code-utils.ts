@@ -328,6 +328,11 @@ export function replaceImports(
       stmt.source.value = realPath;
     } else if (type === "codeComponent") {
       const meta = fixImportContext.codeComponentMetas[uuid];
+      if (!meta.componentImportPath) {
+        throw new HandledError(
+          `Encountered code component "${meta.name}" that was not registered with an importPath, so we don't know where to import this component from.  Please see https://docs.plasmic.app/learn/code-components-ref/`
+        );
+      }
       if (meta.componentImportPath[0] === ".") {
         // Relative path from the project root
         const toPath = path.join(context.rootDir, meta.componentImportPath);
