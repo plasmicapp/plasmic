@@ -99,15 +99,19 @@ export function QueryResultProvider({
   children,
   table,
   rows,
-  hidden
+  hidden,
 }: {
   children?: React.ReactNode;
-  table: string;
-  rows: ApiCmsRow[];
-  hidden?:boolean
+  table: string | undefined;
+  rows: ApiCmsRow[] | undefined;
+  hidden?: boolean;
 }) {
   return (
-    <DataProvider name={mkQueryContextKey(table)} data={rows} hidden={hidden}>
+    <DataProvider
+      name={table ? mkQueryContextKey(table) : undefined}
+      data={rows}
+      hidden={hidden}
+    >
       {children}
     </DataProvider>
   );

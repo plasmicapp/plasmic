@@ -1,8 +1,4 @@
-import {
-  DataProvider,
-  PlasmicCanvasContext,
-  repeatedElement,
-} from "@plasmicapp/host";
+import { PlasmicCanvasContext, repeatedElement } from "@plasmicapp/host";
 import {
   CanvasComponentProps,
   ComponentMeta,
@@ -14,7 +10,6 @@ import React, { useContext } from "react";
 import { DatabaseConfig, HttpError, mkApi, QueryParams } from "./api";
 import {
   DatabaseProvider,
-  mkQueryContextKey,
   QueryResultProvider,
   RowProvider,
   TablesProvider,
@@ -381,24 +376,16 @@ export function CmsQueryRepeater({
     maybeData,
     (rows) => {
       if (rows.length === 0 || forceEmptyState) {
-        return (
-          <QueryResultProvider table={table!} rows={rows}>
-            {emptyMessage}
-          </QueryResultProvider>
-        );
+        return emptyMessage;
       }
 
-      return noAutoRepeat ? (
-        children
-      ) : (
-        <QueryResultProvider table={table!} rows={rows}>
-          {rows.map((row, index) => (
+      return noAutoRepeat
+        ? children
+        : rows.map((row, index) => (
             <RowProvider key={index} table={table!} row={row}>
               {repeatedElement(index, children)}
             </RowProvider>
-          ))}
-        </QueryResultProvider>
-      );
+          ));
     },
     { hideIfNotFound: false },
     inEditor,
@@ -406,12 +393,9 @@ export function CmsQueryRepeater({
     forceLoadingState
   );
   return (
-    <DataProvider
-      data={maybeData?.data}
-      name={table ? `${mkQueryContextKey(table)}s` : undefined}
-    >
+    <QueryResultProvider rows={maybeData?.data} table={table}>
       {noLayout ? <> {node} </> : <div className={className}> {node} </div>}
-    </DataProvider>
+    </QueryResultProvider>
   );
 }
 
