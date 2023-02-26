@@ -5,9 +5,7 @@ import path from 'path';
 import { serverRequire, serverRequireFs } from './server-require';
 
 class FileCache {
-  constructor(private filePath: string) {
-    console.log('USING cache', this.filePath);
-  }
+  constructor(private filePath: string) {}
 
   async get() {
     const fs = serverRequireFs();
