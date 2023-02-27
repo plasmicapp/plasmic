@@ -15,8 +15,10 @@ import { arrayEq, assert, set, useIsomorphicLayoutEffect } from "./helpers";
 import {
   $State,
   $StateSpec,
+  DeprecatedInitFunc,
   DollarStateEnv,
   InitFunc,
+  InitFuncEnv,
   NoUndefinedField,
   ObjectPath,
   PLASMIC_STATE_PROXY_SYMBOL,
@@ -72,17 +74,24 @@ function initializeStateValue(
 
   stateAccess.forEach(({ node, path }) => {
     node.addListener(path, () => {
-      const newValue = initialSpecNode.getSpec().initFunc!({
-        $state,
-        ...$$state.env,
-      });
+      const newValue = invokeInitFuncBackwardsCompatible(
+        initialSpecNode.getSpec().initFunc!,
+        {
+          $state,
+          ...$$state.env,
+        }
+      );
       set(proxyRoot, initialStatePath, newValue);
     });
   });
 
-  const initialValue = initialSpecNode.getInitFunc(
+  const initFunc = initialSpecNode.getInitFunc(
     initialSpecNode.getState(initialStatePath)
-  )!({ $state, ...$$state.env });
+  )!;
+  const initialValue = invokeInitFuncBackwardsCompatible(initFunc, {
+    $state,
+    ...$$state.env,
+  });
   initialSpecNode.setInitialValue(initialStatePath, clone(initialValue));
 
   const initialSpec = initialSpecNode.getSpec();
@@ -312,6 +321,21 @@ function extractDollarStateParametersBackwardCompatible(
   }
 }
 
+function invokeInitFuncBackwardsCompatible<T>(
+  initFunc: InitFunc<T> | DeprecatedInitFunc<T>,
+  env: NoUndefinedField<InitFuncEnv>
+) {
+  if (initFunc.length > 1) {
+    return (initFunc as DeprecatedInitFunc<T>)(
+      env.$props,
+      env.$state,
+      env.$ctx
+    );
+  } else {
+    return (initFunc as InitFunc<T>)(env);
+  }
+}
+
 export function useDollarState(
   specs: $StateSpec<any>[],
   ...rest: any[]
@@ -429,7 +453,10 @@ export function useDollarState(
     .forEach(({ node, stateCell }) => {
       const initFunc = node.getInitFunc(stateCell);
       if (initFunc) {
-        const newInit = initFunc({ $state, ...envFieldsAreNonNill(env) });
+        const newInit = invokeInitFuncBackwardsCompatible(initFunc, {
+          $state,
+          ...envFieldsAreNonNill(env),
+        });
         if (!deepEqual(newInit, stateCell.initialValue)) {
           resetSpecs.push({ stateCell, node });
         }
