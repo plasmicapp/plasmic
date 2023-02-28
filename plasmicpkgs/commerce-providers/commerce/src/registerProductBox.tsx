@@ -55,6 +55,7 @@ export const productBoxMeta: ComponentMeta<ProductBoxProps> = {
       type: "cardPicker",
       modalTitle: "Product",
       onSearch: (props, ctx) => ctx?.onSearch,
+      showInput: true,
       options: (props, ctx) =>
         ctx?.products.map((product) => ({
           imgUrl: product.images[0].url,
