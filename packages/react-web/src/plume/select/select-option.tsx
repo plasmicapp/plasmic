@@ -1,6 +1,7 @@
+import { usePlasmicCanvasContext } from "@plasmicapp/host";
+import { useOption as useAriaOption } from "@react-aria/listbox";
 import { Node } from "@react-types/shared";
 import * as React from "react";
-import { useOption as useAriaOption } from "@react-aria/listbox";
 import { pick } from "../../common";
 import { mergeProps, mergeRefs } from "../../react-utils";
 import { Overrides } from "../../render/elements";
@@ -63,6 +64,7 @@ export function useSelectOption<
 
   const { children } = props;
 
+  const canvasCtx = usePlasmicCanvasContext();
   const rootRef = React.useRef<HTMLElement>(null);
   const onRef = mergeRefs(rootRef, outerRef);
 
@@ -86,6 +88,7 @@ export function useSelectOption<
       shouldSelectOnPressUp: true,
       shouldFocusOnHover: true,
       isVirtualized: false,
+      shouldUseVirtualFocus: !!canvasCtx,
     },
     state,
     rootRef
@@ -107,7 +110,7 @@ export function useSelectOption<
 
   const overrides: Overrides = {
     [config.root]: {
-      props: mergeProps(optionProps, getStyleProps(props), {
+      props: mergeProps(canvasCtx ? {} : optionProps, getStyleProps(props), {
         ref: onRef,
         style: noOutline(),
       }),

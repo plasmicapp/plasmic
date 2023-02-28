@@ -128,6 +128,92 @@ type LoaderAwareSectionLikeProps =
   | SectionLikeProps
   | PlasmicLoaderProps<SectionLikeProps>;
 
+export type ItemJson = LeafItemJson | SectionJson;
+
+export type LeafItemJson =
+  | string
+  | {
+      value: string;
+      label?: string;
+      textValue?: string;
+      isDisabled?: boolean;
+    };
+
+export interface SectionJson {
+  title: string;
+  children: ItemJson[];
+}
+
+export function deriveItemsFromProps(
+  props: any,
+  opts: {
+    itemPlumeType: string;
+    sectionPlumeType?: string;
+    invalidChildError?: string;
+    requireItemValue: boolean;
+    ItemComponent?: React.ComponentType<ItemLikeProps>;
+    SectionComponent?: React.ComponentType<SectionLikeProps>;
+    itemsProp?: string;
+  }
+) {
+  if (opts.itemsProp && opts.itemsProp in props) {
+    if (!opts.ItemComponent || !opts.SectionComponent) {
+      throw new Error(`You may need to re-generate your Plasmic* files`);
+    }
+    const items = props[opts.itemsProp] as ItemJson[] | undefined;
+    return deriveItemsFromItemsProp(items, {
+      ItemComponent: opts.ItemComponent,
+      SectionComponent: opts.SectionComponent,
+    });
+  } else {
+    return deriveItemsFromChildren(props.children as React.ReactNode, opts);
+  }
+}
+
+function deriveItemsFromItemsProp(
+  items: ItemJson[] | undefined,
+  opts: {
+    ItemComponent: React.ComponentType<ItemLikeProps>;
+    SectionComponent: React.ComponentType<SectionLikeProps>;
+  }
+) {
+  const { ItemComponent, SectionComponent } = opts;
+  const disabledKeys: string[] = [];
+  const transform = (item: ItemJson) => {
+    if (typeof item === "string") {
+      return (
+        <ItemComponent key={item} value={item}>
+          {item}
+        </ItemComponent>
+      );
+    } else if ("children" in item) {
+      return (
+        <SectionComponent key={item.title} title={item.title}>
+          {item.children.map((x) => transform(x))}
+        </SectionComponent>
+      );
+    } else {
+      if (item.isDisabled) {
+        disabledKeys.push(item.value);
+      }
+      return (
+        <ItemComponent
+          key={item.value}
+          value={item.value}
+          textValue={item.textValue}
+          isDisabled={item.isDisabled}
+        >
+          {item.label ?? item.value}
+        </ItemComponent>
+      );
+    }
+  };
+  return {
+    items: items?.map((x) => transform(x)) ?? [],
+    disabledKeys,
+  };
+}
+
 /**
  * Given children of a component like Select or Menu, derive the items
  * that we will pass into the Collections API.  These will be
@@ -219,6 +305,51 @@ export function deriveItemsFromChildren<T extends React.ReactElement>(
   };
 
   return { items: flattenedChildren(children) as T[], disabledKeys };
+}
+
+export function useDerivedItems(
+  props: any,
+  opts: {
+    itemPlumeType: string;
+    sectionPlumeType?: string;
+    invalidChildError?: string;
+    requireItemValue: boolean;
+    ItemComponent?: React.ComponentType<ItemLikeProps>;
+    SectionComponent?: React.ComponentType<SectionLikeProps>;
+    itemsProp?: string;
+  }
+) {
+  const { children } = props;
+  const {
+    itemPlumeType,
+    sectionPlumeType,
+    invalidChildError,
+    requireItemValue,
+    ItemComponent,
+    SectionComponent,
+    itemsProp,
+  } = opts;
+  const items = itemsProp ? props[itemsProp] : undefined;
+  return React.useMemo(() => {
+    return deriveItemsFromProps(props, {
+      itemPlumeType,
+      sectionPlumeType,
+      invalidChildError,
+      requireItemValue,
+      itemsProp,
+      ItemComponent,
+      SectionComponent,
+    });
+  }, [
+    children,
+    items,
+    itemPlumeType,
+    sectionPlumeType,
+    invalidChildError,
+    requireItemValue,
+    ItemComponent,
+    SectionComponent,
+  ]);
 }
 
 export function useDerivedItemsFromChildren<T extends React.ReactElement>(

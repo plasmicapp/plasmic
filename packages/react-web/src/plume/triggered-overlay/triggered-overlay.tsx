@@ -1,11 +1,12 @@
-import { DOMProps } from "@react-types/shared";
-import * as React from "react";
+import { usePlasmicCanvasContext } from "@plasmicapp/host";
+import { FocusScope } from "@react-aria/focus";
 import {
   DismissButton,
   useOverlay,
   useOverlayPosition,
 } from "@react-aria/overlays";
-import { FocusScope } from "@react-aria/focus";
+import { DOMProps } from "@react-types/shared";
+import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { pick } from "../../common";
 import {
@@ -165,9 +166,12 @@ export function useTriggeredOverlay<
     ),
   };
 
+  const canvasCtx = usePlasmicCanvasContext();
   const args = {
     ...pick(props, ...plasmicClass.internalArgProps),
-    [config.contentSlot]: (
+    [config.contentSlot]: canvasCtx ? (
+      children
+    ) : (
       <FocusScope restoreFocus>
         <DismissButton onDismiss={state.close} />
         {children}

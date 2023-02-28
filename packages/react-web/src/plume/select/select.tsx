@@ -1,3 +1,4 @@
+import { usePlasmicCanvasContext } from "@plasmicapp/host";
 import { usePress } from "@react-aria/interactions";
 import { useListBox } from "@react-aria/listbox";
 import { HiddenSelect, useSelect as useAriaSelect } from "@react-aria/select";
@@ -21,9 +22,12 @@ import { Overrides } from "../../render/elements";
 import { useEnsureSSRProvider } from "../../render/ssr";
 import {
   getChildProp,
+  ItemJson,
+  ItemLikeProps,
   renderAsCollectionChild,
   renderCollectionNode,
-  useDerivedItemsFromChildren,
+  SectionLikeProps,
+  useDerivedItems,
 } from "../collection-utils";
 import {
   AnyPlasmicClass,
@@ -69,6 +73,16 @@ export interface BaseSelectProps
    * List of Select.Options
    */
   children?: React.ReactNode;
+
+  /**
+   * List of options as an array, instead of using `children` prop. If this
+   * is passed in, then `children` is ignored.
+   *
+   * The options can be a list of strings, or a list of objects with
+   * fields `value` (for the value of the option), `label` (for what's rendered
+   * in the option), and `isDisabled` (if the option should be disabled).
+   */
+  options?: ItemJson[];
 
   /**
    * Whether the Select is currently open
@@ -165,7 +179,7 @@ type AriaSelectItemType = AriaOptionType | AriaGroupType;
  * with the secret derived `_node` prop.  That means Option and OptionGroup
  * render functions can assume that _node is passed in.
  */
-function useAriaSelectProps(props: BaseSelectProps) {
+function useAriaSelectProps(props: BaseSelectProps, config: SelectConfig<any>) {
   let {
     value,
     defaultValue,
@@ -177,10 +191,13 @@ function useAriaSelectProps(props: BaseSelectProps) {
     ...rest
   } = props;
 
-  const { items, disabledKeys } = useDerivedItemsFromChildren(children, {
+  const { items, disabledKeys } = useDerivedItems(props, {
     ...COLLECTION_OPTS,
     invalidChildError: `Can only use Select.Option and Select.OptionGroup as children to Select`,
     requireItemValue: true,
+    ItemComponent: config.OptionComponent,
+    SectionComponent: config.OptionGroupComponent,
+    itemsProp: "options",
   });
 
   const collectionChildRenderer = React.useCallback(
@@ -239,6 +256,9 @@ interface SelectConfig<C extends AnyPlasmicClass> {
   trigger: keyof PlasmicClassOverrides<C>;
   overlay: keyof PlasmicClassOverrides<C>;
   optionsContainer: keyof PlasmicClassOverrides<C>;
+
+  OptionComponent?: React.ComponentType<ItemLikeProps>;
+  OptionGroupComponent?: React.ComponentType<SectionLikeProps>;
 }
 
 interface SelectState {
@@ -256,7 +276,7 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
   ref: React.Ref<SelectRefValue> = null
 ) {
   useEnsureSSRProvider();
-  const { ariaProps } = useAriaSelectProps(props);
+  const { ariaProps } = useAriaSelectProps(props, config);
   const { placement } = props;
   const state = useAriaSelectState<AriaSelectItemType>(ariaProps);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
@@ -271,6 +291,8 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
     placeholder,
     selectedContent,
   } = props;
+
+  const canvasCtx = usePlasmicCanvasContext();
 
   const { triggerProps: triggerPressProps, menuProps } = useAriaSelect(
     ariaProps,
@@ -315,18 +337,20 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
       }),
       wrapChildren: (children) => (
         <>
-          <HiddenSelect
-            state={state}
-            triggerRef={triggerRef}
-            name={name}
-            isDisabled={isDisabled}
-          />
+          {!canvasCtx && (
+            <HiddenSelect
+              state={state}
+              triggerRef={triggerRef}
+              name={name}
+              isDisabled={isDisabled}
+            />
+          )}
           {children}
         </>
       ),
     },
     [config.trigger]: {
-      props: mergeProps(triggerProps, {
+      props: mergeProps(canvasCtx ? {} : triggerProps, {
         ref: triggerRef,
         autoFocus,
         disabled: !!isDisabled,
@@ -407,6 +431,7 @@ function ListBoxWrapper(props: {
   const { state, menuProps, children } = props;
 
   const ref = React.useRef<HTMLElement>(null);
+  const canvasCtx = usePlasmicCanvasContext();
 
   const { listBoxProps } = useListBox(
     {
@@ -421,6 +446,9 @@ function ListBoxWrapper(props: {
 
   return React.cloneElement(
     children,
-    mergeProps(children.props, listBoxProps, { style: noOutline(), ref })
+    mergeProps(children.props, canvasCtx ? {} : listBoxProps, {
+      style: noOutline(),
+      ref,
+    })
   );
 }
