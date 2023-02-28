@@ -1,31 +1,18 @@
 export const searchParameters = [
     {
-        value: "[match]",
-        label: 'Full text search  '
-    },
-    {
-        value: "[in]",
-        label: 'Inclusion'
-    },
-    {
-        value: "[nin]",
-        label: 'Exclusion'
-    },
-
-    {
         value: "[lt]",
-        label: 'Lesser than'
+        label: 'Less than'
     }, {
         value: "[lte]",
-        label: 'Less Than or Equal'
+        label: 'Less than or equal'
     },
     {
         value: "[gt]",
-        label: 'Greater Than'
+        label: 'Greater than'
     },
     {
         value: "[gte]",
-        label: 'Greater Than or Equal '
+        label: 'Greater than or equal '
     },
   
 

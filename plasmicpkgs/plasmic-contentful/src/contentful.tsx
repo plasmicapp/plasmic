@@ -87,12 +87,13 @@ interface ContentfulFetcherProps {
   order?: string;
   filterField?: string;
   searchParameter?: string;
-  filterValue?: string;
+  filterValue?: string | number;
   noAutoRepeat?: boolean;
   noLayout?: boolean;
   setControlContextData?: (data: {
     types?: { name: string; id: string }[];
     fields?: string[];
+    queryOptions?: [];
   }) => void;
 }
 
@@ -149,12 +150,7 @@ export const ContentfulFetcherMeta: ComponentMeta<ContentfulFetcherProps> = {
       displayName: "Search Parameter",
       description:
         "Search Parameter to filter by.Read more (https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/search-parameters/)",
-      options: (props, ctx) => {
-        return searchParameters.map((item: any) => ({
-          label: item?.label,
-          value: item?.value,
-        }));
-      },
+      options: (props, ctx) => ctx?.queryOptions ?? [],
       hidden: (props, ctx) => !props.filterField,
     },
     filterValue: {
@@ -216,11 +212,13 @@ export function ContentfulFetcher({
       return resp.json();
     }
   );
+  setControlContextData?.({
+    types: contentTypes?.items ?? [],
+  });
 
   const { data: entriesData } = usePlasmicQueryData<any | null>(
     contentType ? `${cacheKey}/${contentType}/entriesData` : null,
     async () => {
-      
       const url = `/spaces/${creds.space}/environments/${creds.environment}/entries?access_token=${creds.accessToken}&content_type=${contentType}`;
       let query;
 
@@ -239,24 +237,11 @@ export function ContentfulFetcher({
       ? `${cacheKey}/${contentType}/filteredData`
       : null,
     async () => {
-      const queryPath = `/spaces/${creds.space}/environments/${creds.environment}/entries?access_token=${creds.accessToken}&content_type=${contentType}&fields.${filterField}${searchParameter}=${filterValue}}`;
+      const queryPath = `/spaces/${creds.space}/environments/${creds.environment}/entries?access_token=${creds.accessToken}&content_type=${contentType}&fields.${filterField}${searchParameter}=${filterValue}`;
       const resp = await fetch(`${baseUrl}${queryPath}`);
       return resp.json();
     }
   );
-
-  const filterFields: string[] = entriesData?.items.flatMap((item: any) => {
-    const fields = Object.keys(item.fields).filter((field) => {
-      const value = get(item, field);
-      return typeof value !== "object" && field !== "photos";
-    });
-    return fields;
-  });
-
-  setControlContextData?.({
-    types: contentTypes?.items ?? [],
-    fields: uniq(filterFields ?? []),
-  });
 
   if (!creds.space || !creds.accessToken) {
     return (
@@ -266,9 +251,55 @@ export function ContentfulFetcher({
       </div>
     );
   }
+
+  if (!contentTypes) {
+    return <div>Please configure the ContentStack credentials</div>;
+  }
+
   if (!entriesData) {
     return <div>Please select a content type</div>;
   }
+
+  const filterFields: string[] = entriesData?.items.flatMap((item: any) => {
+    const fields = Object.keys(item.fields).filter((field) => {
+      const value = get(item, field);
+      return typeof value !== "object" && field !== "photos" 
+    });
+    return fields;
+  });
+
+  let operators;
+  const matchedFields = Object.values(entriesData.items)
+  .map((item: any) => {
+    const fields = Object.entries(item.fields).find((el) => el[0] === filterField);
+    return fields;
+  });
+  
+    
+  Object.values(matchedFields)
+    .map((model: any) => (Array.isArray(model) ? model : [model]))
+    .map((item: any) => {
+      if (typeof item[1] === "number" && typeof item[1] !== "object") {
+        operators = searchParameters;
+      } else if (
+        typeof item[1] !== "number" &&
+        typeof item[1] !== "object" &&
+        typeof item[1] === "string"
+      ) {
+        operators = [
+          {
+            value: "[match]",
+            label: "Full text search",
+          },
+        ];
+      }
+    });
+    
+  setControlContextData?.({
+    queryOptions: operators ?? [],
+    types: contentTypes?.items ?? [],
+    fields: uniq(filterFields ?? []),
+  });
 
   if (filterField && !searchParameter) {
     return <div>Please specify a Search Parameter</div>;
