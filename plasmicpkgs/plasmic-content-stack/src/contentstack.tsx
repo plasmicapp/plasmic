@@ -86,12 +86,13 @@ interface ContentStackFetcherProps {
   noLayout?: boolean;
   filterField?: string;
   queryOperator?: string;
-  filterValue?: string;
+  filterValue?: string | number;
   limit?: number;
   noAutoRepeat?: boolean;
   setControlContextData?: (data: {
     types?: { title: string; uid: string }[];
     filterFields?: string[];
+    queryOptions?: [];
   }) => void;
 }
 
@@ -147,19 +148,13 @@ export const ContentStackFetcherMeta: ComponentMeta<ContentStackFetcherProps> =
         type: "choice",
         displayName: "Query Operator",
         description: "Query Operator filter by",
-        options: (props, ctx) => {
-          return queryOperators.map((item: any) => ({
-            label: item?.label,
-            value: item?.value,
-          }));
-        },
+        options: (props, ctx) => ctx?.queryOptions ?? [],
         hidden: (props, ctx) => !props.filterField,
       },
       filterValue: {
         type: "string",
         displayName: "Filter value",
         description: "Value to filter by, should be of filter field type",
-        hidden: (props, ctx) => !props.filterField,
       },
       limit: {
         type: "number",
@@ -243,21 +238,74 @@ export function ContentStackFetcher({
   );
 
   const { data: filteredData } = usePlasmicQueryData<any | null>(
-    contentType && filterField && filterValue
+    contentType && filterField && filterValue && entriesData
       ? `${cacheKey}/${contentType}/filtered`
       : null,
     async () => {
-      if (!contentType && !filterField && !filterValue) {
+      if (
+        !contentType &&
+        !filterField &&
+        !filterValue &&
+        !entriesData &&
+        !contentTypes
+      ) {
         return null;
       }
+      const matched = Object.values(entriesData)
+        .flatMap((model: any) => (Array.isArray(model) ? model : [model]))
+        .map((item: any) => {
+          const fields = Object.entries(item).find(
+            (el) => el[0] === filterField
+          );
+          return fields;
+        });
+
       let url;
       if (!queryOperator) {
-        url = `https://cdn.contentstack.io/v3/content_types/${contentType}/entries?environment=${creds.environment}&query={"${filterField}": "${filterValue}"}`;
+        Object.values(matched)
+          .map((model: any) => (Array.isArray(model) ? model : [model]))
+          .map((item: any) => {
+            if (typeof item[1] === "number" && typeof item[1] !== "object") {
+              url = `https://cdn.contentstack.io/v3/content_types/${contentType}/entries?environment=${creds.environment}&query={"${filterField}" : ${filterValue}}`;
+            } else if (
+              typeof item[1] !== "number" &&
+              typeof item[1] !== "object" &&
+              typeof item[1] === "string"
+            ) {
+              url = `https://cdn.contentstack.io/v3/content_types/${contentType}/entries?environment=${
+                creds.environment
+              }&query=${JSON.stringify({
+                [filterField as string]: filterValue,
+              })}`;
+            } else {
+              url = "";
+            }
+          });
+      } else if (queryOperator === "$ne" || queryOperator === "$regex") {
+        Object.values(matched)
+          .map((model: any) => (Array.isArray(model) ? model : [model]))
+          .map((item: any) => {
+            if (typeof item[1] === "number" && typeof item[1] !== "object") {
+              url = `https://cdn.contentstack.io/v3/content_types/${contentType}/entries?environment=${creds.environment}&query={"${filterField}":{"${queryOperator}":${filterValue}}}`;
+            } else if (
+              typeof item[1] !== "number" &&
+              typeof item[1] !== "object" &&
+              typeof item[1] === "string"
+            ) {
+              url = `https://cdn.contentstack.io/v3/content_types/${contentType}/entries?environment=${
+                creds.environment
+              }&query=${JSON.stringify({
+                [filterField as string]: { [queryOperator]: filterValue },
+              })}`;
+            } else {
+              url = "";
+            }
+          });
       } else {
-        url = `https://cdn.contentstack.io/v3/content_types/${contentType}/entries?environment=${creds.environment}&query={"${filterField}":{"${queryOperator}" :"${filterValue}"}}`;
+        url = `https://cdn.contentstack.io/v3/content_types/${contentType}/entries?environment=${creds.environment}&query={"${filterField}":{"${queryOperator}" :${filterValue}}}`;
       }
 
-      const resp = await fetch(url, {
+      const resp = await fetch(url as string, {
         headers: {
           api_key: creds.apiKey,
           access_token: creds.accessToken,
@@ -291,18 +339,57 @@ export function ContentStackFetcher({
   if (!entriesData) {
     return <div>Please specify content type </div>;
   }
-  
+
   const fieldsForFilter = Object.values(entriesData)
     .flatMap((model: any) => (Array.isArray(model) ? model : [model]))
     .map((item: any) => {
       const fields = Object.keys(item).filter((field) => {
         const value = get(item, field);
-        return typeof value !== "object" && field !== "images";
+        return typeof value !== "object" && field !== "images" && typeof value ==='number' || typeof value ==='string' && !value.match(
+          /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?Z?/gm
+        ) && !value.match(/^blt.*/) ;
       });
       return fields;
     });
 
+  let operators;
+
+  const matchedFields = Object.values(entriesData)
+    .flatMap((model: any) => (Array.isArray(model) ? model : [model]))
+    .map((item: any) => {
+      const fields = Object.entries(item).find((el) => el[0] === filterField);
+      return fields;
+    });
+
+  Object.values(matchedFields)
+    .map((model: any) => (Array.isArray(model) ? model : [model]))
+    .map((item: any) => {
+      if (typeof item[1] === "number" && typeof item[1] !== "object") {
+        operators = queryOperators;
+      } else if (
+        typeof item[1] !== "number" &&
+        typeof item[1] !== "object" &&
+        typeof item[1] === "string"
+      ) {
+        operators = [
+          {
+            value: "",
+            label: "Is",
+          },
+          {
+            value: "$ne",
+            label: "Is not",
+          },
+          {
+            value: "$regex",
+            label: "Matches regex",
+          },
+        ];
+      }
+    });
+
   setControlContextData?.({
+    queryOptions: operators,
     types: types,
     filterFields: fieldsForFilter[0],
   });
@@ -356,7 +443,6 @@ export function ContentStackFetcher({
         </DataProvider>
       </DataProvider>
     ));
-    
   } else {
     const entries = Object.values(entriesData).flatMap((model: any) =>
       Array.isArray(model) ? model : [model]
