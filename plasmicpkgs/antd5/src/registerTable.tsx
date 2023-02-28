@@ -182,6 +182,7 @@ export function registerTable(loader?: Registerable) {
         type: "writable",
         valueProp: "selectedRowKeys",
         onChangeProp: "onSelectedRowKeysChange",
+        variableType: "array",
       },
       // selectedRows: {
       //   type: "readonly",

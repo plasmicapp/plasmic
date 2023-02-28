@@ -254,6 +254,12 @@ export type DataPickerType<P> =
     } & DefaultValueOrExpr<P, DataPickerValueType> &
       PropTypeBase<P>);
 
+export type EventHandlerType<P> = {
+  type: "eventHandler";
+  argTypes: { name: string; type: PropType<any> }[];
+} & DefaultValueOrExpr<P, (...args: any) => any> &
+  PropTypeBase<P>;
+
 interface ChoiceTypeBase<P> extends PropTypeBase<P> {
   type: "choice";
   options:
@@ -408,6 +414,7 @@ export type PropType<P> =
       | CustomType<P>
       | GraphQLType<P>
       | DataPickerType<P>
+      | EventHandlerType<P>
     >
   | SlotType<P>;
 
@@ -479,30 +486,20 @@ interface ComponentTemplate<P>
 export interface ComponentTemplates<P> {
   [name: string]: ComponentTemplate<P>;
 }
-interface $State {
-  [key: string]: any;
-}
 
-interface $StateSpec<T> {
-  // Whether this state is private, readonly, or writable in
-  // this component
-  type: "private" | "readonly" | "writable";
-  // if initial value is defined by a js expression
-  initFunc?: ($props: Record<string, any>, $state: $State) => T;
-
-  // if initial value is a hard-coded value
-  initVal?: T;
-  // Whether this state is private, readonly, or writable in
-  // this component
-
-  // If writable, there should be a valueProp that maps props[valueProp]
-  // to the value of the state
-  valueProp?: string;
-
-  // If writable or readonly, there should be an onChangeProp where
-  // props[onChangeProp] is invoked whenever the value changes
-  onChangeProp?: string;
-}
+type $StateSpec = {
+  variableType: "text" | "number" | "boolean" | "array" | "object";
+  onChangeProp: string;
+  displayName?: string;
+} & (
+  | {
+      type: "readonly";
+    }
+  | {
+      type: "writable";
+      valueProp: string;
+    }
+);
 
 export type StyleSection =
   | "visibility"
@@ -550,7 +547,7 @@ export interface ComponentMeta<P> {
   /**
    * WIP: An object describing the component states to be used in Studio.
    */
-  unstable__states?: Record<string, $StateSpec<any>>;
+  unstable__states?: Record<string, $StateSpec>;
   /**
    * An array describing the component actions to be used in Studio.
    */

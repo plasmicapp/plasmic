@@ -195,6 +195,7 @@ export function registerSelect(loader?: Registerable) {
         type: "writable",
         valueProp: "value",
         onChangeProp: "onChange",
+        variableType: "text",
       },
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerSelect",

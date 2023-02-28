@@ -23,7 +23,7 @@ interface ProductCollectionProps {
   emptyMessage?: React.ReactNode;
   loadingMessage?: React.ReactNode;
   count?: number;
-  category?: string;
+  category: string;
   includeSubCategories?: boolean;
   brand?: string;
   noLayout?: boolean;

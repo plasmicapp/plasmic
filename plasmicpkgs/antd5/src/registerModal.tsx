@@ -126,6 +126,7 @@ export function registerModal(loader?: Registerable) {
         type: "writable",
         valueProp: "open",
         onChangeProp: "onOpenChange",
+        variableType: "boolean",
       },
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerModal",

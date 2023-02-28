@@ -140,6 +140,7 @@ export function registerRadio(loader?: Registerable) {
         type: "writable",
         valueProp: "value",
         onChangeProp: "onChange",
+        variableType: "text",
       },
     },
     importPath: "@plasmicapp/antd5/skinny/registerRadio",
