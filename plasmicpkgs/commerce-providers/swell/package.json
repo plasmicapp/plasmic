@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/commerce-swell",
-  "version": "0.0.108",
+  "version": "0.0.109",
   "description": "Plasmic registration calls for swell commerce provider",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -33,7 +33,7 @@
     "react": ">=16.8.0"
   },
   "dependencies": {
-    "@plasmicpkgs/commerce": "0.0.101",
+    "@plasmicpkgs/commerce": "0.0.102",
     "@types/react": "^18.0.27",
     "debounce": "^1.2.1",
     "swell-js": "^3.13.0"
