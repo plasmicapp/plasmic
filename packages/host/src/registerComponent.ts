@@ -166,6 +166,10 @@ export type JSONLikeType<P> =
         fields: {
           [p: string]: PropType<P>;
         };
+        /**
+         * Optional function that generates a name for this item in the array
+         */
+        nameFunc?: (item: any) => string | undefined;
       };
     } & DefaultValueOrExpr<P, any[]> &
       PropTypeBase<P>)
