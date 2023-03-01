@@ -34,7 +34,8 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "1.0.92",
+    "@plasmicapp/host": "^1.0.107",
+    "@plasmicapp/query": "^0.1.61",
     "@size-limit/preset-small-lib": "^7.0.8",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
@@ -47,7 +48,6 @@
     "typescript": "^4.6.3"
   },
   "dependencies": {
-    "@plasmicapp/query": "0.1.58",
     "@types/dlv": "^1.1.2",
     "dlv": "^1.1.3"
   }

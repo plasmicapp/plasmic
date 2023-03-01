@@ -59,6 +59,7 @@ interface WordpressFetcherProps {
   children?: ReactNode;
   className?: string;
   noLayout?: boolean;
+  noAutoRepeat?: boolean;
   query?: string;
   setControlContextData?: (data: { endpoint?: string }) => void;
 }
@@ -98,6 +99,12 @@ export const WordpressFetcherMeta: ComponentMeta<WordpressFetcherProps> = {
       lang: "graphql",
       endpoint: (props, ctx) => ctx?.endpoint ?? "",
     },
+    noAutoRepeat: {
+      type: "boolean",
+      displayName: "No auto-repeat",
+      description: "Do not automatically repeat children for every entry.",
+      defaultValue: false,
+    },
     noLayout: {
       type: "boolean",
       displayName: "No layout",
@@ -117,6 +124,7 @@ export function WordpressFetcher({
   children,
   className,
   noLayout,
+  noAutoRepeat,
   setControlContextData,
 }: WordpressFetcherProps) {
   const creds = ensure(useContext(CredentialsContext));
@@ -159,18 +167,19 @@ export function WordpressFetcher({
     return <div>Data not found</div>;
   }
 
-  const renderedData = Object.values(data?.data).flatMap(
-    (model: any, i: number) =>
-      (Array.isArray(model) ? model : [model]).map((item: any, j: number) => (
-        <DataProvider
-          key={JSON.stringify(item)}
-          name={"currentWordpressItem"}
-          data={item}
-        >
-          {repeatedElement(i === 0 && j === 0, children)}
-        </DataProvider>
-      ))
-  );
+  const renderedData = noAutoRepeat
+    ? children
+    : Object.values(data?.data).flatMap((model: any, i: number) =>
+        (Array.isArray(model) ? model : [model]).map((item: any, j: number) => (
+          <DataProvider
+            key={JSON.stringify(item)}
+            name={"currentWordpressItem"}
+            data={item}
+          >
+            {repeatedElement(i === 0 && j === 0, children)}
+          </DataProvider>
+        ))
+      );
   return noLayout ? (
     <> {renderedData} </>
   ) : (
