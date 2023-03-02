@@ -17,6 +17,7 @@ export interface TableFieldSchema {
   id: string;
   label?: string;
   type: TableFieldType;
+  readOnly: boolean;
 }
 
 export type TableFieldType =
