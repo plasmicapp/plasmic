@@ -34,6 +34,13 @@ export interface PropTypeBase<P> {
   displayName?: string;
   description?: string;
   helpText?: string;
+  /**
+   * If the user has chosen to use a dynamic expression for this prop, provide
+   * a hint as to the expected values that the expression should evaluate to.
+   * This hint will be displayed alongside the code editor.  You may use
+   * markdown in the text here.
+   */
+  exprHint?: string;
   hidden?: ContextDependentConfig<P, boolean>;
   readOnly?: boolean | ContextDependentConfig<P, boolean>;
   advanced?: boolean;
