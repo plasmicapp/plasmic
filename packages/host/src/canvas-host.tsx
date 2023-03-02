@@ -74,6 +74,7 @@ export const PlasmicCanvasContext = React.createContext<
   | {
       componentName: string | null;
       globalVariants: Record<string, string>;
+      interactive?: boolean;
     }
   | false
 >(false);
@@ -152,6 +153,7 @@ function _PlasmicCanvasHost() {
       ? {
           componentName: locationHash.get("componentName"),
           globalVariants: activeGlobalVariants,
+          interactive: !!locationHash.get("interactive"),
         }
       : false;
     return ReactDOM.createPortal(
