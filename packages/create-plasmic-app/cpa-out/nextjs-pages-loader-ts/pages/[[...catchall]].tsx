@@ -9,7 +9,7 @@ import type { GetStaticPaths, GetStaticProps } from "next";
 
 import Error from "next/error";
 import { useRouter } from "next/router";
-import { PLASMIC } from "plasmic-init";
+import { PLASMIC } from "@/plasmic-init";
 
 export default function PlasmicLoaderPage(props: {
   plasmicData?: ComponentRenderData;

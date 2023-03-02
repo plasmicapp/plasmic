@@ -8,7 +8,7 @@ import {
 
 import Error from "next/error";
 import { useRouter } from "next/router";
-import { PLASMIC } from "plasmic-init";
+import { PLASMIC } from "@/plasmic-init";
 
 export default function PlasmicLoaderPage(props) {
   const { plasmicData, queryCache } = props;

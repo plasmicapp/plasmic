@@ -12,7 +12,7 @@ import {
 ${ifTs(jsOrTs, `import type { GetStaticPaths, GetStaticProps } from "next";\n`)}
 import Error from "next/error";
 import { useRouter } from "next/router";
-import { PLASMIC } from "plasmic-init";
+import { PLASMIC } from "@/plasmic-init";
 
 export default function PlasmicLoaderPage(props${ifTs(
     jsOrTs,
