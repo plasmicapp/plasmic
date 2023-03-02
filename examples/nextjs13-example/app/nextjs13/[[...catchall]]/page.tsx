@@ -1,7 +1,7 @@
+import { PLASMIC } from "@/plasmic-init";
+import { PlasmicClientRootProvider } from "@/plasmic-init-client";
 import { PlasmicComponent } from "@plasmicapp/loader-nextjs";
 import { notFound } from "next/navigation";
-import { PLASMIC } from "plasmic-init";
-import { PlasmicClientRootProvider } from "plasmic-init-client";
 
 export const revalidate = 60;
 

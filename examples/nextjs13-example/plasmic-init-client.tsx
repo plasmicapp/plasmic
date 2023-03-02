@@ -1,8 +1,8 @@
 "use client";
 
+import { PLASMIC } from "@/plasmic-init";
 import { PlasmicRootProvider } from "@plasmicapp/loader-nextjs";
 import { CodeComponent } from "components/CodeComponent";
-import { PLASMIC } from "plasmic-init";
 
 // You can register any code components that you want to use here; see
 // https://docs.plasmic.app/learn/code-components-ref/
@@ -28,7 +28,7 @@ PLASMIC.registerComponent(CodeComponent, {
  * In a Server Component like app/<your-path>/path.tsx, rendering the following would not work:
  *
  * ```tsx
- * import { PLASMIC } from "plasmic-init";
+ * import { PLASMIC } from "@/plasmic-init";
  * import { PlasmicRootProvider } from "plasmicapp/loader-nextjs";
  * export default function MyPage() {
  *   const prefetchedData = await PLASMIC.fetchComponentData("YourPage");
@@ -48,8 +48,8 @@ PLASMIC.registerComponent(CodeComponent, {
  * while allowing your Server Component to pass in prefetched data and other serializable props:
  *
  * ```tsx
- * import { PLASMIC } from "plasmic-init";
- * import { PlasmicClientRootProvider } from "plasmic-init-client"; // changed
+ * import { PLASMIC } from "@/plasmic-init";
+ * import { PlasmicClientRootProvider } from "@/plasmic-init-client"; // changed
  * export default function MyPage() {
  *   const prefetchedData = await PLASMIC.fetchComponentData("YourPage");
  *   return (

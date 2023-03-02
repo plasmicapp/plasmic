@@ -4,8 +4,8 @@ import { JsOrTs } from "../../../utils/types";
 export function makeCatchallPage_app_loader(jsOrTs: JsOrTs): string {
   return `import { PlasmicComponent } from "@plasmicapp/loader-nextjs";
 import { notFound } from "next/navigation";
-import { PLASMIC } from "plasmic-init";
-import { ClientPlasmicRootProvider } from "plasmic-init-client";
+import { PLASMIC } from "@/plasmic-init";
+import { ClientPlasmicRootProvider } from "@/plasmic-init-client";
 
 // Use revalidate if you want incremental static regeneration
 export const revalidate = 60;
