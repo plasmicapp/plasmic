@@ -156,7 +156,7 @@ interface TableContextData extends TablesContextData {
 }
 
 interface RowContextData extends TableContextData {
-  row: ApiCmsRow;
+  row?: ApiCmsRow;
   fieldMeta?: CmsFieldMeta;
 }
 
@@ -534,29 +534,31 @@ export function CmsRowField({
       Field {table ?? "Unknown Model"}.{field ?? "Unknown Field"}
     </div>
   );
+  const fieldMeta = res
+    ? deriveInferredTableField({
+        table: res.table,
+        tables,
+        field,
+        typeFilters: ["text", "long-text", "rich-text"],
+      })
+    : undefined;
+
+  if (tables) {
+    // TODO: Only include table if __plasmic_cms_row_{table} exists.
+    setControlContextData?.({
+      tables,
+      ...(res && res.row
+        ? { table: res.table, row: res.row, fieldMeta: fieldMeta }
+        : {}),
+    });
+  }
+
   if (!res) {
     return unknown;
   }
 
   if (!res.row) {
     return <div className={className}>Error: No CMS Entry found</div>;
-  }
-
-  const fieldMeta = deriveInferredTableField({
-    table: res.table,
-    tables,
-    field,
-    typeFilters: ["text", "long-text", "rich-text"],
-  });
-
-  if (tables) {
-    // TODO: Only include table if __plasmic_cms_row_{table} exists.
-    setControlContextData?.({
-      tables,
-      table: res.table,
-      row: res.row,
-      fieldMeta: fieldMeta,
-    });
   }
 
   if (!fieldMeta) {
