@@ -1,7 +1,9 @@
-import {DataProvider, usePlasmicCanvasContext} from "@plasmicapp/host";
-import registerComponent, {ComponentMeta,} from "@plasmicapp/host/registerComponent";
-import {usePlasmicQueryData} from "@plasmicapp/query";
-import React, {ReactNode} from "react";
+import { DataProvider, usePlasmicCanvasContext } from "@plasmicapp/host";
+import registerComponent, {
+  ComponentMeta,
+} from "@plasmicapp/host/registerComponent";
+import { usePlasmicQueryData } from "@plasmicapp/query";
+import React, { ReactNode } from "react";
 
 export interface GenericFetcherProps {
   children?: ReactNode;
@@ -168,7 +170,7 @@ function mkFetchProps(
 
 export const dataFetcherMeta: ComponentMeta<DataFetcherProps> = {
   name: "hostless-plasmic-query-data-fetcher",
-  displayName: "HTTP API Fetcher",
+  displayName: "HTTP REST API Fetcher",
   importName: "DataFetcher",
   importPath: "@plasmicpkgs/plasmic-query",
   providesData: true,
@@ -206,7 +208,7 @@ export function registerDataFetcher(
 export interface GraphqlFetcherProps
   extends GenericFetcherProps,
     Omit<FetchProps, "body"> {
-  query?: {query?: string, variables?: {}};
+  query?: { query?: string; variables?: {} };
   queryKey?: string;
   varOverrides?: {};
 }
@@ -214,7 +216,7 @@ export interface GraphqlFetcherProps
 export function GraphqlFetcher(props: GraphqlFetcherProps) {
   const { query, url, method, headers, queryKey, varOverrides } = props;
   const fetchProps: FetchProps = {
-    body: ({...query, variables: {...query?.variables, ...varOverrides}}),
+    body: { ...query, variables: { ...query?.variables, ...varOverrides } },
     url,
     method,
     headers,
@@ -251,16 +253,17 @@ export const graphqlFetcherMeta: ComponentMeta<GraphqlFetcherProps> = {
 }
 `,
           variables: {
-            name: "Rick Sanchez"
-          }
+            name: "Rick Sanchez",
+          },
         },
       },
       varOverrides: {
-        type: 'object',
-        displayName: 'Override variables',
-        description: "Pass in dynamic values for your query variables, as an object of key-values",
-        defaultValue: {}
-      }
+        type: "object",
+        displayName: "Override variables",
+        description:
+          "Pass in dynamic values for your query variables, as an object of key-values",
+        defaultValue: {},
+      },
     };
     // Reorder the props
     const { url, query, method, headers, queryKey, ...rest } = {
