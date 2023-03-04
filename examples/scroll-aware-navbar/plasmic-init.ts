@@ -6,9 +6,9 @@ import { ScrollProvider } from "./components/ScrollContext";
 export const PLASMIC = initPlasmicLoader({
   projects: [
     {
-      id: "vSWE1c5xwqyd2c7nFmMWBK",
+      id: "h7ZtM31gaLggh7qknt7uoY",
       token:
-        "oncbLBTapCdjW0iVoW4SkFw1e7RC7Xf6VDnfowszGfj66f8Av7qrjYcgf8Gfl5QOhnhLLvJkguWI5LyBCnzQ",
+        "fqdIxqfUJTIrsIJYTSpNM8aCv9nfTxDjIQ9ZRlcrnJGrmDXFNfguYjBXMIxePx77LQLQGShm2hRI3XfdUJRA",
     },
   ],
 
