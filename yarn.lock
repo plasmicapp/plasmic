@@ -5428,10 +5428,10 @@
     react-ssr-prepass "^1.4.0"
     swr "^1.0.0"
 
-"@plasmicapp/react-ssr-prepass@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.0.tgz#f634dfdd18d2e97380efc93bb8414d3cdfa66cbb"
-  integrity sha512-2g+hzTimRxeUK4FihOBoaiqJ+43Z53L2fKJGS58XmGj8cbiBH1uYwkIvOsbo8fTePT9FNc2vVNovOWiHPWNCFA==
+"@plasmicapp/react-ssr-prepass@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.1.tgz#087265d755fc493039bd7a0d2f24166675dedc6c"
+  integrity sha512-imV4VOVz/8TptOCvNfg3bbwLvQMEaJvrvxHSfUzKl4uHJyvC2pAGkuLAOBiDOxhdD+sn73aaZEVMskG/6G5qxw==
 
 "@pmmmwh/react-refresh-webpack-plugin@^0.4.3":
   version "0.4.3"

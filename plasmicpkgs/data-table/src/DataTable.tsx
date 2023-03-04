@@ -59,6 +59,7 @@ function tryGetSchema(data?: QueryResult): TableSchema | undefined {
     fields: Object.entries(fieldMap).map(([f, t]) => ({
       id: f,
       type: t,
+      readOnly: false,
     })),
   };
 }
