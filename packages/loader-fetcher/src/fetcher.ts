@@ -88,6 +88,7 @@ export class PlasmicModulesFetcher {
       return;
     }
 
+    const global = globalThis as GlobalWithBundles;
     if (global.__PLASMIC_BUNDLES === undefined) {
       global.__PLASMIC_BUNDLES = {};
     }
@@ -102,6 +103,7 @@ export function internal_getCachedBundleInNodeServer(
     throw new Error(`Should not be consulting Node server cache in browser`);
   }
 
+  const global = globalThis as GlobalWithBundles;
   return global.__PLASMIC_BUNDLES?.[getBundleKey(opts)];
 }
 
@@ -124,4 +126,3 @@ function getBundleKey({
 interface GlobalWithBundles {
   __PLASMIC_BUNDLES?: { [bundleKey: string]: LoaderBundleOutput };
 }
-const global = globalThis as GlobalWithBundles;
