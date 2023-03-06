@@ -1,8 +1,8 @@
 "use client";
 
+import { CodeComponent } from "@/components/CodeComponent";
 import { PLASMIC } from "@/plasmic-init";
 import { PlasmicRootProvider } from "@plasmicapp/loader-nextjs";
-import { CodeComponent } from "components/CodeComponent";
 
 // You can register any code components that you want to use here; see
 // https://docs.plasmic.app/learn/code-components-ref/

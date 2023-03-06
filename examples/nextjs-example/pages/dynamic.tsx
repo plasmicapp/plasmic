@@ -1,3 +1,4 @@
+import { PLASMIC } from "@/plasmic-init";
 import {
   ComponentRenderData,
   extractPlasmicQueryData,
@@ -6,7 +7,6 @@ import {
   usePlasmicQueryData,
 } from "@plasmicapp/loader-nextjs";
 import { GetStaticProps } from "next";
-import { PLASMIC } from "../plasmic-init";
 
 const ipUrl = "https://worldtimeapi.org/api/ip";
 const timezoneUrl = "https://worldtimeapi.org/api/timezone";
