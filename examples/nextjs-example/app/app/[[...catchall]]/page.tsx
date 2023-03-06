@@ -44,8 +44,8 @@ export default async function PlasmicLoaderPage({
         componentProps={
           pageMeta.path === "/"
             ? {
-                staticHref: "/nextjs13/static",
-                dynamicHref: "/nextjs13/dynamic",
+                staticHref: "/app/static",
+                dynamicHref: "/app/dynamic",
                 children: (
                   <>
                     <span>
@@ -53,8 +53,8 @@ export default async function PlasmicLoaderPage({
                       feature).
                     </span>
                     <span>
-                      <a href="/">Click here</a> to view pages from the pages/
-                      directory (works for all Next.js versions).
+                      <a href="/pages">Click here</a> to view pages from the
+                      pages/ directory (works for all Next.js versions).
                     </span>
                   </>
                 ),

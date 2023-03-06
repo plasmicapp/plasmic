@@ -32,6 +32,8 @@ export default function PlasmicLoaderPage(props: {
         componentProps={
           pageMeta.path === "/"
             ? {
+                staticHref: "/pages/static",
+                dynamicHref: "/pages/dynamic",
                 children: (
                   <>
                     <span>
@@ -44,8 +46,8 @@ export default function PlasmicLoaderPage(props: {
                         // https://github.com/vercel/next.js/issues/42513#issuecomment-1315006245
                       }
                       {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-                      <a href="/nextjs13">Click here</a> to view pages from the
-                      app/ directory (new Next.js 13 feature).
+                      <a href="/app">Click here</a> to view pages from the app/
+                      directory (new Next.js 13 feature).
                     </span>
                   </>
                 ),
