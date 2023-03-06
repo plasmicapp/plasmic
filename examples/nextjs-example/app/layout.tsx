@@ -7,3 +7,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     </html>
   );
 }
+
+export const metadata = {
+  title: "Next.js Example",
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
