@@ -79,7 +79,16 @@ export type StringType<P> =
         }
       | {
           type: "color";
-          noDeref?: boolean;
+          /**
+           * If specified, and the user picks a color token in the Studio, then
+           * the value passed in as prop is a css variable reference, like
+           * `var(--TOKEN_ID)`, instead of the resolved hex value of the token.
+           * You should take care in using this in the proper css context --
+           * the css token is only defined if you are rendering under some
+           * Plasmic component in the DOM tree, which is usually the case,
+           * unless you are using a React portal.
+           */
+          keepCssVar?: boolean;
         }
       | {
           type: "cardPicker";
