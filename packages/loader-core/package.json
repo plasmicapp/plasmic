@@ -1,5 +1,5 @@
 {
-  "version": "1.0.96",
+  "version": "1.0.97",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "@plasmicapp/isomorphic-unfetch": "^1.0.1",
-    "@plasmicapp/loader-fetcher": "1.0.20"
+    "@plasmicapp/loader-fetcher": "1.0.21"
   },
   "gitHead": "fa53f7d79f0e26d8b061102fda0c06788da6f8a7"
 }

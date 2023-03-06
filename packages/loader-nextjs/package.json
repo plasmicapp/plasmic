@@ -1,5 +1,5 @@
 {
-  "version": "1.0.236",
+  "version": "1.0.237",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -110,9 +110,9 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
-    "@plasmicapp/loader-core": "1.0.96",
-    "@plasmicapp/loader-edge": "1.0.26",
-    "@plasmicapp/loader-react": "1.0.224",
+    "@plasmicapp/loader-core": "1.0.97",
+    "@plasmicapp/loader-edge": "1.0.27",
+    "@plasmicapp/loader-react": "1.0.225",
     "@plasmicapp/watcher": "1.0.70",
     "server-only": "0.0.1"
   },
