@@ -36,8 +36,16 @@ export function mkFieldOptions(
   if (types) {
     fields = fields.filter((f) => types.includes(f.type));
   }
-  return fields.map((f) => ({
+  const options = fields.map((f) => ({
     value: f.identifier,
     label: f.name || f.identifier,
   }));
+  if (!options.some((option) => option.value === "_id")) {
+    options.push({
+      label: "System-assigned ID",
+      value: "_id",
+    });
+  }
+
+  return options;
 }

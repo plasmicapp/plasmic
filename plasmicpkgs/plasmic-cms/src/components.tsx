@@ -182,7 +182,7 @@ interface CmsQueryRepeaterProps
 
 export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
   name: `${componentPrefix}-query-repeater`,
-  displayName: "CMS Data Loader",
+  displayName: "CMS Data Fetcher",
   description:
     "Fetches CMS data and repeats content of children once for every row fetched.",
   importName: "CmsQueryRepeater",
@@ -415,7 +415,11 @@ export const cmsRowFieldMeta: ComponentMeta<CmsRowFieldProps> = {
     table: {
       type: "choice",
       displayName: "Model",
-      description: "CMS model (table) to use.",
+      hidden: (props, ctx: TableContextData | null) =>
+        (ctx?.tables?.length ?? 0) <= 1 && !props.table,
+      helpText: "Pick model from a CMS Data Fetcher",
+      description:
+        "Usually not used! Only with multiple CMS Data Loaders, use this to choose which to show. Otherwise, go select the CMS Data Loader if you want to load different data.",
       options: (_, ctx) => mkTableOptions(ctx?.tables),
       defaultValueHint: (_, ctx) => ctx?.table,
     },
@@ -670,7 +674,11 @@ export const cmsRowLinkMeta: ComponentMeta<CmsRowLinkProps> = {
     table: {
       type: "choice",
       displayName: "Model",
-      description: "CMS model (table) to use.",
+      hidden: (props, ctx: TableContextData | null) =>
+        (ctx?.tables?.length ?? 0) <= 1 && !props.table,
+      helpText: "Pick model from a CMS Data Fetcher",
+      description:
+        "Usually not used! Only with multiple CMS Data Loaders, use this to choose which to show. Otherwise, go select the CMS Data Loader if you want to load different data.",
       options: (_: any, ctx: TableContextData | null) =>
         mkTableOptions(ctx?.tables),
       defaultValueHint: (_, ctx) => ctx?.table,
@@ -786,7 +794,11 @@ export const cmsRowImageMeta: ComponentMeta<CmsRowImageProps> = {
     table: {
       type: "choice",
       displayName: "Model",
-      description: "CMS model (table) to use.",
+      hidden: (props, ctx: TableContextData | null) =>
+        (ctx?.tables?.length ?? 0) <= 1 && !props.table,
+      helpText: "Pick model from a CMS Data Fetcher",
+      description:
+        "Usually not used! Only with multiple CMS Data Loaders, use this to choose which to show. Otherwise, go select the CMS Data Loader if you want to load different data.",
       options: (_: any, ctx: TableContextData | null) =>
         mkTableOptions(ctx?.tables),
       defaultValueHint: (_, ctx) => ctx?.table,
@@ -883,7 +895,11 @@ export const cmsRowFieldValueMeta: ComponentMeta<CmsRowFieldValueProps> = {
     table: {
       type: "choice",
       displayName: "Model",
-      description: "CMS model (table) to use.",
+      hidden: (props, ctx: TableContextData | null) =>
+        (ctx?.tables?.length ?? 0) <= 1 && !props.table,
+      helpText: "Pick model from a CMS Data Fetcher",
+      description:
+        "Usually not used! Only with multiple CMS Data Loaders, use this to choose which to show. Otherwise, go select the CMS Data Loader if you want to load different data.",
       options: (_: any, ctx: TableContextData | null) =>
         mkTableOptions(ctx?.tables),
       defaultValueHint: (_, ctx) => ctx?.table,
