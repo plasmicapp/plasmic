@@ -3,6 +3,7 @@ import React from 'react';
 export interface PlasmicDataSourceContextValue {
   userAuthToken?: string;
   isUserLoading?: boolean;
+  authRedirectUri?: string;
   user?: {
     email: string;
     properties: Record<string, unknown> | null;

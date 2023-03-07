@@ -29,6 +29,7 @@ export function PlasmicRootProvider(props: PlasmicRootProviderProps) {
     children,
     userAuthToken,
     isUserLoading,
+    authRedirectUri,
     user,
   } = props as any;
   const context = React.useMemo(
@@ -42,8 +43,9 @@ export function PlasmicRootProvider(props: PlasmicRootProviderProps) {
       userAuthToken,
       user,
       isUserLoading,
+      authRedirectUri,
     }),
-    [userAuthToken, isUserLoading, user]
+    [userAuthToken, isUserLoading, user, authRedirectUri]
   );
   return (
     <PlasmicRootContext.Provider value={context}>

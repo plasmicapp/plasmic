@@ -40,6 +40,7 @@ export function PlasmicComponent(props: {
     variation,
     userAuthToken,
     isUserLoading,
+    authRedirectUri,
     ...rest
   } = rootContext;
 
@@ -96,6 +97,7 @@ export function PlasmicComponent(props: {
           {...rest}
           userAuthToken={userAuthToken}
           isUserLoading={isUserLoading}
+          authRedirectUri={authRedirectUri}
         >
           <MaybeWrap
             cond={!!GlobalContextsProvider}
@@ -123,6 +125,7 @@ export function PlasmicComponent(props: {
     globalContextsProps,
     userAuthToken, // Just use the token to memo, `user` should be derived from it
     isUserLoading,
+    authRedirectUri,
   ]);
   return element;
 }

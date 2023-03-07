@@ -12,7 +12,11 @@ function uuidv4() {
   );
 }
 
-async function triggerLogin(appId: string, authorizeEndpoint: string) {
+async function triggerLogin(
+  appId: string,
+  authorizeEndpoint: string,
+  redirectUri?: string
+) {
   async function sha256(text: string) {
     const encoder = new TextEncoder();
     const data = encoder.encode(text);
@@ -36,6 +40,10 @@ async function triggerLogin(appId: string, authorizeEndpoint: string) {
   params.set("response_type", "code");
   params.set("code_challenge", code_challenge);
   params.set("code_challenge_method", "S256");
+
+  if (redirectUri) {
+    params.set("redirect_uri", redirectUri);
+  }
 
   const url = `${authorizeEndpoint}?${params.toString()}`;
   window.location.href = url;
@@ -69,7 +77,11 @@ export function PlasmicPageGuard(props: PlasmicPageGuardProps) {
         !dataSourceCtxValue.isUserLoading &&
         !dataSourceCtxValue.user
       ) {
-        triggerLogin(appId, authorizeEndpoint);
+        triggerLogin(
+          appId,
+          authorizeEndpoint,
+          dataSourceCtxValue.authRedirectUri
+        );
       }
     }
   }, [dataSourceCtxValue, appId, authorizeEndpoint, canTriggerLogin, minRole]);
@@ -96,7 +108,7 @@ export function PlasmicPageGuard(props: PlasmicPageGuardProps) {
   if (
     !dataSourceCtxValue ||
     dataSourceCtxValue.isUserLoading ||
-    (!dataSourceCtxValue.user && canTriggerLogin)
+    (!dataSourceCtxValue.user && minRole && canTriggerLogin)
   ) {
     return null;
   }
