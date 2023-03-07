@@ -61,7 +61,6 @@ const Counter: Story<CounterArgs> = (args) => {
       $props: args,
     }
   );
-
   return (
     <div>
       {title}
@@ -133,7 +132,7 @@ PrivateCounter.args = {
 PrivateCounter.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
   await userEvent.click(canvas.getByRole("button"));
-  await sleep(100);
+  await sleep(1);
   await expect(canvas.getByText("Counter: 1")).toBeInTheDocument();
 };
 
@@ -145,6 +144,7 @@ ReadonlyCounter.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
   await sleep(1);
   await userEvent.click(canvas.getByTestId("counter-btn"));
+  await sleep(1);
   await expect(canvas.getByText("Counter: 1")).toBeInTheDocument();
   await expect(canvas.getByText("ParentCounter: 1")).toBeInTheDocument();
 
@@ -162,6 +162,7 @@ WritableCounter.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
   await sleep(1);
   await userEvent.click(canvas.getByTestId("counter-btn"));
+  await sleep(1);
   await expect(canvas.getByText("Counter: 1")).toBeInTheDocument();
   await expect(canvas.getByText("ParentCounter: 1")).toBeInTheDocument();
 
@@ -217,6 +218,7 @@ DynamicInitCount.play = async ({ canvasElement }) => {
 
   await userEvent.click(canvas.getByTestId("counter-btn"));
   await userEvent.click(canvas.getByTestId("counter-btn"));
+  await sleep(1);
   await expect(canvas.getByText("Current count: 2")).toBeInTheDocument();
 
   await userEvent.click(canvas.getByTestId("init-count-btn"));
@@ -232,6 +234,7 @@ DynamicInitCount.play = async ({ canvasElement }) => {
 function TextInput(props: {
   value: string | undefined;
   onChange: (val: string) => void;
+  onBlur?: () => void;
   "data-testid"?: string;
 }) {
   const $state = useDollarState(
@@ -252,6 +255,7 @@ function TextInput(props: {
     <input
       value={$state.value}
       onChange={(event) => ($state.value = event.target.value)}
+      onBlur={() => props.onBlur?.()}
       data-testid={props["data-testid"] ?? "text-input"}
     />
   );
@@ -399,6 +403,7 @@ ResetInput.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
 
   await userEvent.click(canvas.getByTestId("people_0"));
+  await sleep(1);
   await userEvent.type(canvas.getByTestId("textInputFirstName"), "abc");
   await expect(
     (canvas.getByTestId("textInputUpper") as HTMLInputElement).value
@@ -511,6 +516,7 @@ RepeatedStates.play = async ({ canvasElement }) => {
   }
 
   for (let i = 0; i < expectedCount.length; i++) {
+    await sleep(1);
     await expect(
       (canvas.getByTestId(`counter[${i}]-label`) as HTMLParagraphElement)
         .textContent
@@ -677,6 +683,7 @@ NestedRepeatedCounter.play = async ({ canvasElement }) => {
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 3; j++) {
       expected.push(i * 3 + j + 1);
+      await sleep(1);
       await click(
         canvas.getByTestId(`counter[${i}][${j}]-btn`),
         expected.slice(-1)[0]
@@ -812,6 +819,7 @@ MatrixRepeatedCounter.play = async ({ canvasElement }) => {
         canvas.getByTestId(`counter[${i}][${j}]-btn`),
         expected.slice(-1)[0]
       );
+      await sleep(1);
       await expect(
         (canvas.getByTestId(
           `counter[${i}][${j}]-label`
@@ -979,7 +987,8 @@ InitFuncFromInternalContextData.play = async ({ canvasElement }) => {
 
   for (let i = 0; i < products.length; i++) {
     await click(canvas.getByTestId(`product_${i}`));
-    expect(
+    await sleep(1);
+    await expect(
       (canvas.getByTestId("product_name") as HTMLHeadingElement).textContent
     ).toEqual(products[i].name);
   }
@@ -1106,7 +1115,8 @@ InitFuncFromRootContextData.play = async ({ canvasElement }) => {
 
   for (let i = 0; i < products.length; i++) {
     await click(canvas.getByTestId(`product_${i}`));
-    expect(
+    await sleep(1);
+    await expect(
       (canvas.getByTestId("product_name") as HTMLHeadingElement).textContent
     ).toEqual(products[i].name);
   }
@@ -1118,7 +1128,7 @@ InitFuncFromRootContextData.play = async ({ canvasElement }) => {
 
   for (let i = 0; i < products.length; i++) {
     await click(canvas.getByTestId(`product_${i}`));
-    expect(
+    await expect(
       (canvas.getByTestId("product_price") as HTMLHeadingElement).textContent
     ).toEqual(`Price: ${products[i].price * 10}`);
   }
@@ -1143,7 +1153,7 @@ const _InitFuncFromInternalContextDataWithDelay: Story<{
     React.useEffect(() => {
       setTimeout(() => {
         setData(products[0]);
-      }, 2000);
+      }, 1000);
     }, []);
     return (
       <div>
@@ -1210,7 +1220,7 @@ InitFuncFromInternalContextDataWithDelay.play = async ({ canvasElement }) => {
   expect(
     (canvas.getByTestId("label-btn") as HTMLHeadingElement).textContent
   ).toEqual("Counter: ");
-  await new Promise((r) => setTimeout(r, 3000));
+  await new Promise((r) => setTimeout(r, 1500));
   expect(
     (canvas.getByTestId("product-name") as HTMLHeadingElement).textContent
   ).toEqual("Shirt 1");
@@ -1298,7 +1308,8 @@ RepeatedImplicitState.play = async ({ canvasElement }) => {
   await click(canvas.getByTestId(`spread-btn`), 3);
 
   const expected = [0, 1, 2, 3, 4, 5];
-  expect(
+  await sleep(1);
+  await expect(
     (canvas.getByTestId("list") as HTMLUListElement).children.length
   ).toEqual(expected.length);
   expected.forEach((val) =>
@@ -1313,7 +1324,8 @@ RepeatedImplicitState.play = async ({ canvasElement }) => {
 
   expected.splice(0, 1);
   expected.splice(2, 1);
-  expect(
+  await sleep(1);
+  await expect(
     (canvas.getByTestId("list") as HTMLUListElement).children.length
   ).toEqual(expected.length);
   expected.forEach((val) =>
@@ -1597,9 +1609,11 @@ FormBuilder.play = async ({ canvasElement }) => {
   expectedPeople[1].nicknames.push("nickname2");
   expectedPeople[1].nicknames.push("nickname3");
   expectedPeople[2].nicknames.push("nickname4");
+  await sleep(1);
   await userEvent.type(canvas.getByTestId("firstName-input[0]"), "abc");
   await userEvent.type(canvas.getByTestId("lastName-input[2]"), "xyz");
   await click(canvas.getByTestId("add-nickname-btn[0]"));
+  await sleep(1);
   await userEvent.type(canvas.getByTestId("nickname-input[0][0]"), "nickname1");
   await click(canvas.getByTestId("add-nickname-btn[1]"));
   await userEvent.type(canvas.getByTestId("nickname-input[1][1]"), "nickname2");
@@ -1754,7 +1768,6 @@ const _FormBuilderImplicitStates: Story<{ people: Person[] }> = (props: {
           $props: props,
         }
       );
-      console.log("dale", props, $state);
       const mkDataTestIdAttr = (label: string) => ({
         "data-testid": `${label}${props["data-test-index"]}`,
       });
@@ -2022,6 +2035,7 @@ StateCellIsArray.play = async ({ canvasElement }) => {
   };
 
   const addPerson = async (firstName: string, lastName: string) => {
+    await sleep(1);
     await userEvent.clear(canvas.getByTestId("first-name-input"));
     await userEvent.clear(canvas.getByTestId("last-name-input"));
 
@@ -2160,6 +2174,7 @@ StateCellIsMatrix.play = async ({ canvasElement }) => {
   }>({ board: initialBoard });
 
   const testBoard = async () => {
+    await sleep(1);
     await expect(
       canvas.getByText(JSON.stringify(expectedState))
     ).toBeInTheDocument();
@@ -2285,6 +2300,7 @@ IsOnChangePropImmediatelyFired.args = {};
 IsOnChangePropImmediatelyFired.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
 
+  await sleep(1);
   await expect(
     (canvas.getByTestId(`counter-span`) as HTMLSpanElement).textContent
   ).toEqual(`5`);
@@ -2397,6 +2413,7 @@ ImmutableStateCells.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
 
   await userEvent.click(canvas.getByTestId("people_0"));
+  await sleep(1);
   await userEvent.type(canvas.getByTestId("textInputFirstName"), "abc");
   await expect(
     (canvas.getByTestId("textInputUpper") as HTMLInputElement).value
@@ -2429,6 +2446,13 @@ ImmutableStateCells.play = async ({ canvasElement }) => {
   ).toEqual(`${peopleList[1].firstName}abc ${peopleList[1].lastName}def`);
 };
 
+const sorted$StateKeys = ($state: any) =>
+  Object.fromEntries(
+    Object.keys($state)
+      .sort()
+      .map((key) => [key, $state[key]])
+  );
+
 const _InCanvasDollarState: Story<{}> = (props) => {
   type ActiveVariables = {
     type: "single" | "repeated";
@@ -2444,13 +2468,14 @@ const _InCanvasDollarState: Story<{}> = (props) => {
         path:
           type === "single" ? `textInput${id}.value` : `textInput${id}[].value`,
         type: "private",
-        initFunc: type === "single" ? () => "0" : undefined,
+        initFunc: type === "single" ? () => `${id}` : undefined,
         variableType: "text",
-      } as const)
+      } as $StateSpec<string>)
   );
   const $state = useDollarState(specs, { $props: props }, { inCanvas: true });
   return (
     <div>
+      <p data-testid={"$state"}>{JSON.stringify(sorted$StateKeys($state))}</p>
       {activeVariables.map(({ id, type }) => {
         if (type === "single") {
           return (
@@ -2461,6 +2486,7 @@ const _InCanvasDollarState: Story<{}> = (props) => {
               <TextInput
                 value={get($state, `textInput${id}.value`)}
                 onChange={(val) => set($state, `textInput${id}.value`, val)}
+                data-testid={`textInput${id}`}
               />
             </div>
           );
@@ -2480,12 +2506,8 @@ const _InCanvasDollarState: Story<{}> = (props) => {
                 {[0, 1, 2].map((currItem, currIndex) => {
                   $state.registerInitFunc?.(
                     `textInput${id}[].value`,
-                    () => "hello",
+                    () => `hello ${id} ${currItem}`,
                     [currIndex]
-                  );
-                  console.log(
-                    "dale3",
-                    get($state, `textInput${id}.${currIndex}.value`)
                   );
                   return (
                     <div key={currItem}>
@@ -2495,6 +2517,7 @@ const _InCanvasDollarState: Story<{}> = (props) => {
                         onChange={(val) =>
                           set($state, `textInput${id}.${currIndex}.value`, val)
                         }
+                        data-testid={`textInput${id}${currIndex}`}
                       />
                     </div>
                   );
@@ -2510,15 +2533,16 @@ const _InCanvasDollarState: Story<{}> = (props) => {
             ...curr,
             {
               type: "single",
-              id: activeVariables.length + 1,
+              id: (activeVariables.slice(-1)[0]?.id ?? 0) + 1,
             },
           ]);
         }}
+        data-testid="add-variable"
       >
         Add variable
       </button>
       <div>
-        <select id={"repeatable-select"}>
+        <select id={"repeatable-select"} data-testid={"repeatable-select"}>
           {activeVariables.map(
             ({ id, type }) =>
               type === "single" && (
@@ -2544,12 +2568,13 @@ const _InCanvasDollarState: Story<{}> = (props) => {
               )
             );
           }}
+          data-testid={"repeatable"}
         >
           Make repeatable
         </button>
       </div>
       <div>
-        <select id={"single-select"}>
+        <select data-testid="single-select" id="single-select">
           {activeVariables.map(
             ({ id, type }) =>
               type === "repeated" && (
@@ -2574,8 +2599,34 @@ const _InCanvasDollarState: Story<{}> = (props) => {
               )
             );
           }}
+          data-testid="single"
         >
           Make single
+        </button>
+      </div>
+      <div>
+        <select data-testid="delete-select" id="delete-select">
+          {activeVariables.map(({ id }) => (
+            <option key={id} value={id}>
+              {id}
+            </option>
+          ))}
+        </select>
+        <button
+          onClick={() => {
+            setActiveVariables((activeVars) =>
+              activeVars.filter(
+                ({ id }) =>
+                  id !==
+                  +(document.getElementById(
+                    "delete-select"
+                  ) as HTMLSelectElement).value
+              )
+            );
+          }}
+          data-testid="delete"
+        >
+          Delete
         </button>
       </div>
     </div>
@@ -2583,9 +2634,240 @@ const _InCanvasDollarState: Story<{}> = (props) => {
 };
 
 export const InCanvasDollarState = _InCanvasDollarState.bind({});
-_InCanvasDollarState.args = {
+InCanvasDollarState.args = {
   people: deepClone(peopleList),
 };
-_InCanvasDollarState.play = async ({ canvasElement }) => {
+InCanvasDollarState.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
+
+  const $state: Record<string, any> = {};
+  const usedIds: number[] = [];
+  const addVariable = async () => {
+    const id = usedIds.slice(-1)[0] ?? 0;
+    usedIds.push(id + 1);
+    set($state, [`textInput${id + 1}`, "value"], `${id + 1}`);
+
+    await userEvent.click(canvas.getByTestId("add-variable"));
+    await sleep(1);
+    await expect(canvas.getByTestId("$state").textContent).toEqual(
+      JSON.stringify($state)
+    );
+  };
+  const changeTextForSingle = async (id: number, addText: string) => {
+    const oldText = get($state, [`textInput${id}`, "value"]);
+    set($state, [`textInput${id}`, "value"], oldText + addText);
+
+    await userEvent.type(canvas.getByTestId(`textInput${id}`), addText);
+    await sleep(1);
+    await expect(canvas.getByTestId("$state").textContent).toEqual(
+      JSON.stringify($state)
+    );
+  };
+  const changeTextForRepeated = async (
+    id: number,
+    index: number,
+    addText: string
+  ) => {
+    const oldText = get($state, [`textInput${id}`, index, "value"]);
+    set($state, [`textInput${id}`, index, "value"], oldText + addText);
+
+    await userEvent.type(canvas.getByTestId(`textInput${id}${index}`), addText);
+    await sleep(1);
+    await expect(canvas.getByTestId("$state").textContent).toEqual(
+      JSON.stringify($state)
+    );
+  };
+  const makeRepeatable = async (id: number) => {
+    $state[`textInput${id}`] = [0, 1, 2].map((item) => ({
+      value: `hello ${id} ${item}`,
+    }));
+    await userEvent.selectOptions(
+      canvas.getByTestId("repeatable-select"),
+      `${id}`
+    );
+    await userEvent.click(canvas.getByTestId("repeatable"));
+    await sleep(1);
+    await expect(canvas.getByTestId("$state").textContent).toEqual(
+      JSON.stringify($state)
+    );
+  };
+  const makeSingle = async (id: number) => {
+    $state[`textInput${id}`] = { value: `${id}` };
+    await userEvent.selectOptions(canvas.getByTestId("single-select"), `${id}`);
+    await userEvent.click(canvas.getByTestId("single"));
+    await sleep(1);
+    await expect(canvas.getByTestId("$state").textContent).toEqual(
+      JSON.stringify($state)
+    );
+  };
+  const makeDelete = async (id: number) => {
+    usedIds.splice(
+      usedIds.findIndex((id2) => id2 === id),
+      1
+    );
+    delete $state[`textInput${id}`];
+    await userEvent.selectOptions(canvas.getByTestId("delete-select"), `${id}`);
+    await userEvent.click(canvas.getByTestId("delete"));
+    await sleep(1);
+    await expect(canvas.getByTestId("$state").textContent).toEqual(
+      JSON.stringify($state)
+    );
+  };
+
+  await addVariable();
+  await addVariable();
+  await addVariable();
+
+  await changeTextForSingle(1, "hello");
+  await makeRepeatable(1);
+  await makeSingle(1);
+
+  await addVariable();
+  await makeRepeatable(2);
+  await addVariable();
+  await changeTextForRepeated(2, 0, "goodbye");
+  await makeSingle(2);
+
+  await makeRepeatable(3);
+  await makeRepeatable(1);
+  await changeTextForRepeated(3, 1, "foo");
+  await makeSingle(1);
+
+  await makeDelete(1);
+  await makeDelete(2);
+
+  await changeTextForSingle(5, "abc");
+  await makeDelete(5);
+  await addVariable();
+
+  await makeRepeatable(5);
+  await changeTextForRepeated(5, 0, "bar");
+  await makeDelete(5);
+  await addVariable();
+  await makeRepeatable(5);
+};
+
+const _TodoApp: Story<{}> = (props) => {
+  const specs: $StateSpec<any>[] = [
+    {
+      path: "tasks",
+      initFunc: () => ["Task 1", "Task 2"],
+      variableType: "array",
+      type: "private",
+    },
+    {
+      path: "textInput[].value",
+      variableType: "text",
+      type: "private",
+    },
+  ];
+  const $state = useDollarState(specs, { $props: props });
+  return (
+    <div data-testid="root">
+      <h1>To Do App</h1>
+      <div data-testid="tasksWrapper">
+        {$state.tasks.map((currentItem: string, currentIndex: number) => {
+          $state.registerInitFunc?.(
+            "textInput[].value",
+            ({ $state }) => $state.tasks[currentIndex],
+            [currentIndex]
+          );
+          return (
+            <div key={currentIndex}>
+              <div>
+                <span data-testid={`span${currentIndex}`}>{currentItem}</span>
+                <TextInput
+                  onChange={(val) =>
+                    ($state.textInput[currentIndex].value = val)
+                  }
+                  value={$state.textInput[currentIndex].value}
+                  onBlur={() =>
+                    ($state.tasks[currentIndex] =
+                      $state.textInput[currentIndex].value)
+                  }
+                  data-testid={`textInput${currentIndex}`}
+                />
+                <button
+                  onClick={() => {
+                    $state.tasks.splice(currentIndex, 1);
+                  }}
+                  data-testid={`delete${currentIndex}`}
+                >
+                  X
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <button
+        onClick={() => {
+          $state.tasks.push("new task");
+        }}
+        data-testid={"add"}
+      >
+        Add
+      </button>
+    </div>
+  );
+};
+
+export const TodoApp = _TodoApp.bind({});
+TodoApp.args = {};
+TodoApp.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  const tasks = ["Task 1", "Task 2"];
+
+  const checkTasks = async () => {
+    await sleep(1);
+    await expect(canvas.getByTestId(`tasksWrapper`).children.length).toEqual(
+      tasks.length
+    );
+    for (let i = 0; i < tasks.length; i++) {
+      await expect(canvas.getByTestId(`span${i}`).textContent).toEqual(
+        tasks[i]
+      );
+      await expect(
+        (canvas.getByTestId(`textInput${i}`) as HTMLInputElement).value
+      ).toEqual(tasks[i]);
+    }
+  };
+  const changeTaskName = async (id: number, addText: string) => {
+    await userEvent.type(canvas.getByTestId(`textInput${id}`), addText);
+    await expect(canvas.getByTestId(`span${id}`).textContent).toEqual(
+      tasks[id]
+    );
+    // only change after onBlur
+    await userEvent.click(canvas.getByTestId("root"));
+    tasks[id] += addText;
+    await expect(canvas.getByTestId(`span${id}`).textContent).toEqual(
+      tasks[id]
+    );
+
+    await checkTasks();
+  };
+  const addTask = async () => {
+    tasks.push("new task");
+    await userEvent.click(canvas.getByTestId("add"));
+    await checkTasks();
+  };
+  const deleteTask = async (id: number) => {
+    tasks.splice(id, 1);
+    await userEvent.click(canvas.getByTestId(`delete${id}`));
+    await checkTasks();
+  };
+
+  await checkTasks();
+  await changeTaskName(0, "foo");
+  await addTask();
+  await addTask();
+  await changeTaskName(3, "bar");
+  await deleteTask(0);
+  await deleteTask(2);
+  await changeTaskName(1, "hello");
+  await addTask();
+  await deleteTask(2);
+  await deleteTask(1);
+  await deleteTask(0);
 };

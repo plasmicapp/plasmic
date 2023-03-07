@@ -1,3 +1,5 @@
+import { StateSpecNode } from "./graph";
+
 export type InitFuncEnv = {
   $props: Record<string, any>;
   $state: Record<string, any>;
@@ -54,6 +56,7 @@ export interface $State {
 
 export const ARRAY_SYMBOL = Symbol("[]");
 export const PLASMIC_STATE_PROXY_SYMBOL = Symbol("plasmic.state.proxy");
+export const UNINITIALIZED = Symbol("plasmic.unitialized");
 
 export interface Internal$StateSpec<T> extends $StateSpec<T> {
   isRepeated: boolean;
@@ -63,4 +66,25 @@ export interface Internal$StateSpec<T> extends $StateSpec<T> {
 export interface Internal$StateInstance {
   path: ObjectPath; // ["counter", 0, "count"]
   specKey: string;
+}
+
+export interface StateCell<T> {
+  initialValue?: T | Symbol;
+  node: StateSpecNode<any>;
+  path: ObjectPath;
+  initFunc?: InitFunc<T>;
+  listeners: (() => void)[];
+}
+
+export interface Internal$State {
+  registrationsQueue: {
+    node: StateSpecNode<any>;
+    path: ObjectPath;
+    f: InitFunc<any>;
+  }[];
+  stateValues: Record<string, any>;
+  env: NoUndefinedField<DollarStateEnv>;
+  rootSpecTree: StateSpecNode<any>;
+  specTreeLeaves: StateSpecNode<any>[];
+  specs: $StateSpec<any>[];
 }

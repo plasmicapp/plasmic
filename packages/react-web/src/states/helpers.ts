@@ -1,7 +1,15 @@
 import get from "dlv";
 import { useEffect, useLayoutEffect } from "react";
-import { getStateCells, StateSpecNode } from "./graph";
-import { $State, ObjectPath, PLASMIC_STATE_PROXY_SYMBOL } from "./types";
+import { ensure } from "../common";
+import { StateSpecNode } from "./graph";
+import {
+  $State,
+  ARRAY_SYMBOL,
+  ObjectPath,
+  PLASMIC_STATE_PROXY_SYMBOL,
+  StateCell,
+} from "./types";
+import { proxyObjToStateCell } from "./valtio";
 
 export function generateStateOnChangeProp(
   $state: $State,
@@ -23,6 +31,38 @@ export function isPlasmicStateProxy(obj: any) {
   );
 }
 
+export function getStateCells(
+  $state: $State,
+  root: StateSpecNode<any>
+): StateCell<any>[] {
+  if ($state == null || typeof $state !== "object") {
+    return [];
+  }
+  const stateCells = Object.values(
+    proxyObjToStateCell.get($state) ?? {}
+  ) as StateCell<any>[];
+  if (root.isLeaf()) {
+    return stateCells;
+  }
+  if (root.hasArrayTransition()) {
+    return [
+      ...stateCells,
+      ...Object.keys($state).flatMap((key) =>
+        getStateCells($state[key], ensure(root.makeTransition(ARRAY_SYMBOL)))
+      ),
+    ];
+  } else {
+    return [
+      ...stateCells,
+      ...[...root.edges().entries()].flatMap(([key, child]) =>
+        typeof key === "string" && key in $state
+          ? getStateCells($state[key], child)
+          : []
+      ),
+    ];
+  }
+}
+
 export function getStateCellsInPlasmicProxy(
   obj: any
 ): { realPath: ObjectPath; path: string }[] {
@@ -35,12 +75,10 @@ export function getStateCellsInPlasmicProxy(
   if (isOutside) {
     return [];
   }
-  return getStateCells(rootNode).flatMap((node) =>
-    node.states().map((stateCell) => ({
-      path: node.getSpec().path,
-      realPath: stateCell.path.slice(rootPath.length),
-    }))
-  );
+  return getStateCells(obj, rootNode).map((stateCell) => ({
+    path: stateCell.node.getSpec().path,
+    realPath: stateCell.path.slice(rootPath.length),
+  }));
 }
 
 export function getStateSpecInPlasmicProxy(obj: any, path: ObjectPath) {
