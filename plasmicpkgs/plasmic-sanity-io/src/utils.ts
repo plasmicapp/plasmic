@@ -1,37 +1,23 @@
-export const comparisonParameters = [
+export const filterParameters = [
     {
         value: '==',
-        label: 'Equality'
+        label: 'Is'
     },
     {
         value: '!=',
-        label: 'Inequality'
+        label: 'Is not'
     }, {
         value: '>',
-        label: 'Greater Than'
+        label: 'Greater than'
     }, {
         value: '<',
-        label: 'Lesser than'
+        label: 'Less than'
     }, {
         value: '<=',
-        label: 'Less Than or Equal'
+        label: 'Less than or equal'
     },
     {
         value: '>=',
-        label: 'Greater Than or Equal '
+        label: 'Greater than or equal '
     },
-]
-export const logicalParameters = [
-    {
-        value: '&&',
-        label: 'Logical AND'
-    },
-    {
-        value: '||',
-        label: 'Logical OR'
-    }, {
-        value: '!=',
-        label: 'Logical NOT'
-    },
-
 ]
