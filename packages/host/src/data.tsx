@@ -118,12 +118,12 @@ export function PageParamsProvider({
     <DataProvider
       name={"params"}
       data={{ ...$ctx.params, ...params }}
-      label={"Page route params"}
+      label={"Page URL path params"}
     >
       <DataProvider
         name={"query"}
         data={{ ...$ctx.query, ...query }}
-        label={"Page query params"}
+        label={"Page URL query params"}
       >
         {children}
       </DataProvider>
