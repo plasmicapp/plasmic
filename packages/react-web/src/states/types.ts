@@ -43,6 +43,10 @@ export interface $StateSpec<T> {
   isImmutable?: boolean;
 
   variableType: "text" | "number" | "boolean" | "array" | "object" | "variant";
+
+  // Hash used to re-create the state
+  // This is only used in canvas where the state specs are dynamic
+  initFuncHash?: string;
 }
 
 export interface $State {
@@ -74,6 +78,7 @@ export interface StateCell<T> {
   path: ObjectPath;
   initFunc?: InitFunc<T>;
   listeners: (() => void)[];
+  initFuncHash?: string;
 }
 
 export interface Internal$State {

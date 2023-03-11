@@ -2470,6 +2470,7 @@ const _InCanvasDollarState: Story<{}> = (props) => {
         type: "private",
         initFunc: type === "single" ? () => `${id}` : undefined,
         variableType: "text",
+        initFuncHash: type === "single" ? `id` : undefined,
       } as $StateSpec<string>)
   );
   const $state = useDollarState(specs, { $props: props }, { inCanvas: true });

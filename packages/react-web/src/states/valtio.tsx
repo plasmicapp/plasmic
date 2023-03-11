@@ -16,6 +16,7 @@ import {
   assert,
   getStateCells,
   set,
+  shallowEqual,
   useIsomorphicLayoutEffect,
 } from "./helpers";
 import {
@@ -63,6 +64,7 @@ function ensureStateCell(
       path,
       node,
       initFunc: node.getSpec().initFunc,
+      initFuncHash: node.getSpec().initFuncHash ?? "",
     };
   }
   return stateCell[property as any];
@@ -294,6 +296,22 @@ function create$StateProxy(
   return rec([], $$state.rootSpecTree, false, undefined);
 }
 
+function compareStateCells(
+  oldStateCell: StateCell<any>,
+  newStateCell: StateCell<any>
+) {
+  if (oldStateCell.node !== newStateCell.node) {
+    return false;
+  }
+  if (!shallowEqual(oldStateCell.path, newStateCell.path)) {
+    return false;
+  }
+  if (oldStateCell.initFuncHash !== newStateCell.initFuncHash) {
+    return false;
+  }
+  return true;
+}
+
 const mkUntrackedValue = (o: any) =>
   o != null && typeof o === "object" ? ref(o) : o;
 
@@ -443,8 +461,13 @@ export function useDollarState(
         set($state, path, get(old$state, path));
         const oldStateCell = ensureStateCellFrom$StateRoot(old$state, path);
         const newStateCell = ensureStateCellFrom$StateRoot($state, path);
+        if (!compareStateCells(oldStateCell, newStateCell)) {
+          newStateCell.initialValue = UNINITIALIZED;
+        } else {
+          newStateCell.initialValue = oldStateCell.initialValue;
+        }
         newStateCell.initFunc = oldStateCell.initFunc;
-        newStateCell.initialValue = oldStateCell.initialValue;
+        newStateCell.listeners = oldStateCell.listeners;
       });
     }
     // we need to eager initialize all states in canvas to populate the data picker
