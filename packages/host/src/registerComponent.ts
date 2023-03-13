@@ -487,17 +487,58 @@ export interface ComponentTemplates<P> {
   [name: string]: ComponentTemplate<P>;
 }
 
-type $StateSpec = {
-  variableType: "text" | "number" | "boolean" | "array" | "object";
+export type StateSpec = {
   onChangeProp: string;
-  displayName?: string;
 } & (
   | {
       type: "readonly";
+      variableType: "text";
+      initVal?: string;
+    }
+  | {
+      type: "readonly";
+      variableType: "number";
+      initVal?: number;
+    }
+  | {
+      type: "readonly";
+      variableType: "boolean";
+      initVal?: boolean;
+    }
+  | {
+      type: "readonly";
+      variableType: "array";
+      initVal?: any[];
+    }
+  | {
+      type: "readonly";
+      variableType: "object";
+      initVal?: object;
     }
   | {
       type: "writable";
+      variableType: "text" | "number" | "boolean" | "array" | "object";
       valueProp: string;
+    }
+);
+
+
+export interface StateHelpers<P, T> {
+  initFunc?: ($props: P) => T;
+  onChangeArgsToValue?: (...args: any) => T;
+}
+
+export type ComponentHelpers<P> = {
+  helpers: {
+    states: Record<string, StateHelpers<P, any>>;
+  };
+  importPath: string;
+} & (
+  | {
+      importName: string;
+    }
+  | {
+      isDefaultExport: true;
     }
 );
 
@@ -545,9 +586,16 @@ export interface ComponentMeta<P> {
     [prop: string]: PropType<P>;
   };
   /**
-   * WIP: An object describing the component states to be used in Studio.
+   * An object describing the component states to be used in Studio.
    */
-  unstable__states?: Record<string, $StateSpec>;
+  states?: Record<string, StateSpec>;
+  /**
+   * An object describing the components helpers to be used in Studio.
+   *   1. states helpers: Each state can receive an "initFunc" prop to initialize
+   *      the implicit state in Studio, and an "onChangeArgsToValue" prop to
+   *      transform the event handler arguments into a value
+   */
+  componentHelpers?: ComponentHelpers<P>;
   /**
    * An array describing the component actions to be used in Studio.
    */

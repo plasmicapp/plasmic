@@ -135,7 +135,7 @@ export function registerRadio(loader?: Registerable) {
         argTypes: [{ name: "value", type: "string" }],
       } as any,
     },
-    unstable__states: {
+    states: {
       value: {
         type: "writable",
         valueProp: "value",

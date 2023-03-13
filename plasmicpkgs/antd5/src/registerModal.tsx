@@ -121,7 +121,7 @@ export function registerModal(loader?: Registerable) {
         type: "themeResetClass",
       } as any,
     },
-    unstable__states: {
+    states: {
       open: {
         type: "writable",
         valueProp: "open",

@@ -72,7 +72,7 @@ export function registerCheckbox(loader?: Registerable) {
         argTypes: [{ name: "checked", type: "boolean" }],
       } as any,
     },
-    unstable__states: {
+    states: {
       checked: {
         type: "writable",
         valueProp: "checked",
@@ -128,7 +128,7 @@ export function registerCheckbox(loader?: Registerable) {
         argTypes: [{ name: "value", type: "object" }],
       } as any,
     },
-    unstable__states: {
+    states: {
       value: {
         type: "writable",
         valueProp: "value",

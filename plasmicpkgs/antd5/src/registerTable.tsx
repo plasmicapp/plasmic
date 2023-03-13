@@ -177,7 +177,7 @@ export function registerTable(loader?: Registerable) {
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerTable",
     importName: "AntdTable",
-    unstable__states: {
+    states: {
       selectedRowKeys: {
         type: "writable",
         valueProp: "selectedRowKeys",

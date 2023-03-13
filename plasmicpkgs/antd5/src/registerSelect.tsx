@@ -190,7 +190,7 @@ export function registerSelect(loader?: Registerable) {
         hidePlaceholder: true,
       } as any,
     },
-    unstable__states: {
+    states: {
       value: {
         type: "writable",
         valueProp: "value",

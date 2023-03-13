@@ -19,6 +19,8 @@ export {
   PrimitiveType,
   PropType,
   PropTypeBase,
+  StateHelpers,
+  StateSpec,
 } from "./registerComponent";
 export {
   default as registerGlobalContext,
