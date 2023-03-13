@@ -14,11 +14,10 @@
     "clean": "gatsby clean"
   },
   "dependencies": {
-    "@plasmicapp/cli": "^0.1.205",
-    "@plasmicapp/host": "^1.0.100",
-    "@plasmicapp/react-web": "^0.2.150",
-    "gatsby": "^5.5.0",
-    "gatsby-plugin-react-helmet": "^6.5.0",
+    "@plasmicapp/cli": "^0.1.222",
+    "@plasmicapp/react-web": "^0.2.167",
+    "gatsby": "^5.7.0",
+    "gatsby-plugin-react-helmet": "^6.7.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0"

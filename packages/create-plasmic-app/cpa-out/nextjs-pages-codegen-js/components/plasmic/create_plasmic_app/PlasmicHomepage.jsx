@@ -12,7 +12,7 @@ import * as React from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/host";
+import * as ph from "@plasmicapp/react-web/lib/host";
 import {
   hasVariant,
   classNames,
