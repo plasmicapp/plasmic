@@ -91,6 +91,47 @@ export type StringType<P> =
           keepCssVar?: boolean;
         }
       | {
+          type: "class";
+          /**
+           * Additional css selectors that can change how this style should look.
+           * Some examples:
+           *
+           * * `:hover` -- on hover
+           * * `[data-something="blah"] -- when the element with this class has
+           *   an html attribute "data-something=blah"
+           * * :component[data-something="blah"] :self -- when the root of the
+           *   component has an html attribute "data-something=blah". Note that
+           *   the non-standard `:component` selector is used to select the
+           *   component root, and the non-standard `:self` selector is used
+           *   to select the element that this class is attached to.
+           */
+          selectors?: {
+            /**
+             * A css selector, like `:hover` or `[data-something="blah"]`.
+             */
+            selector: string;
+            /**
+             * An optional human-friendly label for the selector, so the studio user
+             * knows what this selector means.
+             */
+            label?: string;
+          }[];
+          /**
+           * If specified, then only shows these style sections for styling this class
+           */
+          styleSections?: StyleSection[];
+        }
+      | {
+          type: "themeResetClass";
+          /**
+           * Normally, theme reset class will only target Plasmic-generated tags
+           * with the default tag styles. If you also want to target non-Plasmic-generated
+           * tags (say, rendered by your code components, or fetched as an HTML blob
+           * from somewhere), then specify `true` here.
+           */
+          targetAllTags?: boolean;
+        }
+      | {
           type: "cardPicker";
           modalTitle?:
             | React.ReactNode
@@ -463,6 +504,20 @@ interface $StateSpec<T> {
   onChangeProp?: string;
 }
 
+export type StyleSection =
+  | "visibility"
+  | "typography"
+  | "sizing"
+  | "spacing"
+  | "background"
+  | "transform"
+  | "transitions"
+  | "layout"
+  | "overflow"
+  | "border"
+  | "shadows"
+  | "effects";
+
 export interface ComponentMeta<P> {
   /**
    * Any unique string name used to identify that component. Each component
@@ -502,9 +557,11 @@ export interface ComponentMeta<P> {
   actions?: Action<P>[];
   /**
    * Whether style sections should be shown in Studio. For styles to work, the
-   * component must accept a `className` prop. If unset, defaults to true.
+   * component must accept a `className` prop. If unset, defaults to all styles.
+   * Set to `false` if this component cannot be styled (for example, if it doesn't
+   * render any DOM elements).
    */
-  styleSections?: boolean;
+  styleSections?: StyleSection[] | boolean;
   /**
    * Whether the element can be repeated in Studio. If unset, defaults to true.
    */
