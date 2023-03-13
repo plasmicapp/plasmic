@@ -136,18 +136,6 @@ async function ensureRequiredPackages(
     );
   }
 
-  const hostVersion = findInstalledVersion(
-    context,
-    baseDir,
-    "@plasmicapp/host"
-  );
-  if (!hostVersion || semver.gt(requireds["@plasmicapp/host"], hostVersion)) {
-    await confirmInstall("@plasmicapp/host", requireds["@plasmicapp/host"], {
-      global: false,
-      dev: false,
-    });
-  }
-
   if (context.config.code.reactRuntime === "automatic") {
     // Using automatic runtime requires installing the @plasmicapp/react-web-runtime package
     const runtimeVersion = findInstalledVersion(

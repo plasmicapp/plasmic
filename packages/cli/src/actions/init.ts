@@ -73,12 +73,11 @@ export async function initPlasmic(
   }
 
   const answer = await confirmWithUser(
-    "@plasmicapp/host and @plasmicapp/react-web are small runtimes required by Plasmic-generated code.\n  Do you want to add them now?",
+    "@plasmicapp/react-web is a small runtime required by Plasmic-generated code.\n  Do you want to add them now?",
     opts.yes
   );
   if (answer) {
     installUpgrade("@plasmicapp/react-web", opts.baseDir);
-    installUpgrade("@plasmicapp/host", opts.baseDir);
   }
 }
 
