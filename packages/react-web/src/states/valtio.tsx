@@ -74,13 +74,20 @@ function getStateCell(target: any, property: string | number | symbol) {
   return proxyObjToStateCell.get(target)?.[property as any];
 }
 
-function ensureStateCellFrom$StateRoot($state: $State, path: ObjectPath) {
+export function tryGetStateCellFrom$StateRoot(
+  $state: $State,
+  path: ObjectPath
+) {
   if (path.length === 0) {
     throw new Error("expected a path with length greater than 0");
   }
   const target = get($state, path.slice(0, -1));
   get(target, path.slice(-1)); // create state cell;
-  return ensure(getStateCell(target, path.slice(-1)[0]));
+  return getStateCell(target, path.slice(-1)[0]);
+}
+
+export function getStateCellFrom$StateRoot($state: $State, path: ObjectPath) {
+  return ensure(tryGetStateCellFrom$StateRoot($state, path));
 }
 
 function initializeStateValue(
@@ -93,7 +100,7 @@ function initializeStateValue(
   }> = new Set();
   const $state = create$StateProxy($$state, (internalStateCell) => ({
     get() {
-      const stateCell = ensureStateCellFrom$StateRoot(
+      const stateCell = getStateCellFrom$StateRoot(
         proxyRoot,
         internalStateCell.path
       );
@@ -432,7 +439,7 @@ export function useDollarState(
             pathStr,
             repetitionIndex
           );
-          const stateCell = ensureStateCellFrom$StateRoot($state, realPath);
+          const stateCell = getStateCellFrom$StateRoot($state, realPath);
           if (
             !deepEqual(stateCell.initialValue, f({ $state, ...$$state.env }))
           ) {
@@ -459,8 +466,8 @@ export function useDollarState(
       $$state.specTreeLeaves = newLeaves;
       getStateCells(old$state, $$state.rootSpecTree).forEach(({ path }) => {
         set($state, path, get(old$state, path));
-        const oldStateCell = ensureStateCellFrom$StateRoot(old$state, path);
-        const newStateCell = ensureStateCellFrom$StateRoot($state, path);
+        const oldStateCell = getStateCellFrom$StateRoot(old$state, path);
+        const newStateCell = getStateCellFrom$StateRoot($state, path);
         if (!compareStateCells(oldStateCell, newStateCell)) {
           newStateCell.initialValue = UNINITIALIZED;
         } else {
@@ -476,7 +483,7 @@ export function useDollarState(
       if (spec.isRepeated) {
         return;
       }
-      const stateCell = ensureStateCellFrom$StateRoot(
+      const stateCell = getStateCellFrom$StateRoot(
         $state,
         spec.pathObj as string[]
       );
@@ -523,7 +530,7 @@ export function useDollarState(
   useIsomorphicLayoutEffect(() => {
     while ($$state.registrationsQueue.length) {
       const { path, f } = $$state.registrationsQueue.shift()!;
-      const stateCell = ensureStateCellFrom$StateRoot($state, path);
+      const stateCell = getStateCellFrom$StateRoot($state, path);
       stateCell.initFunc = f;
       reInitializeState(stateCell);
     }
@@ -533,7 +540,7 @@ export function useDollarState(
     $$state.specTreeLeaves.forEach((node) => {
       const spec = node.getSpec();
       if (!spec.isRepeated && spec.type !== "private" && spec.initFunc) {
-        const stateCell = ensureStateCellFrom$StateRoot(
+        const stateCell = getStateCellFrom$StateRoot(
           $state,
           spec.pathObj as ObjectPath
         );

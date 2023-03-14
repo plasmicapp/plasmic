@@ -9,7 +9,7 @@ import {
   PLASMIC_STATE_PROXY_SYMBOL,
   StateCell,
 } from "./types";
-import { proxyObjToStateCell } from "./valtio";
+import { proxyObjToStateCell, tryGetStateCellFrom$StateRoot } from "./valtio";
 
 export function generateStateOnChangeProp(
   $state: $State,
@@ -98,6 +98,20 @@ export function getStateSpecInPlasmicProxy(obj: any, path: ObjectPath) {
     spec: nextNode.getSpec(),
     isImplicitStateArray: nextNode.hasArrayTransition(),
   };
+}
+
+export function getCurrentInitialValue(obj: any, path: ObjectPath) {
+  if (!isPlasmicStateProxy(obj)) {
+    return undefined;
+  }
+  return tryGetStateCellFrom$StateRoot(obj, path)?.initialValue;
+}
+
+export function resetToInitialValue(obj: any, path: ObjectPath) {
+  const stateCell = tryGetStateCellFrom$StateRoot(obj, path);
+  if (stateCell) {
+    set(obj, path, stateCell.initialValue);
+  }
 }
 
 export function shallowEqual<T>(a1: T[], a2: T[]) {
