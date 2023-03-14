@@ -1,18 +1,23 @@
 import { promises as fs } from "fs";
+import L from "lodash";
 import path from "path";
 import { spawnOrFail } from "../utils/cmd-utils";
 import { installCodegenDeps, runCodegenSync } from "../utils/codegen";
-import { deleteGlob, overwriteIndex } from "../utils/file-utils";
+import {
+  deleteGlob,
+  generateWelcomePage,
+  getPlasmicConfig,
+} from "../utils/file-utils";
 import { ensure } from "../utils/lang-utils";
 import { installUpgrade } from "../utils/npm-utils";
 import { CPAStrategy, GenerateFilesArgs } from "../utils/strategy";
 import { makeCatchallPage_app_loader } from "./templates/app-loader/catchall-page";
+import { makePlasmicHostPage_app_loader } from "./templates/app-loader/plasmic-host";
 import { makePlasmicInit_app_loader } from "./templates/app-loader/plasmic-init";
 import { makePlasmicInitClient_app_loader } from "./templates/app-loader/plasmic-init-client";
 import { makeCustomApp_pages_codegen } from "./templates/pages-codegen/app";
 import { makePlasmicHostPage_pages_codegen } from "./templates/pages-codegen/plasmic-host";
 import { makeCatchallPage_pages_loader } from "./templates/pages-loader/catchall-page";
-import { makePlasmicHostPage_app_loader } from "./templates/app-loader/plasmic-host";
 import { makePlasmicHostPage_pages_loader } from "./templates/pages-loader/plasmic-host";
 import { makePlasmicInit_pages_loader } from "./templates/pages-loader/plasmic-init";
 
@@ -173,8 +178,17 @@ async function generateFilesPagesDir(args: GenerateFilesArgs) {
       projectPath,
     });
 
-    // This should overwrite
-    // ./pages/index.tsx
-    await overwriteIndex(projectPath, "nextjs", scheme);
+    // Make an index page if the project didn't have one.
+    const config = await getPlasmicConfig(projectPath, "nextjs", scheme);
+    const plasmicFiles = L.map(
+      L.flatMap(config.projects, (p) => p.components),
+      (c) => c.importSpec.modulePath
+    );
+    if (!plasmicFiles.find((f) => f.includes("/index."))) {
+      await fs.writeFile(
+        path.join(projectPath, "pages", `index.${jsOrTs}x`),
+        generateWelcomePage(config, "nextjs")
+      );
+    }
   }
 }

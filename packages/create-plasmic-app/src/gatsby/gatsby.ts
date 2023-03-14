@@ -1,9 +1,15 @@
 import { createReadStream, existsSync, promises as fs } from "fs";
+import L from "lodash";
 import path from "path";
 import * as readline from "readline";
 import { spawnOrFail } from "../utils/cmd-utils";
 import { installCodegenDeps, runCodegenSync } from "../utils/codegen";
-import { deleteGlob, ifTs, overwriteIndex } from "../utils/file-utils";
+import {
+  deleteGlob,
+  generateWelcomePage,
+  getPlasmicConfig,
+  ifTs,
+} from "../utils/file-utils";
 import { ensure } from "../utils/lang-utils";
 import { installUpgrade } from "../utils/npm-utils";
 import { CPAStrategy } from "../utils/strategy";
@@ -165,8 +171,31 @@ export const gatsbyStrategy: CPAStrategy = {
         projectPath,
       });
 
-      // Overwrite the index file
-      await overwriteIndex(projectPath, "gatsby", scheme);
+      // Special case: remove all Gatsby components (due to conflicting file names)
+      const config = await getPlasmicConfig(projectPath, "gatsby", scheme);
+      const plasmicFiles = L.map(
+        L.flatMap(config.projects, (p) => p.components),
+        (c) => c.importSpec.modulePath
+      );
+      deleteGlob(path.join(projectPath, "src/@(pages|components)/*.*"), [
+        // Files to ignore
+        ...plasmicFiles.map((f) => path.basename(f)),
+      ]);
+      // Create a very basic 404 page - `gatsby build` fails without it.
+      // We've deleted the components that the default 404 page depended
+      // on, so
+      await fs.writeFile(
+        path.join(projectPath, `src/pages/404.${jsOrTs}x`),
+        GATSBY_404
+      );
+
+      // Make an index page if the project didn't have one.
+      if (!plasmicFiles.find((f) => f.includes("/index."))) {
+        await fs.writeFile(
+          path.join(projectPath, `src/pages/index.${jsOrTs}x`),
+          generateWelcomePage(config, "gatsby")
+        );
+      }
 
       // Overwrite the wrapper files to wrap PlasmicRootProvider
       const wrapperContent = wrapAppRootForCodegen();
