@@ -15,6 +15,24 @@
       "limit": "10 KB"
     }
   ],
+  "exports": {
+    ".": {
+      "import": "./dist/react-web.esm.js",
+      "require": "./dist/index.js"
+    },
+    "./lib/host": {
+      "import": "./lib/host/index.js",
+      "require": "./lib/host/index.cjs.js"
+    },
+    "./lib/data-sources": {
+      "import": "./lib/data-sources/index.js",
+      "require": "./lib/data-sources/index.cjs.js"
+    },
+    "./lib/query": {
+      "import": "./lib/query/index.js",
+      "require": "./lib/query/index.cjs.js"
+    }
+  },
   "files": [
     "dist",
     "lib",
