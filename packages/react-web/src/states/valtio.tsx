@@ -16,7 +16,6 @@ import {
   assert,
   getStateCells,
   set,
-  shallowEqual,
   useIsomorphicLayoutEffect,
 } from "./helpers";
 import {
@@ -124,7 +123,7 @@ function initializeStateValue(
         initialStateCell.node.getSpec().initFunc!,
         {
           $state,
-          ...$$state.env,
+          ...(initialStateCell.overrideEnv ?? $$state.env),
         }
       );
       set(proxyRoot, initialStateCell.path, newValue);
@@ -135,7 +134,7 @@ function initializeStateValue(
     initialStateCell.initFunc!,
     {
       $state,
-      ...$$state.env,
+      ...(initialStateCell.overrideEnv ?? $$state.env),
     }
   );
   initialStateCell.initialValue = clone(initialValue);
@@ -303,22 +302,6 @@ function create$StateProxy(
   return rec([], $$state.rootSpecTree, false, undefined);
 }
 
-function compareStateCells(
-  oldStateCell: StateCell<any>,
-  newStateCell: StateCell<any>
-) {
-  if (oldStateCell.node !== newStateCell.node) {
-    return false;
-  }
-  if (!shallowEqual(oldStateCell.path, newStateCell.path)) {
-    return false;
-  }
-  if (oldStateCell.initFuncHash !== newStateCell.initFuncHash) {
-    return false;
-  }
-  return true;
-}
-
 const mkUntrackedValue = (o: any) =>
   o != null && typeof o === "object" ? ref(o) : o;
 
@@ -432,7 +415,8 @@ export function useDollarState(
         registerInitFunc: function <T>(
           pathStr: string,
           f: InitFunc<T>,
-          repetitionIndex?: number[]
+          repetitionIndex?: number[],
+          overrideEnv?: DollarStateEnv
         ) {
           const { node, realPath } = findStateCell(
             $$state.rootSpecTree,
@@ -440,11 +424,19 @@ export function useDollarState(
             repetitionIndex
           );
           const stateCell = getStateCellFrom$StateRoot($state, realPath);
-          if (
-            !deepEqual(stateCell.initialValue, f({ $state, ...$$state.env }))
-          ) {
+          const env = overrideEnv
+            ? envFieldsAreNonNill(overrideEnv)
+            : $$state.env;
+          if (!deepEqual(stateCell.initialValue, f({ $state, ...env }))) {
             $$state.registrationsQueue.push(
-              mkUntrackedValue({ node, path: realPath, f })
+              mkUntrackedValue({
+                node,
+                path: realPath,
+                f,
+                overrideEnv: overrideEnv
+                  ? envFieldsAreNonNill(overrideEnv)
+                  : undefined,
+              })
             );
           }
         },
@@ -464,17 +456,11 @@ export function useDollarState(
       const old$state = $state;
       $state = ref.current = create$State();
       $$state.specTreeLeaves = newLeaves;
-      getStateCells(old$state, $$state.rootSpecTree).forEach(({ path }) => {
-        set($state, path, get(old$state, path));
-        const oldStateCell = getStateCellFrom$StateRoot(old$state, path);
-        const newStateCell = getStateCellFrom$StateRoot($state, path);
-        if (!compareStateCells(oldStateCell, newStateCell)) {
-          newStateCell.initialValue = UNINITIALIZED;
-        } else {
-          newStateCell.initialValue = oldStateCell.initialValue;
+      getStateCells(newLeaves, $$state.rootSpecTree).forEach(({ path }) => {
+        const oldStateCell = tryGetStateCellFrom$StateRoot(old$state, path);
+        if (oldStateCell) {
+          set($state, path, get(old$state, path));
         }
-        newStateCell.initFunc = oldStateCell.initFunc;
-        newStateCell.listeners = oldStateCell.listeners;
       });
     }
     // we need to eager initialize all states in canvas to populate the data picker
@@ -487,9 +473,12 @@ export function useDollarState(
         $state,
         spec.pathObj as string[]
       );
-      if (stateCell.initialValue !== UNINITIALIZED) {
+      const newSpec = specs.find((sp) => sp.path === spec.path);
+      if (!newSpec || stateCell.initFuncHash === newSpec?.initFuncHash) {
         return;
       }
+      stateCell.initFunc = newSpec.initFunc;
+      stateCell.initFuncHash = newSpec.initFuncHash ?? "";
       const init = spec.valueProp
         ? $$state.env.$props[spec.valueProp]
         : spec.initFunc
@@ -508,7 +497,7 @@ export function useDollarState(
     if (stateCell.initFunc) {
       const newInit = invokeInitFuncBackwardsCompatible(stateCell.initFunc, {
         $state,
-        ...envFieldsAreNonNill(env),
+        ...(stateCell.overrideEnv ?? envFieldsAreNonNill(env)),
       });
       if (!deepEqual(newInit, stateCell.initialValue)) {
         resetSpecs.push({ stateCell });
@@ -529,9 +518,10 @@ export function useDollarState(
   }, [env.$props, resetSpecs]);
   useIsomorphicLayoutEffect(() => {
     while ($$state.registrationsQueue.length) {
-      const { path, f } = $$state.registrationsQueue.shift()!;
+      const { path, f, overrideEnv } = $$state.registrationsQueue.shift()!;
       const stateCell = getStateCellFrom$StateRoot($state, path);
       stateCell.initFunc = f;
+      stateCell.overrideEnv = overrideEnv;
       reInitializeState(stateCell);
     }
   }, [$$state.registrationsQueue.length]);

@@ -54,7 +54,8 @@ export interface $State {
   registerInitFunc?: (
     path: string,
     f: InitFunc<any>,
-    repetitonIndex?: number[]
+    repetitonIndex?: number[],
+    overrideEnv?: DollarStateEnv
   ) => any;
 }
 
@@ -78,7 +79,8 @@ export interface StateCell<T> {
   path: ObjectPath;
   initFunc?: InitFunc<T>;
   listeners: (() => void)[];
-  initFuncHash?: string;
+  initFuncHash: string;
+  overrideEnv?: NoUndefinedField<DollarStateEnv>;
 }
 
 export interface Internal$State {
@@ -86,6 +88,7 @@ export interface Internal$State {
     node: StateSpecNode<any>;
     path: ObjectPath;
     f: InitFunc<any>;
+    overrideEnv?: NoUndefinedField<DollarStateEnv>;
   }[];
   stateValues: Record<string, any>;
   env: NoUndefinedField<DollarStateEnv>;
