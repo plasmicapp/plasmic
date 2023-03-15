@@ -522,16 +522,17 @@ export type StateSpec = {
     }
 );
 
-
 export interface StateHelpers<P, T> {
   initFunc?: ($props: P) => T;
   onChangeArgsToValue?: (...args: any) => T;
 }
 
 export type ComponentHelpers<P> = {
-  helpers: {
-    states: Record<string, StateHelpers<P, any>>;
-  };
+  states: Record<string, StateHelpers<P, any>>;
+};
+
+export type ExternalComponentHelpers<P> = {
+  helpers: ComponentHelpers<P>;
   importPath: string;
 } & (
   | {
@@ -595,7 +596,7 @@ export interface ComponentMeta<P> {
    *      the implicit state in Studio, and an "onChangeArgsToValue" prop to
    *      transform the event handler arguments into a value
    */
-  componentHelpers?: ComponentHelpers<P>;
+  componentHelpers?: ExternalComponentHelpers<P>;
   /**
    * An array describing the component actions to be used in Studio.
    */

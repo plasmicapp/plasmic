@@ -1,6 +1,7 @@
 import * as PlasmicDataSourcesContext from '@plasmicapp/data-sources-context';
 import * as PlasmicHost from '@plasmicapp/host';
 import {
+  ComponentHelpers as InternalCodeComponentHelpers,
   ComponentMeta as InternalCodeComponentMeta,
   GlobalContextMeta as InternalGlobalContextMeta,
   registerComponent,
@@ -47,6 +48,9 @@ export interface ComponentRenderData {
 interface ComponentSubstitutionSpec {
   lookup: ComponentLookupSpec;
   component: React.ComponentType<any>;
+  codeComponentHelpers?: InternalCodeComponentHelpers<
+    React.ComponentProps<any>
+  >;
 }
 
 interface PlasmicRootWatcher {
@@ -93,6 +97,10 @@ export type FetchPagesOpts = {
 };
 
 const SUBSTITUTED_COMPONENTS: Record<string, React.ComponentType<any>> = {};
+const REGISTERED_CODE_COMPONENT_HELPERS: Record<
+  string,
+  InternalCodeComponentHelpers<React.ComponentProps<any>>
+> = {};
 const SUBSTITUTED_GLOBAL_VARIANT_HOOKS: Record<string, () => any> = {};
 
 export class InternalPlasmicComponentLoader {
@@ -135,6 +143,7 @@ export class InternalPlasmicComponentLoader {
       '@plasmicapp/loader-runtime-registry': {
         components: SUBSTITUTED_COMPONENTS,
         globalVariantHooks: SUBSTITUTED_GLOBAL_VARIANT_HOOKS,
+        codeComponentHelpers: REGISTERED_CODE_COMPONENT_HELPERS,
       },
     });
   }
@@ -173,20 +182,31 @@ export class InternalPlasmicComponentLoader {
     component: React.ComponentType<P>,
     name: ComponentLookupSpec
   ) {
+    this.internalSubstituteComponent(component, name, undefined);
+  }
+
+  private internalSubstituteComponent<P>(
+    component: React.ComponentType<P>,
+    name: ComponentLookupSpec,
+    codeComponentHelpers:
+      | InternalCodeComponentHelpers<
+          React.ComponentProps<React.ComponentType<P>>
+        >
+      | undefined
+  ) {
     if (!this.registry.isEmpty()) {
       console.warn(
         'Calling PlasmicComponentLoader.registerSubstitution() after Plasmic component has rendered; starting over.'
       );
       this.registry.clear();
     }
-    this.subs.push({ lookup: name, component });
+    this.subs.push({ lookup: name, component, codeComponentHelpers });
   }
 
   registerComponent<T extends React.ComponentType<any>>(
     component: T,
     meta: CodeComponentMeta<React.ComponentProps<T>>
   ) {
-    this.substituteComponent(component, { name: meta.name, isCode: true });
     // making the component meta consistent between codegen and loader
     const stateHelpers = Object.fromEntries(
       Object.entries(meta.states ?? {})
@@ -206,6 +226,12 @@ export class InternalPlasmicComponentLoader {
           },
         ])
     );
+    const helpers = { states: stateHelpers };
+    this.internalSubstituteComponent(
+      component,
+      { name: meta.name, isCode: true },
+      Object.keys(stateHelpers).length > 0 ? helpers : undefined
+    );
     registerComponent(component, {
       ...meta,
       // Import path is not used as we will use component substitution
@@ -213,9 +239,7 @@ export class InternalPlasmicComponentLoader {
       ...(Object.keys(stateHelpers).length > 0
         ? {
             componentHelpers: {
-              helpers: {
-                states: stateHelpers,
-              },
+              helpers,
               importPath: '',
               importName: '',
             },
@@ -365,6 +389,9 @@ export class InternalPlasmicComponentLoader {
       const metas = getCompMetas(this.getBundle().components, sub.lookup);
       metas.forEach((meta) => {
         SUBSTITUTED_COMPONENTS[meta.id] = sub.component;
+        if (sub.codeComponentHelpers) {
+          REGISTERED_CODE_COMPONENT_HELPERS[meta.id] = sub.codeComponentHelpers;
+        }
       });
     }
 
