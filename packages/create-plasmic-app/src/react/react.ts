@@ -1,8 +1,15 @@
-import fs from "fs";
+import { promises as fs } from "fs";
+import glob from "glob";
 import path from "path";
 import { spawnOrFail } from "../utils/cmd-utils";
 import { installCodegenDeps, runCodegenSync } from "../utils/codegen";
-import { overwriteIndex } from "../utils/file-utils";
+import {
+  deleteGlob,
+  generateHomePage,
+  generateWelcomePage,
+  getPlasmicConfig,
+} from "../utils/file-utils";
+import { ensureString } from "../utils/lang-utils";
 import { installUpgrade } from "../utils/npm-utils";
 import { CPAStrategy } from "../utils/strategy";
 
@@ -41,14 +48,29 @@ export const reactStrategy: CPAStrategy = {
     if (scheme === "loader") {
       // Nothing to do
     } else {
+      // Delete existing entry point App.tsx and related test
+      deleteGlob(path.join(projectPath, "src", "App*"));
+
       await runCodegenSync({
         projectId,
         projectApiToken,
         projectPath,
       });
 
-      // Overwrite the App.tsx
-      await overwriteIndex(projectPath, "react", scheme);
+      // Pick a page for the entry point App.tsx page
+      const config = await getPlasmicConfig(projectPath, "react", scheme);
+      const pagesDir = path.join(projectPath, ensureString(config.srcDir));
+      const homeFilePossibilities = glob.sync(
+        path.join(pagesDir, "**", "@(index|Home|home|Homepage).*")
+      );
+
+      // Overwrite App.tsx
+      const indexPath = path.join(projectPath, "src", `App.${jsOrTs}x`);
+      const content =
+        homeFilePossibilities.length > 0
+          ? generateHomePage(homeFilePossibilities[0], indexPath)
+          : generateWelcomePage(config, "react");
+      await fs.writeFile(indexPath, content);
     }
 
     // Deactivate React.StrictMode from index.js or index.tsx
@@ -57,10 +79,10 @@ export const reactStrategy: CPAStrategy = {
       "src",
       `index.${jsOrTs === "js" ? "js" : "tsx"}`
     );
-    let indexFile = fs.readFileSync(indexFileName).toString();
+    let indexFile = (await fs.readFile(indexFileName)).toString();
     indexFile = indexFile.replace("<React.StrictMode>", "");
     indexFile = indexFile.replace("</React.StrictMode>", "");
-    fs.writeFileSync(indexFileName, indexFile);
+    await fs.writeFile(indexFileName, indexFile);
 
     return;
   },

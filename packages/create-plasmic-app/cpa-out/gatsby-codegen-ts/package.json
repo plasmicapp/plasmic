@@ -15,8 +15,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@plasmicapp/cli": "^0.1.222",
-    "@plasmicapp/react-web": "^0.2.167",
+    "@plasmicapp/cli": "^0.1.225",
+    "@plasmicapp/react-web": "^0.2.170",
     "gatsby": "^5.7.0",
     "gatsby-plugin-react-helmet": "^6.7.0",
     "react": "^18.2.0",

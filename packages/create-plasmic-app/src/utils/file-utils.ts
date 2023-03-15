@@ -2,11 +2,10 @@ import { existsSync, promises as fs, unlinkSync } from "fs";
 import glob from "glob";
 import L from "lodash";
 import * as path from "upath";
-import { GATSBY_404 } from "../gatsby/template";
 import { README } from "../templates/readme";
 import { WELCOME_PAGE } from "../templates/welcomePage";
 import { JsOrTs, PlatformType } from "../utils/types";
-import { ensure, ensureString } from "./lang-utils";
+import { ensure } from "./lang-utils";
 import { installUpgrade } from "./npm-utils";
 
 /**
@@ -58,88 +57,6 @@ export async function writePlasmicLoaderJson(
 }
 
 /**
- * - [nextjs|gatsby, loader, '/' page exists] - remove index file
- * - [nextjs|gatsby, loader, '/' Page DNE] - replace index file with Welcome page
- * - [nextjs|gatsby, codegen, '/' page exists] - remove Next.js/Gatsby index file, preserve Plasmic index
- * - [nextjs|gatsby, codegen, '/' page DNE] - replace index file with Welcome page
- * - [react, codegen ]  - replace App file with '/', Home, or Welcome page
- * @returns
- */
-export async function overwriteIndex(
-  projectPath: string,
-  platform: string,
-  scheme: string
-): Promise<void> {
-  const isNextjs = platform === "nextjs";
-  const isGatsby = platform === "gatsby";
-  const isCra = platform === "react";
-
-  const config = await getPlasmicConfig(projectPath, platform, scheme);
-  const plasmicFiles = L.map(
-    L.flatMap(config.projects, (p) => p.components),
-    (c) => c.importSpec.modulePath
-  );
-
-  const isTypescript = config?.code?.lang === "ts";
-  const pagesDir = ensure(
-    isNextjs
-      ? path.join(projectPath, "pages/")
-      : isGatsby
-      ? path.join(projectPath, "src/pages/")
-      : isCra
-      ? path.join(projectPath, "src/")
-      : undefined
-  );
-  const indexBasename = isCra ? `App` : `index`;
-  const extension = isTypescript ? "tsx" : "jsx";
-  const indexAbsPath = path.join(pagesDir, `${indexBasename}.${extension}`);
-
-  // Delete existing index files
-  // - Skipping any Plasmic-managed files
-  // - Note: this only compares basenames, so it may have false positives
-  deleteGlob(
-    path.join(pagesDir, `${indexBasename}.*`),
-    plasmicFiles.map((f) => path.basename(f))
-  );
-
-  // Special case: remove all Gatsby components (due to conflicting file names)
-  // TODO: find a better way to handle this issue
-  if (platform === "gatsby") {
-    // Delete the index file
-    deleteGlob(path.join(projectPath, "src/@(pages|components)/*.*"), [
-      // Files to ignore
-      ...plasmicFiles.map((f) => path.basename(f)),
-    ]);
-    // Create a very basic 404 page - `gatsby build` fails without it.
-    // We've deleted the components that the default 404 page depended
-    // on, so
-    await fs.writeFile(path.join(projectPath, "src/pages/404.js"), GATSBY_404);
-  }
-
-  // We're done if we can already render an index page
-  if (
-    (isNextjs || isGatsby) &&
-    plasmicFiles.find((f) => f.includes("/index."))
-  ) {
-    return;
-  }
-
-  const homeFilePossibilities = glob.sync(
-    path.join(
-      projectPath,
-      ensureString(config.srcDir),
-      "**",
-      "@(index|Home|home|Homepage).*"
-    )
-  );
-  const content =
-    isCra && homeFilePossibilities.length > 0
-      ? generateHomePage(homeFilePossibilities[0], indexAbsPath)
-      : generateWelcomePage(config, platform);
-  await fs.writeFile(indexAbsPath, content);
-}
-
-/**
  * Overwrite the README file
  * @param projectPath
  * @param platform
@@ -161,7 +78,7 @@ export async function overwriteReadme(
  * @param indexAbsPath - absolute path of index file to write
  * @returns
  */
-function generateHomePage(
+export function generateHomePage(
   componentAbsPath: string,
   indexAbsPath: string
 ): string {
@@ -190,7 +107,7 @@ export default App;
  * @param noPages - don't render links to pages
  * @returns
  */
-function generateWelcomePage(config: any, platform: string): string {
+export function generateWelcomePage(config: any, platform: string): string {
   let hasPages = false;
   let pageComponents: any[];
   let pagesDir: string;
@@ -233,9 +150,9 @@ function generateWelcomePage(config: any, platform: string): string {
   return content;
 }
 
-async function getPlasmicConfig(
+export async function getPlasmicConfig(
   projectPath: string,
-  platform: string,
+  platform: PlatformType,
   scheme: string
 ) {
   const isNextjs = platform === "nextjs";
