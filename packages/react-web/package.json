@@ -31,7 +31,8 @@
     "./lib/query": {
       "import": "./lib/query/index.js",
       "require": "./lib/query/index.cjs.js"
-    }
+    },
+    "./lib/plasmic.css": "./lib/plasmic.css"
   },
   "files": [
     "dist",
