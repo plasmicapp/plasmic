@@ -6,6 +6,7 @@ import { FixImportContext } from "../utils/code-utils";
 import {
   getOrAddProjectConfig,
   getOrAddProjectLock,
+  ImageConfig,
   PlasmicContext,
 } from "../utils/config-utils";
 import {
@@ -124,6 +125,14 @@ export async function syncProjectImageAssets(
   );
 }
 
+function getImagePublicUrl(context: PlasmicContext, asset: ImageConfig) {
+  return (
+    ensure(context.config.images.publicUrlPrefix) +
+    (ensure(context.config.images.publicUrlPrefix).endsWith("/") ? "" : "/") +
+    path.relative(ensure(context.config.images.publicDir), asset.filePath)
+  );
+}
+
 const RE_ASSETCSSREF_ALL = /var\(--image-([^\)]+)\)/g;
 export async function fixComponentCssReferences(
   context: PlasmicContext,
@@ -139,16 +148,7 @@ export async function fixComponentCssReferences(
     const asset = fixImportContext.images[assetId];
     if (asset) {
       return context.config.images.scheme === "public-files"
-        ? `url("${
-            ensure(context.config.images.publicUrlPrefix) +
-            (ensure(context.config.images.publicUrlPrefix).endsWith("/")
-              ? ""
-              : "/") +
-            path.relative(
-              ensure(context.config.images.publicDir),
-              asset.filePath
-            )
-          }")`
+        ? `url("${getImagePublicUrl(context, asset)}")`
         : `url("./${path.relative(
             path.dirname(cssFilePath),
             asset.filePath
@@ -173,11 +173,7 @@ export async function fixComponentImagesReferences(
   const newContent = prevContent.replace(RE_ASSETTSXREF_ALL, (sub, assetId) => {
     const asset = fixImportContext.images[assetId];
     if (asset) {
-      return path.join(
-        "/",
-        ensure(context.config.images.publicUrlPrefix),
-        path.relative(ensure(context.config.images.publicDir), asset.filePath)
-      );
+      return getImagePublicUrl(context, asset);
     } else {
       return sub;
     }
