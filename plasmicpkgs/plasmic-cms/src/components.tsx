@@ -168,7 +168,7 @@ interface CmsQueryRepeaterProps
   extends QueryParams,
     CanvasComponentProps<TableContextData> {
   children: React.ReactNode;
-  table?: string;
+  table: string;
   emptyMessage?: React.ReactNode;
   forceEmptyState?: boolean;
   loadingMessage?: React.ReactNode;
@@ -400,8 +400,8 @@ export function CmsQueryRepeater({
 }
 
 interface CmsRowFieldProps extends CanvasComponentProps<RowContextData> {
-  table?: string;
-  field?: string;
+  table: string;
+  field: string;
   className?: string;
   dateFormat?: string;
 }

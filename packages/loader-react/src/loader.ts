@@ -7,6 +7,8 @@ import {
   registerGlobalContext,
   registerToken,
   registerTrait,
+  StateHelpers,
+  StateSpec,
   TokenRegistration,
   TraitMeta,
 } from '@plasmicapp/host';
@@ -53,7 +55,7 @@ interface PlasmicRootWatcher {
 
 export type CodeComponentMeta<P> = Omit<
   InternalCodeComponentMeta<P>,
-  'importPath'
+  'importPath' | 'componentHelpers'
 > & {
   /**
    * The path to be used when importing the component in the generated code.
@@ -62,6 +64,10 @@ export type CodeComponentMeta<P> = Omit<
    * Optional: not used by Plasmic headless API, only by codegen.
    */
   importPath?: string;
+  /**
+   * The states helpers are registered together with the states for the Plasmic headless API
+   */
+  states?: Record<string, StateSpec & StateHelpers<P, any>>;
 };
 
 export type GlobalContextMeta<P> = Omit<
@@ -181,10 +187,40 @@ export class InternalPlasmicComponentLoader {
     meta: CodeComponentMeta<React.ComponentProps<T>>
   ) {
     this.substituteComponent(component, { name: meta.name, isCode: true });
-    // Import path is not used as we will use component substitution
+    // making the component meta consistent between codegen and loader
+    const stateHelpers = Object.fromEntries(
+      Object.entries(meta.states ?? {})
+        .filter(
+          ([_, stateSpec]) =>
+            'initFunc' in stateSpec || 'onChangeArgsToValue' in stateSpec
+        )
+        .map(([stateName, stateSpec]) => [
+          stateName,
+          {
+            ...('initFunc' in stateSpec
+              ? { initFunc: stateSpec.initFunc }
+              : {}),
+            ...('onChangeArgsToValue' in stateSpec
+              ? { onChangeArgsToValue: stateSpec.onChangeArgsToValue }
+              : {}),
+          },
+        ])
+    );
     registerComponent(component, {
       ...meta,
+      // Import path is not used as we will use component substitution
       importPath: meta.importPath ?? '',
+      ...(Object.keys(stateHelpers).length > 0
+        ? {
+            componentHelpers: {
+              helpers: {
+                states: stateHelpers,
+              },
+              importPath: '',
+              importName: '',
+            },
+          }
+        : {}),
     });
   }
 

@@ -135,11 +135,12 @@ export function registerRadio(loader?: Registerable) {
         argTypes: [{ name: "value", type: "string" }],
       } as any,
     },
-    unstable__states: {
+    states: {
       value: {
         type: "writable",
         valueProp: "value",
         onChangeProp: "onChange",
+        variableType: "text",
       },
     },
     importPath: "@plasmicapp/antd5/skinny/registerRadio",

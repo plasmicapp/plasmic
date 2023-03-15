@@ -254,6 +254,12 @@ export type DataPickerType<P> =
     } & DefaultValueOrExpr<P, DataPickerValueType> &
       PropTypeBase<P>);
 
+export type EventHandlerType<P> = {
+  type: "eventHandler";
+  argTypes: { name: string; type: PropType<any> }[];
+} & DefaultValueOrExpr<P, (...args: any) => any> &
+  PropTypeBase<P>;
+
 interface ChoiceTypeBase<P> extends PropTypeBase<P> {
   type: "choice";
   options:
@@ -408,6 +414,7 @@ export type PropType<P> =
       | CustomType<P>
       | GraphQLType<P>
       | DataPickerType<P>
+      | EventHandlerType<P>
     >
   | SlotType<P>;
 
@@ -479,30 +486,61 @@ interface ComponentTemplate<P>
 export interface ComponentTemplates<P> {
   [name: string]: ComponentTemplate<P>;
 }
-interface $State {
-  [key: string]: any;
+
+export type StateSpec = {
+  onChangeProp: string;
+} & (
+  | {
+      type: "readonly";
+      variableType: "text";
+      initVal?: string;
+    }
+  | {
+      type: "readonly";
+      variableType: "number";
+      initVal?: number;
+    }
+  | {
+      type: "readonly";
+      variableType: "boolean";
+      initVal?: boolean;
+    }
+  | {
+      type: "readonly";
+      variableType: "array";
+      initVal?: any[];
+    }
+  | {
+      type: "readonly";
+      variableType: "object";
+      initVal?: object;
+    }
+  | {
+      type: "writable";
+      variableType: "text" | "number" | "boolean" | "array" | "object";
+      valueProp: string;
+    }
+);
+
+
+export interface StateHelpers<P, T> {
+  initFunc?: ($props: P) => T;
+  onChangeArgsToValue?: (...args: any) => T;
 }
 
-interface $StateSpec<T> {
-  // Whether this state is private, readonly, or writable in
-  // this component
-  type: "private" | "readonly" | "writable";
-  // if initial value is defined by a js expression
-  initFunc?: ($props: Record<string, any>, $state: $State) => T;
-
-  // if initial value is a hard-coded value
-  initVal?: T;
-  // Whether this state is private, readonly, or writable in
-  // this component
-
-  // If writable, there should be a valueProp that maps props[valueProp]
-  // to the value of the state
-  valueProp?: string;
-
-  // If writable or readonly, there should be an onChangeProp where
-  // props[onChangeProp] is invoked whenever the value changes
-  onChangeProp?: string;
-}
+export type ComponentHelpers<P> = {
+  helpers: {
+    states: Record<string, StateHelpers<P, any>>;
+  };
+  importPath: string;
+} & (
+  | {
+      importName: string;
+    }
+  | {
+      isDefaultExport: true;
+    }
+);
 
 export type StyleSection =
   | "visibility"
@@ -548,9 +586,16 @@ export interface ComponentMeta<P> {
     [prop: string]: PropType<P>;
   };
   /**
-   * WIP: An object describing the component states to be used in Studio.
+   * An object describing the component states to be used in Studio.
    */
-  unstable__states?: Record<string, $StateSpec<any>>;
+  states?: Record<string, StateSpec>;
+  /**
+   * An object describing the components helpers to be used in Studio.
+   *   1. states helpers: Each state can receive an "initFunc" prop to initialize
+   *      the implicit state in Studio, and an "onChangeArgsToValue" prop to
+   *      transform the event handler arguments into a value
+   */
+  componentHelpers?: ComponentHelpers<P>;
   /**
    * An array describing the component actions to be used in Studio.
    */

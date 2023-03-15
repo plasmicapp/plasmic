@@ -72,11 +72,12 @@ export function registerCheckbox(loader?: Registerable) {
         argTypes: [{ name: "checked", type: "boolean" }],
       } as any,
     },
-    unstable__states: {
+    states: {
       checked: {
         type: "writable",
         valueProp: "checked",
         onChangeProp: "onChange",
+        variableType: "boolean",
       },
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerCheckbox",
@@ -127,11 +128,12 @@ export function registerCheckbox(loader?: Registerable) {
         argTypes: [{ name: "value", type: "object" }],
       } as any,
     },
-    unstable__states: {
+    states: {
       value: {
         type: "writable",
         valueProp: "value",
         onChangeProp: "onChange",
+        variableType: "boolean",
       },
     },
     importPath: "@plasmicapp/antd5/skinny/registerCheckbox",

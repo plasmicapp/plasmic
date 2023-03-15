@@ -121,11 +121,12 @@ export function registerModal(loader?: Registerable) {
         type: "themeResetClass",
       } as any,
     },
-    unstable__states: {
+    states: {
       open: {
         type: "writable",
         valueProp: "open",
         onChangeProp: "onOpenChange",
+        variableType: "boolean",
       },
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerModal",
