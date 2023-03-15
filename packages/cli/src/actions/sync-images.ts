@@ -139,14 +139,16 @@ export async function fixComponentCssReferences(
     const asset = fixImportContext.images[assetId];
     if (asset) {
       return context.config.images.scheme === "public-files"
-        ? `url("${path.join(
-            "/",
-            ensure(context.config.images.publicUrlPrefix),
+        ? `url("${
+            ensure(context.config.images.publicUrlPrefix) +
+            (ensure(context.config.images.publicUrlPrefix).endsWith("/")
+              ? ""
+              : "/") +
             path.relative(
               ensure(context.config.images.publicDir),
               asset.filePath
             )
-          )}")`
+          }")`
         : `url("./${path.relative(
             path.dirname(cssFilePath),
             asset.filePath
