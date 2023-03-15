@@ -2,29 +2,17 @@ import { isNum, shallowEqual } from "./helpers";
 import {
   $StateSpec,
   ARRAY_SYMBOL,
-  InitFunc,
   Internal$StateSpec,
   ObjectPath,
 } from "./types";
 
-const UNINITIALIZED = Symbol("plasmic.unitialized");
-
-export interface StateCell<T> {
-  initialValue?: T | Symbol;
-  path: ObjectPath;
-  registeredInitFunc?: InitFunc<T>;
-  listeners: (() => void)[];
-}
-
 export class StateSpecNode<T> {
   private _specs: Internal$StateSpec<T>[];
   private _edges: Map<string | symbol, StateSpecNode<any>>;
-  private _state: Record<string, StateCell<T>>;
 
   constructor(specs: Internal$StateSpec<T>[]) {
     this._specs = specs;
     this._edges = new Map();
-    this._state = {};
   }
 
   setSpecs(specs: Internal$StateSpec<T>[]) {
@@ -33,10 +21,6 @@ export class StateSpecNode<T> {
 
   edges() {
     return this._edges;
-  }
-
-  state() {
-    return this._state;
   }
 
   hasEdge(key: string | symbol) {
@@ -61,7 +45,7 @@ export class StateSpecNode<T> {
   }
 
   isLeaf() {
-    return this._edges.size === 0;
+    return this._edges.size === 0 && this.getAllSpecs().length > 0;
   }
 
   hasArrayTransition() {
@@ -74,60 +58,6 @@ export class StateSpecNode<T> {
 
   getAllSpecs() {
     return this._specs;
-  }
-
-  getState(path: ObjectPath) {
-    return this._state[JSON.stringify(path)];
-  }
-
-  getInitFunc(stateCell: StateCell<any>) {
-    return stateCell.registeredInitFunc ?? this.getSpec().initFunc;
-  }
-
-  clearStates() {
-    this._state = {};
-  }
-
-  states() {
-    return Object.values(this._state);
-  }
-
-  hasState(path: ObjectPath) {
-    const key = JSON.stringify(path);
-    return key in this._state;
-  }
-
-  createStateCell(path: ObjectPath) {
-    const key = JSON.stringify(path);
-    this._state[key] = {
-      listeners: [],
-      initialValue: UNINITIALIZED,
-      path,
-    };
-  }
-
-  deleteStateCell(prefixPath: ObjectPath) {
-    [...Object.keys(this._state)].forEach((key) => {
-      const path = JSON.parse(key);
-      if (shallowEqual(prefixPath, path.slice(0, prefixPath.length))) {
-        delete this._state[key];
-      }
-    });
-  }
-
-  setInitialValue(path: ObjectPath, value: any) {
-    const key = JSON.stringify(path);
-    this._state[key].initialValue = value;
-  }
-
-  getInitialValue(path: ObjectPath) {
-    const key = JSON.stringify(path);
-    return this._state[key].initialValue;
-  }
-
-  addListener(path: ObjectPath, f: () => void) {
-    const key = JSON.stringify(path);
-    this._state[key].listeners.push(f);
   }
 }
 
@@ -207,7 +137,7 @@ export function updateTree(root: StateSpecNode<any>, specs: $StateSpec<any>[]) {
   return rec(root, []);
 }
 
-export function getStateCells(root: StateSpecNode<any>) {
+export function getSpecTreeLeaves(root: StateSpecNode<any>) {
   const leaves: StateSpecNode<any>[] = [];
   const rec = (node: StateSpecNode<any>) => {
     for (const child of node.children()) {
