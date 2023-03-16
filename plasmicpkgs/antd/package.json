@@ -9,6 +9,16 @@
     "dist",
     "skinny"
   ],
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/antd.esm.js"
+    },
+    "./skinny/register*": {
+      "import": "./skinny/register*.js"
+    },
+    "./dist/antd.css": "./dist/antd.css"
+  },
   "size-limit": [
     {
       "path": "dist/antd.cjs.production.min.js",
