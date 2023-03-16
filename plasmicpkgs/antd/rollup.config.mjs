@@ -65,7 +65,7 @@ export default [
     output: [
       {
         dir: "skinny",
-        format: "cjs",
+        format: "esm",
         sourcemap: true,
         exports: "named",
         interop: "auto"
