@@ -10,6 +10,7 @@ export * from "./global-actions";
 export {
   Action,
   ActionProps,
+  ComponentHelpers,
   ComponentMeta,
   ComponentRegistration,
   ComponentTemplates,
