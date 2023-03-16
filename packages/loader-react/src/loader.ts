@@ -59,7 +59,7 @@ interface PlasmicRootWatcher {
 
 export type CodeComponentMeta<P> = Omit<
   InternalCodeComponentMeta<P>,
-  'importPath' | 'componentHelpers'
+  'importPath' | 'componentHelpers' | 'states'
 > & {
   /**
    * The path to be used when importing the component in the generated code.
