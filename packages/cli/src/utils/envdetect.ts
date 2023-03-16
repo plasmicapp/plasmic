@@ -25,6 +25,15 @@ export function detectNextJs() {
   }
 }
 
+export function detectNextJsAppDir() {
+  const nextConfigPath = findupSync("next.config.js");
+  if (!nextConfigPath) {
+    return false;
+  }
+
+  return require(nextConfigPath)?.experimental?.appDir || false;
+}
+
 export function detectGatsby() {
   return findupSync("gatsby-config.js") || findupSync("gatsby-config.ts");
 }

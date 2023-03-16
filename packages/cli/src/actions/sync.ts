@@ -555,6 +555,16 @@ async function syncProject(
     branchName,
     {
       platform: context.config.platform,
+      platformOptions:
+        context.config.platform === "nextjs"
+          ? {
+              nextjs: {
+                appDir:
+                  context.config.nextjsConfig?.pagesDir?.endsWith("app") ||
+                  false,
+              },
+            }
+          : {},
       componentIdOrNames: componentIds,
       version: projectVersion,
       imageOpts: context.config.images,

@@ -261,6 +261,11 @@ export class PlasmicApi {
     branchName: string,
     opts: {
       platform: string;
+      platformOptions: {
+        nextjs?: {
+          appDir: boolean;
+        };
+      };
       componentIdOrNames: readonly string[] | undefined;
       version: string;
       imageOpts: ImagesConfig;

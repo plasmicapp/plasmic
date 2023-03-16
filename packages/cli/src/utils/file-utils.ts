@@ -9,6 +9,7 @@ import { isLocalModulePath } from "./code-utils";
 import {
   ComponentConfig,
   CONFIG_FILE_NAME,
+  PlasmicConfig,
   PlasmicContext,
   ProjectConfig,
 } from "./config-utils";
@@ -77,14 +78,35 @@ export function defaultPublicResourcePath(
   );
 }
 
-export function defaultPagePath(context: PlasmicContext, fileName: string) {
+export function defaultPagePath(
+  context: {
+    config: Pick<PlasmicConfig, "platform" | "gatsbyConfig" | "nextjsConfig">;
+  },
+  fileName: string
+) {
   if (context.config.platform === "nextjs") {
-    return path.join(context.config.nextjsConfig?.pagesDir || "", fileName);
-  }
-  if (context.config.platform === "gatsby") {
+    if (context.config.nextjsConfig?.pagesDir?.endsWith("app")) {
+      if (fileName.endsWith("/index.tsx")) {
+        // convert "/foo/index.tsx" to "/foo/page.tsx"
+        return path.join(
+          context.config.nextjsConfig.pagesDir,
+          fileName.replace(/\/index\.tsx$/, "/page.tsx")
+        );
+      } else {
+        // convert "/foo/bar.tsx" to "/foo/bar/page.tsx"
+        return path.join(
+          context.config.nextjsConfig.pagesDir,
+          fileName.replace(/\.tsx$/, "/page.tsx")
+        );
+      }
+    } else {
+      return path.join(context.config.nextjsConfig?.pagesDir || "", fileName);
+    }
+  } else if (context.config.platform === "gatsby") {
     return path.join(context.config.gatsbyConfig?.pagesDir || "", fileName);
+  } else {
+    return fileName;
   }
-  return fileName;
 }
 
 /**
