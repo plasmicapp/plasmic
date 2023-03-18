@@ -1,20 +1,20 @@
 {
-  "name": "@plasmicpkgs/data-table",
+  "name": "@plasmicpkgs/plasmic-rich-components",
   "version": "1.0.35",
   "description": "Table component to consume query data",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "module": "dist/data-table.esm.js",
+  "module": "dist/plasmic-rich-components.esm.js",
   "files": [
     "dist"
   ],
   "size-limit": [
     {
-      "path": "dist/data-table.cjs.production.min.js",
+      "path": "dist/plasmic-rich-components.cjs.production.min.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/data-table.esm.js",
+      "path": "dist/plasmic-rich-components.esm.js",
       "limit": "10 KB"
     }
   ],

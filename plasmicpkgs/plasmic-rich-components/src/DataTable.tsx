@@ -1,12 +1,12 @@
-import { DataProvider, repeatedElement, useSelector } from "@plasmicapp/host";
 import type {
   ManyRowsResult,
   TableFieldType,
   TableSchema,
 } from "@plasmicapp/data-sources";
-import React from "react";
-import type { SizeType } from "antd/es/config-provider/SizeContext";
+import { DataProvider, repeatedElement, useSelector } from "@plasmicapp/host";
 import { Table } from "antd";
+import type { SizeType } from "antd/es/config-provider/SizeContext";
+import React from "react";
 
 export type QueryResult = Partial<ManyRowsResult<any>> & {
   error?: any;
@@ -98,12 +98,14 @@ export function DataTable(props: DataTableProps) {
                 <DataProvider name="currentColumn" data={value}>
                   {children &&
                     (typeof children === "object"
-                      ? (Array.isArray(children) ? children : [children]).map(
-                          (child) =>
-                            repeatedElement(
-                              rowIndex * columnsArray.length + columnIndex,
-                              child
-                            )
+                      ? (Array.isArray(children)
+                          ? children
+                          : [children]
+                        ).map((child) =>
+                          repeatedElement(
+                            rowIndex * columnsArray.length + columnIndex,
+                            child
+                          )
                         )
                       : children)}
                 </DataProvider>

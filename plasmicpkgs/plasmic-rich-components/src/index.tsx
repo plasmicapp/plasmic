@@ -3,8 +3,8 @@ import registerComponent, {
 } from "@plasmicapp/host/registerComponent";
 import {
   DataTable,
-  TableValue,
   DataTableProps,
+  TableValue,
   TableValueProps,
 } from "./DataTable";
 
@@ -12,16 +12,16 @@ export * from "./DataTable";
 export default DataTable;
 
 const dataTableValueMeta: ComponentMeta<TableValueProps> = {
-  name: "hostless-data-table-value",
+  name: "hostless-plasmic-rich-components-value",
   displayName: "Table Value",
-  parentComponentName: "hostless-data-table",
+  parentComponentName: "hostless-plasmic-rich-components",
   props: {},
   importName: "TableValue",
   importPath: "",
 };
 
 const dataTableMeta: ComponentMeta<DataTableProps> = {
-  name: "hostless-data-table",
+  name: "hostless-plasmic-rich-components",
   displayName: "Data Table",
   props: {
     data: {
@@ -33,7 +33,7 @@ const dataTableMeta: ComponentMeta<DataTableProps> = {
       type: "slot",
       defaultValue: {
         type: "component",
-        name: "hostless-data-table-value",
+        name: "hostless-plasmic-rich-components-value",
       },
     },
 
