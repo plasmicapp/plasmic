@@ -19,6 +19,7 @@ import {
   detectCreateReactApp,
   detectGatsby,
   detectNextJs,
+  detectNextJsAppDir,
   detectTypescript,
 } from "../utils/envdetect";
 import { existsBuffered } from "../utils/file-utils";
@@ -163,15 +164,22 @@ async function deriveInitAnswers(
     ? "nextjs"
     : detectGatsby()
     ? "gatsby"
-    : "react";
-  const isCra = detectCreateReactApp();
+    : detectCreateReactApp()
+    ? "react"
+    : "";
+  const isCra = platform === "react";
   const isNext = platform === "nextjs";
+  const isNextAppDir = isNext && detectNextJsAppDir();
   const isGatsby = platform === "gatsby";
   const isGeneric = !isCra && !isNext && !isGatsby;
   const isTypescript = detectTypescript();
 
   if (isNext) {
-    logger.info("Detected Next.js...");
+    if (isNextAppDir) {
+      logger.info("Detected Next.js with app/ directory (experimental)...");
+    } else {
+      logger.info("Detected Next.js...");
+    }
   } else if (isGatsby) {
     logger.info("Detected Gatsby...");
   } else if (isCra) {
@@ -180,7 +188,7 @@ async function deriveInitAnswers(
 
   // Platform-specific defaults that take precedent
   const deriver = isNext
-    ? getNextDefaults(plasmicRootDir)
+    ? getNextDefaults(plasmicRootDir, isNextAppDir)
     : isGatsby
     ? getGatsbyDefaults(plasmicRootDir)
     : isCra
@@ -407,7 +415,10 @@ async function deriveInitAnswers(
   return answers as InitArgs;
 }
 
-function getNextDefaults(plasmicRootDir: string): DefaultDeriver {
+function getNextDefaults(
+  plasmicRootDir: string,
+  appDir: boolean
+): DefaultDeriver {
   const projectRootDir = findPackageJsonDir(plasmicRootDir) ?? plasmicRootDir;
   return {
     srcDir: path.relative(
@@ -417,7 +428,7 @@ function getNextDefaults(plasmicRootDir: string): DefaultDeriver {
     pagesDir: (srcDir: string) =>
       path.relative(
         path.join(plasmicRootDir, srcDir),
-        path.join(projectRootDir, "pages")
+        path.join(projectRootDir, appDir ? "app" : "pages")
       ),
     styleScheme: "css-modules",
     imagesScheme: "public-files",
