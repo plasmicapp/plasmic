@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@plasmicapp/cli": "^0.1.225",
-    "@plasmicapp/react-web": "^0.2.170",
+    "@plasmicapp/cli": "^0.1.231",
+    "@plasmicapp/react-web": "^0.2.174",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",

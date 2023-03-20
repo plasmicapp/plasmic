@@ -18,6 +18,7 @@ import {
   deriveRenderOpts,
   ensureGlobalVariants
 } from "@plasmicapp/react-web";
+import RandomDynamicPageButton from "../../RandomDynamicPageButton"; // plasmic-import: Q23H1_1M_P/component
 import { useScreenVariants as useScreenVariantsscBjPxgdxdzbv } from "./PlasmicGlobalVariant__Screen"; // plasmic-import: SCBjPXGDXDZBV/globalVariant
 import "@plasmicapp/react-web/lib/plasmic.css";
 import projectcss from "./plasmic_create_plasmic_app.module.css"; // plasmic-import: 47tFXWjN2C4NyHFGGpaYQ3/projectcss
@@ -131,6 +132,15 @@ function PlasmicHomepage__RenderFunc(props) {
                 </React.Fragment>
               )}
             </div>
+
+            <RandomDynamicPageButton
+              data-plasmic-name={"randomDynamicPageButton"}
+              data-plasmic-override={overrides.randomDynamicPageButton}
+              className={classNames(
+                "__wab_instance",
+                sty.randomDynamicPageButton
+              )}
+            />
           </p.Stack>
         </div>
       </div>
@@ -139,10 +149,11 @@ function PlasmicHomepage__RenderFunc(props) {
 }
 
 const PlasmicDescendants = {
-  root: ["root", "section", "h1", "text"],
-  section: ["section", "h1", "text"],
+  root: ["root", "section", "h1", "text", "randomDynamicPageButton"],
+  section: ["section", "h1", "text", "randomDynamicPageButton"],
   h1: ["h1"],
-  text: ["text"]
+  text: ["text"],
+  randomDynamicPageButton: ["randomDynamicPageButton"]
 };
 
 function makeNodeComponent(nodeName) {
@@ -181,6 +192,7 @@ export const PlasmicHomepage = Object.assign(
     section: makeNodeComponent("section"),
     h1: makeNodeComponent("h1"),
     text: makeNodeComponent("text"),
+    randomDynamicPageButton: makeNodeComponent("randomDynamicPageButton"),
     // Metadata about props expected for PlasmicHomepage
     internalVariantProps: PlasmicHomepage__VariantProps,
     internalArgProps: PlasmicHomepage__ArgProps,

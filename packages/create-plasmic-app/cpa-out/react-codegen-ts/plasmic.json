@@ -40,9 +40,60 @@
           "cssFilePath": "plasmic/create_plasmic_app/PlasmicHomepage.module.css",
           "scheme": "blackbox",
           "componentType": "page"
+        },
+        {
+          "id": "AO44A-w7hh",
+          "name": "DynamicPage",
+          "type": "managed",
+          "projectId": "47tFXWjN2C4NyHFGGpaYQ3",
+          "renderModuleFilePath": "plasmic/create_plasmic_app/PlasmicDynamicPage.tsx",
+          "importSpec": {
+            "modulePath": "DynamicPage.tsx"
+          },
+          "cssFilePath": "plasmic/create_plasmic_app/PlasmicDynamicPage.module.css",
+          "scheme": "blackbox",
+          "componentType": "page"
+        },
+        {
+          "id": "TQcvW_pSKi3",
+          "name": "Button",
+          "type": "managed",
+          "projectId": "47tFXWjN2C4NyHFGGpaYQ3",
+          "renderModuleFilePath": "plasmic/create_plasmic_app/PlasmicButton.tsx",
+          "importSpec": {
+            "modulePath": "Button.tsx"
+          },
+          "cssFilePath": "plasmic/create_plasmic_app/PlasmicButton.module.css",
+          "scheme": "blackbox",
+          "componentType": "component",
+          "plumeType": "button"
+        },
+        {
+          "id": "Q23H1_1M_P",
+          "name": "RandomDynamicPageButton",
+          "type": "managed",
+          "projectId": "47tFXWjN2C4NyHFGGpaYQ3",
+          "renderModuleFilePath": "plasmic/create_plasmic_app/PlasmicRandomDynamicPageButton.tsx",
+          "importSpec": {
+            "modulePath": "RandomDynamicPageButton.tsx"
+          },
+          "cssFilePath": "plasmic/create_plasmic_app/PlasmicRandomDynamicPageButton.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
-      "icons": [],
+      "icons": [
+        {
+          "id": "gj-_D7n31Ho",
+          "name": "ChecksvgIcon",
+          "moduleFilePath": "plasmic/create_plasmic_app/icons/PlasmicIcon__Checksvg.tsx"
+        },
+        {
+          "id": "6PNxx3YMyDQ",
+          "name": "IconIcon",
+          "moduleFilePath": "plasmic/create_plasmic_app/icons/PlasmicIcon__Icon.tsx"
+        }
+      ],
       "images": [],
       "indirect": false,
       "globalContextsFilePath": "",
@@ -71,6 +122,6 @@
     ]
   },
   "wrapPagesWithGlobalContexts": true,
-  "cliVersion": "0.1.225",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.225/dist/plasmic.schema.json"
+  "cliVersion": "0.1.231",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.231/dist/plasmic.schema.json"
 }
