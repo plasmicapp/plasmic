@@ -1,37 +1,27 @@
 export const queryOperators = [
     {
         value: "",
-        label: 'Equality'
+        label: 'Is'
     },
     {
         value: "$ne",
-        label: 'Not Equal'
-    }, {
-        value: "$in",
-        label: 'Array Equals'
+        label: 'Is not'
     },
-    {
-        value: "$nin",
-        label: 'Array Note-equals'
-    },
-    {
-        value: "$regex",
-        label: 'Regex'
-    },
+   
     {
         value: "$lt",
-        label: 'Lesser than'
+        label: 'Less than'
     }, {
         value: "$lte",
-        label: 'Less Than or Equal'
+        label: 'Less than or equal'
     },
     {
         value: "$gt",
-        label: 'Greater Than'
+        label: 'Greater than'
     },
     {
         value: "$gte",
-        label: 'Greater Than or Equal '
+        label: 'Greater than or equal '
     },
 
 ]
