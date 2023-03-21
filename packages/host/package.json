@@ -5,28 +5,6 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/host.esm.js",
-  "exports": {
-    ".": {
-      "import": "./dist/host.esm.js",
-      "require": "./dist/index.js"
-    },
-    "./registerComponent": {
-      "import": "./registerComponent/dist/index.esm.js",
-      "require": "./registerComponent/dist/index.cjs.js"
-    },
-    "./registerGlobalContext": {
-      "import": "./registerGlobalContext/dist/index.esm.js",
-      "require": "./registerGlobalContext/dist/index.cjs.js"
-    },
-    "./registerToken": {
-      "import": "./registerToken/dist/index.esm.js",
-      "require": "./registerToken/dist/index.cjs.js"
-    },
-    "./registerTrait": {
-      "import": "./registerTrait/dist/index.esm.js",
-      "require": "./registerTrait/dist/index.cjs.js"
-    }
-  },
   "nx": {
     "targets": {
       "build": {
