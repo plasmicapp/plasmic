@@ -42,6 +42,17 @@ describe("defaultPagePath", () => {
             nextjsConfig: { pagesDir: "../pages" },
           },
         },
+        "/index.jsx"
+      )
+    ).toBe("../pages/index.jsx");
+    expect(
+      defaultPagePath(
+        {
+          config: {
+            platform: "nextjs",
+            nextjsConfig: { pagesDir: "../pages" },
+          },
+        },
         "/index.tsx"
       )
     ).toBe("../pages/index.tsx");
@@ -58,6 +69,14 @@ describe("defaultPagePath", () => {
     ).toBe("../pages/nested/index.tsx");
   });
   it("handles nextjs pagesDir using app/ directory ", () => {
+    expect(
+      defaultPagePath(
+        {
+          config: { platform: "nextjs", nextjsConfig: { pagesDir: "../app" } },
+        },
+        "/index.jsx"
+      )
+    ).toBe("../app/page.jsx");
     expect(
       defaultPagePath(
         {

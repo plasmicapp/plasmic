@@ -78,6 +78,9 @@ export function defaultPublicResourcePath(
   );
 }
 
+const INDEX_EXT_REGEXP = /\/index\.(jsx|tsx)$/;
+const EXT_REGEXP = /\.(jsx|tsx)$/;
+
 export function defaultPagePath(
   context: {
     config: Pick<PlasmicConfig, "platform" | "gatsbyConfig" | "nextjsConfig">;
@@ -86,17 +89,18 @@ export function defaultPagePath(
 ) {
   if (context.config.platform === "nextjs") {
     if (context.config.nextjsConfig?.pagesDir?.endsWith("app")) {
-      if (fileName.endsWith("/index.tsx")) {
+      const matchesIndex = fileName.match(INDEX_EXT_REGEXP);
+      if (matchesIndex) {
         // convert "/foo/index.tsx" to "/foo/page.tsx"
         return path.join(
           context.config.nextjsConfig.pagesDir,
-          fileName.replace(/\/index\.tsx$/, "/page.tsx")
+          fileName.replace(INDEX_EXT_REGEXP, "/page.$1")
         );
       } else {
         // convert "/foo/bar.tsx" to "/foo/bar/page.tsx"
         return path.join(
           context.config.nextjsConfig.pagesDir,
-          fileName.replace(/\.tsx$/, "/page.tsx")
+          fileName.replace(EXT_REGEXP, "/page.$1")
         );
       }
     } else {
