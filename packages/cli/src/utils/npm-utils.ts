@@ -1,5 +1,4 @@
 import { execSync, spawnSync } from "child_process";
-import glob from "fast-glob";
 import findupSync from "findup-sync";
 import latest from "latest-version";
 import path from "path";
@@ -114,24 +113,38 @@ export function findInstalledVersion(
   pkg: string
 ) {
   const pm = detectPackageManager(baseDir);
-  if (pm === "yarn2") {
-    try {
-      const pkgInfo = JSON.parse(
-        execSync(`yarn info --json ${pkg}`).toString().trim()
-      );
-      return pkgInfo?.children?.Version;
-    } catch (_) {
-      return undefined;
+  try {
+    if (pm === "yarn2") {
+      const output = execSync(`yarn info --json ${pkg}`).toString().trim();
+      const info = JSON.parse(output);
+      return info?.children?.Version;
+    } else if (pm === "yarn") {
+      const output = execSync(`yarn list --json --pattern ${pkg}`)
+        .toString()
+        .trim()
+        .split("\n");
+      for (const line of output) {
+        const info = JSON.parse(line);
+        if (
+          info?.type === "tree" &&
+          info?.data?.trees?.[0]?.name?.startsWith(`${pkg}@`)
+        ) {
+          return info.data.trees[0].name.replace(`${pkg}@`, "");
+        }
+      }
+    } else {
+      const output = execSync(`npm list --package-lock-only --json ${pkg}`)
+        .toString()
+        .trim();
+      const info = JSON.parse(output);
+      return info?.dependencies?.[pkg]?.version;
     }
+  } catch (err) {
+    logger.warn(
+      `Could not detect installed version of ${pkg} using ${pm}: ${err}`
+    );
   }
 
-  const filename = findInstalledPackageJsonFile(context, pkg);
-  if (filename) {
-    const json = parsePackageJson(filename);
-    if (json && json.name === pkg) {
-      return json.version as string;
-    }
-  }
   return undefined;
 }
 
@@ -162,17 +175,6 @@ function findPackageJsonPath(dir: string) {
 export function findPackageJsonDir(rootDir: string) {
   const filePath = findPackageJsonPath(rootDir);
   return filePath ? path.dirname(filePath) : undefined;
-}
-
-function findInstalledPackageJsonFile(context: PlasmicContext, pkg: string) {
-  const packageJsonPath = findPackageJsonPath(context.rootDir);
-  const rootDir = packageJsonPath
-    ? path.dirname(packageJsonPath)
-    : context.rootDir;
-  const files = glob.sync(`${rootDir}/**/node_modules/${pkg}/package.json`, {
-    ignore: [`**/node_modules/**/node_modules/**`],
-  });
-  return files.length > 0 ? files[0] : undefined;
 }
 
 function parsePackageJson(path: string) {
