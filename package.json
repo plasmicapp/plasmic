@@ -16,6 +16,8 @@
     "deps": "lerna list --include-dependencies --scope"
   },
   "workspaces": [
+    "packages/auth-api",
+    "packages/auth-react",
     "packages/cli",
     "packages/create-plasmic-app",
     "packages/data-sources",
