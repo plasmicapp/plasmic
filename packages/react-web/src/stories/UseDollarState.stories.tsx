@@ -3,6 +3,7 @@ import { Story } from "@storybook/react";
 import { userEvent, within } from "@storybook/testing-library";
 import React from "react";
 import { get, set, useDollarState } from "../states";
+import { CyclicStatesReferencesError } from "../states/errors";
 import { $StateSpec } from "../states/types";
 
 const deepClone = function <T>(o: T): T {
@@ -2871,4 +2872,96 @@ TodoApp.play = async ({ canvasElement }) => {
   await deleteTask(2);
   await deleteTask(1);
   await deleteTask(0);
+};
+
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { error: string | undefined }
+> {
+  constructor(props: any) {
+    super(props);
+    this.state = { error: undefined };
+  }
+
+  componentDidCatch(error: Error) {
+    this.setState({ error: `${error.name}: ${error.message}` });
+  }
+
+  render() {
+    const { error } = this.state;
+    if (error) {
+      return <div data-testid="error-message">{error}</div>;
+    } else {
+      return <>{this.props.children}</>;
+    }
+  }
+}
+
+const _CycleInStateInitialization: Story<{}> = (props) => {
+  const [selfCycle, setSelfCycle] = React.useState(true);
+  const InnerComponent = React.useCallback(
+    ({ selfCycle }: { selfCycle: boolean }) => {
+      const $state = useDollarState(
+        [
+          {
+            path: "self",
+            type: "private",
+            variableType: "text",
+            initFunc: ({ $state }) => $state.self,
+          },
+          {
+            path: "a",
+            type: "private",
+            variableType: "text",
+            initFunc: ({ $state }) => $state.b,
+          },
+          {
+            path: "b",
+            type: "private",
+            variableType: "text",
+            initFunc: ({ $state }) => $state.a,
+          },
+        ],
+        {
+          $props: props,
+        }
+      );
+      return (
+        <div>
+          <span>{selfCycle ? $state.self : $state.a}</span>
+        </div>
+      );
+    },
+    []
+  );
+  return (
+    <>
+      <ErrorBoundary key={JSON.stringify(selfCycle)}>
+        <InnerComponent selfCycle={selfCycle} />
+      </ErrorBoundary>
+      <button
+        onClick={() => setSelfCycle((state) => !state)}
+        data-testid="toggle"
+      >
+        Toggle
+      </button>
+    </>
+  );
+};
+
+export const CycleInStateInitialization = _CycleInStateInitialization.bind({});
+CycleInStateInitialization.args = {};
+CycleInStateInitialization.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+  const errorMessages = [
+    new CyclicStatesReferencesError(["self", "self"]).message,
+    new CyclicStatesReferencesError(["a", "b", "a"]).message,
+  ];
+  expect(canvas.getByTestId("error-message")).toHaveTextContent(
+    `Error: ${errorMessages[0]}`
+  );
+  await userEvent.click(canvas.getByTestId("toggle"));
+  expect(canvas.getByTestId("error-message")).toHaveTextContent(
+    `Error: ${errorMessages[1]}`
+  );
 };

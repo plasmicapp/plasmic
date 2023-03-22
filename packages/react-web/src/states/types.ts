@@ -95,4 +95,8 @@ export interface Internal$State {
   rootSpecTree: StateSpecNode<any>;
   specTreeLeaves: StateSpecNode<any>[];
   specs: $StateSpec<any>[];
+  stateInitializationEnv: {
+    stack: string[];
+    visited: Set<string>;
+  };
 }
