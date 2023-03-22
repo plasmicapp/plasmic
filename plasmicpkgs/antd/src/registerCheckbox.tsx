@@ -13,6 +13,20 @@ class CheckboxWrapper extends React.Component<CheckboxProps> {
   }
 }
 
+export const checkboxHelpers = {
+  helpers: {
+    states: {
+      value: {
+        onChangeArgsToValue: (
+          e: Parameters<NonNullable<CheckboxProps["onChange"]>>[0]
+        ) => e.target.checked,
+      },
+    },
+  },
+  importName: "checkboxHelpers",
+  importPath: "@plasmicpkgs/plasmic-antd/registerCheckbox",
+};
+
 export const checkboxMeta: ComponentMeta<CheckboxProps> = {
   name: "AntdCheckbox",
   displayName: "Antd Checkbox",
@@ -24,8 +38,6 @@ export const checkboxMeta: ComponentMeta<CheckboxProps> = {
     },
     checked: {
       type: "boolean",
-      editOnly: true,
-      uncontrolledProp: "defaultChecked",
       description:
         "Specifies the initial state: whether or not the checkbox is selected",
       defaultValueHint: false,
@@ -53,7 +65,25 @@ export const checkboxMeta: ComponentMeta<CheckboxProps> = {
         },
       ],
     },
+    onChange: {
+      type: "eventHandler",
+      argTypes: [
+        {
+          name: "event",
+          type: "object",
+        },
+      ],
+    },
   },
+  states: {
+    value: {
+      type: "writable",
+      variableType: "boolean",
+      onChangeProp: "onChange",
+      valueProp: "checked",
+    },
+  },
+  componentHelpers: checkboxHelpers,
   importPath: "antd/lib/checkbox/Checkbox",
   importName: "Checkbox",
   defaultStyles: {
@@ -86,9 +116,9 @@ export const checkboxGroupMeta: ComponentMeta<CheckboxGroupProps> = {
       uncontrolledProp: "defaultValue",
       description: "Default selected value",
       multiSelect: true,
-      options: componentProps => {
+      options: (componentProps) => {
         const options = new Set<string>();
-        traverseReactEltTree(componentProps.children, elt => {
+        traverseReactEltTree(componentProps.children, (elt) => {
           if (
             elt?.type === CheckboxWrapper &&
             typeof elt?.props?.value === "string"

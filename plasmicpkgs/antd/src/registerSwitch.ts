@@ -15,8 +15,6 @@ export const switchMeta: ComponentMeta<SwitchProps> = {
     },
     checked: {
       type: "boolean",
-      editOnly: true,
-      uncontrolledProp: "defaultChecked",
       description: "Whether to set the initial state",
       defaultValueHint: false,
     },
@@ -45,6 +43,27 @@ export const switchMeta: ComponentMeta<SwitchProps> = {
       options: ["small", "default"],
       description: "The size of the Switch",
       defaultValueHint: "default",
+    },
+    onChange: {
+      type: "eventHandler",
+      argTypes: [
+        {
+          name: "checked",
+          type: "boolean",
+        },
+        {
+          name: "event",
+          type: "object",
+        },
+      ],
+    },
+  },
+  states: {
+    value: {
+      type: "writable",
+      variableType: "boolean",
+      onChangeProp: "onChange",
+      valueProp: "checked",
     },
   },
   importPath: "antd/lib/switch",
