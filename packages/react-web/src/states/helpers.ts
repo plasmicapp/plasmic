@@ -1,3 +1,4 @@
+import type { ComponentHelpers } from "@plasmicapp/host";
 import get from "dlv";
 import { useEffect, useLayoutEffect } from "react";
 import { ensure } from "../common";
@@ -5,17 +6,72 @@ import { StateSpecNode } from "./graph";
 import {
   $State,
   ARRAY_SYMBOL,
+  InitFunc,
   ObjectPath,
   PLASMIC_STATE_PROXY_SYMBOL,
   StateCell,
 } from "./types";
 import { proxyObjToStateCell, tryGetStateCellFrom$StateRoot } from "./valtio";
 
+export function initializeCodeComponentStates(
+  $state: $State,
+  states: {
+    name: string;
+    plasmicStateName: string;
+  }[],
+  repetitionIndex: number[],
+  componentHelpers: ComponentHelpers<any>,
+  child$Props: Record<string, any>
+) {
+  const stateHelpers = componentHelpers?.states ?? {};
+  for (const { name, plasmicStateName } of states) {
+    if (name in stateHelpers && "initFunc" in stateHelpers[name]) {
+      $state.registerInitFunc?.(
+        plasmicStateName,
+        ({ $props }) => stateHelpers[name].initFunc?.($props),
+        repetitionIndex ?? [],
+        { $props: child$Props }
+      );
+    }
+  }
+}
+
+export function initializePlasmicStates(
+  $state: $State,
+  states: {
+    name: string;
+    initFunc: InitFunc<any>;
+  }[],
+  repetitionIndex: number[]
+) {
+  for (const { name, initFunc } of states) {
+    $state.registerInitFunc?.(name, initFunc, repetitionIndex ?? []);
+  }
+}
+
 export function generateStateOnChangeProp(
   $state: $State,
   path: ObjectPath
 ): (val: any) => void {
   return (val) => set($state, path, val);
+}
+
+export function generateStateOnChangePropForCodeComponents(
+  $state: $State,
+  stateName: string,
+  plasmicStatePath: ObjectPath,
+  componentHelpers: ComponentHelpers<any>
+): (val: any) => void {
+  const onChangeArgsToValue =
+    componentHelpers?.states?.[stateName]?.onChangeArgsToValue;
+  if (!onChangeArgsToValue || typeof onChangeArgsToValue !== "function") {
+    return generateStateOnChangeProp($state, plasmicStatePath);
+  }
+  return (...args) =>
+    generateStateOnChangeProp(
+      $state,
+      plasmicStatePath
+    )(onChangeArgsToValue.apply(null, args));
 }
 
 export function generateStateValueProp($state: $State, path: ObjectPath) {
