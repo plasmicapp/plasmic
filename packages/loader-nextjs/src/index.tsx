@@ -12,6 +12,7 @@ import * as React from 'react';
 import { initPlasmicLoaderWithCache } from './cache';
 
 export {
+  CodeComponentMeta,
   DataCtxReader,
   DataProvider,
   extractPlasmicQueryData,

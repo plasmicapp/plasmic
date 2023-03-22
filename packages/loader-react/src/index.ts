@@ -1,4 +1,5 @@
 import {
+  CodeComponentMeta,
   InternalPlasmicComponentLoader,
   PlasmicComponentLoader,
 } from './loader';
@@ -35,7 +36,11 @@ export {
   renderToString,
 } from './render';
 export { usePlasmicComponent } from './usePlasmicComponent';
-export { InternalPlasmicComponentLoader, PlasmicComponentLoader };
+export {
+  InternalPlasmicComponentLoader,
+  PlasmicComponentLoader,
+  CodeComponentMeta,
+};
 
 export function initPlasmicLoader(opts: InitOptions): PlasmicComponentLoader {
   const internal = new InternalPlasmicComponentLoader(opts);
