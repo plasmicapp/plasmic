@@ -41,9 +41,20 @@ export interface PropTypeBase<P> {
    * markdown in the text here.
    */
   exprHint?: string;
+  /**
+   * Function for whether this prop should be hidden in the right panel,
+   * given the current props for this component
+   */
   hidden?: ContextDependentConfig<P, boolean>;
   readOnly?: boolean | ContextDependentConfig<P, boolean>;
+  /**
+   * If true, will hide the prop in a collapsed section; good for props that
+   * should not usually be used.
+   */
   advanced?: boolean;
+  /**
+   * If true, does not allow the user to use a dynamic expression for this prop
+   */
   disableDynamicValue?: boolean;
 }
 
@@ -367,6 +378,17 @@ type SlotType<P> =
        * repeatedElement().
        */
       isRepeated?: boolean;
+
+      /**
+       * A nicer, human-readable display name for your slot prop
+       */
+      displayName?: string;
+
+      /**
+       * Function for whether this slot should be hidden from the left tree,
+       * given the current props for this component
+       */
+      hidden?: ContextDependentConfig<P, boolean>;
 
       /**
        * If slot is a render prop (accepts a function that takes in some
