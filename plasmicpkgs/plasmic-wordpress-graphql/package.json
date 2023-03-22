@@ -35,7 +35,7 @@
   ],
   "devDependencies": {
     "@plasmicapp/host": "1.0.118",
-    "@plasmicapp/query": "^0.1.61",
+    "@plasmicapp/query": "0.1.61",
     "@size-limit/preset-small-lib": "^7.0.8",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",

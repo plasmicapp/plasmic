@@ -21,6 +21,8 @@
     "analyze": "size-limit --why"
   },
   "peerDependencies": {
+    "@plasmicapp/host": ">=1.0.0",
+    "@plasmicapp/query": ">=0.1.0",
     "react": ">=16"
   },
   "size-limit": [
@@ -34,6 +36,8 @@
     }
   ],
   "devDependencies": {
+    "@plasmicapp/host": "1.0.118",
+    "@plasmicapp/query": "0.1.61",
     "@size-limit/preset-small-lib": "^7.0.8",
     "@types/dlv": "^1.1.2",
     "@types/react": "^18.0.27",
@@ -47,8 +51,6 @@
     "typescript": "^4.6.3"
   },
   "dependencies": {
-    "@plasmicapp/host": "1.0.118",
-    "@plasmicapp/query": "0.1.61",
     "dlv": "^1.1.3"
   }
 }

@@ -21,7 +21,8 @@
     "analyze": "size-limit --why"
   },
   "peerDependencies": {
-    "react": ">=16"
+    "react": ">=16",
+    "@plasmicapp/host": ">=1.0.0"
   },
   "size-limit": [
     {
@@ -45,7 +46,6 @@
   },
   "dependencies": {
     "@chakra-ui/react": "^2.2.8",
-    "@plasmicapp/host": "1.0.76",
     "react": ">=16.8.0"
   }
 }
