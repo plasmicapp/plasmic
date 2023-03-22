@@ -1,9 +1,9 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import Input, { InputProps } from "antd/lib/input";
-import {
+import Input, {
   GroupProps,
+  InputProps,
   PasswordProps,
   SearchProps,
   TextAreaProps,
@@ -38,6 +38,20 @@ const commonHtmlAttributes = {
     description: "The HTML name of the input",
   },
 } as const;
+
+export const inputHelpers = {
+  helpers: {
+    states: {
+      value: {
+        onChangeArgsToValue: (
+          e: Parameters<NonNullable<InputProps["onChange"]>>[0]
+        ) => e.target.value,
+      },
+    },
+  },
+  importName: "inputHelpers",
+  importPath: "@plasmicpkgs/plasmic-antd/registerInput",
+};
 
 export const inputMeta: ComponentMeta<InputProps> = {
   name: "AntdInput",
@@ -100,10 +114,26 @@ export const inputMeta: ComponentMeta<InputProps> = {
     },
     value: {
       type: "string",
-      editOnly: true,
-      uncontrolledProp: "defaultValue",
+    },
+    onChange: {
+      type: "eventHandler",
+      argTypes: [
+        {
+          name: "event",
+          type: "object",
+        },
+      ],
     },
   }),
+  states: {
+    value: {
+      type: "writable",
+      variableType: "text",
+      onChangeProp: "onChange",
+      valueProp: "value",
+    },
+  },
+  componentHelpers: inputHelpers,
   importPath: "antd/lib/input",
   importName: "Input",
   isDefaultExport: true,
@@ -162,10 +192,26 @@ export const inputTextAreaMeta: ComponentMeta<TextAreaProps> = {
     },
     value: {
       type: "string",
-      editOnly: true,
-      uncontrolledProp: "defaultValue",
+    },
+    onChange: {
+      type: "eventHandler",
+      argTypes: [
+        {
+          name: "event",
+          type: "object",
+        },
+      ],
     },
   }),
+  states: {
+    value: {
+      type: "writable",
+      variableType: "text",
+      onChangeProp: "onChange",
+      valueProp: "value",
+    },
+  },
+  componentHelpers: inputHelpers,
   importPath: "antd/lib/input/TextArea",
   importName: "TextArea",
   isDefaultExport: true,
@@ -246,10 +292,26 @@ export const inputSearchMeta: ComponentMeta<SearchProps> = {
     },
     value: {
       type: "string",
-      editOnly: true,
-      uncontrolledProp: "defaultValue",
+    },
+    onChange: {
+      type: "eventHandler",
+      argTypes: [
+        {
+          name: "event",
+          type: "object",
+        },
+      ],
     },
   }),
+  states: {
+    value: {
+      type: "writable",
+      variableType: "text",
+      onChangeProp: "onChange",
+      valueProp: "value",
+    },
+  },
+  componentHelpers: inputHelpers,
   importPath: "antd/lib/input/Search",
   importName: "Search",
   isDefaultExport: true,
@@ -321,15 +383,31 @@ export const inputPasswordMeta: ComponentMeta<PasswordProps> = {
     },
     value: {
       type: "string",
-      editOnly: true,
-      uncontrolledProp: "defaultValue",
     },
     visibilityToggle: {
       type: "boolean",
       description: "Whether show toggle button",
       defaultValueHint: true,
     },
+    onChange: {
+      type: "eventHandler",
+      argTypes: [
+        {
+          name: "event",
+          type: "object",
+        },
+      ],
+    },
   }),
+  states: {
+    value: {
+      type: "writable",
+      variableType: "text",
+      onChangeProp: "onChange",
+      valueProp: "value",
+    },
+  },
+  componentHelpers: inputHelpers,
   importPath: "antd/lib/input/Password",
   importName: "Password",
   isDefaultExport: true,
