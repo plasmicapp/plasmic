@@ -1,10 +1,13 @@
 export { default as get } from "dlv";
 export {
   generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
   generateStateValueProp,
   getCurrentInitialValue,
   getStateCellsInPlasmicProxy,
   getStateSpecInPlasmicProxy,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
   isPlasmicStateProxy,
   resetToInitialValue,
   set,
