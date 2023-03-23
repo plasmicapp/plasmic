@@ -51,8 +51,8 @@
     "typescript": "^4.6.4"
   },
   "peerDependencies": {
-    "@plasmicapp/host": "1.0.103",
-    "@plasmicapp/query": "0.1.61",
+    "@plasmicapp/host": ">=1.0.0",
+    "@plasmicapp/query": ">=0.1.0",
     "react": ">=16.8.0"
   },
   "publishConfig": {

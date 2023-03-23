@@ -36,11 +36,10 @@
     "tslib": "^2.2.0",
     "typescript": "^3.9.7"
   },
-  "dependencies": {
-    "@plasmicapp/query": "0.1.61"
-  },
+  "dependencies": {},
   "peerDependencies": {
-    "@plasmicapp/host": "^1.0.54",
+    "@plasmicapp/query": ">=0.1.0",
+    "@plasmicapp/host": ">=1.0.0",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
   }

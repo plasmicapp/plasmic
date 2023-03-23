@@ -583,7 +583,7 @@ export type StyleSection =
   | "shadows"
   | "effects";
 
-export interface ComponentMeta<P> {
+export interface CodeComponentMeta<P> {
   /**
    * Any unique string name used to identify that component. Each component
    * should be registered with a different `meta.name`, even if they have the
@@ -700,6 +700,11 @@ export interface ComponentMeta<P> {
   unstable__refActions?: Record<string, RefActionRegistration<P>>;
 }
 
+/**
+ * @deprecated use CodeComponentMeta instead
+ */
+export type ComponentMeta<P> = CodeComponentMeta<P>;
+
 export interface FunctionParam<P> {
   name: string;
   displayName?: string;
@@ -714,7 +719,7 @@ export interface RefActionRegistration<P> {
 
 export interface ComponentRegistration {
   component: React.ComponentType<any>;
-  meta: ComponentMeta<any>;
+  meta: CodeComponentMeta<any>;
 }
 
 declare global {
@@ -729,7 +734,7 @@ if (root.__PlasmicComponentRegistry == null) {
 
 export default function registerComponent<T extends React.ComponentType<any>>(
   component: T,
-  meta: ComponentMeta<React.ComponentProps<T>>
+  meta: CodeComponentMeta<React.ComponentProps<T>>
 ) {
   // Check for duplicates
   if (

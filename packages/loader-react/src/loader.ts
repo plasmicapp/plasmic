@@ -1,8 +1,8 @@
 import * as PlasmicDataSourcesContext from '@plasmicapp/data-sources-context';
 import * as PlasmicHost from '@plasmicapp/host';
 import {
+  CodeComponentMeta as InternalCodeComponentMeta,
   ComponentHelpers as InternalCodeComponentHelpers,
-  ComponentMeta as InternalCodeComponentMeta,
   GlobalContextMeta as InternalGlobalContextMeta,
   registerComponent,
   registerGlobalContext,

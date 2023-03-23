@@ -1,4 +1,5 @@
 export {
+  CodeComponentMeta,
   ComponentMeta,
   ComponentRenderData,
   // Data context helpers.
