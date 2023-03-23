@@ -1,0 +1,48 @@
+{
+  "name": "@plasmicpkgs/keen-slider",
+  "version": "0.0.1",
+  "description": "Plasmic registration call for the Keen Slider component",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/keen-slider.esm.js",
+  "files": [
+    "dist"
+  ],
+  "size-limit": [
+    {
+      "path": "dist/keen-slider.cjs.production.min.js",
+      "limit": "20 KB"
+    },
+    {
+      "path": "dist/keen-slider.esm.js",
+      "limit": "20 KB"
+    }
+  ],
+  "scripts": {
+    "build": "tsdx build",
+    "start": "tsdx watch",
+    "test": "tsdx test --passWithNoTests",
+    "lint": "tsdx lint",
+    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
+  },
+  "devDependencies": {
+    "@plasmicapp/host": "^1.0.117",
+    "@size-limit/preset-small-lib": "^4.11.0",
+    "@types/node": "^14.0.26",
+    "size-limit": "^4.11.0",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.2.0",
+    "typescript": "^3.9.7"
+  },
+  "dependencies": {
+    "@seznam/compose-react-refs": "^1.0.6",
+    "@types/resize-observer-browser": "^0.1.7",
+    "keen-slider": "^6.8.2"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  }
+}
