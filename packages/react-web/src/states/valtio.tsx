@@ -5,6 +5,11 @@ import React from "react";
 import { proxy as createValtioProxy, ref, useSnapshot } from "valtio";
 import { ensure } from "../common";
 import {
+  CyclicStatesReferencesError,
+  InvalidOperation,
+  UnknownError,
+} from "./errors";
+import {
   buildTree,
   findStateCell,
   getSpecTreeLeaves,
@@ -78,7 +83,7 @@ export function tryGetStateCellFrom$StateRoot(
   path: ObjectPath
 ) {
   if (path.length === 0) {
-    throw new Error("expected a path with length greater than 0");
+    throw new UnknownError("expected a path with length greater than 0");
   }
   const target = get($state, path.slice(0, -1));
   get(target, path.slice(-1)); // create state cell;
@@ -94,17 +99,36 @@ function initializeStateValue(
   initialStateCell: StateCell<any>,
   proxyRoot: any
 ) {
+  const initialStateName = initialStateCell.node.getSpec().path;
   const stateAccess: Set<{
     stateCell: StateCell<any>;
   }> = new Set();
+  $$state.stateInitializationEnv.visited.add(initialStateName);
+  $$state.stateInitializationEnv.stack.push(initialStateName);
   const $state = create$StateProxy($$state, (internalStateCell) => ({
     get() {
+      const spec = internalStateCell.node.getSpec();
+      if ($$state.stateInitializationEnv.visited.has(spec.path)) {
+        // cyclic reference found
+        const stateAccessCycle: string[] = [spec.path];
+        while ($$state.stateInitializationEnv.stack.length > 0) {
+          const curr = $$state.stateInitializationEnv.stack.pop();
+          if (!curr) {
+            break;
+          }
+          stateAccessCycle.push(curr);
+          if (curr === spec.path) {
+            throw new CyclicStatesReferencesError(stateAccessCycle);
+          }
+        }
+        throw new UnknownError("Internal error: cycle not found");
+      }
+
       const stateCell = getStateCellFrom$StateRoot(
         proxyRoot,
         internalStateCell.path
       );
       stateAccess.add({ stateCell });
-      const spec = stateCell.node.getSpec();
       if (spec.valueProp) {
         return $$state.env.$props[spec.valueProp];
       } else if (spec.initFunc && stateCell.initialValue === UNINITIALIZED) {
@@ -113,7 +137,9 @@ function initializeStateValue(
       return get(proxyRoot, stateCell.path);
     },
     set() {
-      throw new Error(`Cannot update state values during initialization`);
+      throw new InvalidOperation(
+        `Cannot update state values during initialization`
+      );
     },
   }));
 
@@ -148,7 +174,8 @@ function initializeStateValue(
   if (initialSpec.onChangeProp) {
     $$state.env.$props[initialSpec.onChangeProp]?.(initialValue);
   }
-
+  $$state.stateInitializationEnv.visited.delete(initialStateName);
+  $$state.stateInitializationEnv.stack.pop();
   return initialValue;
 }
 
@@ -176,7 +203,7 @@ function create$StateProxy(
           !currNode.hasArrayTransition() &&
           !isNum(property)
         ) {
-          throw new Error(
+          throw new InvalidOperation(
             "Can't delete a property in the middle of the state spec"
           );
         }
@@ -248,7 +275,9 @@ function create$StateProxy(
             value
           );
         } else if (!isOutside && !currNode.isLeaf() && !nextNode?.isLeaf()) {
-          throw new Error("inserting a primitive value into a non-leaf");
+          throw new InvalidOperation(
+            "inserting a primitive value into a non-leaf"
+          );
         } else {
           Reflect.set(target, property, value, receiver);
         }
@@ -381,6 +410,7 @@ export function useDollarState(
         env: envFieldsAreNonNill(env),
         specs: [],
         registrationsQueue: createValtioProxy([]),
+        stateInitializationEnv: { stack: [], visited: new Set<string>() },
       };
     })()
   ).current;
