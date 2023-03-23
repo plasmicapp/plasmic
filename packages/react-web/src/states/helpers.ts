@@ -108,14 +108,13 @@ export function getStateCells(
       ),
     ];
   } else {
-    return [
-      ...stateCells,
-      ...[...root.edges().entries()].flatMap(([key, child]) =>
-        typeof key === "string" && key in $state
-          ? getStateCells($state[key], child)
-          : []
-      ),
-    ];
+    const childrenStateCells = [];
+    for (const [key, child] of root.edges().entries()) {
+      if (typeof key === "string" && key in $state) {
+        childrenStateCells.push(...getStateCells($state[key], child));
+      }
+    }
+    return [...stateCells, ...childrenStateCells];
   }
 }
 
