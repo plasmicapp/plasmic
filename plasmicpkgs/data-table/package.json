@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/data-table",
-  "version": "1.0.33",
+  "version": "1.0.34",
   "description": "Table component to consume query data",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,8 +28,8 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
+    "@plasmicapp/data-sources": "0.1.52",
     "@plasmicapp/host": "1.0.91",
-    "@plasmicapp/data-sources": "0.1.51",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/node": "^14.0.26",
     "size-limit": "^4.11.0",
@@ -37,10 +37,9 @@
     "tslib": "^2.2.0",
     "typescript": "^3.9.7"
   },
-  "dependencies": {},
   "peerDependencies": {
-    "@plasmicapp/host": ">=1.0.0",
     "@plasmicapp/data-sources": ">=0.1.0",
+    "@plasmicapp/host": ">=1.0.0",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
   },
