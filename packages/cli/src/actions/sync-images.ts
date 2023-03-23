@@ -1,4 +1,6 @@
+import cliProgress from "cli-progress";
 import L from "lodash";
+import fetch from "node-fetch";
 import path from "upath";
 import { ChecksumBundle, ImageBundle } from "../api";
 import { logger } from "../deps";
@@ -42,6 +44,8 @@ export async function syncProjectImageAssets(
     knownImageConfigs,
     (i) => !imageBundleIds[i.id] && !id2ImageChecksum.has(i.id)
   );
+
+  await ensureImageAssetContents(imageBundles);
 
   for (const bundle of imageBundles) {
     if (context.cliArgs.quiet !== true) {
@@ -123,6 +127,43 @@ export async function syncProjectImageAssets(
     (fileLock) =>
       fileLock.type !== "image" || !deletedImageIds.has(fileLock.assetId)
   );
+}
+
+async function ensureImageAssetContents(bundles: ImageBundle[]) {
+  // The server may send images as a url instead of a base64 blob. In that
+  // case, we fetch the images here in the cli, instead of on the server.
+  // If you have a lot of images, this moves the expensive / long fetch
+  // from the codegen server to the cli
+  const needsFetching = bundles.filter((b) =>
+    b.blob.startsWith("https://site-assets.plasmic.app/")
+  );
+  if (needsFetching.length === 0) {
+    return;
+  }
+
+  const bar = new cliProgress.SingleBar({
+    format: `Downloading images [{bar}] | {value}/{total}`,
+  });
+  bar.start(needsFetching.length, 0);
+
+  await Promise.all(
+    needsFetching.map(async (bundle) => {
+      try {
+        const res = await fetch(bundle.blob);
+        if (res.status !== 200) {
+          throw new Error(
+            `Fetching ${bundle.blob} failed with status ${res.status}`
+          );
+        }
+        const arrayBuffer = await res.arrayBuffer();
+        bundle.blob = Buffer.from(arrayBuffer).toString("base64");
+        bar.increment();
+      } catch (err) {
+        logger.error(`Failed to fetch image ${bundle.fileName}: ${err}`);
+      }
+    })
+  );
+  bar.stop();
 }
 
 function getImagePublicUrl(context: PlasmicContext, asset: ImageConfig) {
