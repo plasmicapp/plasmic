@@ -2,7 +2,7 @@ import fetch from '@plasmicapp/isomorphic-unfetch';
 import { wrapLoadingFetcher } from '@plasmicapp/query';
 import { ManyRowsResult, Pagination, SingleRowResult } from './types';
 
-const DEFAULT_HOST = 'https://studio.plasmic.app';
+const DEFAULT_HOST = 'https://data.plasmic.app';
 
 export interface DataOp {
   sourceId: string;
