@@ -5,6 +5,22 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/react-web.esm.js",
+  "nx": {
+    "targets": {
+      "build": {
+        "inputs": [
+          "{projectRoot}/**/*",
+          "!{projectRoot}/**/dist/**/*",
+          "!{projectRoot}/lib/**/*"
+        ],
+        "outputs": [
+          "{projectRoot}/dist",
+          "{projectRoot}/**/dist",
+          "{projectRoot}/lib"
+        ]
+      }
+    }
+  },
   "size-limit": [
     {
       "path": "dist/react-web.cjs.production.min.js",

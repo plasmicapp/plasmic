@@ -5,6 +5,22 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/antd.esm.js",
+  "nx": {
+    "targets": {
+      "build": {
+        "inputs": [
+          "{projectRoot}/**/*",
+          "!{projectRoot}/**/dist/**/*",
+          "!{projectRoot}/skinny/**/*"
+        ],
+        "outputs": [
+          "{projectRoot}/dist",
+          "{projectRoot}/**/dist",
+          "{projectRoot}/skinny"
+        ]
+      }
+    }
+  },
   "files": [
     "dist",
     "skinny"
