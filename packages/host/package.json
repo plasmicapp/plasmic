@@ -11,6 +11,11 @@
         "inputs": [
           "{projectRoot}/**/*",
           "!{projectRoot}/**/dist/**/*"
+        ],
+        "outputs": [
+          "{projectRoot}/dist",
+          "{projectRoot}/**/dist",
+          "{projectRoot}/src/version.ts"
         ]
       }
     }
