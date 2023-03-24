@@ -322,6 +322,11 @@ function configureSyncArgs(
       describe: "Ignore post-sync commands in plasmic.json",
       default: false,
     })
+    .option("skip-upgrade-check", {
+      type: "boolean",
+      describe: "Skip upgrade check for Plasmic dependencies",
+      default: false,
+    })
     .option("metadata", {
       type: "string",
       describe:

@@ -1,12 +1,10 @@
 import { execSync, spawnSync } from "child_process";
 import findupSync from "findup-sync";
-import latest from "latest-version";
 import path from "path";
 import semver from "semver";
 import { logger } from "../deps";
 import { PlasmicContext } from "./config-utils";
 import { findFile, readFileText } from "./file-utils";
-import { confirmWithUser } from "./user-utils";
 
 export function getParsedCliPackageJson() {
   const packageJson = findupSync("package.json", { cwd: __dirname });
@@ -40,71 +38,6 @@ export function getParsedPackageJson() {
     throw new Error(`Cannot find package.json`);
   }
   return parsePackageJson(packageJson);
-}
-
-// @TODO: is this function still used?
-export async function warnLatest(
-  context: PlasmicContext,
-  pkg: string,
-  baseDir: string,
-  msgs: {
-    requiredMsg: () => string;
-    updateMsg: (curVersion: string, latestVersion: string) => string;
-  },
-  yes?: boolean
-) {
-  const check = await checkVersion(context, baseDir, pkg);
-  if (check.type === "up-to-date") {
-    return;
-  } else if (check.type === "wrong-npm-registry") {
-    logger.warn(
-      `${msgs.requiredMsg()} Unable to find this package in your npm registry. Please update this dependency manually.`
-    );
-    return;
-  }
-
-  if (
-    await confirmWithUser(
-      `${
-        check.type === "not-installed"
-          ? msgs.requiredMsg()
-          : msgs.updateMsg(check.current, check.latest)
-      }  Do you want to ${
-        check.type === "not-installed" ? "add" : "update"
-      } it now?`,
-      yes
-    )
-  ) {
-    installUpgrade(pkg, baseDir);
-  }
-}
-
-async function checkVersion(
-  context: PlasmicContext,
-  baseDir: string,
-  pkg: string
-) {
-  // Try to get the latest version from npm
-  let last = null;
-  try {
-    last = await latest(pkg);
-  } catch (e) {
-    // This is likely because .npmrc is set to a different registry
-    return { type: "wrong-npm-registry" } as const;
-  }
-
-  const cur = findInstalledVersion(context, baseDir, pkg);
-  if (!cur) {
-    return { type: "not-installed" } as const;
-  }
-  if (semver.gt(last, cur)) {
-    return {
-      type: "obsolete",
-      latest: last,
-      current: cur,
-    } as const;
-  }
-  return { type: "up-to-date" } as const;
 }
 
 export function findInstalledVersion(
