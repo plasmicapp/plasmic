@@ -132,10 +132,15 @@ export function findInstalledVersion(
           return info.data.trees[0].name.replace(`${pkg}@`, "");
         }
       }
-    } else {
+    } else if (pm === "npm") {
       const output = execSync(`npm list --package-lock-only --json ${pkg}`)
         .toString()
         .trim();
+      const info = JSON.parse(output);
+      return info?.dependencies?.[pkg]?.version;
+    } else {
+      // Unknown package manager (e.g. pnpm).
+      const output = execSync(`npm list --json ${pkg}`).toString().trim();
       const info = JSON.parse(output);
       return info?.dependencies?.[pkg]?.version;
     }
@@ -250,8 +255,17 @@ export function detectPackageManager(baseDir: string) {
   const yarnLock = findupSync("yarn.lock", { cwd: baseDir });
   if (yarnLock) {
     const yarnVersion = execSync(`yarn --version`).toString().trim();
-    return semver.gte(yarnVersion, "2.0.0") ? "yarn2" : "yarn";
+    if (semver.gte(yarnVersion, "2.0.0")) {
+      return "yarn2";
+    } else {
+      return "yarn";
+    }
   }
 
-  return "npm";
+  const npmLock = findupSync("package-lock.json", { cwd: baseDir });
+  if (npmLock) {
+    return "npm";
+  }
+
+  return "unknown";
 }
