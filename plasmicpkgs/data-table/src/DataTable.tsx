@@ -40,7 +40,7 @@ function tryGetSchema(data?: QueryResult): TableSchema | undefined {
       Array.from(Object.entries(entry)).forEach(([k, v]) => {
         const inferredType: TableFieldType =
           typeof v === "string"
-            ? "text"
+            ? "string"
             : typeof v === "boolean"
             ? "boolean"
             : typeof v === "number"
