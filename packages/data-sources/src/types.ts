@@ -21,7 +21,7 @@ export interface TableFieldSchema {
 }
 
 export type TableFieldType =
-  | 'text'
+  | 'string'
   | 'boolean'
   | 'number'
   | 'datetime'
