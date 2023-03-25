@@ -251,6 +251,11 @@ packages:
     publish: $authenticated
     unpublish: $authenticated
     proxy: npmjs
+  '@plasmicapp/react-ssr-prepass':
+    access: $all
+    publish: $authenticated
+    unpublish: $authenticated
+    proxy: npmjs
   '@plasmicapp/*':
     access: $all
     publish: $all
