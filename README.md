@@ -211,6 +211,30 @@ Besides the Headless API, you can also [generate React code](https://docs.plasmi
 This is a powerful way to use Plasmic as a UI builder for creating rich interactive web applications—one example of this is Plasmic Studio itself.
 See the [application development tutorials](https://docs.plasmic.app/learn/minitwitter-tutorial) to learn more.
 
+### Note on versioning
+
+One common issue we see is mismatched or duplicate versions of packages.
+
+`@plasmicapp` packages can depend on each other.
+Each package always has an *exact* version of its @plasmicapp dependencies.
+This is because we want to ensure that all packages are always in sync, and that we don't end up with a mismatched set of packages.
+
+Packages like `@plasmicapp/host` must also be deduped, since functionality such as `registerComponent` make use of globals and side effects, so with multiple versions you could end up using the wrong "instance" of this package.
+Additionally, types can be tightly coupled across multiple packages.
+
+Unfortunately, npm and yarn make it easy for you to end up with mismatched versions and duplicate versions of packages.
+Use the `npm list` command to ensure that you have unique deduped versions of packages.
+Furthermore, issues can be "sticky," since npm/yarn are stateful.
+At times, you may need to rely on `npm dedupe`, or removing and reinstalling Plasmic packages (including `@plasmicpkgs` packages), resetting package-lock.json/yarn.lock, in order to unwedge npm/yarn.
+
+`@plasmicpkgs` (the built-in code component packages) have `@plasmicapp` packages as peer dependencies,
+and these specify ranges rather than exact versions--this is to offer some flexibility for developers to use the core package versions they need, while still using `@plasmicpkgs`.
+
+Note: exact versioning does not imply that every package increments versions for every release.
+Packages are only incremented if they or their dependencies have changed.
+Incrementing versions, including those referenced in `dependencies` and `devDependencies`, is done automatically when our deployment scripts run `lerna version patch --exact...`,
+which detects whether a package has changed since its last git-tagged release.
+
 ## Contributing
 
 This repo contains the code for all Plasmic component store packages (`@plasmicpkgs/*`), client libraries/SDKs (`@plasmicapp/*`), and examples (under the `examples/` dir).
@@ -229,7 +253,7 @@ In general, we follow the "fork-and-pull" Git workflow.
 
 NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 
-### Getting started
+### Getting started with development in this repo
 
 ```
 yarn lerna bootstrap  # inter-links all the lerna-managed packages together
@@ -285,7 +309,7 @@ npm --registry=http://localhost:4873 adduser
 
 1. If you're ready to test, run `yarn local-publish YOURPKG`. This unpublishes YOURPKG and its dependencies from your verdaccio, re-builds them, and publishes them to your local verdaccio. Note that this does not bump versions! We are using nx under the hood, so if your dependencies haven't changed, this should be fast.
 
-1. Install the canary version into wherever you're trying to test, via `yarn add ... --registry=http://localhost:4873`.
+1. (Re-)install the canary version into wherever you're trying to test, via `yarn add ... --registry=http://localhost:4873`.
 
 1. If you are not seeing bundles update, clear the relevant caches in the environment you're testing in. For instance, if you are testing a plasmicpkg in a Next.js app, try `rm -rf .next/`.
 
