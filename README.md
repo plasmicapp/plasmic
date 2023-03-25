@@ -305,38 +305,63 @@ npm --registry=http://localhost:4873 adduser
 
 ### Development workflow
 
-1. Make some changes!
+```bash
+# Step 1.
+# Make some changes! Let's say, to @plasmicapp/host.
+# vim packages/host/src/registerComponent.ts
 
-1. If you're ready to test, run `yarn local-publish YOURPKG`. This unpublishes YOURPKG and its dependencies from your verdaccio, re-builds them, and publishes them to your local verdaccio. Note that this does not bump versions! We are using nx under the hood, so if your dependencies haven't changed, this should be fast.
+# Step 2.
+# Publish a specific package to verdaccio.
+# This unpublishes YOURPKG and its dependencies from your verdaccio, re-builds them, and publishes them to your local
+# verdaccio.
+# Note that this does not bump versions!
+# We are using nx under the hood, so if your dependencies haven't changed, this should be fast.
+# In this example, even though we edited @plasmicapp/host, we can just think about publishing the "root" package(s) we're ultimately installing into the test app, in this case @plasmicapp/loader-nextjs.
+yarn local-publish @plasmicapp/loader-nextjs &&
 
-1. (Re-)install the canary version into wherever you're trying to test, via `yarn add ... --registry=http://localhost:4873`.
+# Or publish all packages to verdaccio. This will take longer.
+# yarn local-publish
 
-1. If you are not seeing bundles update, clear the relevant caches in the environment you're testing in. For instance, if you are testing a plasmicpkg in a Next.js app, try `rm -rf .next/`.
+# Step 3.
+# Go to the package you're testing, e.g. test-host-app.
+# You can quickly create a test target app with `npx create-plasmic-app`.
+cd ~/test-host-app &&
 
-(You can quickly create a test target app to install into with `npx create-plasmic-app`).
+# Step 4.
+# Simply blow away existing package manager state, to ensure we're getting your locally published versions of packages.
+# This is the simplest approach if this is a throwaway test app where you don't need to maintain version lock state.
+rm -rf node_modules package-lock.json yarn.lock &&
 
-### Development tips
+# Or, to be more surgical: you can delete anything that pulls in any @plasmicapp/@plasmicpkgs packages.
+# In this case, we want to remove anything that depends on the @plasmicapp/host package we updated.
+# npm un @plasmicapp/loader-nextjs @plasmicpkgs/plasmic-rich-components
 
-You can publish an individual package with, for instance:
+# Step 5.
+# Delete any framework-specific caches, such as these for Next.js and Gatsby.
+# Frameworks might cache node_modules packages in ways that won't pick up your changes, depending on how you carried out the prior steps.
+rm -rf .next/ .cache/ &&
+
+# Step 6.
+# (Re-)install the necessary packages, from your local verdaccio.
+# These will pull in the changes you made to @plasmicapp/host.
+# Note: this proxies to npmjs.org for packages that aren't published locally to verdaccio.
+npm i @plasmicapp/loader-nextjs @plasmicpkgs/plasmic-rich-components --registry=http://localhost:4873
+```
+
+Check that the versions in your package.json are also not holding back any plasmicpkgs and plasmicapp versions!
+
+In general, you probably want all @plasmicapp/@plasmicpkgs packages to be installed from your local verdaccio, rather than having some installed from npmjs.org and others installed from local,
+since you want to prevent mismatched and duplicate package versions.
+
+### Odds and ends
+
+For a few packages like react-ssr-prepass, these are not currently integrated into the NX workspace system.
+You can publish these as individual packages with, for instance:
 
 ```
 cd plasmicpkgs/SOMETHING
 yarn publish --registry=http://localhost:4873
 # Or with more options: yarn publish --canary --yes --include-merged-tags --no-git-tag-version --no-push --registry=http://localhost:4873 --force-publish
-```
-
-As a hack, you can also temporarily edit `package.json` to list just the desired project + dependencies in `workspaces`, if you need to develop/test across multiple packages.
-
-As an alternative to verdaccio, you can also use `yalc`.
-Your mileage may vary.
-It tends to work when there are fewer dependencies/moving parts.
-
-```
-yalc publish  # from the packages/ or plasmicpkgs/ dir
-
-yalc add @plasmicpkgs/PACKAGENAME  # from your test app
-npm i
-npm run dev
 ```
 
 ## Contributing code components (`plasmicpkgs`)
@@ -349,41 +374,46 @@ Before starting, we recommend reading our docs for Code Components:
 
 ### Creating a new package
 
-Skip this if you are just updating an existing package.
+Ignore this if you are just updating an existing package.
 
 To create a new plasmicpkg, the easiest approach is to clone one of the existing packages (like react-slick) and fix up the names in package.json and README. Then author your registration code in src. Please use `yarn` for package management.
 
-The directory name should be the same name as the main package you'll be using to import the React components. Your package must be named `@plasmicpkgs/{package-name}` and start with version 1.0.0. It should have the most recent version of `@plasmicapp/host` as a peerDependency.
+The directory name should be the same name as the main package you'll be using to import the React components. Your package must be named `@plasmicpkgs/{package-name}` and start with version 1.0.0.
 
-### Testing changes
+### Versioning
 
-Ensure you can start running/testing a package before starting to make any code changes.
+`@plasmicpkgs/*` packages should depend on `@plasmicapp/*` packages as both peer dependencies and dev dependencies.
+You should always use a permissive range in peerDependencies, so that users can install your `@plasmicpkgs/*` package with whatever their current versions are of `@plasmicapp/*` packages.
+Dev dependencies should specify the most recent version of the package.
 
-1. (One-time) Set up a normal repo with an app host, as [documented here](https://docs.plasmic.app/learn/app-hosting/). You can do this with:
+In general, `@plasmicpkgs/*` depend on `@plasmicapp/host` because it is the package that is used by Plasmic Studio to register components.
+But you may also need others such as `@plasmicapp/data-sources`.
 
-   ```
-   npx create-plasmic-app # Just create a Next.js app using PlasmicLoader
-   ```
+So a typical `package.json` might look like this:
 
-1. Now each time you want to try out a change, install your plasmicpkg into the app host repo using `yalc`.
-
-   1. From your plasmicpkg/PACKAGENAME directory, run:
-
-      ```
-      npm run local-canary
-      ```
-
-   2. From your app host directory, run:
-
-      ```
-      npm install @plasmicpkgs/PACKAGENAME@latest
-      ```
-
-   3. Restart your app host, and reload the project in Studio:
-
-      ```
-      npm run dev
-      ```
+```json
+{
+   "devDependencies": {
+      "@plasmicapp/data-sources": "0.1.53",
+      "@plasmicapp/host": "1.0.119",
+      "@size-limit/preset-small-lib": "^4.11.0",
+      "@types/node": "^14.0.26",
+      "size-limit": "^4.11.0",
+      "tsdx": "^0.14.1",
+      "tslib": "^2.2.0",
+      "typescript": "^3.9.7"
+   },
+   "peerDependencies": {
+      "@plasmicapp/data-sources": ">=0.1.52",
+      "@plasmicapp/host": ">=1.0.0",
+      "react": ">=16.8.0",
+      "react-dom": ">=16.8.0"
+   },
+   "dependencies": {
+      "memoize-one": "^6.0.0"
+   }
+}
+```
 
 ### Note on registration functions
 
