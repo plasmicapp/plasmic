@@ -5434,14 +5434,6 @@
   dependencies:
     window-or-global "^1.0.1"
 
-"@plasmicapp/host@1.0.91":
-  version "1.0.91"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.91.tgz#93f2b18eb3f053161134b0eb838a01a948be9197"
-  integrity sha512-g5WUj+fZ0hLw9TlDWY6ulur4kHhLye4QrEWx0g0zsvmv93mz62zK8BNGalVGLsvLCX3JS+nMADi0KMyntzml9A==
-  dependencies:
-    "@plasmicapp/query" "0.1.57"
-    window-or-global "^1.0.1"
-
 "@plasmicapp/isomorphic-unfetch@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@plasmicapp/isomorphic-unfetch/-/isomorphic-unfetch-1.0.1.tgz#e2dfdc8d23d9d1c82f5596986fe8c09013ec8eec"
@@ -5449,14 +5441,6 @@
   dependencies:
     node-fetch "^2.6.1"
     unfetch "^4.2.0"
-
-"@plasmicapp/query@0.1.57":
-  version "0.1.57"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.57.tgz#98f4f81305adfaac12cb69fc791dcc15bedcab52"
-  integrity sha512-y3TSrxfNdHTPdFrYD6X7xcsdg9fLdBcaw/axan/hlxdstFzJBIHLl5CttnmEwWBx5jjABCjCOxRXHuANryE3yA==
-  dependencies:
-    react-ssr-prepass "^1.4.0"
-    swr "^1.0.0"
 
 "@plasmicapp/react-ssr-prepass@2.0.1":
   version "2.0.1"
@@ -19728,6 +19712,11 @@ memfs@^3.2.2:
   dependencies:
     fs-monkey "1.0.3"
 
+memoize-one@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-6.0.0.tgz#b2591b871ed82948aee4727dc6abceeeac8c1045"
+  integrity sha512-rkpe71W0N0c0Xz6QD0eJETuWAJGnJ9afsl1srmwPrI+yBCkge5EycXXbYRyvL29zZVUWQCY7InPRCv3GDXuZNw==
+
 memoizee@^0.4.15:
   version "0.4.15"
   resolved "https://registry.yarnpkg.com/memoizee/-/memoizee-0.4.15.tgz#e6f3d2da863f318d02225391829a6c5956555b72"
@@ -23616,11 +23605,6 @@ react-slick@^0.28.1:
     json2mq "^0.2.0"
     lodash.debounce "^4.0.8"
     resize-observer-polyfill "^1.5.0"
-
-react-ssr-prepass@^1.4.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/react-ssr-prepass/-/react-ssr-prepass-1.5.0.tgz#bc4ca7fcb52365e6aea11cc254a3d1bdcbd030c5"
-  integrity sha512-yFNHrlVEReVYKsLI5lF05tZoHveA5pGzjFbFJY/3pOqqjGOmMmqx83N4hIjN2n6E1AOa+eQEUxs3CgRnPmT0RQ==
 
 react-style-singleton@^2.2.1:
   version "2.2.1"
