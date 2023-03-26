@@ -2,7 +2,7 @@ import { expect } from "@storybook/jest";
 import { Story } from "@storybook/react";
 import { userEvent, within } from "@storybook/testing-library";
 import React from "react";
-import { get, set, useDollarState } from "../states";
+import { generateStateOnChangeProp, get, set, useDollarState } from "../states";
 import { CyclicStatesReferencesError } from "../states/errors";
 import { $StateSpec } from "../states/types";
 
@@ -256,6 +256,7 @@ function TextInput(props: {
     <input
       value={$state.value}
       onChange={(event) => ($state.value = event.target.value)}
+      // onChange={props.onChange}
       onBlur={() => props.onBlur?.()}
       data-testid={props["data-testid"] ?? "text-input"}
     />
@@ -2747,6 +2748,93 @@ InCanvasDollarState.play = async ({ canvasElement }) => {
   await makeDelete(5);
   await addVariable();
   await makeRepeatable(5);
+};
+
+const _InCanvasDollarState2: Story<{}> = (props) => {
+  const [toggle, setToggle] = React.useState(false);
+  const specs = [
+    {
+      type: "private" as const,
+      path: "counter.count",
+      variableType: "number" as const,
+    },
+    {
+      type: "private" as const,
+      path: "text",
+      variableType: "text" as const,
+      initFunc: () => "hello",
+    },
+    ...(toggle
+      ? [
+          {
+            type: "private",
+            path: "count2",
+            variableType: "number",
+            initFunc: () => 0,
+          } as const,
+        ]
+      : []),
+  ];
+  const $state = useDollarState(specs, { $props: {} }, { inCanvas: true });
+  return (
+    <div>
+      <Counter
+        stateType="readonly"
+        onChange={generateStateOnChangeProp($state, ["counter", "count"])}
+      />
+      <p>
+        <strong>{JSON.stringify($state)}</strong>
+      </p>
+      <button onClick={() => setToggle((tg) => !tg)} data-testid={"toggle-btn"}>
+        Toggle
+      </button>
+      {toggle ? (
+        <Counter
+          stateType="readonly"
+          onChange={generateStateOnChangeProp($state, ["count2"])}
+          data-testid={"counter2"}
+        />
+      ) : null}
+    </div>
+  );
+};
+
+export const InCanvasDollarState2 = _InCanvasDollarState2.bind({});
+InCanvasDollarState2.args = {};
+InCanvasDollarState2.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  const expected: any = {
+    counter: { count: 0 },
+    text: "hello",
+  };
+  await sleep(1);
+  await expect(canvas.getByText(JSON.stringify(expected))).toBeInTheDocument();
+
+  await userEvent.click(canvas.getByTestId("counter-btn"));
+  await userEvent.click(canvas.getByTestId("counter-btn"));
+  await userEvent.click(canvas.getByTestId("counter-btn"));
+  expected.counter.count = 3;
+  await expect(canvas.getByText(JSON.stringify(expected))).toBeInTheDocument();
+
+  await userEvent.click(canvas.getByTestId("toggle-btn"));
+  expected.count2 = 0;
+  await expect(canvas.getByText(JSON.stringify(expected))).toBeInTheDocument();
+
+  await userEvent.click(canvas.getByTestId("counter2-btn"));
+  await userEvent.click(canvas.getByTestId("counter2-btn"));
+  expected.count2 = 2;
+  await expect(canvas.getByText(JSON.stringify(expected))).toBeInTheDocument();
+
+  await userEvent.click(canvas.getByTestId("toggle-btn"));
+  delete expected.count2;
+  await expect(canvas.getByText(JSON.stringify(expected))).toBeInTheDocument();
+
+  await userEvent.click(canvas.getByTestId("counter-btn"));
+  await userEvent.click(canvas.getByTestId("counter-btn"));
+  await userEvent.click(canvas.getByTestId("counter-btn"));
+  expected.counter.count = 6;
+  await expect(canvas.getByText(JSON.stringify(expected))).toBeInTheDocument();
 };
 
 const _TodoApp: Story<{}> = (props) => {

@@ -486,10 +486,12 @@ export function useDollarState(
       const old$state = $state;
       $state = ref.current = create$State();
       $$state.specTreeLeaves = newLeaves;
-      getStateCells(newLeaves, $$state.rootSpecTree).forEach(({ path }) => {
+      getStateCells(old$state, $$state.rootSpecTree).forEach(({ path }) => {
         const oldStateCell = tryGetStateCellFrom$StateRoot(old$state, path);
         if (oldStateCell) {
           set($state, path, get(old$state, path));
+          const newStateCell = getStateCellFrom$StateRoot($state, path);
+          newStateCell.initialValue = oldStateCell.initialValue;
         }
       });
     }
@@ -504,7 +506,11 @@ export function useDollarState(
         spec.pathObj as string[]
       );
       const newSpec = specs.find((sp) => sp.path === spec.path);
-      if (!newSpec || stateCell.initFuncHash === newSpec?.initFuncHash) {
+      if (
+        !newSpec ||
+        stateCell.initFuncHash === newSpec?.initFuncHash ||
+        stateCell.initialValue !== UNINITIALIZED
+      ) {
         return;
       }
       stateCell.initFunc = newSpec.initFunc;

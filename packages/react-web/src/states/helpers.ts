@@ -94,27 +94,23 @@ export function getStateCells(
   if ($state == null || typeof $state !== "object") {
     return [];
   }
-  const stateCells = Object.values(
-    proxyObjToStateCell.get($state) ?? {}
-  ) as StateCell<any>[];
-  if (root.isLeaf()) {
-    return stateCells;
-  }
+
   if (root.hasArrayTransition()) {
-    return [
-      ...stateCells,
-      ...Object.keys($state).flatMap((key) =>
-        getStateCells($state[key], ensure(root.makeTransition(ARRAY_SYMBOL)))
-      ),
-    ];
+    return Object.keys($state).flatMap((key) =>
+      getStateCells($state[key], ensure(root.makeTransition(ARRAY_SYMBOL)))
+    );
   } else {
-    const childrenStateCells = [];
+    const stateCell = proxyObjToStateCell.get($state) ?? {};
+    const stateCells: StateCell<any>[] = [];
     for (const [key, child] of root.edges().entries()) {
       if (typeof key === "string" && key in $state) {
-        childrenStateCells.push(...getStateCells($state[key], child));
+        stateCells.push(...getStateCells($state[key], child));
+        if (key in stateCell) {
+          stateCells.push(stateCell[key]);
+        }
       }
     }
-    return [...stateCells, ...childrenStateCells];
+    return stateCells;
   }
 }
 
