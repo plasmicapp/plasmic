@@ -24,6 +24,7 @@ export type TableFieldType =
   | 'string'
   | 'boolean'
   | 'number'
+  | 'date'
   | 'datetime'
   | 'unknown';
 
