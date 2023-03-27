@@ -1935,9 +1935,8 @@ export const FormBuilderImplicitStates = _FormBuilderImplicitStates.bind({});
 FormBuilderImplicitStates.args = {
   people: deepClone(peopleList),
 };
-FormBuilderImplicitStates.play = async ({ canvasElement }) => {
-  const canvas = within(canvasElement);
-
+FormBuilderImplicitStates.play = async () => {
+  // const canvas = within(canvasElement);
   // TODO: skipping repeated implicit states for now
 };
 
@@ -2750,7 +2749,7 @@ InCanvasDollarState.play = async ({ canvasElement }) => {
   await makeRepeatable(5);
 };
 
-const _InCanvasDollarState2: Story<{}> = (props) => {
+const _AddDeleteSpecsInCanvas: Story<{}> = () => {
   const [toggle, setToggle] = React.useState(false);
   const specs = [
     {
@@ -2799,9 +2798,9 @@ const _InCanvasDollarState2: Story<{}> = (props) => {
   );
 };
 
-export const InCanvasDollarState2 = _InCanvasDollarState2.bind({});
-InCanvasDollarState2.args = {};
-InCanvasDollarState2.play = async ({ canvasElement }) => {
+export const AddDeleteSpecsInCanvas = _AddDeleteSpecsInCanvas.bind({});
+AddDeleteSpecsInCanvas.args = {};
+AddDeleteSpecsInCanvas.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
 
   const expected: any = {
