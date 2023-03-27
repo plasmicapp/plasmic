@@ -2,7 +2,13 @@ import clone from "clone";
 import get from "dlv";
 import deepEqual from "fast-deep-equal";
 import React from "react";
-import { proxy as createValtioProxy, ref, useSnapshot } from "valtio";
+import {
+  getVersion as isValtioProxy,
+  proxy as createValtioProxy,
+  ref,
+  subscribe,
+  useSnapshot,
+} from "valtio";
 import { ensure } from "../common";
 import {
   CyclicStatesReferencesError,
@@ -18,7 +24,6 @@ import {
 } from "./graph";
 import {
   arrayEq,
-  assert,
   getStateCells,
   set,
   useIsomorphicLayoutEffect,
@@ -49,6 +54,10 @@ function canProxy(value: any) {
 export const proxyObjToStateCell = new WeakMap<
   object,
   Record<string | number | symbol, StateCell<any>>
+>();
+export const valtioSubscriptions = new WeakMap<
+  object,
+  ReturnType<typeof subscribe>[]
 >();
 
 function ensureStateCell(
@@ -92,6 +101,41 @@ export function tryGetStateCellFrom$StateRoot(
 
 export function getStateCellFrom$StateRoot($state: $State, path: ObjectPath) {
   return ensure(tryGetStateCellFrom$StateRoot($state, path));
+}
+
+export function unsubscribeToValtio(
+  $$state: Internal$State,
+  statePath: ObjectPath
+) {
+  const oldValue = get($$state.stateValues, statePath);
+  if (isValtioProxy(oldValue)) {
+    valtioSubscriptions.get(oldValue)?.forEach((f) => f());
+    valtioSubscriptions.delete(oldValue);
+  }
+}
+
+export function subscribeToValtio(
+  $$state: Internal$State,
+  statePath: ObjectPath,
+  node: StateSpecNode<any>
+) {
+  const spec = node.getSpec();
+  const maybeValtioProxy = spec.valueProp
+    ? $$state.env.$props[spec.valueProp]
+    : get($$state.stateValues, statePath);
+  if (isValtioProxy(maybeValtioProxy) && spec.onChangeProp) {
+    const unsub = subscribe(maybeValtioProxy, () => {
+      $$state.env.$props[spec.onChangeProp!]?.(
+        spec.valueProp
+          ? $$state.env.$props[spec.valueProp]
+          : get($$state.stateValues, statePath)
+      );
+    });
+    if (!valtioSubscriptions.has(maybeValtioProxy)) {
+      valtioSubscriptions.set(maybeValtioProxy, []);
+    }
+    ensure(valtioSubscriptions.get(maybeValtioProxy)).push(unsub);
+  }
 }
 
 function initializeStateValue(
@@ -184,12 +228,7 @@ function create$StateProxy(
   leafHandlers: (stateCell: StateCell<any>) => ProxyHandler<any>
 ) {
   let proxyRoot: any;
-  const rec = (
-    currPath: ObjectPath,
-    currNode: StateSpecNode<any>,
-    isOutside: boolean,
-    initialObject?: any
-  ) => {
+  const rec = (currPath: ObjectPath, currNode: StateSpecNode<any>) => {
     const getNextPath = (property: string | number | symbol) => [
       ...currPath,
       isNum(property) ? +property : (property as string),
@@ -198,7 +237,6 @@ function create$StateProxy(
     const handlers: ProxyHandler<any> = {
       deleteProperty(target, property) {
         if (
-          !isOutside &&
           !currNode.isLeaf() &&
           !currNode.hasArrayTransition() &&
           !isNum(property)
@@ -223,27 +261,24 @@ function create$StateProxy(
           return {
             node: currNode,
             path: currPath,
-            isOutside,
           };
         }
         const nextPath = getNextPath(property);
 
-        if (isOutside || currNode.isLeaf()) {
-          return Reflect.get(target, property, receiver);
-        }
         const nextNode = currNode.makeTransition(property);
         if (nextNode?.isLeaf()) {
           return leafHandlers(
             ensureStateCell(receiver, property, nextPath, nextNode)
           ).get?.(target, property, receiver);
         } else if (nextNode && !(property in target)) {
-          target[property] = rec(nextPath, nextNode, false, undefined);
+          target[property] = rec(nextPath, nextNode);
         }
         return Reflect.get(target, property, receiver);
       },
       set(target, property, value, receiver) {
         const nextPath = getNextPath(property);
         let nextNode = currNode.makeTransition(property);
+        const nextSpec = nextNode?.getSpec();
 
         if (property === "registerInitFunc" && currPath.length === 0) {
           return Reflect.set(target, property, value, receiver);
@@ -257,78 +292,45 @@ function create$StateProxy(
           leafHandlers(
             ensureStateCell(receiver, property, nextPath, nextNode)
           ).set?.(target, property, value, receiver);
+          Reflect.set(target, property, value, receiver);
+          if (nextSpec?.onChangeProp) {
+            $$state.env.$props[nextSpec.onChangeProp]?.(value);
+          }
         }
-        if (!isOutside && !currNode.isLeaf() && !nextNode) {
+        if (!nextNode) {
           // can't set an unknown field in $state
           return false;
         }
-        // we keep pointing to the leaf
-        if (!nextNode) {
-          assert(isOutside || currNode.isLeaf, "unexpected update in nextNode");
-          nextNode = currNode;
-        }
-        if (canProxy(value)) {
-          target[property] = rec(
-            nextPath,
-            nextNode,
-            isOutside || currNode.isLeaf(),
-            value
-          );
-        } else if (!isOutside && !currNode.isLeaf() && !nextNode?.isLeaf()) {
+        if (canProxy(value) && !nextNode.isLeaf()) {
+          target[property] = rec(nextPath, nextNode);
+          Reflect.ownKeys(value).forEach((key) => {
+            target[property][key] = value[key];
+          });
+        } else if (!nextNode.isLeaf()) {
           throw new InvalidOperation(
             "inserting a primitive value into a non-leaf"
           );
-        } else {
-          Reflect.set(target, property, value, receiver);
-        }
-        if (currNode.isLeaf()) {
-          if (spec.onChangeProp) {
-            $$state.env.$props[spec.onChangeProp]?.(target);
-          }
-        } else {
-          nextNode.getAllSpecs().forEach((spec) => {
-            if (spec.onChangeProp) {
-              $$state.env.$props[spec.onChangeProp]?.(value);
-            }
-          });
         }
         const newValue =
-          (isOutside || currNode.isLeaf()) && currNode.getSpec().isImmutable
+          nextNode.isLeaf() && nextSpec?.isImmutable
             ? mkUntrackedValue(value)
             : value;
+
+        unsubscribeToValtio($$state, nextPath);
         set($$state.stateValues, nextPath, newValue);
+        subscribeToValtio($$state, nextPath, nextNode);
         return true;
       },
     };
-    const baseObject =
-      !isOutside && !currNode.isLeaf()
-        ? currNode.hasArrayTransition()
-          ? []
-          : {}
-        : Array.isArray(initialObject)
-        ? []
-        : Object.create(Object.getPrototypeOf(initialObject ?? {}));
+    const baseObject = currNode.hasArrayTransition() ? [] : {};
     const proxyObj = new Proxy(baseObject, handlers);
     if (currPath.length === 0) {
       proxyRoot = proxyObj;
     }
-    if (initialObject) {
-      Reflect.ownKeys(initialObject).forEach((key) => {
-        const desc = Object.getOwnPropertyDescriptor(
-          initialObject,
-          key
-        ) as PropertyDescriptor;
-        if (desc.get || desc.set) {
-          Object.defineProperty(baseObject, key, desc);
-        } else {
-          proxyObj[key] = initialObject[key];
-        }
-      });
-    }
     return proxyObj;
   };
 
-  return rec([], $$state.rootSpecTree, false, undefined);
+  return rec([], $$state.rootSpecTree);
 }
 
 const mkUntrackedValue = (o: any) =>
@@ -431,12 +433,14 @@ export function useDollarState(
           set($state, stateCell.path, spec.initVal);
         }
         return {
-          get(target, property, receiver) {
+          get() {
             const spec = stateCell.node.getSpec();
             if (spec.valueProp) {
-              return $$state.env.$props[spec.valueProp];
+              const valueProp = $$state.env.$props[spec.valueProp];
+              subscribeToValtio($$state, stateCell.path, stateCell.node);
+              return valueProp;
             } else {
-              return Reflect.get(target, property, receiver);
+              return get($$state.stateValues, stateCell.path);
             }
           },
         };

@@ -1,6 +1,7 @@
 import type { ComponentHelpers } from "@plasmicapp/host";
 import get from "dlv";
 import { useEffect, useLayoutEffect } from "react";
+import { getVersion as isValtioProxy } from "valtio";
 import { ensure } from "../common";
 import { StateSpecNode } from "./graph";
 import {
@@ -87,6 +88,14 @@ export function isPlasmicStateProxy(obj: any) {
   );
 }
 
+export function is$StateProxy(obj: any) {
+  return (
+    obj != null &&
+    typeof obj === "object" &&
+    (!!obj[PLASMIC_STATE_PROXY_SYMBOL] || isValtioProxy(obj))
+  );
+}
+
 export function getStateCells(
   $state: $State,
   root: StateSpecNode<any>
@@ -137,12 +146,11 @@ export function getStateSpecInPlasmicProxy(obj: any, path: ObjectPath) {
   if (!isPlasmicStateProxy(obj)) {
     return undefined;
   }
-  const { node, isOutside } = obj[PLASMIC_STATE_PROXY_SYMBOL] as {
+  const { node } = obj[PLASMIC_STATE_PROXY_SYMBOL] as {
     node: StateSpecNode<any>;
-    isOutside: boolean;
   };
   const nextNode = node.makeTransition(path[path.length - 1]);
-  if (isOutside || node.isLeaf() || !nextNode) {
+  if (node.isLeaf() || !nextNode) {
     return undefined;
   }
   return {
