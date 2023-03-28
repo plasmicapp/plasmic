@@ -46,57 +46,57 @@ function makeSanityClient(creds: SanityCredentialsProviderProps) {
   return sanity;
 }
 
-const CredentialsContext =
-  React.createContext<SanityCredentialsProviderProps | undefined>(undefined);
+const CredentialsContext = React.createContext<
+  SanityCredentialsProviderProps | undefined
+>(undefined);
 
-export const sanityCredentialsProviderMeta: GlobalContextMeta<SanityCredentialsProviderProps> =
-  {
-    name: "SanityCredentialsProvider",
-    displayName: "Sanity Credentials Provider",
-    description: `Get your project ID, dataset, and token [here](https://www.sanity.io/manage).
+export const sanityCredentialsProviderMeta: GlobalContextMeta<SanityCredentialsProviderProps> = {
+  name: "SanityCredentialsProvider",
+  displayName: "Sanity Credentials Provider",
+  description: `Get your project ID, dataset, and token [here](https://www.sanity.io/manage).
 
 Please also add 'https://host.plasmicdev.com' (or your app host origin) as an authorized host on the CORS origins section of your project.
 
 [Watch how to add Sanity data](https://www.youtube.com/watch?v=dLeu7I4RsYg).`,
-    importName: "SanityCredentialsProvider",
-    importPath: modulePath,
-    props: {
-      projectId: {
-        type: "string",
-        displayName: "Project ID",
-        defaultValueHint: "b2gfz67v",
-        defaultValue: "b2gfz67v",
-        description: "The ID of the project to use.",
-      },
-      dataset: {
-        type: "string",
-        displayName: "Dataset",
-        defaultValueHint: "production",
-        defaultValue: "production",
-        description: "The dataset to use.",
-      },
-      apiVersion: {
-        type: "string",
-        displayName: "API Version",
-        defaultValueHint: "v1",
-        description:
-          "The API version to use (if not set, 'v1' will be used) - see https://www.sanity.io/docs/js-client#specifying-api-version.",
-      },
-      token: {
-        type: "string",
-        displayName: "Token",
-        description:
-          "The token to use (or leave blank for unauthenticated usage) - you can create tokens in the API section of your project (i.e. https://www.sanity.io/manage/personal/project/PROJECT_ID/api#tokens).",
-      },
-      useCdn: {
-        type: "boolean",
-        displayName: "Use CDN?",
-        defaultValueHint: false,
-        description:
-          "Whether you want to use CDN ('false' if you want to ensure fresh data).",
-      },
+  importName: "SanityCredentialsProvider",
+  importPath: modulePath,
+  props: {
+    projectId: {
+      type: "string",
+      displayName: "Project ID",
+      defaultValueHint: "b2gfz67v",
+      defaultValue: "b2gfz67v",
+      description: "The ID of the project to use.",
     },
-  };
+    dataset: {
+      type: "string",
+      displayName: "Dataset",
+      defaultValueHint: "production",
+      defaultValue: "production",
+      description: "The dataset to use.",
+    },
+    apiVersion: {
+      type: "string",
+      displayName: "API Version",
+      defaultValueHint: "v1",
+      description:
+        "The API version to use (if not set, 'v1' will be used) - see https://www.sanity.io/docs/js-client#specifying-api-version.",
+    },
+    token: {
+      type: "string",
+      displayName: "Token",
+      description:
+        "The token to use (or leave blank for unauthenticated usage) - you can create tokens in the API section of your project (i.e. https://www.sanity.io/manage/personal/project/PROJECT_ID/api#tokens).",
+    },
+    useCdn: {
+      type: "boolean",
+      displayName: "Use CDN?",
+      defaultValueHint: false,
+      description:
+        "Whether you want to use CDN ('false' if you want to ensure fresh data).",
+    },
+  },
+};
 
 export function SanityCredentialsProvider({
   projectId,
@@ -168,6 +168,7 @@ export const sanityFetcherMeta: ComponentMeta<SanityFetcherProps> = {
       displayName: "GROQ",
       description: "Query in GROQ.",
       defaultValueHint: "*[_type == 'movie']",
+      hidden: (props) => !!props.docType,
     },
     docType: {
       type: "choice",
@@ -177,20 +178,20 @@ export const sanityFetcherMeta: ComponentMeta<SanityFetcherProps> = {
       displayName: "Document type",
       description:
         "Document type to be queried (*[_type == DOC_TYPE] shortcut).",
+      hidden: (props) => !!props.groq,
     },
-
     filterField: {
       type: "choice",
       displayName: "Filter field",
       description: "Field (from Collection) to filter by",
       options: (props, ctx) => ctx?.sanityFields ?? [],
-      hidden: (props, ctx) => !props.docType && !props.groq,
+      hidden: (props, ctx) => !props.docType,
     },
     filterParameter: {
       type: "choice",
-      displayName: "Filter Parameter",
+      displayName: "Filter Operation",
       description:
-        "Filter Parameter filter by.Read more (https://www.sanity.io/docs/groq-operators#3b7211e976f6)",
+        "Filter Option to filter by. Read more (https://www.sanity.io/docs/groq-operators#3b7211e976f6)",
       options: (props, ctx) => ctx?.queryOptions ?? [],
       hidden: (props, ctx) => !props.filterField,
     },
@@ -198,13 +199,13 @@ export const sanityFetcherMeta: ComponentMeta<SanityFetcherProps> = {
       type: "string",
       displayName: "Filter value",
       description: "Value to filter by, should be of filter field type",
-      hidden: (props, ctx) => !props.filterParameter,
+      hidden: (props, ctx) => !props.filterField,
     },
-
     limit: {
       type: "string",
       displayName: "Limit",
       description: "Limit",
+      hidden: (props) => !props.docType,
     },
     noAutoRepeat: {
       type: "boolean",
@@ -246,14 +247,14 @@ export function SanityFetcher({
 
   if (!creds.projectId || !projectIdRegex.test(creds.projectId)) {
     return (
-      <div>
+      <div className={className}>
         Please specify a valid projectId, it can only contain only a-z, 0-9 and
         dashes.
       </div>
     );
   } else if (!creds.dataset || !datasetRegex.test(creds.dataset)) {
     return (
-      <div>
+      <div className={className}>
         Please specify a valid dataset, they can only contain lowercase
         characters, numbers, underscores and dashes, and start with tilde, and
         be maximum 64 characters.
@@ -274,7 +275,7 @@ export function SanityFetcher({
         )
       ) {
         return (
-          <div>
+          <div className={className}>
             Please specify a valid API version, expected `v1`, `1` or date in
             format `YYYY-MM-DD`.
           </div>
@@ -303,91 +304,82 @@ export function SanityFetcher({
   );
   const docTypes = allDataTypes.data ?? false;
 
-  if (!groq && docType) {
-    groq = "*[_type=='" + docType + "'";
-  }
+  const hasFilter =
+    !!docType && !!filterField && !!filterParameter && !!filterValue;
 
-  const cacheKey = JSON.stringify({
-    docType,
-    filterField,
-    filterValue,
-    filterParameter,
-    limit,
-    groq,
-    creds,
-  });
+  const generateUnfilteredGroq = () => {
+    if (groq) {
+      console.log("ORIG GROQ", groq);
+      return groq;
+    } else if (docType) {
+      let query = `*[_type=='${docType}']`;
+      if (hasFilter) {
+        // Ask for only a small sample, so we know how to generate the filter
+        query += `[0...10]`;
+      } else if (limit) {
+        query += `[0...${limit}]`;
+      }
+      console.log("UNFILTERED GROQ", query);
+      return query;
+    } else {
+      return null;
+    }
+  };
+
+  const unfilteredQuery = generateUnfilteredGroq();
 
   const sanity = makeSanityClient(creds);
 
-  const { data: response } = usePlasmicQueryData<any[] | null>(
-    docType && groq ? cacheKey : null,
-    async () => {
-      if (!groq) {
-        return null;
-      }
-      let query;
-
-      if (limit) {
-        query = `${groq}][${limit}]`;
-      } else {
-        query = `${groq}]`;
-      }
-
-      const resp = await sanity.fetch(query);
-      return resp;
-    }
-  );
-
-  const { data: filteredData } = usePlasmicQueryData<any[] | null>(
-    groq && filterField && filterValue && filterParameter && response
-      ? `${cacheKey}/filtered`
+  const { data: unfilteredData } = usePlasmicQueryData<any[] | null>(
+    unfilteredQuery
+      ? JSON.stringify({ fullQuery: unfilteredQuery, creds })
       : null,
     async () => {
-      if (
-        !docType &&
-        !filterField &&
-        !filterValue &&
-        !filterParameter &&
-        !response
-      ) {
-        return null;
-      }
-      if (!response) {
-        return null;
-      }
-      let query: string;
+      return sanity.fetch(unfilteredQuery!);
+    }
+  );
 
-      const matched = Object.values(response)
-        .flatMap((model: any) => (Array.isArray(model) ? model : [model]))
-        .map((item: any) => {
-          const fields = Object.entries(item).find(
-            (el) => el[0] === filterField
-          );
-          return fields;
-        });
-      Object.values(matched)
-        .map((model: any) => (Array.isArray(model) ? model : [model]))
-        .map((item: any) => {
-          if (typeof item[1] === "number" && typeof item[1] !== "object") {
-            query = `${groq} && ${filterField} ${filterParameter} ${filterValue}]`;
-          } else if (
-            typeof item[1] !== "number" &&
-            typeof item[1] !== "object" &&
-            typeof item[1] === "string"
-          ) {
-            query = `${groq} && ${filterField} ${filterParameter} "${filterValue}"]`;
-          } else {
-            query = `${groq} && ${filterField} ${filterParameter} ${filterValue}]`;
-          }
-        });
+  const generateFilteredQuery = () => {
+    if (!hasFilter || !unfilteredData) {
+      return null;
+    }
 
-      const resp = await sanity.fetch(query!);
+    const fieldValues = Object.values(unfilteredData)
+      .flatMap((model: any) => (Array.isArray(model) ? model : [model]))
+      .map((item: any) => {
+        const field = Object.entries(item).find((el) => el[0] === filterField);
+        return field?.[1];
+      });
+
+    let query = `*[_type=='${docType}'`;
+
+    if (fieldValues.some((v) => typeof v === "string")) {
+      query = `${query} && ${filterField} ${filterParameter} "${filterValue}"`;
+    } else {
+      query = `${query} && ${filterField} ${filterParameter} ${filterValue}`;
+    }
+
+    if (limit) {
+      query = `${query}][0...${limit}]`;
+    } else {
+      query = `${query}]`;
+    }
+    console.log("FILTERED GROQ", query);
+    return query;
+  };
+
+  const filteredQuery = generateFilteredQuery();
+  const { data: filteredData } = usePlasmicQueryData<any[] | null>(
+    filteredQuery ? JSON.stringify({ filteredQuery, creds }) : null,
+    async () => {
+      const resp = await sanity.fetch(filteredQuery!);
       return resp;
     }
   );
+
   if (!docTypes) {
     return (
-      <div>
+      <div className={className}>
         Please configure the Sanity provider with a valid projectId, dataset,
         and token (if necessary). Don't forget to add
         'https://host.plasmicdev.com' as an authorized host on the CORS origins
@@ -400,13 +392,19 @@ export function SanityFetcher({
     docTypes,
   });
 
-  if (!response) {
+  if (!groq && !docType) {
     return (
-      <div>Please specify a valid GROQ query or select a Document type.</div>
+      <div className={className}>
+        Please specify a valid GROQ query or select a Document type.
+      </div>
     );
   }
 
-  let sanityFields = response.map((item) => {
+  if (!unfilteredData) {
+    return <div className={className}>Loading...</div>;
+  }
+
+  let sanityFields = unfilteredData.map((item) => {
     const fields = Object.keys(item).filter((field) => {
       const value = get(item, field);
       return (
@@ -423,7 +421,7 @@ export function SanityFetcher({
 
   let operators;
 
-  const matchedFields = Object.values(response)
+  const matchedFields = Object.values(unfilteredData)
     .flatMap((model: any) => (Array.isArray(model) ? model : [model]))
     .map((item: any) => {
       const fields = Object.entries(item).find((el) => el[0] === filterField);
@@ -443,11 +441,11 @@ export function SanityFetcher({
         operators = [
           {
             value: "==",
-            label: "Equality",
+            label: "Equals",
           },
           {
             value: "!=",
-            label: "Inequality",
+            label: "Not equals",
           },
         ];
       }
@@ -459,83 +457,54 @@ export function SanityFetcher({
     sanityFields: sanityFields[0]!,
   });
 
-  if (filterField && !filterParameter && !filterValue) {
-    return <div>Please specify a Filter Parameter and a Filter Value</div>;
-  }
-  if (filterField && filterParameter && !filterValue) {
-    return <div>Please specify a Filter Value</div>;
-  }
-  if (!filterField && !filterParameter && filterValue) {
-    return <div>Please specify a Filter Field and a Filter Parameter</div>;
-  }
-  if (!filterField && filterParameter && !filterValue) {
-    return <div>Please specify a Filter Field and a Filter Value</div>;
+  if (hasFilter) {
+    if (!filterParameter) {
+      return <div className={className}>Please specify a filter operation</div>;
+    }
+    if (!filterValue) {
+      return <div className={className}>Please specify a filter value</div>;
+    }
   }
 
-  let repElements;
+  if (hasFilter && !filteredData) {
+    return <div className={className}>Loading...</div>;
+  }
+
+  const resultData = hasFilter ? filteredData! : unfilteredData;
 
   const imageBuilder = imageUrlBuilder(sanity);
-  if (filteredData) {
-    if (filteredData.length === 0) {
-      return <div>No published types found</div>;
-    }
-    repElements = filteredData.map((item, index) => {
-      Object.keys(item).forEach((field) => {
-        if (item[field]._type === "image") {
-          item[field].imgUrl = imageBuilder
-            .image(item[field])
-            .ignoreImageParams()
-            .toString();
-        }
-      });
+  const repElements = noAutoRepeat
+    ? children
+    : resultData.map((item, index) => {
+        Object.keys(item).forEach((field) => {
+          if (item[field]._type === "image") {
+            item[field].imgUrl = imageBuilder
+              .image(item[field])
+              .ignoreImageParams()
+              .toString();
+          }
+        });
 
-      return (
-        <DataProvider
-          key={item._id}
-          name={"sanityItem"}
-          data={item}
-          hidden={true}
-        >
-          <DataProvider name={makeDataProviderName(docType)} data={item}>
-            {repeatedElement(index, children)}
-          </DataProvider>
-        </DataProvider>
-      );
-    });
-  } else {
-    repElements = noAutoRepeat
-      ? children
-      : response.map((item, index) => {
-          Object.keys(item).forEach((field) => {
-            if (item[field]._type === "image") {
-              item[field].imgUrl = imageBuilder
-                .image(item[field])
-                .ignoreImageParams()
-                .toString();
-            }
-          });
-
-          return docType ? (
-            <DataProvider
-              key={item._id}
-              name={"sanityItem"}
-              data={item}
-              hidden={true}
-            >
-              <DataProvider name={makeDataProviderName(docType)} data={item}>
-                {repeatedElement(index, children)}
-              </DataProvider>
-            </DataProvider>
-          ) : (
-            <DataProvider key={item._id} name={"sanityItem"} data={item}>
+        return docType ? (
+          <DataProvider
+            key={item._id}
+            name={"sanityItem"}
+            data={item}
+            hidden={true}
+          >
+            <DataProvider name={makeDataProviderName(docType)} data={item}>
               {repeatedElement(index, children)}
             </DataProvider>
-          );
-        });
-  }
+          </DataProvider>
+        ) : (
+          <DataProvider key={item._id} name={"sanityItem"} data={item}>
+            {repeatedElement(index, children)}
+          </DataProvider>
+        );
+      });
 
   return (
-    <DataProvider name="sanityItems" data={response}>
+    <DataProvider name="sanityItems" data={resultData}>
       {noLayout ? (
         <> {repElements} </>
       ) : (
