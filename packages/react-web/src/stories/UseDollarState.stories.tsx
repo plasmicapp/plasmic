@@ -2761,6 +2761,7 @@ const _AddDeleteSpecsInCanvas: Story<{}> = () => {
       type: "private" as const,
       path: "counter.count",
       variableType: "number" as const,
+      initFunc: () => 0,
     },
     {
       type: "private" as const,
