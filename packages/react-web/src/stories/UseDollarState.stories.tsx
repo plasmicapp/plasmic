@@ -512,13 +512,13 @@ RepeatedStates.args = { size: 3 };
 RepeatedStates.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
 
+  await sleep(1);
   const expectedCount = [1, 2, 4];
   for (let i = 0; i < expectedCount.length; i++) {
     await click(canvas.getByTestId(`counter[${i}]-btn`), expectedCount[i]);
   }
 
   for (let i = 0; i < expectedCount.length; i++) {
-    await sleep(1);
     await expect(
       (canvas.getByTestId(`counter[${i}]-label`) as HTMLParagraphElement)
         .textContent
@@ -680,12 +680,12 @@ export const NestedRepeatedCounter = _NestedRepeatedCounter.bind({});
 NestedRepeatedCounter.args = {};
 NestedRepeatedCounter.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
+  await sleep(1);
 
   const expected = [];
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 3; j++) {
       expected.push(i * 3 + j + 1);
-      await sleep(1);
       await click(
         canvas.getByTestId(`counter[${i}][${j}]-btn`),
         expected.slice(-1)[0]
@@ -812,6 +812,7 @@ export const MatrixRepeatedCounter = _MatrixRepeatedCounter.bind({});
 MatrixRepeatedCounter.args = {};
 MatrixRepeatedCounter.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
+  await sleep(1);
 
   const expected = [];
   for (let i = 0; i < 3; i++) {
@@ -821,7 +822,6 @@ MatrixRepeatedCounter.play = async ({ canvasElement }) => {
         canvas.getByTestId(`counter[${i}][${j}]-btn`),
         expected.slice(-1)[0]
       );
-      await sleep(1);
       await expect(
         (canvas.getByTestId(
           `counter[${i}][${j}]-label`
@@ -986,10 +986,10 @@ export const InitFuncFromInternalContextData = _InitFuncFromInternalContextData.
 InitFuncFromInternalContextData.args = { products };
 InitFuncFromInternalContextData.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
+  await sleep(1);
 
   for (let i = 0; i < products.length; i++) {
     await click(canvas.getByTestId(`product_${i}`));
-    await sleep(1);
     await expect(
       (canvas.getByTestId("product_name") as HTMLHeadingElement).textContent
     ).toEqual(products[i].name);
@@ -1114,10 +1114,10 @@ export const InitFuncFromRootContextData = _InitFuncFromRootContextData.bind(
 InitFuncFromRootContextData.args = { products };
 InitFuncFromRootContextData.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
+  await sleep(1);
 
   for (let i = 0; i < products.length; i++) {
     await click(canvas.getByTestId(`product_${i}`));
-    await sleep(1);
     await expect(
       (canvas.getByTestId("product_name") as HTMLHeadingElement).textContent
     ).toEqual(products[i].name);
@@ -1326,7 +1326,6 @@ RepeatedImplicitState.play = async ({ canvasElement }) => {
 
   expected.splice(0, 1);
   expected.splice(2, 1);
-  await sleep(1);
   await expect(
     (canvas.getByTestId("list") as HTMLUListElement).children.length
   ).toEqual(expected.length);
@@ -1537,7 +1536,7 @@ const _FormBuilder: Story<{ people: Person[] }> = (props) => {
       },
     ],
     {
-      $props: props,
+      $props: deepClone(props),
     }
   );
 
@@ -1576,14 +1575,15 @@ const _FormBuilder: Story<{ people: Person[] }> = (props) => {
   );
 };
 
-export const FormBuilder = _FormBuilder.bind({});
-FormBuilder.args = {
-  people: deepClone(peopleList),
-};
-FormBuilder.play = async ({ canvasElement }) => {
+// It's used by the FormBuilder and ImplicitFormBuilder stories
+const sharedFormBuilderInteractionsTest = async (
+  canvasElement: HTMLElement
+) => {
   const canvas = within(canvasElement);
+  await sleep(1);
 
   const testPeopleList = async (expectedPeople: Person[]) => {
+    await sleep(1);
     await expect(canvas.getByTestId("stringified-people").textContent).toEqual(
       JSON.stringify(expectedPeople)
     );
@@ -1611,11 +1611,9 @@ FormBuilder.play = async ({ canvasElement }) => {
   expectedPeople[1].nicknames.push("nickname2");
   expectedPeople[1].nicknames.push("nickname3");
   expectedPeople[2].nicknames.push("nickname4");
-  await sleep(1);
   await userEvent.type(canvas.getByTestId("firstName-input[0]"), "abc");
   await userEvent.type(canvas.getByTestId("lastName-input[2]"), "xyz");
   await click(canvas.getByTestId("add-nickname-btn[0]"));
-  await sleep(1);
   await userEvent.type(canvas.getByTestId("nickname-input[0][0]"), "nickname1");
   await click(canvas.getByTestId("add-nickname-btn[1]"));
   await userEvent.type(canvas.getByTestId("nickname-input[1][1]"), "nickname2");
@@ -1698,33 +1696,89 @@ FormBuilder.play = async ({ canvasElement }) => {
   await testPeopleList(expectedPeople);
 };
 
-//---------------------------
-//----------------------------
+export const FormBuilder = _FormBuilder.bind({});
+FormBuilder.args = {
+  people: deepClone(peopleList),
+};
+FormBuilder.play = async ({ canvasElement }) => {
+  await sharedFormBuilderInteractionsTest(canvasElement);
+};
 
 const _FormBuilderImplicitStates: Story<{ people: Person[] }> = (props: {
   people: Person[];
 }) => {
-  const Nickname = React.useCallback(
+  const Nicknames = React.useCallback(
     (props: {
-      nickname: string;
-      onChangeNickname: (nickname: string) => void;
-      onDeleteNickname: () => void;
+      nicknames: string;
+      onNicknamesChange: (nickname: string) => void;
       "data-test-index": string;
     }) => {
+      const $state = useDollarState(
+        [
+          {
+            path: "nicknames",
+            type: "writable",
+            variableType: "array",
+            onChangeProp: "onNicknamesChange",
+            valueProp: "nicknames",
+          },
+          {
+            path: "textInput[].value",
+            type: "private",
+            variableType: "text",
+          },
+        ],
+        {
+          $props: props,
+        }
+      );
       return (
-        <div>
-          <input
-            type="text"
-            value={props.nickname}
-            onChange={(e) => props.onChangeNickname(e.target.value)}
-            data-testid={`nickname-input${props["data-test-index"]}`}
-          />
-          <button
-            onClick={() => props.onDeleteNickname()}
-            data-testid={`remove-nickname-btn${props["data-test-index"]}`}
+        <div
+          style={{
+            display: "flex",
+          }}
+        >
+          <label>Nicknames</label>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+            }}
           >
-            X
-          </button>
+            {$state.nicknames.map((nickname: any, i: number) => {
+              $state.registerInitFunc?.("textInput[].value", () => nickname, [
+                i,
+              ]);
+              return (
+                <div>
+                  <TextInput
+                    value={$state.textInput[i].value}
+                    onChange={(val) => {
+                      $state.textInput[i].value = val;
+                      $state.nicknames[i] = val;
+                    }}
+                    data-testid={`nickname-input${props["data-test-index"]}[${i}]`}
+                  />
+                  <button
+                    onClick={() => {
+                      $state.nicknames.splice(i, 1);
+                    }}
+                    data-testid={`remove-nickname-btn${props["data-test-index"]}[${i}]`}
+                  >
+                    X
+                  </button>
+                </div>
+              );
+            })}
+            <button
+              onClick={() => {
+                $state.nicknames.push("");
+              }}
+              data-testid={`add-nickname-btn${props["data-test-index"]}`}
+            >
+              Add nickname
+            </button>
+          </div>
         </div>
       );
     },
@@ -1733,37 +1787,37 @@ const _FormBuilderImplicitStates: Story<{ people: Person[] }> = (props: {
 
   const Person = React.useCallback(
     (props: {
-      firstName: string;
-      onFirstNameChange: (value: string) => void;
-      lastName: string;
-      onLastNameChange: (value: string) => void;
-      nicknames: string[];
-      onNicknamesChange: (value: string, path: (string | number)[]) => void;
+      initialPerson: Person;
+      onPersonChange: (value: Person) => void;
       onDeletePerson: () => void;
       "data-test-index": string;
     }) => {
       const $state = useDollarState(
         [
           {
-            path: "nicknames",
-            type: "readonly",
-            onChangeProp: "onNicknamesChange",
-            initFunc: ({ $props }) => $props.nicknames,
-            variableType: "array",
+            path: "person",
+            type: "writable",
+            variableType: "object",
+            valueProp: "initialPerson",
+            onChangeProp: "onPersonChange",
           },
           {
-            path: "firstName",
-            type: "readonly",
-            onChangeProp: "onFirstNameChange",
-            initFunc: ({ $props }) => $props.firstName,
+            path: "firstName.value",
+            type: "private",
             variableType: "text",
+            initFunc: ({ $state }) => $state.person.firstName,
           },
           {
-            path: "lastName",
-            type: "readonly",
-            onChangeProp: "onLastNameChange",
-            initFunc: ({ $props }) => $props.lastName,
+            path: "lastName.value",
+            type: "private",
             variableType: "text",
+            initFunc: ({ $state }) => $state.person.lastName,
+          },
+          {
+            path: "nicknames.value",
+            type: "private",
+            variableType: "text",
+            initFunc: ({ $state }) => $state.person.nicknames,
           },
         ],
         {
@@ -1773,7 +1827,6 @@ const _FormBuilderImplicitStates: Story<{ people: Person[] }> = (props: {
       const mkDataTestIdAttr = (label: string) => ({
         "data-testid": `${label}${props["data-test-index"]}`,
       });
-
       return (
         <div
           style={{
@@ -1784,57 +1837,34 @@ const _FormBuilderImplicitStates: Story<{ people: Person[] }> = (props: {
         >
           <div>
             <label>First Name</label>
-            <input
-              type="text"
-              value={$state.firstName}
-              onChange={(e) => ($state.firstName = e.target.value)}
+            <TextInput
+              value={$state.firstName.value}
+              onChange={(val) => {
+                $state.firstName.value = val;
+                $state.person.firstName = val;
+              }}
               {...mkDataTestIdAttr("firstName-input")}
             />
           </div>
           <div>
             <label>Last Name</label>
-            <input
-              type="text"
-              value={$state.lastName}
-              onChange={(e) => ($state.lastName = e.target.value)}
+            <TextInput
+              value={$state.lastName.value}
+              onChange={(val) => {
+                generateStateOnChangeProp($state, ["lastName", "value"])(val);
+                $state.person.lastName = val;
+              }}
               {...mkDataTestIdAttr("lastName-input")}
             />
           </div>
-          <div
-            style={{
-              display: "flex",
+          <Nicknames
+            nicknames={$state.nicknames.value}
+            onNicknamesChange={(val) => {
+              generateStateOnChangeProp($state, ["nicknames", "value"])(val);
+              $state.person.nicknames = val;
             }}
-          >
-            <label>Nicknames</label>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              {$state.nicknames.map((nickname: any, i: number) => (
-                <Nickname
-                  key={i}
-                  nickname={nickname}
-                  onChangeNickname={(newNickname) => {
-                    $state.nicknames[i] = newNickname;
-                  }}
-                  onDeleteNickname={() => {
-                    $state.nicknames.splice(i, 1);
-                  }}
-                  data-test-index={`${props["data-test-index"]}[${i}]`}
-                />
-              ))}
-              <button
-                onClick={() => {
-                  $state.nicknames.push("salve");
-                }}
-                {...mkDataTestIdAttr("add-nickname-btn")}
-              >
-                Add nickname
-              </button>
-            </div>
-          </div>
+            data-test-index={props["data-test-index"]}
+          />
           <button
             data-testid={`remove-person-btn${props["data-test-index"]}`}
             onClick={() => props.onDeletePerson()}
@@ -1850,23 +1880,19 @@ const _FormBuilderImplicitStates: Story<{ people: Person[] }> = (props: {
   const $state = useDollarState(
     [
       {
-        path: "people[].firstName",
-        type: "private",
-        variableType: "text",
-      },
-      {
-        path: "people[].lastName",
-        type: "private",
-        variableType: "text",
-      },
-      {
-        path: "people[].nicknames",
+        path: "people",
         type: "private",
         variableType: "array",
+        initFunc: ({ $props }) => $props.people,
+      },
+      {
+        path: "person[].value",
+        type: "private",
+        variableType: "object",
       },
     ],
     {
-      $props: props,
+      $props: deepClone(props),
     }
   );
 
@@ -1879,35 +1905,20 @@ const _FormBuilderImplicitStates: Story<{ people: Person[] }> = (props: {
       }}
     >
       {$state.people.map((person: any, i: number) => {
-        $state.registerInitFunc?.(
-          "people[].firstName",
-          ({ $props }) => $props.people[i].firstName,
-          [i]
-        );
-        $state.registerInitFunc?.(
-          "people[].lastName",
-          ({ $props }) => $props.people[i].lastName,
-          [i]
-        );
-        $state.registerInitFunc?.(
-          "people[].nicknames",
-          ({ $props }) => $props.people[i].nicknames,
-          [i]
-        );
+        $state.registerInitFunc?.("person[].value", () => person, [i]);
         return (
-          <Person
-            key={i}
-            firstName={person.firstName}
-            onFirstNameChange={(value) => ($state.people[i].firstName = value)}
-            lastName={person.lastName}
-            onLastNameChange={(value) => ($state.people[i].lastName = value)}
-            nicknames={person.nicknames}
-            onNicknamesChange={(value) => {
-              $state.people[i].nicknames = value;
-            }}
-            onDeletePerson={() => $state.people.splice(i, 1)}
-            data-test-index={`[${i}]`}
-          />
+          $state.person[i].value && (
+            <Person
+              key={i}
+              initialPerson={$state.person[i].value}
+              onPersonChange={(val) => {
+                $state.person[i].value = val;
+                $state.people[i] = val;
+              }}
+              onDeletePerson={() => $state.people.splice(i, 1)}
+              data-test-index={`[${i}]`}
+            />
+          )
         );
       })}
       <button
@@ -1933,11 +1944,10 @@ const _FormBuilderImplicitStates: Story<{ people: Person[] }> = (props: {
 
 export const FormBuilderImplicitStates = _FormBuilderImplicitStates.bind({});
 FormBuilderImplicitStates.args = {
-  people: deepClone(peopleList),
+  people: peopleList,
 };
-FormBuilderImplicitStates.play = async () => {
-  // const canvas = within(canvasElement);
-  // TODO: skipping repeated implicit states for now
+FormBuilderImplicitStates.play = async ({ canvasElement }) => {
+  await sharedFormBuilderInteractionsTest(canvasElement);
 };
 
 const _StateCellIsArray: Story<{ people: Person[] }> = (props: {
@@ -2025,6 +2035,7 @@ StateCellIsArray.args = {
 StateCellIsArray.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
   const expectedPeople = deepClone(peopleList);
+  await sleep(1);
 
   const removePerson = async (i: number) => {
     await userEvent.click(
@@ -2036,7 +2047,6 @@ StateCellIsArray.play = async ({ canvasElement }) => {
   };
 
   const addPerson = async (firstName: string, lastName: string) => {
-    await sleep(1);
     await userEvent.clear(canvas.getByTestId("first-name-input"));
     await userEvent.clear(canvas.getByTestId("last-name-input"));
 
@@ -2167,6 +2177,7 @@ StateCellIsMatrix.args = {
 };
 StateCellIsMatrix.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
+  await sleep(1);
 
   const expectedState = deepClone<{
     board: number[][];
@@ -2175,7 +2186,6 @@ StateCellIsMatrix.play = async ({ canvasElement }) => {
   }>({ board: initialBoard });
 
   const testBoard = async () => {
-    await sleep(1);
     await expect(
       canvas.getByText(JSON.stringify(expectedState))
     ).toBeInTheDocument();
@@ -2352,7 +2362,7 @@ const _ImmutableStateCells: Story<{ people: Person[] }> = (props) => {
       },
     ],
     {
-      $props: props,
+      $props: deepClone(props),
     }
   );
 
@@ -2408,7 +2418,7 @@ const _ImmutableStateCells: Story<{ people: Person[] }> = (props) => {
 
 export const ImmutableStateCells = _ImmutableStateCells.bind({});
 ImmutableStateCells.args = {
-  people: deepClone(peopleList),
+  people: peopleList,
 };
 ImmutableStateCells.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
@@ -2641,6 +2651,7 @@ InCanvasDollarState.args = {
 };
 InCanvasDollarState.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
+  await sleep(1);
 
   const $state: Record<string, any> = {};
   const usedIds: number[] = [];
@@ -2650,7 +2661,6 @@ InCanvasDollarState.play = async ({ canvasElement }) => {
     set($state, [`textInput${id + 1}`, "value"], `${id + 1}`);
 
     await userEvent.click(canvas.getByTestId("add-variable"));
-    await sleep(1);
     await expect(canvas.getByTestId("$state").textContent).toEqual(
       JSON.stringify($state)
     );
@@ -2660,7 +2670,6 @@ InCanvasDollarState.play = async ({ canvasElement }) => {
     set($state, [`textInput${id}`, "value"], oldText + addText);
 
     await userEvent.type(canvas.getByTestId(`textInput${id}`), addText);
-    await sleep(1);
     await expect(canvas.getByTestId("$state").textContent).toEqual(
       JSON.stringify($state)
     );
@@ -2674,7 +2683,6 @@ InCanvasDollarState.play = async ({ canvasElement }) => {
     set($state, [`textInput${id}`, index, "value"], oldText + addText);
 
     await userEvent.type(canvas.getByTestId(`textInput${id}${index}`), addText);
-    await sleep(1);
     await expect(canvas.getByTestId("$state").textContent).toEqual(
       JSON.stringify($state)
     );
@@ -2688,7 +2696,6 @@ InCanvasDollarState.play = async ({ canvasElement }) => {
       `${id}`
     );
     await userEvent.click(canvas.getByTestId("repeatable"));
-    await sleep(1);
     await expect(canvas.getByTestId("$state").textContent).toEqual(
       JSON.stringify($state)
     );
@@ -2697,7 +2704,6 @@ InCanvasDollarState.play = async ({ canvasElement }) => {
     $state[`textInput${id}`] = { value: `${id}` };
     await userEvent.selectOptions(canvas.getByTestId("single-select"), `${id}`);
     await userEvent.click(canvas.getByTestId("single"));
-    await sleep(1);
     await expect(canvas.getByTestId("$state").textContent).toEqual(
       JSON.stringify($state)
     );
@@ -2710,7 +2716,6 @@ InCanvasDollarState.play = async ({ canvasElement }) => {
     delete $state[`textInput${id}`];
     await userEvent.selectOptions(canvas.getByTestId("delete-select"), `${id}`);
     await userEvent.click(canvas.getByTestId("delete"));
-    await sleep(1);
     await expect(canvas.getByTestId("$state").textContent).toEqual(
       JSON.stringify($state)
     );
@@ -2905,11 +2910,11 @@ export const TodoApp = _TodoApp.bind({});
 TodoApp.args = {};
 TodoApp.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
+  await sleep(1);
 
   const tasks = ["Task 1", "Task 2"];
 
   const checkTasks = async () => {
-    await sleep(1);
     await expect(canvas.getByTestId(`tasksWrapper`).children.length).toEqual(
       tasks.length
     );

@@ -8,6 +8,7 @@ export {
   getStateSpecInPlasmicProxy,
   initializeCodeComponentStates,
   initializePlasmicStates,
+  is$StateProxy,
   isPlasmicStateProxy,
   resetToInitialValue,
   set,
