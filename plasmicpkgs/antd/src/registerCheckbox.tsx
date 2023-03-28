@@ -14,17 +14,13 @@ class CheckboxWrapper extends React.Component<CheckboxProps> {
 }
 
 export const checkboxHelpers = {
-  helpers: {
-    states: {
-      value: {
-        onChangeArgsToValue: (
-          e: Parameters<NonNullable<CheckboxProps["onChange"]>>[0]
-        ) => e.target.checked,
-      },
+  states: {
+    value: {
+      onChangeArgsToValue: (
+        e: Parameters<NonNullable<CheckboxProps["onChange"]>>[0]
+      ) => e.target.checked,
     },
   },
-  importName: "checkboxHelpers",
-  importPath: "@plasmicpkgs/plasmic-antd/registerCheckbox",
 };
 
 export const checkboxMeta: ComponentMeta<CheckboxProps> = {
@@ -83,7 +79,11 @@ export const checkboxMeta: ComponentMeta<CheckboxProps> = {
       valueProp: "checked",
     },
   },
-  componentHelpers: checkboxHelpers,
+  componentHelpers: {
+    helpers: checkboxHelpers,
+    importName: "checkboxHelpers",
+    importPath: "@plasmicpkgs/antd/skinny/registerCheckbox",
+  },
   importPath: "antd/lib/checkbox/Checkbox",
   importName: "Checkbox",
   defaultStyles: {

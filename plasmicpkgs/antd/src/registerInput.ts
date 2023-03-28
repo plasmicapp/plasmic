@@ -40,17 +40,13 @@ const commonHtmlAttributes = {
 } as const;
 
 export const inputHelpers = {
-  helpers: {
-    states: {
-      value: {
-        onChangeArgsToValue: (
-          e: Parameters<NonNullable<InputProps["onChange"]>>[0]
-        ) => e.target.value,
-      },
+  states: {
+    value: {
+      onChangeArgsToValue: (
+        e: Parameters<NonNullable<InputProps["onChange"]>>[0]
+      ) => e.target.value,
     },
   },
-  importName: "inputHelpers",
-  importPath: "@plasmicpkgs/plasmic-antd/registerInput",
 };
 
 export const inputMeta: ComponentMeta<InputProps> = {
@@ -133,7 +129,11 @@ export const inputMeta: ComponentMeta<InputProps> = {
       valueProp: "value",
     },
   },
-  componentHelpers: inputHelpers,
+  componentHelpers: {
+    helpers: inputHelpers,
+    importName: "inputHelpers",
+    importPath: "@plasmicpkgs/antd/skinny/registerInput",
+  },
   importPath: "antd/lib/input",
   importName: "Input",
   isDefaultExport: true,
@@ -211,7 +211,11 @@ export const inputTextAreaMeta: ComponentMeta<TextAreaProps> = {
       valueProp: "value",
     },
   },
-  componentHelpers: inputHelpers,
+  componentHelpers: {
+    helpers: inputHelpers,
+    importName: "inputHelpers",
+    importPath: "@plasmicpkgs/antd/skinny/registerInput",
+  },
   importPath: "antd/lib/input/TextArea",
   importName: "TextArea",
   isDefaultExport: true,
@@ -311,7 +315,11 @@ export const inputSearchMeta: ComponentMeta<SearchProps> = {
       valueProp: "value",
     },
   },
-  componentHelpers: inputHelpers,
+  componentHelpers: {
+    helpers: inputHelpers,
+    importName: "inputHelpers",
+    importPath: "@plasmicpkgs/antd/skinny/registerInput",
+  },
   importPath: "antd/lib/input/Search",
   importName: "Search",
   isDefaultExport: true,
@@ -407,7 +415,11 @@ export const inputPasswordMeta: ComponentMeta<PasswordProps> = {
       valueProp: "value",
     },
   },
-  componentHelpers: inputHelpers,
+  componentHelpers: {
+    helpers: inputHelpers,
+    importName: "inputHelpers",
+    importPath: "@plasmicpkgs/antd/skinny/registerInput",
+  },
   importPath: "antd/lib/input/Password",
   importName: "Password",
   isDefaultExport: true,
