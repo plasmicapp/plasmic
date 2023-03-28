@@ -24,7 +24,11 @@ export function usePlasmicDataSourceContext() {
 
 export function useCurrentUser() {
   const ctx = usePlasmicDataSourceContext();
-  return ctx?.user;
+  return (
+    ctx?.user ?? {
+      isLoggedIn: false,
+    }
+  );
 }
 
 export const PlasmicDataSourceContextProvider =
