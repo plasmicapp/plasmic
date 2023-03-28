@@ -512,8 +512,8 @@ export function useDollarState(
       const newSpec = specs.find((sp) => sp.path === spec.path);
       if (
         !newSpec ||
-        stateCell.initFuncHash === newSpec?.initFuncHash ||
-        stateCell.initialValue !== UNINITIALIZED
+        (stateCell.initFuncHash === (newSpec?.initFuncHash ?? "") &&
+          stateCell.initialValue !== UNINITIALIZED)
       ) {
         return;
       }
