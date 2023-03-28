@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/react-web",
-  "version": "0.2.185",
+  "version": "0.2.186",
   "description": "plasmic library for rendering in the presentational style",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -102,8 +102,8 @@
   },
   "prettier": {},
   "dependencies": {
-    "@plasmicapp/data-sources": "0.1.55",
-    "@plasmicapp/data-sources-context": "0.1.7",
+    "@plasmicapp/data-sources": "0.1.56",
+    "@plasmicapp/data-sources-context": "0.1.8",
     "@plasmicapp/host": "1.0.120",
     "@plasmicapp/query": "0.1.61",
     "@react-aria/checkbox": "^3.5.0",
