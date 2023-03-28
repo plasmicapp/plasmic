@@ -1,7 +1,7 @@
 import React from 'react';
 
 export interface PlasmicDataSourceContextValue {
-  userAuthToken?: string;
+  userAuthToken?: string | null;
   isUserLoading?: boolean;
   authRedirectUri?: string;
   user?: {
@@ -11,7 +11,7 @@ export interface PlasmicDataSourceContextValue {
     roleName: string;
     roleIds: string[];
     roleNames: string[];
-  };
+  } | null;
 }
 
 const PlasmicDataSourceContext = React.createContext<

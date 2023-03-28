@@ -57,19 +57,19 @@ async function handleCallback(opts: {
     }
   } catch (err) {}
 
-  const { token, user, error } = await getPlasmicAppUser({
+  const result = await getPlasmicAppUser({
     host,
     appId,
     code,
     codeVerifier,
   });
 
-  if (error) {
-    console.log(`Error while performing code exchange: ${error}`);
+  if (result.error) {
+    console.log(`Error while performing code exchange: ${result.error}`);
     return undefined;
   }
 
-  localStorage.setItem(STORAGE_USER_KEY, token);
+  localStorage.setItem(STORAGE_USER_KEY, result.token);
 
   if (continueTo) {
     window.location.assign(continueTo);
@@ -77,7 +77,7 @@ async function handleCallback(opts: {
     window.location.assign('/');
   }
 
-  return { token, user };
+  return { token: result.token, user: result.user };
 }
 
 async function checkAlreadyLoggedUser(opts: {

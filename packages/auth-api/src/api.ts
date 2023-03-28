@@ -2,10 +2,31 @@ import fetch from '@plasmicapp/isomorphic-unfetch';
 
 const PLASMIC_HOST = 'https://studio.plasmic.app';
 
+export interface PlasmicUser {
+  email: string;
+  properties: Record<string, unknown> | null;
+  roleId: string;
+  roleName: string;
+  roleIds: string[];
+  roleNames: string[];
+}
+
+export type PlasmicUserResult =
+  | {
+      user: null;
+      token: null;
+      error: Error;
+    }
+  | {
+      user: PlasmicUser;
+      token: string;
+      error?: never;
+    };
+
 export async function getPlasmicAppUserFromToken(opts: {
   host?: string;
   token: string;
-}) {
+}): Promise<PlasmicUserResult> {
   const { host, token } = opts;
   const url = `${host || PLASMIC_HOST}/api/v1/app-auth/userinfo`;
   const result = await fetch(url, {
@@ -20,7 +41,7 @@ export async function getPlasmicAppUserFromToken(opts: {
     return {
       user: null,
       token: null,
-      error: 'Invalid token',
+      error: new Error('Invalid token'),
     };
   }
 
@@ -35,7 +56,7 @@ export async function getPlasmicAppUser(opts: {
   appId: string;
   codeVerifier: string;
   code: string;
-}) {
+}): Promise<PlasmicUserResult> {
   const { host, appId, codeVerifier, code } = opts;
 
   const requestParams = new URLSearchParams();
@@ -55,7 +76,7 @@ export async function getPlasmicAppUser(opts: {
     return {
       user: null,
       token: null,
-      error: error ?? 'Internal error',
+      error: error ?? new Error('Internal error'),
     };
   }
 
@@ -69,7 +90,7 @@ export async function createPlasmicAppUser(opts: {
   host?: string;
   appSecret: string;
   email: string;
-}) {
+}): Promise<PlasmicUserResult> {
   const { host, appSecret, email } = opts;
   const url = `${host || PLASMIC_HOST}/api/v1/app-auth/user`;
   const result = await fetch(url, {
@@ -89,7 +110,7 @@ export async function createPlasmicAppUser(opts: {
     return {
       user: null,
       token: null,
-      error: error ?? 'Internal error',
+      error: error ?? new Error('Internal error'),
     };
   }
 
