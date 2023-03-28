@@ -47,84 +47,86 @@ export type PlasmicTranslator = (
  * PlasmicRootProvider should be used at the root of your page
  * or application.
  */
-export function PlasmicRootProvider(props: {
-  /**
-   * The global PlasmicComponentLoader instance you created via
-   * initPlasmicLoader().
-   */
-  loader: PlasmicComponentLoader;
+export function PlasmicRootProvider(
+  props: {
+    /**
+     * The global PlasmicComponentLoader instance you created via
+     * initPlasmicLoader().
+     */
+    loader: PlasmicComponentLoader;
 
-  /**
-   * Global variants to activate for Plasmic components
-   */
-  globalVariants?: GlobalVariantSpec[];
+    /**
+     * Global variants to activate for Plasmic components
+     */
+    globalVariants?: GlobalVariantSpec[];
 
-  children?: React.ReactNode;
+    children?: React.ReactNode;
 
-  /**
-   * If true, will skip rendering css
-   */
-  skipCss?: boolean;
+    /**
+     * If true, will skip rendering css
+     */
+    skipCss?: boolean;
 
-  /**
-   * If true, will skip installing fonts
-   */
-  skipFonts?: boolean;
+    /**
+     * If true, will skip installing fonts
+     */
+    skipFonts?: boolean;
 
-  /**
-   * If you have pre-fetched component data via PlasmicComponentLoader,
-   * you can pass them in here; PlasmicComponent will avoid fetching
-   * component data that have already been pre-fetched.
-   */
-  prefetchedData?: ComponentRenderData;
+    /**
+     * If you have pre-fetched component data via PlasmicComponentLoader,
+     * you can pass them in here; PlasmicComponent will avoid fetching
+     * component data that have already been pre-fetched.
+     */
+    prefetchedData?: ComponentRenderData;
 
-  /**
-   * If you have pre-fetched data that are needed by usePlasmicQueryData(),
-   * then pass in the pre-fetched cache here, mapping query key to fetched data.
-   */
-  prefetchedQueryData?: Record<string, any>;
+    /**
+     * If you have pre-fetched data that are needed by usePlasmicQueryData(),
+     * then pass in the pre-fetched cache here, mapping query key to fetched data.
+     */
+    prefetchedQueryData?: Record<string, any>;
 
-  /**
-   * Specifies whether usePlasmicQueryData() should be operating in suspense mode
-   * (throwing promises).
-   */
-  suspenseForQueryData?: boolean;
+    /**
+     * Specifies whether usePlasmicQueryData() should be operating in suspense mode
+     * (throwing promises).
+     */
+    suspenseForQueryData?: boolean;
 
-  /**
-   * Override your Global Contexts Provider props. This is a map from
-   * globalContextComponentNameProps to object of props to use for that
-   * component.
-   */
-  globalContextsProps?: Record<string, any>;
+    /**
+     * Override your Global Contexts Provider props. This is a map from
+     * globalContextComponentNameProps to object of props to use for that
+     * component.
+     */
+    globalContextsProps?: Record<string, any>;
 
-  /**
-   * Specifies a mapping of split id to slice id that should be activated
-   */
-  variation?: Record<string, string>;
+    /**
+     * Specifies a mapping of split id to slice id that should be activated
+     */
+    variation?: Record<string, string>;
 
-  /**
-   * Translator function to be used for text blocks
-   */
-  translator?: PlasmicTranslator;
+    /**
+     * Translator function to be used for text blocks
+     */
+    translator?: PlasmicTranslator;
 
-  /**
-   * Head component to use in PlasmicHead component (e.g. Head from next/head
-   * or Helmet from react-helmet).
-   */
-  Head?: React.ComponentType<any>;
+    /**
+     * Head component to use in PlasmicHead component (e.g. Head from next/head
+     * or Helmet from react-helmet).
+     */
+    Head?: React.ComponentType<any>;
 
-  /**
-   * Page path parameters (e.g. {slug: "foo"} if page path is
-   * /products/[slug] and URI is /products/foo).
-   */
-  pageParams?: Record<string, string | string[] | undefined>;
+    /**
+     * Page path parameters (e.g. {slug: "foo"} if page path is
+     * /products/[slug] and URI is /products/foo).
+     */
+    pageParams?: Record<string, string | string[] | undefined>;
 
-  /**
-   * Page query parameters (e.g. {q: "foo"} if page path is
-   * /some/path?q=foo).
-   */
-  pageQuery?: Record<string, string | string[] | undefined>;
-}) {
+    /**
+     * Page query parameters (e.g. {q: "foo"} if page path is
+     * /some/path?q=foo).
+     */
+    pageQuery?: Record<string, string | string[] | undefined>;
+  } & PlasmicDataSourceContextValue
+) {
   const {
     globalVariants,
     prefetchedData,
@@ -177,7 +179,6 @@ export function PlasmicRootProvider(props: {
     });
   }, [loader, variation]);
 
-  // @ts-ignore
   const { user, userAuthToken, isUserLoading, authRedirectUri } = props;
 
   const value = React.useMemo<PlasmicRootContextValue>(
