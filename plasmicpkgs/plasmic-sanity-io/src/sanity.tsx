@@ -168,7 +168,9 @@ export const sanityFetcherMeta: ComponentMeta<SanityFetcherProps> = {
       displayName: "GROQ",
       description: "Query in GROQ.",
       defaultValueHint: "*[_type == 'movie']",
-      hidden: (props) => !!props.docType,
+      // Hide this if there's no groq, AND there's docType, so we're in
+      // "docType" mode
+      hidden: (props) => !props.groq && !!props.docType,
     },
     docType: {
       type: "choice",
@@ -178,6 +180,7 @@ export const sanityFetcherMeta: ComponentMeta<SanityFetcherProps> = {
       displayName: "Document type",
       description:
         "Document type to be queried (*[_type == DOC_TYPE] shortcut).",
+      // Hide this if groq is specified, as groq always takes precedence
       hidden: (props) => !!props.groq,
     },
     filterField: {
@@ -185,7 +188,9 @@ export const sanityFetcherMeta: ComponentMeta<SanityFetcherProps> = {
       displayName: "Filter field",
       description: "Field (from Collection) to filter by",
       options: (props, ctx) => ctx?.sanityFields ?? [],
-      hidden: (props, ctx) => !props.docType,
+      // Hide this if there's groq (so we're just using groq), or if there's
+      // no docType selected yet
+      hidden: (props, ctx) => !!props.groq || !props.docType,
     },
     filterParameter: {
       type: "choice",
@@ -193,19 +198,22 @@ export const sanityFetcherMeta: ComponentMeta<SanityFetcherProps> = {
       description:
         "Filter Option to filter by. Read more (https://www.sanity.io/docs/groq-operators#3b7211e976f6)",
       options: (props, ctx) => ctx?.queryOptions ?? [],
-      hidden: (props, ctx) => !props.filterField,
+      // Hide if in groq mode, or if no filter field is selected yet
+      hidden: (props, ctx) => !!props.groq || !props.filterField,
     },
     filterValue: {
       type: "string",
       displayName: "Filter value",
       description: "Value to filter by, should be of filter field type",
-      hidden: (props, ctx) => !props.filterField,
+      // Hide if in groq mode, or if no filter field is selected yet
+      hidden: (props, ctx) => !!props.groq || !props.filterField,
     },
     limit: {
       type: "string",
       displayName: "Limit",
       description: "Limit",
-      hidden: (props) => !props.docType,
+      // Hide if in groq mode
+      hidden: (props) => !!props.groq || !props.docType,
     },
     noAutoRepeat: {
       type: "boolean",
