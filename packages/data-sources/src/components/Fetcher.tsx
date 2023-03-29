@@ -34,7 +34,7 @@ export function Fetcher(props: FetcherProps): React.ReactElement | null {
 
 export const FetcherMeta: ComponentMeta<FetcherProps> = {
   name: 'plasmic-data-source-fetcher',
-  displayName: 'Data Source Fetcher',
+  displayName: 'Data Fetcher',
   props: {
     dataOp: {
       type: 'dataSourceOp' as any,
@@ -63,5 +63,6 @@ export const FetcherMeta: ComponentMeta<FetcherProps> = {
   },
   importPath: '@plasmicapp/react-web/lib/data-sources',
   importName: 'Fetcher',
+  alwaysAutoName: true,
   styleSections: false,
 };
