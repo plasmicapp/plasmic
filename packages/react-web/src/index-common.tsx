@@ -1,6 +1,9 @@
 // Utilities used by generated code
 import _classNames from "classnames";
-export { PlasmicPageGuard } from "./auth/PlasmicPageGuard";
+export {
+  PlasmicPageGuard,
+  withPlasmicPageGuard,
+} from "./auth/PlasmicPageGuard";
 export { omit, pick } from "./common";
 export { HTMLElementRefOf, StrictProps } from "./react-utils";
 export {
