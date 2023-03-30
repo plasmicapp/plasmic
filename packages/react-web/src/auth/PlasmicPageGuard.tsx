@@ -117,5 +117,17 @@ export function PlasmicPageGuard(props: PlasmicPageGuardProps) {
     return <div>You don't have access to this page</div>;
   }
 
-  return children;
+  return <>{children}</>;
+}
+
+export function withPlasmicPageGuard<P extends object>(
+  WrappedComponent: React.ComponentType<P>,
+  options: Omit<PlasmicPageGuardProps, "children">
+) {
+  const PageGuard: React.FC<P> = (props) => (
+    <PlasmicPageGuard {...options}>
+      <WrappedComponent {...props} />
+    </PlasmicPageGuard>
+  );
+  return PageGuard;
 }
