@@ -16,19 +16,33 @@ export interface CanvasComponentProps<Data = any> {
 
 type InferDataType<P> = P extends CanvasComponentProps<infer Data> ? Data : any;
 
+export type ControlExtras = { path: (string | number)[] };
+
 /**
- * Config option that takes the context (e.g., props) of the component instance
- * to dynamically set its value.
+ * Context that we pass back to control functions.
  */
-export type ContextDependentConfig<P, R> = (
-  props: P,
+export type ControlContext<P> = [
+  /**
+   * props
+   */
+  P,
   /**
    * `contextData` can be `null` if the prop controls are rendering before
    * the component instance itself (it will re-render once the component
    * calls `setControlContextData`)
    */
-  contextData: InferDataType<P> | null
-) => R;
+  InferDataType<P> | null,
+  /**
+   * Extra information for the control to use
+   */
+  ControlExtras
+];
+
+/**
+ * Config option that takes the context (e.g., props) of the component instance
+ * to dynamically set its value.
+ */
+export type ContextDependentConfig<P, R> = (...args: ControlContext<P>) => R;
 
 export interface PropTypeBase<P> {
   displayName?: string;
@@ -228,7 +242,7 @@ export type JSONLikeType<P> =
       /**
        * Optional function that generates a name for this item in the array
        */
-      nameFunc?: (item: any) => string | undefined;
+      nameFunc?: (item: any, ...args: ControlContext<P>) => string | undefined;
     } & DefaultValueOrExpr<P, any> &
       PropTypeBase<P>)
   | ({
@@ -241,8 +255,32 @@ export type JSONLikeType<P> =
         /**
          * Optional function that generates a name for this item in the array
          */
-        nameFunc?: (item: any) => string | undefined;
+        nameFunc?: (
+          item: any,
+          ...args: ControlContext<P>
+        ) => string | undefined;
       };
+      /**
+       * Specify how to let Plasmic know how to update its own internal representation of the data when the value has
+       * changed, or when issuing a minimalValue or shownValue that is different.
+       *
+       * Important to specify this if you are expecting any nested expression values in this data type!
+       */
+      unstable__keyFunc?: (item: any) => any;
+      /**
+       * Specify what would be the tentative new value that is set if the user makes any changes.
+       *
+       * Useful for field mappings.
+       *
+       * For instance, consider a Table where we have a `fields` prop:
+       *
+       * - Initially, the value is undefined. But if the user makes any changes, we would want to save an array of at
+       *   least three items (corresponding to, say, three columns inferred from a schema).
+       *
+       * - Let's say there are 5 columns in the value. The data schema changes, removing a column and adding two new
+       *   ones. Now we would want a different minimal value, containing 6 items.
+       */
+      unstable__minimalValue?: ContextDependentConfig<P, any>;
     } & DefaultValueOrExpr<P, any[]> &
       PropTypeBase<P>)
   | ({
