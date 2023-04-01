@@ -37,6 +37,7 @@ export function usePlasmicDataOp<
     async () => {
       return await executePlasmicDataOp<T>(dataOp!, {
         userAuthToken: ctx?.userAuthToken || undefined,
+        user: ctx?.user,
         paginate: opts?.paginate,
       });
     }
@@ -65,6 +66,7 @@ export function usePlasmicDataMutationOp<
       { sourceId, opId, userArgs },
       {
         userAuthToken: userToken || undefined,
+        user: ctx?.user,
       }
     );
   }, [sourceId, opId, userArgs, userToken]);
