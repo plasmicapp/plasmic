@@ -1,4 +1,4 @@
-import { ComponentMeta } from "@plasmicapp/host";
+import { CodeComponentMeta } from "@plasmicapp/host";
 import { Map, Marker } from "pigeon-maps";
 import React from "react";
 
@@ -27,7 +27,7 @@ interface PigeonMapsProps {
   className?: string;
 }
 
-export const PigeonMapsMeta: ComponentMeta<PigeonMapsProps> = {
+export const PigeonMapsMeta: CodeComponentMeta<PigeonMapsProps> = {
   name: "PigeonMaps",
   displayName: "Pigeon Maps",
   importName: "PigeonMaps",
@@ -110,7 +110,7 @@ export function PigeonMaps({
         metaWheelZoom={metaWheelZoom}
         twoFingerDrag={twoFingerDrag}
       >
-        <Marker width={50} anchor={[latitude!, longitude!]} />
+        <Marker width={50} anchor={[latitude!, longitude!]}  style={{filter:'none'}}/>
       </Map>
     </div>
   );
