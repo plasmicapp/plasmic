@@ -28,6 +28,7 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
+    "@ant-design/pro-components": "^2.4.1",
     "@plasmicapp/data-sources": "0.1.59",
     "@plasmicapp/host": "1.0.121",
     "@size-limit/preset-small-lib": "^4.11.0",
@@ -38,12 +39,19 @@
     "typescript": "^3.9.7"
   },
   "peerDependencies": {
-    "@plasmicapp/data-sources": ">=0.1.0",
+    "@ant-design/pro-components": "^2.4.1",
+    "@plasmicapp/data-sources": ">=0.1.52",
     "@plasmicapp/host": ">=1.0.0",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "csv-stringify": "^6.3.0",
+    "fast-stringify": "^2.0.0",
+    "lodash": "^4.17.21",
+    "memoize-one": "^6.0.0"
   }
 }

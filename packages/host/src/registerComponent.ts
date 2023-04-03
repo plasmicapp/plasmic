@@ -243,6 +243,10 @@ export type JSONLikeType<P> =
        * Optional function that generates a name for this item in the array
        */
       nameFunc?: (item: any, ...args: ControlContext<P>) => string | undefined;
+      /**
+       * Optional function that determines whether the user can delete a given item.
+       */
+      unstable__canDelete?: (item: any, ...args: ControlContext<P>) => boolean;
     } & DefaultValueOrExpr<P, any> &
       PropTypeBase<P>)
   | ({
