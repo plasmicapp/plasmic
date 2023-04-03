@@ -28,20 +28,24 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
+    "@ant-design/icons": "^5.0.1",
     "@ant-design/pro-components": "^2.4.1",
     "@plasmicapp/data-sources": "0.1.59",
     "@plasmicapp/host": "1.0.121",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/node": "^14.0.26",
+    "antd": "^5.4.0",
     "size-limit": "^4.11.0",
     "tsdx": "^0.14.1",
     "tslib": "^2.2.0",
     "typescript": "^3.9.7"
   },
   "peerDependencies": {
-    "@ant-design/pro-components": "^2.4.1",
+    "@ant-design/icons": ">=5.0.0",
+    "@ant-design/pro-components": ">=2.4.1",
     "@plasmicapp/data-sources": ">=0.1.52",
     "@plasmicapp/host": ">=1.0.0",
+    "antd": ">=5.0.0",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
   },
