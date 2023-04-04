@@ -1,4 +1,7 @@
-import { PlasmicDataSourceContextProvider } from "@plasmicapp/data-sources-context";
+import {
+  PlasmicDataSourceContextProvider,
+  PlasmicDataSourceContextValue,
+} from "@plasmicapp/data-sources-context";
 import { SSRProvider, useIsSSR as useAriaIsSSR } from "@react-aria/ssr";
 import * as React from "react";
 import { PlasmicHeadContext } from "./PlasmicHead";
@@ -16,7 +19,8 @@ const PlasmicRootContext = React.createContext<
   PlasmicRootContextValue | undefined
 >(undefined);
 
-export interface PlasmicRootProviderProps {
+export interface PlasmicRootProviderProps
+  extends PlasmicDataSourceContextValue {
   platform?: "nextjs" | "gatsby";
   children?: React.ReactNode;
   translator?: PlasmicTranslator;
@@ -31,7 +35,7 @@ export function PlasmicRootProvider(props: PlasmicRootProviderProps) {
     isUserLoading,
     authRedirectUri,
     user,
-  } = props as any;
+  } = props;
   const context = React.useMemo(
     () => ({
       platform,
