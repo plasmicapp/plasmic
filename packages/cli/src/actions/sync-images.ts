@@ -1,3 +1,4 @@
+import { PromisePool } from "@supercharge/promise-pool";
 import cliProgress from "cli-progress";
 import L from "lodash";
 import fetch from "node-fetch";
@@ -140,14 +141,15 @@ async function ensureImageAssetContents(bundles: ImageBundle[]) {
   if (needsFetching.length === 0) {
     return;
   }
-
   const bar = new cliProgress.SingleBar({
     format: `Downloading images [{bar}] | {value}/{total}`,
   });
   bar.start(needsFetching.length, 0);
 
-  await Promise.all(
-    needsFetching.map(async (bundle) => {
+  await new PromisePool()
+    .withConcurrency(10)
+    .for(needsFetching)
+    .process(async (bundle) => {
       try {
         const res = await fetch(bundle.blob);
         if (res.status !== 200) {
@@ -160,9 +162,9 @@ async function ensureImageAssetContents(bundles: ImageBundle[]) {
         bar.increment();
       } catch (err) {
         logger.error(`Failed to fetch image ${bundle.fileName}: ${err}`);
+        throw err;
       }
-    })
-  );
+    });
   bar.stop();
 }
 

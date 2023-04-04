@@ -53,6 +53,7 @@
     "@babel/parser": "^7.12.3",
     "@babel/traverse": "^7.12.1",
     "@sentry/node": "^5.19.2",
+    "@supercharge/promise-pool": "^2.4.0",
     "axios": "^0.21.1",
     "chalk": "^4.1.0",
     "cli-progress": "^3.12.0",
