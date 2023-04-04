@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-rich-components",
-  "version": "1.0.41",
+  "version": "1.0.42",
   "description": "Table component to consume query data",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,8 +28,8 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/data-sources": "0.1.58",
-    "@plasmicapp/host": "1.0.120",
+    "@plasmicapp/data-sources": "0.1.59",
+    "@plasmicapp/host": "1.0.121",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/node": "^14.0.26",
     "size-limit": "^4.11.0",
