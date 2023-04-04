@@ -96,6 +96,13 @@ export interface PlasmicConfig {
 
   /** Arbitrary command to run after `plasmic sync` has run; useful for linting and code formatting synced files */
   postSyncCommands?: string[];
+
+  /**
+   * Package manager to use when installing or upgrading required
+   * packages. If not specified, then it is best-effort automatically
+   * derived.
+   */
+  packageManager?: "npm" | "yarn" | "yarn2" | "pnpm";
 }
 
 export interface CodeConfig {

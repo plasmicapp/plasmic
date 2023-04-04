@@ -67,7 +67,8 @@ export async function initPlasmic(
     opts.config || path.join(opts.baseDir, CONFIG_FILE_NAME);
 
   const answers = await deriveInitAnswers(opts);
-  await writeConfig(newConfigFile, createInitConfig(answers), opts.baseDir);
+  const initConfig = createInitConfig(answers);
+  await writeConfig(newConfigFile, initConfig, opts.baseDir);
 
   if (!process.env.QUIET) {
     logger.info("Successfully created plasmic.json.\n");
@@ -78,7 +79,7 @@ export async function initPlasmic(
     opts.yes
   );
   if (answer) {
-    installUpgrade("@plasmicapp/react-web", opts.baseDir);
+    installUpgrade(initConfig, "@plasmicapp/react-web", opts.baseDir);
   }
 }
 

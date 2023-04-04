@@ -88,13 +88,13 @@ async function ensureRequiredPackages(
     opts: { global: boolean; dev: boolean }
   ) => {
     let success = false;
-    const command = installCommand(pkg, baseDir, opts);
+    const command = installCommand(context.config, pkg, baseDir, opts);
     const upgrade = await confirmWithUser(
       `A more recent version of ${pkg} >=${requiredVersion} is required. Would you like to upgrade via "${command}"?`,
       yes
     );
     if (upgrade) {
-      success = installUpgrade(pkg, baseDir, opts);
+      success = installUpgrade(context.config, pkg, baseDir, opts);
     } else {
       success = false;
     }
@@ -121,7 +121,7 @@ async function ensureRequiredPackages(
   }
 
   const reactWebVersion = findInstalledVersion(
-    context,
+    context.config,
     baseDir,
     "@plasmicapp/react-web"
   );
@@ -139,7 +139,7 @@ async function ensureRequiredPackages(
   if (context.config.code.reactRuntime === "automatic") {
     // Using automatic runtime requires installing the @plasmicapp/react-web-runtime package
     const runtimeVersion = findInstalledVersion(
-      context,
+      context.config,
       baseDir,
       "@plasmicapp/react-web-runtime"
     );
@@ -443,7 +443,7 @@ async function checkExternalPkgs(
   pkgs: string[]
 ) {
   const missingPkgs = pkgs.filter((pkg) => {
-    const installedPkg = findInstalledVersion(context, baseDir, pkg);
+    const installedPkg = findInstalledVersion(context.config, baseDir, pkg);
     return !installedPkg;
   });
   if (missingPkgs.length > 0) {
@@ -455,7 +455,7 @@ async function checkExternalPkgs(
     );
 
     if (upgrade) {
-      installUpgrade(missingPkgs.join(" "), baseDir);
+      installUpgrade(context.config, missingPkgs.join(" "), baseDir);
     }
   }
 }

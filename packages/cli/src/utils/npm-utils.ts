@@ -3,7 +3,7 @@ import findupSync from "findup-sync";
 import path from "path";
 import semver from "semver";
 import { logger } from "../deps";
-import { PlasmicContext } from "./config-utils";
+import { PlasmicConfig } from "./config-utils";
 import { findFile, readFileText } from "./file-utils";
 
 export function getParsedCliPackageJson() {
@@ -41,11 +41,11 @@ export function getParsedPackageJson() {
 }
 
 export function findInstalledVersion(
-  context: PlasmicContext,
+  config: PlasmicConfig,
   baseDir: string,
   pkg: string
 ) {
-  const pm = detectPackageManager(baseDir);
+  const pm = detectPackageManager(config, baseDir);
   try {
     if (pm === "yarn2") {
       const output = execSync(`yarn info --json ${pkg}`).toString().trim();
@@ -124,11 +124,12 @@ function parsePackageJson(path: string) {
 }
 
 export function installUpgrade(
+  config: PlasmicConfig,
   pkg: string,
   baseDir: string,
   opts: { global?: boolean; dev?: boolean } = {}
 ) {
-  const cmd = installCommand(pkg, baseDir, opts);
+  const cmd = installCommand(config, pkg, baseDir, opts);
   if (!process.env.QUIET) {
     logger.info(cmd);
   }
@@ -151,11 +152,12 @@ export function installUpgrade(
 }
 
 export function installCommand(
+  config: PlasmicConfig,
   pkg: string,
   baseDir: string,
   opts: { global?: boolean; dev?: boolean } = {}
 ) {
-  const mgr = detectPackageManager(baseDir);
+  const mgr = detectPackageManager(config, baseDir);
   if (mgr === "yarn") {
     if (opts.global) {
       return `yarn global add ${pkg}`;
@@ -184,7 +186,10 @@ export function installCommand(
   }
 }
 
-export function detectPackageManager(baseDir: string) {
+export function detectPackageManager(config: PlasmicConfig, baseDir: string) {
+  if (config.packageManager) {
+    return config.packageManager;
+  }
   const yarnLock = findupSync("yarn.lock", { cwd: baseDir });
   if (yarnLock) {
     const yarnVersion = execSync(`yarn --version`).toString().trim();

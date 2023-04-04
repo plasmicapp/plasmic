@@ -98,7 +98,7 @@ export async function runNecessaryMigrations(
       throw new HandledError("Upgrading is required to continue.");
     }
 
-    const success = installUpgrade("@plasmicapp/cli", baseDir, {
+    const success = installUpgrade(cur, "@plasmicapp/cli", baseDir, {
       global: isCliGloballyInstalled(path.dirname(configFile)),
       dev: true,
     });
