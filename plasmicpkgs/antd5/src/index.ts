@@ -5,6 +5,12 @@ import {
   registerTokens,
 } from "./registerConfigProvider";
 import { registerDropdown } from "./registerDropdown";
+import {
+  registerForm,
+  registerFormGroup,
+  registerFormItem,
+  registerFormList,
+} from "./registerForm";
 import { registerMenu } from "./registerMenu";
 import { registerModal } from "./registerModal";
 import { registerRadio } from "./registerRadio";
@@ -23,4 +29,8 @@ export function registerAll(loader?: Registerable) {
   registerButton(loader);
   registerMenu(loader);
   registerDropdown(loader);
+  registerForm(loader);
+  registerFormItem(loader);
+  registerFormGroup(loader);
+  registerFormList(loader);
 }

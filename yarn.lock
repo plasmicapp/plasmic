@@ -5636,14 +5636,6 @@
     lodash "^4.17.19"
     prettier "^2.0.5"
 
-"@plasmicapp/host@1.0.119":
-  version "1.0.119"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.119.tgz#84043ba366ec4feee6139096d29a8d229b5ee96d"
-  integrity sha512-vV4VTMdfQBfbmVA+v3Zq3bMKBnJNJUZpszCCtGYAeUimjMGvjoaj6MqcC+VQ/dC/DggbLbvmMfHri8rP3/m15A==
-  dependencies:
-    "@plasmicapp/query" "0.1.61"
-    window-or-global "^1.0.1"
-
 "@plasmicapp/host@1.0.65":
   version "1.0.65"
   resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.65.tgz#ae3f7f9c583a1549556b05d0f9b21e2046e4d26f"
@@ -20059,6 +20051,11 @@ memfs@^3.2.2:
   integrity sha512-RE0CwmIM3CEvpcdK3rZ19BC4E6hv9kADkMN5rPduRak58cNArWLi/9jFLsa4rhsjfVxMP3v0jO7FHXq7SvFY5Q==
   dependencies:
     fs-monkey "1.0.3"
+
+memoize-one@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-6.0.0.tgz#b2591b871ed82948aee4727dc6abceeeac8c1045"
+  integrity sha512-rkpe71W0N0c0Xz6QD0eJETuWAJGnJ9afsl1srmwPrI+yBCkge5EycXXbYRyvL29zZVUWQCY7InPRCv3GDXuZNw==
 
 memoizee@^0.4.15:
   version "0.4.15"
