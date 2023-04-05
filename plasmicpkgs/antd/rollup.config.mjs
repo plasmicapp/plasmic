@@ -65,10 +65,10 @@ export default [
     output: [
       {
         dir: "skinny",
-        format: "esm",
+        format: "cjs",
         sourcemap: true,
         exports: "named",
-        interop: "auto"
+        interop: "auto",
       },
     ],
     plugins: [
