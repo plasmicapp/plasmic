@@ -5,6 +5,7 @@ import {
 } from "@plasmicapp/host/registerToken";
 import { addLoadingStateListener } from "@plasmicapp/query";
 import ConfigProvider from "antd/es/config-provider";
+import enUS from "antd/es/locale/en_US";
 import type { MessageInstance } from "antd/es/message/interface";
 import useMessage from "antd/es/message/useMessage";
 import type {
@@ -70,7 +71,7 @@ export function themeToAntdConfig(opts: ThemeOpts) {
           sizeUnit,
           sizeStep,
           wireframe,
-        }).filter(([key, val]) => !!val)
+        }).filter(([_key, val]) => !!val)
       ),
     },
   };
@@ -85,6 +86,7 @@ export function AntdConfigProvider(
   const { children, themeStyles, ...rest } = props;
   return (
     <ConfigProvider
+      locale={enUS}
       {...themeToAntdConfig({
         ...rest,
         fontFamily: themeStyles.fontFamily,
