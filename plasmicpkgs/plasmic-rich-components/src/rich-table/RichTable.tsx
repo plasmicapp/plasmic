@@ -150,7 +150,7 @@ export function RichTable(props: RichTableProps) {
     actions,
     customActionChildren,
     showSearch = true,
-    pageSize = 50,
+    pageSize = 20,
   } = props;
 
   const data = normalizeData(rawData);
@@ -168,8 +168,9 @@ export function RichTable(props: RichTableProps) {
     );
     setControlContextData?.({ ...data, mergedFields, minimalFullLengthFields });
     const normalized = mergedFields;
-    const columnDefinitions = normalized.map(
-      (cconfig, _columnIndex, _columnsArray) => {
+    const columnDefinitions = normalized
+      .filter((cconfig) => !cconfig.isHidden)
+      .map((cconfig, _columnIndex, _columnsArray) => {
         const columnDefinition: ProColumns<any> = {
           dataIndex: cconfig.fieldId,
           title: cconfig.title,
@@ -228,8 +229,7 @@ export function RichTable(props: RichTableProps) {
         };
 
         return columnDefinition;
-      }
-    );
+      });
     if (actions && actions.length > 0) {
       columnDefinitions.push({
         title: "Actions",

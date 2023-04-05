@@ -50,7 +50,7 @@ export function RichLayout({
           // hideMenuWhenCollapsed: true,
         }}
         avatarProps={
-          showAvatarMenu
+          showAvatarMenu && false
             ? {
                 src: avatarImage,
                 size: "small",

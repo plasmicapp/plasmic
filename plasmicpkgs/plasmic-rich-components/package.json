@@ -1,7 +1,7 @@
 {
   "name": "@plasmicpkgs/plasmic-rich-components",
   "version": "1.0.42",
-  "description": "Table component to consume query data",
+  "description": "Rich batteries-included general purpose components for business apps, admin panels, etc.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/plasmic-rich-components.esm.js",
@@ -55,7 +55,6 @@
   "dependencies": {
     "csv-stringify": "^6.3.0",
     "fast-stringify": "^2.0.0",
-    "lodash": "^4.17.21",
-    "memoize-one": "^6.0.0"
+    "lodash": "^4.17.21"
   }
 }

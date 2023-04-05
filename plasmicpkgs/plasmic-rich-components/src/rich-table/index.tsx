@@ -1,8 +1,9 @@
-import registerComponent, {
+import {
   ComponentMeta,
   ControlExtras,
 } from "@plasmicapp/host/registerComponent";
 import { ColumnConfig } from "../field-mappings";
+import { Registerable, registerComponentHelper } from "../utils";
 import { ControlContextData, RichTable, RichTableProps } from "./RichTable";
 
 export * from "./RichTable";
@@ -52,7 +53,7 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
 
     pageSize: {
       type: "number",
-      defaultValueHint: 50,
+      defaultValueHint: 20,
     },
 
     fields: {
@@ -92,16 +93,17 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
             defaultValueHint: getDefaultValueHint("dataType"),
           },
           expr: rowDataType("Customize data"),
-          isEditableExpr: rowDataType("Is editable", {
-            type: "boolean",
-            defaultValueHint: false,
-          }),
-          disableSorting: {
-            type: "boolean",
-            displayName: "Disable sorting",
-            defaultValueHint: getDefaultValueHint("disableSorting"),
-          },
-          sortByExpr: rowDataType("Sort by"),
+          // TODO
+          // isEditableExpr: rowDataType("Is editable", {
+          //   type: "boolean",
+          //   defaultValueHint: false,
+          // }),
+          // disableSorting: {
+          //   type: "boolean",
+          //   displayName: "Disable sorting",
+          //   defaultValueHint: getDefaultValueHint("disableSorting"),
+          // },
+          // sortByExpr: rowDataType("Sort by"),
           isHidden: {
             type: "boolean",
             displayName: "Is hidden",
@@ -115,19 +117,6 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
   importPath: "@plasmicpkgs/plasmic-rich-components/dist/rich-table/RichTable",
 };
 
-export function registerAll(loader?: {
-  registerComponent: typeof registerComponent;
-}) {
-  const _registerComponent = <T extends React.ComponentType<any>>(
-    Component: T,
-    defaultMeta: ComponentMeta<React.ComponentProps<T>>
-  ) => {
-    if (loader) {
-      loader.registerComponent(Component, defaultMeta as any);
-    } else {
-      registerComponent(Component, defaultMeta as any);
-    }
-  };
-
-  _registerComponent(RichTable, dataTableMeta);
+export function registerRichTable(loader?: Registerable) {
+  registerComponentHelper(loader, RichTable, dataTableMeta);
 }
