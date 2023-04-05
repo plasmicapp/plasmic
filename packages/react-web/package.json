@@ -14,9 +14,8 @@
           "!{projectRoot}/lib/**/*"
         ],
         "outputs": [
-          "{projectRoot}/dist",
-          "{projectRoot}/**/dist",
-          "{projectRoot}/lib"
+          "{projectRoot}/**/dist/**/*",
+          "{projectRoot}/lib/**/*"
         ]
       }
     }

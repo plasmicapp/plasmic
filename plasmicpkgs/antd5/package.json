@@ -14,9 +14,8 @@
           "!{projectRoot}/skinny/**/*"
         ],
         "outputs": [
-          "{projectRoot}/dist",
-          "{projectRoot}/**/dist",
-          "{projectRoot}/skinny"
+          "{projectRoot}/**/dist/**/*",
+          "{projectRoot}/skinny/**/*"
         ]
       }
     }
