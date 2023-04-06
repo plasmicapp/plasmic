@@ -1,0 +1,1 @@
+Chart.js 2.x components for React
