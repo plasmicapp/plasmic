@@ -156,6 +156,10 @@ export interface CodeComponentConfig {
   id: string;
   name: string;
   componentImportPath: string;
+  helper?: {
+    name: string;
+    importPath: string;
+  }
 }
 
 export interface ProjectConfig {

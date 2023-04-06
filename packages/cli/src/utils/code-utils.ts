@@ -156,6 +156,7 @@ type PlasmicImportType =
   | "picture"
   | "jsBundle"
   | "codeComponent"
+  | "codeComponentHelper"
   | "globalContext"
   | undefined;
 
@@ -342,6 +343,23 @@ export function replaceImports(
       } else {
         // npm package
         stmt.source.value = meta.componentImportPath;
+      }
+    } else if (type === "codeComponentHelper") {
+      const meta = fixImportContext.codeComponentMetas[uuid];
+      if (!meta.helper?.importPath) {
+        throw new HandledError(
+          `Encountered code component "${meta.name}" that was not registered with an importPath to the component helper, so we don't know where to import this code component helper from.  Please see https://docs.plasmic.app/learn/code-components-ref/`
+        );
+      }
+      if (meta.helper.importPath[0] === ".") {
+        // Relative path from the project root
+        const toPath = path.join(context.rootDir, meta.helper.importPath);
+        assert(path.isAbsolute(toPath));
+        const realPath = makeImportPath(context, fromPath, toPath, true, true);
+        stmt.source.value = realPath;
+      } else {
+        // npm package
+        stmt.source.value = meta.helper.importPath;
       }
     } else if (type === "globalContext") {
       const projectConfig = fixImportContext.projects[uuid];
