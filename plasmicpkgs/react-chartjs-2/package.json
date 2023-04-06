@@ -42,7 +42,9 @@
   "peerDependencies": {
     "@plasmicapp/data-sources": ">=0.1.52",
     "@plasmicapp/host": ">=1.0.0",
+    "chart.js": ">=4.2.1",
     "react": ">=16.8.0",
+    "react-chartjs-2": ">=5.2.0",
     "react-dom": ">=16.8.0"
   },
   "publishConfig": {
