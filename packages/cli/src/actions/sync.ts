@@ -836,5 +836,13 @@ function syncCodeComponentsMeta(
     id: meta.id,
     name: meta.name,
     componentImportPath: meta.importPath,
+    ...(meta.helper
+      ? {
+          helper: {
+            name: meta.helper.name,
+            importPath: meta.helper.importPath,
+          },
+        }
+      : {}),
   }));
 }

@@ -166,6 +166,10 @@ export interface CodeComponentMeta {
   id: string; // component uuid
   name: string;
   importPath: string;
+  helper?: {
+    name: string;
+    importPath: string;
+  }
 }
 
 export interface ProjectIconsResponse {
