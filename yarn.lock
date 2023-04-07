@@ -12584,10 +12584,10 @@ csstype@^3.0.2, csstype@^3.0.8:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.0.8.tgz#d2266a792729fb227cd216fb572f43728e1ad340"
   integrity sha512-jXKhWqXPmlUeoQnF/EhTtTl4C9SnrxSH/jZUih3jmO6lBKr99rP3/+FmrMj4EFpOXzMtXHAZkd3x0E6h6Fgflw==
 
-csv-stringify@^6.3.0:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/csv-stringify/-/csv-stringify-6.3.0.tgz#21ae523c5c0b25f16d8625bde45dc1b4b5b77eb0"
-  integrity sha512-kTnnBkkLmAR1G409aUdShppWUClNbBQZXhrKrXzKYBGw4yfROspiFvVmjbKonCrdGfwnqwMXKLQG7ej7K/jwjg==
+csv-writer-browser@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/csv-writer-browser/-/csv-writer-browser-1.0.0.tgz#2c700bdc477ee32973bbcccbf9e06d6f12d5eba4"
+  integrity sha512-fqbieG/ZAWwfsGnVCBTDctDyKORjNXXKelvBX6UX/M+iFJKAnLxueXysVfuLYXonablzGqZ9jnNIIcOCuKuUFA==
 
 currently-unhandled@^0.4.1:
   version "0.4.1"
