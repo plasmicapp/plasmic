@@ -30,8 +30,8 @@ export const nextjsStrategy: CPAStrategy = {
       : "--no-experimental-app";
     const templateArg = template ? ` --template ${template}` : "";
     const createCommand =
-      `npx create-next-app@latest ${typescriptArg} ${experimentalAppArg} ${templateArg}` +
-      ` --eslint --no-src-dir  --import-alias "@/*" ${projectPath}`;
+      `npx create-next-app@latest ${projectPath} ${typescriptArg} ${experimentalAppArg} ${templateArg}` +
+      ` --eslint --no-src-dir  --import-alias "@/*" --no-tailwind`;
 
     // Default Next.js starter already supports Typescript
     // See where we `touch tsconfig.json` later on
