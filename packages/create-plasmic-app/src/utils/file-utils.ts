@@ -128,7 +128,7 @@ export function generateWelcomePage(config: any, platform: string): string {
         // Format as an absolute path without the extension name
         const relativeLink = "/" + stripExtension(relativePath);
         if (platform === "nextjs") {
-          return `<li><Link href="${relativeLink}"><a style={{ color: "blue" }}>${pc.name} - ${relativeLink}</a></Link></li>`;
+          return `<li><Link href="${relativeLink}">${pc.name} - ${relativeLink}</Link></li>`;
         } else {
           return `<li><a style={{ color: "blue" }} href="${relativeLink}">${pc.name} - ${relativeLink}</a></li>`;
         }
