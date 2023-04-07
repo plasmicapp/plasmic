@@ -750,7 +750,7 @@ export interface CodeComponentMeta<P> {
    */
   alwaysAutoName?: boolean;
 
-  unstable__refActions?: Record<string, RefActionRegistration<P>>;
+  refActions?: Record<string, RefActionRegistration<P>>;
 }
 
 /**
@@ -767,7 +767,7 @@ export interface FunctionParam<P> {
 export interface RefActionRegistration<P> {
   displayName?: string;
   description?: string;
-  parameters: FunctionParam<P>[];
+  argTypes: FunctionParam<P>[];
 }
 
 export interface ComponentRegistration {
