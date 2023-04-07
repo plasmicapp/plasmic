@@ -13,7 +13,7 @@ import {
 import { DataProvider } from "@plasmicapp/host";
 import { Button, Dropdown } from "antd";
 import { SizeType } from "antd/es/config-provider/SizeContext";
-import { stringify } from "csv-stringify/sync";
+import { createObjectCsvStringifier } from "csv-writer-browser";
 import fastStringify from "fast-stringify";
 import React, { ReactNode, useRef, useState } from "react";
 import { useIsClient } from "../common";
@@ -22,6 +22,8 @@ import {
   deriveFieldConfigs,
   PartialColumnConfig,
 } from "../field-mappings";
+
+// Avoid csv-stringify, it doesn't directly work in browser without Buffer polyfill.
 
 export type QueryResult = Partial<ManyRowsResult<any>> & {
   error?: any;
@@ -348,12 +350,23 @@ export function RichTable(props: RichTableProps) {
                 {
                   label: "Download as CSV",
                   key: "csv",
-                  onClick: () => {
-                    const dataStr = stringify(data?.data as any, {
-                      columns:
-                        tryGetSchema(data)?.fields.map((f) => f.id) ?? [],
-                      header: true,
+                  onClick: async () => {
+                    const writer = createObjectCsvStringifier({
+                      header:
+                        tryGetSchema(data)?.fields.map((f) => ({
+                          id: f.id,
+                          title: f.id,
+                        })) ?? [],
                     });
+                    const dataStr =
+                      writer.getHeaderString() +
+                      writer.stringifyRecords(data?.data as any);
+
+                    // const dataStr = stringify(data?.data as any, {
+                    //   columns:
+                    //     tryGetSchema(data)?.fields.map((f) => f.id) ?? [],
+                    //   header: true,
+                    // });
 
                     const filename = "data.csv";
 
