@@ -12,7 +12,13 @@ import {
 import deepmerge from "deepmerge";
 import React, { useEffect } from "react";
 import { Line } from "react-chartjs-2";
-import { BaseChartProps, prepData, prepOptions, useIsClient } from "../common";
+import {
+  BaseChartProps,
+  ChartAreaPlugin,
+  prepData,
+  prepOptions,
+  useIsClient,
+} from "../common";
 
 export interface SimpleLineProps extends BaseChartProps {
   fill?: boolean;
@@ -24,6 +30,7 @@ export function SimpleLine(props: SimpleLineProps) {
   const isClient = useIsClient();
   useEffect(() => {
     ChartJS.register(
+      ChartAreaPlugin,
       CategoryScale,
       LinearScale,
       PointElement,
@@ -40,6 +47,7 @@ export function SimpleLine(props: SimpleLineProps) {
   const normalized = prepData(props, {
     extras: (field) => ({
       fill,
+      pointRadius: 0,
       yAxisID: field === secondAxisField ? "y1" : "y",
     }),
   });

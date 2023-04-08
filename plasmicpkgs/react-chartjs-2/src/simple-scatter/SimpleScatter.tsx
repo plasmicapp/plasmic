@@ -9,7 +9,13 @@ import {
 import deepmerge from "deepmerge";
 import React, { useEffect } from "react";
 import { Scatter } from "react-chartjs-2";
-import { BaseChartProps, prepData, prepOptions, useIsClient } from "../common";
+import {
+  BaseChartProps,
+  ChartAreaPlugin,
+  prepData,
+  prepOptions,
+  useIsClient,
+} from "../common";
 
 export interface SimpleScatterProps extends BaseChartProps {}
 
@@ -17,7 +23,14 @@ export function SimpleScatter(props: SimpleScatterProps) {
   const { className } = props;
   const isClient = useIsClient();
   useEffect(() => {
-    ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
+    ChartJS.register(
+      ChartAreaPlugin,
+      LinearScale,
+      PointElement,
+      LineElement,
+      Tooltip,
+      Legend
+    );
   }, []);
   if (!isClient) {
     return null;
