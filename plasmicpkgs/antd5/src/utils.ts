@@ -3,8 +3,8 @@ import {
   default as registerComponent,
 } from "@plasmicapp/host/registerComponent";
 import {
-  default as registerGlobalContext,
   GlobalContextMeta,
+  default as registerGlobalContext,
 } from "@plasmicapp/host/registerGlobalContext";
 import { default as registerToken } from "@plasmicapp/host/registerToken";
 import React from "react";
@@ -87,4 +87,17 @@ export function asArray<T>(x: T[] | T | undefined | null) {
   } else {
     return [x];
   }
+}
+
+export function omit<T extends {}>(obj: T, ...keys: (keyof T)[]): Partial<T> {
+  if (Object.keys(obj).length === 0) {
+    return obj;
+  }
+  const res: Partial<T> = {};
+  for (const key of Object.keys(obj) as (keyof T)[]) {
+    if (!keys.includes(key)) {
+      res[key] = obj[key];
+    }
+  }
+  return res;
 }

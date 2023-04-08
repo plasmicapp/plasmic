@@ -70,6 +70,11 @@ export interface PropTypeBase<P> {
    * If true, does not allow the user to use a dynamic expression for this prop
    */
   disableDynamicValue?: boolean;
+  /**
+   * If set to true, the component will be remounted when the prop value is updated.
+   * (This behavior only appliees to canvas)
+   */
+  forceRemount?: boolean;
 }
 
 export type DefaultValueOrExpr<P, T> =
@@ -311,6 +316,11 @@ export type DataPickerType<P> =
     } & DefaultValueOrExpr<P, DataPickerValueType> &
       PropTypeBase<P>);
 
+export type FormValidationRulesType<P> = {
+  type: "formValidationRules";
+} & DefaultValueOrExpr<P, any> &
+  PropTypeBase<P>;
+
 export type EventHandlerType<P> = {
   type: "eventHandler";
   argTypes: { name: string; type: PropType<any> }[];
@@ -482,6 +492,7 @@ export type PropType<P> =
       | CustomType<P>
       | GraphQLType<P>
       | DataPickerType<P>
+      | FormValidationRulesType<P>
       | EventHandlerType<P>
     >
   | SlotType<P>;
