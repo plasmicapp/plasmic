@@ -10,16 +10,23 @@ import {
 import deepmerge from "deepmerge";
 import React, { useEffect } from "react";
 import { Bar } from "react-chartjs-2";
-import { BaseChartProps, prepData, prepOptions, useIsClient } from "../common";
-
-export const baseOptions = {
-  responsive: true,
-};
+import {
+  BaseChartProps,
+  ChartAreaPlugin,
+  prepData,
+  prepOptions,
+  useIsClient,
+} from "../common";
 
 export const stackedOptions = {
   scales: {
     x: {
       stacked: true,
+      ticks: {
+        major: {
+          enabled: false,
+        },
+      },
     },
     y: {
       stacked: true,
@@ -53,6 +60,7 @@ export function SimpleBar(props: SimpleBarProps) {
   const isClient = useIsClient();
   useEffect(() => {
     ChartJS.register(
+      ChartAreaPlugin,
       CategoryScale,
       LinearScale,
       BarElement,
@@ -66,7 +74,7 @@ export function SimpleBar(props: SimpleBarProps) {
   }
   const normalized = prepData(props, {
     preferNonNumericAsLabel: true,
-    opacity: 0.5,
+    opacity: 1,
   });
   const options = prepOptions(props);
   return (
