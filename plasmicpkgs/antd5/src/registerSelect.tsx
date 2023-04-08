@@ -7,12 +7,14 @@ import {
 } from "./utils";
 
 export const AntdOption = Select.Option;
+export const AntdOptionGroup = Select.OptGroup;
 
 export function AntdSelect(
   props: ComponentProps<typeof Select> & {
     popupScopeClassName?: string;
     popupClassName?: string;
     defaultStylesClassName?: string;
+    useChildren?: boolean;
   }
 ) {
   const {
@@ -21,11 +23,16 @@ export function AntdSelect(
     defaultStylesClassName,
     suffixIcon,
     mode,
+    useChildren,
     ...rest
   } = props;
+  const curated = { ...rest };
+  if (useChildren) {
+    curated.options = undefined;
+  }
   return (
     <Select
-      {...rest}
+      {...curated}
       mode={!mode || (mode as any) === "single" ? undefined : mode}
       popupClassName={`${defaultStylesClassName} ${popupScopeClassName} ${popupClassName}`}
       {...(suffixIcon && { suffixIcon })}
@@ -38,10 +45,46 @@ export function registerSelect(loader?: Registerable) {
     name: "plasmic-antd5-select",
     displayName: "Select",
     props: {
+      options: {
+        type: "array",
+        hidden: (ps) => !!ps.useChildren,
+        itemType: {
+          type: "object",
+          nameFunc: (item: any) => item.label,
+          fields: {
+            value: "string",
+            label: "string",
+          },
+        },
+        defaultValue: [
+          {
+            value: "option1",
+            label: "Option 1",
+          },
+          {
+            value: "option2",
+            label: "Option 2",
+          },
+        ],
+      },
+
+      useChildren: {
+        displayName: "Use slot",
+        type: "boolean",
+        defaultValueHint: false,
+        description:
+          "Instead of configuring a list of options, customize the contents of the Select by dragging and dropping options in the outline/canvas, inside the 'children' slot. Lets you use any content or formatting within the Options, and also use Option Groups.",
+      },
+
       children: {
         type: "slot",
-        allowedComponents: ["AntdOption"],
+        allowedComponents: [
+          "plasmic-antd5-option",
+          "plasmic-antd5-option-group",
+        ],
+        hidden: (ps) => !ps.useChildren,
       },
+
       placeholder: {
         type: "slot",
         defaultValue: "Select...",
@@ -64,14 +107,21 @@ export function registerSelect(loader?: Registerable) {
         multiSelect: (ps: any) => ps.mode === "multiple",
         options: (ps: any) => {
           const options = new Set<string>();
-          traverseReactEltTree(ps.children, (elt) => {
-            if (
-              elt?.type === Select.Option &&
-              typeof elt?.props?.value === "string"
-            ) {
-              options.add(elt.props.value);
-            }
-          });
+          if (!ps.useChildren) {
+            return (ps.options ?? []).map((o: any) => ({
+              value: o.value || "",
+              label: o.label ?? (o.value || ""),
+            }));
+          } else {
+            traverseReactEltTree(ps.children, (elt) => {
+              if (
+                elt?.type === Select.Option &&
+                typeof elt?.props?.value === "string"
+              ) {
+                options.add(elt.props.value);
+              }
+            });
+          }
           return Array.from(options.keys());
         },
       },
@@ -217,5 +267,46 @@ export function registerSelect(loader?: Registerable) {
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerSelect",
     importName: "AntdOption",
+  });
+
+  registerComponentHelper(loader, AntdOptionGroup, {
+    name: "plasmic-antd5-option-group",
+    displayName: "Option Group",
+    parentComponentName: "plasmic-antd5-select",
+    props: {
+      children: {
+        type: "slot",
+        defaultValue: [
+          {
+            type: "component",
+            name: "plasmic-antd5-option",
+            props: {
+              value: "option1",
+              children: {
+                type: "text",
+                value: "Option 1",
+              },
+            },
+          },
+          {
+            type: "component",
+            name: "plasmic-antd5-option",
+            props: {
+              value: "option2",
+              children: {
+                type: "text",
+                value: "Option 1",
+              },
+            },
+          },
+        ],
+      },
+      label: {
+        type: "slot",
+        defaultValue: "Group label",
+      },
+    },
+    importPath: "@plasmicpkgs/antd5/skinny/registerSelect",
+    importName: "AntdOptionGroup",
   });
 }
