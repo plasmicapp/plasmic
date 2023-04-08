@@ -73,14 +73,16 @@ export function getDefaultColor(
   total: number,
   opacity?: number
 ) {
-  const preferredStart = 7;
+  const preferredStart = 9;
   const end = defaultColors.length - 1;
   const start = Math.max(0, Math.min(preferredStart, end - total));
   const stops =
     total > defaultColors.length
       ? range(defaultColors.length)
       : range(total).map((_, i) =>
-          Math.round(start + ((1.0 * i) / (total - 1)) * (end - start))
+          Math.round(
+            start + (total > 1 ? ((1.0 * i) / (total - 1)) * (end - start) : 0)
+          )
         );
   const selected = defaultColors[stops[index % stops.length]];
   if (opacity === undefined) {
