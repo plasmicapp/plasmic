@@ -370,8 +370,8 @@ export function registerFormItem(loader?: Registerable) {
       children: {
         type: "slot",
         defaultValue: {
-          type: "default-component",
-          kind: "text-input",
+          type: "component",
+          name: "plasmic-antd5-input",
         },
       },
       name: {

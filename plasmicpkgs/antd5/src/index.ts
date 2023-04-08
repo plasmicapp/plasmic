@@ -17,6 +17,7 @@ import { registerRadio } from "./registerRadio";
 import { registerSelect } from "./registerSelect";
 import { registerTable } from "./registerTable";
 import { Registerable } from "./utils";
+import { registerInput, registerPasswordInput, registerTextArea, registerNumberInput } from './registerInput';
 
 export function registerAll(loader?: Registerable) {
   registerConfigProvider(loader);
@@ -33,4 +34,8 @@ export function registerAll(loader?: Registerable) {
   registerFormItem(loader);
   registerFormGroup(loader);
   registerFormList(loader);
+  registerInput(loader);
+  registerPasswordInput(loader);
+  registerTextArea(loader);
+  registerNumberInput(loader);
 }
