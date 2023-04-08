@@ -142,10 +142,32 @@ export function registerForm(loader?: Registerable) {
           {
             type: "component",
             name: "plasmic-antd5-form-item",
+            props: {
+              label: {
+                type: "text",
+                value: "Name",
+              },
+              name: "name",
+              children: {
+                type: "component",
+                name: "plasmic-antd5-input",
+              },
+            },
           },
           {
             type: "component",
             name: "plasmic-antd5-form-item",
+            props: {
+              label: {
+                type: "text",
+                value: "Message",
+              },
+              name: "message",
+              children: {
+                type: "component",
+                name: "plasmic-antd5-textarea",
+              },
+            },
           },
           {
             type: "default-component",
@@ -167,7 +189,7 @@ export function registerForm(loader?: Registerable) {
       layout: {
         type: "choice",
         options: ["horizontal", "vertical", "inline"],
-        defaultValue: "horizontal",
+        defaultValue: "vertical",
       },
       labelAlign: {
         type: "choice",
@@ -184,9 +206,11 @@ export function registerForm(loader?: Registerable) {
         displayName: "Show required fields?",
         type: "boolean",
         advanced: true,
+        defaultValueHint: true,
       },
       extendedOnValuesChange: {
         type: "eventHandler",
+        displayName: "On values change",
         argTypes: [
           {
             name: "changedValues",
@@ -200,6 +224,7 @@ export function registerForm(loader?: Registerable) {
       },
       onFinish: {
         type: "eventHandler",
+        displayName: "On submit",
         argTypes: [
           {
             name: "values",
@@ -210,6 +235,7 @@ export function registerForm(loader?: Registerable) {
       onFinishFailed: {
         // function({ values, errorFields, outOfDate })
         type: "eventHandler",
+        displayName: "On invalid submit",
         argTypes: [
           {
             name: "data",
