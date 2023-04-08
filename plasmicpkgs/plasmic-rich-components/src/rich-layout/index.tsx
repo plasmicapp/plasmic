@@ -177,16 +177,18 @@ const richLayoutMeta: ComponentMeta<RichLayoutProps> = {
       displayName: "Primary color",
       type: "color",
     },
+    */
     fixedHeader: {
       displayName: "Sticky header",
       type: "boolean",
-      defaultValue: true,
+      defaultValue: false,
     },
     fixSiderbar: {
       displayName: "Sticky sidebar",
       type: "boolean",
-      defaultValue: true,
+      defaultValue: false,
     },
+    /*
     showAvatarMenu: {
       displayName: "Show avatar",
       type: "boolean",

@@ -33,6 +33,12 @@ export function RichLayout({
   const { pathname } = location;
   return (
     <div className={className}>
+      {/* Remove the always-on fixed gradient background layer. */}
+      <style>
+        {`.ant-pro-layout-bg-list {
+            display: none;
+        }`}
+      </style>
       <ProLayout
         {...layoutProps}
         // This is always needed if you want layout mix to have effect and look any different from layout side - not clear why this should ever be false.
