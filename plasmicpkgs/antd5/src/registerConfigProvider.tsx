@@ -33,7 +33,6 @@ export interface ThemeOpts {
   sizeUnit?: number;
   sizeStep?: number;
   wireframe?: boolean;
-  spacing?: "small" | "middle" | "large";
 }
 
 export function themeToAntdConfig(opts: ThemeOpts) {
@@ -51,10 +50,8 @@ export function themeToAntdConfig(opts: ThemeOpts) {
     sizeUnit,
     sizeStep,
     wireframe,
-    spacing,
   } = opts;
   return {
-    ...(spacing && { size: spacing }),
     theme: {
       token: Object.fromEntries(
         Object.entries({
@@ -106,6 +103,16 @@ export function AntdConfigProvider(
   );
 }
 
+function normTokenValue(val: any) {
+  if (typeof val === "string") {
+    return val.trim();
+  } else if (typeof val === "number") {
+    return `${val}px`;
+  } else {
+    return val;
+  }
+}
+
 function InnerConfigProvider(props: { children?: React.ReactNode }) {
   const { children } = props;
   const { token } = theme.useToken();
@@ -114,10 +121,7 @@ function InnerConfigProvider(props: { children?: React.ReactNode }) {
     () => `
 :root {
   ${Object.entries(token)
-    .map(
-      ([key, val]) =>
-        `${makeVarName(key)}:${typeof val === "string" ? val.trim() : val};`
-    )
+    .map(([key, val]) => `${makeVarName(key)}:${normTokenValue(val)};`)
     .join("\n")}
 }
   `,
@@ -244,19 +248,12 @@ function ForkedApp(props: { children?: React.ReactNode }) {
 export function registerTokens(loader?: Registerable) {
   const regs: TokenRegistration[] = [];
 
-  const makeColorToken = (name: string) => {
-    const colorIndex = name.indexOf("color");
-    const humanName = makeNiceName(
-      colorIndex >= 0
-        ? name.substring(name.indexOf("color") + "color".length)
-        : name
-    );
-    return {
-      name,
-      displayName: `System: ${humanName}`,
-      value: `var(--antd-${name})`,
-      type: "color",
-    } as TokenRegistration;
+  const withoutPrefix = (name: string, prefix?: string) => {
+    if (!prefix) {
+      return name;
+    }
+    const index = name.indexOf(prefix);
+    return index === 0 ? name.substring(prefix.length) : name;
   };
 
   function makeNiceName(name: string) {
@@ -264,7 +261,27 @@ export function registerTokens(loader?: Registerable) {
     return name.replace(/([a-z])([A-Z])/g, "$1 $2");
   }
 
-  const colorTokens: string[] = [
+  const makeGenericToken = (
+    name: string | [string, string],
+    type: TokenRegistration["type"],
+    removePrefix?: string
+  ) => {
+    const tokenName = Array.isArray(name) ? name[0] : name;
+    const displayName = Array.isArray(name)
+      ? name[1]
+      : makeNiceName(withoutPrefix(name, removePrefix));
+    return {
+      name: tokenName,
+      displayName: `System: ${displayName}`,
+      value: `var(--antd-${tokenName})`,
+      type,
+    } as TokenRegistration;
+  };
+
+  // TODO: Commenting out a lot of tokens for now until we decide to make them
+  // available
+
+  const colorTokens: (string | [string, string])[] = [
     // Seed tokens
     "colorPrimary",
     "colorSuccess",
@@ -343,107 +360,96 @@ export function registerTokens(loader?: Registerable) {
     "colorBgMask",
 
     // Alias tokens
-    "colorFillContentHover",
-    "colorFillAlter",
-    "colorFillContent",
-    "colorBgContainerDisabled",
-    "colorBgTextHover",
-    "colorBgTextActive",
-    "colorBorderBg",
-    "colorSplit",
-    "colorTextPlaceholder",
-    "colorTextDisabled",
-    "colorTextHeading",
-    "colorTextLabel",
-    "colorTextDescription",
-    "colorTextLightSolid",
+    // "colorFillContentHover",
+    // "colorFillAlter",
+    // "colorFillContent",
+    // "colorBgContainerDisabled",
+    // "colorBgTextHover",
+    // "colorBgTextActive",
+    // "colorBorderBg",
+    // "colorSplit",
+    // "colorTextPlaceholder",
+    // "colorTextDisabled",
+    // "colorTextHeading",
+    // "colorTextLabel",
+    // "colorTextDescription",
+    // "colorTextLightSolid",
     "colorIcon",
     "colorIconHover",
     "colorLink",
     "colorLinkHover",
-    "colorLinkActive",
-    "colorLinkHighlight",
-    "controlOutline",
-    "controlWarningOutline",
-    "controlErrorOutline",
-    "controlItemBgHover",
-    "controlItemBgActive",
-    "controlItemBgActiveHover",
-    "controlItemBgActiveDisabled",
+    // "colorLinkActive",
+    // "colorLinkHighlight",
+    // "controlOutline",
+    // "controlWarningOutline",
+    // "controlErrorOutline",
+    // "controlItemBgHover",
+    // "controlItemBgActive",
+    // "controlItemBgActiveHover",
+    // "controlItemBgActiveDisabled",
   ];
-  colorTokens.forEach((name) => regs.push(makeColorToken(name)));
+  colorTokens.forEach((name) =>
+    regs.push(makeGenericToken(name, "color", "color"))
+  );
 
-  const makeGenericToken = (
-    name: string,
-    type: Exclude<TokenRegistration["type"], "color">
-  ) => {
-    return {
-      name: `Sys: ${makeNiceName(name)}`,
-      value: `var(--antd-${name})`,
-      type,
-    } as TokenRegistration;
-  };
-
-  const spacingTokens: string[] = [
+  const spacingTokens: (string | [string, string])[] = [
     // Seed
-    "lineWidth",
-    "borderRadius",
-    "controlHeight",
-
+    // "lineWidth",
+    // "borderRadius",
+    // "controlHeight",
     // Map tokens
-    "sizeXXL",
-    "sizeXL",
-    "sizeLG",
-    "sizeMD",
-    "sizeMS",
-    "size",
-    "sizeSM",
-    "sizeXS",
-    "sizeXXS",
-    "controlHeightXS",
-    "controlHeightSM",
-    "controlHeightLG",
-    "lineWidthBold",
-    "borderRadiusXS",
-    "borderRadiusSM",
-    "borderRadiusLG",
-    "borderRadiusOuter",
+    // "sizeXXL",
+    // "sizeXL",
+    // "sizeLG",
+    // "sizeMD",
+    // "sizeMS",
+    // "size",
+    // "sizeSM",
+    // "sizeXS",
+    // "sizeXXS",
+    // "controlHeightXS",
+    // "controlHeightSM",
+    // "controlHeightLG",
+    // "lineWidthBold",
+    // "borderRadiusXS",
+    // "borderRadiusSM",
+    // "borderRadiusLG",
+    // "borderRadiusOuter",
 
     // Alias tokens
-    "controlOutlineWidth",
-    "controlInteractiveSize",
+    // "controlOutlineWidth",
+    // "controlInteractiveSize",
     "paddingXXS",
     "paddingXS",
     "paddingSM",
-    "padding",
+    ["padding", "Padding M"],
     "paddingMD",
     "paddingLG",
     "paddingXL",
-    "paddingContentHorizontalLG",
-    "paddingContentHorizontal",
-    "paddingContentHorizontalSM",
-    "paddingContentVerticalLG",
-    "paddingContentVertical",
-    "paddingContentVerticalSM",
+    // "paddingContentHorizontalLG",
+    // "paddingContentHorizontal",
+    // "paddingContentHorizontalSM",
+    // "paddingContentVerticalLG",
+    // "paddingContentVertical",
+    // "paddingContentVerticalSM",
     "marginXXS",
     "marginXS",
     "marginSM",
-    "margin",
+    ["margin", "Margin M"],
     "marginMD",
     "marginLG",
     "marginXL",
     "marginXXL",
-    "controlPaddingHorizontal",
-    "controlPaddingHorizontalSM",
+    // "controlPaddingHorizontal",
+    // "controlPaddingHorizontalSM",
   ];
   spacingTokens.forEach((token) =>
     regs.push(makeGenericToken(token, "spacing"))
   );
 
-  const fontSizeTokens = [
+  const fontSizeTokens: (string | [string, string])[] = [
     // Seed token
-    // "fontSize",
-
+    ["fontSize", "M"],
     // Map tokens
     "fontSizeSM",
     "fontSizeLG",
@@ -455,12 +461,12 @@ export function registerTokens(loader?: Registerable) {
     "fontSizeHeading5",
   ];
   fontSizeTokens.forEach((token) =>
-    regs.push(makeGenericToken(token, "font-size"))
+    regs.push(makeGenericToken(token, "font-size", "fontSize"))
   );
 
-  const lineHeightTokens = [
+  const lineHeightTokens: (string | [string, string])[] = [
     // Map tokens
-    // "lineHeight",
+    ["lineHeight", "M"],
     "lineHeightLG",
     "lineHeightSM",
     "lineHeightHeading1",
@@ -470,7 +476,7 @@ export function registerTokens(loader?: Registerable) {
     "lineHeightHeading5",
   ];
   lineHeightTokens.forEach((token) =>
-    regs.push(makeGenericToken(token, "line-height"))
+    regs.push(makeGenericToken(token, "line-height", "lineHeight"))
   );
 
   if (loader) {
@@ -533,10 +539,6 @@ export const registerConfigProvider = makeRegisterGlobalContext(
       wireframe: {
         type: "boolean",
         defaultValue: false,
-      },
-      spacing: {
-        type: "choice",
-        options: ["small", "middle", "large"],
       },
       themeStyles: {
         type: "themeStyles",
