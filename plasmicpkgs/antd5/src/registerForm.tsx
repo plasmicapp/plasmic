@@ -4,12 +4,12 @@ import {
   repeatedElement,
   usePlasmicCanvasContext,
 } from "@plasmicapp/host";
-import Form, { FormProps } from "antd/lib/form";
-import FormItem, { FormItemProps } from "antd/lib/form/FormItem";
+import Form, { FormInstance, FormProps } from "antd/es/form";
+import FormItem, { FormItemProps } from "antd/es/form/FormItem";
 import FormList, {
   FormListOperation,
   FormListProps,
-} from "antd/lib/form/FormList";
+} from "antd/es/form/FormList";
 import equal from "fast-deep-equal";
 import React from "react";
 import { omit, Registerable, registerComponentHelper } from "./utils";
@@ -169,6 +169,11 @@ export function registerForm(loader?: Registerable) {
         options: ["horizontal", "vertical", "inline"],
         defaultValue: "horizontal",
       },
+      labelAlign: {
+        type: "choice",
+        options: ["left", "right"],
+        advanced: true,
+      },
       colon: {
         type: "boolean",
         description: `Configure the default value of colon for Form.Item. Indicates whether the colon after the label is displayed (only effective when prop layout is horizontal)`,
@@ -314,6 +319,10 @@ const useFormItemFullName = (name: FormItemProps["name"]) => {
     : undefined;
 };
 
+function useFormInstanceMaybe(): FormInstance<any> | undefined {
+  return Form.useFormInstance();
+}
+
 function FormItemWrapper(props: InternalFormItemProps) {
   const relativeFormItemName = useFormItemRelativeName(props.name);
   const fullFormItemName = useFormItemFullName(props.name);
@@ -321,7 +330,7 @@ function FormItemWrapper(props: InternalFormItemProps) {
 
   const inCanvas = !!usePlasmicCanvasContext();
   if (inCanvas) {
-    const form = Form.useFormInstance();
+    const form = useFormInstanceMaybe();
     const prevPropValues = React.useRef({
       initialValue: props.initialValue,
       name: props.name,
@@ -334,16 +343,16 @@ function FormItemWrapper(props: InternalFormItemProps) {
       }
       if (
         !fullFormItemName ||
-        form.getFieldValue(fullFormItemName) !==
+        form?.getFieldValue(fullFormItemName) !==
           prevPropValues.current.initialValue
       ) {
         // this field value is set at the form level
         return;
       }
-      form.setFieldValue(fullFormItemName, props.initialValue);
+      form?.setFieldValue(fullFormItemName, props.initialValue);
       prevPropValues.current.initialValue = props.initialValue;
       fireOnValuesChange?.();
-    }, [props.initialValue, fullFormItemName]);
+    }, [form, props.initialValue, fullFormItemName]);
   }
   return (
     <FormItem
@@ -486,7 +495,7 @@ export const FormListWrapper = React.forwardRef(function FormListWrapper(
   );
   const inCanvas = !!usePlasmicCanvasContext();
   if (inCanvas) {
-    const form = Form.useFormInstance();
+    const form = useFormInstanceMaybe();
     const prevPropValues = React.useRef({
       initialValue: props.initialValue,
       name: props.name,
@@ -498,7 +507,7 @@ export const FormListWrapper = React.forwardRef(function FormListWrapper(
         forceRemount?.();
       }
       if (fullFormItemName) {
-        form.setFieldValue(fullFormItemName, props.initialValue);
+        form?.setFieldValue(fullFormItemName, props.initialValue);
         prevPropValues.current.initialValue = props.initialValue;
         fireOnValuesChange?.();
       }
