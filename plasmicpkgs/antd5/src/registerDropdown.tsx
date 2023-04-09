@@ -23,6 +23,9 @@ export function AntdDropdown(
   );
 }
 
+/**
+ * Note that we don't yet support the simpler `items` prop for configuration.
+ */
 export function registerDropdown(loader?: Registerable) {
   registerComponentHelper(loader, AntdDropdown, {
     name: "plasmic-antd5-dropdown",
