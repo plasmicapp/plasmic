@@ -10,6 +10,7 @@ import FormList, {
   FormListOperation,
   FormListProps,
 } from "antd/es/form/FormList";
+import { ColProps } from "antd/es/grid/col";
 import equal from "fast-deep-equal";
 import React from "react";
 import { omit, Registerable, registerComponentHelper } from "./utils";
@@ -31,17 +32,22 @@ const PathContext = React.createContext<{
   relativePath: (string | number)[]; // used for form.items inside a form.list
   fullPath: (string | number)[];
 }>({ relativePath: [], fullPath: [] });
+
+interface InternalFormInstanceContextData {
+  fireOnValuesChange: () => void;
+  forceRemount: () => void;
+  formProps: FormProps;
+}
+
 const InternalFormInstanceContext = React.createContext<
-  | {
-      fireOnValuesChange: () => void;
-      forceRemount: () => void;
-    }
-  | undefined
+  InternalFormInstanceContextData | undefined
 >(undefined);
 
 const Internal = (
   props: FormWrapperProps & {
     setRemountKey: React.Dispatch<React.SetStateAction<number>>;
+    labelCol?: ColProps & { horizontalOnly?: boolean };
+    wrapperCol?: ColProps & { horizontalOnly?: boolean };
   }
 ) => {
   const [form] = Form.useForm();
@@ -69,6 +75,7 @@ const Internal = (
       value={{
         fireOnValuesChange,
         forceRemount: () => props.setRemountKey((k) => k + 1),
+        formProps: props,
       }}
     >
       <Form
@@ -78,6 +85,16 @@ const Internal = (
           props.extendedOnValuesChange?.(args[1]);
         }}
         form={form}
+        labelCol={
+          props.labelCol?.horizontalOnly && props.layout !== "horizontal"
+            ? undefined
+            : props.labelCol
+        }
+        wrapperCol={
+          props.wrapperCol?.horizontalOnly && props.layout !== "horizontal"
+            ? undefined
+            : props.wrapperCol
+        }
       >
         {childrenNode}
       </Form>
@@ -132,6 +149,35 @@ const COMMON_ACTIONS = [
 ];
 
 export function registerForm(loader?: Registerable) {
+  const colProp = (displayName?: string, defaultValue?: {}) =>
+    ({
+      type: "object",
+      displayName: displayName,
+      advanced: true,
+      fields: {
+        span: {
+          type: "number",
+          displayName: "Grid columns",
+          description:
+            "The number of grid columns to span (24 columns available)",
+          min: 1,
+          max: 24,
+        },
+        offset: {
+          type: "number",
+          displayName: "Offset columns",
+          description: "Number of grid columns to skip from the left",
+          min: 0,
+          max: 23,
+        },
+        horizontalOnly: {
+          type: "boolean",
+          displayName: "Horizontal only",
+          description: "Only apply to horizontal layout",
+        },
+      },
+      defaultValue: defaultValue,
+    } as const);
   registerComponentHelper(loader, FormWrapper, {
     name: "plasmic-antd5-form",
     displayName: "Form",
@@ -194,12 +240,21 @@ export function registerForm(loader?: Registerable) {
       labelAlign: {
         type: "choice",
         options: ["left", "right"],
+        defaultValueHint: "right",
         advanced: true,
       },
+      labelCol: colProp("Label layout", {
+        span: 8,
+        horizontalOnly: true,
+      }),
+      wrapperCol: colProp("Field layout", {
+        span: 16,
+        horizontalOnly: true,
+      }),
       colon: {
         type: "boolean",
         description: `Configure the default value of colon for Form.Item. Indicates whether the colon after the label is displayed (only effective when prop layout is horizontal)`,
-        defaultValue: true,
+        defaultValueHint: true,
         advanced: true,
       },
       requiredMark: {
@@ -264,8 +319,13 @@ export function registerForm(loader?: Registerable) {
   });
 }
 
+interface FormControlContextData {
+  internalFormCtx?: InternalFormInstanceContextData;
+}
+
 interface InternalFormItemProps extends FormItemProps {
   rules: PlasmicRule[];
+  setControlContextData?: (data: FormControlContextData) => void;
 }
 
 interface PlasmicRule {
@@ -361,8 +421,11 @@ function FormItemWrapper(props: InternalFormItemProps) {
       initialValue: props.initialValue,
       name: props.name,
     });
-    const { fireOnValuesChange, forceRemount } =
-      React.useContext(InternalFormInstanceContext) ?? {};
+    const internalFormCtx = React.useContext(InternalFormInstanceContext);
+    const { fireOnValuesChange, forceRemount } = internalFormCtx ?? {};
+    props.setControlContextData?.({
+      internalFormCtx,
+    });
     React.useEffect(() => {
       if (prevPropValues.current.name !== props.name) {
         forceRemount?.();
@@ -424,7 +487,9 @@ export function registerFormItem(loader?: Registerable) {
       } as any,
       colon: {
         type: "boolean",
-        defaultValue: false,
+        defaultValueHint: (_ps: InternalFormItemProps, ctx: any) =>
+          (ctx as FormControlContextData)?.internalFormCtx?.formProps.colon ??
+          true,
         advanced: true,
       },
       labelAlign: {
