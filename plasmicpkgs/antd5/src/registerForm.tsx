@@ -638,26 +638,56 @@ export function registerFormList(loader?: Registerable) {
         type: "slot",
         defaultValue: [
           {
-            type: "component",
-            name: "plasmic-antd5-form-item",
-            props: {
-              name: "item",
-            },
+            type: "hbox",
+            children: [
+              {
+                type: "component",
+                name: "plasmic-antd5-form-item",
+                props: {
+                  name: "firstName",
+                  label: {
+                    type: "text",
+                    value: "First name",
+                  },
+                  children: {
+                    type: "component",
+                    name: "plasmic-antd5-input",
+                  },
+                },
+              },
+              {
+                type: "component",
+                name: "plasmic-antd5-form-item",
+                props: {
+                  name: "lastName",
+                  label: {
+                    type: "text",
+                    value: "Last name",
+                  },
+                  children: {
+                    type: "component",
+                    name: "plasmic-antd5-input",
+                  },
+                },
+              },
+            ],
           },
         ],
       },
       name: {
         type: "string",
-        defaultValue: "list",
+        defaultValue: "guests",
       },
       initialValue: {
-        type: "object",
+        type: "array",
         defaultValue: [
           {
-            item: "Item 1",
+            firstName: "Jane",
+            lastName: "Doe",
           },
           {
-            item: "Item 2",
+            firstName: "John",
+            lastName: "Smith",
           },
         ],
       } as any,
