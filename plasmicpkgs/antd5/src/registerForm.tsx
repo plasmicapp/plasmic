@@ -109,7 +109,7 @@ function FormWrapper(props: FormWrapperProps) {
 const COMMON_ACTIONS = [
   {
     type: "button-action" as const,
-    label: "Append new Form.Item",
+    label: "Append new Form Item",
     onClick: ({ studioOps }: ActionProps<any>) => {
       studioOps.appendToSlot(
         {
@@ -122,7 +122,7 @@ const COMMON_ACTIONS = [
   },
   {
     type: "button-action" as const,
-    label: "Append new Form.Group",
+    label: "Append new Form Group",
     onClick: ({ studioOps }: ActionProps<any>) => {
       studioOps.appendToSlot(
         {
@@ -135,7 +135,7 @@ const COMMON_ACTIONS = [
   },
   {
     type: "button-action" as const,
-    label: "Append new Form.List",
+    label: "Append new Form List",
     onClick: ({ studioOps }: ActionProps<any>) => {
       studioOps.appendToSlot(
         {
@@ -253,7 +253,7 @@ export function registerForm(loader?: Registerable) {
       }),
       colon: {
         type: "boolean",
-        description: `Configure the default value of colon for Form.Item. Indicates whether the colon after the label is displayed (only effective when prop layout is horizontal)`,
+        description: `Show a colon after the label by default (only for horizontal layout)`,
         defaultValueHint: true,
         advanced: true,
       },
@@ -455,7 +455,7 @@ function FormItemWrapper(props: InternalFormItemProps) {
 export function registerFormItem(loader?: Registerable) {
   registerComponentHelper(loader, FormItemWrapper, {
     name: "plasmic-antd5-form-item",
-    displayName: "Form.Item",
+    displayName: "Form Item",
     parentComponentName: "plasmic-antd5-form",
     props: {
       label: {
@@ -529,7 +529,7 @@ function FormGroup(props: FormGroupProps) {
 export function registerFormGroup(loader?: Registerable) {
   registerComponentHelper(loader, FormGroup, {
     name: "plasmic-antd5-form-group",
-    displayName: "Form.Group",
+    displayName: "Form Group",
     parentComponentName: "plasmic-antd5-form",
     actions: COMMON_ACTIONS,
     props: {
@@ -631,7 +631,7 @@ export function registerFormList(loader?: Registerable) {
   registerComponentHelper(loader, FormListWrapper, {
     name: "plasmic-antd5-form-list",
     parentComponentName: "plasmic-antd5-form",
-    displayName: "Form.List",
+    displayName: "Form List",
     actions: COMMON_ACTIONS,
     props: {
       children: {
