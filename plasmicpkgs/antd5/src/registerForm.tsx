@@ -258,8 +258,22 @@ export function registerForm(loader?: Registerable) {
         advanced: true,
       },
       requiredMark: {
-        displayName: "Show required fields?",
-        type: "boolean",
+        displayName: "Required/optional mark",
+        type: "choice",
+        options: [
+          {
+            value: "optional",
+            label: "Indicate optional fields",
+          },
+          {
+            value: true,
+            label: "Indicate required fields with asterisk",
+          },
+          {
+            value: false,
+            label: "Show no indicators",
+          },
+        ],
         advanced: true,
         defaultValueHint: true,
       },
@@ -300,9 +314,9 @@ export function registerForm(loader?: Registerable) {
       },
       validateTrigger: {
         type: "choice",
-        options: ["onSubmit", "onChange"],
+        options: ["onSubmit", "onChange", "onBlur"],
         multiSelect: true,
-        defaultValue: ["onChange"],
+        defaultValueHint: ["onChange"],
         advanced: true,
       },
     },
@@ -325,6 +339,7 @@ interface FormControlContextData {
 
 interface InternalFormItemProps extends FormItemProps {
   rules: PlasmicRule[];
+  noLabel?: boolean;
   setControlContextData?: (data: FormControlContextData) => void;
 }
 
@@ -446,6 +461,7 @@ function FormItemWrapper(props: InternalFormItemProps) {
   return (
     <FormItem
       {...omit(props, "rules")}
+      label={props.noLabel ? undefined : props.label}
       name={relativeFormItemName}
       rules={rules}
     />
@@ -483,8 +499,11 @@ export function registerFormItem(loader?: Registerable) {
       },
       rules: {
         type: "formValidationRules",
-        displayName: "rules",
       } as any,
+      noLabel: {
+        type: "boolean",
+        advanced: true,
+      },
       colon: {
         type: "boolean",
         defaultValueHint: (_ps: InternalFormItemProps, ctx: any) =>
@@ -499,6 +518,19 @@ export function registerFormItem(loader?: Registerable) {
       },
       hidden: {
         type: "boolean",
+        advanced: true,
+      },
+      noStyle: {
+        type: "boolean",
+        displayName: "Field only",
+        description:
+          "Don't render anything but the wrapped field component - so no label, help text, validation error, etc.",
+        advanced: true,
+      },
+      validateTrigger: {
+        type: "choice",
+        options: ["onSubmit", "onChange", "onBlur"],
+        multiSelect: true,
         advanced: true,
       },
     },
