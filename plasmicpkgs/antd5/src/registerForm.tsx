@@ -4,14 +4,16 @@ import {
   repeatedElement,
   usePlasmicCanvasContext,
 } from "@plasmicapp/host";
-import Form, { FormProps } from "antd/lib/form";
-import FormItem, { FormItemProps } from "antd/lib/form/FormItem";
+import Form, { FormInstance, FormProps } from "antd/es/form";
+import FormItem, { FormItemProps } from "antd/es/form/FormItem";
 import FormList, {
   FormListOperation,
   FormListProps,
-} from "antd/lib/form/FormList";
+} from "antd/es/form/FormList";
+import { ColProps } from "antd/es/grid/col";
 import equal from "fast-deep-equal";
-import React from "react";
+import React, { cloneElement, isValidElement } from "react";
+import { mergeProps } from "./react-utils";
 import { omit, Registerable, registerComponentHelper } from "./utils";
 
 interface FormWrapperProps extends FormProps {
@@ -31,17 +33,22 @@ const PathContext = React.createContext<{
   relativePath: (string | number)[]; // used for form.items inside a form.list
   fullPath: (string | number)[];
 }>({ relativePath: [], fullPath: [] });
+
+interface InternalFormInstanceContextData {
+  fireOnValuesChange: () => void;
+  forceRemount: () => void;
+  formProps: FormProps;
+}
+
 const InternalFormInstanceContext = React.createContext<
-  | {
-      fireOnValuesChange: () => void;
-      forceRemount: () => void;
-    }
-  | undefined
+  InternalFormInstanceContextData | undefined
 >(undefined);
 
 const Internal = (
   props: FormWrapperProps & {
     setRemountKey: React.Dispatch<React.SetStateAction<number>>;
+    labelCol?: ColProps & { horizontalOnly?: boolean };
+    wrapperCol?: ColProps & { horizontalOnly?: boolean };
   }
 ) => {
   const [form] = Form.useForm();
@@ -69,6 +76,7 @@ const Internal = (
       value={{
         fireOnValuesChange,
         forceRemount: () => props.setRemountKey((k) => k + 1),
+        formProps: props,
       }}
     >
       <Form
@@ -78,6 +86,16 @@ const Internal = (
           props.extendedOnValuesChange?.(args[1]);
         }}
         form={form}
+        labelCol={
+          props.labelCol?.horizontalOnly && props.layout !== "horizontal"
+            ? undefined
+            : props.labelCol
+        }
+        wrapperCol={
+          props.wrapperCol?.horizontalOnly && props.layout !== "horizontal"
+            ? undefined
+            : props.wrapperCol
+        }
       >
         {childrenNode}
       </Form>
@@ -92,7 +110,7 @@ function FormWrapper(props: FormWrapperProps) {
 const COMMON_ACTIONS = [
   {
     type: "button-action" as const,
-    label: "Append new Form.Item",
+    label: "Append new Form Item",
     onClick: ({ studioOps }: ActionProps<any>) => {
       studioOps.appendToSlot(
         {
@@ -105,7 +123,7 @@ const COMMON_ACTIONS = [
   },
   {
     type: "button-action" as const,
-    label: "Append new Form.Group",
+    label: "Append new Form Group",
     onClick: ({ studioOps }: ActionProps<any>) => {
       studioOps.appendToSlot(
         {
@@ -118,7 +136,7 @@ const COMMON_ACTIONS = [
   },
   {
     type: "button-action" as const,
-    label: "Append new Form.List",
+    label: "Append new Form List",
     onClick: ({ studioOps }: ActionProps<any>) => {
       studioOps.appendToSlot(
         {
@@ -132,6 +150,35 @@ const COMMON_ACTIONS = [
 ];
 
 export function registerForm(loader?: Registerable) {
+  const colProp = (displayName?: string, defaultValue?: {}) =>
+    ({
+      type: "object",
+      displayName: displayName,
+      advanced: true,
+      fields: {
+        span: {
+          type: "number",
+          displayName: "Grid columns",
+          description:
+            "The number of grid columns to span (24 columns available)",
+          min: 1,
+          max: 24,
+        },
+        offset: {
+          type: "number",
+          displayName: "Offset columns",
+          description: "Number of grid columns to skip from the left",
+          min: 0,
+          max: 23,
+        },
+        horizontalOnly: {
+          type: "boolean",
+          displayName: "Horizontal only",
+          description: "Only apply to horizontal layout",
+        },
+      },
+      defaultValue: defaultValue,
+    } as const);
   registerComponentHelper(loader, FormWrapper, {
     name: "plasmic-antd5-form",
     displayName: "Form",
@@ -142,10 +189,32 @@ export function registerForm(loader?: Registerable) {
           {
             type: "component",
             name: "plasmic-antd5-form-item",
+            props: {
+              label: {
+                type: "text",
+                value: "Name",
+              },
+              name: "name",
+              children: {
+                type: "component",
+                name: "plasmic-antd5-input",
+              },
+            },
           },
           {
             type: "component",
             name: "plasmic-antd5-form-item",
+            props: {
+              label: {
+                type: "text",
+                value: "Message",
+              },
+              name: "message",
+              children: {
+                type: "component",
+                name: "plasmic-antd5-textarea",
+              },
+            },
           },
           {
             type: "default-component",
@@ -167,21 +236,51 @@ export function registerForm(loader?: Registerable) {
       layout: {
         type: "choice",
         options: ["horizontal", "vertical", "inline"],
-        defaultValue: "horizontal",
+        defaultValue: "vertical",
       },
+      labelAlign: {
+        type: "choice",
+        options: ["left", "right"],
+        defaultValueHint: "right",
+        advanced: true,
+      },
+      labelCol: colProp("Label layout", {
+        span: 8,
+        horizontalOnly: true,
+      }),
+      wrapperCol: colProp("Field layout", {
+        span: 16,
+        horizontalOnly: true,
+      }),
       colon: {
         type: "boolean",
-        description: `Configure the default value of colon for Form.Item. Indicates whether the colon after the label is displayed (only effective when prop layout is horizontal)`,
-        defaultValue: true,
+        description: `Show a colon after the label by default (only for horizontal layout)`,
+        defaultValueHint: true,
         advanced: true,
       },
       requiredMark: {
-        displayName: "Show required fields?",
-        type: "boolean",
+        displayName: "Required/optional mark",
+        type: "choice",
+        options: [
+          {
+            value: "optional",
+            label: "Indicate optional fields",
+          },
+          {
+            value: true,
+            label: "Indicate required fields with asterisk",
+          },
+          {
+            value: false,
+            label: "Show no indicators",
+          },
+        ],
         advanced: true,
+        defaultValueHint: true,
       },
       extendedOnValuesChange: {
         type: "eventHandler",
+        displayName: "On values change",
         argTypes: [
           {
             name: "changedValues",
@@ -195,6 +294,7 @@ export function registerForm(loader?: Registerable) {
       },
       onFinish: {
         type: "eventHandler",
+        displayName: "On submit",
         argTypes: [
           {
             name: "values",
@@ -205,6 +305,7 @@ export function registerForm(loader?: Registerable) {
       onFinishFailed: {
         // function({ values, errorFields, outOfDate })
         type: "eventHandler",
+        displayName: "On invalid submit",
         argTypes: [
           {
             name: "data",
@@ -214,9 +315,9 @@ export function registerForm(loader?: Registerable) {
       },
       validateTrigger: {
         type: "choice",
-        options: ["onSubmit", "onChange"],
+        options: ["onSubmit", "onChange", "onBlur"],
         multiSelect: true,
-        defaultValue: ["onChange"],
+        defaultValueHint: ["onChange"],
         advanced: true,
       },
     },
@@ -233,8 +334,28 @@ export function registerForm(loader?: Registerable) {
   });
 }
 
+interface FormControlContextData {
+  internalFormCtx?: InternalFormInstanceContextData;
+}
+
+interface CuratedFieldData {
+  status: string | undefined;
+  // path: (string | number)[];
+  // errors: string[];
+  // warnings: string[];
+  // value: any;
+  // trigger: (x: any) => void;
+}
+
 interface InternalFormItemProps extends FormItemProps {
   rules: PlasmicRule[];
+  helpTextMode?: string;
+  noLabel?: boolean;
+  customizeProps?: (
+    fieldData: CuratedFieldData,
+    props: InternalFormItemProps
+  ) => FormItemProps;
+  setControlContextData?: (data: FormControlContextData) => void;
 }
 
 interface PlasmicRule {
@@ -314,6 +435,10 @@ const useFormItemFullName = (name: FormItemProps["name"]) => {
     : undefined;
 };
 
+function useFormInstanceMaybe(): FormInstance<any> | undefined {
+  return Form.useFormInstance();
+}
+
 function FormItemWrapper(props: InternalFormItemProps) {
   const relativeFormItemName = useFormItemRelativeName(props.name);
   const fullFormItemName = useFormItemFullName(props.name);
@@ -321,43 +446,82 @@ function FormItemWrapper(props: InternalFormItemProps) {
 
   const inCanvas = !!usePlasmicCanvasContext();
   if (inCanvas) {
-    const form = Form.useFormInstance();
+    const form = useFormInstanceMaybe();
     const prevPropValues = React.useRef({
       initialValue: props.initialValue,
       name: props.name,
     });
-    const { fireOnValuesChange, forceRemount } =
-      React.useContext(InternalFormInstanceContext) ?? {};
+    const internalFormCtx = React.useContext(InternalFormInstanceContext);
+    const { fireOnValuesChange, forceRemount } = internalFormCtx ?? {};
+    props.setControlContextData?.({
+      internalFormCtx,
+    });
     React.useEffect(() => {
       if (prevPropValues.current.name !== props.name) {
         forceRemount?.();
       }
       if (
         !fullFormItemName ||
-        form.getFieldValue(fullFormItemName) !==
+        form?.getFieldValue(fullFormItemName) !==
           prevPropValues.current.initialValue
       ) {
         // this field value is set at the form level
         return;
       }
-      form.setFieldValue(fullFormItemName, props.initialValue);
+      form?.setFieldValue(fullFormItemName, props.initialValue);
       prevPropValues.current.initialValue = props.initialValue;
       fireOnValuesChange?.();
-    }, [props.initialValue, fullFormItemName]);
+    }, [form, props.initialValue, fullFormItemName]);
   }
   return (
     <FormItem
       {...omit(props, "rules")}
+      label={props.noLabel ? undefined : props.label}
       name={relativeFormItemName}
       rules={rules}
-    />
+      {...(props.helpTextMode === "extra"
+        ? { extra: props.help }
+        : props.helpTextMode === "help"
+        ? // Never show validation errors in this mode, even if user didn't specify help
+          { help: props.help ?? "" }
+        : {})}
+    >
+      {props.customizeProps ? (
+        <FormItemForwarder formItemProps={props} />
+      ) : (
+        props.children
+      )}
+    </FormItem>
   );
+}
+
+function FormItemForwarder({ formItemProps, ...props }: any) {
+  const status = Form.Item.useStatus();
+  const internalFormCtx = React.useContext(InternalFormInstanceContext);
+  // const value = props[formItemProps.valuePropName ?? "value"];
+  // const trigger = props[formItemProps.trigger ?? "onChange"];
+  const data: CuratedFieldData = {
+    status: status.status,
+  };
+  props.setControlContextData?.({
+    internalFormCtx,
+    status,
+  });
+  return React.Children.map(formItemProps.children, (child, i) => {
+    const baseProps = { ...(child.props ?? {}), ...props };
+    return i === 0 && isValidElement(child)
+      ? cloneElement(
+          child,
+          mergeProps(baseProps, formItemProps.customizeProps(data, baseProps))
+        )
+      : child;
+  });
 }
 
 export function registerFormItem(loader?: Registerable) {
   registerComponentHelper(loader, FormItemWrapper, {
     name: "plasmic-antd5-form-item",
-    displayName: "Form.Item",
+    displayName: "Form Item",
     parentComponentName: "plasmic-antd5-form",
     props: {
       label: {
@@ -385,11 +549,16 @@ export function registerFormItem(loader?: Registerable) {
       },
       rules: {
         type: "formValidationRules",
-        displayName: "rules",
       } as any,
+      noLabel: {
+        type: "boolean",
+        advanced: true,
+      },
       colon: {
         type: "boolean",
-        defaultValue: false,
+        defaultValueHint: (_ps: InternalFormItemProps, ctx: any) =>
+          (ctx as FormControlContextData)?.internalFormCtx?.formProps.colon ??
+          true,
         advanced: true,
       },
       labelAlign: {
@@ -399,6 +568,65 @@ export function registerFormItem(loader?: Registerable) {
       },
       hidden: {
         type: "boolean",
+        advanced: true,
+      },
+      validateTrigger: {
+        type: "choice",
+        options: ["onSubmit", "onChange", "onBlur"],
+        multiSelect: true,
+        advanced: true,
+      },
+      shouldUpdate: {
+        type: "boolean",
+        advanced: true,
+        displayName: "Always re-render",
+        description:
+          "Form items normally only re-render when the corresponding form value changes, for performance. This forces it to always re-render.",
+      },
+      helpTextMode: {
+        type: "choice",
+        displayName: "Help text",
+        options: [
+          {
+            value: "errors",
+            label: "Validation errors",
+          },
+          {
+            value: "extra",
+            label: "Custom help text and validation errors",
+          },
+          {
+            value: "help",
+            label: "Custom help text, no validation errors",
+          },
+        ],
+        defaultValueHint: "Show validation errors",
+        description:
+          "What to show in the help text. Edit help text by editing the 'help' slot in the outline.",
+      },
+      help: {
+        type: "slot",
+        hidden: (ps) => !["extra", "help"].includes(ps.helpTextMode ?? ""),
+        hidePlaceholder: true,
+        // advanced: true,
+      },
+      customizeProps: {
+        type: "function",
+        description:
+          "Customize the props passed into the wrapped field component. Takes the current status ('success', 'warning', 'error', or 'validating').)",
+        argNames: ["fieldData"],
+        argValues: (_ps: any, ctx: any) => [
+          {
+            status: ctx?.status?.status,
+          },
+        ],
+        advanced: true,
+      } as any,
+      noStyle: {
+        type: "boolean",
+        displayName: "Field only",
+        description:
+          "Don't render anything but the wrapped field component - so no label, help text, validation error, etc.",
         advanced: true,
       },
     },
@@ -429,7 +657,7 @@ function FormGroup(props: FormGroupProps) {
 export function registerFormGroup(loader?: Registerable) {
   registerComponentHelper(loader, FormGroup, {
     name: "plasmic-antd5-form-group",
-    displayName: "Form.Group",
+    displayName: "Form Group",
     parentComponentName: "plasmic-antd5-form",
     actions: COMMON_ACTIONS,
     props: {
@@ -486,7 +714,7 @@ export const FormListWrapper = React.forwardRef(function FormListWrapper(
   );
   const inCanvas = !!usePlasmicCanvasContext();
   if (inCanvas) {
-    const form = Form.useFormInstance();
+    const form = useFormInstanceMaybe();
     const prevPropValues = React.useRef({
       initialValue: props.initialValue,
       name: props.name,
@@ -498,7 +726,7 @@ export const FormListWrapper = React.forwardRef(function FormListWrapper(
         forceRemount?.();
       }
       if (fullFormItemName) {
-        form.setFieldValue(fullFormItemName, props.initialValue);
+        form?.setFieldValue(fullFormItemName, props.initialValue);
         prevPropValues.current.initialValue = props.initialValue;
         fireOnValuesChange?.();
       }
@@ -531,33 +759,63 @@ export function registerFormList(loader?: Registerable) {
   registerComponentHelper(loader, FormListWrapper, {
     name: "plasmic-antd5-form-list",
     parentComponentName: "plasmic-antd5-form",
-    displayName: "Form.List",
+    displayName: "Form List",
     actions: COMMON_ACTIONS,
     props: {
       children: {
         type: "slot",
         defaultValue: [
           {
-            type: "component",
-            name: "plasmic-antd5-form-item",
-            props: {
-              name: "item",
-            },
+            type: "hbox",
+            children: [
+              {
+                type: "component",
+                name: "plasmic-antd5-form-item",
+                props: {
+                  name: "firstName",
+                  label: {
+                    type: "text",
+                    value: "First name",
+                  },
+                  children: {
+                    type: "component",
+                    name: "plasmic-antd5-input",
+                  },
+                },
+              },
+              {
+                type: "component",
+                name: "plasmic-antd5-form-item",
+                props: {
+                  name: "lastName",
+                  label: {
+                    type: "text",
+                    value: "Last name",
+                  },
+                  children: {
+                    type: "component",
+                    name: "plasmic-antd5-input",
+                  },
+                },
+              },
+            ],
           },
         ],
       },
       name: {
         type: "string",
-        defaultValue: "list",
+        defaultValue: "guests",
       },
       initialValue: {
-        type: "object",
+        type: "array",
         defaultValue: [
           {
-            item: "Item 1",
+            firstName: "Jane",
+            lastName: "Doe",
           },
           {
-            item: "Item 2",
+            firstName: "John",
+            lastName: "Smith",
           },
         ],
       } as any,

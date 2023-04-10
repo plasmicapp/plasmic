@@ -8,6 +8,7 @@ export type TokenType =
 
 export interface TokenRegistration {
   name: string;
+  displayName: string;
   value: string;
   type: TokenType;
 }

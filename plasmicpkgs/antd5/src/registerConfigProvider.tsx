@@ -252,7 +252,8 @@ export function registerTokens(loader?: Registerable) {
         : name
     );
     return {
-      name: `Sys: ${humanName}`,
+      name,
+      displayName: `System: ${humanName}`,
       value: `var(--antd-${name})`,
       type: "color",
     } as TokenRegistration;

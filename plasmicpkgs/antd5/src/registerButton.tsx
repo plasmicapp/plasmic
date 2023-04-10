@@ -73,6 +73,10 @@ export function registerButton(loader?: Registerable) {
         type: "slot",
         hidePlaceholder: true,
       },
+      onClick: {
+        type: "eventHandler",
+        argTypes: [],
+      },
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerButton",
     importName: "AntdButton",
