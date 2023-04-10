@@ -11,22 +11,19 @@ import {
   registerFormItem,
   registerFormList,
 } from "./registerForm";
-import {
-  registerInput,
-  registerNumberInput,
-  registerPasswordInput,
-  registerTextArea,
-} from "./registerInput";
 import { registerMenu } from "./registerMenu";
 import { registerModal } from "./registerModal";
 import { registerRadio } from "./registerRadio";
 import { registerSelect } from "./registerSelect";
+import { registerTable } from "./registerTable";
 import { Registerable } from "./utils";
+import { registerInput, registerPasswordInput, registerTextArea, registerNumberInput } from './registerInput';
 
 export function registerAll(loader?: Registerable) {
   registerConfigProvider(loader);
   registerTokens(loader);
   registerSelect(loader);
+  registerTable(loader);
   registerCheckbox(loader);
   registerRadio(loader);
   registerModal(loader);
