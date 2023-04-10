@@ -12,7 +12,8 @@ import FormList, {
 } from "antd/es/form/FormList";
 import { ColProps } from "antd/es/grid/col";
 import equal from "fast-deep-equal";
-import React from "react";
+import React, { cloneElement, isValidElement } from "react";
+import { mergeProps } from "./react-utils";
 import { omit, Registerable, registerComponentHelper } from "./utils";
 
 interface FormWrapperProps extends FormProps {
@@ -337,9 +338,23 @@ interface FormControlContextData {
   internalFormCtx?: InternalFormInstanceContextData;
 }
 
+interface CuratedFieldData {
+  status: string | undefined;
+  // path: (string | number)[];
+  // errors: string[];
+  // warnings: string[];
+  // value: any;
+  // trigger: (x: any) => void;
+}
+
 interface InternalFormItemProps extends FormItemProps {
   rules: PlasmicRule[];
+  helpTextMode?: string;
   noLabel?: boolean;
+  customizeProps?: (
+    fieldData: CuratedFieldData,
+    props: InternalFormItemProps
+  ) => FormItemProps;
   setControlContextData?: (data: FormControlContextData) => void;
 }
 
@@ -464,8 +479,43 @@ function FormItemWrapper(props: InternalFormItemProps) {
       label={props.noLabel ? undefined : props.label}
       name={relativeFormItemName}
       rules={rules}
-    />
+      {...(props.helpTextMode === "extra"
+        ? { extra: props.help }
+        : props.helpTextMode === "help"
+        ? // Never show validation errors in this mode, even if user didn't specify help
+          { help: props.help ?? "" }
+        : {})}
+    >
+      {props.customizeProps ? (
+        <FormItemForwarder formItemProps={props} />
+      ) : (
+        props.children
+      )}
+    </FormItem>
   );
+}
+
+function FormItemForwarder({ formItemProps, ...props }: any) {
+  const status = Form.Item.useStatus();
+  const internalFormCtx = React.useContext(InternalFormInstanceContext);
+  // const value = props[formItemProps.valuePropName ?? "value"];
+  // const trigger = props[formItemProps.trigger ?? "onChange"];
+  const data: CuratedFieldData = {
+    status: status.status,
+  };
+  props.setControlContextData?.({
+    internalFormCtx,
+    status,
+  });
+  return React.Children.map(formItemProps.children, (child, i) => {
+    const baseProps = { ...(child.props ?? {}), ...props };
+    return i === 0 && isValidElement(child)
+      ? cloneElement(
+          child,
+          mergeProps(baseProps, formItemProps.customizeProps(data, baseProps))
+        )
+      : child;
+  });
 }
 
 export function registerFormItem(loader?: Registerable) {
@@ -520,17 +570,63 @@ export function registerFormItem(loader?: Registerable) {
         type: "boolean",
         advanced: true,
       },
+      validateTrigger: {
+        type: "choice",
+        options: ["onSubmit", "onChange", "onBlur"],
+        multiSelect: true,
+        advanced: true,
+      },
+      shouldUpdate: {
+        type: "boolean",
+        advanced: true,
+        displayName: "Always re-render",
+        description:
+          "Form items normally only re-render when the corresponding form value changes, for performance. This forces it to always re-render.",
+      },
+      helpTextMode: {
+        type: "choice",
+        displayName: "Help text",
+        options: [
+          {
+            value: "errors",
+            label: "Validation errors",
+          },
+          {
+            value: "extra",
+            label: "Custom help text and validation errors",
+          },
+          {
+            value: "help",
+            label: "Custom help text, no validation errors",
+          },
+        ],
+        defaultValueHint: "Show validation errors",
+        description:
+          "What to show in the help text. Edit help text by editing the 'help' slot in the outline.",
+      },
+      help: {
+        type: "slot",
+        hidden: (ps) => !["extra", "help"].includes(ps.helpTextMode ?? ""),
+        hidePlaceholder: true,
+        // advanced: true,
+      },
+      customizeProps: {
+        type: "function",
+        description:
+          "Customize the props passed into the wrapped field component. Takes the current status ('success', 'warning', 'error', or 'validating').)",
+        argNames: ["fieldData"],
+        argValues: (_ps: any, ctx: any) => [
+          {
+            status: ctx?.status?.status,
+          },
+        ],
+        advanced: true,
+      } as any,
       noStyle: {
         type: "boolean",
         displayName: "Field only",
         description:
           "Don't render anything but the wrapped field component - so no label, help text, validation error, etc.",
-        advanced: true,
-      },
-      validateTrigger: {
-        type: "choice",
-        options: ["onSubmit", "onChange", "onBlur"],
-        multiSelect: true,
         advanced: true,
       },
     },
