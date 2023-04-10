@@ -97,6 +97,15 @@ const Internal = (
             : props.wrapperCol
         }
       >
+        {/*Remove built-in spacing on form items*/}
+        <style>{`
+        .ant-form-item {
+          margin-bottom: 0;
+        }
+        .ant-form-item-explain + div {
+          display: none;
+        }
+        `}</style>
         {childrenNode}
       </Form>
     </InternalFormInstanceContext.Provider>
