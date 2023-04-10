@@ -144,7 +144,7 @@ const richLayoutMeta: ComponentMeta<RichLayoutProps> = {
         value,
         label: capitalize(value),
       })),
-      defaultValue: "mix",
+      defaultValueHint: "top",
     },
 
     // Advanced, show later
@@ -181,12 +181,14 @@ const richLayoutMeta: ComponentMeta<RichLayoutProps> = {
     fixedHeader: {
       displayName: "Sticky header",
       type: "boolean",
-      defaultValue: false,
+      hidden: (ps) => (ps.layout ?? "top") !== "top",
+      defaultValueHint: false,
     },
     fixSiderbar: {
       displayName: "Sticky sidebar",
       type: "boolean",
-      defaultValue: false,
+      hidden: (ps) => (ps.layout ?? "top") !== "side",
+      defaultValueHint: false,
     },
     /*
     showAvatarMenu: {

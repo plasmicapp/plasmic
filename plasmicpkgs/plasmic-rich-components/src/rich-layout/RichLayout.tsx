@@ -1,7 +1,7 @@
 import { LogoutOutlined } from "@ant-design/icons";
 import type { MenuDataItem, ProLayoutProps } from "@ant-design/pro-components";
 import { ProLayout } from "@ant-design/pro-components";
-import { Dropdown } from "antd";
+import Dropdown from "antd/es/dropdown";
 import React, { ReactNode } from "react";
 
 interface NavMenuItem extends Omit<MenuDataItem, "routes"> {
@@ -41,6 +41,15 @@ export function RichLayout({
       </style>
       <ProLayout
         {...layoutProps}
+        // Tweak defaults. ProLayout is janky and has terrible docs!
+        layout={layoutProps.layout ?? "top"}
+        fixedHeader={layoutProps.fixedHeader ?? false}
+        fixSiderbar={
+          // Doesn't stretch full height if you set this to false and you're in mix mode.
+          layoutProps.layout === "mix"
+            ? undefined
+            : layoutProps.fixSiderbar ?? false
+        }
         // This is always needed if you want layout mix to have effect and look any different from layout side - not clear why this should ever be false.
         splitMenus={layoutProps.layout === "mix"}
         route={{
