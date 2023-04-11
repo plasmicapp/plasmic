@@ -10,11 +10,11 @@
       "build": {
         "inputs": [
           "{projectRoot}/**/*",
-          "!{projectRoot}/**/dist/**/*"
+          "!{projectRoot}/**/dist/**/*",
+          "!{projectRoot}/src/version.ts"
         ],
         "outputs": [
-          "{projectRoot}/dist",
-          "{projectRoot}/**/dist",
+          "{projectRoot}/**/dist/**/*",
           "{projectRoot}/src/version.ts"
         ]
       }

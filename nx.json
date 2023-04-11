@@ -1,4 +1,7 @@
 {
+  "affected": {
+    "defaultBase": "master"
+  },
   "tasksRunnerOptions": {
     "default": {
       "runner": "nx/tasks-runners/default",
@@ -9,7 +12,13 @@
   },
   "targetDefaults": {
     "build": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "inputs": [
+        "{projectRoot}/**/*",
+        "!{projectRoot}/**/dist/**/*",
+        "!{projectRoot}/**/dist-*/**/*"
+      ],
+      "outputs": ["{projectRoot}/**/dist/**/*", "{projectRoot}/**/dist-*/**/*"]
     },
     "publish": {
       "dependsOn": "build"
