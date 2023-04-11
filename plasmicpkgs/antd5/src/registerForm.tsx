@@ -226,8 +226,8 @@ export function registerForm(loader?: Registerable) {
             },
           },
           {
-            type: "default-component",
-            kind: "button",
+            type: "component",
+            name: "plasmic-antd5-button",
             props: {
               children: {
                 type: "text",
