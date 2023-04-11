@@ -11,9 +11,8 @@ import {
   TableSchema,
 } from "@plasmicapp/data-sources";
 import { DataProvider } from "@plasmicapp/host";
-import Button from "antd/es/button";
+import { Button, Dropdown } from "antd";
 import { SizeType } from "antd/es/config-provider/SizeContext";
-import Dropdown from "antd/es/dropdown";
 import { createObjectCsvStringifier } from "csv-writer-browser";
 import fastStringify from "fast-stringify";
 import React, { ReactNode, useRef, useState } from "react";

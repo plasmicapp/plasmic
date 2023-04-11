@@ -1,7 +1,7 @@
 import { LogoutOutlined } from "@ant-design/icons";
 import type { MenuDataItem, ProLayoutProps } from "@ant-design/pro-components";
 import { ProLayout } from "@ant-design/pro-components";
-import Dropdown from "antd/es/dropdown";
+import { Dropdown } from "antd";
 import React, { ReactNode } from "react";
 
 interface NavMenuItem extends Omit<MenuDataItem, "routes"> {
