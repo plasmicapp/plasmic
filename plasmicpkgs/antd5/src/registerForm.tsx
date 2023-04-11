@@ -238,8 +238,7 @@ export function registerForm(loader?: Registerable) {
         ],
       },
       initialValues: {
-        type: "code",
-        lang: "json",
+        type: "object",
         forceRemount: true,
       } as any,
       layout: {
