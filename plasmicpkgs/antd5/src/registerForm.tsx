@@ -191,6 +191,10 @@ export function registerForm(loader?: Registerable) {
   registerComponentHelper(loader, FormWrapper, {
     name: "plasmic-antd5-form",
     displayName: "Form",
+    defaultStyles: {
+      display: "plasmic-content-layout",
+      gridRowGap: "10px",
+    },
     props: {
       children: {
         type: "slot",
