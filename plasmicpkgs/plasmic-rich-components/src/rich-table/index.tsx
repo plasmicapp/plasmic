@@ -33,6 +33,9 @@ function getDefaultValueHint(field: keyof ColumnConfig) {
 const dataTableMeta: ComponentMeta<RichTableProps> = {
   name: "hostless-rich-table",
   displayName: "Rich Table",
+  defaultStyles: {
+    width: "stretch",
+  },
   props: {
     data: {
       type: "dataSourceOpData" as any,
