@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/cli",
-  "version": "0.1.256",
+  "version": "0.1.257",
   "description": "plasmic cli for syncing local code with Plasmic designs",
   "engines": {
     "node": ">=12"
@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.12.1",
-    "@plasmicapp/react-web": "0.2.192",
+    "@plasmicapp/react-web": "0.2.193",
     "@types/cli-progress": "^3.11.0",
     "@types/findup-sync": "^2.0.2",
     "@types/glob": "^7.1.3",
