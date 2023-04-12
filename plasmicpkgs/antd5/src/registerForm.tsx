@@ -352,7 +352,7 @@ interface CuratedFieldData {
   // trigger: (x: any) => void;
 }
 
-interface InternalFormItemProps extends FormItemProps {
+interface InternalFormItemProps extends Omit<FormItemProps, "rules"> {
   rules: PlasmicRule[];
   helpTextMode?: string;
   noLabel?: boolean;
@@ -369,10 +369,12 @@ interface PlasmicRule {
     | "len"
     | "max"
     | "min"
+    | "regex"
     | "required"
     | "whitespace"
     | "advanced";
   length?: number;
+  pattern?: string;
   custom?: (...args: any[]) => any;
   options?: { value: string }[];
   message?: string;
@@ -395,13 +397,18 @@ function plasmicRulesToAntdRules(plasmicRules: PlasmicRule[]) {
           message: plasmicRule.message,
         });
         break;
+      case "regex":
+        rules.push({
+          pattern: new RegExp(plasmicRule.pattern ?? ""),
+          message: plasmicRule.message,
+        });
+        break;
       case "whitespace":
         rules.push({
           whitespace: true,
           message: plasmicRule.message,
         });
         break;
-      case "len":
       case "min":
       case "max":
         rules.push({
