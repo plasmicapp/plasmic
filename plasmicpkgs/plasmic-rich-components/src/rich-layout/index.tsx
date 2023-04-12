@@ -40,7 +40,10 @@ const richLayoutMeta: ComponentMeta<RichLayoutProps> = {
   displayName: "Rich Layout",
   props: {
     children: "slot",
-    actionsChildren: "slot",
+    actionsChildren: {
+      type: "slot",
+      hidePlaceholder: true,
+    },
     title: {
       displayName: "Title",
       type: "string",
