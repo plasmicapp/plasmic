@@ -99,9 +99,6 @@ const Internal = (
       >
         {/*Remove built-in spacing on form items*/}
         <style>{`
-        .ant-form-item {
-          margin-bottom: 0;
-        }
         .ant-form-item-explain + div {
           display: none;
         }
@@ -130,32 +127,32 @@ const COMMON_ACTIONS = [
       );
     },
   },
-  {
-    type: "button-action" as const,
-    label: "Append new Form Group",
-    onClick: ({ studioOps }: ActionProps<any>) => {
-      studioOps.appendToSlot(
-        {
-          type: "component",
-          name: "plasmic-antd5-form-group",
-        },
-        "children"
-      );
-    },
-  },
-  {
-    type: "button-action" as const,
-    label: "Append new Form List",
-    onClick: ({ studioOps }: ActionProps<any>) => {
-      studioOps.appendToSlot(
-        {
-          type: "component",
-          name: "plasmic-antd5-form-list",
-        },
-        "children"
-      );
-    },
-  },
+  // {
+  //   type: "button-action" as const,
+  //   label: "Append new Form Group",
+  //   onClick: ({ studioOps }: ActionProps<any>) => {
+  //     studioOps.appendToSlot(
+  //       {
+  //         type: "component",
+  //         name: "plasmic-antd5-form-group",
+  //       },
+  //       "children"
+  //     );
+  //   },
+  // },
+  // {
+  //   type: "button-action" as const,
+  //   label: "Append new Form List",
+  //   onClick: ({ studioOps }: ActionProps<any>) => {
+  //     studioOps.appendToSlot(
+  //       {
+  //         type: "component",
+  //         name: "plasmic-antd5-form-list",
+  //       },
+  //       "children"
+  //     );
+  //   },
+  // },
 ];
 
 export function registerForm(loader?: Registerable) {
@@ -355,7 +352,7 @@ interface CuratedFieldData {
   // trigger: (x: any) => void;
 }
 
-interface InternalFormItemProps extends FormItemProps {
+interface InternalFormItemProps extends Omit<FormItemProps, "rules"> {
   rules: PlasmicRule[];
   helpTextMode?: string;
   noLabel?: boolean;
@@ -372,10 +369,12 @@ interface PlasmicRule {
     | "len"
     | "max"
     | "min"
+    | "regex"
     | "required"
     | "whitespace"
     | "advanced";
   length?: number;
+  pattern?: string;
   custom?: (...args: any[]) => any;
   options?: { value: string }[];
   message?: string;
@@ -398,13 +397,18 @@ function plasmicRulesToAntdRules(plasmicRules: PlasmicRule[]) {
           message: plasmicRule.message,
         });
         break;
+      case "regex":
+        rules.push({
+          pattern: new RegExp(plasmicRule.pattern ?? ""),
+          message: plasmicRule.message,
+        });
+        break;
       case "whitespace":
         rules.push({
           whitespace: true,
           message: plasmicRule.message,
         });
         break;
-      case "len":
       case "min":
       case "max":
         rules.push({
