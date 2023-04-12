@@ -130,32 +130,32 @@ const COMMON_ACTIONS = [
       );
     },
   },
-  {
-    type: "button-action" as const,
-    label: "Append new Form Group",
-    onClick: ({ studioOps }: ActionProps<any>) => {
-      studioOps.appendToSlot(
-        {
-          type: "component",
-          name: "plasmic-antd5-form-group",
-        },
-        "children"
-      );
-    },
-  },
-  {
-    type: "button-action" as const,
-    label: "Append new Form List",
-    onClick: ({ studioOps }: ActionProps<any>) => {
-      studioOps.appendToSlot(
-        {
-          type: "component",
-          name: "plasmic-antd5-form-list",
-        },
-        "children"
-      );
-    },
-  },
+  // {
+  //   type: "button-action" as const,
+  //   label: "Append new Form Group",
+  //   onClick: ({ studioOps }: ActionProps<any>) => {
+  //     studioOps.appendToSlot(
+  //       {
+  //         type: "component",
+  //         name: "plasmic-antd5-form-group",
+  //       },
+  //       "children"
+  //     );
+  //   },
+  // },
+  // {
+  //   type: "button-action" as const,
+  //   label: "Append new Form List",
+  //   onClick: ({ studioOps }: ActionProps<any>) => {
+  //     studioOps.appendToSlot(
+  //       {
+  //         type: "component",
+  //         name: "plasmic-antd5-form-list",
+  //       },
+  //       "children"
+  //     );
+  //   },
+  // },
 ];
 
 export function registerForm(loader?: Registerable) {
