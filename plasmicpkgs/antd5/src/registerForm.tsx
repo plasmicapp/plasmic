@@ -560,9 +560,6 @@ export function registerFormItem(loader?: Registerable) {
       initialValue: {
         type: "string",
       },
-      required: {
-        type: "boolean",
-      },
       rules: {
         type: "formValidationRules",
       } as any,
