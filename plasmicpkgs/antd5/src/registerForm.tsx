@@ -99,7 +99,7 @@ const Internal = (
       >
         {/*Remove built-in spacing on form items*/}
         <style>{`
-        .ant-form-item-explain + div {
+        .ant-form-item-explain + div, .ant-form-item-margin-offset {
           display: none;
         }
         `}</style>
