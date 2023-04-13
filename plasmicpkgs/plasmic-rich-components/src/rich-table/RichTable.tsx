@@ -59,9 +59,12 @@ export interface RichTableProps {
   actions?: Action[];
   customActionChildren?: ReactNode;
 
-  showSearch?: boolean;
-
   pageSize?: number;
+
+  hideSearch?: boolean;
+  hideDensity?: boolean;
+  hideColumnPicker?: boolean;
+  hideExports?: boolean;
 }
 
 function tryGetSchema(data?: QueryResult): TableSchema | undefined {
@@ -127,6 +130,19 @@ function normalizeData(
   return { ...normed, schema };
 }
 
+/**
+ * Render booleans, objects, arrays, etc. as JSON repr.
+ */
+function safeRender(x: unknown) {
+  return x === undefined || x === null
+    ? ""
+    : typeof x === "string"
+    ? x
+    : typeof x === "number"
+    ? x.toString()
+    : JSON.stringify(x);
+}
+
 export function RichTable(props: RichTableProps) {
   const {
     className,
@@ -151,8 +167,11 @@ export function RichTable(props: RichTableProps) {
     addHref,
     actions,
     customActionChildren,
-    showSearch = true,
     pageSize = 20,
+    hideSearch,
+    hideDensity,
+    hideColumnPicker,
+    hideExports,
   } = props;
 
   const data = normalizeData(rawData);
@@ -211,7 +230,7 @@ export function RichTable(props: RichTableProps) {
               <DataProvider name="currentRow" data={record}>
                 <DataProvider name="currentRowIndex" data={rowIndex}>
                   <DataProvider name="currentColumn" data={value}>
-                    {cconfig.expr ? cconfig.expr(record) : record}
+                    {safeRender(cconfig.expr ? cconfig.expr(record) : value)}
                     {/*{showChildren &&*/}
                     {/*  children &&*/}
                     {/*  (typeof children === "object"*/}
@@ -312,9 +331,13 @@ export function RichTable(props: RichTableProps) {
         editable={{ type: "multiple" }}
         search={false}
         options={{
-          setting: {
-            listsHeight: 400,
-          },
+          setting: hideColumnPicker
+            ? false
+            : {
+                listsHeight: 400,
+              },
+          reload: false,
+          density: !hideDensity,
         }}
         pagination={{
           pageSize,
@@ -323,7 +346,7 @@ export function RichTable(props: RichTableProps) {
         dateFormatter="string"
         headerTitle={title}
         toolbar={{
-          search: showSearch
+          search: !hideSearch
             ? {
                 value: search,
                 onChange: (e) => setSearch(e.target.value),
@@ -343,79 +366,84 @@ export function RichTable(props: RichTableProps) {
               Add
             </Button>
           ),
-          <Dropdown
-            key="menu"
-            menu={{
-              items: [
-                {
-                  label: "Download as CSV",
-                  key: "csv",
-                  onClick: async () => {
-                    const writer = createObjectCsvStringifier({
-                      header:
-                        tryGetSchema(data)?.fields.map((f) => ({
-                          id: f.id,
-                          title: f.id,
-                        })) ?? [],
-                    });
-                    const dataStr =
-                      writer.getHeaderString() +
-                      writer.stringifyRecords(data?.data as any);
+          !hideExports && (
+            <Dropdown
+              key="menu"
+              menu={{
+                items: [
+                  {
+                    label: "Download as CSV",
+                    key: "csv",
+                    onClick: async () => {
+                      const writer = createObjectCsvStringifier({
+                        header:
+                          tryGetSchema(data)?.fields.map((f) => ({
+                            id: f.id,
+                            title: f.id,
+                          })) ?? [],
+                      });
+                      const dataStr =
+                        writer.getHeaderString() +
+                        writer.stringifyRecords(data?.data as any);
 
-                    // const dataStr = stringify(data?.data as any, {
-                    //   columns:
-                    //     tryGetSchema(data)?.fields.map((f) => f.id) ?? [],
-                    //   header: true,
-                    // });
+                      // const dataStr = stringify(data?.data as any, {
+                      //   columns:
+                      //     tryGetSchema(data)?.fields.map((f) => f.id) ?? [],
+                      //   header: true,
+                      // });
 
-                    const filename = "data.csv";
+                      const filename = "data.csv";
 
-                    // Adapted from https://stackoverflow.com/a/68771795
-                    const blob = new Blob([dataStr], {
-                      type: "text/csv;charset=utf-8;",
-                    });
-                    if ((navigator as any).msSaveBlob) {
-                      // In case of IE 10+
-                      (navigator as any).msSaveBlob(blob, filename);
-                    } else {
-                      const link = document.createElement("a");
-                      if (link.download !== undefined) {
-                        // Browsers that support HTML5 download attribute
-                        const url = URL.createObjectURL(blob);
-                        link.setAttribute("href", url);
-                        link.setAttribute("download", filename);
-                        link.style.visibility = "hidden";
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
+                      // Adapted from https://stackoverflow.com/a/68771795
+                      const blob = new Blob([dataStr], {
+                        type: "text/csv;charset=utf-8;",
+                      });
+                      if ((navigator as any).msSaveBlob) {
+                        // In case of IE 10+
+                        (navigator as any).msSaveBlob(blob, filename);
+                      } else {
+                        const link = document.createElement("a");
+                        if (link.download !== undefined) {
+                          // Browsers that support HTML5 download attribute
+                          const url = URL.createObjectURL(blob);
+                          link.setAttribute("href", url);
+                          link.setAttribute("download", filename);
+                          link.style.visibility = "hidden";
+                          document.body.appendChild(link);
+                          link.click();
+                          document.body.removeChild(link);
+                        }
                       }
-                    }
+                    },
                   },
-                },
-                {
-                  label: "Download as JSON",
-                  key: "json",
-                  onClick: () => {
-                    const dataStr = fastStringify(data?.data);
-                    const dataUri = `data:application/json;charset=utf-8, ${encodeURIComponent(
-                      dataStr
-                    )}`;
+                  {
+                    label: "Download as JSON",
+                    key: "json",
+                    onClick: () => {
+                      const dataStr = fastStringify(data?.data);
+                      const dataUri = `data:application/json;charset=utf-8, ${encodeURIComponent(
+                        dataStr
+                      )}`;
 
-                    const exportFileDefaultName = "data.json";
+                      const exportFileDefaultName = "data.json";
 
-                    const linkElement = document.createElement("a");
-                    linkElement.setAttribute("href", dataUri);
-                    linkElement.setAttribute("download", exportFileDefaultName);
-                    linkElement.click();
+                      const linkElement = document.createElement("a");
+                      linkElement.setAttribute("href", dataUri);
+                      linkElement.setAttribute(
+                        "download",
+                        exportFileDefaultName
+                      );
+                      linkElement.click();
+                    },
                   },
-                },
-              ],
-            }}
-          >
-            <Button>
-              <EllipsisOutlined />
-            </Button>
-          </Dropdown>,
+                ],
+              }}
+            >
+              <Button>
+                <EllipsisOutlined />
+              </Button>
+            </Dropdown>
+          ),
         ]}
       />
       {/*Always hide the weird pin left/right buttons for now, which also have render layout issues*/}
