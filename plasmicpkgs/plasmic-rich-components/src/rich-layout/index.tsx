@@ -37,7 +37,7 @@ function generateNavMenuType(
 
 const richLayoutMeta: ComponentMeta<RichLayoutProps> = {
   name: "hostless-rich-layout",
-  displayName: "Rich Layout",
+  displayName: "Rich Page Layout",
   props: {
     children: "slot",
     actionsChildren: {
@@ -233,8 +233,7 @@ const richLayoutMeta: ComponentMeta<RichLayoutProps> = {
   },
 
   importName: "RichLayout",
-  importPath:
-    "@plasmicpkgs/plasmic-rich-components/dist/rich-layout/RichLayout",
+  importPath: "@plasmicpkgs/plasmic-rich-components",
 };
 
 export function registerRichLayout(loader?: Registerable) {

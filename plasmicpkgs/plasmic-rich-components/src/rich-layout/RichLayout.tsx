@@ -2,7 +2,8 @@ import { LogoutOutlined } from "@ant-design/icons";
 import type { MenuDataItem, ProLayoutProps } from "@ant-design/pro-components";
 import { ProLayout } from "@ant-design/pro-components";
 import { Dropdown } from "antd";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
+import { useIsClient } from "../common";
 
 interface NavMenuItem extends Omit<MenuDataItem, "routes"> {
   routes?: NavMenuItem[];
@@ -30,7 +31,16 @@ export function RichLayout({
   className,
   ...layoutProps
 }: RichLayoutProps) {
-  const { pathname } = location;
+  const isClient = useIsClient();
+  const [pathname, setPathname] = useState<string | undefined>(undefined);
+  useEffect(() => {
+    if (typeof location !== "undefined") {
+      setPathname(location.pathname);
+    }
+  }, []);
+  if (!isClient) {
+    return null;
+  }
   return (
     <div className={className}>
       {/* Remove the always-on fixed gradient background layer. */}

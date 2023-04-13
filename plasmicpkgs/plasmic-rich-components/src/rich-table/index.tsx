@@ -32,7 +32,7 @@ function getDefaultValueHint(field: keyof ColumnConfig) {
 
 const dataTableMeta: ComponentMeta<RichTableProps> = {
   name: "hostless-rich-table",
-  displayName: "Rich Table",
+  displayName: "Table",
   defaultStyles: {
     width: "stretch",
   },
@@ -117,7 +117,7 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
     },
   },
   importName: "RichTable",
-  importPath: "@plasmicpkgs/plasmic-rich-components/dist/rich-table/RichTable",
+  importPath: "@plasmicpkgs/plasmic-rich-components",
 };
 
 export function registerRichTable(loader?: Registerable) {
