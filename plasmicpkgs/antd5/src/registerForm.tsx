@@ -108,7 +108,7 @@ const Internal = (
     </InternalFormInstanceContext.Provider>
   );
 };
-function FormWrapper(props: FormWrapperProps) {
+export function FormWrapper(props: FormWrapperProps) {
   const [remountKey, setRemountKey] = React.useState(0);
   return <Internal key={remountKey} {...props} setRemountKey={setRemountKey} />;
 }
@@ -339,7 +339,7 @@ export function registerForm(loader?: Registerable) {
       },
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerForm",
-    importName: "Form",
+    importName: "FormWrapper",
   });
 }
 
@@ -455,7 +455,7 @@ function useFormInstanceMaybe(): FormInstance<any> | undefined {
   return Form.useFormInstance();
 }
 
-function FormItemWrapper(props: InternalFormItemProps) {
+export function FormItemWrapper(props: InternalFormItemProps) {
   const relativeFormItemName = useFormItemRelativeName(props.name);
   const fullFormItemName = useFormItemFullName(props.name);
   const rules = props.rules ? plasmicRulesToAntdRules(props.rules) : undefined;
@@ -656,7 +656,7 @@ export interface FormGroupProps {
   children: React.ReactNode;
 }
 
-function FormGroup(props: FormGroupProps) {
+export function FormGroup(props: FormGroupProps) {
   const pathCtx = React.useContext(PathContext);
   return (
     <PathContext.Provider
