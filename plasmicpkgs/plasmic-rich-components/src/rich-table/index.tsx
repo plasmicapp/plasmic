@@ -48,12 +48,6 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
       defaultValueHint: "large",
     },
 
-    // TODO
-    // pagination: {
-    //   type: "boolean",
-    //   defaultValueHint: true,
-    // },
-
     pageSize: {
       type: "number",
       defaultValueHint: 20,
@@ -115,6 +109,12 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
           },
         },
       },
+    },
+
+    pagination: {
+      type: "boolean",
+      advanced: true,
+      defaultValueHint: true,
     },
 
     hideSearch: {

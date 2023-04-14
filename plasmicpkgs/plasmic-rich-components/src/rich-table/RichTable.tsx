@@ -160,6 +160,7 @@ export function RichTable(props: RichTableProps) {
       },
     },
     // children,
+    pagination = true,
     defaultSize,
     fields,
     setControlContextData,
@@ -339,10 +340,14 @@ export function RichTable(props: RichTableProps) {
           reload: false,
           density: !hideDensity,
         }}
-        pagination={{
-          pageSize,
-          onChange: (page) => console.log(page),
-        }}
+        pagination={
+          pagination
+            ? {
+                pageSize,
+                onChange: (page) => console.log(page),
+              }
+            : false
+        }
         dateFormatter="string"
         headerTitle={title}
         toolbar={{
