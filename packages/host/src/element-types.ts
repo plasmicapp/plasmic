@@ -1,6 +1,8 @@
 import type { Properties } from "csstype";
 
-export type CSSProperties = Properties<string | number>;
+export type CSSProperties = Properties<string | number> & {
+  layout?: "vbox" | "hbox" | "box" | "page-section";
+};
 
 //
 // Tags
@@ -152,7 +154,7 @@ interface ButtonContainerElement {
 }
 
 interface GenericContainerElement {
-  type: "box" | "vbox" | "hbox";
+  type: "box" | "vbox" | "hbox" | "page-section";
   /**
    * Default: "div"
    */
