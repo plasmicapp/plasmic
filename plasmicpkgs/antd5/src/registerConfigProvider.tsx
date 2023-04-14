@@ -148,7 +148,7 @@ function InnerConfigProvider(props: { children?: React.ReactNode }) {
   }
   return (
     <>
-      <style>{cssStyles}</style>
+      <style dangerouslySetInnerHTML={{ __html: cssStyles }} />
       {/* GlobalActionsProvider may not exist for older host */}
       {GlobalActionsProvider ? (
         <GlobalActionsProvider
