@@ -1,6 +1,7 @@
 import { PlasmicDataSourceContextValue } from '@plasmicapp/data-sources-context';
 import fetch from '@plasmicapp/isomorphic-unfetch';
 import { wrapLoadingFetcher } from '@plasmicapp/query';
+import stringify from 'fast-stringify';
 import { ManyRowsResult, Pagination, SingleRowResult } from './types';
 
 const DEFAULT_HOST = 'https://data.plasmic.app';
@@ -55,7 +56,7 @@ async function _executePlasmicDataOp<
         'x-plasmic-data-user-auth-token': opts.userAuthToken,
       }),
     },
-    body: JSON.stringify({
+    body: stringify({
       opId: op.opId,
       userArgs: op.userArgs ?? {},
       paginate: opts?.paginate,
