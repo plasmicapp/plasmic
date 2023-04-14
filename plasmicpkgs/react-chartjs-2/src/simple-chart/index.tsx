@@ -1,10 +1,15 @@
-import { ComponentMeta } from "@plasmicapp/host/registerComponent";
+import { ComponentMeta, PropType } from "@plasmicapp/host/registerComponent";
 import { Registerable, registerComponentHelper } from "../utils";
 import { SimpleChart, SimpleChartProps } from "./SimpleChart";
 
 export * from "./SimpleChart";
 export default SimpleChart;
 
+const fieldChoice: PropType<SimpleChartProps> = {
+  type: "choice",
+  options: (props: SimpleChartProps) =>
+    props.data?.[0] ? Object.keys(props.data[0]) : [],
+} as const;
 const simpleChartMeta: ComponentMeta<SimpleChartProps> = {
   name: "hostless-react-chartjs-2-simple-chart",
   displayName: "Chart",
@@ -54,15 +59,37 @@ const simpleChartMeta: ComponentMeta<SimpleChartProps> = {
       ]),
     },
     labelField: {
-      type: "choice",
+      ...fieldChoice,
       hidden: (props) => props.type === "scatter",
-      options: (props) => (props.data?.[0] ? Object.keys(props.data[0]) : []),
     },
     title: "string",
+    interactive: {
+      type: "boolean",
+    },
+    // Bar chart
+    direction: {
+      type: "choice",
+      options: ["horizontal", "vertical"].map((dir) => ({
+        value: dir,
+        label: dir[0].toUpperCase() + dir.slice(1),
+      })),
+      defaultValueHint: "Vertical",
+      hidden: (props) => props.type !== "bar",
+    },
+    stacked: {
+      type: "boolean",
+      hidden: (props) => props.type !== "bar",
+    },
+    // Line chart
     fill: {
       type: "boolean",
       hidden: (props) => props.type !== "line",
     },
+    secondAxisField: {
+      ...fieldChoice,
+      hidden: (props) => props.type !== "line",
+    },
+
     // TODO
     // datasets: {
     //   type: "array",
