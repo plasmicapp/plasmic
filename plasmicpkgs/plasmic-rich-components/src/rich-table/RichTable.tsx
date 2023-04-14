@@ -13,9 +13,10 @@ import {
 import { DataProvider } from "@plasmicapp/host";
 import { Button, Dropdown } from "antd";
 import { SizeType } from "antd/es/config-provider/SizeContext";
+import { SorterResult } from "antd/es/table/interface";
 import { createObjectCsvStringifier } from "csv-writer-browser";
 import fastStringify from "fast-stringify";
-import React, { ReactNode, useRef, useState } from "react";
+import React, { ReactNode, useMemo, useRef, useState } from "react";
 import { useIsClient } from "../common";
 import {
   ColumnConfig,
@@ -179,7 +180,7 @@ export function RichTable(props: RichTableProps) {
 
   const [search, setSearch] = useState("");
 
-  const { columnDefinitions } = React.useMemo(() => {
+  const { columnDefinitions, normalized } = React.useMemo(() => {
     const schema = tryGetSchema(data);
     if (!data || !schema) {
       return { normalized: [], columnDefinitions: [] };
@@ -301,34 +302,58 @@ export function RichTable(props: RichTableProps) {
       });
     }
     return { normalized, columnDefinitions };
-  }, [fields, data, setControlContextData, Math.random()]);
+  }, [fields, data, setControlContextData]);
 
   const actionRef = useRef<ActionType>();
+
+  const [state, setState] = useState<
+    undefined | { sorter: SorterResult<Record<string, any>> }
+  >(undefined);
+
+  const finalData = useMemo(() => {
+    const filtered = data?.data?.filter((row) =>
+      fastStringify(Object.values(row)).toLowerCase().includes(search)
+    );
+    const sorted = state?.sorter.column
+      ? // We use .sort() rather than sortBy to use localeCompare
+        (() => {
+          const expr =
+            normalized.find(
+              (cconfig) => cconfig.key === state?.sorter.column?.key
+            )!.expr ?? ((x) => x);
+          return (filtered ?? []).sort((aa, bb) => {
+            const a = expr(aa) ?? null,
+              b = expr(bb) ?? null;
+            // Default nil to '' here because A < null < z which is weird.
+            return typeof a === "string"
+              ? a.localeCompare(b ?? "")
+              : typeof b === "string"
+              ? -b.localeCompare(a ?? "")
+              : a - b;
+          });
+        })()
+      : filtered;
+    const reversed =
+      state?.sorter.order === "descend" ? sorted?.reverse() : sorted;
+    return reversed;
+  }, [data, normalized, state, search]);
 
   const isClient = useIsClient();
   if (!isClient) {
     return null;
   }
-  // return <NestedTest {...{ fields }} />;
   return (
     <>
       <ProTable
         actionRef={actionRef}
         className={className}
         columns={columnDefinitions}
-        dataSource={data?.data?.filter((row) =>
-          fastStringify(Object.values(row)).toLowerCase().includes(search)
-        )}
+        onChange={(_pagination, _filters, sorter, _extra) => {
+          setState({ sorter: sorter as any });
+        }}
+        dataSource={finalData}
         rowKey={"id"}
         defaultSize={defaultSize}
-        // request={() =>
-        //   Promise.resolve({
-        //     data: data?.data?.filter((row) =>
-        //       fastStringify(row).toLowerCase().includes(search)
-        //     ),
-        //     success: true,
-        //   })
-        // }
         editable={{ type: "multiple" }}
         search={false}
         options={{

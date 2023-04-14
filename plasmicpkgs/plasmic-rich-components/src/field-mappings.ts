@@ -59,9 +59,7 @@ export type ColumnConfig = {
   formatting: StyleConfig;
 } & (AutoSettings | NumberSettings | StringSettings | BooleanSettings);
 
-export type PartialColumnConfig = Omit<Partial<ColumnConfig>, "key"> & {
-  key: string;
-};
+export type PartialColumnConfig = Partial<ColumnConfig>;
 
 const defaultColumnConfig = (): ColumnConfig =>
   ({
@@ -85,14 +83,6 @@ export function deriveFieldConfigs(
   mergedFields: ColumnConfig[];
   minimalFullLengthFields: PartialColumnConfig[];
 } {
-  // Ugly: when adding a new item to an array from Plasmic Studio UI, no way to specify default values for the new item,
-  // so we have to do it here. The only one we need is the random key.
-  for (const field of specifiedFieldsPartial) {
-    if (!field.key) {
-      field.key = mkShortId();
-    }
-  }
-
   const schemaFields = schema?.fields ?? [];
   const fieldById = mkIdMap(schemaFields);
   const specifiedFieldIds = new Set(
@@ -101,16 +91,19 @@ export function deriveFieldConfigs(
   function defaultColumnConfigForField(field: TableFieldSchema): ColumnConfig {
     return {
       ...defaultColumnConfig(),
+      key: field.id,
       fieldId: field.id,
       title: field.label || field.id,
       expr: (currentItem) => currentItem[field.id],
     };
   }
   const keptSpecifiedFields = specifiedFieldsPartial.flatMap(
-    (f): ColumnConfig[] => {
+    (f, index): ColumnConfig[] => {
       const fieldId = f.fieldId;
       if (!fieldId) {
-        return [{ ...defaultColumnConfig(), ...f }] as ColumnConfig[];
+        return [
+          { ...defaultColumnConfig(), key: index, ...f },
+        ] as ColumnConfig[];
       }
       const field = fieldById.get(fieldId);
 
