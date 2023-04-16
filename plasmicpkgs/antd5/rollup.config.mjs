@@ -7,6 +7,17 @@ import esbuild from "rollup-plugin-esbuild";
 import replaceImports from "rollup-plugin-replace-imports";
 import glob from "glob";
 const SKINNY_INPUTS = glob.sync('./src/register*.ts*');
+
+const PLUGIN_ANTD_CJS = replaceImports(n => {
+  // Swap antd/es/* with antd/lib/* to use commonjs versions
+  // of the antd modules
+  const match = n.match(/^antd\/es\/(.*)/);
+  if (match) {
+    return `antd/lib/${match[1]}`;
+  }
+  return n;
+});
+
 export default [
   {
     input: ["./src/index.ts"],
@@ -30,15 +41,7 @@ export default [
         exports: "named",
         interop: "auto",
         plugins: [
-          replaceImports(n => {
-            // Swap antd/es/* with antd/lib/* to use commonjs versions
-            // of the antd modules
-            const match = n.match(/^antd\/es\/(.*)/);
-            if (match) {
-              return `antd/lib/${match[1]}`;
-            }
-            return n;
-          })
+          PLUGIN_ANTD_CJS
         ]
       },
     ],
@@ -64,9 +67,11 @@ export default [
     output: [
       {
         dir: "skinny",
-        format: "esm",
+        format: "cjs",
         sourcemap: true,
         exports: "named",
+        interop: "auto",
+        plugins: [PLUGIN_ANTD_CJS]
       },
     ],
     plugins: [
