@@ -24,15 +24,6 @@
     "dist",
     "skinny"
   ],
-  "exports": {
-    ".": {
-      "require": "./dist/index.js",
-      "import": "./dist/antd.esm.js"
-    },
-    "./skinny/*": {
-      "import": "./skinny/*.js"
-    }
-  },
   "size-limit": [
     {
       "path": "dist/index.js",
