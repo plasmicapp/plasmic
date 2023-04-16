@@ -143,7 +143,7 @@ export function registerRadio(loader?: Registerable) {
         variableType: "text",
       },
     },
-    importPath: "@plasmicapp/antd5/skinny/registerRadio",
+    importPath: "@plasmicpkgs/antd5/skinny/registerRadio",
     importName: "AntdRadioGroup",
   });
 }

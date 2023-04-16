@@ -136,7 +136,7 @@ export function registerCheckbox(loader?: Registerable) {
         variableType: "boolean",
       },
     },
-    importPath: "@plasmicapp/antd5/skinny/registerCheckbox",
+    importPath: "@plasmicpkgs/antd5/skinny/registerCheckbox",
     importName: "AntdCheckboxGroup",
     parentComponentName: "plasmic-antd5-checkbox",
   });
