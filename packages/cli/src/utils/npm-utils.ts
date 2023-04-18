@@ -71,6 +71,10 @@ export function findInstalledVersion(
         .trim();
       const info = JSON.parse(output);
       return info?.dependencies?.[pkg]?.version;
+    } else if (pm === "pnpm") {
+      const output = execSync(`pnpm list --json ${pkg}`).toString().trim();
+      const info = JSON.parse(output);
+      return info?.dependencies?.[pkg]?.version;
     } else {
       // Unknown package manager (e.g. pnpm).
       const output = execSync(`npm list --json ${pkg}`).toString().trim();
@@ -175,6 +179,14 @@ export function installCommand(
     } else {
       return `yarn add ${pkg}`;
     }
+  } else if (mgr === "pnpm") {
+    if (opts.global) {
+      return `pnpm install -g ${pkg}`;
+    } else if (opts.dev) {
+      return `pnpm install --dev --ignore-scripts ${pkg}`;
+    } else {
+      return `pnpm install --ignore-scripts ${pkg}`;
+    }
   } else {
     if (opts.global) {
       return `npm install -g ${pkg}`;
@@ -198,6 +210,10 @@ export function detectPackageManager(config: PlasmicConfig, baseDir: string) {
     } else {
       return "yarn";
     }
+  }
+  const pnpmLock = findupSync("pnpm-lock.yaml", { cwd: baseDir });
+  if (pnpmLock) {
+    return "pnpm";
   }
 
   const npmLock = findupSync("package-lock.json", { cwd: baseDir });

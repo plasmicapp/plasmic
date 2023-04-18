@@ -141,7 +141,8 @@ export async function create(args: CreatePlasmicAppArgs): Promise<void> {
    * INSTRUCT USER ON NEXT STEPS
    */
   const pkgMgr = detectPackageManager(resolvedProjectPath);
-  const npmRunCmd = pkgMgr === "yarn" ? "yarn" : "npm run";
+  const npmRunCmd =
+    pkgMgr === "yarn" ? "yarn" : pkgMgr === "pnpm" ? "pnpm run" : "npm run";
   const command =
     platform === "nextjs"
       ? `${npmRunCmd} dev`

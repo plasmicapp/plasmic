@@ -96,6 +96,14 @@ function installCommand(
     } else {
       return `yarn add --ignore-scripts -W ${pkg}`;
     }
+  } else if (mgr === "pnpm") {
+    if (opts.global) {
+      return `pnpm install -g ${pkg}`;
+    } else if (opts.dev) {
+      return `pnpm install --dev --ignore-scripts ${pkg}`;
+    } else {
+      return `pnpm install --ignore-scripts ${pkg}`;
+    }
   } else {
     if (opts.global) {
       return `npm install -g ${pkg}`;
@@ -112,15 +120,18 @@ function installCommand(
  * @param dir
  * @returns
  */
-export function detectPackageManager(dir?: string): "yarn" | "npm" {
+export function detectPackageManager(dir?: string): "yarn" | "pnpm" | "npm" {
   // We should look only inside the directory instead of looking to the ancestors
   // with findupSync, the reason for this is that the current gatsby template
   // uses npm, so if the user has some yarn.lock in a parent directory it's
   // going to run yarn commands, this is going to trigger an error with sharp
 
   const yarnLock = existsSync(path.join(dir ? dir : "", "yarn.lock"));
+  const pnpmLock = existsSync(path.join(dir ? dir : "", "pnpm-lock.yaml"));
   if (yarnLock) {
     return "yarn";
+  } else if (pnpmLock) {
+    return "pnpm";
   } else {
     return "npm";
   }
