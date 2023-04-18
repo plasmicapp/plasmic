@@ -138,8 +138,14 @@ export function registerUpload(loader?: Registerable) {
         type: "slot",
         defaultValue: [
           {
-            type: "text",
-            value: "Upload",
+            type: "default-component",
+            kind: "button",
+            props: {
+              children: {
+                type: "text",
+                value: "Upload",
+              },
+            },
           },
         ],
       },
