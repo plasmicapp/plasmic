@@ -56,87 +56,12 @@ const richLayoutMeta: ComponentMeta<RichLayoutProps> = {
     },
     navMenuItems: generateNavMenuType(2, "Nav menu items", [
       {
-        path: "/welcome",
-        name: "Welcome",
-        // icon: <SmileFilled />,
-        // component: "./Welcome",
+        path: "/",
+        name: "Link 1",
       },
       {
-        path: "/admin",
-        name: "Admin",
-        // icon: <CrownFilled />,
-        // access: "canAdmin",
-        // component: "./Admin",
-        routes: [
-          {
-            path: "/admin/sub-page1",
-            name: "Sub page 1",
-            // icon: "https://gw.alipayobjects.com/zos/antfincdn/upvrAjAPQX/Logo_Tech%252520UI.svg",
-            // component: "./Welcome",
-          },
-          {
-            path: "/admin/sub-page2",
-            name: "Sub page 2",
-            // icon: <CrownFilled />,
-            // component: "./Welcome",
-          },
-          {
-            path: "/admin/sub-page3",
-            name: "Sub page 3",
-            // icon: <CrownFilled />,
-            // component: "./Welcome",
-          },
-        ],
-      },
-      {
-        name: "List",
-        // icon: <TabletFilled />,
-        path: "/list",
-        // component: "./ListTableList",
-        routes: [
-          {
-            path: "/list/sub-page",
-            name: "Page group",
-            // icon: <CrownFilled />,
-            routes: [
-              {
-                path: "sub-sub-page1",
-                name: "Sub sub page 1",
-                // icon: <CrownFilled />,
-                // component: "./Welcome",
-              },
-              {
-                path: "sub-sub-page2",
-                name: "Sub sub page 2",
-                // icon: <CrownFilled />,
-                // component: "./Welcome",
-              },
-              {
-                path: "sub-sub-page3",
-                name: "Sub sub page 3",
-                // icon: <CrownFilled />,
-                // component: "./Welcome",
-              },
-            ],
-          },
-          {
-            path: "/list/sub-page2",
-            name: "Sub page 2",
-            // icon: <CrownFilled />,
-            // component: "./Welcome",
-          },
-          {
-            path: "/list/sub-page3",
-            name: "Sub page 3",
-            // icon: <CrownFilled />,
-            // component: "./Welcome",
-          },
-        ],
-      },
-      {
-        path: "https://ant.design",
-        name: "Extern link",
-        // icon: <ChromeFilled />,
+        path: "/",
+        name: "Link 2",
       },
     ]),
 

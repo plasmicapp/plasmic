@@ -72,6 +72,7 @@ export function registerButton(loader?: Registerable) {
       icon: {
         type: "slot",
         hidePlaceholder: true,
+        hidden: () => true,
       },
       onClick: {
         type: "eventHandler",
