@@ -1,33 +1,29 @@
 repos:
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v2.3.1
-    hooks:
-      - id: prettier
-        files: ^.*\.(js|jsx|ts|tsx|json|css|scss|md|toml|xml)$
-        exclude: (^.*/plasmic/.*$|.md$)
-        additional_dependencies:
-          - prettier@2.2.1
-          - prettier-plugin-organize-imports
-          - typescript
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v2.2.0
-    hooks:
-      - id: prettier
-        files: ^.*/plasmic/.*\.(js|jsx|ts|tsx|json|css|scss|md|toml|xml)$
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.3.0
+    rev: v4.4.0
     hooks:
       - id: check-merge-conflict
       - id: trailing-whitespace
-        exclude: ^.*/__snapshots__/.*$
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v7.20.0
+    rev: v8.38.0
     hooks:
       - id: eslint
-        files: ^wab/src/.*\.(ts|tsx)$
         types: [file]
+        files: ^.*\.(ts|tsx)$
+        exclude: ^.*/plasmic/.*$
         additional_dependencies:
-          - eslint
-          - "@typescript-eslint/eslint-plugin"
-          - "@typescript-eslint/parser"
-          - typescript@3.9.7
+          - "@typescript-eslint/eslint-plugin@5.59.0"
+          - "@typescript-eslint/parser@5.59.0"
+          - "eslint@8.38.0"
+          - "eslint-config-prettier@8.8.0"
+          - "eslint-config-react-app@7.0.1"
+          - "eslint-plugin-prettier@4.2.1"
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v2.7.1
+    hooks:
+      - id: prettier
+        types: [file]
+        files: ^.*\.(js|jsx|ts|tsx|json|css|scss|toml|xml)$
+        exclude: ^.*/plasmic/.*$
+        additional_dependencies:
+          - prettier@2.7.1

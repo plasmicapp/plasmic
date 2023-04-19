@@ -1,0 +1,40 @@
+{
+  // Common tsconfig used for type checking and generating declaration files.
+  // Docs: https://www.typescriptlang.org/tsconfig
+  "exclude": [
+    "**/__specs__/**",
+    "**/__tests__/**",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ],
+  "compilerOptions": {
+    "module": "ESNext",
+    "lib": ["DOM", "ESNext"],
+    // output .d.ts declaration files for consumers
+    "declaration": true,
+    // output .d.ts declaration files only (esbuild will transpile to .js for us)
+    "emitDeclarationOnly": true,
+    // stricter type-checking for stronger correctness. Recommended by TS
+    "strict": true,
+    // linter checks for common issues
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    // noUnused* overlap with @typescript-eslint/no-unused-vars, can disable if duplicative
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    // use modern Node's module resolution algorithm, instead of the legacy TS one
+    "moduleResolution": "NodeNext",
+    // transpile JSX to React.createElement
+    "jsx": "react",
+    // interop between ESM and CJS modules. Recommended by TS
+    "esModuleInterop": true,
+    // significant perf increase by skipping checking .d.ts files, particularly those in node_modules. Recommended by TS
+    "skipLibCheck": true,
+    // error out if import and file system have a casing mismatch. Recommended by TS
+    "forceConsistentCasingInFileNames": true,
+    // esbuild transpiles files individually, so ensure each file is valid when isolated
+    "isolatedModules": true
+  }
+}
