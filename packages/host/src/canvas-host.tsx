@@ -65,18 +65,19 @@ export function setPlasmicRootNode(node: React.ReactElement | null) {
   plasmicRootNode.set(node);
 }
 
+export interface PlasmicCanvasContextValue {
+  componentName: string | null;
+  globalVariants: Record<string, string>;
+  interactive?: boolean;
+}
+
 /**
  * React context to detect whether the component is rendered on Plasmic editor.
  * If not, return false.
  * If so, return an object with more information about the component
  */
 export const PlasmicCanvasContext = React.createContext<
-  | {
-      componentName: string | null;
-      globalVariants: Record<string, string>;
-      interactive?: boolean;
-    }
-  | false
+  PlasmicCanvasContextValue | false
 >(false);
 export const usePlasmicCanvasContext = () =>
   React.useContext(PlasmicCanvasContext);
@@ -94,11 +95,6 @@ function _PlasmicCanvasHost() {
     !document.querySelector("#plasmic-studio-tag") &&
     !isCanvas &&
     !isLive;
-  const locationHash = new URLSearchParams(location.hash);
-
-  const [activeGlobalVariants, setActiveGlobalVariants] = React.useState<
-    Record<string, string>
-  >(() => JSON.parse(locationHash.get("globalVariants") ?? "{}"));
   const forceUpdate = useForceUpdate();
   React.useLayoutEffect(() => {
     rootChangeListeners.push(forceUpdate);
@@ -126,18 +122,21 @@ function _PlasmicCanvasHost() {
       document.head.append(scriptElt);
     }
   }, [shouldRenderStudio]);
+
+  const [canvasContextValue, setCanvasContextValue] = React.useState(() =>
+    deriveCanvasContextValue()
+  );
+
   React.useEffect(() => {
-    const listener = (event: MessageEvent) => {
-      try {
-        const data = JSON.parse(event.data);
-        if (data.source === "canvas-frame") {
-          setActiveGlobalVariants(data.activeGlobalVariants);
-        }
-      } catch {}
-    };
-    window.addEventListener("message", listener);
-    return () => window.removeEventListener("message", listener);
-  }, []);
+    if (isCanvas) {
+      const listener = () => {
+        setCanvasContextValue(deriveCanvasContextValue());
+      };
+      window.addEventListener("hashchange", listener);
+      return () => window.removeEventListener("hashchange", listener);
+    }
+    return undefined;
+  }, [isCanvas]);
   if (!isFrameAttached) {
     return null;
   }
@@ -149,16 +148,9 @@ function _PlasmicCanvasHost() {
       appDiv.classList.add("__wab_user-body");
       document.body.appendChild(appDiv);
     }
-    const plasmicContextValue = isCanvas
-      ? {
-          componentName: locationHash.get("componentName"),
-          globalVariants: activeGlobalVariants,
-          interactive: !!locationHash.get("interactive"),
-        }
-      : false;
     return ReactDOM.createPortal(
       <ErrorBoundary key={`${renderCount}`}>
-        <PlasmicCanvasContext.Provider value={plasmicContextValue}>
+        <PlasmicCanvasContext.Provider value={canvasContextValue}>
           {plasmicRootNode.get()}
         </PlasmicCanvasContext.Provider>
       </ErrorBoundary>,
@@ -296,4 +288,21 @@ function DisableWebpackHmr() {
       }}
     ></script>
   );
+}
+
+function deriveCanvasContextValue(): PlasmicCanvasContextValue | false {
+  const hash = window.location.hash;
+  if (hash && hash.length > 0) {
+    // create URLsearchParams skipping the initial # character
+    const params = new URLSearchParams(hash.substring(1));
+    if (params.get("canvas") === "true") {
+      const globalVariants = params.get("globalVariants");
+      return {
+        componentName: params.get("componentName") ?? null,
+        globalVariants: globalVariants ? JSON.parse(globalVariants) : {},
+        interactive: params.get("interactive") === "true",
+      };
+    }
+  }
+  return false;
 }
