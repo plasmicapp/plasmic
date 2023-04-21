@@ -50,7 +50,7 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
 
     pageSize: {
       type: "number",
-      defaultValueHint: 20,
+      defaultValueHint: 10,
     },
 
     fields: {

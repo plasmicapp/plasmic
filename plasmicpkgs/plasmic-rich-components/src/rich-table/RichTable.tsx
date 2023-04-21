@@ -169,7 +169,7 @@ export function RichTable(props: RichTableProps) {
     addHref,
     actions,
     customActionChildren,
-    pageSize = 20,
+    pageSize = 10,
     hideSearch,
     hideDensity,
     hideColumnPicker,
