@@ -117,6 +117,17 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
       defaultValueHint: true,
     },
 
+    scrollX: {
+      type: "boolean",
+      advanced: true,
+      defaultValueHint: true,
+    },
+
+    scrollHeight: {
+      type: "number",
+      advanced: true,
+    },
+
     hideSearch: {
       type: "boolean",
       advanced: true,
