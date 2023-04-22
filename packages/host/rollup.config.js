@@ -5,19 +5,56 @@ import path from "path";
 import typescript from "rollup-plugin-typescript2";
 import ts from "typescript";
 
+const external = (id) => {
+  if (id.startsWith("regenerator-runtime")) {
+    return false;
+  }
+  return !id.startsWith(".") && !path.isAbsolute(id);
+};
+
 export default [
+  {
+    input: {
+      index: "./src/index.ts",
+    },
+    external,
+    output: [
+      {
+        dir: "dist",
+        entryFileNames: "host.esm.js",
+        format: "esm",
+        sourcemap: true,
+        banner: "'use client';",
+      },
+      {
+        dir: "dist",
+        entryFileNames: "index.cjs.js",
+        format: "cjs",
+        sourcemap: true,
+        exports: "named",
+        banner: "'use client';",
+      },
+    ],
+    plugins: [
+      resolve(),
+      commonjs(),
+      json(),
+      typescript({
+        typescript: ts,
+        check: false,
+        tsconfigOverride: {
+          emitDeclarationOnly: true,
+        },
+      }),
+    ],
+  },
   // We provide a light-weight module for component registration which can be
   // used for component substitution of code components by loader
   {
     input: {
       index: "./src/registerComponent.ts",
     },
-    external: (id) => {
-      if (id.startsWith("regenerator-runtime")) {
-        return false;
-      }
-      return !id.startsWith(".") && !path.isAbsolute(id);
-    },
+    external,
     output: [
       {
         dir: "registerComponent/dist",
@@ -44,6 +81,7 @@ export default [
         check: false,
         tsconfigOverride: {
           include: ["src/registerComponent.ts", "src/element-types.ts"],
+          emitDeclarationOnly: true,
         },
       }),
     ],
@@ -52,12 +90,7 @@ export default [
     input: {
       index: "./src/registerGlobalContext.ts",
     },
-    external: (id) => {
-      if (id.startsWith("regenerator-runtime")) {
-        return false;
-      }
-      return !id.startsWith(".") && !path.isAbsolute(id);
-    },
+    external,
     output: [
       {
         dir: "registerGlobalContext/dist",
@@ -88,6 +121,7 @@ export default [
             "src/registerComponent.ts",
             "src/element-types.ts",
           ],
+          emitDeclarationOnly: true,
         },
       }),
     ],
@@ -96,12 +130,7 @@ export default [
     input: {
       index: "./src/registerTrait.ts",
     },
-    external: (id) => {
-      if (id.startsWith("regenerator-runtime")) {
-        return false;
-      }
-      return !id.startsWith(".") && !path.isAbsolute(id);
-    },
+    external,
     output: [
       {
         dir: "registerTrait/dist",
@@ -128,6 +157,7 @@ export default [
         check: false,
         tsconfigOverride: {
           include: ["src/registerTrait.ts"],
+          emitDeclarationOnly: true,
         },
       }),
     ],
@@ -136,12 +166,7 @@ export default [
     input: {
       index: "./src/registerToken.ts",
     },
-    external: (id) => {
-      if (id.startsWith("regenerator-runtime")) {
-        return false;
-      }
-      return !id.startsWith(".") && !path.isAbsolute(id);
-    },
+    external,
     output: [
       {
         dir: "registerToken/dist",
@@ -166,6 +191,7 @@ export default [
         check: false,
         tsconfigOverride: {
           include: ["src/registerToken.ts"],
+          emitDeclarationOnly: true,
         },
       }),
     ],

@@ -4,19 +4,8 @@ import json from "@rollup/plugin-json";
 import resolve from "@rollup/plugin-node-resolve";
 import path from "path";
 import esbuild from "rollup-plugin-esbuild";
-import replaceImports from "rollup-plugin-replace-imports";
 import glob from "glob";
 const SKINNY_INPUTS = glob.sync('./src/register*.ts*');
-
-const PLUGIN_ANTD_CJS = replaceImports(n => {
-  // Swap antd/es/* with antd/lib/* to use commonjs versions
-  // of the antd modules
-  const match = n.match(/^antd\/es\/(.*)/);
-  if (match) {
-    return `antd/lib/${match[1]}`;
-  }
-  return n;
-});
 
 export default [
   {
@@ -28,22 +17,25 @@ export default [
       return !id.startsWith(".") && !path.isAbsolute(id);
     },
     output: [
-      {
-        file: "dist/antd.esm.js",
-        format: "esm",
-        sourcemap: true,
-        exports: "named",
-      },
+      // {
+      //   file: "dist/antd.esm.mjs",
+      //   format: "esm",
+      //   sourcemap: true,
+      //   exports: "named",
+      // },
       {
         file: "dist/index.js",
         format: "cjs",
         sourcemap: true,
         exports: "named",
         interop: "auto",
-        plugins: [
-          PLUGIN_ANTD_CJS
-        ]
       },
+      // {
+      //   file: "dist/antd.esm.js",
+      //   format: "esm",
+      //   sourcemap: true,
+      //   exports: "named",
+      // },
     ],
     plugins: [
       resolve(),
@@ -71,8 +63,18 @@ export default [
         sourcemap: true,
         exports: "named",
         interop: "auto",
-        plugins: [PLUGIN_ANTD_CJS]
+        entryFileNames: `[name].js`,
+        chunkFileNames: `[name]-[hash].js`,
       },
+      // {
+      //   dir: "skinny",
+      //   format: "esm",
+      //   sourcemap: true,
+      //   exports: "named",
+      //   interop: "auto",
+      //   entryFileNames: `[name].esm.mjs`,
+      //   chunkFileNames: `[name]-[hash].esm.mjs`,
+      // },
     ],
     plugins: [
       resolve(),

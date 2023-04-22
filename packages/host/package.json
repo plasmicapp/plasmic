@@ -2,7 +2,7 @@
   "name": "@plasmicapp/host",
   "version": "1.0.127",
   "description": "plasmic library for app hosting",
-  "main": "dist/index.js",
+  "main": "dist/index.cjs.js",
   "types": "dist/index.d.ts",
   "module": "dist/host.esm.js",
   "nx": {
@@ -38,9 +38,9 @@
     }
   ],
   "scripts": {
-    "build": "./update_version.sh && tsdx build && rollup -c",
+    "build": "./update_version.sh && rollup -c",
     "postbuild": "yarn postbuild:default && yarn postbuild:registerComponent && yarn postbuild:registerGlobalContext && yarn postbuild:registerToken && yarn postbuild:registerTrait",
-    "postbuild:default": "node ../../print-module-api.js ./packages/host/dist/index.js > index-api.txt",
+    "postbuild:default": "node ../../print-module-api.js ./packages/host/dist/index.cjs.js > index-api.txt",
     "postbuild:registerComponent": "node ../../print-module-api.js ./packages/host/registerComponent/dist/index.cjs.js > registerComponent-api.txt",
     "postbuild:registerGlobalContext": "node ../../print-module-api.js ./packages/host/registerGlobalContext/dist/index.cjs.js > registerGlobalContext-api.txt",
     "postbuild:registerToken": "node ../../print-module-api.js ./packages/host/registerToken/dist/index.cjs.js > registerToken-api.txt",

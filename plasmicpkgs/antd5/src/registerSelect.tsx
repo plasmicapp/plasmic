@@ -1,4 +1,4 @@
-import Select from "antd/es/select";
+import { Select } from "antd";
 import React, { ComponentProps } from "react";
 import {
   Registerable,

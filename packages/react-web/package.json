@@ -20,60 +20,33 @@
       }
     }
   },
-  "size-limit": [
-    {
-      "path": "dist/react-web.cjs.production.min.js",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/react-web.esm.js",
-      "limit": "10 KB"
-    }
-  ],
   "exports": {
     ".": {
       "import": "./dist/react-web.esm.js",
-      "require": "./dist/index.js"
+      "require": "./dist/index.cjs.js",
+      "types": "./dist/index.d.ts"
     },
     "./lib/host": {
       "import": "./lib/host/index.js",
-      "require": "./lib/host/index.cjs.js"
+      "require": "./lib/host/index.cjs.js",
+      "types": "./lib/host/index.d.ts"
     },
     "./lib/data-sources": {
       "import": "./lib/data-sources/index.js",
-      "require": "./lib/data-sources/index.cjs.js"
+      "require": "./lib/data-sources/index.cjs.js",
+      "types": "./lib/data-sources/index.d.ts"
     },
     "./lib/query": {
       "import": "./lib/query/index.js",
-      "require": "./lib/query/index.cjs.js"
+      "require": "./lib/query/index.cjs.js",
+      "types": "./lib/query/index.d.ts"
     },
     "./lib/plasmic.css": "./lib/plasmic.css",
     "./skinny": {
       "import": "./skinny/dist/index.js"
     },
-    "./skinny/dist/plume/button": {
-      "import": "./skinny/dist/plume/button/index.js"
-    },
-    "./skinny/dist/plume/checkbox": {
-      "import": "./skinny/dist/plume/checkbox/index.js"
-    },
-    "./skinny/dist/plume/menu": {
-      "import": "./skinny/dist/plume/menu/index.js"
-    },
-    "./skinny/dist/plume/menu-button": {
-      "import": "./skinny/dist/plume/menu-button/index.js"
-    },
-    "./skinny/dist/plume/select": {
-      "import": "./skinny/dist/plume/select/index.js"
-    },
-    "./skinny/dist/plume/switch": {
-      "import": "./skinny/dist/plume/switch/index.js"
-    },
-    "./skinny/dist/plume/text-input": {
-      "import": "./skinny/dist/plume/text-input/index.js"
-    },
-    "./skinny/dist/plume/triggered-overlay": {
-      "import": "./skinny/dist/plume/triggered-overlay/index.js"
+    "./skinny/dist/plume/*": {
+      "import": "./skinny/dist/plume/*/index.js"
     }
   },
   "files": [
@@ -82,7 +55,7 @@
     "skinny"
   ],
   "scripts": {
-    "build": "tsdx build && rollup -c && mkdir -p lib && cp src/styles/plasmic.css lib/",
+    "build": "rollup -c && mkdir -p lib && cp src/styles/plasmic.css lib/",
     "start": "tsdx watch",
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",

@@ -1,5 +1,4 @@
-import Dropdown from "antd/es/dropdown";
-import Menu from "antd/es/menu";
+import { Dropdown, Menu } from "antd";
 import React from "react";
 import { Registerable, registerComponentHelper } from "./utils";
 
@@ -115,7 +114,7 @@ export function registerDropdown(loader?: Registerable) {
         argTypes: [{ name: "key", type: "string" }],
       } as any,
     },
-    importPath: "@plasmicpkgs/antd/skinny/registerDropdown",
+    importPath: "@plasmicpkgs/antd5/skinny/registerDropdown",
     importName: "AntdDropdown",
   });
 }

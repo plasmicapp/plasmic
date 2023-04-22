@@ -1,5 +1,4 @@
-import Input from "antd/es/input";
-import InputNumber from "antd/es/input-number";
+import { Input, InputNumber } from "antd";
 import React from "react";
 import { Registerable, registerComponentHelper } from "./utils";
 

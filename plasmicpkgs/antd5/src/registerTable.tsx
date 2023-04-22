@@ -1,4 +1,4 @@
-import Table from "antd/es/table";
+import { Table } from "antd";
 import type { TableRowSelection } from "antd/es/table/interface";
 import React from "react";
 import { asArray, Registerable, registerComponentHelper } from "./utils";
