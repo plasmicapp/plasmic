@@ -139,8 +139,8 @@ export function registerUpload(loader?: Registerable) {
         type: "slot",
         defaultValue: [
           {
-            type: "default-component",
-            kind: "button",
+            type: "component",
+            name: "plasmic-antd5-button",
             props: {
               children: {
                 type: "text",
