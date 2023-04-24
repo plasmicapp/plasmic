@@ -9,12 +9,12 @@
       "default": "./dist/index.js"
     },
     "./react-server": {
-      "types": "./dist-react-server/index.d.ts",
+      "types": "./dist-react-server/index-react-server.d.ts",
       "default": "./dist-react-server/index.js"
     },
     "./react-server-conditional": {
       "react-server": {
-        "types": "./dist-react-server/index.d.ts",
+        "types": "./dist-react-server/index-react-server.d.ts",
         "default": "./dist-react-server/index.js"
       },
       "default": {
