@@ -1,8 +1,8 @@
+import { useFocusable } from "@react-aria/focus";
+import { useMenuTriggerState } from "@react-stately/menu";
 import { Placement } from "@react-types/overlays";
 import { DOMProps, FocusableProps } from "@react-types/shared";
 import * as React from "react";
-import { useFocusable } from "@react-aria/focus";
-import { useMenuTriggerState } from "@react-stately/menu";
 import { pick } from "../../common";
 import { mergeProps } from "../../react-utils";
 import { Overrides } from "../../render/elements";
@@ -157,7 +157,7 @@ export function useMenuButton<
 
   const overrides: Overrides = {
     [config.root]: {
-      wrapChildren: (children) => (
+      wrapChildren: (children: React.ReactNode) => (
         <TriggeredOverlayContext.Provider value={triggerContext}>
           {children}
         </TriggeredOverlayContext.Provider>

@@ -3,17 +3,16 @@
   Changes:None
 */
 
-import { SWRHook } from "@plasmicpkgs/commerce";
-import { Product } from "@plasmicpkgs/commerce";
-import { useSearch, UseSearch } from "@plasmicpkgs/commerce";
+import { Product, SWRHook, useSearch, UseSearch } from "@plasmicpkgs/commerce";
 
 import { ProductCountableEdge } from "../schema";
 import { getSearchVariables, normalizeProduct } from "../utils";
 
-import * as query from "../utils/queries";
 import { SearchProductsHook } from "@plasmicpkgs/commerce";
+import * as query from "../utils/queries";
 
-export default useSearch as UseSearch<typeof handler>;
+const useSearchTyped: UseSearch<typeof handler> = useSearch;
+export default useSearchTyped;
 
 export type SearchProductsInput = {
   search?: string;

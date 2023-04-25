@@ -25,7 +25,8 @@ export type SearchProductsInput = {
   categories?: Category[];
 };
 
-export default useSearch as UseSearch<typeof handler>;
+const useSearchTyped: UseSearch<typeof handler> = useSearch;
+export default useSearchTyped;
 
 export const handler: SWRHook<SearchProductsHook> = {
   fetchOptions: {
@@ -82,21 +83,23 @@ export const handler: SWRHook<SearchProductsHook> = {
       found: products.length > 0,
     };
   },
-  useHook: ({ useData }) => (input = {}) => {
-    return useData({
-      input: [
-        ["search", input.search],
-        ["categoryId", input.categoryId],
-        ["includeSubCategories", input.includeSubCategories],
-        ["categories", input.categories],
-        ["brandId", input.brandId],
-        ["sort", input.sort],
-        ["count", input.count],
-      ] as HookSWRInput,
-      swrOptions: {
-        revalidateOnFocus: false,
-        ...input.swrOptions,
-      },
-    });
-  },
+  useHook:
+    ({ useData }) =>
+    (input = {}) => {
+      return useData({
+        input: [
+          ["search", input.search],
+          ["categoryId", input.categoryId],
+          ["includeSubCategories", input.includeSubCategories],
+          ["categories", input.categories],
+          ["brandId", input.brandId],
+          ["sort", input.sort],
+          ["count", input.count],
+        ] as HookSWRInput,
+        swrOptions: {
+          revalidateOnFocus: false,
+          ...input.swrOptions,
+        },
+      });
+    },
 };

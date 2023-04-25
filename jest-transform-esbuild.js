@@ -1,4 +1,4 @@
-const esbuild = require('esbuild');
+const esbuild = require("esbuild");
 
 // This transforms TypeScript to JavaScript for Jest.
 // We use esbuild here for speed and consistency with our actual builds.
@@ -6,10 +6,10 @@ const esbuild = require('esbuild');
 module.exports = {
   process: (sourceText, sourcePath, _options) => {
     const { code, map } = esbuild.transformSync(sourceText, {
-      format: 'cjs',
-      loader: 'ts',
+      format: "cjs",
+      loader: sourcePath.endsWith(".tsx") ? "tsx" : "ts",
       sourcefile: sourcePath,
-      sourcemap: 'both',
+      sourcemap: "both",
       target: `node${process.versions.node}`,
     });
     return { code, map };

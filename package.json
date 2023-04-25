@@ -22,7 +22,8 @@
     "local-canary": "yarn local-unpublish && lerna publish --canary --yes --include-merged-tags --no-git-tag-version --no-push --registry=http://localhost:4873 --force-publish",
     "local-publish": "./scripts/local-publish.sh",
     "local-unpublish": "lerna exec -- npm unpublish -f --registry=\"http://localhost:4873/\" \"\\${LERNA_PACKAGE_NAME}\"",
-    "deps": "lerna list --include-dependencies --scope"
+    "deps": "lerna list --include-dependencies --scope",
+    "test": "jest $INIT_CWD"
   },
   "workspaces": [
     "packages/auth-api",

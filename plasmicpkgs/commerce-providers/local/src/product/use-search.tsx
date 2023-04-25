@@ -5,7 +5,8 @@
 import { SWRHook, useSearch, UseSearch } from "@plasmicpkgs/commerce";
 import data from "../data.json";
 import { sortProduct } from "../utils/sort-product";
-export default useSearch as UseSearch<typeof handler>;
+const useSearchTyped: UseSearch<typeof handler> = useSearch;
+export default useSearchTyped;
 
 export const handler: SWRHook<any> = {
   fetchOptions: {
@@ -50,21 +51,23 @@ export const handler: SWRHook<any> = {
       found: products.length > 0,
     };
   },
-  useHook: ({ useData }) => (input = {}) => {
-    return useData({
-      input: [
-        ["search", input.search],
-        ["prefixSearch", input.prefixSearch],
-        ["categoryId", input.categoryId],
-        ["brandId", input.brandId],
-        ["sort", input.sort],
-        ["locale", input.locale],
-        ["count", input.count],
-      ],
-      swrOptions: {
-        revalidateOnFocus: false,
-        ...input.swrOptions,
-      },
-    });
-  },
+  useHook:
+    ({ useData }) =>
+    (input = {}) => {
+      return useData({
+        input: [
+          ["search", input.search],
+          ["prefixSearch", input.prefixSearch],
+          ["categoryId", input.categoryId],
+          ["brandId", input.brandId],
+          ["sort", input.sort],
+          ["locale", input.locale],
+          ["count", input.count],
+        ],
+        swrOptions: {
+          revalidateOnFocus: false,
+          ...input.swrOptions,
+        },
+      });
+    },
 };

@@ -13,7 +13,7 @@
     "start": "tsdx watch",
     "build": "tsdx build",
     "yalcp": "yalc publish --push",
-    "test": "tsdx test",
+    "test": "yarn --cwd=../.. test --passWithNoTests",
     "lint": "tsdx lint",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "size": "size-limit",
@@ -48,8 +48,7 @@
     "husky": "^6.0.0",
     "size-limit": "^4.11.0",
     "tsdx": "^0.14.1",
-    "tslib": "^2.2.0",
-    "typescript": "^4.3.2"
+    "tslib": "^2.2.0"
   },
   "dependencies": {
     "@plasmicapp/isomorphic-unfetch": "^1.0.1"

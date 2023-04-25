@@ -21,7 +21,7 @@
   "scripts": {
     "build": "tsdx build",
     "start": "tsdx watch",
-    "test": "tsdx test --passWithNoTests",
+    "test": "yarn --cwd=../.. test --passWithNoTests",
     "lint": "tsdx lint",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "size": "size-limit",
@@ -36,8 +36,7 @@
     "react-chartjs-2": "^5.2.0",
     "size-limit": "^4.11.0",
     "tsdx": "^0.14.1",
-    "tslib": "^2.2.0",
-    "typescript": "^3.9.7"
+    "tslib": "^2.2.0"
   },
   "peerDependencies": {
     "@plasmicapp/data-sources": ">=0.1.52",

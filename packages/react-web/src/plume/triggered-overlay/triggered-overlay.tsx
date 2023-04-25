@@ -186,7 +186,7 @@ export function useTriggeredOverlay<
       props: mergeProps(overlayProps, getStyleProps(props), {
         ref: onOverlayRef,
       }),
-      wrap: (root) => {
+      wrap: (root: React.ReactNode) => {
         if (typeof document !== "undefined") {
           return ReactDOM.createPortal(root, document.body);
         } else {
