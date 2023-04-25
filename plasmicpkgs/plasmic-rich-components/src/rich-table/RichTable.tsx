@@ -61,6 +61,8 @@ export interface RichTableProps {
   customActionChildren?: ReactNode;
 
   pageSize?: number;
+  scrollX?: boolean;
+  scrollHeight?: number;
 
   hideSearch?: boolean;
   hideDensity?: boolean;
@@ -170,6 +172,8 @@ export function RichTable(props: RichTableProps) {
     actions,
     customActionChildren,
     pageSize = 10,
+    scrollX = true,
+    scrollHeight,
     hideSearch,
     hideDensity,
     hideColumnPicker,
@@ -375,6 +379,8 @@ export function RichTable(props: RichTableProps) {
         }
         dateFormatter="string"
         headerTitle={title}
+        // TODO in the future, figure out how to make this responsive to the CSS height
+        scroll={{ x: scrollX || undefined, y: scrollHeight }}
         toolbar={{
           search: !hideSearch
             ? {
