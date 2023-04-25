@@ -1,4 +1,4 @@
-import Menu from "antd/es/menu";
+import { Menu } from "antd";
 import { Registerable, registerComponentHelper } from "./utils";
 
 export const AntdMenu = Menu;

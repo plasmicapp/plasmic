@@ -1,4 +1,4 @@
-import Button from "antd/es/button";
+import { Button } from "antd";
 import { Registerable, registerComponentHelper } from "./utils";
 
 export const AntdButton = Button;

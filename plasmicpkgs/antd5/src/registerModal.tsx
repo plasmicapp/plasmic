@@ -1,4 +1,4 @@
-import Modal from "antd/es/modal";
+import { Modal } from "antd";
 import React from "react";
 import { Registerable, registerComponentHelper } from "./utils";
 

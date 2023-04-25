@@ -1,5 +1,5 @@
-import Checkbox, { CheckboxChangeEvent } from "antd/es/checkbox";
-import CheckboxGroup from "antd/es/checkbox/Group";
+import { Checkbox } from "antd";
+import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import React from "react";
 import {
   Registerable,
@@ -22,7 +22,7 @@ export function AntdCheckbox(
   }, [onChange]);
   return <Checkbox {...rest} onChange={wrappedOnChange} />;
 }
-export const AntdCheckboxGroup = CheckboxGroup;
+export const AntdCheckboxGroup = Checkbox.Group;
 
 export function registerCheckbox(loader?: Registerable) {
   registerComponentHelper(loader, AntdCheckbox, {
@@ -84,7 +84,7 @@ export function registerCheckbox(loader?: Registerable) {
     importName: "AntdCheckbox",
   });
 
-  registerComponentHelper(loader, CheckboxGroup, {
+  registerComponentHelper(loader, AntdCheckboxGroup, {
     name: "plasmic-antd5-checkbox-group",
     displayName: "Checkbox Group",
     props: {

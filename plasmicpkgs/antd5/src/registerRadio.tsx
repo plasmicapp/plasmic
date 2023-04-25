@@ -1,15 +1,15 @@
-import Radio, { RadioChangeEvent } from "antd/es/radio";
-import RadioGroup from "antd/es/radio/group";
-import RadioButton from "antd/es/radio/radioButton";
+import { Radio } from "antd";
+import type { RadioChangeEvent } from "antd/es/radio";
 import React from "react";
 import {
   Registerable,
   registerComponentHelper,
   traverseReactEltTree,
 } from "./utils";
+const RadioGroup = Radio.Group;
 
 export const AntdRadio = Radio;
-export const AntdRadioButton = RadioButton;
+export const AntdRadioButton = Radio.Button;
 export function AntdRadioGroup(
   props: Omit<React.ComponentProps<typeof RadioGroup>, "onChange"> & {
     onChange?: (value?: string) => void;

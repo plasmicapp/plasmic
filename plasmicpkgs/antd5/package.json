@@ -4,7 +4,6 @@
   "description": "Plasmic registration calls for antd components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "module": "dist/antd.esm.js",
   "nx": {
     "targets": {
       "build": {

@@ -4,17 +4,18 @@ import {
   repeatedElement,
   usePlasmicCanvasContext,
 } from "@plasmicapp/host";
-import Form, { FormInstance, FormProps } from "antd/es/form";
-import FormItem, { FormItemProps } from "antd/es/form/FormItem";
-import FormList, {
-  FormListOperation,
-  FormListProps,
-} from "antd/es/form/FormList";
-import { ColProps } from "antd/es/grid/col";
+import { Form } from "antd";
+import type { FormInstance, FormProps } from "antd/es/form";
+import type { FormItemProps } from "antd/es/form/FormItem";
+import type { FormListOperation, FormListProps } from "antd/es/form/FormList";
+import type { ColProps } from "antd/es/grid/col";
 import equal from "fast-deep-equal";
 import React, { cloneElement, isValidElement } from "react";
 import { mergeProps } from "./react-utils";
 import { omit, Registerable, registerComponentHelper } from "./utils";
+
+const FormItem = Form.Item;
+const FormList = Form.List;
 
 interface FormWrapperProps extends FormProps {
   /**

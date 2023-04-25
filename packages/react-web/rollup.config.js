@@ -2,18 +2,51 @@ import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import resolve from "@rollup/plugin-node-resolve";
 import path from "path";
-import dts from "rollup-plugin-dts";
 import typescript from "rollup-plugin-typescript2";
 import ts from "typescript";
 
+const external = (id) => {
+  if (id.startsWith("regenerator-runtime")) {
+    return false;
+  }
+  return !id.startsWith(".") && !path.isAbsolute(id);
+};
+
 export default [
-  // We use tsdx to build react-web. This config is used only to roll up
-  // all type definitions into dist/index.d.ts after the build.
   {
-    input: "./dist/index.d.ts",
-    output: [{ file: "dist/all.d.ts", format: "es" }],
-    plugins: [dts({ respectExternal: true })],
-    external: ["react"],
+    input: {
+      index: "./src/index.tsx",
+    },
+    external,
+    output: [
+      {
+        dir: "dist",
+        entryFileNames: "react-web.esm.js",
+        format: "esm",
+        sourcemap: true,
+        banner: "'use client';",
+      },
+      {
+        dir: "dist",
+        entryFileNames: "index.cjs.js",
+        format: "cjs",
+        sourcemap: true,
+        exports: "named",
+        banner: "'use client';",
+      },
+    ],
+    plugins: [
+      resolve(),
+      commonjs(),
+      json(),
+      typescript({
+        typescript: ts,
+        check: false,
+        tsconfigOverride: {
+          emitDeclarationOnly: true,
+        },
+      }),
+    ],
   },
 
   // We also do a "skinny" build here that bundles each Plume component as a
@@ -37,12 +70,7 @@ export default [
       "render/PlasmicHead/index": "./src/render/PlasmicHead/index.tsx",
       "render/PlasmicImg/index": "./src/render/PlasmicImg/index.tsx",
     },
-    external: (id) => {
-      if (id.startsWith("regenerator-runtime") || id.startsWith("tslib")) {
-        return false;
-      }
-      return !id.startsWith(".") && !path.isAbsolute(id);
-    },
+    external,
     output: [
       {
         dir: "skinny/dist",
@@ -50,6 +78,7 @@ export default [
         sourcemap: true,
         globals: { react: "React" },
         exports: "named",
+        entryFileNames: "[name].js",
       },
     ],
     plugins: [
@@ -70,18 +99,14 @@ export default [
       "host/index": "./src/host/index.ts",
       "query/index": "./src/query/index.ts",
     },
-    external: (id) => {
-      if (id.startsWith("regenerator-runtime") || id.startsWith("tslib")) {
-        return false;
-      }
-      return !id.startsWith(".") && !path.isAbsolute(id);
-    },
+    external,
     output: [
       {
         dir: "lib",
         format: "esm",
         sourcemap: true,
         globals: { react: "React" },
+        entryFileNames: "[name].js",
         exports: "named",
       },
       {
@@ -102,6 +127,7 @@ export default [
         check: false,
         tsconfigOverride: {
           include: ["src/data-sources", "src/host", "src/query"],
+          emitDeclarationOnly: true,
         },
       }),
     ],

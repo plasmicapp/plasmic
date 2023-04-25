@@ -4,16 +4,13 @@ import {
   TokenRegistration,
 } from "@plasmicapp/host/registerToken";
 import { addLoadingStateListener } from "@plasmicapp/query";
-import ConfigProvider from "antd/es/config-provider";
-import enUS from "antd/es/locale/en_US";
+import { ConfigProvider, message, notification, theme } from "antd";
 import type { MessageInstance } from "antd/es/message/interface";
-import useMessage from "antd/es/message/useMessage";
 import type {
   NotificationInstance,
   NotificationPlacement,
 } from "antd/es/notification/interface";
-import useNotification from "antd/es/notification/useNotification";
-import theme from "antd/es/theme";
+import enUS from "antd/lib/locale/en_US.js";
 import React from "react";
 import { makeRegisterGlobalContext, Registerable } from "./utils";
 
@@ -225,8 +222,11 @@ function useAppContext() {
  * Forking antd's App, to avoid rendering an extra <div/>
  */
 function ForkedApp(props: { children?: React.ReactNode }) {
-  const [messageApi, messageContextHolder] = useMessage();
-  const [notificationApi, notificationContextHolder] = useNotification();
+  const [messageApi, messageContextHolder] = message.useMessage();
+  const [
+    notificationApi,
+    notificationContextHolder,
+  ] = notification.useNotification();
 
   const appContext = React.useMemo(
     () => ({
