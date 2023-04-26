@@ -88,7 +88,7 @@ export function useSelectOption<
       shouldSelectOnPressUp: true,
       shouldFocusOnHover: true,
       isVirtualized: false,
-      shouldUseVirtualFocus: !!canvasCtx,
+      shouldUseVirtualFocus: canvasCtx && !canvasCtx.interactive,
     },
     state,
     rootRef
@@ -110,10 +110,14 @@ export function useSelectOption<
 
   const overrides: Overrides = {
     [config.root]: {
-      props: mergeProps(canvasCtx ? {} : optionProps, getStyleProps(props), {
-        ref: onRef,
-        style: noOutline(),
-      }),
+      props: mergeProps(
+        canvasCtx && !canvasCtx.interactive ? {} : optionProps,
+        getStyleProps(props),
+        {
+          ref: onRef,
+          style: noOutline(),
+        }
+      ),
     },
     [config.labelContainer]: {
       props: labelProps,
