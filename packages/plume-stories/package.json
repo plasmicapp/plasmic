@@ -14,7 +14,6 @@
     "react": "link:../react-web/node_modules/react",
     "react-dom": "link:../react-web/node_modules/react-dom",
     "react-scripts": "4.0.3",
-    "typescript": "^4.1.2",
     "web-vitals": "^1.0.1"
   },
   "scripts": {

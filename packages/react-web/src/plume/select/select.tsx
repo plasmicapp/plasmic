@@ -180,7 +180,7 @@ type AriaSelectItemType = AriaOptionType | AriaGroupType;
  * render functions can assume that _node is passed in.
  */
 function useAriaSelectProps(props: BaseSelectProps, config: SelectConfig<any>) {
-  let {
+  const {
     value,
     defaultValue,
     children,
@@ -335,7 +335,7 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
       props: mergeProps(getStyleProps(props), {
         ref: rootRef,
       }),
-      wrapChildren: (children) => (
+      wrapChildren: (children: React.ReactNode) => (
         <>
           {!canvasCtx && (
             <HiddenSelect
@@ -359,14 +359,14 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
       }),
     },
     [config.overlay]: {
-      wrap: (content) => (
+      wrap: (content: React.ReactNode) => (
         <TriggeredOverlayContext.Provider value={triggerContext}>
           {content}
         </TriggeredOverlayContext.Provider>
       ),
     },
     [config.optionsContainer]: {
-      wrap: (content) => (
+      wrap: (content: React.ReactNode) => (
         <ListBoxWrapper state={state} menuProps={menuProps}>
           {content as React.ReactElement}
         </ListBoxWrapper>

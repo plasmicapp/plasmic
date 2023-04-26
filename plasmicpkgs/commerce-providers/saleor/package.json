@@ -11,7 +11,7 @@
   "scripts": {
     "build": "tsdx build",
     "start": "tsdx watch",
-    "test": "tsdx test --passWithNoTests",
+    "test": "yarn --cwd=../../.. test --passWithNoTests",
     "lint": "tsdx lint",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "size": "size-limit",
@@ -36,8 +36,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "size-limit": "^7.0.8",
-    "tsdx": "^0.14.1",
-    "typescript": "^4.5.4"
+    "tsdx": "^0.14.1"
   },
   "publishConfig": {
     "access": "public"

@@ -21,7 +21,7 @@
   "scripts": {
     "build": "tsdx build",
     "start": "tsdx watch",
-    "test": "tsdx test --passWithNoTests",
+    "test": "yarn --cwd=../.. test --passWithNoTests",
     "lint": "tsdx lint",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "size": "size-limit",
@@ -34,8 +34,7 @@
     "@types/react-slick": "^0.23.7",
     "size-limit": "^4.11.0",
     "tsdx": "^0.14.1",
-    "tslib": "^2.2.0",
-    "typescript": "^3.9.7"
+    "tslib": "^2.2.0"
   },
   "dependencies": {
     "@seznam/compose-react-refs": "^1.0.6",

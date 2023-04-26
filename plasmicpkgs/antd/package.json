@@ -36,7 +36,7 @@
   ],
   "scripts": {
     "build": "rollup -c rollup.config.mjs && yarn copy_css_files && yarn gentypes",
-    "gentypes": "./node_modules/.bin/tsc --emitDeclarationOnly --declaration src/index.ts --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --jsx react --esModuleInterop --strict --outDir ./dist/ && cp ./dist/*.d.ts skinny/ && rm skinny/index.d.ts",
+    "gentypes": "yarn tsc --emitDeclarationOnly --declaration src/index.ts --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --jsx react --esModuleInterop --strict --outDir ./dist/ && cp ./dist/*.d.ts skinny/ && rm skinny/index.d.ts",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "copy_css_files": "cp src/*.css dist/",
     "size": "size-limit",
@@ -54,8 +54,7 @@
     "rollup-plugin-esbuild": "^5.0.0",
     "rollup-plugin-replace-imports": "^1.0.0",
     "size-limit": "^4.11.0",
-    "tsdx": "^0.14.1",
-    "typescript": "^4.6.4"
+    "tsdx": "^0.14.1"
   },
   "peerDependencies": {
     "@plasmicapp/host": ">=1.0.0",
