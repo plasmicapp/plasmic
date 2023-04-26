@@ -1,5 +1,5 @@
 {
-  "version": "0.0.3",
+  "version": "0.0.4",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -57,7 +57,7 @@
     "tslib": "^2.2.0"
   },
   "dependencies": {
-    "@plasmicapp/auth-api": "0.0.3",
+    "@plasmicapp/auth-api": "0.0.4",
     "@plasmicapp/isomorphic-unfetch": "^1.0.1",
     "swr": "2.1.0"
   },
