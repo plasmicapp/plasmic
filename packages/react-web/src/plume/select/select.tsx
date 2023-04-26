@@ -337,7 +337,7 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
       }),
       wrapChildren: (children) => (
         <>
-          {!canvasCtx && (
+          {(!canvasCtx || canvasCtx.interactive) && (
             <HiddenSelect
               state={state}
               triggerRef={triggerRef}
@@ -350,13 +350,16 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
       ),
     },
     [config.trigger]: {
-      props: mergeProps(canvasCtx ? {} : triggerProps, {
-        ref: triggerRef,
-        autoFocus,
-        disabled: !!isDisabled,
-        // Don't trigger form submission!
-        type: "button",
-      }),
+      props: mergeProps(
+        canvasCtx && !canvasCtx.interactive ? {} : triggerProps,
+        {
+          ref: triggerRef,
+          autoFocus,
+          disabled: !!isDisabled,
+          // Don't trigger form submission!
+          type: "button",
+        }
+      ),
     },
     [config.overlay]: {
       wrap: (content) => (
@@ -446,9 +449,13 @@ function ListBoxWrapper(props: {
 
   return React.cloneElement(
     children,
-    mergeProps(children.props, canvasCtx ? {} : listBoxProps, {
-      style: noOutline(),
-      ref,
-    })
+    mergeProps(
+      children.props,
+      canvasCtx && !canvasCtx.interactive ? {} : listBoxProps,
+      {
+        style: noOutline(),
+        ref,
+      }
+    )
   );
 }
