@@ -5,6 +5,22 @@ import { DataOp, executePlasmicDataOp } from '../executor';
 import { ManyRowsResult, Pagination, SingleRowResult } from '../types';
 import { pick } from '../utils';
 
+export function makeCacheKey(
+  dataOp: DataOp,
+  opts?: { paginate?: Pagination; userAuthToken?: string | null }
+) {
+  const queryDependencies = JSON.stringify({
+    sourceId: dataOp.sourceId,
+    opId: dataOp.opId,
+    args: dataOp.userArgs,
+    userAuthToken: opts?.userAuthToken,
+    paginate: opts?.paginate,
+  });
+  return dataOp.cacheKey
+    ? `${dataOp.cacheKey}${queryDependencies}`
+    : queryDependencies;
+}
+
 export function usePlasmicDataOp<
   T extends SingleRowResult | ManyRowsResult,
   E = any
@@ -23,16 +39,10 @@ export function usePlasmicDataOp<
       if (!dataOp) {
         return null;
       }
-      const queryDependencies = JSON.stringify({
-        sourceId: dataOp.sourceId,
-        opId: dataOp.opId,
-        args: dataOp.userArgs,
-        userAuthToken: ctx?.userAuthToken,
+      return makeCacheKey(dataOp, {
         paginate: opts?.paginate,
+        userAuthToken: ctx?.userAuthToken,
       });
-      return dataOp.cacheKey
-        ? `${dataOp.cacheKey}${queryDependencies}`
-        : queryDependencies;
     },
     async () => {
       return await executePlasmicDataOp<T>(dataOp!, {
