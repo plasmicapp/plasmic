@@ -1,21 +1,21 @@
 {
   "version": "1.0.260",
   "license": "MIT",
-  "types": "./dist/index.d.ts",
-  "main": "./dist/index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
     "./react-server": {
-      "types": "./dist/react-server.d.ts",
-      "default": "./dist/react-server.js"
+      "types": "./dist-react-server/index-react-server.d.ts",
+      "default": "./dist-react-server/index.js"
     },
     "./react-server-conditional": {
       "react-server": {
-        "types": "./dist/react-server.d.ts",
-        "default": "./dist/react-server.js"
+        "types": "./dist-react-server/index-react-server.d.ts",
+        "default": "./dist-react-server/index.js"
       },
       "default": {
         "types": "./dist/index.d.ts",
@@ -29,6 +29,7 @@
   },
   "files": [
     "dist",
+    "dist-react-server",
     "index.d.ts",
     "react-server.d.ts",
     "react-server-conditional.d.ts",
@@ -39,17 +40,17 @@
     "node": ">=10"
   },
   "scripts": {
-    "build": "yarn build:types && yarn build:index && yarn build:react-server",
-    "build:types": "yarn tsc",
-    "build:index": "node ../../build.mjs ./src/index.tsx --use-client",
-    "build:react-server": "node ../../build.mjs ./src/react-server.ts",
-    "postbuild": "yarn postbuild:index && yarn postbuild:react-server",
-    "postbuild:index": "node ../../print-module-api.js ./packages/loader-nextjs/dist/index.js > index-api.txt",
-    "postbuild:react-server": "node ../../print-module-api.js ./packages/loader-nextjs/dist/react-server.js > index-react-server-api.txt",
+    "start": "tsdx watch",
+    "build": "yarn build:react-server && yarn build:default",
+    "build:default": "tsdx build --entry src/index.tsx",
+    "build:react-server": "rm -rf dist-react-server && tsdx build --entry src/index-react-server.ts && mv dist dist-react-server",
+    "postbuild": "yarn postbuild:react-server && yarn postbuild:default",
+    "postbuild:default": "node ../../print-module-api.js ./packages/loader-nextjs/dist/index.js > index-api.txt",
+    "postbuild:react-server": "node ../../print-module-api.js ./packages/loader-nextjs/dist-react-server/index.js > index-react-server-api.txt",
     "yalcp": "yalc publish --push",
-    "test": "jest packages/loader-nextjs --config=../../jest.config.js --passWithNoTests",
-    "coverage": "yarn test --coverage",
-    "lint": "eslint",
+    "test": "tsdx test --passWithNoTests",
+    "coverage": "tsdx test --coverage --passWithNoTests",
+    "lint": "tsdx lint",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "size": "size-limit",
     "analyze": "size-limit --why"
@@ -59,25 +60,54 @@
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
   "name": "@plasmicapp/loader-nextjs",
   "author": "Chung Wu",
+  "module": "dist/loader-nextjs.esm.js",
   "size-limit": [
     {
-      "path": "dist/index.js",
+      "path": "dist/loader-nextjs.cjs.production.min.js",
       "limit": "15 KB"
     },
     {
-      "path": "dist/react-server.js",
+      "path": "dist/loader-nextjs.esm.js",
+      "limit": "15 KB"
+    },
+    {
+      "path": "dist-react-server/loader-nextjs.cjs.production.min.js",
+      "limit": "15 KB"
+    },
+    {
+      "path": "dist-react-server/loader-nextjs.esm.js",
       "limit": "15 KB"
     }
   ],
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^19.0.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.0.0",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "husky": "^6.0.0",
     "next": "^11.0.0",
-    "size-limit": "^4.11.0"
+    "rollup": "^2.47.0",
+    "rollup-plugin-dts": "^3.0.1",
+    "rollup-plugin-typescript2": "^0.30.0",
+    "size-limit": "^4.11.0",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.2.0",
+    "typescript": "^4.3.2"
   },
   "dependencies": {
     "@plasmicapp/loader-core": "1.0.98",
