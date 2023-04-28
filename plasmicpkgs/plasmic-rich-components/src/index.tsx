@@ -3,7 +3,7 @@ import { registerRichTable } from "./rich-table";
 import { Registerable } from "./utils";
 
 export { RichLayout } from "./rich-layout";
-export { RichTable } from "./rich-table";
+export { RichTable, tableHelpers } from "./rich-table";
 
 export function registerAll(loader?: Registerable) {
   registerRichLayout(loader);

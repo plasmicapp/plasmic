@@ -4,7 +4,12 @@ import {
 } from "@plasmicapp/host/registerComponent";
 import { ColumnConfig } from "../field-mappings";
 import { Registerable, registerComponentHelper } from "../utils";
-import { ControlContextData, RichTable, RichTableProps } from "./RichTable";
+import {
+  ControlContextData,
+  RichTable,
+  RichTableProps,
+  deriveRowKey,
+} from "./RichTable";
 
 export * from "./RichTable";
 export default RichTable;
@@ -12,6 +17,26 @@ export default RichTable;
 function ensureNumber(x: number | string): number {
   return x as number;
 }
+
+export const tableHelpers = {
+  states: {
+    selectedRow: {
+      onChangeArgsToValue: (rowKeys: string[], rows: any[]) => {
+        return rows[0];
+      },
+    },
+    selectedRows: {
+      onChangeArgsToValue: (rowKeys: string[], rows: any[]) => {
+        return rows;
+      },
+    },
+    selectedRowKey: {
+      onChangeArgsToValue: (rowKeys: string[], rows: any[]) => {
+        return rowKeys;
+      },
+    },
+  },
+};
 
 const rowDataType = (displayName: string, control?: any) =>
   ({
@@ -111,6 +136,46 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
       },
     },
 
+    canSelectRows: {
+      type: "choice",
+      displayName: "Select rows?",
+      options: [
+        { label: "No", value: "none" },
+        { label: "Single", value: "single" },
+        { label: "Multiple", value: "multiple" },
+      ],
+      defaultValueHint: "none",
+    },
+
+    rowKey: {
+      type: "string",
+      displayName: "Row key",
+      helpText:
+        "Column key to use as row key; can also be a function that takes in a row and returns a key value",
+      hidden: (ps) => !ps.canSelectRows || ps.canSelectRows === "none",
+      defaultValueHint: (ps) => deriveRowKey(ps.data, ps.rowKey),
+    },
+
+    selectedRowKey: {
+      type: "string",
+      displayName: "Selected Row Key",
+      hidden: (ps) => ps.canSelectRows !== "single",
+      advanced: true,
+    },
+    selectedRowKeys: {
+      type: "array",
+      displayName: "Selected Row Keys",
+      hidden: (ps) => ps.canSelectRows !== "multiple",
+      advanced: true,
+    },
+    onRowSelectionChanged: {
+      type: "eventHandler",
+      displayName: "On row selection changed",
+      argTypes: [
+        { name: "rowKeys", type: "object" },
+        { name: "rows", type: "object" },
+      ],
+    },
     pagination: {
       type: "boolean",
       advanced: true,
@@ -147,6 +212,32 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
       type: "boolean",
       advanced: true,
     },
+  },
+  states: {
+    selectedRowKey: {
+      type: "writable",
+      valueProp: "selectedRowKey",
+      onChangeProp: "onRowSelectionChanged",
+      variableType: "text",
+      ...tableHelpers.states.selectedRowKey,
+    },
+    selectedRow: {
+      type: "readonly",
+      onChangeProp: "onRowSelectionChanged",
+      variableType: "object",
+      ...tableHelpers.states.selectedRow,
+    },
+    selectedRows: {
+      type: "readonly",
+      onChangeProp: "onRowSelectionChanged",
+      variableType: "array",
+      ...tableHelpers.states.selectedRows,
+    },
+  },
+  componentHelpers: {
+    helpers: tableHelpers,
+    importName: "tableHelpers",
+    importPath: "@plasmicpkgs/plasmic-rich-components",
   },
   importName: "RichTable",
   importPath: "@plasmicpkgs/plasmic-rich-components",

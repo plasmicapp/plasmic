@@ -19,7 +19,7 @@
     }
   ],
   "scripts": {
-    "build": "tsdx build",
+    "build": "rollup -c",
     "start": "tsdx watch",
     "test": "yarn --cwd=../.. test --passWithNoTests",
     "lint": "tsdx lint",
