@@ -12,8 +12,12 @@ import {
 } from "@plasmicapp/data-sources";
 import { DataProvider } from "@plasmicapp/host";
 import { Button, Dropdown } from "antd";
-import { SizeType } from "antd/es/config-provider/SizeContext";
-import { SorterResult } from "antd/es/table/interface";
+import type { SizeType } from "antd/es/config-provider/SizeContext";
+import type {
+  GetRowKey,
+  SorterResult,
+  TableRowSelection,
+} from "antd/es/table/interface";
 import { createObjectCsvStringifier } from "csv-writer-browser";
 import fastStringify from "fast-stringify";
 import React, { ReactNode, useMemo, useRef, useState } from "react";
@@ -51,7 +55,14 @@ export interface RichTableProps {
   // children?: React.ReactNode;
   defaultSize?: SizeType;
   pagination?: boolean;
-  onSelect?: (record: any) => void;
+
+  canSelectRows?: "none" | "single" | "multiple";
+
+  selectedRowKey?: string | string[];
+  onRowSelectionChanged?: (rowKeys: string[], rows: any[]) => void;
+
+  rowKey?: string | GetRowKey<any>;
+
   setControlContextData?: (ctx: ControlContextData) => void;
   title?: ReactNode;
 
@@ -178,6 +189,10 @@ export function RichTable(props: RichTableProps) {
     hideDensity,
     hideColumnPicker,
     hideExports,
+    canSelectRows,
+    selectedRowKey,
+    onRowSelectionChanged,
+    rowKey,
   } = props;
 
   const data = normalizeData(rawData);
@@ -346,6 +361,39 @@ export function RichTable(props: RichTableProps) {
   if (!isClient) {
     return null;
   }
+
+  const deriveSelectedRowKeys = () => {
+    if (
+      !canSelectRows ||
+      canSelectRows === "none" ||
+      !deriveRowKey(data, rowKey)
+    ) {
+      return [];
+    }
+
+    if (typeof selectedRowKey === "string") {
+      return [selectedRowKey];
+    } else if (Array.isArray(selectedRowKey)) {
+      if (canSelectRows === "single") {
+        return selectedRowKey.slice(0, 1);
+      } else {
+        return selectedRowKey;
+      }
+    } else {
+      return [];
+    }
+  };
+
+  const rowSelection: TableRowSelection<any> | undefined =
+    canSelectRows && canSelectRows !== "none"
+      ? {
+          type: canSelectRows === "single" ? "radio" : "checkbox",
+          selectedRowKeys: deriveSelectedRowKeys(),
+          onChange: (rowKeys, rows) => {
+            onRowSelectionChanged?.(rowKeys as string[], rows);
+          },
+        }
+      : undefined;
   return (
     <>
       <ProTable
@@ -355,8 +403,9 @@ export function RichTable(props: RichTableProps) {
         onChange={(_pagination, _filters, sorter, _extra) => {
           setState({ sorter: sorter as any });
         }}
+        rowSelection={rowSelection}
         dataSource={finalData}
-        rowKey={"id"}
+        rowKey={deriveRowKey(data, rowKey)}
         defaultSize={defaultSize}
         editable={{ type: "multiple" }}
         search={false}
@@ -386,7 +435,9 @@ export function RichTable(props: RichTableProps) {
             ? {
                 value: search,
                 onChange: (e) => setSearch(e.target.value),
-                onSearch: () => {},
+                onSearch: () => {
+                  return;
+                },
                 placeholder: "Search",
               }
             : undefined,
@@ -496,4 +547,18 @@ export function RichTable(props: RichTableProps) {
       </style>
     </>
   );
+}
+
+export function deriveRowKey(
+  data: React.ComponentProps<typeof RichTable>["data"],
+  rowKey: React.ComponentProps<typeof RichTable>["rowKey"]
+) {
+  if (rowKey) {
+    return rowKey;
+  }
+  const schema = tryGetSchema(data);
+  if (schema) {
+    return schema.fields[0]?.id;
+  }
+  return undefined;
 }
