@@ -7,7 +7,7 @@ import {
 } from '@plasmicapp/loader-react/react-server';
 import { initPlasmicLoaderWithCache } from './cache';
 
-export * from './shared-exports';
+export * from './index-shared';
 
 export function initPlasmicLoader(opts: InitOptions) {
   return initPlasmicLoaderWithCache<ReactServerPlasmicComponentLoader>(

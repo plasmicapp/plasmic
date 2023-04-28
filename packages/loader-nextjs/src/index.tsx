@@ -5,22 +5,14 @@ import {
   PlasmicRootProvider as CommonPlasmicRootProvider,
 } from '@plasmicapp/loader-react';
 import { IncomingMessage, ServerResponse } from 'http';
-// NextHead and NextLink must be default imported (`import Pkg`) instead of a namespace import (`import * as Pkg`).
-// Otherwise, there's a Next.js 12 bug when referencing these dependencies due to default import interop.
-// The transpiled CommonJS code would create a `default` field on the package,
-// causing React to think it's an invalid React object:
-// ```
-// const NextHead = __defaultInterop(require('next/head.js'))
-// assert(typeof NextHead === 'object')
-// assert(typeof NextHead.default === 'function')
-// ```
-import NextHead from 'next/head.js';
-import NextLink from 'next/link.js';
-import * as NextRouter from 'next/router.js';
+import * as NextHead from 'next/head';
+import * as NextLink from 'next/link';
+import * as NextRouter from 'next/router';
 import * as React from 'react';
 import { initPlasmicLoaderWithCache } from './cache';
 
 export {
+  CodeComponentMeta,
   DataCtxReader,
   DataProvider,
   extractPlasmicQueryData,
@@ -29,7 +21,11 @@ export {
   PlasmicCanvasHost,
   PlasmicComponent,
   plasmicPrepass,
+  PlasmicTranslator,
+  PrimitiveType,
+  PropType,
   repeatedElement,
+  TokenRegistration,
   useDataEnv,
   usePlasmicCanvasContext,
   usePlasmicComponent,
@@ -37,14 +33,7 @@ export {
   useSelector,
   useSelectors,
 } from '@plasmicapp/loader-react';
-export type {
-  CodeComponentMeta,
-  PlasmicTranslator,
-  PrimitiveType,
-  PropType,
-  TokenRegistration,
-} from '@plasmicapp/loader-react';
-export * from './shared-exports';
+export * from './index-shared';
 
 type ServerRequest = IncomingMessage & {
   cookies: {
@@ -122,5 +111,5 @@ export function initPlasmicLoader(opts: InitOptions) {
 export function PlasmicRootProvider(
   props: Omit<React.ComponentProps<typeof CommonPlasmicRootProvider>, 'Head'>
 ) {
-  return <CommonPlasmicRootProvider Head={NextHead} {...props} />;
+  return <CommonPlasmicRootProvider Head={NextHead.default} {...props} />;
 }
