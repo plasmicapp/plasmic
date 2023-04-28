@@ -20,7 +20,7 @@ import type {
 } from "antd/es/table/interface";
 import { createObjectCsvStringifier } from "csv-writer-browser";
 import fastStringify from "fast-stringify";
-import React, { ReactNode, useMemo, useRef, useState } from "react";
+import React, { ReactNode, useRef, useState } from "react";
 import { useIsClient } from "../common";
 import {
   ColumnConfig,
@@ -121,9 +121,12 @@ function tryGetSchema(data?: QueryResult): TableSchema | undefined {
   };
 }
 
-function normalizeData(
-  rawData: unknown
-): { data: Record<string, unknown>[]; schema?: TableSchema } | undefined {
+interface NormalizedData {
+  data: Record<string, unknown>[];
+  schema?: TableSchema;
+}
+
+function normalizeData(rawData: unknown): NormalizedData | undefined {
   if (!rawData || typeof rawData !== "object") {
     return undefined;
   }
@@ -136,7 +139,10 @@ function normalizeData(
     return undefined;
   }
   // Make TS happy.
-  const normed = { ...objWithData, data: objWithData.data };
+  const normed = {
+    ...objWithData,
+    data: objWithData.data as Record<string, unknown>[],
+  };
   const schema = tryGetSchema(rawData as any);
   if (!schema) {
     return undefined;
@@ -176,12 +182,8 @@ export function RichTable(props: RichTableProps) {
     // children,
     pagination = true,
     defaultSize,
-    fields,
-    setControlContextData,
     title,
     addHref,
-    actions,
-    customActionChildren,
     pageSize = 10,
     scrollX = true,
     scrollHeight,
@@ -189,17 +191,134 @@ export function RichTable(props: RichTableProps) {
     hideDensity,
     hideColumnPicker,
     hideExports,
-    canSelectRows,
-    selectedRowKey,
-    onRowSelectionChanged,
     rowKey,
   } = props;
 
   const data = normalizeData(rawData);
 
-  const [search, setSearch] = useState("");
+  const { columnDefinitions, normalized } = useColumnDefinitions(data, props);
 
-  const { columnDefinitions, normalized } = React.useMemo(() => {
+  const actionRef = useRef<ActionType>();
+
+  const { finalData, search, setSearch, setSortState } = useSortedFilteredData(
+    data,
+    normalized
+  );
+
+  const rowSelection = useRowSelection(data, props);
+  // const { containerRef, tableHeight } = useScrollHeight(data, props);
+
+  const isClient = useIsClient();
+
+  if (!isClient) {
+    return null;
+  }
+
+  return (
+    <div className={className}>
+      <ProTable
+        actionRef={actionRef}
+        columns={columnDefinitions}
+        onChange={(_pagination, _filters, sorter, _extra) => {
+          setSortState({ sorter: sorter as any });
+        }}
+        style={{
+          width: "100%",
+          height: "100%",
+        }}
+        cardProps={{
+          ghost: true,
+        }}
+        rowSelection={rowSelection}
+        dataSource={finalData}
+        rowKey={deriveRowKey(data, rowKey)}
+        defaultSize={defaultSize}
+        editable={{ type: "multiple" }}
+        search={false}
+        options={{
+          setting: hideColumnPicker
+            ? false
+            : {
+                listsHeight: 400,
+              },
+          reload: false,
+          density: !hideDensity,
+        }}
+        pagination={
+          pagination
+            ? {
+                pageSize,
+                onChange: (page) => console.log(page),
+              }
+            : false
+        }
+        dateFormatter="string"
+        headerTitle={title}
+        // TODO in the future, figure out how to make this responsive to the CSS height
+        scroll={{ x: scrollX || undefined, y: scrollHeight }}
+        toolbar={{
+          search: !hideSearch
+            ? {
+                value: search,
+                onChange: (e) => setSearch(e.target.value),
+                onSearch: () => {
+                  return;
+                },
+                placeholder: "Search",
+              }
+            : undefined,
+        }}
+        toolBarRender={() => [
+          addHref && (
+            <Button
+              key="button"
+              icon={<PlusOutlined />}
+              type="primary"
+              href={addHref}
+            >
+              Add
+            </Button>
+          ),
+          !hideExports && <ExportMenu data={data} />,
+        ]}
+      />
+      {/*Always hide the weird pin left/right buttons for now, which also have render layout issues*/}
+      <style>
+        {`
+          :where(.css-dev-only-do-not-override-1p704s4).ant-pro-table-column-setting-overlay .ant-tree-treenode:hover .ant-pro-table-column-setting-list-item-option {
+            display: none;
+          }
+          .ant-pro-table-list-toolbar-right {
+            flex-wrap: initial;
+            flex-shrink: 0;
+          }
+        `}
+      </style>
+    </div>
+  );
+}
+
+export function deriveRowKey(
+  data: React.ComponentProps<typeof RichTable>["data"],
+  rowKey: React.ComponentProps<typeof RichTable>["rowKey"]
+) {
+  if (rowKey) {
+    return rowKey;
+  }
+  const schema = tryGetSchema(data);
+  if (schema) {
+    return schema.fields[0]?.id;
+  }
+  return undefined;
+}
+
+function useColumnDefinitions(
+  data: NormalizedData | undefined,
+  props: React.ComponentProps<typeof RichTable>
+) {
+  const { fields, setControlContextData, actions, customActionChildren } =
+    props;
+  return React.useMemo(() => {
     const schema = tryGetSchema(data);
     if (!data || !schema) {
       return { normalized: [], columnDefinitions: [] };
@@ -321,24 +440,27 @@ export function RichTable(props: RichTableProps) {
       });
     }
     return { normalized, columnDefinitions };
-  }, [fields, data, setControlContextData]);
+  }, [fields, data, setControlContextData, actions, customActionChildren]);
+}
 
-  const actionRef = useRef<ActionType>();
-
-  const [state, setState] = useState<
+function useSortedFilteredData(
+  data: NormalizedData | undefined,
+  columns: ColumnConfig[]
+) {
+  const [search, setSearch] = useState("");
+  const [sortState, setSortState] = useState<
     undefined | { sorter: SorterResult<Record<string, any>> }
   >(undefined);
-
-  const finalData = useMemo(() => {
+  const finalData = React.useMemo(() => {
     const filtered = data?.data?.filter((row) =>
       fastStringify(Object.values(row)).toLowerCase().includes(search)
     );
-    const sorted = state?.sorter.column
+    const sorted = sortState?.sorter.column
       ? // We use .sort() rather than sortBy to use localeCompare
         (() => {
           const expr =
-            normalized.find(
-              (cconfig) => cconfig.key === state?.sorter.column?.key
+            columns.find(
+              (cconfig) => cconfig.key === sortState?.sorter.column?.key
             )!.expr ?? ((x) => x);
           return (filtered ?? []).sort((aa, bb) => {
             const a = expr(aa) ?? null,
@@ -353,15 +475,24 @@ export function RichTable(props: RichTableProps) {
         })()
       : filtered;
     const reversed =
-      state?.sorter.order === "descend" ? sorted?.reverse() : sorted;
+      sortState?.sorter.order === "descend" ? sorted?.reverse() : sorted;
     return reversed;
-  }, [data, normalized, state, search]);
+  }, [data, columns, sortState, search]);
 
-  const isClient = useIsClient();
-  if (!isClient) {
-    return null;
-  }
+  return {
+    finalData,
+    search,
+    setSearch,
+    setSortState,
+  };
+}
 
+function useRowSelection(
+  data: NormalizedData | undefined,
+  props: React.ComponentProps<typeof RichTable>
+) {
+  const { canSelectRows, selectedRowKey, onRowSelectionChanged, rowKey } =
+    props;
   const deriveSelectedRowKeys = () => {
     if (
       !canSelectRows ||
@@ -384,7 +515,7 @@ export function RichTable(props: RichTableProps) {
     }
   };
 
-  const rowSelection: TableRowSelection<any> | undefined =
+  const rowSelection: React.ComponentProps<typeof ProTable>["rowSelection"] =
     canSelectRows && canSelectRows !== "none"
       ? {
           type: canSelectRows === "single" ? "radio" : "checkbox",
@@ -392,173 +523,157 @@ export function RichTable(props: RichTableProps) {
           onChange: (rowKeys, rows) => {
             onRowSelectionChanged?.(rowKeys as string[], rows);
           },
+          alwaysShowAlert: true,
         }
       : undefined;
-  return (
-    <>
-      <ProTable
-        actionRef={actionRef}
-        className={className}
-        columns={columnDefinitions}
-        onChange={(_pagination, _filters, sorter, _extra) => {
-          setState({ sorter: sorter as any });
-        }}
-        rowSelection={rowSelection}
-        dataSource={finalData}
-        rowKey={deriveRowKey(data, rowKey)}
-        defaultSize={defaultSize}
-        editable={{ type: "multiple" }}
-        search={false}
-        options={{
-          setting: hideColumnPicker
-            ? false
-            : {
-                listsHeight: 400,
-              },
-          reload: false,
-          density: !hideDensity,
-        }}
-        pagination={
-          pagination
-            ? {
-                pageSize,
-                onChange: (page) => console.log(page),
-              }
-            : false
-        }
-        dateFormatter="string"
-        headerTitle={title}
-        // TODO in the future, figure out how to make this responsive to the CSS height
-        scroll={{ x: scrollX || undefined, y: scrollHeight }}
-        toolbar={{
-          search: !hideSearch
-            ? {
-                value: search,
-                onChange: (e) => setSearch(e.target.value),
-                onSearch: () => {
-                  return;
-                },
-                placeholder: "Search",
-              }
-            : undefined,
-        }}
-        toolBarRender={() => [
-          addHref && (
-            <Button
-              key="button"
-              icon={<PlusOutlined />}
-              type="primary"
-              href={addHref}
-            >
-              Add
-            </Button>
-          ),
-          !hideExports && (
-            <Dropdown
-              key="menu"
-              menu={{
-                items: [
-                  {
-                    label: "Download as CSV",
-                    key: "csv",
-                    onClick: async () => {
-                      const writer = createObjectCsvStringifier({
-                        header:
-                          tryGetSchema(data)?.fields.map((f) => ({
-                            id: f.id,
-                            title: f.id,
-                          })) ?? [],
-                      });
-                      const dataStr =
-                        writer.getHeaderString() +
-                        writer.stringifyRecords(data?.data as any);
-
-                      // const dataStr = stringify(data?.data as any, {
-                      //   columns:
-                      //     tryGetSchema(data)?.fields.map((f) => f.id) ?? [],
-                      //   header: true,
-                      // });
-
-                      const filename = "data.csv";
-
-                      // Adapted from https://stackoverflow.com/a/68771795
-                      const blob = new Blob([dataStr], {
-                        type: "text/csv;charset=utf-8;",
-                      });
-                      if ((navigator as any).msSaveBlob) {
-                        // In case of IE 10+
-                        (navigator as any).msSaveBlob(blob, filename);
-                      } else {
-                        const link = document.createElement("a");
-                        if (link.download !== undefined) {
-                          // Browsers that support HTML5 download attribute
-                          const url = URL.createObjectURL(blob);
-                          link.setAttribute("href", url);
-                          link.setAttribute("download", filename);
-                          link.style.visibility = "hidden";
-                          document.body.appendChild(link);
-                          link.click();
-                          document.body.removeChild(link);
-                        }
-                      }
-                    },
-                  },
-                  {
-                    label: "Download as JSON",
-                    key: "json",
-                    onClick: () => {
-                      const dataStr = fastStringify(data?.data);
-                      const dataUri = `data:application/json;charset=utf-8, ${encodeURIComponent(
-                        dataStr
-                      )}`;
-
-                      const exportFileDefaultName = "data.json";
-
-                      const linkElement = document.createElement("a");
-                      linkElement.setAttribute("href", dataUri);
-                      linkElement.setAttribute(
-                        "download",
-                        exportFileDefaultName
-                      );
-                      linkElement.click();
-                    },
-                  },
-                ],
-              }}
-            >
-              <Button>
-                <EllipsisOutlined />
-              </Button>
-            </Dropdown>
-          ),
-        ]}
-      />
-      {/*Always hide the weird pin left/right buttons for now, which also have render layout issues*/}
-      <style>
-        {`
-          :where(.css-dev-only-do-not-override-1p704s4).ant-pro-table-column-setting-overlay .ant-tree-treenode:hover .ant-pro-table-column-setting-list-item-option {
-            display: none;
-          }
-          .ant-pro-table-list-toolbar-right {
-            flex-wrap: initial;
-            flex-shrink: 0;
-          }
-        `}
-      </style>
-    </>
-  );
+  return rowSelection;
 }
 
-export function deriveRowKey(
-  data: React.ComponentProps<typeof RichTable>["data"],
-  rowKey: React.ComponentProps<typeof RichTable>["rowKey"]
+// TODO: not in use. This tries to detect how much available
+// vertical space there is to automatically set a scroll height,
+// but it only works well when there's a fixed height; if the
+// table is auto-height, then it will set a scroll height of 0,
+// which is unfortunate. There's no way to detect if the table
+// is auto-height or not :-/
+function useScrollHeight(
+  data: NormalizedData | undefined,
+  props: React.ComponentProps<typeof RichTable>
 ) {
-  if (rowKey) {
-    return rowKey;
-  }
-  const schema = tryGetSchema(data);
-  if (schema) {
-    return schema.fields[0]?.id;
-  }
-  return undefined;
+  const [container, setContainer] = React.useState<HTMLDivElement | null>(null);
+  const containerRef = (elt: HTMLDivElement | null) => {
+    setContainer(elt);
+  };
+  const [tableHeight, setTableHeight] = React.useState(0);
+  React.useEffect(() => {
+    if (container) {
+      const setNewHeight = () => {
+        const getHeight = (selector: string) => {
+          const elt = container.querySelector(selector) as
+            | HTMLElement
+            | undefined;
+          if (elt) {
+            const eltStyle = getComputedStyle(elt);
+            return (
+              elt.offsetHeight +
+              parseFloat(eltStyle.marginTop || "0") +
+              parseFloat(eltStyle.marginBottom || "0")
+            );
+          }
+          return 0;
+        };
+        const headerHeight = getHeight(".ant-table-header");
+        const paginationHeight = getHeight(".ant-pagination");
+        const toolbarHeight = getHeight(".ant-pro-table-list-toolbar");
+        const alertHeight = getHeight(".ant-pro-table-alert");
+
+        setTableHeight(
+          container.offsetHeight -
+            headerHeight -
+            paginationHeight -
+            toolbarHeight -
+            alertHeight
+        );
+      };
+
+      const containerObserver = new ResizeObserver(() => {
+        setNewHeight();
+      });
+      containerObserver.observe(container);
+      setNewHeight();
+      return () => {
+        containerObserver.disconnect();
+      };
+    }
+    return undefined;
+  }, [
+    container,
+    props.canSelectRows,
+    props.hideSearch,
+    props.addHref,
+    props.hideExports,
+    props.hideDensity,
+    props.hideColumnPicker,
+    !!data,
+  ]);
+  return { containerRef, tableHeight };
+}
+
+function ExportMenu(props: { data: NormalizedData | undefined }) {
+  const { data } = props;
+
+  return (
+    <Dropdown
+      key="menu"
+      menu={{
+        items: [
+          {
+            label: "Download as CSV",
+            key: "csv",
+            onClick: async () => {
+              const writer = createObjectCsvStringifier({
+                header:
+                  tryGetSchema(data)?.fields.map((f) => ({
+                    id: f.id,
+                    title: f.id,
+                  })) ?? [],
+              });
+              const dataStr =
+                writer.getHeaderString() +
+                writer.stringifyRecords(data?.data as any);
+
+              // const dataStr = stringify(data?.data as any, {
+              //   columns:
+              //     tryGetSchema(data)?.fields.map((f) => f.id) ?? [],
+              //   header: true,
+              // });
+
+              const filename = "data.csv";
+
+              // Adapted from https://stackoverflow.com/a/68771795
+              const blob = new Blob([dataStr], {
+                type: "text/csv;charset=utf-8;",
+              });
+              if ((navigator as any).msSaveBlob) {
+                // In case of IE 10+
+                (navigator as any).msSaveBlob(blob, filename);
+              } else {
+                const link = document.createElement("a");
+                if (link.download !== undefined) {
+                  // Browsers that support HTML5 download attribute
+                  const url = URL.createObjectURL(blob);
+                  link.setAttribute("href", url);
+                  link.setAttribute("download", filename);
+                  link.style.visibility = "hidden";
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }
+              }
+            },
+          },
+          {
+            label: "Download as JSON",
+            key: "json",
+            onClick: () => {
+              const dataStr = fastStringify(data?.data);
+              const dataUri = `data:application/json;charset=utf-8, ${encodeURIComponent(
+                dataStr
+              )}`;
+
+              const exportFileDefaultName = "data.json";
+
+              const linkElement = document.createElement("a");
+              linkElement.setAttribute("href", dataUri);
+              linkElement.setAttribute("download", exportFileDefaultName);
+              linkElement.click();
+            },
+          },
+        ],
+      }}
+    >
+      <Button>
+        <EllipsisOutlined />
+      </Button>
+    </Dropdown>
+  );
 }
