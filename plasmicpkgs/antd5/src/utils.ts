@@ -89,7 +89,10 @@ export function asArray<T>(x: T[] | T | undefined | null) {
   }
 }
 
-export function omit<T extends {}>(obj: T, ...keys: (keyof T)[]): Partial<T> {
+export function omit<T extends object>(
+  obj: T,
+  ...keys: (keyof T)[]
+): Partial<T> {
   if (Object.keys(obj).length === 0) {
     return obj;
   }
@@ -100,4 +103,18 @@ export function omit<T extends {}>(obj: T, ...keys: (keyof T)[]): Partial<T> {
     }
   }
   return res;
+}
+
+export function usePrevious<T>(value: T | undefined): T | undefined {
+  const prevValue = React.useRef<T | undefined>(undefined);
+
+  React.useEffect(() => {
+    prevValue.current = value;
+
+    return () => {
+      prevValue.current = undefined;
+    };
+  });
+
+  return prevValue.current;
 }

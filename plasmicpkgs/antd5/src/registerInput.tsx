@@ -117,6 +117,21 @@ export function registerInput(loader?: Registerable) {
       disabled: {
         type: "boolean",
       },
+      type: {
+        type: "choice",
+        options: [
+          "text",
+          "password",
+          "number",
+          "date",
+          "datetime-local",
+          "time",
+          "email",
+          "tel",
+          "hidden",
+        ],
+        defaultValueHint: "text",
+      },
       ...COMMON_ADVANCED_PROPS,
       ...COMMON_DECORATOR_PROPS,
       ...COMMON_EVENT_HANDLERS,
