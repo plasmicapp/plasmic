@@ -2,7 +2,6 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { ensure } from "./lang-utils";
 import useForceUpdate from "./useForceUpdate";
-const root = globalThis as any;
 
 declare global {
   interface Window {
@@ -10,8 +9,8 @@ declare global {
   }
 }
 
-if (root.__PlasmicHostVersion == null) {
-  root.__PlasmicHostVersion = "2";
+if ((globalThis as any).__PlasmicHostVersion == null) {
+  (globalThis as any).__PlasmicHostVersion = "2";
 }
 
 const rootChangeListeners: (() => void)[] = [];
@@ -198,9 +197,9 @@ interface PlasmicCanvasHostProps {
   enableWebpackHmr?: boolean;
 }
 
-export const PlasmicCanvasHost: React.FunctionComponent<PlasmicCanvasHostProps> = (
-  props
-) => {
+export const PlasmicCanvasHost: React.FunctionComponent<
+  PlasmicCanvasHostProps
+> = (props) => {
   const { enableWebpackHmr } = props;
   const [node, setNode] = React.useState<React.ReactElement<any, any> | null>(
     null
