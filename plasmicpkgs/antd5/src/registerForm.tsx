@@ -12,7 +12,12 @@ import type { ColProps } from "antd/es/grid/col";
 import equal from "fast-deep-equal";
 import React, { cloneElement, isValidElement } from "react";
 import { mergeProps } from "./react-utils";
-import { omit, Registerable, registerComponentHelper } from "./utils";
+import {
+  omit,
+  Registerable,
+  registerComponentHelper,
+  usePrevious,
+} from "./utils";
 
 const FormItem = Form.Item;
 const FormList = Form.List;
@@ -38,7 +43,6 @@ const PathContext = React.createContext<{
 interface InternalFormInstanceContextData {
   fireOnValuesChange: () => void;
   forceRemount: () => void;
-  formProps: FormProps;
 }
 
 const InternalFormInstanceContext = React.createContext<
@@ -55,19 +59,20 @@ const Internal = (
   const [form] = Form.useForm();
   const values = form.getFieldsValue(true);
   const lastValue = React.useRef(values);
+  const { extendedOnValuesChange, setRemountKey, ...rest } = props;
   // extracted from https://github.com/react-component/field-form/blob/master/src/Form.tsx#L120
   const childrenNode =
     typeof props.children === "function"
       ? props.children(values, form)
       : props.children;
 
-  const fireOnValuesChange = () => {
+  const fireOnValuesChange = React.useCallback(() => {
     const values = form.getFieldsValue(true);
     if (!equal(values, lastValue.current)) {
-      props.extendedOnValuesChange?.(values);
+      extendedOnValuesChange?.(values);
       lastValue.current = values;
     }
-  };
+  }, [form, lastValue]);
 
   React.useEffect(() => {
     fireOnValuesChange();
@@ -76,15 +81,17 @@ const Internal = (
     <InternalFormInstanceContext.Provider
       value={{
         fireOnValuesChange,
-        forceRemount: () => props.setRemountKey((k) => k + 1),
-        formProps: props,
+        forceRemount: () => setRemountKey((k) => k + 1),
       }}
     >
       <Form
-        {...props}
+        {...rest}
+        key={
+          props.initialValues ? JSON.stringify(props.initialValues) : undefined
+        }
         onValuesChange={(...args) => {
           props.onValuesChange?.(...args);
-          props.extendedOnValuesChange?.(args[1]);
+          extendedOnValuesChange?.(args[1]);
         }}
         form={form}
         labelCol={
@@ -111,6 +118,18 @@ const Internal = (
 };
 export function FormWrapper(props: FormWrapperProps) {
   const [remountKey, setRemountKey] = React.useState(0);
+  const previousInitialValues = usePrevious(props.initialValues);
+
+  React.useEffect(() => {
+    if (
+      previousInitialValues !== props.initialValues &&
+      JSON.stringify(previousInitialValues) !==
+        JSON.stringify(props.initialValues)
+    ) {
+      setRemountKey((k) => k + 1);
+    }
+  }, [previousInitialValues, props.initialValues]);
+
   return <Internal key={remountKey} {...props} setRemountKey={setRemountKey} />;
 }
 
@@ -157,7 +176,7 @@ const COMMON_ACTIONS = [
 ];
 
 export function registerForm(loader?: Registerable) {
-  const colProp = (displayName?: string, defaultValue?: {}) =>
+  const colProp = (displayName?: string, defaultValue?: object) =>
     ({
       type: "object",
       displayName: displayName,
@@ -241,7 +260,6 @@ export function registerForm(loader?: Registerable) {
       },
       initialValues: {
         type: "object",
-        forceRemount: true,
       } as any,
       layout: {
         type: "choice",
@@ -570,9 +588,7 @@ export function registerFormItem(loader?: Registerable) {
       },
       colon: {
         type: "boolean",
-        defaultValueHint: (_ps: InternalFormItemProps, ctx: any) =>
-          (ctx as FormControlContextData)?.internalFormCtx?.formProps.colon ??
-          true,
+        defaultValueHint: true,
         advanced: true,
       },
       labelAlign: {
