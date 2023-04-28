@@ -5,6 +5,7 @@ export { DataOp, executePlasmicDataOp } from './executor';
 export {
   usePlasmicDataMutationOp,
   usePlasmicDataOp,
+  makeCacheKey,
 } from './hooks/usePlasmicDataOp';
 export type {
   DataSourceSchema,
