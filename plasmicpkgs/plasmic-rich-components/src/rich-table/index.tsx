@@ -60,6 +60,7 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
   displayName: "Table",
   defaultStyles: {
     width: "stretch",
+    padding: "16px",
   },
   props: {
     data: {
@@ -180,17 +181,6 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
       type: "boolean",
       advanced: true,
       defaultValueHint: true,
-    },
-
-    scrollX: {
-      type: "boolean",
-      advanced: true,
-      defaultValueHint: true,
-    },
-
-    scrollHeight: {
-      type: "number",
-      advanced: true,
     },
 
     hideSearch: {
