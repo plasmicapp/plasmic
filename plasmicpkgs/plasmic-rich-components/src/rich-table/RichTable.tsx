@@ -13,11 +13,7 @@ import {
 import { DataProvider } from "@plasmicapp/host";
 import { Button, Dropdown } from "antd";
 import type { SizeType } from "antd/es/config-provider/SizeContext";
-import type {
-  GetRowKey,
-  SorterResult,
-  TableRowSelection,
-} from "antd/es/table/interface";
+import type { GetRowKey, SorterResult } from "antd/es/table/interface";
 import { createObjectCsvStringifier } from "csv-writer-browser";
 import fastStringify from "fast-stringify";
 import React, { ReactNode, useRef, useState } from "react";
@@ -72,8 +68,6 @@ export interface RichTableProps {
   customActionChildren?: ReactNode;
 
   pageSize?: number;
-  scrollX?: boolean;
-  scrollHeight?: number;
 
   hideSearch?: boolean;
   hideDensity?: boolean;
@@ -185,8 +179,6 @@ export function RichTable(props: RichTableProps) {
     title,
     addHref,
     pageSize = 10,
-    scrollX = true,
-    scrollHeight,
     hideSearch,
     hideDensity,
     hideColumnPicker,
@@ -224,7 +216,6 @@ export function RichTable(props: RichTableProps) {
         }}
         style={{
           width: "100%",
-          height: "100%",
         }}
         cardProps={{
           ghost: true,
@@ -255,7 +246,7 @@ export function RichTable(props: RichTableProps) {
         dateFormatter="string"
         headerTitle={title}
         // TODO in the future, figure out how to make this responsive to the CSS height
-        scroll={{ x: scrollX || undefined, y: scrollHeight }}
+        // scroll={{ x: scrollX || undefined, y: scrollHeight }}
         toolbar={{
           search: !hideSearch
             ? {
@@ -283,8 +274,9 @@ export function RichTable(props: RichTableProps) {
         ]}
       />
       {/*Always hide the weird pin left/right buttons for now, which also have render layout issues*/}
-      <style>
-        {`
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
           :where(.css-dev-only-do-not-override-1p704s4).ant-pro-table-column-setting-overlay .ant-tree-treenode:hover .ant-pro-table-column-setting-list-item-option {
             display: none;
           }
@@ -292,8 +284,50 @@ export function RichTable(props: RichTableProps) {
             flex-wrap: initial;
             flex-shrink: 0;
           }
-        `}
-      </style>
+          .ant-pro-table, .ant-pro-table > .ant-pro-card, .ant-pro-table .ant-table-wrapper, .ant-pro-table .ant-spin-nested-loading, .ant-pro-table .ant-table-container {
+            height: 100%;
+          }
+          .ant-pro-table .ant-spin-container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+          }
+          .ant-pro-table .ant-table {
+            flex-grow: 1;
+            min-height: 0;
+          }
+          .ant-pro-table .ant-pagination {
+            flex-shrink: 0;
+          }
+          .ant-pro-table .ant-table-content {
+            overflow: auto !important;
+            height: 100%;
+          }
+          .ant-pro-table > .ant-pro-card > .ant-pro-card-body {
+            display: flex;
+            flex-direction: column;
+          }
+          .ant-pro-table .ant-table-wrapper {
+            flex-grow: 1;
+            min-height: 0;
+          }
+          .ant-pro-table .ant-table-thead > tr > th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+          }
+          .ant-pro-table .ant-table-thead > tr > th.ant-table-cell-fix-left, .ant-pro-table .ant-table-thead > tr > th.ant-table-cell-fix-right {
+            z-index: 3;
+          }
+          .ant-pro-table .ant-table-tbody > tr > td {
+            z-index: 0;
+          }
+          .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-fix-left,.ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-fix-right {
+            z-index: 1;
+          }
+      `,
+        }}
+      />
     </div>
   );
 }
@@ -527,75 +561,6 @@ function useRowSelection(
         }
       : undefined;
   return rowSelection;
-}
-
-// TODO: not in use. This tries to detect how much available
-// vertical space there is to automatically set a scroll height,
-// but it only works well when there's a fixed height; if the
-// table is auto-height, then it will set a scroll height of 0,
-// which is unfortunate. There's no way to detect if the table
-// is auto-height or not :-/
-function useScrollHeight(
-  data: NormalizedData | undefined,
-  props: React.ComponentProps<typeof RichTable>
-) {
-  const [container, setContainer] = React.useState<HTMLDivElement | null>(null);
-  const containerRef = (elt: HTMLDivElement | null) => {
-    setContainer(elt);
-  };
-  const [tableHeight, setTableHeight] = React.useState(0);
-  React.useEffect(() => {
-    if (container) {
-      const setNewHeight = () => {
-        const getHeight = (selector: string) => {
-          const elt = container.querySelector(selector) as
-            | HTMLElement
-            | undefined;
-          if (elt) {
-            const eltStyle = getComputedStyle(elt);
-            return (
-              elt.offsetHeight +
-              parseFloat(eltStyle.marginTop || "0") +
-              parseFloat(eltStyle.marginBottom || "0")
-            );
-          }
-          return 0;
-        };
-        const headerHeight = getHeight(".ant-table-header");
-        const paginationHeight = getHeight(".ant-pagination");
-        const toolbarHeight = getHeight(".ant-pro-table-list-toolbar");
-        const alertHeight = getHeight(".ant-pro-table-alert");
-
-        setTableHeight(
-          container.offsetHeight -
-            headerHeight -
-            paginationHeight -
-            toolbarHeight -
-            alertHeight
-        );
-      };
-
-      const containerObserver = new ResizeObserver(() => {
-        setNewHeight();
-      });
-      containerObserver.observe(container);
-      setNewHeight();
-      return () => {
-        containerObserver.disconnect();
-      };
-    }
-    return undefined;
-  }, [
-    container,
-    props.canSelectRows,
-    props.hideSearch,
-    props.addHref,
-    props.hideExports,
-    props.hideDensity,
-    props.hideColumnPicker,
-    !!data,
-  ]);
-  return { containerRef, tableHeight };
 }
 
 function ExportMenu(props: { data: NormalizedData | undefined }) {
