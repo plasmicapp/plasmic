@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/loader-gatsby",
-  "version": "1.0.254",
+  "version": "1.0.255",
   "typings": "dist/index.d.ts",
   "license": "MIT",
   "files": [
