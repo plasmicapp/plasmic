@@ -130,6 +130,12 @@ async function buildBundle({ entryPoint, name, formats, useClient, watch }) {
         target: 'es6',
         outfile,
 
+        // This means we are not targeting node or browser specifically, which is
+        // how our libraries work. Targeting node or browser specifically has
+        // implications on what is used as `process.env.NODE_ENV` among other
+        // things; see https://esbuild.github.io/api/#platform
+        platform: "neutral",
+
         banner: {
           js: useClient ? `"use client";` : ``,
         },
