@@ -86,30 +86,34 @@ export function initPlasmicLoaderWithCache<
         console.log(`Subscribing to Plasmic changes...`);
 
         // Import using serverRequire, so webpack doesn't bundle us into client bundle
-        const PlasmicRemoteChangeWatcher = serverRequire('@plasmicapp/watcher')
-          .PlasmicRemoteChangeWatcher as typeof Watcher;
-        const watcher = new PlasmicRemoteChangeWatcher({
-          projects: opts.projects,
-          host: opts.host,
-        });
+        try {
+          const PlasmicRemoteChangeWatcher = serverRequire('@plasmicapp/watcher')
+            .PlasmicRemoteChangeWatcher as typeof Watcher;
+          const watcher = new PlasmicRemoteChangeWatcher({
+            projects: opts.projects,
+            host: opts.host,
+          });
 
-        const clearCache = () => {
-          cache.clear();
-          loader.clearCache();
-        };
+          const clearCache = () => {
+            cache.clear();
+            loader.clearCache();
+          };
 
-        watcher.subscribe({
-          onUpdate: () => {
-            if (opts.preview) {
-              clearCache();
-            }
-          },
-          onPublish: () => {
-            if (!opts.preview) {
-              clearCache();
-            }
-          },
-        });
+          watcher.subscribe({
+            onUpdate: () => {
+              if (opts.preview) {
+                clearCache();
+              }
+            },
+            onPublish: () => {
+              if (!opts.preview) {
+                clearCache();
+              }
+            },
+          });
+        } catch (e) {
+          console.warn("Couldn't subscribe to Plasmic changes", e);
+        }
       }
     } else {
       cache.clear();

@@ -114,26 +114,30 @@ export const sourceNodes = async (
       maxWait: SOURCE_MAX_WAIT_TIME,
     });
 
-    const PlasmicRemoteChangeWatcher = serverRequire("@plasmicapp/watcher")
-      .PlasmicRemoteChangeWatcher as typeof Watcher;
+    try {
+      const PlasmicRemoteChangeWatcher = serverRequire("@plasmicapp/watcher")
+        .PlasmicRemoteChangeWatcher as typeof Watcher;
 
-    const watcher = new PlasmicRemoteChangeWatcher({
-      projects: opts.projects,
-      host: opts.host,
-    });
+      const watcher = new PlasmicRemoteChangeWatcher({
+        projects: opts.projects,
+        host: opts.host,
+      });
 
-    watcher.subscribe({
-      onUpdate: () => {
-        if (opts.preview) {
-          triggerSourcing();
-        }
-      },
-      onPublish: () => {
-        if (!opts.preview) {
-          triggerSourcing();
-        }
-      },
-    });
+      watcher.subscribe({
+        onUpdate: () => {
+          if (opts.preview) {
+            triggerSourcing();
+          }
+        },
+        onPublish: () => {
+          if (!opts.preview) {
+            triggerSourcing();
+          }
+        },
+      });
+    } catch (e) {
+      console.warn("Couldn't subscribe to Plasmic changes", e);
+    }
   }
 
   await refreshData();
