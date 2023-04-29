@@ -282,9 +282,10 @@ export function registerForm(loader?: Registerable) {
       }),
       colon: {
         type: "boolean",
-        description: `Show a colon after the label by default (only for horizontal layout)`,
+        description: `Show a colon after labels by default (only for horizontal layout)`,
         defaultValueHint: true,
         advanced: true,
+        hidden: (props) => (props.layout ?? "horizontal") !== "horizontal",
       },
       requiredMark: {
         displayName: "Required/optional mark",
@@ -376,7 +377,7 @@ interface CuratedFieldData {
 }
 
 interface InternalFormItemProps extends Omit<FormItemProps, "rules"> {
-  rules: PlasmicRule[];
+  rules?: PlasmicRule[];
   helpTextMode?: string;
   noLabel?: boolean;
   customizeProps?: (
@@ -590,6 +591,7 @@ export function registerFormItem(loader?: Registerable) {
         type: "boolean",
         defaultValueHint: true,
         advanced: true,
+        hidden: () => true,
       },
       labelAlign: {
         type: "choice",
