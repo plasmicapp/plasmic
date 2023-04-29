@@ -240,6 +240,7 @@ export function RichTable(props: RichTableProps) {
             ? {
                 pageSize,
                 onChange: (page) => console.log(page),
+                showSizeChanger: false,
               }
             : false
         }

@@ -61,6 +61,7 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
   defaultStyles: {
     width: "stretch",
     padding: "16px",
+    maxHeight: "100%",
   },
   props: {
     data: {
