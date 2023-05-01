@@ -50,6 +50,9 @@ export function usePlasmicDataOp<
         user: ctx?.user,
         paginate: opts?.paginate,
       });
+    },
+    {
+      shouldRetryOnError: false,
     }
   );
   const { data, error, isLoading } = res;
@@ -64,7 +67,7 @@ export function usePlasmicDataOp<
 
 export function usePlasmicDataMutationOp<
   T extends SingleRowResult | ManyRowsResult
->(dataOp: DataOp | undefined, opts?: {}) {
+>(dataOp: DataOp | undefined) {
   const { sourceId, opId, userArgs } = dataOp ?? {};
   const ctx = usePlasmicDataSourceContext();
   const userToken = ctx?.userAuthToken;
