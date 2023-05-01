@@ -27,6 +27,13 @@ export function registerButton(loader?: Registerable) {
         description: "Can be set button shape",
         defaultValueHint: "default",
       },
+      htmlType: {
+        type: "choice",
+        options: ["button", "submit"],
+        defaultValue: "submit",
+        description:
+          "Set the htmlType of button as either 'submit' -- for a button that submits a form -- for 'button' -- for a generic button.",
+      },
       disabled: {
         type: "boolean",
         description: "Disabled state of button",

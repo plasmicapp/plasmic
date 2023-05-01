@@ -11,6 +11,7 @@ import {
 } from "../plume-utils";
 
 interface CommonProps {
+  htmlType?: "submit" | "button";
   showStartIcon?: boolean;
   showEndIcon?: boolean;
   startIcon?: React.ReactNode;
@@ -64,6 +65,7 @@ export function useButton<P extends BaseButtonProps, C extends AnyPlasmicClass>(
     showStartIcon,
     showEndIcon,
     children,
+    htmlType,
     ...rest
   } = props;
   const variants = {
@@ -84,8 +86,11 @@ export function useButton<P extends BaseButtonProps, C extends AnyPlasmicClass>(
 
   const overrides: Overrides = {
     [config.root]: {
-      as: !!link ? "a" : "button",
+      as: link ? "a" : "button",
       props: {
+        // Put this at the top, as user may also have set `type` as
+        // inherited from "button", so let `rest` override it
+        type: htmlType,
         ...omit(
           rest as any,
           ...plasmicClass.internalArgProps,
