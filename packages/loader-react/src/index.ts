@@ -2,45 +2,44 @@ import {
   CodeComponentMeta,
   InternalPlasmicComponentLoader,
   PlasmicComponentLoader,
-} from './loader';
-import type { InitOptions } from './loader-react-server';
+} from "./loader";
+import type { InitOptions } from "./loader-react-server";
 
+export type {
+  PrimitiveType,
+  PropType,
+  TokenRegistration,
+} from "@plasmicapp/host";
 export {
   DataCtxReader,
   DataProvider,
   PageParamsProvider,
   PlasmicCanvasContext,
   PlasmicCanvasHost,
-  PrimitiveType,
-  PropType,
   repeatedElement,
-  TokenRegistration,
   useDataEnv,
   usePlasmicCanvasContext,
   useSelector,
   useSelectors,
-} from '@plasmicapp/host';
-export { usePlasmicQueryData } from '@plasmicapp/query';
-export * from './index-shared';
-export { PlasmicComponent } from './PlasmicComponent';
-export {
+} from "@plasmicapp/host";
+export { usePlasmicQueryData } from "@plasmicapp/query";
+export * from "./shared-exports";
+export { PlasmicComponent } from "./PlasmicComponent";
+export type {
   GlobalVariantSpec,
-  PlasmicRootProvider,
   PlasmicTranslator,
-} from './PlasmicRootProvider';
-export { extractPlasmicQueryData, plasmicPrepass } from './prepass';
+} from "./PlasmicRootProvider";
+export { PlasmicRootProvider } from "./PlasmicRootProvider";
+export { extractPlasmicQueryData, plasmicPrepass } from "./prepass";
 export {
   extractPlasmicQueryDataFromElement,
   hydrateFromElement,
   renderToElement,
   renderToString,
-} from './render';
-export { usePlasmicComponent } from './usePlasmicComponent';
-export {
-  InternalPlasmicComponentLoader,
-  PlasmicComponentLoader,
-  CodeComponentMeta,
-};
+} from "./render";
+export { usePlasmicComponent } from "./usePlasmicComponent";
+export type { CodeComponentMeta };
+export { InternalPlasmicComponentLoader, PlasmicComponentLoader };
 
 export function initPlasmicLoader(opts: InitOptions): PlasmicComponentLoader {
   const internal = new InternalPlasmicComponentLoader(opts);

@@ -1,23 +1,25 @@
-export {
+export type {
   CodeComponentMeta,
   ComponentMeta,
   ComponentRenderData,
-  // Data context helpers.
-  DataCtxReader,
-  DataProvider,
   InitOptions,
   PageMeta,
   PageMetadata,
+  PlasmicTranslator,
+  PrimitiveType,
+  PropType,
+  TokenRegistration,
+} from "@plasmicapp/loader-react";
+export {
+  // Data context helpers.
+  DataCtxReader,
+  DataProvider,
   PageParamsProvider,
   PlasmicCanvasContext,
   PlasmicCanvasHost,
   PlasmicComponent,
   PlasmicRootProvider,
-  PlasmicTranslator,
-  PrimitiveType,
-  PropType,
   repeatedElement,
-  TokenRegistration,
   useDataEnv,
   usePlasmicCanvasContext,
   usePlasmicComponent,

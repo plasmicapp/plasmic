@@ -1,12 +1,12 @@
-import 'server-only';
+import "server-only";
 
-import { PlasmicModulesFetcher, PlasmicTracker } from '@plasmicapp/loader-core';
+import { PlasmicModulesFetcher, PlasmicTracker } from "@plasmicapp/loader-core";
 import {
   InitOptions,
   ReactServerPlasmicComponentLoader,
-} from './loader-react-server';
+} from "./loader-react-server";
 
-export * from './index-shared';
+export * from "./shared-exports";
 export { ReactServerPlasmicComponentLoader };
 
 export function initPlasmicLoader(

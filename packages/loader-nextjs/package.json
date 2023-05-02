@@ -72,12 +72,9 @@
     }
   ],
   "devDependencies": {
-    "@size-limit/preset-small-lib": "^4.11.0",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
-    "husky": "^6.0.0",
-    "next": "^11.0.0",
-    "size-limit": "^4.11.0"
+    "next": "^11.0.0"
   },
   "dependencies": {
     "@plasmicapp/loader-core": "1.0.100",

@@ -1,11 +1,18 @@
 {
   "name": "@plasmicapp/loader-vue",
   "version": "0.1.247",
+  "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
-  "typings": "./dist/main.d.ts",
-  "module": "./dist/loader-vue.esm.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "scripts": {
-    "build": "tsdx build --entry src/main.ts",
+    "build": "yarn build:types && yarn build:index",
+    "build:types": "yarn tsc",
+    "build:index": "node ../../build.mjs src/index.ts",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
   },
   "files": [
@@ -22,9 +29,6 @@
     "vue-demi": "^0.11.3"
   },
   "devDependencies": {
-    "@size-limit/preset-small-lib": "^4.11.0",
-    "size-limit": "^4.11.0",
-    "tsdx": "^0.14.1",
     "vue": "3.0.2"
   },
   "peerDependencies": {
@@ -38,11 +42,7 @@
   },
   "size-limit": [
     {
-      "path": "dist/loader-vue.cjs.production.min.js",
-      "limit": "15 KB"
-    },
-    {
-      "path": "dist/loader-vue.esm.js",
+      "path": "dist/index.js",
       "limit": "15 KB"
     }
   ],

@@ -1,13 +1,13 @@
-import { ExperimentSlice, SegmentSlice, Split } from '@plasmicapp/loader-core';
-import type { GlobalVariantSpec } from './PlasmicRootProvider';
+import { ExperimentSlice, SegmentSlice, Split } from "@plasmicapp/loader-core";
+import type { GlobalVariantSpec } from "./PlasmicRootProvider";
 
 export function getPlasmicCookieValues() {
   return Object.fromEntries(
     document.cookie
-      .split('; ')
-      .filter((cookie) => cookie.includes('plasmic:'))
-      .map((cookie) => cookie.split('='))
-      .map(([key, value]) => [key.split(':')[1], value])
+      .split("; ")
+      .filter((cookie) => cookie.includes("plasmic:"))
+      .map((cookie) => cookie.split("="))
+      .map(([key, value]) => [key.split(":")[1], value])
   );
 }
 
@@ -29,18 +29,15 @@ export const getGlobalVariantsFromSplits = (
   const globalVariants: GlobalVariantSpec[] = [];
 
   Object.keys(variation).map((variationKey: string) => {
-    const [type, splitId] = variationKey.split('.');
+    const [_type, splitId] = variationKey.split(".");
     const sliceId = variation[variationKey];
     const split = splits.find(
       (s) => s.id === splitId || s.externalId === splitId
     );
     if (split) {
-      const slice:
-        | ExperimentSlice
-        | SegmentSlice
-        | undefined = (split.slices as Array<
-        ExperimentSlice | SegmentSlice
-      >).find((s: any) => s.id === sliceId || s.externalId === sliceId);
+      const slice: ExperimentSlice | SegmentSlice | undefined = (
+        split.slices as Array<ExperimentSlice | SegmentSlice>
+      ).find((s: any) => s.id === sliceId || s.externalId === sliceId);
       if (slice) {
         slice.contents.map((x) => {
           globalVariants.push({
@@ -62,10 +59,10 @@ export const mergeGlobalVariantsSpec = (
 ) => {
   let result = [...target];
   const existingGlobalVariants = new Set(
-    target.map((t) => `${t.name}-${t.projectId ?? ''}`)
+    target.map((t) => `${t.name}-${t.projectId ?? ""}`)
   );
   const newGlobals = from.filter(
-    (t) => !existingGlobalVariants.has(`${t.name}-${t.projectId ?? ''}`)
+    (t) => !existingGlobalVariants.has(`${t.name}-${t.projectId ?? ""}`)
   );
 
   if (newGlobals.length > 0) {

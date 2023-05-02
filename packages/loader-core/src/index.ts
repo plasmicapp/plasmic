@@ -1,5 +1,4 @@
-export {
-  Api,
+export type {
   AssetModule,
   CodeModule,
   ComponentMeta,
@@ -11,11 +10,12 @@ export {
   LoaderHtmlOutput,
   PageMeta,
   PageMetadata,
-  PlasmicModulesFetcher,
   ProjectMeta,
   SegmentSlice,
   Split,
-} from '@plasmicapp/loader-fetcher';
-export { getBundleSubset } from './bundles';
-export { Registry } from './registry';
-export { PlasmicTracker, TrackRenderOptions } from './tracker';
+} from "@plasmicapp/loader-fetcher";
+export { Api, PlasmicModulesFetcher } from "@plasmicapp/loader-fetcher";
+export { getBundleSubset } from "./bundles";
+export { Registry } from "./registry";
+export { PlasmicTracker } from "./tracker";
+export type { TrackRenderOptions } from "./tracker";
