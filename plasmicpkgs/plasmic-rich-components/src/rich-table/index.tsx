@@ -70,8 +70,22 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
     },
 
     defaultSize: {
+      displayName: "Density",
       type: "choice",
-      options: ["large", "middle", "small"],
+      options: [
+        {
+          value: "large",
+          label: "Larger",
+        },
+        {
+          value: "middle",
+          label: "Medium",
+        },
+        {
+          value: "small",
+          label: "Compact",
+        },
+      ],
       defaultValueHint: "large",
     },
 
