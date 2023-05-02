@@ -11,7 +11,6 @@ import {
 } from "../plume-utils";
 
 interface CommonProps {
-  htmlType?: "submit" | "button";
   showStartIcon?: boolean;
   showEndIcon?: boolean;
   startIcon?: React.ReactNode;
@@ -21,11 +20,14 @@ interface CommonProps {
 }
 
 interface HtmlButtonProps
-  extends Omit<React.ComponentProps<"button">, "ref" | "disabled"> {}
+  extends Omit<React.ComponentProps<"button">, "ref" | "disabled"> {
+  submitsForm?: boolean;
+}
 
 interface HtmlAnchorProps
-  extends Omit<React.ComponentProps<"a">, "ref" | "href"> {
+  extends Omit<React.ComponentProps<"a">, "ref" | "href" | "target"> {
   link?: string;
+  target?: React.ComponentProps<"a">["target"] | boolean;
 }
 
 export type BaseButtonProps = CommonProps & HtmlButtonProps & HtmlAnchorProps;
@@ -65,7 +67,8 @@ export function useButton<P extends BaseButtonProps, C extends AnyPlasmicClass>(
     showStartIcon,
     showEndIcon,
     children,
-    htmlType,
+    target,
+    submitsForm = true,
     ...rest
   } = props;
   const variants = {
@@ -84,20 +87,39 @@ export function useButton<P extends BaseButtonProps, C extends AnyPlasmicClass>(
     [config.contentSlot]: children,
   };
 
+  let buttonType = undefined;
+  if (!link) {
+    if (
+      !plasmicClass.internalVariantProps.includes("type") &&
+      !plasmicClass.internalArgProps.includes("type") &&
+      "type" in rest
+    ) {
+      // There's no Plasmic-defined variant or arg called "type",
+      // but the user passed in a "type" arg, so must be an override
+      // or direct instantiation. We use that value
+      buttonType = rest.type;
+    } else {
+      // Otherwise, we set buttonType depending in submitsForm
+      buttonType = submitsForm ? "submit" : "button";
+    }
+  }
+
   const overrides: Overrides = {
     [config.root]: {
       as: link ? "a" : "button",
       props: {
         // Put this at the top, as user may also have set `type` as
         // inherited from "button", so let `rest` override it
-        type: htmlType,
         ...omit(
           rest as any,
           ...plasmicClass.internalArgProps,
           ...plasmicClass.internalVariantProps
         ),
+        type: buttonType,
         ref: ref,
         disabled: isDisabled,
+        target:
+          target === true ? "_blank" : target === false ? undefined : target,
         ...(!!link && { href: link }),
       },
     },
