@@ -68,7 +68,7 @@ export function useButton<P extends BaseButtonProps, C extends AnyPlasmicClass>(
     showEndIcon,
     children,
     target,
-    submitsForm = true,
+    submitsForm = false,
     ...rest
   } = props;
   const variants = {

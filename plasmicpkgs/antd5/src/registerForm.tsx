@@ -254,6 +254,7 @@ export function registerForm(loader?: Registerable) {
                 type: "text",
                 value: "Submit",
               },
+              submitsForm: true,
             },
           },
         ],

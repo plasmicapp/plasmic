@@ -8,7 +8,7 @@ export function AntdButton(
     target?: React.ComponentProps<typeof Button>["target"] | boolean;
   }
 ) {
-  const { submitsForm = true, ...rest } = props;
+  const { submitsForm = false, ...rest } = props;
   const target =
     props.target === true
       ? "_blank"
@@ -57,7 +57,7 @@ export function registerButton(loader?: Registerable) {
       submitsForm: {
         type: "boolean",
         displayName: "Submits form?",
-        defaultValueHint: true,
+        defaultValueHint: false,
         description:
           "whether clicking this button should submit the enclosing form.",
         advanced: true,
