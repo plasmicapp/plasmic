@@ -1,5 +1,4 @@
-export {
-  Api,
+export type {
   AssetModule,
   CodeModule,
   ComponentMeta,
@@ -13,10 +12,10 @@ export {
   ProjectMeta,
   SegmentSlice,
   Split,
-} from './api';
+} from "./api";
+export { Api } from "./api";
+export type { FetcherOptions, LoaderBundleCache } from "./fetcher";
 export {
-  FetcherOptions,
   internal_getCachedBundleInNodeServer,
-  LoaderBundleCache,
   PlasmicModulesFetcher,
-} from './fetcher';
+} from "./fetcher";

@@ -1,7 +1,9 @@
-export {
+export type {
   ComponentRenderData,
   GlobalVariantSpec,
   InitOptions,
+} from "@plasmicapp/loader-react";
+export {
   initPlasmicLoader,
   PlasmicComponentLoader,
 } from "@plasmicapp/loader-react";

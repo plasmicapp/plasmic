@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { usePlasmicRootContext } from './PlasmicRootProvider';
-import { usePlasmicComponent } from './usePlasmicComponent';
+import * as React from "react";
+import { usePlasmicRootContext } from "./PlasmicRootProvider";
+import { usePlasmicComponent } from "./usePlasmicComponent";
 
 const PlasmicComponentContext = React.createContext(false);
 
@@ -135,7 +135,7 @@ function MaybeWrap(props: {
   cond: boolean;
   wrapper: (children: React.ReactNode) => React.ReactElement;
 }) {
-  return (props.cond
-    ? props.wrapper(props.children)
-    : props.children) as React.ReactElement;
+  return (
+    props.cond ? props.wrapper(props.children) : props.children
+  ) as React.ReactElement;
 }

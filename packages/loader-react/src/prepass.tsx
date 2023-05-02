@@ -1,8 +1,8 @@
-import { PlasmicPrepassContext } from '@plasmicapp/query';
-import prepass from '@plasmicapp/react-ssr-prepass';
-import React from 'react';
-import { isFragment } from 'react-is';
-import { PlasmicComponent } from './PlasmicComponent';
+import { PlasmicPrepassContext } from "@plasmicapp/query";
+import prepass from "@plasmicapp/react-ssr-prepass";
+import React from "react";
+import { isFragment } from "react-is";
+import { PlasmicComponent } from "./PlasmicComponent";
 
 /**
  * Performs a prepass over Plasmic content, kicking off the necessary
@@ -54,13 +54,13 @@ export async function extractPlasmicQueryData(
 
   const queryCache = Object.fromEntries(
     Array.from(cache.entries()).filter(
-      ([key, val]) => !key.startsWith('$swr$') && val !== undefined
+      ([key, val]) => !key.startsWith("$swr$") && val !== undefined
     )
   );
 
   try {
     return JSON.parse(
-      JSON.stringify(queryCache, (key, value) =>
+      JSON.stringify(queryCache, (_key, value) =>
         value !== undefined ? value : null
       )
     );
@@ -103,7 +103,7 @@ function processReactElement(element: React.ReactElement) {
 function processComponentProps(
   props: Record<string, any>
 ): Record<string, any> {
-  if (!props || typeof props !== 'object') {
+  if (!props || typeof props !== "object") {
     return props;
   }
 
@@ -159,6 +159,6 @@ function processPlasmicComponentProps(x: any): any {
   }
 }
 
-function isLiteralObject(obj: any): obj is Object {
-  return !!obj && typeof obj === 'object' && obj.constructor === Object;
+function isLiteralObject(obj: any): obj is object {
+  return !!obj && typeof obj === "object" && obj.constructor === Object;
 }

@@ -6,16 +6,17 @@ import {
   matchesPagePath,
 } from "@plasmicapp/loader-react";
 import type { PlasmicRemoteChangeWatcher as Watcher } from "@plasmicapp/watcher";
-import { CreatePagesArgs, GatsbyNode } from "gatsby";
+import { CreatePagesArgs, GatsbyNode, PluginOptions } from "gatsby";
 import serverRequire from "./server-require";
 
-export const onPreInit = ({ reporter }) =>
+export const onPreInit: GatsbyNode["onPreInit"] = ({ reporter }) =>
   reporter.success("Loaded @plasmicapp/loader-gatsby");
 
-export type GatsbyPluginOptions = InitOptions & {
-  defaultPlasmicPage?: string;
-  ignorePaths?: string[];
-};
+export type GatsbyPluginOptions = PluginOptions &
+  InitOptions & {
+    defaultPlasmicPage?: string;
+    ignorePaths?: string[];
+  };
 
 const PLASMIC_NODE_NAME = "plasmicData";
 
@@ -40,8 +41,8 @@ const SOURCE_MAX_WAIT_TIME = 10000; // 10 seconds
 
 let allPaths: string[] = [];
 
-export const sourceNodes = async (
-  { actions, createContentDigest, reporter }: any,
+export const sourceNodes: GatsbyNode["sourceNodes"] = async (
+  { actions, createContentDigest, reporter },
   opts: GatsbyPluginOptions
 ) => {
   const { createNode, deleteNode } = actions;
@@ -143,7 +144,7 @@ export const sourceNodes = async (
   await refreshData();
 };
 
-async function getAllNodes(nodeModel, type) {
+async function getAllNodes(nodeModel: any, type: any) {
   try {
     const { entries } = await nodeModel.findAll({ type });
     return Array.from(entries);
@@ -166,10 +167,10 @@ export const createResolvers: GatsbyNode["createResolvers"] = (
           componentNames: `[String]!`,
         },
         async resolve(
-          _source,
+          _source: unknown,
           args: { componentNames: string[] },
-          context,
-          _info
+          context: any,
+          _info: unknown
         ) {
           const { componentNames } = args;
 
@@ -246,16 +247,17 @@ export const createResolvers: GatsbyNode["createResolvers"] = (
   });
 };
 
-export const createSchemaCustomization = ({ actions }) => {
-  const { createTypes } = actions;
-  createTypes(PLASMIC_DATA_TYPE);
-};
+export const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] =
+  ({ actions }) => {
+    const { createTypes } = actions;
+    createTypes(PLASMIC_DATA_TYPE);
+  };
 
 interface LoaderGatsbyPluginOptions extends GatsbyPluginOptions {
   defaultPlasmicPage: string;
 }
 
-export const createPages = async (
+export const createPages: GatsbyNode["createPages"] = async (
   { graphql, actions, reporter }: CreatePagesArgs,
   opts: LoaderGatsbyPluginOptions
 ) => {

@@ -1,6 +1,6 @@
 export const getSeededRandomFunction = (strSeed: string) => {
   // https://stackoverflow.com/questions/521295/seeding-the-random-number-generator-in-javascript
-  function cyrb128(str) {
+  function cyrb128(str: string) {
     let h1 = 1779033703,
       h2 = 3144134277,
       h3 = 1013904242,
@@ -23,13 +23,13 @@ export const getSeededRandomFunction = (strSeed: string) => {
       (h4 ^ h1) >>> 0,
     ];
   }
-  function sfc32(a, b, c, d) {
+  function sfc32(a: number, b: number, c: number, d: number) {
     return function () {
       a >>>= 0;
       b >>>= 0;
       c >>>= 0;
       d >>>= 0;
-      var t = (a + b) | 0;
+      let t = (a + b) | 0;
       a = b ^ (b >>> 9);
       b = (c + (c << 3)) | 0;
       c = (c << 21) | (c >>> 11);

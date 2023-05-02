@@ -1,16 +1,35 @@
 {
   "name": "@plasmicapp/loader-gatsby",
   "version": "1.0.255",
-  "typings": "dist/index.d.ts",
+  "types": "./dist/index.d.ts",
+  "main": "./dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./gatsby-node": {
+      "types": "./dist/gatsby-node.d.ts",
+      "default": "./dist/gatsby-node.js"
+    },
+    "./gatsby-ssr": {
+      "types": "./dist/gatsby-ssr.d.ts",
+      "default": "./dist/gatsby-ssr.js"
+    },
+    "./package.json": "./package.json"
+  },
   "license": "MIT",
   "files": [
     "dist",
     "gatsby-node.js",
     "gatsby-ssr.js"
   ],
-  "main": "dist/index.js",
   "scripts": {
-    "build": "tsc --outDir ./dist",
+    "build": "yarn build:types && yarn build:index && yarn build:gatsby-node && yarn build:gatsby-ssr",
+    "build:types": "yarn tsc",
+    "build:index": "node ../../build.mjs src/index.ts",
+    "build:gatsby-node": "node ../../build.mjs src/gatsby-node.ts",
+    "build:gatsby-ssr": "node ../../build.mjs src/gatsby-ssr.ts",
     "yalcp": "yalc publish --push",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
   },
@@ -20,7 +39,15 @@
   ],
   "size-limit": [
     {
+      "path": "dist/index.js",
+      "limit": "15 KB"
+    },
+    {
       "path": "dist/gatsby-node.js",
+      "limit": "15 KB"
+    },
+    {
+      "path": "dist/gatsby-ssr.js",
       "limit": "15 KB"
     }
   ],
@@ -30,17 +57,8 @@
     "react-dom": ">=16.8.0"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^19.0.0",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^13.0.0",
-    "@size-limit/preset-small-lib": "^4.11.0",
     "@types/lodash": "^4.14.171",
-    "gatsby": "^4.0.0",
-    "rollup": "^2.47.0",
-    "rollup-plugin-dts": "^3.0.1",
-    "rollup-plugin-typescript2": "^0.30.0",
-    "size-limit": "^4.11.0",
-    "tsdx": "^0.14.1"
+    "gatsby": "^4.0.0"
   },
   "dependencies": {
     "@plasmicapp/loader-core": "1.0.100",
