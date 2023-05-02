@@ -1,7 +1,29 @@
+import React from "react";
 import { Button } from "antd";
 import { Registerable, registerComponentHelper } from "./utils";
 
-export const AntdButton = Button;
+export function AntdButton(
+  props: Omit<React.ComponentProps<typeof Button>, "target"> & {
+    submitsForm?: boolean;
+    target?: React.ComponentProps<typeof Button>["target"] | boolean;
+  }
+) {
+  const { submitsForm = true, ...rest } = props;
+  const target =
+    props.target === true
+      ? "_blank"
+      : props.target === false
+      ? undefined
+      : props.target;
+  return (
+    <Button
+      {...rest}
+      htmlType={submitsForm ? "submit" : "button"}
+      {...rest}
+      target={target}
+    />
+  );
+}
 
 export function registerButton(loader?: Registerable) {
   registerComponentHelper(loader, AntdButton, {
@@ -24,48 +46,50 @@ export function registerButton(loader?: Registerable) {
       shape: {
         type: "choice",
         options: ["default", "circle", "round"],
-        description: "Can be set button shape",
+        description: "Set the button shape",
         defaultValueHint: "default",
-      },
-      htmlType: {
-        type: "choice",
-        options: ["button", "submit"],
-        defaultValue: "submit",
-        description:
-          "Set the htmlType of button as either 'submit' -- for a button that submits a form -- for 'button' -- for a generic button.",
       },
       disabled: {
         type: "boolean",
-        description: "Disabled state of button",
+        description: "Whether the button is disabled",
         defaultValueHint: false,
+      },
+      submitsForm: {
+        type: "boolean",
+        displayName: "Submits form?",
+        defaultValueHint: true,
+        description:
+          "whether clicking this button should submit the enclosing form.",
+        advanced: true,
       },
       ghost: {
         type: "boolean",
         description:
           "Make background transparent and invert text and border colors",
         defaultValueHint: false,
+        advanced: true,
       },
       danger: {
         type: "boolean",
         description: "Set the danger status of button",
         defaultValueHint: false,
+        advanced: true,
       },
       loading: {
         type: "boolean",
         description: "Set the loading status of button",
         defaultValueHint: false,
+        advanced: true,
       },
       href: {
         type: "string",
         description: "Redirect url of link button",
       },
       target: {
-        type: "choice",
-        options: ["_blank", "_self", "_parent", "_top"],
-        description:
-          "Same as target attribute of a, works when href is specified",
+        type: "boolean",
+        description: "Whether to open the link in a new window",
         hidden: (props) => !props.href,
-        defaultValueHint: "_self",
+        defaultValueHint: false,
       },
       children: {
         type: "slot",
