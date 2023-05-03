@@ -189,10 +189,10 @@ export function registerTable(loader?: Registerable) {
       //   onChangeProp: "onSelectedRowsChange",
       // },
     },
-    unstable__refActions: {
+    refActions: {
       selectRowByIndex: {
         displayName: "Select row by index",
-        parameters: [
+        argTypes: [
           {
             name: "index",
             displayName: "Index",
@@ -202,7 +202,7 @@ export function registerTable(loader?: Registerable) {
       },
       selectRowByKey: {
         displayName: "Select row by key",
-        parameters: [
+        argTypes: [
           {
             name: "key",
             displayName: "Row key",

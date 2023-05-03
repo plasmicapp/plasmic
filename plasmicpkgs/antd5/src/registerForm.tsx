@@ -904,10 +904,10 @@ export function registerFormList(loader?: Registerable) {
         ],
       } as any,
     },
-    unstable__refActions: {
+    refActions: {
       add: {
         displayName: "Add an item",
-        parameters: [
+        argTypes: [
           {
             name: "defaultValue",
             displayName: "Default value",
@@ -922,7 +922,7 @@ export function registerFormList(loader?: Registerable) {
       },
       remove: {
         displayName: "Remove an item",
-        parameters: [
+        argTypes: [
           {
             name: "index",
             displayName: "Index",
@@ -932,7 +932,7 @@ export function registerFormList(loader?: Registerable) {
       },
       move: {
         displayName: "Move field",
-        parameters: [
+        argTypes: [
           {
             name: "from",
             displayName: "From",
