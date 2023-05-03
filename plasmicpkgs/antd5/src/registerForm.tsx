@@ -429,6 +429,7 @@ function plasmicRulesToAntdRules(
   plasmicRules: PlasmicRule[],
   label: string | undefined
 ) {
+  const effectiveLabel = label || "This field";
   const rules: FormItemProps["rules"] = [];
   for (const plasmicRule of plasmicRules) {
     switch (plasmicRule.ruleType) {
@@ -436,27 +437,27 @@ function plasmicRulesToAntdRules(
         rules.push({
           type: "enum",
           enum: plasmicRule.options?.map((opt) => opt.value) ?? [],
-          message: plasmicRule.message ?? `Please specify a valid value`,
+          message:
+            plasmicRule.message ?? `${effectiveLabel} must be a valid value`,
         });
         break;
       case "required":
         rules.push({
           required: true,
-          message:
-            plasmicRule.message ?? `Please specify ${label || "this field"}`,
+          message: plasmicRule.message ?? `${effectiveLabel} is required`,
         });
         break;
       case "regex":
         rules.push({
           pattern: new RegExp(plasmicRule.pattern ?? ""),
-          message: plasmicRule.message ?? `Please enter a valid value`,
+          message:
+            plasmicRule.message ?? `${effectiveLabel} must be a valid value`,
         });
         break;
       case "whitespace":
         rules.push({
           whitespace: true,
-          message:
-            plasmicRule.message ?? `Please specify ${label || "this field"}`,
+          message: plasmicRule.message ?? `${effectiveLabel} is required`,
         });
         break;
       case "min":
@@ -464,7 +465,7 @@ function plasmicRulesToAntdRules(
           [plasmicRule.ruleType]: plasmicRule.length,
           message:
             plasmicRule.message ??
-            `Must be at least ${plasmicRule.length} characters`,
+            `${effectiveLabel} must be at least ${plasmicRule.length} characters`,
         });
         break;
       case "max":
@@ -472,7 +473,7 @@ function plasmicRulesToAntdRules(
           [plasmicRule.ruleType]: plasmicRule.length,
           message:
             plasmicRule.message ??
-            `Must be at most ${plasmicRule.length} characters`,
+            `${effectiveLabel} must be at most ${plasmicRule.length} characters`,
         });
         break;
       case "advanced":
