@@ -14,6 +14,14 @@ import enUS from "antd/lib/locale/en_US.js";
 import React from "react";
 import { makeRegisterGlobalContext, Registerable } from "./utils";
 
+// enUS is a CJS file, and it doesn't always import correctly in
+// esm mode (nextjs does it right, but create-react-app does it wrong).
+// We normalize it ourselves here 😬😬😬
+let defaultLocale = enUS;
+if ("default" in enUS) {
+  defaultLocale = enUS.default as typeof enUS;
+}
+
 export interface ThemeOpts {
   fontFamily?: string;
   fontSize?: number;
@@ -80,7 +88,7 @@ export function AntdConfigProvider(
   const { children, themeStyles, ...rest } = props;
   return (
     <ConfigProvider
-      locale={enUS}
+      locale={defaultLocale}
       {...themeToAntdConfig({
         ...rest,
         fontFamily: themeStyles.fontFamily,
@@ -196,7 +204,9 @@ function GlobalLoadingIndicator() {
       );
     } else {
       warnOutdatedDeps();
-      return () => {};
+      return () => {
+        // noop
+      };
     }
   }, [app]);
   return null;
@@ -223,10 +233,8 @@ function useAppContext() {
  */
 function ForkedApp(props: { children?: React.ReactNode }) {
   const [messageApi, messageContextHolder] = message.useMessage();
-  const [
-    notificationApi,
-    notificationContextHolder,
-  ] = notification.useNotification();
+  const [notificationApi, notificationContextHolder] =
+    notification.useNotification();
 
   const appContext = React.useMemo(
     () => ({

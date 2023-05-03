@@ -4,6 +4,7 @@
   "description": "Plasmic registration calls for antd components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "module": "dist/antd.esm.js",
   "nx": {
     "targets": {
       "build": {
@@ -17,6 +18,18 @@
           "{projectRoot}/skinny/**/*"
         ]
       }
+    }
+  },
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/antd.esm.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./skinny/*": {
+      "require": "./skinny/*.cjs.js",
+      "import": "./skinny/*.esm.js",
+      "types": "./skinny/*.d.ts"
     }
   },
   "files": [
@@ -35,7 +48,8 @@
   ],
   "scripts": {
     "build": "rollup -c rollup.config.mjs && yarn tsc --emitDeclarationOnly --declaration src/index.ts --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --jsx react --esModuleInterop --strict --outDir ./dist/ && cp ./dist/*.d.ts skinny/ && rm skinny/index.d.ts",
-    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
+    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
+    "clean": "rm -rf dist/ skinny/*.ts skinny/*.map skinny/*.js"
   },
   "dependencies": {
     "antd": "^5.1.6"
