@@ -5,6 +5,7 @@ import resolve from "@rollup/plugin-node-resolve";
 import path from "path";
 import esbuild from "rollup-plugin-esbuild";
 import glob from "glob";
+
 const SKINNY_INPUTS = glob.sync('./src/register*.ts*');
 
 export default [
@@ -17,12 +18,12 @@ export default [
       return !id.startsWith(".") && !path.isAbsolute(id);
     },
     output: [
-      // {
-      //   file: "dist/antd.esm.mjs",
-      //   format: "esm",
-      //   sourcemap: true,
-      //   exports: "named",
-      // },
+      {
+        file: "dist/antd.esm.js",
+        format: "esm",
+        sourcemap: true,
+        exports: "named",
+      },
       {
         file: "dist/index.js",
         format: "cjs",
@@ -30,12 +31,6 @@ export default [
         exports: "named",
         interop: "auto",
       },
-      // {
-      //   file: "dist/antd.esm.js",
-      //   format: "esm",
-      //   sourcemap: true,
-      //   exports: "named",
-      // },
     ],
     plugins: [
       resolve(),
@@ -63,18 +58,18 @@ export default [
         sourcemap: true,
         exports: "named",
         interop: "auto",
-        entryFileNames: `[name].js`,
-        chunkFileNames: `[name]-[hash].js`,
+        entryFileNames: `[name].cjs.js`,
+        chunkFileNames: `[name]-[hash].cjs.js`,
       },
-      // {
-      //   dir: "skinny",
-      //   format: "esm",
-      //   sourcemap: true,
-      //   exports: "named",
-      //   interop: "auto",
-      //   entryFileNames: `[name].esm.mjs`,
-      //   chunkFileNames: `[name]-[hash].esm.mjs`,
-      // },
+      {
+        dir: "skinny",
+        format: "esm",
+        sourcemap: true,
+        exports: "named",
+        interop: "auto",
+        entryFileNames: `[name].esm.js`,
+        chunkFileNames: `[name]-[hash].esm.js`,
+      },
     ],
     plugins: [
       resolve(),
