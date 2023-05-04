@@ -22,24 +22,24 @@
   },
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/react-web.esm.js",
-      "require": "./dist/index.cjs.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.cjs.js"
     },
     "./lib/host": {
+      "types": "./lib/host/index.d.ts",
       "import": "./lib/host/index.js",
-      "require": "./lib/host/index.cjs.js",
-      "types": "./lib/host/index.d.ts"
+      "require": "./lib/host/index.cjs.js"
     },
     "./lib/data-sources": {
+      "types": "./lib/data-sources/index.d.ts",
       "import": "./lib/data-sources/index.js",
-      "require": "./lib/data-sources/index.cjs.js",
-      "types": "./lib/data-sources/index.d.ts"
+      "require": "./lib/data-sources/index.cjs.js"
     },
     "./lib/query": {
+      "types": "./lib/query/index.d.ts",
       "import": "./lib/query/index.js",
-      "require": "./lib/query/index.cjs.js",
-      "types": "./lib/query/index.d.ts"
+      "require": "./lib/query/index.cjs.js"
     },
     "./lib/plasmic.css": "./lib/plasmic.css",
     "./skinny": {
@@ -56,6 +56,7 @@
   ],
   "scripts": {
     "build": "rollup -c && mkdir -p lib && cp src/styles/plasmic.css lib/",
+    "clean": "rm -rf dist/ skinny/dist/ lib/host/*js lib/host/*.ts lib/host/*.map lib/data-sources/*js lib/data-sources/*.ts lib/data-sources/*.map lib/query/*js lib/query/*.ts lib/query/*.map",
     "start": "tsdx watch",
     "test": "yarn --cwd=../.. test",
     "lint": "tsdx lint",
