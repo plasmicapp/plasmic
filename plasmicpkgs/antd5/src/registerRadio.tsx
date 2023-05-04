@@ -122,13 +122,30 @@ export function registerRadio(loader?: Registerable) {
           "plasmic-antd5-radio",
           "plasmic-antd5-radio-button",
         ],
-        // Error right now when using default slot content with stateful instances
-        // defaultValue: [
-        //   {
-        //     type: "component",
-        //     name: "plasmic-antd5-radio",
-        //   },
-        // ],
+        defaultValue: [
+          {
+            type: "component",
+            name: "plasmic-antd5-radio",
+            props: {
+              value: "op1",
+              children: {
+                type: "text",
+                value: "Option 1",
+              },
+            },
+          },
+          {
+            type: "component",
+            name: "plasmic-antd5-radio",
+            props: {
+              value: "op2",
+              children: {
+                type: "text",
+                value: "Option 2",
+              },
+            },
+          },
+        ],
       },
       onChange: {
         type: "eventHandler",
