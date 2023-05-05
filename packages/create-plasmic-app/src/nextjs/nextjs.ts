@@ -1,34 +1,34 @@
-import { promises as fs } from 'fs';
-import L from 'lodash';
-import path from 'path';
-import { spawnOrFail } from '../utils/cmd-utils';
-import { installCodegenDeps, runCodegenSync } from '../utils/codegen';
+import { promises as fs } from "fs";
+import L from "lodash";
+import path from "path";
+import { spawnOrFail } from "../utils/cmd-utils";
+import { installCodegenDeps, runCodegenSync } from "../utils/codegen";
 import {
   deleteGlob,
   generateWelcomePage,
   getPlasmicConfig,
-} from '../utils/file-utils';
-import { ensure } from '../utils/lang-utils';
-import { installUpgrade } from '../utils/npm-utils';
-import { CPAStrategy, GenerateFilesArgs } from '../utils/strategy';
-import { makeCatchallPage_app_loader } from './templates/app-loader/catchall-page';
-import { makePlasmicHostPage_app_loader } from './templates/app-loader/plasmic-host';
-import { makePlasmicInit_app_loader } from './templates/app-loader/plasmic-init';
-import { makePlasmicInitClient_app_loader } from './templates/app-loader/plasmic-init-client';
-import { makeCustomApp_pages_codegen } from './templates/pages-codegen/app';
-import { makePlasmicHostPage_pages_codegen } from './templates/pages-codegen/plasmic-host';
-import { makeCatchallPage_pages_loader } from './templates/pages-loader/catchall-page';
-import { makePlasmicHostPage_pages_loader } from './templates/pages-loader/plasmic-host';
-import { makePlasmicInit_pages_loader } from './templates/pages-loader/plasmic-init';
+} from "../utils/file-utils";
+import { ensure } from "../utils/lang-utils";
+import { installUpgrade } from "../utils/npm-utils";
+import { CPAStrategy, GenerateFilesArgs } from "../utils/strategy";
+import { makeCatchallPage_app_loader } from "./templates/app-loader/catchall-page";
+import { makePlasmicHostPage_app_loader } from "./templates/app-loader/plasmic-host";
+import { makePlasmicInit_app_loader } from "./templates/app-loader/plasmic-init";
+import { makePlasmicInitClient_app_loader } from "./templates/app-loader/plasmic-init-client";
+import { makeCustomApp_pages_codegen } from "./templates/pages-codegen/app";
+import { makePlasmicHostPage_pages_codegen } from "./templates/pages-codegen/plasmic-host";
+import { makeCatchallPage_pages_loader } from "./templates/pages-loader/catchall-page";
+import { makePlasmicHostPage_pages_loader } from "./templates/pages-loader/plasmic-host";
+import { makePlasmicInit_pages_loader } from "./templates/pages-loader/plasmic-init";
 
 export const nextjsStrategy: CPAStrategy = {
   create: async (args) => {
     const { projectPath, template, jsOrTs, platformOptions } = args;
     const typescriptArg = `--${jsOrTs}`;
     const experimentalAppArg = platformOptions.nextjs?.appDir
-      ? '--experimental-app'
-      : '--no-experimental-app';
-    const templateArg = template ? ` --template ${template}` : '';
+      ? "--app"
+      : "--no-app";
+    const templateArg = template ? ` --template ${template}` : "";
     const createCommand =
       `npx create-next-app@latest ${projectPath} ${typescriptArg} ${experimentalAppArg} ${templateArg}` +
       ` --eslint --no-src-dir  --import-alias "@/*" --no-tailwind`;
@@ -38,13 +38,8 @@ export const nextjsStrategy: CPAStrategy = {
     await spawnOrFail(createCommand);
   },
   installDeps: async ({ scheme, projectPath }) => {
-    // Locking to version 13.3.0 until this is fixed and released:
-    // https://github.com/vercel/next.js/issues/48593
-    await installUpgrade('next@13.3.0', {
-      workingDir: projectPath,
-    });
-    if (scheme === 'loader') {
-      return await installUpgrade('@plasmicapp/loader-nextjs', {
+    if (scheme === "loader") {
+      return await installUpgrade("@plasmicapp/loader-nextjs", {
         workingDir: projectPath,
       });
     } else {
@@ -53,14 +48,14 @@ export const nextjsStrategy: CPAStrategy = {
   },
   overwriteConfig: async (args) => {
     const { projectPath, scheme, platformOptions } = args;
-    const nextjsConfigFile = path.join(projectPath, 'next.config.js');
+    const nextjsConfigFile = path.join(projectPath, "next.config.js");
     const appDirOption = platformOptions.nextjs?.appDir
       ? `
   experimental: {
     appDir: true,
   }`
-      : '';
-    if (scheme === 'codegen') {
+      : "";
+    if (scheme === "codegen") {
       await fs.writeFile(
         nextjsConfigFile,
         `
@@ -107,7 +102,7 @@ async function generateFilesAppDir(args: GenerateFilesArgs) {
   const { projectPath, jsOrTs, projectId, projectApiToken } = args;
 
   // Delete existing pages
-  deleteGlob(path.join(projectPath, 'app', 'page.*'));
+  deleteGlob(path.join(projectPath, "app", "page.*"));
 
   // ./plasmic-init.ts
   await fs.writeFile(
@@ -122,16 +117,16 @@ async function generateFilesAppDir(args: GenerateFilesArgs) {
   );
 
   // ./app/plasmic-host/page.tsx
-  await fs.mkdir(path.join(projectPath, 'app', 'plasmic-host'));
+  await fs.mkdir(path.join(projectPath, "app", "plasmic-host"));
   await fs.writeFile(
-    path.join(projectPath, 'app', 'plasmic-host', `page.${jsOrTs}x`),
+    path.join(projectPath, "app", "plasmic-host", `page.${jsOrTs}x`),
     makePlasmicHostPage_app_loader()
   );
 
   // ./app/[[...catchall]]/page.tsx
-  await fs.mkdir(path.join(projectPath, 'app', '[[...catchall]]'));
+  await fs.mkdir(path.join(projectPath, "app", "[[...catchall]]"));
   await fs.writeFile(
-    path.join(projectPath, 'app', '[[...catchall]]', `page.${jsOrTs}x`),
+    path.join(projectPath, "app", "[[...catchall]]", `page.${jsOrTs}x`),
     makeCatchallPage_app_loader(jsOrTs)
   );
 }
@@ -140,9 +135,9 @@ async function generateFilesPagesDir(args: GenerateFilesArgs) {
   const { projectPath, scheme, jsOrTs, projectId, projectApiToken } = args;
 
   // Delete existing pages
-  deleteGlob(path.join(projectPath, 'pages', '*.*'));
+  deleteGlob(path.join(projectPath, "pages", "*.*"));
 
-  if (scheme === 'loader') {
+  if (scheme === "loader") {
     // ./plasmic-init.ts
     await fs.writeFile(
       path.join(projectPath, `plasmic-init.${jsOrTs}`),
@@ -151,25 +146,25 @@ async function generateFilesPagesDir(args: GenerateFilesArgs) {
 
     // ./pages/plasmic-host.tsx
     await fs.writeFile(
-      path.join(projectPath, 'pages', `plasmic-host.${jsOrTs}x`),
+      path.join(projectPath, "pages", `plasmic-host.${jsOrTs}x`),
       makePlasmicHostPage_pages_loader()
     );
 
     // ./pages/[[...catchall]].tsx
     await fs.writeFile(
-      path.join(projectPath, 'pages', `[[...catchall]].${jsOrTs}x`),
+      path.join(projectPath, "pages", `[[...catchall]].${jsOrTs}x`),
       makeCatchallPage_pages_loader(jsOrTs)
     );
   } else {
     // ./pages/_app.tsx
     await fs.writeFile(
-      path.join(projectPath, 'pages', `_app.${jsOrTs}x`),
+      path.join(projectPath, "pages", `_app.${jsOrTs}x`),
       makeCustomApp_pages_codegen(jsOrTs)
     );
 
     // ./pages/plasmic-host.tsx
     await fs.writeFile(
-      path.join(projectPath, 'pages', `plasmic-host.${jsOrTs}x`),
+      path.join(projectPath, "pages", `plasmic-host.${jsOrTs}x`),
       makePlasmicHostPage_pages_codegen()
     );
 
@@ -184,15 +179,15 @@ async function generateFilesPagesDir(args: GenerateFilesArgs) {
     });
 
     // Make an index page if the project didn't have one.
-    const config = await getPlasmicConfig(projectPath, 'nextjs', scheme);
+    const config = await getPlasmicConfig(projectPath, "nextjs", scheme);
     const plasmicFiles = L.map(
       L.flatMap(config.projects, (p) => p.components),
       (c) => c.importSpec.modulePath
     );
-    if (!plasmicFiles.find((f) => f.includes('/index.'))) {
+    if (!plasmicFiles.find((f) => f.includes("/index."))) {
       await fs.writeFile(
-        path.join(projectPath, 'pages', `index.${jsOrTs}x`),
-        generateWelcomePage(config, 'nextjs')
+        path.join(projectPath, "pages", `index.${jsOrTs}x`),
+        generateWelcomePage(config, "nextjs")
       );
     }
   }
