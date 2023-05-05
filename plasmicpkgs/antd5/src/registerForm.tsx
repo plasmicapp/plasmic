@@ -12,12 +12,7 @@ import type { ColProps } from "antd/es/grid/col";
 import equal from "fast-deep-equal";
 import React, { cloneElement, isValidElement } from "react";
 import { mergeProps } from "./react-utils";
-import {
-  omit,
-  Registerable,
-  registerComponentHelper,
-  usePrevious,
-} from "./utils";
+import { Registerable, registerComponentHelper, usePrevious } from "./utils";
 
 const reactNodeToString = function (reactNode: React.ReactNode): string {
   let string = "";
@@ -63,10 +58,20 @@ const PathContext = React.createContext<{
 interface InternalFormInstanceContextData {
   fireOnValuesChange: () => void;
   forceRemount: () => void;
+  layout: FormLayoutContextValue;
 }
 
 const InternalFormInstanceContext = React.createContext<
   InternalFormInstanceContextData | undefined
+>(undefined);
+
+interface FormLayoutContextValue {
+  layout: React.ComponentProps<typeof Form>["layout"];
+  labelSpan?: number;
+}
+
+const FormLayoutContext = React.createContext<
+  FormLayoutContextValue | undefined
 >(undefined);
 
 const Internal = (
@@ -97,42 +102,54 @@ const Internal = (
   React.useEffect(() => {
     fireOnValuesChange();
   }, []);
+  const formLayout = React.useMemo(
+    () => ({
+      layout: props.layout,
+      labelSpan: props.labelCol?.span as number | undefined,
+    }),
+    [props.layout, props.labelCol?.span]
+  );
   return (
     <InternalFormInstanceContext.Provider
       value={{
+        layout: formLayout,
         fireOnValuesChange,
         forceRemount: () => setRemountKey((k) => k + 1),
       }}
     >
-      <Form
-        {...rest}
-        key={
-          props.initialValues ? JSON.stringify(props.initialValues) : undefined
-        }
-        onValuesChange={(...args) => {
-          props.onValuesChange?.(...args);
-          extendedOnValuesChange?.(args[1]);
-        }}
-        form={form}
-        labelCol={
-          props.labelCol?.horizontalOnly && props.layout !== "horizontal"
-            ? undefined
-            : props.labelCol
-        }
-        wrapperCol={
-          props.wrapperCol?.horizontalOnly && props.layout !== "horizontal"
-            ? undefined
-            : props.wrapperCol
-        }
-      >
-        {/*Remove built-in spacing on form items*/}
-        <style>{`
-        .ant-form-item-explain + div, .ant-form-item-margin-offset {
-          display: none;
-        }
-        `}</style>
-        {childrenNode}
-      </Form>
+      <FormLayoutContext.Provider value={formLayout}>
+        <Form
+          {...rest}
+          key={
+            props.initialValues
+              ? JSON.stringify(props.initialValues)
+              : undefined
+          }
+          onValuesChange={(...args) => {
+            props.onValuesChange?.(...args);
+            extendedOnValuesChange?.(args[1]);
+          }}
+          form={form}
+          labelCol={
+            props.labelCol?.horizontalOnly && props.layout !== "horizontal"
+              ? undefined
+              : props.labelCol
+          }
+          wrapperCol={
+            props.wrapperCol?.horizontalOnly && props.layout !== "horizontal"
+              ? undefined
+              : props.wrapperCol
+          }
+        >
+          {/*Remove built-in spacing on form items*/}
+          <style>{`
+          .ant-form-item-explain + div, .ant-form-item-margin-offset {
+            display: none;
+          }
+          `}</style>
+          {childrenNode}
+        </Form>
+      </FormLayoutContext.Provider>
     </InternalFormInstanceContext.Provider>
   );
 };
@@ -194,43 +211,49 @@ const COMMON_ACTIONS = [
   //   },
   // },
 ];
+const colProp = (
+  displayName?: string,
+  defaultValue?: object,
+  description?: string
+) =>
+  ({
+    type: "object",
+    displayName: displayName,
+    advanced: true,
+    fields: {
+      span: {
+        type: "number",
+        displayName: "Width",
+        description:
+          "The number of grid columns to span in width (out of 24 columns total)",
+        min: 1,
+        max: 24,
+      },
+      offset: {
+        type: "number",
+        displayName: "Offset",
+        description:
+          "Number of grid columns to skip from the left (out of 24 columns total)",
+        min: 0,
+        max: 23,
+      },
+      horizontalOnly: {
+        type: "boolean",
+        displayName: "Horizontal only",
+        description: "Only apply to horizontal layout",
+      },
+    },
+    description,
+    defaultValue: defaultValue,
+  } as const);
 
 export function registerForm(loader?: Registerable) {
-  const colProp = (displayName?: string, defaultValue?: object) =>
-    ({
-      type: "object",
-      displayName: displayName,
-      advanced: true,
-      fields: {
-        span: {
-          type: "number",
-          displayName: "Grid columns",
-          description:
-            "The number of grid columns to span (24 columns available)",
-          min: 1,
-          max: 24,
-        },
-        offset: {
-          type: "number",
-          displayName: "Offset columns",
-          description: "Number of grid columns to skip from the left",
-          min: 0,
-          max: 23,
-        },
-        horizontalOnly: {
-          type: "boolean",
-          displayName: "Horizontal only",
-          description: "Only apply to horizontal layout",
-        },
-      },
-      defaultValue: defaultValue,
-    } as const);
   registerComponentHelper(loader, FormWrapper, {
     name: "plasmic-antd5-form",
     displayName: "Form",
     defaultStyles: {
-      display: "plasmic-content-layout",
-      gridRowGap: "10px",
+      layout: "vbox",
+      alignItems: "flex-start",
     },
     props: {
       children: {
@@ -268,13 +291,21 @@ export function registerForm(loader?: Registerable) {
           },
           {
             type: "component",
-            name: "plasmic-antd5-button",
+            name: "plasmic-antd5-form-item",
             props: {
+              noLabel: true,
               children: {
-                type: "text",
-                value: "Submit",
+                type: "component",
+                name: "plasmic-antd5-button",
+                props: {
+                  children: {
+                    type: "text",
+                    value: "Submit",
+                  },
+                  type: "primary",
+                  submitsForm: true,
+                },
               },
-              submitsForm: true,
             },
           },
         ],
@@ -292,15 +323,24 @@ export function registerForm(loader?: Registerable) {
         options: ["left", "right"],
         defaultValueHint: "right",
         advanced: true,
+        hidden: (ps) => ps.layout !== "horizontal",
       },
-      labelCol: colProp("Label layout", {
-        span: 8,
-        horizontalOnly: true,
-      }),
-      wrapperCol: colProp("Field layout", {
-        span: 16,
-        horizontalOnly: true,
-      }),
+      labelCol: colProp(
+        "Label layout",
+        {
+          span: 8,
+          horizontalOnly: true,
+        },
+        "Set the width and offset of the labels"
+      ),
+      wrapperCol: colProp(
+        "Control layout",
+        {
+          span: 16,
+          horizontalOnly: true,
+        },
+        "Set the width and offset of the form controls"
+      ),
       colon: {
         type: "boolean",
         description: `Show a colon after labels by default (only for horizontal layout)`,
@@ -399,13 +439,15 @@ interface CuratedFieldData {
 
 interface InternalFormItemProps extends Omit<FormItemProps, "rules"> {
   rules?: PlasmicRule[];
-  helpTextMode?: string;
+  description?: React.ReactNode;
   noLabel?: boolean;
+  hideValidationMessage?: boolean;
   customizeProps?: (
     fieldData: CuratedFieldData,
     props: InternalFormItemProps
   ) => FormItemProps;
   setControlContextData?: (data: FormControlContextData) => void;
+  alignLabellessWithControls?: boolean;
 }
 
 interface PlasmicRule {
@@ -512,20 +554,31 @@ function useFormInstanceMaybe(): FormInstance<any> | undefined {
 }
 
 export function FormItemWrapper(props: InternalFormItemProps) {
-  const relativeFormItemName = useFormItemRelativeName(props.name);
-  const fullFormItemName = useFormItemFullName(props.name);
+  const {
+    rules: plasmicRules,
+    description,
+    noLabel,
+    name,
+    hideValidationMessage,
+    customizeProps,
+    setControlContextData,
+    alignLabellessWithControls = true,
+    ...rest
+  } = props;
+  const relativeFormItemName = useFormItemRelativeName(name);
+  const fullFormItemName = useFormItemFullName(name);
   const bestEffortLabel =
-    (!props.noLabel && reactNodeToString(props.label)) ||
+    (!noLabel && reactNodeToString(props.label)) ||
     ensureArray(props.name).slice(-1)[0];
-  const rules = props.rules
+  const rules = plasmicRules
     ? plasmicRulesToAntdRules(
-        props.rules,
+        plasmicRules,
         typeof bestEffortLabel === "number"
           ? "" + bestEffortLabel
           : bestEffortLabel
       )
     : undefined;
-
+  const layoutContext = React.useContext(FormLayoutContext);
   const inCanvas = !!usePlasmicCanvasContext();
   if (inCanvas) {
     const form = useFormInstanceMaybe();
@@ -557,16 +610,24 @@ export function FormItemWrapper(props: InternalFormItemProps) {
   }
   return (
     <FormItem
-      {...omit(props, "rules")}
-      label={props.noLabel ? undefined : props.label}
+      {...rest}
+      label={noLabel ? undefined : props.label}
       name={relativeFormItemName}
       rules={rules}
-      {...(props.helpTextMode === "extra"
-        ? { extra: props.help }
-        : props.helpTextMode === "help"
-        ? // Never show validation errors in this mode, even if user didn't specify help
-          { help: props.help ?? "" }
-        : {})}
+      extra={description}
+      help={hideValidationMessage ? "" : props.help}
+      colon={noLabel ? false : undefined}
+      // If in horizontal mode and no label, then we align the content
+      // with the rest of the controls in the grid
+      // if alignLabellessWithControls is true
+      wrapperCol={
+        layoutContext?.layout === "horizontal" &&
+        noLabel &&
+        alignLabellessWithControls &&
+        layoutContext.labelSpan
+          ? { offset: layoutContext.labelSpan }
+          : undefined
+      }
     >
       {props.customizeProps ? (
         <FormItemForwarder formItemProps={props} />
@@ -605,6 +666,10 @@ export function registerFormItem(loader?: Registerable) {
     name: "plasmic-antd5-form-item",
     displayName: "Form Item",
     parentComponentName: "plasmic-antd5-form",
+    defaultStyles: {
+      marginBottom: "24px",
+      width: "stretch",
+    },
     props: {
       label: {
         type: "slot",
@@ -612,6 +677,7 @@ export function registerFormItem(loader?: Registerable) {
           type: "text",
           value: "Label",
         },
+        hidden: (ps) => !!ps.noLabel,
       },
       children: {
         type: "slot",
@@ -629,9 +695,24 @@ export function registerFormItem(loader?: Registerable) {
       rules: {
         type: "formValidationRules",
       } as any,
+      valuePropName: {
+        type: "string",
+        advanced: true,
+        defaultValueHint: "value",
+        description:
+          "The prop name for specifying the value of the form control component",
+      },
       noLabel: {
         type: "boolean",
         advanced: true,
+      },
+      alignLabellessWithControls: {
+        type: "boolean",
+        displayName: "Align with controls?",
+        description: "Aligns the content with form controls in the grid",
+        hidden: (ps, ctx) =>
+          !ps.noLabel || ctx?.internalFormCtx?.layout.layout !== "horizontal",
+        defaultValueHint: true,
       },
       colon: {
         type: "boolean",
@@ -643,6 +724,8 @@ export function registerFormItem(loader?: Registerable) {
         type: "choice",
         options: ["left", "right"],
         advanced: true,
+        hidden: (ps, ctx) =>
+          !!ps.noLabel || ctx?.internalFormCtx?.layout.layout !== "horizontal",
       },
       hidden: {
         type: "boolean",
@@ -668,32 +751,16 @@ export function registerFormItem(loader?: Registerable) {
         description:
           "Form items can depend on other form items. This forces it to reevaluate the validation rules when the other form item changes.",
       },
-      helpTextMode: {
-        type: "choice",
-        displayName: "Help text",
-        options: [
-          {
-            value: "errors",
-            label: "Validation errors",
-          },
-          {
-            value: "extra",
-            label: "Custom help text and validation errors",
-          },
-          {
-            value: "help",
-            label: "Custom help text, no validation errors",
-          },
-        ],
-        defaultValueHint: "Show validation errors",
-        description:
-          "What to show in the help text. Edit help text by editing the 'help' slot in the outline.",
+      hideValidationMessage: {
+        type: "boolean",
+        displayName: "Hide validation message?",
+        description: "If true, will hide the validation error message",
+        defaultValueHint: false,
+        advanced: true,
       },
-      help: {
+      description: {
         type: "slot",
-        hidden: (ps) => !["extra", "help"].includes(ps.helpTextMode ?? ""),
         hidePlaceholder: true,
-        // advanced: true,
       },
       customizeProps: {
         type: "function",
@@ -709,14 +776,86 @@ export function registerFormItem(loader?: Registerable) {
       } as any,
       noStyle: {
         type: "boolean",
-        displayName: "Field only",
+        displayName: "Field control only",
         description:
-          "Don't render anything but the wrapped field component - so no label, help text, validation error, etc.",
+          "Don't render anything but the field control - so no label, help text, validation error, etc.",
         advanced: true,
       },
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerForm",
     importName: "FormItemWrapper",
+    templates: {
+      Text: {
+        props: {
+          children: {
+            type: "component",
+            name: "plasmic-antd5-input",
+          },
+        },
+      },
+      "Long Text": {
+        props: {
+          children: {
+            type: "component",
+            name: "plasmic-antd5-textarea",
+          },
+        },
+      },
+      "Select dropdown": {
+        props: {
+          children: {
+            type: "component",
+            name: "plasmic-antd5-select",
+          },
+        },
+      },
+      Number: {
+        props: {
+          children: {
+            type: "component",
+            name: "plasmic-antd5-input-number",
+          },
+        },
+      },
+      Checkbox: {
+        props: {
+          children: {
+            type: "component",
+            name: "plasmic-antd5-checkbox",
+          },
+          valuePropName: "checked",
+          noLabel: true,
+        },
+      },
+      Radios: {
+        props: {
+          children: {
+            type: "component",
+            name: "plasmic-antd5-radio-group",
+          },
+        },
+      },
+      Password: {
+        props: {
+          children: {
+            type: "component",
+            name: "plasmic-antd5-input-password",
+          },
+        },
+      },
+      "Submit button": {
+        props: {
+          children: {
+            type: "component",
+            name: "plasmic-antd5-button",
+            props: {
+              type: "primary",
+            },
+          },
+          noLabel: true,
+        },
+      },
+    },
   });
 }
 
