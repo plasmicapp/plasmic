@@ -39,7 +39,10 @@ const richLayoutMeta: ComponentMeta<RichLayoutProps> = {
   name: "hostless-rich-layout",
   displayName: "Rich Page Layout",
   props: {
-    children: "slot",
+    children: {
+      type: "slot",
+      unstable__isMainContentSlot: true,
+    },
     actionsChildren: {
       type: "slot",
       hidePlaceholder: true,

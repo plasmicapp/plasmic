@@ -448,6 +448,11 @@ type SlotType<P> =
        * arguments expected by the render prop function.
        */
       renderPropParams?: string[];
+
+      /**
+       * When inserting top-level "page sections", should this slot be the default target?
+       */
+      unstable__isMainContentSlot?: boolean;
     } & Omit<
       DefaultValueOrExpr<P, PlasmicElement | PlasmicElement[]>,
       "defaultValueHint" | "defaultExpr" | "defaultExprHint"
@@ -462,7 +467,7 @@ type ImageUrlType<P> =
 
 export type PrimitiveType<P = any> = Extract<
   StringType<P> | BooleanType<P> | NumberType<P> | JSONLikeType<P>,
-  String
+  string
 >;
 
 type ControlTypeBase =
@@ -478,8 +483,8 @@ type ControlTypeBase =
     };
 
 export type SupportControlled<T> =
-  | Extract<T, String | CustomControl<any>>
-  | (Exclude<T, String | CustomControl<any>> & ControlTypeBase);
+  | Extract<T, string | CustomControl<any>>
+  | (Exclude<T, string | CustomControl<any>> & ControlTypeBase);
 
 export type PropType<P> =
   | SupportControlled<
