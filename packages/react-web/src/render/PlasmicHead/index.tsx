@@ -77,8 +77,8 @@ export function PlasmicHead(props: PlasmicHeadProps) {
 
 export const plasmicHeadMeta = {
   name: "hostless-plasmic-head",
-  displayName: "Head",
-  description: "Used to add page metadata to HTML <head />.",
+  displayName: "Page Metadata Override",
+  description: "Set page metadata (HTML <head />) to dynamic values.",
   importName: "PlasmicHead",
   importPath: "@plasmicapp/react-web",
   isRepeatable: false,
