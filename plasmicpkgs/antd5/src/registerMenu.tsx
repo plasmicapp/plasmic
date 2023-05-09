@@ -14,6 +14,46 @@ const allowedMenuComponents = [
   "plasmic-antd5-menu-item-group",
 ];
 
+export const MENU_ITEM_TYPE = {
+  type: "object",
+  nameFunc: (item: any) => {
+    if (item.type === "divider") {
+      return "Divider";
+    }
+    return item.label || item.value;
+  },
+  fields: {
+    type: {
+      type: "choice",
+      options: [
+        { value: "item", label: "Menu item" },
+        { value: "group", label: "Menu item group" },
+        { value: "submenu", label: "Sub-menu" },
+        { value: "divider", label: "Menu divider" },
+      ],
+      defaultValue: "item",
+    },
+    key: {
+      type: "string",
+      displayName: "Menu item key",
+      description:
+        "Key of the menu item; the onClick will receive this as the value to indicate which item was clicked.",
+      hidden: (ps: any) => ps.type !== "item",
+    },
+    label: {
+      type: "string",
+      description: "Label of the menu item; will use the key if not specified.",
+      hidden: (ps: any) => ps.type === "divider",
+    },
+    children: {
+      type: "array",
+      displayName: "Menu items",
+      hidden: (ps: any) => ps.type !== "submenu" && ps.type !== "group",
+    },
+  },
+};
+(MENU_ITEM_TYPE.fields.children as any).itemType = MENU_ITEM_TYPE;
+
 /**
  * Note that the Menu component by itself isn't that useful.
  * It is supposed to be a stateful component, but we don't have state yet (for selected, open, etc.).

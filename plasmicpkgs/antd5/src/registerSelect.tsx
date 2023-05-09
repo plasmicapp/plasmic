@@ -50,10 +50,35 @@ export function registerSelect(loader?: Registerable) {
         hidden: (ps) => !!ps.useChildren,
         itemType: {
           type: "object",
-          nameFunc: (item: any) => item.label,
+          nameFunc: (item: any) => item.label || item.value,
           fields: {
-            value: "string",
+            type: {
+              type: "choice",
+              options: [
+                { value: "option", label: "Option" },
+                { value: "option-group", label: "Option Group" },
+              ],
+              defaultValue: "option",
+            },
+            value: {
+              type: "string",
+              hidden: (ps: any) => ps.type !== "option",
+            },
             label: "string",
+            options: {
+              type: "array",
+              hidden: (ps: any) => {
+                return ps.type !== "option-group";
+              },
+              itemType: {
+                type: "object",
+                nameFunc: (item: any) => item.label || item.value,
+                fields: {
+                  value: "string",
+                  label: "string",
+                },
+              },
+            },
           },
         },
         defaultValue: [
@@ -109,10 +134,16 @@ export function registerSelect(loader?: Registerable) {
         options: (ps: any) => {
           const options = new Set<string>();
           if (!ps.useChildren) {
-            return (ps.options ?? []).map((o: any) => ({
-              value: o.value || "",
-              label: o.label ?? (o.value || ""),
-            }));
+            const rec = (op: any) => {
+              if (typeof op === "string") {
+                return [{ value: op, label: op }];
+              } else if ("options" in op) {
+                return (op.options ?? []).flatMap((sub: any) => rec(sub));
+              } else {
+                return [{ value: op.value, label: op.label || op.value }];
+              }
+            };
+            return (ps.options ?? []).flatMap((o: any) => rec(o));
           } else {
             traverseReactEltTree(ps.children, (elt) => {
               if (
@@ -234,11 +265,6 @@ export function registerSelect(loader?: Registerable) {
       } as any,
       defaultStylesClassName: {
         type: "themeResetClass",
-      } as any,
-      tagRender: {
-        type: "slot",
-        renderPropParams: ["tagProps"],
-        hidePlaceholder: true,
       } as any,
     },
     states: {
