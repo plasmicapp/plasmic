@@ -72,6 +72,7 @@ export function registerSelect(loader?: Registerable) {
         displayName: "Use slot",
         type: "boolean",
         defaultValueHint: false,
+        advanced: true,
         description:
           "Instead of configuring a list of options, customize the contents of the Select by dragging and dropping options in the outline/canvas, inside the 'children' slot. Lets you use any content or formatting within the Options, and also use Option Groups.",
       },
