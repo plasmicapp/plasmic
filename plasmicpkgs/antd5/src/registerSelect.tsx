@@ -248,6 +248,7 @@ export function registerSelect(loader?: Registerable) {
         variableType: "text",
       },
     },
+    ...({ trapsSelection: true } as any),
     importPath: "@plasmicpkgs/antd5/skinny/registerSelect",
     importName: "AntdSelect",
   });
@@ -260,6 +261,7 @@ export function registerSelect(loader?: Registerable) {
       children: {
         type: "slot",
         defaultValue: "Option",
+        ...({ mergeWithParent: true } as any),
       },
       value: {
         type: "string",

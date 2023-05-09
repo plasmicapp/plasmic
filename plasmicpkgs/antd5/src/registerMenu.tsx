@@ -113,6 +113,7 @@ export function registerMenu(loader?: Registerable) {
             value: "Menu item",
           },
         ],
+        ...({ mergeWithParent: true } as any),
       },
       onClick: {
         type: "eventHandler",
