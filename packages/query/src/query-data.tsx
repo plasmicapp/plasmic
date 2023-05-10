@@ -59,12 +59,13 @@ export function usePlasmicQueryData<T>(
     __SWRConfig = config;
   }, [config]);
 
-  const wrappedFetcher = React.useMemo(() => wrapLoadingFetcher(fetcher), [
-    fetcher,
-  ]);
+  const wrappedFetcher = React.useMemo(
+    () => wrapLoadingFetcher(fetcher),
+    [fetcher]
+  );
 
   const resp = useSWR(key, wrappedFetcher, opts);
-  if (resp.data) {
+  if (resp.data !== undefined) {
     return { data: resp.data };
   } else if (resp.error) {
     return { error: resp.error };
