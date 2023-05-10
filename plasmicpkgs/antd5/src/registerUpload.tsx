@@ -179,6 +179,7 @@ export function registerUpload(loader?: Registerable) {
         onChangeProp: "onFilesChange",
       },
     },
+    ...({ trapsSelection: true } as any),
     importPath: "@plasmicpkgs/antd5/skinny/registerUpload",
     importName: "UploadWrapper",
   });

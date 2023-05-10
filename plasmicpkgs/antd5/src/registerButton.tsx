@@ -99,6 +99,7 @@ export function registerButton(loader?: Registerable) {
             value: "Button",
           },
         ],
+        ...({ mergeWithParent: true } as any),
       },
       icon: {
         type: "slot",

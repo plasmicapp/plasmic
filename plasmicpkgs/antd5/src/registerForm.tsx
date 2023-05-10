@@ -678,6 +678,7 @@ export function registerFormItem(loader?: Registerable) {
           value: "Label",
         },
         hidden: (ps) => !!ps.noLabel,
+        ...({ mergeWithParent: true } as any),
       },
       children: {
         type: "slot",
@@ -685,6 +686,7 @@ export function registerFormItem(loader?: Registerable) {
           type: "component",
           name: "plasmic-antd5-input",
         },
+        ...({ mergeWithParent: true } as any),
       },
       name: {
         type: "string",
@@ -856,6 +858,7 @@ export function registerFormItem(loader?: Registerable) {
         },
       },
     },
+    ...({ trapsSelection: true } as any),
   });
 }
 

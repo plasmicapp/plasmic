@@ -66,6 +66,7 @@ export function registerCheckbox(loader?: Registerable) {
             value: "Checkbox",
           },
         ],
+        ...({ mergeWithParent: true } as any),
       },
       onChange: {
         type: "eventHandler",

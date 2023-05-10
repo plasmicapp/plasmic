@@ -107,7 +107,7 @@ export function registerInput(loader?: Registerable) {
       value: {
         type: "string",
       },
-      placholder: {
+      placeholder: {
         type: "string",
       },
       size: {
@@ -139,6 +139,7 @@ export function registerInput(loader?: Registerable) {
     states: {
       ...COMMON_STATES,
     },
+    ...({ trapsSelection: true } as any),
     componentHelpers: COMMON_HELPERS_CONFIG,
     importPath: "@plasmicpkgs/antd5/skinny/registerInput",
     importName: "AntdInput",
@@ -154,7 +155,7 @@ export function registerTextArea(loader?: Registerable) {
       value: {
         type: "string",
       },
-      placholder: {
+      placeholder: {
         type: "string",
       },
       disabled: {
@@ -189,7 +190,7 @@ export function registerPasswordInput(loader?: Registerable) {
       value: {
         type: "string",
       },
-      placholder: {
+      placeholder: {
         type: "string",
       },
       disabled: {
@@ -225,7 +226,7 @@ export function registerNumberInput(loader?: Registerable) {
       value: {
         type: "number",
       },
-      placholder: {
+      placeholder: {
         type: "string",
       },
       disabled: {
@@ -263,6 +264,7 @@ export function registerNumberInput(loader?: Registerable) {
     states: {
       ...COMMON_STATES,
     },
+    ...({ trapsSelection: true } as any),
     // don't need component helpers
     importPath: "@plasmicpkgs/antd5/skinny/registerInput",
     importName: "AntdInputNumber",
