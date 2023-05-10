@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/loader-react",
-  "version": "1.0.255",
+  "version": "1.0.256",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
   "exports": {
@@ -50,10 +50,10 @@
   },
   "dependencies": {
     "@plasmicapp/data-sources-context": "0.1.11",
-    "@plasmicapp/host": "1.0.133",
+    "@plasmicapp/host": "1.0.134",
     "@plasmicapp/loader-core": "1.0.101",
     "@plasmicapp/loader-splits": "1.0.29",
-    "@plasmicapp/query": "0.1.63",
+    "@plasmicapp/query": "0.1.64",
     "@plasmicapp/react-ssr-prepass": "2.0.1",
     "pascalcase": "^1.0.0",
     "react-is": "^17.0.2",
