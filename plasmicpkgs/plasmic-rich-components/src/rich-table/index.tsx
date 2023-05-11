@@ -157,10 +157,13 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
       displayName: "Select rows?",
       options: [
         { label: "No", value: "none" },
-        { label: "Single", value: "single" },
-        { label: "Multiple", value: "multiple" },
+        { label: "By clicking a row", value: "click" },
+        { label: "Using radio buttons", value: "single" },
+        { label: "Using checkboxes", value: "multiple" },
       ],
       defaultValueHint: "none",
+      description:
+        "Lets user select table rows by clicking on a row, or using radio buttons, or checkboxes if multiple rows can be selected together. If you have interactive elements in your row and you don't want clicking on them to select the row, you may use radio buttons instead.",
     },
 
     rowKey: {
@@ -192,6 +195,15 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
         { name: "rows", type: "object" },
       ],
     },
+    onRowClick: {
+      type: "eventHandler",
+      displayName: "On row clicked",
+      argTypes: [
+        { name: "rowKey", type: "string" },
+        { name: "row", type: "object" },
+        { name: "event", type: "object" },
+      ],
+    },
     pagination: {
       type: "boolean",
       advanced: true,
@@ -200,23 +212,40 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
 
     hideSearch: {
       type: "boolean",
+      description: "Hides the search toolbar",
       advanced: true,
     },
 
     hideExports: {
       type: "boolean",
+      description: "Hides the button for exporting table data to CSV",
       advanced: true,
     },
 
     hideDensity: {
       type: "boolean",
+      description: "Hides the control for changing the density of the table",
       advanced: true,
+      defaultValueHint: true,
     },
 
     hideColumnPicker: {
       type: "boolean",
+      description: "Hides the control for reordering and pinning columns",
       advanced: true,
     },
+
+    hideSelectionBar: {
+      type: "boolean",
+      description: "Hides the toolbar that allows the user to clear selection",
+      advanced: true,
+      hidden: (ps: any) => !ps.canSelectRows || ps.canSelectRows === "none",
+      defaultValueHint: true,
+    },
+    scopeClassName: {
+      type: "styleScopeClass",
+      scopeName: "instance",
+    } as any,
   },
   states: {
     selectedRowKey: {

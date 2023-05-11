@@ -52,10 +52,11 @@ export interface RichTableProps {
   defaultSize?: SizeType;
   pagination?: boolean;
 
-  canSelectRows?: "none" | "single" | "multiple";
+  canSelectRows?: "none" | "click" | "single" | "multiple";
 
   selectedRowKey?: string | string[];
   onRowSelectionChanged?: (rowKeys: string[], rows: any[]) => void;
+  onRowClick?: (rowKey: string, row: any, event: React.MouseEvent) => void;
 
   rowKey?: string | GetRowKey<any>;
 
@@ -73,6 +74,9 @@ export interface RichTableProps {
   hideDensity?: boolean;
   hideColumnPicker?: boolean;
   hideExports?: boolean;
+  hideSelectionBar?: boolean;
+
+  scopeClassName?: string;
 }
 
 function tryGetSchema(data?: QueryResult): TableSchema | undefined {
@@ -180,10 +184,12 @@ export function RichTable(props: RichTableProps) {
     addHref,
     pageSize = 10,
     hideSearch,
-    hideDensity,
+    hideDensity = true,
     hideColumnPicker,
     hideExports,
+    hideSelectionBar = true,
     rowKey,
+    scopeClassName,
   } = props;
 
   const data = normalizeData(rawData);
@@ -197,8 +203,7 @@ export function RichTable(props: RichTableProps) {
     normalized
   );
 
-  const rowSelection = useRowSelection(data, props);
-  // const { containerRef, tableHeight } = useScrollHeight(data, props);
+  const rowSelectionProps = useRowSelectionProps(data, props);
 
   const isClient = useIsClient();
 
@@ -207,7 +212,7 @@ export function RichTable(props: RichTableProps) {
   }
 
   return (
-    <div className={className}>
+    <div className={`${className} ${scopeClassName ?? ""}`}>
       <ProTable
         actionRef={actionRef}
         columns={columnDefinitions}
@@ -220,7 +225,7 @@ export function RichTable(props: RichTableProps) {
         cardProps={{
           ghost: true,
         }}
-        rowSelection={rowSelection}
+        {...rowSelectionProps}
         dataSource={finalData}
         rowKey={deriveRowKey(data, rowKey)}
         defaultSize={defaultSize}
@@ -246,8 +251,6 @@ export function RichTable(props: RichTableProps) {
         }
         dateFormatter="string"
         headerTitle={title}
-        // TODO in the future, figure out how to make this responsive to the CSS height
-        // scroll={{ x: scrollX || undefined, y: scrollHeight }}
         toolbar={{
           search: !hideSearch
             ? {
@@ -260,19 +263,21 @@ export function RichTable(props: RichTableProps) {
               }
             : undefined,
         }}
-        toolBarRender={() => [
-          addHref && (
-            <Button
-              key="button"
-              icon={<PlusOutlined />}
-              type="primary"
-              href={addHref}
-            >
-              Add
-            </Button>
-          ),
-          !hideExports && <ExportMenu data={data} />,
-        ]}
+        toolBarRender={() =>
+          [
+            addHref && (
+              <Button
+                key="button"
+                icon={<PlusOutlined />}
+                type="primary"
+                href={addHref}
+              >
+                Add
+              </Button>
+            ),
+            !hideExports && <ExportMenu data={data} />,
+          ].filter((x) => !!x)
+        }
       />
       {/*Always hide the weird pin left/right buttons for now, which also have render layout issues*/}
       <style
@@ -312,7 +317,7 @@ export function RichTable(props: RichTableProps) {
             flex-grow: 1;
             min-height: 0;
           }
-          .ant-pro-table .ant-table-thead > tr > th {
+          .ant-pro-table .ant-table-thead > tr > th, .ant-pro-table .ant-table-thead > tr > td.ant-table-selection-column {
             position: sticky;
             top: 0;
             z-index: 2;
@@ -325,6 +330,15 @@ export function RichTable(props: RichTableProps) {
           }
           .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-fix-left,.ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-fix-right {
             z-index: 1;
+          }
+          ${
+            scopeClassName && hideSelectionBar
+              ? `
+          .${scopeClassName} .ant-pro-table-alert {
+            display: none;
+          }
+          `
+              : ""
           }
       `,
         }}
@@ -345,6 +359,19 @@ export function deriveRowKey(
     return schema.fields[0]?.id;
   }
   return undefined;
+}
+
+export function deriveKeyOfRow(
+  row: any,
+  rowKey: React.ComponentProps<typeof RichTable>["rowKey"]
+) {
+  if (typeof rowKey === "function") {
+    return rowKey(row);
+  } else if (typeof rowKey === "string") {
+    return row[rowKey];
+  } else {
+    return undefined;
+  }
 }
 
 function useColumnDefinitions(
@@ -522,12 +549,17 @@ function useSortedFilteredData(
   };
 }
 
-function useRowSelection(
+function useRowSelectionProps(
   data: NormalizedData | undefined,
   props: React.ComponentProps<typeof RichTable>
-) {
-  const { canSelectRows, selectedRowKey, onRowSelectionChanged, rowKey } =
-    props;
+): Partial<React.ComponentProps<typeof ProTable>> {
+  const {
+    canSelectRows,
+    selectedRowKey,
+    onRowSelectionChanged,
+    rowKey,
+    onRowClick,
+  } = props;
   const deriveSelectedRowKeys = () => {
     if (
       !canSelectRows ||
@@ -540,7 +572,7 @@ function useRowSelection(
     if (typeof selectedRowKey === "string") {
       return [selectedRowKey];
     } else if (Array.isArray(selectedRowKey)) {
-      if (canSelectRows === "single") {
+      if (canSelectRows === "single" || canSelectRows === "click") {
         return selectedRowKey.slice(0, 1);
       } else {
         return selectedRowKey;
@@ -553,15 +585,55 @@ function useRowSelection(
   const rowSelection: React.ComponentProps<typeof ProTable>["rowSelection"] =
     canSelectRows && canSelectRows !== "none"
       ? {
-          type: canSelectRows === "single" ? "radio" : "checkbox",
+          type:
+            canSelectRows === "single" || canSelectRows === "click"
+              ? "radio"
+              : "checkbox",
           selectedRowKeys: deriveSelectedRowKeys(),
           onChange: (rowKeys, rows) => {
             onRowSelectionChanged?.(rowKeys as string[], rows);
           },
           alwaysShowAlert: true,
+          ...(canSelectRows === "click" && {
+            renderCell: () => null,
+            columnWidth: 0,
+            columnTitle: null,
+            hideSelectAll: true,
+          }),
         }
       : undefined;
-  return rowSelection;
+  return {
+    rowSelection,
+    onRow: (row) => ({
+      onClick: (event) => {
+        const key = deriveKeyOfRow(row, deriveRowKey(data, rowKey));
+        if (key) {
+          if (canSelectRows === "click") {
+            // Some heuristics to avoid selecting a row when
+            // the object clicked is interactable -- like button, anchor,
+            // input, etc.  This won't be bulletproof, so just some
+            // heuristics!
+            const target = event.target as HTMLElement;
+            if (!isInteractable(target)) {
+              onRowSelectionChanged?.([key], [row]);
+            }
+          }
+          onRowClick?.(key, row, event);
+        }
+      },
+    }),
+  };
+}
+
+function isInteractable(target: HTMLElement) {
+  if (["A", "BUTTON", "INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)) {
+    return true;
+  }
+  if (target.contentEditable === "true") {
+    return true;
+  }
+
+  return false;
 }
 
 function ExportMenu(props: { data: NormalizedData | undefined }) {
