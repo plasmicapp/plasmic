@@ -141,7 +141,7 @@ const Internal = (
               : props.wrapperCol
           }
         >
-          {/*Remove built-in spacing on form items*/}
+          {/*Remove built-in spacing on form fields*/}
           <style>{`
           .ant-form-item-explain + div, .ant-form-item-margin-offset {
             display: none;
@@ -173,7 +173,7 @@ export function FormWrapper(props: FormWrapperProps) {
 const COMMON_ACTIONS = [
   {
     type: "button-action" as const,
-    label: "Append new Form Item",
+    label: "Append new Form Field",
     onClick: ({ studioOps }: ActionProps<any>) => {
       studioOps.appendToSlot(
         {
@@ -186,7 +186,7 @@ const COMMON_ACTIONS = [
   },
   // {
   //   type: "button-action" as const,
-  //   label: "Append new Form Group",
+  //   label: "Append new Form Field Group",
   //   onClick: ({ studioOps }: ActionProps<any>) => {
   //     studioOps.appendToSlot(
   //       {
@@ -664,7 +664,7 @@ function FormItemForwarder({ formItemProps, ...props }: any) {
 export function registerFormItem(loader?: Registerable) {
   registerComponentHelper(loader, FormItemWrapper, {
     name: "plasmic-antd5-form-item",
-    displayName: "Form Item",
+    displayName: "Form Field",
     parentComponentName: "plasmic-antd5-form",
     defaultStyles: {
       marginBottom: "24px",
@@ -744,14 +744,14 @@ export function registerFormItem(loader?: Registerable) {
         advanced: true,
         displayName: "Always re-render",
         description:
-          "Form items normally only re-render when the corresponding form value changes, for performance. This forces it to always re-render.",
+          "Form fields normally only re-render when the corresponding form value changes, for performance. This forces it to always re-render.",
       },
       dependencies: {
         type: "array",
         advanced: true,
         displayName: "Dependencies",
         description:
-          "Form items can depend on other form items. This forces it to reevaluate the validation rules when the other form item changes.",
+          "Form fields can depend on other form fields. This forces it to reevaluate the validation rules when the other form field changes.",
       },
       hideValidationMessage: {
         type: "boolean",
@@ -884,7 +884,7 @@ export function FormGroup(props: FormGroupProps) {
 export function registerFormGroup(loader?: Registerable) {
   registerComponentHelper(loader, FormGroup, {
     name: "plasmic-antd5-form-group",
-    displayName: "Form Group",
+    displayName: "Form Field Group",
     parentComponentName: "plasmic-antd5-form",
     actions: COMMON_ACTIONS,
     props: {
