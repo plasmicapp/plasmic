@@ -156,6 +156,7 @@ export function registerSelect(loader?: Registerable) {
           }
           return Array.from(options.keys());
         },
+        hidden: (ps: any) => !!ps.__plasmicFormField,
       },
       mode: {
         type: "choice",

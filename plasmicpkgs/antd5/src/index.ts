@@ -21,6 +21,7 @@ import { registerMenu } from "./registerMenu";
 import { registerModal } from "./registerModal";
 import { registerRadio } from "./registerRadio";
 import { registerSelect } from "./registerSelect";
+import { registerSwitch } from "./registerSwitch";
 import { registerTable } from "./registerTable";
 import { registerUpload } from "./registerUpload";
 import { Registerable } from "./utils";
@@ -31,6 +32,7 @@ export function registerAll(loader?: Registerable) {
   registerSelect(loader);
   registerTable(loader);
   registerCheckbox(loader);
+  registerSwitch(loader);
   registerRadio(loader);
   registerModal(loader);
   registerButton(loader);
