@@ -154,6 +154,7 @@ export function registerRadio(loader?: Registerable) {
             return ps.options ?? [];
           }
         },
+        hidden: (ps: any) => !!ps.__plasmicFormField,
       },
       disabled: {
         type: "boolean",

@@ -204,6 +204,29 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
         { name: "event", type: "object" },
       ],
     },
+
+    rowActions: {
+      type: "array",
+      displayName: "Row actions",
+      itemType: {
+        type: "object",
+        nameFunc: (ps: any) => ps.label,
+        fields: {
+          label: {
+            type: "string",
+            displayName: "Action label",
+          },
+          action: {
+            type: "eventHandler",
+            argTypes: [
+              { name: "rowKey", type: "string" },
+              { name: "row", type: "object" },
+            ],
+          },
+        },
+      },
+    },
+
     pagination: {
       type: "boolean",
       advanced: true,

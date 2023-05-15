@@ -22,6 +22,8 @@ export function AntdCheckbox(
   }, [onChange]);
   return <Checkbox {...rest} onChange={wrappedOnChange} />;
 }
+AntdCheckbox.__plasmicFormFieldMeta = { valueProp: "checked" };
+
 export const AntdCheckboxGroup = Checkbox.Group;
 
 export function registerCheckbox(loader?: Registerable) {
@@ -36,21 +38,17 @@ export function registerCheckbox(loader?: Registerable) {
         description:
           "Specifies the initial state: whether or not the checkbox is selected",
         defaultValueHint: false,
+        hidden: (ps: any) => !!ps.__plasmicFormField,
       },
       disabled: {
         type: "boolean",
-        description: "If disable checkbox",
+        description: "If checkbox is disabled",
         defaultValueHint: false,
       },
       indeterminate: {
         type: "boolean",
         description: "The indeterminate checked state of checkbox",
         defaultValueHint: false,
-      },
-      value: {
-        type: "string",
-        description: "The checkbox value",
-        advanced: true,
       },
       autoFocus: {
         type: "boolean",

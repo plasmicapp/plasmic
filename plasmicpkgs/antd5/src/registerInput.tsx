@@ -106,6 +106,7 @@ export function registerInput(loader?: Registerable) {
     props: {
       value: {
         type: "string",
+        hidden: (ps: any) => !!ps.__plasmicFormField,
       },
       placeholder: {
         type: "string",
@@ -154,6 +155,7 @@ export function registerTextArea(loader?: Registerable) {
     props: {
       value: {
         type: "string",
+        hidden: (ps: any) => !!ps.__plasmicFormField,
       },
       placeholder: {
         type: "string",
@@ -189,6 +191,7 @@ export function registerPasswordInput(loader?: Registerable) {
     props: {
       value: {
         type: "string",
+        hidden: (ps: any) => !!ps.__plasmicFormField,
       },
       placeholder: {
         type: "string",
@@ -225,6 +228,7 @@ export function registerNumberInput(loader?: Registerable) {
     props: {
       value: {
         type: "number",
+        hidden: (ps: any) => !!ps.__plasmicFormField,
       },
       placeholder: {
         type: "string",
