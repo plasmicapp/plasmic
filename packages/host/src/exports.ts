@@ -23,6 +23,7 @@ export {
   PropTypeBase,
   StateHelpers,
   StateSpec,
+  CodeComponentMode,
 } from "./registerComponent";
 export {
   default as registerGlobalContext,

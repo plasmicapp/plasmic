@@ -760,6 +760,11 @@ export interface CodeComponentMeta<P> {
   refActions?: Record<string, RefActionRegistration<P>>;
 }
 
+export type CodeComponentMode =
+  | "advanced"
+  | "simplified"
+  | "database-schema-driven";
+
 /**
  * @deprecated use CodeComponentMeta instead
  */
