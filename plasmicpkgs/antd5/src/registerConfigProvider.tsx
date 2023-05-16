@@ -19,7 +19,7 @@ import { makeRegisterGlobalContext, Registerable } from "./utils";
 // We normalize it ourselves here 😬😬😬
 let defaultLocale = enUS;
 if ("default" in enUS) {
-  defaultLocale = enUS.default as typeof enUS;
+  defaultLocale = (enUS as any).default as typeof enUS;
 }
 
 export interface ThemeOpts {

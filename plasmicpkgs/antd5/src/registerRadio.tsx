@@ -33,9 +33,13 @@ export function AntdRadioGroup(
   );
 }
 
+export const radioComponentName = "plasmic-antd5-radio";
+export const radioButtonComponentName = "plasmic-antd5-radio-button";
+export const radioGroupComponentName = "plasmic-antd5-radio-group";
+
 export function registerRadio(loader?: Registerable) {
   registerComponentHelper(loader, AntdRadio, {
-    name: "plasmic-antd5-radio",
+    name: radioComponentName,
     displayName: "Radio",
     props: {
       value: {
@@ -65,10 +69,10 @@ export function registerRadio(loader?: Registerable) {
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerRadio",
     importName: "AntdRadio",
-    parentComponentName: "plasmic-antd5-radio-group",
+    parentComponentName: radioGroupComponentName,
   });
-  registerComponentHelper(loader, AntdRadio, {
-    name: "plasmic-antd5-radio-button",
+  registerComponentHelper(loader, AntdRadioButton, {
+    name: radioButtonComponentName,
     displayName: "Radio Button",
     props: {
       value: {
@@ -98,11 +102,11 @@ export function registerRadio(loader?: Registerable) {
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerRadio",
     importName: "AntdRadioButton",
-    parentComponentName: "plasmic-antd5-radio-group",
+    parentComponentName: radioGroupComponentName,
   });
 
   registerComponentHelper(loader, AntdRadioGroup, {
-    name: "plasmic-antd5-radio-group",
+    name: radioGroupComponentName,
     displayName: "Radio Group",
     props: {
       options: {

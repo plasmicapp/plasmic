@@ -26,9 +26,12 @@ AntdCheckbox.__plasmicFormFieldMeta = { valueProp: "checked" };
 
 export const AntdCheckboxGroup = Checkbox.Group;
 
+export const checkboxComponentName = "plasmic-antd5-checkbox";
+export const checkboxGroupComponentName = "plasmic-antd5-checkbox";
+
 export function registerCheckbox(loader?: Registerable) {
   registerComponentHelper(loader, AntdCheckbox, {
-    name: "plasmic-antd5-checkbox",
+    name: checkboxComponentName,
     displayName: "Checkbox",
     props: {
       checked: {
@@ -84,7 +87,7 @@ export function registerCheckbox(loader?: Registerable) {
   });
 
   registerComponentHelper(loader, AntdCheckboxGroup, {
-    name: "plasmic-antd5-checkbox-group",
+    name: checkboxGroupComponentName,
     displayName: "Checkbox Group",
     props: {
       value: {
@@ -137,6 +140,6 @@ export function registerCheckbox(loader?: Registerable) {
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerCheckbox",
     importName: "AntdCheckboxGroup",
-    parentComponentName: "plasmic-antd5-checkbox",
+    parentComponentName: checkboxComponentName,
   });
 }

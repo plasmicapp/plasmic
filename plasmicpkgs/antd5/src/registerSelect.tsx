@@ -40,9 +40,13 @@ export function AntdSelect(
   );
 }
 
+export const selectComponentName = "plasmic-antd5-select";
+export const optionComponentName = "plasmic-antd5-option";
+export const optionGroupComponentName = "plasmic-antd5-option-group";
+
 export function registerSelect(loader?: Registerable) {
   registerComponentHelper(loader, AntdSelect, {
-    name: "plasmic-antd5-select",
+    name: selectComponentName,
     displayName: "Select",
     props: {
       options: {
@@ -105,8 +109,8 @@ export function registerSelect(loader?: Registerable) {
       children: {
         type: "slot",
         allowedComponents: [
-          "plasmic-antd5-option",
-          "plasmic-antd5-option-group",
+          optionComponentName,
+          optionGroupComponentName,
         ],
         hidden: (ps) => !ps.useChildren,
       },
@@ -282,9 +286,9 @@ export function registerSelect(loader?: Registerable) {
   });
 
   registerComponentHelper(loader, AntdOption, {
-    name: "plasmic-antd5-option",
+    name: optionComponentName,
     displayName: "Option",
-    parentComponentName: "plasmic-antd5-select",
+    parentComponentName: selectComponentName,
     props: {
       children: {
         type: "slot",
@@ -300,9 +304,9 @@ export function registerSelect(loader?: Registerable) {
   });
 
   registerComponentHelper(loader, AntdOptionGroup, {
-    name: "plasmic-antd5-option-group",
+    name: optionGroupComponentName,
     displayName: "Option Group",
-    parentComponentName: "plasmic-antd5-select",
+    parentComponentName: selectComponentName,
     props: {
       children: {
         type: "slot",

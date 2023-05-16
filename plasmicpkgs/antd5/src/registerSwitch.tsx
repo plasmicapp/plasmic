@@ -7,9 +7,11 @@ export function AntdSwitch(props: React.ComponentProps<typeof Switch>) {
 }
 AntdSwitch.__plasmicFormFieldMeta = { valueProp: "checked" };
 
+export const switchComponentName = "plasmic-antd5-switch";
+
 export function registerSwitch(loader?: Registerable) {
   registerComponentHelper(loader, AntdSwitch, {
-    name: "plasmic-antd5-switch",
+    name: switchComponentName,
     displayName: "Switch",
     props: {
       checked: {

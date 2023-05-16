@@ -1,26 +1,40 @@
 import { registerButton } from "./registerButton";
-import { registerCheckbox } from "./registerCheckbox";
+import { checkboxComponentName, registerCheckbox } from "./registerCheckbox";
 import {
   registerConfigProvider,
   registerTokens,
 } from "./registerConfigProvider";
 import { registerDropdown } from "./registerDropdown";
 import {
+  InputType,
   registerForm,
   registerFormGroup,
   registerFormItem,
   registerFormList,
 } from "./registerForm";
 import {
+  inputComponentName,
+  inputNumberComponentName,
+  passwordComponentName,
   registerInput,
   registerNumberInput,
   registerPasswordInput,
   registerTextArea,
+  textAreaComponentName,
 } from "./registerInput";
 import { registerMenu } from "./registerMenu";
 import { registerModal } from "./registerModal";
-import { registerRadio } from "./registerRadio";
-import { registerSelect } from "./registerSelect";
+import {
+  radioComponentName,
+  radioGroupComponentName,
+  registerRadio,
+} from "./registerRadio";
+import {
+  optionComponentName,
+  optionGroupComponentName,
+  registerSelect,
+  selectComponentName,
+} from "./registerSelect";
 import { registerSwitch } from "./registerSwitch";
 import { registerTable } from "./registerTable";
 import { registerUpload } from "./registerUpload";
@@ -48,3 +62,31 @@ export function registerAll(loader?: Registerable) {
   registerNumberInput(loader);
   registerUpload(loader);
 }
+
+export { buttonComponentName } from "./registerButton";
+export {
+  formComponentName,
+  formGroupComponentName,
+  formItemComponentName,
+  formListComponentName,
+  InputType,
+} from "./registerForm";
+
+export type { SimplifiedFormItemsProp } from "./registerForm";
+
+export const componentNameToInputType = {
+  [inputComponentName]: InputType.Text,
+  [textAreaComponentName]: InputType.TextArea,
+  [passwordComponentName]: InputType.Password,
+  [inputNumberComponentName]: InputType.Number,
+  [selectComponentName]: InputType.Select,
+  [optionComponentName]: InputType.Option,
+  [optionGroupComponentName]: InputType.OptionGroup,
+  [radioComponentName]: InputType.Radio,
+  [radioGroupComponentName]: InputType.RadioGroup,
+  [checkboxComponentName]: InputType.Checkbox,
+};
+
+export const inputTypeToComponentName = Object.fromEntries(
+  Object.entries(componentNameToInputType).reverse()
+);

@@ -551,10 +551,12 @@ export type Action<P> =
       type: "button-action";
       label: string;
       onClick: (props: ActionProps<P>) => void;
+      hidden?: ContextDependentConfig<P, boolean>;
     }
   | {
       type: "custom-action";
       control: React.ComponentType<ActionProps<P>>;
+      hidden?: ContextDependentConfig<P, boolean>;
     };
 
 type DistributedKeyOf<T> = T extends any ? keyof T : never;

@@ -25,9 +25,11 @@ export function AntdButton(
   );
 }
 
+export const buttonComponentName = "plasmic-antd5-button";
+
 export function registerButton(loader?: Registerable) {
   registerComponentHelper(loader, AntdButton, {
-    name: "plasmic-antd5-button",
+    name: buttonComponentName,
     displayName: "Button",
     props: {
       type: {

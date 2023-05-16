@@ -99,9 +99,11 @@ const COMMON_EVENT_HANDLERS = {
   },
 } as const;
 
+export const inputComponentName = "plasmic-antd5-input";
+
 export function registerInput(loader?: Registerable) {
   registerComponentHelper(loader, AntdInput, {
-    name: "plasmic-antd5-input",
+    name: inputComponentName,
     displayName: "Input",
     props: {
       value: {
@@ -147,10 +149,12 @@ export function registerInput(loader?: Registerable) {
   });
 }
 
+export const textAreaComponentName = "plasmic-antd5-textarea";
+
 export function registerTextArea(loader?: Registerable) {
   registerComponentHelper(loader, AntdTextArea, {
-    name: "plasmic-antd5-textarea",
-    parentComponentName: "plasmic-antd5-input",
+    name: textAreaComponentName,
+    parentComponentName: inputComponentName,
     displayName: "Text Area",
     props: {
       value: {
@@ -183,10 +187,12 @@ export function registerTextArea(loader?: Registerable) {
   });
 }
 
+export const passwordComponentName = "plasmic-antd5-input-password";
+
 export function registerPasswordInput(loader?: Registerable) {
   registerComponentHelper(loader, AntdPassword, {
-    name: "plasmic-antd5-input-password",
-    parentComponentName: "plasmic-antd5-input",
+    name: passwordComponentName,
+    parentComponentName: inputComponentName,
     displayName: "Password Input",
     props: {
       value: {
@@ -220,10 +226,12 @@ export function registerPasswordInput(loader?: Registerable) {
   });
 }
 
+export const inputNumberComponentName = "plasmic-antd5-input-number";
+
 export function registerNumberInput(loader?: Registerable) {
   registerComponentHelper(loader, AntdInputNumber, {
-    name: "plasmic-antd5-input-number",
-    parentComponentName: "plasmic-antd5-input",
+    name: inputNumberComponentName,
+    parentComponentName: inputComponentName,
     displayName: "Number Input",
     props: {
       value: {
