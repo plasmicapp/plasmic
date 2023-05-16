@@ -267,7 +267,7 @@ const COMMON_ACTIONS = [
         "children"
       );
     },
-    hidden: (props: any) => props.mode,
+    hidden: (props: any) => props.mode !== "advanced",
   },
   // {
   //   type: "button-action" as const,
@@ -404,7 +404,7 @@ export function registerForm(loader?: Registerable) {
           },
           nameFunc: (item) => item.label,
         },
-        hidden: (props) => !props.mode,
+        hidden: (props) => props.mode === "advanced",
       },
       submitSlot: {
         type: "slot",
@@ -472,7 +472,7 @@ export function registerForm(loader?: Registerable) {
             },
           },
         ],
-        hidden: (props) => props.mode ?? false,
+        hidden: (props) => props.mode !== "advanced",
       },
       initialValues: {
         type: "object",
