@@ -50,9 +50,25 @@ export const MENU_ITEM_TYPE = {
       displayName: "Menu items",
       hidden: (ps: any) => ps.type !== "submenu" && ps.type !== "group",
     },
+    onClick: {
+      type: "eventHandler",
+      displayName: "Action",
+      description: "Action to perform when this item is selected",
+      argTypes: [{ name: "info", type: "object" }],
+      hidden: (ps: any) => ps.type !== "item",
+    },
   },
 };
+export const UNKEYED_MENU_ITEM_TYPE = {
+  ...MENU_ITEM_TYPE,
+  fields: Object.fromEntries(
+    Object.entries(MENU_ITEM_TYPE.fields).filter(([k]) => k !== "key")
+  ),
+};
+
 (MENU_ITEM_TYPE.fields.children as any).itemType = MENU_ITEM_TYPE;
+(UNKEYED_MENU_ITEM_TYPE.fields.children as any).itemType =
+  UNKEYED_MENU_ITEM_TYPE;
 
 /**
  * Note that the Menu component by itself isn't that useful.

@@ -208,20 +208,49 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
     rowActions: {
       type: "array",
       displayName: "Row actions",
+      advanced: true,
       itemType: {
         type: "object",
         nameFunc: (ps: any) => ps.label,
         fields: {
+          type: {
+            type: "choice",
+            options: ["item", "menu"],
+            defaultValue: "item",
+          },
           label: {
             type: "string",
             displayName: "Action label",
           },
-          action: {
+          children: {
+            type: "array",
+            displayName: "Menu items",
+            itemType: {
+              type: "object",
+              fields: {
+                label: {
+                  type: "string",
+                  displayName: "Action label",
+                },
+                onClick: {
+                  type: "eventHandler",
+                  argTypes: [
+                    { name: "rowKey", type: "string" },
+                    { name: "row", type: "object" },
+                  ],
+                },
+              },
+            },
+            hidden: (ps: any) => ps.type !== "menu",
+          },
+          onClick: {
             type: "eventHandler",
+            displayName: "Action",
             argTypes: [
               { name: "rowKey", type: "string" },
               { name: "row", type: "object" },
             ],
+            hidden: (ps: any) => ps.type !== "item",
           },
         },
       },
@@ -269,6 +298,10 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
       type: "styleScopeClass",
       scopeName: "instance",
     } as any,
+    themeResetClassName: {
+      type: "themeResetClass",
+      targetAllTags: true,
+    },
   },
   states: {
     selectedRowKey: {

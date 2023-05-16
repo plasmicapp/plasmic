@@ -1,7 +1,7 @@
 import { Dropdown, Menu } from "antd";
 import React from "react";
 import { Registerable, registerComponentHelper } from "./utils";
-import { MENU_ITEM_TYPE } from "./registerMenu";
+import { UNKEYED_MENU_ITEM_TYPE } from "./registerMenu";
 
 export function AntdDropdown(
   props: Omit<React.ComponentProps<typeof Dropdown>, "menu" | "overlay"> & {
@@ -82,7 +82,7 @@ export function registerDropdown(loader?: Registerable) {
         type: "array",
         displayName: "Menu Items",
         hidden: (ps: any) => ps.useMenuItemsSlot,
-        itemType: MENU_ITEM_TYPE as any,
+        itemType: UNKEYED_MENU_ITEM_TYPE as any,
         defaultValue: [
           {
             type: "item",

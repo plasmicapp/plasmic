@@ -44,6 +44,20 @@ export interface ControlContextData {
   minimalFullLengthFields: PartialColumnConfig[];
 }
 
+interface RowActionItem {
+  type: "item";
+  label: string;
+  onClick: (rowKey: string, row: any) => void;
+}
+
+interface RowActionMenu {
+  type: "menu";
+  label: string;
+  children?: RowActionItem[];
+}
+
+type RowAction = RowActionItem | RowActionMenu;
+
 export interface RichTableProps {
   className?: string;
   data?: QueryResult;
@@ -59,6 +73,7 @@ export interface RichTableProps {
   onRowClick?: (rowKey: string, row: any, event: React.MouseEvent) => void;
 
   rowKey?: string | GetRowKey<any>;
+  rowActions?: RowAction[];
 
   setControlContextData?: (ctx: ControlContextData) => void;
   title?: ReactNode;
@@ -77,6 +92,7 @@ export interface RichTableProps {
   hideSelectionBar?: boolean;
 
   scopeClassName?: string;
+  themeResetClassName?: string;
 }
 
 function tryGetSchema(data?: QueryResult): TableSchema | undefined {
@@ -190,6 +206,7 @@ export function RichTable(props: RichTableProps) {
     hideSelectionBar = true,
     rowKey,
     scopeClassName,
+    themeResetClassName,
   } = props;
 
   const data = normalizeData(rawData);
@@ -378,8 +395,7 @@ function useColumnDefinitions(
   data: NormalizedData | undefined,
   props: React.ComponentProps<typeof RichTable>
 ) {
-  const { fields, setControlContextData, actions, customActionChildren } =
-    props;
+  const { fields, setControlContextData, rowActions } = props;
   return React.useMemo(() => {
     const schema = tryGetSchema(data);
     if (!data || !schema) {
@@ -453,56 +469,59 @@ function useColumnDefinitions(
 
         return columnDefinition;
       });
-    if (actions && actions.length > 0) {
+    if (rowActions && rowActions.length > 0) {
       columnDefinitions.push({
         title: "Actions",
         valueType: "option",
         key: "__plasmicActions",
-        render: (_text, record, _, action) => [
-          ...actions
-            .filter((_action) => !_action.moreMenu)
-            .map((_action, aindex) =>
-              _action.type === "edit" ? (
+        fixed: "right",
+        className: props.themeResetClassName,
+        render: (_text, row) => [
+          ...rowActions.map((_action) => {
+            if (_action.type === "item") {
+              return (
                 <a
-                  key={aindex}
-                  onClick={() => {
-                    action?.startEditable?.(record.id);
+                  key={_action.label}
+                  style={{
+                    whiteSpace: "nowrap",
                   }}
+                  onClick={() =>
+                    _action.onClick?.(
+                      deriveKeyOfRow(row, deriveRowKey(data, props.rowKey)),
+                      row
+                    )
+                  }
                 >
-                  Edit
+                  {_action.label}
                 </a>
-              ) : _action.type === "view" ? (
-                <a key={aindex} href={record.url}>
-                  View
-                </a>
-              ) : _action.type === "delete" ? (
-                <a
-                  key={aindex}
-                  onClick={() => {
-                    // TODO delete
+              );
+            } else {
+              return (
+                <TableDropdown
+                  key={_action.label}
+                  style={{
+                    whiteSpace: "nowrap",
                   }}
+                  menus={(_action.children ?? []).map((child) => ({
+                    key: child.label,
+                    name: child.label,
+                    onClick: () =>
+                      child.onClick?.(
+                        deriveKeyOfRow(row, deriveRowKey(data, props.rowKey)),
+                        row
+                      ),
+                  }))}
                 >
-                  Delete
-                </a>
-              ) : (
-                customActionChildren
-              )
-            ),
-          <TableDropdown
-            key="actionGroup"
-            onSelect={() => action?.reload()}
-            menus={actions
-              .filter((_action) => !!_action.moreMenu)
-              .map((_action, aindex) => ({
-                key: "" + aindex,
-                name: _action.label ?? _action.type,
-              }))}
-          />,
+                  {_action.label}
+                </TableDropdown>
+              );
+            }
+          }),
         ],
       });
     }
     return { normalized, columnDefinitions };
-  }, [fields, data, setControlContextData, actions, customActionChildren]);
+  }, [fields, data, setControlContextData, rowActions]);
 }
 
 function useSortedFilteredData(
