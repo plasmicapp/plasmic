@@ -3,6 +3,7 @@ import {
   DataProvider,
   repeatedElement,
   usePlasmicCanvasContext,
+  CodeComponentMode,
 } from "@plasmicapp/host";
 import { Checkbox, Form, Input, InputNumber, Radio, Select } from "antd";
 import type { FormInstance, FormProps } from "antd/es/form";
@@ -92,7 +93,7 @@ interface FormWrapperProps extends FormProps {
     values: Parameters<NonNullable<FormProps["onValuesChange"]>>[1]
   ) => void;
   formItems: SimplifiedFormItemsProp[];
-  mode?: boolean;
+  mode?: CodeComponentMode;
   submitSlot?: boolean;
 }
 
@@ -133,7 +134,7 @@ const Internal = (
   const { extendedOnValuesChange, setRemountKey, ...rest } = props;
   // extracted from https://github.com/react-component/field-form/blob/master/src/Form.tsx#L120
   let childrenNode;
-  if (!props.mode) {
+  if (props.mode !== "simplified") {
     childrenNode =
       typeof props.children === "function"
         ? props.children(values, form)
