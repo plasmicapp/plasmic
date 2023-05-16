@@ -1,4 +1,4 @@
-import { Api, isBrowser, LoaderBundleOutput } from './api';
+import { Api, isBrowser, LoaderBundleOutput } from "./api";
 
 export interface FetcherOptions {
   projects: {
@@ -7,10 +7,10 @@ export interface FetcherOptions {
     token: string;
   }[];
   cache?: LoaderBundleCache;
-  platform?: 'react' | 'nextjs' | 'gatsby';
+  platform?: "react" | "nextjs" | "gatsby";
   preview?: boolean;
   host?: string;
-  i18nKeyScheme?: 'content' | 'hash';
+  i18nKeyScheme?: "content" | "hash";
 }
 
 export interface LoaderBundleCache {
@@ -53,7 +53,9 @@ export class PlasmicModulesFetcher {
     if (this.curFetch) {
       return await this.curFetch;
     }
-    console.debug('Plasmic: doing a fresh fetch...');
+    if (!process.env.PLASMIC_QUIET) {
+      console.debug("Plasmic: doing a fresh fetch...");
+    }
     this.curFetch = this.doFetch();
     const data = await this.curFetch;
     this.curFetch = undefined;
@@ -75,11 +77,13 @@ export class PlasmicModulesFetcher {
     if (this.opts.cache) {
       await this.opts.cache.set(data);
     }
-    console.debug(
-      `Plasmic: fetched designs for ${data.projects
-        .map((p) => `"${p.name}" (${p.id}@${p.version})`)
-        .join(', ')}`
-    );
+    if (!process.env.PLASMIC_QUIET) {
+      console.debug(
+        `Plasmic: fetched designs for ${data.projects
+          .map((p) => `"${p.name}" (${p.id}@${p.version})`)
+          .join(", ")}`
+      );
+    }
     return data;
   }
 
