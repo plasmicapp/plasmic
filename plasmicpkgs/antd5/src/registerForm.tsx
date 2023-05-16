@@ -267,7 +267,7 @@ const COMMON_ACTIONS = [
         "children"
       );
     },
-    hidden: (props: FormWrapperProps) => props.mode,
+    hidden: (props: any) => props.mode,
   },
   // {
   //   type: "button-action" as const,
