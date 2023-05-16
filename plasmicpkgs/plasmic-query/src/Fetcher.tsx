@@ -81,7 +81,7 @@ export function GenericFetcherShell<T>({
 export interface FetchProps {
   url?: string;
   method?: string;
-  body?: string | {};
+  body?: string | object;
   headers?: Record<string, string>;
 }
 
@@ -174,6 +174,8 @@ export const dataFetcherMeta: ComponentMeta<DataFetcherProps> = {
   importName: "DataFetcher",
   importPath: "@plasmicpkgs/plasmic-query",
   providesData: true,
+  description:
+    "These fetches may be run client-side (from the browser). Use [Data Queries](https://docs.plasmic.app/learn/http-api-integration/) for authenticated queries or CORS.",
   props: {
     ...(mkFetchProps(
       "https://api.github.com/users/plasmicapp/repos",
@@ -208,9 +210,9 @@ export function registerDataFetcher(
 export interface GraphqlFetcherProps
   extends GenericFetcherProps,
     Omit<FetchProps, "body"> {
-  query?: { query?: string; variables?: {} };
+  query?: { query?: string; variables?: object };
   queryKey?: string;
-  varOverrides?: {};
+  varOverrides?: object;
 }
 
 export function GraphqlFetcher(props: GraphqlFetcherProps) {
