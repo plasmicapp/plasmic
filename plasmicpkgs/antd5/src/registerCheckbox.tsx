@@ -27,7 +27,7 @@ AntdCheckbox.__plasmicFormFieldMeta = { valueProp: "checked" };
 export const AntdCheckboxGroup = Checkbox.Group;
 
 export const checkboxComponentName = "plasmic-antd5-checkbox";
-export const checkboxGroupComponentName = "plasmic-antd5-checkbox";
+export const checkboxGroupComponentName = "plasmic-antd5-checkbox-group";
 
 export function registerCheckbox(loader?: Registerable) {
   registerComponentHelper(loader, AntdCheckbox, {
@@ -116,7 +116,7 @@ export function registerCheckbox(loader?: Registerable) {
       },
       children: {
         type: "slot",
-        allowedComponents: ["plasmic-antd5-checkbox"],
+        allowedComponents: [checkboxComponentName],
         // Error right now when using default slot content with stateful instances
         // defaultValue: [
         //   {
