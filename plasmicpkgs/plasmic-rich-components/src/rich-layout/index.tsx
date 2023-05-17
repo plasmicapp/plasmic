@@ -156,7 +156,7 @@ const richLayoutMeta: ComponentMeta<RichLayoutProps> = {
   },
 
   defaultStyles: {
-    width: "stretch",
+    width: "full-bleed",
     height: "stretch",
   },
 
