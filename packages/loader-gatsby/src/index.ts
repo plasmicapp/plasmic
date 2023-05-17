@@ -6,7 +6,6 @@ export type {
   PageMeta,
   PageMetadata,
   PlasmicTranslator,
-  PrimitiveType,
   PropType,
   TokenRegistration,
 } from "@plasmicapp/loader-react";

@@ -3,8 +3,8 @@ import {
   InternalPlasmicComponentLoader,
   PlasmicComponentLoader,
   PlasmicRootProvider as CommonPlasmicRootProvider,
-} from '@plasmicapp/loader-react';
-import { IncomingMessage, ServerResponse } from 'http';
+} from "@plasmicapp/loader-react";
+import { IncomingMessage, ServerResponse } from "http";
 // NextHead and NextLink must be default imported (`import Pkg`) instead of a namespace import (`import * as Pkg`).
 // Otherwise, there's a Next.js 12 bug when referencing these dependencies due to default import interop.
 // The transpiled CommonJS code would create a `default` field on the package,
@@ -14,11 +14,11 @@ import { IncomingMessage, ServerResponse } from 'http';
 // assert(typeof NextHead === 'object')
 // assert(typeof NextHead.default === 'function')
 // ```
-import NextHead from 'next/head.js';
-import NextLink from 'next/link.js';
-import * as NextRouter from 'next/router.js';
-import * as React from 'react';
-import { initPlasmicLoaderWithCache } from './cache';
+import NextHead from "next/head.js";
+import NextLink from "next/link.js";
+import * as NextRouter from "next/router.js";
+import * as React from "react";
+import { initPlasmicLoaderWithCache } from "./cache";
 
 export {
   DataCtxReader,
@@ -36,15 +36,14 @@ export {
   usePlasmicQueryData,
   useSelector,
   useSelectors,
-} from '@plasmicapp/loader-react';
+} from "@plasmicapp/loader-react";
 export type {
   CodeComponentMeta,
   PlasmicTranslator,
-  PrimitiveType,
   PropType,
   TokenRegistration,
-} from '@plasmicapp/loader-react';
-export * from './shared-exports';
+} from "@plasmicapp/loader-react";
+export * from "./shared-exports";
 
 type ServerRequest = IncomingMessage & {
   cookies: {
@@ -55,9 +54,9 @@ export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
   constructor(internal: InternalPlasmicComponentLoader) {
     super(internal);
     this.registerModules({
-      'next/head': NextHead,
-      'next/link': NextLink,
-      'next/router': NextRouter,
+      "next/head": NextHead,
+      "next/link": NextLink,
+      "next/router": NextRouter,
     });
   }
 
@@ -69,8 +68,8 @@ export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
   }) {
     const extractBuiltinTraits = () => {
       const url = new URL(
-        opts.req?.url ?? '/',
-        `https://${opts.req?.headers.host ?? 'server.side'}`
+        opts.req?.url ?? "/",
+        `https://${opts.req?.headers.host ?? "server.side"}`
       );
       return {
         pageUrl: url.href,
@@ -92,7 +91,7 @@ export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
       updateKnownValue: (key: string, value: string) => {
         if (opts.res) {
           const cookie = `plasmic:${key}=${value}`;
-          const resCookie = opts.res?.getHeader('Set-Cookie') ?? [];
+          const resCookie = opts.res?.getHeader("Set-Cookie") ?? [];
           let newCookies: string[] = [];
           if (Array.isArray(resCookie)) {
             newCookies = [...resCookie, `plasmic:${key}=${value}`];
@@ -100,7 +99,7 @@ export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
             newCookies = [`${resCookie}`, cookie];
           }
 
-          opts.res?.setHeader('Set-Cookie', newCookies);
+          opts.res?.setHeader("Set-Cookie", newCookies);
         }
       },
     });
@@ -120,7 +119,7 @@ export function initPlasmicLoader(opts: InitOptions) {
 }
 
 export function PlasmicRootProvider(
-  props: Omit<React.ComponentProps<typeof CommonPlasmicRootProvider>, 'Head'>
+  props: Omit<React.ComponentProps<typeof CommonPlasmicRootProvider>, "Head">
 ) {
   return <CommonPlasmicRootProvider Head={NextHead} {...props} />;
 }

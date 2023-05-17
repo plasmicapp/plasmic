@@ -15,16 +15,12 @@ export {
   ComponentMeta,
   ComponentRegistration,
   ComponentTemplates,
-  ContextDependentConfig,
   default as registerComponent,
-  DefaultValueOrExpr,
-  PrimitiveType,
-  PropType,
-  PropTypeBase,
   StateHelpers,
   StateSpec,
   CodeComponentMode,
 } from "./registerComponent";
+export { PropType, ContextDependentConfig } from "./prop-types";
 export {
   default as registerGlobalContext,
   GlobalContextMeta,

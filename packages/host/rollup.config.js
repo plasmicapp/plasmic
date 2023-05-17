@@ -1,37 +1,37 @@
-import commonjs from '@rollup/plugin-commonjs';
-import json from '@rollup/plugin-json';
-import resolve from '@rollup/plugin-node-resolve';
-import path from 'path';
-import typescript from 'rollup-plugin-typescript2';
-import ts from 'typescript';
+import commonjs from "@rollup/plugin-commonjs";
+import json from "@rollup/plugin-json";
+import resolve from "@rollup/plugin-node-resolve";
+import path from "path";
+import typescript from "rollup-plugin-typescript2";
+import ts from "typescript";
 
 const external = (id) => {
-  if (id.startsWith('regenerator-runtime') || id.startsWith('tslib')) {
+  if (id.startsWith("regenerator-runtime") || id.startsWith("tslib")) {
     return false;
   }
-  return !id.startsWith('.') && !path.isAbsolute(id);
+  return !id.startsWith(".") && !path.isAbsolute(id);
 };
 
 export default [
   {
     input: {
-      index: './src/index.ts',
+      index: "./src/index.ts",
     },
     external,
     output: [
       {
-        dir: 'dist',
-        entryFileNames: 'host.esm.js',
-        format: 'esm',
+        dir: "dist",
+        entryFileNames: "host.esm.js",
+        format: "esm",
         sourcemap: true,
         banner: "'use client';",
       },
       {
-        dir: 'dist',
-        entryFileNames: 'index.cjs.js',
-        format: 'cjs',
+        dir: "dist",
+        entryFileNames: "index.cjs.js",
+        format: "cjs",
         sourcemap: true,
-        exports: 'named',
+        exports: "named",
         banner: "'use client';",
       },
     ],
@@ -52,23 +52,23 @@ export default [
   // used for component substitution of code components by loader
   {
     input: {
-      index: './src/registerComponent.ts',
+      index: "./src/registerComponent.ts",
     },
     external,
     output: [
       {
-        dir: 'registerComponent/dist',
-        entryFileNames: 'index.esm.js',
-        format: 'esm',
+        dir: "registerComponent/dist",
+        entryFileNames: "index.esm.js",
+        format: "esm",
         sourcemap: true,
         banner: "'use client';",
       },
       {
-        dir: 'registerComponent/dist',
-        entryFileNames: 'index.cjs.js',
-        format: 'cjs',
+        dir: "registerComponent/dist",
+        entryFileNames: "index.cjs.js",
+        format: "cjs",
         sourcemap: true,
-        exports: 'named',
+        exports: "named",
         banner: "'use client';",
       },
     ],
@@ -80,7 +80,6 @@ export default [
         typescript: ts,
         check: false,
         tsconfigOverride: {
-          include: ['src/registerComponent.ts', 'src/element-types.ts'],
           emitDeclarationOnly: true,
         },
       }),
@@ -88,23 +87,23 @@ export default [
   },
   {
     input: {
-      index: './src/registerGlobalContext.ts',
+      index: "./src/registerGlobalContext.ts",
     },
     external,
     output: [
       {
-        dir: 'registerGlobalContext/dist',
-        entryFileNames: 'index.esm.js',
-        format: 'esm',
+        dir: "registerGlobalContext/dist",
+        entryFileNames: "index.esm.js",
+        format: "esm",
         sourcemap: true,
         banner: "'use client';",
       },
       {
-        dir: 'registerGlobalContext/dist',
-        entryFileNames: 'index.cjs.js',
-        format: 'cjs',
+        dir: "registerGlobalContext/dist",
+        entryFileNames: "index.cjs.js",
+        format: "cjs",
         sourcemap: true,
-        exports: 'named',
+        exports: "named",
         banner: "'use client';",
       },
     ],
@@ -116,11 +115,6 @@ export default [
         typescript: ts,
         check: false,
         tsconfigOverride: {
-          include: [
-            'src/registerGlobalContext.ts',
-            'src/registerComponent.ts',
-            'src/element-types.ts',
-          ],
           emitDeclarationOnly: true,
         },
       }),
@@ -128,23 +122,23 @@ export default [
   },
   {
     input: {
-      index: './src/registerTrait.ts',
+      index: "./src/registerTrait.ts",
     },
     external,
     output: [
       {
-        dir: 'registerTrait/dist',
-        entryFileNames: 'index.esm.js',
-        format: 'esm',
+        dir: "registerTrait/dist",
+        entryFileNames: "index.esm.js",
+        format: "esm",
         sourcemap: true,
         banner: "'use client';",
       },
       {
-        dir: 'registerTrait/dist',
-        entryFileNames: 'index.cjs.js',
-        format: 'cjs',
+        dir: "registerTrait/dist",
+        entryFileNames: "index.cjs.js",
+        format: "cjs",
         sourcemap: true,
-        exports: 'named',
+        exports: "named",
         banner: "'use client';",
       },
     ],
@@ -156,7 +150,6 @@ export default [
         typescript: ts,
         check: false,
         tsconfigOverride: {
-          include: ['src/registerTrait.ts'],
           emitDeclarationOnly: true,
         },
       }),
@@ -164,22 +157,22 @@ export default [
   },
   {
     input: {
-      index: './src/registerToken.ts',
+      index: "./src/registerToken.ts",
     },
     external,
     output: [
       {
-        dir: 'registerToken/dist',
-        entryFileNames: 'index.esm.js',
-        format: 'esm',
+        dir: "registerToken/dist",
+        entryFileNames: "index.esm.js",
+        format: "esm",
         sourcemap: true,
       },
       {
-        dir: 'registerToken/dist',
-        entryFileNames: 'index.cjs.js',
-        format: 'cjs',
+        dir: "registerToken/dist",
+        entryFileNames: "index.cjs.js",
+        format: "cjs",
         sourcemap: true,
-        exports: 'named',
+        exports: "named",
       },
     ],
     plugins: [
@@ -190,7 +183,6 @@ export default [
         typescript: ts,
         check: false,
         tsconfigOverride: {
-          include: ['src/registerToken.ts'],
           emitDeclarationOnly: true,
         },
       }),

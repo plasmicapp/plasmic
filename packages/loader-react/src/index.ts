@@ -5,11 +5,7 @@ import {
 } from "./loader";
 import type { InitOptions } from "./loader-react-server";
 
-export type {
-  PrimitiveType,
-  PropType,
-  TokenRegistration,
-} from "@plasmicapp/host";
+export type { PropType, TokenRegistration } from "@plasmicapp/host";
 export {
   DataCtxReader,
   DataProvider,

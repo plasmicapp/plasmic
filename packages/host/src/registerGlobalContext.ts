@@ -2,32 +2,29 @@ import {
   BooleanType,
   ChoiceType,
   CustomType,
-  FunctionParam,
   JSONLikeType,
   NumberType,
   StringType,
-  SupportControlled,
-} from "./registerComponent";
+} from "./prop-types";
+import { FunctionParam } from "./registerComponent";
 
 const root = globalThis as any;
 
-export type PropType<P> = SupportControlled<
+// Using just a subset of types from prop-types
+export type PropType<P> =
   | StringType<P>
   | BooleanType<P>
   | NumberType<P>
   | JSONLikeType<P>
   | ChoiceType<P>
-  | CustomType<P>
->;
+  | CustomType<P>;
 
 type RestrictPropType<T, P> = T extends string
-  ? SupportControlled<
-      StringType<P> | ChoiceType<P> | JSONLikeType<P> | CustomType<P>
-    >
+  ? StringType<P> | ChoiceType<P> | JSONLikeType<P> | CustomType<P>
   : T extends boolean
-  ? SupportControlled<BooleanType<P> | JSONLikeType<P> | CustomType<P>>
+  ? BooleanType<P> | JSONLikeType<P> | CustomType<P>
   : T extends number
-  ? SupportControlled<NumberType<P> | JSONLikeType<P> | CustomType<P>>
+  ? NumberType<P> | JSONLikeType<P> | CustomType<P>
   : PropType<P>;
 
 type DistributedKeyOf<T> = T extends any ? keyof T : never;

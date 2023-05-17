@@ -1,4 +1,4 @@
-import { PrimitiveType } from "./registerComponent";
+import { PrimitiveType } from "./prop-types";
 
 const root = globalThis as any;
 
