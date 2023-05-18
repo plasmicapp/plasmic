@@ -88,3 +88,11 @@ export function asArray<T>(x: T[] | T | undefined | null) {
     return [x];
   }
 }
+
+export function ensureNumber(x: number | string): number {
+  return x as number;
+}
+
+export function isOneOf<T, U extends T>(elem: T, arr: readonly U[]): elem is U {
+  return arr.includes(elem as any);
+}
