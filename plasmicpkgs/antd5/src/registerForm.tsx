@@ -374,7 +374,7 @@ export function registerForm(loader?: Registerable) {
                       { value: "option-group", label: "Option Group" },
                     ],
                     defaultValue: "option",
-                    hidden: (ps, _ctx, { path }: any) => {
+                    hidden: (ps, _ctx, { path }) => {
                       if (
                         ps.formItems?.[path[1] as number]?.inputType !==
                         InputType.Select
@@ -387,7 +387,7 @@ export function registerForm(loader?: Registerable) {
                   label: "string",
                   value: {
                     type: "string",
-                    hidden: (ps, _ctx, { path, item }: any) => {
+                    hidden: (ps, _ctx, { path, item }) => {
                       if (
                         ps.formItems?.[path[1] as number]?.inputType !==
                         InputType.Select
@@ -407,7 +407,7 @@ export function registerForm(loader?: Registerable) {
                         label: "string",
                       },
                     },
-                    hidden: (ps, _ctx, { path, item }: any) => {
+                    hidden: (ps, _ctx, { path, item }) => {
                       if (
                         ps.formItems?.[path[1] as number]?.inputType !==
                         InputType.Select
@@ -420,7 +420,7 @@ export function registerForm(loader?: Registerable) {
                 },
                 nameFunc: (item) => item?.label,
               },
-              hidden: (_ps: any, _ctx: any, { item }: any) =>
+              hidden: (_ps: any, _ctx: any, { item }) =>
                 ![InputType.Select, InputType.RadioGroup].includes(
                   item.inputType
                 ),
@@ -431,7 +431,7 @@ export function registerForm(loader?: Registerable) {
                 { value: "default", label: "Radio" },
                 { value: "button", label: "Button" },
               ],
-              hidden: (_ps: any, _ctx: any, { item }: any) =>
+              hidden: (_ps: any, _ctx: any, { item }) =>
                 InputType.RadioGroup !== item.inputType,
               defaultValueHint: "Radio",
               displayName: "Option Type",
