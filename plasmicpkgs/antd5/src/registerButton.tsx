@@ -84,11 +84,12 @@ export function registerButton(loader?: Registerable) {
         advanced: true,
       },
       href: {
-        type: "string",
+        type: "href",
         description: "Redirect url of link button",
       },
       target: {
         type: "boolean",
+        displayName: "Open in new tab?",
         description: "Whether to open the link in a new window",
         hidden: (props) => !props.href,
         defaultValueHint: false,

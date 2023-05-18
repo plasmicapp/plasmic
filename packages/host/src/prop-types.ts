@@ -132,6 +132,10 @@ interface RichTextType<P> extends PropTypeBaseDefault<P, string> {
   type: "richText";
 }
 
+interface HrefType<P> extends PropTypeBaseDefault<P, string> {
+  type: "href";
+}
+
 interface ColorType<P> extends PropTypeBaseDefault<P, string> {
   type: "color";
   /**
@@ -219,9 +223,10 @@ type RichStringType<P> =
   | ColorType<P>
   | ClassType<P>
   | ThemeResetClassType<P>
-  | CardPickerType<P>;
+  | CardPickerType<P>
+  | HrefType<P>;
 
-export type StringType<P> = "string" | RichStringType<P>;
+export type StringType<P> = "string" | "href" | RichStringType<P>;
 
 interface RichBooleanType<P> extends PropTypeBaseDefault<P, boolean> {
   type: "boolean";
