@@ -52,6 +52,11 @@ export interface CmsFile extends CmsBaseType {
   defaultValue?: string;
 }
 
+export interface CmsRef extends CmsBaseType {
+  type: "ref";
+  defaultValue?: string;
+}
+
 export type CmsFieldMeta =
   | CmsText
   | CmsLongText
@@ -60,6 +65,7 @@ export type CmsFieldMeta =
   | CmsImage
   | CmsFile
   | CmsDateTime
+  | CmsRef
   | CmsRichText;
 
 export type CmsType = CmsFieldMeta["type"];
