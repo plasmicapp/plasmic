@@ -84,8 +84,9 @@ export function registerButton(loader?: Registerable) {
         advanced: true,
       },
       href: {
+        displayName: "Link to",
         type: "href",
-        description: "Redirect url of link button",
+        description: "Use this button as a link to this url",
       },
       target: {
         type: "boolean",
