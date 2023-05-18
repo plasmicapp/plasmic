@@ -63,44 +63,45 @@ interface CmsCredentialsProviderProps extends DatabaseConfig {
 
 const defaultHost = "https://studio.plasmic.app";
 
-export const cmsCredentialsProviderMeta: GlobalContextMeta<CmsCredentialsProviderProps> = {
-  name: `${componentPrefix}-credentials-provider`,
-  displayName: "CMS Credentials Provider",
-  description: `
+export const cmsCredentialsProviderMeta: GlobalContextMeta<CmsCredentialsProviderProps> =
+  {
+    name: `${componentPrefix}-credentials-provider`,
+    displayName: "CMS Credentials Provider",
+    description: `
 Find your CMS in the [dashboard](https://studio.plasmic.app), and go to the Settings tab for the ID and token.
 
 See also the [getting started video](https://www.youtube.com/watch?v=-Rrn92VtRBc).`,
-  importName: "CmsCredentialsProvider",
-  importPath: modulePath,
-  providesData: true,
-  props: {
-    host: {
-      type: "string",
-      displayName: "Studio URL",
-      description: `The default host for use in production is ${defaultHost}.`,
-      defaultValue: defaultHost,
-      defaultValueHint: defaultHost,
+    importName: "CmsCredentialsProvider",
+    importPath: modulePath,
+    providesData: true,
+    props: {
+      host: {
+        type: "string",
+        displayName: "Studio URL",
+        description: `The default host for use in production is ${defaultHost}.`,
+        defaultValue: defaultHost,
+        defaultValueHint: defaultHost,
+      },
+      databaseId: {
+        type: "string",
+        displayName: "CMS ID",
+        description:
+          "The ID of the CMS (database) to use. (Can get on the CMS settings page)",
+      },
+      databaseToken: {
+        type: "string",
+        displayName: "CMS Public Token",
+        description:
+          "The Public Token of the CMS (database) you are using. (Can get on the CMS settings page)",
+      },
+      locale: {
+        type: "string",
+        displayName: "Locale",
+        description:
+          "The locale to use for localized values, leave empty for the default locale.",
+      },
     },
-    databaseId: {
-      type: "string",
-      displayName: "CMS ID",
-      description:
-        "The ID of the CMS (database) to use. (Can get on the CMS settings page)",
-    },
-    databaseToken: {
-      type: "string",
-      displayName: "CMS Public Token",
-      description:
-        "The Public Token of the CMS (database) you are using. (Can get on the CMS settings page)",
-    },
-    locale: {
-      type: "string",
-      displayName: "Locale",
-      description:
-        "The locale to use for localized values, leave empty for the default locale.",
-    },
-  },
-};
+  };
 
 export function CmsCredentialsProvider({
   children,
@@ -238,6 +239,7 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
           "boolean",
           "text",
           "long-text",
+          "ref",
         ]),
     },
     filterValue: {
@@ -613,6 +615,7 @@ function renderValue(value: any, type: CmsType, props: { className?: string }) {
     case "text":
     case "long-text":
     case "date-time":
+    case "ref":
       return <div {...props}>{value}</div>;
     case "rich-text":
       return (
