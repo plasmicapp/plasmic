@@ -69,7 +69,7 @@ export interface PropTypeBase<P> {
   disableDynamicValue?: boolean;
   /**
    * If set to true, the component will be remounted when the prop value is updated.
-   * (This behavior only appliees to canvas)
+   * (This behavior only applies to canvas)
    */
   forceRemount?: boolean;
 }
@@ -295,7 +295,7 @@ interface ArrayType<P> extends PropTypeBaseDefault<P, any[]> {
 
 export type JSONLikeType<P> = "object" | ObjectType<P> | ArrayType<P>;
 
-interface DataSourceType<P> extends PropTypeBase<P> {
+export interface DataSourceType<P> extends PropTypeBase<P> {
   type: "dataSource";
   dataSource: "airtable" | "cms";
 }

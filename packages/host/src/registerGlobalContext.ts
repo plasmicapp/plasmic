@@ -5,6 +5,7 @@ import {
   JSONLikeType,
   NumberType,
   StringType,
+  DataSourceType,
 } from "./prop-types";
 import { FunctionParam } from "./registerComponent";
 
@@ -17,7 +18,8 @@ export type PropType<P> =
   | NumberType<P>
   | JSONLikeType<P>
   | ChoiceType<P>
-  | CustomType<P>;
+  | CustomType<P>
+  | DataSourceType<P>;
 
 type RestrictPropType<T, P> = T extends string
   ? StringType<P> | ChoiceType<P> | JSONLikeType<P> | CustomType<P>
