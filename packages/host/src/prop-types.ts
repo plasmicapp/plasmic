@@ -113,7 +113,7 @@ interface Controllable {
   uncontrolledProp?: string;
 }
 
-interface PropTypeBaseDefault<P, T>
+export interface PropTypeBaseDefault<P, T>
   extends PropTypeBase<P>,
     Defaultable<P, T>,
     Controllable {}
@@ -455,7 +455,8 @@ interface CustomControlProps<P> {
    */
   studioDocument: typeof document;
 }
-type CustomControl<P> = React.ComponentType<CustomControlProps<P>>;
+export type CustomControl<P> = React.ComponentType<CustomControlProps<P>>;
+
 interface RichCustomType<P> extends PropTypeBaseDefault<P, any> {
   type: "custom";
   control: CustomControl<P>;
