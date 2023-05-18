@@ -53,7 +53,7 @@ export class PlasmicModulesFetcher {
     if (this.curFetch) {
       return await this.curFetch;
     }
-    if (!process.env.PLASMIC_QUIET) {
+    if (typeof process === "undefined" || !process.env.PLASMIC_QUIET) {
       console.debug("Plasmic: doing a fresh fetch...");
     }
     this.curFetch = this.doFetch();
@@ -77,7 +77,7 @@ export class PlasmicModulesFetcher {
     if (this.opts.cache) {
       await this.opts.cache.set(data);
     }
-    if (!process.env.PLASMIC_QUIET) {
+    if (typeof process === "undefined" || !process.env.PLASMIC_QUIET) {
       console.debug(
         `Plasmic: fetched designs for ${data.projects
           .map((p) => `"${p.name}" (${p.id}@${p.version})`)
