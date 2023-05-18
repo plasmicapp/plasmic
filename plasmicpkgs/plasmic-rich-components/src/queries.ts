@@ -52,6 +52,10 @@ function tryGetDataArray(rawData: unknown): any[] | undefined {
     }
   }
 
+  if ("isLoading" in rawData || "error" in rawData) {
+    return undefined;
+  }
+
   // Maybe a singleton record?
   return [rawData];
 }

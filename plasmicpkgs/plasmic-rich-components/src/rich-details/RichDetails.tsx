@@ -9,19 +9,27 @@ import {
   deriveFieldConfigs,
   deriveValueType,
   mkShortId,
-  renderValue,
 } from "../field-mappings";
 import { NormalizedData, normalizeData } from "../queries";
 import { Empty } from "antd";
+import { renderValue } from "../formatting";
 
 export interface RichDetailsProps extends FieldfulProps<DetailsColumnConfig> {
   size?: "small" | "middle" | "default";
   bordered?: boolean;
   layout?: "horizontal" | "vertical";
+  column?: number;
 }
 
 export function RichDetails(props: RichDetailsProps) {
-  const { className, data: rawData, size, bordered, layout } = props;
+  const {
+    className,
+    data: rawData,
+    size,
+    bordered,
+    layout,
+    column = 2,
+  } = props;
   const data = normalizeData(rawData);
   const { columnDefinitions } = useColumnDefinitions(data, props);
   if (!data) {
@@ -35,6 +43,11 @@ export function RichDetails(props: RichDetailsProps) {
       size={size}
       bordered={bordered}
       layout={layout}
+      column={{
+        xs: 1,
+        sm: 1,
+        md: column,
+      }}
     />
   );
 }

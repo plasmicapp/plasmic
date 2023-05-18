@@ -39,6 +39,12 @@ export function registerRichDetails(loader?: Registerable) {
         ],
         defaultValueHint: "horizontal",
       },
+      column: {
+        displayName: "Items per row",
+        type: "number",
+        description: "Number of items to display per row",
+        defaultValueHint: 2,
+      },
       size: {
         displayName: "Spacing",
         type: "choice",

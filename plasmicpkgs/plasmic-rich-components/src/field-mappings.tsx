@@ -1,9 +1,7 @@
-import React from "react";
 import { TableFieldSchema, TableSchema } from "@plasmicapp/data-sources";
-import { Checkbox, Switch } from "antd";
 import { ControlExtras, PropType } from "@plasmicapp/host/registerComponent";
 import { QueryResult } from "./queries";
-import { ensureNumber } from "./utils";
+import { ensureNumber, isOneOf } from "./utils";
 
 export const tuple = <T extends any[]>(...args: T): T => args;
 
@@ -21,7 +19,7 @@ function withoutNils<T>(xs: Array<T | undefined | null>): T[] {
   return xs.filter((x): x is T => x != null);
 }
 
-interface AutoSettings {
+export interface AutoSettings {
   dataType: "auto";
 }
 
@@ -32,23 +30,71 @@ interface _SharedNumberSettings {
   minimumFractionDigits?: number;
   locale?: string;
 }
-interface NumberSettings extends _SharedNumberSettings {
+export interface DecimalSettings extends _SharedNumberSettings {
   dataType: "number";
 }
-interface PercentSettings extends _SharedNumberSettings {
+export interface PercentSettings extends _SharedNumberSettings {
   dataType: "percent";
 }
-interface MoneySettings extends _SharedNumberSettings {
-  dataType: "money";
+export interface CurrencySettings extends _SharedNumberSettings {
+  dataType: "currency";
   currency?: string;
+  currencyDisplay?: "symbol" | "narrowSymbol" | "code" | "name";
 }
+export const DEFAULT_CURRENCY_SETTINGS: CurrencySettings = {
+  dataType: "currency",
+  currency: "USD",
+  currencyDisplay: "narrowSymbol",
+};
 
-interface BooleanSettings {
+export type NumberSettings =
+  | DecimalSettings
+  | PercentSettings
+  | CurrencySettings;
+export const NUMBER_TYPES = ["number", "percent", "currency"] as const;
+
+export interface DateTimeSettings {
+  dataType: "datetime";
+  locale?: string;
+  dateStyle?: "none" | "full" | "long" | "medium" | "short";
+  timeStyle?: "none" | "full" | "long" | "medium" | "short";
+  hour12?: boolean;
+  timeZone?: string;
+}
+export const DEFAULT_DATETIME_SETTINGS: DateTimeSettings = {
+  dataType: "datetime",
+  locale: "en-US",
+  dateStyle: "short",
+  timeStyle: "short",
+  hour12: true,
+};
+
+export interface RelativeDateTimeSettings {
+  dataType: "relative-datetime";
+  locale?: string;
+  numeric?: "always" | "auto";
+  style?: "long" | "short" | "narrow";
+  unit?: "year" | "month" | "week" | "day" | "hour" | "minute" | "second";
+}
+export const DEFAULT_RELATIVE_DATETIME_SETTINGS: RelativeDateTimeSettings = {
+  dataType: "relative-datetime",
+  locale: "en-US",
+  numeric: "always",
+  style: "long",
+  unit: "day",
+};
+export const DATETIME_TYPES = ["datetime", "relative-datetime"] as const;
+
+export interface BooleanSettings {
   dataType: "boolean";
   showAs?: "text" | "checkbox" | "switch";
 }
+export const DEFAULT_BOOLEAN_SETTINGS: BooleanSettings = {
+  dataType: "boolean",
+  showAs: "checkbox",
+};
 
-interface StringSettings {
+export interface StringSettings {
   dataType: "string";
 }
 
@@ -78,8 +124,8 @@ export type BaseColumnConfig = _BaseColumnConfig &
     | NumberSettings
     | StringSettings
     | BooleanSettings
-    | MoneySettings
-    | PercentSettings
+    | DateTimeSettings
+    | RelativeDateTimeSettings
   );
 
 export function deriveFieldConfigs<ColumnConfig extends BaseColumnConfig>(
@@ -145,54 +191,6 @@ export function deriveValueType(cconfig: BaseColumnConfig) {
     : undefined;
 }
 
-/**
- * Render booleans, objects, arrays, etc. as JSON repr.
- */
-export function renderValue(
-  value: any,
-  record: any,
-  cconfig: BaseColumnConfig
-) {
-  if (cconfig.expr) {
-    return cconfig.expr(record, value);
-  }
-
-  if (value == null) {
-    return "";
-  }
-
-  if (cconfig.dataType === "string" || cconfig.dataType === "auto") {
-    return `${value}`;
-  } else if (cconfig.dataType === "number" && typeof value === "number") {
-    return new Intl.NumberFormat(cconfig.locale, cconfig).format(value);
-  } else if (cconfig.dataType === "percent" && typeof value === "number") {
-    return new Intl.NumberFormat(cconfig.locale, {
-      ...cconfig,
-      style: "percent",
-    }).format(value);
-  } else if (cconfig.dataType === "money" && typeof value === "number") {
-    return new Intl.NumberFormat(cconfig.locale, {
-      ...cconfig,
-      style: "currency",
-    }).format(value);
-  } else if (cconfig.dataType === "boolean") {
-    const isTrue = !!value;
-    if (cconfig.showAs === "checkbox") {
-      return <Checkbox checked={isTrue} />;
-    } else if (cconfig.showAs === "switch") {
-      return <Switch checked={isTrue} />;
-    } else {
-      return isTrue ? "true" : "false";
-    }
-  } else {
-    return typeof value === "string"
-      ? value
-      : typeof value === "number"
-      ? value.toString()
-      : JSON.stringify(value);
-  }
-}
-
 export interface ControlContextData<ColumnConfig extends BaseColumnConfig> {
   data: unknown[];
   schema?: TableSchema;
@@ -213,10 +211,17 @@ export function buildFieldsPropType<
 >(opts: { fieldTypes?: Record<string, PropType<any>> }): PropType<Props> {
   function getDefaultValueHint(field: keyof ColumnConfig) {
     return (
-      _props: Props,
-      contextData: ControlContextData<ColumnConfig> | null,
-      { path }: ControlExtras
-    ): any => contextData?.mergedFields[ensureNumber(path.slice(-2)[0])][field];
+      _item: any,
+      contextData: ControlContextData<ColumnConfig> | null
+    ): any => {
+      if (_item.fieldId) {
+        const fieldSetting = contextData?.mergedFields.find(
+          (f) => f.fieldId === _item.fieldId
+        );
+        return fieldSetting?.[field];
+      }
+      return undefined;
+    };
   }
 
   const rowDataType = (displayName: string, control?: any) =>
@@ -275,17 +280,250 @@ export function buildFieldsPropType<
           displayName: "Title",
           defaultValueHint: getDefaultValueHint("title"),
         },
-        dataType: {
-          type: "choice",
-          displayName: "Data type",
-          options: ["auto", "number", "string", "boolean"],
-          defaultValueHint: getDefaultValueHint("dataType"),
-        },
         expr: rowDataType("Customize data"),
         isHidden: {
           type: "boolean",
           displayName: "Is hidden",
           defaultValueHint: getDefaultValueHint("isHidden"),
+        },
+        dataType: {
+          type: "choice",
+          displayName: "Data type",
+          options: [
+            {
+              value: "auto",
+              label: "Auto",
+            },
+            {
+              value: "number",
+              label: "Number",
+            },
+            {
+              value: "percent",
+              label: "Percentage",
+            },
+            {
+              value: "currency",
+              label: "Currency",
+            },
+            {
+              value: "string",
+              label: "String",
+            },
+            {
+              value: "boolean",
+              label: "Boolean",
+            },
+            {
+              value: "datetime",
+              label: "Date / Time",
+            },
+            {
+              value: "relative-datetime",
+              label: "Date / Time relative to now",
+            },
+          ],
+          defaultValueHint: getDefaultValueHint("dataType"),
+        },
+        currency: {
+          displayName: "Currency",
+          description: "Must be a valid currency code",
+          type: "string",
+          defaultValueHint: "USD",
+          hidden: (ps: any) => ps.dataType !== "currency",
+        },
+        locale: {
+          displayName: "Locale",
+          description: "Must be a valid locale code",
+          type: "string",
+          defaultValueHint: "en-US",
+          hidden: (ps: any) =>
+            !isOneOf(ps.dataType, NUMBER_TYPES) &&
+            !isOneOf(ps.dataType, DATETIME_TYPES),
+        },
+        notation: {
+          displayName: "Notation",
+          type: "choice",
+          options: [
+            {
+              value: "standard",
+              label: "Standard",
+            },
+            {
+              value: "scientific",
+              label: "Scientific notation (like 1E3)",
+            },
+            {
+              value: "compact",
+              label: "Compact (like 10K)",
+            },
+          ],
+          defaultValueHint: "standard",
+          hidden: (ps: any) => !isOneOf(ps.dataType, NUMBER_TYPES),
+        },
+        signDisplay: {
+          type: "choice",
+          displayName: "Number sign",
+          options: [
+            {
+              value: "auto",
+              label: "Only for negative numbers (10, -10)",
+            },
+            {
+              value: "exceptZero",
+              label: "Positive or negative (+10, -10)",
+            },
+          ],
+          defaultValueHint: "auto",
+          hidden: (ps: any) => !isOneOf(ps.dataType, NUMBER_TYPES),
+        },
+        maximumFractionDigits: {
+          type: "number",
+          displayName: "Max decimal places",
+          defaultValueHint: 3,
+          min: 0,
+          max: 20,
+          hidden: (ps: any) => !isOneOf(ps.dataType, NUMBER_TYPES),
+        },
+        minimumFractionDigits: {
+          type: "number",
+          displayName: "Min decimal places",
+          defaultValueHint: 0,
+          min: 0,
+          max: 20,
+          hidden: (ps: any) => !isOneOf(ps.dataType, NUMBER_TYPES),
+        },
+        showAs: {
+          type: "choice",
+          options: [
+            {
+              value: "checkbox",
+              label: "Checkboxes",
+            },
+            {
+              value: "switch",
+              label: "Toggle switches",
+            },
+            {
+              value: "text",
+              label: "Text",
+            },
+          ],
+          displayName: "Show as",
+          defaultValueHint: "checkbox",
+          hidden: (ps: any) => ps.dataType !== "boolean",
+        },
+        dateStyle: {
+          displayName: "Date style",
+          type: "choice",
+          options: [
+            {
+              value: "none",
+              label: "None (don't display date)",
+            },
+            {
+              value: "short",
+              label: "Short (like 12/25/2023)",
+            },
+            {
+              value: "medium",
+              label: "Medium (like Dec 25, 2023)",
+            },
+            {
+              value: "long",
+              label: "Long (like December 25, 2023)",
+            },
+            {
+              value: "full",
+              label: "Full (like Monday, December 25, 2023)",
+            },
+          ],
+          defaultValueHint: DEFAULT_DATETIME_SETTINGS.dateStyle,
+          hidden: (ps: any) => ps.dataType !== "datetime",
+        },
+        timeStyle: {
+          displayName: "Time style",
+          type: "choice",
+          options: [
+            {
+              value: "none",
+              label: "None (don't display time)",
+            },
+            {
+              value: "short",
+              label: "Short (like 4:00 PM)",
+            },
+            {
+              value: "medium",
+              label: "Medium (like 4:00:00 PM)",
+            },
+            {
+              value: "long",
+              label: "Long (like 4:00:00 PM PST)",
+            },
+            {
+              value: "full",
+              label: "Full (like 4:00:00 PM Pacific Standard Time)",
+            },
+          ],
+          defaultValueHint: DEFAULT_DATETIME_SETTINGS.timeStyle,
+          hidden: (ps: any) => ps.dataType !== "datetime",
+        },
+        hour12: {
+          displayName: "Use AM/PM?",
+          description: "Whether to use AM/PM or 24-hour clock",
+          type: "boolean",
+          defaultValueHint: DEFAULT_DATETIME_SETTINGS.hour12,
+          hidden: (ps: any) => ps.dataType !== "datetime",
+        },
+        numeric: {
+          type: "choice",
+          displayName: "Use numbers?",
+          options: [
+            { value: "always", label: "Always use numbers" },
+            {
+              value: "auto",
+              label: "Use words like 'Yesterday' or 'Tomorrow'",
+            },
+          ],
+          defaultValueHint: DEFAULT_RELATIVE_DATETIME_SETTINGS.numeric,
+          hidden: (ps: any) => ps.dataType !== "relative-datetime",
+        },
+        unit: {
+          type: "choice",
+          displayName: "Time unit",
+          options: [
+            {
+              value: "second",
+              label: "Seconds",
+            },
+            {
+              value: "minute",
+              label: "Minutes",
+            },
+            {
+              value: "hour",
+              label: "Hours",
+            },
+            {
+              value: "day",
+              label: "Days",
+            },
+            {
+              value: "week",
+              label: "Weeks",
+            },
+            {
+              value: "month",
+              label: "Months",
+            },
+            {
+              value: "year",
+              label: "Years",
+            },
+          ],
+          defaultValueHint: DEFAULT_RELATIVE_DATETIME_SETTINGS.unit,
+          hidden: (ps: any) => ps.dataType !== "relative-datetime",
         },
         ...opts.fieldTypes,
       },

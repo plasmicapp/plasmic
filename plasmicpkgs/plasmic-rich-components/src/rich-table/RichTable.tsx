@@ -6,7 +6,6 @@ import {
   TableDropdown,
 } from "@ant-design/pro-components";
 import { TableSchema } from "@plasmicapp/data-sources";
-import { DataProvider } from "@plasmicapp/host";
 import { Button, Dropdown } from "antd";
 import type { SizeType } from "antd/es/config-provider/SizeContext";
 import type { GetRowKey, SorterResult } from "antd/es/table/interface";
@@ -21,9 +20,9 @@ import {
   deriveFieldConfigs,
   deriveValueType,
   mkShortId,
-  renderValue,
 } from "../field-mappings";
 import { NormalizedData, normalizeData } from "../queries";
+import { renderValue } from "../formatting";
 
 // Avoid csv-stringify, it doesn't directly work in browser without Buffer polyfill.
 
@@ -279,7 +278,7 @@ export function deriveRowKey(
   if (rowKey) {
     return rowKey;
   }
-  const schema = data.schema;
+  const schema = data?.schema;
   if (schema) {
     return schema.fields[0]?.id;
   }
