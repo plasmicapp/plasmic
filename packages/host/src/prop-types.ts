@@ -9,7 +9,10 @@ export interface CanvasComponentProps<Data = any> {
   setControlContextData?: (data: Data) => void;
 }
 
-export type ControlExtras = { path: (string | number)[] };
+export type ControlExtras = {
+  path: (string | number)[];
+  iten: any;
+};
 
 export type InferDataType<P> = P extends CanvasComponentProps<infer Data>
   ? Data

@@ -162,7 +162,7 @@ const Internal = (
               <Checkbox>{formItem.label}</Checkbox>
             ) : formItem.inputType === InputType.Select ? (
               <Select options={formItem.options} />
-            ) : formItem.inputType === InputType.Radio ? (
+            ) : formItem.inputType === InputType.RadioGroup ? (
               <Radio.Group
                 options={formItem.options}
                 optionType={formItem.optionType}
@@ -267,7 +267,7 @@ const COMMON_ACTIONS = [
         "children"
       );
     },
-    hidden: (props: any) => props.mode !== "advanced",
+    hidden: (props: any) => props.mode === "simplified",
   },
   // {
   //   type: "button-action" as const,
@@ -352,7 +352,14 @@ export function registerForm(loader?: Registerable) {
             label: "string",
             inputType: {
               type: "choice",
-              options: Object.values(InputType),
+              options: Object.values(InputType).filter(
+                (inputType) =>
+                  ![
+                    InputType.Option,
+                    InputType.OptionGroup,
+                    InputType.Radio,
+                  ].includes(inputType)
+              ),
               defaultValue: InputType.Text,
             },
             options: {
@@ -367,11 +374,28 @@ export function registerForm(loader?: Registerable) {
                       { value: "option-group", label: "Option Group" },
                     ],
                     defaultValue: "option",
+                    hidden: (ps, _ctx, { path }: any) => {
+                      if (
+                        ps.formItems?.[path[1] as number]?.inputType !==
+                        InputType.Select
+                      ) {
+                        return true;
+                      }
+                      return false;
+                    },
                   },
                   label: "string",
                   value: {
                     type: "string",
-                    hidden: (ps: any) => ps.type !== "option-group",
+                    hidden: (ps, _ctx, { path, item }: any) => {
+                      if (
+                        ps.formItems?.[path[1] as number]?.inputType !==
+                        InputType.Select
+                      ) {
+                        return false;
+                      }
+                      return item.type !== "option";
+                    },
                   },
                   options: {
                     type: "array",
@@ -383,12 +407,23 @@ export function registerForm(loader?: Registerable) {
                         label: "string",
                       },
                     },
+                    hidden: (ps, _ctx, { path, item }: any) => {
+                      if (
+                        ps.formItems?.[path[1] as number]?.inputType !==
+                        InputType.Select
+                      ) {
+                        return true;
+                      }
+                      return item.type !== "option-group";
+                    },
                   },
                 },
                 nameFunc: (item) => item?.label,
               },
-              hidden: (ps: any) =>
-                ![InputType.Select, InputType.Radio].includes(ps.inputType),
+              hidden: (_ps: any, _ctx: any, { item }: any) =>
+                ![InputType.Select, InputType.RadioGroup].includes(
+                  item.inputType
+                ),
             },
             optionType: {
               type: "choice",
@@ -396,7 +431,8 @@ export function registerForm(loader?: Registerable) {
                 { value: "default", label: "Radio" },
                 { value: "button", label: "Button" },
               ],
-              hidden: (ps: any) => InputType.Radio !== ps.inputType,
+              hidden: (_ps: any, _ctx: any, { item }: any) =>
+                InputType.RadioGroup !== item.inputType,
               defaultValueHint: "Radio",
               displayName: "Option Type",
             },
@@ -404,7 +440,7 @@ export function registerForm(loader?: Registerable) {
           },
           nameFunc: (item) => item.label,
         },
-        hidden: (props) => props.mode === "advanced",
+        hidden: (props) => props.mode !== "simplified",
       },
       submitSlot: {
         type: "slot",
@@ -472,7 +508,7 @@ export function registerForm(loader?: Registerable) {
             },
           },
         ],
-        hidden: (props) => props.mode !== "advanced",
+        hidden: (props) => props.mode === "simplified",
       },
       initialValues: {
         type: "object",

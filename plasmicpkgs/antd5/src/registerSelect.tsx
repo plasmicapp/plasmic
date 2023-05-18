@@ -66,13 +66,14 @@ export function registerSelect(loader?: Registerable) {
             },
             value: {
               type: "string",
-              hidden: (ps: any) => ps.type !== "option",
+              hidden: (_ps: any, _ctx: any, { item }: any) =>
+                item.type !== "option",
             },
             label: "string",
             options: {
               type: "array",
-              hidden: (ps: any) => {
-                return ps.type !== "option-group";
+              hidden: (_ps: any, _ctx: any, { item }: any) => {
+                return item.type !== "option-group";
               },
               itemType: {
                 type: "object",
@@ -89,10 +90,12 @@ export function registerSelect(loader?: Registerable) {
           {
             value: "option1",
             label: "Option 1",
+            type: "option",
           },
           {
             value: "option2",
             label: "Option 2",
+            type: "option",
           },
         ],
       },
@@ -108,10 +111,7 @@ export function registerSelect(loader?: Registerable) {
 
       children: {
         type: "slot",
-        allowedComponents: [
-          optionComponentName,
-          optionGroupComponentName,
-        ],
+        allowedComponents: [optionComponentName, optionGroupComponentName],
         hidden: (ps) => !ps.useChildren,
       },
 
