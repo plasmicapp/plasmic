@@ -88,3 +88,7 @@ export function asArray<T>(x: T[] | T | undefined | null) {
     return [x];
   }
 }
+
+export function ensureNumber(x: number | string): number {
+  return x as number;
+}

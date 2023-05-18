@@ -5,11 +5,7 @@ import {
   ProTable,
   TableDropdown,
 } from "@ant-design/pro-components";
-import {
-  ManyRowsResult,
-  TableFieldType,
-  TableSchema,
-} from "@plasmicapp/data-sources";
+import { TableSchema } from "@plasmicapp/data-sources";
 import { DataProvider } from "@plasmicapp/host";
 import { Button, Dropdown } from "antd";
 import type { SizeType } from "antd/es/config-provider/SizeContext";
@@ -19,17 +15,17 @@ import fastStringify from "fast-stringify";
 import React, { ReactNode, useRef, useState } from "react";
 import { useIsClient } from "../common";
 import {
-  ColumnConfig,
+  BaseColumnConfig,
+  FieldfulProps,
+  RowFunc,
   deriveFieldConfigs,
-  PartialColumnConfig,
+  deriveValueType,
+  mkShortId,
+  renderValue,
 } from "../field-mappings";
+import { NormalizedData, normalizeData } from "../queries";
 
 // Avoid csv-stringify, it doesn't directly work in browser without Buffer polyfill.
-
-export type QueryResult = Partial<ManyRowsResult<any>> & {
-  error?: any;
-  isLoading?: boolean;
-};
 
 export interface Action {
   type: "edit" | "view" | "delete" | "custom";
@@ -40,8 +36,8 @@ export interface Action {
 export interface ControlContextData {
   data: unknown[];
   schema?: TableSchema;
-  mergedFields: ColumnConfig[];
-  minimalFullLengthFields: PartialColumnConfig[];
+  mergedFields: TableColumnConfig[];
+  minimalFullLengthFields: Partial<TableColumnConfig>[];
 }
 
 interface RowActionItem {
@@ -58,11 +54,7 @@ interface RowActionMenu {
 
 type RowAction = RowActionItem | RowActionMenu;
 
-export interface RichTableProps {
-  className?: string;
-  data?: QueryResult;
-  fields?: PartialColumnConfig[];
-  // children?: React.ReactNode;
+export interface RichTableProps extends FieldfulProps<TableColumnConfig> {
   defaultSize?: SizeType;
   pagination?: boolean;
 
@@ -75,7 +67,6 @@ export interface RichTableProps {
   rowKey?: string | GetRowKey<any>;
   rowActions?: RowAction[];
 
-  setControlContextData?: (ctx: ControlContextData) => void;
   title?: ReactNode;
 
   addHref?: string;
@@ -93,88 +84,6 @@ export interface RichTableProps {
 
   scopeClassName?: string;
   themeResetClassName?: string;
-}
-
-function tryGetSchema(data?: QueryResult): TableSchema | undefined {
-  if (data?.schema) {
-    return data.schema;
-  }
-  if (Array.isArray(data)) {
-    data = { data };
-  }
-  if (!data?.data || !Array.isArray(data.data) || data.data.length === 0) {
-    return undefined;
-  }
-  const fieldMap: Record<string, TableFieldType> = {};
-  data.data.forEach((entry: any) => {
-    if (entry && typeof entry === "object") {
-      Array.from(Object.entries(entry)).forEach(([k, v]) => {
-        const inferredType: TableFieldType =
-          typeof v === "string"
-            ? "string"
-            : typeof v === "boolean"
-            ? "boolean"
-            : typeof v === "number"
-            ? "number"
-            : "unknown";
-        if (fieldMap[k] && fieldMap[k] !== inferredType) {
-          fieldMap[k] = "unknown";
-        } else {
-          fieldMap[k] = inferredType;
-        }
-      });
-    }
-  });
-  return {
-    id: "inferred",
-    fields: Object.entries(fieldMap).map(([f, t]) => ({
-      id: f,
-      type: t,
-      readOnly: false,
-    })),
-  };
-}
-
-interface NormalizedData {
-  data: Record<string, unknown>[];
-  schema?: TableSchema;
-}
-
-function normalizeData(rawData: unknown): NormalizedData | undefined {
-  if (!rawData || typeof rawData !== "object") {
-    return undefined;
-  }
-  const obj = Array.isArray(rawData) ? { data: rawData } : rawData!;
-  if (!("data" in obj)) {
-    return undefined;
-  }
-  const objWithData = obj as { data: unknown[] };
-  if (!Array.isArray(objWithData.data) || objWithData.data.length === 0) {
-    return undefined;
-  }
-  // Make TS happy.
-  const normed = {
-    ...objWithData,
-    data: objWithData.data as Record<string, unknown>[],
-  };
-  const schema = tryGetSchema(rawData as any);
-  if (!schema) {
-    return undefined;
-  }
-  return { ...normed, schema };
-}
-
-/**
- * Render booleans, objects, arrays, etc. as JSON repr.
- */
-function safeRender(x: unknown) {
-  return x === undefined || x === null
-    ? ""
-    : typeof x === "string"
-    ? x
-    : typeof x === "number"
-    ? x.toString()
-    : JSON.stringify(x);
 }
 
 export function RichTable(props: RichTableProps) {
@@ -206,7 +115,6 @@ export function RichTable(props: RichTableProps) {
     hideSelectionBar = true,
     rowKey,
     scopeClassName,
-    themeResetClassName,
   } = props;
 
   const data = normalizeData(rawData);
@@ -371,7 +279,7 @@ export function deriveRowKey(
   if (rowKey) {
     return rowKey;
   }
-  const schema = tryGetSchema(data);
+  const schema = data.schema;
   if (schema) {
     return schema.fields[0]?.id;
   }
@@ -391,40 +299,65 @@ export function deriveKeyOfRow(
   }
 }
 
+interface StyleConfig {
+  styles: Record<string, any>;
+  align: "left" | "center" | "right";
+  freeze: "off" | "left" | "right";
+}
+
+const defaultColumnConfig = (): TableColumnConfig =>
+  ({
+    key: mkShortId(),
+    isEditableExpr: () => false,
+    disableSorting: false,
+    sortByExpr: undefined,
+    isHidden: false,
+    formatting: {
+      styles: {},
+      align: "left",
+      freeze: "off",
+    },
+    dataType: "auto" as const,
+  } as const);
+
+export type TableColumnConfig = BaseColumnConfig & {
+  isEditableExpr: RowFunc<boolean>;
+  disableSorting: boolean;
+  sortByExpr?: RowFunc<any>;
+  formatting: StyleConfig;
+};
+
 function useColumnDefinitions(
   data: NormalizedData | undefined,
   props: React.ComponentProps<typeof RichTable>
 ) {
   const { fields, setControlContextData, rowActions } = props;
   return React.useMemo(() => {
-    const schema = tryGetSchema(data);
+    const schema = data?.schema;
     if (!data || !schema) {
       return { normalized: [], columnDefinitions: [] };
     }
-    const { mergedFields, minimalFullLengthFields } = deriveFieldConfigs(
-      fields ?? [],
-      schema
-    );
+    const { mergedFields, minimalFullLengthFields } =
+      deriveFieldConfigs<TableColumnConfig>(fields ?? [], schema, (field) => ({
+        ...defaultColumnConfig(),
+        ...(field && {
+          key: field.id,
+          fieldId: field.id,
+          title: field.label || field.id,
+          expr: (currentItem) => currentItem[field.id],
+        }),
+      }));
     setControlContextData?.({ ...data, mergedFields, minimalFullLengthFields });
     const normalized = mergedFields;
-    const columnDefinitions = normalized
+    const columnDefinitions: ProColumns<any, any>[] = normalized
       .filter((cconfig) => !cconfig.isHidden)
       .map((cconfig, _columnIndex, _columnsArray) => {
-        const columnDefinition: ProColumns<any> = {
+        const columnDefinition: ProColumns<any, any> = {
           dataIndex: cconfig.fieldId,
           title: cconfig.title,
           // dataIndex: cconfig,
           key: cconfig.key,
-          valueType:
-            cconfig.dataType === "auto"
-              ? undefined
-              : cconfig.dataType === "string"
-              ? "text"
-              : cconfig.dataType === "number"
-              ? "digit"
-              : cconfig.dataType === "boolean"
-              ? "switch"
-              : undefined,
+          valueType: deriveValueType(cconfig),
 
           // To come later
           readonly: false,
@@ -444,26 +377,7 @@ function useColumnDefinitions(
           },
 
           render: (value: any, record: any, rowIndex: any) => {
-            return (
-              <DataProvider name="currentRow" data={record}>
-                <DataProvider name="currentRowIndex" data={rowIndex}>
-                  <DataProvider name="currentColumn" data={value}>
-                    {safeRender(cconfig.expr ? cconfig.expr(record) : value)}
-                    {/*{showChildren &&*/}
-                    {/*  children &&*/}
-                    {/*  (typeof children === "object"*/}
-                    {/*    ? (Array.isArray(children) ? children : [children]).map(*/}
-                    {/*        (child) =>*/}
-                    {/*          repeatedElement(*/}
-                    {/*            rowIndex * columnsArray.length + columnIndex,*/}
-                    {/*            child*/}
-                    {/*          )*/}
-                    {/*      )*/}
-                    {/*    : children)}*/}
-                  </DataProvider>
-                </DataProvider>
-              </DataProvider>
-            );
+            return renderValue(value, record, cconfig);
           },
         };
 
@@ -526,7 +440,7 @@ function useColumnDefinitions(
 
 function useSortedFilteredData(
   data: NormalizedData | undefined,
-  columns: ColumnConfig[]
+  columns: TableColumnConfig[]
 ) {
   const [search, setSearch] = useState("");
   const [sortState, setSortState] = useState<
@@ -539,13 +453,17 @@ function useSortedFilteredData(
     const sorted = sortState?.sorter.column
       ? // We use .sort() rather than sortBy to use localeCompare
         (() => {
-          const expr =
-            columns.find(
-              (cconfig) => cconfig.key === sortState?.sorter.column?.key
-            )!.expr ?? ((x) => x);
+          const cconfig = columns.find(
+            (cc) => cc.key === sortState?.sorter.column?.key
+          )!;
+          const expr = cconfig.expr ?? ((x) => x);
           return (filtered ?? []).sort((aa, bb) => {
-            const a = expr(aa) ?? null,
-              b = expr(bb) ?? null;
+            const a =
+                expr(aa, cconfig.fieldId ? aa?.[cconfig.fieldId] : null) ??
+                null,
+              b =
+                expr(bb, cconfig.fieldId ? bb?.[cconfig.fieldId] : null) ??
+                null;
             // Default nil to '' here because A < null < z which is weird.
             return typeof a === "string"
               ? a.localeCompare(b ?? "")
@@ -669,7 +587,7 @@ function ExportMenu(props: { data: NormalizedData | undefined }) {
             onClick: async () => {
               const writer = createObjectCsvStringifier({
                 header:
-                  tryGetSchema(data)?.fields.map((f) => ({
+                  data?.schema?.fields.map((f) => ({
                     id: f.id,
                     title: f.id,
                   })) ?? [],
