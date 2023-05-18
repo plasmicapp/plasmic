@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/react-chartjs-2",
-  "version": "1.0.24",
+  "version": "1.0.25",
   "description": "Chart.js 2.x components for React",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,8 +28,8 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/data-sources": "0.1.81",
-    "@plasmicapp/host": "1.0.139",
+    "@plasmicapp/data-sources": "0.1.82",
+    "@plasmicapp/host": "1.0.140",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/node": "^14.0.26",
     "chart.js": "^4.2.1",
