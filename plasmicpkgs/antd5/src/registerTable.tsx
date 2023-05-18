@@ -38,10 +38,8 @@ export const AntdTable = React.forwardRef(function AntdTable(
   setControlContextData?.(data);
 
   const isControlled = !!selectedRowKeys;
-  const [
-    uncontrolledSelectedRowKeys,
-    setUncontrolledSelectedRowKeys,
-  ] = React.useState<string[]>(defaultSelectedRowKeys ?? []);
+  const [uncontrolledSelectedRowKeys, setUncontrolledSelectedRowKeys] =
+    React.useState<string[]>(defaultSelectedRowKeys ?? []);
   const selection: TableRowSelection<any> | undefined =
     isSelectable && rowKey
       ? {
@@ -150,7 +148,7 @@ export function registerTable(loader?: Registerable) {
           }
           return [];
         },
-        hidden: (ps: any) => !ps.isSelectable,
+        hidden: (ps) => !ps.isSelectable,
       },
       selectedRowKeys: {
         type: "choice",
@@ -167,13 +165,13 @@ export function registerTable(loader?: Registerable) {
       onSelectedRowKeysChange: {
         type: "eventHandler",
         argTypes: [{ name: "keys", type: "object" }],
-        hidden: (ps: any) => !ps.isSelectable,
-      } as any,
+        hidden: (ps) => !ps.isSelectable,
+      },
       onSelectedRowsChange: {
         type: "eventHandler",
         argTypes: [{ name: "rows", type: "object" }],
-        hidden: (ps: any) => !ps.isSelectable,
-      } as any,
+        hidden: (ps) => !ps.isSelectable,
+      },
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerTable",
     importName: "AntdTable",

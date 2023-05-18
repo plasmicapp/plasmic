@@ -25,6 +25,7 @@ import { radioGroupComponentName } from "./registerRadio";
 import { selectComponentName } from "./registerSelect";
 import { switchComponentName } from "./registerSwitch";
 import { Registerable, registerComponentHelper, usePrevious } from "./utils";
+import { PropType } from "@plasmicapp/host/registerComponent";
 
 const reactNodeToString = function (reactNode: React.ReactNode): string {
   let string = "";
@@ -898,7 +899,7 @@ function FormItemForwarder({ formItemProps, ...props }: any) {
   });
 }
 
-const commonFormItemProps = {
+const commonFormItemProps: Record<string, PropType<InternalFormItemProps>> = {
   name: {
     type: "string" as const,
   },
@@ -923,7 +924,7 @@ const commonFormItemProps = {
     type: "boolean" as const,
     displayName: "Align with controls?",
     description: "Aligns the content with form controls in the grid",
-    hidden: (ps: any, ctx: any) =>
+    hidden: (ps, ctx) =>
       !ps.noLabel || ctx?.internalFormCtx?.layout.layout !== "horizontal",
     defaultValueHint: true,
   },
@@ -937,7 +938,7 @@ const commonFormItemProps = {
     type: "choice" as const,
     options: ["left", "right"],
     advanced: true,
-    hidden: (ps: any, ctx: any) =>
+    hidden: (ps, ctx) =>
       !!ps.noLabel || ctx?.internalFormCtx?.layout.layout !== "horizontal",
   },
   hidden: {

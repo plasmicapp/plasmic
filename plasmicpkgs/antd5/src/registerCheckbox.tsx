@@ -41,7 +41,7 @@ export function registerCheckbox(loader?: Registerable) {
         description:
           "Specifies the initial state: whether or not the checkbox is selected",
         defaultValueHint: false,
-        hidden: (ps: any) => !!ps.__plasmicFormField,
+        hidden: (ps) => !!(ps as any).__plasmicFormField,
       },
       disabled: {
         type: "boolean",
@@ -96,7 +96,7 @@ export function registerCheckbox(loader?: Registerable) {
         uncontrolledProp: "defaultValue",
         description: "Default selected value",
         multiSelect: true,
-        options: (ps: any) => {
+        options: (ps) => {
           const options = new Set<string>();
           traverseReactEltTree(ps.children, (elt) => {
             if (

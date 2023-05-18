@@ -260,13 +260,14 @@ interface SliderNumberType<P> extends NumberTypeBase<P> {
 type RichNumberType<P> = PlainNumberType<P> | SliderNumberType<P>;
 export type NumberType<P> = "number" | RichNumberType<P>;
 
-interface ObjectType<P> extends PropTypeBaseDefault<P, Record<string, any>> {
+export interface ObjectType<P>
+  extends PropTypeBaseDefault<P, Record<string, any>> {
   type: "object";
   fields?: Record<string, PropType<P>>;
   nameFunc?: (item: any, ...args: ControlContext<P>) => string | undefined;
 }
 
-interface ArrayType<P> extends PropTypeBaseDefault<P, any[]> {
+export interface ArrayType<P> extends PropTypeBaseDefault<P, any[]> {
   type: "array";
   itemType?: ObjectType<P>;
   /**

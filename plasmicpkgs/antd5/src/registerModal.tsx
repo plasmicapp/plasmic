@@ -77,12 +77,12 @@ export function registerModal(loader?: Registerable) {
       } as any,
       okText: {
         type: "string",
-        hidden: (ps: any) => !!ps.footer,
+        hidden: (ps) => !!ps.footer,
         advanced: true,
       },
       cancelText: {
         type: "string",
-        hidden: (ps: any) => !!ps.footer,
+        hidden: (ps) => !!ps.footer,
         advanced: true,
       },
       onOpenChange: {

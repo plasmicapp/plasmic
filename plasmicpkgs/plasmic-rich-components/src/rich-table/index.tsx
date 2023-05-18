@@ -106,7 +106,7 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
       advanced: true,
       itemType: {
         type: "object",
-        nameFunc: (ps: any) => ps.label,
+        nameFunc: (item) => item.label,
         fields: {
           type: {
             type: "choice",
@@ -136,7 +136,7 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
                 },
               },
             },
-            hidden: (ps: any) => ps.type !== "menu",
+            hidden: (ps, ctx, { item }) => item.type !== "menu",
           },
           onClick: {
             type: "eventHandler",
@@ -145,7 +145,7 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
               { name: "rowKey", type: "string" },
               { name: "row", type: "object" },
             ],
-            hidden: (ps: any) => ps.type !== "item",
+            hidden: (ps, ctx, { item }) => item.type !== "item",
           },
         },
       },
@@ -213,7 +213,7 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
       type: "boolean",
       description: "Hides the toolbar that allows the user to clear selection",
       advanced: true,
-      hidden: (ps: any) => !ps.canSelectRows || ps.canSelectRows === "none",
+      hidden: (ps) => !ps.canSelectRows || ps.canSelectRows === "none",
       defaultValueHint: true,
     },
     scopeClassName: {

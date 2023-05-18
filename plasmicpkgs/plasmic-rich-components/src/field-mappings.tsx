@@ -243,14 +243,14 @@ export function buildFieldsPropType<
     unstable__keyFunc: (x) => x.key,
     unstable__minimalValue: (_props, contextData) =>
       contextData?.minimalFullLengthFields,
-    unstable__canDelete: (_item: any, _props, ctx, { path }) => {
+    unstable__canDelete: (ps, _props, ctx, { item }) => {
       if (!ctx?.schema) {
         // still loading...
         return false;
       }
       if (
-        _item.fieldId &&
-        ctx.schema.fields.some((f) => f.id === _item.fieldId)
+        item.fieldId &&
+        ctx.schema.fields.some((f) => f.id === item.fieldId)
       ) {
         return false;
       }
@@ -258,7 +258,7 @@ export function buildFieldsPropType<
     },
     itemType: {
       type: "object",
-      nameFunc: (_item: any, _props, ctx, { path }) => {
+      nameFunc: (_item: any) => {
         return _item.title ?? _item.fieldId;
       },
       fields: {
@@ -330,16 +330,16 @@ export function buildFieldsPropType<
           description: "Must be a valid currency code",
           type: "string",
           defaultValueHint: "USD",
-          hidden: (ps: any) => ps.dataType !== "currency",
+          hidden: (ps, ctx, { item }) => item.dataType !== "currency",
         },
         locale: {
           displayName: "Locale",
           description: "Must be a valid locale code",
           type: "string",
           defaultValueHint: "en-US",
-          hidden: (ps: any) =>
-            !isOneOf(ps.dataType, NUMBER_TYPES) &&
-            !isOneOf(ps.dataType, DATETIME_TYPES),
+          hidden: (ps, ctx, { item }) =>
+            !isOneOf(item.dataType, NUMBER_TYPES) &&
+            !isOneOf(item.dataType, DATETIME_TYPES),
         },
         notation: {
           displayName: "Notation",
@@ -359,7 +359,7 @@ export function buildFieldsPropType<
             },
           ],
           defaultValueHint: "standard",
-          hidden: (ps: any) => !isOneOf(ps.dataType, NUMBER_TYPES),
+          hidden: (ps, ctx, { item }) => !isOneOf(item.dataType, NUMBER_TYPES),
         },
         signDisplay: {
           type: "choice",
@@ -375,7 +375,7 @@ export function buildFieldsPropType<
             },
           ],
           defaultValueHint: "auto",
-          hidden: (ps: any) => !isOneOf(ps.dataType, NUMBER_TYPES),
+          hidden: (ps, ctx, { item }) => !isOneOf(item.dataType, NUMBER_TYPES),
         },
         maximumFractionDigits: {
           type: "number",
@@ -383,7 +383,7 @@ export function buildFieldsPropType<
           defaultValueHint: 3,
           min: 0,
           max: 20,
-          hidden: (ps: any) => !isOneOf(ps.dataType, NUMBER_TYPES),
+          hidden: (ps, ctx, { item }) => !isOneOf(item.dataType, NUMBER_TYPES),
         },
         minimumFractionDigits: {
           type: "number",
@@ -391,7 +391,7 @@ export function buildFieldsPropType<
           defaultValueHint: 0,
           min: 0,
           max: 20,
-          hidden: (ps: any) => !isOneOf(ps.dataType, NUMBER_TYPES),
+          hidden: (ps, ctx, { item }) => !isOneOf(item.dataType, NUMBER_TYPES),
         },
         showAs: {
           type: "choice",
@@ -411,7 +411,7 @@ export function buildFieldsPropType<
           ],
           displayName: "Show as",
           defaultValueHint: "checkbox",
-          hidden: (ps: any) => ps.dataType !== "boolean",
+          hidden: (ps, ctx, { item }) => item.dataType !== "boolean",
         },
         dateStyle: {
           displayName: "Date style",
@@ -439,7 +439,7 @@ export function buildFieldsPropType<
             },
           ],
           defaultValueHint: DEFAULT_DATETIME_SETTINGS.dateStyle,
-          hidden: (ps: any) => ps.dataType !== "datetime",
+          hidden: (ps, ctx, { item }) => item.dataType !== "datetime",
         },
         timeStyle: {
           displayName: "Time style",
@@ -467,14 +467,14 @@ export function buildFieldsPropType<
             },
           ],
           defaultValueHint: DEFAULT_DATETIME_SETTINGS.timeStyle,
-          hidden: (ps: any) => ps.dataType !== "datetime",
+          hidden: (ps, ctx, { item }) => item.dataType !== "datetime",
         },
         hour12: {
           displayName: "Use AM/PM?",
           description: "Whether to use AM/PM or 24-hour clock",
           type: "boolean",
           defaultValueHint: DEFAULT_DATETIME_SETTINGS.hour12,
-          hidden: (ps: any) => ps.dataType !== "datetime",
+          hidden: (ps, ctx, { item }) => item.dataType !== "datetime",
         },
         numeric: {
           type: "choice",
@@ -487,7 +487,7 @@ export function buildFieldsPropType<
             },
           ],
           defaultValueHint: DEFAULT_RELATIVE_DATETIME_SETTINGS.numeric,
-          hidden: (ps: any) => ps.dataType !== "relative-datetime",
+          hidden: (ps, ctx, { item }) => item.dataType !== "relative-datetime",
         },
         unit: {
           type: "choice",
@@ -523,7 +523,7 @@ export function buildFieldsPropType<
             },
           ],
           defaultValueHint: DEFAULT_RELATIVE_DATETIME_SETTINGS.unit,
-          hidden: (ps: any) => ps.dataType !== "relative-datetime",
+          hidden: (ps, ctx, { item }) => item.dataType !== "relative-datetime",
         },
         ...opts.fieldTypes,
       },

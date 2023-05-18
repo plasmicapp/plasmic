@@ -134,8 +134,8 @@ export function registerSelect(loader?: Registerable) {
         editOnly: true,
         uncontrolledProp: "defaultValue",
         description: "Initial selected option",
-        multiSelect: (ps: any) => ps.mode === "multiple",
-        options: (ps: any) => {
+        multiSelect: (ps) => ps.mode === "multiple",
+        options: (ps) => {
           const options = new Set<string>();
           if (!ps.useChildren) {
             const rec = (op: any) => {
