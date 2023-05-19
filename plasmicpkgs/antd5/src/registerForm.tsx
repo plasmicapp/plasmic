@@ -166,6 +166,7 @@ const Internal = (
               <Radio.Group
                 options={formItem.options}
                 optionType={formItem.optionType}
+                style={{ padding: "8px" }}
               />
             ) : null}
           </FormItemWrapper>
