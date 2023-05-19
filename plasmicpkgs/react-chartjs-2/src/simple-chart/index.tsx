@@ -113,7 +113,7 @@ const simpleChartMeta: ComponentMeta<SimpleChartProps> = {
   },
 
   importName: "SimpleChart",
-  importPath: "@plasmicpkgs/react-chartjs-2/dist/simple-chart/SimpleChart",
+  importPath: "@plasmicpkgs/react-chartjs-2",
 };
 
 export function registerSimpleChart(loader?: Registerable) {
