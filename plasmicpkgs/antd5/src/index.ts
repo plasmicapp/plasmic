@@ -88,5 +88,5 @@ export const componentNameToInputType = {
 };
 
 export const inputTypeToComponentName = Object.fromEntries(
-  Object.entries(componentNameToInputType).reverse()
-);
+  Object.entries(componentNameToInputType).map((kv) => kv.reverse())
+) as Record<InputType, string>;
