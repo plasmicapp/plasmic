@@ -1,12 +1,18 @@
 import { LogoutOutlined } from "@ant-design/icons";
 import type { MenuDataItem, ProLayoutProps } from "@ant-design/pro-components";
-import { ProLayout } from "@ant-design/pro-components";
-import { Dropdown } from "antd";
-import React, { ReactNode, useEffect, useState } from "react";
+import { ProConfigProvider, ProLayout } from "@ant-design/pro-components";
+import { Dropdown, theme } from "antd";
+import React, { ReactNode, useContext, useEffect, useState } from "react";
 import { useIsClient } from "../common";
+import { omitUndefined } from "@ant-design/pro-utils/lib";
+import { ConfigContext } from "antd/es/config-provider";
 
 interface NavMenuItem extends Omit<MenuDataItem, "routes"> {
   routes?: NavMenuItem[];
+}
+
+export interface SimpleNavTheme {
+  scheme?: "light" | "dark" | "accent";
 }
 
 export interface RichLayoutProps extends ProLayoutProps {
@@ -17,6 +23,11 @@ export interface RichLayoutProps extends ProLayoutProps {
   avatarLabel?: string;
   avatarImage?: string;
   showAvatarMenu?: boolean;
+  simpleNavTheme?: SimpleNavTheme;
+}
+
+function ensureArray<T>(xs: T | T[]): T[] {
+  return Array.isArray(xs) ? xs : [xs];
 }
 
 export function RichLayout({
@@ -29,6 +40,7 @@ export function RichLayout({
   avatarImage,
   showAvatarMenu,
   className,
+  simpleNavTheme,
   ...layoutProps
 }: RichLayoutProps) {
   const isClient = useIsClient();
@@ -38,6 +50,20 @@ export function RichLayout({
       setPathname(location.pathname);
     }
   }, []);
+  const { locale, theme: th, ...rest } = useContext(ConfigContext);
+  const { token } = theme.useToken();
+  const inDarkMode = ensureArray(th?.algorithm).includes(theme.darkAlgorithm);
+  const bgColor =
+    simpleNavTheme?.scheme === "accent"
+      ? token.colorPrimary
+      : simpleNavTheme?.scheme === "dark"
+      ? // This is the default dark Menu color in Ant.
+        "#011528"
+      : inDarkMode
+      ? // Just use this sorta ugly gray if using 'light' scheme in 'dark' mode....
+        "rgba(0,0,0,0.6)"
+      : // Using 'light' scheme in 'light' mode
+        undefined;
   if (!isClient) {
     return null;
   }
@@ -51,6 +77,45 @@ export function RichLayout({
       </style>
       <ProLayout
         {...layoutProps}
+        // Theme just the header. If you simply pass in navTheme=realDark, it affects all main content as well.
+        headerRender={(props, defaultDom) => (
+          <ProConfigProvider dark={simpleNavTheme?.scheme !== "light"}>
+            {defaultDom}
+          </ProConfigProvider>
+        )}
+        token={{
+          header: omitUndefined({
+            colorBgHeader: bgColor,
+          }),
+          // Ideally, we'd do something similar to headerRender above, and just specify general dark mode to specify
+          // whether all components/text should be light.
+          // But for some reason it doesn't work, causing the bg color to be ignored (just the default dark Menu color),
+          // *and* the text is just dark as well.
+          // Haven't bothered debugging the pro components code to figure out the proper way to do this, so just
+          // bluntly specifying tokens here.
+          sider:
+            !inDarkMode && simpleNavTheme?.scheme === "light"
+              ? undefined
+              : {
+                  colorBgCollapsedButton: "#fff",
+                  colorTextCollapsedButtonHover: "rgba(0,0,0,0.65)",
+                  colorTextCollapsedButton: "rgba(0,0,0,0.45)",
+                  colorMenuBackground: bgColor,
+                  colorBgMenuItemCollapsedHover: "rgba(0,0,0,0.06)",
+                  colorBgMenuItemCollapsedSelected: "rgba(0,0,0,0.15)",
+                  colorBgMenuItemCollapsedElevated: "rgba(0,0,0,0.85)",
+                  colorMenuItemDivider: "rgba(255,255,255,0.15)",
+                  colorBgMenuItemHover: "rgba(0,0,0,0.06)",
+                  colorBgMenuItemSelected: "rgba(0,0,0,0.15)",
+                  colorTextMenuSelected: "#fff",
+                  colorTextMenuItemHover: "rgba(255,255,255,0.75)",
+                  colorTextMenu: "rgba(255,255,255,0.75)",
+                  colorTextMenuSecondary: "rgba(255,255,255,0.65)",
+                  colorTextMenuTitle: "rgba(255,255,255,0.95)",
+                  colorTextMenuActive: "rgba(255,255,255,0.95)",
+                  colorTextSubMenuSelected: "#fff",
+                },
+        }}
         // Tweak defaults. ProLayout is janky and has terrible docs!
         layout={layoutProps.layout ?? "top"}
         fixedHeader={layoutProps.fixedHeader ?? false}
@@ -75,7 +140,7 @@ export function RichLayout({
           // hideMenuWhenCollapsed: true,
         }}
         avatarProps={
-          showAvatarMenu && false
+          showAvatarMenu && 0 / 1
             ? {
                 src: avatarImage,
                 size: "small",
