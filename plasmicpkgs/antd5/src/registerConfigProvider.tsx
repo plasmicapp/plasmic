@@ -13,7 +13,6 @@ import type {
 import enUS from "antd/lib/locale/en_US.js";
 import React from "react";
 import { makeRegisterGlobalContext, Registerable } from "./utils";
-import type { ConfigProviderProps } from "antd/es/config-provider";
 
 // enUS is a CJS file, and it doesn't always import correctly in
 // esm mode (nextjs does it right, but create-react-app does it wrong).
@@ -39,11 +38,9 @@ export interface ThemeOpts {
   sizeUnit?: number;
   sizeStep?: number;
   wireframe?: boolean;
-
-  defaultDark?: boolean;
 }
 
-export function themeToAntdConfig(opts: ThemeOpts): ConfigProviderProps {
+export function themeToAntdConfig(opts: ThemeOpts) {
   const {
     colorTextBase,
     colorPrimary,
@@ -58,11 +55,9 @@ export function themeToAntdConfig(opts: ThemeOpts): ConfigProviderProps {
     sizeUnit,
     sizeStep,
     wireframe,
-    defaultDark = false,
   } = opts;
   return {
     theme: {
-      algorithm: defaultDark ? theme.darkAlgorithm : undefined,
       token: Object.fromEntries(
         Object.entries({
           colorTextBase,
@@ -550,10 +545,6 @@ export const registerConfigProvider = makeRegisterGlobalContext(
         defaultValue: 4,
       },
       wireframe: {
-        type: "boolean",
-        defaultValue: false,
-      },
-      defaultDark: {
         type: "boolean",
         defaultValue: false,
       },
