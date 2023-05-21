@@ -78,23 +78,8 @@ const richLayoutMeta: ComponentMeta<RichLayoutProps> = {
       defaultValueHint: "top",
     },
 
-    simpleNavTheme: {
-      displayName: "Theme",
-      advanced: true,
-      type: "object",
-      fields: {
-        scheme: {
-          type: "choice",
-          options: ["light", "accent", "dark"].map((v) => ({
-            label: capitalize(v),
-            value: v,
-          })),
-          defaultValue: "accent",
-        },
-      },
-    },
-
     // Advanced, show later
+
     /*
     siderMenuType: {
       displayName: "Sidebar mode",
@@ -110,6 +95,18 @@ const richLayoutMeta: ComponentMeta<RichLayoutProps> = {
       type: "choice",
       options: ["Fluid", "Fixed"],
       defaultValueHint: "Fluid",
+    },
+    navTheme: {
+      displayName: "Theme",
+      type: "choice",
+      options: [
+        { value: "realDark", label: "Dark" },
+        { value: "light", label: "Light" },
+      ],
+    },
+    colorPrimary: {
+      displayName: "Primary color",
+      type: "color",
     },
     */
     fixedHeader: {
