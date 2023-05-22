@@ -76,7 +76,6 @@ export function RichLayout({
     }
   }
   const navBgColor = getNavBgColor();
-  console.log("!!", simpleNavTheme);
   // Dynamically determine whether we need to change the text to black/white or not, based on background color.
   // We don't want light-on-light or dark-on-dark, so if both isNavBgLight and isOrigTextLight are the same, then need to change.
   // If no need to change, we leave text color as is.
