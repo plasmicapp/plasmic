@@ -4,7 +4,12 @@ import { ProConfigProvider, ProLayout } from "@ant-design/pro-components";
 import { ConfigProvider, Dropdown, theme } from "antd";
 import React, { ReactNode, useEffect, useState } from "react";
 import { isLight, useIsClient } from "../common";
-import { omitUndefined } from "@ant-design/pro-utils/lib";
+
+function omitUndefined(x: object) {
+  return Object.fromEntries(
+    Object.entries(x).filter(([k, v]) => v !== undefined)
+  );
+}
 
 interface NavMenuItem extends Omit<MenuDataItem, "routes"> {
   routes?: NavMenuItem[];
