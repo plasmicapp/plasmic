@@ -54,7 +54,6 @@
   "dependencies": {
     "csv-writer-browser": "^1.0.0",
     "fast-stringify": "^2.0.0",
-    "lodash": "^4.17.21",
-    "tinycolor2": "^1.6.0"
+    "lodash": "^4.17.21"
   }
 }
