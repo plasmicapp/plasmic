@@ -356,10 +356,12 @@ since you want to prevent mismatched and duplicate package versions.
 ### Odds and ends
 
 For a few packages like react-ssr-prepass, these are not currently integrated into the NX workspace system.
+This is because Lerna doesn't work with git submodules.
 You can publish these as individual packages with, for instance:
 
 ```
 cd plasmicpkgs/SOMETHING
+yarn install # Not included in the workspace install
 yarn publish --registry=http://localhost:4873
 # Or with more options: yarn publish --canary --yes --include-merged-tags --no-git-tag-version --no-push --registry=http://localhost:4873 --force-publish
 ```
