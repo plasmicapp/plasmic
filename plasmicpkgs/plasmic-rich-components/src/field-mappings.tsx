@@ -230,9 +230,9 @@ export function buildFieldsPropType<
       displayName,
       control,
       argNames: ["currentItem", "currentValue"],
-      argValues: (_props: any, ctx: any) => {
+      argValues: (_props: any, ctx: any, { item }: any) => {
         const row = ctx?.data?.[0];
-        const cell = _props.fieldId ? row?.[_props.fieldId] : undefined;
+        const cell = item.fieldId ? row?.[item.fieldId] : undefined;
         return [row, cell];
       },
     } as any);
@@ -280,7 +280,7 @@ export function buildFieldsPropType<
           displayName: "Title",
           defaultValueHint: getDefaultValueHint("title"),
         },
-        expr: rowDataType("Customize data"),
+        expr: rowDataType("Customize cell data"),
         isHidden: {
           type: "boolean",
           displayName: "Is hidden",
