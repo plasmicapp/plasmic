@@ -107,7 +107,10 @@ function useColumnDefinitions(
           },
 
           render: (value: any, record: any, rowIndex: any) => {
-            return renderValue(value, record, cconfig);
+            const cellValue = cconfig.fieldId
+              ? record[cconfig.fieldId]
+              : undefined;
+            return renderValue(cellValue, record, cconfig);
           },
         };
 
