@@ -23,7 +23,7 @@ function generateNavMenuType(
       nameFunc: (item: any) =>
         item.name || (!displayName ? "Unnamed nested item" : "Unnamed item"),
       fields: {
-        path: "string",
+        path: "href",
         name: "string",
         ...(remainingDepth === 0
           ? {}
