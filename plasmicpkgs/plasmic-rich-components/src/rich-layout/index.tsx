@@ -37,7 +37,7 @@ function generateNavMenuType(
 
 const richLayoutMeta: ComponentMeta<RichLayoutProps> = {
   name: "hostless-rich-layout",
-  displayName: "Rich Page Layout",
+  displayName: "Rich App Layout",
   props: {
     children: {
       type: "slot",
@@ -78,8 +78,30 @@ const richLayoutMeta: ComponentMeta<RichLayoutProps> = {
       defaultValueHint: "top",
     },
 
-    // Advanced, show later
+    simpleNavTheme: {
+      displayName: "Theme",
+      type: "object",
+      fields: {
+        scheme: {
+          type: "choice",
+          options: ["default", "primary", "light", "dark", "custom"].map(
+            (v) => ({
+              label: capitalize(v),
+              value: v,
+            })
+          ),
+          defaultValueHint: "default",
+        },
+        customBgColor: {
+          type: "color",
+          displayName: "Custom color",
+          hidden: (props) => !(props.simpleNavTheme?.scheme === "custom"),
+          defaultValue: "#D73B58",
+        },
+      },
+    },
 
+    // Advanced, show later
     /*
     siderMenuType: {
       displayName: "Sidebar mode",
@@ -95,18 +117,6 @@ const richLayoutMeta: ComponentMeta<RichLayoutProps> = {
       type: "choice",
       options: ["Fluid", "Fixed"],
       defaultValueHint: "Fluid",
-    },
-    navTheme: {
-      displayName: "Theme",
-      type: "choice",
-      options: [
-        { value: "realDark", label: "Dark" },
-        { value: "light", label: "Light" },
-      ],
-    },
-    colorPrimary: {
-      displayName: "Primary color",
-      type: "color",
     },
     */
     fixedHeader: {
@@ -158,6 +168,7 @@ const richLayoutMeta: ComponentMeta<RichLayoutProps> = {
   defaultStyles: {
     width: "full-bleed",
     height: "stretch",
+    minHeight: "100vh",
   },
 
   importName: "RichLayout",
