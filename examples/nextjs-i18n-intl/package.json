@@ -1,0 +1,25 @@
+{
+  "name": "nextjs-i18n-intl",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "plasmic-i18n": "plasmic localization-strings --output locales/en.json --format=json --force-overwrite --key-scheme=path --tag-prefix=n --projects=fjKQstuhKKVhuH5dkNkNtj"
+  },
+  "dependencies": {
+    "@next/font": "13.1.5",
+    "@plasmicapp/cli": "^0.1.292",
+    "@plasmicapp/loader-nextjs": "^1.0.287",
+    "@types/node": "18.11.18",
+    "@types/react": "18.0.27",
+    "@types/react-dom": "18.0.10",
+    "next": "13.1.5",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-intl": "^6.4.2",
+    "typescript": "4.9.4"
+  }
+}
