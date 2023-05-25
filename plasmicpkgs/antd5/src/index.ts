@@ -39,6 +39,10 @@ import { registerSwitch } from "./registerSwitch";
 import { registerTable } from "./registerTable";
 import { registerUpload } from "./registerUpload";
 import { Registerable } from "./utils";
+import {
+  datePickerComponentName,
+  registerDatePicker,
+} from "./registerDatePicker";
 
 export function registerAll(loader?: Registerable) {
   registerConfigProvider(loader);
@@ -60,6 +64,7 @@ export function registerAll(loader?: Registerable) {
   registerPasswordInput(loader);
   registerTextArea(loader);
   registerNumberInput(loader);
+  registerDatePicker(loader);
   registerUpload(loader);
 }
 
@@ -84,6 +89,7 @@ export const componentNameToInputType = {
   [optionGroupComponentName]: InputType.OptionGroup,
   [radioComponentName]: InputType.Radio,
   [radioGroupComponentName]: InputType.RadioGroup,
+  [datePickerComponentName]: InputType.DatePicker,
   [checkboxComponentName]: InputType.Checkbox,
 };
 

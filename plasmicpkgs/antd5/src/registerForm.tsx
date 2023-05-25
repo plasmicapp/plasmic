@@ -5,7 +5,15 @@ import {
   usePlasmicCanvasContext,
   CodeComponentMode,
 } from "@plasmicapp/host";
-import { Checkbox, Form, Input, InputNumber, Radio, Select } from "antd";
+import {
+  Checkbox,
+  DatePicker,
+  Form,
+  Input,
+  InputNumber,
+  Radio,
+  Select,
+} from "antd";
 import type { FormInstance, FormProps } from "antd/es/form";
 import type { FormItemProps } from "antd/es/form/FormItem";
 import type { FormListOperation, FormListProps } from "antd/es/form/FormList";
@@ -71,6 +79,7 @@ export enum InputType {
   Radio = "Radio",
   RadioGroup = "Radio Group",
   Checkbox = "Checkbox",
+  DatePicker = "DatePicker",
 }
 
 export interface SimplifiedFormItemsProp extends InternalFormItemProps {
@@ -163,6 +172,8 @@ const Internal = (
               <Checkbox>{formItem.label}</Checkbox>
             ) : formItem.inputType === InputType.Select ? (
               <Select options={formItem.options} />
+            ) : formItem.inputType === InputType.DatePicker ? (
+              <DatePicker />
             ) : formItem.inputType === InputType.RadioGroup ? (
               <Radio.Group
                 options={formItem.options}

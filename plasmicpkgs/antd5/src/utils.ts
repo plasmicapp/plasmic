@@ -3,8 +3,8 @@ import {
   default as registerComponent,
 } from "@plasmicapp/host/registerComponent";
 import {
-  GlobalContextMeta,
   default as registerGlobalContext,
+  GlobalContextMeta,
 } from "@plasmicapp/host/registerGlobalContext";
 import { default as registerToken } from "@plasmicapp/host/registerToken";
 import React from "react";
@@ -117,4 +117,8 @@ export function usePrevious<T>(value: T | undefined): T | undefined {
   });
 
   return prevValue.current;
+}
+
+export function capitalize(value: string) {
+  return value[0].toUpperCase() + value.slice(1);
 }
