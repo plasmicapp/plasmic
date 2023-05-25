@@ -331,7 +331,7 @@ export function replaceImports(
       const meta = fixImportContext.codeComponentMetas[uuid];
       if (!meta.componentImportPath) {
         throw new HandledError(
-          `Encountered code component "${meta.name}" that was not registered with an importPath, so we don't know where to import this component from.  Please see https://docs.plasmic.app/learn/code-components-ref/`
+          `Encountered code component "${meta.displayName}" that was not registered with an importPath, so we don't know where to import this component from.  Please see https://docs.plasmic.app/learn/code-components-ref/`
         );
       }
       if (meta.componentImportPath[0] === ".") {
@@ -348,7 +348,7 @@ export function replaceImports(
       const meta = fixImportContext.codeComponentMetas[uuid];
       if (!meta.helper?.importPath) {
         throw new HandledError(
-          `Encountered code component "${meta.name}" that was not registered with an importPath to the component helper, so we don't know where to import this code component helper from.  Please see https://docs.plasmic.app/learn/code-components-ref/`
+          `Encountered code component "${meta.displayName}" that was not registered with an importPath to the component helper, so we don't know where to import this code component helper from.  Please see https://docs.plasmic.app/learn/code-components-ref/`
         );
       }
       if (meta.helper.importPath[0] === ".") {
