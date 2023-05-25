@@ -345,7 +345,10 @@ export function registerForm(loader?: Registerable) {
       alignItems: "flex-start",
     },
     props: {
-      mode: "controlMode" as any,
+      mode: {
+        type: "controlMode",
+        defaultValue: true,
+      } as any,
       formItems: {
         type: "array",
         itemType: {
