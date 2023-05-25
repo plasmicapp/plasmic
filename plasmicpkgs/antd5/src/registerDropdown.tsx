@@ -155,12 +155,6 @@ export function registerDropdown(loader?: Registerable) {
         ],
         ...({ mergeWithParent: true } as any),
       },
-      arrow: {
-        type: "boolean",
-        description: "Whether the dropdown arrow should be visible",
-        defaultValueHint: false,
-        advanced: true,
-      },
       onAction: {
         type: "eventHandler",
         argTypes: [{ name: "key", type: "string" }],
