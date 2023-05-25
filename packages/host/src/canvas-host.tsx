@@ -10,7 +10,7 @@ declare global {
 }
 
 if ((globalThis as any).__PlasmicHostVersion == null) {
-  (globalThis as any).__PlasmicHostVersion = "2";
+  (globalThis as any).__PlasmicHostVersion = "3";
 }
 
 const rootChangeListeners: (() => void)[] = [];

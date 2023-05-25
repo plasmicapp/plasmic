@@ -10,6 +10,7 @@ export {
   PlasmicDataSourceContextProvider,
   useCurrentUser,
 } from "@plasmicapp/data-sources-context";
+import { DataProvider } from "@plasmicapp/host";
 
 export interface PlasmicRootContextValue {
   platform?: "nextjs" | "gatsby";
@@ -25,6 +26,8 @@ export interface PlasmicRootProviderProps
   children?: React.ReactNode;
   translator?: PlasmicTranslator;
   Head?: React.ComponentType<any>;
+  disableLoadingBoundary?: boolean;
+  suspenseFallback?: React.ReactNode;
 }
 
 export function PlasmicRootProvider(props: PlasmicRootProviderProps) {
@@ -35,6 +38,8 @@ export function PlasmicRootProvider(props: PlasmicRootProviderProps) {
     isUserLoading,
     authRedirectUri,
     user,
+    disableLoadingBoundary,
+    suspenseFallback,
   } = props;
   const context = React.useMemo(
     () => ({
@@ -51,18 +56,35 @@ export function PlasmicRootProvider(props: PlasmicRootProviderProps) {
     }),
     [userAuthToken, isUserLoading, user, authRedirectUri]
   );
+  const reactMajorVersion = +React.version.split(".")[0];
+
   return (
-    <PlasmicRootContext.Provider value={context}>
-      <SSRProvider>
-        <PlasmicDataSourceContextProvider value={dataSourceContextValue}>
-          <PlasmicTranslatorContext.Provider value={props.translator}>
-            <PlasmicHeadContext.Provider value={props.Head}>
-              {children}
-            </PlasmicHeadContext.Provider>
-          </PlasmicTranslatorContext.Provider>
-        </PlasmicDataSourceContextProvider>
-      </SSRProvider>
-    </PlasmicRootContext.Provider>
+    <MaybeWrap
+      cond={!disableLoadingBoundary && reactMajorVersion >= 18}
+      wrapper={(children) => (
+        <DataProvider
+          name="plasmicInternalEnableLoadingBoundary"
+          hidden
+          data={true}
+        >
+          <React.Suspense fallback={suspenseFallback ?? "Loading..."}>
+            {children}
+          </React.Suspense>
+        </DataProvider>
+      )}
+    >
+      <PlasmicRootContext.Provider value={context}>
+        <SSRProvider>
+          <PlasmicDataSourceContextProvider value={dataSourceContextValue}>
+            <PlasmicTranslatorContext.Provider value={props.translator}>
+              <PlasmicHeadContext.Provider value={props.Head}>
+                {children}
+              </PlasmicHeadContext.Provider>
+            </PlasmicTranslatorContext.Provider>
+          </PlasmicDataSourceContextProvider>
+        </SSRProvider>
+      </PlasmicRootContext.Provider>
+    </MaybeWrap>
   );
 }
 
@@ -86,4 +108,12 @@ export function useEnsureSSRProvider() {
   console.warn(
     `Plasmic: To ensure your components work correctly with server-side rendering, please use PlasmicRootProvider at the root of your application.  See https://docs.plasmic.app/learn/ssr`
   );
+}
+
+function MaybeWrap(props: {
+  children: React.ReactElement;
+  cond: boolean;
+  wrapper: (children: React.ReactElement) => React.ReactElement;
+}) {
+  return props.cond ? props.wrapper(props.children) : props.children;
 }
