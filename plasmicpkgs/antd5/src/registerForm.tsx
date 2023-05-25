@@ -327,7 +327,7 @@ const colProp = (
       horizontalOnly: {
         type: "boolean",
         displayName: "Horizontal only",
-        description: "Only apply to horizontal layout",
+        description: "Only apply when form layout is horizontal",
       },
     },
     description,
@@ -350,6 +350,7 @@ export function registerForm(loader?: Registerable) {
         defaultValue: true,
       } as any,
       formItems: {
+        displayName: "Fields",
         type: "array",
         itemType: {
           type: "object",
@@ -516,9 +517,11 @@ export function registerForm(loader?: Registerable) {
         hidden: (props) => props.mode === "simplified",
       },
       initialValues: {
+        displayName: "Initial field values",
         type: "object",
       } as any,
       layout: {
+        displayName: "Form layout",
         type: "choice",
         options: ["horizontal", "vertical", "inline"],
         defaultValue: "vertical",
@@ -554,7 +557,7 @@ export function registerForm(loader?: Registerable) {
         hidden: (props) => (props.layout ?? "horizontal") !== "horizontal",
       },
       requiredMark: {
-        displayName: "Required/optional mark",
+        displayName: "Required/optional indicators",
         type: "choice",
         options: [
           {
@@ -609,8 +612,13 @@ export function registerForm(loader?: Registerable) {
         ],
       },
       validateTrigger: {
+        displayName: "Validate rules",
         type: "choice",
-        options: ["onSubmit", "onChange", "onBlur"],
+        options: [
+          { value: "onBlur", label: "When a field loses focus" },
+          { value: "onChange", label: "When a field changes" },
+          { value: "onSubmit", label: "When the form is submitted" },
+        ],
         multiSelect: true,
         defaultValueHint: ["onChange"],
         advanced: true,
@@ -911,6 +919,7 @@ const commonFormItemProps: Record<string, PropType<InternalFormItemProps>> = {
     type: "string" as const,
   },
   rules: {
+    displayName: "Validation rules",
     type: "formValidationRules" as const,
   } as any,
   valuePropName: {
@@ -960,14 +969,14 @@ const commonFormItemProps: Record<string, PropType<InternalFormItemProps>> = {
     advanced: true,
     displayName: "Always re-render",
     description:
-      "Form items normally only re-render when the corresponding form value changes, for performance. This forces it to always re-render.",
+      "Form fields normally only re-render when the corresponding form value changes, for performance. This forces it to always re-render.",
   },
   dependencies: {
     type: "array" as const,
     advanced: true,
     displayName: "Dependencies",
     description:
-      "Form items can depend on other form items. This forces it to reevaluate the validation rules when the other form item changes.",
+      "Form fields can depend on other form fields. This forces it to re-evaluate the validation rules when the other form fields changes.",
   },
   hideValidationMessage: {
     type: "boolean" as const,
