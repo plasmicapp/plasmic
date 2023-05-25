@@ -67,7 +67,10 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
       helpText:
         "Column key to use as row key; can also be a function that takes in a row and returns a key value",
       hidden: (ps) => !ps.canSelectRows || ps.canSelectRows === "none",
-      defaultValueHint: (ps) => deriveRowKey(ps.data, ps.rowKey),
+      defaultValueHint: (ps) => {
+        const derivedRowKey = deriveRowKey(ps.data, ps.rowKey);
+        return derivedRowKey !== undefined ? `${derivedRowKey}` : undefined;
+      },
     },
 
     selectedRowKey: {

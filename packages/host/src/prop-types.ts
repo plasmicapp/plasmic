@@ -84,7 +84,7 @@ interface Defaultable<P, T> {
   defaultValue?: T;
 
   /**
-   * If no prop is given, the component uses a default; specify whaat
+   * If no prop is given, the component uses a default; specify what
    * that default is so the Plasmic user can see it in the studio UI
    */
   defaultValueHint?: T | ContextDependentConfig<P, T | undefined>;

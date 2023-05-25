@@ -211,12 +211,13 @@ export function buildFieldsPropType<
 >(opts: { fieldTypes?: Record<string, PropType<any>> }): PropType<Props> {
   function getDefaultValueHint(field: keyof ColumnConfig) {
     return (
-      _item: any,
-      contextData: ControlContextData<ColumnConfig> | null
+      _props: any,
+      contextData: ControlContextData<ColumnConfig> | null,
+      { item }: any
     ): any => {
-      if (_item.fieldId) {
+      if (item.fieldId) {
         const fieldSetting = contextData?.mergedFields.find(
-          (f) => f.fieldId === _item.fieldId
+          (f) => f.fieldId === item.fieldId
         );
         return fieldSetting?.[field];
       }
