@@ -358,7 +358,7 @@ export function registerForm(loader?: Registerable) {
     props: {
       mode: {
         type: "controlMode",
-        defaultValue: true,
+        defaultValue: "simplified",
       } as any,
       formItems: {
         displayName: "Fields",
@@ -457,6 +457,18 @@ export function registerForm(loader?: Registerable) {
           },
           nameFunc: (item) => item.label,
         },
+        defaultValue: [
+          {
+            label: "Name",
+            name: "name",
+            inputType: InputType.Text,
+          },
+          {
+            label: "Message",
+            name: "message",
+            inputType: InputType.TextArea,
+          },
+        ],
         hidden: (props) => props.mode !== "simplified",
       },
       submitSlot: {
