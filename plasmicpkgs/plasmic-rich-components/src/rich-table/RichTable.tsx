@@ -138,6 +138,11 @@ export function RichTable(props: RichTableProps) {
   return (
     <div className={`${className} ${scopeClassName ?? ""}`}>
       <ProTable
+        rowClassName={
+          props.onRowClick || props.canSelectRows === "click"
+            ? "plasmic-table-row-clickable"
+            : undefined
+        }
         actionRef={actionRef}
         columns={columnDefinitions}
         onChange={(_pagination, _filters, sorter, _extra) => {
@@ -209,6 +214,9 @@ export function RichTable(props: RichTableProps) {
           __html: `
           :where(.css-dev-only-do-not-override-1p704s4).ant-pro-table-column-setting-overlay .ant-tree-treenode:hover .ant-pro-table-column-setting-list-item-option {
             display: none;
+          }
+          :where(.plasmic-table-row-clickable) {
+            cursor: pointer;
           }
           .ant-pro-table-list-toolbar-right {
             flex-wrap: initial;
