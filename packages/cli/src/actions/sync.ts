@@ -835,6 +835,7 @@ function syncCodeComponentsMeta(
   projectConfig.codeComponents = codeComponentBundles.map((meta) => ({
     id: meta.id,
     name: meta.name,
+    displayName: meta.displayName,
     componentImportPath: meta.importPath,
     ...(meta.helper
       ? {

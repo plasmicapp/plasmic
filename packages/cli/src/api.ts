@@ -165,11 +165,12 @@ export interface ChecksumBundle {
 export interface CodeComponentMeta {
   id: string; // component uuid
   name: string;
+  displayName: string;
   importPath: string;
   helper?: {
     name: string;
     importPath: string;
-  }
+  };
 }
 
 export interface ProjectIconsResponse {

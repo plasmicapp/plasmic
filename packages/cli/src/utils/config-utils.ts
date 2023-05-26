@@ -155,11 +155,12 @@ export interface JsBundleThemeConfig {
 export interface CodeComponentConfig {
   id: string;
   name: string;
+  displayName: string;
   componentImportPath: string;
   helper?: {
     name: string;
     importPath: string;
-  }
+  };
 }
 
 export interface ProjectConfig {
