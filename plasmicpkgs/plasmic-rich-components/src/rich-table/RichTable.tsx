@@ -554,7 +554,7 @@ function useRowSelectionProps(
     onRow: (row) => ({
       onClick: (event) => {
         const key = deriveKeyOfRow(row, deriveRowKey(data, rowKey));
-        if (key) {
+        if (key != null) {
           if (canSelectRows === "click") {
             // Some heuristics to avoid selecting a row when
             // the object clicked is interactable -- like button, anchor,
