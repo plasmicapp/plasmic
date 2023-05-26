@@ -31,6 +31,15 @@ export interface RichLayoutProps extends ProLayoutProps {
   simpleNavTheme?: SimpleNavTheme;
 }
 
+const baseStyles = `
+.ant-pro-layout-bg-list {
+  display: none;
+}
+.ant-pro-layout {
+  display: flex;
+}
+`;
+
 export function RichLayout({
   children,
   navMenuItems,
@@ -83,13 +92,9 @@ export function RichLayout({
     return null;
   }
   return (
-    <div className={className}>
+    <div className={className} style={{ display: "flex" }}>
       {/* Remove the always-on fixed gradient background layer. */}
-      <style>
-        {`.ant-pro-layout-bg-list {
-            display: none;
-        }`}
-      </style>
+      <style>{baseStyles}</style>
       <ProLayout
         {...layoutProps}
         // Theme just the header. If you simply pass in navTheme=realDark, it affects all main content as well.
