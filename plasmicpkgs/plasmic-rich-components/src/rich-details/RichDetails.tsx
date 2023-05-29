@@ -8,11 +8,11 @@ import {
   FieldfulProps,
   deriveFieldConfigs,
   deriveValueType,
-  mkShortId,
 } from "../field-mappings";
 import { NormalizedData, normalizeData } from "../queries";
 import { Empty } from "antd";
 import { renderValue } from "../formatting";
+import { mkShortId } from "../utils";
 
 export interface RichDetailsProps extends FieldfulProps<DetailsColumnConfig> {
   size?: "small" | "middle" | "default";
@@ -107,10 +107,7 @@ function useColumnDefinitions(
           },
 
           render: (value: any, record: any, rowIndex: any) => {
-            const cellValue = cconfig.fieldId
-              ? record[cconfig.fieldId]
-              : undefined;
-            return renderValue(cellValue, record, cconfig);
+            return renderValue(record, cconfig);
           },
         };
 
