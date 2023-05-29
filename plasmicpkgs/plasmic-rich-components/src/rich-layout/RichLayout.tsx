@@ -31,12 +31,14 @@ export interface RichLayoutProps extends ProLayoutProps {
   simpleNavTheme?: SimpleNavTheme;
 }
 
+// width: 100% needed because parent is display: flex, which is needed for the min-height behavior.
 const baseStyles = `
 .ant-pro-layout-bg-list {
   display: none;
 }
 .ant-pro-layout {
   display: flex;
+  width: 100%;
 }
 `;
 
