@@ -7,8 +7,8 @@ import dayjs from "dayjs";
  * onChangeIsoString uses ISO strings rather than dayjs.
  */
 export function AntdDatePicker(
-  props: React.ComponentProps<typeof DatePicker> & {
-    onChangeIsoString: (value: string | null) => void;
+  props: Omit<React.ComponentProps<typeof DatePicker>, "onChange"> & {
+    onChange: (value: string | null) => void;
   }
 ) {
   return (
@@ -24,9 +24,9 @@ export function AntdDatePicker(
       defaultValue={
         props.defaultValue === undefined ? undefined : dayjs(props.defaultValue)
       }
-      onChange={(value, dateString) => {
-        props.onChange?.(value, dateString);
-        props.onChangeIsoString?.(value !== null ? value.toISOString() : null);
+      // dateString isn't a valid ISO string, and value is a dayjs object.
+      onChange={(value, _dateString) => {
+        props.onChange?.(value !== null ? value.toISOString() : null);
       }}
     />
   );
@@ -38,7 +38,7 @@ export const datePickerComponentName = "plasmic-antd5-date-picker";
 export function registerDatePicker(loader?: Registerable) {
   registerComponentHelper(loader, AntdDatePicker, {
     name: datePickerComponentName,
-    displayName: "Date Time Picker",
+    displayName: "Date/Time Picker",
     props: {
       value: {
         type: "string",
@@ -58,7 +58,7 @@ export function registerDatePicker(loader?: Registerable) {
         defaultValueHint: false,
         advanced: true,
       },
-      onChangeIsoString: {
+      onChange: {
         type: "eventHandler",
         argTypes: [{ name: "value", type: "string" }],
       } as any,
@@ -116,7 +116,7 @@ export function registerDatePicker(loader?: Registerable) {
       value: {
         type: "writable",
         valueProp: "value",
-        onChangeProp: "onChangeIsoString",
+        onChangeProp: "onChange",
         variableType: "text",
       },
     },
