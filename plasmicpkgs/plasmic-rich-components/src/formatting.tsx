@@ -13,16 +13,47 @@ import {
   DEFAULT_RELATIVE_DATETIME_SETTINGS,
   DATETIME_TYPES,
 } from "./field-mappings";
-import { isOneOf } from "./utils";
+import { isOneOf, maybe } from "./utils";
 
-export function renderValue(
-  value: any,
+export function maybeRenderValue(
   record: any,
-  cconfig: BaseColumnConfig
+  cconfig: BaseColumnConfig | undefined
 ) {
+  return cconfig ? renderValue(record, cconfig) : undefined;
+}
+
+export function multiRenderValue(
+  record: any,
+  cconfigs: BaseColumnConfig[] | undefined
+) {
+  return cconfigs
+    ?.flatMap((cc) =>
+      cc.isHidden ? [] : [` • `, <>{renderValue(record, cc)}</>]
+    )
+    .slice(1);
+}
+
+export function maybeRenderString(
+  record: any,
+  cconfig: BaseColumnConfig | undefined
+) {
+  return cconfig && !cconfig.isHidden
+    ? maybe(getFieldValue(record, cconfig), asString)
+    : undefined;
+}
+
+function getFieldValue(record: any, cconfig: BaseColumnConfig) {
+  let value = cconfig.fieldId ? record[cconfig.fieldId] : undefined;
+
   if (cconfig.expr) {
     value = cconfig.expr(record, value);
   }
+
+  return value;
+}
+
+export function renderValue(record: any, cconfig: BaseColumnConfig) {
+  const value = getFieldValue(record, cconfig);
 
   if (value == null) {
     return "";

@@ -1,28 +1,29 @@
 import { EllipsisOutlined, PlusOutlined } from "@ant-design/icons";
-import {
-  ActionType,
-  ProColumns,
-  ProTable,
-  TableDropdown,
-} from "@ant-design/pro-components";
-import { TableSchema } from "@plasmicapp/data-sources";
+import { ActionType, ProColumns, ProTable } from "@ant-design/pro-components";
 import { Button, Dropdown } from "antd";
 import type { SizeType } from "antd/es/config-provider/SizeContext";
-import type { GetRowKey, SorterResult } from "antd/es/table/interface";
+import type { GetRowKey } from "antd/es/table/interface";
 import { createObjectCsvStringifier } from "csv-writer-browser";
 import fastStringify from "fast-stringify";
-import React, { ReactNode, useRef, useState } from "react";
+import React, { ReactNode, useRef } from "react";
 import { useIsClient } from "../common";
 import {
   BaseColumnConfig,
-  FieldfulProps,
-  RowFunc,
   deriveFieldConfigs,
   deriveValueType,
-  mkShortId,
+  FieldfulProps,
+  RowFunc,
 } from "../field-mappings";
-import { NormalizedData, normalizeData } from "../queries";
+import { normalizeData, NormalizedData } from "../queries";
 import { renderValue } from "../formatting";
+import {
+  deriveKeyOfRow,
+  deriveRowKey,
+  renderActions,
+  RowAction,
+  useSortedFilteredData,
+} from "../field-react-utils";
+import { isInteractable, mkShortId } from "../utils";
 
 // Avoid csv-stringify, it doesn't directly work in browser without Buffer polyfill.
 
@@ -31,27 +32,6 @@ export interface Action {
   label?: string;
   moreMenu?: boolean;
 }
-
-export interface ControlContextData {
-  data: unknown[];
-  schema?: TableSchema;
-  mergedFields: TableColumnConfig[];
-  minimalFullLengthFields: Partial<TableColumnConfig>[];
-}
-
-interface RowActionItem {
-  type: "item";
-  label: string;
-  onClick: (rowKey: string, row: any) => void;
-}
-
-interface RowActionMenu {
-  type: "menu";
-  label: string;
-  children?: RowActionItem[];
-}
-
-type RowAction = RowActionItem | RowActionMenu;
 
 export interface RichTableProps extends FieldfulProps<TableColumnConfig> {
   defaultSize?: SizeType;
@@ -85,6 +65,7 @@ export interface RichTableProps extends FieldfulProps<TableColumnConfig> {
   themeResetClassName?: string;
 }
 
+// In this code, ColumnConfigs are Plasmic, while ColumnDefinitions are Ant.
 export function RichTable(props: RichTableProps) {
   const {
     className,
@@ -215,7 +196,7 @@ export function RichTable(props: RichTableProps) {
           :where(.css-dev-only-do-not-override-1p704s4).ant-pro-table-column-setting-overlay .ant-tree-treenode:hover .ant-pro-table-column-setting-list-item-option {
             display: none;
           }
-          :where(.plasmic-table-row-clickable) {
+          .plasmic-table-row-clickable {
             cursor: pointer;
           }
           .ant-pro-table-list-toolbar-right {
@@ -277,33 +258,6 @@ export function RichTable(props: RichTableProps) {
       />
     </div>
   );
-}
-
-export function deriveRowKey(
-  data: React.ComponentProps<typeof RichTable>["data"],
-  rowKey: React.ComponentProps<typeof RichTable>["rowKey"]
-) {
-  if (rowKey) {
-    return rowKey;
-  }
-  const schema = data?.schema;
-  if (schema) {
-    return schema.fields[0]?.id;
-  }
-  return undefined;
-}
-
-export function deriveKeyOfRow(
-  row: any,
-  rowKey: React.ComponentProps<typeof RichTable>["rowKey"]
-) {
-  if (typeof rowKey === "function") {
-    return rowKey(row);
-  } else if (typeof rowKey === "string") {
-    return row[rowKey];
-  } else {
-    return undefined;
-  }
 }
 
 interface StyleConfig {
@@ -384,15 +338,13 @@ function useColumnDefinitions(
           },
 
           render: (value: any, record: any, rowIndex: any) => {
-            const cellValue = cconfig.fieldId
-              ? record[cconfig.fieldId]
-              : undefined;
-            return renderValue(cellValue, record, cconfig);
+            return renderValue(record, cconfig);
           },
         };
 
         return columnDefinition;
       });
+    const rowKey = props.rowKey;
     if (rowActions && rowActions.length > 0) {
       columnDefinitions.push({
         title: "Actions",
@@ -401,99 +353,12 @@ function useColumnDefinitions(
         fixed: "right",
         className: props.themeResetClassName,
         render: (_text, row) => [
-          ...rowActions.map((_action) => {
-            if (_action.type === "item") {
-              return (
-                <a
-                  key={_action.label}
-                  style={{
-                    whiteSpace: "nowrap",
-                  }}
-                  onClick={() =>
-                    _action.onClick?.(
-                      deriveKeyOfRow(row, deriveRowKey(data, props.rowKey)),
-                      row
-                    )
-                  }
-                >
-                  {_action.label}
-                </a>
-              );
-            } else {
-              return (
-                <TableDropdown
-                  key={_action.label}
-                  style={{
-                    whiteSpace: "nowrap",
-                  }}
-                  menus={(_action.children ?? []).map((child) => ({
-                    key: child.label,
-                    name: child.label,
-                    onClick: () =>
-                      child.onClick?.(
-                        deriveKeyOfRow(row, deriveRowKey(data, props.rowKey)),
-                        row
-                      ),
-                  }))}
-                >
-                  {_action.label}
-                </TableDropdown>
-              );
-            }
-          }),
+          ...renderActions(rowActions, row, data, rowKey),
         ],
       });
     }
     return { normalized, columnDefinitions };
   }, [fields, data, setControlContextData, rowActions]);
-}
-
-function useSortedFilteredData(
-  data: NormalizedData | undefined,
-  columns: TableColumnConfig[]
-) {
-  const [search, setSearch] = useState("");
-  const [sortState, setSortState] = useState<
-    undefined | { sorter: SorterResult<Record<string, any>> }
-  >(undefined);
-  const finalData = React.useMemo(() => {
-    const filtered = data?.data?.filter((row) =>
-      fastStringify(Object.values(row)).toLowerCase().includes(search)
-    );
-    const sorted = sortState?.sorter.column
-      ? // We use .sort() rather than sortBy to use localeCompare
-        (() => {
-          const cconfig = columns.find(
-            (cc) => cc.key === sortState?.sorter.column?.key
-          )!;
-          const expr = cconfig.expr ?? ((x) => x);
-          return (filtered ?? []).sort((aa, bb) => {
-            const a =
-                expr(aa, cconfig.fieldId ? aa?.[cconfig.fieldId] : null) ??
-                null,
-              b =
-                expr(bb, cconfig.fieldId ? bb?.[cconfig.fieldId] : null) ??
-                null;
-            // Default nil to '' here because A < null < z which is weird.
-            return typeof a === "string"
-              ? a.localeCompare(b ?? "")
-              : typeof b === "string"
-              ? -b.localeCompare(a ?? "")
-              : a - b;
-          });
-        })()
-      : filtered;
-    const reversed =
-      sortState?.sorter.order === "descend" ? sorted?.reverse() : sorted;
-    return reversed;
-  }, [data, columns, sortState, search]);
-
-  return {
-    finalData,
-    search,
-    setSearch,
-    setSortState,
-  };
 }
 
 function useRowSelectionProps(
@@ -554,33 +419,15 @@ function useRowSelectionProps(
     onRow: (row) => ({
       onClick: (event) => {
         const key = deriveKeyOfRow(row, deriveRowKey(data, rowKey));
-        if (key != null) {
+        if (key != null && !isInteractable(event.target as HTMLElement)) {
           if (canSelectRows === "click") {
-            // Some heuristics to avoid selecting a row when
-            // the object clicked is interactable -- like button, anchor,
-            // input, etc.  This won't be bulletproof, so just some
-            // heuristics!
-            const target = event.target as HTMLElement;
-            if (!isInteractable(target)) {
-              onRowSelectionChanged?.([key], [row]);
-            }
+            onRowSelectionChanged?.([key], [row]);
           }
           onRowClick?.(key, row, event);
         }
       },
     }),
   };
-}
-
-function isInteractable(target: HTMLElement) {
-  if (["A", "BUTTON", "INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)) {
-    return true;
-  }
-  if (target.contentEditable === "true") {
-    return true;
-  }
-
-  return false;
 }
 
 function ExportMenu(props: { data: NormalizedData | undefined }) {

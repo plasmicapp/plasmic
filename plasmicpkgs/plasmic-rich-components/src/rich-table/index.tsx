@@ -1,12 +1,14 @@
 import { ComponentMeta } from "@plasmicapp/host/registerComponent";
 import { buildFieldsPropType } from "../field-mappings";
 import { Registerable, registerComponentHelper } from "../utils";
+import { RichTable, RichTableProps, TableColumnConfig } from "./RichTable";
+import { deriveRowKey } from "../field-react-utils";
 import {
-  RichTable,
-  RichTableProps,
-  TableColumnConfig,
-  deriveRowKey,
-} from "./RichTable";
+  commonProps,
+  dataProp,
+  onRowClickProp,
+  rowActionsProp,
+} from "../common-prop-types";
 
 export * from "./RichTable";
 export default RichTable;
@@ -40,10 +42,7 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
     maxHeight: "100%",
   },
   props: {
-    data: {
-      type: "dataSourceOpData" as any,
-      description: "The data to display in the table",
-    },
+    data: dataProp(),
 
     fields: buildFieldsPropType<TableColumnConfig, RichTableProps>({}),
 
@@ -93,66 +92,10 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
         { name: "rows", type: "object" },
       ],
     },
-    onRowClick: {
-      type: "eventHandler",
-      displayName: "On row clicked",
-      argTypes: [
-        { name: "rowKey", type: "string" },
-        { name: "row", type: "object" },
-        { name: "event", type: "object" },
-      ],
-    },
 
-    rowActions: {
-      type: "array",
-      displayName: "Row actions",
-      advanced: true,
-      itemType: {
-        type: "object",
-        nameFunc: (item) => item.label,
-        fields: {
-          type: {
-            type: "choice",
-            options: ["item", "menu"],
-            defaultValue: "item",
-          },
-          label: {
-            type: "string",
-            displayName: "Action label",
-          },
-          children: {
-            type: "array",
-            displayName: "Menu items",
-            itemType: {
-              type: "object",
-              fields: {
-                label: {
-                  type: "string",
-                  displayName: "Action label",
-                },
-                onClick: {
-                  type: "eventHandler",
-                  argTypes: [
-                    { name: "rowKey", type: "string" },
-                    { name: "row", type: "object" },
-                  ],
-                },
-              },
-            },
-            hidden: (ps, ctx, { item }) => item.type !== "menu",
-          },
-          onClick: {
-            type: "eventHandler",
-            displayName: "Action",
-            argTypes: [
-              { name: "rowKey", type: "string" },
-              { name: "row", type: "object" },
-            ],
-            hidden: (ps, ctx, { item }) => item.type !== "item",
-          },
-        },
-      },
-    },
+    onRowClick: onRowClickProp(),
+
+    rowActions: rowActionsProp(),
 
     defaultSize: {
       displayName: "Density",
@@ -175,23 +118,7 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
       advanced: true,
     },
 
-    pageSize: {
-      type: "number",
-      defaultValueHint: 10,
-      advanced: true,
-    },
-
-    pagination: {
-      type: "boolean",
-      advanced: true,
-      defaultValueHint: true,
-    },
-
-    hideSearch: {
-      type: "boolean",
-      description: "Hides the search toolbar",
-      advanced: true,
-    },
+    ...commonProps(),
 
     hideExports: {
       type: "boolean",
