@@ -11,7 +11,10 @@ import {
 } from "../plume-utils";
 
 export interface BaseTextInputProps
-  extends Omit<React.ComponentProps<"input">, "type" | "disabled"> {
+  extends Omit<React.ComponentProps<"input">, "type" | "disabled">,
+    PlumeTextInputProps {}
+
+export interface PlumeTextInputProps {
   showStartIcon?: boolean;
   showEndIcon?: boolean;
   startIcon?: React.ReactNode;
@@ -20,6 +23,8 @@ export interface BaseTextInputProps
   type?: "text" | "password" | "email" | "url" | string;
   inputClassName?: string;
   inputStyle?: React.CSSProperties;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 export interface TextInputRefValue {
@@ -42,7 +47,7 @@ interface TextInputConfig<C extends AnyPlasmicClass> {
 }
 
 export function useTextInput<
-  P extends BaseTextInputProps,
+  P extends PlumeTextInputProps,
   C extends AnyPlasmicClass
 >(
   plasmicClass: C,

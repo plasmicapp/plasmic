@@ -10,7 +10,7 @@ import {
   VariantDef,
 } from "../plume-utils";
 
-interface CommonProps {
+interface PlumeCommonProps {
   showStartIcon?: boolean;
   showEndIcon?: boolean;
   startIcon?: React.ReactNode;
@@ -20,25 +20,40 @@ interface CommonProps {
 }
 
 interface HtmlButtonProps
-  extends Omit<React.ComponentProps<"button">, "ref" | "disabled"> {
+  extends Omit<React.ComponentProps<"button">, "ref" | "disabled"> {}
+
+interface HtmlAnchorProps
+  extends Omit<React.ComponentProps<"a">, "ref" | "href" | "target"> {}
+
+interface PlumeActualButtonProps {
   submitsForm?: boolean;
 }
 
-interface HtmlAnchorProps
-  extends Omit<React.ComponentProps<"a">, "ref" | "href" | "target"> {
+interface PlumeAnchorProps {
   link?: string;
   target?: React.ComponentProps<"a">["target"] | boolean;
 }
 
-export type BaseButtonProps = CommonProps & HtmlButtonProps & HtmlAnchorProps;
+export type PlumeButtonProps = PlumeCommonProps &
+  PlumeActualButtonProps &
+  PlumeAnchorProps;
+
+export type BaseButtonProps = PlumeButtonProps &
+  HtmlButtonProps &
+  HtmlAnchorProps;
+
+type AllButtonProps = PlumeCommonProps &
+  PlumeActualButtonProps &
+  HtmlButtonProps;
+type AllAnchorProps = PlumeCommonProps & PlumeAnchorProps & HtmlAnchorProps;
 
 export type HtmlAnchorOnlyProps = Exclude<
-  keyof HtmlAnchorProps,
-  keyof HtmlButtonProps
+  keyof AllAnchorProps,
+  keyof AllButtonProps
 >;
 export type HtmlButtonOnlyProps = Exclude<
-  keyof HtmlButtonProps,
-  keyof HtmlAnchorProps
+  keyof AllButtonProps,
+  keyof AllAnchorProps
 >;
 
 export type ButtonRef = React.Ref<HTMLButtonElement | HTMLAnchorElement>;
@@ -53,12 +68,10 @@ interface ButtonConfig<C extends AnyPlasmicClass> {
   root: keyof PlasmicClassOverrides<C>;
 }
 
-export function useButton<P extends BaseButtonProps, C extends AnyPlasmicClass>(
-  plasmicClass: C,
-  props: P,
-  config: ButtonConfig<C>,
-  ref: ButtonRef = null
-) {
+export function useButton<
+  P extends PlumeButtonProps,
+  C extends AnyPlasmicClass
+>(plasmicClass: C, props: P, config: ButtonConfig<C>, ref: ButtonRef = null) {
   const {
     link,
     isDisabled,
