@@ -65,8 +65,7 @@ const argv = yargs
 
 // Initialize Sentry
 Sentry.init({
-  dsn:
-    "https://0d602108de7f44aa9470a41cc069395f@o328029.ingest.sentry.io/5679926",
+  dsn: "https://0d602108de7f44aa9470a41cc069395f@o328029.ingest.sentry.io/5679926",
 });
 Sentry.configureScope((scope) => {
   //scope.setUser({ email: auth.user });
@@ -152,7 +151,8 @@ async function run(): Promise<void> {
     type: "list",
     choices: () => [
       {
-        name: "Next.js",
+        name: "Next.js (recommended)",
+        short: "Next.js",
         value: "nextjs",
       },
       {
@@ -160,7 +160,8 @@ async function run(): Promise<void> {
         value: "gatsby",
       },
       {
-        name: "Create React App",
+        name: "Create React App (advanced)",
+        short: "Create React App",
         value: "react",
       },
     ],
@@ -177,12 +178,12 @@ async function run(): Promise<void> {
           type: "list",
           choices: () => [
             {
-              name: "PlasmicLoader: recommended default for most websites",
+              name: "PlasmicLoader (recommended default for most websites)",
               short: "PlasmicLoader",
               value: "loader",
             },
             {
-              name: "Codegen: for building complex stateful apps",
+              name: "Codegen (advanced feature for building complex stateful apps)",
               short: "Codegen",
               value: "codegen",
             },
