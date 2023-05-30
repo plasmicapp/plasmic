@@ -1,34 +1,70 @@
 import { DatePicker } from "antd";
-import React from "react";
+import React, { useState } from "react";
 import { capitalize, Registerable, registerComponentHelper } from "./utils";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 /**
- * onChangeIsoString uses ISO strings rather than dayjs.
+ * value/onChange uses ISO strings rather than dayjs.
+ *
+ * Ant DatePicker popover is unusable on mobile, so fall back to native (which is missing theme).
  */
 export function AntdDatePicker(
-  props: Omit<React.ComponentProps<typeof DatePicker>, "onChange"> & {
+  props: Omit<React.ComponentProps<typeof DatePicker>, "value" | "onChange"> & {
     onChange: (value: string | null) => void;
+    value?: Dayjs | string | null;
+    // Not sure why this is missing from DatePicker props!
+    showTime?: boolean;
   }
 ) {
+  const nativeInput = React.useRef<HTMLInputElement>(null);
+  const [open, setOpen] = useState(false);
+  const strValue: string | undefined =
+    props.value &&
+    !(typeof props.value === "string") &&
+    "toISOString" in props.value
+      ? props.value.toISOString()
+      : props.value === null
+      ? undefined
+      : props.value;
   return (
-    <DatePicker
-      {...props}
-      value={
-        props.value === undefined
-          ? undefined
-          : !props.value
-          ? null
-          : dayjs(props.value)
-      }
-      defaultValue={
-        props.defaultValue === undefined ? undefined : dayjs(props.defaultValue)
-      }
-      // dateString isn't a valid ISO string, and value is a dayjs object.
-      onChange={(value, _dateString) => {
-        props.onChange?.(value !== null ? value.toISOString() : null);
-      }}
-    />
+    <>
+      <DatePicker
+        {...props}
+        value={
+          props.value === undefined
+            ? undefined
+            : !props.value
+            ? null
+            : dayjs(props.value)
+        }
+        defaultValue={
+          props.defaultValue === undefined
+            ? undefined
+            : dayjs(props.defaultValue)
+        }
+        // dateString isn't a valid ISO string, and value is a dayjs object.
+        onChange={(value, _dateString) => {
+          props.onChange?.(value !== null ? value.toISOString() : null);
+        }}
+        open={open}
+        onOpenChange={(open) => {
+          if (open && window.innerWidth < 500) {
+            nativeInput.current!.showPicker();
+          } else {
+            setOpen(open);
+          }
+        }}
+      />
+      <input
+        hidden
+        ref={nativeInput}
+        type={props.showTime ? "datetime-local" : "date"}
+        value={strValue}
+        onChange={(e) => {
+          props.onChange(e.target.value);
+        }}
+      />
+    </>
   );
 }
 AntdDatePicker.__plasmicFormFieldMeta = { valueProp: "checked" };
