@@ -237,3 +237,8 @@ function isPromiseLike(x: any) {
     !!x && typeof x === 'object' && 'then' in x && typeof x.then === 'function'
   );
 }
+
+export function isPlasmicPrepass() {
+  return !!(React as any).__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED
+    ?.ReactCurrentDispatcher?.current?.isPlasmicPrepass;
+}

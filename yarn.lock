@@ -6515,10 +6515,10 @@
     node-fetch "^2.6.1"
     unfetch "^4.2.0"
 
-"@plasmicapp/react-ssr-prepass@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.1.tgz#087265d755fc493039bd7a0d2f24166675dedc6c"
-  integrity sha512-imV4VOVz/8TptOCvNfg3bbwLvQMEaJvrvxHSfUzKl4uHJyvC2pAGkuLAOBiDOxhdD+sn73aaZEVMskG/6G5qxw==
+"@plasmicapp/react-ssr-prepass@2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.2.tgz#0ebe044d4b89080cac1f3ac0a3bc152eea5b9cb5"
+  integrity sha512-axZF7/lVsCqsDED40VkJOjf/Iow/RjfxLjdT3IRwP8KkjsLvy06ir0IfPhXJ+7TcHOiW87f79VmR4aMwJxy0sg==
 
 "@pmmmwh/react-refresh-webpack-plugin@^0.4.3":
   version "0.4.3"

@@ -54,7 +54,7 @@
     "@plasmicapp/loader-core": "1.0.104",
     "@plasmicapp/loader-splits": "1.0.32",
     "@plasmicapp/query": "0.1.64",
-    "@plasmicapp/react-ssr-prepass": "2.0.1",
+    "@plasmicapp/react-ssr-prepass": "2.0.2",
     "pascalcase": "^1.0.0",
     "react-is": "^17.0.2",
     "server-only": "0.0.1"

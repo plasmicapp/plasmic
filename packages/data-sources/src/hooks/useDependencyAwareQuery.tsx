@@ -24,6 +24,9 @@ export interface DependencyAwareQueryConfig extends DataOpConfig {
   getDataOp: () => DataOp;
 }
 
+/**
+ * @deprecated Prefer using `usePlasmicDataOp` directly instead.
+ */
 export function useDependencyAwareQuery({
   $queries,
   getDataOp,

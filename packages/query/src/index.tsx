@@ -1,4 +1,5 @@
 import { mutateAllKeys } from './query-data';
+export { useSWRConfig } from 'swr';
 
 export {
   addLoadingStateListener,
@@ -10,6 +11,7 @@ export {
   usePlasmicDataConfig,
   usePlasmicQueryData,
   wrapLoadingFetcher,
+  isPlasmicPrepass,
 } from './query-data';
 
 if (typeof window !== 'undefined') {

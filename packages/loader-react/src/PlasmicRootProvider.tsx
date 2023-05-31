@@ -1,19 +1,19 @@
-import { PlasmicDataSourceContextValue } from '@plasmicapp/data-sources-context';
-import { PageParamsProvider } from '@plasmicapp/host';
-import { AssetModule, ComponentMeta, Split } from '@plasmicapp/loader-core';
-import { PlasmicQueryDataProvider } from '@plasmicapp/query';
-import * as React from 'react';
+import { PlasmicDataSourceContextValue } from "@plasmicapp/data-sources-context";
+import { PageParamsProvider } from "@plasmicapp/host";
+import { AssetModule, ComponentMeta, Split } from "@plasmicapp/loader-core";
+import { PlasmicQueryDataProvider } from "@plasmicapp/query";
+import * as React from "react";
 import {
   ComponentRenderData,
   InternalPlasmicComponentLoader,
   PlasmicComponentLoader,
-} from './loader';
-import { useForceUpdate } from './utils';
+} from "./loader";
+import { useForceUpdate } from "./utils";
 import {
   ensureVariationCookies,
   getGlobalVariantsFromSplits,
   mergeGlobalVariantsSpec,
-} from './variation';
+} from "./variation";
 
 interface PlasmicRootContextValue extends PlasmicDataSourceContextValue {
   globalVariants?: GlobalVariantSpec[];
@@ -22,6 +22,8 @@ interface PlasmicRootContextValue extends PlasmicDataSourceContextValue {
   variation?: Record<string, string>;
   translator?: PlasmicTranslator;
   Head?: React.ComponentType<any>;
+  disableLoadingBoundary?: boolean;
+  suspenseFallback?: React.ReactNode;
 }
 
 const PlasmicRootContext = React.createContext<
@@ -125,6 +127,14 @@ export function PlasmicRootProvider(
      * /some/path?q=foo).
      */
     pageQuery?: Record<string, string | string[] | undefined>;
+    /**
+     * Whether the React.Suspense boundaries should be removed
+     */
+    disableLoadingBoundary?: boolean;
+    /**
+     * Fallback value for the root-level React.Suspense
+     */
+    suspenseFallback?: React.ReactNode;
   } & PlasmicDataSourceContextValue
 ) {
   const {
@@ -141,6 +151,8 @@ export function PlasmicRootProvider(
     Head,
     pageParams,
     pageQuery,
+    suspenseFallback,
+    disableLoadingBoundary,
   } = props;
   const loader = (props.loader as any)
     .__internal as InternalPlasmicComponentLoader;
@@ -171,7 +183,7 @@ export function PlasmicRootProvider(
     loader.trackRender({
       renderCtx: {
         // We track the provider as a single entity
-        rootComponentId: 'provider',
+        rootComponentId: "provider",
         teamIds: loader.getTeamIds(),
         projectIds: loader.getProjectIds(),
       },
@@ -196,6 +208,8 @@ export function PlasmicRootProvider(
       userAuthToken,
       isUserLoading,
       authRedirectUri,
+      suspenseFallback,
+      disableLoadingBoundary,
     }),
     [
       globalVariants,
@@ -209,6 +223,8 @@ export function PlasmicRootProvider(
       userAuthToken,
       isUserLoading,
       authRedirectUri,
+      suspenseFallback,
+      disableLoadingBoundary,
     ]
   );
 
@@ -282,7 +298,7 @@ function buildCss(
   const cssFiles =
     scopedCompMetas &&
     new Set<string>([
-      'entrypoint.css',
+      "entrypoint.css",
       ...scopedCompMetas.map((c) => c.cssFile),
     ]);
   const cssModules = loader
@@ -290,7 +306,7 @@ function buildCss(
     .getCss()
     .filter((f) => !cssFiles || cssFiles.has(f.fileName));
 
-  const getPri = (fileName: string) => (fileName === 'entrypoint.css' ? 0 : 1);
+  const getPri = (fileName: string) => (fileName === "entrypoint.css" ? 0 : 1);
   const compareModules = (a: AssetModule, b: AssetModule) =>
     getPri(a.fileName) !== getPri(b.fileName)
       ? getPri(a.fileName) - getPri(b.fileName)
@@ -303,10 +319,10 @@ function buildCss(
   return `
     ${
       skipFonts
-        ? ''
-        : remoteFonts.map((f) => `@import url('${f.url}');`).join('\n')
+        ? ""
+        : remoteFonts.map((f) => `@import url('${f.url}');`).join("\n")
     }
-    ${cssModules.map((mod) => mod.source).join('\n')}
+    ${cssModules.map((mod) => mod.source).join("\n")}
   `;
 }
 
