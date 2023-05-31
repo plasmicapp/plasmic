@@ -22,7 +22,12 @@ function isIterable(val: any): val is Iterable<any> {
   return val != null && typeof val[Symbol.iterator] === "function";
 }
 
-export function genTranslatableString(elt: React.ReactNode) {
+export function genTranslatableString(
+  elt: React.ReactNode,
+  opts?: {
+    tagPrefix?: string;
+  }
+) {
   const components: {
     [key: string]: React.ReactElement;
   } = {};
@@ -61,7 +66,8 @@ export function genTranslatableString(elt: React.ReactNode) {
     if (React.isValidElement(node) && node.type === React.Fragment) {
       return contents;
     }
-    const componentId = componentsCount + 1;
+    const prefix = opts?.tagPrefix ?? "";
+    const componentId = `${prefix}${componentsCount + 1}`;
     componentsCount++;
     components[componentId] = React.isValidElement(node)
       ? React.cloneElement(node as any, {

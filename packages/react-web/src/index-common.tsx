@@ -32,7 +32,11 @@ export {
   useIsSSR,
 } from "./render/ssr";
 export { Stack } from "./render/Stack";
-export { genTranslatableString, Trans } from "./render/translation";
+export {
+  genTranslatableString,
+  Trans,
+  PlasmicTranslator,
+} from "./render/translation";
 export { useTrigger } from "./render/triggers";
 export * from "./states";
 export const classNames = _classNames;
