@@ -117,6 +117,11 @@ export function usePlasmicDataOp<
     shouldRetryOnError: false,
   });
   const { data, error, isLoading } = res;
+  if (fetchingData.fetchingPromise != null && data !== undefined) {
+    // Clear the fetching promise as the actual data is now used (so
+    // revalidation is possible)
+    fetchingData.fetchingPromise = undefined;
+  }
   return React.useMemo(() => {
     const result = {
       ...(data ?? ({} as Partial<T>)),
