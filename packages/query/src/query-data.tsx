@@ -12,10 +12,13 @@ import { FullConfiguration } from 'swr/dist/types';
 export type { SWRResponse } from 'swr';
 
 let __SWRConfig: FullConfiguration | undefined = undefined;
-export const mutateAllKeys = () => {
+export const mutateKeys = (invalidateKey?: string) => {
   if (__SWRConfig) {
     const { cache, mutate } = __SWRConfig;
-    Array.from((cache as Map<string, any>).keys()).forEach((key) => {
+    (invalidateKey != null
+      ? [invalidateKey]
+      : Array.from((cache as Map<string, any>).keys())
+    ).forEach((key) => {
       mutate(key);
     });
   }
