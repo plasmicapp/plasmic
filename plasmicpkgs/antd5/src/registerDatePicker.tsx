@@ -67,7 +67,6 @@ export function AntdDatePicker(
     </>
   );
 }
-AntdDatePicker.__plasmicFormFieldMeta = { valueProp: "checked" };
 
 export const datePickerComponentName = "plasmic-antd5-date-picker";
 
