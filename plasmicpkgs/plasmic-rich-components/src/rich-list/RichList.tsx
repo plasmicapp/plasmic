@@ -19,7 +19,7 @@ import {
   maybe,
   mkShortId,
 } from "../utils";
-import { groupBy } from "lodash";
+import groupBy from "lodash/groupBy";
 import {
   deriveKeyOfRow,
   deriveRowKey,
