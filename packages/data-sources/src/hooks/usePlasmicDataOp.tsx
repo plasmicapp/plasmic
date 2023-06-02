@@ -1,11 +1,13 @@
 import { usePlasmicDataSourceContext } from '@plasmicapp/data-sources-context';
-// Import the entire module to check exports (for backwards compatibility)
-import * as plasmicQuery from '@plasmicapp/query';
 import * as ph from '@plasmicapp/host';
 import React from 'react';
 import { DataOp, executePlasmicDataOp } from '../executor';
 import { ManyRowsResult, Pagination, SingleRowResult } from '../types';
 import { pick } from '../utils';
+import {
+  useMutablePlasmicQueryData,
+  usePlasmicDataConfig,
+} from '@plasmicapp/query';
 
 export function makeCacheKey(
   dataOp: DataOp,
@@ -64,9 +66,7 @@ export function usePlasmicDataOp<
 } {
   const ctx = usePlasmicDataSourceContext();
   const enableLoadingBoundary = !!ph.useDataEnv?.()?.[enableLoadingBoundaryKey];
-  // Check if `useSWRConfig` exists for backwards compatibility.
-  const config = plasmicQuery.useSWRConfig?.();
-  const cache = config?.cache as typeof config['cache'] | undefined;
+  const { mutate } = usePlasmicDataConfig();
   const isNullDataOp = !dataOp;
   const key = isNullDataOp
     ? null
@@ -99,21 +99,18 @@ export function usePlasmicDataOp<
     [key, fetchingData]
   );
   const fetchAndUpdateCache = React.useMemo(
-    () =>
-      cache
-        ? () => {
-            if (fetchingData.fetchingPromise) {
-              // No need to update cache as the exist promise call site will do it
-              return fetchingData.fetchingPromise;
-            }
-            const fetcherPromise = fetcher();
-            fetcherPromise.then((data) => cache.set(key, data));
-            return fetcherPromise;
-          }
-        : undefined,
-    [fetcher, fetchingData, cache]
+    () => () => {
+      if (fetchingData.fetchingPromise) {
+        // No need to update cache as the exist promise call site will do it
+        return fetchingData.fetchingPromise;
+      }
+      const fetcherPromise = fetcher();
+      fetcherPromise.then((data) => mutate(key, data));
+      return fetcherPromise;
+    },
+    [fetcher, fetchingData]
   );
-  const res = plasmicQuery.useMutablePlasmicQueryData<T, E>(key, fetcher, {
+  const res = useMutablePlasmicQueryData<T, E>(key, fetcher, {
     shouldRetryOnError: false,
   });
   const { data, error, isLoading } = res;
@@ -131,7 +128,6 @@ export function usePlasmicDataOp<
       !opts?.noUndefinedDataProxy &&
       reactMajorVersion >= 18 &&
       enableLoadingBoundary &&
-      fetchAndUpdateCache &&
       (isLoading || isNullDataOp) &&
       result.data === undefined &&
       result.schema === undefined
