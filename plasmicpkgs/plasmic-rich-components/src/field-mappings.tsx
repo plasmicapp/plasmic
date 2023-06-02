@@ -2,7 +2,7 @@ import { TableFieldSchema, TableSchema } from "@plasmicapp/data-sources";
 import { PropType } from "@plasmicapp/host/registerComponent";
 import { QueryResult } from "./queries";
 import { isOneOf, mkIdMap, withoutFalsey, withoutNils } from "./utils";
-import { get } from "lodash";
+import deepGet from "lodash/get";
 import { ContextDependentConfig } from "@plasmicapp/host";
 
 export interface AutoSettings {
@@ -240,7 +240,7 @@ export function getFieldSubprops<ColumnConfig extends BaseColumnConfig>(
         }
         return true;
         // If there's a user-set fieldId
-        if (get(ps, _controlPath)) {
+        if (deepGet(ps, _controlPath)) {
           return false;
         }
         return opts.hiddenFieldId?.(ps, ctx, { path: _controlPath }) ?? true;
