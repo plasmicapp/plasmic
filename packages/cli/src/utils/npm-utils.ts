@@ -74,7 +74,8 @@ export function findInstalledVersion(
     } else if (pm === "pnpm") {
       const output = execSync(`pnpm list --json ${pkg}`).toString().trim();
       const info = JSON.parse(output);
-      return info?.dependencies?.[pkg]?.version;
+      return info?.dependencies?.[pkg]?.version ||
+        info?.[0]?.dependencies?.[pkg]?.version;
     } else {
       // Unknown package manager (e.g. pnpm).
       const output = execSync(`npm list --json ${pkg}`).toString().trim();
