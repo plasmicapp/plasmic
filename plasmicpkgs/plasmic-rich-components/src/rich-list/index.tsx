@@ -86,7 +86,6 @@ const richListMeta: ComponentMeta<RichListProps> = {
     title: roleProp({ role: "title" }),
     content: roleProp({ role: "content" }),
     image: roleProp({ role: "image", singular: true }),
-    linkTo: roleProp({ role: "linkTo", singular: true }),
     subtitle: roleProp({
       role: "subtitle",
       displayName: "Subtitle",
@@ -95,6 +94,15 @@ const richListMeta: ComponentMeta<RichListProps> = {
     // Haven't styled these yet!
     // beforeTitle: roleProp({ role: "beforeTitle", advanced: true }),
     // afterTitle: roleProp({ role: "afterTitle", advanced: true }),
+
+    linkTo: {
+      type: "function",
+      control: {
+        type: "href",
+      },
+      argNames: ["currentItem"],
+      argValues: (_props: any, ctx: any) => [ctx?.data?.[0]],
+    } as any,
 
     onRowClick: onRowClickProp(),
     rowActions: rowActionsProp(),

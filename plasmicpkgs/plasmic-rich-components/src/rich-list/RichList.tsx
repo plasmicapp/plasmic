@@ -66,7 +66,8 @@ export interface RichListProps extends FieldfulProps<ListColumnConfig> {
 
   hideSearch?: boolean;
 
-  linkTo?: ListColumnConfig;
+  /** ListColumnConfig is obsolete for linkTo */
+  linkTo?: ListColumnConfig | ((row: any) => string);
   image?: ListColumnConfig;
   title?: ListColumnConfig[];
   subtitle?: ListColumnConfig[];
@@ -162,6 +163,9 @@ export function RichList(props: RichListProps) {
 
   const actionRef = useRef<ActionType>();
 
+  // Simply ignore the linkTo if it's not a function.
+  const linkTo = typeof props.linkTo === "function" ? props.linkTo : undefined;
+
   const { finalData, search, setSearch, setSortState } = useSortedFilteredData(
     data,
     normalized
@@ -234,7 +238,7 @@ export function RichList(props: RichListProps) {
 
           function makeLinkWrapper() {
             if ((actions ?? []).length > 0) return undefined;
-            const href = maybeRenderString(record, roleConfigs.linkTo?.[0]);
+            const href = linkTo?.(record);
             if (!href && !onRowClick) return undefined;
             const _linkWrapper = (x: ReactNode) => (
               <a
@@ -388,7 +392,6 @@ const defaultColumnConfig = (): ListColumnConfig =>
   } as const);
 
 const roles = [
-  "linkTo",
   "content",
   "title",
   "subtitle",
@@ -460,7 +463,6 @@ function useRoleDefinitions(
           ...tagFieldConfigs("beforeTitle"),
           ...tagFieldConfigs("afterTitle"),
           ...tagFieldConfigs("subtitle"),
-          ...tagFieldConfigs("linkTo"),
         ],
         schema,
         (field) => ({
