@@ -1,16 +1,11 @@
-import {
-  ProDescriptions,
-  ProDescriptionsItemProps,
-} from "@ant-design/pro-components";
 import React from "react";
 import {
   BaseColumnConfig,
   FieldfulProps,
   deriveFieldConfigs,
-  deriveValueType,
 } from "../field-mappings";
 import { NormalizedData, normalizeData } from "../queries";
-import { Empty } from "antd";
+import { Descriptions, Empty } from "antd";
 import { renderValue } from "../formatting";
 import { mkShortId } from "../utils";
 
@@ -32,14 +27,13 @@ export function RichDetails(props: RichDetailsProps) {
   } = props;
   const data = normalizeData(rawData);
   const { columnDefinitions } = useColumnDefinitions(data, props);
-  if (!data) {
-    return <Empty className={className} />;
+  if (!data || !data.data?.[0]) {
+    return <Empty className={className} image={Empty.PRESENTED_IMAGE_SIMPLE} />;
   }
+  const row = data.data[0];
   return (
-    <ProDescriptions
+    <Descriptions
       className={className}
-      dataSource={data?.data?.[0]}
-      columns={columnDefinitions}
       size={size}
       bordered={bordered}
       layout={layout}
@@ -48,7 +42,13 @@ export function RichDetails(props: RichDetailsProps) {
         sm: 1,
         md: column,
       }}
-    />
+    >
+      {columnDefinitions.map((col) => (
+        <Descriptions.Item label={col.title} key={col.key} span={col.span}>
+          {col.render(row)}
+        </Descriptions.Item>
+      ))}
+    </Descriptions>
   );
 }
 
@@ -87,26 +87,13 @@ function useColumnDefinitions(
     const columnDefinitions = normalized
       .filter((cconfig) => !cconfig.isHidden)
       .map((cconfig, _columnIndex, _columnsArray) => {
-        const columnDefinition: ProDescriptionsItemProps<any> = {
+        const columnDefinition = {
           dataIndex: cconfig.fieldId,
           title: cconfig.title,
           key: cconfig.key,
-          valueType: deriveValueType(cconfig),
           span: cconfig.span,
 
-          // To come later
-          copyable: false,
-          ellipsis: false,
-          tip: undefined,
-          formItemProps: {
-            rules: [],
-          },
-          valueEnum: undefined,
-          renderFormItem: (_, { defaultRender }) => {
-            return defaultRender(_);
-          },
-
-          render: (value: any, record: any, rowIndex: any) => {
+          render: (record: any) => {
             return renderValue(record, cconfig);
           },
         };
