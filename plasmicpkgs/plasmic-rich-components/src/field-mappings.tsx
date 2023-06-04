@@ -276,7 +276,7 @@ export function getFieldSubprops<ColumnConfig extends BaseColumnConfig>(
       displayName: "Is hidden",
       defaultValueHint: getDefaultValueHint("isHidden"),
     },
-    ...(opts.noDataType
+    ...(!opts.noDataType
       ? {
           dataType: {
             type: "choice",
