@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-rich-components",
-  "version": "1.0.89",
+  "version": "1.0.90",
   "description": "Rich batteries-included general purpose components for business apps, admin panels, etc.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -30,7 +30,7 @@
   "devDependencies": {
     "@ant-design/icons": "^5.0.1",
     "@ant-design/pro-components": "^2.4.1",
-    "@plasmicapp/data-sources": "0.1.88",
+    "@plasmicapp/data-sources": "0.1.89",
     "@plasmicapp/host": "1.0.146",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/node": "^14.0.26",
