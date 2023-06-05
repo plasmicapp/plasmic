@@ -1,12 +1,12 @@
 import { DatePicker } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { capitalize, Registerable, registerComponentHelper } from "./utils";
 import dayjs, { Dayjs } from "dayjs";
 
 /**
- * value/onChange uses ISO strings rather than dayjs.
+ * onChangeIsoString uses ISO strings rather than dayjs.
  *
- * Ant DatePicker popover is unusable on mobile, so fall back to native (which is missing theme).
+ * On mobile, Ant DatePicker is unusable, so also have a hidden native picker for the popup.
  */
 export function AntdDatePicker(
   props: Omit<React.ComponentProps<typeof DatePicker>, "value" | "onChange"> & {
@@ -47,11 +47,11 @@ export function AntdDatePicker(
           props.onChange?.(value !== null ? value.toISOString() : null);
         }}
         open={open}
-        onOpenChange={(open) => {
-          if (open && window.innerWidth < 500) {
+        onOpenChange={(_open) => {
+          if (_open && window.innerWidth < 500) {
             nativeInput.current!.showPicker();
           } else {
-            setOpen(open);
+            setOpen(_open);
           }
         }}
       />
@@ -59,7 +59,8 @@ export function AntdDatePicker(
         hidden
         ref={nativeInput}
         type={props.showTime ? "datetime-local" : "date"}
-        value={strValue}
+        // Clearing -> undefined -> will leave it unchanged, so set ""
+        value={strValue || ""}
         onChange={(e) => {
           props.onChange(e.target.value);
         }}
