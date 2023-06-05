@@ -26,9 +26,11 @@ export const mutateKeys = (invalidateKey?: string) => {
 
 // @plasmicapp/query is optimized for SSR, so we do not revalidate
 // automatically upon hydration; as if the data is immutable.
-function getPlasmicDefaultSWROptions(): SWRConfiguration {
+function getPlasmicDefaultSWROptions(opts?: {
+  isMutable?: boolean;
+}): SWRConfiguration {
   return {
-    revalidateIfStale: false,
+    revalidateIfStale: !!opts?.isMutable,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   };
@@ -95,7 +97,7 @@ export function useMutablePlasmicQueryData<T, E>(
   const prepassCtx = React.useContext(PrepassContext);
 
   const opts = {
-    ...getPlasmicDefaultSWROptions(),
+    ...getPlasmicDefaultSWROptions({ isMutable: true }),
     ...options,
   };
   if (prepassCtx) {
