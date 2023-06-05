@@ -1,13 +1,13 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import AntdDropdown, {
-  DropdownButtonProps,
-  DropDownProps,
-} from "antd/lib/dropdown";
-import DropdownButton from "antd/lib/dropdown/dropdown-button";
+import { Dropdown as AntdDropdown } from "antd";
+import type { DropdownButtonProps, DropDownProps } from "antd/es/dropdown";
+
 import React from "react";
 import { Registerable } from "./registerable";
+
+export const DropdownButton: typeof AntdDropdown.Button = AntdDropdown.Button;
 
 export class Dropdown extends React.Component<DropDownProps> {
   render() {
@@ -165,10 +165,9 @@ export const dropdownButtonMeta: ComponentMeta<DropdownButtonProps> = {
       ],
     },
   },
-  importPath: "antd/lib/dropdown/dropdown-button",
+  importPath: "@plasmicpkgs/antd/skinny/registerDropdown",
   importName: "DropdownButton",
   parentComponentName: "AntdDropdown",
-  isDefaultExport: true,
 };
 
 export function registerDropdownButton(

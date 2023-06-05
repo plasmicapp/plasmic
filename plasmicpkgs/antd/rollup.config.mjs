@@ -8,16 +8,6 @@ import replaceImports from "rollup-plugin-replace-imports";
 
 const SKINNY_INPUTS = glob.sync('./src/register*.ts*');
 
-const toEsmImports = replaceImports(n => {
-  // Swap antd/lib/* with antd/es/* to use esm versions
-  // of the antd modules
-  const match = n.match(/^antd\/lib\/(.*)/);
-  if (match) {
-    return `antd/es/${match[1]}`;
-  }
-  return n;
-});
-
 export default [
   {
     input: ["./src/index.ts"],
@@ -33,7 +23,6 @@ export default [
         format: "esm",
         sourcemap: true,
         exports: "named",
-        plugins: [toEsmImports]
       },
       {
         file: "dist/index.js",
@@ -69,6 +58,17 @@ export default [
         sourcemap: true,
         exports: "named",
         interop: "auto",
+        entryFileNames: `[name].cjs.js`,
+        chunkFileNames: `[name]-[hash].cjs.js`,
+      },
+      {
+        dir: "skinny",
+        format: "esm",
+        sourcemap: true,
+        exports: "named",
+        interop: "auto",
+        entryFileNames: `[name].esm.js`,
+        chunkFileNames: `[name]-[hash].esm.js`,
       },
     ],
     plugins: [

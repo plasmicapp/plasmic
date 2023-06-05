@@ -1,15 +1,21 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { MenuItemProps, MenuProps, SubMenuProps } from "antd/lib/menu";
-import { MenuDividerProps } from "antd/lib/menu";
-import Menu from "antd/lib/menu/index";
-import MenuDivider from "antd/lib/menu/MenuDivider";
-import MenuItem from "antd/lib/menu/MenuItem";
-import SubMenu from "antd/lib/menu/SubMenu";
-import { ItemGroup, MenuItemGroupProps } from "rc-menu";
+import type {
+  MenuItemProps,
+  MenuProps,
+  SubMenuProps,
+  MenuDividerProps,
+} from "antd/es/menu";
+import { Menu as AntdMenu } from "antd";
+import type { MenuItemGroupProps } from "rc-menu";
 import { traverseReactEltTree } from "./customControls";
 import { Registerable } from "./registerable";
+export const Menu = AntdMenu;
+export const MenuDivider = Menu.Divider;
+export const MenuItemGroup = Menu.ItemGroup;
+export const MenuItem = Menu.Item;
+export const SubMenu = Menu.SubMenu;
 
 export const menuDividerMeta: ComponentMeta<MenuDividerProps> = {
   name: "AntdMenuDivider",
@@ -21,9 +27,8 @@ export const menuDividerMeta: ComponentMeta<MenuDividerProps> = {
       defaultValueHint: false,
     },
   },
-  importPath: "antd/lib/menu/MenuDivider",
+  importPath: "@plasmicpkgs/antd/skinny/registerMenu",
   importName: "MenuDivider",
-  isDefaultExport: true,
   parentComponentName: "AntdMenu",
 };
 
@@ -69,9 +74,8 @@ export const menuItemMeta: ComponentMeta<MenuItemProps> = {
       ],
     },
   },
-  importPath: "antd/lib/menu/MenuItem",
+  importPath: "@plasmicpkgs/antd/skinny/registerMenu",
   importName: "MenuItem",
-  isDefaultExport: true,
   parentComponentName: "AntdMenu",
 };
 
@@ -112,8 +116,8 @@ export const menuItemGroupMeta: ComponentMeta<MenuItemGroupProps> = {
       ],
     },
   },
-  importPath: "rc-menu",
-  importName: "ItemGroup",
+  importPath: "@plasmicpkgs/antd/skinny/registerMenu",
+  importName: "MenuItemGroup",
   parentComponentName: "AntdMenu",
 };
 
@@ -123,7 +127,10 @@ export function registerMenuItemGroup(
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(ItemGroup, customMenuItemGroupMeta ?? menuItemGroupMeta);
+  doRegisterComponent(
+    MenuItemGroup,
+    customMenuItemGroupMeta ?? menuItemGroupMeta
+  );
 }
 
 export const subMenuMeta: ComponentMeta<SubMenuProps> = {
@@ -172,9 +179,8 @@ export const subMenuMeta: ComponentMeta<SubMenuProps> = {
       })),
     },
   },
-  importPath: "antd/lib/menu/SubMenu",
+  importPath: "@plasmicpkgs/antd/skinny/registerMenu",
   importName: "SubMenu",
-  isDefaultExport: true,
   parentComponentName: "AntdMenu",
 };
 
@@ -222,9 +228,9 @@ export const menuMeta: ComponentMeta<MenuProps> = {
       uncontrolledProp: "defaultOpenKeys",
       description: "Array with the keys of default opened sub menus",
       multiSelect: true,
-      options: componentProps => {
+      options: (componentProps) => {
         const options = new Set<string>();
-        traverseReactEltTree(componentProps.children, elt => {
+        traverseReactEltTree(componentProps.children, (elt) => {
           if (elt?.type === SubMenu && typeof elt?.key === "string") {
             options.add(elt.key);
           }
@@ -247,9 +253,9 @@ export const menuMeta: ComponentMeta<MenuProps> = {
       uncontrolledProp: "defaultSelectedKeys",
       description: "Array with the keys of default selected menu items",
       multiSelect: true,
-      options: componentProps => {
+      options: (componentProps) => {
         const options = new Set<string>();
-        traverseReactEltTree(componentProps.children, elt => {
+        traverseReactEltTree(componentProps.children, (elt) => {
           if (
             [SubMenu, MenuItem as any].includes(elt?.type) &&
             typeof elt?.key === "string"
@@ -297,9 +303,8 @@ export const menuMeta: ComponentMeta<MenuProps> = {
       ],
     },
   },
-  importPath: "antd/lib/menu/index",
+  importPath: "@plasmicpkgs/antd/skinny/registerMenu",
   importName: "Menu",
-  isDefaultExport: true,
 };
 
 export function registerMenu(

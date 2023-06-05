@@ -1,9 +1,11 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { OptGroup, Option } from "rc-select";
-import { OptGroupProps } from "rc-select/lib/OptGroup";
-import { OptionProps } from "rc-select/lib/Option";
+import { Select } from "antd";
+export const Option = Select.Option;
+export const OptGroup = Select.OptGroup;
+import type { OptGroupProps } from "rc-select/es/OptGroup";
+import type { OptionProps } from "rc-select/es/Option";
 import { Registerable } from "./registerable";
 
 export const optionMeta: ComponentMeta<OptionProps> = {
@@ -37,7 +39,7 @@ export const optionMeta: ComponentMeta<OptionProps> = {
       ],
     },
   },
-  importPath: "rc-select",
+  importPath: "@plasmicpkgs/antd/skinny/registerOption",
   importName: "Option",
   parentComponentName: "AntdSelect",
 };
@@ -74,7 +76,7 @@ export const optGroupMeta: ComponentMeta<OptGroupProps> = {
       ],
     },
   },
-  importPath: "rc-select",
+  importPath: "@plasmicpkgs/antd/skinny/registerOption",
   importName: "OptGroup",
   parentComponentName: "AntdSelect",
 };

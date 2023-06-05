@@ -1,11 +1,15 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import Checkbox, { CheckboxProps } from "antd/lib/checkbox/Checkbox";
-import CheckboxGroup, { CheckboxGroupProps } from "antd/lib/checkbox/Group";
+import { Checkbox as AntdCheckbox } from "antd";
+import type { CheckboxProps } from "antd/es/checkbox/Checkbox";
+import type { CheckboxGroupProps } from "antd/es/checkbox/Group";
 import React from "react";
 import { traverseReactEltTree } from "./customControls";
 import { Registerable } from "./registerable";
+
+export const Checkbox: typeof AntdCheckbox = AntdCheckbox;
+export const CheckboxGroup = Checkbox.Group;
 
 class CheckboxWrapper extends React.Component<CheckboxProps> {
   render() {
@@ -84,12 +88,11 @@ export const checkboxMeta: ComponentMeta<CheckboxProps> = {
     importName: "checkboxHelpers",
     importPath: "@plasmicpkgs/antd/skinny/registerCheckbox",
   },
-  importPath: "antd/lib/checkbox/Checkbox",
+  importPath: "@plasmicpkgs/antd/skinny/registerCheckbox",
   importName: "Checkbox",
   defaultStyles: {
     marginLeft: 0,
   },
-  isDefaultExport: true,
 };
 
 export function registerCheckbox(
@@ -140,10 +143,9 @@ export const checkboxGroupMeta: ComponentMeta<CheckboxGroupProps> = {
       ],
     },
   },
-  importPath: "antd/lib/checkbox/Group",
+  importPath: "@plasmicpkgs/antd/skinny/registerCheckbox",
   importName: "CheckboxGroup",
   parentComponentName: "AntdCheckbox",
-  isDefaultExport: true,
 };
 
 export function registerCheckboxGroup(

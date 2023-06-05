@@ -1,9 +1,12 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import Carousel, { CarouselProps } from "antd/lib/carousel";
+import { Carousel as AntdCarousel } from "antd";
+import type { CarouselProps } from "antd/es/carousel";
 import { CSSProperties } from "react";
 import { Registerable } from "./registerable";
+
+export const Carousel = AntdCarousel;
 
 const contentStyle: CSSProperties = {
   height: "160px",
@@ -60,9 +63,8 @@ export const carouselMeta: ComponentMeta<CarouselProps> = {
       ],
     },
   },
-  importPath: "antd/lib/carousel",
+  importPath: "@plasmicpkgs/antd/skinny/registerCarousel",
   importName: "Carousel",
-  isDefaultExport: true,
 };
 
 export function registerCarousel(
