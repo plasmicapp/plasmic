@@ -40,6 +40,9 @@ const baseStyles = `
   display: flex;
   width: 100%;
 }
+.ant-pro-layout .ant-pro-layout-content {
+  padding: 0;
+}
 `;
 
 export function RichLayout({
