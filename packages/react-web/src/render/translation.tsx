@@ -9,8 +9,13 @@ export type PlasmicTranslator = (
   }
 ) => React.ReactNode;
 
+export interface PlasmicI18NContextValue {
+  translator?: PlasmicTranslator;
+  tagPrefix?: string;
+}
+
 export const PlasmicTranslatorContext = React.createContext<
-  PlasmicTranslator | undefined
+  PlasmicI18NContextValue | PlasmicTranslator | undefined
 >(undefined);
 
 export interface TransProps {
@@ -88,13 +93,23 @@ export function genTranslatableString(
 
 export function Trans({ transKey, children }: TransProps) {
   const _t = React.useContext(PlasmicTranslatorContext);
-  if (!_t) {
+  const translator = _t
+    ? typeof _t === "function"
+      ? _t
+      : _t.translator
+    : undefined;
+  if (!translator) {
     warnNoTranslationFunctionAtMostOnce();
     return children;
   }
 
-  const { str, components, componentsCount } = genTranslatableString(children);
-  return _t(transKey ?? str, componentsCount > 0 ? { components } : undefined);
+  const { str, components, componentsCount } = genTranslatableString(children, {
+    tagPrefix: typeof _t === "object" ? _t.tagPrefix : undefined,
+  });
+  return translator(
+    transKey ?? str,
+    componentsCount > 0 ? { components } : undefined
+  );
 }
 
 let hasWarned = false;

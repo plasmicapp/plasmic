@@ -1,5 +1,5 @@
-import * as PlasmicDataSourcesContext from '@plasmicapp/data-sources-context';
-import * as PlasmicHost from '@plasmicapp/host';
+import * as PlasmicDataSourcesContext from "@plasmicapp/data-sources-context";
+import * as PlasmicHost from "@plasmicapp/host";
 import {
   CodeComponentMeta as InternalCodeComponentMeta,
   ComponentHelpers as InternalCodeComponentHelpers,
@@ -12,7 +12,7 @@ import {
   StateSpec,
   TokenRegistration,
   TraitMeta,
-} from '@plasmicapp/host';
+} from "@plasmicapp/host";
 import {
   ComponentMeta,
   LoaderBundleOutput,
@@ -20,24 +20,24 @@ import {
   PlasmicTracker,
   Registry,
   TrackRenderOptions,
-} from '@plasmicapp/loader-core';
-import { internal_getCachedBundleInNodeServer } from '@plasmicapp/loader-fetcher';
-import { getActiveVariation, getExternalIds } from '@plasmicapp/loader-splits';
-import * as PlasmicQuery from '@plasmicapp/query';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import * as jsxDevRuntime from 'react/jsx-dev-runtime';
-import * as jsxRuntime from 'react/jsx-runtime';
-import { ComponentLookup } from './component-lookup';
-import { createUseGlobalVariant } from './global-variants';
+} from "@plasmicapp/loader-core";
+import { internal_getCachedBundleInNodeServer } from "@plasmicapp/loader-fetcher";
+import { getActiveVariation, getExternalIds } from "@plasmicapp/loader-splits";
+import * as PlasmicQuery from "@plasmicapp/query";
+import React from "react";
+import ReactDOM from "react-dom";
+import * as jsxDevRuntime from "react/jsx-dev-runtime";
+import * as jsxRuntime from "react/jsx-runtime";
+import { ComponentLookup } from "./component-lookup";
+import { createUseGlobalVariant } from "./global-variants";
 import {
   FetchComponentDataOpts,
   InitOptions,
   ReactServerPlasmicComponentLoader,
-} from './loader-react-server';
-import type { GlobalVariantSpec } from './PlasmicRootProvider';
-import { ComponentLookupSpec, getCompMetas, isBrowser, uniq } from './utils';
-import { getPlasmicCookieValues, updatePlasmicCookieValue } from './variation';
+} from "./loader-react-server";
+import type { GlobalVariantSpec } from "./PlasmicRootProvider";
+import { ComponentLookupSpec, getCompMetas, isBrowser, uniq } from "./utils";
+import { getPlasmicCookieValues, updatePlasmicCookieValue } from "./variation";
 
 export interface ComponentRenderData {
   entryCompMetas: (ComponentMeta & { params?: Record<string, string> })[];
@@ -59,7 +59,7 @@ interface PlasmicRootWatcher {
 
 export type CodeComponentMeta<P> = Omit<
   InternalCodeComponentMeta<P>,
-  'importPath' | 'componentHelpers' | 'states'
+  "importPath" | "componentHelpers" | "states"
 > & {
   /**
    * The path to be used when importing the component in the generated code.
@@ -76,7 +76,7 @@ export type CodeComponentMeta<P> = Omit<
 
 export type GlobalContextMeta<P> = Omit<
   InternalGlobalContextMeta<P>,
-  'importPath'
+  "importPath"
 > & {
   /**
    * The path to be used when importing the component in the generated code.
@@ -111,7 +111,7 @@ export class InternalPlasmicComponentLoader {
   private globalVariants: GlobalVariantSpec[] = [];
   private tracker: PlasmicTracker;
 
-  constructor(private opts: InitOptions) {
+  constructor(public opts: InitOptions) {
     this.tracker = new PlasmicTracker({
       projectIds: opts.projects.map((p) => p.id),
       platform: opts.platform,
@@ -131,16 +131,16 @@ export class InternalPlasmicComponentLoader {
 
     this.registerModules({
       react: React,
-      'react-dom': ReactDOM,
-      'react/jsx-runtime': jsxRuntime,
-      'react/jsx-dev-runtime': jsxDevRuntime,
+      "react-dom": ReactDOM,
+      "react/jsx-runtime": jsxRuntime,
+      "react/jsx-dev-runtime": jsxDevRuntime,
 
       // Also inject @plasmicapp/query and @plasmicapp/host to use the
       // same contexts here and in loader-downloaded code.
-      '@plasmicapp/query': PlasmicQuery,
-      '@plasmicapp/data-sources-context': PlasmicDataSourcesContext,
-      '@plasmicapp/host': PlasmicHost,
-      '@plasmicapp/loader-runtime-registry': {
+      "@plasmicapp/query": PlasmicQuery,
+      "@plasmicapp/data-sources-context": PlasmicDataSourcesContext,
+      "@plasmicapp/host": PlasmicHost,
+      "@plasmicapp/loader-runtime-registry": {
         components: SUBSTITUTED_COMPONENTS,
         globalVariantHooks: SUBSTITUTED_GLOBAL_VARIANT_HOOKS,
         codeComponentHelpers: REGISTERED_CODE_COMPONENT_HELPERS,
@@ -168,7 +168,7 @@ export class InternalPlasmicComponentLoader {
     ) {
       if (!this.registry.isEmpty()) {
         console.warn(
-          'Calling PlasmicComponentLoader.registerModules() after Plasmic component has rendered; starting over.'
+          "Calling PlasmicComponentLoader.registerModules() after Plasmic component has rendered; starting over."
         );
         this.registry.clear();
       }
@@ -196,7 +196,7 @@ export class InternalPlasmicComponentLoader {
   ) {
     if (!this.registry.isEmpty()) {
       console.warn(
-        'Calling PlasmicComponentLoader.registerSubstitution() after Plasmic component has rendered; starting over.'
+        "Calling PlasmicComponentLoader.registerSubstitution() after Plasmic component has rendered; starting over."
       );
       this.registry.clear();
     }
@@ -212,15 +212,15 @@ export class InternalPlasmicComponentLoader {
       Object.entries(meta.states ?? {})
         .filter(
           ([_, stateSpec]) =>
-            'initFunc' in stateSpec || 'onChangeArgsToValue' in stateSpec
+            "initFunc" in stateSpec || "onChangeArgsToValue" in stateSpec
         )
         .map(([stateName, stateSpec]) => [
           stateName,
           {
-            ...('initFunc' in stateSpec
+            ...("initFunc" in stateSpec
               ? { initFunc: stateSpec.initFunc }
               : {}),
-            ...('onChangeArgsToValue' in stateSpec
+            ...("onChangeArgsToValue" in stateSpec
               ? { onChangeArgsToValue: stateSpec.onChangeArgsToValue }
               : {}),
           },
@@ -235,13 +235,13 @@ export class InternalPlasmicComponentLoader {
     registerComponent(component, {
       ...meta,
       // Import path is not used as we will use component substitution
-      importPath: meta.importPath ?? '',
+      importPath: meta.importPath ?? "",
       ...(Object.keys(stateHelpers).length > 0
         ? {
             componentHelpers: {
               helpers,
-              importPath: '',
-              importName: '',
+              importPath: "",
+              importName: "",
             },
           }
         : {}),
@@ -256,7 +256,7 @@ export class InternalPlasmicComponentLoader {
     // Import path is not used as we will use component substitution
     registerGlobalContext(context, {
       ...meta,
-      importPath: meta.importPath ?? '',
+      importPath: meta.importPath ?? "",
     });
   }
 
@@ -342,7 +342,7 @@ export class InternalPlasmicComponentLoader {
     return this.reactServerLoader.getActiveSplits();
   }
 
-  trackConversion(value: number = 0) {
+  trackConversion(value = 0) {
     this.tracker.trackConversion(value);
   }
 
@@ -362,7 +362,7 @@ export class InternalPlasmicComponentLoader {
     return uniq(
       this.getBundle()
         .projects.map((p) =>
-          p.teamId ? `${p.teamId}${p.indirect ? '@indirect' : ''}` : null
+          p.teamId ? `${p.teamId}${p.indirect ? "@indirect" : ""}` : null
         )
         .filter((x): x is string => !!x)
     );
@@ -371,7 +371,7 @@ export class InternalPlasmicComponentLoader {
   public getProjectIds(): string[] {
     return uniq(
       this.getBundle().projects.map(
-        (p) => `${p.id}${p.indirect ? '@indirect' : ''}`
+        (p) => `${p.id}${p.indirect ? "@indirect" : ""}`
       )
     );
   }
@@ -402,10 +402,9 @@ export class InternalPlasmicComponentLoader {
     // PlasmicComponentLoader.setGlobalVariants(), we redirect these
     // hooks to read from them instead.
     for (const globalGroup of this.getBundle().globalGroups) {
-      if (globalGroup.type !== 'global-screen') {
-        SUBSTITUTED_GLOBAL_VARIANT_HOOKS[
-          globalGroup.id
-        ] = createUseGlobalVariant(globalGroup.name, globalGroup.projectId);
+      if (globalGroup.type !== "global-screen") {
+        SUBSTITUTED_GLOBAL_VARIANT_HOOKS[globalGroup.id] =
+          createUseGlobalVariant(globalGroup.name, globalGroup.projectId);
       }
     }
     this.registry.updateModules(this.getBundle());
@@ -475,12 +474,12 @@ export class PlasmicComponentLoader {
     metaOrName: ComponentLookupSpec | CodeComponentMeta<React.ComponentProps<T>>
   ) {
     // 'props' is a required field in CodeComponentMeta
-    if (metaOrName && typeof metaOrName === 'object' && 'props' in metaOrName) {
+    if (metaOrName && typeof metaOrName === "object" && "props" in metaOrName) {
       this.__internal.registerComponent(component, metaOrName);
     } else {
       // Deprecated call
       if (
-        process.env.NODE_ENV === 'development' &&
+        process.env.NODE_ENV === "development" &&
         !this.warnedRegisterComponent
       ) {
         console.warn(
@@ -593,7 +592,7 @@ export class PlasmicComponentLoader {
     return this.__internal.getActiveSplits();
   }
 
-  trackConversion(value: number = 0) {
+  trackConversion(value = 0) {
     this.__internal.trackConversion(value);
   }
 

@@ -10,7 +10,14 @@ export interface FetcherOptions {
   platform?: "react" | "nextjs" | "gatsby";
   preview?: boolean;
   host?: string;
+  /**
+   * @deprecated use i18n.keyScheme instead
+   */
   i18nKeyScheme?: "content" | "hash";
+  i18n?: {
+    keyScheme: "content" | "hash";
+    tagPrefix?: string;
+  };
 }
 
 export interface LoaderBundleCache {
@@ -70,7 +77,8 @@ export class PlasmicModulesFetcher {
       {
         platform: this.opts.platform,
         preview: this.opts.preview,
-        i18nKeyScheme: this.opts.i18nKeyScheme,
+        i18nKeyScheme: this.opts.i18n?.keyScheme ?? this.opts.i18nKeyScheme,
+        i18nTagPrefix: this.opts.i18n?.tagPrefix,
         browserOnly: isBrowser,
       }
     );

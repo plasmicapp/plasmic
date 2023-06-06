@@ -5,7 +5,11 @@ import {
 import { SSRProvider, useIsSSR as useAriaIsSSR } from "@react-aria/ssr";
 import * as React from "react";
 import { PlasmicHeadContext } from "./PlasmicHead";
-import { PlasmicTranslator, PlasmicTranslatorContext } from "./translation";
+import {
+  PlasmicI18NContextValue,
+  PlasmicTranslator,
+  PlasmicTranslatorContext,
+} from "./translation";
 export {
   PlasmicDataSourceContextProvider,
   useCurrentUser,
@@ -24,6 +28,10 @@ export interface PlasmicRootProviderProps
   extends PlasmicDataSourceContextValue {
   platform?: "nextjs" | "gatsby";
   children?: React.ReactNode;
+  i18n?: PlasmicI18NContextValue;
+  /**
+   * @deprecated use i18n.translator instead
+   */
   translator?: PlasmicTranslator;
   Head?: React.ComponentType<any>;
   disableLoadingBoundary?: boolean;
@@ -40,6 +48,7 @@ export function PlasmicRootProvider(props: PlasmicRootProviderProps) {
     user,
     disableLoadingBoundary,
     suspenseFallback,
+    i18n,
   } = props;
   const context = React.useMemo(
     () => ({
@@ -76,7 +85,9 @@ export function PlasmicRootProvider(props: PlasmicRootProviderProps) {
       <PlasmicRootContext.Provider value={context}>
         <SSRProvider>
           <PlasmicDataSourceContextProvider value={dataSourceContextValue}>
-            <PlasmicTranslatorContext.Provider value={props.translator}>
+            <PlasmicTranslatorContext.Provider
+              value={props.i18n ?? props.translator}
+            >
               <PlasmicHeadContext.Provider value={props.Head}>
                 {children}
               </PlasmicHeadContext.Provider>

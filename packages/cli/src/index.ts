@@ -258,6 +258,12 @@ yargs
           type: "string",
           choices: ["content", "hash"],
         })
+        .option("tag-prefix", {
+          describe:
+            "By default, rich text with markup tags look like '<0>hello</0>'. If your localization framework requires num-numeric tags, then specify a prefix; for example a prefix of 'n' turns it into '<n0>hello</n0>'.",
+          type: "string",
+          choices: ["content", "hash"],
+        })
         .option("output", {
           alias: "o",
           describe: "Output file",

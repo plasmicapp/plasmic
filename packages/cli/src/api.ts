@@ -303,12 +303,13 @@ export class PlasmicApi {
     projects: readonly string[],
     format: "po" | "json" | "lingui",
     keyScheme: "content" | "hash",
+    tagPrefix: string | undefined,
     projectIdsAndTokens: ProjectIdAndToken[]
   ) {
     const result = await this.get(
       `${
         this.codegenHost
-      }/api/v1/localization/gen-texts?format=${format}&keyScheme=${keyScheme}&preview=true&${projects
+      }/api/v1/localization/gen-texts?format=${format}&keyScheme=${keyScheme}&tagPrefix=${tagPrefix}&preview=true&${projects
         .map((p) => `projectId=${p}`)
         .join("&")}`,
       undefined,
