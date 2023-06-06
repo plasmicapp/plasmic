@@ -17,7 +17,7 @@ export interface LocalizationStringsArgs extends CommonArgs {
   format: "po" | "json" | "lingui";
   output: string;
   forceOverwrite: boolean;
-  keyScheme: "content" | "hash" | undefined;
+  keyScheme: "content" | "hash" | "path" | undefined;
   tagPrefix: string | undefined;
 }
 

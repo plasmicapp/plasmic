@@ -27,7 +27,7 @@ export interface InitOptions {
   host?: string;
   onClientSideFetch?: "warn" | "error";
   i18n?: {
-    keyScheme: "content" | "hash";
+    keyScheme: "content" | "hash" | "path";
     tagPrefix?: string;
   };
   /**

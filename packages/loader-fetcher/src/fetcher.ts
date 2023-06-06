@@ -13,9 +13,9 @@ export interface FetcherOptions {
   /**
    * @deprecated use i18n.keyScheme instead
    */
-  i18nKeyScheme?: "content" | "hash";
+  i18nKeyScheme?: "content" | "hash" | "path";
   i18n?: {
-    keyScheme: "content" | "hash";
+    keyScheme: "content" | "hash" | "path";
     tagPrefix?: string;
   };
 }

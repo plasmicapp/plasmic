@@ -302,7 +302,7 @@ export class PlasmicApi {
   async genLocalizationStrings(
     projects: readonly string[],
     format: "po" | "json" | "lingui",
-    keyScheme: "content" | "hash",
+    keyScheme: "content" | "hash" | "path",
     tagPrefix: string | undefined,
     projectIdsAndTokens: ProjectIdAndToken[]
   ) {

@@ -144,7 +144,7 @@ export class Api {
       platform?: "react" | "nextjs" | "gatsby";
       preview?: boolean;
       browserOnly?: boolean;
-      i18nKeyScheme?: "content" | "hash";
+      i18nKeyScheme?: "content" | "hash" | "path";
       i18nTagPrefix?: string;
     }
   ) {
