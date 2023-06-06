@@ -1,15 +1,15 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import {
+import type {
   CollapsePanelProps,
   CollapseProps as AntdCollapseProps,
-} from "antd/lib/collapse";
-import AntdCollapse from "antd/lib/collapse/Collapse";
-import CollapsePanel from "antd/lib/collapse/CollapsePanel";
+} from "antd/es/collapse";
+import { Collapse as AntdCollapse } from "antd";
 import React from "react";
 import { traverseReactEltTree } from "./customControls";
 import { Registerable } from "./registerable";
+export const CollapsePanel = AntdCollapse.Panel;
 
 export const collapstePanelMeta: ComponentMeta<CollapsePanelProps> = {
   name: "AntdCollapsePanel",
@@ -59,10 +59,9 @@ export const collapstePanelMeta: ComponentMeta<CollapsePanelProps> = {
       ],
     },
   },
-  importPath: "antd/lib/collapse/CollapsePanel",
+  importPath: "@plasmicpkgs/antd/skinny/registerCollapse",
   importName: "CollapsePanel",
   parentComponentName: "AntdCollapse",
-  isDefaultExport: true,
 };
 
 export function registerCollapsePanel(

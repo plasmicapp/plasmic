@@ -1,20 +1,23 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import Input, {
+import { Input as AntdInput } from "antd";
+import type {
   GroupProps,
   InputProps,
   PasswordProps,
   SearchProps,
   TextAreaProps,
-} from "antd/lib/input";
-import InputGroup from "antd/lib/input/Group";
-import Password from "antd/lib/input/Password";
-import Search from "antd/lib/input/Search";
-import TextArea from "antd/lib/input/TextArea";
+} from "antd/es/input";
 import { Registerable } from "./registerable";
 
-function sortObjectKeys<T extends {}>(obj: T): T {
+export const Input: typeof AntdInput = AntdInput;
+export const InputGroup = Input.Group;
+export const Password = Input.Password;
+export const Search = Input.Search;
+export const TextArea = Input.TextArea;
+
+function sortObjectKeys<T extends Record<string, any>>(obj: T): T {
   return Object.fromEntries(Object.entries(obj).sort()) as T;
 }
 
@@ -134,9 +137,8 @@ export const inputMeta: ComponentMeta<InputProps> = {
     importName: "inputHelpers",
     importPath: "@plasmicpkgs/antd/skinny/registerInput",
   },
-  importPath: "antd/lib/input",
+  importPath: "@plasmicpkgs/antd/skinny/registerInput",
   importName: "Input",
-  isDefaultExport: true,
 };
 
 export function registerInput(
@@ -216,9 +218,8 @@ export const inputTextAreaMeta: ComponentMeta<TextAreaProps> = {
     importName: "inputHelpers",
     importPath: "@plasmicpkgs/antd/skinny/registerInput",
   },
-  importPath: "antd/lib/input/TextArea",
+  importPath: "@plasmicpkgs/antd/skinny/registerInput",
   importName: "TextArea",
-  isDefaultExport: true,
   parentComponentName: "AntdInput",
 };
 
@@ -320,9 +321,8 @@ export const inputSearchMeta: ComponentMeta<SearchProps> = {
     importName: "inputHelpers",
     importPath: "@plasmicpkgs/antd/skinny/registerInput",
   },
-  importPath: "antd/lib/input/Search",
+  importPath: "@plasmicpkgs/antd/skinny/registerInput",
   importName: "Search",
-  isDefaultExport: true,
   parentComponentName: "AntdInput",
 };
 
@@ -420,9 +420,8 @@ export const inputPasswordMeta: ComponentMeta<PasswordProps> = {
     importName: "inputHelpers",
     importPath: "@plasmicpkgs/antd/skinny/registerInput",
   },
-  importPath: "antd/lib/input/Password",
+  importPath: "@plasmicpkgs/antd/skinny/registerInput",
   importName: "Password",
-  isDefaultExport: true,
   parentComponentName: "AntdInput",
 };
 
@@ -465,9 +464,8 @@ export const inputGroupMeta: ComponentMeta<GroupProps> = {
       ],
     },
   },
-  importPath: "antd/lib/input/Group",
+  importPath: "@plasmicpkgs/antd/skinny/registerInput",
   importName: "InputGroup",
-  isDefaultExport: true,
   parentComponentName: "AntdInput",
 };
 

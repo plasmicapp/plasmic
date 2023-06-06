@@ -1,8 +1,12 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import Button, { ButtonProps } from "antd/lib/button";
+import { Button as AntdButton } from "antd";
+import type { ButtonProps } from "antd/es/button";
 import { Registerable } from "./registerable";
+
+export const Button: typeof AntdButton = AntdButton;
+
 export const buttonMeta: ComponentMeta<ButtonProps> = {
   name: "AntdButton",
   displayName: "Antd Button",
@@ -60,7 +64,7 @@ export const buttonMeta: ComponentMeta<ButtonProps> = {
       options: ["_blank", "_self", "_parent", "_top"],
       description:
         "Same as target attribute of a, works when href is specified",
-      hidden: props => !props.href,
+      hidden: (props) => !props.href,
       defaultValueHint: "_self",
     },
     children: {
@@ -73,8 +77,7 @@ export const buttonMeta: ComponentMeta<ButtonProps> = {
       ],
     },
   },
-  importPath: "antd/lib/button",
-  isDefaultExport: true,
+  importPath: "@plasmicpkgs/antd/skinny/registerButton",
   importName: "Button",
 };
 
@@ -84,5 +87,5 @@ export function registerButton(
 ) {
   const doRegisterComponent: typeof registerComponent = (...args) =>
     loader ? loader.registerComponent(...args) : registerComponent(...args);
-  doRegisterComponent(Button, customButtonMeta ?? buttonMeta);
+  doRegisterComponent(AntdButton, customButtonMeta ?? buttonMeta);
 }

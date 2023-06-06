@@ -1,11 +1,13 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import Select from "antd/lib/select";
-import { Option } from "rc-select";
+import { Select as AntdSelect } from "antd";
 import React from "react";
 import { traverseReactEltTree } from "./customControls";
 import { Registerable } from "./registerable";
+
+export const Select = AntdSelect;
+const Option = Select.Option;
 
 type SelectProps = React.ComponentProps<typeof Select>;
 
@@ -144,9 +146,8 @@ export const selectMeta: ComponentMeta<SelectProps> = {
       valueProp: "value",
     },
   },
-  importPath: "antd/lib/select",
+  importPath: "@plasmicpkgs/antd/skinny/registerSelect",
   importName: "Select",
-  isDefaultExport: true,
 };
 
 export function registerSelect(

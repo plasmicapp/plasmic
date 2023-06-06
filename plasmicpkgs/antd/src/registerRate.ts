@@ -1,8 +1,10 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import Rate, { RateProps } from "antd/lib/rate";
+import { Rate as AntdRate } from "antd";
+import type { RateProps } from "antd/es/rate";
 import { Registerable } from "./registerable";
+export const Rate = AntdRate;
 
 export const rateMeta: ComponentMeta<RateProps> = {
   name: "AntdRate",
@@ -48,9 +50,8 @@ export const rateMeta: ComponentMeta<RateProps> = {
       hidePlaceholder: true,
     },
   },
-  importPath: "antd/lib/rate",
+  importPath: "@plasmicpkgs/antd/skinny/registerRate",
   importName: "Rate",
-  isDefaultExport: true,
 };
 
 export function registerRate(

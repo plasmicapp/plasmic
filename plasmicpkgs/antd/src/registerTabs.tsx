@@ -2,12 +2,8 @@ import registerComponent, {
   ActionProps,
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { Button } from "antd";
-import {
-  default as AntdTabs,
-  TabPaneProps,
-  TabsProps as AntdTabsProps,
-} from "antd/lib/tabs";
+import { Button, Tabs as AntdTabs } from "antd";
+import type { TabPaneProps, TabsProps as AntdTabsProps } from "antd/es/tabs";
 import React from "react";
 import { traverseReactEltTree } from "./customControls";
 import { Registerable } from "./registerable";
@@ -83,11 +79,8 @@ export type TabsProps = Omit<AntdTabsProps, "tabBarExtraContent"> & {
 };
 
 export function Tabs(props: TabsProps) {
-  const {
-    leftTabBarExtraContent,
-    rightTabBarExtraContent,
-    ...otherProps
-  } = props;
+  const { leftTabBarExtraContent, rightTabBarExtraContent, ...otherProps } =
+    props;
   return (
     <AntdTabs
       {...otherProps}
@@ -290,7 +283,7 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
       onClick: ({ componentProps, studioOps }: ActionProps<any>) => {
         // Get the first positive integer that isn't already a key
         const generateNewKey = () => {
-          let keysSet = new Set<string>();
+          const keysSet = new Set<string>();
           traverseReactEltTree(componentProps.children, (elt) => {
             if (elt?.type === TabPane && typeof elt?.key === "string") {
               keysSet.add(elt.key);

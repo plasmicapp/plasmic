@@ -1,8 +1,10 @@
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import Switch, { SwitchProps } from "antd/lib/switch";
+import { Switch as AntdSwitch } from "antd";
+import type { SwitchProps } from "antd/es/switch";
 import { Registerable } from "./registerable";
+export const Switch: typeof AntdSwitch = AntdSwitch;
 
 export const switchMeta: ComponentMeta<SwitchProps> = {
   name: "AntdSwitch",
@@ -66,9 +68,8 @@ export const switchMeta: ComponentMeta<SwitchProps> = {
       valueProp: "checked",
     },
   },
-  importPath: "antd/lib/switch",
+  importPath: "@plasmicpkgs/antd/skinny/registerSwitch",
   importName: "Switch",
-  isDefaultExport: true,
 };
 
 export function registerSwitch(

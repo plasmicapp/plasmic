@@ -20,6 +20,19 @@
       }
     }
   },
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/antd.esm.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./dist/antd.css": "./dist/antd.css",
+    "./skinny/*": {
+      "require": "./skinny/*.cjs.js",
+      "import": "./skinny/*.esm.js",
+      "types": "./skinny/*.d.ts"
+    }
+  },
   "files": [
     "dist",
     "skinny"
