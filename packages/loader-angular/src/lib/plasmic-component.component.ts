@@ -33,6 +33,8 @@ export class PlasmicComponent implements AfterViewInit {
           componentProps: this.componentProps,
           prefetchedData: this.loaderService.prefetchedData,
           globalVariants: this.loaderService.globalVariants,
+          pageParams: this.loaderService.pageParams,
+          pageQuery: this.loaderService.pageQuery,
         }
       );
     }
