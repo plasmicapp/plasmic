@@ -15,7 +15,9 @@ import React, {
   useState,
 } from 'react';
 
-const noop = () => {};
+const noop = () => {
+  // noop
+};
 
 function defaultButtonChildren(label: string) {
   return {
@@ -38,7 +40,15 @@ export interface TabsProviderProps {
 
 const DebugContext = createContext(false);
 
-function useTabsData({ initialKey }: { initialKey?: string }) {
+export type MountMode = 'mountOneAtATime' | 'mountAllEagerly' | 'mountLazily';
+
+function useTabsData({
+  initialKey,
+  mountMode = 'mountOneAtATime',
+}: {
+  initialKey?: string;
+  mountMode?: MountMode;
+}) {
   const [tabKey, setTabKey] = useState<string | undefined>(initialKey);
   const [bbox, setBbox] = useState<{ left: number; width: number } | undefined>(
     undefined
@@ -48,6 +58,7 @@ function useTabsData({ initialKey }: { initialKey?: string }) {
     bbox,
     setTabKey,
     setBbox,
+    mountMode,
   };
 }
 
@@ -82,6 +93,26 @@ export const TabsContainerMeta: ComponentMeta<TabsProviderProps> = {
     previewAll: {
       type: 'boolean',
       description: 'Reveal all tab contents while editing in Plasmic Studio',
+    },
+    mountMode: {
+      advanced: true,
+      description: 'How to render/mount tab content.',
+      type: 'choice',
+      options: [
+        {
+          label: 'Mount one at a time, unmount on hide',
+          value: 'mountOneAtATime',
+        },
+        {
+          label: 'Mount all up-front, do not unmount',
+          value: 'mountAllEagerly',
+        },
+        {
+          label: 'Mount on-demand/lazily, do not unmount',
+          value: 'mountLazily',
+        },
+      ],
+      defaultValueHint: 'mountOneAtATime',
     },
     children: {
       type: 'slot',
@@ -252,7 +283,12 @@ export const TabButtonMeta: ComponentMeta<TabButtonProps> = {
 export function TabButton({ className, children, tabKey }: TabButtonProps) {
   const tabsContext = useTabsContext();
   const ref = useRef<HTMLDivElement>(null);
-  const { tabKey: activeKey, setTabKey, bbox, setBbox } = tabsContext ?? {
+  const {
+    tabKey: activeKey,
+    setTabKey,
+    bbox,
+    setBbox,
+  } = tabsContext ?? {
     tabKey: undefined,
     setTabKey: noop,
     bbox: undefined,
@@ -281,6 +317,7 @@ export function TabButton({ className, children, tabKey }: TabButtonProps) {
 export interface TabContentProps {
   children?: ReactNode;
   tabKey?: string;
+  className?: string;
 }
 
 export const TabContentMeta: ComponentMeta<TabContentProps> = {
@@ -306,15 +343,36 @@ export const TabContentMeta: ComponentMeta<TabContentProps> = {
     },
   },
 };
-export function TabContent({ children, tabKey }: TabContentProps) {
+
+export function TabContent({
+  children,
+  className,
+  tabKey,
+}: TabContentProps): ReactElement {
   const tabsContext = useTabsContext();
   const previewAll = useContext(DebugContext);
-  const { tabKey: activeKey } = tabsContext ?? { tabKey: undefined };
-  return (
-    <>
-      {tabsContext === undefined || activeKey === tabKey || previewAll
-        ? children
-        : null}
-    </>
+  const { tabKey: activeKey, mountMode } = tabsContext ?? {
+    tabKey: undefined,
+    mountMode: 'mountOneAtATime',
+  };
+  const show = tabsContext === undefined || activeKey === tabKey || previewAll;
+  const [everMounted, setEverMounted] = useState(false);
+  useEffect(() => {
+    if (show) {
+      setEverMounted(true);
+    }
+  }, [show]);
+  const divContent = (
+    <div className={className} style={show ? {} : { display: 'none' }}>
+      {children}
+    </div>
   );
+  switch (mountMode) {
+    case 'mountOneAtATime':
+      return <>{show ? children : null}</>;
+    case 'mountAllEagerly':
+      return divContent;
+    case 'mountLazily':
+      return <>{everMounted && divContent}</>;
+  }
 }
