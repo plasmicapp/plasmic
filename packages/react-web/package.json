@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/react-web",
-  "version": "0.2.224",
+  "version": "0.2.225",
   "description": "plasmic library for rendering in the presentational style",
   "main": "dist/index.cjs.js",
   "types": "dist/index.d.ts",

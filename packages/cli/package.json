@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/cli",
-  "version": "0.1.291",
+  "version": "0.1.292",
   "description": "plasmic cli for syncing local code with Plasmic designs",
   "engines": {
     "node": ">=12"
