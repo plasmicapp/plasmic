@@ -20,6 +20,19 @@ export interface SimpleNavTheme {
   customBgColor?: string;
 }
 
+function filterNavMenuItemsByConditions(
+  navMenuItems: NavMenuItem[]
+): NavMenuItem[] {
+  return navMenuItems
+    .filter((item) => item.condition === undefined || item.condition)
+    .map((item) => ({
+      ...item,
+      routes: item.routes
+        ? filterNavMenuItemsByConditions(item.routes)
+        : undefined,
+    }));
+}
+
 export interface RichLayoutProps extends ProLayoutProps {
   navMenuItems?: NavMenuItem[];
   rootUrl?: string;
@@ -170,7 +183,9 @@ export function RichLayout({
         splitMenus={layoutProps.layout === "mix"}
         route={{
           path: rootUrl,
-          routes: navMenuItems,
+          routes: navMenuItems
+            ? filterNavMenuItemsByConditions(navMenuItems)
+            : undefined,
         }}
         location={{
           pathname,

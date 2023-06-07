@@ -10,6 +10,7 @@ export * from "./RichLayout";
 export default RichLayout;
 
 function generateNavMenuType(
+  isNested: boolean,
   remainingDepth: number,
   displayName?: string,
   defaultValue?: any[]
@@ -18,6 +19,7 @@ function generateNavMenuType(
     displayName: displayName ? displayName : "Nested items",
     type: "array",
     defaultValue,
+    advanced: isNested,
     itemType: {
       type: "object",
       nameFunc: (item: any) =>
@@ -25,10 +27,15 @@ function generateNavMenuType(
       fields: {
         path: "href",
         name: "string",
+        condition: {
+          advanced: true,
+          displayName: "Show only if",
+          type: "exprEditor" as any,
+        },
         ...(remainingDepth === 0
           ? {}
           : {
-              routes: generateNavMenuType(remainingDepth - 1),
+              routes: generateNavMenuType(true, remainingDepth - 1),
             }),
       },
     },
@@ -57,7 +64,7 @@ const richLayoutMeta: ComponentMeta<RichLayoutProps> = {
       type: "imageUrl",
       defaultValue: "https://www.plasmic.app/favicon.ico",
     },
-    navMenuItems: generateNavMenuType(2, "Nav menu items", [
+    navMenuItems: generateNavMenuType(false, 2, "Nav menu items", [
       {
         path: "/",
         name: "Link 1",
