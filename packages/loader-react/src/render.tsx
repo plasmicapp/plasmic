@@ -1,11 +1,11 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { renderToString as reactRenderToString } from 'react-dom/server';
-import { ComponentRenderData, PlasmicComponentLoader } from './loader';
-import { PlasmicComponent } from './PlasmicComponent';
-import { GlobalVariantSpec, PlasmicRootProvider } from './PlasmicRootProvider';
-import { extractPlasmicQueryData } from './prepass';
-import { ComponentLookupSpec } from './utils';
+import React from "react";
+import ReactDOM from "react-dom";
+import { renderToString as reactRenderToString } from "react-dom/server";
+import { ComponentRenderData, PlasmicComponentLoader } from "./loader";
+import { PlasmicComponent } from "./PlasmicComponent";
+import { GlobalVariantSpec, PlasmicRootProvider } from "./PlasmicRootProvider";
+import { extractPlasmicQueryData } from "./prepass";
+import { ComponentLookupSpec } from "./utils";
 
 export async function renderToElement(
   loader: PlasmicComponentLoader,
@@ -16,6 +16,8 @@ export async function renderToElement(
     componentProps?: any;
     globalVariants?: GlobalVariantSpec[];
     prefetchedQueryData?: Record<string, any>;
+    pageParams?: Record<string, any>;
+    pageQuery?: Record<string, any>;
   } = {}
 ) {
   return new Promise<void>((resolve) => {
@@ -77,6 +79,8 @@ function makeElement(
     componentProps?: any;
     globalVariants?: GlobalVariantSpec[];
     prefetchedQueryData?: Record<string, any>;
+    pageParams?: Record<string, any>;
+    pageQuery?: Record<string, any>;
   } = {}
 ) {
   return (
@@ -85,10 +89,12 @@ function makeElement(
       prefetchedData={opts.prefetchedData}
       globalVariants={opts.globalVariants}
       prefetchedQueryData={opts.prefetchedQueryData}
+      pageParams={opts.pageParams}
+      pageQuery={opts.pageQuery}
     >
       <PlasmicComponent
-        component={typeof lookup === 'string' ? lookup : lookup.name}
-        projectId={typeof lookup === 'string' ? undefined : lookup.projectId}
+        component={typeof lookup === "string" ? lookup : lookup.name}
+        projectId={typeof lookup === "string" ? undefined : lookup.projectId}
         componentProps={opts.componentProps}
       />
     </PlasmicRootProvider>
