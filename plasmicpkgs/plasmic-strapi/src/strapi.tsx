@@ -14,7 +14,6 @@ import { queryParameters, uniq } from "./utils";
 
 export function ensure<T>(x: T | null | undefined): T {
   if (x === null || x === undefined) {
-    debugger;
     throw new Error(`Value must not be undefined or null`);
   } else {
     return x;
@@ -31,8 +30,9 @@ interface StrapiCredentialsProviderProps {
   token?: string;
 }
 
-const CredentialsContext =
-  React.createContext<StrapiCredentialsProviderProps | undefined>(undefined);
+const CredentialsContext = React.createContext<
+  StrapiCredentialsProviderProps | undefined
+>(undefined);
 
 export const strapiCredentialsProviderMeta: GlobalContextMeta<StrapiCredentialsProviderProps> =
   {
@@ -240,7 +240,7 @@ export function StrapiCollection({
     const attributes = get(item, ["attributes"]);
     const displayableFields = Object.keys(attributes).filter((field) => {
       const value = attributes[field];
-      const maybeMime = value.data?.attributes?.mime;
+      const maybeMime = value?.data?.attributes?.mime;
       return (
         typeof value !== "object" ||
         (typeof maybeMime === "string" && maybeMime.startsWith("image"))
