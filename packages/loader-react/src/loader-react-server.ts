@@ -3,17 +3,17 @@ import {
   PageMeta,
   PlasmicModulesFetcher,
   PlasmicTracker,
-} from '@plasmicapp/loader-core';
-import { ComponentMeta, LoaderBundleOutput } from '@plasmicapp/loader-fetcher';
-import { mergeBundles, prepComponentData } from './bundles';
-import { ComponentRenderData, FetchPagesOpts } from './loader';
+} from "@plasmicapp/loader-core";
+import { ComponentMeta, LoaderBundleOutput } from "@plasmicapp/loader-fetcher";
+import { mergeBundles, prepComponentData } from "./bundles";
+import { ComponentRenderData, FetchPagesOpts } from "./loader";
 import {
   ComponentLookupSpec,
   getCompMetas,
   getLookupSpecName,
   isBrowser,
   isDynamicPagePath,
-} from './utils';
+} from "./utils";
 
 export interface InitOptions {
   projects: {
@@ -22,11 +22,18 @@ export interface InitOptions {
     version?: string;
   }[];
   cache?: LoaderBundleCache;
-  platform?: 'react' | 'nextjs' | 'gatsby';
+  platform?: "react" | "nextjs" | "gatsby";
   preview?: boolean;
   host?: string;
-  onClientSideFetch?: 'warn' | 'error';
-  i18nKeyScheme?: 'content' | 'hash';
+  onClientSideFetch?: "warn" | "error";
+  i18n?: {
+    keyScheme: "content" | "hash" | "path";
+    tagPrefix?: string;
+  };
+  /**
+   * @deprecated use i18n.keyScheme instead
+   */
+  i18nKeyScheme?: "content" | "hash";
 
   /**
    * By default, fetchComponentData() and fetchPages() calls cached in memory
@@ -101,10 +108,8 @@ export class ReactServerPlasmicComponentLoader {
       specsToFetch: ComponentLookupSpec[]
     ) => {
       await this.fetchMissingData({ missingSpecs: specsToFetch });
-      const {
-        found: existingMetas2,
-        missing: missingSpecs2,
-      } = this.maybeGetCompMetas(...specs);
+      const { found: existingMetas2, missing: missingSpecs2 } =
+        this.maybeGetCompMetas(...specs);
       if (missingSpecs2.length > 0) {
         return null;
       }
@@ -118,10 +123,8 @@ export class ReactServerPlasmicComponentLoader {
     }
 
     // Else we only fetch actually missing specs
-    const {
-      found: existingMetas,
-      missing: missingSpecs,
-    } = this.maybeGetCompMetas(...specs);
+    const { found: existingMetas, missing: missingSpecs } =
+      this.maybeGetCompMetas(...specs);
     if (missingSpecs.length === 0) {
       return prepComponentData(this.bundle, existingMetas, opts);
     }
@@ -145,7 +148,7 @@ export class ReactServerPlasmicComponentLoader {
       throw new Error(
         `Unable to find components ${missingSpecs
           .map(getLookupSpecName)
-          .join(', ')}`
+          .join(", ")}`
       );
     }
 
@@ -185,7 +188,7 @@ export class ReactServerPlasmicComponentLoader {
       () =>
         `Plasmic: fetching missing components in the browser: ${opts.missingSpecs
           .map((spec) => getLookupSpecName(spec))
-          .join(', ')}`
+          .join(", ")}`
     );
     return this.fetchAllData();
   }
@@ -193,7 +196,7 @@ export class ReactServerPlasmicComponentLoader {
   private maybeReportClientSideFetch(mkMsg: () => string) {
     if (isBrowser && this.opts.onClientSideFetch) {
       const msg = mkMsg();
-      if (this.opts.onClientSideFetch === 'warn') {
+      if (this.opts.onClientSideFetch === "warn") {
         console.warn(msg);
       } else {
         throw new Error(msg);
@@ -248,16 +251,17 @@ export interface FetchComponentDataOpts {
    * sure that when you fetch, you are fetching the right one to be used in the
    * right environment for either SSR or browser hydration.
    */
-  target?: 'server' | 'browser';
+  target?: "server" | "browser";
 }
 
 function parseFetchComponentDataArgs(
   specs: ComponentLookupSpec[],
   opts?: FetchComponentDataOpts
 ): { specs: ComponentLookupSpec[]; opts?: FetchComponentDataOpts };
-function parseFetchComponentDataArgs(
-  ...specs: ComponentLookupSpec[]
-): { specs: ComponentLookupSpec[]; opts?: FetchComponentDataOpts };
+function parseFetchComponentDataArgs(...specs: ComponentLookupSpec[]): {
+  specs: ComponentLookupSpec[];
+  opts?: FetchComponentDataOpts;
+};
 function parseFetchComponentDataArgs(...args: any[]) {
   let specs: ComponentLookupSpec[];
   let opts: FetchComponentDataOpts | undefined;

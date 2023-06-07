@@ -41,6 +41,7 @@ export function PlasmicComponent(props: {
     userAuthToken,
     isUserLoading,
     authRedirectUri,
+    translator,
     ...rest
   } = rootContext;
 
@@ -98,6 +99,10 @@ export function PlasmicComponent(props: {
           userAuthToken={userAuthToken}
           isUserLoading={isUserLoading}
           authRedirectUri={authRedirectUri}
+          i18n={{
+            translator,
+            tagPrefix: loader.opts.i18n?.tagPrefix,
+          }}
         >
           <MaybeWrap
             cond={!!GlobalContextsProvider}

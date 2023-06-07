@@ -20,7 +20,6 @@
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.12.1",
-    "@plasmicapp/react-web": "0.2.224",
     "@types/cli-progress": "^3.11.0",
     "@types/findup-sync": "^2.0.2",
     "@types/glob": "^7.1.3",

@@ -254,9 +254,14 @@ yargs
         })
         .option("key-scheme", {
           describe:
-            "What value to use as message keys; either the message content itself, or a hash of it. Defaults to whatever is specified in plasmic.json, or `content`",
+            "What value to use as message keys; `content` uses the message content itself, `hash` uses a hash of the content, and `path` uses a a hierarchical string containing the project id, component name, element name, and related variants, and does not encode the text content in the key.  Defaults to whatever is specified in plasmic.json, or `content`",
           type: "string",
-          choices: ["content", "hash"],
+          choices: ["content", "hash", "path"],
+        })
+        .option("tag-prefix", {
+          describe:
+            "By default, rich text with markup tags look like '<0>hello</0>'. If your localization framework requires num-numeric tags, then specify a prefix; for example a prefix of 'n' turns it into '<n0>hello</n0>'.",
+          type: "string",
         })
         .option("output", {
           alias: "o",

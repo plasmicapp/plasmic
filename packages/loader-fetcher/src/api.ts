@@ -1,4 +1,4 @@
-import fetch from '@plasmicapp/isomorphic-unfetch';
+import fetch from "@plasmicapp/isomorphic-unfetch";
 
 export interface ComponentMeta {
   id: string;
@@ -55,7 +55,7 @@ export interface FontMeta {
 }
 
 interface GlobalVariantSplitContent {
-  type: 'global-variant';
+  type: "global-variant";
   projectId: string;
   group: string;
   variant: string;
@@ -78,14 +78,14 @@ export interface SegmentSlice extends Slice {
 export interface ExperimentSplit {
   id: string;
   externalId?: string;
-  type: 'experiment';
+  type: "experiment";
   slices: ExperimentSlice[];
 }
 
 export interface SegmentSplit {
   id: string;
   externalId?: string;
-  type: 'segment';
+  type: "segment";
   slices: SegmentSlice[];
 }
 
@@ -111,21 +111,21 @@ export interface CodeModule {
   fileName: string;
   code: string;
   imports: string[];
-  type: 'code';
+  type: "code";
 }
 
 export interface AssetModule {
   fileName: string;
   source: string;
-  type: 'asset';
+  type: "asset";
 }
 
-const VERSION = '10';
+const VERSION = "10";
 
 export const isBrowser =
-  typeof window !== 'undefined' &&
+  typeof window !== "undefined" &&
   window != null &&
-  typeof window.document !== 'undefined';
+  typeof window.document !== "undefined";
 
 export class Api {
   private host: string;
@@ -135,31 +135,33 @@ export class Api {
       host?: string;
     }
   ) {
-    this.host = opts.host ?? 'https://codegen.plasmic.app';
+    this.host = opts.host ?? "https://codegen.plasmic.app";
   }
 
   async fetchLoaderData(
     projectIds: string[],
     opts: {
-      platform?: 'react' | 'nextjs' | 'gatsby';
+      platform?: "react" | "nextjs" | "gatsby";
       preview?: boolean;
       browserOnly?: boolean;
-      i18nKeyScheme?: 'content' | 'hash';
+      i18nKeyScheme?: "content" | "hash" | "path";
+      i18nTagPrefix?: string;
     }
   ) {
     const { platform, preview } = opts;
     const query = new URLSearchParams([
-      ['platform', platform ?? 'react'],
-      ...projectIds.map((projectId) => ['projectId', projectId]),
-      ...(opts.browserOnly ? [['browserOnly', 'true']] : []),
-      ...(opts.i18nKeyScheme ? [['i18nKeyScheme', opts.i18nKeyScheme]] : []),
+      ["platform", platform ?? "react"],
+      ...projectIds.map((projectId) => ["projectId", projectId]),
+      ...(opts.browserOnly ? [["browserOnly", "true"]] : []),
+      ...(opts.i18nKeyScheme ? [["i18nKeyScheme", opts.i18nKeyScheme]] : []),
+      ...(opts.i18nTagPrefix ? [["i18nTagPrefix", opts.i18nTagPrefix]] : []),
     ]).toString();
 
     const url = `${this.host}/api/v1/loader/code/${
-      preview ? 'preview' : 'published'
+      preview ? "preview" : "published"
     }?${query}`;
     const resp = await fetch(url, {
-      method: 'GET',
+      method: "GET",
       headers: this.makeGetHeaders(),
     });
     if (resp.status >= 400) {
@@ -193,13 +195,13 @@ export class Api {
   }) {
     const { projectId, component, embedHydrate, hydrate } = opts;
     const query = new URLSearchParams([
-      ['projectId', projectId],
-      ['component', component],
-      ['embedHydrate', embedHydrate ? '1' : '0'],
-      ['hydrate', hydrate ? '1' : '0'],
+      ["projectId", projectId],
+      ["component", component],
+      ["embedHydrate", embedHydrate ? "1" : "0"],
+      ["hydrate", hydrate ? "1" : "0"],
     ]).toString();
     const resp = await fetch(`${this.host}/api/v1/loader/html?${query}`, {
-      method: 'GET',
+      method: "GET",
       headers: this.makeGetHeaders(),
     });
     const json = await resp.json();
@@ -208,16 +210,7 @@ export class Api {
 
   private makeGetHeaders() {
     return {
-      'x-plasmic-loader-version': VERSION,
-      ...this.makeAuthHeaders(),
-    };
-  }
-
-  // @ts-ignore
-  private makePostHeaders() {
-    return {
-      'x-plasmic-loader-version': VERSION,
-      'Content-Type': 'application/json',
+      "x-plasmic-loader-version": VERSION,
       ...this.makeAuthHeaders(),
     };
   }
@@ -225,9 +218,9 @@ export class Api {
   private makeAuthHeaders() {
     const tokens = this.opts.projects
       .map((p) => `${p.id}:${p.token}`)
-      .join(',');
+      .join(",");
     return {
-      'x-plasmic-api-project-tokens': tokens,
+      "x-plasmic-api-project-tokens": tokens,
     };
   }
 }

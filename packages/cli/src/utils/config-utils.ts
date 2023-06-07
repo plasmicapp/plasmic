@@ -355,6 +355,14 @@ export interface I18NConfig {
    * or by a hash of its content
    */
   keyScheme: "content" | "hash";
+  /**
+   * For localization, rich text with embedded tags are exported as
+   * "Hello <0>there</0>, I am <1>here</1>".  Some frameworks, like
+   * react-intl, doesn't work with numbers as tag names, so you can
+   * specify a prefix. For example, a tagPrefix of "n" turns the above
+   * into "Hello <n0>there</n0>, I am <n1>here</n1>".
+   */
+  tagPrefix?: string;
 }
 
 export interface PlasmicLock {
