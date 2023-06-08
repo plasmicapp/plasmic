@@ -109,6 +109,28 @@ export function RichLayout({
   if (!isClient) {
     return null;
   }
+
+  const layoutColorOverrides = isNavBgLight
+    ? undefined
+    : {
+        colorBgCollapsedButton: navBgColor,
+        colorTextCollapsedButtonHover: "rgba(255,255,255,0.85)",
+        colorTextCollapsedButton: "rgba(255,255,255,0.65)",
+        colorMenuBackground: navBgColor,
+        colorBgMenuItemCollapsedHover: "rgba(0,0,0,0.06)",
+        colorBgMenuItemCollapsedSelected: "rgba(0,0,0,0.15)",
+        colorBgMenuItemCollapsedElevated: "rgba(0,0,0,0.85)",
+        colorMenuItemDivider: "rgba(255,255,255,0.15)",
+        colorBgMenuItemHover: "rgba(0,0,0,0.06)",
+        colorBgMenuItemSelected: "rgba(0,0,0,0.15)",
+        colorTextMenuSelected: "#fff",
+        colorTextMenuItemHover: "rgba(255,255,255,0.75)",
+        colorTextMenu: "rgba(255,255,255,0.75)",
+        colorTextMenuSecondary: "rgba(255,255,255,0.65)",
+        colorTextMenuTitle: "rgba(255,255,255,0.95)",
+        colorTextMenuActive: "rgba(255,255,255,0.95)",
+        colorTextSubMenuSelected: "#fff",
+      };
   return (
     <div className={className} style={{ display: "flex" }}>
       {/* Remove the always-on fixed gradient background layer. */}
@@ -141,6 +163,7 @@ export function RichLayout({
         token={{
           header: omitUndefined({
             colorBgHeader: navBgColor,
+            ...layoutColorOverrides,
           }),
           // Ideally, we'd do something similar to headerRender above, and just specify general dark mode to specify
           // whether all components/text should be light.
@@ -148,27 +171,7 @@ export function RichLayout({
           // *and* the text is just dark as well.
           // Haven't yet been able to unravel the pro components code to figure out the proper way to do this, so just
           // bluntly specifying tokens here, as recommended in some GitHub issue.
-          sider: isNavBgLight
-            ? undefined
-            : {
-                colorBgCollapsedButton: navBgColor,
-                colorTextCollapsedButtonHover: "rgba(255,255,255,0.85)",
-                colorTextCollapsedButton: "rgba(255,255,255,0.65)",
-                colorMenuBackground: navBgColor,
-                colorBgMenuItemCollapsedHover: "rgba(0,0,0,0.06)",
-                colorBgMenuItemCollapsedSelected: "rgba(0,0,0,0.15)",
-                colorBgMenuItemCollapsedElevated: "rgba(0,0,0,0.85)",
-                colorMenuItemDivider: "rgba(255,255,255,0.15)",
-                colorBgMenuItemHover: "rgba(0,0,0,0.06)",
-                colorBgMenuItemSelected: "rgba(0,0,0,0.15)",
-                colorTextMenuSelected: "#fff",
-                colorTextMenuItemHover: "rgba(255,255,255,0.75)",
-                colorTextMenu: "rgba(255,255,255,0.75)",
-                colorTextMenuSecondary: "rgba(255,255,255,0.65)",
-                colorTextMenuTitle: "rgba(255,255,255,0.95)",
-                colorTextMenuActive: "rgba(255,255,255,0.95)",
-                colorTextSubMenuSelected: "#fff",
-              },
+          sider: layoutColorOverrides,
         }}
         // Tweak defaults. ProLayout is janky and has terrible docs!
         layout={layoutProps.layout ?? "top"}
