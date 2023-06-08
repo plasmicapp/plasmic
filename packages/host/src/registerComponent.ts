@@ -256,6 +256,11 @@ export interface CodeComponentMeta<P> {
    */
   alwaysAutoName?: boolean;
 
+  /**
+   * If true, then won't be listed in the insert menu for content creators.
+   */
+  hideFromContentCreators?: boolean;
+
   refActions?: Record<string, RefActionRegistration<P>>;
 }
 
