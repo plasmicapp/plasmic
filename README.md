@@ -8,12 +8,12 @@
   Plasmic
 </h1>
 <h3 align="center">
-  The headless page builder + CMS for React, Vue, Angular, PHP, vanilla JS, and more.
+  The low-code visual builder for your codebase.
 </h3>
 <p align="center">
-  Drag and drop your own code components.
-  Let non-developers create stunning content,
-  and free up developers from pixel-pushing.
+  Build beautiful apps and websites incredibly fast.
+  Drag and drop your own components, integrate with your codebase.
+  Break through the no-code ceiling.
 </p>
 
 <p>&nbsp;</p>
@@ -47,7 +47,48 @@
 [docs]: https://www.plasmic.app/learn/
 [quickstart]: https://www.plasmic.app/learn/quickstart/
 
-## How it works
+## What is Plasmic?
+
+Plasmic is a visual builder for the web.
+
+You can use it to build web apps and websites, and you can use it as a visual content management system.
+
+It lets anyone, regardless of coding background, design and build rapidly--code optional.
+
+At the same time, it is powerful, with a deep feature set that scales to complex projects.
+And with codebase integration, it removes the ceiling typically associated with low-code tools.
+
+Some highlights of what Plasmic provides:
+
+- **Full design freedom** and speedy modern design tool UX.
+- Create **rich interactions and behavior**.
+- Connect with **arbitrary data source and backend integrations**.
+- **Content creator mode**: give specific collaborators a more simplified and restricted editing experience.
+- Deep collaboration with multiplayer, branching, cross-project imports, and multi-workspace organizations.
+- **Integrate with codebases** for unlimited flexibility and scale.
+- **Drag/drop and visually manipulate your own React components**—design systems, interactions, data, behavior, and more. Extend and customize Studio with custom controls.
+- **Import designs from Figma**, translating its proprietary vector document format into DOM/CSS.
+- **Powerful abstractions** like components, variants, slots, composable state management, and more that promote composition and let you build and maintain at scale.
+- **High-performance and high-quality codegen**. Supports static site generation, automatic image optimization, layout shift reduction, and more.
+- **Customizable design system components**. Powered by [react-aria](https://react-spectrum.adobe.com/react-aria/). Most component libraries give you variables to tweak, but here you can completely change the structure and layout.
+- Deploy/host/export anywhere
+- End-user auth and permissions
+- **Versatility in use cases**. The line between websites and web apps can be blurry.
+
+Learn more on [our website][website] and [our docs][docs]. Or check out [comparisons of Plasmic vs other tools][comparisons].
+
+[website]: https://www.plasmic.app
+[comparisons]: https://docs.plasmic.app/learn/comparisons/
+
+## Get help and join our community
+
+Connect with the Plasmic team and with other Plasmic users on the [Plasmic Community Slack][slack].
+
+[slack]: https://www.plasmic.app/slack
+
+## How do I integrate Plasmic as a CMS?
+
+This is one popular use case of Plasmic.
 
 **Step 1.** Install Plasmic into your codebase (exact package [depends on your framework][quickstart]).
 
@@ -100,61 +141,7 @@ export default function IndexPage() {
 **Step 5.** When you hit Publish, changes get picked up via webhooks that trigger rebuilds,
 or more specific mechanisms such as incremental static revalidation or dynamic fetching from the Plasmic CDN.
 
-## Overview
-
-Plasmic is a platform that contains a few things:
-
-- Visual builder / web design tool--**this is the heart of Plasmic**
-- Headless CMS for structured content (or bring your own CMS)
-- Growth optimization tools (A/B testing, personalization, analytics)
-
-Plasmic's main feature is its visual builder for the web.
-Developers integrate this into their codebase,
-and anyone (including non-developers) can build pages or parts of pages.
-
-The goal is to empower and unblock non-developers such as marketers and designers, while freeing up developers from pixel-pushing content, thus letting the whole team move faster.
-
-Plasmic as a page builder and “visual CMS” is its simplest and most common use case. Editors can create and update content in Plasmic without code, and publish this into their production site without needing to block on developers.
-
-A key capability is that **Plasmic lets you drag and drop your own components**.
-There are multiple ways to use Plasmic--editors can:
-
-- Design and build from scratch entirely in the visual tool, as a freeform page builder. No developer code needed.
-- Exclusively use existing components as building blocks (this can be enforced). This ensures consistency and makes editing easier for non-designer/non-developers.
-- Anything in between.
-
-Beyond website content, Plasmic can even be used to create frontends for complex web applications (such as Plasmic itself, which was built in Plasmic).
-This is a more advanced use case.
-
-Learn more on [our website][website] and [our docs][docs]. Or check out [comparisons of Plasmic vs other tools][comparisons].
-
-[website]: https://www.plasmic.app
-[comparisons]: https://docs.plasmic.app/learn/comparisons/
-
-Or check out our [Next.js-based talk and demo at Next.js Conf 2021][nextconf-talk]:
-
-[![Next.js-based talk and demo at Next.js Conf 2021](https://user-images.githubusercontent.com/7129/139349085-0e72defe-89c2-47c4-8915-b92143fbb33c.png)][nextconf-talk]
-
-[nextconf-talk]: https://www.youtube.com/watch?v=fhEwNlzzobE
-
-## Get help and join our community
-
-Connect with the Plasmic team and with other Plasmic users on the [Plasmic Community Slack][slack].
-
-[slack]: https://www.plasmic.app/slack
-
-## Features
-
-A smattering of interesting highlights about Plasmic:
-
-- **Drag/drop and visually manipulate your own React components**, and seamlessly nest design elements within your React components (using slots).
-- **Import designs from Figma**, translating its proprietary vector document format into DOM/CSS.
-- **Scalable component system** with slots/props, variants (that can be combined), and style mixins/tokens.
-- **High-performance and high-quality codegen**. Supports static site generation, automatic image optimization, layout shift reduction, and more.
-- **Design fully functional and accessible design system components**. For designers, you can craft completely bespoke, complex design system components like dropdowns, and we wire it up to [react-aria](https://react-spectrum.adobe.com/react-aria/). Most component libraries give you variables to tweak, but here you can completely change the structure and layout of these components.
-- **Versatility in use cases**. Use it as a page builder to create simple static content like marketing/landing pages and promotional sections, or use it as a development tool for visually building complex, stateful React UIs.
-
-## Users of Plasmic
+## Who uses Plasmic?
 
 Plasmic is used by companies ranging from Fortune 500s to boutique brands to solo makers.
 It's used for websites ranging from headless commerce storefronts to marketing websites to logged-in app content.
@@ -175,30 +162,14 @@ Check out the [Case Studies and Community Showcase][customers].
   </a>
 </p>
 
-## Technical overview
+## How does Plasmic work?
 
-(Read [the full technical overview](https://docs.plasmic.app/learn/technical-overview/).)
+### How codebase integration works
 
-The main way to integrate Plasmic into a codebase is via the Headless API.
-The Headless API lets developers fetch and render into your existing codebase, without touching your code base besides the initial setup.
-This allows your Plasmic users to build designs and pages, and publish directly to production, without involving the development team.
+Note: you do not need to integrate Plasmic with a codebase.
+This is core to using Plasmic as a CMS, but you can build complete apps and websites without this, entirely within Plasmic.
 
-You can think of Plasmic as a CMS, but where editors get to edit HTML/CSS rather than JSON data.
-Developers then just render the content as-is.
-
-Plasmic does not host your site;
-your site continues to run on your existing infrastructure and tech stack.
-
-For static site generators and server-rendered pages,
-Plasmic content is loaded at build-time or server-side and thus pre-rendered,
-optimizing page load performance.
-For other sites that fetch and render client-side,
-Plasmic content is loaded from the AWS Cloudfront CDN.
-
-New pages can automatically just show up.
-The codebase integration can be configured such that
-as users create pages and routes in Plasmic Studio,
-they will be auto-loaded into your app without developer involvement.
+Read [the full technical overview](https://docs.plasmic.app/learn/technical-overview/).
 
 ### Bring your own React components
 
@@ -211,7 +182,7 @@ Besides the Headless API, you can also [generate React code](https://docs.plasmi
 This is a powerful way to use Plasmic as a UI builder for creating rich interactive web applications—one example of this is Plasmic Studio itself.
 See the [application development tutorials](https://docs.plasmic.app/learn/minitwitter-tutorial) to learn more.
 
-### Note on versioning
+## Note on versioning
 
 One common issue we see is mismatched or duplicate versions of packages.
 

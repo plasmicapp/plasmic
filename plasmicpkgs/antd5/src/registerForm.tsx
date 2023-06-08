@@ -493,50 +493,6 @@ export function registerForm(loader?: Registerable) {
       },
       children: {
         type: "slot",
-        defaultValue: [
-          {
-            type: "component",
-            name: formItemComponentName,
-            props: {
-              label: {
-                type: "text",
-                value: "Name",
-              },
-              name: "name",
-              children: {
-                type: "component",
-                name: inputComponentName,
-              },
-            },
-          },
-          {
-            type: "component",
-            name: formItemComponentName,
-            props: {
-              label: {
-                type: "text",
-                value: "Message",
-              },
-              name: "message",
-              children: {
-                type: "component",
-                name: textAreaComponentName,
-              },
-            },
-          },
-          {
-            type: "component",
-            name: buttonComponentName,
-            props: {
-              children: {
-                type: "text",
-                value: "Submit",
-              },
-              type: "primary",
-              submitsForm: true,
-            },
-          },
-        ],
         hidden: (props) => props.mode === "simplified",
       },
       initialValues: {
