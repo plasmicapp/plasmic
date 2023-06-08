@@ -375,4 +375,5 @@ export function TabContent({
     case 'mountLazily':
       return <>{everMounted && divContent}</>;
   }
+  throw new Error(`Unexpected mount mode ${mountMode}`);
 }
