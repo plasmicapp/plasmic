@@ -6,6 +6,7 @@ GlobalActionsProvider
 PageParamsProvider
 PlasmicCanvasContext
 PlasmicCanvasHost
+PlasmicLinkProvider
 applySelector
 mkMetaName
 mkMetaValue
@@ -18,5 +19,7 @@ unstable_registerFetcher
 useDataEnv
 useGlobalActions
 usePlasmicCanvasContext
+usePlasmicLink
+usePlasmicLinkMaybe
 useSelector
 useSelectors

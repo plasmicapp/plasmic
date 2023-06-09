@@ -14,7 +14,9 @@ export {
   PlasmicDataSourceContextProvider,
   useCurrentUser,
 } from "@plasmicapp/data-sources-context";
-import { DataProvider } from "@plasmicapp/host";
+import { DataProvider, PlasmicLinkProvider } from "@plasmicapp/host";
+import { PlasmicLinkInternal } from "./PlasmicLink";
+// import { PlasmicLink } from "./PlasmicLink";
 
 export interface PlasmicRootContextValue {
   platform?: "nextjs" | "gatsby";
@@ -34,6 +36,7 @@ export interface PlasmicRootProviderProps
    */
   translator?: PlasmicTranslator;
   Head?: React.ComponentType<any>;
+  Link?: React.ComponentType<any>;
   disableLoadingBoundary?: boolean;
   suspenseFallback?: React.ReactNode;
 }
@@ -48,7 +51,6 @@ export function PlasmicRootProvider(props: PlasmicRootProviderProps) {
     user,
     disableLoadingBoundary,
     suspenseFallback,
-    i18n,
   } = props;
   const context = React.useMemo(
     () => ({
@@ -89,7 +91,9 @@ export function PlasmicRootProvider(props: PlasmicRootProviderProps) {
               value={props.i18n ?? props.translator}
             >
               <PlasmicHeadContext.Provider value={props.Head}>
-                {children}
+                <PlasmicLinkProvider Link={props.Link ?? PlasmicLinkInternal}>
+                  {children}
+                </PlasmicLinkProvider>
               </PlasmicHeadContext.Provider>
             </PlasmicTranslatorContext.Provider>
           </PlasmicDataSourceContextProvider>
