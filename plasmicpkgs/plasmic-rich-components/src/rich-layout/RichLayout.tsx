@@ -4,6 +4,8 @@ import { ProConfigProvider, ProLayout } from "@ant-design/pro-components";
 import { ConfigProvider, Dropdown, theme } from "antd";
 import React, { ReactNode, useEffect, useState } from "react";
 import { isLight, useIsClient } from "../common";
+import { usePlasmicLink } from "@plasmicapp/host";
+import { AnchorLink } from "../widgets";
 
 function omitUndefined(x: object) {
   return Object.fromEntries(
@@ -42,6 +44,7 @@ export interface RichLayoutProps extends ProLayoutProps {
   avatarImage?: string;
   showAvatarMenu?: boolean;
   simpleNavTheme?: SimpleNavTheme;
+  logoElement?: ReactNode;
 }
 
 // width: 100% needed because parent is display: flex, which is needed for the min-height behavior.
@@ -69,6 +72,8 @@ export function RichLayout({
   showAvatarMenu,
   className,
   simpleNavTheme,
+  logo,
+  logoElement,
   ...layoutProps
 }: RichLayoutProps) {
   const isClient = useIsClient();
@@ -78,6 +83,8 @@ export function RichLayout({
       setPathname(location.pathname);
     }
   }, []);
+  // The usePlasmicLink function may be undefined, if host is not up to date
+  const Link = usePlasmicLink?.() ?? AnchorLink;
   const { token } = theme.useToken();
   const origTextColor = token.colorTextBase;
   function getNavBgColor(): string {
@@ -137,6 +144,7 @@ export function RichLayout({
       <style>{baseStyles}</style>
       <ProLayout
         {...layoutProps}
+        logo={logo ?? logoElement}
         // Theme just the header. If you simply pass in navTheme=realDark, it affects all main content as well.
         //
         // What we're doing is telling Ant to use the dark mode algorithm. However, dark mode algorithm doesn't change
@@ -232,13 +240,13 @@ export function RichLayout({
           return footerChildren;
         }}
         onMenuHeaderClick={(e) => console.log(e)}
-        menuItemRender={(item, dom) => <a href={item.path}>{dom}</a>}
+        menuItemRender={(item, dom) => <Link href={item.path}>{dom}</Link>}
         headerTitleRender={(logo, title, _) => {
           return (
-            <a href={rootUrl}>
+            <Link href={rootUrl}>
               {logo}
               {title}
-            </a>
+            </Link>
           );
         }}
       >

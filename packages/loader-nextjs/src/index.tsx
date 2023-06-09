@@ -121,5 +121,7 @@ export function initPlasmicLoader(opts: InitOptions) {
 export function PlasmicRootProvider(
   props: Omit<React.ComponentProps<typeof CommonPlasmicRootProvider>, "Head">
 ) {
-  return <CommonPlasmicRootProvider Head={NextHead} {...props} />;
+  return (
+    <CommonPlasmicRootProvider Head={NextHead} Link={NextLink} {...props} />
+  );
 }

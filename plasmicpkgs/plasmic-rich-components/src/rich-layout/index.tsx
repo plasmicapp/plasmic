@@ -62,7 +62,16 @@ const richLayoutMeta: ComponentMeta<RichLayoutProps> = {
     logo: {
       displayName: "Logo",
       type: "imageUrl",
-      defaultValue: "https://www.plasmic.app/favicon.ico",
+      hidden: (ps) => !ps.logo,
+    },
+    logoElement: {
+      type: "slot",
+      displayName: "Logo",
+      defaultValue: {
+        type: "img",
+        src: "https://static1.plasmic.app/fake-logo.svg",
+      },
+      hidden: (ps) => !!ps.logo,
     },
     navMenuItems: generateNavMenuType(false, 2, "Nav menu items", [
       {

@@ -22,6 +22,7 @@ interface PlasmicRootContextValue extends PlasmicDataSourceContextValue {
   variation?: Record<string, string>;
   translator?: PlasmicTranslator;
   Head?: React.ComponentType<any>;
+  Link?: React.ComponentType<any>;
   disableLoadingBoundary?: boolean;
   suspenseFallback?: React.ReactNode;
 }
@@ -117,6 +118,12 @@ export function PlasmicRootProvider(
     Head?: React.ComponentType<any>;
 
     /**
+     * Link component to use. Can be any component that takes in props passed
+     * to an <a/> tag.
+     */
+    Link?: React.ComponentType<any>;
+
+    /**
      * Page path parameters (e.g. {slug: "foo"} if page path is
      * /products/[slug] and URI is /products/foo).
      */
@@ -149,6 +156,7 @@ export function PlasmicRootProvider(
     variation,
     translator,
     Head,
+    Link,
     pageParams,
     pageQuery,
     suspenseFallback,
@@ -204,6 +212,7 @@ export function PlasmicRootProvider(
       variation,
       translator,
       Head,
+      Link,
       user,
       userAuthToken,
       isUserLoading,
@@ -219,6 +228,7 @@ export function PlasmicRootProvider(
       splits,
       translator,
       Head,
+      Link,
       user,
       userAuthToken,
       isUserLoading,

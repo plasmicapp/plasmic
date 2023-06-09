@@ -40,3 +40,4 @@ export {
   TraitRegistration,
 } from "./registerTrait";
 export { default as repeatedElement } from "./repeatedElement";
+export * from "./link";
