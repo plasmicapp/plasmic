@@ -1,9 +1,9 @@
 import {
   ActionProps,
+  CodeComponentMode,
   DataProvider,
   repeatedElement,
   usePlasmicCanvasContext,
-  CodeComponentMode,
 } from "@plasmicapp/host";
 import {
   Checkbox,
@@ -20,7 +20,7 @@ import type { FormListOperation, FormListProps } from "antd/es/form/FormList";
 import type { ColProps } from "antd/es/grid/col";
 import equal from "fast-deep-equal";
 import React, { cloneElement, isValidElement } from "react";
-import { mergeProps } from "./react-utils";
+import { mergeProps, reactNodeToString } from "./react-utils";
 import { buttonComponentName } from "./registerButton";
 import { checkboxComponentName } from "./registerCheckbox";
 import {
@@ -32,28 +32,13 @@ import {
 import { radioGroupComponentName } from "./registerRadio";
 import { selectComponentName } from "./registerSelect";
 import { switchComponentName } from "./registerSwitch";
-import { Registerable, registerComponentHelper, usePrevious } from "./utils";
+import {
+  ensureArray,
+  Registerable,
+  registerComponentHelper,
+  usePrevious,
+} from "./utils";
 import { PropType } from "@plasmicapp/host/registerComponent";
-
-const reactNodeToString = function (reactNode: React.ReactNode): string {
-  let string = "";
-  if (typeof reactNode === "string") {
-    string = reactNode;
-  } else if (typeof reactNode === "number") {
-    string = reactNode.toString();
-  } else if (reactNode instanceof Array) {
-    reactNode.forEach(function (child) {
-      string += reactNodeToString(child);
-    });
-  } else if (isValidElement(reactNode)) {
-    string += reactNodeToString(reactNode.props.children);
-  }
-  return string;
-};
-
-function ensureArray<T>(x: T | T[]): T[] {
-  return Array.isArray(x) ? x : [x];
-}
 
 const FormItem = Form.Item;
 const FormList = Form.List;

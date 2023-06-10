@@ -5,6 +5,7 @@ import {
   registerComponentHelper,
   traverseReactEltTree,
 } from "./utils";
+import { reactNodeToString } from "./react-utils";
 
 export const AntdOption = Select.Option;
 export const AntdOptionGroup = Select.OptGroup;
@@ -35,6 +36,15 @@ export function AntdSelect(
       {...curated}
       mode={!mode || (mode as any) === "single" ? undefined : mode}
       popupClassName={`${defaultStylesClassName} ${popupScopeClassName} ${popupClassName}`}
+      optionFilterProp={curated.options ? "label" : undefined}
+      filterOption={(input, option) =>
+        (useChildren
+          ? reactNodeToString(option?.children)
+          : option?.label ?? ""
+        )
+          .toLowerCase()
+          .includes(input.toLowerCase())
+      }
       {...(suffixIcon && { suffixIcon })}
     />
   );
