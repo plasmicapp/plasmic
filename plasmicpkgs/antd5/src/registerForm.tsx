@@ -741,7 +741,7 @@ const useFormItemFullName = (name: FormItemProps["name"]) => {
     : undefined;
 };
 
-function useFormInstanceMaybe(): FormInstance<any> | undefined {
+export function useFormInstanceMaybe(): FormInstance<any> | undefined {
   return Form.useFormInstance();
 }
 

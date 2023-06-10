@@ -96,3 +96,5 @@ export const componentNameToInputType = {
 export const inputTypeToComponentName = Object.fromEntries(
   Object.entries(componentNameToInputType).map((kv) => kv.reverse())
 ) as Record<InputType, string>;
+
+export { useFormInstanceMaybe } from "./registerForm";
