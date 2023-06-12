@@ -122,3 +122,7 @@ export function usePrevious<T>(value: T | undefined): T | undefined {
 export function capitalize(value: string) {
   return value[0].toUpperCase() + value.slice(1);
 }
+
+export function ensureArray<T>(x: T | T[]): T[] {
+  return Array.isArray(x) ? x : [x];
+}

@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React from "react";
+import React, { isValidElement } from "react";
 
 export const isBrowser = typeof window !== "undefined";
 export const NONE = Symbol("NONE");
@@ -87,7 +87,7 @@ export type StrictProps<T, TExpected> = Exclude<
   keyof T,
   keyof TExpected
 > extends never
-  ? {}
+  ? any
   : Partial<"Unexpected extraneous props">;
 
 export type HTMLElementRefOf<T extends keyof JSX.IntrinsicElements> = Exclude<
@@ -183,4 +183,20 @@ export function getElementTypeName(element: React.ReactElement) {
     const comp = element.type as any;
     return comp.displayName ?? comp.name ?? comp.render?.name ?? "Component";
   }
+}
+
+export function reactNodeToString(reactNode: React.ReactNode): string {
+  let string = "";
+  if (typeof reactNode === "string") {
+    string = reactNode;
+  } else if (typeof reactNode === "number") {
+    string = reactNode.toString();
+  } else if (reactNode instanceof Array) {
+    reactNode.forEach(function (child) {
+      string += reactNodeToString(child);
+    });
+  } else if (isValidElement(reactNode)) {
+    string += reactNodeToString(reactNode.props.children);
+  }
+  return string;
 }
