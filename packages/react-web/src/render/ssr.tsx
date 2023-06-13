@@ -91,9 +91,11 @@ export function PlasmicRootProvider(props: PlasmicRootProviderProps) {
               value={props.i18n ?? props.translator}
             >
               <PlasmicHeadContext.Provider value={props.Head}>
-                <PlasmicLinkProvider Link={props.Link ?? PlasmicLinkInternal}>
+                <SafePlasmicLinkProvider
+                  Link={props.Link ?? PlasmicLinkInternal}
+                >
                   {children}
-                </PlasmicLinkProvider>
+                </SafePlasmicLinkProvider>
               </PlasmicHeadContext.Provider>
             </PlasmicTranslatorContext.Provider>
           </PlasmicDataSourceContextProvider>
@@ -101,6 +103,20 @@ export function PlasmicRootProvider(props: PlasmicRootProviderProps) {
       </PlasmicRootContext.Provider>
     </MaybeWrap>
   );
+}
+
+/**
+ * A PlasmicLinkProvider that anticipates PlasmicLinkProvider may not exist yet from
+ * @plasmicapp/host if the user is using an older version
+ */
+function SafePlasmicLinkProvider(
+  props: React.ComponentProps<typeof PlasmicLinkProvider>
+) {
+  if (PlasmicLinkProvider) {
+    return <PlasmicLinkProvider {...props} />;
+  } else {
+    return <>{props.children}</>;
+  }
 }
 
 export const useIsSSR = useAriaIsSSR;
