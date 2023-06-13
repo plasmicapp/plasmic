@@ -8,11 +8,12 @@ export const PlasmicLink = React.forwardRef(function PlasmicLink(
 ) {
   // The usePlasmicLinkMaybe function may be undefined, if host is not up-to-date
   const Link = usePlasmicLinkMaybe?.() ?? PlasmicLinkInternal;
-  if (Link === PlasmicLink) {
+  if (Link === PlasmicLink || Link === PlasmicLinkInternal) {
     // Just in case, break the cycle
     return <PlasmicLinkInternal {...props} ref={ref} />;
   } else {
-    return <Link {...props} ref={ref} />;
+    // Don't pass component/platform props to non-PlasmicLinkInternal
+    return <Link {...omit(props, "component", "platform")} ref={ref} />;
   }
 });
 
