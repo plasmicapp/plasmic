@@ -118,10 +118,27 @@ export function initPlasmicLoader(opts: InitOptions) {
   );
 }
 
+const PlasmicNextLink = React.forwardRef(function PlasmicNextLink(
+  props: React.ComponentProps<typeof NextLink>,
+  ref: React.Ref<HTMLAnchorElement>
+) {
+  // Basically renders NextLink, except when href is undefined,
+  // which freaks out NextLink :-/
+  if (props.href) {
+    return <NextLink {...props} />;
+  } else {
+    return <a {...props} href={undefined} ref={ref} />;
+  }
+});
+
 export function PlasmicRootProvider(
   props: Omit<React.ComponentProps<typeof CommonPlasmicRootProvider>, "Head">
 ) {
   return (
-    <CommonPlasmicRootProvider Head={NextHead} Link={NextLink} {...props} />
+    <CommonPlasmicRootProvider
+      Head={NextHead}
+      Link={PlasmicNextLink}
+      {...props}
+    />
   );
 }
