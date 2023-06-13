@@ -66,7 +66,7 @@ export function usePlasmicDataOp<
 } {
   const ctx = usePlasmicDataSourceContext();
   const enableLoadingBoundary = !!ph.useDataEnv?.()?.[enableLoadingBoundaryKey];
-  const { mutate } = usePlasmicDataConfig();
+  const { mutate, cache } = usePlasmicDataConfig();
   const isNullDataOp = !dataOp;
   const key = isNullDataOp
     ? null
@@ -105,10 +105,16 @@ export function usePlasmicDataOp<
         return fetchingData.fetchingPromise;
       }
       const fetcherPromise = fetcher();
-      fetcherPromise.then((data) => mutate(key, data));
+      fetcherPromise
+        .then((data) => mutate(key, data))
+        .catch((err) => {
+          // Cache the error here to avoid infinite loop
+          const keyInfo = key ? '$swr$' + key : '';
+          cache.set(keyInfo, { ...(cache.get(keyInfo) ?? {}), error: err });
+        });
       return fetcherPromise;
     },
-    [fetcher, fetchingData]
+    [fetcher, fetchingData, cache, key]
   );
   const res = useMutablePlasmicQueryData<T, E>(key, fetcher, {
     shouldRetryOnError: false,
