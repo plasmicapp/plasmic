@@ -1303,17 +1303,17 @@
     node-gyp "^7.1.0"
     read-package-json-fast "^2.0.1"
 
-"@plasmicapp/data-sources-context@0.1.10":
-  version "0.1.10"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources-context/-/data-sources-context-0.1.10.tgz#a3b0a9b38565e4784327d22e3365218f5053910f"
-  integrity sha512-afKdSCKZZAJVQvDJEIjqsKYH2RdjUSnFAUFgEYNWYE6tNSHxTprh4uNsLN4BLhrnY+JwwXar0YazXUHUOxBp8g==
+"@plasmicapp/data-sources-context@0.1.11":
+  version "0.1.11"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources-context/-/data-sources-context-0.1.11.tgz#30765e1eff677ac06d0ec6e8d0cecdbf8759f9bc"
+  integrity sha512-JFrtPCjdLIRnmZujWFuh025Id4bgd2fwllOOm2qMo4yoSm4oGDg6/2rRpD0qRC6DiN47RGt8tDR+ancYboxPjw==
 
-"@plasmicapp/host@1.0.129":
-  version "1.0.129"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.129.tgz#86c43191daeebb2fe9058d0c4187a430fb4506f8"
-  integrity sha512-hxbi+D9gBkwZRmAKZsJm3XIFNg8bbf5sl8oXV+rvOMkCwJarhs6tv/v+iHVQB5YWGUU9xWcSVcsMNc6rQ7jz2w==
+"@plasmicapp/host@1.0.149":
+  version "1.0.149"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.149.tgz#a44035b4ab3d8f171e98f96a305f64eeb533bc80"
+  integrity sha512-hA6vcy3a0JtgbXrorxopHE90j5YKygNnbWBpONG32rbUxiE9jnRMYq+R9j92uaHTe3g5kPpON4f8dT45DywGhw==
   dependencies:
-    "@plasmicapp/query" "0.1.62"
+    "@plasmicapp/query" "0.1.67"
     window-or-global "^1.0.1"
 
 "@plasmicapp/isomorphic-unfetch@^1.0.1":
@@ -1324,55 +1324,55 @@
     node-fetch "^2.6.1"
     unfetch "^4.2.0"
 
-"@plasmicapp/loader-core@1.0.99":
-  version "1.0.99"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-core/-/loader-core-1.0.99.tgz#d0e11334f2337bb85c60e3d5db435fa5cf18ce6d"
-  integrity sha512-07AAGwKMO8GJjp4WtP/mn8DqTJSSX/OILHXB8UqPw5M0TWXMVuBXG9ODugh127Gkf/zVKBx9NmTzh22bpfOW2g==
+"@plasmicapp/loader-core@1.0.105":
+  version "1.0.105"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-core/-/loader-core-1.0.105.tgz#2fdedbcf58ca2702528f56da661dcec6948137e4"
+  integrity sha512-bilKS/lX2oV5f/wQ3fMxgjRlkS5Kz+gAEqA9Ojnu4rB3vv+C/K+CcbS1I2BMohytUMKD8vhqIgkXqIqt7odwZg==
   dependencies:
     "@plasmicapp/isomorphic-unfetch" "^1.0.1"
-    "@plasmicapp/loader-fetcher" "1.0.22"
+    "@plasmicapp/loader-fetcher" "1.0.28"
 
-"@plasmicapp/loader-fetcher@1.0.22":
-  version "1.0.22"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-fetcher/-/loader-fetcher-1.0.22.tgz#9bd83db0593eec587fb438297f56d08f32fae0e0"
-  integrity sha512-vJ85Ji9oKdv/1VwzshoDjMoyw7oZnu/CNlKZWSM/AYFDmX5IPJhIYYTuEVrQJQk/buuP9L+khK52Qh+EaDK8bA==
+"@plasmicapp/loader-fetcher@1.0.28":
+  version "1.0.28"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-fetcher/-/loader-fetcher-1.0.28.tgz#a4870ad4832a9a8b2d26fc592fc91a7060bf5d44"
+  integrity sha512-kj1hl9RpeG0x/jTG6dpTa3kQOTGpWzRn0xNuKVhKEAoIg23pA/GX1bCAkxP5Vn0PqZXfW3uXnjct7FgYneGVnA==
   dependencies:
     "@plasmicapp/isomorphic-unfetch" "^1.0.1"
 
-"@plasmicapp/loader-react@^1.0.18":
-  version "1.0.250"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-react/-/loader-react-1.0.250.tgz#717e3e27edd4a048e19ddcfbe5cb8c324fba9b5f"
-  integrity sha512-5uSzP7tp3dCZcezOJppA2tiLC6/FoO6yONjwMsw/QkRztI0H85QXEKmp/OQhR0Ak7LfHR1fzy7aZnpdYqdLHLw==
+"@plasmicapp/loader-react@^1.0.274":
+  version "1.0.274"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-react/-/loader-react-1.0.274.tgz#1d788756115030a26afdac464c7e2387dc731e35"
+  integrity sha512-RS5gI6iJZbz14NUeN2FC94+OQq5+al6C41lTQTi6Jc7qStKqarpZFLln8nswRozaIlbMD89FTJAoTWSaiNR/Uw==
   dependencies:
-    "@plasmicapp/data-sources-context" "0.1.10"
-    "@plasmicapp/host" "1.0.129"
-    "@plasmicapp/loader-core" "1.0.99"
-    "@plasmicapp/loader-splits" "1.0.27"
-    "@plasmicapp/query" "0.1.62"
-    "@plasmicapp/react-ssr-prepass" "2.0.1"
+    "@plasmicapp/data-sources-context" "0.1.11"
+    "@plasmicapp/host" "1.0.149"
+    "@plasmicapp/loader-core" "1.0.105"
+    "@plasmicapp/loader-splits" "1.0.33"
+    "@plasmicapp/query" "0.1.67"
+    "@plasmicapp/react-ssr-prepass" "2.0.2"
     pascalcase "^1.0.0"
     react-is "^17.0.2"
     server-only "0.0.1"
 
-"@plasmicapp/loader-splits@1.0.27":
-  version "1.0.27"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-splits/-/loader-splits-1.0.27.tgz#5271de220410eabcc54ce78f8b45ff97f360a9f5"
-  integrity sha512-cNrav29GD7Gzh/qR9RI5Wb9H//UkzLtV2F2c7encM10iZDZWnHyPpz2VbjFpaZ9dh7q5VETZ6xnBQxJX0f3V/A==
+"@plasmicapp/loader-splits@1.0.33":
+  version "1.0.33"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-splits/-/loader-splits-1.0.33.tgz#76ce7ce41d46845f1758d5ab6f061adfbf927228"
+  integrity sha512-j4iXoSRKXr5SUoF/51NRyNdoXqH7ajg3cdf+FgHaKTmYsTQqpZxJda+gaRHvnJ0BlimCPIsH4vS8+lsvdklspw==
   dependencies:
-    "@plasmicapp/loader-fetcher" "1.0.22"
+    "@plasmicapp/loader-fetcher" "1.0.28"
     json-logic-js "^2.0.2"
 
-"@plasmicapp/query@0.1.62":
-  version "0.1.62"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.62.tgz#c1345843cdbd9cde2f5384f58f03f9c5909ee077"
-  integrity sha512-v85udhAieWsu6j1RePBlxw/Jo+LNbuZb5G8D6fGwbnxAn6ASu6EPXbRhTPHFtDE/KNoCVCPtqZsBjk86nCj0JQ==
+"@plasmicapp/query@0.1.67":
+  version "0.1.67"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.67.tgz#64515dc7782093fae5c3c741ad016fdcc9281200"
+  integrity sha512-BS+NrTtknKeaPhOD14K0AsUe8Mvq6qmnL/B9TE80Ac0dq1mwD7SIyptV7JGpYmiFzsO1v1XZ/RkR3jtpsKrpoQ==
   dependencies:
     swr "^1.0.0"
 
-"@plasmicapp/react-ssr-prepass@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.1.tgz#087265d755fc493039bd7a0d2f24166675dedc6c"
-  integrity sha512-imV4VOVz/8TptOCvNfg3bbwLvQMEaJvrvxHSfUzKl4uHJyvC2pAGkuLAOBiDOxhdD+sn73aaZEVMskG/6G5qxw==
+"@plasmicapp/react-ssr-prepass@2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.2.tgz#0ebe044d4b89080cac1f3ac0a3bc152eea5b9cb5"
+  integrity sha512-axZF7/lVsCqsDED40VkJOjf/Iow/RjfxLjdT3IRwP8KkjsLvy06ir0IfPhXJ+7TcHOiW87f79VmR4aMwJxy0sg==
 
 "@rollup/plugin-commonjs@^20.0.0":
   version "20.0.0"
