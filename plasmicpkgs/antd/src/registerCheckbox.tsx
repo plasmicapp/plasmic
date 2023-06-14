@@ -104,6 +104,19 @@ export function registerCheckbox(
   doRegisterComponent(CheckboxWrapper, customCheckboxMeta ?? checkboxMeta);
 }
 
+function getGroupOptions(componentProps: CheckboxGroupProps) {
+  const options = new Set<string>();
+  traverseReactEltTree(componentProps.children, (elt) => {
+    if (
+      elt?.type === CheckboxWrapper &&
+      typeof elt?.props?.value === "string"
+    ) {
+      options.add(elt.props.value);
+    }
+  });
+  return Array.from(options.keys());
+}
+
 export const checkboxGroupMeta: ComponentMeta<CheckboxGroupProps> = {
   name: "AntdCheckboxGroup",
   displayName: "Antd Checkbox Group",
@@ -116,21 +129,22 @@ export const checkboxGroupMeta: ComponentMeta<CheckboxGroupProps> = {
     value: {
       type: "choice",
       editOnly: true,
-      uncontrolledProp: "defaultValue",
       description: "Default selected value",
       multiSelect: true,
-      options: (componentProps) => {
-        const options = new Set<string>();
-        traverseReactEltTree(componentProps.children, (elt) => {
-          if (
-            elt?.type === CheckboxWrapper &&
-            typeof elt?.props?.value === "string"
-          ) {
-            options.add(elt.props.value);
-          }
-        });
-        return Array.from(options.keys());
-      },
+      options: getGroupOptions,
+    },
+    onChange: {
+      type: "eventHandler",
+      argTypes: [
+        {
+          name: "value",
+          type: {
+            type: "choice",
+            multiSelect: true,
+            options: getGroupOptions,
+          },
+        },
+      ],
     },
     children: {
       type: "slot",
@@ -141,6 +155,14 @@ export const checkboxGroupMeta: ComponentMeta<CheckboxGroupProps> = {
           name: "AntdCheckbox",
         },
       ],
+    },
+  },
+  states: {
+    value: {
+      type: "writable",
+      variableType: "array",
+      valueProp: "value",
+      onChangeProp: "onChange",
     },
   },
   importPath: "@plasmicpkgs/antd/skinny/registerCheckbox",

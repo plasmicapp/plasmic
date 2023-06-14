@@ -193,6 +193,16 @@ export function registerSubMenu(
   doRegisterComponent(SubMenu, customSubMenuMeta ?? subMenuMeta);
 }
 
+function getOpenKeysOptions(componentProps: MenuProps) {
+  const options = new Set<string>();
+  traverseReactEltTree(componentProps.children, (elt) => {
+    if (elt?.type === SubMenu && typeof elt?.key === "string") {
+      options.add(elt.key);
+    }
+  });
+  return Array.from(options.keys());
+}
+
 export const menuMeta: ComponentMeta<MenuProps> = {
   name: "AntdMenu",
   displayName: "Antd Menu",
@@ -225,18 +235,22 @@ export const menuMeta: ComponentMeta<MenuProps> = {
     openKeys: {
       type: "choice",
       editOnly: true,
-      uncontrolledProp: "defaultOpenKeys",
       description: "Array with the keys of default opened sub menus",
       multiSelect: true,
-      options: (componentProps) => {
-        const options = new Set<string>();
-        traverseReactEltTree(componentProps.children, (elt) => {
-          if (elt?.type === SubMenu && typeof elt?.key === "string") {
-            options.add(elt.key);
-          }
-        });
-        return Array.from(options.keys());
-      },
+      options: getOpenKeysOptions,
+    },
+    onOpenChange: {
+      type: "eventHandler",
+      argTypes: [
+        {
+          name: "openKeys",
+          type: {
+            type: "choice",
+            multiSelect: true,
+            options: getOpenKeysOptions,
+          },
+        },
+      ],
     },
     overflowedIndicator: {
       type: "slot",
@@ -301,6 +315,14 @@ export const menuMeta: ComponentMeta<MenuProps> = {
           name: "AntdSubMenu",
         },
       ],
+    },
+  },
+  states: {
+    openKeys: {
+      type: "writable",
+      variableType: "array",
+      valueProp: "openKeys",
+      onChangeProp: "onOpenChange",
     },
   },
   importPath: "@plasmicpkgs/antd/skinny/registerMenu",
