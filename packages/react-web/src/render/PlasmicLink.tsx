@@ -32,9 +32,17 @@ export const PlasmicLinkInternal = React.forwardRef(
         "locale",
       ];
 
+      // If this is a fragment identifier link, then we set
+      // scroll={false} so that smooth scrolling works
+      const isFragment = props.href?.startsWith("#");
+
       return React.createElement(
         props.component,
-        { ...pick(props, ...nextjsProps), legacyBehavior: true },
+        {
+          scroll: !isFragment,
+          ...pick(props, ...nextjsProps),
+          legacyBehavior: true,
+        },
         <a
           {...omit(props, "component", "platform", ...nextjsProps)}
           ref={ref}

@@ -135,13 +135,16 @@ const PlasmicNextLink = React.forwardRef(function PlasmicNextLink(
       locale,
       ...rest
     } = props;
+    // If this is a fragment identifier link, then we set
+    // scroll={false} so that smooth scrolling works
+    const isFragment = typeof href === "string" && href.startsWith("#");
     // We use legacyBehavior, because we don't know which
     // version of next the user has installed
     return (
       <NextLink
         href={href}
         replace={replace}
-        scroll={scroll}
+        scroll={scroll != null ? scroll : isFragment ? false : undefined}
         shallow={shallow}
         passHref={passHref}
         prefetch={prefetch}
