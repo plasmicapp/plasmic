@@ -148,6 +148,16 @@ function OutlineMessage() {
   return <div>* To re-arrange tab panes, use the Outline panel</div>;
 }
 
+function getActiveKeyOptions(props: TabsProps) {
+  const options = new Set<string>();
+  traverseReactEltTree(props.children, (elt) => {
+    if (elt?.type === TabPane && typeof elt?.key === "string") {
+      options.add(elt.key);
+    }
+  });
+  return Array.from(options.keys());
+}
+
 export const tabsMeta: ComponentMeta<TabsProps> = {
   name: "AntdTabs",
   displayName: "Antd Tabs",
@@ -215,17 +225,20 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
     activeKey: {
       type: "choice",
       editOnly: true,
-      uncontrolledProp: "defaultActiveKey",
       description: "Initial active TabPane's key",
-      options: (props) => {
-        const options = new Set<string>();
-        traverseReactEltTree(props.children, (elt) => {
-          if (elt?.type === TabPane && typeof elt?.key === "string") {
-            options.add(elt.key);
-          }
-        });
-        return Array.from(options.keys());
-      },
+      options: getActiveKeyOptions,
+    },
+    onChange: {
+      type: "eventHandler",
+      argTypes: [
+        {
+          name: "activeKey",
+          type: {
+            type: "choice",
+            options: getActiveKeyOptions,
+          },
+        },
+      ],
     },
     children: {
       type: "slot",
@@ -270,6 +283,14 @@ export const tabsMeta: ComponentMeta<TabsProps> = {
           },
         },
       ],
+    },
+  },
+  states: {
+    activeKey: {
+      type: "writable",
+      variableType: "array",
+      valueProp: "activeKey",
+      onChangeProp: "onChange",
     },
   },
   actions: [

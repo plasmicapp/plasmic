@@ -60,9 +60,17 @@ export const selectMeta: ComponentMeta<SelectProps> = {
     open: {
       type: "boolean",
       editOnly: true,
-      uncontrolledProp: "defaultOpen",
       description: "Initial open state of dropdown",
       defaultValueHint: false,
+    },
+    onDropdownVisibleChange: {
+      type: "eventHandler",
+      argTypes: [
+        {
+          name: "open",
+          type: "boolean",
+        },
+      ],
     },
     placeholder: {
       type: "slot",
@@ -144,6 +152,12 @@ export const selectMeta: ComponentMeta<SelectProps> = {
       variableType: "text",
       onChangeProp: "onChange",
       valueProp: "value",
+    },
+    open: {
+      type: "writable",
+      variableType: "boolean",
+      onChangeProp: "onDropdownVisibleChange",
+      valueProp: "open",
     },
   },
   importPath: "@plasmicpkgs/antd/skinny/registerSelect",

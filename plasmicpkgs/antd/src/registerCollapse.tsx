@@ -81,6 +81,17 @@ type CollapseProps = {
   closeIcon?: React.ReactNode;
 } & AntdCollapseProps;
 
+function getOptions(componentProps: CollapseProps) {
+  const options = new Set<string>();
+  // `children` is not defined in the Collapse props
+  traverseReactEltTree((componentProps as any).children, (elt) => {
+    if (elt?.type === CollapsePanel && typeof elt?.key === "string") {
+      options.add(elt.key);
+    }
+  });
+  return Array.from(options.keys());
+}
+
 export const collapsteMeta: ComponentMeta<CollapseProps> = {
   name: "AntdCollapse",
   displayName: "Antd Collapse",
@@ -93,19 +104,22 @@ export const collapsteMeta: ComponentMeta<CollapseProps> = {
     activeKey: {
       type: "choice",
       editOnly: true,
-      uncontrolledProp: "defaultActiveKey",
       description: "Key of the active panel",
       multiSelect: true,
-      options: (componentProps) => {
-        const options = new Set<string>();
-        // `children` is not defined in the Collapse props
-        traverseReactEltTree((componentProps as any).children, (elt) => {
-          if (elt?.type === CollapsePanel && typeof elt?.key === "string") {
-            options.add(elt.key);
-          }
-        });
-        return Array.from(options.keys());
-      },
+      options: getOptions,
+    },
+    onChange: {
+      type: "eventHandler",
+      argTypes: [
+        {
+          name: "value",
+          type: {
+            type: "choice",
+            multiSelect: true,
+            options: getOptions,
+          },
+        },
+      ],
     },
     bordered: {
       type: "boolean",
@@ -150,6 +164,14 @@ export const collapsteMeta: ComponentMeta<CollapseProps> = {
     closeIcon: {
       type: "slot",
       hidePlaceholder: true,
+    },
+  },
+  states: {
+    activeKey: {
+      type: "writable",
+      variableType: "array",
+      valueProp: "activeKey",
+      onChangeProp: "onChange",
     },
   },
   importPath: "@plasmicpkgs/antd/skinny/registerCollapse",

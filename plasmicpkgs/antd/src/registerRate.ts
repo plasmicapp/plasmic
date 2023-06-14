@@ -42,12 +42,28 @@ export const rateMeta: ComponentMeta<RateProps> = {
       type: "number",
       description: "The default value",
       editOnly: true,
-      uncontrolledProp: "defaultValue",
       defaultValueHint: 0,
+    },
+    onChange: {
+      type: "eventHandler",
+      argTypes: [
+        {
+          name: "value",
+          type: "number",
+        },
+      ],
     },
     character: {
       type: "slot",
       hidePlaceholder: true,
+    },
+  },
+  states: {
+    value: {
+      type: "writable",
+      variableType: "text",
+      onChangeProp: "onChange",
+      valueProp: "value",
     },
   },
   importPath: "@plasmicpkgs/antd/skinny/registerRate",

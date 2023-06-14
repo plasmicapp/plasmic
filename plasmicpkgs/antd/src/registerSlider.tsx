@@ -8,38 +8,35 @@ import { Registerable } from "./registerable";
 
 type SliderProps = Omit<
   SliderSingleProps | SliderRangeProps,
-  "value" | "defaultValue"
+  "value" | "defaultValue" | "onChange"
 > & {
-  value?: number;
-  defaultValue?: number;
-  value2?: number;
-  defaultValue2?: number;
+  value: number;
+  value2: number;
+  onChange: (val: number) => void;
+  onChange2: (val: number) => void;
 };
 
-export const Slider = React.forwardRef<unknown, SliderProps>(
-  ({ value, defaultValue, value2, defaultValue2, ...props }, ref) => {
-    const newProps = { ...props } as SliderSingleProps | SliderRangeProps;
-    if (props.range) {
-      if (typeof value === "number" || typeof value2 === "number") {
-        newProps.value = [value ?? 0, value2 ?? 0];
-      }
-      if (
-        typeof defaultValue === "number" ||
-        typeof defaultValue2 === "number"
-      ) {
-        newProps.defaultValue = [defaultValue ?? 0, defaultValue2 ?? 0];
-      }
-    } else {
-      if (typeof value === "number") {
-        newProps.value = value;
-      }
-      if (typeof defaultValue === "number") {
-        newProps.defaultValue = defaultValue;
-      }
+export const Slider = React.forwardRef<unknown, SliderProps>(function Slider(
+  { value, value2, onChange, onChange2, ...props },
+  ref
+) {
+  const newProps = { ...props } as SliderSingleProps | SliderRangeProps;
+  if (props.range) {
+    if (typeof value === "number" || typeof value2 === "number") {
+      newProps.value = [value ?? 0, value2 ?? 0];
     }
-    return <AntdSlider {...newProps} ref={ref} />;
+    newProps.onChange = (values: [number, number]) => {
+      onChange(values[0]);
+      onChange2(values[1]);
+    };
+  } else {
+    if (typeof value === "number") {
+      newProps.value = value;
+    }
+    newProps.onChange = onChange;
   }
-);
+  return <AntdSlider {...newProps} ref={ref} />;
+});
 
 export const sliderMeta: ComponentMeta<SliderProps> = {
   name: "AntdSlider",
@@ -83,16 +80,24 @@ export const sliderMeta: ComponentMeta<SliderProps> = {
     },
     value: {
       type: "number",
+      displayName: "Value",
       editOnly: true,
-      uncontrolledProp: "defaultValue",
-      description: "The default value of slider",
+      description: "Initial value for the slider",
+    },
+    onChange: {
+      type: "eventHandler",
+      argTypes: [{ name: "value", type: "number" }],
     },
     value2: {
       type: "number",
-      displayName: "value 2",
+      displayName: "Second Value",
       editOnly: true,
-      uncontrolledProp: "defaultValue2",
-      description: "The default value for the second value of the slider",
+      description: "Initial second value for the slider",
+      hidden: (props) => !props.range,
+    },
+    onChange2: {
+      type: "eventHandler",
+      argTypes: [{ name: "value", type: "number" }],
       hidden: (props) => !props.range,
     },
     step: {
@@ -107,6 +112,20 @@ export const sliderMeta: ComponentMeta<SliderProps> = {
       description:
         "Tick mark of Slider, type of key must be number, and must in closed interval [min, max]," +
         " each mark can declare its own style",
+    },
+  },
+  states: {
+    value: {
+      type: "writable",
+      variableType: "number",
+      valueProp: "value",
+      onChangeProp: "onChange",
+    },
+    value2: {
+      type: "writable",
+      variableType: "number",
+      valueProp: "value2",
+      onChangeProp: "onChange2",
     },
   },
   defaultStyles: {
