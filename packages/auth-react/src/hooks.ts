@@ -2,7 +2,7 @@ import {
   getPlasmicAppUser,
   getPlasmicAppUserFromToken,
 } from '@plasmicapp/auth-api';
-import useSWR from 'swr/immutable';
+import { useMutablePlasmicQueryData } from '@plasmicapp/query';
 
 interface PlasmicAuthData {
   user: any;
@@ -10,6 +10,7 @@ interface PlasmicAuthData {
 }
 
 const STORAGE_USER_KEY = 'plasmic_user';
+const isBrowser = typeof window !== 'undefined';
 
 function getCallbackParams() {
   const params = new URLSearchParams(window.location.search);
@@ -37,7 +38,18 @@ function getCodeVerifier() {
 function removeCallbackParams() {
   try {
     window.history.replaceState({}, '', location.pathname);
-  } catch (err) {}
+  } catch (err) {
+    console.error(`Error while removing callback params: ${err}`);
+  }
+}
+
+// continueTo can be only a pathname or a full url with origin
+// we can consider that currently we are at the callback page
+// with callback params, so ignore the search params
+function isContinueToSameLocation(continueTo: string) {
+  const pathname = window.location.pathname;
+  const origin = window.location.origin;
+  return continueTo === pathname || continueTo === origin + pathname;
 }
 
 async function handleCallback(opts: {
@@ -49,13 +61,15 @@ async function handleCallback(opts: {
 }): Promise<PlasmicAuthData | undefined> {
   const { host, appId, code, state, codeVerifier } = opts;
 
-  let continueTo = undefined;
+  let continueTo = '/';
   try {
     if (state) {
       const parsedState = JSON.parse(state);
       continueTo = parsedState.continueTo;
     }
-  } catch (err) {}
+  } catch (err) {
+    console.error(`Error while parsing state: ${err}`);
+  }
 
   const result = await getPlasmicAppUser({
     host,
@@ -71,10 +85,10 @@ async function handleCallback(opts: {
 
   localStorage.setItem(STORAGE_USER_KEY, result.token);
 
-  if (continueTo) {
+  if (!isContinueToSameLocation(continueTo)) {
     window.location.assign(continueTo);
   } else {
-    window.location.assign('/');
+    removeCallbackParams();
   }
 
   return { token: result.token, user: result.user };
@@ -111,10 +125,11 @@ async function checkAlreadyLoggedUser(opts: {
  */
 export function usePlasmicAuth(opts: { host?: string; appId?: string }) {
   const { host, appId } = opts;
-  const { data: userData, isLoading } = useSWR(
-    ['plasmic-auth', appId],
+  const authKey = `$csq$plasmic-auth-${appId}`;
+  const { data: userData, isLoading } = useMutablePlasmicQueryData(
+    authKey,
     async (): Promise<PlasmicAuthData> => {
-      if (!appId) {
+      if (!appId || !isBrowser) {
         return { user: null, token: null };
       }
 
@@ -136,9 +151,9 @@ export function usePlasmicAuth(opts: { host?: string; appId?: string }) {
               console.error('No code verifier found');
               return { user: null, token: null };
             } else {
-              // We will perform the code exchange, currently it's assumed that
-              // by the end of the exchange a navigation is going to happen
-              // This can be improved so that we don't navigate to the same page
+              // Perform code exchange, by the end of the callback handling we will either still be
+              // in the callback page or we will be redirected to the continueTo page.
+
               const result = await handleCallback({
                 host,
                 appId,
@@ -146,16 +161,12 @@ export function usePlasmicAuth(opts: { host?: string; appId?: string }) {
                 state: callbackParams.state!,
                 codeVerifier,
               });
-              // If the code exchange failed, we just remove the callback params
+
+              // Undefined result means that the code exchange failed
               if (!result) {
                 removeCallbackParams();
                 return { user: null, token: null };
               }
-
-              // If the code exchange succeeded, we just return the result
-              // Even though we are not going to use it, because we are going to navigate
-              // If the callback page requires login, it will may trigger a login redirect
-              // and we will end up in this hook again instead of displaying an unauthorized page
 
               // In the above case where the code exchange failed and the callback page requires login
               // a login redirect will be triggered
@@ -167,7 +178,9 @@ export function usePlasmicAuth(opts: { host?: string; appId?: string }) {
             host,
           });
         }
-      } catch (err) {}
+      } catch (err) {
+        console.error(`Error while handling auth: ${err}`);
+      }
 
       return { user: null, token: null };
     }
