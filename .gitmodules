@@ -1,3 +1,0 @@
-[submodule "packages/react-ssr-prepass"]
-	path = packages/react-ssr-prepass
-	url = https://gerrit.aws.plasmic.app/react-ssr-prepass

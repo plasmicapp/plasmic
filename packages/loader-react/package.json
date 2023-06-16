@@ -53,10 +53,9 @@
     "@plasmicapp/host": "1.0.149",
     "@plasmicapp/loader-core": "1.0.105",
     "@plasmicapp/loader-splits": "1.0.33",
+    "@plasmicapp/prepass": "1.0.0",
     "@plasmicapp/query": "0.1.67",
-    "@plasmicapp/react-ssr-prepass": "2.0.2",
     "pascalcase": "^1.0.0",
-    "react-is": "^17.0.2",
     "server-only": "0.0.1"
   },
   "peerDependencies": {

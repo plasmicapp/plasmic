@@ -1,0 +1,41 @@
+{
+  "name": "@plasmicapp/prepass",
+  "version": "1.0.0",
+  "types": "./dist/index.d.ts",
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.esm.js",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=12"
+  },
+  "scripts": {
+    "build": "yarn build:types && yarn build:index",
+    "build:types": "yarn tsc --emitDeclarationOnly",
+    "build:index": "esbuild --format=cjs --outfile=./dist/index.cjs.js ./src/index.tsx && esbuild --format=esm --outfile=./dist/index.esm.js ./src/index.tsx",
+    "test": "yarn --cwd=../.. test",
+    "coverage": "yarn --cwd=../.. test --coverage --passWithNoTests",
+    "lint": "eslint",
+    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
+  },
+  "dependencies": {
+    "@plasmicapp/query": "0.1.67",
+    "@plasmicapp/react-ssr-prepass": "2.0.2"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs.js",
+      "import": "./dist/index.esm.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
