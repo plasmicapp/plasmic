@@ -55,11 +55,18 @@ interface PlasmicPageGuardProps {
   minRole?: string;
   canTriggerLogin: boolean;
   children: React.ReactNode;
+  unauthorizedComp?: React.ReactNode;
 }
 
 export function PlasmicPageGuard(props: PlasmicPageGuardProps) {
-  const { appId, authorizeEndpoint, minRole, canTriggerLogin, children } =
-    props;
+  const {
+    appId,
+    authorizeEndpoint,
+    minRole,
+    canTriggerLogin,
+    children,
+    unauthorizedComp,
+  } = props;
 
   const dataSourceCtxValue = usePlasmicDataSourceContext();
 
@@ -118,6 +125,10 @@ export function PlasmicPageGuard(props: PlasmicPageGuardProps) {
   }
 
   if (!canUserViewPage()) {
+    if (unauthorizedComp) {
+      return <>{unauthorizedComp}</>;
+    }
+
     return <div>You don't have access to this page</div>;
   }
 
