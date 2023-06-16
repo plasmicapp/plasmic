@@ -7,7 +7,7 @@ export interface ConditionGuardProps {
   condition: boolean;
   onNotSatisfied?: () => Promise<void>;
   children: React.ReactNode;
-  skipPaths: Array<{ path: string }>;
+  skipPaths?: Array<{ path: string }>;
 }
 
 function ConditionGuardOnNotSatisfied({
@@ -23,12 +23,14 @@ function ConditionGuardOnNotSatisfied({
   return null;
 }
 
-function isCurrentLocationInSkipPaths(skipPaths: Array<{ path: string }>) {
+function isCurrentLocationInSkipPaths(skipPaths?: Array<{ path: string }>) {
   const pathname = window.location.pathname;
   // Ignore search params
   const currentPath = window.location.origin + pathname;
-  return skipPaths.some(
-    ({ path }) => path === pathname || path === currentPath
+  const plasmicPathname = (globalThis as any)?.["__PLASMIC_STUDIO_PATH"]?.();
+  return skipPaths?.some(
+    ({ path }) =>
+      path === pathname || path === currentPath || path === plasmicPathname
   );
 }
 
