@@ -1,6 +1,7 @@
 import {
   ActionProps,
   CodeComponentMode,
+  ComponentHelpers,
   DataProvider,
   repeatedElement,
   usePlasmicCanvasContext,
@@ -35,7 +36,6 @@ import { selectComponentName } from "./registerSelect";
 import { switchComponentName } from "./registerSwitch";
 import {
   ensureArray,
-  getAllFieldsInObject,
   Registerable,
   registerComponentHelper,
   setFieldsToUndefined,
@@ -204,7 +204,7 @@ const Internal = React.forwardRef(
     );
     props.setControlContextData?.({ formInstance: form });
     React.useImperativeHandle(ref, () => ({
-      form,
+      formInstance: form,
       setFieldsValue: (newValues: Record<string, any>) => {
         form.setFieldsValue(newValues);
         extendedOnValuesChange?.(form.getFieldsValue(true));
@@ -279,6 +279,7 @@ interface FormRefActions
     "setFieldsValue" | "resetFields" | "setFieldValue"
   > {
   clearFields: () => void;
+  formInstance: FormInstance<any>;
 }
 
 export const FormWrapper = React.forwardRef(
@@ -388,6 +389,16 @@ const colProp = (
     description,
     defaultValue: defaultValue,
   } as const);
+
+export const formHelpers: ComponentHelpers<FormWrapperProps> = {
+  states: {
+    value: {
+      onMutate: (value, $ref) => {
+        $ref?.formInstance?.setFieldsValue(value);
+      },
+    },
+  },
+};
 
 export const formComponentName = "plasmic-antd5-form";
 
@@ -654,6 +665,11 @@ export function registerForm(loader?: Registerable) {
         variableType: "object",
         onChangeProp: "extendedOnValuesChange",
       },
+    },
+    componentHelpers: {
+      helpers: formHelpers,
+      importName: "formHelpers",
+      importPath: "@plasmicpkgs/antd5/skinny/registerForm",
     },
     refActions: {
       setFieldsValue: {

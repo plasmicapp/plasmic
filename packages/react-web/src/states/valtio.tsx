@@ -123,8 +123,17 @@ export function subscribeToValtio(
   const maybeValtioProxy = spec.valueProp
     ? $$state.env.$props[spec.valueProp]
     : get($$state.stateValues, statePath);
-  if (isValtioProxy(maybeValtioProxy) && spec.onChangeProp) {
+  if (
+    isValtioProxy(maybeValtioProxy) &&
+    (spec.onChangeProp || (spec.onMutate && node.isLeaf()))
+  ) {
     const unsub = subscribe(maybeValtioProxy, () => {
+      if (spec.onMutate && node.isLeaf()) {
+        spec.onMutate(
+          maybeValtioProxy,
+          spec.refName ? $$state.env.$refs[spec.refName] : undefined
+        );
+      }
       $$state.env.$props[spec.onChangeProp!]?.(
         spec.valueProp
           ? $$state.env.$props[spec.valueProp]
@@ -277,7 +286,7 @@ function create$StateProxy(
       },
       set(target, property, value, receiver) {
         const nextPath = getNextPath(property);
-        let nextNode = currNode.makeTransition(property);
+        const nextNode = currNode.makeTransition(property);
         const nextSpec = nextNode?.getSpec();
 
         if (property === "registerInitFunc" && currPath.length === 0) {
@@ -342,6 +351,7 @@ const envFieldsAreNonNill = (
   $props: env.$props,
   $ctx: env.$ctx ?? {},
   $queries: env.$queries ?? {},
+  $refs: env.$refs ?? {},
 });
 
 /**
@@ -358,9 +368,7 @@ const envFieldsAreNonNill = (
  *       opts?: { inCanvas: boolean }
  *    }
  */
-function extractDollarStateParametersBackwardCompatible(
-  ...rest: any[]
-): {
+function extractDollarStateParametersBackwardCompatible(...rest: any[]): {
   env: DollarStateEnv;
   opts?: { inCanvas: boolean };
 } {

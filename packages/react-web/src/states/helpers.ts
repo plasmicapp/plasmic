@@ -37,6 +37,13 @@ export function initializeCodeComponentStates(
   }
 }
 
+export function generateOnMutateForSpec(
+  stateName: string,
+  componentHelpers: ComponentHelpers<any>
+) {
+  return componentHelpers?.states?.[stateName]?.onMutate;
+}
+
 export function initializePlasmicStates(
   $state: $State,
   states: {
@@ -129,9 +136,11 @@ export function getStateCellsInPlasmicProxy(
   if (!isPlasmicStateProxy(obj)) {
     return [];
   }
-  const { node: rootNode, path: rootPath, isOutside } = obj[
-    PLASMIC_STATE_PROXY_SYMBOL
-  ];
+  const {
+    node: rootNode,
+    path: rootPath,
+    isOutside,
+  } = obj[PLASMIC_STATE_PROXY_SYMBOL];
   if (isOutside) {
     return [];
   }
