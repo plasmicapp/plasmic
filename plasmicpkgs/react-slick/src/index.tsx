@@ -143,29 +143,19 @@ export const sliderMeta: ComponentMeta<Settings> = {
   props: {
     children: {
       type: "slot",
-      defaultValue: [
-        {
+      defaultValue: [0, 1, 2].map((i) => ({
+        type: "vbox",
+        children: {
           type: "img",
-          src: "https://via.placeholder.com/150x90/FF0000/FFFFFF/?text=Slide_1",
+          src:
+            "https://static1.plasmic.app/components/react-slick/slide" +
+            (i + 1) +
+            ".png",
           styles: {
             maxWidth: "100%",
           },
         },
-        {
-          type: "img",
-          src: "https://via.placeholder.com/150x90/00FF00/FFFFFF/?text=Slide_2",
-          styles: {
-            maxWidth: "100%",
-          },
-        },
-        {
-          type: "img",
-          src: "https://via.placeholder.com/150x90/0000FF/FFFFFF/?text=Slide_3",
-          styles: {
-            maxWidth: "100%",
-          },
-        },
-      ],
+      })),
     },
     editingSlide: {
       displayName: "Currently edited slide",
