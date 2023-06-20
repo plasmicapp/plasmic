@@ -9,6 +9,7 @@ export interface DataSourceSchema {
 
 export interface TableSchema {
   id: string;
+  schema?: string;
   label?: string;
   fields: TableFieldSchema[];
 }
