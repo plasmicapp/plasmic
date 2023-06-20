@@ -19,6 +19,7 @@ export interface LocalizationStringsArgs extends CommonArgs {
   forceOverwrite: boolean;
   keyScheme: "content" | "hash" | "path" | undefined;
   tagPrefix: string | undefined;
+  excludeDeps: boolean | undefined;
 }
 
 export async function localizationStrings(
@@ -89,7 +90,8 @@ export async function localizationStrings(
       opts.format,
       keyScheme ?? "content",
       tagPrefix,
-      projectIdsAndTokens
+      projectIdsAndTokens,
+      opts.excludeDeps
     );
     if (existsBuffered(output)) {
       const overwrite = await confirmWithUser(

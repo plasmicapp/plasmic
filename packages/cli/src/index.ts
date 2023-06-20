@@ -263,6 +263,12 @@ yargs
             "By default, rich text with markup tags look like '<0>hello</0>'. If your localization framework requires num-numeric tags, then specify a prefix; for example a prefix of 'n' turns it into '<n0>hello</n0>'.",
           type: "string",
         })
+        .option("exclude-deps", {
+          type: "boolean",
+          describe:
+            "By default, strings from imported dependencies are also included. Specify --exclude-deps to only include strings from projects you explicitly specify.",
+          default: false,
+        })
         .option("output", {
           alias: "o",
           describe: "Output file",

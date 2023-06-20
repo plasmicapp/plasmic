@@ -304,14 +304,21 @@ export class PlasmicApi {
     format: "po" | "json" | "lingui",
     keyScheme: "content" | "hash" | "path",
     tagPrefix: string | undefined,
-    projectIdsAndTokens: ProjectIdAndToken[]
+    projectIdsAndTokens: ProjectIdAndToken[],
+    excludeDeps: boolean | undefined
   ) {
+    const params = new URLSearchParams(
+      [
+        ["format", format],
+        ["keyScheme", keyScheme],
+        ["preview", "true"],
+        ...projects.map((p) => ["projectId", p]),
+        tagPrefix ? ["tagPrefix", tagPrefix] : undefined,
+        excludeDeps ? ["excludeDeps", "true"] : undefined,
+      ].filter((x): x is [string, string] => !!x)
+    );
     const result = await this.get(
-      `${
-        this.codegenHost
-      }/api/v1/localization/gen-texts?format=${format}&keyScheme=${keyScheme}&tagPrefix=${tagPrefix}&preview=true&${projects
-        .map((p) => `projectId=${p}`)
-        .join("&")}`,
+      `${this.codegenHost}/api/v1/localization/gen-texts?${params.toString()}`,
       undefined,
       {
         "x-plasmic-api-project-tokens": projectIdsAndTokens
