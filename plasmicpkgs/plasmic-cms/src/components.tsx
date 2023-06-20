@@ -61,7 +61,7 @@ interface CmsCredentialsProviderProps extends DatabaseConfig {
   children?: React.ReactNode;
 }
 
-const defaultHost = "https://studio.plasmic.app";
+const defaultHost = "https://data.plasmic.app";
 
 export const cmsCredentialsProviderMeta: GlobalContextMeta<CmsCredentialsProviderProps> =
   {
@@ -81,6 +81,7 @@ See also the [getting started video](https://www.youtube.com/watch?v=-Rrn92VtRBc
         description: `The default host for use in production is ${defaultHost}.`,
         defaultValue: defaultHost,
         defaultValueHint: defaultHost,
+        advanced: true,
       },
       databaseId: {
         type: "string",
