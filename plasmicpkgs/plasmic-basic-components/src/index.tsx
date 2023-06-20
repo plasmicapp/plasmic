@@ -11,3 +11,5 @@ export * from "./Video";
 export { default as Video } from "./Video";
 export { default as LoadingBoundary } from "./LoadingBoundary";
 export * from "./LoadingBoundary";
+export { default as ConditionGuard } from "./ConditionGuard";
+export * from "./ConditionGuard";
