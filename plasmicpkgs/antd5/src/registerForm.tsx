@@ -36,6 +36,7 @@ import { selectComponentName } from "./registerSelect";
 import { switchComponentName } from "./registerSwitch";
 import {
   ensureArray,
+  has,
   Registerable,
   registerComponentHelper,
   setFieldsToUndefined,
@@ -721,6 +722,8 @@ export function registerForm(loader?: Registerable) {
 
 interface FormControlContextData {
   internalFormCtx?: InternalFormInstanceContextData;
+  formInstance?: FormInstance<any>;
+  parentFormItemPath: (string | number)[];
 }
 
 interface CuratedFieldData {
@@ -881,10 +884,13 @@ export function FormItemWrapper(props: InternalFormItemProps) {
       initialValue: props.initialValue,
       name: props.name,
     });
+    const fullPath = React.useContext(PathContext).fullPath;
     const internalFormCtx = React.useContext(InternalFormInstanceContext);
     const { fireOnValuesChange, forceRemount } = internalFormCtx ?? {};
     props.setControlContextData?.({
       internalFormCtx,
+      formInstance: form,
+      parentFormItemPath: fullPath,
     });
     React.useEffect(() => {
       if (prevPropValues.current.name !== props.name) {
@@ -996,6 +1002,7 @@ function FormItemForwarder({ formItemProps, ...props }: any) {
 const commonFormItemProps: Record<string, PropType<InternalFormItemProps>> = {
   name: {
     type: "string" as const,
+    required: true,
   },
   initialValue: {
     type: "string" as const,
