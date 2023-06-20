@@ -10,5 +10,6 @@ module.exports = {
   root: true,
   rules: {
     "@typescript-eslint/no-empty-interface": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
   },
 };

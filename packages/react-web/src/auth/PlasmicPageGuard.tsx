@@ -55,6 +55,7 @@ interface PlasmicPageGuardProps {
   minRole?: string;
   canTriggerLogin: boolean;
   children: React.ReactNode;
+  unauthorizedComp?: React.ReactNode;
 }
 
 export function PlasmicPageGuard(props: PlasmicPageGuardProps) {
@@ -64,6 +65,7 @@ export function PlasmicPageGuard(props: PlasmicPageGuardProps) {
     minRole,
     canTriggerLogin,
     children,
+    unauthorizedComp,
   } = props;
 
   const dataSourceCtxValue = usePlasmicDataSourceContext();
@@ -105,15 +107,28 @@ export function PlasmicPageGuard(props: PlasmicPageGuardProps) {
     return dataSourceCtxValue.user.roleIds.includes(minRole);
   }
 
+  /*
+  PlasmicPageGuard has three cases:
+  1. No value of dataSourceCtxValue, user is loading or a trigger login should be performed.
+     In this case, we don't want to render the children or the access denied message.
+     While the user is loading we look to see if don't have a user value as we can be in a
+     revalidate state.
+  2. The user doesn't have access to the page in which we show an access denied message.
+  3. The user has access to the page in which we render the children.
+  */
   if (
     !dataSourceCtxValue ||
-    dataSourceCtxValue.isUserLoading ||
+    (dataSourceCtxValue.isUserLoading && !dataSourceCtxValue.user) ||
     (!dataSourceCtxValue.user && minRole && canTriggerLogin)
   ) {
     return null;
   }
 
   if (!canUserViewPage()) {
+    if (unauthorizedComp) {
+      return <>{unauthorizedComp}</>;
+    }
+
     return <div>You don't have access to this page</div>;
   }
 
