@@ -26,7 +26,7 @@ export type {
   PlasmicTranslator,
 } from "./PlasmicRootProvider";
 export { PlasmicRootProvider } from "./PlasmicRootProvider";
-export { extractPlasmicQueryData, plasmicPrepass } from "./prepass";
+export { extractPlasmicQueryData, plasmicPrepass } from "@plasmicapp/prepass";
 export {
   extractPlasmicQueryDataFromElement,
   hydrateFromElement,

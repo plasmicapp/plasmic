@@ -45,6 +45,7 @@
     "packages/loader-svelte",
     "packages/loader-vue",
     "packages/preamble",
+    "packages/prepass",
     "packages/query",
     "packages/react-web",
     "packages/watcher",

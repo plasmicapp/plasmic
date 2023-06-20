@@ -41,6 +41,11 @@
       "import": "./lib/query/index.js",
       "require": "./lib/query/index.cjs.js"
     },
+    "./lib/prepass": {
+      "types": "./lib/prepass/index.d.ts",
+      "import": "./lib/prepass/index.js",
+      "require": "./lib/prepass/index.cjs.js"
+    },
     "./lib/plasmic.css": "./lib/plasmic.css",
     "./skinny": {
       "import": "./skinny/dist/index.js"
@@ -78,6 +83,7 @@
     "@plasmicapp/data-sources": "0.1.93",
     "@plasmicapp/data-sources-context": "0.1.11",
     "@plasmicapp/host": "1.0.149",
+    "@plasmicapp/prepass": "1.0.0",
     "@plasmicapp/query": "0.1.67",
     "@react-aria/checkbox": "^3.5.0",
     "@react-aria/focus": "^3.7.0",
