@@ -47,6 +47,11 @@
       "require": "./lib/prepass/index.cjs.js"
     },
     "./lib/plasmic.css": "./lib/plasmic.css",
+    "./lib/auth": {
+      "types": "./lib/auth/index.d.ts",
+      "import": "./lib/auth/index.js",
+      "require": "./lib/auth/index.cjs.js"
+    },
     "./skinny": {
       "import": "./skinny/dist/index.js"
     },
@@ -61,7 +66,7 @@
   ],
   "scripts": {
     "build": "rollup -c && mkdir -p lib && cp src/styles/plasmic.css lib/",
-    "clean": "rm -rf dist/ skinny/dist/ lib/host/*js lib/host/*.ts lib/host/*.map lib/data-sources/*js lib/data-sources/*.ts lib/data-sources/*.map lib/query/*js lib/query/*.ts lib/query/*.map",
+    "clean": "rm -rf dist/ skinny/dist/ lib/host/*js lib/host/*.ts lib/host/*.map lib/data-sources/*js lib/data-sources/*.ts lib/data-sources/*.map lib/query/*js lib/query/*.ts lib/query/*.map lib/auth/*js lib/auth/*.ts lib/auth/*.map",
     "start": "tsdx watch",
     "test": "yarn --cwd=../.. test",
     "lint": "tsdx lint",
@@ -80,6 +85,7 @@
   },
   "prettier": {},
   "dependencies": {
+    "@plasmicapp/auth-react": "^0.0.5",
     "@plasmicapp/data-sources": "0.1.94",
     "@plasmicapp/data-sources-context": "0.1.11",
     "@plasmicapp/host": "1.0.149",
