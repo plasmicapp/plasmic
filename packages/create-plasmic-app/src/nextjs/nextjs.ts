@@ -11,6 +11,7 @@ import {
 import { ensure } from "../utils/lang-utils";
 import { installUpgrade } from "../utils/npm-utils";
 import { CPAStrategy, GenerateFilesArgs } from "../utils/strategy";
+import { makeDotEnv_app_loader } from "./templates/app-loader/dot-env";
 import { makeCatchallPage_app_loader } from "./templates/app-loader/catchall-page";
 import { makePlasmicHostPage_app_loader } from "./templates/app-loader/plasmic-host";
 import { makePlasmicInit_app_loader } from "./templates/app-loader/plasmic-init";
@@ -107,7 +108,7 @@ async function generateFilesAppDir(args: GenerateFilesArgs) {
   // ./plasmic-init.ts
   await fs.writeFile(
     path.join(projectPath, `plasmic-init.${jsOrTs}`),
-    makePlasmicInit_app_loader(projectId, ensure(projectApiToken))
+    makePlasmicInit_app_loader()
   );
 
   // ./plasmic-init-client.ts
@@ -128,6 +129,13 @@ async function generateFilesAppDir(args: GenerateFilesArgs) {
   await fs.writeFile(
     path.join(projectPath, "app", "[[...catchall]]", `page.${jsOrTs}x`),
     makeCatchallPage_app_loader(jsOrTs)
+  );
+  
+  // ./.env.local
+  await fs.mkdir(path.join(projectPath, ".env.local"));
+  await fs.writeFile(
+    path.join(projectPath, ".env.local"),
+    makeDotEnv_app_loader(projectId, ensure(projectApiToken))
   );
 }
 

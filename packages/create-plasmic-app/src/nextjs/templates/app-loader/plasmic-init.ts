@@ -1,14 +1,11 @@
-export function makePlasmicInit_app_loader(
-  projectId: string,
-  projectApiToken: string
-): string {
+export function makePlasmicInit_app_loader(): string {
   return `import { initPlasmicLoader } from "@plasmicapp/loader-nextjs/react-server-conditional";
 
 export const PLASMIC = initPlasmicLoader({
   projects: [
     {
-      id: "${projectId}",
-      token: "${projectApiToken}",
+      id: process.env.PLASMIC_PROJECT_ID,
+      token: process.env.PLASMIC_API_TOKEN,
     },
   ],
 
