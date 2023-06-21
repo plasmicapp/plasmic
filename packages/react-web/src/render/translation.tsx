@@ -27,6 +27,16 @@ function isIterable(val: any): val is Iterable<any> {
   return val != null && typeof val[Symbol.iterator] === "function";
 }
 
+export function usePlasmicTranslator() {
+  const _t = React.useContext(PlasmicTranslatorContext);
+  const translator = _t
+    ? typeof _t === "function"
+      ? _t
+      : _t.translator
+    : undefined;
+  return translator;
+}
+
 export function genTranslatableString(
   elt: React.ReactNode,
   opts?: {

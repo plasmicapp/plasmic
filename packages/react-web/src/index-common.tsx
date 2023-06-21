@@ -36,6 +36,7 @@ export {
   genTranslatableString,
   Trans,
   PlasmicTranslator,
+  usePlasmicTranslator,
 } from "./render/translation";
 export { useTrigger } from "./render/triggers";
 export * from "./states";
