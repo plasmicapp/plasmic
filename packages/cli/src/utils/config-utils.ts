@@ -351,10 +351,10 @@ export interface ProjectLock {
 
 export interface I18NConfig {
   /**
-   * For localization, whether the extracted strings are keyed by its content
-   * or by a hash of its content
+   * For localization, whether the extracted strings are keyed by its content,
+   * or by a hash of its content, or by where the string is found ("path")
    */
-  keyScheme: "content" | "hash";
+  keyScheme: "content" | "hash" | "path";
   /**
    * For localization, rich text with embedded tags are exported as
    * "Hello <0>there</0>, I am <1>here</1>".  Some frameworks, like

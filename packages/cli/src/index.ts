@@ -238,7 +238,7 @@ yargs
         .option("projects", {
           alias: "p",
           describe:
-            "One or more projects to generate localization strings, separated by comma. Version constraints can be specified using @. Example: projectid, projectid@>=version",
+            "One or more projects to generate localization strings, separated by comma. Version constraints can be specified using @. Example: projectid, projectid@>=version. If not specified, will be derived from plasmic.json if you are using codegen.",
           type: "array",
         })
         .option("host", {

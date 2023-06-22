@@ -25,10 +25,40 @@ export interface LocalizationStringsArgs extends CommonArgs {
 export async function localizationStrings(
   opts: LocalizationStringsArgs
 ): Promise<void> {
-  if (!opts.projects || opts.projects.length === 0) {
+  if (!opts.baseDir) {
+    opts.baseDir = process.cwd();
+  }
+
+  const maybeConfigFile =
+    opts.config || findConfigFile(opts.baseDir, { traverseParents: true });
+
+  let projectSpecs = opts.projects;
+  let keyScheme = opts.keyScheme;
+  let tagPrefix = opts.tagPrefix;
+  const projectTokensFromConfig: ProjectIdAndToken[] = [];
+  if (maybeConfigFile) {
+    // if plasmic.json exists, then we can derive some settings from
+    // there instead.
+    logger.info(`Using settings from ${maybeConfigFile}...`);
+    const context = await getContext(opts, { enableSkipAuth: true });
+    context.config.projects.forEach((p) => {
+      projectTokensFromConfig.push(pick(p, "projectId", "projectApiToken"));
+    });
+    if (!projectSpecs || projectSpecs.length === 0) {
+      projectSpecs = context.config.projects.map(
+        (p) => p.projectId + (p.version === "latest" ? "" : `@${p.version}`)
+      );
+    }
+    if (!keyScheme) {
+      keyScheme = context.config.i18n?.keyScheme;
+    }
+    if (!tagPrefix) {
+      tagPrefix = context.config.i18n?.tagPrefix;
+    }
+  }
+  if (!projectSpecs || projectSpecs.length === 0) {
     throw new HandledError(`Missing projects.`);
   }
-  if (!opts.baseDir) opts.baseDir = process.cwd();
   const parsedProjectTokens: ProjectIdAndToken[] = (
     opts.projectTokens ?? []
   ).map((val) => {
@@ -48,24 +78,7 @@ export async function localizationStrings(
       ? "data.po"
       : "data.json"
     : opts.output;
-  let keyScheme = opts.keyScheme;
-  let tagPrefix = opts.tagPrefix;
-  const projectTokensFromConfig: ProjectIdAndToken[] = [];
   const auth = await getCurrentAuth(opts.auth);
-  const maybeConfigFile =
-    opts.config || findConfigFile(opts.baseDir, { traverseParents: true });
-  if (maybeConfigFile) {
-    const context = await getContext(opts, { enableSkipAuth: true });
-    context.config.projects.forEach((p) => {
-      projectTokensFromConfig.push(pick(p, "projectId", "projectApiToken"));
-    });
-    if (!keyScheme) {
-      keyScheme = context.config.i18n?.keyScheme;
-    }
-    if (!tagPrefix) {
-      tagPrefix = context.config.i18n?.tagPrefix;
-    }
-  }
 
   const projectIdsAndTokens = [
     ...parsedProjectTokens,
@@ -82,11 +95,11 @@ export async function localizationStrings(
     );
     logger.info(
       `Generating localization strings for ${chalk.bold(
-        opts.projects.join(", ")
+        projectSpecs.join(", ")
       )}...`
     );
     const data = await api.genLocalizationStrings(
-      opts.projects,
+      projectSpecs,
       opts.format,
       keyScheme ?? "content",
       tagPrefix,
