@@ -14,7 +14,6 @@ import { searchParameters, uniq } from "./utils";
 
 export function ensure<T>(x: T | null | undefined): T {
   if (x === null || x === undefined) {
-    debugger;
     throw new Error(`Value must not be undefined or null`);
   } else {
     return x;
@@ -32,10 +31,9 @@ interface ContentfulCredentialsProviderProps {
   environment?: string;
 }
 
-const CredentialsContext =
-  React.createContext<ContentfulCredentialsProviderProps | undefined>(
-    undefined
-  );
+const CredentialsContext = React.createContext<
+  ContentfulCredentialsProviderProps | undefined
+>(undefined);
 
 export const ContentfulCredentialsProviderMeta: GlobalContextMeta<ContentfulCredentialsProviderProps> =
   {
@@ -253,7 +251,7 @@ export function ContentfulFetcher({
   }
 
   if (!contentTypes) {
-    return <div>Please configure the ContentStack credentials</div>;
+    return <div>Please configure the Contentful credentials</div>;
   }
 
   if (!entriesData) {
@@ -263,19 +261,19 @@ export function ContentfulFetcher({
   const filterFields: string[] = entriesData?.items.flatMap((item: any) => {
     const fields = Object.keys(item.fields).filter((field) => {
       const value = get(item, field);
-      return typeof value !== "object" && field !== "photos" 
+      return typeof value !== "object" && field !== "photos";
     });
     return fields;
   });
 
   let operators;
-  const matchedFields = Object.values(entriesData.items)
-  .map((item: any) => {
-    const fields = Object.entries(item.fields).find((el) => el[0] === filterField);
+  const matchedFields = Object.values(entriesData.items).map((item: any) => {
+    const fields = Object.entries(item.fields).find(
+      (el) => el[0] === filterField
+    );
     return fields;
   });
-  
-    
+
   Object.values(matchedFields)
     .map((model: any) => (Array.isArray(model) ? model : [model]))
     .map((item: any) => {
@@ -294,7 +292,7 @@ export function ContentfulFetcher({
         ];
       }
     });
-    
+
   setControlContextData?.({
     queryOptions: operators ?? [],
     types: contentTypes?.items ?? [],
