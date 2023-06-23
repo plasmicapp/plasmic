@@ -1,13 +1,12 @@
 import { ActionType } from "@ant-design/pro-components";
 import type { GetRowKey } from "antd/es/table/interface";
 import React, { ReactNode, useRef } from "react";
+import { BaseColumnConfig, FieldfulProps, RowFunc } from "../field-mappings";
 import {
-  BaseColumnConfig,
+  normalizeData,
+  NormalizedData,
   deriveFieldConfigs,
-  FieldfulProps,
-  RowFunc,
-} from "../field-mappings";
-import { normalizeData, NormalizedData } from "../queries";
+} from "@plasmicapp/data-sources";
 import { maybeRenderString, multiRenderValue } from "../formatting";
 import { Card, Input, List, Tag } from "antd";
 import classNames from "classnames";

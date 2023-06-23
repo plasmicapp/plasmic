@@ -1,4 +1,4 @@
-import { NormalizedData, QueryResult } from "./queries";
+import { NormalizedData, QueryResult } from "@plasmicapp/data-sources";
 import { BaseColumnConfig } from "./field-mappings";
 import React, { Key, useState } from "react";
 import type { GetRowKey, SorterResult } from "antd/es/table/interface";

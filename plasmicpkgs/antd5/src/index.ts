@@ -70,11 +70,19 @@ export function registerAll(loader?: Registerable) {
 
 export { buttonComponentName } from "./registerButton";
 export {
+  FormType,
+  formTypeDescription,
   formComponentName,
   formGroupComponentName,
   formItemComponentName,
   formListComponentName,
   InputType,
+} from "./registerForm";
+
+export {
+  registerForm,
+  registerFormGroup,
+  registerFormItem,
 } from "./registerForm";
 
 export type { SimplifiedFormItemsProp } from "./registerForm";
