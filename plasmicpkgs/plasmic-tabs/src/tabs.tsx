@@ -44,17 +44,20 @@ export type MountMode = 'mountOneAtATime' | 'mountAllEagerly' | 'mountLazily';
 
 function useTabsData({
   initialKey,
+  previewKey,
   mountMode = 'mountOneAtATime',
 }: {
   initialKey?: string;
+  previewKey?: string;
   mountMode?: MountMode;
 }) {
   const [tabKey, setTabKey] = useState<string | undefined>(initialKey);
   const [bbox, setBbox] = useState<{ left: number; width: number } | undefined>(
     undefined
   );
+  const inEditor = usePlasmicCanvasContext();
   return {
-    tabKey,
+    tabKey: inEditor ? previewKey || tabKey : tabKey,
     bbox,
     setTabKey,
     setBbox,
@@ -189,7 +192,7 @@ export function TabsContainer({
 }: TabsProviderProps) {
   const inEditor = !!usePlasmicCanvasContext();
   return (
-    <TabsProvider initialKey={initialKey}>
+    <TabsProvider initialKey={initialKey} previewKey={previewKey}>
       <DebugContext.Provider value={inEditor && previewAll}>
         <Helper previewKey={previewKey || initialKey}>{children}</Helper>
       </DebugContext.Provider>
@@ -211,11 +214,9 @@ function Helper({
   previewKey?: string;
   children?: ReactNode;
 }) {
-  const inEditor = usePlasmicCanvasContext();
   const { tabKey } = ensure(useTabsContext());
-  const effectiveKey = inEditor ? previewKey || tabKey : tabKey;
   return (
-    <DataProvider name={'currentTabKey'} data={effectiveKey}>
+    <DataProvider name={'currentTabKey'} data={tabKey}>
       {children}
     </DataProvider>
   );
