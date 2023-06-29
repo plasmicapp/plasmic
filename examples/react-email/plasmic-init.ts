@@ -19,7 +19,7 @@ export const PLASMIC = initPlasmicLoader({
   // For development, you can set preview to true, which will use the unpublished
   // project, allowing you to see your designs without publishing.  Please
   // only use this for development, as this is significantly slower.
-  preview: true,
+  preview: false,
 });
 
 // You can register any code components that you want to use here; see
