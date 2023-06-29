@@ -8,6 +8,10 @@ We make a Next.js API route at pages/api/email.tsx to render an email template d
 The endpoint takes a template name as a query param, and responds with the HTML.
 So you can visit for example:
 
+https://plasmic-react-email.vercel.app/api/email?template=Basic
+
+Or on localhost:
+
 http://localhost:3000/api/email?template=Basic
 
 You can take the resulting HTML response and send it, or cache it if it's a commonly sent (and non-personalized) email.
