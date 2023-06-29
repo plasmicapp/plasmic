@@ -115,12 +115,12 @@ PLASMIC.registerComponent(Button, {
       displayName: "Link",
     },
     pX: {
-      displayName: "pX",
+      displayName: "Padding X",
       type: "number",
       defaultValue: 16,
     },
     pY: {
-      displayName: "pY",
+      displayName: "Padding Y",
       type: "number",
       defaultValue: 8,
     },
