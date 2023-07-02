@@ -1,5 +1,6 @@
 export { default as get } from "dlv";
 export {
+  generateOnMutateForSpec,
   generateStateOnChangeProp,
   generateStateOnChangePropForCodeComponents,
   generateStateValueProp,

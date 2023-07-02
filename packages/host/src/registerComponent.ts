@@ -110,7 +110,23 @@ export type StateSpec = {
 export interface StateHelpers<P, T> {
   initFunc?: ($props: P) => T;
   onChangeArgsToValue?: (...args: any) => T;
+  onMutate?: (stateValue: T, $ref: any) => void;
 }
+
+// A compile-time error will occur if a new field is added to the StateHelper 
+// interface but not included in the keys array of state helper.
+type TupleUnion<U extends string, R extends string[] = []> = {
+  [S in U]: Exclude<U, S> extends never
+    ? [...R, S]
+    : TupleUnion<Exclude<U, S>, [...R, S]>;
+}[U] &
+  string[];
+
+export const stateHelpersKeys: TupleUnion<keyof StateHelpers<any, any>> = [
+  "initFunc",
+  "onChangeArgsToValue",
+  "onMutate",
+];
 
 export type ComponentHelpers<P> = {
   states: Record<string, StateHelpers<P, any>>;

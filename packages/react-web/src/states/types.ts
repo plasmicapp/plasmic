@@ -5,6 +5,7 @@ export type InitFuncEnv = {
   $state: Record<string, any>;
   $queries?: Record<string, any>;
   $ctx?: Record<string, any>;
+  $refs?: Record<string, any>;
 };
 
 export type DollarStateEnv = Omit<InitFuncEnv, "$state">;
@@ -47,6 +48,9 @@ export interface $StateSpec<T> {
   // Hash used to re-create the state
   // This is only used in canvas where the state specs are dynamic
   initFuncHash?: string;
+
+  refName?: string;
+  onMutate?: (stateValue: T, $ref: any) => void;
 }
 
 export interface $State {
@@ -74,7 +78,7 @@ export interface Internal$StateInstance {
 }
 
 export interface StateCell<T> {
-  initialValue?: T | Symbol;
+  initialValue?: T | symbol;
   node: StateSpecNode<any>;
   path: ObjectPath;
   initFunc?: InitFunc<T>;

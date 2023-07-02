@@ -15,6 +15,7 @@ registerGlobalContext
 registerToken
 registerTrait
 repeatedElement
+stateHelpersKeys
 unstable_registerFetcher
 useDataEnv
 useGlobalActions

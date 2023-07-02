@@ -126,3 +126,14 @@ export function capitalize(value: string) {
 export function ensureArray<T>(x: T | T[]): T[] {
   return Array.isArray(x) ? x : [x];
 }
+
+export function setFieldsToUndefined(obj: any) {
+  if (typeof obj === "object" && obj !== null) {
+    for (const key in obj) {
+      if (typeof obj[key] === "object") {
+        setFieldsToUndefined(obj[key]);
+      }
+      obj[key] = undefined;
+    }
+  }
+}

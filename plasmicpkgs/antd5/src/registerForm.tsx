@@ -1,10 +1,12 @@
 import {
   ActionProps,
   CodeComponentMode,
+  ComponentHelpers,
   DataProvider,
   repeatedElement,
   usePlasmicCanvasContext,
 } from "@plasmicapp/host";
+import { CanvasComponentProps } from "@plasmicapp/host/registerComponent";
 import {
   Checkbox,
   DatePicker,
@@ -36,6 +38,7 @@ import {
   ensureArray,
   Registerable,
   registerComponentHelper,
+  setFieldsToUndefined,
   usePrevious,
 } from "./utils";
 import { PropType } from "@plasmicapp/host/registerComponent";
@@ -76,7 +79,13 @@ export interface SimplifiedFormItemsProp extends InternalFormItemProps {
   optionType?: "default" | "button";
 }
 
-interface FormWrapperProps extends FormProps {
+interface FormWrapperControlContextData {
+  formInstance: FormInstance<any>;
+}
+
+interface FormWrapperProps
+  extends FormProps,
+    CanvasComponentProps<FormWrapperControlContextData> {
   /**
    * https://ant.design/components/form#setfieldsvalue-do-not-trigger-onfieldschange-or-onvalueschange
    * Because setFieldsValue doesn't trigger onValuesChange, we need to create our own onChange function.
@@ -116,141 +125,192 @@ const FormLayoutContext = React.createContext<
   FormLayoutContextValue | undefined
 >(undefined);
 
-const Internal = (
-  props: FormWrapperProps & {
-    setRemountKey: React.Dispatch<React.SetStateAction<number>>;
-    labelCol?: ColProps & { horizontalOnly?: boolean };
-    wrapperCol?: ColProps & { horizontalOnly?: boolean };
-  }
-) => {
-  const [form] = Form.useForm();
-  const values = form.getFieldsValue(true);
-  const lastValue = React.useRef(values);
-  const { extendedOnValuesChange, setRemountKey, ...rest } = props;
-  // extracted from https://github.com/react-component/field-form/blob/master/src/Form.tsx#L120
-  let childrenNode;
-  if (props.mode !== "simplified") {
-    childrenNode =
-      typeof props.children === "function"
-        ? props.children(values, form)
-        : props.children;
-  } else {
-    childrenNode = (
-      <>
-        {(props.formItems ?? []).map((formItem) => (
-          <FormItemWrapper
-            {...formItem}
-            noLabel={
-              formItem.inputType === InputType.Checkbox || formItem.noLabel
-            }
-            style={{ width: "100%" }}
-          >
-            {formItem.inputType === InputType.Text ? (
-              <Input />
-            ) : formItem.inputType === InputType.Password ? (
-              <Input.Password />
-            ) : formItem.inputType === InputType.TextArea ? (
-              <Input.TextArea />
-            ) : formItem.inputType === InputType.Number ? (
-              <InputNumber />
-            ) : formItem.inputType === InputType.Checkbox ? (
-              <Checkbox>{formItem.label}</Checkbox>
-            ) : formItem.inputType === InputType.Select ? (
-              <Select options={formItem.options} />
-            ) : formItem.inputType === InputType.DatePicker ? (
-              <DatePicker />
-            ) : formItem.inputType === InputType.RadioGroup ? (
-              <Radio.Group
-                options={formItem.options}
-                optionType={formItem.optionType}
-                style={{ padding: "8px" }}
-              />
-            ) : null}
-          </FormItemWrapper>
-        ))}
-        {props.submitSlot}
-      </>
-    );
-  }
-
-  const fireOnValuesChange = React.useCallback(() => {
+const Internal = React.forwardRef(
+  (
+    props: FormWrapperProps & {
+      setRemountKey: React.Dispatch<React.SetStateAction<number>>;
+      labelCol?: ColProps & { horizontalOnly?: boolean };
+      wrapperCol?: ColProps & { horizontalOnly?: boolean };
+    },
+    ref: React.Ref<FormRefActions>
+  ) => {
+    const [form] = Form.useForm();
     const values = form.getFieldsValue(true);
-    if (!equal(values, lastValue.current)) {
-      extendedOnValuesChange?.(values);
-      lastValue.current = values;
+    const lastValue = React.useRef(values);
+    const { extendedOnValuesChange, setRemountKey, ...rest } = props;
+    // extracted from https://github.com/react-component/field-form/blob/master/src/Form.tsx#L120
+    let childrenNode;
+    if (props.mode !== "simplified") {
+      childrenNode =
+        typeof props.children === "function"
+          ? props.children(values, form)
+          : props.children;
+    } else {
+      childrenNode = (
+        <>
+          {(props.formItems ?? []).map((formItem) => (
+            <FormItemWrapper
+              {...formItem}
+              noLabel={
+                formItem.inputType === InputType.Checkbox || formItem.noLabel
+              }
+              style={{ width: "100%" }}
+            >
+              {formItem.inputType === InputType.Text ? (
+                <Input />
+              ) : formItem.inputType === InputType.Password ? (
+                <Input.Password />
+              ) : formItem.inputType === InputType.TextArea ? (
+                <Input.TextArea />
+              ) : formItem.inputType === InputType.Number ? (
+                <InputNumber />
+              ) : formItem.inputType === InputType.Checkbox ? (
+                <Checkbox>{formItem.label}</Checkbox>
+              ) : formItem.inputType === InputType.Select ? (
+                <Select options={formItem.options} />
+              ) : formItem.inputType === InputType.DatePicker ? (
+                <DatePicker />
+              ) : formItem.inputType === InputType.RadioGroup ? (
+                <Radio.Group
+                  options={formItem.options}
+                  optionType={formItem.optionType}
+                  style={{ padding: "8px" }}
+                />
+              ) : null}
+            </FormItemWrapper>
+          ))}
+          {props.submitSlot}
+        </>
+      );
     }
-  }, [form, lastValue]);
 
-  React.useEffect(() => {
-    fireOnValuesChange();
-  }, []);
-  const formLayout = React.useMemo(
-    () => ({
-      layout: props.layout,
-      labelSpan: props.labelCol?.span as number | undefined,
-    }),
-    [props.layout, props.labelCol?.span]
-  );
-  return (
-    <InternalFormInstanceContext.Provider
-      value={{
-        layout: formLayout,
-        fireOnValuesChange,
-        forceRemount: () => setRemountKey((k) => k + 1),
-      }}
-    >
-      <FormLayoutContext.Provider value={formLayout}>
-        <Form
-          {...rest}
-          key={
-            props.initialValues
-              ? JSON.stringify(props.initialValues)
-              : undefined
-          }
-          onValuesChange={(...args) => {
-            props.onValuesChange?.(...args);
-            extendedOnValuesChange?.(args[1]);
-          }}
-          form={form}
-          labelCol={
-            props.labelCol?.horizontalOnly && props.layout !== "horizontal"
-              ? undefined
-              : props.labelCol
-          }
-          wrapperCol={
-            props.wrapperCol?.horizontalOnly && props.layout !== "horizontal"
-              ? undefined
-              : props.wrapperCol
-          }
-        >
-          {/*Remove built-in spacing on form fields*/}
-          <style>{`
+    const fireOnValuesChange = React.useCallback(() => {
+      const values = form.getFieldsValue(true);
+      if (!equal(values, lastValue.current)) {
+        extendedOnValuesChange?.(values);
+        lastValue.current = values;
+      }
+    }, [form, lastValue]);
+
+    React.useEffect(() => {
+      fireOnValuesChange();
+    }, []);
+    const formLayout = React.useMemo(
+      () => ({
+        layout: props.layout,
+        labelSpan: props.labelCol?.span as number | undefined,
+      }),
+      [props.layout, props.labelCol?.span]
+    );
+    props.setControlContextData?.({ formInstance: form });
+    React.useImperativeHandle(ref, () => ({
+      formInstance: form,
+      setFieldsValue: (newValues: Record<string, any>) => {
+        form.setFieldsValue(newValues);
+        extendedOnValuesChange?.(form.getFieldsValue(true));
+      },
+      setFieldValue: (
+        namePath: string | number | (string | number)[],
+        value: any
+      ) => {
+        form.setFieldValue(namePath, value);
+        extendedOnValuesChange?.(form.getFieldsValue(true));
+      },
+      resetFields: () => {
+        form.resetFields();
+        extendedOnValuesChange?.(form.getFieldsValue(true));
+      },
+      clearFields: () => {
+        const values = form.getFieldsValue(true);
+        setFieldsToUndefined(values);
+        form.setFieldsValue(values);
+        extendedOnValuesChange?.(form.getFieldsValue(true));
+      },
+    }));
+    return (
+      <InternalFormInstanceContext.Provider
+        value={{
+          layout: formLayout,
+          fireOnValuesChange,
+          forceRemount: () => setRemountKey((k) => k + 1),
+        }}
+      >
+        <FormLayoutContext.Provider value={formLayout}>
+          <Form
+            {...rest}
+            key={
+              props.initialValues
+                ? JSON.stringify(props.initialValues)
+                : undefined
+            }
+            onValuesChange={(...args) => {
+              props.onValuesChange?.(...args);
+              extendedOnValuesChange?.(args[1]);
+            }}
+            form={form}
+            labelCol={
+              props.labelCol?.horizontalOnly && props.layout !== "horizontal"
+                ? undefined
+                : props.labelCol
+            }
+            wrapperCol={
+              props.wrapperCol?.horizontalOnly && props.layout !== "horizontal"
+                ? undefined
+                : props.wrapperCol
+            }
+          >
+            {/*Remove built-in spacing on form fields*/}
+            <style>{`
           .ant-form-item-explain + div, .ant-form-item-margin-offset {
             display: none;
           }
           `}</style>
-          {childrenNode}
-        </Form>
-      </FormLayoutContext.Provider>
-    </InternalFormInstanceContext.Provider>
-  );
-};
-export function FormWrapper(props: FormWrapperProps) {
-  const [remountKey, setRemountKey] = React.useState(0);
-  const previousInitialValues = usePrevious(props.initialValues);
+            {childrenNode}
+          </Form>
+        </FormLayoutContext.Provider>
+      </InternalFormInstanceContext.Provider>
+    );
+  }
+);
 
-  React.useEffect(() => {
-    if (
-      previousInitialValues !== props.initialValues &&
-      JSON.stringify(previousInitialValues) !==
-        JSON.stringify(props.initialValues)
-    ) {
-      setRemountKey((k) => k + 1);
-    }
-  }, [previousInitialValues, props.initialValues]);
-
-  return <Internal key={remountKey} {...props} setRemountKey={setRemountKey} />;
+interface FormRefActions
+  extends Pick<
+    FormInstance<any>,
+    "setFieldsValue" | "resetFields" | "setFieldValue"
+  > {
+  clearFields: () => void;
+  formInstance: FormInstance<any>;
 }
+
+export const FormWrapper = React.forwardRef(
+  (props: FormWrapperProps, ref: React.Ref<FormRefActions>) => {
+    const [remountKey, setRemountKey] = React.useState(0);
+    const previousInitialValues = usePrevious(props.initialValues);
+
+    const wrapperRef = React.useRef<FormRefActions>(null);
+    React.useEffect(() => {
+      if (
+        previousInitialValues !== props.initialValues &&
+        JSON.stringify(previousInitialValues) !==
+          JSON.stringify(props.initialValues)
+      ) {
+        setRemountKey((k) => k + 1);
+      }
+    }, [previousInitialValues, props.initialValues]);
+
+    React.useImperativeHandle(ref, () =>
+      wrapperRef.current ? { ...wrapperRef.current } : ({} as FormRefActions)
+    );
+    return (
+      <Internal
+        key={remountKey}
+        {...props}
+        setRemountKey={setRemountKey}
+        ref={wrapperRef}
+      />
+    );
+  }
+);
 
 const COMMON_ACTIONS = [
   {
@@ -329,6 +389,16 @@ const colProp = (
     description,
     defaultValue: defaultValue,
   } as const);
+
+export const formHelpers: ComponentHelpers<FormWrapperProps> = {
+  states: {
+    value: {
+      onMutate: (value, $ref) => {
+        $ref?.formInstance?.setFieldsValue(value);
+      },
+    },
+  },
+};
 
 export const formComponentName = "plasmic-antd5-form";
 
@@ -594,6 +664,54 @@ export function registerForm(loader?: Registerable) {
         type: "readonly",
         variableType: "object",
         onChangeProp: "extendedOnValuesChange",
+      },
+    },
+    componentHelpers: {
+      helpers: formHelpers,
+      importName: "formHelpers",
+      importPath: "@plasmicpkgs/antd5/skinny/registerForm",
+    },
+    refActions: {
+      setFieldsValue: {
+        displayName: "Set multiple fields",
+        argTypes: [
+          {
+            name: "newValues",
+            displayName: "New Values",
+            type: "exprEditor",
+          },
+        ],
+      },
+      setFieldValue: {
+        displayName: "Set field",
+        argTypes: [
+          {
+            name: "namePath",
+            displayName: "Name Path",
+            type: {
+              type: "dataSelector",
+              data: (_, ctx) => {
+                if (!ctx?.formInstance) {
+                  return {};
+                }
+                return ctx.formInstance.getFieldsValue(true);
+              },
+            },
+          },
+          {
+            name: "value",
+            displayName: "New Value",
+            type: "exprEditor",
+          },
+        ],
+      },
+      resetFields: {
+        displayName: "Reset fields to initial value",
+        argTypes: [],
+      },
+      clearFields: {
+        displayName: "Clear fields",
+        argTypes: [],
       },
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerForm",

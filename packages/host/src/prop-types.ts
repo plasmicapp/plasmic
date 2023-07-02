@@ -310,18 +310,22 @@ export interface DataSourceType<P> extends PropTypeBase<P> {
 }
 
 type DataPickerValueType = string | number | (string | number)[];
-interface DataPickerType<P>
+interface RichDataPickerType<P>
   extends PropTypeBaseDefault<P, DataPickerValueType> {
   type: "dataSelector";
-  data: Record<string, any> | ContextDependentConfig<P, Record<string, any>>;
+  data?: Record<string, any> | ContextDependentConfig<P, Record<string, any>>;
   alwaysShowValuePathAsLabel?: boolean;
+  mergeWithExternalData?: boolean;
 }
+type DataPickerType<P> = "dataPicker" | RichDataPickerType<P>;
 
-interface ExprEditorType<P>
+interface RichExprEditorType<P>
   extends PropTypeBaseDefault<P, DataPickerValueType> {
   type: "exprEditor";
-  data: Record<string, any> | ContextDependentConfig<P, Record<string, any>>;
+  data?: Record<string, any> | ContextDependentConfig<P, Record<string, any>>;
+  mergeWithExternalData?: boolean;
 }
+type ExprEditorType<P> = "exprEditor" | RichExprEditorType<P>;
 
 interface FormValidationRulesType<P> extends PropTypeBaseDefault<P, any> {
   type: "formValidationRules";

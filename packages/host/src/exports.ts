@@ -16,6 +16,7 @@ export {
   ComponentRegistration,
   ComponentTemplates,
   default as registerComponent,
+  stateHelpersKeys,
   StateHelpers,
   StateSpec,
   CodeComponentMode,

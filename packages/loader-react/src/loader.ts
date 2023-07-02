@@ -7,6 +7,7 @@ import {
   registerComponent,
   registerGlobalContext,
   registerToken,
+  stateHelpersKeys,
   registerTrait,
   StateHelpers,
   StateSpec,
@@ -210,20 +211,16 @@ export class InternalPlasmicComponentLoader {
     // making the component meta consistent between codegen and loader
     const stateHelpers = Object.fromEntries(
       Object.entries(meta.states ?? {})
-        .filter(
-          ([_, stateSpec]) =>
-            "initFunc" in stateSpec || "onChangeArgsToValue" in stateSpec
+        .filter(([_, stateSpec]) =>
+          Object.keys(stateSpec).some((key) => stateHelpersKeys.includes(key))
         )
         .map(([stateName, stateSpec]) => [
           stateName,
-          {
-            ...("initFunc" in stateSpec
-              ? { initFunc: stateSpec.initFunc }
-              : {}),
-            ...("onChangeArgsToValue" in stateSpec
-              ? { onChangeArgsToValue: stateSpec.onChangeArgsToValue }
-              : {}),
-          },
+          Object.fromEntries(
+            stateHelpersKeys
+              .filter((key) => key in stateSpec)
+              .map((key) => [key, stateSpec[key]])
+          ),
         ])
     );
     const helpers = { states: stateHelpers };
