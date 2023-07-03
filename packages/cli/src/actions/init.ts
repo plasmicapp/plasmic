@@ -286,7 +286,7 @@ async function deriveInitAnswers(
     simulatePrompt(useExpressQuestion, "yes", true);
     return answers;
   } else {
-    const useExpress = await inquirer.prompt([useExpressQuestion]);
+    const useExpress: any = await inquirer.prompt([useExpressQuestion]);
     if (useExpress.continue === "yes") {
       return answers;
     }
@@ -312,7 +312,7 @@ async function deriveInitAnswers(
           default: answers[name],
         });
         // Not sure why TS complains here without this cast.
-        (answers as any)[name] = ans[name];
+        (answers as any)[name] = (ans as any)[name];
       }
       // Other questions are silently skipped
     }
