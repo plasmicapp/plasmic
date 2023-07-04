@@ -169,7 +169,7 @@ const Internal = React.forwardRef(
     const { extendedOnValuesChange, setRemountKey, ...rest } = props;
     // extracted from https://github.com/react-component/field-form/blob/master/src/Form.tsx#L120
     let childrenNode;
-    if (props.mode === "advanced") {
+    if (props.mode !== "simplified") {
       childrenNode =
         typeof props.children === "function"
           ? props.children(values, form)
