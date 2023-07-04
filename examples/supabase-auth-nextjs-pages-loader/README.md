@@ -4,16 +4,20 @@ This is a Next.js project bootstrapped with [`create-plasmic-app`](https://www.n
 
 Integrated with Plasmic by following the [Supabase Auth Pages](https://supabase.com/docs/guides/auth/auth-helpers/nextjs-pages) guide.
 
-- In [getPlasmicAuthData](/utils/plasmic-auth.ts) the conversion between supbase user and plasmic user is done. The supabase user is considered a source of truth and the plasmic user is built based on it.
-- In [catch-all routes](/pages/%5B%5B...catchall%5D%5D.tsx) it's demonstrated how to use auth while fetching the user in client side.
-- In [ssr](/pages/ssr/index.tsx) it's demonstrated how to use auth while fetching the user in server side.
-- In [plasmic-init](plasmic-init.ts) the `AuthButton` and `AuthForm` components are substituted so that they have interactivity to perform supabase auth operations.
+- In [getPlasmicAuthData](./utils/plasmic-auth.ts) the conversion between supabase user and plasmic user is done. The supabase user is considered a source of truth and the plasmic user is built based on it.
+- In [catch-all routes](./pages/%5B%5B...catchall%5D%5D.tsx) it's demonstrated how to use auth while fetching the user in client side.
+- In [ssr](./pages/ssr/index.tsx) it's demonstrated how to use auth while fetching the user server side.
+- In [plasmic-init](./plasmic-init.ts) the `AuthButton` and `AuthForm` components are substituted so that they have interactivity to perform supabase auth operations.
 
 ## Getting Started
 
 First, create a `.env.local` file with the variables listed in `.env.example`.
 
 Then run the development server:
+
+```bash
+yarn
+```
 
 ```bash
 yarn dev
