@@ -1,10 +1,10 @@
 import React from "react";
+import { BaseColumnConfig, FieldfulProps } from "../field-mappings";
 import {
-  BaseColumnConfig,
-  FieldfulProps,
+  NormalizedData,
+  normalizeData,
   deriveFieldConfigs,
-} from "../field-mappings";
-import { NormalizedData, normalizeData } from "../queries";
+} from "@plasmicapp/data-sources";
 import { Descriptions, Empty } from "antd";
 import { renderValue } from "../formatting";
 import { mkShortId } from "../utils";

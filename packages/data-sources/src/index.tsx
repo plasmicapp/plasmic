@@ -16,3 +16,5 @@ export type {
   TableFieldType,
   TableSchema,
 } from './types';
+export type { QueryResult, NormalizedData, BaseFieldConfig } from './helpers';
+export { normalizeData, deriveFieldConfigs } from './helpers';

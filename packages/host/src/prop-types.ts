@@ -48,6 +48,7 @@ export interface PropTypeBase<P> {
   displayName?: string;
   description?: string;
   helpText?: string;
+  required?: boolean;
   /**
    * If the user has chosen to use a dynamic expression for this prop, provide
    * a hint as to the expected values that the expression should evaluate to.
@@ -94,6 +95,15 @@ interface Defaultable<P, T> {
    */
   defaultExpr?: string;
   defaultExprHint?: string;
+
+  /**
+   * This function validates whether the prop value is valid.
+   * If the value is invalid, it returns an error message. Otherwise, it returns true.
+   */
+  validator?: (
+    value: T,
+    ...args: ControlContext<P>
+  ) => (string | true) | Promise<string | true>;
 }
 
 interface Controllable {

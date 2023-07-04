@@ -105,6 +105,29 @@ export function omit<T extends object>(
   return res;
 }
 
+export function has<T extends object>(obj: T, keys: (keyof T)[]): boolean {
+  if (Object.keys(obj).length === 0) {
+    return true;
+  }
+  for (const key of keys) {
+    if (Array.isArray(obj)) {
+      const index = parseInt(key as string);
+      if (isNaN(index) || index < 0 || index >= obj.length) {
+        return false;
+      }
+      obj = obj[index];
+    } else if (typeof obj === "object" && obj != null) {
+      if (!Object.prototype.hasOwnProperty.call(obj, key) || !(key in obj)) {
+        return false;
+      }
+      obj = obj[key] as T;
+    } else {
+      return false;
+    }
+  }
+  return true;
+}
+
 export function usePrevious<T>(value: T | undefined): T | undefined {
   const prevValue = React.useRef<T | undefined>(undefined);
 

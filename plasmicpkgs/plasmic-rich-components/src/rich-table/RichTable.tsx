@@ -9,12 +9,15 @@ import React, { ReactNode, useRef } from "react";
 import { useIsClient } from "../common";
 import {
   BaseColumnConfig,
-  deriveFieldConfigs,
   deriveValueType,
   FieldfulProps,
   RowFunc,
 } from "../field-mappings";
-import { normalizeData, NormalizedData } from "../queries";
+import {
+  normalizeData,
+  NormalizedData,
+  deriveFieldConfigs,
+} from "@plasmicapp/data-sources";
 import { renderValue } from "../formatting";
 import {
   deriveKeyOfRow,

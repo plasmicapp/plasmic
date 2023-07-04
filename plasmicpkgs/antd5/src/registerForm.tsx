@@ -6,8 +6,8 @@ import {
   repeatedElement,
   usePlasmicCanvasContext,
 } from "@plasmicapp/host";
-import { CanvasComponentProps } from "@plasmicapp/host/registerComponent";
 import {
+  Button,
   Checkbox,
   DatePicker,
   Form,
@@ -36,12 +36,25 @@ import { selectComponentName } from "./registerSelect";
 import { switchComponentName } from "./registerSwitch";
 import {
   ensureArray,
+  has,
   Registerable,
   registerComponentHelper,
   setFieldsToUndefined,
   usePrevious,
 } from "./utils";
-import { PropType } from "@plasmicapp/host/registerComponent";
+import {
+  CanvasComponentProps,
+  PropType,
+} from "@plasmicapp/host/registerComponent";
+import {
+  normalizeData,
+  deriveFieldConfigs,
+  TableSchema,
+  DataOp,
+  usePlasmicDataOp,
+  SingleRowResult,
+  ManyRowsResult,
+} from "@plasmicapp/data-sources";
 
 const FormItem = Form.Item;
 const FormList = Form.List;
@@ -81,6 +94,20 @@ export interface SimplifiedFormItemsProp extends InternalFormItemProps {
 
 interface FormWrapperControlContextData {
   formInstance: FormInstance<any>;
+  schema?: TableSchema;
+  minimalFullLengthFields: Partial<SimplifiedFormItemsProp>[];
+  mergedFields: SimplifiedFormItemsProp[];
+}
+
+export enum FormType {
+  NewEntry,
+  UpdateEntry,
+}
+
+interface DBConnectionProp {
+  formType: FormType;
+  dataSchema: DataOp;
+  dataEntry: DataOp;
 }
 
 interface FormWrapperProps
@@ -98,7 +125,9 @@ interface FormWrapperProps
   ) => void;
   formItems: SimplifiedFormItemsProp[];
   mode?: CodeComponentMode;
+  formType: "new-entry" | "update-entry";
   submitSlot?: boolean;
+  data?: DBConnectionProp;
 }
 
 const PathContext = React.createContext<{
@@ -140,7 +169,7 @@ const Internal = React.forwardRef(
     const { extendedOnValuesChange, setRemountKey, ...rest } = props;
     // extracted from https://github.com/react-component/field-form/blob/master/src/Form.tsx#L120
     let childrenNode;
-    if (props.mode !== "simplified") {
+    if (props.mode === "advanced") {
       childrenNode =
         typeof props.children === "function"
           ? props.children(values, form)
@@ -202,7 +231,6 @@ const Internal = React.forwardRef(
       }),
       [props.layout, props.labelCol?.span]
     );
-    props.setControlContextData?.({ formInstance: form });
     React.useImperativeHandle(ref, () => ({
       formInstance: form,
       setFieldsValue: (newValues: Record<string, any>) => {
@@ -282,6 +310,75 @@ interface FormRefActions
   formInstance: FormInstance<any>;
 }
 
+function useFormItemDefinitions(
+  rawData:
+    | {
+        data?: Partial<SingleRowResult | ManyRowsResult>;
+        error?: Error;
+      }
+    | undefined,
+  props: React.ComponentProps<typeof FormWrapper>,
+  formRef: FormRefActions | null
+) {
+  const { mode, formItems, setControlContextData } = props;
+
+  return React.useMemo(() => {
+    if (mode !== "simplified" || !formRef || !rawData || rawData.error) {
+      return undefined;
+    }
+    const data = normalizeData(rawData);
+    const schema = data?.schema;
+    if (!data || !schema || !data.data) {
+      return undefined;
+    }
+    const row = data.data.length > 0 ? data.data[0] : undefined;
+    const { mergedFields, minimalFullLengthFields } =
+      deriveFieldConfigs<SimplifiedFormItemsProp>(
+        formItems ?? [],
+        schema,
+        (field) => ({
+          inputType: InputType.Text,
+          ...(field && {
+            key: field.id,
+            fieldId: field.id,
+            label: field.label,
+            name: field.id,
+            inputType:
+              field.type === "string"
+                ? InputType.Text
+                : field.type === "number"
+                ? InputType.Number
+                : field.type === "boolean"
+                ? InputType.Checkbox
+                : InputType.Text, //missing date and date-time
+            initialValue: row ? row[field.id] : undefined,
+            hidden: field.primaryKey,
+          }),
+        })
+      );
+
+    setControlContextData?.({
+      schema: data.schema,
+      minimalFullLengthFields,
+      mergedFields,
+      formInstance: formRef.formInstance,
+    });
+
+    return mergedFields;
+  }, [mode, setControlContextData, formItems, rawData, formRef]);
+}
+
+const useRawData = (connection: DBConnectionProp | undefined) => {
+  const rawDataSchema = usePlasmicDataOp(connection?.dataSchema);
+  const rawDataEntry = usePlasmicDataOp(connection?.dataEntry);
+  if (!connection) {
+    return undefined;
+  }
+  return FormType.NewEntry === connection.formType
+    ? rawDataSchema
+    : rawDataEntry;
+};
+
 export const FormWrapper = React.forwardRef(
   (props: FormWrapperProps, ref: React.Ref<FormRefActions>) => {
     const [remountKey, setRemountKey] = React.useState(0);
@@ -301,11 +398,29 @@ export const FormWrapper = React.forwardRef(
     React.useImperativeHandle(ref, () =>
       wrapperRef.current ? { ...wrapperRef.current } : ({} as FormRefActions)
     );
+
+    const rawData = useRawData(props.data);
+    const formItemDefinitions = useFormItemDefinitions(
+      rawData,
+      props,
+      wrapperRef.current
+    );
+
+    const { formItems, ...rest } = props;
+    const actualFormItems =
+      props.mode === "simplified" && formItemDefinitions
+        ? formItemDefinitions
+        : formItems;
+
+    if (props.mode === "simplified" && rawData && "error" in rawData) {
+      return <div>Error when fetching data: {rawData.error.message}</div>;
+    }
     return (
       <Internal
         key={remountKey}
-        {...props}
+        {...rest}
         setRemountKey={setRemountKey}
+        formItems={actualFormItems}
         ref={wrapperRef}
       />
     );
@@ -325,7 +440,7 @@ const COMMON_ACTIONS = [
         "children"
       );
     },
-    hidden: (props: any) => props.mode === "simplified",
+    hidden: (props: any) => props.mode !== "advanced",
   },
   // {
   //   type: "button-action" as const,
@@ -401,6 +516,61 @@ export const formHelpers: ComponentHelpers<FormWrapperProps> = {
 };
 
 export const formComponentName = "plasmic-antd5-form";
+export const formTypeDescription = `
+  You can create form with two different behaviors:
+  \n\n
+  1. Create a new entry: The form will be created empty and it will create a new row when submitted.
+  2. Update an entry: The form will be pre-filled with the row values and it will update the table entry when submitted.
+  \n\n
+  For both options, you can customize later.
+`;
+
+const getConnectionDBPropRegistration = () => ({
+  formType: {
+    type: "choice" as const,
+    options: [
+      { label: "New entry", value: FormType.NewEntry },
+      { label: "Update entry", value: FormType.UpdateEntry },
+    ],
+    displayName: "Form Type",
+    disableDynamicValue: true,
+    defaultValueHint: "Select the form type...",
+    description: `
+    You can create form with two different behaviors:
+    \n\n
+    1. Create a new entry: The form will be created empty and it will create a new row when submitted.
+    2. Update an entry: The form will be pre-filled with the row values and it will update the table entry when submitted.
+    \n\n
+    For both options, you can customize later.
+    `,
+  },
+  dataSchema: {
+    type: "dataSourceOp",
+    description: "The data to generate the form",
+    hidden: (
+      _ps: FormWrapperProps,
+      _ctx: FormControlContextData,
+      { item }: { item: DBConnectionProp }
+    ) => item.formType !== FormType.NewEntry,
+    displayName: "",
+    disableDynamicValue: true,
+    allowedOps: () => ["getTableSchema"],
+    hideCacheKey: true,
+  } as any,
+  dataEntry: {
+    type: "dataSourceOp",
+    description: "The data to generate the form",
+    hidden: (
+      _ps: FormWrapperProps,
+      _ctx: FormControlContextData,
+      { item }: { item: DBConnectionProp }
+    ) => item.formType !== FormType.UpdateEntry,
+    displayName: "",
+    disableDynamicValue: true,
+    allowedOps: () => ["getOne"],
+    hideCacheKey: true,
+  } as any,
+});
 
 export function registerForm(loader?: Registerable) {
   registerComponentHelper(loader, FormWrapper, {
@@ -415,13 +585,22 @@ export function registerForm(loader?: Registerable) {
         type: "controlMode",
         defaultValue: "simplified",
       } as any,
+      data: {
+        type: "object",
+        fields: getConnectionDBPropRegistration(),
+        hidden: (ps) => ps.mode !== "simplified" || !ps.data,
+        nameFunc: () => "DB Connection",
+      },
       formItems: {
         displayName: "Fields",
         type: "array",
         itemType: {
           type: "object",
           fields: {
-            label: "string",
+            label: {
+              type: "string",
+              defaultValueHint: getDefaultValueHint("label"),
+            },
             inputType: {
               type: "choice",
               options: Object.values(InputType).filter(
@@ -433,6 +612,7 @@ export function registerForm(loader?: Registerable) {
                   ].includes(inputType)
               ),
               defaultValue: InputType.Text,
+              defaultValueHint: getDefaultValueHint("inputType"),
             },
             options: {
               type: "array",
@@ -510,7 +690,7 @@ export function registerForm(loader?: Registerable) {
             },
             ...commonFormItemProps,
           },
-          nameFunc: (item) => item.label,
+          nameFunc: (item) => item.fieldId ?? item.label ?? item.name,
         },
         defaultValue: [
           {
@@ -524,7 +704,37 @@ export function registerForm(loader?: Registerable) {
             inputType: InputType.TextArea,
           },
         ],
-        hidden: (props) => props.mode !== "simplified",
+        hidden: (ps) => {
+          if (ps.mode === "advanced") {
+            return true;
+          }
+          if (ps.mode === "simplified") {
+            return false;
+          }
+          return !ps.data || !ps.formType;
+        },
+        unstable__keyFunc: (x) => x.key,
+        unstable__minimalValue: (ps, contextData) => {
+          return ps.mode === "simplified"
+            ? ps.formItems
+            : contextData?.minimalFullLengthFields;
+        },
+        unstable__canDelete: (item, ps, ctx) => {
+          if (ps.mode !== "database-schema-driven") {
+            return true;
+          }
+          if (!ctx?.schema) {
+            // still loading...
+            return false;
+          }
+          if (
+            item.fieldId &&
+            ctx.schema.fields.some((f) => f.id === item.fieldId)
+          ) {
+            return false;
+          }
+          return true;
+        },
       },
       submitSlot: {
         type: "slot",
@@ -548,7 +758,7 @@ export function registerForm(loader?: Registerable) {
       },
       children: {
         type: "slot",
-        hidden: (props) => props.mode === "simplified",
+        hidden: (props) => props.mode !== "advanced",
       },
       initialValues: {
         displayName: "Initial field values",
@@ -658,7 +868,13 @@ export function registerForm(loader?: Registerable) {
         advanced: true,
       },
     },
-    actions: COMMON_ACTIONS,
+    actions: [
+      ...COMMON_ACTIONS,
+      {
+        type: "form-schema",
+        hidden: (ps: FormWrapperProps) => ps.mode !== "simplified" || !!ps.data,
+      } as any,
+    ],
     states: {
       value: {
         type: "readonly",
@@ -721,6 +937,8 @@ export function registerForm(loader?: Registerable) {
 
 interface FormControlContextData {
   internalFormCtx?: InternalFormInstanceContextData;
+  formInstance?: FormInstance<any>;
+  parentFormItemPath: (string | number)[];
 }
 
 interface CuratedFieldData {
@@ -881,10 +1099,13 @@ export function FormItemWrapper(props: InternalFormItemProps) {
       initialValue: props.initialValue,
       name: props.name,
     });
+    const fullPath = React.useContext(PathContext).fullPath;
     const internalFormCtx = React.useContext(InternalFormInstanceContext);
     const { fireOnValuesChange, forceRemount } = internalFormCtx ?? {};
     props.setControlContextData?.({
       internalFormCtx,
+      formInstance: form,
+      parentFormItemPath: fullPath,
     });
     React.useEffect(() => {
       if (prevPropValues.current.name !== props.name) {
@@ -940,23 +1161,28 @@ function deriveValuePropName(props: InternalFormItemProps): string | undefined {
     return props.valuePropName;
   }
 
-  const valueProps = React.Children.map(props.children as any, (child) => {
-    if (React.isValidElement(child)) {
-      const childType = child.type;
-      if (childType) {
-        const x = (childType as any).__plasmicFormFieldMeta?.valueProp;
-        if (x) {
-          return x as string;
-        }
-        // Hard-coding "isChecked" for Plume checkbox / switch
-        const plumeType = (childType as any).__plumeType;
-        if (plumeType && (plumeType === "checkbox" || plumeType === "switch")) {
-          return "isChecked";
+  const valueProps = (
+    React.Children.map(props.children as any, (child) => {
+      if (React.isValidElement(child)) {
+        const childType = child.type;
+        if (childType) {
+          const x = (childType as any).__plasmicFormFieldMeta?.valueProp;
+          if (x) {
+            return x as string;
+          }
+          // Hard-coding "isChecked" for Plume checkbox / switch
+          const plumeType = (childType as any).__plumeType;
+          if (
+            plumeType &&
+            (plumeType === "checkbox" || plumeType === "switch")
+          ) {
+            return "isChecked";
+          }
         }
       }
-    }
-    return undefined;
-  }).filter((x: any): x is string => !!x);
+      return undefined;
+    }) ?? []
+  ).filter((x: any): x is string => !!x);
   if (valueProps.length > 0) {
     return valueProps[0];
   }
@@ -993,12 +1219,34 @@ function FormItemForwarder({ formItemProps, ...props }: any) {
   });
 }
 
+function getDefaultValueHint(field: keyof SimplifiedFormItemsProp) {
+  return (
+    _props: any,
+    contextData: FormWrapperControlContextData | FormControlContextData | null,
+    { item }: any
+  ): any => {
+    if (!contextData || !("mergedFields" in contextData)) {
+      return undefined;
+    }
+    if (item?.fieldId) {
+      const fieldSetting = contextData.mergedFields.find(
+        (f) => f.fieldId === item.fieldId
+      );
+      return fieldSetting?.[field];
+    }
+    return undefined;
+  };
+}
+
 const commonFormItemProps: Record<string, PropType<InternalFormItemProps>> = {
   name: {
     type: "string" as const,
+    required: true,
+    defaultValueHint: getDefaultValueHint("name"),
   },
   initialValue: {
     type: "string" as const,
+    defaultValueHint: getDefaultValueHint("initialValue"),
   },
   rules: {
     displayName: "Validation rules",
@@ -1039,6 +1287,7 @@ const commonFormItemProps: Record<string, PropType<InternalFormItemProps>> = {
   hidden: {
     type: "boolean" as const,
     advanced: true,
+    defaultValueHint: getDefaultValueHint("hidden"),
   },
   validateTrigger: {
     type: "choice" as const,

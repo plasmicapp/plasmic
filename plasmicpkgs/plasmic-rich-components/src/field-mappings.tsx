@@ -1,7 +1,6 @@
-import { TableFieldSchema, TableSchema } from "@plasmicapp/data-sources";
+import { TableSchema, QueryResult } from "@plasmicapp/data-sources";
 import { PropType } from "@plasmicapp/host/registerComponent";
-import { QueryResult } from "./queries";
-import { isOneOf, mkIdMap, withoutFalsey, withoutNils } from "./utils";
+import { isOneOf, withoutFalsey } from "./utils";
 import deepGet from "lodash/get";
 import { ContextDependentConfig } from "@plasmicapp/host";
 
@@ -113,57 +112,6 @@ export type BaseColumnConfig = _BaseColumnConfig &
     | DateTimeSettings
     | RelativeDateTimeSettings
   );
-
-export function deriveFieldConfigs<ColumnConfig extends BaseColumnConfig>(
-  specifiedFieldsPartial: Partial<ColumnConfig>[],
-  schema: TableSchema | undefined,
-  makeDefaultConfig: (field: TableFieldSchema | undefined) => ColumnConfig
-): {
-  mergedFields: ColumnConfig[];
-  minimalFullLengthFields: Partial<ColumnConfig>[];
-} {
-  const schemaFields = schema?.fields ?? [];
-  const fieldById = mkIdMap(schemaFields);
-  const specifiedFieldIds = new Set(
-    withoutNils(specifiedFieldsPartial.map((f) => f.fieldId))
-  );
-  const keptSpecifiedFields = specifiedFieldsPartial.flatMap(
-    (f, index): ColumnConfig[] => {
-      const fieldId = f.fieldId;
-      if (!fieldId) {
-        return [
-          { ...makeDefaultConfig(undefined), key: index, ...f },
-        ] as ColumnConfig[];
-      }
-      const field = fieldById.get(fieldId);
-
-      // Drop configs with fieldIds no longer in the data.
-      if (!field) {
-        return [];
-      }
-
-      return [
-        {
-          ...makeDefaultConfig(field),
-          ...f,
-        },
-      ] as ColumnConfig[];
-    }
-  );
-  const newVirtualFields = schemaFields
-    .filter((f) => !specifiedFieldIds.has(f.id))
-    .map(
-      (f): ColumnConfig => ({
-        ...makeDefaultConfig(f),
-      })
-    );
-  const mergedFields = [...keptSpecifiedFields, ...newVirtualFields];
-  const minimalFullLengthFields: Partial<ColumnConfig>[] = [
-    ...specifiedFieldsPartial,
-    ...newVirtualFields.map((f) => ({ key: f.key, fieldId: f.fieldId })),
-  ] as Partial<ColumnConfig>[];
-  return { mergedFields, minimalFullLengthFields };
-}
 
 export function deriveValueType(cconfig: BaseColumnConfig) {
   return cconfig.dataType === "auto"
