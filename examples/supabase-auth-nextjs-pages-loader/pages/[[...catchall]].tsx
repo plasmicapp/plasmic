@@ -12,7 +12,7 @@ import useSWR from "swr";
 import Error from "next/error";
 import { useRouter } from "next/router";
 import { PLASMIC } from "@/plasmic-init";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { PLASMIC_AUTH_DATA_KEY } from "../utils/cache-keys";
 
 export default function PlasmicLoaderPage(props: {
   plasmicData?: ComponentRenderData;
@@ -46,7 +46,7 @@ export default function PlasmicLoaderPage(props: {
  * This is going to use the user current session to get a valid plasmic user.
  */
 function usePlasmicAuthData() {
-  const { isLoading, data } = useSWR("plasmic-auth-data", async () => {
+  const { isLoading, data } = useSWR(PLASMIC_AUTH_DATA_KEY, async () => {
     const data = await fetch("/api/plasmic-auth").then((r) => r.json());
     return data;
   });

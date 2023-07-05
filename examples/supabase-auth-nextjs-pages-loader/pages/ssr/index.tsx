@@ -5,9 +5,8 @@ import {
   ComponentRenderData,
   PlasmicRootProvider,
 } from "@plasmicapp/loader-nextjs";
-import type { GetServerSideProps, GetStaticPaths, GetStaticProps } from "next";
+import type { GetServerSideProps } from "next";
 import "@supabase/auth-helpers-nextjs"
-import useSWR from "swr";
 
 import Error from "next/error";
 import { useRouter } from "next/router";

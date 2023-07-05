@@ -3,6 +3,7 @@ import { createPagesBrowserClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { mutate } from "swr";
+import { PLASMIC_AUTH_DATA_KEY } from "../utils/cache-keys";
 
 export function AuthForm(): JSX.Element {
   const [supabaseClient] = useState(() => createPagesBrowserClient());
@@ -24,7 +25,7 @@ export function AuthForm(): JSX.Element {
           } else {
             await supabaseClient.auth.signUp(credentials);
           }
-          await mutate("plasmic-auth-data");
+          await mutate(PLASMIC_AUTH_DATA_KEY);
           router.push("/");
         },
       }}

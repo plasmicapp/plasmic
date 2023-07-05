@@ -3,6 +3,7 @@ import { createPagesBrowserClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { mutate } from "swr";
+import { PLASMIC_AUTH_DATA_KEY } from "../utils/cache-keys";
 
 export function AuthButton(): JSX.Element {
   const [supabaseClient] = useState(() => createPagesBrowserClient());
@@ -12,15 +13,10 @@ export function AuthButton(): JSX.Element {
       forceOriginal
       component="AuthButton"
       componentProps={{
-        loginBtn: {
-          onClick: () => {
-            router.push("/");
-          },
-        },
         logoutBtn: {
           onClick: async () => {
             await supabaseClient.auth.signOut();
-            await mutate("plasmic-auth-data");
+            await mutate(PLASMIC_AUTH_DATA_KEY);
             router.reload();
           },
         },
