@@ -131,6 +131,7 @@ export interface PropTypeBaseDefault<P, T>
 interface PlainStringType<P> extends PropTypeBaseDefault<P, string> {
   type: "string";
   control?: "default" | "large";
+  isLocalizable?: boolean;
 }
 
 interface CodeStringType<P> extends PropTypeBaseDefault<P, string> {
