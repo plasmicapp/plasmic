@@ -13,11 +13,11 @@ export function AuthForm(): JSX.Element {
       component="AuthForm"
       componentProps={{
         handleSubmit: async (
+          mode: "signIn" | "signUp",
           credentials: {
             email: string;
             password: string;
-          },
-          mode: "signIn" | "signUp"
+          }
         ) => {
           if (mode === "signIn") {
             await supabaseClient.auth.signInWithPassword(credentials);
