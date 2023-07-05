@@ -715,9 +715,7 @@ export function registerForm(loader?: Registerable) {
         },
         unstable__keyFunc: (x) => x.key,
         unstable__minimalValue: (ps, contextData) => {
-          return ps.mode === "simplified"
-            ? ps.formItems
-            : contextData?.minimalFullLengthFields;
+          return ps.data ? contextData?.minimalFullLengthFields : undefined;
         },
         unstable__canDelete: (item, ps, ctx) => {
           if (ps.mode !== "database-schema-driven") {
