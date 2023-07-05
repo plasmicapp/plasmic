@@ -1,0 +1,34 @@
+{
+  "name": "supabase-auth-nextjs-pages-codegen",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.1.4",
+    "@ant-design/pro-components": "^2.6.4",
+    "@plasmicapp/auth-api": "^0.0.4",
+    "@plasmicapp/cli": "^0.1.295",
+    "@plasmicapp/react-web": "^0.2.236",
+    "@plasmicpkgs/antd5": "^0.0.87",
+    "@plasmicpkgs/plasmic-basic-components": "^0.0.162",
+    "@plasmicpkgs/plasmic-rich-components": "^1.0.99",
+    "@supabase/auth-helpers-nextjs": "^0.7.2",
+    "@supabase/auth-helpers-react": "^0.4.0",
+    "@supabase/supabase-js": "^2.26.0",
+    "@types/node": "20.3.3",
+    "@types/react": "18.2.14",
+    "@types/react-dom": "18.2.6",
+    "eslint": "8.44.0",
+    "eslint-config-next": "13.4.8",
+    "next": "13.4.8",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "swr": "^2.2.0",
+    "typescript": "5.1.6"
+  }
+}
