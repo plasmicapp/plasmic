@@ -12,13 +12,14 @@ import React, {
 import {Bundler} from './Bundler';
 import {
   Expr,
+  ImageAsset,
   RichText,
   Site,
   TplNode,
   Variant,
   VariantSetting,
 } from './classes';
-import {assert, camelize, ensure, ensureArray, tuple} from './common';
+import {assert, camelize, ensure, ensureArray, maybe, tuple} from './common';
 
 export const isValidVarName = (name: string) =>
   name.match(
@@ -118,7 +119,6 @@ let componentMap: Map<string, ComponentType<any>> = new Map();
 const bundler = new Bundler();
 
 function unbundleAll(repr: any) {
-  debugger;
   return bundler.unbundle(repr.site, '') as Site;
 }
 
@@ -135,6 +135,45 @@ function tryme(f: () => any) {
     // throw e;
     return undefined;
   }
+}
+
+const imgOptimizerHost = 'https://img.plasmic.app';
+export const ASPECT_RATIO_SCALE_FACTOR = 1000000;
+
+export function maybeMakePlasmicImgSrc(asset: ImageAsset) {
+  if (!asset.dataUri) {
+    return undefined;
+  }
+
+  // Don't use PlasmicImg if...
+  if (
+    // Not a Picture
+    asset.type !== 'picture' ||
+    // No imgOptimizerHost set
+    !imgOptimizerHost ||
+    // No known full width/height
+    !asset.width ||
+    !asset.height
+  ) {
+    return asset.dataUri;
+  }
+
+  const imgId =
+    asset.dataUri.startsWith('http') &&
+    ensure(asset.dataUri.split('/').slice(-1)[0]);
+
+  return {
+    src:
+      !imgId || imgId.endsWith('.svg')
+        ? asset.dataUri
+        : `${imgOptimizerHost}/img-optimizer/v1/img/${imgId}`,
+    fullWidth: asset.width,
+    fullHeight: asset.height,
+    aspectRatio: maybe(
+      asset.aspectRatio,
+      (aspectRatio) => aspectRatio / ASPECT_RATIO_SCALE_FACTOR,
+    ),
+  };
 }
 
 function createElementWithChildren(tag: any, props: any, ...children: any[]) {
@@ -178,7 +217,7 @@ export function PlasmicModelRenderer({
       case 'CustomCode':
         return expr.code.startsWith('(') ? undefined : JSON.parse(expr.code);
       case 'ImageAssetRef':
-        return expr.asset.name;
+        return expr.asset.dataUri;
       // case "ObjectPath":
       //     return JSON.parse(expr.path);
       case 'PageHref':
@@ -386,24 +425,36 @@ export async function loadModelData({
   projectApiToken,
   projectId,
   host = 'https://codegen.plasmic.app',
+  preview = false,
 }: {
   projectId: string;
   projectApiToken: string;
   componentName?: string;
   host?: string;
+  preview?: boolean;
 }) {
+  const previewOrPublished = preview ? 'preview' : 'published';
   const response = await fetch(
-    `${host}/api/v1/loader/repr-v3/preview/${projectId}`,
+    `${host}/api/v1/loader/repr-v3/${previewOrPublished}/${projectId}`,
     {
       headers: {
         'x-plasmic-api-project-tokens': `${projectId}:${projectApiToken}`,
       },
     },
   );
-  const repr = await response.json();
+  const repr = (await response.json()) as any;
+  repr.interpreterExtras = {
+    output: {
+      projectConfig: repr.interpreterExtras.output.projectConfig,
+      components: repr.interpreterExtras.output.components.map(
+        ({id, interpreterMeta}: any) => ({id, interpreterMeta}),
+      ),
+    },
+  };
+
   {
     const response = await fetch(
-      `${host}/api/v1/loader/code/preview?projectId=${projectId}&platform=react`,
+      `${host}/api/v1/loader/code/${previewOrPublished}?projectId=${projectId}&platform=react`,
       {
         headers: {
           'x-plasmic-api-project-tokens': `${projectId}:${projectApiToken}`,
@@ -412,6 +463,10 @@ export async function loadModelData({
       },
     );
     repr.code = await response.json();
+    repr.code.modules.server = [];
+    repr.code.modules.browser = repr.code.modules.browser.filter((m: any) =>
+      m.fileName.endsWith('.css'),
+    );
   }
   return repr;
 }

@@ -19,7 +19,7 @@
   "dependencies": {
     "@headlessui/react": "^1.7.2",
     "@plasmicapp/loader-react": "^1.0.278",
-    "@plasmicapp/model-renderer-react": "^0.0.2",
+    "@plasmicapp/model-renderer-react": "^0.0.4",
     "@remix-run/react": "1.17.1",
     "@shopify/cli": "3.45.0",
     "@shopify/cli-hydrogen": "^5.0.1",

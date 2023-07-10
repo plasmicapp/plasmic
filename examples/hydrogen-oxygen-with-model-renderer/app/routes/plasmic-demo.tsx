@@ -12,6 +12,7 @@ export async function loader({params, context}: LoaderArgs) {
     projectId: 'epbgVLcp3YhaE2wswNV8LH',
     projectApiToken:
       'JkMij4v6NRfS5iEZrAoHiNR02pdXKeUKrH0QGfRLQ0ym2o5qUU89VSYdGYCyhx88sOiUTQtNCREgRc9DM9A',
+    preview: false,
   });
 
   return json({
