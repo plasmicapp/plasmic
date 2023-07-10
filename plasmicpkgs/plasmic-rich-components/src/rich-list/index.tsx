@@ -62,6 +62,11 @@ const richListMeta: ComponentMeta<RichListProps> = {
     padding: "16px",
     maxHeight: "100%",
   },
+  templates: {
+    grid: {
+      props: {},
+    },
+  },
   props: {
     data: dataProp(),
 
