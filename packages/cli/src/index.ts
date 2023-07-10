@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-import semver from "semver";
-import updateNotifier from "update-notifier";
 import yargs from "yargs";
 import * as auth from "./actions/auth";
 import { fixImports, FixImportsArgs } from "./actions/fix-imports";
@@ -21,17 +19,19 @@ if (process.env.DEBUG_CHDIR) {
   process.chdir(process.env.DEBUG_CHDIR);
 }
 
+// TODO: we cannot use update-notifier, as it uses lazy-import, which
+// cannot be compiled into a single bundle with esbuild.
 // Check once an hour
-const pkg = require("../package.json");
-const notifier = updateNotifier({ pkg, updateCheckInterval: 1000 * 60 * 60 });
-// Workaround for this bug
-// https://github.com/yeoman/update-notifier/issues/181
-if (
-  !!notifier.update &&
-  semver.gt(notifier.update.latest, notifier.update.current)
-) {
-  notifier.notify();
-}
+// const pkg = require("../package.json");
+// const notifier = updateNotifier({ pkg, updateCheckInterval: 1000 * 60 * 60 });
+// // Workaround for this bug
+// // https://github.com/yeoman/update-notifier/issues/181
+// if (
+//   !!notifier.update &&
+//   semver.gt(notifier.update.latest, notifier.update.current)
+// ) {
+//   notifier.notify();
+// }
 
 yargs
   .usage("Usage: $0 <command> [options]")

@@ -41,7 +41,14 @@ export const formatAsLocal = (
   baseDir: string,
   defaultOpts: Options = {}
 ) => {
-  const opts = resolveConfig.sync(baseDir) || defaultOpts;
+  // TODO: we used to use resolveConfig.sync() to try to use local prettier,
+  // but this ended up using unrelated prettier config higher up the stack,
+  // which dangerously may remove unused imports like
+  // createPlasmicElementProxy.  So we're going to stop for now until we find
+  // a better solution, like maybe letting user specify a prettier config
+  // file in plasmic.json
+  // const opts = resolveConfig.sync(baseDir) || defaultOpts;
+  const opts = { ...defaultOpts };
   opts.filepath = filePath;
 
   // Running Prettier multiple times may actually yield different results!
