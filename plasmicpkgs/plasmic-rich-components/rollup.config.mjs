@@ -3,8 +3,7 @@ import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import resolve from "@rollup/plugin-node-resolve";
 import path from "path";
-import typescript from "rollup-plugin-typescript2";
-import ts from "typescript";
+import esbuild from "rollup-plugin-esbuild";
 
 export default [
   {
@@ -35,11 +34,9 @@ export default [
       resolve(),
       commonjs(),
       json(),
-      typescript({
-        typescript: ts,
-        check: false,
-        tsconfigOverride: {
-          emitDeclarationOnly: true,
+      esbuild({
+        loaders: {
+          ".json": "json",
         },
       }),
     ],

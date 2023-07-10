@@ -10,13 +10,8 @@ import {
   PropType,
   RestrictPropType,
 } from "./prop-types";
-export type {
-  CanvasComponentProps,
-  ControlExtras,
-  ControlContext,
-  ContextDependentConfig,
-  PropType,
-} from "./prop-types";
+import { TupleUnion } from "./type-utils";
+export type * from "./prop-types";
 
 const root = globalThis as any;
 
@@ -113,15 +108,8 @@ export interface StateHelpers<P, T> {
   onMutate?: (stateValue: T, $ref: any) => void;
 }
 
-// A compile-time error will occur if a new field is added to the StateHelper 
+// A compile-time error will occur if a new field is added to the StateHelper
 // interface but not included in the keys array of state helper.
-type TupleUnion<U extends string, R extends string[] = []> = {
-  [S in U]: Exclude<U, S> extends never
-    ? [...R, S]
-    : TupleUnion<Exclude<U, S>, [...R, S]>;
-}[U] &
-  string[];
-
 export const stateHelpersKeys: TupleUnion<keyof StateHelpers<any, any>> = [
   "initFunc",
   "onChangeArgsToValue",

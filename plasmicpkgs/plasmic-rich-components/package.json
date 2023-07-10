@@ -19,7 +19,7 @@
     }
   ],
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c rollup.config.mjs && yarn tsc --emitDeclarationOnly --declaration src/index.tsx --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --jsx react --esModuleInterop --strict --outDir ./dist/",
     "start": "tsdx watch",
     "test": "yarn --cwd=../.. test --passWithNoTests",
     "lint": "tsdx lint",
@@ -32,12 +32,17 @@
     "@ant-design/pro-components": "^2.4.1",
     "@plasmicapp/data-sources": "0.1.97",
     "@plasmicapp/host": "1.0.152",
+    "@rollup/plugin-commonjs": "^25.0.2",
+    "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^15.1.0",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/node": "^14.0.26",
     "antd": "^5.4.0",
+    "rollup": "^3.26.2",
     "size-limit": "^4.11.0",
     "tsdx": "^0.14.1",
-    "tslib": "^2.2.0"
+    "tslib": "^2.2.0",
+    "typescript": "^4"
   },
   "peerDependencies": {
     "@ant-design/icons": ">=5.0.0",
