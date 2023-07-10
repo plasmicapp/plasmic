@@ -57,8 +57,8 @@
     "react-dom": ">=16.8.0"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.171",
-    "gatsby": "^4.0.0"
+    "@types/lodash": "^4.14.195",
+    "gatsby": "^5.11.0"
   },
   "dependencies": {
     "@plasmicapp/loader-core": "1.0.105",

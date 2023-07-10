@@ -3,16 +3,15 @@ import registerComponent, {
 } from "@plasmicapp/host/registerComponent";
 import { Carousel as AntdCarousel } from "antd";
 import type { CarouselProps } from "antd/es/carousel";
-import { CSSProperties } from "react";
 import { Registerable } from "./registerable";
 
 export const Carousel = AntdCarousel;
 
-const contentStyle: CSSProperties = {
-  height: "160px",
+const contentStyle = {
+  height: 160,
   color: "#fff",
-  lineHeight: "160px",
-  textAlign: "center",
+  lineHeight: 160,
+  textAlign: "center" as const,
   backgroundColor: "#364d79",
 };
 
