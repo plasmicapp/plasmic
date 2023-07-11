@@ -148,12 +148,18 @@ yargs
     "info",
     "Fetches metadata for projects",
     (yags) =>
-      yags.option("projects", {
-        alias: "p",
-        describe: "ID of plasmic project to check",
-        type: "array",
-        default: [],
-      }),
+      yags
+        .option("projects", {
+          alias: "p",
+          describe: "ID of plasmic project to check",
+          type: "array",
+          default: [],
+        })
+        .option("json", {
+          describe: "Output full info, not just summary, in JSON format",
+          type: "boolean",
+          default: false,
+        }),
     (argv) => {
       handleError(printProjectInfo(argv));
     }
