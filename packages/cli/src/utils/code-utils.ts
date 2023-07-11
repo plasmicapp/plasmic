@@ -34,6 +34,7 @@ import {
   writeFileContent,
 } from "./file-utils";
 import { assert, flatMap } from "./lang-utils";
+import { GLOBAL_SETTINGS } from "../globals";
 
 export const formatAsLocal = (
   content: string,
@@ -41,6 +42,9 @@ export const formatAsLocal = (
   baseDir: string,
   defaultOpts: Options = {}
 ) => {
+  if (GLOBAL_SETTINGS.skipFormatting) {
+    return content;
+  }
   // TODO: we used to use resolveConfig.sync() to try to use local prettier,
   // but this ended up using unrelated prettier config higher up the stack,
   // which dangerously may remove unused imports like

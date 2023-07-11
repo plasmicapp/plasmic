@@ -12,6 +12,7 @@ import {
   StyleConfigResponse,
 } from "../api";
 import { logger } from "../deps";
+import { GLOBAL_SETTINGS } from "../globals";
 import { getChecksums } from "../utils/checksum";
 import {
   ComponentUpdateSummary,
@@ -21,12 +22,12 @@ import {
 } from "../utils/code-utils";
 import {
   CONFIG_FILE_NAME,
-  createProjectConfig,
-  getOrAddProjectConfig,
-  getOrAddProjectLock,
   LOADER_CONFIG_FILE_NAME,
   PlasmicContext,
   PlasmicLoaderConfig,
+  createProjectConfig,
+  getOrAddProjectConfig,
+  getOrAddProjectLock,
   updateConfig,
 } from "../utils/config-utils";
 import { HandledError } from "../utils/error";
@@ -41,7 +42,7 @@ import {
   writeFileContent,
   writeFileText,
 } from "../utils/file-utils";
-import { generateMetadata, getContext, Metadata } from "../utils/get-context";
+import { Metadata, generateMetadata, getContext } from "../utils/get-context";
 import { printFirstSyncInfo } from "../utils/help";
 import { ensure, tuple } from "../utils/lang-utils";
 import {
@@ -73,6 +74,7 @@ export interface SyncArgs extends CommonArgs {
   metadata?: string;
   allFiles?: boolean;
   loaderConfig?: string;
+  skipFormatting?: boolean;
 }
 
 async function ensureRequiredPackages(
@@ -197,6 +199,10 @@ export async function sync(
   if (!opts.baseDir) opts.baseDir = process.cwd();
   const baseDir = opts.baseDir;
   let context = await getContext(opts, { enableSkipAuth: true });
+
+  if (opts.skipFormatting) {
+    GLOBAL_SETTINGS.skipFormatting = true;
+  }
 
   const isFirstRun = context.config.projects.length === 0;
 

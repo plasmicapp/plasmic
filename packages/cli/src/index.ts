@@ -136,7 +136,12 @@ yargs
   .command<FixImportsArgs>(
     "fix-imports",
     "Fixes import paths after you've moved around Plasmic blackbox files",
-    (yags) => 0,
+    (yags) =>
+      yags.option("skip-formatting", {
+        type: "boolean",
+        describe: "Skip formatting of modified code",
+        default: false,
+      }),
     (argv) => handleError(fixImports(argv))
   )
   .command<InfoArgs>(
@@ -344,6 +349,11 @@ function configureSyncArgs(
         "Pass metadata through to the server. Use querystring format (e.g. command=sync&source=cli&cli_version=1.0.0",
       default: "source=cli",
       hidden: true,
+    })
+    .option("skip-formatting", {
+      type: "boolean",
+      describe: "Disables formatting on generated code",
+      default: false,
     })
     .option("all-files", {
       type: "boolean",
