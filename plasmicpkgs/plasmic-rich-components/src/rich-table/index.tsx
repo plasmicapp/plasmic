@@ -27,6 +27,11 @@ export const tableHelpers = {
     },
     selectedRowKey: {
       onChangeArgsToValue: (rowKeys: string[], rows: any[]) => {
+        return rowKeys[0];
+      },
+    },
+    selectedRowKeys: {
+      onChangeArgsToValue: (rowKeys: string[], rows: any[]) => {
         return rowKeys;
       },
     },
@@ -75,7 +80,8 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
     selectedRowKey: {
       type: "string",
       displayName: "Selected Row Key",
-      hidden: (ps) => ps.canSelectRows !== "single",
+      hidden: (ps) =>
+        ps.canSelectRows !== "single" && ps.canSelectRows !== "click",
       advanced: true,
     },
     selectedRowKeys: {
@@ -162,6 +168,13 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
       onChangeProp: "onRowSelectionChanged",
       variableType: "text",
       ...tableHelpers.states.selectedRowKey,
+    },
+    selectedRowKeys: {
+      type: "writable",
+      valueProp: "selectedRowKeys",
+      onChangeProp: "onRowSelectionChanged",
+      variableType: "array",
+      ...tableHelpers.states.selectedRowKeys,
     },
     selectedRow: {
       type: "readonly",

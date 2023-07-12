@@ -42,7 +42,8 @@ export interface RichTableProps extends FieldfulProps<TableColumnConfig> {
 
   canSelectRows?: "none" | "click" | "single" | "multiple";
 
-  selectedRowKey?: string | string[];
+  selectedRowKey?: string;
+  selectedRowKeys?: string[];
   onRowSelectionChanged?: (rowKeys: string[], rows: any[]) => void;
   onRowClick?: (rowKey: string, row: any, event: React.MouseEvent) => void;
 
@@ -371,6 +372,7 @@ function useRowSelectionProps(
   const {
     canSelectRows,
     selectedRowKey,
+    selectedRowKeys,
     onRowSelectionChanged,
     rowKey,
     onRowClick,
@@ -384,14 +386,10 @@ function useRowSelectionProps(
       return [];
     }
 
-    if (typeof selectedRowKey === "string") {
+    if (canSelectRows === "multiple") {
+      return selectedRowKeys ?? [];
+    } else if (selectedRowKey) {
       return [selectedRowKey];
-    } else if (Array.isArray(selectedRowKey)) {
-      if (canSelectRows === "single" || canSelectRows === "click") {
-        return selectedRowKey.slice(0, 1);
-      } else {
-        return selectedRowKey;
-      }
     } else {
       return [];
     }
