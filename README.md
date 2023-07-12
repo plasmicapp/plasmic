@@ -276,6 +276,22 @@ npm --registry=http://localhost:4873 adduser
 
 ### Development workflow
 
+For standalone applications like the CLI, you can do this:
+
+```bash
+cd packages/cli/
+
+# Step 1. (One-time)
+# Ensure dependencies are built.
+npx nx build @plasmicapp/cli
+
+# Step 2. (Repeat)
+# Hackety hack, then you can directly run the source with esbuild-register.
+node -r esbuild-register src/index.ts -h
+```
+
+If you need the package installed in another npm project to test it, like say a Next.js project, you'll need to publish to your local verdaccio. This is the case for most packages in this repo, which are libraries meant to be used elsewhere.
+
 ```bash
 # Step 1.
 # Make some changes! Let's say, to @plasmicapp/host.
