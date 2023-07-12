@@ -210,9 +210,11 @@ export const PlasmicImg = React.forwardRef(function PlasmicImg(
   const imageLoader = getImageLoader(loader);
   const spacerSvg = `<svg width="${spacerWidth}" height="${spacerHeight}" xmlns="http://www.w3.org/2000/svg" version="1.1"/>`;
   const spacerSvgBase64 =
-    typeof window === "undefined"
-      ? Buffer.from(spacerSvg).toString("base64")
-      : window.btoa(spacerSvg);
+    // if btoa exists, use btoa, as it works in browser and in
+    // cloudflare edge workers.  For node, use Buffer.from().
+    typeof globalThis.btoa === "function"
+      ? globalThis.btoa(spacerSvg)
+      : Buffer.from(spacerSvg).toString("base64");
 
   let wrapperStyle: CSSProperties = { ...(style || {}) };
   let spacerStyle: CSSProperties = {
