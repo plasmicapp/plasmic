@@ -5,10 +5,11 @@ import { getContext } from "../utils/get-context";
 export interface InfoArgs extends CommonArgs {
   projects: readonly string[];
   json?: boolean;
+  host?: string;
 }
 
 export async function printProjectInfo(opts: InfoArgs): Promise<void> {
-  let context = await getContext(opts);
+  let context = await getContext(opts, { skipMissingFiles: true });
   const results = await Promise.all(
     opts.projects.map(async (p) => await context.api.projectMeta(p))
   );

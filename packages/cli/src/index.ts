@@ -149,6 +149,11 @@ yargs
     "Fetches metadata for projects",
     (yags) =>
       yags
+        .option("host", {
+          describe: "Plasmic host to use",
+          type: "string",
+          default: "https://studio.plasmic.app",
+        })
         .option("projects", {
           alias: "p",
           describe: "ID of plasmic project to check",

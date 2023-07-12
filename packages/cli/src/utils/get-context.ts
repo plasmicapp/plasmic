@@ -286,7 +286,10 @@ async function resolveMissingFilesInConfig(
 
 export async function getContext(
   args: CommonArgs,
-  { enableSkipAuth = false }: { enableSkipAuth?: boolean } = {}
+  {
+    enableSkipAuth = false,
+    skipMissingFiles = false,
+  }: { enableSkipAuth?: boolean; skipMissingFiles?: boolean } = {}
 ): Promise<PlasmicContext> {
   if (!args.baseDir) args.baseDir = process.cwd();
   const auth = enableSkipAuth
@@ -297,8 +300,7 @@ export async function getContext(
   if (auth.host.startsWith(DEFAULT_HOST)) {
     // Production usage of cli
     Sentry.init({
-      dsn:
-        "https://3ed4eb43d28646e381bf3c50cff24bd6@o328029.ingest.sentry.io/5285892",
+      dsn: "https://3ed4eb43d28646e381bf3c50cff24bd6@o328029.ingest.sentry.io/5285892",
     });
     Sentry.configureScope((scope) => {
       if (auth.user) {
@@ -348,8 +350,10 @@ export async function getContext(
     cliArgs: args,
   };
 
-  await resolveMissingFilesInConfig(context, config);
-  removeMissingFilesFromLock(context, config, lock);
+  if (!skipMissingFiles) {
+    await resolveMissingFilesInConfig(context, config);
+    removeMissingFilesFromLock(context, config, lock);
+  }
 
   return context;
 }
