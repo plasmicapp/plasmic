@@ -1,1 +1,1 @@
-export type * from '@plasmicapp/loader-edge';
+export * from "./dist/edge";

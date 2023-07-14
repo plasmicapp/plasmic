@@ -23,8 +23,8 @@
       }
     },
     "./edge": {
-      "types": "./edge.d.ts",
-      "default": "./edge.js"
+      "types": "./dist/edge.d.ts",
+      "default": "./dist/edge.js"
     }
   },
   "files": [
@@ -32,16 +32,16 @@
     "index.d.ts",
     "react-server.d.ts",
     "react-server-conditional.d.ts",
-    "edge.d.ts",
-    "edge.js"
+    "edge.d.ts"
   ],
   "engines": {
     "node": ">=10"
   },
   "scripts": {
-    "build": "yarn build:types && yarn build:index && yarn build:react-server",
+    "build": "yarn build:types && yarn build:index && yarn build:edge && yarn build:react-server",
     "build:types": "yarn tsc",
     "build:index": "node ../../build.mjs ./src/index.tsx --use-client",
+    "build:edge": "node ../../build.mjs ./src/edge.ts",
     "build:react-server": "node ../../build.mjs ./src/react-server.ts",
     "postbuild": "yarn postbuild:index && yarn postbuild:react-server",
     "postbuild:index": "node ../../print-module-api.js ./packages/loader-nextjs/dist/index.js > index-api.txt",
