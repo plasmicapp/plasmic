@@ -1,60 +1,70 @@
+/* eslint-disable */
 /*
   Forked from https://github.com/vercel/commerce/tree/main/packages/saleor/src
-  Changes: None 
+  Changes: None
 */
 
-import { Product } from '@plasmicpkgs/commerce'
+import { Product } from "@plasmicpkgs/commerce";
 
-import { Product as SaleorProduct, Checkout, CheckoutLine, Money, ProductVariant, Collection } from '../schema'
-import { Category } from '../types/site';
-import type { Cart, LineItem } from '../types'
+import {
+  Product as SaleorProduct,
+  Checkout,
+  CheckoutLine,
+  Money,
+  ProductVariant,
+  Collection,
+} from "../schema";
+import { Category } from "../types/site";
+import type { Cart, LineItem } from "../types";
 
 // TODO: Check nextjs-commerce bug if no images are added for a product
-const placeholderImg = '/product-img-placeholder.svg'
+const placeholderImg = "/product-img-placeholder.svg";
 
 const money = ({ amount, currency }: Money) => {
   return {
     value: +amount,
-    currencyCode: currency || 'USD',
-  }
-}
+    currencyCode: currency || "USD",
+  };
+};
 
 const normalizeProductOptions = (options: ProductVariant[]) => {
   return options
     ?.map((option) => option?.attributes)
     .flat(1)
     .reduce<any>((acc, x) => {
-      if (acc.find(({ displayName }: any) => displayName === x.attribute.name)) {
+      if (
+        acc.find(({ displayName }: any) => displayName === x.attribute.name)
+      ) {
         return acc.map((opt: any) => {
           return opt.displayName === x.attribute.name
             ? {
-              ...opt,
-              values: [
-                ...opt.values,
-                ...x.values.map((value: any) => ({
-                  label: value?.name,
-                })),
-              ],
-            }
-            : opt
-        })
+                ...opt,
+                values: [
+                  ...opt.values,
+                  ...x.values.map((value: any) => ({
+                    label: value?.name,
+                  })),
+                ],
+              }
+            : opt;
+        });
       }
 
       return acc.concat({
-        __typename: 'MultipleChoiceOption',
+        __typename: "MultipleChoiceOption",
         displayName: x.attribute.name,
-        variant: 'size',
+        variant: "size",
         values: x.values.map((value: any) => ({
           label: value?.name,
         })),
-      })
-    }, [])
-}
+      });
+    }, []);
+};
 
 const normalizeProductVariants = (variants: ProductVariant[]) => {
   return variants?.map((variant) => {
-    const { id, sku, name, pricing } = variant
-    const price = pricing?.price?.net && money(pricing.price.net)?.value
+    const { id, sku, name, pricing } = variant;
+    const price = pricing?.price?.net && money(pricing.price.net)?.value;
 
     return {
       id,
@@ -64,42 +74,61 @@ const normalizeProductVariants = (variants: ProductVariant[]) => {
       listPrice: price,
       requiresShipping: true,
       options: normalizeProductOptions([variant]),
-    }
-  })
-}
+    };
+  });
+};
 
 export function normalizeProduct(productNode: SaleorProduct): Product {
-  const { id, name, media = [], variants, description, slug, pricing, ...rest } = productNode
+  const {
+    id,
+    name,
+    media = [],
+    variants,
+    description,
+    slug,
+    pricing,
+    ...rest
+  } = productNode;
 
   const product = {
     id,
     name,
-    vendor: '',
-    description: description ? JSON.parse(description)?.blocks[0]?.data.text : '',
+    vendor: "",
+    description: description
+      ? JSON.parse(description)?.blocks[0]?.data.text
+      : "",
     path: `/${slug}`,
-    slug: slug?.replace(/^\/+|\/+$/g, ''),
-    price: (pricing?.priceRange?.start?.net && money(pricing.priceRange.start.net)) || {
+    slug: slug?.replace(/^\/+|\/+$/g, ""),
+    price: (pricing?.priceRange?.start?.net &&
+      money(pricing.priceRange.start.net)) || {
       value: 0,
-      currencyCode: 'USD',
+      currencyCode: "USD",
     },
     // TODO: Check nextjs-commerce bug if no images are added for a product
     images: media?.length ? media : [{ url: placeholderImg }],
-    variants: variants && variants.length > 0 ? normalizeProductVariants(variants as ProductVariant[]) : [],
-    options: variants && variants.length > 0 ? normalizeProductOptions(variants as ProductVariant[]) : [],
+    variants:
+      variants && variants.length > 0
+        ? normalizeProductVariants(variants as ProductVariant[])
+        : [],
+    options:
+      variants && variants.length > 0
+        ? normalizeProductOptions(variants as ProductVariant[])
+        : [],
     ...rest,
-  }
+  };
 
-  return product as Product
+  return product as Product;
 }
 
 export function normalizeCart(checkout: Checkout): Cart {
-  const lines = checkout.lines as CheckoutLine[]
-  const lineItems: LineItem[] = lines.length > 0 ? lines?.map<LineItem>(normalizeLineItem) : []
+  const lines = checkout.lines as CheckoutLine[];
+  const lineItems: LineItem[] =
+    lines.length > 0 ? lines?.map<LineItem>(normalizeLineItem) : [];
 
   return {
     id: checkout.id,
-    customerId: '',
-    email: '',
+    customerId: "",
+    email: "",
     createdAt: checkout.created,
     currency: {
       code: checkout.totalPrice?.currency!,
@@ -110,19 +139,19 @@ export function normalizeCart(checkout: Checkout): Cart {
     subtotalPrice: checkout.subtotalPrice?.gross?.amount!,
     totalPrice: checkout.totalPrice?.gross.amount!,
     discounts: [],
-  }
+  };
 }
 
 function normalizeLineItem({ id, variant, quantity }: CheckoutLine): LineItem {
   return {
     id,
     variantId: String(variant?.id),
-    productId: String(variant?.id),
+    productId: String(variant?.product?.id),
     name: `${variant.product.name}`,
     quantity,
     variant: {
       id: String(variant?.id),
-      sku: variant?.sku ?? '',
+      sku: variant?.sku ?? "",
       name: variant?.name!,
       image: {
         url: variant?.media![0] ? variant?.media![0].url : placeholderImg,
@@ -134,7 +163,7 @@ function normalizeLineItem({ id, variant, quantity }: CheckoutLine): LineItem {
     path: String(variant?.product?.slug),
     discounts: [],
     options: [],
-  }
+  };
 }
 export const normalizeCategory = ({
   name,
@@ -145,4 +174,4 @@ export const normalizeCategory = ({
   name,
   slug,
   path: `/${slug}`,
-})
+});

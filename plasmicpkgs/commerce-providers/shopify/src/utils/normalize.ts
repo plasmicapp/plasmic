@@ -1,12 +1,13 @@
+/* eslint-disable */
 /*
   Forked from https://github.com/vercel/commerce/tree/main/packages/shopify/src
-  Changes: 
+  Changes:
     - When a product doesn't have a variant, Shopify sets the default variant title as "Default Title"
-      Changed to "Default Variant" to have the same default title as the Swell provider. 
+      Changed to "Default Variant" to have the same default title as the Swell provider.
 */
-import type { Page } from '../types/page'
-import type { Product } from '@plasmicpkgs/commerce'
-import type { Cart, LineItem } from '../types/cart'
+import type { Page } from "../types/page";
+import type { Product } from "@plasmicpkgs/commerce";
+import type { Cart, LineItem } from "../types/cart";
 
 import {
   Product as ShopifyProduct,
@@ -20,16 +21,16 @@ import {
   Page as ShopifyPage,
   PageEdge,
   Collection,
-} from '../schema'
-import { colorMap } from './colors'
-import { Category } from '../types/site'
+} from "../schema";
+import { colorMap } from "./colors";
+import { Category } from "../types/site";
 
 const money = ({ amount, currencyCode }: MoneyV2) => {
   return {
     value: +amount,
     currencyCode,
-  }
-}
+  };
+};
 
 const isDefaultOption = (selectedOption: SelectedOption) =>
   selectedOption.name === "Title";
@@ -40,32 +41,32 @@ const normalizeProductOption = ({
   values,
 }: ProductOption) => {
   return {
-    __typename: 'MultipleChoiceOption',
+    __typename: "MultipleChoiceOption",
     id,
     displayName: displayName.toLowerCase(),
     values: values.map((value) => {
       let output: any = {
         label: value,
-      }
+      };
       if (displayName.match(/colou?r/gi)) {
-        const mapedColor = colorMap[value.toLowerCase().replace(/ /g, '')]
+        const mapedColor = colorMap[value.toLowerCase().replace(/ /g, "")];
         if (mapedColor) {
           output = {
             ...output,
             hexColors: [mapedColor],
-          }
+          };
         }
       }
-      return output
+      return output;
     }),
-  }
-}
+  };
+};
 
 const normalizeProductImages = ({ edges }: ImageConnection) =>
   edges?.map(({ node: { originalSrc: url, ...rest } }) => ({
     url,
     ...rest,
-  }))
+  }));
 
 const normalizeProductVariants = ({ edges }: ProductVariantConnection) => {
   return edges?.map(
@@ -83,7 +84,9 @@ const normalizeProductVariants = ({ edges }: ProductVariantConnection) => {
     }) => {
       return {
         id,
-        name: selectedOptions.some(o => !isDefaultOption(o)) ? title : "Default variant",
+        name: selectedOptions.some((o) => !isDefaultOption(o))
+          ? title
+          : "Default variant",
         sku: sku ?? id,
         price: +priceV2.amount,
         listPrice: +compareAtPriceV2?.amount,
@@ -94,14 +97,14 @@ const normalizeProductVariants = ({ edges }: ProductVariantConnection) => {
             id,
             name,
             values: [value],
-          })
+          });
 
-          return options
+          return options;
         }),
-      }
+      };
     }
-  )
-}
+  );
+};
 
 export function normalizeProduct({
   id,
@@ -122,7 +125,7 @@ export function normalizeProduct({
     name,
     vendor,
     path: `/${handle}`,
-    slug: handle?.replace(/^\/+|\/+$/g, ''),
+    slug: handle?.replace(/^\/+|\/+$/g, ""),
     price: money(priceRange?.minVariantPrice),
     images: normalizeProductImages(images),
     variants: variants ? normalizeProductVariants(variants) : [],
@@ -134,15 +137,15 @@ export function normalizeProduct({
     ...(description && { description }),
     ...(descriptionHtml && { descriptionHtml }),
     ...rest,
-  }
+  };
 }
 
 export function normalizeCart(checkout: any): Cart {
   return {
     id: checkout.id,
     url: checkout.webUrl,
-    customerId: '',
-    email: '',
+    customerId: "",
+    email: "",
     createdAt: checkout.createdAt,
     currency: {
       code: checkout.totalPriceV2?.currencyCode,
@@ -153,7 +156,7 @@ export function normalizeCart(checkout: any): Cart {
     subtotalPrice: +checkout.subtotalPriceV2?.amount,
     totalPrice: +checkout.totalPriceV2?.amount,
     discounts: [],
-  }
+  };
 }
 
 function normalizeLineItem({
@@ -162,15 +165,15 @@ function normalizeLineItem({
   return {
     id,
     variantId: String(variant?.id),
-    productId: String(variant?.id),
+    productId: String(variant?.product.id),
     name: `${title}`,
     quantity,
     variant: {
       id: String(variant?.id),
-      sku: variant?.sku ?? '',
+      sku: variant?.sku ?? "",
       name: variant?.title!,
       image: {
-        url: variant?.image?.originalSrc || '/product-img-placeholder.svg',
+        url: variant?.image?.originalSrc || "/product-img-placeholder.svg",
       },
       requiresShipping: variant?.requiresShipping ?? false,
       price: variant?.priceV2?.amount,
@@ -178,8 +181,8 @@ function normalizeLineItem({
     },
     path: String(variant?.product?.handle),
     discounts: [],
-    options: variant?.title == 'Default Title' ? [] : variant?.selectedOptions,
-  }
+    options: variant?.title == "Default Title" ? [] : variant?.selectedOptions,
+  };
 }
 /*
 export const normalizePage = (
@@ -204,5 +207,5 @@ export const normalizeCategory = ({
   name,
   slug: handle,
   path: `/${handle}`,
-  isEmpty: products.edges.length === 0
-})
+  isEmpty: products.edges.length === 0,
+});

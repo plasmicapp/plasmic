@@ -1,6 +1,7 @@
 import { Registerable } from "./registerable";
 import { registerAddToCartButton } from "./registerAddToCartButton";
 import { registerCart } from "./registerCart";
+import { registerCartProvider } from "./registerCartProvider";
 import { registerCategoryCollection } from "./registerCategoryCollection";
 import { registerCategoryField } from "./registerCategoryField";
 import { registerCategoryLink } from "./registerCategoryLink";
@@ -33,6 +34,7 @@ export { default as useSearch } from "./product/use-search";
 export * from "./registerable";
 export * from "./registerAddToCartButton";
 export * from "./registerCart";
+export * from "./registerCartProvider";
 export * from "./registerCategoryCollection";
 export * from "./registerCategoryField";
 export * from "./registerCategoryLink";
@@ -58,6 +60,7 @@ export * as SiteTypes from "./types/site";
 export { defaultProduct as ProductPlaceholder } from "./utils/default-product";
 export * from "./utils/errors";
 export * from "./utils/types";
+export { globalActionsRegistrations, CartActionsProvider } from "./contexts";
 
 export function registerAll(loader?: Registerable) {
   registerProductCollection(loader);
@@ -66,6 +69,7 @@ export function registerAll(loader?: Registerable) {
   registerProductMedia(loader);
   registerProductMediaCollection(loader);
   registerCart(loader);
+  registerCartProvider(loader);
   registerAddToCartButton(loader);
   registerProductQuantity(loader);
   registerProductVariantPicker(loader);

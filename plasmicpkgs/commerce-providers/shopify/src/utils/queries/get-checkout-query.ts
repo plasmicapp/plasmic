@@ -53,6 +53,7 @@ export const checkoutDetailsFragment = /* GraphQL */ `
               currencyCode
             }
             product {
+              id
               handle
             }
           }
@@ -61,7 +62,7 @@ export const checkoutDetailsFragment = /* GraphQL */ `
       }
     }
   }
-`
+`;
 
 const getCheckoutQuery = /* GraphQL */ `
   query getCheckout($checkoutId: ID!) {
@@ -70,5 +71,5 @@ const getCheckoutQuery = /* GraphQL */ `
     }
   }
   ${checkoutDetailsFragment}
-`
-export default getCheckoutQuery
+`;
+export default getCheckoutQuery;

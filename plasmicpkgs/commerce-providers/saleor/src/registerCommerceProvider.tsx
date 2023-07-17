@@ -3,13 +3,20 @@ import registerGlobalContext from "@plasmicapp/host/registerGlobalContext";
 import React from "react";
 import { Registerable } from "./registerable";
 import { getCommerceProvider } from "./saleor";
+import {
+  CartActionsProvider,
+  globalActionsRegistrations,
+} from "@plasmicpkgs/commerce";
 
 interface CommerceProviderProps {
   children?: React.ReactNode;
   saleorApiUrl: string;
 }
+
+const globalContextName = "plasmic-commerce-saleor-provider";
+
 export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
-  name: "plasmic-commerce-saleor-provider",
+  name: globalContextName,
   displayName: "Saleor Provider",
   props: {
     saleorApiUrl: {
@@ -17,6 +24,7 @@ export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
       defaultValue: "https://vercel.saleor.cloud/graphql/",
     },
   },
+  unstable__globalActions: globalActionsRegistrations as any,
   importPath: "@plasmicpkgs/commerce-saleor",
   importName: "CommerceProviderComponent",
 };
@@ -29,7 +37,13 @@ export function CommerceProviderComponent(props: CommerceProviderProps) {
     [saleorApiUrl]
   );
 
-  return <CommerceProvider>{children}</CommerceProvider>;
+  return (
+    <CommerceProvider>
+      <CartActionsProvider globalContextName={globalContextName}>
+        {children}
+      </CartActionsProvider>
+    </CommerceProvider>
+  );
 }
 
 export function registerCommerceProvider(

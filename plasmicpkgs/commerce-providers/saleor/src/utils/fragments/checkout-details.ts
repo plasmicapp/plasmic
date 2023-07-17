@@ -1,6 +1,6 @@
 /*
   Forked from https://github.com/vercel/commerce/tree/main/packages/saleor/src
-  Changes: None 
+  Changes: None
 */
 
 export const CheckoutDetails = /* GraphQL */ `
@@ -30,6 +30,7 @@ export const CheckoutDetails = /* GraphQL */ `
         product {
           name
           slug
+          id
         }
         media {
           url
@@ -51,4 +52,4 @@ export const CheckoutDetails = /* GraphQL */ `
       }
     }
   }
-`
+`;
