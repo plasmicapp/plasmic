@@ -102,7 +102,12 @@ export async function startAuth(opts: Partial<CommonArgs> & { host: string }) {
 
     const initToken = uuidv4();
     const url = `${opts.host}/auth/plasmic-init/${initToken}`;
-    open(url);
+    open(url).then((subprocess) => {
+      subprocess.on("error", () => {
+        // Browser failed to start. This needs to be handled to avoid
+        // crashing the CLI.
+      });
+    });
     logger.info(
       `\nIf your browser doesn't automatically open, enter the following URL:\n${url}\n`
     );
