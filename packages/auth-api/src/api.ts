@@ -1,6 +1,6 @@
 import fetch from '@plasmicapp/isomorphic-unfetch';
 
-const PLASMIC_HOST = 'https://studio.plasmic.app';
+const PLASMIC_HOST = 'https://data.plasmic.app';
 
 export interface PlasmicUser {
   email: string;
