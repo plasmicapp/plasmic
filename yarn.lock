@@ -7852,12 +7852,6 @@
     lodash "^4.17.19"
     prettier "^2.0.5"
 
-"@plasmicapp/host@1.0.65":
-  version "1.0.65"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.65.tgz#ae3f7f9c583a1549556b05d0f9b21e2046e4d26f"
-  integrity sha512-eLER/VYIyInypRat0OnzHm/SG+BXNxRJOvd/sAXu99K4hDWCmW9h9jzk8/iMYc6qxAiLPkBIATNkAHmIXLtMRQ==
-  dependencies:
-    window-or-global "^1.0.1"
 
 "@plasmicapp/host@1.0.76":
   version "1.0.76"

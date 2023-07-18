@@ -16,8 +16,10 @@ interface CommerceProviderProps extends CommercetoolsCredentials {
   children?: React.ReactNode;
 }
 
+const globalContextName = "plasmic-commerce-commercetools-provider";
+
 export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
-  name: "plasmic-commerce-commercetools-provider",
+  name: globalContextName,
   displayName: "Commercetools Provider",
   props: {
     projectKey: {
@@ -80,7 +82,9 @@ export function CommerceProviderComponent(props: CommerceProviderProps) {
 
   return (
     <CommerceProvider>
-      <CartActionsProvider>{children}</CartActionsProvider>
+      <CartActionsProvider globalContextName={globalContextName}>
+        {children}
+      </CartActionsProvider>
     </CommerceProvider>
   );
 }
