@@ -7,6 +7,10 @@ import { getCommerceProvider } from "./commercetools";
 import { getFetcher } from "./fetcher";
 import { CommercetoolsCredentials } from "./provider";
 import { Registerable } from "./registerable";
+import {
+  globalActionsRegistrations,
+  CartActionsProvider,
+} from "@plasmicpkgs/commerce";
 
 interface CommerceProviderProps extends CommercetoolsCredentials {
   children?: React.ReactNode;
@@ -40,6 +44,7 @@ export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
       defaultValue: "us-central1.gcp",
     },
   },
+  unstable__globalActions: globalActionsRegistrations as any,
   importPath: "@plasmicpkgs/commercetools",
   importName: "CommerceProviderComponent",
 };
@@ -52,14 +57,15 @@ export function CommerceProviderComponent(props: CommerceProviderProps) {
     [projectKey, clientId, clientSecret, region]
   );
 
-  const { data: locale, error, isLoading } = usePlasmicQueryData(
-    JSON.stringify({ creds }) + "locale",
-    async () => {
-      const fetcher = getFetcher(creds);
-      const project: ClientResponse<Project> = await fetcher({ method: "get" });
-      return project.body ? project.body.languages[0] : undefined;
-    }
-  );
+  const {
+    data: locale,
+    error,
+    isLoading,
+  } = usePlasmicQueryData(JSON.stringify({ creds }) + "locale", async () => {
+    const fetcher = getFetcher(creds);
+    const project: ClientResponse<Project> = await fetcher({ method: "get" });
+    return project.body ? project.body.languages[0] : undefined;
+  });
 
   const CommerceProvider = React.useMemo(
     () => getCommerceProvider(creds, locale ?? ""),
@@ -72,7 +78,11 @@ export function CommerceProviderComponent(props: CommerceProviderProps) {
     throw new Error(error ? error.message : "Project language not found");
   }
 
-  return <CommerceProvider>{children}</CommerceProvider>;
+  return (
+    <CommerceProvider>
+      <CartActionsProvider>{children}</CartActionsProvider>
+    </CommerceProvider>
+  );
 }
 
 export function registerCommerceProvider(
