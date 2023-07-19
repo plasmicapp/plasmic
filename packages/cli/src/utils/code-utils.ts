@@ -504,6 +504,7 @@ export async function fixAllImportStatements(
   logger.info("Fixing import statements...");
   const config = context.config;
   const fixImportContext = mkFixImportContext(config);
+  let lastError: any = undefined;
   for (const project of config.projects) {
     for (const compConfig of project.components) {
       const compSummary = summary?.get(compConfig.id);
@@ -514,17 +515,36 @@ export async function fixAllImportStatements(
         ? compSummary.skeletonModuleModified
         : true;
       if (!summary || compSummary) {
-        await fixComponentImportStatements(
-          context,
-          compConfig,
-          fixImportContext,
-          fixSkeletonModule,
-          baseDir
-        );
+        try {
+          await fixComponentImportStatements(
+            context,
+            compConfig,
+            fixImportContext,
+            fixSkeletonModule,
+            baseDir
+          );
+        } catch (err) {
+          logger.error(
+            `Error encountered while fixing imports for ${compConfig.name}: ${err}`
+          );
+          lastError = err;
+        }
       }
     }
   }
-  fixGlobalContextImportStatements(context, fixImportContext, baseDir);
+
+  try {
+    fixGlobalContextImportStatements(context, fixImportContext, baseDir);
+  } catch (err) {
+    logger.error(
+      `Error encountered while fixing imports for global contexts: ${err}`
+    );
+    lastError = err;
+  }
+
+  if (lastError) {
+    throw lastError;
+  }
 }
 
 async function fixComponentImportStatements(

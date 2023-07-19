@@ -366,6 +366,12 @@ function configureSyncArgs(
       describe: "Disables formatting on generated code",
       default: false,
     })
+    .option("skip-buffering", {
+      type: "boolean",
+      describe:
+        "Write files directly to disk, instead of buffering and only writing if sync completes successfully",
+      default: false,
+    })
     .option("all-files", {
       type: "boolean",
       describe:

@@ -75,6 +75,7 @@ export interface SyncArgs extends CommonArgs {
   allFiles?: boolean;
   loaderConfig?: string;
   skipFormatting?: boolean;
+  skipBuffering?: boolean;
 }
 
 async function ensureRequiredPackages(
@@ -319,8 +320,7 @@ export async function sync(
   const externalNpmPackages = new Set<string>();
   const externalCssImports = new Set<string>();
 
-  // Perform the actual sync
-  await withBufferedFs(async () => {
+  const doSync = async () => {
     // Sync in sequence (no parallelism)
     // going in reverse to get leaves of the dependency tree first
     for (const projectMeta of projectsToSync) {
@@ -408,7 +408,14 @@ export async function sync(
     });
     // Write the new ComponentConfigs to disk
     await updateConfig(context, context.config, baseDir);
-  });
+  };
+
+  // Perform the actual sync
+  if (opts.skipBuffering) {
+    await doSync();
+  } else {
+    await withBufferedFs(doSync);
+  }
 
   await checkExternalPkgs(
     context,
