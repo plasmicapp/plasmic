@@ -6,7 +6,7 @@ import {
   PlasmicRootProvider,
 } from "@plasmicapp/loader-nextjs";
 import type { GetStaticPaths, GetStaticProps } from "next";
-import "@supabase/auth-helpers-nextjs"
+import "@supabase/auth-helpers-nextjs";
 import useSWR from "swr";
 
 import Error from "next/error";
@@ -20,7 +20,7 @@ export default function PlasmicLoaderPage(props: {
 }) {
   const { plasmicData, queryCache } = props;
   const router = useRouter();
-  const { isUserLoading, plasmicAuthToken, plasmicUser } = usePlasmicAuthData();
+  const { isUserLoading, plasmicUserToken, plasmicUser } = usePlasmicAuthData();
   if (!plasmicData || plasmicData.entryCompMetas.length === 0) {
     return <Error statusCode={404} />;
   }
@@ -34,7 +34,7 @@ export default function PlasmicLoaderPage(props: {
       pageQuery={router.query}
       isUserLoading={isUserLoading}
       user={plasmicUser}
-      userAuthToken={plasmicAuthToken}
+      userAuthToken={plasmicUserToken}
     >
       <PlasmicComponent component={pageMeta.displayName} />
     </PlasmicRootProvider>
@@ -53,7 +53,7 @@ function usePlasmicAuthData() {
   return {
     isUserLoading: isLoading,
     plasmicUser: data?.plasmicUser,
-    plasmicAuthToken: data?.plasmicAuthToken,
+    plasmicUserToken: data?.plasmicUserToken,
   };
 }
 

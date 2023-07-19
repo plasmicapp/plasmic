@@ -13,6 +13,6 @@ export function usePlasmicAuthData() {
   return {
     isUserLoading: isLoading,
     plasmicUser: data?.plasmicUser,
-    plasmicAuthToken: data?.plasmicAuthToken,
+    plasmicUserToken: data?.plasmicUserToken,
   };
 }
