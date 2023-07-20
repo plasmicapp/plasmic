@@ -266,6 +266,14 @@ export interface CodeComponentMeta<P> {
   hideFromContentCreators?: boolean;
 
   refActions?: Record<string, RefActionRegistration<P>>;
+
+  /**
+   * Optional function that takes in component props and context, and returns
+   * a string that will be used for labeling this element in the Outline panel
+   * on the left of the Studio.  This makes it easy to identify an element when
+   * looking at the tree.
+   */
+  treeLabel?: ContextDependentConfig<P, string>;
 }
 
 export type CodeComponentMode =
