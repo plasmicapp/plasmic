@@ -98,6 +98,11 @@ export function UploadWrapper(props: ExtendedUploadProps) {
   );
 }
 
+UploadWrapper.__plasmicFormFieldMeta = {
+  valueProp: "files",
+  onChangePropName: "onFilesChange",
+};
+
 export function registerUpload(loader?: Registerable) {
   registerComponentHelper(loader, UploadWrapper, {
     name: "plasmic-antd5-upload",
@@ -134,6 +139,7 @@ export function registerUpload(loader?: Registerable) {
         type: "object",
         displayName: "Files",
         defaultValue: [],
+        hidden: (ps: any) => !!ps.__plasmicFormField,
       },
       children: {
         type: "slot",
@@ -161,7 +167,7 @@ export function registerUpload(loader?: Registerable) {
         argTypes: [
           {
             name: "files",
-            type: "object",
+            type: "array",
           },
         ],
       },

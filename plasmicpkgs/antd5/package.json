@@ -55,6 +55,7 @@
     "antd": "^5.1.6"
   },
   "devDependencies": {
+    "@plasmicapp/data-sources": "0.1.99",
     "@plasmicapp/host": "1.0.154",
     "@plasmicapp/query": "0.1.67",
     "@types/node": "^14.0.26",
@@ -71,6 +72,7 @@
   "peerDependencies": {
     "@plasmicapp/host": ">=1.0.0",
     "@plasmicapp/query": ">=0.1.0",
+    "@plasmicapp/data-sources": ">=0.1.0",
     "react": ">=16.8.0"
   },
   "publishConfig": {

@@ -1132,6 +1132,7 @@ export function FormItemWrapper(props: InternalFormItemProps) {
       help={hideValidationMessage ? "" : props.help}
       colon={noLabel ? false : undefined}
       valuePropName={deriveValuePropName(props)}
+      trigger={deriveOnChangePropName(props)}
       // If in horizontal mode and no label, then we align the content
       // with the rest of the controls in the grid
       // if alignLabellessWithControls is true
@@ -1183,6 +1184,38 @@ function deriveValuePropName(props: InternalFormItemProps): string | undefined {
   ).filter((x: any): x is string => !!x);
   if (valueProps.length > 0) {
     return valueProps[0];
+  }
+  return undefined;
+}
+
+/**
+ * Derive the onChange prop to use, if the wrapped child has designated
+ * one via its Component.__plasmicFormFieldMeta?.valueProp.
+ */
+function deriveOnChangePropName(
+  props: InternalFormItemProps
+): string | undefined {
+  if (props.trigger) {
+    // Always prefer an explicitly specified valuePropName
+    return props.trigger;
+  }
+
+  const triggerProps = (
+    React.Children.map(props.children as any, (child) => {
+      if (React.isValidElement(child)) {
+        const childType = child.type;
+        if (childType) {
+          const x = (childType as any).__plasmicFormFieldMeta?.onChangeProp;
+          if (x) {
+            return x as string;
+          }
+        }
+      }
+      return undefined;
+    }) ?? []
+  ).filter((x: any): x is string => !!x);
+  if (triggerProps.length > 0) {
+    return triggerProps[0];
   }
   return undefined;
 }
@@ -1256,6 +1289,14 @@ const commonFormItemProps: Record<string, PropType<InternalFormItemProps>> = {
     defaultValueHint: "value",
     description:
       "The prop name for specifying the value of the form control component",
+  },
+  trigger: {
+    type: "string" as const,
+    displayName: "Trigger prop name",
+    advanced: true,
+    defaultValueHint: "onChange",
+    description:
+      "The prop name of event handler that is called when value is changed",
   },
   noLabel: {
     type: "boolean" as const,
@@ -1368,6 +1409,7 @@ export function registerFormItem(loader?: Registerable) {
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerForm",
     importName: "FormItemWrapper",
+    treeLabel: (ps) => ps.name,
     templates: {
       Text: {
         props: {
