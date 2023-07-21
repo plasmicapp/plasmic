@@ -160,3 +160,64 @@ export function setFieldsToUndefined(obj: any) {
     }
   }
 }
+
+/**
+ *
+ * Forked from: https://github.com/ant-design/pro-components/blob/master/packages/utils/src/components/ErrorBoundary/index.tsx
+ *
+ */
+import { Result } from "antd";
+import type { ErrorInfo } from "react";
+
+interface ErrorBoundaryProps {
+  children?: React.ReactNode;
+  message?: string;
+  canvasEnvId?: number;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  errorInfo: string;
+}
+export class ErrorBoundary extends React.Component<
+  ErrorBoundaryProps,
+  ErrorBoundaryState
+> {
+  state = { hasError: false, errorInfo: "" };
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, errorInfo: error.message };
+  }
+
+  componentDidCatch(error: any, errorInfo: ErrorInfo) {
+    // You can also log the error to an error reporting service
+    // eslint-disable-next-line no-console
+    console.log(error, errorInfo);
+  }
+
+  componentDidUpdate(
+    prevProps: Readonly<ErrorBoundaryProps>,
+    prevState: Readonly<ErrorBoundaryState>
+  ) {
+    if (
+      prevProps.canvasEnvId !== this.props.canvasEnvId &&
+      prevState.hasError
+    ) {
+      this.setState({ hasError: false });
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      // You can render any custom fallback UI
+      return (
+        <Result
+          status="error"
+          title={this.props.message ?? "Something went wrong."}
+          extra={this.state.errorInfo}
+        />
+      );
+    }
+    return this.props.children;
+  }
+}
