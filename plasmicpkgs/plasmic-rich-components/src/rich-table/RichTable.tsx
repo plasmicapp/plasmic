@@ -26,7 +26,7 @@ import {
   RowAction,
   useSortedFilteredData,
 } from "../field-react-utils";
-import { isInteractable, mkShortId } from "../utils";
+import { ErrorBoundary, isInteractable, mkShortId } from "../utils";
 
 // Avoid csv-stringify, it doesn't directly work in browser without Buffer polyfill.
 
@@ -122,77 +122,81 @@ export function RichTable(props: RichTableProps) {
 
   return (
     <div className={`${className} ${scopeClassName ?? ""}`}>
-      <ProTable
-        rowClassName={
-          props.onRowClick || props.canSelectRows === "click"
-            ? "plasmic-table-row-clickable"
-            : undefined
-        }
-        actionRef={actionRef}
-        columns={columnDefinitions}
-        onChange={(_pagination, _filters, sorter, _extra) => {
-          setSortState({ sorter: sorter as any });
-        }}
-        style={{
-          width: "100%",
-        }}
-        cardProps={{
-          ghost: true,
-        }}
-        {...rowSelectionProps}
-        dataSource={finalData}
-        rowKey={deriveRowKey(data, rowKey)}
-        defaultSize={defaultSize}
-        editable={{ type: "multiple" }}
-        search={false}
-        options={{
-          setting: hideColumnPicker
-            ? false
-            : {
-                listsHeight: 400,
-              },
-          reload: false,
-          density: !hideDensity,
-        }}
-        pagination={
-          pagination
-            ? {
-                pageSize,
-                onChange: (page) => console.log(page),
-                showSizeChanger: false,
-              }
-            : false
-        }
-        dateFormatter="string"
-        headerTitle={title}
-        toolbar={{
-          search: !hideSearch
-            ? {
-                value: search,
-                onChange: (e) => setSearch(e.target.value),
-                onSearch: () => {
-                  return;
+      <ErrorBoundary canvasEnvId={(props as any)["data-plasmic-canvas-envs"]}>
+        <ProTable
+          ErrorBoundary={false}
+          rowClassName={
+            props.onRowClick || props.canSelectRows === "click"
+              ? "plasmic-table-row-clickable"
+              : undefined
+          }
+          actionRef={actionRef}
+          columns={columnDefinitions}
+          onChange={(_pagination, _filters, sorter, _extra) => {
+            setSortState({ sorter: sorter as any });
+          }}
+          style={{
+            width: "100%",
+          }}
+          cardProps={{
+            ghost: true,
+          }}
+          {...rowSelectionProps}
+          dataSource={finalData}
+          rowKey={deriveRowKey(data, rowKey)}
+          defaultSize={defaultSize}
+          editable={{ type: "multiple" }}
+          search={false}
+          options={{
+            setting: hideColumnPicker
+              ? false
+              : {
+                  listsHeight: 400,
                 },
-                placeholder: "Search",
-              }
-            : undefined,
-        }}
-        toolBarRender={() =>
-          [
-            addHref && (
-              <Button
-                key="button"
-                icon={<PlusOutlined />}
-                type="primary"
-                href={addHref}
-              >
-                Add
-              </Button>
-            ),
-            !hideExports && <ExportMenu data={data} />,
-          ].filter((x) => !!x)
-        }
-      />
+            reload: false,
+            density: !hideDensity,
+          }}
+          pagination={
+            pagination
+              ? {
+                  pageSize,
+                  onChange: (page) => console.log(page),
+                  showSizeChanger: false,
+                }
+              : false
+          }
+          dateFormatter="string"
+          headerTitle={title}
+          toolbar={{
+            search: !hideSearch
+              ? {
+                  value: search,
+                  onChange: (e) => setSearch(e.target.value),
+                  onSearch: () => {
+                    return;
+                  },
+                  placeholder: "Search",
+                }
+              : undefined,
+          }}
+          toolBarRender={() =>
+            [
+              addHref && (
+                <Button
+                  key="button"
+                  icon={<PlusOutlined />}
+                  type="primary"
+                  href={addHref}
+                >
+                  Add
+                </Button>
+              ),
+              !hideExports && <ExportMenu data={data} />,
+            ].filter((x) => !!x)
+          }
+          // key={(props as any)["data-plasmic-canvas-env"]}
+        />
+      </ErrorBoundary>
       {/*Always hide the weird pin left/right buttons for now, which also have render layout issues*/}
       <style
         dangerouslySetInnerHTML={{
