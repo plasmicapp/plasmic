@@ -274,6 +274,18 @@ export interface CodeComponentMeta<P> {
    * looking at the tree.
    */
   treeLabel?: ContextDependentConfig<P, string>;
+
+  /**
+   * The value of the CSS display property used by this component.
+   * Plasmic passes in a class name prop to components to let users style them,
+   * but normally this does not include layout properties like display.
+   * However, if the user has set the components visibility to be visible
+   * (for instance, in the base variant it was set to not visible ie display none,
+   * but in a variant it's overridden to be visible), then Plasmic needs to know
+   * what display property to set.
+   * Defaults to "flex".
+   */
+  defaultDisplay?: string;
 }
 
 export type CodeComponentMode =
