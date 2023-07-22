@@ -12,7 +12,3 @@ The key files to look at are:
 Plasmic project this is connected to:
 
 https://studio.plasmic.app/projects/epbgVLcp3YhaE2wswNV8LH/branch/main@latest/focus/Homepage
-
-Oxygen production URL:
-
-https://qm6aj0mta-f1c7c85aaadfddf92f97.myshopify.dev/plasmic-demo
