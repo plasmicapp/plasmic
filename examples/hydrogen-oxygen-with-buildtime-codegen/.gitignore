@@ -1,0 +1,12 @@
+node_modules
+
+/.cache
+/build
+/dist
+/public/build
+/.mf
+.env
+.shopify
+plasmic.lock
+plasmic.json
+_plasmic/
