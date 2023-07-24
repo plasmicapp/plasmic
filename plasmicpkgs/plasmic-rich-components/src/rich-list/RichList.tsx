@@ -96,6 +96,10 @@ const listCss = `
   padding-right: 8px;
 }
 
+.ant-list .plasmic-list-item {
+  align-items: stretch;
+}
+
 .plasmic-list-item--clickable:hover {
   background-color: #8881;
 }
@@ -148,7 +152,7 @@ export function RichList(props: RichListProps) {
     pageSize = 10,
     hideSearch,
     rowKey,
-    pagination,
+    pagination = true,
     onRowClick,
     ...rest
   } = props;
@@ -270,7 +274,7 @@ export function RichList(props: RichListProps) {
           }
 
           return type === "grid" ? (
-            <List.Item>
+            <List.Item className={"plasmic-list-item"}>
               {maybeLink(
                 <Card
                   className={"plasmic-list-item-card"}
@@ -288,6 +292,7 @@ export function RichList(props: RichListProps) {
               <List.Item
                 actions={actions}
                 className={classNames({
+                  "plasmic-list-item": true,
                   "plasmic-list-item--clickable": hasLink,
                 })}
               >
@@ -436,7 +441,7 @@ function useRoleDefinitions(
     const schema = data?.schema;
     const schemaMap = new Map(data?.schema?.fields.map((f) => [f.id, f]));
     if (!data || !schema) {
-      return { normalized: [], roleConfigs: {}, finalRoles: {} };
+      return { normalized: [], finalRoles: {} };
     }
 
     function tagFieldConfigs(role: Role) {
@@ -453,16 +458,18 @@ function useRoleDefinitions(
     }
 
     // This is only being computed to get the default role choices.
-    const { mergedFields, minimalFullLengthFields } =
-      deriveFieldConfigs<ListColumnConfig>(
-        [
-          ...tagFieldConfigs("image"),
-          ...tagFieldConfigs("content"),
-          ...tagFieldConfigs("title"),
-          ...tagFieldConfigs("beforeTitle"),
-          ...tagFieldConfigs("afterTitle"),
-          ...tagFieldConfigs("subtitle"),
-        ],
+    const specifiedFieldsPartial = [
+      ...tagFieldConfigs("image"),
+      ...tagFieldConfigs("content"),
+      ...tagFieldConfigs("title"),
+      ...tagFieldConfigs("beforeTitle"),
+      ...tagFieldConfigs("afterTitle"),
+      ...tagFieldConfigs("subtitle"),
+    ];
+
+    function doDeriveFieldConfigs(mode: "existing" | "defaults") {
+      return deriveFieldConfigs<ListColumnConfig>(
+        mode === "defaults" ? [] : specifiedFieldsPartial,
         schema,
         (field) => ({
           ...defaultColumnConfig(),
@@ -476,7 +483,20 @@ function useRoleDefinitions(
           }),
         })
       );
-    const normalized = mergedFields;
+    }
+
+    // Now we derive the defaults.
+    //
+    // We always start from a blank slate for this. We want stability - we don't want a situation where we are constantly shifting around the defaults based on what else the user has set.
+    //
+    // For instance,
+    // (1) we derive `city` to be content,
+    // (2) user sets `city` as title,
+    // (3) we now derive a different content because `city` is used.
+    const {
+      mergedFields: defaultMergedFields,
+      minimalFullLengthFields: defaultMinimalFullLengthFields,
+    } = doDeriveFieldConfigs("defaults");
 
     // Find a good default image field.
     // Filter mergedFields where there are mostly values (in the sampleRows) that are a string that looks like a URL or path to an image file.
@@ -485,7 +505,7 @@ function useRoleDefinitions(
     // Otherwise, pick any remaining one.
     if (
       data.data.length > 0 &&
-      !mergedFields.some((field) => field.role === "image")
+      !defaultMergedFields.some((field) => field.role === "image")
     ) {
       const sampleRows = Array.from(
         new Set(
@@ -494,7 +514,7 @@ function useRoleDefinitions(
           )
         )
       ).map((i) => data.data[i]);
-      const imageFieldCandidates = mergedFields.filter(
+      const imageFieldCandidates = defaultMergedFields.filter(
         (field) =>
           !field.role &&
           sampleRows.filter(
@@ -520,8 +540,8 @@ function useRoleDefinitions(
     }
 
     // Find a good default title field, just based on the field name.
-    if (!mergedFields.some((field) => field.role === "title")) {
-      const titleField = mergedFields.find(
+    if (!defaultMergedFields.some((field) => field.role === "title")) {
+      const titleField = defaultMergedFields.find(
         (field) =>
           !field.role &&
           field.fieldId
@@ -534,8 +554,8 @@ function useRoleDefinitions(
     }
 
     // Find a good default content field - just any remaining text field.
-    if (!mergedFields.some((field) => field.role === "content")) {
-      const contentField = mergedFields.find(
+    if (!defaultMergedFields.some((field) => field.role === "content")) {
+      const contentField = defaultMergedFields.find(
         (field) =>
           !field.role &&
           field.fieldId &&
@@ -546,7 +566,48 @@ function useRoleDefinitions(
       }
     }
 
-    const roleConfigs = ensure(groupBy(mergedFields, (f) => f.role));
+    const fieldIdToDefaultRole = new Map(
+      defaultMergedFields.map((f) => [f.fieldId, f.role])
+    );
+    for (const f of defaultMinimalFullLengthFields) {
+      f.role = fieldIdToDefaultRole.get(f.fieldId);
+    }
+
+    // Now we have the defaults!
+    //
+    // We once again derive field configs, this time using existing props.
+    // Then we add on the derived defaults for the "real merged" fields.
+    //
+    // Note this is kind of an awkward/wasteful use of deriveFieldConfigs since it was more for table columns originally, and this by-role usage is a different shape of problem. We're mainly using it to fill in / "inflate" the additional settings on these FieldConfigs. Haven't yet bothered finding a better utility interface.
+    const { mergedFields, minimalFullLengthFields } =
+      doDeriveFieldConfigs("existing");
+
+    const minimalFullLengthFieldsWithDefaults = [
+      ...minimalFullLengthFields.filter((f) => f.role && f.role !== "unset"),
+      ...defaultMinimalFullLengthFields.filter(
+        (f) => f.role && f.role !== "unset" && !props[f.role]
+      ),
+    ];
+    const mergedFieldsWithDefaults = [
+      ...mergedFields.filter((f) => f.role && f.role !== "unset"),
+      ...defaultMergedFields.filter(
+        (f) => f.role && f.role !== "unset" && !props[f.role]
+      ),
+    ];
+    console.log("!!derived", {
+      minimalFullLengthFieldsWithDefaults,
+      minimalFullLengthFields,
+      defaultMinimalFullLengthFields,
+      mergedFieldsWithDefaults,
+      mergedFields,
+      defaultMergedFields,
+      props,
+    });
+
+    // We now get by-role grouping which is needed by the component.
+    const roleConfigs = ensure(
+      groupBy(mergedFieldsWithDefaults, (f) => f.role)
+    );
 
     const finalRoles: Partial<Record<Role, ListColumnConfig[]>> = {};
     for (const role of roles) {
@@ -555,13 +616,13 @@ function useRoleDefinitions(
       }
     }
 
-    const fieldIdToRole = new Map(mergedFields.map((f) => [f.fieldId, f.role]));
-    for (const f of minimalFullLengthFields) {
-      f.role = fieldIdToRole.get(f.fieldId);
-    }
+    setControlContextData?.({
+      ...data,
+      mergedFields: mergedFieldsWithDefaults,
+      minimalFullLengthFields: minimalFullLengthFieldsWithDefaults,
+    });
 
-    setControlContextData?.({ ...data, mergedFields, minimalFullLengthFields });
-
-    return { normalized, roleConfigs, finalRoles };
+    const normalized = mergedFieldsWithDefaults;
+    return { normalized, finalRoles };
   }, [fields, data, setControlContextData, rowActions]);
 }
