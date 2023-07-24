@@ -9,6 +9,7 @@ import {
 import {
   Button,
   Checkbox,
+  ConfigProvider,
   DatePicker,
   Form,
   Input,
@@ -21,7 +22,7 @@ import type { FormItemProps } from "antd/es/form/FormItem";
 import type { FormListOperation, FormListProps } from "antd/es/form/FormList";
 import type { ColProps } from "antd/es/grid/col";
 import equal from "fast-deep-equal";
-import React, { cloneElement, isValidElement } from "react";
+import React, { ErrorInfo, cloneElement, isValidElement } from "react";
 import { mergeProps, reactNodeToString } from "./react-utils";
 import { buttonComponentName } from "./registerButton";
 import { checkboxComponentName } from "./registerCheckbox";
@@ -36,6 +37,7 @@ import { selectComponentName } from "./registerSelect";
 import { switchComponentName } from "./registerSwitch";
 import {
   ensureArray,
+  ErrorBoundary,
   has,
   Registerable,
   registerComponentHelper,
@@ -55,6 +57,7 @@ import {
   SingleRowResult,
   ManyRowsResult,
 } from "@plasmicapp/data-sources";
+import Alert from "antd/es/alert";
 
 const FormItem = Form.Item;
 const FormList = Form.List;
@@ -185,27 +188,34 @@ const Internal = React.forwardRef(
               }
               style={{ width: "100%" }}
             >
-              {formItem.inputType === InputType.Text ? (
-                <Input />
-              ) : formItem.inputType === InputType.Password ? (
-                <Input.Password />
-              ) : formItem.inputType === InputType.TextArea ? (
-                <Input.TextArea />
-              ) : formItem.inputType === InputType.Number ? (
-                <InputNumber />
-              ) : formItem.inputType === InputType.Checkbox ? (
-                <Checkbox>{formItem.label}</Checkbox>
-              ) : formItem.inputType === InputType.Select ? (
-                <Select options={formItem.options} />
-              ) : formItem.inputType === InputType.DatePicker ? (
-                <DatePicker />
-              ) : formItem.inputType === InputType.RadioGroup ? (
-                <Radio.Group
-                  options={formItem.options}
-                  optionType={formItem.optionType}
-                  style={{ padding: "8px" }}
-                />
-              ) : null}
+              <ErrorBoundary
+                canvasEnvId={(props as any)["data-plasmic-canvas-envs"]}
+                message={`Error rendering input for ${
+                  formItem.label ?? formItem.name ?? "undefined"
+                }`}
+              >
+                {formItem.inputType === InputType.Text ? (
+                  <Input />
+                ) : formItem.inputType === InputType.Password ? (
+                  <Input.Password />
+                ) : formItem.inputType === InputType.TextArea ? (
+                  <Input.TextArea />
+                ) : formItem.inputType === InputType.Number ? (
+                  <InputNumber />
+                ) : formItem.inputType === InputType.Checkbox ? (
+                  <Checkbox>{formItem.label}</Checkbox>
+                ) : formItem.inputType === InputType.Select ? (
+                  <Select options={formItem.options} />
+                ) : formItem.inputType === InputType.DatePicker ? (
+                  <DatePicker />
+                ) : formItem.inputType === InputType.RadioGroup ? (
+                  <Radio.Group
+                    options={formItem.options}
+                    optionType={formItem.optionType}
+                    style={{ padding: "8px" }}
+                  />
+                ) : null}
+              </ErrorBoundary>
             </FormItemWrapper>
           ))}
           {props.submitSlot}
