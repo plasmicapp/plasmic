@@ -159,3 +159,63 @@ export type Truthy<T> = T extends Falsey ? never : T;
 export function withoutFalsey<T>(xs: Array<T | Falsey>): T[] {
   return xs.filter((x): x is T => !!x);
 }
+
+/**
+ *
+ * Forked from: https://github.com/ant-design/pro-components/blob/master/packages/utils/src/components/ErrorBoundary/index.tsx
+ *
+ */
+import { Result } from "antd";
+import type { ErrorInfo } from "react";
+
+interface ErrorBoundaryProps {
+  children?: React.ReactNode;
+  canvasEnvId?: number;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  errorInfo: string;
+}
+export class ErrorBoundary extends React.Component<
+  ErrorBoundaryProps,
+  ErrorBoundaryState
+> {
+  state = { hasError: false, errorInfo: "" };
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, errorInfo: error.message };
+  }
+
+  componentDidCatch(error: any, errorInfo: ErrorInfo) {
+    // You can also log the error to an error reporting service
+    // eslint-disable-next-line no-console
+    console.log(error, errorInfo);
+  }
+
+  componentDidUpdate(
+    prevProps: Readonly<ErrorBoundaryProps>,
+    prevState: Readonly<ErrorBoundaryState>
+  ) {
+    if (
+      prevProps.canvasEnvId !== this.props.canvasEnvId &&
+      prevState.hasError
+    ) {
+      this.setState({ hasError: false });
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      // You can render any custom fallback UI
+      return (
+        <Result
+          status="error"
+          title="Something went wrong."
+          extra={this.state.errorInfo}
+        />
+      );
+    }
+    return this.props.children;
+  }
+}
