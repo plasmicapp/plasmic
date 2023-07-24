@@ -15,7 +15,9 @@ export function useSortedFilteredData(
   >(undefined);
   const finalData = React.useMemo(() => {
     const filtered = data?.data?.filter((row) =>
-      fastStringify(Object.values(row)).toLowerCase().includes(search)
+      fastStringify(Object.values(row))
+        .toLowerCase()
+        .includes(search.toLowerCase())
     );
     const sorted = sortState?.sorter.column
       ? // We use .sort() rather than sortBy to use localeCompare
