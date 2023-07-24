@@ -7852,6 +7852,14 @@
     lodash "^4.17.19"
     prettier "^2.0.5"
 
+"@plasmicapp/host@1.0.151":
+  version "1.0.151"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.151.tgz#e7ae92c48a8efdedba7d299091b78a9301af1212"
+  integrity sha512-ZOisTiz0d5hMxCdzbRkj4b+VKyAz81R355vnp8sjjLteXbzrH6KMxcutgkotbXMGYRnn3322Y9DZlUCkEgDELg==
+  dependencies:
+    "@plasmicapp/query" "0.1.67"
+    csstype "^3.0.8"
+    window-or-global "^1.0.1"
 
 "@plasmicapp/host@1.0.76":
   version "1.0.76"
@@ -15437,7 +15445,7 @@ csstype@^3.0.2:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.0.8.tgz#d2266a792729fb227cd216fb572f43728e1ad340"
   integrity sha512-jXKhWqXPmlUeoQnF/EhTtTl4C9SnrxSH/jZUih3jmO6lBKr99rP3/+FmrMj4EFpOXzMtXHAZkd3x0E6h6Fgflw==
 
-csstype@^3.1.2:
+csstype@^3.0.8, csstype@^3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.2.tgz#1d4bf9d572f11c14031f0436e1c10bc1f571f50b"
   integrity sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==
