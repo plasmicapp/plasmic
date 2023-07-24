@@ -594,15 +594,6 @@ function useRoleDefinitions(
         (f) => f.role && f.role !== "unset" && !props[f.role]
       ),
     ];
-    console.log("!!derived", {
-      minimalFullLengthFieldsWithDefaults,
-      minimalFullLengthFields,
-      defaultMinimalFullLengthFields,
-      mergedFieldsWithDefaults,
-      mergedFields,
-      defaultMergedFields,
-      props,
-    });
 
     // We now get by-role grouping which is needed by the component.
     const roleConfigs = ensure(
