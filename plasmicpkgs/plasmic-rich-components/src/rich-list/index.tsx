@@ -62,9 +62,9 @@ const richListMeta: ComponentMeta<RichListProps> = {
     padding: "16px",
     maxHeight: "100%",
   },
+  defaultDisplay: "block",
   props: {
     data: dataProp(),
-
     type: {
       type: "choice",
       options: [
