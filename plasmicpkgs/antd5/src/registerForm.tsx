@@ -57,7 +57,6 @@ import {
   SingleRowResult,
   ManyRowsResult,
 } from "@plasmicapp/data-sources";
-import Alert from "antd/es/alert";
 
 const FormItem = Form.Item;
 const FormList = Form.List;
@@ -181,18 +180,18 @@ const Internal = React.forwardRef(
       childrenNode = (
         <>
           {(props.formItems ?? []).map((formItem) => (
-            <FormItemWrapper
-              {...formItem}
-              noLabel={
-                formItem.inputType === InputType.Checkbox || formItem.noLabel
-              }
-              style={{ width: "100%" }}
+            <ErrorBoundary
+              canvasEnvId={(props as any)["data-plasmic-canvas-envs"]}
+              message={`Error rendering input for ${
+                formItem.label ?? formItem.name ?? "undefined"
+              }`}
             >
-              <ErrorBoundary
-                canvasEnvId={(props as any)["data-plasmic-canvas-envs"]}
-                message={`Error rendering input for ${
-                  formItem.label ?? formItem.name ?? "undefined"
-                }`}
+              <FormItemWrapper
+                {...formItem}
+                noLabel={
+                  formItem.inputType === InputType.Checkbox || formItem.noLabel
+                }
+                style={{ width: "100%" }}
               >
                 {formItem.inputType === InputType.Text ? (
                   <Input />
@@ -215,8 +214,8 @@ const Internal = React.forwardRef(
                     style={{ padding: "8px" }}
                   />
                 ) : null}
-              </ErrorBoundary>
-            </FormItemWrapper>
+              </FormItemWrapper>
+            </ErrorBoundary>
           ))}
           {props.submitSlot}
         </>
