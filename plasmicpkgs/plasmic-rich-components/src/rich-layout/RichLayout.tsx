@@ -22,16 +22,17 @@ export interface SimpleNavTheme {
   customBgColor?: string;
 }
 
-function filterNavMenuItemsByConditions(
-  navMenuItems: NavMenuItem[]
-): NavMenuItem[] {
+/**
+ * Filter items by condition, and add missing paths so that any added items are visible.
+ */
+function processNavItems(navMenuItems: NavMenuItem[]): NavMenuItem[] {
   return navMenuItems
     .filter((item) => item.condition === undefined || item.condition)
     .map((item) => ({
       ...item,
-      routes: item.routes
-        ? filterNavMenuItemsByConditions(item.routes)
-        : undefined,
+      // We fill a default path because otherwise the item doesn't appear at all.
+      path: item.path || "/",
+      routes: item.routes ? processNavItems(item.routes) : undefined,
     }));
 }
 
@@ -194,9 +195,7 @@ export function RichLayout({
         splitMenus={layoutProps.layout === "mix"}
         route={{
           path: rootUrl,
-          routes: navMenuItems
-            ? filterNavMenuItemsByConditions(navMenuItems)
-            : undefined,
+          routes: navMenuItems ? processNavItems(navMenuItems) : undefined,
         }}
         location={{
           pathname,
