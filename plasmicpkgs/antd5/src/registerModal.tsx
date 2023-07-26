@@ -5,6 +5,7 @@ import { Registerable, registerComponentHelper } from "./utils";
 export function AntdModal(
   props: React.ComponentProps<typeof Modal> & {
     onOpenChange?: (open: boolean) => void;
+    defaultStylesClassName?: string;
   }
 ) {
   const { onOpenChange, onOk, onCancel, open, footer, ...rest } = props;
@@ -36,6 +37,7 @@ export function AntdModal(
       onCancel={memoOnCancel}
       open={open}
       footer={footer ?? undefined}
+      className={`${props.className} ${props.defaultStylesClassName}`}
     />
   );
 }
