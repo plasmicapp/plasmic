@@ -18,6 +18,7 @@ export interface FetcherOptions {
     keyScheme: "content" | "hash" | "path";
     tagPrefix?: string;
   };
+  skipHead?: boolean;
 }
 
 export interface LoaderBundleCache {
@@ -80,6 +81,7 @@ export class PlasmicModulesFetcher {
         i18nKeyScheme: this.opts.i18n?.keyScheme ?? this.opts.i18nKeyScheme,
         i18nTagPrefix: this.opts.i18n?.tagPrefix,
         browserOnly: isBrowser,
+        skipHead: this.opts.skipHead,
       }
     );
     if (this.opts.cache) {
@@ -125,6 +127,7 @@ function getBundleKey({
   i18nKeyScheme,
   preview,
   projects,
+  skipHead,
 }: FetcherOptions) {
   return JSON.stringify({
     host,
@@ -132,6 +135,7 @@ function getBundleKey({
     i18nKeyScheme,
     preview,
     projects,
+    skipHead,
   });
 }
 
