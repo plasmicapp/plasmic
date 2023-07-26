@@ -43,6 +43,11 @@ import {
   datePickerComponentName,
   registerDatePicker,
 } from "./registerDatePicker";
+import { registerAvatar, registerAvatarGroup } from "./registerAvatar";
+import { registerTooltip } from "./registerTooltip";
+import { registerColorPicker } from "./registerColorPicker";
+import { registerDrawer } from "./registerDrawer";
+import { registerSteps } from "./registerSteps";
 
 export function registerAll(loader?: Registerable) {
   registerConfigProvider(loader);
@@ -66,6 +71,12 @@ export function registerAll(loader?: Registerable) {
   registerNumberInput(loader);
   registerDatePicker(loader);
   registerUpload(loader);
+  registerColorPicker(loader);
+  registerDrawer(loader);
+  registerSteps(loader);
+  registerTooltip(loader);
+  registerAvatar(loader);
+  registerAvatarGroup(loader);
 }
 
 export { buttonComponentName } from "./registerButton";
