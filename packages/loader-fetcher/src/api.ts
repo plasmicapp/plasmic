@@ -146,6 +146,7 @@ export class Api {
       browserOnly?: boolean;
       i18nKeyScheme?: "content" | "hash" | "path";
       i18nTagPrefix?: string;
+      skipHead?: boolean;
     }
   ) {
     const { platform, preview } = opts;
@@ -155,6 +156,7 @@ export class Api {
       ...(opts.browserOnly ? [["browserOnly", "true"]] : []),
       ...(opts.i18nKeyScheme ? [["i18nKeyScheme", opts.i18nKeyScheme]] : []),
       ...(opts.i18nTagPrefix ? [["i18nTagPrefix", opts.i18nTagPrefix]] : []),
+      ...(opts.skipHead ? [["skipHead", "true"]] : []),
     ]).toString();
 
     const url = `${this.host}/api/v1/loader/code/${

@@ -41,6 +41,11 @@ export interface InitOptions {
    * data is always freshly fetched over the network.
    */
   alwaysFresh?: boolean;
+
+  /**
+   * If true, generated code from the server won't include page metadata tags
+   */
+  skipHead?: boolean;
 }
 
 /** Subset of loader functionality that works on React Server Components. */
