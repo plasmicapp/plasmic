@@ -11,6 +11,7 @@ import { pascalCase } from "change-case";
 import get from "dlv";
 import React, { ReactNode, useContext } from "react";
 import { searchParameters, uniq } from "./utils";
+import { Entry } from "./types";
 
 export function ensure<T>(x: T | null | undefined): T {
   if (x === null || x === undefined) {
@@ -306,6 +307,73 @@ export function ContentfulFetcher({
     return <div>Please specify a Filter value</div>;
   }
 
+  function denormalizeData(data: any | null) {
+    if (!data?.items || !data?.includes || !data?.includes.Asset) {
+      return data; // Return the original data if the required properties are missing
+    }
+    const itemsWithDenormalizedFields: Entry[] = data.items.map((item: any) => {
+      const updatedFields: { [fieldName: string]: unknown | unknown[] } = {};
+
+      for (const fieldName in item.fields) {
+        const fieldValue = item.fields[fieldName];
+
+        if (Array.isArray(fieldValue)) {
+          const updatedArray = fieldValue.map((arrayItem) => {
+            if (
+              arrayItem &&
+              typeof arrayItem === "object" &&
+              "sys" in arrayItem &&
+              arrayItem.sys.linkType === "Asset"
+            ) {
+              const fieldId = arrayItem.sys.id;
+              const asset = data.includes.Asset.find(
+                (asset: any) => asset.sys.id === fieldId
+              );
+              if (asset) {
+                return {
+                  ...arrayItem,
+                  url: "https:" + asset.fields?.file?.url,
+                };
+              } else {
+                console.log(`Asset URL not found for ID: ${fieldId}`);
+              }
+            }
+            return arrayItem;
+          });
+          updatedFields[fieldName] = updatedArray;
+        } else if (
+          fieldValue &&
+          typeof fieldValue === "object" &&
+          "sys" in fieldValue &&
+          fieldValue.sys.linkType === "Asset"
+        ) {
+          const fieldId = fieldValue.sys.id;
+          const asset = data.includes.Asset.find(
+            (asset: any) => asset.sys.id === fieldId
+          );
+          if (asset) {
+            updatedFields[fieldName] = {
+              ...fieldValue,
+              url: "https:" + asset.fields?.file?.url,
+            };
+          } else {
+            console.log(`Asset URL not found for ID: ${fieldId}`);
+          }
+        } else {
+          updatedFields[fieldName] = fieldValue;
+        }
+      }
+      return {
+        ...item,
+        fields: updatedFields,
+      };
+    });
+    return {
+      ...data,
+      items: itemsWithDenormalizedFields,
+    };
+  }
+
   let renderedData;
 
   if (filteredData) {
@@ -315,18 +383,23 @@ export function ContentfulFetcher({
 
     renderedData = noAutoRepeat
       ? children
-      : filteredData?.items?.map((item: any, index: number) => (
-          <DataProvider
-            key={item?.sys?.id}
-            name={"contentfulItem"}
-            data={item}
-            hidden={true}
-          >
-            <DataProvider name={makeDataProviderName(contentType)} data={item}>
-              {repeatedElement(index, children)}
+      : denormalizeData(filteredData)?.items?.map(
+          (item: any, index: number) => (
+            <DataProvider
+              key={item?.sys?.id}
+              name={"contentfulItem"}
+              data={item}
+              hidden={true}
+            >
+              <DataProvider
+                name={makeDataProviderName(contentType)}
+                data={item}
+              >
+                {repeatedElement(index, children)}
+              </DataProvider>
             </DataProvider>
-          </DataProvider>
-        ));
+          )
+        );
   } else {
     if (entriesData?.items?.length === 0) {
       return <div className={className}>{contentType} is empty</div>;
@@ -334,7 +407,7 @@ export function ContentfulFetcher({
 
     renderedData = noAutoRepeat
       ? children
-      : entriesData?.items?.map((item: any, index: number) => (
+      : denormalizeData(entriesData)?.items?.map((item: any, index: number) => (
           <DataProvider
             key={item?.sys?.id}
             name={"contentfulItem"}
@@ -409,8 +482,8 @@ export function ContentfulField({
     );
   } else if (
     typeof data === "object" &&
-    "contentType" in data &&
-    data.contentType.includes("image")
+    data.sys.linkType === "Asset" &&
+    data.url
   ) {
     return <img className={className} src={data.url} />;
   } else if (!data) {
