@@ -1,12 +1,12 @@
-import { Menu } from "antd";
+import { Menu as AntdMenu } from "antd";
 import { Registerable, registerComponentHelper } from "./utils";
 import { PropType } from "@plasmicapp/host/registerComponent";
 
-export const AntdMenu = Menu;
-export const AntdMenuDivider = Menu.Divider;
-export const AntdMenuItem = Menu.Item;
-export const AntdMenuItemGroup = Menu.ItemGroup;
-export const AntdSubMenu = Menu.SubMenu;
+export { AntdMenu };
+export const AntdMenuDivider = AntdMenu.Divider;
+export const AntdMenuItem = AntdMenu.Item;
+export const AntdMenuItemGroup = AntdMenu.ItemGroup;
+export const AntdSubMenu = AntdMenu.SubMenu;
 
 const allowedMenuComponents = [
   "plasmic-antd5-menu-item",
