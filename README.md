@@ -1,7 +1,8 @@
 <!-- AUTO-GENERATED-CONTENT:START (STARTER) -->
 <p align="center">
   <a href="https://www.plasmic.app">
-    <img alt="Plasmic" role="img" src="https://cdn-images-1.medium.com/max/176/1*D1nV2o_le9dJEO3G80P4xg@2x.png" width="120">
+    <img alt="Plasmic" role="img" src="https://github.com/seriousadi/plasmic/assets/120696438/371d2b08-cc0f-464a-847c-501c1d6d7f3a"
+ width="120" bakcgroundColor="transparent">
   </a>
 </p>
 <h1 align="center">
