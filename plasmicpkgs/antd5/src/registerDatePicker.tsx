@@ -26,10 +26,13 @@ export function AntdDatePicker(
       : props.value === null
       ? undefined
       : props.value;
+
+  const { picker, ...rest } = props;
   return (
     <>
       <DatePicker
-        {...props}
+        {...rest}
+        picker={props.picker as any}
         value={
           props.value === undefined
             ? undefined
