@@ -14,7 +14,7 @@ export function AntdColorPicker({
     <ColorPicker
       {...props}
       showText={props.showText || showTextSwitch}
-      onChangeComplete={(value) => {
+      onChangeComplete={(value: any) => {
         onChange?.(typeof value === "string" ? value : value.toHexString());
       }}
     />

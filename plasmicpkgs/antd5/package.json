@@ -52,7 +52,7 @@
     "clean": "rm -rf dist/ skinny/*.ts skinny/*.map skinny/*.js"
   },
   "dependencies": {
-    "antd": "^5.1.6"
+    "antd": "^5.7.3"
   },
   "devDependencies": {
     "@plasmicapp/data-sources": "0.1.100",
