@@ -1,25 +1,10 @@
-This is a Next.js project bootstrapped with [`create-plasmic-app`](https://www.npmjs.com/package/create-plasmic-app).
+# Plasmic CMS custom components example
 
-## Getting Started
+This is a demo of how to write your own custom code components that lets users pick content entries from the Plasmic CMS and display that content.
 
-First, run the development server:
+- We use usePlasmicDataQuery for pre-rendering SSG/SSR support.
+- While in Studio, we also list all available content entries so that users can pick in the sidebar.
 
-```bash
-npm run dev
-```
+You can also use the basic built-in Plasmic CMS components here:
 
-Open your browser to see the result.
-
-You can start editing your project in Plasmic Studio. The page auto-updates as you edit the project.
-
-## Learn More
-
-With Plasmic, you can enable non-developers on your team to publish pages and content into your website or app.
-
-To learn more about Plasmic, take a look at the following resources:
-
-- [Plasmic Website](https://www.plasmic.app/)
-- [Plasmic Documentation](https://docs.plasmic.app/learn/)
-- [Plasmic Slack Community](https://www.plasmic.app/slack)
-
-You can check out [the Plasmic GitHub repository](https://github.com/plasmicapp/plasmic) - your feedback and contributions are welcome!
+https://docs.plasmic.app/learn/plasmic-cms/

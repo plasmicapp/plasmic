@@ -26,9 +26,11 @@ export const PLASMIC = initPlasmicLoader({
 
 PLASMIC.registerComponent(BlogPost, {
   name: "BlogPost",
+  displayName: "Blog Post",
   props: {
     postId: {
       displayName: "Post",
+      // Can also use type: cardPicker, etc.
       type: "choice",
       options: (ps, ctx) =>
         (ctx?.allPosts as any[])?.map((p) => ({
