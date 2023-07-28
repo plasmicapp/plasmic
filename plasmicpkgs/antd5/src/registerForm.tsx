@@ -106,12 +106,6 @@ export enum FormType {
   UpdateEntry,
 }
 
-interface DBConnectionProp {
-  formType: FormType;
-  dataSchema: DataOp;
-  dataEntry: DataOp;
-}
-
 interface FormWrapperProps
   extends FormProps,
     CanvasComponentProps<FormWrapperControlContextData> {
@@ -129,7 +123,7 @@ interface FormWrapperProps
   mode?: CodeComponentMode;
   formType: "new-entry" | "update-entry";
   submitSlot?: boolean;
-  data?: DBConnectionProp;
+  data?: DataOp;
 }
 
 const PathContext = React.createContext<{
@@ -321,10 +315,10 @@ interface FormRefActions
 
 function useFormItemDefinitions(
   rawData:
-    | {
-        data?: Partial<SingleRowResult | ManyRowsResult>;
+    | (Partial<SingleRowResult | ManyRowsResult> & {
         error?: Error;
-      }
+        isLoading?: boolean;
+      })
     | undefined,
   props: React.ComponentProps<typeof FormWrapper>,
   formRef: FormRefActions | null
@@ -377,15 +371,9 @@ function useFormItemDefinitions(
   }, [mode, setControlContextData, formItems, rawData, formRef]);
 }
 
-const useRawData = (connection: DBConnectionProp | undefined) => {
-  const rawDataSchema = usePlasmicDataOp(connection?.dataSchema);
-  const rawDataEntry = usePlasmicDataOp(connection?.dataEntry);
-  if (!connection) {
-    return undefined;
-  }
-  return FormType.NewEntry === connection.formType
-    ? rawDataSchema
-    : rawDataEntry;
+const useRawData = (props: FormWrapperProps) => {
+  const rawData = usePlasmicDataOp(props.data);
+  return props.data ? rawData : undefined;
 };
 
 export const FormWrapper = React.forwardRef(
@@ -408,13 +396,18 @@ export const FormWrapper = React.forwardRef(
       wrapperRef.current ? { ...wrapperRef.current } : ({} as FormRefActions)
     );
 
-    const rawData = useRawData(props.data);
+    const rawData = useRawData(props);
     const formItemDefinitions = useFormItemDefinitions(
       rawData,
       props,
       wrapperRef.current
     );
-
+    const previousOpData = usePrevious(props.data);
+    React.useEffect(() => {
+      if (previousOpData?.opId !== props.data?.opId) {
+        setRemountKey((k) => k + 1);
+      }
+    }, [previousOpData, props.data]);
     const { formItems, ...rest } = props;
     const actualFormItems =
       props.mode === "simplified" && formItemDefinitions
@@ -534,53 +527,6 @@ export const formTypeDescription = `
   For both options, you can customize later.
 `;
 
-const getConnectionDBPropRegistration = () => ({
-  formType: {
-    type: "choice" as const,
-    options: [
-      { label: "New entry", value: FormType.NewEntry },
-      { label: "Update entry", value: FormType.UpdateEntry },
-    ],
-    displayName: "Form Type",
-    disableDynamicValue: true,
-    defaultValueHint: "Select the form type...",
-    description: `
-    You can create form with two different behaviors:
-    \n\n
-    1. Create a new entry: The form will be created empty and it will create a new row when submitted.
-    2. Update an entry: The form will be pre-filled with the row values and it will update the table entry when submitted.
-    \n\n
-    For both options, you can customize later.
-    `,
-  },
-  dataSchema: {
-    type: "dataSourceOp",
-    description: "The data to generate the form",
-    hidden: (
-      _ps: FormWrapperProps,
-      _ctx: FormControlContextData,
-      { item }: { item: DBConnectionProp }
-    ) => item.formType !== FormType.NewEntry,
-    displayName: "",
-    disableDynamicValue: true,
-    allowedOps: () => ["getTableSchema"],
-    hideCacheKey: true,
-  } as any,
-  dataEntry: {
-    type: "dataSourceOp",
-    description: "The data to generate the form",
-    hidden: (
-      _ps: FormWrapperProps,
-      _ctx: FormControlContextData,
-      { item }: { item: DBConnectionProp }
-    ) => item.formType !== FormType.UpdateEntry,
-    displayName: "",
-    disableDynamicValue: true,
-    allowedOps: () => ["getOne"],
-    hideCacheKey: true,
-  } as any,
-});
-
 export function registerForm(loader?: Registerable) {
   registerComponentHelper(loader, FormWrapper, {
     name: formComponentName,
@@ -595,11 +541,11 @@ export function registerForm(loader?: Registerable) {
         defaultValue: "simplified",
       } as any,
       data: {
-        type: "object",
-        fields: getConnectionDBPropRegistration(),
-        hidden: (ps) => ps.mode !== "simplified" || !ps.data,
-        nameFunc: () => "DB Connection",
-      },
+        type: "formDataConnection",
+        disableDynamicValue: true,
+        disableLinkToProp: true,
+        hidden: (ps: FormWrapperProps) => ps.mode !== "simplified" || !ps.data,
+      } as any,
       formItems: {
         displayName: "Fields",
         type: "array",
