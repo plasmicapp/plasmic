@@ -61,7 +61,7 @@ export function registerSteps(loader?: Registerable) {
         type: "choice",
         options: ["horizontal", "vertical"],
         description: "Direction of steps",
-        defaultValueHint: "default",
+        defaultValueHint: "horizontal",
       },
       progressDot: {
         type: "boolean",

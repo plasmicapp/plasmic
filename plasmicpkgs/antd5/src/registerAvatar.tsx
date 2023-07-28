@@ -64,7 +64,7 @@ export function registerAvatar(loader?: Registerable) {
         type: "choice",
         options: ["circle", "round"],
         description: "Set the avatar shape",
-        defaultValueHint: "square",
+        defaultValueHint: "circle",
       },
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerAvatar",
