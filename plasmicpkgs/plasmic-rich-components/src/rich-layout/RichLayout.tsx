@@ -145,6 +145,8 @@ export function RichLayout({
       <style>{baseStyles}</style>
       <ProLayout
         {...layoutProps}
+        // This prevents setting a document title. Normally tries to set to either app title or page title (from routes meta).
+        pageTitleRender={() => ""}
         logo={logo ?? logoElement}
         // Theme just the header. If you simply pass in navTheme=realDark, it affects all main content as well.
         //
