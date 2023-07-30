@@ -12,6 +12,7 @@ export function GlobalActionsProvider(props: {
   actions: GlobalActionDict;
 }) {
   const { contextName, children, actions } = props;
+  const existingActions = useGlobalActions();
   const namespacedActions = React.useMemo(
     () =>
       Object.fromEntries(
@@ -23,7 +24,12 @@ export function GlobalActionsProvider(props: {
     [contextName, actions]
   );
   return (
-    <GlobalActionsContext.Provider value={namespacedActions}>
+    <GlobalActionsContext.Provider
+      value={{
+        ...existingActions,
+        ...namespacedActions,
+      }}
+    >
       {children}
     </GlobalActionsContext.Provider>
   );
