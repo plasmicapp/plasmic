@@ -205,7 +205,9 @@ function GlobalLoadingIndicator() {
             app.message.destroy(`plasmic-antd5-global-loading-indicator`);
           }
         },
-        { immediate: true }
+        // Diabled immediat because it's creating an infinite rendering
+        // https://app.shortcut.com/plasmic/story/36991
+        { immediate: false }
       );
     } else {
       warnOutdatedDeps();
