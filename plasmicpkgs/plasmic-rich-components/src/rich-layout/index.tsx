@@ -76,11 +76,7 @@ const richLayoutMeta: ComponentMeta<RichLayoutProps> = {
     navMenuItems: generateNavMenuType(false, 2, "Nav menu items", [
       {
         path: "/",
-        name: "Link 1",
-      },
-      {
-        path: "/",
-        name: "Link 2",
+        name: "Home",
       },
     ]),
 
