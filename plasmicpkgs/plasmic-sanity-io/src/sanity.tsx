@@ -6,7 +6,7 @@ import {
   useSelector,
 } from "@plasmicapp/host";
 import { usePlasmicQueryData } from "@plasmicapp/query";
-import sanityClient from "@sanity/client";
+import { createClient } from "@sanity/client";
 import imageUrlBuilder from "@sanity/image-url";
 import { pascalCase } from "change-case";
 import get from "dlv";
@@ -36,7 +36,7 @@ interface SanityCredentialsProviderProps {
 }
 
 function makeSanityClient(creds: SanityCredentialsProviderProps) {
-  const sanity = sanityClient({
+  const sanity = createClient({
     projectId: creds.projectId,
     dataset: creds.dataset,
     apiVersion: creds.apiVersion ? creds.apiVersion : "v1",
