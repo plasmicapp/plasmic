@@ -38,8 +38,8 @@
     "tslib": "^2.3.1"
   },
   "dependencies": {
-    "@sanity/client": "^3.3.0",
-    "@sanity/image-url": "^1.0.1",
+    "@sanity/client": "^6.2.0",
+    "@sanity/image-url": "^1.0.2",
     "change-case": "^4.1.2",
     "dlv": "^1.1.3"
   },
