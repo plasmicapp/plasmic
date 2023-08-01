@@ -3,4 +3,5 @@
  */
 module.exports = {
   extends: ['plugin:hydrogen/recommended', 'plugin:hydrogen/typescript'],
+  root: true,
 };

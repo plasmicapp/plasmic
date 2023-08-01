@@ -18,23 +18,26 @@
   },
   "srcDir": "./app/_plasmic",
   "defaultPlasmicDir": "./plasmic",
-  "projects": [{
-    "projectId": "9LhnBWx7GdPG233uB4TumX",
-    "version": ">0.0.0",
-    "projectApiToken": "WHxlZqlM0G0ZnPxbKBzA2b1kDaBBelqLJlOAmSUq92SmQbbRIbHNBjirBCmep2TmD9JtT7lYCOCOp0mQ",
-    "components": [],
-    "icons": [],
-    "images": [],
-    "codeComponents": [],
-    "cssFilePath": "",
-    "indirect": false,
-    "globalContextsFilePath": "",
-    "projectName": ""
-  }],
+  "projects": [
+    {
+      "projectId": "9LhnBWx7GdPG233uB4TumX",
+      "version": ">0.0.0",
+      "projectApiToken": "WHxlZqlM0G0ZnPxbKBzA2b1kDaBBelqLJlOAmSUq92SmQbbRIbHNBjirBCmep2TmD9JtT7lYCOCOp0mQ",
+      "components": [],
+      "icons": [],
+      "images": [],
+      "codeComponents": [],
+      "cssFilePath": "",
+      "indirect": false,
+      "globalContextsFilePath": "",
+      "projectName": ""
+    }
+  ],
   "globalVariants": {
     "variantGroups": []
   },
   "wrapPagesWithGlobalContexts": false,
   "cliVersion": "0.1.299",
+  "packageManager": "npm",
   "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.299/dist/plasmic.schema.json"
 }
