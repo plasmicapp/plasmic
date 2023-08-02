@@ -8,3 +8,7 @@ export { WatchArgs, watchProjects } from "./actions/watch";
 export { logger } from "./deps";
 export { HandledError, handleError } from "./utils/error";
 export { Metadata, setMetadataEnv } from "./utils/get-context";
+export {
+  localizationStrings,
+  LocalizationStringsArgs,
+} from "./actions/localization-strings";
