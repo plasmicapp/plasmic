@@ -11,7 +11,6 @@ import React, { ReactNode, useContext } from "react";
 
 export function ensure<T>(x: T | null | undefined): T {
   if (x === null || x === undefined) {
-    debugger;
     throw new Error(`Value must not be undefined or null`);
   } else {
     return x;
@@ -25,13 +24,14 @@ interface GraphCMSCredentialsProviderProps {
   authToken: string;
 }
 
-const CredentialsContext =
-  React.createContext<GraphCMSCredentialsProviderProps | undefined>(undefined);
+const CredentialsContext = React.createContext<
+  GraphCMSCredentialsProviderProps | undefined
+>(undefined);
 
 export const GraphCMSCredentialsProviderMeta: GlobalContextMeta<GraphCMSCredentialsProviderProps> =
   {
     name: "GraphCMSCredentialsProvider",
-    displayName: "GraphCMS Credentials Provider",
+    displayName: "Hygraph Credentials Provider",
     description:
       "Permanent Auth Tokens are used for controlling access to querying, mutating content, and comes in the form of Bearer token authentication.[get your Auth Token](https://graphcms.com/docs/api-reference/basics/authorization#permanent-auth-tokens).",
     importName: "GraphCMSCredentialsProvider",
@@ -40,7 +40,7 @@ export const GraphCMSCredentialsProviderMeta: GlobalContextMeta<GraphCMSCredenti
       apiUrl: {
         type: "string",
         displayName: "API url",
-        description: "API url of your GraphCMS ",
+        description: "API url of your Hygraph CMS ",
         defaultValue:
           "https://api-us-west-2.graphcms.com/v2/cl3ua8gpwdni001z10ucc482i/master",
       },
@@ -71,7 +71,8 @@ interface GraphCMSFetcherProps {
   className?: string;
   noAutoRepeat?: boolean;
   noLayout?: boolean;
-  query?: string;
+  query?: { query?: string; variables?: object };
+  varOverrides?: Record<string, any>;
   setControlContextData?: (data: {
     endpoint?: string;
     headers?: HeadersInit;
@@ -80,12 +81,12 @@ interface GraphCMSFetcherProps {
 
 export const GraphCMSFetcherMeta: ComponentMeta<GraphCMSFetcherProps> = {
   name: "GraphCMSFetcher",
-  displayName: "GraphCMS Fetcher",
+  displayName: "Hygraph Fetcher",
   importName: "GraphCMSFetcher",
   importPath: modulePath,
   providesData: true,
   description:
-    "Fetches GraphCMS data and repeats content of children once for every row fetched. ",
+    "Fetches Hygraph data and repeats content of children once for every row fetched. ",
   defaultStyles: {
     display: "grid",
     gridTemplateColumns: "1fr 1fr 1fr 1fr",
@@ -114,6 +115,12 @@ export const GraphCMSFetcherMeta: ComponentMeta<GraphCMSFetcherProps> = {
       endpoint: (props, ctx) => ctx?.endpoint ?? "",
       headers: (props, ctx) => ctx?.headers ?? "",
     },
+    varOverrides: {
+      type: "object",
+      description:
+        "Pass in dynamic values for your query variables, as an object of key-values",
+      defaultValue: {},
+    },
     noAutoRepeat: {
       type: "boolean",
       displayName: "No auto-repeat",
@@ -140,14 +147,16 @@ export function GraphCMSFetcher({
   className,
   noLayout,
   noAutoRepeat,
+  varOverrides,
   setControlContextData,
 }: GraphCMSFetcherProps) {
   const creds = ensure(useContext(CredentialsContext));
   const cacheKey = JSON.stringify({
     query,
     creds,
+    varOverrides,
   });
-  
+
   const headers = {
     Authorization: `Bearer ${creds.authToken}`,
   };
@@ -157,6 +166,20 @@ export function GraphCMSFetcher({
     async () => {
       if (!query) {
         return null;
+      }
+
+      if (
+        varOverrides &&
+        typeof varOverrides === "object" &&
+        Object.keys(varOverrides).length > 0
+      ) {
+        query = {
+          ...query,
+          variables: {
+            ...query.variables,
+            ...varOverrides,
+          },
+        };
       }
 
       const data = await fetch(creds.apiUrl, {
@@ -220,10 +243,11 @@ interface GraphCMSFieldProps {
   className?: string;
   path?: string;
   setControlContextData?: (data: { data: any }) => void;
+  themeClassName?: string;
 }
 export const GraphCMSFieldMeta: ComponentMeta<GraphCMSFieldProps> = {
   name: "GraphCMSField",
-  displayName: "GraphCMS Field",
+  displayName: "Hygraph Field",
   importName: "GraphCMSField",
   importPath: modulePath,
   props: {
@@ -233,11 +257,16 @@ export const GraphCMSFieldMeta: ComponentMeta<GraphCMSFieldProps> = {
       displayName: "Field",
       description: "Field to be displayed.",
     },
+    themeClassName: {
+      type: "themeResetClass",
+      targetAllTags: true,
+    },
   },
 };
 export function GraphCMSField({
   className,
   path,
+  themeClassName,
   setControlContextData,
 }: GraphCMSFieldProps) {
   const item = useSelector("graphCmsItem");
@@ -260,7 +289,7 @@ export function GraphCMSField({
   } else if (typeof data === "object" && isRichText(data)) {
     return (
       <div
-        className={className}
+        className={`${themeClassName} ${className}`}
         dangerouslySetInnerHTML={{ __html: data.html }}
       />
     );
