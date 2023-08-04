@@ -33,7 +33,7 @@ const simpleChartMeta: ComponentMeta<SimpleChartProps> = {
       defaultValueHint: "bar",
     },
     data: {
-      type: "exprEditor" as any,
+      type: "exprEditor",
       description: "The data as an array of objects",
       defaultExpr: JSON.stringify([
         {
@@ -57,6 +57,7 @@ const simpleChartMeta: ComponentMeta<SimpleChartProps> = {
           spend: 1656,
         },
       ]),
+      mergeWithExternalData: true,
     },
     labelField: {
       ...fieldChoice,
