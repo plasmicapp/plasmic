@@ -109,7 +109,7 @@ export async function localizationStrings(
     if (existsBuffered(output)) {
       const overwrite = await confirmWithUser(
         `File ${output} already exists. Do you want to overwrite?`,
-        opts.forceOverwrite
+        opts.forceOverwrite || opts.yes
       );
       if (!overwrite) {
         throw new HandledError(
