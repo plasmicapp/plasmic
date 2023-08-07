@@ -140,7 +140,7 @@ export const ContentfulFetcherMeta: ComponentMeta<ContentfulFetcherProps> = {
     filterField: {
       type: "choice",
       displayName: "Filter field",
-      description: "Field (from Collection) to filter by",
+      description: "Field (from Collection) to filter by.",
       options: (props, ctx) => ctx?.fields ?? [],
       hidden: (props, ctx) => !props.contentType,
     },
@@ -148,14 +148,14 @@ export const ContentfulFetcherMeta: ComponentMeta<ContentfulFetcherProps> = {
       type: "choice",
       displayName: "Search Parameter",
       description:
-        "Search Parameter to filter by.Read more (https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/search-parameters/)",
+        "Search Parameter to filter by (see Contentful Content Delivery API documentation for details).",
       options: (props, ctx) => ctx?.queryOptions ?? [],
       hidden: (props, ctx) => !props.filterField,
     },
     filterValue: {
       type: "string",
       displayName: "Filter value",
-      description: "Value to filter by, should be of filter field type",
+      description: "Value to filter by, should be of filter field type.",
       hidden: (props, ctx) => !props.searchParameter,
     },
     limit: {
