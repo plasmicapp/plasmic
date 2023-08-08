@@ -27,9 +27,12 @@
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
+  "devDependenciesComments": {
+    "@ant-design/pro-components": "Must be 2.6.4. Earlier doesn't support newer antd, later incurs a disallowed dynamic require of antd/es/layout/Sider. https://app.shortcut.com/plasmic/story/37043/richlayout-always-initially-loads-with-dark-background"
+  },
   "devDependencies": {
     "@ant-design/icons": "^5.0.1",
-    "@ant-design/pro-components": "^2.4.1",
+    "@ant-design/pro-components": "2.6.4",
     "@plasmicapp/data-sources": "0.1.102",
     "@plasmicapp/host": "1.0.157",
     "@rollup/plugin-commonjs": "^25.0.2",
@@ -46,7 +49,7 @@
   },
   "peerDependencies": {
     "@ant-design/icons": ">=5.0.0",
-    "@ant-design/pro-components": ">=2.4.1",
+    "@ant-design/pro-components": "2.6.4",
     "@plasmicapp/data-sources": ">=0.1.52",
     "@plasmicapp/host": ">=1.0.0",
     "antd": ">=5.0.0",
