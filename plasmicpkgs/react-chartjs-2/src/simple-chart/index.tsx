@@ -57,7 +57,6 @@ const simpleChartMeta: ComponentMeta<SimpleChartProps> = {
           spend: 1656,
         },
       ]),
-      mergeWithExternalData: true,
     },
     labelField: {
       ...fieldChoice,

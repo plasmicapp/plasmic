@@ -326,7 +326,7 @@ interface RichDataPickerType<P>
   type: "dataSelector";
   data?: Record<string, any> | ContextDependentConfig<P, Record<string, any>>;
   alwaysShowValuePathAsLabel?: boolean;
-  mergeWithExternalData?: boolean;
+  isolateEnv?: boolean;
 }
 type DataPickerType<P> = "dataPicker" | RichDataPickerType<P>;
 
@@ -334,7 +334,7 @@ interface RichExprEditorType<P>
   extends PropTypeBaseDefault<P, DataPickerValueType> {
   type: "exprEditor";
   data?: Record<string, any> | ContextDependentConfig<P, Record<string, any>>;
-  mergeWithExternalData?: boolean;
+  isolateEnv?: boolean;
 }
 type ExprEditorType<P> = "exprEditor" | RichExprEditorType<P>;
 
