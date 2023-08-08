@@ -58,7 +58,7 @@ export function registerRichDetails(loader?: Registerable) {
       bordered: {
         displayName: "Show borders?",
         type: "boolean",
-        defaultValueHint: false,
+        defaultValue: true,
       },
     },
     importPath: "@plasmicpkgs/plasmic-rich-components",
