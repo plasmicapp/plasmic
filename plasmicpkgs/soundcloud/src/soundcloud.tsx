@@ -1,9 +1,10 @@
-import { ComponentMeta ,usePlasmicCanvasContext} from "@plasmicapp/host";
+import { ComponentMeta, usePlasmicCanvasContext } from "@plasmicapp/host";
 
 import React from "react";
 
 export function ensure<T>(x: T | null | undefined): T {
   if (x === null || x === undefined) {
+    // eslint-disable-next-line no-debugger
     debugger;
     throw new Error(`Value must not be undefined or null`);
   } else {
@@ -20,8 +21,8 @@ interface SoundCloudProps {
   color: string;
   showComments: boolean;
   showUser: boolean;
-  showRelated:boolean;
-  showTeaser:boolean;
+  showRelated: boolean;
+  showTeaser: boolean;
   className: string;
 }
 
@@ -44,7 +45,7 @@ export const SoundCloudMeta: ComponentMeta<SoundCloudProps> = {
       type: "boolean",
       displayName: "Visual",
       description: "Visual or Classic player",
-      defaultValue:true
+      defaultValue: true,
     },
     autoPlay: {
       type: "boolean",
@@ -56,7 +57,6 @@ export const SoundCloudMeta: ComponentMeta<SoundCloudProps> = {
       type: "color",
       displayName: "Color",
       description: "Widget color,should be in hex format",
-      noDeref:false
     },
     showUser: {
       type: "boolean",
@@ -96,11 +96,10 @@ export function SoundCloud({
   showUser,
   visual,
 }: SoundCloudProps) {
-  
- const inEditor = usePlasmicCanvasContext();
- 
- const play = inEditor ? false :autoPlay
- const query = new URL(url)
+  const inEditor = usePlasmicCanvasContext();
+
+  const play = inEditor ? false : autoPlay;
+  const query = new URL(url);
   const parameters = new URLSearchParams(query.search);
   parameters.set("url", encodeURIComponent(url));
   parameters.set("show_comments", showComments.toString());
@@ -112,7 +111,7 @@ export function SoundCloud({
   parameters.set("color", color);
 
   return (
-    <iframe   
+    <iframe
       frameBorder="0"
       scrolling="no"
       width="600px"
@@ -120,7 +119,6 @@ export function SoundCloud({
       src={`https://w.soundcloud.com/player?${parameters.toString()}`}
       allow="autoplay"
       className={className}
-      /> 
-
+    />
   );
 }
