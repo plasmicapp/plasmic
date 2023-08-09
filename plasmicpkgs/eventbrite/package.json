@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-eventbrite",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Plasmic Eventbrite components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -34,7 +34,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "^1.0.100",
+    "@plasmicapp/host": "1.0.158",
     "@size-limit/preset-small-lib": "^7.0.8",
     "@types/react": "^17.0.43",
     "@types/react-dom": "^17.0.14",

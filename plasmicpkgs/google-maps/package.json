@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-google-maps",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Plasmic Google Maps components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -34,7 +34,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "^1.0.117",
+    "@plasmicapp/host": "1.0.158",
     "@plasmicapp/query": "^0.1.61",
     "@size-limit/preset-small-lib": "^7.0.8",
     "@types/dlv": "^1.1.2",
@@ -46,6 +46,5 @@
     "size-limit": "^7.0.8",
     "tsdx": "^0.14.1",
     "tslib": "^2.3.1"
-  },
-  "dependencies": {}
+  }
 }
