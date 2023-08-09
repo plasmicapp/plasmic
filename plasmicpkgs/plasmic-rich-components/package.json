@@ -39,6 +39,7 @@
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.1.0",
     "@size-limit/preset-small-lib": "^4.11.0",
+    "@types/luxon": "^3.3.1",
     "@types/node": "^14.0.26",
     "antd": "^5.4.0",
     "rollup": "^3.26.2",
@@ -63,6 +64,7 @@
     "csv-writer-browser": "^1.0.0",
     "fast-stringify": "^2.0.0",
     "lodash": "^4.17.21",
+    "luxon": "^3.3.0",
     "tinycolor2": "^1.6.0"
   }
 }

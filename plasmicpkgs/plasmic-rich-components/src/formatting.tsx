@@ -14,6 +14,7 @@ import {
   DATETIME_TYPES,
 } from "./field-mappings";
 import { isOneOf, maybe } from "./utils";
+import { DateTime } from "luxon";
 
 export function maybeRenderValue(
   record: any,
@@ -197,6 +198,13 @@ function renderBoolean(value: boolean, cconfig: BooleanSettings) {
   }
 }
 
+const dateTimeParsers = [
+  DateTime.fromISO,
+  DateTime.fromRFC2822,
+  DateTime.fromHTTP,
+  DateTime.fromSQL,
+];
+
 const CANNOT_COERCE = Symbol("plasmic-cannot-coerce");
 function coerceValue(value: unknown, dataType: BaseColumnConfig["dataType"]) {
   if (value == null) {
@@ -218,9 +226,26 @@ function coerceValue(value: unknown, dataType: BaseColumnConfig["dataType"]) {
       } else if (typeof value === "number") {
         return new Date(value);
       } else if (typeof value === "string") {
-        const maybeDate = new Date(value);
-        if (!isNaN(maybeDate.getTime())) {
-          return maybeDate;
+        // We don't want to simply use Date because it's too loose and varies across platforms.
+        // It'll parse even things like "42" and "iPhone 8" as dates!
+        //
+        // After a bunch of research, I couldn't find a great simple way to recognize a bunch of common date formats.
+        // Closest such resource I could find was this list of formats:
+        // https://gist.github.com/brandonjp/ac259099ba95868c4826fc0f58f9e7b4
+        // But for now it's probably better to stick to one of the "standard" computer formats rather than try to recognize various "humanized" date time formats.
+        // We could try to expand this in the future.
+        //
+        // As far as libraries go:
+        // dayjs has very buggy and long-neglected support for parsing.
+        // Temporal doesn't handle general parsing by format.
+        // Luxon is maintained and decent, though it doesn't accept a whole list of formats.
+        //
+        // Right now we also don't know anything about performance.
+        for (const parser of dateTimeParsers) {
+          const parsed = parser(value);
+          if (parsed.isValid) {
+            return parsed.toJSDate();
+          }
         }
       }
     } else if (dataType === "boolean") {
