@@ -4,6 +4,7 @@ import {
   ComponentHelpers,
   DataProvider,
   repeatedElement,
+  useDataEnv,
   usePlasmicCanvasContext,
 } from "@plasmicapp/host";
 import {
@@ -95,7 +96,7 @@ export interface SimplifiedFormItemsProp extends InternalFormItemProps {
 }
 
 interface FormWrapperControlContextData {
-  formInstance: FormInstance<any>;
+  formInstance?: FormInstance<any>;
   schema?: TableSchema;
   minimalFullLengthFields: Partial<SimplifiedFormItemsProp>[];
   mergedFields: SimplifiedFormItemsProp[];
@@ -326,7 +327,12 @@ function useFormItemDefinitions(
   const { mode, formItems, setControlContextData } = props;
 
   return React.useMemo(() => {
-    if (mode !== "simplified" || !formRef || !rawData || rawData.error) {
+    if (
+      mode !== "simplified" ||
+      !rawData ||
+      rawData.isLoading ||
+      rawData.error
+    ) {
       return undefined;
     }
     const data = normalizeData(rawData);
@@ -364,7 +370,7 @@ function useFormItemDefinitions(
       schema: data.schema,
       minimalFullLengthFields,
       mergedFields,
-      formInstance: formRef.formInstance,
+      formInstance: formRef?.formInstance,
     });
 
     return mergedFields;
@@ -402,29 +408,59 @@ export const FormWrapper = React.forwardRef(
       props,
       wrapperRef.current
     );
-    const previousOpData = usePrevious(props.data);
     React.useEffect(() => {
-      if (previousOpData?.opId !== props.data?.opId) {
+      if (rawData && !rawData.isLoading) {
         setRemountKey((k) => k + 1);
       }
-    }, [previousOpData, props.data]);
+    }, [rawData]);
     const { formItems, ...rest } = props;
     const actualFormItems =
       props.mode === "simplified" && formItemDefinitions
         ? formItemDefinitions
         : formItems;
-
+    const previousFormItems = React.useRef<SimplifiedFormItemsProp[]>([]);
+    React.useEffect(() => {
+      if (!(rawData && rawData.isLoading)) {
+        previousFormItems.current = actualFormItems;
+      }
+    }, [rawData, actualFormItems]);
     if (props.mode === "simplified" && rawData && "error" in rawData) {
       return <div>Error when fetching data: {rawData.error.message}</div>;
     }
+    const isSchemaForm = props.mode === "simplified" && !!props.data;
+    const isLoadingData = rawData?.isLoading;
     return (
-      <Internal
-        key={remountKey}
-        {...rest}
-        setRemountKey={setRemountKey}
-        formItems={actualFormItems}
-        ref={wrapperRef}
-      />
+      <>
+        <Internal
+          key={remountKey}
+          {...rest}
+          setRemountKey={setRemountKey}
+          formItems={
+            rawData && rawData.isLoading
+              ? previousFormItems.current
+              : actualFormItems
+          }
+          ref={wrapperRef}
+          style={
+            isSchemaForm && isLoadingData
+              ? {
+                  opacity: 0.5,
+                  transitionDelay: "250ms",
+                  transition: "1s",
+                }
+              : {}
+          }
+        />
+        {isSchemaForm && isLoadingData && (
+          <div
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+            }}
+          />
+        )}
+      </>
     );
   }
 );
