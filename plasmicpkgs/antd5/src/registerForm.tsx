@@ -508,7 +508,7 @@ const COMMON_ACTIONS = [
   // },
 ];
 const colProp = (
-  displayName?: string,
+  displayName: string,
   defaultValue?: object,
   description?: string
 ) =>
@@ -539,6 +539,7 @@ const colProp = (
         description: "Only apply when form layout is horizontal",
       },
     },
+    nameFunc: () => `Edit ${displayName}`,
     description,
     defaultValue: defaultValue,
   } as const);
