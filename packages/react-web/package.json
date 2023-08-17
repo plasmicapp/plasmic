@@ -57,6 +57,9 @@
     },
     "./skinny/dist/plume/*": {
       "import": "./skinny/dist/plume/*/index.js"
+    },
+    "./additional-types-PlasmicImg": {
+      "types": "./dist/render/PlasmicImg/index.d.ts"
     }
   },
   "files": [
