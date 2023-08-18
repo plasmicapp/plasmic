@@ -49,6 +49,7 @@ import { registerColorPicker } from "./registerColorPicker";
 import { registerDrawer } from "./registerDrawer";
 import { registerSteps } from "./registerSteps";
 import { registerDirectoryTree, registerTree } from "./registerTree";
+import { registerCollapse } from "./registerCollapse";
 
 export function registerAll(loader?: Registerable) {
   registerConfigProvider(loader);
@@ -80,6 +81,7 @@ export function registerAll(loader?: Registerable) {
   registerAvatarGroup(loader);
   registerTree(loader);
   registerDirectoryTree(loader);
+  registerCollapse(loader);
 }
 
 export { buttonComponentName } from "./registerButton";
