@@ -161,6 +161,14 @@ interface ColorType<P> extends PropTypeBaseDefault<P, string> {
   keepCssVar?: boolean;
 }
 
+interface DateStringType<P> extends PropTypeBaseDefault<P, string> {
+  type: "dateString";
+}
+interface DateRangeStringsType<P>
+  extends PropTypeBaseDefault<P, [string, string]> {
+  type: "dateRangeStrings";
+}
+
 interface ClassType<P> extends PropTypeBase<P> {
   type: "class";
   /**
@@ -504,9 +512,12 @@ export type PropType<P> =
   | ChoiceType<P>
   | CustomType<P>
   | ImageUrlType<P>
-  | SlotType<P>;
+  | SlotType<P>
+  | DateStringType<P>
+  | DateRangeStringsType<P>;
 
 type StringCompatType<P> =
+  | DateStringType<P>
   | StringType<P>
   | ChoiceType<P>
   | JSONLikeType<P>
