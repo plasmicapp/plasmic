@@ -48,6 +48,7 @@ import { registerTooltip } from "./registerTooltip";
 import { registerColorPicker } from "./registerColorPicker";
 import { registerDrawer } from "./registerDrawer";
 import { registerSteps } from "./registerSteps";
+import { registerDirectoryTree, registerTree } from "./registerTree";
 
 export function registerAll(loader?: Registerable) {
   registerConfigProvider(loader);
@@ -77,6 +78,8 @@ export function registerAll(loader?: Registerable) {
   registerTooltip(loader);
   registerAvatar(loader);
   registerAvatarGroup(loader);
+  registerTree(loader);
+  registerDirectoryTree(loader);
 }
 
 export { buttonComponentName } from "./registerButton";
