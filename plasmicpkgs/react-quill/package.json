@@ -1,0 +1,51 @@
+{
+  "name": "@plasmicpkgs/react-quill",
+  "version": "1.0.0",
+  "description": "Plasmic registration call for react-quill WYSIWYG Editor",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/react-quill.esm.js",
+  "files": [
+    "dist"
+  ],
+  "size-limit": [
+    {
+      "path": "dist/react-quill.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/react-quill.esm.js",
+      "limit": "10 KB"
+    }
+  ],
+  "scripts": {
+    "build": "tsdx build",
+    "start": "tsdx watch",
+    "test": "yarn --cwd=../.. test --passWithNoTests",
+    "lint": "tsdx lint",
+    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
+  },
+  "devDependencies": {
+    "@plasmicapp/data-sources": "0.1.104",
+    "@plasmicapp/host": "1.0.159",
+    "@size-limit/preset-small-lib": "^4.11.0",
+    "@types/node": "^14.0.26",
+    "size-limit": "^4.11.0",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.2.0"
+  },
+  "peerDependencies": {
+    "@plasmicapp/data-sources": ">=0.1.52",
+    "@plasmicapp/host": ">=1.0.0",
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "react-quill": "^2.0.0"
+  }
+}
