@@ -1,4 +1,4 @@
-import { ComponentMeta } from "@plasmicapp/host";
+import { CodeComponentMeta } from "@plasmicapp/host";
 
 import React, { useRef, useEffect, useState } from "react";
 
@@ -23,7 +23,7 @@ interface CalendlyInlineWidgetProps {
   className?: string;
 }
 
-export const CalendlyInlineWidgetMeta: ComponentMeta<CalendlyInlineWidgetProps> =
+export const CalendlyInlineWidgetMeta: CodeComponentMeta<CalendlyInlineWidgetProps> =
   {
     name: "CalendlyInlineWidget",
     displayName: "Calendly Inline Widget",
@@ -100,7 +100,7 @@ interface CalendlyCornerPopupProps {
   className?: string;
 }
 
-export const CalendlyCornerPopupMeta: ComponentMeta<CalendlyCornerPopupProps> =
+export const CalendlyCornerPopupMeta: CodeComponentMeta<CalendlyCornerPopupProps> =
   {
     name: "CalendlyCornerPopup",
     displayName: "Calendly Corner Popup ",
