@@ -43,7 +43,6 @@ export interface TriggeredOverlayConfig<C extends AnyPlasmicClass> {
 
   contentSlot: keyof PlasmicClassArgs<C>;
   root: keyof PlasmicClassOverrides<C>;
-  contentContainer: keyof PlasmicClassOverrides<C>;
 }
 
 export type TriggeredOverlayRef = React.Ref<HTMLElement>;

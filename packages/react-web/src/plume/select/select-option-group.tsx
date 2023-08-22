@@ -12,6 +12,7 @@ import {
   PlasmicClassOverrides,
   PlasmicClassVariants,
   PLUME_STRICT_MODE,
+  VariantDef,
 } from "../plume-utils";
 import {
   getDefaultPlasmicProps,
@@ -25,8 +26,8 @@ export interface BaseSelectOptionGroupProps
     StyleProps {}
 
 interface SelectOptionGroupConfig<C extends AnyPlasmicClass> {
-  noTitleVariant: PlasmicClassVariants<C>;
-  isFirstVariant: PlasmicClassVariants<C>;
+  noTitleVariant: VariantDef<PlasmicClassVariants<C>>;
+  isFirstVariant: VariantDef<PlasmicClassVariants<C>>;
 
   optionsSlot: keyof PlasmicClassArgs<C>;
   titleSlot: keyof PlasmicClassArgs<C>;
