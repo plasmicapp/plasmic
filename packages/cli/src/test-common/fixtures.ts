@@ -99,7 +99,6 @@ export function standardTestSetup(includeDep = true) {
     forceOverwrite: true,
     config: tmpRepo.plasmicJsonPath(),
     auth: tmpRepo.plasmicAuthPath(),
-    loaderConfig: tmpRepo.plasmicLoaderJsonPath(),
     baseDir: process.cwd(),
   };
 }
@@ -154,9 +153,9 @@ export const project1Config: ProjectConfig = {
   globalContextsFilePath: "",
 };
 
-export function expectProject1PlasmicJson(
-  optional?: { [k in keyof ProjectConfig]?: boolean }
-) {
+export function expectProject1PlasmicJson(optional?: {
+  [k in keyof ProjectConfig]?: boolean;
+}) {
   const plasmicJson = tmpRepo.readPlasmicJson();
   expect(plasmicJson.projects.length).toEqual(1);
   const projectConfig = plasmicJson.projects[0];

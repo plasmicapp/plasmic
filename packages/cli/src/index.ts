@@ -5,6 +5,7 @@ import { fixImports, FixImportsArgs } from "./actions/fix-imports";
 import { InfoArgs, printProjectInfo } from "./actions/info";
 import { getYargsOption, InitArgs, initPlasmic } from "./actions/init";
 import {
+  getLocalizationYargs,
   localizationStrings,
   LocalizationStringsArgs,
 } from "./actions/localization-strings";
@@ -12,8 +13,8 @@ import * as projectToken from "./actions/project-token";
 import { sync, SyncArgs } from "./actions/sync";
 import { UploadBundleArgs, uploadJsBundle } from "./actions/upload-bundle";
 import { WatchArgs, watchProjects } from "./actions/watch";
-import { LOADER_CONFIG_FILE_NAME } from "./utils/config-utils";
 import { handleError } from "./utils/error";
+import { ExportArgs, exportProjectsCli } from "./actions/export";
 
 if (process.env.DEBUG_CHDIR) {
   process.chdir(process.env.DEBUG_CHDIR);
@@ -248,7 +249,7 @@ yargs
   )
   .command<LocalizationStringsArgs>(
     "localization-strings",
-    false,
+    "Generate localization strings",
     (yargs) =>
       yargs
         .option("projects", {
@@ -268,17 +269,8 @@ yargs
           choices: ["json", "po", "lingui"],
           default: "json",
         })
-        .option("key-scheme", {
-          describe:
-            "What value to use as message keys; `content` uses the message content itself, `hash` uses a hash of the content, and `path` uses a a hierarchical string containing the project id, component name, element name, and related variants, and does not encode the text content in the key.  Defaults to whatever is specified in plasmic.json, or `content`",
-          type: "string",
-          choices: ["content", "hash", "path"],
-        })
-        .option("tag-prefix", {
-          describe:
-            "By default, rich text with markup tags look like '<0>hello</0>'. If your localization framework requires num-numeric tags, then specify a prefix; for example a prefix of 'n' turns it into '<n0>hello</n0>'.",
-          type: "string",
-        })
+        .option("key-scheme", getLocalizationYargs("key-scheme"))
+        .option("tag-prefix", getLocalizationYargs("tag-prefix"))
         .option("exclude-deps", {
           type: "boolean",
           describe:
@@ -303,6 +295,35 @@ yargs
         }),
     (argv) => handleError(localizationStrings(argv))
   )
+  .command<ExportArgs>(
+    "export",
+    false,
+    (yargs) =>
+      yargs
+        .option("projects", {
+          alias: "p",
+          describe: "ID of project to export from",
+          type: "array",
+        })
+        .option("out-dir", {
+          alias: "o",
+          describe: "Folder to output exported code to",
+          type: "string",
+        })
+        .option("platform", getYargsOption("platform"))
+        .option("code-lang", getYargsOption("codeLang"))
+        .option("code-scheme", getYargsOption("codeScheme"))
+        .option("style-scheme", getYargsOption("styleScheme"))
+        .option("images-scheme", getYargsOption("imagesScheme"))
+        .option("images-public-dir", getYargsOption("imagesPublicDir"))
+        .option(
+          "images-public-url-prefix",
+          getYargsOption("imagesPublicUrlPrefix")
+        )
+        .option("i18n-key-scheme", getLocalizationYargs("key-scheme"))
+        .option("i18n-tag-prefix", getLocalizationYargs("tag-prefix")),
+    (argv) => handleError(exportProjectsCli(argv))
+  )
   .demandCommand()
   .strict()
   .help("h")
@@ -324,13 +345,6 @@ function configureSyncArgs(
       type: "boolean",
       describe: "Force sync to bypass specified version ranges.",
       default: false,
-    })
-    .option("loader-config", {
-      type: "string",
-      describe:
-        "Path to loader config file, and causes CLI to run in PlasmicLoader mode.",
-      hidden: true,
-      default: LOADER_CONFIG_FILE_NAME,
     })
     .option("non-recursive", {
       type: "boolean",

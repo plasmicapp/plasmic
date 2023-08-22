@@ -5,9 +5,7 @@ import {
   AuthConfig,
   AUTH_FILE_NAME,
   CONFIG_FILE_NAME,
-  LOADER_CONFIG_FILE_NAME,
   PlasmicConfig,
-  PlasmicLoaderConfig,
 } from "../utils/config-utils";
 import { deleteFileBuffered, readFileText, writeFileText } from "./file-utils";
 
@@ -104,13 +102,5 @@ export class TempRepo {
 
   deletePlasmicJson() {
     this.deleteFile(CONFIG_FILE_NAME);
-  }
-
-  plasmicLoaderJsonPath() {
-    return this.resolveFile(LOADER_CONFIG_FILE_NAME);
-  }
-
-  readPlasmicLoaderJson(): PlasmicLoaderConfig {
-    return JSON.parse(this.readFile(LOADER_CONFIG_FILE_NAME));
   }
 }

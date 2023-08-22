@@ -26,7 +26,7 @@ export interface ComponentBundle {
   cssFileName: string;
   componentName: string;
   id: string;
-  scheme: string;
+  scheme: "blackbox" | "plain";
   nameInIdToUuid: Array<[string, string]>;
   isPage: boolean;
   plumeType?: string;
@@ -285,6 +285,39 @@ export class PlasmicApi {
   ): Promise<ProjectBundle> {
     const result = await this.post(
       `${this.codegenHost}/api/v1/projects/${projectId}/code/components?branchName=${branchName}`,
+      {
+        ...opts,
+      }
+    );
+    return result.data as ProjectBundle;
+  }
+  /**
+   * Code-gen endpoint.
+   * This will fetch components from a given branch at an exact specified version
+   * using the "plain" scheme
+   */
+  async exportProject(
+    projectId: string,
+    branchName: string,
+    opts: {
+      platform: string;
+      platformOptions: {
+        nextjs?: {
+          appDir: boolean;
+        };
+      };
+      version: string;
+      imageOpts: ImagesConfig;
+      stylesOpts: StyleConfig;
+      i18nOpts?: I18NConfig;
+      codeOpts: Pick<CodeConfig, "lang">;
+      indirect: boolean;
+      wrapPagesWithGlobalContexts: boolean;
+      metadata?: Metadata;
+    }
+  ): Promise<ProjectBundle> {
+    const result = await this.post(
+      `${this.codegenHost}/api/v1/projects/${projectId}/code/components?branchName=${branchName}&export=true`,
       {
         ...opts,
       }

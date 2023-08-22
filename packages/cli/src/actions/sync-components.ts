@@ -233,7 +233,7 @@ export async function syncProjectComponents(
 
       compConfig.plumeType = plumeType;
 
-      if (scheme === "direct") {
+      if ((scheme as any) === "direct") {
         throw new Error(`Direct update codegen scheme is no longer supported`);
       } else if (/\/\/\s*plasmic-managed-jsx\/\d+/.test(editedFile)) {
         if (forceOverwrite) {

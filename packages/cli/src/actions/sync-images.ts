@@ -130,7 +130,7 @@ export async function syncProjectImageAssets(
   );
 }
 
-async function ensureImageAssetContents(bundles: ImageBundle[]) {
+export async function ensureImageAssetContents(bundles: ImageBundle[]) {
   // The server may send images as a url instead of a base64 blob. In that
   // case, we fetch the images here in the cli, instead of on the server.
   // If you have a lot of images, this moves the expensive / long fetch

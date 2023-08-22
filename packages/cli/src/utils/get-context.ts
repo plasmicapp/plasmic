@@ -289,7 +289,12 @@ export async function getContext(
   {
     enableSkipAuth = false,
     skipMissingFiles = false,
-  }: { enableSkipAuth?: boolean; skipMissingFiles?: boolean } = {}
+    skipInit = false,
+  }: {
+    enableSkipAuth?: boolean;
+    skipMissingFiles?: boolean;
+    skipInit?: boolean;
+  } = {}
 ): Promise<PlasmicContext> {
   if (!args.baseDir) args.baseDir = process.cwd();
   const auth = enableSkipAuth
@@ -361,7 +366,7 @@ export async function getContext(
 /**
  * Use empty user/token to signify no auth (only returning to provide a default host).
  */
-async function getCurrentOrDefaultAuth(args: CommonArgs) {
+export async function getCurrentOrDefaultAuth(args: CommonArgs) {
   const auth = await getCurrentAuth(args.auth);
   if (auth) {
     return auth;
