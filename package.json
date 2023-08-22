@@ -56,6 +56,7 @@
     "plasmicpkgs/chakra-ui",
     "plasmicpkgs/commerce-providers/*",
     "plasmicpkgs/framer-motion",
+    "plasmicpkgs/giphy",
     "plasmicpkgs/lottie-react",
     "plasmicpkgs/plasmic-basic-components",
     "plasmicpkgs/plasmic-cms",
