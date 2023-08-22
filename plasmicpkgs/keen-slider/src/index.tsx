@@ -1,6 +1,6 @@
 import registerComponent, {
   ActionProps,
-  ComponentMeta,
+  CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Button, Select } from "antd";
 import React, { forwardRef, Ref, useEffect } from "react";
@@ -22,6 +22,7 @@ const ResizePlugin: KeenSliderPlugin = (slider) => {
     observer.unobserve(slider.container);
   });
 };
+
 function CurrentSlideDropdown({ componentProps, studioOps }: ActionProps<any>) {
   const editingSlide = componentProps.editingSlide ?? 0;
   const slidesCnt =
@@ -102,7 +103,7 @@ function OutlineMessage() {
 
 interface KeenSliderProps extends KeenSliderOptions {}
 
-export const sliderMeta: ComponentMeta<KeenSliderProps> = {
+export const sliderMeta: CodeComponentMeta<KeenSliderProps> = {
   name: "hostless-slider",
   displayName: "Slider",
   importName: "Slider",
@@ -316,7 +317,7 @@ export const SliderWrapper = forwardRef(function SliderWrapper_(
 
 export function registerSlider(
   loader?: { registerComponent: typeof registerComponent },
-  customSliderMeta?: ComponentMeta<KeenSliderOptions>
+  customSliderMeta?: CodeComponentMeta<KeenSliderOptions>
 ) {
   if (loader) {
     loader.registerComponent(SliderWrapper, customSliderMeta ?? sliderMeta);

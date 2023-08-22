@@ -1,1 +1,1 @@
-Plasmic registration call for keen-slider
+Plasmic components and registration calls for Keen slider
