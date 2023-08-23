@@ -11,8 +11,8 @@ export interface DataOp {
   opId: string;
   userArgs?: Record<string, any>;
   cacheKey?: string;
-  invalidatedKeys?: string[];
-  roleId?: string;
+  invalidatedKeys?: string[] | null;
+  roleId?: string | null;
 }
 
 interface ExecuteOpts {
