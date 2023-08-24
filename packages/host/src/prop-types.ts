@@ -159,6 +159,10 @@ interface ColorType<P> extends PropTypeBaseDefault<P, string> {
    * unless you are using a React portal.
    */
   keepCssVar?: boolean;
+  /**
+   * Prevent tokens from being selected.
+   */
+  disableTokens?: boolean;
 }
 
 interface DateStringType<P> extends PropTypeBaseDefault<P, string> {

@@ -510,26 +510,32 @@ export const registerConfigProvider = makeRegisterGlobalContext(
       colorPrimary: {
         type: "color",
         defaultValue: "#1677ff",
+        disableTokens: true,
       },
       colorSuccess: {
         type: "color",
         defaultValue: "#52c41a",
+        disableTokens: true,
       },
       colorWarning: {
         type: "color",
         defaultValue: "#faad14",
+        disableTokens: true,
       },
       colorError: {
         type: "color",
         defaultValue: "#ff4d4f",
+        disableTokens: true,
       },
       colorInfo: {
         type: "color",
         defaultValue: "#1677ff",
+        disableTokens: true,
       },
       colorBgBase: {
         type: "color",
         defaultValue: "#ffffff",
+        disableTokens: true,
       },
       lineWidth: {
         type: "number",
