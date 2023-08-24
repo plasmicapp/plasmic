@@ -135,6 +135,14 @@ export function eqPagePath(a: string, b: string) {
     return true;
   }
 
+  // We also let users rename [...page].js to [[...page]].js
+  const normPagePathBrackets = (p: string) => {
+    return p.replace("[[", "[").replace("]]", "]");
+  };
+  if (normPagePathBrackets(a) === normPagePathBrackets(b)) {
+    return true;
+  }
+
   // pages/about.* and pages/about/index.* resolve to the same URI, but
   // pages/index.* and pages/index/index.* do not.
   if (!a.endsWith("/index") && `${a}/index` === b) {
