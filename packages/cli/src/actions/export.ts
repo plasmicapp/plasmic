@@ -30,8 +30,8 @@ export interface ExportArgs extends CommonArgs {
   imagesScheme: "" | "inlined" | "files" | "public-files";
   imagesPublicDir: string;
   imagesPublicUrlPrefix: string;
-  i18nKeyScheme: "" | I18NConfig["keyScheme"];
-  i18nTagPrefix: "" | I18NConfig["tagPrefix"];
+  i18NKeyScheme: "" | I18NConfig["keyScheme"];
+  i18NTagPrefix: "" | I18NConfig["tagPrefix"];
 
   skipFormatting?: boolean;
 
@@ -39,6 +39,9 @@ export interface ExportArgs extends CommonArgs {
 }
 
 export async function exportProjectsCli(opts: ExportArgs): Promise<void> {
+  if (!opts.outDir) {
+    opts.outDir = "./";
+  }
   if (!opts.baseDir) opts.baseDir = process.cwd();
   let configFile =
     opts.config || findConfigFile(opts.baseDir, { traverseParents: true });
@@ -81,8 +84,8 @@ export async function exportProjectsCli(opts: ExportArgs): Promise<void> {
     codeOpts: { lang: opts.codeLang || "ts" },
     stylesOpts: { scheme: opts.styleScheme || "css-modules" },
     imageOpts: { scheme: opts.imagesScheme || "files" },
-    i18nOpts: opts.i18nKeyScheme
-      ? { keyScheme: opts.i18nKeyScheme, tagPrefix: opts.i18nTagPrefix }
+    i18nOpts: opts.i18NKeyScheme
+      ? { keyScheme: opts.i18NKeyScheme, tagPrefix: opts.i18NTagPrefix }
       : undefined,
   });
 
