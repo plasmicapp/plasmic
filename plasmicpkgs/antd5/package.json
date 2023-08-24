@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/antd5",
-  "version": "0.0.108",
+  "version": "0.0.109",
   "description": "Plasmic registration calls for antd components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -55,7 +55,7 @@
     "antd": "^5.7.3"
   },
   "devDependencies": {
-    "@plasmicapp/data-sources": "0.1.104",
+    "@plasmicapp/data-sources": "0.1.105",
     "@plasmicapp/host": "1.0.159",
     "@plasmicapp/query": "0.1.67",
     "@types/node": "^14.0.26",
