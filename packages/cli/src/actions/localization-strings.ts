@@ -22,6 +22,25 @@ export interface LocalizationStringsArgs extends CommonArgs {
   excludeDeps: boolean | undefined;
 }
 
+export function getLocalizationYargs(key: "key-scheme" | "tag-prefix") {
+  if (key === "key-scheme") {
+    return {
+      describe:
+        "What value to use as message keys; `content` uses the message content itself, `hash` uses a hash of the content, and `path` uses a a hierarchical string containing the project id, component name, element name, and related variants, and does not encode the text content in the key.  Defaults to whatever is specified in plasmic.json, or `content`",
+      type: "string" as const,
+      choices: ["content", "hash", "path"],
+    };
+  } else if (key === "tag-prefix") {
+    return {
+      describe:
+        "By default, rich text with markup tags look like '<0>hello</0>'. If your localization framework requires num-numeric tags, then specify a prefix; for example a prefix of 'n' turns it into '<n0>hello</n0>'.",
+      type: "string" as const,
+    };
+  } else {
+    throw new Error(`Unexpected localization option ${key}`);
+  }
+}
+
 export async function localizationStrings(
   opts: LocalizationStringsArgs
 ): Promise<void> {

@@ -18,23 +18,12 @@ export const DEFAULT_HOST =
 export const AUTH_FILE_NAME = ".plasmic.auth";
 export const CONFIG_FILE_NAME = "plasmic.json";
 export const LOCK_FILE_NAME = "plasmic.lock";
-export const LOADER_CONFIG_FILE_NAME = "plasmic-loader.json";
 export const CONFIG_SCHEMA_FILE_NAME = "plasmic.schema.json";
 
 // Default environment variable names
 export const ENV_AUTH_HOST = "PLASMIC_AUTH_HOST";
 export const ENV_AUTH_USER = "PLASMIC_AUTH_USER";
 export const ENV_AUTH_TOKEN = "PLASMIC_AUTH_TOKEN";
-
-export interface PlasmicLoaderConfig {
-  projects: ProjectIdAndToken[];
-  aboutThisFile: string;
-  dir: string;
-  plasmicDir: string;
-  pageDir: string;
-  initArgs: Record<string, string>;
-  substitutions?: Record<string, any>;
-}
 
 export interface PlasmicConfig {
   /** Target platform to generate code for */

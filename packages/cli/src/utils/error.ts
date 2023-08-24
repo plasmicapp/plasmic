@@ -16,10 +16,10 @@ export class HandledError extends Error {}
  * @returns
  */
 export const handleError = <T>(p: Promise<T>) => {
-  return p.catch((e) => {
+  return p.catch((e: Error) => {
     if (e.message) {
       logger.error(
-        chalk.bold(chalk.redBright("\nPlasmic error: ")) + e.message
+        chalk.bold(chalk.redBright("\nPlasmic error: ")) + e.message + e.stack
       );
     }
     // Check if we satisfy the engine policy first

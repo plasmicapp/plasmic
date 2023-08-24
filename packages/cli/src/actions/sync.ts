@@ -22,9 +22,7 @@ import {
 } from "../utils/code-utils";
 import {
   CONFIG_FILE_NAME,
-  LOADER_CONFIG_FILE_NAME,
   PlasmicContext,
-  PlasmicLoaderConfig,
   createProjectConfig,
   getOrAddProjectConfig,
   getOrAddProjectLock,
@@ -73,7 +71,6 @@ export interface SyncArgs extends CommonArgs {
   quiet?: boolean;
   metadata?: string;
   allFiles?: boolean;
-  loaderConfig?: string;
   skipFormatting?: boolean;
   skipBuffering?: boolean;
 }
@@ -159,30 +156,6 @@ async function ensureRequiredPackages(
   }
 }
 
-function getLoaderConfigPath(opts: SyncArgs) {
-  return opts.loaderConfig || LOADER_CONFIG_FILE_NAME;
-}
-
-function maybeReadLoaderConfig(opts: SyncArgs): Partial<PlasmicLoaderConfig> {
-  const path = getLoaderConfigPath(opts);
-  if (!existsBuffered(path)) {
-    return {};
-  }
-  return JSON.parse(readFileText(path!));
-}
-
-function writeLoaderConfig(
-  opts: SyncArgs,
-  config: Partial<PlasmicLoaderConfig>
-) {
-  const loaderConfigPath = getLoaderConfigPath(opts);
-
-  writeFileText(
-    loaderConfigPath,
-    formatAsLocal(JSON.stringify(config), loaderConfigPath, opts.baseDir)
-  );
-}
-
 /**
  * Sync will always try to sync down a set of components that are version-consistent among specified projects.
  * (we only allow 1 version per projectId).
@@ -214,12 +187,8 @@ export async function sync(
   fixFileExtension(context);
   assertAllPathsInRootDir(context);
 
-  const loaderConfig: Partial<PlasmicLoaderConfig> = process.env.PLASMIC_LOADER
-    ? maybeReadLoaderConfig(opts)
-    : {};
-
   const projectIdToToken = new Map(
-    [...context.config.projects, ...(loaderConfig?.projects ?? [])]
+    [...context.config.projects]
       .filter((p) => p.projectApiToken)
       .map((p) => tuple(p.projectId, p.projectApiToken))
   );
@@ -265,9 +234,7 @@ export async function sync(
       context = await getContext(opts);
     } catch (e) {
       if ((e as any).message.includes("Unable to authenticate Plasmic")) {
-        const configFileName = process.env.PLASMIC_LOADER
-          ? LOADER_CONFIG_FILE_NAME
-          : CONFIG_FILE_NAME;
+        const configFileName = CONFIG_FILE_NAME;
         throw new HandledError(
           `Unable to authenticate Plasmic. Please run 'plasmic auth' or check the projectApiTokens in your ${configFileName}, and try again.`
         );
@@ -375,26 +342,6 @@ export async function sync(
 
     // Now we know config.components are all correct, so we can go ahead and fix up all the import statements
     await fixAllImportStatements(context, opts.baseDir, summary);
-
-    if (process.env.PLASMIC_LOADER) {
-      const rootProjectIds = new Set(projectSyncParams.map((p) => p.projectId));
-      const freshIdsAndTokens = projectIdsAndTokens
-        .filter((p) => rootProjectIds.has(p.projectId))
-        .map((p) => L.pick(p, "projectId", "projectApiToken"));
-
-      const config: Partial<PlasmicLoaderConfig> = {
-        ...loaderConfig,
-        projects: L.sortBy(
-          L.uniqBy(
-            [...freshIdsAndTokens, ...(loaderConfig?.projects ?? [])],
-            (p) => p.projectId
-          ),
-          (p) => p.projectId
-        ),
-      };
-
-      writeLoaderConfig(opts, config);
-    }
 
     const codegenVersion = await context.api.latestCodegenVersion();
     context.lock.projects.forEach((p) => {

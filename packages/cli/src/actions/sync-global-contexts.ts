@@ -15,6 +15,7 @@ import {
 } from "../utils/file-utils";
 
 const COMPONENT_NAME = "PlasmicGlobalContextsProvider";
+export const DEFAULT_GLOBAL_CONTEXTS_NAME = COMPONENT_NAME;
 
 export async function syncGlobalContexts(
   context: PlasmicContext,
