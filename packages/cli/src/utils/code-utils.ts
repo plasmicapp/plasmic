@@ -52,7 +52,7 @@ export const formatAsLocal = (
   // a better solution, like maybe letting user specify a prettier config
   // file in plasmic.json
   // const opts = resolveConfig.sync(baseDir) || defaultOpts;
-  const opts = { ...defaultOpts };
+  const opts: Options = { ...defaultOpts, pluginSearchDirs: false };
   opts.filepath = filePath;
 
   // Running Prettier multiple times may actually yield different results!
