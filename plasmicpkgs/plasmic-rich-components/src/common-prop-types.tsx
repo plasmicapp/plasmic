@@ -1,4 +1,54 @@
 import { PropType } from "@plasmicapp/host/registerComponent";
+import {
+  BaseColumnConfig,
+  FieldfulProps,
+  buildFieldsPropType,
+  getFieldSubprops,
+} from "./field-mappings";
+import { capitalize } from "./common";
+import { maybe } from "./utils";
+
+export function roleProp<P extends FieldfulProps<any>>({
+  role,
+  singular = false,
+  advanced = false,
+  displayName,
+}: {
+  role: string;
+  singular?: boolean;
+  advanced?: boolean;
+  displayName?: string;
+}): PropType<P> {
+  return singular
+    ? {
+        type: "object",
+        displayName: displayName || `${capitalize(role)} field`,
+        advanced,
+        hidden: (ps) => !ps.data,
+        nameFunc: (item) =>
+          maybe(item, (i) =>
+            i.isHidden ? "Hidden" : i.fieldId || "Custom value"
+          ),
+        fields: getFieldSubprops({
+          canChangeField: true,
+          noTitle: true,
+        }),
+        defaultValueHint: (_props, contextData) =>
+          (contextData?.minimalFullLengthFields ?? []).find(
+            (f) => f.role === role
+          ),
+      }
+    : buildFieldsPropType<BaseColumnConfig, P>({
+        displayName: displayName || `${capitalize(role)} fields`,
+        advanced,
+        noTitle: true,
+        canChangeField: true,
+        minimalValue: (_props, contextData) =>
+          (contextData?.minimalFullLengthFields ?? []).filter(
+            (f) => f.role === role
+          ),
+      });
+}
 
 export function dataProp<T>(): PropType<T> {
   return {
