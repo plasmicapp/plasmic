@@ -88,9 +88,11 @@ export function AntdConfigProvider(
   props: Omit<ThemeOpts, "fontFamily" | "fontSize" | "lineWidth"> & {
     children?: React.ReactNode;
     themeStyles: Record<string, string>;
+    loadingText?: string;
+    removeLoading?: boolean;
   }
 ) {
-  const { children, themeStyles, ...rest } = props;
+  const { children, themeStyles, loadingText, removeLoading, ...rest } = props;
   return (
     <ConfigProvider
       locale={defaultLocale}
@@ -107,7 +109,12 @@ export function AntdConfigProvider(
       })}
     >
       <ForkedApp>
-        <InnerConfigProvider>{children}</InnerConfigProvider>
+        <InnerConfigProvider
+          loadingText={loadingText}
+          removeLoading={removeLoading}
+        >
+          {children}
+        </InnerConfigProvider>
       </ForkedApp>
     </ConfigProvider>
   );
@@ -123,8 +130,12 @@ function normTokenValue(val: any) {
   }
 }
 
-function InnerConfigProvider(props: { children?: React.ReactNode }) {
-  const { children } = props;
+function InnerConfigProvider(props: {
+  children?: React.ReactNode;
+  loadingText?: string;
+  removeLoading?: boolean;
+}) {
+  const { children, loadingText, removeLoading } = props;
   const { token } = theme.useToken();
   const makeVarName = (name: string) => `--antd-${name}`;
   const cssStyles = React.useMemo(
@@ -174,7 +185,7 @@ function InnerConfigProvider(props: { children?: React.ReactNode }) {
       ) : (
         children
       )}
-      <GlobalLoadingIndicator />
+      {!removeLoading && <GlobalLoadingIndicator loadingText={loadingText} />}
     </>
   );
 }
@@ -189,7 +200,8 @@ function warnOutdatedDeps() {
   }
 }
 
-function GlobalLoadingIndicator() {
+function GlobalLoadingIndicator(props: { loadingText?: string }) {
+  const { loadingText } = props;
   const app = useAppContext();
   React.useEffect(() => {
     if (addLoadingStateListener) {
@@ -197,7 +209,7 @@ function GlobalLoadingIndicator() {
         (isLoading) => {
           if (isLoading) {
             app.message.open({
-              content: "Loading...",
+              content: loadingText ?? "Loading...",
               duration: 0,
               key: `plasmic-antd5-global-loading-indicator`,
             });
@@ -205,7 +217,7 @@ function GlobalLoadingIndicator() {
             app.message.destroy(`plasmic-antd5-global-loading-indicator`);
           }
         },
-        // Diabled immediat because it's creating an infinite rendering
+        // Disabled immediat because it's creating an infinite rendering
         // https://app.shortcut.com/plasmic/story/36991
         { immediate: false }
       );
@@ -556,6 +568,14 @@ export const registerConfigProvider = makeRegisterGlobalContext(
       sizeStep: {
         type: "number",
         defaultValue: 4,
+      },
+      loadingText: {
+        type: "string",
+        defaultValueHint: "Loading...",
+      },
+      removeLoading: {
+        type: "boolean",
+        defaultValueHint: false,
       },
       wireframe: {
         type: "boolean",
