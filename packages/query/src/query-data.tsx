@@ -93,7 +93,7 @@ export function useMutablePlasmicQueryData<T, E>(
   key: Key,
   fetcher: Fetcher<T>,
   options?: SWRConfiguration<T, E>
-): SWRResponse<T, E> & { isLoading?: boolean } {
+): SWRResponse<T, E> & { isLoading?: boolean; isLagging?: boolean } {
   const prepassCtx = React.useContext(PrepassContext);
 
   const opts = {
@@ -122,17 +122,32 @@ export function useMutablePlasmicQueryData<T, E>(
     [fetcher]
   );
 
+  // Based on https://swr.vercel.app/docs/middleware#keep-previous-result
+  const laggyDataRef = React.useRef<any>();
+
   const { isValidating, mutate, data, error } = useSWR(
     key,
     fetcherWrapper,
     opts
   );
+
+  React.useEffect(() => {
+    if (data !== undefined) {
+      laggyDataRef.current = data;
+    }
+  }, [data]);
+
   return React.useMemo(
     () => ({
       isValidating,
       mutate,
       isLoading: (data === undefined && error === undefined) || isLoading,
-      ...(data !== undefined ? { data } : {}),
+      ...(data !== undefined
+        ? { data }
+        : error === undefined && laggyDataRef.current
+        ? // Show previous data if available
+          { data: laggyDataRef.current, isLagging: true }
+        : {}),
       ...(error !== undefined ? { error } : {}),
     }),
     [isValidating, mutate, data, error, isLoading]
