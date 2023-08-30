@@ -13,8 +13,7 @@ import {
   DEFAULT_RELATIVE_DATETIME_SETTINGS,
   DATETIME_TYPES,
 } from "./field-mappings";
-import { isOneOf, maybe } from "./utils";
-import { DateTime } from "luxon";
+import { isOneOf, maybe, parseDate } from "./utils";
 
 export function maybeRenderValue(
   record: any,
@@ -51,6 +50,18 @@ function getFieldValue(record: any, cconfig: BaseColumnConfig) {
   }
 
   return value;
+}
+
+export function getFieldAggregateValue(
+  record: any,
+  cconfigs: BaseColumnConfig[] | undefined,
+  separator = ", "
+) {
+  if (!cconfigs?.length) return undefined;
+
+  return cconfigs?.length
+    ? cconfigs.map((item) => getFieldValue(record, item)).join(separator)
+    : undefined;
 }
 
 export function renderValue(record: any, cconfig: BaseColumnConfig) {
@@ -198,13 +209,6 @@ function renderBoolean(value: boolean, cconfig: BooleanSettings) {
   }
 }
 
-const dateTimeParsers = [
-  DateTime.fromISO,
-  DateTime.fromRFC2822,
-  DateTime.fromHTTP,
-  DateTime.fromSQL,
-];
-
 const CANNOT_COERCE = Symbol("plasmic-cannot-coerce");
 function coerceValue(value: unknown, dataType: BaseColumnConfig["dataType"]) {
   if (value == null) {
@@ -241,11 +245,9 @@ function coerceValue(value: unknown, dataType: BaseColumnConfig["dataType"]) {
         // Luxon is maintained and decent, though it doesn't accept a whole list of formats.
         //
         // Right now we also don't know anything about performance.
-        for (const parser of dateTimeParsers) {
-          const parsed = parser(value);
-          if (parsed.isValid) {
-            return parsed.toJSDate();
-          }
+        const parsed = parseDate(value);
+        if (parsed) {
+          return parsed.toJSDate();
         }
       }
     } else if (dataType === "boolean") {

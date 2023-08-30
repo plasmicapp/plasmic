@@ -8,6 +8,9 @@ import {
 } from "@plasmicapp/host/registerGlobalContext";
 import { default as registerToken } from "@plasmicapp/host/registerToken";
 import React from "react";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import { DateTime } from "luxon";
 
 export type Registerable = {
   registerComponent: typeof registerComponent;
@@ -112,10 +115,85 @@ export function maybe<T, U>(
   return f(x);
 }
 
+/**
+ *
+ * @param str iso string
+ * @param extendedOnly boolean for extended mode (i.e. time)
+ * @returns Returns true for strings in ISO 8601 format
+ */
+export function isValidIsoDate(str: string | undefined, extendedOnly = false) {
+  if (!str) return false;
+  if (typeof str !== "string") return false;
+  if (str.includes(" ")) return false; // spaces not supported
+  if (str.length === 10) {
+    if (extendedOnly) return false;
+    dayjs.extend(customParseFormat);
+    return dayjs(str, "YYYY-MM-DD", true).isValid();
+  }
+  if (!dayjs(str).isValid()) return false; // should be a valid dayjs date
+  if (isNaN(new Date(str).getTime())) return false; // should be a valid js date
+  return true;
+}
+
+export function parseDate(value: unknown) {
+  const dateTimeParsers = [
+    DateTime.fromISO,
+    DateTime.fromRFC2822,
+    DateTime.fromHTTP,
+    DateTime.fromSQL,
+  ];
+
+  if (!value) return undefined;
+  if (typeof value !== "string") return undefined;
+
+  for (const parser of dateTimeParsers) {
+    const parsed = parser(value);
+    if (parsed.isValid) {
+      return parsed;
+    }
+  }
+  return undefined;
+}
+
+export function isLikeDate(value: unknown) {
+  const parsed = parseDate(value);
+  return parsed ? true : false;
+}
+
 export function isLikeImage(value: unknown) {
   return typeof value === "string"
     ? value.match(/\.(png|jpg|jpeg|gif|svg|webp|avif|ico|bmp|tiff)$/i)
     : false;
+}
+
+export function isLikeColor(value: unknown) {
+  if (typeof value !== "string") return false;
+
+  const hex =
+    /^#?([0-9a-fA-F]{3}([0-9a-fA-F]{3})?|[0-9a-fA-F]{4}([0-9a-fA-F]{4})?)$/;
+  const rgba =
+    /^rgba?\((\s*\d+\s*,\s*\d+\s*,\s*\d+\s*(,\s*(1|0?(\.\d+)?))?\s*)\)$/;
+  const cssNamed =
+    /^(aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|rebeccapurple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen)$/;
+  const hsla =
+    /^hsla?\((\s*\d+(\.\d+)?\s*,\s*\d+(\.\d+)?%\s*,\s*\d+(\.\d+)?%\s*(,\s*(1|0?\.\d+))?\s*)\)$/;
+  const cmyk =
+    /^cmyka?\((\s*\d+(\.\d+)?%\s*,\s*\d+(\.\d+)?%\s*,\s*\d+(\.\d+)?%\s*,\s*\d+(\.\d+)?%\s*(,\s*(1|0?\.\d+))?\s*)\)$/;
+  const hsv =
+    /^hsva?\((\s*\d+(\.\d+)?\s*,\s*\d+(\.\d+)?%\s*,\s*\d+(\.\d+)?%\s*(,\s*(1|0?\.\d+))?\s*)\)$/;
+
+  if (
+    value.match(hex) ||
+    value.match(rgba) ||
+    value.match(cssNamed) ||
+    value.match(hsla) ||
+    value.match(cmyk) ||
+    value.match(hsv)
+  ) {
+    return true;
+  }
+
+  return false;
 }
 
 // Some heuristics to avoid selecting a row when

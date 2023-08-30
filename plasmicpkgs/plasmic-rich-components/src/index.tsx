@@ -3,6 +3,7 @@ import { registerRichLayout } from "./rich-layout";
 import { registerRichTable } from "./rich-table";
 import { Registerable } from "./utils";
 import { registerRichList } from "./rich-list";
+import { registerRichCalendar } from "./rich-calendar";
 
 export { RichLayout } from "./rich-layout";
 export { RichList } from "./rich-list";
@@ -14,6 +15,7 @@ export function registerAll(loader?: Registerable) {
   registerRichList(loader);
   registerRichTable(loader);
   registerRichDetails(loader);
+  registerRichCalendar(loader);
 }
 export { useSortedFilteredData } from "./field-react-utils";
 export { isLikeImage } from "./utils";
