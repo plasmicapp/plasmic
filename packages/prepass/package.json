@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/prepass",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.esm.js",
@@ -20,7 +20,7 @@
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
   },
   "dependencies": {
-    "@plasmicapp/query": "0.1.67",
+    "@plasmicapp/query": "0.1.68",
     "@plasmicapp/react-ssr-prepass": "2.0.3"
   },
   "peerDependencies": {
