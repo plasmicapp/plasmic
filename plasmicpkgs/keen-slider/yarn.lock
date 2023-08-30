@@ -1281,19 +1281,19 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@plasmicapp/host@^1.0.159":
-  version "1.0.159"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.159.tgz#25a511ac61fb52e71b42ab291b82d077fa6bc943"
-  integrity sha512-bnh+P7WQgDMX7v7+FNQe7wxdAdyZcEdP676nLq7uFnZ1+6jciC+rOjM3trrQfsscqcoF53WRs9Yh/QkyID/EFw==
+"@plasmicapp/host@1.0.161":
+  version "1.0.161"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.161.tgz#0b634665d6cc90e9f1b7d48319073519424bb977"
+  integrity sha512-Jez0kV/S3SVJMlNaSXMd9NKKOYkr1ERCjFbl+VkD3gs9lrXf5cKPWnyxhOtHqvasCca7I6RBTwPSGadTB6CuGA==
   dependencies:
-    "@plasmicapp/query" "0.1.67"
+    "@plasmicapp/query" "0.1.68"
     csstype "^3.1.2"
     window-or-global "^1.0.1"
 
-"@plasmicapp/query@0.1.67":
-  version "0.1.67"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.67.tgz#64515dc7782093fae5c3c741ad016fdcc9281200"
-  integrity sha512-BS+NrTtknKeaPhOD14K0AsUe8Mvq6qmnL/B9TE80Ac0dq1mwD7SIyptV7JGpYmiFzsO1v1XZ/RkR3jtpsKrpoQ==
+"@plasmicapp/query@0.1.68":
+  version "0.1.68"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.68.tgz#b5b89b592409f62c9b6a94b770ac81a72482a63c"
+  integrity sha512-iyYMayksA5AuHyPTXGI+371rT4m4KzOx3kq+nlb8O+TZQQAvSfIsj9rht5N2KV7KQl+H2jsQ4398oukusQ2TtQ==
   dependencies:
     swr "^1.0.0"
 
@@ -1589,6 +1589,11 @@
     "@types/prop-types" "*"
     "@types/scheduler" "*"
     csstype "^3.0.2"
+
+"@types/resize-observer-browser@^0.1.7":
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/@types/resize-observer-browser/-/resize-observer-browser-0.1.7.tgz#294aaadf24ac6580b8fbd1fe3ab7b59fe85f9ef3"
+  integrity sha512-G9eN0Sn0ii9PWQ3Vl72jDPgeJwRWhv2Qk/nQkJuWmRmOB4HX3/BhD5SE1dZs/hzPZL/WKnvF0RHdTSG54QJFyg==
 
 "@types/resolve@1.17.1":
   version "1.17.1"
