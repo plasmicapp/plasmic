@@ -36,4 +36,10 @@ if (root.__Sub == null) {
     setRepeatedElementFn,
     ...hostModule,
   };
+} else {
+  console.warn(
+    `Encountered likely duplicate host version: ${root.__Sub.hostVersion} vs ${hostVersion}`
+  );
+  root.__Sub.duplicateHostVersions = root.__Sub.duplicateHostVersions ?? [];
+  root.__Sub.duplicateHostVersions.push(hostVersion);
 }
