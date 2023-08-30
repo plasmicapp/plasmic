@@ -1,1 +1,0 @@
-Plasmic components and registration calls for Pigeon Maps
