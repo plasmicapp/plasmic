@@ -289,7 +289,11 @@ function create$StateProxy(
         const nextNode = currNode.makeTransition(property);
         const nextSpec = nextNode?.getSpec();
 
-        if (property === "registerInitFunc" && currPath.length === 0) {
+        if (
+          (property === "registerInitFunc" ||
+            property === "eagerInitializeStates") &&
+          currPath.length === 0
+        ) {
           return Reflect.set(target, property, value, receiver);
         }
         if (!nextNode && currNode.hasArrayTransition()) {
@@ -482,10 +486,43 @@ export function useDollarState(
             );
           }
         },
+        ...(opts?.inCanvas
+          ? {
+              eagerInitializeStates: (specs: $StateSpec<any>[]) => {
+                // we need to eager initialize all states in canvas to populate the data picker
+                $$state.specTreeLeaves.forEach((node) => {
+                  const spec = node.getSpec();
+                  if (spec.isRepeated) {
+                    return;
+                  }
+                  const stateCell = getStateCellFrom$StateRoot(
+                    $state,
+                    spec.pathObj as string[]
+                  );
+                  const newSpec = specs.find((sp) => sp.path === spec.path);
+                  if (
+                    !newSpec ||
+                    (stateCell.initFuncHash === (newSpec?.initFuncHash ?? "") &&
+                      stateCell.initialValue !== UNINITIALIZED)
+                  ) {
+                    return;
+                  }
+                  stateCell.initFunc = newSpec.initFunc;
+                  stateCell.initFuncHash = newSpec.initFuncHash ?? "";
+                  const init = spec.valueProp
+                    ? $$state.env.$props[spec.valueProp]
+                    : spec.initFunc
+                    ? initializeStateValue($$state, stateCell, $state)
+                    : spec.initVal;
+                  set($state, spec.pathObj, init);
+                });
+              },
+            }
+          : {}),
       }
     );
     return $state;
-  }, []);
+  }, [opts?.inCanvas]);
   const ref = React.useRef<undefined | $State>(undefined);
   if (!ref.current) {
     ref.current = create$State();
@@ -507,33 +544,6 @@ export function useDollarState(
         }
       });
     }
-    // we need to eager initialize all states in canvas to populate the data picker
-    $$state.specTreeLeaves.forEach((node) => {
-      const spec = node.getSpec();
-      if (spec.isRepeated) {
-        return;
-      }
-      const stateCell = getStateCellFrom$StateRoot(
-        $state,
-        spec.pathObj as string[]
-      );
-      const newSpec = specs.find((sp) => sp.path === spec.path);
-      if (
-        !newSpec ||
-        (stateCell.initFuncHash === (newSpec?.initFuncHash ?? "") &&
-          stateCell.initialValue !== UNINITIALIZED)
-      ) {
-        return;
-      }
-      stateCell.initFunc = newSpec.initFunc;
-      stateCell.initFuncHash = newSpec.initFuncHash ?? "";
-      const init = spec.valueProp
-        ? $$state.env.$props[spec.valueProp]
-        : spec.initFunc
-        ? initializeStateValue($$state, stateCell, $state)
-        : spec.initVal;
-      set($state, spec.pathObj, init);
-    });
   }
 
   // For each spec with an initFunc, evaluate it and see if
