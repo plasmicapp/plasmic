@@ -31,7 +31,7 @@ const useEventbrite = ({
     const [isLoaded, setLoaded] = React.useState(false);
     const onLoad = React.useCallback(() => setLoaded(true), [setLoaded]);
     const onErr = React.useCallback(
-        (e) => {
+        (e:any) => {
             console.error(`Failed to load Eventbrite script from ${SCRIPT_URL}`);
             console.error(e);
 

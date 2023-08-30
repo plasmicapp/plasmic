@@ -1,4 +1,4 @@
-import { ComponentMeta } from "@plasmicapp/host";
+import { CodeComponentMeta } from "@plasmicapp/host";
 
 import React from "react";
 import useEventbrite from "./hooks/useEventBrite";
@@ -20,7 +20,7 @@ interface EventbriteProps {
   text?: string;
 }
 
-export const EventbriteMeta: ComponentMeta<EventbriteProps> = {
+export const EventbriteMeta: CodeComponentMeta<EventbriteProps> = {
   name: "Eventbrite",
   displayName: "EventBrite",
   importName: "Eventbrite",
