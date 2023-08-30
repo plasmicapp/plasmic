@@ -19,25 +19,25 @@ interface MailchimpSignupFormProps {
 }
 
 export const MailchimpSignupFormMeta: ComponentMeta<MailchimpSignupFormProps> =
-  {
-    name: "MailchimpSignupForm",
-    displayName: "Mailchimp Signup Form",
-    importName: "MailchimpSignupForm",
-    importPath: modulePath,
-    providesData: true,
-    description:
-      "Shows a sign up form to users for subscribe to your newsletter",
-    props: {
-      url: {
-        type: "string",
-        displayName: "URL",
-        description: `Learn how to get your form url ("https://mailchimp.com/help/host-your-own-signup-forms/")`,
-        defaultValue: "http://eepurl.com/ic43yL",
-        helpText:
-          "You can learn how.(https://mailchimp.com/help/share-your-signup-form/)",
-      },
+{
+  name: "MailchimpSignupForm",
+  displayName: "Mailchimp Signup Form",
+  importName: "MailchimpSignupForm",
+  importPath: modulePath,
+  providesData: true,
+  description:
+    "Shows a sign up form to users for subscribe to your newsletter",
+  props: {
+    url: {
+      type: "string",
+      displayName: "URL",
+      description: `Learn how to get your form url ("https://mailchimp.com/help/host-your-own-signup-forms/")`,
+      defaultValue: "http://eepurl.com/ic43yL",
+      helpText:'You can learn how.(https://mailchimp.com/help/share-your-signup-form/)'
+      
     },
-  };
+  },
+};
 
 export function MailchimpSignupForm({
   className,
