@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-soundcloud",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Plasmic Soundcloud components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
