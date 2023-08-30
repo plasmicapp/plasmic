@@ -68,9 +68,9 @@ export const cmsCredentialsProviderMeta: GlobalContextMeta<CmsCredentialsProvide
     name: `${componentPrefix}-credentials-provider`,
     displayName: "CMS Credentials Provider",
     description: `
-Find your CMS in the [dashboard](https://studio.plasmic.app), and go to the Settings tab for the ID and token.
+Find (or create) your CMS in the [dashboard](https://studio.plasmic.app), and go to its Settings view for the ID and token.
 
-See also the [getting started video](https://www.youtube.com/watch?v=-Rrn92VtRBc).`,
+[See tutorial video](https://docs.plasmic.app/learn/plasmic-cms/).`,
     importName: "CmsCredentialsProvider",
     importPath: modulePath,
     providesData: true,
@@ -186,7 +186,7 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
   name: `${componentPrefix}-query-repeater`,
   displayName: "CMS Data Fetcher",
   description:
-    "Fetches CMS data and repeats content of children once for every row fetched.",
+    "Fetches CMS data. Repeats `children` slot content for each row fetched. [See tutorial video](https://docs.plasmic.app/learn/plasmic-cms/).",
   importName: "CmsQueryRepeater",
   importPath: modulePath,
   providesData: true,

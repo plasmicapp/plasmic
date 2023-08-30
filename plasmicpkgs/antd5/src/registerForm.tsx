@@ -568,6 +568,8 @@ export function registerForm(loader?: Registerable) {
   registerComponentHelper(loader, FormWrapper, {
     name: formComponentName,
     displayName: "Form",
+    description:
+      "[Learn how to use forms](https://docs.plasmic.app/learn/forms/)",
     defaultStyles: {
       layout: "vbox",
       alignItems: "flex-start",

@@ -89,9 +89,11 @@ function OutlineMessage() {
 
 export const sliderMeta: ComponentMeta<Settings> = {
   name: "hostless-slider",
-  displayName: "Slider",
+  displayName: "Slider Carousel",
   importName: "Slider",
   importPath: "react-slick",
+  description:
+    "[See tutorial video](https://www.youtube.com/watch?v=GMgXLbNHX8c)",
   actions: [
     {
       type: "custom-action",

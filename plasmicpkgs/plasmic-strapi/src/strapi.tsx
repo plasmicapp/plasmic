@@ -38,7 +38,7 @@ export const strapiCredentialsProviderMeta: GlobalContextMeta<StrapiCredentialsP
   {
     name: "StrapiCredentialsProvider",
     displayName: "Strapi Credentials Provider",
-    description: `[Watch how to add Strapi data](https://www.youtube.com/watch?v=1SLoVY3hkQ4).
+    description: `[See tutorial video](https://www.youtube.com/watch?v=1SLoVY3hkQ4).
 
 API token is needed only if data is not publicly readable.
 
@@ -95,7 +95,7 @@ export const strapiCollectionMeta: ComponentMeta<StrapiCollectionProps> = {
   importPath: modulePath,
   providesData: true,
   description:
-    "Fetches Strapi data of a given collection and repeats content of children once for every row fetched.",
+    "Fetches Strapi data of a given collection, and repeats `children` slot content for each row fetched. [See tutorial video](https://www.youtube.com/watch?v=1SLoVY3hkQ4).",
   defaultStyles: {
     display: "grid",
     gridTemplateColumns: "1fr 1fr 1fr 1fr",
