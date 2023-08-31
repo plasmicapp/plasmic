@@ -1,4 +1,4 @@
-import { ComponentMeta } from "@plasmicapp/host";
+import { CodeComponentMeta } from "@plasmicapp/host";
 
 import React from "react";
 
@@ -18,7 +18,7 @@ interface GoogleMapsProps {
   coordinates?: string;
 }
 
-export const GoogleMapsMeta: ComponentMeta<GoogleMapsProps> = {
+export const GoogleMapsMeta: CodeComponentMeta<GoogleMapsProps> = {
   name: "GoogleMaps",
   displayName: "Google Maps ",
   importName: "GoogleMaps",

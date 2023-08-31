@@ -1,1 +1,1 @@
-Plasmic components and registration for Google Maps
+Plasmic components and registration calls for Google maps
