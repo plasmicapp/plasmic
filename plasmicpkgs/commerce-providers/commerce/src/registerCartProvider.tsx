@@ -11,6 +11,8 @@ export const cartProviderMeta: ComponentMeta<React.PropsWithChildren<object>> =
   {
     name: "plasmic-commerce-cart-provider",
     displayName: "Cart Provider",
+    description:
+      "Use this to create bespoke cart UI. Inside Cart Provider, use dynamic values to access cart data.",
     props: {
       children: "slot",
     },

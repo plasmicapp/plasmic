@@ -41,6 +41,8 @@ interface ProductCollectionProps {
 export const productCollectionMeta: ComponentMeta<ProductCollectionProps> = {
   name: "plasmic-commerce-product-collection",
   displayName: "Product Collection",
+  description:
+    "Show a product category. [See commerce tutorial video](https://www.youtube.com/watch?v=1OJ_gXmta2Q)",
   props: {
     children: {
       type: "slot",

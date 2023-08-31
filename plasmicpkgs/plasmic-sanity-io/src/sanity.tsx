@@ -15,7 +15,6 @@ import { filterParameters } from "./utils";
 
 export function ensure<T>(x: T | null | undefined): T {
   if (x === null || x === undefined) {
-    debugger;
     throw new Error(`Value must not be undefined or null`);
   } else {
     return x;
@@ -50,53 +49,54 @@ const CredentialsContext = React.createContext<
   SanityCredentialsProviderProps | undefined
 >(undefined);
 
-export const sanityCredentialsProviderMeta: GlobalContextMeta<SanityCredentialsProviderProps> = {
-  name: "SanityCredentialsProvider",
-  displayName: "Sanity Credentials Provider",
-  description: `Get your project ID, dataset, and token [here](https://www.sanity.io/manage).
+export const sanityCredentialsProviderMeta: GlobalContextMeta<SanityCredentialsProviderProps> =
+  {
+    name: "SanityCredentialsProvider",
+    displayName: "Sanity Credentials Provider",
+    description: `Get your project ID, dataset, and token [here](https://www.sanity.io/manage).
 
-Please also add 'https://host.plasmicdev.com' (or your app host origin) as an authorized host on the CORS origins section of your project.
+Add 'https://host.plasmicdev.com' (or your app host origin) as an authorized host in the CORS origins section of your Sanity project.
 
-[Watch how to add Sanity data](https://www.youtube.com/watch?v=dLeu7I4RsYg).`,
-  importName: "SanityCredentialsProvider",
-  importPath: modulePath,
-  props: {
-    projectId: {
-      type: "string",
-      displayName: "Project ID",
-      defaultValueHint: "b2gfz67v",
-      defaultValue: "b2gfz67v",
-      description: "The ID of the project to use.",
+[See tutorial video](https://www.youtube.com/watch?v=dLeu7I4RsYg).`,
+    importName: "SanityCredentialsProvider",
+    importPath: modulePath,
+    props: {
+      projectId: {
+        type: "string",
+        displayName: "Project ID",
+        defaultValueHint: "b2gfz67v",
+        defaultValue: "b2gfz67v",
+        description: "The ID of the project to use.",
+      },
+      dataset: {
+        type: "string",
+        displayName: "Dataset",
+        defaultValueHint: "production",
+        defaultValue: "production",
+        description: "The dataset to use.",
+      },
+      apiVersion: {
+        type: "string",
+        displayName: "API Version",
+        defaultValueHint: "v1",
+        description:
+          "The API version to use (if not set, 'v1' will be used) - see https://www.sanity.io/docs/js-client#specifying-api-version.",
+      },
+      token: {
+        type: "string",
+        displayName: "Token",
+        description:
+          "The token to use (or leave blank for unauthenticated usage) - you can create tokens in the API section of your project (i.e. https://www.sanity.io/manage/personal/project/PROJECT_ID/api#tokens).",
+      },
+      useCdn: {
+        type: "boolean",
+        displayName: "Use CDN?",
+        defaultValueHint: false,
+        description:
+          "Whether you want to use CDN ('false' if you want to ensure fresh data).",
+      },
     },
-    dataset: {
-      type: "string",
-      displayName: "Dataset",
-      defaultValueHint: "production",
-      defaultValue: "production",
-      description: "The dataset to use.",
-    },
-    apiVersion: {
-      type: "string",
-      displayName: "API Version",
-      defaultValueHint: "v1",
-      description:
-        "The API version to use (if not set, 'v1' will be used) - see https://www.sanity.io/docs/js-client#specifying-api-version.",
-    },
-    token: {
-      type: "string",
-      displayName: "Token",
-      description:
-        "The token to use (or leave blank for unauthenticated usage) - you can create tokens in the API section of your project (i.e. https://www.sanity.io/manage/personal/project/PROJECT_ID/api#tokens).",
-    },
-    useCdn: {
-      type: "boolean",
-      displayName: "Use CDN?",
-      defaultValueHint: false,
-      description:
-        "Whether you want to use CDN ('false' if you want to ensure fresh data).",
-    },
-  },
-};
+  };
 
 export function SanityCredentialsProvider({
   projectId,
@@ -139,8 +139,9 @@ export const sanityFetcherMeta: ComponentMeta<SanityFetcherProps> = {
   importName: "SanityFetcher",
   importPath: modulePath,
   providesData: true,
-  description:
-    "Fetches Sanity data and repeats content of children once for every row fetched. Query Cheat Sheet - GROQ <https://www.sanity.io/docs/query-cheat-sheet>",
+  description: `Fetches Sanity data of a given collection, and repeats \`children\` slot content for each row fetched.
+
+[See tutorial video](https://www.youtube.com/watch?v=1SLoVY3hkQ4) and [GROQ cheat sheet](https://www.sanity.io/docs/query-cheat-sheet).`,
   defaultStyles: {
     display: "grid",
     gridTemplateColumns: "1fr 1fr 1fr 1fr",

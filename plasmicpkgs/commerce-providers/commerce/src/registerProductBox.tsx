@@ -24,6 +24,8 @@ interface ProductBoxProps {
 export const productBoxMeta: ComponentMeta<ProductBoxProps> = {
   name: "plasmic-commerce-product-box",
   displayName: "Product Box",
+  description:
+    "Show a single product. [See commerce tutorial video](https://www.youtube.com/watch?v=1OJ_gXmta2Q)",
   props: {
     children: {
       type: "slot",

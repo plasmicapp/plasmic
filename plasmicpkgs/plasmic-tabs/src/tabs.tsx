@@ -79,6 +79,8 @@ export const TabsContainerMeta: ComponentMeta<TabsProviderProps> = {
   importName: 'TabsContainer',
   importPath: modulePath,
   providesData: true,
+  description:
+    'Create bespoke/advanced tab-like UIs. [See example project](https://docs.plasmic.app/learn/tabs-components/)',
   defaultStyles: {
     width: 'stretch',
     padding: '8px',

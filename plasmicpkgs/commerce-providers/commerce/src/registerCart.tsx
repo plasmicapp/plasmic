@@ -15,6 +15,8 @@ interface CartProps {
 export const cartMeta: ComponentMeta<CartProps> = {
   name: "plasmic-commerce-cart",
   displayName: "Cart",
+  description:
+    "Show the size or total of the cart. See Cart Provider component to access more cart data.",
   props: {
     field: {
       type: "choice",

@@ -46,6 +46,8 @@ export function registerModal(loader?: Registerable) {
   registerComponentHelper(loader, AntdModal, {
     name: "plasmic-antd5-modal",
     displayName: "Modal",
+    description:
+      "[See tutorial video](https://www.youtube.com/watch?v=TkjxNJIFun8)",
     props: {
       open: {
         type: "boolean",
