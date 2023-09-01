@@ -1,26 +1,42 @@
 import { Collapse } from "antd";
-import React, { ReactNode, useMemo } from "react";
+import React, { useMemo } from "react";
 import { Registerable, registerComponentHelper } from "./utils";
+import { uniqueId } from "lodash";
+import { PropType } from "@plasmicapp/loader-nextjs";
 
-export const collapseComponentName = "plasmic-antd5-collapse";
-export const collapseItemComponentName = "plasmic-antd5-collapse-item";
+export const singleCollapseComponentName = "plasmic-antd5-single-collapse";
+export const accordionComponentName = "plasmic-antd5-collapse";
+export const accordionItemComponentName = "plasmic-antd5-collapse-item";
 
-type CollapseItemType = NonNullable<
+type AccordionItemType = NonNullable<
   React.ComponentProps<typeof Collapse>["items"]
 >[number];
 
-export const AntdCollapseItem: React.FC<CollapseItemType> = ({ children }) => {
-  return <div>{children}</div>;
-};
+type SingleCollapseProps = Omit<
+  React.ComponentProps<typeof Collapse>,
+  "items" | "activeKey" | "defaultActiveKey" | "expandIcon" | "accordion"
+> &
+  AccordionItemType & {
+    open?: boolean;
+    defaultOpen?: boolean;
+    disabled?: boolean;
+    expandIcon: React.ReactElement;
+    rotateCustomExpandIcon: boolean;
+    children: React.ReactElement;
+  };
 
-export function AntdCollapse(
+export function AntdAccordionItem({ children }: AccordionItemType) {
+  return <div>{children}</div>;
+}
+
+export function AntdAccordion(
   props: Omit<
     React.ComponentProps<typeof Collapse>,
-    "items" | "activeKey" | "defaultActiveKeys" | "expandIcon"
+    "items" | "activeKey" | "defaultActiveKey" | "expandIcon" | "accordion"
   > & {
-    items: { props: { children: React.ReactElement<CollapseItemType>[] } };
-    defaultActiveKeys?: { key: string | number }[];
-    activeKeys?: { key: string | number }[];
+    items: { props: { children: React.ReactElement<AccordionItemType>[] } };
+    defaultActiveKey?: string;
+    activeKey?: string;
     disabled?: boolean;
     expandIcon: React.ReactElement;
     rotateCustomExpandIcon: boolean;
@@ -28,8 +44,8 @@ export function AntdCollapse(
 ) {
   const {
     items: itemsRaw,
-    activeKeys,
-    defaultActiveKeys,
+    activeKey,
+    defaultActiveKey,
     expandIcon,
     collapsible,
     disabled,
@@ -37,17 +53,7 @@ export function AntdCollapse(
     ...rest
   } = props;
 
-  const activeKeyProp = useMemo(() => {
-    const res = activeKeys?.map((k) => k.key).filter((k) => k) || [];
-    return res.length ? res : undefined;
-  }, [activeKeys]);
-
-  const defaultActiveKeysProp = useMemo(() => {
-    const res = defaultActiveKeys?.map((k) => k.key).filter((k) => k) || [];
-    return res.length ? res : undefined;
-  }, [defaultActiveKeys]);
-
-  const items: CollapseItemType[] = useMemo(() => {
+  const items: AccordionItemType[] = useMemo(() => {
     if (!React.isValidElement(itemsRaw)) return [];
     return (
       Array.isArray(itemsRaw.props.children)
@@ -68,14 +74,15 @@ export function AntdCollapse(
           children: React.cloneElement(currentItem.props.children),
         };
       })
-      .filter((i) => i != null) as CollapseItemType[];
+      .filter((i) => i != null) as AccordionItemType[];
   }, [itemsRaw]);
 
   return (
     <Collapse
+      accordion
       items={items}
-      defaultActiveKey={defaultActiveKeysProp}
-      activeKey={activeKeyProp}
+      defaultActiveKey={defaultActiveKey}
+      activeKey={activeKey}
       collapsible={disabled ? "disabled" : collapsible}
       expandIcon={
         expandIcon?.key
@@ -97,105 +104,241 @@ export function AntdCollapse(
   );
 }
 
-export const collapseHelpers = {
+export function AntdSingleCollapse(props: SingleCollapseProps) {
+  const {
+    open,
+    defaultOpen,
+    expandIcon,
+    collapsible,
+    disabled,
+    rotateCustomExpandIcon,
+    label,
+    showArrow,
+    extra,
+    forceRender,
+    children,
+    headerClass,
+    ...rest
+  } = props;
+
+  const defaultItemKey = useMemo(() => uniqueId(), []);
+
+  const item = useMemo(
+    () => ({
+      key: defaultItemKey,
+      label,
+      showArrow,
+      extra: <>{extra}</>,
+      headerClass,
+      children,
+    }),
+    [label, showArrow, extra, children, defaultItemKey, headerClass]
+  );
+
+  return (
+    <Collapse
+      accordion={false}
+      items={[item]}
+      defaultActiveKey={defaultOpen ? item.key : undefined}
+      activeKey={open ? item.key : undefined}
+      collapsible={disabled ? "disabled" : collapsible}
+      expandIcon={
+        expandIcon?.key
+          ? ({ isActive }) => (
+              <div
+                style={
+                  isActive && rotateCustomExpandIcon
+                    ? { transform: "rotate(90deg)" }
+                    : undefined
+                }
+              >
+                {expandIcon}
+              </div>
+            )
+          : undefined
+      }
+      {...rest}
+    />
+  );
+}
+
+export const accordionHelpers = {
   states: {
-    activeKeys: {
-      onChangeArgsToValue: (activeKeys: string[]) =>
-        activeKeys.map((key) => ({ key })),
+    activeKey: {
+      onChangeArgsToValue: (activeKeys: string[]) => activeKeys[0],
     },
   },
 };
 
+export const singleCollapseHelpers = {
+  states: {
+    open: {
+      onChangeArgsToValue: (activeKeys: string) => activeKeys.length > 0,
+    },
+  },
+};
+
+const commonAccordionProps: Record<string, PropType<any>> = {
+  bordered: {
+    type: "boolean",
+    defaultValue: true,
+    description: `Display border around accordion `,
+  },
+  disabled: {
+    type: "boolean",
+    description: "Disable the toggle behaviour of panels",
+  },
+  expandIcon: {
+    type: "slot",
+    hidePlaceholder: true,
+  },
+  rotateCustomExpandIcon: {
+    type: "boolean",
+    description: "Enable rotation of custom expand icon when panel is expanded",
+    advanced: true,
+    hidden: (ps) => !ps.expandIcon?.key,
+  },
+  expandIconPosition: {
+    type: "choice",
+    defaultValueHint: "start",
+    description: `Set expand icon position`,
+    options: ["start", "end"],
+  },
+  ghost: {
+    type: "boolean",
+    description: `Make the accordion borderless and its background transparent`,
+  },
+  size: {
+    type: "choice",
+    defaultValueHint: "middle",
+    description: `Set the size of accordion`,
+    options: ["large", "middle", "small"],
+  },
+  onChange: {
+    type: "eventHandler",
+    argTypes: [{ name: "activeIds", type: "object" }],
+  },
+};
+
+const commonAccordionItemProps: Record<string, PropType<any>> = {
+  label: {
+    type: "slot",
+    displayName: "Header Content",
+    defaultValue: "Collapse Header",
+    hidePlaceholder: true,
+  },
+  extra: {
+    type: "slot",
+    hidePlaceholder: true,
+  },
+  showArrow: {
+    type: "boolean",
+    defaultValue: true,
+    description: `Whether to show animating arrow alongside header text`,
+    advanced: true,
+  },
+  headerClass: {
+    type: "class",
+    displayName: "Header",
+  },
+  children: {
+    type: "slot",
+    hidePlaceholder: true,
+    ...({ mergeWithParent: true } as any),
+    defaultValue: "Collapsible text...",
+  },
+};
+
+const commonProps: Record<string, PropType<any>> = {
+  collapsible: {
+    displayName: "Toggle Area",
+    type: "choice",
+    defaultValueHint: "header",
+    description: `Specify the element that can be clicked to toggle a panel`,
+    options: ["header", "icon"],
+    advanced: true,
+    hidden: (ps) => Boolean(ps.disabled),
+  },
+  destroyInactivePanel: {
+    type: "boolean",
+    description: `Destroy/Unmount panel if inactive`,
+    advanced: true,
+  },
+  forceRender: {
+    type: "boolean",
+    description: `Force rendering of content in the panel, instead of lazy rendering it.`,
+    advanced: true,
+  },
+};
+
 export function registerCollapse(loader?: Registerable) {
-  registerComponentHelper(loader, AntdCollapse, {
-    name: collapseComponentName,
+  registerComponentHelper(loader, AntdSingleCollapse, {
+    name: singleCollapseComponentName,
     displayName: "Collapse",
+    description: "Accordion, but with a single collapsible block.",
     defaultStyles: {
       width: "stretch",
     },
     props: {
-      accordion: {
-        type: "boolean",
-        description: `Allow only one panel to be expanded at a time`,
-      },
-      activeKeys: {
+      open: {
         editOnly: true,
-        displayName: "Active Panel IDs",
-        uncontrolledProp: "defaultActiveKeys",
-        type: "array",
-        description: `A list of panel IDs that are expanded by default.`,
+        displayName: "Open",
+        uncontrolledProp: "defaultOpen",
+        type: "boolean",
+        description: `Default open state of the collapse block`,
+      },
+      ...commonProps,
+      ...commonAccordionItemProps,
+      ...commonAccordionProps,
+    },
+    states: {
+      open: {
+        type: "writable",
+        valueProp: "open",
+        onChangeProp: "onChange",
+        variableType: "boolean",
+        ...singleCollapseHelpers.states.open,
+      },
+    },
+    componentHelpers: {
+      helpers: accordionHelpers,
+      importName: "accordionHelpers",
+      importPath: "@plasmicpkgs/antd5/skinny/registerCollapse",
+    },
+    importPath: "@plasmicpkgs/antd5/skinny/registerCollapse",
+    importName: "AntdAccordion",
+  });
+
+  registerComponentHelper(loader, AntdAccordion, {
+    name: accordionComponentName,
+    displayName: "Accordion",
+    defaultStyles: {
+      width: "stretch",
+    },
+    props: {
+      activeKey: {
+        editOnly: true,
+        displayName: "Active panel ID",
+        uncontrolledProp: "defaultActiveKey",
+        type: "string",
+        description: `ID of Accordion item that is expanded by default.`,
         advanced: true,
-        itemType: {
-          type: "object",
-          nameFunc: (_item: any) => `ID: ${_item.key}`,
-          fields: {
-            key: {
-              type: "number",
-              displayName: "Panel ID",
-            },
-          },
-        },
-      },
-      bordered: {
-        type: "boolean",
-        defaultValue: true,
-        description: `Display border around collapse `,
-      },
-      disabled: {
-        type: "boolean",
-        description: "Disable the toggle behaviour of panels",
-      },
-      collapsible: {
-        type: "choice",
-        defaultValueHint: "header",
-        description: `Specify the element that can be clicked to toggle a panel`,
-        options: ["header", "icon"],
-        hidden: (ps) => Boolean(ps.disabled),
-      },
-      destroyInactivePanel: {
-        type: "boolean",
-        advanced: true,
-        description: `Destroy/Unmount inactive panels`,
-      },
-      expandIcon: {
-        type: "slot",
-        hidePlaceholder: true,
-      },
-      rotateCustomExpandIcon: {
-        type: "boolean",
-        description:
-          "Enable rotation of custom expand icon when panel is expanded",
-        advanced: true,
-        hidden: (ps) => !ps.expandIcon?.key,
-      },
-      expandIconPosition: {
-        type: "choice",
-        defaultValueHint: "start",
-        description: `Set expand icon position`,
-        options: ["start", "end"],
-      },
-      ghost: {
-        type: "boolean",
-        description: `Make the collapse borderless and its background transparent`,
-      },
-      size: {
-        type: "choice",
-        defaultValueHint: "middle",
-        description: `Set the size of collapse`,
-        options: ["large", "middle", "small"],
       },
       items: {
         type: "slot",
         hidePlaceholder: true,
-        allowedComponents: [collapseItemComponentName],
+        allowedComponents: [accordionItemComponentName],
         ...({ mergeWithParent: true } as any),
         defaultValue: [
           {
             type: "component",
-            name: collapseItemComponentName,
+            name: accordionItemComponentName,
             props: {
               id: 1,
-              label: "First Item",
+              label: {
+                type: "text",
+                value: "First Item",
+              },
               children: {
                 type: "text",
                 value: "First Children",
@@ -204,10 +347,13 @@ export function registerCollapse(loader?: Registerable) {
           },
           {
             type: "component",
-            name: collapseItemComponentName,
+            name: accordionItemComponentName,
             props: {
               id: 2,
-              label: "Second Item",
+              label: {
+                type: "text",
+                value: "Second Item",
+              },
               children: {
                 type: "text",
                 value: "Second Children",
@@ -216,73 +362,40 @@ export function registerCollapse(loader?: Registerable) {
           },
         ],
       },
-      onChange: {
-        type: "eventHandler",
-        argTypes: [{ name: "activeIds", type: "object" }],
-      },
+      ...commonProps,
+      ...commonAccordionProps,
     },
     states: {
-      activePanelIds: {
+      activePanelId: {
         type: "writable",
-        valueProp: "activeKeys",
+        valueProp: "activeKey",
         onChangeProp: "onChange",
         variableType: "array",
-        ...collapseHelpers.states.activeKeys,
+        ...accordionHelpers.states.activeKey,
       },
     },
     componentHelpers: {
-      helpers: collapseHelpers,
-      importName: "collapseHelpers",
+      helpers: accordionHelpers,
+      importName: "accordionHelpers",
       importPath: "@plasmicpkgs/antd5/skinny/registerCollapse",
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerCollapse",
-    importName: "AntdCollapse",
+    importName: "AntdAccordion",
   });
 
-  registerComponentHelper(loader, AntdCollapseItem, {
-    name: collapseItemComponentName,
-    displayName: "Collapse Item",
+  registerComponentHelper(loader, AntdAccordionItem, {
+    name: accordionItemComponentName,
+    displayName: "Accordion Item",
     props: {
       id: {
         type: "string",
-        description: `Unique identifier for this time`,
+        description: `Unique identifier for this item`,
       },
-      label: {
-        type: "string",
-        description: `Text inside the header`,
-        displayName: "Header Content",
-      },
-      showArrow: {
-        type: "boolean",
-        defaultValue: true,
-        description: `Whether to show animating arrow alongside header text`,
-        advanced: true,
-      },
-      destroyInactivePanel: {
-        type: "boolean",
-        description: `Destroy/Unmount panel if inactive`,
-        advanced: true,
-      },
-      forceRender: {
-        type: "boolean",
-        description: `Force rendering of content in the panel, instead of lazy rendering it.`,
-        advanced: true,
-      },
-      extra: {
-        type: "slot",
-        hidePlaceholder: true,
-      },
-      collapsible: {
-        type: "boolean",
-        advanced: true,
-      },
-      children: {
-        type: "slot",
-        hidePlaceholder: true,
-      },
+      ...commonProps,
+      ...commonAccordionItemProps,
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerCollapse",
-    importName: "AntdCollapseItem",
-    parentComponentName: collapseComponentName,
+    importName: "AntdAccordionItem",
+    parentComponentName: accordionComponentName,
   });
 }
