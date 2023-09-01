@@ -12,3 +12,7 @@ export {
   localizationStrings,
   LocalizationStringsArgs,
 } from "./actions/localization-strings";
+export {
+  exportProjectsCli as exportProjects,
+  ExportArgs,
+} from "./actions/export";

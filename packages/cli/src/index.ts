@@ -314,12 +314,12 @@ yargs
         .option("code-lang", getYargsOption("codeLang"))
         .option("code-scheme", getYargsOption("codeScheme"))
         .option("style-scheme", getYargsOption("styleScheme"))
-        .option("images-scheme", getYargsOption("imagesScheme"))
-        .option("images-public-dir", getYargsOption("imagesPublicDir"))
-        .option(
-          "images-public-url-prefix",
-          getYargsOption("imagesPublicUrlPrefix")
-        )
+        .option("images-scheme", {
+          describe:
+            "How to reference used images in designs; either `inlined`, which puts base64-encoded images directly into the React component files, or `files`, which puts images on disk and imports them from component files.",
+          type: "string",
+          choices: ["inlined", "files"],
+        })
         .option("i18n-key-scheme", getLocalizationYargs("key-scheme"))
         .option("i18n-tag-prefix", getLocalizationYargs("tag-prefix")),
     (argv) => handleError(exportProjectsCli(argv))

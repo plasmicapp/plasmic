@@ -1,6 +1,13 @@
+import { promises as fs } from "fs";
 import { keyBy, snakeCase } from "lodash";
+import path from "path";
 import { CommonArgs } from "..";
-import { ComponentBundle, PlasmicApi, ProjectBundle } from "../api";
+import { PlasmicApi, ProjectBundle } from "../api";
+import {
+  fixAllImportStatements,
+  formatAsLocal,
+  maybeConvertTsxToJsx,
+} from "../utils/code-utils";
 import {
   CodeConfig,
   I18NConfig,
@@ -11,25 +18,15 @@ import {
 } from "../utils/config-utils";
 import { getContext, getCurrentOrDefaultAuth } from "../utils/get-context";
 import { tuple } from "../utils/lang-utils";
-import {
-  fixAllImportStatements,
-  formatAsLocal,
-  maybeConvertTsxToJsx,
-} from "../utils/code-utils";
-import { promises as fs, write } from "fs";
-import path from "path";
 import { DEFAULT_GLOBAL_CONTEXTS_NAME } from "./sync-global-contexts";
 import { ensureImageAssetContents } from "./sync-images";
-import { logger } from "../deps";
 
 export interface ExportArgs extends CommonArgs {
   projects: readonly string[];
   platform: "" | "react" | "nextjs" | "gatsby";
   codeLang: "" | "ts" | "js";
   styleScheme: "" | "css" | "css-modules";
-  imagesScheme: "" | "inlined" | "files" | "public-files";
-  imagesPublicDir: string;
-  imagesPublicUrlPrefix: string;
+  imagesScheme: "" | "inlined" | "files";
   i18NKeyScheme: "" | I18NConfig["keyScheme"];
   i18NTagPrefix: "" | I18NConfig["tagPrefix"];
 
@@ -155,8 +152,6 @@ export async function exportProjectsCli(opts: ExportArgs): Promise<void> {
         },
         images: {
           scheme: opts.imagesScheme || "files",
-          publicDir: opts.imagesPublicDir,
-          publicUrlPrefix: opts.imagesPublicUrlPrefix,
         },
         style: {
           scheme: opts.styleScheme || "css-modules",
