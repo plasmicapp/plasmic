@@ -22,6 +22,10 @@ export function registerTooltip(loader?: Registerable) {
         },
         mergeWithParent: true,
       } as any,
+      overlayClassName: {
+        type: "class",
+        displayName: "Overlay",
+      },
       titleText: {
         type: "string",
         displayName: "Tooltip contents",

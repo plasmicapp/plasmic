@@ -6,9 +6,20 @@ export function AntdModal(
   props: React.ComponentProps<typeof Modal> & {
     onOpenChange?: (open: boolean) => void;
     defaultStylesClassName?: string;
+    modalScopeClassName: string;
+    wrapClassName: string;
   }
 ) {
-  const { onOpenChange, onOk, onCancel, open, footer, ...rest } = props;
+  const {
+    onOpenChange,
+    onOk,
+    onCancel,
+    open,
+    footer,
+    modalScopeClassName,
+    wrapClassName,
+    ...rest
+  } = props;
   const memoOnOk = React.useMemo(() => {
     if (onOpenChange || onOk) {
       return (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -29,7 +40,6 @@ export function AntdModal(
       return undefined;
     }
   }, [onOpenChange, onCancel]);
-
   return (
     <Modal
       {...rest}
@@ -37,7 +47,8 @@ export function AntdModal(
       onCancel={memoOnCancel}
       open={open}
       footer={footer ?? undefined}
-      className={`${props.className} ${props.defaultStylesClassName}`}
+      wrapClassName={wrapClassName}
+      className={`${props.className} ${props.defaultStylesClassName} ${modalScopeClassName}`}
     />
   );
 }
@@ -93,29 +104,33 @@ export function registerModal(loader?: Registerable) {
         type: "eventHandler",
         argTypes: [{ name: "open", type: "boolean" }],
       } as any,
+      wrapClassName: {
+        type: "class",
+        displayName: "Modal container",
+        styleSections: ["background"],
+      },
       modalScopeClassName: {
         type: "styleScopeClass",
         scopeName: "modal",
       } as any,
-      modalClassName: {
+      modalContentClassName: {
         type: "class",
-        displayName: "Modal content styles",
+        displayName: "Modal content",
         noSelf: true,
         selectors: [
           {
-            selector: ":modal .ant-modal .ant-modal-content",
+            selector: ":modal .ant-modal-content",
             label: "Base",
           },
         ],
-        advanced: true,
       } as any,
       closeButtonClassName: {
         type: "class",
-        displayName: "Close button styles",
+        displayName: "Close button",
         noSelf: true,
         selectors: [
           {
-            selector: ":modal .ant-modal .ant-modal-close",
+            selector: ":modal .ant-modal-close",
             label: "Base",
           },
         ],

@@ -14,6 +14,7 @@ export function AntdDatePicker(
     value?: Dayjs | string | null;
     // Not sure why this is missing from DatePicker props!
     showTime?: boolean;
+    popupScopeClassName: string;
   }
 ) {
   const nativeInput = React.useRef<HTMLInputElement>(null);
@@ -27,12 +28,12 @@ export function AntdDatePicker(
       ? undefined
       : props.value;
 
-  const { picker, ...rest } = props;
+  const { picker, popupScopeClassName, ...rest } = props;
   return (
     <>
       <DatePicker
         {...rest}
-        picker={props.picker as any}
+        picker={picker as any}
         value={
           props.value === undefined
             ? undefined
@@ -45,6 +46,7 @@ export function AntdDatePicker(
             ? undefined
             : dayjs(props.defaultValue)
         }
+        popupClassName={popupScopeClassName}
         // dateString isn't a valid ISO string, and value is a dayjs object.
         onChange={(value, _dateString) => {
           props.onChange?.(value !== null ? value.toISOString() : null);
@@ -100,7 +102,7 @@ export function registerDatePicker(loader?: Registerable) {
       onChange: {
         type: "eventHandler",
         argTypes: [{ name: "value", type: "string" }],
-      } as any,
+      },
       picker: {
         type: "choice",
         options: ["date", "week", "month", "quarter", "year"].map((value) => ({
@@ -108,6 +110,50 @@ export function registerDatePicker(loader?: Registerable) {
           label: capitalize(value),
         })),
         defaultValueHint: "date",
+      },
+      popupScopeClassName: {
+        type: "styleScopeClass",
+        scopeName: "datePickerPopup",
+      } as any,
+      popupClassName: {
+        type: "class",
+        displayName: "Popup container",
+        selectors: [
+          {
+            selector: ":datePickerPopup .ant-picker-panel-container",
+            label: "Base",
+          },
+        ],
+      },
+      popupHeaderClassName: {
+        type: "class",
+        displayName: "Popup header",
+        selectors: [
+          {
+            selector: ":datePickerPopup .ant-picker-header",
+            label: "Base",
+          },
+        ],
+      },
+      popupBodyClassName: {
+        type: "class",
+        displayName: "Popup body",
+        selectors: [
+          {
+            selector: ":datePickerPopup .ant-picker-body",
+            label: "Base",
+          },
+        ],
+      },
+      popupFooterClassName: {
+        type: "class",
+        displayName: "Popup footer",
+        selectors: [
+          {
+            selector: ":datePickerPopup .ant-picker-footer",
+            label: "Base",
+          },
+        ],
       },
       showTime: {
         type: "boolean",
