@@ -228,7 +228,17 @@ export const sliderMeta: ComponentMeta<Settings> = {
       description: "Enables mouse dragging on desktop",
       defaultValueHint: true,
     },
+    cssEase: {
+      advanced: true,
+      displayName: "Easing",
+      type: "string",
+      description: "Easing method for transition",
+      defaultValueHint: "linear",
+    },
+    /** Deprecated, this was apparently never working:
+     * https://github.com/akiran/react-slick/issues/363 */
     easing: {
+      hidden: () => true,
       advanced: true,
       displayName: "Easing",
       type: "string",
