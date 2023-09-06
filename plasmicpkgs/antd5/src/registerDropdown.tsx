@@ -10,6 +10,7 @@ export function AntdDropdown(
     useMenuItemsSlot?: boolean;
     menuItemsJson?: React.ComponentProps<typeof Menu>["items"];
     trigger?: "click" | "hover" | "contextMenu";
+    dropdownMenuScopeClassName?: string;
   }
 ) {
   const {
@@ -19,6 +20,7 @@ export function AntdDropdown(
     useMenuItemsSlot = false,
     menuItemsJson,
     trigger = "click",
+    dropdownMenuScopeClassName,
     ...rest
   } = props;
   return (
@@ -31,7 +33,11 @@ export function AntdDropdown(
           : undefined;
         const items = useMenuItemsSlot ? undefined : menuItemsJson;
         return (
-          <Menu onClick={(event) => onAction?.(event.key)} items={items}>
+          <Menu
+            className={`${dropdownMenuScopeClassName}`}
+            onClick={(event) => onAction?.(event.key)}
+            items={items}
+          >
             {itemsChildren}
           </Menu>
         );
@@ -93,6 +99,35 @@ export function registerDropdown(loader?: Registerable) {
             type: "item",
             value: "action2",
             label: "Action 2",
+          },
+        ],
+      },
+      dropdownMenuScopeClassName: {
+        type: "styleScopeClass",
+        scopeName: "dropdownMenu",
+      } as any,
+      menuClassName: {
+        type: "class",
+        displayName: "Menu",
+        selectors: [
+          {
+            selector: ":dropdownMenu.ant-dropdown-menu",
+            label: "Base",
+          },
+        ],
+      },
+      menuItemClassName: {
+        type: "class",
+        displayName: "Menu item",
+        selectors: [
+          {
+            selector: ":dropdownMenu.ant-dropdown-menu .ant-dropdown-menu-item",
+            label: "Base",
+          },
+          {
+            selector:
+              ":dropdownMenu.ant-dropdown-menu .ant-dropdown-menu-item-active",
+            label: "Focused",
           },
         ],
       },

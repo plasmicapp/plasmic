@@ -109,6 +109,25 @@ export function registerMenu(loader?: Registerable) {
         defaultValueHint: "hover",
         advanced: true,
       },
+      //   menuScopeClassName: {
+      //     type: "styleScopeClass",
+      //     scopeName: "menu",
+      //   } as any,
+      //   menuItemClassName: {
+      //     type: "class",
+      //     displayName: "Menu items",
+      //     noSelf: true,
+      //     selectors: [
+      //         {
+      //             selector: ":menu .ant-menu-item",
+      //             label: "Base",
+      //         },
+      //         {
+      //             selector: ":menu .ant-menu-item-selected",
+      //             label: "Selected",
+      //         },
+      //     ],
+      //   } as any,
       children: {
         type: "slot",
         allowedComponents: allowedMenuComponents,
@@ -251,6 +270,10 @@ export function registerMenu(loader?: Registerable) {
             value: "Sub-menu",
           },
         ],
+      },
+      popupClassName: {
+        type: "class",
+        displayName: "Sidemenu Popup",
       },
       children: {
         type: "slot",

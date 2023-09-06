@@ -6,9 +6,11 @@ export function AntdDrawer(
   props: React.ComponentProps<typeof Drawer> & {
     onOpenChange?: (open: boolean) => void;
     defaultStylesClassName?: string;
+    drawerScopeClassName?: string;
   }
 ) {
-  const { onOpenChange, onClose, open, footer, ...rest } = props;
+  const { onOpenChange, onClose, open, footer, drawerScopeClassName, ...rest } =
+    props;
   const memoOnClose = React.useMemo(() => {
     if (onOpenChange || onClose) {
       return (e: React.MouseEvent | React.KeyboardEvent) => {
@@ -19,11 +21,11 @@ export function AntdDrawer(
       return undefined;
     }
   }, [onOpenChange, onClose]);
-
   return (
     <Drawer
       {...rest}
       onClose={memoOnClose}
+      rootClassName={drawerScopeClassName}
       open={open}
       footer={footer ?? undefined}
       className={`${props.className} ${props.defaultStylesClassName}`}
@@ -71,13 +73,69 @@ export function registerDrawer(loader?: Registerable) {
         type: "styleScopeClass",
         scopeName: "drawer",
       } as any,
-      drawerClassName: {
+      drawerHeaderClassName: {
         type: "class",
-        displayName: "Drawer content styles",
+        displayName: "Drawer header",
         noSelf: true,
         selectors: [
           {
-            selector: ":drawer .ant-drawer .ant-drawer-content",
+            selector: ":drawer .ant-drawer-header",
+            label: "Base",
+          },
+        ],
+      } as any,
+      drawerBodyClassName: {
+        type: "class",
+        displayName: "Drawer body",
+        noSelf: true,
+        selectors: [
+          {
+            selector: ":drawer .ant-drawer-body",
+            label: "Base",
+          },
+        ],
+      } as any,
+      drawerFooterClassName: {
+        type: "class",
+        displayName: "Drawer footer",
+        noSelf: true,
+        selectors: [
+          {
+            selector: ":drawer .ant-drawer-footer",
+            label: "Base",
+          },
+        ],
+      } as any,
+      drawerTitleClassName: {
+        type: "class",
+        displayName: "Drawer title",
+        noSelf: true,
+        selectors: [
+          {
+            selector: ":drawer .ant-drawer-title",
+            label: "Base",
+          },
+        ],
+      } as any,
+      drawerMaskClassName: {
+        type: "class",
+        displayName: "Drawer mask",
+        styleSections: ["background"],
+        noSelf: true,
+        selectors: [
+          {
+            selector: ":drawer .ant-drawer-mask",
+            label: "Base",
+          },
+        ],
+      } as any,
+      drawerContentWrapperClassName: {
+        type: "class",
+        displayName: "Drawer content wrapper",
+        noSelf: true,
+        selectors: [
+          {
+            selector: ":drawer .ant-drawer-content-wrapper",
             label: "Base",
           },
         ],
@@ -85,11 +143,11 @@ export function registerDrawer(loader?: Registerable) {
       } as any,
       closeButtonClassName: {
         type: "class",
-        displayName: "Close button styles",
+        displayName: "Close button",
         noSelf: true,
         selectors: [
           {
-            selector: ":drawer .ant-drawer .ant-drawer-close",
+            selector: ":drawer .ant-drawer-close",
             label: "Base",
           },
         ],
