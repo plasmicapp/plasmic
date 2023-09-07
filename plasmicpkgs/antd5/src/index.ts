@@ -50,6 +50,7 @@ import { registerDrawer } from "./registerDrawer";
 import { registerSteps } from "./registerSteps";
 import { registerDirectoryTree, registerTree } from "./registerTree";
 import { registerCollapse } from "./registerCollapse";
+import { registerPopover } from "./registerPopover";
 
 export function registerAll(loader?: Registerable) {
   registerConfigProvider(loader);
@@ -82,6 +83,7 @@ export function registerAll(loader?: Registerable) {
   registerTree(loader);
   registerDirectoryTree(loader);
   registerCollapse(loader);
+  registerPopover(loader);
 }
 
 export { buttonComponentName } from "./registerButton";
