@@ -7,6 +7,8 @@ import {
 import { RichCalendar } from "./RichCalendar";
 import dayjs, { Dayjs } from "dayjs";
 
+export * from "./RichCalendar";
+
 export const calendarHelpers = {
   states: {
     mode: {
