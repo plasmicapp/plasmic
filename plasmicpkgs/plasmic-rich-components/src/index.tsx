@@ -9,6 +9,7 @@ export { RichLayout } from "./rich-layout";
 export { RichList } from "./rich-list";
 export { RichTable, tableHelpers } from "./rich-table";
 export { RichDetails } from "./rich-details";
+export { RichCalendar } from "./rich-calendar";
 
 export function registerAll(loader?: Registerable) {
   registerRichLayout(loader);
