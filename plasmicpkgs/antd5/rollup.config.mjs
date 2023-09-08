@@ -1,4 +1,3 @@
-
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import resolve from "@rollup/plugin-node-resolve";
@@ -6,7 +5,7 @@ import path from "path";
 import esbuild from "rollup-plugin-esbuild";
 import glob from "glob";
 
-const SKINNY_INPUTS = glob.sync('./src/register*.ts*');
+const SKINNY_INPUTS = glob.sync("./src/register*.ts*");
 
 export default [
   {
