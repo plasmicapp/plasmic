@@ -214,6 +214,12 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Feel free to join our [Slack Community][slack] and ask us anything! We're here to help and always welcome contributions.
 
+## License
+
+`studio/` is licensed under the AGPL.
+
+All other content is licensed under the MIT license.
+
 ## Contributors ❤️
 
 Thanks to all the people who make Plasmic!
