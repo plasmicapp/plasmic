@@ -1,8 +1,29 @@
 # Contributing to Plasmic 🚀
 
-This repo contains the code for all Plasmic component store packages (`@plasmicpkgs/*`), client libraries/SDKs (`@plasmicapp/*`), and examples (under the `examples/` dir).
+Thank you for your interest in contributing to Plasmic! We appreciate all the contributions we receive, from issue reports to code changes.
 
-(For hacking on code components or `plasmicpkgs`, see specific additional instructions further down.)
+[//]: # (Not sure how to help? Check out [good first issues]&#40;https://github.com/plasmicapp/plasmic/issues&#41;!)
+
+If you're interested in implementing a non-trivial code change, please create an issue first, so that we can discuss the approach.
+
+## Contributor License Agreement
+
+When submitting a PR for `studio/` for the first time, you'll be automatically asked to agree to our [Individual Contributor License Agreement](docs/contributing/individual-cla.md), which is needed to accept your PR.
+This only needs to be done once.
+
+If you are contributing on behalf of a company, please have your company contact us to sign a [Corporate Contributor License Agreement](docs/contributing/corporate-cla.md), via community@plasmic.app.
+
+## Codebase overview
+
+This repo contains:
+
+[//]: # (- the Plasmic Studio platform itself &#40;under the `studio/` dir&#41;)
+
+- code for all Plasmic component store packages (`@plasmicpkgs/*`)
+- client libraries/SDKs (`@plasmicapp/*`)
+- examples (under the `examples/` dir)
+
+For hacking on code components or `plasmicpkgs`, see specific additional instructions further down.
 
 We use `lerna` to help us manage dependencies among all the packages.
 
@@ -16,7 +37,9 @@ In general, we follow the "fork-and-pull" Git workflow.
 
 NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 
-### Getting started with development in this repo
+## Contributing to `plasmicpkgs` or SDKs
+
+### Getting started
 
 ```
 yarn lerna bootstrap  # inter-links all the lerna-managed packages together
@@ -234,3 +257,10 @@ Testing codegen ensures your import paths are correct.
 - [Codegen guide](https://docs.plasmic.app/learn/codegen-guide/)
 - [Next.js loader guide](https://docs.plasmic.app/learn/nextjs-quickstart/)
 
+[//]: # (## Contributing to Plasmic Studio platform)
+
+[//]: # ()
+[//]: # (In `studio/` is the code for the Plasmic Studio platform itself.)
+
+[//]: # ()
+[//]: # (To get started, please see [the development guide]&#40;studio/doc/dev-setup.md&#41;.)
