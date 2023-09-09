@@ -1,7 +1,8 @@
-import { Tree, TreeDataNode, TreeProps } from "antd";
+import { Tree } from "antd";
+import type { TreeDataNode, TreeProps } from "antd";
 import React, { Key, useState } from "react";
 import { Registerable, registerComponentHelper } from "./utils";
-import { DirectoryTreeProps } from "antd/es/tree";
+import type { DirectoryTreeProps } from "antd/es/tree";
 
 function useMunged(props: TreeProps) {
   const [autoExpandParent, setAutoExpandParent] = useState(
