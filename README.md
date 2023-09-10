@@ -445,3 +445,11 @@ Testing codegen ensures your import paths are correct.
 ## Getting help
 
 Feel free to join our [Slack Community][slack] and ask us anything! We're here to help and always welcome contributions.
+
+## Contributors ❤️
+
+Thanks to all the people who make Plasmic!
+
+<a href="https://github.com/plasmicapp/plasmic/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=plasmicapp/plasmic" />
+</a>

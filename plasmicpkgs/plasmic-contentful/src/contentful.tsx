@@ -83,6 +83,7 @@ interface ContentfulFetcherProps {
   children?: ReactNode;
   className?: string;
   limit?: number;
+  include?: number;
   order?: string;
   filterField?: string;
   searchParameter?: string;
@@ -163,6 +164,15 @@ export const ContentfulFetcherMeta: ComponentMeta<ContentfulFetcherProps> = {
       displayName: "Limit",
       description: "Limit the number of entries that are returned.",
     },
+    include: {
+      type: "number",
+      displayName: "Linked items depth",
+      defaultValueHint: 1,
+      description:
+        "When you have related content (e.g. entries with links to image assets) it's possible to include both search results and related data in a single request. Using the include parameter, you can specify the number of levels to resolve.",
+      max: 10,
+      min: 0,
+    },
     noAutoRepeat: {
       type: "boolean",
       displayName: "No auto-repeat",
@@ -188,6 +198,7 @@ export function ContentfulFetcher({
   children,
   className,
   limit,
+  include,
   noLayout,
   setControlContextData,
 }: ContentfulFetcherProps) {
@@ -218,13 +229,12 @@ export function ContentfulFetcher({
   const { data: entriesData } = usePlasmicQueryData<any | null>(
     contentType ? `${cacheKey}/${contentType}/entriesData` : null,
     async () => {
-      const url = `/spaces/${creds.space}/environments/${creds.environment}/entries?access_token=${creds.accessToken}&content_type=${contentType}`;
-      let query;
-
+      let query = `/spaces/${creds.space}/environments/${creds.environment}/entries?access_token=${creds.accessToken}&content_type=${contentType}`;
       if (limit) {
-        query = `${url}&limit=${limit}`;
-      } else {
-        query = url;
+        query = `${query}&limit=${limit}`;
+      }
+      if (include) {
+        query = `${query}&include=${include}`;
       }
       const resp = await fetch(`${baseUrl}${query}`);
       return resp.json();
