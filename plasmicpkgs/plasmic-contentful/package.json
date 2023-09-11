@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-contentful",
-  "version": "0.0.98",
+  "version": "0.0.99",
   "description": "Plasmic Contentful components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
