@@ -59,7 +59,7 @@ export function UploadWrapper(props: ExtendedUploadProps) {
             /^data:[^;]+;base64,/,
             ""
           ),
-          status: "success",
+          status: "done",
         },
       ]);
     };
