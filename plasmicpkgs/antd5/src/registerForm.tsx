@@ -1403,7 +1403,7 @@ export function registerFormItem(loader?: Registerable) {
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerForm",
     importName: "FormItemWrapper",
-    treeLabel: (ps) => ps.name,
+    treeLabel: (ps: any) => ps.name,
     templates: {
       Text: {
         props: {
