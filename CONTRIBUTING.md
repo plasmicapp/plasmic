@@ -8,7 +8,7 @@ If you're interested in implementing a non-trivial code change, please create an
 
 ## Contributor License Agreement
 
-When submitting a PR for `studio/` for the first time, you'll be automatically asked to agree to our [Individual Contributor License Agreement](docs/contributing/individual-cla.md), which is needed to accept your PR.
+When submitting a PR for `app/` for the first time, you'll be automatically asked to agree to our [Individual Contributor License Agreement](docs/contributing/individual-cla.md), which is needed to accept your PR.
 This only needs to be done once.
 
 If you are contributing on behalf of a company, please have your company contact us to sign a [Corporate Contributor License Agreement](docs/contributing/corporate-cla.md), via community@plasmic.app.
@@ -17,7 +17,7 @@ If you are contributing on behalf of a company, please have your company contact
 
 This repo contains:
 
-[//]: # (- the Plasmic Studio platform itself &#40;under the `studio/` dir&#41;)
+[//]: # (- the Plasmic Studio platform itself &#40;under the `app/` dir&#41;)
 
 - code for all Plasmic component store packages (`@plasmicpkgs/*`)
 - client libraries/SDKs (`@plasmicapp/*`)
@@ -260,7 +260,7 @@ Testing codegen ensures your import paths are correct.
 [//]: # (## Contributing to Plasmic Studio platform)
 
 [//]: # ()
-[//]: # (In `studio/` is the code for the Plasmic Studio platform itself.)
+[//]: # (In `app/` is the code for the Plasmic Studio platform itself.)
 
 [//]: # ()
 [//]: # (To get started, please see [the development guide]&#40;studio/doc/dev-setup.md&#41;.)
