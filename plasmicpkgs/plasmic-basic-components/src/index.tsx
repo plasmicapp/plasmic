@@ -13,3 +13,5 @@ export { default as LoadingBoundary } from "./LoadingBoundary";
 export * from "./LoadingBoundary";
 export { default as ConditionGuard } from "./ConditionGuard";
 export * from "./ConditionGuard";
+export { default as SideEffect } from "./SideEffect";
+export * from "./SideEffect";
