@@ -7,8 +7,8 @@ import {
 } from "./utils";
 import { reactNodeToString } from "./react-utils";
 
-export const AntdOption = Select.Option;
-export const AntdOptionGroup = Select.OptGroup;
+export const AntdOption: typeof Select.Option = Select.Option;
+export const AntdOptionGroup: typeof Select.OptGroup = Select.OptGroup;
 
 export function AntdSelect(
   props: ComponentProps<typeof Select> & {

@@ -71,7 +71,7 @@ export type RowAction = RowActionItem | RowActionMenu;
 
 export function deriveRowKey(
   data: QueryResult | undefined,
-  rowKey: string | GetRowKey<any> | undefined
+  rowKey: string | GetRowKey<Record<any, any>> | undefined
 ) {
   if (rowKey) {
     return rowKey;

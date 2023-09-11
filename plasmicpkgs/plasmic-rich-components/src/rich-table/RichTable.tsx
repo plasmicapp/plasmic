@@ -194,7 +194,6 @@ export function RichTable(props: RichTableProps) {
               !hideExports && <ExportMenu data={data} />,
             ].filter((x) => !!x)
           }
-          // key={(props as any)["data-plasmic-canvas-env"]}
         />
       </ErrorBoundary>
       {/*Always hide the weird pin left/right buttons for now, which also have render layout issues*/}
