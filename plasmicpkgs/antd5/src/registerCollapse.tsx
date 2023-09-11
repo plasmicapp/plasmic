@@ -1,8 +1,8 @@
 import { Collapse } from "antd";
 import React, { useMemo } from "react";
 import { Registerable, registerComponentHelper } from "./utils";
-import { uniqueId } from "lodash";
-import { PropType } from "@plasmicapp/loader-nextjs";
+import uniqueId from "lodash/uniqueId";
+import type { PropType } from "@plasmicapp/loader-nextjs";
 
 export const singleCollapseComponentName = "plasmic-antd5-single-collapse";
 export const accordionComponentName = "plasmic-antd5-collapse";
