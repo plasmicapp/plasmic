@@ -52,6 +52,7 @@ import { registerDirectoryTree, registerTree } from "./registerTree";
 import { registerCollapse } from "./registerCollapse";
 import { registerPopover } from "./registerPopover";
 import { registerTabs } from "./registerTabs";
+import { registerRate } from "./registerRate";
 
 export function registerAll(loader?: Registerable) {
   registerConfigProvider(loader);
@@ -86,6 +87,7 @@ export function registerAll(loader?: Registerable) {
   registerCollapse(loader);
   registerPopover(loader);
   registerTabs(loader);
+  registerRate(loader);
 }
 
 export { buttonComponentName } from "./registerButton";
