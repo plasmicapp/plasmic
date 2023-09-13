@@ -2,7 +2,7 @@ import {
   FormControlProps,
   FormErrorMessageProps,
   FormLabelProps,
-  HelpTextProps,
+  FormHelperTextProps,
 } from "@chakra-ui/react";
 import { ComponentMeta } from "@plasmicapp/host/registerComponent";
 import {
@@ -51,7 +51,7 @@ export const formLabelMeta: ComponentMeta<FormLabelProps> = {
   },
 };
 
-export const formHelperTextMeta: ComponentMeta<HelpTextProps> = {
+export const formHelperTextMeta: ComponentMeta<FormHelperTextProps> = {
   ...getComponentNameAndImportMeta("FormHelperText", "FormControl"),
   props: {
     children: {
