@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-chakra-ui",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Plasmic registration calls for chakra ui components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
