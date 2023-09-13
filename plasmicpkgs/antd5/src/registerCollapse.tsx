@@ -306,7 +306,7 @@ export function registerCollapse(loader?: Registerable) {
       importPath: "@plasmicpkgs/antd5/skinny/registerCollapse",
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerCollapse",
-    importName: "AntdAccordion",
+    importName: "AntdSingleCollapse",
   });
 
   registerComponentHelper(loader, AntdAccordion, {
