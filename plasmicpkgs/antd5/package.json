@@ -55,7 +55,8 @@
     "test-storybook": "test-storybook"
   },
   "dependencies": {
-    "antd": "^5.7.3"
+    "antd": "^5.7.3",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.22.15",
