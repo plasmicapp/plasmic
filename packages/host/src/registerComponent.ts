@@ -69,6 +69,11 @@ export interface ComponentTemplates<P> {
 
 export type StateSpec = {
   onChangeProp: string;
+  /**
+   * If true, will hide the state in a collapsed section; good for states that
+   * should not usually be used.
+   */
+  advanced?: boolean;
 } & (
   | {
       type: "readonly";
