@@ -161,6 +161,10 @@ export function setFieldsToUndefined(obj: any) {
   }
 }
 
+export function arrayEq(xs: ReadonlyArray<any>, ys: ReadonlyArray<any>) {
+  return xs.length === ys.length && xs.every((x, i) => x === ys[i]);
+}
+
 /**
  *
  * Forked from: https://github.com/ant-design/pro-components/blob/master/packages/utils/src/components/ErrorBoundary/index.tsx

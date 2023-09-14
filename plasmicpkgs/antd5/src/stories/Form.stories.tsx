@@ -2,6 +2,7 @@ import { StoryFn } from "@storybook/react";
 import React from "react";
 import {
   FormWrapper as Form,
+  FormGroup,
   FormItemWrapper as FormItem,
   InputType,
   SimplifiedFormItemsProp,
@@ -17,6 +18,7 @@ import {
   screen,
 } from "@storybook/testing-library";
 import { expect } from "@storybook/jest";
+import { PlasmicCanvasContext } from "@plasmicapp/host";
 
 export default {
   title: "Form",
@@ -404,5 +406,241 @@ TestSimplifiedForm.play = async ({ canvasElement }) => {
   await sleep(100);
   await expect(canvas.getByTestId("submitted")).toHaveTextContent(
     `Submitted: ${JSON.stringify(getFormItemsValue(expectedFormItems))}`
+  );
+};
+
+const useForceRender = () => {
+  const [_, setRenderCnt] = React.useState(0);
+  return () => setRenderCnt((c) => c + 1);
+};
+
+const _InternalFormCtx: StoryFn = (args: any) => {
+  const forceRender = useForceRender();
+  const ctxDataRef = React.useRef<any>(() => undefined);
+  const setControlContextData = React.useCallback((data: any) => {
+    if (JSON.stringify(ctxDataRef.current) !== JSON.stringify(data)) {
+      ctxDataRef.current = data;
+      forceRender();
+    }
+  }, []);
+  const registeredFields = ctxDataRef.current.registeredFields;
+  const $state = useDollarState(
+    [
+      {
+        path: "form.value",
+        type: "private",
+        variableType: "object",
+      },
+    ],
+    { $props: args }
+  );
+  const [formItems, setFormItems] = React.useState(() => [
+    {
+      name: "textField",
+    },
+    {
+      name: "textAreaField",
+      hidden: true,
+    },
+    {
+      name: "numberField",
+    },
+    {
+      name: "address",
+    },
+    {
+      name: "city",
+    },
+    {
+      name: "state",
+    },
+  ]);
+  const [selectedFormItem, setSelectedFormItem] = React.useState<string>("0");
+  const [renameInput, setRenameInput] = React.useState("");
+  const [fieldVisibility, setFieldVisibility] = React.useState<
+    "visible" | "invisible"
+  >("visible");
+  return (
+    <div>
+      <PlasmicCanvasContext.Provider
+        value={{
+          // registered fields are enabled only in canvas
+          componentName: "test",
+          globalVariants: {},
+        }}
+      >
+        <Form
+          extendedOnValuesChange={(values) => ($state.form.value = values)}
+          setControlContextData={setControlContextData}
+        >
+          {!formItems[0].hidden && (
+            <FormItem label={"Text Field"} name={formItems[0].name}>
+              <Input />
+            </FormItem>
+          )}
+          {!formItems[1].hidden && (
+            <FormItem label={"Text Area"} name={formItems[1].name}>
+              <TextArea />
+            </FormItem>
+          )}
+          {!formItems[2].hidden && (
+            <FormItem label={"Number"} name={formItems[2].name}>
+              <InputNumber />
+            </FormItem>
+          )}
+          {!formItems[3].hidden && (
+            <FormGroup name={formItems[3].name}>
+              {!formItems[4].hidden && (
+                <FormItem label="City" name={formItems[4].name}>
+                  <Input />
+                </FormItem>
+              )}
+              {!formItems[5].hidden && (
+                <FormItem label="State" name={formItems[5].name}>
+                  <Input />
+                </FormItem>
+              )}
+            </FormGroup>
+          )}
+        </Form>
+        <p data-testid={"registeredFields"}>
+          {JSON.stringify(registeredFields)}
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <p>Modify fields</p>
+          <select
+            data-testid={"registeredFieldsSelect"}
+            value={selectedFormItem}
+            onChange={(e) => setSelectedFormItem(e.target.value)}
+          >
+            {formItems.map((formItem, index) => (
+              <option value={index}>{formItem.name}</option>
+            ))}
+          </select>
+          <div style={{ display: "flex" }}>
+            <Input
+              value={renameInput}
+              onChange={(e) => setRenameInput(e.target.value)}
+              style={{ width: 200 }}
+              data-testid={"renameInput"}
+            />
+            <Button
+              onClick={() => {
+                setFormItems((formItems) => {
+                  formItems[+selectedFormItem].name = renameInput;
+                  return [...formItems];
+                });
+                setRenameInput("");
+              }}
+            >
+              Rename field
+            </Button>
+          </div>
+          <div>
+            <select
+              data-testid={"visibilitySelect"}
+              value={fieldVisibility}
+              onChange={(e) => setFieldVisibility(e.target.value as any)}
+            >
+              <option value="visible">Visible</option>
+              <option value="invisible">Invisible</option>
+            </select>
+            <Button
+              onClick={() => {
+                setFormItems((formItems) => {
+                  formItems[+selectedFormItem].hidden =
+                    fieldVisibility === "invisible";
+                  return [...formItems];
+                });
+                setRenameInput("");
+              }}
+            >
+              Change visibility
+            </Button>
+          </div>
+        </div>
+      </PlasmicCanvasContext.Provider>
+    </div>
+  );
+};
+
+export const InternalFormCtx = _InternalFormCtx.bind({});
+InternalFormCtx.args = {};
+InternalFormCtx.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+  let expectedRegisteredFields = [
+    { fullPath: ["textField"], name: "textField" },
+    { fullPath: ["numberField"], name: "numberField" },
+    { fullPath: ["address", "city"], name: "city" },
+    { fullPath: ["address", "state"], name: "state" },
+  ];
+  await sleep(100);
+  await expect(canvas.getByTestId("registeredFields")).toHaveTextContent(
+    JSON.stringify(expectedRegisteredFields)
+  );
+  // change fields visibility --> this should register/unregister fields
+  expectedRegisteredFields.push({
+    fullPath: ["textAreaField"],
+    name: "textAreaField",
+  });
+  await userEvent.selectOptions(
+    canvas.getByTestId("registeredFieldsSelect"),
+    "1"
+  );
+  await userEvent.selectOptions(
+    canvas.getByTestId("visibilitySelect"),
+    "visible"
+  );
+  await userEvent.click(canvas.getByText("Change visibility"));
+  await sleep(100);
+  await expect(canvas.getByTestId("registeredFields")).toHaveTextContent(
+    JSON.stringify(expectedRegisteredFields)
+  );
+
+  expectedRegisteredFields = expectedRegisteredFields.slice(1);
+  await userEvent.selectOptions(
+    canvas.getByTestId("registeredFieldsSelect"),
+    "0"
+  );
+  await userEvent.selectOptions(
+    canvas.getByTestId("visibilitySelect"),
+    "invisible"
+  );
+  await userEvent.click(canvas.getByText("Change visibility"));
+  await sleep(100);
+  await expect(canvas.getByTestId("registeredFields")).toHaveTextContent(
+    JSON.stringify(expectedRegisteredFields)
+  );
+
+  //rename fields name
+  expectedRegisteredFields = [
+    ...expectedRegisteredFields.slice(-1),
+    ...expectedRegisteredFields.slice(0, -1),
+  ];
+  (expectedRegisteredFields[1].fullPath[0] = "new field name"),
+    (expectedRegisteredFields[1].name = "new field name");
+  await userEvent.selectOptions(
+    canvas.getByTestId("registeredFieldsSelect"),
+    "2"
+  );
+  await userEvent.type(canvas.getByTestId("renameInput"), "new field name");
+  await userEvent.click(canvas.getByText("Rename field"));
+  await sleep(100);
+  await expect(canvas.getByTestId("registeredFields")).toHaveTextContent(
+    JSON.stringify(expectedRegisteredFields)
+  );
+
+  //renaming form group name should rename all children
+  (expectedRegisteredFields[2].fullPath[0] = "address2"),
+    (expectedRegisteredFields[3].fullPath[0] = "address2"),
+    await userEvent.selectOptions(
+      canvas.getByTestId("registeredFieldsSelect"),
+      "3"
+    );
+  await userEvent.type(canvas.getByTestId("renameInput"), "address2");
+  await userEvent.click(canvas.getByText("Rename field"));
+  await sleep(100);
+  await expect(canvas.getByTestId("registeredFields")).toHaveTextContent(
+    JSON.stringify(expectedRegisteredFields)
   );
 };
