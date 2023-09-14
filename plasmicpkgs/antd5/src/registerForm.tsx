@@ -397,7 +397,6 @@ function useFormItemDefinitions(
                 ? InputType.Checkbox
                 : InputType.Text, //missing date and date-time
             initialValue: row ? row[field.id] : undefined,
-            hidden: field.primaryKey,
           }),
         })
       );
