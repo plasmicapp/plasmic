@@ -23,6 +23,7 @@ type SingleCollapseProps = Omit<
     expandIcon: React.ReactElement;
     rotateCustomExpandIcon: boolean;
     children: React.ReactElement;
+    label2: React.ReactElement; // For backwards compatibility
   };
 
 export function AntdAccordionItem({ children }: AccordionItemType) {
@@ -67,12 +68,21 @@ export function AntdAccordion(
         ) {
           return null;
         }
-        return {
+        const props = {
           ...currentItem.props,
           id: currentItem.props.id,
           key: currentItem.props.id,
           children: React.cloneElement(currentItem.props.children),
         };
+        if (currentItem.props.label) {
+          // The old `label` prop takes precedence, delete label2
+          delete (props as any).label2;
+        } else {
+          // Keep `label2` so the `hidden` function knows it's used
+          props.label = (props as any).label2;
+        }
+
+        return props;
       })
       .filter((i) => i != null) as AccordionItemType[];
   }, [itemsRaw]);
@@ -112,7 +122,8 @@ export function AntdSingleCollapse(props: SingleCollapseProps) {
     collapsible,
     disabled,
     rotateCustomExpandIcon,
-    label,
+    label: oldLabelProp,
+    label2: newLabelProp,
     showArrow,
     extra,
     forceRender,
@@ -121,6 +132,7 @@ export function AntdSingleCollapse(props: SingleCollapseProps) {
     ...rest
   } = props;
 
+  const label = oldLabelProp ?? newLabelProp;
   const defaultItemKey = useMemo(() => uniqueId(), []);
 
   const item = useMemo(
@@ -222,10 +234,23 @@ const commonAccordionProps: Record<string, PropType<any>> = {
 
 const commonAccordionItemProps: Record<string, PropType<any>> = {
   label: {
+    type: "string",
+    displayName: "Header Content",
+    description: "Text inside the header",
+    hidden: (props) =>
+      props.label != null
+        ? false
+        : props?.label2 !== undefined || props?.header === undefined,
+  },
+  label2: {
     type: "slot",
     displayName: "Header Content",
     defaultValue: "Collapse Header",
     hidePlaceholder: true,
+    hidden: (props) =>
+      props.label != null
+        ? true
+        : props?.label2 === undefined && props?.header !== undefined,
   },
   extra: {
     type: "slot",
@@ -335,7 +360,7 @@ export function registerCollapse(loader?: Registerable) {
             name: accordionItemComponentName,
             props: {
               id: 1,
-              label: {
+              label2: {
                 type: "text",
                 value: "First Item",
               },
@@ -350,7 +375,7 @@ export function registerCollapse(loader?: Registerable) {
             name: accordionItemComponentName,
             props: {
               id: 2,
-              label: {
+              label2: {
                 type: "text",
                 value: "Second Item",
               },
