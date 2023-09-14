@@ -120,10 +120,10 @@ interface FormWrapperProps
   extendedOnValuesChange?: (
     values: Parameters<NonNullable<FormProps["onValuesChange"]>>[1]
   ) => void;
-  formItems: SimplifiedFormItemsProp[];
+  formItems?: SimplifiedFormItemsProp[];
   mode?: CodeComponentMode;
-  formType: "new-entry" | "update-entry";
-  submitSlot?: boolean;
+  formType?: "new-entry" | "update-entry";
+  submitSlot?: React.ReactNode;
   data?: DataOp;
 }
 
@@ -185,6 +185,12 @@ const Internal = React.forwardRef(
                 {...formItem}
                 noLabel={
                   formItem.inputType === InputType.Checkbox || formItem.noLabel
+                }
+                valuePropName={
+                  formItem.valuePropName ??
+                  (formItem.inputType === InputType.Checkbox
+                    ? "checked"
+                    : undefined)
                 }
                 style={{ width: "100%" }}
               >
@@ -421,7 +427,7 @@ export const FormWrapper = React.forwardRef(
     const previousFormItems = React.useRef<SimplifiedFormItemsProp[]>([]);
     React.useEffect(() => {
       if (!(rawData && rawData.isLoading)) {
-        previousFormItems.current = actualFormItems;
+        previousFormItems.current = actualFormItems ?? [];
       }
     }, [rawData, actualFormItems]);
     if (props.mode === "simplified" && rawData && "error" in rawData) {

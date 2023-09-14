@@ -49,15 +49,33 @@
   "scripts": {
     "build": "rollup -c rollup.config.mjs && yarn tsc --emitDeclarationOnly --declaration src/index.ts --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --jsx react --esModuleInterop --strict --outDir ./dist/ && cp ./dist/*.d.ts skinny/ && rm skinny/index.d.ts",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
-    "clean": "rm -rf dist/ skinny/*.ts skinny/*.map skinny/*.js"
+    "clean": "rm -rf dist/ skinny/*.ts skinny/*.map skinny/*.js",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "test-storybook": "test-storybook"
   },
   "dependencies": {
     "antd": "^5.7.3"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.22.15",
+    "@babel/preset-react": "^7.22.15",
+    "@babel/preset-typescript": "^7.22.15",
     "@plasmicapp/data-sources": "0.1.110",
     "@plasmicapp/host": "1.0.163",
     "@plasmicapp/query": "0.1.68",
+    "@plasmicapp/react-web": "^0.2.250",
+    "@storybook/addon-actions": "^7.4.0",
+    "@storybook/addon-essentials": "^7.4.0",
+    "@storybook/addon-info": "^5.3.21",
+    "@storybook/addon-interactions": "^7.4.0",
+    "@storybook/addon-links": "^7.4.0",
+    "@storybook/addons": "^7.4.0",
+    "@storybook/jest": "^0.0.10",
+    "@storybook/react": "^7.4.0",
+    "@storybook/react-webpack5": "^7.4.0",
+    "@storybook/test-runner": "^0.13.0",
+    "@storybook/testing-library": "^0.0.13",
     "@types/node": "^14.0.26",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
@@ -67,7 +85,8 @@
     "rollup": "^3.10.1",
     "rollup-plugin-dts": "^5.0.0",
     "rollup-plugin-esbuild": "^5.0.0",
-    "rollup-plugin-replace-imports": "^1.0.0"
+    "rollup-plugin-replace-imports": "^1.0.0",
+    "storybook": "^7.4.0"
   },
   "peerDependencies": {
     "@plasmicapp/data-sources": ">=0.1.0",
