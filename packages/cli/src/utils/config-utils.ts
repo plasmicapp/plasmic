@@ -266,6 +266,9 @@ export interface ComponentConfig {
 
   componentType: "page" | "component";
 
+  /** Page path if the component is a page */
+  path?: string;
+
   /** Plume type if component is a Plume component */
   plumeType?: string;
 }

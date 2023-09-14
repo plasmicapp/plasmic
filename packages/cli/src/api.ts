@@ -29,6 +29,7 @@ export interface ComponentBundle {
   scheme: "blackbox" | "plain";
   nameInIdToUuid: Array<[string, string]>;
   isPage: boolean;
+  path?: string;
   plumeType?: string;
 }
 

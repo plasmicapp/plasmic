@@ -108,6 +108,7 @@ export async function syncProjectComponents(
       scheme,
       nameInIdToUuid,
       isPage,
+      path: pagePath,
       plumeType,
     } = bundle;
     if (context.cliArgs.quiet !== true) {
@@ -151,6 +152,7 @@ export async function syncProjectComponents(
         cssFilePath: defaultCssFilePath,
         scheme: scheme as "blackbox" | "direct",
         componentType: isPage ? "page" : "component",
+        path: pagePath,
         plumeType,
       };
       allCompConfigs[id] = compConfig;
