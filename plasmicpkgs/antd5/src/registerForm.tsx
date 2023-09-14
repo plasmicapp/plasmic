@@ -755,7 +755,7 @@ export function registerForm(loader?: Registerable) {
           return ps.data ? contextData?.minimalFullLengthFields : undefined;
         },
         unstable__canDelete: (item, ps, ctx) => {
-          if (ps.mode !== "database-schema-driven") {
+          if (ps.mode !== "simplified") {
             return true;
           }
           if (!ctx?.schema) {
