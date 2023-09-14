@@ -11,6 +11,7 @@ export type DataDict = Record<string, any>;
 export const DataContext = createContext<DataDict | undefined>(undefined);
 
 export type DataMeta = {
+  advanced?: boolean;
   hidden?: boolean;
   label?: string;
 };
@@ -67,9 +68,13 @@ export interface DataProviderProps {
    */
   data?: any;
   /**
-   * If true, hide this entry in studio (data binding).
+   * If true, hide this item in studio data picker.
    */
   hidden?: boolean;
+  /**
+   * If true, mark this item as advanced in studio.
+   */
+  advanced?: boolean;
   /**
    * Label to be shown in the studio data picker for easier navigation (data binding).
    */
@@ -81,6 +86,7 @@ export function DataProvider({
   name,
   data,
   hidden,
+  advanced,
   label,
   children,
 }: DataProviderProps) {
@@ -93,7 +99,7 @@ export function DataProvider({
         value={{
           ...existingEnv,
           [name]: data,
-          [mkMetaName(name)]: mkMetaValue({ hidden, label }),
+          [mkMetaName(name)]: mkMetaValue({ hidden, advanced, label }),
         }}
       >
         {children}
