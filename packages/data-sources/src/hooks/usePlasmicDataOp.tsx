@@ -1,13 +1,13 @@
 import { usePlasmicDataSourceContext } from '@plasmicapp/data-sources-context';
 import * as ph from '@plasmicapp/host';
-import React from 'react';
-import { DataOp, executePlasmicDataOp } from '../executor';
-import { ManyRowsResult, Pagination, SingleRowResult } from '../types';
-import { pick } from '../utils';
 import {
   useMutablePlasmicQueryData,
   usePlasmicDataConfig,
 } from '@plasmicapp/query';
+import React from 'react';
+import { DataOp, executePlasmicDataOp } from '../executor';
+import { ManyRowsResult, Pagination, SingleRowResult } from '../types';
+import { pick } from '../utils';
 
 export function makeCacheKey(
   dataOp: DataOp,
@@ -51,6 +51,19 @@ function mkUndefinedDataProxy(
 
 const reactMajorVersion = +React.version.split('.')[0];
 
+/**
+ * Fetches can be kicked off two ways -- normally, by useSWR(), or by some
+ * expression accessing the `$queries.*` proxy when not ready yet. We need
+ * a global cache for proxy-invoked caches, so that different components
+ * with the same key can share the same fetch.
+ *
+ * The life cycle for this cache is short -- only the duration of a
+ * proxy-invoked fetch, and once the fetch is done. That's because we really
+ * just want SWR to be managing the cache, not us! Once the data is in SWR,
+ * we will use SWR for getting data.
+ */
+const PRE_FETCHES = new Map<string, Promise<any>>();
+
 export function usePlasmicDataOp<
   T extends SingleRowResult | ManyRowsResult,
   E = any
@@ -82,9 +95,22 @@ export function usePlasmicDataOp<
   );
   const fetcher = React.useMemo(
     () => () => {
+      // If we are in this function, that means SWR cache missed.
+
       if (fetchingData.fetchingPromise) {
+        // Fetch is already underway from this hook
         return fetchingData.fetchingPromise;
       }
+
+      if (key && PRE_FETCHES.has(key)) {
+        // Some other usePlasmicDataOp() hook elsewhere has already
+        // started this fetch as well; re-use it here.
+        const existing = PRE_FETCHES.get(key) as Promise<T>;
+        fetchingData.fetchingPromise = existing;
+        return existing;
+      }
+
+      // Else we really need to kick off this fetch now...
       const fetcherFn = () =>
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         executePlasmicDataOp<T>(dataOp!, {
@@ -94,15 +120,39 @@ export function usePlasmicDataOp<
         });
       const fetcherPromise = fetcherFn();
       fetchingData.fetchingPromise = fetcherPromise;
+      if (key) {
+        PRE_FETCHES.set(key, fetcherPromise);
+        fetcherPromise.then(() => {
+          // Once we have a result, we rely on swr to perform the caching,
+          // so remove from our cache as quickly as possible.
+          PRE_FETCHES.delete(key);
+        });
+      }
       return fetcherPromise;
     },
     [key, fetchingData]
   );
   const fetchAndUpdateCache = React.useMemo(
     () => () => {
+      // This function is called when the undefined data proxy is invoked.
+      // USUALLY, this means the data is not available in SWR yet, and
+      // we need to kick off a fetch.
       if (fetchingData.fetchingPromise) {
         // No need to update cache as the exist promise call site will do it
         return fetchingData.fetchingPromise;
+      }
+
+      // SOMETIMES, SWR actually _does_ have the cache, but we still end up
+      // here.  That's because of how we update $queries, which takes two
+      // cycles; each time we render, we build a `new$Queries`, and
+      // `set$Queries(new$Queries)`.  So once the data is ready, at the
+      // first render, we will have data in `new$Queries` but not `$queries`,
+      // but we will still finish rendering that pass, which means any `$queries`
+      // access will still end up here.  So we look into the SWR cache and
+      // return any data that's here.
+      const cached = cache.get(key);
+      if (cached) {
+        return Promise.resolve(cached);
       }
       const fetcherPromise = fetcher();
       fetcherPromise
@@ -112,7 +162,7 @@ export function usePlasmicDataOp<
           const keyInfo = key ? '$swr$' + key : '';
           cache.set(keyInfo, { ...(cache.get(keyInfo) ?? {}), error: err });
         });
-      return fetcherPromise;
+      return fetchingData.fetchingPromise!;
     },
     [fetcher, fetchingData, cache, key]
   );
