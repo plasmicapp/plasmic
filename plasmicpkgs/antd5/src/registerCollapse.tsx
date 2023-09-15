@@ -62,17 +62,11 @@ export function AntdAccordion(
         : [itemsRaw.props.children]
     )
       .map((currentItem) => {
-        if (
-          !React.isValidElement(currentItem) ||
-          !React.isValidElement(currentItem.props.children)
-        ) {
-          return null;
-        }
         const props = {
           ...currentItem.props,
           id: currentItem.props.id,
           key: currentItem.props.id,
-          children: React.cloneElement(currentItem.props.children),
+          children: React.cloneElement(<>{currentItem.props.children}</>),
         };
         if (currentItem.props.label) {
           // The old `label` prop takes precedence, delete label2
@@ -176,7 +170,7 @@ export function AntdSingleCollapse(props: SingleCollapseProps) {
 
 export const accordionHelpers = {
   states: {
-    activeKey: {
+    activePanelId: {
       onChangeArgsToValue: (activeKeys: string[]) => activeKeys[0],
     },
   },
@@ -185,7 +179,7 @@ export const accordionHelpers = {
 export const singleCollapseHelpers = {
   states: {
     open: {
-      onChangeArgsToValue: (activeKeys: string) => activeKeys.length > 0,
+      onChangeArgsToValue: (activeKeys: string[]) => activeKeys.length > 0,
     },
   },
 };
@@ -326,8 +320,8 @@ export function registerCollapse(loader?: Registerable) {
       },
     },
     componentHelpers: {
-      helpers: accordionHelpers,
-      importName: "accordionHelpers",
+      helpers: singleCollapseHelpers,
+      importName: "singleCollapseHelpers",
       importPath: "@plasmicpkgs/antd5/skinny/registerCollapse",
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerCollapse",
@@ -395,8 +389,8 @@ export function registerCollapse(loader?: Registerable) {
         type: "writable",
         valueProp: "activeKey",
         onChangeProp: "onChange",
-        variableType: "array",
-        ...accordionHelpers.states.activeKey,
+        variableType: "text",
+        ...accordionHelpers.states.activePanelId,
       },
     },
     componentHelpers: {
@@ -415,6 +409,7 @@ export function registerCollapse(loader?: Registerable) {
       id: {
         type: "string",
         description: `Unique identifier for this item`,
+        required: true,
       },
       ...commonProps,
       ...commonAccordionItemProps,
