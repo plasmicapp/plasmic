@@ -47,6 +47,7 @@ import {
   usePrevious,
 } from "./utils";
 import {
+  ArrayType,
   CanvasComponentProps,
   PropType,
 } from "@plasmicapp/host/registerComponent";
@@ -109,7 +110,7 @@ export enum FormType {
   UpdateEntry,
 }
 
-interface FormWrapperProps
+export interface FormWrapperProps
   extends FormProps,
     CanvasComponentProps<FormWrapperControlContextData> {
   /**
@@ -123,6 +124,7 @@ interface FormWrapperProps
     values: Parameters<NonNullable<FormProps["onValuesChange"]>>[1]
   ) => void;
   formItems?: SimplifiedFormItemsProp[];
+  dataFormItems?: SimplifiedFormItemsProp[];
   mode?: CodeComponentMode;
   formType?: "new-entry" | "update-entry";
   submitSlot?: React.ReactNode;
@@ -163,7 +165,7 @@ const FormLayoutContext = React.createContext<
 const Internal = React.forwardRef(
   (
     props: FormWrapperProps & {
-      setRemountKey: React.Dispatch<React.SetStateAction<number>>;
+      forceRemount: () => void;
       setRegisteredFields: React.Dispatch<React.SetStateAction<FieldEntity[]>>;
       registeredFields: FieldEntity[];
       labelCol?: ColProps & { horizontalOnly?: boolean };
@@ -176,7 +178,7 @@ const Internal = React.forwardRef(
     const lastValue = React.useRef(values);
     const {
       extendedOnValuesChange,
-      setRemountKey,
+      forceRemount,
       setRegisteredFields,
       registeredFields,
       ...rest
@@ -293,7 +295,7 @@ const Internal = React.forwardRef(
         value={{
           layout: formLayout,
           fireOnValuesChange,
-          forceRemount: () => setRemountKey((k) => k + 1),
+          forceRemount,
           registerField,
           registeredFields,
         }}
@@ -356,7 +358,7 @@ function useFormItemDefinitions(
   formRef: FormRefActions | null,
   registeredFields: FieldEntity[]
 ) {
-  const { mode, formItems, setControlContextData } = props;
+  const { mode, dataFormItems, setControlContextData } = props;
 
   return React.useMemo(() => {
     const data = rawData && normalizeData(rawData);
@@ -379,14 +381,14 @@ function useFormItemDefinitions(
     const row = data.data.length > 0 ? data.data[0] : undefined;
     const { mergedFields, minimalFullLengthFields } =
       deriveFieldConfigs<SimplifiedFormItemsProp>(
-        formItems ?? [],
+        dataFormItems ?? [],
         schema,
         (field) => ({
           inputType: InputType.Text,
           ...(field && {
             key: field.id,
             fieldId: field.id,
-            label: field.label,
+            label: field.label ?? field.id,
             name: field.id,
             inputType:
               field.type === "string"
@@ -410,7 +412,7 @@ function useFormItemDefinitions(
     });
 
     return mergedFields;
-  }, [mode, setControlContextData, formItems, rawData, formRef]);
+  }, [mode, setControlContextData, dataFormItems, rawData, formRef]);
 }
 
 const useRawData = (props: FormWrapperProps) => {
@@ -421,6 +423,10 @@ const useRawData = (props: FormWrapperProps) => {
 export const FormWrapper = React.forwardRef(
   (props: FormWrapperProps, ref: React.Ref<FormRefActions>) => {
     const [remountKey, setRemountKey] = React.useState(0);
+    const forceRemount = React.useCallback(
+      () => setRemountKey((k) => k + 1),
+      [setRemountKey]
+    );
     const previousInitialValues = usePrevious(props.initialValues);
 
     const wrapperRef = React.useRef<FormRefActions>(null);
@@ -430,7 +436,7 @@ export const FormWrapper = React.forwardRef(
         JSON.stringify(previousInitialValues) !==
           JSON.stringify(props.initialValues)
       ) {
-        setRemountKey((k) => k + 1);
+        forceRemount();
       }
     }, [previousInitialValues, props.initialValues]);
     const [registeredFields, setRegisteredFields] = React.useState<
@@ -450,13 +456,24 @@ export const FormWrapper = React.forwardRef(
     );
     React.useEffect(() => {
       if (rawData && !rawData.isLoading) {
-        setRemountKey((k) => k + 1);
+        forceRemount();
       }
     }, [rawData]);
-    const { formItems, ...rest } = props;
+    const previousDataOp = usePrevious(props.data);
+    React.useEffect(() => {
+      if (
+        (previousDataOp == null && props.data != null) ||
+        (previousDataOp != null && props.data == null)
+      ) {
+        forceRemount();
+      }
+    }, [props.data]);
+    const { dataFormItems, formItems, data, ...rest } = props;
     const actualFormItems =
       props.mode === "simplified" && formItemDefinitions
         ? formItemDefinitions
+        : data
+        ? dataFormItems
         : formItems;
     const previousFormItems = React.useRef<SimplifiedFormItemsProp[]>([]);
     React.useEffect(() => {
@@ -474,7 +491,7 @@ export const FormWrapper = React.forwardRef(
         <Internal
           key={remountKey}
           {...rest}
-          setRemountKey={setRemountKey}
+          forceRemount={forceRemount}
           setRegisteredFields={setRegisteredFields}
           registeredFields={registeredFields}
           formItems={
@@ -630,104 +647,7 @@ export function registerForm(loader?: Registerable) {
       formItems: {
         displayName: "Fields",
         type: "array",
-        itemType: {
-          type: "object",
-          fields: {
-            label: {
-              type: "string",
-              defaultValueHint: getDefaultValueHint("label"),
-            },
-            inputType: {
-              type: "choice",
-              options: Object.values(InputType).filter(
-                (inputType) =>
-                  ![
-                    InputType.Option,
-                    InputType.OptionGroup,
-                    InputType.Radio,
-                  ].includes(inputType)
-              ),
-              defaultValue: InputType.Text,
-              defaultValueHint: getDefaultValueHint("inputType"),
-            },
-            options: {
-              type: "array",
-              itemType: {
-                type: "object",
-                fields: {
-                  type: {
-                    type: "choice",
-                    options: [
-                      { value: "option", label: "Option" },
-                      { value: "option-group", label: "Option Group" },
-                    ],
-                    defaultValue: "option",
-                    hidden: (ps, _ctx, { path }) => {
-                      if (
-                        ps.formItems?.[path[1] as number]?.inputType !==
-                        InputType.Select
-                      ) {
-                        return true;
-                      }
-                      return false;
-                    },
-                  },
-                  label: "string",
-                  value: {
-                    type: "string",
-                    hidden: (ps, _ctx, { path, item }) => {
-                      if (
-                        ps.formItems?.[path[1] as number]?.inputType !==
-                        InputType.Select
-                      ) {
-                        return false;
-                      }
-                      return item.type !== "option";
-                    },
-                  },
-                  options: {
-                    type: "array",
-                    itemType: {
-                      type: "object",
-                      nameFunc: (item: any) => item.label || item.value,
-                      fields: {
-                        value: "string",
-                        label: "string",
-                      },
-                    },
-                    hidden: (ps, _ctx, { path, item }) => {
-                      if (
-                        ps.formItems?.[path[1] as number]?.inputType !==
-                        InputType.Select
-                      ) {
-                        return true;
-                      }
-                      return item.type !== "option-group";
-                    },
-                  },
-                },
-                nameFunc: (item) => item?.label,
-              },
-              hidden: (_ps: any, _ctx: any, { item }) =>
-                ![InputType.Select, InputType.RadioGroup].includes(
-                  item.inputType
-                ),
-            },
-            optionType: {
-              type: "choice",
-              options: [
-                { value: "default", label: "Radio" },
-                { value: "button", label: "Button" },
-              ],
-              hidden: (_ps: any, _ctx: any, { item }) =>
-                InputType.RadioGroup !== item.inputType,
-              defaultValueHint: "Radio",
-              displayName: "Option Type",
-            },
-            ...commonFormItemProps,
-          },
-          nameFunc: (item) => item.fieldId ?? item.label ?? item.name,
-        },
+        itemType: commonFormItemPropItemType("formItems"),
         defaultValue: [
           {
             label: "Name",
@@ -744,10 +664,24 @@ export function registerForm(loader?: Registerable) {
           if (ps.mode === "advanced") {
             return true;
           }
-          if (ps.mode === "simplified") {
-            return false;
+          return !!ps.data;
+        },
+      },
+      /**
+       * dataFormItems are used to expand the form items from schema forms.
+       * We can't use the formItems prop because it has a default value. Therefore, if we unset the formItems prop,
+       * we would end up with the default value of formItems + schema form items.
+       * Ideally, we would need to support dynamic default value.
+       */
+      dataFormItems: {
+        displayName: "Data Fields",
+        type: "array",
+        itemType: commonFormItemPropItemType("dataFormItems"),
+        hidden: (ps) => {
+          if (ps.mode === "advanced") {
+            return true;
           }
-          return !ps.data || !ps.formType;
+          return !ps.data;
         },
         unstable__keyFunc: (x) => x.key,
         unstable__minimalValue: (ps, contextData) => {
@@ -1440,6 +1374,103 @@ const commonFormItemProps: Record<string, PropType<InternalFormItemProps>> = {
     advanced: true,
   },
 };
+
+const commonFormItemPropItemType = (
+  propName: "formItems" | "dataFormItems"
+): ArrayType<FormWrapperProps>["itemType"] => ({
+  type: "object",
+  fields: {
+    label: {
+      type: "string",
+      defaultValueHint: getDefaultValueHint("label"),
+    },
+    inputType: {
+      type: "choice",
+      options: Object.values(InputType).filter(
+        (inputType) =>
+          ![InputType.Option, InputType.OptionGroup, InputType.Radio].includes(
+            inputType
+          )
+      ),
+      defaultValue: InputType.Text,
+      defaultValueHint: getDefaultValueHint("inputType"),
+    },
+    options: {
+      type: "array",
+      itemType: {
+        type: "object",
+        fields: {
+          type: {
+            type: "choice",
+            options: [
+              { value: "option", label: "Option" },
+              { value: "option-group", label: "Option Group" },
+            ],
+            defaultValue: "option",
+            hidden: (ps, _ctx, { path }) => {
+              if (
+                ps[propName]?.[path[1] as number]?.inputType !==
+                InputType.Select
+              ) {
+                return true;
+              }
+              return false;
+            },
+          },
+          label: "string",
+          value: {
+            type: "string",
+            hidden: (ps, _ctx, { path, item }) => {
+              if (
+                ps[propName]?.[path[1] as number]?.inputType !==
+                InputType.Select
+              ) {
+                return false;
+              }
+              return item.type !== "option";
+            },
+          },
+          options: {
+            type: "array",
+            itemType: {
+              type: "object",
+              nameFunc: (item: any) => item.label || item.value,
+              fields: {
+                value: "string",
+                label: "string",
+              },
+            },
+            hidden: (ps, _ctx, { path, item }) => {
+              if (
+                ps[propName]?.[path[1] as number]?.inputType !==
+                InputType.Select
+              ) {
+                return true;
+              }
+              return item.type !== "option-group";
+            },
+          },
+        },
+        nameFunc: (item) => item?.label,
+      },
+      hidden: (_ps: any, _ctx: any, { item }) =>
+        ![InputType.Select, InputType.RadioGroup].includes(item.inputType),
+    },
+    optionType: {
+      type: "choice",
+      options: [
+        { value: "default", label: "Radio" },
+        { value: "button", label: "Button" },
+      ],
+      hidden: (_ps: any, _ctx: any, { item }) =>
+        InputType.RadioGroup !== item.inputType,
+      defaultValueHint: "Radio",
+      displayName: "Option Type",
+    },
+    ...commonFormItemProps,
+  },
+  nameFunc: (item) => item.fieldId ?? item.label ?? item.name,
+});
 
 export const formItemComponentName = "plasmic-antd5-form-item";
 

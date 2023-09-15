@@ -21793,6 +21793,11 @@ mkdirp@1.x, mkdirp@^1.0.3, mkdirp@^1.0.4:
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
+mock-xmlhttprequest@^8.1.0:
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/mock-xmlhttprequest/-/mock-xmlhttprequest-8.2.0.tgz#d9ad9ca82265bcbe2eea5354f556448a2bc0133c"
+  integrity sha512-agEokniRxw/MhrmIl9Ytn5wuj6kK+pu4KaGPV2fGEKStHXH9HIzYPChth2Jb/MB3TMX0ER1F1QMsvMA3BBe3qA==
+
 modify-values@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/modify-values/-/modify-values-1.0.1.tgz#b3939fa605546474e3e3e3c63d64bd43b4ee6022"
@@ -23430,6 +23435,11 @@ path-to-regexp@2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-2.4.0.tgz#35ce7f333d5616f1c1e1bfe266c3aba2e5b2e704"
   integrity sha512-G6zHoVqC6GGTQkZwF4lkuEyMbVOjoBKAEybQUypI1WTkqinCOrq2x6U2+phkJ1XsEMTy4LjtwPI7HW+NVrRR2w==
+
+path-to-regexp@^6.2.1:
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-6.2.1.tgz#d54934d6798eb9e5ef14e7af7962c945906918e5"
+  integrity sha512-JLyh7xT1kizaEvcaXOQwOc2/Yhw6KZOvPf1S8401UyLk86CU79LN3vl7ztXGm/pZ+YjoyAJ4rxmHwbkBXJX+yw==
 
 path-type@^3.0.0:
   version "3.0.0"
@@ -27490,6 +27500,15 @@ store2@^2.12.0, store2@^2.14.2, store2@^2.7.1:
   version "2.14.2"
   resolved "https://registry.yarnpkg.com/store2/-/store2-2.14.2.tgz#56138d200f9fe5f582ad63bc2704dbc0e4a45068"
   integrity sha512-siT1RiqlfQnGqgT/YzXVUNsom9S0H1OX+dpdGN1xkyYATo4I6sep5NmsRD/40s3IIOvlCq6akxkqG82urIZW1w==
+
+storybook-addon-mock@^4.2.1:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/storybook-addon-mock/-/storybook-addon-mock-4.2.1.tgz#6f8cb16d2a545827f48d4485cd25f7420ad6a8fd"
+  integrity sha512-OWXneOefQZfZoviBw0jgLgUVcNmf3zd7Ia35FTcI8HBZ0zYmpsC093iHd3aoSm0wQJXDG0xGY1KnfHwKq4G8mg==
+  dependencies:
+    mock-xmlhttprequest "^8.1.0"
+    path-to-regexp "^6.2.1"
+    polished "^4.2.2"
 
 storybook@^7.4.0:
   version "7.4.1"

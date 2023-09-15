@@ -2,6 +2,7 @@ import { StoryFn } from "@storybook/react";
 import React from "react";
 import {
   FormWrapper as Form,
+  FormWrapperProps,
   FormGroup,
   FormItemWrapper as FormItem,
   InputType,
@@ -19,6 +20,7 @@ import {
 } from "@storybook/testing-library";
 import { expect } from "@storybook/jest";
 import { PlasmicCanvasContext } from "@plasmicapp/host";
+import { fakeInitDatabase, fakeSchema } from "./fake-data-source";
 
 export default {
   title: "Form",
@@ -40,24 +42,28 @@ const ALL_FORM_ITEMS_TYPE: ExtendedSimplifiedFormItemsProp[] = [
     label: "Text Field",
     inputType: InputType.Text,
     initialValue: "text",
+    preserve: false,
   },
   {
     name: "textAreaField",
     label: "Text Area Field",
     inputType: InputType.TextArea,
     initialValue: "textarea",
+    preserve: false,
   },
   {
     name: "numberField",
     label: "Number Field",
     inputType: InputType.Number,
     initialValue: "123",
+    preserve: false,
   },
   {
     name: "passwordField",
     label: "Password Field",
     inputType: InputType.Password,
     initialValue: "password",
+    preserve: false,
   },
   {
     name: "selectField",
@@ -74,12 +80,14 @@ const ALL_FORM_ITEMS_TYPE: ExtendedSimplifiedFormItemsProp[] = [
       },
     ],
     initialValue: "opt1",
+    preserve: false,
   },
   {
     name: "checkboxField",
     label: "Checkbox Field",
     inputType: InputType.Checkbox,
     initialValue: true,
+    preserve: false,
   },
   {
     name: "radioGroupField",
@@ -95,6 +103,7 @@ const ALL_FORM_ITEMS_TYPE: ExtendedSimplifiedFormItemsProp[] = [
       },
     ],
     initialValue: "radio1",
+    preserve: false,
   },
 ];
 
@@ -258,6 +267,9 @@ const checkFormItems = async (
       formItem.name ?? ""
     ) as HTMLSelectElement;
     await expect(dom).toBeInTheDocument();
+    if (!formItem.initialValue) {
+      continue;
+    }
     if (formItem.inputType === InputType.Select) {
       await userEvent.click(dom);
       await userEvent.click(dom);
@@ -331,16 +343,16 @@ TestSimplifiedForm.play = async ({ canvasElement }) => {
 
   await checkFormItems(canvasElement, expectedFormItems);
 
-  (expectedFormItems[0].initialValue = "foo"),
-    // test state is updating properly
-    await modifyFormItems(canvasElement, expectedFormItems.slice(0, 1));
+  expectedFormItems[0].initialValue = "foo";
+  // test state is updating properly
+  await modifyFormItems(canvasElement, expectedFormItems.slice(0, 1));
   await expect(canvas.getByTestId("value")).toHaveTextContent(
     `Value: ${JSON.stringify(getFormItemsValue(expectedFormItems))}`
   );
 
-  (expectedFormItems[1].initialValue = "bar"),
-    (expectedFormItems[2].initialValue = 456),
-    await modifyFormItems(canvasElement, expectedFormItems.slice(1, 3));
+  expectedFormItems[1].initialValue = "bar";
+  expectedFormItems[2].initialValue = 456;
+  await modifyFormItems(canvasElement, expectedFormItems.slice(1, 3));
   await expect(canvas.getByTestId("value")).toHaveTextContent(
     `Value: ${JSON.stringify(getFormItemsValue(expectedFormItems))}`
   );
@@ -394,10 +406,10 @@ TestSimplifiedForm.play = async ({ canvasElement }) => {
   await userEvent.click(canvas.getByText("Update form"));
   await checkFormItems(canvasElement, expectedFormItems);
 
-  (expectedFormItems[2].initialValue = "opt3"),
-    (expectedFormItems[2].selectedLabel = "Opt 3"),
-    await modifyFormItems(canvasElement, expectedFormItems.slice(2, 3));
-
+  expectedFormItems[2].initialValue = "opt3";
+  expectedFormItems[2].selectedLabel = "Opt 3";
+  await modifyFormItems(canvasElement, expectedFormItems.slice(2, 3));
+  await sleep(100);
   await expect(canvas.getByTestId("value")).toHaveTextContent(
     `Value: ${JSON.stringify(getFormItemsValue(expectedFormItems))}`
   );
@@ -617,8 +629,8 @@ InternalFormCtx.play = async ({ canvasElement }) => {
     ...expectedRegisteredFields.slice(-1),
     ...expectedRegisteredFields.slice(0, -1),
   ];
-  (expectedRegisteredFields[1].fullPath[0] = "new field name"),
-    (expectedRegisteredFields[1].name = "new field name");
+  expectedRegisteredFields[1].fullPath[0] = "new field name";
+  expectedRegisteredFields[1].name = "new field name";
   await userEvent.selectOptions(
     canvas.getByTestId("registeredFieldsSelect"),
     "2"
@@ -631,16 +643,269 @@ InternalFormCtx.play = async ({ canvasElement }) => {
   );
 
   //renaming form group name should rename all children
-  (expectedRegisteredFields[2].fullPath[0] = "address2"),
-    (expectedRegisteredFields[3].fullPath[0] = "address2"),
-    await userEvent.selectOptions(
-      canvas.getByTestId("registeredFieldsSelect"),
-      "3"
-    );
+  expectedRegisteredFields[2].fullPath[0] = "address2";
+  expectedRegisteredFields[3].fullPath[0] = "address2";
+  await userEvent.selectOptions(
+    canvas.getByTestId("registeredFieldsSelect"),
+    "3"
+  );
   await userEvent.type(canvas.getByTestId("renameInput"), "address2");
   await userEvent.click(canvas.getByText("Rename field"));
   await sleep(100);
   await expect(canvas.getByTestId("registeredFields")).toHaveTextContent(
     JSON.stringify(expectedRegisteredFields)
   );
+};
+
+const _SchemaForms: StoryFn = (args: any) => {
+  const [formType, setFormType] = React.useState<"new" | "update">("new");
+  const [table, setTable] = React.useState<"athletes" | "products">("athletes");
+  const [id, setId] = React.useState<number>(0);
+  const [newFieldName, setNewFieldName] = React.useState("");
+  const [dataFields, setDataFields] = React.useState<SimplifiedFormItemsProp[]>(
+    []
+  );
+  const [dataOp, setDataOp] = React.useState<
+    FormWrapperProps["data"] | undefined
+  >({
+    sourceId: "fake",
+    opId: "fake",
+    userArgs: {
+      table: "athletes",
+      opName: "schema",
+    },
+  });
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      <div style={{ display: "flex", gap: 10 }}>
+        <p>Form Type</p>
+        <select
+          data-testid={"formType"}
+          value={formType}
+          onChange={(e) => setFormType(e.target.value as any)}
+        >
+          <option value="new">New Entry</option>
+          <option value="update">Update Entry</option>
+        </select>
+      </div>
+      <div style={{ display: "flex", gap: 10 }}>
+        <p>Table</p>
+        <select
+          data-testid={"table"}
+          value={table}
+          onChange={(e) => setTable(e.target.value as any)}
+        >
+          <option value={"athletes"}>Athletes</option>
+          <option value="products">Products</option>
+        </select>
+      </div>
+      <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+        <span>Id</span>
+        <InputNumber
+          value={id}
+          onChange={(val) => setId(val ?? 0)}
+          data-testid={"rowId"}
+        />
+      </div>
+      <Button
+        onClick={() => {
+          setDataOp({
+            sourceId: "fake",
+            opId: "fake",
+            userArgs: {
+              table,
+              opName: formType === "new" ? "schema" : "getRow",
+              id,
+            },
+          });
+        }}
+      >
+        Generate new form
+      </Button>
+      <Button
+        onClick={() => {
+          setDataOp(undefined);
+          setDataFields([]);
+        }}
+        danger
+      >
+        Disconnect from data
+      </Button>
+      <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+        <span>New field name</span>
+        <Input
+          value={newFieldName}
+          onChange={(e) => setNewFieldName(e.target.value)}
+          style={{ width: 200 }}
+          data-testid={"newFieldName"}
+        />
+        <Button
+          onClick={() => {
+            setDataFields((dataFields) => [
+              ...dataFields,
+              {
+                inputType: InputType.Text,
+                name: newFieldName,
+                label: newFieldName,
+              },
+            ]);
+            setNewFieldName("");
+          }}
+        >
+          Add field
+        </Button>
+      </div>
+      <hr />
+      <Form
+        mode="simplified"
+        submitSlot={<Button type="primary">Submit</Button>}
+        colon={false}
+        data={dataOp}
+        formItems={[
+          {
+            inputType: InputType.Text,
+            name: "name",
+            label: "Name",
+            initialValue: "hello",
+          },
+          { inputType: InputType.TextArea, name: "message", label: "Message" },
+        ]}
+        dataFormItems={dataFields}
+      />
+    </div>
+  );
+};
+
+export const SchemaForms = _SchemaForms.bind({});
+SchemaForms.args = {};
+SchemaForms.parameters = {
+  mockData: [
+    {
+      url: "https://data.plasmic.app/api/v1/server-data/sources/:id/execute",
+      method: "POST",
+      status: 200,
+      response: (request: any) => {
+        const body = JSON.parse(request.body);
+        const { opName, id } = body.userArgs;
+        const table = body.userArgs.table;
+        return {
+          data:
+            opName === "getRow"
+              ? fakeInitDatabase[table].find((row: any) => row.id === id)
+              : [],
+          schema: {
+            id: table,
+            fields: fakeSchema[table],
+          },
+        };
+      },
+    },
+  ],
+};
+SchemaForms.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  const genExpectedFormItemsFromSchema = (
+    table: keyof typeof fakeSchema,
+    formType: "new" | "update",
+    id?: number
+  ) => {
+    return fakeSchema[table].map((column) => ({
+      name: column.name,
+      fieldId: column.name,
+      id: column.name,
+      inputType:
+        column.type === "string"
+          ? InputType.Text
+          : column.type === "number"
+          ? InputType.Number
+          : column.type === "boolean"
+          ? InputType.Checkbox
+          : InputType.Text,
+      ...(formType === "update"
+        ? {
+            initialValue: fakeInitDatabase[table].find(
+              (row: any) => row.id === id
+            )?.[column.name],
+          }
+        : {}),
+    })) as SimplifiedFormItemsProp[];
+  };
+
+  let expectedFormItems = genExpectedFormItemsFromSchema("athletes", "new");
+  await sleep(100);
+  await checkFormItems(canvasElement, expectedFormItems);
+
+  // can switch between rows and tables
+  await userEvent.selectOptions(canvas.getByTestId("formType"), "update");
+  await userEvent.type(canvas.getByTestId("rowId"), "{selectall}{del}1");
+  await userEvent.click(canvas.getByText("Generate new form"));
+  await sleep(100);
+  expectedFormItems = genExpectedFormItemsFromSchema("athletes", "update", 1);
+  await checkFormItems(canvasElement, expectedFormItems);
+
+  await userEvent.selectOptions(canvas.getByTestId("formType"), "update");
+  await userEvent.type(canvas.getByTestId("rowId"), "{selectall}{del}2");
+  await userEvent.click(canvas.getByText("Generate new form"));
+  await sleep(100);
+  expectedFormItems = genExpectedFormItemsFromSchema("athletes", "update", 2);
+  await checkFormItems(canvasElement, expectedFormItems);
+
+  await userEvent.selectOptions(canvas.getByTestId("formType"), "new");
+  await userEvent.selectOptions(canvas.getByTestId("table"), "products");
+  await userEvent.click(canvas.getByText("Generate new form"));
+  await sleep(100);
+  expectedFormItems = genExpectedFormItemsFromSchema("products", "update");
+  await checkFormItems(canvasElement, expectedFormItems);
+
+  await userEvent.selectOptions(canvas.getByTestId("formType"), "update");
+  await userEvent.type(canvas.getByTestId("rowId"), "{selectall}{del}2");
+  await userEvent.click(canvas.getByText("Generate new form"));
+  await sleep(100);
+  expectedFormItems = genExpectedFormItemsFromSchema("products", "update", 2);
+  await checkFormItems(canvasElement, expectedFormItems);
+
+  // can add new fields to schema forms
+  await userEvent.type(canvas.getByTestId("newFieldName"), "new field");
+  await userEvent.click(canvas.getByText("Add field"));
+  await sleep(100);
+  expectedFormItems.push({
+    inputType: InputType.Text,
+    name: "new field",
+    label: "new field",
+  });
+  await userEvent.type(canvas.getByTestId("newFieldName"), "new field2");
+  await userEvent.click(canvas.getByText("Add field"));
+  await sleep(100);
+  expectedFormItems.push({
+    inputType: InputType.Text,
+    name: "new field2",
+    label: "new field2",
+  });
+  await checkFormItems(canvasElement, expectedFormItems);
+
+  // disconnecting from data switches to the formItems prop
+  await userEvent.click(canvas.getByText("Disconnect from data"));
+  expectedFormItems = [
+    {
+      inputType: InputType.Text,
+      name: "name",
+      initialValue: "hello",
+    },
+    {
+      inputType: InputType.TextArea,
+      name: "message",
+    },
+  ];
+  await sleep(100);
+  await checkFormItems(canvasElement, expectedFormItems);
+
+  // can connect back to data
+  await userEvent.selectOptions(canvas.getByTestId("formType"), "update");
+  await userEvent.selectOptions(canvas.getByTestId("table"), "athletes");
+  await userEvent.type(canvas.getByTestId("rowId"), "{selectall}{del}3");
+  await userEvent.click(canvas.getByText("Generate new form"));
+  await sleep(100);
+  expectedFormItems = genExpectedFormItemsFromSchema("athletes", "update", 3);
+  await checkFormItems(canvasElement, expectedFormItems);
 };

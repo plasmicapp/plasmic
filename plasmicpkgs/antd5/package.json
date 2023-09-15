@@ -86,7 +86,8 @@
     "rollup-plugin-dts": "^5.0.0",
     "rollup-plugin-esbuild": "^5.0.0",
     "rollup-plugin-replace-imports": "^1.0.0",
-    "storybook": "^7.4.0"
+    "storybook": "^7.4.0",
+    "storybook-addon-mock": "^4.2.1"
   },
   "peerDependencies": {
     "@plasmicapp/data-sources": ">=0.1.0",
