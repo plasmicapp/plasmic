@@ -310,7 +310,10 @@ const Internal = React.forwardRef(
             }
             onValuesChange={(...args) => {
               props.onValuesChange?.(...args);
-              extendedOnValuesChange?.(args[1]);
+              extendedOnValuesChange?.(form.getFieldsValue(true));
+            }}
+            onFinish={() => {
+              props.onFinish?.(form.getFieldsValue(true));
             }}
             form={form}
             labelCol={

@@ -909,3 +909,159 @@ SchemaForms.play = async ({ canvasElement }) => {
   expectedFormItems = genExpectedFormItemsFromSchema("athletes", "update", 3);
   await checkFormItems(canvasElement, expectedFormItems);
 };
+
+const _MultiStepForm: StoryFn = (args: any) => {
+  const [step, setStep] = React.useState(0);
+  const $state = useDollarState(
+    [
+      {
+        path: "form.value",
+        type: "private",
+        variableType: "object",
+      },
+      {
+        path: "submittedData",
+        type: "private",
+        variableType: "object",
+      },
+    ],
+    { $props: args }
+  );
+  return (
+    <div>
+      <Form
+        extendedOnValuesChange={(values) => ($state.form.value = values)}
+        onFinish={(values) => ($state.submittedData = values)}
+        validateTrigger={"onFinish"}
+      >
+        {[0, 1, 2].map((formStep) => {
+          if (formStep !== step) {
+            return null;
+          }
+          return [0, 1].map((fieldId) => (
+            <FormItem
+              name={`field${formStep}${fieldId}`}
+              label={`Field ${formStep} ${fieldId}`}
+            >
+              {fieldId === 0 ? <Input /> : <InputNumber />}
+            </FormItem>
+          ));
+        })}
+        <div style={{ display: "flex", gap: 10 }}>
+          <Button
+            danger
+            onClick={() => setStep((s) => s - 1)}
+            disabled={step < 1}
+            data-testid="prevStep"
+          >
+            Prev step
+          </Button>
+          <Button
+            onClick={async () => {
+              setStep((s) => s + 1);
+            }}
+            disabled={step == 2}
+            data-testid="nextStep"
+          >
+            Next step
+          </Button>
+          <Button
+            type="primary"
+            disabled={step != 2}
+            htmlType="submit"
+            data-testid="submit"
+          >
+            Submit
+          </Button>
+        </div>
+      </Form>
+      <p data-testid="value">{JSON.stringify($state.form.value)}</p>
+      <p data-testid="submittedData">{JSON.stringify($state.submittedData)}</p>
+    </div>
+  );
+};
+
+export const MultiStepForm = _MultiStepForm.bind({});
+MultiStepForm.args = {};
+MultiStepForm.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  let expectedFormItems: SimplifiedFormItemsProp[] = [
+    { name: "field00", inputType: InputType.Text },
+    { name: "field01", inputType: InputType.Number },
+  ];
+  const formItemsValues: Record<string, any> = {
+    field00: "foo",
+    field01: 123,
+  };
+
+  // $state.form.value keeps value stored even if the component is unmounted
+
+  await checkFormItems(canvasElement, expectedFormItems);
+  expectedFormItems[0].initialValue = formItemsValues.field00;
+  expectedFormItems[1].initialValue = formItemsValues.field01;
+  await modifyFormItems(canvasElement, expectedFormItems);
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    JSON.stringify(formItemsValues)
+  );
+
+  await userEvent.click(canvas.getByText("Next step"));
+
+  expectedFormItems = [
+    { name: "field10", inputType: InputType.Text },
+    { name: "field11", inputType: InputType.Number },
+  ];
+  await checkFormItems(canvasElement, expectedFormItems);
+  formItemsValues.field10 = "bar";
+  formItemsValues.field11 = 456;
+  expectedFormItems[0].initialValue = formItemsValues.field10;
+  expectedFormItems[1].initialValue = formItemsValues.field11;
+  await modifyFormItems(canvasElement, expectedFormItems);
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    JSON.stringify(formItemsValues)
+  );
+
+  await userEvent.click(canvas.getByText("Next step"));
+
+  expectedFormItems = [
+    { name: "field20", inputType: InputType.Text },
+    { name: "field21", inputType: InputType.Number },
+  ];
+  await checkFormItems(canvasElement, expectedFormItems);
+  formItemsValues.field20 = "baz";
+  formItemsValues.field21 = 789;
+  expectedFormItems[0].initialValue = formItemsValues.field20;
+  expectedFormItems[1].initialValue = formItemsValues.field21;
+  await modifyFormItems(canvasElement, expectedFormItems);
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    JSON.stringify(formItemsValues)
+  );
+
+  await userEvent.click(canvas.getByText("Submit"));
+  await sleep(100);
+  await expect(canvas.getByTestId("submittedData")).toHaveTextContent(
+    JSON.stringify(formItemsValues)
+  );
+
+  await userEvent.click(canvas.getByText("Prev step"));
+  expectedFormItems = [
+    { name: "field10", inputType: InputType.Text, initialValue: "bar" },
+    { name: "field11", inputType: InputType.Number, initialValue: 456 },
+  ];
+  await checkFormItems(canvasElement, expectedFormItems);
+  formItemsValues.field10 = "";
+  formItemsValues.field11 = 123;
+  expectedFormItems[0].initialValue = formItemsValues.field10;
+  expectedFormItems[1].initialValue = formItemsValues.field11;
+  await modifyFormItems(canvasElement, expectedFormItems);
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    JSON.stringify(formItemsValues)
+  );
+
+  await userEvent.click(canvas.getByText("Next step"));
+  await userEvent.click(canvas.getByText("Submit"));
+  await sleep(100);
+  await expect(canvas.getByTestId("submittedData")).toHaveTextContent(
+    JSON.stringify(formItemsValues)
+  );
+};
