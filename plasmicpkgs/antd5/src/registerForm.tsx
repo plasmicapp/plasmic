@@ -1376,6 +1376,12 @@ const commonFormItemProps: Record<string, PropType<InternalFormItemProps>> = {
       "Don't render anything but the field control - so no label, help text, validation error, etc.",
     advanced: true,
   },
+  preserve: {
+    type: "boolean" as const,
+    advanced: true,
+    defaultValueHint: true,
+    description: "Keep field value even when field removed.",
+  },
 };
 
 const commonFormItemPropItemType = (
