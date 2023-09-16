@@ -30,7 +30,7 @@ const enableLoadingBoundaryKey = 'plasmicInternalEnableLoadingBoundary';
 
 function mkUndefinedDataProxy(
   promiseRef: { fetchingPromise: Promise<any> | undefined },
-  fetchAndUpdateCache: () => Promise<any>
+  fetchAndUpdateCache: (() => Promise<any>) | undefined
 ) {
   return new Proxy(
     {},
@@ -39,7 +39,21 @@ function mkUndefinedDataProxy(
         if (prop === 'isPlasmicUndefinedDataProxy') {
           return true;
         }
-        const promise = promiseRef.fetchingPromise || fetchAndUpdateCache();
+
+        const promise =
+          // existing fetch
+          promiseRef.fetchingPromise ||
+          // No existing fetch, so kick off a fetch
+          fetchAndUpdateCache?.() ||
+          // There's no key so no fetch to kick off yet. Maybe this
+          // should be some kind of promise that gets resolved when the
+          // key evaluates to none-null. But for now, we just throw
+          // a Promise that never resolves, with the expectation that
+          // some _other_ promise should resolve can cause this component
+          // to be rendered again.
+          new Promise((resolve) => {
+            // intentionally not resolving
+          });
         (promise as any).plasmicType = 'PlasmicUndefinedDataError';
         (promise as any).message = `Cannot read property ${String(
           prop
@@ -97,6 +111,9 @@ export function usePlasmicDataOp<
   const fetcher = React.useMemo(
     () => () => {
       // If we are in this function, that means SWR cache missed.
+      if (!key) {
+        throw new Error(`Fetcher should never be called without a proper key`);
+      }
 
       if (fetchingData.fetchingPromise) {
         // Fetch is already underway from this hook
@@ -138,8 +155,11 @@ export function usePlasmicDataOp<
     },
     [key, fetchingData]
   );
-  const fetchAndUpdateCache = React.useMemo(
-    () => () => {
+  const fetchAndUpdateCache = React.useMemo(() => {
+    if (!key) {
+      return undefined;
+    }
+    return () => {
       // This function is called when the undefined data proxy is invoked.
       // USUALLY, this means the data is not available in SWR yet, and
       // we need to kick off a fetch.
@@ -173,11 +193,18 @@ export function usePlasmicDataOp<
           cache.set(keyInfo, { ...(cache.get(keyInfo) ?? {}), error: err });
         });
       return fetchingData.fetchingPromise!;
-    },
-    [fetcher, fetchingData, cache, key]
-  );
+    };
+  }, [fetcher, fetchingData, cache, key]);
   const res = useMutablePlasmicQueryData<T, E>(key, fetcher, {
     shouldRetryOnError: false,
+
+    // If revalidateIfStale is true, then if there's a cache entry with a key,
+    // but no mounted hook with that key yet, and when the hook mounts with the key,
+    // swr will revalidate. This may be reasonable behavior, but for us, this
+    // happens all the time -- we prepopulate the cache with proxy-invoked fetch,
+    // sometimes before swr had a chance to run the effect.  So we turn off
+    // revalidateIfStale here, and just let the user manage invalidation.
+    revalidateIfStale: false,
   });
   const { data, error, isLoading } = res;
   if (fetchingData.fetchingPromise != null && data !== undefined) {
