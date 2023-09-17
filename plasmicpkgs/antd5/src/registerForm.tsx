@@ -277,6 +277,13 @@ const Internal = React.forwardRef(
         form.resetFields();
         extendedOnValuesChange?.(form.getFieldsValue(true));
       },
+      validateFields: async (...args) => {
+        try {
+          return await form.validateFields(...(args as any));
+        } catch (err) {
+          return err as any;
+        }
+      },
       clearFields: () => {
         const values = form.getFieldsValue(true);
         setFieldsToUndefined(values);
@@ -344,7 +351,7 @@ const Internal = React.forwardRef(
 interface FormRefActions
   extends Pick<
     FormInstance<any>,
-    "setFieldsValue" | "resetFields" | "setFieldValue"
+    "setFieldsValue" | "resetFields" | "setFieldValue" | "validateFields"
   > {
   clearFields: () => void;
   formInstance: FormInstance<any>;
@@ -900,6 +907,21 @@ export function registerForm(loader?: Registerable) {
         displayName: "Clear fields",
         argTypes: [],
       },
+      validateFields: {
+        displayName: "Validate fields",
+        argTypes: [
+          {
+            name: "nameList",
+            displayName: "Name List",
+            type: "object",
+          },
+          {
+            name: "options",
+            displayName: "Options",
+            type: "object",
+          },
+        ],
+      },
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerForm",
     importName: "FormWrapper",
@@ -948,7 +970,7 @@ interface PlasmicRule {
   length?: number;
   pattern?: string;
   custom?: (...args: any[]) => any;
-  options?: { value: string }[];
+  options?: { value: any }[];
   message?: string;
 }
 

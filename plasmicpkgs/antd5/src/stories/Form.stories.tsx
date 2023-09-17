@@ -107,6 +107,12 @@ const ALL_FORM_ITEMS_TYPE: ExtendedSimplifiedFormItemsProp[] = [
   },
 ];
 
+const SubmitSlot = ({ label }: { label?: string }) => (
+  <Button type="primary" htmlType="submit">
+    {label ?? "Submit"}
+  </Button>
+);
+
 const _SimplifiedForm: StoryFn = (args: any) => {
   const $state = useDollarState(
     [
@@ -124,7 +130,7 @@ const _SimplifiedForm: StoryFn = (args: any) => {
         extendedOnValuesChange={(values) => ($state.form.value = values)}
         formItems={args.formItems}
         mode="simplified"
-        submitSlot={<Button type="primary">Submit</Button>}
+        submitSlot={<SubmitSlot />}
       />
       <p>{JSON.stringify($state.form.value)}</p>
     </div>
@@ -235,11 +241,7 @@ const _TestSimplifiedForm: StoryFn = (args: any) => {
       <Form
         mode="simplified"
         formItems={JSON.parse($state.formItems)}
-        submitSlot={
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        }
+        submitSlot={<SubmitSlot />}
         extendedOnValuesChange={(values) => ($state.form.value = values)}
         onFinish={(values) => ($state.submittedValue = values)}
       />
@@ -295,7 +297,7 @@ const checkFormItems = async (
 
 const modifyFormItems = async (
   canvasElement: HTMLElement,
-  expectedFormItems: ExtendedSimplifiedFormItemsProp[]
+  expectedFormItems: Partial<ExtendedSimplifiedFormItemsProp>[]
 ) => {
   for (const formItem of expectedFormItems) {
     const dom = queryByAttribute(
@@ -758,7 +760,7 @@ const _SchemaForms: StoryFn = (args: any) => {
       <hr />
       <Form
         mode="simplified"
-        submitSlot={<Button type="primary">Submit</Button>}
+        submitSlot={<SubmitSlot />}
         colon={false}
         data={dataOp}
         formItems={[
@@ -1064,4 +1066,214 @@ MultiStepForm.play = async ({ canvasElement }) => {
   await expect(canvas.getByTestId("submittedData")).toHaveTextContent(
     JSON.stringify(formItemsValues)
   );
+};
+
+const _FormValidation: StoryFn = (args: any) => {
+  return (
+    <div>
+      Simple Validation
+      <Form
+        mode="simplified"
+        submitSlot={<SubmitSlot label="Submit 1" />}
+        formItems={[
+          {
+            inputType: InputType.Text,
+            name: "field1",
+            label: "Required Field",
+            rules: [
+              {
+                ruleType: "required",
+                message: "Field Is Required",
+              },
+            ],
+          },
+          {
+            inputType: InputType.Text,
+            name: "field2",
+            label: "Field with maximum length",
+            rules: [
+              {
+                ruleType: "max",
+                length: 5,
+                message: "Maximum Length is 5",
+              },
+            ],
+          },
+          {
+            inputType: InputType.Text,
+            name: "field3",
+            label: "Field with minimum length",
+            rules: [
+              {
+                ruleType: "min",
+                length: 5,
+                message: "Minimum Length is 5",
+              },
+            ],
+          },
+          {
+            inputType: InputType.Text,
+            name: "field4",
+            label: "Must be one of rule",
+            rules: [
+              {
+                ruleType: "enum",
+                options: [{ value: "foo" }, { value: "bar" }, { value: "baz" }],
+                message: "Invalid value for field4",
+              },
+            ],
+          },
+          {
+            inputType: InputType.Text,
+            name: "field5",
+            label: "Forbid all-whitespace",
+            rules: [
+              {
+                ruleType: "whitespace",
+                message: "Only whitespace",
+              },
+            ],
+          },
+          {
+            inputType: InputType.Text,
+            name: "field6",
+            label: "Custom validator",
+            rules: [
+              {
+                ruleType: "advanced",
+                message: "Invalid value for field 6",
+                custom: (_rule, value) => value === "qux",
+              },
+            ],
+          },
+        ]}
+      />
+      Multiple validations
+      <Form
+        mode="simplified"
+        submitSlot={<SubmitSlot label="Submit 2" />}
+        formItems={[
+          {
+            inputType: InputType.Text,
+            name: "field7",
+            label: "Required Field",
+            rules: [
+              {
+                ruleType: "required",
+                message: "Field Is Required",
+              },
+              {
+                ruleType: "whitespace",
+                message: "No whitespace",
+              },
+              {
+                ruleType: "min",
+                length: 3,
+                message: "min length 3",
+              },
+              {
+                ruleType: "max",
+                length: 6,
+                message: "max length 6",
+              },
+            ],
+          },
+        ]}
+      />
+    </div>
+  );
+};
+
+export const FormValidation = _FormValidation.bind({});
+FormValidation.args = {};
+FormValidation.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  let labelDom = canvasElement.querySelector(`label[for="field1"]`);
+  await expect(labelDom).toBeInTheDocument();
+  await expect(labelDom).toHaveClass("ant-form-item-required");
+
+  labelDom = canvasElement.querySelector(`label[for="field2"]`);
+  await expect(labelDom).toBeInTheDocument();
+  await expect(labelDom).not.toHaveClass("ant-form-item-required");
+
+  await modifyFormItems(canvasElement, [
+    { name: "field2", initialValue: "more than five chars" },
+    { name: "field3", initialValue: "foo" },
+    { name: "field4", initialValue: "hello" },
+    { name: "field5", initialValue: "   " },
+    { name: "field6", initialValue: "bar" },
+  ]);
+
+  await userEvent.click(canvas.getByText("Submit 1"));
+  await sleep(1000);
+  await expect(
+    canvasElement.getElementsByClassName("ant-form-item-explain-error").length
+  ).toBe(6);
+
+  await expect(canvas.getByText("Field Is Required"));
+  await expect(canvas.getByText("Maximum Length is 5"));
+  await expect(canvas.getByText("Minimum Length is 5"));
+  await expect(canvas.getByText("Invalid value for field4"));
+  await expect(canvas.getByText("Only whitespace"));
+  await expect(canvas.getByText("Invalid value for field 6"));
+
+  await modifyFormItems(canvasElement, [
+    { name: "field1", initialValue: "hello" },
+    { name: "field2", initialValue: "foo" },
+    { name: "field3", initialValue: "more than five chars" },
+    { name: "field4", initialValue: "bar" },
+    { name: "field5", initialValue: "baz" },
+    { name: "field6", initialValue: "qux" },
+  ]);
+
+  await userEvent.click(canvas.getByText("Submit 1"));
+  await sleep(1000);
+  await expect(
+    canvasElement.getElementsByClassName("ant-form-item-explain-error").length
+  ).toBe(0);
+
+  await userEvent.click(canvas.getByText("Submit 2"));
+  await sleep(700);
+  await expect(canvas.getByText("Field Is Required"));
+
+  await modifyFormItems(canvasElement, [
+    { name: "field7", initialValue: "  " },
+  ]);
+  await userEvent.click(canvas.getByText("Submit 2"));
+  await sleep(700);
+  await expect(canvas.getByText("No whitespace"));
+
+  await modifyFormItems(canvasElement, [
+    { name: "field7", initialValue: "ab" },
+  ]);
+  await userEvent.click(canvas.getByText("Submit 2"));
+  await sleep(700);
+  await expect(canvas.getByText("min length 3"));
+
+  await modifyFormItems(canvasElement, [
+    { name: "field7", initialValue: "more than six chars" },
+  ]);
+  await userEvent.click(canvas.getByText("Submit 2"));
+  await sleep(700);
+  await expect(canvas.getByText("max length 6"));
+
+  await modifyFormItems(canvasElement, [
+    { name: "field7", initialValue: "  " },
+  ]);
+  await sleep(700);
+  await expect(canvas.getByText("No whitespace"));
+  await expect(canvas.getByText("min length 3"));
+  await expect(
+    canvasElement.getElementsByClassName("ant-form-item-explain-error").length
+  ).toBe(2);
+
+  await modifyFormItems(canvasElement, [
+    { name: "field7", initialValue: "valid" },
+  ]);
+  await userEvent.click(canvas.getByText("Submit 2"));
+  await sleep(700);
+  await expect(
+    canvasElement.getElementsByClassName("ant-form-item-explain-error").length
+  ).toBe(0);
 };
