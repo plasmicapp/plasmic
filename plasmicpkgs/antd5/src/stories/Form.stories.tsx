@@ -7,11 +7,13 @@ import {
   FormItemWrapper as FormItem,
   InputType,
   SimplifiedFormItemsProp,
+  formHelpers,
+  FormRefActions,
 } from "../registerForm";
 import { Button, Checkbox, Input, InputNumber } from "antd";
 import TextArea, { TextAreaRef } from "antd/es/input/TextArea";
 import { Select } from "antd/lib";
-import { useDollarState } from "@plasmicapp/react-web";
+import { generateOnMutateForSpec, useDollarState } from "@plasmicapp/react-web";
 import {
   userEvent,
   within,
@@ -269,15 +271,16 @@ const checkFormItems = async (
       formItem.name ?? ""
     ) as HTMLSelectElement;
     await expect(dom).toBeInTheDocument();
-    if (!formItem.initialValue) {
-      continue;
-    }
     if (formItem.inputType === InputType.Select) {
       await userEvent.click(dom);
       await userEvent.click(dom);
       const optionDom = document.querySelector('[aria-selected="true"]');
-      await expect(optionDom).toBeInTheDocument();
-      await expect(optionDom).toHaveTextContent(formItem.initialValue);
+      if (formItem.initialValue) {
+        await expect(optionDom).toBeInTheDocument();
+        await expect(optionDom).toHaveTextContent(formItem.initialValue);
+      } else {
+        await expect(optionDom).not.toBeInTheDocument();
+      }
     } else if (formItem.inputType === InputType.Checkbox) {
       if (formItem.initialValue) {
         await expect(dom).toBeChecked();
@@ -290,7 +293,11 @@ const checkFormItems = async (
         await expect(optionDom).toBeChecked();
       }
     } else {
-      await expect(dom).toHaveValue(`${formItem.initialValue}`);
+      if (formItem.initialValue) {
+        await expect(dom).toHaveValue(`${formItem.initialValue}`);
+      } else {
+        await expect(dom).not.toHaveValue();
+      }
     }
   }
 };
@@ -1276,4 +1283,301 @@ FormValidation.play = async ({ canvasElement }) => {
   await expect(
     canvasElement.getElementsByClassName("ant-form-item-explain-error").length
   ).toBe(0);
+};
+
+const _TestFormRefActions: StoryFn = (args: any) => {
+  const refsRef = React.useRef<{ form?: FormRefActions | null }>({});
+  const $refs = refsRef.current;
+  const $state = useDollarState(
+    [
+      {
+        path: "form.value",
+        type: "private",
+        variableType: "object",
+      },
+      {
+        path: "itemName",
+        type: "private",
+        variableType: "text",
+      },
+      {
+        path: "itemValue",
+        type: "private",
+        variableType: "text",
+      },
+    ],
+    { $props: args, $refs }
+  );
+  return (
+    <div>
+      <Form
+        mode="simplified"
+        extendedOnValuesChange={(val) => ($state.form.value = val)}
+        ref={(ref) => ($refs["form"] = ref)}
+        formItems={[
+          ...ALL_FORM_ITEMS_TYPE,
+          {
+            label: "Validate Field",
+            name: "validateField",
+            inputType: InputType.Text,
+            rules: [
+              { ruleType: "required", message: "Field Is Required" },
+              { ruleType: "max", message: "max length is 5", length: 5 },
+            ],
+          },
+        ]}
+        submitSlot={<SubmitSlot />}
+        validateTrigger={"onFinish"}
+      />
+      <p data-testid="value">{JSON.stringify($state.form.value)}</p>
+      <Input
+        value={$state.itemName}
+        onChange={(e) => ($state.itemName = e.target.value)}
+        data-testid={"itemName"}
+      />
+      <Input
+        value={$state.itemValue}
+        onChange={(e) => ($state.itemValue = e.target.value)}
+        data-testid={"itemValue"}
+      />
+      <div>
+        <Button onClick={() => $refs.form?.clearFields()}>Clear fields</Button>
+        <Button onClick={() => $refs.form?.resetFields()}>Reset fields</Button>
+        <Button
+          onClick={() =>
+            $refs.form?.setFieldValue(
+              JSON.parse($state.itemName),
+              JSON.parse($state.itemValue)
+            )
+          }
+        >
+          Set field
+        </Button>
+        <Button
+          onClick={() =>
+            $refs.form?.setFieldsValue(JSON.parse($state.itemValue))
+          }
+        >
+          Set fields
+        </Button>
+        <Button onClick={() => $refs.form?.validateFields()}>
+          Validate all fields
+        </Button>
+        <Button
+          onClick={() =>
+            $refs.form?.validateFields(JSON.parse($state.itemName))
+          }
+        >
+          Validate fields
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+const justType = async (element: HTMLElement, text: string) => {
+  await userEvent.type(element, `{selectall}{del}${text}`);
+};
+export const TestFormRefActions = _TestFormRefActions.bind({});
+TestFormRefActions.args = {};
+TestFormRefActions.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  let expectedFormItems = deepClone(ALL_FORM_ITEMS_TYPE);
+  expectedFormItems.push({
+    label: "Validate Field",
+    name: "validateField",
+    inputType: InputType.Text,
+    rules: [
+      { ruleType: "required", message: "Field Is Required" },
+      { ruleType: "max", message: "max length is 5", length: 5 },
+    ],
+  });
+  await checkFormItems(canvasElement, expectedFormItems);
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    JSON.stringify(getFormItemsValue(expectedFormItems))
+  );
+
+  // can clear fields
+  await userEvent.click(canvas.getByText("Clear fields"));
+  await sleep(100);
+  let newExpectedFormItems = deepClone(expectedFormItems);
+  newExpectedFormItems.forEach(
+    (formItem) => (formItem.initialValue = undefined)
+  );
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    JSON.stringify(getFormItemsValue(newExpectedFormItems))
+  );
+  await checkFormItems(canvasElement, newExpectedFormItems);
+
+  // can reset fields to initial value
+  await userEvent.click(canvas.getByText("Reset fields"));
+  await sleep(100);
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    JSON.stringify(getFormItemsValue(expectedFormItems))
+  );
+  await checkFormItems(canvasElement, expectedFormItems);
+
+  // can set single fields
+  expectedFormItems[0].initialValue = "foo";
+  expectedFormItems[1].initialValue = "bar";
+  expectedFormItems[2].initialValue = 456;
+  expectedFormItems[3].initialValue = "new password";
+  expectedFormItems[4].initialValue = "opt2";
+  expectedFormItems[5].initialValue = false;
+  expectedFormItems[6].initialValue = "radio2";
+  for (const formItem of expectedFormItems) {
+    await justType(canvas.getByTestId("itemName"), `"${formItem.name}"`);
+    await justType(
+      canvas.getByTestId("itemValue"),
+      JSON.stringify(formItem.initialValue)
+    );
+    await userEvent.click(canvas.getByText("Set field"));
+  }
+  await checkFormItems(canvasElement, expectedFormItems);
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    JSON.stringify(getFormItemsValue(expectedFormItems))
+  );
+
+  // can set multiple fields with setFields action
+  expectedFormItems[0].initialValue = "foo3";
+  expectedFormItems[1].initialValue = "bar3";
+  expectedFormItems[2].initialValue = 789;
+  expectedFormItems[3].initialValue = "password3";
+  expectedFormItems[4].initialValue = "opt2";
+  expectedFormItems[5].initialValue = false;
+  expectedFormItems[6].initialValue = "radio2";
+  await userEvent.type(canvas.getByTestId("itemValue"), "{selectall}{del}");
+  await userEvent.paste(
+    canvas.getByTestId("itemValue"),
+    JSON.stringify(getFormItemsValue(expectedFormItems))
+  );
+  await userEvent.click(canvas.getByText("Set fields"));
+  await sleep(100);
+  await checkFormItems(canvasElement, expectedFormItems);
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    JSON.stringify(getFormItemsValue(expectedFormItems))
+  );
+
+  // can use validateFields action
+  await userEvent.click(canvas.getByText("Validate all fields"));
+  await sleep(500);
+  await expect(
+    canvasElement.getElementsByClassName("ant-form-item-explain-error").length
+  ).toBe(1);
+  await expect(canvas.getByText("Field Is Required"));
+
+  await justType(canvas.getByTestId("itemName"), `"validateField"`);
+  await justType(canvas.getByTestId("itemValue"), `"abcdefgh"`);
+  await userEvent.click(canvas.getByText("Set field"));
+  await userEvent.click(canvas.getByText("Validate all fields"));
+  await sleep(1000);
+  await expect(
+    canvasElement.getElementsByClassName("ant-form-item-explain-error").length
+  ).toBe(1);
+  await expect(canvas.getByText("max length is 5"));
+
+  await justType(canvas.getByTestId("itemName"), `"validateField"`);
+  await justType(canvas.getByTestId("itemValue"), `"valid"`);
+  await userEvent.click(canvas.getByText("Set field"));
+  await userEvent.type(canvas.getByTestId("itemName"), "{selectall}{del}");
+  await userEvent.paste(canvas.getByTestId("itemName"), `["textField"]`);
+  await userEvent.click(canvas.getByText("Validate fields"));
+  await sleep(1000);
+  await expect(
+    canvasElement.getElementsByClassName("ant-form-item-explain-error").length
+  ).toBe(1);
+  await expect(canvas.getByText("max length is 5"));
+
+  await userEvent.type(canvas.getByTestId("itemName"), "{selectall}{del}");
+  await userEvent.paste(canvas.getByTestId("itemName"), `["validateField"]`);
+  await userEvent.click(canvas.getByText("Validate fields"));
+  await sleep(1000);
+  await expect(
+    canvasElement.getElementsByClassName("ant-form-item-explain-error").length
+  ).toBe(0);
+};
+
+const _FormStateIsMutable: StoryFn = (args: any) => {
+  const refsRef = React.useRef<{ form?: FormRefActions | null }>({});
+  const $refs = refsRef.current;
+  const $state = useDollarState(
+    [
+      {
+        path: "form.value",
+        type: "private",
+        variableType: "object",
+        refName: "form",
+        onMutate: generateOnMutateForSpec("value", formHelpers),
+      },
+      {
+        path: "runCode",
+        type: "private",
+        variableType: "text",
+      },
+    ],
+    { $props: args, $refs }
+  );
+  return (
+    <div>
+      <Form
+        mode="simplified"
+        extendedOnValuesChange={(val) => ($state.form.value = val)}
+        ref={(ref) => ($refs["form"] = ref)}
+        formItems={ALL_FORM_ITEMS_TYPE}
+        submitSlot={<SubmitSlot />}
+        validateTrigger={"onFinish"}
+      />
+      <p data-testid="value">{JSON.stringify($state.form.value)}</p>
+      <div style={{ display: "flex", gap: 10 }}>
+        <Input
+          value={$state.runCode}
+          onChange={(e) => ($state.runCode = e.target.value)}
+          data-testid={"runCode"}
+        />
+        <Button
+          onClick={() => {
+            eval($state.runCode);
+          }}
+        >
+          Run Code
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+export const FormStateIsMutable = _FormStateIsMutable.bind({});
+FormStateIsMutable.args = {};
+FormStateIsMutable.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  let expectedFormItems = deepClone(ALL_FORM_ITEMS_TYPE);
+  await checkFormItems(canvasElement, expectedFormItems);
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    JSON.stringify(getFormItemsValue(expectedFormItems))
+  );
+
+  expectedFormItems[0].initialValue = "foo2";
+  expectedFormItems[1].initialValue = "bar2";
+  expectedFormItems[2].initialValue = 123;
+  expectedFormItems[3].initialValue = "password123";
+  expectedFormItems[4].initialValue = "opt1";
+  expectedFormItems[5].initialValue = true;
+  expectedFormItems[6].initialValue = "radio1";
+
+  for (const formItem of expectedFormItems) {
+    await justType(
+      canvas.getByTestId("runCode"),
+      `$state.form.value.${formItem.name} = ${JSON.stringify(
+        formItem.initialValue
+      )}`
+    );
+    await userEvent.click(canvas.getByText("Run Code"));
+  }
+  await sleep(100);
+  await checkFormItems(canvasElement, expectedFormItems);
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    JSON.stringify(getFormItemsValue(expectedFormItems))
+  );
 };

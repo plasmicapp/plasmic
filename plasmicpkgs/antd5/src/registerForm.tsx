@@ -348,7 +348,7 @@ const Internal = React.forwardRef(
   }
 );
 
-interface FormRefActions
+export interface FormRefActions
   extends Pick<
     FormInstance<any>,
     "setFieldsValue" | "resetFields" | "setFieldValue" | "validateFields"
