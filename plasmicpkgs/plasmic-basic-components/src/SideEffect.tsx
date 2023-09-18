@@ -26,27 +26,28 @@ export default function SideEffect({
 export const sideEffectMeta: CodeComponentMeta<SideEffectProps> = {
   name: "hostless-side-effect",
   displayName: "Side Effect",
-  description: "Run actions on component mount/unmount.",
+  description: "Run actions on load, unload, and when data changes.",
   importName: "SideEffect",
   importPath: "@plasmicpkgs/plasmic-basic-components",
   props: {
     onMount: {
       type: "eventHandler",
-      displayName: "On mount",
-      description: "Actions to run when the component is mounted.",
+      displayName: "On load",
+      description: "Actions to run when this Side Effect component is mounted.",
       argTypes: [],
     },
     onUnmount: {
       type: "eventHandler",
-      displayName: "On unmount",
-      description: "Actions to run when the component is unmounted.",
+      displayName: "On unload",
+      description:
+        "Actions to run when this Side Effect component is unmounted.",
       argTypes: [],
     },
     deps: {
       type: "array",
-      displayName: "Dependencies",
+      displayName: "When data changes",
       description:
-        "List of reactive values which should trigger a re-run of the actions if changed.",
+        "List of values which should trigger a re-run of the actions if changed.",
     },
   },
 };
