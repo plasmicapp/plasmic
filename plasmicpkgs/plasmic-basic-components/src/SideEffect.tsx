@@ -1,4 +1,6 @@
-import { CodeComponentMeta, registerComponent } from "@plasmicapp/host";
+import registerComponent, {
+  CodeComponentMeta,
+} from "@plasmicapp/host/registerComponent";
 import React from "react";
 
 export interface SideEffectProps {
