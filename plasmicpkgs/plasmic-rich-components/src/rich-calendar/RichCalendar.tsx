@@ -19,6 +19,12 @@ import {
 import { groupBy } from "lodash";
 import { getFieldAggregateValue } from "../formatting";
 
+import weekday from "dayjs/plugin/weekday";
+import localeData from "dayjs/plugin/localeData";
+
+dayjs.extend(weekday);
+dayjs.extend(localeData);
+
 type RichCalendarPropsBase = Omit<
   React.ComponentProps<typeof Calendar>,
   "value" | "defaultValue" | "validRange"

@@ -42,6 +42,7 @@ export function registerRichCalendar(loader?: Registerable) {
         type: "dateString",
         description: `The date selected by default as an ISO string`,
         validator: (value, ps) => {
+          if (!ps.value) return true;
           if (!ps.validRange) return true;
           if (!isValidIsoDate(value)) return "Not a valid ISO string.";
           if (
