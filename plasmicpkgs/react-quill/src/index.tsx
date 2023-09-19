@@ -6,15 +6,22 @@ import { useIsClient } from "./useIsClient";
 const ReactQuill =
   typeof window !== "undefined" ? require("react-quill") : null;
 
-
-type ToolbarOptionsType = "textStyle" | "script" | "fontFamily" | "heading" | "fontSizes" | "colors" | "formatting" | "inputTypes";
+type ToolbarOptionsType =
+  | "textStyle"
+  | "script"
+  | "fontFamily"
+  | "heading"
+  | "fontSizes"
+  | "colors"
+  | "formatting"
+  | "inputTypes";
 
 const TEXT_STYLE_DICT = {
-  "bold": "bold",
-  "italic": "italic",
-  "underline": "underline",
-  "strikethrough": "strike",
-}
+  bold: "bold",
+  italic: "italic",
+  underline: "underline",
+  strikethrough: "strike",
+};
 
 const HEADING_TYPES_DICT = {
   "Heading 1": 1,
@@ -23,48 +30,49 @@ const HEADING_TYPES_DICT = {
   "Heading 4": 4,
   "Heading 5": 5,
   "Heading 6": 6,
-  "Body": "normal",
-}
+  Body: "normal",
+};
 
-const FONT_SIZES = [
-  "small",
-  "medium",
-  "large",
-  "huge",
-];
+const FONT_SIZES = ["small", "medium", "large", "huge"];
 
 const COLOR_TYPE_DICT = {
   "text color": "color",
-  "text background": "background"
-}
+  "text background": "background",
+};
 
 const FORMATTING_TYPES_DICT = {
-  "alignment": "align",
-  "list": "list",
-  "indentation": "indent",
+  alignment: "align",
+  list: "list",
+  indentation: "indent",
   "text direction": "direction",
-  "clear formatting": "clean"
+  "clear formatting": "clean",
 };
 
 const INPUT_TYPES = [
-  "link","blockquote","image","video","code-block","formula"
-]
+  "link",
+  "blockquote",
+  "image",
+  "video",
+  "code-block",
+  "formula",
+];
 
-export function Quill(props: ReactQuillProps & {
-  containerClassName: string;
-  customToolbar: any[];
-  toolbar: Record<ToolbarOptionsType, any>;
-}) {
+export function Quill(
+  props: ReactQuillProps & {
+    containerClassName: string;
+    customToolbar: any[];
+    toolbar: Record<ToolbarOptionsType, any>;
+  }
+) {
   const isClient = useIsClient();
-  
-  const {containerClassName, toolbar, customToolbar, ...rest} = props;
+
+  const { containerClassName, toolbar, customToolbar, ...rest } = props;
 
   const modules = useMemo(() => {
-
     if (customToolbar) {
       return {
         toolbar: customToolbar,
-      }
+      };
     }
 
     const {
@@ -77,59 +85,80 @@ export function Quill(props: ReactQuillProps & {
       formatting,
       inputTypes,
     } = toolbar;
-  
+
     const textStyleControls = Object.keys(TEXT_STYLE_DICT)
-      .filter(key => textStyle.includes(key))
+      .filter((key) => textStyle.includes(key))
       .map((key) => TEXT_STYLE_DICT[key as keyof typeof TEXT_STYLE_DICT]);
-  
+
     const colorControls = Object.keys(COLOR_TYPE_DICT)
-      .filter(key => colors.includes(key))
-      .map((key) => ({ [COLOR_TYPE_DICT[key as keyof typeof COLOR_TYPE_DICT]]: [] }));
-  
-    const scriptControls = script 
-    ? [{ 'script': 'super'}, { 'script': 'sub'}] : undefined;
-  
+      .filter((key) => colors.includes(key))
+      .map((key) => ({
+        [COLOR_TYPE_DICT[key as keyof typeof COLOR_TYPE_DICT]]: [],
+      }));
+
+    const scriptControls = script
+      ? [{ script: "super" }, { script: "sub" }]
+      : undefined;
+
     const fontControls = [
-      fontFamily ?{font: []} : undefined,
+      fontFamily ? { font: [] } : undefined,
       heading.length
         ? {
             header: Object.keys(HEADING_TYPES_DICT)
-              .filter(key => heading.includes(key))
-              .map((key) => HEADING_TYPES_DICT[key as keyof typeof HEADING_TYPES_DICT])}
+              .filter((key) => heading.includes(key))
+              .map(
+                (key) =>
+                  HEADING_TYPES_DICT[key as keyof typeof HEADING_TYPES_DICT]
+              ),
+          }
         : undefined,
       fontSizes.length
-        ? {size: FONT_SIZES.filter(fs => fontSizes.includes(fs))}
+        ? { size: FONT_SIZES.filter((fs) => fontSizes.includes(fs)) }
         : undefined,
-    ].filter(i => i);
-  
+    ].filter((i) => i);
+
     const listControlsGroup: any[] = [];
     const indentationControlsGroup: any[] = [];
     const otherFormattingControlsGroup: any[] = [];
-  
+
     formatting?.map((f: keyof typeof FORMATTING_TYPES_DICT) => {
-      switch(f) {
+      switch (f) {
         case "list":
-          listControlsGroup.push({  [FORMATTING_TYPES_DICT["list"]]: 'ordered'});
-          listControlsGroup.push({  [FORMATTING_TYPES_DICT["list"]]: 'bullet' });
+          listControlsGroup.push({
+            [FORMATTING_TYPES_DICT["list"]]: "ordered",
+          });
+          listControlsGroup.push({ [FORMATTING_TYPES_DICT["list"]]: "bullet" });
           break;
         case "alignment":
-          otherFormattingControlsGroup.push({ [FORMATTING_TYPES_DICT["alignment"]]: []});
+          otherFormattingControlsGroup.push({
+            [FORMATTING_TYPES_DICT["alignment"]]: [],
+          });
           break;
-          case "indentation":
-            indentationControlsGroup.push({ [FORMATTING_TYPES_DICT["indentation"]]: '-1'});
-            indentationControlsGroup.push({ [FORMATTING_TYPES_DICT["indentation"]]: '+1'});
+        case "indentation":
+          indentationControlsGroup.push({
+            [FORMATTING_TYPES_DICT["indentation"]]: "-1",
+          });
+          indentationControlsGroup.push({
+            [FORMATTING_TYPES_DICT["indentation"]]: "+1",
+          });
           break;
         case "text direction":
-          otherFormattingControlsGroup.push({ [FORMATTING_TYPES_DICT["text direction"]]: 'rtl' });
+          otherFormattingControlsGroup.push({
+            [FORMATTING_TYPES_DICT["text direction"]]: "rtl",
+          });
           break;
         case "clear formatting":
-          otherFormattingControlsGroup.push(FORMATTING_TYPES_DICT["clear formatting"]);
+          otherFormattingControlsGroup.push(
+            FORMATTING_TYPES_DICT["clear formatting"]
+          );
           break;
       }
     });
-  
-    const otherInputControls = inputTypes.length ? INPUT_TYPES.filter(inp => inputTypes.includes(inp)) : undefined;
-  
+
+    const otherInputControls = inputTypes.length
+      ? INPUT_TYPES.filter((inp) => inputTypes.includes(inp))
+      : undefined;
+
     return {
       toolbar: [
         textStyleControls,
@@ -140,11 +169,14 @@ export function Quill(props: ReactQuillProps & {
         indentationControlsGroup,
         otherFormattingControlsGroup,
         otherInputControls,
-      ].filter(i => i?.length)
-    }
+      ].filter((i) => i?.length),
+    };
   }, [toolbar, customToolbar]);
 
-  const key = useMemo(() => JSON.stringify(modules) + String(rest.preserveWhitespace), [rest.preserveWhitespace, modules]);
+  const key = useMemo(
+    () => JSON.stringify(modules) + String(rest.preserveWhitespace),
+    [rest.preserveWhitespace, modules]
+  );
 
   if (!isClient) {
     return null;
@@ -152,31 +184,27 @@ export function Quill(props: ReactQuillProps & {
 
   return (
     <div className={containerClassName}>
-      <ReactQuill 
-        key={key} 
-        modules={modules}
-        {...rest}
-      />
+      <ReactQuill key={key} modules={modules} {...rest} />
     </div>
-  )
+  );
 }
 
-const quillHelpers_ = {
+export const quillHelpers = {
   states: {
     value: {
       onChangeArgsToValue: ((content, _delta, _source, _editor) => {
         return content;
       }) as ReactQuillProps["onChange"],
-    }
-  }
-}
+    },
+  },
+};
 
 const toolbarFields: Record<ToolbarOptionsType, PropType<any>> = {
   textStyle: {
     type: "choice",
     multiSelect: true,
     options: Object.keys(TEXT_STYLE_DICT),
-    defaultValue: Object.keys(TEXT_STYLE_DICT)
+    defaultValue: Object.keys(TEXT_STYLE_DICT),
   },
   colors: {
     type: "choice",
@@ -214,20 +242,18 @@ const toolbarFields: Record<ToolbarOptionsType, PropType<any>> = {
   inputTypes: {
     type: "choice",
     multiSelect: true,
-    options:INPUT_TYPES,
-    defaultValue:INPUT_TYPES,
+    options: INPUT_TYPES,
+    defaultValue: INPUT_TYPES,
   },
 } as const;
 
-const importName = "ReactQuill";
-
 export function registerQuill(loader?: Registerable) {
-  registerComponentHelper(loader, Quill, {
+  registerComponentHelper(loader, ReactQuill, {
     name: "hostless-react-quill",
     displayName: "Rich Text Editor",
     classNameProp: "containerClassName",
     defaultStyles: {
-      width: "stretch"
+      width: "stretch",
     },
     props: {
       value: {
@@ -239,24 +265,27 @@ export function registerQuill(loader?: Registerable) {
       },
       toolbar: {
         type: "object",
-        fields: {...toolbarFields}, 
-        defaultValue: Object.keys(toolbarFields)
-          .reduce((acc: any, key) => {
-            acc[key] = (toolbarFields[key as keyof typeof toolbarFields] as any).defaultValue;
-            return acc;
-          }, {}),
+        fields: { ...toolbarFields },
+        defaultValue: Object.keys(toolbarFields).reduce((acc: any, key) => {
+          acc[key] = (
+            toolbarFields[key as keyof typeof toolbarFields] as any
+          ).defaultValue;
+          return acc;
+        }, {}),
         description: "Customize the toolbar to show/hide controls",
       },
       customToolbar: {
         type: "array",
         advanced: true,
-        description: "Custom toolbar configuration for Quill editor. Overrides the existing toolbar."
+        description:
+          "Custom toolbar configuration for Quill editor. Overrides the existing toolbar.",
       },
       placeholder: "string",
       preserveWhitespace: {
         type: "boolean",
-        description: "Prevents Quill from collapsing continuous whitespaces on paste",
-        advanced: true,  
+        description:
+          "Prevents Quill from collapsing continuous whitespaces on paste",
+        advanced: true,
         defaultValue: true,
       },
       readOnly: {
@@ -279,12 +308,12 @@ export function registerQuill(loader?: Registerable) {
           },
           {
             name: "source",
-            type: "string"
+            type: "string",
           },
           {
             name: "editor",
-            type: "object"
-          }
+            type: "object",
+          },
         ],
       },
       onChangeSelection: {
@@ -297,12 +326,12 @@ export function registerQuill(loader?: Registerable) {
           },
           {
             name: "source",
-            type: "string"
+            type: "string",
           },
           {
             name: "editor",
-            type: "object"
-          }
+            type: "object",
+          },
         ],
       },
       onFocus: {
@@ -315,12 +344,12 @@ export function registerQuill(loader?: Registerable) {
           },
           {
             name: "source",
-            type: "string"
+            type: "string",
           },
           {
             name: "editor",
-            type: "object"
-          }
+            type: "object",
+          },
         ],
       },
       onBlur: {
@@ -333,12 +362,12 @@ export function registerQuill(loader?: Registerable) {
           },
           {
             name: "source",
-            type: "string"
+            type: "string",
           },
           {
             name: "editor",
-            type: "object"
-          }
+            type: "object",
+          },
         ],
       },
       onKeyPress: {
@@ -348,7 +377,7 @@ export function registerQuill(loader?: Registerable) {
           {
             name: "event",
             type: "object",
-          }
+          },
         ],
       },
       onKeyDown: {
@@ -358,7 +387,7 @@ export function registerQuill(loader?: Registerable) {
           {
             name: "event",
             type: "object",
-          }
+          },
         ],
       },
       onKeyUp: {
@@ -368,26 +397,26 @@ export function registerQuill(loader?: Registerable) {
           {
             name: "event",
             type: "object",
-          }
+          },
         ],
       },
     } as any,
     states: {
-        value: {
-          type: "writable",
-          valueProp: "value",
-          onChangeProp: "onChange",
-          variableType: "text",
-          // initVal: "",
-          ...quillHelpers_.states.value,
-        },
+      value: {
+        type: "writable",
+        valueProp: "value",
+        onChangeProp: "onChange",
+        variableType: "text",
+        // initVal: "",
+        ...quillHelpers.states.value,
+      },
     },
     componentHelpers: {
-      helpers: quillHelpers_,
-      importName,
+      helpers: quillHelpers,
+      importName: "quillHelpers",
       importPath: "@plasmicpkgs/react-quill",
     },
-    importName,
+    importName: "Quill",
     importPath: "@plasmicpkgs/react-quill",
   });
 }
