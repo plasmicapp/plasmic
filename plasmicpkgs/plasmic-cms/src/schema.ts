@@ -90,5 +90,6 @@ type FilterClause = any;
 export interface ApiCmsQuery {
   where?: FilterClause;
   limit?: number;
+  offset?: number;
   order?: (string | { field: string; dir: "asc" | "desc" })[];
 }

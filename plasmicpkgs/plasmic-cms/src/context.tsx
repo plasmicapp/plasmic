@@ -15,8 +15,14 @@ const collectionResultSuffix = `Collection`;
 export const mkQueryContextKey = (table: string) =>
   `${contextPrefix}${capitalizeFirst(table)}${collectionResultSuffix}`;
 const itemContextSuffix = `Item`;
+const countContextSuffix = `Count`;
+const modeContextSuffix = `Mode`;
 const mkRowContextKey = (table: string) =>
   `${contextPrefix}${capitalizeFirst(table)}${itemContextSuffix}`;
+const mkCountContextKey = (table: string) =>
+  `${contextPrefix}${capitalizeFirst(table)}${countContextSuffix}`;
+const mkModeContextKey = (table: string) =>
+  `${contextPrefix}${capitalizeFirst(table)}${modeContextSuffix}`;
 
 function capitalizeFirst(str: string): string {
   return str[0]?.toUpperCase() + str.slice(1);
@@ -95,6 +101,13 @@ function getClosestMatchingKeys(env: DataDict, suffix: string) {
   return [...Object.keys(env).reverse()].filter((k) => k.endsWith(suffix));
 }
 
+function getClosestMatchingKeysBy(
+  env: DataDict,
+  pred: (str: string) => boolean
+) {
+  return [...Object.keys(env).reverse()].filter((key) => pred(key));
+}
+
 export function QueryResultProvider({
   children,
   table,
@@ -108,16 +121,22 @@ export function QueryResultProvider({
 }) {
   return (
     <DataProvider
-      name={table ? mkQueryContextKey(table) : undefined}
-      data={rows}
-      hidden={hidden}
+      name={table ? mkModeContextKey(table) : undefined}
+      data="rows"
+      hidden
     >
-      {children}
+      <DataProvider
+        name={table ? mkQueryContextKey(table) : undefined}
+        data={rows}
+        hidden={hidden}
+      >
+        {children}
+      </DataProvider>
     </DataProvider>
   );
 }
 
-export function useTablesWithDataLoaded() {
+export function useTablesWithDataLoaded(mode: "rows" | "count" | undefined) {
   const env = useDataEnv();
   const tables = useTables();
 
@@ -129,11 +148,39 @@ export function useTablesWithDataLoaded() {
     return undefined;
   }
 
-  const matchingKeys = getClosestMatchingKeys(env, itemContextSuffix);
+  const matchingKeys = getClosestMatchingKeysBy(env, (key) => {
+    if (mode === "rows") {
+      return key.endsWith(itemContextSuffix);
+    } else if (mode === "count") {
+      return key.endsWith(countContextSuffix);
+    } else {
+      return (
+        key.endsWith(itemContextSuffix) || key.endsWith(countContextSuffix)
+      );
+    }
+  });
 
   return tables.filter((table) =>
-    matchingKeys.some((key) => mkRowContextKey(table.identifier) === key)
+    matchingKeys.some((key) => {
+      if (mode === "rows") {
+        return mkRowContextKey(table.identifier) === key;
+      } else if (mode === "count") {
+        return mkCountContextKey(table.identifier) === key;
+      } else {
+        return (
+          mkRowContextKey(table.identifier) === key ||
+          mkCountContextKey(table.identifier) === key
+        );
+      }
+    })
   );
+}
+
+function deriveTableId(tables?: ApiCmsTable[], table?: string) {
+  if (!table && tables && tables.length > 0) {
+    table = tables[0].identifier;
+  }
+  return table;
 }
 
 export function useRow(tables?: ApiCmsTable[], table?: string) {
@@ -143,14 +190,31 @@ export function useRow(tables?: ApiCmsTable[], table?: string) {
     return undefined;
   }
 
-  if (!table && tables && tables.length > 0) {
-    table = tables[0].identifier;
-  }
+  table = deriveTableId(tables, table);
 
   if (table) {
     return {
       table,
       row: env[mkRowContextKey(table)] as ApiCmsRow | undefined,
+    };
+  }
+
+  return undefined;
+}
+
+export function useCount(tables?: ApiCmsTable[], table?: string) {
+  const env = useDataEnv();
+
+  if (!env) {
+    return undefined;
+  }
+
+  table = deriveTableId(tables, table);
+
+  if (table) {
+    return {
+      table,
+      count: env[mkCountContextKey(table)] as number | undefined,
     };
   }
 
@@ -169,6 +233,31 @@ export function RowProvider({
   return (
     <DataProvider name={mkRowContextKey(table)} data={row}>
       {children}
+    </DataProvider>
+  );
+}
+
+export function CountProvider({
+  children,
+  table,
+  count,
+}: {
+  children?: React.ReactNode;
+  table: string | undefined;
+  count: number | undefined;
+}) {
+  return (
+    <DataProvider
+      name={table ? mkModeContextKey(table) : undefined}
+      data="count"
+      hidden
+    >
+      <DataProvider
+        name={table ? mkCountContextKey(table) : undefined}
+        data={count}
+      >
+        {children}
+      </DataProvider>
     </DataProvider>
   );
 }

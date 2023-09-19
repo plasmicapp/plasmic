@@ -5,6 +5,8 @@ import registerGlobalContext, {
   GlobalContextMeta,
 } from "@plasmicapp/host/registerGlobalContext";
 import {
+  CmsCount,
+  cmsCountFieldMeta,
   CmsCredentialsProvider,
   cmsCredentialsProviderMeta,
   CmsQueryRepeater,
@@ -54,6 +56,7 @@ export function registerAll(loader?: {
   _registerComponent(CmsRowLink, cmsRowLinkMeta);
   _registerComponent(CmsRowImage, cmsRowImageMeta);
   _registerComponent(CmsRowFieldValue, cmsRowFieldValueMeta);
+  _registerComponent(CmsCount, cmsCountFieldMeta);
 }
 
 export * from "./api";

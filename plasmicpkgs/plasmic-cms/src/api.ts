@@ -9,16 +9,18 @@ export interface DatabaseConfig {
 
 export interface QueryParams {
   useDraft?: boolean;
-  where?: {};
+  where?: any;
   orderBy?: string;
   desc?: boolean;
   limit?: number;
+  offset?: number;
 }
 
 function queryParamsToApi(params: QueryParams): ApiCmsQuery {
   return {
     where: params.where,
     limit: params.limit,
+    offset: params.offset,
     order: params.orderBy
       ? [
           {
@@ -39,7 +41,7 @@ export class HttpError extends Error {
 export class API {
   constructor(private config: DatabaseConfig) {}
 
-  async get(endpoint: string, params: {} = {}) {
+  async get(endpoint: string, params: any = {}) {
     const url = new URL(
       `${this.config.host}/api/v1/cms/databases/${this.config.databaseId}${endpoint}`
     );
@@ -60,7 +62,9 @@ export class API {
         if (json.error?.message) {
           message = json.error.message;
         }
-      } catch {}
+      } catch {
+        // ignored
+      }
       throw new HttpError(response.status, message);
     }
 
@@ -85,6 +89,22 @@ export class API {
         locale: this.config.locale,
       });
       return response.rows;
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
+
+  async count(
+    table: string,
+    params: Pick<QueryParams, "where" | "useDraft"> = {}
+  ): Promise<number> {
+    try {
+      const response = await this.get(`/tables/${table}/count`, {
+        q: JSON.stringify(queryParamsToApi(params)),
+        draft: Number(params.useDraft),
+      });
+      return response.count;
     } catch (e) {
       console.error(e);
       throw e;

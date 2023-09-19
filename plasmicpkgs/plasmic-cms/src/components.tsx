@@ -1,4 +1,4 @@
-import { PlasmicCanvasContext, repeatedElement } from "@plasmicapp/host";
+import { repeatedElement, usePlasmicCanvasContext } from "@plasmicapp/host";
 import {
   CanvasComponentProps,
   ComponentMeta,
@@ -6,13 +6,15 @@ import {
 import { GlobalContextMeta } from "@plasmicapp/host/registerGlobalContext";
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import dayjs from "dayjs";
-import React, { useContext } from "react";
-import { DatabaseConfig, HttpError, mkApi, QueryParams } from "./api";
+import React from "react";
+import { DatabaseConfig, HttpError, QueryParams, mkApi } from "./api";
 import {
+  CountProvider,
   DatabaseProvider,
   QueryResultProvider,
   RowProvider,
   TablesProvider,
+  useCount,
   useDatabase,
   useRow,
   useTables,
@@ -137,7 +139,7 @@ function TablesFetcher({ children }: { children: React.ReactNode }) {
     }
     return await mkApi(databaseConfig).fetchTables();
   });
-  const inEditor = !!useContext(PlasmicCanvasContext);
+  const inEditor = !!usePlasmicCanvasContext();
 
   return (
     <TablesProvider tables={maybeData.data}>
@@ -180,6 +182,7 @@ interface CmsQueryRepeaterProps
   className?: string;
   filterField?: string;
   filterValue?: string;
+  mode?: "rows" | "count";
 }
 
 export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
@@ -224,6 +227,14 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
       defaultValue: false,
       hidden: () => true,
     },
+    mode: {
+      type: "choice",
+      options: [
+        { label: "Rows", value: "rows" },
+        { label: "Count", value: "count" },
+      ],
+      defaultValueHint: "rows",
+    },
     where: {
       type: "object",
       displayName: "Filter",
@@ -260,18 +271,28 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
           "long-text",
           "text",
         ]),
+      hidden: (ps) => ps.mode === "count",
     },
     desc: {
       type: "boolean",
       displayName: "Sort descending?",
       description: 'Sort descending by "Order by" field.',
       defaultValue: false,
+      hidden: (ps) => ps.mode === "count",
     },
     limit: {
       type: "number",
       displayName: "Limit",
       description: "Maximum number of entries to fetch (0 for unlimited).",
       defaultValue: 0,
+      hidden: (ps) => ps.mode === "count",
+    },
+    offset: {
+      type: "number",
+      displayName: "Offset",
+      description:
+        "Skips this number of rows in the result set; used in combination with limit to build pagination",
+      hidden: (ps) => ps.mode === "count",
     },
     emptyMessage: {
       type: "slot",
@@ -312,6 +333,7 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
       displayName: "No auto-repeat",
       description: "Do not automatically repeat children for every entry.",
       defaultValue: false,
+      hidden: (ps) => ps.mode === "count",
     },
   },
 };
@@ -320,11 +342,13 @@ export function CmsQueryRepeater({
   table,
   children,
   setControlContextData,
+  mode,
   where,
   useDraft,
   orderBy,
   desc,
   limit,
+  offset,
   emptyMessage,
   forceEmptyState,
   loadingMessage,
@@ -343,7 +367,7 @@ export function CmsQueryRepeater({
       [filterField]: filterValue,
     };
   }
-  const params = { where, useDraft, orderBy, desc, limit };
+  const params = { where, useDraft, orderBy, desc, limit, offset };
 
   if (!table && tables && tables.length > 0) {
     table = tables[0].identifier;
@@ -351,6 +375,7 @@ export function CmsQueryRepeater({
 
   const cacheKey = JSON.stringify({
     component: "CmsQueryLoader",
+    mode,
     table,
     databaseConfig,
     params,
@@ -369,37 +394,60 @@ export function CmsQueryRepeater({
       throw new Error(`You must select a model to query`);
     } else if (tables && !tables.find((t) => t.identifier === table)) {
       throw new Error(`There is no model called "${table}"`);
+    } else if (mode === "count") {
+      return mkApi(databaseConfig).count(table, params);
     } else {
       return mkApi(databaseConfig).query(table, params);
     }
   });
-  const inEditor = !!useContext(PlasmicCanvasContext);
+  const inEditor = !!usePlasmicCanvasContext();
+  if (mode === "count") {
+    const node = renderMaybeData<number>(
+      maybeData,
+      () => children,
+      { hideIfNotFound: false },
+      inEditor,
+      loadingMessage,
+      forceLoadingState
+    );
+    return (
+      <CountProvider
+        table={table}
+        count={typeof maybeData?.data === "number" ? maybeData.data : undefined}
+      >
+        {node}
+      </CountProvider>
+    );
+  } else {
+    const node = renderMaybeData<ApiCmsRow[]>(
+      maybeData,
+      (rows) => {
+        if (rows.length === 0 || forceEmptyState) {
+          return emptyMessage;
+        }
 
-  const node = renderMaybeData<ApiCmsRow[]>(
-    maybeData,
-    (rows) => {
-      if (rows.length === 0 || forceEmptyState) {
-        return emptyMessage;
-      }
-
-      return noAutoRepeat
-        ? children
-        : rows.map((row, index) => (
-            <RowProvider key={index} table={table!} row={row}>
-              {repeatedElement(index, children)}
-            </RowProvider>
-          ));
-    },
-    { hideIfNotFound: false },
-    inEditor,
-    loadingMessage,
-    forceLoadingState
-  );
-  return (
-    <QueryResultProvider rows={maybeData?.data} table={table}>
-      {noLayout ? <> {node} </> : <div className={className}> {node} </div>}
-    </QueryResultProvider>
-  );
+        return noAutoRepeat
+          ? children
+          : rows.map((row, index) => (
+              <RowProvider key={index} table={table!} row={row}>
+                {repeatedElement(index, children)}
+              </RowProvider>
+            ));
+      },
+      { hideIfNotFound: false },
+      inEditor,
+      loadingMessage,
+      forceLoadingState
+    );
+    return (
+      <QueryResultProvider
+        rows={Array.isArray(maybeData?.data) ? maybeData.data : undefined}
+        table={table}
+      >
+        {noLayout ? <> {node} </> : <div className={className}> {node} </div>}
+      </QueryResultProvider>
+    );
+  }
 }
 
 interface CmsRowFieldProps extends CanvasComponentProps<RowContextData> {
@@ -533,7 +581,7 @@ export function CmsRowField({
   setControlContextData,
   ...rest
 }: CmsRowFieldProps) {
-  const tables = useTablesWithDataLoaded();
+  const tables = useTablesWithDataLoaded("rows");
 
   const res = useRow(tables, table);
   const unknown = (
@@ -585,6 +633,58 @@ export function CmsRowField({
         ...rest,
       })
     : null;
+}
+
+interface CmsCountProps extends CanvasComponentProps<RowContextData> {
+  table: string;
+  className?: string;
+}
+
+export const cmsCountFieldMeta: ComponentMeta<CmsCountProps> = {
+  name: `${componentPrefix}-count`,
+  displayName: "CMS Entries Count",
+  importName: "CmsCount",
+  importPath: modulePath,
+  props: {
+    table: {
+      type: "choice",
+      displayName: "Model",
+      hidden: (props, ctx: TableContextData | null) =>
+        (ctx?.tables?.length ?? 0) <= 1 && !props.table,
+      helpText: "Pick model from a CMS Data Fetcher",
+      description:
+        "Usually not used! Only with multiple CMS Data Loaders, use this to choose which to show. Otherwise, go select the CMS Data Loader if you want to load different data.",
+      options: (_, ctx) => mkTableOptions(ctx?.tables),
+      defaultValueHint: (_, ctx) => ctx?.table,
+    },
+  },
+};
+export function CmsCount({
+  className,
+  table,
+  setControlContextData,
+  ...rest
+}: CmsCountProps) {
+  const tables = useTablesWithDataLoaded("count");
+  const res = useCount(tables, table);
+  const unknown = (
+    <div className={className} {...rest}>
+      Count: {table ?? "Unknown Model"}
+    </div>
+  );
+  if (!res) {
+    return unknown;
+  }
+
+  if (res.count == null) {
+    return null;
+  } else {
+    return (
+      <div className={className} {...rest}>
+        {new Intl.NumberFormat().format(res.count)}
+      </div>
+    );
+  }
 }
 
 const DEFAULT_TYPE_FILTERS = ["text"];
@@ -726,7 +826,7 @@ export function CmsRowLink({
   prefix,
   suffix,
 }: CmsRowLinkProps): React.ReactElement | null {
-  const tables = useTablesWithDataLoaded();
+  const tables = useTablesWithDataLoaded("rows");
 
   const res = useRow(tables, table);
   if (!res || !res.row) {
@@ -832,7 +932,7 @@ export function CmsRowImage({
   children,
   setControlContextData,
 }: CmsRowImageProps): React.ReactElement | null {
-  const tables = useTablesWithDataLoaded();
+  const tables = useTablesWithDataLoaded("rows");
 
   const res = useRow(tables, table);
   if (!res || !res.row) {
@@ -936,7 +1036,7 @@ export function CmsRowFieldValue({
   setControlContextData,
   ...rest
 }: CmsRowFieldValueProps): React.ReactElement | null {
-  const tables = useTablesWithDataLoaded();
+  const tables = useTablesWithDataLoaded("rows");
 
   const res = useRow(tables, table);
   if (!res || !res.row) {
