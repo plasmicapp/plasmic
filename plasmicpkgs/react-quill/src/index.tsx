@@ -189,7 +189,7 @@ export function Quill(
   );
 }
 
-const quillHelpers_ = {
+export const quillHelpers = {
   states: {
     value: {
       onChangeArgsToValue: ((content, _delta, _source, _editor) => {
@@ -246,8 +246,6 @@ const toolbarFields: Record<ToolbarOptionsType, PropType<any>> = {
     defaultValue: INPUT_TYPES,
   },
 } as const;
-
-const importName = "ReactQuill";
 
 export function registerQuill(loader?: Registerable) {
   registerComponentHelper(loader, ReactQuill, {
@@ -410,15 +408,15 @@ export function registerQuill(loader?: Registerable) {
         onChangeProp: "onChange",
         variableType: "text",
         // initVal: "",
-        ...quillHelpers_.states.value,
+        ...quillHelpers.states.value,
       },
     },
     componentHelpers: {
-      helpers: quillHelpers_,
-      importName,
+      helpers: quillHelpers,
+      importName: "quillHelpers",
       importPath: "@plasmicpkgs/react-quill",
     },
-    importName,
+    importName: "Quill",
     importPath: "@plasmicpkgs/react-quill",
   });
 }
