@@ -37,6 +37,7 @@ import { radioGroupComponentName } from "./registerRadio";
 import { selectComponentName } from "./registerSelect";
 import { switchComponentName } from "./registerSwitch";
 import {
+  arrayEq,
   ensureArray,
   ErrorBoundary,
   has,
@@ -98,8 +99,9 @@ export interface SimplifiedFormItemsProp extends InternalFormItemProps {
 interface FormWrapperControlContextData {
   formInstance?: FormInstance<any>;
   schema?: TableSchema;
-  minimalFullLengthFields: Partial<SimplifiedFormItemsProp>[];
-  mergedFields: SimplifiedFormItemsProp[];
+  minimalFullLengthFields?: Partial<SimplifiedFormItemsProp>[];
+  mergedFields?: SimplifiedFormItemsProp[];
+  registeredFields: FieldEntity[];
 }
 
 export enum FormType {
@@ -120,10 +122,10 @@ interface FormWrapperProps
   extendedOnValuesChange?: (
     values: Parameters<NonNullable<FormProps["onValuesChange"]>>[1]
   ) => void;
-  formItems: SimplifiedFormItemsProp[];
+  formItems?: SimplifiedFormItemsProp[];
   mode?: CodeComponentMode;
-  formType: "new-entry" | "update-entry";
-  submitSlot?: boolean;
+  formType?: "new-entry" | "update-entry";
+  submitSlot?: React.ReactNode;
   data?: DataOp;
 }
 
@@ -132,10 +134,17 @@ const PathContext = React.createContext<{
   fullPath: (string | number)[];
 }>({ relativePath: [], fullPath: [] });
 
+interface FieldEntity {
+  fullPath: (string | number)[];
+  name: string | number | undefined;
+}
+
 interface InternalFormInstanceContextData {
   fireOnValuesChange: () => void;
   forceRemount: () => void;
   layout: FormLayoutContextValue;
+  registeredFields: FieldEntity[];
+  registerField: (fieldEntity: FieldEntity) => () => void;
 }
 
 const InternalFormInstanceContext = React.createContext<
@@ -155,6 +164,8 @@ const Internal = React.forwardRef(
   (
     props: FormWrapperProps & {
       setRemountKey: React.Dispatch<React.SetStateAction<number>>;
+      setRegisteredFields: React.Dispatch<React.SetStateAction<FieldEntity[]>>;
+      registeredFields: FieldEntity[];
       labelCol?: ColProps & { horizontalOnly?: boolean };
       wrapperCol?: ColProps & { horizontalOnly?: boolean };
     },
@@ -163,7 +174,13 @@ const Internal = React.forwardRef(
     const [form] = Form.useForm();
     const values = form.getFieldsValue(true);
     const lastValue = React.useRef(values);
-    const { extendedOnValuesChange, setRemountKey, ...rest } = props;
+    const {
+      extendedOnValuesChange,
+      setRemountKey,
+      setRegisteredFields,
+      registeredFields,
+      ...rest
+    } = props;
     // extracted from https://github.com/react-component/field-form/blob/master/src/Form.tsx#L120
     let childrenNode;
     if (props.mode !== "simplified") {
@@ -185,6 +202,12 @@ const Internal = React.forwardRef(
                 {...formItem}
                 noLabel={
                   formItem.inputType === InputType.Checkbox || formItem.noLabel
+                }
+                valuePropName={
+                  formItem.valuePropName ??
+                  (formItem.inputType === InputType.Checkbox
+                    ? "checked"
+                    : undefined)
                 }
                 style={{ width: "100%" }}
               >
@@ -259,12 +282,20 @@ const Internal = React.forwardRef(
         extendedOnValuesChange?.(form.getFieldsValue(true));
       },
     }));
+    const registerField = React.useCallback((fieldEntity: FieldEntity) => {
+      setRegisteredFields((f) => [...f, fieldEntity]);
+      return () => {
+        setRegisteredFields((f) => f.filter((ent) => ent !== fieldEntity));
+      };
+    }, []);
     return (
       <InternalFormInstanceContext.Provider
         value={{
           layout: formLayout,
           fireOnValuesChange,
           forceRemount: () => setRemountKey((k) => k + 1),
+          registerField,
+          registeredFields,
         }}
       >
         <FormLayoutContext.Provider value={formLayout}>
@@ -322,22 +353,27 @@ function useFormItemDefinitions(
       })
     | undefined,
   props: React.ComponentProps<typeof FormWrapper>,
-  formRef: FormRefActions | null
+  formRef: FormRefActions | null,
+  registeredFields: FieldEntity[]
 ) {
   const { mode, formItems, setControlContextData } = props;
 
   return React.useMemo(() => {
+    const data = rawData && normalizeData(rawData);
+    const schema = data && data?.schema;
     if (
       mode !== "simplified" ||
       !rawData ||
       rawData.isLoading ||
-      rawData.error
+      rawData.error ||
+      !data ||
+      !schema ||
+      !data.data
     ) {
-      return undefined;
-    }
-    const data = normalizeData(rawData);
-    const schema = data?.schema;
-    if (!data || !schema || !data.data) {
+      setControlContextData?.({
+        formInstance: formRef?.formInstance,
+        registeredFields,
+      });
       return undefined;
     }
     const row = data.data.length > 0 ? data.data[0] : undefined;
@@ -361,7 +397,6 @@ function useFormItemDefinitions(
                 ? InputType.Checkbox
                 : InputType.Text, //missing date and date-time
             initialValue: row ? row[field.id] : undefined,
-            hidden: field.primaryKey,
           }),
         })
       );
@@ -371,6 +406,7 @@ function useFormItemDefinitions(
       minimalFullLengthFields,
       mergedFields,
       formInstance: formRef?.formInstance,
+      registeredFields,
     });
 
     return mergedFields;
@@ -397,6 +433,9 @@ export const FormWrapper = React.forwardRef(
         setRemountKey((k) => k + 1);
       }
     }, [previousInitialValues, props.initialValues]);
+    const [registeredFields, setRegisteredFields] = React.useState<
+      FieldEntity[]
+    >([]);
 
     React.useImperativeHandle(ref, () =>
       wrapperRef.current ? { ...wrapperRef.current } : ({} as FormRefActions)
@@ -406,7 +445,8 @@ export const FormWrapper = React.forwardRef(
     const formItemDefinitions = useFormItemDefinitions(
       rawData,
       props,
-      wrapperRef.current
+      wrapperRef.current,
+      registeredFields
     );
     React.useEffect(() => {
       if (rawData && !rawData.isLoading) {
@@ -421,7 +461,7 @@ export const FormWrapper = React.forwardRef(
     const previousFormItems = React.useRef<SimplifiedFormItemsProp[]>([]);
     React.useEffect(() => {
       if (!(rawData && rawData.isLoading)) {
-        previousFormItems.current = actualFormItems;
+        previousFormItems.current = actualFormItems ?? [];
       }
     }, [rawData, actualFormItems]);
     if (props.mode === "simplified" && rawData && "error" in rawData) {
@@ -435,6 +475,8 @@ export const FormWrapper = React.forwardRef(
           key={remountKey}
           {...rest}
           setRemountKey={setRemountKey}
+          setRegisteredFields={setRegisteredFields}
+          registeredFields={registeredFields}
           formItems={
             rawData && rawData.isLoading
               ? previousFormItems.current
@@ -712,7 +754,7 @@ export function registerForm(loader?: Registerable) {
           return ps.data ? contextData?.minimalFullLengthFields : undefined;
         },
         unstable__canDelete: (item, ps, ctx) => {
-          if (ps.mode !== "database-schema-driven") {
+          if (ps.mode !== "simplified") {
             return true;
           }
           if (!ctx?.schema) {
@@ -942,7 +984,7 @@ interface CuratedFieldData {
   // trigger: (x: any) => void;
 }
 
-interface InternalFormItemProps extends Omit<FormItemProps, "rules"> {
+interface InternalFormItemProps extends Omit<FormItemProps, "rules" | "name"> {
   rules?: PlasmicRule[];
   description?: React.ReactNode;
   noLabel?: boolean;
@@ -953,6 +995,7 @@ interface InternalFormItemProps extends Omit<FormItemProps, "rules"> {
   ) => FormItemProps;
   setControlContextData?: (data: FormControlContextData) => void;
   alignLabellessWithControls?: boolean;
+  name?: string;
 }
 
 interface PlasmicRule {
@@ -1072,6 +1115,11 @@ export function FormItemWrapper(props: InternalFormItemProps) {
   } = props;
   const relativeFormItemName = useFormItemRelativeName(name);
   const fullFormItemName = useFormItemFullName(name);
+  const pathCtx = React.useContext(PathContext);
+  const fieldEntity = React.useRef<FieldEntity>({
+    fullPath: pathCtx.fullPath,
+    name,
+  }).current;
   const bestEffortLabel =
     (!noLabel && reactNodeToString(props.label)) ||
     ensureArray(props.name).slice(-1)[0];
@@ -1093,13 +1141,23 @@ export function FormItemWrapper(props: InternalFormItemProps) {
     });
     const fullPath = React.useContext(PathContext).fullPath;
     const internalFormCtx = React.useContext(InternalFormInstanceContext);
-    const { fireOnValuesChange, forceRemount } = internalFormCtx ?? {};
+    const { fireOnValuesChange, forceRemount, registerField } =
+      internalFormCtx ?? {};
     props.setControlContextData?.({
       internalFormCtx,
       formInstance: form,
       parentFormItemPath: fullPath,
     });
     React.useEffect(() => {
+      const unregister = registerField?.(fieldEntity);
+      return () => unregister?.();
+    }, []);
+    React.useEffect(() => {
+      fieldEntity.fullPath = [
+        ...pathCtx.fullPath,
+        ...(props.name != null ? [props.name] : []),
+      ];
+      fieldEntity.name = props.name;
       if (prevPropValues.current.name !== props.name) {
         forceRemount?.();
       }
@@ -1254,7 +1312,7 @@ function getDefaultValueHint(field: keyof SimplifiedFormItemsProp) {
       return undefined;
     }
     if (item?.fieldId) {
-      const fieldSetting = contextData.mergedFields.find(
+      const fieldSetting = contextData.mergedFields?.find(
         (f) => f.fieldId === item.fieldId
       );
       return fieldSetting?.[field];
@@ -1267,6 +1325,19 @@ const commonFormItemProps: Record<string, PropType<InternalFormItemProps>> = {
   name: {
     type: "string" as const,
     required: true,
+    validator: (
+      value: string,
+      _props: any,
+      ctx: FormControlContextData | null
+    ) => {
+      const currFullPath = [...(ctx?.parentFormItemPath ?? []), value];
+      const nameCounter = (ctx?.internalFormCtx?.registeredFields ?? []).filter(
+        (formItem) => arrayEq(formItem.fullPath, currFullPath)
+      ).length;
+      return nameCounter === 1
+        ? true
+        : `Repeated form item name: ${currFullPath.join(" → ")}`;
+    },
     defaultValueHint: getDefaultValueHint("name"),
   },
   initialValue: {
