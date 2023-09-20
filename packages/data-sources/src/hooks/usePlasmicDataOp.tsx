@@ -1,4 +1,5 @@
 import { usePlasmicDataSourceContext } from '@plasmicapp/data-sources-context';
+// eslint-disable-next-line no-restricted-imports
 import * as ph from '@plasmicapp/host';
 import {
   useMutablePlasmicQueryData,
@@ -122,11 +123,16 @@ export function usePlasmicDataOp<
       fetchingData.fetchingPromise = fetcherPromise;
       if (key) {
         PRE_FETCHES.set(key, fetcherPromise);
-        fetcherPromise.then(() => {
-          // Once we have a result, we rely on swr to perform the caching,
-          // so remove from our cache as quickly as possible.
-          PRE_FETCHES.delete(key);
-        });
+        // Once we have a result, we rely on swr to perform the caching,
+        // so remove from our cache as quickly as possible.
+        fetcherPromise.then(
+          () => {
+            PRE_FETCHES.delete(key);
+          },
+          () => {
+            PRE_FETCHES.delete(key);
+          }
+        );
       }
       return fetcherPromise;
     },
@@ -153,6 +159,10 @@ export function usePlasmicDataOp<
       const cached = cache.get(key);
       if (cached) {
         return Promise.resolve(cached);
+      }
+      const cachedError = cache.get(`$swr$${key}`);
+      if (cachedError) {
+        return Promise.reject(cachedError.error);
       }
       const fetcherPromise = fetcher();
       fetcherPromise
@@ -186,7 +196,8 @@ export function usePlasmicDataOp<
       enableLoadingBoundary &&
       (isLoading || isNullDataOp) &&
       result.data === undefined &&
-      result.schema === undefined
+      result.schema === undefined &&
+      result.error === undefined
     ) {
       result.data = mkUndefinedDataProxy(fetchingData, fetchAndUpdateCache);
       result.schema = mkUndefinedDataProxy(fetchingData, fetchAndUpdateCache);
