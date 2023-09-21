@@ -72,7 +72,7 @@ export type CodeComponentMeta<P> = Omit<
   /**
    * The states helpers are registered together with the states for the Plasmic headless API
    */
-  states?: Record<string, StateSpec & StateHelpers<P, any>>;
+  states?: Record<string, StateSpec<P> & StateHelpers<P, any>>;
 };
 
 export type GlobalContextMeta<P> = Omit<

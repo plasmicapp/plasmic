@@ -67,13 +67,19 @@ export interface ComponentTemplates<P> {
   [name: string]: ComponentTemplate<P>;
 }
 
-export type StateSpec = {
+export type StateSpec<P> = {
   onChangeProp: string;
+
+  /**
+   * If true, will hide the state on studio.
+   */
+  hidden?: ContextDependentConfig<P, boolean>;
+
   /**
    * If true, will hide the state in a collapsed section; good for states that
    * should not usually be used.
    */
-  advanced?: boolean;
+  advanced?: ContextDependentConfig<P, boolean>;
 } & (
   | {
       type: "readonly";
@@ -183,7 +189,7 @@ export interface CodeComponentMeta<P> {
   /**
    * An object describing the component states to be used in Studio.
    */
-  states?: Record<string, StateSpec>;
+  states?: Record<string, StateSpec<P>>;
   /**
    * An object describing the components helpers to be used in Studio.
    *   1. states helpers: Each state can receive an "initFunc" prop to initialize
