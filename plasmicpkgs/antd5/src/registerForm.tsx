@@ -26,15 +26,15 @@ import equal from "fast-deep-equal";
 import React, { ErrorInfo, cloneElement, isValidElement } from "react";
 import { mergeProps, reactNodeToString } from "./react-utils";
 import { buttonComponentName } from "./registerButton";
-import { checkboxComponentName } from "./registerCheckbox";
+import { AntdCheckbox, checkboxComponentName } from "./registerCheckbox";
 import {
   inputComponentName,
   inputNumberComponentName,
   passwordComponentName,
   textAreaComponentName,
 } from "./registerInput";
-import { radioGroupComponentName } from "./registerRadio";
-import { selectComponentName } from "./registerSelect";
+import { AntdRadioGroup, radioGroupComponentName } from "./registerRadio";
+import { AntdSelect, selectComponentName } from "./registerSelect";
 import { switchComponentName } from "./registerSwitch";
 import {
   arrayEq,
@@ -60,6 +60,7 @@ import {
   SingleRowResult,
   ManyRowsResult,
 } from "@plasmicapp/data-sources";
+import { AntdDatePicker } from "./registerDatePicker";
 
 const FormItem = Form.Item;
 const FormList = Form.List;
@@ -86,6 +87,7 @@ export enum InputType {
   RadioGroup = "Radio Group",
   Checkbox = "Checkbox",
   DatePicker = "DatePicker",
+  Unknown = "Unkown",
 }
 
 export interface SimplifiedFormItemsProp extends InternalFormItemProps {
@@ -95,6 +97,7 @@ export interface SimplifiedFormItemsProp extends InternalFormItemProps {
     value: string;
   }[];
   optionType?: "default" | "button";
+  showTime?: boolean;
 }
 
 interface FormWrapperControlContextData {
@@ -222,13 +225,13 @@ const Internal = React.forwardRef(
                 ) : formItem.inputType === InputType.Number ? (
                   <InputNumber />
                 ) : formItem.inputType === InputType.Checkbox ? (
-                  <Checkbox>{formItem.label}</Checkbox>
+                  <AntdCheckbox>{formItem.label}</AntdCheckbox>
                 ) : formItem.inputType === InputType.Select ? (
-                  <Select options={formItem.options} />
+                  <AntdSelect options={formItem.options} />
                 ) : formItem.inputType === InputType.DatePicker ? (
-                  <DatePicker />
+                  <AntdDatePicker showTime={formItem.showTime} />
                 ) : formItem.inputType === InputType.RadioGroup ? (
-                  <Radio.Group
+                  <AntdRadioGroup
                     options={formItem.options}
                     optionType={formItem.optionType}
                     style={{ padding: "8px" }}
@@ -657,7 +660,7 @@ export function registerForm(loader?: Registerable) {
       formItems: {
         displayName: "Fields",
         type: "array",
-        itemType: commonFormItemPropItemType("formItems"),
+        itemType: commonSimplifiedFormArrayItemType("formItems"),
         defaultValue: [
           {
             label: "Name",
@@ -686,7 +689,7 @@ export function registerForm(loader?: Registerable) {
       dataFormItems: {
         displayName: "Data Fields",
         type: "array",
-        itemType: commonFormItemPropItemType("dataFormItems"),
+        itemType: commonSimplifiedFormArrayItemType("dataFormItems"),
         hidden: (ps) => {
           if (ps.mode === "advanced") {
             return true;
@@ -1280,7 +1283,28 @@ function getDefaultValueHint(field: keyof SimplifiedFormItemsProp) {
   };
 }
 
-const commonFormItemProps: Record<string, PropType<InternalFormItemProps>> = {
+const mapAntdComponentToInputType = new Map<any, InputType>([
+  [Input, InputType.Text],
+  [Input.TextArea, InputType.TextArea],
+  [Input.Password, InputType.Password],
+  [InputNumber, InputType.Number],
+  [AntdSelect, InputType.Select],
+  [AntdRadioGroup, InputType.RadioGroup],
+  [Radio, InputType.Radio],
+  [AntdDatePicker, InputType.DatePicker],
+  [AntdCheckbox, InputType.Checkbox],
+]);
+
+const mapPlumeTypeToInputType = new Map<string, InputType>([
+  ["text-input", InputType.Text],
+  ["select", InputType.Select],
+  ["checkbox", InputType.Checkbox],
+  ["switch", InputType.Checkbox],
+]);
+
+const commonFormItemProps = (
+  usage: "simplified-form-item" | "advanced-form-item"
+): Record<string, PropType<InternalFormItemProps>> => ({
   name: {
     type: "string" as const,
     required: true,
@@ -1300,9 +1324,70 @@ const commonFormItemProps: Record<string, PropType<InternalFormItemProps>> = {
     defaultValueHint: getDefaultValueHint("name"),
   },
   initialValue: {
-    type: "string" as const,
-    defaultValueHint: getDefaultValueHint("initialValue"),
-  },
+    type: "dynamic",
+    control: (
+      ps: FormWrapperProps | InternalFormItemProps,
+      _ctx: any,
+      { item }: { item: SimplifiedFormItemsProp }
+    ) => {
+      let inputType = InputType.Unknown;
+      if (usage === "simplified-form-item") {
+        inputType = item.inputType;
+      } else {
+        if (
+          !React.isValidElement(ps.children) ||
+          typeof ps.children.type === "string"
+        ) {
+          inputType = InputType.Unknown;
+        } else {
+          if (mapAntdComponentToInputType.has(ps.children.type)) {
+            inputType =
+              mapAntdComponentToInputType.get(ps.children.type) ??
+              InputType.Unknown;
+          } else if ("__plumeType" in ps.children.type) {
+            inputType =
+              mapPlumeTypeToInputType.get(
+                ps.children.type.__plumeType as string
+              ) ?? InputType.Unknown;
+          }
+        }
+      }
+      if (
+        [
+          InputType.Text,
+          InputType.TextArea,
+          InputType.Password,
+          InputType.Select,
+          InputType.RadioGroup,
+        ].includes(inputType)
+      ) {
+        return {
+          type: "string",
+          defaultValueHint: getDefaultValueHint("initialValue"),
+        };
+      } else if (InputType.Number === inputType) {
+        return {
+          type: "number",
+          defaultValueHint: getDefaultValueHint("initialValue"),
+        };
+      } else if (InputType.Checkbox === inputType) {
+        return {
+          type: "boolean",
+          defaultValueHint: getDefaultValueHint("initialValue"),
+        };
+      } else if (InputType.DatePicker === inputType) {
+        return {
+          type: "dateString",
+          defaultValueHint: getDefaultValueHint("initialValue"),
+        };
+      } else {
+        return {
+          type: "exprEditor",
+          defaultValueHint: getDefaultValueHint("initialValue"),
+        };
+      }
+    },
+  } as any,
   rules: {
     displayName: "Validation rules",
     type: "formValidationRules" as const,
@@ -1404,9 +1489,9 @@ const commonFormItemProps: Record<string, PropType<InternalFormItemProps>> = {
     defaultValueHint: true,
     description: "Keep field value even when field removed.",
   },
-};
+});
 
-const commonFormItemPropItemType = (
+const commonSimplifiedFormArrayItemType = (
   propName: "formItems" | "dataFormItems"
 ): ArrayType<FormWrapperProps>["itemType"] => ({
   type: "object",
@@ -1419,9 +1504,12 @@ const commonFormItemPropItemType = (
       type: "choice",
       options: Object.values(InputType).filter(
         (inputType) =>
-          ![InputType.Option, InputType.OptionGroup, InputType.Radio].includes(
-            inputType
-          )
+          ![
+            InputType.Option,
+            InputType.OptionGroup,
+            InputType.Radio,
+            InputType.Unknown,
+          ].includes(inputType)
       ),
       defaultValue: InputType.Text,
       defaultValueHint: getDefaultValueHint("inputType"),
@@ -1498,7 +1586,14 @@ const commonFormItemPropItemType = (
       defaultValueHint: "Radio",
       displayName: "Option Type",
     },
-    ...commonFormItemProps,
+    showTime: {
+      type: "boolean",
+      displayName: "Show Time",
+      description: "To provide an additional time selection",
+      hidden: (_ps: any, _ctx: any, { item }) =>
+        ![InputType.DatePicker].includes(item.inputType),
+    },
+    ...commonFormItemProps("simplified-form-item"),
   },
   nameFunc: (item) => item.fieldId ?? item.label ?? item.name,
 });
@@ -1532,7 +1627,7 @@ export function registerFormItem(loader?: Registerable) {
         },
         ...({ mergeWithParent: true } as any),
       },
-      ...commonFormItemProps,
+      ...commonFormItemProps("advanced-form-item"),
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerForm",
     importName: "FormItemWrapper",
