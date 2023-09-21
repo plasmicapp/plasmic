@@ -52,7 +52,6 @@
     "packages/watcher",
     "plasmicpkgs/airtable",
     "plasmicpkgs/antd",
-    "plasmicpkgs/antd5",
     "plasmicpkgs/chakra-ui",
     "plasmicpkgs/commerce-providers/*",
     "plasmicpkgs/framer-motion",
