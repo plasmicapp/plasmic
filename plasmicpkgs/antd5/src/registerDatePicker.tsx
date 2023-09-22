@@ -10,18 +10,18 @@ import dayjs, { Dayjs } from "dayjs";
  */
 export function AntdDatePicker(
   props: Omit<React.ComponentProps<typeof DatePicker>, "value" | "onChange"> & {
-    onChange: (value: string | null) => void;
+    onChange?: (value: string | null) => void;
     value?: Dayjs | string | null;
     // Not sure why this is missing from DatePicker props!
     showTime?: boolean;
-    popupScopeClassName: string;
+    popupScopeClassName?: string;
   }
 ) {
   const nativeInput = React.useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const strValue: string | undefined =
     props.value &&
-    !(typeof props.value === "string") &&
+    typeof props.value === "object" &&
     "toISOString" in props.value
       ? props.value.toISOString()
       : props.value === null
@@ -67,7 +67,7 @@ export function AntdDatePicker(
         // Clearing -> undefined -> will leave it unchanged, so set ""
         value={strValue || ""}
         onChange={(e) => {
-          props.onChange(e.target.value);
+          props.onChange?.(e.target.value);
         }}
       />
     </>
