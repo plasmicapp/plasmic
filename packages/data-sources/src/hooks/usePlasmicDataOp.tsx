@@ -184,15 +184,42 @@ export function usePlasmicDataOp<
       if (cachedError) {
         return Promise.reject(cachedError.error);
       }
-      const fetcherPromise = fetcher();
+
+      // Now, upon this proxy.get() miss, we want to kick off the fetch. We can't
+      // wait for useSWR() to kick off the fetch, because upon data miss we are
+      // throwing a promise, and useSWR() won't kick off the fetch till the effect,
+      // so it will never get a chance to fetch.  Instead, we fetch, and then we
+      // put the fetched data into the SWR cache, so that next time useSWR() is called,
+      // it will just find it in the cache.
+      //
+      // However, we don't want to fetch SYNCHRONOUSLY RIGHT NOW, becase we are in
+      // the rendering phase (presumably, we're here because some component is trying
+      // to read fetched data while rendering).  Doing a fetch right now would invoke
+      // the fetcher, which is wrapped by @plasmicapp/query to tracking loading state,
+      // and upon loading state toggled to true, it will fire loading event listeners,
+      // and for example, our antd's <GlobalLoadingIndicator /> will listen to this
+      // event and immediately ask antd to show the loading indicator, which mutates
+      // antd component's state.  It is NOT LEGAL to call setState() on some other
+      // component's state during rendering phase!
+      //
+      // We therefore will delay kicking off the fetch by a tick, so that we will safely
+      // start the fetch outside of React rendering phase.
+      const fetcherPromise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          fetcher().then(resolve, reject);
+        }, 1);
+      });
       fetcherPromise
-        .then((data) => mutate(key, data))
+        .then((data) => {
+          // Insert the fetched data into the SWR cache
+          mutate(key, data);
+        })
         .catch((err) => {
           // Cache the error here to avoid infinite loop
           const keyInfo = key ? '$swr$' + key : '';
           cache.set(keyInfo, { ...(cache.get(keyInfo) ?? {}), error: err });
         });
-      return fetchingData.fetchingPromise!;
+      return fetcherPromise;
     };
   }, [fetcher, fetchingData, cache, key]);
   const res = useMutablePlasmicQueryData<T, E>(key, fetcher, {
