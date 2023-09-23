@@ -40,20 +40,20 @@ function mkUndefinedDataProxy(
           return true;
         }
 
+        if (!fetchAndUpdateCache) {
+          // There's no key so no fetch to kick off yet; when computing key,
+          // we encountered some thrown exception (that's not an undefined data promise),
+          // and so we can't fetch yet. This might be dependent on a $state or $prop value
+          // that's currently undefined, etc.  We will act like an undefined data object,
+          // and trigger the usual fallback behavior
+          return undefined;
+        }
+
         const promise =
           // existing fetch
           promiseRef.fetchingPromise ||
           // No existing fetch, so kick off a fetch
-          fetchAndUpdateCache?.() ||
-          // There's no key so no fetch to kick off yet. Maybe this
-          // should be some kind of promise that gets resolved when the
-          // key evaluates to none-null. But for now, we just throw
-          // a Promise that never resolves, with the expectation that
-          // some _other_ promise should resolve can cause this component
-          // to be rendered again.
-          new Promise((resolve) => {
-            // intentionally not resolving
-          });
+          fetchAndUpdateCache();
         (promise as any).plasmicType = 'PlasmicUndefinedDataError';
         (promise as any).message = `Cannot read property ${String(
           prop
@@ -64,7 +64,47 @@ function mkUndefinedDataProxy(
   ) as any;
 }
 
+interface PlasmicUndefinedDataErrorPromise extends Promise<any> {
+  plasmicType: 'PlasmicUndefinedDataError';
+  message: string;
+}
+
+function isPlasmicUndefinedDataErrorPromise(
+  x: any
+): x is PlasmicUndefinedDataErrorPromise {
+  return (
+    !!x &&
+    typeof x === 'object' &&
+    (x as any).plasmicType === 'PlasmicUndefinedDataError'
+  );
+}
+
 const reactMajorVersion = +React.version.split('.')[0];
+
+/**
+ * This returns either:
+ * * DataOp to perform
+ * * undefined/null, if no data op can be performed
+ * * PlasmicUndefinedDataErrorPromise, if when trying to evaluate the DataOp to perform,
+ *   we encounter a PlasmicUndefinedDataErrorPromise, so this operation cannot be
+ *   performed until that promise is resolved.
+ */
+function resolveDataOp(
+  dataOp: DataOp | undefined | null | (() => DataOp | undefined | null)
+) {
+  if (typeof dataOp === 'function') {
+    try {
+      return dataOp();
+    } catch (err) {
+      if (isPlasmicUndefinedDataErrorPromise(err)) {
+        return err;
+      }
+      return null;
+    }
+  } else {
+    return dataOp;
+  }
+}
 
 /**
  * Fetches can be kicked off two ways -- normally, by useSWR(), or by some
@@ -92,16 +132,22 @@ export function usePlasmicDataOp<
   error?: E;
   isLoading?: boolean;
 } {
+  const resolvedDataOp = resolveDataOp(dataOp);
   const ctx = usePlasmicDataSourceContext();
   const enableLoadingBoundary = !!ph.useDataEnv?.()?.[enableLoadingBoundaryKey];
   const { mutate, cache } = usePlasmicDataConfig();
-  const isNullDataOp = !dataOp;
-  const key = isNullDataOp
-    ? null
-    : makeCacheKey(dataOp!, {
-        paginate: opts?.paginate,
-        userAuthToken: ctx?.userAuthToken,
-      });
+  // Cannot perform this operation
+  const isNullDataOp = !resolvedDataOp;
+  // This operation depends on another data query to resolve first
+  const isWaitingOnDependentQuery =
+    isPlasmicUndefinedDataErrorPromise(resolvedDataOp);
+  const key =
+    !resolvedDataOp || isPlasmicUndefinedDataErrorPromise(resolvedDataOp)
+      ? null
+      : makeCacheKey(resolvedDataOp, {
+          paginate: opts?.paginate,
+          userAuthToken: ctx?.userAuthToken,
+        });
   const fetchingData = React.useMemo(
     () => ({
       fetchingPromise: undefined as Promise<T> | undefined,
@@ -114,6 +160,8 @@ export function usePlasmicDataOp<
       if (!key) {
         throw new Error(`Fetcher should never be called without a proper key`);
       }
+
+      // dataOp is guaranteed to be a DataOp, and not an undefined promise or null
 
       if (fetchingData.fetchingPromise) {
         // Fetch is already underway from this hook
@@ -130,8 +178,7 @@ export function usePlasmicDataOp<
 
       // Else we really need to kick off this fetch now...
       const fetcherFn = () =>
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        executePlasmicDataOp<T>(dataOp!, {
+        executePlasmicDataOp<T>(resolvedDataOp as DataOp, {
           userAuthToken: ctx?.userAuthToken || undefined,
           user: ctx?.user,
           paginate: opts?.paginate,
@@ -155,17 +202,38 @@ export function usePlasmicDataOp<
     },
     [key, fetchingData]
   );
+
+  const dependentKeyDataErrorPromise = isPlasmicUndefinedDataErrorPromise(
+    resolvedDataOp
+  )
+    ? resolvedDataOp
+    : undefined;
   const fetchAndUpdateCache = React.useMemo(() => {
-    if (!key) {
+    if (!key && !dependentKeyDataErrorPromise) {
+      // If there's no key, and no data query we're waiting for, then there's
+      // no way to perform a fetch
       return undefined;
     }
     return () => {
       // This function is called when the undefined data proxy is invoked.
       // USUALLY, this means the data is not available in SWR yet, and
       // we need to kick off a fetch.
+
       if (fetchingData.fetchingPromise) {
         // No need to update cache as the exist promise call site will do it
         return fetchingData.fetchingPromise;
+      }
+
+      if (dependentKeyDataErrorPromise) {
+        // We can't actually fetch yet, because we couldn't even evaluate the dataOp
+        // to fetch for, because we depend on unfetched data. Once _that_
+        // dataOp we depend on is finished, then we can try again.  So we
+        // will throw and wait for _that_ promise to be resolved instead.
+        return dependentKeyDataErrorPromise;
+      }
+
+      if (!key) {
+        throw new Error(`Expected key to be non-null`);
       }
 
       // SOMETIMES, SWR actually _does_ have the cache, but we still end up
@@ -221,7 +289,7 @@ export function usePlasmicDataOp<
         });
       return fetcherPromise;
     };
-  }, [fetcher, fetchingData, cache, key]);
+  }, [fetcher, fetchingData, cache, key, dependentKeyDataErrorPromise]);
   const res = useMutablePlasmicQueryData<T, E>(key, fetcher, {
     shouldRetryOnError: false,
 
@@ -248,7 +316,7 @@ export function usePlasmicDataOp<
       !opts?.noUndefinedDataProxy &&
       reactMajorVersion >= 18 &&
       enableLoadingBoundary &&
-      (isLoading || isNullDataOp) &&
+      (isLoading || isNullDataOp || isWaitingOnDependentQuery) &&
       result.data === undefined &&
       result.schema === undefined &&
       result.error === undefined
@@ -259,6 +327,7 @@ export function usePlasmicDataOp<
     return result;
   }, [
     isNullDataOp,
+    isWaitingOnDependentQuery,
     data,
     error,
     isLoading,
