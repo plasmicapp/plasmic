@@ -34,6 +34,18 @@ const deepClone = function <T>(o: T): T {
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+function PlasmicCanvasProvider(props: React.PropsWithChildren<{}>) {
+  return (
+    <PlasmicCanvasContext.Provider
+      value={{
+        componentName: "test",
+        globalVariants: {},
+      }}
+    >
+      {props.children}
+    </PlasmicCanvasContext.Provider>
+  );
+}
 interface ExtendedSimplifiedFormItemsProp extends SimplifiedFormItemsProp {
   selectedLabel?: string;
 }
@@ -339,10 +351,12 @@ const modifyFormItems = async (
 const getFormItemsValue = (
   expectedFormItems: ExtendedSimplifiedFormItemsProp[]
 ) => {
-  return Object.fromEntries(
-    expectedFormItems
-      .filter((formItem) => formItem.initialValue != null)
-      .map((formItem) => [formItem.name, formItem.initialValue])
+  return JSON.stringify(
+    Object.fromEntries(
+      expectedFormItems
+        .filter((formItem) => formItem.initialValue != null)
+        .map((formItem) => [formItem.name, formItem.initialValue])
+    )
   );
 };
 
@@ -356,14 +370,14 @@ TestSimplifiedForm.play = async ({ canvasElement }) => {
   // test state is updating properly
   await modifyFormItems(canvasElement, expectedFormItems.slice(0, 1));
   await expect(canvas.getByTestId("value")).toHaveTextContent(
-    `Value: ${JSON.stringify(getFormItemsValue(expectedFormItems))}`
+    `Value: ${getFormItemsValue(expectedFormItems)}`
   );
 
   expectedFormItems[1].initialValue = "bar";
   expectedFormItems[2].initialValue = 456;
   await modifyFormItems(canvasElement, expectedFormItems.slice(1, 3));
   await expect(canvas.getByTestId("value")).toHaveTextContent(
-    `Value: ${JSON.stringify(getFormItemsValue(expectedFormItems))}`
+    `Value: ${getFormItemsValue(expectedFormItems)}`
   );
 
   await checkFormItems(canvasElement, expectedFormItems);
@@ -371,7 +385,7 @@ TestSimplifiedForm.play = async ({ canvasElement }) => {
   await userEvent.click(canvas.getByText("Submit"));
   await sleep(100);
   await expect(canvas.getByTestId("submitted")).toHaveTextContent(
-    `Submitted: ${JSON.stringify(getFormItemsValue(expectedFormItems))}`
+    `Submitted: ${getFormItemsValue(expectedFormItems)}`
   );
 
   // test can modify the form structure -- simulates changing props in studio
@@ -420,13 +434,13 @@ TestSimplifiedForm.play = async ({ canvasElement }) => {
   await modifyFormItems(canvasElement, expectedFormItems.slice(2, 3));
   await sleep(100);
   await expect(canvas.getByTestId("value")).toHaveTextContent(
-    `Value: ${JSON.stringify(getFormItemsValue(expectedFormItems))}`
+    `Value: ${getFormItemsValue(expectedFormItems)}`
   );
   await checkFormItems(canvasElement, expectedFormItems);
   await userEvent.click(canvas.getByText("Submit"));
   await sleep(100);
   await expect(canvas.getByTestId("submitted")).toHaveTextContent(
-    `Submitted: ${JSON.stringify(getFormItemsValue(expectedFormItems))}`
+    `Submitted: ${getFormItemsValue(expectedFormItems)}`
   );
 };
 
@@ -482,106 +496,96 @@ const _InternalFormCtx: StoryFn = (args: any) => {
     "visible" | "invisible"
   >("visible");
   return (
-    <div>
-      <PlasmicCanvasContext.Provider
-        value={{
-          // registered fields are enabled only in canvas
-          componentName: "test",
-          globalVariants: {},
-        }}
+    <PlasmicCanvasProvider>
+      <Form
+        extendedOnValuesChange={(values) => ($state.form.value = values)}
+        setControlContextData={setControlContextData}
       >
-        <Form
-          extendedOnValuesChange={(values) => ($state.form.value = values)}
-          setControlContextData={setControlContextData}
+        {!formItems[0].hidden && (
+          <FormItem label={"Text Field"} name={formItems[0].name}>
+            <Input />
+          </FormItem>
+        )}
+        {!formItems[1].hidden && (
+          <FormItem label={"Text Area"} name={formItems[1].name}>
+            <TextArea />
+          </FormItem>
+        )}
+        {!formItems[2].hidden && (
+          <FormItem label={"Number"} name={formItems[2].name}>
+            <InputNumber />
+          </FormItem>
+        )}
+        {!formItems[3].hidden && (
+          <FormGroup name={formItems[3].name}>
+            {!formItems[4].hidden && (
+              <FormItem label="City" name={formItems[4].name}>
+                <Input />
+              </FormItem>
+            )}
+            {!formItems[5].hidden && (
+              <FormItem label="State" name={formItems[5].name}>
+                <Input />
+              </FormItem>
+            )}
+          </FormGroup>
+        )}
+      </Form>
+      <p data-testid={"registeredFields"}>{JSON.stringify(registeredFields)}</p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <p>Modify fields</p>
+        <select
+          data-testid={"registeredFieldsSelect"}
+          value={selectedFormItem}
+          onChange={(e) => setSelectedFormItem(e.target.value)}
         >
-          {!formItems[0].hidden && (
-            <FormItem label={"Text Field"} name={formItems[0].name}>
-              <Input />
-            </FormItem>
-          )}
-          {!formItems[1].hidden && (
-            <FormItem label={"Text Area"} name={formItems[1].name}>
-              <TextArea />
-            </FormItem>
-          )}
-          {!formItems[2].hidden && (
-            <FormItem label={"Number"} name={formItems[2].name}>
-              <InputNumber />
-            </FormItem>
-          )}
-          {!formItems[3].hidden && (
-            <FormGroup name={formItems[3].name}>
-              {!formItems[4].hidden && (
-                <FormItem label="City" name={formItems[4].name}>
-                  <Input />
-                </FormItem>
-              )}
-              {!formItems[5].hidden && (
-                <FormItem label="State" name={formItems[5].name}>
-                  <Input />
-                </FormItem>
-              )}
-            </FormGroup>
-          )}
-        </Form>
-        <p data-testid={"registeredFields"}>
-          {JSON.stringify(registeredFields)}
-        </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <p>Modify fields</p>
-          <select
-            data-testid={"registeredFieldsSelect"}
-            value={selectedFormItem}
-            onChange={(e) => setSelectedFormItem(e.target.value)}
+          {formItems.map((formItem, index) => (
+            <option value={index}>{formItem.name}</option>
+          ))}
+        </select>
+        <div style={{ display: "flex" }}>
+          <Input
+            value={renameInput}
+            onChange={(e) => setRenameInput(e.target.value)}
+            style={{ width: 200 }}
+            data-testid={"renameInput"}
+          />
+          <Button
+            onClick={() => {
+              setFormItems((formItems) => {
+                formItems[+selectedFormItem].name = renameInput;
+                return [...formItems];
+              });
+              setRenameInput("");
+            }}
           >
-            {formItems.map((formItem, index) => (
-              <option value={index}>{formItem.name}</option>
-            ))}
-          </select>
-          <div style={{ display: "flex" }}>
-            <Input
-              value={renameInput}
-              onChange={(e) => setRenameInput(e.target.value)}
-              style={{ width: 200 }}
-              data-testid={"renameInput"}
-            />
-            <Button
-              onClick={() => {
-                setFormItems((formItems) => {
-                  formItems[+selectedFormItem].name = renameInput;
-                  return [...formItems];
-                });
-                setRenameInput("");
-              }}
-            >
-              Rename field
-            </Button>
-          </div>
-          <div>
-            <select
-              data-testid={"visibilitySelect"}
-              value={fieldVisibility}
-              onChange={(e) => setFieldVisibility(e.target.value as any)}
-            >
-              <option value="visible">Visible</option>
-              <option value="invisible">Invisible</option>
-            </select>
-            <Button
-              onClick={() => {
-                setFormItems((formItems) => {
-                  formItems[+selectedFormItem].hidden =
-                    fieldVisibility === "invisible";
-                  return [...formItems];
-                });
-                setRenameInput("");
-              }}
-            >
-              Change visibility
-            </Button>
-          </div>
+            Rename field
+          </Button>
         </div>
-      </PlasmicCanvasContext.Provider>
-    </div>
+        <div>
+          <select
+            data-testid={"visibilitySelect"}
+            value={fieldVisibility}
+            onChange={(e) => setFieldVisibility(e.target.value as any)}
+          >
+            <option value="visible">Visible</option>
+            <option value="invisible">Invisible</option>
+          </select>
+          <Button
+            onClick={() => {
+              setFormItems((formItems) => {
+                formItems[+selectedFormItem].hidden =
+                  fieldVisibility === "invisible";
+                return [...formItems];
+              });
+              setRenameInput("");
+            }}
+          >
+            Change visibility
+          </Button>
+        </div>
+      </div>
+    </PlasmicCanvasProvider>
   );
 };
 
@@ -785,61 +789,63 @@ const _SchemaForms: StoryFn = (args: any) => {
   );
 };
 
+const mockedData = [
+  {
+    url: "https://data.plasmic.app/api/v1/server-data/sources/:id/execute",
+    method: "POST",
+    status: 200,
+    response: (request: any) => {
+      const body = JSON.parse(request.body);
+      const { opName, id } = body.userArgs;
+      const table = body.userArgs.table;
+      return {
+        data:
+          opName === "getRow"
+            ? fakeInitDatabase[table].find((row: any) => row.id === id)
+            : [],
+        schema: {
+          id: table,
+          fields: fakeSchema[table],
+        },
+      };
+    },
+  },
+];
+
+const genExpectedFormItemsFromSchema = (
+  table: keyof typeof fakeSchema,
+  formType: "new" | "update",
+  id?: number
+) => {
+  return fakeSchema[table].map((column) => ({
+    name: column.name,
+    fieldId: column.name,
+    id: column.name,
+    inputType:
+      column.type === "string"
+        ? InputType.Text
+        : column.type === "number"
+        ? InputType.Number
+        : column.type === "boolean"
+        ? InputType.Checkbox
+        : InputType.Text,
+    ...(formType === "update"
+      ? {
+          initialValue: fakeInitDatabase[table].find(
+            (row: any) => row.id === id
+          )?.[column.name],
+        }
+      : {}),
+  })) as SimplifiedFormItemsProp[];
+};
+
 export const SchemaForms = _SchemaForms.bind({});
 SchemaForms.args = {};
 SchemaForms.parameters = {
-  mockData: [
-    {
-      url: "https://data.plasmic.app/api/v1/server-data/sources/:id/execute",
-      method: "POST",
-      status: 200,
-      response: (request: any) => {
-        const body = JSON.parse(request.body);
-        const { opName, id } = body.userArgs;
-        const table = body.userArgs.table;
-        return {
-          data:
-            opName === "getRow"
-              ? fakeInitDatabase[table].find((row: any) => row.id === id)
-              : [],
-          schema: {
-            id: table,
-            fields: fakeSchema[table],
-          },
-        };
-      },
-    },
-  ],
+  mockData: mockedData,
 };
 SchemaForms.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
-
-  const genExpectedFormItemsFromSchema = (
-    table: keyof typeof fakeSchema,
-    formType: "new" | "update",
-    id?: number
-  ) => {
-    return fakeSchema[table].map((column) => ({
-      name: column.name,
-      fieldId: column.name,
-      id: column.name,
-      inputType:
-        column.type === "string"
-          ? InputType.Text
-          : column.type === "number"
-          ? InputType.Number
-          : column.type === "boolean"
-          ? InputType.Checkbox
-          : InputType.Text,
-      ...(formType === "update"
-        ? {
-            initialValue: fakeInitDatabase[table].find(
-              (row: any) => row.id === id
-            )?.[column.name],
-          }
-        : {}),
-    })) as SimplifiedFormItemsProp[];
-  };
 
   let expectedFormItems = genExpectedFormItemsFromSchema("athletes", "new");
   await sleep(100);
@@ -1395,7 +1401,7 @@ TestFormRefActions.play = async ({ canvasElement }) => {
   });
   await checkFormItems(canvasElement, expectedFormItems);
   await expect(canvas.getByTestId("value")).toHaveTextContent(
-    JSON.stringify(getFormItemsValue(expectedFormItems))
+    getFormItemsValue(expectedFormItems)
   );
 
   // can clear fields
@@ -1406,7 +1412,7 @@ TestFormRefActions.play = async ({ canvasElement }) => {
     (formItem) => (formItem.initialValue = undefined)
   );
   await expect(canvas.getByTestId("value")).toHaveTextContent(
-    JSON.stringify(getFormItemsValue(newExpectedFormItems))
+    getFormItemsValue(newExpectedFormItems)
   );
   await checkFormItems(canvasElement, newExpectedFormItems);
 
@@ -1414,7 +1420,7 @@ TestFormRefActions.play = async ({ canvasElement }) => {
   await userEvent.click(canvas.getByText("Reset fields"));
   await sleep(100);
   await expect(canvas.getByTestId("value")).toHaveTextContent(
-    JSON.stringify(getFormItemsValue(expectedFormItems))
+    getFormItemsValue(expectedFormItems)
   );
   await checkFormItems(canvasElement, expectedFormItems);
 
@@ -1436,7 +1442,7 @@ TestFormRefActions.play = async ({ canvasElement }) => {
   }
   await checkFormItems(canvasElement, expectedFormItems);
   await expect(canvas.getByTestId("value")).toHaveTextContent(
-    JSON.stringify(getFormItemsValue(expectedFormItems))
+    getFormItemsValue(expectedFormItems)
   );
 
   // can set multiple fields with setFields action
@@ -1450,13 +1456,13 @@ TestFormRefActions.play = async ({ canvasElement }) => {
   await userEvent.type(canvas.getByTestId("itemValue"), "{selectall}{del}");
   await userEvent.paste(
     canvas.getByTestId("itemValue"),
-    JSON.stringify(getFormItemsValue(expectedFormItems))
+    getFormItemsValue(expectedFormItems)
   );
   await userEvent.click(canvas.getByText("Set fields"));
   await sleep(100);
   await checkFormItems(canvasElement, expectedFormItems);
   await expect(canvas.getByTestId("value")).toHaveTextContent(
-    JSON.stringify(getFormItemsValue(expectedFormItems))
+    getFormItemsValue(expectedFormItems)
   );
 
   // can use validateFields action
@@ -1555,7 +1561,7 @@ FormStateIsMutable.play = async ({ canvasElement }) => {
   let expectedFormItems = deepClone(ALL_FORM_ITEMS_TYPE);
   await checkFormItems(canvasElement, expectedFormItems);
   await expect(canvas.getByTestId("value")).toHaveTextContent(
-    JSON.stringify(getFormItemsValue(expectedFormItems))
+    getFormItemsValue(expectedFormItems)
   );
 
   expectedFormItems[0].initialValue = "foo2";
@@ -1578,6 +1584,181 @@ FormStateIsMutable.play = async ({ canvasElement }) => {
   await sleep(100);
   await checkFormItems(canvasElement, expectedFormItems);
   await expect(canvas.getByTestId("value")).toHaveTextContent(
-    JSON.stringify(getFormItemsValue(expectedFormItems))
+    getFormItemsValue(expectedFormItems)
+  );
+};
+
+const _CanModifyPropsInCanvasForSchema: StoryFn = (args: any) => {
+  const $state = useDollarState(
+    [
+      {
+        path: "form.value",
+        type: "private",
+        variableType: "object",
+      },
+      {
+        path: "input.value",
+        type: "private",
+        variableType: "text",
+      },
+    ],
+    { $props: args }
+  );
+  const dataOp = React.useMemo(
+    () => ({
+      sourceId: "fake",
+      opId: "fake",
+      userArgs: {
+        table: "athletes",
+        opName: "schema",
+      },
+    }),
+    []
+  );
+  const [dataFormItems, setDataFormItems] = React.useState<
+    SimplifiedFormItemsProp[]
+  >([]);
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      <div
+        style={{
+          display: "flex",
+          gap: 20,
+        }}
+      >
+        <Input
+          value={$state.input.value}
+          onChange={(e) => ($state.input.value = e.target.value)}
+          data-testid="input"
+        />
+        <Button
+          onClick={() => {
+            const [opName, formItem] = JSON.parse($state.input.value) as any;
+            if (opName === "add") {
+              setDataFormItems((formItems) => [...formItems, formItem]);
+            } else if (opName === "delete") {
+              setDataFormItems((formItems) =>
+                formItems.filter((item) => item.name !== formItem.name)
+              );
+            } else {
+              setDataFormItems((formItems) =>
+                formItems.map((item) => {
+                  if (item.name !== opName) {
+                    return item;
+                  } else {
+                    return {
+                      ...item,
+                      ...formItem,
+                    };
+                  }
+                })
+              );
+            }
+            $state.input.value = "";
+          }}
+        >
+          Update form
+        </Button>
+      </div>
+      <PlasmicCanvasProvider>
+        <Form
+          mode="simplified"
+          extendedOnValuesChange={(values) => ($state.form.value = values)}
+          submitSlot={<SubmitSlot />}
+          colon={false}
+          data={dataOp}
+          formItems={[
+            {
+              inputType: InputType.Text,
+              name: "name",
+              label: "Name",
+              initialValue: "hello",
+            },
+            {
+              inputType: InputType.TextArea,
+              name: "message",
+              label: "Message",
+            },
+          ]}
+          dataFormItems={dataFormItems}
+        />
+      </PlasmicCanvasProvider>
+      <p data-testid="value">{JSON.stringify($state.form.value)}</p>
+    </div>
+  );
+};
+
+export const CanModifyPropsInCanvasForSchema =
+  _CanModifyPropsInCanvasForSchema.bind({});
+CanModifyPropsInCanvasForSchema.args = {};
+CanModifyPropsInCanvasForSchema.parameters = {
+  mockData: mockedData,
+};
+CanModifyPropsInCanvasForSchema.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+  let expectedFormItems = genExpectedFormItemsFromSchema("athletes", "new");
+
+  await sleep(100);
+  await checkFormItems(canvasElement, expectedFormItems);
+  await expect(canvas.getByTestId("value")).toHaveTextContent("{}");
+  await userEvent.paste(
+    canvas.getByTestId("input"),
+    JSON.stringify([
+      "add",
+      { name: "testInput", label: "Test Input", initialValue: "hello" },
+    ])
+  );
+  await userEvent.click(canvas.getByText("Update form"));
+  expectedFormItems = [
+    {
+      label: "Test Input",
+      name: "testInput",
+      inputType: InputType.Text,
+      initialValue: "hello",
+    },
+    ...expectedFormItems,
+  ];
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    getFormItemsValue(expectedFormItems)
+  );
+
+  await sleep(100);
+  await checkFormItems(canvasElement, expectedFormItems);
+  await userEvent.paste(
+    canvas.getByTestId("input"),
+    JSON.stringify([
+      "testInput",
+      { name: "testInput2", label: "Test Input", initialValue: "hello" },
+    ])
+  );
+  await userEvent.click(canvas.getByText("Update form"));
+  expectedFormItems[0].name = "testInput2";
+  await sleep(500);
+  await checkFormItems(canvasElement, expectedFormItems);
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    getFormItemsValue(expectedFormItems)
+  );
+
+  await sleep(100);
+  await checkFormItems(canvasElement, expectedFormItems);
+  await userEvent.paste(
+    canvas.getByTestId("input"),
+    JSON.stringify([
+      "testInput2",
+      {
+        name: "testInput3",
+        label: "Test Input",
+        initialValue: 123,
+        inputType: InputType.Number,
+      },
+    ])
+  );
+  await userEvent.click(canvas.getByText("Update form"));
+  expectedFormItems[0].name = "testInput3";
+  expectedFormItems[0].initialValue = 123;
+  await sleep(500);
+  await checkFormItems(canvasElement, expectedFormItems);
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    getFormItemsValue(expectedFormItems)
   );
 };

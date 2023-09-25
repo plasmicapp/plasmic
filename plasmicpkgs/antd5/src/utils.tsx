@@ -225,3 +225,12 @@ export class ErrorBoundary extends React.Component<
     return this.props.children;
   }
 }
+
+// Forked from https://github.com/developit/dlv/blob/master/index.js
+export function get(obj: any, key: any, def?: any, undef?: any) {
+  key = key.split ? key.split(".") : key;
+  for (let p = 0; p < key.length; p++) {
+    obj = obj ? obj[key[p]] : undef;
+  }
+  return obj === undef ? def : obj;
+}

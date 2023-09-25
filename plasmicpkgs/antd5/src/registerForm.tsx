@@ -40,7 +40,9 @@ import {
   arrayEq,
   ensureArray,
   ErrorBoundary,
+  get,
   has,
+  omit,
   Registerable,
   registerComponentHelper,
   setFieldsToUndefined,
@@ -98,6 +100,7 @@ export interface SimplifiedFormItemsProp extends InternalFormItemProps {
   }[];
   optionType?: "default" | "button";
   showTime?: boolean;
+  key?: string;
 }
 
 interface FormWrapperControlContextData {
@@ -150,6 +153,7 @@ interface InternalFormInstanceContextData {
   layout: FormLayoutContextValue;
   registeredFields: FieldEntity[];
   registerField: (fieldEntity: FieldEntity) => () => void;
+  initialValues: Record<string, any>;
 }
 
 const InternalFormInstanceContext = React.createContext<
@@ -204,7 +208,7 @@ const Internal = React.forwardRef(
               }`}
             >
               <FormItemWrapper
-                {...formItem}
+                {...omit(formItem, "key")}
                 noLabel={
                   formItem.inputType === InputType.Checkbox || formItem.noLabel
                 }
@@ -308,6 +312,7 @@ const Internal = React.forwardRef(
           forceRemount,
           registerField,
           registeredFields,
+          initialValues: props.initialValues ?? {},
         }}
       >
         <FormLayoutContext.Provider value={formLayout}>
@@ -373,6 +378,7 @@ function useFormItemDefinitions(
 ) {
   const { mode, dataFormItems, setControlContextData } = props;
 
+  const formInstance = formRef?.formInstance;
   return React.useMemo(() => {
     const data = rawData && normalizeData(rawData);
     const schema = data && data?.schema;
@@ -386,7 +392,7 @@ function useFormItemDefinitions(
       !data.data
     ) {
       setControlContextData?.({
-        formInstance: formRef?.formInstance,
+        formInstance,
         registeredFields,
       });
       return undefined;
@@ -420,12 +426,12 @@ function useFormItemDefinitions(
       schema: data.schema,
       minimalFullLengthFields,
       mergedFields,
-      formInstance: formRef?.formInstance,
+      formInstance,
       registeredFields,
     });
 
     return mergedFields;
-  }, [mode, setControlContextData, dataFormItems, rawData, formRef]);
+  }, [mode, setControlContextData, dataFormItems, rawData, formInstance]);
 }
 
 const useRawData = (props: FormWrapperProps) => {
@@ -1103,7 +1109,7 @@ export function FormItemWrapper(props: InternalFormItemProps) {
     });
     const fullPath = React.useContext(PathContext).fullPath;
     const internalFormCtx = React.useContext(InternalFormInstanceContext);
-    const { fireOnValuesChange, forceRemount, registerField } =
+    const { fireOnValuesChange, forceRemount, registerField, initialValues } =
       internalFormCtx ?? {};
     props.setControlContextData?.({
       internalFormCtx,
@@ -1123,11 +1129,7 @@ export function FormItemWrapper(props: InternalFormItemProps) {
       if (prevPropValues.current.name !== props.name) {
         forceRemount?.();
       }
-      if (
-        !fullFormItemName ||
-        form?.getFieldValue(fullFormItemName) !==
-          prevPropValues.current.initialValue
-      ) {
+      if (!fullFormItemName || get(initialValues, fullFormItemName) != null) {
         // this field value is set at the form level
         return;
       }
@@ -1327,12 +1329,21 @@ const commonFormItemProps = (
     type: "dynamic",
     control: (
       ps: FormWrapperProps | InternalFormItemProps,
-      _ctx: any,
-      { item }: { item: SimplifiedFormItemsProp }
+      ctx: FormWrapperControlContextData | null,
+      {
+        item,
+        path,
+      }: { item: SimplifiedFormItemsProp; path: (string | number)[] }
     ) => {
       let inputType = InputType.Unknown;
       if (usage === "simplified-form-item") {
         inputType = item.inputType;
+        if (!(ps as FormWrapperProps).data) {
+          inputType = item.inputType;
+        } else if (path != null && typeof path[1] === "number") {
+          inputType =
+            ctx?.mergedFields?.[path[1]].inputType ?? InputType.Unknown;
+        }
       } else {
         if (
           !React.isValidElement(ps.children) ||
