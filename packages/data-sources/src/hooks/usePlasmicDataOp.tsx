@@ -123,7 +123,7 @@ export function usePlasmicDataOp<
   T extends SingleRowResult | ManyRowsResult,
   E = any
 >(
-  dataOp: DataOp | undefined,
+  dataOp: DataOp | undefined | (() => DataOp | undefined),
   opts?: {
     paginate?: Pagination;
     noUndefinedDataProxy?: boolean;
