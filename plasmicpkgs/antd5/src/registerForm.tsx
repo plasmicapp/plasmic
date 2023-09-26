@@ -4,26 +4,15 @@ import {
   ComponentHelpers,
   DataProvider,
   repeatedElement,
-  useDataEnv,
   usePlasmicCanvasContext,
 } from "@plasmicapp/host";
-import {
-  Button,
-  Checkbox,
-  ConfigProvider,
-  DatePicker,
-  Form,
-  Input,
-  InputNumber,
-  Radio,
-  Select,
-} from "antd";
+import { Form, Input, InputNumber, Radio } from "antd";
 import type { FormInstance, FormProps } from "antd/es/form";
 import type { FormItemProps } from "antd/es/form/FormItem";
 import type { FormListOperation, FormListProps } from "antd/es/form/FormList";
 import type { ColProps } from "antd/es/grid/col";
 import equal from "fast-deep-equal";
-import React, { ErrorInfo, cloneElement, isValidElement } from "react";
+import React, { cloneElement, isValidElement } from "react";
 import { mergeProps, reactNodeToString } from "./react-utils";
 import { buttonComponentName } from "./registerButton";
 import { AntdCheckbox, checkboxComponentName } from "./registerCheckbox";
@@ -41,7 +30,6 @@ import {
   ensureArray,
   ErrorBoundary,
   get,
-  has,
   omit,
   Registerable,
   registerComponentHelper,
@@ -51,6 +39,7 @@ import {
 import {
   ArrayType,
   CanvasComponentProps,
+  ControlExtras,
   PropType,
 } from "@plasmicapp/host/registerComponent";
 import {
@@ -74,7 +63,7 @@ interface InternalFormItemProps extends Omit<FormItemProps, "rules"> {
     fieldData: CuratedFieldData,
     props: InternalFormItemProps
   ) => FormItemProps;
-  setControlContextData?: (data: FormControlContextData) => void;
+  setControlContextData?: (data: FormItemControlContextData) => void;
 }
 
 export enum InputType {
@@ -103,12 +92,17 @@ export interface SimplifiedFormItemsProp extends InternalFormItemProps {
   key?: string;
 }
 
-interface FormWrapperControlContextData {
+interface CommonFormControlContextData {
+  registeredFields?: FieldEntity[];
+  formInstance?: FormInstance<any>;
+  layout?: FormLayoutContextValue;
+}
+
+interface FormWrapperControlContextData extends CommonFormControlContextData {
   formInstance?: FormInstance<any>;
   schema?: TableSchema;
   minimalFullLengthFields?: Partial<SimplifiedFormItemsProp>[];
   mergedFields?: SimplifiedFormItemsProp[];
-  registeredFields: FieldEntity[];
 }
 
 export enum FormType {
@@ -147,17 +141,16 @@ interface FieldEntity {
   name: string | number | undefined;
 }
 
-interface InternalFormInstanceContextData {
+interface InternalFormInstanceContext extends CommonFormControlContextData {
   fireOnValuesChange: () => void;
   forceRemount: () => void;
-  layout: FormLayoutContextValue;
   registeredFields: FieldEntity[];
   registerField: (fieldEntity: FieldEntity) => () => void;
   initialValues: Record<string, any>;
 }
 
 const InternalFormInstanceContext = React.createContext<
-  InternalFormInstanceContextData | undefined
+  InternalFormInstanceContext | undefined
 >(undefined);
 
 interface FormLayoutContextValue {
@@ -177,6 +170,7 @@ const Internal = React.forwardRef(
       registeredFields: FieldEntity[];
       labelCol?: ColProps & { horizontalOnly?: boolean };
       wrapperCol?: ColProps & { horizontalOnly?: boolean };
+      formLayout: FormLayoutContextValue;
     },
     ref: React.Ref<FormRefActions>
   ) => {
@@ -188,6 +182,7 @@ const Internal = React.forwardRef(
       forceRemount,
       setRegisteredFields,
       registeredFields,
+      formLayout,
       ...rest
     } = props;
     // extracted from https://github.com/react-component/field-form/blob/master/src/Form.tsx#L120
@@ -260,13 +255,6 @@ const Internal = React.forwardRef(
     React.useEffect(() => {
       fireOnValuesChange();
     }, []);
-    const formLayout = React.useMemo(
-      () => ({
-        layout: props.layout,
-        labelSpan: props.labelCol?.span as number | undefined,
-      }),
-      [props.layout, props.labelCol?.span]
-    );
     React.useImperativeHandle(ref, () => ({
       formInstance: form,
       setFieldsValue: (newValues: Record<string, any>) => {
@@ -374,7 +362,7 @@ function useFormItemDefinitions(
     | undefined,
   props: React.ComponentProps<typeof FormWrapper>,
   formRef: FormRefActions | null,
-  registeredFields: FieldEntity[]
+  commonFormCtxData: CommonFormControlContextData | undefined
 ) {
   const { mode, dataFormItems, setControlContextData } = props;
 
@@ -393,7 +381,7 @@ function useFormItemDefinitions(
     ) {
       setControlContextData?.({
         formInstance,
-        registeredFields,
+        ...commonFormCtxData,
       });
       return undefined;
     }
@@ -427,11 +415,18 @@ function useFormItemDefinitions(
       minimalFullLengthFields,
       mergedFields,
       formInstance,
-      registeredFields,
+      ...commonFormCtxData,
     });
 
     return mergedFields;
-  }, [mode, setControlContextData, dataFormItems, rawData, formInstance]);
+  }, [
+    mode,
+    setControlContextData,
+    dataFormItems,
+    rawData,
+    formInstance,
+    commonFormCtxData,
+  ]);
 }
 
 const useRawData = (props: FormWrapperProps) => {
@@ -466,12 +461,28 @@ export const FormWrapper = React.forwardRef(
       wrapperRef.current ? { ...wrapperRef.current } : ({} as FormRefActions)
     );
 
+    const formLayout = React.useMemo(
+      () => ({
+        layout: props.layout,
+        labelSpan: props.labelCol?.span as number | undefined,
+      }),
+      [props.layout, props.labelCol?.span]
+    );
+
+    const commonFormCtxData = React.useMemo<CommonFormControlContextData>(
+      () => ({
+        layout: formLayout,
+        registeredFields,
+      }),
+      [formLayout, registeredFields]
+    );
+
     const rawData = useRawData(props);
     const formItemDefinitions = useFormItemDefinitions(
       rawData,
       props,
       wrapperRef.current,
-      registeredFields
+      commonFormCtxData
     );
     React.useEffect(() => {
       if (rawData && !rawData.isLoading) {
@@ -513,6 +524,7 @@ export const FormWrapper = React.forwardRef(
           forceRemount={forceRemount}
           setRegisteredFields={setRegisteredFields}
           registeredFields={registeredFields}
+          formLayout={formLayout}
           formItems={
             rawData && rawData.isLoading
               ? previousFormItems.current
@@ -937,10 +949,9 @@ export function registerForm(loader?: Registerable) {
   });
 }
 
-interface FormControlContextData {
-  internalFormCtx?: InternalFormInstanceContextData;
-  formInstance?: FormInstance<any>;
+interface FormItemControlContextData extends CommonFormControlContextData {
   parentFormItemPath: (string | number)[];
+  status?: ReturnType<typeof Form.Item.useStatus>;
 }
 
 interface CuratedFieldData {
@@ -952,7 +963,9 @@ interface CuratedFieldData {
   // trigger: (x: any) => void;
 }
 
-interface InternalFormItemProps extends Omit<FormItemProps, "rules" | "name"> {
+interface InternalFormItemProps
+  extends Omit<FormItemProps, "rules" | "name">,
+    CanvasComponentProps<FormItemControlContextData> {
   rules?: PlasmicRule[];
   description?: React.ReactNode;
   noLabel?: boolean;
@@ -961,7 +974,6 @@ interface InternalFormItemProps extends Omit<FormItemProps, "rules" | "name"> {
     fieldData: CuratedFieldData,
     props: InternalFormItemProps
   ) => FormItemProps;
-  setControlContextData?: (data: FormControlContextData) => void;
   alignLabellessWithControls?: boolean;
   name?: string;
 }
@@ -1109,12 +1121,18 @@ export function FormItemWrapper(props: InternalFormItemProps) {
     });
     const fullPath = React.useContext(PathContext).fullPath;
     const internalFormCtx = React.useContext(InternalFormInstanceContext);
-    const { fireOnValuesChange, forceRemount, registerField, initialValues } =
-      internalFormCtx ?? {};
+    const {
+      fireOnValuesChange,
+      forceRemount,
+      registerField,
+      initialValues,
+      registeredFields,
+    } = internalFormCtx ?? {};
     props.setControlContextData?.({
-      internalFormCtx,
+      registeredFields,
       formInstance: form,
       parentFormItemPath: fullPath,
+      layout: layoutContext,
     });
     React.useEffect(() => {
       const unregister = registerField?.(fieldEntity);
@@ -1269,7 +1287,10 @@ function FormItemForwarder({ formItemProps, ...props }: any) {
 function getDefaultValueHint(field: keyof SimplifiedFormItemsProp) {
   return (
     _props: any,
-    contextData: FormWrapperControlContextData | FormControlContextData | null,
+    contextData:
+      | FormWrapperControlContextData
+      | FormItemControlContextData
+      | null,
     { item }: any
   ): any => {
     if (!contextData || !("mergedFields" in contextData)) {
@@ -1304,203 +1325,243 @@ const mapPlumeTypeToInputType = new Map<string, InputType>([
   ["switch", InputType.Checkbox],
 ]);
 
-const commonFormItemProps = (
+function commonFormItemProps(
+  usage: "simplified-form-item"
+): Record<string, PropType<InternalFormItemProps>>;
+function commonFormItemProps(
+  usage: "advanced-form-item"
+): Record<string, PropType<FormWrapperProps>>;
+function commonFormItemProps(
   usage: "simplified-form-item" | "advanced-form-item"
-): Record<string, PropType<InternalFormItemProps>> => ({
-  name: {
-    type: "string" as const,
-    required: true,
-    validator: (
-      value: string,
-      _props: any,
-      ctx: FormControlContextData | null
-    ) => {
-      const currFullPath = [...(ctx?.parentFormItemPath ?? []), value];
-      const nameCounter = (ctx?.internalFormCtx?.registeredFields ?? []).filter(
-        (formItem) => arrayEq(formItem.fullPath, currFullPath)
-      ).length;
-      return nameCounter === 1
-        ? true
-        : `Repeated form item name: ${currFullPath.join(" → ")}`;
-    },
-    defaultValueHint: getDefaultValueHint("name"),
-  },
-  initialValue: {
-    type: "dynamic",
-    control: (
-      ps: FormWrapperProps | InternalFormItemProps,
-      ctx: FormWrapperControlContextData | null,
-      {
-        item,
-        path,
-      }: { item: SimplifiedFormItemsProp; path: (string | number)[] }
-    ) => {
-      let inputType = InputType.Unknown;
-      if (usage === "simplified-form-item") {
-        inputType = item.inputType;
-        if (!(ps as FormWrapperProps).data) {
-          inputType = item.inputType;
-        } else if (path != null && typeof path[1] === "number") {
-          inputType =
-            ctx?.mergedFields?.[path[1]].inputType ?? InputType.Unknown;
-        }
-      } else {
-        if (
-          !React.isValidElement(ps.children) ||
-          typeof ps.children.type === "string"
-        ) {
-          inputType = InputType.Unknown;
+):
+  | Record<string, PropType<FormWrapperProps>>
+  | Record<string, PropType<InternalFormItemProps>> {
+  const getFormItemProps = (
+    ps: FormWrapperProps | InternalFormItemProps,
+    _ctx: any,
+    { item }: { item?: SimplifiedFormItemsProp }
+  ): InternalFormItemProps | undefined => {
+    if (usage === "simplified-form-item") {
+      return item;
+    } else {
+      return ps as InternalFormItemProps;
+    }
+  };
+
+  return {
+    name: {
+      type: "string" as const,
+      required: true,
+      validator: (
+        value: string,
+        _ps: any,
+        ctx: CommonFormControlContextData | null
+      ) => {
+        let currFullPath: (string | number)[] = [];
+        if (usage === "simplified-form-item") {
+          currFullPath = [value];
         } else {
-          if (mapAntdComponentToInputType.has(ps.children.type)) {
+          const formItemCtx = ctx as FormItemControlContextData | null;
+          currFullPath = [...(formItemCtx?.parentFormItemPath ?? []), value];
+        }
+        const nameCounter = (ctx?.registeredFields ?? []).filter((formItem) =>
+          arrayEq(formItem.fullPath, currFullPath)
+        ).length;
+        return nameCounter === 1
+          ? true
+          : `Repeated form item name: ${currFullPath.join(" → ")}`;
+      },
+      defaultValueHint: getDefaultValueHint("name"),
+    },
+    initialValue: {
+      type: "dynamic",
+      control: (
+        ps: FormWrapperProps | InternalFormItemProps,
+        ctx: FormWrapperControlContextData | null,
+        {
+          item,
+          path,
+        }: { item: SimplifiedFormItemsProp; path: (string | number)[] }
+      ) => {
+        let inputType = InputType.Unknown;
+        if (usage === "simplified-form-item") {
+          inputType = item.inputType;
+          if (!(ps as FormWrapperProps).data) {
+            inputType = item.inputType;
+          } else if (path != null && typeof path[1] === "number") {
             inputType =
-              mapAntdComponentToInputType.get(ps.children.type) ??
-              InputType.Unknown;
-          } else if ("__plumeType" in ps.children.type) {
-            inputType =
-              mapPlumeTypeToInputType.get(
-                ps.children.type.__plumeType as string
-              ) ?? InputType.Unknown;
+              ctx?.mergedFields?.[path[1]].inputType ?? InputType.Unknown;
+          }
+        } else {
+          if (
+            !React.isValidElement(ps.children) ||
+            typeof ps.children.type === "string"
+          ) {
+            inputType = InputType.Unknown;
+          } else {
+            if (mapAntdComponentToInputType.has(ps.children.type)) {
+              inputType =
+                mapAntdComponentToInputType.get(ps.children.type) ??
+                InputType.Unknown;
+            } else if ("__plumeType" in ps.children.type) {
+              inputType =
+                mapPlumeTypeToInputType.get(
+                  ps.children.type.__plumeType as string
+                ) ?? InputType.Unknown;
+            }
           }
         }
-      }
-      if (
-        [
-          InputType.Text,
-          InputType.TextArea,
-          InputType.Password,
-          InputType.Select,
-          InputType.RadioGroup,
-        ].includes(inputType)
-      ) {
-        return {
-          type: "string",
-          defaultValueHint: getDefaultValueHint("initialValue"),
-        };
-      } else if (InputType.Number === inputType) {
-        return {
-          type: "number",
-          defaultValueHint: getDefaultValueHint("initialValue"),
-        };
-      } else if (InputType.Checkbox === inputType) {
-        return {
-          type: "boolean",
-          defaultValueHint: getDefaultValueHint("initialValue"),
-        };
-      } else if (InputType.DatePicker === inputType) {
-        return {
-          type: "dateString",
-          defaultValueHint: getDefaultValueHint("initialValue"),
-        };
-      } else {
-        return {
-          type: "exprEditor",
-          defaultValueHint: getDefaultValueHint("initialValue"),
-        };
-      }
-    },
-  } as any,
-  rules: {
-    displayName: "Validation rules",
-    type: "formValidationRules" as const,
-  } as any,
-  valuePropName: {
-    type: "string" as const,
-    advanced: true,
-    defaultValueHint: "value",
-    description:
-      "The prop name for specifying the value of the form control component",
-  },
-  trigger: {
-    type: "string" as const,
-    displayName: "Trigger prop name",
-    advanced: true,
-    defaultValueHint: "onChange",
-    description:
-      "The prop name of event handler that is called when value is changed",
-  },
-  noLabel: {
-    type: "boolean" as const,
-    advanced: true,
-  },
-  alignLabellessWithControls: {
-    type: "boolean" as const,
-    displayName: "Align with controls?",
-    description: "Aligns the content with form controls in the grid",
-    hidden: (ps, ctx) =>
-      !ps.noLabel || ctx?.internalFormCtx?.layout.layout !== "horizontal",
-    defaultValueHint: true,
-  },
-  colon: {
-    type: "boolean" as const,
-    defaultValueHint: true,
-    advanced: true,
-    hidden: () => true,
-  },
-  labelAlign: {
-    type: "choice" as const,
-    options: ["left", "right"],
-    advanced: true,
-    hidden: (ps, ctx) =>
-      !!ps.noLabel || ctx?.internalFormCtx?.layout.layout !== "horizontal",
-  },
-  hidden: {
-    type: "boolean" as const,
-    advanced: true,
-    defaultValueHint: getDefaultValueHint("hidden"),
-  },
-  validateTrigger: {
-    type: "choice" as const,
-    options: ["onSubmit", "onChange", "onBlur"],
-    multiSelect: true as const,
-    advanced: true,
-  },
-  shouldUpdate: {
-    type: "boolean" as const,
-    advanced: true,
-    displayName: "Always re-render",
-    description:
-      "Form fields normally only re-render when the corresponding form value changes, for performance. This forces it to always re-render.",
-  },
-  dependencies: {
-    type: "array" as const,
-    advanced: true,
-    displayName: "Dependencies",
-    description:
-      "Form fields can depend on other form fields. This forces it to re-evaluate the validation rules when the other form fields changes.",
-  },
-  hideValidationMessage: {
-    type: "boolean" as const,
-    displayName: "Hide validation message?",
-    description: "If true, will hide the validation error message",
-    defaultValueHint: false,
-    advanced: true,
-  },
-  customizeProps: {
-    type: "function" as const,
-    description:
-      "Customize the props passed into the wrapped field component. Takes the current status ('success', 'warning', 'error', or 'validating').)",
-    argNames: ["fieldData"],
-    argValues: (_ps: any, ctx: any) => [
-      {
-        status: ctx?.status?.status,
+        if (
+          [
+            InputType.Text,
+            InputType.TextArea,
+            InputType.Password,
+            InputType.Select,
+            InputType.RadioGroup,
+          ].includes(inputType)
+        ) {
+          return {
+            type: "string",
+            defaultValueHint: getDefaultValueHint("initialValue"),
+          };
+        } else if (InputType.Number === inputType) {
+          return {
+            type: "number",
+            defaultValueHint: getDefaultValueHint("initialValue"),
+          };
+        } else if (InputType.Checkbox === inputType) {
+          return {
+            type: "boolean",
+            defaultValueHint: getDefaultValueHint("initialValue"),
+          };
+        } else if (InputType.DatePicker === inputType) {
+          return {
+            type: "dateString",
+            defaultValueHint: getDefaultValueHint("initialValue"),
+          };
+        } else {
+          return {
+            type: "exprEditor",
+            defaultValueHint: getDefaultValueHint("initialValue"),
+          };
+        }
       },
-    ],
-    advanced: true,
-  } as any,
-  noStyle: {
-    type: "boolean" as const,
-    displayName: "Field control only",
-    description:
-      "Don't render anything but the field control - so no label, help text, validation error, etc.",
-    advanced: true,
-  },
-  preserve: {
-    type: "boolean" as const,
-    advanced: true,
-    defaultValueHint: true,
-    description: "Keep field value even when field removed.",
-  },
-});
+    } as any,
+    rules: {
+      displayName: "Validation rules",
+      type: "formValidationRules" as const,
+    } as any,
+    valuePropName: {
+      type: "string" as const,
+      advanced: true,
+      defaultValueHint: "value",
+      description:
+        "The prop name for specifying the value of the form control component",
+    },
+    trigger: {
+      type: "string" as const,
+      displayName: "Trigger prop name",
+      advanced: true,
+      defaultValueHint: "onChange",
+      description:
+        "The prop name of event handler that is called when value is changed",
+    },
+    noLabel: {
+      type: "boolean" as const,
+      advanced: true,
+    },
+    alignLabellessWithControls: {
+      type: "boolean" as const,
+      displayName: "Align with controls?",
+      description: "Aligns the content with form controls in the grid",
+      hidden: (
+        ps: any,
+        ctx: CommonFormControlContextData | null,
+        extras: ControlExtras
+      ) => {
+        const formItem = getFormItemProps(ps, ctx, extras);
+        return !formItem?.noLabel || ctx?.layout?.layout !== "horizontal";
+      },
+      defaultValueHint: true,
+    },
+    colon: {
+      type: "boolean" as const,
+      defaultValueHint: true,
+      advanced: true,
+      hidden: () => true,
+    },
+    labelAlign: {
+      type: "choice" as const,
+      options: ["left", "right"],
+      advanced: true,
+      hidden: (
+        ps: any,
+        ctx: CommonFormControlContextData | null,
+        extras: ControlExtras
+      ) => {
+        const formItem = getFormItemProps(ps, ctx, extras);
+        return !!formItem?.noLabel || ctx?.layout?.layout !== "horizontal";
+      },
+    },
+    hidden: {
+      type: "boolean" as const,
+      advanced: true,
+      defaultValueHint: getDefaultValueHint("hidden"),
+    },
+    validateTrigger: {
+      type: "choice" as const,
+      options: ["onSubmit", "onChange", "onBlur"],
+      multiSelect: true as const,
+      advanced: true,
+    },
+    shouldUpdate: {
+      type: "boolean" as const,
+      advanced: true,
+      displayName: "Always re-render",
+      description:
+        "Form fields normally only re-render when the corresponding form value changes, for performance. This forces it to always re-render.",
+    },
+    dependencies: {
+      type: "array" as const,
+      advanced: true,
+      displayName: "Dependencies",
+      description:
+        "Form fields can depend on other form fields. This forces it to re-evaluate the validation rules when the other form fields changes.",
+    },
+    hideValidationMessage: {
+      type: "boolean" as const,
+      displayName: "Hide validation message?",
+      description: "If true, will hide the validation error message",
+      defaultValueHint: false,
+      advanced: true,
+    },
+    customizeProps: {
+      type: "function" as const,
+      description:
+        "Customize the props passed into the wrapped field component. Takes the current status ('success', 'warning', 'error', or 'validating').)",
+      argNames: ["fieldData"],
+      argValues: (_ps: any, ctx: FormItemControlContextData) => [
+        {
+          status: ctx?.status?.status,
+        },
+      ],
+      advanced: true,
+    } as any,
+    noStyle: {
+      type: "boolean" as const,
+      displayName: "Field control only",
+      description:
+        "Don't render anything but the field control - so no label, help text, validation error, etc.",
+      advanced: true,
+    },
+    preserve: {
+      type: "boolean" as const,
+      advanced: true,
+      defaultValueHint: true,
+      description: "Keep field value even when field removed.",
+    },
+  };
+}
 
 const commonSimplifiedFormArrayItemType = (
   propName: "formItems" | "dataFormItems"
