@@ -1399,6 +1399,8 @@ function commonFormItemProps(
     name: {
       type: "string" as const,
       required: true,
+      displayName: "Field key",
+      description: "Key name for this field value in the submitted form data.",
       validator: (
         value: string,
         _ps: any,
@@ -1416,7 +1418,7 @@ function commonFormItemProps(
         ).filter((formItem) => arrayEq(formItem.fullPath, currFullPath)).length;
         return nameCounter === 1
           ? true
-          : `Repeated form item name: ${currFullPath.join(" → ")}`;
+          : `Repeated form field key: ${currFullPath.join(" → ")}`;
       },
       defaultValueHint: getDefaultValueHint("name"),
     },
@@ -1865,6 +1867,9 @@ export function registerFormGroup(loader?: Registerable) {
     props: {
       name: {
         type: "string",
+        displayName: "Form group key",
+        description:
+          "Name of the field key for this group of form fields in the submitted form data.",
       },
       children: {
         type: "slot",
