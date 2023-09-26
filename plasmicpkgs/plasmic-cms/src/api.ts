@@ -5,6 +5,7 @@ export interface DatabaseConfig {
   databaseId: string;
   databaseToken: string;
   locale: string;
+  useDraft: boolean;
 }
 
 export interface QueryParams {
@@ -85,7 +86,7 @@ export class API {
     try {
       const response = await this.get(`/tables/${table}/query`, {
         q: JSON.stringify(queryParamsToApi(params)),
-        draft: Number(params.useDraft),
+        draft: Number(this.config.useDraft || params.useDraft),
         locale: this.config.locale,
       });
       return response.rows;
@@ -102,7 +103,7 @@ export class API {
     try {
       const response = await this.get(`/tables/${table}/count`, {
         q: JSON.stringify(queryParamsToApi(params)),
-        draft: Number(params.useDraft),
+        draft: Number(this.config.useDraft || params.useDraft),
       });
       return response.count;
     } catch (e) {

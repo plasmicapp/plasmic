@@ -112,12 +112,14 @@ export function CmsCredentialsProvider({
   databaseToken,
   host,
   locale,
+  useDraft,
 }: CmsCredentialsProviderProps) {
   const config: DatabaseConfig = {
     databaseId,
     databaseToken,
     locale,
     host: host || defaultHost,
+    useDraft: useDraft ?? false,
   };
   return (
     <DatabaseProvider config={config}>
