@@ -8,6 +8,7 @@ export function AntdModal(
     defaultStylesClassName?: string;
     modalScopeClassName: string;
     wrapClassName: string;
+    hideFooter?: boolean;
   }
 ) {
   const {
@@ -16,6 +17,7 @@ export function AntdModal(
     onCancel,
     open,
     footer,
+    hideFooter,
     modalScopeClassName,
     wrapClassName,
     ...rest
@@ -46,7 +48,7 @@ export function AntdModal(
       onOk={memoOnOk}
       onCancel={memoOnCancel}
       open={open}
-      footer={footer ?? undefined}
+      footer={hideFooter ? null : footer ?? undefined}
       wrapClassName={wrapClassName}
       className={`${props.className} ${props.defaultStylesClassName} ${modalScopeClassName}`}
     />
@@ -77,6 +79,7 @@ export function registerModal(loader?: Registerable) {
       footer: {
         type: "slot",
         hidePlaceholder: true,
+        hidden: (ps) => ps.hideFooter ?? false,
       },
       closeIcon: {
         type: "slot",
@@ -98,6 +101,11 @@ export function registerModal(loader?: Registerable) {
       cancelText: {
         type: "string",
         hidden: (ps) => !!ps.footer,
+        advanced: true,
+      },
+      hideFooter: {
+        type: "boolean",
+        description: "Hide the modal footer slot",
         advanced: true,
       },
       onOpenChange: {
@@ -147,6 +155,18 @@ export function registerModal(loader?: Registerable) {
         onChangeProp: "onOpenChange",
         variableType: "boolean",
       },
+    },
+    templates: {
+      "Modal Form": {
+        props: {
+          children: {
+            type: "component",
+            name: "plasmic-antd5-form",
+          },
+          hideFooter: true,
+        },
+      },
+      "Generic Modal": {},
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerModal",
     importName: "AntdModal",
