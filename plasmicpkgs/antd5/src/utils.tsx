@@ -226,11 +226,49 @@ export class ErrorBoundary extends React.Component<
   }
 }
 
-// Forked from https://github.com/developit/dlv/blob/master/index.js
-export function get(obj: any, key: any, def?: any, undef?: any) {
-  key = key.split ? key.split(".") : key;
-  for (let p = 0; p < key.length; p++) {
-    obj = obj ? obj[key[p]] : undef;
+// Forked from https://github.com/acstll/deep-get-set/blob/master/index.js
+var hasOwnProp = Object.prototype.hasOwnProperty;
+function isSafeKey(key: string | number | symbol) {
+  return key !== "__proto__" && key !== "prototype" && key !== "constructor";
+}
+export function get(obj: any, path: (string | number | symbol)[] | string) {
+  var keys = Array.isArray(path) ? path : path.split(".");
+  for (var i = 0; i < keys.length; i++) {
+    var key = keys[i];
+    if (!obj || !hasOwnProp.call(obj, key) || !isSafeKey(key)) {
+      obj = undefined;
+      break;
+    }
+    obj = obj[key];
   }
-  return obj === undef ? def : obj;
+  return obj;
+}
+function set(
+  obj: any,
+  path: (string | number | symbol)[] | string,
+  value: any
+) {
+  var keys = Array.isArray(path) ? path : path.split(".");
+  for (var i = 0; i < keys.length - 1; i++) {
+    var key = keys[i];
+    if (!isSafeKey(key)) return;
+    if (hasOwnProp.call(obj, key)) obj[key] = {};
+    obj = obj[key];
+  }
+  obj[keys[i]] = value;
+  return value;
+}
+
+export function pick<T extends {}>(
+  obj: T,
+  ...paths: (string | number | symbol)[][]
+): Partial<T> {
+  if (Object.keys(obj).length === 0) {
+    return obj;
+  }
+  const res: any = {};
+  for (const path of paths) {
+    set(res, path, get(obj, path));
+  }
+  return res as Partial<T>;
 }

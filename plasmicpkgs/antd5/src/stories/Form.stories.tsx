@@ -9,6 +9,7 @@ import {
   SimplifiedFormItemsProp,
   formHelpers,
   FormRefActions,
+  FormWrapperControlContextData,
 } from "../registerForm";
 import { Button, Checkbox, Input, InputNumber } from "antd";
 import TextArea, { TextAreaRef } from "antd/es/input/TextArea";
@@ -382,6 +383,7 @@ TestSimplifiedForm.play = async ({ canvasElement }) => {
 
   await checkFormItems(canvasElement, expectedFormItems);
 
+  await sleep(100);
   await userEvent.click(canvas.getByText("Submit"));
   await sleep(100);
   await expect(canvas.getByTestId("submitted")).toHaveTextContent(
@@ -437,8 +439,9 @@ TestSimplifiedForm.play = async ({ canvasElement }) => {
     `Value: ${getFormItemsValue(expectedFormItems)}`
   );
   await checkFormItems(canvasElement, expectedFormItems);
-  await userEvent.click(canvas.getByText("Submit"));
   await sleep(100);
+  await userEvent.click(canvas.getByText("Submit"));
+  await sleep(200);
   await expect(canvas.getByTestId("submitted")).toHaveTextContent(
     `Submitted: ${getFormItemsValue(expectedFormItems)}`
   );
@@ -451,14 +454,18 @@ const useForceRender = () => {
 
 const _InternalFormCtx: StoryFn = (args: any) => {
   const forceRender = useForceRender();
-  const ctxDataRef = React.useRef<any>(() => undefined);
+  const ctxDataRef = React.useRef<FormWrapperControlContextData | null>(null);
   const setControlContextData = React.useCallback((data: any) => {
-    if (JSON.stringify(ctxDataRef.current) !== JSON.stringify(data)) {
+    if (
+      JSON.stringify(ctxDataRef.current?.internalFieldCtx) !==
+      JSON.stringify(data.internalFieldCtx)
+    ) {
       ctxDataRef.current = data;
       forceRender();
     }
   }, []);
-  const registeredFields = ctxDataRef.current.registeredFields;
+  const registeredFields =
+    ctxDataRef.current?.internalFieldCtx?.registeredFields;
   const $state = useDollarState(
     [
       {
@@ -471,22 +478,28 @@ const _InternalFormCtx: StoryFn = (args: any) => {
   );
   const [formItems, setFormItems] = React.useState(() => [
     {
+      preserve: true,
       name: "textField",
     },
     {
+      preserve: true,
       name: "textAreaField",
       hidden: true,
     },
     {
+      preserve: true,
       name: "numberField",
     },
     {
+      preserve: true,
       name: "address",
     },
     {
+      preserve: true,
       name: "city",
     },
     {
+      preserve: true,
       name: "state",
     },
   ]);
@@ -495,6 +508,11 @@ const _InternalFormCtx: StoryFn = (args: any) => {
   const [fieldVisibility, setFieldVisibility] = React.useState<
     "visible" | "invisible"
   >("visible");
+  console.log(
+    "dale",
+    ctxDataRef,
+    ctxDataRef.current?.internalFieldCtx?.registeredFields
+  );
   return (
     <PlasmicCanvasProvider>
       <Form
@@ -594,17 +612,22 @@ InternalFormCtx.args = {};
 InternalFormCtx.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
   let expectedRegisteredFields = [
-    { fullPath: ["textField"], name: "textField" },
-    { fullPath: ["numberField"], name: "numberField" },
-    { fullPath: ["address", "city"], name: "city" },
-    { fullPath: ["address", "state"], name: "state" },
+    { preserve: true, fullPath: ["textField"], name: "textField" },
+    { preserve: true, fullPath: ["numberField"], name: "numberField" },
+    { preserve: true, fullPath: ["address", "city"], name: "city" },
+    { preserve: true, fullPath: ["address", "state"], name: "state" },
   ];
-  await sleep(100);
-  await expect(canvas.getByTestId("registeredFields")).toHaveTextContent(
-    JSON.stringify(expectedRegisteredFields)
-  );
-  // change fields visibility --> this should register/unregister fields
+
+  const checkRegisteredFields = async () => {
+    await sleep(200);
+    await expect(canvas.getByTestId("registeredFields")).toHaveTextContent(
+      JSON.stringify(expectedRegisteredFields)
+    );
+  };
+  await checkRegisteredFields();
+  // // change fields visibility --> this should register/unregister fields
   expectedRegisteredFields.push({
+    preserve: true,
     fullPath: ["textAreaField"],
     name: "textAreaField",
   });
@@ -617,10 +640,7 @@ InternalFormCtx.play = async ({ canvasElement }) => {
     "visible"
   );
   await userEvent.click(canvas.getByText("Change visibility"));
-  await sleep(100);
-  await expect(canvas.getByTestId("registeredFields")).toHaveTextContent(
-    JSON.stringify(expectedRegisteredFields)
-  );
+  await checkRegisteredFields();
 
   expectedRegisteredFields = expectedRegisteredFields.slice(1);
   await userEvent.selectOptions(
@@ -632,12 +652,9 @@ InternalFormCtx.play = async ({ canvasElement }) => {
     "invisible"
   );
   await userEvent.click(canvas.getByText("Change visibility"));
-  await sleep(100);
-  await expect(canvas.getByTestId("registeredFields")).toHaveTextContent(
-    JSON.stringify(expectedRegisteredFields)
-  );
+  await checkRegisteredFields();
 
-  //rename fields name
+  // //rename fields name
   expectedRegisteredFields = [
     ...expectedRegisteredFields.slice(-1),
     ...expectedRegisteredFields.slice(0, -1),
@@ -650,10 +667,7 @@ InternalFormCtx.play = async ({ canvasElement }) => {
   );
   await userEvent.type(canvas.getByTestId("renameInput"), "new field name");
   await userEvent.click(canvas.getByText("Rename field"));
-  await sleep(100);
-  await expect(canvas.getByTestId("registeredFields")).toHaveTextContent(
-    JSON.stringify(expectedRegisteredFields)
-  );
+  await checkRegisteredFields();
 
   //renaming form group name should rename all children
   expectedRegisteredFields[2].fullPath[0] = "address2";
@@ -664,10 +678,7 @@ InternalFormCtx.play = async ({ canvasElement }) => {
   );
   await userEvent.type(canvas.getByTestId("renameInput"), "address2");
   await userEvent.click(canvas.getByText("Rename field"));
-  await sleep(100);
-  await expect(canvas.getByTestId("registeredFields")).toHaveTextContent(
-    JSON.stringify(expectedRegisteredFields)
-  );
+  await checkRegisteredFields();
 };
 
 const _SchemaForms: StoryFn = (args: any) => {
@@ -1052,6 +1063,7 @@ MultiStepForm.play = async ({ canvasElement }) => {
     JSON.stringify(formItemsValues)
   );
 
+  await sleep(100);
   await userEvent.click(canvas.getByText("Submit"));
   await sleep(100);
   await expect(canvas.getByTestId("submittedData")).toHaveTextContent(
@@ -1761,4 +1773,229 @@ CanModifyPropsInCanvasForSchema.play = async ({ canvasElement }) => {
   await expect(canvas.getByTestId("value")).toHaveTextContent(
     getFormItemsValue(expectedFormItems)
   );
+};
+
+const _OnlySubmitMountedFields: StoryFn = (args: any) => {
+  const $state = useDollarState(
+    [
+      {
+        path: "form.value",
+        type: "private",
+        variableType: "object",
+      },
+      {
+        path: "submitted",
+        type: "private",
+        variableType: "object",
+      },
+      {
+        path: "input.value",
+        type: "private",
+        variableType: "text",
+      },
+    ],
+    { $props: args }
+  );
+  const [formItems, setFormItems] = React.useState<SimplifiedFormItemsProp[]>([
+    { label: "Field 1", name: "field1", inputType: InputType.Text },
+    { label: "Field 2", name: "field2", inputType: InputType.Text },
+  ]);
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      <div
+        style={{
+          display: "flex",
+          gap: 20,
+        }}
+      >
+        <Input
+          value={$state.input.value}
+          onChange={(e) => ($state.input.value = e.target.value)}
+          data-testid="input"
+        />
+        <Button
+          onClick={() => {
+            const [opName, formItem] = JSON.parse($state.input.value) as any;
+            if (opName === "add") {
+              setFormItems((items) => [...items, formItem]);
+            } else if (opName === "delete") {
+              setFormItems((items) =>
+                items.filter((item) => item.name !== formItem.name)
+              );
+            } else {
+              setFormItems((items) =>
+                items.map((item) => {
+                  if (item.name !== opName) {
+                    return item;
+                  } else {
+                    return {
+                      ...item,
+                      ...formItem,
+                    };
+                  }
+                })
+              );
+            }
+            $state.input.value = "";
+          }}
+        >
+          Update form
+        </Button>
+      </div>
+      <PlasmicCanvasProvider>
+        <Form
+          extendedOnValuesChange={(values) => ($state.form.value = values)}
+          onFinish={(values) => ($state.submitted = values)}
+          mode="simplified"
+          submitSlot={<SubmitSlot />}
+          colon={false}
+          formItems={formItems}
+          initialValues={{
+            field1: "hello",
+            field3: "world",
+          }}
+        />
+      </PlasmicCanvasProvider>
+      <p data-testid="value">{JSON.stringify($state.form.value)}</p>
+      <p data-testid="submitted">{JSON.stringify($state.submitted)}</p>
+    </div>
+  );
+};
+
+export const OnlySubmitMountedFields = _OnlySubmitMountedFields.bind({});
+OnlySubmitMountedFields.args = {};
+OnlySubmitMountedFields.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  const expectedValue: Record<string, any> = {
+    field1: "hello",
+    field3: "world",
+  };
+  const expectedSubmitted: Record<string, any> = { field1: "hello" };
+  let expectedFormItems: SimplifiedFormItemsProp[] = [
+    {
+      label: "Field 1",
+      name: "field1",
+      inputType: InputType.Text,
+      initialValue: "hello",
+    },
+    {
+      label: "Field 2",
+      name: "field2",
+      inputType: InputType.Text,
+    },
+  ];
+  await sleep(100);
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    JSON.stringify(expectedValue)
+  );
+  await checkFormItems(canvasElement, expectedFormItems);
+
+  await canvas.getByText("Submit").click();
+  await sleep(100);
+  await expect(canvas.getByTestId("submitted")).toHaveTextContent(
+    JSON.stringify(expectedSubmitted)
+  );
+
+  // add new field
+  const newField: SimplifiedFormItemsProp & { name: string } = {
+    name: "testInput",
+    label: "Test Input",
+    inputType: InputType.Number,
+    initialValue: 123,
+  };
+  await userEvent.paste(
+    canvas.getByTestId("input"),
+    JSON.stringify(["add", newField])
+  );
+  await canvas.getByText("Update form").click();
+
+  expectedValue[newField.name] = newField.initialValue;
+  expectedSubmitted[newField.name] = newField.initialValue;
+  expectedFormItems.push(newField);
+
+  await sleep(100);
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    JSON.stringify(expectedValue)
+  );
+  await checkFormItems(canvasElement, expectedFormItems);
+  await canvas.getByText("Submit").click();
+  await sleep(100);
+  await expect(canvas.getByTestId("submitted")).toHaveTextContent(
+    JSON.stringify(expectedSubmitted)
+  );
+
+  // add delete field
+  // submitted and value states shouldn't change
+  await userEvent.paste(
+    canvas.getByTestId("input"),
+    JSON.stringify(["delete", newField])
+  );
+  await canvas.getByText("Update form").click();
+  expectedFormItems = expectedFormItems.slice(0, 2);
+  await sleep(100);
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    JSON.stringify(expectedValue)
+  );
+  await checkFormItems(canvasElement, expectedFormItems);
+  await canvas.getByText("Submit").click();
+  await sleep(100);
+  await expect(canvas.getByTestId("submitted")).toHaveTextContent(
+    JSON.stringify(expectedSubmitted)
+  );
+
+  // add it back
+  await userEvent.paste(
+    canvas.getByTestId("input"),
+    JSON.stringify(["add", newField])
+  );
+  await canvas.getByText("Update form").click();
+  expectedFormItems.push(newField);
+  await sleep(100);
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    JSON.stringify(expectedValue)
+  );
+  await checkFormItems(canvasElement, expectedFormItems);
+  await canvas.getByText("Submit").click();
+  await sleep(100);
+  await expect(canvas.getByTestId("submitted")).toHaveTextContent(
+    JSON.stringify(expectedSubmitted)
+  );
+
+  // mark field to not preserve
+  await userEvent.paste(
+    canvas.getByTestId("input"),
+    JSON.stringify([newField.name, { preserve: false }])
+  );
+  await canvas.getByText("Update form").click();
+
+  // add delete field
+  // submitted and value states shouldn't change
+  await userEvent.paste(
+    canvas.getByTestId("input"),
+    JSON.stringify(["delete", newField])
+  );
+  await canvas.getByText("Update form").click();
+  expectedFormItems = expectedFormItems.slice(0, 2);
+  delete expectedSubmitted[newField.name];
+  await sleep(100);
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    JSON.stringify(expectedValue)
+  );
+  await checkFormItems(canvasElement, expectedFormItems);
+  await canvas.getByText("Submit").click();
+  await sleep(100);
+  await expect(canvas.getByTestId("submitted")).toHaveTextContent(
+    JSON.stringify(expectedSubmitted)
+  );
+
+  expectedFormItems[0].initialValue = "abc";
+  expectedValue["field1"] = expectedFormItems[0].initialValue;
+  delete expectedValue[newField.name];
+  modifyFormItems(canvasElement, [expectedFormItems[0]]);
+  await sleep(100);
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    JSON.stringify(expectedValue)
+  );
+  await checkFormItems(canvasElement, expectedFormItems);
 };

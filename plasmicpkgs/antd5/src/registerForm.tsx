@@ -35,6 +35,7 @@ import {
   registerComponentHelper,
   setFieldsToUndefined,
   usePrevious,
+  pick,
 } from "./utils";
 import {
   ArrayType,
@@ -56,7 +57,7 @@ import { AntdDatePicker } from "./registerDatePicker";
 const FormItem = Form.Item;
 const FormList = Form.List;
 
-interface InternalFormItemProps extends Omit<FormItemProps, "rules"> {
+export interface InternalFormItemProps extends Omit<FormItemProps, "rules"> {
   rules?: PlasmicRule[];
   noLabel?: boolean;
   customizeProps?: (
@@ -93,12 +94,13 @@ export interface SimplifiedFormItemsProp extends InternalFormItemProps {
 }
 
 interface CommonFormControlContextData {
-  registeredFields?: FieldEntity[];
   formInstance?: FormInstance<any>;
   layout?: FormLayoutContextValue;
+  internalFieldCtx?: InternalFieldCtx;
 }
 
-interface FormWrapperControlContextData extends CommonFormControlContextData {
+export interface FormWrapperControlContextData
+  extends CommonFormControlContextData {
   formInstance?: FormInstance<any>;
   schema?: TableSchema;
   minimalFullLengthFields?: Partial<SimplifiedFormItemsProp>[];
@@ -139,13 +141,23 @@ const PathContext = React.createContext<{
 interface FieldEntity {
   fullPath: (string | number)[];
   name: string | number | undefined;
+  preserve: boolean;
+}
+
+/**
+ * - registeredFields: current mounted form fields
+ * - preservedRegisteredFields: all fields that were registered and were marked as NOT preserve
+ */
+interface InternalFieldCtx {
+  registeredFields: FieldEntity[];
+  preservedRegisteredFields: FieldEntity[];
 }
 
 interface InternalFormInstanceContext extends CommonFormControlContextData {
   fireOnValuesChange: () => void;
   forceRemount: () => void;
-  registeredFields: FieldEntity[];
   registerField: (fieldEntity: FieldEntity) => () => void;
+  internalFieldCtx: InternalFieldCtx;
   initialValues: Record<string, any>;
 }
 
@@ -166,8 +178,10 @@ const Internal = React.forwardRef(
   (
     props: FormWrapperProps & {
       forceRemount: () => void;
-      setRegisteredFields: React.Dispatch<React.SetStateAction<FieldEntity[]>>;
-      registeredFields: FieldEntity[];
+      setInternalFieldCtx: React.Dispatch<
+        React.SetStateAction<InternalFieldCtx>
+      >;
+      internalFieldCtx: InternalFieldCtx;
       labelCol?: ColProps & { horizontalOnly?: boolean };
       wrapperCol?: ColProps & { horizontalOnly?: boolean };
       formLayout: FormLayoutContextValue;
@@ -180,9 +194,9 @@ const Internal = React.forwardRef(
     const {
       extendedOnValuesChange,
       forceRemount,
-      setRegisteredFields,
-      registeredFields,
       formLayout,
+      internalFieldCtx,
+      setInternalFieldCtx,
       ...rest
     } = props;
     // extracted from https://github.com/react-component/field-form/blob/master/src/Form.tsx#L120
@@ -286,12 +300,28 @@ const Internal = React.forwardRef(
         extendedOnValuesChange?.(form.getFieldsValue(true));
       },
     }));
-    const registerField = React.useCallback((fieldEntity: FieldEntity) => {
-      setRegisteredFields((f) => [...f, fieldEntity]);
-      return () => {
-        setRegisteredFields((f) => f.filter((ent) => ent !== fieldEntity));
-      };
-    }, []);
+    const registerField = React.useCallback(
+      (fieldEntity: FieldEntity) => {
+        setInternalFieldCtx((ctx) => ({
+          registeredFields: [...ctx.registeredFields, fieldEntity],
+          preservedRegisteredFields: [
+            ...ctx.preservedRegisteredFields,
+            fieldEntity,
+          ],
+        }));
+        return () => {
+          setInternalFieldCtx((ctx) => ({
+            registeredFields: ctx.registeredFields.filter(
+              (ent) => ent !== fieldEntity
+            ),
+            preservedRegisteredFields: ctx.preservedRegisteredFields.filter(
+              (ent) => ent !== fieldEntity || fieldEntity.preserve
+            ),
+          }));
+        };
+      },
+      [setInternalFieldCtx]
+    );
     return (
       <InternalFormInstanceContext.Provider
         value={{
@@ -299,7 +329,7 @@ const Internal = React.forwardRef(
           fireOnValuesChange,
           forceRemount,
           registerField,
-          registeredFields,
+          internalFieldCtx,
           initialValues: props.initialValues ?? {},
         }}
       >
@@ -316,7 +346,14 @@ const Internal = React.forwardRef(
               extendedOnValuesChange?.(form.getFieldsValue(true));
             }}
             onFinish={() => {
-              props.onFinish?.(form.getFieldsValue(true));
+              props.onFinish?.(
+                pick(
+                  form.getFieldsValue(true),
+                  ...internalFieldCtx.preservedRegisteredFields.map(
+                    (field) => field.fullPath
+                  )
+                )
+              );
             }}
             form={form}
             labelCol={
@@ -453,9 +490,11 @@ export const FormWrapper = React.forwardRef(
         forceRemount();
       }
     }, [previousInitialValues, props.initialValues]);
-    const [registeredFields, setRegisteredFields] = React.useState<
-      FieldEntity[]
-    >([]);
+    const [internalFieldCtx, setInternalFieldCtx] =
+      React.useState<InternalFieldCtx>({
+        registeredFields: [],
+        preservedRegisteredFields: [],
+      });
 
     React.useImperativeHandle(ref, () =>
       wrapperRef.current ? { ...wrapperRef.current } : ({} as FormRefActions)
@@ -472,9 +511,9 @@ export const FormWrapper = React.forwardRef(
     const commonFormCtxData = React.useMemo<CommonFormControlContextData>(
       () => ({
         layout: formLayout,
-        registeredFields,
+        internalFieldCtx,
       }),
-      [formLayout, registeredFields]
+      [formLayout, internalFieldCtx]
     );
 
     const rawData = useRawData(props);
@@ -522,9 +561,9 @@ export const FormWrapper = React.forwardRef(
           key={remountKey}
           {...rest}
           forceRemount={forceRemount}
-          setRegisteredFields={setRegisteredFields}
-          registeredFields={registeredFields}
           formLayout={formLayout}
+          internalFieldCtx={internalFieldCtx}
+          setInternalFieldCtx={setInternalFieldCtx}
           formItems={
             rawData && rawData.isLoading
               ? previousFormItems.current
@@ -963,7 +1002,7 @@ interface CuratedFieldData {
   // trigger: (x: any) => void;
 }
 
-interface InternalFormItemProps
+export interface InternalFormItemProps
   extends Omit<FormItemProps, "rules" | "name">,
     CanvasComponentProps<FormItemControlContextData> {
   rules?: PlasmicRule[];
@@ -1097,6 +1136,7 @@ export function FormItemWrapper(props: InternalFormItemProps) {
   const fullFormItemName = useFormItemFullName(name);
   const pathCtx = React.useContext(PathContext);
   const fieldEntity = React.useRef<FieldEntity>({
+    preserve: props.preserve ?? true,
     fullPath: pathCtx.fullPath,
     name,
   }).current;
@@ -1113,37 +1153,26 @@ export function FormItemWrapper(props: InternalFormItemProps) {
     : undefined;
   const layoutContext = React.useContext(FormLayoutContext);
   const inCanvas = !!usePlasmicCanvasContext();
+  const {
+    fireOnValuesChange,
+    forceRemount,
+    registerField,
+    initialValues,
+    internalFieldCtx,
+  } = React.useContext(InternalFormInstanceContext) ?? {};
   if (inCanvas) {
     const form = useFormInstanceMaybe();
     const prevPropValues = React.useRef({
       initialValue: props.initialValue,
       name: props.name,
     });
-    const fullPath = React.useContext(PathContext).fullPath;
-    const internalFormCtx = React.useContext(InternalFormInstanceContext);
-    const {
-      fireOnValuesChange,
-      forceRemount,
-      registerField,
-      initialValues,
-      registeredFields,
-    } = internalFormCtx ?? {};
     props.setControlContextData?.({
-      registeredFields,
+      internalFieldCtx,
       formInstance: form,
-      parentFormItemPath: fullPath,
+      parentFormItemPath: pathCtx.fullPath,
       layout: layoutContext,
     });
     React.useEffect(() => {
-      const unregister = registerField?.(fieldEntity);
-      return () => unregister?.();
-    }, []);
-    React.useEffect(() => {
-      fieldEntity.fullPath = [
-        ...pathCtx.fullPath,
-        ...(props.name != null ? [props.name] : []),
-      ];
-      fieldEntity.name = props.name;
       if (prevPropValues.current.name !== props.name) {
         forceRemount?.();
       }
@@ -1154,8 +1183,26 @@ export function FormItemWrapper(props: InternalFormItemProps) {
       form?.setFieldValue(fullFormItemName, props.initialValue);
       prevPropValues.current.initialValue = props.initialValue;
       fireOnValuesChange?.();
-    }, [form, props.initialValue, fullFormItemName]);
+    }, [
+      form,
+      props.initialValue,
+      pathCtx.fullPath,
+      props.name,
+      props.preserve,
+    ]);
   }
+  React.useEffect(() => {
+    fieldEntity.fullPath = [
+      ...pathCtx.fullPath,
+      ...(props.name != null ? [props.name] : []),
+    ];
+    fieldEntity.name = props.name;
+    fieldEntity.preserve = props.preserve ?? true;
+  }, [pathCtx.fullPath, props.name, props.preserve]);
+  React.useEffect(() => {
+    const unregister = registerField?.(fieldEntity);
+    return () => unregister?.();
+  }, []);
   return (
     <FormItem
       {...rest}
@@ -1364,9 +1411,9 @@ function commonFormItemProps(
           const formItemCtx = ctx as FormItemControlContextData | null;
           currFullPath = [...(formItemCtx?.parentFormItemPath ?? []), value];
         }
-        const nameCounter = (ctx?.registeredFields ?? []).filter((formItem) =>
-          arrayEq(formItem.fullPath, currFullPath)
-        ).length;
+        const nameCounter = (
+          ctx?.internalFieldCtx?.registeredFields ?? []
+        ).filter((formItem) => arrayEq(formItem.fullPath, currFullPath)).length;
         return nameCounter === 1
           ? true
           : `Repeated form item name: ${currFullPath.join(" → ")}`;
