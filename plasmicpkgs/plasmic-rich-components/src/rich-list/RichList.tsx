@@ -112,9 +112,16 @@ const listCss = `
   border-radius: 8px;
 }
 
-/* Unsure why needed, but cards otherwise can be much narrower. */
 .plasmic-list-item-card {
+  /* Unsure why needed, but cards otherwise can be much narrower. */
   width: 100%;
+  /* For the body to fill the height, so all cards are the same height. */
+  display: flex;
+  flex-direction: column;
+}
+
+.plasmic-list-item-card > .ant-card-body {
+  flex: 1;
 }
 
 .plasmic-list-item-card-cover {
