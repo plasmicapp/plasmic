@@ -8,11 +8,22 @@ fragment simpleProductConnection on ProductConnection {
 }
 `;
 
+/*
+  Forked from https://github.com/vercel/commerce/tree/main/packages/shopify/src
+  Changes:
+  - Fetch image.
+*/
 export const collectionFieldsFragment = `
   fragment collectionFieldsFragment on Collection {
     id
     title
-    handle,
+    handle
+    image {
+      originalSrc
+      altText
+      width
+      height
+    }
     products(first: $first) {
       ...simpleProductConnection
     }
