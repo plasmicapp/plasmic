@@ -25,3 +25,4 @@
 /platform/sub/typedoc/
 bower_components/
 node_modules/
+storybook-static/
