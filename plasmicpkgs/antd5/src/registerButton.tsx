@@ -8,7 +8,7 @@ export function AntdButton(
     target?: React.ComponentProps<typeof Button>["target"] | boolean;
   }
 ) {
-  const { submitsForm = false, ...rest } = props;
+  const { submitsForm = false, children, ...rest } = props;
   const target =
     props.target === true
       ? "_blank"
@@ -18,8 +18,16 @@ export function AntdButton(
   return (
     <Button
       {...rest}
+      children={
+        <div
+          style={{
+            display: "inline-block",
+          }}
+        >
+          {children}
+        </div>
+      }
       htmlType={submitsForm ? "submit" : "button"}
-      {...rest}
       target={target}
     />
   );
