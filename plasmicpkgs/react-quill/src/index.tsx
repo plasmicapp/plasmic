@@ -248,7 +248,7 @@ const toolbarFields: Record<ToolbarOptionsType, PropType<any>> = {
 } as const;
 
 export function registerQuill(loader?: Registerable) {
-  registerComponentHelper(loader, ReactQuill, {
+  registerComponentHelper(loader, Quill, {
     name: "hostless-react-quill",
     displayName: "Rich Text Editor",
     classNameProp: "containerClassName",
@@ -279,6 +279,8 @@ export function registerQuill(loader?: Registerable) {
         advanced: true,
         description:
           "Custom toolbar configuration for Quill editor. Overrides the existing toolbar.",
+        helpText:
+          "Check toolbarOptions here: https://quilljs.com/docs/modules/toolbar",
       },
       placeholder: "string",
       preserveWhitespace: {
