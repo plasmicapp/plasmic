@@ -14,6 +14,7 @@ import {
   Checkout,
   CheckoutLineItemEdge,
   SelectedOption,
+  Image,
   ImageConnection,
   ProductVariantConnection,
   MoneyV2,
@@ -62,11 +63,13 @@ const normalizeProductOption = ({
   };
 };
 
+const normalizeImage = ({ originalSrc: url, ...rest }: Image) => ({
+  url,
+  ...rest,
+});
+
 const normalizeProductImages = ({ edges }: ImageConnection) =>
-  edges?.map(({ node: { originalSrc: url, ...rest } }) => ({
-    url,
-    ...rest,
-  }));
+  edges?.map(({ node }) => normalizeImage(node));
 
 const normalizeProductVariants = ({ edges }: ProductVariantConnection) => {
   return edges?.map(
@@ -202,10 +205,12 @@ export const normalizeCategory = ({
   handle,
   id,
   products,
+  image,
 }: Collection): Category => ({
   id,
   name,
   slug: handle,
   path: `/${handle}`,
   isEmpty: products.edges.length === 0,
+  images: image ? [normalizeImage(image)] : undefined,
 });
