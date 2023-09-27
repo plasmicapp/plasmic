@@ -1554,7 +1554,6 @@ function commonFormItemProps(
     },
     hidden: {
       type: "boolean" as const,
-      advanced: true,
       defaultValueHint: getDefaultValueHint("hidden"),
     },
     validateTrigger: {
