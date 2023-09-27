@@ -905,12 +905,12 @@ export function registerForm(loader?: Registerable) {
         ],
       },
       validateTrigger: {
-        displayName: "Validate rules",
+        displayName: "Validate when",
         type: "choice",
         options: [
-          { value: "onBlur", label: "When a field loses focus" },
-          { value: "onChange", label: "When a field changes" },
-          { value: "onSubmit", label: "When the form is submitted" },
+          { value: "onBlur", label: "a field loses focus" },
+          { value: "onChange", label: "a field changes" },
+          { value: "onSubmit", label: "the form is submitted" },
         ],
         multiSelect: true,
         defaultValueHint: ["onChange"],
@@ -1568,9 +1568,15 @@ function commonFormItemProps(
       defaultValueHint: getDefaultValueHint("hidden"),
     },
     validateTrigger: {
-      type: "choice" as const,
-      options: ["onSubmit", "onChange", "onBlur"],
-      multiSelect: true as const,
+      displayName: "Validate when",
+      type: "choice",
+      options: [
+        { value: "onBlur", label: "a field loses focus" },
+        { value: "onChange", label: "a field changes" },
+        { value: "onSubmit", label: "the form is submitted" },
+      ],
+      multiSelect: true,
+      defaultValueHint: ["onChange"],
       advanced: true,
     },
     shouldUpdate: {
