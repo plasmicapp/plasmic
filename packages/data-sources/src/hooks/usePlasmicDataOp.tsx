@@ -81,6 +81,12 @@ function isPlasmicUndefinedDataErrorPromise(
 
 const reactMajorVersion = +React.version.split('.')[0];
 
+type ResolvableDataOp =
+  | DataOp
+  | undefined
+  | null
+  | (() => DataOp | undefined | null);
+
 /**
  * This returns either:
  * * DataOp to perform
@@ -89,9 +95,7 @@ const reactMajorVersion = +React.version.split('.')[0];
  *   we encounter a PlasmicUndefinedDataErrorPromise, so this operation cannot be
  *   performed until that promise is resolved.
  */
-function resolveDataOp(
-  dataOp: DataOp | undefined | null | (() => DataOp | undefined | null)
-) {
+function resolveDataOp(dataOp: ResolvableDataOp) {
   if (typeof dataOp === 'function') {
     try {
       return dataOp();
@@ -123,7 +127,7 @@ export function usePlasmicDataOp<
   T extends SingleRowResult | ManyRowsResult,
   E = any
 >(
-  dataOp: DataOp | undefined | (() => DataOp | undefined),
+  dataOp: ResolvableDataOp,
   opts?: {
     paginate?: Pagination;
     noUndefinedDataProxy?: boolean;
@@ -340,14 +344,35 @@ export function usePlasmicDataOp<
 
 export function usePlasmicDataMutationOp<
   T extends SingleRowResult | ManyRowsResult
->(dataOp: DataOp | undefined) {
-  const { sourceId, opId, userArgs } = dataOp ?? {};
+>(dataOp: ResolvableDataOp) {
   const ctx = usePlasmicDataSourceContext();
   const userToken = ctx?.userAuthToken;
+
+  const getRealDataOp = React.useCallback(async () => {
+    const tryGetRealDataOp = async (): Promise<DataOp | null> => {
+      const resolved = resolveDataOp(dataOp);
+      if (!resolved) {
+        return null;
+      } else if (isPlasmicUndefinedDataErrorPromise(resolved)) {
+        // If calling the dataOp function resulted in a data fetch,
+        // then we wait for the data fetch to finish and try
+        // again
+        await resolved;
+        return tryGetRealDataOp();
+      } else {
+        return resolved;
+      }
+    };
+    return await tryGetRealDataOp();
+  }, [dataOp]);
+
   return React.useCallback(async () => {
+    const { sourceId, opId, userArgs } = (await getRealDataOp()) ?? {};
+
     if (!sourceId || !opId) {
       return undefined;
     }
+
     return executePlasmicDataOp<T>(
       { sourceId, opId, userArgs },
       {
@@ -355,5 +380,5 @@ export function usePlasmicDataMutationOp<
         user: ctx?.user,
       }
     );
-  }, [sourceId, opId, userArgs, userToken]);
+  }, [getRealDataOp, userToken]);
 }
