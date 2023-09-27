@@ -159,7 +159,11 @@ function InnerConfigProvider(props: {
         placement?: NotificationPlacement;
       }) => {
         const { type, ...rest } = opts;
-        app.notification[opts.type ?? "info"]({ ...rest });
+        app.notification[opts.type ?? "info"]({
+          ...rest,
+          message: rest.message?.toString(),
+          description: rest.description?.toString(),
+        });
       },
       hideNotifications: () => {
         app.notification.destroy();
