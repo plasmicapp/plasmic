@@ -5,15 +5,21 @@ import { Registerable, registerComponentHelper } from "./utils";
 export function AntdPopover(
   props: React.ComponentProps<typeof Popover> & {
     popoverScopeClassName?: string;
-    contentText?: string
+    contentText?: string;
   }
 ) {
-  const { overlayClassName, popoverScopeClassName, contentText, content, ...rest } = props;
+  const {
+    overlayClassName,
+    popoverScopeClassName,
+    contentText,
+    content,
+    ...rest
+  } = props;
   return (
     <Popover
-        content={content || contentText}
-        overlayClassName={`${overlayClassName} ${popoverScopeClassName}`}
-        {...rest}
+      content={content || contentText}
+      overlayClassName={`${overlayClassName} ${popoverScopeClassName}`}
+      {...rest}
     />
   );
 }
@@ -64,16 +70,17 @@ export function registerPopover(loader?: Registerable) {
         defaultValue: "Popover contents",
         hidePlaceholder: true,
       },
-    /**
-     *  NOTE: contentText ensures that the popover shows as a custom behaviour without modifications 
-     * (when a random element is given a custom behaviour of Popover, the props of type "slot" do not receive any default value.
-     * Therefore we use the contentText which has a string default value, so that the popover shows with at least something)
-     *  */  
+      /**
+       *  NOTE: contentText ensures that the popover shows as a custom behaviour without modifications
+       * (when a random element is given a custom behaviour of Popover, the props of type "slot" do not receive any default value.
+       * Therefore we use the contentText which has a string default value, so that the popover shows with at least something)
+       *  */
       contentText: {
         type: "string",
         displayName: "Popover contents",
         description: "What gets shown inside the popover on hover",
         defaultValue: "Popover contents",
+        hidden: (ps) => !!ps.content,
       },
       title: {
         type: "slot",
@@ -115,6 +122,7 @@ export function registerPopover(loader?: Registerable) {
         description: "Delay in seconds, before popover is shown on mouse enter",
         defaultValue: 0,
         advanced: true,
+        hidden: (ps) => (ps.trigger ? ps.trigger !== "hover" : false),
       },
       mouseLeaveDelay: {
         type: "number",
@@ -122,6 +130,7 @@ export function registerPopover(loader?: Registerable) {
           "Delay in seconds, before popover is hidden on mouse leave",
         defaultValue: 0,
         advanced: true,
+        hidden: (ps) => (ps.trigger ? ps.trigger !== "hover" : false),
       },
       onOpenChange: {
         type: "eventHandler",
