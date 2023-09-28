@@ -297,6 +297,14 @@ export interface CodeComponentMeta<P> {
    * Defaults to "flex".
    */
   defaultDisplay?: string;
+
+  /**
+   * When true, when you click for the first time anywhere in the component including its slots, the component itself is
+   * selected, making it easier to select the component instead of slot contents. So for instance, setting this on a
+   * Button ensures that clicking on the Button’s text will still select the Button and not the text element in its
+   * slot. Clicking again will deep-select the slot content.
+   */
+  trapsFocus?: boolean;
 }
 
 export type CodeComponentMode =

@@ -443,6 +443,22 @@ interface RichSlotType<P> {
   unstable__isMainContentSlot?: boolean;
 
   defaultValue?: PlasmicElement | PlasmicElement[];
+
+  /**
+   * When true, when you click for the first time in this slot and the component was not selected, the component itself
+   * is selected, making it easier to select the component instead of slot contents. So for
+   * instance, setting this on a Button slot ensures that clicking on the Button’s text will still select the Button and not
+   * the text element in its slot. Clicking again will deep-select the slot content. Similar in this regard to trapsFocus on components.
+   *
+   * Furthermore, the component further shows the props of whatever is in the slot on
+   *  the parent component for the user's convenience. Handy for various “wrapper" components, form fields, and so on.
+   */
+  mergeWithParent?: ContextDependentConfig<P, boolean>;
+
+  /**
+   * A function that returns true to hide the merged props conditionally.
+   */
+  hiddenMergedProps?: ContextDependentConfig<P, boolean>;
 }
 
 type SlotType<P> = "slot" | RichSlotType<P>;
