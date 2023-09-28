@@ -29,6 +29,8 @@ https://studio.plasmic.app/projects/2gYaa1FsuykK8CmmDLsakd
 
 You can start editing your project in Plasmic Studio.
 
+Remember to update your [plasmic-init](./plasmic-init.ts) with your project id and token if you have cloned the example project.
+
 ## Learn More
 
 With Plasmic, you can enable non-developers on your team to publish pages and content into your website or app.
