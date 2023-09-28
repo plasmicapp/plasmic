@@ -99,6 +99,7 @@ export {
   formItemComponentName,
   formListComponentName,
   InputType,
+  deriveFormFieldConfigs,
 } from "./registerForm";
 
 export {

@@ -390,6 +390,35 @@ export interface FormRefActions
   formInstance: FormInstance<any>;
 }
 
+export function deriveFormFieldConfigs(
+  dataFormItems: SimplifiedFormItemsProp[],
+  schema: TableSchema,
+  data: any
+) {
+  return deriveFieldConfigs<SimplifiedFormItemsProp>(
+    dataFormItems,
+    schema,
+    (field) => ({
+      inputType: InputType.Text,
+      ...(field && {
+        key: field.id,
+        fieldId: field.id,
+        label: field.label ?? field.id,
+        name: field.id,
+        inputType:
+          field.type === "string"
+            ? InputType.Text
+            : field.type === "number"
+            ? InputType.Number
+            : field.type === "boolean"
+            ? InputType.Checkbox
+            : InputType.Text, //missing date and date-time
+        initialValue: data ? data[field.id] : undefined,
+      }),
+    })
+  );
+}
+
 function useFormItemDefinitions(
   rawData:
     | (Partial<SingleRowResult | ManyRowsResult> & {
@@ -423,29 +452,11 @@ function useFormItemDefinitions(
       return undefined;
     }
     const row = data.data.length > 0 ? data.data[0] : undefined;
-    const { mergedFields, minimalFullLengthFields } =
-      deriveFieldConfigs<SimplifiedFormItemsProp>(
-        dataFormItems ?? [],
-        schema,
-        (field) => ({
-          inputType: InputType.Text,
-          ...(field && {
-            key: field.id,
-            fieldId: field.id,
-            label: field.label ?? field.id,
-            name: field.id,
-            inputType:
-              field.type === "string"
-                ? InputType.Text
-                : field.type === "number"
-                ? InputType.Number
-                : field.type === "boolean"
-                ? InputType.Checkbox
-                : InputType.Text, //missing date and date-time
-            initialValue: row ? row[field.id] : undefined,
-          }),
-        })
-      );
+    const { mergedFields, minimalFullLengthFields } = deriveFormFieldConfigs(
+      dataFormItems ?? [],
+      schema,
+      row
+    );
 
     setControlContextData?.({
       schema: data.schema,
