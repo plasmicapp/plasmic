@@ -318,18 +318,26 @@ export function ContentfulFetcher({
   }
 
   function denormalizeData(data: any | null) {
-    if (!data?.items || !data?.includes || !data?.includes.Asset) {
-      return data; // Return the original data if the required properties are missing
+    if (!data?.items || !data?.includes) {
+      return data;
     }
+    
+    const entryMap: { [id: string]: any } = {};
+  
+    if (data.includes.Entry) {
+      data.includes.Entry.forEach((entry: any) => {
+        entryMap[entry.sys.id] = entry.fields;
+      });
+    }
+  
     const itemsWithDenormalizedFields: Entry[] = data.items.map((item: any) => {
       const updatedFields: { [fieldName: string]: unknown | unknown[] } = {};
-
       for (const fieldName in item.fields) {
         const fieldValue = item.fields[fieldName];
-
         if (Array.isArray(fieldValue)) {
           const updatedArray = fieldValue.map((arrayItem) => {
             if (
+              data.includes.Asset &&
               arrayItem &&
               typeof arrayItem === "object" &&
               "sys" in arrayItem &&
@@ -347,11 +355,28 @@ export function ContentfulFetcher({
               } else {
                 console.log(`Asset URL not found for ID: ${fieldId}`);
               }
+            } else if (
+              data.includes.Entry &&
+              arrayItem &&
+              typeof arrayItem === "object" &&
+              "sys" in arrayItem &&
+              arrayItem.sys.linkType === "Entry"
+            ){
+              const fieldId = arrayItem.sys.id;
+              if (entryMap[fieldId]) {
+                updatedFields[fieldName] = {
+                  ...fieldValue,
+                  fields: entryMap[fieldId],
+                };
+              } else {
+                console.log(`Entry not found for ID: ${fieldId}`);
+              }
             }
-            return arrayItem;
+              return arrayItem;
           });
           updatedFields[fieldName] = updatedArray;
         } else if (
+          data.includes.Asset &&
           fieldValue &&
           typeof fieldValue === "object" &&
           "sys" in fieldValue &&
@@ -369,6 +394,22 @@ export function ContentfulFetcher({
           } else {
             console.log(`Asset URL not found for ID: ${fieldId}`);
           }
+        } else if (
+          data.includes.Entry &&
+          fieldValue &&
+          typeof fieldValue === "object" &&
+          "sys" in fieldValue &&
+          fieldValue.sys.linkType === "Entry"
+        ) {
+          const fieldId = fieldValue.sys.id;
+          if (entryMap[fieldId]) {
+            updatedFields[fieldName] = {
+              ...fieldValue,
+              fields: entryMap[fieldId],
+            };
+          } else {
+            console.log(`Entry not found for ID: ${fieldId}`);
+          }
         } else {
           updatedFields[fieldName] = fieldValue;
         }
@@ -383,7 +424,8 @@ export function ContentfulFetcher({
       items: itemsWithDenormalizedFields,
     };
   }
-
+  
+  
   let renderedData;
 
   if (filteredData) {
