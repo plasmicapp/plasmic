@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ReactElement, useState } from "react";
+import { ReactElement, ReactNode, useState } from "react";
 import { CodeComponentMeta } from "@plasmicapp/host";
 import { DialogProps } from "@radix-ui/react-dialog";
 import { omit, pick } from "remeda";
@@ -33,16 +33,16 @@ export const useId = (React as any).useId ?? (() => useState(() => "" + id++));
 /** Allow attaching pseudoclasses and other CSS selectors to this unique component instance */
 export const StyleWrapper = ({
   children,
-  css,
+  cssStr,
 }: {
   children: (dynClass: string | undefined) => ReactElement;
-  css: string;
+  cssStr: string;
 }) => {
   const dynClass = "pd__" + useId().replace(/:/g, "");
   return (
     <>
       {children(dynClass)}
-      <style>{dynClass ? css.replace(/&/g, `.${dynClass}`) : ""}</style>
+      <style>{dynClass ? cssStr.replace(/&/g, `.${dynClass}`) : ""}</style>
     </>
   );
 };
@@ -108,8 +108,8 @@ export const Animated = ({
   };
   return (
     <StyleWrapper
-      css={`
-        &[data-state="closed"] {
+      cssStr={`
+        &&[data-state=closed] {
           animation-duration: ${exitDuration}s;
           animation-timing-function: ${exitTiming};
           animation-delay: ${exitDelay};
@@ -117,7 +117,8 @@ export const Animated = ({
             .map((exitAnimation) => animations[exitAnimation] ?? "")
             .join(" ")}
         }
-        &[data-state="open"] {
+        &&,
+        &&[data-state=open] {
           animation-duration: ${enterDuration}s;
           animation-timing-function: ${enterTiming};
           animation-delay: ${enterDelay};
@@ -260,9 +261,27 @@ export const animPropTypes = ({
   };
 };
 
-export const popoverProps: CodeComponentMeta<DialogProps>["props"] = {
+export const overlayStates = {
+  open: {
+    type: "writable",
+    valueProp: "open",
+    onChangeProp: "onOpenChange",
+    variableType: "boolean",
+  },
+} as const;
+
+export const overlayProps = ({
+  defaultSlotContent,
+  triggerSlotName,
+  openDisplay,
+}: {
+  defaultSlotContent: any;
+  triggerSlotName: string;
+  openDisplay?: string;
+}): CodeComponentMeta<DialogProps>["props"] => ({
   open: {
     type: "boolean",
+    displayName: openDisplay,
     editOnly: true,
     uncontrolledProp: "defaultOpen",
   },
@@ -281,4 +300,167 @@ export const popoverProps: CodeComponentMeta<DialogProps>["props"] = {
       },
     ],
   },
+  [triggerSlotName]: {
+    type: "slot",
+    defaultValue: [defaultSlotContent],
+    ...({
+      mergeWithParent: true,
+    } as any),
+  },
+  themeResetClass: { type: "themeResetClass" },
+});
+
+export function prefixClasses(x: string) {
+  return x
+    .trim()
+    .split(/\s+/g)
+    .map((part) => `pl__${part}`)
+    .join(" ");
+}
+
+// Be careful formatting this!
+// Note that these are magically prepended with pl__
+const prefixedBaseStyles = `
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+.absolute {
+    position: absolute;
+}
+.relative {
+    position: relative;
+}
+.transition {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+}
+.h-full {
+    height: 100%;
+}
+.z-50 { z-index: 50;  }
+.fixed { position: fixed; }
+.inset-0 { top: 0; left: 0; right: 0; bottom: 0; }
+.bottom-0 {
+    bottom: 0px;
+}
+.left-0 {
+    left: 0px;
+}
+.right-0 {
+    right: 0px;
+}
+.top-0 {
+    top: 0px;
+}
+.right-4 {
+    right: 1rem;
+}
+.top-4 {
+    top: 1rem;
+}
+.h-4 { height: 1rem; }
+.w-4 { width: 1rem; }
+.outline-none { outline: none; }
+
+@keyframes plsmc-enter {
+
+    from {
+        opacity: var(--tw-enter-opacity, 1);
+        transform: translate3d(var(--tw-enter-translate-x, 0), var(--tw-enter-translate-y, 0), 0) scale3d(var(--tw-enter-scale, 1), var(--tw-enter-scale, 1), var(--tw-enter-scale, 1)) rotate(var(--tw-enter-rotate, 0));
+    }
+}
+
+@keyframes plsmc-exit {
+
+    to {
+        opacity: var(--tw-exit-opacity, 1);
+        transform: translate3d(var(--tw-exit-translate-x, 0), var(--tw-exit-translate-y, 0), 0) scale3d(var(--tw-exit-scale, 1), var(--tw-exit-scale, 1), var(--tw-exit-scale, 1)) rotate(var(--tw-exit-rotate, 0));
+    }
+}
+.animate-in,
+.data-\\[state\\=open\\]\\:animate-in[data-state=open] {
+  animation-name: plsmc-enter;
+  animation-duration: 150ms;
+  --tw-enter-opacity: initial;
+  --tw-enter-scale: initial;
+  --tw-enter-rotate: initial;
+  --tw-enter-translate-x: initial;
+  --tw-enter-translate-y: initial;
+}
+.animate-out,
+.data-\\[state\\=closed\\]\\:animate-out[data-state=closed] {
+  animation-name: plsmc-exit;
+  animation-duration: 150ms;
+  --tw-exit-opacity: initial;
+  --tw-exit-scale: initial;
+  --tw-exit-rotate: initial;
+  --tw-exit-translate-x: initial;
+  --tw-exit-translate-y: initial;
+}
+.data-\\[side\\=bottom\\]\\:slide-in-from-top-2[data-side=bottom] {
+    --tw-enter-translate-y: -0.5rem;
+}
+
+.data-\\[side\\=left\\]\\:slide-in-from-right-2[data-side=left] {
+    --tw-enter-translate-x: 0.5rem;
+}
+
+.data-\\[side\\=right\\]\\:slide-in-from-left-2[data-side=right] {
+    --tw-enter-translate-x: -0.5rem;
+}
+
+.data-\\[side\\=top\\]\\:slide-in-from-bottom-2[data-side=top] {
+    --tw-enter-translate-y: 0.5rem;
+}
+
+`.replace(/\n\./g, ".pl__");
+
+export function BaseStyles() {
+  // return <style>{prefixedBaseStyles}</style>;
+  return <style dangerouslySetInnerHTML={{ __html: prefixedBaseStyles }} />;
+}
+
+export const popoverProps = {
+  side: {
+    type: "choice",
+    options: ["top", "bottom", "left", "right"] as string[],
+    defaultValueHint: "bottom",
+  },
+  sideOffset: {
+    type: "number",
+    defaultValueHint: 4,
+    advanced: true,
+  },
+  align: {
+    type: "choice",
+    options: ["center", "start", "end"] as string[],
+    defaultValueHint: "center",
+  },
+  alignOffset: {
+    type: "number",
+    defaultValueHint: 0,
+    advanced: true,
+  },
+  ...animPropTypes({
+    defaultEnterAnimations: () => ["fade-in", "zoom-enter"],
+    defaultExitAnimations: () => ["fade-out", "zoom-exit"],
+  }),
+  slideIn: {
+    type: "boolean",
+    defaultValueHint: true,
+    description:
+      "Add additional subtle slide-in animation on reveal, which can depend on where the tooltip is dynamically placed.",
+  },
+} as const;
+export type PopoverExtraProps = AnimatedProps & {
+  themeResetClass?: string;
+  overlay?: ReactNode;
+  slideIn?: boolean;
 };

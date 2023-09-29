@@ -1,14 +1,15 @@
-// @ts-nocheck
 import * as React from "react";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 
 import clsx from "clsx";
-import { ReactNode } from "react";
 import {
   Animated,
-  AnimatedProps,
-  animPropTypes,
+  BaseStyles,
+  overlayProps,
+  overlayStates,
+  PopoverExtraProps,
   popoverProps,
+  prefixClasses,
   splitAnimProps,
 } from "./util";
 import { Registerable, registerComponentHelper } from "./reg-util";
@@ -33,12 +34,9 @@ export function Popover({
 
   ...props
 }: React.ComponentProps<typeof PopoverPrimitive.Content> &
-  AnimatedProps &
-  PopoverPrimitive.PopoverProps & {
-    themeResetClass?: string;
-    overlay?: ReactNode;
+  PopoverPrimitive.PopoverProps &
+  PopoverExtraProps & {
     trigger?: boolean;
-    slideIn?: boolean;
   }) {
   const [animProps, rest] = splitAnimProps(props);
   return (
@@ -47,7 +45,7 @@ export function Popover({
       exitAnimations={["fade-out", "zoom-exit"]}
       {...animProps}
     >
-      {(plsmcId) => (
+      {(dynClass) => (
         <PopoverPrimitive.Root
           open={open}
           onOpenChange={onOpenChange}
@@ -55,18 +53,26 @@ export function Popover({
           modal={modal}
         >
           {trigger ? (
-            <PopoverPrimitive.Trigger>{children}</PopoverPrimitive.Trigger>
+            <PopoverPrimitive.Trigger asChild>
+              {children}
+            </PopoverPrimitive.Trigger>
           ) : (
-            <PopoverPrimitive.Anchor>{children}</PopoverPrimitive.Anchor>
+            <PopoverPrimitive.Anchor asChild>
+              {children}
+            </PopoverPrimitive.Anchor>
           )}
           <PopoverPrimitive.Portal>
             <PopoverPrimitive.Content
               className={clsx(
-                "outline-none data-[state=open]:animate-in data-[state=closed]:animate-out",
+                prefixClasses(
+                  "outline-none data-[state=open]:animate-in data-[state=closed]:animate-out"
+                ),
                 slideIn
-                  ? "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2"
+                  ? prefixClasses(
+                      "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2"
+                    )
                   : "",
-                plsmcId ? plsmcId : "",
+                dynClass ? dynClass : "",
                 className,
                 themeResetClass
               )}
@@ -76,12 +82,13 @@ export function Popover({
               {overlay}
             </PopoverPrimitive.Content>
           </PopoverPrimitive.Portal>
+          <BaseStyles />
         </PopoverPrimitive.Root>
       )}
     </Animated>
   );
 }
-Popover.displayName = PopoverPrimitive.Content.displayName;
+Popover.displayName = "PlasmicRadixPopover";
 
 export function registerPopover(PLASMIC?: Registerable) {
   registerComponentHelper(PLASMIC, Popover, {
@@ -89,35 +96,25 @@ export function registerPopover(PLASMIC?: Registerable) {
     displayName: "Popover",
     importPath: "@plasmicpkgs/radix-ui/popover",
     importName: "Popover",
+    states: overlayStates,
     props: {
-      ...popoverProps,
+      ...overlayProps({
+        triggerSlotName: "children",
+        defaultSlotContent: {
+          type: "default-component",
+          kind: "button",
+          props: {
+            children: { type: "text", value: `Show popover` },
+          },
+        },
+      }),
       trigger: {
         type: "boolean",
         displayName: "Trigger on click",
         defaultValueHint: true,
         advanced: true,
       },
-      themeResetClass: { type: "themeResetClass" },
-      side: {
-        type: "choice",
-        options: ["top", "bottom", "left", "right"],
-        defaultValueHint: "bottom",
-      },
-      sideOffset: {
-        type: "number",
-        defaultValueHint: 4,
-        advanced: true,
-      },
-      align: {
-        type: "choice",
-        options: ["center", "start", "end"],
-        defaultValueHint: "center",
-      },
-      alignOffset: {
-        type: "number",
-        defaultValueHint: 0,
-        advanced: true,
-      },
+      ...popoverProps,
       overlay: {
         type: "slot",
         defaultValue: {
@@ -134,28 +131,11 @@ export function registerPopover(PLASMIC?: Registerable) {
             boxShadow: "0px 4px 16px 0px #00000033",
             alignItems: "stretch",
           },
-          children: ["Hello World"],
+          children: ["Here is the popover content."],
         },
         ...({
           mergeWithParent: true,
         } as any),
-      },
-      children: {
-        type: "slot",
-        defaultValue: ["Popover here"],
-        ...({
-          mergeWithParent: true,
-        } as any),
-      },
-      ...animPropTypes({
-        defaultEnterAnimations: () => ["fade-in", "zoom-enter"],
-        defaultExitAnimations: () => ["fade-out", "zoom-exit"],
-      }),
-      slideIn: {
-        type: "boolean",
-        defaultValueHint: true,
-        description:
-          "Add additional subtle slide-in animation on reveal, which can depend on where the popover is dynamically placed.",
       },
     },
   });

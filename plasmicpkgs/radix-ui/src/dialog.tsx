@@ -1,8 +1,7 @@
-// @ts-nocheck
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { cva } from "class-variance-authority";
 import type { VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
 import { X } from "lucide-react";
 
 import clsx from "clsx";
@@ -11,134 +10,29 @@ import {
   Animated,
   AnimatedProps,
   animPropTypes,
+  BaseStyles,
   EnterAnim,
   ExitAnim,
-  popoverProps,
+  overlayProps,
+  overlayStates,
+  prefixClasses,
   splitAnimProps,
 } from "./util";
 import { Side } from "@radix-ui/react-popper";
 import { Registerable, registerComponentHelper } from "./reg-util";
 
-export function prefixClasses(x: string) {
-  return x
-    .trim()
-    .split(/\s+/g)
-    .map((part) => `plsmc__${part}`)
-    .join(" ");
-}
-
-const baseSty = `
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-}
-.absolute {
-    position: absolute;
-}
-.relative {
-    position: relative;
-}
-.transition {
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
-}
-.h-full {
-    height: 100%;
-}
-.z-50 { z-index: 50;  }
-.fixed { position: fixed; }
-.inset-0 { top: 0; left: 0; right: 0; bottom: 0; }
-.bottom-0 {
-    bottom: 0px;
-}
-.left-0 {
-    left: 0px;
-}
-.right-0 {
-    right: 0px;
-}
-.top-0 {
-    top: 0px;
-}
-.right-4 {
-    right: 1rem;
-}
-.top-4 {
-    top: 1rem;
-}
-.h-4 { height: 1rem; }
-.w-4 { width: 1rem; }
-.outline-none { outline: none; }
-
-@keyframes plsmc-enter {
-
-    from {
-        opacity: var(--tw-enter-opacity, 1);
-        transform: translate3d(var(--tw-enter-translate-x, 0), var(--tw-enter-translate-y, 0), 0) scale3d(var(--tw-enter-scale, 1), var(--tw-enter-scale, 1), var(--tw-enter-scale, 1)) rotate(var(--tw-enter-rotate, 0));
-    }
-}
-
-@keyframes plsmc-exit {
-
-    to {
-        opacity: var(--tw-exit-opacity, 1);
-        transform: translate3d(var(--tw-exit-translate-x, 0), var(--tw-exit-translate-y, 0), 0) scale3d(var(--tw-exit-scale, 1), var(--tw-exit-scale, 1), var(--tw-exit-scale, 1)) rotate(var(--tw-exit-rotate, 0));
-    }
-}
-.data-\\[state\\=open\\]\\:animate-in[data-state=open] {
-  animation-name: plsmc-enter;
-  animation-duration: 150ms;
-  --tw-enter-opacity: initial;
-  --tw-enter-scale: initial;
-  --tw-enter-rotate: initial;
-  --tw-enter-translate-x: initial;
-  --tw-enter-translate-y: initial;
-}
-.data-\\[state\\=closed\\]\\:animate-out[data-state=closed] {
-  animation-name: plsmc-exit;
-  animation-duration: 150ms;
-  --tw-exit-opacity: initial;
-  --tw-exit-scale: initial;
-  --tw-exit-rotate: initial;
-  --tw-exit-translate-x: initial;
-  --tw-exit-translate-y: initial;
-}
-.data-\\[side\\=bottom\\]\\:slide-in-from-top-2[data-side=bottom] {
-    --tw-enter-translate-y: -0.5rem;
-}
-
-.data-\\[side\\=left\\]\\:slide-in-from-right-2[data-side=left] {
-    --tw-enter-translate-x: 0.5rem;
-}
-
-.data-\\[side\\=right\\]\\:slide-in-from-left-2[data-side=right] {
-    --tw-enter-translate-x: -0.5rem;
-}
-
-.data-\\[side\\=top\\]\\:slide-in-from-bottom-2[data-side=top] {
-    --tw-enter-translate-y: 0.5rem;
-}
-
-`.replace(/\n\./g, ".plsmc__");
-
 export const DialogClose = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Close>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Close>
 >((props) => (
-  <DialogPrimitive.Close {...props}>
-    {props.children ?? (
-      <X className={prefixClasses("h-4 w-4") + " " + props.className} />
-    )}
-    <span className="sr-only">Close</span>
+  <DialogPrimitive.Close {...props} asChild>
+    <div className={props.className}>
+      {props.children ?? <X className={prefixClasses("h-4 w-4")} />}
+      <span className={prefixClasses("sr-only")}>Close</span>
+    </div>
   </DialogPrimitive.Close>
 ));
-DialogClose.displayName = DialogPrimitive.Close.displayName;
+DialogClose.displayName = "PlasmicRadixDialogClose";
 
 const DialogOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Overlay>,
@@ -146,13 +40,13 @@ const DialogOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => {
   return (
     <Animated {...props}>
-      {(plsmcId) => (
+      {(dynClass) => (
         <DialogPrimitive.Overlay
           className={clsx(
             [
               "fixed inset-0 z-50 data-[state=open]:animate-in data-[state=closed]:animate-out",
             ].map(prefixClasses),
-            plsmcId ? plsmcId : "",
+            dynClass ? dynClass : "",
             className
           )}
           {...props}
@@ -162,7 +56,7 @@ const DialogOverlay = React.forwardRef<
     </Animated>
   );
 });
-DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
+DialogOverlay.displayName = "PlasmicOverlay";
 
 export const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
@@ -183,7 +77,9 @@ export const DialogContent = React.forwardRef<
         <DialogPrimitive.Content
           {...rest}
           className={clsx(
-            "fixed z-50 data-[state=open]:animate-in data-[state=closed]:animate-out",
+            prefixClasses(
+              "fixed z-50 outline-none relative data-[state=open]:animate-in data-[state=closed]:animate-out"
+            ),
             dynClass ? dynClass : "",
             themeResetClass,
             className
@@ -194,7 +90,7 @@ export const DialogContent = React.forwardRef<
     </Animated>
   );
 });
-DialogContent.displayName = DialogPrimitive.Content.displayName;
+DialogContent.displayName = "PlasmicRadixDialogContent";
 
 function getDefaultSheetAnims(side: Side = "right") {
   return (
@@ -223,11 +119,11 @@ export const SheetContent = React.forwardRef<
       enterAnimations={props.enterAnimations ?? [defaultEnterAnimation]}
       exitAnimations={props.exitAnimations ?? [defaultExitAnimation]}
     >
-      {(plsmcId) => (
+      {(dynClass) => (
         <DialogPrimitive.Content
           className={clsx(
             sheetVariants({ side }),
-            plsmcId ? plsmcId : "",
+            dynClass ? dynClass : "",
             className
           )}
           {...props}
@@ -237,11 +133,11 @@ export const SheetContent = React.forwardRef<
     </Animated>
   );
 });
-SheetContent.displayName = DialogPrimitive.Content.displayName;
+SheetContent.displayName = "PlasmicRadixSheetContent";
 
 export const sheetVariants = cva(
   prefixClasses(
-    "fixed z-50 data-[state=open]:animate-in data-[state=closed]:animate-out"
+    "fixed z-50 outline-none relative data-[state=open]:animate-in data-[state=closed]:animate-out"
   ),
   {
     variants: {
@@ -265,6 +161,7 @@ export const Dialog = React.forwardRef<
       overlayClassName?: string;
       themeResetClass?: string;
       noContain?: boolean;
+      triggerSlot?: React.ReactNode;
     }
 >(
   (
@@ -272,11 +169,12 @@ export const Dialog = React.forwardRef<
       open,
       onOpenChange,
       modal,
-      className,
       themeResetClass,
       children,
       noContain,
       defaultOpen,
+      triggerSlot,
+      overlayClassName,
       ...props
     },
     ref
@@ -287,6 +185,7 @@ export const Dialog = React.forwardRef<
       onOpenChange={onOpenChange}
       defaultOpen={defaultOpen}
     >
+      <DialogPrimitive.Trigger asChild>{triggerSlot}</DialogPrimitive.Trigger>
       <DialogPrimitive.Portal>
         {/*
         The main benefit of containing by default is that users can apply layout to position the dialog content easily, e.g. centered on the screen.
@@ -298,27 +197,29 @@ export const Dialog = React.forwardRef<
         {noContain ? (
           <>
             <DialogOverlay
+              ref={ref}
               {...props}
-              className={clsx(className, themeResetClass)}
+              className={clsx(overlayClassName, themeResetClass)}
             />
             {children}
           </>
         ) : (
           <DialogOverlay
+            ref={ref}
             {...props}
-            className={clsx(className, themeResetClass)}
+            className={clsx(overlayClassName, themeResetClass)}
           >
             {children}
           </DialogOverlay>
         )}
       </DialogPrimitive.Portal>
       {/*Must be outside the portal or exit animation doesn't work*/}
-      <style>{baseSty}</style>
+      <BaseStyles />
     </DialogPrimitive.Root>
   )
 );
 
-Dialog.displayName = DialogPrimitive.Root.displayName;
+Dialog.displayName = "PlasmicRadixDialog";
 
 export const DialogTitle = DialogPrimitive.Title;
 
@@ -330,6 +231,7 @@ export function registerDialog(PLASMIC?: Registerable) {
     displayName: "Dialog",
     importPath: "@plasmicpkgs/radix-ui/dialog",
     importName: "Dialog",
+    styleSections: false,
     defaultStyles: {
       // Note: unable to set position styles since Plasmic coerces to auto layout
       display: "flex",
@@ -339,14 +241,25 @@ export function registerDialog(PLASMIC?: Registerable) {
       background: "rgba(255,255,255,0.8)",
     },
     props: {
-      ...popoverProps,
+      ...overlayProps({
+        defaultSlotContent: {
+          type: "default-component",
+          kind: "button",
+          props: {
+            children: { type: "text", value: `Show dialog` },
+          },
+        },
+        triggerSlotName: "triggerSlot",
+      }),
+      overlayClassName: {
+        type: "class",
+      },
       noContain: {
         type: "boolean",
         advanced: true,
         description:
           "Place the dialog content over the overlay instead of inside the overlay. Useful for separating their animations, but you also won't be able to conveniently set layout on the overlay as a parent.",
       },
-      themeResetClass: { type: "themeResetClass" },
       children: {
         type: "slot",
         allowedComponents: [
@@ -359,6 +272,7 @@ export function registerDialog(PLASMIC?: Registerable) {
         },
       },
     },
+    states: overlayStates,
   });
   registerComponentHelper(PLASMIC, DialogClose, {
     name: "hostless-radix-dialog-close",
