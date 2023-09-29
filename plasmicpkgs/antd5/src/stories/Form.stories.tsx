@@ -10,10 +10,11 @@ import {
   formHelpers,
   FormRefActions,
   FormWrapperControlContextData,
+  FormListWrapper,
 } from "../registerForm";
 import { Button, Checkbox, Input, InputNumber } from "antd";
 import TextArea, { TextAreaRef } from "antd/es/input/TextArea";
-import { Select } from "antd/lib";
+import { FormListOperation, Select } from "antd/lib";
 import { generateOnMutateForSpec, useDollarState } from "@plasmicapp/react-web";
 import {
   userEvent,
@@ -22,8 +23,9 @@ import {
   screen,
 } from "@storybook/testing-library";
 import { expect } from "@storybook/jest";
-import { PlasmicCanvasContext } from "@plasmicapp/host";
+import { DataCtxReader, PlasmicCanvasContext } from "@plasmicapp/host";
 import { fakeInitDatabase, fakeSchema } from "./fake-data-source";
+import { AntdCheckbox } from "../registerCheckbox";
 
 export default {
   title: "Form",
@@ -508,11 +510,6 @@ const _InternalFormCtx: StoryFn = (args: any) => {
   const [fieldVisibility, setFieldVisibility] = React.useState<
     "visible" | "invisible"
   >("visible");
-  console.log(
-    "dale",
-    ctxDataRef,
-    ctxDataRef.current?.internalFieldCtx?.registeredFields
-  );
   return (
     <PlasmicCanvasProvider>
       <Form
@@ -574,7 +571,9 @@ const _InternalFormCtx: StoryFn = (args: any) => {
                 formItems[+selectedFormItem].name = renameInput;
                 return [...formItems];
               });
-              setRenameInput("");
+              // updating the field registration doesn't cause a re-render in the parent component
+              // so we need to force a re-render to get latest registered fields
+              setTimeout(() => setRenameInput(""), 1);
             }}
           >
             Rename field
@@ -1695,7 +1694,7 @@ const _CanModifyPropsInCanvasForSchema: StoryFn = (args: any) => {
           dataFormItems={dataFormItems}
         />
       </PlasmicCanvasProvider>
-      <p data-testid="value">{JSON.stringify($state.form.value)}</p>
+      <p data-testid="value">{JSON.stringify($state.form.value ?? {})}</p>
     </div>
   );
 };
@@ -1998,4 +1997,158 @@ OnlySubmitMountedFields.play = async ({ canvasElement }) => {
     JSON.stringify(expectedValue)
   );
   await checkFormItems(canvasElement, expectedFormItems);
+};
+
+const _TestFormList: StoryFn = (args: any) => {
+  const refsRef = React.useRef<{ form?: FormListOperation | null }>({});
+  const $refs = refsRef.current;
+  const $state = useDollarState(
+    [
+      {
+        path: "form.value",
+        type: "private",
+        variableType: "object",
+      },
+    ],
+    { $props: args, $refs }
+  );
+  const [withDefault, setWithDefault] = React.useState(false);
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      {JSON.stringify(withDefault)}
+      <PlasmicCanvasProvider>
+        <div>
+          <AntdCheckbox
+            checked={withDefault}
+            onChange={(v) => setWithDefault(v)}
+          />{" "}
+          Add new form item with default value
+        </div>
+        <Form
+          extendedOnValuesChange={(values) => ($state.form.value = values)}
+          submitSlot={<SubmitSlot />}
+          colon={false}
+        >
+          <FormListWrapper
+            name="guests"
+            initialValue={[
+              { firstName: "Jane", lastName: "Doe" },
+              { firstName: "John", lastName: "Smith" },
+            ]}
+            ref={(ref) => ($refs["form"] = ref)}
+          >
+            <DataCtxReader>
+              {($ctx) => (
+                <>
+                  <FormItem name="firstName" label="First Name">
+                    <Input />
+                  </FormItem>
+                  <FormItem name="lastName" label="Last Name">
+                    <Input />
+                  </FormItem>
+                  <Button
+                    onClick={() => $refs.form?.remove($ctx?.currentFieldIndex)}
+                  >
+                    Remove {$ctx?.currentFieldIndex}
+                  </Button>
+                </>
+              )}
+            </DataCtxReader>
+          </FormListWrapper>
+          <br />
+          <Button
+            onClick={() =>
+              $refs.form?.add(
+                withDefault
+                  ? {
+                      firstName: "Foo",
+                      lastName: "Bar",
+                    }
+                  : {}
+              )
+            }
+          >
+            Add item
+          </Button>
+        </Form>
+      </PlasmicCanvasProvider>
+      <p data-testid="value">{JSON.stringify($state.form.value)}</p>
+    </div>
+  );
+};
+
+export const TestFormList = _TestFormList.bind({});
+TestFormList.args = {};
+TestFormList.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  let expectedValues = [
+    { firstName: "Jane", lastName: "Doe" },
+    { firstName: "John", lastName: "Smith" },
+  ];
+  const getExpectedFormItems = () => {
+    return expectedValues.flatMap(
+      (listItem, i) =>
+        [
+          {
+            label: "First Name",
+            initialValue: listItem.firstName,
+            name: ["guests", i, "firstName"].join("_"),
+          },
+          {
+            label: "Last Name",
+            initialValue: listItem.lastName,
+            name: ["guests", i, "lastName"].join("_"),
+          },
+        ] as SimplifiedFormItemsProp[]
+    );
+  };
+
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    JSON.stringify(expectedValues)
+  );
+  await checkFormItems(canvasElement, getExpectedFormItems());
+
+  canvas.getByText("Add item").click();
+  expectedValues.push({} as any);
+
+  await sleep(500);
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    JSON.stringify(expectedValues)
+  );
+  await checkFormItems(canvasElement, getExpectedFormItems());
+
+  canvas.getByText("Remove 0").click();
+  expectedValues = expectedValues.slice(1);
+
+  await sleep(500);
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    JSON.stringify(expectedValues)
+  );
+  await checkFormItems(canvasElement, getExpectedFormItems());
+
+  await userEvent.click(canvas.getByRole("checkbox"));
+  canvas.getByText("Add item").click();
+  expectedValues.push({ firstName: "Foo", lastName: "Bar" });
+
+  await sleep(500);
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    JSON.stringify(expectedValues)
+  );
+  await checkFormItems(canvasElement, getExpectedFormItems());
+
+  const expectedFormItems = getExpectedFormItems();
+  for (const formItem of expectedFormItems) {
+    formItem.initialValue += "a";
+  }
+  for (const formItem of expectedValues) {
+    formItem.firstName += "a";
+    formItem.lastName += "a";
+  }
+  await modifyFormItems(canvasElement, expectedFormItems);
+  await sleep(500);
+  await expect(canvas.getByTestId("value")).toHaveTextContent(
+    JSON.stringify(expectedValues)
+  );
+  await checkFormItems(canvasElement, getExpectedFormItems());
 };

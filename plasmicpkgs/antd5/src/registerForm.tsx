@@ -1187,7 +1187,11 @@ export function FormItemWrapper(props: InternalFormItemProps) {
       if (prevPropValues.current.name !== props.name) {
         forceRemount?.();
       }
-      if (!fullFormItemName || get(initialValues, fullFormItemName) != null) {
+      if (
+        !fullFormItemName ||
+        get(initialValues, fullFormItemName) != null ||
+        props.initialValue == null
+      ) {
         // this field value is set at the form level
         return;
       }
@@ -1197,7 +1201,7 @@ export function FormItemWrapper(props: InternalFormItemProps) {
     }, [
       form,
       props.initialValue,
-      pathCtx.fullPath,
+      JSON.stringify(pathCtx.fullPath),
       props.name,
       props.preserve,
     ]);
@@ -1896,7 +1900,7 @@ export function registerFormGroup(loader?: Registerable) {
   });
 }
 
-type FormListWrapperProps = FormListProps & {
+type FormListWrapperProps = Omit<FormListProps, "children"> & {
   children: React.ReactNode;
 };
 
@@ -1953,7 +1957,7 @@ export const FormListWrapper = React.forwardRef(function FormListWrapper(
         prevPropValues.current.initialValue = props.initialValue;
         fireOnValuesChange?.();
       }
-    }, [props.initialValue, fullFormItemName]);
+    }, [JSON.stringify(props.initialValue), JSON.stringify(fullFormItemName)]);
   }
   return (
     <FormList {...props} name={relativeFormItemName ?? []}>
@@ -1986,6 +1990,7 @@ export function registerFormList(loader?: Registerable) {
     parentComponentName: formComponentName,
     displayName: "Form List",
     actions: COMMON_ACTIONS,
+    providesData: true,
     props: {
       children: {
         type: "slot",
