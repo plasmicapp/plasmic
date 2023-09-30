@@ -35,7 +35,7 @@
     }
   ],
   "dependencies": {
-    "@plasmicapp/isomorphic-unfetch": "^1.0.1",
+    "@plasmicapp/isomorphic-unfetch": "1.0.3",
     "@plasmicapp/loader-fetcher": "1.0.30"
   },
   "gitHead": "fa53f7d79f0e26d8b061102fda0c06788da6f8a7"

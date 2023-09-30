@@ -36,7 +36,7 @@
     }
   ],
   "dependencies": {
-    "@plasmicapp/isomorphic-unfetch": "^1.0.1"
+    "@plasmicapp/isomorphic-unfetch": "1.0.3"
   },
   "publishConfig": {
     "access": "public"

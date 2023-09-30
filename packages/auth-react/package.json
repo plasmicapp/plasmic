@@ -58,7 +58,7 @@
   },
   "dependencies": {
     "@plasmicapp/auth-api": "0.0.5",
-    "@plasmicapp/isomorphic-unfetch": "^1.0.1",
+    "@plasmicapp/isomorphic-unfetch": "1.0.3",
     "@plasmicapp/query": "0.1.68"
   },
   "publishConfig": {
