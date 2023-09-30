@@ -295,7 +295,6 @@ function registerTreeHelper({
         valueProp: "checkedKeys",
         onChangeProp: "onCheck",
         variableType: "array",
-        initVal: [],
         ...treeHelpers_.states.checkedKeys,
       },
       checkedNodes: {
@@ -320,7 +319,6 @@ function registerTreeHelper({
         valueProp: "selectedKeys",
         onChangeProp: "onSelect",
         variableType: "array",
-        initVal: [],
         ...treeHelpers_.states.selectedKeys,
       },
       selectedNodes: {
@@ -335,7 +333,6 @@ function registerTreeHelper({
         valueProp: "expandedKeys",
         onChangeProp: "onExpand",
         variableType: "array",
-        initVal: [],
         ...treeHelpers_.states.expandedKeys,
       },
     },
