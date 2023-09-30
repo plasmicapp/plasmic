@@ -5,14 +5,12 @@ import {
   Animated,
   BaseStyles,
   overlayProps,
-  overlayStates,
   PopoverExtraProps,
   popoverProps,
   prefixClasses,
   splitAnimProps,
 } from "./util";
 import { Registerable, registerComponentHelper } from "./reg-util";
-import { Popover } from "./popover";
 
 export const Tooltip = React.forwardRef<
   React.ElementRef<typeof TooltipPrimitive.Content>,
