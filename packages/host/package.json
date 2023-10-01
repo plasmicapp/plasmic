@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/host",
-  "version": "1.0.165",
+  "version": "1.0.166",
   "description": "plasmic library for app hosting",
   "main": "dist/index.cjs.js",
   "types": "dist/index.d.ts",
