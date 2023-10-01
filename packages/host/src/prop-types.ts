@@ -78,7 +78,7 @@ export interface PropTypeBase<P> {
   forceRemount?: boolean;
 }
 
-interface Defaultable<P, T> {
+export interface Defaultable<P, T> {
   /**
    * Default value to set for this prop when the component is instantiated
    */
@@ -106,7 +106,7 @@ interface Defaultable<P, T> {
   ) => (string | true) | Promise<string | true>;
 }
 
-interface Controllable {
+export interface Controllable {
   /**
    * If true, this is a prop that should only be used inside Plasmic
    * Studio for rendering artboards; will not be actually used in
@@ -128,26 +128,26 @@ export interface PropTypeBaseDefault<P, T>
     Defaultable<P, T>,
     Controllable {}
 
-interface PlainStringType<P> extends PropTypeBaseDefault<P, string> {
+export interface PlainStringType<P> extends PropTypeBaseDefault<P, string> {
   type: "string";
   control?: "default" | "large";
   isLocalizable?: boolean;
 }
 
-interface CodeStringType<P> extends PropTypeBaseDefault<P, string> {
+export interface CodeStringType<P> extends PropTypeBaseDefault<P, string> {
   type: "code";
   lang: "css" | "html" | "javascript" | "json";
 }
 
-interface RichTextType<P> extends PropTypeBaseDefault<P, string> {
+export interface RichTextType<P> extends PropTypeBaseDefault<P, string> {
   type: "richText";
 }
 
-interface HrefType<P> extends PropTypeBaseDefault<P, string> {
+export interface HrefType<P> extends PropTypeBaseDefault<P, string> {
   type: "href";
 }
 
-interface ColorType<P> extends PropTypeBaseDefault<P, string> {
+export interface ColorType<P> extends PropTypeBaseDefault<P, string> {
   type: "color";
   /**
    * If specified, and the user picks a color token in the Studio, then
@@ -165,15 +165,15 @@ interface ColorType<P> extends PropTypeBaseDefault<P, string> {
   disableTokens?: boolean;
 }
 
-interface DateStringType<P> extends PropTypeBaseDefault<P, string> {
+export interface DateStringType<P> extends PropTypeBaseDefault<P, string> {
   type: "dateString";
 }
-interface DateRangeStringsType<P>
+export interface DateRangeStringsType<P>
   extends PropTypeBaseDefault<P, [string, string]> {
   type: "dateRangeStrings";
 }
 
-interface ClassType<P> extends PropTypeBase<P> {
+export interface ClassType<P> extends PropTypeBase<P> {
   type: "class";
   /**
    * Additional css selectors that can change how this style should look.
@@ -205,7 +205,7 @@ interface ClassType<P> extends PropTypeBase<P> {
   styleSections?: StyleSection[];
 }
 
-interface ThemeResetClassType<P> extends PropTypeBase<P> {
+export interface ThemeResetClassType<P> extends PropTypeBase<P> {
   type: "themeResetClass";
   /**
    * Normally, theme reset class will only target Plasmic-generated tags
@@ -216,7 +216,7 @@ interface ThemeResetClassType<P> extends PropTypeBase<P> {
   targetAllTags?: boolean;
 }
 
-interface CardPickerType<P> extends PropTypeBaseDefault<P, string> {
+export interface CardPickerType<P> extends PropTypeBaseDefault<P, string> {
   type: "cardPicker";
   modalTitle?: React.ReactNode | ContextDependentConfig<P, React.ReactNode>;
   options:
@@ -239,7 +239,7 @@ interface CardPickerType<P> extends PropTypeBaseDefault<P, string> {
   onSearch?: ContextDependentConfig<P, ((value: string) => void) | undefined>;
 }
 
-type RichStringType<P> =
+export type RichStringType<P> =
   | PlainStringType<P>
   | CodeStringType<P>
   | RichTextType<P>
@@ -251,18 +251,18 @@ type RichStringType<P> =
 
 export type StringType<P> = "string" | "href" | RichStringType<P>;
 
-interface RichBooleanType<P> extends PropTypeBaseDefault<P, boolean> {
+export interface RichBooleanType<P> extends PropTypeBaseDefault<P, boolean> {
   type: "boolean";
 }
 
 export type BooleanType<P> = "boolean" | RichBooleanType<P>;
 
-type GraphQLValue = {
+export type GraphQLValue = {
   query: string;
   variables?: Record<string, any>;
 };
 
-interface GraphQLType<P> extends PropTypeBaseDefault<P, GraphQLValue> {
+export interface GraphQLType<P> extends PropTypeBaseDefault<P, GraphQLValue> {
   type: "code";
   lang: "graphql";
   endpoint: string | ContextDependentConfig<P, string>;
@@ -270,22 +270,22 @@ interface GraphQLType<P> extends PropTypeBaseDefault<P, GraphQLValue> {
   headers?: object | ContextDependentConfig<P, object>;
 }
 
-interface NumberTypeBase<P> extends PropTypeBaseDefault<P, number> {
+export interface NumberTypeBase<P> extends PropTypeBaseDefault<P, number> {
   type: "number";
   min?: number | ContextDependentConfig<P, number>;
   max?: number | ContextDependentConfig<P, number>;
 }
 
-interface PlainNumberType<P> extends NumberTypeBase<P> {
+export interface PlainNumberType<P> extends NumberTypeBase<P> {
   control?: "default";
 }
 
-interface SliderNumberType<P> extends NumberTypeBase<P> {
+export interface SliderNumberType<P> extends NumberTypeBase<P> {
   control: "slider";
   step?: number | ContextDependentConfig<P, number>;
 }
 
-type RichNumberType<P> = PlainNumberType<P> | SliderNumberType<P>;
+export type RichNumberType<P> = PlainNumberType<P> | SliderNumberType<P>;
 export type NumberType<P> = "number" | RichNumberType<P>;
 
 export interface ObjectType<P>
@@ -332,34 +332,35 @@ export interface DataSourceType<P> extends PropTypeBase<P> {
   dataSource: "airtable" | "cms";
 }
 
-type DataPickerValueType = string | number | (string | number)[];
-interface RichDataPickerType<P>
+export type DataPickerValueType = string | number | (string | number)[];
+export interface RichDataPickerType<P>
   extends PropTypeBaseDefault<P, DataPickerValueType> {
   type: "dataSelector";
   data?: Record<string, any> | ContextDependentConfig<P, Record<string, any>>;
   alwaysShowValuePathAsLabel?: boolean;
   isolateEnv?: boolean;
 }
-type DataPickerType<P> = "dataPicker" | RichDataPickerType<P>;
+export type DataPickerType<P> = "dataPicker" | RichDataPickerType<P>;
 
-interface RichExprEditorType<P>
+export interface RichExprEditorType<P>
   extends PropTypeBaseDefault<P, DataPickerValueType> {
   type: "exprEditor";
   data?: Record<string, any> | ContextDependentConfig<P, Record<string, any>>;
   isolateEnv?: boolean;
 }
-type ExprEditorType<P> = "exprEditor" | RichExprEditorType<P>;
+export type ExprEditorType<P> = "exprEditor" | RichExprEditorType<P>;
 
-interface FormValidationRulesType<P> extends PropTypeBaseDefault<P, any> {
+export interface FormValidationRulesType<P>
+  extends PropTypeBaseDefault<P, any> {
   type: "formValidationRules";
 }
 
-interface EventHandlerType<P> extends PropTypeBase<P> {
+export interface EventHandlerType<P> extends PropTypeBase<P> {
   type: "eventHandler";
   argTypes: { name: string; type: PropType<any> }[];
 }
 
-interface ChoiceTypeBase<P, T> extends PropTypeBaseDefault<P, T> {
+export interface ChoiceTypeBase<P, T> extends PropTypeBaseDefault<P, T> {
   type: "choice";
   options:
     | string[]
@@ -380,17 +381,17 @@ interface ChoiceTypeBase<P, T> extends PropTypeBaseDefault<P, T> {
   onSearch?: ContextDependentConfig<P, ((value: string) => void) | undefined>;
 }
 
-interface SingleChoiceType<P>
+export interface SingleChoiceType<P>
   extends ChoiceTypeBase<P, string | number | boolean> {
   multiSelect?: false;
 }
 
-interface MultiChoiceType<P>
+export interface MultiChoiceType<P>
   extends ChoiceTypeBase<P, (string | number | boolean)[]> {
   multiSelect: true;
 }
 
-interface CustomChoiceType<P>
+export interface CustomChoiceType<P>
   extends ChoiceTypeBase<
     P,
     string | number | boolean | (string | number | boolean)[]
@@ -403,7 +404,7 @@ export type ChoiceType<P> =
   | MultiChoiceType<P>
   | CustomChoiceType<P>;
 
-interface RichSlotType<P> {
+export interface RichSlotType<P> {
   type: "slot";
   /**
    * The unique names of all code components that can be placed in the slot
@@ -461,13 +462,13 @@ interface RichSlotType<P> {
   hiddenMergedProps?: ContextDependentConfig<P, boolean>;
 }
 
-type SlotType<P> = "slot" | RichSlotType<P>;
+export type SlotType<P> = "slot" | RichSlotType<P>;
 
-interface RichImageUrlType<P> extends PropTypeBaseDefault<P, string> {
+export interface RichImageUrlType<P> extends PropTypeBaseDefault<P, string> {
   type: "imageUrl";
 }
 
-type ImageUrlType<P> = "imageUrl" | RichImageUrlType<P>;
+export type ImageUrlType<P> = "imageUrl" | RichImageUrlType<P>;
 
 export interface ModalProps {
   show?: boolean;
@@ -475,7 +476,7 @@ export interface ModalProps {
   onClose: () => void;
   style?: CSSProperties;
 }
-interface CustomControlProps<P> {
+export interface CustomControlProps<P> {
   componentProps: P;
   /**
    * `contextData` can be `null` if the prop controls are rendering before
@@ -506,7 +507,7 @@ interface CustomControlProps<P> {
 }
 export type CustomControl<P> = React.ComponentType<CustomControlProps<P>>;
 
-interface RichCustomType<P> extends PropTypeBaseDefault<P, any> {
+export interface RichCustomType<P> extends PropTypeBaseDefault<P, any> {
   type: "custom";
   control: CustomControl<P>;
 }
@@ -536,7 +537,7 @@ export type PropType<P> =
   | DateStringType<P>
   | DateRangeStringsType<P>;
 
-type StringCompatType<P> =
+export type StringCompatType<P> =
   | DateStringType<P>
   | StringType<P>
   | ChoiceType<P>
@@ -544,8 +545,14 @@ type StringCompatType<P> =
   | ImageUrlType<P>
   | CustomType<P>
   | DataPickerType<P>;
-type BoolCompatType<P> = BooleanType<P> | CustomType<P> | DataPickerType<P>;
-type NumberCompatType<P> = NumberType<P> | CustomType<P> | DataPickerType<P>;
+export type BoolCompatType<P> =
+  | BooleanType<P>
+  | CustomType<P>
+  | DataPickerType<P>;
+export type NumberCompatType<P> =
+  | NumberType<P>
+  | CustomType<P>
+  | DataPickerType<P>;
 
 export type RestrictPropType<T, P> = T extends string
   ? StringCompatType<P>
