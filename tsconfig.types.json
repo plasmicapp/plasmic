@@ -10,7 +10,7 @@
     "**/*.test.tsx"
   ],
   "compilerOptions": {
-    "module": "NodeNext",
+    "module": "ESNext",
     "lib": ["DOM", "ESNext"],
     // output .d.ts declaration files for consumers
     "declaration": true,
