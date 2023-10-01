@@ -1,8 +1,8 @@
 import * as React from "react";
 import { ReactElement, ReactNode, useState } from "react";
+import { omit, pick } from "remeda";
 import { CodeComponentMeta } from "@plasmicapp/host";
 import { DialogProps } from "@radix-ui/react-dialog";
-import { omit, pick } from "remeda";
 
 const DEBUG_SLOWDOWN = 1;
 
@@ -172,12 +172,13 @@ export const animPropTypes = ({
 }: {
   defaultEnterAnimations?: (ps: any) => EnterAnim[];
   defaultExitAnimations?: (ps: any) => ExitAnim[];
-}): CodeComponentMeta<AnimatedProps>["props"] => {
+  // Need to work around the typescript v3 or v4 used in root public-packages via tsdx
+}): any => {
   const getEnterAnimations = (ps: any) =>
     ps.enterAnimations ?? defaultEnterAnimations;
   const getExitAnimations = (ps: any) =>
     ps.exitAnimations ?? defaultExitAnimations;
-  return {
+  const props: CodeComponentMeta<AnimatedProps>["props"] = {
     enterAnimations: {
       type: "choice",
       options: mungeNames(enterAnims),
@@ -259,6 +260,7 @@ export const animPropTypes = ({
       } as any),
     },
   };
+  return props;
 };
 
 export const overlayStates = {
@@ -278,37 +280,41 @@ export const overlayProps = ({
   defaultSlotContent: any;
   triggerSlotName: string;
   openDisplay?: string;
-}): CodeComponentMeta<DialogProps>["props"] => ({
-  open: {
-    type: "boolean",
-    displayName: openDisplay,
-    editOnly: true,
-    uncontrolledProp: "defaultOpen",
-  },
-  modal: {
-    type: "boolean",
-    advanced: true,
-    description:
-      "Disable interaction with outside elements. Only popover content will be visible to screen readers.",
-  },
-  onOpenChange: {
-    type: "eventHandler",
-    argTypes: [
-      {
-        type: "boolean",
-        name: "open",
-      },
-    ],
-  },
-  [triggerSlotName]: {
-    type: "slot",
-    defaultValue: [defaultSlotContent],
-    ...({
-      mergeWithParent: true,
-    } as any),
-  },
-  themeResetClass: { type: "themeResetClass" },
-});
+  // Need to work around the typescript v3 or v4 used in root public-packages via tsdx
+}): any => {
+  const props: CodeComponentMeta<DialogProps>["props"] = {
+    open: {
+      type: "boolean",
+      displayName: openDisplay,
+      editOnly: true,
+      uncontrolledProp: "defaultOpen",
+    },
+    modal: {
+      type: "boolean",
+      advanced: true,
+      description:
+        "Disable interaction with outside elements. Only popover content will be visible to screen readers.",
+    },
+    onOpenChange: {
+      type: "eventHandler",
+      argTypes: [
+        {
+          type: "boolean",
+          name: "open",
+        },
+      ],
+    },
+    [triggerSlotName]: {
+      type: "slot",
+      defaultValue: [defaultSlotContent],
+      ...({
+        mergeWithParent: true,
+      } as any),
+    },
+    themeResetClass: { type: "themeResetClass" },
+  };
+  return props;
+};
 
 export function prefixClasses(x: string) {
   return x
