@@ -58,7 +58,7 @@ export const deprecated_parallaxWrapperMeta: ComponentMeta<ParallaxWrapperProps>
         defaultValue: {
           type: "img",
           src: "https://placekitten.com/300/200",
-          style: {
+          styles: {
             maxWidth: "100%",
           },
         },

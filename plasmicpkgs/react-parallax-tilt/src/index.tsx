@@ -30,7 +30,7 @@ const parallaxTiltMeta: ComponentMeta<TiltProps> = {
       defaultValue: {
         type: "img",
         src: "https://placekitten.com/300/200",
-        style: {
+        styles: {
           maxWidth: "100%",
         },
       },
@@ -101,7 +101,7 @@ const parallaxTiltMeta: ComponentMeta<TiltProps> = {
     },
     glareBorderRadius: {
       type: "string",
-      defaultValueHint: '0',
+      defaultValueHint: "0",
       description: "Border radius of glare effect",
       displayName: "Glare Border Radius",
       hidden: (props) => !props.glareEnable,
@@ -109,7 +109,7 @@ const parallaxTiltMeta: ComponentMeta<TiltProps> = {
     glarePosition: {
       type: "choice",
       options: ["top", "bottom", "left", "right", "all"],
-      defaultValueHint: 'bottom',
+      defaultValueHint: "bottom",
       description: "Position of the glare effect",
       displayName: "Glare Position",
       hidden: (props) => !props.glareEnable,
@@ -154,7 +154,7 @@ const parallaxTiltMeta: ComponentMeta<TiltProps> = {
     },
     transitionEasing: {
       type: "string",
-      defaultValueHint: 'cubic-bezier(.03,.98,.52,.99)',
+      defaultValueHint: "cubic-bezier(.03,.98,.52,.99)",
       description: "Easing function for the transition",
       displayName: "Transition Easing",
     },
