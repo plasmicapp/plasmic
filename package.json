@@ -41,6 +41,7 @@
     "packages/auth-api",
     "packages/auth-react",
     "packages/cli",
+    "packages/create-plasmic-app",
     "packages/data-sources",
     "packages/data-sources-context",
     "packages/host",
