@@ -168,6 +168,7 @@ module.exports = {
         "@typescript-eslint/ban-types": "warn",
         "@typescript-eslint/no-empty-function": "warn",
         "@typescript-eslint/no-non-null-asserted-optional-chain": "warn",
+        "@typescript-eslint/ban-ts-comment": "warn",
         "import/no-extraneous-dependencies": [
           "error",
           {
