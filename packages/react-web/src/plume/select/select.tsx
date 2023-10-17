@@ -1,6 +1,6 @@
 import { usePlasmicCanvasContext } from "@plasmicapp/host";
 import { usePress } from "@react-aria/interactions";
-import { useListBox } from "@react-aria/listbox";
+import { AriaListBoxOptions, useListBox } from "@react-aria/listbox";
 import { HiddenSelect, useSelect as useAriaSelect } from "@react-aria/select";
 import {
   SelectState as AriaSelectState,
@@ -305,7 +305,7 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
     isDisabled,
   });
 
-  const triggerContent = state.selectedItem
+  const triggerContent = state.selectedItem.value
     ? selectedContent ?? getChildProp(state.selectedItem.value, "children")
     : null;
 
@@ -428,7 +428,7 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
 
 function ListBoxWrapper(props: {
   state: AriaSelectState<any>;
-  menuProps: React.HTMLAttributes<Element>;
+  menuProps: AriaListBoxOptions<any>;
   children: React.ReactElement;
 }) {
   const { state, menuProps, children } = props;

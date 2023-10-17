@@ -125,7 +125,6 @@ export function useMenuButton<
     isOpen,
     defaultOpen,
     onOpenChange,
-    shouldFlip: true,
   });
 
   const { triggerProps, makeMenu, triggerContext } = useMenuTrigger(

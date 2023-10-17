@@ -14,5 +14,5 @@ export {
   resetToInitialValue,
   set,
 } from "./helpers";
-export { $State, $StateSpec } from "./types";
+export { $State, $StateSpec, InitFunc } from "./types";
 export { useDollarState } from "./valtio";

@@ -1,6 +1,6 @@
+import { useMenuTriggerState } from "@react-stately/menu";
 import { Placement } from "@react-types/overlays";
 import * as React from "react";
-import { useMenuTriggerState } from "@react-stately/menu";
 import { mergeProps } from "../../react-utils";
 import { BaseMenuProps } from "../menu/menu";
 import { TriggeredOverlayContext } from "../triggered-overlay/context";
@@ -45,14 +45,8 @@ export interface DropdownMenuProps {
 }
 
 export function DropdownMenu(props: DropdownMenuProps) {
-  const {
-    isOpen,
-    defaultOpen,
-    onOpenChange,
-    children,
-    placement,
-    menu,
-  } = props;
+  const { isOpen, defaultOpen, onOpenChange, children, placement, menu } =
+    props;
 
   const triggerRef = React.useRef<HTMLElement>(null);
 
@@ -60,7 +54,6 @@ export function DropdownMenu(props: DropdownMenuProps) {
     isOpen,
     defaultOpen,
     onOpenChange,
-    shouldFlip: true,
   });
 
   const { triggerProps, makeMenu, triggerContext } = useMenuTrigger(
