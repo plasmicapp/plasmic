@@ -127,10 +127,22 @@ function mkPathFromRouteAndParams(
 }
 
 export interface PageParamsProviderProps {
-  route?: string;
-  params?: Record<string, string | string[] | undefined>;
-  query?: Record<string, string | string[] | undefined>;
   children?: ReactNode;
+
+  /**
+   * Page route without params substituted (e.g. /products/[slug]).
+   */
+  route?: string;
+
+  /**
+   * Page params (e.g. { slug: "jacket" })
+   */
+  params?: Record<string, string | string[] | undefined>;
+
+  /**
+   * Page query params (e.g. { q: "search term" })
+   */
+  query?: Record<string, string | string[] | undefined>;
 
   /**
    * @deprecated Use `route` instead.
