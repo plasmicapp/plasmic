@@ -108,33 +108,66 @@ export function DataProvider({
   }
 }
 
+function mkPathFromRouteAndParams(
+  route: string,
+  params: Record<string, string | string[] | undefined> | undefined
+) {
+  if (!params) {
+    return route;
+  }
+  let path = route;
+  for (const [key, value] of Object.entries(params)) {
+    if (typeof value === "string") {
+      path = path.replace(`[${key}]`, value);
+    } else if (Array.isArray(value)) {
+      path = path.replace(`[...${key}]`, value.join("/"));
+    }
+  }
+  return path;
+}
+
 export interface PageParamsProviderProps {
-  path?: string;
+  route?: string;
   params?: Record<string, string | string[] | undefined>;
   query?: Record<string, string | string[] | undefined>;
   children?: ReactNode;
+
+  /**
+   * @deprecated Use `route` instead.
+   */
+  path?: string;
 }
 
 export function PageParamsProvider({
   children,
-  path,
+  route,
+  path: deprecatedRoute,
   params = {},
   query = {},
 }: PageParamsProviderProps) {
+  route = route ?? deprecatedRoute;
   const $ctx = useDataEnv() || {};
+  const path = route ? mkPathFromRouteAndParams(route, params) : undefined;
   return (
-    <DataProvider name={"pagePath"} data={path} label={"Page path"}>
-      <DataProvider
-        name={"params"}
-        data={{ ...$ctx.params, ...params }}
-        label={"Page URL path params"}
-      >
+    <DataProvider
+      name={"pageRoute"}
+      data={route}
+      label={"Page route"}
+      advanced={true}
+    >
+      <DataProvider name={"pagePath"} data={path} label={"Page path"}>
         <DataProvider
-          name={"query"}
-          data={{ ...$ctx.query, ...query }}
-          label={"Page URL query params"}
+          name={"params"}
+          data={{ ...$ctx.params, ...params }}
+          label={"Page URL path params"}
         >
-          {children}
+          <DataProvider
+            name={"query"}
+            data={{ ...$ctx.query, ...query }}
+            label={"Page URL query params"}
+          >
+            {children}
+          </DataProvider>
         </DataProvider>
       </DataProvider>
     </DataProvider>
