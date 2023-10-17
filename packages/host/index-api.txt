@@ -17,6 +17,7 @@ registerTrait
 repeatedElement
 stateHelpersKeys
 unstable_registerFetcher
+unstable_registerFunction
 useDataEnv
 useGlobalActions
 usePlasmicCanvasContext

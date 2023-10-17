@@ -1,57 +1,43 @@
 {
-  "version": "1.0.72",
+  "version": "1.0.78",
   "license": "MIT",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
   "sideEffects": false,
+  "types": "./dist/index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.esm.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js"
+    }
+  },
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "engines": {
     "node": ">=10"
   },
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
-    "yalcp": "yalc publish --push",
+    "build": "yarn build:types && yarn build:index",
+    "build:types": "yarn tsc",
+    "build:index": "node ../../build.mjs ./src/index.ts",
     "test": "yarn --cwd=../.. test",
-    "lint": "tsdx lint",
+    "lint": "eslint",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "tsdx lint"
-    }
-  },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
-  },
   "name": "@plasmicapp/watcher",
   "author": "Chung Wu",
-  "module": "dist/watcher.esm.js",
   "size-limit": [
     {
-      "path": "dist/watcher.cjs.production.min.js",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/watcher.esm.js",
+      "path": "dist/index.js",
       "limit": "10 KB"
     }
   ],
   "devDependencies": {
-    "@size-limit/preset-small-lib": "^4.12.0",
-    "@types/socket.io-client": "^3.0.0",
-    "husky": "^6.0.0",
-    "size-limit": "^4.12.0",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.3.0"
+    "@types/socket.io-client": "^3.0.0"
   },
   "dependencies": {
     "socket.io-client": "^4.1.2"

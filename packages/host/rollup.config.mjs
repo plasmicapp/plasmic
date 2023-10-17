@@ -87,6 +87,41 @@ export default [
   },
   {
     input: {
+      index: "./src/registerFunction.ts",
+    },
+    external,
+    output: [
+      {
+        dir: "registerFunction/dist",
+        entryFileNames: "index.esm.js",
+        format: "esm",
+        sourcemap: true,
+        banner: "'use client';",
+      },
+      {
+        dir: "registerFunction/dist",
+        entryFileNames: "index.cjs.js",
+        format: "cjs",
+        sourcemap: true,
+        exports: "named",
+        banner: "'use client';",
+      },
+    ],
+    plugins: [
+      resolve(),
+      commonjs(),
+      json(),
+      typescript({
+        typescript: ts,
+        check: false,
+        tsconfigOverride: {
+          emitDeclarationOnly: true,
+        },
+      }),
+    ],
+  },
+  {
+    input: {
       index: "./src/registerGlobalContext.ts",
     },
     external,

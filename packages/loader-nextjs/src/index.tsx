@@ -1,5 +1,4 @@
 import {
-  InitOptions,
   InternalPlasmicComponentLoader,
   PlasmicComponentLoader,
   PlasmicRootProvider as CommonPlasmicRootProvider,
@@ -19,6 +18,7 @@ import NextLink from "next/link.js";
 import * as NextRouter from "next/router.js";
 import * as React from "react";
 import { initPlasmicLoaderWithCache } from "./cache";
+import type { NextInitOptions } from "./shared-exports";
 
 export {
   DataCtxReader,
@@ -53,11 +53,6 @@ type ServerRequest = IncomingMessage & {
 export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
   constructor(internal: InternalPlasmicComponentLoader) {
     super(internal);
-    this.registerModules({
-      "next/head": NextHead,
-      "next/link": NextLink,
-      "next/router": NextRouter,
-    });
   }
 
   async getActiveVariation(opts: {
@@ -106,16 +101,25 @@ export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
   }
 }
 
-const initPlasmicLoaderNext = (opts: InitOptions) => {
-  const internal = new InternalPlasmicComponentLoader(opts);
-  return new NextJsPlasmicComponentLoader(internal);
-};
-
-export function initPlasmicLoader(opts: InitOptions) {
-  return initPlasmicLoaderWithCache<NextJsPlasmicComponentLoader>(
-    initPlasmicLoaderNext,
+export function initPlasmicLoader(opts: NextInitOptions) {
+  const loader = initPlasmicLoaderWithCache<NextJsPlasmicComponentLoader>(
+    (opts) =>
+      new NextJsPlasmicComponentLoader(
+        new InternalPlasmicComponentLoader(opts)
+      ),
     opts
   );
+  loader.registerModules({
+    "next/head": NextHead,
+    "next/link": NextLink,
+    "next/router": NextRouter,
+  });
+  if (opts.nextNavigation) {
+    loader.registerModules({
+      "next/navigation": opts.nextNavigation,
+    });
+  }
+  return loader;
 }
 
 const PlasmicNextLink = React.forwardRef(function PlasmicNextLink(

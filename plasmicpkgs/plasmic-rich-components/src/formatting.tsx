@@ -1,19 +1,20 @@
-import React from "react";
+import { parseDate } from "@plasmicpkgs/luxon-parser";
 import { Checkbox, Switch } from "antd";
+import React from "react";
 import {
   BaseColumnConfig,
   BooleanSettings,
-  DEFAULT_BOOLEAN_SETTINGS,
-  DEFAULT_DATETIME_SETTINGS,
-  DEFAULT_CURRENCY_SETTINGS,
   DateTimeSettings,
-  NUMBER_TYPES,
-  NumberSettings,
-  RelativeDateTimeSettings,
-  DEFAULT_RELATIVE_DATETIME_SETTINGS,
   DATETIME_TYPES,
+  DEFAULT_BOOLEAN_SETTINGS,
+  DEFAULT_CURRENCY_SETTINGS,
+  DEFAULT_DATETIME_SETTINGS,
+  DEFAULT_RELATIVE_DATETIME_SETTINGS,
+  NumberSettings,
+  NUMBER_TYPES,
+  RelativeDateTimeSettings,
 } from "./field-mappings";
-import { isOneOf, maybe, parseDate } from "./utils";
+import { isOneOf, maybe } from "./utils";
 
 export function maybeRenderValue(
   record: any,
@@ -246,9 +247,7 @@ function coerceValue(value: unknown, dataType: BaseColumnConfig["dataType"]) {
         //
         // Right now we also don't know anything about performance.
         const parsed = parseDate(value);
-        if (parsed) {
-          return parsed.toJSDate();
-        }
+        return parsed ? parsed : CANNOT_COERCE;
       }
     } else if (dataType === "boolean") {
       if (value === true || value === false) {

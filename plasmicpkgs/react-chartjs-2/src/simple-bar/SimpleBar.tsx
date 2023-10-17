@@ -35,6 +35,7 @@ export const stackedOptions = {
 };
 
 export const vertOptions = {
+  indexAxis: "x" as const,
   plugins: {
     legend: {
       position: "top" as const,
@@ -80,6 +81,7 @@ export function SimpleBar(props: SimpleBarProps) {
   return (
     <div className={className}>
       <Bar
+        key={`${props.direction}${props.stacked}`}
         options={deepmerge.all([
           ...options,
           direction === "vertical" ? vertOptions : horizOptions,

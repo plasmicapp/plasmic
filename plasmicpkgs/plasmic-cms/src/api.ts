@@ -5,7 +5,7 @@ export interface DatabaseConfig {
   databaseId: string;
   databaseToken: string;
   locale: string;
-  useDraft: boolean;
+  useDraft: boolean | string[];
 }
 
 export interface QueryParams {
@@ -82,11 +82,19 @@ export class API {
     }
   }
 
+  private useDraftForTable(table: string) {
+    if (Array.isArray(this.config.useDraft)) {
+      return this.config.useDraft.includes(table);
+    } else {
+      return this.config.useDraft;
+    }
+  }
+
   async query(table: string, params: QueryParams = {}): Promise<ApiCmsRow[]> {
     try {
       const response = await this.get(`/tables/${table}/query`, {
         q: JSON.stringify(queryParamsToApi(params)),
-        draft: Number(this.config.useDraft || params.useDraft),
+        draft: Number(this.useDraftForTable(table) || params.useDraft),
         locale: this.config.locale,
       });
       return response.rows;
@@ -103,7 +111,7 @@ export class API {
     try {
       const response = await this.get(`/tables/${table}/count`, {
         q: JSON.stringify(queryParamsToApi(params)),
-        draft: Number(this.config.useDraft || params.useDraft),
+        draft: Number(this.useDraftForTable(table) || params.useDraft),
       });
       return response.count;
     } catch (e) {

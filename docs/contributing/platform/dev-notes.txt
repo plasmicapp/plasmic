@@ -1,0 +1,49 @@
+React Gotchas
+=============
+
+- For some reason, if a component crashes on the first render (within the
+  ViewInitializer's first `setState({viewCtx})`), this causes some very
+  confusing issues with attempting to reload the base-pkg and refresh the app
+  again from the top.  This might manifest as an attempt to render
+  foreign components and then not finding the component in
+  ForeignComponents.forValComponent().  I ran into this when e.g. enabling
+  CreateTab rendering earlier (renders the gallery even when no selection is
+  active, but there was a silly bug in CreateItem triggering the above symptoms)
+
+Library Gotchas
+===============
+
+- Do not import from "jquery", always use the one from deps.  They have
+different plugins, but more subtlely, they have different .data() stores.
+
+WAB Gotchas
+===========
+
+- Tpls.ancestors doesn't do any filtering, but canvasCtx().valAncestors() filters
+  out the valUserRoot!  (Which is good since in both isolated component editing
+  mode and normal page editing mode, they're more like sentinels.)
+- Tagger will actually tag the portaled div of a React Bootstrap Modal on first
+  render (as seen in componentDidMount), but not later updates that re-show the
+  div (componentDidUpdate just sees null).  I'm not able to repro that initial
+  tagging outside of WAB---see e.g. https://codesandbox.io/s/q8828q9p69.  So
+  don't rely on that initial tagging.
+- Currently, when you insert a Modal, you might have this val tree:
+
+    ValComponent for Modal
+      ValComponent for ModalBody
+        ValTag for div
+
+  which renders as these React components:
+
+    CanvasElement
+      Sub
+        Modal
+          ModalBody <-- Modal expects ModalBody to be its direct child
+            Sup
+              CanvasElement
+                div
+
+  Because of that parent-child requirement, we unfortunately can't interleave a
+  CanvasElement, which would let us more easily associate the DOM node (with
+  .getDOMNode() or .findDOMNode()) with that ValComponent (without overriding
+  more bsRole settings---which may be a good thing to consider eventually).

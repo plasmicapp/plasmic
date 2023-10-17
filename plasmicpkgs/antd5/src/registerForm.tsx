@@ -1,4 +1,13 @@
 import {
+  DataOp,
+  deriveFieldConfigs,
+  ManyRowsResult,
+  normalizeData,
+  SingleRowResult,
+  TableSchema,
+  usePlasmicDataOp,
+} from "@plasmicapp/data-sources";
+import {
   ActionProps,
   CodeComponentMode,
   ComponentHelpers,
@@ -6,6 +15,12 @@ import {
   repeatedElement,
   usePlasmicCanvasContext,
 } from "@plasmicapp/host";
+import {
+  ArrayType,
+  CanvasComponentProps,
+  ControlExtras,
+  PropType,
+} from "@plasmicapp/host/registerComponent";
 import { Form, Input, InputNumber, Radio } from "antd";
 import type { FormInstance, FormProps } from "antd/es/form";
 import type { FormItemProps } from "antd/es/form/FormItem";
@@ -16,6 +31,7 @@ import React, { cloneElement, isValidElement } from "react";
 import { mergeProps, reactNodeToString } from "./react-utils";
 import { buttonComponentName } from "./registerButton";
 import { AntdCheckbox, checkboxComponentName } from "./registerCheckbox";
+import { AntdDatePicker } from "./registerDatePicker";
 import {
   inputComponentName,
   inputNumberComponentName,
@@ -31,28 +47,12 @@ import {
   ErrorBoundary,
   get,
   omit,
+  pick,
   Registerable,
   registerComponentHelper,
   setFieldsToUndefined,
   usePrevious,
-  pick,
 } from "./utils";
-import {
-  ArrayType,
-  CanvasComponentProps,
-  ControlExtras,
-  PropType,
-} from "@plasmicapp/host/registerComponent";
-import {
-  normalizeData,
-  deriveFieldConfigs,
-  TableSchema,
-  DataOp,
-  usePlasmicDataOp,
-  SingleRowResult,
-  ManyRowsResult,
-} from "@plasmicapp/data-sources";
-import { AntdDatePicker } from "./registerDatePicker";
 
 const FormItem = Form.Item;
 const FormList = Form.List;
@@ -1330,6 +1330,7 @@ function FormItemForwarder({ formItemProps, ...props }: any) {
   });
   return React.Children.map(formItemProps.children, (child, i) => {
     let newProps = {
+      name: formItemProps.name,
       ...(child.props ?? {}),
       ...props,
       __plasmicFormField: true,

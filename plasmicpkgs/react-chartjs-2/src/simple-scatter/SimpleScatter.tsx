@@ -4,6 +4,7 @@ import {
   LinearScale,
   LineElement,
   PointElement,
+  Title,
   Tooltip,
 } from "chart.js";
 import deepmerge from "deepmerge";
@@ -17,7 +18,7 @@ import {
   useIsClient,
 } from "../common";
 
-export interface SimpleScatterProps extends BaseChartProps {}
+export type SimpleScatterProps = BaseChartProps;
 
 export function SimpleScatter(props: SimpleScatterProps) {
   const { className } = props;
@@ -29,7 +30,8 @@ export function SimpleScatter(props: SimpleScatterProps) {
       PointElement,
       LineElement,
       Tooltip,
-      Legend
+      Legend,
+      Title
     );
   }, []);
   if (!isClient) {
@@ -37,7 +39,7 @@ export function SimpleScatter(props: SimpleScatterProps) {
   }
   const normalized = prepData(props, { isScatter: true, opacity: 1 });
   const options = prepOptions(props);
-  console.log("!!", normalized, options);
+
   return (
     <div className={className}>
       <Scatter

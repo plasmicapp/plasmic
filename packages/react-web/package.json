@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/react-web",
-  "version": "0.2.261",
+  "version": "0.2.273",
   "description": "plasmic library for rendering in the presentational style",
   "main": "dist/index.cjs.js",
   "types": "dist/index.d.ts",
@@ -52,6 +52,11 @@
       "import": "./lib/auth/index.js",
       "require": "./lib/auth/index.cjs.js"
     },
+    "./lib/splits": {
+      "types": "./lib/splits/index.d.ts",
+      "import": "./lib/splits/index.js",
+      "require": "./lib/splits/index.cjs.js"
+    },
     "./skinny": {
       "import": "./skinny/dist/index.js"
     },
@@ -69,10 +74,9 @@
   ],
   "scripts": {
     "build": "rollup -c && mkdir -p lib && cp src/styles/plasmic.css lib/",
-    "clean": "rm -rf dist/ skinny/dist/ lib/host/*js lib/host/*.ts lib/host/*.map lib/data-sources/*js lib/data-sources/*.ts lib/data-sources/*.map lib/query/*js lib/query/*.ts lib/query/*.map lib/auth/*js lib/auth/*.ts lib/auth/*.map",
-    "start": "tsdx watch",
+    "clean": "rm -rf dist/ skinny/dist/ lib/host/*js lib/host/*.ts lib/host/*.map lib/data-sources/*js lib/data-sources/*.ts lib/data-sources/*.map lib/query/*js lib/query/*.ts lib/query/*.map lib/auth/*js lib/auth/*.ts lib/auth/*.map lib/splits/*js lib/splits/*.ts lib/splits/*.map",
     "test": "yarn --cwd=../.. test",
-    "lint": "tsdx lint",
+    "lint": "eslint",
     "upgrade-aria": "yarn upgrade --latest --scope @react-aria && yarn upgrade --latest --scope @react-stately && yarn upgrade --latest --scope @react-types",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "size": "size-limit",
@@ -81,19 +85,14 @@
     "build-storybook": "storybook build",
     "test-storybook": "test-storybook"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "tsdx lint"
-    }
-  },
-  "prettier": {},
   "dependencies": {
-    "@plasmicapp/auth-react": "0.0.8",
-    "@plasmicapp/data-sources": "0.1.117",
-    "@plasmicapp/data-sources-context": "0.1.11",
-    "@plasmicapp/host": "1.0.166",
-    "@plasmicapp/prepass": "1.0.3",
-    "@plasmicapp/query": "0.1.68",
+    "@plasmicapp/auth-react": "0.0.15",
+    "@plasmicapp/data-sources": "0.1.128",
+    "@plasmicapp/data-sources-context": "0.1.17",
+    "@plasmicapp/host": "1.0.173",
+    "@plasmicapp/loader-splits": "1.0.43",
+    "@plasmicapp/prepass": "1.0.9",
+    "@plasmicapp/query": "0.1.74",
     "@react-aria/checkbox": "^3.5.0",
     "@react-aria/focus": "^3.7.0",
     "@react-aria/interactions": "^3.10.0",
@@ -146,20 +145,13 @@
     "@types/dlv": "^1.1.2",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
-    "babel-jest": "^27.0.6",
-    "babel-loader": "^8.2.2",
-    "eslint": "^7.26.0",
-    "eslint-plugin-valtio": "^0.5.1",
-    "husky": "^6.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rollup": "^3.26.1",
     "rollup-plugin-dts": "^5.3.0",
     "rollup-plugin-typescript2": "^0.35.0",
     "size-limit": "^4.10.2",
-    "storybook": "^7.4.0",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.3.1"
+    "storybook": "^7.4.0"
   },
   "peerDependencies": {
     "react": ">=16.8.0",

@@ -1,0 +1,13 @@
+environment-id: ""
+exclude: []
+format: text
+include:
+- opa-rules
+input-type:
+- auto
+inputs: []
+no-built-ins: true
+no-ignore: false
+only: []
+severity: unknown
+sync: false

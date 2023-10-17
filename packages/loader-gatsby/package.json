@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/loader-gatsby",
-  "version": "1.0.298",
+  "version": "1.0.308",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
   "exports": {
@@ -27,9 +27,9 @@
   "scripts": {
     "build": "yarn build:types && yarn build:index && yarn build:gatsby-node && yarn build:gatsby-ssr",
     "build:types": "yarn tsc",
-    "build:index": "node ../../build.mjs src/index.ts",
-    "build:gatsby-node": "node ../../build.mjs src/gatsby-node.ts",
-    "build:gatsby-ssr": "node ../../build.mjs src/gatsby-ssr.ts",
+    "build:index": "node ../../build.mjs src/index.ts --no-esm",
+    "build:gatsby-node": "node ../../build.mjs src/gatsby-node.ts --no-esm",
+    "build:gatsby-ssr": "node ../../build.mjs src/gatsby-ssr.ts --no-esm",
     "yalcp": "yalc publish --push",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
   },
@@ -61,9 +61,9 @@
     "gatsby": "^5.11.0"
   },
   "dependencies": {
-    "@plasmicapp/loader-core": "1.0.108",
-    "@plasmicapp/loader-react": "1.0.296",
-    "@plasmicapp/watcher": "1.0.72",
+    "@plasmicapp/loader-core": "1.0.115",
+    "@plasmicapp/loader-react": "1.0.306",
+    "@plasmicapp/watcher": "1.0.78",
     "lodash": "^4.17.21"
   }
 }

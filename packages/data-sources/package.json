@@ -1,8 +1,16 @@
 {
-  "version": "0.1.117",
+  "version": "0.1.128",
   "license": "MIT",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "types": "./dist/index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.esm.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js"
+    }
+  },
   "files": [
     "dist"
   ],
@@ -10,57 +18,37 @@
     "node": ">=10"
   },
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
+    "build": "yarn build:types && yarn build:index",
+    "build:types": "yarn tsc",
+    "build:index": "node ../../build.mjs ./src/index.tsx",
     "test": "yarn --cwd=../.. test --passWithNoTests",
-    "lint": "tsdx lint",
+    "lint": "eslint",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
   "peerDependencies": {
-    "react": ">=16"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "tsdx lint"
-    }
-  },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
+    "react": ">=16.8.0"
   },
   "name": "@plasmicapp/data-sources",
   "author": "Chung Wu",
-  "module": "dist/data-sources.esm.js",
   "size-limit": [
     {
-      "path": "dist/data-sources.cjs.production.min.js",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/data-sources.esm.js",
+      "path": "dist/index.js",
       "limit": "10 KB"
     }
   ],
   "devDependencies": {
-    "@size-limit/preset-small-lib": "^7.0.4",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
-    "husky": "^7.0.4",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "size-limit": "^7.0.4",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.3.1"
+    "react-dom": "^18.2.0"
   },
   "dependencies": {
-    "@plasmicapp/data-sources-context": "0.1.11",
-    "@plasmicapp/host": "1.0.166",
+    "@plasmicapp/data-sources-context": "0.1.17",
+    "@plasmicapp/host": "1.0.173",
     "@plasmicapp/isomorphic-unfetch": "1.0.3",
-    "@plasmicapp/query": "0.1.68",
+    "@plasmicapp/query": "0.1.74",
     "fast-stringify": "^2.0.0"
   },
   "publishConfig": {

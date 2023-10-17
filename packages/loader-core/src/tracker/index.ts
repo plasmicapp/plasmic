@@ -1,4 +1,4 @@
-import fetch from '@plasmicapp/isomorphic-unfetch';
+import fetch from "@plasmicapp/isomorphic-unfetch";
 import {
   getDistinctId,
   getEnvMeta,
@@ -6,7 +6,7 @@ import {
   getWindowMeta,
   rawSplitVariation,
   throttled,
-} from './utils';
+} from "./utils";
 
 export interface TrackerOptions {
   projectIds: string[];
@@ -15,7 +15,7 @@ export interface TrackerOptions {
   preview?: boolean;
 }
 
-type EventType = '$render' | '$fetch' | '$conversion';
+type EventType = "$render" | "$fetch" | "$conversion";
 
 interface Event {
   event: EventType;
@@ -35,8 +35,8 @@ export interface TrackRenderOptions {
   variation?: Record<string, string>;
 }
 
-const API_ENDPOINT = 'https://analytics.plasmic.app/capture';
-const API_PUBLIC_KEY = 'phc_BRvYTAoMoam9fDHfrIneF67KdtMJagLVVCM6ELNYd4n';
+const API_ENDPOINT = "https://analytics.plasmic.app/capture";
+const API_PUBLIC_KEY = "phc_BRvYTAoMoam9fDHfrIneF67KdtMJagLVVCM6ELNYd4n";
 const TRACKER_VERSION = 3;
 
 export class PlasmicTracker {
@@ -46,7 +46,7 @@ export class PlasmicTracker {
 
   public trackRender(opts?: TrackRenderOptions) {
     this.enqueue({
-      event: '$render',
+      event: "$render",
       properties: {
         ...this.getProperties(),
         ...(opts?.renderCtx ?? {}),
@@ -57,14 +57,14 @@ export class PlasmicTracker {
 
   public trackFetch() {
     this.enqueue({
-      event: '$fetch',
+      event: "$fetch",
       properties: this.getProperties(),
     });
   }
 
   public trackConversion(value: number = 0) {
     this.enqueue({
-      event: '$conversion',
+      event: "$conversion",
       properties: {
         ...this.getProperties(),
         value,
@@ -87,7 +87,7 @@ export class PlasmicTracker {
   private enqueue(event: Event) {
     this.eventQueue.push(event);
 
-    this.sendEvents('fetch');
+    this.sendEvents("fetch");
   }
 
   private getContextMeta() {
@@ -98,7 +98,7 @@ export class PlasmicTracker {
     };
   }
 
-  private sendEvents = throttled(async (transport: 'fetch' | 'beacon') => {
+  private sendEvents = throttled(async (transport: "fetch" | "beacon") => {
     if (this.eventQueue.length === 0) {
       return;
     }
@@ -113,14 +113,14 @@ export class PlasmicTracker {
 
     try {
       const stringBody = JSON.stringify(body);
-      if (transport === 'beacon') {
+      if (transport === "beacon") {
         // Triggers warning: https://chromestatus.com/feature/5629709824032768
         window.navigator.sendBeacon(API_ENDPOINT, stringBody);
       } else {
         fetch(API_ENDPOINT, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            Accept: 'application/json',
+            Accept: "application/json",
           },
           body: stringBody,
         })

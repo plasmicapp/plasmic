@@ -143,6 +143,11 @@ export class Api {
     projectIds: string[],
     opts: {
       platform?: "react" | "nextjs" | "gatsby";
+      platformOptions?: {
+        nextjs?: {
+          appDir: boolean;
+        };
+      };
       preview?: boolean;
       browserOnly?: boolean;
       i18nKeyScheme?: "content" | "hash" | "path";
@@ -153,6 +158,9 @@ export class Api {
     const { platform, preview } = opts;
     const query = new URLSearchParams([
       ["platform", platform ?? "react"],
+      ...(opts.platformOptions?.nextjs?.appDir
+        ? [["nextjsAppDir", "true"]]
+        : []),
       ...projectIds.map((projectId) => ["projectId", projectId]),
       ...(opts.browserOnly ? [["browserOnly", "true"]] : []),
       ...(opts.i18nKeyScheme ? [["i18nKeyScheme", opts.i18nKeyScheme]] : []),

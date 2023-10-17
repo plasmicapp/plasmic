@@ -200,3 +200,17 @@ export function reactNodeToString(reactNode: React.ReactNode): string {
   }
   return string;
 }
+
+export function useIsMounted(): () => boolean {
+  const ref = React.useRef<boolean>(false);
+  const isMounted = React.useCallback(() => ref.current, []);
+
+  React.useEffect(() => {
+    ref.current = true;
+    return () => {
+      ref.current = false;
+    };
+  }, []);
+
+  return isMounted;
+}

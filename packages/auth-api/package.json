@@ -1,8 +1,16 @@
 {
-  "version": "0.0.6",
+  "version": "0.0.12",
   "license": "MIT",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "types": "./dist/index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.esm.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js"
+    }
+  },
   "files": [
     "dist"
   ],
@@ -10,46 +18,23 @@
     "node": ">=10"
   },
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
-    "yalcp": "yalc publish --push",
+    "build": "yarn build:types && yarn build:index",
+    "build:types": "yarn tsc",
+    "build:index": "node ../../build.mjs ./src/index.ts",
     "test": "yarn --cwd=../.. test --passWithNoTests",
-    "lint": "tsdx lint",
+    "lint": "eslint",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "tsdx lint"
-    }
-  },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
-  },
   "name": "@plasmicapp/auth-api",
   "author": "Chung Wu",
-  "module": "dist/auth-api.esm.js",
   "size-limit": [
     {
-      "path": "dist/auth-api.cjs.production.min.js",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/auth-api.esm.js",
+      "path": "dist/index.js",
       "limit": "10 KB"
     }
   ],
-  "devDependencies": {
-    "@size-limit/preset-small-lib": "^4.11.0",
-    "husky": "^6.0.0",
-    "size-limit": "^4.11.0",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.2.0"
-  },
   "dependencies": {
     "@plasmicapp/isomorphic-unfetch": "1.0.3"
   },

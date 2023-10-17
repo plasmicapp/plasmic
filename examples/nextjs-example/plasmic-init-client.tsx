@@ -3,6 +3,7 @@
 import { CodeComponent } from "@/components/CodeComponent";
 import { PLASMIC } from "@/plasmic-init";
 import { PlasmicRootProvider } from "@plasmicapp/loader-nextjs";
+import React from "react";
 
 // You can register any code components that you want to use here; see
 // https://docs.plasmic.app/learn/code-components-ref/

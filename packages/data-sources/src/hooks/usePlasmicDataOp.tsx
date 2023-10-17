@@ -26,12 +26,61 @@ export function makeCacheKey(
     : queryDependencies;
 }
 
+/**
+ * Returns a function that can be used to invalidate Plasmic query groups.
+ */
+export function usePlasmicInvalidate() {
+  // NOTE: we use `revalidateIfStale: false` with SWR.
+  // One quirk of this is that if you supply fallback data to swr,
+  // that data doesn't get entered into the cache if `revalidateIfStale: false`,
+  // so you won't see it if you iterate over keys of the cache. That's why
+  // we have usePlasmicInvalidate() which will iterate over both the cache
+  // and the fallback data.
+  const { cache, fallback, mutate } = usePlasmicDataConfig();
+  return async (invalidatedKeys: string[] | null | undefined) => {
+    const getKeysToInvalidate = () => {
+      if (!invalidatedKeys) {
+        return [];
+      }
+      const allKeys = Array.from(
+        new Set([
+          ...Array.from((cache as any).keys()),
+          ...(fallback ? Object.keys(fallback) : []),
+        ])
+      ).filter((key): key is string => typeof key === 'string');
+      if (invalidatedKeys.includes('plasmic_refresh_all')) {
+        return allKeys;
+      }
+      return allKeys.filter((key) =>
+        invalidatedKeys.some((k) => key.includes(`.$.${k}.$.`))
+      );
+    };
+
+    const keys = getKeysToInvalidate();
+    if (keys.length === 0) {
+      return;
+    }
+
+    const invalidateKey = async (key: string) => {
+      const studioInvalidate = (globalThis as any).__PLASMIC_MUTATE_DATA_OP;
+      if (studioInvalidate) {
+        await studioInvalidate(key);
+      }
+      return mutate(key);
+    };
+
+    return await Promise.all(keys.map((key) => invalidateKey(key)));
+  };
+}
+
 const enableLoadingBoundaryKey = 'plasmicInternalEnableLoadingBoundary';
 
 function mkUndefinedDataProxy(
   promiseRef: { fetchingPromise: Promise<any> | undefined },
   fetchAndUpdateCache: (() => Promise<any>) | undefined
 ) {
+  let fetchAndUpdatePromise: Promise<any> | undefined = undefined;
+
   return new Proxy(
     {},
     {
@@ -49,11 +98,29 @@ function mkUndefinedDataProxy(
           return undefined;
         }
 
+        const doFetchAndUpdate = () => {
+          // We hold onto the promise last returned by fetchAndUpdateCache()
+          // and keep reusing it until it is resolved. The reason is that the
+          // Promise thrown here will be used as a dependency for memoized
+          // fetchAndUpdateCache, which is a dependency on the memoized returned value
+          // from usePlasmicDataOp(). If we have a fetch that's taking a long time,
+          // we want to make sure that our memoized returned value is stable,
+          // so that we don't keep calling setDollarQueries() (otherwise, for each
+          // render, we find an unstable result, and call setDollarQueries(),
+          // resulting in an infinite loop while fetch is happening).
+          if (!fetchAndUpdatePromise) {
+            fetchAndUpdatePromise = fetchAndUpdateCache().finally(() => {
+              fetchAndUpdatePromise = undefined;
+            });
+          }
+          return fetchAndUpdatePromise;
+        };
+
         const promise =
           // existing fetch
           promiseRef.fetchingPromise ||
           // No existing fetch, so kick off a fetch
-          fetchAndUpdateCache();
+          doFetchAndUpdate();
         (promise as any).plasmicType = 'PlasmicUndefinedDataError';
         (promise as any).message = `Cannot read property ${String(
           prop

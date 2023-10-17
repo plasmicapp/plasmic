@@ -1,18 +1,22 @@
 import * as PlasmicDataSourcesContext from "@plasmicapp/data-sources-context";
+// eslint-disable-next-line no-restricted-imports
 import * as PlasmicHost from "@plasmicapp/host";
 import {
   CodeComponentMeta as InternalCodeComponentMeta,
   ComponentHelpers as InternalCodeComponentHelpers,
+  CustomFunctionMeta as InternalCustomFunctionMeta,
   GlobalContextMeta as InternalGlobalContextMeta,
+  // eslint-disable-next-line no-restricted-imports
   registerComponent,
   registerGlobalContext,
   registerToken,
-  stateHelpersKeys,
   registerTrait,
   StateHelpers,
+  stateHelpersKeys,
   StateSpec,
   TokenRegistration,
   TraitMeta,
+  unstable_registerFunction,
 } from "@plasmicapp/host";
 import {
   ComponentMeta,
@@ -88,6 +92,19 @@ export type GlobalContextMeta<P> = Omit<
   importPath?: string;
 };
 
+export type CustomFunctionMeta<F extends (...args: any[]) => any> = Omit<
+  InternalCustomFunctionMeta<F>,
+  "importPath"
+> & {
+  /**
+   * The path to be used when importing the function in the generated code.
+   * It can be the name of the package that contains the function, or the path
+   * to the file in the project (relative to the root directory).
+   * Optional: not used by Plasmic headless API, only by codegen.
+   */
+  importPath?: string;
+};
+
 export type FetchPagesOpts = {
   /**
    * Whether to include dynamic pages in fetchPages() output. A page is
@@ -103,6 +120,16 @@ const REGISTERED_CODE_COMPONENT_HELPERS: Record<
   InternalCodeComponentHelpers<React.ComponentProps<any>>
 > = {};
 const SUBSTITUTED_GLOBAL_VARIANT_HOOKS: Record<string, () => any> = {};
+const REGISTERED_CUSTOM_FUNCTIONS: Record<string, (...args: any[]) => any> = {};
+
+function customFunctionImportAlias<F extends (...args: any[]) => any>(
+  meta: CustomFunctionMeta<F>
+) {
+  const customFunctionPrefix = `__fn_`;
+  return meta.namespace
+    ? `${customFunctionPrefix}${meta.namespace}__${meta.name}`
+    : `${customFunctionPrefix}${meta.name}`;
+}
 
 export class InternalPlasmicComponentLoader {
   private readonly reactServerLoader: ReactServerPlasmicComponentLoader;
@@ -145,6 +172,7 @@ export class InternalPlasmicComponentLoader {
         components: SUBSTITUTED_COMPONENTS,
         globalVariantHooks: SUBSTITUTED_GLOBAL_VARIANT_HOOKS,
         codeComponentHelpers: REGISTERED_CODE_COMPONENT_HELPERS,
+        functions: REGISTERED_CUSTOM_FUNCTIONS,
       },
     });
   }
@@ -243,6 +271,17 @@ export class InternalPlasmicComponentLoader {
           }
         : {}),
     });
+  }
+
+  unstable_registerFunction<F extends (...args: any[]) => any>(
+    fn: F,
+    meta: CustomFunctionMeta<F>
+  ) {
+    unstable_registerFunction(fn, {
+      ...meta,
+      importPath: meta.importPath ?? "",
+    });
+    REGISTERED_CUSTOM_FUNCTIONS[customFunctionImportAlias(meta)] = fn;
   }
 
   registerGlobalContext<T extends React.ComponentType<any>>(
@@ -489,6 +528,13 @@ export class PlasmicComponentLoader {
     }
   }
   private warnedRegisterComponent = false;
+
+  unstable_registerFunction<F extends (...args: any[]) => any>(
+    fn: F,
+    meta: CustomFunctionMeta<F>
+  ) {
+    this.__internal.unstable_registerFunction(fn, meta);
+  }
 
   registerGlobalContext<T extends React.ComponentType<any>>(
     context: T,

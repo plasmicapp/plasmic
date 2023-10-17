@@ -181,9 +181,18 @@ export function prepOptions({ interactive = true, title }: BaseChartProps) {
             mode: "index" as const,
             intersect: false,
           },
+          events: undefined,
+        }
+      : {
+          events: [],
+        },
+    title
+      ? {
+          plugins: {
+            title: { display: true, text: title },
+          },
         }
       : {},
-    title ? { title: { display: true, text: title } } : {},
   ];
 }
 

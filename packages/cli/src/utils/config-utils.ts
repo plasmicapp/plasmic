@@ -1,6 +1,6 @@
 import L from "lodash";
 import { DeepPartial } from "utility-types";
-import { PlasmicApi, ProjectIdAndToken } from "../api";
+import { PlasmicApi } from "../api";
 import { logger } from "../deps";
 import { HandledError } from "../utils/error";
 import { formatAsLocal } from "./code-utils";
@@ -152,6 +152,14 @@ export interface CodeComponentConfig {
   };
 }
 
+export interface CustomFunctionConfig {
+  id: string;
+  name: string;
+  namespace?: string | null;
+  importPath: string;
+  defaultExport: boolean;
+}
+
 export interface ProjectConfig {
   /** Project ID */
   projectId: string;
@@ -172,11 +180,14 @@ export interface ProjectConfig {
   cssFilePath: string;
   /** File location for the project-wide global contexts. Relative to srcDir */
   globalContextsFilePath: string;
+  /** File location for the project-wide splits provider. Relative to srcDir */
+  splitsProviderFilePath: string;
 
   // Code-component-related fields can be treated as optional not to be shown
   // to the users nor appear to be missing in the documentation.
   jsBundleThemes?: JsBundleThemeConfig[];
   codeComponents?: CodeComponentConfig[];
+  customFunctions?: CustomFunctionConfig[];
 
   /** Metadata for each synced component in this project. */
   components: ComponentConfig[];
@@ -211,6 +222,7 @@ export function createProjectConfig(base: {
     images: [],
     indirect: base.indirect,
     globalContextsFilePath: "",
+    splitsProviderFilePath: "",
   };
 }
 
@@ -317,7 +329,8 @@ export interface FileLock {
     | "image"
     | "projectCss"
     | "globalVariant"
-    | "globalContexts";
+    | "globalContexts"
+    | "splitsProvider";
   // The checksum value for the file
   checksum: string;
   // The component id, or the image asset id
@@ -567,6 +580,7 @@ export function getOrAddProjectConfig(
           jsBundleThemes: [],
           indirect: false,
           globalContextsFilePath: "",
+          splitsProviderFilePath: "",
         };
     context.config.projects.push(project);
   }

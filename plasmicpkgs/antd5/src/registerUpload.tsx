@@ -18,7 +18,7 @@ interface UploadFile {
 }
 
 interface ExtendedUploadProps<T = any> extends UploadProps<T> {
-  files: Array<UploadFile>;
+  files?: Array<UploadFile>;
   onFilesChange?: (values: Array<UploadFile>) => void;
 }
 
@@ -41,7 +41,7 @@ export function UploadWrapper(props: ExtendedUploadProps) {
     };
 
     onFilesChange?.([
-      ...files,
+      ...(files ?? []),
       {
         ...metadata,
         status: "uploading",
@@ -52,7 +52,7 @@ export function UploadWrapper(props: ExtendedUploadProps) {
 
     reader.onload = () => {
       onFilesChange?.([
-        ...files.filter((f) => f.uid !== file.uid),
+        ...(files ?? []).filter((f) => f.uid !== file.uid),
         {
           ...metadata,
           contents: (reader.result as string).replace(
@@ -66,7 +66,7 @@ export function UploadWrapper(props: ExtendedUploadProps) {
 
     reader.onerror = (error) => {
       onFilesChange?.([
-        ...files.filter((f) => f.uid !== file.uid),
+        ...(files ?? []).filter((f) => f.uid !== file.uid),
         {
           ...metadata,
           status: "error",
@@ -78,7 +78,7 @@ export function UploadWrapper(props: ExtendedUploadProps) {
   };
 
   const handleRemove = (file: UploadFile) => {
-    onFilesChange?.(files.filter((f) => f.uid !== file.uid));
+    onFilesChange?.((files ?? []).filter((f) => f.uid !== file.uid));
   };
 
   return (
@@ -100,7 +100,7 @@ export function UploadWrapper(props: ExtendedUploadProps) {
 
 UploadWrapper.__plasmicFormFieldMeta = {
   valueProp: "files",
-  onChangePropName: "onFilesChange",
+  onChangeProp: "onFilesChange",
 };
 
 export function registerUpload(loader?: Registerable) {

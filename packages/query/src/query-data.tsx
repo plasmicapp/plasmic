@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren } from "react";
 import useSWR, {
   Fetcher,
   Key,
@@ -6,12 +6,11 @@ import useSWR, {
   SWRConfiguration,
   SWRResponse,
   useSWRConfig,
-} from 'swr';
-import { FullConfiguration } from 'swr/dist/types';
+} from "swr";
 
-export type { SWRResponse } from 'swr';
+export type { SWRResponse } from "swr";
 
-let __SWRConfig: FullConfiguration | undefined = undefined;
+let __SWRConfig: ReturnType<typeof useSWRConfig> | undefined = undefined;
 export const mutateKeys = (invalidateKey?: string) => {
   if (__SWRConfig) {
     const { cache, mutate } = __SWRConfig;
@@ -202,9 +201,7 @@ export function PlasmicPrepassContext(
   );
 }
 
-export function usePlasmicDataConfig() {
-  return useSWRConfig();
-}
+export const usePlasmicDataConfig: typeof useSWRConfig = useSWRConfig;
 
 let loadingCount = 0;
 export type LoadingStateListener = (isLoading: boolean) => void;
@@ -254,7 +251,7 @@ export function wrapLoadingFetcher<
 
 function isPromiseLike(x: any) {
   return (
-    !!x && typeof x === 'object' && 'then' in x && typeof x.then === 'function'
+    !!x && typeof x === "object" && "then" in x && typeof x.then === "function"
   );
 }
 

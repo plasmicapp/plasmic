@@ -1,22 +1,22 @@
-import { getExternalIds } from '../index';
-import { EXTERNAL_SPLIT } from './data';
+import { getExternalIds } from "../index";
+import { EXTERNAL_SPLIT } from "./data";
 
-describe('getExternalIds', () => {
-  it('should convert normal ids to external ones', () => {
+describe("getExternalIds", () => {
+  it("should convert normal ids to external ones", () => {
     expect(
       getExternalIds([EXTERNAL_SPLIT], {
-        'exp.split-2': 'slice-0',
+        "exp.split-2": "slice-0",
       })
     ).toMatchObject({
-      EXTSPLIT: 'EXTSLICE0',
+      EXTSPLIT: "EXTSLICE0",
     });
 
     expect(
       getExternalIds([EXTERNAL_SPLIT], {
-        'exp.split-2': 'slice-1',
+        "exp.split-2": "slice-1",
       })
     ).toMatchObject({
-      EXTSPLIT: 'EXTSLICE1',
+      EXTSPLIT: "EXTSLICE1",
     });
   });
 });

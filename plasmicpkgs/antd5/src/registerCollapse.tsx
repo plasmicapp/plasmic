@@ -1,8 +1,8 @@
+import type { PropType } from "@plasmicapp/host";
 import { Collapse } from "antd";
+import uniqueId from "lodash/uniqueId";
 import React, { useMemo } from "react";
 import { Registerable, registerComponentHelper } from "./utils";
-import uniqueId from "lodash/uniqueId";
-import type { PropType } from "@plasmicapp/host";
 
 export const singleCollapseComponentName = "plasmic-antd5-single-collapse";
 export const accordionComponentName = "plasmic-antd5-collapse";
@@ -55,9 +55,11 @@ export function AntdAccordion(
   } = props;
 
   const items: AccordionItemType[] = useMemo(() => {
-    if (!React.isValidElement(itemsRaw)) return [];
+    if (!React.isValidElement(itemsRaw) && !Array.isArray(itemsRaw)) return [];
     return (
-      Array.isArray(itemsRaw.props.children)
+      Array.isArray(itemsRaw)
+        ? itemsRaw
+        : Array.isArray(itemsRaw.props.children)
         ? itemsRaw.props.children
         : [itemsRaw.props.children]
     )

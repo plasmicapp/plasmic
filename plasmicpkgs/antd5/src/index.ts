@@ -1,9 +1,18 @@
+import { registerAvatar, registerAvatarGroup } from "./registerAvatar";
 import { registerButton } from "./registerButton";
 import { checkboxComponentName, registerCheckbox } from "./registerCheckbox";
+import { registerCollapse } from "./registerCollapse";
+import { registerColorPicker } from "./registerColorPicker";
 import {
   registerConfigProvider,
   registerTokens,
 } from "./registerConfigProvider";
+import {
+  datePickerComponentName,
+  registerDatePicker,
+} from "./registerDatePicker";
+import { registerDateRangePicker } from "./registerDateRangePicker";
+import { registerDrawer } from "./registerDrawer";
 import { registerDropdown } from "./registerDropdown";
 import {
   InputType,
@@ -24,37 +33,31 @@ import {
 } from "./registerInput";
 import { registerMenu } from "./registerMenu";
 import { registerModal } from "./registerModal";
+import { registerPagination } from "./registerPagination";
+import { registerPopover } from "./registerPopover";
+import { registerProgress } from "./registerProgress";
 import {
   radioComponentName,
   radioGroupComponentName,
   registerRadio,
 } from "./registerRadio";
+import { registerRate } from "./registerRate";
+import { registerSegmented } from "./registerSegmented";
 import {
   optionComponentName,
   optionGroupComponentName,
   registerSelect,
   selectComponentName,
 } from "./registerSelect";
+import { registerSlider } from "./registerSlider";
+import { registerSteps } from "./registerSteps";
 import { registerSwitch } from "./registerSwitch";
 import { registerTable } from "./registerTable";
+import { registerTabs } from "./registerTabs";
+import { registerTooltip } from "./registerTooltip";
+import { registerDirectoryTree, registerTree } from "./registerTree";
 import { registerUpload } from "./registerUpload";
 import { Registerable } from "./utils";
-import {
-  datePickerComponentName,
-  registerDatePicker,
-} from "./registerDatePicker";
-import { registerAvatar, registerAvatarGroup } from "./registerAvatar";
-import { registerTooltip } from "./registerTooltip";
-import { registerColorPicker } from "./registerColorPicker";
-import { registerDrawer } from "./registerDrawer";
-import { registerSteps } from "./registerSteps";
-import { registerDirectoryTree, registerTree } from "./registerTree";
-import { registerCollapse } from "./registerCollapse";
-import { registerPopover } from "./registerPopover";
-import { registerTabs } from "./registerTabs";
-import { registerRate } from "./registerRate";
-import { registerSlider } from "./registerSlider";
-import { registerDateRangePicker } from "./registerDateRangePicker";
 
 export function registerAll(loader?: Registerable) {
   registerConfigProvider(loader);
@@ -92,26 +95,26 @@ export function registerAll(loader?: Registerable) {
   registerTabs(loader);
   registerRate(loader);
   registerSlider(loader);
+  registerSegmented(loader);
+  registerProgress(loader);
+  registerPagination(loader);
 }
 
 export { buttonComponentName } from "./registerButton";
 export {
-  FormType,
-  formTypeDescription,
+  deriveFormFieldConfigs,
   formComponentName,
   formGroupComponentName,
   formItemComponentName,
   formListComponentName,
+  FormType,
+  formTypeDescription,
   InputType,
-  deriveFormFieldConfigs,
-} from "./registerForm";
-
-export {
   registerForm,
   registerFormGroup,
   registerFormItem,
+  useFormInstanceMaybe,
 } from "./registerForm";
-
 export type { SimplifiedFormItemsProp } from "./registerForm";
 
 export const componentNameToInputType = {
@@ -131,5 +134,3 @@ export const componentNameToInputType = {
 export const inputTypeToComponentName = Object.fromEntries(
   Object.entries(componentNameToInputType).map((kv) => kv.reverse())
 ) as Record<InputType, string>;
-
-export { useFormInstanceMaybe } from "./registerForm";

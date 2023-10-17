@@ -1,21 +1,23 @@
-import { Split } from '@plasmicapp/loader-fetcher';
-import { getActiveVariation as getActiveVariationSplits } from '@plasmicapp/loader-splits';
-import { getSeededRandomFunction } from './random';
+import type { Split } from "@plasmicapp/loader-fetcher";
+import {
+  getActiveVariation as getActiveVariationSplits,
+  getSeededRandomFunction,
+} from "@plasmicapp/loader-splits";
 
-const DELIMITER = '__pm__';
-const PLASMIC_SEED = 'plasmic_seed';
-const SEED_RANGE = 16;
+export const DELIMITER = "__pm__";
+export const PLASMIC_SEED = "plasmic_seed";
+const DEFAULT_PLASMIC_SEED_RANGE = 16;
 
 type Traits = Record<string, string | number | boolean>;
 
-const getSeed = () => {
-  return `${Math.floor(Math.random() * SEED_RANGE)}`;
+const getSeed = (seedRange: number = DEFAULT_PLASMIC_SEED_RANGE) => {
+  return `${Math.floor(Math.random() * seedRange)}`;
 };
 
 export const rewriteWithoutTraits = (url: string) => {
   const [path, ...traitssArr] = url.split(DELIMITER);
   const traits = traitssArr.reduce((acc, elem) => {
-    const [key, value] = elem.split('=');
+    const [key, value] = elem.split("=");
     return {
       ...acc,
       [key]: value,
@@ -23,9 +25,9 @@ export const rewriteWithoutTraits = (url: string) => {
   }, {});
   return {
     path:
-      path === '/'
+      path === "/"
         ? path
-        : path.endsWith('/')
+        : path.endsWith("/")
         ? path.substring(0, path.length - 1)
         : path,
     traits,
@@ -39,44 +41,84 @@ const expandTraits = (traits: Traits) => {
   return Object.keys(traits)
     .sort(cmp)
     .map((key) => `${DELIMITER}${key}=${traits[key]}`)
-    .join('');
+    .join("");
 };
 
 export const rewriteWithTraits = (path: string, traits: Traits) => {
-  return `${path}${path.endsWith('/') ? '' : '/'}${expandTraits(traits)}`;
+  if (Object.keys(traits).length === 0) {
+    return path;
+  }
+
+  return `${path}${path.endsWith("/") ? "" : "/"}${expandTraits(traits)}`;
 };
 
-export const generateAllPaths = (path: string) => {
-  const paths = [
-    path,
-    ...Array(SEED_RANGE)
-      .fill(0)
-      .map(
-        (_, idx) =>
-          `${path}${path.endsWith('/') ? '' : '/'}__pm__${PLASMIC_SEED}=${idx}`
-      ),
-  ];
-  return paths;
+export const generateAllPaths = (
+  path: string,
+  seedRange: number = DEFAULT_PLASMIC_SEED_RANGE
+) => {
+  return generateAllPathsWithTraits(path, {}, seedRange);
 };
+
+/**
+ * Generates all possible paths with the given traits. Should be used to enable fallback false
+ */
+export function generateAllPathsWithTraits(
+  path: string,
+  traitValues: Record<string, string[]> = {},
+  seedRange = DEFAULT_PLASMIC_SEED_RANGE
+) {
+  const traitsCombinations = [{}];
+  traitsCombinations.push(
+    ...Array(seedRange)
+      .fill(0)
+      .map((_, idx) => ({
+        [PLASMIC_SEED]: idx,
+      }))
+  );
+  for (const [trait, possibleValues] of Object.entries(traitValues)) {
+    const newCombinations = [];
+    for (const traitValue of possibleValues) {
+      for (const combination of traitsCombinations) {
+        newCombinations.push({
+          ...combination,
+          [trait]: traitValue,
+        });
+      }
+    }
+    traitsCombinations.push(...newCombinations);
+  }
+  return traitsCombinations.map((traits) => rewriteWithTraits(path, traits));
+}
 
 export const getMiddlewareResponse = (opts: {
   path: string;
   traits: Traits;
   cookies: Record<string, string>;
+  seedRange?: number;
 }) => {
   const newCookies: { key: string; value: string }[] = [];
-  const seed = opts.cookies[PLASMIC_SEED] || getSeed();
-  if (!opts.cookies[PLASMIC_SEED]) {
-    newCookies.push({
-      key: PLASMIC_SEED,
-      value: seed,
-    });
+
+  const seedRange = Number.isInteger(opts.seedRange)
+    ? opts.seedRange
+    : DEFAULT_PLASMIC_SEED_RANGE;
+  const seed = opts.cookies[PLASMIC_SEED] || getSeed(seedRange);
+
+  let traits = opts.traits;
+  if (seedRange && seedRange > 0) {
+    traits = {
+      ...traits,
+      [PLASMIC_SEED]: seed,
+    };
+
+    if (!opts.cookies[PLASMIC_SEED]) {
+      newCookies.push({
+        key: PLASMIC_SEED,
+        value: seed,
+      });
+    }
   }
   return {
-    pathname: rewriteWithTraits(opts.path, {
-      [PLASMIC_SEED]: seed,
-      ...opts.traits,
-    }),
+    pathname: rewriteWithTraits(opts.path, traits),
     cookies: newCookies,
   };
 };
@@ -96,7 +138,7 @@ export const getActiveVariation = (opts: {
     getKnownValue: () => undefined,
     updateKnownValue: () => null,
     getRandomValue: (key) => {
-      const rand = getSeededRandomFunction((traits[PLASMIC_SEED] ?? '') + key);
+      const rand = getSeededRandomFunction((traits[PLASMIC_SEED] ?? "") + key);
       return rand();
     },
   });

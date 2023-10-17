@@ -5,7 +5,7 @@ import traverse, { Node } from "@babel/traverse";
 import { ImportDeclaration } from "@babel/types";
 import L from "lodash";
 import * as Prettier from "prettier";
-import { Options, resolveConfig } from "prettier";
+import { Options } from "prettier";
 import * as ts from "typescript";
 import path from "upath";
 import { getGlobalContextsResourcePath } from "../actions/sync-global-contexts";
@@ -13,12 +13,15 @@ import {
   fixComponentCssReferences,
   fixComponentImagesReferences,
 } from "../actions/sync-images";
+import { getSplitsProviderResourcePath } from "../actions/sync-splits-provider";
 import { logger } from "../deps";
+import { GLOBAL_SETTINGS } from "../globals";
 import { HandledError } from "../utils/error";
 import {
   CodeComponentConfig,
   ComponentConfig,
   CONFIG_FILE_NAME,
+  CustomFunctionConfig,
   GlobalVariantGroupConfig,
   IconConfig,
   ImageConfig,
@@ -34,7 +37,6 @@ import {
   writeFileContent,
 } from "./file-utils";
 import { assert, flatMap } from "./lang-utils";
-import { GLOBAL_SETTINGS } from "../globals";
 
 export const formatAsLocal = (
   content: string,
@@ -169,7 +171,24 @@ type PlasmicImportType =
   | "codeComponent"
   | "codeComponentHelper"
   | "globalContext"
+  | "customFunction"
+  | "splitsProvider"
   | undefined;
+
+const validJsIdentifierChars = [
+  "\\u0621-\\u064A", // arabic
+  "\\u3400-\\u4DB5", // chinese
+  "\\u4E00-\\u9FCC", // chinese
+  "\\u0400-\\u04FF", // cyrillic
+  "\\u0370-\\u03ff", // greek
+  "\\u1f00-\\u1fff", // greek
+  "\\u0900-\\u097F", // hindi
+  "\\u3041-\\u3094", // japanese
+  "\\u30A1-\\u30FB", // japanese
+  "\\u0E00-\\u0E7F", // thai
+  "\\w",
+  "-_",
+];
 
 function tryParsePlasmicImportSpec(node: ImportDeclaration) {
   const c = node.trailingComments?.[0];
@@ -177,7 +196,14 @@ function tryParsePlasmicImportSpec(node: ImportDeclaration) {
     return undefined;
   }
   const m = c.value.match(
-    /plasmic-import:\s+([\w-]+)(?:\/(component|css|render|globalVariant|projectcss|defaultcss|icon|picture|jsBundle|codeComponent|globalContext))?/
+    new RegExp(
+      [
+        "plasmic-import:\\s+([",
+        ...validJsIdentifierChars,
+        "\\.",
+        "]+)(?:\\/(component|css|render|globalVariant|projectcss|defaultcss|icon|picture|jsBundle|codeComponent|globalContext|customFunction|splitsProvider))?",
+      ].join("")
+    )
   );
   if (m) {
     return { id: m[1], type: m[2] as PlasmicImportType } as PlasmicImportSpec;
@@ -384,6 +410,35 @@ export function replaceImports(
         true
       );
       stmt.source.value = realPath;
+    } else if (type === "customFunction") {
+      const meta = fixImportContext.customFunctionMetas[uuid];
+      if (!meta?.importPath) {
+        throw new HandledError(
+          `Encountered custom function "${uuid}" that was not registered with an importPath, so we don't know where to import this function from. Please see https://docs.plasmic.app/learn/code-components-ref/`
+        );
+      }
+      if (meta.importPath[0] === ".") {
+        // Relative path from the project root
+        const toPath = path.join(context.rootDir, meta.importPath);
+        assert(path.isAbsolute(toPath));
+        const realPath = makeImportPath(context, fromPath, toPath, true, true);
+        stmt.source.value = realPath;
+      } else {
+        // npm package
+        stmt.source.value = meta.importPath;
+      }
+    } else if (type === "splitsProvider") {
+      const projectConfig = fixImportContext.projects[uuid];
+      if (!projectConfig) {
+        throwMissingReference(context, "project", uuid, fromPath);
+      }
+      const realPath = makeImportPath(
+        context,
+        fromPath,
+        projectConfig.splitsProviderFilePath,
+        true
+      );
+      stmt.source.value = realPath;
     }
   });
 
@@ -454,20 +509,26 @@ export interface FixImportContext {
   config: PlasmicConfig;
   components: Record<string, ComponentConfig>;
   codeComponentMetas: Record<string, CodeComponentConfig>;
+  customFunctionMetas: Record<string, CustomFunctionConfig>;
   globalVariants: Record<string, GlobalVariantGroupConfig>;
   icons: Record<string, IconConfig>;
   images: Record<string, ImageConfig>;
   projects: Record<string, ProjectConfig>;
 }
 
-export const mkFixImportContext = (config: PlasmicConfig) => {
+export const mkFixImportContext = (config: PlasmicConfig): FixImportContext => {
   const allComponents = flatMap(config.projects, (p) => p.components);
   const components = L.keyBy(allComponents, (c) => c.id);
   const allCodeComponents = flatMap(
     config.projects,
     (p) => p.codeComponents || []
   );
+  const allCustomFunctions = flatMap(
+    config.projects,
+    (p) => p.customFunctions ?? []
+  );
   const codeComponentMetas = L.keyBy(allCodeComponents, (c) => c.id);
+  const customFunctionMetas = L.keyBy(allCustomFunctions, (fn) => fn.id);
   const globalVariants = L.keyBy(
     config.globalVariants.variantGroups,
     (c) => c.id
@@ -485,6 +546,7 @@ export const mkFixImportContext = (config: PlasmicConfig) => {
     config,
     components,
     codeComponentMetas,
+    customFunctionMetas,
     globalVariants,
     icons,
     images,
@@ -538,6 +600,15 @@ export async function fixAllImportStatements(
   } catch (err) {
     logger.error(
       `Error encountered while fixing imports for global contexts: ${err}`
+    );
+    lastError = err;
+  }
+
+  try {
+    fixSplitsProviderImportStatements(context, fixImportContext, baseDir);
+  } catch (err) {
+    logger.error(
+      `Error encountered while fixing imports for splits provider: ${err}`
     );
     lastError = err;
   }
@@ -736,6 +807,45 @@ async function fixGlobalContextImportStatements(
   for (const project of context.config.projects) {
     if (!project.globalContextsFilePath) continue;
     const resourcePath = getGlobalContextsResourcePath(context, project);
+
+    let prevContent: string;
+    try {
+      prevContent = readFileText(
+        makeFilePath(context, resourcePath)
+      ).toString();
+    } catch (e) {
+      logger.warn(
+        `${resourcePath} is missing. If you deleted this component, remember to remove the component from ${CONFIG_FILE_NAME}`
+      );
+      throw e;
+    }
+
+    const newContent = replaceImports(
+      context,
+      prevContent,
+      resourcePath,
+      fixImportContext,
+      false,
+      baseDir,
+      true
+    );
+
+    if (prevContent !== newContent) {
+      await writeFileContent(context, resourcePath, newContent, {
+        force: true,
+      });
+    }
+  }
+}
+
+async function fixSplitsProviderImportStatements(
+  context: PlasmicContext,
+  fixImportContext: FixImportContext,
+  baseDir: string
+) {
+  for (const project of context.config.projects) {
+    if (!project.splitsProviderFilePath) continue;
+    const resourcePath = getSplitsProviderResourcePath(context, project);
 
     let prevContent: string;
     try {

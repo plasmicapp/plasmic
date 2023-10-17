@@ -3,6 +3,7 @@ import socketio, { Socket } from "socket.io-client";
 import {
   AuthConfig,
   CodeConfig,
+  CustomFunctionConfig,
   DEFAULT_HOST,
   I18NConfig,
   ImagesConfig,
@@ -45,6 +46,11 @@ export interface GlobalContextBundle {
   contextModule: string;
 }
 
+export interface SplitsProviderBundle {
+  id: string;
+  module: string;
+}
+
 export interface JsBundleTheme {
   themeFileName: string;
   themeModule: string;
@@ -58,6 +64,7 @@ export interface ProjectMetaBundle {
   cssRules: string;
   jsBundleThemes?: JsBundleTheme[];
   globalContextBundle?: GlobalContextBundle;
+  splitsProviderBundle?: SplitsProviderBundle;
 }
 
 export interface IconBundle {
@@ -112,6 +119,7 @@ export interface ProjectMetaInfo {
 export interface ProjectBundle {
   components: ComponentBundle[];
   codeComponentMetas: CodeComponentMeta[];
+  customFunctionMetas: CustomFunctionConfig[];
   projectConfig: ProjectMetaBundle;
   globalVariants: GlobalVariantBundle[];
   usedTokens: StyleTokensMap;
@@ -161,6 +169,8 @@ export interface ChecksumBundle {
   projectCssChecksum: string;
   // Checksum of project global contexts
   globalContextsChecksum: string;
+  // Checksum of project splits provider
+  splitsProviderChecksum: string;
 }
 
 export interface CodeComponentMeta {

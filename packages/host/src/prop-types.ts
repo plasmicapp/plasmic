@@ -357,7 +357,7 @@ export interface FormValidationRulesType<P>
 
 export interface EventHandlerType<P> extends PropTypeBase<P> {
   type: "eventHandler";
-  argTypes: { name: string; type: PropType<any> }[];
+  argTypes: { name: string; type: ArgType<any> }[];
 }
 
 export interface ChoiceTypeBase<P, T> extends PropTypeBaseDefault<P, T> {
@@ -536,6 +536,11 @@ export type PropType<P> =
   | SlotType<P>
   | DateStringType<P>
   | DateRangeStringsType<P>;
+
+export type ArgType<P> = Exclude<
+  PropType<P>,
+  SlotType<P> | EventHandlerType<P>
+>;
 
 export type StringCompatType<P> =
   | DateStringType<P>

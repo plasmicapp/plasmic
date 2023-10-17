@@ -1,29 +1,88 @@
+fail_fast: true
 repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+  - repo: local
     hooks:
-      - id: check-merge-conflict
-      - id: trailing-whitespace
-  - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v8.44.0
+      - id: check-instanceof-model
+        name: Check that we do not use instanceof or ensureInstance or ensureInstanceMaybe with model types
+        files: ^platform/wab/src/.*\.(ts|tsx)$
+        entry: platform/wab/node_modules/.bin/ts-node -P platform/wab/tsconfig.tools.json -r tsconfig-paths/register platform/wab/tools/check-instanceof-model.ts
+        language: system
+  - repo: local
     hooks:
-      - id: eslint
-        types: [file]
-        files: ^.*\.(ts|tsx)$
-        exclude: ^.*/plasmic/.*$
-        additional_dependencies:
-          - "@typescript-eslint/eslint-plugin@5.62.0"
-          - "@typescript-eslint/parser@5.62.0"
-          - "eslint@8.44.0"
-          - "eslint-config-prettier@8.8.0"
-          - "eslint-config-react-app@7.0.1"
-          - "eslint-plugin-prettier@4.2.1"
+      - id: check-weakrefs
+        name: Check new weak refs in the project and warn about files that might need to be updated
+        files: ^platform/wab/src/wab/model/model-schema.ts$
+        entry: platform/wab/node_modules/.bin/ts-node -P platform/wab/tsconfig.tools.json -r tsconfig-paths/register platform/wab/tools/checkWeakRefs.ts
+        language: system
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v2.7.1
     hooks:
       - id: prettier
-        types: [file]
-        files: ^.*\.(js|jsx|ts|tsx|json|css|scss|toml|xml)$
-        exclude: ^.*/plasmic/.*$
+        name: Run prettier on code written by humans
+        files: ^.*\.(js|jsx|ts|tsx|json|css|scss|md|toml|xml)$
+        exclude: (^.*/(plasmic|deps|static|\.yalc)/.*$|.md$)|(^loader-tests/data/.*\.json$)|examples/hydrogen-.*
+        env:
+          NODE_OPTIONS: "--max-old-space-size=4096"
         additional_dependencies:
-          - prettier@2.7.1
+          - prettier@2.8.8
+          - prettier-plugin-organize-imports@3.2.2
+          - typescript@4.7.4
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v2.7.1
+    hooks:
+      - id: prettier
+        name: Run prettier on Plasmic-generated files
+        files: ^.*/plasmic/.*\.(js|jsx|ts|tsx|json|css|scss|md|toml|xml)$
+        additional_dependencies:
+          - prettier@2.8.8
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-merge-conflict
+        name: Check merge conflicts
+      - id: trailing-whitespace
+        name: Check trailing whitespaces
+        exclude: ^.*/__snapshots__/.*$
+  - repo: local
+    hooks:
+      - id: eslint
+        name: Lint ts/tsx files with eslint
+        files: ^platform/wab/src/.*\.(ts|tsx)$
+        types: [file]
+        entry: env NODE_OPTIONS=--max-old-space-size=4096 yarn eslint --fix
+        language: system
+  # From public-packages
+  #  - repo: https://github.com/pre-commit/mirrors-eslint
+  #    rev: v8.44.0
+  #    hooks:
+  #      - id: eslint
+  #        types: [file]
+  #        files: ^.*\.(ts|tsx)$
+  #        exclude: ^.*/plasmic/.*$
+  #        additional_dependencies:
+  #          - "@typescript-eslint/eslint-plugin@5.62.0"
+  #          - "@typescript-eslint/parser@5.62.0"
+  #          - "eslint@8.44.0"
+  #          - "eslint-config-prettier@8.8.0"
+  #          - "eslint-config-react-app@7.0.1"
+  #          - "eslint-plugin-prettier@4.2.1"
+  - repo: local
+    hooks:
+      - id: check-plume-version
+        name: Check plume-master-pkg.json matches REAL_PLUME_VERSION
+        files: ^platform/wab/src/wab/server/pkgs/(plume-master-pkg\.json|plume-pkg-mgr\.ts)$
+        entry: env NODE_PATH=platform/wab/node_modules node -r esbuild-register -- platform/wab/src/wab/server/pkgs/plume-pkg-mgr.ts check
+        language: system
+  - repo: local
+    hooks:
+      - id: check-bundle-migrations
+        name: Update list of bundle migrations and check migration numbers
+        files: ^platform/wab/src/wab/server/bundle-migrations/.*$
+        entry: platform/wab/tools/bundle-migration-check.sh
+        language: system
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint
+        name: Lint Dockerfiles
+        args: [--failure-threshold=warning]

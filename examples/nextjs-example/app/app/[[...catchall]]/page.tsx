@@ -45,7 +45,8 @@ export default async function PlasmicLoaderPage({
           pageMeta.path === "/"
             ? {
                 staticHref: "/app/static",
-                dynamicHref: "/app/dynamic",
+                dynamicHref: "/app/dynamic/foo",
+                codeHref: "/app/code",
                 children: (
                   <>
                     <span>

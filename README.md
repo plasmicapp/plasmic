@@ -216,9 +216,9 @@ Feel free to join our [Slack Community][slack] and ask us anything! We're here t
 
 ## License
 
-`app/` is licensed under the AGPL--see LICENSE.app.md.
+All content outside of `platform/` is licensed under the MIT license--see LICENSE.md.
 
-All other content is licensed under the MIT license--see LICENSE.md.
+`platform/` is licensed under the AGPL--see LICENSE.platform.md.
 
 ## Contributors ❤️
 

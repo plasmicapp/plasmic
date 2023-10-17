@@ -109,6 +109,7 @@ export default [
       "query/index": "./src/query/index.ts",
       "prepass/index": "./src/prepass/index.ts",
       "auth/index": "./src/auth/index.ts",
+      "splits/index": "./src/splits/index.ts",
     },
     external,
     output: [
@@ -137,7 +138,14 @@ export default [
         typescript: ts,
         check: false,
         tsconfigOverride: {
-          include: ["src/data-sources", "src/host", "src/query", "src/prepass", "src/auth"],
+          include: [
+            "src/data-sources",
+            "src/host",
+            "src/query",
+            "src/prepass",
+            "src/auth",
+            "src/splits",
+          ],
           emitDeclarationOnly: true,
         },
       }),

@@ -10,7 +10,7 @@ import {
   Tooltip,
 } from "chart.js";
 import deepmerge from "deepmerge";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import {
   BaseChartProps,
@@ -25,9 +25,29 @@ export interface SimpleLineProps extends BaseChartProps {
   secondAxisField?: string;
 }
 
+// Force a re-mount when the secondAxisField is unset / re-set
+// https://app.shortcut.com/plasmic/story/38358/chart-component-issues-with-second-axis-field
+const useKey = (secondAxisField?: string) => {
+  const [key, setKey] = useState(0);
+
+  // change key once when the secondAxisField is unset.
+  if (!secondAxisField && key) {
+    setKey(0);
+  }
+
+  // change key once when the secondAxisField value changes from undefined -> something
+  if (secondAxisField && !key) {
+    setKey(Math.random());
+  }
+
+  return key;
+};
+
 export function SimpleLine(props: SimpleLineProps) {
   const { secondAxisField, fill, className } = props;
   const isClient = useIsClient();
+  const key = useKey(props.secondAxisField);
+
   useEffect(() => {
     ChartJS.register(
       ChartAreaPlugin,
@@ -55,6 +75,7 @@ export function SimpleLine(props: SimpleLineProps) {
   return (
     <div className={className}>
       <Line
+        key={key}
         options={deepmerge.all([
           ...options,
           secondAxisField

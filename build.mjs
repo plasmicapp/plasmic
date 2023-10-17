@@ -17,10 +17,12 @@ async function main() {
   const options = process.argv.slice(3);
 
   const useClient = findAndRemoveOption(options, '--use-client');
-  // By default, we only ship cjs bundles. Use this option to also ship esm bundles.
-  // However, there are many issues that need to be resolved before turning this option on.
-  // https://app.shortcut.com/plasmic/story/33688/es-module-support
-  const esm = findAndRemoveOption(options, '--esm-do-not-use');
+  // TODO: default ESM extension should be "mjs" once we figure out how to use .mjs properly
+  const defaultEsmExtension = "esm.js";
+  // Some packages may not work with a .mjs extension due to the stricter Node ES module rules.
+  // loader-react uses it for "react/jsx-runtime" imports.
+  // See https://app.shortcut.com/plasmic/story/33688/es-module-support for more details.
+  const esmExtension = findAndRemoveOption(options, '--no-esm') ? null : findAndRemoveOption(options, '--no-mjs') ? "esm.js" : defaultEsmExtension;
   const watch = findAndRemoveOption(options, '--watch');
   if (options.length > 0) {
     throw new Error(`unknown or duplicate options: ${options.join(' ')}`);
@@ -28,16 +30,17 @@ async function main() {
 
   const name = path.parse(entryPoint).name;
 
-  const expectedPackageJson = generateExpectedPackageJson(name, esm);
+  const expectedPackageJson = generateExpectedPackageJson(name, esmExtension);
   const actualPackageJson = JSON.parse(
     await fs.readFile(path.resolve('package.json'))
   );
   validatePackageJson(actualPackageJson, expectedPackageJson);
+  validatePackageJsonReactServerConditional(actualPackageJson);
 
   const ctx = {
     entryPoint,
     name,
-    formats: esm ? ['cjs', 'esm'] : ['cjs'],
+    esmExtension,
     useClient,
     watch,
   };
@@ -54,39 +57,34 @@ function findAndRemoveOption(options, option) {
   return found;
 }
 
-function generateExpectedPackageJson(name, esm) {
+function generateExpectedPackageJson(name, esmExtension) {
   const subpath = name === 'index' ? '.' : `./${name}`;
   const packageJson = {
     exports: {
-      [subpath]: generateExpectedPackageJsonSubpath(name, esm),
+      [subpath]: generateExpectedPackageJsonSubpath(name, esmExtension),
     },
   };
 
   if (name === 'index') {
     packageJson.types = './dist/index.d.ts';
     packageJson.main = './dist/index.js';
-    if (esm) {
+    if (esmExtension) {
       // "index.esm.js" should be set as the "module" field for webpack 4 and other tools,
       // since they don't support the "exports" field.
       // We change the extension from ".mjs" to ".js" because ".mjs" doesn't work properly in webpack 4.
       // https://github.com/adobe/react-spectrum/pull/4038
       packageJson.module = './dist/index.esm.js';
     }
-  } else if (name === 'react-server') {
-    packageJson.exports['./react-server-conditional'] = {
-      'react-server': generateExpectedPackageJsonSubpath('react-server', esm),
-      default: generateExpectedPackageJsonSubpath('index', esm),
-    };
   }
 
   return packageJson;
 }
 
-function generateExpectedPackageJsonSubpath(name, esm) {
-  if (esm) {
+function generateExpectedPackageJsonSubpath(name, esmExtension) {
+  if (esmExtension) {
     return {
       types: `./dist/${name}.d.ts`,
-      import: `./dist/${name}.mjs`,
+      import: `./dist/${name}.${esmExtension}`,
       require: `./dist/${name}.js`,
     };
   } else {
@@ -117,10 +115,23 @@ function validatePackageJson(actual, expected, path = '') {
   }
 }
 
-async function buildBundle({ entryPoint, name, formats, useClient, watch }) {
+function validatePackageJsonReactServerConditional(packageJson) {
+  const indexSubpath = packageJson.exports['.']
+  const reactServerSubpath = packageJson.exports['./react-server']
+  const reactServerConditionalSubpath = packageJson.exports['./react-server-conditional']
+  if (indexSubpath && reactServerSubpath && reactServerConditionalSubpath) {
+    validatePackageJson(reactServerConditionalSubpath, {
+      'react-server': reactServerSubpath,
+      'default': indexSubpath
+    }, '"exports" > "./react-server-conditional"')
+  }
+}
+
+async function buildBundle({ entryPoint, name, esmExtension, useClient, watch }) {
+  const formats = esmExtension ? ['cjs', 'esm'] : ['cjs']
   return Promise.all(
     formats.map(async (format) => {
-      const outfile = `dist/${name}.${format === 'cjs' ? 'js' : 'mjs'}`;
+      const outfile = `dist/${name}.${format === 'cjs' ? 'js' : esmExtension}`;
       const esbuildOptions = {
         bundle: true,
         packages: 'external', // don't bundle node_modules

@@ -341,6 +341,7 @@ class PlasmicApi {
     const result = {
       components,
       codeComponentMetas: [],
+      customFunctionMetas: [],
       projectConfig: genProjectMetaBundle(projectId),
       globalVariants: [],
       usedTokens: genEmptyStyleTokensMap(),
@@ -354,6 +355,7 @@ class PlasmicApi {
         globalVariantChecksums: [],
         projectCssChecksum: "",
         globalContextsChecksum: "",
+        splitsProviderChecksum: "",
       } as ChecksumBundle,
       usedNpmPackages: [],
       externalCssImports: [],

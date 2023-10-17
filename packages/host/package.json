@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/host",
-  "version": "1.0.166",
+  "version": "1.0.173",
   "description": "plasmic library for app hosting",
   "main": "dist/index.cjs.js",
   "types": "dist/index.d.ts",
@@ -23,15 +23,12 @@
   "files": [
     "dist",
     "registerComponent",
+    "registerFunction",
     "registerGlobalContext",
     "registerToken",
     "registerTrait"
   ],
   "size-limit": [
-    {
-      "path": "dist/host.cjs.production.min.js",
-      "limit": "3 KB"
-    },
     {
       "path": "dist/host.esm.js",
       "limit": "3 KB"
@@ -39,21 +36,21 @@
   ],
   "scripts": {
     "build": "./update_version.sh && rollup -c",
-    "postbuild": "yarn postbuild:default && yarn postbuild:registerComponent && yarn postbuild:registerGlobalContext && yarn postbuild:registerToken && yarn postbuild:registerTrait",
+    "postbuild": "yarn postbuild:default && yarn postbuild:registerComponent && yarn postbuild:registerFunction && yarn postbuild:registerGlobalContext && yarn postbuild:registerToken && yarn postbuild:registerTrait",
     "postbuild:default": "node ../../print-module-api.js ./packages/host/dist/index.cjs.js > index-api.txt",
     "postbuild:registerComponent": "node ../../print-module-api.js ./packages/host/registerComponent/dist/index.cjs.js > registerComponent-api.txt",
+    "postbuild:registerFunction": "node ../../print-module-api.js ./packages/host/registerFunction/dist/index.cjs.js > registerFunction-api.txt",
     "postbuild:registerGlobalContext": "node ../../print-module-api.js ./packages/host/registerGlobalContext/dist/index.cjs.js > registerGlobalContext-api.txt",
     "postbuild:registerToken": "node ../../print-module-api.js ./packages/host/registerToken/dist/index.cjs.js > registerToken-api.txt",
     "postbuild:registerTrait": "node ../../print-module-api.js ./packages/host/registerTrait/dist/index.cjs.js > registerTrait-api.txt",
-    "start": "tsdx watch",
     "test": "yarn --cwd=../.. test --passWithNoTests",
-    "lint": "tsdx lint",
+    "lint": "eslint",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
   "dependencies": {
-    "@plasmicapp/query": "0.1.68",
+    "@plasmicapp/query": "0.1.74",
     "csstype": "^3.1.2",
     "window-or-global": "^1.0.1"
   },
@@ -61,7 +58,6 @@
     "@rollup/plugin-commonjs": "^25.0.2",
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.1.0",
-    "@size-limit/preset-small-lib": "^8.2.6",
     "@types/classnames": "^2.3.0",
     "@types/node": "^20.3.3",
     "@types/react": "^18.2.14",
@@ -71,10 +67,7 @@
     "rollup": "^3.26.1",
     "rollup-plugin-banner2": "^1.2.2",
     "rollup-plugin-dts": "^5.3.0",
-    "rollup-plugin-typescript2": "^0.35.0",
-    "size-limit": "^8.2.6",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.6.0"
+    "rollup-plugin-typescript2": "^0.35.0"
   },
   "peerDependencies": {
     "react": ">=16.8.0",

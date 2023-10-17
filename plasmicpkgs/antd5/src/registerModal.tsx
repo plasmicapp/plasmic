@@ -1,6 +1,22 @@
+import type { StyleSection } from "@plasmicapp/host/registerComponent";
 import { Modal } from "antd";
-import React from "react";
+import React, { ReactElement, useState, useMemo } from "react";
 import { Registerable, registerComponentHelper } from "./utils";
+
+// hide sizing section, as width can only be set via a width prop, and not css!
+const styleSections: StyleSection[] = [
+  "visibility",
+  "typography",
+  "spacing",
+  "background",
+  "transform",
+  "transitions",
+  "layout",
+  "overflow",
+  "border",
+  "shadows",
+  "effects",
+];
 
 export function AntdModal(
   props: React.ComponentProps<typeof Modal> & {
@@ -9,22 +25,29 @@ export function AntdModal(
     modalScopeClassName: string;
     wrapClassName: string;
     hideFooter?: boolean;
+    trigger?: ReactElement;
   }
 ) {
+  const [isOpen, setIsOpen] = useState(false);
+
   const {
     onOpenChange,
     onOk,
     onCancel,
     open,
+    width,
     footer,
     hideFooter,
     modalScopeClassName,
     wrapClassName,
+    trigger,
     ...rest
   } = props;
+
   const memoOnOk = React.useMemo(() => {
     if (onOpenChange || onOk) {
       return (e: React.MouseEvent<HTMLButtonElement>) => {
+        setIsOpen(false);
         onOpenChange?.(false);
         onOk?.(e);
       };
@@ -35,6 +58,7 @@ export function AntdModal(
   const memoOnCancel = React.useMemo(() => {
     if (onOpenChange || onCancel) {
       return (e: React.MouseEvent<HTMLButtonElement>) => {
+        setIsOpen(false);
         onOpenChange?.(false);
         onCancel?.(e);
       };
@@ -42,16 +66,31 @@ export function AntdModal(
       return undefined;
     }
   }, [onOpenChange, onCancel]);
+
+  const widthProp = useMemo(() => {
+    if (!width) return undefined;
+    if (typeof width === "number") return width;
+    if (typeof width !== "string") return undefined;
+    if (/^\d+$/.test(width)) {
+      return +width;
+    }
+    return width;
+  }, [width]);
+
   return (
-    <Modal
-      {...rest}
-      onOk={memoOnOk}
-      onCancel={memoOnCancel}
-      open={open}
-      footer={hideFooter ? null : footer ?? undefined}
-      wrapClassName={wrapClassName}
-      className={`${props.className} ${props.defaultStylesClassName} ${modalScopeClassName}`}
-    />
+    <>
+      <Modal
+        {...rest}
+        onOk={memoOnOk}
+        width={widthProp}
+        onCancel={memoOnCancel}
+        open={isOpen || open}
+        footer={hideFooter ? null : footer ?? undefined}
+        wrapClassName={wrapClassName}
+        className={`${props.className} ${props.defaultStylesClassName} ${modalScopeClassName}`}
+      />
+      {trigger ? <div onClick={() => setIsOpen(true)}>{trigger}</div> : null}
+    </>
   );
 }
 
@@ -59,11 +98,19 @@ export function registerModal(loader?: Registerable) {
   registerComponentHelper(loader, AntdModal, {
     name: "plasmic-antd5-modal",
     displayName: "Modal",
+    styleSections,
     description:
       "[See tutorial video](https://www.youtube.com/watch?v=TkjxNJIFun8)",
     props: {
       open: {
         type: "boolean",
+      },
+      width: {
+        type: "string",
+        defaultValueHint: "520px",
+        description: "Change the width of the modal",
+        helpText:
+          "Default unit is px. You can also use % or other units for width.",
       },
       children: {
         type: "slot",
@@ -80,6 +127,23 @@ export function registerModal(loader?: Registerable) {
         type: "slot",
         hidePlaceholder: true,
         hidden: (ps) => ps.hideFooter ?? false,
+      },
+      trigger: {
+        type: "slot",
+        hidePlaceholder: true,
+        defaultValue: {
+          type: "component",
+          name: "plasmic-antd5-button",
+          props: {
+            children: {
+              type: "text",
+              value: "Show modal",
+            },
+          },
+        },
+        ...({
+          mergeWithParent: true,
+        } as any),
       },
       closeIcon: {
         type: "slot",
@@ -114,7 +178,7 @@ export function registerModal(loader?: Registerable) {
       } as any,
       wrapClassName: {
         type: "class",
-        displayName: "Modal container",
+        displayName: "Modal overlay",
         styleSections: ["background"],
       },
       modalScopeClassName: {
@@ -125,6 +189,7 @@ export function registerModal(loader?: Registerable) {
         type: "class",
         displayName: "Modal content",
         noSelf: true,
+        styleSections,
         selectors: [
           {
             selector: ":modal .ant-modal-content",

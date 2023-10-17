@@ -7,10 +7,10 @@ import {
   GlobalContextMeta,
 } from "@plasmicapp/host/registerGlobalContext";
 import { default as registerToken } from "@plasmicapp/host/registerToken";
-import React from "react";
+import { parseDate } from "@plasmicpkgs/luxon-parser";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { DateTime } from "luxon";
+import React from "react";
 
 export type Registerable = {
   registerComponent: typeof registerComponent;
@@ -133,26 +133,6 @@ export function isValidIsoDate(str: string | undefined, extendedOnly = false) {
   if (!dayjs(str).isValid()) return false; // should be a valid dayjs date
   if (isNaN(new Date(str).getTime())) return false; // should be a valid js date
   return true;
-}
-
-export function parseDate(value: unknown) {
-  const dateTimeParsers = [
-    DateTime.fromISO,
-    DateTime.fromRFC2822,
-    DateTime.fromHTTP,
-    DateTime.fromSQL,
-  ];
-
-  if (!value) return undefined;
-  if (typeof value !== "string") return undefined;
-
-  for (const parser of dateTimeParsers) {
-    const parsed = parser(value);
-    if (parsed.isValid) {
-      return parsed;
-    }
-  }
-  return undefined;
 }
 
 export function isLikeDate(value: unknown) {

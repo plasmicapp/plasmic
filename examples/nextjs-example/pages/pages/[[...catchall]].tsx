@@ -33,7 +33,8 @@ export default function PlasmicLoaderPage(props: {
           pageMeta.path === "/"
             ? {
                 staticHref: "/pages/static",
-                dynamicHref: "/pages/dynamic",
+                dynamicHref: "/pages/dynamic/foo",
+                codeHref: "/pages/code",
                 children: (
                   <>
                     <span>

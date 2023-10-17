@@ -1,25 +1,23 @@
-import { mutateKeys } from './query-data';
-export { useSWRConfig } from 'swr';
-
+import { mutateKeys } from "./query-data";
+export { useSWRConfig } from "swr";
 export {
   addLoadingStateListener,
-  LoadingStateListener,
+  isPlasmicPrepass,
   PlasmicPrepassContext,
   PlasmicQueryDataProvider,
-  SWRResponse,
   useMutablePlasmicQueryData,
   usePlasmicDataConfig,
   usePlasmicQueryData,
   wrapLoadingFetcher,
-  isPlasmicPrepass,
-} from './query-data';
+} from "./query-data";
+export type { LoadingStateListener, SWRResponse } from "./query-data";
 
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   const root = window as any;
   const maybeExistingMutateAllKeys = root.__SWRMutateAllKeys;
   root.__SWRMutateAllKeys = (invalidateKey?: string) => {
     mutateKeys(invalidateKey);
-    if (typeof maybeExistingMutateAllKeys === 'function') {
+    if (typeof maybeExistingMutateAllKeys === "function") {
       maybeExistingMutateAllKeys(invalidateKey);
     }
   };

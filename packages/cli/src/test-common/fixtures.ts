@@ -151,6 +151,7 @@ export const project1Config: ProjectConfig = {
   jsBundleThemes: [],
   indirect: false,
   globalContextsFilePath: "",
+  splitsProviderFilePath: "",
 };
 
 export function expectProject1PlasmicJson(optional?: {

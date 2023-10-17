@@ -210,6 +210,35 @@ export function checkValidName(name?: string): boolean {
   return true;
 }
 
+const PROJECT_URL_REGEXP =
+  /studio\.plasmic\.app\/projects\/([a-z0-9]{5,})(\/|$)/i;
+const PROJECT_ID_REGEXP = /([a-z0-9]{5,})/i;
+
+export function checkProjectInput(input: string): boolean {
+  try {
+    extractProjectId(input);
+    return true;
+  } catch {
+    console.warn(`"${input}" is not a valid project URL nor ID.`);
+    return false;
+  }
+}
+
+/** Gets a project ID from an ID itself or a URL. */
+export function extractProjectId(input: string): string {
+  const matchUrl = input.match(PROJECT_URL_REGEXP);
+  if (matchUrl) {
+    return matchUrl[1];
+  }
+
+  const matchId = input.match(PROJECT_ID_REGEXP);
+  if (matchId) {
+    return matchId[1];
+  }
+
+  throw new Error("run checkProjectInput before extractProjectId");
+}
+
 export function banner(message: string): void {
   // 50-char width
   console.log();

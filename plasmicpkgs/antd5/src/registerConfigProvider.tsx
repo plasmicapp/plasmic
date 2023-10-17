@@ -1,19 +1,21 @@
-import { GlobalActionsProvider } from "@plasmicapp/host";
+import { GlobalActionsProvider, useSelector } from "@plasmicapp/host";
 import {
   default as registerToken,
   TokenRegistration,
 } from "@plasmicapp/host/registerToken";
 import { addLoadingStateListener } from "@plasmicapp/query";
 import { ConfigProvider, message, notification, theme } from "antd";
+import type { ConfigProviderProps } from "antd/es/config-provider";
 import type { MessageInstance } from "antd/es/message/interface";
 import type {
   NotificationInstance,
   NotificationPlacement,
 } from "antd/es/notification/interface";
+import type { Locale } from "antd/lib/locale";
 import enUS from "antd/lib/locale/en_US.js";
 import React from "react";
+import { useIsMounted } from "./react-utils";
 import { makeRegisterGlobalContext, Registerable } from "./utils";
-import type { ConfigProviderProps } from "antd/es/config-provider";
 
 // enUS is a CJS file, and it doesn't always import correctly in
 // esm mode (nextjs does it right, but create-react-app does it wrong).
@@ -41,6 +43,12 @@ export interface ThemeOpts {
   wireframe?: boolean;
 
   defaultDark?: boolean;
+
+  /**
+   * `locale` is a prop that can be set by code, but is not registered,
+   * i.e. exposed to Plasmic studio.
+   */
+  locale?: Locale;
 }
 
 export function themeToAntdConfig(opts: ThemeOpts): ConfigProviderProps {
@@ -92,10 +100,11 @@ export function AntdConfigProvider(
     removeLoading?: boolean;
   }
 ) {
-  const { children, themeStyles, loadingText, removeLoading, ...rest } = props;
+  const { children, locale, themeStyles, loadingText, removeLoading, ...rest } =
+    props;
   return (
     <ConfigProvider
-      locale={defaultLocale}
+      locale={locale ?? defaultLocale}
       {...themeToAntdConfig({
         ...rest,
         fontFamily: themeStyles.fontFamily,
@@ -171,24 +180,35 @@ function InnerConfigProvider(props: {
     }),
     [app]
   );
+  const enableLoadingBoundary = !!useSelector(
+    "plasmicInternalEnableLoadingBoundary"
+  );
 
   if (!GlobalActionsProvider) {
     warnOutdatedDeps();
   }
+
+  let content = GlobalActionsProvider ? (
+    <GlobalActionsProvider
+      contextName="plasmic-antd5-config-provider"
+      actions={actions}
+    >
+      {children}
+    </GlobalActionsProvider>
+  ) : (
+    children
+  );
+  if (!removeLoading && enableLoadingBoundary) {
+    // If we're using the GlobalLoadingIndicator, and loading boundary is
+    // enabled, then we wrap the content in Suspense so that we don't propagate
+    // loading promises beyond this ConfigProvider, and instead will keep
+    // this ConfigProvider mounted, so it can render the loading indicator
+    content = <React.Suspense>{content}</React.Suspense>;
+  }
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: cssStyles }} />
-      {/* GlobalActionsProvider may not exist for older host */}
-      {GlobalActionsProvider ? (
-        <GlobalActionsProvider
-          contextName="plasmic-antd5-config-provider"
-          actions={actions}
-        >
-          {children}
-        </GlobalActionsProvider>
-      ) : (
-        children
-      )}
+      {content}
       {!removeLoading && <GlobalLoadingIndicator loadingText={loadingText} />}
     </>
   );
@@ -207,18 +227,46 @@ function warnOutdatedDeps() {
 function GlobalLoadingIndicator(props: { loadingText?: string }) {
   const { loadingText } = props;
   const app = useAppContext();
+
+  const isLoadingRef = React.useRef(false);
+  const isMounted = useIsMounted();
+  const showLoading = React.useCallback(() => {
+    if (isMounted() && isLoadingRef.current) {
+      app.message.open({
+        content: loadingText ?? "Loading...",
+        duration: 0,
+        key: `plasmic-antd5-global-loading-indicator`,
+      });
+    }
+  }, [app, loadingText, isMounted, isLoadingRef]);
+
+  const hideLoading = React.useCallback(() => {
+    // Delay hiding loading message, to avoid quick churns of loading / not loading
+    setTimeout(() => {
+      if (isMounted() && !isLoadingRef.current) {
+        app.message.destroy(`plasmic-antd5-global-loading-indicator`);
+      }
+    }, 500);
+  }, [app, isMounted, isLoadingRef]);
+
   React.useEffect(() => {
     if (addLoadingStateListener) {
+      // Upon mount, we show any loading message that has been queued up before
+      // we were mounted
+      if (isLoadingRef.current) {
+        showLoading();
+      } else {
+        hideLoading();
+      }
       return addLoadingStateListener(
         (isLoading) => {
-          if (isLoading) {
-            app.message.open({
-              content: loadingText ?? "Loading...",
-              duration: 0,
-              key: `plasmic-antd5-global-loading-indicator`,
-            });
-          } else {
-            app.message.destroy(`plasmic-antd5-global-loading-indicator`);
+          isLoadingRef.current = isLoading;
+          if (isMounted()) {
+            if (isLoading) {
+              showLoading();
+            } else {
+              hideLoading();
+            }
           }
         },
         // Disabled immediat because it's creating an infinite rendering
@@ -231,7 +279,7 @@ function GlobalLoadingIndicator(props: { loadingText?: string }) {
         // noop
       };
     }
-  }, [app]);
+  }, [app, isMounted, isLoadingRef, showLoading, hideLoading]);
   return null;
 }
 

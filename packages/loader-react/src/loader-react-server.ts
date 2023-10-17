@@ -23,6 +23,11 @@ export interface InitOptions {
   }[];
   cache?: LoaderBundleCache;
   platform?: "react" | "nextjs" | "gatsby";
+  platformOptions?: {
+    nextjs?: {
+      appDir: boolean;
+    };
+  };
   preview?: boolean;
   host?: string;
   onClientSideFetch?: "warn" | "error";

@@ -1,12 +1,17 @@
-export { usePlasmicDataConfig } from '@plasmicapp/query';
-export { Fetcher, FetcherMeta, FetcherProps } from './components/Fetcher';
-export { useDependencyAwareQuery } from './hooks/useDependencyAwareQuery';
-export { DataOp, executePlasmicDataOp } from './executor';
+export { usePlasmicDataConfig } from "@plasmicapp/query";
+export { Fetcher, FetcherMeta } from "./components/Fetcher";
+export type { FetcherProps } from "./components/Fetcher";
+export { executePlasmicDataOp } from "./executor";
+export type { DataOp } from "./executor";
+export { deriveFieldConfigs, normalizeData } from "./helpers";
+export type { BaseFieldConfig, NormalizedData, QueryResult } from "./helpers";
+export { useDependencyAwareQuery } from "./hooks/useDependencyAwareQuery";
 export {
+  makeCacheKey,
   usePlasmicDataMutationOp,
   usePlasmicDataOp,
-  makeCacheKey,
-} from './hooks/usePlasmicDataOp';
+  usePlasmicInvalidate,
+} from "./hooks/usePlasmicDataOp";
 export type {
   DataSourceSchema,
   ManyRowsResult,
@@ -15,6 +20,4 @@ export type {
   TableFieldSchema,
   TableFieldType,
   TableSchema,
-} from './types';
-export type { QueryResult, NormalizedData, BaseFieldConfig } from './helpers';
-export { normalizeData, deriveFieldConfigs } from './helpers';
+} from "./types";

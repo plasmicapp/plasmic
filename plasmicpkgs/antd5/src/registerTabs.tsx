@@ -1,11 +1,11 @@
-import { Button, Tabs } from "antd";
-import React, { useMemo } from "react";
+import { ActionProps } from "@plasmicapp/host/registerComponent";
+import { Tabs } from "antd";
+import React, { ReactElement, useMemo } from "react";
 import {
   Registerable,
   registerComponentHelper,
   traverseReactEltTree,
 } from "./utils";
-import { ActionProps } from "@plasmicapp/host/registerComponent";
 
 export const tabsComponentName = "plasmic-antd5-tabs";
 export const tabItemComponentName = "plasmic-antd5-tab-item";
@@ -18,27 +18,30 @@ export const AntdTabItem: React.FC<TabItemType> = ({ children }) => {
   return <div>{children}</div>;
 };
 
-function getTabItems(
-  items:
-    | { props: { children: React.ReactElement<TabItemType>[] } }
-    | React.ReactElement<TabItemType>
-): React.ReactElement<TabItemType>[] {
-  if ((items as React.ReactElement<TabItemType>)?.type === AntdTabItem) {
-    return [items as React.ReactElement<TabItemType>];
-  }
-  if (Array.isArray(items?.props?.children)) {
-    return items.props.children.filter((item) => item.type === AntdTabItem);
-  }
-  return [];
+function getTabItems(items: ReactElement): React.ReactElement<TabItemType>[] {
+  return (items?.type as any)?.name == AntdTabItem.name
+    ? [items]
+    : items?.props.children;
+}
+
+function getTabItemKeys(items: ReactElement): string[] {
+  const keys: string[] = [];
+  traverseReactEltTree(items, (elt) => {
+    if (
+      (elt?.type as any)?.name === AntdTabItem.name &&
+      typeof elt?.key === "string"
+    ) {
+      keys.push(`${elt.key}`);
+    }
+  });
+  return keys;
 }
 
 type TabsProps = Omit<
   React.ComponentProps<typeof Tabs>,
   "items" | "animated" | "tabBarExtraContent" | "renderTabBar"
 > & {
-  items:
-    | { props: { children: React.ReactElement<TabItemType>[] } }
-    | React.ReactElement<TabItemType>;
+  items: ReactElement;
   animated: boolean;
   animateTabBar: boolean;
   animateTabContent: boolean;
@@ -83,13 +86,6 @@ export function AntdTabs(props: TabsProps) {
     const tabItems = getTabItems(itemsRaw);
     return tabItems
       .map((currentItem) => {
-        if (
-          !React.isValidElement(currentItem) ||
-          !React.isValidElement(currentItem.props.children)
-        ) {
-          return null;
-        }
-
         return {
           ...currentItem.props,
           key: currentItem.key,
@@ -98,6 +94,7 @@ export function AntdTabs(props: TabsProps) {
       })
       .filter((i) => i != null) as TabItemType[];
   }, [itemsRaw]);
+
   return (
     <Tabs
       className={`${className} ${tabsScopeClassName}`}
@@ -116,7 +113,7 @@ export function AntdTabs(props: TabsProps) {
        */
       renderTabBar={
         sticky && tabPosition === "top"
-          ? (props, DefaultTabBar) => (
+          ? (tabBarProps, DefaultTabBar) => (
               <div
                 style={{
                   zIndex: 1,
@@ -125,7 +122,7 @@ export function AntdTabs(props: TabsProps) {
                 }}
               >
                 <DefaultTabBar
-                  {...props}
+                  {...tabBarProps}
                   style={{ backgroundColor: tabBarBackground }}
                 />
               </div>
@@ -140,12 +137,7 @@ export function AntdTabs(props: TabsProps) {
 }
 
 // function NavigateTabs({ componentProps, studioOps }: ActionProps<any>) {
-//   const tabPanes: string[] = [];
-//   traverseReactEltTree(getTabItems(componentProps.items), (elt) => {
-//     if (elt?.type === AntdTabItem && typeof elt?.key === "string") {
-//       tabPanes.push(elt.key);
-//     }
-//   });
+//   const tabPanes: string[] = getTabItemKeys(componentProps.items);
 //   const buttonStyle = {
 //     width: "100%",
 //     borderColor: "#f3f3f2",
@@ -200,16 +192,6 @@ function OutlineMessage() {
   return <div>* To re-arrange tab panes, use the Outline panel</div>;
 }
 
-function getActiveKeyOptions(props: TabsProps) {
-  const options = new Set<string>();
-  traverseReactEltTree(getTabItems(props.items), (elt) => {
-    if (elt?.type === AntdTabItem && typeof elt?.key === "string") {
-      options.add(elt.key);
-    }
-  });
-  return Array.from(options.keys());
-}
-
 export function registerTabs(loader?: Registerable) {
   registerComponentHelper(loader, AntdTabs, {
     name: tabsComponentName,
@@ -225,7 +207,7 @@ export function registerTabs(loader?: Registerable) {
         uncontrolledProp: "defaultActiveKey",
         type: "choice",
         description: `Initial active tab's key`,
-        options: getActiveKeyOptions,
+        options: (ps) => getTabItemKeys(ps.items),
       },
       animated: {
         type: "boolean",
@@ -411,20 +393,18 @@ export function registerTabs(loader?: Registerable) {
         onClick: ({ componentProps, studioOps }: ActionProps<any>) => {
           // Get the first positive integer that isn't already a key
           const generateNewKey = () => {
-            const keysSet = new Set<string>();
-            traverseReactEltTree(getTabItems(componentProps.items), (elt) => {
-              if (elt?.type === AntdTabItem && typeof elt?.key === "string") {
-                keysSet.add(elt.key);
-              }
-            });
+            const existingKeys = getTabItemKeys(componentProps.items);
 
             for (
               let keyCandidate = 1;
-              keyCandidate <= keysSet.size + 1;
+              keyCandidate <= existingKeys.length + 1;
               keyCandidate++
             ) {
               const strKey = keyCandidate.toString();
-              if (!keysSet.has(strKey)) {
+              const index = existingKeys.findIndex((k) => {
+                return strKey === k;
+              });
+              if (index === -1) {
                 return strKey;
               }
             }
@@ -459,12 +439,7 @@ export function registerTabs(loader?: Registerable) {
         label: "Delete current tab",
         onClick: ({ componentProps, studioOps }: ActionProps<any>) => {
           if (componentProps.activeKey) {
-            const tabPanes: string[] = [];
-            traverseReactEltTree(getTabItems(componentProps.items), (elt) => {
-              if (elt?.type === AntdTabItem && typeof elt?.key === "string") {
-                tabPanes.push(elt!.key!);
-              }
-            });
+            const tabPanes = getTabItemKeys(componentProps.items);
             const activeKey = componentProps.activeKey;
             const currTabPos = tabPanes.findIndex((tabKey) => {
               return tabKey === activeKey;

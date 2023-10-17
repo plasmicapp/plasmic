@@ -7,21 +7,28 @@ export * from "./data";
 export { PlasmicElement } from "./element-types";
 export { registerFetcher as unstable_registerFetcher } from "./fetcher";
 export * from "./global-actions";
+export * from "./link";
+export { ContextDependentConfig, PropType } from "./prop-types";
 export {
   Action,
   ActionProps,
   CodeComponentMeta,
+  CodeComponentMode,
   ComponentHelpers,
   ComponentMeta,
   ComponentRegistration,
   ComponentTemplates,
   default as registerComponent,
-  stateHelpersKeys,
   StateHelpers,
+  stateHelpersKeys,
   StateSpec,
-  CodeComponentMode,
 } from "./registerComponent";
-export { PropType, ContextDependentConfig } from "./prop-types";
+export {
+  CustomFunctionMeta,
+  CustomFunctionRegistration,
+  default as unstable_registerFunction,
+  ParamType,
+} from "./registerFunction";
 export {
   default as registerGlobalContext,
   GlobalContextMeta,
@@ -41,4 +48,3 @@ export {
   TraitRegistration,
 } from "./registerTrait";
 export { default as repeatedElement } from "./repeatedElement";
-export * from "./link";

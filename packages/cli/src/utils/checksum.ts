@@ -30,6 +30,9 @@ function getFilesByFileLockAssetId(
     globalContext: {
       [projectConfig.projectId]: projectConfig.globalContextsFilePath,
     },
+    splitsProvider: {
+      [projectConfig.projectId]: projectConfig.splitsProviderFilePath,
+    },
   } as const;
 }
 
@@ -56,6 +59,7 @@ export function getChecksums(
       globalVariantChecksums: [],
       projectCssChecksum: "",
       globalContextsChecksum: "",
+      splitsProviderChecksum: "",
     };
   }
 
@@ -157,6 +161,20 @@ export function getChecksums(
       ? globalContextsChecksums[0].checksum
       : "";
 
+  const splitsProviderChecksums = fileLocks
+    .filter(
+      (fileLock) =>
+        fileLock.type === "splitsProvider" && fileLock.assetId === projectId
+    )
+    .filter((fileLock) =>
+      checkFile(fileLocations.splitsProvider[fileLock.assetId])
+    );
+  assert(splitsProviderChecksums.length < 2);
+  const splitsProviderChecksum =
+    splitsProviderChecksums.length > 0
+      ? splitsProviderChecksums[0].checksum
+      : "";
+
   return {
     imageChecksums,
     iconChecksums,
@@ -165,5 +183,6 @@ export function getChecksums(
     globalVariantChecksums,
     projectCssChecksum,
     globalContextsChecksum,
+    splitsProviderChecksum,
   };
 }

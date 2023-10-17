@@ -1,25 +1,30 @@
 {
   "name": "@plasmicapp/loader-react",
-  "version": "1.0.296",
+  "version": "1.0.306",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
+  "module": "./dist/index.esm.js",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js"
     },
     "./react-server": {
       "types": "./dist/react-server.d.ts",
-      "default": "./dist/react-server.js"
+      "import": "./dist/react-server.esm.js",
+      "require": "./dist/react-server.js"
     },
     "./react-server-conditional": {
       "react-server": {
         "types": "./dist/react-server.d.ts",
-        "default": "./dist/react-server.js"
+        "import": "./dist/react-server.esm.js",
+        "require": "./dist/react-server.js"
       },
       "default": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
+        "import": "./dist/index.esm.js",
+        "require": "./dist/index.js"
       }
     }
   },
@@ -49,12 +54,12 @@
     "analyze": "size-limit --why"
   },
   "dependencies": {
-    "@plasmicapp/data-sources-context": "0.1.11",
-    "@plasmicapp/host": "1.0.166",
-    "@plasmicapp/loader-core": "1.0.108",
-    "@plasmicapp/loader-splits": "1.0.36",
-    "@plasmicapp/prepass": "1.0.3",
-    "@plasmicapp/query": "0.1.68",
+    "@plasmicapp/data-sources-context": "0.1.17",
+    "@plasmicapp/host": "1.0.173",
+    "@plasmicapp/loader-core": "1.0.115",
+    "@plasmicapp/loader-splits": "1.0.43",
+    "@plasmicapp/prepass": "1.0.9",
+    "@plasmicapp/query": "0.1.74",
     "pascalcase": "^1.0.0",
     "server-only": "0.0.1"
   },

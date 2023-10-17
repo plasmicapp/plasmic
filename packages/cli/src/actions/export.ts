@@ -10,16 +10,17 @@ import {
 } from "../utils/code-utils";
 import {
   CodeConfig,
+  findConfigFile,
   I18NConfig,
   ImagesConfig,
   PlasmicConfig,
   StyleConfig,
-  findConfigFile,
 } from "../utils/config-utils";
 import { getContext, getCurrentOrDefaultAuth } from "../utils/get-context";
 import { tuple } from "../utils/lang-utils";
 import { DEFAULT_GLOBAL_CONTEXTS_NAME } from "./sync-global-contexts";
 import { ensureImageAssetContents } from "./sync-images";
+import { DEFAULT_SPLITS_PROVIDER_NAME } from "./sync-splits-provider";
 
 export interface ExportArgs extends CommonArgs {
   projects: readonly string[];
@@ -130,6 +131,13 @@ export async function exportProjectsCli(opts: ExportArgs): Promise<void> {
       );
     }
 
+    if (bundle.projectConfig.splitsProviderBundle) {
+      writeFile(
+        `${DEFAULT_SPLITS_PROVIDER_NAME}.${extx}`,
+        bundle.projectConfig.splitsProviderBundle.module
+      );
+    }
+
     await Promise.all(promises);
   };
 
@@ -179,6 +187,9 @@ export async function exportProjectsCli(opts: ExportArgs): Promise<void> {
             globalContextsFilePath: bundle.projectConfig.globalContextBundle
               ? `${projectName}/${DEFAULT_GLOBAL_CONTEXTS_NAME}.${extx}`
               : "",
+            splitsProviderFilePath: bundle.projectConfig.splitsProviderBundle
+              ? `${projectName}/${DEFAULT_SPLITS_PROVIDER_NAME}.${extx}`
+              : "",
             components: bundle.components.map((comp) => ({
               id: comp.id,
               name: comp.componentName,
@@ -200,6 +211,15 @@ export async function exportProjectsCli(opts: ExportArgs): Promise<void> {
               componentImportPath: comp.importPath,
               helper: comp.helper,
             })),
+            customFunctionMetas: (bundle.customFunctionMetas ?? []).map(
+              (meta) => ({
+                id: meta.id,
+                name: meta.name,
+                importPath: meta.importPath,
+                defaultExport: meta.defaultExport,
+                namespace: meta.namespace ?? null,
+              })
+            ),
             icons: bundle.iconAssets.map((icon) => ({
               id: icon.id,
               name: icon.name,
@@ -316,6 +336,14 @@ async function exportProjects(api: PlasmicApi, opts: ExportOpts) {
           "."
         );
         proj.projectConfig.globalContextBundle.contextModule = res[1];
+      }
+      if (proj.projectConfig.splitsProviderBundle) {
+        const res = maybeConvertTsxToJsx(
+          `${DEFAULT_SPLITS_PROVIDER_NAME}.tsx`,
+          proj.projectConfig.splitsProviderBundle.module,
+          "."
+        );
+        proj.projectConfig.splitsProviderBundle.module = res[1];
       }
     }
   }

@@ -1,22 +1,28 @@
-import type FS from 'fs';
+import type * as FS from "fs";
 
-let secretRequire: NodeRequire | undefined;
+let secretRequire: ((module: string) => any) | undefined;
 try {
-  // Secretly use require without webpack knowing
-  secretRequire = eval('require');
+  // Secretly use require/import without webpack knowing
+  // eslint-disable-next-line
+  secretRequire = eval("require");
 } catch (err) {
-  secretRequire = undefined;
+  try {
+    // eslint-disable-next-line
+    secretRequire = eval("(module) => import(module)");
+  } catch (err) {
+    secretRequire = undefined;
+  }
 }
 
-export function serverRequire(module: string) {
+export async function serverRequire<T>(module: string): Promise<T> {
   if (!secretRequire) {
     throw new Error(
       `Unexpected serverRequire() -- can only do this from a Node server!`
     );
   }
-  return secretRequire(module);
+  return secretRequire(module) as Promise<T>;
 }
 
-export function serverRequireFs() {
-  return serverRequire('fs') as typeof FS;
+export async function serverRequireFs() {
+  return serverRequire<typeof FS>("fs");
 }

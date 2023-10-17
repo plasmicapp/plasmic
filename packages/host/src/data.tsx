@@ -109,6 +109,7 @@ export function DataProvider({
 }
 
 export interface PageParamsProviderProps {
+  path?: string;
   params?: Record<string, string | string[] | undefined>;
   query?: Record<string, string | string[] | undefined>;
   children?: ReactNode;
@@ -116,22 +117,25 @@ export interface PageParamsProviderProps {
 
 export function PageParamsProvider({
   children,
+  path,
   params = {},
   query = {},
 }: PageParamsProviderProps) {
   const $ctx = useDataEnv() || {};
   return (
-    <DataProvider
-      name={"params"}
-      data={{ ...$ctx.params, ...params }}
-      label={"Page URL path params"}
-    >
+    <DataProvider name={"pagePath"} data={path} label={"Page path"}>
       <DataProvider
-        name={"query"}
-        data={{ ...$ctx.query, ...query }}
-        label={"Page URL query params"}
+        name={"params"}
+        data={{ ...$ctx.params, ...params }}
+        label={"Page URL path params"}
       >
-        {children}
+        <DataProvider
+          name={"query"}
+          data={{ ...$ctx.query, ...query }}
+          label={"Page URL query params"}
+        >
+          {children}
+        </DataProvider>
       </DataProvider>
     </DataProvider>
   );

@@ -61,7 +61,26 @@ const argv = yargs
   })
   .strict()
   .help("h")
-  .alias("h", "help").argv;
+  .alias("h", "help")
+  .check((argv) => {
+    if (
+      argv.scheme === "loader" &&
+      !(argv.platform === "nextjs" || argv.platform === "gatsby")
+    ) {
+      throw new Error(`Loader scheme may only be used with Next.js or Gatsby`);
+    }
+
+    if (
+      argv.appDir &&
+      !(argv.platform === "nextjs" && argv.scheme === "loader")
+    ) {
+      throw new Error(
+        `App dir may only be used with Next.js and loader scheme`
+      );
+    }
+
+    return true;
+  }).argv;
 
 // Initialize Sentry
 Sentry.init({
@@ -79,23 +98,20 @@ Sentry.configureScope((scope) => {
  * @returns
  */
 async function maybePrompt<T>(
-  question: DistinctQuestion<Record<string, T>>,
-  checkCliAnswer = true
+  question: DistinctQuestion<Record<string, unknown>>
 ): Promise<T> {
   const name = ensure(question.name);
   const message = ensure(question.message);
 
-  if (checkCliAnswer) {
-    const cliAnswer = argv[name];
-    if (
-      cliAnswer !== null &&
-      cliAnswer !== undefined &&
-      cliAnswer !== "" &&
-      (!question.validate || question.validate(cliAnswer))
-    ) {
-      console.log(`${message}: ${cliAnswer} (specified in CLI arg)`);
-      return cliAnswer as T; // assume it's the correct type
-    }
+  const cliAnswer = argv[name];
+  if (
+    cliAnswer !== null &&
+    cliAnswer !== undefined &&
+    cliAnswer !== "" &&
+    (!question.validate || question.validate(cliAnswer))
+  ) {
+    console.log(`${message}: ${cliAnswer} (specified in CLI arg)`);
+    return cliAnswer as T; // assume it's the correct type
   }
 
   const ans = await inquirer.prompt<Record<string, T>>(question);
@@ -194,7 +210,9 @@ async function run(): Promise<void> {
 
   // TODO: Support nextjs + codegen
   const platformOptions: PlatformOptions = {};
-  if (platform === "nextjs" && scheme === "loader") {
+  // Don't show app dir question until we have better support for app dir.
+  const showAppDirQuestion = false;
+  if (showAppDirQuestion && platform === "nextjs" && scheme === "loader") {
     platformOptions.nextjs = {
       appDir: await maybePrompt({
         name: "appDir",
@@ -220,36 +238,13 @@ async function run(): Promise<void> {
 
   // Get the projectId
   console.log();
-  let projectId: string | undefined;
-  let firstPrompt = true;
-  while (!projectId) {
-    const rawProjectId = await maybePrompt<string>(
-      {
-        name: "projectId",
-        message: `If you don't have a project yet, create one by going to https://studio.plasmic.app/starters/blank.
+  const projectInput = await maybePrompt<string>({
+    name: "projectId",
+    message: `If you don't have a project yet, create one by going to https://studio.plasmic.app/starters/blank.
 What is the URL of your project?`,
-      },
-      firstPrompt
-    );
-    firstPrompt = false; // avoid infinite loop with an invalid CLI answer
-
-    const matchUrl = rawProjectId.match(
-      /studio\.plasmic\.app\/projects\/([a-z0-9]{5,})(\/|$)/i
-    );
-    if (matchUrl) {
-      projectId = matchUrl[1];
-      continue;
-    }
-
-    // allow passing in a project ID
-    const matchId = rawProjectId.match(/([a-z0-9]{5,})/i);
-    if (matchId) {
-      projectId = matchId[1];
-      continue;
-    }
-
-    console.error(`"${rawProjectId}" is not a valid project URL nor ID.`);
-  }
+    validate: cpa.checkProjectInput,
+  });
+  const projectId = cpa.extractProjectId(projectInput);
 
   // RUN IT
   console.log();

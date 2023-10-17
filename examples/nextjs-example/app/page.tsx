@@ -6,14 +6,12 @@ import { PlasmicComponent } from "@plasmicapp/loader-nextjs";
 export default async function Homepage() {
   return (
     <PlasmicClientRootProvider
-      prefetchedData={
-        await PLASMIC.fetchComponentData(
-          "Layout",
-          "Card",
-          "Card: SSR",
-          "Card: SSG"
-        )
-      }
+      prefetchedData={await PLASMIC.fetchComponentData(
+        "Layout",
+        "Card",
+        "Card: SSR",
+        "Card: SSG"
+      )}
     >
       <PlasmicComponent
         component="Layout"

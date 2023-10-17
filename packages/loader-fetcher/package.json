@@ -1,12 +1,14 @@
 {
-  "version": "1.0.31",
+  "version": "1.0.37",
   "license": "MIT",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
+  "module": "./dist/index.esm.js",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js"
     }
   },
   "files": [

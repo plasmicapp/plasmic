@@ -1,9 +1,9 @@
 import { ComponentMeta, GlobalContextMeta } from "@plasmicapp/host";
-import React, { useContext } from "react";
 import { usePlasmicQueryData } from "@plasmicapp/query";
+import isArray from "lodash/isArray";
+import React, { useContext } from "react";
 
-import L from "lodash";
-import { ProductElement, ReviewResponse, Image } from "./types";
+import { Image, ProductElement, ReviewResponse } from "./types";
 
 export function ensure<T>(x: T | null | undefined): T {
   if (x === null || x === undefined) {
@@ -21,8 +21,9 @@ interface YotpoProps {
   uToken: string;
 }
 
-const CredentialsContext =
-  React.createContext<YotpoProps | undefined>(undefined);
+const CredentialsContext = React.createContext<YotpoProps | undefined>(
+  undefined
+);
 
 export const YotpoCredentialsProviderMeta: GlobalContextMeta<YotpoProps> = {
   name: "Yotpo",
@@ -176,7 +177,6 @@ export function YotpoReviews({
     );
   }
   const data = Object.values(reviewsData).map((item: any) => item);
-  
 
   setControlContextData?.({
     reviews: data[0] || [],
@@ -195,7 +195,7 @@ export function YotpoReviews({
   }
 
   const review = Object.values(reviewsData).flatMap((item: any, i: number) =>
-    (L.isArray(item) ? item : [item]).filter(
+    (isArray(item) ? item : [item]).filter(
       (review: any) => review.id === reviewId
     )
   );
@@ -339,7 +339,7 @@ export function YotpoStarRating({
     );
   }
   const product = Object.values(reviews).flatMap((item: any, i: number) =>
-    (L.isArray(item) ? item : [item]).filter(
+    (isArray(item) ? item : [item]).filter(
       (review: any) => review.id === productId
     )
   );

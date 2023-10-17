@@ -1,25 +1,30 @@
 {
-  "version": "1.0.315",
+  "version": "1.0.327",
   "license": "MIT",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
+  "module": "./dist/index.esm.js",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js"
     },
     "./react-server": {
       "types": "./dist/react-server.d.ts",
-      "default": "./dist/react-server.js"
+      "import": "./dist/react-server.esm.js",
+      "require": "./dist/react-server.js"
     },
     "./react-server-conditional": {
       "react-server": {
         "types": "./dist/react-server.d.ts",
-        "default": "./dist/react-server.js"
+        "import": "./dist/react-server.esm.js",
+        "require": "./dist/react-server.js"
       },
       "default": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
+        "import": "./dist/index.esm.js",
+        "require": "./dist/index.js"
       }
     },
     "./edge": {
@@ -41,7 +46,7 @@
     "build": "yarn build:types && yarn build:index && yarn build:edge && yarn build:react-server",
     "build:types": "yarn tsc",
     "build:index": "node ../../build.mjs ./src/index.tsx --use-client",
-    "build:edge": "node ../../build.mjs ./src/edge.ts",
+    "build:edge": "node ../../build.mjs ./src/edge.ts --no-esm",
     "build:react-server": "node ../../build.mjs ./src/react-server.ts",
     "postbuild": "yarn postbuild:index && yarn postbuild:react-server",
     "postbuild:index": "node ../../print-module-api.js ./packages/loader-nextjs/dist/index.js > index-api.txt",
@@ -74,13 +79,13 @@
   "devDependencies": {
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
-    "next": "^11.0.0"
+    "next": "^13.2.0"
   },
   "dependencies": {
-    "@plasmicapp/loader-core": "1.0.108",
-    "@plasmicapp/loader-edge": "1.0.37",
-    "@plasmicapp/loader-react": "1.0.296",
-    "@plasmicapp/watcher": "1.0.72",
+    "@plasmicapp/loader-core": "1.0.115",
+    "@plasmicapp/loader-edge": "1.0.46",
+    "@plasmicapp/loader-react": "1.0.306",
+    "@plasmicapp/watcher": "1.0.78",
     "server-only": "0.0.1"
   },
   "gitHead": "fa53f7d79f0e26d8b061102fda0c06788da6f8a7"

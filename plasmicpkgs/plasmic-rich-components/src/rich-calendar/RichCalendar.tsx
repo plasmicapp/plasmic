@@ -1,26 +1,27 @@
-import dayjs, { Dayjs } from "dayjs";
+import {
+  deriveFieldConfigs,
+  normalizeData,
+  NormalizedData,
+} from "@plasmicapp/data-sources";
+import { parseDate } from "@plasmicpkgs/luxon-parser";
 import { Badge, Calendar } from "antd";
+import dayjs, { Dayjs } from "dayjs";
+import groupBy from "lodash/groupBy";
 import React, { useMemo } from "react";
-import { isValidIsoDate, parseDate } from "../utils";
 import { BaseColumnConfig, FieldfulProps, RowFunc } from "../field-mappings";
+import { getFieldAggregateValue } from "../formatting";
 import {
   ensure,
   ensureArray,
   isLikeColor,
   isLikeDate,
+  isValidIsoDate,
   maybe,
   mkShortId,
 } from "../utils";
-import {
-  normalizeData,
-  NormalizedData,
-  deriveFieldConfigs,
-} from "@plasmicapp/data-sources";
-import { groupBy } from "lodash";
-import { getFieldAggregateValue } from "../formatting";
 
-import weekday from "dayjs/plugin/weekday";
 import localeData from "dayjs/plugin/localeData";
+import weekday from "dayjs/plugin/weekday";
 
 dayjs.extend(weekday);
 dayjs.extend(localeData);
@@ -48,7 +49,7 @@ interface Event {
 }
 
 function getEventFullDate(date?: string): string | undefined {
-  return parseDate(date)?.toISODate() || undefined;
+  return parseDate(date)?.toISOString() || undefined;
 }
 
 function getEventMonthYear(date?: string): string | undefined {
@@ -216,7 +217,7 @@ const defaultColumnConfig = (): EventsConfig =>
 
 const roles = ["date", "title", "color", "unset"] as const;
 
-export type Role = typeof roles[number];
+export type Role = (typeof roles)[number];
 
 export type EventsConfig = BaseColumnConfig & {
   isEditableExpr: RowFunc<boolean>;

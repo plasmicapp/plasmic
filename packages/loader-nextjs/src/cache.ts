@@ -1,14 +1,15 @@
-import { LoaderBundleOutput } from '@plasmicapp/loader-core';
-import type { InitOptions } from '@plasmicapp/loader-react/react-server-conditional';
-import type { PlasmicRemoteChangeWatcher as Watcher } from '@plasmicapp/watcher';
-import path from 'path';
-import { serverRequire, serverRequireFs } from './server-require';
+import { LoaderBundleOutput } from "@plasmicapp/loader-core";
+import type { InitOptions } from "@plasmicapp/loader-react/react-server-conditional";
+import type * as Watcher from "@plasmicapp/watcher";
+import path from "path";
+import { serverRequire, serverRequireFs } from "./server-require";
+import type { NextInitOptions } from "./shared-exports";
 
 class FileCache {
   constructor(private filePath: string) {}
 
   async get() {
-    const fs = serverRequireFs();
+    const fs = await serverRequireFs();
     try {
       await fs.promises.mkdir(path.dirname(this.filePath), { recursive: true });
       const data = (await fs.promises.readFile(this.filePath)).toString();
@@ -19,7 +20,7 @@ class FileCache {
   }
 
   async set(data: LoaderBundleOutput) {
-    const fs = serverRequireFs();
+    const fs = await serverRequireFs();
     try {
       await fs.promises.writeFile(this.filePath, JSON.stringify(data));
     } catch (err) {
@@ -27,21 +28,23 @@ class FileCache {
     }
   }
 
-  clear() {
-    const fs = serverRequireFs();
+  async clear() {
+    const fs = await serverRequireFs();
     try {
-      fs.unlinkSync(this.filePath);
-    } catch (err) {}
+      fs.promises.unlink(this.filePath);
+    } catch (err) {
+      // noop
+    }
   }
 }
 
 function makeCache(opts: InitOptions) {
-  const cacheDir = path.resolve(process.cwd(), '.next', '.plasmic');
+  const cacheDir = path.resolve(process.cwd(), ".next", ".plasmic");
   const cachePath = path.join(
     cacheDir,
-    `plasmic-${[...opts.projects.map((p) => `${p.id}@${p.version ?? ''}`)]
+    `plasmic-${[...opts.projects.map((p) => `${p.id}@${p.version ?? ""}`)]
       .sort()
-      .join('-')}${opts.preview ? '-preview' : ''}-cache.json`
+      .join("-")}${opts.preview ? "-preview" : ""}-cache.json`
   );
   return new FileCache(cachePath);
 }
@@ -50,15 +53,23 @@ export function initPlasmicLoaderWithCache<
   T extends {
     clearCache(): void;
   }
->(initFn: (opts: InitOptions) => T, opts: InitOptions): T {
-  const isBrowser = typeof window !== 'undefined';
-  const isProd = process.env.NODE_ENV === 'production';
+>(
+  initFn: (opts: InitOptions) => T,
+  { nextNavigation, ...opts }: NextInitOptions
+): T {
+  const isBrowser = typeof window !== "undefined";
+  const isProd = process.env.NODE_ENV === "production";
   const cache = isBrowser || isProd ? undefined : makeCache(opts);
   const loader = initFn({
-    onClientSideFetch: 'warn',
+    onClientSideFetch: "warn",
     ...opts,
     cache,
-    platform: 'nextjs',
+    platform: "nextjs",
+    platformOptions: {
+      nextjs: {
+        appDir: !!nextNavigation,
+      },
+    },
     // For Nextjs 12, revalidate may in fact re-use an existing instance
     // of PlasmicComponentLoader that's already in memory, so we need to
     // make sure we don't re-use the data cached in memory.
@@ -81,39 +92,42 @@ export function initPlasmicLoaderWithCache<
 
   if (cache) {
     if (!isProd) {
-      if (process.env.PLASMIC_WATCHED !== 'true') {
-        process.env.PLASMIC_WATCHED = 'true';
-        console.log(`Subscribing to Plasmic changes...`);
+      if (process.env.PLASMIC_WATCHED !== "true") {
+        (async () => {
+          process.env.PLASMIC_WATCHED = "true";
+          console.log(`Subscribing to Plasmic changes...`);
 
-        // Import using serverRequire, so webpack doesn't bundle us into client bundle
-        try {
-          const PlasmicRemoteChangeWatcher = serverRequire('@plasmicapp/watcher')
-            .PlasmicRemoteChangeWatcher as typeof Watcher;
-          const watcher = new PlasmicRemoteChangeWatcher({
-            projects: opts.projects,
-            host: opts.host,
-          });
+          // Import using serverRequire, so webpack doesn't bundle us into client bundle
+          try {
+            const PlasmicRemoteChangeWatcher = (
+              await serverRequire<typeof Watcher>("@plasmicapp/watcher")
+            ).PlasmicRemoteChangeWatcher;
+            const watcher = new PlasmicRemoteChangeWatcher({
+              projects: opts.projects,
+              host: opts.host,
+            });
 
-          const clearCache = () => {
-            cache.clear();
-            loader.clearCache();
-          };
+            const clearCache = () => {
+              cache.clear();
+              loader.clearCache();
+            };
 
-          watcher.subscribe({
-            onUpdate: () => {
-              if (opts.preview) {
-                clearCache();
-              }
-            },
-            onPublish: () => {
-              if (!opts.preview) {
-                clearCache();
-              }
-            },
-          });
-        } catch (e) {
-          console.warn("Couldn't subscribe to Plasmic changes", e);
-        }
+            watcher.subscribe({
+              onUpdate: () => {
+                if (opts.preview) {
+                  clearCache();
+                }
+              },
+              onPublish: () => {
+                if (!opts.preview) {
+                  clearCache();
+                }
+              },
+            });
+          } catch (e) {
+            console.warn("Couldn't subscribe to Plasmic changes", e);
+          }
+        })();
       }
     } else {
       cache.clear();

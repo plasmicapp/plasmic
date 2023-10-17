@@ -1,15 +1,17 @@
 import {
   getPlasmicAppUser,
   getPlasmicAppUserFromToken,
+  PlasmicUser,
 } from '@plasmicapp/auth-api';
 import { useMutablePlasmicQueryData } from '@plasmicapp/query';
 
 interface PlasmicAuthData {
-  user: any;
+  user: PlasmicUser | null;
   token: string | null;
 }
 
-const STORAGE_USER_KEY = 'plasmic_user';
+const storageUserKey = (appId: string) => `$user.${appId}`;
+
 const isBrowser = typeof window !== 'undefined';
 
 function getCallbackParams() {
@@ -83,7 +85,7 @@ async function handleCallback(opts: {
     return undefined;
   }
 
-  localStorage.setItem(STORAGE_USER_KEY, result.token);
+  localStorage.setItem(storageUserKey(appId), result.token);
 
   if (!isContinueToSameLocation(continueTo)) {
     window.location.assign(continueTo);
@@ -95,11 +97,12 @@ async function handleCallback(opts: {
 }
 
 async function checkAlreadyLoggedUser(opts: {
+  appId: string;
   host?: string;
 }): Promise<PlasmicAuthData> {
-  const { host } = opts;
+  const { appId, host } = opts;
 
-  const token = localStorage.getItem(STORAGE_USER_KEY);
+  const token = localStorage.getItem(storageUserKey(appId));
   if (!token) {
     return { user: null, token: null };
   }
@@ -112,7 +115,7 @@ async function checkAlreadyLoggedUser(opts: {
   if (error) {
     // If there is an error, we just remove the token
     // But ideally we should check if the reason is token expired
-    localStorage.removeItem(STORAGE_USER_KEY);
+    localStorage.removeItem(storageUserKey(appId));
     console.log(`Error while checking logged user`);
     return { user: null, token: null };
   }
@@ -175,6 +178,7 @@ export function usePlasmicAuth(opts: { host?: string; appId?: string }) {
           }
         } else {
           return await checkAlreadyLoggedUser({
+            appId,
             host,
           });
         }

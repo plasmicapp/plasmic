@@ -65,6 +65,7 @@ const simpleChartMeta: ComponentMeta<SimpleChartProps> = {
     title: "string",
     interactive: {
       type: "boolean",
+      defaultValueHint: true,
     },
     // Bar chart
     direction: {
@@ -74,11 +75,11 @@ const simpleChartMeta: ComponentMeta<SimpleChartProps> = {
         label: dir[0].toUpperCase() + dir.slice(1),
       })),
       defaultValueHint: "Vertical",
-      hidden: (props) => props.type !== "bar",
+      hidden: ({ type = "bar" }) => type !== "bar",
     },
     stacked: {
       type: "boolean",
-      hidden: (props) => props.type !== "bar",
+      hidden: ({ type = "bar" }) => type !== "bar",
     },
     // Line chart
     fill: {

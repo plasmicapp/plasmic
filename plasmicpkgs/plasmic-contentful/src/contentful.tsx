@@ -204,6 +204,7 @@ export function ContentfulFetcher({
 }: ContentfulFetcherProps) {
   const creds = ensure(useContext(CredentialsContext));
   const cacheKey = JSON.stringify({
+    include,
     limit,
     filterField,
     filterValue,

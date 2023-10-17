@@ -1,20 +1,27 @@
-bower_components/
-node_modules/
-**/.idea/workspace.xml
-*.pyc
+**/*.swp
 **/.idea/libraries/Generated_files.xml
 **/.idea/sqldialects.xml
-.ipynb_checkpoints/
-# Typedoc output
-/sub/typedoc/
-/sub/typedoc-*/
-/sub/typedoc.json
-/sub/typedoc.json.gz
-.cache-loader/
-.DS_Store
+**/.idea/workspace.xml
+# Local .terraform directories
+**/.terraform/*
 **/.vscode/
-**/*.swp
+*.pyc
+# .tfstate files
+*.tfstate
+*.tfstate.*
+.DS_Store
 .cache
-.idea
+.cache-loader/
+.direnv
 .env
+.idea
+.ipynb_checkpoints/
+.venv/
 /.direnv/
+# Typedoc output
+/platform/sub/typedoc-*/
+/platform/sub/typedoc.json
+/platform/sub/typedoc.json.gz
+/platform/sub/typedoc/
+bower_components/
+node_modules/

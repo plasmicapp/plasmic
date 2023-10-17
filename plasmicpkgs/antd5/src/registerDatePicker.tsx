@@ -1,7 +1,7 @@
 import { DatePicker } from "antd";
-import React, { useEffect, useState } from "react";
-import { capitalize, Registerable, registerComponentHelper } from "./utils";
 import dayjs, { Dayjs } from "dayjs";
+import React, { useState } from "react";
+import { capitalize, Registerable, registerComponentHelper } from "./utils";
 
 /**
  * onChangeIsoString uses ISO strings rather than dayjs.
@@ -76,13 +76,21 @@ export function AntdDatePicker(
 
 export const datePickerComponentName = "plasmic-antd5-date-picker";
 
+export const datePickerHelpers = {
+  states: {
+    value: {
+      onChangeArgsToValue: (value: string) => (value ? value : undefined),
+    },
+  },
+};
+
 export function registerDatePicker(loader?: Registerable) {
   registerComponentHelper(loader, AntdDatePicker, {
     name: datePickerComponentName,
     displayName: "Date/Time Picker",
     props: {
       value: {
-        type: "string",
+        type: "dateString",
         editOnly: true,
         uncontrolledProp: "defaultValue",
         description:
@@ -203,7 +211,13 @@ export function registerDatePicker(loader?: Registerable) {
         valueProp: "value",
         onChangeProp: "onChange",
         variableType: "text",
+        ...datePickerHelpers.states.value,
       },
+    },
+    componentHelpers: {
+      helpers: datePickerHelpers,
+      importName: "datePickerHelpers",
+      importPath: "@plasmicpkgs/antd5/skinny/registerDatePicker",
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerDatePicker",
     importName: "AntdDatePicker",

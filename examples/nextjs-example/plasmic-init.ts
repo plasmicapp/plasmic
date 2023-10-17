@@ -1,6 +1,8 @@
 import { initPlasmicLoader } from "@plasmicapp/loader-nextjs/react-server-conditional";
+import * as NextNavigation from "next/navigation";
 
 export const PLASMIC = initPlasmicLoader({
+  nextNavigation: NextNavigation,
   projects: [
     {
       id: "961Dap539VqK6ewnrYwsre",

@@ -8,6 +8,11 @@ export interface FetcherOptions {
   }[];
   cache?: LoaderBundleCache;
   platform?: "react" | "nextjs" | "gatsby";
+  platformOptions?: {
+    nextjs?: {
+      appDir: boolean;
+    };
+  };
   preview?: boolean;
   host?: string;
   /**
@@ -77,6 +82,7 @@ export class PlasmicModulesFetcher {
       ),
       {
         platform: this.opts.platform,
+        platformOptions: this.opts.platformOptions,
         preview: this.opts.preview,
         i18nKeyScheme: this.opts.i18n?.keyScheme ?? this.opts.i18nKeyScheme,
         i18nTagPrefix: this.opts.i18n?.tagPrefix,

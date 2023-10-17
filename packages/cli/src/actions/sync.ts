@@ -22,25 +22,23 @@ import {
 } from "../utils/code-utils";
 import {
   CONFIG_FILE_NAME,
-  PlasmicContext,
   createProjectConfig,
+  CustomFunctionConfig,
   getOrAddProjectConfig,
   getOrAddProjectLock,
+  PlasmicContext,
   updateConfig,
 } from "../utils/config-utils";
 import { HandledError } from "../utils/error";
 import {
   assertAllPathsInRootDir,
   defaultResourcePath,
-  existsBuffered,
-  readFileText,
   renameFile,
   stripExtension,
   withBufferedFs,
   writeFileContent,
-  writeFileText,
 } from "../utils/file-utils";
-import { Metadata, generateMetadata, getContext } from "../utils/get-context";
+import { generateMetadata, getContext, Metadata } from "../utils/get-context";
 import { printFirstSyncInfo } from "../utils/help";
 import { ensure, tuple } from "../utils/lang-utils";
 import {
@@ -58,6 +56,7 @@ import { syncGlobalContexts } from "./sync-global-contexts";
 import { syncGlobalVariants } from "./sync-global-variants";
 import { syncProjectIconAssets } from "./sync-icons";
 import { syncProjectImageAssets } from "./sync-images";
+import { syncSplitsProvider } from "./sync-splits-provider";
 import { upsertStyleTokens } from "./sync-styles";
 
 export interface SyncArgs extends CommonArgs {
@@ -604,6 +603,11 @@ async function syncProject(
     indirect
   );
   syncCodeComponentsMeta(context, projectId, projectBundle.codeComponentMetas);
+  await syncCustomFunctionsMeta(
+    context,
+    projectId,
+    projectBundle.customFunctionMetas
+  );
   await upsertStyleTokens(
     context,
     projectBundle.usedTokens,
@@ -771,6 +775,15 @@ async function syncProjectConfig(
     baseDir
   );
 
+  await syncSplitsProvider(
+    context,
+    projectBundle,
+    projectConfig,
+    projectLock,
+    checksums,
+    baseDir
+  );
+
   // Write out components
   await syncProjectComponents(
     context,
@@ -805,5 +818,20 @@ function syncCodeComponentsMeta(
           },
         }
       : {}),
+  }));
+}
+
+function syncCustomFunctionsMeta(
+  context: PlasmicContext,
+  projectId: string,
+  customFunctionBundles: CustomFunctionConfig[]
+) {
+  const projectConfig = getOrAddProjectConfig(context, projectId);
+  projectConfig.customFunctions = customFunctionBundles.map((meta) => ({
+    defaultExport: meta.defaultExport,
+    id: meta.id,
+    importPath: meta.importPath,
+    name: meta.name,
+    namespace: meta.namespace ?? null,
   }));
 }
