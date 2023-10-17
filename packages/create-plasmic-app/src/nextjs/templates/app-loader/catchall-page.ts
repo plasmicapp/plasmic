@@ -34,6 +34,7 @@ export default async function PlasmicLoaderPage({
   return (
     <ClientPlasmicRootProvider
       prefetchedData={prefetchedData}
+      pageRoute={pageMeta.path}
       pageParams={pageMeta.params}
       pageQuery={searchParams}
     >

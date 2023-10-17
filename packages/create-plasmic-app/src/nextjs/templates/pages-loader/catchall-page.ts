@@ -32,6 +32,7 @@ export default function PlasmicLoaderPage(props${ifTs(
       loader={PLASMIC}
       prefetchedData={plasmicData}
       prefetchedQueryData={queryCache}
+      pageRoute={pageMeta.path}
       pageParams={pageMeta.params}
       pageQuery={router.query}
     >
@@ -57,6 +58,7 @@ export const getStaticProps${ifTs(
     <PlasmicRootProvider
       loader={PLASMIC}
       prefetchedData={plasmicData}
+      pageRoute={pageMeta.path}
       pageParams={pageMeta.params}
     >
       <PlasmicComponent component={pageMeta.displayName} />
