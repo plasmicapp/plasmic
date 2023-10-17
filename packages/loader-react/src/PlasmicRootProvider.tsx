@@ -124,6 +124,11 @@ export function PlasmicRootProvider(
     Link?: React.ComponentType<any>;
 
     /**
+     * Page route without params substitution (e.g. /products/[slug]).
+     */
+    pageRoute?: string;
+
+    /**
      * Page path parameters (e.g. {slug: "foo"} if page path is
      * /products/[slug] and URI is /products/foo).
      */
@@ -157,6 +162,7 @@ export function PlasmicRootProvider(
     translator,
     Head,
     Link,
+    pageRoute,
     pageParams,
     pageQuery,
     suspenseFallback,
@@ -251,7 +257,11 @@ export function PlasmicRootProvider(
             skipFonts={skipFonts}
           />
         )}
-        <PageParamsProvider params={pageParams} query={pageQuery}>
+        <PageParamsProvider
+          route={pageRoute}
+          params={pageParams}
+          query={pageQuery}
+        >
           {children}
         </PageParamsProvider>
       </PlasmicRootContext.Provider>
