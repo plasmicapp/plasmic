@@ -167,6 +167,7 @@ module.exports = {
         "no-inner-declarations": "off",
         "@typescript-eslint/ban-types": "warn",
         "@typescript-eslint/no-empty-function": "warn",
+        "@typescript-eslint/no-non-null-asserted-optional-chain": "warn",
         "import/no-extraneous-dependencies": [
           "error",
           {
