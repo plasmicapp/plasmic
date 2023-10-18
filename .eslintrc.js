@@ -126,6 +126,8 @@ module.exports = {
     "no-var": "error",
     "no-constant-condition": ["error", { checkLoops: false }],
     "no-empty": ["error", { allowEmptyCatch: true }],
+    "@typescript-eslint/no-empty-function": "off",
+    "prefer-spread": "off",
   },
   env: {
     es6: true,
