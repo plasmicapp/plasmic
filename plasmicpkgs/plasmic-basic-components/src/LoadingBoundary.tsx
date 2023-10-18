@@ -1,9 +1,10 @@
+import { DataProvider, useDataEnv } from "@plasmicapp/host";
 import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { DataProvider, useDataEnv } from "@plasmicapp/host";
 import * as plasmicQuery from "@plasmicapp/query";
 import React, { Suspense, useState } from "react";
+import { useIsomorphicLayoutEffect } from "./common";
 
 interface LoadingBoundaryProps {
   loadingState?: React.ReactNode;
@@ -17,13 +18,8 @@ if (reactMajorVersion < 18) {
   console.warn("The LoadingBoundary component only works with React 18+");
 }
 
-export const isBrowser = typeof window !== "undefined";
 const enableLoadingBoundaryKey = "plasmicInternalEnableLoadingBoundary";
 const hasLoadingBoundaryKey = "plasmicInternalHasLoadingBoundary";
-
-export const useIsomorphicLayoutEffect = isBrowser
-  ? React.useLayoutEffect
-  : React.useEffect;
 
 function useIsClient() {
   const [loaded, setLoaded] = useState(false);

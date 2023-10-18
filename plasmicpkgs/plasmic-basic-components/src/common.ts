@@ -1,3 +1,8 @@
+import { default as registerGlobalContext } from "@plasmicapp/host/registerGlobalContext";
+import React from "react";
+
+console.log(typeof registerGlobalContext);
+
 export const tuple = <T extends any[]>(...args: T): T => args;
 
 export function ensure<T>(x: T | null | undefined): T {
@@ -8,3 +13,9 @@ export function ensure<T>(x: T | null | undefined): T {
     return x;
   }
 }
+
+export const isBrowser = typeof window !== "undefined";
+
+export const useIsomorphicLayoutEffect = isBrowser
+  ? React.useLayoutEffect
+  : React.useEffect;
