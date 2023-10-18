@@ -108,9 +108,30 @@ export function DataProvider({
   }
 }
 
+/**
+ * This transforms `{ "...slug": "a/b/c" }` into `{ "slug": ["a", "b", "c"] }.
+ */
+function fixCatchallParams(
+  params: Record<string, string | string[] | undefined>
+) {
+  const newParams: Record<string, string | string[]> = {};
+  for (const [key, value] of Object.entries(params)) {
+    if (!value) {
+      continue;
+    }
+    if (key.startsWith("...")) {
+      newParams[key.slice(3)] =
+        typeof value === "string" ? value.split("/") : value;
+    } else {
+      newParams[key] = value;
+    }
+  }
+  return newParams;
+}
+
 function mkPathFromRouteAndParams(
   route: string,
-  params: Record<string, string | string[] | undefined> | undefined
+  params: Record<string, string | string[] | undefined>
 ) {
   if (!params) {
     return route;
@@ -158,6 +179,7 @@ export function PageParamsProvider({
   query = {},
 }: PageParamsProviderProps) {
   route = route ?? deprecatedRoute;
+  params = fixCatchallParams(params);
   const $ctx = useDataEnv() || {};
   const path = route ? mkPathFromRouteAndParams(route, params) : undefined;
   return (
