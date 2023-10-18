@@ -1,7 +1,7 @@
 import {
   deriveFieldConfigs,
-  normalizeData,
   NormalizedData,
+  useNormalizedData,
 } from "@plasmicapp/data-sources";
 import { parseDate } from "@plasmicpkgs/luxon-parser";
 import { Badge, Calendar } from "antd";
@@ -93,7 +93,7 @@ export function RichCalendar(props: RichCalendarProps) {
     monthFullCellRender,
     ...rest
   } = props;
-  const data = normalizeData(rawData);
+  const data = useNormalizedData(rawData);
 
   const { normalized, finalRoles: roleConfigs } = useRoleDefinitions(
     data,

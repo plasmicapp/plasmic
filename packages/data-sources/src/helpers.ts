@@ -1,10 +1,11 @@
+import { useMemo } from "react";
 import {
   ManyRowsResult,
   TableFieldSchema,
   TableFieldType,
   TableSchema,
-} from './types';
-import { mkIdMap, withoutNils } from './utils';
+} from "./types";
+import { mkIdMap, withoutNils } from "./utils";
 
 export type QueryResult = Partial<ManyRowsResult<any>> & {
   error?: any;
@@ -32,8 +33,14 @@ export function normalizeData(rawData: unknown): NormalizedData | undefined {
   return { data: dataArray, schema };
 }
 
+export function useNormalizedData(
+  rawData: unknown
+): NormalizedData | undefined {
+  return useMemo(() => normalizeData(rawData), [rawData]);
+}
+
 function tryGetDataArray(rawData: unknown): any[] | undefined {
-  if (rawData == null || typeof rawData !== 'object') {
+  if (rawData == null || typeof rawData !== "object") {
     return undefined;
   }
 
@@ -50,7 +57,7 @@ function tryGetDataArray(rawData: unknown): any[] | undefined {
     return undefined;
   }
 
-  if ('data' in rawData && typeof (rawData as any).data === 'object') {
+  if ("data" in rawData && typeof (rawData as any).data === "object") {
     if (
       Array.isArray((rawData as any).data) &&
       isArrayOfObjects((rawData as any).data)
@@ -62,7 +69,7 @@ function tryGetDataArray(rawData: unknown): any[] | undefined {
       return undefined;
     }
   }
-  if ('isLoading' in rawData || 'error' in rawData) {
+  if ("isLoading" in rawData || "error" in rawData) {
     return undefined;
   }
 
@@ -71,24 +78,24 @@ function tryGetDataArray(rawData: unknown): any[] | undefined {
 }
 
 function isArrayOfObjects(arr: unknown[]) {
-  return arr.every((x) => typeof x === 'object' && !Array.isArray(x));
+  return arr.every((x) => typeof x === "object" && !Array.isArray(x));
 }
 
 function tryGetSchema(data: any[]): TableSchema | undefined {
   const fieldMap: Record<string, TableFieldType> = {};
   data.forEach((entry: any) => {
-    if (entry && typeof entry === 'object') {
+    if (entry && typeof entry === "object") {
       Array.from(Object.entries(entry)).forEach(([k, v]) => {
         const inferredType: TableFieldType =
-          typeof v === 'string'
-            ? 'string'
-            : typeof v === 'boolean'
-            ? 'boolean'
-            : typeof v === 'number'
-            ? 'number'
-            : 'unknown';
+          typeof v === "string"
+            ? "string"
+            : typeof v === "boolean"
+            ? "boolean"
+            : typeof v === "number"
+            ? "number"
+            : "unknown";
         if (fieldMap[k] && fieldMap[k] !== inferredType) {
-          fieldMap[k] = 'unknown';
+          fieldMap[k] = "unknown";
         } else {
           fieldMap[k] = inferredType;
         }
@@ -96,7 +103,7 @@ function tryGetSchema(data: any[]): TableSchema | undefined {
     }
   });
   return {
-    id: 'inferred',
+    id: "inferred",
     fields: Object.entries(fieldMap).map(([f, t]) => ({
       id: f,
       type: t,

@@ -1,5 +1,10 @@
 import { EllipsisOutlined, PlusOutlined } from "@ant-design/icons";
 import { ActionType, ProColumns, ProTable } from "@ant-design/pro-components";
+import {
+  deriveFieldConfigs,
+  NormalizedData,
+  useNormalizedData,
+} from "@plasmicapp/data-sources";
 import { Button, Dropdown } from "antd";
 import type { SizeType } from "antd/es/config-provider/SizeContext";
 import type { GetRowKey } from "antd/es/table/interface";
@@ -14,18 +19,13 @@ import {
   RowFunc,
 } from "../field-mappings";
 import {
-  normalizeData,
-  NormalizedData,
-  deriveFieldConfigs,
-} from "@plasmicapp/data-sources";
-import { renderValue } from "../formatting";
-import {
   deriveKeyOfRow,
   deriveRowKey,
   renderActions,
   RowAction,
   useSortedFilteredData,
 } from "../field-react-utils";
+import { renderValue } from "../formatting";
 import { ErrorBoundary, isInteractable, mkShortId } from "../utils";
 
 // Avoid csv-stringify, it doesn't directly work in browser without Buffer polyfill.
@@ -101,7 +101,7 @@ export function RichTable(props: RichTableProps) {
     scopeClassName,
   } = props;
 
-  const data = normalizeData(rawData);
+  const data = useNormalizedData(rawData);
 
   const { columnDefinitions, normalized } = useColumnDefinitions(data, props);
 

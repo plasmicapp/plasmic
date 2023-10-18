@@ -3,7 +3,11 @@ export { Fetcher, FetcherMeta } from "./components/Fetcher";
 export type { FetcherProps } from "./components/Fetcher";
 export { executePlasmicDataOp } from "./executor";
 export type { DataOp } from "./executor";
-export { deriveFieldConfigs, normalizeData } from "./helpers";
+export {
+  deriveFieldConfigs,
+  normalizeData,
+  useNormalizedData,
+} from "./helpers";
 export type { BaseFieldConfig, NormalizedData, QueryResult } from "./helpers";
 export { useDependencyAwareQuery } from "./hooks/useDependencyAwareQuery";
 export {

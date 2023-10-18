@@ -1,15 +1,22 @@
 import { ActionType } from "@ant-design/pro-components";
+import {
+  deriveFieldConfigs,
+  NormalizedData,
+  useNormalizedData,
+} from "@plasmicapp/data-sources";
+import { Card, Input, List, Tag } from "antd";
 import type { GetRowKey } from "antd/es/table/interface";
+import classNames from "classnames";
+import groupBy from "lodash/groupBy";
 import React, { ReactNode, useRef } from "react";
 import { BaseColumnConfig, FieldfulProps, RowFunc } from "../field-mappings";
 import {
-  normalizeData,
-  NormalizedData,
-  deriveFieldConfigs,
-} from "@plasmicapp/data-sources";
+  deriveKeyOfRow,
+  deriveRowKey,
+  renderActions,
+  useSortedFilteredData,
+} from "../field-react-utils";
 import { maybeRenderString, multiRenderValue } from "../formatting";
-import { Card, Input, List, Tag } from "antd";
-import classNames from "classnames";
 import {
   ensure,
   ensureArray,
@@ -18,13 +25,6 @@ import {
   maybe,
   mkShortId,
 } from "../utils";
-import groupBy from "lodash/groupBy";
-import {
-  deriveKeyOfRow,
-  deriveRowKey,
-  renderActions,
-  useSortedFilteredData,
-} from "../field-react-utils";
 
 // Avoid csv-stringify, it doesn't directly work in browser without Buffer polyfill.
 
@@ -164,7 +164,7 @@ export function RichList(props: RichListProps) {
     ...rest
   } = props;
 
-  const data = normalizeData(rawData);
+  const data = useNormalizedData(rawData);
 
   const { normalized, finalRoles: roleConfigs } = useRoleDefinitions(
     data,
@@ -412,7 +412,7 @@ const roles = [
   "unset",
 ] as const;
 
-export type Role = typeof roles[number];
+export type Role = (typeof roles)[number];
 
 export type ListColumnConfig = BaseColumnConfig & {
   isEditableExpr: RowFunc<boolean>;

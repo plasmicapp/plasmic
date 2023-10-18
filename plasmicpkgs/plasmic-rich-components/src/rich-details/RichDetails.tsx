@@ -1,11 +1,11 @@
-import React from "react";
-import { BaseColumnConfig, FieldfulProps } from "../field-mappings";
 import {
-  NormalizedData,
-  normalizeData,
   deriveFieldConfigs,
+  NormalizedData,
+  useNormalizedData,
 } from "@plasmicapp/data-sources";
 import { Descriptions, Empty } from "antd";
+import React from "react";
+import { BaseColumnConfig, FieldfulProps } from "../field-mappings";
 import { renderValue } from "../formatting";
 import { mkShortId } from "../utils";
 
@@ -25,7 +25,7 @@ export function RichDetails(props: RichDetailsProps) {
     layout,
     column = 2,
   } = props;
-  const data = normalizeData(rawData);
+  const data = useNormalizedData(rawData);
   const { columnDefinitions } = useColumnDefinitions(data, props);
   if (!data || !data.data?.[0]) {
     return <Empty className={className} image={Empty.PRESENTED_IMAGE_SIMPLE} />;
