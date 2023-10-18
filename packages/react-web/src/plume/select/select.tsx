@@ -305,7 +305,7 @@ export function useSelect<P extends BaseSelectProps, C extends AnyPlasmicClass>(
     isDisabled,
   });
 
-  const triggerContent = state.selectedItem.value
+  const triggerContent = state.selectedItem?.value
     ? selectedContent ?? getChildProp(state.selectedItem.value, "children")
     : null;
 
