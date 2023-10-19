@@ -1,8 +1,8 @@
+import { CodeComponentMeta } from "@plasmicapp/host";
+import { DialogProps } from "@radix-ui/react-dialog";
 import * as React from "react";
 import { ReactElement, ReactNode, useState } from "react";
 import { omit, pick } from "remeda";
-import { CodeComponentMeta } from "@plasmicapp/host";
-import { DialogProps } from "@radix-ui/react-dialog";
 
 const DEBUG_SLOWDOWN = 1;
 
@@ -14,7 +14,7 @@ export const enterAnims = [
   "slide-in-from-bottom",
   "slide-in-from-left",
 ] as const;
-export type EnterAnim = typeof enterAnims[number];
+export type EnterAnim = (typeof enterAnims)[number];
 export const exitAnims = [
   "fade-out",
   "zoom-exit",
@@ -23,7 +23,7 @@ export const exitAnims = [
   "slide-out-to-bottom",
   "slide-out-to-left",
 ] as const;
-export type ExitAnim = typeof exitAnims[number];
+export type ExitAnim = (typeof exitAnims)[number];
 export type AnimName = EnterAnim | ExitAnim;
 
 // https://github.com/reactwg/react-18/discussions/111#discussioncomment-1517837
@@ -172,13 +172,12 @@ export const animPropTypes = ({
 }: {
   defaultEnterAnimations?: (ps: any) => EnterAnim[];
   defaultExitAnimations?: (ps: any) => ExitAnim[];
-  // Need to work around the typescript v3 or v4 used in root public-packages via tsdx
-}): any => {
+}): CodeComponentMeta<AnimatedProps>["props"] => {
   const getEnterAnimations = (ps: any) =>
-    ps.enterAnimations ?? defaultEnterAnimations;
+    ps.enterAnimations ?? defaultEnterAnimations?.(ps);
   const getExitAnimations = (ps: any) =>
-    ps.exitAnimations ?? defaultExitAnimations;
-  const props: CodeComponentMeta<AnimatedProps>["props"] = {
+    ps.exitAnimations ?? defaultExitAnimations?.(ps);
+  return {
     enterAnimations: {
       type: "choice",
       options: mungeNames(enterAnims),
@@ -202,6 +201,7 @@ export const animPropTypes = ({
     },
     exitTranslateX: {
       type: "string",
+      advanced: true,
       defaultValueHint: "100%",
       hidden: (ps) =>
         !getExitAnimations(ps)?.includes("slide-out-to-right") &&
@@ -209,6 +209,7 @@ export const animPropTypes = ({
     },
     enterTranslateY: {
       type: "string",
+      advanced: true,
       defaultValueHint: "100%",
       hidden: (ps) =>
         !getEnterAnimations(ps)?.includes("slide-in-from-bottom") &&
@@ -216,6 +217,7 @@ export const animPropTypes = ({
     },
     exitTranslateY: {
       type: "string",
+      advanced: true,
       defaultValueHint: "100%",
       hidden: (ps) =>
         !getExitAnimations(ps)?.includes("slide-out-to-bottom") &&
@@ -223,21 +225,25 @@ export const animPropTypes = ({
     },
     enterOpacity: {
       type: "number",
+      advanced: true,
       defaultValueHint: 0,
       hidden: (ps) => !getEnterAnimations(ps)?.includes("fade-in"),
     },
     exitOpacity: {
       type: "number",
+      advanced: true,
       defaultValueHint: 0,
       hidden: (ps) => !getExitAnimations(ps)?.includes("fade-out"),
     },
     enterScale: {
       type: "number",
+      advanced: true,
       defaultValueHint: 0.95,
       hidden: (ps) => !getEnterAnimations(ps)?.includes("zoom-enter"),
     },
     exitScale: {
       type: "number",
+      advanced: true,
       defaultValueHint: 0.95,
       hidden: (ps) => !getExitAnimations(ps)?.includes("zoom-exit"),
     },
@@ -260,7 +266,6 @@ export const animPropTypes = ({
       } as any),
     },
   };
-  return props;
 };
 
 export const overlayStates = {
@@ -280,41 +285,37 @@ export const overlayProps = ({
   defaultSlotContent: any;
   triggerSlotName: string;
   openDisplay?: string;
-  // Need to work around the typescript v3 or v4 used in root public-packages via tsdx
-}): any => {
-  const props: CodeComponentMeta<DialogProps>["props"] = {
-    open: {
-      type: "boolean",
-      displayName: openDisplay,
-      editOnly: true,
-      uncontrolledProp: "defaultOpen",
-    },
-    modal: {
-      type: "boolean",
-      advanced: true,
-      description:
-        "Disable interaction with outside elements. Only popover content will be visible to screen readers.",
-    },
-    onOpenChange: {
-      type: "eventHandler",
-      argTypes: [
-        {
-          type: "boolean",
-          name: "open",
-        },
-      ],
-    },
-    [triggerSlotName]: {
-      type: "slot",
-      defaultValue: [defaultSlotContent],
-      ...({
-        mergeWithParent: true,
-      } as any),
-    },
-    themeResetClass: { type: "themeResetClass" },
-  };
-  return props;
-};
+}): CodeComponentMeta<DialogProps>["props"] => ({
+  open: {
+    type: "boolean",
+    displayName: openDisplay,
+    editOnly: true,
+    uncontrolledProp: "defaultOpen",
+  },
+  modal: {
+    type: "boolean",
+    advanced: true,
+    description:
+      "Disable interaction with outside elements. Only popover content will be visible to screen readers.",
+  },
+  onOpenChange: {
+    type: "eventHandler",
+    argTypes: [
+      {
+        type: "boolean",
+        name: "open",
+      },
+    ],
+  },
+  [triggerSlotName]: {
+    type: "slot",
+    defaultValue: [defaultSlotContent],
+    ...({
+      mergeWithParent: true,
+    } as any),
+  },
+  themeResetClass: { type: "themeResetClass" },
+});
 
 export function prefixClasses(x: string) {
   return x

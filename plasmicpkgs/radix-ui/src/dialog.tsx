@@ -1,11 +1,13 @@
-import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import { X } from "lucide-react";
+import * as React from "react";
 
 import clsx from "clsx";
 
+import { Side } from "@radix-ui/react-popper";
+import { Registerable, registerComponentHelper } from "./reg-util";
 import {
   Animated,
   AnimatedProps,
@@ -18,8 +20,6 @@ import {
   prefixClasses,
   splitAnimProps,
 } from "./util";
-import { Side } from "@radix-ui/react-popper";
-import { Registerable, registerComponentHelper } from "./reg-util";
 
 export const DialogClose = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Close>,
@@ -186,24 +186,26 @@ export const Dialog = React.forwardRef<
       defaultOpen={defaultOpen}
     >
       <DialogPrimitive.Trigger asChild>{triggerSlot}</DialogPrimitive.Trigger>
-      <DialogPrimitive.Portal>
-        {/*
-        The main benefit of containing by default is that users can apply layout to position the dialog content easily, e.g. centered on the screen.
+      {/*
+      The main benefit of containing by default is that users can apply layout to position the dialog content easily, e.g. centered on the screen.
 
-        But still need noContain for Sheets, since they slide in/out, and you don't want them fading in/out just because the overlay is fading out.
+      But still need noContain for Sheets, since they slide in/out, and you don't want them fading in/out just because the overlay is fading out.
 
-        Cannot wrap in any extra divs or exit animations won't work!
-        */}
-        {noContain ? (
-          <>
+      ALSO, Portal needs to know the exit animation state, and to do this it needs DialogOverlay and the content (children) to both be immediate children - they can't be inside a React.Fragment, and of course cannot wrap in any extra divs!
+      */}
+      {noContain ? (
+        <>
+          <DialogPrimitive.Portal>
             <DialogOverlay
               ref={ref}
               {...props}
               className={clsx(overlayClassName, themeResetClass)}
             />
             {children}
-          </>
-        ) : (
+          </DialogPrimitive.Portal>
+        </>
+      ) : (
+        <DialogPrimitive.Portal>
           <DialogOverlay
             ref={ref}
             {...props}
@@ -211,8 +213,8 @@ export const Dialog = React.forwardRef<
           >
             {children}
           </DialogOverlay>
-        )}
-      </DialogPrimitive.Portal>
+        </DialogPrimitive.Portal>
+      )}
       {/*Must be outside the portal or exit animation doesn't work*/}
       <BaseStyles />
     </DialogPrimitive.Root>
