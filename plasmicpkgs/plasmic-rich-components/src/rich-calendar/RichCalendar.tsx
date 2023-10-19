@@ -49,7 +49,12 @@ interface Event {
 }
 
 function getEventFullDate(date?: string): string | undefined {
-  return parseDate(date)?.toISOString() || undefined;
+  const parsed = parseDate(date);
+  if (!parsed) return undefined;
+  const yyyy = parsed.getFullYear();
+  const mm = (parsed.getMonth() + 1).toString().padStart(2, "0");
+  const dd = parsed.getDate().toString().padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
 }
 
 function getEventMonthYear(date?: string): string | undefined {
