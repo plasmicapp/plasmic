@@ -128,6 +128,7 @@ module.exports = {
     "no-empty": ["error", { allowEmptyCatch: true }],
     "@typescript-eslint/no-empty-function": "off",
     "prefer-spread": "off",
+    "@typescript-eslint/no-this-alias": "off",
   },
   env: {
     es6: true,
