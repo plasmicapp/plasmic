@@ -1,8 +1,8 @@
-import { ComponentMeta } from '@plasmicapp/loader-core';
-import pascalcase from 'pascalcase';
-import * as React from 'react';
+import { ComponentMeta } from "@plasmicapp/loader-core";
+import pascalcase from "pascalcase";
+import * as React from "react";
 
-export const isBrowser = typeof window !== 'undefined';
+export const isBrowser = typeof window !== "undefined";
 
 export type ComponentLookupSpec =
   | string
@@ -74,19 +74,19 @@ function areLookupSpecsEqual(
 }
 
 function isNameSpec(lookup: FullLookupSpec): lookup is FullNameLookupSpec {
-  return 'name' in lookup;
+  return "name" in lookup;
 }
 
 function isPathSpec(lookup: FullLookupSpec): lookup is FullPathLookupSpec {
-  return 'path' in lookup;
+  return "path" in lookup;
 }
 
 function toFullLookup(lookup: ComponentLookupSpec): FullLookupSpec {
-  const namePart = typeof lookup === 'string' ? lookup : lookup.name;
-  const projectId = typeof lookup === 'string' ? undefined : lookup.projectId;
-  const codeComponent = typeof lookup === 'string' ? undefined : lookup.isCode;
+  const namePart = typeof lookup === "string" ? lookup : lookup.name;
+  const projectId = typeof lookup === "string" ? undefined : lookup.projectId;
+  const codeComponent = typeof lookup === "string" ? undefined : lookup.isCode;
 
-  if (codeComponent !== true && namePart.startsWith('/')) {
+  if (codeComponent !== true && namePart.startsWith("/")) {
     return { path: normalizePath(namePart), projectId };
   } else {
     return {
@@ -123,39 +123,48 @@ export function useIsMounted(): () => boolean {
 
 /**
  * Check if `lookup` resolves to `pagePath`. If it's a match, return an object
- * containing path params; otherwise, returns false.
+ * containing path params; otherwise, return false.
  *
  * For example,
  * - `matchesPagePath("/hello/[name]", "/hello/world")` -> `{params: {name:
  *   "world"}}`
  * - `matchesPagePath("/hello/[name]", "/")` -> `false`
+ * - `matchesPagePath("/hello/[...catchall]", "/hello/a/b/c")` -> `{params: {catchall: ["a", "b", "c"]}}`
  * - `matchesPagePath("/", "")` -> `{params: {}}`
  */
 export function matchesPagePath(
   pagePath: string,
   lookup: string
-): { params: Record<string, string> } | false {
+): { params: Record<string, string | string[]> } | false {
   // Remove trailing slashes from both `pagePath` and `lookup`.
-  pagePath = pagePath.replace(/^\/*/, '').replace(/\/*$/, '');
-  lookup = lookup.replace(/^\/*/, '').replace(/\/*$/, '');
+  pagePath = pagePath.replace(/^\/*/, "").replace(/\/*$/, "");
+  lookup = lookup.replace(/^\/*/, "").replace(/\/*$/, "");
 
   // paramNames will contain a list of parameter names; e.g. if pagePath
-  // is "/products/[slug]/[variant]" it will contain ["slug", "variant"].
+  // is "/products/[slug]/[...catchall]" it will contain ["slug", "...catchall"].
   const paramNames = (pagePath.match(/\[([^\]]*)\]/g) || []).map((group) =>
     group.slice(1, -1)
   );
 
   const pagePathRegExp = new RegExp(
-    '^' + pagePath.replace(/\[[^\]]*\]/g, '([^/]+)') + '$'
+    "^/?" +
+      pagePath
+        .replace(/\[\.\.\.[^\]]*\]/g, "(.+)")
+        .replace(/\[[^\]]*\]/g, "([^/]+)") +
+      "$"
   );
-  const maybeVals = lookup.match(pagePathRegExp)?.slice(1);
+  const maybeVals = lookup.replace(/[?].*/, "").match(pagePathRegExp)?.slice(1);
   if (!maybeVals) {
     return false;
   }
 
-  const params: Record<string, string> = {};
+  const params: Record<string, string | string[]> = {};
   for (let i = 0; i < paramNames.length; i++) {
-    params[paramNames[i]] = maybeVals[i];
+    if (paramNames[i].startsWith("...")) {
+      params[paramNames[i].slice(3)] = maybeVals[i].split("/");
+    } else {
+      params[paramNames[i]] = maybeVals[i];
+    }
   }
 
   return { params };
@@ -185,18 +194,20 @@ export function getCompMetas(
   const full = toFullLookup(lookup);
   return metas
     .filter((meta) => matchesCompMeta(full, meta))
-    .map<ComponentMeta & { params?: Record<string, string> }>((meta) => {
-      if (isNameSpec(full) || !meta.path) {
-        return meta;
-      }
+    .map<ComponentMeta & { params?: Record<string, string | string[]> }>(
+      (meta) => {
+        if (isNameSpec(full) || !meta.path) {
+          return meta;
+        }
 
-      const match = matchesPagePath(meta.path, full.path);
-      if (!match) {
-        return meta;
-      }
+        const match = matchesPagePath(meta.path, full.path);
+        if (!match) {
+          return meta;
+        }
 
-      return { ...meta, params: match.params };
-    })
+        return { ...meta, params: match.params };
+      }
+    )
     .sort(
       (meta1, meta2) =>
         // We sort the matched component metas by the number of path params, so
@@ -208,7 +219,7 @@ export function getCompMetas(
 }
 
 export function getLookupSpecName(lookup: ComponentLookupSpec) {
-  if (typeof lookup === 'string') {
+  if (typeof lookup === "string") {
     return lookup;
   } else if (lookup.projectId) {
     return `${lookup.name} (project ${lookup.projectId})`;
