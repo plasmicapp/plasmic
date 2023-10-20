@@ -1,9 +1,9 @@
 import { NormalizedData, QueryResult } from "@plasmicapp/data-sources";
-import { BaseColumnConfig } from "./field-mappings";
-import React, { Key, useState } from "react";
+import { Dropdown } from "antd";
 import type { GetRowKey, SorterResult } from "antd/es/table/interface";
 import fastStringify from "fast-stringify";
-import { Dropdown } from "antd";
+import React, { Key, useState } from "react";
+import { BaseColumnConfig } from "./field-mappings";
 
 export function useSortedFilteredData(
   data: NormalizedData | undefined,
@@ -75,10 +75,6 @@ export function deriveRowKey(
 ) {
   if (rowKey) {
     return rowKey;
-  }
-  const schema = data?.schema;
-  if (schema) {
-    return schema.fields[0]?.id;
   }
   return undefined;
 }
