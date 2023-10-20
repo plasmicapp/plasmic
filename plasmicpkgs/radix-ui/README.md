@@ -1,1 +1,1 @@
-Plasmic components and registration calls for Spotify
+Plasmic components and registration calls for Radix UI
