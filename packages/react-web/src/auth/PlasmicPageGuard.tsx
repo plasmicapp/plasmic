@@ -3,6 +3,7 @@ import React from "react";
 
 // https://stackoverflow.com/a/2117523
 function uuidv4() {
+  // eslint-disable-next-line
   // @ts-ignore
   return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
     (
@@ -40,6 +41,7 @@ async function triggerLogin(
   params.set("response_type", "code");
   params.set("code_challenge", code_challenge);
   params.set("code_challenge_method", "S256");
+  params.set("origin_host", window.location.host);
 
   if (redirectUri) {
     params.set("redirect_uri", redirectUri);
