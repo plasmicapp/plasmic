@@ -156,6 +156,7 @@ module.exports = {
           {
             checksVoidReturn: {
               attributes: false,
+              arguments: false,
             },
           },
         ],
