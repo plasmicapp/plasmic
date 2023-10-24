@@ -1,7 +1,7 @@
 import { repeatedElement, usePlasmicCanvasContext } from "@plasmicapp/host";
 import {
   CanvasComponentProps,
-  CodeComponentMeta,
+  ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { GlobalContextMeta } from "@plasmicapp/host/registerGlobalContext";
 import { usePlasmicQueryData } from "@plasmicapp/query";
@@ -164,7 +164,6 @@ interface TableContextData extends TablesContextData {
 interface RowContextData extends TableContextData {
   row?: ApiCmsRow;
   fieldMeta?: CmsFieldMeta;
-  data?: object;
 }
 
 function isDatabaseConfigured(config?: DatabaseConfig) {
@@ -188,7 +187,7 @@ interface CmsQueryRepeaterProps
   mode?: "rows" | "count";
 }
 
-export const cmsQueryRepeaterMeta: CodeComponentMeta<CmsQueryRepeaterProps> = {
+export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
   name: `${componentPrefix}-query-repeater`,
   displayName: "CMS Data Fetcher",
   description:
@@ -255,7 +254,6 @@ export const cmsQueryRepeaterMeta: CodeComponentMeta<CmsQueryRepeaterProps> = {
           "text",
           "long-text",
           "ref",
-          "object"
         ]),
     },
     filterValue: {
@@ -456,12 +454,12 @@ export function CmsQueryRepeater({
 
 interface CmsRowFieldProps extends CanvasComponentProps<RowContextData> {
   table: string;
-  field?: string | string[];
+  field: string;
   className?: string;
   dateFormat?: string;
 }
 
-export const cmsRowFieldMeta: CodeComponentMeta<CmsRowFieldProps> = {
+export const cmsRowFieldMeta: ComponentMeta<CmsRowFieldProps> = {
   name: `${componentPrefix}-row-field`,
   displayName: "CMS Entry Field",
   importName: "CmsRowField",
@@ -479,12 +477,23 @@ export const cmsRowFieldMeta: CodeComponentMeta<CmsRowFieldProps> = {
       defaultValueHint: (_, ctx) => ctx?.table,
     },
     field: {
-      type: "dataSelector",
-      data: (_, ctx: any) => ctx?.data ?? {},
+      type: "choice",
       displayName: "Field",
-      description: "Field to be displayed.",
+      description: "Field (from model schema) to use.",
+      options: ({ table }, ctx) =>
+        mkFieldOptions(ctx?.tables, ctx?.table ?? table, [
+          "number",
+          "boolean",
+          "text",
+          "long-text",
+          "date-time",
+          "rich-text",
+          "image",
+          "file",
+        ]),
+      defaultValueHint: (_, ctx) =>
+        ctx?.fieldMeta?.name || ctx?.fieldMeta?.identifier,
     },
-
     dateFormat: {
       type: "choice",
       displayName: "Date Format",
@@ -575,6 +584,7 @@ export function CmsRowField({
   ...rest
 }: CmsRowFieldProps) {
   const tables = useTablesWithDataLoaded("rows");
+
   const res = useRow(tables, table);
   const unknown = (
     <div className={className} {...rest}>
@@ -586,36 +596,16 @@ export function CmsRowField({
         table: res.table,
         tables,
         field,
-        typeFilters: ["text",
-        "long-text", "rich-text"],
+        typeFilters: ["text", "long-text", "rich-text"],
       })
     : undefined;
-
-    const filteredFields=res && tables ? filterFieldsByType(res.table,tables,[
-      "number",
-      "boolean",
-      "text",
-      "long-text",
-      "date-time",
-      "rich-text",
-      "image",
-      "file",
-      "object"
-    ]):undefined
- 
-
 
   if (tables) {
     // TODO: Only include table if __plasmic_cms_row_{table} exists.
     setControlContextData?.({
       tables,
-      ...(res && res.row && res.row.data
-        ? {
-            table: res.table,
-            row: res.row,
-            fieldMeta: fieldMeta,
-            data: extractFields(res.row.data,filteredFields),
-          }
+      ...(res && res.row
+        ? { table: res.table, row: res.row, fieldMeta: fieldMeta }
         : {}),
     });
   }
@@ -632,32 +622,11 @@ export function CmsRowField({
     return unknown;
   }
 
-  if (!field) {
-    return <div>Please specify a valid path or select a field.</div>;
-  }
-
-  let data:Record<string,any>|null|string = res.row.data
-
-  if (data !== null && typeof data !=='string' && fieldMeta.path) {
-    const pathParts = fieldMeta.path.split(".");
-    for (const part of pathParts) {
-      if (data && typeof data === 'object' && data.hasOwnProperty(part)) {
-        data = data[part];
-      } else {
-        data = null;
-        break;
-      }
-    }
-  } else if (data !== null) {
-    data = data[fieldMeta.identifier];
-  } else {
-    data = null;
-  }
-
+  let data = res.row.data?.[fieldMeta.identifier];
   if (!data) {
     return null;
   }
-  if (fieldMeta.type === "date-time" && dateFormat && typeof data ==='string') {
+  if (fieldMeta.type === "date-time" && dateFormat) {
     data = dayjs(data).format(dateFormat);
   }
   return data
@@ -673,7 +642,7 @@ interface CmsCountProps extends CanvasComponentProps<RowContextData> {
   className?: string;
 }
 
-export const cmsCountFieldMeta: CodeComponentMeta<CmsCountProps> = {
+export const cmsCountFieldMeta: ComponentMeta<CmsCountProps> = {
   name: `${componentPrefix}-count`,
   displayName: "CMS Entries Count",
   importName: "CmsCount",
@@ -723,101 +692,19 @@ export function CmsCount({
 const DEFAULT_TYPE_FILTERS = ["text"];
 function deriveInferredTableField(opts: {
   table?: string;
-  tables?: any[];
-  field?: string | string[]; // Allow for an array of field identifiers
-  typeFilters?: string[];
+  tables?: ApiCmsTable[];
+  field?: string;
+  typeFilters?: CmsType[];
 }) {
   const { table, tables, field, typeFilters } = opts;
   if (!table) return undefined;
   const schema = tables?.find((t) => t.identifier === table)?.schema;
-
-  function findFieldInSchema(schema: any, fieldIdentifier: string): any {
-    return schema?.fields.find((f: any) => f.identifier === fieldIdentifier);
-  }
-  if (Array.isArray(field)) {
-    if (field.length === 1) {
-      return findFieldInSchema(schema, field[0]);
-    } else if (field.length === 2) {
-      const topLevelField = findFieldInSchema(schema, field[0]);
-      if (
-        topLevelField &&
-        topLevelField.type === "object" &&
-        topLevelField.fields
-      ) {
-        const nestedField = topLevelField?.fields.find(
-          (f: any) => f.identifier === field[1]
-        );
-        return nestedField
-          ? { ...nestedField, path: `${field[0]}.${field[1]}` }
-          : undefined;
-      }
-    }
-  } else if (typeof field === "string") {
-    return findFieldInSchema(schema, field);
-  } else {
-    return schema?.fields.find((f: any) =>
-      (typeFilters ?? DEFAULT_TYPE_FILTERS).includes(f.type)
-    );
-  }
-}
-
-function filterFieldsByType(table: any, tables: any[], types: string[]): any[] | undefined {
-  if (!table || !tables) return undefined;
-  const schema = tables.find((t) => t.identifier === table)?.schema;
-
-  if (!schema || !schema.fields) return [];
-
-  const filteredFields = [];
-
-  for (const field of schema.fields) {
-    if (types.includes(field.type)) {
-      const modifiedField = deepClone(field);
-
-      if (field.type === "object" && field.fields) {
-        modifiedField.fields = field.fields.filter((f: any) => types.includes(f.type));
-      }
-
-      filteredFields.push(modifiedField);
-    }
-  }
-
-  return filteredFields;
-}
-
-function extractFields(data: Record<string, any>, schema: any): Record<string, any> {
-
-  const result: Record<string, any> = {};
-  
-  schema.forEach((field: any) => {
-    const fieldName = field.identifier;
-    const fieldType = field.type;
-    if (fieldType === "object" && data[fieldName] && field.fields) {
-      result[fieldName] = extractFields({ ...data[fieldName] }, field.fields || []);
-    } else if (data[fieldName] !== undefined) {
-      result[fieldName] = data[fieldName];
-    }
-  });
-
-  return result;
-}
-
-function deepClone(obj: any): any {
-  if (obj === null || typeof obj !== "object") {
-    return obj;
-  }
-
-  if (Array.isArray(obj)) {
-    return obj.map((item: any) => deepClone(item));
-  }
-
-  const clonedObj: any = {};
-  for (const key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      clonedObj[key] = deepClone(obj[key]);
-    }
-  }
-
-  return clonedObj;
+  const fieldMeta = field
+    ? schema?.fields.find((f) => f.identifier === field)
+    : schema?.fields.find((f) =>
+        (typeFilters ?? DEFAULT_TYPE_FILTERS).includes(f.type)
+      );
+  return fieldMeta;
 }
 
 function assertNever(_: never): never {
@@ -831,7 +718,6 @@ function renderValue(value: any, type: CmsType, props: { className?: string }) {
     case "text":
     case "long-text":
     case "date-time":
-    case "object":
     case "ref":
       return <div {...props}>{value}</div>;
     case "rich-text":
@@ -877,7 +763,7 @@ interface CmsRowLinkProps extends CanvasComponentProps<RowContextData> {
   suffix?: string;
 }
 
-export const cmsRowLinkMeta: CodeComponentMeta<CmsRowLinkProps> = {
+export const cmsRowLinkMeta: ComponentMeta<CmsRowLinkProps> = {
   name: `${componentPrefix}-row-link`,
   displayName: "CMS Entry Link",
   importName: "CmsRowLink",
@@ -998,7 +884,7 @@ interface CmsRowImageProps extends CanvasComponentProps<RowContextData> {
   children: React.ReactNode;
 }
 
-export const cmsRowImageMeta: CodeComponentMeta<CmsRowImageProps> = {
+export const cmsRowImageMeta: ComponentMeta<CmsRowImageProps> = {
   name: `${componentPrefix}-row-image`,
   displayName: "CMS Entry Image",
   importName: "CmsRowImage",
@@ -1103,7 +989,7 @@ interface CmsRowFieldValueProps extends CanvasComponentProps<RowContextData> {
   children: React.ReactNode;
 }
 
-export const cmsRowFieldValueMeta: CodeComponentMeta<CmsRowFieldValueProps> = {
+export const cmsRowFieldValueMeta: ComponentMeta<CmsRowFieldValueProps> = {
   name: `${componentPrefix}-row-value`,
   displayName: "CMS Entry Value",
   importName: "CmsRowFieldValue",

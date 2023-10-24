@@ -56,10 +56,6 @@ export interface CmsRef extends CmsBaseType {
   type: "ref";
   defaultValue?: string;
 }
-export interface CmsObjectType extends CmsBaseType {
-  type: "object";
-  fields: CmsFieldMeta[];
-}
 
 export type CmsFieldMeta =
   | CmsText
@@ -70,8 +66,7 @@ export type CmsFieldMeta =
   | CmsFile
   | CmsDateTime
   | CmsRef
-  | CmsRichText
-  | CmsObjectType;
+  | CmsRichText;
 
 export type CmsType = CmsFieldMeta["type"];
 

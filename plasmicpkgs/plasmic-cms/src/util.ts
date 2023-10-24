@@ -1,4 +1,4 @@
-import { ApiCmsTable, CmsFieldMeta, CmsType } from "./schema";
+import { ApiCmsTable, CmsType } from "./schema";
 
 type ValueLabelPair = {
   value: string;
@@ -16,29 +16,6 @@ export function mkTableOptions(
     value: table.identifier,
     label: table.name,
   }));
-}
-
-function addNestedFieldOptions(fields: CmsFieldMeta[], prefix = "") {
-  const options: { value: string; label: any }[] = [];
-  fields.forEach((field: any) => {
-    const fieldPath = prefix + field.identifier;
-
-    if (field.type !== "object") {
-      options.push({
-        value: fieldPath,
-        label: field.name || fieldPath,
-      });
-    }
-
-    if (field.type === "object" && field.fields) {
-      const nestedOptions = addNestedFieldOptions(
-        field.fields,
-        fieldPath + "."
-      );
-      options.push(...nestedOptions);
-    }
-  });
-  return options;
 }
 
 export function mkFieldOptions(
@@ -59,9 +36,10 @@ export function mkFieldOptions(
   if (types) {
     fields = fields.filter((f) => types.includes(f.type));
   }
-
-  const options = addNestedFieldOptions(fields);
-
+  const options = fields.map((f) => ({
+    value: f.identifier,
+    label: f.name || f.identifier,
+  }));
   if (!options.some((option) => option.value === "_id")) {
     options.push({
       label: "System-assigned ID",
@@ -70,22 +48,4 @@ export function mkFieldOptions(
   }
 
   return options;
-}
-export function deepClone(obj: any): any {
-  if (obj === null || typeof obj !== "object") {
-    return obj;
-  }
-
-  if (Array.isArray(obj)) {
-    return obj.map((item: any) => deepClone(item));
-  }
-
-  const clonedObj: any = {};
-  for (const key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      clonedObj[key] = deepClone(obj[key]);
-    }
-  }
-
-  return clonedObj;
 }
