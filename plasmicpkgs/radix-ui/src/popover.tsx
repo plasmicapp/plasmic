@@ -1,7 +1,8 @@
-import * as React from "react";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
+import * as React from "react";
 
 import clsx from "clsx";
+import { Registerable, registerComponentHelper } from "./reg-util";
 import {
   Animated,
   BaseStyles,
@@ -12,7 +13,6 @@ import {
   prefixClasses,
   splitAnimProps,
 } from "./util";
-import { Registerable, registerComponentHelper } from "./reg-util";
 
 export function Popover({
   // root
@@ -94,7 +94,7 @@ export function registerPopover(PLASMIC?: Registerable) {
   registerComponentHelper(PLASMIC, Popover, {
     name: "hostless-radix-popover",
     displayName: "Popover",
-    importPath: "@plasmicpkgs/radix-ui/popover",
+    importPath: "@plasmicpkgs/radix-ui",
     importName: "Popover",
     states: overlayStates,
     props: {

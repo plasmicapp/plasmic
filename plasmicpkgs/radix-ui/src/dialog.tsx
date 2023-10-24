@@ -231,7 +231,7 @@ export function registerDialog(PLASMIC?: Registerable) {
   registerComponentHelper(PLASMIC, Dialog, {
     name: "hostless-radix-dialog",
     displayName: "Dialog",
-    importPath: "@plasmicpkgs/radix-ui/dialog",
+    importPath: "@plasmicpkgs/radix-ui",
     importName: "Dialog",
     styleSections: false,
     defaultStyles: {
@@ -279,7 +279,7 @@ export function registerDialog(PLASMIC?: Registerable) {
   registerComponentHelper(PLASMIC, DialogClose, {
     name: "hostless-radix-dialog-close",
     displayName: "Dialog Close",
-    importPath: "@plasmicpkgs/radix-ui/dialog",
+    importPath: "@plasmicpkgs/radix-ui",
     importName: "DialogClose",
     parentComponentName: "hostless-radix-dialog",
     defaultStyles: {
@@ -308,7 +308,7 @@ export function registerDialog(PLASMIC?: Registerable) {
   registerComponentHelper(PLASMIC, SheetContent, {
     name: "hostless-radix-sheet-content",
     displayName: "Drawer Content",
-    importPath: "@plasmicpkgs/radix-ui/dialog",
+    importPath: "@plasmicpkgs/radix-ui",
     importName: "SheetContent",
     parentComponentName: "hostless-radix-dialog",
     defaultStyles: {
@@ -362,7 +362,7 @@ export function registerDialog(PLASMIC?: Registerable) {
   registerComponentHelper(PLASMIC, DialogContent, {
     name: "hostless-radix-dialog-content",
     displayName: "Dialog Content",
-    importPath: "@plasmicpkgs/radix-ui/dialog",
+    importPath: "@plasmicpkgs/radix-ui",
     importName: "DialogContent",
     parentComponentName: "hostless-radix-dialog",
     defaultStyles: {
@@ -408,7 +408,7 @@ export function registerDialog(PLASMIC?: Registerable) {
   registerComponentHelper(PLASMIC, DialogTitle, {
     name: "hostless-radix-dialog-title",
     displayName: "Dialog Title",
-    importPath: "@plasmicpkgs/radix-ui/dialog",
+    importPath: "@plasmicpkgs/radix-ui",
     importName: "DialogTitle",
     parentComponentName: "hostless-radix-dialog",
     props: {
@@ -421,7 +421,7 @@ export function registerDialog(PLASMIC?: Registerable) {
   registerComponentHelper(PLASMIC, DialogDescription, {
     name: "hostless-radix-dialog-description",
     displayName: "Dialog Description",
-    importPath: "@plasmicpkgs/radix-ui/dialog",
+    importPath: "@plasmicpkgs/radix-ui",
     importName: "DialogDescription",
     parentComponentName: "hostless-radix-dialog",
     props: {

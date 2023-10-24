@@ -1,6 +1,7 @@
-import * as React from "react";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import clsx from "clsx";
+import * as React from "react";
+import { Registerable, registerComponentHelper } from "./reg-util";
 import {
   Animated,
   BaseStyles,
@@ -10,7 +11,6 @@ import {
   prefixClasses,
   splitAnimProps,
 } from "./util";
-import { Registerable, registerComponentHelper } from "./reg-util";
 
 export const Tooltip = React.forwardRef<
   React.ElementRef<typeof TooltipPrimitive.Content>,
@@ -94,7 +94,7 @@ export function registerTooltip(PLASMIC?: Registerable) {
   registerComponentHelper(PLASMIC, Tooltip, {
     name: "hostless-radix-tooltip",
     displayName: "Tooltip",
-    importPath: "@plasmicpkgs/radix-ui/tooltip",
+    importPath: "@plasmicpkgs/radix-ui",
     importName: "Tooltip",
     props: {
       ...overlayProps({
