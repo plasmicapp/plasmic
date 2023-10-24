@@ -7,7 +7,7 @@ import { GlobalContextMeta } from "@plasmicapp/host/registerGlobalContext";
 import { usePlasmicQueryData } from "@plasmicapp/query";
 import dayjs from "dayjs";
 import React from "react";
-import { DatabaseConfig, HttpError, QueryParams, mkApi } from "./api";
+import { DatabaseConfig, HttpError, mkApi, QueryParams } from "./api";
 import {
   CountProvider,
   DatabaseProvider,
@@ -184,6 +184,7 @@ interface CmsQueryRepeaterProps
   className?: string;
   filterField?: string;
   filterValue?: string;
+  fields?: string[];
   mode?: "rows" | "count";
 }
 
@@ -296,6 +297,16 @@ export const cmsQueryRepeaterMeta: ComponentMeta<CmsQueryRepeaterProps> = {
         "Skips this number of rows in the result set; used in combination with limit to build pagination",
       hidden: (ps) => ps.mode === "count",
     },
+    fields: {
+      type: "choice",
+      multiSelect: true,
+      displayName: "Fields",
+      description:
+        "Fields from the CMS model to include with each row; by default, all fields are included",
+      options: ({ table }, ctx) =>
+        mkFieldOptions(ctx?.tables, ctx?.table ?? table),
+      hidden: (ps) => ps.mode === "count",
+    },
     emptyMessage: {
       type: "slot",
       defaultValue: {
@@ -360,6 +371,7 @@ export function CmsQueryRepeater({
   className,
   filterField,
   filterValue,
+  fields,
 }: CmsQueryRepeaterProps) {
   const databaseConfig = useDatabase();
   const tables = useTables();
@@ -369,7 +381,7 @@ export function CmsQueryRepeater({
       [filterField]: filterValue,
     };
   }
-  const params = { where, useDraft, orderBy, desc, limit, offset };
+  const params = { where, useDraft, orderBy, desc, limit, offset, fields };
 
   if (!table && tables && tables.length > 0) {
     table = tables[0].identifier;

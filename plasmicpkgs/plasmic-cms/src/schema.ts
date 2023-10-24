@@ -92,4 +92,5 @@ export interface ApiCmsQuery {
   limit?: number;
   offset?: number;
   order?: (string | { field: string; dir: "asc" | "desc" })[];
+  fields?: string[];
 }

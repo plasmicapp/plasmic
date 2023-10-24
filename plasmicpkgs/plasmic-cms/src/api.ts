@@ -15,6 +15,7 @@ export interface QueryParams {
   desc?: boolean;
   limit?: number;
   offset?: number;
+  fields?: string[];
 }
 
 function queryParamsToApi(params: QueryParams): ApiCmsQuery {
@@ -30,6 +31,7 @@ function queryParamsToApi(params: QueryParams): ApiCmsQuery {
           },
         ]
       : undefined,
+    fields: params.fields,
   };
 }
 
