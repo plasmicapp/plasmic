@@ -107,6 +107,7 @@
     "plasmicpkgs/plasmic-wordpress-graphql",
     "plasmicpkgs/plasmic-yotpo",
     "plasmicpkgs/radix-ui",
+    "plasmicpkgs/react-audio-player",
     "plasmicpkgs/react-awesome-reveal",
     "plasmicpkgs/react-chartjs-2",
     "plasmicpkgs/react-parallax-tilt",
