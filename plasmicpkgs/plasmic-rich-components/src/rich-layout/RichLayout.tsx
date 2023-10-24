@@ -1,10 +1,10 @@
 import { LogoutOutlined } from "@ant-design/icons";
 import type { MenuDataItem, ProLayoutProps } from "@ant-design/pro-components";
 import { ProConfigProvider, ProLayout } from "@ant-design/pro-components";
+import { useDataEnv, usePlasmicLink } from "@plasmicapp/host";
 import { ConfigProvider, Dropdown, theme } from "antd";
 import React, { ReactNode, useEffect, useState } from "react";
 import { isLight, useIsClient } from "../common";
-import { usePlasmicLink } from "@plasmicapp/host";
 import { AnchorLink } from "../widgets";
 
 function omitUndefined(x: object) {
@@ -77,6 +77,7 @@ export function RichLayout({
   logoElement,
   ...layoutProps
 }: RichLayoutProps) {
+  const $ctx = useDataEnv();
   const isClient = useIsClient();
   const [pathname, setPathname] = useState<string | undefined>(undefined);
   useEffect(() => {
@@ -85,7 +86,7 @@ export function RichLayout({
     }
   }, []);
   // The usePlasmicLink function may be undefined, if host is not up to date
-  const Link = usePlasmicLink?.() ?? AnchorLink;
+  const PlasmicLink = usePlasmicLink?.() ?? AnchorLink;
   const { token } = theme.useToken();
   const origTextColor = token.colorTextBase;
   function getNavBgColor(): string {
@@ -241,13 +242,16 @@ export function RichLayout({
           return footerChildren;
         }}
         onMenuHeaderClick={(e) => console.log(e)}
-        menuItemRender={(item, dom) => <Link href={item.path}>{dom}</Link>}
-        headerTitleRender={(logo, title, _) => {
+        selectedKeys={[$ctx?.pagePath]}
+        menuItemRender={(item, dom) => (
+          <PlasmicLink href={item.path}>{dom}</PlasmicLink>
+        )}
+        headerTitleRender={(logoEl, title, _) => {
           return (
-            <Link href={rootUrl}>
-              {logo}
+            <PlasmicLink href={rootUrl}>
+              {logoEl}
               {title}
-            </Link>
+            </PlasmicLink>
           );
         }}
       >
