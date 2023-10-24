@@ -78,8 +78,8 @@ export const Animated = ({
   exitTranslateX = "100%",
   enterTranslateY = "100%",
   exitTranslateY = "100%",
-  enterTiming = "ease-out",
-  exitTiming = "ease-out",
+  enterTiming = "ease",
+  exitTiming = "ease",
   enterDelay = 0,
   exitDelay = 0,
 }: AnimatedProps & {
@@ -253,7 +253,7 @@ export const animPropTypes = ({
     enterTiming: {
       type: "string",
       advanced: true,
-      defaultValueHint: "ease-out",
+      defaultValueHint: "ease",
       ...({
         suggestions: ["linear", "ease", "ease-in", "ease-out", "ease-in-out"],
       } as any),
@@ -261,7 +261,7 @@ export const animPropTypes = ({
     exitTiming: {
       type: "string",
       advanced: true,
-      defaultValueHint: "ease-out",
+      defaultValueHint: "ease",
       ...({
         suggestions: ["linear", "ease", "ease-in", "ease-out", "ease-in-out"],
       } as any),
@@ -334,6 +334,10 @@ export function prefixClasses(x: string) {
 // Be careful formatting this!
 // Note that these are magically prepended with pl__
 const prefixedBaseStyles = `
+.box-border {
+  box-sizing: border-box;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

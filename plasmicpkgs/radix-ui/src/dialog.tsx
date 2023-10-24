@@ -78,7 +78,7 @@ export const DialogContent = React.forwardRef<
           {...rest}
           className={clsx(
             prefixClasses(
-              "fixed z-50 outline-none relative data-[state=open]:animate-in data-[state=closed]:animate-out"
+              "fixed z-50 outline-none relative box-border data-[state=open]:animate-in data-[state=closed]:animate-out"
             ),
             dynClass ? dynClass : "",
             themeResetClass,
