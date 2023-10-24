@@ -69,7 +69,7 @@ export function PlasmicHead(props: PlasmicHeadProps) {
         />,
       ]}
       {props.canonical && (
-        <link key="canonical" ref="canonical" href={props.canonical} />
+        <link key="canonical" rel="canonical" href={props.canonical} />
       )}
     </Head>
   );
