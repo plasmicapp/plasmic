@@ -258,7 +258,7 @@ interface LoaderGatsbyPluginOptions extends GatsbyPluginOptions {
 }
 
 export const createPages: GatsbyNode["createPages"] = async (
-  { graphql, actions, reporter }: CreatePagesArgs,
+  { graphql, actions, reporter, store }: CreatePagesArgs,
   opts: LoaderGatsbyPluginOptions
 ) => {
   const { defaultPlasmicPage } = opts;
@@ -287,7 +287,23 @@ export const createPages: GatsbyNode["createPages"] = async (
       return;
     }
 
-    for (const path of allPaths) {
+    for (const originalPath of allPaths) {
+      // `deletePage` might throw if the path is not in the expected format.
+      // We first check if the pages include the original path, and, if not,
+      // we assume it's due to an extra / missing trailing slash and try again.
+      let path = originalPath;
+      try {
+        // Store is considered private API so use it only inside try-catch
+        const storedPages = store.getState().pages;
+        if (!storedPages.get(path)) {
+          path = path.match(/\w\/$/) ? path.replace(/\/$/, "") : `${path}/`;
+          if (!storedPages.get(path)) {
+            path = originalPath;
+          }
+        }
+      } catch {
+        path = originalPath;
+      }
       deletePage({
         path,
         component: defaultPlasmicPage,
