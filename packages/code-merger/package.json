@@ -11,7 +11,7 @@
     "wtest": "jest --colors --watchAll",
     "test": "jest --colors",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
-    "build": "tsc",
+    "build": "pwd && which tsc && tsc",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
   },
   "dependencies": {
@@ -24,6 +24,7 @@
     "@types/babel__generator": "^7.6.2",
     "@types/babel__parser": "^7.1.1",
     "@types/babel__traverse": "^7.11.1",
+    "@types/diff": "^5.0.7",
     "diff": "^4.0.2",
     "lodash": "^4.17.19",
     "prettier": "^2.0.5"
@@ -38,7 +39,7 @@
     "babel-jest": "^26.1.0",
     "jest": "^26.1.0",
     "ts-jest": "^26.1.2",
-    "typescript": "^3.9.6"
+    "typescript": "^5.2.2"
   },
   "peerDependencies": {}
 }
