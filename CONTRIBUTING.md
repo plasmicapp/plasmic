@@ -70,6 +70,16 @@ packages:
     access: $all
     publish: $all
     unpublish: $all
+  '@plasmicpkgs/data-table':
+    access: $all
+    publish: $authenticated
+    unpublish: $authenticated
+    proxy: npmjs
+  '@plasmicpkgs/plasmic-shopify':
+    access: $all
+    publish: $authenticated
+    unpublish: $authenticated
+    proxy: npmjs
   '@plasmicpkgs/*':
     access: $all
     publish: $all
