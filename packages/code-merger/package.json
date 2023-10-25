@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/code-merger",
-  "version": "0.0.33",
+  "version": "0.0.34",
   "description": "plasmic library for updating code generated in direct-edit scheme",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -40,6 +40,5 @@
     "jest": "^26.1.0",
     "ts-jest": "^26.1.2",
     "typescript": "^5.2.2"
-  },
-  "peerDependencies": {}
+  }
 }
