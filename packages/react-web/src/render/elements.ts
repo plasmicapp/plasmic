@@ -134,7 +134,10 @@ function createPlasmicElement<DefaultElementType extends React.ElementType>(
   defaultProps: Partial<React.ComponentProps<DefaultElementType>>,
   wrapChildrenInFlex?: boolean
 ): React.ReactNode | null {
-  if (!override || Object.keys(override).length === 0) {
+  if (
+    !override ||
+    (typeof override === "object" && Object.keys(override).length === 0)
+  ) {
     return createElementWithChildren(
       defaultRoot,
       defaultProps,
