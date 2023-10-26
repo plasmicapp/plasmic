@@ -76,6 +76,7 @@
     "packages/prepass",
     "packages/query",
     "packages/react-web",
+    "packages/react-web-runtime",
     "packages/watcher",
     "plasmicpkgs/airtable",
     "plasmicpkgs/antd",
