@@ -230,7 +230,7 @@ export const DialogDescription = DialogPrimitive.Description;
 export function registerDialog(PLASMIC?: Registerable) {
   registerComponentHelper(PLASMIC, Dialog, {
     name: "hostless-radix-dialog",
-    displayName: "Dialog",
+    displayName: "Dialog Core",
     importPath: "@plasmicpkgs/radix-ui",
     importName: "Dialog",
     styleSections: false,

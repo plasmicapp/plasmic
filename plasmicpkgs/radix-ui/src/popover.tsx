@@ -93,7 +93,7 @@ Popover.displayName = "PlasmicRadixPopover";
 export function registerPopover(PLASMIC?: Registerable) {
   registerComponentHelper(PLASMIC, Popover, {
     name: "hostless-radix-popover",
-    displayName: "Popover",
+    displayName: "Popover Core",
     importPath: "@plasmicpkgs/radix-ui",
     importName: "Popover",
     states: overlayStates,

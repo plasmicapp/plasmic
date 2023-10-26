@@ -93,7 +93,7 @@ Tooltip.displayName = "PlasmicRadixTooltip";
 export function registerTooltip(PLASMIC?: Registerable) {
   registerComponentHelper(PLASMIC, Tooltip, {
     name: "hostless-radix-tooltip",
-    displayName: "Tooltip",
+    displayName: "Tooltip Core",
     importPath: "@plasmicpkgs/radix-ui",
     importName: "Tooltip",
     props: {
