@@ -2,7 +2,7 @@
   "name": "plasmic-monorepo",
   "private": true,
   "scripts": {
-    "bootstrap": "yarn install --ignore-scripts && nx run-many --target=build",
+    "bootstrap": "bash scripts/bootstrap.sh",
     "bootstrap:platform": "yarn db:setup ; yarn setup-all ; yarn db:reset ; yarn setup-all",
     "bump": "echo 'Use the jenkins job release_public_packages instead: https://jenkins.aws.plasmic.app/job/release_public_packages/'",
     "db:reset": "cd platform/wab && yarn db:reset",
