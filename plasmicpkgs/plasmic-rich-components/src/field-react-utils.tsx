@@ -4,6 +4,7 @@ import type { GetRowKey, SorterResult } from "antd/es/table/interface";
 import fastStringify from "fast-stringify";
 import React, { Key, useState } from "react";
 import { BaseColumnConfig } from "./field-mappings";
+import { ensure } from "./utils";
 
 export function useSortedFilteredData(
   data: NormalizedData | undefined,
@@ -69,14 +70,28 @@ interface RowActionMenu {
 
 export type RowAction = RowActionItem | RowActionMenu;
 
+export function tagDataArray(xs: object[]) {
+  return xs.map((x: object, i) => ({ ...x, __tag: i + 1 }));
+}
+
+export function getTag(x: unknown) {
+  return (x as any).__tag;
+}
+
+/**
+ * Don't want to simply return undefined, we prefer always having *some* row key so that users can always (say) click on things without needing to explicitly set a row key.
+ */
 export function deriveRowKey(
-  data: QueryResult | undefined,
+  _data: QueryResult | undefined,
   rowKey: string | GetRowKey<Record<any, any>> | undefined
 ) {
   if (rowKey) {
     return rowKey;
   }
-  return undefined;
+  // Use the index by default.
+  return (x: unknown) => {
+    return ensure(getTag(x));
+  };
 }
 
 export function deriveKeyOfRow(

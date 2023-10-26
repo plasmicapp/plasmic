@@ -10,7 +10,7 @@ import type { SizeType } from "antd/es/config-provider/SizeContext";
 import type { GetRowKey } from "antd/es/table/interface";
 import { createObjectCsvStringifier } from "csv-writer-browser";
 import fastStringify from "fast-stringify";
-import React, { ReactNode, useRef } from "react";
+import React, { ReactNode, useMemo, useRef } from "react";
 import { useIsClient } from "../common";
 import {
   BaseColumnConfig,
@@ -23,6 +23,7 @@ import {
   deriveRowKey,
   renderActions,
   RowAction,
+  tagDataArray,
   useSortedFilteredData,
 } from "../field-react-utils";
 import { renderValue } from "../formatting";
@@ -101,7 +102,14 @@ export function RichTable(props: RichTableProps) {
     scopeClassName,
   } = props;
 
-  const data = useNormalizedData(rawData);
+  const normalizedData = useNormalizedData(rawData);
+
+  const data = useMemo(() => {
+    if (!normalizedData?.data) {
+      return normalizedData;
+    }
+    return { ...normalizedData, data: tagDataArray(normalizedData.data) };
+  }, [normalizedData]);
 
   const { columnDefinitions, normalized } = useColumnDefinitions(data, props);
 

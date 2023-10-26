@@ -1,14 +1,13 @@
 import { ComponentMeta } from "@plasmicapp/host/registerComponent";
-import { buildFieldsPropType } from "../field-mappings";
-import { Registerable, registerComponentHelper } from "../utils";
-import { RichTable, RichTableProps, TableColumnConfig } from "./RichTable";
-import { deriveRowKey } from "../field-react-utils";
 import {
   commonProps,
   dataProp,
   onRowClickProp,
   rowActionsProp,
 } from "../common-prop-types";
+import { buildFieldsPropType } from "../field-mappings";
+import { Registerable, registerComponentHelper } from "../utils";
+import { RichTable, RichTableProps, TableColumnConfig } from "./RichTable";
 
 export * from "./RichTable";
 export default RichTable;
@@ -71,10 +70,6 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
       helpText:
         "Column key to use as row key; can also be a function that takes in a row and returns a key value",
       hidden: (ps) => !ps.canSelectRows || ps.canSelectRows === "none",
-      defaultValueHint: (ps) => {
-        const derivedRowKey = deriveRowKey(ps.data, ps.rowKey);
-        return derivedRowKey !== undefined ? `${derivedRowKey}` : undefined;
-      },
     },
 
     selectedRowKey: {
