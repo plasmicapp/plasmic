@@ -14,6 +14,7 @@ import {
   deriveKeyOfRow,
   deriveRowKey,
   renderActions,
+  tagDataArray,
   useSortedFilteredData,
 } from "../field-react-utils";
 import { maybeRenderString, multiRenderValue } from "../formatting";
@@ -164,7 +165,14 @@ export function RichList(props: RichListProps) {
     ...rest
   } = props;
 
-  const data = useNormalizedData(rawData);
+  const normalizedData = useNormalizedData(rawData);
+
+  const data = React.useMemo(() => {
+    if (!normalizedData?.data) {
+      return normalizedData;
+    }
+    return { ...normalizedData, data: tagDataArray(normalizedData.data) };
+  }, [normalizedData]);
 
   const { normalized, finalRoles: roleConfigs } = useRoleDefinitions(
     data,
