@@ -38,7 +38,7 @@ export function renderPlasmicSlot<
   if (nonEmptyProps.length === 0) {
     // No attrs to apply to the slot (which means the slot is unstyled), then
     // just render the content directly; no need for style wrapper.
-    return content;
+    return content as React.ReactElement | null;
   }
 
   return React.createElement(
