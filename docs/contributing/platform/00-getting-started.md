@@ -169,7 +169,7 @@ The app runs on http://localhost:3003/.
 If you have freshly reset the DB, log in as one of the example users (see
 seed script for details):
 
-- **User:** `yang@plasmic.app`
+- **User:** `admin@example.com`
 - **Password:** `!53kr3tz!`
 
 ## Next steps
