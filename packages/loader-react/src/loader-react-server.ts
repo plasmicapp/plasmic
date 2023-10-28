@@ -5,7 +5,7 @@ import {
   PlasmicTracker,
 } from "@plasmicapp/loader-core";
 import { ComponentMeta, LoaderBundleOutput } from "@plasmicapp/loader-fetcher";
-import { mergeBundles, prepComponentData } from "./bundles";
+import { prepComponentData } from "./bundles";
 import { ComponentRenderData, FetchPagesOpts } from "./loader";
 import {
   ComponentLookupSpec,
@@ -223,7 +223,9 @@ export class ReactServerPlasmicComponentLoader {
   }
 
   mergeBundle(bundle: LoaderBundleOutput) {
-    this.bundle = mergeBundles(bundle, this.bundle);
+    // TODO: this is only possible as the bundle is the full bundle,
+    // not a partial bundle. Figure it out how to merge partial bundles.
+    this.bundle = bundle;
     this.onBundleMerged?.();
   }
 
