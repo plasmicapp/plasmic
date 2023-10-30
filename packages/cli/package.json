@@ -19,6 +19,11 @@
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
   },
   "devDependencies": {
+    "@types/node-fetch": "^2.6.7",
+    "@types/babel__core": "^7.20.3",
+    "@types/babel__generator": "^7.6.6",
+    "@types/babel__traverse": "^7.20.3",
+    "@babel/types": "^7.23.0",
     "@babel/core": "^7.12.3",
     "@babel/generator": "^7.12.1",
     "@babel/parser": "^7.12.3",

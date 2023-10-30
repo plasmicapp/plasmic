@@ -31,6 +31,7 @@
     "@plasmicapp/host": "1.0.177",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/node": "^14.0.26",
+    "@types/react": "^18.2.33",
     "@types/youtube-player": "^5.5.6",
     "size-limit": "^4.11.0",
     "tsdx": "^0.14.1",

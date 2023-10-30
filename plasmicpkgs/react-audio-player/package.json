@@ -4,7 +4,7 @@
   "description": "React Audio Player components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
-  "module": "dist/plasmic-react-audio-player.esm.js",
+  "module": "dist/index.mjs",
   "publishConfig": {
     "access": "public"
   },
@@ -12,10 +12,8 @@
     "dist"
   ],
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
+    "build": "tsup src/index.tsx --dts --format esm,cjs --target es2019",
     "test": "yarn --cwd=../.. test --passWithNoTests",
-    "lint": "tsdx lint",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "size": "size-limit",
     "analyze": "size-limit --why"
@@ -25,11 +23,11 @@
   },
   "size-limit": [
     {
-      "path": "dist/plasmic-react-audio-player.cjs.production.min.js",
+      "path": "dist/index.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/plasmic-react-audio-player.esm.js",
+      "path": "dist/index.mjs",
       "limit": "10 KB"
     }
   ],
@@ -42,8 +40,9 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "size-limit": "^7.0.8",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.3.1"
+    "tslib": "^2.3.1",
+    "tsup": "^7.2.0",
+    "typescript": "^5.2.2"
   },
   "dependencies": {
     "change-case": "^4.1.2",

@@ -19,6 +19,9 @@
     "lint": "eslint",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
   },
+  "devDependencies": {
+    "@types/react": "^18.2.33"
+  },
   "dependencies": {
     "@plasmicapp/query": "0.1.74",
     "@plasmicapp/react-ssr-prepass": "2.0.3"

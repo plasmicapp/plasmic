@@ -57,6 +57,7 @@
     "@plasmicapp/data-sources-context": "0.1.17",
     "@plasmicapp/host": "1.0.177",
     "@plasmicapp/loader-core": "1.0.115",
+    "@plasmicapp/loader-fetcher": "1.0.37",
     "@plasmicapp/loader-splits": "1.0.43",
     "@plasmicapp/prepass": "1.0.9",
     "@plasmicapp/query": "0.1.74",
@@ -78,6 +79,7 @@
     }
   ],
   "devDependencies": {
+    "@types/node": "^20.8.9",
     "@types/pascalcase": "^1.0.0",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",

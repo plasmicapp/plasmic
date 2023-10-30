@@ -19,10 +19,8 @@
     }
   ],
   "scripts": {
-    "build": "rollup -c rollup.config.mjs && yarn tsc --emitDeclarationOnly --declaration src/index.tsx --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --jsx react --esModuleInterop --strict --outDir ./dist/",
-    "start": "tsdx watch",
+    "build": "rollup -c rollup.config.mjs && yarn tsc --emitDeclarationOnly --declaration src/index.tsx --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --jsx react --lib dom,esnext --esModuleInterop --strict --outDir ./dist/",
     "test": "yarn --cwd=../.. test --passWithNoTests",
-    "lint": "tsdx lint",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "size": "size-limit",
     "analyze": "size-limit --why"
@@ -39,15 +37,15 @@
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.1.0",
     "@size-limit/preset-small-lib": "^4.11.0",
-    "@types/luxon": "^3.3.1",
-    "@types/node": "^14.0.26",
+    "@types/lodash": "^4.14.200",
+    "@types/node": "^20.8.9",
+    "@types/react": "^18.2.33",
     "antd": "^5.4.0",
     "rollup": "^3.26.2",
     "rollup-plugin-esbuild": "^5.0.0",
     "size-limit": "^4.11.0",
-    "tsdx": "^0.14.1",
     "tslib": "^2.2.0",
-    "typescript": "^4"
+    "typescript": "^5.2.2"
   },
   "peerDependencies": {
     "@ant-design/icons": ">=5.0.0",
@@ -62,10 +60,12 @@
     "access": "public"
   },
   "dependencies": {
+    "@ctrl/tinycolor": "^3.6.1",
     "@plasmicpkgs/luxon-parser": "^3.4.4",
+    "classnames": "^2.3.2",
     "csv-writer-browser": "^1.0.0",
+    "dayjs": "^1.11.10",
     "fast-stringify": "^2.0.0",
-    "lodash": "^4.17.21",
-    "tinycolor2": "^1.6.0"
+    "lodash": "^4.17.21"
   }
 }

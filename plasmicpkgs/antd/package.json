@@ -49,7 +49,7 @@
   ],
   "scripts": {
     "build": "rollup -c rollup.config.mjs && yarn copy_css_files && yarn gentypes",
-    "gentypes": "yarn tsc --emitDeclarationOnly --declaration src/index.ts --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --jsx react --esModuleInterop --strict --outDir ./dist/ && cp ./dist/*.d.ts skinny/ && rm skinny/index.d.ts",
+    "gentypes": "yarn tsc --emitDeclarationOnly --declaration src/index.ts --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --jsx react --lib dom,es2019 --esModuleInterop --strict --outDir ./dist/ && cp ./dist/*.d.ts skinny/ && rm skinny/index.d.ts",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "copy_css_files": "cp src/*.css dist/",
     "size": "size-limit",
@@ -64,13 +64,19 @@
     "@rollup/plugin-json": "^4.0.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
     "@size-limit/preset-small-lib": "^4.11.0",
+    "@types/glob": "^7.1.3",
     "@types/node": "^14.0.26",
+    "@types/react": "^18.2.33",
+    "glob": "^7.1.3",
+    "rc-menu": "~9.8.0",
+    "rc-select": "~14.1.17",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rollup": "^3.10.1",
     "rollup-plugin-esbuild": "^5.0.0",
     "rollup-plugin-replace-imports": "^1.0.0",
-    "size-limit": "^4.11.0"
+    "size-limit": "^4.11.0",
+    "typescript": "^5.2.2"
   },
   "peerDependencies": {
     "@plasmicapp/host": ">=1.0.0",

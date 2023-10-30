@@ -32,6 +32,7 @@
     "@plasmicapp/host": "1.0.177",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/node": "^14.0.26",
+    "@types/react": "^18.2.33",
     "chart.js": "^4.2.1",
     "react-chartjs-2": "^5.2.0",
     "size-limit": "^4.11.0",

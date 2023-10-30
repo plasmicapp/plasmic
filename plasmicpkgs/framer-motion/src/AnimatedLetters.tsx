@@ -62,7 +62,7 @@ export default function AnimatedLetters({
         <motion.span
           key={i}
           custom={i}
-          style={{ display: "inline-block" }}
+          style={{ display: "inline-block" } as any}
           variants={letterVariants}
         >
           {letter === " " ? "\u00a0" : letter}

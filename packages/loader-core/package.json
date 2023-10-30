@@ -36,6 +36,9 @@
       "limit": "10 KB"
     }
   ],
+  "devDependencies": {
+    "@types/node": "^20.8.9"
+  },
   "dependencies": {
     "@plasmicapp/isomorphic-unfetch": "1.0.3",
     "@plasmicapp/loader-fetcher": "1.0.37"

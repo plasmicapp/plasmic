@@ -20,6 +20,7 @@
   "devDependencies": {
     "@plasmicapp/host": "1.0.177",
     "@size-limit/preset-small-lib": "^4.11.0",
+    "@types/debounce": "^1.2.3",
     "@types/js-cookie": "^3.0.1",
     "@types/node": "^14.0.26",
     "react": "^18.2.0",
@@ -34,6 +35,7 @@
   "dependencies": {
     "@plasmicpkgs/commerce": "0.0.174",
     "@types/react": "^18.0.27",
-    "debounce": "^1.2.1"
+    "debounce": "^1.2.1",
+    "js-cookie": "^3.0.5"
   }
 }

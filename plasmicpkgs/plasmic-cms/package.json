@@ -32,6 +32,7 @@
     "@plasmicapp/query": "0.1.74",
     "@size-limit/preset-small-lib": "^7.0.8",
     "@types/node": "^17.0.14",
+    "@types/react": "^18.2.33",
     "size-limit": "^7.0.8",
     "tsdx": "^0.14.1",
     "tslib": "^2.3.1"

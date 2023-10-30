@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "start": "tsdx watch",
-    "build": "tsdx build",
+    "build": "rollup -c rollup.config.mjs && yarn tsc --emitDeclarationOnly --declaration src/index.ts --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --jsx react --esModuleInterop --strict --outDir ./dist/",
     "test": "yarn --cwd=../.. test --passWithNoTests",
     "lint": "tsdx lint",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
@@ -38,13 +38,21 @@
     "@plasmicapp/host": "1.0.76",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/node": "^14.0.26",
+    "@types/react": "^18.2.33",
+    "@types/react-dom": "^18.2.14",
+    "@rollup/plugin-commonjs": "^25.0.2",
+    "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^15.1.0",
+    "rollup": "^3.26.2",
+    "rollup-plugin-esbuild": "^5.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "size-limit": "^4.11.0",
-    "tsdx": "^0.14.1"
+    "tsdx": "^0.14.1",
+    "tslib": "^2.6.2",
+    "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@chakra-ui/react": "^2.2.8",
-    "react": ">=16.8.0"
+    "@chakra-ui/react": "^2.8.1"
   }
 }
