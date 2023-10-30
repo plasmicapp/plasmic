@@ -5,7 +5,7 @@ import { Registerable, registerComponentHelper } from "./utils";
 export const AntdInput = Input;
 export const AntdTextArea = Input.TextArea;
 export const AntdPassword = Input.Password;
-export const AntdInputNumber = InputNumber;
+export const AntdInputNumber: typeof InputNumber = InputNumber;
 
 export const inputHelpers = {
   states: {
