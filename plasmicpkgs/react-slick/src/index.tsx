@@ -2,26 +2,57 @@ import registerComponent, {
   ActionProps,
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import composeRefs from "@seznam/compose-react-refs";
-import { Button, Select } from "antd";
-import React, { forwardRef, Ref, useEffect, useRef } from "react";
+import { Button } from "antd";
+import React, {
+  ChangeEvent,
+  forwardRef,
+  Ref,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import Slider, { Settings } from "react-slick";
 
-const { Option } = Select;
+type SliderProps = Settings & {
+  arrowColor?: string;
+  editingSlide?: number;
+  sliderScopeClassName: string;
+};
+
+function getSlideInfo({
+  rows = 1,
+  slidesPerRow = 1,
+  editingSlide = 0,
+  children,
+}: SliderProps) {
+  const slidesCnt = Array.isArray(children) ? children.length : 1;
+
+  const slidesPerDot = rows * slidesPerRow;
+  const dotCount = Math.ceil(slidesCnt / slidesPerDot);
+  const currentDotIndex =
+    editingSlide >= dotCount ? dotCount - 1 : editingSlide;
+
+  return {
+    currentDotIndex,
+    slidesPerDot,
+    dotCount,
+    totalSlides: slidesCnt,
+  };
+}
 
 function CurrentSlideDropdown({ componentProps, studioOps }: ActionProps<any>) {
-  const editingSlide = componentProps.editingSlide ?? 0;
-  const slidesCnt =
-    componentProps.children.length ??
-    (componentProps.children.type === "img" ? 1 : 0);
+  const { dotCount, currentDotIndex } = getSlideInfo(componentProps);
 
-  const options = Array.from({ length: slidesCnt }, (_, i) => i).map((i) => {
-    return <Option value={i.toString()}>Slide {i + 1}</Option>;
+  const options = Array.from({ length: dotCount }, (_, i) => i).map((i) => {
+    return (
+      <option key={i} value={i.toString()}>
+        Slide {i}
+      </option>
+    );
   });
 
-  const handleChange = (value: string) => {
-    const slideIdx = Number(value);
-    studioOps.updateProps({ editingSlide: slideIdx % slidesCnt });
+  const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    studioOps.updateProps({ editingSlide: Number(e.target.value) });
   };
 
   return (
@@ -35,21 +66,20 @@ function CurrentSlideDropdown({ componentProps, studioOps }: ActionProps<any>) {
       }}
     >
       <div>Current slide:</div>
-      <Select
-        defaultValue={editingSlide.toString()}
+      <select
+        defaultValue={currentDotIndex.toString()}
         style={{ width: "100%" }}
         onChange={handleChange}
-        value={editingSlide.toString()}
+        value={currentDotIndex.toString()}
       >
         {options}
-      </Select>
+      </select>
     </div>
   );
 }
 
 function NavigateSlides({ componentProps, studioOps }: ActionProps<any>) {
-  const slidesCnt = componentProps.children.length;
-  const editingSlide = componentProps.editingSlide ?? 0;
+  const { dotCount, currentDotIndex } = getSlideInfo(componentProps);
 
   return (
     <div
@@ -64,7 +94,10 @@ function NavigateSlides({ componentProps, studioOps }: ActionProps<any>) {
       <Button
         style={{ width: "100%" }}
         onClick={() => {
-          const prevSlide = (editingSlide - 1 + slidesCnt) % slidesCnt;
+          const prevSlide =
+            currentDotIndex === 0
+              ? dotCount - 1
+              : (currentDotIndex - 1) % dotCount;
           studioOps.updateProps({ editingSlide: prevSlide });
         }}
       >
@@ -73,7 +106,7 @@ function NavigateSlides({ componentProps, studioOps }: ActionProps<any>) {
       <Button
         style={{ width: "100%" }}
         onClick={() => {
-          const nextSlide = (editingSlide + 1) % slidesCnt;
+          const nextSlide = (currentDotIndex + 1) % dotCount;
           studioOps.updateProps({ editingSlide: nextSlide });
         }}
       >
@@ -87,11 +120,19 @@ function OutlineMessage() {
   return <div>* To re-arrange slides, use the Outline panel</div>;
 }
 
-export const sliderMeta: ComponentMeta<Settings> = {
+export const sliderHelpers = {
+  states: {
+    currentSlide: {
+      onChangeArgsToValue: (_: number, newIndex: number) => newIndex,
+    },
+  },
+};
+
+export const sliderMeta: ComponentMeta<SliderProps> = {
   name: "hostless-slider",
   displayName: "Slider Carousel",
-  importName: "Slider",
-  importPath: "react-slick",
+  importName: "SliderWrapper",
+  importPath: "@plasmicpkgs/react-slick",
   description:
     "[See tutorial video](https://www.youtube.com/watch?v=GMgXLbNHX8c)",
   actions: [
@@ -107,7 +148,10 @@ export const sliderMeta: ComponentMeta<Settings> = {
       type: "button-action",
       label: "Append new slide",
       onClick: ({ componentProps, studioOps }: ActionProps<any>) => {
-        const slidesCnt = componentProps.children.length;
+        const { dotCount, slidesPerDot, totalSlides } =
+          getSlideInfo(componentProps);
+        const editingSlide =
+          totalSlides % slidesPerDot ? dotCount - 1 : dotCount;
         studioOps.appendToSlot(
           {
             type: "img",
@@ -118,22 +162,38 @@ export const sliderMeta: ComponentMeta<Settings> = {
           },
           "children"
         );
-        studioOps.updateProps({ editingSlide: slidesCnt });
+        studioOps.updateProps({ editingSlide });
       },
     },
     {
       type: "button-action",
       label: "Delete current slide",
-      onClick: ({
-        componentProps,
-        contextData,
-        studioOps,
-      }: ActionProps<any>) => {
-        const editingSlide = contextData.editingSlide ?? 0;
-        studioOps.removeFromSlotAt(editingSlide, "children");
-        const slidesCnt = componentProps.children.length - 1;
+      hidden: (ps) =>
+        (ps.children as any)?.type?.name === "CanvasSlotPlaceholder",
+      onClick: ({ componentProps, studioOps }: ActionProps<any>) => {
+        const { currentDotIndex, dotCount, slidesPerDot, totalSlides } =
+          getSlideInfo(componentProps);
+        studioOps.removeFromSlotAt(currentDotIndex * slidesPerDot, "children");
+        let newPos = currentDotIndex;
+        if (dotCount === 1) {
+          // not the only dot
+          newPos = 0;
+        } else if (currentDotIndex !== dotCount - 1) {
+          // not the last dot
+          if (slidesPerDot === 1) {
+            newPos = currentDotIndex - 1;
+          } else {
+            newPos = currentDotIndex;
+          }
+        } else {
+          // the last dot
+          newPos =
+            totalSlides % slidesPerDot === 1
+              ? currentDotIndex - 1
+              : currentDotIndex;
+        }
         studioOps.updateProps({
-          editingSlide: (editingSlide - 1 + slidesCnt) % slidesCnt,
+          editingSlide: newPos,
         });
       },
     },
@@ -142,6 +202,39 @@ export const sliderMeta: ComponentMeta<Settings> = {
       control: OutlineMessage,
     },
   ],
+  refActions: {
+    slickGoTo: {
+      displayName: "Jump to slide",
+      argTypes: [
+        {
+          name: "index",
+          displayName: "Slide index",
+          type: "number",
+        },
+        {
+          name: "dontAnimate",
+          displayName: "Animate?",
+          type: "boolean",
+        },
+      ],
+    },
+    slickNext: {
+      displayName: "Go to Next slide",
+      argTypes: [],
+    },
+    slickPause: {
+      displayName: "Pause",
+      argTypes: [],
+    },
+    slickPlay: {
+      displayName: "Play",
+      argTypes: [],
+    },
+    slickPrev: {
+      displayName: "Go to Previous slide",
+      argTypes: [],
+    },
+  },
   props: {
     children: {
       type: "slot",
@@ -165,6 +258,7 @@ export const sliderMeta: ComponentMeta<Settings> = {
       description:
         "Switch to the specified slide (first is 0). Only affects the editor, not the final page.",
       defaultValueHint: 0,
+      defaultValue: 0,
       editOnly: true,
       hidden: () => true,
     },
@@ -187,6 +281,16 @@ export const sliderMeta: ComponentMeta<Settings> = {
       type: "boolean",
       description: "Show next/prev arrows",
       defaultValueHint: true,
+    },
+    sliderScopeClassName: {
+      type: "styleScopeClass",
+      scopeName: "slider",
+    } as any,
+    arrowColor: {
+      type: "color",
+      description: "Color of next/prev arrow buttons",
+      defaultValueHint: "#000000",
+      hidden: (ps) => (ps.arrows === undefined ? false : !ps.arrows),
     },
     autoplay: {
       displayName: "Auto Play",
@@ -268,8 +372,10 @@ export const sliderMeta: ComponentMeta<Settings> = {
     initialSlide: {
       displayName: "Initial Slide",
       type: "number",
-      description: "Index of initial slide (first is 0)",
+      description:
+        "Index of the first visible slide (first is 0), accounting for multiple slides per view if applicable.",
       defaultValueHint: 0,
+      defaultValue: 0,
     },
     lazyLoad: {
       advanced: true,
@@ -405,8 +511,26 @@ export const sliderMeta: ComponentMeta<Settings> = {
       description: "Vertical slide mode",
       defaultValueHint: false,
     },
+    beforeChange: {
+      type: "eventHandler",
+      advanced: true,
+      argTypes: [{ name: "currentSlide", type: "number" }],
+    },
   },
-  isDefaultExport: true,
+  states: {
+    currentSlide: {
+      type: "writable",
+      valueProp: "editingSlide",
+      onChangeProp: "beforeChange",
+      variableType: "number",
+      ...sliderHelpers.states.currentSlide,
+    },
+  },
+  componentHelpers: {
+    helpers: sliderHelpers,
+    importName: "sliderHelpers",
+    importPath: "@plasmicpkgs/react-slick",
+  },
   defaultStyles: {
     width: "stretch",
     maxWidth: "100%",
@@ -414,32 +538,112 @@ export const sliderMeta: ComponentMeta<Settings> = {
   },
 };
 
-export const SliderWrapper = forwardRef(function SliderWrapper_(
-  {
-    editingSlide,
-    setControlContextData,
-    ...props
-  }: Settings & {
-    editingSlide?: number;
-    setControlContextData?: (data: {
-      editingSlide: number | undefined;
-    }) => void;
-  },
-  userRef?: Ref<Slider>
-) {
-  setControlContextData?.({ editingSlide: editingSlide });
-  const slider = useRef<Slider>(null);
+export function useDebounce<T>(value: T, delay?: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
   useEffect(() => {
-    if (editingSlide !== undefined) {
-      slider.current!.slickGoTo(editingSlide);
+    const timer = setTimeout(() => setDebouncedValue(value), delay || 500);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
+export type SliderMethods = Pick<
+  Slider,
+  "slickGoTo" | "slickNext" | "slickPause" | "slickPlay" | "slickPrev"
+>;
+
+export const SliderWrapper = forwardRef(function SliderWrapper_(
+  props: SliderProps,
+  userRef?: Ref<SliderMethods>
+) {
+  const {
+    editingSlide,
+    initialSlide,
+    arrowColor,
+    className,
+    sliderScopeClassName,
+    ...rest
+  } = props;
+  // "data-plasmic-canvas-envs" prop only exists in studio canvas
+  const isEditMode = (props as any)["data-plasmic-canvas-envs"] ? true : false;
+  const slider = useRef<Slider>(null);
+  const debouncedEditingSlide = useDebounce(editingSlide);
+
+  useEffect(() => {
+    if (debouncedEditingSlide !== undefined && isEditMode) {
+      slider.current?.slickGoTo(debouncedEditingSlide);
     }
-  }, [editingSlide]);
-  return <Slider ref={composeRefs(slider, userRef)} {...props} />;
+  }, [debouncedEditingSlide, isEditMode]);
+
+  useEffect(() => {
+    // passing the initialSlide prop directly to <Slider> does not work when inifinite: true and slidesPerRow: 3. So usingSlickGoTo instead
+    if (initialSlide === undefined) return;
+    slider.current?.slickGoTo(initialSlide, true);
+  }, [initialSlide]);
+
+  React.useImperativeHandle(
+    userRef,
+    () => ({
+      slickGoTo(index, dontAnimate) {
+        if (slider.current) {
+          const { slickGoTo } = slider.current;
+          slickGoTo(index, dontAnimate);
+        }
+      },
+      slickNext() {
+        if (slider.current) {
+          const { slickNext } = slider.current;
+          slickNext();
+        }
+      },
+      slickPause() {
+        if (slider.current) {
+          const { slickPause } = slider.current;
+          slickPause();
+        }
+      },
+      slickPlay() {
+        if (slider.current) {
+          const { slickPlay } = slider.current;
+          slickPlay();
+        }
+      },
+      slickPrev() {
+        if (slider.current) {
+          const { slickPrev } = slider.current;
+          slickPrev();
+        }
+      },
+    }),
+    []
+  );
+
+  const css = `
+  .${sliderScopeClassName} .slick-arrow:before {
+      color: ${arrowColor ?? "black"};
+    }
+  `;
+
+  return (
+    <>
+      <Slider
+        className={`${className} ${sliderScopeClassName}`}
+        ref={slider}
+        {...rest}
+      />
+      <style dangerouslySetInnerHTML={{ __html: css }} />
+    </>
+  );
 });
 
 export function registerSlider(
   loader?: { registerComponent: typeof registerComponent },
-  customSliderMeta?: ComponentMeta<Settings>
+  customSliderMeta?: ComponentMeta<SliderProps>
 ) {
   if (loader) {
     loader.registerComponent(SliderWrapper, customSliderMeta ?? sliderMeta);
