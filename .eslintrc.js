@@ -47,6 +47,11 @@ module.exports = {
         message:
           "Please use reactPrompt() instead; window.prompt() does not work well with app hosting",
       },
+      {
+        property: "findOneOrFail",
+        message:
+          "Please prefer `findExactlyOne` instead, to ensure no more than one row will match",
+      },
     ],
     "no-restricted-globals": [
       "error",
