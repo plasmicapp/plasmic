@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/react-awesome-reveal",
-  "version": "3.8.177",
+  "version": "3.8.178",
   "description": "Plasmic registration call for react-awesome-reveal",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

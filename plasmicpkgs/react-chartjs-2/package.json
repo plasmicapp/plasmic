@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/react-chartjs-2",
-  "version": "1.0.78",
+  "version": "1.0.79",
   "description": "Chart.js 2.x components for React",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

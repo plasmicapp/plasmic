@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/react-quill",
-  "version": "1.0.31",
+  "version": "1.0.32",
   "description": "Plasmic registration call for react-quill WYSIWYG Editor",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

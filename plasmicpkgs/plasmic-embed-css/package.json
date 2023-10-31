@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-embed-css",
-  "version": "0.1.161",
+  "version": "0.1.162",
   "description": "Plasmic embed css code components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
