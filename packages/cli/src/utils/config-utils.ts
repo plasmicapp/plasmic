@@ -215,7 +215,9 @@ export function createProjectConfig(base: {
     projectId: base.projectId,
     projectApiToken: base.projectApiToken,
     projectName: base.projectName,
-    version: base.version,
+    // Indirect dependencies will have an explicit base.version but
+    // we don't actually want to pin to that version in plasmic.json
+    version: base.indirect ? ">0.0.0" : base.version,
     cssFilePath: base.cssFilePath,
     components: [],
     icons: [],

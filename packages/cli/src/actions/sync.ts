@@ -210,14 +210,16 @@ export async function sync(
 
   const projectSyncParams = projectWithVersion.length
     ? projectWithVersion
-    : context.config.projects.map((p) => ({
-        projectId: p.projectId,
-        branchName: p.projectBranchName ?? "main",
-        versionRange: p.version,
-        componentIdOrNames: undefined, // Get all components!
-        projectApiToken: p.projectApiToken,
-        indirect: !!p.indirect,
-      }));
+    : context.config.projects
+        .filter((p) => !p.indirect)
+        .map((p) => ({
+          projectId: p.projectId,
+          branchName: p.projectBranchName ?? "main",
+          versionRange: p.version,
+          componentIdOrNames: undefined, // Get all components!
+          projectApiToken: p.projectApiToken,
+          indirect: !!p.indirect,
+        }));
 
   // Short-circuit if nothing to sync
   if (projectSyncParams.length === 0) {
@@ -401,13 +403,18 @@ async function checkExternalPkgs(
   opts: SyncArgs,
   pkgs: string[]
 ) {
-  const missingPkgs = pkgs.filter((pkg) => {
-    const installedPkg = findInstalledVersion(context.config, baseDir, pkg);
-    return !installedPkg;
+  const missingPkgs = pkgs.filter((pkgSpec) => {
+    const [pkg, version] = pkgSpec.split("@");
+    const installedVersion = findInstalledVersion(context.config, baseDir, pkg);
+    if (version) {
+      return version !== installedVersion;
+    } else {
+      return !installedVersion;
+    }
   });
   if (missingPkgs.length > 0) {
     const upgrade = await confirmWithUser(
-      `The following packages aren't installed but are required by some projects, would you like to install them? ${missingPkgs.join(
+      `The following packages aren't installed or are outdated, but are required by some projects; would you like to install them? ${missingPkgs.join(
         ", "
       )}`,
       opts.yes
