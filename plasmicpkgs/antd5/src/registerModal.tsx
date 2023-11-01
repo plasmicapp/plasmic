@@ -1,6 +1,6 @@
 import type { StyleSection } from "@plasmicapp/host/registerComponent";
 import { Modal } from "antd";
-import React, { ReactElement, useState, useMemo } from "react";
+import React, { ReactElement, useMemo, useState } from "react";
 import { Registerable, registerComponentHelper } from "./utils";
 
 // hide sizing section, as width can only be set via a width prop, and not css!
@@ -176,6 +176,13 @@ export function registerModal(loader?: Registerable) {
         type: "eventHandler",
         argTypes: [{ name: "open", type: "boolean" }],
       } as any,
+      maskClosable: {
+        type: "boolean",
+        displayName: "Close modal on outside click?",
+        description:
+          "Whether to close the modal when user clicks outside the modal",
+        defaultValueHint: true,
+      },
       wrapClassName: {
         type: "class",
         displayName: "Modal overlay",
