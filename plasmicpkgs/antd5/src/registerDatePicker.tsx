@@ -80,6 +80,7 @@ export const datePickerHelpers = {
   states: {
     value: {
       onChangeArgsToValue: (value: string) => (value ? value : undefined),
+      hidden: (ps: any) => !!ps.__plasmicFormField,
     },
   },
 };

@@ -32,6 +32,7 @@ const COMMON_STATES = {
     valueProp: "value",
     variableType: "text",
     onChangeProp: "onChange",
+    hidden: (ps: any) => !!ps.__plasmicFormField,
   },
 } as const;
 

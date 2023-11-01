@@ -1,9 +1,9 @@
 import { DatePicker } from "antd";
+import type { Dayjs } from "dayjs";
+import dayjs from "dayjs";
+import kebabCase from "lodash/kebabCase";
 import React, { useMemo } from "react";
 import { capitalize, Registerable, registerComponentHelper } from "./utils";
-import dayjs from "dayjs";
-import type { Dayjs } from "dayjs";
-import kebabCase from "lodash/kebabCase";
 
 const { RangePicker } = DatePicker;
 
@@ -87,13 +87,13 @@ export function AntdDateRangePicker(
     ? `.${popupScopeClassName}`
     : "";
   const css = `
-    @media(max-width: 900px) { 
-      .ant-picker-panels{ 
+    @media(max-width: 900px) {
+      .ant-picker-panels{
         flex-direction: column;
       }
     }
-    
-    @media(max-width: 500px) { 
+
+    @media(max-width: 500px) {
       ${popupScopeClassNameSelector}.ant-picker-dropdown {
         top: 20px !important;
         left: 10px !important;
@@ -115,15 +115,15 @@ export function AntdDateRangePicker(
       .${className} .ant-picker-input > input {
         font-size: 16px !important;
       }
-      
+
       ${popupScopeClassNameSelector} .ant-picker-header-view {
         line-height: unset !important;
       }
-      
+
       ${popupScopeClassNameSelector} .ant-picker-content {
         height: unset !important;
       }
-      
+
       ${popupScopeClassNameSelector} .ant-picker-time-panel-column {
         height: 100px;
       }
@@ -178,9 +178,11 @@ export const dateRangePickerHelpers = {
   states: {
     startDate: {
       onChangeArgsToValue: (value: string[]) => value[0],
+      hidden: (ps: any) => !!ps.__plasmicFormField,
     },
     endDate: {
       onChangeArgsToValue: (value: string[]) => value[1],
+      hidden: (ps: any) => !!ps.__plasmicFormField,
     },
   },
 };

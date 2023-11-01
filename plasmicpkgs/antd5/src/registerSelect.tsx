@@ -1,11 +1,11 @@
 import { Select } from "antd";
 import React, { ComponentProps } from "react";
+import { reactNodeToString } from "./react-utils";
 import {
   Registerable,
   registerComponentHelper,
   traverseReactEltTree,
 } from "./utils";
-import { reactNodeToString } from "./react-utils";
 
 export const AntdOption: typeof Select.Option = Select.Option;
 export const AntdOptionGroup: typeof Select.OptGroup = Select.OptGroup;
@@ -288,6 +288,7 @@ export function registerSelect(loader?: Registerable) {
         valueProp: "value",
         onChangeProp: "onChange",
         variableType: "text",
+        hidden: (ps: any) => !!ps.__plasmicFormField,
       },
     },
     ...({ trapsSelection: true } as any),

@@ -1,5 +1,5 @@
-import React, { ReactNode } from "react";
 import { ColorPicker } from "antd";
+import React from "react";
 import { Registerable, registerComponentHelper } from "./utils";
 
 export function AntdColorPicker({
@@ -79,6 +79,7 @@ export function registerColorPicker(loader?: Registerable) {
         valueProp: "value",
         onChangeProp: "onChange",
         variableType: "text",
+        hidden: (ps: any) => !!ps.__plasmicFormField,
       },
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerColorPicker",

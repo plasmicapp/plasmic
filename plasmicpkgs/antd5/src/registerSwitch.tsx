@@ -44,6 +44,7 @@ export function registerSwitch(loader?: Registerable) {
         valueProp: "checked",
         onChangeProp: "onChange",
         variableType: "boolean",
+        hidden: (ps: any) => !!ps.__plasmicFormField,
       },
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerSwitch",

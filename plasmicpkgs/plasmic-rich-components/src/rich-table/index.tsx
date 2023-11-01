@@ -162,6 +162,8 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
       valueProp: "selectedRowKey",
       onChangeProp: "onRowSelectionChanged",
       variableType: "text",
+      hidden: (ps) =>
+        !(ps.canSelectRows === "click" || ps.canSelectRows === "single"),
       ...tableHelpers.states.selectedRowKey,
     },
     selectedRowKeys: {
@@ -169,18 +171,22 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
       valueProp: "selectedRowKeys",
       onChangeProp: "onRowSelectionChanged",
       variableType: "array",
+      hidden: (ps) => !(ps.canSelectRows === "multiple"),
       ...tableHelpers.states.selectedRowKeys,
     },
     selectedRow: {
       type: "readonly",
       onChangeProp: "onRowSelectionChanged",
       variableType: "object",
+      hidden: (ps) =>
+        !(ps.canSelectRows === "click" || ps.canSelectRows === "single"),
       ...tableHelpers.states.selectedRow,
     },
     selectedRows: {
       type: "readonly",
       onChangeProp: "onRowSelectionChanged",
       variableType: "array",
+      hidden: (ps) => !(ps.canSelectRows === "multiple"),
       ...tableHelpers.states.selectedRows,
     },
   },

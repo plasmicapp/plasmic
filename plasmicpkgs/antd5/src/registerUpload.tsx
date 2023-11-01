@@ -247,6 +247,7 @@ export function registerUpload(loader?: Registerable) {
         valueProp: "files",
         variableType: "array",
         onChangeProp: "onFilesChange",
+        hidden: (ps: any) => !!ps.__plasmicFormField,
       },
     },
     ...({ trapsSelection: true } as any),

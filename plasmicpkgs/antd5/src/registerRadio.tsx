@@ -215,6 +215,7 @@ export function registerRadio(loader?: Registerable) {
         valueProp: "value",
         onChangeProp: "onChange",
         variableType: "text",
+        hidden: (ps: any) => !!ps.__plasmicFormField,
       },
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerRadio",

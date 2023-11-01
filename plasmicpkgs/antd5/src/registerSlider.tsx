@@ -428,6 +428,7 @@ export function registerSlider(loader?: Registerable) {
         editOnly: true,
         uncontrolledProp: "defaultValue",
         description: "The default value of the slider",
+        hidden: (ps: any) => !!ps.__plasmicFormField,
       },
       onChange: {
         type: "eventHandler",
@@ -447,6 +448,7 @@ export function registerSlider(loader?: Registerable) {
         valueProp: "value",
         onChangeProp: "onChange",
         variableType: "text",
+        hidden: (ps: any) => !!ps.__plasmicFormField,
       },
     },
     importPath: "@plasmicpkgs/antd5/skinny/registerSlider",
