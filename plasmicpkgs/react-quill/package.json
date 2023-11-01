@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/react-quill",
-  "version": "1.0.33",
+  "version": "1.0.34",
   "description": "Plasmic registration call for react-quill WYSIWYG Editor",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,8 +28,8 @@
     "analyze": "size-limit --why"
   },
   "devDependencies": {
-    "@plasmicapp/data-sources": "0.1.134",
-    "@plasmicapp/host": "1.0.177",
+    "@plasmicapp/data-sources": "0.1.135",
+    "@plasmicapp/host": "1.0.178",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/node": "^14.0.26",
     "@types/react": "^18.2.33",

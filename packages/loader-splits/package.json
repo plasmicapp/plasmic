@@ -1,5 +1,5 @@
 {
-  "version": "1.0.44",
+  "version": "1.0.45",
   "license": "MIT",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
@@ -38,7 +38,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/loader-fetcher": "1.0.38",
+    "@plasmicapp/loader-fetcher": "1.0.39",
     "@types/json-logic-js": "^1.2.1"
   },
   "dependencies": {
