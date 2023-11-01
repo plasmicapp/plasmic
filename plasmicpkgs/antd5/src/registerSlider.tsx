@@ -1,10 +1,10 @@
-import { Slider } from "antd";
-import React, { ReactElement, useMemo } from "react";
-import { capitalize, Registerable, registerComponentHelper } from "./utils";
-import kebabCase from "lodash/kebabCase";
 import { PropType } from "@plasmicapp/host";
+import { Slider } from "antd";
 import type { SliderTooltipProps } from "antd/lib/slider";
 import type { TooltipPlacement } from "antd/lib/tooltip";
+import kebabCase from "lodash/kebabCase";
+import React, { ReactElement, useMemo } from "react";
+import { Registerable, registerComponentHelper } from "./utils";
 
 export type StylableMark = {
   mark: number;
@@ -53,8 +53,8 @@ export interface AntdRangeSliderProps extends AntdSliderBaseProps {
   valueMax?: number;
   defaultValueMin?: number;
   defaultValueMax?: number;
-  onChange: (value?: [number, number]) => void;
-  onAfterChange: (value?: [number, number]) => void;
+  onChange: (value?: number[]) => void;
+  onAfterChange: (value?: number[]) => void;
 }
 
 export function useMarks({

@@ -19,7 +19,7 @@
     }
   ],
   "scripts": {
-    "build": "tsup src/index.tsx --dts --format esm,cjs --target es2019",
+    "build": "tsup-node src/index.tsx --dts --format esm,cjs --target es2019",
     "test": "yarn --cwd=../.. test --passWithNoTests",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "size": "size-limit",

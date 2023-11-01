@@ -4,25 +4,23 @@
   "description": "Plasmic Sanity.io components.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "module": "dist/plasmic-sanity-io.esm.js",
+  "module": "dist/index.mjs",
   "files": [
     "dist"
   ],
   "size-limit": [
     {
-      "path": "dist/plasmic-sanity-io.cjs.production.min.js",
+      "path": "dist/index.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/plasmic-sanity-io.esm.js",
+      "path": "dist/index.mjs",
       "limit": "10 KB"
     }
   ],
   "scripts": {
-    "build": "tsdx build",
-    "start": "tsdx watch",
+    "build": "tsup-node src/index.tsx --dts --format esm,cjs --target es2019",
     "test": "yarn --cwd=../.. test --passWithNoTests",
-    "lint": "tsdx lint",
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
     "size": "size-limit",
     "analyze": "size-limit --why"
@@ -35,8 +33,9 @@
     "@types/node": "^17.0.14",
     "@types/react": "^18.2.33",
     "size-limit": "^7.0.8",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.3.1"
+    "tslib": "^2.3.1",
+    "tsup": "^7.2.0",
+    "typescript": "^5.2.2"
   },
   "dependencies": {
     "@sanity/client": "^6.2.0",
