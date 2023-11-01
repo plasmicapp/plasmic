@@ -6,9 +6,15 @@ export interface IframeProps {
   src: string;
   preview?: boolean;
   className?: string;
+  onLoad?: React.ComponentProps<"iframe">["onLoad"];
 }
 
-export default function Iframe({ preview, src, className }: IframeProps) {
+export default function Iframe({
+  preview,
+  src,
+  className,
+  onLoad,
+}: IframeProps) {
   const isEditing = useContext(PlasmicCanvasContext);
   if (isEditing && !preview) {
     return (
@@ -36,7 +42,7 @@ export default function Iframe({ preview, src, className }: IframeProps) {
       </div>
     );
   }
-  return <iframe src={src} className={className} />;
+  return <iframe src={src} className={className} onLoad={onLoad} />;
 }
 
 export const iframeMeta: ComponentMeta<IframeProps> = {
@@ -52,6 +58,10 @@ export const iframeMeta: ComponentMeta<IframeProps> = {
     preview: {
       type: "boolean",
       description: "Load the iframe while editing in Plasmic Studio",
+    },
+    onLoad: {
+      type: "eventHandler",
+      argTypes: [{ name: "event", type: "object" }],
     },
   },
   defaultStyles: {
