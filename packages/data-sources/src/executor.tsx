@@ -1,10 +1,11 @@
-import { PlasmicDataSourceContextValue } from '@plasmicapp/data-sources-context';
-import fetch from '@plasmicapp/isomorphic-unfetch';
-import { wrapLoadingFetcher } from '@plasmicapp/query';
-import stringify from 'fast-stringify';
-import { ManyRowsResult, Pagination, SingleRowResult } from './types';
+import { PlasmicDataSourceContextValue } from "@plasmicapp/data-sources-context";
+import fetch from "@plasmicapp/isomorphic-unfetch";
+import { wrapLoadingFetcher } from "@plasmicapp/query";
+import stringify from "fast-stringify";
+import { addPlaceholdersToUserArgs } from "./placeholders";
+import { ManyRowsResult, Pagination, SingleRowResult } from "./types";
 
-const DEFAULT_HOST = 'https://data.plasmic.app';
+const DEFAULT_HOST = "https://data.plasmic.app";
 
 export interface DataOp {
   sourceId: string;
@@ -17,20 +18,21 @@ export interface DataOp {
 
 interface ExecuteOpts {
   userAuthToken?: string;
-  user?: PlasmicDataSourceContextValue['user'];
+  user?: PlasmicDataSourceContextValue["user"];
   paginate?: Pagination;
 }
 
 const UNAUTHORIZED_MESSAGE =
-  'You do not have permission to perform this operation. Login to get access or contact the app owner to get access.';
+  "You do not have permission to perform this operation. Login to get access or contact the app owner to get access.";
 
 export async function executePlasmicDataOp<
   T extends SingleRowResult | ManyRowsResult
 >(op: DataOp, opts?: ExecuteOpts) {
   const func = getConfig(
-    '__PLASMIC_EXECUTE_DATA_OP',
+    "__PLASMIC_EXECUTE_DATA_OP",
     _executePlasmicDataOp
   ) as typeof _executePlasmicDataOp;
+  op.userArgs = addPlaceholdersToUserArgs(op.userArgs);
   const res = await wrapLoadingFetcher(func)(op, opts);
   return res as T;
 }
@@ -45,15 +47,15 @@ async function _executePlasmicDataOp<
     }
   }
 
-  const host = getConfig('__PLASMIC_DATA_HOST', DEFAULT_HOST);
+  const host = getConfig("__PLASMIC_DATA_HOST", DEFAULT_HOST);
 
   const url = `${host}/api/v1/server-data/sources/${op.sourceId}/execute`;
   const resp = await fetch(url, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...(opts?.userAuthToken && {
-        'x-plasmic-data-user-auth-token': opts.userAuthToken,
+        "x-plasmic-data-user-auth-token": opts.userAuthToken,
       }),
     },
     body: stringify({
@@ -70,7 +72,7 @@ async function _executePlasmicDataOp<
 }
 
 function getConfig<T>(key: string, defaultValue: T) {
-  if (typeof globalThis === 'undefined') {
+  if (typeof globalThis === "undefined") {
     return defaultValue;
   } else {
     return (globalThis as any)[key] ?? defaultValue;
