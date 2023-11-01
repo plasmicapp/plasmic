@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/react-web-runtime",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "files": [
     "jsx-runtime",
     "jsx-dev-runtime"
@@ -14,7 +14,7 @@
     "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
   },
   "devDependencies": {
-    "@plasmicapp/react-web": "0.2.287",
+    "@plasmicapp/react-web": "0.2.288",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-replace": "^5.0.4",
