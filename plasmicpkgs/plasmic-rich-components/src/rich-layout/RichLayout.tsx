@@ -1,10 +1,10 @@
 import { LogoutOutlined } from "@ant-design/icons";
 import type { MenuDataItem, ProLayoutProps } from "@ant-design/pro-components";
 import { ProConfigProvider, ProLayout } from "@ant-design/pro-components";
+import { usePlasmicLink } from "@plasmicapp/host";
 import { ConfigProvider, Dropdown, theme } from "antd";
 import React, { ReactNode, useEffect, useState } from "react";
 import { isLight, useIsClient } from "../common";
-import { usePlasmicLink } from "@plasmicapp/host";
 import { AnchorLink } from "../widgets";
 
 function omitUndefined(x: object) {
@@ -182,7 +182,10 @@ export function RichLayout({
           // *and* the text is just dark as well.
           // Haven't yet been able to unravel the pro components code to figure out the proper way to do this, so just
           // bluntly specifying tokens here, as recommended in some GitHub issue.
-          sider: layoutColorOverrides,
+          sider: omitUndefined({
+            colorMenuBackground: navBgColor,
+            ...layoutColorOverrides,
+          }),
         }}
         // Tweak defaults. ProLayout is janky and has terrible docs!
         layout={layoutProps.layout ?? "top"}
