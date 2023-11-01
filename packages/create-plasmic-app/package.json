@@ -18,7 +18,7 @@
     "build": "eslint 'src/**' && tsc",
     "run-cpa": "yarn build && ts-node run-cpa.ts",
     "create-plasmic-app": "ts-node src/index.ts",
-    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "@types/findup-sync": "^2.0.2",

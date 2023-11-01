@@ -49,7 +49,7 @@
     "test": "yarn --cwd=../.. test",
     "coverage": "yarn --cwd=../.. test --coverage --passWithNoTests",
     "lint": "eslint",
-    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
+    "prepublishOnly": "npm run build",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },

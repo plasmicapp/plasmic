@@ -16,7 +16,7 @@
     "build": "rollup -c rollup.config.mjs && yarn tsc --emitDeclarationOnly --declaration src/index.ts --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --jsx react --esModuleInterop --strict --outDir ./dist/",
     "test": "yarn --cwd=../.. test --passWithNoTests",
     "lint": "tsdx lint",
-    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
+    "prepublishOnly": "npm run build",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },

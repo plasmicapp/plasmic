@@ -17,7 +17,7 @@
     "test": "yarn --cwd=../.. test",
     "coverage": "yarn --cwd=../.. test --coverage --passWithNoTests",
     "lint": "eslint",
-    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "@types/react": "^18.2.33"

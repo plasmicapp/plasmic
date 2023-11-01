@@ -55,7 +55,7 @@
     "test": "jest packages/loader-nextjs --config=../../jest.config.js --passWithNoTests",
     "coverage": "yarn test --coverage",
     "lint": "eslint",
-    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
+    "prepublishOnly": "npm run build",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },

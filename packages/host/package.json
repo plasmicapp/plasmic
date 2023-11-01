@@ -45,7 +45,7 @@
     "postbuild:registerTrait": "node ../../print-module-api.js ./packages/host/registerTrait/dist/index.cjs.js > registerTrait-api.txt",
     "test": "yarn --cwd=../.. test --passWithNoTests",
     "lint": "eslint",
-    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
+    "prepublishOnly": "npm run build",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },

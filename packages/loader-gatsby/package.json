@@ -31,7 +31,7 @@
     "build:gatsby-node": "node ../../build.mjs src/gatsby-node.ts --no-esm",
     "build:gatsby-ssr": "node ../../build.mjs src/gatsby-ssr.ts --no-esm",
     "yalcp": "yalc publish --push",
-    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "gatsby",

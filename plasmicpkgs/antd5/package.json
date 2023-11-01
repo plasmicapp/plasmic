@@ -48,7 +48,7 @@
   ],
   "scripts": {
     "build": "rollup -c rollup.config.mjs && yarn tsc --emitDeclarationOnly --declaration src/index.ts --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --jsx react --lib dom,esnext --esModuleInterop --strict --outDir ./dist/ && cp ./dist/*.d.ts skinny/ && rm skinny/index.d.ts",
-    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
+    "prepublishOnly": "npm run build",
     "clean": "rm -rf dist/ skinny/*.ts skinny/*.map skinny/*.js",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",

@@ -21,7 +21,7 @@
   "scripts": {
     "build": "rollup -c rollup.config.mjs && yarn tsc --emitDeclarationOnly --declaration src/index.tsx --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --jsx react --lib dom,esnext --esModuleInterop --strict --outDir ./dist/",
     "test": "yarn --cwd=../.. test --passWithNoTests",
-    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
+    "prepublishOnly": "npm run build",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },

@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
+    "prepublishOnly": "npm run build"
   },
   "private": true,
   "dependencies": {

@@ -15,7 +15,7 @@
     "build": "yarn build:types && yarn build:index",
     "build:types": "yarn tsc",
     "build:index": "node ../../build.mjs src/index.ts",
-    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build"
+    "prepublishOnly": "npm run build"
   },
   "files": [
     "dist"
