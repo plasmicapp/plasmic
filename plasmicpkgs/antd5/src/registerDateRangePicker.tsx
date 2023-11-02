@@ -5,6 +5,12 @@ import kebabCase from "lodash/kebabCase";
 import React, { useMemo } from "react";
 import { capitalize, Registerable, registerComponentHelper } from "./utils";
 
+import localeData from "dayjs/plugin/localeData";
+import weekday from "dayjs/plugin/weekday";
+
+dayjs.extend(weekday);
+dayjs.extend(localeData);
+
 const { RangePicker } = DatePicker;
 
 function getDayjsRange(dateRange: any): [Dayjs | null, Dayjs | null] {
