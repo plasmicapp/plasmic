@@ -84,12 +84,15 @@ async function ensureRequiredPackages(
   const confirmInstall = async (
     pkg: string,
     requiredVersion: string,
+    currentVersion: string | undefined,
     opts: { global: boolean; dev: boolean }
   ) => {
     let success = false;
     const command = installCommand(context.config, pkg, baseDir, opts);
     const upgrade = await confirmWithUser(
-      `A more recent version of ${pkg} >=${requiredVersion} is required. Would you like to upgrade via "${command}"?`,
+      currentVersion
+        ? `A more recent version of ${pkg} >=${requiredVersion} is required (you currently have ${currentVersion}). Would you like to upgrade via "${command}"?`
+        : `You need ${pkg} >=${requiredVersion} to proceed.  Would you like to install via "${command}"?`,
       yes
     );
     if (upgrade) {
@@ -106,10 +109,15 @@ async function ensureRequiredPackages(
   const cliVersion = getCliVersion();
   if (!cliVersion || semver.gt(requireds["@plasmicapp/cli"], cliVersion)) {
     const isGlobal = isCliGloballyInstalled(context.rootDir);
-    await confirmInstall("@plasmicapp/cli", requireds["@plasmicapp/cli"], {
-      global: isGlobal,
-      dev: true,
-    });
+    await confirmInstall(
+      "@plasmicapp/cli",
+      requireds["@plasmicapp/cli"],
+      cliVersion,
+      {
+        global: isGlobal,
+        dev: true,
+      }
+    );
 
     logger.info(
       chalk.bold("@plasmicapp/cli has been upgraded; please try again!")
@@ -131,6 +139,7 @@ async function ensureRequiredPackages(
     await confirmInstall(
       "@plasmicapp/react-web",
       requireds["@plasmicapp/react-web"],
+      reactWebVersion,
       { global: false, dev: false }
     );
   }
@@ -149,6 +158,7 @@ async function ensureRequiredPackages(
       await confirmInstall(
         "@plasmicapp/react-web-runtime",
         requireds["@plasmicapp/react-web-runtime"],
+        runtimeVersion,
         { global: false, dev: false }
       );
     }
@@ -403,15 +413,26 @@ async function checkExternalPkgs(
   opts: SyncArgs,
   pkgs: string[]
 ) {
-  const missingPkgs = pkgs.filter((pkgSpec) => {
-    const [pkg, version] = pkgSpec.split("@");
-    const installedVersion = findInstalledVersion(context.config, baseDir, pkg);
-    if (version) {
-      return version !== installedVersion;
-    } else {
-      return !installedVersion;
-    }
-  });
+  const missingPkgs = pkgs
+    .map((pkgSpec) => {
+      const [pkg, version] = pkgSpec.split("@");
+      const installedVersion = findInstalledVersion(
+        context.config,
+        baseDir,
+        pkg
+      );
+      if (!installedVersion) {
+        // Not installed
+        return pkg;
+      } else if (version) {
+        // Installed, so check against requested version; upgrade if
+        // requested version is greater than installed version
+        return semver.gt(version, installedVersion) ? pkg : undefined;
+      } else {
+        return undefined;
+      }
+    })
+    .filter((x): x is string => !!x);
   if (missingPkgs.length > 0) {
     const upgrade = await confirmWithUser(
       `The following packages aren't installed or are outdated, but are required by some projects; would you like to install them? ${missingPkgs.join(
