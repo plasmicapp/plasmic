@@ -627,9 +627,6 @@ export const SliderWrapper = forwardRef(function SliderWrapper_(
   .${sliderScopeClassName} .slick-arrow:before {
       color: ${arrowColor ?? "black"};
     }
-  .${sliderScopeClassName} .slick-slide {
-    line-height: 0;
-  }
   `;
 
   return (
