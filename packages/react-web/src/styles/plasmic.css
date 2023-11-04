@@ -1,19 +1,23 @@
-.__wab_flex-container {
+.__wab_flex-container,
+.ρfc {
   display: flex;
   flex: 1;
   align-self: stretch;
   pointer-events: none;
 }
 
-.__wab_flex-container > * {
+.__wab_flex-container > *,
+.ρfc > * {
   pointer-events: auto;
 }
 
-.__wab_slot {
+.__wab_slot,
+.ρs {
   display: contents;
 }
 
-.__wab_slot-string-wrapper {
+.__wab_slot-string-wrapper,
+.ρsw {
   position: relative;
 }
 
@@ -29,7 +33,8 @@
   flex-shrink: 0;
 }
 
-.__wab_slot > .__wab_img-wrapper {
+.__wab_slot > .__wab_img-wrapper,
+.ρs > .__wab_img-wrapper {
   display: block;
 }
 

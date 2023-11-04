@@ -31,7 +31,9 @@ export function renderPlasmicSlot<
   // container (you cannot apply margin to just a text node).
   const maybeString = maybeAsString(content);
   if (maybeString) {
-    content = <span className="__wab_slot-string-wrapper">{maybeString}</span>;
+    content = (
+      <span className="__wab_slot-string-wrapper ρsw">{maybeString}</span>
+    );
   }
 
   const nonEmptyProps = Object.keys(rest).filter((p) => !!(rest as any)[p]);
@@ -43,7 +45,7 @@ export function renderPlasmicSlot<
 
   return React.createElement(
     as || "span",
-    mergeProps({ className: "__wab_slot" }, rest),
+    mergeProps({ className: "__wab_slot ρs" }, rest),
     content
   );
 }

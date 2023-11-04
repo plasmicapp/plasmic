@@ -118,7 +118,7 @@ export function wrapFlexContainerChildren(
   // otherwise if we toggle between with and without gap, React reconciliation
   // will blow away the children tree and all state if we switch from having
   // a wrapper and not.
-  const className = hasGap ? "__wab_flex-container" : "__wab_passthrough";
+  const className = hasGap ? "__wab_flex-container ρfc" : "__wab_passthrough";
   if (!children) {
     return null;
   } else if (Array.isArray(children)) {
