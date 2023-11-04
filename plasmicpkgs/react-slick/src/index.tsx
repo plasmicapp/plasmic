@@ -624,8 +624,18 @@ export const SliderWrapper = forwardRef(function SliderWrapper_(
   );
 
   const css = `
-  .${sliderScopeClassName} .slick-arrow:before {
+    .${sliderScopeClassName} .slick-arrow:before {
       color: ${arrowColor ?? "black"};
+    }
+    .${sliderScopeClassName} .slick-slide img:only-child {
+      ${
+        /* NOTE: this is otherwise explicitly set to "block" by react-slick  (which should also fix this issue but somehow doesn't.).  */ ""
+      }
+      ${
+        /* This style override is added to fix a well-known issue with images inside divs. https://stackoverflow.com/questions/5804256/image-inside-div-has-extra-space-below-the-image  */ ""
+      }
+      display: inline-block;
+      vertical-align: top;
     }
   `;
 
