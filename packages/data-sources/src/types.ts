@@ -20,15 +20,18 @@ export interface TableFieldSchema {
   type: TableFieldType;
   readOnly: boolean;
   primaryKey?: boolean;
+  options?: string[];
 }
 
 export type TableFieldType =
-  | 'string'
-  | 'boolean'
-  | 'number'
-  | 'date'
-  | 'datetime'
-  | 'unknown';
+  | "string"
+  | "boolean"
+  | "number"
+  | "date"
+  | "datetime"
+  | "enum"
+  | "json"
+  | "unknown";
 
 export interface SingleRowResult<T = any> {
   data: T;
