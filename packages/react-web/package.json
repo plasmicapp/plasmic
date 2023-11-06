@@ -1,6 +1,6 @@
 {
   "name": "@plasmicapp/react-web",
-  "version": "0.2.292",
+  "version": "0.2.293",
   "description": "plasmic library for rendering in the presentational style",
   "main": "dist/index.cjs.js",
   "types": "dist/index.d.ts",
@@ -90,7 +90,7 @@
     "@plasmicapp/data-sources": "0.1.136",
     "@plasmicapp/data-sources-context": "0.1.18",
     "@plasmicapp/host": "1.0.178",
-    "@plasmicapp/loader-splits": "1.0.45",
+    "@plasmicapp/loader-splits": "1.0.46",
     "@plasmicapp/prepass": "1.0.11",
     "@plasmicapp/query": "0.1.75",
     "@react-aria/checkbox": "^3.11.2",
