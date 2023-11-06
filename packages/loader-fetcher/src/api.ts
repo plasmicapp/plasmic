@@ -1,4 +1,4 @@
-import fetch from "@plasmicapp/isomorphic-unfetch";
+import unfetch from "@plasmicapp/isomorphic-unfetch";
 
 export interface ComponentMeta {
   id: string;
@@ -132,13 +132,18 @@ export const isBrowser =
 
 export class Api {
   private host: string;
+  private fetch: typeof globalThis.fetch;
   constructor(
     private opts: {
       projects: { id: string; token: string }[];
       host?: string;
+      nativeFetch?: boolean;
     }
   ) {
     this.host = opts.host ?? "https://codegen.plasmic.app";
+    this.fetch = (
+      opts.nativeFetch && globalThis.fetch ? globalThis.fetch : unfetch
+    ).bind(globalThis);
   }
 
   async fetchLoaderData(
@@ -173,7 +178,7 @@ export class Api {
     const url = `${this.host}/api/v1/loader/code/${
       preview ? "preview" : "published"
     }?${query}`;
-    const resp = await fetch(url, {
+    const resp = await this.fetch(url, {
       method: "GET",
       headers: this.makeGetHeaders(),
     });
@@ -213,7 +218,7 @@ export class Api {
       ["embedHydrate", embedHydrate ? "1" : "0"],
       ["hydrate", hydrate ? "1" : "0"],
     ]).toString();
-    const resp = await fetch(`${this.host}/api/v1/loader/html?${query}`, {
+    const resp = await this.fetch(`${this.host}/api/v1/loader/html?${query}`, {
       method: "GET",
       headers: this.makeGetHeaders(),
     });

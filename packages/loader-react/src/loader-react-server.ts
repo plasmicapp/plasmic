@@ -51,6 +51,11 @@ export interface InitOptions {
    * If true, generated code from the server won't include page metadata tags
    */
   skipHead?: boolean;
+
+  /**
+   * If true, uses browser / node's native fetch
+   */
+  nativeFetch?: boolean;
 }
 
 /** Subset of loader functionality that works on React Server Components. */

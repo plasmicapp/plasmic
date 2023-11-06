@@ -144,6 +144,7 @@ export class InternalPlasmicComponentLoader {
       projectIds: opts.projects.map((p) => p.id),
       platform: opts.platform,
       preview: opts.preview,
+      nativeFetch: opts.nativeFetch,
     });
     this.reactServerLoader = new ReactServerPlasmicComponentLoader({
       opts,

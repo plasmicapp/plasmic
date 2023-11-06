@@ -1,4 +1,4 @@
-import fetch from "@plasmicapp/isomorphic-unfetch";
+import unfetch from "@plasmicapp/isomorphic-unfetch";
 import {
   getDistinctId,
   getEnvMeta,
@@ -13,6 +13,7 @@ export interface TrackerOptions {
   host?: string;
   platform?: string;
   preview?: boolean;
+  nativeFetch?: boolean;
 }
 
 type EventType = "$render" | "$fetch" | "$conversion";
@@ -41,8 +42,13 @@ const TRACKER_VERSION = 3;
 
 export class PlasmicTracker {
   private eventQueue: Event[] = [];
+  private fetch: typeof globalThis.fetch;
 
-  constructor(private opts: TrackerOptions) {}
+  constructor(private opts: TrackerOptions) {
+    this.fetch = (
+      opts.nativeFetch && globalThis.fetch ? globalThis.fetch : unfetch
+    ).bind(globalThis);
+  }
 
   public trackRender(opts?: TrackRenderOptions) {
     this.enqueue({
@@ -117,7 +123,7 @@ export class PlasmicTracker {
         // Triggers warning: https://chromestatus.com/feature/5629709824032768
         window.navigator.sendBeacon(API_ENDPOINT, stringBody);
       } else {
-        fetch(API_ENDPOINT, {
+        this.fetch(API_ENDPOINT, {
           method: "POST",
           headers: {
             Accept: "application/json",

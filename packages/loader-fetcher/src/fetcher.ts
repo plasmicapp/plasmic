@@ -24,6 +24,7 @@ export interface FetcherOptions {
     tagPrefix?: string;
   };
   skipHead?: boolean;
+  nativeFetch?: boolean;
 }
 
 export interface LoaderBundleCache {
@@ -38,6 +39,7 @@ export class PlasmicModulesFetcher {
     this.api = new Api({
       projects: opts.projects,
       host: opts.host,
+      nativeFetch: opts.nativeFetch,
     });
   }
 
