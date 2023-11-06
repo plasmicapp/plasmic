@@ -34,7 +34,9 @@ export interface ThemeOpts {
   colorPrimary?: string;
   colorSuccess?: string;
   colorWarning?: string;
+  colorError?: string;
   colorInfo?: string;
+  colorBgBase?: string;
   lineWidth?: number;
   borderRadius?: number;
   controlHeight?: number;
@@ -57,7 +59,9 @@ export function themeToAntdConfig(opts: ThemeOpts): ConfigProviderProps {
     colorPrimary,
     colorSuccess,
     colorWarning,
+    colorError,
     colorInfo,
+    colorBgBase,
     fontFamily,
     fontSize,
     lineWidth,
@@ -77,7 +81,9 @@ export function themeToAntdConfig(opts: ThemeOpts): ConfigProviderProps {
           colorPrimary,
           colorSuccess,
           colorWarning,
+          colorError,
           colorInfo,
+          colorBgBase,
           fontFamily,
           fontSize,
           lineWidth,
