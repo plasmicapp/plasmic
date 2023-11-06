@@ -108,18 +108,34 @@ export function getActiveVariation(opts: {
   return variation;
 }
 
+interface ExternalIDsFilters {
+  projectIds?: string[];
+}
+
 export function getExternalIds(
   splits: Split[],
-  variation: Record<string, string>
+  variation: Record<string, string>,
+  filters?: ExternalIDsFilters
 ) {
   const externalVariation: Record<string, string> = {};
+
+  function shouldIncludeSplit(split: Split) {
+    if (!filters) {
+      return true;
+    }
+    if (filters.projectIds && !filters.projectIds.includes(split.projectId)) {
+      return false;
+    }
+    return true;
+  }
+
   Object.keys(variation).forEach((variationKey) => {
     const [, splitId] = variationKey.split(".");
     const sliceId = variation[variationKey];
     const split = splits.find(
       (s) => s.id === splitId || s.externalId === splitId
     );
-    if (split && split.externalId) {
+    if (split && split.externalId && shouldIncludeSplit(split)) {
       const slice = (
         split.slices as Array<ExperimentSlice | SegmentSlice>
       ).find((s) => s.id === sliceId || s.externalId === sliceId);

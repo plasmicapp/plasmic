@@ -78,6 +78,7 @@ export interface SegmentSlice extends Slice {
 
 export interface ExperimentSplit {
   id: string;
+  projectId: string;
   externalId?: string;
   type: "experiment";
   slices: ExperimentSlice[];
@@ -85,6 +86,7 @@ export interface ExperimentSplit {
 
 export interface SegmentSplit {
   id: string;
+  projectId: string;
   externalId?: string;
   type: "segment";
   slices: SegmentSlice[];

@@ -627,8 +627,11 @@ export class PlasmicComponentLoader {
     });
   }
 
-  getExternalVariation(variation: Record<string, string>) {
-    return getExternalIds(this.getActiveSplits(), variation);
+  getExternalVariation(
+    variation: Record<string, string>,
+    filters?: Parameters<typeof getExternalIds>[2]
+  ) {
+    return getExternalIds(this.getActiveSplits(), variation, filters);
   }
 
   getActiveSplits() {
