@@ -1,6 +1,6 @@
-import fetch from '@plasmicapp/isomorphic-unfetch';
+import fetch from "@plasmicapp/isomorphic-unfetch";
 
-const PLASMIC_HOST = 'https://data.plasmic.app';
+const PLASMIC_HOST = "https://data.plasmic.app";
 
 export interface PlasmicUser {
   email: string;
@@ -31,7 +31,7 @@ export async function getPlasmicAppUserFromToken(opts: {
   const url = `${host || PLASMIC_HOST}/api/v1/app-auth/userinfo`;
   const result = await fetch(url, {
     headers: {
-      'x-plasmic-data-user-auth-token': token,
+      "x-plasmic-data-user-auth-token": token,
     },
   });
 
@@ -41,7 +41,7 @@ export async function getPlasmicAppUserFromToken(opts: {
     return {
       user: null,
       token: null,
-      error: new Error('Invalid token'),
+      error: new Error("Invalid token"),
     };
   }
 
@@ -60,10 +60,10 @@ export async function getPlasmicAppUser(opts: {
   const { host, appId, codeVerifier, code } = opts;
 
   const requestParams = new URLSearchParams();
-  requestParams.set('grant_type', 'authorization_code');
-  requestParams.set('code', code);
-  requestParams.set('code_verifier', codeVerifier);
-  requestParams.set('client_id', appId);
+  requestParams.set("grant_type", "authorization_code");
+  requestParams.set("code", code);
+  requestParams.set("code_verifier", codeVerifier);
+  requestParams.set("client_id", appId);
 
   const url = `${
     host || PLASMIC_HOST
@@ -76,7 +76,7 @@ export async function getPlasmicAppUser(opts: {
     return {
       user: null,
       token: null,
-      error: error ?? new Error('Internal error'),
+      error: error ?? new Error("Internal error"),
     };
   }
 
@@ -86,21 +86,31 @@ export async function getPlasmicAppUser(opts: {
   };
 }
 
-export async function createPlasmicAppUser(opts: {
-  host?: string;
-  appSecret: string;
-  email: string;
-}): Promise<PlasmicUserResult> {
-  const { host, appSecret, email } = opts;
+type UserIdentifier = { email: string } | { externalId: string };
+
+export async function ensurePlasmicAppUser(
+  opts: {
+    host?: string;
+    appSecret: string;
+    roleId?: string;
+  } & UserIdentifier
+): Promise<PlasmicUserResult> {
+  const { host, appSecret, roleId } = opts;
+
+  const email = "email" in opts ? opts.email : undefined;
+  const externalId = "externalId" in opts ? opts.externalId : undefined;
+
   const url = `${host || PLASMIC_HOST}/api/v1/app-auth/user`;
   const result = await fetch(url, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'x-plasmic-app-auth-api-token': appSecret,
+      "Content-Type": "application/json",
+      "x-plasmic-app-auth-api-token": appSecret,
     },
     body: JSON.stringify({
       email,
+      externalId,
+      roleId,
     }),
   });
 
@@ -110,7 +120,7 @@ export async function createPlasmicAppUser(opts: {
     return {
       user: null,
       token: null,
-      error: error ?? new Error('Internal error'),
+      error: error ?? new Error("Internal error"),
     };
   }
 
@@ -119,3 +129,5 @@ export async function createPlasmicAppUser(opts: {
     token,
   };
 }
+
+export const createPlasmicAppUser = ensurePlasmicAppUser;
