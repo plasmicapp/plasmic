@@ -1,4 +1,4 @@
-import { PlasmicUser, createPlasmicAppUser } from "@plasmicapp/auth-api";
+import { ensurePlasmicAppUser, PlasmicUser } from "@plasmicapp/auth-api";
 import { SupabaseClient } from "@supabase/auth-helpers-nextjs";
 
 // This is the secret that allows us to create users in the Plasmic API.
@@ -23,7 +23,7 @@ export async function getPlasmicAuthData(
     // If we have a confirmed email we then create a Plasmic user.
     // It's not an issue to create a user multiple times, as the API will
     // return the same user if it already exists.
-    const result = await createPlasmicAppUser({
+    const result = await ensurePlasmicAppUser({
       email: user?.email,
       appSecret: PLASMIC_AUTH_SECRET!,
     });

@@ -155,12 +155,12 @@
     picocolors "^1.0.0"
     tslib "^2.5.0"
 
-"@plasmicapp/auth-api@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/auth-api/-/auth-api-0.0.4.tgz#8920a3e4ae87f7d07de50d9b76f8ad5142439572"
-  integrity sha512-4nyroaKTX+L6StcWSQjeVuDm6hjijhW5DMpzcD4UHn+1dfxwZYP6jkV4fh5F8dWZ3job93Yi41nVDgpXHIjDhQ==
+"@plasmicapp/auth-api@^0.0.14":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/auth-api/-/auth-api-0.0.14.tgz#1bfd67a2a804cfd3de277e2d1b0323a89221214a"
+  integrity sha512-DM4A2iyqKeb3NGsdeGSUytKvf+7RBFD2NniQ7D3qQvqKQglr5ei4/Uk+GOONzQ2qtVCDwBGldfW/Bdf2+k3qVA==
   dependencies:
-    "@plasmicapp/isomorphic-unfetch" "^1.0.1"
+    "@plasmicapp/isomorphic-unfetch" "1.0.3"
 
 "@plasmicapp/data-sources-context@0.1.11":
   version "0.1.11"
@@ -175,6 +175,13 @@
     "@plasmicapp/query" "0.1.67"
     csstype "^3.0.8"
     window-or-global "^1.0.1"
+
+"@plasmicapp/isomorphic-unfetch@1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/isomorphic-unfetch/-/isomorphic-unfetch-1.0.3.tgz#baa334f5190d49461c26b1aa3fda073f5cfa7e33"
+  integrity sha512-cJtPOCf2/FWlFB42Q/n0MK/C47NSZr+YQJbCvQwvyjOrOgOQ4gJ/+gkr4avpMa7UPMa8qLovDAuaR+5k+hMlZQ==
+  dependencies:
+    unfetch "^4.2.0"
 
 "@plasmicapp/isomorphic-unfetch@^1.0.1":
   version "1.0.2"
