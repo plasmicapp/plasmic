@@ -1,5 +1,5 @@
 {
-  "name": "custom-targeting",
+  "name": "ga-variation-tracking",
   "version": "0.1.0",
   "private": true,
   "scripts": {
