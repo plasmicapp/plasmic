@@ -367,6 +367,8 @@ export function registerDialog(PLASMIC?: Registerable) {
     parentComponentName: "hostless-radix-dialog",
     defaultStyles: {
       // No need for position here, just relying on layout container parent.
+      position: "relative",
+      margin: "10% auto", // for horizontally centered dialog
       padding: "24px",
       borderRadius: "8px",
       ...dialogStyles,

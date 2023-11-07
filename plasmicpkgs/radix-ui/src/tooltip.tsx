@@ -102,7 +102,13 @@ export function registerTooltip(PLASMIC?: Registerable) {
         defaultSlotContent: { type: "text", value: "I have a tooltip." },
         openDisplay: "Preview open",
       }),
-      ...popoverProps,
+      ...{
+        ...popoverProps,
+        side: {
+          ...popoverProps.side,
+          defaultValueHint: "top",
+        },
+      },
       overlay: {
         type: "slot",
         defaultValue: {

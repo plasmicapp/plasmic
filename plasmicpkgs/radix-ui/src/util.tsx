@@ -447,7 +447,7 @@ export const popoverProps = {
   },
   sideOffset: {
     type: "number",
-    defaultValueHint: 4,
+    defaultValueHint: 0,
     advanced: true,
   },
   align: {
