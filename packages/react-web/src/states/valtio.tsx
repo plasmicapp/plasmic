@@ -1,6 +1,5 @@
 import clone from "clone";
 import get from "dlv";
-import deepEqual from "fast-deep-equal";
 import React from "react";
 import {
   getVersion as isValtioProxy,
@@ -24,6 +23,7 @@ import {
 } from "./graph";
 import {
   arrayEq,
+  deepEqual,
   getStateCells,
   set,
   useIsomorphicLayoutEffect,
