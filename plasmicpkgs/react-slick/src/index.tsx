@@ -116,7 +116,8 @@ export const SliderWrapper = forwardRef(function SliderWrapper_(
     .${sliderScopeClassName} .slick-arrow:before {
       color: ${arrowColor ?? "black"};
     }
-    .${sliderScopeClassName} .slick-slide img:only-child {
+    .${sliderScopeClassName} .slick-slide img:only-child,
+    .${sliderScopeClassName} .slick-slide .__wab_img-wrapper:only-child {
       ${
         /* NOTE: this is otherwise explicitly set to "block" by react-slick  (which should also fix this issue but somehow doesn't.).  */ ""
       }
