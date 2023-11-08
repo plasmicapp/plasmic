@@ -1,0 +1,17 @@
+.root:global(.__wab_instance) {
+  position: relative;
+}
+.svg__lh32G {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg__rUr3X {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 1em;
+}

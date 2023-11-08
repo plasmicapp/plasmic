@@ -1,0 +1,1131 @@
+{
+  "ms": 74,
+  "query": "*{_type}",
+  "result": [
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "sanity.imageAsset"
+    },
+    {
+      "_type": "movie"
+    },
+    {
+      "_type": "movie"
+    },
+    {
+      "_type": "movie"
+    },
+    {
+      "_type": "movie"
+    },
+    {
+      "_type": "movie"
+    },
+    {
+      "_type": "movie"
+    },
+    {
+      "_type": "movie"
+    },
+    {
+      "_type": "movie"
+    },
+    {
+      "_type": "movie"
+    },
+    {
+      "_type": "movie"
+    },
+    {
+      "_type": "movie"
+    },
+    {
+      "_type": "movie"
+    },
+    {
+      "_type": "movie"
+    },
+    {
+      "_type": "movie"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "person"
+    },
+    {
+      "_type": "screening"
+    },
+    {
+      "_type": "screening"
+    },
+    {
+      "_type": "screening"
+    },
+    {
+      "_type": "screening"
+    },
+    {
+      "_type": "screening"
+    }
+  ]
+}

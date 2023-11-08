@@ -1,0 +1,35 @@
+.root {
+  display: inline-flex;
+  flex-direction: row;
+  position: relative;
+  width: auto;
+  height: auto;
+}
+.root > :global(.__wab_flex-container) {
+  flex-direction: row;
+  margin-left: calc(0px - 4px);
+  width: calc(100% + 4px);
+}
+.root > :global(.__wab_flex-container) > *,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.root > :global(.__wab_flex-container) > picture > img,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
+  margin-left: 4px;
+}
+.rootmedium > :global(.__wab_flex-container) {
+  align-items: center;
+}
+.icon {
+  position: relative;
+  object-fit: cover;
+  width: 1rem;
+  height: 1rem;
+  color: var(--token-fVn5vRhXJxQ);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.iconmedium {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+}

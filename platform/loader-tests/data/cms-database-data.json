@@ -1,0 +1,140 @@
+{
+  "table": {
+    "name": "blogPosts",
+    "identifier": "blogPosts",
+    "schema": {
+      "fields": [
+        {
+          "identifier": "title",
+          "name": "",
+          "localized": false,
+          "helperText": "",
+          "required": false,
+          "hidden": false,
+          "type": "long-text",
+          "defaultValueByLocale": {}
+        },
+        {
+          "identifier": "author",
+          "name": "",
+          "localized": false,
+          "helperText": "",
+          "required": false,
+          "hidden": false,
+          "type": "text",
+          "defaultValueByLocale": {
+            "": "Default author"
+          }
+        },
+        {
+          "identifier": "message",
+          "name": "",
+          "localized": true,
+          "helperText": "",
+          "required": false,
+          "hidden": false,
+          "type": "rich-text",
+          "defaultValueByLocale": {
+            "": "default message",
+            "pt-BR": "default pt-BR message"
+          }
+        },
+        {
+          "identifier": "creationDate",
+          "name": "",
+          "localized": false,
+          "helperText": "",
+          "required": false,
+          "hidden": false,
+          "type": "date-time",
+          "defaultValueByLocale": {}
+        },
+        {
+          "identifier": "views",
+          "name": "",
+          "localized": false,
+          "helperText": "",
+          "required": false,
+          "hidden": false,
+          "type": "number",
+          "defaultValueByLocale": {}
+        },
+        {
+          "identifier": "icon",
+          "name": "",
+          "localized": false,
+          "helperText": "",
+          "required": false,
+          "hidden": false,
+          "type": "image",
+          "defaultValueByLocale": {}
+        }
+      ]
+    }
+  },
+  "entries": {
+    "rows": [
+      {
+        "data": {
+          "icon": {
+            "url": "https://site-assets.plasmic.app/10bba32f87e763ccb5a7eb316577f092.png",
+            "name": "bojji crying.png",
+            "size": 2509688,
+            "mimetype": "image/png",
+            "imageMeta": {
+              "width": 1491,
+              "height": 1348
+            }
+          },
+          "title": "Second blog post",
+          "views": 13,
+          "author": "First User",
+          "message": {
+            "": "<p><span style=\"color: rgb(0, 0, 0);\">Praesent in bibendum felis. In pulvinar neque metus</span></p>",
+            "pt-BR": null
+          },
+          "creationDate": "2022-06-22T13:43:29.632Z"
+        }
+      },
+      {
+        "data": {
+          "title": "First blog post",
+          "author": "First User",
+          "message": {
+            "": "<p class=\"ql-align-justify\">Etiam a tortor et ligula ornare pretium. Nam ex dui, dictum vel varius quis, convallis nec sem. Sed ac dignissim nisi. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>",
+            "pt-BR": "<p><span style=\"color: rgb(0, 0, 0);\">Phasellus quis lacinia dui. Phasellus nulla purus, iaculis non tortor et, tincidunt molestie felis. Fusce eu orci dui. Curabitur porttitor pharetra orci, non ullamcorper mi rutrum vel. Nunc scelerisque posuere </span><em style=\"color: rgb(0, 0, 0);\">metus</em><span style=\"color: rgb(0, 0, 0);\">, ut dictum sem efficitur a. Nulla facilisi. Sed at risus </span><strong style=\"color: rgb(0, 0, 0);\">rhoncus</strong><span style=\"color: rgb(0, 0, 0);\">, lobortis felis in, auctor libero. Ut </span><u style=\"color: rgb(0, 0, 0);\">sit</u><span style=\"color: rgb(0, 0, 0);\"> amet augue quam. Mauris ac dignissim lacus, pulvinar finibus massa. Proin commodo libero at turpis rhoncus tincidunt. Praesent nibh libero, luctus et est vitae, sollicitudin fringilla ipsum. Nulla iaculis est vel justo rutrum, id porttitor libero scelerisque. In in diam ac diam malesuada volutpat ac nec metus. Integer mi nunc, sodales ut tortor vitae, vehicula ultricies justo. In nibh turpis, interdum eu elit et, vehicula semper dui. Donec at tristique sapien, nec ultricies est.</span></p><ol><li><span style=\"color: rgb(0, 0, 0);\">one</span></li><li><span style=\"color: rgb(0, 0, 0);\">two</span></li><li><span style=\"color: rgb(0, 0, 0);\">three</span></li></ol>"
+          },
+          "creationDate": "2022-06-27T13:38:17.567Z",
+          "views": 50,
+          "icon": {
+            "url": "https://site-assets.plasmic.app/b429d092957da159c7c03148ebc36512.jpg",
+            "name": "anya.jpeg",
+            "size": 65598,
+            "mimetype": "image/jpeg",
+            "imageMeta": {
+              "width": 790,
+              "height": 790
+            }
+          }
+        }
+      },
+      {
+        "data": {
+          "icon": {
+            "url": "https://site-assets.plasmic.app/e1f2d0ea6a2b3c51981335ae161fdb5e.jpg",
+            "name": "bojji.jpeg",
+            "size": 78479,
+            "mimetype": "image/jpeg",
+            "imageMeta": {
+              "width": 1280,
+              "height": 720
+            }
+          },
+          "title": "Third blog post",
+          "views": 6,
+          "creationDate": "2022-06-14T13:39:41.430Z"
+        }
+      }
+    ]
+  }
+}

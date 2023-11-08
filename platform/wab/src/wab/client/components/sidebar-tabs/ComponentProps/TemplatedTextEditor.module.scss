@@ -1,0 +1,44 @@
+@import "src/wab/styles/_vars";
+
+.sqlKeywordColor {
+  color: #07a;
+}
+
+.sqlSpecialColor {
+  color: #999;
+}
+
+.sqlNumberColor {
+  color: #905;
+}
+
+.sqlFunctionColor {
+  color: #dd4a68;
+}
+
+.sqlBracketColor {
+  color: #9a6e3a;
+}
+
+.errorMsg {
+  color: red;
+  margin-bottom: 4px;
+}
+
+.content {
+  vertical-align: middle;
+}
+
+.prefix {
+  vertical-align: middle;
+  user-select: none;
+  color: $sand9;
+}
+
+.placeholder {
+  top: 21%;
+  opacity: 1 !important;
+  color: $sand9;
+  width: initial !important;
+  display: inline-block !important;
+}

@@ -1,0 +1,64 @@
+.root {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+}
+.header {
+  display: flex;
+  position: sticky;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  align-content: unset;
+  left: 0px;
+  top: 48px;
+  z-index: 1;
+  background: #ffffff;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--token-hoA5qaM-91G);
+}
+.freeBox {
+  display: flex;
+  position: relative;
+  height: auto;
+}
+.slotTargetTeamName {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.teamMenuButton:global(.__wab_instance):global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+  flex-shrink: 0;
+}
+.memberList:global(.__wab_instance) {
+  position: relative;
+}
+.teamMemberListItem__rdPmn:global(.__wab_instance) {
+  position: relative;
+}
+.teamMemberListItem__nbSwk:global(.__wab_instance) {
+  position: relative;
+}
+.text__ahUvf {
+  height: auto;
+}
+.teamMemberListItem___9Njm9:global(.__wab_instance) {
+  position: relative;
+}
+.text__dtMjE {
+  height: auto;
+}
+.teamMemberListItem__ngOos:global(.__wab_instance) {
+  position: relative;
+}
+.text__iTfFq {
+  height: auto;
+}
+.navSeparator:global(.__wab_instance) {
+  position: relative;
+}
+.teamBilling:global(.__wab_instance) {
+  position: relative;
+}

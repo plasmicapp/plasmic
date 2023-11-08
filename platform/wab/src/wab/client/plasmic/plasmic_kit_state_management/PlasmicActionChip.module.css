@@ -1,0 +1,111 @@
+.root {
+  background: var(--token-O4S7RMTqZ3);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  position: relative;
+  cursor: pointer;
+  min-width: 0;
+  border-radius: 6px;
+  padding: 0px 4px;
+}
+.root:hover {
+  background: var(--token-bV4cCeIniS6);
+}
+.freeBox__zcpRw {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0px;
+}
+.freeBox__zcpRw > :global(.__wab_flex-container) {
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: flex-start;
+  min-width: 0;
+  margin-left: calc(0px - 5px);
+  width: calc(100% + 5px);
+}
+.freeBox__zcpRw > :global(.__wab_flex-container) > *,
+.freeBox__zcpRw > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBox__zcpRw > :global(.__wab_flex-container) > picture > img,
+.freeBox__zcpRw
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 5px;
+}
+.freeBox__fJmat {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  padding: 0px;
+}
+.freeBox___4W5Bn {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  overflow: hidden;
+  min-width: 0;
+  padding: 0px;
+}
+.text {
+  width: 0px;
+  height: auto;
+  max-width: 800px;
+}
+.svg {
+  object-fit: cover;
+  max-width: 100%;
+  height: 24px;
+  width: 24px;
+  color: var(--token-UunsGa2Y3t3);
+  flex-shrink: 0;
+}
+.freeBox__lWbe1 {
+  width: auto;
+  height: auto;
+  max-width: 800px;
+  display: flex;
+  flex-direction: row;
+}
+.freeBox__yakOm {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: auto;
+  height: 32px;
+  max-width: 100%;
+  align-self: flex-end;
+  padding: 0px;
+}
+.menuButton:global(.__wab_instance):global(.__wab_instance) {
+  max-width: 100%;
+  flex-shrink: 0;
+  display: none;
+}
+.root:hover .menuButton:global(.__wab_instance):global(.__wab_instance) {
+  flex-shrink: 0;
+  display: block;
+}

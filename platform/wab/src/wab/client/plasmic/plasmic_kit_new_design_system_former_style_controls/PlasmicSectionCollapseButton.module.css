@@ -1,0 +1,38 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100px;
+  height: 12px;
+  justify-content: center;
+  align-items: center;
+  background: var(--token-Ik3bdE1e1Uy);
+  cursor: pointer;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  padding: 0px;
+  border-width: 0px;
+}
+.root:hover {
+  background: var(--token-G18pc1ITl);
+}
+.svg {
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+  color: var(--token-UunsGa2Y3t3);
+  transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+  transition-property: transform;
+  transition-duration: 0.25s;
+  height: 16px;
+  width: 16px;
+  flex-shrink: 0;
+  -webkit-transition-property: transform;
+  -webkit-transition-duration: 0.25s;
+}
+.svgisExpanded {
+  transform: rotateX(0deg) rotateY(0deg) rotateZ(180deg);
+}
+.root:hover .svg {
+  color: var(--token-N3uwCfNqv);
+}

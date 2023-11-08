@@ -1,0 +1,13 @@
+.spin {
+  height: 16px;
+  width: 16px;
+
+  :global(.ant-spin-dot) {
+    font-size: 9px;
+  }
+
+  :global(.ant-spin-dot-item) {
+    height: 4px;
+    width: 4px;
+  }
+}

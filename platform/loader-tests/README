@@ -1,0 +1,5 @@
+Usually you run a nextjs-* test, which sets up a next server, uploads a project, and runs a cypress test.
+
+To iterate on the cypress test visually, do this, run the test with CYPRESS_OPEN:
+
+  CYPRESS_OPEN=true yarn test nextjs-antd5.spec.ts

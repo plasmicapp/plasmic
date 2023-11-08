@@ -1,0 +1,49 @@
+.root {
+  background: transparent;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  position: relative;
+  pointer-events: none;
+  cursor: pointer;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: flex-start;
+  overflow: hidden;
+  padding: 0px;
+  border-width: 0px;
+  border-style: none;
+}
+.rootinteractive {
+  pointer-events: auto;
+}
+.dropSmoothCorners {
+  box-shadow: none;
+  background: var(--token-clhN-3CruXgh);
+  transform: rotateX(0deg) rotateY(0deg) rotateZ(90deg);
+  width: 18px;
+  height: 18px;
+  display: flex;
+  transform-origin: 50% 50%;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 16px 16px 3px;
+}
+.dropSmoothCornersisRecording {
+  background: #e54d2e;
+}
+.svg {
+  position: relative;
+  object-fit: cover;
+  color: #fff;
+  width: 16px;
+  height: 16px;
+  display: block;
+  left: auto;
+  top: auto;
+  transform: rotateX(0deg) rotateY(0deg) rotateZ(90deg);
+  flex-shrink: 0;
+}

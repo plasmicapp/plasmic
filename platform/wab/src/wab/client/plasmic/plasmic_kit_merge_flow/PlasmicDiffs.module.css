@@ -1,0 +1,208 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+.freeBox__bU0WY {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.114);
+  filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.079));
+  width: 100%;
+  display: flex;
+  overflow: hidden;
+  flex-direction: row;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  border-radius: 8px;
+}
+.freeBox__bU0WY > :global(.__wab_flex-container) {
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  min-width: 0;
+  min-height: 0;
+  margin-left: calc(0px - 8px);
+  width: calc(100% + 8px);
+}
+.freeBox__bU0WY > :global(.__wab_flex-container) > *,
+.freeBox__bU0WY > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBox__bU0WY > :global(.__wab_flex-container) > picture > img,
+.freeBox__bU0WY
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 8px;
+}
+.freeBox__kZmf4 {
+  height: auto;
+  display: flex;
+  position: relative;
+  flex-grow: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+.freeBox___7C2QV {
+  height: auto;
+  display: flex;
+  position: relative;
+  align-self: stretch;
+  flex-direction: column;
+  padding: 24px;
+}
+.freeBox___7C2QV > :global(.__wab_flex-container) {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin-top: calc(0px - 8px);
+  height: calc(100% + 8px);
+}
+.freeBox___7C2QV > :global(.__wab_flex-container) > *,
+.freeBox___7C2QV > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBox___7C2QV > :global(.__wab_flex-container) > picture > img,
+.freeBox___7C2QV
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-top: 8px;
+}
+.backButton:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.svg__n4509 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}
+.svg__nLiki {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}
+.freeBox__bo5SR {
+  width: 100%;
+  height: auto;
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  min-width: 0;
+}
+.freeBox__xCi3C {
+  width: auto;
+  height: 32px;
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  border-radius: 6px;
+  padding: 8px;
+}
+.freeBox__xCi3C > :global(.__wab_flex-container) {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  margin-left: calc(0px - 4px);
+  width: calc(100% + 4px);
+}
+.freeBox__xCi3C > :global(.__wab_flex-container) > *,
+.freeBox__xCi3C > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBox__xCi3C > :global(.__wab_flex-container) > picture > img,
+.freeBox__xCi3C
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 4px;
+}
+.freeBox__ue9L3 {
+  width: auto;
+  height: auto;
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+.labelText {
+  width: auto;
+  height: auto;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+.label {
+  display: block;
+  font-size: 12px;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  letter-spacing: 0em;
+  line-height: 100%;
+  color: rgba(26, 26, 23, 1);
+  position: relative;
+}
+.text {
+  display: block;
+  font-size: 11px;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  letter-spacing: 0em;
+  line-height: 100%;
+  color: rgba(111, 110, 107, 1);
+  position: relative;
+}
+.labelIconsContainer {
+  width: auto;
+  height: auto;
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+.svg__aCBau {
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+  color: #706f6c;
+  width: 20px;
+  height: 20px;
+  display: block;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.diffContent {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+  padding: 8px;
+}
+.freeBox__wTUx {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 800px;
+  display: flex;
+  flex-direction: row;
+  min-width: 0;
+}

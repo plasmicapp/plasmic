@@ -1,0 +1,1036 @@
+// Original Source: https://github.com/ukrbublik/react-awesome-query-builder/blob/master/css/styles.scss
+
+.query-builder * {
+  box-sizing: border-box;
+}
+
+.qb-custom-widget {
+  .ant-col {
+    .ant-input-number {
+      width: 100%;
+    }
+  }
+  .ant-segmented {
+    .ant-segmented-group {
+      .ant-segmented-item {
+        width: 100%;
+      }
+    }
+  }
+}
+
+body.qb-dragging {
+  .ant-tooltip {
+    display: none;
+  }
+}
+
+@mixin qb-font-settings {
+  font-family: inherit;
+  font-size: 12px !important;
+}
+
+@mixin qb-input-shared-styles {
+  border-color: var(--qb-select-input-border-color) !important;
+  border-radius: 3px;
+  font: inherit !important;
+}
+
+.query-builder {
+  @include qb-font-settings;
+  // font-variant-ligatures: contextual !important;
+  user-select: none;
+
+  .rule--value {
+    flex: 1;
+  }
+
+  .rule--body {
+    width: 100%;
+  }
+
+  .rule--field > div {
+    min-width: 100%;
+    max-width: 110px;
+  }
+
+  .group--conjunctions > div {
+    padding-top: 5px;
+  }
+
+  .rule--body--wrapper {
+    width: calc(100% - 10px) !important;
+  }
+
+  .rule--drag-handler {
+    flex-shrink: 0;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  &.qb-dragging {
+    cursor: -webkit-grabbing !important;
+    cursor: grabbing !important;
+
+    button {
+      pointer-events: none;
+    }
+  }
+
+  .rule-with-error .rule {
+    border: 1px solid #e0a1a1;
+  }
+
+  .rule--body--wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .rule--error {
+    color: red;
+    margin-bottom: -5px;
+    margin-top: 5px;
+  }
+
+  .group-or-rule {
+    border-radius: 5px;
+    position: relative;
+  }
+
+  .rule_group {
+    background: rgba(255, 252, 242, 0.5);
+    border: 1px solid #f9f1dd;
+  }
+
+  // Dragged Item style
+  .qb-draggable {
+    user-select: none;
+    pointer-events: none;
+    position: absolute;
+    opacity: 0.7;
+    z-index: 1000;
+
+    &::before,
+    &::after {
+      display: none;
+    }
+  }
+
+  // Position was overriden for groups
+  .qb-draggable.group {
+    position: absolute;
+  }
+
+  .qb-drag-handler {
+    user-select: none;
+    cursor: -webkit-grabbing;
+    cursor: grabbing;
+  }
+
+  // Dragged placeholder styles
+  .qb-placeholder {
+    // border: 1px dashed gray;
+    background-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.15);
+    opacity: 0.5;
+  }
+
+  .locked {
+    border: 1px dashed red;
+  }
+
+  // Ant Design Overrides
+
+  /* slider */
+  .ant-tooltip-inner {
+    min-height: 18px;
+  }
+  .ant-slider {
+    margin-bottom: 4px;
+    margin-top: 4px;
+  }
+  .ant-slider-with-marks {
+    margin-bottom: 10px;
+    margin-top: 4px;
+  }
+  .ant-slider-track {
+    visibility: visible !important;
+  }
+
+  /* tree */
+  .ant-select-tree-dropdown > div[role="listbox"] {
+    outline: none;
+  }
+  ul.ant-select-selection__rendered {
+    margin-right: 11px;
+  }
+
+  /* for antd v4 default is 32 - too big */
+  .ant-select-item {
+    min-height: 22px;
+  }
+
+  .group--children {
+    padding-left: 24px;
+
+    &.rule_group--children
+      > .group-or-rule-container:first-child
+      > .group-or-rule {
+      &::before {
+        display: none;
+      }
+      &::after {
+        border-radius: 4px 0 0 0;
+        border-width: 2px 0 0 2px;
+      }
+    }
+
+    & > .group-or-rule-container:first-child > .group-or-rule {
+      &::before {
+        top: -12px;
+        height: calc(50% + 14px);
+      }
+    }
+
+    & > .group-or-rule-container:last-child > .group-or-rule {
+      &::before {
+        border-radius: 0 0 0 4px;
+      }
+      &::after {
+        display: none;
+      }
+    }
+  }
+
+  .group--children.hide--line {
+    & > .group-or-rule-container > .group-or-rule {
+      &::before,
+      &::after {
+        border-color: rgba(128, 128, 128, 0.1);
+      }
+    }
+  }
+
+  .group--drag-handler {
+    margin-right: 8px;
+    position: relative;
+  }
+  .group--conjunctions {
+    .group--drag-handler {
+      margin-left: 10px;
+    }
+  }
+
+  .group--conjunctions.hide--conj {
+    opacity: 0.3;
+  }
+
+  .group--actions {
+    margin-left: 10px;
+    flex: 0 0 auto;
+    display: flex;
+
+    &--tl,
+    &--bl {
+      justify-content: flex-start;
+    }
+
+    &--tl {
+      margin-left: 20px;
+    }
+
+    &--tc,
+    &--bc {
+      justify-content: center;
+    }
+
+    &--tr,
+    &--br {
+      justify-content: flex-end;
+    }
+
+    .action--DELETE {
+      margin-top: -1px;
+    }
+  }
+
+  // CASE_GROUP *********************************************************************/
+
+  .case_group {
+    border-width: 2px;
+  }
+
+  .switch_group {
+    & > .group--children {
+      & > .group-or-rule-container > .group-or-rule {
+        &::before,
+        &::after {
+          height: calc(50% + 12px); // for `border-width: 2px`
+        }
+      }
+    }
+  }
+
+  .case_group--body {
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    .case_group--children {
+      flex: auto;
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+    }
+
+    .case_group--value {
+      margin-top: 0;
+      margin-bottom: 0;
+      margin-right: 10px;
+    }
+  }
+
+  // RULE_GROUP *********************************************************************/
+
+  .rule_group {
+    display: flex;
+    padding-left: 10px;
+
+    .group--drag-handler {
+      align-self: center;
+    }
+    .group--field {
+      align-self: center;
+    }
+    .group--actions {
+      align-self: center;
+      flex: 0;
+    }
+
+    .rule_group--children {
+      flex: 1;
+
+      margin-top: 5px;
+      margin-bottom: 5px;
+      .group-or-rule-container {
+        margin-bottom: 5px;
+        margin-top: 5px;
+        padding-right: 5px;
+      }
+
+      padding-left: 18px;
+      &.one--child {
+        padding-left: 10px;
+      }
+
+      & > .group-or-rule-container > .group-or-rule {
+        &::before,
+        &::after {
+          left: -10px;
+          width: 10px;
+          height: calc(50% + 8px);
+        }
+      }
+    }
+  }
+
+  // RULE_GROUP_EXT *********************************************************************/
+
+  .group--header.hide--drag.with--conjs {
+    & > .group--field--count--rule {
+      margin-left: 20px;
+    }
+  }
+
+  // RULE **********************************************************************/
+
+  .rule {
+    flex: 1;
+    display: flex;
+  }
+
+  //"remove" button
+  .rule--header {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    // padding-left: 10px;
+
+    // Clear Fix
+    &:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+  }
+
+  .rule--drag-handler {
+    display: flex;
+    align-items: center;
+    margin-right: 8px;
+  }
+
+  $rule_items: ".rule--field", ".group--field", ".rule--operator",
+    ".rule--value", ".rule--operator-options", ".rule--widget",
+    ".widget--widget", ".widget--valuesrc", ".widget--sep",
+    ".operator--options--sep", ".rule--before-widget", ".rule--after-widget";
+
+  $seps: ".widget--sep", ".operator--options--sep",
+    ".rule--func--bracket-before", ".rule--func--bracket-after",
+    ".rule--func--arg-sep";
+
+  #{$rule_items} {
+    display: inline-block;
+  }
+
+  .widget--widget {
+    width: 100%;
+    min-width: 80px;
+    max-width: 120px;
+  }
+
+  .rule--operator,
+  .widget--widget,
+  .widget--valuesrc,
+  .widget--sep {
+    margin-left: 10px;
+  }
+  .widget--valuesrc {
+    margin-right: -8px;
+  }
+  .widget--valuesrc span i {
+    transform: rotate(90deg);
+  }
+  .operator--options--sep {
+    margin-right: 10px;
+  }
+
+  div.tooltip-inner {
+    max-width: 500px;
+  }
+
+  .rule--field,
+  .group--field,
+  .rule--operator,
+  .widget--widget {
+    label {
+      display: block;
+      font-weight: bold;
+    }
+  }
+
+  // CONJUNCTION ***************************************************************/
+
+  .conjunction {
+    display: inline-block;
+
+    label {
+      display: inline-block;
+      border: 1px solid;
+      cursor: pointer;
+      color: white;
+      text-transform: uppercase;
+      padding: 0.2rem 0.4rem;
+    }
+
+    input {
+      display: none;
+    }
+
+    &[data-state="active"] {
+      label {
+        background-color: #3276b1;
+        border-color: #285e8e;
+      }
+    }
+
+    &[data-state="inactive"] {
+      label {
+        background-color: #428bca;
+        border-color: #357ebd;
+
+        &:hover {
+          background-color: #3276b1;
+          border-color: #285e8e;
+        }
+      }
+    }
+
+    &:first-child {
+      label {
+        border-radius: 3px 0 0 3px;
+      }
+    }
+
+    &:last-child {
+      label {
+        border-radius: 0 3px 3px 0;
+      }
+    }
+
+    &:first-child:last-child {
+      border-radius: 3px;
+    }
+  }
+
+  // FUNC **********************************************************************/
+
+  $rule_func_items: ".rule--func--wrapper", ".rule--func", ".rule--func--args",
+    ".rule--func--arg", ".rule--func--arg-value", ".rule--func--bracket-before",
+    ".rule--func--bracket-after", ".rule--func--arg-sep",
+    ".rule--func--arg-label", ".rule--func--arg-label-sep";
+
+  #{$rule_func_items} {
+    display: inline-block;
+  }
+
+  .rule--func--bracket-before,
+  .rule--func--bracket-after {
+    margin-left: 3px;
+    margin-right: 3px;
+  }
+  .rule--func--bracket-before {
+    margin-left: 5px;
+  }
+  .rule--func--arg-value > .rule--widget {
+    margin-left: -10px;
+  }
+  .rule--func--arg-sep {
+    margin-left: 3px;
+    margin-right: 6px;
+  }
+  .rule--func--arg-label-sep {
+    margin-left: 1px;
+    margin-right: 6px;
+  }
+
+  // Minimalism ****************************************************************/
+
+  @mixin opacity_transition_settings {
+    transition: 0.2s;
+  }
+
+  @mixin opacity_hidden_state {
+    opacity: 0;
+    // transition-delay: 0.1s;
+  }
+
+  @mixin visible_only_for_hovered_group($what) {
+    #{$what} {
+      // transition: opacity 0.2s;
+      @include opacity_transition_settings;
+    }
+    .group--header:hover .group--header,
+    .group--header:not(:hover),
+    .rule_group:not(:hover) {
+      #{$what} {
+        @include opacity_hidden_state;
+      }
+    }
+  }
+
+  @mixin show_only_for_hovered_rule($what) {
+    #{$what} {
+      // transition: opacity 0.2s;
+      @include opacity_transition_settings;
+    }
+    .rule:hover .rule,
+    .rule:not(:hover) {
+      #{$what} {
+        // opacity: 0;
+        @include opacity_hidden_state;
+      }
+    }
+  }
+
+  @mixin display_only_for_hovered_group($inactive, $active) {
+    #{$inactive} {
+      transition: padding 0.2s;
+    }
+    .group--header:hover .group--header,
+    .group--header:not(:hover),
+    .rule_group:not(:hover) {
+      #{$inactive} {
+        width: 0;
+        padding: 0;
+        overflow: hidden;
+        opacity: 0;
+      }
+    }
+  }
+
+  @mixin force_unvisible($what) {
+    #{$what} {
+      opacity: 0 !important;
+    }
+  }
+
+  @mixin force_not_display($what) {
+    #{$what} {
+      width: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      opacity: 0 !important;
+    }
+  }
+
+  $groupDragHandle: ".group--drag-handler:after";
+  $ruleDragHandle: ".rule--drag-handler:after";
+
+  $group_actions: ".group--actions", $groupDragHandle;
+  $inactive_conjs: ".group--conjunctions .ant-btn:not(.ant-btn-primary)",
+    ".rule_group_ext--drag-handler";
+  $active_conjs: ".group--conjunctions .ant-btn.ant-btn-primary";
+  $rule_actions: ".widget--valuesrc", $ruleDragHandle, ".rule--header";
+
+  // AUTO HIDE - SHOW ON HOVER
+  &.qb-lite {
+    @include visible_only_for_hovered_group($group_actions);
+    // @include display_only_for_hovered_group($inactive_conjs, $active_conjs);
+    @include show_only_for_hovered_rule($rule_actions);
+
+    // &.qb-dragging {
+    //   @include force_unvisible(#{$rule_actions, $group_actions});
+    //   @include force_not_display($inactive_conjs);
+    // }
+  }
+
+  // Vertical padding ****************************************************************/
+
+  .group-or-rule-container {
+    // margin-top: 10px;
+    margin-bottom: 10px;
+    padding-right: 10px;
+
+    &:first-child {
+      margin-top: 0px !important;
+    }
+    &:last-child {
+      margin-bottom: 0px !important;
+    }
+  }
+  .group--children {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  // Shrink textarea ***********************************************************/
+
+  .rule--body.can--shrink--value {
+    display: flex;
+    align-items: center;
+    .rule--value {
+      flex: 1;
+    }
+    .rule--value > .rule--widget {
+      display: flex;
+      .widget--widget {
+        flex: 1;
+      }
+    }
+    .rule--value > .rule--widget > .widget--valuesrc {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .rule--value > .rule--widget > .widget--valuesrc {
+    .anticon {
+      height: 100%;
+      svg {
+        height: 100%;
+      }
+    }
+  }
+
+  // PLASMIC - Custom Styles
+  --qb-select-input-background-color: #ffffff;
+  --qb-select-input-background-color-hover: #eeeee7;
+  --qb-select-input-background-color-accent-hover: #edf6ff;
+  --qb-select-input-text-color: #1b1b18;
+  --qb-select-input-arrow-color: #90908c;
+  --qb-select-input-border-color: #eeeeec;
+  --qb-select-input-font-weight: normal;
+
+  .group {
+    --group-content-padding-horizontal: 24px;
+    --group-line-color: hsl(60, 0%, 75%); // #eeeee7;
+
+    position: relative;
+
+    .group {
+      --group-line-color: hsl(60, 0%, 80%);
+
+      .group {
+        --group-line-color: hsl(60, 0%, 85%);
+
+        .group {
+          --group-line-color: hsl(60, 0%, 90%);
+        }
+      }
+    }
+
+    // Left Border
+    &:after {
+      --group-line-offset-top: 50px;
+      --group-line-offset-bottom: 12px;
+      --group-line-offset-left: 24px;
+
+      position: absolute;
+      content: "";
+      display: block !important;
+      background: var(--group-line-color);
+      width: 1px;
+      top: var(--group-line-offset-top);
+      bottom: var(--group-line-offset-bottom);
+      left: var(--group-line-offset-left);
+    }
+
+    // Hide the "and" prefix for the top-level group
+    .group-prefix {
+      display: none;
+    }
+
+    // Nested Group
+    .group {
+      .group-prefix {
+        display: inline;
+      }
+    }
+  }
+
+  .qb-drag-handler {
+    position: relative;
+    width: 24px;
+    //height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    // Adding a transparent background to capture mouse events.
+    background-color: rgba(0, 0, 0, 0.001);
+    margin-left: -12px;
+
+    // Hiding the original drag icon
+    svg {
+      display: none;
+    }
+
+    &:before,
+    &:after {
+      position: absolute;
+      content: "";
+    }
+
+    // Row Circle
+    &:before {
+      width: 7px;
+      height: 7px;
+      background-color: white;
+      margin-left: 1px;
+      border: 2px solid var(--group-line-color);
+      border-radius: 8px;
+      z-index: 1;
+    }
+
+    // Drag Handle Icon
+    &:after {
+      width: 100%;
+      height: 100%;
+      background-color: #ffffff;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 0 24 24' width='24'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z'/%3E%3C/svg%3E");
+      background-size: 16px 16px;
+      background-repeat: no-repeat;
+      background-position: center center;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+      border-radius: 3px;
+      transition: 0.2s all;
+      z-index: 1;
+    }
+  }
+
+  .group--children {
+    padding: 0;
+    margin-left: var(--group-content-padding-horizontal);
+  }
+
+  .group--conjunctions {
+    display: flex;
+    .qb-drag-handler {
+      order: -1;
+    }
+  }
+
+  // Nested group drag handler
+  .group .group .group--conjunctions .group--drag-handler {
+    margin-left: -12px;
+  }
+
+  .group--actions {
+    position: relative;
+  }
+
+  .group--footer {
+    position: relative;
+    padding-left: calc(var(--group-content-padding-horizontal) + 10px);
+
+    &:before {
+      position: absolute;
+      content: "";
+
+      margin-left: 1px;
+      z-index: 1;
+      width: 7px;
+      height: 7px;
+      background-color: white;
+      border: 2px solid var(--group-line-color);
+      border-radius: 99px;
+      top: 10px;
+      left: var(--group-content-padding-horizontal);
+      transform: translateX(-50%);
+    }
+  }
+
+  .qb-select-option {
+    @include qb-font-settings;
+  }
+
+  .qb-custom-widget {
+    @include qb-font-settings;
+  }
+
+  .ant-select {
+    @include qb-input-shared-styles;
+    min-width: 20px !important;
+
+    box-sizing: border-box;
+    font-size: inherit;
+    //height: 24px;
+    margin-right: 4px;
+
+    .ant-select-selector {
+      background-color: var(--qb-select-input-background-color) !important;
+      border-color: var(--qb-select-input-border-color) !important;
+
+      &:hover {
+        background-color: var(
+          --qb-select-input-background-color-hover
+        ) !important;
+      }
+    }
+    .ant-select-selection-item {
+      font-weight: var(--qb-select-input-font-weight);
+    }
+
+    &,
+    &.ant-select-open {
+      .ant-select-selection-item {
+        color: var(--qb-select-input-text-color);
+      }
+    }
+
+    .select-arrow {
+      color: var(--qb-select-input-arrow-color);
+      margin-left: 10px;
+      width: 16px;
+      //height: 24px;
+
+      svg {
+        transition: 0.2s all;
+      }
+    }
+
+    // Dropdown Open - Arrow
+    &.ant-select-open .select-arrow svg {
+      transform: rotate(-180deg);
+    }
+
+    &.not-selector {
+      --qb-select-input-background-color: #e9f9ee;
+      --qb-select-input-background-color-hover: #ddf3e4;
+      --qb-select-input-text-color: #18794e;
+      --qb-select-input-arrow-color: #30a46c;
+      --qb-select-input-border-color: transparent;
+      --qb-select-input-font-weight: 600;
+
+      &.is-active {
+        --qb-select-input-background-color: #f9e9e9;
+        --qb-select-input-background-color-hover: #f3dddd;
+        --qb-select-input-text-color: #791818;
+        --qb-select-input-arrow-color: #a43030;
+        --qb-select-input-border-color: transparent;
+      }
+    }
+
+    &.conjunction-selector {
+      --qb-select-input-background-color: #edf6ff;
+      --qb-select-input-background-color-hover: #e1f0ff;
+      --qb-select-input-text-color: #006adc;
+      --qb-select-input-arrow-color: #0091ff;
+      --qb-select-input-border-color: transparent;
+      --qb-select-input-font-weight: 600;
+    }
+
+    &.field-selector {
+      --qb-select-input-font-weight: bold;
+    }
+  }
+
+  .rule--body {
+    .ant-select {
+      min-width: 44px !important;
+    }
+  }
+
+  .ant-segmented {
+    //height: 24px;
+    margin: 0;
+  }
+
+  .ant-segmented-item {
+    transition: none !important;
+  }
+
+  .ant-segmented-item-label,
+  .ant-segmented-item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+
+  // Boolean value editor styles
+  .ant-segmented-item-selected {
+    color: #30a46c;
+    &:nth-child(2) {
+      color: #e5484d;
+    }
+  }
+
+  .rule--body--wrapper {
+    flex: 0 0 auto;
+  }
+
+  .rule--body {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .rule--header {
+    // margin-left: 4px;
+    margin-left: 0px;
+  }
+
+  .rule--widget {
+    gap: 4px;
+    margin-right: 4px;
+    display: flex;
+    align-items: center;
+  }
+
+  .widget--widget .templated-string-input {
+    width: calc(100% - 20px);
+    white-space: nowrap !important;
+    overflow: hidden;
+  }
+
+  .group--actions,
+  .rule--body {
+    gap: 4px;
+    margin-right: 4px;
+  }
+
+  .group--conjunctions > div {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .plasmic-query-builder-select,
+  .qb-button {
+    margin-right: 0;
+    // margin-right: 4px;
+  }
+
+  .ant-select {
+    height: auto !important;
+  }
+
+  .ant-select-selector {
+    padding: 4px 10px !important;
+    height: 32px !important;
+  }
+
+  .qb-button {
+    @include qb-input-shared-styles;
+
+    &.action--ADD-RULE,
+    &.action--ADD-GROUP {
+      border: 1px solid #ddd !important;
+      box-shadow: none !important;
+    }
+
+    &.action--DELETE {
+      //border-color: transparent !important;
+      color: #d7dade;
+
+      &:hover {
+        background-color: var(--qb-select-input-background-color-accent-hover);
+        color: var(--qb-select-input-text-color);
+      }
+    }
+  }
+
+  .ant-input-number {
+    @include qb-input-shared-styles;
+  }
+
+  .ant-input {
+    @include qb-input-shared-styles;
+  }
+
+  .ant-picker {
+    @include qb-input-shared-styles;
+  }
+
+  // Handle the case where there is only one rule in the whole query builder.
+  $qb-one-child-horizontal-spacing: 20px;
+  // If this is a top level group, and this group has only one child
+  & > .group-container > .group > .group--children.one--child {
+    position: relative;
+    z-index: 2;
+    margin-left: $qb-one-child-horizontal-spacing;
+
+    & + .group--footer {
+      padding-left: $qb-one-child-horizontal-spacing;
+      z-index: 1;
+      position: relative;
+
+      &:before {
+        display: none;
+      }
+
+      &:after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: #ffffff;
+        display: block;
+        transform: scaleY(2);
+        transform-origin: bottom left;
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      .group--actions {
+        margin-left: 0;
+      }
+    }
+  }
+}

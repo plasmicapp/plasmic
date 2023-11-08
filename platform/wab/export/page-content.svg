@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="52px" height="34px" viewBox="0 0 52 34" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 41.2 (35397) - http://www.bohemiancoding.com/sketch -->
+    <title>page-content</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="7.78571429" y="8.05419922" width="37.1571429" height="21.1585937"></rect>
+        <mask id="mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="37.1571429" height="21.1585937" fill="white">
+            <use xlink:href="#path-1"></use>
+        </mask>
+    </defs>
+    <g id="All-Screens" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Create-Sidebar" transform="translate(-34.000000, -157.000000)">
+            <g id="page-content" transform="translate(34.000000, 157.000000)">
+                <g id="Group" transform="translate(0.500000, 0.497559)">
+                    <path d="M0.364285714,32.8713867 L50.6409935,32.8713867" id="Line" stroke="#979797" stroke-linecap="square"></path>
+                    <path d="M0.364285714,0.28003822 L0.364285714,32.2240411" id="Line" stroke="#979797" stroke-linecap="square"></path>
+                    <path d="M50.6357143,0.840114661 L50.6357143,32.7841175" id="Line" stroke="#979797" stroke-linecap="square"></path>
+                    <rect id="Rectangle-33" fill="#979797" x="0" y="0" width="51" height="4.53398437"></rect>
+                    <ellipse id="Oval" stroke="#979797" fill="#394249" cx="3.64285714" cy="2.26699219" rx="1.45714286" ry="1.51132812"></ellipse>
+                    <ellipse id="Oval" stroke="#979797" fill="#394249" cx="7.28571429" cy="2.26699219" rx="1.45714286" ry="1.51132812"></ellipse>
+                    <ellipse id="Oval" stroke="#979797" fill="#394249" cx="10.9285714" cy="2.26699219" rx="1.45714286" ry="1.51132812"></ellipse>
+                </g>
+                <use id="Rectangle-3" stroke="#979797" mask="url(#mask-2)" stroke-width="2" stroke-dasharray="2,2,2,2" xlink:href="#path-1"></use>
+            </g>
+        </g>
+    </g>
+</svg>

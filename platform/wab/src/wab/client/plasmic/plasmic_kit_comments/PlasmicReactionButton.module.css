@@ -1,0 +1,33 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  position: relative;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 2px 8px;
+  border: 0.5px solid var(--token-Ik3bdE1e1Uy);
+}
+.rootincludesSelf {
+  background: var(--token-G18pc1ITl);
+}
+.root:hover {
+  background: var(--token-G18pc1ITl);
+}
+.emoji {
+  width: 20px;
+  height: 20px;
+  max-width: 800px;
+  flex-shrink: 0;
+}
+.count {
+  width: auto;
+  height: auto;
+  max-width: 800px;
+  padding-left: 4px;
+  font-family: "IBM Plex Mono";
+}

@@ -1,0 +1,56 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  height: auto;
+  justify-content: flex-start;
+  align-items: center;
+  min-width: 0;
+}
+.freeBox {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0px;
+}
+.freeBox > :global(.__wab_flex-container) {
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+  margin-top: calc(0px - 12px);
+  height: calc(100% + 12px);
+}
+.freeBox > :global(.__wab_flex-container) > *,
+.freeBox > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBox > :global(.__wab_flex-container) > picture > img,
+.freeBox
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-top: 12px;
+}
+.handlerRow__zI5N2:global(.__wab_instance) {
+  position: relative;
+}
+.actionChip__n4HD:global(.__wab_instance) {
+  position: relative;
+}
+.handlerRow__n4Znq:global(.__wab_instance) {
+  position: relative;
+}
+.actionChip__wi95R:global(.__wab_instance) {
+  position: relative;
+}
+.handlerRow__hcLpt:global(.__wab_instance) {
+  position: relative;
+}
+.actionChip__ld50P:global(.__wab_instance) {
+  position: relative;
+}

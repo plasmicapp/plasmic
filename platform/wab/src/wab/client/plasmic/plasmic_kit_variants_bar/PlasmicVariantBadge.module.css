@@ -1,0 +1,100 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding-right: 8px;
+  padding-left: 8px;
+  height: 24px;
+  position: relative;
+  border-radius: 4px;
+}
+.rootisFocused {
+  cursor: pointer;
+  background: var(--token-bV4cCeIniS6);
+}
+.rootisRecording_isFocused {
+  background: var(--token-iDpByWoW0eF);
+}
+.slotTargetChildren {
+  color: var(--token-UunsGa2Y3t3);
+  white-space: pre;
+}
+.slotTargetChildren > :global(.__wab_text),
+.slotTargetChildren > :global(.__wab_slot-string-wrapper),
+.slotTargetChildren > :global(.__wab_slot) > :global(.__wab_text),
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot-string-wrapper),
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_text),
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot-string-wrapper),
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_text),
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot-string-wrapper) {
+  text-overflow: ellipsis;
+}
+.slotTargetChildren > *,
+.slotTargetChildren > :global(.__wab_slot) > *,
+.slotTargetChildren > :global(.__wab_slot) > :global(.__wab_slot) > *,
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.slotTargetChildren > picture > img,
+.slotTargetChildren > :global(.__wab_slot) > picture > img,
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  overflow: hidden;
+}
+.slotTargetChildrenisRecording {
+  color: var(--token-Y2CWh0ci95a);
+}
+.slotTargetChildrenisRecording_isFocused {
+  color: #ffffff;
+}
+.removeIcon {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  margin-left: 5px;
+  border-radius: 2px;
+  padding: 1px;
+}
+.root .removeIcon:hover {
+  background: #0000001a;
+}
+.svg {
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+  color: var(--token-fVn5vRhXJxQ);
+  flex-shrink: 0;
+}
+.svgisRecording {
+  color: var(--token-7aKAiXanMe);
+}

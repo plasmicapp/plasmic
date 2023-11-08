@@ -1,0 +1,47 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  height: 24px;
+  padding-left: 8px;
+  padding-right: 8px;
+  cursor: pointer;
+}
+.root > :global(.__wab_flex-container) {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  margin-left: calc(0px - 8px);
+  width: calc(100% + 8px);
+}
+.root > :global(.__wab_flex-container) > *,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.root > :global(.__wab_flex-container) > picture > img,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
+  margin-left: 8px;
+}
+.root__isSelected {
+  background: rgb(224, 247, 255);
+}
+.root__isSelected_inUnfocusedColumn {
+  background: rgb(228, 230, 235);
+}
+.root:hover {
+  box-shadow: inset 0px 0px 0px 1px rgb(118, 182, 255)
+    /* plasmic-token: XAcFjGXez_jbS */;
+}
+.freeBox__eU6XB {
+  display: flex;
+  position: relative;
+  width: 100px;
+  flex-shrink: 0;
+}
+.slotTargetName {
+  font-family: IBM Plex Mono;
+}
+.freeBox__ta6Ef {
+  display: flex;
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}

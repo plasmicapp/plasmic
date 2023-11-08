@@ -1,0 +1,52 @@
+.root {
+  display: flex;
+  width: 100%;
+  height: auto;
+  flex-direction: row;
+  position: relative;
+  min-width: 0;
+  border-radius: 8px;
+  padding: 16px;
+}
+.root > :global(.__wab_flex-container) {
+  flex-direction: row;
+  flex-wrap: wrap;
+  min-width: 0;
+  margin-left: calc(0px - 8px);
+  width: calc(100% + 8px);
+  margin-top: calc(0px - 8px);
+  height: calc(100% + 8px);
+}
+.root > :global(.__wab_flex-container) > *,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.root > :global(.__wab_flex-container) > picture > img,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
+  margin-left: 8px;
+  margin-top: 8px;
+}
+.freeBox {
+  display: flex;
+  position: absolute;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  left: 0px;
+  top: -16px;
+  cursor: pointer;
+  background: var(--token-iR8SeEwQZ);
+}
+.slotTargetName {
+  font-weight: 700;
+}
+.preset__kuBfd:global(.__wab_instance) {
+  position: relative;
+}
+.text__uIv8N {
+  position: relative;
+}
+.preset__aVsCj:global(.__wab_instance) {
+  position: relative;
+}
+.text__xxvsv {
+  position: relative;
+}

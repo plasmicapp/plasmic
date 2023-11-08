@@ -1,0 +1,11 @@
+# Run (from wab dir) `screen -dR wab-screens`
+# Then from within, press the escape key combo and enter `:source tools/start.bash`
+# Not sure of a way to automate the above layout setup whenever attaching to the screen.
+
+screen screen -dR wab-dev-server
+split
+focus down
+screen screen -dR wab-watch
+split
+focus down
+screen screen -dR wab-node-server

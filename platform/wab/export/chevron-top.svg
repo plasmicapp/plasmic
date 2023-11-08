@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="13px" height="8px" viewBox="0 0 13 8" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 41.1 (35376) - http://www.bohemiancoding.com/sketch -->
+    <title>chevron-top</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="All-Screens" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="square">
+        <g id="Styles-Sidebar" transform="translate(-222.000000, -1436.000000)" stroke="#979797" stroke-width="2">
+            <g id="Group-11-Copy-6" transform="translate(208.000000, 1435.000000)">
+                <g id="chevron" transform="translate(20.656854, 6.656854) rotate(45.000000) translate(-20.656854, -6.656854) translate(16.656854, 2.656854)">
+                    <path d="M1,7.5 L1,1.5" id="Line"></path>
+                    <path d="M1.5,1 L7.5,1" id="Line"></path>
+                    <path d="M1,7.5 L1,1.5" id="Line"></path>
+                    <path d="M1.5,1 L7.5,1" id="Line"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

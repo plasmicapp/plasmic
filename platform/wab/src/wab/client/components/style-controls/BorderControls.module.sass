@@ -1,0 +1,107 @@
+@import '../../../styles/_vars.sass'
+@import '../../../styles/_mixins.sass'
+
+.Borders, .Corners
+  position: relative
+  width: 70px
+  height: 70px
+  margin: 0 auto
+.Borders
+  margin-bottom: 12px
+.Corners
+  width: 64px
+  height: 64px
+
+.PartRotator
+  @include cover
+  pointer-events: none
+.PartRotator__0
+  transform: rotate(0deg)
+.PartRotator__1
+  transform: rotate(90deg)
+.PartRotator__2
+  transform: rotate(180deg)
+.PartRotator__3
+  transform: rotate(270deg)
+
+.SideOrigin
+  position: absolute
+  top: 0
+  left: 50%
+
+@mixin PartSelectable
+  pointer-events: initial
+  cursor: pointer
+  &:hover .PartShape
+    fill: $fg
+
+.SideContainer
+  @include PartSelectable
+  transform: translateX(-50%)
+
+.Corner
+  @include PartSelectable
+  display: inline-block
+  line-height: 0
+  position: relative
+
+.PartShape
+  fill: $dimfg
+.PartShape__Selected
+  fill: $fg
+.PartShape__Set
+  stroke: none
+
+.DefinedIndicatorContainer__Border
+  display: flex
+  justify-content: center
+  margin-top: -0.5em
+.DefinedIndicatorContainer__Corner
+  position: absolute
+  bottom: -0.5em
+  right: -0.5em
+
+// Experiment with magnifying selected parts since outline is ugly. Don't know what to do about select-all (since everything would be magnified).
+//.Corner:hover svg
+//  transform: scale(1.3)
+
+.CheckAllContainer
+  text-align: center
+
+.CheckAllSides
+  margin-left: -4px
+
+.CheckAllCorners
+  margin-left: 0px
+
+@mixin DetailsCol
+  vertical-align: top
+
+.BorderDetailsCol
+  @include DetailsCol
+  vertical-align: baseline
+
+.CornerDetailsCol
+  @include DetailsCol
+
+@mixin Style
+  border: 2px solid $fg
+  width: 70%
+  height: 2px
+  margin: 0 auto
+.StyleDotted
+  @include Style
+  border-style: dotted
+.StyleDashed
+  @include Style
+  border-style: dashed
+.StyleSolid
+  @include Style
+  border-style: solid
+
+.inputContainer
+  display: flex
+  align-items: center
+  width: 100%
+  & > div
+    margin-bottom: 0

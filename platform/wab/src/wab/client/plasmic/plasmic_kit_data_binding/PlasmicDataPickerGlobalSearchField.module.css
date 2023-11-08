@@ -1,0 +1,16 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: 40px;
+  max-width: 100%;
+  position: relative;
+  min-width: 0;
+  padding: 0px;
+  border-bottom: 1px solid var(--token-hoA5qaM-91G);
+}
+.searchbox:global(.__wab_instance):global(.__wab_instance) {
+  position: relative;
+}

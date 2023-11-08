@@ -1,0 +1,198 @@
+.root {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  flex-direction: column;
+  background: #ffffff;
+  min-width: 0;
+  min-height: 0;
+}
+.rootisTargeting {
+  background: var(--token-htSNbGB58Rx);
+}
+.leftSearchPanel:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.leftSearchPanelisTargeting:global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.leftPaneHeader:global(.__wab_instance) {
+  position: relative;
+}
+.svg__e3TfD {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg__o0O5S {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 1em;
+}
+.textWithInfo__f0IeN:global(.__wab_instance) {
+  max-width: 100%;
+  display: flex;
+}
+.text__qnc3Q {
+  font-weight: 600;
+  font-size: 14px;
+}
+.globalVariantsSelectContainer {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+}
+.globalVariantsSelectContainer > :global(.__wab_flex-container) {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: calc(0px - 4px);
+  width: calc(100% + 4px);
+}
+.globalVariantsSelectContainer > :global(.__wab_flex-container) > *,
+.globalVariantsSelectContainer
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > *,
+.globalVariantsSelectContainer > :global(.__wab_flex-container) > picture > img,
+.globalVariantsSelectContainer
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 4px;
+}
+.text__h2R {
+  width: auto;
+  height: auto;
+  max-width: 800px;
+}
+.textisTargeting__h2RWy5IQ {
+  color: var(--token-WnbI6EOoey2);
+  font-weight: 500;
+}
+.globalVariantSelect:global(.__wab_instance) {
+  position: relative;
+  margin-top: 0px;
+  margin-right: 0px;
+  margin-bottom: 0px;
+  margin-left: calc(0px + 4px) !important;
+}
+.svg__ugBmB {
+  position: relative;
+  object-fit: cover;
+  min-width: 16px;
+  min-height: 16px;
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+.text__hDqR6 {
+  position: relative;
+  text-align: left;
+  display: block;
+}
+.option:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.text__qa0Lm {
+  line-height: 2;
+  padding-right: 0px;
+  margin: 0px;
+}
+.freeBox {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  overflow-x: visible;
+  overflow-y: visible;
+  min-width: 0;
+  padding: 0px;
+}
+.colorTokens {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+  border-bottom: 1px solid var(--token-hoA5qaM-91G);
+}
+.spacingTokenHeader:global(.__wab_instance) {
+  position: relative;
+}
+.spacingTokens {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+  border-bottom: 1px solid var(--token-hoA5qaM-91G);
+}
+.fontFamilyTokenHeader:global(.__wab_instance) {
+  position: relative;
+}
+.fontFamilyTokens {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+  border-bottom: 1px solid var(--token-hoA5qaM-91G);
+}
+.fontSizeTokenHeader:global(.__wab_instance) {
+  position: relative;
+}
+.fontSizeTokens {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+  border-bottom: 1px solid var(--token-hoA5qaM-91G);
+}
+.lineHeightTokenHeader:global(.__wab_instance) {
+  position: relative;
+}
+.lineHeightTokens {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+  border-bottom: 1px solid var(--token-hoA5qaM-91G);
+}
+.opacityTokenHeader:global(.__wab_instance) {
+  position: relative;
+}
+.opacityTokens {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+  border-bottom: 1px solid var(--token-hoA5qaM-91G);
+}

@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "target": "es2019",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "types": ["cypress", "@types/cypress-image-snapshot", "node"]
+  }
+}

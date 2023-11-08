@@ -1,0 +1,2042 @@
+[
+  [
+    "4536e610-f7b7-43b7-b45e-172856a7e132",
+    {
+      "root": "63895001",
+      "map": {
+        "10603001": {
+          "uuid": "N3synEMdWz-",
+          "name": "SanityFetcher",
+          "params": [
+            { "__ref": "10603006" },
+            { "__ref": "10603007" },
+            { "__ref": "10603008" },
+            { "__ref": "16376002" },
+            { "__ref": "ImNhR-_0Jaxe" },
+            { "__ref": "01kcr5sXWaOX" },
+            { "__ref": "rtRUCbuhC-Y8" },
+            { "__ref": "YT80v6IWhRZa" },
+            { "__ref": "xA3oVbUNz0j-" }
+          ],
+          "states": [],
+          "tplTree": { "__ref": "10603009" },
+          "editableByContentEditor": false,
+          "hiddenFromContentEditor": false,
+          "variants": [{ "__ref": "10603010" }],
+          "variantGroups": [],
+          "pageMeta": null,
+          "codeComponentMeta": { "__ref": "10603011" },
+          "type": "code",
+          "subComps": [],
+          "superComp": null,
+          "plumeInfo": null,
+          "templateInfo": null,
+          "metadata": {},
+          "dataQueries": [],
+          "figmaMappings": [],
+          "alwaysAutoName": false,
+          "trapsFocus": false,
+          "__type": "Component"
+        },
+        "10603002": {
+          "uuid": "nluGS76d7AO",
+          "name": "SanityField",
+          "params": [{ "__ref": "10603012" }, { "__ref": "16376003" }],
+          "states": [],
+          "tplTree": { "__ref": "10603013" },
+          "editableByContentEditor": false,
+          "hiddenFromContentEditor": false,
+          "variants": [{ "__ref": "10603014" }],
+          "variantGroups": [],
+          "pageMeta": null,
+          "codeComponentMeta": { "__ref": "10603015" },
+          "type": "code",
+          "subComps": [],
+          "superComp": null,
+          "plumeInfo": null,
+          "templateInfo": null,
+          "metadata": {},
+          "dataQueries": [],
+          "figmaMappings": [],
+          "alwaysAutoName": false,
+          "trapsFocus": false,
+          "__type": "Component"
+        },
+        "10603003": {
+          "uuid": "YdgzVjgMuPo",
+          "name": "SanityCredentialsProvider",
+          "params": [
+            { "__ref": "10603016" },
+            { "__ref": "10603017" },
+            { "__ref": "10603018" },
+            { "__ref": "10603019" },
+            { "__ref": "10603020" },
+            { "__ref": "10603021" }
+          ],
+          "states": [],
+          "tplTree": { "__ref": "10603022" },
+          "editableByContentEditor": false,
+          "hiddenFromContentEditor": false,
+          "variants": [{ "__ref": "10603023" }],
+          "variantGroups": [],
+          "pageMeta": null,
+          "codeComponentMeta": { "__ref": "10603024" },
+          "type": "code",
+          "subComps": [],
+          "superComp": null,
+          "plumeInfo": null,
+          "templateInfo": null,
+          "metadata": {},
+          "dataQueries": [],
+          "figmaMappings": [],
+          "alwaysAutoName": false,
+          "trapsFocus": false,
+          "__type": "Component"
+        },
+        "10603004": {
+          "name": null,
+          "component": { "__ref": "10603003" },
+          "uuid": "q0fx8OAHpcA",
+          "parent": null,
+          "locked": null,
+          "vsettings": [{ "__ref": "10603025" }],
+          "__type": "TplComponent"
+        },
+        "10603006": {
+          "type": { "__ref": "58179001" },
+          "tplSlot": { "__ref": "10603033" },
+          "variable": { "__ref": "10603026" },
+          "uuid": "xzNs19-S4om",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": null,
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": null,
+          "about": null,
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "SlotParam"
+        },
+        "10603007": {
+          "type": { "__ref": "10603029" },
+          "variable": { "__ref": "10603028" },
+          "uuid": "fcKsRxwWcTQ",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": null,
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": "GROQ",
+          "about": "Query in GROQ.",
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "PropParam"
+        },
+        "10603008": {
+          "type": { "__ref": "10603031" },
+          "variable": { "__ref": "10603030" },
+          "uuid": "6JhEVVpAOQa",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": { "__ref": "10603032" },
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": "No layout",
+          "about": "When set, Sanity Fetcher will not layout its children; instead, the layout set on its parent element will be used. Useful if you want to set flex gap or control container tag type.",
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "PropParam"
+        },
+        "10603009": {
+          "tag": "div",
+          "name": null,
+          "children": [{ "__ref": "10603033" }],
+          "type": "other",
+          "codeGenType": null,
+          "columnsSetting": null,
+          "uuid": "2FLG9YE67mw",
+          "parent": null,
+          "locked": null,
+          "vsettings": [{ "__ref": "10603034" }],
+          "__type": "TplTag"
+        },
+        "10603010": {
+          "uuid": "x14cj-YFvQK",
+          "name": "base",
+          "selectors": null,
+          "parent": null,
+          "mediaQuery": null,
+          "description": null,
+          "forTpl": null,
+          "__type": "Variant"
+        },
+        "10603011": {
+          "importPath": "@plasmicpkgs/plasmic-sanity-io",
+          "defaultExport": false,
+          "displayName": "Sanity Fetcher",
+          "importName": "SanityFetcher",
+          "description": "Fetches Sanity data of a given collection, and repeats `children` slot content for each row fetched.\n\n[See tutorial video](https://www.youtube.com/watch?v=1SLoVY3hkQ4) and [GROQ cheat sheet](https://www.sanity.io/docs/query-cheat-sheet).",
+          "classNameProp": null,
+          "refProp": null,
+          "defaultStyles": { "__ref": "16376001" },
+          "defaultDisplay": null,
+          "isHostLess": true,
+          "isContext": false,
+          "isAttachment": false,
+          "providesData": true,
+          "hasRef": false,
+          "isRepeatable": true,
+          "styleSections": null,
+          "helpers": null,
+          "defaultSlotContents": {
+            "children": {
+              "type": "vbox",
+              "styles": { "padding": "8px" },
+              "children": { "type": "component", "name": "SanityField" }
+            }
+          },
+          "__type": "CodeComponentMeta"
+        },
+        "10603012": {
+          "type": { "__ref": "10603037" },
+          "variable": { "__ref": "10603036" },
+          "uuid": "Sj9lJRAv888",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": null,
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": "Path",
+          "about": "Field path - see https://www.sanity.io/docs/ids.",
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "PropParam"
+        },
+        "10603013": {
+          "tag": "div",
+          "name": null,
+          "children": [],
+          "type": "other",
+          "codeGenType": null,
+          "columnsSetting": null,
+          "uuid": "YE24D3-9JaN",
+          "parent": null,
+          "locked": null,
+          "vsettings": [{ "__ref": "10603038" }],
+          "__type": "TplTag"
+        },
+        "10603014": {
+          "uuid": "NlIs1GzGunp",
+          "name": "base",
+          "selectors": null,
+          "parent": null,
+          "mediaQuery": null,
+          "description": null,
+          "forTpl": null,
+          "__type": "Variant"
+        },
+        "10603015": {
+          "importPath": "@plasmicpkgs/plasmic-sanity-io",
+          "defaultExport": false,
+          "displayName": "Sanity Field",
+          "importName": "SanityField",
+          "description": null,
+          "classNameProp": null,
+          "refProp": null,
+          "defaultStyles": null,
+          "defaultDisplay": null,
+          "isHostLess": true,
+          "isContext": false,
+          "isAttachment": false,
+          "providesData": false,
+          "hasRef": false,
+          "isRepeatable": true,
+          "styleSections": null,
+          "helpers": null,
+          "defaultSlotContents": {},
+          "__type": "CodeComponentMeta"
+        },
+        "10603016": {
+          "type": { "__ref": "16376005" },
+          "variable": { "__ref": "10603040" },
+          "uuid": "iOkHOyqlbkS",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": { "__ref": "16376004" },
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": "Project ID",
+          "about": "The ID of the project to use.",
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "PropParam"
+        },
+        "10603017": {
+          "type": { "__ref": "16376007" },
+          "variable": { "__ref": "10603042" },
+          "uuid": "oM005dRJETC",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": { "__ref": "16376006" },
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": "Dataset",
+          "about": "The dataset to use.",
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "PropParam"
+        },
+        "10603018": {
+          "type": { "__ref": "10603045" },
+          "variable": { "__ref": "10603044" },
+          "uuid": "G1A3TkgRVWX",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": null,
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": "API Version",
+          "about": "The API version to use (if not set, 'v1' will be used) - see https://www.sanity.io/docs/js-client#specifying-api-version.",
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "PropParam"
+        },
+        "10603019": {
+          "type": { "__ref": "10603047" },
+          "variable": { "__ref": "10603046" },
+          "uuid": "mLVy0maY5A9",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": null,
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": "Token",
+          "about": "The token to use (or leave blank for unauthenticated usage) - you can create tokens in the API section of your project (i.e. https://www.sanity.io/manage/personal/project/PROJECT_ID/api#tokens).",
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "PropParam"
+        },
+        "10603020": {
+          "type": { "__ref": "10603049" },
+          "variable": { "__ref": "10603048" },
+          "uuid": "d1fhWgMxzS8",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": null,
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": "Use CDN?",
+          "about": "Whether you want to use CDN ('false' if you want to ensure fresh data).",
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "PropParam"
+        },
+        "10603021": {
+          "type": { "__ref": "10603051" },
+          "tplSlot": { "__ref": "10603052" },
+          "variable": { "__ref": "10603050" },
+          "uuid": "sPY8z3Mq6D4",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": null,
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": null,
+          "about": null,
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "SlotParam"
+        },
+        "10603022": {
+          "tag": "div",
+          "name": null,
+          "children": [{ "__ref": "10603052" }],
+          "type": "other",
+          "codeGenType": null,
+          "columnsSetting": null,
+          "uuid": "IDZifjo0gL3",
+          "parent": null,
+          "locked": null,
+          "vsettings": [{ "__ref": "10603053" }],
+          "__type": "TplTag"
+        },
+        "10603023": {
+          "uuid": "hq5RpQ_b3Gs",
+          "name": "base",
+          "selectors": null,
+          "parent": null,
+          "mediaQuery": null,
+          "description": null,
+          "forTpl": null,
+          "__type": "Variant"
+        },
+        "10603024": {
+          "importPath": "@plasmicpkgs/plasmic-sanity-io",
+          "defaultExport": false,
+          "displayName": "Sanity Credentials Provider",
+          "importName": "SanityCredentialsProvider",
+          "description": "Get your project ID, dataset, and token [here](https://www.sanity.io/manage).\n\nAdd 'https://host.plasmicdev.com' (or your app host origin) as an authorized host in the CORS origins section of your Sanity project.\n\n[See tutorial video](https://www.youtube.com/watch?v=dLeu7I4RsYg).",
+          "classNameProp": null,
+          "refProp": null,
+          "defaultStyles": null,
+          "defaultDisplay": null,
+          "isHostLess": true,
+          "isContext": true,
+          "isAttachment": false,
+          "providesData": false,
+          "hasRef": false,
+          "isRepeatable": true,
+          "styleSections": null,
+          "helpers": null,
+          "defaultSlotContents": {},
+          "__type": "CodeComponentMeta"
+        },
+        "10603025": {
+          "variants": [{ "__ref": "10867007" }],
+          "args": [],
+          "attrs": {},
+          "rs": { "__ref": "10603055" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "10603026": {
+          "name": "children",
+          "uuid": "eBPKu5NNxeJ",
+          "__type": "Var"
+        },
+        "10603028": { "name": "groq", "uuid": "FC0isdOa5GV", "__type": "Var" },
+        "10603029": { "name": "text", "__type": "Text" },
+        "10603030": {
+          "name": "noLayout",
+          "uuid": "tqB71jIP_1L",
+          "__type": "Var"
+        },
+        "10603031": { "name": "bool", "__type": "BoolType" },
+        "10603032": {
+          "code": "false",
+          "fallback": null,
+          "__type": "CustomCode"
+        },
+        "10603033": {
+          "param": { "__ref": "10603006" },
+          "defaultContents": [],
+          "uuid": "tTQDtG0E56X",
+          "parent": { "__ref": "10603009" },
+          "locked": null,
+          "vsettings": [{ "__ref": "10603057" }],
+          "__type": "TplSlot"
+        },
+        "10603034": {
+          "variants": [{ "__ref": "10603010" }],
+          "args": [],
+          "attrs": {},
+          "rs": { "__ref": "10603058" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "10603036": { "name": "path", "uuid": "XRnxsV2U2xU", "__type": "Var" },
+        "10603037": { "name": "text", "__type": "Text" },
+        "10603038": {
+          "variants": [{ "__ref": "10603014" }],
+          "args": [],
+          "attrs": {},
+          "rs": { "__ref": "10603059" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "10603040": {
+          "name": "projectId",
+          "uuid": "zGroAVYmGVr",
+          "__type": "Var"
+        },
+        "10603042": {
+          "name": "dataset",
+          "uuid": "21EzUOqC4GS",
+          "__type": "Var"
+        },
+        "10603044": {
+          "name": "apiVersion",
+          "uuid": "vSatF_5I8Rt",
+          "__type": "Var"
+        },
+        "10603045": { "name": "text", "__type": "Text" },
+        "10603046": { "name": "token", "uuid": "hg2fZXR7es2", "__type": "Var" },
+        "10603047": { "name": "text", "__type": "Text" },
+        "10603048": {
+          "name": "useCdn",
+          "uuid": "h-p_7eAMjMs",
+          "__type": "Var"
+        },
+        "10603049": { "name": "bool", "__type": "BoolType" },
+        "10603050": {
+          "name": "children",
+          "uuid": "ZWNa8ItmaD1",
+          "__type": "Var"
+        },
+        "10603051": {
+          "name": "renderable",
+          "params": [],
+          "__type": "RenderableType"
+        },
+        "10603052": {
+          "param": { "__ref": "10603021" },
+          "defaultContents": [],
+          "uuid": "81GCG22hEh1",
+          "parent": { "__ref": "10603022" },
+          "locked": null,
+          "vsettings": [{ "__ref": "10603060" }],
+          "__type": "TplSlot"
+        },
+        "10603053": {
+          "variants": [{ "__ref": "10603023" }],
+          "args": [],
+          "attrs": {},
+          "rs": { "__ref": "10603061" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "10603055": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "10603057": {
+          "variants": [{ "__ref": "10603010" }],
+          "args": [],
+          "attrs": {},
+          "rs": { "__ref": "10603064" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "10603058": {
+          "values": { "display": "flex", "flex-direction": "row" },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "10603059": {
+          "values": { "display": "flex", "flex-direction": "row" },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "10603060": {
+          "variants": [{ "__ref": "10603023" }],
+          "args": [],
+          "attrs": {},
+          "rs": { "__ref": "10603069" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "10603061": {
+          "values": { "display": "flex", "flex-direction": "row" },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "10603064": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "10603069": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "10867001": {
+          "components": [
+            { "__ref": "10603001" },
+            { "__ref": "10603002" },
+            { "__ref": "10603003" }
+          ],
+          "arenas": [],
+          "pageArenas": [],
+          "componentArenas": [],
+          "globalVariantGroups": [],
+          "userManagedFonts": [],
+          "globalVariant": { "__ref": "10867007" },
+          "styleTokens": [],
+          "mixins": [],
+          "themes": [{ "__ref": "10867009" }],
+          "activeTheme": { "__ref": "10867009" },
+          "imageAssets": [],
+          "projectDependencies": [],
+          "activeScreenVariantGroup": null,
+          "flags": { "usePlasmicImg": true },
+          "hostLessPackageInfo": { "__ref": "58179003" },
+          "globalContexts": [{ "__ref": "10603004" }],
+          "splits": [],
+          "defaultComponents": {},
+          "defaultPageRoleId": null,
+          "pageWrapper": null,
+          "customFunctions": [],
+          "codeLibraries": [],
+          "__type": "Site"
+        },
+        "10867007": {
+          "uuid": "OtA9yZVAf74",
+          "name": "base",
+          "selectors": null,
+          "parent": null,
+          "mediaQuery": null,
+          "description": null,
+          "forTpl": null,
+          "__type": "Variant"
+        },
+        "10867009": {
+          "defaultStyle": { "__ref": "10867010" },
+          "styles": [],
+          "layout": null,
+          "active": true,
+          "__type": "Theme"
+        },
+        "10867010": {
+          "name": "Default Typography",
+          "rs": { "__ref": "10867011" },
+          "preview": null,
+          "uuid": "thc-5FwOLG",
+          "forTheme": true,
+          "variantedRs": [],
+          "__type": "Mixin"
+        },
+        "10867011": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "16376001": {
+          "values": {
+            "padding-top": "8px",
+            "padding-right": "8px",
+            "padding-bottom": "8px",
+            "padding-left": "8px",
+            "display": "grid",
+            "grid-template-columns": "1fr 1fr 1fr 1fr",
+            "grid-row-gap": "8px",
+            "grid-column-gap": "8px",
+            "max-width": "100%"
+          },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "16376002": {
+          "type": { "__ref": "16376019" },
+          "variable": { "__ref": "16376018" },
+          "uuid": "4vR5IbTccG",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": null,
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": "Document type",
+          "about": "Document type to be queried (*[_type == DOC_TYPE] shortcut).",
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "PropParam"
+        },
+        "16376003": {
+          "type": { "__ref": "16376021" },
+          "variable": { "__ref": "16376020" },
+          "uuid": "_wzId0adDr",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": null,
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": "Field",
+          "about": "Field to be displayed.",
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "PropParam"
+        },
+        "16376004": {
+          "code": "\"b2gfz67v\"",
+          "fallback": null,
+          "__type": "CustomCode"
+        },
+        "16376005": { "name": "text", "__type": "Text" },
+        "16376006": {
+          "code": "\"production\"",
+          "fallback": null,
+          "__type": "CustomCode"
+        },
+        "16376007": { "name": "text", "__type": "Text" },
+        "16376018": {
+          "name": "docType",
+          "uuid": "Qs8LD60r8A",
+          "__type": "Var"
+        },
+        "16376019": {
+          "name": "choice",
+          "options": ["Dynamic options"],
+          "__type": "Choice"
+        },
+        "16376020": { "name": "field", "uuid": "msWV8QsgAi", "__type": "Var" },
+        "16376021": {
+          "name": "choice",
+          "options": ["Dynamic options"],
+          "__type": "Choice"
+        },
+        "58179001": {
+          "name": "renderable",
+          "params": [],
+          "__type": "RenderableType"
+        },
+        "58179003": {
+          "name": "plasmic-sanity-io",
+          "npmPkg": ["@plasmicpkgs/plasmic-sanity-io"],
+          "cssImport": [],
+          "deps": [],
+          "registerCalls": [],
+          "minimumReactVersion": null,
+          "__type": "HostLessPackageInfo"
+        },
+        "63895001": {
+          "uuid": "0sRoTZrpqE",
+          "pkgId": "c8e8caa1-4a82-478d-9981-58145031bc01",
+          "projectId": "wcJmyAADVNDsvYqEpBqMy8",
+          "version": "0.0.28",
+          "name": "Imported Dep",
+          "site": { "__ref": "10867001" },
+          "__type": "ProjectDependency"
+        },
+        "cYxVyImEwAYk": {
+          "name": "choice",
+          "options": ["Dynamic options"],
+          "__type": "Choice"
+        },
+        "wTCbetlH97Gw": {
+          "name": "filterField",
+          "uuid": "yeNtrAakP4D9",
+          "__type": "Var"
+        },
+        "ImNhR-_0Jaxe": {
+          "type": { "__ref": "cYxVyImEwAYk" },
+          "variable": { "__ref": "wTCbetlH97Gw" },
+          "uuid": "ALEynNmFw9Rl",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": null,
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": "Filter field",
+          "about": "Field (from Collection) to filter by",
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "PropParam"
+        },
+        "iO7gLI2VWFWf": {
+          "name": "choice",
+          "options": ["Dynamic options"],
+          "__type": "Choice"
+        },
+        "9d2n_9dy7KqT": {
+          "name": "filterParameter",
+          "uuid": "ucJ9UOZmSeis",
+          "__type": "Var"
+        },
+        "01kcr5sXWaOX": {
+          "type": { "__ref": "iO7gLI2VWFWf" },
+          "variable": { "__ref": "9d2n_9dy7KqT" },
+          "uuid": "yIFCDRRinf3e",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": null,
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": "Filter Operation",
+          "about": "Filter Option to filter by. Read more (https://www.sanity.io/docs/groq-operators#3b7211e976f6)",
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "PropParam"
+        },
+        "ZXvEsm5aHfeS": { "name": "text", "__type": "Text" },
+        "PUyNFhTEjZjq": {
+          "name": "filterValue",
+          "uuid": "kgQYXKd5qG2M",
+          "__type": "Var"
+        },
+        "rtRUCbuhC-Y8": {
+          "type": { "__ref": "ZXvEsm5aHfeS" },
+          "variable": { "__ref": "PUyNFhTEjZjq" },
+          "uuid": "B1iXobBADcGf",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": null,
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": "Filter value",
+          "about": "Value to filter by, should be of filter field type",
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "PropParam"
+        },
+        "BEfc8FgHtPea": { "name": "text", "__type": "Text" },
+        "Jw1bj0RhmmB3": {
+          "name": "limit",
+          "uuid": "GWFAjJu-zu_t",
+          "__type": "Var"
+        },
+        "YT80v6IWhRZa": {
+          "type": { "__ref": "BEfc8FgHtPea" },
+          "variable": { "__ref": "Jw1bj0RhmmB3" },
+          "uuid": "vzheWp9hStL4",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": null,
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": "Limit",
+          "about": "Limit",
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "PropParam"
+        },
+        "qY7slyUNoRyT": { "name": "bool", "__type": "BoolType" },
+        "r9oeO4LtJIUe": {
+          "code": "false",
+          "fallback": null,
+          "__type": "CustomCode"
+        },
+        "bex0dcBs7NZ0": {
+          "name": "noAutoRepeat",
+          "uuid": "EyAJCmrHCIKN",
+          "__type": "Var"
+        },
+        "xA3oVbUNz0j-": {
+          "type": { "__ref": "qY7slyUNoRyT" },
+          "variable": { "__ref": "bex0dcBs7NZ0" },
+          "uuid": "IVC3CuAGZH6c",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": { "__ref": "r9oeO4LtJIUe" },
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": "No auto-repeat",
+          "about": "Do not automatically repeat children for every category.",
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "PropParam"
+        }
+      },
+      "deps": [],
+      "version": "224-migrate-hostless"
+    }
+  ],
+  [
+    "8NKsqWkYqrCZdHfH6rZFvd",
+    {
+      "root": "18175001",
+      "map": {
+        "4972501": {
+          "rows": [{ "__ref": "4972502" }],
+          "__type": "ArenaFrameGrid"
+        },
+        "4972502": { "cols": [], "rowKey": null, "__type": "ArenaFrameRow" },
+        "18175001": {
+          "components": [{ "__ref": "24633004" }],
+          "arenas": [],
+          "pageArenas": [{ "__ref": "24633005" }],
+          "componentArenas": [],
+          "globalVariantGroups": [{ "__ref": "18175003" }],
+          "userManagedFonts": [],
+          "globalVariant": { "__ref": "18175007" },
+          "styleTokens": [],
+          "mixins": [],
+          "themes": [{ "__ref": "18175009" }],
+          "activeTheme": { "__ref": "18175009" },
+          "imageAssets": [{ "__ref": "18532019" }],
+          "projectDependencies": [
+            {
+              "__xref": {
+                "uuid": "4536e610-f7b7-43b7-b45e-172856a7e132",
+                "iid": "63895001"
+              }
+            }
+          ],
+          "activeScreenVariantGroup": { "__ref": "18175003" },
+          "flags": { "usePlasmicImg": true },
+          "hostLessPackageInfo": null,
+          "globalContexts": [{ "__ref": "24633001" }],
+          "splits": [],
+          "defaultComponents": {},
+          "defaultPageRoleId": null,
+          "pageWrapper": null,
+          "customFunctions": [],
+          "codeLibraries": [],
+          "__type": "Site"
+        },
+        "18175003": {
+          "type": "global-screen",
+          "param": { "__ref": "18175004" },
+          "uuid": "gXNqm4RTG09",
+          "variants": [],
+          "multi": true,
+          "__type": "GlobalVariantGroup"
+        },
+        "18175004": {
+          "type": { "__ref": "18175006" },
+          "variable": { "__ref": "18175005" },
+          "uuid": "7euoCnImqcW",
+          "enumValues": [],
+          "origin": null,
+          "exportType": "External",
+          "defaultExpr": null,
+          "previewExpr": null,
+          "propEffect": null,
+          "description": null,
+          "displayName": null,
+          "about": null,
+          "isRepeated": null,
+          "isMainContentSlot": false,
+          "required": false,
+          "mergeWithParent": false,
+          "isLocalizable": false,
+          "__type": "GlobalVariantGroupParam"
+        },
+        "18175005": { "name": "Screen", "uuid": "JA4MBi1HbA", "__type": "Var" },
+        "18175006": { "name": "text", "__type": "Text" },
+        "18175007": {
+          "uuid": "Vnc9AT6tnwT",
+          "name": "base",
+          "selectors": null,
+          "parent": null,
+          "mediaQuery": null,
+          "description": null,
+          "forTpl": null,
+          "__type": "Variant"
+        },
+        "18175009": {
+          "defaultStyle": { "__ref": "18175010" },
+          "styles": [
+            { "__ref": "18175025" },
+            { "__ref": "18175034" },
+            { "__ref": "18175043" },
+            { "__ref": "18175052" },
+            { "__ref": "18175061" },
+            { "__ref": "18175070" },
+            { "__ref": "18175078" },
+            { "__ref": "18175082" },
+            { "__ref": "18175086" },
+            { "__ref": "18175094" },
+            { "__ref": "18175119" },
+            { "__ref": "18175144" },
+            { "__ref": "18175155" }
+          ],
+          "layout": null,
+          "active": true,
+          "__type": "Theme"
+        },
+        "18175010": {
+          "name": "Default Typography",
+          "rs": { "__ref": "18175011" },
+          "preview": null,
+          "uuid": "9yNYUhcC4e",
+          "forTheme": true,
+          "variantedRs": [],
+          "__type": "Mixin"
+        },
+        "18175011": {
+          "values": {
+            "font-family": "Roboto",
+            "font-size": "16px",
+            "font-weight": "400",
+            "font-style": "normal",
+            "color": "#535353",
+            "text-align": "left",
+            "text-transform": "none",
+            "line-height": "1.5",
+            "letter-spacing": "normal",
+            "white-space": "pre-wrap",
+            "user-select": "text",
+            "text-decoration-line": "none",
+            "text-overflow": "clip"
+          },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "18175025": {
+          "selector": "h1",
+          "style": { "__ref": "18175026" },
+          "__type": "ThemeStyle"
+        },
+        "18175026": {
+          "name": "Default \"h1\"",
+          "rs": { "__ref": "18175027" },
+          "preview": null,
+          "uuid": "_vR33sK4xt",
+          "forTheme": true,
+          "variantedRs": [],
+          "__type": "Mixin"
+        },
+        "18175027": {
+          "values": {
+            "font-family": "Inter",
+            "color": "#000000",
+            "font-size": "72px",
+            "font-weight": "900",
+            "letter-spacing": "-4px",
+            "line-height": "1"
+          },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "18175034": {
+          "selector": "h2",
+          "style": { "__ref": "18175035" },
+          "__type": "ThemeStyle"
+        },
+        "18175035": {
+          "name": "Default \"h2\"",
+          "rs": { "__ref": "18175036" },
+          "preview": null,
+          "uuid": "2NfscNZwq1",
+          "forTheme": true,
+          "variantedRs": [],
+          "__type": "Mixin"
+        },
+        "18175036": {
+          "values": {
+            "font-family": "Inter",
+            "color": "#000000",
+            "font-size": "48px",
+            "font-weight": "700",
+            "letter-spacing": "-1px",
+            "line-height": "1.1"
+          },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "18175043": {
+          "selector": "h3",
+          "style": { "__ref": "18175044" },
+          "__type": "ThemeStyle"
+        },
+        "18175044": {
+          "name": "Default \"h3\"",
+          "rs": { "__ref": "18175045" },
+          "preview": null,
+          "uuid": "a9ko6-Ex4R",
+          "forTheme": true,
+          "variantedRs": [],
+          "__type": "Mixin"
+        },
+        "18175045": {
+          "values": {
+            "font-family": "Inter",
+            "color": "#000000",
+            "font-size": "32px",
+            "font-weight": "600",
+            "letter-spacing": "-0.8px",
+            "line-height": "1.2"
+          },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "18175052": {
+          "selector": "h4",
+          "style": { "__ref": "18175053" },
+          "__type": "ThemeStyle"
+        },
+        "18175053": {
+          "name": "Default \"h4\"",
+          "rs": { "__ref": "18175054" },
+          "preview": null,
+          "uuid": "qnVUyg4vpi",
+          "forTheme": true,
+          "variantedRs": [],
+          "__type": "Mixin"
+        },
+        "18175054": {
+          "values": {
+            "font-family": "Inter",
+            "color": "#000000",
+            "font-size": "24px",
+            "font-weight": "600",
+            "letter-spacing": "-0.5px",
+            "line-height": "1.3"
+          },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "18175061": {
+          "selector": "h5",
+          "style": { "__ref": "18175062" },
+          "__type": "ThemeStyle"
+        },
+        "18175062": {
+          "name": "Default \"h5\"",
+          "rs": { "__ref": "18175063" },
+          "preview": null,
+          "uuid": "fbu8WJnrGv",
+          "forTheme": true,
+          "variantedRs": [],
+          "__type": "Mixin"
+        },
+        "18175063": {
+          "values": {
+            "font-family": "Inter",
+            "color": "#000000",
+            "font-size": "20px",
+            "font-weight": "600",
+            "letter-spacing": "-0.3px",
+            "line-height": "1.5"
+          },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "18175070": {
+          "selector": "h6",
+          "style": { "__ref": "18175071" },
+          "__type": "ThemeStyle"
+        },
+        "18175071": {
+          "name": "Default \"h6\"",
+          "rs": { "__ref": "18175072" },
+          "preview": null,
+          "uuid": "Fe0n1Kbf8Q",
+          "forTheme": true,
+          "variantedRs": [],
+          "__type": "Mixin"
+        },
+        "18175072": {
+          "values": {
+            "font-family": "Inter",
+            "color": "#000000",
+            "font-size": "16px",
+            "font-weight": "600",
+            "line-height": "1.5"
+          },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "18175078": {
+          "selector": "a",
+          "style": { "__ref": "18175079" },
+          "__type": "ThemeStyle"
+        },
+        "18175079": {
+          "name": "Default \"a\"",
+          "rs": { "__ref": "18175080" },
+          "preview": null,
+          "uuid": "kTX66VoJ1L",
+          "forTheme": true,
+          "variantedRs": [],
+          "__type": "Mixin"
+        },
+        "18175080": {
+          "values": { "color": "#0070f3" },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "18175082": {
+          "selector": "a:hover",
+          "style": { "__ref": "18175083" },
+          "__type": "ThemeStyle"
+        },
+        "18175083": {
+          "name": "Default \"a:hover\"",
+          "rs": { "__ref": "18175084" },
+          "preview": null,
+          "uuid": "Y-2_HtzQFm",
+          "forTheme": true,
+          "variantedRs": [],
+          "__type": "Mixin"
+        },
+        "18175084": {
+          "values": { "color": "#3291ff" },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "18175086": {
+          "selector": "blockquote",
+          "style": { "__ref": "18175087" },
+          "__type": "ThemeStyle"
+        },
+        "18175087": {
+          "name": "Default \"blockquote\"",
+          "rs": { "__ref": "18175088" },
+          "preview": null,
+          "uuid": "vJ68dcqOqT",
+          "forTheme": true,
+          "variantedRs": [],
+          "__type": "Mixin"
+        },
+        "18175088": {
+          "values": {
+            "border-left-color": "#dddddd",
+            "border-left-style": "solid",
+            "border-left-width": "3px",
+            "color": "#888888",
+            "padding-left": "10px"
+          },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "18175094": {
+          "selector": "code",
+          "style": { "__ref": "18175095" },
+          "__type": "ThemeStyle"
+        },
+        "18175095": {
+          "name": "Default \"code\"",
+          "rs": { "__ref": "18175096" },
+          "preview": null,
+          "uuid": "PYluNjJiIK",
+          "forTheme": true,
+          "variantedRs": [],
+          "__type": "Mixin"
+        },
+        "18175096": {
+          "values": {
+            "background": "linear-gradient(#f8f8f8, #f8f8f8)",
+            "border-bottom-color": "#dddddd",
+            "border-bottom-style": "solid",
+            "border-bottom-width": "1px",
+            "border-left-color": "#dddddd",
+            "border-left-style": "solid",
+            "border-left-width": "1px",
+            "border-right-color": "#dddddd",
+            "border-right-style": "solid",
+            "border-right-width": "1px",
+            "border-top-color": "#dddddd",
+            "border-top-style": "solid",
+            "border-top-width": "1px",
+            "border-bottom-left-radius": "3px",
+            "border-bottom-right-radius": "3px",
+            "border-top-left-radius": "3px",
+            "border-top-right-radius": "3px",
+            "font-family": "Inconsolata",
+            "padding-bottom": "1px",
+            "padding-left": "4px",
+            "padding-right": "4px",
+            "padding-top": "1px"
+          },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "18175119": {
+          "selector": "pre",
+          "style": { "__ref": "18175120" },
+          "__type": "ThemeStyle"
+        },
+        "18175120": {
+          "name": "Default \"pre\"",
+          "rs": { "__ref": "18175121" },
+          "preview": null,
+          "uuid": "-s-ejK9xMG",
+          "forTheme": true,
+          "variantedRs": [],
+          "__type": "Mixin"
+        },
+        "18175121": {
+          "values": {
+            "background": "linear-gradient(#f8f8f8, #f8f8f8)",
+            "border-bottom-color": "#dddddd",
+            "border-bottom-style": "solid",
+            "border-bottom-width": "1px",
+            "border-left-color": "#dddddd",
+            "border-left-style": "solid",
+            "border-left-width": "1px",
+            "border-right-color": "#dddddd",
+            "border-right-style": "solid",
+            "border-right-width": "1px",
+            "border-top-color": "#dddddd",
+            "border-top-style": "solid",
+            "border-top-width": "1px",
+            "border-bottom-left-radius": "3px",
+            "border-bottom-right-radius": "3px",
+            "border-top-left-radius": "3px",
+            "border-top-right-radius": "3px",
+            "font-family": "Inconsolata",
+            "padding-bottom": "3px",
+            "padding-left": "6px",
+            "padding-right": "6px",
+            "padding-top": "3px"
+          },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "18175144": {
+          "selector": "ol",
+          "style": { "__ref": "18175145" },
+          "__type": "ThemeStyle"
+        },
+        "18175145": {
+          "name": "Default \"ol\"",
+          "rs": { "__ref": "18175146" },
+          "preview": null,
+          "uuid": "kqEpJymQM_",
+          "forTheme": true,
+          "variantedRs": [],
+          "__type": "Mixin"
+        },
+        "18175146": {
+          "values": {
+            "display": "flex",
+            "flex-direction": "column",
+            "align-items": "stretch",
+            "justify-content": "flex-start",
+            "list-style-position": "outside",
+            "padding-left": "40px",
+            "position": "relative",
+            "list-style-type": "decimal"
+          },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "18175155": {
+          "selector": "ul",
+          "style": { "__ref": "18175156" },
+          "__type": "ThemeStyle"
+        },
+        "18175156": {
+          "name": "Default \"ul\"",
+          "rs": { "__ref": "18175157" },
+          "preview": null,
+          "uuid": "bPhp3pVxtT",
+          "forTheme": true,
+          "variantedRs": [],
+          "__type": "Mixin"
+        },
+        "18175157": {
+          "values": {
+            "display": "flex",
+            "flex-direction": "column",
+            "align-items": "stretch",
+            "justify-content": "flex-start",
+            "list-style-position": "outside",
+            "padding-left": "40px",
+            "position": "relative",
+            "list-style-type": "disc"
+          },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "18532001": {
+          "expr": { "__ref": "64116003" },
+          "html": false,
+          "__type": "ExprText"
+        },
+        "18532006": {
+          "tag": "img",
+          "name": null,
+          "children": [],
+          "type": "image",
+          "codeGenType": null,
+          "columnsSetting": null,
+          "uuid": "4AOkl4qgFjg",
+          "parent": { "__ref": "42555017" },
+          "locked": null,
+          "vsettings": [{ "__ref": "18532007" }],
+          "__type": "TplTag"
+        },
+        "18532007": {
+          "variants": [{ "__ref": "24633007" }],
+          "args": [],
+          "attrs": {
+            "loading": { "__ref": "18532008" },
+            "src": { "__ref": "64116005" }
+          },
+          "rs": { "__ref": "18532009" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "18532008": {
+          "code": "\"lazy\"",
+          "fallback": null,
+          "__type": "CustomCode"
+        },
+        "18532009": {
+          "values": {
+            "position": "relative",
+            "object-fit": "cover",
+            "max-width": "100%"
+          },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "18532019": {
+          "uuid": "UfHWP-Wun",
+          "name": "Unknown_person.jpeg",
+          "type": "picture",
+          "dataUri": "https://site-assets.plasmic.app/9dd43afd05a2ec766598149885a22215.jpg",
+          "width": 1945,
+          "height": 2153,
+          "aspectRatio": null,
+          "__type": "ImageAsset"
+        },
+        "24633001": {
+          "name": null,
+          "component": {
+            "__xref": {
+              "uuid": "4536e610-f7b7-43b7-b45e-172856a7e132",
+              "iid": "10603003"
+            }
+          },
+          "uuid": "CDQ4D5GFx",
+          "parent": null,
+          "locked": null,
+          "vsettings": [{ "__ref": "24633002" }],
+          "__type": "TplComponent"
+        },
+        "24633002": {
+          "variants": [
+            {
+              "__xref": {
+                "uuid": "4536e610-f7b7-43b7-b45e-172856a7e132",
+                "iid": "10867007"
+              }
+            }
+          ],
+          "args": [],
+          "attrs": {},
+          "rs": { "__ref": "24633003" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "24633003": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "24633004": {
+          "uuid": "j2Bsi9wGSb",
+          "name": "Homepage",
+          "params": [],
+          "states": [],
+          "tplTree": { "__ref": "24633006" },
+          "editableByContentEditor": false,
+          "hiddenFromContentEditor": false,
+          "variants": [{ "__ref": "24633007" }],
+          "variantGroups": [],
+          "pageMeta": { "__ref": "24633008" },
+          "codeComponentMeta": null,
+          "type": "page",
+          "subComps": [],
+          "superComp": null,
+          "plumeInfo": null,
+          "templateInfo": null,
+          "metadata": {},
+          "dataQueries": [],
+          "figmaMappings": [],
+          "alwaysAutoName": false,
+          "trapsFocus": false,
+          "__type": "Component"
+        },
+        "24633005": {
+          "component": { "__ref": "24633004" },
+          "matrix": { "__ref": "24633009" },
+          "customMatrix": { "__ref": "4972501" },
+          "__type": "PageArena"
+        },
+        "24633006": {
+          "tag": "div",
+          "name": null,
+          "children": [{ "__ref": "24633029" }, { "__ref": "42555001" }],
+          "type": "other",
+          "codeGenType": null,
+          "columnsSetting": null,
+          "uuid": "ph6Ysx-Ke",
+          "parent": null,
+          "locked": null,
+          "vsettings": [{ "__ref": "24633010" }],
+          "__type": "TplTag"
+        },
+        "24633007": {
+          "uuid": "KU-BQQyl3O",
+          "name": "base",
+          "selectors": null,
+          "parent": null,
+          "mediaQuery": null,
+          "description": null,
+          "forTpl": null,
+          "__type": "Variant"
+        },
+        "24633008": {
+          "path": "/",
+          "params": {},
+          "query": {},
+          "title": null,
+          "description": "",
+          "canonical": null,
+          "roleId": null,
+          "openGraphImage": null,
+          "__type": "PageMeta"
+        },
+        "24633009": {
+          "rows": [{ "__ref": "24633012" }],
+          "__type": "ArenaFrameGrid"
+        },
+        "24633010": {
+          "variants": [{ "__ref": "24633007" }],
+          "args": [],
+          "attrs": {},
+          "rs": { "__ref": "24633013" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "24633012": {
+          "cols": [{ "__ref": "24633014" }],
+          "rowKey": { "__ref": "24633007" },
+          "__type": "ArenaFrameRow"
+        },
+        "24633013": {
+          "values": {
+            "display": "flex",
+            "flex-direction": "column",
+            "position": "relative",
+            "width": "stretch",
+            "height": "stretch"
+          },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "24633014": {
+          "frame": { "__ref": "24633021" },
+          "cellKey": null,
+          "__type": "ArenaFrameCell"
+        },
+        "24633021": {
+          "uuid": "93k8W_7kOA",
+          "width": 1366,
+          "height": 768,
+          "viewportHeight": 768,
+          "container": { "__ref": "24633023" },
+          "lang": "English",
+          "pinnedVariants": {},
+          "targetVariants": [{ "__ref": "24633007" }],
+          "pinnedGlobalVariants": {},
+          "targetGlobalVariants": [],
+          "viewMode": "stretch",
+          "bgColor": null,
+          "name": "",
+          "top": null,
+          "left": null,
+          "__type": "ArenaFrame"
+        },
+        "24633023": {
+          "name": null,
+          "component": { "__ref": "24633004" },
+          "uuid": "1FLImWCG9g",
+          "parent": null,
+          "locked": null,
+          "vsettings": [{ "__ref": "24633025" }],
+          "__type": "TplComponent"
+        },
+        "24633025": {
+          "variants": [{ "__ref": "18175007" }],
+          "args": [],
+          "attrs": {},
+          "rs": { "__ref": "24633027" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "24633027": { "values": {}, "mixins": [], "__type": "RuleSet" },
+        "24633029": {
+          "name": null,
+          "component": {
+            "__xref": {
+              "uuid": "4536e610-f7b7-43b7-b45e-172856a7e132",
+              "iid": "10603001"
+            }
+          },
+          "uuid": "NupW5Njwr",
+          "parent": { "__ref": "24633006" },
+          "locked": null,
+          "vsettings": [{ "__ref": "24633030" }],
+          "__type": "TplComponent"
+        },
+        "24633030": {
+          "variants": [{ "__ref": "24633007" }],
+          "args": [
+            { "__ref": "24633031" },
+            { "__ref": "24633063" },
+            { "__ref": "24633065" }
+          ],
+          "attrs": {},
+          "rs": { "__ref": "24633032" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "24633031": {
+          "param": {
+            "__xref": {
+              "uuid": "4536e610-f7b7-43b7-b45e-172856a7e132",
+              "iid": "10603006"
+            }
+          },
+          "expr": { "__ref": "24633068" },
+          "__type": "Arg"
+        },
+        "24633032": {
+          "values": {
+            "padding-top": "8px",
+            "padding-right": "8px",
+            "padding-bottom": "8px",
+            "padding-left": "8px",
+            "display": "grid",
+            "grid-template-columns": "1fr 1fr 1fr 1fr",
+            "grid-row-gap": "8px",
+            "grid-column-gap": "8px",
+            "max-width": "100%",
+            "position": "relative"
+          },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "24633044": {
+          "tag": "div",
+          "name": null,
+          "children": [{ "__ref": "24633045" }, { "__ref": "24633070" }],
+          "type": "other",
+          "codeGenType": null,
+          "columnsSetting": null,
+          "uuid": "QmBoEz-LKz",
+          "parent": { "__ref": "24633029" },
+          "locked": null,
+          "vsettings": [{ "__ref": "24633046" }],
+          "__type": "TplTag"
+        },
+        "24633045": {
+          "name": null,
+          "component": {
+            "__xref": {
+              "uuid": "4536e610-f7b7-43b7-b45e-172856a7e132",
+              "iid": "10603002"
+            }
+          },
+          "uuid": "gTwopUTvuk",
+          "parent": { "__ref": "24633044" },
+          "locked": null,
+          "vsettings": [{ "__ref": "24633047" }],
+          "__type": "TplComponent"
+        },
+        "24633046": {
+          "variants": [{ "__ref": "24633007" }],
+          "args": [],
+          "attrs": {},
+          "rs": { "__ref": "24633048" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "24633047": {
+          "variants": [{ "__ref": "24633007" }],
+          "args": [{ "__ref": "24633067" }],
+          "attrs": {},
+          "rs": { "__ref": "24633049" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "24633048": {
+          "values": {
+            "display": "flex",
+            "flex-direction": "column",
+            "position": "relative",
+            "width": "stretch",
+            "height": "wrap",
+            "max-width": "100%",
+            "padding-left": "8px",
+            "padding-right": "8px",
+            "padding-bottom": "8px",
+            "padding-top": "8px",
+            "justify-content": "flex-start",
+            "align-items": "center"
+          },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "24633049": {
+          "values": { "max-width": "100%" },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "24633063": {
+          "param": {
+            "__xref": {
+              "uuid": "4536e610-f7b7-43b7-b45e-172856a7e132",
+              "iid": "10603007"
+            }
+          },
+          "expr": { "__ref": "24633064" },
+          "__type": "Arg"
+        },
+        "24633064": {
+          "code": "\"\"",
+          "fallback": null,
+          "__type": "CustomCode"
+        },
+        "24633065": {
+          "param": {
+            "__xref": {
+              "uuid": "4536e610-f7b7-43b7-b45e-172856a7e132",
+              "iid": "16376002"
+            }
+          },
+          "expr": { "__ref": "24633066" },
+          "__type": "Arg"
+        },
+        "24633066": {
+          "code": "\"movie\"",
+          "fallback": null,
+          "__type": "CustomCode"
+        },
+        "24633067": {
+          "param": {
+            "__xref": {
+              "uuid": "4536e610-f7b7-43b7-b45e-172856a7e132",
+              "iid": "16376003"
+            }
+          },
+          "expr": { "__ref": "24633069" },
+          "__type": "Arg"
+        },
+        "24633068": {
+          "tpl": [{ "__ref": "24633044" }],
+          "__type": "RenderExpr"
+        },
+        "24633069": {
+          "code": "\"title\"",
+          "fallback": null,
+          "__type": "CustomCode"
+        },
+        "24633070": {
+          "name": null,
+          "component": {
+            "__xref": {
+              "uuid": "4536e610-f7b7-43b7-b45e-172856a7e132",
+              "iid": "10603002"
+            }
+          },
+          "uuid": "ULGYrygQsA",
+          "parent": { "__ref": "24633044" },
+          "locked": null,
+          "vsettings": [{ "__ref": "24633071" }],
+          "__type": "TplComponent"
+        },
+        "24633071": {
+          "variants": [{ "__ref": "24633007" }],
+          "args": [{ "__ref": "24633072" }],
+          "attrs": {},
+          "rs": { "__ref": "24633073" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "24633072": {
+          "param": {
+            "__xref": {
+              "uuid": "4536e610-f7b7-43b7-b45e-172856a7e132",
+              "iid": "16376003"
+            }
+          },
+          "expr": { "__ref": "24633076" },
+          "__type": "Arg"
+        },
+        "24633073": {
+          "values": { "max-width": "100%" },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "24633076": {
+          "code": "\"poster\"",
+          "fallback": null,
+          "__type": "CustomCode"
+        },
+        "42555001": {
+          "name": null,
+          "component": {
+            "__xref": {
+              "uuid": "4536e610-f7b7-43b7-b45e-172856a7e132",
+              "iid": "10603001"
+            }
+          },
+          "uuid": "L-6Nc6OaeTi",
+          "parent": { "__ref": "24633006" },
+          "locked": null,
+          "vsettings": [{ "__ref": "42555002" }],
+          "__type": "TplComponent"
+        },
+        "42555002": {
+          "variants": [{ "__ref": "24633007" }],
+          "args": [
+            { "__ref": "42555003" },
+            { "__ref": "42555036" },
+            { "__ref": "64116002" }
+          ],
+          "attrs": {},
+          "rs": { "__ref": "42555004" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "42555003": {
+          "param": {
+            "__xref": {
+              "uuid": "4536e610-f7b7-43b7-b45e-172856a7e132",
+              "iid": "10603006"
+            }
+          },
+          "expr": { "__ref": "42555041" },
+          "__type": "Arg"
+        },
+        "42555004": {
+          "values": {
+            "padding-top": "8px",
+            "padding-right": "8px",
+            "padding-bottom": "8px",
+            "padding-left": "8px",
+            "display": "grid",
+            "grid-template-columns": "1fr 1fr 1fr 1fr",
+            "grid-row-gap": "8px",
+            "grid-column-gap": "8px",
+            "max-width": "100%",
+            "object-fit": "cover",
+            "position": "relative"
+          },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "42555017": {
+          "tag": "div",
+          "name": null,
+          "children": [{ "__ref": "42555045" }, { "__ref": "18532006" }],
+          "type": "other",
+          "codeGenType": null,
+          "columnsSetting": null,
+          "uuid": "VEaeIn7Lbdf",
+          "parent": { "__ref": "42555001" },
+          "locked": null,
+          "vsettings": [{ "__ref": "42555019" }],
+          "__type": "TplTag"
+        },
+        "42555019": {
+          "variants": [{ "__ref": "24633007" }],
+          "args": [],
+          "attrs": {},
+          "rs": { "__ref": "42555021" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": null,
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "42555021": {
+          "values": {
+            "display": "flex",
+            "flex-direction": "column",
+            "position": "relative",
+            "width": "stretch",
+            "height": "wrap",
+            "max-width": "100%",
+            "padding-left": "8px",
+            "padding-right": "8px",
+            "padding-bottom": "8px",
+            "padding-top": "8px",
+            "justify-content": "flex-start",
+            "align-items": "center"
+          },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "42555036": {
+          "param": {
+            "__xref": {
+              "uuid": "4536e610-f7b7-43b7-b45e-172856a7e132",
+              "iid": "10603007"
+            }
+          },
+          "expr": { "__ref": "64116001" },
+          "__type": "Arg"
+        },
+        "42555041": {
+          "tpl": [{ "__ref": "42555017" }],
+          "__type": "RenderExpr"
+        },
+        "42555045": {
+          "tag": "div",
+          "name": null,
+          "children": [],
+          "type": "text",
+          "codeGenType": null,
+          "columnsSetting": null,
+          "uuid": "tiSC9eooR",
+          "parent": { "__ref": "42555017" },
+          "locked": null,
+          "vsettings": [{ "__ref": "42555046" }],
+          "__type": "TplTag"
+        },
+        "42555046": {
+          "variants": [{ "__ref": "24633007" }],
+          "args": [],
+          "attrs": {},
+          "rs": { "__ref": "42555047" },
+          "dataCond": null,
+          "dataRep": null,
+          "text": { "__ref": "18532001" },
+          "columnsConfig": null,
+          "__type": "VariantSetting"
+        },
+        "42555047": {
+          "values": {
+            "position": "relative",
+            "width": "stretch",
+            "height": "wrap",
+            "max-width": "800px",
+            "text-align": "center"
+          },
+          "mixins": [],
+          "__type": "RuleSet"
+        },
+        "64116001": {
+          "code": "\"\"",
+          "fallback": null,
+          "__type": "CustomCode"
+        },
+        "64116002": {
+          "param": {
+            "__xref": {
+              "uuid": "4536e610-f7b7-43b7-b45e-172856a7e132",
+              "iid": "16376002"
+            }
+          },
+          "expr": { "__ref": "64116006" },
+          "__type": "Arg"
+        },
+        "64116003": {
+          "path": ["$ctx", "currentSanityMovieItem", "title"],
+          "fallback": { "__ref": "64116007" },
+          "__type": "ObjectPath"
+        },
+        "64116005": {
+          "path": ["$ctx", "currentSanityMovieItem", "poster", "imgUrl"],
+          "fallback": { "__ref": "64116008" },
+          "__type": "ObjectPath"
+        },
+        "64116006": {
+          "code": "\"movie\"",
+          "fallback": null,
+          "__type": "CustomCode"
+        },
+        "64116007": {
+          "code": "\"Enter some text\"",
+          "fallback": null,
+          "__type": "CustomCode"
+        },
+        "64116008": {
+          "asset": { "__ref": "18532019" },
+          "__type": "ImageAssetRef"
+        }
+      },
+      "deps": ["4536e610-f7b7-43b7-b45e-172856a7e132"],
+      "version": "224-migrate-hostless"
+    }
+  ]
+]

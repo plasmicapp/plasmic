@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0;
+      }
+
+      iframe {
+        border: 0;
+        bottom: 0;
+        height: 100vh;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <iframe></iframe>
+    <script>
+      const iframe = document.getElementsByTagName("iframe")[0]
+      const url = location.hash.replace(/^#/, "");
+      iframe.setAttribute("src", url);
+
+      function post(type, params = {}) {
+        window.opener.postMessage({
+          source: "plasmic-popup",
+          type: type,
+          ...params,
+        }, "*");
+      }
+
+      window.addEventListener("message", (event) => {
+        switch (event.data.type) {
+          case "pushHistory":
+            window.history.pushState({}, "", event.data.url);
+            post("popstate");
+            break;
+          case "replaceHistory":
+            window.history.replaceState({}, "", event.data.url);
+            post("popstate");
+            break;
+          case "getLocation":
+            post("location", {url: location.href});
+            break;
+        }
+      });
+
+      window.addEventListener("load", () => {
+        post("load");
+      });
+
+      window.addEventListener("beforeunload", () => {
+        post("unload");
+      });
+
+      window.addEventListener("popstate", () => {
+        post("popstate");
+      });
+    </script>
+  </body>
+</html>

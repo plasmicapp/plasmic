@@ -1,0 +1,40 @@
+@import 'src/wab/styles/_tokens.sass'
+@import 'src/wab/styles/css-variables.scss'
+
+.root
+  display: flex
+  flex-direction: column
+
+  & > *:not(:first-child)
+    margin-top: $gridSpacing
+
+  & > *
+    display: flex
+
+    & > *:not(:last-child)
+      margin-right: $gridSpacing
+
+
+.rowLabel
+  justify-items: flex-end
+  white-space: nowrap
+  color: $sand8
+  font-weight: 500
+  width: 0
+  transform-origin: 100% 0
+  text-align: right
+  font-size: 16px
+  line-height: 28px
+
+.rowLabelInner
+  padding-right: 15px
+  position: absolute
+  right: 0
+  display: flex
+  flex-direction: column
+  min-width: 10em
+
+  & input
+    text-align: right
+
+

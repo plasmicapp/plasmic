@@ -1,0 +1,58 @@
+@import "src/wab/styles/tokens";
+
+.opacityFieldContainer {
+  height: 22px;
+  display: flex;
+  align-items: center;
+  margin: auto 0 !important;
+}
+
+.opacityField {
+  width: auto;
+  min-width: 46px;
+  margin-right: 24px;
+  margin-left: 0 !important;
+  padding: 0;
+  flex: none;
+
+  & input {
+    width: 35px;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.opacityInput {
+  width: auto;
+}
+
+.controlsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 2px 0;
+  padding-left: 16px;
+  width: 100%;
+
+  & > * {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+}
+
+.visibilityTogglers {
+  justify-content: flex-end;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+  gap: 0;
+  flex-shrink: 1;
+}
+
+.moreOptionsIcon {
+  cursor: pointer;
+  color: #ceced0;
+
+  &:hover {
+    color: $neutral-secondary;
+  }
+}

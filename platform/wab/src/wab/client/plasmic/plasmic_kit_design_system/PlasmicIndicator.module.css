@@ -1,0 +1,26 @@
+.root {
+  display: flex;
+  position: relative;
+  padding: 4px;
+}
+.dot {
+  display: flex;
+  width: 4px;
+  height: 4px;
+  background: var(--token-D666zt2IZPL);
+  box-shadow: 0px 0px 0px 1px var(--token-iR8SeEwQZ);
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+.dotcolor_red {
+  background: var(--token-iDpByWoW0eF);
+}
+.dotcolor_green {
+  background: var(--token-GEBK7U4Am62W);
+}
+.dotcolor_gray {
+  background: var(--token-fVn5vRhXJxQ);
+}
+.dotcolor_purple {
+  background: var(--token-Izr3_jwKAp1);
+}

@@ -1,0 +1,58 @@
+start = _ first:class rest:("\n" _ class)* _ { [first].concat(r[2] for r in rest) }
+
+class
+  = name:typename base:(_ ":" _ typename)? concrete:(_ "(concrete)")? contents:(_ "{{{" _ innards _ "}}}")?
+    {
+      name: name
+      base: base?[3]
+      concrete: concrete?
+      fields: contents?[3]?.fields
+      subclasses: contents?[3]?.subclasses
+    }
+
+innards
+  = fields:(_ field "\n")* classes:(_ class)*
+    {
+      fields: (f[1] for f in fields)
+      subclasses: (f[1] for f in classes)
+    }
+field = annotations:annotation* name:fieldname _ ":" _ type:typespec { {name, type, annotations } }
+annotation = "@" typename:typename _ { typename }
+
+// No left recursion
+// typespec
+//   = "[" _ param:typespec _ "]" { {type: "List", params: [param]} }
+//   / "{" _ param:typespec _ "}" { {type: "Set", params: [param]} }
+//   / "(" _ param:typespec _ ")" { param }
+//   / type:typespec q:(_ "?")?
+//     { if q.length then {type: "Optional", params: [type]} else type }
+//   / type:typename
+
+typespec = orType
+orType = first:optionType rest:(_ "|" _ optionType)*
+  {
+    if rest.length
+      {type: "Or", params: [first].concat(r[3] for r in rest)}
+    else
+      first
+  }
+optionType = param:seqType question:(_ "?")?
+  { if question then {type: "Optional", params: [param]} else param }
+seqType
+  = "[" _ param:typespec _ "]" { {type: "List", params: [param]} }
+  / "{" _ param:typespec _ "}" { {type: "Set", params: [param]} }
+  / name:typename "[" _ first:typespec rest:(_ "," _ typespec)* _ "]"
+    { {type: name, params: [first].concat(r[3] for r in rest)} }
+  / literalType
+  / parenType
+literalType
+  = "'" str:[A-Za-z0-9_-]* "'" { {type: "StringLiteral", params: [str.join('')]} }
+parenType
+  = "(" _ param:typespec _ ")" { param }
+  / type:typename { {type: type, params: []} }
+
+typename = first:[A-Z] rest:[A-Za-z0-9_]* { first + rest.join('') }
+fieldname = first:[a-z_] rest:[A-Za-z0-9_]* { first + rest.join('') }
+
+_ = [ \n\r\t\v]*
+__ = [ \n\r\t\v]+

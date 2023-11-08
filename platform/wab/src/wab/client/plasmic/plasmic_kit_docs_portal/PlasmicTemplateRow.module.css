@@ -1,0 +1,38 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  position: relative;
+  cursor: pointer;
+  min-width: 0;
+  padding: 8px;
+}
+.rootisActive {
+  background: var(--token-pryzRkTNOFd);
+}
+.root:hover {
+  background: var(--token-7bUFmc-GkpN);
+}
+.freeBox {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 800px;
+  display: flex;
+  flex-direction: row;
+  min-width: 0;
+}
+.svg {
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+  align-self: center;
+  margin-right: 5px;
+  width: 1em;
+  flex-shrink: 0;
+  height: 1em;
+}

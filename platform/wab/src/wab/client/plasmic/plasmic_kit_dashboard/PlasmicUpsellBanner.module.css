@@ -1,0 +1,40 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  width: 100%;
+  height: auto;
+  background: var(--token-rv5GUS0f6RK);
+  min-width: 0;
+  padding: 5px;
+}
+.root > :global(.__wab_flex-container) {
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+  margin-left: calc(0px - 3px);
+  width: calc(100% + 3px);
+}
+.root > :global(.__wab_flex-container) > *,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.root > :global(.__wab_flex-container) > picture > img,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
+  margin-left: 3px;
+}
+.svg {
+  position: relative;
+  object-fit: cover;
+  color: var(--token-iR8SeEwQZ);
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+.text__kKomi {
+  position: relative;
+  color: var(--token-iR8SeEwQZ);
+}
+.text__uRIll {
+  position: relative;
+  color: var(--token-9jh0BkCENS);
+}

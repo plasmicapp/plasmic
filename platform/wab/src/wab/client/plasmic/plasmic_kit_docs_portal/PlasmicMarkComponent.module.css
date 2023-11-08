@@ -1,0 +1,24 @@
+.root {
+  display: inline-flex;
+  width: auto;
+  height: auto;
+  position: relative;
+}
+.iconButton:global(.__wab_instance) {
+  position: relative;
+}
+.svg__gUdrw {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 32px;
+  height: 16px;
+}
+.svg__oEtp {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  color: var(--token-UunsGa2Y3t3);
+  width: 1em;
+  height: 1em;
+}

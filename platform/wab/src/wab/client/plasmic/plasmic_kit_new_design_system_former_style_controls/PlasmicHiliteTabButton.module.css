@@ -1,0 +1,30 @@
+.root {
+  display: inline-flex;
+  flex-direction: column;
+  position: relative;
+  width: auto;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  border-top-width: 2px;
+  border-right-width: 0px;
+  border-bottom-width: 2px;
+  border-left-width: 0px;
+  cursor: pointer;
+  padding: 0px;
+  border-style: solid;
+  border-color: var(--token-brSQU2ryS);
+}
+.rootisSelected {
+  border-bottom-color: var(--token-qKhMu66CwSx);
+}
+.root:hover {
+  border-bottom-color: var(--token-qKhMu66CwSx);
+}
+.slotTargetChildren {
+  font-weight: 500;
+  color: var(--token-fVn5vRhXJxQ);
+}
+.slotTargetChildrenisSelected {
+  color: var(--token-0IloF6TmFvF);
+}

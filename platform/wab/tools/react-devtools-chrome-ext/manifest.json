@@ -1,0 +1,14 @@
+{
+  "name": "Plasmic React Devtools Chrome Extension",
+  "version": "1.0",
+  "description": "This extension makes studio.plasmic.app connect to your locally running (Electron) React Devtools.",
+  "manifest_version": 2,
+  "content_scripts": [
+    {
+      "matches": ["https://studio.plasmic.app/projects/*"],
+      "all_frames": true,
+      "run_at": "document_start",
+      "js": ["contentScript.js"]
+    }
+  ]
+}

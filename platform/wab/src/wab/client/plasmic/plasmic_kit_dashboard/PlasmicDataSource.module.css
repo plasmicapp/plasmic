@@ -1,0 +1,37 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  border-radius: 6px;
+  padding: 0.5rem;
+}
+.root:hover {
+  background: var(--token-bV4cCeIniS6);
+}
+.freeBox {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 800px;
+  display: flex;
+  flex-direction: row;
+  min-width: 0;
+}
+.svg {
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+  color: var(--token-UunsGa2Y3t3);
+  flex-shrink: 0;
+}
+.root:hover .svg {
+  display: block;
+}
+.rootreadOnly:hover .svgreadOnly {
+  display: none;
+}

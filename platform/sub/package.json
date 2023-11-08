@@ -1,0 +1,47 @@
+{
+  "name": "subwab",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@plasmicapp/host": "^1.0.178",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "scripts": {
+    "build-dev": "webpack --config webpack.dev.config.js",
+    "build": "webpack --config webpack.prod.config.js",
+    "watch": "webpack --progress --watch --config webpack.dev.config.js",
+    "watch-css": "postcss src/main.css -w -o assets/main.css -u postcss-cssnext",
+    "dev": "webpack-dev-server --config webpack.dev.config.js --open",
+    "test": "jest",
+    "watch-test": "jest --watch",
+    "preview-names": "ts-node src/server.ts preview-names"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.158",
+    "@types/node": "^18.0.0",
+    "@types/prop-types": "^15.7.3",
+    "@types/react": "^18.0.26",
+    "@types/react-bootstrap": "^0.31.8",
+    "@types/react-color": "^3.0.4",
+    "@types/react-dom": "^18.0.9",
+    "@types/react-helmet": "^6.0.0",
+    "@types/react-router-dom": "^5.1.5",
+    "@types/react-select": "^3.0.14",
+    "@types/react-swipeable-views": "^0.13.0",
+    "awesome-typescript-loader": "^5.2.1",
+    "copy-webpack-plugin": "^6.0.3",
+    "postcss": "^7.0.32",
+    "postcss-cli": "^7.1.1",
+    "postcss-cssnext": "^3.1.0",
+    "source-map-loader": "^1.0.1",
+    "ts-node": "^8.10.2",
+    "typedoc": "^0.17.8",
+    "typescript": "^4.1.2",
+    "webpack": "^5.86.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1",
+    "webpack-merge": "^5.9.0"
+  }
+}

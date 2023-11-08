@@ -1,0 +1,26 @@
+{
+  "name": "integration-tests",
+  "version": "0.0.1",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "cy:open": "cypress open"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "execa": "^5.0.0"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.12.16",
+    "@babel/preset-typescript": "^7.12.16",
+    "@types/jest": "^27.0.1",
+    "@types/node": "^14.14.28",
+    "@types/tmp": "^0.2.0",
+    "cypress": "^6.4.0",
+    "jest": "^27.2.0",
+    "tmp": "^0.2.1",
+    "typescript": "^4.1.5"
+  }
+}

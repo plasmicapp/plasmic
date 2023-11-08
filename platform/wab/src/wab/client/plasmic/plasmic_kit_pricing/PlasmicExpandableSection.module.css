@@ -1,0 +1,130 @@
+.root {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+}
+.header {
+  box-shadow: 0px 0px 0px 1px #12376914, 0px 1px 2px 0px #a4acb929;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  cursor: pointer;
+  min-width: 0;
+  border-radius: 24px;
+  padding: 14px 24px;
+}
+.header > :global(.__wab_flex-container) {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  min-width: 0;
+  margin-top: calc(0px - 12px);
+  height: calc(100% + 12px);
+}
+.header > :global(.__wab_flex-container) > *,
+.header > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.header > :global(.__wab_flex-container) > picture > img,
+.header
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-top: 12px;
+}
+@media (min-width: 0px) and (max-width: 768px) {
+  .header {
+    border-radius: 40px;
+  }
+}
+.headerdark {
+  box-shadow: 0px 0px 0px 1px var(--token-4wrna4fBEDIp);
+}
+.freeBox__i5DdO {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0px;
+}
+.freeBox__eNnlX {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  display: flex;
+  flex-direction: row;
+  padding-right: 12px;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+}
+@media (min-width: 0px) and (max-width: 768px) {
+  .freeBox__eNnlX {
+    padding-right: 12px;
+  }
+}
+.freeBox__x0N39 {
+  display: flex;
+  position: relative;
+}
+.slotTargetTitledark {
+  color: var(--token-iR8SeEwQZ);
+}
+.svg {
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+.svgdark {
+  color: var(--token-iR8SeEwQZ);
+}
+.content {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  margin-top: 12px;
+  min-width: 0;
+  padding: 0px;
+}
+.contentopen {
+  display: flex;
+}
+.slotTargetBody {
+  font-size: var(--token-AyOBufhd1IOg);
+  line-height: 24px;
+  color: var(--token-mlyauzeAvywY);
+}
+.slotTargetBodydark {
+  color: var(--token-iR8SeEwQZ);
+}
+.freeBox__k1Ze5 {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+}

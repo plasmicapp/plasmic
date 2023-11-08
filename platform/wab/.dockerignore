@@ -1,0 +1,72 @@
+!**/.gitkeep
+
+# Auto-generated
+**/.git/
+
+# wab/create-react-app:
+create-react-app/
+create-react-app-new/
+
+# Static assets from Jenkins:
+static-*.tgz
+
+# Generated
+.git/
+deps/chrome/
+src/wab/gen/
+public/static/img/*.svg
+public/static/img/icons/*.svg
+build/
+src/wab/classes.ts
+src/wab/classes-metas.ts
+server/.cachedev-build/
+**/dev-build
+src/wab/styles/_tokens.sass
+src/wab/styles/_tokens.ts
+src/wab/styles/css-variables.scss
+src/wab/styles/css-variables.ts
+**/.intercom-token
+**/yarn-error.log
+**/cypress/videos
+**/.cache
+**/package-lock.json
+**/localhost-key.pem
+**/localhost.pem
+**/import-graph.json
+**/import-chains.png
+**/import-chains.dot
+**/.env
+
+# Code coverage
+**/coverage/
+**/cc-test-reporter
+
+**/to-import-into-substack.csv
+
+**/bower_components/
+**/node_modules/
+**/**/.idea/workspace.xml
+**/*.pyc
+**/**/.idea/libraries/Generated_files.xml
+**/**/.idea/sqldialects.xml
+**/.ipynb_checkpoints/
+# Typedoc output
+sub/typedoc/
+sub/typedoc-*/
+sub/typedoc.json
+sub/typedoc.json.gz
+**/.cache-loader/
+**/.DS_Store
+**/**/.vscode/
+**/**/*.swp
+**/.cache
+**/.idea
+**/.env
+**/.venv/
+**/.direnv
+# Local .terraform directories
+**/**/.terraform/*
+
+# .tfstate files
+**/*.tfstate
+**/*.tfstate.*

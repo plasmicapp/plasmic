@@ -1,0 +1,22 @@
+.root:global(.__wab_instance) {
+  position: relative;
+}
+.svg__y7QMe {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  color: var(--token-UunsGa2Y3t3);
+  width: 24px;
+  height: 24px;
+}
+.svgisExpanded__y7QMe5Dg9P {
+  color: var(--token-UunsGa2Y3t3);
+}
+.svg__wgw3N {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  color: var(--token-UunsGa2Y3t3);
+  width: 1em;
+  height: 1em;
+}

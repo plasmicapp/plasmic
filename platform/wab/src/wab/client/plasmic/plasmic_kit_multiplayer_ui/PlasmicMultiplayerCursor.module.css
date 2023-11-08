@@ -1,0 +1,53 @@
+.root {
+  display: block;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 0px;
+  height: 0px;
+  position: relative;
+  pointer-events: none;
+}
+.multiplayerLightDarkColorProvider:global(.__wab_instance) {
+  max-width: 100%;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+}
+.freeBox {
+  display: block;
+  position: relative;
+  width: 0px;
+  height: 0px;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+.cursorShape {
+  object-fit: cover;
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  left: -12px;
+  top: -10px;
+}
+.nameContainer {
+  display: flex;
+  position: absolute;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  height: auto;
+  left: 6px;
+  top: 12px;
+  width: auto;
+  background: #ff0000;
+  border-radius: 100px;
+  padding: 2px 8px;
+}
+.text {
+  width: auto;
+  height: auto;
+  font-size: 11px;
+  white-space: pre;
+}

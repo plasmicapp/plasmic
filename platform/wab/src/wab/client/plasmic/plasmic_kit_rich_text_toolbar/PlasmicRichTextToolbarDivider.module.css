@@ -1,0 +1,11 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 1px;
+  height: 16px;
+  max-width: 100%;
+  background: var(--token-hoA5qaM-91G);
+  position: relative;
+}

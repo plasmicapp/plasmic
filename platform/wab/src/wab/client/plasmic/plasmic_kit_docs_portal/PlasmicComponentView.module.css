@@ -1,0 +1,319 @@
+.root {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+  padding: 8px;
+}
+.rootcomponentType_code {
+  background: var(--token-pryzRkTNOFd);
+}
+.freeBox__wsP0Q {
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 20%;
+  height: auto;
+  max-width: 100%;
+  background: #ffffff;
+  margin-right: 8px;
+  display: none;
+  padding: 8px;
+}
+.freeBoxcomponentType_code__wsP0QLzWtc {
+  justify-content: flex-start;
+  align-items: center;
+  display: flex;
+}
+.text__ukrDh {
+  position: relative;
+  height: auto;
+  line-height: 1.2;
+  font-size: 18px;
+  margin-bottom: 32px;
+}
+.templatesList {
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+  display: none;
+  padding: 8px;
+}
+.templatesListcomponentType_code {
+  display: flex;
+}
+.templateRow__bte5:global(.__wab_instance) {
+  position: relative;
+}
+.templateRow___8Sspq:global(.__wab_instance) {
+  position: relative;
+}
+.templateRow___324Uz:global(.__wab_instance) {
+  position: relative;
+}
+.freeBox__vapgF {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background: #ffffff;
+  min-width: 0;
+  min-height: 0;
+  padding: 16px;
+}
+.freeBox__a1Db7 {
+  position: relative;
+  margin-bottom: 16px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}
+.slotTargetTitle {
+  font-size: 24px;
+  line-height: 1.2;
+}
+.freeBox___1RuAb {
+  position: relative;
+  height: auto;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+}
+.slotTargetInfo {
+  font-size: 14px;
+  color: var(--token-dBnk53GtPsb);
+  line-height: 20px;
+}
+.text__fOsIs {
+  position: relative;
+  height: auto;
+  line-height: 1.2;
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+.viewport {
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  min-height: auto;
+  min-width: 0;
+  display: none;
+  padding: 8px;
+}
+.viewportcomponentType_code {
+  display: flex;
+}
+.columns {
+  position: relative;
+  width: 100%;
+  height: auto;
+  align-items: stretch;
+  flex-shrink: 1;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  min-width: 0;
+  display: none;
+  padding: 8px;
+}
+.columns > :nth-child(2n + 1) {
+  width: calc((100% - 2 * 0px) * 6 / 12);
+}
+.columns > :nth-child(2n + 2) {
+  width: calc((100% - 2 * 0px) * 6 / 12);
+}
+.columnscomponentType_code {
+  display: none;
+}
+.columnscomponentType_code > :nth-child(2n + 1) {
+  width: calc((100% - 2 * 0px) * 6 / 12);
+}
+.columnscomponentType_code > :nth-child(2n + 2) {
+  width: calc((100% - 2 * 0px) * 6 / 12);
+}
+.column__isLor {
+  position: relative;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+  display: none;
+  padding: 8px;
+}
+.columncomponentType_code__isLorLzWtc {
+  display: flex;
+}
+.column__aoY9U {
+  position: relative;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+  display: none;
+  padding: 8px;
+}
+.columncomponentType_code__aoY9ULzWtc {
+  display: flex;
+}
+.examples {
+  flex-direction: column;
+  display: flex;
+  position: relative;
+  margin-bottom: 24px;
+}
+.examples > :global(.__wab_flex-container) {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  margin-top: calc(0px - 16px);
+  height: calc(100% + 16px);
+}
+.examples > :global(.__wab_flex-container) > *,
+.examples > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.examples > :global(.__wab_flex-container) > picture > img,
+.examples
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-top: 16px;
+}
+.examplescomponentType_code {
+  display: none;
+}
+.text__fTmN9 {
+  height: auto;
+}
+.text__wfjsy {
+  height: auto;
+}
+.text__s58E1 {
+  position: relative;
+  height: auto;
+  line-height: 1.2;
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+.baseProps:global(.__wab_instance) {
+  margin-bottom: 16px;
+}
+.basePropscomponentType_code:global(.__wab_instance) {
+  max-height: 20%;
+}
+.text__gn2DO {
+  height: auto;
+}
+.docsPropsTableRow__jgJTo:global(.__wab_instance) {
+  position: relative;
+}
+.docsPropsTableRow__t228J:global(.__wab_instance) {
+  position: relative;
+}
+.text___1FCzt {
+  height: auto;
+}
+.docsPropsTableRow___9FImz:global(.__wab_instance) {
+  position: relative;
+}
+.text__bMo5S {
+  height: auto;
+}
+.docsPropsTableRow___7OuBz:global(.__wab_instance) {
+  position: relative;
+  display: flex;
+}
+.docsPropsTableRow___4Gv5U:global(.__wab_instance) {
+  position: relative;
+  display: flex;
+}
+.docsPropsTableRow__kgZjM:global(.__wab_instance) {
+  position: relative;
+  display: flex;
+}
+.docsPropsTableRow__drijt:global(.__wab_instance) {
+  position: relative;
+  display: flex;
+}
+.text__w9A9 {
+  position: relative;
+  height: auto;
+  line-height: 1.2;
+  font-size: 18px;
+  margin-bottom: 16px;
+  display: block;
+}
+.textcomponentType_code__w9A9LzWtc {
+  display: none;
+}
+.texthideCustomProps__w9A9XQZyE {
+  display: none;
+}
+.customProps:global(.__wab_instance) {
+  position: relative;
+  margin-bottom: 24px;
+  display: flex;
+}
+.customPropscomponentType_code:global(.__wab_instance) {
+  display: none;
+}
+.customPropshideCustomProps:global(.__wab_instance) {
+  display: none;
+}
+.docsPropsTableRow__bsjqs:global(.__wab_instance) {
+  position: relative;
+}
+.text__zpDRm {
+  height: auto;
+}
+.docsPropsTableRow__g7Gtw:global(.__wab_instance) {
+  position: relative;
+  display: flex;
+}
+.docsPropsTableRow__vYLs:global(.__wab_instance) {
+  position: relative;
+  display: flex;
+}
+.docsPropsTableRow__sY5Lb:global(.__wab_instance) {
+  position: relative;
+  display: flex;
+}
+.docsPropsTableRow__b2Oap:global(.__wab_instance) {
+  position: relative;
+  display: flex;
+}
+.freeBox__z6TZh {
+  position: relative;
+  height: auto;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+}
+.freeBoxcomponentType_code__z6TZhLzWtc {
+  display: none;
+}
+.slotTargetFooter {
+  font-size: 14px;
+  color: var(--token-dBnk53GtPsb);
+  line-height: 20px;
+}

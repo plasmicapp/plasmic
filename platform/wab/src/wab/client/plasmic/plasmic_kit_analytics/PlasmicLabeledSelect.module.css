@@ -1,0 +1,99 @@
+.root {
+  flex-direction: column;
+  display: flex;
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  padding: 1.5rem;
+}
+.root > :global(.__wab_flex-container) {
+  flex-direction: column;
+  min-width: 0;
+  margin-top: calc(0px - 8px);
+  height: calc(100% + 8px);
+}
+.root > :global(.__wab_flex-container) > *,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.root > :global(.__wab_flex-container) > picture > img,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
+  margin-top: 8px;
+}
+.rootwithBottomBorder {
+  border-bottom: 1px solid var(--token-hoA5qaM-91G);
+}
+.rootnoRightPadding {
+  padding-right: 0rem;
+}
+.freeBox {
+  position: relative;
+  left: auto;
+  top: auto;
+  display: flex;
+  flex-direction: row;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+.freeBoxwithInfo {
+  justify-content: space-between;
+  align-items: center;
+}
+.slotTargetLabel {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.info {
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+  width: 16px;
+  height: 16px;
+  color: var(--token-UunsGa2Y3t3);
+  flex-shrink: 0;
+  display: none;
+}
+.infowithInfo {
+  display: block;
+}
+.select:global(.__wab_instance) {
+  position: relative;
+  left: auto;
+  top: auto;
+}
+.svg__hRatk {
+  position: relative;
+  object-fit: cover;
+  min-width: 16px;
+  min-height: 16px;
+  width: 16px;
+  height: 16px;
+}
+.option__o4Vcn:global(.__wab_instance) {
+  position: relative;
+}
+.option__joI6W:global(.__wab_instance) {
+  position: relative;
+}
+.optionGroup__iiXo:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.option__h2F3:global(.__wab_instance) {
+  position: relative;
+}
+.option___1IiGb:global(.__wab_instance) {
+  position: relative;
+}
+.optionGroup__zctCi:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.option__ekSaT:global(.__wab_instance) {
+  position: relative;
+}
+.option___1IiGb:global(.__wab_instance) {
+  position: relative;
+}
+.option___7XjA:global(.__wab_instance) {
+  position: relative;
+}

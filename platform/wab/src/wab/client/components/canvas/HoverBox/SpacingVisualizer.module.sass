@@ -1,0 +1,43 @@
+@import "src/wab/styles/tokens"
+
+$padding_color: $green8
+$margin_color: $orange8
+
+@mixin absoluteFill
+    position: absolute
+    top: 0
+    left: 0
+    right: 0
+    bottom: 0
+
+.container
+    @include absoluteFill
+    pointer-events: none
+    z-index: -1
+
+.container
+    @include absoluteFill
+
+.mask
+    @include absoluteFill
+    opacity: 0.2
+
+    .background
+        @include absoluteFill
+        background-color: $padding_color
+
+    .pattern
+        @include absoluteFill
+        // Stripes pattern
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 100 100'%3E%3Cpattern id='uEFjXn30xa' patternUnits='userSpaceOnUse' width='4' height='4'%3E%3Cpath d='M-1 1l2-2M0 4l4-4M3 5l2-2' stroke='%23fff' stroke-width='1'/%3E%3C/pattern%3E%3Crect x='0' y='0' width='100%25' height='100%25' fill='url(%23uEFjXn30xa)'/%3E%3C/svg%3E%0A")
+        background-position-x: left
+        background-position-y: top
+        background-size: 100px 100px
+        background-repeat: repeat
+
+    &.isMargin
+        .background
+            background-color: $margin_color
+        .pattern
+            // Flip the pattern horizontally
+            transform: scaleX(-1)

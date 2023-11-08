@@ -1,0 +1,20 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  height: auto;
+  justify-content: flex-start;
+  align-items: center;
+  background: #01020e;
+  min-width: 0;
+}
+.text {
+  position: relative;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  line-height: 2em;
+  color: var(--token-olzpv9Zfv0);
+  font-size: 14px;
+}

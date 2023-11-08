@@ -1,0 +1,12 @@
+.root {
+  box-shadow: 0px 8px 32px -8px var(--token-XeFw4MGauXBT),
+    0px 8px 20px -16px var(--token-JrjdlBU-a5Ju);
+  display: inline-flex;
+  width: auto;
+  height: auto;
+  position: relative;
+  flex-direction: column;
+  background: rgb(255, 255, 255);
+  border-radius: 2px;
+  padding: 4px 0px;
+}

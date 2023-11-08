@@ -1,0 +1,40 @@
+@import '../../../styles/_vars.sass'
+@import '../../../styles/_mixins.sass'
+
+.DefinedIndicatorContainer
+  width: 12px
+  height: 12px
+  display: grid
+  justify-items: center
+  align-items: center
+
+.DefinedIndicatorCentered
+  width: 14px
+  height: 16px
+  display: grid
+  justify-items: center
+  align-items: center
+
+.DefinedIndicator
+  border-radius: 50%
+  height: 4px
+  width: 4px
+  z-index: 10
+  box-shadow: 0 0 0 2px white
+
+.DefinedIndicator--set
+  background: $indicator-set
+.DefinedIndicator--overriding
+  background: $indicator-overriding
+.DefinedIndicator--inherited
+  background: $indicator-inherited
+.DefinedIndicator--overwritten
+  background: $indicator-overwritten
+.DefinedIndicator--theme
+  background: $indicator-theme
+.DefinedIndicator--mixin
+  background: $indicator-mixin
+.DefinedIndicator--slot
+  background: $indicator-inherited
+.DefinedIndicator--derived
+  background: $indicator-inherited

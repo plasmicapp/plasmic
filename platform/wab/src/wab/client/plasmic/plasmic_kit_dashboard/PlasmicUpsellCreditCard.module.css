@@ -1,0 +1,104 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  height: auto;
+  justify-content: flex-start;
+  align-items: center;
+  align-content: unset;
+  min-width: 0;
+}
+.freeBox__mqxSq {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+}
+.freeBox__mqxSq > :global(.__wab_flex-container) {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  min-width: 0;
+  margin-top: calc(0px - 16px);
+  height: calc(100% + 16px);
+}
+.freeBox__mqxSq > :global(.__wab_flex-container) > *,
+.freeBox__mqxSq > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBox__mqxSq > :global(.__wab_flex-container) > picture > img,
+.freeBox__mqxSq
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-top: 16px;
+}
+.stripeCardElement {
+  display: flex;
+  position: relative;
+  height: 32px;
+  width: 100%;
+  background: #ffffff;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: unset;
+  min-width: 0;
+  flex-shrink: 0;
+}
+.text {
+  position: relative;
+  left: auto;
+  top: auto;
+}
+.freeBox__pvAE {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+}
+.freeBox__pvAE > :global(.__wab_flex-container) {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  align-content: unset;
+  margin-left: calc(0px - 8px);
+  width: calc(100% + 8px);
+}
+.freeBox__pvAE > :global(.__wab_flex-container) > *,
+.freeBox__pvAE > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBox__pvAE > :global(.__wab_flex-container) > picture > img,
+.freeBox__pvAE
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 8px;
+}
+.spinnerContainer {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  height: 30px;
+  width: 30px;
+  flex-shrink: 0;
+}
+.submitButton:global(.__wab_instance) {
+  position: relative;
+}
+.svg__mF8R4 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg__fk8Ai {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 1em;
+}

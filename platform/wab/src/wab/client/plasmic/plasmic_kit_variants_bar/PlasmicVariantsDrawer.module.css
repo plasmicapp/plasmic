@@ -1,0 +1,108 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: auto;
+  height: auto;
+  min-width: 200px;
+  max-height: 450px;
+  box-shadow: 0px 3px 10px 0px #00000033, 0px 0px 0px 1px #0000001a;
+  background: #ffffff;
+  border-radius: 3px;
+}
+.freeBox {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  height: 37px;
+  padding-left: 15px;
+  padding-right: 15px;
+  box-shadow: 0px 2px 5px 0px #0000001a;
+  flex-shrink: 0;
+  width: 100%;
+  min-width: 0;
+}
+.svg {
+  position: relative;
+  object-fit: cover;
+  color: var(--token-nxRkvMlWri);
+  margin-right: 5px;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+.searchInput {
+  position: relative;
+  width: 100%;
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  min-width: 0;
+  border-width: 0px;
+  border-style: none;
+}
+.variantsList {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  overflow: auto;
+  height: 100%;
+  width: 100%;
+  min-width: 0;
+}
+.variantRow__m8Qzi:global(.__wab_instance) {
+  position: relative;
+}
+.text__xsPjs {
+  height: auto;
+}
+.variantsSectionDivider___965Xv:global(.__wab_instance) {
+  position: relative;
+}
+.variantRow__aIt:global(.__wab_instance) {
+  position: relative;
+}
+.text__wrKaW {
+  height: auto;
+}
+.variantRow__hKqTf:global(.__wab_instance) {
+  position: relative;
+}
+.text__mCOb {
+  height: auto;
+}
+.variantsSectionDivider___84T4X:global(.__wab_instance) {
+  position: relative;
+}
+.variantsGroupLabel__eNuDg:global(.__wab_instance) {
+  position: relative;
+}
+.variantRow__ij1KE:global(.__wab_instance) {
+  position: relative;
+}
+.text__pBdts {
+  height: auto;
+}
+.variantRow__lo39W:global(.__wab_instance) {
+  position: relative;
+}
+.variantsGroupLabel__jsbGk:global(.__wab_instance) {
+  position: relative;
+}
+.variantRow__nvL0I:global(.__wab_instance) {
+  position: relative;
+}
+.text__s6JqC {
+  height: auto;
+}
+.variantRow___7OQs5:global(.__wab_instance) {
+  position: relative;
+}
+.text__j9Dww {
+  height: auto;
+}

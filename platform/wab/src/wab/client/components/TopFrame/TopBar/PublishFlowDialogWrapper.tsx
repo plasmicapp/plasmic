@@ -1,0 +1,566 @@
+/** @format */
+
+import { apiKey } from "@/wab/client/api";
+import { AppCtx } from "@/wab/client/app-ctx";
+import { topFrameTourSignals } from "@/wab/client/components/TopFrame/TopFrameChrome";
+import { ToggleWebhook } from "@/wab/client/components/webhooks/WebhooksItem";
+import { personalProjectPaywallMessage } from "@/wab/client/components/widgets/plasmic/ShareDialogContent";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import { useTopFrameCtx } from "@/wab/client/frame-ctx/top-frame-ctx";
+import {
+  useAsyncFnStrict,
+  useAsyncStrict,
+} from "@/wab/client/hooks/useAsyncStrict";
+import { PlasmicPublishFlowDialog__VariantMembers } from "@/wab/client/plasmic/plasmic_kit_continuous_deployment/PlasmicPublishFlowDialog";
+import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
+import { trackEvent } from "@/wab/client/tracking";
+import { spawn, waitUntil } from "@/wab/common";
+import {
+  ApiBranch,
+  ApiProject,
+  ApiProjectWebhook,
+  GitActionParams,
+  GitWorkflowJobStep,
+} from "@/wab/shared/ApiSchema";
+import { notification } from "antd";
+import L from "lodash";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
+import { useInterval } from "react-use";
+import useSWR from "swr";
+import PublishFlowDialog, {
+  SubsectionMeta,
+  VisibleEnableBlockReadOnly,
+} from "./PublishFlowDialog";
+import PublishWizard from "./PublishWizard";
+import { StatusPlasmicHosting } from "./SubsectionPlasmicHosting";
+import {
+  mkPushDeployPublishState,
+  StatusPushDeploy,
+} from "./SubsectionPushDeploy";
+import {
+  mkSaveVersionPublishState,
+  StatusSaveVersion,
+} from "./SubsectionSaveVersion";
+import { mkWebhooksPublishState, StatusWebhooks } from "./SubsectionWebhooks";
+import { TopBarModal } from "./TopBarModal";
+
+export type PublishState = undefined | "publishing" | "success" | "failure";
+
+function mkPublishState(
+  saveVersion: StatusSaveVersion | undefined,
+  pushDeploy: StatusPushDeploy | undefined,
+  webhooks: StatusWebhooks | undefined
+): PublishState {
+  const states = [
+    mkSaveVersionPublishState(saveVersion),
+    mkPushDeployPublishState(pushDeploy),
+    mkWebhooksPublishState(webhooks),
+  ];
+
+  for (const state of ["publishing", "failure", "success"] as PublishState[]) {
+    if (states.includes(state as PublishState)) {
+      return state as PublishState;
+    }
+  }
+
+  return undefined;
+}
+
+function shouldShowPublishWizard(project: ApiProject, appCtx: AppCtx): boolean {
+  const starterId = project.clonedFromProjectId;
+  if (!starterId) {
+    return false;
+  }
+
+  const starterProjects = L.flatMap(
+    appCtx.appConfig.starterSections,
+    (section) => section.projects
+  ).filter((p) => p.publishWizard);
+  return starterProjects.map((p) => p.projectId).includes(starterId);
+}
+
+interface PublishFlowDialogWrapperProps {
+  project: ApiProject;
+  refreshProjectAndPerms: () => void;
+  activatedBranch: ApiBranch | undefined;
+  editorPerm: boolean;
+  latestPublishedVersionData:
+    | { revisionId: string; version: string }
+    | undefined;
+  revisionNum: number;
+  showPublishModal: boolean;
+  keepPublishModalOpen: boolean;
+  setShowPublishModal: (val: boolean) => Promise<void>;
+  setShowCodeModal: (val: boolean) => Promise<void>;
+}
+
+export const PublishFlowDialogWrapper = observer(
+  function PublishFlowDialogWrapper({
+    project,
+    refreshProjectAndPerms,
+    activatedBranch,
+    editorPerm,
+    latestPublishedVersionData,
+    revisionNum,
+    showPublishModal,
+    setShowPublishModal,
+    keepPublishModalOpen,
+    setShowCodeModal,
+  }: PublishFlowDialogWrapperProps) {
+    const appCtx = useAppCtx();
+    const { hostFrameApi } = useTopFrameCtx();
+    const projectId = project.id;
+
+    const [view, setView] = React.useState<
+      PlasmicPublishFlowDialog__VariantMembers["view"] | undefined
+    >(undefined);
+    const [wizard, setWizard] = React.useState(false);
+    const [dismissedWizard, setDismissedWizard] = React.useState(false);
+    const isWizardDisabled = true;
+
+    const [publishState, setPublishState] =
+      React.useState<PublishState>(undefined);
+
+    // Project versioning
+    const [vebSaveVersion, setVEBSaveVersion] =
+      React.useState<VisibleEnableBlockReadOnly>({
+        visible: true,
+        enable: false,
+        block: true,
+      });
+    const [versionTags, setVersionTags] = React.useState([] as string[]);
+    const [versionDescription, setVersionDescription] = React.useState("");
+    const [statusSaveVersion, setStatusSaveVersion] = React.useState<
+      StatusSaveVersion | undefined
+    >(undefined);
+    // Plasmic hosting
+    const [vebPlasmicHosting, setVEBPlasmicHosting] =
+      React.useState<VisibleEnableBlockReadOnly>({
+        visible: false,
+        enable: false,
+        block: true,
+      });
+    const [statusPlasmicHosting, setStatusPlasmicHosting] = React.useState<
+      StatusPlasmicHosting | undefined
+    >(undefined);
+    const { data: domainsResult } = useSWR(
+      apiKey(`getDomainsForProject`, projectId),
+      () =>
+        !activatedBranch && appCtx.appConfig.enablePlasmicHosting
+          ? appCtx.api.getDomainsForProject(projectId)
+          : undefined,
+      { revalidateOnMount: true }
+    );
+    const domains = domainsResult?.domains ?? [];
+    // Push and deploy (GitHub integration)
+    const [vebPushDeploy, setVEBPushDeploy] =
+      React.useState<VisibleEnableBlockReadOnly>({
+        visible: false,
+        enable: false,
+        block: true,
+      });
+    const [gitActionParams, setGitActionParams] =
+      React.useState<GitActionParams>({
+        title: "",
+        description: "",
+        projectId: project.id,
+      });
+    const [projectRepository, updateProjectRepository] =
+      useAsyncFnStrict(async () => {
+        if (!editorPerm) {
+          return null;
+        }
+        if (activatedBranch) {
+          return null;
+        }
+        const { projectRepositories } = await appCtx.api.getProjectRepositories(
+          projectId
+        );
+        return projectRepositories[0] ?? null;
+      }, [projectId]);
+    React.useEffect(() => {
+      if (projectRepository.loading || projectRepository.error) {
+        return;
+      }
+      if (
+        !isWizardDisabled &&
+        !showPublishModal &&
+        !dismissedWizard &&
+        projectRepository.value === null &&
+        revisionNum <= 2 &&
+        shouldShowPublishWizard(project, appCtx)
+      ) {
+        setWizard(true);
+      }
+      setGitActionParams({
+        ...gitActionParams,
+        projectRepositoryId: projectRepository.value?.id,
+        action: projectRepository.value?.defaultAction || "pr",
+        branch: projectRepository.value?.defaultBranch,
+      });
+    }, [projectRepository]);
+    useAsyncStrict(async () => {
+      if (view !== "status" && !projectRepository.loading) {
+        await updateProjectRepository();
+      }
+    }, [view]);
+    const [connectedToGithub, setConnectedToGithub] = React.useState(false);
+    const [statusPushDeploy, setStatusPushDeploy] = React.useState<
+      StatusPushDeploy | undefined
+    >(undefined);
+    const [delay, setDelay] = React.useState<number | null>(null);
+    const [jobState, jobRun] = useAsyncFnStrict(async () => {
+      if (!statusPushDeploy?.projectRepositoryId) {
+        return;
+      }
+
+      if (!statusPushDeploy?.workflowRunId) {
+        const run = await appCtx.api.getGitLatestWorkflowRun(
+          statusPushDeploy.projectRepositoryId,
+          projectId
+        );
+        if (run.state === "running") {
+          statusPushDeploy.setWorkflowRunId(run.workflowRunId);
+          setDelay(0);
+          if (run.workflowJobUrl) {
+            statusPushDeploy.setWorkflowJobUrl(run.workflowJobUrl);
+          }
+        }
+        return;
+      }
+
+      const { job } = await appCtx.api.getGitWorkflowJob(
+        statusPushDeploy.projectRepositoryId,
+        project.id,
+        statusPushDeploy.workflowRunId
+      );
+      if (job) {
+        statusPushDeploy.setWorkflowJobUrl(job.html_url ?? undefined);
+        statusPushDeploy.setSteps(job.steps ?? []);
+        if (job.status === "completed") {
+          setDelay(null);
+        } else if (job.status === "in_progress") {
+          setDelay(1000);
+        } else {
+          setDelay(3000);
+        }
+      }
+    }, [statusPushDeploy]);
+    useInterval(() => {
+      if (!jobState.loading) {
+        spawn(jobRun());
+      }
+    }, delay);
+
+    // Webhooks
+    const [vebWebhooks, setVEBWebhooks] =
+      React.useState<VisibleEnableBlockReadOnly>({
+        visible: false,
+        enable: false,
+        block: true,
+      });
+    const [webhooks, setWebhooks] = React.useState<ToggleWebhook[]>([]);
+    const updateWebhooks = (newWebhooks: ApiProjectWebhook[]) => {
+      const disabledIDs = new Set(
+        webhooks.filter((w) => !w.enable).map((w) => w.id)
+      );
+      const ww = newWebhooks.map((w) => {
+        return { ...w, enable: !(w.id in disabledIDs) } as ToggleWebhook;
+      });
+      setWebhooks(ww);
+    };
+    const updateWebhook = (webhook: ToggleWebhook) => {
+      const ww = [...webhooks];
+      for (let i = 0; i < ww.length; i++) {
+        if (ww[i].id === webhook.id) {
+          ww[i] = webhook;
+        }
+      }
+      setWebhooks(ww);
+    };
+    const resetWebhookEnabled = () => {
+      const ww = [...webhooks];
+      ww.forEach((w) => (w.enable = false));
+      setWebhooks(ww);
+    };
+    const [statusWebhooks, setStatusWebhooks] = React.useState<
+      StatusWebhooks | undefined
+    >(undefined);
+
+    const subsectionMeta: SubsectionMeta = {
+      saveVersion: {
+        ...vebSaveVersion,
+        setVisibleEnableBlock: (v: boolean, e: boolean, b: boolean) =>
+          setVEBSaveVersion({ visible: v, enable: e, block: b }),
+        setup: {
+          tags: versionTags,
+          setTags: setVersionTags,
+          description: versionDescription,
+          setDescription: setVersionDescription,
+        },
+        status: statusSaveVersion,
+      },
+      plasmicHosting: {
+        ...vebPlasmicHosting,
+        setVisibleEnableBlock: (v: boolean, e: boolean, b: boolean) =>
+          setVEBPlasmicHosting({ visible: v, enable: e, block: b }),
+        setup: {
+          domains,
+        },
+        status: statusPlasmicHosting,
+      },
+      pushDeploy: {
+        ...vebPushDeploy,
+        setVisibleEnableBlock: (v: boolean, e: boolean, b: boolean) =>
+          setVEBPushDeploy({ visible: v, enable: e, block: b }),
+        setup: {
+          gitActionParams,
+          setGitActionParams,
+          projectRepository,
+          updateProjectRepository,
+          connectedToGithub,
+          setConnectedToGithub,
+        },
+        status: statusPushDeploy,
+      },
+      webhooks: {
+        ...vebWebhooks,
+        setVisibleEnableBlock: (v: boolean, e: boolean, b: boolean) =>
+          setVEBWebhooks({ visible: v, enable: e, block: b }),
+        setup: {
+          webhooks,
+          resetWebhookEnabled,
+          updateWebhooks,
+          updateWebhook,
+        },
+        status: statusWebhooks,
+      },
+    };
+
+    const publish = () => {
+      spawn(
+        (async () => {
+          topFrameTourSignals?.dispatch({
+            type: TutorialEventsType.PublishModalButtonClicked,
+          });
+          setView("status");
+          trackEvent("Publish", {
+            save: vebSaveVersion.enable,
+            plasmicHosting: vebPlasmicHosting.enable,
+            github: vebPushDeploy.enable,
+            webhooks: vebWebhooks.enable,
+          });
+
+          const _statusSaveVersion: StatusSaveVersion = {
+            enabled: vebSaveVersion.enable,
+          };
+          const _statusPlasmicHosting: StatusPlasmicHosting = {
+            enabled: vebSaveVersion.enable,
+            revalidateResult: undefined,
+            revalidateResponse: undefined,
+          };
+          const _statusPushDeploy: StatusPushDeploy = {
+            enabled: vebPushDeploy.enable,
+            projectRepositoryId: gitActionParams.projectRepositoryId,
+            setWorkflowJobUrl: (url: string | undefined) => {
+              _statusPushDeploy.workflowJobUrl = url;
+              setStatusPushDeploy({ ..._statusPushDeploy });
+            },
+            setWorkflowRunId: (id: number) => {
+              _statusPushDeploy.workflowRunId = id;
+              setStatusPushDeploy({ ..._statusPushDeploy });
+            },
+            steps: [],
+            setSteps: (steps: GitWorkflowJobStep[]) => {
+              _statusPushDeploy.steps = steps;
+              setStatusPushDeploy({ ..._statusPushDeploy });
+            },
+          };
+          const _statusWebhooks: StatusWebhooks = {
+            enabled: vebWebhooks.enable,
+            enabledWebhooks: webhooks
+              .filter((w) => w.enable)
+              .map((w) => L.omit(w, "enable")),
+          };
+
+          if (_statusPushDeploy.enabled) {
+            setDelay(0);
+          } else {
+            setDelay(null);
+          }
+
+          setStatusSaveVersion({ ..._statusSaveVersion });
+          setStatusPlasmicHosting({ ..._statusPlasmicHosting });
+          setStatusPushDeploy({ ..._statusPushDeploy });
+          setStatusWebhooks({ ..._statusWebhooks });
+
+          if (_statusSaveVersion.enabled) {
+            const publishResult = await hostFrameApi.publishVersion(
+              versionTags,
+              versionDescription,
+              activatedBranch?.id
+            );
+            _statusSaveVersion.result = publishResult;
+            setVersionTags([] as string[]);
+            setVersionDescription("");
+            setStatusSaveVersion({ ..._statusSaveVersion });
+
+            if (publishResult === "PaywallError") {
+              return;
+            }
+
+            const versionId = await hostFrameApi.getLatestPublishedVersionId();
+            if (versionId) {
+              await waitUntil(
+                async () => {
+                  const { status } =
+                    await appCtx.api.getPkgVersionPublishStatus(
+                      project.id,
+                      versionId
+                    );
+                  return status === "ready";
+                },
+                { timeout: 5000 }
+              );
+            }
+
+            setStatusSaveVersion({
+              ..._statusSaveVersion,
+              result: "Success",
+            });
+          }
+
+          if (_statusPlasmicHosting.enabled) {
+            setStatusPlasmicHosting({
+              ..._statusPlasmicHosting,
+              revalidateResult: "started",
+            });
+            const response = await appCtx.api.revalidatePlasmicHosting(
+              projectId
+            );
+            setStatusPlasmicHosting({
+              ..._statusPlasmicHosting,
+              revalidateResult: "finished",
+              revalidateResponse: response,
+            });
+            topFrameTourSignals.dispatch({
+              type: TutorialEventsType.HostingPublished,
+              params: {
+                response,
+              },
+            });
+          }
+
+          if (
+            _statusPushDeploy.enabled &&
+            gitActionParams.projectRepositoryId
+          ) {
+            spawn(
+              (async () => {
+                const run = await appCtx.api.fireGitAction(gitActionParams);
+                setGitActionParams({
+                  ...gitActionParams,
+                  title: "",
+                  description: "",
+                });
+                if (run.state === "running") {
+                  _statusPushDeploy.workflowRunId = run.workflowRunId;
+                  _statusPushDeploy.workflowJobUrl =
+                    run.workflowJobUrl ?? undefined;
+                  setStatusPushDeploy({ ..._statusPushDeploy });
+                }
+              })()
+            );
+          }
+
+          if (_statusWebhooks.enabled) {
+            spawn(
+              (async () => {
+                for (const w of _statusWebhooks.enabledWebhooks) {
+                  const event = await appCtx.api.triggerProjectWebhook(
+                    projectId,
+                    w
+                  );
+                  w.event = event;
+                  setStatusWebhooks({ ..._statusWebhooks });
+                }
+              })()
+            );
+          }
+        })()
+      );
+    };
+
+    const resetStatus = () => {
+      setStatusSaveVersion(undefined);
+      setStatusPushDeploy(undefined);
+      setStatusWebhooks(undefined);
+    };
+
+    React.useEffect(() => {
+      setPublishState(
+        mkPublishState(statusSaveVersion, statusPushDeploy, statusWebhooks)
+      );
+    }, [statusSaveVersion, statusPushDeploy, statusWebhooks]);
+
+    React.useEffect(() => {
+      if (publishState === "failure") {
+        if (statusSaveVersion?.result === "PaywallError") {
+          notification.error({
+            message: personalProjectPaywallMessage,
+            duration: 0,
+          });
+        } else {
+          notification.warn({
+            message: "The latest publish failed",
+            description: `An error occurred when publishing. Please try again!`,
+          });
+        }
+      }
+    }, [publishState]);
+
+    return (
+      <>
+        {wizard && (
+          <TopBarModal onClose={() => setWizard(false)}>
+            <PublishWizard
+              appCtx={appCtx}
+              close={() => {
+                setWizard(false);
+                setDismissedWizard(true);
+              }}
+              onGithubConnect={() => {
+                setWizard(false);
+                setConnectedToGithub(true);
+                spawn(setShowPublishModal(true));
+              }}
+            />
+          </TopBarModal>
+        )}
+
+        {(showPublishModal || keepPublishModalOpen) && (
+          <TopBarModal onClose={() => setShowPublishModal(false)}>
+            <PublishFlowDialog
+              appCtx={appCtx}
+              latestPublishedVersionData={latestPublishedVersionData}
+              project={project}
+              refreshProjectAndPerms={refreshProjectAndPerms}
+              activatedBranch={activatedBranch}
+              closeDialog={() => setShowPublishModal(false)}
+              setView={setView}
+              subsectionMeta={subsectionMeta}
+              view={view}
+              publish={publish}
+              resetStatus={resetStatus}
+              setShowCodeModal={setShowCodeModal}
+              publishState={publishState}
+            />
+          </TopBarModal>
+        )}
+      </>
+    );
+  }
+);
+
+export default PublishFlowDialogWrapper;

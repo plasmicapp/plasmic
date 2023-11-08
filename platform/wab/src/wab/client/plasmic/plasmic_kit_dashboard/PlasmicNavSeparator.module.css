@@ -1,0 +1,22 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding-left: 8px;
+  padding-right: 8px;
+  position: relative;
+}
+.roothideStarters {
+  display: none;
+}
+.rootnoPadding {
+  padding: 0px;
+}
+.freeBox {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: var(--token-hoA5qaM-91G);
+  min-width: 0;
+}

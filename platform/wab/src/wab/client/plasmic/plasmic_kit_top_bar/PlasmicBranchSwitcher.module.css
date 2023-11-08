@@ -1,0 +1,19 @@
+.root:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.svg {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  color: var(--token-0IloF6TmFvF);
+  width: 1em;
+  height: 1em;
+}
+.svg__e5Tjx {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}

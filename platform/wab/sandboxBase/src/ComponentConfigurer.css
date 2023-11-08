@@ -1,0 +1,56 @@
+.configurer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  overflow: hidden;
+}
+
+.component-canvas {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+}
+
+.params-panel {
+  box-shadow: -1px 0 4px rgba(0, 0, 0, 0.3);
+  background-color: #fafafa;
+  padding: 20px;
+  min-width: 200px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.params-panel__header {
+  font-weight: bold;
+}
+
+.params-panel__body {
+  flex: 1;
+  overflow: auto;
+}
+
+.params-panel__footer {
+  display: flex;
+  padding-top: 20px;
+}
+
+.param-row {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.param-input {
+  width: 100%;
+}
+
+.component-link-container {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+  white-space: nowrap;
+}

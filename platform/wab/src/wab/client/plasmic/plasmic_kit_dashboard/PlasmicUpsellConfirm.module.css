@@ -1,0 +1,98 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  height: auto;
+  min-width: 0;
+  padding: 32px;
+}
+.root > :global(.__wab_flex-container) {
+  flex-direction: column;
+  min-width: 0;
+  margin-top: calc(0px - 16px);
+  height: calc(100% + 16px);
+}
+.root > :global(.__wab_flex-container) > *,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.root > :global(.__wab_flex-container) > picture > img,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
+  margin-top: 16px;
+}
+.freeBox__tyspx {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+}
+.freeBox__tyspx > :global(.__wab_flex-container) {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  margin-top: calc(0px - 8px);
+  height: calc(100% + 8px);
+}
+.freeBox__tyspx > :global(.__wab_flex-container) > *,
+.freeBox__tyspx > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBox__tyspx > :global(.__wab_flex-container) > picture > img,
+.freeBox__tyspx
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-top: 8px;
+}
+.svg__dlUg2 {
+  position: relative;
+  object-fit: cover;
+  color: rgb(36, 133, 60);
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+.text__aeosj {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.text__efG6S {
+  position: relative;
+}
+.teamSettingsLink {
+  position: relative;
+}
+.freeBox___65IXe {
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  align-content: unset;
+  display: none;
+}
+.slotTargetAmountPaid {
+  font-size: 16px;
+}
+.freeBox__xirn7 {
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  align-content: unset;
+  display: none;
+}
+.dismissButton:global(.__wab_instance) {
+  position: relative;
+}
+.svg__ueqAv {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg___2M4J {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 1em;
+}

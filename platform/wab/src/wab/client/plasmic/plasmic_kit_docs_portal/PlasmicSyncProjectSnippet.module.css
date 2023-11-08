@@ -1,0 +1,9 @@
+.root {
+  display: flex;
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+.docsCodeSnippet__qLyo4:global(.__wab_instance) {
+  position: relative;
+}

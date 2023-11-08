@@ -1,0 +1,107 @@
+.root {
+  display: flex;
+  width: 100%;
+  position: relative;
+  min-height: 2rem;
+  min-width: 0;
+  padding: 8px 16px;
+}
+.root > :global(.__wab_flex-container) {
+  align-items: center;
+  min-width: 0;
+  margin-left: calc(0px - 4px);
+  width: calc(100% + 4px);
+}
+.root > :global(.__wab_flex-container) > *,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.root > :global(.__wab_flex-container) > picture > img,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
+  margin-left: 4px;
+}
+.iconContainer {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+.slotTargetIcon {
+  color: var(--token-UunsGa2Y3t3);
+}
+.svg__yXeE {
+  position: relative;
+  object-fit: cover;
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+.titleContainer {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+}
+.slotTargetChildren {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--token-UunsGa2Y3t3);
+}
+.actionsContainer {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  flex-shrink: 0;
+}
+.iconButton__yhbTg:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.svg__priNb {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}
+.svg__pXkgq {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  color: var(--token-UunsGa2Y3t3);
+  width: 1em;
+  height: 1em;
+}
+.collapseIndicator {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  margin-right: -8px;
+}
+.collapseIndicatorcollapseState_collapsed {
+  flex-shrink: 0;
+}
+.collapseIndicatorcollapseState_expanded {
+  flex-shrink: 0;
+}
+.expandButton:global(.__wab_instance):global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.expandButtoncollapseState_collapsed:global(.__wab_instance):global(
+    .__wab_instance
+  ) {
+  flex-shrink: 0;
+}
+.expandButtoncollapseState_expanded:global(.__wab_instance):global(
+    .__wab_instance
+  ) {
+  flex-shrink: 0;
+}

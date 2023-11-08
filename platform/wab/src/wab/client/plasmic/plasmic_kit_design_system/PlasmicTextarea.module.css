@@ -1,0 +1,10 @@
+.root {
+  position: relative;
+}
+.textarea {
+  position: relative;
+  background: var(--token-bV4cCeIniS6);
+  border-radius: 6px;
+  padding: 8px;
+  border-width: 0px;
+}

@@ -1,0 +1,108 @@
+.root {
+  display: flex;
+  position: relative;
+  pointer-events: auto;
+  flex-direction: column;
+  height: auto;
+}
+.rootfullWidth {
+  width: 100%;
+  min-width: 0;
+}
+.root:hover {
+  display: flex;
+  flex-direction: column;
+}
+.root:focus-within {
+  display: flex;
+  flex-direction: column;
+  outline: none;
+}
+.menuIndicator:global(.__wab_instance) {
+  position: relative;
+  top: auto;
+  left: auto;
+  opacity: 0;
+  flex-shrink: 0;
+  display: none;
+}
+.boundingBoxHighlighter:global(.__wab_instance) {
+  position: relative;
+  top: auto;
+  left: auto;
+  bottom: auto;
+  right: auto;
+  opacity: 0;
+  display: none;
+}
+.text__omx2K {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+.contextMenuIndicatorInner:global(.__wab_instance) {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  right: 0;
+  bottom: 0;
+  min-width: 0;
+  min-height: 0;
+}
+.contextMenuIndicatorInnerisActive:global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.contextMenuIndicatorInnerisRecording:global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.root:hover .contextMenuIndicatorInner:global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.root:focus-within .contextMenuIndicatorInner:global(.__wab_instance) {
+  flex-shrink: 0;
+  outline: none;
+}
+.invisibleHoverTarget {
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 14px;
+  max-width: 100%;
+  width: 100px;
+  left: auto;
+  top: auto;
+  bottom: 100%;
+  right: 0%;
+  opacity: 0;
+  flex-shrink: 0;
+}
+.root:focus-within .invisibleHoverTarget {
+  outline: none;
+}
+.contextMenuContainer {
+  display: flex;
+  position: absolute;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  max-width: 100%;
+  left: 100%;
+  top: 0px;
+  bottom: 0px;
+  min-width: 18px;
+  width: auto;
+  max-height: 32px;
+  opacity: 0;
+}
+.root:hover .contextMenuContainer {
+  opacity: 1;
+}
+.root:focus-within .contextMenuContainer {
+  opacity: 1;
+  outline: none;
+}

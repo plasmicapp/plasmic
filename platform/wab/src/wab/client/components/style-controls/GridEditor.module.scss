@@ -1,0 +1,483 @@
+@import "../../../styles/_mixins";
+
+$handle-thickness: 20px;
+
+:root {
+  /* The size of the container, which catches hover */
+  --LaneHeaders-rows-size: 50px;
+  --LaneHeaders-cols-size: 50px;
+  /* Space between handle and the grid */
+  --TrackHandleGap__Rows: 8px;
+  --TrackHandleGap__Cols: 8px;
+  /* How much to offset TrackInserter from top of LaneHeaders */
+  --TrackInserterOffset__Rows: 10px;
+  --TrackInserterOffset__Cols: 10px;
+}
+
+.GridEditorSandbox {
+  margin: 30px;
+}
+
+.GridControls {
+  transform-origin: top left;
+  position: absolute;
+  background: rgba(200, 210, 255, 0.5);
+  user-select: none;
+}
+.GridControls__InsetRows {
+  --LaneHeaders-rows-size: 0px;
+  --TrackHandleGap__Rows: -20px;
+  --TrackInserterOffset__Rows: 40px;
+}
+.GridControls__InsetCols {
+  --LaneHeaders-cols-size: 0px;
+  --TrackHandleGap__Cols: -20px;
+  --TrackInserterOffset__Cols: 40px;
+}
+.GridControls__AtEndRows {
+  //--LaneHeaders-rows-size: 0px;
+  //--TrackHandleGap__Rows: -20px;
+  //--TrackInserterOffset__Rows: 40px;
+}
+.GridControls__AtEndCols {
+  //--LaneHeaders-cols-size: 0px;
+  //--TrackHandleGap__Cols: -20px;
+  //--TrackInserterOffset__Cols: 40px;
+}
+
+.GridChild {
+  background: silver;
+  cursor: pointer;
+  user-select: none;
+}
+
+.GridChildControls {
+  position: absolute;
+  pointer-events: none;
+  border: 1px solid blue;
+}
+
+.GridChildResizer {
+  @include grid3x3--pushed-out;
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+}
+
+.GridChildResizerCorner {
+  width: 16px;
+  height: 16px;
+  //background: black;
+  pointer-events: initial;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.GridChildResizerCorner__TopLeft {
+  cursor: nw-resize;
+}
+.GridChildResizerCorner__TopRight {
+  cursor: ne-resize;
+}
+.GridChildResizerCorner__BottomLeft {
+  cursor: sw-resize;
+}
+.GridChildResizerCorner__BottomRight {
+  cursor: se-resize;
+}
+
+.GridChildResizerIcon {
+  width: 8px;
+  height: 8px;
+  background: white;
+  border: 1px solid blue;
+}
+
+.LaneHeaders {
+  position: absolute;
+}
+.LaneHeaders__rows {
+  left: calc(-1 * var(--LaneHeaders-rows-size));
+  width: var(--LaneHeaders-rows-size);
+}
+.GridControls__AtEndRows .LaneHeaders__rows {
+  left: unset;
+  right: calc(-1 * var(--LaneHeaders-rows-size));
+}
+.LaneHeaders__cols {
+  top: calc(-1 * var(--LaneHeaders-cols-size));
+  height: var(--LaneHeaders-cols-size);
+}
+.GridControls__AtEndCols .LaneHeaders__cols {
+  top: unset;
+  bottom: calc(-1 * var(--LaneHeaders-cols-size));
+}
+
+.LaneHeader {
+  position: absolute;
+}
+.LaneHeader__Row {
+  width: 100%;
+}
+.LaneHeader__Col {
+  height: 100%;
+}
+
+.HalfTop {
+  top: 0;
+}
+.HalfBottom {
+  bottom: 0;
+}
+.HalfLeft {
+  left: 0;
+}
+.HalfRight {
+  right: 0;
+}
+
+.ResizeHalfTop {
+  top: 0;
+  cursor: n-resize;
+}
+.ResizeHalfBottom {
+  bottom: 0;
+  cursor: s-resize;
+}
+.ResizeHalfLeft {
+  left: 0;
+  cursor: w-resize;
+}
+.ResizeHalfRight {
+  right: 0;
+  cursor: e-resize;
+}
+
+@mixin LaneHeaderHover {
+  //background: black;
+  position: absolute;
+}
+.LaneHeaderHover__Rows {
+  @include LaneHeaderHover;
+  width: 100%;
+  height: 50%;
+}
+.LaneHeaderHover__Cols {
+  @include LaneHeaderHover;
+  width: 50%;
+  height: 100%;
+}
+
+.TrackHandleContainer {
+  position: absolute;
+}
+.TrackHandleContainer__Row {
+  width: ($handle-thickness);
+  right: var(--TrackHandleGap__Rows);
+}
+.TrackHandleContainer__Col {
+  height: ($handle-thickness);
+  bottom: var(--TrackHandleGap__Cols);
+}
+.GridControls__AtEndRows .TrackHandleContainer__Row {
+  right: unset;
+  left: var(--TrackHandleGap__Rows);
+}
+.GridControls__AtEndCols .TrackHandleContainer__Col {
+  bottom: unset;
+  top: var(--TrackHandleGap__Cols);
+}
+
+.TrackHandle {
+  @include cover;
+  border-radius: 8px;
+  background: #d6efffdd;
+  cursor: pointer;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  &:hover,
+  &:active {
+    background: #d6efff;
+    pointer-events: initial;
+  }
+}
+.TrackHandle__Auto {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.TrackHoverHighlight {
+  position: absolute;
+  pointer-events: none;
+}
+.TrackHandleContainer {
+  &:active,
+  &:hover {
+    .TrackHoverHighlight {
+      background: #d6efff55;
+    }
+  }
+}
+.TrackHoverHighlight__Row {
+  left: calc(var(--TrackHandleGap__Rows) + 100%);
+  height: 100%;
+}
+.TrackHoverHighlight__Col {
+  top: calc(var(--TrackHandleGap__Cols) + 100%);
+  width: 100%;
+}
+.GridControls__AtEndRows .TrackHoverHighlight__Row {
+  left: unset;
+  right: calc(var(--TrackHandleGap__Rows) + 100%);
+}
+.GridControls__AtEndCols .TrackHoverHighlight__Col {
+  top: unset;
+  bottom: calc(var(--TrackHandleGap__Cols) + 100%);
+}
+
+@mixin TrackHandleHover {
+  position: absolute;
+}
+.TrackHandleHover__Rows {
+  @include TrackHandleHover;
+  width: 100%;
+  height: 50%;
+}
+.TrackHandleHover__Cols {
+  @include TrackHandleHover;
+  height: 100%;
+  width: 50%;
+}
+
+.TrackInserterIcon {
+  position: absolute;
+  border-radius: 99px;
+  //padding: 4px 4px 0 4px;
+  line-height: 14px;
+  transform: translateY(-50%) translateX(-50%);
+}
+.TrackInserter:hover .TrackInserterIcon {
+  //background: white;
+  //box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+// These styles are manually tweaked so that they line up with the rendered font
+// icon, giving the circular plus a white background. This is probably quite
+// brittle.
+.TrackInserterBackground {
+  position: absolute;
+  z-index: -1;
+  border-radius: 99px;
+  height: 12px;
+  width: 12px;
+  top: 6px;
+  left: 3px;
+}
+.TrackInserter:hover .TrackInserterBackground {
+  background: white;
+}
+
+.TrackInserter {
+  position: absolute;
+  cursor: pointer;
+  color: silver;
+  z-index: 1;
+  display: none;
+  font-size: 20px;
+  line-height: 1em;
+  &:hover,
+  &:active {
+    color: blue;
+  }
+}
+.TrackInserter__Visible {
+  display: block;
+}
+.TrackInserter__Row {
+  top: 100%;
+  left: var(--TrackInserterOffset__Rows);
+  transform: translateY(-50%);
+}
+.TrackInserter__Col {
+  top: var(--TrackInserterOffset__Cols);
+  left: 100%;
+  transform: translateX(-50%);
+}
+.GridControls__AtEndRows .TrackInserter__Row {
+  left: unset;
+  right: var(--TrackInserterOffset__Rows);
+}
+.GridControls__AtEndCols .TrackInserter__Col {
+  top: unset;
+  bottom: var(--TrackInserterOffset__Cols);
+}
+
+.TrackInserterBeam {
+  position: absolute;
+  border: 1px solid blue;
+  display: none;
+  pointer-events: none;
+}
+.TrackInserterBeam__Col {
+  top: calc(var(--LaneHeaders-cols-size) - var(--TrackInserterOffset__Cols));
+  left: calc(50% - 1px);
+}
+.TrackInserterBeam__Row {
+  left: calc(var(--LaneHeaders-rows-size) - var(--TrackInserterOffset__Rows));
+  top: calc(50% - 1px);
+}
+.GridControls__AtEndCols .TrackInserterBeam__Col {
+  top: unset;
+  bottom: calc(var(--LaneHeaders-cols-size) - var(--TrackInserterOffset__Cols));
+}
+.GridControls__AtEndRows .TrackInserterBeam__Row {
+  left: unset;
+  right: calc(var(--LaneHeaders-rows-size) - var(--TrackInserterOffset__Rows));
+}
+.TrackInserter {
+  &:hover,
+  &:active {
+    .TrackInserterBeam {
+      display: block;
+    }
+  }
+}
+
+.Gap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: transparent;
+  border: 1px solid transparent;
+  &:hover,
+  &:active,
+  &.Gap__Active {
+    //background: #d6efffdd;
+    background: #d6efff;
+    border: 1px solid #b6dfff;
+    pointer-events: initial;
+  }
+}
+.Gap__Rows {
+  transform: translateY(-50%);
+  left: 100%;
+  cursor: s-resize;
+}
+.Gap__Cols {
+  transform: translateX(-50%);
+  top: 100%;
+  cursor: e-resize;
+}
+.GridControls__AtEndRows .Gap__Rows {
+  left: unset;
+  right: 100%;
+}
+.GridControls__AtEndCols .Gap__Cols {
+  top: unset;
+  bottom: 100%;
+}
+.Gap__Visible {
+  visibility: visible;
+}
+
+.MimicGrid {
+  position: absolute;
+  pointer-events: none;
+}
+
+.Placeholder {
+  border: 1px dashed #88888888;
+}
+.Placeholder__DropArea {
+  background: #d6efffdd;
+}
+
+$resizer-size: 20px;
+@mixin TrackHandleResizer {
+  position: absolute;
+  //background: red;
+}
+.TrackHandleResizer__Rows {
+  @include TrackHandleResizer;
+  height: 50%;
+  max-height: $resizer-size;
+  width: 100%;
+}
+.TrackHandleResizer__Cols {
+  @include TrackHandleResizer;
+  width: 50%;
+  max-width: $resizer-size;
+  height: 100%;
+}
+
+@mixin TrackHandleResizerGrip {
+  @include dead-center;
+  position: absolute;
+  pointer-events: none;
+  color: rgba(0, 0, 0, 0.2);
+}
+.TrackHandleResizerGrip__Rows {
+  @include TrackHandleResizerGrip;
+  width: 100%;
+}
+.TrackHandleResizerGrip__Cols {
+  @include TrackHandleResizerGrip;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.GapDragRegion {
+  position: absolute;
+  //border: 1px solid gray;
+  top: -10px;
+  left: -10px;
+  bottom: -10px;
+  right: -10px;
+}
+
+.Measure {
+  @include cover;
+  @include dead-center;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #777;
+}
+
+.MeasureRotator {
+  padding: 0 16px;
+}
+.MeasureRotator__Row {
+  transform: rotate(-90deg);
+}
+.MeasureRotator__Col {
+}
+
+.MeasureContent {
+  white-space: nowrap;
+  overflow: hidden;
+  text-align: center;
+}
+
+.MeasureDropdown {
+  position: absolute;
+  display: none;
+  //line-height: 1.6em;
+  font-size: 14px;
+}
+.TrackHandle:hover .MeasureDropdown {
+  display: inline-block;
+}
+
+.NoPointerEvents {
+  pointer-events: none;
+}
+
+.TooltipTent__Row {
+  position: absolute;
+  height: 100%;
+}
+.TooltipTent__Col {
+  position: absolute;
+  width: 100%;
+}

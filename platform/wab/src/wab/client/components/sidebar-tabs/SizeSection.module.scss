@@ -1,0 +1,68 @@
+@import "src/wab/styles/tokens";
+
+.firstRow,
+.sizeSectionControls [class*="panel-row"]:not(.overflowControls) {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 20px;
+}
+
+.firstRow {
+  & [role="combobox"] svg {
+    display: none;
+  }
+
+  & input {
+    text-align: left;
+  }
+}
+
+.overflowControls {
+  padding-top: 12px;
+  margin-top: 12px;
+  border-top: 1px solid #eee;
+
+  & > div {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.toggleIcons {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  display: flex;
+}
+
+.toggleSizingIcon {
+  color: $neutral-secondary;
+  cursor: pointer;
+  &:hover {
+    color: $neutral-primary;
+  }
+}
+
+.disableSizingIcon {
+  cursor: not-allowed;
+}
+
+.toggleSizingIcon__height {
+  transform: rotate(90deg);
+}
+
+.dimField:hover .toggleIcons {
+  pointer-events: all;
+}
+
+.extraOptionWrapper {
+  display: flex;
+  align-items: center;
+
+  & svg {
+    margin-right: 5px;
+  }
+}

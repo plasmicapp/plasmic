@@ -1,0 +1,12 @@
+{
+  "name": "slick-carousel-theme",
+  "private": true,
+  "version": "0.0.1",
+  "description": "CSS with inlined fonts to adapt `slick-carousel/slick/slick-theme.css`",
+  "files": [
+    "slick"
+  ],
+  "scripts": {
+    "build": "echo 'Nothing to build'"
+  }
+}

@@ -1,0 +1,63 @@
+@import "src/wab/styles/tokens";
+
+.treeHeader {
+  padding: 3px 15px 15px 3px;
+  flex-shrink: 0;
+  display: block;
+  width: 100%;
+}
+
+.pageArenaTreeHeader {
+  padding: 0 10px;
+}
+
+.currentFrame {
+  padding: 5px 0 7px 0;
+  font-size: 12px;
+  display: flex;
+  cursor: pointer;
+
+  &:hover {
+    color: $sand9 !important;
+  }
+
+  & svg {
+    margin-left: 5px;
+  }
+}
+
+.searchInputContainer {
+  display: flex;
+  flex-shrink: 1;
+  width: 100%;
+  padding-left: 14px;
+  padding-top: 5px;
+
+  /*
+   * Little hack to avoid weird movement
+   * of elements while expanding the search field
+   */
+  &::after {
+    content: "";
+    display: block;
+    width: 6px;
+  }
+}
+
+.pageArenaSearchInputContainer {
+  width: 100%;
+
+  & > * {
+    width: 100%;
+    border: none;
+  }
+
+  &::after {
+    display: none;
+  }
+}
+
+.framesMenuGroupLabel {
+  text-transform: capitalize;
+  color: $sand8 !important;
+}

@@ -1,0 +1,11 @@
+@import "src/wab/styles/_tokens.sass";
+
+.prefsTable {
+  background-color: $sand2;
+  width: 100%;
+  th,
+  td {
+    text-align: left;
+    padding: 4px 8px;
+  }
+}

@@ -1,0 +1,48 @@
+.contentRoot {
+  padding: 1rem;
+}
+
+.strategy {
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.breakpointsContainer {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-row-gap: 8px;
+  margin-bottom: 1rem;
+}
+
+.deleteIconCol {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  & svg {
+    width: 13px;
+    height: 13px;
+    cursor: pointer;
+    color: #ddd !important;
+
+    &:hover {
+      color: #999 !important;
+    }
+  }
+}
+
+.warningIconCustomVariant, .warningIconBaseVariant {
+  color: #ff9900;
+}
+
+.warningIconCustomVariant {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.warningIconBaseVariant {
+  margin-left: 5px;
+}
+

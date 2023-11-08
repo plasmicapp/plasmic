@@ -1,0 +1,17 @@
+@import "src/wab/styles/tokens";
+
+.imgControl {
+  position: absolute;
+  right: 0;
+  top: -20px;
+  width: 20px;
+  height: 20px;
+  background-color: $blue4;
+  border-radius: 2px 2px 0px 0px;
+  z-index: 10;
+  pointer-events: auto;
+  cursor: pointer;
+  & > svg {
+    color: $blue8;
+  }
+}

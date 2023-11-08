@@ -1,0 +1,35 @@
+.DateRangeStringsEditor {
+  gap: 5px;
+  flex-wrap: wrap;
+  width: 100%;
+  display: flex;
+  background-color: var(--token-O4S7RMTqZ3) !important;
+  border-radius: 6px !important;
+  border: none !important;
+}
+
+.DateRangeStringsEditor input {
+  font-size: 12px !important;
+}
+
+.DateRangeStringsEditor :global(.ant-picker-range-separator) {
+  display: none;
+}
+
+.DateRangeStringsEditor :global(.ant-picker-active-bar) {
+  display: none;
+}
+
+.DateRangeStringsEditor :global(.ant-picker-input:first-child) {
+  width: 100%;
+  padding-bottom: 5px;
+}
+
+.DateRangeStringsEditor :global(.ant-picker-input:nth-child(3)) {
+  flex: 1;
+  width: auto;
+}
+
+.DateRangeStringsEditor :global(.ant-picker-clear) {
+  transform: translateY(50%);
+}

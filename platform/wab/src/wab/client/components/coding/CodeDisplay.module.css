@@ -1,0 +1,10 @@
+.root {
+  margin: 0;
+  padding: 0;
+}
+
+.snippet {
+  padding: 16px;
+  border-radius: 8px;
+  overflow: auto;
+}

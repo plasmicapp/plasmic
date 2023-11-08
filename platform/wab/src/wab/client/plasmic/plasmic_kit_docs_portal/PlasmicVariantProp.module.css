@@ -1,0 +1,35 @@
+.root {
+  display: flex;
+  width: 100%;
+  height: auto;
+  position: relative;
+  min-width: 0;
+}
+.labeledProp:global(.__wab_instance) {
+  position: relative;
+}
+.svg {
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.textbox__iiKwt:global(.__wab_instance) {
+  position: relative;
+}
+.svg__nnoYs {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg__ok0Tr {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.toggle:global(.__wab_instance) {
+  position: relative;
+}

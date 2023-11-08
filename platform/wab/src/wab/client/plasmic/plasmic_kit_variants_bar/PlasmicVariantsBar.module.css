@@ -1,0 +1,231 @@
+.root {
+  display: inline-flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: auto;
+}
+.rootcontained {
+  flex-direction: row;
+}
+.recordingButton:global(.__wab_instance) {
+  position: relative;
+  margin-left: 0px;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+.recordingButtonisFocused:global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.recordingButtonisEmpty:global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.recordingButtoncontained:global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.recordingButtonisEmpty_isFocused:global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.recordingButtonisEditable_isFocused:global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.recordingButtoncontained_isFocused:global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.recordingButtonisEditable_isEmpty_isFocused:global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.recordingButtoncontained_isEditable_isFocused:global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.freeBox {
+  display: flex;
+  flex-direction: row;
+  width: auto;
+  height: auto;
+  border-radius: 4px;
+  padding: 5px;
+}
+.freeBox > :global(.__wab_flex-container) {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.freeBox {
+  display: flex;
+  flex-direction: row;
+  width: auto;
+  height: auto;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 4px;
+  padding: 5px;
+}
+.freeBoxisFocused {
+  box-shadow: 0px 0px 0px 1px #0000001a, 0px 2px 5px 0px #00000033;
+  background: #ffffff;
+}
+.freeBoxisFocused > :global(.__wab_flex-container) {
+  margin-left: calc(0px - 4px);
+  width: calc(100% + 4px);
+  margin-top: calc(0px - 0px);
+  height: calc(100% + 0px);
+}
+.freeBoxisFocused > :global(.__wab_flex-container) > *,
+.freeBoxisFocused > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBoxisFocused > :global(.__wab_flex-container) > picture > img,
+.freeBoxisFocused
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 4px;
+  margin-top: 0px;
+}
+.freeBoxisFocused {
+  box-shadow: 0px 0px 0px 1px #0000001a, 0px 2px 5px 0px #00000033;
+  background: #ffffff;
+}
+.freeBoxcontained {
+  box-shadow: none;
+  background: var(--token-7aKAiXanMe);
+  padding: 0px;
+}
+.freeBoxcontained {
+  box-shadow: none;
+  background: var(--token-7aKAiXanMe);
+  padding: 0px;
+}
+.variantsList {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+}
+.variantsList > :global(.__wab_flex-container) {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  margin-left: calc(0px - 4px);
+  width: calc(100% + 4px);
+}
+.variantsList > :global(.__wab_flex-container) > *,
+.variantsList > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.variantsList > :global(.__wab_flex-container) > picture > img,
+.variantsList
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 4px;
+}
+.variantsList {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+.variantBadge__ns9NY:global(.__wab_instance) {
+  position: relative;
+}
+.variantBadge__jdaZf:global(.__wab_instance) {
+  position: relative;
+}
+.dropdownTrigger {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  padding-left: 5px;
+  padding-right: 5px;
+  height: 24px;
+  background: #ffffff;
+  border-radius: 3px;
+}
+.dropdownTrigger > :global(.__wab_flex-container) {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  margin-left: calc(0px - 0px);
+  width: calc(100% + 0px);
+}
+.dropdownTrigger > :global(.__wab_flex-container) > *,
+.dropdownTrigger > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.dropdownTrigger > :global(.__wab_flex-container) > picture > img,
+.dropdownTrigger
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 0px;
+}
+.dropdownTrigger {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 5px;
+  padding-right: 5px;
+  height: 24px;
+  background: #ffffff;
+  border-radius: 3px;
+}
+.dropdownTriggerisFocused {
+  height: 24px;
+}
+.dropdownTriggerisFocused > :global(.__wab_flex-container) {
+  align-items: center;
+}
+.dropdownTriggerisFocused {
+  height: 24px;
+  align-items: center;
+}
+.dropdownTriggercontained_isEditable_isEmpty_isFocused {
+  background: var(--token-p-rw5DRJTx);
+}
+.dropdownTriggercontained_isEditable_isEmpty_isFocused {
+  background: var(--token-p-rw5DRJTx);
+}
+.root .dropdownTrigger:hover {
+  background: linear-gradient(#0000000d, #0000000d), #ffffff;
+}
+.root .dropdownTrigger:hover {
+  background: linear-gradient(#0000000d, #0000000d), #ffffff;
+}
+.rootcontained_isEditable_isEmpty_isFocused
+  .dropdownTriggercontained_isEditable_isEmpty_isFocused:hover {
+  background: var(--token-bV4cCeIniS6);
+}
+.rootcontained_isEditable_isEmpty_isFocused
+  .dropdownTriggercontained_isEditable_isEmpty_isFocused:hover {
+  background: var(--token-bV4cCeIniS6);
+}
+.emptyListMessage {
+  position: relative;
+  height: auto;
+  color: var(--token-8e6WOx6QI);
+  padding-right: 8px;
+}
+.emptyListMessageisEmpty {
+  padding-left: 8px;
+}
+.emptyListMessageisEditable_isEmpty_isFocused {
+  height: 24px;
+  line-height: 24px;
+}
+.chevronDownIcon {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+}
+.svg {
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+  color: var(--token-fVn5vRhXJxQ);
+  flex-shrink: 0;
+}

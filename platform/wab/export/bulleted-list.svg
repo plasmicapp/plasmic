@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="39px" height="22px" viewBox="0 0 39 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 41.2 (35397) - http://www.bohemiancoding.com/sketch -->
+    <title>bulleted-list</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="All-Screens" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Create-Sidebar" transform="translate(-42.000000, -399.000000)">
+            <g id="bulleted-list" transform="translate(42.000000, 399.000000)">
+                <path d="M9.5,2 L37.5178515,2" id="Line" stroke="#979797" stroke-width="2" stroke-linecap="square"></path>
+                <path d="M9.5,11 L37.5178515,11" id="Line" stroke="#979797" stroke-width="2" stroke-linecap="square"></path>
+                <path d="M9.5,20 L37.5178515,20" id="Line" stroke="#979797" stroke-width="2" stroke-linecap="square"></path>
+                <circle id="Oval-6" fill="#979797" cx="2" cy="2" r="2"></circle>
+                <circle id="Oval-6" fill="#979797" cx="2" cy="20" r="2"></circle>
+                <circle id="Oval-6" fill="#979797" cx="2" cy="11" r="2"></circle>
+            </g>
+        </g>
+    </g>
+</svg>

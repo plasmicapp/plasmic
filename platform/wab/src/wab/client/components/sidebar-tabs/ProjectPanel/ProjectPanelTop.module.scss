@@ -1,0 +1,52 @@
+@import "src/wab/styles/tokens";
+
+.root {
+  flex-shrink: 0;
+}
+
+.collapsedRoot {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.02);
+  }
+}
+
+.collapsedArenaLabel {
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+
+  & svg {
+    opacity: 0.3;
+  }
+}
+
+.collapsedCounter {
+  color: $sand8;
+}
+
+.filterMenuItem {
+  display: flex;
+  align-items: center;
+
+  & svg {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+  }
+}
+
+.sectionHeader {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  padding-left: 18px;
+  color: $sand9;
+}

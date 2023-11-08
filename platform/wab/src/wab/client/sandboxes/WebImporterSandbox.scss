@@ -1,0 +1,10 @@
+body * {
+  -webkit-font-feature-settings: initial;
+  font-feature-settings: initial;
+  font-variant: initial;
+}
+
+img,
+video {
+  max-width: unset;
+}

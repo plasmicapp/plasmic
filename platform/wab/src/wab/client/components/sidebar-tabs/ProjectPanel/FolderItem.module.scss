@@ -1,0 +1,25 @@
+.editableLabelInput {
+  width: 100%;
+  box-shadow: none !important;
+  padding: 0 !important;
+
+  & input {
+    padding: 0 !important;
+  }
+}
+
+.folderLabel {
+  width: 100%;
+  user-select: none;
+}
+
+.highlightSearchTerms:not(:hover) {
+  & strong {
+    color: black;
+  }
+}
+
+.itemPathName {
+  color: rgba(0,0,0,.4);
+  margin-left: 10px;
+}

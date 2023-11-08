@@ -1,0 +1,187 @@
+import { Tooltip } from "antd";
+import * as React from "react";
+import { useState } from "react";
+import { DEVFLAGS, InsertableTemplatesItem } from "../../../devflags";
+import { UU } from "../../cli-routes";
+import { getPageTemplatesGroups } from "../../insertable-templates";
+import EyeIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Eye";
+import {
+  DefaultNewComponentModalProps,
+  PlasmicNewComponentModal,
+} from "../../plasmic/plasmic_kit_new_component/PlasmicNewComponentModal";
+import { StudioCtx } from "../../studio-ctx/StudioCtx";
+import { Icon } from "./Icon";
+import NewComponentItem from "./NewComponentItem";
+import NewComponentSection from "./NewComponentSection";
+import { TextboxRef } from "./Textbox";
+
+type NewPageType = "blank" | "dynamic" | "template";
+export type NewPageInfo = {
+  name: string;
+  type: NewPageType;
+  componentName?: string;
+  projectId?: string;
+};
+
+interface NewPageModalProps
+  extends Omit<DefaultNewComponentModalProps, "children"> {
+  onSubmit: (info: NewPageInfo) => void;
+  onCancel: () => void;
+  studioCtx: StudioCtx;
+}
+
+function NewPageModal(props: NewPageModalProps) {
+  const { onSubmit, onCancel, studioCtx, ...rest } = props;
+
+  const [type, setType] = useState<NewPageType>("blank");
+  const [componentName, setComponentName] = React.useState<string | undefined>(
+    undefined
+  );
+  const [projectId, setProjectId] = React.useState<string | undefined>(
+    undefined
+  );
+  const [name, setName] = React.useState("NewPage");
+  const nameRef = React.useRef<TextboxRef>(null);
+
+  const isApp = studioCtx.siteInfo.hasAppAuth;
+  const contentEditorMode = studioCtx.contentEditorMode;
+  const pageTemplatesGroups =
+    isApp || contentEditorMode ? [] : getPageTemplatesGroups(studioCtx);
+
+  return (
+    <PlasmicNewComponentModal
+      root={{
+        as: "form",
+        props: {
+          onSubmit: () => {
+            if (name) {
+              onSubmit({ name, type, componentName, projectId });
+            }
+          },
+          style: {
+            maxHeight: "calc(100vh - 64px)",
+          },
+        },
+      }}
+      cancelButton={{
+        onClick: onCancel,
+        htmlType: "button",
+      }}
+      nameInput={{
+        props: {
+          autoFocus: true,
+          "data-test-id": "prompt",
+          ref: nameRef,
+          value: name,
+          onChange: (e) => setName(e.target.value),
+        },
+      }}
+      submitButton={{
+        props: {
+          "data-test-id": "prompt-submit",
+          htmlType: "submit",
+          disabled: !name,
+        },
+      }}
+      showTemplates={true}
+      isPage={true}
+      {...rest}
+    >
+      <NewComponentSection title={""}>
+        <NewComponentItem
+          isSelected={type === "blank"}
+          title="Empty page"
+          imgUrl={"https://jovial-poitras-57edb1.netlify.app/blank.png"}
+          onClick={() => {
+            const previousName = componentName;
+            setComponentName(undefined);
+            setProjectId(undefined);
+            setType("blank");
+            if (!name || previousName === name) {
+              setName("NewPage");
+            }
+          }}
+        />
+        {DEVFLAGS.simplifiedDynamicPages && (
+          <NewComponentItem
+            isSelected={type === "dynamic"}
+            title="Dynamic page"
+            imgUrl={"https://jovial-poitras-57edb1.netlify.app/blank.png"}
+            onClick={() => {
+              const previousName = componentName;
+              setComponentName(undefined);
+              setProjectId(undefined);
+              setType("dynamic");
+              if (!name || previousName === name) {
+                setName("NewPage");
+              }
+            }}
+          />
+        )}
+      </NewComponentSection>
+      {pageTemplatesGroups.map((group, idx) => (
+        <NewComponentSection
+          title={group.name}
+          key={`page-templates-section-${group.name}-${idx}`}
+        >
+          {(
+            group.items.filter(
+              (c) => c.type === "insertable-templates-item"
+            ) as InsertableTemplatesItem[]
+          ).map((comp) => {
+            return (
+              <NewComponentItem
+                key={`page-templates-item-${comp.projectId}-${comp.componentName}`}
+                isSelected={
+                  comp.componentName === componentName &&
+                  comp.projectId === projectId
+                }
+                title={comp.displayName || comp.componentName}
+                imgUrl={comp.imageUrl}
+                onClick={() => {
+                  const previousName = componentName;
+                  setComponentName(comp.componentName);
+                  setProjectId(comp.projectId);
+                  setType("template");
+                  if (!name || previousName === name) {
+                    setName(comp.componentName);
+                  }
+                  if (nameRef.current) {
+                    nameRef.current.focus();
+                  }
+                }}
+                controls={
+                  <Tooltip title="Open page template in new window">
+                    <Icon
+                      icon={EyeIcon}
+                      onClick={async () => {
+                        await studioCtx.projectDependencyManager.fetchInsertableTemplate(
+                          comp.projectId
+                        );
+                        const template =
+                          studioCtx.projectDependencyManager.getInsertableTemplate(
+                            comp
+                          );
+                        if (!template) {
+                          return;
+                        }
+                        const route = UU.projectFullPreview.pattern
+                          .replace(":projectId", comp.projectId)
+                          .replace(":previewPath*", template.component.uuid);
+                        window.open(route, "_blank");
+                      }}
+                    />
+                  </Tooltip>
+                }
+                large
+                showControls
+              />
+            );
+          })}
+        </NewComponentSection>
+      ))}
+    </PlasmicNewComponentModal>
+  );
+}
+
+export default NewPageModal;

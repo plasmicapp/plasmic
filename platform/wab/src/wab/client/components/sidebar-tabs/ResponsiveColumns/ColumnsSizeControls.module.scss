@@ -1,0 +1,83 @@
+@import "src/wab/styles/tokens";
+
+$controlsWidth: 264px;
+$columnHeight: 30px;
+$columnBackground: rgb(228, 230, 235); //$spectrum-gray-90
+$resizerBackground: rgb(150, 153, 158); //$spectrum-gray-60
+
+$canvasSpaceTop: -30px;
+
+.wrapper {
+  display: flex;
+  flex: 1;
+  border: 1px solid #eeeeee;
+  border-radius: 6px;
+  margin-left: -8px;
+  margin-right: -8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  justify-content: center;
+}
+
+.controlsWrapper {
+  display: flex;
+  position: relative;
+  width: $controlsWidth;
+}
+
+.columnWrapper {
+  padding: 4px;
+}
+
+.columnContent {
+  height: $columnHeight;
+  background-color: $columnBackground;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+}
+
+.columnResizer {
+  position: absolute;
+  top: calc(50% - 4px);
+  margin-left: -1px; /* width / 2 */
+  width: 2px;
+  height: 8px;
+  border-radius: 100%;
+  cursor: ew-resize;
+  background-color: $resizerBackground;
+}
+
+.canvasColumnBtn {
+  position: absolute;
+  top: $canvasSpaceTop;
+  margin-left: -10px; /* width / 2 */
+  width: 20px;
+  height: 20px;
+  border-radius: 2px;
+  z-index: 10;
+  pointer-events: auto;
+  cursor: ew-resize;
+  background: $blue4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  & svg {
+    color: $blue8;
+  }
+}
+
+.canvasColumnPlusBtn {
+  left: calc(100% + 20px);
+  cursor: pointer;
+}
+
+.canvasColumnBeamLine {
+  position: absolute;
+  height: 100%;
+  width: 2px;
+  margin-left: -1px; /* width / 2 */
+  z-index: 10;
+  border-left: 2px dotted $blue8;
+}

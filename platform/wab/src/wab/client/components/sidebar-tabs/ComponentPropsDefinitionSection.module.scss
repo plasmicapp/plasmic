@@ -1,0 +1,22 @@
+@import "src/wab/styles/tokens";
+@import "src/wab/styles/vars";
+
+.propDefaultValueInputContainer {
+  display: block;
+
+  & label {
+    font-size: 11px;
+    color: $black-a9;
+  }
+
+  & input,
+  & [class^="ant-input-number"],
+  & [contenteditable] {
+    box-shadow: none !important;
+    padding: 0 !important;
+    border: none !important;
+    outline: none !important;
+    background: transparent !important;
+    font-family: $font-family !important;
+  }
+}

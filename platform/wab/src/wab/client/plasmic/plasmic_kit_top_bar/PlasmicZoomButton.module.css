@@ -1,0 +1,20 @@
+.root:global(.__wab_instance) {
+  position: relative;
+  height: 1.75rem;
+}
+.svg___336LD {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg___5FCws {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+  width: 16px;
+  height: 16px;
+}

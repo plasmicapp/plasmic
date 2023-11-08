@@ -1,0 +1,86 @@
+.root {
+  display: inline-flex;
+  width: auto;
+  height: auto;
+  position: relative;
+  flex-direction: column;
+  cursor: pointer;
+}
+.root:hover {
+  box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.15);
+}
+.freeBox {
+  display: flex;
+  position: relative;
+  width: auto;
+  height: auto;
+  left: auto;
+  top: auto;
+  flex-direction: column;
+}
+.nameContainer {
+  display: flex;
+  position: relative;
+  width: auto;
+  height: auto;
+  justify-content: center;
+  overflow: hidden;
+}
+.slotTargetName {
+  text-align: center;
+  white-space: pre;
+}
+.slotTargetName > :global(.__wab_text),
+.slotTargetName > :global(.__wab_expr_html_text),
+.slotTargetName > :global(.__wab_slot-string-wrapper),
+.slotTargetName > :global(.__wab_slot) > :global(.__wab_text),
+.slotTargetName > :global(.__wab_slot) > :global(.__wab_expr_html_text),
+.slotTargetName > :global(.__wab_slot) > :global(.__wab_slot-string-wrapper),
+.slotTargetName
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_text),
+.slotTargetName
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_expr_html_text),
+.slotTargetName
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot-string-wrapper),
+.slotTargetName
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_text),
+.slotTargetName
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_expr_html_text),
+.slotTargetName
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot-string-wrapper) {
+  text-overflow: ellipsis;
+}
+.slotTargetName > *,
+.slotTargetName > :global(.__wab_slot) > *,
+.slotTargetName > :global(.__wab_slot) > :global(.__wab_slot) > *,
+.slotTargetName
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.slotTargetName > picture > img,
+.slotTargetName > :global(.__wab_slot) > picture > img,
+.slotTargetName > :global(.__wab_slot) > :global(.__wab_slot) > picture > img,
+.slotTargetName
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  overflow: hidden;
+}

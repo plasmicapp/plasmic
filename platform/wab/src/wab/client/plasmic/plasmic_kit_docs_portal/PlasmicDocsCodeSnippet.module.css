@@ -1,0 +1,17 @@
+.root {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  background: rgb(30, 30, 30);
+  min-width: 0;
+  border-radius: 8px;
+  padding: 16px;
+}
+.slotTargetChildren {
+  font-family: "IBM Plex Mono";
+  color: var(--token-aUCjnzhayS);
+}

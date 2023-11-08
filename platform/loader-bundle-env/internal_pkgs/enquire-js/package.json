@@ -1,0 +1,33 @@
+{
+  "name": "enquire.js",
+  "version": "2.1.6",
+  "main": "./src",
+  "description": "Awesome Media Queries in JavaScript",
+  "homepage": "http://wicky.nillia.ms/enquire.js",
+  "author": {
+    "name": "Nick Williams",
+    "url": "http://wicky.nillia.ms"
+  },
+  "keywords": [
+    "media query",
+    "media queries",
+    "matchMedia",
+    "enquire",
+    "enquire.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/WickyNilliams/enquire.js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/WickyNilliams/enquire.js/issues"
+  },
+  "license": "MIT",
+  "devDependencies": {},
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "build": "echo 'Nothing to build'"
+  }
+}

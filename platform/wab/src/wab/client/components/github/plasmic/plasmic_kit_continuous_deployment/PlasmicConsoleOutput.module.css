@@ -1,0 +1,27 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+.outputBox {
+  display: flex;
+  height: 200px;
+  overflow: auto;
+  flex-direction: column-reverse;
+  width: 100%;
+  background: var(--token-PHHWT_HMuS1);
+  min-width: 0;
+  flex-shrink: 0;
+  padding: 16px;
+}
+.slotTargetOutput {
+  font-family: "IBM Plex Mono";
+  color: var(--token-N1gO6v-RIEn);
+}
+.text__hUYoL {
+  position: relative;
+}

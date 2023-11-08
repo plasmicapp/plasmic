@@ -1,0 +1,289 @@
+@import "src/wab/styles/tokens";
+
+$activeAlignmentControls: $neutral-secondary;
+$simulatedAlignmentControls: $blue9;
+
+$expanderBackground: $sand3;
+$expanderHoverBackground: $blue3;
+$expanderHoverChevronColor: $blue9;
+
+$expanderSize: 12px;
+$alignerSize: 16px;
+
+$gridWidth: 150px;
+$gridHeight: 120px;
+
+.aligner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
+  border: none;
+  z-index: 5;
+  border-radius: 4px;
+  position: relative;
+
+  & svg {
+    width: $expanderSize !important;
+    height: $expanderSize !important;
+    transition: all 300ms;
+  }
+
+  &:hover {
+    background: $expanderHoverBackground;
+    color: $expanderHoverChevronColor;
+  }
+
+  button {
+    display: flex;
+    padding: 0;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.alignerTextWrapper {
+  white-space: nowrap;
+}
+
+.verticalAligner {
+  flex-direction: column;
+  width: $alignerSize;
+  height: 100%;
+  left: 0;
+  margin-right: 2px;
+
+  .alignerTextWrapper {
+    pointer-events: none;
+    transform: rotate(-90deg);
+  }
+
+  button {
+    flex-direction: column;
+    width: $alignerSize;
+    height: 100%;
+  }
+}
+
+.horizontalAligner {
+  flex-direction: row;
+  height: $alignerSize;
+  width: 100%;
+  bottom: 0;
+  margin-bottom: 2px;
+
+  button {
+    flex-direction: row;
+    width: 100%;
+    height: $alignerSize;
+  }
+}
+
+.verticalIndicator {
+  position: absolute;
+  bottom: -10px;
+  left: 2px;
+  > div {
+    margin-left: 0;
+  }
+}
+
+.horizontalIndicator {
+  position: absolute;
+  left: 6px;
+}
+
+.alignEachRow {
+  height: 100%;
+}
+
+.alignEachColumn {
+  width: 100%;
+}
+
+.root {
+  justify-content: center;
+}
+
+.root:hover .verticalExpander,
+.root:hover .horizontalExpander {
+  background: $expanderBackground;
+}
+
+.arrangementRoot {
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+.stackPreviewSimulated {
+  background: transparent !important;
+
+  & > div {
+    background: $simulatedAlignmentControls !important;
+    opacity: 1;
+    z-index: 2;
+  }
+}
+
+.stackPreviewDimmed > div {
+  opacity: 0.2 !important;
+}
+
+.gridRoot {
+  width: $gridWidth;
+  height: $gridHeight;
+  position: relative;
+}
+
+.leftControls {
+  height: $gridHeight;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+}
+
+.bottomControls {
+  width: $gridWidth;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.previewStack,
+.horizontalStack,
+.verticalStack,
+.hoverableGrid {
+  width: 100%;
+  height: 100%;
+}
+
+.previewStack,
+.horizontalStack,
+.verticalStack {
+  padding: 3px;
+  background: white;
+  border: 1px solid $activeAlignmentControls;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  z-index: 1;
+  display: flex;
+  border-radius: 3px;
+  opacity: 1;
+  transition: opacity 250ms;
+
+  &.stackHidden {
+    opacity: 0;
+  }
+
+  &.stackWrap {
+    flex-wrap: wrap;
+  }
+
+  &.stackWrapReverse {
+    flex-wrap: wrap-reverse;
+  }
+
+  & > div {
+    border-radius: 2px;
+    margin: 1px;
+    background: $activeAlignmentControls;
+    flex-shrink: 0;
+    font-size: 7px;
+    line-height: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+  }
+
+  & > div > span {
+    width: 2px;
+    height: 2px;
+    background: white;
+    margin: 1px;
+    display: none;
+  }
+}
+
+.horizontalStack {
+  &.stackReverse {
+    flex-direction: row-reverse;
+  }
+
+  & > div {
+    width: 28px;
+    min-height: 30%;
+  }
+}
+
+.horizontalArrangement {
+  & > div {
+    width: 28px;
+    min-height: 30%;
+  }
+}
+
+.verticalArrangement {
+  & > div {
+    height: 28px;
+    min-width: 30%;
+  }
+}
+
+.verticalStack {
+  flex-direction: column;
+
+  &.stackReverse {
+    flex-direction: column-reverse;
+  }
+
+  & > div {
+    height: 28px;
+    min-width: 30%;
+  }
+}
+
+.hoverableGrid {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+}
+
+.extraFieldsContainer {
+  width: 100%;
+  flex-shrink: 1;
+  align-self: flex-start;
+}
+
+.flexTogglers {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  margin-top: 6px;
+  padding-top: 12px;
+  padding-bottom: 8px;
+  border-top: 1px solid #eee;
+}
+
+.overflowToggleGroup {
+  justify-content: space-between;
+}

@@ -1,0 +1,26 @@
+.root {
+  display: flex;
+  width: 100%;
+  height: 1px;
+  position: relative;
+  min-width: 0;
+  border-bottom: 1px solid var(--token-hoA5qaM-91G);
+}
+.rootcenter {
+  border-bottom-style: none;
+}
+.freeBox {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  width: 100%;
+  height: 0px;
+  margin-right: var(--token-NCc1lDy9R);
+  margin-left: var(--token-NCc1lDy9R);
+  align-self: center;
+  min-width: 0;
+  border-bottom: 1px solid var(--token-hoA5qaM-91G);
+}
+.freeBoxcenter {
+  display: flex;
+}

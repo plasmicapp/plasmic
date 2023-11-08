@@ -1,0 +1,98 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background: var(--token-iR8SeEwQZ);
+  min-width: 0;
+  min-height: 0;
+}
+.freeBox__q86AV {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  background: var(--token-iR8SeEwQZ);
+  min-width: 0;
+  min-height: 0;
+}
+.freeBox__iAyOg {
+  display: flex;
+  position: relative;
+  justify-content: space-between;
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--token-hoA5qaM-91G);
+}
+.left {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+}
+.text {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 800px;
+  font-weight: 500;
+  font-size: 14px;
+  min-width: 0;
+}
+.details {
+  color: var(--token-UunsGa2Y3t3);
+}
+.right {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: flex-start;
+}
+.saveButton:global(.__wab_instance) {
+  position: relative;
+}
+.svg__dBzwB {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}
+.svg__rlUn6 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}
+.freeBox__zo006 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  background: var(--token-p-rw5DRJTx);
+  overflow: auto;
+  min-width: 0;
+  min-height: 0;
+}
+.content {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  max-width: 800px;
+  min-width: 0;
+  min-height: 0;
+  padding: 1.25rem;
+}

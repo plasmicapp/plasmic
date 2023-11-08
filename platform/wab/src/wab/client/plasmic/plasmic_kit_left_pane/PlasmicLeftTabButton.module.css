@@ -1,0 +1,105 @@
+.root {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  width: 40px;
+  height: 40px;
+  padding-left: 8px;
+  padding-right: 8px;
+  cursor: pointer;
+  border-radius: 6px;
+  border-width: 0px;
+  border-style: dotted;
+}
+.root > :global(.__wab_flex-container) {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  margin-left: calc(0px - 4px);
+  width: calc(100% + 4px);
+}
+.root > :global(.__wab_flex-container) > *,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.root > :global(.__wab_flex-container) > picture > img,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
+  margin-left: 4px;
+}
+.rootisSelected {
+  background: var(--token-O4S7RMTqZ3);
+}
+.roothasLabel {
+  width: 100%;
+  min-width: 0;
+}
+.roothasLabel > :global(.__wab_flex-container) {
+  min-width: 0;
+}
+.root:hover {
+  background: var(--token-O4S7RMTqZ3);
+}
+.freeBox__b5WN {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 24px;
+  height: auto;
+  max-width: 24px;
+  flex-shrink: 0;
+  padding: 0px;
+}
+.slotTargetIcon {
+  color: var(--token-UunsGa2Y3t3);
+  font-size: 24px;
+}
+.slotTargetIconisSelected {
+  color: var(--token-0IloF6TmFvF);
+}
+.root:hover .slotTargetIcon {
+  color: var(--token-0IloF6TmFvF);
+}
+.svg__zvJof {
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+}
+.svg {
+  left: 23px;
+  top: -2px;
+  position: absolute;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+  color: var(--token-Kkp266E0V7gX);
+  flex-shrink: 0;
+}
+.svgshowAlert_showAlert {
+  left: -2px;
+  top: 2px;
+}
+.svgshowAlert_showYellowCircle {
+  left: 0px;
+  width: 12px;
+  height: 12px;
+  top: 4px;
+  color: var(--token-DEbwNasuLfjs);
+  flex-shrink: 0;
+}
+.freeBox__t4REh {
+  position: relative;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  flex-direction: row;
+  display: none;
+}
+.freeBoxhasLabel__t4REhrO5Dz {
+  display: flex;
+}
+.slotTargetLabel {
+  color: var(--token-UunsGa2Y3t3);
+  font-weight: 500;
+}

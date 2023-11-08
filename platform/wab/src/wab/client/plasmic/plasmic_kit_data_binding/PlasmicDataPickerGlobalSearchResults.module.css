@@ -1,0 +1,39 @@
+.root {
+  display: inline-flex;
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  flex-grow: 1;
+  overflow-x: visible;
+  overflow-y: auto;
+  flex-shrink: 0;
+  position: relative;
+  flex-direction: column;
+  min-width: 250px;
+  min-height: 0;
+  padding: 0px;
+}
+.text {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.25;
+  position: relative;
+  padding: 16px;
+}
+.freeBox {
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  flex-direction: column;
+  min-width: 0;
+}
+.dataPickerGlobalSearchResultsItem__b90X7:global(.__wab_instance) {
+  position: relative;
+  width: auto;
+}
+.dataPickerGlobalSearchResultsItem__wkt0L:global(.__wab_instance) {
+  position: relative;
+  width: auto;
+}

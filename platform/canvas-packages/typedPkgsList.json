@@ -1,0 +1,22 @@
+[
+  "lodash",
+  "uuid",
+  "isomorphic-fetch",
+  "fast-stringify",
+  "marked",
+  "pluralize",
+  "copy-to-clipboard",
+  "random",
+  "@faker-js/faker",
+  "nanoid",
+  "tinycolor2",
+  "zod",
+  "immer",
+  "md5",
+  "axios",
+  "semver",
+  "date-fns",
+  "papaparse",
+  "jquery",
+  "dayjs"
+]

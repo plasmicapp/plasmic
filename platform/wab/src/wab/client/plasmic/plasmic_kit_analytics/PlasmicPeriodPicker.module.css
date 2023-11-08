@@ -1,0 +1,116 @@
+.root {
+  flex-direction: column;
+  display: flex;
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  padding: 1.5rem;
+}
+.root > :global(.__wab_flex-container) {
+  flex-direction: column;
+  justify-content: flex-end;
+  min-width: 0;
+  margin-top: calc(0px - 8px);
+  height: calc(100% + 8px);
+}
+.root > :global(.__wab_flex-container) > *,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.root > :global(.__wab_flex-container) > picture > img,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
+  margin-top: 8px;
+}
+.text {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.25;
+  position: relative;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+.picker {
+  display: flex;
+  position: relative;
+  background: var(--token-bV4cCeIniS6);
+  border-radius: 6px;
+  padding: 2px;
+}
+.animationbox {
+  display: flex;
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  max-width: 100%;
+  left: 0px;
+  top: 0px;
+  background: none;
+  flex-direction: column;
+  transition-property: all;
+  transition-duration: 0.5s;
+  min-height: 0;
+  -webkit-transition-property: all;
+  -webkit-transition-duration: 0.5s;
+  padding: 2px;
+}
+.animationboxmonth {
+  transform: translateX(100%) translateY(0px) translateZ(0px);
+}
+.highlighter {
+  display: block;
+  position: relative;
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  left: auto;
+  top: auto;
+  background: #ffffff;
+  min-height: 0;
+  border-radius: 4px;
+}
+.dayOption {
+  font-size: 12px;
+  line-height: 1.25;
+  position: relative;
+  width: 50%;
+  height: auto;
+  max-width: 800px;
+  left: auto;
+  top: auto;
+  text-align: center;
+  background: none;
+  font-weight: 500;
+  border-radius: 4px;
+  padding: 0.5rem;
+}
+.dayOptionmonth {
+  background: none;
+  font-weight: 400;
+  cursor: pointer;
+}
+.rootmonth .dayOptionmonth:active {
+  background: var(--token-hoA5qaM-91G);
+}
+.monthOption {
+  font-size: 12px;
+  line-height: 1.25;
+  position: relative;
+  width: 50%;
+  height: auto;
+  max-width: 800px;
+  left: auto;
+  top: auto;
+  right: auto;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 0.5rem;
+}
+.monthOptionmonth {
+  font-weight: 500;
+  cursor: auto;
+}
+.root .monthOption:hover {
+  background: var(--token-Ik3bdE1e1Uy);
+}
+.root .monthOption:active {
+  background: var(--token-hoA5qaM-91G);
+}

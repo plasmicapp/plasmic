@@ -1,0 +1,71 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-top-width: 0px;
+  border-top-style: none;
+  border-right-width: 0px;
+  border-right-style: none;
+  border-left-width: 0px;
+  border-left-style: none;
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  padding: 8px 16px;
+  border-color: var(--token-hoA5qaM-91G);
+}
+.freeBox___2Aimk {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+.slotTargetTokenType {
+  font-weight: 500;
+}
+.freeBox___36Lfh {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+}
+.addButton:global(.__wab_instance) {
+  flex-shrink: 0;
+  display: none;
+}
+.addButtonisExpanded:global(.__wab_instance) {
+  flex-shrink: 0;
+  display: flex;
+}
+.svg__ihGm1 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+  width: 16px;
+  height: 16px;
+}
+.svg__jqg1 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  color: var(--token-UunsGa2Y3t3);
+  width: 1em;
+  height: 1em;
+}
+.expandButton:global(.__wab_instance):global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.expandButtonisExpanded:global(.__wab_instance):global(.__wab_instance) {
+  flex-shrink: 0;
+}

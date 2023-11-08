@@ -1,0 +1,9 @@
+.scrollableShortcuts {
+  max-height: 70vh;
+  overflow: auto;
+  padding: 20px 25px;
+}
+
+.shortcutRow:not(:last-child) {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+}

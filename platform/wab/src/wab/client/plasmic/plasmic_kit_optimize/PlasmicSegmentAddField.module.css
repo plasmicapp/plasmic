@@ -1,0 +1,96 @@
+.root {
+  flex-direction: column;
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: auto;
+  min-width: 0;
+  padding: 8px;
+}
+.root > :global(.__wab_flex-container) {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  min-width: 0;
+  margin-top: calc(0px - 8px);
+  height: calc(100% + 8px);
+}
+.root > :global(.__wab_flex-container) > *,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.root > :global(.__wab_flex-container) > picture > img,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
+  margin-top: 8px;
+}
+.text {
+  position: relative;
+  width: auto;
+  height: auto;
+  max-width: 800px;
+}
+.fieldName:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.svg__o2Qg {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg__ysTq {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.fieldType:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.svg__dOswJ {
+  position: relative;
+  object-fit: cover;
+  min-width: 16px;
+  min-height: 16px;
+  width: 16px;
+  height: 16px;
+}
+.option___8Gx38:global(.__wab_instance) {
+  position: relative;
+}
+.option__wkLnx:global(.__wab_instance) {
+  position: relative;
+}
+.optionGroup__dTwDb:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.option___2PVtb:global(.__wab_instance) {
+  position: relative;
+}
+.option___1IiGb:global(.__wab_instance) {
+  position: relative;
+}
+.option__gniIa:global(.__wab_instance) {
+  position: relative;
+}
+.addFieldBtn:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.svg__ib6Zu {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg__xrA4S {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 1em;
+}

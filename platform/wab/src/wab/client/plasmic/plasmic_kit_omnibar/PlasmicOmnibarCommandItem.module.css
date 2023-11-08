@@ -1,0 +1,64 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  width: 100%;
+  height: 32px;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 8px 16px;
+}
+.rootfocused {
+  background: var(--token-7ZKxn5-4Au);
+}
+.freeBox__mKbC {
+  flex-direction: row;
+  display: flex;
+  position: relative;
+}
+.freeBox__mKbC > :global(.__wab_flex-container) {
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  margin-left: calc(0px - 10px);
+  width: calc(100% + 10px);
+}
+.freeBox__mKbC > :global(.__wab_flex-container) > *,
+.freeBox__mKbC > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBox__mKbC > :global(.__wab_flex-container) > picture > img,
+.freeBox__mKbC
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 10px;
+}
+.svg__vTshG {
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+  color: var(--token-vxWzcGg6aE);
+  flex-shrink: 0;
+}
+.slotTargetTitle {
+  font-size: 11px;
+  color: var(--token-6QxBZ9qV1n);
+}
+.freeBox__mYueg {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  box-shadow: 0px 1px 0px 0px #00000026;
+  background: var(--token-rn7cv75TwH);
+  border-radius: 2px;
+  padding: 2px 4px;
+}
+.slotTargetKeyboardShortcut {
+  font-family: "Roboto", sans-serif;
+  font-size: 10px;
+  color: var(--token--deXnEZPIk);
+}

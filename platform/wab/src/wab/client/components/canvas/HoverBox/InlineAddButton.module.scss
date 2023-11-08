@@ -1,0 +1,72 @@
+@import "src/wab/styles/tokens";
+@import "../../../../styles/css-variables";
+
+.inlineAddButton {
+  --button-size: 30px;
+  box-shadow: 0 0 0 2px white;
+  width: var(--button-size);
+  height: var(--button-size);
+  border-radius: 999px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  z-index: 10;
+  pointer-events: auto;
+  cursor: pointer;
+  margin-left: 10px;
+  color: white;
+  overflow: hidden;
+
+  &::before,
+  &::after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    content: "";
+    z-index: -1;
+  }
+
+  &::before {
+    filter: brightness(1.2) saturate(1.2);
+    background: $selectionControlsColor;
+  }
+
+  &::after {
+    filter: brightness(0.8) saturate(1.2);
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      $selectionControlsColor
+    );
+  }
+
+  & svg {
+    width: calc(var(--button-size) * 2 / 3);
+    height: calc(var(--button-size) * 2 / 3);
+  }
+}
+
+.inside {
+  right: calc(var(--button-size) / 2.5);
+  bottom: calc(var(--button-size) / 2.5);
+}
+
+.outside {
+  right: calc(var(--button-size) * -1.25) !important;
+  bottom: calc(var(--button-size) * -1.25) !important;
+  border-radius: 3px calc(var(--button-size) / 2) calc(var(--button-size) / 2);
+}
+
+.bottomEdge {
+  right: calc(var(--button-size) / 2);
+  bottom: calc(var(--button-size) / -2);
+}
+
+.rightEdge {
+  right: calc(var(--button-size) / -2);
+  bottom: calc(var(--button-size) / 2);
+}

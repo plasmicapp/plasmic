@@ -1,0 +1,65 @@
+.root {
+  display: flex;
+  width: 100%;
+  height: var(--token-aDa535tnF);
+  position: relative;
+  min-width: 0;
+}
+.root > :global(.__wab_flex-container) {
+  align-items: center;
+  min-width: 0;
+  margin-left: calc(0px - 4px);
+  width: calc(100% + 4px);
+}
+.root > :global(.__wab_flex-container) > *,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.root > :global(.__wab_flex-container) > picture > img,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
+  margin-left: 4px;
+}
+.labelContainer {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 70px;
+  flex-shrink: 0;
+}
+.labelContainerautoLabelWidth {
+  width: auto;
+  height: auto;
+}
+.slotTargetLabel {
+  color: var(--token-pXjwiQ4b3);
+}
+.controlContainer {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+}
+.chip___6L2Vm:global(.__wab_instance) {
+  position: relative;
+}
+.chip__t6Vnz:global(.__wab_instance) {
+  position: relative;
+}
+.text__hpAoP {
+  position: relative;
+}
+.indicatorContainer {
+  display: flex;
+  position: absolute;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  top: 10px;
+  left: -18px;
+}
+.indicatorContainernoLabel {
+  left: -8px;
+}

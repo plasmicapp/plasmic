@@ -1,0 +1,41 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  position: relative;
+  min-width: 0;
+  padding: 16px 0px;
+}
+.freeBox {
+  width: 100%;
+  height: auto;
+  max-width: 800px;
+  padding-left: 8px;
+  padding-right: 8px;
+  margin-bottom: 2px;
+  display: flex;
+  flex-direction: row;
+  min-width: 0;
+}
+.slotTargetTitle {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--token-qKhMu66CwSx);
+  text-transform: uppercase;
+}
+.insertPanelTabItem__b7NYe:global(.__wab_instance) {
+  position: relative;
+}
+.svg__yQ38 {
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}

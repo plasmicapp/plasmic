@@ -1,0 +1,28 @@
+.root {
+  width: 250px;
+  height: 100px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-row-gap: 0px;
+  position: relative;
+  cursor: pointer;
+  border-width: 1px;
+  border-style: none;
+}
+.root:hover {
+  background: var(--token-Dd7LTRbv-ss);
+}
+.img__iv9Z2 {
+  object-fit: cover;
+  width: 211px;
+  height: 72px;
+  flex-shrink: 0;
+}
+.img__iv9Z2 > picture > img {
+  object-fit: cover;
+}
+.img__iv9Z2 > .__wab_img-spacer > img {
+  object-fit: cover;
+}

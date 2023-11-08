@@ -1,0 +1,18 @@
+.root:global(.__wab_instance) {
+  position: relative;
+}
+.svg___30FS {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}
+.svg__mMk8Z {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  color: var(--token-UunsGa2Y3t3);
+  width: 1em;
+  height: 1em;
+}

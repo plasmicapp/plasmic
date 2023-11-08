@@ -1,0 +1,29 @@
+.root {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+}
+.svg__pOu3R {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg__omiHo {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 1em;
+}
+.menuButton:global(.__wab_instance) {
+  display: none;
+}
+.svg__ayoeb {
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}

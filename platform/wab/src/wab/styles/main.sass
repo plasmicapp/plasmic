@@ -1,0 +1,5948 @@
+@import './_vars.sass'
+@import './_mixins.sass'
+@import './_utils.sass'
+@import './css-variables.scss'
+
+$node-outline-color: $selectionControlsColor
+$node-outline-border-thickness: 1px
+$node-outline-handle-size: 16px
+$node-outline-tag-color: #0b88e0
+$node-outline-border: $node-outline-border-thickness solid $node-outline-color
+
+$node-measure-border-color: $tomato9
+
+$scroll-width: 7px
+$right-pane-content-width: 280px
+$right-pane-padding: 8px
+$right-pane-width: $right-pane-content-width + $scroll-width + $right-pane-padding * 2
+$right-float-pane-width: 255px
+$bottom-pane-height: 200px
+$left-tab-strip-width: 48px
+
+$link-color: $blue9
+$grab: url(/static/img/openhand.cur) 10 7, default
+$grabbing: url(/static/img/closedhand.cur) 10 7, default
+
+$controlbg: #505050
+$insetbg: #131516
+$insetbg: darken($bg, 3%)
+$slightly-darker: #212426
+$tab-bar-color: #2B3237
+
+$selected-control-color: lighten($btn-color, 20%)
+
+$swatch-size: 24px
+
+//$dimmer-highlight: adjust-hue(#444858, -40deg)
+//$dimmer-highlight: rgba($active-color, .4)
+$dimmer-highlight: #444858
+$dim-highlight: darken($dimmer-highlight, 5%)
+$dim-selected: #2E3F48
+$darkener: rgba(black, 0.3)
+
+$warning-color: #F7A700
+
+$expr-color: #F6A623
+
+$content-width: 960px
+
+$lightbg: $sand2
+$panel-bg: #fff
+
+$pill-bg: $active-color
+
+body
+  font-size: $font-size
+  line-height: $line-height
+
+*:focus, button:focus, input:focus
+  outline: none
+
+@mixin draggable
+  cursor: $grab
+  &:active
+    cursor: $grabbing
+
+@mixin table
+  display: table
+  table-layout: fixed
+
+@mixin clearfix
+  &:before, &:after
+    content: ' '
+    display: table
+
+  &:after
+    clear: both
+
+  // For IE 6/7 only
+  &
+    *zoom: 1
+
+@mixin popup-box
+  box-shadow: 2px 2px 9px rgba(0,0,0,.3)
+
+@mixin popup-box-hoverable
+  @include popup-box
+  &:hover
+    box-shadow: 2px 2px 9px rgba(0,0,0,.4)
+    transition: box-shadow .2s
+
+@mixin popup-menu
+  background-color: $panel-bg
+  border: 1px solid $darkener
+  padding: 4px 0
+  box-shadow: 1px 2px 9px 3px rgba(0,0,0,.4)
+
+@mixin tpl-popup-menu
+  @include popup-menu
+
+@mixin tpl-menu-item
+  cursor: pointer
+  padding: 4px 10px
+  &:hover
+    background-color: $dimmer-highlight
+
+@mixin inset
+  //background-color: $insetbg
+  //background-color: transparent
+  border: none
+  color: $fg
+
+@mixin link
+  cursor: pointer
+
+@mixin small-heading
+  @extend .strong
+
+@mixin h-nav-item
+  display: inline-block
+
+@mixin minor-icon
+  margin: 0 5px
+  display: inline-block
+  &:first-child
+    margin-left: 0
+  &:last-child
+    margin-right: 0
+
+@mixin padded
+  display: inline-block
+  margin: 0 10px
+  &:first-child
+    margin-left: 0
+  &:last-child
+    margin-right: 0
+
+@mixin svg-icon
+  // this is already done via tasks/clean-svg
+  // fill: currentColor
+
+@mixin thin-button
+  padding: 4px
+
+@mixin vcenter
+  display: flex
+  align-items: center
+
+@mixin hint
+  font-style: italic
+  color: rgba($fg, 0.7)
+
+@mixin type-hint
+  font-size: 11px
+  color: rgba(white, 0.4)
+
+@mixin small-title
+  text-transform: uppercase
+  font-size: 11px
+  color: rgba(255, 255, 255, 0.4)
+  @extend .strong
+
+@mixin line-clamp($n)
+  display: -webkit-inline-box
+  -webkit-line-clamp: $n
+  -webkit-box-orient: vertical
+  overflow: hidden
+  text-overflow: ellipsis
+
+strong
+  @extend .strong
+
+$col-width: 8.3333%
+$col-gutter: 20px
+@mixin col($cols)
+  display: inline-block
+  padding: 0 calc($col-gutter / 2)
+  width: $cols * $col-width
+  &:first-child
+    padding-left: 0
+  &:last-child
+    padding-right: 0
+@for $i from 1 through 12
+  .col-#{$i}
+    @include col($i)
+@mixin row
+  margin: 8px 0
+  &:first-child
+    margin-top: 0
+  &:last-child
+    margin-bottom: 0
+.row
+  @include row
+.row--separated
+  border-top: 1px solid $lightener
+  padding-top: 8px
+.row--fill
+  height: 100%
+
+@mixin right-pane-font
+  font-size: $font-size
+
+@mixin full-panel-width
+  margin-left: -$sidebar-section-hpadding
+  margin-right: -$sidebar-section-hpadding-with-right-gutter
+
+.full-panel-width
+  @include full-panel-width
+
+$panel-col-width: 8.3333%
+$panel-col-gutter: 10px
+@mixin panel-col($cols)
+  display: inline-block
+  padding-left: calc($panel-col-gutter / 2)
+  padding-right: calc($panel-col-gutter / 2)
+  width: $cols * $panel-col-width
+  &:first-child
+    padding-left: 0
+  &:last-child
+    padding-right: 0
+@for $i from 1 through 12
+  .panel-col-#{$i}
+    @include panel-col($i)
+@mixin panel-row
+  min-height: $section-list-item-height
+  display: flex
+  align-items: center
+  width: 100%
+
+.panel-row
+  @include panel-row
+.panel-row--separated
+  border-top: 1px solid $lightener
+  padding-top: 8px
+.panel-row--extra
+  margin-top: 16px
+.panel-row--autoHeight
+  height: auto
+  min-height: auto
+.panel-row + .panel-row
+  margin-top: 8px
+
+.panel-col--narrow-gap
+  &:not(:first-child)
+    padding-left: 2px
+  &:not(:last-child)
+    padding-right: 2px
+
+.panel-content
+  padding: 12px $sidebar-section-hpadding-with-right-gutter 12px $sidebar-section-hpadding
+.panel-content--hug-top
+  margin-top: -4px
+
+.panel-block
+  //@extend .panel-dim-block
+  //margin-left: -4px
+  //margin-right: -4px
+
+.panel-dim-block
+  position: relative
+  padding: 8px 12px
+  border-radius: 4px
+  background: $panel-block-bg
+
+.panel-block--eat-vert
+  margin-top: -8px
+  margin-bottom: -8px
+
+.panel-block-placeholder
+  padding-top: 12px
+  padding-bottom: 12px
+
+@mixin list-box-item
+  cursor: pointer
+  padding: 2px
+  padding-left: 16px
+  padding-right: 8px
+
+@mixin list-box-item--highlighted
+  background: $dimmer-highlight
+  background: #2F69A3
+  color: rgba(white, .5)
+
+@mixin list-box-heading
+  @include small-title
+  margin: 0.5em 0
+
+// Stuff to translate into sass
+*
+  box-sizing: border-box
+html, body
+  height: 100%
+body
+  background-color: $bg
+body
+  overscroll-behavior-x: none
+
+$grab: url(/static/img/openhand.cur) 10 7, default
+$grabbing: url(/static/img/closedhand.cur) 10 7, default
+
+.panning-grabbable
+  cursor: $grab
+
+.panning-grabbing
+  cursor: $grabbing
+
+body, .dev-env
+  font-family: $font-family
+  font-size: $font-size
+  color: $fg
+  background-color: $bg
+  z-index: 1
+
+h1
+  font-family: $font-family
+  font-size: 32px
+
+h2
+  font-family: $font-family
+  font-size: 18px
+
+ul
+  margin: 0
+  padding: 0
+a.fg
+  color: $fg
+a.dimfg
+  color: $dimfg
+
+code
+  @include codefont
+  line-height: $line-height
+
+ul
+  list-style: none
+
+button
+  color: $fg
+  background: none
+  padding: 5px
+
+@mixin inset--hover
+  border-bottom: 1px solid $active-color
+
+.focused
+  @include focused
+
+.focused-input-bg
+  background-color: #fff !important
+
+@mixin textbox
+  @include inset
+  background-color: transparent
+  padding: 8px
+  border-radius: 4px
+  border: none
+  @extend .form-control-transition
+  min-height: $section-list-item-height
+  color: $fg
+  &:placeholder
+    color: $dimdimfg
+  &:disabled
+    color: $dimfg
+  &:hover:not(:focus)
+    box-shadow: inset 0 0 0 1px $dimdimdimfg
+  &:focus
+    @extend .focused
+    color: $fg !important
+    @extend .focused-input-bg
+  &:disabled:hover
+    cursor: not-allowed
+  &.textbox--transparent
+    background: none
+  &.textbox--seamless
+    padding: 0
+    width: 100%
+    height: auto
+    min-height: auto
+    color: inherit
+    &:focus
+      background: none !important
+      box-shadow: none !important
+      color: inherit !important
+  &.textbox--inverse
+    color: $inverse-fg
+    background: none
+  &.textbox--code
+    @extend .code
+  &.textbox--right
+    text-align: right
+  &.textbox--listitem
+    border-radius: 0
+    width: 100%
+
+textarea.form-control
+  @include textbox
+
+.fg-placeholder
+  &::placeholder
+    color: $fg
+
+.textbox-container
+  display: flex
+  align-items: center
+  position: relative
+
+.textbox
+  @include textbox
+  width: 100%
+
+input[type="text"].textbox--unset, textarea.textbox-unset, .select-dropdown__button.textbox--unset, .textbox--unset
+  color: $dimdimfg
+
+.ant-tooltip
+  pointer-events: none
+
+.ant-tooltip-inner
+  min-height: 0
+  background-color: $inverse-bg
+
+.preset-preview-tooltip
+  max-width: 500px
+  max-height: 350px
+  width: auto
+
+.preset-preview-tooltip-outer
+  max-width: 550px
+  max-height: 400px
+
+.ant-tooltip-arrow
+  display: none
+.show-ant-tooltip-arrow .ant-tooltip-arrow
+  display: initial
+
+.ant-select.textboxlike
+  display: flex
+  align-items: center
+  cursor: pointer
+  overflow: hidden
+  .ant-select-selector
+    border-radius: 4px
+    border: none
+    background-color: transparent
+    height: auto
+    min-height: $section-list-item-height
+    padding: 0 8px
+    display: flex
+    align-items: center
+  .ant-select-selection-item
+    line-height: inherit
+    display: flex
+    align-items: center
+  .ant-select-selection-search
+    left: 8px
+  .ant-select-arrow
+    right: 0
+    top: 50%
+    transform: translateY(-50%)
+    margin: auto 0
+    width: auto
+    height: auto
+    margin-right: 6px
+    color: #90908c
+  &.ant-select-focused
+    .ant-select-selector
+      @extend .focused
+  &:hover
+    .ant-select-selector
+      box-shadow: inset 0 0 0 2px $focus-color
+  &.textboxlike--white
+    .ant-select-selector
+      background-color: #fff
+      color: $dimfg
+.ant-select.textboxlike.text-right
+  .ant-select-selection-item
+    justify-content: flex-end
+
+.ant-select.textboxlike.seamless
+  display: flex
+  align-items: center
+  cursor: pointer
+  .ant-select-selector
+    border-radius: 4px
+    border: none
+    background-color: transparent
+    height: auto
+    min-height: $section-list-item-height
+    padding: 0 8px
+    display: flex
+    align-items: center
+  .ant-select-selection-item
+    line-height: inherit
+  .ant-select-selection-search
+    left: 8px
+  .ant-select-arrow
+    right: 0
+    top: 50%
+    transform: translateY(-50%)
+    margin: auto 0
+    width: auto
+    height: auto
+  &.ant-select-focused
+    .ant-select-selector
+      box-shadow: none !important
+  &:hover
+    .ant-select-selector
+      box-shadow: none !important
+
+.ant-select-item-option-grouped.ant-select-item-option-grouped--noindent
+  padding-left: 12px
+
+.ant-select-item-option-content
+  display: flex
+  align-items: center
+
+.ant-input-number.textboxlike
+  &.ant-input-number-focused
+    @extend .focused
+  .ant-input-number-input
+    text-align: left
+  .ant-input-number-handler-wrap
+    // the arrow twiddlers interferes with text-align: right
+    display: none
+
+.textbox__icon
+  position: absolute
+  left: 8px
+  top: 8px
+  width: 16px
+  height: 16px
+  color: $dimdimfg
+
+.ant-input-number.form-control
+  @include textbox
+  input
+    height: auto
+
+input.transparent
+  background: none
+  border: none
+  margin: 0
+  padding: 0
+
+.sidebar-searchbox-container
+  padding: 8px 5px
+
+
+textarea
+  @include inset
+
+li
+  list-style-type: none
+
+h5, h6
+  font-size: 1em
+
+// micro clearfix: <http://nicolasgallagher.com/micro-clearfix-hack/>
+.clearfix:before, .clearfix:after
+  content: ' '
+  display: table
+
+.clearfix:after
+  clear: both
+
+// For IE 6/7 only
+.clearfix
+  *zoom: 1
+
+.routine-editor > *
+  vertical-align: top
+
+.gallery__group-heading
+  @include list-box-heading
+.gallery__item
+  @include list-box-item
+  //padding: 4px 20px
+  //cursor: pointer
+  &:hover
+    @include list-box-item--highlighted
+.gallery__group-items
+  @include inset
+.gallery__list
+  @include inset
+  flex: 1
+  overflow-y: scroll
+
+.gallery__drag-handle
+  width: 200px
+  height: 50px
+  position: absolute
+  background: black
+
+.block-editor
+  // to prevent margin collapse with stmts
+  overflow: auto
+  padding: 8px 0
+
+@mixin outline-block
+  border-left: 8px solid $dimmer-highlight
+  padding: 8px
+  padding-left: 12px
+
+.stmt-block
+  @include outline-block
+  position: relative
+  cursor: pointer
+  line-height: 1.6em
+
+.stmt-block--disabled
+  opacity: .7
+
+.stmt-block--hovered
+  border-left-color: $active-color
+
+.stmt-block--selected
+  border-left-color: $active-color
+  background: $dim-selected
+
+.stmt-block__menu-button-icon
+  border-top: 8px solid rgba(0,0,0,0)
+  border-left: 8px solid rgba(0,0,0,0)
+  border-right: 8px solid gray
+  border-bottom: 8px solid gray
+  cursor: pointer
+  &:hover
+    border-right: 8px solid lighten(gray, 10%)
+    border-bottom: 8px solid lighten(gray, 10%)
+
+.stmt-block__menu-button
+  position: absolute
+  bottom: 5px
+  right: 5px
+
+.stmt-block__menu
+  @include popup-menu
+  width: 300px
+  padding: 10px
+  margin-top: -10px
+  margin-right: 10px
+  z-index: 1
+
+.menu-item
+  cursor: pointer
+  &:hover
+    background: #666
+
+.block-editor__placeholder
+  @include outline-block
+  cursor: pointer
+
+.routine-editor
+  flex: 1
+  // For some reason, this is needed in order to not let children push our
+  // height larger--see https://codepen.io/yaaang/pen/zNgoQj
+  overflow-y: hidden
+  width: 800px
+.routine-editor__main
+  @include inset
+  height: 100%
+  overflow-y: scroll
+  padding: 0 8px
+
+.fill-height
+  height: 100%
+  vertical-align: top
+
+.todo
+  content: 'TODO'
+  background: #744
+
+.indented
+  padding-left: 0px
+
+.modal
+  background: $bg
+  box-shadow: 2px 2px 40px black
+  @include clearfix
+  display: flex
+  flex-direction: column
+  height: 100%
+
+.modal-title
+  padding: 20px
+  padding-bottom: 0
+.modal-content
+  padding: 20px
+  flex: 1
+  display: flex
+  flex-direction: column
+  overflow: hidden
+.modal-scroll
+  overflow: auto
+  margin-right: -20px
+  padding-right: 20px
+
+p:first-child
+  margin-top: 0
+p:last-child
+  margin-bottom: 0
+
+.modal-ftr
+  padding: 20px
+
+.rel-editor__col
+  display: inline-block
+  margin-right: 20px
+
+.rel-editor
+  border-top: 1px solid gray
+  border-bottom: 1px solid gray
+
+.fixed-centered__container-outer
+  display: table
+  position: fixed
+  top: 0
+  left: 0
+  width: 100%
+  height: 100%
+  pointer-events: none
+
+.fixed-centered__container-middle
+  display: table-cell
+  vertical-align: middle
+  text-align: center
+
+.fixed-centered__container-inner
+  text-align: initial
+  display: inline-block
+  pointer-events: initial
+
+.query-editor__collection
+  color: #bbb
+  background: #333
+  border: 1px solid #333
+  padding: 5px
+
+.centered__container-outer
+  display: table
+  width: 100%
+  height: 100%
+.centered__container-middle
+  display: table-row
+.centered__container-inner
+  display: table-cell
+  vertical-align: middle
+  text-align: center
+
+.centered
+  display: flex
+  flex-direction: column
+  align-items: center
+
+.removable-pill
+  display: inline-block
+  margin: 0 15px
+
+.list-menu__item
+  cursor: pointer
+
+.match__prefix
+  @extend .strong
+
+.style-prop--set
+  color: aqua
+
+.path-browser__type-header
+  color: gray
+  font-style: italic
+
+.image-picker-placeholder__thumbnail
+  max-width: 50px
+  max-height: 50px
+
+.fixed-centered__glass
+  display: flex
+  position: fixed
+  height: 100%
+  width: 100%
+  padding: 20px
+  flex-direction: column
+  justify-content: center
+  align-items: center
+  top: 0
+  left: 0
+  pointer-events: none
+
+$fixed-centered-margin: 32px
+
+.fixed-centered__filled-container
+  margin: $fixed-centered-margin
+  flex-grow: 1
+  height: calc(100% - 2*#{$fixed-centered-margin})
+  pointer-events: initial
+
+.scroller
+  height: 100%
+  overflow: scroll
+
+::-webkit-input-placeholder
+  color: rgba(187, 187, 187, .5)
+
+::-webkit-scrollbar
+  width: $scroll-width
+  height: 8px
+  background-color: transparent
+
+::-webkit-scrollbar-track
+  background-color: transparent
+
+::-webkit-scrollbar-button
+  display: none
+
+::-webkit-scrollbar-thumb
+  background-color: $sand7
+  border-radius: 7px
+  &:hover
+    background: $sand6
+
+#scrollable::-webkit-scrollbar-corner
+  background-color: transparent
+
+// micro clearfix: <http://nicolasgallagher.com/micro-clearfix-hack/>
+.clearfix:before, .clearfix:after
+  content: ' '
+  display: table
+.clearfix:after
+  clear: both
+// For IE 6/7 only
+.clearfix
+  *zoom: 1
+
+.node-outline-tag
+  background: $node-outline-color
+  padding: 2px 8px 2px 6px
+  border-radius: 3px
+  color: white
+  white-space: nowrap
+  position: absolute
+  bottom: 100%
+  margin-right: auto
+  pointer-events: auto
+  cursor: $grab
+  display: flex
+  align-items: center
+
+.node-outline-tag--flipped
+  top: 1px
+  bottom: auto
+.node-outline-tag--bottomed
+  top: auto
+  bottom: 1px
+.node-outline-tag--bottomed-flipped
+  top: 100%
+  bottom: auto
+.resize-handle
+  pointer-events: auto
+.top, .bottom, .left, .right
+  background-color: $node-outline-color
+.top-left, .top-right, .bottom-left, .bottom-right
+  background-color: white
+  //border: 1px solid black
+  height: $node-outline-handle-size
+  width: $node-outline-handle-size
+  display: none
+.hoverbox
+  transform-origin: top left
+  position: absolute
+  // http://stackoverflow.com/questions/1401658/html-overlay-which-allows-clicks-to-fall-through-to-elements-behind-it
+  pointer-events: none
+  .top, .bottom-center
+    height: $node-outline-border-thickness
+  .bottom
+    clear: both
+  .left, .right
+    width: $node-outline-border-thickness
+    height: 100%
+  .left, .top-left, .bottom-left
+    float: left
+  .right, .top-right, .bottom-right
+    float: right
+  // Commenting out the following resize-things.
+  //.top-left { cursor: nw-resize; }
+  //.top { cursor: n-resize; }
+  //.top-right { cursor: ne-resize; }
+  //.right { cursor: e-resize; }
+  //.bottom-right { cursor: se-resize; }
+  //// 'bottom-center' is actually for the center part; 'bottom' is for the whole
+  //// bottom row
+  //.bottom-center { cursor: s-resize; }
+  //.bottom-left { cursor: sw-resize; }
+  //.left { cursor: w-resize; }\
+
+.templates
+  display: none
+
+.hlabel
+  display: inline-block
+  .hlabel-label
+    font-size: 11px
+    display: inline-block
+    width: 40px
+    vertical-align: middle
+  .hlabel-control
+    display: inline-block
+    width: 100px
+    vertical-align: middle
+
+.dropdown-button
+  cursor: pointer
+  background-image: url(/static/img/ui-icons_888888_256x240.png)
+  background-position: -64px -16px
+  width: 20px
+  height: 20px
+  border-width: 1px
+
+.styles, .matching-styles
+  border: 2px solid gray
+  .ruleset
+    .rule, .selstr
+      border-bottom: 1px solid #eee
+    .rule
+      .style-key
+        display: inline-block
+        width: 200px
+        margin-left: 15px
+        vertical-align: top
+        .value-display
+          display: inline-block
+          width: 100%
+        .value-input-bundle
+          input
+            width: 100%
+
+.style-completions-container
+  position: absolute
+  z-index: 2000
+  .style-completions
+    position: absolute
+    background: white
+    list-style: none
+    padding: 2px
+    @include popup-box
+    .style-completion:hover
+      background: #eee
+
+.flowgraph
+  width: 500px
+  height: 400px
+  border: 10px solid silver
+  .block
+    width: 50px
+    height: 50px
+    background-color: #98a490
+    position: absolute
+
+.dot
+  display: inline-block
+  background: $active-color
+  border-radius: 50%
+  width: 5px
+  height: 5px
+  margin: 4px
+  margin-bottom: 3px
+  margin-left: 6px
+
+.dock-panel
+  z-index: 1000
+  display: block // !important
+  position: fixed
+  background: $bg
+  margin: initial
+  left: initial
+  @include popup-box
+
+.DragItem__Handle
+  position: absolute
+  pointer-events: none
+  z-index: 10
+
+.component-drag-handle
+  display: flex
+  opacity: .5
+  align-items: center
+  color: white
+  background-color: $active-color
+  border-radius: 4px
+  padding: 4px 8px
+  .create-item__icon
+    color: white
+.component-insertion-menu
+  @include tpl-popup-menu
+  border-radius: 2px
+.component-insertion-menu__item
+  @include tpl-menu-item
+
+.matching-styles-panel
+  right: 64px
+  top: 64px
+  width: 500px
+.styles-panel
+  right: 96px
+  top: 96px
+  width: 500px
+.tpltree-panel
+  right: 32px
+  top: 128px
+  width: 500px
+.domtree-panel
+  display: none !important
+
+.structure
+  padding: 10px
+  margin: 10px
+  border: 1px dashed rgba(0,0,0,.5)
+
+.crumb
+  padding: 3px
+  background: #777
+  color: #eee
+  margin-right: 3px
+  cursor: pointer
+
+.dnd__drag-ghost
+  border: 1px solid $node-outline-color
+  display: none
+  pointer-events: none
+  position: absolute
+  transform-origin: top left
+
+.dnd__adoptee
+  transform-origin: top left
+  position: absolute
+  border: 1px solid purple
+
+@mixin dnd-marker
+  pointer-events: none
+.dnd__drop-marker
+  @include dnd-marker
+  position: absolute
+  background: $node-outline-color
+  box-shadow: 0 0 0 2px $node-outline-color
+  transform-origin: top left
+.dnd__container
+  @include dnd-marker
+  border: $node-outline-border-thickness dashed $node-outline-color
+  transform-origin: 0px 0px
+  position: absolute
+.dnd__container-tag
+  display: flex
+  align-items: center
+.dnd__container-tag--error
+  background-color: $error-bg
+  color: $error-fg
+.dnd__container-tag__icon
+  margin-right: 5px
+  line-height: 0
+$dnd-container-error-color: rgba(255, 0, 0, 0.1)
+.dnd__container--error
+  background: repeating-linear-gradient(45deg, $dnd-container-error-color, $dnd-container-error-color 10px, transparent 10px, transparent 20px)
+  border-color: $error-bg
+.dnd__replace
+  background: rgba($node-outline-color, 0.05)
+
+.control-group
+  display: inline-block
+  margin: 0 10px
+
+.create-table-grid
+  display: table
+.create-table-row
+  display: table-row
+.create-table-block
+  display: table-cell
+  width: 32px
+  height: 32px
+  border: 1px solid silver
+  background: white
+.filled-table-block
+  background: #80B5F2
+
+.Dashboard__Project
+  cursor: pointer
+
+.Dashboard__ProjectAction
+  line-height: 1
+
+.Dashboard__ProjectName__Editor__Container
+  display: flex
+  align-items: center
+
+.vsplit-container
+  flex: 1
+  width: 100%
+  position: relative // see <http://stackoverflow.com/questions/7676022/html5-flexible-box-model-height-calculation/15388247#15388247>
+.vsplit
+  display: flex
+  position: absolute
+  height: 100%
+  width: 100%
+.vsplit-content
+  flex: 1
+
+.main-pane__switcher
+  height: 100%
+
+.matching-classes
+  margin-bottom: 10px
+
+.removeable
+  margin-right: 5px
+  .fixed
+
+    margin-right: 5px
+
+.new-class-container
+  display: none
+.new-class
+  width: 100px
+
+.toolbar__container
+  height: 100%
+.toolbar
+  height: 100%
+  display: flex
+  flex-direction: row
+  align-items: stretch
+  position: relative
+  justify-content: center
+.toolbar__chunk
+  display: flex
+  align-items: center
+.toolbar__chunk--middle
+  // position them in the middle of the topbar
+  left: 50%
+  top: 50%
+  transform: translate(-50%, -50%)
+  position: absolute
+.toolbar__chunk--left
+  margin-right: auto
+.toolbar__chunk--right
+  margin-left: auto
+
+.toolbar__live-controls
+  background-color: $sand12
+  border-radius: 12px
+  .icon-link-btn.icon-link-btn--inverse
+    color: $inverse-fg
+
+.toolbar__saving-container
+  position: absolute
+  left: 100%
+  padding-left: 4px
+.toolbar__saving-indicator
+  width: 6px
+  height: 6px
+  border-radius: 50%
+  opacity: 0
+  @extend .form-control-transition
+.toolbar__saving-indicator--dirty
+  background-color: $dimfg
+  opacity: 1
+.toolbar__saving-indicator--unlogged
+  background-color: $dimdimfg
+  opacity: 1
+
+
+.crumbs
+  display: inline-block
+.display-controls
+  display: inline-block
+  margin: 0 20px
+
+.default-editable-label
+  width: 100%
+  display: block
+  cursor: pointer
+  overflow: hidden
+  text-overflow: ellipsis
+.fill-space
+  position: absolute
+  height: 100%
+  width: 100%
+.fill-flex-space
+  flex: 1
+.tabs
+  display: flex
+  flex-direction: column
+  flex: 1
+  overflow: hidden
+.tab-content
+  flex: 1
+  position: relative
+  overflow-y: auto
+  display: flex
+  flex-direction: column
+
+.advanced-toggle
+  float: right
+  font-size: smaller
+  input
+    vertical-align: top
+
+.hgroup
+  > *
+    display: inline-block
+    vertical-align: middle
+    margin-right: 10px
+
+.dropdown-list
+  @include tpl-popup-menu
+
+.dropdown-list-item
+  @include tpl-menu-item
+
+.size-picker
+  width: 50px
+
+.color-picker
+  margin-left: -10px
+  margin-right: 10px
+  margin-top: -10px
+  margin-bottom: 10px
+
+.color-picker-separator
+  text-align: center
+  padding-top: 8px
+  padding-bottom: 8px
+
+.color-picker__add-token
+  width: $swatch-size
+  height: $swatch-size
+  border-radius: 50%
+  background-color: $sand3
+  border: none
+  display: flex
+  justify-content: center
+  padding: 0
+  color: $sand7
+  &:hover
+    border: none
+    background-color: $sand5
+
+.color-control__container
+  @include textbox
+  display: flex
+  align-items: center
+  justify-content: flex-end
+
+.color-control--unset
+  color: $dimdimfg
+
+a.plain-link, .non-link-btn
+  @include plain-link
+  cursor: pointer
+  display: inline-flex
+  align-items: center
+  padding: 0
+a.inverted
+  color: rgba(white, 0.8)
+  &:hover
+    color: white
+a.btn-link
+  color: inherit
+  &:hover
+    color: inherit
+.non-link-btn
+  color: inherit
+  &:focus
+    @include focused
+.non-link-btn--disabled, a.plain-link--disabled
+  color: darken($fg, 30%)
+  cursor: initial
+  &:hover
+    color: darken($fg, 30%)
+
+.icon-link-btn
+  @include dead-center
+  display: inline-flex
+  border-radius: 4px
+  padding: 4px 6px
+  color: $dimfg
+  line-height: 1em
+  display: flex !important
+  // &:first-child
+  //   margin-left: -6px
+  // &:last-child
+  //   margin-right: -6px
+  &:hover
+    color: $fg
+  .icon-group--vert &
+    padding: 6px
+    &:first-child
+      margin-left: unset
+    &:last-child
+      margin-right: unset
+
+.icon-link-btn--active
+  color: $active-color
+  &:hover
+    color: $active-color
+
+.icon-link-btn--disabled
+  opacity: 0.5
+  cursor: not-allowed !important
+  color: $dimfg !important
+
+.icon-link-btn--inverse
+  color: $inverse-dimfg
+  &:hover
+    color: $inverse-fg
+  &.icon-link-btn--active
+    color: $inverse-brightfg
+    background-color: $sand12
+    &:hover
+      color: $inverse-brightfg
+  .icon-link-btn__label
+    color: $inverse-fg
+  .non-link-btn
+    color: $inverse-dimfg
+  &:hover .non-link-btn
+    color: $inverse-fg
+
+.toolbar-icon + .icon-link-btn__label
+  margin-left: 0px
+
+.icon-link-btn__with-menu
+  position: relative
+  @include dead-center
+
+.icon-link-btn__dropdown
+  margin-left: -4px
+  margin-right: -8px
+  div .icon-group--vert &
+    padding: 0
+    padding-left: 4px
+    padding-bottom: 4px
+
+.icon-link-btn + .icon-link-btn__dropdown
+  margin-left: -10px
+
+
+.dial
+  background-image: url(/static/img/dial.png)
+  background-size: 100% 100%
+  width: 40px
+  height: 40px
+  cursor: $grab
+  :active
+    cursor: $grabbing
+
+.outset-button
+  @include outset-button
+
+.icon-btn-switch--spaced
+  margin-left: -4px
+  margin-right: -4px
+  > *
+    margin-left: 4px
+
+.icon-button
+  @include icon-button
+
+.icon-button--large
+  width: 40px
+  height: 40px
+
+.icon-button--disabled
+  opacity: 0.5
+
+.icon-button--small
+  width: 20px
+  height: 20px
+
+.icon-button--seamless
+  width: auto
+  height: auto
+  line-height: 0
+  padding: 0
+  &:hover
+    border-color: none
+
+.border-color-summary
+  overflow: hidden
+  text-overflow: ellipsis
+  max-width: 90px
+
+.larger-icon
+  font-size: 16px
+
+.largest-icon
+  font-size: 20px
+
+.icon-button--spaced
+  margin-left: 4px
+  margin-right: 4px
+
+.flex-sizing-container
+  position: relative
+
+.flex-order-container
+  width: 33%
+
+.flex-sizing-btn
+  width: 32px
+  flex-shrink: 0
+
+.grow-label
+  left: 25%
+
+.shrink-label
+  left: 75%
+
+.icon-button--vfit
+  height: auto
+  padding-top: 4px
+  padding-bottom: 4px
+
+.icon-button--hug
+  width: auto
+  padding-left: 8px
+  padding-right: 8px
+
+.icon-button--flex-start
+  align-items: flex-start
+  justify-content: flex-start
+  text-align: start
+
+.icon-btn-switch
+  display: flex
+  flex-direction: row
+.icon-button-flex
+  flex: 1
+
+.icon-nudge
+  position: relative
+  top: 2px
+
+@mixin outset-button--active
+  background-color: $sand4
+
+.icon-button--active
+  @include outset-button--active
+.plain-active-context .icon-button--active
+  color: $brightfg
+
+.toggle-button
+  display: inline-block
+  input
+    display: none
+  > span
+    @include icon-button
+  input:checked + span
+    background: black
+    color: white
+
+.svg-symbol
+  width: 12px
+  height: 12px
+  fill: $fg
+  stroke: $fg
+
+.svg-symbol--large
+  width: 90%
+  height: 90%
+
+.nav-tabs
+  width: 100%
+  border-bottom: 1px solid $sand4
+  display: flex
+  align-items: flex-end
+
+.nav-tab
+  @include outset-button
+  padding: 10px 5px
+
+.nav-tab--active
+  @include inset
+
+.nav-tab--pull-right
+  margin-left: auto
+
+@mixin dropdown-pill-base
+  box-shadow: none
+  white-space: nowrap
+  margin-right: 4px
+  margin-bottom: 1px
+  display: inline-flex
+  align-items: center
+  line-height: 1
+  background-color: rgba($black, 8%)
+  border-radius: 2px
+  color: $fg
+
+.dropdown-pill
+  @include dropdown-pill-base
+
+.no-selector-placeholder
+  color: $sand9
+
+.dropdown-pill--tight
+  margin: 0
+  margin-right: 4px
+
+.dropdown-pill__contents
+  padding: 4px 8px
+  cursor: pointer
+  overflow: hidden
+  text-overflow: ellipsis
+
+.dropdown-pill__deleter
+  padding: 0
+  line-height: 0
+
+.dropdown-pill__contents:not(:first-child)
+  padding-left: 0
+
+.dropdown-pill--selected
+  background: $active-color
+  color: #fff
+  .icon-link-btn
+    color: #fff
+
+.dropdown-pill--inline-block
+  @include dropdown-pill-base
+  display: inline-block
+
+.dropdown-container
+  @include textbox
+  display: flex
+  flex-wrap: wrap
+  align-items: center
+  position: relative
+  cursor: text
+  z-index: 3
+  padding: 4px 8px
+.dropdown-container--focused
+  @extend .focused
+.dropdown-container--bordered
+  box-shadow: inset 0 0 0 1px $sand4
+  &:hover
+    box-shadow: inset 0 0 0 1px $sand3
+
+.dropdown-container-vstack
+  flex-direction: column
+
+.dropdown-input-container
+  flex: 1
+  white-space: nowrap
+  display: flex
+  > input
+    flex: 1
+    // This is necessary because otherwise input will have `width:auto` and
+    // be sized by its `size` attribute (defaults to 20), not by flexbox.
+    width: 0
+
+.down-triangle-template
+  display: none
+
+.fixed-mixins-container
+  display: flex
+  flex-wrap: wrap
+  align-items: center
+  position: relative
+  padding: 4px 8px
+  font-family: IBM Plex Mono, monospace
+
+.fixed-mixins-pill
+  @include dropdown-pill-base
+
+.fixed-mixins-pill__contents
+  padding: 4px
+
+
+.down-triangle
+  fill: $fg
+  width: 10px
+  height: 5px
+  display: inline-block
+
+.dropdown-arrow-container
+  //width: 20px
+  height: 90%
+  //position: absolute
+  top: 0
+  right: 0
+  cursor: pointer
+
+.dropdown-arrow-table
+  display: table
+  width: 100%
+  height: 100%
+  border-spacing: 0
+
+.dropdown-arrow
+  @include minor-icon
+  text-align: center
+  display: table-cell
+  vertical-align: middle
+  svg
+    vertical-align: middle
+
+.svg-sym-cache
+  width: 0
+  height: 0
+  overflow: hidden
+
+.disabled__style__context__menu
+  &:hover
+    background-color: #777777
+  background-color: #777777
+
+.select-dropdown
+  display: inline-block
+.select-dropdown__dropdown
+  position: relative
+.select-dropdown__container
+  position: relative
+  display: flex
+.select-dropdown__selected
+  display: block
+  flex: 1
+  white-space: nowrap
+  text-overflow: ellipsis
+  overflow: hidden
+.select-dropdown__button
+  @include textbox
+  padding-right: 0
+  overflow: hidden
+.select-dropdown__button--small
+  padding: 3px
+
+.select-dropdown.ant-select
+  .ant-select-selection
+    @include textbox
+    display: flex
+    align-items: center
+    height: auto
+  .ant-select-selection__rendered
+    line-height: inherit
+    margin: 0
+    padding: 0
+    flex: 1
+    text-align: right
+  .ant-select-arrow
+    @extend .tight-line-height
+    position: relative
+    margin: 0
+    vertical-align: middle
+    top: auto
+    right: auto
+  &.ant-select-focused
+    .ant-select-selection
+      @extend .focused
+
+
+.panel-section__toggle-icon
+  float: right
+.panel-section__title
+  @include small-heading
+  cursor: pointer
+  background: $sand3
+  vertical-align: middle
+  padding: 8px 20px
+  margin: 0
+
+.EmptyTabPlaceholder
+  @include cover
+  @include dead-center
+
+.list-box
+  @include inset
+  width: 100%
+
+.list-box__add-placeholder
+  @include dead-center
+  > :not(:nth-child(1))
+    margin-left: 5px
+
+.list-box-item-focusable:focus
+  @include focused
+  border-radius: 4px
+
+// This turns out to be 44px, because of the handle's line-height + padding.
+.list-box-item
+  display: flex
+  width: 100%
+  margin: 2px auto
+  align-items: center
+  min-height: $section-list-item-height
+
+.list-box-item--clickable
+  cursor: pointer
+  &:hover
+    background-color: lighten($btn-color, 5%)
+
+.list-box-item__img
+  width: 48px
+  height: 32px
+  align-self: center
+  margin-right: 10px
+  @include inset
+  display: flex
+  align-items: center
+  justify-content: center
+  overflow: hidden
+
+.list-box-item__img-grid
+  width: $label-col-width
+  margin-right: 8px
+
+.list-box-item__handle
+  padding: 0 5px
+  width: 20px
+  font-size: 16px
+  cursor: grab
+  color: $dimdimfg
+  @extend .form-control-transition
+
+.list-box-item__label
+  flex: 1
+
+.list-box-item__label--truncate
+  @include truncate-text
+
+.list-box-item-full-height
+  margin-top: -5px
+  margin-bottom: -5px
+
+.list-box-item--top > *
+  align-items: flex-start
+
+.list-item-height
+  min-height: $section-list-item-height
+
+.private__variant__adder
+  @include dead-center
+  background-color: #1b1f22
+  height: 28px
+  > :not(:nth-child(1))
+    margin-left: 5px
+
+
+.number-spinner__textbox
+  width: 50px
+.number-spinner__decr
+  @include outset-button
+.number-spinner__incr
+  @include outset-button
+.number-spinner
+  display: inline-block
+  white-space: nowrap
+
+@mixin tpl-full-screen
+  position: fixed
+  width: 100vw
+  height: 100vh
+  top: 0
+  left: 0
+
+.drag-guard
+  @include tpl-full-screen
+  z-index: 1000
+  background: rgba(0,0,0,0) // TODO temp? to help guide dev
+
+.modal-screen
+  @include tpl-full-screen
+  background: rgba(0,0,0,.5)
+  display: none
+
+@mixin hover-outline
+  &:hover
+    box-shadow: inset 0 0 0 1px $active-color
+
+.hover-outline
+  @include hover-outline
+
+.hover-outline--variant
+  &:hover
+    box-shadow: inset 0 0 0 1px $variant-fg
+
+.hover-outline--component
+  &:hover
+    box-shadow: inset 0 0 0 1px $component-fg
+
+.tpltree__ul
+  padding-left: 0
+  color: $sand12
+.tpltree__li
+  position: relative
+.tpltree__label
+  cursor: pointer
+  display: flex
+  position: relative
+  align-items: center
+  min-height: $section-list-item-height
+  &:hover
+    .tpltree__label__menu
+      opacity: 1
+.tpltree__draggable
+  cursor: pointer
+  height: $section-list-item-height
+.tpltree__label__expander
+  width: 16px
+  svg
+    width: 16px
+    height: 16px
+  text-align: center
+  color: $dimfg
+  line-height: 1em
+  display: flex
+  align-items: center
+  &:hover
+    color: $fg
+.tpltree__label--focused
+  background: $selected-bg
+  color: $brightfg
+.tpltree__label--hovered
+  box-shadow: inset 0 0 0 1px $active-color
+.tpltree__label--focused-descendant
+  background: $blue1
+.tpltree__label--out-of-context
+  background: rgba(0,0,0,0.1)
+.tpltree__label--drilled-descendant
+  background-color: $purple2
+.tpltree__label--drilled-descendant.tpltree__label--focused
+  background-color: $purple3
+.tpltree__label--hidden
+  opacity: .5
+  text-decoration: line-through
+.tpltree__label__content
+  flex: 1
+  display: flex
+  align-items: center
+  max-width: calc(100% - 80px)
+
+  //overflow: hidden
+.tpltree__label__icon
+  width: 16px
+  height: 16px
+  flex-shrink: 0
+  margin-right: 4px
+  line-height: 1em
+  color: $sand7
+  > svg
+    height: 100%
+    width: 100%
+  &.tpltree__label__icon--frame
+    color: $frame-dimfg
+  &.tpltree__label__icon--component
+    color: $component-dimfg
+  &.tpltree__label__icon--tag
+    color: $blue7
+  &.tpltree__label__icon--slot
+    color: $component-dimfg
+  &.tpltree__label__icon--prop
+    color: $component-dimfg
+  &.tpltree__label__icon--focused
+    &.tpltree__label__icon--frame
+      color: $blue9
+    &.tpltree__label__icon--component
+      color: $purple9
+    &.tpltree__label__icon--tag
+      color: $blue9
+    &.tpltree__label__icon--slot
+      color: $purple9
+    &.tpltree__label__icon--prop
+      color: $purple9
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .left,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .right
+  background-color: inherit
+.monaco-editor .focused
+  box-shadow: none !important
+
+.tpltree__label__menu
+  opacity: 0
+.tpltree__label__action-icon
+  width: 16px
+  height: 16px
+  margin-left: 2px
+  display: none
+  align-items: center
+  justify-content: center
+  color: $dimfg
+  .tpltree__label:hover &
+    display: flex
+    visibility: visible
+.tpltree__label__action-icon--narrow
+  width: 8px
+
+.tpltree__label__action-icon--visible
+  display: flex
+  visibility: visible
+
+.tpltree__label__action-icon--take-space
+  display: flex
+  visibility: hidden
+
+.tpltree__label__action-icon--take-space.tpltree__label__action-icon--visible
+  visibility: visible
+
+.tpltree__label__indicator
+  position: absolute
+  left: -2px
+
+.tpltree__label__visibility
+  &:hover
+    color: $brightfg
+.tpltree__label__lock
+  &:hover
+    color: $brightfg
+.tpltree__label__setting
+  display: none
+  &:hover
+    color: $brightfg
+  &.tpltree__label__setting--showing
+    display: block
+  .tpltree__label:hover &
+    display: block
+
+.tpltree__dragged
+  padding: 5px 10px
+  background-color: $selected-bg
+  border-radius: 10px
+  .tpltree__dragged__label
+    color: $brightfg
+
+.tpltree__drop-container
+  position: absolute
+  top: 0
+  left: 0
+  width: 100%
+  height: 100%
+  pointer-events: none
+  z-index: 100
+
+.tpltree__drop
+  width: 100%
+  height: 100%
+  &.tpltree__drop--dnd-parent
+    border: 1px dashed $active-color
+  &.tpltree__drop--dnd-above
+    margin-top: -1px
+    border-top: 2px solid $active-color
+  &.tpltree__drop--dnd-below
+    margin-top: 1px
+    border-bottom: 2px solid $active-color
+  &.tpltree__drop--dnd-parent--error
+    border: 2px solid $error-bg
+  &.tpltree__drop--dnd-above--error
+    margin-top: -1px
+    border-top: 2px solid $error-bg
+  &.tpltree__drop--dnd-below--error
+    margin-top: 1px
+    border-bottom: 2px solid $error-bg
+.tpltree__drop__error
+  position: absolute
+  background-color: $error-bg
+  color: $error-fg
+  padding: 0 5px
+  .tpltree__drop--dnd-parent--error &
+    top: 100%
+  .tpltree__drop--dnd-above--error &
+    bottom: 100%
+  .tpltree__drop--dnd-below--error &
+    top: 100%
+
+
+.tpltree__nodeLabelContainer
+  flex: 1
+  display: flex
+  min-width: 0
+  padding-right: 5px
+
+.tpltree__nodeLabel
+  display: flex
+  flex-direction: row
+  max-width: 100%
+  width: 100%
+  column-gap: 1ch
+  //overflow: hidden
+  .tpltree__nodeLabel__name
+    color: $brightfg
+    font-weight: 600
+    @extend .text-ellipsis
+    position: relative
+    max-width: 100%
+
+  .tpltree__nodeLabel__name + .tpltree__nodeLabel__summary, .tpltree__nodeLabel__customLabel + .tpltree__nodeLabel__summary
+    color: $blue12
+    opacity: .5
+  .tpltree__nodeLabel__summary
+    width: auto
+    flex-shrink: 0
+    display: inline-block
+
+    @extend .text-ellipsis
+  .tpltree__nodeLabel__content
+    flex: 1
+    overflow: hidden
+    text-overflow: ellipsis
+    white-space: nowrap
+  .tpltree__nodeLabel__customLabel
+    opacity: 0.5
+    flex: 1
+    overflow: hidden
+    text-overflow: ellipsis
+    white-space: nowrap
+  .tpltree__nodeLabel__name + .tpltree__nodeLabel__content, .tpltree__nodeLabel__summary + .tpltree__nodeLabel__content
+    &::before
+      content: "- "
+  &.tpltree__nodeLabel--hasName
+    .tpltree__nodeLabel__summary
+      display: none
+    .tpltree__label:hover &, .tpltree__label--focused &
+      .tpltree__nodeLabel__summary
+        display: inline-block
+
+.tpltree__label--droptarget
+  border-bottom: 3px solid $active-color
+
+.tpltree__label--hidden
+  .tpltree__nodeLabel__name
+    color: $dimbrightfg
+
+.content-settings__tree-ul--nested
+  padding-left: 10px
+.content-settings__tree-node--underlined
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3)
+.content-settings__tree-node-content--clickable
+  cursor: pointer
+  &:hover
+    color: white
+.content-settings__tree-node
+  margin-top: 8px
+  display: flex
+.content-settings__tree-node-content
+  padding: 2px 0
+  &:first-child
+    flex: 1
+.tree-node__select-child-hint
+  padding-top: 4px
+  font-size: 11px
+  @extend .strong
+
+.modify-panel
+  display: flex
+  flex-direction: column
+  position: relative
+  width: 100%
+  color: $dimfg
+  overflow: hidden
+.modify-panel__sections
+  flex: 1
+
+.fixed-panel-header
+  @include popup-box
+  border-bottom: 1px solid black
+
+@mixin full-scrollable-panel
+  position: absolute
+  overflow-y: auto
+  height: 100%
+  width: 100%
+
+.dim-spinner
+  white-space: nowrap
+.dim-spinner__dropdown
+  width: 50px
+
+.border-style-demo__container
+  vertical-align: middle
+.border-style-demo__label
+  display: inline-block
+  width: 50px
+.border-style-demo__demo
+  width: 50px
+  display: inline-block
+
+.updated-element
+  background: rgba(255, 255, 255, .2)
+
+.ant-dropdown-menu-root, .ant-dropdown-menu-sub
+  max-height: 80vh
+  overflow: auto
+
+//.tpl-checkerboard(@color, @dim)
+//  background-image:
+//    -moz-linear-gradient(45deg, @color 25%, transparent 25%),
+//    -moz-linear-gradient(-45deg, @color 25%, transparent 25%),
+//    -moz-linear-gradient(45deg, transparent 75%, @color 75%),
+//    -moz-linear-gradient(-45deg, transparent 75%, @color 75%)
+//  background-image:
+//    -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.25, @color), color-stop(.25, transparent)),
+//    -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.25, @color), color-stop(.25, transparent)),
+//    -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.75, transparent), color-stop(.75, #000)),
+//    -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.75, transparent), color-stop(.75, #000))
+//
+//  -moz-background-size:@dim @dim
+//  background-size:@dim @dim
+//  -webkit-background-size:@dim (@dim+1px); /* override value for shitty webkit */
+//
+//  background-position:0 0, 50px 0, 50px -50px, 0px 50px
+//}
+//
+//.color-control__checkerboard
+//  @include tpl-checkerboard(silver, 5px)
+//  position: absolute
+//  width: 100%
+//  height: 100%
+//}
+
+@mixin tpl-insertion__item
+  height: 24px
+  cursor: pointer
+
+.component-insertion__item
+  @include tpl-insertion__item
+.layout-insertion__item
+  @include tpl-insertion__item
+
+.data-scope
+  margin: 16px 0
+
+.data-scope__tag-desc
+  cursor: pointer
+  background: #222
+  @extend .strong
+  padding: 2px 0
+  margin-top: 10px
+  margin-bottom: 5px
+
+.data-scope__expr-and-vals
+  display: inline-block
+
+.data-scope__remove-binding-btn
+  vertical-align: top
+
+.data-scope__cond, .data-scope__rep, .data-scope__let
+  margin-bottom: 8px
+
+.focused-scope
+  //background: rgba(255, 255, 255, .2)
+
+.binding-name
+  width: 50px
+
+.btn
+  @include outset-button
+.btn--thin
+  @include thin-button
+
+@mixin tpl-data-table__header
+  background: rgba(0,0,0,.5)
+
+@mixin tpl-data-table__cell
+  border-bottom: 1px solid rgba(0,0,0,0.5)
+  padding: 2px 4px
+
+.table-editor__table
+  //border-collapse: separate
+  //border-spacing: 8px 4px
+
+.table-editor__cell
+  @include tpl-data-table__cell
+
+.field-editor__label
+  border: 1px solid rgba(0,0,0,0)
+
+.field-editor__label--editable:hover
+  border: 1px solid #777
+
+.table-editor__header
+  @include tpl-data-table__header
+
+.table-editor__row--pending
+  background: rgba(255, 255, 0, .2)
+
+@mixin tpl-indented
+  border-left: 4px solid gray
+  padding: 4px
+
+.logical__conds
+  @include tpl-indented
+.logical__cond
+  margin-bottom: 4px
+
+.query-builder__row
+  margin-bottom: 4px
+
+.placeholder
+  font-style: italic
+  color: rgba(200, 200, 200, .5)
+
+.add-rel__col
+  width: 200px
+  display: inline-block
+
+.flex-accessor
+  border: 1px solid gray
+
+.flex-accessor__scroller
+  max-width: 400px
+  overflow-x: auto
+  display: inline-block
+  height: 240px // add some space for the scrollbar
+
+.flex-accessor__inner
+  display: inline // so we can determine the width
+  height: 220px // add some space for the padding
+  white-space: nowrap // so children keep growing horizontally
+
+.flex-accessor__list
+  display: inline-block
+  width: 150px
+  height: 200px
+  overflow: auto
+  margin: 8px
+
+.rich-accessor__level
+  display: inline-block
+  min-width: 150px
+  height: 200px
+  overflow-y: scroll
+  margin: 8px
+
+.flex-accessor__item
+  @include list-box-item
+
+.flex-accessor__item--highlighted
+  @include list-box-item--highlighted
+
+.flex-accessor__item--browsed
+  background: rgba(255, 255, 255, .05)
+
+.flex-accessor__item--selected
+  //background: $dim-highlight
+  background: #2F69A3
+  //background: $bg
+  padding-top: 8px
+  padding-bottom: 8px
+  margin-top: 8px
+  margin-bottom: 8px
+  border-left: 4px solid $active-color
+  padding-left: 12px
+
+.routine-builder__steps
+  display: table
+.routine-builder__step
+  display: table-row
+.routine-builder__step-spec
+  display: table-cell
+.routine-builder__step-example
+  display: table-cell
+
+.env-builder__bindings
+  display: table-row-group
+.env-builder__binding
+  display: table-row
+.env-builder__binding-name
+  display: table-cell
+.env-builder__binding-expr
+  display: table-cell
+.env-builder__binding-example
+  display: table-cell
+
+.env-explorer__table, .env-builder__table, .record-editor__table
+  display: table
+  border-collapse: separate
+  border-spacing: 10px
+  th
+    text-align: left
+.env-explorer__expander
+  display: inline-block
+  width: 10px
+
+.preview-table__head
+  @include tpl-data-table__header
+.preview-table__cell
+  @include tpl-data-table__cell
+
+.elastic
+  width: 100%
+
+.method-form__title
+  @include row
+.method-form__desc
+  @include col(6)
+.method-form__ret
+  @include col(6)
+  @include type-hint
+  text-align: right
+
+//.method-form__params
+//  display: table
+//  border-spacing: 4px
+//}
+.method-form__param
+  @include row
+.method-form__param-name
+  @include col(4)
+  padding-left: 8px !important
+.method-form__param-val
+  @include col(8)
+.method-form__param-val--full
+  @include col(12)
+.method-form__continue-container
+  @include row
+  text-align: right
+
+.env-accessor__fields
+  display: table
+  width: 100%
+.env-accessor__field-name
+  display: table-cell
+.env-accessor__field-type
+  @include type-hint
+  display: table-cell
+  text-align: right
+
+//.method-form__param-val
+//  float: right
+//}
+
+.table-editor__cell--unpadded
+  padding: 0
+
+.toggle-check
+  height: 20px
+  width: 20px
+  display: block
+  &:hover
+    background: rgba(255,255,255,.1)
+
+.wab-logo
+  // TODO make this font avail.
+  font-family: Stencil
+
+.project
+  margin-bottom: 30px
+  margin-right: 30px
+
+.project-thumbnail
+  width: 300px
+  height: 200px
+  background: white
+  margin-bottom: 10px
+  @include link
+  position: relative
+  transition: background 0.5s
+
+.project-caption
+  width: 100%
+
+.project-thumbnail--create-btn
+  background: #D8D8D8
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+
+.project-thumbnail__hover
+  background: rgba(0,0,0,0.8)
+  opacity: 0
+  position: absolute
+  width: 100%
+  height: 100%
+  transition: opacity 0.5s
+
+.create-project__icon
+  font-size: 144px
+  @extend .strong
+  margin-top: -50px
+  margin-bottom: -10px
+  z-index: 1
+
+.project-thumbnail:hover
+  //color: white
+  .project-thumbnail__hover
+    opacity: 1
+
+.project__name-link
+  color: lighten($fg, 20%)
+
+@mixin project__btn
+  text-transform: uppercase
+  &:hover
+    color: lighten($fg, 20%)
+
+.project__main-btn
+  @include cover
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+  @include project__btn
+.project__btn-row
+  position: absolute
+  bottom: 0
+  width: 100%
+  padding: 20px
+
+.user-avatar
+  margin-right: 5px
+
+.major-tab-bar
+  background: $tab-bar-color
+  width: 100%
+
+.major-tab
+  display: inline-block
+  padding: 15px
+  &:hover
+    background: darken($tab-bar-color, 5%)
+.major-tab--active
+  background: black
+  &:hover
+    background: black
+
+.major-sub-tab
+  @include h-nav-item
+  position: relative
+.major-sub-tab__link
+  z-index: 1
+  display: inline-block
+  padding: 15px
+  &:hover
+    color: lighten($fg, 5%)
+.major-sub-tab__link--active
+  @extend .strong
+  color: #B8B8B8
+.major-sub-tab--active::before, .major-sub-tab:hover::before
+  $triangle-size: 12px
+  content: ''
+  position: absolute
+  left: calc(50% - #{$triangle-size})
+  bottom: 0
+  width: 0
+  height: 0
+  border: $triangle-size solid transparent
+  border-bottom: $triangle-size solid $bg
+  pointer-events: none
+
+.site-mgr__title
+  display: inline-block
+.site-mgr__title-adjunct
+  display: inline-block
+  margin-left: 32px
+
+.icon-warning
+  color: $warning-color
+
+@mixin badge-warning
+  background: $warning-color
+  border-radius: 12px
+  color: $bg
+  padding: 1px 8px
+  @extend .strong
+  font-size: $font-size
+  display: inline-block
+  position: relative
+  top: -2px
+
+.issue-counter__count
+  @include badge-warning
+
+.major-icon
+  font-size: 20px
+  display: inline-block
+  width: 20px
+  text-align: center
+  margin-right: 5px
+
+.toolbar-icon
+  font-size: 14px
+  display: inline-block
+  min-width: 14px
+  text-align: center
+
+.minor-icon
+  @include minor-icon
+
+.padded
+  @include padded
+
+.section
+  margin-top: 20px
+  @include clearfix
+  &:first-child
+    margin-top: 0
+
+.tbl
+  margin: 20px 0
+  width: 100%
+@mixin tbl-cell
+  padding: 6px
+  height: 50px
+.tbl__th, .tbl__td
+  @include tbl-cell
+.tbl__th
+  @include small-heading
+  text-align: left
+.tbl__th--clickable
+  cursor: pointer
+.tbl__tr:nth-child(odd)
+  background: #282F34
+.tbl__tr:hover
+  filter: brightness(110%)
+.tbl__td--squeeze
+  width: 1%
+  white-space: nowrap
+
+.circle-btn
+  @include outset-button
+  border-radius: 16px
+  padding: 4px
+  width: 32px
+  height: 32px
+  margin-right: 8px
+
+.checkbox
+  display: inline-block
+.checkbox__box
+  display: inline-block
+  margin-right: .5em
+  background: darken($bg, 5%)
+  border: 2px solid black
+  color: #3BBFFF
+  width: calc(1.5em)
+  height: calc(1.5em)
+  text-align: center
+  cursor: pointer
+  > input[type="checkbox"]
+    opacity: 0
+    width: 0
+    height: 0
+.plain-active-context .checkbox__box
+  color: $fg
+.checkbox__repr
+  visibility: hidden
+input[type="checkbox"]:checked + .checkbox__repr
+  visibility: visible
+
+.home-logo
+  width: 20px
+  height: 20px
+  margin-top: 12px
+  padding-top: 4px
+  filter: brightness(80%)
+  margin-bottom: 10px
+
+.rotated--90
+  transform: rotate(-90deg)
+.rotated--45
+  transform: rotate(-45deg)
+.rotated-0
+  transform: rotate(0)
+.rotated-45
+  transform: rotate(45deg)
+.rotated-90
+  transform: rotate(90deg)
+.rotated-135
+  transform: rotate(135deg)
+.rotated-180
+  transform: rotate(180deg)
+.rotated-225
+  transform: rotate(225deg)
+.rotated-270
+  transform: rotate(270deg)
+.rotated-315
+  transform: rotate(315deg)
+.flip-horiz
+  transform: scaleX(-1)
+.flip-vert
+  transform: scaleY(-1)
+
+.h-nav-item
+  @include h-nav-item
+
+.table-columns
+  display: flex
+
+.table-list
+  padding-left: 10px
+  width: 180px
+  margin-right: 20px
+.table-list__title
+  @include small-heading
+.table-list__list
+  position: relative
+  left: -6px
+  margin: 8px 0
+.table-list__table
+  display: block
+  padding: 8px 6px
+  border-radius: 3px
+  &:hover
+    background: $dimmer-highlight
+.table-list__create
+  font-style: italic
+  font-size: $font-size
+.table-list__table--active
+  background: $dim-highlight
+.table-list__create
+  float: left
+.table-list__icons
+  float: right
+
+.table-view-filter
+  float: left
+.table-view-summary
+  float: right
+.table-view-btn
+  @include outset-button
+  @include padded
+
+.table-details
+  flex: 1
+.table-details__field
+  margin-bottom: 10px
+  display: block
+.table-details__field-label
+  margin-right: 10px
+  display: inline-block
+  width: 100px
+  text-align: right
+  @include small-heading
+.table-details__input
+  width: 500px
+.table-details__textarea
+  width: 500px
+
+.major-sub-tab-bar
+  background: black
+  height: 45px
+
+.normal-layout
+  font-size: 14px
+.normal-layout-content
+  max-width: $content-width
+  margin: 0 auto
+  height: 100%
+.normal-layout-content--top-bar
+  display: flex
+.normal-layout__top-bar
+  height: 50px
+  background-color: $sand12
+.normal-layout__top-bar-right
+  @include hstack-gap(24px)
+  align-items: center
+  margin-left: auto
+.normal-layout__user
+  cursor: pointer
+  display: flex
+  flex-direction: row
+  align-items: center
+  height: 100%
+.normal-layout__mark
+  height: 18px
+  width: 36px
+
+.id-summary__container
+  cursor: pointer
+.id-summary
+  display: inline-block
+  overflow: hidden
+  width: 50px
+  text-overflow: ellipsis
+  height: 1em
+
+.icon-group
+  display: flex
+  align-items: center
+  * + &
+    margin-left: 8px
+
+.icon-group--vert
+  flex-direction: column
+  align-items: center
+  * + &
+    margin-left: unset
+    margin-top: 8px
+
+.icon-group--sep-left
+  border-left: 1px solid $sand12
+  padding-left: 8px
+
+.expander-icon
+  display: inline-block
+  font-size: 14px
+  width: 14px
+  text-align: center
+.expander-icon--hoverable
+  &:hover
+    color: white
+
+.expr-placeholder
+  @include outset-button
+  @include thin-button
+  text-align: left
+  //color: $expr-color
+  display: block
+  width: 100%
+
+.expr-setting
+  margin-bottom: 12px
+.expr-setting__label
+  display: block
+  margin-bottom: 4px
+.expr-setting__expr
+  display: block
+  width: 100%
+  text-align: left
+  color: $expr-color
+
+.selector__label
+  @include panel-col(3)
+.selector__select
+  @include panel-col(9)
+.selector__controls
+  @include panel-row
+.selector__control
+  margin-right: 20px
+
+.panel-heading
+  font-size: 11px
+  @extend .strong
+  margin: 0
+  position: relative
+  text-transform: uppercase
+
+.panel-heading__text
+  position: relative
+  display: inline-block
+  padding-right: 10px
+  //background: $bg
+
+.panel-heading__line
+  position: absolute
+  top: calc(50% - 1px)
+  width: 100%
+  height: 1px
+  background: $lightener2
+  display: none
+
+.svg-icon
+  vertical-align: middle
+.custom-svg-icon
+  height: 16px
+  width: auto
+  flex-shrink: 0
+  vertical-align: middle
+.custom-svg-icon--lg
+  height: 24px
+.custom-svg-icon--xlg
+  height: 36px
+.custom-svg-icon--xxlg
+  height: 48px
+
+.InlineIcon
+  @include inline-dead-center
+  transform: translateY(-5%)
+
+.object__position__control__row
+  display: flex
+
+.labeled-item
+  display: flex
+  flex: 1
+  gap: 8px
+  position: relative
+  // Please keep baseline alignment or consult if something looks wrong!
+  align-items: baseline
+  min-width: 0
+  min-height: 32px
+  padding: 0
+  margin-left: 0
+  transition: all 200ms
+  &.textbox--unset
+    color: $sand11
+    opacity: 1
+
+  //&:not(:last-child)
+  //  margin-bottom: 4px
+
+  // &:last-child
+  //   margin-right: -8px
+
+:where(.labeled-item > *)
+  min-width: 0
+  min-height: 0
+
+.labeled-item--horizontal--flushtop
+  align-items: flex-start
+
+:where(.labeled-item--horizontal--flushtop > *)
+  // Make all children have min-height of 32 with content center-aligned,
+  // so that content shorter than 32 will line up
+  min-height: 32px
+  display: flex
+  align-items: center
+
+.labeled-item--horizontal--vcenter
+  align-items: center
+
+.labeled-item--vertical
+  flex-direction: column
+  align-items: flex-start
+  gap: 4px
+
+.labeled-item--auto
+  flex-grow: 0
+  flex-shrink: 0
+  min-width: auto
+
+.labeled-item--end
+  justify-content: flex-end
+
+.labeled-item + .labeled-item, .labeled-item + .style-wrapper
+  margin-left: 10px
+
+.labeled-item__label
+  flex-shrink: 0
+  position: relative
+  overflow: hidden
+  text-overflow: ellipsis
+  white-space: nowrap
+  color: $sand12
+
+.labeled-item__label-and-defined-container
+  position: relative
+  flex-shrink: 0
+  display: flex
+  align-items: center
+
+.labeled-item__label--horizontal
+  width: $label-col-width
+.labeled-item__label--small
+  width: $label-col-width-sm
+.labeled-item__label--icon
+  line-height: 0
+.labeled-item__defined-container
+  @include dead-center
+  position: absolute
+  left: -1px
+  top: 50%
+  transform: translate(0, -50%)
+  //margin-left: -8px
+.labeled-item__defined-container--tight
+  position: absolute
+.labeled-item__input
+  flex: 1
+  display: flex
+.labeled-item__menu
+  position: absolute
+  padding: 4px 8px
+  left: 100%
+  margin-left: -4px
+  display: none
+  cursor: pointer
+  .labeled-item:hover &
+    display: block
+.labeled-item__text
+  padding: 4px 0
+
+.labeled-item__value-vpadding
+  padding: 7px 0
+
+.label-col
+  width: $label-col-width
+  margin-right: $label-col-gap
+
+.fallback__label .labeled-item__label
+  padding-left: 16px
+
+.labeled-item__item-position
+  display: flex
+  padding: 0 5px 0 8px
+  margin-left: 84px
+
+.input-pill
+  background-color: #fdfdfc
+  padding: 4px 6px 4px 6px
+  border-radius: 4px
+  margin-top: -4px
+  margin-bottom: -4px
+  margin-left: 2px
+  margin-right: 2px
+  box-shadow: 0px 0px 0px 1px #00000024
+  cursor: pointer
+  &:hover
+    background-color: #f9f9f8
+
+.right-panel-input-background__no-height
+  background-color: $sand3
+  padding: 6px 6px 6px 6px
+  border-radius: 6px
+  &:hover
+    background-color: $sand4
+
+.right-panel-input-background
+  background-color: $sand3
+  padding: 6px 6px 6px 6px
+  border-radius: 6px
+  min-height: 32px
+  &:hover
+    background-color: $sand4
+
+.right-panel-input-background-selected
+  background-color: $sand4
+
+.code-chip-like
+  @include codefont
+  padding: 0 2px
+  border-radius: 4px
+  color: $green10
+  background-color: white
+  cursor: pointer
+  font-weight: bold
+  vertical-align: middle
+  &:hover
+    background-color: $green3
+
+.templated-string-input
+  color: $sand12
+  background-color: $sand3
+  border-radius: 6px
+  cursor: initial
+  border: 1px solid var(--qb-select-input-border-color)
+  padding: 6px
+  overflow: auto
+  min-height: 32px !important
+  max-height: 100px
+  overflow-wrap: break-word
+  &:hover
+    background: $sand4
+  .code-chip
+    @include code-chip-like
+    @include line-clamp(3)
+    overflow-wrap: break-word
+    vertical-align: middle
+    &:hover
+      background-color: $green3
+    &.right-panel-input-background-selected
+      background-color: $blue9
+      color: white
+    &.right-panel-input-background-selected:hover
+      background-color: $blue8
+      color: white
+
+@keyframes caret-animation
+  0%, 100%
+    opacity: 1
+  50%
+    opacity: 0
+
+@keyframes caret-animation2
+  0%, 100%
+    opacity: 1
+  50%
+    opacity: 0
+
+.custom-caret-container
+  @extend .flex-col
+  position: fixed
+  top: 0px
+  left: 0px
+  width: 0px
+  height: 0px
+  align-items: center
+  animation: none
+  --caret-color: #{$active-color}
+  --caret-width: 2px
+  z-index: 1000
+
+.templated-string-input
+  &:not(:hover,:focus,:focus-within)
+    --caret-color: black
+    --caret-width: 1px
+
+.custom-caret
+  width: 0px
+  height: 1.3em
+  flex: 0 0 auto
+
+.caret-button
+  --webkit-appearance: none
+  flex: 0 0 auto
+  border: none
+  box-shadow: none
+  background: none
+  padding: 0
+  margin: 0
+  width: 16px
+  height: 16px
+  display: flex
+  justify-content: center
+  cursor: pointer
+
+  .caret-button-inner
+    transform-origin: top center
+    transition: 0.1s all
+    transform: translateY(10px)
+  .caret-button-shape
+    display: flex
+    align-items: center
+    justify-content: center
+    width: 24px
+    height: 24px
+    border-radius: 24px
+    border-top-left-radius: 0
+    transform: rotate(45deg)
+    background-color: var(--caret-color)
+    box-sizing: border-box
+    color: #ffffff
+  .caret-button-icon
+    transform: rotate(-45deg)
+    display: flex
+    align-items: center
+    justify-content: center
+
+.custom-caret-container
+  transform-origin: 50% 0%
+  &:not(:hover,:focus)
+    .caret-button-inner
+      transform: scale(0.3)
+    transform: translateY(0px)
+    .caret-button-shape
+      opacity: 0.5
+
+.templated-string-input
+  &:not(.templated-string-input--moved)
+    .caret-button-shape
+      background-color: transparent
+      border-radius: 100000px
+    .caret-button-icon
+      opacity: 0
+
+.code-editor-input
+  @extend .right-panel-input-background
+  @include codefont
+  @include line-clamp(8)
+  display: flex
+  justify-content: flex-start
+  align-items: flex-end
+  width: 100%
+  overflow-wrap: break-word
+  height: auto
+  .text-set
+    @include code-chip-like
+  & span
+    @include line-clamp(8)
+    overflow-wrap: break-word
+
+.generic-prop-editor
+  width: 100%
+  display: flex
+  align-items: center
+  min-height: 32px
+
+.generic-prop-editor .ant-input-number,
+.generic-prop-editor .ant-input,
+.generic-prop-editor .code-editor-input
+  box-shadow: inset 0px 0px 0px 1px var(--token-eBt2ZgqRUCz)
+  background: transparent
+  border-width: 0
+  padding: 0
+  font-family: inherit
+  padding: 8px
+  border-radius: 6px
+  &:focus-within
+    box-shadow: 0px 0px 0px 2px $focus-color
+    outline: none
+
+.generic-prop-editor .ant-input-number-input
+  height: auto
+  padding: 0
+
+.screen__variants__dim__controls
+  margin-left: 8px
+  display: flex
+  .labeled-item+.labeled-item
+    padding-left: 20px
+
+.screen__variants__dim__label
+  width: 30px
+
+.panel-heading-row
+  @include list-box-heading
+  margin: 10px -20px
+  padding: 8px 20px
+  background: black
+  @extend .strong
+
+.small-textbox
+  line-height: 1
+
+.form-control
+  width: 100%
+
+.attributes-menu
+  overflow-y: auto
+
+.attributes-menu::before
+  top: 0px
+  bottom: 0px
+
+.textbox--block
+  display: block
+  width: 100%
+
+.positioning-label
+  @include panel-col(4)
+
+.typography__text-decoration
+  text-align: right
+.typography__underline-icon
+  text-decoration: underline
+.typography__line-through-icon
+  text-decoration: line-through
+
+.align-right
+  text-align: right
+.float-right
+  float: right
+.flex-right
+  display: flex
+  justify-content: flex-end
+
+.panel-group
+  @include panel-row
+  margin-left: -12px
+  margin-right: -12px
+  padding: 12px
+  background: $panel-bg
+  flex-direction: column
+  color: $sand10
+
+.on-off-switch
+  cursor: pointer
+  margin-right: -6px
+  color: rgba(black, 0.3)
+.on-off-switch__label
+  display: inline-block
+  text-transform: uppercase
+  font-size: 11px
+  @extend .strong
+  padding: 2px 0
+  margin-right: 6px
+.on-off-switch__label--active
+  border-bottom: 1px solid $fg
+.on-off-switch__space
+  @include inset
+  display: inline-block
+  position: relative
+  width: 19px
+  height: 17px
+  margin: 0 2px
+  vertical-align: middle
+.on-off-switch__switch
+  display: block
+  position: absolute
+  background: rgba(#979797, .5)
+  width: 7px
+  height: 12px
+  top: 3px
+.on-off-switch__switch--on
+  left: 3px
+.on-off-switch__switch--off
+  right: 3px
+
+.data-control-block
+  padding: 8px 12px
+  margin: 0 -12px
+  background: $panel-bg
+  border-top: 1px solid transparent
+.data-control-block--has-top-neighbor
+  border-top: 1px solid $lightener
+.data-control-block--expanded
+  border-top: 1px solid transparent
+  margin-top: 16px
+  margin-bottom: 16px
+.data-control-block--expanded + .data-control-block--has-top-neighbor
+  border-top: 1px solid transparent
+
+.toolbar__taper-container
+  height: 100%
+  width: 10px
+.toolbar__taper-shape
+  fill: $bg
+
+@mixin hilite
+  content: ''
+  position: absolute
+  background: $sand10
+  height: 2px
+  bottom: -1px
+  left: $sidebar-tab-hpadding
+  right: $sidebar-tab-hpadding
+.hilite-tabs
+  @extend .strong
+  padding: 0 $sidebar-section-hpadding - $sidebar-tab-hpadding
+.hilite-tabs--no-border
+  border-bottom-color: transparent
+.hilite-tab
+  height: 40px
+  padding: 0 $sidebar-tab-hpadding
+  cursor: pointer
+  color: $dimfg
+  position: relative
+  font-weight: 600
+  &:hover
+    &::after
+      @include hilite
+  &:focus
+    &::after
+      @include hilite
+      background: $focus-color
+.hilite-tab--active
+  color: $fg
+  &::after
+    @include hilite
+.hilite-tab--tight
+  height: $section-list-item-height
+
+.style__assets__adder__container
+  height: 24px
+
+.style__assets__adder
+  position: absolute
+  padding-top: 8px
+  right: 25px
+
+.style__assets__item__label
+  display: inline-block
+  width: 80%
+
+.style__assets__label__menu
+  display: inline-block
+  cusor: pointer
+
+.style__assets__item__container
+  margin-top: 5px
+  padding: 2px 2px
+
+.style__assets__item__label__row
+  margin-bottom: 4px
+  display: flex
+  flex-direction: row
+  justify-content: space-between
+  &:hover
+    background: $dim-highlight
+
+.style__assets__item__settings
+  display: inline-block
+  cursor: pointer
+
+.style__assets__item__preview__container
+  display: block
+  padding-left: 20px
+
+.style__assets__typography__preview
+  background-color: white
+  max-width: 100%
+  max-height: 80px
+  overflow: auto
+
+.copilot-no-background, .copilot-no-background > .ant-popover-content, .copilot-no-background > .ant-popover-content > .ant-popover-inner, .copilot-no-background > .ant-popover-content > .ant-popover-inner > .ant-popover-inner-content
+  background: transparent
+  box-shadow: none
+
+.completions
+  display: flex
+  height: 240px
+  flex-direction: column
+.completions__list
+  overflow-x: clip
+  overflow-y: scroll
+  flex: 1
+  background:  $insetbg
+  color: rgba(white, 0.5)
+
+.list-box-section
+  cursor: pointer
+.list-box-section__title
+  @include list-box-heading
+
+.completion--selected
+  background: $active-color
+.completion__label
+  display: inline-block
+  width: 50%
+.completion__detail
+  display: inline-block
+  width: 50%
+  text-align: right
+  color: rgba(white, 0.4)
+
+.picker-modal-content
+  width: 360px
+
+.hint
+  @include hint
+
+.completions__type-hint
+  @include hint
+  margin-top: 8px
+
+// For link buttons that sit besides normal buttons
+.link-btn-space
+  margin: 0 20px
+
+.right-panel-dropdown
+  font-size: $font-size
+
+.grab-handle
+  cursor: $grab
+  &:active
+    cursor: $grabbing
+
+.mad-lib
+  border-bottom: 4px solid rgba($active-color, 0.3)
+  &:hover:not(:disabled)
+    border-bottom: 4px solid rgba($active-color, 0.5)
+.mad-lib--placeholder:link
+  font-style: italic
+  color: rgba($active-color, 0.7)
+
+.input-box
+  @include inset
+  display: block
+  padding: 4px 6px
+  &:hover
+    background: lighten($insetbg, 3%)
+
+.panel-row + .value-preview-row
+  margin-top: 4px
+
+.value-preview
+  @include inset
+  @include line-clamp(3)
+  overflow-wrap: break-word
+  color: $purple-dark8
+  font-weight: 500
+  align-self: flex-start
+  max-width: 100%
+.value-preview--error
+  color: $light-error-fg
+.value-preview--loading
+  color: $purple-dark10
+  font-style: italic
+.value-preview--clickable
+  &:hover
+    color: $purple-dark10
+    text-decoration: underline
+.value-preview--editable
+  cursor: pointer
+  &:hover
+    background: lighten($insetbg, 3%)
+
+.light-error
+  color: $light-error-fg
+.error-bg
+  background: $error-bg
+  color: $error-fg
+
+.error-boundary
+  @include line-clamp(2)
+  position: relative
+  background: rgba(200, 90, 90, 1)
+  font: 11px Helvetica
+  color: white
+  margin-left: 4px
+  max-width: 100%
+  padding: 2px
+
+@mixin gallery-item
+  @include hover-outline
+  @include full-panel-width
+  display: flex
+  padding: 0 20px
+  cursor: pointer
+  height: 30px
+  align-items: center
+  user-select: none
+
+.ArenaNavigator
+  min-width: 200px
+.ArenaNavigator__List
+  margin: 0 -16px
+  margin-top: 10px
+  max-height: 500px
+  overflow: auto
+.ArenaNavigator__Item
+  @include gallery-item
+
+.arenas-arena-separator
+  padding-top: 8px
+  padding-bottom: 8px
+
+.create-item
+  @include gallery-item
+.create-item--selected
+  background: $dim-highlight
+.create-item__icon
+  @include dead-center
+  line-height: 1
+  margin-right: 10px
+  color: $sand7
+  width: 24px
+  height: 24px
+.create-item__label
+  flex: 1
+.create-item__icons
+  margin-left: auto
+  display: flex
+  opacity: 0
+  margin-right: -10px
+.create-item:hover .create-item__icons
+  opacity: 1
+.create-item--disabled
+  color: $dimfg
+
+
+.align-top
+  vertical-align: top
+.align-middle
+  vertical-align: middle
+
+.status--valid
+  color: green
+
+.exported-code
+  border: 1px solid gray
+  width: 500px
+  height: 300px
+
+.type-disp
+  @include hint
+  text-align: right
+
+.expr-val
+  @include inset
+  margin-left: -6px
+  margin-right: -6px
+.expr-val__sep
+  padding: 0 10px
+  display: flex
+  flex-direction: row
+  align-items: center
+  line-height: 4px
+.expr-val__sep-line
+  height: 1px
+  flex: 1
+  background: rgba(255, 255, 255, 0.1)
+.expr-val__sep-sym
+  color: rgba(255, 255, 255, 0.2)
+  padding: 0 10px
+
+.file-uploader
+  position: relative
+  align-self: stretch
+  border: 1px dashed $border-strong
+  border-radius: 8px
+  &:hover
+    background-color: $strongbg
+  .fake-upload
+    @include inset
+    @include dead-center
+    width: 100%
+    height: 60px
+    color: rgba(125, 125, 125, 0.2)
+    font-size: 20px
+  &.file-uploader--over
+    border-style: solid
+    background-color: $inverse-dimbg
+    .fake-upload
+      color: $inverse-brightfg
+
+.image-paster
+  border: 1px dashed $border-strong
+  border-radius: 8px
+  height: 60px
+  resize: none
+
+.opaque-file-uploader
+  position: absolute
+  height: 100%
+  width: 100%
+  opacity: 0
+  cursor: pointer
+  left: 0px
+  top: 0px
+
+// Ant styles are getting imported and they overwrite this
+h1, h2, h3, h4, h5, h6
+  color: inherit
+
+.overriding
+  color: $active-color
+
+.beefy-menu-item
+  margin-top: 4px
+  margin-bottom: 4px
+  display: flex
+.beefy-menu-item__icon
+  width: 40px
+  text-align: center
+  margin-right: 10px
+  margin-top: 10px
+.beefy-menu-item__main-content
+  flex: 1
+.beefy-menu-item__title
+  @include small-heading
+.beefy-menu-item__desc
+  white-space: normal
+
+.bg-size-switch-container
+  padding: 0 0px
+
+@mixin bg-layer-type
+  width: 26px
+  height: 21px
+.bg-layer-linear
+  @include bg-layer-type
+  background: linear-gradient(#bbbbbb, #5E5E5E)
+.bg-layer-radial
+  @include bg-layer-type
+  background: radial-gradient(#bbbbbb, #5E5E5E)
+.bg-layer-image
+  @include bg-layer-type
+  background-size: 100%
+  background-color: #fff
+
+.bg-layer__label
+  @include codefont
+  @include truncate-text
+  // This vertical offset is to make the baseline-aligned text appear centered
+  // in light of the tall thumbnail image.
+  padding-top: 2px
+
+.image-preview
+  width: 100%
+  height: 100%
+  position: relative
+  cursor: pointer
+  .image-preview__msg-overlay
+    position: absolute
+    left: 0
+    right: 0
+    top: 0
+    bottom: 0
+    display: none
+    background-color: rgba(0, 0, 0, 0.3)
+    align-items: center
+    justify-content: center
+  .image-preview__msg
+    background-color: rgba(0, 0, 0, 0.9)
+    color: #fff
+    padding: 5px 10px
+    border-radius: 4px
+  &:hover
+    .image-preview__msg-overlay
+      display: flex
+
+$img-checkerboard-color: #ddd
+
+.img-thumb__checkers
+  height: 100%
+  width: 100%
+.img-thumb__checkers--shown
+  background-image: linear-gradient(45deg, $img-checkerboard-color 25%, transparent 25%), linear-gradient(-45deg, $img-checkerboard-color 25%, transparent 25%), linear-gradient(45deg, transparent 75%, $img-checkerboard-color 75%), linear-gradient(-45deg, transparent 75%, $img-checkerboard-color 75%)
+  background-size: 20px 20px
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px
+.img-thumb
+  background: none no-repeat center center
+  background-size: cover
+  height: 100%
+  width: 100%
+.img-thumb-border
+  border: solid 1px #e2e8f0
+  border-radius: 4px
+
+.shadow-thumb
+  width: 30px
+  height: 15px
+  background-color: $dimdimdimfg
+
+.image-selector-root
+  display: flex
+  flex-direction: column
+  flex: 1 1
+  overflow: hidden
+
+$angle-input-height: 50px
+
+.vcenter
+  vertical-align: middle
+
+.angle-dial
+  @include dead-center
+  position: relative
+  height: $angle-input-height
+  vertical-align: top
+.angle-dial__dial-img
+  @include not-draggable
+.angle-dial__dial
+  cursor: pointer
+.angle-dial__ticks-sheet
+  @include dead-center
+  @include cover
+  display: none
+  pointer-events: none
+.angle-dial__ticks
+  position: relative
+  left: -40px
+  top: -40px
+  background: red
+.angle-dial__tick-container
+  position: absolute
+$tickWidth: 32px
+$tickHeight: 9px
+.angle-dial__tick
+  position: absolute
+  display: block
+  font-size: $tickHeight
+  line-height: 1
+  width: $tickWidth
+  height: $tickHeight
+  left: calc(-1 * $tickWidth / 2)
+  top: calc(-1 * $tickHeight / 2)
+  text-align: center
+  pointer-events: initial
+
+.spaced-above
+  margin-top: 10px
+
+$color-stops-width: 100%
+.color-stops
+  position: relative
+  width: $color-stops-width
+  margin: 0 auto
+.color-stops__bar-container
+  height: 50px
+  cursor: pointer
+.color-stops__bar
+  height: 32px
+  width: $color-stops-width
+.color-stops__stops
+  @include cover
+  position: absolute
+  top: 28px
+  width: $color-stops-width
+  pointer-events: none
+  height: auto
+.color-stop__container
+  position: absolute
+.color-stop
+  position: absolute
+  left: -12px
+  top: -6px
+  user-select: none
+  pointer-events: initial
+  color: $dimdimfg
+  filter: drop-shadow(0 0 1px black)
+.color-stop--selected, .color-stop:hover
+  color: $active-color
+.color-stop--removing
+  opacity: 0.3
+.color-stop--ghost
+  //opacity: 0.7
+  pointer-events: none
+  //color: white
+.color-stop__color-chip
+  width: 12px
+  height: 12px
+  position: absolute
+  top: 10px
+  left: 6px
+  box-shadow: inset 0px 1px 2px 0px rgba(0,0,0,0.3)
+.color-stop__icon
+  display: block
+  width: 24px
+  height: 24px
+.color-stop__fill
+  position: absolute
+  height: 10px
+  width: 10px
+  top: 8px
+  left: 2px
+  border: 1px solid black
+
+.sketch-picker
+  background: none !important
+  box-shadow: none !important
+  span
+    color: $fg !important
+  input
+    @include textbox
+    @include codefont
+    border: 0 none !important
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important
+    box-shadow: none !important
+  > div:nth-child(2) > div > div
+    background: white
+  > .flexbox-fix:last-child
+    border-top: none !important
+
+.ellipse-control
+  display: block
+  background: $sand3
+  width: 100px
+  height: 100px
+  margin: 0 auto
+  margin-top: 10px
+.ellipse-control__svg
+  display: block
+  width: 100px
+  height: 100px
+.ellipse-control__ellipse
+  fill: none
+  stroke: $sand7
+  stroke-width: 1px
+.ellipse-control__line
+  stroke: $sand7
+  stroke-width: 1px
+.ellipse-control__center, .ellipse-control__knob
+  @include draggable
+  fill: $sand7
+
+.svg-small-icon
+  vertical-align: middle
+
+@mixin select-option
+  display: inline-block
+  width: 40%
+  position: relative
+  margin-right: 10%
+  vertical-align: top
+.select-option__text
+  @include select-option
+.select-option__value
+  @include select-option
+
+.raised-label
+  position: absolute
+  top: -12px
+  font-size: 9px
+  text-transform: uppercase
+  @extend .strong
+  opacity: 0.5
+
+.component-ctx-spotlight
+  position: absolute
+  top: 0
+  left: 0
+  width: 0
+  height: 0
+  pointer-events: none
+
+.component-ctx-spotlight__shadow
+  box-shadow: 0 0 0 9999999px rgba(black, 0.15)
+  pointer-events: none
+  position: absolute
+  left: 0
+  top: 0
+  bottom: 0
+  right: 0
+
+.component-ctx-spotlight__controls
+  position: absolute
+  left: 0
+  top: 100%
+  white-space: nowrap
+  color: $fg
+  transform: translate(0, 10px) scale(1)
+  transform-origin: top left
+  pointer-events: auto
+  // Move the spotlight controls on top of the hoverbox
+  z-index: 1
+  background-color: rgba(255,255,255,0.8)
+  padding: 4px
+  border-radius: 4px
+  button.ant-switch
+    background-color: $sand10
+    &.ant-switch-checked
+      background-color: $active-color
+
+.component-ctx-spotlight__slots__slot
+  position: absolute
+  background: rgba(black, 0.25)
+
+.menu
+  background: $panel-bg
+  padding: 12px 0
+.menu-group
+  &:not(:first)
+    padding-top: 8px
+  &:not(:last)
+    padding-bottom: 8px
+    border-bottom: 1px solid gray
+.menu-item__link
+  display: block
+  padding: 5px 20px
+  &:hover
+    background: $lightener
+
+.studio
+  display: flex
+  height: 100vh
+.studio__nav-menu
+  text-align: center
+.studio__nav-menu-item
+  font-size: 16px
+  margin: 10px 10px
+  display: inline-block
+.studio__main-area
+  flex: 1
+  position: relative
+
+.dark-mask
+  position: absolute
+  background-color: rgba(0,0,0,0.6)
+  z-index: 200000
+  display: flex
+  pointer-events: none
+
+.dark-mask-top
+  @extend .dark-mask
+.dark-mask-left
+  @extend .dark-mask
+.dark-mask-bottom
+  @extend .dark-mask
+.dark-mask-right
+  @extend .dark-mask
+
+
+.right-pane__mask
+  @include cover
+  background: rgba(0,0,0,0.7)
+  // need to beat antd popovers
+  z-index: 2000
+
+// TODO restyle this
+.pane-title
+  @extend .strong
+  padding: 0 20px
+  margin-top: 2px
+  padding-top: 8px
+  padding-bottom: 8px
+  text-transform: uppercase
+  background: black
+
+.canvas-editor
+  display: flex
+  position: absolute
+  width: 100%
+  height: 100%
+.canvas-editor__outer-main-area
+  flex: 1
+  display: flex
+  flex-direction: column
+  overflow: hidden
+
+@mixin canvas-editor-pane-common
+  @include right-pane-font
+  width: $right-pane-width
+  flex-shrink: 0
+  display: flex
+  flex-direction: column
+  position: relative
+  z-index: 2
+
+.canvas-editor__right-pane
+  @include canvas-editor-pane-common
+  // background-color: $sand4
+  background-color: white
+  overflow: hidden
+  margin-left: auto
+
+.canvas-editor__disable-right-pane
+  position: absolute
+  top: 0
+  bottom: 0
+  left: 0
+  right: 0
+  background: $sand3
+  opacity: 30%
+  cursor: not-allowed
+  z-index: 100
+
+.canvas-editor__right-pane-box-shadow
+  box-shadow: -1px 0 0 1px $canvas-border
+
+.canvas-editor__top-pane
+  flex: 1
+  pointer-events: none
+  overflow: hidden
+  z-index: 2
+  grid-area: clipper
+
+.canvas-editor__top-pane__floating-elements-container
+  padding: 8px 20px
+
+.canvas-editor__left-pane-container
+  background-color: transparent
+
+.canvas-editor__right-pane__top
+  overflow-y: auto
+  display: flex
+  flex-direction: column
+
+  &.canvas-editor__right-pane__top--with-bottom
+    max-height: 50%
+    box-shadow: 0 5px 15px -5px rgba(0, 0, 0, .15)
+    z-index: 3
+
+.canvas-editor__right-pane__bottom
+  padding-top: 10px
+  overflow-y: auto
+  flex: 1
+  display: flex
+  flex-direction: column
+  position: relative
+
+.canvas-editor__right-pane__bottom__scroll
+  overflow-y: auto
+  flex: 1
+  display: flex
+  flex-direction: column
+  position: relative
+
+.canvas-editor__right-stack-pane
+  padding-top: 10px
+  display: flex
+  max-height: 100%
+  flex-direction: column
+  background-color: #fff
+  &:not(:first-child)
+    border-top: 1px solid $canvas-border
+  & > div
+    max-height: 100%
+
+.canvas-editor__right-float-pane
+  display: flex
+  flex-direction: column
+  border-radius: 8px
+  background-color: #fff
+  margin: 8px
+  &:not(:last-child)
+    margin-bottom: 0
+
+.canvas-editor__right-pane__scroll
+  overflow-y: auto
+  display: flex
+  flex-direction: column
+  padding: $right-pane-padding
+  > * + *
+    margin-top: $right-pane-padding
+
+.canvas-editor__right-float-pane--affixable
+  transition: 0.15s all
+
+.canvas-editor__right-float-pane--affixed
+  margin-left: -$right-pane-padding
+  margin-right: -$right-pane-padding
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15)
+  border-radius: 0
+  background-color: #fff
+
+.canvas-editor__recording-panel-container
+  display: flex
+  justify-content: center
+  flex: 1
+  margin-left: 8px
+
+.canvas-editor__top-bar
+  flex-shrink: 0
+.canvas-editor__hsplit
+  flex: 1
+  display: flex
+  flex-direction: row
+  position: relative
+  overflow: hidden
+.canvas-editor__alert-banner-container
+  margin-bottom: 8px
+  pointer-events: auto
+.canvas-editor__scaler
+  transform-origin: 0 0
+  display: flex
+.canvas-editor__scaler__popup_live
+  width: 100%
+  height: 100%
+
+.canvas-editor__floating-msg
+  width: 300px
+  margin-top: 30px
+  z-index: 1
+  pointer-events: auto
+
+.canvas-editor__canvas
+  position: absolute
+  padding-right: 0px
+  padding-bottom: 0px
+  user-select: none
+  width: 0
+  height: 0
+.canvas-editor__canvas__popup_live
+  width: 100%
+  height: 100%
+.canvas-editor__bottom-pane
+  height: 0
+  flex-shrink: 0
+.canvas-editor__bottom-pane--expanded
+  height: $bottom-pane-height
+  overflow: scroll
+// We need to clip the canvas content.
+.canvas-editor__canvas-clipper
+  overflow: hidden
+  height: 100%
+  width: 100%
+  position: absolute
+.canvas-editor__canvas-clipper--live
+  left: 0
+  right: 0
+
+.canvas-editor__canvas-clipper-grid
+  z-index: 1
+  position: absolute
+  display: none
+  left: 0px
+  top: 0px
+  height: 100%
+  width: 100%
+  background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.1) 0px, transparent 1px), linear-gradient(90deg, rgba(0, 0, 0, 0.1) 0px, transparent 1px)
+  background-size: 0px 0px
+  transform-origin: top left
+  pointer-events: none
+
+@mixin manual__scrollbar-track-common
+  pointer-events: none
+  z-index: 2
+  position: absolute
+  right: 0
+  bottom: 0
+  overflow: hidden
+.manual__scrollbar-vertical-track
+  @include manual__scrollbar-track-common
+  top: 0
+  width: 11px
+  margin-bottom: 11px
+.manual__scrollbar-horizontal-track
+  @include manual__scrollbar-track-common
+  left: 0
+  height: 11px
+  margin-right: 11px
+
+@mixin manual__scrollbar-before-common
+  position: absolute
+  content: ''
+  background: $sand7
+  border-radius: 7px
+  left: 0
+  right: 0
+  transition: opacity 0.2s linear
+  &:hover
+    background: $sand6
+.manual__scrollbar-vertical:before
+  @include manual__scrollbar-before-common
+  top: 2px
+  bottom: 2px
+.manual__scrollbar-horizontal:before
+  @include manual__scrollbar-before-common
+  height: 100%
+  left: 2px
+  right: 2px
+
+@mixin manual__scrollbar-common
+  position: absolute
+  right: 2px
+  width: 7px
+  min-height: 50px
+  pointer-events: auto
+  display: none
+.manual__scrollbar-vertical
+  @include manual__scrollbar-common
+.manual__scrollbar-horizontal
+  @include manual__scrollbar-common
+  right: auto
+  left: 0
+  top: 2px
+  height: 7px
+  min-height: 0
+  min-width: 50px
+  width: auto
+
+.manual__scrollbar-visible
+  display: block
+
+.topbar__preview__frame__name
+  left: 50%
+  top: 50%
+  transform: translate(-50%, -50%)
+  position: absolute
+  white-space: nowrap
+
+.canvas-editor__canvas-container
+  flex: 1
+  display: flex
+  overflow: hidden
+  background: $canvas-bg
+  justify-content: center
+  width: 100%
+  height: 100%
+  z-index: 0
+  position: relative
+
+.canvas-editor__canvas-container__focus_mode
+  display: grid
+  grid-template-rows: 50px auto
+  grid-template-areas: "topbar" "clipper"
+  grid-template-columns: 100%
+  justify-items: center
+
+  & > *
+    position: relative
+
+  .canvas-editor__canvas
+    height: auto
+    padding: 2000px
+    position: relative
+    width: auto
+
+.canvas-editor__watch-mode
+  position: absolute !important
+  z-index: 55
+
+.canvas-editor__canvas-container-popup-live
+  border: 0px
+.canvas-editor__error-overlay
+  background: black
+  text-align: center
+.canvas-editor__viewport
+  width: 100%
+  height: 100%
+  border: none
+  background: white  // for some reason the iframe is always transparent
+.app--dragging .canvas-editor__viewport
+  pointer-events: none
+.canvas-editor__viewport-click-guard
+  @include cover
+  display: none
+.canvas-editor__hoverbox-scroller
+  position: absolute
+.hidden-image-selector
+  display: none
+.pane-content
+  flex: 1
+  position: relative
+
+.abs
+  position: absolute
+  top: 0
+  left: 0
+
+.app-container, .app
+  height: 100%
+
+.root
+  width: 100%
+  height: 100%
+  min-height: 100%
+  background: white
+
+.show-controls-button
+  position: fixed
+  bottom: 10px
+  right: 10px
+  padding: 8px 16px
+  border-radius: 18px
+  background: $pill-bg
+  color: white
+  z-index: 99999
+  box-shadow: 4px 4px 8px 0px rgba(0, 0, 0, 0.5)
+
+.dev-env--hidden
+  display: none
+
+.creation-lasso
+  border: 2px solid green
+  position: absolute
+  display: hidden
+
+.step-plot
+  display: table-cell
+  width: 100px
+  vertical-align: middle
+
+.step-plot__step
+  display: inline-block
+  width: 10px
+  height: 10px
+.step-plot__step--active
+  background: red
+
+.stmt-row
+  margin-bottom: 12px
+  &:last-child
+    margin-bottom: 0
+
+.code-editor
+  width: 500px
+  // Can't make this smaller than 200px, see <https://github.com/Microsoft/monaco-editor/issues/29>
+  height: 200px
+  border: 1px solid grey
+
+.code-preview
+  border: 1px solid $sand5
+  display: flex
+  position: relative
+
+.code-preview-inner
+  background: white
+  height: 100%
+  width: 100%
+  left: 0px
+  top: 0px
+  overflow: auto
+  padding: 8px
+
+.text-reset
+  text-transform: initial
+  font-weight: normal
+
+.sub
+  display: inline-block
+
+.canvas-editable-area
+  position: relative
+  height: 100%
+
+.link-btn-group
+  display: flex
+  flex-direction: row
+  justify-content: flex-end
+  > *
+    margin-right: 8px
+    &:last-child
+      margin-right: 0
+
+@mixin control-item
+  padding: 8px 0
+  &:not(:first-child)
+    border-top: 1px solid $lightener
+  &:first-child
+    padding-top: 0
+  &:last-child
+    padding-bottom: 0
+.var-control, .behavior-control
+  @include control-item
+.var-control__header-toggle
+  cursor: pointer
+
+.expr-display--code
+  @include codefont
+
+.xselect
+  .ant-dropdown-menu
+    max-height: 300px
+    overflow-y: auto
+  .ant-dropdown-menu-item, .ant-dropdown-menu-submenu-title
+    padding: 0
+    > *
+      padding: 5px 12px
+
+.ant-dropdown-menu-item-selected, .ant-dropdown-menu-submenu-title-selected, .ant-dropdown-menu-item-selected > a, .ant-dropdown-menu-submenu-title-selected > a
+  color: $fg
+
+.ant-dropdown-menu-item--not-selectable
+  &:hover
+    background: none
+
+// Bug in antd applies .ant-dropdown-menu twice, so we disable
+// the styles from one of them
+.ant-dropdown-menu-submenu.ant-dropdown-menu-submenu-popup.ant-dropdown-menu
+  background: none
+  box-shadow: none
+  border: none
+
+.panel-popup
+  background: $bg
+  width: $right-pane-content-width - 10px
+  @include popup-box
+  @include right-pane-font
+  z-index: 10
+  overflow: hidden
+  display: flex
+  flex-direction: column
+
+.panel-popup-title
+  display: flex
+  align-items: center
+  padding: $sidebar-section-vpadding $sidebar-section-hpadding
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1)
+
+.panel-popup-content
+  flex: 1
+  overflow-y: auto
+
+.panel-popup .panel-popup--no-padding
+  padding: 0 !important
+
+.panel-popup .panel-popup--no-min-width
+  min-width: 0 !important
+
+.labeled-icon__icon, .labeled-icon__label
+  display: inline-block
+
+.input--error.input--error
+  border-bottom-color: red
+
+.validation-error
+  color: red
+  margin-top: 10px
+
+.mini-collapse
+  background: none
+  border: none
+  &.ant-collapse > .ant-collapse-item
+    border: none
+  &.ant-collapse > .ant-collapse-item > .ant-collapse-header
+    padding: 0
+  .ant-collapse-content
+    background: none
+    border: none
+  .ant-collapse-content > .ant-collapse-content-box
+    padding: 0
+
+.panel-btn
+  @include panel-button
+  width: 100%
+
+.GridControls__Collapse.ant-collapse > .ant-collapse-item > .ant-collapse-header
+  line-height: 1.5
+  padding: 5px 5px
+
+.GridControls__TrackSizeInput
+  padding-bottom: 10px
+
+.MiniLabel
+  //position: relative
+
+.MiniLabel__label
+  //position: absolute
+  //top: -12px
+  font-size: 9px
+  line-height: 1
+  margin-bottom: 2px
+  white-space: nowrap
+  //transform: translateX(-50%)
+
+.style-wrapper
+  position: relative
+  display: flex
+  align-items: center
+
+.style-wrapper__icon
+  width: 21px
+
+.style-wrapper__defined-container
+  position: absolute
+  left: -14px
+
+.style-wrapper__defined-container--right
+  left: unset
+  right: -8px
+
+.VariantControls__StatusContainer
+  @include icon-sized
+
+.VariantControls__ActualStatus
+  .VariantControls__StatusContainer:hover &
+    display: none
+
+.VariantControls__StatusHover
+  display: none
+  color: $dimfg
+  .VariantControls__StatusContainer:hover &
+    display: block
+
+.VariantControls__VariantLabel
+  display: block
+  width: 100%
+
+.variant-group-panel
+  background-color: $sand2
+  border-radius: 4px
+  margin-bottom: 8px
+  .variant-group-panel__header
+    background-color: $sand4
+    border-radius: 4px 4px 0 0
+  .variant-group-panel__add-variant
+    background-color: $sand3
+    color: $fg
+    @extend .strong
+  &:last-child
+    margin-bottom: 0
+
+.highlighted-text
+  color: white
+  &::selection
+    background: #0074b8
+
+.inline-block
+  display: inline-block
+
+
+.VariantControls__ItemContent
+  display: flex
+  margin-left: -8px
+  align-items: baseline
+  > *
+    margin-left: 8px
+.VariantControls__ItemContent_StyleVariant
+  margin-left: 4px
+.VariantControls__OnOffSwitch
+  color: rgba(255,255,255,0.7)
+.VariantControls__Controls
+  display: inline-flex
+  justify-content: flex-end
+  padding-left: -8px
+  text-align: right
+  align-items: baseline
+  > *
+    margin-left: 8px
+.VariantControls__Main
+  flex: 1
+  @include truncate-text
+.VariantControls__Cond
+  @include codefont
+  color: rgba(255,255,255,0.7)
+  font-size: 10px
+
+.lighter-clickable
+  color: rgba(255,255,255,0.5)
+  &:hover
+    color: white
+.VariantControls__Eye
+  display: none
+  &:hover
+    color: white
+.VariantControls__Variant:hover .VariantControls__Eye
+  display: unset
+.VariantControls__Eye__Set
+  display: unset
+  color: white
+
+.invisible
+  visibility: hidden
+
+@mixin infinite
+  position: absolute
+  top: -500000px
+  left: -500000px
+  width: 999999px
+  height: 999999px
+
+.FreestyleBox__guard
+  @include infinite
+  cursor: crosshair
+
+.FreestyleBox__box
+  position: absolute
+  border: 1px solid $active-color
+  transform-origin: top left
+
+.DragInsertState
+  @include infinite
+  cursor: crosshair
+
+.MeasureTool__Line
+  position: absolute
+  border: 0.5px solid $node-measure-border-color
+  transform-origin: top left
+  pointer-events: none
+.MeasureTool__Label
+  position: absolute
+  top: 50%
+  left: 50%
+  transform: translate(-50%, -50%)
+  font-size: $font-size
+  background: $node-measure-border-color
+  color: white
+  padding: 2px 4px 2px 4px
+  border-radius: 5px
+  display: flex
+  align-items: center
+  justify-content: center
+  pointer-events: none
+.HoverBox__Dims
+  background: $node-outline-color
+  border-radius: 2px
+  color: white
+  left: 50%
+  padding: 2px 4px
+  font-family: $code-font-family
+  font-size: 10px
+  position: absolute
+  top: calc(100% + 5px)
+  transform: translateX(-50%)
+  white-space: nowrap
+
+.HoverBox__DragGuard
+  @include infinite
+  pointer-events: initial
+.HoverBox__DragGuard__TopLeft
+  cursor: nwse-resize
+.HoverBox__DragGuard__TopRight
+  cursor: nesw-resize
+.HoverBox__DragGuard__BottomLeft
+  cursor: nesw-resize
+.HoverBox__DragGuard__BottomRight
+  cursor: nwse-resize
+.HoverBox__Resizer__Top
+  cursor: ns-resize
+.HoverBox__Resizer__Bottom
+  cursor: ns-resize
+.HoverBox__Resizer__Left
+  cursor: ew-resize
+.HoverBox__Resizer__Right
+  cursor: ew-resize
+
+$resizer_size: 8px
+
+.HoverBox__Resizer__Vertical
+  height: calc(100% + #{$resizer_size}) !important
+.HoverBox__Resizer__Horizontal
+  width: calc(100% + #{$resizer_size}) !important
+
+@mixin HoverBox__Resizer
+  pointer-events: auto
+  position: absolute
+
+@mixin HoverBox__ResizerCorner
+  @include HoverBox__Resizer
+  width: $resizer_size
+  height: $resizer_size
+  background: white
+  border: 1px solid $node-outline-color
+  border-radius: 2px
+  z-index: 100
+.HoverBox__Resizer__TopLeft
+  @include HoverBox__ResizerCorner
+  cursor: nwse-resize
+  left: calc(-1 * $resizer_size / 2)
+  top: calc(-1 * $resizer_size / 2)
+.HoverBox__Resizer__TopRight
+  @include HoverBox__ResizerCorner
+  cursor: nesw-resize
+  right: calc(-1 * $resizer_size / 2)
+  top: calc(-1 * $resizer_size / 2)
+.HoverBox__Resizer__BottomLeft
+  @include HoverBox__ResizerCorner
+  cursor: nesw-resize
+  left: calc(-1 * $resizer_size / 2)
+  bottom: calc(-1 * $resizer_size / 2)
+.HoverBox__Resizer__BottomRight
+  @include HoverBox__ResizerCorner
+  cursor: nwse-resize
+  right: calc(-1 * $resizer_size / 2)
+  bottom: calc(-1 * $resizer_size / 2)
+
+@mixin HoverBox__ResizerSide
+  @include HoverBox__Resizer
+@mixin HoverBox__ResizerSide__TopBottom
+  @include HoverBox__ResizerSide
+  cursor: ns-resize
+  width: calc(100% + #{$resizer_size})
+  height: $resizer_size
+  left: calc(-1 * $resizer_size / 2)
+@mixin HoverBox__ResizerSide__LeftRight
+  @include HoverBox__ResizerSide
+  cursor: ew-resize
+  width: $resizer_size
+  height: calc(100% + #{$resizer_size})
+  top: calc(-1 * $resizer_size / 2)
+.HoverBox__Resizer__Top
+  @include HoverBox__ResizerSide__TopBottom
+  top: calc(-1 * $resizer_size / 2)
+.HoverBox__Resizer__Bottom
+  @include HoverBox__ResizerSide__TopBottom
+  bottom: calc(-1 * $resizer_size / 2)
+.HoverBox__Resizer__Left
+  @include HoverBox__ResizerSide__LeftRight
+  left: calc(-1 * $resizer_size / 2)
+.HoverBox__Resizer__Right
+  @include HoverBox__ResizerSide__LeftRight
+  right: calc(-1 * $resizer_size / 2)
+
+.HoverBox__Resizer__Right.HoverBox__Resizer__Scrollable
+  right: calc($resizer_size / 2)
+
+
+.HoverBox__ScrollBar
+  position: absolute
+
+.HoverBox__ScrollBar--vertical
+  height: 100%
+  right: -5px
+  top: 0
+
+.HoverBox__ScrollBar--horizontal
+  width: 100%
+  bottom: -5px
+  left: 0
+
+.HoverBox__ScrollBar__Thumb
+  position: absolute
+  z-index: 10
+  pointer-events: auto
+  background: $sand7
+  border-radius: 7px
+  opacity: 0.7
+  transition: opacity 0.1s linear
+  &:hover, &:active
+    background: $sand6
+    opacity: 1
+
+.HoverBox__ScrollBar__Thumb--vertical
+  width: 7px
+
+.HoverBox__ScrollBar__Thumb--horizontal
+  height: 7px
+
+
+.HoverBox__Border
+  @include oversized-center
+  width: calc(100% + 2px)
+  height: calc(100% + 2px)
+  border: 1px solid $node-outline-color
+.HoverBox__Border--autoWidth
+  border-left-style: dashed
+  border-right-style: dashed
+.HoverBox__Border--autoHeight
+  border-top-style: dashed
+  border-bottom-style: dashed
+.HoverBox__Border--isSlot
+  border: 2px dashed rgba(75, 171, 252, 0.6)
+
+.HoverBox__Resizers
+  height: 100%
+  width: 100%
+  position: relative
+
+.HoverBox__Controls
+  width: 100%
+  height: 100%
+
+.OutlineBox
+  border: 1px solid $node-outline-color
+
+.PreselectBox
+  border: none
+  transform-origin: top left
+  position: absolute
+  pointer-events: none
+  z-index: 1
+  .node-outline-tag
+    padding-left: 0
+    color: $selectionControlsColor
+    background-color: rgba(255,255,255,0.9)
+    & > *
+      opacity: 0.7
+
+.CanvasTransformedBox
+  transform-origin: top left
+  position: absolute
+
+.ElementHighlightBoxContainer
+  pointer-events: none
+.ElementHighlightBoxRendered
+  @include cover
+  border: 1px solid rgba($active-fg, 0.2)
+  background-color: rgba($active-fg, 0.1)
+
+.CommentMarkerContainer
+  z-index: 11
+  &:hover
+    z-index: 12
+  &:hover > .CommentMarkerOverlay
+    display: unset
+.CommentMarkerContainerSelected
+  z-index: 13
+  .CommentMarkerOverlay
+    display: unset
+.CommentMarkerOverlay
+  display: none
+
+.CommentMarker
+  pointer-events: initial
+  position: absolute
+  left: 100%
+  bottom: 100%
+
+@mixin CommentMarkerView
+  @include popup-box-hoverable
+  border-radius: 8px
+  border: 6px solid white
+  background: white
+  cursor: pointer
+.CommentMarkerInitial
+  @include CommentMarkerView
+  border-radius: 99px
+  border-bottom-left-radius: 0
+.CommentMarkerHover
+  @include CommentMarkerView
+  display: none
+  position: absolute
+  top: 0
+  left: 0
+  width: 300px
+.CommentMarkerSelected
+  @include CommentMarkerView
+  display: none
+  position: absolute
+  top: 0
+  left: 0
+  border-radius: 8px !important
+  cursor: unset
+  width: 300px
+
+.CommentMarkerContainer:hover:not(.CommentMarkerContainerSelected) .CommentMarkerHover
+  display: unset
+.CommentMarkerContainerSelected .CommentMarkerSelected
+  display: unset
+.CommentMarker:hover, .CommentMarkerContainerSelected
+  .CommentMarkerInitial
+    visibility: hidden
+    opacity: 0
+
+.PlayerBox
+  border: 2px dotted
+  transform-origin: top left
+  position: absolute
+  pointer-events: none
+
+.PlayerCursor
+  position: absolute !important
+  left: -1px
+  top: -1px
+
+.dim-spinner-popup-mask
+  background: rgba(0,0,0,0.3)
+.dim-spinner-popup
+  width: 150px
+  @include popup-box
+
+.DimSpinner__Container
+  position: relative
+  flex: 1
+  display: flex
+
+.DimSpinner__DropdownIcon
+  @include dead-center
+  position: absolute
+  top: 0
+  right: 0
+  bottom: 0
+  cursor: pointer
+  z-index: 1
+
+.clickable
+  cursor: pointer
+
+.ControlBlock__Title
+  display: flex
+.ControlBlock__TitleContent
+  flex: 1
+.ControlBlock__Actions
+  margin-left: auto
+.ControlBlock__Title:hover .ControlBlock__PrimaryAction
+  color: $brightfg
+
+.VarControl__Header
+  display: flex
+.VarControl__HeaderContent
+  flex: 1
+.VarControl__HeaderRight
+  margin-left: auto
+
+
+
+
+.ExprInput
+  width: 200px
+
+.ContentSizer
+  // Uncomment first 3 lines to debug.
+  visibility: hidden
+  top: -100000px
+  position: absolute
+  display: inline-block
+  margin: 0
+  padding: 0
+  white-space: nowrap
+
+.ExprContent
+  // Matches the defaults in Monaco .view-lines
+  font-family: Menlo, Monaco, "Courier New", monospace
+  font-size: $font-size
+  line-height: 18px
+  letter-spacing: 0
+  white-space: normal
+  max-width: 200px
+
+
+.canvas-editor__code-editor-container
+  position: absolute
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+
+
+
+.SelectorsControl__CustomOptionLabel
+  display: inline-block
+  background: silver
+  color: black
+  font-size: 9px
+  @extend .strong
+  text-transform: uppercase
+  padding: 2px 4px
+  line-height: 1
+  border-radius: 2px
+
+.no-pointer-events
+  pointer-events: none
+
+
+
+.icon-sized
+  width: 12px
+  height: 12px
+
+
+.Avatar
+  +inline-dead-center
+  border-radius: 50%
+  width: 32px
+  height: 32px
+  cursor: pointer
+  background: #414c53
+  overflow: hidden
+  color: white
+  box-shadow: inset 0 0 0px 2px rgba(0,0,0,0.1)
+
+.Avatar__Small
+  font-size: 11px
+  line-height: 1em
+  height: 24px !important
+  width: 24px !important
+
+.Avatar__Highlight
+  box-shadow: inset 0 0 0px 2px #408ccd
+
+.Avatar__Img
+  width: 100%
+  height: 100%
+  border-radius: 50%
+
+.AvatarGallery
+  display: flex
+  flex-direction: row-reverse
+  align-items: center
+
+.AvatarGallery__Avatar
+  margin-right: -8px
+
+.AvatarPlayerSize
+  width: 26px
+  height: 26px
+  margin: 2px 0px
+  border-radius: 50%
+
+.AvatarPlayer
+  @extend .AvatarPlayerSize
+  border: 2px solid
+
+.ToolbarButton
+  background: $sand12
+  @extend .strong
+  color: $inverse-brightfg
+  border-radius: 4px
+  cursor: pointer
+  padding: 4px 8px
+
+
+@mixin CustomSvgIcon
+  transform: translateY(16%)
+  width: 1em
+  height: 1em
+  stroke: currentColor
+  stroke-width: 1px
+  fill: none
+
+.BlockIcon
+  border: 2px solid $dimfg
+  display: inline-block
+  height: 12px
+  width: 16px
+  margin-top: 4px
+.BlockIcon__svg
+  @include CustomSvgIcon
+  stroke-width: 2px
+
+.StackIcon__content
+  transform: scaleX(0.7)
+
+.TextIcon
+  font-family: serif
+  display: inline-block
+
+.arena__menu
+  display: inline-block
+  padding-top: 8px
+  padding-bottom: 8px
+.arena__menu__icon
+  line-height: 1em
+
+.CanvasFrame__Label
+  @mixin truncate-text
+  overflow: hidden
+  min-height: 20px
+  padding: 2px 0 6px 8px
+  position: absolute
+  left: 0
+  bottom: 100%
+  color: $dimfg
+  transform-origin: bottom left
+
+.CanvasFrame__Label--hidden
+  display: none
+
+.CanvasFrame__Label__variant
+  display: flex
+  &:not(:last-child)::after
+    content: "|"
+    margin: 0 8px
+    color: $dimfg
+
+.CanvasFrame__Label__variant--target
+  color: $tomato9
+
+.CanvasFrame__Config
+  position: absolute
+  left: 100%
+  bottom: 100%
+  transform-origin: 0 100%
+  transform: scale(1.5) rotate(90deg)
+  white-space: nowrap
+  color: $sand9
+  border: none
+  // use margin to center button without taking up additional height
+  // used for padding
+  margin: -3px 0 -3px auto
+  height: $hoverBoxTagHeight
+  display: flex
+  align-items: center
+  border-radius: 4px 4px 0 0
+  letter-spacing: -0.05ch
+  &:hover
+    background-color: $sand4
+
+.CanvasFrame__Config_contained
+  position: relative
+  transform-origin: unset
+  transform: unset
+  left: unset
+  bottom: unset
+  border-radius: 4px
+
+.CanvasFrame__Config__icon
+  width: 16px
+  height: 16px
+
+// The first canvas has a large margin on the left
+.CanvasFrame__Container
+  position: relative
+  box-shadow: 5px 5px calc(var(--gridSpacing) * .8) #0000001a
+
+@mixin CanvasFrame__OverlayCommon
+  position: absolute
+  z-index: 1
+  background-color: transparent
+.CanvasFrame__OverlayTop
+  @include CanvasFrame__OverlayCommon
+  left: 0px
+  top: 0px
+  width: 100%
+  height: 1px
+.CanvasFrame__OverlayRight
+  @include CanvasFrame__OverlayCommon
+  right: 0px
+  top: 0px
+  width: 1px
+  height: 100%
+.CanvasFrame__OverlayBottom
+  @include CanvasFrame__OverlayCommon
+  left: 0px
+  bottom: 0px
+  width: 100%
+  height: 1px
+.CanvasFrame__OverlayLeft
+  @include CanvasFrame__OverlayCommon
+  left: 0px
+  top: 0px
+  width: 1px
+  height: 100%
+.CanvasFrame__Container--live
+  position: absolute
+  display: none
+.CanvasFrame__Cover
+  position: absolute
+  top: 0
+  bottom: 0
+  left: 0
+  right: 0
+
+.GridEditorAdapter__Offset
+  position: absolute
+
+.LaneHeadersContainer
+  position: absolute
+
+.snackbar .ant-notification-notice-message
+  display: none
+
+.snackbar hr
+  margin: 10px 0
+
+.ant-notification
+  // Bump up default ant-notification so it displays over popover
+  z-index: 1031
+
+.mixin__popup__content__panel
+  margin: 0px 0px
+
+.left__spacing__panel__content
+  margin-right: 0px
+  margin-left: 0px
+
+.pass-through
+  display: contents
+
+
+.SidebarSection__Container
+  border-bottom: 1px solid #eee
+  display: flex
+  flex-direction: column
+  &:last-child
+    border-bottom-width: 0
+
+//.SidebarSection__Container--NoHeader
+//  padding-top: $sidebar-section-vpadding
+
+.SidebarSection__Container--NoBorder
+  border: none
+
+.SidebarSection__Header
+  padding: $sidebar-section-vpadding $sidebar-section-hpadding-with-right-gutter $sidebar-section-vpadding $sidebar-section-hpadding
+  display: flex
+  align-items: center
+  position: relative
+  min-height: 52px
+
+.SidebarSection__Header__Menu
+  visibility: hidden
+  .SidebarSection__Header:hover &
+    visibility: visible
+
+.SidebarSection__Header--tabs
+  padding-bottom: 0
+
+.SidebarSection__Title
+  color: $dimfg
+  flex: 1
+  @extend .strong
+  font-size: 13px
+
+.SidebarSection__Title__Active
+  color: $fg
+
+.SidebarSection__Controls
+  margin-left: auto
+  line-height: 1em
+  display: flex
+  align-items: center
+  .icon-link-btn
+    padding: 0
+    margin-left: $space-sm
+
+.SidebarSection__Body
+  padding: 2px $sidebar-section-hpadding-with-right-gutter $sidebar-section-vpadding + 5px $sidebar-section-hpadding
+  //margin-top: -5px
+  display: flex
+  flex-direction: column
+
+.SidebarSection__HPadding
+  padding-left: $sidebar-section-hpadding
+  padding-right: $sidebar-section-hpadding-with-right-gutter
+
+.SidebarSection__VPadding
+  padding-top: $sidebar-section-vpadding
+  padding-bottom: $sidebar-section-vpadding
+
+.SidebarSection__Body__EmptyBody
+  padding-bottom: 0
+
+.SidebarSection__Body__ZeroBodyPadding
+  padding-left: 0
+  padding-right: 0
+
+.SidebarSection__Body__NoBottomPadding
+  padding-bottom: 0
+
+.SidebarSectionListItem
+  @extend .flex
+  @extend .flex-vcenter
+  @extend .group
+  @extend .rel
+  @extend .SidebarSection__HPadding
+  @extend .fg
+  min-height: $section-list-item-height
+
+.SidebarSectionListItem__actionIcon
+  @extend .visible-on-group-hover
+  @extend .dimfg
+  @extend .no-line-height
+
+.SidebarSectionListItem--selected
+  background-color: $selected-bg
+
+.SidebarSectionListItem--selected-variant
+  background-color: $variant-dimdimfg
+
+.SidebarSectionListItem--selected-component
+  background-color: $component-dimdimfg
+
+.sidebar-header-section
+  padding: 8px
+.sidebar-header-section--frame
+  background-color: $blue4
+.sidebar-header-section__content
+  background-color: #fff
+  border-radius: 6px
+
+.SectionTabsBar
+  border-bottom: none
+  display: flex
+
+.SectionTab
+  white-space: nowrap
+  padding: 8px
+  min-height: 40px
+  &:focus
+    background-color: $focus-color
+
+.SectionTab__Active
+  background: $sand3
+  border-radius: 4px 4px 0 0
+
+.SectionTab__Active--empty
+  border-radius: 4px
+
+.Separator
+  background: $border-dim
+  height: 1px
+
+.SectionSeparator
+  background: $border-dim
+  height: 1px
+
+.vertical-separator
+  border-left: 1px solid #e4e6eb
+  align-self: stretch
+
+.flush-right
+  margin-left: auto
+
+.PositionTabs__Anchor
+  position: relative
+
+.PositionTabs__Tabs
+  position: absolute
+  bottom: 0
+  right: 0
+
+.FloatingToolbar
+  @include popup-box
+  padding: 10px 0
+  display: flex
+  flex-direction: column
+  width: 40px
+  border-radius: 8px
+  align-items: center
+.gallery
+  height: 100%
+  display: flex
+  flex-direction: column
+
+.SwatchItemList
+  margin-left: -8px
+  margin-right: -8px
+
+.SwatchItem
+  cursor: pointer
+  display: inline-block
+
+.SwatchItem__Querying
+  display: block
+
+.NamedSwatch
+  display: flex
+  align-items: center
+
+.NamedSwatch--highlighted
+  background-color: $dimdimdimfg
+
+.NamedSwatch--selected
+  background-color: $selected-bg
+
+.red-circle-top-right
+  left: -16px
+  width: 11px
+  height: 11px
+  top: -18px
+  color: rgb(243, 66, 95)
+  margin-bottom: -16px
+  margin-right: -11px
+  flex-shrink: 0
+  position: relative
+
+.yellow-circle-top-right
+  left: -16px
+  width: 11px
+  height: 11px
+  top: -18px
+  color: rgb(255, 215, 69)
+  margin-bottom: -16px
+  margin-right: -11px
+  flex-shrink: 0
+  position: relative
+
+.swatch-size
+  width: $swatch-size
+  height: $swatch-size
+
+.Swatch__Selected
+  box-shadow: 0 0 0px 2px $active-color
+
+a.SwatchButton:focus
+  box-shadow: none !important
+  > .Swatch
+    box-shadow: 0 0 0px 2px $focus-color
+
+$spacing-control-height: 64px
+$spacing-control-width: 256px
+$spacing-control-x-thickness: 36px
+$spacing-control-y-thickness: 24px
+$dim-border-thickness: 4px
+$size-controls-width: $spacing-control-width - 2 * ($spacing-control-x-thickness)
+.spacing-control__container
+  display: contents
+.spacing-control__handles-container
+  max-width: 130px
+  position: relative
+  margin: 0 -4px
+  line-height: 0
+@mixin spacing-control-area
+  position: absolute
+  pointer-events: none
+  width: $spacing-control-x-thickness
+  height: $spacing-control-y-thickness
+  display: flex
+  align-items: center
+  justify-content: center
+@mixin spacing-control-top
+  @include spacing-control-area
+  top: 0
+  left: 0
+  width: 100%
+@mixin spacing-control-right
+  @include spacing-control-area
+  top: 0
+  right: 0
+  height: 100%
+@mixin spacing-control-bottom
+  @include spacing-control-area
+  bottom: 0
+  left: 0
+  width: 100%
+@mixin spacing-control-left
+  @include spacing-control-area
+  top: 0
+  left: 0
+  height: 100%
+.spacing-control__svg
+  width: 100%
+.spacing-control__top
+  @include spacing-control-top
+  flex-direction: column-reverse
+.spacing-control__right
+  @include spacing-control-right
+  flex-direction: row
+.spacing-control__bottom
+  @include spacing-control-bottom
+  flex-direction: column
+.spacing-control__left
+  @include spacing-control-left
+  flex-direction: row-reverse
+.spacing-control__num
+  flex: 1
+  text-align: center
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+  @extend .code
+.spacing-control__border
+  pointer-events: none
+  width: $spacing-control-width + 2 * $dim-border-thickness
+  height: $spacing-control-height + 2 * $dim-border-thickness
+  @include dead-center
+
+@mixin spacing-control__label
+  pointer-events: none
+  position: absolute
+  line-height: 1
+  font-size: 9px
+  text-transform: uppercase
+  @extend .strong
+  opacity: 0.7
+.spacing-control__label
+  @include spacing-control__label
+  left: 16px
+  top: 4px
+
+.size-controls
+  z-index: 1 // need to raise it above the svg
+  pointer-events: initial
+  width: $size-controls-width
+  padding: 5px
+.size-controls__label
+  text-align: center
+
+.small-textbox
+  line-height: 1
+
+.spacing-control__handle
+  fill: $sand2
+  stroke: rgba(0,0,0,.07)
+  &:hover
+    fill: $sand4
+
+.spacing-control__handle--selected
+  fill: $sand6 !important
+
+.PlasmicLogo
+  width: 36px
+  height: 18px
+
+.light-text
+  @include light-text
+
+.block
+  display: block
+
+.ScreenDimmer
+  +cover
+  +dead-center
+  z-index: 99999
+  background: rgba(white, 0.5)
+  opacity: 0
+.ScreenDimmer__Fade
+  opacity: 1
+  transition: opacity 3s
+
+.top-bar-popover-dialog-overlay
+  & .ant-popover-arrow
+    display: none
+  & .ant-popover-inner
+    background-color: #0000
+  & .ant-popover-inner-content
+    padding: 0px
+
+.recording-panel__separator
+  width: 1px
+  background-color: $border-dim
+  margin: -8px 12px
+  align-self: stretch
+
+.recording-panel__dropdown
+  .ant-dropdown-menu
+    max-height: 300px
+    overflow-y: auto
+  .ant-dropdown-menu-item, .ant-dropdown-menu-item-group-title
+    height: $section-list-item-height
+    display: flex
+    align-items: center
+  .ant-dropdown-menu-item-group-list
+    margin: 0
+  .ant-dropdown-menu-item-group:not(:first-child)
+    margin-top: 4px
+    padding-top: 4px
+    border-top: 1px solid $border-dim
+
+.recording-badge
+  background-color: $variant-fg
+  color: #fff
+  font-size: 8px
+  text-transform: uppercase
+  white-space: nowrap
+  display: flex
+  align-items: center
+  @extend .strong
+  border-radius: 2px
+  padding: 0 4px 0 0
+  overflow: hidden
+
+.variant-chip-container
+  display: flex
+  flex-wrap: wrap
+  align-items: center
+  margin-left: -6px
+  margin-top: -4px
+  > *
+    margin-left: 6px
+    margin-top: 4px
+
+.variant-chip
+  display: flex
+  align-items: center
+  background-color: $dimbg
+  color: $fg
+  font-weight: normal
+  font-size: $font-size
+  border-radius: 2px
+  overflow: hidden
+  padding: 2px 4px
+  .variant-chip__icon
+    line-height: 0
+    color: $dimfg
+  .variant-chip__text
+    @extend .text-ellipsis
+  .variant-chip__icon + .variant-chip__text
+    margin-left: 2px
+
+.variant-chip--recording
+  background-color: $variant-dimbg
+  .variant-chip__icon
+    color: $variant-fg
+
+.variant-chip--disabled
+  cursor: not-allowed
+  opacity: 0.5
+
+.add-drawer
+  .add-drawer__content
+    max-height: 400px
+    overflow-y: auto
+
+#drift-frame-controller
+  bottom: 0 !important
+  right: $right-pane-width + 5px !important
+  transform: scale(0.5)
+  transform-origin: bottom right
+  filter: grayscale(1) opacity(0.75)
+
+#drift-frame-chat
+  bottom: 20px !important
+  right: $right-pane-width - 10px !important
+
+.help-btn.help-btn.help-btn.help-btn.help-btn
+  color: $inverse-fg
+
+.asset-usage-items
+  margin-left: 8px
+
+.asset-usage-item
+  margin-right: 8px
+  font-family: $code-font-family
+  color: $blue9
+
+.asset-usage-ul
+  margin-left: 8px
+  margin-top: 16px
+
+.token-ref-cycle-item
+  font-family: $code-font-family
+  color: $blue9
+
+.topbar-panel-divider
+  margin-left: 4px
+  margin-right: 4px
+
+.topbar--isObserver
+  background: $tomato4 !important
+
+.defined-indicator-tooltip-items
+  display: flex
+  flex-direction: column
+
+.defined-indicator-tootip-stack-item-overwritten
+  text-decoration-line: line-through
+
+.defined-indicator-tootip-stack-item
+  margin-left: 8px
+  white-space: nowrap
+  display: flex
+  justify-content: space-between
+
+.defined-indicator__popover
+  min-width: 200px
+  max-width: 300px
+  .ant-popover-title
+    min-height: auto
+    border-bottom: none
+    @extend .strong
+    padding: 16px 16px 8px
+  .ant-popover-inner-content
+    max-height: 300px
+    overflow-y: auto
+    padding: 16px
+  .ant-popover-title + .ant-popover-inner-content
+    padding-top: 0
+  .ant-popover-arrow
+    display: none
+
+.defined-indicator__source-stack
+  position: relative
+  background-color: #fff
+.defined-indicator__source-stack__line-container
+    position: absolute
+    height: 100%
+    top: 0
+    left: 7px
+    padding: 10px 0
+    z-index: 0
+.defined-indicator__source-stack__line-container__line
+    width: 2px
+    height: 100%
+    border-left: 1px dashed $dimfg
+
+.defined-indicator__source
+  display: flex
+  align-items: center
+  color: $dimfg
+  margin-bottom: $space-sm
+  &:last-child
+    margin-bottom: 0
+
+.defined-indicator__source--target
+  color: $fg
+
+.defined-indicator__source-icon
+  margin-right: $space-sm
+  background-color: #fff
+  line-height: 0
+  z-index: 1
+.defined-indicator__source-name
+  @extend .text-ellipsis
+  min-width: 50px
+  margin-right: $space-sm
+.defined-indicator__source-value
+  margin-left: auto
+  text-align: right
+  @extend .text-ellipsis
+
+.defined-indicator__source--overwritten
+  .defined-indicator__source-name, .defined-indicator__source-value
+    position: relative
+    &::after
+      content: " "
+      border-top: 1px solid currentcolor
+      width: 100%
+      height: 2px
+      top: 50%
+      left: 0
+      position: absolute
+      pointer-events: none
+
+.defined-indicator__prop
+  padding-bottom: $space-sm
+  margin-bottom: $space-sm
+  border-bottom: 1px solid $border-dim
+  &:last-child
+    margin-bottom: 0
+    border-bottom: none
+    padding-bottom: 0
+
+.defined-indicator__prop__label
+  @extend .strong
+  margin-bottom: $space-sm
+
+.defined-indicator__edit-button
+  background-color: $sand3
+  border-radius: 2px
+  padding: 2px 4px
+  &:hover
+    background-color: $sand4
+
+.maybe-overwritten-warning-items
+  display: flex
+  flex-direction: column
+  margin-left: 16px
+  margin-right: 16px
+  margin-top: 16px
+  color: red
+
+.ant-popover.ant-popover--tight
+  .ant-popover-inner-content
+    padding: 2px 4px
+
+.ant-popover.ant-popover--dropdown-like
+  .ant-popover-inner-content
+    padding: 0
+  .ant-popover-arrow
+    display: none
+  &.ant-popover-placement-bottomLeft
+    padding: 0
+
+.maybe-overwritten-warning-item
+  margin-left: 8px
+
+.maybe-overwritten-warning-item-target
+  font-weight: bold
+
+.clicker-stopper
+  color: $blue9
+  cursor: pointer
+
+.tooltip-title
+  margin-top: 8px
+  margin-bottom: 8px
+  font-size: 14px
+  font-weight: bold
+
+.CodegenPanel
+  width: 100%
+  height: 100%
+
+.svg-icon-wrapper
+  > svg
+    width: 100%
+    height: 100%
+
+.game-name
+  font-family: 'Bungee', Inter, sans-serif
+
+.text-unselectable
+  user-select: none
+
+.shortcut-combo
+  background-color: $sand3
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.15)
+  border-radius: 4px
+  color: $sand10
+  padding: 4px
+  font-size: 10px
+  align-self: center
+  line-height: 1em
+  font-family: $code-font-family
+
+.ant-tooltip-content .shortcut-combo
+  background-color: $sand12
+  color: $sand8
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15)
+
+.dim-spinner-like-input
+  padding-right: 16px !important
+
+.dim-token-editor-container
+  position: relative
+
+.labelled-item-with-small-gap
+  margin-left: 0px !important
+
+.ant-select-selector-no-padding .ant-select-selector
+  padding-right: 8px !important
+  line-height: 16px !important
+
+.position-legend
+  max-width: 40px
+  text-overflow: ellipsis
+  white-space: nowrap
+  overflow: hidden
+
+.preset-screenshot
+  width: 100%
+  height: 100%
+  object-fit: contain
+  pointer-events: none
+
+.left-pane-resizer
+  position: absolute
+  right: -7px
+  width: 8px
+  height: 100%
+  opacity: 0
+  cursor: ew-resize
+  z-index: 10
+  top: 0
+
+.studio-frame
+  width: 100vw
+  height: 100vh
+  border: none
+
+.no-text-select
+  cursor: default
+  user-select: none
+
+.dropdown-overlay
+  // Need to be higher than antd modals / popovers
+  z-index: 2000
+
+.hiddenIfLastChild:last-child
+  display: none
+
+.hoverable-disclosure
+  text-decoration: underline dotted
+  text-underline-offset: 0.1em
+
+
+a, button.link-like
+  color: $link-color
+  padding: 0
+  &:hover
+    color: $blue9
+
+.yellow-snippet
+  background: yellow
+
+.text-set
+  color: $text-set
+
+.text-unset
+  color: $text-unset
+
+.text-inherited
+  color: $text-inherited
+
+.ql-container.ql-snow
+  background-color: white
+
+.data-picker-popover-overlay
+  & .ant-popover-arrow
+    display: none
+  & .ant-popover-inner-content
+    padding: 0px
+
+.panel-row.fallback-spacing
+  align-items: baseline
+  margin-top: 4px
+
+.property-connector-line
+  width: 9px
+  height: 26px
+  opacity: 0.2
+  border-width: 0px 0px 1px 1px
+  border-radius: 0px 0px 0px 3px
+  border-style: solid
+  border-color: #908F8C
+  margin-right: 8px
+  margin-top: -6px
+  position: absolute
+  left: 4px
+
+.property-connector-line-icon
+  position: relative
+  width: 16px
+  align-self: flex-start
+  &::before
+    content: " "
+    width: 9px
+    height: 20px
+    opacity: 0.2
+    border-width: 0px 0px 1px 1px
+    border-radius: 0px 0px 0px 3px
+    border-style: solid
+    border-color: #908F8C
+    position: absolute
+    left: 7px
+    top: -10px
+
+.property-editor
+  border-radius: 6px
+  &:focus-within
+    box-shadow: 0px 0px 0px 1px $focus-color
+
+.NoPaddingPopover
+  .ant-popover-inner-content
+    padding: 0
+
+.NewBadge
+  padding: 4px 8px
+  background: $blue9
+  color: white
+  font-weight: bold
+  font-size: 9px
+  border-radius: 99px
+
+// You can use me to put any text-less div or other opaque element (like textarea) in a baseline aligned location, and
+// have it be centered (rather than bottom aligned - ugly).
+// https://codepen.io/yaaang/pen/QWVjMmX
+.baseline-friendly-centered-block-container
+  &:before
+    content: '-'
+    width: 0
+    overflow: clip
+  display: flex
+  align-items: center
+
+.ant-form-item-margin-offset
+  margin: 0 !important
+
+.data-table
+  .ant-table-tbody > tr > td
+    max-width: 200px
+    vertical-align: top
+
+.vertical-fill-table
+  max-height: 85%
+  .ant-table
+    background: none
+  .ant-table-tbody
+    background: white
+  .ant-table-content
+    overflow: unset !important
+  .ant-table-container::after, .ant-table-container::before
+    display: none
+  .ant-table-container
+    max-height: 100%
+    overflow: scroll
+    border: 1px solid #eee
+  .ant-table-thead
+    position: sticky
+    top: 0
+    z-index: 1
+  .ant-table, .ant-spin-container, .ant-spin-nested-loading, .ant-table-wrapper
+    height: 100%
+
+
+.code-wrap
+  user-select: text
+  white-space: pre-wrap
+  overflow-wrap: break-word
+.copilot-chat-msg
+  border-radius: 16px
+  padding: 16px
+  user-select: text
+.copilot-chat-msg--user
+  background: #0097FF
+  color: white
+.copilot-chat-msg--agent
+  background: #EBF7FF
+  color: #2D2F31
+  line-height: 0.2 // I don't know why this is needed
+
+@keyframes tutorial-highlight
+  0%,100%
+    box-shadow: 0 0 8px 6px rgba(red, 0.25), inset 0 0 4px 3px rgba(red, 0.25)
+  50%
+    box-shadow: 0 0 8px 6px transparent, inset 0 0 0 0 transparent
+
+.tutorial-content
+  font-size: 13px
+  h2
+    font-size: 16px
+    color: #777
+    margin-bottom: 12px
+  ul, ol
+    padding-left: 16px
+    margin-bottom: 1em
+  li
+    list-style-type: initial
+
+.sidebar-popover
+  > *
+    transform: translateX(-16px)
+  .ant-popover-inner
+    border-radius: 8px
+  .ant-popover-inner-content
+    padding: 8px
+
+.floating-inset-toolbar
+  position: absolute
+  bottom: calc(100% + 4px)
+  right: 0px
+  display: flex
+  //height: 32px
+
+.custom-gql-ui
+  --font-family: Inter
+  --font-family-mono: 'Roboto Mono'
+  --font-size-body: 12px
+  --font-size-h2: 12px
+  --font-weight-medium: 700
+  --font-size-h3: 12px
+  --font-size-h4: 12px
+  height: auto !important
+  // Or else the contents collapse to height 0
+  overflow: initial
+  // graphiql-container overflow hidden causing a negative vertical offset on the contents
+  overflow: initial
+  margin-top: 8px
+  width: 100%
+  .graphiql-editor
+    border: 1px solid #ddd
+    border-radius: 8px
+    // Or else the corners are cut off by the contents!
+    overflow: clip
+    height: auto !important
+    &:focus-within
+      border-color: $focus-color
+    .CodeMirror
+      height: auto
+      position: initial
+      min-height: 300px
+
+.standard-gql-ui
+  .graphiql-container
+    --font-family: Inter
+    --font-family-mono: 'Roboto Mono'
+    --font-size-body: 12px
+  // Hide buttons, tabs
+  button[aria-label="Hide History"], button[aria-label="Show History"], button[data-value='settings'], .graphiql-session-header
+    display: none
+  // Tweak spacing
+  .graphiql-sessions
+    padding-top: 8px
+  // Query editor has negative spacing when no tabs are just displayed (because there's just one tab)
+  .graphiql-container .graphiql-editors.full-height
+    margin-top: 0
+
+[data-radix-popper-content-wrapper], .graphiql-dialog
+  // Above Ant modal
+  z-index: 1100 !important

@@ -1,0 +1,18 @@
+{
+  "type": "postgres",
+  "host": "localhost",
+  "username": "wab",
+  "database": "wab",
+
+  "synchronize": false,
+  "dropSchema": false,
+  "logging": false,
+  "entities": ["src/wab/server/entities/**/*.ts"],
+  "migrations": ["src/wab/server/migrations/**/*.ts"],
+  "subscribers": ["src/wab/server/subscribers/**/*.ts"],
+  "cli": {
+    "entitiesDir": "src/wab/server/entities",
+    "migrationsDir": "src/wab/server/migrations",
+    "subscribersDir": "src/wab/server/subscribers"
+  }
+}

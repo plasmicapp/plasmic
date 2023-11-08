@@ -1,0 +1,50 @@
+.root {
+  flex-direction: column;
+  display: flex;
+  width: 100%;
+  height: auto;
+  position: relative;
+  background: var(--token-aUCjnzhayS);
+  min-width: 0;
+  padding: 8px;
+  border-bottom: 1px solid var(--token-pzmB25Csye);
+}
+.root > :global(.__wab_flex-container) {
+  flex-direction: column;
+  min-width: 0;
+  margin-top: calc(0px - 4px);
+  height: calc(100% + 4px);
+}
+.root > :global(.__wab_flex-container) > *,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.root > :global(.__wab_flex-container) > picture > img,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
+  margin-top: 4px;
+}
+.intro:global(.__wab_instance) {
+  position: relative;
+}
+.svg__zfUTw {
+  position: relative;
+  object-fit: cover;
+  width: 24px;
+  height: 24px;
+}
+.components:global(.__wab_instance) {
+  position: relative;
+}
+.svg__n57Oc {
+  position: relative;
+  object-fit: cover;
+  width: 24px;
+  height: 24px;
+}
+.images:global(.__wab_instance) {
+  position: relative;
+}
+.svg__j4E20 {
+  position: relative;
+  object-fit: cover;
+  width: 24px;
+  height: 24px;
+}

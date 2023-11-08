@@ -1,0 +1,345 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.rootcolor_softGreen {
+  border-color: #ffffff00;
+}
+.root:focus-within {
+  outline: none;
+}
+.root___focusVisibleWithin {
+  outline: none;
+}
+.trigger {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 8px 12px;
+  border: 1px solid #dbdbd7;
+}
+.triggercolor_softPink {
+  background: #feeef8;
+  border-color: #ffffff00;
+}
+.triggercolor_softPurple {
+  background: #f9f1fe;
+  border-color: #ffffff00;
+}
+.triggercolor_softGray {
+  background: #f3f3f2;
+}
+.triggercolor_clear {
+  background: none;
+}
+.triggerisOpen {
+  background: #e9e9e6;
+}
+.triggercolor_softBlue {
+  background: #edf6ff;
+  border-color: #ffffff00;
+}
+.triggercolor_softCyan {
+  background: #e7f9fb;
+  border-color: #ffffff00;
+}
+.triggercolor_softGreen {
+  background: #e9f9ee;
+  border-color: #ffffff00;
+}
+.triggercolor_softYellow {
+  background: #fffbd1;
+  border-color: #ffffff00;
+}
+.triggercolor_softOrange {
+  background: #fff1e7;
+  border-color: #ffffff00;
+}
+.triggercolor_softRed {
+  background: #ffefef;
+  border-color: #ffffff00;
+}
+.root:focus-within .trigger {
+  box-shadow: 0px 0px 0px 3px #96c7f2;
+  outline: none;
+}
+.root .trigger___focusVisibleWithin {
+  box-shadow: 0px 0px 0px 3px #96c7f2;
+  outline: none;
+}
+.root .trigger:hover {
+  background: #eeeeec;
+}
+.rootcolor_softPink .triggercolor_softPink:hover {
+  background: #fce5f3;
+}
+.rootcolor_softPurple .triggercolor_softPurple:hover {
+  background: #f3e7fc;
+}
+.rootcolor_softBlue .triggercolor_softBlue:hover {
+  background: #e1f0ff;
+}
+.rootcolor_softCyan .triggercolor_softCyan:hover {
+  background: #d8f3f6;
+}
+.rootcolor_softGreen .triggercolor_softGreen:hover {
+  background: #ddf3e4;
+}
+.rootcolor_softYellow .triggercolor_softYellow:hover {
+  background: #fff8bb;
+}
+.rootcolor_softOrange .triggercolor_softOrange:hover {
+  background: #ffe8d7;
+}
+.rootcolor_softRed .triggercolor_softRed:hover {
+  background: #ffe6e2;
+}
+.root .trigger:active {
+  background: #e9e9e6;
+}
+.rootcolor_softPink .triggercolor_softPink:active {
+  background: #f9d8ec;
+}
+.rootcolor_softPurple .triggercolor_softPurple:active {
+  background: #eddbf9;
+}
+.rootcolor_softBlue .triggercolor_softBlue:active {
+  background: #cee7fe;
+}
+.rootcolor_softCyan .triggercolor_softCyan:active {
+  background: #c4eaef;
+}
+.rootcolor_softGreen .triggercolor_softGreen:active {
+  background: #ccebd7;
+}
+.rootcolor_softYellow .triggercolor_softYellow:active {
+  background: #fef2a4;
+}
+.rootcolor_softOrange .triggercolor_softOrange:active {
+  background: #ffdcc3;
+}
+.rootcolor_softRed .triggercolor_softRed:active {
+  background: #fdd8d3;
+}
+.contentContainer {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+}
+.root:focus-within .contentContainer {
+  outline: none;
+}
+.slotTargetSelectedContent {
+  white-space: pre;
+}
+.slotTargetSelectedContent > .__wab_text,
+.slotTargetSelectedContent > .__wab_slot-string-wrapper,
+.slotTargetSelectedContent > .__wab_slot > .__wab_text,
+.slotTargetSelectedContent > .__wab_slot > .__wab_slot-string-wrapper,
+.slotTargetSelectedContent > .__wab_slot > .__wab_slot > .__wab_text,
+.slotTargetSelectedContent
+  > .__wab_slot
+  > .__wab_slot
+  > .__wab_slot-string-wrapper,
+.slotTargetSelectedContent
+  > .__wab_slot
+  > .__wab_slot
+  > .__wab_slot
+  > .__wab_text,
+.slotTargetSelectedContent
+  > .__wab_slot
+  > .__wab_slot
+  > .__wab_slot
+  > .__wab_slot-string-wrapper {
+  text-overflow: ellipsis;
+}
+.slotTargetSelectedContent > *,
+.slotTargetSelectedContent > .__wab_slot > *,
+.slotTargetSelectedContent > .__wab_slot > .__wab_slot > *,
+.slotTargetSelectedContent > .__wab_slot > .__wab_slot > .__wab_slot > *,
+.slotTargetSelectedContent > picture > img,
+.slotTargetSelectedContent > .__wab_slot > picture > img,
+.slotTargetSelectedContent > .__wab_slot > .__wab_slot > picture > img,
+.slotTargetSelectedContent
+  > .__wab_slot
+  > .__wab_slot
+  > .__wab_slot
+  > picture
+  > img {
+  overflow: hidden;
+}
+.slotTargetSelectedContentcolor_softPink {
+  color: #cd1d8d;
+}
+.slotTargetSelectedContentcolor_softPurple {
+  color: #793aaf;
+}
+.slotTargetSelectedContentcolor_softBlue {
+  color: #006adc;
+}
+.slotTargetSelectedContentcolor_softCyan {
+  color: #0c7792;
+}
+.slotTargetSelectedContentcolor_softGreen {
+  color: #18794e;
+}
+.slotTargetSelectedContentcolor_softYellow {
+  color: #946800;
+}
+.slotTargetSelectedContentcolor_softOrange {
+  color: #bd4b00;
+}
+.slotTargetSelectedContentcolor_softRed {
+  color: #cd2b31;
+}
+.root:focus-within .slotTargetSelectedContent > *,
+.root:focus-within .slotTargetSelectedContent > .__wab_slot > *,
+.root:focus-within .slotTargetSelectedContent > .__wab_slot > .__wab_slot > *,
+.root:focus-within
+  .slotTargetSelectedContent
+  > .__wab_slot
+  > .__wab_slot
+  > .__wab_slot
+  > *,
+.root:focus-within .slotTargetSelectedContent > picture > img,
+.root:focus-within .slotTargetSelectedContent > .__wab_slot > picture > img,
+.root:focus-within
+  .slotTargetSelectedContent
+  > .__wab_slot
+  > .__wab_slot
+  > picture
+  > img,
+.root:focus-within
+  .slotTargetSelectedContent
+  > .__wab_slot
+  > .__wab_slot
+  > .__wab_slot
+  > picture
+  > img {
+  outline: none;
+}
+.slotTargetPlaceholder {
+  white-space: pre;
+  color: #706f6c;
+}
+.slotTargetPlaceholder > .__wab_text,
+.slotTargetPlaceholder > .__wab_slot-string-wrapper,
+.slotTargetPlaceholder > .__wab_slot > .__wab_text,
+.slotTargetPlaceholder > .__wab_slot > .__wab_slot-string-wrapper,
+.slotTargetPlaceholder > .__wab_slot > .__wab_slot > .__wab_text,
+.slotTargetPlaceholder > .__wab_slot > .__wab_slot > .__wab_slot-string-wrapper,
+.slotTargetPlaceholder > .__wab_slot > .__wab_slot > .__wab_slot > .__wab_text,
+.slotTargetPlaceholder
+  > .__wab_slot
+  > .__wab_slot
+  > .__wab_slot
+  > .__wab_slot-string-wrapper {
+  text-overflow: ellipsis;
+}
+.slotTargetPlaceholder > *,
+.slotTargetPlaceholder > .__wab_slot > *,
+.slotTargetPlaceholder > .__wab_slot > .__wab_slot > *,
+.slotTargetPlaceholder > .__wab_slot > .__wab_slot > .__wab_slot > *,
+.slotTargetPlaceholder > picture > img,
+.slotTargetPlaceholder > .__wab_slot > picture > img,
+.slotTargetPlaceholder > .__wab_slot > .__wab_slot > picture > img,
+.slotTargetPlaceholder
+  > .__wab_slot
+  > .__wab_slot
+  > .__wab_slot
+  > picture
+  > img {
+  overflow: hidden;
+}
+.slotTargetPlaceholdershowPlaceholder_color_softRed {
+  color: #cd2b31;
+}
+.slotTargetPlaceholdercolor_softPink_showPlaceholder {
+  color: #cd1d8d;
+}
+.slotTargetPlaceholdercolor_softPurple_showPlaceholder {
+  color: #793aaf;
+}
+.slotTargetPlaceholdershowPlaceholder_color_softBlue {
+  color: #006adc;
+}
+.slotTargetPlaceholdercolor_softCyan_showPlaceholder {
+  color: #0c7792;
+}
+.slotTargetPlaceholdershowPlaceholder_color_softGreen {
+  color: #18794e;
+}
+.slotTargetPlaceholdercolor_softYellow_showPlaceholder {
+  color: #946800;
+}
+.slotTargetPlaceholdershowPlaceholder_color_softOrange {
+  color: #bd4b00;
+}
+.dropdownIcon {
+  position: relative;
+  object-fit: cover;
+  width: 20px;
+  height: 20px;
+  color: #90908c;
+  flex-shrink: 0;
+}
+.dropdownIconcolor_softPink {
+  color: #d6409f;
+}
+.dropdownIconcolor_softPurple {
+  color: #8e4ec6;
+}
+.dropdownIconcolor_softBlue {
+  color: #0091ff;
+}
+.dropdownIconcolor_softCyan {
+  color: #05a2c2;
+}
+.dropdownIconcolor_softGreen {
+  color: #30a46c;
+}
+.dropdownIconcolor_softYellow {
+  color: #f5d90a;
+}
+.dropdownIconcolor_softOrange {
+  color: #f76808;
+}
+.dropdownIconcolor_softRed {
+  color: #e5484d;
+}
+.root:focus-within .dropdownIcon {
+  outline: none;
+}
+.root .dropdownIcon___focusVisibleWithin {
+  outline: none;
+}
+.overlay:global(.__wab_instance) {
+  position: absolute;
+  left: 0px;
+  top: 100%;
+  z-index: 1000;
+}
+.optionsContainer {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  min-width: 0;
+}
+.option__ozD8:global(.__wab_instance) {
+  position: relative;
+}
+.option__uinJx:global(.__wab_instance) {
+  position: relative;
+}

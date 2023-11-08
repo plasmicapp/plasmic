@@ -1,0 +1,8 @@
+.buttonsContainer {
+  display: flex;
+
+  & > * {
+    display: flex;
+    margin-left: 3px;
+  }
+}

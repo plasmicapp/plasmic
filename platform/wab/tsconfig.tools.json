@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "jsx": "react"
+    //    "target": "es6",
+    //    "lib": ["es7", "es2017.sharedmemory"]
+  }
+}

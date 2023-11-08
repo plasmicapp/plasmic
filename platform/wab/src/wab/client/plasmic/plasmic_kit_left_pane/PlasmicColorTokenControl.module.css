@@ -1,0 +1,22 @@
+.root {
+  display: flex;
+  width: 100%;
+  height: auto;
+  position: relative;
+  min-width: 0;
+  padding: 0px 1px;
+}
+.listItem:global(.__wab_instance) {
+  position: relative;
+}
+.svg__oaVe8 {
+  object-fit: cover;
+  width: 24px;
+  height: 24px;
+}
+.svg {
+  position: relative;
+  object-fit: cover;
+  width: 24px;
+  height: 24px;
+}

@@ -1,0 +1,32 @@
+.root {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  overflow: hidden;
+  border-radius: 6px;
+}
+.rootselected {
+  background: var(--token-p-rw5DRJTx);
+}
+.freeBox {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding-left: 0px;
+}
+.svg___1NhRc {
+  display: flex;
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+.svg__vpdso {
+  display: flex;
+  position: relative;
+  width: 24px;
+  height: 24px;
+}

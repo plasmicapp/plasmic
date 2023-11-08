@@ -1,0 +1,151 @@
+.root {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+}
+.roottype_baseVariant:hover {
+  border-color: var(--token-LmrMFZok-p9);
+}
+.listItem:global(.__wab_instance) {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+.freeBox__qnsp {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  margin-left: 22px;
+  opacity: 0;
+}
+.freeBoxtype_baseVariant__qnspVuhwH {
+  margin-left: 0px;
+  opacity: 1;
+}
+.freeBoxtype_toggle__qnspNLw14 {
+  margin-left: 0px;
+}
+.svg__cFzz8 {
+  object-fit: cover;
+  opacity: 1;
+  width: 1em;
+  flex-shrink: 0;
+  height: 1em;
+  display: block;
+}
+.freeBox__vSe8B {
+  flex-direction: row;
+  display: flex;
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+.freeBox__vSe8B > :global(.__wab_flex-container) {
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  min-width: 0;
+  margin-left: calc(0px - 4px);
+  width: calc(100% + 4px);
+}
+.freeBox__vSe8B > :global(.__wab_flex-container) > *,
+.freeBox__vSe8B > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBox__vSe8B > :global(.__wab_flex-container) > picture > img,
+.freeBox__vSe8B
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 4px;
+}
+.freeBoxtype_baseVariant__vSe8BvuhwH {
+  padding-left: 0px;
+}
+.freeBoxtype_toggle__vSe8BnLw14 {
+  padding-left: 0px;
+}
+.slotTargetChildren {
+  font-size: 12px;
+  line-height: 1.25;
+  color: var(--token-ElMeFHrIrKT);
+}
+.freeBox__t0Gv2 {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+}
+.recordButton:global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.recordButtonpinState_selected:global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.recordButtonisIndicated:global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.root:hover .recordButton:global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.svg__fzeqg {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+  color: var(--token-Y2CWh0ci95a);
+}
+.svg__wxygf {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  color: var(--token-UunsGa2Y3t3);
+  width: 1em;
+  height: 1em;
+}
+.variantPinButton:global(.__wab_instance):global(.__wab_instance) {
+  position: relative;
+}
+.exprButton:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  flex-shrink: 0;
+  display: none;
+}
+.exprButtonhasCodeExpression:global(.__wab_instance) {
+  display: flex;
+}
+.svg__hMptI {
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+.svg___6E2Tt {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}
+.indicator:global(.__wab_instance) {
+  position: absolute;
+  left: 2px;
+  top: 10px;
+}

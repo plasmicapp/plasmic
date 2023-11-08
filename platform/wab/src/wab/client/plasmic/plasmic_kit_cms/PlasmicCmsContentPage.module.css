@@ -1,0 +1,30 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background: var(--token-iR8SeEwQZ);
+  min-width: 0;
+  min-height: 0;
+}
+.cmsModelsList:global(.__wab_instance) {
+  position: relative;
+  width: 200px;
+  height: 100%;
+  flex-shrink: 0;
+  min-height: 0;
+}
+.cmsModelItem__l6W9D:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.cmsModelItem__wwoJa:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.cmsModelContent:global(.__wab_instance) {
+  position: relative;
+}

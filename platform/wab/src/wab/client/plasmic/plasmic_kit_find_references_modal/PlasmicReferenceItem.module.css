@@ -1,0 +1,47 @@
+.root {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  cursor: default;
+  min-width: 0;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0);
+}
+.listItem:global(.__wab_instance) {
+  position: relative;
+}
+.svg__hpcVh {
+  position: relative;
+  object-fit: cover;
+  width: 24px;
+  height: 24px;
+}
+.svg__g3Nlv {
+  position: relative;
+  object-fit: cover;
+  width: 24px;
+  height: 24px;
+}
+.svg__yn2Mk {
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg__type_page__yn2Mks0Z3C {
+  width: 16px;
+  height: 16px;
+}
+.svg__type_component__yn2Mkkyowq {
+  width: 16px;
+  height: 16px;
+}
+.svg__ucHp {
+  position: relative;
+  object-fit: cover;
+  width: 24px;
+  height: 24px;
+}

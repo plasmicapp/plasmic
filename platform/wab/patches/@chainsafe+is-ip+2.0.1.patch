@@ -1,0 +1,13 @@
+diff --git a/node_modules/@chainsafe/is-ip/package.json b/node_modules/@chainsafe/is-ip/package.json
+index 8a101e3..cfb61a8 100644
+--- a/node_modules/@chainsafe/is-ip/package.json
++++ b/node_modules/@chainsafe/is-ip/package.json
+@@ -9,7 +9,7 @@
+   "exports": {
+     ".": {
+       "node": "./lib/is-ip.node.js",
+-      "import": "./lib/is-ip.js"
++      "default": "./lib/is-ip.js"
+     },
+     "./parse": {
+       "import": "./lib/parse.js"

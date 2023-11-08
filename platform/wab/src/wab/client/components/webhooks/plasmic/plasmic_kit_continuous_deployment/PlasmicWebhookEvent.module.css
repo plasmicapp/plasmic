@@ -1,0 +1,242 @@
+.root {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  background: var(--token-iv-M1hAwV);
+  min-width: 0;
+  border-radius: 6px;
+  border: 1px solid var(--token-hoA5qaM-91G);
+}
+.freeBox__ty2Le {
+  display: flex;
+  padding: 8px;
+}
+.freeBox__ty2Le > :global(.__wab_flex-container) {
+  justify-content: space-between;
+  margin-left: calc(0px - 8px);
+  width: calc(100% + 8px);
+}
+.freeBox__ty2Le > :global(.__wab_flex-container) > *,
+.freeBox__ty2Le > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBox__ty2Le > :global(.__wab_flex-container) > picture > img,
+.freeBox__ty2Le
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 8px;
+}
+.freeBox__awMIm {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  width: 100%;
+  min-width: 0;
+}
+.freeBox__awMIm > :global(.__wab_flex-container) {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+  margin-left: calc(0px - 8px);
+  width: calc(100% + 8px);
+}
+.freeBox__awMIm > :global(.__wab_flex-container) > *,
+.freeBox__awMIm > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBox__awMIm > :global(.__wab_flex-container) > picture > img,
+.freeBox__awMIm
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 8px;
+}
+.freeBox__h1XF {
+  display: flex;
+  width: 36px;
+  flex-shrink: 0;
+}
+.freeBox__h1XF > :global(.__wab_flex-container) {
+  align-items: center;
+  margin-left: calc(0px - 4px);
+  width: calc(100% + 4px);
+}
+.freeBox__h1XF > :global(.__wab_flex-container) > *,
+.freeBox__h1XF > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBox__h1XF > :global(.__wab_flex-container) > picture > img,
+.freeBox__h1XF
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 4px;
+}
+.indicator {
+  display: block;
+  width: 6px;
+  height: 6px;
+  background: var(--token-GEBK7U4Am62W);
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+.indicatorstate_failed {
+  background: var(--token-iDpByWoW0eF);
+}
+.indicatorstate_loading {
+  background: var(--token-fVn5vRhXJxQ);
+}
+.slotTargetStatus {
+  color: var(--token-hIvqQBCxyWwX);
+}
+.slotTargetStatusstate_failed {
+  color: var(--token-Y2CWh0ci95a);
+}
+.freeBox__wnEpm {
+  display: flex;
+  position: relative;
+  width: 72px;
+  flex-shrink: 0;
+}
+.slotTargetMethod {
+  font-family: "IBM Plex Mono";
+  font-weight: 700;
+}
+.freeBox___5UJ68 {
+  display: flex;
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+.slotTargetUrl {
+  font-family: "IBM Plex Mono";
+  white-space: pre;
+}
+.slotTargetUrl > :global(.__wab_text),
+.slotTargetUrl > :global(.__wab_expr_html_text),
+.slotTargetUrl > :global(.__wab_slot-string-wrapper),
+.slotTargetUrl > :global(.__wab_slot) > :global(.__wab_text),
+.slotTargetUrl > :global(.__wab_slot) > :global(.__wab_expr_html_text),
+.slotTargetUrl > :global(.__wab_slot) > :global(.__wab_slot-string-wrapper),
+.slotTargetUrl
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_text),
+.slotTargetUrl
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_expr_html_text),
+.slotTargetUrl
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot-string-wrapper),
+.slotTargetUrl
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_text),
+.slotTargetUrl
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_expr_html_text),
+.slotTargetUrl
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot-string-wrapper) {
+  text-overflow: ellipsis;
+}
+.slotTargetUrl > *,
+.slotTargetUrl > :global(.__wab_slot) > *,
+.slotTargetUrl > :global(.__wab_slot) > :global(.__wab_slot) > *,
+.slotTargetUrl
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.slotTargetUrl > picture > img,
+.slotTargetUrl > :global(.__wab_slot) > picture > img,
+.slotTargetUrl > :global(.__wab_slot) > :global(.__wab_slot) > picture > img,
+.slotTargetUrl
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  overflow: hidden;
+}
+.viewButton:global(.__wab_instance) {
+  position: relative;
+  align-self: flex-start;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+}
+.svg__edv0Q {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--token-fVn5vRhXJxQ);
+}
+.svgexpanded__edv0Q8Ak7G {
+  color: var(--token-UunsGa2Y3t3);
+}
+.svg__k4Czc {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  color: var(--token-UunsGa2Y3t3);
+  width: 1em;
+  height: 1em;
+}
+.freeBox___99Mh {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+}
+.freeBox___99Mh > :global(.__wab_flex-container) {
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+.freeBoxexpanded___99Mh8Ak7G {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+.freeBoxexpanded___99Mh8Ak7G > :global(.__wab_flex-container) {
+  flex-direction: column;
+  margin-left: calc(0px - 0px);
+  width: calc(100% + 0px);
+  margin-top: calc(0px - 10px);
+  height: calc(100% + 10px);
+}
+.freeBoxexpanded___99Mh8Ak7G > :global(.__wab_flex-container) > *,
+.freeBoxexpanded___99Mh8Ak7G
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > *,
+.freeBoxexpanded___99Mh8Ak7G > :global(.__wab_flex-container) > picture > img,
+.freeBoxexpanded___99Mh8Ak7G
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 0px;
+  margin-top: 10px;
+}
+.slotTargetResponse {
+  font-family: "IBM Plex Mono";
+  color: var(--token-NcVkVEFwiIx);
+}
+.slotTargetCreatedAt {
+  font-size: 10px;
+  color: var(--token-tqZN8CQTuKc);
+  line-height: 12px;
+}

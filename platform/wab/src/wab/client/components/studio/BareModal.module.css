@@ -1,0 +1,10 @@
+.wraper {
+}
+
+.wrapper :global(.ant-modal-body) {
+  padding: 0;
+}
+
+.wrapper :global(.ant-modal-content) {
+  background: none;
+}

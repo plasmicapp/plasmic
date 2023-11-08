@@ -1,0 +1,29 @@
+.controlContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  background: var(--token-h3n_6qpT3Tc4);
+  min-height: 32px;
+  position: relative;
+  min-width: 0;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+.controlContainercolor_purple {
+  background: #80008012;
+}
+.slotTargetChildren {
+  color: var(--token-qKhMu66CwSx);
+}
+.slotTargetChildrencolor_purple {
+  color: #800080;
+}
+.text__oZBco {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 800px;
+  min-width: 0;
+}

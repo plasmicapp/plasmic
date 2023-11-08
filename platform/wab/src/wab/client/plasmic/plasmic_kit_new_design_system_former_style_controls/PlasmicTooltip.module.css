@@ -1,0 +1,55 @@
+.root {
+  display: flex;
+  position: relative;
+  overflow: visible;
+}
+.freeBox {
+  display: block;
+  position: relative;
+}
+.invisibleRegion {
+  display: flex;
+  position: absolute;
+}
+.invisibleRegionplacement_topLeft {
+  bottom: -28px;
+  right: -16px;
+}
+.invisibleRegionplacement_bottomRight {
+  left: -16px;
+  top: -16px;
+}
+.floatingWindow {
+  display: flex;
+  position: relative;
+  background: var(--token-4ILMhexmH8l8);
+  flex-direction: column;
+  border-radius: 4px;
+  padding: 8px;
+  margin: 16px;
+}
+.floatingWindowplacement_topLeft {
+  margin-bottom: 28px;
+  margin-right: 28px;
+}
+.floatingWindowplacement_bottomRight {
+  margin-top: 28px;
+  margin-left: 28px;
+}
+.slotTargetChildren {
+  color: var(--token-iR8SeEwQZ);
+}
+.text__pcxZh {
+  position: relative;
+  font-weight: 700;
+}
+.text__sm96 {
+  position: relative;
+}
+.svg {
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  flex-shrink: 0;
+  height: 1em;
+}

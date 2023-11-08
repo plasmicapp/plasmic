@@ -1,0 +1,31 @@
+@import "src/wab/styles/tokens";
+
+@keyframes blinker {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+.HighlightBlinker {
+  background: $blue9;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.HighlightBlinker_Blink {
+  animation-name: blinker;
+  animation-duration: 500ms;
+  animation-iteration-count: 1;
+}
+
+.HighlightBlinker_DelayedBlink {
+  animation-name: blinker;
+  animation-delay: 500ms;
+  animation-duration: 500ms;
+  animation-iteration-count: 1;
+}

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="20px" height="23px" viewBox="0 0 20 23" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 41.1 (35376) - http://www.bohemiancoding.com/sketch -->
+    <title>icons/push-top-right</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Position-Control" transform="translate(-191.000000, -25.000000)">
+            <g id="icons/push-top-right" transform="translate(186.000000, 23.000000)">
+                <path d="M15,-5 L15,12" id="Line" stroke="#979797" stroke-width="2" stroke-linecap="square" transform="translate(15.000000, 3.500000) rotate(90.000000) translate(-15.000000, -3.500000) "></path>
+                <path d="M14.5,13.5 L33.5262976,13.5" id="Line" stroke="#979797" stroke-width="2" stroke-linecap="square" transform="translate(24.000000, 13.500000) rotate(90.000000) translate(-24.000000, -13.500000) "></path>
+                <path d="M14.5,12.5 L33.5262976,12.5" id="Line-Copy-4" stroke="#979797" stroke-width="2" stroke-linecap="square" transform="translate(24.000000, 12.500000) rotate(90.000000) translate(-24.000000, -12.500000) "></path>
+                <text id="arrow-down---FontAwesome-Copy-4" transform="translate(13.788582, 13.788582) rotate(-135.000000) translate(-13.788582, -13.788582) " font-family="FontAwesome" font-size="20" font-weight="normal" fill="#979797">
+                    <tspan x="4.50286795" y="20.7885822"></tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>

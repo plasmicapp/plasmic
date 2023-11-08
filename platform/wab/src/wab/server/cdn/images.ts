@@ -1,0 +1,100 @@
+import { md5 } from "@/wab/server/util/hash";
+import { parseDataUrl } from "@/wab/shared/data-urls";
+import * as Sentry from "@sentry/node";
+import S3 from "aws-sdk/clients/s3";
+import FileType from "file-type";
+import { extension } from "mime-types";
+import sharp from "sharp";
+import { failableAsync } from "ts-failable";
+
+const siteAssetsBucket = process.env.SITE_ASSETS_BUCKET as string;
+const siteAssetsBaseUrl = process.env.SITE_ASSETS_BASE_URL as string;
+
+export async function uploadDataUriToS3(
+  dataUri: string,
+  opts?: { imageOnly?: boolean }
+) {
+  return failableAsync<string, Error>(async ({ success }) => {
+    if (!dataUri.startsWith("data:")) {
+      // Already on S3
+      return success(dataUri);
+    }
+    const parsed = parseDataUrl(dataUri);
+    const contentType = parsed.contentType;
+    const fileBuffer = parsed.toBuffer();
+
+    return (await uploadFileToS3(fileBuffer, { ...opts, contentType })).map(
+      (res) => res.url
+    );
+  });
+}
+
+export async function uploadFileToS3(
+  fileBuffer: Buffer,
+  opts?: { imageOnly?: boolean; contentType?: string }
+) {
+  return failableAsync<{ url: string; mimeType: string | undefined }, Error>(
+    async ({ success, failure }) => {
+      const imageOnly = opts?.imageOnly ?? true;
+
+      let fileType = await FileType.fromBuffer(fileBuffer);
+      if (!fileType && isSVG(fileBuffer)) {
+        fileType = {
+          mime: "image/svg+xml" as FileType.MimeType,
+          ext: "svg" as FileType.FileExtension,
+        };
+      }
+      const mime = fileType?.mime ?? opts?.contentType;
+      const ext = fileType?.ext ?? (mime && extension(mime));
+
+      const optimizedBuffer =
+        fileType?.mime === "image/jpeg" || fileType?.mime === "image/png"
+          ? await sharp(fileBuffer)
+              .jpeg({ progressive: true, force: false, mozjpeg: true })
+              .png({ progressive: true, force: false })
+              .toBuffer()
+          : fileBuffer;
+
+      if (!fileType && (imageOnly || !mime || !ext)) {
+        return failure(new Error("Invalid file type"));
+      }
+
+      const fileHash = md5(fileBuffer);
+      const storagePath = `${fileHash}.${ext}`;
+
+      try {
+        const { Location } = await new S3()
+          .upload({
+            Bucket: siteAssetsBucket,
+            Key: storagePath,
+            Body: optimizedBuffer,
+            ContentType: mime,
+            ACL: "public-read",
+            CacheControl: `max-age=3600, s-maxage=31536000`,
+          })
+          .promise();
+
+        // Replace dataUri by the URL of the just uploaded asset.
+        // The value of siteAssetBaseUrl is expected to be the CDN base URL,
+        // but if it's not available, we simply use the plain S3 URL.
+        return success({
+          url: siteAssetsBaseUrl
+            ? `${siteAssetsBaseUrl}${storagePath}`
+            : Location,
+          mimeType: mime,
+        });
+      } catch (err) {
+        console.log("Could not upload asset to S3:", err);
+        Sentry.captureMessage(`Could not upload asset to S3 (${err.message}).`);
+        return failure(err);
+      }
+    }
+  );
+}
+
+export function isSVG(fileBuffer: Buffer) {
+  // We get the first 10kB, just in case of
+  // some very long comments before the svg tag
+  const fileContent = fileBuffer.toString("utf8", 0, 10240);
+  return /<svg\s.*?>/i.test(fileContent);
+}

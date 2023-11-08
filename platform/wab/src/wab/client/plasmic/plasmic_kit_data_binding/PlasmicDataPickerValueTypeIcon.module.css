@@ -1,0 +1,39 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  background: var(--token-bV4cCeIniS6);
+  position: relative;
+  border-radius: 4px;
+}
+.rootisSelected {
+  background: var(--token-RhvOnhv_xIi);
+}
+.rootisHovered {
+  background: var(--token-Ik3bdE1e1Uy);
+}
+.freeBox__x0W5L {
+  position: relative;
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
+}
+.freeBox___1FNcp {
+  display: flex;
+  position: relative;
+}
+.slotTargetChildren {
+  font-size: 8px;
+  line-height: 1.5;
+  color: var(--token-fVn5vRhXJxQ);
+  text-align: center;
+}
+.slotTargetChildrenisSelected {
+  color: var(--token-VUsIDivgUss);
+}
+.slotTargetChildrenisHovered {
+  color: var(--token-UunsGa2Y3t3);
+}

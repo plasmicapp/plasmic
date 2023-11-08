@@ -1,0 +1,86 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  width: 100%;
+  max-width: 256px;
+  min-width: 0;
+  border-radius: 6px;
+  padding: 0px;
+  border: 1px solid var(--token-hoA5qaM-91G);
+}
+.rootlarge {
+  width: 360px;
+}
+.root:hover {
+  border-color: var(--token-eBt2ZgqRUCz);
+}
+.root:focus {
+  box-shadow: 0px 0px 0px 2px #0091ff80;
+  outline: none;
+}
+.image {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  height: 150px;
+  overflow: hidden;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--token-hoA5qaM-91G);
+}
+.imagelarge {
+  height: 210px;
+  flex-shrink: 0;
+}
+.root:focus .image {
+  outline: none;
+}
+.freeBox__sxDqT {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+}
+.freeBoxisSelected__sxDqT5OaEf {
+  background: var(--token-bV4cCeIniS6);
+}
+.root:hover .freeBox__sxDqT {
+  background: var(--token-bV4cCeIniS6);
+}
+.root:focus .freeBox__sxDqT {
+  outline: none;
+}
+.slotTargetTitleisSelected {
+  font-weight: 500;
+}
+.svg__es6UG {
+  position: relative;
+  object-fit: cover;
+  width: 24px;
+  height: 24px;
+  color: var(--token-UunsGa2Y3t3);
+  flex-shrink: 0;
+  display: block;
+}
+.freeBox__rbX2U {
+  display: block;
+  position: relative;
+}
+.root:focus .freeBox__rbX2U {
+  position: absolute;
+  bottom: -5px;
+  top: -5px;
+  right: -5px;
+  left: -5px;
+  width: auto;
+  height: auto;
+  outline: none;
+  border-radius: 8px;
+  border: 2px dashed var(--token-N3uwCfNqv);
+}

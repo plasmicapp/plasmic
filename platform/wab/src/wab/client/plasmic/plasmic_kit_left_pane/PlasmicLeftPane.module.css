@@ -1,0 +1,144 @@
+.root {
+  display: inline-flex;
+  width: auto;
+  height: 100%;
+  position: relative;
+  flex-direction: row;
+  align-items: flex-start;
+  pointer-events: none;
+  min-height: 0;
+}
+.leftTabStrip:global(.__wab_instance) {
+  position: relative;
+  z-index: 10;
+}
+.leftTabButton___8DyiL:global(.__wab_instance) {
+  position: relative;
+  display: flex;
+}
+.svg__zOfU0 {
+  position: relative;
+  object-fit: cover;
+  width: 24px;
+  height: 24px;
+}
+.leftTabButton__zrZsg:global(.__wab_instance) {
+  position: relative;
+}
+.svg__sSj6U {
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}
+.leftTabButton__l5GAj:global(.__wab_instance) {
+  position: relative;
+}
+.svg___2I0R2 {
+  position: relative;
+  object-fit: cover;
+  width: 24px;
+  height: 24px;
+}
+.leftTabButton__rhV:global(.__wab_instance) {
+  position: relative;
+}
+.svg__otRy1 {
+  position: relative;
+  object-fit: cover;
+  width: 24px;
+  height: 24px;
+}
+.leftTabButton___74Qo:global(.__wab_instance) {
+  position: relative;
+}
+.svg___52RoI {
+  position: relative;
+  object-fit: cover;
+  width: 24px;
+  height: 24px;
+}
+.paneContainer {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  height: 100%;
+  left: auto;
+  top: auto;
+  width: 303px;
+  flex-shrink: 0;
+  min-height: 0;
+}
+.paneContent {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: auto;
+  padding-bottom: 4px;
+  background: var(--token-iR8SeEwQZ);
+  min-width: 0;
+  min-height: 0;
+  border-right: 1px solid var(--token-hoA5qaM-91G);
+}
+.leftOutlinePanel:global(.__wab_instance) {
+  position: relative;
+}
+.leftGeneralTokensPanel:global(.__wab_instance) {
+  position: relative;
+}
+.leftMixinsPanel:global(.__wab_instance) {
+  position: relative;
+}
+.leftImagesPanel:global(.__wab_instance) {
+  position: relative;
+}
+.leftThemesPanel:global(.__wab_instance) {
+  position: relative;
+}
+.leftFontsPanel:global(.__wab_instance) {
+  position: relative;
+}
+.leftImportsPanel:global(.__wab_instance) {
+  position: relative;
+}
+.leftVersionsPanel:global(.__wab_instance) {
+  position: relative;
+}
+.leftComponentsPanel:global(.__wab_instance) {
+  position: relative;
+}
+.leftPagesPanel:global(.__wab_instance) {
+  position: relative;
+}
+.leftPagesPaneltype_settings:global(.__wab_instance) {
+  display: none;
+}
+.leftSettingsPanel:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+  display: none;
+}
+.leftSettingsPaneltype_settings:global(.__wab_instance) {
+  display: flex;
+}
+.leftSplitsPanel:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+  display: none;
+}
+.leftSplitsPaneltype_splits:global(.__wab_instance) {
+  display: flex;
+}
+.leftLintIssuesPanel:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.leftLintIssuesPaneltype_lint:global(.__wab_instance) {
+  display: flex;
+}

@@ -1,0 +1,37 @@
+{
+  "name": "@plasmicapp/loader-html-hydrate",
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "dev": "rollup -c",
+    "build": "rm -rf build/ && NODE_ENV=production rollup -c"
+  },
+  "author": "Chung Wu",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^19.0.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.0.0",
+    "@rollup/plugin-replace": "^2.4.2",
+    "@rollup/plugin-sucrase": "^3.1.0",
+    "@types/react": "^17.0.9",
+    "@types/react-dom": "^17.0.6",
+    "rollup": "^2.52.2",
+    "rollup-plugin-sourcemaps": "^0.6.3",
+    "rollup-plugin-terser": "^7.0.2",
+    "tslib": "^2.2.0",
+    "typescript": "^4.3.2"
+  },
+  "dependencies": {
+    "@plasmicapp/loader-react": "^1.0.317",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  }
+}

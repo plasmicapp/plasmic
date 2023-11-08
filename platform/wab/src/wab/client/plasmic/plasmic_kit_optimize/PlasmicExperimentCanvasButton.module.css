@@ -1,0 +1,21 @@
+.root:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.svg {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.texttype_scheduled {
+  height: auto;
+}
+.svg__dzdg0 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 1em;
+}

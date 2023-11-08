@@ -1,0 +1,95 @@
+.feedContainer {
+  display: flex;
+  flex-direction: column;
+  width: 276px;
+  height: 730px;
+  position: relative;
+  padding: 10px;
+}
+.feedContainer > :global(.__wab_flex-container) {
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: calc(0px - 10px);
+  height: calc(100% + 10px);
+}
+.feedContainer > :global(.__wab_flex-container) > *,
+.feedContainer > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.feedContainer > :global(.__wab_flex-container) > picture > img,
+.feedContainer
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-top: 10px;
+}
+.activityFeedItem__btc0P:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.img__gdOyp {
+  display: flex !important;
+  position: relative;
+  width: 48px;
+  height: 48px;
+}
+.activityFeedItem__uxQl:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.img___87C7U {
+  display: flex !important;
+  position: relative;
+  width: 48px;
+  height: 48px;
+}
+.activityFeedItem___1K9Hj:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.img__vwKp4 {
+  display: flex !important;
+  position: relative;
+  width: 48px;
+  height: 48px;
+}
+.activityFeedItem__iTzwf:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.img__mj4Q2 {
+  display: flex !important;
+  position: relative;
+  width: 48px;
+  height: 48px;
+}
+.activityFeedItem__ofHRh:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.img__pPYfK {
+  display: flex !important;
+  position: relative;
+  width: 48px;
+  height: 48px;
+}
+.activityFeedItem___1BeLe:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.img__zEr6X {
+  display: flex !important;
+  position: relative;
+  width: 48px;
+  height: 48px;
+}
+.activityFeedItem__c8Mm1:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.img__s2Mvv {
+  display: flex !important;
+  position: relative;
+  width: 48px;
+  height: 48px;
+}

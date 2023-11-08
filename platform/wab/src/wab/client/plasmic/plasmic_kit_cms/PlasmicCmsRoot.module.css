@@ -1,0 +1,54 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+  min-height: 0;
+}
+.cmsTopBar:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.freeBox {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+.cmsLeftTabs:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+  height: 100%;
+  min-height: 0;
+}
+.cmsContentPage:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.cmsContentPageactiveTab_content:global(.__wab_instance) {
+  display: flex;
+}
+.cmsSchemaPage:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.cmsSchemaPageactiveTab_schema:global(.__wab_instance) {
+  display: flex;
+}
+.cmsSettingsPage:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.cmsSettingsPageactiveTab_settings:global(.__wab_instance) {
+  display: flex;
+}

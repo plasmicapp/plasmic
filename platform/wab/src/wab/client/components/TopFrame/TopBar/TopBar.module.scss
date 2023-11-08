@@ -1,0 +1,26 @@
+@import "../../../../styles/tokens";
+
+.focusedModeSwitchContainer {
+  margin-left: 30px;
+  cursor: pointer;
+}
+
+.focusedModeSwitchOff,
+.focusedModeSwitchOn {
+  margin-right: 5px;
+}
+
+.focusedModeSwitchOff {
+  background: #999;
+}
+
+.focusedModeSwitchOn {
+  background: $blue9;
+}
+
+.insertablesDivider {
+  height: 30px;
+  width: 0;
+  margin: 0 10px 0 14px !important;
+  border-right: 1px solid $sand4;
+}

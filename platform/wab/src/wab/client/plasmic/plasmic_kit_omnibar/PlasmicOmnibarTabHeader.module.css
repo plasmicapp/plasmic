@@ -1,0 +1,16 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  position: relative;
+  padding: 4px 8px;
+}
+.slotTargetTitle {
+  font-size: 11px;
+  color: var(--token--deXnEZPIk);
+}
+.slotTargetTitleselected {
+  font-weight: 600;
+  color: var(--token-6QxBZ9qV1n);
+}

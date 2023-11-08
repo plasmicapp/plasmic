@@ -1,0 +1,32 @@
+{
+  exports = {}
+  for k of exports
+    @[k] = funcTplParser[k] = exports[k]
+}
+
+start = mainType:type __ desc:phrase __ ret:ret
+        { {form: 'unary', mainType, desc, ret} }
+      / mainType:type __ desc:phrase __ secondType:type __ ret:ret
+        { {form: 'binary', mainType, desc, secondType, ret} }
+      / mainType:type __ desc:phrase ":" parts:parts+ __ ret:ret
+        { {form: 'nary', mainType, desc, ret, parts} }
+      / desc:phrase __ ret:ret
+        { {form: 'nullary', desc, ret} }
+
+parts = __ fixed:phrase __ param:namedParam
+        { {fixed, param} }
+
+namedParam = name:[A-Z]+ ":" type:type opt:"?"?
+             { {name: name.join('').toLowerCase(), type, opt: opt == "?"} }
+
+phrase = first:word rest:(__ word)* { [first].concat(b for [a,b] in rest).join(' ') }
+word = first:[a-z0-9] rest:[a-z0-9-]* { [first].concat(rest).join('') }
+
+ret = "->" __ type:type { {type} }
+
+type = name:[\$A-Z]+ params:params? { {name: name.join('').toLowerCase(), params: params or []} }
+
+params = "[" _ head:type rest:(_ "," _ type)* _ "]" { [head].concat(x[3] for x in rest) }
+
+_ = [ \n\r\t\v]*
+__ = [ \n\r\t\v]+

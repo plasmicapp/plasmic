@@ -1,0 +1,32 @@
+.root {
+  display: flex;
+  width: 100%;
+  height: auto;
+  position: relative;
+  min-width: 0;
+}
+.labeledProp:global(.__wab_instance) {
+  position: relative;
+}
+.svg {
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.textbox__lmxPj:global(.__wab_instance) {
+  position: relative;
+}
+.svg__ietaa {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg__iqq4Q {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}

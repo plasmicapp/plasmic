@@ -1,0 +1,14 @@
+{
+  "name": "plasmic-internal-noop-func",
+  "private": true,
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "scripts": {
+    "prepublishOnly": "npm run build",
+    "build": "esbuild src/index.tsx --format=esm --outfile=dist/index.esm.js --minify && esbuild src/index.tsx --format=cjs --outfile=dist/index.js --minify"
+  },
+  "devDependencies": {
+    "esbuild": "^0.14.41"
+  }
+}

@@ -1,0 +1,155 @@
+import { parse as parseDbUri } from "pg-connection-string";
+import {
+  Connection,
+  ConnectionOptions,
+  createConnection,
+  getConnection,
+  getConnectionManager,
+  getConnectionOptions,
+} from "typeorm";
+import { stringToPair } from "../util/hash";
+
+// Unused, just creating for the global side effect of having a connection
+// pool.  Contrary to the name, this actually sets up a pool of connections
+// that later getConnection() calls draw from.
+// When --freshDb is specified, the default connection is created in
+// prepareFreshDb and so we guard against trying to create it again (which
+// causes an error).
+export async function ensureDbConnection(
+  dburi: string | ConnectionOptions,
+  opts?: {
+    maxConnections?: number;
+    name?: string;
+    useEnvPassword?: boolean;
+  }
+) {
+  const maxConnections = opts?.maxConnections ?? 15;
+  const name = opts?.name ?? "default";
+  if (!getConnectionManager().has(name)) {
+    console.log(`Creating typeorm connection pool for ${name}`);
+    let connOpts: ConnectionOptions;
+    if (typeof dburi === "string") {
+      const envPassword = process.env.WAB_DBPASSWORD;
+      connOpts = Object.assign(
+        {},
+        await getConnectionOptions(),
+        {
+          type: "postgres",
+          extra: {
+            // Set postgres pool size up from default of 10
+            // https://node-postgres.com/api/pool
+            max: maxConnections,
+          },
+        },
+        opts?.useEnvPassword && envPassword
+          ? {
+              // We parse dbUri into its component options, instead of specifying
+              // `url:`, because we can't use `url:` in combination with `password:`
+              ...parseDbUri(dburi),
+              password: envPassword,
+            }
+          : {
+              url: dburi,
+            }
+      );
+    } else {
+      connOpts = dburi;
+    }
+
+    return await createConnection({ ...connOpts, name });
+  } else {
+    return getConnection(name);
+  }
+}
+
+export const MIGRATION_POOL_NAME = "migration-pool";
+
+export async function getMigrationConnection() {
+  // Should only call this after ensureDbConnections() have been called
+  return _getConnection(MIGRATION_POOL_NAME);
+}
+
+export async function getDefaultConnection() {
+  return _getConnection();
+}
+
+async function _getConnection(name?: string) {
+  const conn = getConnection(name);
+  if (!conn.isConnected) {
+    await conn.connect();
+  }
+  return conn;
+}
+
+export async function ensureDbConnections(
+  dbUri: string | ConnectionOptions,
+  opts?: {
+    defaultPoolSize?: number;
+    migrationPoolSize?: number;
+    useEnvPassword?: boolean;
+  }
+) {
+  await ensureDbConnection(dbUri, {
+    name: "default",
+    maxConnections: opts?.defaultPoolSize ?? 15,
+    useEnvPassword: opts?.useEnvPassword,
+  });
+  await ensureDbConnection(dbUri, {
+    name: MIGRATION_POOL_NAME,
+    maxConnections: opts?.migrationPoolSize ?? 10,
+    useEnvPassword: opts?.useEnvPassword,
+  });
+}
+
+async function withAdvisoryLock(
+  conn: Connection,
+  callback: () => Promise<void>
+): Promise<void> {
+  const lockName = stringToPair("migration-lock");
+  try {
+    // wait to acquire lock
+    await conn.manager.query(
+      `SELECT pg_advisory_lock(${lockName[0]}, ${lockName[1]})`
+    );
+
+    // execute our code inside the lock
+    await callback();
+  } finally {
+    // unlock the acquired lock
+    const [{ pg_advisory_unlock: wasLocked }]: [
+      { pg_advisory_unlock: boolean }
+    ] = await conn.manager.query(
+      `SELECT pg_advisory_unlock(${lockName[0]}, ${lockName[1]})`
+    );
+
+    if (!wasLocked) {
+      console.warn(
+        `Advisory lock was not locked: ${lockName[0]}, ${lockName[1]}`
+      );
+    }
+  }
+}
+
+export async function maybeMigrateDatabase() {
+  const conn = await getDefaultConnection();
+  await withAdvisoryLock(conn, async () => {
+    const migrations = await conn.runMigrations({ transaction: "all" });
+    if (migrations.length > 0) {
+      console.log(
+        `Successfully ran ${migrations.length} migrations`,
+        migrations
+      );
+    }
+  });
+}
+
+async function closeConnection(name?: string) {
+  console.log(`Closing typeorm connection pool for ${name}`);
+  const conn = getConnection(name);
+  await conn.close();
+}
+
+export async function closeDbConnections() {
+  await closeConnection("default");
+  await closeConnection(MIGRATION_POOL_NAME);
+}

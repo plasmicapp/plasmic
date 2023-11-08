@@ -1,0 +1,149 @@
+.root {
+  display: inline-flex;
+  flex-direction: row;
+  position: relative;
+  width: auto;
+  height: auto;
+  border-radius: 4px;
+  padding: 0px;
+}
+.root > :global(.__wab_flex-container) {
+  flex-direction: row;
+  align-items: center;
+  margin-left: calc(0px - 4px);
+  width: calc(100% + 4px);
+}
+.root > :global(.__wab_flex-container) > *,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.root > :global(.__wab_flex-container) > picture > img,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
+  margin-left: 4px;
+}
+.rootisDisabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.checkbox {
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+  color: var(--token-7wESQh_g4);
+  opacity: 1;
+  margin-top: 0px;
+  margin-right: 0px;
+  margin-bottom: 0px;
+  margin-left: calc(0px + 4px) !important;
+  flex-shrink: 0;
+}
+.checkboxnoLabel {
+  margin-left: calc(0px + 4px) !important;
+}
+.checkboxisDisabled {
+  margin-left: calc(0px + 4px) !important;
+}
+.checkboxisChecked {
+  color: var(--token-D666zt2IZPL);
+  margin-left: calc(0px + 4px) !important;
+}
+.checkboxisIndeterminate {
+  margin-left: calc(0px + 4px) !important;
+}
+.checkboxvalueSetState_isSet {
+  color: var(--token-AEygAh2U_);
+  margin-left: calc(0px + 4px) !important;
+}
+.checkboxvalueSetState_isUnset {
+  color: var(--token-4f35RzFNq);
+  margin-left: calc(0px + 4px) !important;
+}
+.checkboxvalueSetState_isInherited {
+  color: var(--token-s0HBak9It);
+  margin-left: calc(0px + 4px) !important;
+}
+.root:focus-within .checkbox {
+  box-shadow: inset 0px 0px 0px 1px #0091ff80;
+  margin-left: calc(0px + 4px) !important;
+  outline: none;
+  border-radius: 4px;
+}
+.labelContainer {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+.slotTargetChildren {
+  color: var(--token-7wESQh_g4);
+  white-space: pre;
+}
+.slotTargetChildren > :global(.__wab_text),
+.slotTargetChildren > :global(.__wab_expr_html_text),
+.slotTargetChildren > :global(.__wab_slot-string-wrapper),
+.slotTargetChildren > :global(.__wab_slot) > :global(.__wab_text),
+.slotTargetChildren > :global(.__wab_slot) > :global(.__wab_expr_html_text),
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot-string-wrapper),
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_text),
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_expr_html_text),
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot-string-wrapper),
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_text),
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_expr_html_text),
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot-string-wrapper) {
+  text-overflow: ellipsis;
+}
+.slotTargetChildren > *,
+.slotTargetChildren > :global(.__wab_slot) > *,
+.slotTargetChildren > :global(.__wab_slot) > :global(.__wab_slot) > *,
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.slotTargetChildren > picture > img,
+.slotTargetChildren > :global(.__wab_slot) > picture > img,
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img,
+.slotTargetChildren
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  overflow: hidden;
+}
+.slotTargetChildrenvalueSetState_isSet {
+  color: var(--token-AEygAh2U_);
+}
+.slotTargetChildrenvalueSetState_isUnset {
+  color: var(--token-4f35RzFNq);
+}
+.slotTargetChildrenvalueSetState_isInherited {
+  color: var(--token-s0HBak9It);
+}

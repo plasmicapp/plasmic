@@ -1,0 +1,34 @@
+.root {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+.roothideMenu {
+  display: flex;
+  flex-direction: row;
+}
+.svg__h87Hm {
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.button:global(.__wab_instance) {
+  position: relative;
+}
+.svg__q2M75 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg__obRRe {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 1em;
+}

@@ -1,0 +1,85 @@
+.reversedVstack {
+  display: inline-flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: flex-start;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  opacity: 1;
+  position: relative;
+  padding: 0px;
+}
+.reversedVstackabove {
+  flex-direction: column;
+}
+.freeBox__dkPx6 {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0px;
+}
+.link___5Xafm {
+  width: 100%;
+  height: auto;
+  max-width: 800px;
+  min-width: 0;
+}
+.link__kzr9C {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 800px;
+  min-width: 0;
+}
+.link__ydj8H {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 800px;
+  min-width: 0;
+}
+.arrowContainer {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 85px;
+  height: 16px;
+  max-width: 100%;
+  overflow: hidden;
+  transform: rotateX(0deg) rotateY(0deg) rotateZ(180deg);
+  flex-shrink: 0;
+  padding: 0px;
+}
+.arrowContainerabove {
+  transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+}
+.arrowContainernoArrow {
+  display: none;
+}
+.arrow {
+  box-shadow: 0px 6px 12px 0px #1a1b251f, 0px 1px 3px 0px #1a1b251f,
+    0px 0px 0px 1px #1a1b250f;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 12px;
+  height: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  transform: translateX(0px) translateY(-6px) translateZ(0px) rotateX(0deg)
+    rotateY(0deg) rotateZ(-45deg);
+  transform-origin: 50% 50%;
+  flex-shrink: 0;
+  padding: 0px;
+}

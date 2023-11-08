@@ -1,0 +1,51 @@
+@import "src/wab/styles/tokens";
+
+.canvasGapArea {
+  position: absolute;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+.canvasGapShadow {
+  background-color: $blue4;
+  opacity: 0.75;
+}
+
+.canvasGapHandle {
+  position: absolute;
+  z-index: 10;
+  pointer-events: auto;
+  background-color: $blue10;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(var(--gap-control-zoom));
+  &.vert {
+    width: 3px;
+    height: 15px;
+    cursor: ew-resize;
+  }
+  &.horiz {
+    width: 15px;
+    height: 3px;
+    cursor: ns-resize;
+  }
+  &:hover {
+    transform: translate(-50%, -50%) scale(calc(var(--gap-control-zoom) * 1.2));
+  }
+}
+
+.canvasGapLabel {
+  position: absolute;
+  top: calc(50% + 30px * var(--gap-control-zoom));
+  left: 50%;
+  background-color: $blue11;
+  color: white;
+  transform: translate(-50%, -50%) scale(var(--gap-control-zoom));
+  padding: 2px;
+  border-radius: 2px;
+  white-space: nowrap;
+  opacity: 0.75;
+  &.hidden {
+    display: none;
+  }
+}

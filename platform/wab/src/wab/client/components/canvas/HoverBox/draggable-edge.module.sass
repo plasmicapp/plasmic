@@ -1,0 +1,287 @@
+@import "src/wab/styles/tokens"
+
+$padding_color: $green8
+$margin_color: $orange8
+
+.root
+  position: absolute
+  display: flex
+  pointer-events: none
+
+  &:hover
+    // On hover, reveal all the edges and areas this is
+    // responsible for
+    .knob
+      opacity: 1
+    .edgeAreaFill
+      opacity: 0.75
+
+  &.isSomeDragging
+    // When in the middle of dragging, disable all hover-to-reveal
+    // effects
+    pointer-events: none
+
+.edgeAreaContainer
+  pointer-events: none
+
+.edgeHandle
+  position: absolute
+  width: 100%
+  height: 100%
+  pointer-events: auto
+  &.edgeHandleVertical
+    cursor: ew-resize
+  &.edgeHandleHorizontal
+    cursor: ns-resize
+
+.edge
+  position: absolute
+  opacity: 0
+  transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out
+  width: 100%
+  height: 100%
+  transform-origin: 50% 50%
+  border-radius: 10px
+
+.edgeHandle.isDraggedEdge, .edgeHandle:hover
+  .edge
+    opacity: 1
+  .knob
+    opacity: 1
+
+.edgeLabel
+  position: absolute
+  padding: 2px 4px
+  border-radius: 2px
+  color: #fff
+  left: 50%
+  top: 50%
+  transform: translate(-50%, -50%)
+  pointer-events: none
+  z-index: 5
+  white-space: nowrap
+  opacity: 1
+  &.isHidden
+    opacity: 0
+
+.edgeArea
+  position: relative
+  width: 100%
+  height: 100%
+  top: 0
+  left: 0
+  pointer-events: none
+  &.isHidden
+    display: none
+
+.edgeAreaFill
+  opacity: 0
+  transition: opacity 0.1s ease-in-out
+  position: absolute
+  width: 100%
+  height: 100%
+  top: 0
+  bottom: 0
+  left: 0
+  right: 0
+  pointer-events: none
+  &.interactive
+    z-index: -1
+    opacity: 0.001 !important
+    mix-blend-mode: overlay
+    pointer-events: all
+
+.edgeAreaShown
+  .edgeAreaFill
+    opacity: 1
+
+$knob_length: 5px
+$knob_offset: 5px
+
+.knob
+  position: absolute
+  z-index: 1
+  border-radius: 2px
+  opacity: 0
+  transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out
+  pointer-events: none
+  width: 16px
+  height: 6px
+  transform-origin: 50% 50%
+  &.isDraggedKnob
+    opacity: 1
+
+  &.knobHoriz
+    left: 50%
+    transform: translate(-50%, 0)
+  &.knobVert
+    top: 50%
+    transform: translate(0, -50%)
+
+.knob2
+  position: absolute
+  z-index: 1
+  border-radius: 3px
+  width: 12px
+  height: 3px
+  border: 0.5px var(--drag-edge-color) solid
+  background-color: #ffffff
+  box-shadow: 0px 0px 0px 1px rgba(255,255,255, 0.2)
+  transition: 0.1s opacity, 0.1s transform
+
+  &.knobHoriz
+    left: 50%
+    transform: translate(-50%, 0)
+
+  &.knobVert
+    top: 50%
+    transform: translate(0, -50%)
+
+.edgeAreaContainer:hover, .edgeAreaContainer.isDraggedEdge
+  .edgeAreaFill.interactive
+    opacity: 1 !important
+
+  .edgeHandle, .edgeHandle.isDraggedEdge
+    .edge
+      opacity: 1
+    .knob2
+      transform: scale(1.5)
+
+      &.knobHoriz
+        left: 50%
+        transform: translate(-50%, 0) scale(1.5)
+
+      &.knobVert
+        top: 50%
+        transform: translate(0, -50%) scale(1.5)
+
+
+.root.isSomeDragging
+  .edgeHandle:not(:hover), .edgeHandle:not(.isDraggedEdge)
+    .knob2
+      opacity: 0
+
+.padding
+  --drag-edge-color: #{rgba($padding_color,1)}
+  .edge
+    background-color: rgba($padding_color,1)
+  .edgeLabel
+    background-color: rgba($padding_color,1)
+  .edgeAreaFill
+    background-color: rgba($padding_color,0.2)
+  .knob
+    color: $padding_color
+  .edgeHandle:hover, .edgeHandle.isDraggedEdge
+    .knob > path
+      fill: $padding_color
+
+.margin
+  --drag-edge-color: #{rgba($margin_color,1)}
+  .edge
+    background-color: rgba($margin_color,1)
+  .edgeLabel
+    background-color: rgba($margin_color,1)
+  .edgeAreaFill
+    background-color: rgba($margin_color,0.2)
+  .knob
+    color: $margin_color
+  .edgeHandle:hover, .edgeHandle.isDraggedEdge
+    .knob > path
+      fill: $margin_color
+
+.size.edgeHandle
+  .edge
+    background-color: var(--selectionControlsColor)
+  &:hover
+    // size edges are visible on hover, as there are no additional
+    // knobs for size dragging
+    .edge
+      opacity: 1
+
+$square_size: 8px
+$square_border_radius: 2px
+
+.square
+  position: absolute
+  pointer-events: none
+  z-index: 1
+  width: $square_size
+  height: $square_size
+  background: white
+  border: 1px solid var(--selectionControlsColor)
+  border-radius: $square_border_radius
+
+  &.squareTop
+    left: calc(50% - 4px)
+    top: calc(-1 * $square_size / 2)
+  &.squareBottom
+    left: calc(50% - 4px)
+    bottom: calc(-1 * $square_size / 2)
+  &.squareLeft
+    top: calc(50% - 4px)
+    left: calc(-1 * $square_size / 2)
+  &.squareRight
+    top: calc(50% - 4px)
+    right: calc(-1 * $square_size / 2)
+
+.square2
+  position: absolute
+  width: 0px
+  height: 0px
+  z-index: 1
+  pointer-events: none
+  display: flex
+  align-items: center
+  justify-content: center
+
+  &:after
+    content: ''
+    flex: 0 0 auto
+    width: $square_size
+    height: $square_size
+    background: white
+    border: 1px solid var(--selectionControlsColor)
+    border-radius: $square_border_radius
+
+  &.squareTop
+    left: 50%
+    top: 50%
+
+  &.squareBottom
+    left: 50%
+    bottom: 50%
+
+  &.squareLeft
+    left: 50%
+    top: 50%
+
+  &.squareRight
+    right: 50%
+    top: 50%
+
+.left, .right
+  height: 100%
+  top: 0
+  .margin
+    .edgeAreaFill.interactive, .edge
+      height: auto
+      top: calc(-1 * var(--selected-element-margin-top))
+      bottom: calc(-1 * var(--selected-element-margin-bottom))
+
+.top, .bottom
+  width: 100%
+  left: 0
+  flex-direction: column
+  .margin
+    .edgeAreaFill.interactive, .edge
+      width: auto
+      left: calc(-1 * var(--selected-element-margin-left))
+      right: calc(-1 * var(--selected-element-margin-right))
+
+.right
+  .margin
+    order: 2
+
+.bottom
+  .margin
+    order: 2

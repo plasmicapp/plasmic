@@ -1,0 +1,60 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  min-width: 0;
+  min-height: 0;
+}
+.defaultLayout:global(.__wab_instance) {
+  position: relative;
+}
+.cmsSection:global(.__wab_instance) {
+  position: relative;
+}
+.noProjectsText {
+  padding: 1.5rem;
+}
+.cmsListItem__eygmj:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.cmsListItem__dqvsB:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.cmsListItem___97Bp:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.cmsListItem__fU7Ah:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.cmsListItem__dHh6F:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.cmsListItem___6SZ74:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.cmsListItem__dePtP:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.img__lXcEq {
+  object-fit: cover;
+  width: 24px;
+  height: 24px;
+  max-width: 24px;
+  border-radius: 50%;
+}
+.img__lXcEq > picture > img {
+  object-fit: cover;
+}
+.img__lXcEq > :global(.__wab_img-spacer) > img {
+  object-fit: cover;
+}

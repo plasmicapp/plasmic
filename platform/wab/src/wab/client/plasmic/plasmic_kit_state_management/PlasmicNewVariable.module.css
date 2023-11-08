@@ -1,0 +1,274 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: var(--token-NCc1lDy9R);
+  border: 1px solid var(--token-O4S7RMTqZ3);
+}
+.root > :global(.__wab_flex-container) {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  min-width: 0;
+  min-height: 0;
+  margin-top: calc(0px - var(--token-uzWT6AFCY));
+  height: calc(100% + var(--token-uzWT6AFCY));
+}
+.root > :global(.__wab_flex-container) > *,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.root > :global(.__wab_flex-container) > picture > img,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
+  margin-top: var(--token-uzWT6AFCY);
+}
+.freeBox__wMgtQ {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+}
+.freeBoxisImplicitState__wMgtQws6WV {
+  display: none;
+}
+.freeBoxaccessType_readonly_isImplicitState__wMgtQ4ApxWWs6WV {
+  order: 4;
+  display: flex;
+}
+.freeBoxisImplicitState_accessType_writable__wMgtQws6WVL5M6I {
+  order: 4;
+  display: flex;
+}
+.labeledItem___92BR:global(.__wab_instance) {
+  position: relative;
+}
+.text___7B2Br {
+  height: auto;
+}
+.textbox__bThkw:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.svg__pIVjv {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.svg__sEuY3 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.labeledItem__g3YwR:global(.__wab_instance) {
+  position: relative;
+}
+.labeledItemisImplicitState__g3YwRws6WV:global(.__wab_instance) {
+  display: none;
+}
+.variableType:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.option___1Ws0C:global(.__wab_instance) {
+  position: relative;
+}
+.option__o2AW2:global(.__wab_instance) {
+  position: relative;
+}
+.freeBox__ndf1U {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0px 8px 0px 0px;
+}
+.freeBoxisExternal__ndf1UdBoOy {
+  display: flex;
+}
+.freeBoxisImplicitState__ndf1Uws6WV {
+  display: none;
+}
+.textbox___3LE7F:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.svg___0EDqL {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.svg__riKvv {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.freeBox__knZkb {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  padding-top: 8px;
+  padding-right: 0px;
+  min-width: 0;
+}
+.freeBox__knZkb > :global(.__wab_flex-container) {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  min-width: 0;
+  margin-left: calc(0px - 0px);
+  width: calc(100% + 0px);
+  margin-top: calc(0px - var(--token-NCc1lDy9R));
+  height: calc(100% + var(--token-NCc1lDy9R));
+}
+.freeBox__knZkb > :global(.__wab_flex-container) > *,
+.freeBox__knZkb > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBox__knZkb > :global(.__wab_flex-container) > picture > img,
+.freeBox__knZkb
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 0px;
+  margin-top: var(--token-NCc1lDy9R);
+}
+.freeBoxisExternal__knZkBdBoOy {
+  padding-top: 8px;
+}
+.freeBoxisExternal__knZkBdBoOy > :global(.__wab_flex-container) {
+  margin-left: calc(0px - 0px);
+  width: calc(100% + 0px);
+  margin-top: calc(0px - var(--token-NCc1lDy9R));
+  height: calc(100% + var(--token-NCc1lDy9R));
+}
+.freeBoxisExternal__knZkBdBoOy > :global(.__wab_flex-container) > *,
+.freeBoxisExternal__knZkBdBoOy
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > *,
+.freeBoxisExternal__knZkBdBoOy > :global(.__wab_flex-container) > picture > img,
+.freeBoxisExternal__knZkBdBoOy
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 0px;
+  margin-top: var(--token-NCc1lDy9R);
+}
+.freeBoxisImplicitState__knZkbws6WV {
+  padding-top: 0px;
+}
+.freeBoxisPageComponent__knZkbVaTK {
+  display: none;
+}
+.allowExternalAccess:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.labeledItem__r2Zs6:global(.__wab_instance) {
+  display: none;
+}
+.labeledItemisExternal__r2Zs6DBoOy:global(.__wab_instance) {
+  display: flex;
+}
+.accessTypeSelect:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.option__v0H15:global(.__wab_instance) {
+  position: relative;
+}
+.option__tUc3F:global(.__wab_instance) {
+  position: relative;
+}
+.freeBox__uirV1 {
+  position: relative;
+  flex-direction: row;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  padding-top: 8px;
+  min-width: 0;
+  display: none;
+}
+.freeBox__uirV1 > :global(.__wab_flex-container) {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+  margin-left: calc(0px - 8px);
+  width: calc(100% + 8px);
+}
+.freeBox__uirV1 > :global(.__wab_flex-container) > *,
+.freeBox__uirV1 > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBox__uirV1 > :global(.__wab_flex-container) > picture > img,
+.freeBox__uirV1
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 8px;
+}
+.freeBoxwithFormButtons__uirV1FjzBe {
+  display: flex;
+}
+.cancelButton:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.svg___5Ghrl {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  color: var(--token-iR8SeEwQZ);
+  width: 1em;
+  height: 1em;
+}
+.svg__iifqa {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}
+.confirmButton:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.svg___3JWvy {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  color: var(--token-iR8SeEwQZ);
+  width: 1em;
+  height: 1em;
+}
+.svg___4Tkj {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}

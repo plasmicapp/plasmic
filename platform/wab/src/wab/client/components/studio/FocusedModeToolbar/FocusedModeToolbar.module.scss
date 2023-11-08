@@ -1,0 +1,29 @@
+@import "src/wab/styles/tokens";
+
+.root {
+  height: 100%;
+  width: 100%;
+  background: white;
+  border-bottom: 1px solid $border-color;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  grid-area: topbar;
+  justify-content: space-between;
+}
+
+.variantsBarContainer {
+  max-width: 60%;
+  min-width: 213px;
+}
+
+.interactiveCanvasSwitchContainer {
+  display: flex;
+
+  & label {
+    display: flex;
+    align-items: center;
+    color: #706f6c;
+    font-size: 11px;
+  }
+}

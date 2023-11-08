@@ -1,0 +1,34 @@
+.root {
+  display: inline-flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  padding: 0px;
+}
+.freeBox {
+  display: flex;
+  flex-direction: column;
+  width: 25px;
+  height: 25px;
+  justify-content: center;
+  align-items: center;
+  background: var(--token-hoA5qaM-91G);
+  flex-shrink: 0;
+}
+.text {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 800px;
+  text-align: center;
+  color: var(--token-fVn5vRhXJxQ);
+  font-size: 8px;
+  min-width: 0;
+}
+.texttype_array {
+  padding-bottom: 0px;
+}

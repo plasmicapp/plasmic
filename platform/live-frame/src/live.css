@@ -1,0 +1,49 @@
+body {
+  background-color: #fff;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  min-height: 100vh;
+  height: 100vh;
+}
+
+#plasmic-app {
+  display: contents;
+}
+
+/*
+  Vertical centering trick copied from
+  https://steelkiwi.medium.com/vertical-centering-until-the-block-reaches-specified-height-ea2e985f461
+
+  Allows you to center vertically if content is shorter than screen height,
+  and then top-align otherwise. We only apply this for components, not for
+  pages though, because pages should always span the viewport height.
+*/
+.live-root-container {
+  width: 100%;
+  min-height: 100vh;
+  display: contents;
+}
+
+.live-root-container--centered {
+  display: flex;
+  justify-content: safe center;
+  align-items: safe center;
+}
+
+/*
+  We don't want to show error overlays whenever the host app is running
+  in dev mode and our error boundaries (e.g., the Loading Boundary) catch
+  an error.
+*/
+nextjs-portal {
+  display: none;
+}
+
+body > iframe {
+  display: none;
+}
+
+gatsby-fast-refresh {
+  display: none;
+}

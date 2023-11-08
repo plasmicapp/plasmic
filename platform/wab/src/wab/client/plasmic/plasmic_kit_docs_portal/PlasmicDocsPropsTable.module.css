@@ -1,0 +1,121 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+.freeBox {
+  flex-direction: row;
+  display: flex;
+  position: relative;
+  width: 100%;
+  background: var(--token-pryzRkTNOFd);
+  min-width: 0;
+  padding: 8px;
+}
+.freeBox > :global(.__wab_flex-container) {
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: stretch;
+  min-width: 0;
+  margin-left: calc(0px - 8px);
+  width: calc(100% + 8px);
+}
+.freeBox > :global(.__wab_flex-container) > *,
+.freeBox > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBox > :global(.__wab_flex-container) > picture > img,
+.freeBox
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 8px;
+}
+.text__stRwP {
+  position: relative;
+  font-weight: 600;
+  width: 30%;
+}
+.text__gDsMx {
+  position: relative;
+  font-weight: 600;
+  width: 100%;
+  min-width: 0;
+}
+.textshowControls__gDsMx6TP3R {
+  height: auto;
+}
+.text__k2Mxo {
+  position: relative;
+  font-weight: 600;
+  width: 35%;
+}
+.textshowControls__k2Mxo6TP3R {
+  width: 20%;
+}
+.text__yr0Wp {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 800px;
+  min-width: 0;
+  display: none;
+}
+.textshowControls__yr0Wp6TP3R {
+  font-weight: 700;
+  width: 35%;
+  height: auto;
+  text-align: left;
+  display: block;
+}
+.rows {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+.rowsshowControls {
+  display: none;
+}
+.docsPropsTableRow__iK8Fi:global(.__wab_instance) {
+  position: relative;
+  display: flex;
+}
+.docsPropsTableRow__sxb0O:global(.__wab_instance) {
+  position: relative;
+  display: flex;
+}
+.docsPropsTableRow__dP3YW:global(.__wab_instance) {
+  position: relative;
+  display: flex;
+}
+.rowsWithControl {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+.rowsWithControlshowControls {
+  display: flex;
+}
+.docsPropsTableRow___0PtEn:global(.__wab_instance) {
+  position: relative;
+  display: flex;
+}
+.docsPropsTableRow__yyw9C:global(.__wab_instance) {
+  position: relative;
+  display: flex;
+}
+.docsPropsTableRow__c6KSr:global(.__wab_instance) {
+  position: relative;
+  display: flex;
+}
+.docsPropsTableRow__rWfwe:global(.__wab_instance) {
+  position: relative;
+  display: flex;
+}

@@ -1,0 +1,53 @@
+.root {
+  display: inline-flex;
+  width: auto;
+  height: auto;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  background: linear-gradient(
+      var(--token-D666zt2IZPL),
+      var(--token-D666zt2IZPL)
+    ),
+    var(--token-iR8SeEwQZ);
+  box-shadow: none;
+  border-radius: 20px;
+  padding: 8px;
+  border-width: 0px;
+}
+.rootisActive {
+  background: var(--token-mu3x63xzJRW);
+}
+.root:hover {
+  background: var(--token-mu3x63xzJRW);
+}
+.root___focusVisible {
+  outline: none;
+}
+.svg {
+  position: relative;
+  object-fit: cover;
+  width: 24px;
+  height: 24px;
+  color: var(--token-iR8SeEwQZ);
+  flex-shrink: 0;
+}
+.root .svg___focusVisible {
+  outline: none;
+}
+.focusRing {
+  box-shadow: 0px 0px 0px 2px #0091ff80;
+  display: block;
+  position: absolute;
+  left: -4px;
+  top: -4px;
+  right: -4px;
+  width: auto;
+  height: auto;
+  bottom: -4px;
+  pointer-events: none;
+  border-radius: 24px;
+}
+.root .focusRing___focusVisible {
+  outline: none;
+}

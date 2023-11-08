@@ -1,0 +1,35 @@
+.root {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+}
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  height: auto;
+  width: 100%;
+  min-width: 0;
+  padding: 4px 16px;
+}
+.slotTargetChildren {
+  font-weight: 600;
+  color: var(--token-0KXajUKTVZC);
+}
+.details {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 0px 16px;
+}
+.slotTargetSlot {
+  font-style: normal;
+  color: var(--token-nadNyMOsLjl);
+}

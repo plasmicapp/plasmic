@@ -1,0 +1,11 @@
+.addGroupButton {
+  width: 100%;
+
+  & > button:first-child {
+    width: 100%;
+  }
+
+  & svg {
+    margin-right: 3px;
+  }
+}

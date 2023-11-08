@@ -1,0 +1,357 @@
+.root {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+.freeBox__yrVjt {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  height: 100%;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+.freeBoxcomponentType_plume__yrVjtNpXbx {
+  display: none;
+}
+.togglesContainer {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 320px;
+  background: var(--token-aUCjnzhayS);
+  flex-shrink: 0;
+}
+.labeledProp__ji10M:global(.__wab_instance) {
+  position: relative;
+}
+.svg__kNvx {
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.textbox___0J3Yp:global(.__wab_instance) {
+  position: relative;
+}
+.svg__gkR4F {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg___16Alj {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.labeledProp___4MqSk:global(.__wab_instance) {
+  position: relative;
+}
+.svg__litoE {
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.textbox__zVZh6:global(.__wab_instance) {
+  position: relative;
+}
+.svg__p8EJ {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg__fe1Ja {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.labeledProp__llVjx:global(.__wab_instance) {
+  position: relative;
+}
+.svg__gsoiw {
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.textbox__ptxo4:global(.__wab_instance) {
+  position: relative;
+}
+.svg__b6FHn {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg___6TQ1 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.labeledProp___0HvoM:global(.__wab_instance) {
+  position: relative;
+}
+.svg__tL0Ov {
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.textbox__dHeuy:global(.__wab_instance) {
+  position: relative;
+}
+.svg___0Rb6Z {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg__zBMoc {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.labeledProp__hgv4F:global(.__wab_instance) {
+  position: relative;
+}
+.svg__cho8M {
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.textbox__oU5TX:global(.__wab_instance) {
+  position: relative;
+}
+.svg__fOjab {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg__c9H20 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.labeledProp__aTrz:global(.__wab_instance) {
+  position: relative;
+}
+.svg__skLah {
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.textbox__iOtzN:global(.__wab_instance) {
+  position: relative;
+}
+.svg__ez3X9 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg__nEty0 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.labeledProp__mNgPf:global(.__wab_instance) {
+  position: relative;
+}
+.svg__j1F3S {
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.textbox__keHqg:global(.__wab_instance) {
+  position: relative;
+}
+.svg__oQahZ {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg__z1DE3 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.labeledProp__n8YSl:global(.__wab_instance) {
+  position: relative;
+}
+.svg__hmnAd {
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.textbox__c1Kut:global(.__wab_instance) {
+  position: relative;
+}
+.svg__foJav {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg__ehh6B {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.labeledProp__x8Beo:global(.__wab_instance) {
+  position: relative;
+}
+.svg__kAVxS {
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.textbox__ijCyp:global(.__wab_instance) {
+  position: relative;
+}
+.svg__etZrz {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg__nSD {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.freeBox__ll9Az {
+  flex-direction: column;
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--token-pryzRkTNOFd);
+  min-width: 0;
+  min-height: 0;
+  padding: 8px;
+}
+.freeBox__ll9Az > :global(.__wab_flex-container) {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  min-width: 0;
+  min-height: 0;
+  margin-top: calc(0px - 8px);
+  height: calc(100% + 8px);
+}
+.freeBox__ll9Az > :global(.__wab_flex-container) > *,
+.freeBox__ll9Az > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBox__ll9Az > :global(.__wab_flex-container) > picture > img,
+.freeBox__ll9Az
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-top: 8px;
+}
+.viewport {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--token-aUCjnzhayS);
+  min-width: 0;
+  min-height: 0;
+  border-radius: 8px;
+}
+.textbox__f3JUg:global(.__wab_instance) {
+  position: relative;
+  height: auto;
+  width: 343px;
+  flex-shrink: 0;
+}
+.svg___8TrlV {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg__p3MO7 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.editor {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  background: rgb(30, 30, 30);
+  min-width: 0;
+  min-height: 0;
+  border-radius: 8px;
+  padding: 16px;
+}
+.text__ldsNa {
+  position: relative;
+  color: var(--token-aUCjnzhayS);
+  font-family: "IBM Plex Mono";
+}
+.componentView:global(.__wab_instance) {
+  position: relative;
+}
+.codePreviewSnippetcomponentType_code__glO39Eelg:global(.__wab_instance) {
+  display: none;
+}
+.text__xtmgU {
+  height: auto;
+}
+.text__kKdzj {
+  height: auto;
+}
+.codePreviewSnippetcomponentType_code__ocV1LEelg:global(.__wab_instance) {
+  display: none;
+}

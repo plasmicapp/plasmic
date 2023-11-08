@@ -1,0 +1,72 @@
+@import 'src/wab/styles/_mixins.sass'
+@import 'src/wab/styles/_utils.sass'
+
+.Container
+  position: relative
+  line-height: 1
+.FigureAndNums, .PushersContainer
+  position: relative
+  display: inline-block
+  vertical-align: middle
+.FigureContainer
+  @include cover
+  @include dead-center
+.NumsContainer
+  position: relative
+.Nums
+  display: grid
+  grid-template-rows: 40px 16px 40px
+  grid-template-columns: 1fr 32px 1fr
+  width: 100%
+  margin-bottom: 10px
+.CenterBlock
+  width: 32px
+  height: 16px
+  background-color: $sand4
+  border-radius: 2px
+.Num
+  @include dead-center
+  height: 33%
+.LabelHole
+  background: $panel-block-bg
+  padding: 0 1px
+  line-height: 1
+  @extend .code
+.Pushers
+  @include grid3x3--pushed-out
+  font-size: 14px
+  margin-left: 5px
+  width: 3 * 16px
+  height: 3 * 16px
+.Pusher
+  @include plain-link
+  //width: 18px
+  //height: 18px
+.CoverBtn
+  text-align: center
+  position: absolute
+  top: 120%
+  width: 140%
+  left: -25%
+
+.TopIndicator
+  z-index: 1
+  margin-bottom: -10px
+
+.LeftIndicator
+  z-index: 1
+  margin-right: -8px
+
+.BottomIndicator
+  z-index: 1
+  margin-top: -8px
+
+.RightIndicator
+  z-index: 1
+  margin-left: -8px
+
+.TopIndicator > div,
+.BottomIndicator > div,
+.LeftIndicator > div,
+.RightIndicator > div
+  margin-left: 0 !important

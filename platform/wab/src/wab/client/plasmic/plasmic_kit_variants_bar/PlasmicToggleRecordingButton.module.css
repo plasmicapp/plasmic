@@ -1,0 +1,38 @@
+.root {
+  box-shadow: 0px 8px 32px -8px var(--token-XeFw4MGauXBT),
+    0px 8px 20px -16px var(--token-JrjdlBU-a5Ju);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  position: relative;
+  flex-shrink: 0;
+  cursor: pointer;
+  background: var(--token-7aKAiXanMe);
+  border-radius: 50%;
+}
+.rootcontained {
+  box-shadow: 0px 0px 0px 1px var(--token-hoA5qaM-91G);
+  width: 24px;
+  height: 24px;
+}
+.freeBox {
+  display: block;
+  position: relative;
+  width: 12px;
+  height: 12px;
+  background: var(--token-fVn5vRhXJxQ);
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+.freeBoxisRecording {
+  background: var(--token-iDpByWoW0eF);
+}
+.root:hover .freeBox {
+  background: var(--token-iDpByWoW0eF);
+}
+.rootisRecording:hover .freeBoxisRecording {
+  background: var(--token-d0faF7Eby4);
+}

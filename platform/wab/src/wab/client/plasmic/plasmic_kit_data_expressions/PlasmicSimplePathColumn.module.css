@@ -1,0 +1,100 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  box-shadow: 0px 2px 16px 0px #00000033;
+  width: 100%;
+  background: #ffffff;
+  min-width: 0;
+  min-height: 0;
+  padding: 16px;
+  border: 1px solid rgb(228, 230, 235) /* plasmic-token: mT3OPm6XuE-JR */;
+}
+.root > :global(.__wab_flex-container) {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  margin-top: calc(0px - 8px);
+  height: calc(100% + 8px);
+}
+.root > :global(.__wab_flex-container) > *,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.root > :global(.__wab_flex-container) > picture > img,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
+  margin-top: 8px;
+}
+.svg__want0 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg__xAmU {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.rows {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  height: 100%;
+  overflow: auto;
+  min-height: 0;
+}
+.simplePathRowHeader__qncat:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.simplePathRow__sPuM:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.simplePathRow__isUnfocused__sPuMjkxgU:global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.simplePathRow__q4J2Z:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.simplePathRowHeader__nlqgo:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.simplePathRow___1Trf1:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.simplePathRow__xcPdf:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.mask {
+  display: block;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  cursor: pointer;
+  transition-property: opacity;
+  transition-duration: 0.2s;
+  background: rgba(68, 192, 255, 0.2);
+}
+.mask__isUnfocused {
+  position: absolute;
+  left: 0px;
+  top: -10px;
+  width: auto;
+  right: 0px;
+  height: auto;
+  bottom: 0px;
+  background: #05050533;
+}
+.root .mask:hover {
+  opacity: 0.5;
+}

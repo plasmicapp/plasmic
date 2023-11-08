@@ -1,0 +1,57 @@
+@import "src/wab/styles/_utils.sass"
+
+.ModalsRoot
+  pointer-events: none
+  position: absolute
+  width: 100%
+  height: 100%
+  left: 0
+  top: 0
+
+.ModalsMask
+  background-color: rgba(0, 0, 0, 0.1)
+  position: absolute
+  width: 100%
+  height: 100%
+  left: 0
+  top: 0
+  pointer-events: auto
+  z-index: 4
+
+.ModalsMask__collapsed
+  background-color: rgba(0, 0, 0, 0.05)
+
+.ModalRoot
+  position: absolute
+  pointer-events: auto
+  display: flex
+  flex-direction: column
+  width: calc(100% - 200px)
+  left: 100px
+  background-color: white
+  box-shadow: 0 -6px 16px -8px #00000014, 0 -9px 28px #0000000d, 0 -12px 48px 16px #00000008
+  border: 1px solid #ccc
+  border-radius: 20px 20px 0 0
+  z-index: 5
+
+.ModalTitleContainer
+  padding: 0 24px
+  border-bottom: 1px solid #ccc
+  display: flex
+  align-items: center
+  height: 50px
+  flex-shrink: 0
+
+.ModalTitle
+  font-size: 16px
+  font-weight: bold
+
+.ModalActions
+  margin-left: auto
+  display: flex
+  align-items: center
+  column-gap: $space-sm
+
+.ModalBody
+  flex-grow: 1
+  min-height: 0

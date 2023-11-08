@@ -1,0 +1,9 @@
+.root {
+  display: block;
+  width: 100%;
+  height: 1px;
+  max-width: 100%;
+  background: var(--token-UQZchMTsm);
+  position: relative;
+  min-width: 0;
+}

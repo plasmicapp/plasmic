@@ -1,0 +1,74 @@
+.root {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  position: relative;
+  min-width: 0;
+}
+.freeBox {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  max-width: 100%;
+  grid-column-end: span 4;
+  padding: 8px;
+}
+.freeBoxwithoutLabel {
+  display: none;
+}
+.text {
+  max-width: 800px;
+  color: var(--token-UunsGa2Y3t3);
+}
+.input:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+  grid-column-end: span 7;
+  grid-column-start: 5;
+}
+.svg__bdJjX {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg__kEFr {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.copyButton:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+  grid-column-end: span 1;
+  grid-column-start: 12;
+}
+.svg__hRkom {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg__e9Lpz {
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+  color: var(--token-UunsGa2Y3t3);
+  width: 16px;
+  height: 16px;
+}
+.svg__qhqtk {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 1em;
+}

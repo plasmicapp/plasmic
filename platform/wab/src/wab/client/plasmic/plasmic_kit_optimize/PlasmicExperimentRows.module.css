@@ -1,0 +1,36 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  height: auto;
+  justify-content: flex-start;
+  align-items: center;
+  max-height: 250px;
+  overflow: auto;
+  min-width: 0;
+}
+.experimentRow__bLtg5:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.experimentRow__slFWu:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.experimentRow__es2Cb:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.experimentRow__e6F9B:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.experimentRow__jXgth:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.experimentRow__mghP3:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}

@@ -1,0 +1,20 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  height: auto;
+  padding-right: 8px;
+  padding-left: 8px;
+  min-width: 0;
+}
+.freeBox {
+  display: block;
+  position: relative;
+  height: 1px;
+  width: 100%;
+  background: #0000000d;
+  min-width: 0;
+  flex-shrink: 0;
+  margin: 8px 0px;
+}

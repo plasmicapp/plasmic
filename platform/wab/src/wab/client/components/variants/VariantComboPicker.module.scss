@@ -1,0 +1,25 @@
+@import "src/wab/styles/tokens";
+
+.valueContainer {
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid $sand4;
+  border-radius: 3px;
+  padding: 5px 5px 1px 5px;
+  margin-bottom: 10px;
+  cursor: pointer;
+
+  & > * {
+    margin-bottom: 4px;
+  }
+
+  & > *:not(:last-child) {
+    margin-right: 4px;
+  }
+}
+
+.placeholder {
+  line-height: 24px;
+  padding-left: 10px;
+  color: $sand9;
+}

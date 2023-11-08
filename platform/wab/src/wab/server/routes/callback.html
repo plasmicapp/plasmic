@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link
+      href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="px-6 py-6" style="display: none">
+      <p class="my-4"><a class="text-blue-400" href="javascript: void 0" onclick="window.close()">Close</a></p>
+    </div>
+    <script>
+      const authStatus = ${JSON.stringify(_authStatus)};
+      window.localStorage.setItem("authStatus", authStatus);
+      setTimeout(window.close, 0);
+    </script>
+  </body>
+</html>

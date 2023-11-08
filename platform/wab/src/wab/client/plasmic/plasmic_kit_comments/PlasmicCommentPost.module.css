@@ -1,0 +1,329 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  position: relative;
+  min-width: 0;
+  padding: 8px 16px;
+}
+.root:hover {
+  background: var(--token-9jh0BkCENS);
+}
+.rootthread:hover {
+  background: var(--token-G18pc1ITl);
+  cursor: pointer;
+}
+.freeBox__sfn9I {
+  flex-direction: row;
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0px;
+}
+.freeBox__sfn9I > :global(.__wab_flex-container) {
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  min-width: 0;
+  margin-left: calc(0px - 8px);
+  width: calc(100% + 8px);
+}
+.freeBox__sfn9I > :global(.__wab_flex-container) > *,
+.freeBox__sfn9I > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBox__sfn9I > :global(.__wab_flex-container) > picture > img,
+.freeBox__sfn9I
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 8px;
+}
+.avatarContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 32px;
+  height: auto;
+  max-width: 100%;
+  flex-shrink: 0;
+  padding: 0px;
+}
+.img {
+  object-fit: cover;
+  max-width: 100%;
+  width: 100%;
+  min-width: 0;
+}
+.img > picture > img {
+  object-fit: cover;
+}
+.img > :global(.__wab_img-spacer) > img {
+  object-fit: cover;
+}
+.text {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 800px;
+  min-width: 0;
+}
+.userFullName {
+  font-weight: 700;
+}
+.timestamp {
+  color: var(--token-PTyaboLP9ZK);
+  padding: 0px 0px 0px 4px;
+}
+.actions {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  padding: 0px;
+}
+.btnMore:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+  opacity: 0;
+  flex-shrink: 0;
+}
+.root:hover .btnMore:global(.__wab_instance) {
+  opacity: 1;
+  flex-shrink: 0;
+}
+.svg__rq90N {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}
+.svg__yh1Nh {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}
+.freeBox___5UHnq {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0px 0px 0px 40px;
+}
+.subjectLabel {
+  width: 100%;
+  height: auto;
+  max-width: 800px;
+  min-width: 0;
+}
+.subjectLabelthread {
+  color: var(--token-qKhMu66CwSx);
+}
+.freeBox__dc1JV {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0px;
+}
+.freeBoxthread__dc1JVkhQ {
+  margin-top: 8px;
+}
+.body {
+  width: 100%;
+  height: auto;
+  max-width: 800px;
+  min-width: 0;
+}
+.btnAddReaction:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+  opacity: 0;
+  flex-shrink: 0;
+}
+.root:hover .btnAddReaction:global(.__wab_instance) {
+  opacity: 1;
+  flex-shrink: 0;
+}
+.svg___61Fdh {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}
+.freeBox__xBuRf {
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 6px;
+  height: 6px;
+  background: #ffffff;
+  left: auto;
+  top: auto;
+  bottom: 4px;
+  right: 4px;
+  border-radius: 1000px;
+}
+.svg__lgliq {
+  display: flex;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+.svg__hsh5 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}
+.reactionsContainer {
+  flex-direction: row;
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0px;
+}
+.reactionsContainer > :global(.__wab_flex-container) {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: stretch;
+  min-width: 0;
+  margin-left: calc(0px - 4px);
+  width: calc(100% + 4px);
+  margin-top: calc(0px - 4px);
+  height: calc(100% + 4px);
+}
+.reactionsContainer > :global(.__wab_flex-container) > *,
+.reactionsContainer > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.reactionsContainer > :global(.__wab_flex-container) > picture > img,
+.reactionsContainer
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 4px;
+  margin-top: 4px;
+}
+.reactionButton__cMbVc:global(.__wab_instance) {
+  position: relative;
+}
+.reactionButton__fahBu:global(.__wab_instance) {
+  position: relative;
+}
+.reactionButton__oy7Cy:global(.__wab_instance) {
+  position: relative;
+}
+.reactionButton__lNxki:global(.__wab_instance) {
+  position: relative;
+}
+.reactionButton__yxwte:global(.__wab_instance) {
+  position: relative;
+}
+.reactionButton__nAY7:global(.__wab_instance) {
+  position: relative;
+}
+.btnAddReaction2:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+  opacity: 0;
+  flex-shrink: 0;
+}
+.root:hover .btnAddReaction2:global(.__wab_instance) {
+  opacity: 1;
+  flex-shrink: 0;
+}
+.svg__bs35C {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}
+.freeBox___0N5Wz {
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 6px;
+  height: 6px;
+  background: #ffffff;
+  left: auto;
+  top: auto;
+  bottom: 4px;
+  right: 4px;
+  border-radius: 1000px;
+}
+.svg__qvPY {
+  display: flex;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+.svg__k3U7A {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}
+.repliesLink:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+  align-self: flex-end;
+  margin-top: 8px;
+  display: none;
+}
+.repliesLinkthread:global(.__wab_instance) {
+  display: flex;
+}
+.svg__nXnHi {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}
+.svg__hh9Er {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}

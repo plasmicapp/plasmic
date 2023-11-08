@@ -1,0 +1,28 @@
+@import "src/wab/styles/tokens";
+
+.fullWidthLabelEditing {
+  overflow: unset;
+  text-overflow: unset;
+}
+
+.inputBox {
+  width: 100%;
+  border: 2px solid $blue9;
+  padding: 2px;
+  outline: none;
+  background: white;
+  line-height: 1.2em;
+  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+  overflow: unset !important;
+  color: #222;
+}
+
+span.inputBox[placeholder]:empty:focus::before {
+  content: attr(placeholder);
+  line-height: 1.2em;
+  display: inline-flex;
+  align-items: center;
+  color: rgba(0, 0, 0, 0.2);
+}

@@ -1,0 +1,46 @@
+.root {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+  padding: 5px 15px 5px 32px;
+}
+.rootisBase {
+  padding-left: 15px;
+}
+.roothighlight {
+  background: #0000000d;
+}
+.roothighlight_isBase {
+  background: var(--token-oGnXJKuY6v);
+}
+.roothighlight_isRecording {
+  background: linear-gradient(var(--token-B-HjTDm7Im), var(--token-B-HjTDm7Im)),
+    #0000000d;
+}
+.svg {
+  position: relative;
+  object-fit: cover;
+  width: 150px;
+  height: 150px;
+  flex-shrink: 0;
+}
+.svgisBase {
+  width: 12px;
+  height: 12px;
+  color: var(--token-q0AxQyGsjU);
+  margin-right: 5px;
+  flex-shrink: 0;
+}
+.slotTargetChildren {
+  color: var(--token-xo9BIXJZI6);
+}
+.slotTargetChildrenisBase {
+  color: var(--token-q0AxQyGsjU);
+}
+.slotTargetChildrenisRecording {
+  color: var(--token-d0faF7Eby4);
+}

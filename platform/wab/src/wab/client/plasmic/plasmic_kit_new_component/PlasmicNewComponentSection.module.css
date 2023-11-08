@@ -1,0 +1,71 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+.title {
+  position: relative;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+}
+.slotTargetTitle {
+  font-weight: 700;
+}
+.items {
+  flex-direction: row;
+  display: flex;
+  position: relative;
+}
+.items > :global(.__wab_flex-container) {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: stretch;
+  align-content: flex-start;
+  margin-left: calc(0px - 1%);
+  width: calc(100% + 1%);
+  margin-top: calc(0px - 12px);
+  height: calc(100% + 12px);
+}
+.items > :global(.__wab_flex-container) > *,
+.items > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.items > :global(.__wab_flex-container) > picture > img,
+.items > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
+  margin-left: 1%;
+  margin-top: 12px;
+}
+.newComponentItem___50Oun:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.img___2Qggo {
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+  display: inline-block !important;
+}
+.img___2Qggo > picture > img {
+  object-fit: cover;
+}
+.img___2Qggo > .__wab_img-spacer > img {
+  object-fit: cover;
+}
+.newComponentItem__mplbv:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.img__ylGDf {
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+  display: inline-block !important;
+}
+.img__ylGDf > picture > img {
+  object-fit: cover;
+}
+.img__ylGDf > .__wab_img-spacer > img {
+  object-fit: cover;
+}

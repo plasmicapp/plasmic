@@ -1,0 +1,9 @@
+.root {
+  display: block;
+  width: auto;
+  height: 24px;
+  max-width: 100%;
+  background: linear-gradient(0deg, #ffffff 0%, #ffffff00 100%);
+  pointer-events: none;
+  position: relative;
+}

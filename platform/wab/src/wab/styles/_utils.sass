@@ -1,0 +1,897 @@
+@import './_vars.sass'
+@import './_mixins.sass'
+
+
+// Typography
+.text-xsm
+  font-size: $font-size-xsm
+
+.text-sm
+  font-size: $font-size-sm
+
+.text-m
+  font-size: $font-size
+
+.text-xlg
+  font-size: $font-size-xlg
+  line-height: 20px
+
+.text-align-left
+  text-align: left
+
+.text-align-right
+  text-align: right
+
+.fg
+  color: $fg !important
+
+.dimfg
+  color: $dimfg !important
+
+.dimdimfg
+  color: $dimdimfg !important
+
+.strong
+  font-weight: 600
+
+.regular
+  font-weight: normal !important
+
+.no-line-height
+  line-height: 0
+
+.tight-line-height
+  line-height: 1em
+
+.uppercase
+  text-transform: uppercase
+.inverse-fg
+  color: $inverse-fg
+
+.inverse-dimfg
+  color: $inverse-dimfg
+
+.inverse-brightfg
+  color: $inverse-brightfg
+
+.component-dimfg
+  color: $component-dimfg !important
+
+.component-fg
+  color: $component-fg !important
+
+.variant-dimfg
+  color: $variant-dimfg !important
+
+.variant-fg
+  color: $variant-fg !important
+
+.frame-dimfg
+  color: $frame-dimfg !important
+
+.frame-fg
+  color: $frame-fg !important
+
+.tag-fg
+  color: $tag-fg !important
+
+.code
+  @include codefont
+
+.text-right
+  text-align: right
+
+.text-center
+  text-align: center
+
+.mixin-fg
+  color: $mixin-fg !important
+
+.mixin-bg
+  color: $mixin-bg
+
+.token-fg
+  color: $token-fg !important
+
+.added-fg
+  color: $grass9
+
+.removed-fg
+  color: $tomato9
+
+// Background color
+.white-bg
+  background-color: #fff !important
+
+.white-bg-unimp
+  background-color: #fff
+
+.mixin-bg
+  background-color: $mixin-dimdimfg !important
+
+.mixin-strongbg
+  background-color: $mixin-fg !important
+
+.inverse-bg
+  background-color: $inverse-bg !important
+
+.inverse-dimbg
+  background-color: $inverse-dimbg !important
+
+.inverse-dimdimbg
+  background-color: $inverse-dimdimbg !important
+
+// Flex
+.flex
+  display: flex
+  > *
+    min-width: 0
+.inline-flex
+  display: inline-flex
+.flex-vcenter
+  align-items: center
+.flex-vcenter-important
+  align-items: center !important
+.flex-hcenter
+  justify-content: center
+.flex-stretch-items
+  align-items: stretch
+.flex-align-end
+  align-items: flex-end
+.flex-align-start
+  align-items: flex-start
+.flex-align-baseline
+  align-items: baseline
+
+.flex-col
+  display: flex
+  flex-direction: column
+  > *
+    min-height: 0
+  &.flex-hcenter
+    align-items: center
+  &.flex-vcenter
+    justify-content: center
+
+
+.flex-row
+  display: flex
+  flex-direction: row
+
+.flex-fill
+  flex-grow: 1
+
+.flex-stretch
+  align-self: stretch
+
+.flex-no-shrink
+  flex-shrink: 0
+
+.flex-children-no-shrink > *
+  flex-shrink: 0
+
+.flex-wrap
+  flex-wrap: wrap
+
+.flex-col-vcenter
+  justify-content: center
+
+.flex-push-right
+  margin-left: auto
+
+.flex-full-basis
+  flex-basis: 100%
+
+.flex-even
+  flex: 1
+  flex-basis: 0
+
+.flex-no-shrink-children
+  > *
+    flex-shrink: 0
+
+.flex-even-children
+  > *
+    flex: 1
+    flex-basis: 0
+
+.flex-even-child
+  flex: 1
+  flex-basis: 0
+
+.max-full-width
+  max-width: 100%
+
+.justify-end
+  justify-content: flex-end
+
+.justify-start
+  justify-content: flex-start
+
+.justify-between
+  justify-content: space-between
+
+// Absolute position
+.absolute
+  position: absolute
+
+// Grid (grabbed from tailwind)
+.grid
+  display: grid
+
+.grid-cols-1
+  grid-template-columns: repeat(1, minmax(0, 1fr))
+.grid-cols-2
+  grid-template-columns: repeat(2, minmax(0, 1fr))
+.grid-cols-3
+  grid-template-columns: repeat(3, minmax(0, 1fr))
+.grid-cols-4
+  grid-template-columns: repeat(4, minmax(0, 1fr))
+.grid-cols-5
+  grid-template-columns: repeat(5, minmax(0, 1fr))
+.grid-cols-6
+  grid-template-columns: repeat(6, minmax(0, 1fr))
+.grid-cols-7
+  grid-template-columns: repeat(7, minmax(0, 1fr))
+.grid-cols-8
+  grid-template-columns: repeat(8, minmax(0, 1fr))
+.grid-cols-9
+  grid-template-columns: repeat(9, minmax(0, 1fr))
+
+.grid-rows-1
+  grid-template-rows: repeat(1, minmax(0, 1fr))
+.grid-rows-2
+  grid-template-rows: repeat(2, minmax(0, 1fr))
+.grid-rows-3
+  grid-template-rows: repeat(3, minmax(0, 1fr))
+.grid-rows-4
+  grid-template-rows: repeat(4, minmax(0, 1fr))
+.grid-rows-5
+  grid-template-rows: repeat(5, minmax(0, 1fr))
+.grid-rows-6
+  grid-template-rows: repeat(6, minmax(0, 1fr))
+.grid-rows-7
+  grid-template-rows: repeat(7, minmax(0, 1fr))
+.grid-rows-8
+  grid-template-rows: repeat(8, minmax(0, 1fr))
+.grid-rows-9
+  grid-template-rows: repeat(9, minmax(0, 1fr))
+
+.col-auto
+    grid-column: auto
+.col-span-1
+    grid-column: span 1 / span 1
+.col-span-2
+    grid-column: span 2 / span 2
+.col-span-3
+    grid-column: span 3 / span 3
+.col-span-4
+    grid-column: span 4 / span 4
+.col-span-5
+    grid-column: span 5 / span 5
+.col-span-6
+    grid-column: span 6 / span 6
+.col-start-1
+  grid-column-start: 1
+.col-start-2
+  grid-column-start: 2
+.col-start-3
+  grid-column-start: 3
+.col-start-4
+  grid-column-start: 4
+.col-start-5
+  grid-column-start: 5
+.col-start-6
+  grid-column-start: 6
+.col-start-7
+  grid-column-start: 7
+.col-start-8
+  grid-column-start: 8
+.col-start-9
+  grid-column-start: 9
+.col-start-auto
+  grid-column-start: auto
+.col-end-1
+  grid-column-end: 1
+.col-end-2
+  grid-column-end: 2
+.col-end-3
+  grid-column-end: 3
+.col-end-4
+  grid-column-end: 4
+.col-end-5
+  grid-column-end: 5
+.col-end-6
+  grid-column-end: 6
+.col-end-7
+  grid-column-end: 7
+.col-end-8
+  grid-column-end: 8
+.col-end-9
+  grid-column-end: 9
+.col-end-10
+  grid-column-end: 10
+.col-end-auto
+  grid-column-end: auto
+
+.row-auto
+  grid-row: auto
+.row-span-1
+  grid-row: span 1 / span 1
+.row-span-2
+  grid-row: span 2 / span 2
+.row-span-3
+  grid-row: span 3 / span 3
+.row-span-4
+  grid-row: span 4 / span 4
+.row-span-5
+  grid-row: span 5 / span 5
+.row-span-6
+  grid-row: span 6 / span 6
+.row-start-1
+  grid-row-start: 1
+.row-start-2
+  grid-row-start: 2
+.row-start-3
+  grid-row-start: 3
+.row-start-4
+  grid-row-start: 4
+.row-start-5
+  grid-row-start: 5
+.row-start-6
+  grid-row-start: 6
+.row-start-7
+  grid-row-start: 7
+.row-start-7
+  grid-row-start: 7
+.row-start-8
+  grid-row-start: 8
+.row-start-9
+  grid-row-start: 9
+.row-start-auto
+  grid-row-start: auto
+.row-end-1
+  grid-row-end: 1
+.row-end-2
+  grid-row-end: 2
+.row-end-3
+  grid-row-end: 3
+.row-end-4
+  grid-row-end: 4
+.row-end-5
+  grid-row-end: 5
+.row-end-6
+  grid-row-end: 6
+.row-end-7
+  grid-row-end: 7
+.row-end-7
+  grid-row-end: 7
+.row-end-8
+  grid-row-end: 8
+.row-end-9
+  grid-row-end: 9
+.row-end-auto
+  grid-row-end: auto
+
+.inline-block
+  display: inline-block
+
+.nowrap
+  white-space: nowrap
+
+.wrap-word
+  white-space: normal
+  word-break: break-word
+
+.pre
+  white-space: pre
+
+.text-ellipsis
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+  min-width: 0px
+
+.text-ellipsis-wrappable
+  overflow: hidden
+  text-overflow: ellipsis
+  min-width: 0px
+
+.text-wrap
+  overflow-wrap: break-word
+  overflow: hidden
+  min-width: 0px
+
+.text-one-line
+  display: -webkit-box
+  -webkit-box-orient: vertical
+  -webkit-line-clamp: 1
+  overflow: hidden
+
+.text-two-lines
+  display: -webkit-box
+  -webkit-box-orient: vertical
+  -webkit-line-clamp: 2
+  overflow: hidden
+  text-overflow: ellipsis
+
+// Margins
+$space-xsm: 4px
+$space-sm: 6px
+$space-m: 8px
+$space-lg: 12px
+$space-xlg: 16px
+$space-xxlg: 20px
+$space-xxxlg: 24px
+
+.gap-xsm
+  gap: $space-xsm
+.gap-sm
+  gap: $space-sm
+.gap-m
+  gap: $space-m
+.gap-lg
+  gap: $space-lg
+.gap-xlg
+  gap: $space-xlg
+.gap-xxlg
+  gap: $space-xxlg
+.gap-xxxlg
+  gap: $space-xxxlg
+
+.spacer-xsm
+  width: $space-xsm
+  flex-shrink: 0
+  display: inline-block
+
+.spacer-sm
+  width: $space-sm
+  flex-shrink: 0
+  display: inline-block
+
+.spacer-m
+  width: $space-m
+  flex-shrink: 0
+  display: inline-block
+
+.spacer-lg
+  width: $space-lg
+  flex-shrink: 0
+  display: inline-block
+
+.spacer-xlg
+  width: $space-xlg
+  flex-shrink: 0
+  display: inline-block
+
+.spacer-icon
+  width: 16px
+  flex-shrink: 0
+  display: inline-block
+
+.spacer-icon-sm
+  width: 16px + $space-sm
+  flex-shrink: 0
+  display: inline-block
+
+.spacer-ch
+  width: 1ch
+  flex-shrink: 0
+  display: inline-block
+
+.spacerv-xsm
+  height: $space-xsm
+  flex-shrink: 0
+
+.spacerv-sm
+  height: $space-sm
+  flex-shrink: 0
+
+.spacerv-m
+  height: $space-m
+  flex-shrink: 0
+
+.spacerv-lg
+  height: $space-lg
+  flex-shrink: 0
+
+.spacerv-xlg
+  height: $space-xlg
+  flex-shrink: 0
+
+.spacerv-icon
+  height: 16px
+  flex-shrink: 0
+
+.width-auto
+  width: auto
+
+.width-half
+  width: 50%
+
+.mb-xsm:not(:last-child)
+  margin-bottom: $space-xsm
+.mb-sm:not(:last-child)
+  margin-bottom: $space-sm
+.mb-m:not(:last-child)
+  margin-bottom: $space-m
+.mb-lg:not(:last-child)
+  margin-bottom: $space-lg
+.mb-xlg:not(:last-child)
+  margin-bottom: $space-xlg
+.mb-p:not(:last-child)
+  margin-bottom: 1em
+.mt-xsm
+  margin-top: $space-xsm
+.mt-sm
+  margin-top: $space-sm
+.mt-m
+  margin-top: $space-m
+.mt-lg
+  margin-top: $space-lg
+.mt-xlg
+  margin-top: $space-xlg
+.mt-xxlg
+  margin-top: $space-xxlg
+.mv-xsm
+  @extend .mb-xsm
+  @extend .mt-xsm
+.mv-sm
+  @extend .mb-sm
+  @extend .mt-sm
+.mv-m
+  @extend .mb-m
+  @extend .mt-m
+.mv-lg
+  @extend .mb-lg
+  @extend .mt-lg
+.mv-xlg
+  @extend .mb-xlg
+  @extend .mt-xlg
+
+.ml-ch
+  margin-left: 1ch
+.ml-xsm
+  margin-left: $space-xsm
+.ml-sm
+  margin-left: $space-sm
+.ml-m
+  margin-left: $space-m
+.ml-lg
+  margin-left: $space-lg
+.ml-xlg
+  margin-left: $space-xlg
+.mr-ch
+  margin-right: 1ch
+.mr-xsm
+  margin-right: $space-xsm
+.mr-sm
+  margin-right: $space-sm
+.mr-m
+  margin-right: $space-m
+.mr-lg
+  margin-right: $space-lg
+.mr-xlg
+  margin-right: $space-xlg
+.mh-xsm
+  @extend .ml-xsm
+  @extend .mr-xsm
+.mh-sm
+  @extend .ml-sm
+  @extend .mr-sm
+.mh-m
+  @extend .ml-m
+  @extend .mr-m
+.mh-lg
+  @extend .ml-lg
+  @extend .mr-lg
+.mh-xlg
+  @extend .ml-xlg
+  @extend .mr-xlg
+
+.m-sm
+  @extend .mh-sm
+  @extend .mv-sm
+
+.m-m
+  @extend .mh-m
+  @extend .mv-m
+
+.m0
+  margin: 0
+
+.mr-sm
+  margin-right: $space-sm
+
+.mr-m
+  margin-right: $space-m
+
+.ml-sm
+  margin-left: $space-sm
+
+.ml-lg
+  margin-left: $space-lg
+
+// Paddings
+.pb-xsm
+  padding-bottom: $space-xsm
+
+.pb-sm
+  padding-bottom: $space-sm
+
+.pb-m
+  padding-bottom: $space-m
+
+.pt-xsm
+  padding-top: $space-xsm
+
+.pt-sm
+  padding-top: $space-sm
+
+.pt-m
+  padding-top: $space-m
+
+.pt-lg
+  padding-top: $space-lg
+
+.pt-xlg
+  padding-top: $space-xlg
+
+.pt-xxlg
+  padding-top: $space-xxlg
+
+.pv-sm
+  padding-top: $space-sm
+  padding-bottom: $space-sm
+
+.pv-m
+  padding-top: $space-m
+  padding-bottom: $space-m
+
+.pv-lg
+  padding-top: $space-lg
+  padding-bottom: $space-lg
+
+.pv-xlg
+  padding-top: $space-xlg
+  padding-bottom: $space-xlg
+
+.pv-xsm
+  padding-top: $space-xsm
+  padding-bottom: $space-xsm
+
+.ph-sm
+  padding-left: $space-sm
+  padding-right: $space-sm
+
+.ph-m
+  padding-left: $space-m
+  padding-right: $space-m
+
+.ph-lg
+  padding-left: $space-lg
+  padding-right: $space-lg
+
+.ph-xlg
+  padding-left: $space-xlg
+  padding-right: $space-xlg
+
+.ph-xxlg
+  padding-left: $space-xxlg
+  padding-right: $space-xxlg
+
+.ph-xsm
+  padding-left: $space-xsm
+  padding-right: $space-xsm
+
+.pr-lg
+  padding-right: $space-lg !important
+
+.pr-xlg
+  padding-right: $space-xlg !important
+
+.pr-xxlg
+  padding-right: $space-xxlg !important
+
+.pr-xxxlg
+  padding-right: $space-xxxlg !important
+
+.p-sm
+  padding: $space-sm
+
+.p-m
+  padding: $space-m
+
+.p-lg
+  padding: $space-lg
+
+.p-xlg
+  padding: $space-xlg
+
+.p-xxlg
+  padding: $space-xxlg
+
+.pl-m
+  padding-left: $space-m
+
+.pl-lg
+  padding-left: $space-lg
+
+.pl-xxlg
+  padding-left: $space-xxlg
+
+.p0
+  padding: 0
+
+// Borders
+.bb-dimfg
+  border-bottom: 1px solid $dimfg
+.bb-lightener2
+  border-bottom: 1px solid $lightener2
+.b-dashed-lightener2
+  border: 1px dashed $lightener2
+.bt-dim
+  border-top: 1px solid $border-dim
+
+// Overflow
+.overflow-hidden
+  overflow: hidden
+
+.overflow-scroll-y
+  overflow-y: auto
+
+.overflow-scroll
+  overflow: auto
+
+.center
+  @include dead-center
+
+.inline-center
+  @include inline-dead-center
+
+// Positioning
+.rel
+  position: relative
+
+.cover
+  @include cover
+
+.hang-right
+  position: absolute
+  right: 0
+  transform: translate(100%, 0)
+
+// Sizing
+.fill-width
+  width: 100%
+.fill-height
+  height: 100%
+.flex-child-min
+  min-height: 0
+  min-width: 0
+
+// Interactions
+.group
+  .show-on-group-hover
+    display: none
+  .visible-on-group-hover
+    visibility: hidden
+  .opaque-on-group-hover
+    opacity: 0
+  &:hover, &:focus-within
+    .show-on-group-hover
+      display: block
+    .visible-on-group-hover
+      visibility: visible
+    .opaque-on-group-hover
+      opacity: 1
+
+// Lists
+.hlist-gap-xsm
+  > * + *
+    margin-left: $space-xsm
+
+.vlist-gap-xsm
+  > * + *
+    margin-top: $space-xsm
+
+.vlist-gap-sm
+  > * + *
+    margin-top: $space-sm
+.vlist-gap-m
+  > * + *
+    margin-top: $space-m
+.vlist-gap-lg
+  > * + *
+    margin-top: $space-lg
+.vlist-gap-xlg
+  > * + *
+    margin-top: $space-xlg
+
+.vlist-gray-border
+  > * + *
+    border-top: 1px solid $border-dim
+
+ul.disc-list
+  padding-left: 15px
+  > li
+    list-style-type: disc
+
+.vlist-scrollable-descendant
+  display: flex
+  flex-direction: column
+  flex: 1
+  overflow: hidden
+
+// Other effects
+.pointer
+  cursor: pointer
+
+.ew-resize
+  cursor: ew-resize
+
+.ns-resize
+  cursor: ns-resize
+
+.grabbable
+  cursor: grab
+
+.cursor-text
+  cursor: text
+
+.form-control-transition
+  transition: all 0.2s
+
+.invisible
+  visibility: hidden
+
+.display-none
+  display: none
+
+.z-resize
+  z-index: 10
+
+.cover
+  @include cover
+
+.no-select
+  user-select: none !important
+
+.no-pointer-events
+  pointer-events: none
+
+.auto-pointer-events
+  pointer-events: auto
+
+
+.line-clamp-2
+  -webkit-line-clamp: 2
+  -webkit-box-orient: vertical
+  display: -webkit-box
+  text-overflow: ellipsis
+  overflow: hidden
+
+.line-clamp-3
+  -webkit-line-clamp: 3
+  -webkit-box-orient: vertical
+  display: -webkit-box
+
+.max-scrollable
+  display: flex
+  flex-direction: column
+  height: 100%
+
+.no-caret
+  caret-color: transparent
+
+.restore-normal-formatting
+  & > *:last-child
+    margin-bottom: 0
+  ol, ul
+    list-style: initial
+    padding-left: 16px
+    margin-bottom: 0 // from antd
+  ol
+    list-style-type: decimal
+  li
+    list-style-type: inherit

@@ -1,0 +1,171 @@
+@import "src/wab/styles/tokens";
+@import "../../../styles/_vars";
+
+.root:hover {
+  & .contextMenuIcon {
+    opacity: 0.7;
+  }
+
+  & .collapsingToggle {
+    opacity: 1;
+  }
+}
+
+.root_fullyCollapsible:last-child {
+  border-bottom-width: 1px !important;
+  margin-bottom: 20px;
+}
+
+.root_scrollable {
+  height: 100%;
+}
+
+.collapsingToggle_sticky {
+  position: sticky !important;
+  bottom: -1px !important;
+}
+
+.contextMenuIcon {
+  opacity: 0;
+  transition: opacity 150ms;
+}
+
+.headerRoot {
+  width: 100%;
+  padding: 0 $sidebar-section-hpadding-with-right-gutter 0
+    $sidebar-section-hpadding;
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.headerLeftSide {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  flex-shrink: 1;
+  flex-grow: 1;
+}
+
+.headerLeftSide_clickable {
+  cursor: pointer;
+}
+
+.headerRoot--grid .headerLeftSide {
+  width: $label-col-width;
+  flex-shrink: 0;
+}
+
+.headerTitle {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: $sand12;
+}
+
+.headerTitleActive {
+  color: $sand12;
+}
+
+.headerControls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+
+  & > * {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.headerRoot--grid .headerControls {
+  justify-content: flex-start;
+}
+
+.contextMenuContainer {
+  cursor: pointer;
+
+  &:hover {
+    color: $neutral-primary;
+  }
+}
+
+.bodyScrollable {
+  height: 100%;
+  position: relative;
+  overflow: auto;
+  padding-bottom: 0 !important;
+}
+
+.collapsingToggle {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  opacity: 0.7;
+  transition: opacity 150ms;
+  margin-bottom: -18px;
+  margin-top: 8px;
+
+  &[data-show-extra-content="true"] {
+    opacity: 1 !important;
+
+    &::before {
+      opacity: 1;
+    }
+  }
+}
+
+.collapsingToggle.fullyCollapsedBody {
+  margin-top: -12px;
+}
+
+.bodyScrollable .collapsingToggle {
+  margin-bottom: 0;
+}
+
+.collapsingToggleAlwaysVisible {
+  //opacity: 1 !important;
+}
+
+.collapsingToggleLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  height: 12px;
+  width: 100px;
+
+  background: $sand5;
+  border-radius: 6px 6px 0 0;
+  position: relative;
+  z-index: 1;
+
+  & svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  &:hover {
+    background: $blue3 !important;
+    border-color: transparent;
+    color: $blue9;
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 2px $focus-color;
+  }
+}
+
+.collapsingToggleLabel_expanded {
+  margin-top: 10px;
+}
+
+.hiddenChevronIcon {
+  visibility: hidden;
+}

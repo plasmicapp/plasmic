@@ -1,0 +1,97 @@
+.root {
+  display: flex;
+  width: 100%;
+  height: auto;
+  position: relative;
+  flex-direction: column;
+  min-width: 0;
+}
+.listSectionHeader:global(.__wab_instance) {
+  position: relative;
+}
+.iconButton:global(.__wab_instance) {
+  position: relative;
+}
+.svg__m72P3 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+  width: 16px;
+  height: 16px;
+}
+.svg__oLuZm {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  color: var(--token-UunsGa2Y3t3);
+  width: 1em;
+  height: 1em;
+}
+.svg___42FXn {
+  position: relative;
+  object-fit: cover;
+  width: 24px;
+  height: 24px;
+  color: rgb(150, 153, 158);
+}
+.itemsContainer {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  height: 100%;
+  padding-bottom: 8px;
+  min-height: 0;
+}
+.svg__qxi65 {
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}
+.svg__nOeR {
+  position: relative;
+  object-fit: cover;
+  width: 24px;
+  height: 24px;
+}
+.listItem__fHgE:global(.__wab_instance) {
+  position: relative;
+}
+.svg__qoaAq {
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}
+.svg__gp8QQ {
+  position: relative;
+  object-fit: cover;
+  width: 24px;
+  height: 24px;
+}
+.listItem__h0DR:global(.__wab_instance) {
+  position: relative;
+}
+.svg__l86PJ {
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}
+.svg__v9X9I {
+  position: relative;
+  object-fit: cover;
+  width: 24px;
+  height: 24px;
+}
+.listSectionSeparator:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.listSectionSeparatorisLast:global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.listSectionSeparatorcollapseState_collapsed:global(.__wab_instance) {
+  flex-shrink: 0;
+}

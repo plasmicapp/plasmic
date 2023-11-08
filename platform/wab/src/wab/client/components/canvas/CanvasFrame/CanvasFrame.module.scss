@@ -1,0 +1,61 @@
+@import "src/wab/styles/css-variables";
+@import "src/wab/styles/tokens";
+
+.root:hover {
+  & .artboardSelectionHandle:not(:hover) {
+    transform: scale($inverseZoom) !important;
+    background-color: $sand4;
+    color: $sand9;
+
+    &:hover {
+      background-color: $selectionControlsColor !important;
+      color: white !important;
+    }
+  }
+}
+
+.artboardSelectionHandle {
+  width: $hoverBoxTagHeight;
+  height: $hoverBoxTagHeight;
+
+  border-radius: 4px 4px 0 4px;
+  transform-origin: 100% 100%;
+  bottom: 100%;
+  right: calc(100% + 1px);
+
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $sand9;
+  transition: transform 200ms, background 200ms, color 200ms;
+
+  & svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover,
+  &.artboardSelectionHandle_prominent {
+    background-color: $sand4;
+    color: $sand9;
+  }
+}
+
+.artboardSelectionHandle_focused,
+.artboardSelectionHandle_prominent:hover {
+  background-color: $selectionControlsColor !important;
+  color: white !important;
+}
+
+.statusBadge {
+  position: absolute;
+  pointer-events: none;
+  color: white;
+  background-color: $orange-dark8;
+  border-radius: 0 0 0 4px;
+  top: 0;
+  right: 0;
+  padding: 2px 4px;
+}

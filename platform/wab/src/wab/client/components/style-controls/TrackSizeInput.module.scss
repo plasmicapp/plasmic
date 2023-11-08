@@ -1,0 +1,15 @@
+.trackSizeInput {
+  display: grid;
+  grid-template: 28px / 28px 1fr;
+  grid-auto-rows: auto;
+  grid-gap: 0 10px;
+  align-items: baseline;
+}
+
+.label {
+  //text-align: right;
+}
+
+.vcenter {
+  align-self: center;
+}

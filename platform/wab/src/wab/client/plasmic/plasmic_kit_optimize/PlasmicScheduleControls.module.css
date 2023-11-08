@@ -1,0 +1,82 @@
+.root {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  position: relative;
+  grid-row-gap: 8px;
+  min-width: 0;
+  padding: 0px 8px;
+}
+.freeBox__jRmBs {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  grid-column-end: span 4;
+  min-width: 0;
+  padding: 0px 0px 0px 8px;
+}
+.text__tlc4B {
+  width: 100%;
+  height: auto;
+  max-width: 800px;
+  color: var(--token-UunsGa2Y3t3);
+  min-width: 0;
+}
+.freeBox__dKhK {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  justify-content: flex-start;
+  align-items: center;
+  grid-column-end: span 8;
+  min-width: 0;
+}
+.slotTargetFromInput {
+  color: var(--token-qKhMu66CwSx);
+}
+.freeBox__nMyw {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  grid-column-end: span 4;
+  min-width: 0;
+  padding: 0px 0px 0px 8px;
+}
+.text__fjTqm {
+  width: 100%;
+  height: auto;
+  max-width: 800px;
+  color: var(--token-UunsGa2Y3t3);
+  padding-left: 0px;
+  min-width: 0;
+}
+.freeBox__z8Zv {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  justify-content: flex-start;
+  align-items: center;
+  grid-column-end: span 8;
+  min-width: 0;
+}
+.slotTargetToInput {
+  color: var(--token-qKhMu66CwSx);
+}

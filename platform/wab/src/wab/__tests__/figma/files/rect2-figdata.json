@@ -1,0 +1,131 @@
+{
+  "version": "0.0.1",
+  "i": {},
+  "k": [
+    "name",
+    "visible",
+    "opacity",
+    "blendMode",
+    "strokeWeight",
+    "strokeAlign",
+    "x",
+    "y",
+    "width",
+    "height",
+    "rotation",
+    "layoutAlign",
+    "layoutGrow",
+    "cornerRadius",
+    "topLeftRadius",
+    "topRightRadius",
+    "bottomLeftRadius",
+    "bottomRightRadius",
+    "type",
+    "horizontal",
+    "vertical",
+    "constraints",
+    "relativeTransform",
+    "r",
+    "g",
+    "b",
+    "color",
+    "fills"
+  ],
+  "n": [
+    {
+      "0": "0",
+      "1": 1,
+      "2": 1,
+      "3": "1",
+      "4": 1,
+      "5": "2",
+      "6": -314,
+      "7": -240,
+      "8": 111,
+      "9": 142,
+      "a": 0,
+      "b": "3",
+      "c": 0,
+      "d": 0,
+      "e": 0,
+      "f": 0,
+      "g": 0,
+      "h": 0,
+      "i": "4",
+      "l": {
+        "j": "5",
+        "k": "5"
+      },
+      "m": [
+        [1, 0, -314],
+        [0, 1, -240]
+      ],
+      "r": [
+        {
+          "1": 1,
+          "2": 1,
+          "3": "7",
+          "i": "6",
+          "q": {
+            "n": 0.768,
+            "o": 0.768,
+            "p": 0.768
+          }
+        }
+      ]
+    },
+    {
+      "0": "0",
+      "1": 1,
+      "2": 1,
+      "3": "1",
+      "4": 1,
+      "5": "2",
+      "6": -203,
+      "7": -240,
+      "8": 107,
+      "9": 142,
+      "a": 0,
+      "b": "3",
+      "c": 0,
+      "d": 0,
+      "e": 0,
+      "f": 0,
+      "g": 0,
+      "h": 0,
+      "i": "4",
+      "l": {
+        "j": "5",
+        "k": "5"
+      },
+      "m": [
+        [1, 0, -203],
+        [0, 1, -240]
+      ],
+      "r": [
+        {
+          "1": 1,
+          "2": 1,
+          "3": "7",
+          "i": "6",
+          "q": {
+            "n": 0.8,
+            "o": 0.153,
+            "p": 0.153
+          }
+        }
+      ]
+    }
+  ],
+  "s": [
+    "Rectangle",
+    "PASS_THROUGH",
+    "INSIDE",
+    "INHERIT",
+    "RECTANGLE",
+    "MIN",
+    "SOLID",
+    "NORMAL"
+  ],
+  "v": {}
+}

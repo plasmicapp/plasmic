@@ -1,0 +1,149 @@
+{
+  _ = require 'lodash'
+  @_ = _
+  bgStylesMod = require '../bg-styles'
+  _.extend(@, bgStylesMod)
+}
+
+backgroundLayer
+  = image:backgroundImage posAndSize:(_ backgroundPositionAndSize)? repeat:(_ backgroundRepeat)? origin:(_ backgroundOrigin)? clip:(_ backgroundClip)? attachment:(_ backgroundAttachment)? _
+    {
+      new @BackgroundLayer({
+        image,
+        position: posAndSize?[1]?[0],
+        size: posAndSize?[1]?[1],
+        repeat: repeat?[1],
+        origin: origin?[1],
+        clip: clip?[1],
+        attachment: attachment?[1]
+      })
+    }
+
+backgroundImage
+  = "linear-gradient(" _ color:color _ "," _ color _ ")"
+    { new @ColorFill(color: color) }
+  / name:linear _ "(" angle:(_ angle _ ",") _ stops:stops ")"
+    {
+      new @LinearGradient(
+        repeating: name.indexOf('repeating') != -1
+        angle: angle[1]
+        stops: stops
+      )
+    }
+  / name:radial _ "(" _ ellipse:ellipse _ "," _ stops:stops ")"
+    {
+      new @RadialGradient(
+        @_.extend(ellipse, {
+          repeating: name.indexOf('repeating') != -1
+          stops: stops
+        })
+      )
+    }
+  / "url" _ "(" _ '"' url:[^")]+ '"' _ ")"
+    { new @ImageBackground(url: url.join('')) }
+  / "var" _ "(" _ url:[^)]+ _ ")"
+    { new @ImageBackground(url: "var(" + url.join('') + ")") }
+  / url:"none"
+    { new @NoneBackground({url}) }
+
+backgroundPositionAndSize = backgroundPosition ( vals:(_ "/" _ backgroundSize ) { vals[3] } )?
+
+backgroundPosition = $ ( (( ("top" / "bottom" / "right" / "left")? _ (dim / "auto" / "center") ) / ("top" / "bottom" / "right" / "left")) ( _ (( ("top" / "bottom" / "right" / "left")? _ (dim / "auto" / "center")) / ("top" / "bottom" / "right" / "left")) )? )
+
+backgroundSize = $ ( ( "contain" / "cover" / "auto" / dim ) ( _  ( "contain" / "cover" / "auto" / dim ) )? )
+
+backgroundRepeat = $ ("repeat-x" / "repeat-y" / ( ("repeat" / "space" / "round" / "no-repeat") ( _ ("repeat" / "space" / "round" / "no-repeat") )? ) )
+
+backgroundOrigin = "border-box" / "padding-box" / "content-box"
+
+// Also include `bgClipTextTag`
+backgroundClip = "border-box" / "padding-box" / "content-box" / "text" / "/* clip: text **/"
+
+backgroundAttachment = "scroll" / "fixed" / "local"
+
+boxShadows = head:boxShadow tail:( _ "," _ boxShadow )*
+  { new @BoxShadows([head, (x[3] for x in tail)...]) }
+
+
+boxShadow
+  = inset:( "inset" __ )? x:dim __ y:dim __ blur:dim __ spread:dim __ color:color
+    {
+      new @BoxShadow({
+        inset: inset?.length ? 0
+        x, y, blur, spread, color
+      })
+    }
+  / color:color __ x:dim __ y:dim __ blur:dim __ spread:dim inset:( __ "inset" )?
+    {
+      new @BoxShadow({
+        inset: inset?.length ? 0
+        x, y, blur, spread, color
+      })
+    }
+
+linear = "linear-gradient" / "repeating-linear-gradient"
+radial = "radial-gradient" / "repeating-radial-gradient"
+
+ellipse = "ellipse" __ rx:dim __ ry:dim __ "at" __ cx:dim __ cy:dim
+  { {cx, cy, rx, ry} }
+
+stops
+  = head:stop tail:( _ "," _ stop )*
+    { [head].concat(x[3] for x in tail) }
+
+angle = angle:num "deg" { angle }
+
+stop = color:color dim:( __ dim ) { new @Stop(color, dim[1]) }
+
+color = color:(call / word / hex) { color }
+hex = all:( "#" [A-Fa-f0-9]+ ) { @_.flatten(all).join('') }
+call = all:( word _ "(" [^)]+ ")" ) { @_.flatten(all).join('') }
+
+dim = value:num unit:("%" / "px" / "em") { new @Dim(value, unit) }
+  / "var" _ "(--token-" _ token:[^)]+ _ ")" { "var(--token-" + token.join('') + ")" }
+
+words = word+
+
+word = word:[A-Za-z0-9_-]+ { word.join('') }
+
+num = neg:"-"? value:[0-9.]+ { parseInt("#{neg ? ""}#{value.join('')}") }
+
+
+// comma-separated values, parses top-level values delimited by commas.
+// Ignores commas that live within quoted strings and parentheses
+// "hello, (yes, no), maybe, 'hello, you'" => ["hello", "(yes, no)", "maybe", "'hello, you'"]
+commaSepValues = nonEmptyCommaSepValues / emptyCommaSepValues
+emptyCommaSepValues = "" { return [] }
+nonEmptyCommaSepValues = head:commaSepValue tail:( _ "," _ commaSepValue )* { return [head, (x[3] for x in tail)...] }
+commaSepValue = all:(containsParenChunk / containsDoubleQuotedChunk / containsSingleQuotedChunk / plainChunk)+ { return all.join("") }
+plainChunk = all:[^(),"']+ {return all.join("")}
+
+doubleQuotedChunk = '"' middle:[^"]* '"' { return '"' + middle.join("") + '"' }
+containsDoubleQuotedChunk = prefix:[^",]* chunk:doubleQuotedChunk suffix:[^",]* { return prefix.join("") + chunk + suffix.join("")}
+
+singleQuotedChunk = "'" middle:[^']* "'" { return "'" + middle.join("") + "'" }
+containsSingleQuotedChunk = prefix:[^',]* chunk:singleQuotedChunk suffix:[^',]* { return prefix.join("") + chunk + suffix.join("")}
+
+// for parens, we need to more carefully match open and close and they can be nested
+containsParenChunk = prefix:[^(),]* chunk:parenChunk suffix:[^(),]* { return prefix.join("") + chunk + suffix.join("") }
+parenChunk = "(" middle:(innerContainsParenChunk / innerNonParenChunk)+ ")" { return "(" + middle.join("") + ")" }
+innerContainsParenChunk = prefix:[^()]* middle:parenChunk suffix:[^()]* { return prefix.join("") + middle + suffix.join("")}
+innerNonParenChunk = all:[^()]+ {return all.join("")}
+
+// Space-separated css values (like for transform or filter)
+spaceSepValues = nonEmptySpaceSepValues / emptyValues
+emptyValues = "" { return [] }
+nonEmptySpaceSepValues = head:outerAtomicChunk tail:( __ outerAtomicChunk )* { return [head, (x[1] for x in tail)...] }
+plainChunk2 = all:[^()"']+ {return all.join("")}
+spacelessPlainChunk = all:[^()"' \n\r\t\v]+ {return all.join("")}
+
+outerAtomicChunk = doubleQuotedAtomicChunk / singleQuotedAtomicChunk / containsParenAtomicChunk / spacelessPlainChunk
+innerAtomicChunk = doubleQuotedAtomicChunk / singleQuotedAtomicChunk / containsParenAtomicChunk / plainChunk2
+doubleQuotedAtomicChunk = '"' middle:innerAtomicChunk* '"' { return '"' + middle.join("") + '"'}
+singleQuotedAtomicChunk = "'" middle:innerAtomicChunk* "'" { return "'" + middle.join("") + "'"}
+containsParenAtomicChunk = prefix:spacelessPlainChunk* "(" middle:innerAtomicChunk* ")" { return prefix.join("") + "(" + middle.join("") + ")"}
+
+
+__ = [ \n\r\t\v]+
+
+_ = [ \n\r\t\v]*

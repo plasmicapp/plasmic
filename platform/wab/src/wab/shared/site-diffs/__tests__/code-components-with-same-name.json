@@ -1,0 +1,4304 @@
+{
+  "branches": [{ "id": "ueJCf2xRNeZUigdkcqomNJ", "name": "test" }],
+  "pkgVersions": [
+    {
+      "id": "6fa02148-c3fb-4c7e-ade4-7942c6f13467",
+      "data": {
+        "root": "35298001",
+        "map": {
+          "1644601": {
+            "rows": [{ "__ref": "1644602" }],
+            "__type": "ArenaFrameGrid"
+          },
+          "1644602": { "cols": [], "rowKey": null, "__type": "ArenaFrameRow" },
+          "10466001": {
+            "uuid": "EcZrzAhI2t",
+            "name": "Comp",
+            "params": [{ "__ref": "10466002" }],
+            "states": [],
+            "tplTree": { "__ref": "10466003" },
+            "editableByContentEditor": true,
+            "hiddenFromContentEditor": false,
+            "variants": [{ "__ref": "10466004" }],
+            "variantGroups": [],
+            "pageMeta": null,
+            "codeComponentMeta": { "__ref": "10466005" },
+            "type": "code",
+            "subComps": [],
+            "superComp": null,
+            "plumeInfo": null,
+            "templateInfo": null,
+            "metadata": {},
+            "dataQueries": [],
+            "figmaMappings": [],
+            "alwaysAutoName": false,
+            "trapsFocus": false,
+            "__type": "Component"
+          },
+          "10466002": {
+            "type": { "__ref": "10466007" },
+            "variable": { "__ref": "10466006" },
+            "uuid": "ZwA5F5xaGF",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": null,
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "10466003": {
+            "tag": "div",
+            "name": null,
+            "children": [],
+            "type": "other",
+            "codeGenType": null,
+            "columnsSetting": null,
+            "uuid": "AsoKaqx8eo",
+            "parent": null,
+            "locked": null,
+            "vsettings": [{ "__ref": "10466008" }],
+            "__type": "TplTag"
+          },
+          "10466004": {
+            "uuid": "SVbS2XE6Q",
+            "name": "base",
+            "selectors": null,
+            "parent": null,
+            "mediaQuery": null,
+            "description": null,
+            "forTpl": null,
+            "__type": "Variant"
+          },
+          "10466005": {
+            "importPath": "",
+            "defaultExport": false,
+            "displayName": null,
+            "importName": null,
+            "description": null,
+            "classNameProp": null,
+            "refProp": null,
+            "defaultStyles": null,
+            "defaultDisplay": null,
+            "isHostLess": false,
+            "isContext": false,
+            "isAttachment": false,
+            "providesData": false,
+            "hasRef": false,
+            "isRepeatable": true,
+            "styleSections": null,
+            "helpers": null,
+            "defaultSlotContents": {},
+            "__type": "CodeComponentMeta"
+          },
+          "10466006": {
+            "name": "param1",
+            "uuid": "KoHueX3Z3Z",
+            "__type": "Var"
+          },
+          "10466007": { "name": "text", "__type": "Text" },
+          "10466008": {
+            "variants": [{ "__ref": "10466004" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "10466009" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "10466009": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": { "display": "flex", "flex-direction": "row" }
+          },
+          "10466012": {
+            "name": "comp1",
+            "component": { "__ref": "10466001" },
+            "uuid": "NharCG4oH",
+            "parent": { "__ref": "43666003" },
+            "locked": null,
+            "vsettings": [{ "__ref": "10466013" }],
+            "__type": "TplComponent"
+          },
+          "10466013": {
+            "variants": [{ "__ref": "43666004" }],
+            "args": [{ "__ref": "10466018" }],
+            "attrs": {},
+            "rs": { "__ref": "10466014" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "10466014": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "max-width": "100%",
+              "object-fit": "cover",
+              "position": "relative"
+            }
+          },
+          "10466018": {
+            "param": { "__ref": "10466002" },
+            "expr": { "__ref": "10466019" },
+            "__type": "Arg"
+          },
+          "10466019": { "text": ["arg1"], "__type": "TemplatedString" },
+          "18650001": {
+            "uuid": "DA4AQmg1Sb",
+            "name": "hostless-plasmic-head",
+            "params": [
+              { "__ref": "18650003" },
+              { "__ref": "18650004" },
+              { "__ref": "18650005" },
+              { "__ref": "18650006" }
+            ],
+            "states": [],
+            "tplTree": { "__ref": "18650007" },
+            "editableByContentEditor": true,
+            "hiddenFromContentEditor": false,
+            "variants": [{ "__ref": "18650008" }],
+            "variantGroups": [],
+            "pageMeta": null,
+            "codeComponentMeta": { "__ref": "18650009" },
+            "type": "code",
+            "subComps": [],
+            "superComp": null,
+            "plumeInfo": null,
+            "templateInfo": null,
+            "metadata": {},
+            "dataQueries": [],
+            "figmaMappings": [],
+            "alwaysAutoName": false,
+            "trapsFocus": false,
+            "__type": "Component"
+          },
+          "18650002": {
+            "uuid": "q2L7mov6yJ",
+            "name": "plasmic-data-source-fetcher",
+            "params": [
+              { "__ref": "18650010" },
+              { "__ref": "18650011" },
+              { "__ref": "18650012" },
+              { "__ref": "18650013" },
+              { "__ref": "18650014" }
+            ],
+            "states": [],
+            "tplTree": { "__ref": "18650015" },
+            "editableByContentEditor": true,
+            "hiddenFromContentEditor": false,
+            "variants": [{ "__ref": "18650016" }],
+            "variantGroups": [],
+            "pageMeta": null,
+            "codeComponentMeta": { "__ref": "18650017" },
+            "type": "code",
+            "subComps": [],
+            "superComp": null,
+            "plumeInfo": null,
+            "templateInfo": null,
+            "metadata": {},
+            "dataQueries": [],
+            "figmaMappings": [],
+            "alwaysAutoName": true,
+            "trapsFocus": false,
+            "__type": "Component"
+          },
+          "18650003": {
+            "type": { "__ref": "18650019" },
+            "variable": { "__ref": "18650018" },
+            "uuid": "9RB1M2ofm0",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": "Title",
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "18650004": {
+            "type": { "__ref": "18650021" },
+            "variable": { "__ref": "18650020" },
+            "uuid": "ROLYBAKhxL",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": "Description",
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "18650005": {
+            "type": { "__ref": "18650023" },
+            "variable": { "__ref": "18650022" },
+            "uuid": "vK3_7zBqc9",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": "Image",
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "18650006": {
+            "type": { "__ref": "18650025" },
+            "variable": { "__ref": "18650024" },
+            "uuid": "2tWFzxA4He",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": "Canonical URL",
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "18650007": {
+            "tag": "div",
+            "name": null,
+            "children": [],
+            "type": "other",
+            "codeGenType": null,
+            "columnsSetting": null,
+            "uuid": "_nP0wq_Y_F",
+            "parent": null,
+            "locked": null,
+            "vsettings": [{ "__ref": "18650026" }],
+            "__type": "TplTag"
+          },
+          "18650008": {
+            "uuid": "b8JXbiIfw",
+            "name": "base",
+            "selectors": null,
+            "parent": null,
+            "mediaQuery": null,
+            "description": null,
+            "forTpl": null,
+            "__type": "Variant"
+          },
+          "18650009": {
+            "importPath": "@plasmicapp/react-web",
+            "defaultExport": false,
+            "displayName": "Head",
+            "importName": "PlasmicHead",
+            "description": "Used to add page metadata to HTML <head />.",
+            "classNameProp": null,
+            "refProp": null,
+            "defaultStyles": null,
+            "defaultDisplay": null,
+            "isHostLess": true,
+            "isContext": false,
+            "isAttachment": false,
+            "providesData": false,
+            "hasRef": false,
+            "isRepeatable": false,
+            "styleSections": false,
+            "helpers": null,
+            "defaultSlotContents": {},
+            "__type": "CodeComponentMeta"
+          },
+          "18650010": {
+            "type": { "__ref": "18650028" },
+            "variable": { "__ref": "18650027" },
+            "uuid": "HYkO9bNW_5",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": "Data",
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "18650011": {
+            "type": { "__ref": "18650030" },
+            "variable": { "__ref": "18650029" },
+            "uuid": "5XiPpwFGY8P",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": "Variable name",
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "18650012": {
+            "type": { "__ref": "18650032" },
+            "tplSlot": { "__ref": "18650037" },
+            "variable": { "__ref": "18650031" },
+            "uuid": "BM_paADQPsu",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": null,
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "SlotParam"
+          },
+          "18650013": {
+            "type": { "__ref": "18650034" },
+            "variable": { "__ref": "18650033" },
+            "uuid": "tnpXZzdr1j2",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": "Page size",
+            "about": "Only fetch in batches of this size; for pagination",
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "18650014": {
+            "type": { "__ref": "18650036" },
+            "variable": { "__ref": "18650035" },
+            "uuid": "GFAB7XoHS1U",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": "Page index",
+            "about": "0-based index of the paginated page to fetch",
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "18650015": {
+            "tag": "div",
+            "name": null,
+            "children": [{ "__ref": "18650037" }],
+            "type": "other",
+            "codeGenType": null,
+            "columnsSetting": null,
+            "uuid": "7LHCuXQqVj",
+            "parent": null,
+            "locked": null,
+            "vsettings": [{ "__ref": "18650038" }],
+            "__type": "TplTag"
+          },
+          "18650016": {
+            "uuid": "AyPUyJhn3a",
+            "name": "base",
+            "selectors": null,
+            "parent": null,
+            "mediaQuery": null,
+            "description": null,
+            "forTpl": null,
+            "__type": "Variant"
+          },
+          "18650017": {
+            "importPath": "@plasmicapp/react-web/lib/data-sources",
+            "defaultExport": false,
+            "displayName": "Data Fetcher",
+            "importName": "Fetcher",
+            "description": null,
+            "classNameProp": null,
+            "refProp": null,
+            "defaultStyles": null,
+            "defaultDisplay": null,
+            "isHostLess": true,
+            "isContext": false,
+            "isAttachment": false,
+            "providesData": false,
+            "hasRef": false,
+            "isRepeatable": true,
+            "styleSections": false,
+            "helpers": null,
+            "defaultSlotContents": {},
+            "__type": "CodeComponentMeta"
+          },
+          "18650018": {
+            "name": "title",
+            "uuid": "NX8J-9IHKa",
+            "__type": "Var"
+          },
+          "18650019": { "name": "text", "__type": "Text" },
+          "18650020": {
+            "name": "description",
+            "uuid": "ffQCfedtkN",
+            "__type": "Var"
+          },
+          "18650021": { "name": "text", "__type": "Text" },
+          "18650022": {
+            "name": "image",
+            "uuid": "_sgN5TKJ2-",
+            "__type": "Var"
+          },
+          "18650023": { "name": "img", "__type": "Img" },
+          "18650024": {
+            "name": "canonical",
+            "uuid": "uT7dZv-Tz5",
+            "__type": "Var"
+          },
+          "18650025": { "name": "text", "__type": "Text" },
+          "18650026": {
+            "variants": [{ "__ref": "18650008" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "18650039" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "18650027": {
+            "name": "dataOp",
+            "uuid": "lY4mr91au0",
+            "__type": "Var"
+          },
+          "18650028": { "name": "any", "__type": "AnyType" },
+          "18650029": {
+            "name": "name",
+            "uuid": "HF2sIJQaY2Z",
+            "__type": "Var"
+          },
+          "18650030": { "name": "text", "__type": "Text" },
+          "18650031": {
+            "name": "children",
+            "uuid": "Zn7Y0s4AVAH",
+            "__type": "Var"
+          },
+          "18650032": {
+            "name": "renderFunc",
+            "params": [{ "__ref": "18650040" }],
+            "allowed": [],
+            "__type": "RenderFuncType"
+          },
+          "18650033": {
+            "name": "pageSize",
+            "uuid": "LJC_wbaRc38",
+            "__type": "Var"
+          },
+          "18650034": { "name": "num", "__type": "Num" },
+          "18650035": {
+            "name": "pageIndex",
+            "uuid": "clzvTX1poRH",
+            "__type": "Var"
+          },
+          "18650036": { "name": "num", "__type": "Num" },
+          "18650037": {
+            "param": { "__ref": "18650012" },
+            "defaultContents": [],
+            "uuid": "3NJQfDjFmHB",
+            "parent": { "__ref": "18650015" },
+            "locked": null,
+            "vsettings": [{ "__ref": "18650041" }],
+            "__type": "TplSlot"
+          },
+          "18650038": {
+            "variants": [{ "__ref": "18650016" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "18650042" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "18650039": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": { "display": "flex", "flex-direction": "row" }
+          },
+          "18650040": {
+            "name": "arg",
+            "argName": "$queries",
+            "displayName": null,
+            "type": { "__ref": "18650045" },
+            "__type": "ArgType"
+          },
+          "18650041": {
+            "variants": [{ "__ref": "18650016" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "18650046" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "18650042": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": { "display": "flex", "flex-direction": "row" }
+          },
+          "18650045": { "name": "any", "__type": "AnyType" },
+          "18650046": { "mixins": [], "__type": "RuleSet", "values": {} },
+          "35298001": {
+            "uuid": "5siQF3Bva7",
+            "pkgId": "fbe7aed8-bdac-408f-967b-083989b1626c",
+            "projectId": "cpkeUeeErCd6XAniAHq8xq",
+            "version": "0.0.1",
+            "name": "Code Components with same name",
+            "site": { "__ref": "54658001" },
+            "__type": "ProjectDependency"
+          },
+          "43666001": {
+            "uuid": "rrptSdKmGx",
+            "name": "Page",
+            "params": [],
+            "states": [],
+            "tplTree": { "__ref": "43666003" },
+            "editableByContentEditor": true,
+            "hiddenFromContentEditor": false,
+            "variants": [{ "__ref": "43666004" }],
+            "variantGroups": [],
+            "pageMeta": { "__ref": "43666005" },
+            "codeComponentMeta": null,
+            "type": "page",
+            "subComps": [],
+            "superComp": null,
+            "plumeInfo": null,
+            "templateInfo": null,
+            "metadata": {},
+            "dataQueries": [],
+            "figmaMappings": [],
+            "alwaysAutoName": false,
+            "trapsFocus": false,
+            "__type": "Component"
+          },
+          "43666002": {
+            "component": { "__ref": "43666001" },
+            "matrix": { "__ref": "43666006" },
+            "customMatrix": { "__ref": "1644601" },
+            "__type": "PageArena"
+          },
+          "43666003": {
+            "tag": "div",
+            "name": null,
+            "children": [{ "__ref": "10466012" }],
+            "type": "other",
+            "codeGenType": null,
+            "columnsSetting": null,
+            "uuid": "HjlnTa2dB",
+            "parent": null,
+            "locked": null,
+            "vsettings": [{ "__ref": "43666007" }],
+            "__type": "TplTag"
+          },
+          "43666004": {
+            "uuid": "vIJvolShb_",
+            "name": "base",
+            "selectors": null,
+            "parent": null,
+            "mediaQuery": null,
+            "description": null,
+            "forTpl": null,
+            "__type": "Variant"
+          },
+          "43666005": {
+            "path": "/page",
+            "params": {},
+            "query": {},
+            "title": null,
+            "description": "",
+            "canonical": null,
+            "roleId": null,
+            "openGraphImage": null,
+            "__type": "PageMeta"
+          },
+          "43666006": {
+            "rows": [{ "__ref": "43666008" }],
+            "__type": "ArenaFrameGrid"
+          },
+          "43666007": {
+            "variants": [{ "__ref": "43666004" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "43666009" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "43666008": {
+            "cols": [{ "__ref": "43666010" }, { "__ref": "43666011" }],
+            "rowKey": { "__ref": "43666004" },
+            "__type": "ArenaFrameRow"
+          },
+          "43666009": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "display": "plasmic-content-layout",
+              "flex-direction": "column",
+              "position": "relative",
+              "width": "stretch",
+              "height": "stretch",
+              "align-content": "flex-start"
+            }
+          },
+          "43666010": {
+            "frame": { "__ref": "43666018" },
+            "cellKey": null,
+            "__type": "ArenaFrameCell"
+          },
+          "43666011": {
+            "frame": { "__ref": "43666019" },
+            "cellKey": null,
+            "__type": "ArenaFrameCell"
+          },
+          "43666018": {
+            "uuid": "t1z9RGuZ9i",
+            "width": 1366,
+            "height": 768,
+            "viewportHeight": 768,
+            "container": { "__ref": "43666020" },
+            "lang": "English",
+            "pinnedVariants": {},
+            "targetVariants": [{ "__ref": "43666004" }],
+            "pinnedGlobalVariants": {},
+            "targetGlobalVariants": [],
+            "viewMode": "stretch",
+            "bgColor": null,
+            "name": "",
+            "top": null,
+            "left": null,
+            "__type": "ArenaFrame"
+          },
+          "43666019": {
+            "uuid": "mdBtRoxBzh",
+            "width": 414,
+            "height": 736,
+            "viewportHeight": 736,
+            "container": { "__ref": "43666021" },
+            "lang": "English",
+            "pinnedVariants": {},
+            "targetVariants": [{ "__ref": "43666004" }],
+            "pinnedGlobalVariants": {},
+            "targetGlobalVariants": [],
+            "viewMode": "stretch",
+            "bgColor": null,
+            "name": "",
+            "top": null,
+            "left": null,
+            "__type": "ArenaFrame"
+          },
+          "43666020": {
+            "name": null,
+            "component": { "__ref": "43666001" },
+            "uuid": "MFaBMWqPWe",
+            "parent": null,
+            "locked": null,
+            "vsettings": [{ "__ref": "43666022" }],
+            "__type": "TplComponent"
+          },
+          "43666021": {
+            "name": null,
+            "component": { "__ref": "43666001" },
+            "uuid": "cxXVg3jSb3",
+            "parent": null,
+            "locked": null,
+            "vsettings": [{ "__ref": "43666023" }],
+            "__type": "TplComponent"
+          },
+          "43666022": {
+            "variants": [{ "__ref": "54658007" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "43666024" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "43666023": {
+            "variants": [{ "__ref": "54658007" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "43666025" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "43666024": { "mixins": [], "__type": "RuleSet", "values": {} },
+          "43666025": { "mixins": [], "__type": "RuleSet", "values": {} },
+          "54658001": {
+            "components": [
+              { "__ref": "18650001" },
+              { "__ref": "18650002" },
+              { "__ref": "43666001" },
+              { "__ref": "10466001" }
+            ],
+            "arenas": [],
+            "pageArenas": [{ "__ref": "43666002" }],
+            "componentArenas": [],
+            "globalVariantGroups": [{ "__ref": "54658003" }],
+            "userManagedFonts": [],
+            "globalVariant": { "__ref": "54658007" },
+            "styleTokens": [],
+            "mixins": [],
+            "themes": [{ "__ref": "54658008" }],
+            "activeTheme": { "__ref": "54658008" },
+            "imageAssets": [],
+            "projectDependencies": [],
+            "activeScreenVariantGroup": { "__ref": "54658003" },
+            "flags": { "usePlasmicImg": true },
+            "hostLessPackageInfo": null,
+            "globalContexts": [],
+            "splits": [],
+            "defaultComponents": {},
+            "defaultPageRoleId": null,
+            "pageWrapper": null,
+            "__type": "Site",
+            "customFunctions": [],
+            "codeLibraries": []
+          },
+          "54658003": {
+            "type": "global-screen",
+            "param": { "__ref": "54658004" },
+            "uuid": "CdS9SAqvMwk",
+            "variants": [],
+            "multi": true,
+            "__type": "GlobalVariantGroup"
+          },
+          "54658004": {
+            "type": { "__ref": "54658006" },
+            "variable": { "__ref": "54658005" },
+            "uuid": "hmxhUaKWyXM",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": null,
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "GlobalVariantGroupParam"
+          },
+          "54658005": {
+            "name": "Screen",
+            "uuid": "CJd021hHvT",
+            "__type": "Var"
+          },
+          "54658006": { "name": "text", "__type": "Text" },
+          "54658007": {
+            "uuid": "3paUL4g2Lq-",
+            "name": "base",
+            "selectors": null,
+            "parent": null,
+            "mediaQuery": null,
+            "description": null,
+            "forTpl": null,
+            "__type": "Variant"
+          },
+          "54658008": {
+            "defaultStyle": { "__ref": "54658009" },
+            "styles": [
+              { "__ref": "54658024" },
+              { "__ref": "54658033" },
+              { "__ref": "54658042" },
+              { "__ref": "54658051" },
+              { "__ref": "54658060" },
+              { "__ref": "54658069" },
+              { "__ref": "54658077" },
+              { "__ref": "54658081" },
+              { "__ref": "54658085" },
+              { "__ref": "54658093" },
+              { "__ref": "54658118" },
+              { "__ref": "54658143" },
+              { "__ref": "54658154" }
+            ],
+            "layout": null,
+            "active": true,
+            "__type": "Theme"
+          },
+          "54658009": {
+            "name": "Default Typography",
+            "rs": { "__ref": "54658010" },
+            "preview": null,
+            "uuid": "RpB0JQrw1v",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658010": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "font-family": "Roboto",
+              "font-size": "16px",
+              "font-weight": "400",
+              "font-style": "normal",
+              "color": "#535353",
+              "text-align": "left",
+              "text-transform": "none",
+              "line-height": "1.5",
+              "letter-spacing": "normal",
+              "white-space": "pre-wrap",
+              "user-select": "text",
+              "text-decoration-line": "none",
+              "text-overflow": "clip"
+            }
+          },
+          "54658024": {
+            "selector": "h1",
+            "style": { "__ref": "54658025" },
+            "__type": "ThemeStyle"
+          },
+          "54658025": {
+            "name": "Default \"h1\"",
+            "rs": { "__ref": "54658026" },
+            "preview": null,
+            "uuid": "sPchOzIedc",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658026": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "font-family": "Inter",
+              "color": "#000000",
+              "font-size": "72px",
+              "font-weight": "900",
+              "letter-spacing": "-4px",
+              "line-height": "1"
+            }
+          },
+          "54658033": {
+            "selector": "h2",
+            "style": { "__ref": "54658034" },
+            "__type": "ThemeStyle"
+          },
+          "54658034": {
+            "name": "Default \"h2\"",
+            "rs": { "__ref": "54658035" },
+            "preview": null,
+            "uuid": "dpfdUAvJUy",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658035": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "font-family": "Inter",
+              "color": "#000000",
+              "font-size": "48px",
+              "font-weight": "700",
+              "letter-spacing": "-1px",
+              "line-height": "1.1"
+            }
+          },
+          "54658042": {
+            "selector": "h3",
+            "style": { "__ref": "54658043" },
+            "__type": "ThemeStyle"
+          },
+          "54658043": {
+            "name": "Default \"h3\"",
+            "rs": { "__ref": "54658044" },
+            "preview": null,
+            "uuid": "wRNVr2lz0Z",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658044": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "font-family": "Inter",
+              "color": "#000000",
+              "font-size": "32px",
+              "font-weight": "600",
+              "letter-spacing": "-0.8px",
+              "line-height": "1.2"
+            }
+          },
+          "54658051": {
+            "selector": "h4",
+            "style": { "__ref": "54658052" },
+            "__type": "ThemeStyle"
+          },
+          "54658052": {
+            "name": "Default \"h4\"",
+            "rs": { "__ref": "54658053" },
+            "preview": null,
+            "uuid": "gzbVtu0dOJ",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658053": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "font-family": "Inter",
+              "color": "#000000",
+              "font-size": "24px",
+              "font-weight": "600",
+              "letter-spacing": "-0.5px",
+              "line-height": "1.3"
+            }
+          },
+          "54658060": {
+            "selector": "h5",
+            "style": { "__ref": "54658061" },
+            "__type": "ThemeStyle"
+          },
+          "54658061": {
+            "name": "Default \"h5\"",
+            "rs": { "__ref": "54658062" },
+            "preview": null,
+            "uuid": "lZV8H6pdds",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658062": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "font-family": "Inter",
+              "color": "#000000",
+              "font-size": "20px",
+              "font-weight": "600",
+              "letter-spacing": "-0.3px",
+              "line-height": "1.5"
+            }
+          },
+          "54658069": {
+            "selector": "h6",
+            "style": { "__ref": "54658070" },
+            "__type": "ThemeStyle"
+          },
+          "54658070": {
+            "name": "Default \"h6\"",
+            "rs": { "__ref": "54658071" },
+            "preview": null,
+            "uuid": "wXnT_RY7mP",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658071": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "font-family": "Inter",
+              "color": "#000000",
+              "font-size": "16px",
+              "font-weight": "600",
+              "line-height": "1.5"
+            }
+          },
+          "54658077": {
+            "selector": "a",
+            "style": { "__ref": "54658078" },
+            "__type": "ThemeStyle"
+          },
+          "54658078": {
+            "name": "Default \"a\"",
+            "rs": { "__ref": "54658079" },
+            "preview": null,
+            "uuid": "VArkWcBr-m",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658079": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": { "color": "#0070f3" }
+          },
+          "54658081": {
+            "selector": "a:hover",
+            "style": { "__ref": "54658082" },
+            "__type": "ThemeStyle"
+          },
+          "54658082": {
+            "name": "Default \"a:hover\"",
+            "rs": { "__ref": "54658083" },
+            "preview": null,
+            "uuid": "tjoFVQcZEj",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658083": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": { "color": "#3291ff" }
+          },
+          "54658085": {
+            "selector": "blockquote",
+            "style": { "__ref": "54658086" },
+            "__type": "ThemeStyle"
+          },
+          "54658086": {
+            "name": "Default \"blockquote\"",
+            "rs": { "__ref": "54658087" },
+            "preview": null,
+            "uuid": "jyE8kXBCeE",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658087": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "border-left-color": "#dddddd",
+              "border-left-style": "solid",
+              "border-left-width": "3px",
+              "color": "#888888",
+              "padding-left": "10px"
+            }
+          },
+          "54658093": {
+            "selector": "code",
+            "style": { "__ref": "54658094" },
+            "__type": "ThemeStyle"
+          },
+          "54658094": {
+            "name": "Default \"code\"",
+            "rs": { "__ref": "54658095" },
+            "preview": null,
+            "uuid": "1grxftYEEA",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658095": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "background": "linear-gradient(#f8f8f8, #f8f8f8)",
+              "border-bottom-color": "#dddddd",
+              "border-bottom-style": "solid",
+              "border-bottom-width": "1px",
+              "border-left-color": "#dddddd",
+              "border-left-style": "solid",
+              "border-left-width": "1px",
+              "border-right-color": "#dddddd",
+              "border-right-style": "solid",
+              "border-right-width": "1px",
+              "border-top-color": "#dddddd",
+              "border-top-style": "solid",
+              "border-top-width": "1px",
+              "border-bottom-left-radius": "3px",
+              "border-bottom-right-radius": "3px",
+              "border-top-left-radius": "3px",
+              "border-top-right-radius": "3px",
+              "font-family": "Inconsolata",
+              "padding-bottom": "1px",
+              "padding-left": "4px",
+              "padding-right": "4px",
+              "padding-top": "1px"
+            }
+          },
+          "54658118": {
+            "selector": "pre",
+            "style": { "__ref": "54658119" },
+            "__type": "ThemeStyle"
+          },
+          "54658119": {
+            "name": "Default \"pre\"",
+            "rs": { "__ref": "54658120" },
+            "preview": null,
+            "uuid": "5V0pcFLrjh",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658120": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "background": "linear-gradient(#f8f8f8, #f8f8f8)",
+              "border-bottom-color": "#dddddd",
+              "border-bottom-style": "solid",
+              "border-bottom-width": "1px",
+              "border-left-color": "#dddddd",
+              "border-left-style": "solid",
+              "border-left-width": "1px",
+              "border-right-color": "#dddddd",
+              "border-right-style": "solid",
+              "border-right-width": "1px",
+              "border-top-color": "#dddddd",
+              "border-top-style": "solid",
+              "border-top-width": "1px",
+              "border-bottom-left-radius": "3px",
+              "border-bottom-right-radius": "3px",
+              "border-top-left-radius": "3px",
+              "border-top-right-radius": "3px",
+              "font-family": "Inconsolata",
+              "padding-bottom": "3px",
+              "padding-left": "6px",
+              "padding-right": "6px",
+              "padding-top": "3px"
+            }
+          },
+          "54658143": {
+            "selector": "ol",
+            "style": { "__ref": "54658144" },
+            "__type": "ThemeStyle"
+          },
+          "54658144": {
+            "name": "Default \"ol\"",
+            "rs": { "__ref": "54658145" },
+            "preview": null,
+            "uuid": "1QQzMYEvMN",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658145": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "display": "flex",
+              "flex-direction": "column",
+              "align-items": "stretch",
+              "justify-content": "flex-start",
+              "list-style-position": "outside",
+              "padding-left": "40px",
+              "position": "relative",
+              "list-style-type": "decimal"
+            }
+          },
+          "54658154": {
+            "selector": "ul",
+            "style": { "__ref": "54658155" },
+            "__type": "ThemeStyle"
+          },
+          "54658155": {
+            "name": "Default \"ul\"",
+            "rs": { "__ref": "54658156" },
+            "preview": null,
+            "uuid": "KRhZFKUZGD",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658156": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "display": "flex",
+              "flex-direction": "column",
+              "align-items": "stretch",
+              "justify-content": "flex-start",
+              "list-style-position": "outside",
+              "padding-left": "40px",
+              "position": "relative",
+              "list-style-type": "disc"
+            }
+          }
+        },
+        "deps": [],
+        "version": "224-migrate-hostless"
+      },
+      "projectId": "cpkeUeeErCd6XAniAHq8xq",
+      "version": "0.0.1",
+      "branchId": "main"
+    }
+  ],
+  "project": {
+    "id": "cpkeUeeErCd6XAniAHq8xq",
+    "name": "Code Components with same name",
+    "commitGraph": {
+      "parents": { "6fa02148-c3fb-4c7e-ade4-7942c6f13467": [] },
+      "branches": {
+        "main": "6fa02148-c3fb-4c7e-ade4-7942c6f13467",
+        "ueJCf2xRNeZUigdkcqomNJ": "6fa02148-c3fb-4c7e-ade4-7942c6f13467"
+      }
+    }
+  },
+  "revisions": [
+    {
+      "branchId": "ueJCf2xRNeZUigdkcqomNJ",
+      "data": {
+        "root": "54658001",
+        "map": {
+          "1644601": {
+            "rows": [{ "__ref": "1644602" }],
+            "__type": "ArenaFrameGrid"
+          },
+          "1644602": { "cols": [], "rowKey": null, "__type": "ArenaFrameRow" },
+          "10466012": {
+            "name": "comp1",
+            "component": { "__ref": "10673001" },
+            "uuid": "NharCG4oH",
+            "parent": { "__ref": "43666003" },
+            "locked": null,
+            "vsettings": [{ "__ref": "10466013" }],
+            "__type": "TplComponent"
+          },
+          "10466013": {
+            "variants": [{ "__ref": "43666004" }],
+            "args": [{ "__ref": "10466018" }],
+            "attrs": {},
+            "rs": { "__ref": "10466014" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "10466014": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "max-width": "100%",
+              "object-fit": "cover",
+              "position": "relative"
+            }
+          },
+          "10466018": {
+            "param": { "__ref": "10673002" },
+            "expr": { "__ref": "10466019" },
+            "__type": "Arg"
+          },
+          "10466019": { "text": ["arg1"], "__type": "TemplatedString" },
+          "10673001": {
+            "uuid": "gpz76d7BPh",
+            "name": "Comp",
+            "params": [{ "__ref": "10673002" }],
+            "states": [],
+            "tplTree": { "__ref": "10673003" },
+            "editableByContentEditor": true,
+            "hiddenFromContentEditor": false,
+            "variants": [{ "__ref": "10673004" }],
+            "variantGroups": [],
+            "pageMeta": null,
+            "codeComponentMeta": { "__ref": "10673005" },
+            "type": "code",
+            "subComps": [],
+            "superComp": null,
+            "plumeInfo": null,
+            "templateInfo": null,
+            "metadata": {},
+            "dataQueries": [],
+            "figmaMappings": [],
+            "alwaysAutoName": false,
+            "trapsFocus": false,
+            "__type": "Component"
+          },
+          "10673002": {
+            "type": { "__ref": "10673007" },
+            "variable": { "__ref": "10673006" },
+            "uuid": "7b30Vp9PMg",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": null,
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "10673003": {
+            "tag": "div",
+            "name": null,
+            "children": [],
+            "type": "other",
+            "codeGenType": null,
+            "columnsSetting": null,
+            "uuid": "YJM4L1KtEN",
+            "parent": null,
+            "locked": null,
+            "vsettings": [{ "__ref": "10673008" }],
+            "__type": "TplTag"
+          },
+          "10673004": {
+            "uuid": "60L_L4aKw",
+            "name": "base",
+            "selectors": null,
+            "parent": null,
+            "mediaQuery": null,
+            "description": null,
+            "forTpl": null,
+            "__type": "Variant"
+          },
+          "10673005": {
+            "importPath": "",
+            "defaultExport": false,
+            "displayName": null,
+            "importName": null,
+            "description": null,
+            "classNameProp": null,
+            "refProp": null,
+            "defaultStyles": null,
+            "defaultDisplay": null,
+            "isHostLess": false,
+            "isContext": false,
+            "isAttachment": false,
+            "providesData": false,
+            "hasRef": false,
+            "isRepeatable": true,
+            "styleSections": null,
+            "helpers": null,
+            "defaultSlotContents": {},
+            "__type": "CodeComponentMeta"
+          },
+          "10673006": {
+            "name": "param1",
+            "uuid": "OecbnaqPgB",
+            "__type": "Var"
+          },
+          "10673007": { "name": "text", "__type": "Text" },
+          "10673008": {
+            "variants": [{ "__ref": "10673004" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "10673009" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "10673009": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": { "display": "flex", "flex-direction": "row" }
+          },
+          "10673012": {
+            "uuid": "SzVaY4n_Ck",
+            "name": "Comp",
+            "params": [{ "__ref": "10673045" }],
+            "states": [],
+            "tplTree": { "__ref": "10673014" },
+            "editableByContentEditor": false,
+            "hiddenFromContentEditor": false,
+            "variants": [{ "__ref": "10673015" }],
+            "variantGroups": [],
+            "pageMeta": null,
+            "codeComponentMeta": null,
+            "type": "plain",
+            "subComps": [],
+            "superComp": null,
+            "plumeInfo": null,
+            "templateInfo": null,
+            "metadata": {},
+            "dataQueries": [],
+            "figmaMappings": [],
+            "alwaysAutoName": false,
+            "trapsFocus": false,
+            "__type": "Component"
+          },
+          "10673013": {
+            "component": { "__ref": "10673012" },
+            "matrix": { "__ref": "10673016" },
+            "customMatrix": { "__ref": "10673017" },
+            "__type": "ComponentArena"
+          },
+          "10673014": {
+            "tag": "div",
+            "name": null,
+            "children": [],
+            "type": "other",
+            "codeGenType": null,
+            "columnsSetting": null,
+            "uuid": "Fzz8mk5NZ",
+            "parent": null,
+            "locked": null,
+            "vsettings": [{ "__ref": "10673018" }],
+            "__type": "TplTag"
+          },
+          "10673015": {
+            "uuid": "L_QK03pEso",
+            "name": "base",
+            "selectors": null,
+            "parent": null,
+            "mediaQuery": null,
+            "description": null,
+            "forTpl": null,
+            "__type": "Variant"
+          },
+          "10673016": {
+            "rows": [{ "__ref": "10673019" }],
+            "__type": "ArenaFrameGrid"
+          },
+          "10673017": {
+            "rows": [{ "__ref": "10673020" }],
+            "__type": "ArenaFrameGrid"
+          },
+          "10673018": {
+            "variants": [{ "__ref": "10673015" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "10673021" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "10673019": {
+            "cols": [{ "__ref": "10673022" }],
+            "rowKey": null,
+            "__type": "ArenaFrameRow"
+          },
+          "10673020": { "cols": [], "rowKey": null, "__type": "ArenaFrameRow" },
+          "10673021": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "display": "flex",
+              "flex-direction": "column",
+              "position": "relative",
+              "width": "wrap",
+              "height": "wrap"
+            }
+          },
+          "10673022": {
+            "frame": { "__ref": "10673028" },
+            "cellKey": { "__ref": "10673015" },
+            "__type": "ArenaFrameCell"
+          },
+          "10673028": {
+            "uuid": "-bRkeNRR8r",
+            "width": 340,
+            "height": 340,
+            "viewportHeight": null,
+            "container": { "__ref": "10673029" },
+            "lang": "English",
+            "pinnedVariants": {},
+            "targetVariants": [{ "__ref": "10673015" }],
+            "pinnedGlobalVariants": {},
+            "targetGlobalVariants": [],
+            "viewMode": "centered",
+            "bgColor": null,
+            "name": "",
+            "top": null,
+            "left": null,
+            "__type": "ArenaFrame"
+          },
+          "10673029": {
+            "name": null,
+            "component": { "__ref": "10673012" },
+            "uuid": "x86gtM0YB-",
+            "parent": null,
+            "locked": null,
+            "vsettings": [{ "__ref": "10673030" }],
+            "__type": "TplComponent"
+          },
+          "10673030": {
+            "variants": [{ "__ref": "54658007" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "10673031" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "10673031": { "mixins": [], "__type": "RuleSet", "values": {} },
+          "10673032": {
+            "name": "plasmicComp1",
+            "component": { "__ref": "10673012" },
+            "uuid": "bA3OOm2Ez",
+            "parent": { "__ref": "43666003" },
+            "locked": null,
+            "vsettings": [{ "__ref": "10673033" }],
+            "__type": "TplComponent"
+          },
+          "10673033": {
+            "variants": [{ "__ref": "43666004" }],
+            "args": [{ "__ref": "10673048" }],
+            "attrs": {},
+            "rs": { "__ref": "10673034" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "10673034": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": { "max-width": "100%", "position": "relative" }
+          },
+          "10673037": {
+            "name": "comp2",
+            "component": { "__ref": "10673001" },
+            "uuid": "R0UpDlwcy2",
+            "parent": { "__ref": "43666003" },
+            "locked": null,
+            "vsettings": [{ "__ref": "10673038" }],
+            "__type": "TplComponent"
+          },
+          "10673038": {
+            "variants": [{ "__ref": "43666004" }],
+            "args": [{ "__ref": "10673043" }],
+            "attrs": {},
+            "rs": { "__ref": "10673039" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "10673039": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "max-width": "100%",
+              "object-fit": "cover",
+              "position": "relative"
+            }
+          },
+          "10673043": {
+            "param": { "__ref": "10673002" },
+            "expr": { "__ref": "10673044" },
+            "__type": "Arg"
+          },
+          "10673044": { "text": ["arg2"], "__type": "TemplatedString" },
+          "10673045": {
+            "type": { "__ref": "10673047" },
+            "variable": { "__ref": "10673046" },
+            "uuid": "6rtljvo680",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": "metaProp",
+            "displayName": null,
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "10673046": { "name": "prop", "uuid": "DtbzpXypd", "__type": "Var" },
+          "10673047": { "name": "text", "__type": "Text" },
+          "10673048": {
+            "param": { "__ref": "10673045" },
+            "expr": { "__ref": "15595001" },
+            "__type": "Arg"
+          },
+          "15595001": { "text": ["plasmicArg1"], "__type": "TemplatedString" },
+          "18650001": {
+            "uuid": "DA4AQmg1Sb",
+            "name": "hostless-plasmic-head",
+            "params": [
+              { "__ref": "18650003" },
+              { "__ref": "18650004" },
+              { "__ref": "18650005" },
+              { "__ref": "18650006" }
+            ],
+            "states": [],
+            "tplTree": { "__ref": "18650007" },
+            "editableByContentEditor": true,
+            "hiddenFromContentEditor": false,
+            "variants": [{ "__ref": "18650008" }],
+            "variantGroups": [],
+            "pageMeta": null,
+            "codeComponentMeta": { "__ref": "18650009" },
+            "type": "code",
+            "subComps": [],
+            "superComp": null,
+            "plumeInfo": null,
+            "templateInfo": null,
+            "metadata": {},
+            "dataQueries": [],
+            "figmaMappings": [],
+            "alwaysAutoName": false,
+            "trapsFocus": false,
+            "__type": "Component"
+          },
+          "18650002": {
+            "uuid": "q2L7mov6yJ",
+            "name": "plasmic-data-source-fetcher",
+            "params": [
+              { "__ref": "18650010" },
+              { "__ref": "18650011" },
+              { "__ref": "18650012" },
+              { "__ref": "18650013" },
+              { "__ref": "18650014" }
+            ],
+            "states": [],
+            "tplTree": { "__ref": "18650015" },
+            "editableByContentEditor": true,
+            "hiddenFromContentEditor": false,
+            "variants": [{ "__ref": "18650016" }],
+            "variantGroups": [],
+            "pageMeta": null,
+            "codeComponentMeta": { "__ref": "18650017" },
+            "type": "code",
+            "subComps": [],
+            "superComp": null,
+            "plumeInfo": null,
+            "templateInfo": null,
+            "metadata": {},
+            "dataQueries": [],
+            "figmaMappings": [],
+            "alwaysAutoName": true,
+            "trapsFocus": false,
+            "__type": "Component"
+          },
+          "18650003": {
+            "type": { "__ref": "18650019" },
+            "variable": { "__ref": "18650018" },
+            "uuid": "9RB1M2ofm0",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": "Title",
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "18650004": {
+            "type": { "__ref": "18650021" },
+            "variable": { "__ref": "18650020" },
+            "uuid": "ROLYBAKhxL",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": "Description",
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "18650005": {
+            "type": { "__ref": "18650023" },
+            "variable": { "__ref": "18650022" },
+            "uuid": "vK3_7zBqc9",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": "Image",
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "18650006": {
+            "type": { "__ref": "18650025" },
+            "variable": { "__ref": "18650024" },
+            "uuid": "2tWFzxA4He",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": "Canonical URL",
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "18650007": {
+            "tag": "div",
+            "name": null,
+            "children": [],
+            "type": "other",
+            "codeGenType": null,
+            "columnsSetting": null,
+            "uuid": "_nP0wq_Y_F",
+            "parent": null,
+            "locked": null,
+            "vsettings": [{ "__ref": "18650026" }],
+            "__type": "TplTag"
+          },
+          "18650008": {
+            "uuid": "b8JXbiIfw",
+            "name": "base",
+            "selectors": null,
+            "parent": null,
+            "mediaQuery": null,
+            "description": null,
+            "forTpl": null,
+            "__type": "Variant"
+          },
+          "18650009": {
+            "importPath": "@plasmicapp/react-web",
+            "defaultExport": false,
+            "displayName": "Head",
+            "importName": "PlasmicHead",
+            "description": "Used to add page metadata to HTML <head />.",
+            "classNameProp": null,
+            "refProp": null,
+            "defaultStyles": null,
+            "defaultDisplay": null,
+            "isHostLess": true,
+            "isContext": false,
+            "isAttachment": false,
+            "providesData": false,
+            "hasRef": false,
+            "isRepeatable": false,
+            "styleSections": false,
+            "helpers": null,
+            "defaultSlotContents": {},
+            "__type": "CodeComponentMeta"
+          },
+          "18650010": {
+            "type": { "__ref": "18650028" },
+            "variable": { "__ref": "18650027" },
+            "uuid": "HYkO9bNW_5",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": "Data",
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "18650011": {
+            "type": { "__ref": "18650030" },
+            "variable": { "__ref": "18650029" },
+            "uuid": "5XiPpwFGY8P",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": "Variable name",
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "18650012": {
+            "type": { "__ref": "18650032" },
+            "tplSlot": { "__ref": "18650037" },
+            "variable": { "__ref": "18650031" },
+            "uuid": "BM_paADQPsu",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": null,
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "SlotParam"
+          },
+          "18650013": {
+            "type": { "__ref": "18650034" },
+            "variable": { "__ref": "18650033" },
+            "uuid": "tnpXZzdr1j2",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": "Page size",
+            "about": "Only fetch in batches of this size; for pagination",
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "18650014": {
+            "type": { "__ref": "18650036" },
+            "variable": { "__ref": "18650035" },
+            "uuid": "GFAB7XoHS1U",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": "Page index",
+            "about": "0-based index of the paginated page to fetch",
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "18650015": {
+            "tag": "div",
+            "name": null,
+            "children": [{ "__ref": "18650037" }],
+            "type": "other",
+            "codeGenType": null,
+            "columnsSetting": null,
+            "uuid": "7LHCuXQqVj",
+            "parent": null,
+            "locked": null,
+            "vsettings": [{ "__ref": "18650038" }],
+            "__type": "TplTag"
+          },
+          "18650016": {
+            "uuid": "AyPUyJhn3a",
+            "name": "base",
+            "selectors": null,
+            "parent": null,
+            "mediaQuery": null,
+            "description": null,
+            "forTpl": null,
+            "__type": "Variant"
+          },
+          "18650017": {
+            "importPath": "@plasmicapp/react-web/lib/data-sources",
+            "defaultExport": false,
+            "displayName": "Data Fetcher",
+            "importName": "Fetcher",
+            "description": null,
+            "classNameProp": null,
+            "refProp": null,
+            "defaultStyles": null,
+            "defaultDisplay": null,
+            "isHostLess": true,
+            "isContext": false,
+            "isAttachment": false,
+            "providesData": false,
+            "hasRef": false,
+            "isRepeatable": true,
+            "styleSections": false,
+            "helpers": null,
+            "defaultSlotContents": {},
+            "__type": "CodeComponentMeta"
+          },
+          "18650018": {
+            "name": "title",
+            "uuid": "NX8J-9IHKa",
+            "__type": "Var"
+          },
+          "18650019": { "name": "text", "__type": "Text" },
+          "18650020": {
+            "name": "description",
+            "uuid": "ffQCfedtkN",
+            "__type": "Var"
+          },
+          "18650021": { "name": "text", "__type": "Text" },
+          "18650022": {
+            "name": "image",
+            "uuid": "_sgN5TKJ2-",
+            "__type": "Var"
+          },
+          "18650023": { "name": "img", "__type": "Img" },
+          "18650024": {
+            "name": "canonical",
+            "uuid": "uT7dZv-Tz5",
+            "__type": "Var"
+          },
+          "18650025": { "name": "text", "__type": "Text" },
+          "18650026": {
+            "variants": [{ "__ref": "18650008" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "18650039" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "18650027": {
+            "name": "dataOp",
+            "uuid": "lY4mr91au0",
+            "__type": "Var"
+          },
+          "18650028": { "name": "any", "__type": "AnyType" },
+          "18650029": {
+            "name": "name",
+            "uuid": "HF2sIJQaY2Z",
+            "__type": "Var"
+          },
+          "18650030": { "name": "text", "__type": "Text" },
+          "18650031": {
+            "name": "children",
+            "uuid": "Zn7Y0s4AVAH",
+            "__type": "Var"
+          },
+          "18650032": {
+            "name": "renderFunc",
+            "params": [{ "__ref": "18650040" }],
+            "allowed": [],
+            "__type": "RenderFuncType"
+          },
+          "18650033": {
+            "name": "pageSize",
+            "uuid": "LJC_wbaRc38",
+            "__type": "Var"
+          },
+          "18650034": { "name": "num", "__type": "Num" },
+          "18650035": {
+            "name": "pageIndex",
+            "uuid": "clzvTX1poRH",
+            "__type": "Var"
+          },
+          "18650036": { "name": "num", "__type": "Num" },
+          "18650037": {
+            "param": { "__ref": "18650012" },
+            "defaultContents": [],
+            "uuid": "3NJQfDjFmHB",
+            "parent": { "__ref": "18650015" },
+            "locked": null,
+            "vsettings": [{ "__ref": "18650041" }],
+            "__type": "TplSlot"
+          },
+          "18650038": {
+            "variants": [{ "__ref": "18650016" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "18650042" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "18650039": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": { "display": "flex", "flex-direction": "row" }
+          },
+          "18650040": {
+            "name": "arg",
+            "argName": "$queries",
+            "displayName": null,
+            "type": { "__ref": "18650045" },
+            "__type": "ArgType"
+          },
+          "18650041": {
+            "variants": [{ "__ref": "18650016" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "18650046" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "18650042": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": { "display": "flex", "flex-direction": "row" }
+          },
+          "18650045": { "name": "any", "__type": "AnyType" },
+          "18650046": { "mixins": [], "__type": "RuleSet", "values": {} },
+          "43666001": {
+            "uuid": "rrptSdKmGx",
+            "name": "Page",
+            "params": [],
+            "states": [],
+            "tplTree": { "__ref": "43666003" },
+            "editableByContentEditor": true,
+            "hiddenFromContentEditor": false,
+            "variants": [{ "__ref": "43666004" }],
+            "variantGroups": [],
+            "pageMeta": { "__ref": "43666005" },
+            "codeComponentMeta": null,
+            "type": "page",
+            "subComps": [],
+            "superComp": null,
+            "plumeInfo": null,
+            "templateInfo": null,
+            "metadata": {},
+            "dataQueries": [],
+            "figmaMappings": [],
+            "alwaysAutoName": false,
+            "trapsFocus": false,
+            "__type": "Component"
+          },
+          "43666002": {
+            "component": { "__ref": "43666001" },
+            "matrix": { "__ref": "43666006" },
+            "customMatrix": { "__ref": "1644601" },
+            "__type": "PageArena"
+          },
+          "43666003": {
+            "tag": "div",
+            "name": null,
+            "children": [
+              { "__ref": "10466012" },
+              { "__ref": "10673037" },
+              { "__ref": "10673032" }
+            ],
+            "type": "other",
+            "codeGenType": null,
+            "columnsSetting": null,
+            "uuid": "HjlnTa2dB",
+            "parent": null,
+            "locked": null,
+            "vsettings": [{ "__ref": "43666007" }],
+            "__type": "TplTag"
+          },
+          "43666004": {
+            "uuid": "vIJvolShb_",
+            "name": "base",
+            "selectors": null,
+            "parent": null,
+            "mediaQuery": null,
+            "description": null,
+            "forTpl": null,
+            "__type": "Variant"
+          },
+          "43666005": {
+            "path": "/page",
+            "params": {},
+            "query": {},
+            "title": null,
+            "description": "",
+            "canonical": null,
+            "roleId": null,
+            "openGraphImage": null,
+            "__type": "PageMeta"
+          },
+          "43666006": {
+            "rows": [{ "__ref": "43666008" }],
+            "__type": "ArenaFrameGrid"
+          },
+          "43666007": {
+            "variants": [{ "__ref": "43666004" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "43666009" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "43666008": {
+            "cols": [{ "__ref": "43666010" }, { "__ref": "43666011" }],
+            "rowKey": { "__ref": "43666004" },
+            "__type": "ArenaFrameRow"
+          },
+          "43666009": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "display": "plasmic-content-layout",
+              "flex-direction": "column",
+              "position": "relative",
+              "width": "stretch",
+              "height": "stretch",
+              "align-content": "flex-start"
+            }
+          },
+          "43666010": {
+            "frame": { "__ref": "43666018" },
+            "cellKey": null,
+            "__type": "ArenaFrameCell"
+          },
+          "43666011": {
+            "frame": { "__ref": "43666019" },
+            "cellKey": null,
+            "__type": "ArenaFrameCell"
+          },
+          "43666018": {
+            "uuid": "t1z9RGuZ9i",
+            "width": 1366,
+            "height": 768,
+            "viewportHeight": 768,
+            "container": { "__ref": "43666020" },
+            "lang": "English",
+            "pinnedVariants": {},
+            "targetVariants": [{ "__ref": "43666004" }],
+            "pinnedGlobalVariants": {},
+            "targetGlobalVariants": [],
+            "viewMode": "stretch",
+            "bgColor": null,
+            "name": "",
+            "top": null,
+            "left": null,
+            "__type": "ArenaFrame"
+          },
+          "43666019": {
+            "uuid": "mdBtRoxBzh",
+            "width": 414,
+            "height": 736,
+            "viewportHeight": 736,
+            "container": { "__ref": "43666021" },
+            "lang": "English",
+            "pinnedVariants": {},
+            "targetVariants": [{ "__ref": "43666004" }],
+            "pinnedGlobalVariants": {},
+            "targetGlobalVariants": [],
+            "viewMode": "stretch",
+            "bgColor": null,
+            "name": "",
+            "top": null,
+            "left": null,
+            "__type": "ArenaFrame"
+          },
+          "43666020": {
+            "name": null,
+            "component": { "__ref": "43666001" },
+            "uuid": "MFaBMWqPWe",
+            "parent": null,
+            "locked": null,
+            "vsettings": [{ "__ref": "43666022" }],
+            "__type": "TplComponent"
+          },
+          "43666021": {
+            "name": null,
+            "component": { "__ref": "43666001" },
+            "uuid": "cxXVg3jSb3",
+            "parent": null,
+            "locked": null,
+            "vsettings": [{ "__ref": "43666023" }],
+            "__type": "TplComponent"
+          },
+          "43666022": {
+            "variants": [{ "__ref": "54658007" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "43666024" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "43666023": {
+            "variants": [{ "__ref": "54658007" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "43666025" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "43666024": { "mixins": [], "__type": "RuleSet", "values": {} },
+          "43666025": { "mixins": [], "__type": "RuleSet", "values": {} },
+          "54658001": {
+            "components": [
+              { "__ref": "18650001" },
+              { "__ref": "18650002" },
+              { "__ref": "43666001" },
+              { "__ref": "10673001" },
+              { "__ref": "10673012" }
+            ],
+            "arenas": [],
+            "pageArenas": [{ "__ref": "43666002" }],
+            "componentArenas": [{ "__ref": "10673013" }],
+            "globalVariantGroups": [{ "__ref": "54658003" }],
+            "userManagedFonts": [],
+            "globalVariant": { "__ref": "54658007" },
+            "styleTokens": [],
+            "mixins": [],
+            "themes": [{ "__ref": "54658008" }],
+            "activeTheme": { "__ref": "54658008" },
+            "imageAssets": [],
+            "projectDependencies": [],
+            "activeScreenVariantGroup": { "__ref": "54658003" },
+            "flags": { "usePlasmicImg": true },
+            "hostLessPackageInfo": null,
+            "globalContexts": [],
+            "splits": [],
+            "defaultComponents": {},
+            "defaultPageRoleId": null,
+            "pageWrapper": null,
+            "__type": "Site",
+            "customFunctions": [],
+            "codeLibraries": []
+          },
+          "54658003": {
+            "type": "global-screen",
+            "param": { "__ref": "54658004" },
+            "uuid": "CdS9SAqvMwk",
+            "variants": [],
+            "multi": true,
+            "__type": "GlobalVariantGroup"
+          },
+          "54658004": {
+            "type": { "__ref": "54658006" },
+            "variable": { "__ref": "54658005" },
+            "uuid": "hmxhUaKWyXM",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": null,
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "GlobalVariantGroupParam"
+          },
+          "54658005": {
+            "name": "Screen",
+            "uuid": "CJd021hHvT",
+            "__type": "Var"
+          },
+          "54658006": { "name": "text", "__type": "Text" },
+          "54658007": {
+            "uuid": "3paUL4g2Lq-",
+            "name": "base",
+            "selectors": null,
+            "parent": null,
+            "mediaQuery": null,
+            "description": null,
+            "forTpl": null,
+            "__type": "Variant"
+          },
+          "54658008": {
+            "defaultStyle": { "__ref": "54658009" },
+            "styles": [
+              { "__ref": "54658024" },
+              { "__ref": "54658033" },
+              { "__ref": "54658042" },
+              { "__ref": "54658051" },
+              { "__ref": "54658060" },
+              { "__ref": "54658069" },
+              { "__ref": "54658077" },
+              { "__ref": "54658081" },
+              { "__ref": "54658085" },
+              { "__ref": "54658093" },
+              { "__ref": "54658118" },
+              { "__ref": "54658143" },
+              { "__ref": "54658154" }
+            ],
+            "layout": null,
+            "active": true,
+            "__type": "Theme"
+          },
+          "54658009": {
+            "name": "Default Typography",
+            "rs": { "__ref": "54658010" },
+            "preview": null,
+            "uuid": "RpB0JQrw1v",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658010": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "font-family": "Roboto",
+              "font-size": "16px",
+              "font-weight": "400",
+              "font-style": "normal",
+              "color": "#535353",
+              "text-align": "left",
+              "text-transform": "none",
+              "line-height": "1.5",
+              "letter-spacing": "normal",
+              "white-space": "pre-wrap",
+              "user-select": "text",
+              "text-decoration-line": "none",
+              "text-overflow": "clip"
+            }
+          },
+          "54658024": {
+            "selector": "h1",
+            "style": { "__ref": "54658025" },
+            "__type": "ThemeStyle"
+          },
+          "54658025": {
+            "name": "Default \"h1\"",
+            "rs": { "__ref": "54658026" },
+            "preview": null,
+            "uuid": "sPchOzIedc",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658026": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "font-family": "Inter",
+              "color": "#000000",
+              "font-size": "72px",
+              "font-weight": "900",
+              "letter-spacing": "-4px",
+              "line-height": "1"
+            }
+          },
+          "54658033": {
+            "selector": "h2",
+            "style": { "__ref": "54658034" },
+            "__type": "ThemeStyle"
+          },
+          "54658034": {
+            "name": "Default \"h2\"",
+            "rs": { "__ref": "54658035" },
+            "preview": null,
+            "uuid": "dpfdUAvJUy",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658035": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "font-family": "Inter",
+              "color": "#000000",
+              "font-size": "48px",
+              "font-weight": "700",
+              "letter-spacing": "-1px",
+              "line-height": "1.1"
+            }
+          },
+          "54658042": {
+            "selector": "h3",
+            "style": { "__ref": "54658043" },
+            "__type": "ThemeStyle"
+          },
+          "54658043": {
+            "name": "Default \"h3\"",
+            "rs": { "__ref": "54658044" },
+            "preview": null,
+            "uuid": "wRNVr2lz0Z",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658044": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "font-family": "Inter",
+              "color": "#000000",
+              "font-size": "32px",
+              "font-weight": "600",
+              "letter-spacing": "-0.8px",
+              "line-height": "1.2"
+            }
+          },
+          "54658051": {
+            "selector": "h4",
+            "style": { "__ref": "54658052" },
+            "__type": "ThemeStyle"
+          },
+          "54658052": {
+            "name": "Default \"h4\"",
+            "rs": { "__ref": "54658053" },
+            "preview": null,
+            "uuid": "gzbVtu0dOJ",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658053": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "font-family": "Inter",
+              "color": "#000000",
+              "font-size": "24px",
+              "font-weight": "600",
+              "letter-spacing": "-0.5px",
+              "line-height": "1.3"
+            }
+          },
+          "54658060": {
+            "selector": "h5",
+            "style": { "__ref": "54658061" },
+            "__type": "ThemeStyle"
+          },
+          "54658061": {
+            "name": "Default \"h5\"",
+            "rs": { "__ref": "54658062" },
+            "preview": null,
+            "uuid": "lZV8H6pdds",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658062": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "font-family": "Inter",
+              "color": "#000000",
+              "font-size": "20px",
+              "font-weight": "600",
+              "letter-spacing": "-0.3px",
+              "line-height": "1.5"
+            }
+          },
+          "54658069": {
+            "selector": "h6",
+            "style": { "__ref": "54658070" },
+            "__type": "ThemeStyle"
+          },
+          "54658070": {
+            "name": "Default \"h6\"",
+            "rs": { "__ref": "54658071" },
+            "preview": null,
+            "uuid": "wXnT_RY7mP",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658071": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "font-family": "Inter",
+              "color": "#000000",
+              "font-size": "16px",
+              "font-weight": "600",
+              "line-height": "1.5"
+            }
+          },
+          "54658077": {
+            "selector": "a",
+            "style": { "__ref": "54658078" },
+            "__type": "ThemeStyle"
+          },
+          "54658078": {
+            "name": "Default \"a\"",
+            "rs": { "__ref": "54658079" },
+            "preview": null,
+            "uuid": "VArkWcBr-m",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658079": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": { "color": "#0070f3" }
+          },
+          "54658081": {
+            "selector": "a:hover",
+            "style": { "__ref": "54658082" },
+            "__type": "ThemeStyle"
+          },
+          "54658082": {
+            "name": "Default \"a:hover\"",
+            "rs": { "__ref": "54658083" },
+            "preview": null,
+            "uuid": "tjoFVQcZEj",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658083": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": { "color": "#3291ff" }
+          },
+          "54658085": {
+            "selector": "blockquote",
+            "style": { "__ref": "54658086" },
+            "__type": "ThemeStyle"
+          },
+          "54658086": {
+            "name": "Default \"blockquote\"",
+            "rs": { "__ref": "54658087" },
+            "preview": null,
+            "uuid": "jyE8kXBCeE",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658087": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "border-left-color": "#dddddd",
+              "border-left-style": "solid",
+              "border-left-width": "3px",
+              "color": "#888888",
+              "padding-left": "10px"
+            }
+          },
+          "54658093": {
+            "selector": "code",
+            "style": { "__ref": "54658094" },
+            "__type": "ThemeStyle"
+          },
+          "54658094": {
+            "name": "Default \"code\"",
+            "rs": { "__ref": "54658095" },
+            "preview": null,
+            "uuid": "1grxftYEEA",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658095": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "background": "linear-gradient(#f8f8f8, #f8f8f8)",
+              "border-bottom-color": "#dddddd",
+              "border-bottom-style": "solid",
+              "border-bottom-width": "1px",
+              "border-left-color": "#dddddd",
+              "border-left-style": "solid",
+              "border-left-width": "1px",
+              "border-right-color": "#dddddd",
+              "border-right-style": "solid",
+              "border-right-width": "1px",
+              "border-top-color": "#dddddd",
+              "border-top-style": "solid",
+              "border-top-width": "1px",
+              "border-bottom-left-radius": "3px",
+              "border-bottom-right-radius": "3px",
+              "border-top-left-radius": "3px",
+              "border-top-right-radius": "3px",
+              "font-family": "Inconsolata",
+              "padding-bottom": "1px",
+              "padding-left": "4px",
+              "padding-right": "4px",
+              "padding-top": "1px"
+            }
+          },
+          "54658118": {
+            "selector": "pre",
+            "style": { "__ref": "54658119" },
+            "__type": "ThemeStyle"
+          },
+          "54658119": {
+            "name": "Default \"pre\"",
+            "rs": { "__ref": "54658120" },
+            "preview": null,
+            "uuid": "5V0pcFLrjh",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658120": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "background": "linear-gradient(#f8f8f8, #f8f8f8)",
+              "border-bottom-color": "#dddddd",
+              "border-bottom-style": "solid",
+              "border-bottom-width": "1px",
+              "border-left-color": "#dddddd",
+              "border-left-style": "solid",
+              "border-left-width": "1px",
+              "border-right-color": "#dddddd",
+              "border-right-style": "solid",
+              "border-right-width": "1px",
+              "border-top-color": "#dddddd",
+              "border-top-style": "solid",
+              "border-top-width": "1px",
+              "border-bottom-left-radius": "3px",
+              "border-bottom-right-radius": "3px",
+              "border-top-left-radius": "3px",
+              "border-top-right-radius": "3px",
+              "font-family": "Inconsolata",
+              "padding-bottom": "3px",
+              "padding-left": "6px",
+              "padding-right": "6px",
+              "padding-top": "3px"
+            }
+          },
+          "54658143": {
+            "selector": "ol",
+            "style": { "__ref": "54658144" },
+            "__type": "ThemeStyle"
+          },
+          "54658144": {
+            "name": "Default \"ol\"",
+            "rs": { "__ref": "54658145" },
+            "preview": null,
+            "uuid": "1QQzMYEvMN",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658145": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "display": "flex",
+              "flex-direction": "column",
+              "align-items": "stretch",
+              "justify-content": "flex-start",
+              "list-style-position": "outside",
+              "padding-left": "40px",
+              "position": "relative",
+              "list-style-type": "decimal"
+            }
+          },
+          "54658154": {
+            "selector": "ul",
+            "style": { "__ref": "54658155" },
+            "__type": "ThemeStyle"
+          },
+          "54658155": {
+            "name": "Default \"ul\"",
+            "rs": { "__ref": "54658156" },
+            "preview": null,
+            "uuid": "KRhZFKUZGD",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658156": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "display": "flex",
+              "flex-direction": "column",
+              "align-items": "stretch",
+              "justify-content": "flex-start",
+              "list-style-position": "outside",
+              "padding-left": "40px",
+              "position": "relative",
+              "list-style-type": "disc"
+            }
+          }
+        },
+        "deps": [],
+        "version": "224-migrate-hostless"
+      }
+    },
+    {
+      "branchId": "main",
+      "data": {
+        "root": "54658001",
+        "map": {
+          "1644601": {
+            "rows": [{ "__ref": "1644602" }],
+            "__type": "ArenaFrameGrid"
+          },
+          "1644602": { "cols": [], "rowKey": null, "__type": "ArenaFrameRow" },
+          "10466001": {
+            "uuid": "EcZrzAhI2t",
+            "name": "Comp",
+            "params": [{ "__ref": "10466002" }],
+            "states": [],
+            "tplTree": { "__ref": "10466003" },
+            "editableByContentEditor": true,
+            "hiddenFromContentEditor": false,
+            "variants": [{ "__ref": "10466004" }],
+            "variantGroups": [],
+            "pageMeta": null,
+            "codeComponentMeta": { "__ref": "10466005" },
+            "type": "code",
+            "subComps": [],
+            "superComp": null,
+            "plumeInfo": null,
+            "templateInfo": null,
+            "metadata": {},
+            "dataQueries": [],
+            "figmaMappings": [],
+            "alwaysAutoName": false,
+            "trapsFocus": false,
+            "__type": "Component"
+          },
+          "10466002": {
+            "type": { "__ref": "10466007" },
+            "variable": { "__ref": "10466006" },
+            "uuid": "ZwA5F5xaGF",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": null,
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "10466003": {
+            "tag": "div",
+            "name": null,
+            "children": [],
+            "type": "other",
+            "codeGenType": null,
+            "columnsSetting": null,
+            "uuid": "AsoKaqx8eo",
+            "parent": null,
+            "locked": null,
+            "vsettings": [{ "__ref": "10466008" }],
+            "__type": "TplTag"
+          },
+          "10466004": {
+            "uuid": "SVbS2XE6Q",
+            "name": "base",
+            "selectors": null,
+            "parent": null,
+            "mediaQuery": null,
+            "description": null,
+            "forTpl": null,
+            "__type": "Variant"
+          },
+          "10466005": {
+            "importPath": "",
+            "defaultExport": false,
+            "displayName": null,
+            "importName": null,
+            "description": null,
+            "classNameProp": null,
+            "refProp": null,
+            "defaultStyles": null,
+            "defaultDisplay": null,
+            "isHostLess": false,
+            "isContext": false,
+            "isAttachment": false,
+            "providesData": false,
+            "hasRef": false,
+            "isRepeatable": true,
+            "styleSections": null,
+            "helpers": null,
+            "defaultSlotContents": {},
+            "__type": "CodeComponentMeta"
+          },
+          "10466006": {
+            "name": "param1",
+            "uuid": "KoHueX3Z3Z",
+            "__type": "Var"
+          },
+          "10466007": { "name": "text", "__type": "Text" },
+          "10466008": {
+            "variants": [{ "__ref": "10466004" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "10466009" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "10466009": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": { "display": "flex", "flex-direction": "row" }
+          },
+          "10466012": {
+            "name": "comp1",
+            "component": { "__ref": "10466001" },
+            "uuid": "NharCG4oH",
+            "parent": { "__ref": "43666003" },
+            "locked": null,
+            "vsettings": [{ "__ref": "10466013" }],
+            "__type": "TplComponent"
+          },
+          "10466013": {
+            "variants": [{ "__ref": "43666004" }],
+            "args": [{ "__ref": "10466018" }],
+            "attrs": {},
+            "rs": { "__ref": "10466014" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "10466014": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "max-width": "100%",
+              "object-fit": "cover",
+              "position": "relative"
+            }
+          },
+          "10466018": {
+            "param": { "__ref": "10466002" },
+            "expr": { "__ref": "10466019" },
+            "__type": "Arg"
+          },
+          "10466019": { "text": ["arg1"], "__type": "TemplatedString" },
+          "18650001": {
+            "uuid": "DA4AQmg1Sb",
+            "name": "hostless-plasmic-head",
+            "params": [
+              { "__ref": "18650003" },
+              { "__ref": "18650004" },
+              { "__ref": "18650005" },
+              { "__ref": "18650006" }
+            ],
+            "states": [],
+            "tplTree": { "__ref": "18650007" },
+            "editableByContentEditor": true,
+            "hiddenFromContentEditor": false,
+            "variants": [{ "__ref": "18650008" }],
+            "variantGroups": [],
+            "pageMeta": null,
+            "codeComponentMeta": { "__ref": "18650009" },
+            "type": "code",
+            "subComps": [],
+            "superComp": null,
+            "plumeInfo": null,
+            "templateInfo": null,
+            "metadata": {},
+            "dataQueries": [],
+            "figmaMappings": [],
+            "alwaysAutoName": false,
+            "trapsFocus": false,
+            "__type": "Component"
+          },
+          "18650002": {
+            "uuid": "q2L7mov6yJ",
+            "name": "plasmic-data-source-fetcher",
+            "params": [
+              { "__ref": "18650010" },
+              { "__ref": "18650011" },
+              { "__ref": "18650012" },
+              { "__ref": "18650013" },
+              { "__ref": "18650014" }
+            ],
+            "states": [],
+            "tplTree": { "__ref": "18650015" },
+            "editableByContentEditor": true,
+            "hiddenFromContentEditor": false,
+            "variants": [{ "__ref": "18650016" }],
+            "variantGroups": [],
+            "pageMeta": null,
+            "codeComponentMeta": { "__ref": "18650017" },
+            "type": "code",
+            "subComps": [],
+            "superComp": null,
+            "plumeInfo": null,
+            "templateInfo": null,
+            "metadata": {},
+            "dataQueries": [],
+            "figmaMappings": [],
+            "alwaysAutoName": true,
+            "trapsFocus": false,
+            "__type": "Component"
+          },
+          "18650003": {
+            "type": { "__ref": "18650019" },
+            "variable": { "__ref": "18650018" },
+            "uuid": "9RB1M2ofm0",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": "Title",
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "18650004": {
+            "type": { "__ref": "18650021" },
+            "variable": { "__ref": "18650020" },
+            "uuid": "ROLYBAKhxL",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": "Description",
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "18650005": {
+            "type": { "__ref": "18650023" },
+            "variable": { "__ref": "18650022" },
+            "uuid": "vK3_7zBqc9",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": "Image",
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "18650006": {
+            "type": { "__ref": "18650025" },
+            "variable": { "__ref": "18650024" },
+            "uuid": "2tWFzxA4He",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": "Canonical URL",
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "18650007": {
+            "tag": "div",
+            "name": null,
+            "children": [],
+            "type": "other",
+            "codeGenType": null,
+            "columnsSetting": null,
+            "uuid": "_nP0wq_Y_F",
+            "parent": null,
+            "locked": null,
+            "vsettings": [{ "__ref": "18650026" }],
+            "__type": "TplTag"
+          },
+          "18650008": {
+            "uuid": "b8JXbiIfw",
+            "name": "base",
+            "selectors": null,
+            "parent": null,
+            "mediaQuery": null,
+            "description": null,
+            "forTpl": null,
+            "__type": "Variant"
+          },
+          "18650009": {
+            "importPath": "@plasmicapp/react-web",
+            "defaultExport": false,
+            "displayName": "Head",
+            "importName": "PlasmicHead",
+            "description": "Used to add page metadata to HTML <head />.",
+            "classNameProp": null,
+            "refProp": null,
+            "defaultStyles": null,
+            "defaultDisplay": null,
+            "isHostLess": true,
+            "isContext": false,
+            "isAttachment": false,
+            "providesData": false,
+            "hasRef": false,
+            "isRepeatable": false,
+            "styleSections": false,
+            "helpers": null,
+            "defaultSlotContents": {},
+            "__type": "CodeComponentMeta"
+          },
+          "18650010": {
+            "type": { "__ref": "18650028" },
+            "variable": { "__ref": "18650027" },
+            "uuid": "HYkO9bNW_5",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": "Data",
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "18650011": {
+            "type": { "__ref": "18650030" },
+            "variable": { "__ref": "18650029" },
+            "uuid": "5XiPpwFGY8P",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": "Variable name",
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "18650012": {
+            "type": { "__ref": "18650032" },
+            "tplSlot": { "__ref": "18650037" },
+            "variable": { "__ref": "18650031" },
+            "uuid": "BM_paADQPsu",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": null,
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "SlotParam"
+          },
+          "18650013": {
+            "type": { "__ref": "18650034" },
+            "variable": { "__ref": "18650033" },
+            "uuid": "tnpXZzdr1j2",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": "Page size",
+            "about": "Only fetch in batches of this size; for pagination",
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "18650014": {
+            "type": { "__ref": "18650036" },
+            "variable": { "__ref": "18650035" },
+            "uuid": "GFAB7XoHS1U",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": "Page index",
+            "about": "0-based index of the paginated page to fetch",
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "18650015": {
+            "tag": "div",
+            "name": null,
+            "children": [{ "__ref": "18650037" }],
+            "type": "other",
+            "codeGenType": null,
+            "columnsSetting": null,
+            "uuid": "7LHCuXQqVj",
+            "parent": null,
+            "locked": null,
+            "vsettings": [{ "__ref": "18650038" }],
+            "__type": "TplTag"
+          },
+          "18650016": {
+            "uuid": "AyPUyJhn3a",
+            "name": "base",
+            "selectors": null,
+            "parent": null,
+            "mediaQuery": null,
+            "description": null,
+            "forTpl": null,
+            "__type": "Variant"
+          },
+          "18650017": {
+            "importPath": "@plasmicapp/react-web/lib/data-sources",
+            "defaultExport": false,
+            "displayName": "Data Fetcher",
+            "importName": "Fetcher",
+            "description": null,
+            "classNameProp": null,
+            "refProp": null,
+            "defaultStyles": null,
+            "defaultDisplay": null,
+            "isHostLess": true,
+            "isContext": false,
+            "isAttachment": false,
+            "providesData": false,
+            "hasRef": false,
+            "isRepeatable": true,
+            "styleSections": false,
+            "helpers": null,
+            "defaultSlotContents": {},
+            "__type": "CodeComponentMeta"
+          },
+          "18650018": {
+            "name": "title",
+            "uuid": "NX8J-9IHKa",
+            "__type": "Var"
+          },
+          "18650019": { "name": "text", "__type": "Text" },
+          "18650020": {
+            "name": "description",
+            "uuid": "ffQCfedtkN",
+            "__type": "Var"
+          },
+          "18650021": { "name": "text", "__type": "Text" },
+          "18650022": {
+            "name": "image",
+            "uuid": "_sgN5TKJ2-",
+            "__type": "Var"
+          },
+          "18650023": { "name": "img", "__type": "Img" },
+          "18650024": {
+            "name": "canonical",
+            "uuid": "uT7dZv-Tz5",
+            "__type": "Var"
+          },
+          "18650025": { "name": "text", "__type": "Text" },
+          "18650026": {
+            "variants": [{ "__ref": "18650008" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "18650039" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "18650027": {
+            "name": "dataOp",
+            "uuid": "lY4mr91au0",
+            "__type": "Var"
+          },
+          "18650028": { "name": "any", "__type": "AnyType" },
+          "18650029": {
+            "name": "name",
+            "uuid": "HF2sIJQaY2Z",
+            "__type": "Var"
+          },
+          "18650030": { "name": "text", "__type": "Text" },
+          "18650031": {
+            "name": "children",
+            "uuid": "Zn7Y0s4AVAH",
+            "__type": "Var"
+          },
+          "18650032": {
+            "name": "renderFunc",
+            "params": [{ "__ref": "18650040" }],
+            "allowed": [],
+            "__type": "RenderFuncType"
+          },
+          "18650033": {
+            "name": "pageSize",
+            "uuid": "LJC_wbaRc38",
+            "__type": "Var"
+          },
+          "18650034": { "name": "num", "__type": "Num" },
+          "18650035": {
+            "name": "pageIndex",
+            "uuid": "clzvTX1poRH",
+            "__type": "Var"
+          },
+          "18650036": { "name": "num", "__type": "Num" },
+          "18650037": {
+            "param": { "__ref": "18650012" },
+            "defaultContents": [],
+            "uuid": "3NJQfDjFmHB",
+            "parent": { "__ref": "18650015" },
+            "locked": null,
+            "vsettings": [{ "__ref": "18650041" }],
+            "__type": "TplSlot"
+          },
+          "18650038": {
+            "variants": [{ "__ref": "18650016" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "18650042" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "18650039": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": { "display": "flex", "flex-direction": "row" }
+          },
+          "18650040": {
+            "name": "arg",
+            "argName": "$queries",
+            "displayName": null,
+            "type": { "__ref": "18650045" },
+            "__type": "ArgType"
+          },
+          "18650041": {
+            "variants": [{ "__ref": "18650016" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "18650046" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "18650042": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": { "display": "flex", "flex-direction": "row" }
+          },
+          "18650045": { "name": "any", "__type": "AnyType" },
+          "18650046": { "mixins": [], "__type": "RuleSet", "values": {} },
+          "43666001": {
+            "uuid": "rrptSdKmGx",
+            "name": "Page",
+            "params": [],
+            "states": [],
+            "tplTree": { "__ref": "43666003" },
+            "editableByContentEditor": true,
+            "hiddenFromContentEditor": false,
+            "variants": [{ "__ref": "43666004" }],
+            "variantGroups": [],
+            "pageMeta": { "__ref": "43666005" },
+            "codeComponentMeta": null,
+            "type": "page",
+            "subComps": [],
+            "superComp": null,
+            "plumeInfo": null,
+            "templateInfo": null,
+            "metadata": {},
+            "dataQueries": [],
+            "figmaMappings": [],
+            "alwaysAutoName": false,
+            "trapsFocus": false,
+            "__type": "Component"
+          },
+          "43666002": {
+            "component": { "__ref": "43666001" },
+            "matrix": { "__ref": "43666006" },
+            "customMatrix": { "__ref": "1644601" },
+            "__type": "PageArena"
+          },
+          "43666003": {
+            "tag": "div",
+            "name": null,
+            "children": [
+              { "__ref": "10466012" },
+              { "__ref": "55543031" },
+              { "__ref": "55543024" }
+            ],
+            "type": "other",
+            "codeGenType": null,
+            "columnsSetting": null,
+            "uuid": "HjlnTa2dB",
+            "parent": null,
+            "locked": null,
+            "vsettings": [{ "__ref": "43666007" }],
+            "__type": "TplTag"
+          },
+          "43666004": {
+            "uuid": "vIJvolShb_",
+            "name": "base",
+            "selectors": null,
+            "parent": null,
+            "mediaQuery": null,
+            "description": null,
+            "forTpl": null,
+            "__type": "Variant"
+          },
+          "43666005": {
+            "path": "/page",
+            "params": {},
+            "query": {},
+            "title": null,
+            "description": "",
+            "canonical": null,
+            "roleId": null,
+            "openGraphImage": null,
+            "__type": "PageMeta"
+          },
+          "43666006": {
+            "rows": [{ "__ref": "43666008" }],
+            "__type": "ArenaFrameGrid"
+          },
+          "43666007": {
+            "variants": [{ "__ref": "43666004" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "43666009" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "43666008": {
+            "cols": [{ "__ref": "43666010" }, { "__ref": "43666011" }],
+            "rowKey": { "__ref": "43666004" },
+            "__type": "ArenaFrameRow"
+          },
+          "43666009": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "display": "plasmic-content-layout",
+              "flex-direction": "column",
+              "position": "relative",
+              "width": "stretch",
+              "height": "stretch",
+              "align-content": "flex-start"
+            }
+          },
+          "43666010": {
+            "frame": { "__ref": "43666018" },
+            "cellKey": null,
+            "__type": "ArenaFrameCell"
+          },
+          "43666011": {
+            "frame": { "__ref": "43666019" },
+            "cellKey": null,
+            "__type": "ArenaFrameCell"
+          },
+          "43666018": {
+            "uuid": "t1z9RGuZ9i",
+            "width": 1366,
+            "height": 768,
+            "viewportHeight": 768,
+            "container": { "__ref": "43666020" },
+            "lang": "English",
+            "pinnedVariants": {},
+            "targetVariants": [{ "__ref": "43666004" }],
+            "pinnedGlobalVariants": {},
+            "targetGlobalVariants": [],
+            "viewMode": "stretch",
+            "bgColor": null,
+            "name": "",
+            "top": null,
+            "left": null,
+            "__type": "ArenaFrame"
+          },
+          "43666019": {
+            "uuid": "mdBtRoxBzh",
+            "width": 414,
+            "height": 736,
+            "viewportHeight": 736,
+            "container": { "__ref": "43666021" },
+            "lang": "English",
+            "pinnedVariants": {},
+            "targetVariants": [{ "__ref": "43666004" }],
+            "pinnedGlobalVariants": {},
+            "targetGlobalVariants": [],
+            "viewMode": "stretch",
+            "bgColor": null,
+            "name": "",
+            "top": null,
+            "left": null,
+            "__type": "ArenaFrame"
+          },
+          "43666020": {
+            "name": null,
+            "component": { "__ref": "43666001" },
+            "uuid": "MFaBMWqPWe",
+            "parent": null,
+            "locked": null,
+            "vsettings": [{ "__ref": "43666022" }],
+            "__type": "TplComponent"
+          },
+          "43666021": {
+            "name": null,
+            "component": { "__ref": "43666001" },
+            "uuid": "cxXVg3jSb3",
+            "parent": null,
+            "locked": null,
+            "vsettings": [{ "__ref": "43666023" }],
+            "__type": "TplComponent"
+          },
+          "43666022": {
+            "variants": [{ "__ref": "54658007" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "43666024" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "43666023": {
+            "variants": [{ "__ref": "54658007" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "43666025" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "43666024": { "mixins": [], "__type": "RuleSet", "values": {} },
+          "43666025": { "mixins": [], "__type": "RuleSet", "values": {} },
+          "54658001": {
+            "components": [
+              { "__ref": "18650001" },
+              { "__ref": "18650002" },
+              { "__ref": "43666001" },
+              { "__ref": "10466001" },
+              { "__ref": "55543001" }
+            ],
+            "arenas": [],
+            "pageArenas": [{ "__ref": "43666002" }],
+            "componentArenas": [{ "__ref": "55543002" }],
+            "globalVariantGroups": [{ "__ref": "54658003" }],
+            "userManagedFonts": [],
+            "globalVariant": { "__ref": "54658007" },
+            "styleTokens": [],
+            "mixins": [],
+            "themes": [{ "__ref": "54658008" }],
+            "activeTheme": { "__ref": "54658008" },
+            "imageAssets": [],
+            "projectDependencies": [],
+            "activeScreenVariantGroup": { "__ref": "54658003" },
+            "flags": { "usePlasmicImg": true },
+            "hostLessPackageInfo": null,
+            "globalContexts": [],
+            "splits": [],
+            "defaultComponents": {},
+            "defaultPageRoleId": null,
+            "pageWrapper": null,
+            "__type": "Site",
+            "customFunctions": [],
+            "codeLibraries": []
+          },
+          "54658003": {
+            "type": "global-screen",
+            "param": { "__ref": "54658004" },
+            "uuid": "CdS9SAqvMwk",
+            "variants": [],
+            "multi": true,
+            "__type": "GlobalVariantGroup"
+          },
+          "54658004": {
+            "type": { "__ref": "54658006" },
+            "variable": { "__ref": "54658005" },
+            "uuid": "hmxhUaKWyXM",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": null,
+            "displayName": null,
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "GlobalVariantGroupParam"
+          },
+          "54658005": {
+            "name": "Screen",
+            "uuid": "CJd021hHvT",
+            "__type": "Var"
+          },
+          "54658006": { "name": "text", "__type": "Text" },
+          "54658007": {
+            "uuid": "3paUL4g2Lq-",
+            "name": "base",
+            "selectors": null,
+            "parent": null,
+            "mediaQuery": null,
+            "description": null,
+            "forTpl": null,
+            "__type": "Variant"
+          },
+          "54658008": {
+            "defaultStyle": { "__ref": "54658009" },
+            "styles": [
+              { "__ref": "54658024" },
+              { "__ref": "54658033" },
+              { "__ref": "54658042" },
+              { "__ref": "54658051" },
+              { "__ref": "54658060" },
+              { "__ref": "54658069" },
+              { "__ref": "54658077" },
+              { "__ref": "54658081" },
+              { "__ref": "54658085" },
+              { "__ref": "54658093" },
+              { "__ref": "54658118" },
+              { "__ref": "54658143" },
+              { "__ref": "54658154" }
+            ],
+            "layout": null,
+            "active": true,
+            "__type": "Theme"
+          },
+          "54658009": {
+            "name": "Default Typography",
+            "rs": { "__ref": "54658010" },
+            "preview": null,
+            "uuid": "RpB0JQrw1v",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658010": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "font-family": "Roboto",
+              "font-size": "16px",
+              "font-weight": "400",
+              "font-style": "normal",
+              "color": "#535353",
+              "text-align": "left",
+              "text-transform": "none",
+              "line-height": "1.5",
+              "letter-spacing": "normal",
+              "white-space": "pre-wrap",
+              "user-select": "text",
+              "text-decoration-line": "none",
+              "text-overflow": "clip"
+            }
+          },
+          "54658024": {
+            "selector": "h1",
+            "style": { "__ref": "54658025" },
+            "__type": "ThemeStyle"
+          },
+          "54658025": {
+            "name": "Default \"h1\"",
+            "rs": { "__ref": "54658026" },
+            "preview": null,
+            "uuid": "sPchOzIedc",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658026": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "font-family": "Inter",
+              "color": "#000000",
+              "font-size": "72px",
+              "font-weight": "900",
+              "letter-spacing": "-4px",
+              "line-height": "1"
+            }
+          },
+          "54658033": {
+            "selector": "h2",
+            "style": { "__ref": "54658034" },
+            "__type": "ThemeStyle"
+          },
+          "54658034": {
+            "name": "Default \"h2\"",
+            "rs": { "__ref": "54658035" },
+            "preview": null,
+            "uuid": "dpfdUAvJUy",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658035": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "font-family": "Inter",
+              "color": "#000000",
+              "font-size": "48px",
+              "font-weight": "700",
+              "letter-spacing": "-1px",
+              "line-height": "1.1"
+            }
+          },
+          "54658042": {
+            "selector": "h3",
+            "style": { "__ref": "54658043" },
+            "__type": "ThemeStyle"
+          },
+          "54658043": {
+            "name": "Default \"h3\"",
+            "rs": { "__ref": "54658044" },
+            "preview": null,
+            "uuid": "wRNVr2lz0Z",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658044": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "font-family": "Inter",
+              "color": "#000000",
+              "font-size": "32px",
+              "font-weight": "600",
+              "letter-spacing": "-0.8px",
+              "line-height": "1.2"
+            }
+          },
+          "54658051": {
+            "selector": "h4",
+            "style": { "__ref": "54658052" },
+            "__type": "ThemeStyle"
+          },
+          "54658052": {
+            "name": "Default \"h4\"",
+            "rs": { "__ref": "54658053" },
+            "preview": null,
+            "uuid": "gzbVtu0dOJ",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658053": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "font-family": "Inter",
+              "color": "#000000",
+              "font-size": "24px",
+              "font-weight": "600",
+              "letter-spacing": "-0.5px",
+              "line-height": "1.3"
+            }
+          },
+          "54658060": {
+            "selector": "h5",
+            "style": { "__ref": "54658061" },
+            "__type": "ThemeStyle"
+          },
+          "54658061": {
+            "name": "Default \"h5\"",
+            "rs": { "__ref": "54658062" },
+            "preview": null,
+            "uuid": "lZV8H6pdds",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658062": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "font-family": "Inter",
+              "color": "#000000",
+              "font-size": "20px",
+              "font-weight": "600",
+              "letter-spacing": "-0.3px",
+              "line-height": "1.5"
+            }
+          },
+          "54658069": {
+            "selector": "h6",
+            "style": { "__ref": "54658070" },
+            "__type": "ThemeStyle"
+          },
+          "54658070": {
+            "name": "Default \"h6\"",
+            "rs": { "__ref": "54658071" },
+            "preview": null,
+            "uuid": "wXnT_RY7mP",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658071": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "font-family": "Inter",
+              "color": "#000000",
+              "font-size": "16px",
+              "font-weight": "600",
+              "line-height": "1.5"
+            }
+          },
+          "54658077": {
+            "selector": "a",
+            "style": { "__ref": "54658078" },
+            "__type": "ThemeStyle"
+          },
+          "54658078": {
+            "name": "Default \"a\"",
+            "rs": { "__ref": "54658079" },
+            "preview": null,
+            "uuid": "VArkWcBr-m",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658079": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": { "color": "#0070f3" }
+          },
+          "54658081": {
+            "selector": "a:hover",
+            "style": { "__ref": "54658082" },
+            "__type": "ThemeStyle"
+          },
+          "54658082": {
+            "name": "Default \"a:hover\"",
+            "rs": { "__ref": "54658083" },
+            "preview": null,
+            "uuid": "tjoFVQcZEj",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658083": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": { "color": "#3291ff" }
+          },
+          "54658085": {
+            "selector": "blockquote",
+            "style": { "__ref": "54658086" },
+            "__type": "ThemeStyle"
+          },
+          "54658086": {
+            "name": "Default \"blockquote\"",
+            "rs": { "__ref": "54658087" },
+            "preview": null,
+            "uuid": "jyE8kXBCeE",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658087": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "border-left-color": "#dddddd",
+              "border-left-style": "solid",
+              "border-left-width": "3px",
+              "color": "#888888",
+              "padding-left": "10px"
+            }
+          },
+          "54658093": {
+            "selector": "code",
+            "style": { "__ref": "54658094" },
+            "__type": "ThemeStyle"
+          },
+          "54658094": {
+            "name": "Default \"code\"",
+            "rs": { "__ref": "54658095" },
+            "preview": null,
+            "uuid": "1grxftYEEA",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658095": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "background": "linear-gradient(#f8f8f8, #f8f8f8)",
+              "border-bottom-color": "#dddddd",
+              "border-bottom-style": "solid",
+              "border-bottom-width": "1px",
+              "border-left-color": "#dddddd",
+              "border-left-style": "solid",
+              "border-left-width": "1px",
+              "border-right-color": "#dddddd",
+              "border-right-style": "solid",
+              "border-right-width": "1px",
+              "border-top-color": "#dddddd",
+              "border-top-style": "solid",
+              "border-top-width": "1px",
+              "border-bottom-left-radius": "3px",
+              "border-bottom-right-radius": "3px",
+              "border-top-left-radius": "3px",
+              "border-top-right-radius": "3px",
+              "font-family": "Inconsolata",
+              "padding-bottom": "1px",
+              "padding-left": "4px",
+              "padding-right": "4px",
+              "padding-top": "1px"
+            }
+          },
+          "54658118": {
+            "selector": "pre",
+            "style": { "__ref": "54658119" },
+            "__type": "ThemeStyle"
+          },
+          "54658119": {
+            "name": "Default \"pre\"",
+            "rs": { "__ref": "54658120" },
+            "preview": null,
+            "uuid": "5V0pcFLrjh",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658120": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "background": "linear-gradient(#f8f8f8, #f8f8f8)",
+              "border-bottom-color": "#dddddd",
+              "border-bottom-style": "solid",
+              "border-bottom-width": "1px",
+              "border-left-color": "#dddddd",
+              "border-left-style": "solid",
+              "border-left-width": "1px",
+              "border-right-color": "#dddddd",
+              "border-right-style": "solid",
+              "border-right-width": "1px",
+              "border-top-color": "#dddddd",
+              "border-top-style": "solid",
+              "border-top-width": "1px",
+              "border-bottom-left-radius": "3px",
+              "border-bottom-right-radius": "3px",
+              "border-top-left-radius": "3px",
+              "border-top-right-radius": "3px",
+              "font-family": "Inconsolata",
+              "padding-bottom": "3px",
+              "padding-left": "6px",
+              "padding-right": "6px",
+              "padding-top": "3px"
+            }
+          },
+          "54658143": {
+            "selector": "ol",
+            "style": { "__ref": "54658144" },
+            "__type": "ThemeStyle"
+          },
+          "54658144": {
+            "name": "Default \"ol\"",
+            "rs": { "__ref": "54658145" },
+            "preview": null,
+            "uuid": "1QQzMYEvMN",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658145": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "display": "flex",
+              "flex-direction": "column",
+              "align-items": "stretch",
+              "justify-content": "flex-start",
+              "list-style-position": "outside",
+              "padding-left": "40px",
+              "position": "relative",
+              "list-style-type": "decimal"
+            }
+          },
+          "54658154": {
+            "selector": "ul",
+            "style": { "__ref": "54658155" },
+            "__type": "ThemeStyle"
+          },
+          "54658155": {
+            "name": "Default \"ul\"",
+            "rs": { "__ref": "54658156" },
+            "preview": null,
+            "uuid": "KRhZFKUZGD",
+            "forTheme": true,
+            "variantedRs": [],
+            "__type": "Mixin"
+          },
+          "54658156": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "display": "flex",
+              "flex-direction": "column",
+              "align-items": "stretch",
+              "justify-content": "flex-start",
+              "list-style-position": "outside",
+              "padding-left": "40px",
+              "position": "relative",
+              "list-style-type": "disc"
+            }
+          },
+          "55543001": {
+            "uuid": "F6NtpF8Xoz",
+            "name": "Comp",
+            "params": [{ "__ref": "55543021" }],
+            "states": [],
+            "tplTree": { "__ref": "55543003" },
+            "editableByContentEditor": false,
+            "hiddenFromContentEditor": false,
+            "variants": [{ "__ref": "55543004" }],
+            "variantGroups": [],
+            "pageMeta": null,
+            "codeComponentMeta": null,
+            "type": "plain",
+            "subComps": [],
+            "superComp": null,
+            "plumeInfo": null,
+            "templateInfo": null,
+            "metadata": {},
+            "dataQueries": [],
+            "figmaMappings": [],
+            "alwaysAutoName": false,
+            "trapsFocus": false,
+            "__type": "Component"
+          },
+          "55543002": {
+            "component": { "__ref": "55543001" },
+            "matrix": { "__ref": "55543005" },
+            "customMatrix": { "__ref": "55543006" },
+            "__type": "ComponentArena"
+          },
+          "55543003": {
+            "tag": "div",
+            "name": null,
+            "children": [],
+            "type": "other",
+            "codeGenType": null,
+            "columnsSetting": null,
+            "uuid": "hd1KGVi0x",
+            "parent": null,
+            "locked": null,
+            "vsettings": [{ "__ref": "55543007" }],
+            "__type": "TplTag"
+          },
+          "55543004": {
+            "uuid": "rCtmPQ_bLv",
+            "name": "base",
+            "selectors": null,
+            "parent": null,
+            "mediaQuery": null,
+            "description": null,
+            "forTpl": null,
+            "__type": "Variant"
+          },
+          "55543005": {
+            "rows": [{ "__ref": "55543008" }],
+            "__type": "ArenaFrameGrid"
+          },
+          "55543006": {
+            "rows": [{ "__ref": "55543009" }],
+            "__type": "ArenaFrameGrid"
+          },
+          "55543007": {
+            "variants": [{ "__ref": "55543004" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "55543010" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "55543008": {
+            "cols": [{ "__ref": "55543011" }],
+            "rowKey": null,
+            "__type": "ArenaFrameRow"
+          },
+          "55543009": { "cols": [], "rowKey": null, "__type": "ArenaFrameRow" },
+          "55543010": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "display": "flex",
+              "flex-direction": "column",
+              "position": "relative",
+              "width": "wrap",
+              "height": "wrap"
+            }
+          },
+          "55543011": {
+            "frame": { "__ref": "55543017" },
+            "cellKey": { "__ref": "55543004" },
+            "__type": "ArenaFrameCell"
+          },
+          "55543017": {
+            "uuid": "6DA4tPCMzJ",
+            "width": 340,
+            "height": 340,
+            "viewportHeight": null,
+            "container": { "__ref": "55543018" },
+            "lang": "English",
+            "pinnedVariants": {},
+            "targetVariants": [{ "__ref": "55543004" }],
+            "pinnedGlobalVariants": {},
+            "targetGlobalVariants": [],
+            "viewMode": "centered",
+            "bgColor": null,
+            "name": "",
+            "top": null,
+            "left": null,
+            "__type": "ArenaFrame"
+          },
+          "55543018": {
+            "name": null,
+            "component": { "__ref": "55543001" },
+            "uuid": "dBEJlC9ETv",
+            "parent": null,
+            "locked": null,
+            "vsettings": [{ "__ref": "55543019" }],
+            "__type": "TplComponent"
+          },
+          "55543019": {
+            "variants": [{ "__ref": "54658007" }],
+            "args": [],
+            "attrs": {},
+            "rs": { "__ref": "55543020" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "55543020": { "mixins": [], "__type": "RuleSet", "values": {} },
+          "55543021": {
+            "type": { "__ref": "55543023" },
+            "variable": { "__ref": "55543022" },
+            "uuid": "uhfQqdYfXf",
+            "enumValues": [],
+            "origin": null,
+            "exportType": "External",
+            "defaultExpr": null,
+            "previewExpr": null,
+            "propEffect": null,
+            "description": "metaProp",
+            "displayName": null,
+            "about": null,
+            "isRepeated": null,
+            "isMainContentSlot": false,
+            "required": false,
+            "mergeWithParent": false,
+            "isLocalizable": false,
+            "__type": "PropParam"
+          },
+          "55543022": { "name": "prop", "uuid": "EYHqrIQKc", "__type": "Var" },
+          "55543023": { "name": "text", "__type": "Text" },
+          "55543024": {
+            "name": "plasmicComp2",
+            "component": { "__ref": "55543001" },
+            "uuid": "fZyK3vgx_8",
+            "parent": { "__ref": "43666003" },
+            "locked": null,
+            "vsettings": [{ "__ref": "55543025" }],
+            "__type": "TplComponent"
+          },
+          "55543025": {
+            "variants": [{ "__ref": "43666004" }],
+            "args": [{ "__ref": "55543029" }],
+            "attrs": {},
+            "rs": { "__ref": "55543026" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "55543026": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": { "max-width": "100%", "position": "relative" }
+          },
+          "55543029": {
+            "param": { "__ref": "55543021" },
+            "expr": { "__ref": "55543030" },
+            "__type": "Arg"
+          },
+          "55543030": { "text": ["plasmicArg2"], "__type": "TemplatedString" },
+          "55543031": {
+            "name": "comp3",
+            "component": { "__ref": "10466001" },
+            "uuid": "N8uiUhN0Q",
+            "parent": { "__ref": "43666003" },
+            "locked": null,
+            "vsettings": [{ "__ref": "55543032" }],
+            "__type": "TplComponent"
+          },
+          "55543032": {
+            "variants": [{ "__ref": "43666004" }],
+            "args": [{ "__ref": "55543037" }],
+            "attrs": {},
+            "rs": { "__ref": "55543033" },
+            "dataCond": null,
+            "dataRep": null,
+            "text": null,
+            "columnsConfig": null,
+            "__type": "VariantSetting"
+          },
+          "55543033": {
+            "mixins": [],
+            "__type": "RuleSet",
+            "values": {
+              "max-width": "100%",
+              "object-fit": "cover",
+              "position": "relative"
+            }
+          },
+          "55543037": {
+            "param": { "__ref": "10466002" },
+            "expr": { "__ref": "55543038" },
+            "__type": "Arg"
+          },
+          "55543038": { "text": ["arg3"], "__type": "TemplatedString" }
+        },
+        "deps": [],
+        "version": "224-migrate-hostless"
+      }
+    }
+  ]
+}

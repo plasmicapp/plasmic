@@ -1,0 +1,25 @@
+.root:global(.__wab_instance) {
+  position: relative;
+}
+.svg__jeWc1 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1rem;
+  height: 1rem;
+}
+.svgmedium__jeWc109MCz {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.root:hover .svg__jeWc1 {
+  color: var(--token-PHHWT_HMuS1);
+}
+.svg___5FElZ {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  color: var(--token-UunsGa2Y3t3);
+  width: 1em;
+  height: 1em;
+}

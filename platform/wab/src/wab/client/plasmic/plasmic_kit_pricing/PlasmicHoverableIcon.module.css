@@ -1,0 +1,51 @@
+.root {
+  display: inline-flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+}
+.tooltip:global(.__wab_instance) {
+  max-width: 100%;
+  object-fit: cover;
+}
+.freeBox__mdtW {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+.svg {
+  object-fit: cover;
+  max-width: 100%;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+.svgwhite {
+  color: var(--token-N1gO6v-RIEn);
+}
+.popout:global(.__wab_instance) {
+  position: relative;
+  margin-top: 0px;
+}
+.freeBox__diuB5 {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 300px;
+  min-width: 0;
+}
+.slotTargetPopover {
+  font-size: var(--token-YU1H6d7MUtVL);
+  line-height: 18px;
+  font-weight: 400;
+}

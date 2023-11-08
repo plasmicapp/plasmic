@@ -1,0 +1,40 @@
+.root {
+  display: flex;
+  width: 100%;
+  height: auto;
+  position: relative;
+  min-width: 0;
+}
+.labeledProp:global(.__wab_instance) {
+  position: relative;
+}
+.svg {
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.textbox__ywkXa:global(.__wab_instance) {
+  position: relative;
+}
+.svg__qdE2 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.svg___7VbjL {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.text {
+  position: relative;
+}
+.textisNonText {
+  white-space: pre;
+  color: var(--token-B77WAT17jl8);
+  font-style: italic;
+}

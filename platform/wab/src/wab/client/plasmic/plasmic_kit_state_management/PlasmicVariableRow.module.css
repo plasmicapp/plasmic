@@ -1,0 +1,106 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  position: relative;
+  cursor: pointer;
+  min-height: var(--token-aDa535tnF);
+  min-width: 0;
+  padding: 0px 0px 0px 16px;
+}
+.root > :global(.__wab_flex-container) {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+  margin-left: calc(0px - var(--token-uzWT6AFCY));
+  width: calc(100% + var(--token-uzWT6AFCY));
+}
+.root > :global(.__wab_flex-container) > *,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.root > :global(.__wab_flex-container) > picture > img,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
+  margin-left: var(--token-uzWT6AFCY);
+}
+.root:hover {
+  background: var(--token-O4S7RMTqZ3);
+}
+.variableType:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+  width: auto;
+}
+.freeBox__vYiqk {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0px;
+}
+.freeBox___7S0Wf {
+  width: 100%;
+  height: auto;
+  max-width: 800px;
+  display: flex;
+  flex-direction: row;
+  min-width: 0;
+}
+.freeBox__mOc9Q {
+  width: 100%;
+  height: auto;
+  max-width: 800px;
+  display: flex;
+  flex-direction: row;
+  min-height: 18px;
+  min-width: 0;
+}
+.freeBoxhideValue__mOc9QIc4Vi {
+  display: none;
+}
+.slotTargetValue {
+  color: var(--token-UunsGa2Y3t3);
+}
+.svg {
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+  width: 20px;
+  height: 20px;
+  color: var(--token-hoA5qaM-91G);
+  flex-shrink: 0;
+  display: none;
+}
+.svgisExternal {
+  display: block;
+}
+.freeBox__pRutb {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 24px;
+  height: 32px;
+  max-width: 100%;
+  flex-shrink: 0;
+  padding: 0px;
+}
+.freeBoxhideMenu__pRutbDmEuf {
+  display: none;
+}
+.menuButton:global(.__wab_instance):global(.__wab_instance) {
+  max-width: 100%;
+  flex-shrink: 0;
+  display: none;
+}
+.root:hover .menuButton:global(.__wab_instance):global(.__wab_instance) {
+  flex-shrink: 0;
+  display: block;
+}

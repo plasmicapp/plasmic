@@ -1,0 +1,19 @@
+@import "src/wab/styles/tokens";
+
+.variantLabelInput {
+  & input {
+    padding: 0;
+  }
+}
+
+.variantLabelInput__recording {
+  & input {
+    color: $tomato9;
+  }
+}
+
+.styleVariantEditor {
+  display: grid;
+  grid-template-columns: auto 70px;
+  grid-column-gap: 10px;
+}

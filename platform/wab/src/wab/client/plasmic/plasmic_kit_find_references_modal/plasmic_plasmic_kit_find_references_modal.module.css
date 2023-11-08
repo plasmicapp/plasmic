@@ -1,0 +1,322 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter%3Aital%2Cwght%400%2C400%3B0%2C600%3B0%2C700%3B0%2C900&family=Inconsolata%3Aital%2Cwght%400%2C400%3B0%2C600%3B0%2C700%3B0%2C900&display=swap");
+.all {
+  display: block;
+  white-space: inherit;
+  grid-row: auto;
+  grid-column: auto;
+  position: relative;
+  background: none;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  box-shadow: none;
+  box-sizing: border-box;
+  text-decoration-line: none;
+  margin: 0;
+  border-width: 0px;
+}
+.img {
+  composes: all;
+  display: inline-block;
+}
+.li {
+  composes: all;
+  display: list-item;
+}
+.span {
+  composes: all;
+  display: inline;
+  position: static;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit;
+}
+.input {
+  composes: all;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit;
+  background-image: linear-gradient(#ffffff, #ffffff);
+  padding: 2px;
+  border: 1px solid lightgray;
+}
+.textarea {
+  composes: all;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit;
+  padding: 2px;
+  border: 1px solid lightgray;
+}
+.button {
+  composes: all;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit;
+  background-image: none;
+  align-items: flex-start;
+  text-align: center;
+  padding: 2px 6px;
+  border: 1px solid lightgray;
+}
+.code {
+  composes: all;
+  font-family: inherit;
+  line-height: inherit;
+}
+.pre {
+  composes: all;
+  font-family: inherit;
+  line-height: inherit;
+}
+.p {
+  composes: all;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit;
+}
+.h1 {
+  composes: all;
+  font-size: inherit;
+  font-weight: inherit;
+}
+.h2 {
+  composes: all;
+  font-size: inherit;
+  font-weight: inherit;
+}
+.h3 {
+  composes: all;
+  font-size: inherit;
+  font-weight: inherit;
+}
+.h4 {
+  composes: all;
+  font-size: inherit;
+  font-weight: inherit;
+}
+.h5 {
+  composes: all;
+  font-size: inherit;
+  font-weight: inherit;
+}
+.h6 {
+  composes: all;
+  font-size: inherit;
+  font-weight: inherit;
+}
+.address {
+  composes: all;
+  font-style: inherit;
+}
+.a {
+  composes: all;
+  color: inherit;
+}
+.ol {
+  composes: all;
+  list-style-type: none;
+  padding: 0;
+}
+.ul {
+  composes: all;
+  list-style-type: none;
+  padding: 0;
+}
+.select {
+  composes: all;
+  padding: 2px 6px;
+}
+.plasmic_default__component_wrapper {
+  display: grid;
+}
+.plasmic_default__inline {
+  display: inline;
+}
+.plasmic_page_wrapper {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  align-items: stretch;
+  align-self: start;
+}
+.plasmic_page_wrapper > * {
+  height: auto !important;
+}
+.root_reset {
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  font-style: normal;
+  color: #535353;
+  text-align: left;
+  text-transform: none;
+  line-height: 1.5;
+  letter-spacing: normal;
+  white-space: pre-wrap;
+}
+
+:where(.root_reset) h1,
+:where(.root_reset) .plasmic_default__h1,
+:where(.root_reset) .h1,
+h1:where(.root_reset) {
+  font-family: "Inter";
+  color: #000000;
+  font-size: 72px;
+  font-weight: 900;
+  letter-spacing: -4px;
+  line-height: 1;
+}
+
+:where(.root_reset) h2,
+:where(.root_reset) .plasmic_default__h2,
+:where(.root_reset) .h2,
+h2:where(.root_reset) {
+  font-family: "Inter";
+  color: #000000;
+  font-size: 48px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1.1;
+}
+
+:where(.root_reset) h3,
+:where(.root_reset) .plasmic_default__h3,
+:where(.root_reset) .h3,
+h3:where(.root_reset) {
+  font-family: "Inter";
+  color: #000000;
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.8px;
+  line-height: 1.2;
+}
+
+:where(.root_reset) h4,
+:where(.root_reset) .plasmic_default__h4,
+:where(.root_reset) .h4,
+h4:where(.root_reset) {
+  font-family: "Inter";
+  color: #000000;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  line-height: 1.3;
+}
+
+:where(.root_reset) h5,
+:where(.root_reset) .plasmic_default__h5,
+:where(.root_reset) .h5,
+h5:where(.root_reset) {
+  font-family: "Inter";
+  color: #000000;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  line-height: 1.5;
+}
+
+:where(.root_reset) h6,
+:where(.root_reset) .plasmic_default__h6,
+:where(.root_reset) .h6,
+h6:where(.root_reset) {
+  font-family: "Inter";
+  color: #000000;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+:where(.root_reset) a,
+:where(.root_reset) .plasmic_default__a,
+:where(.root_reset) .a,
+a:where(.root_reset) {
+  color: #0070f3;
+}
+
+:where(.root_reset) a:hover,
+:where(.root_reset) .plasmic_default__a:hover,
+:where(.root_reset) .a:hover,
+a:hover:where(.root_reset) {
+  color: #3291ff;
+}
+
+:where(.root_reset) blockquote,
+:where(.root_reset) .plasmic_default__blockquote,
+:where(.root_reset) .blockquote,
+blockquote:where(.root_reset) {
+  color: #888888;
+  padding-left: 10px;
+  border-left: 3px solid #dddddd;
+}
+
+:where(.root_reset) code,
+:where(.root_reset) .plasmic_default__code,
+:where(.root_reset) .code,
+code:where(.root_reset) {
+  background: linear-gradient(#f8f8f8, #f8f8f8);
+  font-family: "Inconsolata";
+  border-radius: 3px;
+  padding: 1px 4px;
+  border: 1px solid #dddddd;
+}
+
+:where(.root_reset) pre,
+:where(.root_reset) .plasmic_default__pre,
+:where(.root_reset) .pre,
+pre:where(.root_reset) {
+  background: linear-gradient(#f8f8f8, #f8f8f8);
+  font-family: "Inconsolata";
+  border-radius: 3px;
+  padding: 3px 6px;
+  border: 1px solid #dddddd;
+}
+
+:where(.root_reset) ol,
+:where(.root_reset) .plasmic_default__ol,
+:where(.root_reset) .ol,
+ol:where(.root_reset) {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  list-style-position: outside;
+  padding-left: 40px;
+  position: relative;
+  list-style-type: decimal;
+  flex-column-gap: 0px;
+}
+
+:where(.root_reset) ul,
+:where(.root_reset) .plasmic_default__ul,
+:where(.root_reset) .ul,
+ul:where(.root_reset) {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  list-style-position: outside;
+  padding-left: 40px;
+  position: relative;
+  list-style-type: disc;
+  flex-column-gap: 0px;
+}

@@ -1,0 +1,12 @@
+.root {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  height: 24px;
+}
+.slotTargetChildren {
+  font-weight: 600;
+  color: rgb(164, 167, 171) /* plasmic-token: 0a8K8Ue9nWPZz */;
+}

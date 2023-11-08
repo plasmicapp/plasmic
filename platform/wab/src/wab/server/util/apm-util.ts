@@ -1,0 +1,31 @@
+import { WabPromTimer } from "../promstats";
+
+export async function withSpan<T>(
+  name: string,
+  f: () => Promise<T>,
+  msg?: string
+) {
+  const start = new Date().getTime();
+  const promTimer = new WabPromTimer(name);
+  try {
+    return await f();
+  } finally {
+    console.log(
+      `${name} took ${new Date().getTime() - start}ms`,
+      msg ? `: ${msg}` : undefined
+    );
+    promTimer.end();
+  }
+}
+
+export async function withTimeSpent<T>(f: () => Promise<T>): Promise<{
+  result: T;
+  spentTime: number;
+}> {
+  const start = new Date().getTime();
+  const result = await f();
+  return {
+    result,
+    spentTime: new Date().getTime() - start,
+  };
+}

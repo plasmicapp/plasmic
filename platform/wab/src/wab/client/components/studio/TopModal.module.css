@@ -1,0 +1,14 @@
+.wrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+.wrapper :global(.ant-modal-body) {
+  padding: 0;
+}
+
+.wrapper :global(.ant-modal) {
+  width: auto !important;
+  margin: 0;
+}

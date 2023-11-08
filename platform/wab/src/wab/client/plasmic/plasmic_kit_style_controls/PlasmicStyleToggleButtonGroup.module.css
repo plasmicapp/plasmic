@@ -1,0 +1,63 @@
+.root {
+  display: flex;
+  width: 100%;
+  height: auto;
+  position: relative;
+  min-width: 0;
+}
+.rootautoWidth {
+  width: auto;
+  display: inline-flex;
+}
+.buttonsContainer {
+  background: var(--token-O4S7RMTqZ3);
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  width: 100%;
+  min-width: 0;
+  border-radius: 6px;
+  padding: 2px;
+}
+.buttonsContainer > :global(.__wab_flex-container) {
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  min-width: 0;
+  margin-left: calc(0px - 2px);
+  width: calc(100% + 2px);
+}
+.buttonsContainer > :global(.__wab_flex-container) > *,
+.buttonsContainer > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.buttonsContainer > :global(.__wab_flex-container) > picture > img,
+.buttonsContainer
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 2px;
+}
+.buttonsContainerstyleType_right > :global(.__wab_flex-container) {
+  align-items: stretch;
+  justify-content: flex-end;
+}
+.buttonsContainerstyleType_between > :global(.__wab_flex-container) {
+  justify-content: space-between;
+}
+.styleToggleButton__bW8S4:global(.__wab_instance) {
+  position: relative;
+}
+.svg__rsFgI {
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.styleToggleButton__l4DOy:global(.__wab_instance) {
+  position: relative;
+}
+.svg__pKot {
+  position: relative;
+  width: 1em;
+  height: 1em;
+}

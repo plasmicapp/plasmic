@@ -1,0 +1,52 @@
+tutorialdb are databases that are created for each "tutorial" or "app template" project. Each comes seeded with some schema and data.
+
+The database host to connect to for tutorialdb is specified by the TUTORIAL_DB_HOST environment variable; it defaults to localhost, so for development, it will just use the same postgres instance you're using for wab.
+
+# Users and roles
+
+## Super tutorialdb user
+We connect to the tutorialdb's default `postgres` database, using the user `supertdbwab`.  This user is used to create new databases and users. So this user must have already been created, and have those privileges.
+
+## Normal tutorialdb user
+Each individually created database is paired with a user. This user will only have access to this database.
+
+# Credentials
+
+## Local dev
+You can create your local `supertdbwab` user like this:
+
+```
+CREATE USER supertdbwab PASSWORD 'devpassword' CREATEDB CREATEROLE;
+```
+
+Update your `~/.pgpass` file with the password for the `supertdbwab` user you created above.
+
+## Production app server
+For app server, we'll need to update its `~/.pgpass` with password to tutorialdb for the `supertdbwab` user (which was manually created by Chung on the RDS instance).
+
+We pass the `TUTORIAL_DB_HOST` environment variable in our kubernetes deployment files.
+
+## Data integration pods
+For data integration pods, we pass the `TUTORIAL_DB_HOsT` environment variable in `integrations-deployment.yaml`. But that's really just to pass along the db host name; we do not add the `supertdbwab` user password to its `~/.pgpass` because data integration pods should only need to read from those individual tutorial dbs, and not create new ones.
+
+# Adding tutorialdb schemas
+
+Each "tutorial" / template has its own directory with init script.
+
+There should also be an `init.ts` file that exports a function called `initDb()` function that will sync the schema, and add in seed data.
+
+# Creating a database
+
+## Local dev
+
+```
+yarn tutorialdb todo
+```
+
+This will create a tutorialdb, print out the details, and add a corresponding entry into your tutorialdb table in wab.
+
+## Production
+
+Create from the admin panel.
+
+Then create an instance of it in the "App starters" workspace.

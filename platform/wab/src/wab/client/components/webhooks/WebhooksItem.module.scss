@@ -1,0 +1,10 @@
+@import "../../../styles/vars";
+
+.item > svg {
+  margin-right: 5px;
+  vertical-align: -1px;
+}
+
+.item.delete {
+  color: $tomato9;
+}

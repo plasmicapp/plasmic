@@ -1,0 +1,190 @@
+@import "./_vars.sass"
+
+$selected-bg: $blue3
+
+$bg: #fff
+$btn-color: #fff
+
+$panel-block-base-color: #2D3439
+$panel-block-bg: $sand3
+$panel-block-border: darken($panel-block-base-color, 15%)
+
+@mixin cover
+  height: 100%
+  width: 100%
+  position: absolute
+  top: 0
+  left: 0
+
+@mixin hcenter
+  display: flex
+  flex-direction: column
+  align-items: center
+
+@mixin hstack
+  display: flex
+
+@mixin vstack
+  display: flex
+  flex-direction: column
+
+@mixin hstack-gap($gap)
+  @include hstack
+  > *:not(:first-child)
+    margin-left: $gap
+
+@mixin vstack-gap($gap)
+  @include vstack
+  > *:not(:first-child)
+    margin-top: $gap
+
+@mixin inset-border($width, $color)
+  box-shadow: inset 0 0 0 $width $color
+
+@mixin stretcher
+  display: flex
+  align-items: stretch
+  justify-content: stretch
+
+@mixin dead-center
+  display: flex
+  align-items: center
+  justify-content: center
+
+@mixin inline-dead-center
+  display: inline-flex
+  align-items: center
+  justify-content: center
+  vertical-align: middle
+
+@mixin grid3x3--spaced-evenly
+  display: grid
+  grid-template-columns: 1fr 1fr 1fr
+  grid-template-rows: 1fr 1fr 1fr
+  align-items: center
+  justify-items: center
+
+@mixin grid3x3--pushed-out
+  @include grid3x3--spaced-evenly
+  grid-template-columns: auto 1fr auto
+  grid-template-rows: auto 1fr auto
+
+@mixin outset
+  background-color: $btn-color
+  //border: 1px solid rgba(255,255,255,.1)
+  //border: 1px solid rgba(0,0,0,0)
+  //border-top-color: rgba(255,255,255,.1)
+  box-shadow: 0 0 0 1px darken($bg, 0%)
+
+@mixin outset-button-no-hover
+  cursor: pointer
+  display: inline-block
+  text-align: center
+  padding: 10px 20px
+
+@mixin outset-button
+  @include outset-button-no-hover
+  &:hover:not(:disabled)
+    //background-color: #555555
+    //border-color: rgba(255,255,255,.13)
+    //border-top-color: rgba(255,255,255,.25)
+    //background-color: lighten($btn-color, 5%)
+    //border: 1px solid rgba(0,0,0,0)
+    //border-top-color: rgba(255,255,255,.2)
+    //border-bottom-color: $active-color
+    color: $fg
+  &:disabled
+    border: 1px solid transparent
+    color: $disabled-fg
+    cursor: not-allowed
+
+@mixin btn--micro
+  @include outset-button
+  padding: 1px
+  line-height: 1
+  width: 19px
+  height: 19px
+  border: 1px solid rgba(255, 255, 255, 0.1)
+  border: 1px solid rgba(0,0,0,0.3)
+  box-shadow: none
+
+@mixin plain-link
+  color: $fg
+  &:hover
+    color: $brightfg
+
+@mixin codefont
+  font-family: $code-font-family
+
+@mixin panel-button
+  @include outset-button
+  height: 28px
+  width: 28px
+  vertical-align: middle
+
+@mixin focused
+  box-shadow: 0 0 0 2px $focus-color
+
+@mixin icon-button
+  @include panel-button
+  @include dead-center
+  color: $dimfg
+  border-radius: 4px
+  padding: 0
+  background-color: transparent
+  @extend .form-control-transition
+  border: 1px solid transparent
+  &:hover
+    color: $fg
+    border-color: $dimdimdimfg
+  &.icon-button--inverse
+    color: $inverse-dimfg
+    &:hover
+      color: $inverse-fg
+      border-color: $inverse-dimdimfg
+  &:focus
+    @include focused
+
+
+@mixin text-overflow
+  overflow: hidden
+  text-overflow: ellipsis
+  white-space: nowrap
+
+@mixin not-draggable
+  user-drag: none
+  user-select: none
+  -moz-user-select: none
+  -webkit-user-drag: none
+  -webkit-user-select: none
+  -ms-user-select: none
+
+@mixin oversized-center
+  position: absolute
+  left: 50%
+  top: 50%
+  transform: translate(-50%, -50%)
+
+@mixin icon-sized
+  width: 12px
+  height: 12px
+
+@mixin truncate-text
+  overflow: hidden
+  text-overflow: ellipsis
+  white-space: nowrap
+
+@mixin light-text
+  font-weight: 300
+
+@mixin code-chip-like
+  @include codefont
+  padding: 0 2px
+  border-radius: 4px
+  color: $green10
+  background-color: white
+  cursor: pointer
+  font-weight: bold
+  vertical-align: middle
+  &:hover
+    background-color: $green3

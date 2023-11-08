@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 600 86">
+  <g clip-path="url(#cn22Yomvha)">
+    <path d="M50 0H0v35h50V0z" fill="#FCFCFC"/>
+    <path d="M100 0H50v35h50V0z" fill="#F8F8F8"/>
+    <path d="M150 0h-50v35h50V0z" fill="#F3F3F3"/>
+    <path d="M200 0h-50v35h50V0z" fill="#EDEDED"/>
+    <path d="M250 0h-50v35h50V0z" fill="#E8E8E8"/>
+    <path d="M300 0h-50v35h50V0z" fill="#E2E2E2"/>
+    <path d="M350 0h-50v35h50V0z" fill="#DBDBDB"/>
+    <path d="M400 0h-50v35h50V0z" fill="#C7C7C7"/>
+    <path d="M450 0h-50v35h50V0z" fill="#8F8F8F"/>
+    <path d="M500 0h-50v35h50V0z" fill="#858585"/>
+    <path d="M550 0h-50v35h50V0z" fill="#6F6F6F"/>
+    <path d="M600 0h-50v35h50V0z" fill="#171717"/>
+  </g>
+  <path d="M50 51H0v35h50V51z" fill="#161616"/>
+  <path d="M100 51H50v35h50V51z" fill="#1C1C1C"/>
+  <path d="M150 51h-50v35h50V51z" fill="#232323"/>
+  <path d="M200 51h-50v35h50V51z" fill="#282828"/>
+  <path d="M250 51h-50v35h50V51z" fill="#2E2E2E"/>
+  <path d="M300 51h-50v35h50V51z" fill="#343434"/>
+  <path d="M350 51h-50v35h50V51z" fill="#3E3E3E"/>
+  <path d="M400 51h-50v35h50V51z" fill="#505050"/>
+  <path d="M450 51h-50v35h50V51z" fill="#707070"/>
+  <path d="M500 51h-50v35h50V51z" fill="#7E7E7E"/>
+  <path d="M550 51h-50v35h50V51z" fill="#A0A0A0"/>
+  <path d="M600 51h-50v35h50V51z" fill="#EDEDED"/>
+  <defs>
+    <clipPath id="cn22Yomvha">
+      <path fill="#fff" d="M0 0h600v35H0z"/>
+    </clipPath>
+  </defs>
+</svg>

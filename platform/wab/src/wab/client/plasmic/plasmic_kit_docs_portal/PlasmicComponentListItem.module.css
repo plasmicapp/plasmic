@@ -1,0 +1,37 @@
+.root {
+  display: flex;
+  width: 100%;
+  height: auto;
+  position: relative;
+  min-width: 0;
+}
+.listItem:global(.__wab_instance) {
+  position: relative;
+}
+.svg {
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.slotTargetChildrenisSelected {
+  font-weight: 600;
+}
+.iconButton__fmetf:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.svg__pEdt0 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}
+.svg__suLe {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  color: var(--token-UunsGa2Y3t3);
+  width: 1em;
+  height: 1em;
+}

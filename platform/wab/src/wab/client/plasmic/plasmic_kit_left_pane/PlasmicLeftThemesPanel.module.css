@@ -1,0 +1,88 @@
+.root {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  flex-direction: column;
+  overflow: hidden;
+  background: #ffffff;
+  min-width: 0;
+  min-height: 0;
+}
+.themeHeader:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.textWithInfo:global(.__wab_instance) {
+  max-width: 100%;
+  display: flex;
+}
+.text__sLPev {
+  font-weight: 600;
+  font-size: 14px;
+}
+.freeBox {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+}
+.freeBox > :global(.__wab_flex-container) {
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: flex-start;
+  min-width: 0;
+  margin-left: calc(0px - 4px);
+  width: calc(100% + 4px);
+}
+.freeBox > :global(.__wab_flex-container) > *,
+.freeBox > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBox > :global(.__wab_flex-container) > picture > img,
+.freeBox
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 4px;
+}
+.text__rgfqo {
+  position: relative;
+  width: auto;
+  height: auto;
+  max-width: 800px;
+  white-space: pre;
+}
+.themeSelector:global(.__wab_instance) {
+  max-width: 100%;
+  width: 100%;
+  min-width: 0;
+}
+.hiliteTabs:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+.hiliteTabsnoLayout:global(.__wab_instance) {
+  display: none;
+}
+.defaultStylesPanel:global(.__wab_instance) {
+  position: relative;
+  display: none;
+}
+.defaultStylesPanelnoLayout:global(.__wab_instance) {
+  display: flex;
+}
+.defaultStylesPaneltab_styles:global(.__wab_instance) {
+  display: flex;
+}
+.themeLayoutPanel:global(.__wab_instance) {
+  position: relative;
+  display: none;
+}
+.themeLayoutPaneltab_layout:global(.__wab_instance) {
+  display: flex;
+}

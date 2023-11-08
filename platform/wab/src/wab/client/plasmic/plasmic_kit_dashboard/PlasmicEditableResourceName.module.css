@@ -1,0 +1,75 @@
+.root {
+  box-sizing: border-box;
+  display: flex;
+  position: relative;
+}
+.root > :global(.__wab_flex-container) {
+  align-items: center;
+  justify-content: flex-start;
+  margin-left: calc(0px - 4px);
+  width: calc(100% + 4px);
+}
+.root > :global(.__wab_flex-container) > *,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.root > :global(.__wab_flex-container) > picture > img,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
+  margin-left: 4px;
+}
+.rootstate_hover {
+  position: relative;
+  padding: 0px;
+}
+.root:hover {
+  position: relative;
+  padding: 0px;
+}
+.slotTargetName {
+  font-weight: 500;
+  font-size: 14px;
+}
+.slotTargetNamesize_small {
+  font-size: 11px;
+  line-height: 16px;
+}
+.editButton {
+  position: relative;
+  display: flex;
+  border-radius: 2px;
+  padding: 0px;
+  border-style: none;
+}
+.editButtonstate_hover {
+  opacity: 1;
+}
+.editButtonsize_small {
+  width: 16px;
+  flex-shrink: 0;
+}
+.root:hover .editButton {
+  opacity: 1;
+}
+.rootcantEdit:hover .editButtoncantEdit {
+  display: none;
+}
+.root .editButton:focus {
+  box-shadow: 0px 0px 0px 2px #0091ff80;
+  outline: none;
+}
+.rootstate_hover .editButtonstate_hover:focus {
+  outline: none;
+}
+.root:hover .editButton:focus {
+  outline: none;
+}
+.svg {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  color: var(--token-UunsGa2Y3t3);
+  height: 16px;
+  width: 16px;
+  flex-shrink: 0;
+}
+.root .svg:hover {
+  color: var(--token-0IloF6TmFvF);
+}

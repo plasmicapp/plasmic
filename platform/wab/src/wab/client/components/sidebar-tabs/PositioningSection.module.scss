@@ -1,0 +1,10 @@
+.positionIconWrapper {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding-right: 7px;
+
+  & svg {
+    margin-right: 3px;
+  }
+}

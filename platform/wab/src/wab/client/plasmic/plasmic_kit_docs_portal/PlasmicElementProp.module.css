@@ -1,0 +1,74 @@
+.root {
+  display: flex;
+  width: 100%;
+  height: auto;
+  position: relative;
+  padding-bottom: 4px;
+  min-width: 0;
+}
+.root:hover {
+  box-shadow: inset 0px 0px 0px 1px #0091ff80;
+}
+.labeledProp:global(.__wab_instance) {
+  position: relative;
+}
+.svg___256O {
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.slotTargetElementType {
+  font-family: "IBM Plex Mono";
+  color: var(--token-nadNyMOsLjl);
+  white-space: pre;
+}
+.slotTargetElementType > .__wab_text,
+.slotTargetElementType > .__wab_slot-string-wrapper,
+.slotTargetElementType > .__wab_slot > .__wab_text,
+.slotTargetElementType > .__wab_slot > .__wab_slot-string-wrapper,
+.slotTargetElementType > .__wab_slot > .__wab_slot > .__wab_text,
+.slotTargetElementType > .__wab_slot > .__wab_slot > .__wab_slot-string-wrapper,
+.slotTargetElementType > .__wab_slot > .__wab_slot > .__wab_slot > .__wab_text,
+.slotTargetElementType
+  > .__wab_slot
+  > .__wab_slot
+  > .__wab_slot
+  > .__wab_slot-string-wrapper {
+  text-overflow: ellipsis;
+}
+.slotTargetElementType > *,
+.slotTargetElementType > .__wab_slot > *,
+.slotTargetElementType > .__wab_slot > .__wab_slot > *,
+.slotTargetElementType > .__wab_slot > .__wab_slot > .__wab_slot > *,
+.slotTargetElementType > picture > img,
+.slotTargetElementType > .__wab_slot > picture > img,
+.slotTargetElementType > .__wab_slot > .__wab_slot > picture > img,
+.slotTargetElementType
+  > .__wab_slot
+  > .__wab_slot
+  > .__wab_slot
+  > picture
+  > img {
+  overflow: hidden;
+}
+.addButton:global(.__wab_instance) {
+  position: relative;
+  flex-shrink: 0;
+}
+.svg__vKxue {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+  width: 16px;
+  height: 16px;
+}
+.svg__tojF4 {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  color: var(--token-UunsGa2Y3t3);
+  width: 1em;
+  height: 1em;
+}

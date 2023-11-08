@@ -1,0 +1,30 @@
+.SplitRow__root__duyLk {
+  display: flex;
+  width: 100%;
+  height: auto;
+  position: relative;
+}
+.SplitRow__root__duyLk > .__wab_flex-container {
+  margin-left: calc(0px - 10px);
+  width: calc(100% + 10px);
+}
+.SplitRow__root__duyLk > .__wab_flex-container > *,
+.SplitRow__root__duyLk > .__wab_flex-container > .__wab_slot > * {
+  margin-left: 10px;
+}
+.SplitRow__leftContainer__fl2HS {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
+}
+.SplitRow__rightContainer___26KvG {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
+}

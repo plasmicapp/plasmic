@@ -1,0 +1,26 @@
+.togglers {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 0 5px 0;
+
+  & > * {
+    flex: unset;
+    -webkit-flex: unset;
+  }
+}
+
+.textTransformContainer {
+  width: 50%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.textOverflowContainer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.lineWrapRow {
+  display: grid;
+  grid-template-columns: 45% 55%;
+}

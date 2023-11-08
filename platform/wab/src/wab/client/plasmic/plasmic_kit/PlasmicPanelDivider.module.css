@@ -1,0 +1,5 @@
+.panelDivider {
+  transform: scale(1, 1) rotate(-90deg);
+  position: relative;
+  background: var(--token-hoA5qaM-91G);
+}

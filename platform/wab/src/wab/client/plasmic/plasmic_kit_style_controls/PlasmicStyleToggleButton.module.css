@@ -1,0 +1,193 @@
+.root {
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+  padding: 6px;
+  border-style: none;
+}
+.root > :global(.__wab_flex-container) {
+  justify-content: center;
+  align-items: center;
+  margin-left: calc(0px - 4px);
+  width: calc(100% + 4px);
+}
+.root > :global(.__wab_flex-container) > *,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.root > :global(.__wab_flex-container) > picture > img,
+.root > :global(.__wab_flex-container) > :global(.__wab_slot) > picture > img {
+  margin-left: 4px;
+}
+.rootvalueSetState_isSet {
+  background: var(--token-9jh0BkCENS);
+  box-shadow: 0px 0px 0px 1px var(--token-JrjdlBU-a5Ju);
+}
+.rootvalueSetState_isInherited {
+  box-shadow: inset 0px 0px 0px 1px var(--token-KFJx6UwUe);
+  background: var(--token-9jh0BkCENS);
+  border-radius: 4px;
+  padding: 6px;
+}
+.rootvalueSetState_isInherited > :global(.__wab_flex-container) {
+  justify-content: center;
+  align-items: center;
+  margin-left: calc(0px - 4px);
+  width: calc(100% + 4px);
+  margin-top: calc(0px - 0px);
+  height: calc(100% + 0px);
+}
+.rootvalueSetState_isInherited > :global(.__wab_flex-container) > *,
+.rootvalueSetState_isInherited
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > *,
+.rootvalueSetState_isInherited > :global(.__wab_flex-container) > picture > img,
+.rootvalueSetState_isInherited
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 4px;
+  margin-top: 0px;
+}
+.rootisDisabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.rootstretched {
+  min-width: auto;
+  flex-grow: 1;
+}
+.rootstyleType_tight {
+  padding: 6px 4px;
+}
+.root:hover {
+  background: var(--token-bV4cCeIniS6);
+}
+.rootvalueSetState_isSet:hover {
+  background: var(--token-p-rw5DRJTx);
+}
+.root___focusVisible {
+  box-shadow: inset 0px 0px 0px 1px #0091ff80;
+  outline: none;
+}
+.iconContainer {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+.slotTargetChildren {
+  color: var(--token-UunsGa2Y3t3);
+  font-size: 16px;
+}
+.slotTargetChildrenvalueSetState_isSet {
+  color: var(--token-0IloF6TmFvF);
+}
+.slotTargetChildrenvalueSetState_isInherited {
+  color: var(--token-pXjwiQ4b3);
+}
+.root:hover .slotTargetChildren {
+  color: var(--token-0IloF6TmFvF);
+}
+.svg__rqz6E {
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  flex-shrink: 0;
+  height: 1em;
+}
+.labelContainer {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+.labelContainershowLabel {
+  padding-right: 5px;
+}
+.labelContainernoIcon {
+  display: flex;
+}
+.labelContainernoIcon_showLabel {
+  padding: 0px;
+}
+.slotTargetLabel {
+  color: var(--token-fVn5vRhXJxQ);
+  white-space: pre;
+}
+.slotTargetLabel > :global(.__wab_text),
+.slotTargetLabel > :global(.__wab_expr_html_text),
+.slotTargetLabel > :global(.__wab_slot-string-wrapper),
+.slotTargetLabel > :global(.__wab_slot) > :global(.__wab_text),
+.slotTargetLabel > :global(.__wab_slot) > :global(.__wab_expr_html_text),
+.slotTargetLabel > :global(.__wab_slot) > :global(.__wab_slot-string-wrapper),
+.slotTargetLabel
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_text),
+.slotTargetLabel
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_expr_html_text),
+.slotTargetLabel
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot-string-wrapper),
+.slotTargetLabel
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_text),
+.slotTargetLabel
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_expr_html_text),
+.slotTargetLabel
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot-string-wrapper) {
+  text-overflow: ellipsis;
+}
+.slotTargetLabel > *,
+.slotTargetLabel > :global(.__wab_slot) > *,
+.slotTargetLabel > :global(.__wab_slot) > :global(.__wab_slot) > *,
+.slotTargetLabel
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > *,
+.slotTargetLabel > picture > img,
+.slotTargetLabel > :global(.__wab_slot) > picture > img,
+.slotTargetLabel > :global(.__wab_slot) > :global(.__wab_slot) > picture > img,
+.slotTargetLabel
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  overflow: hidden;
+}
+.slotTargetLabelvalueSetState_isUnset {
+  color: var(--token-4f35RzFNq);
+}
+.slotTargetLabelvalueSetState_isSet {
+  color: var(--token-0IloF6TmFvF);
+}
+.slotTargetLabelvalueSetState_isInherited {
+  color: var(--token-s0HBak9It);
+}
+.slotTargetLabelshowLabel {
+  color: var(--token-UunsGa2Y3t3);
+}
+.slotTargetLabelvalueSetState_isSet_showLabel {
+  color: var(--token-0IloF6TmFvF);
+}
+.rootshowLabel:hover .slotTargetLabelshowLabel {
+  color: var(--token-AEygAh2U_);
+}

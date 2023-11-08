@@ -1,0 +1,89 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  align-content: unset;
+  position: relative;
+  width: 100%;
+  cursor: pointer;
+  min-width: 0;
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+.root:hover {
+  background: var(--token-bV4cCeIniS6);
+}
+.root:focus {
+  box-shadow: 0px 0px 0px 2px #0091ff80;
+  outline: none;
+}
+.freeBox___2SOfh {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+}
+.root:focus .freeBox___2SOfh {
+  outline: none;
+}
+.slotTargetTeamName {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.freeBox__yYwPl {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  min-height: 0;
+}
+.freeBox__yYwPl > :global(.__wab_flex-container) {
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  margin-left: calc(0px - 16px);
+  width: calc(100% + 16px);
+}
+.freeBox__yYwPl > :global(.__wab_flex-container) > *,
+.freeBox__yYwPl > :global(.__wab_flex-container) > :global(.__wab_slot) > *,
+.freeBox__yYwPl > :global(.__wab_flex-container) > picture > img,
+.freeBox__yYwPl
+  > :global(.__wab_flex-container)
+  > :global(.__wab_slot)
+  > picture
+  > img {
+  margin-left: 16px;
+}
+.root:focus .freeBox__yYwPl {
+  outline: none;
+}
+.newPriceTierChip:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.text {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  font-size: 14px;
+  font-weight: 400;
+  min-width: 0;
+}
+.svg {
+  object-fit: cover;
+  width: 24px;
+  height: 24px;
+  color: var(--token-UunsGa2Y3t3);
+  flex-shrink: 0;
+}

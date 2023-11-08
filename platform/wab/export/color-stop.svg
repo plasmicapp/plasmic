@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="12px" height="18px" viewBox="0 0 12 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 41.1 (35376) - http://www.bohemiancoding.com/sketch -->
+    <title>color-stop</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="All-Screens" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Background-Gradient-Modal" transform="translate(-267.000000, -513.000000)" fill="#D8D8D8">
+            <path d="M267,519 L279,519 L279,531 L267,531 L267,519 Z M273,513 L279,519 L267,519 L273,513 Z" id="color-stop"></path>
+        </g>
+    </g>
+</svg>

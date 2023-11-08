@@ -1,0 +1,1575 @@
+@import url("https://fonts.googleapis.com/css2?family=Inconsolata%3Aital%2Cwght%400%2C400&display=swap");
+
+.plasmic_tokens {
+  --token-9jh0BkCENS: #fdfdfc;
+  --plasmic-token-sand-1: var(--token-9jh0BkCENS);
+  --token-p-rw5DRJTx: #f9f9f8;
+  --plasmic-token-sand-2: var(--token-p-rw5DRJTx);
+  --token-O4S7RMTqZ3: #f3f3f2;
+  --plasmic-token-sand-3: var(--token-O4S7RMTqZ3);
+  --token-bV4cCeIniS6: #eeeeec;
+  --plasmic-token-sand-4: var(--token-bV4cCeIniS6);
+  --token-Ik3bdE1e1Uy: #e9e9e6;
+  --plasmic-token-sand-5: var(--token-Ik3bdE1e1Uy);
+  --token-hoA5qaM-91G: #e3e3e0;
+  --plasmic-token-sand-6: var(--token-hoA5qaM-91G);
+  --token-eBt2ZgqRUCz: #dbdbd7;
+  --plasmic-token-sand-7: var(--token-eBt2ZgqRUCz);
+  --token-PTyaboLP9ZK: #c8c7c1;
+  --plasmic-token-sand-8: var(--token-PTyaboLP9ZK);
+  --token-fVn5vRhXJxQ: #90908c;
+  --plasmic-token-sand-9: var(--token-fVn5vRhXJxQ);
+  --token-qKhMu66CwSx: #868682;
+  --plasmic-token-sand-10: var(--token-qKhMu66CwSx);
+  --token-UunsGa2Y3t3: #706f6c;
+  --plasmic-token-sand-11: var(--token-UunsGa2Y3t3);
+  --token-0IloF6TmFvF: #1b1b18;
+  --plasmic-token-sand-12: var(--token-0IloF6TmFvF);
+  --token-jVXWDIdVvlt: #161615;
+  --plasmic-token-sand-dark-1: var(--token-jVXWDIdVvlt);
+  --token-PHHWT_HMuS1: #1c1c1a;
+  --plasmic-token-sand-dark-2: var(--token-PHHWT_HMuS1);
+  --token-e-r-GHCcl1d: #232320;
+  --plasmic-token-sand-dark-3: var(--token-e-r-GHCcl1d);
+  --token-qwk5VCG0Tr1: #282826;
+  --plasmic-token-sand-dark-4: var(--token-qwk5VCG0Tr1);
+  --token-ElMeFHrIrKT: #2e2e2b;
+  --plasmic-token-sand-dark-5: var(--token-ElMeFHrIrKT);
+  --token-3mY8YwgQNfA: #353431;
+  --plasmic-token-sand-dark-6: var(--token-3mY8YwgQNfA);
+  --token-3jY1TVZSrSP: #3e3e3a;
+  --plasmic-token-sand-dark-7: var(--token-3jY1TVZSrSP);
+  --token-PRmnMfsdVnW: #51504b;
+  --plasmic-token-sand-dark-8: var(--token-PRmnMfsdVnW);
+  --token-AxvPj5PgDqq: #717069;
+  --plasmic-token-sand-dark-9: var(--token-AxvPj5PgDqq);
+  --token-JorJKl5vYhL: #7f7e77;
+  --plasmic-token-sand-dark-10: var(--token-JorJKl5vYhL);
+  --token-poNdLqmV0Rt: #a1a09a;
+  --plasmic-token-sand-dark-11: var(--token-poNdLqmV0Rt);
+  --token-N1gO6v-RIEn: #ededec;
+  --plasmic-token-sand-dark-12: var(--token-N1gO6v-RIEn);
+  --token-QtIGrGFnMMY: #fffcfc;
+  --plasmic-token-tomato-1: var(--token-QtIGrGFnMMY);
+  --token-zMitpBKaEUn: #fff8f7;
+  --plasmic-token-tomato-2: var(--token-zMitpBKaEUn);
+  --token-qYuX4XAEbRt: #fff0ee;
+  --plasmic-token-tomato-3: var(--token-qYuX4XAEbRt);
+  --token-HKVCQ5ZKovK: #ffe6e2;
+  --plasmic-token-tomato-4: var(--token-HKVCQ5ZKovK);
+  --token-5kjtdCiiOPB: #fdd8d3;
+  --plasmic-token-tomato-5: var(--token-5kjtdCiiOPB);
+  --token-UvQtQXQfB6W: #fac7be;
+  --plasmic-token-tomato-6: var(--token-UvQtQXQfB6W);
+  --token-yUAjM3D7ZnY: #f3b0a2;
+  --plasmic-token-tomato-7: var(--token-yUAjM3D7ZnY);
+  --token-X3RqfYinNEP: #ea9280;
+  --plasmic-token-tomato-8: var(--token-X3RqfYinNEP);
+  --token-iDpByWoW0eF: #e54d2e;
+  --plasmic-token-tomato-9: var(--token-iDpByWoW0eF);
+  --token-1Y_TDpd6VTG: #db4324;
+  --plasmic-token-tomato-10: var(--token-1Y_TDpd6VTG);
+  --token-Y2CWh0ci95a: #ca3214;
+  --plasmic-token-tomato-11: var(--token-Y2CWh0ci95a);
+  --token-Ift7nNWjir7: #341711;
+  --plasmic-token-tomato-12: var(--token-Ift7nNWjir7);
+  --token-Du4OUPYBkxq: #1d1412;
+  --plasmic-token-tomato-dark-1: var(--token-Du4OUPYBkxq);
+  --token-EShq_6QzxxJ: #2a1410;
+  --plasmic-token-tomato-dark-2: var(--token-EShq_6QzxxJ);
+  --token--DnLgfg8ksL: #3b1813;
+  --plasmic-token-tomato-dark-3: var(--token--DnLgfg8ksL);
+  --token-2Oc8IQEKeki: #481a14;
+  --plasmic-token-tomato-dark-4: var(--token-2Oc8IQEKeki);
+  --token-W_a_eEFQ6VV: #541c15;
+  --plasmic-token-tomato-dark-5: var(--token-W_a_eEFQ6VV);
+  --token-aW7cN4b0HZZ: #652016;
+  --plasmic-token-tomato-dark-6: var(--token-aW7cN4b0HZZ);
+  --token-n4KgTfzcO6H: #7f2315;
+  --plasmic-token-tomato-dark-7: var(--token-n4KgTfzcO6H);
+  --token-fTQ8IoiCK: #a42a12;
+  --plasmic-token-tomato-dark-8: var(--token-fTQ8IoiCK);
+  --token-M6q4nJev3CK: #e54d2e;
+  --plasmic-token-tomato-dark-9: var(--token-M6q4nJev3CK);
+  --token-lWbTO8z91an: #ec5e41;
+  --plasmic-token-tomato-dark-10: var(--token-lWbTO8z91an);
+  --token-ylE-Ax1KX19: #f16a50;
+  --plasmic-token-tomato-dark-11: var(--token-ylE-Ax1KX19);
+  --token-MuSUbZOS_NL: #feefec;
+  --plasmic-token-tomato-dark-12: var(--token-MuSUbZOS_NL);
+  --token-5YaRNGZ13vw: #fffcfc;
+  --plasmic-token-red-1: var(--token-5YaRNGZ13vw);
+  --token-htSNbGB58Rx: #fff8f8;
+  --plasmic-token-red-2: var(--token-htSNbGB58Rx);
+  --token-SJeRSg5mW91: #ffefef;
+  --plasmic-token-red-3: var(--token-SJeRSg5mW91);
+  --token-yRFIEjqMe6o: #ffe5e5;
+  --plasmic-token-red-4: var(--token-yRFIEjqMe6o);
+  --token-EQKnVbYjyhe: #fdd8d8;
+  --plasmic-token-red-5: var(--token-EQKnVbYjyhe);
+  --token-OIiPIHkBU6D: #f9c6c6;
+  --plasmic-token-red-6: var(--token-OIiPIHkBU6D);
+  --token-pH5HkOAVcYh: #f3aeaf;
+  --plasmic-token-red-7: var(--token-pH5HkOAVcYh);
+  --token-7xaXz1vsu4K: #eb9091;
+  --plasmic-token-red-8: var(--token-7xaXz1vsu4K);
+  --token-S8OnTYk9S2Q: #e5484d;
+  --plasmic-token-red-9: var(--token-S8OnTYk9S2Q);
+  --token-WnbI6EOoey2: #dc3d43;
+  --plasmic-token-red-10: var(--token-WnbI6EOoey2);
+  --token-Ukdc99GMwtn: #cd2b31;
+  --plasmic-token-red-11: var(--token-Ukdc99GMwtn);
+  --token-7cEm2Vfjcs-: #381316;
+  --plasmic-token-red-12: var(--token-7cEm2Vfjcs-);
+  --token-A1J58dgGcEK: #1f1315;
+  --plasmic-token-red-dark-1: var(--token-A1J58dgGcEK);
+  --token-SJFQyuWU_PL: #291415;
+  --plasmic-token-red-dark-2: var(--token-SJFQyuWU_PL);
+  --token-QNZWAldTxCj: #3c181a;
+  --plasmic-token-red-dark-3: var(--token-QNZWAldTxCj);
+  --token-jrMf1BClUDV: #481a1d;
+  --plasmic-token-red-dark-4: var(--token-jrMf1BClUDV);
+  --token-0SoP7pxc4pT: #541b1f;
+  --plasmic-token-red-dark-5: var(--token-0SoP7pxc4pT);
+  --token-caT_5tbfRIt: #671e22;
+  --plasmic-token-red-dark-6: var(--token-caT_5tbfRIt);
+  --token-r9UrCsEpK4e: #822025;
+  --plasmic-token-red-dark-7: var(--token-r9UrCsEpK4e);
+  --token-_VNyb1erl3h: #aa2429;
+  --plasmic-token-red-dark-8: var(--token-_VNyb1erl3h);
+  --token-e4bR6DaNn_C: #e5484d;
+  --plasmic-token-red-dark-9: var(--token-e4bR6DaNn_C);
+  --token-1n9jNGlSCQU: #f2555a;
+  --plasmic-token-red-dark-10: var(--token-1n9jNGlSCQU);
+  --token-4ypTh-k29T5: #ff6369;
+  --plasmic-token-red-dark-11: var(--token-4ypTh-k29T5);
+  --token-KxTVyeB_fBc: #feecee;
+  --plasmic-token-red-dark-12: var(--token-KxTVyeB_fBc);
+  --token-sNh1hgfPiWe: #fffcfd;
+  --plasmic-token-crimson-1: var(--token-sNh1hgfPiWe);
+  --token-KdEjL97xgwT: #fff7fb;
+  --plasmic-token-crimson-2: var(--token-KdEjL97xgwT);
+  --token-SibB9n6SCSM: #feeff6;
+  --plasmic-token-crimson-3: var(--token-SibB9n6SCSM);
+  --token-hRZHp4MUu5g: #fce5f0;
+  --plasmic-token-crimson-4: var(--token-hRZHp4MUu5g);
+  --token-ugrQImDfQTr: #f9d8e7;
+  --plasmic-token-crimson-5: var(--token-ugrQImDfQTr);
+  --token-WJr6CIYsXu9: #f4c6db;
+  --plasmic-token-crimson-6: var(--token-WJr6CIYsXu9);
+  --token-xZbXfh-1eZn: #edadc8;
+  --plasmic-token-crimson-7: var(--token-xZbXfh-1eZn);
+  --token-bgfTxpMazku: #e58fb1;
+  --plasmic-token-crimson-8: var(--token-bgfTxpMazku);
+  --token-6W1Wu2n4m_7: #e93d82;
+  --plasmic-token-crimson-9: var(--token-6W1Wu2n4m_7);
+  --token-k8q7qO6jnUN: #e03177;
+  --plasmic-token-crimson-10: var(--token-k8q7qO6jnUN);
+  --token-S4h5Syoe5J1: #d31e66;
+  --plasmic-token-crimson-11: var(--token-S4h5Syoe5J1);
+  --token-XIL5D6Yo8ds: #3d0d1d;
+  --plasmic-token-crimson-12: var(--token-XIL5D6Yo8ds);
+  --token-aho7bvMC1eB: #1d1418;
+  --plasmic-token-crimson-dark-1: var(--token-aho7bvMC1eB);
+  --token-RC4V0FnbwZg: #27141c;
+  --plasmic-token-crimson-dark-2: var(--token-RC4V0FnbwZg);
+  --token-qC5nvFF3vKv: #3c1827;
+  --plasmic-token-crimson-dark-3: var(--token-qC5nvFF3vKv);
+  --token-_V9WiJ7rhro: #481a2d;
+  --plasmic-token-crimson-dark-4: var(--token-_V9WiJ7rhro);
+  --token-Wcomg6XW2je: #541b33;
+  --plasmic-token-crimson-dark-5: var(--token-Wcomg6XW2je);
+  --token-p_oSp55QgXA: #641d3b;
+  --plasmic-token-crimson-dark-6: var(--token-p_oSp55QgXA);
+  --token-0-O6xfZATVm: #801d45;
+  --plasmic-token-crimson-dark-7: var(--token-0-O6xfZATVm);
+  --token-kInIU1iFXSF: #ae1955;
+  --plasmic-token-crimson-dark-8: var(--token-kInIU1iFXSF);
+  --token-OBDSADVyJ-O: #e93d82;
+  --plasmic-token-crimson-dark-9: var(--token-OBDSADVyJ-O);
+  --token-7govXS_F5P4: #f04f88;
+  --plasmic-token-crimson-dark-10: var(--token-7govXS_F5P4);
+  --token-f7eN-7ptWLI: #f76190;
+  --plasmic-token-crimson-dark-11: var(--token-f7eN-7ptWLI);
+  --token-sE8XJ9G0nX2: #feecf4;
+  --plasmic-token-crimson-dark-12: var(--token-sE8XJ9G0nX2);
+  --token-b7_PX-ic3Ag: #fffcfe;
+  --plasmic-token-pink-1: var(--token-b7_PX-ic3Ag);
+  --token-4jmMZmXzE7b: #fff7fc;
+  --plasmic-token-pink-2: var(--token-4jmMZmXzE7b);
+  --token-RCyxrYT_bO1: #feeef8;
+  --plasmic-token-pink-3: var(--token-RCyxrYT_bO1);
+  --token-CF0C193TBoL: #fce5f3;
+  --plasmic-token-pink-4: var(--token-CF0C193TBoL);
+  --token-BfrM04TzWPL: #f9d8ec;
+  --plasmic-token-pink-5: var(--token-BfrM04TzWPL);
+  --token-agwtl9OC6QH: #f3c6e2;
+  --plasmic-token-pink-6: var(--token-agwtl9OC6QH);
+  --token-n_NJrPbXMQJ: #ecadd4;
+  --plasmic-token-pink-7: var(--token-n_NJrPbXMQJ);
+  --token-QRZekjsbfqZ: #e38ec3;
+  --plasmic-token-pink-8: var(--token-QRZekjsbfqZ);
+  --token-49yXl5zB7c3: #d6409f;
+  --plasmic-token-pink-9: var(--token-49yXl5zB7c3);
+  --token-9LZXMTVajTn: #d23197;
+  --plasmic-token-pink-10: var(--token-9LZXMTVajTn);
+  --token-nnaRFhY3Pqv: #cd1d8d;
+  --plasmic-token-pink-11: var(--token-nnaRFhY3Pqv);
+  --token-d2JabdBVEp3: #3b0a2a;
+  --plasmic-token-pink-12: var(--token-d2JabdBVEp3);
+  --token-ggW0uOd9gXW: #1f121b;
+  --plasmic-token-pink-dark-1: var(--token-ggW0uOd9gXW);
+  --token-yI348g218rM: #271421;
+  --plasmic-token-pink-dark-2: var(--token-yI348g218rM);
+  --token-VEtBIJ7g49u: #3a182f;
+  --plasmic-token-pink-dark-3: var(--token-VEtBIJ7g49u);
+  --token-c3I2adYiTh_: #451a37;
+  --plasmic-token-pink-dark-4: var(--token-c3I2adYiTh_);
+  --token-UE3lmomaUjJ: #501b3f;
+  --plasmic-token-pink-dark-5: var(--token-UE3lmomaUjJ);
+  --token-1yumWltWZkO: #601d48;
+  --plasmic-token-pink-dark-6: var(--token-1yumWltWZkO);
+  --token-tZSIA5t5Aao: #7a1d5a;
+  --plasmic-token-pink-dark-7: var(--token-tZSIA5t5Aao);
+  --token-M0dTnA5JmSg: #a71873;
+  --plasmic-token-pink-dark-8: var(--token-M0dTnA5JmSg);
+  --token-iUsf5JXnsEp: #d6409f;
+  --plasmic-token-pink-dark-9: var(--token-iUsf5JXnsEp);
+  --token-Z2nsIzjFNwB: #e34ba9;
+  --plasmic-token-pink-dark-10: var(--token-Z2nsIzjFNwB);
+  --token-9V2Djy6YnGx: #f65cb6;
+  --plasmic-token-pink-dark-11: var(--token-9V2Djy6YnGx);
+  --token--ImJBOsk6NH: #feebf7;
+  --plasmic-token-pink-dark-12: var(--token--ImJBOsk6NH);
+  --token-YV-D5D6ISin: #fefcff;
+  --plasmic-token-plum-1: var(--token-YV-D5D6ISin);
+  --token-f2wsKwdTl1Q: #fff8ff;
+  --plasmic-token-plum-2: var(--token-f2wsKwdTl1Q);
+  --token-Se51b0MohEd: #fceffc;
+  --plasmic-token-plum-3: var(--token-Se51b0MohEd);
+  --token-wDOUuSW8sGP: #f9e5f9;
+  --plasmic-token-plum-4: var(--token-wDOUuSW8sGP);
+  --token-74daI2Yxlou: #f3d9f4;
+  --plasmic-token-plum-5: var(--token-74daI2Yxlou);
+  --token-spAbFa2Xisq: #ebc8ed;
+  --plasmic-token-plum-6: var(--token-spAbFa2Xisq);
+  --token-aWC1yk_inAY: #dfafe3;
+  --plasmic-token-plum-7: var(--token-aWC1yk_inAY);
+  --token-GneebnOmd2u: #cf91d8;
+  --plasmic-token-plum-8: var(--token-GneebnOmd2u);
+  --token-9BW7vg5Q1gd: #ab4aba;
+  --plasmic-token-plum-9: var(--token-9BW7vg5Q1gd);
+  --token-392qkl_sqzD: #a43cb4;
+  --plasmic-token-plum-10: var(--token-392qkl_sqzD);
+  --token-aaT9EqV5ht4: #9c2bad;
+  --plasmic-token-plum-11: var(--token-aaT9EqV5ht4);
+  --token-hvwDK5pGKxp: #340c3b;
+  --plasmic-token-plum-12: var(--token-hvwDK5pGKxp);
+  --token-WHsfnFdb29Q: #1d131d;
+  --plasmic-token-plum-dark-1: var(--token-WHsfnFdb29Q);
+  --token-CMhSl0BCzus: #251425;
+  --plasmic-token-plum-dark-2: var(--token-CMhSl0BCzus);
+  --token-2bVwDZoJ7Py: #341a34;
+  --plasmic-token-plum-dark-3: var(--token-2bVwDZoJ7Py);
+  --token-MaQ8Otj8g8_: #3e1d40;
+  --plasmic-token-plum-dark-4: var(--token-MaQ8Otj8g8_);
+  --token-AIy0OuLT4BJ: #48214b;
+  --plasmic-token-plum-dark-5: var(--token-AIy0OuLT4BJ);
+  --token-ykQy7_FWZ4I: #542658;
+  --plasmic-token-plum-dark-6: var(--token-ykQy7_FWZ4I);
+  --token-vxnCuy_ry1-: #692d6f;
+  --plasmic-token-plum-dark-7: var(--token-vxnCuy_ry1-);
+  --token-Dfo8a9gELVS: #883894;
+  --plasmic-token-plum-dark-8: var(--token-Dfo8a9gELVS);
+  --token---tUPecc0nh: #ab4aba;
+  --plasmic-token-plum-dark-9: var(--token---tUPecc0nh);
+  --token-iuTI7asqgcv: #bd54c6;
+  --plasmic-token-plum-dark-10: var(--token-iuTI7asqgcv);
+  --token-0VT6R-Ymikj: #d864d8;
+  --plasmic-token-plum-dark-11: var(--token-0VT6R-Ymikj);
+  --token-yrh4UbNPsIW: #fbecfc;
+  --plasmic-token-plum-dark-12: var(--token-yrh4UbNPsIW);
+  --token-a1paxm6C9sF: #fefcfe;
+  --plasmic-token-purple-1: var(--token-a1paxm6C9sF);
+  --token-IQD5rLegZAM: #fdfaff;
+  --plasmic-token-purple-2: var(--token-IQD5rLegZAM);
+  --token-3IB-N7z9j4h: #f9f1fe;
+  --plasmic-token-purple-3: var(--token-3IB-N7z9j4h);
+  --token-PCiZHO4txkI: #f3e7fc;
+  --plasmic-token-purple-4: var(--token-PCiZHO4txkI);
+  --token-yz0AHmZhOGl: #eddbf9;
+  --plasmic-token-purple-5: var(--token-yz0AHmZhOGl);
+  --token-DGEOQP2XW2u: #e3ccf4;
+  --plasmic-token-purple-6: var(--token-DGEOQP2XW2u);
+  --token-zhatb3620Sq: #d3b4ed;
+  --plasmic-token-purple-7: var(--token-zhatb3620Sq);
+  --token-4Ms4hdqu2yP: #be93e4;
+  --plasmic-token-purple-8: var(--token-4Ms4hdqu2yP);
+  --token-LmrMFZok-p9: #8e4ec6;
+  --plasmic-token-purple-9: var(--token-LmrMFZok-p9);
+  --token-kVsWCwO8E4A: #8445bc;
+  --plasmic-token-purple-10: var(--token-kVsWCwO8E4A);
+  --token-0hoecngYQFp: #793aaf;
+  --plasmic-token-purple-11: var(--token-0hoecngYQFp);
+  --token-TQJwwAdui3V: #2b0e44;
+  --plasmic-token-purple-12: var(--token-TQJwwAdui3V);
+  --token-lH0aia9pSyl: #1b141d;
+  --plasmic-token-purple-dark-1: var(--token-lH0aia9pSyl);
+  --token-kGO2MJqE9b2: #221527;
+  --plasmic-token-purple-dark-2: var(--token-kGO2MJqE9b2);
+  --token-Bl3ROPo9nR3: #301a3a;
+  --plasmic-token-purple-dark-3: var(--token-Bl3ROPo9nR3);
+  --token-1Kv_joRKcJ_: #3a1e48;
+  --plasmic-token-purple-dark-4: var(--token-1Kv_joRKcJ_);
+  --token-RWi7fHjCL7R: #432155;
+  --plasmic-token-purple-dark-5: var(--token-RWi7fHjCL7R);
+  --token-u2cj3VRnyap: #4e2667;
+  --plasmic-token-purple-dark-6: var(--token-u2cj3VRnyap);
+  --token-Q2UnpzxtU8l: #5f2d84;
+  --plasmic-token-purple-dark-7: var(--token-Q2UnpzxtU8l);
+  --token-Kqh_Hwqis62: #7938b2;
+  --plasmic-token-purple-dark-8: var(--token-Kqh_Hwqis62);
+  --token-bR2PanIx7xJ: #8e4ec6;
+  --plasmic-token-purple-dark-9: var(--token-bR2PanIx7xJ);
+  --token-40_ix_cSqbH: #9d5bd2;
+  --plasmic-token-purple-dark-10: var(--token-40_ix_cSqbH);
+  --token-zm0W4IxMAS9: #bf7af0;
+  --plasmic-token-purple-dark-11: var(--token-zm0W4IxMAS9);
+  --token-r4VOYYZaOgd: #f7ecfc;
+  --plasmic-token-purple-dark-12: var(--token-r4VOYYZaOgd);
+  --token-EyES-rbhFjV: #fdfcfe;
+  --plasmic-token-violet-1: var(--token-EyES-rbhFjV);
+  --token-wLbfXeq3ptE: #fbfaff;
+  --plasmic-token-violet-2: var(--token-wLbfXeq3ptE);
+  --token-Cr1odk81N3Y: #f5f2ff;
+  --plasmic-token-violet-3: var(--token-Cr1odk81N3Y);
+  --token-oPrqrxbKHqk: #ede9fe;
+  --plasmic-token-violet-4: var(--token-oPrqrxbKHqk);
+  --token-I2zAJ678hbp: #e4defc;
+  --plasmic-token-violet-5: var(--token-I2zAJ678hbp);
+  --token-gpk50S2gRoz: #d7cff9;
+  --plasmic-token-violet-6: var(--token-gpk50S2gRoz);
+  --token-WxIz6fy1Z-V: #c4b8f3;
+  --plasmic-token-violet-7: var(--token-WxIz6fy1Z-V);
+  --token-VqNWxgnqoxY: #aa99ec;
+  --plasmic-token-violet-8: var(--token-VqNWxgnqoxY);
+  --token-Izr3_jwKAp1: #6e56cf;
+  --plasmic-token-violet-9: var(--token-Izr3_jwKAp1);
+  --token-iDy4pL85FX6: #644fc1;
+  --plasmic-token-violet-10: var(--token-iDy4pL85FX6);
+  --token-UCbZU41E8Mj: #5746af;
+  --plasmic-token-violet-11: var(--token-UCbZU41E8Mj);
+  --token-ZaJGjVCo3Ue: #20134b;
+  --plasmic-token-violet-12: var(--token-ZaJGjVCo3Ue);
+  --token-LbTbCEHcpIM: #17151f;
+  --plasmic-token-violet-dark-1: var(--token-LbTbCEHcpIM);
+  --token-EdXFFaILeqQ: #1c172b;
+  --plasmic-token-violet-dark-2: var(--token-EdXFFaILeqQ);
+  --token-P1wSgEsr_ac: #251e40;
+  --plasmic-token-violet-dark-3: var(--token-P1wSgEsr_ac);
+  --token-12uBKiNa28-: #2c2250;
+  --plasmic-token-violet-dark-4: var(--token-12uBKiNa28-);
+  --token-BzvknmqKLCa: #32275f;
+  --plasmic-token-violet-dark-5: var(--token-BzvknmqKLCa);
+  --token-4LCoUH4Tre8: #392c72;
+  --plasmic-token-violet-dark-6: var(--token-4LCoUH4Tre8);
+  --token-6-XRtoQhWFg: #443592;
+  --plasmic-token-violet-dark-7: var(--token-6-XRtoQhWFg);
+  --token-CkHQi57I5kr: #5842c3;
+  --plasmic-token-violet-dark-8: var(--token-CkHQi57I5kr);
+  --token-rv5GUS0f6RK: #6e56cf;
+  --plasmic-token-violet-dark-9: var(--token-rv5GUS0f6RK);
+  --token-3kYc4IFNxWQ: #7c66dc;
+  --plasmic-token-violet-dark-10: var(--token-3kYc4IFNxWQ);
+  --token-krVJNWVonJU: #9e8cfc;
+  --plasmic-token-violet-dark-11: var(--token-krVJNWVonJU);
+  --token-RRLnqwnxcH5: #f1eefe;
+  --plasmic-token-violet-dark-12: var(--token-RRLnqwnxcH5);
+  --token-DxF9kSb-Nb9: #fdfdfe;
+  --plasmic-token-indigo-1: var(--token-DxF9kSb-Nb9);
+  --token-LzN_BeNB27q: #f8faff;
+  --plasmic-token-indigo-2: var(--token-LzN_BeNB27q);
+  --token-kHJfvUnoGiO: #f0f4ff;
+  --plasmic-token-indigo-3: var(--token-kHJfvUnoGiO);
+  --token-_x2R5Ogaeo5: #e6edfe;
+  --plasmic-token-indigo-4: var(--token-_x2R5Ogaeo5);
+  --token-wn5N3ILTddm: #d9e2fc;
+  --plasmic-token-indigo-5: var(--token-wn5N3ILTddm);
+  --token-ck617brFZQy: #c6d4f9;
+  --plasmic-token-indigo-6: var(--token-ck617brFZQy);
+  --token-_KfwvRipM3e: #aec0f5;
+  --plasmic-token-indigo-7: var(--token-_KfwvRipM3e);
+  --token-aMA_Go-ENBl: #8da4ef;
+  --plasmic-token-indigo-8: var(--token-aMA_Go-ENBl);
+  --token-v20Xb5W90yZ: #3e63dd;
+  --plasmic-token-indigo-9: var(--token-v20Xb5W90yZ);
+  --token-9JHpL8Yvzy4: #3a5ccc;
+  --plasmic-token-indigo-10: var(--token-9JHpL8Yvzy4);
+  --token-TSEOUn2Kjps: #3451b2;
+  --plasmic-token-indigo-11: var(--token-TSEOUn2Kjps);
+  --token-csYd16wjJi9: #101d46;
+  --plasmic-token-indigo-12: var(--token-csYd16wjJi9);
+  --token-fSm_czYnB7u: #131620;
+  --plasmic-token-indigo-dark-1: var(--token-fSm_czYnB7u);
+  --token-u1nGEvgjOVt: #15192d;
+  --plasmic-token-indigo-dark-2: var(--token-u1nGEvgjOVt);
+  --token-XA1dZhUycYE: #192140;
+  --plasmic-token-indigo-dark-3: var(--token-XA1dZhUycYE);
+  --token-q-tY4i_ggEX: #1c274f;
+  --plasmic-token-indigo-dark-4: var(--token-q-tY4i_ggEX);
+  --token-CV0Qr1qgc3C: #1f2c5c;
+  --plasmic-token-indigo-dark-5: var(--token-CV0Qr1qgc3C);
+  --token-_bf9ixrn48n: #22346e;
+  --plasmic-token-indigo-dark-6: var(--token-_bf9ixrn48n);
+  --token-y00xl53O8Le: #273e89;
+  --plasmic-token-indigo-dark-7: var(--token-y00xl53O8Le);
+  --token-hCQGbkLHYVD: #2f4eb2;
+  --plasmic-token-indigo-dark-8: var(--token-hCQGbkLHYVD);
+  --token-HEqOvMrz7rK: #3e63dd;
+  --plasmic-token-indigo-dark-9: var(--token-HEqOvMrz7rK);
+  --token-UAqHYAsZ7X7: #5373e7;
+  --plasmic-token-indigo-dark-10: var(--token-UAqHYAsZ7X7);
+  --token-vMjXoFl1ADQ: #849dff;
+  --plasmic-token-indigo-dark-11: var(--token-vMjXoFl1ADQ);
+  --token-Jg4TndJJ_Gw: #eef1fd;
+  --plasmic-token-indigo-dark-12: var(--token-Jg4TndJJ_Gw);
+  --token-AxeOGzUVWPM: #fbfdff;
+  --plasmic-token-blue-1: var(--token-AxeOGzUVWPM);
+  --token-5CkXgt-Rjud: #f5faff;
+  --plasmic-token-blue-2: var(--token-5CkXgt-Rjud);
+  --token-yqAf_E0HIjU: #edf6ff;
+  --plasmic-token-blue-3: var(--token-yqAf_E0HIjU);
+  --token-dqEx_KxIoYV: #e1f0ff;
+  --plasmic-token-blue-4: var(--token-dqEx_KxIoYV);
+  --token-RhvOnhv_xIi: #cee7fe;
+  --plasmic-token-blue-5: var(--token-RhvOnhv_xIi);
+  --token-IknVZEkiPDz: #b7d9f8;
+  --plasmic-token-blue-6: var(--token-IknVZEkiPDz);
+  --token-JfSQu2FXX0v: #96c7f2;
+  --plasmic-token-blue-7: var(--token-JfSQu2FXX0v);
+  --token-mr2NiPmIlt2: #5eb0ef;
+  --plasmic-token-blue-8: var(--token-mr2NiPmIlt2);
+  --token-D666zt2IZPL: #0091ff;
+  --plasmic-token-blue-9: var(--token-D666zt2IZPL);
+  --token-mu3x63xzJRW: #0081f1;
+  --plasmic-token-blue-10: var(--token-mu3x63xzJRW);
+  --token-VUsIDivgUss: #006adc;
+  --plasmic-token-blue-11: var(--token-VUsIDivgUss);
+  --token-krbUYvO2lx2: #00254d;
+  --plasmic-token-blue-12: var(--token-krbUYvO2lx2);
+  --token-N6YVEKrofYh: #0f1720;
+  --plasmic-token-blue-dark-1: var(--token-N6YVEKrofYh);
+  --token-9kfYBxXrwvv: #0f1b2d;
+  --plasmic-token-blue-dark-2: var(--token-9kfYBxXrwvv);
+  --token-6-Iwdm-R6YB: #10243e;
+  --plasmic-token-blue-dark-3: var(--token-6-Iwdm-R6YB);
+  --token-sbBs-TU-oo3: #102a4c;
+  --plasmic-token-blue-dark-4: var(--token-sbBs-TU-oo3);
+  --token-5j9hEIF0ZwW: #0f3058;
+  --plasmic-token-blue-dark-5: var(--token-5j9hEIF0ZwW);
+  --token-p7aZe5pWFiw: #0d3868;
+  --plasmic-token-blue-dark-6: var(--token-p7aZe5pWFiw);
+  --token-nisYs4mdpgE: #0a4481;
+  --plasmic-token-blue-dark-7: var(--token-nisYs4mdpgE);
+  --token-GgEQ12NfnIo: #0954a5;
+  --plasmic-token-blue-dark-8: var(--token-GgEQ12NfnIo);
+  --token-5j3rDkMLTbx: #0091ff;
+  --plasmic-token-blue-dark-9: var(--token-5j3rDkMLTbx);
+  --token-wdIt8GuZ_bO: #369eff;
+  --plasmic-token-blue-dark-10: var(--token-wdIt8GuZ_bO);
+  --token-kbNf37dAf35: #52a9ff;
+  --plasmic-token-blue-dark-11: var(--token-kbNf37dAf35);
+  --token-F5cfFgGl0mb: #eaf6ff;
+  --plasmic-token-blue-dark-12: var(--token-F5cfFgGl0mb);
+  --token-5eTUk43Hx0U: #fafdfe;
+  --plasmic-token-cyan-1: var(--token-5eTUk43Hx0U);
+  --token-oL1jWgZ1k-F: #f2fcfd;
+  --plasmic-token-cyan-2: var(--token-oL1jWgZ1k-F);
+  --token-y1vKiLsumIj: #e7f9fb;
+  --plasmic-token-cyan-3: var(--token-y1vKiLsumIj);
+  --token-JkjCicJF7tK: #d8f3f6;
+  --plasmic-token-cyan-4: var(--token-JkjCicJF7tK);
+  --token-8BJRlW0CGyAS: #c4eaef;
+  --plasmic-token-cyan-5: var(--token-8BJRlW0CGyAS);
+  --token-OCmPGgepzX1A: #aadee6;
+  --plasmic-token-cyan-6: var(--token-OCmPGgepzX1A);
+  --token-EXdSicMU4Kn4: #84cdda;
+  --plasmic-token-cyan-7: var(--token-EXdSicMU4Kn4);
+  --token-BBlfXifFkRyp: #3db9cf;
+  --plasmic-token-cyan-8: var(--token-BBlfXifFkRyp);
+  --token-yNpyEV13BHoo: #05a2c2;
+  --plasmic-token-cyan-9: var(--token-yNpyEV13BHoo);
+  --token-nXWE_vzKJAFZ: #0894b3;
+  --plasmic-token-cyan-10: var(--token-nXWE_vzKJAFZ);
+  --token-pZdFekfDfX21: #0c7792;
+  --plasmic-token-cyan-11: var(--token-pZdFekfDfX21);
+  --token-JImKKlVvAhso: #04313c;
+  --plasmic-token-cyan-12: var(--token-JImKKlVvAhso);
+  --token-Cf8tPhVOx5JN: #07191d;
+  --plasmic-token-cyan-dark-1: var(--token-Cf8tPhVOx5JN);
+  --token-z9EaW6IXtkpu: #061e24;
+  --plasmic-token-cyan-dark-2: var(--token-z9EaW6IXtkpu);
+  --token-s8D7VWQUb2Tp: #072830;
+  --plasmic-token-cyan-dark-3: var(--token-s8D7VWQUb2Tp);
+  --token-yAgecXTGsX-K: #07303b;
+  --plasmic-token-cyan-dark-4: var(--token-yAgecXTGsX-K);
+  --token-uJ726fWzRiuf: #073844;
+  --plasmic-token-cyan-dark-5: var(--token-uJ726fWzRiuf);
+  --token-4ctP3z7wThAv: #064150;
+  --plasmic-token-cyan-dark-6: var(--token-4ctP3z7wThAv);
+  --token-cG-08clxoRbk: #045063;
+  --plasmic-token-cyan-dark-7: var(--token-cG-08clxoRbk);
+  --token-reX5qlvRsqUb: #00647d;
+  --plasmic-token-cyan-dark-8: var(--token-reX5qlvRsqUb);
+  --token--CuAvIlXkupx: #05a2c2;
+  --plasmic-token-cyan-dark-9: var(--token--CuAvIlXkupx);
+  --token-5V60q_zP_eFt: #00b1cc;
+  --plasmic-token-cyan-dark-10: var(--token-5V60q_zP_eFt);
+  --token-SvzMKAtse_17: #00c2d7;
+  --plasmic-token-cyan-dark-11: var(--token-SvzMKAtse_17);
+  --token-TTR31_ViCfx0: #e1f8fa;
+  --plasmic-token-cyan-dark-12: var(--token-TTR31_ViCfx0);
+  --token-4e5-0Pfl-_U8: #fafefd;
+  --plasmic-token-teal-1: var(--token-4e5-0Pfl-_U8);
+  --token-PwXYvLzF2cAI: #f1fcfa;
+  --plasmic-token-teal-2: var(--token-PwXYvLzF2cAI);
+  --token-LomYOmN9ERkQ: #e7f9f5;
+  --plasmic-token-teal-3: var(--token-LomYOmN9ERkQ);
+  --token-1UQ8idWHKfcD: #d9f3ee;
+  --plasmic-token-teal-4: var(--token-1UQ8idWHKfcD);
+  --token-cqHyMGtc4Isd: #c7ebe5;
+  --plasmic-token-teal-5: var(--token-cqHyMGtc4Isd);
+  --token-A8MPkr1oMW_D: #afdfd7;
+  --plasmic-token-teal-6: var(--token-A8MPkr1oMW_D);
+  --token-xy0ES4hWr14E: #8dcec3;
+  --plasmic-token-teal-7: var(--token-xy0ES4hWr14E);
+  --token-vMpNOrGwNxsL: #53b9ab;
+  --plasmic-token-teal-8: var(--token-vMpNOrGwNxsL);
+  --token-e370WsoPH8cE: #12a594;
+  --plasmic-token-teal-9: var(--token-e370WsoPH8cE);
+  --token-InMsay9s78r2: #0e9888;
+  --plasmic-token-teal-10: var(--token-InMsay9s78r2);
+  --token-OuuoJUtZxc_Y: #067a6f;
+  --plasmic-token-teal-11: var(--token-OuuoJUtZxc_Y);
+  --token-CkJ9_STKsPeS: #10302b;
+  --plasmic-token-teal-12: var(--token-CkJ9_STKsPeS);
+  --token-bL5d52eHL-Nr: #091915;
+  --plasmic-token-teal-dark-1: var(--token-bL5d52eHL-Nr);
+  --token-PJytDILSgSwO: #04201b;
+  --plasmic-token-teal-dark-2: var(--token-PJytDILSgSwO);
+  --token-MK3PHMixPaD5: #062923;
+  --plasmic-token-teal-dark-3: var(--token-MK3PHMixPaD5);
+  --token-NG1rbvIRFbek: #07312b;
+  --plasmic-token-teal-dark-4: var(--token-NG1rbvIRFbek);
+  --token-DC2HTuVTPdg8: #083932;
+  --plasmic-token-teal-dark-5: var(--token-DC2HTuVTPdg8);
+  --token-G1xhLuuZGdzl: #09443c;
+  --plasmic-token-teal-dark-6: var(--token-G1xhLuuZGdzl);
+  --token-_W6wYrb_TWyM: #0b544a;
+  --plasmic-token-teal-dark-7: var(--token-_W6wYrb_TWyM);
+  --token-8ZKUq7AR4Dxb: #0c6d62;
+  --plasmic-token-teal-dark-8: var(--token-8ZKUq7AR4Dxb);
+  --token-Lxh3S0AAAcSt: #12a594;
+  --plasmic-token-teal-dark-9: var(--token-Lxh3S0AAAcSt);
+  --token-k_J_Gr8Qx-Y6: #10b3a3;
+  --plasmic-token-teal-dark-10: var(--token-k_J_Gr8Qx-Y6);
+  --token-DX-YSmuE-DQY: #0ac5b3;
+  --plasmic-token-teal-dark-11: var(--token-DX-YSmuE-DQY);
+  --token-PYiIIoj3fUuo: #e1faf4;
+  --plasmic-token-teal-dark-12: var(--token-PYiIIoj3fUuo);
+  --token-aKL_G00LZzCi: #fbfefc;
+  --plasmic-token-green-1: var(--token-aKL_G00LZzCi);
+  --token-rUAnrnJzHqeS: #f2fcf5;
+  --plasmic-token-green-2: var(--token-rUAnrnJzHqeS);
+  --token-qEDJedw9WWX8: #e9f9ee;
+  --plasmic-token-green-3: var(--token-qEDJedw9WWX8);
+  --token-5TSkL5SqnvBt: #ddf3e4;
+  --plasmic-token-green-4: var(--token-5TSkL5SqnvBt);
+  --token-Tc_ZOUnBuGQ_: #ccebd7;
+  --plasmic-token-green-5: var(--token-Tc_ZOUnBuGQ_);
+  --token-gP8qYgbSNHYH: #b4dfc4;
+  --plasmic-token-green-6: var(--token-gP8qYgbSNHYH);
+  --token-LsPj_iMMTYwZ: #92ceac;
+  --plasmic-token-green-7: var(--token-LsPj_iMMTYwZ);
+  --token-fAL2XzoILGPm: #5bb98c;
+  --plasmic-token-green-8: var(--token-fAL2XzoILGPm);
+  --token-oI9RmKl5Rl_y: #30a46c;
+  --plasmic-token-green-9: var(--token-oI9RmKl5Rl_y);
+  --token-clhN-3CruXgh: #299764;
+  --plasmic-token-green-10: var(--token-clhN-3CruXgh);
+  --token-XIeN_eWjZN1j: #18794e;
+  --plasmic-token-green-11: var(--token-XIeN_eWjZN1j);
+  --token-nIEkeUaKRnHy: #153226;
+  --plasmic-token-green-12: var(--token-nIEkeUaKRnHy);
+  --token-hii9bXyO0szD: #0d1912;
+  --plasmic-token-green-dark-1: var(--token-hii9bXyO0szD);
+  --token--rfC-hAbM1Fx: #0c1f17;
+  --plasmic-token-green-dark-2: var(--token--rfC-hAbM1Fx);
+  --token-e6yVG7KEorOW: #0f291e;
+  --plasmic-token-green-dark-3: var(--token-e6yVG7KEorOW);
+  --token-3njjBWnk_067: #113123;
+  --plasmic-token-green-dark-4: var(--token-3njjBWnk_067);
+  --token-nW5BFbYjVycd: #133929;
+  --plasmic-token-green-dark-5: var(--token-nW5BFbYjVycd);
+  --token-GSqHMhDKBesX: #164430;
+  --plasmic-token-green-dark-6: var(--token-GSqHMhDKBesX);
+  --token-I8KLw90GPo35: #1b543a;
+  --plasmic-token-green-dark-7: var(--token-I8KLw90GPo35);
+  --token-GzHdIz9L4lDx: #236e4a;
+  --plasmic-token-green-dark-8: var(--token-GzHdIz9L4lDx);
+  --token-8VKfEV7lLEYo: #30a46c;
+  --plasmic-token-green-dark-9: var(--token-8VKfEV7lLEYo);
+  --token-8TmWfOAYT1ly: #3cb179;
+  --plasmic-token-green-dark-10: var(--token-8TmWfOAYT1ly);
+  --token-MjASxqsIGnnO: #4cc38a;
+  --plasmic-token-green-dark-11: var(--token-MjASxqsIGnnO);
+  --token-T8tRSbWTb8A7: #e5fbeb;
+  --plasmic-token-green-dark-12: var(--token-T8tRSbWTb8A7);
+  --token-KNEhc1Ev78AE: #fbfefb;
+  --plasmic-token-grass-1: var(--token-KNEhc1Ev78AE);
+  --token-h-Zwk_EHvv7M: #f3fcf3;
+  --plasmic-token-grass-2: var(--token-h-Zwk_EHvv7M);
+  --token-h-5XbcO2WhcA: #ebf9eb;
+  --plasmic-token-grass-3: var(--token-h-5XbcO2WhcA);
+  --token-dv0BWWyaHl7H: #dff3df;
+  --plasmic-token-grass-4: var(--token-dv0BWWyaHl7H);
+  --token-3AptjBfMqvPS: #ceebcf;
+  --plasmic-token-grass-5: var(--token-3AptjBfMqvPS);
+  --token-xOzLOPCg2gcn: #b7dfba;
+  --plasmic-token-grass-6: var(--token-xOzLOPCg2gcn);
+  --token-n4S9_H7k9rsR: #97cf9c;
+  --plasmic-token-grass-7: var(--token-n4S9_H7k9rsR);
+  --token-7z1QOgRqHDWD: #65ba75;
+  --plasmic-token-grass-8: var(--token-7z1QOgRqHDWD);
+  --token-GEBK7U4Am62W: #46a758;
+  --plasmic-token-grass-9: var(--token-GEBK7U4Am62W);
+  --token-sU4k1Op8WU8Z: #3d9a50;
+  --plasmic-token-grass-10: var(--token-sU4k1Op8WU8Z);
+  --token-hIvqQBCxyWwX: #297c3b;
+  --plasmic-token-grass-11: var(--token-hIvqQBCxyWwX);
+  --token-AKguBXlLTkKh: #1b311e;
+  --plasmic-token-grass-12: var(--token-AKguBXlLTkKh);
+  --token-6DFXIyFuK7Uu: #0d1912;
+  --plasmic-token-grass-dark-1: var(--token-6DFXIyFuK7Uu);
+  --token-W3y9_S9Nr3jJ: #0f1e13;
+  --plasmic-token-grass-dark-2: var(--token-W3y9_S9Nr3jJ);
+  --token-EA-WxZIS__1K: #132819;
+  --plasmic-token-grass-dark-3: var(--token-EA-WxZIS__1K);
+  --token-cCMt_IjLplGc: #16301d;
+  --plasmic-token-grass-dark-4: var(--token-cCMt_IjLplGc);
+  --token-rScVP1fC5gED: #193921;
+  --plasmic-token-grass-dark-5: var(--token-rScVP1fC5gED);
+  --token-fwuUngWbJbvd: #1d4427;
+  --plasmic-token-grass-dark-6: var(--token-fwuUngWbJbvd);
+  --token-Wt81RRiOQp3F: #245530;
+  --plasmic-token-grass-dark-7: var(--token-Wt81RRiOQp3F);
+  --token-RIMUSmwQu18-: #2f6e3b;
+  --plasmic-token-grass-dark-8: var(--token-RIMUSmwQu18-);
+  --token-0cH5Sd6Nfe6J: #46a758;
+  --plasmic-token-grass-dark-9: var(--token-0cH5Sd6Nfe6J);
+  --token-TI0oac1H0VEX: #55b467;
+  --plasmic-token-grass-dark-10: var(--token-TI0oac1H0VEX);
+  --token-etQLQ4rUrKIg: #63c174;
+  --plasmic-token-grass-dark-11: var(--token-etQLQ4rUrKIg);
+  --token-h6S0euHM1-3R: #e5fbeb;
+  --plasmic-token-grass-dark-12: var(--token-h6S0euHM1-3R);
+  --token-pLnn79zhNn_t: #fefcfb;
+  --plasmic-token-orange-1: var(--token-pLnn79zhNn_t);
+  --token-XTWgBuWQCiy-: #fef8f4;
+  --plasmic-token-orange-2: var(--token-XTWgBuWQCiy-);
+  --token-ey6tiePDun7D: #fff1e7;
+  --plasmic-token-orange-3: var(--token-ey6tiePDun7D);
+  --token-7f5CIeYKZ6m-: #ffe8d7;
+  --plasmic-token-orange-4: var(--token-7f5CIeYKZ6m-);
+  --token-u9SJUWiBo4al: #ffdcc3;
+  --plasmic-token-orange-5: var(--token-u9SJUWiBo4al);
+  --token-X3cN6j2Rs1Vs: #ffcca7;
+  --plasmic-token-orange-6: var(--token-X3cN6j2Rs1Vs);
+  --token-C9I7IO1gBk1v: #ffb381;
+  --plasmic-token-orange-7: var(--token-C9I7IO1gBk1v);
+  --token-MqYzqoRgx_vr: #fa934e;
+  --plasmic-token-orange-8: var(--token-MqYzqoRgx_vr);
+  --token-Kkp266E0V7gX: #f76808;
+  --plasmic-token-orange-9: var(--token-Kkp266E0V7gX);
+  --token-E3ep8uxp7uzq: #ed5f00;
+  --plasmic-token-orange-10: var(--token-E3ep8uxp7uzq);
+  --token-6bwvE5Pdn_Gz: #bd4b00;
+  --plasmic-token-orange-11: var(--token-6bwvE5Pdn_Gz);
+  --token-c-w54MgmSqpl: #451e11;
+  --plasmic-token-orange-12: var(--token-c-w54MgmSqpl);
+  --token-mKaj49K7ojgT: #1f1206;
+  --plasmic-token-orange-dark-1: var(--token-mKaj49K7ojgT);
+  --token-vjXEArogPcnO: #2b1400;
+  --plasmic-token-orange-dark-2: var(--token-vjXEArogPcnO);
+  --token-UhJKTwjZVaLf: #391a03;
+  --plasmic-token-orange-dark-3: var(--token-UhJKTwjZVaLf);
+  --token-KwZK203nH-3A: #441f04;
+  --plasmic-token-orange-dark-4: var(--token-KwZK203nH-3A);
+  --token-5RD-XpkSGwnj: #4f2305;
+  --plasmic-token-orange-dark-5: var(--token-5RD-XpkSGwnj);
+  --token-a8ZZ5m9nC-me: #5f2a06;
+  --plasmic-token-orange-dark-6: var(--token-a8ZZ5m9nC-me);
+  --token-Ve9XEFHHb69y: #763205;
+  --plasmic-token-orange-dark-7: var(--token-Ve9XEFHHb69y);
+  --token-G4hPWqOIfn63: #943e00;
+  --plasmic-token-orange-dark-8: var(--token-G4hPWqOIfn63);
+  --token-z1GpMZUMJUej: #f76808;
+  --plasmic-token-orange-dark-9: var(--token-z1GpMZUMJUej);
+  --token-NyyglRP3GwAR: #ff802b;
+  --plasmic-token-orange-dark-10: var(--token-NyyglRP3GwAR);
+  --token-KvIrMAWpNKTs: #ff8b3e;
+  --plasmic-token-orange-dark-11: var(--token-KvIrMAWpNKTs);
+  --token-kLLbDoXcQl9X: #feeadd;
+  --plasmic-token-orange-dark-12: var(--token-kLLbDoXcQl9X);
+  --token-Gp8tb6o0v9nf: #fefdfc;
+  --plasmic-token-brown-1: var(--token-Gp8tb6o0v9nf);
+  --token-GYvmDnV4y9ZD: #fcf9f6;
+  --plasmic-token-brown-2: var(--token-GYvmDnV4y9ZD);
+  --token-R0cIp24SQBdX: #f8f1ea;
+  --plasmic-token-brown-3: var(--token-R0cIp24SQBdX);
+  --token-MkcnPwOrZaak: #f4e9dd;
+  --plasmic-token-brown-4: var(--token-MkcnPwOrZaak);
+  --token-EYcWZh1PZPyb: #efddcc;
+  --plasmic-token-brown-5: var(--token-EYcWZh1PZPyb);
+  --token-mKO1apeMb4dW: #e8cdb5;
+  --plasmic-token-brown-6: var(--token-mKO1apeMb4dW);
+  --token-BmKzA7wi2gcV: #ddb896;
+  --plasmic-token-brown-7: var(--token-BmKzA7wi2gcV);
+  --token-RARnoZR0VnMf: #d09e72;
+  --plasmic-token-brown-8: var(--token-RARnoZR0VnMf);
+  --token-kjjxGw1qkB3t: #ad7f58;
+  --plasmic-token-brown-9: var(--token-kjjxGw1qkB3t);
+  --token-bEqFA2kim9V_: #a07653;
+  --plasmic-token-brown-10: var(--token-bEqFA2kim9V_);
+  --token-Z1STlw7Q_DFm: #886349;
+  --plasmic-token-brown-11: var(--token-Z1STlw7Q_DFm);
+  --token-Nu_KcQ6YucbS: #3f2c22;
+  --plasmic-token-brown-12: var(--token-Nu_KcQ6YucbS);
+  --token-HX9_p8t8af71: #191513;
+  --plasmic-token-brown-dark-1: var(--token-HX9_p8t8af71);
+  --token-x7JyUMt3oa1W: #221813;
+  --plasmic-token-brown-dark-2: var(--token-x7JyUMt3oa1W);
+  --token-utL-r2iYzVhY: #2e201a;
+  --plasmic-token-brown-dark-3: var(--token-utL-r2iYzVhY);
+  --token-9sbCsGeKfZn4: #36261e;
+  --plasmic-token-brown-dark-4: var(--token-9sbCsGeKfZn4);
+  --token-lourz5lS26Lm: #3e2c22;
+  --plasmic-token-brown-dark-5: var(--token-lourz5lS26Lm);
+  --token-5ZedhGsi4NYx: #3e2c22;
+  --plasmic-token-brown-dark-6: var(--token-5ZedhGsi4NYx);
+  --token-lleTiI69DPrS: #5c4332;
+  --plasmic-token-brown-dark-7: var(--token-lleTiI69DPrS);
+  --token-hh5Oujk2cPXe: #775940;
+  --plasmic-token-brown-dark-8: var(--token-hh5Oujk2cPXe);
+  --token-HaavtsbivfQ4: #ad7f58;
+  --plasmic-token-brown-dark-9: var(--token-HaavtsbivfQ4);
+  --token-gCNd_ce026rI: #bd8b60;
+  --plasmic-token-brown-dark-10: var(--token-gCNd_ce026rI);
+  --token-Pgkt0W4MVrmk: #dba16e;
+  --plasmic-token-brown-dark-11: var(--token-Pgkt0W4MVrmk);
+  --token-Kj34tf1hpVIX: #faf0e5;
+  --plasmic-token-brown-dark-12: var(--token-Kj34tf1hpVIX);
+  --token-Vs_7fQ5X2FJh: #fdfdf9;
+  --plasmic-token-yellow-1: var(--token-Vs_7fQ5X2FJh);
+  --token-u66Bj8wQHeTJ: #fffce8;
+  --plasmic-token-yellow-2: var(--token-u66Bj8wQHeTJ);
+  --token-WsutfVbnQWpY: #fffbd1;
+  --plasmic-token-yellow-3: var(--token-WsutfVbnQWpY);
+  --token-_TR9sJIkSoKq: #fff8bb;
+  --plasmic-token-yellow-4: var(--token-_TR9sJIkSoKq);
+  --token-lnmgSAgb1Osy: #fef2a4;
+  --plasmic-token-yellow-5: var(--token-lnmgSAgb1Osy);
+  --token-T4lCPuFgXNi8: #f9e68c;
+  --plasmic-token-yellow-6: var(--token-T4lCPuFgXNi8);
+  --token-680C9kW9i_xC: #efd36c;
+  --plasmic-token-yellow-7: var(--token-680C9kW9i_xC);
+  --token-FysuiHI81beK: #ebbc00;
+  --plasmic-token-yellow-8: var(--token-FysuiHI81beK);
+  --token-DEbwNasuLfjs: #f5d90a;
+  --plasmic-token-yellow-9: var(--token-DEbwNasuLfjs);
+  --token-vDIqgxZOFlMH: #f7ce00;
+  --plasmic-token-yellow-10: var(--token-vDIqgxZOFlMH);
+  --token-4bm4kJpqcRTD: #946800;
+  --plasmic-token-yellow-11: var(--token-4bm4kJpqcRTD);
+  --token-N-GFU-C_NPxa: #35290f;
+  --plasmic-token-yellow-12: var(--token-N-GFU-C_NPxa);
+  --token-2uAj4s2QkULz: #1c1500;
+  --plasmic-token-yellow-dark-1: var(--token-2uAj4s2QkULz);
+  --token-3HgCdDvU0Opy: #221a00;
+  --plasmic-token-yellow-dark-2: var(--token-3HgCdDvU0Opy);
+  --token-hpG0K9cRK57V: #2c2100;
+  --plasmic-token-yellow-dark-3: var(--token-hpG0K9cRK57V);
+  --token-j4UdS5LSwA8_: #352800;
+  --plasmic-token-yellow-dark-4: var(--token-j4UdS5LSwA8_);
+  --token-gfmAeMieSvZF: #3e3000;
+  --plasmic-token-yellow-dark-5: var(--token-gfmAeMieSvZF);
+  --token-rZlqZDl83p6x: #493c00;
+  --plasmic-token-yellow-dark-6: var(--token-rZlqZDl83p6x);
+  --token-zXziQ_gkWlYJ: #594a05;
+  --plasmic-token-yellow-dark-7: var(--token-zXziQ_gkWlYJ);
+  --token-l7HX5fHqwk9H: #705e00;
+  --plasmic-token-yellow-dark-8: var(--token-l7HX5fHqwk9H);
+  --token-wQ-T3wQg3yha: #f5d90a;
+  --plasmic-token-yellow-dark-9: var(--token-wQ-T3wQg3yha);
+  --token-LMDA8kdswgyY: #ffef5c;
+  --plasmic-token-yellow-dark-10: var(--token-LMDA8kdswgyY);
+  --token-6V5ITWYARQy8: #f0c000;
+  --plasmic-token-yellow-dark-11: var(--token-6V5ITWYARQy8);
+  --token-t8mL04v5To1u: #fffad1;
+  --plasmic-token-yellow-dark-12: var(--token-t8mL04v5To1u);
+  --token-q8evwj5fHkar: #00000003;
+  --plasmic-token-black-a-1: var(--token-q8evwj5fHkar);
+  --token-zBV3PmIqbJ9F: #00000008;
+  --plasmic-token-black-a-2: var(--token-zBV3PmIqbJ9F);
+  --token-h3n_6qpT3Tc4: #0000000d;
+  --plasmic-token-black-a-3: var(--token-h3n_6qpT3Tc4);
+  --token-VEgqNiouHaAh: #00000012;
+  --plasmic-token-black-a-4: var(--token-VEgqNiouHaAh);
+  --token-sBh7BFhgAybb: #00000017;
+  --plasmic-token-black-a-5: var(--token-sBh7BFhgAybb);
+  --token-WbdRZ5gvp6S8: #0000001c;
+  --plasmic-token-black-a-6: var(--token-WbdRZ5gvp6S8);
+  --token-JrjdlBU-a5Ju: #00000024;
+  --plasmic-token-black-a-7: var(--token-JrjdlBU-a5Ju);
+  --token-XeFw4MGauXBT: #00000038;
+  --plasmic-token-black-a-8: var(--token-XeFw4MGauXBT);
+  --token-kMlqw0sBgo96: #00000070;
+  --plasmic-token-black-a-9: var(--token-kMlqw0sBgo96);
+  --token-iRjO5KzKh1e_: #0000007a;
+  --plasmic-token-black-a-10: var(--token-iRjO5KzKh1e_);
+  --token-4ILMhexmH8l8: #00000091;
+  --plasmic-token-black-a-11: var(--token-4ILMhexmH8l8);
+  --token-iP3LxEvLa0xh: #000000e8;
+  --plasmic-token-black-a-12: var(--token-iP3LxEvLa0xh);
+  --token-wRTnrRwLX: #000000;
+  --plasmic-token-black: var(--token-wRTnrRwLX);
+  --token-JsA3njtr-rzP: transparent;
+  --plasmic-token-white-a-1: var(--token-JsA3njtr-rzP);
+  --token-NzyBh18CEQMk: #ffffff03;
+  --plasmic-token-white-a-2: var(--token-NzyBh18CEQMk);
+  --token-Qyg3hs7jbZHb: #ffffff08;
+  --plasmic-token-white-a-3: var(--token-Qyg3hs7jbZHb);
+  --token-txA1BvQJTrWN: #ffffff0f;
+  --plasmic-token-white-a-4: var(--token-txA1BvQJTrWN);
+  --token-XrRqExLE5GAU: #ffffff17;
+  --plasmic-token-white-a-5: var(--token-XrRqExLE5GAU);
+  --token-s2uqsB8OgWOC: #ffffff1f;
+  --plasmic-token-white-a-6: var(--token-s2uqsB8OgWOC);
+  --token-EYzM6mC2mMsS: #ffffff2e;
+  --plasmic-token-white-a-7: var(--token-EYzM6mC2mMsS);
+  --token-oycAHZb9VWi-: #ffffff40;
+  --plasmic-token-white-a-8: var(--token-oycAHZb9VWi-);
+  --token-qSK3ckiAP0uj: #ffffff63;
+  --plasmic-token-white-a-9: var(--token-qSK3ckiAP0uj);
+  --token-SKvd6FRD5kzi: #ffffff73;
+  --plasmic-token-white-a-10: var(--token-SKvd6FRD5kzi);
+  --token-O0ewJSaoIYwr: #ffffff96;
+  --plasmic-token-white-a-11: var(--token-O0ewJSaoIYwr);
+  --token-Hnmc63c6Fir5: #ffffffeb;
+  --plasmic-token-white-a-12: var(--token-Hnmc63c6Fir5);
+  --token-iR8SeEwQZ: #ffffff;
+  --plasmic-token-white: var(--token-iR8SeEwQZ);
+  --token-DSTZORhmRJmm: #fdfdfc;
+  --plasmic-token-gold-1: var(--token-DSTZORhmRJmm);
+  --token-PcDFAdHME7uk: #fbf9f2;
+  --plasmic-token-gold-2: var(--token-PcDFAdHME7uk);
+  --token-3fyI3Qjkzfuy: #f5f2e9;
+  --plasmic-token-gold-3: var(--token-3fyI3Qjkzfuy);
+  --token-HwA2X5NUmVbK: #eeeadd;
+  --plasmic-token-gold-4: var(--token-HwA2X5NUmVbK);
+  --token-4Yeq6X9hcNW4: #e5dfd0;
+  --plasmic-token-gold-5: var(--token-4Yeq6X9hcNW4);
+  --token-cfhblnVCuAYf: #dad1bd;
+  --plasmic-token-gold-6: var(--token-cfhblnVCuAYf);
+  --token-CHoszduNFHjV: #cbbda4;
+  --plasmic-token-gold-7: var(--token-CHoszduNFHjV);
+  --token-Of_WdfVuNF9h: #b8a383;
+  --plasmic-token-gold-8: var(--token-Of_WdfVuNF9h);
+  --token-8xSnLnQ9VNoG: #978365;
+  --plasmic-token-gold-9: var(--token-8xSnLnQ9VNoG);
+  --token-NqRPBEELkigo: #8c795d;
+  --plasmic-token-gold-10: var(--token-NqRPBEELkigo);
+  --token-eruTlY1vf2E1: #776750;
+  --plasmic-token-gold-11: var(--token-eruTlY1vf2E1);
+  --token-DGpKAtEFKoTd: #3b352b;
+  --plasmic-token-gold-12: var(--token-DGpKAtEFKoTd);
+  --token-fw6gBTEAHRz2: #171613;
+  --plasmic-token-gold-dark-1: var(--token-fw6gBTEAHRz2);
+  --token-w3wfMWodyn7l: #1c1a15;
+  --plasmic-token-gold-dark-2: var(--token-w3wfMWodyn7l);
+  --token-f7bwzMsdmZ83: #26231c;
+  --plasmic-token-gold-dark-3: var(--token-f7bwzMsdmZ83);
+  --token-QC5CspxhYArr: #2e2a21;
+  --plasmic-token-gold-dark-4: var(--token-QC5CspxhYArr);
+  --token--F-5L2Ddldn8: #353026;
+  --plasmic-token-gold-dark-5: var(--token--F-5L2Ddldn8);
+  --token-A8iSz7YwrUbv: #3e382c;
+  --plasmic-token-gold-dark-6: var(--token-A8iSz7YwrUbv);
+  --token-5YkLWXxhF3xO: #504737;
+  --plasmic-token-gold-dark-7: var(--token-5YkLWXxhF3xO);
+  --token-H34gQVwWJNT2: #6b5d48;
+  --plasmic-token-gold-dark-8: var(--token-H34gQVwWJNT2);
+  --token-FLOqQ1zvf0jr: #978365;
+  --plasmic-token-gold-dark-9: var(--token-FLOqQ1zvf0jr);
+  --token-fOX137PQ5ZpW: #a59071;
+  --plasmic-token-gold-dark-10: var(--token-fOX137PQ5ZpW);
+  --token-hlo51G9cuOS_: #bfa888;
+  --plasmic-token-gold-dark-11: var(--token-hlo51G9cuOS_);
+  --token-C2-MFJ9gp-H3: #f7f4e7;
+  --plasmic-token-gold-dark-12: var(--token-C2-MFJ9gp-H3);
+  --token-dczds1b5H: #f9feff;
+  --plasmic-token-sky-1: var(--token-dczds1b5H);
+  --token-JgN078AZV: #f1fcff;
+  --plasmic-token-sky-2: var(--token-JgN078AZV);
+  --token-T_TZMi9kk: #e4f9ff;
+  --plasmic-token-sky-3: var(--token-T_TZMi9kk);
+  --token-IIzZCwAUI: #d5f4fd;
+  --plasmic-token-sky-4: var(--token-IIzZCwAUI);
+  --token-bYrl2MhvO: #c1ecf9;
+  --plasmic-token-sky-5: var(--token-bYrl2MhvO);
+  --token-uHemL3RFt: #a4dff1;
+  --plasmic-token-sky-6: var(--token-uHemL3RFt);
+  --token-8f5y503VI: #79cfea;
+  --plasmic-token-sky-7: var(--token-8f5y503VI);
+  --token-k-RqZfrnV: #2ebde5;
+  --plasmic-token-sky-8: var(--token-k-RqZfrnV);
+  --token-jbaQBQhsR: #68ddfd;
+  --plasmic-token-sky-9: var(--token-jbaQBQhsR);
+  --token-KT5IG59Xp: #5fd4f4;
+  --plasmic-token-sky-10: var(--token-KT5IG59Xp);
+  --token-RJqT92Xi0: #0078a1;
+  --plasmic-token-sky-11: var(--token-RJqT92Xi0);
+  --token-6BQirsdBm: #003242;
+  --plasmic-token-sky-12: var(--token-6BQirsdBm);
+  --token-WDtSjxi4N: #0c1820;
+  --plasmic-token-sky-dark-1: var(--token-WDtSjxi4N);
+  --token-o6PtP-UIm: #071d2a;
+  --plasmic-token-sky-dark-2: var(--token-o6PtP-UIm);
+  --token-vORQ70NS8: #082636;
+  --plasmic-token-sky-dark-3: var(--token-vORQ70NS8);
+  --token-Js1l22ZNO: #082d41;
+  --plasmic-token-sky-dark-4: var(--token-Js1l22ZNO);
+  --token-ysQqyqsQX: #08354c;
+  --plasmic-token-sky-dark-5: var(--token-ysQqyqsQX);
+  --token-uknZckab8: #083e59;
+  --plasmic-token-sky-dark-6: var(--token-uknZckab8);
+  --token-PAF4Fhs1M: #064b6b;
+  --plasmic-token-sky-dark-7: var(--token-PAF4Fhs1M);
+  --token-9qqiB3yO0: #005d85;
+  --plasmic-token-sky-dark-8: var(--token-9qqiB3yO0);
+  --token-hhRfIFf5p: #68ddfd;
+  --plasmic-token-sky-dark-9: var(--token-hhRfIFf5p);
+  --token-G9eI_Z49i: #8ae8ff;
+  --plasmic-token-sky-dark-10: var(--token-G9eI_Z49i);
+  --token-Yqxd8KKAH: #2ec8ee;
+  --plasmic-token-sky-dark-11: var(--token-Yqxd8KKAH);
+  --token-DTsDH65k_: #eaf8ff;
+  --plasmic-token-sky-dark-12: var(--token-DTsDH65k_);
+  --token-brSQU2ryS: #ffffff00;
+  --plasmic-token-transparent: var(--token-brSQU2ryS);
+}
+
+.plasmic_tokens {
+  --plsmc-standard-width: 800px;
+  --plsmc-wide-width: 1280px;
+  --plsmc-viewport-gap: 16px;
+  --plsmc-wide-chunk: calc(
+    ((var(--plsmc-wide-width) - var(--plsmc-standard-width)) / 2) -
+      var(--plsmc-viewport-gap)
+  );
+}
+
+.plasmic_default_styles {
+  --mixin-TJJYeuMQBf_text-decoration-line: none;
+  --mixin-TJJYeuMQBf_text-overflow: clip;
+  --mixin-TJJYeuMQBf_white-space: pre-wrap;
+  --mixin-ERnC9B31xC_white-space: pre-wrap;
+  --mixin-8fnyMApH2I_white-space: pre-wrap;
+  --mixin-cjjTJ3s3Wp_white-space: pre-wrap;
+  --mixin-aJRkQ68vKJ_white-space: pre-wrap;
+  --mixin-fynqxrKdjD5_white-space: pre-wrap;
+  --mixin-ruKzbyuPBX-_white-space: pre-wrap;
+  --mixin-3egv9vVzp3F_white-space: pre-wrap;
+  --mixin-R-xmwt62son_white-space: pre-wrap;
+  --mixin-5Jpt7sNEFoE_border-left-color: #dddddd;
+  --mixin-5Jpt7sNEFoE_border-left-style: solid;
+  --mixin-5Jpt7sNEFoE_border-left-width: 3px;
+  --mixin-5Jpt7sNEFoE_padding-left: 10px;
+  --mixin-5Jpt7sNEFoE_white-space: pre-wrap;
+  --mixin-tpa5B5_FlJQ_background: linear-gradient(#f8f8f8, #f8f8f8);
+  --mixin-tpa5B5_FlJQ_border-bottom-color: #dddddd;
+  --mixin-tpa5B5_FlJQ_border-bottom-style: solid;
+  --mixin-tpa5B5_FlJQ_border-bottom-width: 1px;
+  --mixin-tpa5B5_FlJQ_border-left-color: #dddddd;
+  --mixin-tpa5B5_FlJQ_border-left-style: solid;
+  --mixin-tpa5B5_FlJQ_border-left-width: 1px;
+  --mixin-tpa5B5_FlJQ_border-right-color: #dddddd;
+  --mixin-tpa5B5_FlJQ_border-right-style: solid;
+  --mixin-tpa5B5_FlJQ_border-right-width: 1px;
+  --mixin-tpa5B5_FlJQ_border-top-color: #dddddd;
+  --mixin-tpa5B5_FlJQ_border-top-style: solid;
+  --mixin-tpa5B5_FlJQ_border-top-width: 1px;
+  --mixin-tpa5B5_FlJQ_border-bottom-left-radius: 3px;
+  --mixin-tpa5B5_FlJQ_border-bottom-right-radius: 3px;
+  --mixin-tpa5B5_FlJQ_border-top-left-radius: 3px;
+  --mixin-tpa5B5_FlJQ_border-top-right-radius: 3px;
+  --mixin-tpa5B5_FlJQ_padding-bottom: 1px;
+  --mixin-tpa5B5_FlJQ_padding-left: 4px;
+  --mixin-tpa5B5_FlJQ_padding-right: 4px;
+  --mixin-tpa5B5_FlJQ_padding-top: 1px;
+  --mixin-tpa5B5_FlJQ_white-space: pre-wrap;
+  --mixin-IfjGLhSicW-_background: linear-gradient(#f8f8f8, #f8f8f8);
+  --mixin-IfjGLhSicW-_border-bottom-color: #dddddd;
+  --mixin-IfjGLhSicW-_border-bottom-style: solid;
+  --mixin-IfjGLhSicW-_border-bottom-width: 1px;
+  --mixin-IfjGLhSicW-_border-left-color: #dddddd;
+  --mixin-IfjGLhSicW-_border-left-style: solid;
+  --mixin-IfjGLhSicW-_border-left-width: 1px;
+  --mixin-IfjGLhSicW-_border-right-color: #dddddd;
+  --mixin-IfjGLhSicW-_border-right-style: solid;
+  --mixin-IfjGLhSicW-_border-right-width: 1px;
+  --mixin-IfjGLhSicW-_border-top-color: #dddddd;
+  --mixin-IfjGLhSicW-_border-top-style: solid;
+  --mixin-IfjGLhSicW-_border-top-width: 1px;
+  --mixin-IfjGLhSicW-_border-bottom-left-radius: 3px;
+  --mixin-IfjGLhSicW-_border-bottom-right-radius: 3px;
+  --mixin-IfjGLhSicW-_border-top-left-radius: 3px;
+  --mixin-IfjGLhSicW-_border-top-right-radius: 3px;
+  --mixin-IfjGLhSicW-_font-family: "Inconsolata";
+  --mixin-IfjGLhSicW-_padding-bottom: 3px;
+  --mixin-IfjGLhSicW-_padding-left: 6px;
+  --mixin-IfjGLhSicW-_padding-right: 6px;
+  --mixin-IfjGLhSicW-_padding-top: 3px;
+  --mixin-IfjGLhSicW-_white-space: pre-wrap;
+  --mixin-838aYPQokKG_display: flex;
+  --mixin-838aYPQokKG_flex-direction: column;
+  --mixin-838aYPQokKG_align-items: stretch;
+  --mixin-838aYPQokKG_justify-content: flex-start;
+  --mixin-838aYPQokKG_list-style-position: outside;
+  --mixin-838aYPQokKG_padding-left: 40px;
+  --mixin-838aYPQokKG_position: relative;
+  --mixin-838aYPQokKG_list-style-type: decimal;
+  --mixin-838aYPQokKG_white-space: pre-wrap;
+  --mixin-7T_1NeMKuUo_display: flex;
+  --mixin-7T_1NeMKuUo_flex-direction: column;
+  --mixin-7T_1NeMKuUo_align-items: stretch;
+  --mixin-7T_1NeMKuUo_justify-content: flex-start;
+  --mixin-7T_1NeMKuUo_list-style-position: outside;
+  --mixin-7T_1NeMKuUo_padding-left: 40px;
+  --mixin-7T_1NeMKuUo_position: relative;
+  --mixin-7T_1NeMKuUo_list-style-type: disc;
+  --mixin-7T_1NeMKuUo_white-space: pre-wrap;
+  --mixin-ADBUynLPP_white-space: pre-wrap;
+  --mixin-TtG6OzZiQ_white-space: pre-wrap;
+  --mixin-c7aDhsgVf_white-space: pre-wrap;
+  --mixin-jUslNVrg1_white-space: pre-wrap;
+}
+
+.plasmic_mixins {
+  --mixin-YjNYCA5-gK_i_box-shadow: 0px 2px 4px 0px var(--token-JrjdlBU-a5Ju),
+    0px 0px 0px 0px var(--token-zBV3PmIqbJ9F);
+  --plasmic-mixin-extra-small-shadow_box-shadow: var(
+    --mixin-YjNYCA5-gK_i_box-shadow
+  );
+  --mixin-dlZINIZ_AIyZ_box-shadow: 0px 4px 8px 1px var(--token-zBV3PmIqbJ9F);
+  --plasmic-mixin-small-shadow_box-shadow: var(--mixin-dlZINIZ_AIyZ_box-shadow);
+  --mixin-yJTLoKkET_box-shadow: 0px 8px 32px -8px var(--token-XeFw4MGauXBT),
+    0px 8px 20px -16px var(--token-JrjdlBU-a5Ju);
+  --plasmic-mixin-medium-shadow_box-shadow: var(--mixin-yJTLoKkET_box-shadow);
+}
+
+:where(.all) {
+  display: block;
+  white-space: inherit;
+  grid-row: auto;
+  grid-column: auto;
+  position: relative;
+  background: none;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  box-shadow: none;
+  box-sizing: border-box;
+  text-decoration-line: none;
+  margin: 0;
+  border-width: 0px;
+}
+:where(.__wab_expr_html_text *) {
+  white-space: inherit;
+  grid-row: auto;
+  grid-column: auto;
+  background: none;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  box-shadow: none;
+  box-sizing: border-box;
+  text-decoration-line: none;
+  margin: 0;
+  border-width: 0px;
+}
+
+:where(.img) {
+  display: inline-block;
+}
+:where(.__wab_expr_html_text img) {
+  white-space: inherit;
+}
+
+:where(.li) {
+  display: list-item;
+}
+:where(.__wab_expr_html_text li) {
+  white-space: inherit;
+}
+
+:where(.span) {
+  display: inline;
+  position: static;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit;
+}
+:where(.__wab_expr_html_text span) {
+  white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit;
+}
+
+:where(.input) {
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit;
+  background-image: linear-gradient(#ffffff, #ffffff);
+  padding: 2px;
+  border: 1px solid lightgray;
+}
+:where(.__wab_expr_html_text input) {
+  white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit;
+  background-image: linear-gradient(#ffffff, #ffffff);
+  padding: 2px;
+  border: 1px solid lightgray;
+}
+
+:where(.textarea) {
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit;
+  padding: 2px;
+  border: 1px solid lightgray;
+}
+:where(.__wab_expr_html_text textarea) {
+  white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit;
+  padding: 2px;
+  border: 1px solid lightgray;
+}
+
+:where(.button) {
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit;
+  background-image: none;
+  align-items: flex-start;
+  text-align: center;
+  padding: 2px 6px;
+  border: 1px solid lightgray;
+}
+:where(.__wab_expr_html_text button) {
+  white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit;
+  background-image: none;
+  align-items: flex-start;
+  text-align: center;
+  padding: 2px 6px;
+  border: 1px solid lightgray;
+}
+
+:where(.code) {
+  font-family: inherit;
+  line-height: inherit;
+}
+:where(.__wab_expr_html_text code) {
+  white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+}
+
+:where(.pre) {
+  font-family: inherit;
+  line-height: inherit;
+}
+:where(.__wab_expr_html_text pre) {
+  white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+}
+
+:where(.p) {
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit;
+}
+:where(.__wab_expr_html_text p) {
+  white-space: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-transform: inherit;
+}
+
+:where(.h1) {
+  font-size: inherit;
+  font-weight: inherit;
+}
+:where(.__wab_expr_html_text h1) {
+  white-space: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+:where(.h2) {
+  font-size: inherit;
+  font-weight: inherit;
+}
+:where(.__wab_expr_html_text h2) {
+  white-space: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+:where(.h3) {
+  font-size: inherit;
+  font-weight: inherit;
+}
+:where(.__wab_expr_html_text h3) {
+  white-space: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+:where(.h4) {
+  font-size: inherit;
+  font-weight: inherit;
+}
+:where(.__wab_expr_html_text h4) {
+  white-space: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+:where(.h5) {
+  font-size: inherit;
+  font-weight: inherit;
+}
+:where(.__wab_expr_html_text h5) {
+  white-space: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+:where(.h6) {
+  font-size: inherit;
+  font-weight: inherit;
+}
+:where(.__wab_expr_html_text h6) {
+  white-space: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+:where(.address) {
+  font-style: inherit;
+}
+:where(.__wab_expr_html_text address) {
+  white-space: inherit;
+  font-style: inherit;
+}
+
+:where(.a) {
+  color: inherit;
+}
+:where(.__wab_expr_html_text a) {
+  white-space: inherit;
+  color: inherit;
+}
+
+:where(.ol) {
+  list-style-type: none;
+  padding: 0;
+}
+:where(.__wab_expr_html_text ol) {
+  white-space: inherit;
+  list-style-type: none;
+  padding: 0;
+}
+
+:where(.ul) {
+  list-style-type: none;
+  padding: 0;
+}
+:where(.__wab_expr_html_text ul) {
+  white-space: inherit;
+  list-style-type: none;
+  padding: 0;
+}
+
+:where(.select) {
+  padding: 2px 6px;
+}
+:where(.__wab_expr_html_text select) {
+  white-space: inherit;
+  padding: 2px 6px;
+}
+
+.plasmic_default__component_wrapper {
+  display: grid;
+}
+.plasmic_default__inline {
+  display: inline;
+}
+.plasmic_page_wrapper {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  align-items: stretch;
+  align-self: start;
+}
+.plasmic_page_wrapper > * {
+  height: auto !important;
+}
+.__wab_expr_html_text {
+  white-space: normal;
+}
+:where(.root_reset) {
+  white-space: var(--mixin-TJJYeuMQBf_white-space);
+}
+
+:where(.root_reset) h1:where(.h1),
+h1:where(.root_reset.h1),
+:where(.root_reset .__wab_expr_html_text) h1,
+:where(.root_reset_tags) h1,
+h1:where(.root_reset_tags) {
+}
+
+:where(.root_reset) h2:where(.h2),
+h2:where(.root_reset.h2),
+:where(.root_reset .__wab_expr_html_text) h2,
+:where(.root_reset_tags) h2,
+h2:where(.root_reset_tags) {
+}
+
+:where(.root_reset) h3:where(.h3),
+h3:where(.root_reset.h3),
+:where(.root_reset .__wab_expr_html_text) h3,
+:where(.root_reset_tags) h3,
+h3:where(.root_reset_tags) {
+}
+
+:where(.root_reset) h4:where(.h4),
+h4:where(.root_reset.h4),
+:where(.root_reset .__wab_expr_html_text) h4,
+:where(.root_reset_tags) h4,
+h4:where(.root_reset_tags) {
+}
+
+:where(.root_reset) h5:where(.h5),
+h5:where(.root_reset.h5),
+:where(.root_reset .__wab_expr_html_text) h5,
+:where(.root_reset_tags) h5,
+h5:where(.root_reset_tags) {
+}
+
+:where(.root_reset) h6:where(.h6),
+h6:where(.root_reset.h6),
+:where(.root_reset .__wab_expr_html_text) h6,
+:where(.root_reset_tags) h6,
+h6:where(.root_reset_tags) {
+}
+
+:where(.root_reset) a:where(.a),
+a:where(.root_reset.a),
+:where(.root_reset .__wab_expr_html_text) a,
+:where(.root_reset_tags) a,
+a:where(.root_reset_tags) {
+}
+
+:where(.root_reset) a:where(.a):hover,
+a:where(.root_reset.a):hover,
+:where(.root_reset .__wab_expr_html_text) a:hover,
+:where(.root_reset_tags) a:hover,
+a:where(.root_reset_tags):hover {
+}
+
+:where(.root_reset) blockquote:where(.blockquote),
+blockquote:where(.root_reset.blockquote),
+:where(.root_reset .__wab_expr_html_text) blockquote,
+:where(.root_reset_tags) blockquote,
+blockquote:where(.root_reset_tags) {
+  padding-left: var(--mixin-5Jpt7sNEFoE_padding-left);
+  border-left: var(--mixin-5Jpt7sNEFoE_border-left-width)
+    var(--mixin-5Jpt7sNEFoE_border-left-style)
+    var(--mixin-5Jpt7sNEFoE_border-left-color);
+}
+
+:where(.root_reset) code:where(.code),
+code:where(.root_reset.code),
+:where(.root_reset .__wab_expr_html_text) code,
+:where(.root_reset_tags) code,
+code:where(.root_reset_tags) {
+  background: #f8f8f8;
+  border-radius: var(--mixin-tpa5B5_FlJQ_border-top-left-radius)
+    var(--mixin-tpa5B5_FlJQ_border-top-right-radius)
+    var(--mixin-tpa5B5_FlJQ_border-bottom-right-radius)
+    var(--mixin-tpa5B5_FlJQ_border-bottom-left-radius);
+  padding: var(--mixin-tpa5B5_FlJQ_padding-top)
+    var(--mixin-tpa5B5_FlJQ_padding-right)
+    var(--mixin-tpa5B5_FlJQ_padding-bottom)
+    var(--mixin-tpa5B5_FlJQ_padding-left);
+  border-top: var(--mixin-tpa5B5_FlJQ_border-top-width)
+    var(--mixin-tpa5B5_FlJQ_border-top-style)
+    var(--mixin-tpa5B5_FlJQ_border-top-color);
+  border-right: var(--mixin-tpa5B5_FlJQ_border-right-width)
+    var(--mixin-tpa5B5_FlJQ_border-right-style)
+    var(--mixin-tpa5B5_FlJQ_border-right-color);
+  border-bottom: var(--mixin-tpa5B5_FlJQ_border-bottom-width)
+    var(--mixin-tpa5B5_FlJQ_border-bottom-style)
+    var(--mixin-tpa5B5_FlJQ_border-bottom-color);
+  border-left: var(--mixin-tpa5B5_FlJQ_border-left-width)
+    var(--mixin-tpa5B5_FlJQ_border-left-style)
+    var(--mixin-tpa5B5_FlJQ_border-left-color);
+}
+
+:where(.root_reset) pre:where(.pre),
+pre:where(.root_reset.pre),
+:where(.root_reset .__wab_expr_html_text) pre,
+:where(.root_reset_tags) pre,
+pre:where(.root_reset_tags) {
+  background: #f8f8f8;
+  font-family: var(--mixin-IfjGLhSicW-_font-family);
+  border-radius: var(--mixin-IfjGLhSicW-_border-top-left-radius)
+    var(--mixin-IfjGLhSicW-_border-top-right-radius)
+    var(--mixin-IfjGLhSicW-_border-bottom-right-radius)
+    var(--mixin-IfjGLhSicW-_border-bottom-left-radius);
+  padding: var(--mixin-IfjGLhSicW-_padding-top)
+    var(--mixin-IfjGLhSicW-_padding-right)
+    var(--mixin-IfjGLhSicW-_padding-bottom)
+    var(--mixin-IfjGLhSicW-_padding-left);
+  border-top: var(--mixin-IfjGLhSicW-_border-top-width)
+    var(--mixin-IfjGLhSicW-_border-top-style)
+    var(--mixin-IfjGLhSicW-_border-top-color);
+  border-right: var(--mixin-IfjGLhSicW-_border-right-width)
+    var(--mixin-IfjGLhSicW-_border-right-style)
+    var(--mixin-IfjGLhSicW-_border-right-color);
+  border-bottom: var(--mixin-IfjGLhSicW-_border-bottom-width)
+    var(--mixin-IfjGLhSicW-_border-bottom-style)
+    var(--mixin-IfjGLhSicW-_border-bottom-color);
+  border-left: var(--mixin-IfjGLhSicW-_border-left-width)
+    var(--mixin-IfjGLhSicW-_border-left-style)
+    var(--mixin-IfjGLhSicW-_border-left-color);
+}
+
+:where(.root_reset) ol:where(.ol),
+ol:where(.root_reset.ol),
+:where(.root_reset .__wab_expr_html_text) ol,
+:where(.root_reset_tags) ol,
+ol:where(.root_reset_tags) {
+  display: var(--mixin-838aYPQokKG_display);
+  flex-direction: var(--mixin-838aYPQokKG_flex-direction);
+  align-items: var(--mixin-838aYPQokKG_align-items);
+  justify-content: var(--mixin-838aYPQokKG_justify-content);
+  list-style-position: var(--mixin-838aYPQokKG_list-style-position);
+  padding-left: var(--mixin-838aYPQokKG_padding-left);
+  position: var(--mixin-838aYPQokKG_position);
+  list-style-type: var(--mixin-838aYPQokKG_list-style-type);
+  flex-column-gap: var(--mixin-838aYPQokKG_flex-column-gap);
+}
+
+:where(.root_reset) ul:where(.ul),
+ul:where(.root_reset.ul),
+:where(.root_reset .__wab_expr_html_text) ul,
+:where(.root_reset_tags) ul,
+ul:where(.root_reset_tags) {
+  display: var(--mixin-7T_1NeMKuUo_display);
+  flex-direction: var(--mixin-7T_1NeMKuUo_flex-direction);
+  align-items: var(--mixin-7T_1NeMKuUo_align-items);
+  justify-content: var(--mixin-7T_1NeMKuUo_justify-content);
+  list-style-position: var(--mixin-7T_1NeMKuUo_list-style-position);
+  padding-left: var(--mixin-7T_1NeMKuUo_padding-left);
+  position: var(--mixin-7T_1NeMKuUo_position);
+  list-style-type: var(--mixin-7T_1NeMKuUo_list-style-type);
+  flex-column-gap: var(--mixin-7T_1NeMKuUo_flex-column-gap);
+}
+
+:where(.root_reset) li:where(.li),
+li:where(.root_reset.li),
+:where(.root_reset .__wab_expr_html_text) li,
+:where(.root_reset_tags) li,
+li:where(.root_reset_tags) {
+}
+
+:where(.root_reset) a:where(.a):not(:hover),
+a:where(.root_reset.a):not(:hover),
+:where(.root_reset .__wab_expr_html_text) a:not(:hover),
+:where(.root_reset_tags) a:not(:hover),
+a:where(.root_reset_tags):not(:hover) {
+}
+
+:where(.root_reset) blockquote:where(.blockquote):not(:hover),
+blockquote:where(.root_reset.blockquote):not(:hover),
+:where(.root_reset .__wab_expr_html_text) blockquote:not(:hover),
+:where(.root_reset_tags) blockquote:not(:hover),
+blockquote:where(.root_reset_tags):not(:hover) {
+}
+
+:where(.root_reset) a:where(.a):active,
+a:where(.root_reset.a):active,
+:where(.root_reset .__wab_expr_html_text) a:active,
+:where(.root_reset_tags) a:active,
+a:where(.root_reset_tags):active {
+}
