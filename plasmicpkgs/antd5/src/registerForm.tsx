@@ -1329,21 +1329,23 @@ function FormItemForwarder({ formItemProps, ...props }: any) {
     status,
   });
   return React.Children.map(formItemProps.children, (child, i) => {
-    let newProps = {
-      name: formItemProps.name,
-      ...(child.props ?? {}),
-      ...props,
-      __plasmicFormField: true,
-    };
-    if (formItemProps.customizeProps) {
-      newProps = mergeProps(
-        newProps,
-        formItemProps.customizeProps(data, newProps)
-      );
+    if (i === 0 && isValidElement(child)) {
+      let newProps = {
+        name: formItemProps.name,
+        ...(child.props ?? {}),
+        ...props,
+        __plasmicFormField: true,
+      };
+      if (formItemProps.customizeProps) {
+        newProps = mergeProps(
+          newProps,
+          formItemProps.customizeProps(data, newProps)
+        );
+      }
+      return cloneElement(child, newProps);
+    } else {
+      return child;
     }
-    return i === 0 && isValidElement(child)
-      ? cloneElement(child, newProps)
-      : child;
   });
 }
 
