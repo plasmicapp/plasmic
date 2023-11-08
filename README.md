@@ -51,6 +51,22 @@
 [docs]: https://www.plasmic.app/learn/
 [quickstart]: https://www.plasmic.app/learn/quickstart/
 
+## See Plasmic in action
+
+- Twitter clone: https://youtu.be/rpdjrFuVMog (live app: https://twitter-staging.plasmic.run)
+
+- Service desk app: https://youtu.be/rYqSpUEJSTw (live app: https://tickets.plasmic.run)
+
+- Vercel marketing page: https://youtu.be/itvbmgLZvcM (live app: https://vercel-workflow.vercel.app)
+
+- Shopify headless storefront: https://commerce.plasmic.run
+
+- Apple.com: https://apple.plasmic.run
+
+- Interview with Lee Robinson, Plasmic as a visual CMS: https://www.youtube.com/watch?v=pcVzNR6FBAQ
+
+- Emails with React.Email: coming soon
+
 ## What is Plasmic?
 
 Plasmic is a visual builder for the web.
@@ -59,9 +75,11 @@ It enables rapidly designing and building applications and websites--code option
 
 Main use cases:
 
-- Applications: for developers and technical users to quickly build internal tools, client portals, and business applications
 - Content management: let marketing drag/drop your React components to build landing pages in your Next.js website, with design guardrails
-- Website builder and design tool that doesn’t limit you to the built-in ecommerce platform, CMS, hosting, or database
+
+- Applications: let developers and technical users quickly build internal tools, client portals, and business software
+
+- Website builder and design tool that doesn’t limit you to some built-in ecommerce platform, CMS, or hosting
 
 Plasmic is powerful, with a deep feature set that scales to complex projects.
 And with codebase integration, it removes the ceiling typically associated with low-code tools.
@@ -75,9 +93,9 @@ Plasmic combines some seemingly disparate genres:
 - Glide and no-code app builders
 - Contentful and other CMSes
 
-Today these are different tools to specialize in, but the line between say a website and an application is blurry (consider an ecommerce storefront with user logins). With the right foundations, we think these can be unified—Plasmic’s UI can adapt to different levels of control for different personas/tasks.
+Today these are different tools to specialize in, but the line between, say, a website and an application is blurry (consider an ecommerce storefront with user logins). With the right foundations, we think these can be unified—Plasmic’s UI can adapt to different levels of control for different personas/tasks.
 
-But more importantly, unlike existing tools, Plasmic integrates with codebases. This is critical to making low-code scale past the complexity ceiling that all such tools (including Plasmic) have. You can drag and drop existing complex React components, and you can create new UIs/components within traditionally-coded applications, seamlessly weaving code and no-code.
+But more importantly, unlike existing tools, Plasmic integrates with codebases. This is critical to making low-code scale past the complexity ceiling that all such tools (including Plasmic) have. You can drag and drop existing complex React components, and you can visually create new UIs/components within traditionally-coded applications, seamlessly weaving code and no-code.
 
 Some feature highlights:
 
@@ -134,8 +152,8 @@ PLASMIC.registerComponent(HeroSection, {
 // pages/index.tsx
 
 import {
-  PlasmicRootProvider,
   PlasmicComponent,
+  PlasmicRootProvider,
 } from "@plasmicapp/loader-nextjs";
 import { PLASMIC } from "../plasmic-init";
 
@@ -202,7 +220,7 @@ See the [application development tutorials](https://docs.plasmic.app/learn/minit
 One common issue we see is mismatched or duplicate versions of packages.
 
 `@plasmicapp` packages can depend on each other.
-Each package always has an *exact* version of its @plasmicapp dependencies.
+Each package always has an _exact_ version of its @plasmicapp dependencies.
 This is because we want to ensure that all packages are always in sync, and that we don't end up with a mismatched set of packages.
 
 Packages like `@plasmicapp/host` must also be deduped, since functionality such as `registerComponent` make use of globals and side effects, so with multiple versions you could end up using the wrong "instance" of this package.
