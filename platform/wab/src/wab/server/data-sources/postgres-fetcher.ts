@@ -623,6 +623,9 @@ const POSTGRES_FORMAT_TO_BUILDER_TYPE = {
   "timestamp with time zone": "datetime",
   "timestamp without time zone": "datetime",
   boolean: "boolean",
+  "USER-DEFINED": "enum",
+  json: "json",
+  jsonb: "json",
 } as const;
 
 const POSTGRES_TYPE_CATEGORY_TO_BUILDER_TYPE = {
@@ -637,12 +640,17 @@ function toTableSchema(row: PostgresTableQuery): TableSchema {
     id: `${row.schema}"."${row.name}`,
     label: row.name,
     fields: row.columns.map((column): TableFieldSchema => {
+      let builderType = POSTGRES_FORMAT_TO_BUILDER_TYPE[column.data_type];
+      if (builderType === "enum" && column.enums.length === 0) {
+        builderType = undefined;
+      }
       return {
         id: column.name,
         label: column.name,
-        type: POSTGRES_FORMAT_TO_BUILDER_TYPE[column.data_type] ?? "unknown",
+        type: builderType ?? "unknown",
         readOnly: false,
         primaryKey: column.is_primary_key,
+        options: column.enums,
       };
     }),
   };

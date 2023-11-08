@@ -1,29 +1,24 @@
+import { CustomCode, ObjectPath, TemplatedString } from "@/wab/classes";
+import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
+import "@/wab/client/components/QueryBuilder/QueryBuilder.scss";
+import DataPicker, {
+  DataPickerTypesSchema,
+} from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
+import { IconLinkButton } from "@/wab/client/components/widgets";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
+import { cx } from "@/wab/common";
+import {
+  createExprForDataPickerValue,
+  ExprCtx,
+  extractValueSavedFromDataPicker,
+  summarizeExpr,
+} from "@/wab/exprs";
+import { isDynamicValue } from "@/wab/shared/dynamic-bindings";
 import { BaseWidgetProps } from "@react-awesome-query-builder/antd";
 import { Popover } from "antd";
 import { isString } from "lodash";
 import * as React from "react";
-import {
-  CustomCode,
-  isKnownCustomCode,
-  isKnownObjectPath,
-  ObjectPath,
-  TemplatedString,
-} from "@/wab/classes";
-import { cx } from "@/wab/common";
-import {
-  asCode,
-  createExprForDataPickerValue,
-  ExprCtx,
-  isRealCodeExpr,
-  summarizeExpr,
-} from "@/wab/exprs";
-import { isDynamicValue } from "@/wab/shared/dynamic-bindings";
-import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
-import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
-import "@/wab/client/components/QueryBuilder/QueryBuilder.scss";
-import { IconLinkButton } from "@/wab/client/components/widgets";
-import { Icon } from "@/wab/client/components/widgets/Icon";
-import DataPicker, { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 
 export interface DataPickerWidgetFactoryProps {
   widgetProps: BaseWidgetProps;
@@ -111,13 +106,7 @@ export function DynamicValueWidget({
       : mkUndefinedObjectPath();
 
   const previewValue = summarizeExpr(realValue, exprCtx);
-  const textValue = isKnownCustomCode(realValue)
-    ? isRealCodeExpr(realValue)
-      ? realValue.code.slice(1, -1)
-      : realValue.code
-    : isKnownObjectPath(realValue)
-    ? realValue.path
-    : asCode(realValue, exprCtx).code;
+  const textValue = extractValueSavedFromDataPicker(realValue, exprCtx);
 
   return (
     <Popover

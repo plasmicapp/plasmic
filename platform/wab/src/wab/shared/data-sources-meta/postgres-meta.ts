@@ -1,9 +1,9 @@
+import { xGroupBy } from "@/wab/common";
+import type { DataSource } from "@/wab/server/entities/Entities";
+import { capitalizeFirst } from "@/wab/strs";
 import { DataSourceSchema } from "@plasmicapp/data-sources";
 import moment from "moment";
 import SqlString from "sqlstring";
-import { xGroupBy } from "../../common";
-import type { DataSource } from "../../server/entities/Entities";
-import { capitalizeFirst } from "../../strs";
 import {
   DataSourceMeta,
   FilterArgMeta,
@@ -94,13 +94,26 @@ const makeFields = (schemaData: DataSourceSchema, tableId?: string) => {
           return a.label.localeCompare(b.label);
         }
       })
-      .map((field) => [
-        field.id,
-        {
-          type: field.type,
-          label: field.label ?? capitalizeFirst(field.id),
-        },
-      ])
+      .map((field) => {
+        const fieldSettings =
+          field.type === "enum"
+            ? {
+                listValues: (field.options ?? []).map((o) => ({
+                  value: o,
+                  title: o,
+                })),
+                allowCustomValues: true,
+              }
+            : undefined;
+        return [
+          field.id,
+          {
+            type: field.type,
+            label: field.label ?? capitalizeFirst(field.id),
+            fieldSettings,
+          },
+        ];
+      })
   );
 };
 

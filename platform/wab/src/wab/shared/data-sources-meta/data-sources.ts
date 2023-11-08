@@ -17,11 +17,7 @@ import {
   Pagination,
   TableSchema,
 } from "@plasmicapp/data-sources";
-import {
-  AntdConfig,
-  Fields,
-  JsonTree,
-} from "@react-awesome-query-builder/antd";
+import { AntdConfig, Field, JsonTree } from "@react-awesome-query-builder/antd";
 import type {
   JsonLogicAnd,
   JsonLogicDoubleNegation,
@@ -122,6 +118,10 @@ export type RawType =
   | "dict-string"
   | "graphql-query"
   | "http-body";
+
+export type Fields = {
+  [key: string]: Field;
+};
 
 export type LabeledValue = {
   value: string;

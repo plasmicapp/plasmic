@@ -1,4 +1,21 @@
 import {
+  CustomCode,
+  isKnownTemplatedString,
+  ObjectPath,
+  TemplatedString,
+} from "@/wab/classes";
+import S from "@/wab/client/components/QueryBuilder/QueryBuilder.module.scss";
+import "@/wab/client/components/QueryBuilder/QueryBuilder.scss";
+import {
+  AwesomeBuilder,
+  QueryBuilderConfig,
+} from "@/wab/client/components/QueryBuilder/QueryBuilderConfig";
+import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
+import { arrayEq, ensure } from "@/wab/common";
+import { ExprCtx } from "@/wab/exprs";
+import { Filters } from "@/wab/shared/data-sources-meta/data-sources";
+import { isDynamicValue } from "@/wab/shared/dynamic-bindings";
+import {
   BaseWidgetProps,
   Config,
   Field,
@@ -14,23 +31,6 @@ import {
 import cn from "classnames";
 import { isNil, isString, merge, pick } from "lodash";
 import * as React from "react";
-import {
-  CustomCode,
-  isKnownTemplatedString,
-  ObjectPath,
-  TemplatedString,
-} from "@/wab/classes";
-import { arrayEq, ensure } from "@/wab/common";
-import { ExprCtx } from "@/wab/exprs";
-import { Filters } from "@/wab/shared/data-sources-meta/data-sources";
-import { isDynamicValue } from "@/wab/shared/dynamic-bindings";
-import S from "@/wab/client/components/QueryBuilder/QueryBuilder.module.scss";
-import "@/wab/client/components/QueryBuilder/QueryBuilder.scss";
-import {
-  AwesomeBuilder,
-  QueryBuilderConfig,
-} from "@/wab/client/components/QueryBuilder/QueryBuilderConfig";
-import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
 import { DataPickerWidgetFactory } from "./DataPickerWidgetFactory";
 import { mkBindingId } from "./DataSourceOpPicker";
 import { TemplatedTextWidget } from "./TemplatedTextWidget";
@@ -107,13 +107,17 @@ function DataSourceQueryBuilder_(
     exprCtx,
   } = props;
 
-  const fields = Object.entries(defaultFields).reduce((acum, [key, value]) => {
-    acum[key] = value;
-    if (acum[key].type === "string") {
-      acum[key].type = "text";
-    }
-    return acum;
-  }, {} as Fields);
+  const fields = Object.entries(defaultFields)
+    .filter(([key, field]) => field.type !== "json")
+    .reduce((acum, [key, value]) => {
+      acum[key] = value;
+      if (acum[key].type === "string") {
+        acum[key].type = "text";
+      } else if (acum[key].type === "enum") {
+        acum[key].type = "select";
+      }
+      return acum;
+    }, {} as Fields);
 
   const config = React.useMemo(() => {
     const mergedConfig = merge({}, baseConfig, dataSourceConfig);

@@ -8,7 +8,6 @@ import {
   TableSchema,
   usePlasmicDataOp,
 } from "@plasmicapp/react-web/lib/data-sources";
-import { Fields } from "@react-awesome-query-builder/antd";
 import { Input, Menu, notification, Tooltip } from "antd";
 import { GraphiQLProvider } from "graphiql";
 import "graphiql/graphiql.css";
@@ -54,6 +53,7 @@ import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/C
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { createPortalTunnel } from "@/wab/client/components/portal-tunnel";
 import { QueryBuilderConfig } from "@/wab/client/components/QueryBuilder/QueryBuilderConfig";
+import { DataPickerEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/DataPickerEditor";
 import { EnumPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/EnumPropEditor";
 import { InvalidationEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/InvalidationEditor";
 import { StringPropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/StringPropEditor";
@@ -128,6 +128,7 @@ import {
   asCode,
   createExprForDataPickerValue,
   ExprCtx,
+  extractValueSavedFromDataPicker,
   getRawCode,
   hasUnsafeCurrentUserBinding,
 } from "@/wab/exprs";
@@ -144,6 +145,7 @@ import {
   DataSourceOpDraftValue,
   dataSourceTemplateToString,
   exprToDataSourceString,
+  Fields,
   getTemplateFieldType,
   isJsonType,
   JsonSchemaArgMeta,
@@ -2723,7 +2725,9 @@ export const JsonWithSchemaEditor = observer(function JsonWithSchemaEditor({
       {typeof value !== "string" && inputType === "editor" ? (
         <ListBox>
           {[...Object.entries(fields)].map(([fieldName, field], idx) => {
-            const v = value?.[fieldName] ?? undefined;
+            const val = value?.[fieldName] ?? undefined;
+            const fieldSettings = field.fieldSettings ?? {};
+            const fieldType = field.type === "enum" ? "select" : field.type;
             const setValue = (
               newVal: string | number | boolean | undefined
             ) => {
@@ -2767,7 +2771,7 @@ export const JsonWithSchemaEditor = observer(function JsonWithSchemaEditor({
             };
             const menu = () => {
               const builder = new MenuBuilder();
-              if (v != null) {
+              if (val != null) {
                 builder.genSection(undefined, (push) => {
                   push(
                     <Menu.Item
@@ -2820,9 +2824,9 @@ export const JsonWithSchemaEditor = observer(function JsonWithSchemaEditor({
                             ...bindings.current,
                           };
                           if (
-                            isKnownTemplatedString(allBindings[v]) ||
-                            (field.type === "string" &&
-                              (!v || !allBindings?.[v]))
+                            isKnownTemplatedString(allBindings[val]) ||
+                            (fieldType === "string" &&
+                              (!val || !allBindings?.[val]))
                           ) {
                             return (
                               <TemplatedTextWidget
@@ -2830,7 +2834,7 @@ export const JsonWithSchemaEditor = observer(function JsonWithSchemaEditor({
                                 schema={schema}
                                 bindings={{ ...allBindings }}
                                 setValue={setExprValue}
-                                value={v}
+                                value={val}
                                 exprCtx={exprCtx}
                                 data-plasmic-prop={`data-source-modal-${
                                   (dataPlasmicProp
@@ -2839,10 +2843,10 @@ export const JsonWithSchemaEditor = observer(function JsonWithSchemaEditor({
                                 }-json-editor`}
                               />
                             );
-                          } else if (isString(v) && isDynamicValue(v)) {
+                          } else if (isString(val) && isDynamicValue(val)) {
                             return (
                               <DynamicValueWidget
-                                value={v}
+                                value={val}
                                 bindings={{ ...allBindings }}
                                 setValue={setExprValue}
                                 data={data}
@@ -2853,6 +2857,23 @@ export const JsonWithSchemaEditor = observer(function JsonWithSchemaEditor({
                                 exprCtx={exprCtx}
                               />
                             );
+                          } else if (fieldType === "json") {
+                            return (
+                              <DataPickerEditor
+                                value={extractValueSavedFromDataPicker(
+                                  allBindings[val],
+                                  exprCtx
+                                )}
+                                onChange={(v) => {
+                                  const newVal =
+                                    v != null
+                                      ? createExprForDataPickerValue(v)
+                                      : v;
+                                  setExprValue(newVal);
+                                }}
+                                data={data}
+                              />
+                            );
                           } else {
                             return (
                               <ContextMenuIndicator
@@ -2860,7 +2881,7 @@ export const JsonWithSchemaEditor = observer(function JsonWithSchemaEditor({
                                 showDynamicValueButton
                                 onIndicatorClickDefault={() => {
                                   setDefaultOpenDataPicker(fieldName);
-                                  if (isStringType(field.type)) {
+                                  if (isStringType(fieldType)) {
                                     setExprValue(
                                       new TemplatedString({
                                         text: [mkUndefinedObjectPath()],
@@ -2872,13 +2893,14 @@ export const JsonWithSchemaEditor = observer(function JsonWithSchemaEditor({
                                 }}
                                 className="qb-custom-widget"
                               >
-                                {configWidgets[field.type].factory({
+                                {configWidgets[fieldType].factory({
                                   config: { ...QueryBuilderConfig },
                                   setValue: setExprValue,
-                                  value: v,
+                                  value: val,
                                   customProps: {
                                     "data-plasmic-prop": fieldName,
                                   },
+                                  ...field.fieldSettings,
                                 })}
                               </ContextMenuIndicator>
                             );
