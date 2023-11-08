@@ -755,19 +755,43 @@ export function checkAndNotifyUnsupportedHostVersion(requiredVersion?: number) {
   return false;
 }
 
-export function notifyCodeLibraryInsertion(name?: string) {
+export function notifyCodeLibraryInsertion(
+  name: string,
+  jsIdentifier: string,
+  type: string
+) {
   if (!name) return;
-  notification.success({
-    message: (
-      <>
-        <code>{name}</code> library installed. You can now call functions in
-        this package from any code snippet with:
-        <br />
-        <code lang="javascript">$$.{name}.function()</code>
-      </>
-    ),
-    duration: 0,
-  });
+  const commonOpts = { duration: 0 };
+  switch (type) {
+    case "function":
+      notification.success({
+        message: (
+          <>
+            <code>{name}</code> library installed. You can now use this package
+            with the following code snippet:
+            <br />
+            <code lang="javascript">$$.{jsIdentifier}()</code>
+          </>
+        ),
+        ...commonOpts,
+      });
+      break;
+    case "object":
+      notification.success({
+        message: (
+          <>
+            <code>{name}</code> library installed. You can now call functions in
+            this package from any code snippet with:
+            <br />
+            <code lang="javascript">$$.{jsIdentifier}.function()</code>
+          </>
+        ),
+        ...commonOpts,
+      });
+      break;
+    default:
+      break;
+  }
 }
 
 // Returns true if the user needs to upgrade their react version

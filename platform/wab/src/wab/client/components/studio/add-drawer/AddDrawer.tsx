@@ -848,7 +848,16 @@ export function createFakeHostLessComponent(
         const isCodeLibrary =
           dep.site.components.length === 0 && dep.site.codeLibraries.length > 0;
         if (!isCodeLibrary) return;
-        notifyCodeLibraryInsertion(dep.site.hostLessPackageInfo?.name);
+        dep.site.codeLibraries.forEach((lib) => {
+          if (!dep.site.hostLessPackageInfo?.name) return;
+          notifyCodeLibraryInsertion(
+            dep.site.hostLessPackageInfo.name,
+            lib.jsIdentifier,
+            typeof sc
+              .getRegisteredLibraries()
+              .find((r) => r.meta.jsIdentifier === lib.jsIdentifier)?.lib
+          );
+        });
       });
       return true;
     },
