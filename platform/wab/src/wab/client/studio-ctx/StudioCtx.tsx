@@ -6671,7 +6671,7 @@ export class StudioCtx extends WithDbCtx {
   private dataOpCache: Record<string, Promise<any>> = {};
 
   executePlasmicDataOp = asyncMaxAtATime(
-    4,
+    10,
     async (op: DataOp, opts?: Parameters<typeof executePlasmicDataOp>[1]) => {
       // Custom in-studio executePlasmicDataOp. For now, it will point to localhost
       // instead of the production host. Soon, it will instead point to a studio endpoint
