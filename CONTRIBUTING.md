@@ -8,7 +8,7 @@ If you're interested in implementing a non-trivial code change, please create an
 
 ## Contributor License Agreement
 
-When submitting a PR for `app/` for the first time, you'll be automatically asked to agree to our [Individual Contributor License Agreement](docs/contributing/individual-cla.md), which is needed to accept your PR.
+When submitting a PR for `platform/` for the first time, you'll be automatically asked to agree to our [Individual Contributor License Agreement](docs/contributing/individual-cla.md), which is needed to accept your PR.
 This only needs to be done once.
 
 If you are contributing on behalf of a company, please have your company contact us to sign a [Corporate Contributor License Agreement](docs/contributing/corporate-cla.md), via community@plasmic.app.
@@ -17,8 +17,7 @@ If you are contributing on behalf of a company, please have your company contact
 
 This repo contains:
 
-[//]: # (- the Plasmic Studio platform itself &#40;under the `app/` dir&#41;)
-
+- the Plasmic Studio platform itself (under the `platform/` dir)
 - code for all Plasmic component store packages (`@plasmicpkgs/*`)
 - client libraries/SDKs (`@plasmicapp/*`)
 - examples (under the `examples/` dir)
@@ -37,11 +36,20 @@ In general, we follow the "fork-and-pull" Git workflow.
 
 NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 
+## Contributing to the Plasmic Studio platform
+
+In `platform/` is the code for the Plasmic Studio platform itself.
+This includes all the frontend and backend code for the design tool/visual editor,
+as well as the backend code for the apps built in Plasmic.
+
+To get started, please see the [the getting started guide](docs/contributing/platform/00-getting-started.md).
+
 ## Contributing to `plasmicpkgs` or SDKs
 
 ### Getting started
 
 ```
+yarn
 yarn lerna bootstrap  # inter-links all the lerna-managed packages together
 ```
 
@@ -258,6 +266,7 @@ Checklist to test:
 
 - Does your component behave well in the Studio in **both** editing and live preview modes?
 - Do _all_ of the props and slots work correctly?
+- Have component tests been added to loader-tests to ensure that it works?
 
 Remember that your package will be used by a wide variety of users, so it's important to have easy-to-use components, with good descriptions.
 
@@ -266,11 +275,3 @@ Testing codegen ensures your import paths are correct.
 
 - [Codegen guide](https://docs.plasmic.app/learn/codegen-guide/)
 - [Next.js loader guide](https://docs.plasmic.app/learn/nextjs-quickstart/)
-
-[//]: # (## Contributing to Plasmic Studio platform)
-
-[//]: # ()
-[//]: # (In `app/` is the code for the Plasmic Studio platform itself.)
-
-[//]: # ()
-[//]: # (To get started, please see [the development guide]&#40;studio/doc/dev-setup.md&#41;.)

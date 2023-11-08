@@ -1,7 +1,7 @@
 <!-- AUTO-GENERATED-CONTENT:START (STARTER) -->
 <p align="center">
   <a href="https://www.plasmic.app">
-    <img alt="Plasmic" role="img" src="https://cdn-images-1.medium.com/max/176/1*D1nV2o_le9dJEO3G80P4xg@2x.png" width="120">
+    <img alt="Plasmic" role="img" src="https://static1.plasmic.app/brand/2023/logo-cropped.png" width="120">
   </a>
 </p>
 <h1 align="center">
@@ -12,7 +12,11 @@
 </h3>
 <p align="center">
   Build beautiful apps and websites incredibly fast.
+</p>
+<p align="center">
   Drag and drop your own components, integrate with your codebase.
+</p>
+<p align="center">
   Break through the no-code ceiling.
 </p>
 
@@ -51,40 +55,51 @@
 
 Plasmic is a visual builder for the web.
 
-You can use it to build web apps and websites, and you can use it as a visual content management system.
+It enables rapidly designing and building applications and websites--code optional.
 
-It lets anyone, regardless of coding background, design and build rapidly--code optional.
+Main use cases:
 
-At the same time, it is powerful, with a deep feature set that scales to complex projects.
+- Applications: for developers and technical users to quickly build internal tools, client portals, and business applications
+- Content management: let marketing drag/drop your React components to build landing pages in your Next.js website, with design guardrails
+- Website builder and design tool that doesn’t limit you to the built-in ecommerce platform, CMS, hosting, or database
+
+Plasmic is powerful, with a deep feature set that scales to complex projects.
 And with codebase integration, it removes the ceiling typically associated with low-code tools.
 
-Some highlights of what Plasmic provides:
+## What makes Plasmic special?
+
+Plasmic combines some seemingly disparate genres:
+
+- Webflow, Wordpress and other site builders
+- Retool and other tool builders
+- Glide and no-code app builders
+- Contentful and other CMSes
+
+Today these are different tools to specialize in, but the line between say a website and an application is blurry (consider an ecommerce storefront with user logins). With the right foundations, we think these can be unified—Plasmic’s UI can adapt to different levels of control for different personas/tasks.
+
+But more importantly, unlike existing tools, Plasmic integrates with codebases. This is critical to making low-code scale past the complexity ceiling that all such tools (including Plasmic) have. You can drag and drop existing complex React components, and you can create new UIs/components within traditionally-coded applications, seamlessly weaving code and no-code.
+
+Some feature highlights:
 
 - **Full design freedom** and speedy modern design tool UX.
-- Create **rich interactions and behavior**.
+- **Integrate with codebases** to drag/drop existing React components, publish screens into existing applications, and extend/customize Plasmic Studio.
+- Create **rich stateful interactions and behavior**.
 - Connect with **arbitrary data source and backend integrations**.
-- **Content creator mode**: give specific collaborators a more simplified and restricted editing experience.
-- Deep collaboration with multiplayer, branching, cross-project imports, and multi-workspace organizations.
-- **Integrate with codebases** for unlimited flexibility and scale.
-- **Drag/drop and visually manipulate your own React components**—design systems, interactions, data, behavior, and more. Extend and customize Studio with custom controls.
-- **Import designs from Figma**, translating its proprietary vector document format into DOM/CSS.
 - **Powerful abstractions** like components, variants, slots, composable state management, and more that promote composition and let you build and maintain at scale.
-- **High-performance and high-quality codegen**. Supports static site generation, automatic image optimization, layout shift reduction, and more.
-- **Customizable design system components**. Powered by [react-aria](https://react-spectrum.adobe.com/react-aria/). Most component libraries give you variables to tweak, but here you can completely change the structure and layout.
-- Deploy/host/export anywhere
-- End-user auth and permissions
-- **Versatility in use cases**. The line between websites and web apps can be blurry.
+- **Customizable headless design system components** powered by [react-aria](https://react-spectrum.adobe.com/react-aria/).
+- **Content creator mode**: give specific collaborators a more simplified editing experience with design guardrails.
+- **Open integrations**: choose your own CMS, ecommerce platform, hosting provider, and more.
+- Deep collaboration with multiplayer, branching, cross-project imports, and multi-workspace organizations.
+- **Import designs from Figma**, translating its proprietary vector document format into DOM/CSS.
+- **Page performance and high-quality codegen**. Supports static site generation, automatic image optimization, layout shift reduction, and more.
+- **Deploy/host/export anywhere**, including Vercel, Netlify, or any hosting provider.
+- **End-user auth and permissions**, including RBAC and user-scoped permissions.
+- **Open-source platform** that you can always fork and control.
 
 Learn more on [our website][website] and [our docs][docs]. Or check out [comparisons of Plasmic vs other tools][comparisons].
 
 [website]: https://www.plasmic.app
 [comparisons]: https://docs.plasmic.app/learn/comparisons/
-
-## Get help and join our community
-
-Connect with the Plasmic team and with other Plasmic users on the [Plasmic Community Slack][slack].
-
-[slack]: https://www.plasmic.app/slack
 
 ## How do I integrate Plasmic as a CMS?
 
@@ -152,7 +167,7 @@ Check out the [Case Studies and Community Showcase][customers].
 
 <p align="center">
   <a href="https://www.plasmic.app/casestudies">
-    <img alt="Customer logos" src="https://user-images.githubusercontent.com/7129/139349783-70fc4289-ea1a-4ca2-bff1-400c8b367c17.png">
+    <img alt="Customer logos" width="1106"  src="https://github.com/plasmicapp/plasmic/assets/7129/2c682d45-6b72-4571-895a-e48b0c588647">
   </a>
 </p>
 
@@ -219,6 +234,12 @@ Feel free to join our [Slack Community][slack] and ask us anything! We're here t
 All content outside of `platform/` is licensed under the MIT license--see LICENSE.md.
 
 `platform/` is licensed under the AGPL--see LICENSE.platform.md.
+
+## Get help and join our community
+
+Connect with the Plasmic team and with other Plasmic users on the [Plasmic Community Slack][slack].
+
+[slack]: https://www.plasmic.app/slack
 
 ## Contributors ❤️
 
