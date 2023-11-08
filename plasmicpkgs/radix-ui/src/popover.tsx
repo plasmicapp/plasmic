@@ -12,6 +12,7 @@ import {
   popoverProps,
   prefixClasses,
   splitAnimProps,
+  unwrapSingleFragment,
 } from "./util";
 
 export function Popover({
@@ -54,7 +55,7 @@ export function Popover({
         >
           {trigger ? (
             <PopoverPrimitive.Trigger asChild>
-              {children}
+              {unwrapSingleFragment(children)}
             </PopoverPrimitive.Trigger>
           ) : (
             <PopoverPrimitive.Anchor asChild>
@@ -112,6 +113,10 @@ export function registerPopover(PLASMIC?: Registerable) {
         type: "boolean",
         displayName: "Trigger on click",
         defaultValueHint: true,
+        description:
+          `Instead of automatically showing the popover on click, ` +
+          `you can toggle the popover's "open" state from any interaction. ` +
+          `This enables more custom control over when it is shown.`,
         advanced: true,
       },
       ...popoverProps,
