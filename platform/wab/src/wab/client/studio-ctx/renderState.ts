@@ -1,5 +1,9 @@
-import { maxBy } from "lodash";
-import { TplNode } from "../../classes";
+import { TplNode } from "@/wab/classes";
+import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
+import { getRealClassNames } from "@/wab/client/components/canvas/styles-name";
+import { SubDeps } from "@/wab/client/components/canvas/subdeps";
+import { Fiber } from "@/wab/client/react-global-hook/fiber";
+import { globalHookCtx } from "@/wab/client/react-global-hook/globalHook";
 import {
   asArray,
   assert,
@@ -8,16 +12,12 @@ import {
   removeWhere,
   withoutNils,
   xSetDefault,
-} from "../../common";
-import { $ } from "../../deps";
-import { Selectable } from "../../selection";
-import { makeSlotSelectionKey, SlotSelection } from "../../slots";
-import { cloneValNode, ValComponent, ValNode, ValSlot } from "../../val-nodes";
-import { CanvasCtx } from "../components/canvas/canvas-ctx";
-import { getRealClassNames } from "../components/canvas/styles-name";
-import { SubDeps } from "../components/canvas/subdeps";
-import { Fiber } from "../react-global-hook/fiber";
-import { globalHookCtx } from "../react-global-hook/globalHook";
+} from "@/wab/common";
+import { $ } from "@/wab/deps";
+import { Selectable } from "@/wab/selection";
+import { makeSlotSelectionKey, SlotSelection } from "@/wab/slots";
+import { cloneValNode, ValComponent, ValNode, ValSlot } from "@/wab/val-nodes";
+import { maxBy } from "lodash";
 
 // We only export the `RenderState` as a type
 class RenderStateImpl {
@@ -215,7 +215,8 @@ class RenderStateImpl {
       return maybeFiber
         ? withoutNils(
             [...getDomNodesFromFiber(maybeFiber, win, cctx.Sub, false)].filter(
-              (v) => !(v instanceof win.Text)
+              (v) =>
+                v && !(v instanceof win.Text) && shouldAcceptAsMappedDomNode(v)
             ) as HTMLElement[]
           )
         : null;
@@ -267,7 +268,10 @@ class RenderStateImpl {
           withoutNils(
             fibers.flatMap((fiber) =>
               [...getDomNodesFromFiber(fiber, win, cctx.Sub, false)].filter(
-                (v): v is HTMLElement | null => !(v instanceof win.Text)
+                (v): v is HTMLElement =>
+                  !!v &&
+                  !(v instanceof win.Text) &&
+                  shouldAcceptAsMappedDomNode(v)
               )
             )
           )
@@ -409,11 +413,11 @@ export function getRenderState(frameUid: number): RenderState {
 
 // Traverses the fiber tree starting from `fiber` to gather the DOM nodes it
 // renders to.
-export function* getDomNodesFromFiber(
+function* getDomNodesFromFiber(
   fiber: Fiber,
   win: typeof window,
   sub: SubDeps,
-  visitSiblings: boolean = true
+  visitSiblings = true
 ): Generator<HTMLElement | Text | null> {
   if (
     fiber.stateNode != null &&
@@ -429,4 +433,21 @@ export function* getDomNodesFromFiber(
   if (visitSiblings && fiber.sibling) {
     yield* getDomNodesFromFiber(fiber.sibling, win, sub);
   }
+}
+
+/**
+ * Returns true if the argument `element` can be used as a DOM element
+ * mapped from val nodes. Gives us an opportunity to filter out DOM elements
+ * that we don't want considered in the HoverBox boundary, etc.
+ */
+function shouldAcceptAsMappedDomNode(element: HTMLElement) {
+  if (!element.isConnected) {
+    return false;
+  }
+  if (element.style.clip === "rect(0px, 0px, 0px, 0px)") {
+    // react-aria <HiddenSelect/>, etc, which is rendered for accesssibility
+    // but is absolutely positioned
+    return false;
+  }
+  return true;
 }
