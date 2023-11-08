@@ -1203,8 +1203,8 @@ function showClassPropRuleSets(
         selector = `:self${selector}`;
       }
       selector = selector
-        .replace(":component", `.${rootClassName}`)
-        .replace(":self", baseClassRule);
+        .replaceAll(":component", `.${rootClassName}`)
+        .replaceAll(":self", baseClassRule);
       for (const scope of customScopes) {
         selector = selector.replace(
           `:${scope}`,
