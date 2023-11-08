@@ -47,46 +47,46 @@ function AddDrawerItem(props: AddDrawerItemProps) {
   } = props;
   const displayLabel = item.displayLabel ?? item.label;
   return (
-    <PlasmicAddDrawerItem
-      root={{
-        props: {
-          "data-plasmic-class": "AddDrawerItem",
-          "data-drawer-item-name": item.label,
-        } as any,
-      }}
-      showPreviewImage={showPreviewImage}
-      previewImage={
-        <ImagePreview
-          uri={item.type === "frame" ? item.addDrawerPreviewImage : ""}
-        />
-      }
-      listItem={{
-        style: {
-          paddingLeft: indent * 20,
-        },
-      }}
-      className="no-select"
-      icon={item.icon}
-      isHighlighted={isHighlighted}
-      actions={
-        isTplAddItem(item) ? (
-          <InsertActions
-            studioCtx={studioCtx}
-            item={item}
-            onInserted={onInserted}
-            validTplLocs={validTplLocs}
+    <Tooltip title={item.description}>
+      <PlasmicAddDrawerItem
+        root={{
+          props: {
+            "data-plasmic-class": "AddDrawerItem",
+            "data-drawer-item-name": item.label,
+          } as any,
+        }}
+        showPreviewImage={showPreviewImage}
+        previewImage={
+          <ImagePreview
+            uri={item.type === "frame" ? item.addDrawerPreviewImage : ""}
           />
-        ) : null
-      }
-    >
-      <Tooltip title={item.description}>
+        }
+        listItem={{
+          style: {
+            paddingLeft: indent * 20,
+          },
+        }}
+        className="no-select"
+        icon={item.icon}
+        isHighlighted={isHighlighted}
+        actions={
+          isTplAddItem(item) ? (
+            <InsertActions
+              studioCtx={studioCtx}
+              item={item}
+              onInserted={onInserted}
+              validTplLocs={validTplLocs}
+            />
+          ) : null
+        }
+      >
         {item.monospaced ? (
           <code>{displayLabel}</code>
         ) : (
           <>{matcher ? matcher.boldSnippets(displayLabel) : displayLabel}</>
         )}
-      </Tooltip>
-    </PlasmicAddDrawerItem>
+      </PlasmicAddDrawerItem>
+    </Tooltip>
   );
 }
 
