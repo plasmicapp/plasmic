@@ -3218,10 +3218,10 @@
     "@types/dlv" "^1.1.2"
     dlv "^1.1.3"
 
-"@plasmicpkgs/radix-ui@^0.0.27":
-  version "0.0.27"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/radix-ui/-/radix-ui-0.0.27.tgz#195fd20c9cadbb889e85cf68fa68ef9fa8b41a23"
-  integrity sha512-soFUSUoZiyHzlgokHb4bOouDp8yvQ8dIjKiOfgd95bpizfUBiALk4D6NPDh9XvYBM4fR82PW361oRq4IfEWLgQ==
+"@plasmicpkgs/radix-ui@^0.0.28":
+  version "0.0.28"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/radix-ui/-/radix-ui-0.0.28.tgz#9134f70f6eb99efa33732500f4554a0de539cf56"
+  integrity sha512-7RiywP1DJviULgRGTV+S9RvpU/AEClbGvEtleEfT9AMLPczq4idBYRxdszFjzPNM52slpR7e2raJ9AzG0YKCMQ==
   dependencies:
     "@radix-ui/react-context-menu" "^2.1.4"
     "@radix-ui/react-dialog" "^1.0.4"
