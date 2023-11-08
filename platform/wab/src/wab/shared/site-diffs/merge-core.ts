@@ -1404,12 +1404,19 @@ export function getDirectConflicts(
               }
             }
           }
-        } else if (mergedInst)
+        } else if (mergedInst && leftInst) {
+          // Ensure both the ancestor/merged and the updated side exist.
+          // This is because getInstUpdates continues walking the tree even if one side doesn't have a correpsonding match.
+          // Don't do anything if either side is missing, since that means the ancestor didn't exist and this was a new node
+          // (thus there's no mergedInst to update),
+          // or else the ancestor existed but was deleted in the branch
+          // (in which case we don't want to overwrite all the mergedInst fields with undefined--will mess with deletion cascading!).
           mergedInst[field.name] = cloneFieldValue(
             field,
             leftVal,
             leftCtx.site
           );
+        }
       });
       if (conflict.conflictDetails.length > 0) {
         conflicts.push(conflict);

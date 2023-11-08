@@ -2348,6 +2348,63 @@ describe("merging", () => {
       // Should not care about reordering for order-insensitive
     });
 
+    it("handle mergeKeys deleted in both branches", () => {
+      res = testMerge({
+        ancestorSite: (() => {
+          const site = basicSite();
+          const cmp = ensure(
+            site.components.find((c) => c.name === "Button"),
+            () => `Component "Button" not found`
+          );
+          cmp.tplTree.vsettings.push(
+            mkVariantSetting({
+              variants: [
+                cmp.variantGroups[0].variants[0],
+                cmp.variantGroups[0].variants[1],
+              ],
+              attrs: {
+                foo: codeLit(10),
+              },
+            })
+          );
+          return site;
+        })(),
+        a: (site) => {
+          const cmp = ensure(
+            site.components.find((c) => c.name === "Button"),
+            () => `Component "Button" not found`
+          );
+          removeVariantGroup(site, cmp, cmp.variantGroups[0]);
+        },
+        b: (site) => {
+          const cmp = ensure(
+            site.components.find((c) => c.name === "Button"),
+            () => `Component "Button" not found`
+          );
+          cmp.tplTree.vsettings.push(
+            mkVariantSetting({
+              variants: [cmp.variantGroups[1].variants[0]],
+              attrs: {
+                foo: codeLit(2),
+              },
+            })
+          );
+          removeVariantGroup(site, cmp, cmp.variantGroups[0]);
+        },
+      });
+      expect(res).toMatchObject({
+        status: "merged",
+      });
+      const cmp = ensure(
+        res.mergedSite.components.find((c) => c.name === "Button"),
+        () => `Component "Button" not found`
+      );
+      expect(cmp.tplTree.vsettings.length).toBe(2);
+      expect(
+        ensureKnownCustomCode(cmp.tplTree.vsettings[1].attrs["foo"]).code
+      ).toBe("2");
+    });
+
     it("mergeKeyFn returns correct value", () => {
       const baseSite = basicSite();
       baseSite.components[0].dataQueries.push(
