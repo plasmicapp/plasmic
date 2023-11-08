@@ -21,7 +21,6 @@
     "build": "yarn build:types && yarn build:index",
     "build:types": "yarn tsc",
     "build:index": "node ../../build.mjs ./src/index.ts",
-    "postbuild": "node ../../print-module-api.js ./packages/loader-fetcher/dist/index.js > index-api.txt",
     "yalcp": "yalc publish --push",
     "test": "yarn --cwd=../.. test",
     "lint": "eslint",

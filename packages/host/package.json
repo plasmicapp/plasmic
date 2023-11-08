@@ -36,13 +36,6 @@
   ],
   "scripts": {
     "build": "./update_version.sh && rollup -c",
-    "postbuild": "yarn postbuild:default && yarn postbuild:registerComponent && yarn postbuild:registerFunction && yarn postbuild:registerGlobalContext && yarn postbuild:registerToken && yarn postbuild:registerTrait",
-    "postbuild:default": "node ../../print-module-api.js ./packages/host/dist/index.cjs.js > index-api.txt",
-    "postbuild:registerComponent": "node ../../print-module-api.js ./packages/host/registerComponent/dist/index.cjs.js > registerComponent-api.txt",
-    "postbuild:registerFunction": "node ../../print-module-api.js ./packages/host/registerFunction/dist/index.cjs.js > registerFunction-api.txt",
-    "postbuild:registerGlobalContext": "node ../../print-module-api.js ./packages/host/registerGlobalContext/dist/index.cjs.js > registerGlobalContext-api.txt",
-    "postbuild:registerToken": "node ../../print-module-api.js ./packages/host/registerToken/dist/index.cjs.js > registerToken-api.txt",
-    "postbuild:registerTrait": "node ../../print-module-api.js ./packages/host/registerTrait/dist/index.cjs.js > registerTrait-api.txt",
     "test": "yarn --cwd=../.. test --passWithNoTests",
     "lint": "eslint",
     "prepublishOnly": "npm run build",

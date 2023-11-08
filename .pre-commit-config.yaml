@@ -19,8 +19,8 @@ repos:
     hooks:
       - id: prettier
         name: Run prettier on code written by humans
-        files: ^.*\.(js|jsx|ts|tsx|json|css|scss|md|toml|xml)$
-        exclude: (^.*/(plasmic|deps|static|\.yalc)/.*$|.md$)|(^loader-tests/data/.*\.json$)|examples/hydrogen-.*
+        files: ^.*\.(js|jsx|cjs|mjs|ts|tsx|cts|mts|json|css|scss|md|toml|xml)$
+        exclude: (^.*/(plasmic|deps|static|\.yalc)/.*$)|(^loader-tests/data/.*\.json$)|(examples/hydrogen-.*)|(api/.*\.md$)
         env:
           NODE_OPTIONS: "--max-old-space-size=4096"
         additional_dependencies:

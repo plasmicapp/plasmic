@@ -1,3 +1,4 @@
+export { Api, PlasmicModulesFetcher } from "@plasmicapp/loader-fetcher";
 export type {
   AssetModule,
   CodeModule,
@@ -14,7 +15,6 @@ export type {
   SegmentSlice,
   Split,
 } from "@plasmicapp/loader-fetcher";
-export { Api, PlasmicModulesFetcher } from "@plasmicapp/loader-fetcher";
 export { getBundleSubset } from "./bundles";
 export { Registry } from "./registry";
 export { PlasmicTracker } from "./tracker";

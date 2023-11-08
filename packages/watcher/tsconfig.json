@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.types.json",
   "include": ["./src"],
   "compilerOptions": {
-    "outDir": "./dist",
+    "outDir": "./api/tsc",
     "module": "ESNext",
     "moduleResolution": "bundler"
   }

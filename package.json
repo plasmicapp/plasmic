@@ -31,6 +31,7 @@
     "upgrade-internal": "bash scripts/upgrade-internal.bash"
   },
   "devDependencies": {
+    "@microsoft/api-extractor": "7.38.2",
     "@size-limit/preset-small-lib": "8.2.4",
     "@typescript-eslint/eslint-plugin": "5.59.0",
     "@typescript-eslint/parser": "5.59.0",
