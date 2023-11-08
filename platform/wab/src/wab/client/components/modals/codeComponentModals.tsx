@@ -781,9 +781,9 @@ export function notifyCodeLibraryInsertion(
         message: (
           <>
             <code>{name}</code> library installed. You can now call functions in
-            this package from any code snippet with:
+            this package from any code snippet with (replace "FUNCTION"):
             <br />
-            <code lang="javascript">$$.{jsIdentifier}.function()</code>
+            <code lang="javascript">$$.{jsIdentifier}.FUNCTION()</code>
           </>
         ),
         ...commonOpts,
