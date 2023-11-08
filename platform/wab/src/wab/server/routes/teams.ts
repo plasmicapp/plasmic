@@ -439,14 +439,14 @@ export async function purgeUsersFromTeam(req: Request, res: Response) {
   const workspaces = await mgr.getWorkspacesByTeams([teamId]);
   const workspaceIds = workspaces.map((w) => w.id);
   for (const wid of workspaceIds) {
-    await mgr.revokeWorkspacePermissionsByEmails(wid, emails);
+    await mgr.revokeWorkspacePermissionsByEmails(wid, emails, true);
   }
 
   // Remove project permissions
   const projects = await mgr.getProjectsByWorkspaces(workspaceIds);
   const projectIds = projects.map((p) => p.id);
   for (const pid of projectIds) {
-    await mgr.revokeProjectPermissionsByEmails(pid, emails);
+    await mgr.revokeProjectPermissionsByEmails(pid, emails, true);
   }
 
   res.json({});

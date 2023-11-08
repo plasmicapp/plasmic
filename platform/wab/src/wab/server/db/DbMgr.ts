@@ -2175,11 +2175,13 @@ export class DbMgr implements MigrationDbMgr {
 
   async revokeWorkspacePermissionsByEmails(
     workspaceId: WorkspaceId,
-    emails: string[]
+    emails: string[],
+    ignoreOwnerCheck?: boolean
   ) {
     return this.revokeResourcePermissionsByEmail(
       { type: "workspace", id: workspaceId },
-      emails
+      emails,
+      ignoreOwnerCheck
     );
   }
 
@@ -5235,16 +5237,22 @@ export class DbMgr implements MigrationDbMgr {
       .getMany();
   }
 
-  async revokeProjectPermissionsByEmails(projectId: string, emails: string[]) {
+  async revokeProjectPermissionsByEmails(
+    projectId: string,
+    emails: string[],
+    ignoreOwnerCheck?: boolean
+  ) {
     await this.revokeResourcePermissionsByEmail(
       { type: "project", id: projectId },
-      emails
+      emails,
+      ignoreOwnerCheck
     );
   }
 
   async revokeResourcePermissionsByEmail(
     taggedResourceId: TaggedResourceId,
-    emails: string[]
+    emails: string[],
+    ignoreOwnerCheck?: boolean
   ) {
     await this._checkResourcePerms(
       taggedResourceId,
@@ -5261,8 +5269,9 @@ export class DbMgr implements MigrationDbMgr {
         (perm.user && emailSet.has(perm.user.email.toLowerCase())) ||
         (perm.email && emailSet.has(perm.email.toLowerCase()))
       ) {
-        // Don't allow revoking owner permission
-        if (perm.accessLevel === "owner") {
+        // If `ignoreOwnerCheck` is not set, don't allow revoking owner
+        // permission.
+        if (!ignoreOwnerCheck && perm.accessLevel === "owner") {
           throw new BadRequestError("Cannot revoke permission from owner");
         }
         mergeSane(perm, this.stampDelete());
