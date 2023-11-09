@@ -1,4 +1,5 @@
 import { usePlasmicDataSourceContext } from "@plasmicapp/data-sources-context";
+import * as plasmicQuery from "@plasmicapp/query";
 import React from "react";
 
 // https://stackoverflow.com/a/2117523
@@ -107,6 +108,13 @@ export function PlasmicPageGuard(props: PlasmicPageGuardProps) {
       return false;
     }
     return dataSourceCtxValue.user.roleIds.includes(minRole);
+  }
+
+  // If we are in prepass, PlasmicPageGuard should not render anything
+  // it's expected that pages are only equipped with PlasmicPageGuard
+  // when it's known that it will disable prepass/prefetching
+  if (plasmicQuery.isPlasmicPrepass?.()) {
+    return null;
   }
 
   /*
