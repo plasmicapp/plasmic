@@ -176,6 +176,8 @@ export class InternalPlasmicComponentLoader {
     // (undocumented)
     registerComponent<T extends React_2.ComponentType<any>>(component: T, meta: CodeComponentMeta<React_2.ComponentProps<T>>): void;
     // (undocumented)
+    registerFunction<F extends (...args: any[]) => any>(fn: F, meta: CustomFunctionMeta<F>): void;
+    // (undocumented)
     registerGlobalContext<T extends React_2.ComponentType<any>>(context: T, meta: GlobalContextMeta<React_2.ComponentProps<T>>): void;
     // (undocumented)
     registerModules(modules: Record<string, any>): void;
@@ -195,8 +197,6 @@ export class InternalPlasmicComponentLoader {
     trackConversion(value?: number): void;
     // (undocumented)
     trackRender(opts?: TrackRenderOptions): void;
-    // (undocumented)
-    unstable_registerFunction<F extends (...args: any[]) => any>(fn: F, meta: CustomFunctionMeta<F>): void;
     // (undocumented)
     unsubscribePlasmicRoot(watcher: PlasmicRootWatcher): void;
 }
@@ -251,6 +251,8 @@ export class PlasmicComponentLoader {
     registerComponent<T extends React_2.ComponentType<any>>(component: T, meta: CodeComponentMeta<React_2.ComponentProps<T>>): void;
     registerComponent<T extends React_2.ComponentType<any>>(component: T, name: ComponentLookupSpec): void;
     // (undocumented)
+    registerFunction<F extends (...args: any[]) => any>(fn: F, meta: CustomFunctionMeta<F>): void;
+    // (undocumented)
     registerGlobalContext<T extends React_2.ComponentType<any>>(context: T, meta: GlobalContextMeta<React_2.ComponentProps<T>>): void;
     // (undocumented)
     registerModules(modules: Record<string, any>): void;
@@ -262,8 +264,6 @@ export class PlasmicComponentLoader {
     substituteComponent<P>(component: React_2.ComponentType<P>, name: ComponentLookupSpec): void;
     // (undocumented)
     trackConversion(value?: number): void;
-    // (undocumented)
-    unstable_registerFunction<F extends (...args: any[]) => any>(fn: F, meta: CustomFunctionMeta<F>): void;
 }
 
 export { plasmicPrepass }

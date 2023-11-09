@@ -26,7 +26,7 @@ export {
 export {
   CustomFunctionMeta,
   CustomFunctionRegistration,
-  default as unstable_registerFunction,
+  default as registerFunction,
   ParamType,
 } from "./registerFunction";
 export {

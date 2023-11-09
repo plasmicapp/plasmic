@@ -169,9 +169,10 @@ if (root.__PlasmicFunctionsRegistry == null) {
   root.__PlasmicFunctionsRegistry = [];
 }
 
-export default function unstable_registerFunction<
-  F extends (...args: any[]) => any
->(fn: F, meta: CustomFunctionMeta<F>) {
+export default function registerFunction<F extends (...args: any[]) => any>(
+  fn: F,
+  meta: CustomFunctionMeta<F>
+) {
   // Check for duplicates
   if (
     root.__PlasmicFunctionsRegistry.some(

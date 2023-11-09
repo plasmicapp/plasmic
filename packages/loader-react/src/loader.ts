@@ -8,6 +8,7 @@ import {
   GlobalContextMeta as InternalGlobalContextMeta,
   // eslint-disable-next-line no-restricted-imports
   registerComponent,
+  registerFunction,
   registerGlobalContext,
   registerToken,
   registerTrait,
@@ -16,7 +17,6 @@ import {
   StateSpec,
   TokenRegistration,
   TraitMeta,
-  unstable_registerFunction,
 } from "@plasmicapp/host";
 import {
   ComponentMeta,
@@ -274,11 +274,11 @@ export class InternalPlasmicComponentLoader {
     });
   }
 
-  unstable_registerFunction<F extends (...args: any[]) => any>(
+  registerFunction<F extends (...args: any[]) => any>(
     fn: F,
     meta: CustomFunctionMeta<F>
   ) {
-    unstable_registerFunction(fn, {
+    registerFunction(fn, {
       ...meta,
       importPath: meta.importPath ?? "",
     });
@@ -530,11 +530,11 @@ export class PlasmicComponentLoader {
   }
   private warnedRegisterComponent = false;
 
-  unstable_registerFunction<F extends (...args: any[]) => any>(
+  registerFunction<F extends (...args: any[]) => any>(
     fn: F,
     meta: CustomFunctionMeta<F>
   ) {
-    this.__internal.unstable_registerFunction(fn, meta);
+    this.__internal.registerFunction(fn, meta);
   }
 
   registerGlobalContext<T extends React.ComponentType<any>>(
