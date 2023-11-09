@@ -85,6 +85,9 @@ export function useTextInput<
       getInput() {
         return inputRef.current;
       },
+      getBoundingClientRect() {
+        return rootRef.current?.getBoundingClientRect();
+      },
     }),
     [rootRef, inputRef]
   );
