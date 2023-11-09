@@ -12,7 +12,7 @@ import {
   popoverProps,
   prefixClasses,
   splitAnimProps,
-  unwrapSingleFragment,
+  wrapFragmentInDiv,
 } from "./util";
 
 export function Popover({
@@ -55,11 +55,11 @@ export function Popover({
         >
           {trigger ? (
             <PopoverPrimitive.Trigger asChild>
-              {unwrapSingleFragment(children)}
+              {wrapFragmentInDiv(children)}
             </PopoverPrimitive.Trigger>
           ) : (
             <PopoverPrimitive.Anchor asChild>
-              {children}
+              {wrapFragmentInDiv(children)}
             </PopoverPrimitive.Anchor>
           )}
           <PopoverPrimitive.Portal>

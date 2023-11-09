@@ -19,7 +19,7 @@ import {
   overlayStates,
   prefixClasses,
   splitAnimProps,
-  unwrapSingleFragment,
+  wrapFragmentInDiv,
 } from "./util";
 
 export const DialogClose = React.forwardRef<
@@ -187,7 +187,7 @@ export const Dialog = React.forwardRef<
       defaultOpen={defaultOpen}
     >
       <DialogPrimitive.Trigger asChild>
-        {unwrapSingleFragment(triggerSlot)}
+        {wrapFragmentInDiv(triggerSlot)}
       </DialogPrimitive.Trigger>
       {/*
       The main benefit of containing by default is that users can apply layout to position the dialog content easily, e.g. centered on the screen.

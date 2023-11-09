@@ -10,7 +10,7 @@ import {
   popoverProps,
   prefixClasses,
   splitAnimProps,
-  unwrapSingleFragment,
+  wrapFragmentInDiv,
 } from "./util";
 
 export const Tooltip = React.forwardRef<
@@ -61,7 +61,7 @@ export const Tooltip = React.forwardRef<
               }}
             >
               <TooltipPrimitive.Trigger asChild>
-                {unwrapSingleFragment(children)}
+                {wrapFragmentInDiv(children)}
               </TooltipPrimitive.Trigger>
               <TooltipPrimitive.Content
                 ref={ref}
