@@ -302,7 +302,7 @@ const isRegExp = (a: any) =>
   Object.prototype.toString.call(a) === "[object RegExp]";
 
 /**
- * Forked from https://github.com/jamesfoster/DeepEqual
+ * Forked from https://github.com/epoberezkin/fast-deep-equal/blob/master/src/index.jst
  * Changes: removed the comparison between constructors and instanceof objects
  * because they are dependent on the window object
  */
@@ -337,10 +337,10 @@ export function deepEqual(a: any, b: any) {
     // if (a.constructor === RegExp) return a.source === b.source && a.flags === b.flags;
     if (isRegExp(a) && isRegExp(b))
       return a.source === b.source && a.flags === b.flags;
-    if (a.valueOf !== Object.prototype.valueOf)
-      return a.valueOf() === b.valueOf();
-    if (a.toString !== Object.prototype.toString)
-      return a.toString() === b.toString();
+    // if (a.valueOf !== Object.prototype.valueOf)
+    //   return a.valueOf() === b.valueOf();
+    // if (a.toString !== Object.prototype.toString)
+    //   return a.toString() === b.toString();
 
     keys = Object.keys(a);
     length = keys.length;
