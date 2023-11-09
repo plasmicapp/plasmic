@@ -102,6 +102,18 @@ const COMMON_EVENT_HANDLERS = {
 
 export const inputComponentName = "plasmic-antd5-input";
 
+const inputTypeOptions = [
+  "text",
+  "password",
+  "number",
+  "date",
+  "datetime-local",
+  "time",
+  "email",
+  "tel",
+  "hidden",
+];
+
 export function registerInput(loader?: Registerable) {
   registerComponentHelper(loader, AntdInput, {
     name: inputComponentName,
@@ -123,17 +135,7 @@ export function registerInput(loader?: Registerable) {
       },
       type: {
         type: "choice",
-        options: [
-          "text",
-          "password",
-          "number",
-          "date",
-          "datetime-local",
-          "time",
-          "email",
-          "tel",
-          "hidden",
-        ],
+        options: inputTypeOptions,
         defaultValueHint: "text",
       },
       ...COMMON_ADVANCED_PROPS,
@@ -258,6 +260,13 @@ export function registerNumberInput(loader?: Registerable) {
       controls: {
         type: "boolean",
         displayName: "Show add/minus controls?",
+        advanced: true,
+      },
+      type: {
+        type: "choice",
+        options: inputTypeOptions,
+        displayName: "Input type",
+        defaultValue: "number",
         advanced: true,
       },
       ...COMMON_DECORATOR_PROPS,
