@@ -111,14 +111,12 @@ export function executeDataSourceOperationWithCurrentUserHandler(
         // In studio, we allow user to perform operations as user
         const { identifier: reqIdentifier } = req.body;
         const identifier = {
-          email:
-            reqIdentifier?.email && isString(reqIdentifier.email)
-              ? reqIdentifier.email
-              : undefined,
-          externalId:
-            reqIdentifier?.externalId && isString(reqIdentifier.externalId)
-              ? reqIdentifier.externalId
-              : undefined,
+          ...(reqIdentifier?.email && isString(reqIdentifier.email)
+            ? { email: reqIdentifier.email }
+            : {}),
+          ...(reqIdentifier?.externalId && isString(reqIdentifier.externalId)
+            ? { externalId: reqIdentifier.externalId }
+            : {}),
         };
         if (identifier.email || identifier.externalId) {
           const isAbleToExecuteAs =
@@ -139,7 +137,8 @@ export function executeDataSourceOperationWithCurrentUserHandler(
             req.con,
             mgr,
             userInfo.appId,
-            identifier
+            identifier,
+            authUsage.usesCurrentUserCustomProperties
           );
           const isAuthorized = await canCurrentUserExecuteOperation(
             mgr,

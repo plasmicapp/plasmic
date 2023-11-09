@@ -367,7 +367,8 @@ export async function buildFakeCurrentUser(
   dbCon: Connection,
   mgr: DbMgr,
   appId: string,
-  identifier: EndUserIdentifier | undefined
+  identifier: EndUserIdentifier | undefined,
+  includeCustomProperties = true
 ) {
   if (!identifier) {
     return {};
@@ -383,12 +384,9 @@ export async function buildFakeCurrentUser(
 
   const userRoles = roles.filter((r) => r.order <= userRole.order);
 
-  const extraProperties = await getCurrentUserDataProperties(
-    dbCon,
-    mgr,
-    appId,
-    identifier
-  );
+  const extraProperties = includeCustomProperties
+    ? await getCurrentUserDataProperties(dbCon, mgr, appId, identifier)
+    : {};
 
   return {
     email: identifier.email,
