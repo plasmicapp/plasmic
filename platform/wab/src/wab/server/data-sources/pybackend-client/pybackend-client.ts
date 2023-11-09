@@ -1,3 +1,10 @@
+import { ensure, ensureType, jsonClone, strictIdentity } from "@/wab/common";
+import jsonFetch from "@/wab/commons/json-fetch";
+import {
+  fillPagination,
+  Filters,
+  RawPagination,
+} from "@/wab/shared/data-sources-meta/data-sources";
 import { CrudSorting } from "@pankod/refine-core";
 import {
   DataSourceSchema,
@@ -5,13 +12,6 @@ import {
   Pagination,
   SingleRowResult,
 } from "@plasmicapp/data-sources";
-import { ensure, ensureType, jsonClone, strictIdentity } from "../../../common";
-import jsonFetch from "../../../commons/json-fetch";
-import {
-  fillPagination,
-  Filters,
-  RawPagination,
-} from "../../../shared/data-sources-meta/data-sources";
 
 export interface SelectOp {
   op: "select";

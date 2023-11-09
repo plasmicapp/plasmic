@@ -14,7 +14,7 @@ import { Connection } from "typeorm";
 import {
   SqlalchemyClient,
   SQLITE_TO_BUILDER_TYPE,
-} from "./pyintegrations-client/pyintegrations-client";
+} from "./pybackend-client/pybackend-client";
 
 export function makeGoogleSheetsFetcher(
   dbCon: Connection,
