@@ -765,12 +765,23 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
   const conflicts: DirectConflict[] = [];
   assertSameInstType(ancestor, left, right, merged);
 
-  if (
-    [left, right, merged].every((tpl) =>
-      arrayEq(
-        tplChildren(tpl).map((child) => child.uuid),
-        tplChildren(ancestor).map((child) => child.uuid)
+  const getNonVirtualArgUuids = (tpl: TplNode) =>
+    withoutNils(
+      tpl.vsettings[0].args.map((arg) =>
+        isKnownRenderExpr(arg.expr) && !isKnownVirtualRenderExpr(arg.expr)
+          ? arg.param.uuid
+          : null
       )
+    );
+
+  if (
+    [left, right, merged].every(
+      (tpl) =>
+        arrayEq(
+          tplChildren(tpl).map((child) => child.uuid),
+          tplChildren(ancestor).map((child) => child.uuid)
+        ) &&
+        arrayEq(getNonVirtualArgUuids(tpl), getNonVirtualArgUuids(ancestor))
     )
   ) {
     // No changes, early exit
@@ -1103,6 +1114,13 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
 
           setMergedSlotArg(merged, mergedParam, (mergedExpr) => {
             mergedExpr.tpl = [...mergedArgChildren];
+            if (isKnownVirtualRenderExpr(mergedExpr)) {
+              return new RenderExpr({
+                tpl: [...mergedExpr.tpl],
+              });
+            } else {
+              return mergedExpr;
+            }
           });
         });
       };
@@ -1201,6 +1219,7 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
                 )
               );
               mergedExpr.tpl = argTpls;
+              return mergedExpr;
             });
           });
       });
@@ -1457,14 +1476,14 @@ export function fixDuplicatedCodeComponents(mergedSite: Site) {
 function setMergedSlotArg(
   merged: TplComponent,
   mergedParam: Param,
-  setChildren: (expr: RenderExpr) => void
+  setChildren: (expr: RenderExpr) => RenderExpr
 ) {
   let mergedArg = $$$(merged).getSlotArgForParam(mergedParam);
-  const mergedExpr =
+  const mergedExpr = setChildren(
     mergedArg && isKnownRenderExpr(mergedArg.expr)
       ? mergedArg.expr
-      : new RenderExpr({ tpl: [] });
-  setChildren(mergedExpr);
+      : new RenderExpr({ tpl: [] })
+  );
   mergedExpr.tpl.forEach((child) => (child.parent = merged));
   if (!mergedArg) {
     mergedArg = new Arg({ expr: mergedExpr, param: mergedParam });

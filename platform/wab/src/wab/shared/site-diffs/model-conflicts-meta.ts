@@ -94,6 +94,10 @@ export type FieldConflictDescriptorMeta<
       conflictType: "special";
       handler: MergeSpecialFieldHandler<Cls>;
     }
+  | {
+      conflictType: "contents";
+      excludeFromClone: (v: Cls[P]) => boolean;
+    }
   | (Cls[P] extends Array<infer E>
       ?
           | { arrayType: "atomic" }
@@ -948,7 +952,13 @@ export const modelConflictsMeta: ModelConflictsMeta = {
     isMainContentSlot: "generic",
     isLocalizable: "generic",
   },
-  Arg: { expr: "contents", param: "generic" },
+  Arg: {
+    expr: {
+      conflictType: "contents",
+      excludeFromClone: (expr) => classes.isKnownRenderExpr(expr),
+    },
+    param: "generic",
+  },
   RenderExpr: {
     tpl: { conflictType: "special", handler: () => [] },
   },

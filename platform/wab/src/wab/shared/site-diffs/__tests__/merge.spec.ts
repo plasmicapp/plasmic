@@ -4826,4 +4826,94 @@ describe("merging", () => {
     expect(childText.text).toBe("w/");
     expect(childText.markers.length).toBe(0);
   });
+  it("Do not clone RenderExpr args", () => {
+    let tplToMoveUuid = "";
+    const result = testMerge({
+      ancestorSite: (() => {
+        const site = createSite();
+        const tplMgr = new TplMgr({ site });
+        const instantiatedComp = tplMgr.addComponent({
+          name: "InstantiatedComp",
+          type: ComponentType.Plain,
+        });
+        const slotParam = addSlotParam(site, instantiatedComp, "children");
+        const instantiatedBaseVariant = getBaseVariant(instantiatedComp);
+        const tplSlot = mkSlot(slotParam, [
+          mkTplTagX("div", {
+            name: "defaultContent",
+            baseVariant: instantiatedBaseVariant,
+            variants: [
+              mkVariantSetting({ variants: [instantiatedBaseVariant] }),
+            ],
+          }),
+        ]);
+        tplSlot.vsettings = [
+          mkVariantSetting({ variants: [instantiatedBaseVariant] }),
+        ];
+        $$$(instantiatedComp.tplTree).append(tplSlot);
+
+        const parentComp = tplMgr.addComponent({
+          name: "ParentComp",
+          type: ComponentType.Plain,
+        });
+        const parentCompBaseVariant = getBaseVariant(parentComp);
+
+        const tplComp = mkTplComponentX({
+          name: "tplComp",
+          baseVariant: parentCompBaseVariant,
+          component: instantiatedComp,
+        });
+        const tplToMove = mkTplTagX("div", {
+          name: "tplToMove",
+          baseVariant: parentCompBaseVariant,
+          variants: [mkVariantSetting({ variants: [parentCompBaseVariant] })],
+        });
+        tplToMoveUuid = tplToMove.uuid;
+        $$$(parentComp.tplTree).append(tplComp);
+        $$$(parentComp.tplTree).append(tplToMove);
+        fillVirtualSlotContents(tplMgr, tplComp);
+        return site;
+      })(),
+      a: () => {},
+      b: (site) => {
+        const parentComp = ensure(
+          site.components.find((c) => c.name === "ParentComp"),
+          () => `Component "ParentComp" not found`
+        );
+        const tplComp = ensure(
+          flattenTpls(parentComp.tplTree).find(
+            (tpl) => (tpl as any).name === "tplComp"
+          ),
+          () => `Couldn't find tpl "tplComp"`
+        );
+        const tplToMove = ensure(
+          flattenTpls(parentComp.tplTree).find(
+            (tpl) => (tpl as any).name === "tplToMove"
+          ),
+          () => `Couldn't find tpl "tplToMove"`
+        );
+        $$$(tplToMove).remove({ deep: false });
+        $$$(tplComp).append(tplToMove);
+      },
+    });
+    expect(result.status).toBe("merged");
+    const parentComp = ensure(
+      result.mergedSite.components.find((c) => c.name === "ParentComp"),
+      () => `Component "ParentComp" not found`
+    );
+    const tplComp = ensure(
+      flattenTpls(parentComp.tplTree).find(
+        (tpl) => (tpl as any).name === "tplComp"
+      ),
+      () => `Couldn't find tpl "tplComp"`
+    );
+    const tplToMove = ensure(
+      flattenTpls(parentComp.tplTree).find(
+        (tpl) => (tpl as any).name === "tplToMove"
+      ),
+      () => `Couldn't find tpl "tplToMove"`
+    );
+    expect(tplToMove.parent).toBe(tplComp);
+    expect(tplToMove.uuid).toBe(tplToMoveUuid);
+  });
 });

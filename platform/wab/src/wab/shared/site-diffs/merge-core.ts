@@ -25,6 +25,7 @@ import {
   isLiteralObject,
   isPrimitive,
   maybe,
+  mkShortId,
   pathGet,
   sortBy,
   strictZip,
@@ -178,6 +179,26 @@ export type MergeDirectConflict = {
 
 export type MergeStep = MergeAuto | MergeDirectConflict;
 
+function isContentsConflictType(fm: FieldConflictDescriptorMeta) {
+  return (
+    fm === "contents" ||
+    (typeof fm === "object" &&
+      "conflictType" in fm &&
+      fm.conflictType === "contents") ||
+    (typeof fm === "object" && "contents" in fm && fm.contents)
+  );
+}
+
+function shouldCloneContents(fm: FieldConflictDescriptorMeta, fieldValue: any) {
+  const shouldExclude = () =>
+    typeof fm === "object" &&
+    "conflictType" in fm &&
+    fm.conflictType === "contents" &&
+    fm.excludeFromClone(fieldValue);
+
+  return isContentsConflictType(fm) && !shouldExclude();
+}
+
 function valueChanged(
   v1: any,
   v2: any,
@@ -264,12 +285,7 @@ function valueChanged(
     if (bundler.addrOf(v1).iid === bundler.addrOf(v2).iid) {
       return false;
     }
-    if (
-      fieldMeta === "contents" ||
-      (typeof fieldMeta === "object" &&
-        "contents" in fieldMeta &&
-        fieldMeta.contents)
-    ) {
+    if (isContentsConflictType(fieldMeta)) {
       if (deep) {
         for (const field of meta.allFields(cls)) {
           const nextFieldMeta = modelConflictsMeta[cls.name][field.name];
@@ -391,6 +407,10 @@ function cloneContents(value: any, bundler: Bundler, siteUuid: string) {
       inst2clone.set(v, cloned);
       instUtil.allInstFields(v).forEach((f) => {
         cloned[f.name] = rec(v[f.name], isWeakRefField(f));
+        if (f.name === "uuid") {
+          // Avoid duplicate uuids
+          cloned[f.name] = mkShortId();
+        }
       });
       generateIidForInst(cloned, bundler, siteUuid);
       return cloned;
@@ -407,13 +427,7 @@ function handleUpdatedValue<T>(
   parentInst: ObjInst,
   bundler: Bundler
 ): T {
-  if (
-    fieldMeta === "contents" ||
-    (fieldMeta &&
-      typeof fieldMeta === "object" &&
-      "contents" in fieldMeta &&
-      fieldMeta.contents)
-  ) {
+  if (shouldCloneContents(fieldMeta, updatedValue)) {
     // Whenever a field marked as "contents" changes, we deep clone its values.
     return cloneContents(
       updatedValue,
@@ -1777,12 +1791,7 @@ function fixDuplicatedContentFields(
         continue;
       }
       const fieldMeta = modelConflictsMeta[cls.name][field.name];
-      if (
-        fieldMeta === "contents" ||
-        (typeof fieldMeta === "object" &&
-          "contents" in fieldMeta &&
-          fieldMeta.contents)
-      ) {
+      if (shouldCloneContents(fieldMeta, node[field.name])) {
         let hasInvalidChild = false;
         const checkInvalidInsts = (child: ObjInst) => {
           if (
