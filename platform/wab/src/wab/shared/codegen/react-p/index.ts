@@ -3316,7 +3316,7 @@ export function serializeTplComponentBase(
     if (attrs[classNameProp]) {
       attrs[
         classNameProp
-      ] = `${attrs.className} + ${serializedAppicableClassName}`;
+      ] = `${attrs.className} + " " + ${serializedAppicableClassName}`;
     } else {
       attrs[classNameProp] = serializedAppicableClassName;
     }

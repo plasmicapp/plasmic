@@ -46,13 +46,13 @@ test.describe(`Plasmic Radix UI Dialog`, async () => {
       test(`works`, async ({ page }) => {
         await page.goto(`${ctx.host}/dialog-test`);
 
-        assertions(page, false);
+        await assertions(page, false);
 
         await page.locator(`text="Show dialog"`).click();
-        assertions(page, true);
+        await assertions(page, true);
 
         await page.locator(`[role="dialog"] svg`).click();
-        assertions(page, false);
+        await assertions(page, false);
       });
     });
   }
