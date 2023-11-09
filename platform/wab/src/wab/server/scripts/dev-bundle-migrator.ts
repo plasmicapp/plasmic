@@ -25,6 +25,7 @@ const paths = [
   "src/wab/shared/codegen/__tests__/bundles/people-list-implicit-states.json",
   "src/wab/server/pkgs/plume-master-pkg.json",
   "cypress/bundles/state-management.json",
+  "cypress/bundles/code-libs.json",
   "cypress/bundles/prop-editors.json",
   "cypress/bundles/tutorial-app.json",
   "../loader-tests/data/antd5/collapse.json",
