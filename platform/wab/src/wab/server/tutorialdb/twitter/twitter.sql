@@ -1,5 +1,7 @@
 begin;
 
+drop function if exists get_tweet_details(uuid);
+drop table if exists follows;
 drop table if exists likes;
 drop table if exists tweets;
 drop table if exists users;
@@ -22,7 +24,8 @@ create table tweets (
   body text,
   reply_to uuid references tweets(id),
   created_at timestamp with time zone default now(),
-  updated_at timestamp with time zone default now()
+  updated_at timestamp with time zone default now(),
+  repost_of uuid references tweets(id)
 );
 
 create table likes (
@@ -31,6 +34,13 @@ create table likes (
   created_at timestamp with time zone default now(),
   updated_at timestamp with time zone default now(),
   primary key (user_id, tweet_id)
+);
+
+create table follows (
+  follower_id uuid references users(id) not null,
+  followee_id uuid references users(id) not null,
+  created_at timestamp with time zone default now(),
+  primary key (follower_id, followee_id)
 );
 
 create unique index user_username on users (username);
@@ -68,5 +78,55 @@ insert into tweets (user_id, body, reply_to) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f
 insert into tweets (user_id, body, reply_to) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1b', 'I am faster than a speeding bullet', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e23');
 insert into tweets (user_id, body, reply_to) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1c', 'I am a warrior for justice', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e24');
 
+insert into tweets (user_id, repost_of) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e10', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7ea0');
+
+create or replace function get_tweet_details(current_user_id uuid)
+returns table (
+  id uuid,
+  body text,
+  created_at timestamp with time zone,
+  reply_to uuid,
+  repost_of uuid,
+  user_id uuid,
+  user_name text,
+  avatar_url text,
+  username text,
+  like_count integer,
+  user_liked boolean,
+  reply_count integer,
+  retweet_count integer,
+  retweet_id uuid,
+  original_user_id uuid,
+  original_user_name text,
+  original_user_avatar_url text,
+  original_user_username text
+) as $$
+begin
+  return query
+  select
+    t.id,
+    t.body,
+    t.created_at,
+    t.reply_to,
+    t.repost_of,
+    u.id,
+    u.name,
+    u.avatar_url,
+    u.username,
+    (select count(*) from likes l where l.tweet_id = t.id)::integer as like_count,
+    coalesce((select bool_or(l.user_id = current_user_id) from likes l where tweet_id = t.id), false) as user_liked,
+    (select count(*) from tweets replies where replies.reply_to = t.id)::integer as reply_count,
+    (select count(*) from tweets reposts where reposts.repost_of = t.id)::integer as retweet_count,
+    rt.id as retweet_id,
+    ou.id as original_user_id,
+    ou.name as original_user_name,
+    ou.avatar_url as original_user_avatar_url,
+    ou.username as original_user_username
+  from tweets t
+  join users u on t.user_id = u.id
+  left join tweets rt on t.repost_of = rt.id
+  left join users ou on rt.user_id = ou.id;
+end;
+$$ language plpgsql stable;
 
 commit;
