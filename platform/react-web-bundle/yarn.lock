@@ -436,10 +436,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.3.tgz#d946d81c3d1e3a8f4f3cfcb8751edfe14b90d09e"
   integrity sha512-jFde/wfL8NlJEr76Mshyju/3GvJD5Z9YijCG1/8DR+KOEv7m5uRvORjxtEEw2GKDXRp2GqpQqj97iWGLFUsOzA==
 
-"@plasmicapp/react-web@^0.2.298":
-  version "0.2.298"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.298.tgz#3f69ecd1b5ed36914a6313dc8280e5331ddefd93"
-  integrity sha512-/xAOdVWqN+CgtldcNlFOPy+WJoHV5BszFep6six3FFpiJMkhLUSLf7n1ibDxOq070PV13vpAV24DmUgCH6L2wQ==
+"@plasmicapp/react-web@^0.2.299":
+  version "0.2.299"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.299.tgz#632399aa7994f715d9309a10b4cdf6ac71dd23e1"
+  integrity sha512-1iz7hJiKjQZQ3p1apgKdAlSGGLo96J9g8Sp6MXCLfow5YMLH9e2syQIwkwKHzWY/KwEuoZSTMv2u4ZhEwkW8iw==
   dependencies:
     "@plasmicapp/auth-react" "0.0.18"
     "@plasmicapp/data-sources" "0.1.138"
