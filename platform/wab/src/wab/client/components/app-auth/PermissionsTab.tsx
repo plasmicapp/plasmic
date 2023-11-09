@@ -284,9 +284,9 @@ function PermissionsTab_(
       })),
       ...groups.map((group) => ({
         label: (
-          <>
+          <div>
             Add group <strong>{group.name}</strong>
-          </>
+          </div>
         ),
         value: group.name,
       })),
