@@ -1,7 +1,34 @@
 import { Dropdown, Menu } from "antd";
 import React from "react";
-import { Registerable, registerComponentHelper } from "./utils";
 import { UNKEYED_MENU_ITEM_TYPE } from "./registerMenu";
+import { Registerable, registerComponentHelper } from "./utils";
+
+function addKeysToUnkeyedMenuItems(
+  unkeyedMenuItems: React.ComponentProps<typeof Menu>["items"],
+  maybeGenKey?: () => string
+) {
+  const genKey =
+    maybeGenKey ??
+    (() => {
+      let key = 0;
+      return () => {
+        return `${key++}`;
+      };
+    })();
+  return unkeyedMenuItems?.map((item) => {
+    if (!item) {
+      return null;
+    }
+    const newItem = { ...item };
+    if (!newItem.key) {
+      newItem.key = genKey();
+    }
+    if ("children" in newItem && newItem.children) {
+      newItem.children = addKeysToUnkeyedMenuItems(newItem.children, genKey);
+    }
+    return newItem;
+  });
+}
 
 export function AntdDropdown(
   props: Omit<React.ComponentProps<typeof Dropdown>, "menu" | "overlay"> & {
@@ -18,11 +45,14 @@ export function AntdDropdown(
     onAction,
     menuItems,
     useMenuItemsSlot = false,
-    menuItemsJson,
+    menuItemsJson: unkeyedMenuItems,
     trigger = "click",
     dropdownMenuScopeClassName,
     ...rest
   } = props;
+
+  const keyedMenuItems = addKeysToUnkeyedMenuItems(unkeyedMenuItems);
+
   return (
     <Dropdown
       {...rest}
@@ -31,7 +61,7 @@ export function AntdDropdown(
         const itemsChildren = useMenuItemsSlot
           ? menuItems?.() ?? []
           : undefined;
-        const items = useMenuItemsSlot ? undefined : menuItemsJson;
+        const items = useMenuItemsSlot ? undefined : keyedMenuItems;
         return (
           <Menu
             className={`${dropdownMenuScopeClassName}`}
