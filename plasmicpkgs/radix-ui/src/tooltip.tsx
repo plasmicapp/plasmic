@@ -67,7 +67,9 @@ export const Tooltip = React.forwardRef<
                 ref={ref}
                 sideOffset={sideOffset}
                 className={clsx(
-                  prefixClasses("animate-in data-[state=closed]:animate-out"),
+                  prefixClasses(
+                    "z-50 animate-in data-[state=closed]:animate-out"
+                  ),
                   slideIn
                     ? prefixClasses(
                         "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2"

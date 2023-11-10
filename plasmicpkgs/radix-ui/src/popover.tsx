@@ -66,7 +66,7 @@ export function Popover({
             <PopoverPrimitive.Content
               className={clsx(
                 prefixClasses(
-                  "outline-none data-[state=open]:animate-in data-[state=closed]:animate-out"
+                  "outline-none z-50 data-[state=open]:animate-in data-[state=closed]:animate-out"
                 ),
                 slideIn
                   ? prefixClasses(
