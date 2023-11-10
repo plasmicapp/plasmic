@@ -207,6 +207,7 @@ export const FullCodeEditor = React.forwardRef(
         }
       };
       hideHiddenLines();
+      editorRef.current?.setPosition({ lineNumber: 2, column: 1 });
 
       const dispose = model.onDidChangeContent(() => {
         const realValue = getRealValue();
