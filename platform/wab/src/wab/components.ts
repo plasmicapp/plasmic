@@ -186,7 +186,7 @@ export interface PageComponent extends Component {
 export interface CodeComponent extends Component {
   type: ComponentType.Code;
   codeComponentMeta: CodeComponentMeta;
-  _meta: ComponentRegistration<any>;
+  _meta?: ComponentRegistration<any> /* Unset when DEVFLAGS.ccStubs is set */;
 }
 
 export function groupComponents(components: Component[]) {

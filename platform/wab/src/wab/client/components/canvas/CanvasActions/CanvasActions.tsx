@@ -1,30 +1,30 @@
-import { Tooltip } from "antd";
-import { observer } from "mobx-react-lite";
-import React from "react";
-import { hasLayoutBox } from "src/wab/dom";
-import { ArenaFrame } from "../../../../classes";
-import { assert } from "../../../../common";
+import { ArenaFrame } from "@/wab/classes";
+import { CanvasTransformedBox } from "@/wab/client/components/canvas/CanvasTransformedBox";
+import { useRerenderOnUserBodyChange } from "@/wab/client/components/canvas/UserBodyObserver";
+import WarningIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__WarningTrianglesvg";
+import { globalHookCtx } from "@/wab/client/react-global-hook/globalHook";
+import { RightTabKey, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { assert } from "@/wab/common";
 import {
   CodeComponent,
   getComponentDisplayName,
   isCodeComponent,
-} from "../../../../components";
-import { $ } from "../../../../deps";
-import { AnyArena } from "../../../../shared/Arenas";
-import { maybePropTypeToDisplayName } from "../../../../shared/code-components/code-components";
+} from "@/wab/components";
+import { $ } from "@/wab/deps";
+import { AnyArena } from "@/wab/shared/Arenas";
+import { maybePropTypeToDisplayName } from "@/wab/shared/code-components/code-components";
 import {
   flattenVals,
   InvalidArgMeta,
   isValComponent,
   ValComponent,
   ValidationType,
-} from "../../../../val-nodes";
-import WarningIcon from "../../../plasmic/q_4_icons/icons/PlasmicIcon__WarningTrianglesvg";
-import { globalHookCtx } from "../../../react-global-hook/globalHook";
-import { RightTabKey, useStudioCtx } from "../../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../../studio-ctx/view-ctx";
-import { CanvasTransformedBox } from "../CanvasTransformedBox";
-import { useRerenderOnUserBodyChange } from "../UserBodyObserver";
+} from "@/wab/val-nodes";
+import { Tooltip } from "antd";
+import { observer } from "mobx-react-lite";
+import React from "react";
+import { hasLayoutBox } from "src/wab/dom";
 
 const getErrorMessage = (invalidArg: InvalidArgMeta) =>
   invalidArg.validationType === ValidationType.Required
@@ -46,9 +46,11 @@ const TooltipMessage = ({
         <li>
           {" "}
           -{" "}
-          {maybePropTypeToDisplayName(
-            component._meta.props[invalidArg.param.variable.name]
-          ) ?? invalidArg.param.variable.name}
+          {(component._meta &&
+            maybePropTypeToDisplayName(
+              component._meta.props[invalidArg.param.variable.name]
+            )) ??
+            invalidArg.param.variable.name}
           : {getErrorMessage(invalidArg)}
         </li>
       ))}

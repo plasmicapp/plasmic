@@ -2604,7 +2604,7 @@ export function getAlwaysVisibleEventHandlerKeysForTpl(
           if (!isTplCodeComponent(tpl)) {
             return true;
           }
-          const propType = tpl.component._meta.props[param.variable.name];
+          const propType = tpl.component._meta?.props[param.variable.name];
           return !isAdvancedProp(propType);
         })
         .map((param) => ({ eventHandlerKey: { param }, expr: undefined }))
