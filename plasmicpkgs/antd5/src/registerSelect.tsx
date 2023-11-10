@@ -174,8 +174,10 @@ export function registerSelect(loader?: Registerable) {
       },
       mode: {
         type: "choice",
-        options: ["single", "multiple"],
+        options: ["single", "multiple", "tags"],
         defaultValueHint: "single",
+        description:
+          "Whether to allow single or multiple selection. Tags mode additionally allows selecting options outside the specified set of options.",
       },
       size: {
         type: "choice",
@@ -216,6 +218,12 @@ export function registerSelect(loader?: Registerable) {
         type: "boolean",
         displayName: "Should dropdown match trigger button width?",
         defaultValueHint: true,
+        advanced: true,
+      },
+      allowClear: {
+        type: "boolean",
+        displayName: "Allow clearing the Select",
+        defaultValueHint: false,
         advanced: true,
       },
       triggerClassName: {

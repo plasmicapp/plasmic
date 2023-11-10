@@ -179,6 +179,10 @@ export function registerTextArea(loader?: Registerable) {
         advanced: true,
         defaultValueHint: true,
       },
+      autoSize: {
+        type: "boolean",
+        displayName: "Auto grow height?",
+      },
       ...COMMON_EVENT_HANDLERS,
     },
     states: {
