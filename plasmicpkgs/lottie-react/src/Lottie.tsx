@@ -1,4 +1,4 @@
-import { ComponentMeta, PlasmicCanvasContext } from "@plasmicapp/host";
+import { CodeComponentMeta, PlasmicCanvasContext } from "@plasmicapp/host";
 import registerComponent from "@plasmicapp/host/registerComponent";
 import Lottie from "lottie-react";
 import React, { useContext } from "react";
@@ -397,13 +397,19 @@ export const CheckExample = {
     },
   ],
 };
-
-export interface LottieWrapperProps {
+interface CommonLottieWrapperProps {
   className?: string;
   animationData?: {};
   loop?: boolean;
   autoplay?: boolean;
   preview?: boolean;
+}
+
+export interface LottieWrapperProps extends CommonLottieWrapperProps {
+  animationData?: {};
+}
+export interface AsyncLottieWrapperProps extends CommonLottieWrapperProps {
+  animationUrl?: string;
 }
 
 export function LottieWrapper({
@@ -427,17 +433,80 @@ export function LottieWrapper({
   );
 }
 
-export const lottieWrapper: ComponentMeta<LottieWrapperProps> = {
-  name: "hostless-lottie-react",
-  displayName: "Lottie",
-  importName: "LottieWrapper",
-  importPath: "@plasmicpkgs/lottie-react",
-  props: {
-    animationData: {
-      type: "object",
-      description: "The animation JSON data",
-      defaultValue: CheckExample,
-    },
+const PROMISE_CACHE: Record<string, Promise<any>> = {};
+const DATA_CACHE: Record<string, any> = {};
+
+async function fetchAnimationData(url: string) {
+  if (url in DATA_CACHE) {
+    return DATA_CACHE[url];
+  } else if (url in PROMISE_CACHE) {
+    return PROMISE_CACHE[url];
+  } else {
+    PROMISE_CACHE[url] = (async () => {
+      const resp = await fetch(url);
+      if (!resp.ok) {
+        throw new Error(
+          `Error downloading Lottie animation from ${url}: ${resp.statusText}`
+        );
+      }
+      const json = await resp.json();
+      // Only delete from PROMISE_CACHE upon success
+      delete PROMISE_CACHE[url];
+      return json;
+    })();
+    return PROMISE_CACHE[url];
+  }
+}
+
+export function AsyncLottieWrapper({
+  className,
+  animationUrl,
+  loop = true,
+  autoplay = true,
+  preview = false,
+}: AsyncLottieWrapperProps) {
+  const inEditor = useContext(PlasmicCanvasContext);
+  const [data, setData] = React.useState<any | undefined>(
+    animationUrl ? DATA_CACHE[animationUrl] : undefined
+  );
+  const [error, setError] = React.useState<any | undefined>(undefined);
+  React.useEffect(() => {
+    if (animationUrl) {
+      fetchAnimationData(animationUrl).then(
+        (res) => {
+          setData(res);
+        },
+        (err) => {
+          setError(err);
+        }
+      );
+    }
+  }, [animationUrl]);
+  if (!animationUrl) {
+    throw new Error("animationUrl is required");
+  }
+  if (error) {
+    throw error;
+  }
+
+  if (!data) {
+    return <div className={className} />;
+  } else {
+    return (
+      <Lottie
+        className={className}
+        animationData={data}
+        loop={loop}
+        autoplay={inEditor ? preview : autoplay}
+      />
+    );
+  }
+}
+
+export function registerLottieWrapper(loader?: {
+  registerComponent: typeof registerComponent;
+}) {
+  const commonProps: CodeComponentMeta<CommonLottieWrapperProps>["props"] = {
     loop: {
       type: "boolean",
       description: "Whether to loop the animation",
@@ -453,19 +522,46 @@ export const lottieWrapper: ComponentMeta<LottieWrapperProps> = {
       description: "Whether to preview the animation in the editor",
       defaultValueHint: false,
     },
-  },
-};
+  };
 
-export function registerLottieWrapper(
-  loader?: { registerComponent: typeof registerComponent },
-  customLottieWrapper?: ComponentMeta<LottieWrapperProps>
-) {
-  if (loader) {
-    loader.registerComponent(
-      LottieWrapper,
-      customLottieWrapper ?? lottieWrapper
-    );
-  } else {
-    registerComponent(LottieWrapper, customLottieWrapper ?? lottieWrapper);
-  }
+  const register = <T extends React.ComponentType<any>>(
+    component: T,
+    meta: CodeComponentMeta<React.ComponentProps<T>>
+  ) => {
+    if (loader) {
+      loader.registerComponent(component, meta);
+    } else {
+      registerComponent(component, meta);
+    }
+  };
+
+  register(LottieWrapper, {
+    name: "hostless-lottie-react",
+    displayName: "Lottie",
+    importName: "LottieWrapper",
+    importPath: "@plasmicpkgs/lottie-react",
+    props: {
+      animationData: {
+        type: "object",
+        description: "The animation JSON data",
+        defaultValue: CheckExample,
+      },
+      ...(commonProps as any),
+    },
+  });
+
+  register(AsyncLottieWrapper, {
+    name: "hostless-lottie-async-react",
+    displayName: "Lottie Async",
+    importName: "AsyncLottieWrapper",
+    importPath: "@plasmicpkgs/lottie-react",
+    props: {
+      animationUrl: {
+        displayName: "Animation URL",
+        type: "string",
+        description: "URL from which to download Lottie JSON data",
+      },
+      ...(commonProps as any),
+    },
+  });
 }
