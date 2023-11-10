@@ -444,6 +444,11 @@ function shouldAcceptAsMappedDomNode(element: HTMLElement) {
   if (!element.isConnected) {
     return false;
   }
+  if (element.hidden) {
+    // react-aria also renders hidden elements as markers for start/end of
+    // FocusScope
+    return false;
+  }
   if (element.style.clip === "rect(0px, 0px, 0px, 0px)") {
     // react-aria <HiddenSelect/>, etc, which is rendered for accesssibility
     // but is absolutely positioned
