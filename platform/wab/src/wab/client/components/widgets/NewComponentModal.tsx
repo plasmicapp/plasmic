@@ -1,24 +1,24 @@
-import { Tooltip } from "antd";
-import * as React from "react";
-import { assert, ensure } from "../../../common";
-import { flattenInsertableTemplatesByType } from "../../../devflags";
-import { InsertableTemplateExtraInfo } from "../../../shared/insertable-templates";
-import { getPlumeEditorPluginByType } from "../../../shared/plume/plume-registry";
+import {
+  getPlumeComponentTemplates,
+  getPlumeImage,
+} from "@/wab/client/components/plume/plume-display-utils";
 import {
   buildInsertableExtraInfo,
   getInsertableTemplateComponentItem,
   getScreenVariantToInsertableTemplate,
-} from "../../insertable-templates";
-import PlumeMarkIcon from "../../plasmic/plasmic_kit_design_system/icons/PlasmicIcon__PlumeMark";
+} from "@/wab/client/insertable-templates";
+import PlumeMarkIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__PlumeMark";
 import {
   DefaultNewComponentModalProps,
   PlasmicNewComponentModal,
-} from "../../plasmic/plasmic_kit_new_component/PlasmicNewComponentModal";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import {
-  getPlumeComponentTemplates,
-  getPlumeImage,
-} from "../plume/plume-display-utils";
+} from "@/wab/client/plasmic/plasmic_kit_new_component/PlasmicNewComponentModal";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { assert, ensure } from "@/wab/common";
+import { flattenInsertableTemplatesByType } from "@/wab/devflags";
+import { InsertableTemplateExtraInfo } from "@/wab/shared/insertable-templates";
+import { getPlumeEditorPluginByType } from "@/wab/shared/plume/plume-registry";
+import { Tooltip } from "antd";
+import * as React from "react";
 import { Icon } from "./Icon";
 import NewComponentItem from "./NewComponentItem";
 import NewComponentSection from "./NewComponentSection";
@@ -59,7 +59,8 @@ function NewComponentModal(props: NewComponentModalProps) {
       root={{
         as: "form",
         props: {
-          onSubmit: async () => {
+          onSubmit: async (e: Event) => {
+            e.preventDefault();
             if (name) {
               if (templateId?.startsWith("template:")) {
                 const templateName = templateId.split(":")[1];

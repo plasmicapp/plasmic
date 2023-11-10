@@ -1,24 +1,24 @@
-import { Menu, notification } from "antd";
-import { observer } from "mobx-react-lite";
-import React from "react";
-import { Component } from "../../../classes";
-import { spawn } from "../../../common";
+import { Component } from "@/wab/classes";
+import { WithContextMenu } from "@/wab/client/components/ContextMenu";
+import promptForMetadata from "@/wab/client/components/modals/ComponentMetadataModal";
+import { ComponentPropModal } from "@/wab/client/components/modals/ComponentPropModal";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import { IFrameAwareDropdownMenu } from "@/wab/client/components/widgets";
+import Button from "@/wab/client/components/widgets/Button";
+import { MetadataTooltip } from "@/wab/client/components/widgets/DetailedTooltips";
+import { EditableLabel } from "@/wab/client/components/widgets/EditableLabel";
+import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
+import { VERT_MENU_ICON } from "@/wab/client/icons";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { spawn } from "@/wab/common";
 import {
   addOrEditComponentMetadata,
   removeComponentMetadata,
-} from "../../../components";
-import { toVarName } from "../../../shared/codegen/util";
-import { VERT_MENU_ICON } from "../../icons";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { WithContextMenu } from "../ContextMenu";
-import promptForMetadata from "../modals/ComponentMetadataModal";
-import { ComponentPropModal } from "../modals/ComponentPropModal";
-import { SidebarSection } from "../sidebar/SidebarSection";
-import { IFrameAwareDropdownMenu } from "../widgets";
-import Button from "../widgets/Button";
-import { MetadataTooltip } from "../widgets/DetailedTooltips";
-import { EditableLabel } from "../widgets/EditableLabel";
-import { LabelWithDetailedTooltip } from "../widgets/LabelWithDetailedTooltip";
+} from "@/wab/components";
+import { toVarName } from "@/wab/shared/codegen/util";
+import { Menu, notification } from "antd";
+import { observer } from "mobx-react-lite";
+import React from "react";
 import { BoolPropEditor } from "./ComponentProps/BoolPropEditor";
 
 export const ComponentMetaDataPropsSection = observer(
@@ -43,37 +43,41 @@ export const ComponentMetaDataPropsSection = observer(
     return (
       <SidebarSection>
         <div className="vlist-gap-m">
-          <div className="SidebarSectionListItem justify-between">
-            <div className="labeled-item__label">
-              Editable by content editors
-            </div>
-            <BoolPropEditor
-              onChange={(val) => {
-                spawn(
-                  studioCtx.changeUnsafe(
-                    () => (component.editableByContentEditor = val)
-                  )
-                );
-              }}
-              value={component.editableByContentEditor}
-            />
-          </div>
+          {!studioCtx.contentEditorMode ? (
+            <>
+              <div className="SidebarSectionListItem justify-between">
+                <div className="labeled-item__label">
+                  Editable by content editors
+                </div>
+                <BoolPropEditor
+                  onChange={(val) => {
+                    spawn(
+                      studioCtx.changeUnsafe(
+                        () => (component.editableByContentEditor = val)
+                      )
+                    );
+                  }}
+                  value={component.editableByContentEditor}
+                />
+              </div>
 
-          <div className="SidebarSectionListItem justify-between">
-            <div className="labeled-item__label">
-              Hidden from content editors
-            </div>
-            <BoolPropEditor
-              onChange={(val) => {
-                spawn(
-                  studioCtx.changeUnsafe(
-                    () => (component.hiddenFromContentEditor = val)
-                  )
-                );
-              }}
-              value={component.hiddenFromContentEditor}
-            />
-          </div>
+              <div className="SidebarSectionListItem justify-between">
+                <div className="labeled-item__label">
+                  Hidden from content editors
+                </div>
+                <BoolPropEditor
+                  onChange={(val) => {
+                    spawn(
+                      studioCtx.changeUnsafe(
+                        () => (component.hiddenFromContentEditor = val)
+                      )
+                    );
+                  }}
+                  value={component.hiddenFromContentEditor}
+                />
+              </div>
+            </>
+          ) : null}
 
           {Object.keys(metadata).length > 0 && shown.keyValue && (
             <MetadataSection

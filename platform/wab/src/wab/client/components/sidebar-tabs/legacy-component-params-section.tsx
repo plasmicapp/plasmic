@@ -1,13 +1,27 @@
-import { Menu, notification, Tooltip } from "antd";
-import { observer } from "mobx-react-lite";
-import React from "react";
 import {
   Component,
   ComponentTemplateInfo,
   isKnownFunctionType,
   Param,
-} from "../../../classes";
-import { spawn } from "../../../common";
+} from "@/wab/classes";
+import { WithContextMenu } from "@/wab/client/components/ContextMenu";
+import promptForMetadata from "@/wab/client/components/modals/ComponentMetadataModal";
+import { ComponentPropModal } from "@/wab/client/components/modals/ComponentPropModal";
+import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import { IFrameAwareDropdownMenu } from "@/wab/client/components/widgets";
+import Button from "@/wab/client/components/widgets/Button";
+import {
+  MetadataTooltip,
+  PropsTooltip,
+} from "@/wab/client/components/widgets/DetailedTooltips";
+import { EditableLabel } from "@/wab/client/components/widgets/EditableLabel";
+import LabeledListItem from "@/wab/client/components/widgets/LabeledListItem";
+import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
+import Textbox from "@/wab/client/components/widgets/Textbox";
+import { VERT_MENU_ICON } from "@/wab/client/icons";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { spawn } from "@/wab/common";
 import {
   addOrEditComponentMetadata,
   canDeleteParam,
@@ -17,27 +31,16 @@ import {
   isReusableComponent,
   removeComponentMetadata,
   removeComponentParam,
-} from "../../../components";
-import { wabTypeToPropType } from "../../../shared/code-components/code-components";
-import { toVarName } from "../../../shared/codegen/util";
-import { typeDisplayName } from "../../../shared/core/model-util";
-import { isCoreTeamEmail } from "../../../shared/devflag-utils";
-import { getSlotParams } from "../../../shared/SlotUtils";
-import { extractLit } from "../../../states";
-import { VERT_MENU_ICON } from "../../icons";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { WithContextMenu } from "../ContextMenu";
-import promptForMetadata from "../modals/ComponentMetadataModal";
-import { ComponentPropModal } from "../modals/ComponentPropModal";
-import { LabeledItemRow } from "../sidebar/sidebar-helpers";
-import { SidebarSection } from "../sidebar/SidebarSection";
-import { IFrameAwareDropdownMenu } from "../widgets";
-import Button from "../widgets/Button";
-import { MetadataTooltip, PropsTooltip } from "../widgets/DetailedTooltips";
-import { EditableLabel } from "../widgets/EditableLabel";
-import LabeledListItem from "../widgets/LabeledListItem";
-import { LabelWithDetailedTooltip } from "../widgets/LabelWithDetailedTooltip";
-import Textbox from "../widgets/Textbox";
+} from "@/wab/components";
+import { wabTypeToPropType } from "@/wab/shared/code-components/code-components";
+import { toVarName } from "@/wab/shared/codegen/util";
+import { typeDisplayName } from "@/wab/shared/core/model-util";
+import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { getSlotParams } from "@/wab/shared/SlotUtils";
+import { extractLit } from "@/wab/states";
+import { Menu, notification, Tooltip } from "antd";
+import { observer } from "mobx-react-lite";
+import React from "react";
 import { BoolPropEditor } from "./ComponentProps/BoolPropEditor";
 import { updateOrCreateExpr } from "./PropEditorRow";
 import { PropValueEditor } from "./PropValueEditor";
@@ -70,37 +73,41 @@ export const LegacyComponentParamsSection = observer(
     return (
       <SidebarSection>
         <div className="vlist-gap-m">
-          <div className="SidebarSectionListItem justify-between">
-            <div className="labeled-item__label">
-              Editable by content editors
-            </div>
-            <BoolPropEditor
-              onChange={(val) => {
-                spawn(
-                  studioCtx.changeUnsafe(
-                    () => (component.editableByContentEditor = val)
-                  )
-                );
-              }}
-              value={component.editableByContentEditor}
-            />
-          </div>
+          {!studioCtx.contentEditorMode ? (
+            <>
+              <div className="SidebarSectionListItem justify-between">
+                <div className="labeled-item__label">
+                  Editable by content editors
+                </div>
+                <BoolPropEditor
+                  onChange={(val) => {
+                    spawn(
+                      studioCtx.changeUnsafe(
+                        () => (component.editableByContentEditor = val)
+                      )
+                    );
+                  }}
+                  value={component.editableByContentEditor}
+                />
+              </div>
 
-          <div className="SidebarSectionListItem justify-between">
-            <div className="labeled-item__label">
-              Hidden from content editors
-            </div>
-            <BoolPropEditor
-              onChange={(val) => {
-                spawn(
-                  studioCtx.changeUnsafe(
-                    () => (component.hiddenFromContentEditor = val)
-                  )
-                );
-              }}
-              value={component.hiddenFromContentEditor}
-            />
-          </div>
+              <div className="SidebarSectionListItem justify-between">
+                <div className="labeled-item__label">
+                  Hidden from content editors
+                </div>
+                <BoolPropEditor
+                  onChange={(val) => {
+                    spawn(
+                      studioCtx.changeUnsafe(
+                        () => (component.hiddenFromContentEditor = val)
+                      )
+                    );
+                  }}
+                  value={component.hiddenFromContentEditor}
+                />
+              </div>
+            </>
+          ) : null}
 
           {studioCtx.appCtx.appConfig.focusable &&
             isReusableComponent(component) && (
