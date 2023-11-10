@@ -121,7 +121,8 @@ begin
     ou.id as original_user_id,
     ou.name as original_user_name,
     ou.avatar_url as original_user_avatar_url,
-    ou.username as original_user_username
+    ou.username as original_user_username,
+    ou.body as original_tweet_body
   from tweets t
   join users u on t.user_id = u.id
   left join tweets rt on t.repost_of = rt.id
