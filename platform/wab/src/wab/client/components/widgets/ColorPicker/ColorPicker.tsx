@@ -1,3 +1,30 @@
+import { StyleToken } from "@/wab/classes";
+import {
+  ColorTokenPopup,
+  newTokenValueAllowed,
+} from "@/wab/client/components/sidebar/token-controls";
+import { ColorSwatch } from "@/wab/client/components/style-controls/ColorSwatch";
+import { UnloggedDragCatcher } from "@/wab/client/components/style-controls/UnloggedDragCatcher";
+import Button from "@/wab/client/components/widgets/Button";
+import { ColorTokenSelector } from "@/wab/client/components/widgets/ColorTokenSelector";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { IconButton } from "@/wab/client/components/widgets/IconButton";
+import { ensureNumber, nudgeIntoRange } from "@/wab/client/number-utils";
+import { CloseIcon } from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
+import { useUndo } from "@/wab/client/shortcuts/studio/useUndo";
+import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ensure } from "@/wab/common";
+import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
+import {
+  derefTokenRefs,
+  mkTokenRef,
+  TokenType,
+  tryParseTokenRef,
+} from "@/wab/commons/StyleToken";
+import { TokenResolver } from "@/wab/shared/cached-selectors";
+import { Chroma } from "@/wab/shared/utils/color-utils";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { allColorTokens, allStyleTokens, isEditable } from "@/wab/sites";
 import Pickr from "@simonwep/pickr";
 import "@simonwep/pickr/dist/themes/nano.min.css";
 import { Input, InputRef, Select, Tooltip } from "antd";
@@ -13,32 +40,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { StyleToken } from "../../../../classes";
-import { ensure } from "../../../../common";
-import { MaybeWrap } from "../../../../commons/components/ReactUtil";
-import {
-  derefTokenRefs,
-  mkTokenRef,
-  TokenType,
-  tryParseTokenRef,
-} from "../../../../commons/StyleToken";
-import { Chroma } from "../../../../shared/utils/color-utils";
-import { VariantedStylesHelper } from "../../../../shared/VariantedStylesHelper";
-import { allColorTokens, allStyleTokens, isEditable } from "../../../../sites";
-import { ensureNumber, nudgeIntoRange } from "../../../number-utils";
-import { CloseIcon } from "../../../plasmic/plasmic_kit/PlasmicIcon__Close";
-import { useUndo } from "../../../shortcuts/studio/useUndo";
-import { useStudioCtx } from "../../../studio-ctx/StudioCtx";
-import {
-  ColorTokenPopup,
-  newTokenValueAllowed,
-} from "../../sidebar/token-controls";
-import { ColorSwatch } from "../../style-controls/ColorSwatch";
-import { UnloggedDragCatcher } from "../../style-controls/UnloggedDragCatcher";
-import Button from "../Button";
-import { ColorTokenSelector } from "../ColorTokenSelector";
-import { Icon } from "../Icon";
-import { IconButton } from "../IconButton";
 import { useClientTokenResolver } from "./client-token-resolver";
 import {
   ColorMode,
@@ -50,6 +51,26 @@ import {
   getShortenedHSL,
 } from "./colorPickerUtils";
 import "./Pickr.overrides.scss";
+
+export function tryGetRealColor(
+  color: string,
+  sc: StudioCtx,
+  resolver: TokenResolver,
+  vsh: VariantedStylesHelper = new VariantedStylesHelper(),
+  maybeColorTokens?: StyleToken[]
+) {
+  const colorTokens = maybeColorTokens
+    ? maybeColorTokens
+    : allColorTokens(sc.site, { includeDeps: "direct" });
+
+  // Currently-applied token, if `color` is a token reference
+  const appliedToken = color ? tryParseTokenRef(color, colorTokens) : undefined;
+
+  // The actual hex value
+  const realColor = appliedToken ? resolver(appliedToken, vsh) : color;
+
+  return { colorTokens, appliedToken, realColor };
+}
 
 interface ColorPickerProps {
   color: string;
@@ -73,19 +94,16 @@ function ColorPicker_({
   vsh = new VariantedStylesHelper(),
 }: ColorPickerProps) {
   const sc = useStudioCtx();
-  const colorTokens = maybeColorTokens
-    ? maybeColorTokens
-    : allColorTokens(sc.site, { includeDeps: "direct" });
   const justAddedRef = React.useRef<StyleToken | undefined>(undefined);
   const justAddedValue = justAddedRef.current;
 
   const resolver = useClientTokenResolver();
 
-  // Currently-applied token, if `color` is a token reference
-  const appliedToken = color ? tryParseTokenRef(color, colorTokens) : undefined;
-
-  // The actual hex value
-  const maybeRealColor = appliedToken ? resolver(appliedToken, vsh) : color;
+  const {
+    colorTokens,
+    realColor: maybeRealColor,
+    appliedToken,
+  } = tryGetRealColor(color, sc, resolver, vsh, maybeColorTokens);
 
   const [editToken, setEditToken] = React.useState<StyleToken | undefined>(
     undefined

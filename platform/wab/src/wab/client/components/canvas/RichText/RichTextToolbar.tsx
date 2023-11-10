@@ -1,34 +1,38 @@
+import { CustomCssProps } from "@/wab/client/components/canvas/CanvasText";
+import { TplTagElement } from "@/wab/client/components/canvas/slate";
+import { tags } from "@/wab/client/components/canvas/subdeps";
+import Button from "@/wab/client/components/widgets/Button";
+import {
+  ColorPicker,
+  tryGetRealColor,
+} from "@/wab/client/components/widgets/ColorPicker";
+import { useClientTokenResolver } from "@/wab/client/components/widgets/ColorPicker/client-token-resolver";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import Select from "@/wab/client/components/widgets/Select";
+import StrikeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Strike";
+import {
+  DefaultRichTextToolbarProps,
+  PlasmicRichTextToolbar,
+} from "@/wab/client/plasmic/plasmic_kit_rich_text_toolbar/PlasmicRichTextToolbar";
+import CodesvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Codesvg";
+import HeadingsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Headingsvg";
+import LinksvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Linksvg";
+import OrderedListsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__OrderedListsvg";
+import TextsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Textsvg";
+import UnderlinesvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Underlinesvg";
+import UnorderedListsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__UnorderedListsvg";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { EditingTextContext } from "@/wab/client/studio-ctx/view-ctx";
+import { fontWeightOptions } from "@/wab/client/typography-utils";
+import { spawn } from "@/wab/common";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Menu, Popover } from "antd";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
 import { Editor, Range, Text } from "slate";
-import { spawn } from "../../../../common";
-import StrikeIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Strike";
-import {
-  DefaultRichTextToolbarProps,
-  PlasmicRichTextToolbar,
-} from "../../../plasmic/plasmic_kit_rich_text_toolbar/PlasmicRichTextToolbar";
-import CodesvgIcon from "../../../plasmic/q_4_icons/icons/PlasmicIcon__Codesvg";
-import HeadingsvgIcon from "../../../plasmic/q_4_icons/icons/PlasmicIcon__Headingsvg";
-import LinksvgIcon from "../../../plasmic/q_4_icons/icons/PlasmicIcon__Linksvg";
-import OrderedListsvgIcon from "../../../plasmic/q_4_icons/icons/PlasmicIcon__OrderedListsvg";
-import TextsvgIcon from "../../../plasmic/q_4_icons/icons/PlasmicIcon__Textsvg";
-import UnderlinesvgIcon from "../../../plasmic/q_4_icons/icons/PlasmicIcon__Underlinesvg";
-import UnorderedListsvgIcon from "../../../plasmic/q_4_icons/icons/PlasmicIcon__UnorderedListsvg";
-import { useStudioCtx } from "../../../studio-ctx/StudioCtx";
-import { EditingTextContext } from "../../../studio-ctx/view-ctx";
-import { fontWeightOptions } from "../../../typography-utils";
-import Button from "../../widgets/Button";
-import { ColorPicker } from "../../widgets/ColorPicker";
-import { Icon } from "../../widgets/Icon";
-import Select from "../../widgets/Select";
-import { CustomCssProps } from "../CanvasText";
-import { TplTagElement } from "../slate";
-import { tags } from "../subdeps";
 
 type BlockElement = {
-  tag: typeof tags[number];
+  tag: (typeof tags)[number];
   icon: (props: any) => JSX.Element;
   label: string;
 };
@@ -102,7 +106,7 @@ function RichTextToolbar_(
     }
   };
 
-  const markCss = (cssProps: React.CSSProperties, toggle: boolean = true) => {
+  const markCss = (cssProps: React.CSSProperties, toggle = true) => {
     runInEditor("CUSTOM_CSS", { props: cssProps, toggle } as CustomCssProps);
   };
 
@@ -110,14 +114,20 @@ function RichTextToolbar_(
   const [marks, setMarks] = React.useState<Omit<Text, "text">>({});
 
   // Current block tag (e.g. "h1", "ul" or undefined for no block).
-  const [block, setBlock] =
-    React.useState<typeof tags[number] | undefined>(undefined);
+  const [block, setBlock] = React.useState<(typeof tags)[number] | undefined>(
+    undefined
+  );
 
   const studioCtx = useStudioCtx();
+  const resolver = useClientTokenResolver();
+
+  const maybeRealColor = marks?.color
+    ? tryGetRealColor(marks.color, studioCtx, resolver).realColor
+    : undefined;
 
   // TODO: We default color to black, but maybe we could default it to the
   // effective color of the current TplText.
-  const currentColor = marks?.color || "#000000";
+  const currentColor = maybeRealColor ?? "#000000";
 
   const [colorPickerVisible, setColorPickerVisible] = React.useState(false);
 
@@ -200,9 +210,6 @@ function RichTextToolbar_(
                 <div style={{ width: 250 }}>
                   <ColorPicker
                     color={currentColor}
-                    // TODO: We do not support tokens in StyleMarkers at the
-                    // moment.
-                    hideTokenPicker={true}
                     onChange={(color: string) => {
                       const { editor } = ctx;
                       const oldColor = (editor ? Editor.marks(editor) : {})
