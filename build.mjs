@@ -212,7 +212,11 @@ async function buildBundle({
  * this script multiple times for multiple entry points, which would result in
  * duplicative `tsc` runs.
  */
-function extractApi({ name, dtsRollupPath }) {
+function extractApi({ name, dtsRollupPath, docModelPath }) {
+  // Excluding non-index entry points for now since we can't handle multiple entry points.
+  // TODO: https://linear.app/plasmic/issue/PLA-10114
+  const docModelEnabled = name === "index";
+
   const extractorConfig = ExtractorConfig.prepare({
     configObject: {
       apiReport: {
@@ -223,6 +227,10 @@ function extractApi({ name, dtsRollupPath }) {
       },
       compiler: {
         tsconfigFilePath: path.resolve("./tsconfig.json"),
+      },
+      docModel: {
+        enabled: docModelEnabled,
+        apiJsonFilePath: path.resolve(`./api/temp/${name}.api.json`),
       },
       dtsRollup: {
         enabled: true,

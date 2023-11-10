@@ -15,7 +15,8 @@
     "build": "yarn build:types && yarn build:index",
     "build:types": "yarn tsc",
     "build:index": "node ../../build.mjs src/index.ts",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "postpublish": "bash ../../scripts/publish-api-doc-model.sh"
   },
   "files": [
     "dist"

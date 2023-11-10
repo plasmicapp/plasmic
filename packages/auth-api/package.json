@@ -24,6 +24,7 @@
     "test": "yarn --cwd=../.. test --passWithNoTests",
     "lint": "eslint",
     "prepublishOnly": "npm run build",
+    "postpublish": "bash ../../scripts/publish-api-doc-model.sh",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
