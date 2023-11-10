@@ -3001,10 +3001,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/airtable/-/airtable-0.0.195.tgz#79d189f2f3056c5d9483e8925d76931b2f9806fb"
   integrity sha512-PKGZkAE5LSsgl49gd3T5BSNxCaswzU6XT7hHyar0IEOBKPKTFI7jwiINDRCDOFZRkx2TFpRFKkmru7HFOsvNNA==
 
-"@plasmicpkgs/antd5@^0.0.186":
-  version "0.0.186"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.186.tgz#339ed6c8a6038d6b6038c574565ae448860c563e"
-  integrity sha512-/hqTtt8QKVx97UdN2uOSSyPfJUBppZiOaIHYUuON/Vc9t8fZM+JASMP6yeWRN8JmgJZH63915sr0xia79+pwew==
+"@plasmicpkgs/antd5@^0.0.187":
+  version "0.0.187"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.187.tgz#6ce8e92cc6ede7d951000dcbfe7cc65276b6fbc5"
+  integrity sha512-gP+mVpK5Hz0Cusv6q8Ytgn1ojMyGHmHMqgRdRWTBeU2JLaIx8yBJjXiIu6zEcOZPzo78/6A5sqLTd9wGUUb6uA==
   dependencies:
     antd "^5.7.3"
     classnames "^2.3.2"
@@ -3090,10 +3090,10 @@
   dependencies:
     framer-motion "^5.3.0"
 
-"@plasmicpkgs/lottie-react@^0.0.167":
-  version "0.0.167"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/lottie-react/-/lottie-react-0.0.167.tgz#221d0274b89f1cce03575a05a25a6a3604007722"
-  integrity sha512-oyvkMHulshkHcJ2Srmyqfm7uLfr3gmMrCELsBWRGaPBgxmWRbtmfYbKllSz/s7rImZAXmskE6tQXVpn5VEfLkg==
+"@plasmicpkgs/lottie-react@^0.0.168":
+  version "0.0.168"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/lottie-react/-/lottie-react-0.0.168.tgz#a22e0947c4ed68c76620a24fc44944276f5ddf0d"
+  integrity sha512-NGY8WMgFPIHdDIqbqAp/tH3rlHpYFUyec36uxyYYO2E5Lnos/WemWe8JOeHqDGKciE6oNrM1825lOc3GuYz3tw==
   dependencies:
     lottie-react "^2.1.0"
 
