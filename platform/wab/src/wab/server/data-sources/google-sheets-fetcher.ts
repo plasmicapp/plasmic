@@ -16,7 +16,7 @@ import {
   SQLITE_TO_BUILDER_TYPE,
 } from "./pybackend-client/pybackend-client";
 
-export function makeGoogleSheetsFetcher(
+export async function makeGoogleSheetsFetcher(
   dbCon: Connection,
   source: GoogleSheetsDataSource
 ) {
@@ -36,19 +36,20 @@ export class GoogleSheetsImpl {
       this.methodWrapper.bind(this),
       {
         dburi: "shillelagh://",
-        engineKwargs: {
-          adapters: ["gsheetsapi"],
-          adapter_kwargs: {
-            gsheetsapi: { access_token: this.tokenData.accessToken },
-          },
-        },
       },
       this.getSchema.bind(this),
       (resource) => this.makeSheetUrl(resource)
     );
   }
 
-  createFetcher() {
+  async createFetcher() {
+    await this.getAndCacheSheetsCredentials();
+    this.sqlalchemy.setEngineKwargs({
+      adapters: ["gsheetsapi"],
+      adapter_kwargs: {
+        gsheetsapi: { access_token: this.tokenData.accessToken },
+      },
+    });
     return this.sqlalchemy.createFetcher();
   }
 
@@ -56,7 +57,6 @@ export class GoogleSheetsImpl {
     if (this.tokenData && this.sheetsClient) {
       return;
     }
-
     const maybeTokenData = await this.dbCon.transaction((em) => {
       const dbMgr = new DbMgr(em, SUPER_USER);
       return dbMgr.getOauthTokenById(this.source.credentials.credentials);
@@ -175,7 +175,6 @@ async function refreshAndUpdateToken(oauthTokenId: string, token: TokenData) {
       token.refreshToken,
       async (err, accessToken) => {
         if (err) {
-          console.log("ERROR", err);
           resolve(undefined);
           return;
         }

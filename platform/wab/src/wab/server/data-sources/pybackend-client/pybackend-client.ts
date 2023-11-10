@@ -85,6 +85,10 @@ export class SqlalchemyClient {
     private resourceWrapper: (resource: string) => string = strictIdentity
   ) {}
 
+  setEngineKwargs(engineKwargs: Record<string, any>) {
+    this.header.engineKwargs = engineKwargs;
+  }
+
   async getList(opts: {
     resource: string;
     filters?: Filters;
@@ -163,7 +167,6 @@ export class SqlalchemyClient {
         ),
       }
     );
-
     return result;
   }
 

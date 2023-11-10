@@ -124,7 +124,7 @@ export async function makeFetcher(
     case "postgres":
       return makePostgresFetcher(source);
     case "google-sheets":
-      return makeGoogleSheetsFetcher(dbCon, source);
+      return await makeGoogleSheetsFetcher(dbCon, source);
     case "zapier":
       return makeZapierFetcher(source);
     case "tutorialdb":
