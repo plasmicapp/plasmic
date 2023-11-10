@@ -236,7 +236,7 @@ $placeholder-hue: black;
   width: 100vw;
   z-index: 1000000000;
   // Some components like radix-ui dialog will disable pointer events on body.
-  poniter-events: initial;
+  pointer-events: initial;
 }
 
 .__interactive_canvas .__wab_canvas_overlay {
