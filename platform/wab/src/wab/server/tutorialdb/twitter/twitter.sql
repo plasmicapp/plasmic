@@ -1,6 +1,7 @@
 begin;
 
 drop function if exists get_tweet_details(uuid);
+drop table if exists trusted_users;
 drop table if exists follows;
 drop table if exists likes;
 drop table if exists tweets;
@@ -43,6 +44,12 @@ create table follows (
   primary key (follower_id, followee_id)
 );
 
+create table trusted_users (
+  trusted_user_id uuid references users(id) not null,
+  created_at timestamp with time zone default now(),
+  primary key (trusted_user_id)
+);
+
 create unique index user_username on users (username);
 create unique index user_email on users (email);
 
@@ -80,6 +87,16 @@ insert into tweets (user_id, body, reply_to) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f
 
 insert into tweets (user_id, repost_of) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e10', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7ea0');
 
+insert into trusted_users (trusted_user_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e10');
+insert into trusted_users (trusted_user_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1a');
+insert into trusted_users (trusted_user_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1b');
+insert into trusted_users (trusted_user_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1c');
+insert into trusted_users (trusted_user_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1d');
+insert into trusted_users (trusted_user_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1e');
+insert into trusted_users (trusted_user_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1f');
+insert into trusted_users (trusted_user_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e20');
+insert into trusted_users (trusted_user_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e21');
+
 create or replace function get_tweet_details(current_user_id uuid)
 returns table (
   id uuid,
@@ -96,6 +113,8 @@ returns table (
   reply_count integer,
   retweet_count integer,
   retweet_id uuid,
+  original_body text,
+  original_created_at timestamp with time zone,
   original_user_id uuid,
   original_user_name text,
   original_user_avatar_url text,
@@ -113,16 +132,17 @@ begin
     u.name,
     u.avatar_url,
     u.username,
-    (select count(*) from likes l where l.tweet_id = t.id)::integer as like_count,
-    coalesce((select bool_or(l.user_id = current_user_id) from likes l where tweet_id = t.id), false) as user_liked,
-    (select count(*) from tweets replies where replies.reply_to = t.id)::integer as reply_count,
-    (select count(*) from tweets reposts where reposts.repost_of = t.id)::integer as retweet_count,
+    (select count(*) from likes l where l.tweet_id = coalesce(t.repost_of, t.id))::integer as like_count,
+    coalesce((select bool_or(l.user_id = current_user_id) from likes l where tweet_id = coalesce(t.repost_of, t.id)), false) as user_liked,
+    (select count(*) from tweets replies where replies.reply_to = coalesce(t.repost_of, t.id))::integer as reply_count,
+    (select count(*) from tweets reposts where reposts.repost_of = coalesce(t.repost_of, t.id))::integer as retweet_count,
     rt.id as retweet_id,
+    rt.body as original_body,
+    rt.created_at as original_created_at,
     ou.id as original_user_id,
     ou.name as original_user_name,
     ou.avatar_url as original_user_avatar_url,
-    ou.username as original_user_username,
-    ou.body as original_tweet_body
+    ou.username as original_user_username
   from tweets t
   join users u on t.user_id = u.id
   left join tweets rt on t.repost_of = rt.id

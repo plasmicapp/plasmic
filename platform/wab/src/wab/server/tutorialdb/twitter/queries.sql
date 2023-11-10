@@ -54,3 +54,10 @@ where reply_to =
 tweet
 order by created_at desc;
 
+-- Fetch trusted tweets
+
+select * from get_tweet_details(
+currentUser ▸ customProperties ▸ id)
+where reply_to is null and repost_of is null and user_id in (
+  select trusted_user_id from trusted_users
+);
