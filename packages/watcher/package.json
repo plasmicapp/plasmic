@@ -1,5 +1,5 @@
 {
-  "version": "1.0.80",
+  "version": "1.0.81",
   "license": "MIT",
   "sideEffects": false,
   "types": "./dist/index.d.ts",
