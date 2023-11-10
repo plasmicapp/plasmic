@@ -161,7 +161,10 @@ import {
   isValidFontWeight,
 } from "@/wab/client/typography-utils";
 import { UndoRecord } from "@/wab/client/undo-log";
-import { getContainerType } from "@/wab/client/utils/tpl-client-utils";
+import {
+  canSetDisplayNone,
+  getContainerType,
+} from "@/wab/client/utils/tpl-client-utils";
 import {
   canAddChildren,
   canAddChildrenAndWhy,
@@ -1706,7 +1709,13 @@ export class ViewOps {
       this.change(() => {
         for (const tpl of tpls) {
           if (isTplVariantable(tpl)) {
-            setTplVisibility(tpl, currentCombo, TplVisibility.DisplayNone);
+            setTplVisibility(
+              tpl,
+              currentCombo,
+              canSetDisplayNone(this.viewCtx(), tpl)
+                ? TplVisibility.DisplayNone
+                : TplVisibility.NotRendered
+            );
           }
         }
         const onlyRootSelected = tpls.length === 1 && tpls[0].parent === null;
