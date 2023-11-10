@@ -202,18 +202,18 @@ export const FullCodeEditor = React.forwardRef(
                   endLineNumber: lastLine,
                 },
               ]);
+              const position = editorRef.current?.getPosition();
+              if (
+                position?.lineNumber === 1 ||
+                position?.lineNumber === lastLine
+              ) {
+                editorRef.current?.setPosition({ lineNumber: 2, column: 1 });
+              }
             }
           }
         }
       };
       hideHiddenLines();
-
-      if (isJavascriptLanguage(language)) {
-        const mode = deriveCodeMode();
-        if (mode) {
-          editorRef.current?.setPosition({ lineNumber: 2, column: 1 });
-        }
-      }
 
       const dispose = model.onDidChangeContent(() => {
         const realValue = getRealValue();
