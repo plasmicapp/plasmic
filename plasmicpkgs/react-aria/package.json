@@ -1,0 +1,73 @@
+{
+  "name": "@plasmicpkgs/react-aria",
+  "version": "0.0.1",
+  "description": "Plasmic registration calls for react-aria based components",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/react-aria.esm.js",
+  "nx": {
+    "targets": {
+      "build": {
+        "inputs": [
+          "{projectRoot}/**/*",
+          "!{projectRoot}/**/dist/**/*",
+          "!{projectRoot}/skinny/**/*"
+        ],
+        "outputs": [
+          "{projectRoot}/**/dist/**/*",
+          "{projectRoot}/skinny/**/*"
+        ]
+      }
+    }
+  },
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/react-aria.esm.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./skinny/*": {
+      "require": "./skinny/*.cjs.js",
+      "import": "./skinny/*.esm.js",
+      "types": "./skinny/*.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "skinny"
+  ],
+  "scripts": {
+    "build": "rollup -c rollup.config.mjs && yarn tsc --emitDeclarationOnly --declaration src/index.tsx --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --lib esnext --jsx react --esModuleInterop --strict --outDir ./dist/ && cp ./dist/*.d.ts skinny/ && rm skinny/index.d.ts",
+    "prepare": "if-env PREPARE_NO_BUILD=true || yarn build",
+    "clean": "rm -rf dist/ skinny/*.ts skinny/*.map skinny/*.js",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "test-storybook": "test-storybook"
+  },
+  "dependencies": {
+    "@react-aria/i18n": "^3.8.4",
+    "@react-aria/utils": "^3.21.1",
+    "react-aria-components": "^1.0.0-rc.0"
+  },
+  "devDependencies": {
+    "@plasmicapp/host": "1.0.177",
+    "@rollup/plugin-commonjs": "^11.0.0",
+    "@rollup/plugin-json": "^4.0.0",
+    "@rollup/plugin-node-resolve": "^9.0.0",
+    "@types/react": "^18.0.27",
+    "@types/react-dom": "^18.0.10",
+    "glob": "^8.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "rollup": "^3.10.1",
+    "rollup-plugin-esbuild": "^5.0.0",
+    "typescript": "^5.2.2"
+  },
+  "peerDependencies": {
+    "@plasmicapp/host": ">=1.0.0",
+    "react": ">=16.8.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
