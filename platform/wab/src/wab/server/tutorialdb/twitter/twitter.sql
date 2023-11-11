@@ -1,6 +1,6 @@
 begin;
 
-drop function if exists get_tweet_details(uuid);
+drop view if exists tweet_details;
 drop table if exists trusted_users;
 drop table if exists follows;
 drop table if exists likes;
@@ -23,6 +23,7 @@ create table tweets (
   id uuid primary key default gen_random_uuid(),
   user_id uuid references users(id) not null,
   body text,
+  media_url text,
   reply_to uuid references tweets(id),
   created_at timestamp with time zone default now(),
   updated_at timestamp with time zone default now(),
@@ -87,6 +88,18 @@ insert into tweets (user_id, body, reply_to) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f
 
 insert into tweets (user_id, repost_of) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e10', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7ea0');
 
+insert into tweets (user_id, body, media_url) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e10', 'Beautiful city of Guadalajara', 'https://loktvbeqqsoyjqqwvmhq.supabase.co/storage/v1/object/public/plasmic_app_bucket/app_dev/20c9d297-e4d1-4f24-b069-8f670f78afac');
+
+insert into likes (tweet_id, user_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e22', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1a');
+insert into likes (tweet_id, user_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e23', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1b');
+insert into likes (tweet_id, user_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e24', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1c');
+insert into likes (tweet_id, user_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e25', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1d');
+insert into likes (tweet_id, user_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e26', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1e');
+insert into likes (tweet_id, user_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e27', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1f');
+insert into likes (tweet_id, user_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e28', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e20');
+insert into likes (tweet_id, user_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e29', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e21');
+insert into likes (tweet_id, user_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7ea0', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e10');
+
 insert into trusted_users (trusted_user_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e10');
 insert into trusted_users (trusted_user_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1a');
 insert into trusted_users (trusted_user_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1b');
@@ -97,57 +110,32 @@ insert into trusted_users (trusted_user_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9
 insert into trusted_users (trusted_user_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e20');
 insert into trusted_users (trusted_user_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e21');
 
-create or replace function get_tweet_details(current_user_id uuid)
-returns table (
-  id uuid,
-  body text,
-  created_at timestamp with time zone,
-  reply_to uuid,
-  repost_of uuid,
-  user_id uuid,
-  user_name text,
-  avatar_url text,
-  username text,
-  like_count integer,
-  user_liked boolean,
-  reply_count integer,
-  retweet_count integer,
-  retweet_id uuid,
-  original_body text,
-  original_created_at timestamp with time zone,
-  original_user_id uuid,
-  original_user_name text,
-  original_user_avatar_url text,
-  original_user_username text
-) as $$
-begin
-  return query
-  select
-    t.id,
-    t.body,
-    t.created_at,
-    t.reply_to,
-    t.repost_of,
-    u.id,
-    u.name,
-    u.avatar_url,
-    u.username,
-    (select count(*) from likes l where l.tweet_id = coalesce(t.repost_of, t.id))::integer as like_count,
-    coalesce((select bool_or(l.user_id = current_user_id) from likes l where tweet_id = coalesce(t.repost_of, t.id)), false) as user_liked,
-    (select count(*) from tweets replies where replies.reply_to = coalesce(t.repost_of, t.id))::integer as reply_count,
-    (select count(*) from tweets reposts where reposts.repost_of = coalesce(t.repost_of, t.id))::integer as retweet_count,
-    rt.id as retweet_id,
-    rt.body as original_body,
-    rt.created_at as original_created_at,
-    ou.id as original_user_id,
-    ou.name as original_user_name,
-    ou.avatar_url as original_user_avatar_url,
-    ou.username as original_user_username
-  from tweets t
-  join users u on t.user_id = u.id
-  left join tweets rt on t.repost_of = rt.id
-  left join users ou on rt.user_id = ou.id;
-end;
-$$ language plpgsql stable;
+create or replace view tweet_details as
+select
+  t.id,
+  t.body,
+  t.media_url,
+  t.created_at,
+  t.reply_to,
+  t.repost_of,
+  u.id as user_id,
+  u.name as user_name,
+  u.avatar_url,
+  u.username,
+  (select count(*) from likes l where l.tweet_id = coalesce(t.repost_of, t.id))::integer as like_count,
+  (select count(*) from tweets replies where replies.reply_to = coalesce(t.repost_of, t.id))::integer as reply_count,
+  (select count(*) from tweets reposts where reposts.repost_of = coalesce(t.repost_of, t.id))::integer as retweet_count,
+  rt.id as retweet_id,
+  rt.body as original_body,
+  rt.created_at as original_created_at,
+  ou.id as original_user_id,
+  ou.name as original_user_name,
+  ou.avatar_url as original_user_avatar_url,
+  ou.username as original_user_username
+from tweets t
+join users u on t.user_id = u.id
+left join tweets rt on t.repost_of = rt.id
+left join users ou on rt.user_id = ou.id;
+
 
 commit;

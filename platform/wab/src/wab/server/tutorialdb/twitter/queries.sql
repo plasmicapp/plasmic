@@ -1,15 +1,28 @@
 -- Fetch home tweets
 
-select * from get_tweet_details(currentUser ▸ customProperties ▸ id)
-where (user_id != currentUser ▸ customProperties ▸ id or created_at > now() - interval '10 minutes') and reply_to is null
+select
+  *,
+  exists(select 1 from likes l where l.tweet_id = coalesce(t.repost_of, t.id) and l.user_id =
+
+currentUser ▸ customProperties ▸ id) as user_liked
+from tweet_details t
+where (user_id !=
+coalesce(
+currentUser ▸ customProperties ▸ id, '00000000-0000-0000-0000-000000000000')::uuid or created_at > now() - interval '10 minutes') and reply_to is null
 order by created_at desc;
 
 
 -- Fetch user tweets
 
-select * from get_tweet_details(currentUser ▸ customProperties ▸ id)
-where username = user
+select
+  *,
+  exists(select 1 from likes l where l.tweet_id = coalesce(t.repost_of, t.id) and l.user_id =
+currentUser ▸ customProperties ▸ id) as user_liked
+from tweet_details t
+where username =
+user
 order by created_at desc;
+
 
 -- fetch tweet chain
 
@@ -46,18 +59,50 @@ join get_tweet_details(
 currentUser.customProperties.id) td on tc.id = td.id
 order by created_at asc;
 
+
+
 -- Fetch tweet replies
 
-select * from get_tweet_details(
-currentUser ▸ customProperties ▸ id)
+select
+  *,
+  exists(select 1 from likes l where l.tweet_id = coalesce(t.repost_of, t.id) and l.user_id =
+currentUser ▸ customProperties ▸ id) as user_liked
+from tweet_details t
 where reply_to =
 tweet
 order by created_at desc;
 
+
 -- Fetch trusted tweets
 
-select * from get_tweet_details(
-currentUser ▸ customProperties ▸ id)
-where reply_to is null and repost_of is null and user_id in (
-  select trusted_user_id from trusted_users
-);
+select
+  *,
+  exists(select 1 from likes l where l.tweet_id = coalesce(t.repost_of, t.id) and l.user_id =
+
+currentUser ▸ customProperties ▸ id) as user_liked
+from tweet_details t
+where reply_to is null and repost_of is null and exists (
+  select trusted_user_id from trusted_users where trusted_user_id = user_id
+)
+order by created_at desc;
+
+
+-- Fetch user profile
+
+select
+  u.id,
+  u.name as user_name,
+  u.bio,
+  u.created_at,
+  u.avatar_url,
+  u.background_url,
+  u.username,
+  (select count(*) from follows where followee_id = u.id)::integer as follower_count,
+  (select count(*) from follows where follower_id = u.id)::integer as following_count,
+  exists(select 1 from follows where followee_id = u.id and follower_id =
+currentUser ▸ customProperties ▸ id) as is_following,
+  exists(select 1 from follows where follower_id = u.id and followee_id =
+currentUser ▸ customProperties ▸ id) as follows_you
+from users u where username =
+
+user;
