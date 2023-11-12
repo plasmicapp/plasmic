@@ -24,6 +24,7 @@ create table tweets (
   user_id uuid references users(id) not null,
   body text,
   media_url text,
+  thread_id uuid default gen_random_uuid(),
   reply_to uuid references tweets(id),
   created_at timestamp with time zone default now(),
   updated_at timestamp with time zone default now(),
@@ -64,9 +65,9 @@ insert into users (id, name, username, bio, avatar_url, email) values ('d7e7e7c8
 insert into users (id, name, username, bio, avatar_url, email) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e20', 'Tony Stark', 'ironman', 'I am Iron Man, genius billionaire playboy philanthropist', 'https://ui-avatars.com/api/?name=Tony+Stark', 'ironman@example.com');
 insert into users (id, name, username, bio, avatar_url, email) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e21', 'Natasha Romanoff', 'blackwidow', 'I am Black Widow, former KGB agent and Avenger', 'https://ui-avatars.com/api/?name=Natasha+Romanoff', 'blackwidow@example.com');
 
-insert into tweets (id, user_id, body, reply_to) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e22', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1a', 'I am the night', null);
-insert into tweets (id, user_id, body, reply_to) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e23', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1b', 'I am faster than a speeding bullet', null);
-insert into tweets (id, user_id, body, reply_to) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e24', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1c', 'I am a warrior for justice', null);
+insert into tweets (id, user_id, body, reply_to, thread_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e22', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1a', 'I am the night', null, 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7ea0');
+insert into tweets (id, user_id, body, reply_to, thread_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e23', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1b', 'I am faster than a speeding bullet', null, 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7ea1');
+insert into tweets (id, user_id, body, reply_to, thread_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e24', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1c', 'I am a warrior for justice', null, 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7ea2');
 insert into tweets (id, user_id, body, reply_to) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e25', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1d', 'I am the fastest man alive', null);
 insert into tweets (id, user_id, body, reply_to) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e26', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1e', 'I am the king of the seven seas', null);
 insert into tweets (id, user_id, body, reply_to) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e27', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1f', 'I am your friendly neighborhood Spider-Man', null);
@@ -82,9 +83,9 @@ insert into tweets (user_id, body, reply_to) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f
 insert into tweets (user_id, body, reply_to) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1f', 'With great power comes great responsibility', null);
 insert into tweets (user_id, body, reply_to) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e20', 'Sometimes you gotta run before you can walk', null);
 
-insert into tweets (user_id, body, reply_to) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1a', 'I am the night', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e22');
-insert into tweets (user_id, body, reply_to) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1b', 'I am faster than a speeding bullet', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e23');
-insert into tweets (user_id, body, reply_to) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1c', 'I am a warrior for justice', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e24');
+insert into tweets (user_id, body, reply_to, thread_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1a', 'I am the night', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e22', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7ea0');
+insert into tweets (user_id, body, reply_to, thread_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1b', 'I am faster than a speeding bullet', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e23', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7ea1');
+insert into tweets (user_id, body, reply_to, thread_id) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e1c', 'I am a warrior for justice', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e24', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7ea2');
 
 insert into tweets (user_id, repost_of) values ('d7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7e10', 'd7e7e7c8-8a5e-4c7f-8c5a-1f9d7c9b7ea0');
 
@@ -127,6 +128,7 @@ select
   (select count(*) from tweets reposts where reposts.repost_of = coalesce(t.repost_of, t.id))::integer as retweet_count,
   rt.id as retweet_id,
   rt.body as original_body,
+  rt.media_url as original_media_url,
   rt.created_at as original_created_at,
   ou.id as original_user_id,
   ou.name as original_user_name,
