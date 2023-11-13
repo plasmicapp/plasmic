@@ -501,11 +501,12 @@ export function genComponentSwapMenuItem(
   ) => {
     for (const comp of comps) {
       if (
-        (isReusableComponent(comp) &&
-          comp !== component &&
-          comp.name !== "plasmic-data-source-fetcher" &&
-          includeCodeComponents) ||
-        !isCodeComponent(comp)
+        isReusableComponent(comp) &&
+        comp !== component &&
+        (!isCodeComponent(comp) ||
+          (comp.name !== "plasmic-data-source-fetcher" &&
+            (includeCodeComponents || isHostLessCodeComponent(comp)) &&
+            !isContextCodeComponent(comp)))
       ) {
         push(
           <Menu.Item key={comp.uuid} onClick={() => doSwap(comp)}>
