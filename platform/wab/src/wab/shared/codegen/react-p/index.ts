@@ -4038,7 +4038,7 @@ function serializeCustomFunctionsAndLibs(ctx: SerializerBaseContext) {
             ? `* as ${codeLibraryImportAlias(lib)}` // namespace import
             : lib.importType === "default"
             ? `${codeLibraryImportAlias(lib)}` // default import
-            : `{ ${lib.namedImport} }` // named import
+            : `{ ${lib.namedImport} as ${codeLibraryImportAlias(lib)} }` // named import
         } from "${lib.importPath}";`;
       }
     }),

@@ -65,6 +65,7 @@
     "marked": "^9.1.1",
     "md5": "^2.3.0",
     "nanoid": "^5.0.2",
+    "papaparse": "^5.4.1",
     "plasmic-internal-noop-func": "link:./internal_pkgs/noop-func",
     "pluralize": "^8.0.0",
     "random": "^4.1.0",
