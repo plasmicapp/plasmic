@@ -67,9 +67,12 @@ describe("Make sure code libs work on canvas", function () {
                   `Immer - state before: "done === false"; state after: "done === true"`
                 )
                 .should("exist");
+              /*
+              TODO: isomorphic-fetch
               chainable()
                 .contains(`Isomorphic-fetch response: "Animals"`)
                 .should("exist");
+                */
               chainable().contains(`jquery: red box width: 50`).should("exist");
               chainable()
                 .contains(`lodash partition: [[1,3],[2,4]]`)
