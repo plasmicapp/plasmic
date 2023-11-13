@@ -268,6 +268,25 @@ export function registerForm(loader?: Registerable) {
         defaultValueHint: ["onChange"],
         advanced: true,
       },
+      autoDisableWhileSubmitting: {
+        displayName: "Auto disable while submitting",
+        type: "boolean",
+        defaultValueHint: true,
+        advanced: true,
+        description:
+          "When disabled, it allows the creation of new submissions even while existing submissions are in progress.",
+      },
+      onIsSubmittingChange: {
+        type: "eventHandler",
+        displayName: "On Is Submitting Change",
+        argTypes: [
+          {
+            name: "isSubmitting",
+            type: "boolean",
+          },
+        ],
+        advanced: true,
+      },
     },
     actions: [
       ...COMMON_ACTIONS,
@@ -281,6 +300,12 @@ export function registerForm(loader?: Registerable) {
         type: "readonly",
         variableType: "object",
         onChangeProp: "extendedOnValuesChange",
+      },
+      isSubmitting: {
+        type: "readonly",
+        variableType: "boolean",
+        onChangeProp: "onIsSubmittingChange",
+        initVal: false,
       },
     },
     componentHelpers: {

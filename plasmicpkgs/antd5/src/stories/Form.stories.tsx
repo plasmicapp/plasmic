@@ -2151,3 +2151,97 @@ TestFormList.play = async ({ canvasElement }) => {
   );
   await checkFormItems(canvasElement, getExpectedFormItems());
 };
+
+const _DisableMultipleSubmissions: StoryFn = (args: any) => {
+  const refsRef = React.useRef<{ form?: FormListOperation | null }>({});
+  const $refs = refsRef.current;
+  const $state = useDollarState(
+    [
+      {
+        path: "form.value",
+        type: "private",
+        variableType: "object",
+      },
+      {
+        path: "submittedData",
+        type: "private",
+        variableType: "object",
+      },
+      {
+        path: "count",
+        type: "private",
+        variableType: "number",
+        initVal: 0,
+      },
+      {
+        path: "isDisabled",
+        type: "private",
+        variableType: "boolean",
+        initVal: false,
+      },
+    ],
+    { $props: args, $refs }
+  );
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      <Button onClick={() => ($state.isDisabled = !$state.isDisabled)}>
+        Toggle "Disable Multiple Submissions"
+      </Button>
+      <p>Is disabled: {$state.isDisabled ? "true" : "false"}</p>
+      <p>Active submissions: {$state.count}</p>
+      <Form
+        extendedOnValuesChange={(values) => ($state.form.value = values)}
+        colon={false}
+        onFinish={async () => {
+          $state.count++;
+          await new Promise((r) => setTimeout(r, 2000));
+          $state.count = 0;
+        }}
+        autoDisableWhileSubmitting={$state.isDisabled}
+      >
+        <FormItem label={<p>Text Field</p>} name="textField">
+          <Input />
+        </FormItem>
+        <FormItem label={<p>Text Area</p>} name="textAreaField">
+          <TextArea />
+        </FormItem>
+        <div
+          style={{
+            display: "flex",
+            gap: "20px",
+          }}
+        >
+          <Button htmlType="submit">Submit</Button>
+          <button type="submit">Native HTML Submit</button>
+        </div>
+      </Form>
+    </div>
+  );
+};
+
+export const DisableMultipleSubmissions = _DisableMultipleSubmissions.bind({});
+DisableMultipleSubmissions.args = {};
+DisableMultipleSubmissions.play = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  await expect(canvas.getByText("Active submissions: 0")).toBeInTheDocument();
+
+  await userEvent.click(canvas.getByText("Submit"));
+  await sleep(100);
+  await userEvent.click(canvas.getByText("Submit"));
+  await sleep(100);
+  await userEvent.click(canvas.getByText("Submit"));
+  await sleep(100);
+  await expect(canvas.getByText("Active submissions: 3")).toBeInTheDocument();
+
+  await sleep(2000);
+  await expect(canvas.getByText("Active submissions: 0")).toBeInTheDocument();
+
+  await userEvent.click(
+    canvas.getByText(`Toggle "Disable Multiple Submissions"`)
+  );
+  await sleep(100);
+  await userEvent.click(canvas.getByText("Submit"));
+  await sleep(100);
+  await expect(canvas.getByText("Submit").parentNode).toBeDisabled();
+};
