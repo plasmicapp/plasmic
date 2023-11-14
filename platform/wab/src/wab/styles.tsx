@@ -1180,8 +1180,11 @@ function showClassPropRuleSets(
   tpl: TplComponent,
   vs: VariantSetting,
   ruleNamer: RuleNamer,
-  resolver?: CssVarResolver,
-  isStudio?: boolean
+  opts?: {
+    resolver?: CssVarResolver;
+    isStudio?: boolean;
+    useCssModules?: boolean;
+  }
 ) {
   const rootClassName = makeRootClassName(tpl, ruleNamer);
 
@@ -1207,7 +1210,14 @@ function showClassPropRuleSets(
         // applied to the element
         selector = `:self${selector}`;
       }
-      selector = selector
+      selector = (
+        opts?.useCssModules
+          ? selector.replaceAll(
+              /(\.-?[_a-zA-Z]+[_a-zA-Z0-9-]*)/g,
+              ":global($1)"
+            )
+          : selector
+      )
         .replaceAll(":component", `.${rootClassName}`)
         .replaceAll(":self", baseClassRule);
       for (const scope of customScopes) {
@@ -1250,8 +1260,8 @@ function showClassPropRuleSets(
           const rule = showSelectorRuleSet(
             makeRuleName(arg.expr, sty),
             sty,
-            resolver,
-            isStudio
+            opts?.resolver,
+            opts?.isStudio
           );
           if (rule) {
             rules.push(rule);
@@ -1278,6 +1288,7 @@ export const showSimpleCssRuleSet = (
   const site = ctx.site;
   const resolver = ctx.resolver;
   const isStudio = ctx.isStudio;
+  const useCssModules = opts.useCssModules;
 
   let ruleName = ruleNamer(tpl, vs);
 
@@ -1385,7 +1396,11 @@ export const showSimpleCssRuleSet = (
         )}`,
         showStyles(styles)
       ),
-      ...showClassPropRuleSets(site, tpl, vs, ruleNamer, resolver, isStudio)
+      ...showClassPropRuleSets(site, tpl, vs, ruleNamer, {
+        resolver,
+        isStudio,
+        useCssModules,
+      })
     );
   } else if (isStyledTplSlot(tpl)) {
     const uninheritedProps = [...styles.keys()].filter(
