@@ -2251,9 +2251,12 @@ export function getRepetitionIndexName(dataRep: Rep) {
 }
 
 export function getParamDisplayName(component: Component, param: Param) {
-  return param.displayName ?? component.codeComponentMeta
-    ? smartHumanize(param.variable.name)
-    : param.variable.name;
+  return (
+    param.displayName ??
+    (component.codeComponentMeta
+      ? smartHumanize(param.variable.name)
+      : param.variable.name)
+  );
 }
 
 export function removeVariantGroup(

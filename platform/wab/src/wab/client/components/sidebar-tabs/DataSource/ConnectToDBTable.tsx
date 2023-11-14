@@ -1,9 +1,3 @@
-import { DataSourceSchema, TableSchema } from "@plasmicapp/data-sources";
-import { FormType, formTypeDescription } from "@plasmicpkgs/antd5";
-import { notification } from "antd";
-import Modal from "antd/lib/modal/Modal";
-import { isString, size } from "lodash";
-import React from "react";
 import {
   Component,
   CustomCode,
@@ -15,12 +9,26 @@ import {
   TplComponent,
 } from "@/wab/classes";
 import {
-  ensure,
-  ensureArray,
-  mkShortId,
-  spawn,
-  swallow,
-} from "@/wab/common";
+  BottomModalButtons,
+  useBottomModalActions,
+} from "@/wab/client/components/BottomModal";
+import {
+  reactConfirm,
+  showTemporaryPrompt,
+} from "@/wab/client/components/quick-modals";
+import { ChoicePropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/ChoicePropEditor";
+import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
+import { useSourceOp } from "@/wab/client/components/sidebar-tabs/useSourceOp";
+import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
+import Button from "@/wab/client/components/widgets/Button";
+import { providesAppCtx } from "@/wab/client/contexts/AppContexts";
+import {
+  providesStudioCtx,
+  StudioCtx,
+  useStudioCtx,
+} from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { ensure, ensureArray, mkShortId, spawn, swallow } from "@/wab/common";
 import { ExprCtx, serCompositeExprMaybe } from "@/wab/exprs";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { getDataSourceMeta } from "@/wab/shared/data-sources-meta/data-source-registry";
@@ -35,20 +43,12 @@ import {
 import { TplMgr } from "@/wab/shared/TplMgr";
 import { ensureBaseVariantSetting } from "@/wab/shared/Variants";
 import { tryGetTplOwnerComponent } from "@/wab/tpls";
-import { providesAppCtx } from "@/wab/client/contexts/AppContexts";
-import {
-  providesStudioCtx,
-  StudioCtx,
-  useStudioCtx,
-} from "@/wab/client/studio-ctx/StudioCtx";
-import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { BottomModalButtons, useBottomModalActions } from "@/wab/client/components/BottomModal";
-import { reactConfirm, showTemporaryPrompt } from "@/wab/client/components/quick-modals";
-import { LabeledItemRow } from "@/wab/client/components/sidebar/sidebar-helpers";
-import Button from "@/wab/client/components/widgets/Button";
-import { ChoicePropEditor } from "@/wab/client/components/sidebar-tabs/ComponentProps/ChoicePropEditor";
-import { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
-import { useSourceOp } from "@/wab/client/components/sidebar-tabs/useSourceOp";
+import { DataSourceSchema, TableSchema } from "@plasmicapp/data-sources";
+import { FormType, formTypeDescription } from "@plasmicpkgs/antd5";
+import { notification } from "antd";
+import Modal from "antd/lib/modal/Modal";
+import { isString, size } from "lodash";
+import React from "react";
 import {
   DataSourceOpDraftPreview,
   DataSourceOpPickerProvider,
@@ -389,6 +389,7 @@ export function FormDataConnectionPropEditor({
   onChange,
   component,
   tpl,
+  disabled,
 }: {
   value: DataSourceOpExpr | undefined;
   env: Record<string, any>;
@@ -396,6 +397,7 @@ export function FormDataConnectionPropEditor({
   onChange: (expr: Expr) => void;
   component?: Component;
   tpl: TplComponent;
+  disabled?: boolean;
 }) {
   const studioCtx = useStudioCtx();
   const modalActions = useBottomModalActions();
@@ -439,6 +441,7 @@ export function FormDataConnectionPropEditor({
     <Button
       type={["leftAligned"]}
       size="stretch"
+      disabled={disabled}
       onClick={() => {
         modalActions.open(bottomModalKey, {
           children: (

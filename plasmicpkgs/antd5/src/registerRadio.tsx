@@ -2,6 +2,11 @@ import { Radio } from "antd";
 import type { RadioChangeEvent } from "antd/es/radio";
 import React from "react";
 import {
+  radioButtonComponentName,
+  radioComponentName,
+  radioGroupComponentName,
+} from "./names";
+import {
   Registerable,
   registerComponentHelper,
   traverseReactEltTree,
@@ -32,10 +37,6 @@ export function AntdRadioGroup(
     />
   );
 }
-
-export const radioComponentName = "plasmic-antd5-radio";
-export const radioButtonComponentName = "plasmic-antd5-radio-button";
-export const radioGroupComponentName = "plasmic-antd5-radio-group";
 
 export function registerRadio(loader?: Registerable) {
   registerComponentHelper(loader, AntdRadio, {

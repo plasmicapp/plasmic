@@ -1,8 +1,28 @@
-import { Select, Tooltip } from "antd";
-import cn from "classnames";
-import { observer } from "mobx-react-lite";
-import * as React from "react";
-import { CSSProperties, ReactNode } from "react";
+import { useLabel } from "@/wab/client/components/aria-utils";
+import { useContextMenu } from "@/wab/client/components/ContextMenu";
+import { ColorButton } from "@/wab/client/components/style-controls/ColorButton";
+import {
+  DefinedIndicator,
+  mergedIndicatorSource,
+} from "@/wab/client/components/style-controls/DefinedIndicator";
+import StyleCheckbox from "@/wab/client/components/style-controls/StyleCheckbox";
+import {
+  createStyleContextMenu,
+  ExpsProvider,
+  useStyleComponent,
+} from "@/wab/client/components/style-controls/StyleComponent";
+import StyleSelect from "@/wab/client/components/style-controls/StyleSelect";
+import StyleSwitch from "@/wab/client/components/style-controls/StyleSwitch";
+import StyleToggleButtonGroup from "@/wab/client/components/style-controls/StyleToggleButtonGroup";
+import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelector";
+import { FontFamilySelector } from "@/wab/client/components/widgets/FontFamilySelector";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import LabeledListItem from "@/wab/client/components/widgets/LabeledListItem";
+import { SimpleTextbox } from "@/wab/client/components/widgets/SimpleTextbox";
+import TriangleBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
+import { PlasmicStyleToggleButtonGroup__VariantsArgs } from "@/wab/client/plasmic/plasmic_kit_style_controls/PlasmicStyleToggleButtonGroup";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import {
   cx,
   ensure,
@@ -10,44 +30,24 @@ import {
   maybe,
   spawn,
   withoutNils,
-} from "../../../common";
-import { MaybeWrap } from "../../../commons/components/ReactUtil";
-import { XDraggable } from "../../../commons/components/XDraggable";
-import { TokenType } from "../../../commons/StyleToken";
-import { OptionalSubKeys } from "../../../commons/types";
-import { parseCssNumericNew, roundedCssNumeric } from "../../../css";
+} from "@/wab/common";
+import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
+import { XDraggable } from "@/wab/commons/components/XDraggable";
+import { TokenType } from "@/wab/commons/StyleToken";
+import { OptionalSubKeys } from "@/wab/commons/types";
+import { parseCssNumericNew, roundedCssNumeric } from "@/wab/css";
 import {
   DefinedIndicatorType,
   getTargetBlockingCombo,
-} from "../../../shared/defined-indicator";
-import { IRuleSetHelpersX } from "../../../shared/RuleSetHelpers";
-import { VariantedStylesHelper } from "../../../shared/VariantedStylesHelper";
-import { makeVariantName, VariantCombo } from "../../../shared/Variants";
-import TriangleBottomIcon from "../../plasmic/plasmic_kit/PlasmicIcon__TriangleBottom";
-import { PlasmicStyleToggleButtonGroup__VariantsArgs } from "../../plasmic/plasmic_kit_style_controls/PlasmicStyleToggleButtonGroup";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { StandardMarkdown } from "../../utils/StandardMarkdown";
-import { useLabel } from "../aria-utils";
-import { useContextMenu } from "../ContextMenu";
-import { ColorButton } from "../style-controls/ColorButton";
-import {
-  DefinedIndicator,
-  mergedIndicatorSource,
-} from "../style-controls/DefinedIndicator";
-import StyleCheckbox from "../style-controls/StyleCheckbox";
-import {
-  createStyleContextMenu,
-  ExpsProvider,
-  useStyleComponent,
-} from "../style-controls/StyleComponent";
-import StyleSelect from "../style-controls/StyleSelect";
-import StyleSwitch from "../style-controls/StyleSwitch";
-import StyleToggleButtonGroup from "../style-controls/StyleToggleButtonGroup";
-import { DimTokenSpinner } from "../widgets/DimTokenSelector";
-import { FontFamilySelector } from "../widgets/FontFamilySelector";
-import { Icon } from "../widgets/Icon";
-import LabeledListItem from "../widgets/LabeledListItem";
-import { SimpleTextbox } from "../widgets/SimpleTextbox";
+} from "@/wab/shared/defined-indicator";
+import { IRuleSetHelpersX } from "@/wab/shared/RuleSetHelpers";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { makeVariantName, VariantCombo } from "@/wab/shared/Variants";
+import { Select, Tooltip } from "antd";
+import cn from "classnames";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
+import { CSSProperties, ReactNode } from "react";
 
 export function LabeledItem(props: {
   label?: React.ReactNode;
@@ -919,6 +919,22 @@ export function shouldBeDisabled(opts: {
       disabledTooltip: null,
     };
   }
+}
+
+export function InvariantablePropTooltip(props: { propName: string }) {
+  const { propName } = props;
+  return (
+    <>
+      <p>
+        The <strong>{propName}</strong> is invariantable so it should only be
+        modified in the <strong>Base</strong> variant.
+      </p>
+      <p>
+        To edit, switch to editing that variant (by activating it in the
+        floating toolbar).
+      </p>
+    </>
+  );
 }
 
 export const FullRow = React.forwardRef(function FullRow(

@@ -1,6 +1,7 @@
 import { Checkbox } from "antd";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import React from "react";
+import { checkboxComponentName, checkboxGroupComponentName } from "./names";
 import {
   Registerable,
   registerComponentHelper,
@@ -25,9 +26,6 @@ export function AntdCheckbox(
 AntdCheckbox.__plasmicFormFieldMeta = { valueProp: "checked" };
 
 export const AntdCheckboxGroup = Checkbox.Group;
-
-export const checkboxComponentName = "plasmic-antd5-checkbox";
-export const checkboxGroupComponentName = "plasmic-antd5-checkbox-group";
 
 export function registerCheckbox(loader?: Registerable) {
   registerComponentHelper(loader, AntdCheckbox, {

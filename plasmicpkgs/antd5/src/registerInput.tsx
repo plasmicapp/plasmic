@@ -1,5 +1,11 @@
 import { Input, InputNumber } from "antd";
 import React from "react";
+import {
+  inputComponentName,
+  inputNumberComponentName,
+  passwordComponentName,
+  textAreaComponentName,
+} from "./names";
 import { Registerable, registerComponentHelper } from "./utils";
 
 export const AntdInput = Input;
@@ -100,8 +106,6 @@ const COMMON_EVENT_HANDLERS = {
   },
 } as const;
 
-export const inputComponentName = "plasmic-antd5-input";
-
 const inputTypeOptions = [
   "text",
   "password",
@@ -152,8 +156,6 @@ export function registerInput(loader?: Registerable) {
   });
 }
 
-export const textAreaComponentName = "plasmic-antd5-textarea";
-
 export function registerTextArea(loader?: Registerable) {
   registerComponentHelper(loader, AntdTextArea, {
     name: textAreaComponentName,
@@ -194,8 +196,6 @@ export function registerTextArea(loader?: Registerable) {
   });
 }
 
-export const passwordComponentName = "plasmic-antd5-input-password";
-
 export function registerPasswordInput(loader?: Registerable) {
   registerComponentHelper(loader, AntdPassword, {
     name: passwordComponentName,
@@ -232,8 +232,6 @@ export function registerPasswordInput(loader?: Registerable) {
     importName: "AntdPassword",
   });
 }
-
-export const inputNumberComponentName = "plasmic-antd5-input-number";
 
 export function registerNumberInput(loader?: Registerable) {
   registerComponentHelper(loader, AntdInputNumber, {

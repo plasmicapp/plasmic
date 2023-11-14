@@ -1,36 +1,32 @@
-import { PropType } from "@plasmicapp/host";
-import { isString } from "lodash";
-import { observer } from "mobx-react-lite";
-import React from "react";
-import {
-  isKnownExpr,
-  TemplatedString,
-  TplComponent,
-} from "../../../../classes";
-import { assert, uncheckedCast, withoutNils } from "../../../../common";
-import { codeLit, summarizeExpr } from "../../../../exprs";
-import {
-  getPropTypeDefaultValue,
-  getPropTypeType,
-  isAdvancedProp,
-  maybePropTypeToDisplayName,
-  StudioPropType,
-} from "../../../../shared/code-components/code-components";
-import { DefinedIndicatorType } from "../../../../shared/defined-indicator";
-import { smartHumanize } from "../../../../strs";
-import { summarizeVal } from "../../../../vals";
-import { useStudioCtx } from "../../../studio-ctx/StudioCtx";
-import { TutorialEventsType } from "../../../tours/tutorials/tutorials-events";
-import { SidebarModal } from "../../sidebar/SidebarModal";
-import { SidebarSection } from "../../sidebar/SidebarSection";
-import Button from "../../widgets/Button";
+import { isKnownExpr, TemplatedString, TplComponent } from "@/wab/classes";
 import {
   ControlExtras,
   InnerPropEditorRow,
   isPropShown,
   PropValueEditorContext,
   usePropValueEditorContext,
-} from "../PropEditorRow";
+} from "@/wab/client/components/sidebar-tabs/PropEditorRow";
+import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import Button from "@/wab/client/components/widgets/Button";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
+import { assert, uncheckedCast, withoutNils } from "@/wab/common";
+import { codeLit, summarizeExpr } from "@/wab/exprs";
+import {
+  getPropTypeDefaultValue,
+  getPropTypeType,
+  isAdvancedProp,
+  maybePropTypeToDisplayName,
+  StudioPropType,
+} from "@/wab/shared/code-components/code-components";
+import { DefinedIndicatorType } from "@/wab/shared/defined-indicator";
+import { smartHumanize } from "@/wab/strs";
+import { summarizeVal } from "@/wab/vals";
+import { PropType } from "@plasmicapp/host";
+import { isString } from "lodash";
+import { observer } from "mobx-react-lite";
+import React from "react";
 
 export type ItemFunc<Value, Return> = (
   value: Value | undefined,
@@ -56,6 +52,7 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
   controlExtras: ControlExtras;
   "data-plasmic-prop"?: string;
   propType: StudioPropType<any>;
+  disabled?: boolean;
 }) {
   const {
     compositeValue,
@@ -72,6 +69,7 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
     controlExtras,
     "data-plasmic-prop": dataPlasmicProp,
     propType,
+    disabled,
   } = props;
   const sc = useStudioCtx();
   const [showModal, setShowModal] = React.useState(defaultShowModal);
@@ -100,6 +98,7 @@ export const ObjectPropEditor = observer(function ObjectPropEditor<
         onClick={() => {
           setShowModal(true);
         }}
+        disabled={disabled}
         data-plasmic-prop={props["data-plasmic-prop"]}
       >
         {objectNameFunc?.(evaluatedValue, componentPropValues, ccContextData, {

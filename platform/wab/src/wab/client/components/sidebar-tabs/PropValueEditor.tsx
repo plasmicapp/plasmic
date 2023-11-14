@@ -1,7 +1,3 @@
-import { ContextDependentConfig } from "@plasmicapp/host";
-import L, { isNil, isNumber } from "lodash";
-import { observer } from "mobx-react-lite";
-import React from "react";
 import {
   CollectionExpr,
   Component,
@@ -33,6 +29,10 @@ import {
   VariantsRef,
   VarRef,
 } from "@/wab/classes";
+import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { ColorButton } from "@/wab/client/components/style-controls/ColorButton";
+import { extractDataCtx } from "@/wab/client/state-management/interactions-meta";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   assert,
   ensure,
@@ -75,10 +75,10 @@ import { CanvasEnv, tryEvalExpr } from "@/wab/shared/eval";
 import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
 import { smartHumanize } from "@/wab/strs";
 import { getDisplayNameOfEventHandlerKey, isTplComponent } from "@/wab/tpls";
-import { extractDataCtx } from "@/wab/client/state-management/interactions-meta";
-import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ValueSetState } from "@/wab/client/components/sidebar/sidebar-helpers";
-import { ColorButton } from "@/wab/client/components/style-controls/ColorButton";
+import { ContextDependentConfig } from "@plasmicapp/host";
+import L, { isNil, isNumber } from "lodash";
+import { observer } from "mobx-react-lite";
+import React from "react";
 import { ArrayPropEditor } from "./ComponentProps/ArrayPropEditor";
 import { BoolPropEditor } from "./ComponentProps/BoolPropEditor";
 import { CardPickerEditor } from "./ComponentProps/CardPickerEditor";
@@ -804,6 +804,7 @@ const PropValueEditor_ = (
         onChange={onChange}
         component={component}
         tpl={tpl}
+        disabled={disabled}
       />
     );
   } else if (isPlainObjectPropType(propType) && propType.type === "class") {
@@ -1005,6 +1006,7 @@ const PropValueEditor_ = (
           tpl={tpl}
           data-plasmic-prop={attr}
           propType={propType}
+          disabled={disabled}
         />
       );
     } else {

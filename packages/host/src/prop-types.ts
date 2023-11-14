@@ -76,6 +76,10 @@ export interface PropTypeBase<P> {
    * (This behavior only applies to canvas)
    */
   forceRemount?: boolean;
+  /**
+   * If true, the prop can't be overriden in different variants.
+   */
+  invariantable?: boolean;
 }
 
 export interface Defaultable<P, T> {
