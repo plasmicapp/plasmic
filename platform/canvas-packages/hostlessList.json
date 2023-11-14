@@ -55,5 +55,6 @@
   "date-fns",
   "papaparse",
   "jquery",
-  "dayjs"
+  "dayjs",
+  "react-aria"
 ]
