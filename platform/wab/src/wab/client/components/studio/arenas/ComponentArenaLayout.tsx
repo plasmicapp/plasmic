@@ -1,7 +1,3 @@
-import { Button, Form, Menu, Popover } from "antd";
-import cn from "classnames";
-import { observer } from "mobx-react-lite";
-import React, { useLayoutEffect, useRef } from "react";
 import {
   ArenaFrame,
   ArenaFrameRow,
@@ -13,44 +9,49 @@ import {
   PageArena,
   Site,
   VariantGroup,
-} from "../../../../classes";
-import { maybe, spawn } from "../../../../common";
-import { MaybeWrap } from "../../../../commons/components/ReactUtil";
+} from "@/wab/classes";
+import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
+import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
+import ExperimentCanvasButton from "@/wab/client/components/splits/ExperimentCanvasButton";
+import { VariantComboPicker } from "@/wab/client/components/variants/VariantComboPicker";
+import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
+import {
+  EditableLabel,
+  EditableLabelHandles,
+} from "@/wab/client/components/widgets/EditableLabel";
+import { useRefMap } from "@/wab/client/hooks/useRefMap";
+import { useResponsiveBreakpoints } from "@/wab/client/hooks/useResponsiveBreakpoints";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { maybe, spawn } from "@/wab/common";
+import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import {
   allComponentVariants,
   getSuperComponentVariantGroupToComponent,
-} from "../../../../components";
-import { getFrameHeight } from "../../../../shared/Arenas";
+} from "@/wab/components";
+import { getFrameHeight } from "@/wab/shared/Arenas";
 import {
   ensureCustomFrameForActivatedVariants,
   getComponentArenaRowLabel,
-} from "../../../../shared/component-arenas";
+} from "@/wab/shared/component-arenas";
 import {
   COMBINATIONS_CAP,
   FRAME_LOWER,
   VARIANTS_LOWER,
   VARIANT_CAP,
-} from "../../../../shared/Labels";
-import { VariantOptionsType } from "../../../../shared/TplMgr";
+} from "@/wab/shared/Labels";
+import { VariantOptionsType } from "@/wab/shared/TplMgr";
 import {
   isGlobalVariantGroup,
   isScreenVariantGroup,
   isStandaloneVariantGroup,
   VariantCombo,
-} from "../../../../shared/Variants";
-import { allGlobalVariantGroups } from "../../../../sites";
-import { useRefMap } from "../../../hooks/useRefMap";
-import { useResponsiveBreakpoints } from "../../../hooks/useResponsiveBreakpoints";
-import { StudioCtx } from "../../../studio-ctx/StudioCtx";
-import { CanvasCtx } from "../../canvas/canvas-ctx";
-import { maybeShowContextMenu } from "../../ContextMenu";
-import ExperimentCanvasButton from "../../splits/ExperimentCanvasButton";
-import { VariantComboPicker } from "../../variants/VariantComboPicker";
-import { makeVariantsController } from "../../variants/VariantsController";
-import {
-  EditableLabel,
-  EditableLabelHandles,
-} from "../../widgets/EditableLabel";
+} from "@/wab/shared/Variants";
+import { allGlobalVariantGroups } from "@/wab/sites";
+import { isTplTag } from "@/wab/tpls";
+import { Button, Form, Menu, Popover } from "antd";
+import cn from "classnames";
+import { observer } from "mobx-react-lite";
+import React, { useLayoutEffect, useRef } from "react";
 import sty from "./ComponentArenaLayout.module.sass";
 import { GhostFrame, GhostFrameRef } from "./GhostFrame";
 import { GridFramesLayout } from "./GridFramesLayout";
@@ -222,6 +223,10 @@ export const ComponentArenaLayout = observer(
           rowEndControls={(row) => {
             const group = ensureMaybeKnownVariantGroup(row.rowKey);
             if (!group) {
+              // If the root is not a TplTag we don't allow interaction variants
+              if (!isTplTag(component.tplTree)) {
+                return null;
+              }
               return (
                 <GhostFrame
                   tooltip="Add interaction variant"

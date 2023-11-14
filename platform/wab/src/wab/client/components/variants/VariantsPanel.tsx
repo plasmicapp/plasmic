@@ -1,10 +1,3 @@
-import { Menu } from "antd";
-import sortBy from "lodash/sortBy";
-import { observer } from "mobx-react-lite";
-import * as React from "react";
-import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
-import { useSessionStorage } from "react-use";
-import { isTplTag } from "src/wab/tpls";
 import {
   Component,
   ComponentVariantGroup,
@@ -15,18 +8,48 @@ import {
   TplTag,
   Variant,
   VariantGroup,
-} from "../../../classes";
-import { ensure, ensureInstance, partitions, spawn } from "../../../common";
+} from "@/wab/classes";
+import { MenuBuilder } from "@/wab/client/components/menu-builder";
+import {
+  SidebarSection,
+  SidebarSectionHandle,
+} from "@/wab/client/components/sidebar/SidebarSection";
+import {
+  StyleVariantLabel,
+  VariantLabel,
+} from "@/wab/client/components/VariantControls";
+import {
+  IconLinkButton,
+  IFrameAwareDropdownMenu,
+} from "@/wab/client/components/widgets";
+import {
+  GlobalVariantsTooltip,
+  VariantCombosTooltip,
+  VariantsTooltip,
+} from "@/wab/client/components/widgets/DetailedTooltips";
+import { EditableLabelHandles } from "@/wab/client/components/widgets/EditableLabel";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
+import { SimpleReorderableList } from "@/wab/client/components/widgets/SimpleReorderableList";
+import BoltIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Bolt";
+import GlobeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Globe";
+import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import VariantGroupIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__VariantGroup";
+import ScreenIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Screen";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { testIds } from "@/wab/client/test-helpers/test-ids";
+import { ensure, ensureInstance, partitions, spawn } from "@/wab/common";
 import {
   allComponentStyleVariants,
   getSuperComponents,
   isPageComponent,
-} from "../../../components";
-import { findNonEmptyCombos } from "../../../shared/cached-selectors";
-import { ScreenSizeSpec } from "../../../shared/Css";
-import { VariantPinState } from "../../../shared/PinManager";
-import { getPlumeVariantDef } from "../../../shared/plume/plume-registry";
-import { VariantOptionsType } from "../../../shared/TplMgr";
+} from "@/wab/components";
+import { findNonEmptyCombos } from "@/wab/shared/cached-selectors";
+import { ScreenSizeSpec } from "@/wab/shared/Css";
+import { VariantPinState } from "@/wab/shared/PinManager";
+import { getPlumeVariantDef } from "@/wab/shared/plume/plume-registry";
+import { VariantOptionsType } from "@/wab/shared/TplMgr";
 import {
   getBaseVariant,
   isBaseVariant,
@@ -36,31 +59,14 @@ import {
   moveVariant,
   moveVariantGroup,
   variantComboKey,
-} from "../../../shared/Variants";
-import BoltIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Bolt";
-import GlobeIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Globe";
-import PlusIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Plus";
-import VariantGroupIcon from "../../plasmic/plasmic_kit/PlasmicIcon__VariantGroup";
-import ScreenIcon from "../../plasmic/plasmic_kit_design_system/PlasmicIcon__Screen";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
-import { testIds } from "../../test-helpers/test-ids";
-import { MenuBuilder } from "../menu-builder";
-import {
-  SidebarSection,
-  SidebarSectionHandle,
-} from "../sidebar/SidebarSection";
-import { StyleVariantLabel, VariantLabel } from "../VariantControls";
-import { IconLinkButton, IFrameAwareDropdownMenu } from "../widgets";
-import {
-  GlobalVariantsTooltip,
-  VariantCombosTooltip,
-  VariantsTooltip,
-} from "../widgets/DetailedTooltips";
-import { EditableLabelHandles } from "../widgets/EditableLabel";
-import { Icon } from "../widgets/Icon";
-import { LabelWithDetailedTooltip } from "../widgets/LabelWithDetailedTooltip";
-import { SimpleReorderableList } from "../widgets/SimpleReorderableList";
+} from "@/wab/shared/Variants";
+import { Menu } from "antd";
+import sortBy from "lodash/sortBy";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
+import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
+import { useSessionStorage } from "react-use";
+import { isTplTag } from "src/wab/tpls";
 import { EditableGroupLabel } from "./EditableGroupLabel";
 import { StandaloneVariant } from "./StandaloneVariantGroup";
 import { SuperComponentVariantsSection } from "./SuperComponentVariantsSection";
@@ -469,64 +475,66 @@ export const VariantsPanel = observer(
                 )
               )}
             </SimpleReorderableList>
-            <VariantSection
-              showIcon
-              icon={<Icon icon={BoltIcon} />}
-              title="Interaction Variants"
-              emptyAddButtonText="Add variant"
-              emptyAddButtonTooltip="Interaction variants are automatically activated when the user interacts with the component -- by hovering, focusing, pressing, etc."
-              onAddNewVariant={() =>
-                studioCtx.change(({ success }) => {
-                  const variant = studioCtx
-                    .tplMgr()
-                    .createStyleVariant(component, []);
-                  onAddedVariant(variant);
-                  return success();
-                })
-              }
-              isQuiet
-            >
-              {isTplTag(root) &&
-                !isPageComponent(component) &&
-                styleVariants.map((variant) => (
-                  <ComponentStyleVariantRow
-                    key={variant.uuid}
-                    variant={variant}
-                    component={component}
-                    studioCtx={studioCtx}
-                    viewCtx={viewCtx}
-                    pinState={vcontroller.getPinState(variant)}
-                    onClick={() =>
-                      justAddedVariant !== variant &&
-                      studioCtx.change(({ success }) => {
-                        vcontroller.onClickVariant(variant);
-                        return success();
-                      })
-                    }
-                    onTarget={
-                      canChangeVariants ||
-                      vcontroller.canToggleTargeting(variant)
-                        ? (target) =>
-                            studioCtx.change(({ success }) => {
-                              vcontroller.onTargetVariant(variant, target);
-                              return success();
-                            })
-                        : undefined
-                    }
-                    onToggle={
-                      canChangeVariants
-                        ? () =>
-                            studioCtx.change(({ success }) => {
-                              vcontroller.onToggleVariant(variant);
-                              return success();
-                            })
-                        : undefined
-                    }
-                    defaultEditing={variant === justAddedVariant}
-                    onEdited={() => setJustAddedVariant(undefined)}
-                  />
-                ))}
-            </VariantSection>
+            {isTplTag(root) && (
+              <VariantSection
+                showIcon
+                icon={<Icon icon={BoltIcon} />}
+                title="Interaction Variants"
+                emptyAddButtonText="Add variant"
+                emptyAddButtonTooltip="Interaction variants are automatically activated when the user interacts with the component -- by hovering, focusing, pressing, etc."
+                onAddNewVariant={() =>
+                  studioCtx.change(({ success }) => {
+                    studioCtx.siteOps().createStyleVariant(component);
+                    const variant = studioCtx
+                      .tplMgr()
+                      .createStyleVariant(component, []);
+                    onAddedVariant(variant);
+                    return success();
+                  })
+                }
+                isQuiet
+              >
+                {!isPageComponent(component) &&
+                  styleVariants.map((variant) => (
+                    <ComponentStyleVariantRow
+                      key={variant.uuid}
+                      variant={variant}
+                      component={component}
+                      studioCtx={studioCtx}
+                      viewCtx={viewCtx}
+                      pinState={vcontroller.getPinState(variant)}
+                      onClick={() =>
+                        justAddedVariant !== variant &&
+                        studioCtx.change(({ success }) => {
+                          vcontroller.onClickVariant(variant);
+                          return success();
+                        })
+                      }
+                      onTarget={
+                        canChangeVariants ||
+                        vcontroller.canToggleTargeting(variant)
+                          ? (target) =>
+                              studioCtx.change(({ success }) => {
+                                vcontroller.onTargetVariant(variant, target);
+                                return success();
+                              })
+                          : undefined
+                      }
+                      onToggle={
+                        canChangeVariants
+                          ? () =>
+                              studioCtx.change(({ success }) => {
+                                vcontroller.onToggleVariant(variant);
+                                return success();
+                              })
+                          : undefined
+                      }
+                      defaultEditing={variant === justAddedVariant}
+                      onEdited={() => setJustAddedVariant(undefined)}
+                    />
+                  ))}
+              </VariantSection>
+            )}
 
             {superComps.map((superComp) => (
               <SuperComponentVariantsSection
