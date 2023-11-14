@@ -41,6 +41,7 @@ import ContextMenuIndicator from "@/wab/client/components/ContextMenuIndicator/C
 import { ComponentPropModal } from "@/wab/client/components/modals/ComponentPropModal";
 import {
   getValueSetState,
+  InvariantablePropTooltip,
   LabeledItemRow,
   ValueSetState,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
@@ -125,6 +126,7 @@ import { getInputTypeOptions } from "@/wab/shared/html-utils";
 import { hashExpr } from "@/wab/shared/site-diffs";
 import { getTplComponentArg, unsetTplComponentArg } from "@/wab/shared/TplMgr";
 import { $$$ } from "@/wab/shared/TplQuery";
+import { isBaseVariant } from "@/wab/shared/Variants";
 import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
 import {
   getTplTextBlockContent,
@@ -449,17 +451,31 @@ function PropEditorRowWrapper_(props: {
     viewCtx.highlightParam.tpl === tpl &&
     viewCtx.highlightParam.param === param;
 
+  const isDisabled =
+    isPlainObjectPropType(propType) &&
+    hackyCast(propType).invariantable &&
+    !isBaseVariant(expsProvider.targetIndicatorCombo);
+
   return (
     <PropEditorRow
       key={param.variable.name}
       attr={param.variable.name}
       expr={origExpr}
-      label={param.displayName ?? getParamDisplayName(tpl.component, param)}
+      label={getParamDisplayName(tpl.component, param)}
       definedIndicator={defined}
       onDelete={defined.source === "set" ? onDeleteArg : undefined}
       propType={propType}
       shouldHighlight={shouldHighlight}
-      onChange={(expr) =>
+      disabled={isDisabled}
+      tooltip={
+        isDisabled && (
+          <InvariantablePropTooltip
+            propName={getParamDisplayName(tpl.component, param)}
+          />
+        )
+      }
+      onChange={(expr) => {
+        assert(!isDisabled, "Trying to override an invariantable prop");
         viewCtx.change(() => {
           if (expr) {
             if (isKnownVarRef(expr)) {
@@ -505,8 +521,8 @@ function PropEditorRowWrapper_(props: {
               vtm.delArg(tpl, param.variable);
             }
           }
-        })
-      }
+        });
+      }}
       about={param.about ?? undefined}
       viewCtx={viewCtx}
       tpl={tpl}
@@ -539,6 +555,7 @@ interface PropEditorRowProps {
   isNested?: boolean;
   icon?: React.ReactNode;
   shouldHighlight?: boolean;
+  tooltip?: React.ReactNode;
 }
 
 function canLinkPropToParam(type: Type, existingParam: Param) {
@@ -634,6 +651,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
   const forceSetState = isNested ? ("isSet" as const) : undefined;
   const canLinkToProp =
     !disableLinkToProp &&
+    !disabled &&
     viewCtx &&
     tpl &&
     viewCtx.tplMgr().canLinkToProp(tpl) &&
@@ -938,7 +956,9 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
             noMenuButton
             icon={icon}
             tooltip={
-              about ? (
+              props.tooltip ? (
+                props.tooltip
+              ) : about ? (
                 <>
                   <strong>{label}</strong>: {about}
                 </>

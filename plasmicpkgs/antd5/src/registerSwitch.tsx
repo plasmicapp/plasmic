@@ -1,13 +1,12 @@
 import { Switch } from "antd";
 import React from "react";
+import { switchComponentName } from "./names";
 import { Registerable, registerComponentHelper } from "./utils";
 
 export function AntdSwitch(props: React.ComponentProps<typeof Switch>) {
   return <Switch {...props} />;
 }
 AntdSwitch.__plasmicFormFieldMeta = { valueProp: "checked" };
-
-export const switchComponentName = "plasmic-antd5-switch";
 
 export function registerSwitch(loader?: Registerable) {
   registerComponentHelper(loader, AntdSwitch, {

@@ -1,6 +1,23 @@
+import { InputType } from "./form/Form";
+import { registerForm } from "./form/registerForm";
+import { registerFormGroup } from "./form/registerFormGroup";
+import { registerFormItem } from "./form/registerFormItem";
+import { registerFormList } from "./form/registerFormList";
+import {
+  checkboxComponentName,
+  inputComponentName,
+  inputNumberComponentName,
+  optionComponentName,
+  optionGroupComponentName,
+  passwordComponentName,
+  radioComponentName,
+  radioGroupComponentName,
+  selectComponentName,
+  textAreaComponentName,
+} from "./names";
 import { registerAvatar, registerAvatarGroup } from "./registerAvatar";
 import { registerButton } from "./registerButton";
-import { checkboxComponentName, registerCheckbox } from "./registerCheckbox";
+import { registerCheckbox } from "./registerCheckbox";
 import { registerCollapse } from "./registerCollapse";
 import { registerColorPicker } from "./registerColorPicker";
 import {
@@ -15,40 +32,20 @@ import { registerDateRangePicker } from "./registerDateRangePicker";
 import { registerDrawer } from "./registerDrawer";
 import { registerDropdown } from "./registerDropdown";
 import {
-  InputType,
-  registerForm,
-  registerFormGroup,
-  registerFormItem,
-  registerFormList,
-} from "./registerForm";
-import {
-  inputComponentName,
-  inputNumberComponentName,
-  passwordComponentName,
   registerInput,
   registerNumberInput,
   registerPasswordInput,
   registerTextArea,
-  textAreaComponentName,
 } from "./registerInput";
 import { registerMenu } from "./registerMenu";
 import { registerModal } from "./registerModal";
 import { registerPagination } from "./registerPagination";
 import { registerPopover } from "./registerPopover";
 import { registerProgress } from "./registerProgress";
-import {
-  radioComponentName,
-  radioGroupComponentName,
-  registerRadio,
-} from "./registerRadio";
+import { registerRadio } from "./registerRadio";
 import { registerRate } from "./registerRate";
 import { registerSegmented } from "./registerSegmented";
-import {
-  optionComponentName,
-  optionGroupComponentName,
-  registerSelect,
-  selectComponentName,
-} from "./registerSelect";
+import { registerSelect } from "./registerSelect";
 import { registerSlider } from "./registerSlider";
 import { registerSteps } from "./registerSteps";
 import { registerSwitch } from "./registerSwitch";
@@ -100,22 +97,11 @@ export function registerAll(loader?: Registerable) {
   registerPagination(loader);
 }
 
-export { buttonComponentName } from "./registerButton";
-export {
-  deriveFormFieldConfigs,
-  formComponentName,
-  formGroupComponentName,
-  formItemComponentName,
-  formListComponentName,
-  FormType,
-  formTypeDescription,
-  InputType,
-  registerForm,
-  registerFormGroup,
-  registerFormItem,
-  useFormInstanceMaybe,
-} from "./registerForm";
-export type { SimplifiedFormItemsProp } from "./registerForm";
+export { FormType, InputType, OPTIMIZED_FORM_IMPORT } from "./form/Form";
+export type { SimplifiedFormItemsProp } from "./form/Form";
+export { formTypeDescription, registerForm } from "./form/registerForm";
+export { deriveFormFieldConfigs } from "./form/SchemaForm";
+export * from "./names";
 
 export const componentNameToInputType = {
   [inputComponentName]: InputType.Text,

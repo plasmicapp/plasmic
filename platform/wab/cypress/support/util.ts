@@ -2076,6 +2076,7 @@ export function addInteraction(
   interactions: InteractionType | InteractionType[]
 ) {
   switchToSettingsRightTab();
+  cy.wait(300);
   cy.get(`[data-test-id="add-interaction"]`).click().wait(200);
   justType(`${eventHandler}{enter}`);
   ensureArray(interactions).forEach((interaction, interactionIndex, list) => {

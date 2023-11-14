@@ -1,5 +1,10 @@
 import { Select } from "antd";
 import React, { ComponentProps } from "react";
+import {
+  optionComponentName,
+  optionGroupComponentName,
+  selectComponentName,
+} from "./names";
 import { reactNodeToString } from "./react-utils";
 import {
   Registerable,
@@ -49,10 +54,6 @@ export function AntdSelect(
     />
   );
 }
-
-export const selectComponentName = "plasmic-antd5-select";
-export const optionComponentName = "plasmic-antd5-option";
-export const optionGroupComponentName = "plasmic-antd5-option-group";
 
 export function registerSelect(loader?: Registerable) {
   registerComponentHelper(loader, AntdSelect, {

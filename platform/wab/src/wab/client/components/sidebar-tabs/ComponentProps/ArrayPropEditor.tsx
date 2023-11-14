@@ -1,27 +1,27 @@
-import { PropType } from "@plasmicapp/host";
-import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
-import { TplComponent } from "../../../../classes";
+import { TplComponent } from "@/wab/classes";
+import {
+  ControlExtras,
+  PropValueEditorContext,
+  usePropValueEditorContext,
+} from "@/wab/client/components/sidebar-tabs/PropEditorRow";
+import { ListBox, ListBoxItem } from "@/wab/client/components/widgets";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import {
   arrayMoveIndex,
   arrayRemoveAt,
   arrayReplaceAt,
   Dict,
-} from "../../../../collections";
-import { ensure, uncheckedCast } from "../../../../common";
+} from "@/wab/collections";
+import { ensure, uncheckedCast } from "@/wab/common";
 import {
   getPropTypeDefaultValue,
   isPlainObjectPropType,
   StudioPropType,
-} from "../../../../shared/code-components/code-components";
-import { useStudioCtx } from "../../../studio-ctx/StudioCtx";
-import { TutorialEventsType } from "../../../tours/tutorials/tutorials-events";
-import { ListBox, ListBoxItem } from "../../widgets";
-import {
-  ControlExtras,
-  PropValueEditorContext,
-  usePropValueEditorContext,
-} from "../PropEditorRow";
+} from "@/wab/shared/code-components/code-components";
+import { PropType } from "@plasmicapp/host";
+import { observer } from "mobx-react-lite";
+import React, { useState } from "react";
 import { ItemFunc, ObjectPropEditor } from "./ObjectPropEditor";
 
 interface ArrayPropEditorProps<Value extends object> {
@@ -37,6 +37,7 @@ interface ArrayPropEditorProps<Value extends object> {
   evaluatedValue: Value[] | undefined;
   "data-plasmic-prop": string;
   propType: StudioPropType<any>;
+  disabled?: boolean;
 }
 
 export const ArrayPropEditor = observer(function ArrayPropEditor<
@@ -54,6 +55,7 @@ export const ArrayPropEditor = observer(function ArrayPropEditor<
   controlExtras,
   "data-plasmic-prop": dataPlasmicProp,
   propType,
+  disabled,
 }: ArrayPropEditorProps<Value>) {
   const [inspect, setInspect] = useState<number | undefined>(undefined);
   const sc = useStudioCtx();
@@ -106,6 +108,7 @@ export const ArrayPropEditor = observer(function ArrayPropEditor<
           });
         }}
         data-test-id={dataPlasmicProp}
+        disabled={disabled}
       >
         {(evaluatedValue ?? []).map((evaluatedItem, index) => {
           const nextControlExtras: ControlExtras = {
@@ -163,21 +166,27 @@ export const ArrayPropEditor = observer(function ArrayPropEditor<
                     defaultShowModal={index === inspect}
                     controlExtras={nextControlExtras}
                     propType={arrayItemType}
+                    disabled={disabled}
                   />
                 </PropValueEditorContext.Provider>
               }
               index={index}
-              showDelete={canDeleteFunc?.(
-                evaluatedItem,
-                componentPropValues,
-                ccContextData,
-                nextControlExtras
-              )}
+              showDelete={
+                !disabled &&
+                canDeleteFunc?.(
+                  evaluatedItem,
+                  componentPropValues,
+                  ccContextData,
+                  nextControlExtras
+                )
+              }
               onRemove={() => {
                 if (compositeValue) {
                   onChange(arrayRemoveAt(compositeValue, index));
                 }
               }}
+              disabled={disabled}
+              isDragDisabled={disabled}
             />
           );
         })}

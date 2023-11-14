@@ -1,5 +1,6 @@
-import React from "react";
 import { Button } from "antd";
+import React from "react";
+import { buttonComponentName } from "./names";
 import { Registerable, registerComponentHelper } from "./utils";
 
 export function AntdButton(
@@ -32,8 +33,6 @@ export function AntdButton(
     />
   );
 }
-
-export const buttonComponentName = "plasmic-antd5-button";
 
 export function registerButton(loader?: Registerable) {
   registerComponentHelper(loader, AntdButton, {
