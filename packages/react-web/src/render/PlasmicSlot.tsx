@@ -70,6 +70,10 @@ function maybeAsString(
     return node;
   }
 
+  if (typeof node === "number") {
+    return `${node}`;
+  }
+
   if (Array.isArray(node) && node.length === 1 && typeof node[0] === "string") {
     return node[0];
   }
