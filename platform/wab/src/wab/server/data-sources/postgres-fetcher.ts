@@ -17,6 +17,7 @@ import {
   TableSchema,
 } from "@plasmicapp/data-sources";
 import { Mutex } from "async-mutex";
+import { Dictionary, has, keyBy } from "lodash";
 import moize from "moize";
 import { Pool, PoolConfig, QueryResult } from "pg";
 
@@ -569,17 +570,12 @@ export class PostgresFetcher {
     if (!sanitizedResource) {
       throw new NotFoundError();
     }
-    const formattedVariables = formatVariables(variables);
-    const columns = formattedVariables
+    const knownColumns = keyBy(sanitizedResource.fields, "id");
+    const formattedVariables = formatVariables(knownColumns, variables);
+    const sanitizedColumns = formattedVariables
       ? Array.isArray(formattedVariables)
         ? formattedVariables.flatMap((v) => Object.keys(v))
         : Object.keys(formattedVariables)
-      : undefined;
-    const knownColumns = new Set(
-      sanitizedResource.fields.map((column) => column.id)
-    );
-    const sanitizedColumns = columns
-      ? columns.filter((c) => knownColumns.has(c))
       : undefined;
 
     return {
@@ -666,21 +662,43 @@ function buildInsertQuery(resource: string, columns: string[]): string {
 }
 
 function formatVariables(
+  columns: Dictionary<TableFieldSchema>,
   variables?: Record<string, any> | Record<string, any>[]
 ): Record<string, any> | Record<string, any>[] | undefined {
   if (!variables) {
     return undefined;
   }
+  const formatValue = (val: any, type: TableFieldType) => {
+    // We need to stringify the array if the column is of type json/jsonb
+    // because node-pg treats js arrays as native postgres arrays
+    // https://github.com/brianc/node-postgres/issues/442
+    if (Array.isArray(val) && type === "json") {
+      return JSON.stringify(val);
+    }
+    return val;
+  };
   if (Array.isArray(variables)) {
     return variables.map((variable) =>
       Object.keys(variable).reduce((record, column) => {
-        record[formatIdentifier(column)] = variable[column];
+        const columnId = formatIdentifier(column);
+        if (has(columns, columnId)) {
+          record[columnId] = formatValue(
+            variable[column],
+            columns[columnId].type
+          );
+        }
         return record;
       }, {} as Record<string, any>)
     );
   } else {
     return Object.keys(variables).reduce((record, column) => {
-      record[formatIdentifier(column)] = variables[column];
+      const columnId = formatIdentifier(column);
+      if (has(columns, columnId)) {
+        record[columnId] = formatValue(
+          variables[column],
+          columns[columnId].type
+        );
+      }
       return record;
     }, {} as Record<string, any>);
   }
