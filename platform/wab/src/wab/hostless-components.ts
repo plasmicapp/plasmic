@@ -57,4 +57,5 @@ export const fstPartyHostLessComponents = [
   "papaparse",
   "jquery",
   "dayjs",
+  "react-aria",
 ];
