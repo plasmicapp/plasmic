@@ -3524,6 +3524,7 @@ export class DbMgr implements MigrationDbMgr {
 
     const fromAppAuthConfig = await this.getAppAuthConfig(fromProject.id, true);
     let oldToNewSourceIds: Record<string, string> = {};
+    let oldToNewRoleIds: Record<string, string> = {};
     let reevaluateOpIds = false;
 
     if (fromAppAuthConfig) {
@@ -3537,15 +3538,15 @@ export class DbMgr implements MigrationDbMgr {
         );
         if (isInTheSameTeam) {
           // If the project is being cloned into the same team, we reuse the directory
-          const { oldToNewRoleIds } = await this.createAppAuthConfigFromProject(
-            {
+          oldToNewRoleIds = (
+            await this.createAppAuthConfigFromProject({
               fromProjectId: fromProject.id,
               toProjectId: project.id,
               toDirectoryId: fromAppAuthConfig.directoryId,
               oldToNewDirectoryGroupIds: {},
               keepGroupRefs: true,
-            }
-          );
+            })
+          ).oldToNewRoleIds;
 
           const fixResult = fixAppAuthRefs(clonedSite, oldToNewRoleIds);
 
@@ -3567,15 +3568,15 @@ export class DbMgr implements MigrationDbMgr {
           // We won't copy the people that belong to the directory groups
           // so that we don't start any project from template with people already in it
 
-          const { oldToNewRoleIds } = await this.createAppAuthConfigFromProject(
-            {
+          oldToNewRoleIds = (
+            await this.createAppAuthConfigFromProject({
               fromProjectId: fromProject.id,
               toProjectId: project.id,
               toDirectoryId: endUserDirectory.id,
               oldToNewDirectoryGroupIds,
               keepGroupRefs: false,
-            }
-          );
+            })
+          ).oldToNewRoleIds;
 
           const fixResult = fixAppAuthRefs(clonedSite, oldToNewRoleIds);
 
@@ -3609,21 +3610,38 @@ export class DbMgr implements MigrationDbMgr {
         this,
         fromProject.id,
         project.id,
-        oldToNewSourceIds
+        oldToNewSourceIds,
+        oldToNewRoleIds
       );
     }
 
     if (reevaluateOpIds) {
-      await reevaluateDataSourceExprOpIds(this, clonedSite, oldToNewSourceIds);
+      await reevaluateDataSourceExprOpIds(
+        this,
+        clonedSite,
+        oldToNewSourceIds,
+        oldToNewRoleIds
+      );
     }
 
     // By now, cloned site already has the new source ids for the new project (including cloned tutorial dbs)
     const sourceIds = getAllOpExprSourceIdsUsedInSite(clonedSite);
-    // This may fail the clone if the user doesn't have access to the sourceIds
-    await this.allowProjectToDataSources(
-      project.id,
-      sourceIds as DataSourceId[]
-    );
+    try {
+      await this.allowProjectToDataSources(
+        project.id,
+        sourceIds as DataSourceId[]
+      );
+    } catch (err) {
+      // This may fail the clone if the user doesn't have access to the sourceIds, which is fine
+      // the user will have a cloned version but won't be able to issue new opIds, the ones already
+      // in the model will still work, but it will check for permissions in the data source too
+      console.error(
+        `Failed to allow project ${project.id} to data sources ${sourceIds.join(
+          ","
+        )}`,
+        err
+      );
+    }
 
     const newBundle = bundler.bundle(
       clonedSite,
@@ -9337,42 +9355,17 @@ export class DbMgr implements MigrationDbMgr {
         })
     );
 
-    const workspaceDataSources = workspaceId
-      ? await this.getWorkspaceDataSources(workspaceId)
-      : [];
-
-    const workspaceTutorialDbs = await Promise.all(
-      workspaceDataSources
-        .filter((ds) => ds.source === "tutorialdb")
-        .map(async (ds) => {
-          const tutorialDbId = ds.credentials.tutorialDbId;
-          const tutorialDb = await this.getTutorialDb(tutorialDbId);
-          return {
-            dataSource: ds,
-            tutorialDb,
-          };
-        })
-    );
-
     const oldToNewSourceIds: Record<string, string> = {};
 
     for (const { dataSource, tutorialDb } of siteTutorialDbs) {
-      const existingTutorialDb = workspaceTutorialDbs.find(
-        (t) => t.tutorialDb.info.type === tutorialDb.info.type
+      // We always create a new tutorial db for the workspace so that all opIds
+      // get updated and we don't have to worry about not issuing a new opId
+      const newDataSource = await this.createTutorialDbDataSource(
+        tutorialDb.info.type,
+        workspaceId,
+        dataSource.name
       );
-
-      // In case, we already have a tutorial db of the same type in the workspace, we will skip cloning
-      // so that the user won't have to deal with duplicated tutorial dbs in the workspace
-      if (existingTutorialDb) {
-        oldToNewSourceIds[dataSource.id] = existingTutorialDb.dataSource.id;
-      } else {
-        const newDataSource = await this.createTutorialDbDataSource(
-          tutorialDb.info.type,
-          workspaceId,
-          dataSource.name
-        );
-        oldToNewSourceIds[dataSource.id] = newDataSource.id;
-      }
+      oldToNewSourceIds[dataSource.id] = newDataSource.id;
     }
 
     return {

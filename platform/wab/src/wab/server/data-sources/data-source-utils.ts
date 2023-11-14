@@ -415,7 +415,8 @@ async function updateDataSourceExprSourceId(
   dbMgr: DbMgr,
   expr: DataSourceOpExpr,
   oldToNewSourceIds: Record<string, string>,
-  exprCtx: ExprCtx
+  exprCtx: ExprCtx,
+  oldToNewRoleIds: Record<string, string> = {}
 ) {
   const operation: OperationTemplate = {
     name: expr.opName,
@@ -432,29 +433,61 @@ async function updateDataSourceExprSourceId(
       ? oldToNewSourceIds[expr.sourceId]
       : expr.sourceId;
 
-  // Only issue new opId if sourceId has changed (tutorialdb), otherwise
-  // keep old references so that we don't create new operations
+  // If the sourceId changed, this should be a tutorialdb data source
+  // which we can issue a new operation id for it
   if (oldSourceId !== sourceId) {
     const newOpId = await makeDataSourceOperationId(dbMgr, sourceId, operation);
     expr.opId = newOpId;
     expr.sourceId = sourceId;
+  } else {
+    const isNewRoleId =
+      expr.roleId && Object.values(oldToNewRoleIds).includes(expr.roleId);
+
+    // If the data source is the same, but only the role has changed, we need
+    // to check user permissions to see if the user has access to the database
+    // which would allow them to issue a new operation id
+    if (isNewRoleId) {
+      try {
+        // makeDataSourceOperationId will throw if the user does not have
+        // at least editor permission
+        const newOpId = await makeDataSourceOperationId(
+          dbMgr,
+          sourceId,
+          operation
+        );
+        expr.opId = newOpId;
+      } catch (err) {
+        // We won't fail here, as this state of project even though it is not properly represeting
+        // the expression, it may still be valid as a template
+        console.error(
+          `Error trying to issue dataSourceOpId user does not have permission to access data source ${sourceId}`
+        );
+      }
+    }
   }
 }
 
 export async function reevaluateDataSourceExprOpIds(
   dbMgr: DbMgr,
   site: Site,
-  oldToNewSourceIds: Record<string, string>
+  oldToNewSourceIds: Record<string, string>,
+  oldToNewRoleIds: Record<string, string> = {}
 ) {
   await Promise.all(
     site.components.map(async (component) => {
       await Promise.all(
         findAllDataSourceOpExprForComponent(component).map(async (opExpr) => {
-          await updateDataSourceExprSourceId(dbMgr, opExpr, oldToNewSourceIds, {
-            projectFlags: getProjectFlags(site),
-            component,
-            inStudio: true,
-          });
+          await updateDataSourceExprSourceId(
+            dbMgr,
+            opExpr,
+            oldToNewSourceIds,
+            {
+              projectFlags: getProjectFlags(site),
+              component,
+              inStudio: true,
+            },
+            oldToNewRoleIds
+          );
         })
       );
     })
@@ -467,7 +500,8 @@ export async function reevaluateAppAuthUserPropsOpId(
   dbMgr: DbMgr,
   fromProjectId: ProjectId,
   toProjectId: ProjectId,
-  oldToNewSourceIds: Record<string, string>
+  oldToNewSourceIds: Record<string, string>,
+  oldToNewRoleIds: Record<string, string> = {}
 ) {
   const appConfig = await dbMgr.getAppAuthConfig(fromProjectId, true);
   if (!appConfig || !appConfig.userPropsBundledOp) {
@@ -487,11 +521,17 @@ export async function reevaluateAppAuthUserPropsOpId(
     USER_PROPS_BUNDLE_UUID
   ) as DataSourceOpExpr;
 
-  await updateDataSourceExprSourceId(dbMgr, expr, oldToNewSourceIds, {
-    projectFlags: jsonClone(DEVFLAGS),
-    component: null,
-    inStudio: true,
-  });
+  await updateDataSourceExprSourceId(
+    dbMgr,
+    expr,
+    oldToNewSourceIds,
+    {
+      projectFlags: jsonClone(DEVFLAGS),
+      component: null,
+      inStudio: true,
+    },
+    oldToNewRoleIds
+  );
 
   const updatedBundle = bundler.bundle(
     expr,

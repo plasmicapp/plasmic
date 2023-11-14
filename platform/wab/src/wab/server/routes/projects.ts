@@ -641,7 +641,14 @@ export async function doImportProject(
       project.id,
       sourceIds as DataSourceId[]
     );
-  } catch (err) {}
+  } catch (err) {
+    console.error(
+      `Failed to allow project ${project.id} to data sources ${sourceIds.join(
+        ","
+      )}`,
+      err
+    );
+  }
 
   const latestRev = await mgr.saveProjectRev({
     projectId: project.id,
@@ -1346,9 +1353,17 @@ export async function getProjectRev(req: Request, res: Response) {
   const hasAppAuth = !!appAuthConfig;
   const appAuthProvider = appAuthConfig?.provider;
 
+  const allowedDataSourceIds = (
+    await mgr.listAllowedDataSourcesForProject(projectId as ProjectId)
+  ).map((ds) => ds.dataSourceId);
+
   const workspaceTutorialDbs = project.workspaceId
     ? (await mgr.getWorkspaceTutorialDataSources(project.workspaceId))
-        .filter((ds) => ds.source === "tutorialdb")
+        .filter(
+          (ds) =>
+            ds.source === "tutorialdb" && allowedDataSourceIds.includes(ds.id)
+        )
+
         .map((ds) => mkApiDataSource(ds))
     : [];
 
