@@ -2,7 +2,7 @@ import { Connection } from "typeorm";
 import { Comment, Ticket, User } from "./entities";
 
 export async function initDb(con: Connection) {
-  await con.query("CREATE SCHEMA ticketing");
+  await con.query("CREATE SCHEMA If NOT EXISTS ticketing");
   await con.synchronize();
   await con.query(`
 grant all on schema ticketing to public;
