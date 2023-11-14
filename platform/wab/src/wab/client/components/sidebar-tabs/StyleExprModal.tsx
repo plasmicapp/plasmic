@@ -13,7 +13,8 @@ import Button from "@/wab/client/components/widgets/Button";
 import Select from "@/wab/client/components/widgets/Select";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import { ensure, mkShortId, spawn } from "@/wab/common";
+import { ensure, mkShortId, spawn, withoutNils } from "@/wab/common";
+import { isCodeComponent } from "@/wab/components";
 import { PublicStyleSection } from "@/wab/shared/ApiSchema";
 import { mkSelectorRuleSet } from "@/wab/styles";
 import { observer } from "mobx-react-lite";
@@ -51,6 +52,9 @@ export const StyleExprButton = observer(function StyleExprButton(props: {
   const vtm = viewCtx.variantTplMgr();
   const [show, setShow] = React.useState(false);
   const component = tpl.component;
+  const isClassName =
+    attr === "className" ||
+    (isCodeComponent(component) && component._meta?.classNameProp === attr);
   const param = ensure(
     component.params.find((p) => p.variable.name === attr),
     `Component param of name ${attr} must exist`
@@ -99,6 +103,7 @@ export const StyleExprButton = observer(function StyleExprButton(props: {
           spec={spec}
           expr={expr}
           onClose={() => setShow(false)}
+          isClassName={isClassName}
         />
       )}
     </>
@@ -110,15 +115,44 @@ const StyleExprPopup = observer(function StyleExprPopup(props: {
   label: string;
   spec: StyleExprSpec;
   expr: StyleExpr;
+  isClassName: boolean;
   onClose: () => void;
 }) {
-  const { studioCtx, label, spec, expr, onClose } = props;
-  const [selector, setSelector] = React.useState<string>(
-    spec.selectors?.find((s) => s.label === "Base")?.selector ?? "base"
+  const { studioCtx, label, spec, expr, isClassName, onClose } = props;
+  const selectorOptions = withoutNils([
+    !isClassName && !spec.selectors?.some((s) => s.label === "Base")
+      ? { value: "base", label: "Base" }
+      : undefined,
+    ...(spec.selectors?.map((s) => ({
+      value: s.selector,
+      label: s.label ?? s.selector,
+    })) ?? []),
+  ]);
+  const [selector, setSelector] = React.useState<string | null>(
+    selectorOptions?.[0]?.value ?? null
   );
   const hasAdditionalSelectors =
     spec.selectors &&
     spec.selectors.filter((s) => s.label !== "Base").length > 0;
+
+  React.useEffect(() => {
+    // If the SelectorRuleSet for the current selector doesn't exist yet, then
+    // create it
+    if (studioCtx.canEditProject() && selector !== "base") {
+      if (!expr.styles.find((s) => s.selector === selector)) {
+        spawn(
+          studioCtx.changeUnsafe(() => {
+            expr.styles.push(
+              mkSelectorRuleSet({
+                selector,
+                isBase: false,
+              })
+            );
+          })
+        );
+      }
+    }
+  }, [studioCtx, expr, selector]);
   return (
     <SidebarModal
       show
@@ -131,34 +165,11 @@ const StyleExprPopup = observer(function StyleExprPopup(props: {
               style={{ marginLeft: "auto" }}
               size="tiny"
               value={selector}
-              onChange={(newSelector) => {
-                spawn(
-                  studioCtx.changeUnsafe(() => {
-                    if (newSelector !== "base") {
-                      if (
-                        !expr.styles.find((s) => s.selector === newSelector)
-                      ) {
-                        expr.styles.push(
-                          mkSelectorRuleSet({
-                            selector: newSelector,
-                            isBase: false,
-                          })
-                        );
-                      }
-                    }
-                    setSelector(newSelector!);
-                  })
-                );
-              }}
+              onChange={(newSelector) => setSelector(newSelector)}
             >
-              {!spec.selectors.some((s) => s.label === "Base") && (
-                <Select.Option key="base" value={"base"}>
-                  Base
-                </Select.Option>
-              )}
-              {spec.selectors.map((s) => (
-                <Select.Option key={s.selector} value={s.selector}>
-                  {s.label ?? s.selector}
+              {selectorOptions.map((op) => (
+                <Select.Option key={op.value} value={op.value}>
+                  {op.label}
                 </Select.Option>
               ))}
             </Select>
