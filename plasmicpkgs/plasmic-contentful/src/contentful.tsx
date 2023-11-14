@@ -10,12 +10,12 @@ import { usePlasmicQueryData } from "@plasmicapp/query";
 import { pascalCase } from "change-case";
 import get from "dlv";
 import React, { ReactNode, useContext } from "react";
-import { searchParameters, uniq } from "./utils";
 import { Entry } from "./types";
+import { searchParameters, uniq } from "./utils";
 
-export function ensure<T>(x: T | null | undefined): T {
+export function ensure<T>(x: T | null | undefined, msg?: string): T {
   if (x === null || x === undefined) {
-    throw new Error(`Value must not be undefined or null`);
+    throw new Error(msg ?? `Value must not be undefined or null`);
   } else {
     return x;
   }
@@ -202,7 +202,10 @@ export function ContentfulFetcher({
   noLayout,
   setControlContextData,
 }: ContentfulFetcherProps) {
-  const creds = ensure(useContext(CredentialsContext));
+  const creds = ensure(
+    useContext(CredentialsContext),
+    "Could not find context with current credentials"
+  );
   const cacheKey = JSON.stringify({
     include,
     limit,
@@ -322,111 +325,81 @@ export function ContentfulFetcher({
     if (!data?.items || !data?.includes) {
       return data;
     }
-    
+
     const entryMap: { [id: string]: any } = {};
-  
+
     if (data.includes.Entry) {
       data.includes.Entry.forEach((entry: any) => {
-        entryMap[entry.sys.id] = entry.fields;
+        entryMap[entry.sys.id] = entry;
       });
     }
-  
-    const itemsWithDenormalizedFields: Entry[] = data.items.map((item: any) => {
+
+    const denormalizeField = (fieldValue: any) => {
+      if (Array.isArray(fieldValue)) {
+        const updatedArray: any[] = fieldValue.map((arrayItem) => {
+          return denormalizeField(arrayItem);
+        });
+        return updatedArray;
+      } else if (
+        data.includes.Asset &&
+        fieldValue &&
+        typeof fieldValue === "object" &&
+        "sys" in fieldValue &&
+        fieldValue.sys.linkType === "Asset"
+      ) {
+        const fieldId = fieldValue.sys.id;
+        const asset = data.includes.Asset.find(
+          (a: any) => a.sys.id === fieldId
+        );
+        if (asset) {
+          return {
+            ...fieldValue,
+            url: "https:" + asset.fields?.file?.url,
+          };
+        } else {
+          console.log(`Asset URL not found for ID: ${fieldId}`);
+        }
+      } else if (
+        data.includes.Entry &&
+        fieldValue &&
+        typeof fieldValue === "object" &&
+        "sys" in fieldValue &&
+        fieldValue.sys.linkType === "Entry"
+      ) {
+        const fieldId = fieldValue.sys.id;
+        if (entryMap[fieldId]) {
+          return {
+            ...fieldValue,
+            fields: denormalizeItem(entryMap[fieldId]).fields,
+          };
+        } else {
+          console.log(`Entry not found for ID: ${fieldId}`);
+        }
+      } else {
+        return fieldValue;
+      }
+    };
+
+    const denormalizeItem = (item: any) => {
       const updatedFields: { [fieldName: string]: unknown | unknown[] } = {};
       for (const fieldName in item.fields) {
-        const fieldValue = item.fields[fieldName];
-        if (Array.isArray(fieldValue)) {
-          const updatedArray = fieldValue.map((arrayItem) => {
-            if (
-              data.includes.Asset &&
-              arrayItem &&
-              typeof arrayItem === "object" &&
-              "sys" in arrayItem &&
-              arrayItem.sys.linkType === "Asset"
-            ) {
-              const fieldId = arrayItem.sys.id;
-              const asset = data.includes.Asset.find(
-                (asset: any) => asset.sys.id === fieldId
-              );
-              if (asset) {
-                return {
-                  ...arrayItem,
-                  url: "https:" + asset.fields?.file?.url,
-                };
-              } else {
-                console.log(`Asset URL not found for ID: ${fieldId}`);
-              }
-            } else if (
-              data.includes.Entry &&
-              arrayItem &&
-              typeof arrayItem === "object" &&
-              "sys" in arrayItem &&
-              arrayItem.sys.linkType === "Entry"
-            ){
-              const fieldId = arrayItem.sys.id;
-              if (entryMap[fieldId]) {
-                updatedFields[fieldName] = {
-                  ...fieldValue,
-                  fields: entryMap[fieldId],
-                };
-              } else {
-                console.log(`Entry not found for ID: ${fieldId}`);
-              }
-            }
-              return arrayItem;
-          });
-          updatedFields[fieldName] = updatedArray;
-        } else if (
-          data.includes.Asset &&
-          fieldValue &&
-          typeof fieldValue === "object" &&
-          "sys" in fieldValue &&
-          fieldValue.sys.linkType === "Asset"
-        ) {
-          const fieldId = fieldValue.sys.id;
-          const asset = data.includes.Asset.find(
-            (asset: any) => asset.sys.id === fieldId
-          );
-          if (asset) {
-            updatedFields[fieldName] = {
-              ...fieldValue,
-              url: "https:" + asset.fields?.file?.url,
-            };
-          } else {
-            console.log(`Asset URL not found for ID: ${fieldId}`);
-          }
-        } else if (
-          data.includes.Entry &&
-          fieldValue &&
-          typeof fieldValue === "object" &&
-          "sys" in fieldValue &&
-          fieldValue.sys.linkType === "Entry"
-        ) {
-          const fieldId = fieldValue.sys.id;
-          if (entryMap[fieldId]) {
-            updatedFields[fieldName] = {
-              ...fieldValue,
-              fields: entryMap[fieldId],
-            };
-          } else {
-            console.log(`Entry not found for ID: ${fieldId}`);
-          }
-        } else {
-          updatedFields[fieldName] = fieldValue;
-        }
+        updatedFields[fieldName] = denormalizeField(item.fields[fieldName]);
       }
       return {
         ...item,
-        fields: updatedFields,
+        fields: updatedFields ?? undefined,
       };
+    };
+
+    const itemsWithDenormalizedFields: Entry[] = data.items.map((item: any) => {
+      return denormalizeItem(item);
     });
     return {
       ...data,
       items: itemsWithDenormalizedFields,
     };
   }
-  
-  
+
   let renderedData;
 
   if (filteredData) {
