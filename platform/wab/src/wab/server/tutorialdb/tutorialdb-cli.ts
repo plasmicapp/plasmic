@@ -1,9 +1,9 @@
+import { assert, spawn } from "@/wab/common";
+import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
+import { createDbConnection } from "@/wab/server/db/dbcli-utils";
+import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { Command } from "commander";
 import { TutorialDbId } from "src/wab/shared/ApiSchema";
-import { assert, spawn } from "../../common";
-import { DEFAULT_DATABASE_URI } from "../config";
-import { createDbConnection } from "../db/dbcli-utils";
-import { DbMgr, SUPER_USER } from "../db/DbMgr";
 import { resetTutorialDb, TutorialType } from "./tutorialdb-utils";
 
 async function main() {
@@ -29,7 +29,7 @@ async function main() {
     .description("Create a new tutorialdb")
     .arguments("<type>")
     .action(async (type: string, opts: any) => {
-      await withDb(opts, async (db) => {
+      await withDb(program.optsWithGlobals(), async (db) => {
         const res = await db.createTutorialDb(type as TutorialType);
         console.log("DATABASE CREATED", res);
       });
@@ -40,7 +40,7 @@ async function main() {
     .description("Resets the schema and data in an existing tutorialdb")
     .arguments("<sourceId>")
     .action(async (sourceId: string, opts: any) => {
-      await withDb(opts, async (db) => {
+      await withDb(program.optsWithGlobals(), async (db) => {
         const source = await db.getDataSourceById(sourceId);
         assert(source.source === "tutorialdb", "Can only reset tutorialdb");
         const tutorialDbId = source.credentials.tutorialDbId;
@@ -53,8 +53,8 @@ async function main() {
     .command("show")
     .description("debug")
     .arguments("<sourceId>")
-    .action(async (sourceId: string, opts: any) => {
-      await withDb(opts, async (db) => {
+    .action(async (sourceId: string, opts: any, what: any) => {
+      await withDb(program.optsWithGlobals(), async (db) => {
         const source = await db.getDataSourceById(sourceId);
         assert(source.source === "tutorialdb", "Can only reset tutorialdb");
         const tutorialDbId = source.credentials.tutorialDbId;
