@@ -1138,6 +1138,11 @@ function showSelectorRuleSet(
     }
   }
 
+  // Disable outline if any style has been set
+  if (m.size > 0 && !m.has("outline")) {
+    m.set("outline", "none");
+  }
+
   postProcessStyles(m, { isStudio });
 
   const ruleContent = showStyles(m);
