@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-contentful",
-  "version": "0.0.120",
+  "version": "0.0.121",
   "description": "Plasmic Contentful components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -32,7 +32,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "1.0.181",
+    "@plasmicapp/host": "1.0.182",
     "@plasmicapp/query": "0.1.77",
     "@size-limit/preset-small-lib": "^7.0.8",
     "@types/dlv": "^1.1.2",
