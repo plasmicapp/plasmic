@@ -6766,6 +6766,10 @@ export class StudioCtx extends WithDbCtx {
     this.dataOpCache = {};
   };
 
+  getAllDataOpCacheKeys = () => {
+    return Object.keys(this.dataOpCache);
+  };
+
   private _currentAppUserCtx = observable.box<{
     appUser: StudioAppUser;
     fakeAuthToken?: string;

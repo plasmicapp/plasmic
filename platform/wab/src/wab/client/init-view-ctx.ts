@@ -1,7 +1,7 @@
+import { meta } from "@/wab/classes-metas";
+import { observeModel } from "@/wab/observable-model";
+import { SiteInfo } from "@/wab/shared/SharedApi";
 import * as mobx from "mobx";
-import { meta } from "../classes-metas";
-import { observeModel } from "../observable-model";
-import { SiteInfo } from "../shared/SharedApi";
 import { AppCtx } from "./app-ctx";
 import { Clipboard } from "./clipboard";
 import { DbCtx } from "./db";
@@ -29,6 +29,8 @@ export function createStudioCtx({
   (window as any).__PLASMIC_EXECUTE_DATA_OP = studioCtx.executePlasmicDataOp;
   (window as any).__PLASMIC_MUTATE_DATA_OP =
     studioCtx.refreshFetchedDataFromPlasmicQuery;
+  (window as any).__PLASMIC_GET_ALL_CACHE_KEYS =
+    studioCtx.getAllDataOpCacheKeys;
   (window as any).__PLASMIC_STUDIO_PATH = studioCtx.getCurrentPathName;
 
   return studioCtx;

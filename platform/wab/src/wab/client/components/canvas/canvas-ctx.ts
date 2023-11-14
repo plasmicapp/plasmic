@@ -258,9 +258,9 @@ export class CanvasCtx {
     // Cache interaction information in studio
     (this._win as any).__PLASMIC_CACHE_$STEP_VALUE = sc.save$stepValue;
     (this._win as any).__PLASMIC_CACHE_EVENT_ARGS = sc.saveInteractionArgs;
-
     (this._win as any).__PLASMIC_MUTATE_DATA_OP =
       sc.refreshFetchedDataFromPlasmicQuery;
+    (this._win as any).__PLASMIC_GET_ALL_CACHE_KEYS = sc.getAllDataOpCacheKeys;
     (this._win as any).__PLASMIC_STUDIO_PATH = sc.getCurrentPathName;
     if (this.usedPkgsDispose) {
       this.usedPkgsDispose();
