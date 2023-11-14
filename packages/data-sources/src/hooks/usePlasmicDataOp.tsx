@@ -1,14 +1,14 @@
-import { usePlasmicDataSourceContext } from '@plasmicapp/data-sources-context';
+import { usePlasmicDataSourceContext } from "@plasmicapp/data-sources-context";
 // eslint-disable-next-line no-restricted-imports
-import * as ph from '@plasmicapp/host';
+import * as ph from "@plasmicapp/host";
 import {
   useMutablePlasmicQueryData,
   usePlasmicDataConfig,
-} from '@plasmicapp/query';
-import React from 'react';
-import { DataOp, executePlasmicDataOp } from '../executor';
-import { ManyRowsResult, Pagination, SingleRowResult } from '../types';
-import { pick } from '../utils';
+} from "@plasmicapp/query";
+import React from "react";
+import { DataOp, executePlasmicDataOp } from "../executor";
+import { ManyRowsResult, Pagination, SingleRowResult } from "../types";
+import { pick } from "../utils";
 
 export function makeCacheKey(
   dataOp: DataOp,
@@ -46,9 +46,24 @@ export function usePlasmicInvalidate() {
         new Set([
           ...Array.from((cache as any).keys()),
           ...(fallback ? Object.keys(fallback) : []),
+          // If this is running within the Studio, we also take the
+          // opportunity to invalidate the Studio cache. The keys that
+          // Studio may have can be a superset of `cache` here, because
+          // `cache` is updated as swr hooks are mounted and unmounted,
+          // but Studio's data cache keys don't get removed when hooks
+          // are unmounted. This makes it possible for Studio to hold
+          // onto a stale cache entry that doesn't get invalidated.
+          // For example, Studio may render page1, with key X, then goes
+          // to page 2, which performs a mutate. At this point, Studio
+          // has a cache entry for key X, but `cache` does not, because
+          // page2 does not use that query. But page 2 may perform a
+          // mutation that invalidates X. So we need to invalidate not
+          // only keys in `cache`, but also keys that Studio is still
+          // holding onto.
+          ...((globalThis as any).__PLASMIC_GET_ALL_CACHE_KEYS?.() ?? []),
         ])
-      ).filter((key): key is string => typeof key === 'string');
-      if (invalidatedKeys.includes('plasmic_refresh_all')) {
+      ).filter((key): key is string => typeof key === "string");
+      if (invalidatedKeys.includes("plasmic_refresh_all")) {
         return allKeys;
       }
       return allKeys.filter((key) =>
@@ -73,7 +88,7 @@ export function usePlasmicInvalidate() {
   };
 }
 
-const enableLoadingBoundaryKey = 'plasmicInternalEnableLoadingBoundary';
+const enableLoadingBoundaryKey = "plasmicInternalEnableLoadingBoundary";
 
 function mkUndefinedDataProxy(
   promiseRef: { fetchingPromise: Promise<any> | undefined },
@@ -85,7 +100,7 @@ function mkUndefinedDataProxy(
     {},
     {
       get: (_target, prop) => {
-        if (prop === 'isPlasmicUndefinedDataProxy') {
+        if (prop === "isPlasmicUndefinedDataProxy") {
           return true;
         }
 
@@ -121,7 +136,7 @@ function mkUndefinedDataProxy(
           promiseRef.fetchingPromise ||
           // No existing fetch, so kick off a fetch
           doFetchAndUpdate();
-        (promise as any).plasmicType = 'PlasmicUndefinedDataError';
+        (promise as any).plasmicType = "PlasmicUndefinedDataError";
         (promise as any).message = `Cannot read property ${String(
           prop
         )} - data is still loading`;
@@ -132,7 +147,7 @@ function mkUndefinedDataProxy(
 }
 
 interface PlasmicUndefinedDataErrorPromise extends Promise<any> {
-  plasmicType: 'PlasmicUndefinedDataError';
+  plasmicType: "PlasmicUndefinedDataError";
   message: string;
 }
 
@@ -141,12 +156,12 @@ function isPlasmicUndefinedDataErrorPromise(
 ): x is PlasmicUndefinedDataErrorPromise {
   return (
     !!x &&
-    typeof x === 'object' &&
-    (x as any).plasmicType === 'PlasmicUndefinedDataError'
+    typeof x === "object" &&
+    (x as any).plasmicType === "PlasmicUndefinedDataError"
   );
 }
 
-const reactMajorVersion = +React.version.split('.')[0];
+const reactMajorVersion = +React.version.split(".")[0];
 
 type ResolvableDataOp =
   | DataOp
@@ -163,7 +178,7 @@ type ResolvableDataOp =
  *   performed until that promise is resolved.
  */
 function resolveDataOp(dataOp: ResolvableDataOp) {
-  if (typeof dataOp === 'function') {
+  if (typeof dataOp === "function") {
     try {
       return dataOp();
     } catch (err) {
@@ -355,7 +370,7 @@ export function usePlasmicDataOp<
         })
         .catch((err) => {
           // Cache the error here to avoid infinite loop
-          const keyInfo = key ? '$swr$' + key : '';
+          const keyInfo = key ? "$swr$" + key : "";
           cache.set(keyInfo, { ...(cache.get(keyInfo) ?? {}), error: err });
         });
       return fetcherPromise;
@@ -381,7 +396,7 @@ export function usePlasmicDataOp<
   return React.useMemo(() => {
     const result = {
       ...(data ?? ({} as Partial<T>)),
-      ...pick(res, 'isLoading', 'error'),
+      ...pick(res, "isLoading", "error"),
     };
     if (
       !opts?.noUndefinedDataProxy &&

@@ -697,6 +697,8 @@ export async function onLoadInjectSystemJS(
     studioCtx.executePlasmicDataOp;
   (frameWindow as any).__PLASMIC_MUTATE_DATA_OP =
     studioCtx.refreshFetchedDataFromPlasmicQuery;
+  (frameWindow as any).__PLASMIC_GET_ALL_CACHE_KEYS =
+    studioCtx.getAllDataOpCacheKeys;
   // We don't cache interaction data in live preview since
   // it can be very confusing to have values cached in $steps and event args
   // that differ from what is currently rendered in the artboard.
