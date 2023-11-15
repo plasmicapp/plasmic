@@ -22,8 +22,36 @@ export function registerButton(
       props: {
         children: {
           type: "slot",
+          mergeWithParent: true as any,
+        },
+        className: {
+          type: "class",
+          displayName: "Additional states",
+          selectors: [
+            {
+              selector: ":self[data-hovered]",
+              label: "Hovered",
+            },
+            {
+              selector: ":self[data-pressed]",
+              label: "Pressed",
+            },
+            {
+              selector: ":self[data-focused]",
+              label: "Focused",
+            },
+            {
+              selector: ":self[data-focus-visible]",
+              label: "Focused by keyboard",
+            },
+            {
+              selector: ":self[data-disabled]",
+              label: "Disabled",
+            },
+          ],
         },
       },
+      trapsFocus: true,
     },
     overrides
   );
