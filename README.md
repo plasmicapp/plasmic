@@ -8,7 +8,7 @@
   Plasmic
 </h1>
 <h3 align="center">
-  The low-code visual builder for your codebase.
+  The open-source visual builder for your codebase.
 </h3>
 <p align="center">
   Build beautiful apps and websites incredibly fast.
@@ -17,7 +17,7 @@
   Drag and drop your own components, integrate with your codebase.
 </p>
 <p align="center">
-  Break through the no-code ceiling.
+  Break through the low-code ceiling.
 </p>
 
 <p>&nbsp;</p>
