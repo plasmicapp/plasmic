@@ -78,6 +78,20 @@ export function registerPopover(
         resetClassName: {
           type: "themeResetClass",
         },
+        // className: {
+        //   type: "class",
+        //   displayName: "Additional states",
+        //   selectors: [
+        //     {
+        //       selector: ":self[data-entering]",
+        //       label: "Entering",
+        //     },
+        //     {
+        //       selector: ":self[data-exiting]",
+        //       label: "Exiting",
+        //     },
+        //   ],
+        // },
       },
       styleSections: true,
     },

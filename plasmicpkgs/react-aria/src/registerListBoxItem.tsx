@@ -34,7 +34,7 @@ export function registerListBoxItem(
       props: {
         className: {
           type: "class",
-          displayName: "Styles in different states",
+          displayName: "Additional states",
           selectors: [
             {
               selector: ":self[data-selected]",

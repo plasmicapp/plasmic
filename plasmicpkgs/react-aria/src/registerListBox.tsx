@@ -1,6 +1,6 @@
 import { mergeProps } from "@react-aria/utils";
 import React from "react";
-import { ListBox, ListBoxContext } from "react-aria-components";
+import { ListBox } from "react-aria-components";
 import {
   PlasmicItemContext,
   PlasmicListBoxContext,
@@ -68,7 +68,7 @@ const STANDALONE_PROPS: Partial<BaseListBoxProps> = {
 
 export function BaseListBox(props: BaseListBoxProps) {
   const contextProps = React.useContext(PlasmicListBoxContext);
-  const isStandalone: boolean = !React.useContext(ListBoxContext);
+  const isStandalone: boolean = !contextProps;
   const {
     makeItemProps,
     makeSectionProps,
@@ -125,6 +125,20 @@ export function registerListBox(
           type: "slot",
           displayName: "Render Section",
           renderPropParams: ["section"],
+        },
+        class: {
+          type: "class",
+          displayName: "Additional states",
+          selectors: [
+            {
+              selector: ":self[data-focused]",
+              label: "Focused",
+            },
+            {
+              selector: ":self[data-focus-visible]",
+              label: "Focused by keyboard",
+            },
+          ],
         },
       },
     },

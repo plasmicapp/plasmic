@@ -31,8 +31,10 @@ export function registerLabel(
             type: "text",
             value: "Label",
           },
+          mergeWithParent: true as any,
         },
       },
+      trapsFocus: true,
     },
     overrides
   );

@@ -29,7 +29,7 @@ export function registerInput(
       props: {
         className: {
           type: "class",
-          displayName: "Styles in different states",
+          displayName: "Additional states",
           selectors: [
             {
               selector: ":self[data-hovered]",
@@ -41,7 +41,7 @@ export function registerInput(
             },
             {
               selector: ":self[data-focus-visible]",
-              label: "Focus visible",
+              label: "Focused by keyboard",
             },
             {
               selector: ":self[data-disabled]",

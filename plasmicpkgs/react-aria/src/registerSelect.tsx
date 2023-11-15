@@ -219,6 +219,16 @@ export function registerSelect(loader?: Registerable) {
     importPath: "@plasmicpkgs/react-aria/registerSelect",
     importName: "SelectValue",
     parentComponentName: SELECT_NAME,
-    props: {},
+    props: {
+      className: {
+        type: "class",
+        selectors: [
+          {
+            selector: ":self[data-placeholder]",
+            label: "Placeholder",
+          },
+        ],
+      },
+    },
   });
 }

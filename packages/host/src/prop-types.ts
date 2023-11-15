@@ -458,7 +458,7 @@ export interface RichSlotType<P> {
    * Furthermore, the component further shows the props of whatever is in the slot on
    *  the parent component for the user's convenience. Handy for various “wrapper" components, form fields, and so on.
    */
-  mergeWithParent?: ContextDependentConfig<P, boolean>;
+  mergeWithParent?: boolean | ContextDependentConfig<P, boolean>;
 
   /**
    * A function that returns true to hide the merged props conditionally.
