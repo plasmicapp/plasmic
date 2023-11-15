@@ -30,7 +30,7 @@ function getThumbUrl(file?: UploadFile): string | undefined {
 }
 
 export function UploadWrapper(props: ExtendedUploadProps) {
-  const { files, dragAndDropFiles, onFilesChange, ...rest } = props;
+  const { files, dragAndDropFiles, onFilesChange, maxCount, ...rest } = props;
   const filesRef = useRef<Array<UploadFile>>(); // if multiple = true, it facilitates adding multiple files
 
   filesRef.current = files;
@@ -53,7 +53,7 @@ export function UploadWrapper(props: ExtendedUploadProps) {
     };
 
     onFilesChange?.([
-      ...(filesRef.current ?? []),
+      ...(filesRef.current ?? []).slice(0, (maxCount || Infinity) - 1),
       {
         ...metadata,
         status: "uploading",
@@ -63,6 +63,7 @@ export function UploadWrapper(props: ExtendedUploadProps) {
     const reader = new FileReader();
 
     reader.onload = () => {
+      if (!filesRef.current?.map((f) => f.uid).includes(metadata.uid)) return;
       onFilesChange?.([
         ...(filesRef.current ?? []).filter((f) => f.uid !== file.uid),
         {
@@ -77,6 +78,7 @@ export function UploadWrapper(props: ExtendedUploadProps) {
     };
 
     reader.onerror = (error) => {
+      if (!filesRef.current?.map((f) => f.uid).includes(metadata.uid)) return;
       onFilesChange?.([
         ...(filesRef.current ?? []).filter((f) => f.uid !== file.uid),
         {
