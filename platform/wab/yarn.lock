@@ -3961,21 +3961,21 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources-context/-/data-sources-context-0.1.20.tgz#65f9052011eb07370db4c5be7bffe8fc2ce11703"
   integrity sha512-r+156StkG37WSXTGQSoihYjGLyKu1re+/ziD7GcPpP0VIHXtiUYC4XBINQa9jVer4hYZ54GItOdvUAZsxgCP/g==
 
-"@plasmicapp/data-sources@0.1.139", "@plasmicapp/data-sources@^0.1.139":
-  version "0.1.139"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources/-/data-sources-0.1.139.tgz#ccf545062620b08e8e6246342f9945cd7fc6ab55"
-  integrity sha512-ledZW5RUOnwiVQAOYoO2vclEKGjqGPiwnkGF2DQqTr3Tv8v9ivNbayAlS3WiD3GNnHQrvsaX/7AjU1iLPLDshw==
+"@plasmicapp/data-sources@0.1.140", "@plasmicapp/data-sources@^0.1.140":
+  version "0.1.140"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/data-sources/-/data-sources-0.1.140.tgz#3621f048427046cd7a54da6a843909ed2d01fd5d"
+  integrity sha512-ba3tAj7TVy+g6wOtiZIcvBkT1Z3xj+gs40G6KRwpIi78Kb0CM/ILE6LIELp49fF5eO2sHF0Fs2Hg5S+/TUnxrQ==
   dependencies:
     "@plasmicapp/data-sources-context" "0.1.20"
-    "@plasmicapp/host" "1.0.181"
+    "@plasmicapp/host" "1.0.182"
     "@plasmicapp/isomorphic-unfetch" "1.0.3"
     "@plasmicapp/query" "0.1.77"
     fast-stringify "^2.0.0"
 
-"@plasmicapp/host@1.0.181", "@plasmicapp/host@^1.0.181":
-  version "1.0.181"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.181.tgz#8cdfab34e91ad95a5013ab83559d76b8bbbf0e92"
-  integrity sha512-uNKpPRYz6XDZZQxwbQ6ybih8Sfl6dodNkneFBxGQjslEUZp1Ra23ntHuQCWm2/U7+dws7+K/NnZNd0pi2JQZgg==
+"@plasmicapp/host@1.0.182", "@plasmicapp/host@^1.0.182":
+  version "1.0.182"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.182.tgz#cd38d01ffca90dde698804eb01bb6094168cf2bc"
+  integrity sha512-TQ2CK27/2sxHNzGfRHoOrc5O/ENNS6f6DChQYw7IqnfvOpe3EAxsiiDJigqRPBwvciFKEHvBJQKrrJqPm4me7w==
   dependencies:
     "@plasmicapp/query" "0.1.77"
     csstype "^3.1.2"
@@ -4003,13 +4003,13 @@
   dependencies:
     "@plasmicapp/isomorphic-unfetch" "1.0.3"
 
-"@plasmicapp/loader-react@^1.0.320":
-  version "1.0.320"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-react/-/loader-react-1.0.320.tgz#0ba0ca50cc24abb3f3eb66efeaf59fc4165c9c54"
-  integrity sha512-bbPFMq2oRtfpU0B5gFa3TW8mDTIaRDC4nAFtbUB2CjUhZuKqaP7Ok6Zm8yTga9nexjPtZ6gFyYp9PJx6j3qF7A==
+"@plasmicapp/loader-react@^1.0.321":
+  version "1.0.321"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/loader-react/-/loader-react-1.0.321.tgz#bc0adb3bc94733cf2d44903afeda2dadb5267fb0"
+  integrity sha512-dzqkfGFDw4Kt2pTxq6bYDo+Y7i6oIVV5wI1eTx02G2iQR74DfN5t21ai91gHwfdtA+p+lLEPUZSO+WDiLPuVXw==
   dependencies:
     "@plasmicapp/data-sources-context" "0.1.20"
-    "@plasmicapp/host" "1.0.181"
+    "@plasmicapp/host" "1.0.182"
     "@plasmicapp/loader-core" "1.0.121"
     "@plasmicapp/loader-fetcher" "1.0.43"
     "@plasmicapp/loader-splits" "1.0.49"
@@ -4045,15 +4045,15 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.3.tgz#d946d81c3d1e3a8f4f3cfcb8751edfe14b90d09e"
   integrity sha512-jFde/wfL8NlJEr76Mshyju/3GvJD5Z9YijCG1/8DR+KOEv7m5uRvORjxtEEw2GKDXRp2GqpQqj97iWGLFUsOzA==
 
-"@plasmicapp/react-web@^0.2.301":
-  version "0.2.301"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.301.tgz#f56bf84ff8226addfd754e0a2e00070830ca1d48"
-  integrity sha512-K7yCX6GI/VYvhwgO1Wbc5Z6xElPg3I16MWiy25TewLjtYX040Rp9Eun+rCicrcS5eu4kgIqljIIWjpX6BDJxIg==
+"@plasmicapp/react-web@^0.2.302":
+  version "0.2.302"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.302.tgz#82a71e43a60b4f29e9654e3aa5fbb8d5d07bc24d"
+  integrity sha512-SBAclfNJCyGIXuQa71gSUE1mKTYwgMXD0HaB7xugLIxJoBRbH0HKAQFYLgR2JvyiGfrz0AnxCh9OwSIcpZgVwg==
   dependencies:
     "@plasmicapp/auth-react" "0.0.19"
-    "@plasmicapp/data-sources" "0.1.139"
+    "@plasmicapp/data-sources" "0.1.140"
     "@plasmicapp/data-sources-context" "0.1.20"
-    "@plasmicapp/host" "1.0.181"
+    "@plasmicapp/host" "1.0.182"
     "@plasmicapp/loader-splits" "1.0.49"
     "@plasmicapp/prepass" "1.0.13"
     "@plasmicapp/query" "0.1.77"
@@ -4081,10 +4081,10 @@
     fast-deep-equal "^3.1.3"
     valtio "^1.6.3"
 
-"@plasmicpkgs/antd5@^0.0.188":
-  version "0.0.188"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.188.tgz#81513b65b2762cdaa5cdec8e578096466716be42"
-  integrity sha512-EflYQHQdIfZiFtkm7hWw/aAXNIU9bC3ujfX/44VTRAiqZqksdufR9dTi0MEML5GXNUVg0IgbmbfFNPwgcpZ+Tw==
+"@plasmicpkgs/antd5@^0.0.189":
+  version "0.0.189"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.189.tgz#7b029b0ad5619abfa8df2f70e7d2d91b481a37b8"
+  integrity sha512-lMEJMoI6soHr5M6LEGRKDE3hVQ/31huxS70mSM5iPQFk/wHmmxUViSkgEbB0MMcpKGdHrvofbvinkmH4qc9d1w==
   dependencies:
     antd "^5.7.3"
     classnames "^2.3.2"
@@ -4092,18 +4092,18 @@
     fast-deep-equal "^3.1.3"
     lodash "^4.17.21"
 
-"@plasmicpkgs/commerce-local@^0.0.179":
-  version "0.0.179"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/commerce-local/-/commerce-local-0.0.179.tgz#230bd1f2e34e17f8483c817ec35d183eeee8a52c"
-  integrity sha512-zrzL0PQDnlswFI3HqR/XIrx32q8lkyivhYM7MWsPfEu4Cdr/GWHWiY8tph0M5QjZYFZau+IwhdUdGi5Pew63gA==
+"@plasmicpkgs/commerce-local@^0.0.180":
+  version "0.0.180"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/commerce-local/-/commerce-local-0.0.180.tgz#30c6f76ec7fe104ef034935cf19e8480ae453687"
+  integrity sha512-LhyxbTp67GBWOrR/DgDM+/VqLQtW9TXy/cyOzjQbG0zlaIBiptXZUYE9XPUganVry2Q70xDvPF1i5hrd6zl46A==
   dependencies:
-    "@plasmicpkgs/commerce" "0.0.179"
+    "@plasmicpkgs/commerce" "0.0.180"
     "@types/react" "^18.0.27"
 
-"@plasmicpkgs/commerce@0.0.179":
-  version "0.0.179"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/commerce/-/commerce-0.0.179.tgz#aabd8b980bc0e75e98cf2f25ce155fafb8e0ffaa"
-  integrity sha512-3p+YAWYgSqYsBtXdrhfvQ3YIx8guiddwR0JAJ308CR3OKhxoppu8WKJAwvx+7dA08TKwH3ViZMoLGuJJiMn+WA==
+"@plasmicpkgs/commerce@0.0.180":
+  version "0.0.180"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/commerce/-/commerce-0.0.180.tgz#edf4dcea6acb646dc700964bc4f8a2fcc372f6dd"
+  integrity sha512-+UfTasS9xuzx9C+os/keEHu9zFoCea4E4Ox7tcaDRLPLjK2JUKsbrTI2B9MPW1z+keDF3pPDBgWx4UWT30MUGw==
   dependencies:
     "@types/react" "^18.0.27"
     "@vercel/fetch" "^6.2.0"
@@ -4113,20 +4113,20 @@
     react-hook-form "^7.28.0"
     swr "^1.2.2"
 
-"@plasmicpkgs/plasmic-basic-components@^0.0.199":
-  version "0.0.199"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-basic-components/-/plasmic-basic-components-0.0.199.tgz#c247ab51961634b1f854c0d6ab403932998c41bc"
-  integrity sha512-+GNI4fd2rBSKMS3LaOWmS+/+T5pJF051EiwyXnGR7N1etJEDB12VY5Csarlro2AvYz+cW/++cW45WooW6/DSug==
+"@plasmicpkgs/plasmic-basic-components@^0.0.200":
+  version "0.0.200"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-basic-components/-/plasmic-basic-components-0.0.200.tgz#3e410525b7ea3065bd1f1ee6af716bcb97e466f5"
+  integrity sha512-BtzmTwWD42a1D7hh6vuhahP0ooNcTPjExxXElXpKZgtOxSbMiiIPxBL9F8y54GjyCLVYFDAITTsZ896/Z56FEw==
 
-"@plasmicpkgs/plasmic-embed-css@^0.1.166":
-  version "0.1.166"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-embed-css/-/plasmic-embed-css-0.1.166.tgz#25bd6cc57638a1a3bbc96d8249a8f194b9a69601"
-  integrity sha512-qDgvAzpEBxv0Wh01UM3x3uy+EeYFnkmycV/UvfDWWnZPX389I4/bK8x4fWY/IpqVge0l2QrMwe+SrQQHKt3wTw==
+"@plasmicpkgs/plasmic-embed-css@^0.1.167":
+  version "0.1.167"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-embed-css/-/plasmic-embed-css-0.1.167.tgz#7e05661c618ade40d749a7f4d23c2f5a139723dc"
+  integrity sha512-6UEhOPj0sZXB5fI8CBgyfYFd1yD7b8Vjg8uiK1w6vvXDOwYC4sDtd/UBP4bQkwtWhys9ZX+CA4J9dYWxyaXaZg==
 
-"@plasmicpkgs/radix-ui@^0.0.33":
-  version "0.0.33"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/radix-ui/-/radix-ui-0.0.33.tgz#e38487d460e804bbffc6ada7d944821539158717"
-  integrity sha512-uodgjdi0sZgXe4P4gizd1P7SvI02NGmk62ZnmJH6tAgLMOgJoE+wQQ0TZ6bvOkJ/2//FC3sJum8rAXvLREwi2w==
+"@plasmicpkgs/radix-ui@^0.0.34":
+  version "0.0.34"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/radix-ui/-/radix-ui-0.0.34.tgz#5ed4923363faaf744173c24f9975d76d8f025ce0"
+  integrity sha512-bVR472i0jYUfFZOK9YMAIaaVxNvX4UqV00ismIulDIDDIuBPvtpVhFHO04jSp7dSJY9hVm9mlg2uRRVR7YVpXg==
   dependencies:
     "@radix-ui/react-context-menu" "^2.1.4"
     "@radix-ui/react-dialog" "^1.0.4"
