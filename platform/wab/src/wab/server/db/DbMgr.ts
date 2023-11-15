@@ -3626,21 +3626,21 @@ export class DbMgr implements MigrationDbMgr {
 
     // By now, cloned site already has the new source ids for the new project (including cloned tutorial dbs)
     const sourceIds = getAllOpExprSourceIdsUsedInSite(clonedSite);
-    try {
-      await this.allowProjectToDataSources(
-        project.id,
-        sourceIds as DataSourceId[]
-      );
-    } catch (err) {
-      // This may fail the clone if the user doesn't have access to the sourceIds, which is fine
-      // the user will have a cloned version but won't be able to issue new opIds, the ones already
-      // in the model will still work, but it will check for permissions in the data source too
-      console.error(
-        `Failed to allow project ${project.id} to data sources ${sourceIds.join(
-          ","
-        )}`,
-        err
-      );
+    // Enable each source id independently, so that if one fails, the others still get enabled
+    for (const sourceId of sourceIds) {
+      try {
+        await this.allowProjectToDataSources(project.id, [
+          sourceId,
+        ] as DataSourceId[]);
+      } catch (err) {
+        // This may fail the clone if the user doesn't have access to the sourceIds, which is fine
+        // the user will have a cloned version but won't be able to issue new opIds, the ones already
+        // in the model will still work, but it will check for permissions in the data source too
+        console.error(
+          `Failed to allow project ${project.id} to data sources ${sourceId}`,
+          err
+        );
+      }
     }
 
     const newBundle = bundler.bundle(

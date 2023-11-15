@@ -829,6 +829,12 @@ function getRolesFields(role: AppRole, roles: AppRole[]) {
   };
 }
 
+/**
+buildCurrentUserFromEmail only checks the user access to the app
+it skips the directory permissions check, it's assumed that it's
+safe to build the user from the email because the user has access
+to the app or is the current user
+*/
 async function buildCurrentUserFromEmail(
   dbCon: Connection,
   mgr: DbMgr,
@@ -846,7 +852,10 @@ async function buildCurrentUserFromEmail(
     {
       email: userEmail,
     },
-    projectId
+    projectId,
+    {
+      skipDirectoryPermsCheck: true,
+    }
   );
   const extraProperties = await getCurrentUserDataProperties(
     dbCon,
