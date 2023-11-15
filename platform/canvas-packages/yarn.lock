@@ -3521,10 +3521,10 @@
   dependencies:
     deepmerge "^4.3.1"
 
-"@plasmicpkgs/react-parallax-tilt@^0.0.182":
-  version "0.0.182"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-parallax-tilt/-/react-parallax-tilt-0.0.182.tgz#8cad79cab614040ae853943a1e756ddab25ee9d2"
-  integrity sha512-/aVDsNmN8EV41V6zHZSwff2dyH+AYq2sJgFUNcMhs9F8eUN6Ikacl6LbkHG5WO8X/Z3D0Mot+RVy6hNE4selvA==
+"@plasmicpkgs/react-parallax-tilt@^0.0.183":
+  version "0.0.183"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-parallax-tilt/-/react-parallax-tilt-0.0.183.tgz#e7f6318dae71ead6cf41c03efca50a4e420deea9"
+  integrity sha512-Rxk/njyPB3ob0HMxRobnjUS2XCTFovwPdk8YBgU/+ANyjnBxNdptgQCVKxfrIksURTHoOrn6JNchfOEmXpn2hA==
   dependencies:
     react-parallax-tilt "^1.5.74"
 
