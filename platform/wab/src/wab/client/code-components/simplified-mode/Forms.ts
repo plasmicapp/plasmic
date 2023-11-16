@@ -1,3 +1,57 @@
+import {
+  Arg,
+  Expr,
+  isKnownDataSourceOpExpr,
+  isKnownExpr,
+  isKnownRenderExpr,
+  Param,
+  TplComponent,
+  TplNode,
+  VariantSetting,
+} from "@/wab/classes";
+import { getComponentPropTypes } from "@/wab/client/components/sidebar-tabs/ComponentPropsSection";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { assert, ensure } from "@/wab/common";
+import { unwrap } from "@/wab/commons/failable-utils";
+import {
+  clone as cloneExpr,
+  codeLit,
+  deserCompositeExprMaybe,
+  ExprCtx,
+  isRealCodeExpr,
+  mergeUserMinimalValueWithCompositeExpr,
+  serCompositeExprMaybe,
+  tryExtractJson,
+} from "@/wab/exprs";
+import { walkDependencyTree } from "@/wab/project-deps";
+import {
+  elementSchemaToTpl,
+  isPlainObjectPropType,
+} from "@/wab/shared/code-components/code-components";
+import {
+  createDefaultSubmitButton,
+  createLabelRenderExprFromFormItem,
+  inputTypeToElementSchema,
+} from "@/wab/shared/code-components/simplified-mode/Forms";
+import { getSingleTplComponentFromArg } from "@/wab/shared/SlotUtils";
+import { unsetTplComponentArg } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
+import {
+  ensureBaseVariantSetting,
+  getBaseVariant,
+} from "@/wab/shared/Variants";
+import { SlotSelection } from "@/wab/slots";
+import {
+  clone as cloneTpl,
+  findFirstTextBlockInBaseVariant,
+  getParamVariable,
+  getTplComponentArgByParamName,
+  isTplCodeComponent,
+  isTplComponent,
+  mkTplComponent,
+  tplChildren,
+  TplCodeComponent,
+} from "@/wab/tpls";
 import { CodeComponentMode } from "@plasmicapp/host";
 import { NormalizedData } from "@plasmicapp/react-web/lib/data-sources";
 import {
@@ -9,58 +63,6 @@ import {
   inputTypeToComponentName as inputTypeToAntdComponentName,
   SimplifiedFormItemsProp,
 } from "@plasmicpkgs/antd5";
-import { isString } from "lodash";
-import {
-  Arg,
-  Component,
-  Expr,
-  ExprText,
-  isKnownDataSourceOpExpr,
-  isKnownExpr,
-  isKnownRenderExpr,
-  Param,
-  RenderExpr,
-  TplComponent,
-  TplNode,
-  VariantSetting,
-} from "../../../classes";
-import { assert, ensure } from "../../../common";
-import { unwrap } from "../../../commons/failable-utils";
-import {
-  clone as cloneExpr,
-  codeLit,
-  deserCompositeExprMaybe,
-  ExprCtx,
-  isRealCodeExpr,
-  isRealCodeExprEnsuringType,
-  mergeUserMinimalValueWithCompositeExpr,
-  serCompositeExprMaybe,
-  tryExtractJson,
-} from "../../../exprs";
-import { walkDependencyTree } from "../../../project-deps";
-import {
-  elementSchemaToTpl,
-  isPlainObjectPropType,
-} from "../../../shared/code-components/code-components";
-import { getSingleTplComponentFromArg } from "../../../shared/SlotUtils";
-import {
-  getTplComponentArg,
-  unsetTplComponentArg,
-} from "../../../shared/TplMgr";
-import { $$$ } from "../../../shared/TplQuery";
-import { ensureBaseVariantSetting } from "../../../shared/Variants";
-import { SlotSelection } from "../../../slots";
-import {
-  clone as cloneTpl,
-  findFirstTextBlockInBaseVariant,
-  isTplCodeComponent,
-  isTplComponent,
-  mkTplComponent,
-  tplChildren,
-  TplCodeComponent,
-} from "../../../tpls";
-import { getComponentPropTypes } from "../../components/sidebar-tabs/ComponentPropsSection";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
 
 type FormItemProps = {
   [key in keyof SimplifiedFormItemsProp]: Expr | undefined;
@@ -80,65 +82,12 @@ const plumeTypeToInputType = {
   checkbox: InputType.Checkbox,
 };
 
-const getParamVariable = (tpl: TplComponent, name: string) =>
-  ensure(
-    tpl.component.params.find((p) => p.variable.name === name),
-    `component ${tpl.component.name} should have ${name} param`
-  ).variable;
-
-const inputTypeToElementSchema = (formItem: any) => {
-  const inputType = isKnownExpr(formItem.inputType)
-    ? tryExtractJson(formItem.inputType)
-    : formItem.inputType;
-  if (!isString(inputType) || !(inputType in inputTypeToAntdComponentName)) {
-    return undefined;
-  }
-  return {
-    type: "component" as const,
-    name: inputTypeToAntdComponentName[inputType],
-    props: {},
-  };
-};
-
-const getTplComponentArgByParamName = (
-  tpl: TplComponent,
-  paramName: string,
-  baseVs?: VariantSetting
-) => {
-  if (!baseVs) {
-    baseVs = ensureBaseVariantSetting(tpl);
-  }
-  const param = tpl.component.params.find((p) => p.variable.name === paramName);
-  if (!param) {
-    return undefined;
-  }
-  const arg = getTplComponentArg(tpl, baseVs, param.variable);
-  return arg;
-};
-
 const getSlotDirectChildren = (tpl: TplComponent, slotName: string) => {
   const slotArg = ensure(
     $$$(tpl).getSlotArg(slotName),
     `${tpl.component.name} should have a label slot`
   );
   return isKnownRenderExpr(slotArg.expr) ? slotArg.expr.tpl : [];
-};
-
-const createDefaultSubmitButton = (
-  viewCtx: ViewCtx,
-  allComponents: Component[]
-) => {
-  return mkTplComponent(
-    ensure(
-      allComponents.find((c) => c.name === buttonComponentName),
-      `project should have a "${formItemComponentName}" component`
-    ),
-    viewCtx.variantTplMgr().getBaseVariantForNewNode(),
-    {
-      type: codeLit("primary"),
-      submitsForm: codeLit("boolean"),
-    }
-  );
 };
 
 const getFirstTextInSlot = (tpl: TplComponent, slotName: string) => {
@@ -448,25 +397,6 @@ const extractFormItemsFromSchemaForm = (
   );
 };
 
-const createLabelRenderExprFromFormItem = (
-  formItem: FormItemProps,
-  viewCtx: ViewCtx
-) => {
-  const text = isRealCodeExpr(formItem.label)
-    ? undefined
-    : isKnownExpr(formItem.label)
-    ? tryExtractJson(formItem.label)
-    : formItem.label;
-  const labelTpl = viewCtx.variantTplMgr().mkTplInlinedText(text ?? "", "div");
-  if (isRealCodeExprEnsuringType(formItem.label)) {
-    ensureBaseVariantSetting(labelTpl).text = new ExprText({
-      expr: formItem.label,
-      html: false,
-    });
-  }
-  return new RenderExpr({ tpl: [labelTpl] });
-};
-
 export function updateFormComponentMode(
   tpl: TplCodeComponent,
   viewCtx: ViewCtx,
@@ -474,6 +404,7 @@ export function updateFormComponentMode(
   schemaData: NormalizedData | undefined
 ) {
   const baseVs = ensureBaseVariantSetting(tpl);
+  const baseVariant = getBaseVariant(viewCtx.currentComponent());
   const submitSlot = new SlotSelection({
     tpl,
     slotParam: ensure(
@@ -532,7 +463,11 @@ export function updateFormComponentMode(
       viewCtx.viewOps.insertAsChild(cloneTpl(firstButton), submitSlot);
     } else {
       viewCtx.viewOps.insertAsChild(
-        createDefaultSubmitButton(viewCtx, allComponents),
+        createDefaultSubmitButton(
+          viewCtx.tplMgr(),
+          viewCtx.currentComponent(),
+          allComponents
+        ),
         submitSlot
       );
     }
@@ -565,7 +500,7 @@ export function updateFormComponentMode(
           : formItem.inputType;
         const labelRenderExpr = createLabelRenderExprFromFormItem(
           formItem,
-          viewCtx
+          baseVariant
         );
         const elementSchema = inputTypeToElementSchema(formItem);
         if (!elementSchema) {
@@ -668,7 +603,11 @@ export function updateFormComponentMode(
       viewCtx.viewOps.insertAsChild(cloneTpl(submitButton), tpl);
     } else {
       viewCtx.viewOps.insertAsChild(
-        createDefaultSubmitButton(viewCtx, allComponents),
+        createDefaultSubmitButton(
+          viewCtx.tplMgr(),
+          viewCtx.currentComponent(),
+          allComponents
+        ),
         submitSlot
       );
     }
