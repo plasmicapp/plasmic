@@ -70,20 +70,18 @@ export async function setupCraServer(
   const templateDir = path.resolve(path.join(__dirname, template));
   copySync(templateDir, tmpdir, { recursive: true });
 
-  const yarnMutex = getEnvVar("YARN_MUTEX_FILE");
-  const yarnMutexArg = yarnMutex ? `--mutex ${yarnMutex}` : "";
   const npmRegistry = getEnvVar("NPM_REGISTRY");
 
-  await runCommand(`yarn install ${yarnMutexArg} --registry ${npmRegistry}`, {
+  await runCommand(`npm install  --registry ${npmRegistry}`, {
     dir: tmpdir,
   });
 
   // Install the latest loader-react
-  await runCommand(`yarn remove ${yarnMutexArg} @plasmicapp/loader-react`, {
+  await runCommand(`npm uninstall @plasmicapp/loader-react`, {
     dir: tmpdir,
   });
   await runCommand(
-    `yarn add ${yarnMutexArg} --registry ${npmRegistry} @plasmicapp/loader-react@latest`,
+    `npm install  --registry ${npmRegistry} @plasmicapp/loader-react@latest`,
     { dir: tmpdir }
   );
 
@@ -103,7 +101,7 @@ export async function setupCraServer(
 
   const port = await getPort();
 
-  await runCommand(`yarn build`, {
+  await runCommand(`npm run build`, {
     dir: tmpdir,
     env: {
       SKIP_PREFLIGHT_CHECK: "true",

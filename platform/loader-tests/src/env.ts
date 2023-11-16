@@ -5,7 +5,6 @@ const DEFAULT_ENV = {
   WAB_HOST: "http://localhost:3003",
   WAB_USER_EMAIL: "admin@example.com",
   WAB_USER_PASSWORD: "!53kr3tz!",
-  YARN_MUTEX_FILE: "file:/tmp/.yarn-mutex",
 };
 
 type EnvVar = keyof typeof DEFAULT_ENV;
