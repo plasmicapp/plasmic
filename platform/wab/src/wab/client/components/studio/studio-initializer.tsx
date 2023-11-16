@@ -116,8 +116,8 @@ class StudioInitializer_ extends React.Component<
     this.setState({ studioCtx });
 
     const listener = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
       if (studioCtx.needsSaving()) {
+        e.preventDefault();
         e.returnValue = "Changes you made may not be saved.";
       }
     };
