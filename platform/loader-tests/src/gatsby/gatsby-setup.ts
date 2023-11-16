@@ -89,20 +89,18 @@ export async function setupGatsbyServer(
   const templateDir = path.resolve(path.join(__dirname, template));
   copySync(templateDir, tmpdir, { recursive: true });
 
-  const yarnMutex = getEnvVar("YARN_MUTEX_FILE");
-  const yarnMutexArg = yarnMutex ? `--mutex ${yarnMutex}` : "";
   const npmRegistry = getEnvVar("NPM_REGISTRY");
 
-  await runCommand(`yarn install ${yarnMutexArg} --registry ${npmRegistry}`, {
+  await runCommand(`npm install  --registry ${npmRegistry}`, {
     dir: tmpdir,
   });
 
   // Install the latest loader-gatsby
-  await runCommand(`yarn remove ${yarnMutexArg} @plasmicapp/loader-gatsby`, {
+  await runCommand(`npm uninstall   @plasmicapp/loader-gatsby`, {
     dir: tmpdir,
   });
   await runCommand(
-    `yarn add ${yarnMutexArg} --registry ${npmRegistry} @plasmicapp/loader-gatsby@latest`,
+    `npm install  --registry ${npmRegistry} @plasmicapp/loader-gatsby@latest`,
     { dir: tmpdir }
   );
 
@@ -120,7 +118,7 @@ export async function setupGatsbyServer(
     })
   );
 
-  await runCommand(`yarn build`, { dir: tmpdir });
+  await runCommand(`npm run build`, { dir: tmpdir });
 
   const port = await getPort();
   const server = runCommand(`./node_modules/.bin/gatsby serve --port ${port}`, {

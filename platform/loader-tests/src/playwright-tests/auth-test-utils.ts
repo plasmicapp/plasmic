@@ -431,7 +431,7 @@ export async function authNextJsSetup(opts: {
     })
   );
 
-  await runCommand(`yarn build`, { dir: tmpdir });
+  await runCommand(`npm run build`, { dir: tmpdir });
 
   const nextServer = runCommand(
     `./node_modules/.bin/next start --port ${port}`,

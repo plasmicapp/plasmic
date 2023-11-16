@@ -53,25 +53,22 @@ export async function prepareTemplate(opts: {
     fs.unlinkSync(path.join(tmpdir, "pages/components.tsx"));
   }
 
-  const yarnMutex = getEnvVar("YARN_MUTEX_FILE");
-  const yarnMutexArg = yarnMutex ? `--mutex ${yarnMutex}` : "";
-
-  await runCommand(`yarn install ${yarnMutexArg} --registry ${npmRegistry}`, {
+  await runCommand(`npm install  --registry ${npmRegistry}`, {
     dir: tmpdir,
   });
 
   // Remove and install the designated next version
-  await runCommand(`yarn remove ${yarnMutexArg} next`, { dir: tmpdir });
-  await runCommand(`yarn add ${yarnMutexArg} next@${nextVersion}`, {
+  await runCommand(`npm uninstall next`, { dir: tmpdir });
+  await runCommand(`npm install  next@${nextVersion}`, {
     dir: tmpdir,
   });
 
   // Remove and install the designated @plasmicapp/loader-nextjs version
-  await runCommand(`yarn remove ${yarnMutexArg} @plasmicapp/loader-nextjs`, {
+  await runCommand(`npm uninstall @plasmicapp/loader-nextjs`, {
     dir: tmpdir,
   });
   await runCommand(
-    `yarn add ${yarnMutexArg} --registry ${
+    `npm install  --registry ${
       loaderVersion !== "latest" ? "https://registry.npmjs.org" : npmRegistry
     } @plasmicapp/loader-nextjs@${loaderVersion}`,
     { dir: tmpdir }
@@ -207,7 +204,7 @@ export async function setupNextjsServer(
     projectToken: project.projectToken,
   });
 
-  await runCommand(`yarn build`, { dir });
+  await runCommand(`npm run build`, { dir });
 
   const port = await getPort();
   const nextServer = runCommand(
