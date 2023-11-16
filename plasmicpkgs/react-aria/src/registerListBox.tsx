@@ -126,7 +126,7 @@ export function registerListBox(
           displayName: "Render Section",
           renderPropParams: ["section"],
         },
-        class: {
+        className: {
           type: "class",
           displayName: "Additional states",
           selectors: [
