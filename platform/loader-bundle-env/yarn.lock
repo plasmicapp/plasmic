@@ -3268,10 +3268,10 @@
     react-scroll-parallax "3.0.0-alpha.14"
     resize-observer-polyfill "^1.5.1"
 
-"@plasmicpkgs/react-slick@^0.0.197":
-  version "0.0.197"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-slick/-/react-slick-0.0.197.tgz#89c49ce4c7aacfe2b87b84d05087d6b93d6bb7a8"
-  integrity sha512-CncAzcCNUmZ7tABpSZw7o9tZSyWi2ivkdgZygaejcPPVHMrqPFBZBsPapyjjSMRZP5Nn/9vvaQLMAaMC1KQEdw==
+"@plasmicpkgs/react-slick@^0.0.198":
+  version "0.0.198"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-slick/-/react-slick-0.0.198.tgz#6ddaaf5c8c2bb431df5a92c504b342e4ba7cbd43"
+  integrity sha512-QlQ3na11wwHihj5uU/vqUIfutepiDzc7uMpXehFED/vHSjDRQG/7QtWgUAe9FcmUz7D27yUxenukscEtclaROA==
   dependencies:
     "@seznam/compose-react-refs" "^1.0.6"
     antd "^4.23.4"
