@@ -288,6 +288,7 @@ import {
 import { getIntegrationsUrl, getPublicUrl } from "@/wab/urls";
 import L, { groupBy, sortBy } from "lodash";
 import memoizeOne from "memoize-one";
+import { optimizeGeneratedCodeForHostlessPackages } from "./optimize-hostless-packages";
 import { ReactHookSpec } from "./react-hook-spec";
 import {
   defaultStyleCssFileName,
@@ -679,7 +680,8 @@ export function generateReferencedImports(
   // If true, the reference is from the implementation dir; otherwise, it is
   // from the autogen dir.
   fromImpl: boolean,
-  aliases: ImportAliasesMap
+  aliases: ImportAliasesMap,
+  replacedHostlessComponentImportPath?: Map<Component, string>
 ) {
   const pathToImplDir = fromImpl
     ? "."
@@ -702,7 +704,10 @@ export function generateReferencedImports(
       isHostLessCodeComponent(c) &&
       opts.hostLessComponentsConfig === "package"
     ) {
-      return c.codeComponentMeta?.importPath;
+      return (
+        replacedHostlessComponentImportPath?.get(c) ??
+        c.codeComponentMeta?.importPath
+      );
     }
     // Even for code components, we do not use the configured import path;
     // instead, we will fix it up in the cli
@@ -733,6 +738,8 @@ export function generateReferencedImports(
     }`;
   };
 
+  const shouldSkipPlasmicImportTag = (component: Component) =>
+    isHostLessCodeComponent(component);
   const referencedPlasmicImports = components.flatMap((c) => {
     const imports: string[] = [];
     const importName = makeComponentImportName(c, aliases, opts);
@@ -741,7 +748,11 @@ export function generateReferencedImports(
       isCodeComponent(c) ? "codeComponent" : "component"
     }`;
     imports.push(
-      `import ${importName} from "${importPath}";  // plasmic-import: ${importTag}`
+      `import ${importName} from "${importPath}";${
+        !shouldSkipPlasmicImportTag(c)
+          ? `  // plasmic-import: ${importTag}`
+          : ""
+      }`
     );
 
     if (importArgType && !isCodeComponent(c)) {
@@ -751,9 +762,11 @@ export function generateReferencedImports(
           : makePlasmicComponentName(c)
       }"`;
       imports.push(
-        `import {${makeVariantsArgTypeName(
-          c
-        )}} from "${plasmicImportPath}";  // plasmic-import: ${c.uuid}/render`
+        `import {${makeVariantsArgTypeName(c)}} from "${plasmicImportPath}";${
+          !shouldSkipPlasmicImportTag(c)
+            ? `  // plasmic-import: ${c.uuid}/render`
+            : ""
+        }`
       );
     }
     if (isCodeComponentWithHelpers(c)) {
@@ -762,9 +775,11 @@ export function generateReferencedImports(
           c,
           opts,
           aliases
-        )} from "${makeCodeComponentHelperImportPath(c)}"; // plasmic-import: ${
-          c.uuid
-        }/codeComponentHelper`
+        )} from "${makeCodeComponentHelperImportPath(c)}";${
+          !shouldSkipPlasmicImportTag(c)
+            ? ` // plasmic-import: ${c.uuid}/codeComponentHelper`
+            : ""
+        }`
       );
     }
     return imports;
@@ -876,6 +891,12 @@ export function exportReactPresentational(
   if (!opts.relPathFromManagedToImplDir) {
     opts.relPathFromManagedToImplDir = ".";
   }
+  const { fakeTpls, replacedHostlessComponentImportPath } =
+    optimizeGeneratedCodeForHostlessPackages(
+      component,
+      site,
+      opts.isLivePreview ?? false
+    );
   const nodeNamer = makeNodeNamer(component);
   const reactHookSpecs = deriveReactHookSpecs(component, nodeNamer);
   const projectFlags = getProjectFlags(site);
@@ -970,6 +991,8 @@ export function exportReactPresentational(
       component,
       inStudio: opts.isLivePreview,
     },
+    fakeTpls,
+    replacedHostlessComponentImportPath,
   };
   const variantsType = serializeVariantsArgsType(ctx);
   const argsType = serializeArgsType(ctx);
@@ -994,7 +1017,8 @@ export function exportReactPresentational(
     false,
     // The imports are used in the autogen directory.
     false,
-    ctx.aliases
+    ctx.aliases,
+    ctx.replacedHostlessComponentImportPath
   );
 
   const importGlobalVariantContexts =
@@ -1872,6 +1896,7 @@ function serializeStateSpecs(component: Component, ctx: SerializerBaseContext) {
   };
 
   return `[${component.states
+    .filter((state) => !state.tplNode || !ctx.fakeTpls.includes(state.tplNode))
     .map((state) => serializeState(state))
     .join(",")}]`;
 }
@@ -2770,6 +2795,18 @@ export interface SerializerBaseContext {
   isPlasmicHosted?: boolean;
   serializeTplNode: (ctx: SerializerBaseContext, node: TplNode) => string;
   exprCtx: ExprCtx;
+  /**
+   * These tpls only exist during codegen for certain improvements in the user-generated code.
+   * Because of this, they do not accept certain props/attrs that are passed to other plasmic tpls,
+   * such as overrides and implicit states."
+   */
+  fakeTpls: TplNode[];
+  /**
+   * Depending on certain conditions, we can modify the import path of certain hostless components
+   * to improve the user-generated code. For instance, we can make simplified forms tree-shakable by
+   * importing a simpler form component instead of the full form component for schema forms.
+   */
+  replacedHostlessComponentImportPath: Map<Component, string>;
 }
 
 export type ImportAliasesMap = Map<Component | ImageAsset, string>;
@@ -3091,13 +3128,18 @@ function makeCreatePlasmicElement(
     ? elementType
     : jsLiteral(elementType);
   const skinny = ctx.exportOpts.skinny;
+  const isFakeTpl = ctx.fakeTpls.includes(node);
 
   const serializeComponentCall = (is$PropsCreated: boolean) => {
     return `<${tagType}
       ${hasGap ? `as={${asType}}` : ""}
-      ${!skinny && nodeName ? `data-plasmic-name={${jsLiteral(nodeName)}}` : ""}
       ${
-        nodeName
+        !skinny && nodeName && !isFakeTpl
+          ? `data-plasmic-name={${jsLiteral(nodeName)}}`
+          : ""
+      }
+      ${
+        nodeName && !isFakeTpl
           ? `data-plasmic-override={${getDataPlasmicOverride(
               nodeName,
               isPlasmicDefaultNodeName
@@ -3159,10 +3201,12 @@ function makeCreatePlasmicElement(
   });
   const maybeUseCodeComponentHelpers =
     isTplCodeComponent(node) && isCodeComponentWithHelpers(node.component);
-  if (statesUsingCtx.length === 0 && !maybeUseCodeComponentHelpers) {
+  if (
+    isFakeTpl ||
+    (statesUsingCtx.length === 0 && !maybeUseCodeComponentHelpers)
+  ) {
     return serializeComponentCall(false);
   }
-  // TODO: Will move this part to react-web.
   const codeComponentHelperName =
     isTplComponent(node) && isCodeComponentWithHelpers(node.component)
       ? getImportedCodeComponentHelperName(ctx.aliases, node.component)
@@ -3226,6 +3270,7 @@ export function serializeTplComponentBase(
   }
 ) {
   const { variantComboChecker } = ctx;
+  const isFakeTpl = ctx.fakeTpls.includes(node);
   const { attrs, variantArgNames } = conditionalComponentArgs(ctx, node);
 
   const slotParams = getSlotParams(node.component).filter(
@@ -3322,73 +3367,75 @@ export function serializeTplComponentBase(
     }
   }
 
-  const builtinEventHandlers: Record<string, string[]> = {};
-  ctx.component.states
-    .filter((state) => state.tplNode === node)
-    .forEach((state) => {
-      assert(
-        !!state.implicitState,
-        `${getStateDisplayName(state)} should be an implicit state`
-      );
+  if (!isFakeTpl) {
+    const builtinEventHandlers: Record<string, string[]> = {};
+    ctx.component.states
+      .filter((state) => state.tplNode === node)
+      .forEach((state) => {
+        assert(
+          !!state.implicitState,
+          `${getStateDisplayName(state)} should be an implicit state`
+        );
 
-      const tplVarName = toVarName(state.tplNode!.name ?? "undefined");
-      const statePath = [
-        `"${tplVarName}"`,
-        ...serializeDataRepsIndexName(node),
-        `"${toVarName(getLastPartOfImplicitStateName(state))}"`,
-      ];
-      const maybeOnChangePropName = getStateOnChangePropName(
-        state.implicitState
-      );
-      if (maybeOnChangePropName) {
-        const pushEventHandler = (handlerCode: string) => {
-          withDefaultFunc(
-            builtinEventHandlers,
-            maybeOnChangePropName,
-            () => []
-          ).push(handlerCode);
-        };
-        if (node.component.plumeInfo) {
-          const plugin = getPlumeCodegenPlugin(node.component);
-          pushEventHandler(`(...eventArgs) => {
-            p.generateStateOnChangeProp($state, [${statePath}])(${
-            plugin?.genOnChangeEventToValue
-              ? `(${plugin.genOnChangeEventToValue}).apply(null, eventArgs)`
-              : "eventArgs[0]"
-          })}`);
-        } else if (
-          isTplCodeComponent(node) &&
-          isCodeComponentWithHelpers(node.component)
-        ) {
-          const stateName = ensureKnownNamedState(state.implicitState).name;
-          const codeComponentHelperName = getImportedCodeComponentHelperName(
-            ctx.aliases,
-            node.component
-          );
-          pushEventHandler(
-            `p.generateStateOnChangePropForCodeComponents($state, "${stateName}", [${statePath}], ${codeComponentHelperName})`
-          );
-        } else {
-          pushEventHandler(
-            `p.generateStateOnChangeProp($state, [${statePath}])`
-          );
+        const tplVarName = toVarName(state.tplNode!.name ?? "undefined");
+        const statePath = [
+          `"${tplVarName}"`,
+          ...serializeDataRepsIndexName(node),
+          `"${toVarName(getLastPartOfImplicitStateName(state))}"`,
+        ];
+        const maybeOnChangePropName = getStateOnChangePropName(
+          state.implicitState
+        );
+        if (maybeOnChangePropName) {
+          const pushEventHandler = (handlerCode: string) => {
+            withDefaultFunc(
+              builtinEventHandlers,
+              maybeOnChangePropName,
+              () => []
+            ).push(handlerCode);
+          };
+          if (node.component.plumeInfo) {
+            const plugin = getPlumeCodegenPlugin(node.component);
+            pushEventHandler(`(...eventArgs) => {
+              p.generateStateOnChangeProp($state, [${statePath}])(${
+              plugin?.genOnChangeEventToValue
+                ? `(${plugin.genOnChangeEventToValue}).apply(null, eventArgs)`
+                : "eventArgs[0]"
+            })}`);
+          } else if (
+            isTplCodeComponent(node) &&
+            isCodeComponentWithHelpers(node.component)
+          ) {
+            const stateName = ensureKnownNamedState(state.implicitState).name;
+            const codeComponentHelperName = getImportedCodeComponentHelperName(
+              ctx.aliases,
+              node.component
+            );
+            pushEventHandler(
+              `p.generateStateOnChangePropForCodeComponents($state, "${stateName}", [${statePath}], ${codeComponentHelperName})`
+            );
+          } else {
+            pushEventHandler(
+              `p.generateStateOnChangeProp($state, [${statePath}])`
+            );
+          }
         }
-      }
 
-      if (isWritableState(state.implicitState)) {
-        const plumeType = node.component.plumeInfo?.type ?? "";
-        attrs[
-          getStateValuePropName(state.implicitState!)
-        ] = `p.generateStateValueProp($state, [${statePath}])${
-          ["switch", "checkbox"].includes(plumeType)
-            ? `?? false`
-            : plumeType === "text-input"
-            ? `?? ""`
-            : ""
-        }`;
-      }
-    });
-  mergeEventHandlers(attrs, builtinEventHandlers);
+        if (isWritableState(state.implicitState)) {
+          const plumeType = node.component.plumeInfo?.type ?? "";
+          attrs[
+            getStateValuePropName(state.implicitState!)
+          ] = `p.generateStateValueProp($state, [${statePath}])${
+            ["switch", "checkbox"].includes(plumeType)
+              ? `?? false`
+              : plumeType === "text-input"
+              ? `?? ""`
+              : ""
+          }`;
+        }
+      });
+    mergeEventHandlers(attrs, builtinEventHandlers);
+  }
 
   if (
     isBuiltinCodeComponent(node.component) &&

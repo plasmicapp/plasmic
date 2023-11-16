@@ -160,7 +160,7 @@ import {
   getSlotSelectionContainingTpl,
   isCodeComponentSlot,
 } from "./shared/SlotUtils";
-import { TplMgr } from "./shared/TplMgr";
+import { getTplComponentArg, TplMgr } from "./shared/TplMgr";
 import { $$$ } from "./shared/TplQuery";
 import {
   makeVariantComboSorter,
@@ -2797,3 +2797,25 @@ export function findAllInstancesOfComponent(site: Site, component: Component) {
       }))
   );
 }
+
+export const getParamVariable = (tpl: TplComponent, name: string) =>
+  ensure(
+    tpl.component.params.find((p) => p.variable.name === name),
+    `component ${tpl.component.name} should have ${name} param`
+  ).variable;
+
+export const getTplComponentArgByParamName = (
+  tpl: TplComponent,
+  paramName: string,
+  baseVs?: VariantSetting
+) => {
+  if (!baseVs) {
+    baseVs = ensureBaseVariantSetting(tpl);
+  }
+  const param = tpl.component.params.find((p) => p.variable.name === paramName);
+  if (!param) {
+    return undefined;
+  }
+  const arg = getTplComponentArg(tpl, baseVs, param.variable);
+  return arg;
+};

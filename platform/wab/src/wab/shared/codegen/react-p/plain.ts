@@ -75,6 +75,7 @@ import {
   serializeTplTextBlockContent,
   serializeVariantsArgsType,
 } from ".";
+import { optimizeGeneratedCodeForHostlessPackages } from "./optimize-hostless-packages";
 import {
   getExportedComponentName,
   getImportedComponentName,
@@ -120,6 +121,8 @@ export function exportReactPlain(
   },
   extraOpts: Partial<SerializerBaseContext> = {}
 ): ComponentExportOutput {
+  const { fakeTpls, replacedHostlessComponentImportPath } =
+    optimizeGeneratedCodeForHostlessPackages(component, site, false);
   const nodeNamer = makeNodeNamer(component);
   const reactHookSpecs = deriveReactHookSpecs(component, nodeNamer);
   const projectFlags = getProjectFlags(site);
@@ -169,6 +172,8 @@ export function exportReactPlain(
       component,
       inStudio: opts.isLivePreview,
     },
+    fakeTpls,
+    replacedHostlessComponentImportPath,
   };
   const componentName = getExportedComponentName(component);
   const root = component.tplTree;
