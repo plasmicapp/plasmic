@@ -1,3 +1,12 @@
+import { U } from "@/wab/client/cli-routes";
+import { useAppCtx, useTopFrameApi } from "@/wab/client/contexts/AppContexts";
+import { useCodegenType } from "@/wab/client/hooks/useCodegenType";
+import CirclesvgIcon from "@/wab/client/plasmic/plasmic_kit_q_4_icons/icons/PlasmicIcon__Circlesvg";
+import PlasmicCodeButton from "@/wab/client/plasmic/plasmic_kit_top_bar/PlasmicCodeButton";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { spawn } from "@/wab/common";
+import { isPlasmicComponent } from "@/wab/components";
+import { toClassName } from "@/wab/shared/codegen/util";
 import { PlasmicIcon } from "@plasmicapp/react-web";
 import { Menu, Tooltip } from "antd";
 import { defer } from "lodash";
@@ -5,16 +14,6 @@ import { observer } from "mobx-react-lite";
 import * as React from "react";
 import { MdOpenInNew } from "react-icons/all";
 import { useLocalStorage } from "react-use";
-import { spawn } from "../../../common";
-import { isPlasmicComponent } from "../../../components";
-import { toClassName } from "../../../shared/codegen/util";
-import { hideHelp } from "../../app-ctx";
-import { U } from "../../cli-routes";
-import { useAppCtx, useTopFrameApi } from "../../contexts/AppContexts";
-import { useCodegenType } from "../../hooks/useCodegenType";
-import CirclesvgIcon from "../../plasmic/plasmic_kit_q_4_icons/icons/PlasmicIcon__Circlesvg";
-import PlasmicCodeButton from "../../plasmic/plasmic_kit_top_bar/PlasmicCodeButton";
-import { useStudioCtx } from "../../studio-ctx/StudioCtx";
 
 export const CodeButton = observer(function CodeButton() {
   const studioCtx = useStudioCtx();
@@ -57,9 +56,6 @@ export const CodeButton = observer(function CodeButton() {
   const projectWasNeverSyncedOrImported =
     studioCtx.siteInfo.latestRevisionSynced === 0;
   const redCircle = enableCircles && projectWasNeverSyncedOrImported;
-  if (hideHelp(appCtx)) {
-    return null;
-  }
 
   function showQuickstarts() {
     if (!isPlasmicLevels) {
