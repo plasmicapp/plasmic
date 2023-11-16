@@ -41,7 +41,7 @@
     "@plasmicpkgs/plasmic-wordpress": "^0.0.104",
     "@plasmicpkgs/plasmic-wordpress-graphql": "^0.0.99",
     "@plasmicpkgs/radix-ui": "^0.0.35",
-    "@plasmicpkgs/react-aria": "^0.0.4",
+    "@plasmicpkgs/react-aria": "^0.0.5",
     "@plasmicpkgs/react-awesome-reveal": "^3.8.184",
     "@plasmicpkgs/react-chartjs-2": "^1.0.87",
     "@plasmicpkgs/react-parallax-tilt": "^0.0.183",
