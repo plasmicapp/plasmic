@@ -13,7 +13,7 @@ test.describe(`Plasmic Code Libraries`, async () => {
 
     test.describe(`loader-nextjs@${loaderVersion}, next@${nextVersion}`, async () => {
       let ctx: NextJsContext;
-      test.beforeEach(async () => {
+      test.beforeEach(async ({ context }) => {
         ctx = await setupNextJs({
           bundleFile: "code-libs.json",
           projectName: "Code Libraries",
@@ -23,6 +23,28 @@ test.describe(`Plasmic Code Libraries`, async () => {
           loaderVersion,
           nextVersion,
         });
+
+        await context.route(
+          "https://api.publicapis.org/entries?title=cats",
+          (route) =>
+            route.fulfill({
+              status: 200,
+              json: {
+                count: 1,
+                entries: [
+                  {
+                    API: "Cats",
+                    Description: "Pictures of cats from Tumblr",
+                    Auth: "apiKey",
+                    HTTPS: true,
+                    Cors: "no",
+                    Link: "https://docs.thecatapi.com/",
+                    Category: "Animals",
+                  },
+                ],
+              },
+            })
+        );
       });
 
       test.afterEach(async () => {
@@ -31,9 +53,7 @@ test.describe(`Plasmic Code Libraries`, async () => {
       test(`Code Libraries`, async ({ page }) => {
         await page.goto(ctx.host);
 
-        // TODO: this API call often ends up with "You have reached
-        // maximum request limit". Need a different one!
-        // await expect(page.getByText(`Axios response: "Animals"`)).toBeVisible();
+        await expect(page.getByText(`Axios response: "Animals"`)).toBeVisible();
         await expect(
           page.getByText(`Copy to clipboard type: "function"`)
         ).toBeVisible();
