@@ -69,12 +69,6 @@ export const SliderWrapper = forwardRef(function SliderWrapper_(
     }
   }, [debouncedEditingSlide, isEditMode]);
 
-  useEffect(() => {
-    // passing the initialSlide prop directly to <Slider> does not work when inifinite: true and slidesPerRow: 3. So usingSlickGoTo instead
-    if (initialSlide === undefined) return;
-    slider.current?.slickGoTo(initialSlide, true);
-  }, [initialSlide]);
-
   React.useImperativeHandle(
     userRef,
     () => ({
