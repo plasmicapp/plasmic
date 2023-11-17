@@ -157,7 +157,17 @@ export function runInteractionCode(
           canvasEnv,
           viewCtx.studioCtx,
           viewCtx.canvasCtx.Sub.reactWeb,
-          undefined,
+          async (invalidateKeys: string[] | null | undefined) => {
+            if (!invalidateKeys) {
+              return undefined;
+            }
+            const invalidateKey = async (key: string) => {
+              await viewCtx.studioCtx.refreshFetchedDataFromPlasmicQuery(key);
+            };
+            return await Promise.all(
+              invalidateKeys.map((key) => invalidateKey(key))
+            );
+          },
           viewCtx.canvasCtx.win(),
           viewCtx.canvasCtx.Sub.dataSources
         )
