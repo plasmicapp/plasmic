@@ -1,23 +1,23 @@
+import { ProjectDependency } from "@/wab/classes";
+import { assert, spawn, spawnWrapper } from "@/wab/common";
+import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
+import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
+import { unbundleWithDeps } from "@/wab/server/db/DbBundleLoader";
+import { ensureDbConnection } from "@/wab/server/db/DbCon";
+import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
+import { Pkg, PkgVersion, User } from "@/wab/server/entities/Entities";
+import { Bundle, Bundler } from "@/wab/shared/bundler";
 import fs from "fs";
 import fetch from "node-fetch";
 import path from "path";
 import yargs from "yargs";
-import { ProjectDependency } from "../../classes";
-import { assert, spawn, spawnWrapper } from "../../common";
-import { Bundle, Bundler } from "../../shared/bundler";
-import { DEFAULT_DATABASE_URI } from "../config";
-import { getLastBundleVersion } from "../db/BundleMigrator";
-import { unbundleWithDeps } from "../db/DbBundleLoader";
-import { ensureDbConnection } from "../db/DbCon";
-import { DbMgr, SUPER_USER } from "../db/DbMgr";
-import { Pkg, PkgVersion, User } from "../entities/Entities";
 
 // This is the right Plume PkgVersion.version to use. You can publish
 // newer versions of Plume, but they will not be used until this
 // constant is updated to point to them. This makes it possible to
 // update Plume project, publish a new version, save the json to
 // git, and run tests against it in cypress before it is live in prod.
-export const REAL_PLUME_VERSION = "19.3.0";
+export const REAL_PLUME_VERSION = "19.4.0";
 
 export class PlumePkgMgr {
   constructor(private db: DbMgr) {}
@@ -165,7 +165,7 @@ async function checkPlumeVersion() {
 }
 
 export async function main() {
-  yargs
+  await yargs
     .usage("Usage: $0 <command> [options]")
     .command(
       "update",
