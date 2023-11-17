@@ -50,14 +50,8 @@ export const SliderWrapper = forwardRef(function SliderWrapper_(
   props: SliderProps,
   userRef?: Ref<SliderMethods>
 ) {
-  const {
-    editingSlide,
-    initialSlide,
-    arrowColor,
-    className,
-    sliderScopeClassName,
-    ...rest
-  } = props;
+  const { editingSlide, arrowColor, className, sliderScopeClassName, ...rest } =
+    props;
   // "data-plasmic-canvas-envs" prop only exists in studio canvas
   const isEditMode = (props as any)["data-plasmic-canvas-envs"] ? true : false;
   const slider = useRef<Slider>(null);
