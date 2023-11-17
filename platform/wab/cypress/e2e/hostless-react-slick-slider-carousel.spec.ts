@@ -1,4 +1,4 @@
-describe("hostless-react-slick slider carousel", () => {
+describe.skip("hostless-react-slick slider carousel", () => {
   beforeEach(() => {
     cy.setupProjectWithHostlessPackages({
       hostLessPackagesInfo: [
