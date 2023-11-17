@@ -737,7 +737,9 @@ const PropValueEditor_ = (
     const allowedOps = _getContextDependentValue(propType.allowedOps);
     return (
       <DataSourceOpPicker
-        queryKey={`${tpl?.uuid ?? ""}-${attr}`}
+        queryKey={`${tpl?.uuid ?? ""}-${
+          ccContextData?.currentInteraction?.uuid ?? ""
+        }-${attr}`}
         key={value?.uid}
         value={value}
         onChange={onChange}
