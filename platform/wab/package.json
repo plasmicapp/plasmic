@@ -276,7 +276,7 @@
     "acorn-walk": "^8.2.0",
     "airtable": "0.11.5",
     "analytics-node": "^3.4.0-beta.2",
-    "antd": "^4.20.5",
+    "antd": "^4.24.14",
     "assert": "^2.0.0",
     "async": "^3.2.0",
     "async-mutex": "^0.4.0",
