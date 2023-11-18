@@ -12,7 +12,7 @@
     "@plasmicapp/react-web": "^0.2.303",
     "@plasmicpkgs/airtable": "^0.0.197",
     "@plasmicpkgs/antd": "^2.0.103",
-    "@plasmicpkgs/antd5": "^0.0.191",
+    "@plasmicpkgs/antd5": "^0.0.192",
     "@plasmicpkgs/commerce": "^0.0.181",
     "@plasmicpkgs/commerce-commercetools": "^0.0.130",
     "@plasmicpkgs/commerce-local": "^0.0.181",
