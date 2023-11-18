@@ -36,7 +36,6 @@ test.describe(`Data Source basic`, async () => {
       .type("https://assets.pokemon.com/assets/cms2/img/pokedex/full/158.png");
 
     await page.getByRole("button", { name: "Submit" }).click();
-    await page.keyboard.down("Escape");
     await expect(page.getByText("Totodile")).toBeVisible();
     await expect(page.getByText("Friendly alligator")).toBeVisible();
     await expect(

@@ -84,11 +84,13 @@ export interface FormWrapperProps
   formType?: "new-entry" | "update-entry";
   submitSlot?: React.ReactNode;
   data?: DataOp;
+  autoDisableWhileSubmitting?: boolean;
+  onIsSubmittingChange?: (isSubmitting: boolean) => void;
 }
 
 const Internal = React.forwardRef(
   (
-    props: FormWrapperProps & {
+    props: Omit<FormWrapperProps, "onFinish"> & {
       forceRemount: () => void;
       setInternalFieldCtx: React.Dispatch<
         React.SetStateAction<InternalFieldCtx>
@@ -97,9 +99,15 @@ const Internal = React.forwardRef(
       labelCol?: ColProps & { horizontalOnly?: boolean };
       wrapperCol?: ColProps & { horizontalOnly?: boolean };
       formLayout: FormLayoutContextValue;
+      onFinish?:
+        | FormProps["onFinish"]
+        | ((
+            ...args: Parameters<NonNullable<FormProps["onFinish"]>>
+          ) => Promise<ReturnType<NonNullable<FormProps["onFinish"]>>>);
     },
     ref: React.Ref<FormRefActions>
   ) => {
+    const [isSubmitting, setIsSubmitting] = React.useState(false);
     const [form] = Form.useForm();
     const values = form.getFieldsValue(true);
     const lastValue = React.useRef(values);
@@ -109,6 +117,7 @@ const Internal = React.forwardRef(
       formLayout,
       internalFieldCtx,
       setInternalFieldCtx,
+      autoDisableWhileSubmitting = true,
       ...rest
     } = props;
     // extracted from https://github.com/react-component/field-form/blob/master/src/Form.tsx#L120
@@ -189,6 +198,14 @@ const Internal = React.forwardRef(
       ...(schemaFormCtx ? schemaFormCtx : {}),
     });
 
+    const updateIsSubmitting = React.useCallback(
+      (newValue: boolean) => {
+        setIsSubmitting(newValue);
+        props.onIsSubmittingChange?.(newValue);
+      },
+      [props.onIsSubmittingChange, setIsSubmitting]
+    );
+
     return (
       <InternalFormInstanceContext.Provider
         value={{
@@ -212,8 +229,12 @@ const Internal = React.forwardRef(
               props.onValuesChange?.(...args);
               extendedOnValuesChange?.(form.getFieldsValue(true));
             }}
-            onFinish={() => {
-              props.onFinish?.(
+            onFinish={async () => {
+              if (isSubmitting && autoDisableWhileSubmitting) {
+                return;
+              }
+              updateIsSubmitting(true);
+              const submission = props.onFinish?.(
                 pick(
                   form.getFieldsValue(true),
                   ...internalFieldCtx.preservedRegisteredFields.map(
@@ -221,6 +242,13 @@ const Internal = React.forwardRef(
                   )
                 )
               );
+              if (
+                typeof submission === "object" &&
+                typeof submission.then === "function"
+              ) {
+                await submission;
+              }
+              updateIsSubmitting(false);
             }}
             form={form}
             labelCol={
@@ -233,6 +261,7 @@ const Internal = React.forwardRef(
                 ? undefined
                 : props.wrapperCol
             }
+            disabled={isSubmitting && autoDisableWhileSubmitting}
           >
             {/*Remove built-in spacing on form fields*/}
             <style>{`
