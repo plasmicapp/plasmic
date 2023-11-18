@@ -536,7 +536,7 @@ export function InteractionExprEditor(props: {
   return (
     <DataPickerRunCodeActionContext.Provider
       value={
-        currentInteraction
+        currentInteraction && isRunCodeInteraction
           ? {
               interaction: currentInteraction,
               stepValue,
