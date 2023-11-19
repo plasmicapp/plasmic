@@ -348,7 +348,6 @@ import {
   mapValues,
   maxBy,
   memoize,
-  throttle,
   uniq,
 } from "lodash";
 import assign from "lodash/assign";
@@ -1884,6 +1883,7 @@ export class StudioCtx extends WithDbCtx {
     try {
       const prevFocusedViewCtx = this.focusedViewCtx();
       const prevArena = this.currentArena;
+      const prevFocusedMode = this.focusedMode;
 
       if (prevFocusedViewCtx && prevArena) {
         this.arenaViewStates.set(prevArena, {
@@ -1913,7 +1913,18 @@ export class StudioCtx extends WithDbCtx {
 
       if (!this.watchPlayerId) {
         if (viewState.lastViewSnapshot) {
-          this.restoreStudioViewportSnapshot(viewState.lastViewSnapshot, true);
+          const lastViewSnapshot = viewState.lastViewSnapshot;
+          this.restoreStudioViewportSnapshot(lastViewSnapshot, true);
+          // restoreStudioViewportSnapshot doesn't work if we are moving
+          // from not focused frame to focused frame.
+          // Defer to ensure the focused frame has loaded.
+          // https://linear.app/plasmic/issue/PLA-10107
+          if (prevFocusedMode !== this.focusedMode) {
+            defer(() => {
+              this.restoreStudioViewportSnapshot(lastViewSnapshot, true);
+            });
+          }
+
           // We dispatch a framesChanged event, as new frames are now rendered,
           // so that hoverbox can position itself properly
           defer(() => this.framesChanged.dispatch());
@@ -2761,23 +2772,6 @@ export class StudioCtx extends WithDbCtx {
     z: 0,
   });
 
-  maybeFixCanvasPanning = throttle(
-    () => {
-      if (this.focusedMode)
-        window.requestAnimationFrame(() =>
-          this.setTransform({
-            translate3D: this.getScalerTranslate(),
-            scale: this.zoom,
-          })
-        );
-    },
-    500,
-    {
-      leading: true,
-      trailing: true,
-    }
-  );
-
   /**
    * Applies a transform (scale + translate) on the canvas.
    *
@@ -3092,7 +3086,6 @@ export class StudioCtx extends WithDbCtx {
     this.maybeCanvasHorizontalScrollbarMetadata();
     this.maybeCanvasVerticalScrollbarMetadata();
     this.maybeClipperBB();
-    this.maybeFixCanvasPanning();
 
     this.clipperResizedSignal.dispatch();
   }
