@@ -1957,6 +1957,11 @@ export class StudioCtx extends WithDbCtx {
         }
       }
 
+      // If not in focused mode, leave interactive mode.
+      if (!isDedicatedArena(arena) || !arena._focusedFrame) {
+        this.isInteractiveMode = false;
+      }
+
       // If there were still outstanding canvas load requests for this arena,
       // go fulfill them now!
       this.drainCanvasFrameForArena(arena);
