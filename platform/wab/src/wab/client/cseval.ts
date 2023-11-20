@@ -167,7 +167,7 @@ export abstract class BaseCliSvrEvaluator {
     // changes instead of create several root nodes to avoid unmounting the
     // canvas (currently `Sub.setPlasmicRootNode` forces the tree to remount)
     return sub.React.createElement(() => {
-      const forceUpdate = useCanvasForceUpdate(sub);
+      const forceUpdate = useCanvasForceUpdate(sub, false);
       return mkUseCanvasObserver(sub, vc)(
         () => {
           const tpl = vc.componentArgsContainer();
