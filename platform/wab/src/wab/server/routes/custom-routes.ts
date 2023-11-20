@@ -5,6 +5,8 @@ import {
 import { Application, Request, Response } from "express";
 import { withNext } from "./util";
 
+export const ROUTES_WITH_TIMING = [];
+
 export function addInternalRoutes(app: Application) {
   addHostingRoutes(app);
   addPaymentRoutes(app);

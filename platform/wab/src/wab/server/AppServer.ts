@@ -318,7 +318,7 @@ import {
 import { getPromotionCodeById } from "./routes/promo-code";
 import { getDevFlagsMergedWithOverrides } from "./db/appconfig";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
-import { addInternalRoutes } from "./routes/custom-routes";
+import { addInternalRoutes, ROUTES_WITH_TIMING } from "./routes/custom-routes";
 import { ensureDevFlags } from "./workers/worker-utils";
 
 const hotShots = require("hot-shots");
@@ -518,7 +518,8 @@ function addMiddlewares(
     // This is before we've loaded req.devflags - just use the hard-coded default for the core team email domain.
     if (
       isCoreTeamEmail(req.user?.email, DEVFLAGS) ||
-      req.path.includes("/server-data")
+      req.path.includes("/server-data") ||
+      ROUTES_WITH_TIMING.some((route) => req.path.includes(route))
     ) {
       req.timingStore = { calls: [], cur: undefined };
       ASYNC_TIMING.enterWith(req.timingStore);
