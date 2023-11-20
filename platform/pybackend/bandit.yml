@@ -1,0 +1,2 @@
+assert_used:
+  skips: ["*/test_*.py"]
