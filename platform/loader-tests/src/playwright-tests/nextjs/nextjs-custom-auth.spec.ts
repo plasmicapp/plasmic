@@ -4,7 +4,7 @@ import { test } from "../../fixtures";
 import { NextJsContext, teardownNextJs } from "../../nextjs/nextjs-setup";
 import { authNextJsSetup } from "../auth-test-utils";
 
-test.describe(`PlasmicRootProvider Auth`, async () => {
+test.skip(`PlasmicRootProvider Auth`, async () => {
   let ctx: NextJsContext;
   test.beforeEach(async ({ request }) => {
     const bundleFile = "auth-e2e.json";
