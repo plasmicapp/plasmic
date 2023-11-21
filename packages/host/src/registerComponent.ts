@@ -31,6 +31,7 @@ export interface ActionProps<P> {
     appendToSlot: (element: PlasmicElement, slotName: string) => void;
     removeFromSlotAt: (pos: number, slotName: string) => void;
     updateProps: (newValues: any) => void;
+    updateStates: (newValues: any) => void;
   };
   /**
    * The document that the component will be rendered into; instead of using

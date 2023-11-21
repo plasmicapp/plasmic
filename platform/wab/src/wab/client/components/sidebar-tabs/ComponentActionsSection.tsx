@@ -1,24 +1,24 @@
-import { isKnownRenderExpr } from "../../../classes";
+import { isKnownNamedState, isKnownRenderExpr } from "@/wab/classes";
 /** @format */
+import { TplComponent } from "@/wab/classes";
+import { TplExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
+import Button from "@/wab/client/components/widgets/Button";
+import { reportError } from "@/wab/client/ErrorNotifications";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { ensure, hackyCast, maybe } from "@/wab/common";
+import { $ } from "@/wab/deps";
+import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
+import { elementSchemaToTpl } from "@/wab/shared/code-components/code-components";
+import { getSlotParams } from "@/wab/shared/SlotUtils";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { SlotSelection } from "@/wab/slots";
 import { Action, ActionProps, PlasmicElement } from "@plasmicapp/host";
 import { notification } from "antd";
 import domAlign from "dom-align";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { useUnmount } from "react-use";
-import { TplComponent } from "../../../classes";
-import { ensure, hackyCast, maybe } from "../../../common";
 import { isCodeComponent } from "../../../components";
-import { $ } from "../../../deps";
-import { BadRequestError } from "../../../shared/ApiErrors/errors";
-import { elementSchemaToTpl } from "../../../shared/code-components/code-components";
-import { getSlotParams } from "../../../shared/SlotUtils";
-import { $$$ } from "../../../shared/TplQuery";
-import { SlotSelection } from "../../../slots";
-import { reportError } from "../../ErrorNotifications";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
-import { TplExpsProvider } from "../style-controls/StyleComponent";
-import Button from "../widgets/Button";
 import { ConnectToDBTableModal } from "./DataSource/ConnectToDBTable";
 import { updateOrCreateExpr } from "./PropEditorRow";
 
@@ -86,7 +86,7 @@ function useStudioOps(
   node: HTMLDivElement | null,
   tplComp: TplComponent,
   expsProvider: TplExpsProvider
-) {
+): ActionProps<any>["studioOps"] {
   const canvasCtx = viewCtx.canvasCtx;
   const sub = canvasCtx.Sub;
   const [modalProps, setModalProps] = React.useState<null | {
@@ -203,43 +203,67 @@ function useStudioOps(
     [viewCtx]
   );
 
+  const updateStates = React.useCallback(
+    (newValues: any) => {
+      if (typeof newValues !== "object") {
+        return;
+      }
+      Object.keys(newValues).forEach((stateName) => {
+        const val = newValues[stateName];
+        const state = tplComp.component.states.find(
+          (_state) => isKnownNamedState(_state) && _state.name === stateName
+        );
+        if (!state) {
+          return;
+        }
+        const implicitState = viewCtx
+          .currentComponent()
+          .states.find((_state) => _state.implicitState === state);
+        if (!implicitState) {
+          return;
+        }
+        viewCtx.setCanvasStateValue(implicitState, val);
+      });
+    },
+    [viewCtx, expsProvider, tplComp]
+  );
+
   const updateProps = React.useCallback(
     (newValues: any) => {
+      const vtm = viewCtx.variantTplMgr();
       viewCtx.change(() => {
-        if (typeof newValues === "object") {
-          Object.keys(newValues).forEach((prop) => {
-            const val = newValues[prop];
-            const param = tplComp.component.params.find(
-              (_param) => _param.variable.name === prop
+        if (typeof newValues !== "object") {
+          return;
+        }
+        Object.keys(newValues).forEach((prop) => {
+          const val = newValues[prop];
+          const param = tplComp.component.params.find(
+            (_param) => _param.variable.name === prop
+          );
+          if (!param) {
+            return;
+          }
+          if (val !== undefined) {
+            const effectiveVs = expsProvider.effectiveVs();
+            const arg = effectiveVs.args.find((_arg) => _arg.param === param);
+            const curExpr =
+              maybe(arg, (x) => x.expr) ||
+              (isCodeComponent(tplComp.component) && param.defaultExpr) ||
+              undefined;
+
+            const newExpr = updateOrCreateExpr(
+              curExpr,
+              param.type,
+              val,
+              tplComp,
+              viewCtx
             );
 
-            if (param) {
-              const vtm = viewCtx.variantTplMgr();
-              if (val !== undefined) {
-                const effectiveVs = expsProvider.effectiveVs();
-                const arg = effectiveVs.args.find(
-                  (_arg) => _arg.param === param
-                );
-                const curExpr =
-                  maybe(arg, (x) => x.expr) ||
-                  (isCodeComponent(tplComp.component) && param.defaultExpr) ||
-                  undefined;
-
-                const newExpr = updateOrCreateExpr(
-                  curExpr,
-                  param.type,
-                  val,
-                  tplComp,
-                  viewCtx
-                );
-
-                vtm.setArg(tplComp, param.variable, newExpr);
-              } else {
-                vtm.delArg(tplComp, param.variable);
-              }
-            }
-          });
-        }
+            vtm.setArg(tplComp, param.variable, newExpr);
+          } else {
+            vtm.delArg(tplComp, param.variable);
+          }
+        });
       });
     },
     [viewCtx, expsProvider, tplComp]
@@ -252,8 +276,16 @@ function useStudioOps(
       appendToSlot,
       removeFromSlotAt,
       updateProps,
+      updateStates,
     }),
-    [showModal, refreshQueryData, appendToSlot, removeFromSlotAt, updateProps]
+    [
+      showModal,
+      refreshQueryData,
+      appendToSlot,
+      removeFromSlotAt,
+      updateProps,
+      updateStates,
+    ]
   );
   return studioOps;
 }
