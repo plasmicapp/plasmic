@@ -1368,14 +1368,28 @@ export function extractComponent({
     component.params.push(newParam);
     jsNamesOfParamsAlreadyExtracted.add(toVarName(newParam.variable.name));
 
-    // TODO: this clone is safe for literal CustomCode only
-    newParam.defaultExpr = containingParam.defaultExpr
-      ? cloneExpr(containingParam.defaultExpr)
-      : undefined;
+    const isSafeInitialExpr = (expr: Expr) => {
+      // Don't accept exprs that references $ variables as initial values
+      // since the new component won't have the reference to it.
+      const parsedExpr = parseExpr(expr);
+      return !Object.entries(parsedExpr.usesDollarVars).some(
+        ([_, value]) => value
+      );
+    };
 
-    newParam.previewExpr = containingParam.previewExpr
-      ? cloneExpr(containingParam.previewExpr)
-      : undefined;
+    // TODO: this clone is safe for literal CustomCode only
+    if (
+      containingParam.defaultExpr &&
+      isSafeInitialExpr(containingParam.defaultExpr)
+    ) {
+      newParam.defaultExpr = cloneExpr(containingParam.defaultExpr);
+    }
+    if (
+      containingParam.previewExpr &&
+      isSafeInitialExpr(containingParam.previewExpr)
+    ) {
+      newParam.previewExpr = cloneExpr(containingParam.previewExpr);
+    }
 
     // We set the arg for the new TplComponent to reference the containing
     // component's param.
