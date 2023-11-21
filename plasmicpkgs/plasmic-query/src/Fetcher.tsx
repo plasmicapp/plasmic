@@ -164,6 +164,7 @@ function mkFetchProps(
       type: "string",
       description:
         "A globally unique ID for this query, used for invalidating queries",
+      invariantable: true,
     },
   };
 }
