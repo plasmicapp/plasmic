@@ -272,6 +272,7 @@ import {
 } from "./studio-canvas-util";
 import { getRealClassNames } from "./styles-name";
 import { SubDeps } from "./subdeps";
+import defer = setTimeout;
 
 export const hasLoadingBoundaryKey = "plasmicInternalHasLoadingBoundary";
 const enableLoadingBoundaryKey = "plasmicInternalEnableLoadingBoundary";
@@ -3376,6 +3377,18 @@ const mkComponentLevelQueryFetcher = computedFn(
                 ] as const
             )
         );
+        defer(() => {
+          Object.keys(new$Queries).forEach((k) => {
+            try {
+              if (new$Queries[k]?.isLoading) {
+                // Force kickoff all fetches
+                (new$Queries[k] as any).data.value;
+              }
+            } catch {
+              /* Empty */
+            }
+          });
+        });
         // In codegen we update $queries in the render function, but we can't
         // do it here as this is not the `Component` render function, so we
         // update the object itself to delete old queries and add the new ones.
