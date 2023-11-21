@@ -314,11 +314,13 @@ export function ContentfulFetcher({
     fields: uniq(filterFields ?? []),
   });
 
-  if (filterField && !searchParameter) {
-    return <div>Please specify a Search Parameter</div>;
-  }
-  if (searchParameter && !filterValue) {
-    return <div>Please specify a Filter value</div>;
+  if (filterField) {
+    if (!searchParameter) {
+      return <div>Please specify a Search Parameter</div>;
+    }
+    if (!filterValue) {
+      return <div>Please specify a Filter value</div>;
+    }
   }
 
   function denormalizeData(data: any | null) {
@@ -340,44 +342,50 @@ export function ContentfulFetcher({
           return denormalizeField(arrayItem);
         });
         return updatedArray;
-      } else if (
-        data.includes.Asset &&
-        fieldValue &&
-        typeof fieldValue === "object" &&
-        "sys" in fieldValue &&
-        fieldValue.sys.linkType === "Asset"
-      ) {
-        const fieldId = fieldValue.sys.id;
-        const asset = data.includes.Asset.find(
-          (a: any) => a.sys.id === fieldId
-        );
-        if (asset) {
-          return {
-            ...fieldValue,
-            url: "https:" + asset.fields?.file?.url,
-          };
-        } else {
-          console.log(`Asset URL not found for ID: ${fieldId}`);
+      } else if (fieldValue && typeof fieldValue === "object") {
+        if (
+          data.includes.Asset &&
+          "sys" in fieldValue &&
+          fieldValue.sys.linkType === "Asset"
+        ) {
+          const fieldId = fieldValue.sys.id;
+          const asset = data.includes.Asset.find(
+            (a: any) => a.sys.id === fieldId
+          );
+          if (asset) {
+            fieldValue = {
+              ...fieldValue,
+              url: "https:" + asset.fields?.file?.url,
+            };
+          } else {
+            console.log(`Asset URL not found for ID: ${fieldId}`);
+          }
+        } else if (
+          data.includes.Entry &&
+          "sys" in fieldValue &&
+          fieldValue.sys.linkType === "Entry"
+        ) {
+          const fieldId = fieldValue.sys.id;
+          if (entryMap[fieldId]) {
+            fieldValue = {
+              ...fieldValue,
+              fields: denormalizeItem(entryMap[fieldId]).fields,
+            };
+          } else {
+            console.log(`Entry not found for ID: ${fieldId}`);
+          }
         }
-      } else if (
-        data.includes.Entry &&
-        fieldValue &&
-        typeof fieldValue === "object" &&
-        "sys" in fieldValue &&
-        fieldValue.sys.linkType === "Entry"
-      ) {
-        const fieldId = fieldValue.sys.id;
-        if (entryMap[fieldId]) {
-          return {
-            ...fieldValue,
-            fields: denormalizeItem(entryMap[fieldId]).fields,
-          };
-        } else {
-          console.log(`Entry not found for ID: ${fieldId}`);
-        }
-      } else {
-        return fieldValue;
+        fieldValue = Object.entries(fieldValue).reduce((obj, [key, value]) => {
+          if (key === "sys" || key === "fields") {
+            obj[key] = value;
+          } else {
+            obj[key] = denormalizeField(value);
+          }
+          return obj;
+        }, {} as Record<string, any>);
       }
+
+      return fieldValue;
     };
 
     const denormalizeItem = (item: any) => {
@@ -401,6 +409,8 @@ export function ContentfulFetcher({
   }
 
   let renderedData;
+
+  const fixedData = entriesData ? denormalizeData(entriesData) : undefined;
 
   if (filteredData) {
     if (filteredData?.items?.length === 0) {
@@ -427,13 +437,13 @@ export function ContentfulFetcher({
           )
         );
   } else {
-    if (entriesData?.items?.length === 0) {
+    if (fixedData?.items?.length === 0) {
       return <div className={className}>{contentType} is empty</div>;
     }
 
     renderedData = noAutoRepeat
       ? children
-      : denormalizeData(entriesData)?.items?.map((item: any, index: number) => (
+      : fixedData?.items?.map((item: any, index: number) => (
           <DataProvider
             key={item?.sys?.id}
             name={"contentfulItem"}
@@ -448,7 +458,7 @@ export function ContentfulFetcher({
   }
 
   return (
-    <DataProvider name="contentfulItems" data={entriesData?.items}>
+    <DataProvider name="contentfulItems" data={fixedData?.items}>
       {noLayout ? (
         <> {renderedData} </>
       ) : (
