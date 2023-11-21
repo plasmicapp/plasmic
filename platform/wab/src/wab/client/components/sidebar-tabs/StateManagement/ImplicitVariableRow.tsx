@@ -1,15 +1,16 @@
+import { Component, State } from "@/wab/classes";
+import { WithContextMenu } from "@/wab/client/components/ContextMenu";
+import { ValuePreview } from "@/wab/client/components/sidebar-tabs/data-tab";
+import LabeledListItem from "@/wab/client/components/widgets/LabeledListItem";
+import { DefaultVariableRowProps } from "@/wab/client/plasmic/plasmic_kit_state_management/PlasmicVariableRow";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { assert } from "@/wab/common";
+import { isPageComponent } from "@/wab/components";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
 import { getStateVarName } from "src/wab/states";
-import { Component, State } from "../../../../classes";
-import { assert } from "../../../../common";
-import { DefaultVariableRowProps } from "../../../plasmic/plasmic_kit_state_management/PlasmicVariableRow";
-import { StudioCtx } from "../../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../../studio-ctx/view-ctx";
-import { WithContextMenu } from "../../ContextMenu";
-import LabeledListItem from "../../widgets/LabeledListItem";
-import { ValuePreview } from "../data-tab";
 import { useVariableRow } from "./useVariableRow";
 
 export interface ImplicitVariableRowProps extends DefaultVariableRowProps {
@@ -43,7 +44,14 @@ const ImplicitVariableRow = observer(
               {variableRowProps.name}
             </label>
           }
-          onClick={variableRowProps.showVariableConfigModal}
+          onClick={
+            // There is nothing to configure for implicit states in page
+            // components. We do not add the `onClick` handler to
+            // avoid opening an empty modal.
+            isPageComponent(component)
+              ? undefined
+              : variableRowProps.showVariableConfigModal
+          }
           menu={menu}
           padding={"noHorizontal"}
           withIcon
