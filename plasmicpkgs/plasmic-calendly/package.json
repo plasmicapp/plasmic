@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-calendly",
-  "version": "0.0.26",
+  "version": "0.0.27",
   "description": "Plasmic Calendly components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

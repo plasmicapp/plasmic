@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-eventbrite",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "Plasmic Eventbrite components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
