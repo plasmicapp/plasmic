@@ -521,7 +521,7 @@ export function ContentfulField({
     );
   } else if (
     typeof data === "object" &&
-    data.sys.linkType === "Asset" &&
+    data.sys?.linkType === "Asset" &&
     data.url
   ) {
     return <img className={className} src={data.url} />;
