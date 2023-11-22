@@ -26853,7 +26853,7 @@
         }
       },
       "deps": [],
-      "version": "224-migrate-hostless"
+      "version": "225-release-global-actions"
     }
   ],
   [
@@ -52082,7 +52082,7 @@
         "DuESJECNxPHt": { "tpl": [], "__type": "VirtualRenderExpr" }
       },
       "deps": ["968565bc-2862-4179-aa20-deebd3879e08"],
-      "version": "224-migrate-hostless"
+      "version": "225-release-global-actions"
     }
   ]
 ]

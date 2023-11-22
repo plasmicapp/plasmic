@@ -1,12 +1,12 @@
-import { GlobalActionsProvider, GlobalContextMeta } from "@plasmicapp/host";
+import { GlobalContextMeta } from "@plasmicapp/host";
 import registerGlobalContext from "@plasmicapp/host/registerGlobalContext";
-import React from "react";
-import { Registerable } from "./registerable";
-import { getCommerceProvider } from "./swell";
 import {
   CartActionsProvider,
   globalActionsRegistrations,
 } from "@plasmicpkgs/commerce";
+import React from "react";
+import { Registerable } from "./registerable";
+import { getCommerceProvider } from "./swell";
 
 interface CommerceProviderProps {
   children?: React.ReactNode;
@@ -29,7 +29,7 @@ export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
       defaultValue: "pk_QaZeGhtpQaVbNQnWJdRlE1abE6Ezf9U9",
     },
   },
-  unstable__globalActions: globalActionsRegistrations as any,
+  ...{ globalActions: globalActionsRegistrations },
   description: `Get your store ID and public storefront API key from the Swell admin UI under Developer > API Keys.
 
 [Watch how to use this integration](https://www.youtube.com/watch?v=b2mgOTbP2_8).`,

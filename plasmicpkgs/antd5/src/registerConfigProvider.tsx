@@ -166,18 +166,18 @@ function InnerConfigProvider(props: {
   const app = useAppContext();
   const actions = React.useMemo(
     () => ({
-      showNotification: (opts: {
-        type: "success" | "error" | "info" | "warning";
-        message: React.ReactNode;
-        description?: React.ReactNode;
-        duration?: number;
-        placement?: NotificationPlacement;
-      }) => {
-        const { type, ...rest } = opts;
-        app.notification[opts.type ?? "info"]({
-          ...rest,
-          message: rest.message?.toString(),
-          description: rest.description?.toString(),
+      showNotification: (
+        type: "success" | "error" | "info" | "warning",
+        message: React.ReactNode,
+        description?: React.ReactNode,
+        duration?: number,
+        placement?: NotificationPlacement
+      ) => {
+        app.notification[type ?? "info"]({
+          message: message?.toString(),
+          description: description?.toString(),
+          duration,
+          placement,
         });
       },
       hideNotifications: () => {
@@ -647,47 +647,63 @@ export const registerConfigProvider = makeRegisterGlobalContext(
         type: "themeStyles",
       } as any,
     },
-    ...({
-      unstable__globalActions: {
+    ...{
+      globalActions: {
         showNotification: {
           displayName: "Show notification",
-          parameters: {
-            type: {
-              type: "choice",
-              options: ["success", "error", "info", "warning"],
-              defaultValue: "info",
+          parameters: [
+            {
+              name: "type",
+              type: {
+                type: "choice",
+                options: ["success", "error", "info", "warning"],
+                defaultValue: "info",
+              },
             },
-            message: {
-              type: "string",
-              defaultValue: "A message for you!",
+            {
+              name: "message",
+              type: {
+                type: "string",
+                defaultValue: "A message for you!",
+              },
             },
-            description: {
-              type: "string",
-              defaultValue: "Would you like to learn more?",
+            {
+              name: "description",
+              type: {
+                type: "string",
+                defaultValue: "Would you like to learn more?",
+              },
             },
-            duration: {
-              type: "number",
-              defaultValueHint: 5,
+            {
+              name: "duration",
+              type: {
+                type: "number",
+                defaultValueHint: 5,
+              },
             },
-            placement: {
-              type: "choice",
-              options: [
-                "top",
-                "topLeft",
-                "topRight",
-                "bottom",
-                "bottomLeft",
-                "bottomRight",
-              ],
-              defaultValueHint: "topRight",
+            {
+              name: "placement",
+              type: {
+                type: "choice",
+                options: [
+                  "top",
+                  "topLeft",
+                  "topRight",
+                  "bottom",
+                  "bottomLeft",
+                  "bottomRight",
+                ],
+                defaultValueHint: "topRight",
+              },
             },
-          },
+          ],
         },
         hideNotifications: {
           displayName: "Hide notifications",
+          parameters: [],
         },
       },
-    } as any),
+    },
     importPath: "@plasmicpkgs/antd5/skinny/registerConfigProvider",
     importName: "AntdConfigProvider",
   }

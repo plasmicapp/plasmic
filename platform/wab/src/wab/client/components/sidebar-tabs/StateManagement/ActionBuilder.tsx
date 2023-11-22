@@ -29,6 +29,7 @@ import {
   ActionType,
   BLOCKED_RUN_INTERACTION_MESSAGE,
   extractDataCtx,
+  generateActionMetaForGlobalAction,
   generateInteractionContextData,
 } from "@/wab/client/state-management/interactions-meta";
 import {
@@ -291,29 +292,31 @@ function ActionBuilder_(
                       ...Array.from(sc.getRegisteredContextsMap().values()),
                       ...Array.from(sc.getHostLessContextsMap().values()),
                     ].map(({ meta }) => {
-                      const globalActions = (meta as any)
-                        .unstable__globalActions;
-                      if (globalActions && !isEmpty(globalActions)) {
-                        return (
-                          <StyleSelect.OptionGroup
-                            title={meta.displayName ?? meta.name}
-                          >
-                            {Object.entries(globalActions).map(
-                              ([globalAction, globalActionMeta]: [
-                                string,
-                                any
-                              ]) => (
-                                <StyleSelect.Option
-                                  value={`${meta.name}.${globalAction}`}
-                                >
-                                  {globalActionMeta.displayName ?? globalAction}
-                                </StyleSelect.Option>
-                              )
-                            )}
-                          </StyleSelect.OptionGroup>
-                        );
+                      const globalActions =
+                        "globalActions" in meta
+                          ? meta.globalActions
+                          : undefined;
+                      if (!globalActions || isEmpty(globalActions)) {
+                        return null;
                       }
-                      return null;
+                      return (
+                        <StyleSelect.OptionGroup
+                          title={meta.displayName ?? meta.name}
+                        >
+                          {Object.entries(globalActions).map(
+                            ([globalAction, globalActionMeta]: [
+                              string,
+                              any
+                            ]) => (
+                              <StyleSelect.Option
+                                value={`${meta.name}.${globalAction}`}
+                              >
+                                {globalActionMeta.displayName ?? globalAction}
+                              </StyleSelect.Option>
+                            )
+                          )}
+                        </StyleSelect.OptionGroup>
+                      );
                     }),
                   ],
                 }}
@@ -568,9 +571,17 @@ function getActionMeta(sc: StudioCtx, actionName: string) {
     const contextMeta =
       sc.getRegisteredContextsMap().get(contextName) ??
       sc.getHostLessContextsMap().get(contextName);
-    return (contextMeta?.meta as any)?.unstable__globalActions?.[
-      action
-    ] as ActionType<any>;
+    if (
+      !contextMeta ||
+      !("globalActions" in contextMeta.meta) ||
+      !contextMeta.meta.globalActions
+    ) {
+      return undefined;
+    }
+    const globalAction = contextMeta.meta.globalActions[action];
+    return globalAction
+      ? generateActionMetaForGlobalAction(globalAction)
+      : undefined;
   }
   return undefined;
 }

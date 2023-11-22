@@ -26716,7 +26716,7 @@
         }
       },
       "deps": [],
-      "version": "224-migrate-hostless"
+      "version": "225-release-global-actions"
     }
   ],
   [
@@ -38360,7 +38360,7 @@
         "p4m7rWp5nDGl": { "tpl": [], "__type": "VirtualRenderExpr" }
       },
       "deps": ["b420cd72-36aa-46e8-a9af-795714ebc344"],
-      "version": "224-migrate-hostless"
+      "version": "225-release-global-actions"
     }
   ]
 ]

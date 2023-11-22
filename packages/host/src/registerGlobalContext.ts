@@ -2,10 +2,10 @@ import {
   BooleanType,
   ChoiceType,
   CustomType,
+  DataSourceType,
   JSONLikeType,
   NumberType,
   StringType,
-  DataSourceType,
 } from "./prop-types";
 import { FunctionParam } from "./registerComponent";
 
@@ -82,7 +82,7 @@ export interface GlobalContextMeta<P> {
    */
   providesData?: boolean;
 
-  unstable__globalActions?: Record<string, GlobalActionRegistration<P>>;
+  globalActions?: Record<string, GlobalActionRegistration<P>>;
 }
 
 export interface GlobalContextRegistration {

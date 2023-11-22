@@ -6557,15 +6557,6 @@
     lodash "^4.17.19"
     prettier "^2.0.5"
 
-"@plasmicapp/host@1.0.151":
-  version "1.0.151"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.151.tgz#e7ae92c48a8efdedba7d299091b78a9301af1212"
-  integrity sha512-ZOisTiz0d5hMxCdzbRkj4b+VKyAz81R355vnp8sjjLteXbzrH6KMxcutgkotbXMGYRnn3322Y9DZlUCkEgDELg==
-  dependencies:
-    "@plasmicapp/query" "0.1.67"
-    csstype "^3.0.8"
-    window-or-global "^1.0.1"
-
 "@plasmicapp/host@1.0.177":
   version "1.0.177"
   resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.177.tgz#4bc0975f5144a4ed945417d9f2d724c40d9a9e55"
@@ -6582,19 +6573,21 @@
   dependencies:
     window-or-global "^1.0.1"
 
+"@plasmicapp/host@^1.0.184":
+  version "1.0.184"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.184.tgz#45a61cf065fd53faed71ca99241a2d0cf7ecab4e"
+  integrity sha512-ntp/p8ex7nPNJpnvyKRIhKPbDExdxBwn4VBQCADe9BAspgPdW/OpqgojL3RRS3B1jmoaWoig7jubkvUTuF8IIg==
+  dependencies:
+    "@plasmicapp/query" "0.1.77"
+    csstype "^3.1.2"
+    window-or-global "^1.0.1"
+
 "@plasmicapp/isomorphic-unfetch@1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@plasmicapp/isomorphic-unfetch/-/isomorphic-unfetch-1.0.3.tgz#baa334f5190d49461c26b1aa3fda073f5cfa7e33"
   integrity sha512-cJtPOCf2/FWlFB42Q/n0MK/C47NSZr+YQJbCvQwvyjOrOgOQ4gJ/+gkr4avpMa7UPMa8qLovDAuaR+5k+hMlZQ==
   dependencies:
     unfetch "^4.2.0"
-
-"@plasmicapp/query@0.1.67":
-  version "0.1.67"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.67.tgz#64515dc7782093fae5c3c741ad016fdcc9281200"
-  integrity sha512-BS+NrTtknKeaPhOD14K0AsUe8Mvq6qmnL/B9TE80Ac0dq1mwD7SIyptV7JGpYmiFzsO1v1XZ/RkR3jtpsKrpoQ==
-  dependencies:
-    swr "^1.0.0"
 
 "@plasmicapp/query@0.1.74":
   version "0.1.74"
@@ -16034,7 +16027,7 @@ csstype@^2.5.7, csstype@^2.6.8:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.6.21.tgz#2efb85b7cc55c80017c66a5ad7cbd931fda3a90e"
   integrity sha512-Z1PhmomIfypOpoMjRQB70jfvy/wxT50qW08YXO5lMIJkrdq4yOTR+AW7FqutScmB9NkLwxo+jU+kZLbofZZq/w==
 
-csstype@^3.0.10, csstype@^3.0.11, csstype@^3.0.2, csstype@^3.0.6, csstype@^3.0.8, csstype@^3.1.2:
+csstype@^3.0.10, csstype@^3.0.11, csstype@^3.0.2, csstype@^3.0.6, csstype@^3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.2.tgz#1d4bf9d572f11c14031f0436e1c10bc1f571f50b"
   integrity sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==

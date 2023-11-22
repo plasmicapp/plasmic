@@ -1,12 +1,12 @@
 import { GlobalContextMeta } from "@plasmicapp/host";
 import registerGlobalContext from "@plasmicapp/host/registerGlobalContext";
-import React from "react";
-import { Registerable } from "./registerable";
-import { getCommerceProvider } from "./shopify";
 import {
   CartActionsProvider,
   globalActionsRegistrations,
 } from "@plasmicpkgs/commerce";
+import React from "react";
+import { Registerable } from "./registerable";
+import { getCommerceProvider } from "./shopify";
 
 interface CommerceProviderProps {
   children?: React.ReactNode;
@@ -29,7 +29,7 @@ export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
       defaultValue: "ef7d41c7bf7e1c214074d0d3047bcd7b",
     },
   },
-  unstable__globalActions: globalActionsRegistrations as any,
+  ...{ globalActions: globalActionsRegistrations },
   description: `Your store domain usually looks like **storename.myshopify.com**.
 
 For your access token, get it by following [this video](https://www.youtube.com/watch?v=wB_6cM7tdv4).

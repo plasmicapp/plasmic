@@ -1309,7 +1309,7 @@
         }
       },
       "deps": [],
-      "version": "224-migrate-hostless"
+      "version": "225-release-global-actions"
     }
   ],
   [
@@ -13984,7 +13984,7 @@
         }
       },
       "deps": ["b0321cd3-88d2-47d1-8bc8-e261e664bccb"],
-      "version": "224-migrate-hostless"
+      "version": "225-release-global-actions"
     }
   ]
 ]

@@ -2,15 +2,15 @@ import { ClientResponse, Project } from "@commercetools/platform-sdk";
 import { GlobalContextMeta } from "@plasmicapp/host";
 import registerGlobalContext from "@plasmicapp/host/registerGlobalContext";
 import { usePlasmicQueryData } from "@plasmicapp/query";
+import {
+  CartActionsProvider,
+  globalActionsRegistrations,
+} from "@plasmicpkgs/commerce";
 import React from "react";
 import { getCommerceProvider } from "./commercetools";
 import { getFetcher } from "./fetcher";
 import { CommercetoolsCredentials } from "./provider";
 import { Registerable } from "./registerable";
-import {
-  globalActionsRegistrations,
-  CartActionsProvider,
-} from "@plasmicpkgs/commerce";
 
 interface CommerceProviderProps extends CommercetoolsCredentials {
   children?: React.ReactNode;
@@ -46,7 +46,7 @@ export const commerceProviderMeta: GlobalContextMeta<CommerceProviderProps> = {
       defaultValue: "us-central1.gcp",
     },
   },
-  unstable__globalActions: globalActionsRegistrations as any,
+  ...{ globalActions: globalActionsRegistrations },
   importPath: "@plasmicpkgs/commercetools",
   importName: "CommerceProviderComponent",
 };

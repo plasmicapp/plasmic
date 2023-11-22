@@ -4,14 +4,15 @@ import {
   GlobalActionsProvider,
   useSelector,
 } from "@plasmicapp/host";
+import { GlobalActionRegistration } from "@plasmicapp/host/registerGlobalContext";
 import React, { useContext } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Product } from "./types/product";
-import { Category } from "./types/site";
-import { defaultProduct } from "./utils/default-product";
 import useAddItem from "./cart/use-add-item";
 import useRemoveItem from "./cart/use-remove-item";
 import useUpdateItem from "./cart/use-update-item";
+import { Product } from "./types/product";
+import { Category } from "./types/site";
+import { defaultProduct } from "./utils/default-product";
 
 const productSelector = "currentProduct";
 
@@ -81,13 +82,9 @@ export const useProductMediaContext = () =>
   useSelector(mediaSelector) as number | undefined;
 
 interface CartActions extends GlobalActionDict {
-  addItem: (p: {
-    productId: string;
-    variantId: string;
-    quantity: number;
-  }) => void;
-  updateItem: (p: { lineItemId: string; quantity: number }) => void;
-  removeItem: (p: { lineItemId: string }) => void;
+  addItem: (productId: string, variantId: string, quantity: number) => void;
+  updateItem: (lineItemId: string, quantity: number) => void;
+  removeItem: (lineItemId: string) => void;
 }
 
 export function CartActionsProvider(
@@ -101,13 +98,13 @@ export function CartActionsProvider(
 
   const actions: CartActions = React.useMemo(
     () => ({
-      addItem({ productId, variantId, quantity }) {
+      addItem(productId, variantId, quantity) {
         addItem({ productId, variantId, quantity });
       },
-      updateItem({ lineItemId, quantity }) {
+      updateItem(lineItemId, quantity) {
         updateItem({ id: lineItemId, quantity });
       },
-      removeItem({ lineItemId }) {
+      removeItem(lineItemId) {
         removeItem({ id: lineItemId });
       },
     }),
@@ -124,44 +121,53 @@ export function CartActionsProvider(
   );
 }
 
-export const globalActionsRegistrations = {
+export const globalActionsRegistrations: Record<
+  string,
+  GlobalActionRegistration<any>
+> = {
   addItem: {
     displayName: "Add item to cart",
-    parameters: {
-      productId: {
+    parameters: [
+      {
+        name: "productId",
         displayName: "Product Id",
         type: "string",
       },
-      variantId: {
+      {
+        name: "variantId",
         displayName: "Variant Id",
         type: "string",
       },
-      quantity: {
+      {
+        name: "quantity",
         displayName: "Quantity",
         type: "number",
       },
-    },
+    ],
   },
   updateItem: {
     displayName: "Update item in cart",
-    parameters: {
-      lineItemId: {
+    parameters: [
+      {
+        name: "lineItemId",
         displayName: "Line Item Id",
         type: "string",
       },
-      quantity: {
+      {
+        name: "quantity",
         displayName: "New Quantity",
         type: "number",
       },
-    },
+    ],
   },
   removeItem: {
     displayName: "Remove item from cart",
-    parameters: {
-      lineItemId: {
+    parameters: [
+      {
+        name: "lineItemId",
         displayName: "Line Item Id",
         type: "string",
       },
-    },
+    ],
   },
 };

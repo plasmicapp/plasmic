@@ -1,4 +1,5 @@
 import {
+  CollectionExpr,
   Component,
   CustomCode,
   ensureKnownDataSourceOpExpr,
@@ -70,6 +71,7 @@ import {
   isEventHandlerKeyForParam,
 } from "@/wab/tpls";
 import { mkMetaName } from "@plasmicapp/host";
+import { GlobalActionRegistration } from "@plasmicapp/host/registerGlobalContext";
 import { get, startCase } from "lodash";
 import { getTplRefActions } from "./ref-actions";
 
@@ -783,3 +785,49 @@ export const mkDefaultInteraction = (
     defaultArgs
   );
 };
+
+export function generateActionMetaForGlobalAction(
+  globalAction: GlobalActionRegistration<any>
+) {
+  return {
+    displayName: globalAction.displayName ?? "",
+    getDefaultArgs: () => ({ args: new CollectionExpr({ exprs: [] }) }),
+    getDefaultName: () => "Invoke global action",
+    parameters: {
+      args: {
+        type: "functionArgs",
+        displayName: "Arguments",
+        forExternal: true,
+        functionType: (_args, ctx: InteractionContextData) =>
+          typeFactory.func(
+            ...globalAction.parameters.map((arg) => {
+              const argType = propTypeToWabType(
+                ctx.viewCtx.site,
+                arg.type
+              ).match({
+                success: (val) => val,
+                failure: () => typeFactory.any(),
+              });
+              assert(
+                !isKnownRenderableType(argType) && !isRenderFuncType(argType),
+                () =>
+                  `RenderableType and RenderFuncType should only be used for slots`
+              );
+              assert(
+                !isKnownFunctionType(argType),
+                () => `Can't have recursive FunctionType`
+              );
+              return typeFactory.arg(arg.name, argType, arg.displayName);
+            })
+          ),
+        isFunctionTypeAttachedToModel: false,
+        parametersMeta: (_args, ctx: InteractionContextData) =>
+          globalAction.parameters,
+        currentInteraction: (_props, ctx: InteractionContextData) =>
+          ctx.currentInteraction,
+        eventHandlerKey: (_props, ctx: InteractionContextData) =>
+          ctx.eventHandlerKey,
+      },
+    },
+  } as ActionType<any>;
+}

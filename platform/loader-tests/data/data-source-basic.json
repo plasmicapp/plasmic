@@ -26729,7 +26729,7 @@
         }
       },
       "deps": [],
-      "version": "224-migrate-hostless"
+      "version": "225-release-global-actions"
     }
   ],
   [
@@ -30761,7 +30761,7 @@
         }
       },
       "deps": [],
-      "version": "224-migrate-hostless"
+      "version": "225-release-global-actions"
     }
   ],
   [
@@ -31062,7 +31062,7 @@
         }
       },
       "deps": [],
-      "version": "224-migrate-hostless"
+      "version": "225-release-global-actions"
     }
   ],
   [
@@ -35643,34 +35643,34 @@
         },
         "Xh9gnPMo307b": { "tpl": [], "__type": "VirtualRenderExpr" },
         "8QNCwEcOHEW-": {
-          "__type": "Interaction",
           "interactionName": "Update addPokemonModal ▸ open",
           "actionName": "updateVariable",
           "args": [{ "__ref": "mXMjseC4_SE7" }, { "__ref": "PDXDH2yiq0W9" }],
           "condExpr": null,
           "conditionalMode": "always",
           "uuid": "2dRI9tVUqRH2",
-          "parent": { "__ref": "T_9w02S7zelK" }
+          "parent": { "__ref": "T_9w02S7zelK" },
+          "__type": "Interaction"
         },
         "X-gBcLdEltb-": {
-          "__type": "ObjectPath",
           "path": ["$state", "addPokemonModal", "open"],
-          "fallback": null
+          "fallback": null,
+          "__type": "ObjectPath"
         },
         "mXMjseC4_SE7": {
-          "__type": "NameArg",
           "name": "variable",
-          "expr": { "__ref": "X-gBcLdEltb-" }
+          "expr": { "__ref": "X-gBcLdEltb-" },
+          "__type": "NameArg"
         },
         "PDXDH2yiq0W9": {
-          "__type": "NameArg",
           "name": "operation",
-          "expr": { "__ref": "97vruMDAYpcK" }
+          "expr": { "__ref": "97vruMDAYpcK" },
+          "__type": "NameArg"
         },
         "97vruMDAYpcK": {
-          "__type": "CustomCode",
           "code": "4",
-          "fallback": null
+          "fallback": null,
+          "__type": "CustomCode"
         }
       },
       "deps": [
@@ -35678,7 +35678,7 @@
         "88b7de88-9046-4021-b08b-d5d7d1db6a8c",
         "0b5c4773-e201-48c2-86a4-c29335ea539b"
       ],
-      "version": "224-migrate-hostless"
+      "version": "225-release-global-actions"
     }
   ]
 ]

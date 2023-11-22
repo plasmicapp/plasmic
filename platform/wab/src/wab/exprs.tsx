@@ -93,6 +93,7 @@ import { maybeComputedFn } from "./shared/mobx-util";
 import { maybeConvertToIife } from "./shared/parser-utils";
 import {
   extractEventArgsNameFromEventHandler,
+  isGlobalAction,
   serializeActionArg,
   serializeActionFunction,
 } from "./states";
@@ -608,7 +609,9 @@ const _asCode = maybeComputedFn(
 
           let performActionCode = `(${serializeActionFunction(
             interaction
-          )})?.apply(null, [actionArgs])`;
+          )})?.apply(null, [${
+            !isGlobalAction(interaction) ? "actionArgs" : "...actionArgs.args"
+          }])`;
           if (exprCtx.inStudio) {
             performActionCode = wrapInteractionBodyExpr(
               interactionLoc,

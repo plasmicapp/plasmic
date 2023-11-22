@@ -1238,6 +1238,9 @@ export const serializeActionArg = (
   }
 };
 
+export const isGlobalAction = (interaction: Interaction) =>
+  !ACTIONS[interaction.actionName] && interaction.actionName.includes(".");
+
 export const serializeActionFunction = (interaction: Interaction) => {
   const actionName = interaction.actionName;
   const action = ACTIONS[actionName];
@@ -1247,7 +1250,7 @@ export const serializeActionFunction = (interaction: Interaction) => {
       : action.function;
   } else {
     assert(
-      actionName.includes("."),
+      isGlobalAction(interaction),
       `didn't find an action named ${actionName}`
     );
     const [contextName, contextActionName] = actionName.split(".");
