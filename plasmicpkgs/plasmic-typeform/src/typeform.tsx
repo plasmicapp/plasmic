@@ -1,7 +1,7 @@
 import { ComponentMeta } from "@plasmicapp/host";
 
-import React from "react";
 import { Widget } from "@typeform/embed-react";
+import React from "react";
 export function ensure<T>(x: T | null | undefined): T {
   if (x === null || x === undefined) {
     debugger;
@@ -19,7 +19,7 @@ interface TypeformProps {
 }
 
 export const TypeformMeta: ComponentMeta<TypeformProps> = {
-  name: "TypeForm",
+  name: "hostless-typeform",
   displayName: "Typeform",
   importName: "Typeform",
   importPath: modulePath,
@@ -27,14 +27,14 @@ export const TypeformMeta: ComponentMeta<TypeformProps> = {
   description: "Embed Typeform on your website",
   defaultStyles: {
     width: "600px",
-    height: "700px"
+    height: "700px",
   },
   props: {
     formId: {
       type: "string",
       displayName: "Form ID",
       description: "ID of your form in Typeform",
-      defaultValue: "R2s5BM"
+      defaultValue: "R2s5BM",
     },
   },
 };
@@ -45,11 +45,12 @@ export function Typeform({ className, formId }: TypeformProps) {
   }
 
   return (
-
     <div className={className}>
-      <Widget id={formId!} style={{ width: "100%", height: "100%" }} className={className} />
+      <Widget
+        id={formId!}
+        style={{ width: "100%", height: "100%" }}
+        className={className}
+      />
     </div>
-
-
   );
 }

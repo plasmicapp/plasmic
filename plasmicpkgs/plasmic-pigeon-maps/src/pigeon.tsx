@@ -28,7 +28,7 @@ interface PigeonMapsProps {
 }
 
 export const PigeonMapsMeta: CodeComponentMeta<PigeonMapsProps> = {
-  name: "PigeonMaps",
+  name: "hostless-pigeon-maps",
   displayName: "Pigeon Maps",
   importName: "PigeonMaps",
   importPath: modulePath,
@@ -110,7 +110,11 @@ export function PigeonMaps({
         metaWheelZoom={metaWheelZoom}
         twoFingerDrag={twoFingerDrag}
       >
-        <Marker width={50} anchor={[latitude!, longitude!]}  style={{filter:'none'}}/>
+        <Marker
+          width={50}
+          anchor={[latitude!, longitude!]}
+          style={{ filter: "none" }}
+        />
       </Map>
     </div>
   );

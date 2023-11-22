@@ -1192,18 +1192,19 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@plasmicapp/host@^1.0.92":
-  version "1.0.92"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.92.tgz#04165c682bb65ec807ef93e0301aa4f13d0617a5"
-  integrity sha512-7+Qd4YHTze4/DCwiwmdOoBJKYo3gu/AfgTJTMYWDTqG5M8oIMSG43oNwVKb4+B1tcjARMGmiYUNWGwIreo++2w==
+"@plasmicapp/host@^1.0.184":
+  version "1.0.184"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.184.tgz#45a61cf065fd53faed71ca99241a2d0cf7ecab4e"
+  integrity sha512-ntp/p8ex7nPNJpnvyKRIhKPbDExdxBwn4VBQCADe9BAspgPdW/OpqgojL3RRS3B1jmoaWoig7jubkvUTuF8IIg==
   dependencies:
-    "@plasmicapp/query" "0.1.58"
+    "@plasmicapp/query" "0.1.77"
+    csstype "^3.1.2"
     window-or-global "^1.0.1"
 
-"@plasmicapp/query@0.1.58":
-  version "0.1.58"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.58.tgz#32da1e5522eab254fa500854ea0b1a6524194ec2"
-  integrity sha512-sKX/KLLHEVrqgQyS/HyOocWxGbQAykbl6DrJfZweodzKp3oy7yVfdfA7QiURuToHoqApChfgy8dxAOi4WQ9sPQ==
+"@plasmicapp/query@0.1.77":
+  version "0.1.77"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/query/-/query-0.1.77.tgz#4f0611e23c9e6d5c9f2d5537f1ce9f0633ef9633"
+  integrity sha512-46yTL/y1ys9erE5yDKAX7x/VSq16gNYxpAGm1HF+h0TrFoWyctvFEFsZdAGkrcqPgrp5AYHW71khYkMD1ES/5A==
   dependencies:
     swr "^1.0.0"
 
@@ -2313,6 +2314,11 @@ csstype@^3.0.2:
   version "3.1.0"
   resolved "https://registry.npmjs.org/csstype/-/csstype-3.1.0.tgz"
   integrity sha512-uX1KG+x9h5hIJsaKR9xHUeUraxf8IODOwq9JLNPq6BwB04a/xgpq3rcx47l5BZu5zBPlgD342tdke3Hom/nJRA==
+
+csstype@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.2.tgz#1d4bf9d572f11c14031f0436e1c10bc1f571f50b"
+  integrity sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==
 
 damerau-levenshtein@^1.0.7:
   version "1.0.8"
@@ -6426,11 +6432,6 @@ typescript@^3.7.3:
   version "3.9.10"
   resolved "https://registry.npmjs.org/typescript/-/typescript-3.9.10.tgz"
   integrity sha512-w6fIxVE/H1PkLKcCPsFqKE7Kv7QUwhU8qQY2MueZXWx5cPZdwFupLgKK3vntcK98BtNHZtAF4LA/yl2a7k8R6Q==
-
-typescript@^4.6.3:
-  version "4.8.4"
-  resolved "https://registry.npmjs.org/typescript/-/typescript-4.8.4.tgz"
-  integrity sha512-QCh+85mCy+h0IGff8r5XWzOVSbBO+KfeYrMQh7NJ58QujwcE22u+NUSmUxqF+un70P9GXKxa2HCNiTTMJknyjQ==
 
 unbox-primitive@^1.0.2:
   version "1.0.2"

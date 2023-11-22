@@ -19,7 +19,7 @@ interface GoogleMapsProps {
 }
 
 export const GoogleMapsMeta: CodeComponentMeta<GoogleMapsProps> = {
-  name: "GoogleMaps",
+  name: "hostless-google-maps",
   displayName: "Google Maps ",
   importName: "GoogleMaps",
   importPath: modulePath,
@@ -34,7 +34,7 @@ export const GoogleMapsMeta: CodeComponentMeta<GoogleMapsProps> = {
       displayName: "Coordinates",
       description: `The latitude, longitude of the map location.Learn how to get latitude and longitude ("https://support.google.com/maps/answer/18539")`,
       defaultValue: "51.51634532635064, -0.1332152112055726",
-      helpText:`You can get latitude and longitude of your location from this website ("https://www.gps-coordinates.net/")`
+      helpText: `You can get latitude and longitude of your location from this website ("https://www.gps-coordinates.net/")`,
     },
   },
 };

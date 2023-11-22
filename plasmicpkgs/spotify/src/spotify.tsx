@@ -19,7 +19,7 @@ interface SpotifyProps {
 }
 
 export const SpotifyMeta: ComponentMeta<SpotifyProps> = {
-  name: "Spotify",
+  name: "hostless-spotify",
   displayName: "Spotify",
   importName: "Spotify",
   importPath: modulePath,
@@ -38,16 +38,11 @@ export const SpotifyMeta: ComponentMeta<SpotifyProps> = {
       displayName: "Theme",
       description: "Theme",
     },
-
   },
 };
 
-export function Spotify({
-  className,
-  url,
-  theme,
-}: SpotifyProps) {
-  const value = theme ? "1" : "0"
+export function Spotify({ className, url, theme }: SpotifyProps) {
+  const value = theme ? "1" : "0";
   const query = `${url}?utm_source=generator&theme=${value}`;
   return (
     <iframe

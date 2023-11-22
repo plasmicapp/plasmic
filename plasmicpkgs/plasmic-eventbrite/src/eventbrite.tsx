@@ -21,7 +21,7 @@ interface EventbriteProps {
 }
 
 export const EventbriteMeta: CodeComponentMeta<EventbriteProps> = {
-  name: "Eventbrite",
+  name: "hostless-eventbrite",
   displayName: "EventBrite",
   importName: "Eventbrite",
   importPath: modulePath,
@@ -55,7 +55,6 @@ export const EventbriteMeta: CodeComponentMeta<EventbriteProps> = {
 };
 
 export function Eventbrite({ className, text, eventId }: EventbriteProps) {
-  
   if (!eventId) {
     return <div>Please enter Event Id</div>;
   }

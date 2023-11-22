@@ -2,11 +2,11 @@ import registerComponent, {
   ActionProps,
   CodeComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { Button, Select } from "antd";
-import React, { forwardRef, Ref, useEffect } from "react";
-import { useKeenSlider, KeenSliderPlugin } from "keen-slider/react";
 import composeRefs from "@seznam/compose-react-refs";
+import { Button, Select } from "antd";
 import { KeenSliderOptions } from "keen-slider";
+import { KeenSliderPlugin, useKeenSlider } from "keen-slider/react";
+import React, { forwardRef, Ref, useEffect } from "react";
 
 const { Option } = Select;
 
@@ -104,10 +104,10 @@ function OutlineMessage() {
 interface KeenSliderProps extends KeenSliderOptions {}
 
 export const sliderMeta: CodeComponentMeta<KeenSliderProps> = {
-  name: "hostless-slider",
-  displayName: "Slider",
+  name: "hostless-keen-slider",
+  displayName: "Keen Slider",
   importName: "Slider",
-  importPath: "keen-slider",
+  importPath: "@plasmicpkgs/plasmic-keen-slider",
   actions: [
     {
       type: "custom-action",

@@ -1,6 +1,6 @@
 import { CodeComponentMeta } from "@plasmicapp/host";
 
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { InlineWidget, PopupWidget } from "react-calendly";
 
@@ -25,7 +25,7 @@ interface CalendlyInlineWidgetProps {
 
 export const CalendlyInlineWidgetMeta: CodeComponentMeta<CalendlyInlineWidgetProps> =
   {
-    name: "CalendlyInlineWidget",
+    name: "hostless-calendly-inline-widget",
     displayName: "Calendly Inline Widget",
     importName: "CalendlyInlineWidget",
     importPath: modulePath,
@@ -127,13 +127,11 @@ export const CalendlyCornerPopupMeta: CodeComponentMeta<CalendlyCornerPopupProps
         type: "color",
         displayName: "Color",
         description: "Color of the PopupWidget.",
-        
       },
       textColor: {
         type: "color",
         displayName: "Text Color",
         description: "Color of the text",
-        
       },
       branding: {
         type: "boolean",

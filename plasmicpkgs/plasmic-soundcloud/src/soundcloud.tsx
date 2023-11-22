@@ -27,7 +27,7 @@ interface SoundCloudProps {
 }
 
 export const SoundCloudMeta: ComponentMeta<SoundCloudProps> = {
-  name: "SoundCloud",
+  name: "hostless-soundcloud",
   displayName: "SoundCloud",
   importName: "SoundCloud",
   importPath: modulePath,

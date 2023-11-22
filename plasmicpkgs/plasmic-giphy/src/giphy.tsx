@@ -1,8 +1,8 @@
+import { GiphyFetch } from "@giphy/js-fetch-api";
+import { IGif } from "@giphy/js-types";
 import { ComponentMeta } from "@plasmicapp/host";
 import React, { useEffect, useState } from "react";
 import { useFetch } from "./hooks/useFetch";
-import { GiphyFetch } from "@giphy/js-fetch-api";
-import { IGif } from "@giphy/js-types";
 
 export function ensure<T>(x: T | null | undefined): T {
   if (x === null || x === undefined) {
@@ -22,7 +22,7 @@ interface GiphyProps {
 }
 
 export const GiphyMeta: ComponentMeta<GiphyProps> = {
-  name: "Giphy",
+  name: "hostless-giphy",
   displayName: "Giphy",
   importName: "Giphy",
   importPath: modulePath,

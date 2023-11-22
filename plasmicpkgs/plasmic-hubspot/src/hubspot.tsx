@@ -19,7 +19,7 @@ interface HubspotSignupFormProps {
 }
 
 export const HubspotSignupFormMeta: ComponentMeta<HubspotSignupFormProps> = {
-  name: "HubspotSignupForm",
+  name: "hostless-hubspot-signup-form",
   displayName: "Hubspot Signup Form",
   importName: "HubspotSignupForm",
   importPath: modulePath,
@@ -31,8 +31,7 @@ export const HubspotSignupFormMeta: ComponentMeta<HubspotSignupFormProps> = {
       displayName: "URL",
       description: `Copy your share link from your Hubspot form.Learn how ("https://knowledge.hubspot.com/forms/how-can-i-share-a-hubspot-form-if-im-using-an-external-site")`,
       defaultValue: "https://share.hsforms.com/1Y7nnYY8aSkuXgoeWA16-ZQdvi9r",
-      helpText:`You can learn how to get share link.("https://knowledge.hubspot.com/forms/how-can-i-share-a-hubspot-form-if-im-using-an-external-site")`
-      
+      helpText: `You can learn how to get share link.("https://knowledge.hubspot.com/forms/how-can-i-share-a-hubspot-form-if-im-using-an-external-site")`,
     },
   },
 };

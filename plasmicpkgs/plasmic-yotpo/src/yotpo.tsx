@@ -70,7 +70,7 @@ interface YotpoReviewsProps {
 }
 
 export const YotpoReviewsMeta: ComponentMeta<YotpoReviewsProps> = {
-  name: "Yotpo Reviews",
+  name: "hostless-yotpo-star-reviews",
   displayName: "Yotpo Reviews",
   importName: "YotpoReviews",
   importPath: modulePath,
@@ -231,7 +231,7 @@ interface YotpoStarRatingProps {
 }
 
 export const YotpoStarRatingMeta: ComponentMeta<YotpoStarRatingProps> = {
-  name: "Yotpo Star Rating",
+  name: "hostless-yotpo-star-rating",
   displayName: "Yotpo Star Rating",
   importName: "YotpoStarRating",
   importPath: modulePath,
