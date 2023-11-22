@@ -1,16 +1,17 @@
+import DocsPortalBranches from "@/DocsPortalBranches";
+import { UU } from "@/wab/client/cli-routes";
+import { BottomModalsProvider } from "@/wab/client/components/BottomModal";
+import { TopFrameObserver } from "@/wab/client/components/studio/TopFrameObserver";
+import { fixStudioIframePositionAndOverflow } from "@/wab/client/dom-utils";
+import { HostFrameCtx } from "@/wab/client/frame-ctx/host-frame-ctx";
+import { PlasmicDocsPortal } from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicDocsPortal";
+import CodegenTypeContext from "@/wab/client/plasmic/plasmic_kit_docs_portal/PlasmicGlobalVariant__CodegenType";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
 import { useState } from "react";
 import { Route, Switch } from "react-router";
 import { useHistory } from "react-router-dom";
-import DocsPortalBranches from "../../../../DocsPortalBranches";
-import { UU } from "../../cli-routes";
-import { fixStudioIframePositionAndOverflow } from "../../dom-utils";
-import { HostFrameCtx } from "../../frame-ctx/host-frame-ctx";
-import { PlasmicDocsPortal } from "../../plasmic/plasmic_kit_docs_portal/PlasmicDocsPortal";
-import CodegenTypeContext from "../../plasmic/plasmic_kit_docs_portal/PlasmicGlobalVariant__CodegenType";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { TopFrameObserver } from "../studio/TopFrameObserver";
 import { DocsPortalCtx, providesDocsPortalCtx } from "./DocsPortalCtx";
 
 interface DocsPortalProps {
@@ -57,19 +58,21 @@ const DocsPortal = observer(function DocsPortal(props: DocsPortalProps) {
           <DocsPortalBranches />
         </Route>
         <Route>
-          <PlasmicDocsPortal
-            activeTab={docsCtx.docsTabKey}
-            docsPortalHeader={{ projectName: studioCtx.siteInfo.name }}
-            root={{
-              style: {
-                position: "absolute",
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0,
-              },
-            }}
-          />
+          <BottomModalsProvider>
+            <PlasmicDocsPortal
+              activeTab={docsCtx.docsTabKey}
+              docsPortalHeader={{ projectName: studioCtx.siteInfo.name }}
+              root={{
+                style: {
+                  position: "absolute",
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                },
+              }}
+            />
+          </BottomModalsProvider>
         </Route>
       </Switch>
     </CodegenTypeContext.Provider>
