@@ -250,8 +250,11 @@ export function ContentfulFetcher({
       ? `${cacheKey}/${contentType}/filteredData`
       : null,
     async () => {
-      const queryPath = `/spaces/${creds.space}/environments/${creds.environment}/entries?access_token=${creds.accessToken}&content_type=${contentType}&fields.${filterField}${searchParameter}=${filterValue}`;
-      const resp = await fetch(`${baseUrl}${queryPath}`);
+      let query = `/spaces/${creds.space}/environments/${creds.environment}/entries?access_token=${creds.accessToken}&content_type=${contentType}&fields.${filterField}${searchParameter}=${filterValue}`;
+      if (include) {
+        query = `${query}&include=${include}`;
+      }
+      const resp = await fetch(`${baseUrl}${query}`);
       return resp.json();
     }
   );
