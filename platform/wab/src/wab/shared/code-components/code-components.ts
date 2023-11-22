@@ -1720,7 +1720,7 @@ function checkDefaultSlotContents(
         elts = [elts];
       }
       for (const elt of elts) {
-        run(elementSchemaToTplAndHandleWarnings(ctx.site, component, elt));
+        run(checkElementSchemaToTpl(ctx.site, component, elt));
       }
     }
     return success();
@@ -1750,7 +1750,7 @@ function buildComponentToMeta(
   return map;
 }
 
-function elementSchemaToTplAndHandleWarnings(
+function checkElementSchemaToTpl(
   site: Site,
   component: Component | undefined,
   rootSchema: PlasmicElement
@@ -1766,6 +1766,7 @@ function elementSchemaToTplAndHandleWarnings(
     const { tpl, warnings } = run(
       elementSchemaToTpl(site, component, rootSchema, {
         codeComponentsOnly: true,
+        ignoreDefaultComponents: isHostLessPackage(site),
       })
     );
     if (warnings.length > 0) {
@@ -2208,6 +2209,7 @@ export function elementSchemaToTpl(
   opts: {
     codeComponentsOnly: boolean;
     baseVariant?: Variant;
+    ignoreDefaultComponents?: boolean;
   }
 ) {
   const siteComponents = [
@@ -2345,6 +2347,18 @@ export function elementSchemaToTpl(
 
       switch (schema.type) {
         case "default-component": {
+          // This function is used to check the validity of default
+          // slot contents when syncing code component meta. In that case,
+          // we do not care about the actual returned tpl, because it is
+          // not going to be inserted anywhere. Particularly when syncing
+          // code components in a hostless package, there are no default
+          // components, so `getDefaultComponent()` would fail. To avoid
+          // crashing in that case, we just return an empty tpl.
+          if (opts?.ignoreDefaultComponents) {
+            const tpl = mkTplTagX("div");
+            return success({ tpl, warnings });
+          }
+
           const kind = schema.kind;
           const defaultComponent = getDefaultComponent(site, kind);
           const schemaPropErrors = findSchemaPropErrors(
