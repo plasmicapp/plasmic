@@ -102,7 +102,7 @@ interface CalendlyCornerPopupProps {
 
 export const CalendlyCornerPopupMeta: CodeComponentMeta<CalendlyCornerPopupProps> =
   {
-    name: "CalendlyCornerPopup",
+    name: "hostless-calendly-corner-popup",
     displayName: "Calendly Corner Popup ",
     importName: "CalendlyCornerPopup",
     description: "Shows Popup button on corner of the webpage",
