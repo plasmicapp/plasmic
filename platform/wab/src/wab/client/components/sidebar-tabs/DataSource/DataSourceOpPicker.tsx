@@ -220,7 +220,6 @@ export const [DataSourceOpPickerProvider, useDataSourceOpPickerContext] =
   constate(useDataSourceOpPicker);
 
 interface DataSourceDraftContext {
-  draft?: DataSourceOpDraftValue;
   sourceMeta?: DataSourceMeta;
   schemaTunnel?: ReturnType<typeof createPortalTunnel>;
 }
@@ -876,10 +875,13 @@ const DataSourceOpExprFormAndPreview = observer(
       sourceId,
       source
     );
-    const opMeta =
-      sourceMeta && opName
-        ? sourceMeta.ops.find((op) => op.name === opName)
-        : undefined;
+    const opMeta = React.useMemo(
+      () =>
+        sourceMeta && opName
+          ? sourceMeta.ops.find((op) => op.name === opName)
+          : undefined,
+      [sourceMeta, opName]
+    );
     const missingRequiredArgs = getMissingRequiredArgsFromDraft(
       draft,
       sourceSchemaData,
@@ -967,6 +969,10 @@ const DataSourceOpExprFormAndPreview = observer(
     const [executeQueue, setExecuteQueue] = React.useState<
       ExecuteDataOperationQueueItem[]
     >([]);
+    const dataOpExecuteContextValue = React.useMemo(
+      () => ({ executeQueue, setExecuteQueue }),
+      [executeQueue, setExecuteQueue]
+    );
 
     function refresh(newDraft: DataSourceOpDraftValue) {
       setPreviewOperation(newDraft);
@@ -974,6 +980,10 @@ const DataSourceOpExprFormAndPreview = observer(
     }
 
     const schemaTunnel = React.useMemo(() => createPortalTunnel(), []);
+    const dataSourceDraftContextValue = React.useMemo(
+      () => ({ schemaTunnel, sourceMeta }),
+      [schemaTunnel, sourceMeta]
+    );
 
     const enablePreviewSteps = studioCtx.appCtx.appConfig.previewSteps;
 
@@ -1114,12 +1124,7 @@ const DataSourceOpExprFormAndPreview = observer(
               </BottomModalButtons>
             )}
           </div>
-          <DataOpExecuteQueueContext.Provider
-            value={{
-              executeQueue,
-              setExecuteQueue,
-            }}
-          >
+          <DataOpExecuteQueueContext.Provider value={dataOpExecuteContextValue}>
             <DataSourceOpDraftPreview
               value={previewOperation}
               env={env}
@@ -1133,9 +1138,7 @@ const DataSourceOpExprFormAndPreview = observer(
       </div>
     );
     return (
-      <DataSourceDraftContext.Provider
-        value={{ draft, sourceMeta, schemaTunnel }}
-      >
+      <DataSourceDraftContext.Provider value={dataSourceDraftContextValue}>
         {contents}
       </DataSourceDraftContext.Provider>
     );
@@ -1882,7 +1885,7 @@ export function DataSourceOpDraftForm(props: {
   );
 }
 
-export function DataSourceOpDraftPreview(props: {
+function _DataSourceOpDraftPreview(props: {
   value?: DataSourceOpDraftValue | DataSourceOpExpr;
   env?: Record<string, any>;
   tableSchema?: TableSchema;
@@ -1922,6 +1925,8 @@ export function DataSourceOpDraftPreview(props: {
     />
   );
 }
+
+export const DataSourceOpDraftPreview = React.memo(_DataSourceOpDraftPreview);
 
 function simplifyName(x: string) {
   return x.replace(/[\W]+/g, "").toLowerCase();
@@ -2217,7 +2222,7 @@ function DataSourceOpDataPreview(props: {
                       data={{}}
                       className="code-preview-inner"
                       opts={{
-                        expandLevel: 1000,
+                        expandLevel: 50,
                       }}
                     />
                   </React.Suspense>
