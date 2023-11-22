@@ -149,14 +149,20 @@ function NewComponentModal(props: NewComponentModalProps) {
             </Tooltip>
           }
         >
-          {plumeTemplates.map((comp) => {
+          {plumeTemplates.map((comp, i) => {
             const plumeType = ensure(
               comp.plumeInfo,
               "Plume component should have plumeInfo"
             ).type;
+            // Do not show Plume components of kinds that are already
+            // available on site default components.
+            if (studioCtx.site.defaultComponents[plumeType]) {
+              return null;
+            }
             const plugin = getPlumeEditorPluginByType(plumeType);
             return (
               <NewComponentItem
+                key={`${i}`}
                 isSelected={comp.uuid === templateId}
                 title={comp.name}
                 imgUrl={getPlumeImage(plumeType)}
