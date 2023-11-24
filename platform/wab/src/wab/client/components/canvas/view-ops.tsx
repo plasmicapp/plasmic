@@ -2307,7 +2307,9 @@ export class ViewOps {
       if (refs.length > 0) {
         notification.error({
           message: "Cannot paste elements",
-          description: `They contain a reference to "{getStateDisplayName(state)}".`,
+          description: `They contain a reference to "${getStateDisplayName(
+            state
+          )}".`,
         });
         return;
       }
