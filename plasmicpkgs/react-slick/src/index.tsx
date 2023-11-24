@@ -1,5 +1,7 @@
+import { usePlasmicCanvasContext } from "@plasmicapp/host";
 import registerComponent, {
   ActionProps,
+  ComponentHelpers,
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import { Button } from "antd";
@@ -15,14 +17,17 @@ import Slider, { Settings } from "react-slick";
 
 type SliderProps = Settings & {
   arrowColor?: string;
-  editingSlide?: number;
   sliderScopeClassName: string;
 };
 
-export const sliderHelpers = {
+export const sliderHelpers: ComponentHelpers<SliderProps> = {
   states: {
     currentSlide: {
       onChangeArgsToValue: (_: number, newIndex: number) => newIndex,
+      onMutate: (stateValue, $ref) => {
+        console.log("dale", stateValue, $ref);
+        $ref.slickGoTo(stateValue);
+      },
     },
   },
 };
@@ -50,18 +55,18 @@ export const SliderWrapper = forwardRef(function SliderWrapper_(
   props: SliderProps,
   userRef?: Ref<SliderMethods>
 ) {
-  const { editingSlide, arrowColor, className, sliderScopeClassName, ...rest } =
+  const { initialSlide, arrowColor, className, sliderScopeClassName, ...rest } =
     props;
   // "data-plasmic-canvas-envs" prop only exists in studio canvas
-  const isEditMode = (props as any)["data-plasmic-canvas-envs"] ? true : false;
+  const inCanvas = !!usePlasmicCanvasContext();
   const slider = useRef<Slider>(null);
-  const debouncedEditingSlide = useDebounce(editingSlide);
+  const debouncedInitialSlide = useDebounce(initialSlide);
 
   useEffect(() => {
-    if (debouncedEditingSlide !== undefined && isEditMode) {
-      slider.current?.slickGoTo(debouncedEditingSlide);
+    if (debouncedInitialSlide !== undefined && inCanvas) {
+      slider.current?.slickGoTo(debouncedInitialSlide);
     }
-  }, [debouncedEditingSlide, isEditMode]);
+  }, [debouncedInitialSlide, inCanvas]);
 
   React.useImperativeHandle(
     userRef,
@@ -135,7 +140,7 @@ export function registerSlider(loader?: {
   function getSlideInfo({
     rows = 1,
     slidesPerRow = 1,
-    editingSlide = 0,
+    initialSlide = 0,
     children,
   }: SliderProps) {
     const slidesCnt = Array.isArray(children) ? children.length : 1;
@@ -143,7 +148,7 @@ export function registerSlider(loader?: {
     const slidesPerDot = rows * slidesPerRow;
     const dotCount = Math.ceil(slidesCnt / slidesPerDot);
     const currentDotIndex =
-      editingSlide >= dotCount ? dotCount - 1 : editingSlide;
+      initialSlide >= dotCount ? dotCount - 1 : initialSlide;
 
     return {
       currentDotIndex,
@@ -168,7 +173,7 @@ export function registerSlider(loader?: {
     });
 
     const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-      studioOps.updateProps({ editingSlide: Number(e.target.value) });
+      studioOps.updateStates({ currentSlide: Number(e.target.value) });
     };
 
     return (
@@ -214,7 +219,7 @@ export function registerSlider(loader?: {
               currentDotIndex === 0
                 ? dotCount - 1
                 : (currentDotIndex - 1) % dotCount;
-            studioOps.updateProps({ editingSlide: prevSlide });
+            studioOps.updateStates({ currentSlide: prevSlide });
           }}
         >
           Prev slide
@@ -223,7 +228,7 @@ export function registerSlider(loader?: {
           style={{ width: "100%" }}
           onClick={() => {
             const nextSlide = (currentDotIndex + 1) % dotCount;
-            studioOps.updateProps({ editingSlide: nextSlide });
+            studioOps.updateStates({ currentSlide: nextSlide });
           }}
         >
           Next slide
@@ -257,7 +262,7 @@ export function registerSlider(loader?: {
         onClick: ({ componentProps, studioOps }: ActionProps<any>) => {
           const { dotCount, slidesPerDot, totalSlides } =
             getSlideInfo(componentProps);
-          const editingSlide =
+          const currentSlide =
             totalSlides % slidesPerDot ? dotCount - 1 : dotCount;
           studioOps.appendToSlot(
             {
@@ -269,7 +274,7 @@ export function registerSlider(loader?: {
             },
             "children"
           );
-          studioOps.updateProps({ editingSlide });
+          studioOps.updateStates({ currentSlide });
         },
       },
       {
@@ -302,8 +307,8 @@ export function registerSlider(loader?: {
                 ? currentDotIndex - 1
                 : currentDotIndex;
           }
-          studioOps.updateProps({
-            editingSlide: newPos,
+          studioOps.updateStates({
+            currentSlide: newPos,
           });
         },
       },
@@ -361,16 +366,6 @@ export function registerSlider(loader?: {
             },
           },
         })),
-      },
-      editingSlide: {
-        displayName: "Currently edited slide",
-        type: "number",
-        description:
-          "Switch to the specified slide (first is 0). Only affects the editor, not the final page.",
-        defaultValueHint: 0,
-        defaultValue: 0,
-        editOnly: true,
-        hidden: () => true,
       },
       accessibility: {
         advanced: true,
@@ -630,7 +625,7 @@ export function registerSlider(loader?: {
     states: {
       currentSlide: {
         type: "writable",
-        valueProp: "editingSlide",
+        valueProp: "initialSlide",
         onChangeProp: "beforeChange",
         variableType: "number",
         ...sliderHelpers.states.currentSlide,

@@ -1,4 +1,4 @@
-describe.skip("hostless-react-slick slider carousel", () => {
+describe("hostless-react-slick slider carousel", () => {
   beforeEach(() => {
     cy.setupProjectWithHostlessPackages({
       hostLessPackagesInfo: [
@@ -15,6 +15,7 @@ describe.skip("hostless-react-slick slider carousel", () => {
   });
 
   function assertState(value: string) {
+    cy.wait(300);
     cy.switchToDataTab();
     cy.get(
       `[data-test-id="variables-section"] [data-test-id="show-extra-content"]`
