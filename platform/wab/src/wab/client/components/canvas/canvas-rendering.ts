@@ -1382,10 +1382,14 @@ function renderTplComponent(
               ),
               param
             );
-            // We don't render a placeholder if hidePlaceholder:true and
-            // it is not the currently focused selectable or the user
-            // has chosen to hide slot placeholders
             if (
+              !ctx.viewCtx.studioCtx.showSlotPlaceholder() ||
+              // We don't show placeholder unless we're currently
+              // editing the owner component
+              !(ctx.ownerKey && isKeyInEditableStack(ctx, ctx.ownerKey)) ||
+              // We don't render a placeholder if hidePlaceholder:true and
+              // it is not the currently focused selectable or the user
+              // has chosen to hide slot placeholders
               (isPlainObjectPropType(propMeta) &&
                 propMeta.hidePlaceholder &&
                 // We wrap this in computed() so we don't re-render the
@@ -1396,8 +1400,7 @@ function renderTplComponent(
                   () =>
                     makeSelectableKey(ctx.viewCtx.focusedSelectable()) !==
                     selKey
-                ).get()) ||
-              !ctx.viewCtx.studioCtx.showSlotPlaceholder()
+                ).get())
             ) {
               continue;
             }
