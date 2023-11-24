@@ -25,7 +25,6 @@ export const sliderHelpers: ComponentHelpers<SliderProps> = {
     currentSlide: {
       onChangeArgsToValue: (_: number, newIndex: number) => newIndex,
       onMutate: (stateValue, $ref) => {
-        console.log("dale", stateValue, $ref);
         $ref.slickGoTo(stateValue);
       },
     },
