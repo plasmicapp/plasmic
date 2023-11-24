@@ -34,6 +34,7 @@ export const fstPartyHostLessComponents = [
   "plasmic-tabs",
   "plasmic-rich-components",
   "react-chartjs-2",
+  "plasmic-link-preview",
   "react-quill",
   "loading-boundary",
   "radix-ui",

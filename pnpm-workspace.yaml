@@ -56,6 +56,7 @@ packages:
   - plasmicpkgs/react-audio-player
   - plasmicpkgs/react-awesome-reveal
   - plasmicpkgs/react-chartjs-2
+  - plasmicpkgs/plasmic-link-preview
   - plasmicpkgs/react-parallax-tilt
   - plasmicpkgs/react-quill
   - plasmicpkgs/react-scroll-parallax
