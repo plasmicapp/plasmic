@@ -193,10 +193,10 @@ const dataTableMeta: ComponentMeta<RichTableProps> = {
   componentHelpers: {
     helpers: tableHelpers,
     importName: "tableHelpers",
-    importPath: "@plasmicpkgs/plasmic-rich-components",
+    importPath: "@plasmicpkgs/plasmic-rich-components/skinny/rich-table",
   },
   importName: "RichTable",
-  importPath: "@plasmicpkgs/plasmic-rich-components",
+  importPath: "@plasmicpkgs/plasmic-rich-components/skinny/rich-table",
 };
 
 export function registerRichTable(loader?: Registerable) {

@@ -1,11 +1,11 @@
-import { dataProp, roleProp } from "../common-prop-types";
+import dayjs, { Dayjs } from "dayjs";
+import { roleProp } from "../common-prop-types";
 import {
-  Registerable,
   isValidIsoDate,
+  Registerable,
   registerComponentHelper,
 } from "../utils";
 import { RichCalendar } from "./RichCalendar";
-import dayjs, { Dayjs } from "dayjs";
 
 export * from "./RichCalendar";
 
@@ -135,9 +135,9 @@ export function registerRichCalendar(loader?: Registerable) {
     componentHelpers: {
       helpers: calendarHelpers,
       importName: "calendarHelpers",
-      importPath: "@plasmicpkgs/plasmic-rich-components",
+      importPath: "@plasmicpkgs/plasmic-rich-components/skinny/rich-calendar",
     },
-    importPath: "@plasmicpkgs/plasmic-rich-components",
+    importPath: "@plasmicpkgs/plasmic-rich-components/skinny/rich-calendar",
     importName: "RichCalendar",
   });
 }

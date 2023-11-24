@@ -1,6 +1,4 @@
 import { ComponentMeta } from "@plasmicapp/host/registerComponent";
-import { Registerable, registerComponentHelper } from "../utils";
-import { RichList, RichListProps } from "./RichList";
 import {
   commonProps,
   dataProp,
@@ -8,6 +6,8 @@ import {
   roleProp,
   rowActionsProp,
 } from "../common-prop-types";
+import { Registerable, registerComponentHelper } from "../utils";
+import { RichList, RichListProps } from "./RichList";
 
 export * from "./RichList";
 export default RichList;
@@ -72,7 +72,7 @@ const richListMeta: ComponentMeta<RichListProps> = {
     ...commonProps(),
   },
   importName: "RichList",
-  importPath: "@plasmicpkgs/plasmic-rich-components",
+  importPath: "@plasmicpkgs/plasmic-rich-components/skinny/rich-list",
 };
 
 export function registerRichList(loader?: Registerable) {

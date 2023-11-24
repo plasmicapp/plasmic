@@ -6,8 +6,21 @@
   "types": "dist/index.d.ts",
   "module": "dist/plasmic-rich-components.esm.js",
   "files": [
-    "dist"
+    "dist",
+    "skinny"
   ],
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/plasmic-rich-components.esm.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./skinny/*": {
+      "require": "./skinny/*/index.cjs.js",
+      "import": "./skinny/*/index.esm.js",
+      "types": "./skinny/*/index.d.ts"
+    }
+  },
   "size-limit": [
     {
       "path": "dist/plasmic-rich-components.cjs.production.min.js",
@@ -19,7 +32,7 @@
     }
   ],
   "scripts": {
-    "build": "rollup -c rollup.config.mjs && yarn tsc --emitDeclarationOnly --declaration src/index.tsx --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --jsx react --lib dom,esnext --esModuleInterop --strict --outDir ./dist/",
+    "build": "rollup -c rollup.config.mjs && yarn tsc --emitDeclarationOnly --declaration src/index.tsx --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --jsx react --lib dom,esnext --esModuleInterop --strict --outDir ./dist/ && rsync -r --include='*/' --include='*.d.ts' --exclude='*' ./dist/ ./skinny/ && rm skinny/index.d.ts",
     "test": "yarn --cwd=../.. test --passWithNoTests",
     "prepublishOnly": "npm run build",
     "size": "size-limit",
@@ -41,6 +54,7 @@
     "@types/node": "^20.8.9",
     "@types/react": "^18.2.33",
     "antd": "^5.4.0",
+    "glob": "^8.1.0",
     "rollup": "^3.26.2",
     "rollup-plugin-esbuild": "^5.0.0",
     "size-limit": "^4.11.0",

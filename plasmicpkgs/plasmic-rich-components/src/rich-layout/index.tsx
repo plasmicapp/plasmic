@@ -184,7 +184,7 @@ const richLayoutMeta: ComponentMeta<RichLayoutProps> = {
   },
 
   importName: "RichLayout",
-  importPath: "@plasmicpkgs/plasmic-rich-components",
+  importPath: "@plasmicpkgs/plasmic-rich-components/skinny/rich-layout",
 };
 
 export function registerRichLayout(loader?: Registerable) {

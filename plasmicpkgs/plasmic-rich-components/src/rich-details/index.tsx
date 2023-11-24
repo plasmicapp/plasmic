@@ -61,7 +61,7 @@ export function registerRichDetails(loader?: Registerable) {
         defaultValue: true,
       },
     },
-    importPath: "@plasmicpkgs/plasmic-rich-components",
+    importPath: "@plasmicpkgs/plasmic-rich-components/skinny/rich-details",
     importName: "RichDetails",
   });
 }
