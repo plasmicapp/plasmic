@@ -6573,15 +6573,6 @@
   dependencies:
     window-or-global "^1.0.1"
 
-"@plasmicapp/host@^1.0.184":
-  version "1.0.184"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.184.tgz#45a61cf065fd53faed71ca99241a2d0cf7ecab4e"
-  integrity sha512-ntp/p8ex7nPNJpnvyKRIhKPbDExdxBwn4VBQCADe9BAspgPdW/OpqgojL3RRS3B1jmoaWoig7jubkvUTuF8IIg==
-  dependencies:
-    "@plasmicapp/query" "0.1.77"
-    csstype "^3.1.2"
-    window-or-global "^1.0.1"
-
 "@plasmicapp/isomorphic-unfetch@1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@plasmicapp/isomorphic-unfetch/-/isomorphic-unfetch-1.0.3.tgz#baa334f5190d49461c26b1aa3fda073f5cfa7e33"
