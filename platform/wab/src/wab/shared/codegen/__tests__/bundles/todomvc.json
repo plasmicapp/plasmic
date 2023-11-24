@@ -4231,7 +4231,8 @@
       ],
       "layout": null,
       "active": true,
-      "__type": "Theme"
+      "__type": "Theme",
+      "addItemPrefs": {}
     },
     "915": {
       "name": "Default Theme",
@@ -4873,5 +4874,5 @@
     }
   },
   "deps": [],
-  "version": "225-release-global-actions"
+  "version": "226-add-item-prefs"
 }

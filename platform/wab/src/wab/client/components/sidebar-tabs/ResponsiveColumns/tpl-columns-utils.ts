@@ -1,19 +1,19 @@
-import { ColumnsConfig, TplTag, Variant } from "../../../../classes";
-import { assert } from "../../../../common";
-import { AddItemKey } from "../../../../shared/add-item-keys";
-import {
-  COLUMNS_CONFIG_DEFAULTS,
-  redistributeColumnsSizes,
-} from "../../../../shared/columns-utils";
-import { getSimplifiedStyles } from "../../../../shared/default-styles";
-import { $$$ } from "../../../../shared/TplQuery";
-import { clearTplVisibility } from "../../../../shared/visibility-utils";
-import { isTplColumn, TplColumnsTag, TplTagType } from "../../../../tpls";
+import { ColumnsConfig, TplTag, Variant } from "@/wab/classes";
 import {
   ensureBaseRs,
   ensureVariantRs,
   ViewCtx,
-} from "../../../studio-ctx/view-ctx";
+} from "@/wab/client/studio-ctx/view-ctx";
+import { assert } from "@/wab/common";
+import { AddItemKey } from "@/wab/shared/add-item-keys";
+import {
+  COLUMNS_CONFIG_DEFAULTS,
+  redistributeColumnsSizes,
+} from "@/wab/shared/columns-utils";
+import { AddItemPrefs, getSimplifiedStyles } from "@/wab/shared/default-styles";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { clearTplVisibility } from "@/wab/shared/visibility-utils";
+import { isTplColumn, TplColumnsTag, TplTagType } from "@/wab/tpls";
 
 export const getScreenVariant = (viewCtx: ViewCtx): Variant | undefined => {
   const screenVariants =
@@ -30,7 +30,10 @@ export function ensureTplColumnsRs(
   tag: TplTag,
   variant: Variant | undefined | null,
   isBaseColumn = false,
-  styles: Record<string, string> = getSimplifiedStyles(AddItemKey.columns)
+  styles: Record<string, string> = getSimplifiedStyles(
+    AddItemKey.columns,
+    vc.site.activeTheme?.addItemPrefs as AddItemPrefs | undefined
+  )
 ) {
   ensureBaseRs(vc, tag, {
     display: "flex",
@@ -68,7 +71,10 @@ export function ensureTplColumnsRs(
 export function ensureTplColumnRs(
   vc: ViewCtx,
   tag: TplTag,
-  styles: Record<string, string> = getSimplifiedStyles(AddItemKey.vstack)
+  styles: Record<string, string> = getSimplifiedStyles(
+    AddItemKey.vstack,
+    vc.site.activeTheme?.addItemPrefs as AddItemPrefs | undefined
+  )
 ) {
   ensureBaseRs(vc, tag, {
     display: "flex",
@@ -80,7 +86,10 @@ export function ensureTplColumnRs(
 
 export function makeTplColumn(
   vc: ViewCtx,
-  styles: Record<string, string> = getSimplifiedStyles(AddItemKey.vstack)
+  styles: Record<string, string> = getSimplifiedStyles(
+    AddItemKey.vstack,
+    vc.site.activeTheme?.addItemPrefs as AddItemPrefs | undefined
+  )
 ) {
   const tag = vc.variantTplMgr().mkTplTagX("div", { type: TplTagType.Column });
   ensureTplColumnRs(vc, tag, styles);

@@ -37,7 +37,6 @@
 }
 .textWithInfo__f0IeN:global(.__wab_instance) {
   max-width: 100%;
-  display: flex;
 }
 .text__qnc3Q {
   font-weight: 600;
@@ -91,12 +90,10 @@
   min-height: 16px;
   width: 16px;
   height: 16px;
-  display: block;
 }
 .text__hDqR6 {
   position: relative;
   text-align: left;
-  display: block;
 }
 .option:global(.__wab_instance) {
   max-width: 100%;

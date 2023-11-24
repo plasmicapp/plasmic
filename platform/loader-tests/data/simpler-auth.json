@@ -414,7 +414,8 @@
           ],
           "layout": { "__ref": "7-np99YwWm5Y" },
           "active": true,
-          "__type": "Theme"
+          "__type": "Theme",
+          "addItemPrefs": {}
         },
         "4oA0JtaNoGki": { "name": "text", "__type": "Text" },
         "GJtksx_9rJLK": {
@@ -9384,7 +9385,7 @@
         }
       },
       "deps": [],
-      "version": "225-release-global-actions"
+      "version": "226-add-item-prefs"
     }
   ]
 ]

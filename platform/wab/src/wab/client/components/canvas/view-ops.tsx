@@ -88,7 +88,7 @@ import {
   typographyCssProps,
   WRAP_AS_PARENT_PROPS,
 } from "@/wab/shared/core/style-props";
-import { getSimplifiedStyles } from "@/wab/shared/default-styles";
+import { AddItemPrefs, getSimplifiedStyles } from "@/wab/shared/default-styles";
 import {
   computeDefinedIndicator,
   getTargetBlockingCombo,
@@ -3319,7 +3319,10 @@ export class ViewOps {
             }
           : undefined),
         ...(["hstack", "vstack", "stack"].includes(insertableKey)
-          ? getSimplifiedStyles(insertableKey as AddItemKey)
+          ? getSimplifiedStyles(
+              insertableKey as AddItemKey,
+              this.site().activeTheme?.addItemPrefs as AddItemPrefs | undefined
+            )
           : {}),
       })
     );

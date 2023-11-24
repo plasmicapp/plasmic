@@ -72,13 +72,7 @@ export interface DefaultLeftFontsPanelProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicLeftFontsPanel__RenderFunc(props: {
   variants: PlasmicLeftFontsPanel__VariantsArgs;
@@ -139,7 +133,7 @@ function PlasmicLeftFontsPanel__RenderFunc(props: {
                 role={"img"}
               />
             }
-            size={"wide" as const}
+            size={"wide"}
             startIcon={
               <PlusIcon
                 className={classNames(projectcss.all, sty.svg___4TfS)}
@@ -163,8 +157,8 @@ function PlasmicLeftFontsPanel__RenderFunc(props: {
               projectcss.__wab_text,
               sty.link
             )}
-            href={"https://docs.plasmic.app/learn/custom-fonts/" as const}
-            target={"_blank" as const}
+            href={"https://docs.plasmic.app/learn/custom-fonts/"}
+            target={"_blank"}
           >
             {"Learn how to add custom fonts."}
           </a>
@@ -242,7 +236,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicLeftFontsPanel__ArgProps,
           internalVariantPropNames: PlasmicLeftFontsPanel__VariantProps,
         }),

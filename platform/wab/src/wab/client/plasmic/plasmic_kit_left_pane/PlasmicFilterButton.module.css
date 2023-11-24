@@ -7,7 +7,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-iR8SeEwQZ);
-  width: 1em;
   height: 1em;
 }
 .svg {
@@ -24,6 +23,5 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }

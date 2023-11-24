@@ -79,13 +79,7 @@ export interface DefaultTokenTypeHeaderProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicTokenTypeHeader__RenderFunc(props: {
   variants: PlasmicTokenTypeHeader__VariantsArgs;
@@ -160,58 +154,54 @@ function PlasmicTokenTypeHeader__RenderFunc(props: {
           className: classNames(sty.slotTargetTokenType),
         })}
       </div>
-      {true ? (
-        <div
-          className={classNames(projectcss.all, sty.freeBox___36Lfh, {
-            [sty.freeBoxisExpanded___36LfHaTp]: hasVariant(
+      <div
+        className={classNames(projectcss.all, sty.freeBox___36Lfh, {
+          [sty.freeBoxisExpanded___36LfHaTp]: hasVariant(
+            $state,
+            "isExpanded",
+            "isExpanded"
+          ),
+        })}
+      >
+        <IconButton
+          data-plasmic-name={"addButton"}
+          data-plasmic-override={overrides.addButton}
+          children2={
+            <ChevronDownsvgIcon
+              className={classNames(projectcss.all, sty.svg__jqg1)}
+              role={"img"}
+            />
+          }
+          className={classNames("__wab_instance", sty.addButton, {
+            [sty.addButtonisExpanded]: hasVariant(
               $state,
               "isExpanded",
               "isExpanded"
             ),
           })}
+          size={"small"}
         >
-          {(hasVariant($state, "isExpanded", "isExpanded") ? true : true) ? (
-            <IconButton
-              data-plasmic-name={"addButton"}
-              data-plasmic-override={overrides.addButton}
-              children2={
-                <ChevronDownsvgIcon
-                  className={classNames(projectcss.all, sty.svg__jqg1)}
-                  role={"img"}
-                />
-              }
-              className={classNames("__wab_instance", sty.addButton, {
-                [sty.addButtonisExpanded]: hasVariant(
-                  $state,
-                  "isExpanded",
-                  "isExpanded"
-                ),
-              })}
-              size={"small" as const}
-            >
-              <PlussvgIcon
-                className={classNames(projectcss.all, sty.svg__ihGm1)}
-                role={"img"}
-              />
-            </IconButton>
-          ) : null}
-          <ExpandButton
-            data-plasmic-name={"expandButton"}
-            data-plasmic-override={overrides.expandButton}
-            className={classNames("__wab_instance", sty.expandButton, {
-              [sty.expandButtonisExpanded]: hasVariant(
-                $state,
-                "isExpanded",
-                "isExpanded"
-              ),
-            })}
-            isExpanded={
-              hasVariant($state, "isExpanded", "isExpanded") ? true : undefined
-            }
-            size={"small" as const}
+          <PlussvgIcon
+            className={classNames(projectcss.all, sty.svg__ihGm1)}
+            role={"img"}
           />
-        </div>
-      ) : null}
+        </IconButton>
+        <ExpandButton
+          data-plasmic-name={"expandButton"}
+          data-plasmic-override={overrides.expandButton}
+          className={classNames("__wab_instance", sty.expandButton, {
+            [sty.expandButtonisExpanded]: hasVariant(
+              $state,
+              "isExpanded",
+              "isExpanded"
+            ),
+          })}
+          isExpanded={
+            hasVariant($state, "isExpanded", "isExpanded") ? true : undefined
+          }
+          size={"small"}
+        />
+      </div>
     </div>
   ) as React.ReactElement | null;
 }
@@ -264,7 +254,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicTokenTypeHeader__ArgProps,
           internalVariantPropNames: PlasmicTokenTypeHeader__VariantProps,
         }),

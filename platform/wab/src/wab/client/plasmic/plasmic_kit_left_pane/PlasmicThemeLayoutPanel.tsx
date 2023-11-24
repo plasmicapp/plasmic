@@ -62,13 +62,7 @@ export interface DefaultThemeLayoutPanelProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicThemeLayoutPanel__RenderFunc(props: {
   variants: PlasmicThemeLayoutPanel__VariantsArgs;
@@ -92,37 +86,31 @@ function PlasmicThemeLayoutPanel__RenderFunc(props: {
   const currentUser = p.useCurrentUser?.() || {};
 
   return (
-    true ? (
+    <div
+      data-plasmic-name={"root"}
+      data-plasmic-override={overrides.root}
+      data-plasmic-root={true}
+      data-plasmic-for-node={forNode}
+      className={classNames(
+        projectcss.all,
+        projectcss.root_reset,
+        projectcss.plasmic_default_styles,
+        projectcss.plasmic_mixins,
+        projectcss.plasmic_tokens,
+        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
+        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        plasmic_plasmic_kit_new_design_system_former_style_controls_css.plasmic_tokens,
+        sty.root
+      )}
+    >
       <div
-        data-plasmic-name={"root"}
-        data-plasmic-override={overrides.root}
-        data-plasmic-root={true}
-        data-plasmic-for-node={forNode}
-        className={classNames(
-          projectcss.all,
-          projectcss.root_reset,
-          projectcss.plasmic_default_styles,
-          projectcss.plasmic_mixins,
-          projectcss.plasmic_tokens,
-          plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-          plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-          plasmic_plasmic_kit_new_design_system_former_style_controls_css.plasmic_tokens,
-          sty.root
-        )}
+        data-plasmic-name={"text"}
+        data-plasmic-override={overrides.text}
+        className={classNames(projectcss.all, projectcss.__wab_text, sty.text)}
       >
-        <div
-          data-plasmic-name={"text"}
-          data-plasmic-override={overrides.text}
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text
-          )}
-        >
-          {"Here be layout stuff"}
-        </div>
+        {"Here be layout stuff"}
       </div>
-    ) : null
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -172,7 +160,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicThemeLayoutPanel__ArgProps,
           internalVariantPropNames: PlasmicThemeLayoutPanel__VariantProps,
         }),

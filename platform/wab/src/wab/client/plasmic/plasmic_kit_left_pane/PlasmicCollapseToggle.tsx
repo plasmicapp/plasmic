@@ -70,13 +70,7 @@ export interface DefaultCollapseToggleProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicCollapseToggle__RenderFunc(props: {
   variants: PlasmicCollapseToggle__VariantsArgs;
@@ -142,30 +136,27 @@ function PlasmicCollapseToggle__RenderFunc(props: {
         }
       )}
     >
-      {(hasVariant($state, "collapseState", "expanded") ? true : true) ? (
-        <ChevronDownsvgIcon
-          className={classNames(projectcss.all, sty.svg__tRn5M, {
-            [sty.svgcollapseState_expanded__tRn5M4HqP]: hasVariant(
-              $state,
-              "collapseState",
-              "expanded"
-            ),
-          })}
-          role={"img"}
-        />
-      ) : null}
-      {(hasVariant($state, "collapseState", "expanded") ? true : true) ? (
-        <ChevronUpsvgIcon
-          className={classNames(projectcss.all, sty.svg__fDuU1, {
-            [sty.svgcollapseState_expanded__fDuU14HqP]: hasVariant(
-              $state,
-              "collapseState",
-              "expanded"
-            ),
-          })}
-          role={"img"}
-        />
-      ) : null}
+      <ChevronDownsvgIcon
+        className={classNames(projectcss.all, sty.svg__tRn5M, {
+          [sty.svgcollapseState_expanded__tRn5M4HqP]: hasVariant(
+            $state,
+            "collapseState",
+            "expanded"
+          ),
+        })}
+        role={"img"}
+      />
+
+      <ChevronUpsvgIcon
+        className={classNames(projectcss.all, sty.svg__fDuU1, {
+          [sty.svgcollapseState_expanded__fDuU14HqP]: hasVariant(
+            $state,
+            "collapseState",
+            "expanded"
+          ),
+        })}
+        role={"img"}
+      />
     </div>
   ) as React.ReactElement | null;
 }
@@ -214,7 +205,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicCollapseToggle__ArgProps,
           internalVariantPropNames: PlasmicCollapseToggle__VariantProps,
         }),

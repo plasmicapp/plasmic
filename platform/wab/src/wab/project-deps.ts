@@ -1432,6 +1432,7 @@ function upgradeProjectDep(
   site.themes.forEach((theme) => {
     fixRefsForMixin(theme.defaultStyle);
     theme.styles.forEach((s) => fixRefsForMixin(s.style));
+    Object.values(theme.addItemPrefs).forEach((rs) => fixRefsForRuleset(rs));
   });
 
   // Fix activeTheme, if we used to be using oldDep's activeTheme

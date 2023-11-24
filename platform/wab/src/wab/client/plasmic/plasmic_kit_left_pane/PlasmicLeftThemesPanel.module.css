@@ -15,7 +15,6 @@
 }
 .textWithInfo:global(.__wab_instance) {
   max-width: 100%;
-  display: flex;
 }
 .text__sLPev {
   font-weight: 600;
@@ -84,5 +83,13 @@
   display: none;
 }
 .themeLayoutPaneltab_layout:global(.__wab_instance) {
+  display: flex;
+}
+.themeInitialStylesPanel:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+  display: none;
+}
+.themeInitialStylesPaneltab_initials:global(.__wab_instance) {
   display: flex;
 }

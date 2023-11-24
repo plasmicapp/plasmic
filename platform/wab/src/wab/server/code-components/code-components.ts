@@ -182,7 +182,7 @@ export async function createSiteForHostlessProject(
     >();
 
     [...registeredComponents, ...registeredContexts].forEach(({ meta }) => {
-      const component = mkCodeComponent(meta.name, meta);
+      const component = mkCodeComponent(meta.name, meta, {});
       component.codeComponentMeta.isHostLess = true;
 
       site.components.push(component);

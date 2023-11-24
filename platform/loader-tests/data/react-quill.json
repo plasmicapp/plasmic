@@ -24,7 +24,8 @@
           "styles": [],
           "layout": { "__ref": "Dyvj5ViGZIA-" },
           "active": true,
-          "__type": "Theme"
+          "__type": "Theme",
+          "addItemPrefs": {}
         },
         "pn48FXinGJiS": {
           "uuid": "HYzjsp1TstIa",
@@ -731,7 +732,7 @@
         }
       },
       "deps": [],
-      "version": "225-release-global-actions"
+      "version": "226-add-item-prefs"
     }
   ],
   [
@@ -1149,7 +1150,8 @@
           ],
           "layout": { "__ref": "Eb4BF8L1gv7u" },
           "active": true,
-          "__type": "Theme"
+          "__type": "Theme",
+          "addItemPrefs": {}
         },
         "-At_00oYrG3d": { "name": "text", "__type": "Text" },
         "T_33XK0l7i2G": {
@@ -2097,7 +2099,7 @@
         "tkbX31iChEAr": { "text": ["quill-state"], "__type": "TemplatedString" }
       },
       "deps": ["b911462e-59ce-455d-b8d3-0d84f50a35dd"],
-      "version": "225-release-global-actions"
+      "version": "226-add-item-prefs"
     }
   ]
 ]

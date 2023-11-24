@@ -1,34 +1,34 @@
-import { Menu } from "antd";
-import cn from "classnames";
-import { observer } from "mobx-react";
-import React from "react";
-import { ColumnsConfig } from "../../../classes";
-import { ensure, NullOrUndefinedValueError } from "../../../common";
-import { TokenType } from "../../../commons/StyleToken";
-import { equalColumnDistribution } from "../../../shared/columns-utils";
-import { computeDefinedIndicator } from "../../../shared/defined-indicator";
-import { TplColumnsTag, TplColumnTag } from "../../../tpls";
-import { reportError } from "../../ErrorNotifications";
-import MinusIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Minus";
-import PlusIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Plus";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
+import { ColumnsConfig } from "@/wab/classes";
 import {
   DraggableDimLabel,
   FullRow,
   LabeledItemRow,
   LabeledStyleItemRow,
   shouldBeDisabled,
-} from "../sidebar/sidebar-helpers";
-import { SidebarSection } from "../sidebar/SidebarSection";
-import { DefinedIndicator } from "../style-controls/DefinedIndicator";
+} from "@/wab/client/components/sidebar/sidebar-helpers";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import { DefinedIndicator } from "@/wab/client/components/style-controls/DefinedIndicator";
 import {
   ExpsProvider,
   StylePanelSection,
-} from "../style-controls/StyleComponent";
-import { IconLinkButton } from "../widgets";
-import DimTokenSpinner from "../widgets/DimTokenSelector";
-import { Icon } from "../widgets/Icon";
+} from "@/wab/client/components/style-controls/StyleComponent";
+import { IconLinkButton } from "@/wab/client/components/widgets";
+import DimTokenSpinner from "@/wab/client/components/widgets/DimTokenSelector";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { reportError } from "@/wab/client/ErrorNotifications";
+import MinusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Minus";
+import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { ensure, NullOrUndefinedValueError } from "@/wab/common";
+import { TokenType } from "@/wab/commons/StyleToken";
+import { equalColumnDistribution } from "@/wab/shared/columns-utils";
+import { computeDefinedIndicator } from "@/wab/shared/defined-indicator";
+import { TplColumnsTag, TplColumnTag } from "@/wab/tpls";
+import { Menu } from "antd";
+import cn from "classnames";
+import { observer } from "mobx-react";
+import React from "react";
 import S from "./ColumnsSection.module.scss";
 import { FlexContainerControls } from "./FlexContainerControls";
 import { ColumnsAlignControls } from "./ResponsiveColumns/ColumnsAlignControls";
@@ -200,8 +200,8 @@ export const ColumnsPanelSection = observer(function ColumnsPanelSection(
           <ColumnsGapControls
             expsProvider={expsProvider}
             studioCtx={studioCtx}
-            config={columnsConfig}
             isDisabled={isDisabled}
+            includeRowGap={columnsConfig.breakUpRows}
           />
           {childrenLength > 0 && (
             <ColumnsWrapControls
@@ -230,10 +230,25 @@ export const ColumnsPanelSection = observer(function ColumnsPanelSection(
   );
 });
 
+export const ColumnsStyleOnlySection = observer(
+  function ColumnsStyleOnlySection(props: { expsProvider: ExpsProvider }) {
+    const { expsProvider } = props;
+    const studioCtx = useStudioCtx();
+    return (
+      <SidebarSection title="Responsive Section">
+        <ColumnsGapControls
+          expsProvider={expsProvider}
+          studioCtx={studioCtx}
+          includeRowGap={true}
+        />
+      </SidebarSection>
+    );
+  }
+);
+
 const SingleGapControl = observer(function ColumnsGapControls(props: {
   expsProvider: ExpsProvider;
   studioCtx: StudioCtx;
-  config: ColumnsConfig;
   isDisabled?: boolean;
   label: string;
   prop: string;
@@ -279,10 +294,10 @@ const SingleGapControl = observer(function ColumnsGapControls(props: {
 export const ColumnsGapControls = observer(function ColumnsGapControls(props: {
   expsProvider: ExpsProvider;
   studioCtx: StudioCtx;
-  config: ColumnsConfig;
   isDisabled?: boolean;
+  includeRowGap?: boolean;
 }) {
-  const { expsProvider, studioCtx, config, isDisabled } = props;
+  const { expsProvider, studioCtx, isDisabled, includeRowGap } = props;
   const exp = expsProvider.mergedExp();
 
   const rowGap = exp.get("flex-row-gap") || "";
@@ -296,7 +311,6 @@ export const ColumnsGapControls = observer(function ColumnsGapControls(props: {
         <SingleGapControl
           expsProvider={expsProvider}
           studioCtx={studioCtx}
-          config={config}
           isDisabled={isDisabled}
           label={"Column"}
           prop="flex-column-gap"
@@ -305,8 +319,7 @@ export const ColumnsGapControls = observer(function ColumnsGapControls(props: {
         <SingleGapControl
           expsProvider={expsProvider}
           studioCtx={studioCtx}
-          config={config}
-          isDisabled={isDisabled || !config.breakUpRows}
+          isDisabled={isDisabled || !includeRowGap}
           label={"Row"}
           prop="flex-row-gap"
           value={rowGap}

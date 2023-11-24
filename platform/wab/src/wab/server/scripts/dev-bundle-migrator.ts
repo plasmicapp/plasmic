@@ -56,6 +56,7 @@ const paths = [
   "../loader-tests/data/plasmic-antd5.json",
   "../loader-tests/data/data-source-basic.json",
   "src/wab/shared/site-diffs/__tests__/code-components-with-same-name.json",
+  "src/wab/shared/site-diffs/__tests__/rich-text-conflict.json",
   "src/wab/shared/site-diffs/__tests__/test-tpl-merge.json",
   "src/wab/shared/site-diffs/__tests__/test-merging-deps.json",
   "src/wab/shared/site-diffs/__tests__/test-edge-cases-merge.json",

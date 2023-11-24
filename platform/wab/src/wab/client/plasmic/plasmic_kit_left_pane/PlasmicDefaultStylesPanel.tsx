@@ -82,13 +82,7 @@ export interface DefaultDefaultStylesPanelProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicDefaultStylesPanel__RenderFunc(props: {
   variants: PlasmicDefaultStylesPanel__VariantsArgs;
@@ -130,7 +124,7 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
         path: "globalVariantSelect.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => "" as const,
+        initFunc: ({ $props, $state, $queries, $ctx }) => "",
       },
       {
         path: "tagSelect.value",
@@ -155,255 +149,239 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
   });
 
   return (
-    true ? (
+    <div
+      data-plasmic-name={"root"}
+      data-plasmic-override={overrides.root}
+      data-plasmic-root={true}
+      data-plasmic-for-node={forNode}
+      className={classNames(
+        projectcss.all,
+        projectcss.root_reset,
+        projectcss.plasmic_default_styles,
+        projectcss.plasmic_mixins,
+        projectcss.plasmic_tokens,
+        plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
+        plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
+        plasmic_plasmic_kit_new_design_system_former_style_controls_css.plasmic_tokens,
+        sty.root,
+        {
+          [sty.rootisTargeting]: hasVariant(
+            $state,
+            "isTargeting",
+            "isTargeting"
+          ),
+        }
+      )}
+    >
       <div
-        data-plasmic-name={"root"}
-        data-plasmic-override={overrides.root}
-        data-plasmic-root={true}
-        data-plasmic-for-node={forNode}
         className={classNames(
           projectcss.all,
-          projectcss.root_reset,
-          projectcss.plasmic_default_styles,
-          projectcss.plasmic_mixins,
-          projectcss.plasmic_tokens,
-          plasmic_plasmic_kit_design_system_deprecated_css.plasmic_tokens,
-          plasmic_plasmic_kit_color_tokens_css.plasmic_tokens,
-          plasmic_plasmic_kit_new_design_system_former_style_controls_css.plasmic_tokens,
-          sty.root,
-          {
-            [sty.rootisTargeting]: hasVariant(
-              $state,
-              "isTargeting",
-              "isTargeting"
-            ),
-          }
+          projectcss.__wab_text,
+          sty.text__iGLd
         )}
       >
+        {
+          "Define default typography styles; you can define different styles for different tags and responsive breakpoints."
+        }
+      </div>
+      <p.Stack
+        as={"div"}
+        data-plasmic-name={"selector"}
+        data-plasmic-override={overrides.selector}
+        hasGap={true}
+        className={classNames(projectcss.all, sty.selector, {
+          [sty.selectorisTargeting]: hasVariant(
+            $state,
+            "isTargeting",
+            "isTargeting"
+          ),
+        })}
+      >
         <div
-          className={classNames(
-            projectcss.all,
-            projectcss.__wab_text,
-            sty.text__iGLd
-          )}
+          data-plasmic-name={"freeBox"}
+          data-plasmic-override={overrides.freeBox}
+          className={classNames(projectcss.all, sty.freeBox, {
+            [sty.freeBoxshowPseudoClass]: hasVariant(
+              $state,
+              "showPseudoClass",
+              "showPseudoClass"
+            ),
+          })}
         >
-          {
-            "Define default typography styles; you can define different styles for different tags and responsive breakpoints."
-          }
+          <div
+            className={classNames(
+              projectcss.all,
+              projectcss.__wab_text,
+              sty.text__amsGc
+            )}
+          >
+            {"Tag"}
+          </div>
+          <p.Stack
+            as={"div"}
+            data-plasmic-name={"globalVariantSelectorContainer"}
+            data-plasmic-override={overrides.globalVariantSelectorContainer}
+            hasGap={true}
+            className={classNames(
+              projectcss.all,
+              sty.globalVariantSelectorContainer
+            )}
+          >
+            <div
+              className={classNames(
+                projectcss.all,
+                projectcss.__wab_text,
+                sty.text___1UBnM,
+                {
+                  [sty.textisTargeting___1UBnMog7Mw]: hasVariant(
+                    $state,
+                    "isTargeting",
+                    "isTargeting"
+                  ),
+                }
+              )}
+            >
+              {"Target:"}
+            </div>
+            <Select
+              data-plasmic-name={"globalVariantSelect"}
+              data-plasmic-override={overrides.globalVariantSelect}
+              hasIcon={true}
+              icon={
+                <GlobesvgIcon
+                  className={classNames(projectcss.all, sty.svg__qOj9X)}
+                  role={"img"}
+                />
+              }
+              name={""}
+              onChange={(...eventArgs) => {
+                p.generateStateOnChangeProp($state, [
+                  "globalVariantSelect",
+                  "value",
+                ])(eventArgs[0]);
+              }}
+              placeholder={
+                <div
+                  className={classNames(
+                    projectcss.all,
+                    projectcss.__wab_text,
+                    sty.text__oqmBw
+                  )}
+                >
+                  {"Base"}
+                </div>
+              }
+              size={"tiny"}
+              value={p.generateStateValueProp($state, [
+                "globalVariantSelect",
+                "value",
+              ])}
+            >
+              <Select__Option
+                data-plasmic-name={"option"}
+                data-plasmic-override={overrides.option}
+                className={classNames("__wab_instance", sty.option)}
+                value={"base"}
+              >
+                <div
+                  className={classNames(
+                    projectcss.all,
+                    projectcss.__wab_text,
+                    sty.text__jSaSm
+                  )}
+                >
+                  {"Base"}
+                </div>
+              </Select__Option>
+            </Select>
+          </p.Stack>
         </div>
-        <p.Stack
-          as={"div"}
-          data-plasmic-name={"selector"}
-          data-plasmic-override={overrides.selector}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.selector, {
-            [sty.selectorisTargeting]: hasVariant(
+        <Select
+          data-plasmic-name={"tagSelect"}
+          data-plasmic-override={overrides.tagSelect}
+          className={classNames("__wab_instance", sty.tagSelect, {
+            [sty.tagSelectisTargeting]: hasVariant(
               $state,
               "isTargeting",
               "isTargeting"
             ),
           })}
-        >
-          {(
+          icon={
+            <PlussvgIcon
+              className={classNames(projectcss.all, sty.svg__kRhm1)}
+              role={"img"}
+            />
+          }
+          onChange={(...eventArgs) => {
+            p.generateStateOnChangeProp($state, ["tagSelect", "value"])(
+              eventArgs[0]
+            );
+          }}
+          options={[
+            { value: "option1", label: "Option 1" },
+            { value: "option2", label: "Option 2" },
+          ]}
+          placeholder={
             hasVariant($state, "showPseudoClass", "showPseudoClass")
-              ? true
-              : true
-          ) ? (
-            <div
-              data-plasmic-name={"freeBox"}
-              data-plasmic-override={overrides.freeBox}
-              className={classNames(projectcss.all, sty.freeBox, {
-                [sty.freeBoxshowPseudoClass]: hasVariant(
-                  $state,
-                  "showPseudoClass",
-                  "showPseudoClass"
-                ),
-              })}
-            >
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__amsGc
-                )}
-              >
-                {"Tag"}
-              </div>
-              {true ? (
-                <p.Stack
-                  as={"div"}
-                  data-plasmic-name={"globalVariantSelectorContainer"}
-                  data-plasmic-override={
-                    overrides.globalVariantSelectorContainer
-                  }
-                  hasGap={true}
-                  className={classNames(
-                    projectcss.all,
-                    sty.globalVariantSelectorContainer
-                  )}
-                >
-                  <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text___1UBnM,
-                      {
-                        [sty.textisTargeting___1UBnMog7Mw]: hasVariant(
-                          $state,
-                          "isTargeting",
-                          "isTargeting"
-                        ),
-                      }
-                    )}
-                  >
-                    {"Target:"}
-                  </div>
-                  <Select
-                    data-plasmic-name={"globalVariantSelect"}
-                    data-plasmic-override={overrides.globalVariantSelect}
-                    hasIcon={true}
-                    icon={
-                      true ? (
-                        <GlobesvgIcon
-                          className={classNames(projectcss.all, sty.svg__qOj9X)}
-                          role={"img"}
-                        />
-                      ) : null
-                    }
-                    name={"" as const}
-                    onChange={(...eventArgs) => {
-                      p.generateStateOnChangeProp($state, [
-                        "globalVariantSelect",
-                        "value",
-                      ])(eventArgs[0]);
-                    }}
-                    placeholder={
-                      true ? (
-                        <div
-                          className={classNames(
-                            projectcss.all,
-                            projectcss.__wab_text,
-                            sty.text__oqmBw
-                          )}
-                        >
-                          {"Base"}
-                        </div>
-                      ) : null
-                    }
-                    size={"tiny" as const}
-                    value={p.generateStateValueProp($state, [
-                      "globalVariantSelect",
-                      "value",
-                    ])}
-                  >
-                    <Select__Option
-                      data-plasmic-name={"option"}
-                      data-plasmic-override={overrides.option}
-                      className={classNames("__wab_instance", sty.option)}
-                      value={"base" as const}
-                    >
-                      <div
-                        className={classNames(
-                          projectcss.all,
-                          projectcss.__wab_text,
-                          sty.text__jSaSm
-                        )}
-                      >
-                        {"Base"}
-                      </div>
-                    </Select__Option>
-                  </Select>
-                </p.Stack>
-              ) : null}
-            </div>
-          ) : null}
+              ? "Select tag\u2026"
+              : "Select tag\u2026"
+          }
+          type={"bordered"}
+          value={p.generateStateValueProp($state, ["tagSelect", "value"])}
+        />
+
+        {(
+          hasVariant($state, "showPseudoClass", "showPseudoClass")
+            ? true
+            : false
+        ) ? (
           <Select
-            data-plasmic-name={"tagSelect"}
-            data-plasmic-override={overrides.tagSelect}
-            className={classNames("__wab_instance", sty.tagSelect, {
-              [sty.tagSelectisTargeting]: hasVariant(
+            data-plasmic-name={"pseudoClassSelect"}
+            data-plasmic-override={overrides.pseudoClassSelect}
+            className={classNames("__wab_instance", sty.pseudoClassSelect, {
+              [sty.pseudoClassSelectshowPseudoClass]: hasVariant(
                 $state,
-                "isTargeting",
-                "isTargeting"
+                "showPseudoClass",
+                "showPseudoClass"
               ),
             })}
             icon={
               <PlussvgIcon
-                className={classNames(projectcss.all, sty.svg__kRhm1)}
+                className={classNames(projectcss.all, sty.svg__iMz8C)}
                 role={"img"}
               />
             }
             onChange={(...eventArgs) => {
-              p.generateStateOnChangeProp($state, ["tagSelect", "value"])(
-                eventArgs[0]
-              );
+              p.generateStateOnChangeProp($state, [
+                "pseudoClassSelect",
+                "value",
+              ])(eventArgs[0]);
             }}
             options={[
               { value: "option1", label: "Option 1" },
               { value: "option2", label: "Option 2" },
             ]}
-            placeholder={
-              hasVariant($state, "showPseudoClass", "showPseudoClass")
-                ? "Select tag\u2026"
-                : "Select tag\u2026"
-            }
-            type={"bordered" as const}
-            value={p.generateStateValueProp($state, ["tagSelect", "value"])}
+            placeholder={"Select\u2026"}
+            type={"bordered"}
+            value={p.generateStateValueProp($state, [
+              "pseudoClassSelect",
+              "value",
+            ])}
           />
-
-          {(
-            hasVariant($state, "showPseudoClass", "showPseudoClass")
-              ? true
-              : false
-          ) ? (
-            <Select
-              data-plasmic-name={"pseudoClassSelect"}
-              data-plasmic-override={overrides.pseudoClassSelect}
-              className={classNames("__wab_instance", sty.pseudoClassSelect, {
-                [sty.pseudoClassSelectshowPseudoClass]: hasVariant(
-                  $state,
-                  "showPseudoClass",
-                  "showPseudoClass"
-                ),
-              })}
-              icon={
-                <PlussvgIcon
-                  className={classNames(projectcss.all, sty.svg__iMz8C)}
-                  role={"img"}
-                />
-              }
-              onChange={(...eventArgs) => {
-                p.generateStateOnChangeProp($state, [
-                  "pseudoClassSelect",
-                  "value",
-                ])(eventArgs[0]);
-              }}
-              options={[
-                { value: "option1", label: "Option 1" },
-                { value: "option2", label: "Option 2" },
-              ]}
-              placeholder={"Select\u2026"}
-              type={"bordered" as const}
-              value={p.generateStateValueProp($state, [
-                "pseudoClassSelect",
-                "value",
-              ])}
-            />
-          ) : null}
-        </p.Stack>
-        <div
-          data-plasmic-name={"content"}
-          data-plasmic-override={overrides.content}
-          className={classNames(projectcss.all, sty.content, {
-            [sty.contentisTargeting]: hasVariant(
-              $state,
-              "isTargeting",
-              "isTargeting"
-            ),
-          })}
-        />
-      </div>
-    ) : null
+        ) : null}
+      </p.Stack>
+      <div
+        data-plasmic-name={"content"}
+        data-plasmic-override={overrides.content}
+        className={classNames(projectcss.all, sty.content, {
+          [sty.contentisTargeting]: hasVariant(
+            $state,
+            "isTargeting",
+            "isTargeting"
+          ),
+        })}
+      />
+    </div>
   ) as React.ReactElement | null;
 }
 
@@ -494,7 +472,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicDefaultStylesPanel__ArgProps,
           internalVariantPropNames: PlasmicDefaultStylesPanel__VariantProps,
         }),

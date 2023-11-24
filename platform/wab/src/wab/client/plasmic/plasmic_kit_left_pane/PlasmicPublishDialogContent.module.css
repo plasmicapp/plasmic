@@ -141,9 +141,6 @@
   cursor: wait;
   background: var(--token-O4S7RMTqZ3);
 }
-.titlestate_nochanges {
-  display: flex;
-}
 .root .title:focus {
   box-shadow: 0px 0px 0px 2px #0091ff80;
   left: auto;

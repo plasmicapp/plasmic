@@ -71,13 +71,7 @@ export interface DefaultLeftSearchPanelProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicLeftSearchPanel__RenderFunc(props: {
   variants: PlasmicLeftSearchPanel__VariantsArgs;
@@ -216,7 +210,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicLeftSearchPanel__ArgProps,
           internalVariantPropNames: PlasmicLeftSearchPanel__VariantProps,
         }),

@@ -255,7 +255,7 @@ import {
   mkDataSourceOpExpr,
   mkDataSourceTemplate,
 } from "@/wab/shared/data-sources-meta/data-sources";
-import { getSimplifiedStyles } from "@/wab/shared/default-styles";
+import { AddItemPrefs, getSimplifiedStyles } from "@/wab/shared/default-styles";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { DataSourceUser } from "@/wab/shared/dynamic-bindings";
 import { accessLevelRank } from "@/wab/shared/EntUtil";
@@ -2077,7 +2077,7 @@ export class StudioCtx extends WithDbCtx {
         return this.tplMgr().addComponent({
           name,
           type,
-          styles: getSimplifiedStyles(frame),
+          styles: getSimplifiedStyles(frame, this.getAddItemPrefs()),
         });
       }
     };
@@ -2651,6 +2651,10 @@ export class StudioCtx extends WithDbCtx {
   // Managing Content Editor Mode
   isContentEditor() {
     return isContentEditor(this.appCtx.selfInfo, this.siteInfo);
+  }
+
+  getAddItemPrefs() {
+    return this.site.activeTheme?.addItemPrefs as AddItemPrefs | undefined;
   }
 
   private _contentEditorMode = observable.box(false);

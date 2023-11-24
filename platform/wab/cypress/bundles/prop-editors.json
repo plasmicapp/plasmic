@@ -11418,7 +11418,8 @@
           "styles": [],
           "layout": { "__ref": "39174165" },
           "active": true,
-          "__type": "Theme"
+          "__type": "Theme",
+          "addItemPrefs": {}
         },
         "39174009": {
           "name": "Default Typography",
@@ -26853,7 +26854,7 @@
         }
       },
       "deps": [],
-      "version": "225-release-global-actions"
+      "version": "226-add-item-prefs"
     }
   ],
   [
@@ -36739,7 +36740,8 @@
           ],
           "layout": { "__ref": "18894165" },
           "active": true,
-          "__type": "Theme"
+          "__type": "Theme",
+          "addItemPrefs": {}
         },
         "18894009": {
           "name": "Default Typography",
@@ -52082,7 +52084,7 @@
         "DuESJECNxPHt": { "tpl": [], "__type": "VirtualRenderExpr" }
       },
       "deps": ["968565bc-2862-4179-aa20-deebd3879e08"],
-      "version": "225-release-global-actions"
+      "version": "226-add-item-prefs"
     }
   ]
 ]

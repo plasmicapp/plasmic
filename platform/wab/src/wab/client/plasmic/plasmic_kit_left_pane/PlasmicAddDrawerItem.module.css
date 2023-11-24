@@ -31,9 +31,6 @@
 .img__iEEcN > picture > img {
   object-fit: cover;
 }
-.img__iEEcN > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .svg__xaCli {
   object-fit: cover;
   width: 24px;
@@ -53,7 +50,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .iconButton__ol5Pp:global(.__wab_instance) {
@@ -73,6 +69,5 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }

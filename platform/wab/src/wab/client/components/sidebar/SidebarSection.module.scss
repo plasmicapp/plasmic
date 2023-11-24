@@ -1,6 +1,10 @@
 @import "src/wab/styles/tokens";
 @import "../../../styles/_vars";
 
+.root {
+  width: 100%;
+}
+
 .root:hover {
   & .contextMenuIcon {
     opacity: 0.7;

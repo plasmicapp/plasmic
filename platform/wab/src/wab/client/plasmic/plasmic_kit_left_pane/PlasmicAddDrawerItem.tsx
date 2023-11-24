@@ -95,13 +95,7 @@ export interface DefaultAddDrawerItemProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicAddDrawerItem__RenderFunc(props: {
   variants: PlasmicAddDrawerItem__VariantsArgs;
@@ -173,37 +167,33 @@ function PlasmicAddDrawerItem__RenderFunc(props: {
       )}
       data-plasmic-trigger-props={[triggerRootHoverProps]}
     >
-      {(
-        hasVariant($state, "showPreviewImage", "showPreviewImage") ? true : true
-      ) ? (
-        <div
-          data-plasmic-name={"freeBox"}
-          data-plasmic-override={overrides.freeBox}
-          className={classNames(projectcss.all, sty.freeBox, {
-            [sty.freeBoxshowPreviewImage]: hasVariant(
-              $state,
-              "showPreviewImage",
-              "showPreviewImage"
-            ),
-          })}
-        >
-          {p.renderPlasmicSlot({
-            defaultContents: (
-              <img
-                alt={""}
-                className={classNames(
-                  projectcss.all,
-                  projectcss.img,
-                  sty.img__iEEcN
-                )}
-                src={image49X6ZsC5Ww5}
-              />
-            ),
+      <div
+        data-plasmic-name={"freeBox"}
+        data-plasmic-override={overrides.freeBox}
+        className={classNames(projectcss.all, sty.freeBox, {
+          [sty.freeBoxshowPreviewImage]: hasVariant(
+            $state,
+            "showPreviewImage",
+            "showPreviewImage"
+          ),
+        })}
+      >
+        {p.renderPlasmicSlot({
+          defaultContents: (
+            <img
+              alt={""}
+              className={classNames(
+                projectcss.all,
+                projectcss.img,
+                sty.img__iEEcN
+              )}
+              src={image49X6ZsC5Ww5}
+            />
+          ),
 
-            value: args.previewImage,
-          })}
-        </div>
-      ) : null}
+          value: args.previewImage,
+        })}
+      </div>
       <ListItem
         data-plasmic-name={"listItem"}
         data-plasmic-override={overrides.listItem}
@@ -321,7 +311,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicAddDrawerItem__ArgProps,
           internalVariantPropNames: PlasmicAddDrawerItem__VariantProps,
         }),

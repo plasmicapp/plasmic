@@ -61,13 +61,7 @@ export interface DefaultActivityFeedProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicActivityFeed__RenderFunc(props: {
   variants: PlasmicActivityFeed__VariantsArgs;
@@ -112,37 +106,37 @@ function PlasmicActivityFeed__RenderFunc(props: {
     >
       <ActivityFeedItem
         className={classNames("__wab_instance", sty.activityFeedItem__btc0P)}
-        state={"projectCreated" as const}
+        state={"projectCreated"}
       />
 
       <ActivityFeedItem
         className={classNames("__wab_instance", sty.activityFeedItem__uxQl)}
-        state={"projectRenamed" as const}
+        state={"projectRenamed"}
       />
 
       <ActivityFeedItem
         className={classNames("__wab_instance", sty.activityFeedItem___1K9Hj)}
-        state={"projectShared" as const}
+        state={"projectShared"}
       />
 
       <ActivityFeedItem
         className={classNames("__wab_instance", sty.activityFeedItem__iTzwf)}
-        state={"projectForked" as const}
+        state={"projectForked"}
       />
 
       <ActivityFeedItem
         className={classNames("__wab_instance", sty.activityFeedItem__ofHRh)}
-        state={"userVisited" as const}
+        state={"userVisited"}
       />
 
       <ActivityFeedItem
         className={classNames("__wab_instance", sty.activityFeedItem___1BeLe)}
-        state={"anonymousVisited" as const}
+        state={"anonymousVisited"}
       />
 
       <ActivityFeedItem
         className={classNames("__wab_instance", sty.activityFeedItem__c8Mm1)}
-        state={"versionPublished" as const}
+        state={"versionPublished"}
       />
     </p.Stack>
   ) as React.ReactElement | null;
@@ -192,7 +186,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicActivityFeed__ArgProps,
           internalVariantPropNames: PlasmicActivityFeed__VariantProps,
         }),

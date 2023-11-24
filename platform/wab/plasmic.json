@@ -524,6 +524,19 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicLeftLintIssuesPanel.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "T_OF2Q8rJc1U",
+          "name": "ThemeInitialStylesPanel",
+          "type": "managed",
+          "projectId": "aukbrhkegRkQ6KizvhdUPT",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicThemeInitialStylesPanel.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/sidebar/ThemeInitialStylesPanel.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicThemeInitialStylesPanel.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [
@@ -562,8 +575,8 @@
       ],
       "indirect": false,
       "globalContextsFilePath": "",
-      "jsBundleThemes": [],
-      "splitsProviderFilePath": ""
+      "splitsProviderFilePath": "",
+      "customFunctions": []
     },
     {
       "projectId": "ooL7EhXDmFQWnW9sxtchhE",
@@ -1328,7 +1341,8 @@
       "indirect": false,
       "globalContextsFilePath": "wab/client/plasmic/plasmic_kit_dashboard/PlasmicGlobalContextsProvider.tsx",
       "splitsProviderFilePath": "",
-      "customFunctions": []
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "8n4Jmw9HN2r6jnjKYgqsK4",
@@ -10349,7 +10363,7 @@
           "projectId": "frhoorZk3bxNXU73uUyvHm",
           "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_state_management/PlasmicImplicitVariablesSection.tsx",
           "importSpec": {
-            "modulePath": "ImplicitVariablesSection.tsx"
+            "modulePath": "wab/client/components/sidebar-tabs/StateManagement/ImplicitVariablesSection.tsx"
           },
           "cssFilePath": "wab/client/plasmic/plasmic_kit_state_management/PlasmicImplicitVariablesSection.module.css",
           "scheme": "blackbox",
@@ -11057,6 +11071,6 @@
   "postSyncCommands": [
     "git ls-files -m | xargs pre-commit run prettier --files"
   ],
-  "cliVersion": "0.1.318",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.318/dist/plasmic.schema.json"
+  "cliVersion": "0.1.322",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.322/dist/plasmic.schema.json"
 }

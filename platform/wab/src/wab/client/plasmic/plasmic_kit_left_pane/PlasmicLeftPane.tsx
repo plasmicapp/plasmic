@@ -152,13 +152,7 @@ export interface DefaultLeftPaneProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicLeftPane__RenderFunc(props: {
   variants: PlasmicLeftPane__VariantsArgs;
@@ -232,29 +226,29 @@ function PlasmicLeftPane__RenderFunc(props: {
         data-plasmic-override={overrides.leftTabStrip}
         activeTab={
           hasVariant($state, "type", "lint")
-            ? ("lint" as const)
+            ? "lint"
             : hasVariant($state, "type", "endpoints")
-            ? ("endpoints" as const)
+            ? "endpoints"
             : hasVariant($state, "type", "splits")
-            ? ("splits" as const)
+            ? "splits"
             : hasVariant($state, "type", "pages")
-            ? ("pages" as const)
+            ? "pages"
             : hasVariant($state, "type", "components")
-            ? ("components" as const)
+            ? "components"
             : hasVariant($state, "type", "versions")
-            ? ("versions" as const)
+            ? "versions"
             : hasVariant($state, "type", "fonts")
-            ? ("fonts" as const)
+            ? "fonts"
             : hasVariant($state, "type", "themes")
-            ? ("themes" as const)
+            ? "themes"
             : hasVariant($state, "type", "images")
-            ? ("images" as const)
+            ? "images"
             : hasVariant($state, "type", "mixins")
-            ? ("mixins" as const)
+            ? "mixins"
             : hasVariant($state, "type", "tokens")
-            ? ("tokens" as const)
+            ? "tokens"
             : hasVariant($state, "type", "outline")
-            ? ("outline" as const)
+            ? "outline"
             : undefined
         }
         className={classNames("__wab_instance", sty.leftTabStrip, {
@@ -591,32 +585,30 @@ function PlasmicLeftPane__RenderFunc(props: {
               })}
             />
           ) : null}
-          {(hasVariant($state, "type", "settings") ? true : true) ? (
-            <LeftSettingsPanel
-              data-plasmic-name={"leftSettingsPanel"}
-              data-plasmic-override={overrides.leftSettingsPanel}
-              className={classNames("__wab_instance", sty.leftSettingsPanel, {
-                [sty.leftSettingsPaneltype_settings]: hasVariant(
-                  $state,
-                  "type",
-                  "settings"
-                ),
-              })}
-            />
-          ) : null}
-          {(hasVariant($state, "type", "splits") ? true : true) ? (
-            <LeftSplitsPanel
-              data-plasmic-name={"leftSplitsPanel"}
-              data-plasmic-override={overrides.leftSplitsPanel}
-              className={classNames("__wab_instance", sty.leftSplitsPanel, {
-                [sty.leftSplitsPaneltype_splits]: hasVariant(
-                  $state,
-                  "type",
-                  "splits"
-                ),
-              })}
-            />
-          ) : null}
+          <LeftSettingsPanel
+            data-plasmic-name={"leftSettingsPanel"}
+            data-plasmic-override={overrides.leftSettingsPanel}
+            className={classNames("__wab_instance", sty.leftSettingsPanel, {
+              [sty.leftSettingsPaneltype_settings]: hasVariant(
+                $state,
+                "type",
+                "settings"
+              ),
+            })}
+          />
+
+          <LeftSplitsPanel
+            data-plasmic-name={"leftSplitsPanel"}
+            data-plasmic-override={overrides.leftSplitsPanel}
+            className={classNames("__wab_instance", sty.leftSplitsPanel, {
+              [sty.leftSplitsPaneltype_splits]: hasVariant(
+                $state,
+                "type",
+                "splits"
+              ),
+            })}
+          />
+
           {(hasVariant($state, "type", "lint") ? true : false) ? (
             <LeftLintIssuesPanel
               data-plasmic-name={"leftLintIssuesPanel"}
@@ -761,7 +753,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicLeftPane__ArgProps,
           internalVariantPropNames: PlasmicLeftPane__VariantProps,
         }),

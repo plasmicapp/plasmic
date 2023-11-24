@@ -1,8 +1,10 @@
-import { DEVFLAGS } from "../devflags";
+import { RuleSet } from "@/wab/classes";
+import { DEVFLAGS } from "@/wab/devflags";
+import { camelCase, isEmpty, mapKeys } from "lodash";
 import { AddItemKey, WrapItemKey } from "./add-item-keys";
 import { CONTENT_LAYOUT, CONTENT_LAYOUT_FULL_BLEED } from "./core/style-props";
 
-const DEFAULT_STYLES = {
+const DEFAULT_INITIAL_STYLES = {
   sizing: {
     width: "stretch",
     height: "wrap",
@@ -27,110 +29,146 @@ export const CONTENT_LAYOUT_INITIALS = {
   "justify-items": "center",
 };
 
-const DEFAULT_STYLES_BY_ITEM: Partial<Record<AddItemKey | WrapItemKey, any>> = {
-  [AddItemKey.box]: {
-    position: "relative",
-    display: "block",
-    ...DEFAULT_STYLES.sizing,
-    ...DEFAULT_STYLES.container,
-  },
-  [AddItemKey.hstack]: {
-    display: "flex",
-    flexDirection: "row",
-    position: "relative",
-    alignItems: "stretch",
-    justifyContent: "flex-start",
-    ...DEFAULT_STYLES.sizing,
-    ...DEFAULT_STYLES.container,
-  },
-  [AddItemKey.vstack]: {
-    display: "flex",
-    flexDirection: "column",
-    position: "relative",
-    ...DEFAULT_STYLES.sizing,
-    ...DEFAULT_STYLES.container,
-    ...DEFAULT_STYLES.vstacks,
-  },
-  [AddItemKey.grid]: {
-    ...DEFAULT_STYLES.sizing,
-    ...DEFAULT_STYLES.container,
-  },
-  [AddItemKey.section]: {
-    position: "relative",
-    width: CONTENT_LAYOUT_FULL_BLEED,
-    ...CONTENT_LAYOUT_INITIALS,
-    ...DEFAULT_STYLES.container,
-    paddingLeft: "0",
-    paddingRight: "0",
-  },
-  [AddItemKey.stack]: {
-    display: "flex",
-    position: "relative",
-    alignItems: "stretch",
-    justifyContent: "flex-start",
-    ...DEFAULT_STYLES.sizing,
-    ...DEFAULT_STYLES.container,
-  },
-  [AddItemKey.text]: {
-    position: "relative",
-    ...DEFAULT_STYLES.sizing,
-    ...DEFAULT_STYLES.text,
-  },
-  [AddItemKey.image]: {},
-  [AddItemKey.icon]: {},
-  [AddItemKey.link]: {},
-  [AddItemKey.button]: {},
-  [AddItemKey.textbox]: {
-    ...DEFAULT_STYLES.sizing,
-  },
-  [AddItemKey.textarea]: {
-    ...DEFAULT_STYLES.sizing,
-  },
-  [AddItemKey.password]: {
-    ...DEFAULT_STYLES.sizing,
-  },
-  [AddItemKey.heading]: {
-    ...DEFAULT_STYLES.sizing,
-    ...DEFAULT_STYLES.text,
-  },
-  [AddItemKey.columns]: {
-    ...DEFAULT_STYLES.container,
-  },
-  [AddItemKey.componentFrame]: {
-    ...DEFAULT_STYLES.vstacks,
-    width: "stretch",
-    height: "wrap",
-  },
-  [AddItemKey.pageFrame]: {
-    ...DEFAULT_STYLES.vstacks,
-  },
-  [WrapItemKey.hstack]: {
-    display: "flex",
-    flexDirection: "row",
-    position: "relative",
-    alignItems: "stretch",
-    justifyContent: "flex-start",
-  },
-  [WrapItemKey.vstack]: {
-    display: "flex",
-    flexDirection: "column",
-    position: "relative",
-    alignItems: "center",
-    justifyContent: "flex-start",
-  },
-};
+export type AddItemPrefs = Record<AddItemKey, RuleSet>;
 
-export const getSimplifiedStyles = (itemKey: AddItemKey | WrapItemKey) => {
+function ruleSetToStyles(rs: RuleSet) {
+  return mapKeys(rs.values, (_, key) => camelCase(key));
+}
+
+function makeDefaultStylesByItem(
+  prefs: AddItemPrefs | undefined
+): Partial<Record<AddItemKey | WrapItemKey, any>> {
+  const maybeStyles = (key: AddItemKey, defaults: Record<string, string>) => {
+    if (prefs?.[key]) {
+      const styles = ruleSetToStyles(prefs[key]);
+      if (!isEmpty(styles)) {
+        return styles;
+      }
+    }
+    return defaults;
+  };
+  return {
+    [AddItemKey.box]: {
+      position: "relative",
+      display: "block",
+      ...maybeStyles(AddItemKey.box, {
+        ...DEFAULT_INITIAL_STYLES.sizing,
+        ...DEFAULT_INITIAL_STYLES.container,
+      }),
+    },
+    [AddItemKey.hstack]: {
+      display: "flex",
+      flexDirection: "row",
+      position: "relative",
+      alignItems: "stretch",
+      justifyContent: "flex-start",
+      ...maybeStyles(AddItemKey.hstack, {
+        ...DEFAULT_INITIAL_STYLES.sizing,
+        ...DEFAULT_INITIAL_STYLES.container,
+      }),
+    },
+    [AddItemKey.vstack]: {
+      display: "flex",
+      flexDirection: "column",
+      position: "relative",
+      ...maybeStyles(AddItemKey.vstack, {
+        ...DEFAULT_INITIAL_STYLES.sizing,
+        ...DEFAULT_INITIAL_STYLES.container,
+        ...DEFAULT_INITIAL_STYLES.vstacks,
+      }),
+    },
+    [AddItemKey.grid]: {
+      display: "grid",
+      ...maybeStyles(AddItemKey.grid, {
+        ...DEFAULT_INITIAL_STYLES.sizing,
+        ...DEFAULT_INITIAL_STYLES.container,
+      }),
+    },
+    [AddItemKey.section]: {
+      position: "relative",
+      width: CONTENT_LAYOUT_FULL_BLEED,
+      ...CONTENT_LAYOUT_INITIALS,
+      ...maybeStyles(AddItemKey.section, {
+        paddingLeft: "0",
+        paddingRight: "0",
+      }),
+    },
+    [AddItemKey.stack]: {
+      display: "flex",
+      position: "relative",
+      alignItems: "stretch",
+      justifyContent: "flex-start",
+      ...maybeStyles(AddItemKey.stack, {
+        ...DEFAULT_INITIAL_STYLES.sizing,
+        ...DEFAULT_INITIAL_STYLES.container,
+      }),
+    },
+    [AddItemKey.text]: {
+      position: "relative",
+      ...DEFAULT_INITIAL_STYLES.sizing,
+      ...DEFAULT_INITIAL_STYLES.text,
+    },
+    [AddItemKey.image]: {},
+    [AddItemKey.icon]: {},
+    [AddItemKey.link]: {},
+    [AddItemKey.button]: {},
+    [AddItemKey.textbox]: {
+      ...DEFAULT_INITIAL_STYLES.sizing,
+    },
+    [AddItemKey.textarea]: {
+      ...DEFAULT_INITIAL_STYLES.sizing,
+    },
+    [AddItemKey.password]: {
+      ...DEFAULT_INITIAL_STYLES.sizing,
+    },
+    [AddItemKey.heading]: {
+      ...DEFAULT_INITIAL_STYLES.sizing,
+      ...DEFAULT_INITIAL_STYLES.text,
+    },
+    [AddItemKey.columns]: {
+      ...maybeStyles(AddItemKey.columns, {
+        ...DEFAULT_INITIAL_STYLES.sizing,
+        ...DEFAULT_INITIAL_STYLES.container,
+      }),
+    },
+    [AddItemKey.componentFrame]: {
+      ...DEFAULT_INITIAL_STYLES.vstacks,
+      width: "stretch",
+      height: "wrap",
+    },
+    [AddItemKey.pageFrame]: {
+      ...DEFAULT_INITIAL_STYLES.vstacks,
+    },
+    [WrapItemKey.hstack]: {
+      display: "flex",
+      flexDirection: "row",
+      position: "relative",
+      alignItems: "stretch",
+      justifyContent: "flex-start",
+    },
+    [WrapItemKey.vstack]: {
+      display: "flex",
+      flexDirection: "column",
+      position: "relative",
+      alignItems: "center",
+      justifyContent: "flex-start",
+    },
+  };
+}
+
+export const getSimplifiedStyles = (
+  itemKey: AddItemKey | WrapItemKey,
+  prefs: AddItemPrefs | undefined
+) => {
   if (!DEVFLAGS.simplifiedLayout) {
     return {};
   }
-  return getDefaultStyles(itemKey);
+  return getDefaultStyles(itemKey, prefs);
 };
 
-export function getDefaultStyles(itemKey: AddItemKey | WrapItemKey) {
-  const sty = DEFAULT_STYLES_BY_ITEM[itemKey] || {};
-  if (itemKey === AddItemKey.text || itemKey === AddItemKey.heading) {
-    sty.maxWidth = "100%";
-  }
-  return sty;
+export function getDefaultStyles(
+  itemKey: AddItemKey | WrapItemKey,
+  prefs: AddItemPrefs | undefined
+) {
+  return makeDefaultStylesByItem(prefs)[itemKey] || {};
 }

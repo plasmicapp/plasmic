@@ -54,7 +54,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .addDrawerItem__gOkt:global(.__wab_instance) {
@@ -79,7 +78,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .appendButton:global(.__wab_instance) {
@@ -99,7 +97,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img__xTec {
@@ -109,9 +106,6 @@
   min-width: 0;
 }
 .img__xTec > picture > img {
-  object-fit: cover;
-}
-.img__xTec > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .listSectionSeparator__shd2:global(.__wab_instance) {
@@ -145,7 +139,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .addDrawerItem___7GMI:global(.__wab_instance) {
@@ -170,7 +163,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .iconButton__xIblo:global(.__wab_instance) {
@@ -190,7 +182,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img__hWsla {
@@ -200,9 +191,6 @@
   min-width: 0;
 }
 .img__hWsla > picture > img {
-  object-fit: cover;
-}
-.img__hWsla > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .addDrawerItem__jtA5P:global(.__wab_instance) {
@@ -227,7 +215,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .iconButton__wvc16:global(.__wab_instance) {
@@ -247,7 +234,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img__khVaZ {
@@ -257,9 +243,6 @@
   min-width: 0;
 }
 .img__khVaZ > picture > img {
-  object-fit: cover;
-}
-.img__khVaZ > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .listSectionSeparator__tnazP:global(.__wab_instance) {
@@ -293,7 +276,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .addDrawerItem___3UHn:global(.__wab_instance) {
@@ -318,7 +300,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .iconButton__biqL:global(.__wab_instance) {
@@ -338,7 +319,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img___2EpwU {
@@ -348,9 +328,6 @@
   min-width: 0;
 }
 .img___2EpwU > picture > img {
-  object-fit: cover;
-}
-.img___2EpwU > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .addDrawerItem__g1BHu:global(.__wab_instance) {
@@ -375,7 +352,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .iconButton__fSn7A:global(.__wab_instance) {
@@ -395,7 +371,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img__yv4GX {
@@ -405,9 +380,6 @@
   min-width: 0;
 }
 .img__yv4GX > picture > img {
-  object-fit: cover;
-}
-.img__yv4GX > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .addDrawerItem__ebXz:global(.__wab_instance) {
@@ -432,7 +404,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .iconButton__nCSai:global(.__wab_instance) {
@@ -452,7 +423,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img__cpYaG {
@@ -462,9 +432,6 @@
   min-width: 0;
 }
 .img__cpYaG > picture > img {
-  object-fit: cover;
-}
-.img__cpYaG > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .addDrawerItem__bciD9:global(.__wab_instance) {
@@ -489,7 +456,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .iconButton__auUnh:global(.__wab_instance) {
@@ -509,7 +475,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img__sU7Hz {
@@ -519,9 +484,6 @@
   min-width: 0;
 }
 .img__sU7Hz > picture > img {
-  object-fit: cover;
-}
-.img__sU7Hz > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .addDrawerItem__mpPMh:global(.__wab_instance) {
@@ -546,7 +508,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .iconButton__pC6Uv:global(.__wab_instance) {
@@ -566,7 +527,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img__qyrgv {
@@ -576,9 +536,6 @@
   min-width: 0;
 }
 .img__qyrgv > picture > img {
-  object-fit: cover;
-}
-.img__qyrgv > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .addDrawerItem__ybvgR:global(.__wab_instance) {
@@ -603,7 +560,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .iconButton__cnN2:global(.__wab_instance) {
@@ -623,7 +579,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img__rFqTa {
@@ -633,9 +588,6 @@
   min-width: 0;
 }
 .img__rFqTa > picture > img {
-  object-fit: cover;
-}
-.img__rFqTa > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .listSectionSeparator__axDp:global(.__wab_instance) {
@@ -669,7 +621,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .addDrawerItem___03X7:global(.__wab_instance) {
@@ -694,7 +645,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .iconButton__aZjZc:global(.__wab_instance) {
@@ -714,7 +664,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img___2Kt2R {
@@ -724,9 +673,6 @@
   min-width: 0;
 }
 .img___2Kt2R > picture > img {
-  object-fit: cover;
-}
-.img___2Kt2R > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .addDrawerItem__e8NG:global(.__wab_instance) {
@@ -751,7 +697,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .iconButton__evXdY:global(.__wab_instance) {
@@ -771,7 +716,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img__nqom6 {
@@ -781,9 +725,6 @@
   min-width: 0;
 }
 .img__nqom6 > picture > img {
-  object-fit: cover;
-}
-.img__nqom6 > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .listSectionSeparator___6Uip:global(.__wab_instance) {
@@ -817,7 +758,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .addDrawerItem__d08Mt:global(.__wab_instance) {
@@ -842,7 +782,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .iconButton__b4TF:global(.__wab_instance) {
@@ -862,7 +801,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img__jf5Tn {
@@ -872,9 +810,6 @@
   min-width: 0;
 }
 .img__jf5Tn > picture > img {
-  object-fit: cover;
-}
-.img__jf5Tn > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .addDrawerItem___9DKx:global(.__wab_instance) {
@@ -899,7 +834,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .iconButton__rimuA:global(.__wab_instance) {
@@ -919,7 +853,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img__sI4 {
@@ -929,9 +862,6 @@
   min-width: 0;
 }
 .img__sI4 > picture > img {
-  object-fit: cover;
-}
-.img__sI4 > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .addDrawerItem___2PtF9:global(.__wab_instance) {
@@ -956,7 +886,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .iconButton__moS4:global(.__wab_instance) {
@@ -976,7 +905,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img___0A4Xc {
@@ -986,9 +914,6 @@
   min-width: 0;
 }
 .img___0A4Xc > picture > img {
-  object-fit: cover;
-}
-.img___0A4Xc > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .addDrawerItem__pQm3H:global(.__wab_instance) {
@@ -1013,7 +938,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .iconButton__qJupl:global(.__wab_instance) {
@@ -1033,7 +957,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img___5ABvB {
@@ -1043,9 +966,6 @@
   min-width: 0;
 }
 .img___5ABvB > picture > img {
-  object-fit: cover;
-}
-.img___5ABvB > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .addDrawerItem__mzba:global(.__wab_instance) {
@@ -1070,7 +990,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .iconButton__xnoVz:global(.__wab_instance) {
@@ -1090,7 +1009,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img__rUtn5 {
@@ -1100,9 +1018,6 @@
   min-width: 0;
 }
 .img__rUtn5 > picture > img {
-  object-fit: cover;
-}
-.img__rUtn5 > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .addDrawerItem__reimP:global(.__wab_instance) {
@@ -1127,7 +1042,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .iconButton__l4VQp:global(.__wab_instance) {
@@ -1147,7 +1061,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img__v9RgC {
@@ -1157,9 +1070,6 @@
   min-width: 0;
 }
 .img__v9RgC > picture > img {
-  object-fit: cover;
-}
-.img__v9RgC > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .listSectionSeparator___5TREf:global(.__wab_instance) {
@@ -1193,7 +1103,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .addDrawerItem___3FB9B:global(.__wab_instance) {
@@ -1218,7 +1127,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .iconButton__zw5Ex:global(.__wab_instance) {
@@ -1238,7 +1146,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img___3B4ZT {
@@ -1248,9 +1155,6 @@
   min-width: 0;
 }
 .img___3B4ZT > picture > img {
-  object-fit: cover;
-}
-.img___3B4ZT > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .listSectionSeparator__pHgDl:global(.__wab_instance) {
@@ -1284,7 +1188,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .addDrawerItem__aItZi:global(.__wab_instance) {
@@ -1309,7 +1212,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .appendButton232222222222322:global(.__wab_instance) {
@@ -1329,7 +1231,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img__gKhIs {
@@ -1339,9 +1240,6 @@
   min-width: 0;
 }
 .img__gKhIs > picture > img {
-  object-fit: cover;
-}
-.img__gKhIs > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .addDrawerItem___9WRqQ:global(.__wab_instance) {
@@ -1366,7 +1264,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .appendButton2322222222223222:global(.__wab_instance) {
@@ -1386,7 +1283,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img__mJt6E {
@@ -1396,9 +1292,6 @@
   min-width: 0;
 }
 .img__mJt6E > picture > img {
-  object-fit: cover;
-}
-.img__mJt6E > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .addDrawerItem__gu03X:global(.__wab_instance) {
@@ -1423,7 +1316,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .appendButton23222222222232222:global(.__wab_instance) {
@@ -1443,7 +1335,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img__gxhnB {
@@ -1453,9 +1344,6 @@
   min-width: 0;
 }
 .img__gxhnB > picture > img {
-  object-fit: cover;
-}
-.img__gxhnB > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .addDrawerItem__wMAol:global(.__wab_instance) {
@@ -1480,7 +1368,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .appendButton232222222222322222:global(.__wab_instance) {
@@ -1500,7 +1387,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img__bmZrC {
@@ -1510,9 +1396,6 @@
   min-width: 0;
 }
 .img__bmZrC > picture > img {
-  object-fit: cover;
-}
-.img__bmZrC > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .addDrawerItem__zeOZs:global(.__wab_instance) {
@@ -1537,7 +1420,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .appendButton23222222222232:global(.__wab_instance) {
@@ -1557,7 +1439,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img__aGtDa {
@@ -1567,9 +1448,6 @@
   min-width: 0;
 }
 .img__aGtDa > picture > img {
-  object-fit: cover;
-}
-.img__aGtDa > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .addDrawerItem__aw21I:global(.__wab_instance) {
@@ -1594,7 +1472,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .appendButton232222222222:global(.__wab_instance) {
@@ -1614,7 +1491,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img__oUhu {
@@ -1624,9 +1500,6 @@
   min-width: 0;
 }
 .img__oUhu > picture > img {
-  object-fit: cover;
-}
-.img__oUhu > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .addDrawerItem__gx59S:global(.__wab_instance) {
@@ -1651,7 +1524,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .appendButton22:global(.__wab_instance) {
@@ -1671,7 +1543,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img__bdrO6 {
@@ -1681,8 +1552,5 @@
   min-width: 0;
 }
 .img__bdrO6 > picture > img {
-  object-fit: cover;
-}
-.img__bdrO6 > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }

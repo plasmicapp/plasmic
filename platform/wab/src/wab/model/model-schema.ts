@@ -253,6 +253,8 @@ Theme
   defaultStyle: Mixin
   styles: [ThemeStyle]
   layout: ThemeLayoutSettings?
+  # Default styles when new elements are added
+  addItemPrefs: Map[String, RuleSet]
   # whether this theme is active or not. At most one theme is active.
   @Const active: Bool
   # TBD: add tokens support to Theme.

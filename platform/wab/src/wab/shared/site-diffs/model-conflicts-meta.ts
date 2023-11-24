@@ -570,6 +570,7 @@ export const modelConflictsMeta: ModelConflictsMeta = {
         ]),
     },
     layout: "contents",
+    addItemPrefs: "contents",
   },
   ThemeStyle: {
     selector: "unexpected",

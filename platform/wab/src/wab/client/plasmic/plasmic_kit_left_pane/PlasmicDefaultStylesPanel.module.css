@@ -52,9 +52,6 @@
   max-width: 100%;
   min-width: 0;
 }
-.freeBoxshowPseudoClass {
-  display: flex;
-}
 .text__amsGc {
   font-weight: 500;
 }
@@ -107,11 +104,9 @@
   min-height: 16px;
   width: 16px;
   height: 16px;
-  display: block;
 }
 .text__oqmBw {
   position: relative;
-  display: block;
 }
 .option:global(.__wab_instance) {
   max-width: 100%;

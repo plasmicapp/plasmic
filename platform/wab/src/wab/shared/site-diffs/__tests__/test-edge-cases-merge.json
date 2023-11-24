@@ -5710,7 +5710,8 @@
             ],
             "layout": { "__ref": "53898073" },
             "active": true,
-            "__type": "Theme"
+            "__type": "Theme",
+            "addItemPrefs": {}
           },
           "53897917": {
             "name": "Default Typography",
@@ -6105,7 +6106,7 @@
           "53898074": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "225-release-global-actions"
+        "version": "226-add-item-prefs"
       },
       "projectId": "5txi3zd6hPLtbkzbV8p6jB",
       "version": "0.0.1",
@@ -11761,7 +11762,8 @@
             ],
             "layout": { "__ref": "53898073" },
             "active": true,
-            "__type": "Theme"
+            "__type": "Theme",
+            "addItemPrefs": {}
           },
           "53897917": {
             "name": "Default Typography",
@@ -12275,7 +12277,7 @@
           "63532015": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "225-release-global-actions"
+        "version": "226-add-item-prefs"
       }
     },
     {
@@ -17921,7 +17923,8 @@
             ],
             "layout": { "__ref": "53898073" },
             "active": true,
-            "__type": "Theme"
+            "__type": "Theme",
+            "addItemPrefs": {}
           },
           "53897917": {
             "name": "Default Typography",
@@ -18529,7 +18532,7 @@
           }
         },
         "deps": [],
-        "version": "225-release-global-actions"
+        "version": "226-add-item-prefs"
       }
     }
   ]

@@ -82,13 +82,7 @@ export interface DefaultPublishDialogContentProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicPublishDialogContent__RenderFunc(props: {
   variants: PlasmicPublishDialogContent__VariantsArgs;
@@ -210,7 +204,7 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
                 }
               )}
               src={
-                "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAxNiAxNiIgaGVpZ2h0PSIxNiIgd2lkdGg9IjE2Ij4KPHBhdGggZmlsbD0iI0JDQzBDNCIgZD0iTTQuOTM1OSAzLjk5MzA2TDMuOTkzMDkgNC45MzU4N0w3LjA1NzIxIDhMMy45OTMwOCAxMS4wNjQxTDQuOTM1ODkgMTIuMDA2OUw4LjAwMDAyIDguOTQyODFMMTEuMDY0MiAxMi4wMDY5TDEyLjAwNyAxMS4wNjQxTDguOTQyODMgOEwxMi4wMDcgNC45MzU4N0wxMS4wNjQyIDMuOTkzMDZMOC4wMDAwMiA3LjA1NzE5TDQuOTM1OSAzLjk5MzA2WiIgY2xpcC1ydWxlPSJldmVub2RkIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz4KPC9zdmc+Cg==" as const
+                "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAxNiAxNiIgaGVpZ2h0PSIxNiIgd2lkdGg9IjE2Ij4KPHBhdGggZmlsbD0iI0JDQzBDNCIgZD0iTTQuOTM1OSAzLjk5MzA2TDMuOTkzMDkgNC45MzU4N0w3LjA1NzIxIDhMMy45OTMwOCAxMS4wNjQxTDQuOTM1ODkgMTIuMDA2OUw4LjAwMDAyIDguOTQyODFMMTEuMDY0MiAxMi4wMDY5TDEyLjAwNyAxMS4wNjQxTDguOTQyODMgOEwxMi4wMDcgNC45MzU4N0wxMS4wNjQyIDMuOTkzMDZMOC4wMDAwMiA3LjA1NzE5TDQuOTM1OSAzLjk5MzA2WiIgY2xpcC1ydWxlPSJldmVub2RkIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz4KPC9zdmc+Cg=="
               }
             />
           </p.Stack>
@@ -274,108 +268,93 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
             >
               {"Version number"}
             </div>
-            {true ? (
-              <div className={classNames(projectcss.all, sty.freeBox__epD6O)}>
-                {true ? (
-                  <div
-                    className={classNames(projectcss.all, sty.freeBox__iv4LQ)}
-                  >
-                    {p.renderPlasmicSlot({
-                      defaultContents: "1.0.0",
-                      value: args.versionNumber,
-                      className: classNames(sty.slotTargetVersionNumber),
-                    })}
-                  </div>
-                ) : null}
-                <div
-                  data-plasmic-name={"hint"}
-                  data-plasmic-override={overrides.hint}
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.__wab_text,
-                    sty.hint,
-                    {
-                      [sty.hintstate_disabled]: hasVariant(
-                        $state,
-                        "state",
-                        "disabled"
-                      ),
-                    }
-                  )}
-                >
-                  {
-                    "Version numbers are automatically calculated using semantic versioning."
-                  }
-                </div>
+            <div className={classNames(projectcss.all, sty.freeBox__epD6O)}>
+              <div className={classNames(projectcss.all, sty.freeBox__iv4LQ)}>
+                {p.renderPlasmicSlot({
+                  defaultContents: "1.0.0",
+                  value: args.versionNumber,
+                  className: classNames(sty.slotTargetVersionNumber),
+                })}
               </div>
-            ) : null}
+              <div
+                data-plasmic-name={"hint"}
+                data-plasmic-override={overrides.hint}
+                className={classNames(
+                  projectcss.all,
+                  projectcss.__wab_text,
+                  sty.hint,
+                  {
+                    [sty.hintstate_disabled]: hasVariant(
+                      $state,
+                      "state",
+                      "disabled"
+                    ),
+                  }
+                )}
+              >
+                {
+                  "Version numbers are automatically calculated using semantic versioning."
+                }
+              </div>
+            </div>
           </div>
         ) : null}
-        {(hasVariant($state, "state", "nochanges") ? true : true) ? (
+        <div
+          className={classNames(projectcss.all, sty.freeBox___67EiX, {
+            [sty.freeBoxstate_disabled___67EiXc5URt]: hasVariant(
+              $state,
+              "state",
+              "disabled"
+            ),
+            [sty.freeBoxstate_nochanges___67EiXxcr0E]: hasVariant(
+              $state,
+              "state",
+              "nochanges"
+            ),
+          })}
+        >
           <div
-            className={classNames(projectcss.all, sty.freeBox___67EiX, {
-              [sty.freeBoxstate_disabled___67EiXc5URt]: hasVariant(
+            className={classNames(
+              projectcss.all,
+              projectcss.__wab_text,
+              sty.text__lY3Fv,
+              {
+                [sty.textstate_nochanges__lY3Fvxcr0E]: hasVariant(
+                  $state,
+                  "state",
+                  "nochanges"
+                ),
+              }
+            )}
+          >
+            {"Description"}
+          </div>
+          <input
+            data-plasmic-name={"title"}
+            data-plasmic-override={overrides.title}
+            className={classNames(projectcss.all, projectcss.input, sty.title, {
+              [sty.titlestate_disabled]: hasVariant(
                 $state,
                 "state",
                 "disabled"
               ),
-              [sty.freeBoxstate_nochanges___67EiXxcr0E]: hasVariant(
+              [sty.titlestate_nochanges]: hasVariant(
                 $state,
                 "state",
                 "nochanges"
               ),
             })}
-          >
-            <div
-              className={classNames(
-                projectcss.all,
-                projectcss.__wab_text,
-                sty.text__lY3Fv,
-                {
-                  [sty.textstate_nochanges__lY3Fvxcr0E]: hasVariant(
-                    $state,
-                    "state",
-                    "nochanges"
-                  ),
-                }
-              )}
-            >
-              {"Description"}
-            </div>
-            {(hasVariant($state, "state", "nochanges") ? true : true) ? (
-              <input
-                data-plasmic-name={"title"}
-                data-plasmic-override={overrides.title}
-                className={classNames(
-                  projectcss.all,
-                  projectcss.input,
-                  sty.title,
-                  {
-                    [sty.titlestate_disabled]: hasVariant(
-                      $state,
-                      "state",
-                      "disabled"
-                    ),
-                    [sty.titlestate_nochanges]: hasVariant(
-                      $state,
-                      "state",
-                      "nochanges"
-                    ),
-                  }
-                )}
-                disabled={
-                  hasVariant($state, "state", "disabled") ? true : undefined
-                }
-                placeholder={"Description (optional)…" as const}
-                ref={(ref) => {
-                  $refs["title"] = ref;
-                }}
-                size={1 as const}
-                type={"text" as const}
-              />
-            ) : null}
-          </div>
-        ) : null}
+            disabled={
+              hasVariant($state, "state", "disabled") ? true : undefined
+            }
+            placeholder={"Description (optional)…"}
+            ref={(ref) => {
+              $refs["title"] = ref;
+            }}
+            size={1}
+            type={"text"}
+          />
+        </div>
         {(hasVariant($state, "state", "nochanges") ? false : true) ? (
           <div
             data-plasmic-name={"publishHint"}
@@ -410,7 +389,7 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
                       sty.img
                     )}
                     src={
-                      "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAxNiAxNiIgaGVpZ2h0PSIxNiIgd2lkdGg9IjE2Ij4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwKSI+CjxwYXRoIGZpbGw9IiM2RUQxRkYiIGQ9Ik05LjM2Nzc0IDMuMzMzMzRIMi42NjY2N0MyLjI5ODQ4IDMuMzMzMzQgMiAzLjYzMTgyIDIgNC4wMDAwMVYxMy4zMzMzQzIgMTMuNzAxNSAyLjI5ODQ4IDE0IDIuNjY2NjcgMTRIMTJDMTIuMzY4MiAxNCAxMi42NjY3IDEzLjcwMTUgMTIuNjY2NyAxMy4zMzMzVjYuNjM0MDhMMTEuMzMzMyA3Ljk2NzQxVjEyLjY2NjdIMy4zMzMzM1Y0LjY2NjY4SDguMDM0NEw5LjM2Nzc0IDMuMzMzMzRaIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPgo8cmVjdCBmaWxsPSIjNkVEMUZGIiB0cmFuc2Zvcm09InJvdGF0ZSgxMzUgMTQuMzcwOSAyLjYwOTc3KSIgaGVpZ2h0PSIxLjMzMzMzIiB3aWR0aD0iMTAuNjY2NyIgeT0iMi42MDk3NyIgeD0iMTQuMzcwOSIvPgo8cGF0aCBmaWxsPSIjNkVEMUZGIiBkPSJNMTAuNjQwMiAxLjkwMjY4QzEwLjY0MDIgMS41MzQ0OSAxMC45Mzg2IDEuMjM2MDEgMTEuMzA2OCAxLjIzNjAxTDE0LjgwMTkgMS4yMzYwMUwxNC44MDE5IDQuNzMxMTFDMTQuODAxOSA1LjA5OTMgMTQuNTAzNCA1LjM5Nzc3IDE0LjEzNTMgNS4zOTc3N0MxMy43NjcxIDUuMzk3NzcgMTMuNDY4NiA1LjA5OTMgMTMuNDY4NiA0LjczMTExTDEzLjQ2ODYgMi41NjkzNUwxMS4zMDY4IDIuNTY5MzVDMTAuOTM4NiAyLjU2OTM1IDEwLjY0MDIgMi4yNzA4NyAxMC42NDAyIDEuOTAyNjhaIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPgo8L2c+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAwIj4KPHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0wIDBIMTZWMTZIMFYwWiIvPgo8L2NsaXBQYXRoPgo8L2RlZnM+Cjwvc3ZnPgo=" as const
+                      "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAxNiAxNiIgaGVpZ2h0PSIxNiIgd2lkdGg9IjE2Ij4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwKSI+CjxwYXRoIGZpbGw9IiM2RUQxRkYiIGQ9Ik05LjM2Nzc0IDMuMzMzMzRIMi42NjY2N0MyLjI5ODQ4IDMuMzMzMzQgMiAzLjYzMTgyIDIgNC4wMDAwMVYxMy4zMzMzQzIgMTMuNzAxNSAyLjI5ODQ4IDE0IDIuNjY2NjcgMTRIMTJDMTIuMzY4MiAxNCAxMi42NjY3IDEzLjcwMTUgMTIuNjY2NyAxMy4zMzMzVjYuNjM0MDhMMTEuMzMzMyA3Ljk2NzQxVjEyLjY2NjdIMy4zMzMzM1Y0LjY2NjY4SDguMDM0NEw5LjM2Nzc0IDMuMzMzMzRaIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPgo8cmVjdCBmaWxsPSIjNkVEMUZGIiB0cmFuc2Zvcm09InJvdGF0ZSgxMzUgMTQuMzcwOSAyLjYwOTc3KSIgaGVpZ2h0PSIxLjMzMzMzIiB3aWR0aD0iMTAuNjY2NyIgeT0iMi42MDk3NyIgeD0iMTQuMzcwOSIvPgo8cGF0aCBmaWxsPSIjNkVEMUZGIiBkPSJNMTAuNjQwMiAxLjkwMjY4QzEwLjY0MDIgMS41MzQ0OSAxMC45Mzg2IDEuMjM2MDEgMTEuMzA2OCAxLjIzNjAxTDE0LjgwMTkgMS4yMzYwMUwxNC44MDE5IDQuNzMxMTFDMTQuODAxOSA1LjA5OTMgMTQuNTAzNCA1LjM5Nzc3IDE0LjEzNTMgNS4zOTc3N0MxMy43NjcxIDUuMzk3NzcgMTMuNDY4NiA1LjA5OTMgMTMuNDY4NiA0LjczMTExTDEzLjQ2ODYgMi41NjkzNUwxMS4zMDY4IDIuNTY5MzVDMTAuOTM4NiAyLjU2OTM1IDEwLjY0MDIgMi4yNzA4NyAxMC42NDAyIDEuOTAyNjhaIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPgo8L2c+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAwIj4KPHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0wIDBIMTZWMTZIMFYwWiIvPgo8L2NsaXBQYXRoPgo8L2RlZnM+Cjwvc3ZnPgo="
                     }
                   />
                 }
@@ -447,7 +426,7 @@ function PlasmicPublishDialogContent__RenderFunc(props: {
                 role={"img"}
               />
             }
-            size={"wide" as const}
+            size={"wide"}
             startIcon={
               false ? (
                 <TrashIcon
@@ -533,7 +512,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicPublishDialogContent__ArgProps,
           internalVariantPropNames: PlasmicPublishDialogContent__VariantProps,
         }),

@@ -96,13 +96,7 @@ export interface DefaultLeftGeneralTokensPanelProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
   variants: PlasmicLeftGeneralTokensPanel__VariantsArgs;
@@ -137,7 +131,7 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
         path: "globalVariantSelect.value",
         type: "private",
         variableType: "text",
-        initFunc: ({ $props, $state, $queries, $ctx }) => "" as const,
+        initFunc: ({ $props, $state, $queries, $ctx }) => "",
       },
     ],
     [$props, $ctx, $refs]
@@ -200,7 +194,7 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
                 role={"img"}
               />
             }
-            size={"wide" as const}
+            size={"wide"}
             startIcon={
               <DownloadsvgIcon
                 className={classNames(projectcss.all, sty.svg__e3TfD)}
@@ -226,186 +220,175 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
         hasTitleActions={true}
         title={"Style Tokens"}
         titleActions={
-          true ? (
-            <p.Stack
-              as={"div"}
-              data-plasmic-name={"globalVariantsSelectContainer"}
-              data-plasmic-override={overrides.globalVariantsSelectContainer}
-              hasGap={true}
+          <p.Stack
+            as={"div"}
+            data-plasmic-name={"globalVariantsSelectContainer"}
+            data-plasmic-override={overrides.globalVariantsSelectContainer}
+            hasGap={true}
+            className={classNames(
+              projectcss.all,
+              sty.globalVariantsSelectContainer
+            )}
+          >
+            <div
               className={classNames(
                 projectcss.all,
-                sty.globalVariantsSelectContainer
+                projectcss.__wab_text,
+                sty.text__h2R,
+                {
+                  [sty.textisTargeting__h2RWy5IQ]: hasVariant(
+                    $state,
+                    "isTargeting",
+                    "isTargeting"
+                  ),
+                }
               )}
             >
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__h2R,
-                  {
-                    [sty.textisTargeting__h2RWy5IQ]: hasVariant(
-                      $state,
-                      "isTargeting",
-                      "isTargeting"
-                    ),
-                  }
-                )}
-              >
-                {"Target:"}
-              </div>
-              <Select
-                data-plasmic-name={"globalVariantSelect"}
-                data-plasmic-override={overrides.globalVariantSelect}
-                className={classNames(
-                  "__wab_instance",
-                  sty.globalVariantSelect
-                )}
-                icon={
-                  true ? (
-                    <PlussvgIcon
-                      className={classNames(projectcss.all, sty.svg__ugBmB)}
-                      role={"img"}
-                    />
-                  ) : null
-                }
-                name={"" as const}
-                onChange={(...eventArgs) => {
-                  p.generateStateOnChangeProp($state, [
-                    "globalVariantSelect",
-                    "value",
-                  ])(eventArgs[0]);
-                }}
-                placeholder={
-                  true ? (
-                    <div
-                      className={classNames(
-                        projectcss.all,
-                        projectcss.__wab_text,
-                        sty.text__hDqR6
-                      )}
-                    >
-                      {"Base"}
-                    </div>
-                  ) : null
-                }
-                size={"tiny" as const}
-                value={p.generateStateValueProp($state, [
+              {"Target:"}
+            </div>
+            <Select
+              data-plasmic-name={"globalVariantSelect"}
+              data-plasmic-override={overrides.globalVariantSelect}
+              className={classNames("__wab_instance", sty.globalVariantSelect)}
+              icon={
+                <PlussvgIcon
+                  className={classNames(projectcss.all, sty.svg__ugBmB)}
+                  role={"img"}
+                />
+              }
+              name={""}
+              onChange={(...eventArgs) => {
+                p.generateStateOnChangeProp($state, [
                   "globalVariantSelect",
                   "value",
-                ])}
-              >
-                <Select__Option
-                  data-plasmic-name={"option"}
-                  data-plasmic-override={overrides.option}
-                  className={classNames("__wab_instance", sty.option)}
-                  value={"base" as const}
+                ])(eventArgs[0]);
+              }}
+              placeholder={
+                <div
+                  className={classNames(
+                    projectcss.all,
+                    projectcss.__wab_text,
+                    sty.text__hDqR6
+                  )}
                 >
-                  <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text__qa0Lm
-                    )}
-                  >
-                    {"Base"}
-                  </div>
-                </Select__Option>
-              </Select>
-            </p.Stack>
-          ) : null
+                  {"Base"}
+                </div>
+              }
+              size={"tiny"}
+              value={p.generateStateValueProp($state, [
+                "globalVariantSelect",
+                "value",
+              ])}
+            >
+              <Select__Option
+                data-plasmic-name={"option"}
+                data-plasmic-override={overrides.option}
+                className={classNames("__wab_instance", sty.option)}
+                value={"base"}
+              >
+                <div
+                  className={classNames(
+                    projectcss.all,
+                    projectcss.__wab_text,
+                    sty.text__qa0Lm
+                  )}
+                >
+                  {"Base"}
+                </div>
+              </Select__Option>
+            </Select>
+          </p.Stack>
         }
       />
 
-      {true ? (
+      <div
+        data-plasmic-name={"freeBox"}
+        data-plasmic-override={overrides.freeBox}
+        className={classNames(projectcss.all, sty.freeBox, {
+          [sty.freeBoxisTargeting]: hasVariant(
+            $state,
+            "isTargeting",
+            "isTargeting"
+          ),
+        })}
+      >
+        <TokenTypeHeader
+          data-plasmic-name={"colorTokenHeader"}
+          data-plasmic-override={overrides.colorTokenHeader}
+          tokenType={"Colors"}
+        />
+
         <div
-          data-plasmic-name={"freeBox"}
-          data-plasmic-override={overrides.freeBox}
-          className={classNames(projectcss.all, sty.freeBox, {
-            [sty.freeBoxisTargeting]: hasVariant(
-              $state,
-              "isTargeting",
-              "isTargeting"
-            ),
-          })}
-        >
-          <TokenTypeHeader
-            data-plasmic-name={"colorTokenHeader"}
-            data-plasmic-override={overrides.colorTokenHeader}
-            tokenType={"Colors"}
-          />
+          data-plasmic-name={"colorTokens"}
+          data-plasmic-override={overrides.colorTokens}
+          className={classNames(projectcss.all, sty.colorTokens)}
+        />
 
-          <div
-            data-plasmic-name={"colorTokens"}
-            data-plasmic-override={overrides.colorTokens}
-            className={classNames(projectcss.all, sty.colorTokens)}
-          />
+        <TokenTypeHeader
+          data-plasmic-name={"spacingTokenHeader"}
+          data-plasmic-override={overrides.spacingTokenHeader}
+          className={classNames("__wab_instance", sty.spacingTokenHeader)}
+          tokenType={"Spaces"}
+        />
 
-          <TokenTypeHeader
-            data-plasmic-name={"spacingTokenHeader"}
-            data-plasmic-override={overrides.spacingTokenHeader}
-            className={classNames("__wab_instance", sty.spacingTokenHeader)}
-            tokenType={"Spaces"}
-          />
+        <div
+          data-plasmic-name={"spacingTokens"}
+          data-plasmic-override={overrides.spacingTokens}
+          className={classNames(projectcss.all, sty.spacingTokens)}
+        />
 
-          <div
-            data-plasmic-name={"spacingTokens"}
-            data-plasmic-override={overrides.spacingTokens}
-            className={classNames(projectcss.all, sty.spacingTokens)}
-          />
+        <TokenTypeHeader
+          data-plasmic-name={"fontFamilyTokenHeader"}
+          data-plasmic-override={overrides.fontFamilyTokenHeader}
+          className={classNames("__wab_instance", sty.fontFamilyTokenHeader)}
+          tokenType={"Font Families"}
+        />
 
-          <TokenTypeHeader
-            data-plasmic-name={"fontFamilyTokenHeader"}
-            data-plasmic-override={overrides.fontFamilyTokenHeader}
-            className={classNames("__wab_instance", sty.fontFamilyTokenHeader)}
-            tokenType={"Font Families"}
-          />
+        <div
+          data-plasmic-name={"fontFamilyTokens"}
+          data-plasmic-override={overrides.fontFamilyTokens}
+          className={classNames(projectcss.all, sty.fontFamilyTokens)}
+        />
 
-          <div
-            data-plasmic-name={"fontFamilyTokens"}
-            data-plasmic-override={overrides.fontFamilyTokens}
-            className={classNames(projectcss.all, sty.fontFamilyTokens)}
-          />
+        <TokenTypeHeader
+          data-plasmic-name={"fontSizeTokenHeader"}
+          data-plasmic-override={overrides.fontSizeTokenHeader}
+          className={classNames("__wab_instance", sty.fontSizeTokenHeader)}
+          tokenType={"Font Sizes"}
+        />
 
-          <TokenTypeHeader
-            data-plasmic-name={"fontSizeTokenHeader"}
-            data-plasmic-override={overrides.fontSizeTokenHeader}
-            className={classNames("__wab_instance", sty.fontSizeTokenHeader)}
-            tokenType={"Font Sizes"}
-          />
+        <div
+          data-plasmic-name={"fontSizeTokens"}
+          data-plasmic-override={overrides.fontSizeTokens}
+          className={classNames(projectcss.all, sty.fontSizeTokens)}
+        />
 
-          <div
-            data-plasmic-name={"fontSizeTokens"}
-            data-plasmic-override={overrides.fontSizeTokens}
-            className={classNames(projectcss.all, sty.fontSizeTokens)}
-          />
+        <TokenTypeHeader
+          data-plasmic-name={"lineHeightTokenHeader"}
+          data-plasmic-override={overrides.lineHeightTokenHeader}
+          className={classNames("__wab_instance", sty.lineHeightTokenHeader)}
+          tokenType={"Line Heights"}
+        />
 
-          <TokenTypeHeader
-            data-plasmic-name={"lineHeightTokenHeader"}
-            data-plasmic-override={overrides.lineHeightTokenHeader}
-            className={classNames("__wab_instance", sty.lineHeightTokenHeader)}
-            tokenType={"Line Heights"}
-          />
+        <div
+          data-plasmic-name={"lineHeightTokens"}
+          data-plasmic-override={overrides.lineHeightTokens}
+          className={classNames(projectcss.all, sty.lineHeightTokens)}
+        />
 
-          <div
-            data-plasmic-name={"lineHeightTokens"}
-            data-plasmic-override={overrides.lineHeightTokens}
-            className={classNames(projectcss.all, sty.lineHeightTokens)}
-          />
+        <TokenTypeHeader
+          data-plasmic-name={"opacityTokenHeader"}
+          data-plasmic-override={overrides.opacityTokenHeader}
+          className={classNames("__wab_instance", sty.opacityTokenHeader)}
+          tokenType={"Opacities"}
+        />
 
-          <TokenTypeHeader
-            data-plasmic-name={"opacityTokenHeader"}
-            data-plasmic-override={overrides.opacityTokenHeader}
-            className={classNames("__wab_instance", sty.opacityTokenHeader)}
-            tokenType={"Opacities"}
-          />
-
-          <div
-            data-plasmic-name={"opacityTokens"}
-            data-plasmic-override={overrides.opacityTokens}
-            className={classNames(projectcss.all, sty.opacityTokens)}
-          />
-        </div>
-      ) : null}
+        <div
+          data-plasmic-name={"opacityTokens"}
+          data-plasmic-override={overrides.opacityTokens}
+          className={classNames(projectcss.all, sty.opacityTokens)}
+        />
+      </div>
     </div>
   ) as React.ReactElement | null;
 }
@@ -537,7 +520,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicLeftGeneralTokensPanel__ArgProps,
           internalVariantPropNames: PlasmicLeftGeneralTokensPanel__VariantProps,
         }),

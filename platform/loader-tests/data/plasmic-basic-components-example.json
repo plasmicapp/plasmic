@@ -62,7 +62,8 @@
           "styles": [],
           "layout": null,
           "active": true,
-          "__type": "Theme"
+          "__type": "Theme",
+          "addItemPrefs": {}
         },
         "3935062": {
           "name": "Default Typography",
@@ -1443,7 +1444,7 @@
         }
       },
       "deps": [],
-      "version": "225-release-global-actions"
+      "version": "226-add-item-prefs"
     }
   ],
   [
@@ -2236,7 +2237,8 @@
           ],
           "layout": null,
           "active": true,
-          "__type": "Theme"
+          "__type": "Theme",
+          "addItemPrefs": {}
         },
         "14792065": {
           "name": "Default Typography",
@@ -2871,7 +2873,7 @@
         }
       },
       "deps": ["46daef11-1a70-4f74-b471-12e71963588c"],
-      "version": "225-release-global-actions"
+      "version": "226-add-item-prefs"
     }
   ]
 ]

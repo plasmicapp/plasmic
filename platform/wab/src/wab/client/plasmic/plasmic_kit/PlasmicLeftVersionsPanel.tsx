@@ -77,13 +77,7 @@ export interface DefaultLeftVersionsPanelProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicLeftVersionsPanel__RenderFunc(props: {
   variants: PlasmicLeftVersionsPanel__VariantsArgs;
@@ -168,7 +162,7 @@ function PlasmicLeftVersionsPanel__RenderFunc(props: {
                 role={"img"}
               />
             }
-            size={"wide" as const}
+            size={"wide"}
             startIcon={
               <StampsvgIcon
                 className={classNames(projectcss.all, sty.svg__g3KFb)}
@@ -264,7 +258,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicLeftVersionsPanel__ArgProps,
           internalVariantPropNames: PlasmicLeftVersionsPanel__VariantProps,
         }),

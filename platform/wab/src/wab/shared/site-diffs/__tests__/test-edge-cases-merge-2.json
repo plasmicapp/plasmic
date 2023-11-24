@@ -113,7 +113,8 @@
             ],
             "layout": { "__ref": "36067165" },
             "active": true,
-            "__type": "Theme"
+            "__type": "Theme",
+            "addItemPrefs": {}
           },
           "36067009": {
             "name": "Default Typography",
@@ -2482,7 +2483,7 @@
           }
         },
         "deps": [],
-        "version": "225-release-global-actions"
+        "version": "226-add-item-prefs"
       },
       "projectId": "2YAtuqUruz4SscKrr5g25x",
       "version": "0.0.1",
@@ -2614,7 +2615,8 @@
             ],
             "layout": { "__ref": "36067165" },
             "active": true,
-            "__type": "Theme"
+            "__type": "Theme",
+            "addItemPrefs": {}
           },
           "36067009": {
             "name": "Default Typography",
@@ -4658,7 +4660,7 @@
           "53903362": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "225-release-global-actions"
+        "version": "226-add-item-prefs"
       }
     },
     {
@@ -4773,7 +4775,8 @@
             ],
             "layout": { "__ref": "36067165" },
             "active": true,
-            "__type": "Theme"
+            "__type": "Theme",
+            "addItemPrefs": {}
           },
           "36067009": {
             "name": "Default Typography",
@@ -7308,7 +7311,7 @@
           }
         },
         "deps": [],
-        "version": "225-release-global-actions"
+        "version": "226-add-item-prefs"
       }
     }
   ]

@@ -37,7 +37,6 @@
 }
 .iconInfo:global(.__wab_instance) {
   max-width: 100%;
-  display: flex;
 }
 .text__k0Tq1 {
   font-weight: 600;
@@ -76,7 +75,6 @@
 }
 .imageInfo:global(.__wab_instance) {
   max-width: 100%;
-  display: flex;
 }
 .text__hnR4J {
   font-weight: 600;

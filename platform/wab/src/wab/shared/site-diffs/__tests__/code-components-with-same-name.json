@@ -891,7 +891,8 @@
             ],
             "layout": null,
             "active": true,
-            "__type": "Theme"
+            "__type": "Theme",
+            "addItemPrefs": {}
           },
           "54658009": {
             "name": "Default Typography",
@@ -1281,7 +1282,7 @@
           }
         },
         "deps": [],
-        "version": "225-release-global-actions"
+        "version": "226-add-item-prefs"
       },
       "projectId": "cpkeUeeErCd6XAniAHq8xq",
       "version": "0.0.1",
@@ -2407,7 +2408,8 @@
             ],
             "layout": null,
             "active": true,
-            "__type": "Theme"
+            "__type": "Theme",
+            "addItemPrefs": {}
           },
           "54658009": {
             "name": "Default Typography",
@@ -2797,7 +2799,7 @@
           }
         },
         "deps": [],
-        "version": "225-release-global-actions"
+        "version": "226-add-item-prefs"
       }
     },
     {
@@ -3686,7 +3688,8 @@
             ],
             "layout": null,
             "active": true,
-            "__type": "Theme"
+            "__type": "Theme",
+            "addItemPrefs": {}
           },
           "54658009": {
             "name": "Default Typography",
@@ -4297,7 +4300,7 @@
           "55543038": { "text": ["arg3"], "__type": "TemplatedString" }
         },
         "deps": [],
-        "version": "225-release-global-actions"
+        "version": "226-add-item-prefs"
       }
     }
   ]

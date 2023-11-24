@@ -77,13 +77,7 @@ export interface DefaultLeftSplitsPanelProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicLeftSplitsPanel__RenderFunc(props: {
   variants: PlasmicLeftSplitsPanel__VariantsArgs;
@@ -137,7 +131,7 @@ function PlasmicLeftSplitsPanel__RenderFunc(props: {
                 role={"img"}
               />
             }
-            size={"wide" as const}
+            size={"wide"}
             startIcon={
               <PlussvgIcon
                 className={classNames(projectcss.all, sty.svg__va03F)}
@@ -161,57 +155,55 @@ function PlasmicLeftSplitsPanel__RenderFunc(props: {
         className={classNames(projectcss.all, sty.abContent)}
       />
 
-      {true ? (
-        <LeftPaneHeader
-          data-plasmic-name={"segmentsHeader"}
-          data-plasmic-override={overrides.segmentsHeader}
-          actions={
-            <Button
-              data-plasmic-name={"newSegmentButton"}
-              data-plasmic-override={overrides.newSegmentButton}
-              endIcon={
-                <ChevronDownsvgIcon
-                  className={classNames(projectcss.all, sty.svg__bnPy)}
-                  role={"img"}
-                />
-              }
-              size={"wide" as const}
-              startIcon={
-                <PlussvgIcon
-                  className={classNames(projectcss.all, sty.svg__eacMt)}
-                  role={"img"}
-                />
-              }
-              type={["secondary"]}
-              withIcons={["startIcon"]}
+      <LeftPaneHeader
+        data-plasmic-name={"segmentsHeader"}
+        data-plasmic-override={overrides.segmentsHeader}
+        actions={
+          <Button
+            data-plasmic-name={"newSegmentButton"}
+            data-plasmic-override={overrides.newSegmentButton}
+            endIcon={
+              <ChevronDownsvgIcon
+                className={classNames(projectcss.all, sty.svg__bnPy)}
+                role={"img"}
+              />
+            }
+            size={"wide"}
+            startIcon={
+              <PlussvgIcon
+                className={classNames(projectcss.all, sty.svg__eacMt)}
+                role={"img"}
+              />
+            }
+            type={["secondary"]}
+            withIcons={["startIcon"]}
+          >
+            <div
+              data-plasmic-name={"text"}
+              data-plasmic-override={overrides.text}
+              className={classNames(
+                projectcss.all,
+                projectcss.__wab_text,
+                sty.text
+              )}
             >
-              <div
-                data-plasmic-name={"text"}
-                data-plasmic-override={overrides.text}
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text
-                )}
-              >
-                {"New targeted content"}
-              </div>
-            </Button>
-          }
-          className={classNames("__wab_instance", sty.segmentsHeader)}
-          description={
-            "Target specific segments of your users with specialized content."
-          }
-          title={"Targeted Content"}
-        />
-      ) : null}
-      {true ? (
-        <div
-          data-plasmic-name={"segmentsContent"}
-          data-plasmic-override={overrides.segmentsContent}
-          className={classNames(projectcss.all, sty.segmentsContent)}
-        />
-      ) : null}
+              {"New targeted content"}
+            </div>
+          </Button>
+        }
+        className={classNames("__wab_instance", sty.segmentsHeader)}
+        description={
+          "Target specific segments of your users with specialized content."
+        }
+        title={"Targeted Content"}
+      />
+
+      <div
+        data-plasmic-name={"segmentsContent"}
+        data-plasmic-override={overrides.segmentsContent}
+        className={classNames(projectcss.all, sty.segmentsContent)}
+      />
+
       <LeftPaneHeader
         data-plasmic-name={"leftPaneHeader"}
         data-plasmic-override={overrides.leftPaneHeader}
@@ -225,7 +217,7 @@ function PlasmicLeftSplitsPanel__RenderFunc(props: {
                 role={"img"}
               />
             }
-            size={"wide" as const}
+            size={"wide"}
             startIcon={
               <PlussvgIcon
                 className={classNames(projectcss.all, sty.svg__j3MPs)}
@@ -245,13 +237,11 @@ function PlasmicLeftSplitsPanel__RenderFunc(props: {
         title={"Scheduled Content"}
       />
 
-      {true ? (
-        <div
-          data-plasmic-name={"scheduledContent"}
-          data-plasmic-override={overrides.scheduledContent}
-          className={classNames(projectcss.all, sty.scheduledContent)}
-        />
-      ) : null}
+      <div
+        data-plasmic-name={"scheduledContent"}
+        data-plasmic-override={overrides.scheduledContent}
+        className={classNames(projectcss.all, sty.scheduledContent)}
+      />
     </div>
   ) as React.ReactElement | null;
 }
@@ -332,7 +322,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicLeftSplitsPanel__ArgProps,
           internalVariantPropNames: PlasmicLeftSplitsPanel__VariantProps,
         }),

@@ -38,6 +38,7 @@ import StyleSelect from "../../components/style-controls/StyleSelect"; // plasmi
 import HiliteTabs from "../../components/widgets/HiliteTabs"; // plasmic-import: a0-WHzk-U8/component
 import DefaultStylesPanel from "../../components/sidebar/DefaultStylesPanel"; // plasmic-import: nmt_YiclQJk/component
 import ThemeLayoutPanel from "../../components/sidebar/ThemeLayoutPanel"; // plasmic-import: hudLjkQJbU/component
+import ThemeInitialStylesPanel from "../../components/sidebar/ThemeInitialStylesPanel"; // plasmic-import: T_OF2Q8rJc1U/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -51,21 +52,21 @@ createPlasmicElementProxy;
 
 export type PlasmicLeftThemesPanel__VariantMembers = {
   noLayout: "noLayout";
+  tab: "styles" | "layout" | "initials";
   notOwnedBySite: "notOwnedBySite";
-  tab: "styles" | "layout";
   noThemePicker: "noThemePicker";
 };
 export type PlasmicLeftThemesPanel__VariantsArgs = {
   noLayout?: SingleBooleanChoiceArg<"noLayout">;
+  tab?: SingleChoiceArg<"styles" | "layout" | "initials">;
   notOwnedBySite?: SingleBooleanChoiceArg<"notOwnedBySite">;
-  tab?: SingleChoiceArg<"styles" | "layout">;
   noThemePicker?: SingleBooleanChoiceArg<"noThemePicker">;
 };
 type VariantPropType = keyof PlasmicLeftThemesPanel__VariantsArgs;
 export const PlasmicLeftThemesPanel__VariantProps = new Array<VariantPropType>(
   "noLayout",
-  "notOwnedBySite",
   "tab",
+  "notOwnedBySite",
   "noThemePicker"
 );
 
@@ -82,23 +83,18 @@ export type PlasmicLeftThemesPanel__OverridesType = {
   hiliteTabs?: p.Flex<typeof HiliteTabs>;
   defaultStylesPanel?: p.Flex<typeof DefaultStylesPanel>;
   themeLayoutPanel?: p.Flex<typeof ThemeLayoutPanel>;
+  themeInitialStylesPanel?: p.Flex<typeof ThemeInitialStylesPanel>;
 };
 
 export interface DefaultLeftThemesPanelProps {
   noLayout?: SingleBooleanChoiceArg<"noLayout">;
+  tab?: SingleChoiceArg<"styles" | "layout" | "initials">;
   notOwnedBySite?: SingleBooleanChoiceArg<"notOwnedBySite">;
-  tab?: SingleChoiceArg<"styles" | "layout">;
   noThemePicker?: SingleBooleanChoiceArg<"noThemePicker">;
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicLeftThemesPanel__RenderFunc(props: {
   variants: PlasmicLeftThemesPanel__VariantsArgs;
@@ -134,9 +130,7 @@ function PlasmicLeftThemesPanel__RenderFunc(props: {
         type: "private",
         variableType: "text",
         initFunc: ({ $props, $state, $queries, $ctx }) =>
-          hasVariant($state, "noLayout", "noLayout")
-            ? ("styles" as const)
-            : $state.tab,
+          hasVariant($state, "noLayout", "noLayout") ? "styles" : $state.tab,
       },
       {
         path: "themeSelector.value",
@@ -205,56 +199,53 @@ function PlasmicLeftThemesPanel__RenderFunc(props: {
         data-plasmic-name={"themeHeader"}
         data-plasmic-override={overrides.themeHeader}
         actions={
-          true ? (
-            <p.Stack
-              as={"div"}
-              data-plasmic-name={"freeBox"}
-              data-plasmic-override={overrides.freeBox}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox)}
+          <p.Stack
+            as={"div"}
+            data-plasmic-name={"freeBox"}
+            data-plasmic-override={overrides.freeBox}
+            hasGap={true}
+            className={classNames(projectcss.all, sty.freeBox)}
+          >
+            <div
+              className={classNames(
+                projectcss.all,
+                projectcss.__wab_text,
+                sty.text__rgfqo
+              )}
             >
-              <div
-                className={classNames(
-                  projectcss.all,
-                  projectcss.__wab_text,
-                  sty.text__rgfqo
-                )}
-              >
-                {"Active theme"}
-              </div>
-              <StyleSelect
-                data-plasmic-name={"themeSelector"}
-                data-plasmic-override={overrides.themeSelector}
-                className={classNames("__wab_instance", sty.themeSelector, {
-                  [sty.themeSelectornoLayout]: hasVariant(
-                    $state,
-                    "noLayout",
-                    "noLayout"
-                  ),
-                  [sty.themeSelectortab_styles]: hasVariant(
-                    $state,
-                    "tab",
-                    "styles"
-                  ),
-                })}
-                onChange={(...eventArgs) => {
-                  p.generateStateOnChangeProp($state, [
-                    "themeSelector",
-                    "value",
-                  ])(eventArgs[0]);
-                }}
-                options={[
-                  { value: "option1", label: "Option 1" },
-                  { value: "option2", label: "Option 2" },
-                ]}
-                value={p.generateStateValueProp($state, [
-                  "themeSelector",
-                  "value",
-                ])}
-                valueSetState={"isSet" as const}
-              />
-            </p.Stack>
-          ) : null
+              {"Active theme"}
+            </div>
+            <StyleSelect
+              data-plasmic-name={"themeSelector"}
+              data-plasmic-override={overrides.themeSelector}
+              className={classNames("__wab_instance", sty.themeSelector, {
+                [sty.themeSelectornoLayout]: hasVariant(
+                  $state,
+                  "noLayout",
+                  "noLayout"
+                ),
+                [sty.themeSelectortab_styles]: hasVariant(
+                  $state,
+                  "tab",
+                  "styles"
+                ),
+              })}
+              onChange={(...eventArgs) => {
+                p.generateStateOnChangeProp($state, ["themeSelector", "value"])(
+                  eventArgs[0]
+                );
+              }}
+              options={[
+                { value: "option1", label: "Option 1" },
+                { value: "option2", label: "Option 2" },
+              ]}
+              value={p.generateStateValueProp($state, [
+                "themeSelector",
+                "value",
+              ])}
+              valueSetState={"isSet"}
+            />
+          </p.Stack>
         }
         className={classNames("__wab_instance", sty.themeHeader, {
           [sty.themeHeadernoThemePicker]: hasVariant(
@@ -262,6 +253,7 @@ function PlasmicLeftThemesPanel__RenderFunc(props: {
             "noThemePicker",
             "noThemePicker"
           ),
+          [sty.themeHeadertab_initials]: hasVariant($state, "tab", "initials"),
         })}
         compactTitle={
           <TextWithInfo
@@ -313,6 +305,7 @@ function PlasmicLeftThemesPanel__RenderFunc(props: {
               "notOwnedBySite",
               "notOwnedBySite"
             ),
+            [sty.hiliteTabstab_initials]: hasVariant($state, "tab", "initials"),
             [sty.hiliteTabstab_layout]: hasVariant($state, "tab", "layout"),
             [sty.hiliteTabstab_styles]: hasVariant($state, "tab", "styles"),
           })}
@@ -323,77 +316,34 @@ function PlasmicLeftThemesPanel__RenderFunc(props: {
             ]).apply(null, eventArgs);
             (async (val) => {
               const $steps = {};
+
               $steps["setTab"] = true
                 ? (() => {
                     const actionArgs = {
-                      variable: __wrapUserFunction(
-                        {
-                          type: "InteractionArgLoc",
-                          actionName: "updateVariable",
-                          interactionUuid: "SPxG5rgIX",
-                          componentUuid: "9I47RGPv62",
-                          argName: "variable",
-                        },
-                        () => ({
-                          objRoot: $state,
-                          variablePath: ["tab"],
-                        })
-                      ),
-                      operation: __wrapUserFunction(
-                        {
-                          type: "InteractionArgLoc",
-                          actionName: "updateVariable",
-                          interactionUuid: "SPxG5rgIX",
-                          componentUuid: "9I47RGPv62",
-                          argName: "operation",
-                        },
-                        () => 0
-                      ),
-                      value: __wrapUserFunction(
-                        {
-                          type: "InteractionArgLoc",
-                          actionName: "updateVariable",
-                          interactionUuid: "SPxG5rgIX",
-                          componentUuid: "9I47RGPv62",
-                          argName: "value",
-                        },
-                        () => $state.hiliteTabs.selectedTabKey
-                      ),
-                    };
-                    return __wrapUserFunction(
-                      {
-                        type: "InteractionLoc",
-                        actionName: "updateVariable",
-                        interactionUuid: "SPxG5rgIX",
-                        componentUuid: "9I47RGPv62",
+                      variable: {
+                        objRoot: $state,
+                        variablePath: ["tab"],
                       },
-                      () =>
-                        (({ variable, value, startIndex, deleteCount }) => {
-                          if (!variable) {
-                            return;
-                          }
-                          const { objRoot, variablePath } = variable;
+                      operation: 0,
+                      value: $state.hiliteTabs.selectedTabKey,
+                    };
+                    return (({ variable, value, startIndex, deleteCount }) => {
+                      if (!variable) {
+                        return;
+                      }
+                      const { objRoot, variablePath } = variable;
 
-                          p.set(objRoot, variablePath, value);
-                          return value;
-                        })?.apply(null, [actionArgs]),
-                      actionArgs
-                    );
+                      p.set(objRoot, variablePath, value);
+                      return value;
+                    })?.apply(null, [actionArgs]);
                   })()
                 : undefined;
               if (
+                $steps["setTab"] != null &&
                 typeof $steps["setTab"] === "object" &&
                 typeof $steps["setTab"].then === "function"
               ) {
-                $steps["setTab"] = await __wrapUserPromise(
-                  {
-                    type: "InteractionLoc",
-                    actionName: "updateVariable",
-                    interactionUuid: "SPxG5rgIX",
-                    componentUuid: "9I47RGPv62",
-                  },
-                  $steps["setTab"]
-                );
+                $steps["setTab"] = await $steps["setTab"];
               }
             }).apply(null, eventArgs);
           }}
@@ -402,16 +352,17 @@ function PlasmicLeftThemesPanel__RenderFunc(props: {
             "selectedTabKey",
           ])}
           tabs={[
-            { tabKey: "styles", content: "Default styles" },
+            { tabKey: "styles", content: "Typography" },
             { tabKey: "layout", content: "Layout" },
+            { tabKey: "initials", content: "Initial styles" },
           ]}
         />
       ) : null}
       {(
-        hasVariant($state, "tab", "styles")
-          ? true
-          : hasVariant($state, "notOwnedBySite", "notOwnedBySite")
+        hasVariant($state, "notOwnedBySite", "notOwnedBySite")
           ? false
+          : hasVariant($state, "tab", "styles")
+          ? true
           : hasVariant($state, "noLayout", "noLayout")
           ? true
           : true
@@ -444,10 +395,10 @@ function PlasmicLeftThemesPanel__RenderFunc(props: {
         />
       ) : null}
       {(
-        hasVariant($state, "tab", "layout")
-          ? true
-          : hasVariant($state, "notOwnedBySite", "notOwnedBySite")
+        hasVariant($state, "notOwnedBySite", "notOwnedBySite")
           ? false
+          : hasVariant($state, "tab", "layout")
+          ? true
           : true
       ) ? (
         <ThemeLayoutPanel
@@ -467,6 +418,30 @@ function PlasmicLeftThemesPanel__RenderFunc(props: {
           })}
         />
       ) : null}
+      {(
+        hasVariant($state, "notOwnedBySite", "notOwnedBySite")
+          ? false
+          : hasVariant($state, "tab", "initials")
+          ? true
+          : true
+      ) ? (
+        <ThemeInitialStylesPanel
+          data-plasmic-name={"themeInitialStylesPanel"}
+          data-plasmic-override={overrides.themeInitialStylesPanel}
+          className={classNames("__wab_instance", sty.themeInitialStylesPanel, {
+            [sty.themeInitialStylesPanelnotOwnedBySite]: hasVariant(
+              $state,
+              "notOwnedBySite",
+              "notOwnedBySite"
+            ),
+            [sty.themeInitialStylesPaneltab_initials]: hasVariant(
+              $state,
+              "tab",
+              "initials"
+            ),
+          })}
+        />
+      ) : null}
     </div>
   ) as React.ReactElement | null;
 }
@@ -481,6 +456,7 @@ const PlasmicDescendants = {
     "hiliteTabs",
     "defaultStylesPanel",
     "themeLayoutPanel",
+    "themeInitialStylesPanel",
   ],
   themeHeader: ["themeHeader", "textWithInfo", "freeBox", "themeSelector"],
   textWithInfo: ["textWithInfo"],
@@ -489,6 +465,7 @@ const PlasmicDescendants = {
   hiliteTabs: ["hiliteTabs"],
   defaultStylesPanel: ["defaultStylesPanel"],
   themeLayoutPanel: ["themeLayoutPanel"],
+  themeInitialStylesPanel: ["themeInitialStylesPanel"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -502,6 +479,7 @@ type NodeDefaultElementType = {
   hiliteTabs: typeof HiliteTabs;
   defaultStylesPanel: typeof DefaultStylesPanel;
   themeLayoutPanel: typeof ThemeLayoutPanel;
+  themeInitialStylesPanel: typeof ThemeInitialStylesPanel;
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -538,7 +516,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicLeftThemesPanel__ArgProps,
           internalVariantPropNames: PlasmicLeftThemesPanel__VariantProps,
         }),
@@ -571,6 +549,7 @@ export const PlasmicLeftThemesPanel = Object.assign(
     hiliteTabs: makeNodeComponent("hiliteTabs"),
     defaultStylesPanel: makeNodeComponent("defaultStylesPanel"),
     themeLayoutPanel: makeNodeComponent("themeLayoutPanel"),
+    themeInitialStylesPanel: makeNodeComponent("themeInitialStylesPanel"),
 
     // Metadata about props expected for PlasmicLeftThemesPanel
     internalVariantProps: PlasmicLeftThemesPanel__VariantProps,

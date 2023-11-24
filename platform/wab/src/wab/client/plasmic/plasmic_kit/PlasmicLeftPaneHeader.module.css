@@ -69,9 +69,6 @@
   > img {
   margin-top: 4px;
 }
-.freeBoxshowAlert__f9FwI7K1Nc {
-  display: flex;
-}
 .titleContainer {
   overflow: visible;
   display: flex;
@@ -226,7 +223,6 @@
 }
 .textWithInfo___3D2OQ:global(.__wab_instance) {
   max-width: 100%;
-  display: flex;
 }
 .text__loEe2 {
   font-weight: 600;

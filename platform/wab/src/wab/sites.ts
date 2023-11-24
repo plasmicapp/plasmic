@@ -684,6 +684,7 @@ export function cloneSite(fromSite: Site) {
   site.themes.forEach((theme) => {
     fixRefsForMixin(theme.defaultStyle);
     theme.styles.forEach((s) => fixRefsForMixin(s.style));
+    Object.values(theme.addItemPrefs).forEach((rs) => fixRefsForRuleset(rs));
   });
   const oldToNewComponent = new Map<Component, Component>(
     strictZip(fromSite.components, site.components)
@@ -1702,6 +1703,7 @@ export function createDefaultTheme() {
           }),
         })
     ),
+    addItemPrefs: {},
   });
 }
 

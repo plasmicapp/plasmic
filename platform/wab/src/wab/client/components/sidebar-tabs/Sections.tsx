@@ -1,32 +1,45 @@
-import { Alert } from "antd";
-import { observer } from "mobx-react";
-import * as React from "react";
 import {
   ensureKnownTplComponent,
   isKnownClassNamePropType,
   TplComponent,
   TplNode,
   TplTag,
-} from "../../../classes";
-import { asOne, assert, ensure, ensureArray } from "../../../common";
+} from "@/wab/classes";
+import {
+  hasSimplifiedMode,
+  isTplCodeComponentStyleable,
+} from "@/wab/client/code-components/code-components";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import {
+  BorderPanelSection,
+  BorderRadiusSection,
+} from "@/wab/client/components/style-controls/BorderControls";
+import {
+  ExpsProvider,
+  mkStyleComponent,
+  TplExpsProvider,
+} from "@/wab/client/components/style-controls/StyleComponent";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { asOne, assert, ensure, ensureArray } from "@/wab/common";
 import {
   getComponentDisplayName,
   isCodeComponent,
   isCodeComponentTpl,
   isPageComponent,
-} from "../../../components";
-import { $ } from "../../../deps";
-import { DEVFLAGS, DevFlagsType } from "../../../devflags";
-import { PublicStyleSection } from "../../../shared/ApiSchema";
-import { isTagListContainer } from "../../../shared/core/rich-text-util";
-import { isGridTag } from "../../../shared/grid-utils";
+} from "@/wab/components";
+import { $ } from "@/wab/deps";
+import { DEVFLAGS, DevFlagsType } from "@/wab/devflags";
+import { PublicStyleSection } from "@/wab/shared/ApiSchema";
+import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
+import { isGridTag } from "@/wab/shared/grid-utils";
 import {
   getAncestorSlotArg,
   getAncestorTplSlot,
   isTypographyNode,
-} from "../../../shared/SlotUtils";
-import { canEditStyleSection } from "../../../shared/ui-config-utils";
-import { getApplicableSelectors } from "../../../styles";
+} from "@/wab/shared/SlotUtils";
+import { canEditStyleSection } from "@/wab/shared/ui-config-utils";
+import { getApplicableSelectors } from "@/wab/styles";
 import {
   canToggleVisibility,
   EventHandlerKeyType,
@@ -47,24 +60,11 @@ import {
   isTplVariantable,
   TplColumnsTag,
   TplColumnTag,
-} from "../../../tpls";
-import { ValComponent } from "../../../val-nodes";
-import {
-  hasSimplifiedMode,
-  isTplCodeComponentStyleable,
-} from "../../code-components/code-components";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
-import { SidebarSection } from "../sidebar/SidebarSection";
-import {
-  BorderPanelSection,
-  BorderRadiusSection,
-} from "../style-controls/BorderControls";
-import {
-  ExpsProvider,
-  mkStyleComponent,
-  TplExpsProvider,
-} from "../style-controls/StyleComponent";
+} from "@/wab/tpls";
+import { ValComponent } from "@/wab/val-nodes";
+import { Alert } from "antd";
+import { observer } from "mobx-react";
+import * as React from "react";
 import { BackgroundSection } from "./background-section";
 import { ColumnSection, ColumnsPanelSection } from "./columns-section";
 import { ComponentPropsSection } from "./ComponentPropsSection";
@@ -741,6 +741,7 @@ export function getRenderBySection(
             key={`${tpl.uuid}-layout`}
             expsProvider={sc.props.expsProvider}
             isCodeComponentTpl={codeComponentTpl}
+            allowConvert
           />
         ),
     ],

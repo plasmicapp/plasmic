@@ -590,7 +590,8 @@
           "styles": [],
           "layout": null,
           "active": true,
-          "__type": "Theme"
+          "__type": "Theme",
+          "addItemPrefs": {}
         },
         "60773010": {
           "name": "Default Typography",
@@ -762,7 +763,7 @@
         }
       },
       "deps": [],
-      "version": "225-release-global-actions"
+      "version": "226-add-item-prefs"
     }
   ],
   [
@@ -1418,7 +1419,8 @@
           ],
           "layout": null,
           "active": true,
-          "__type": "Theme"
+          "__type": "Theme",
+          "addItemPrefs": {}
         },
         "31846010": {
           "name": "Default Typography",
@@ -1855,7 +1857,7 @@
         }
       },
       "deps": ["c30818bb-2f70-4079-bc4d-65eaecf566f6"],
-      "version": "225-release-global-actions"
+      "version": "226-add-item-prefs"
     }
   ]
 ]

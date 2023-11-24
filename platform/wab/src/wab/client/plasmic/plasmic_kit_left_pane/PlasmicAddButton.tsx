@@ -74,13 +74,7 @@ export interface DefaultAddButtonProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicAddButton__RenderFunc(props: {
   variants: PlasmicAddButton__VariantsArgs;
@@ -153,7 +147,7 @@ function PlasmicAddButton__RenderFunc(props: {
           [sty.rootisActive]: hasVariant($state, "isActive", "isActive"),
         }
       )}
-      data-test-id={"add-button" as const}
+      data-test-id={"add-button"}
       onClick={args.onClick}
       data-plasmic-trigger-props={[triggerRootFocusVisibleProps]}
     >
@@ -227,7 +221,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicAddButton__ArgProps,
           internalVariantPropNames: PlasmicAddButton__VariantProps,
         }),

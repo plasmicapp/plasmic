@@ -55,6 +55,13 @@
   --mixin-qjB654aOL_white-space: pre-wrap;
 }
 
+.plasmic_mixins {
+  --mixin-eeky5Y8An_white-space: pre-wrap;
+  --plasmic-mixin-overlay-box-container_white-space: var(
+    --mixin-eeky5Y8An_white-space
+  );
+}
+
 :where(.all) {
   display: block;
   white-space: inherit;

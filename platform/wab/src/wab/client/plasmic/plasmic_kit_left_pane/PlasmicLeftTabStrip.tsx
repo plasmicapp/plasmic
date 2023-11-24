@@ -188,13 +188,7 @@ export interface DefaultLeftTabStripProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicLeftTabStrip__RenderFunc(props: {
   variants: PlasmicLeftTabStrip__VariantsArgs;
@@ -298,96 +292,91 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
         }
       )}
     >
-      {(
-        hasVariant($state, "withInsertButton", "withInsertButton") ? true : true
-      ) ? (
-        <AddButton
-          data-plasmic-name={"insert"}
-          data-plasmic-override={overrides.insert}
-          className={classNames("__wab_instance", sty.insert, {
-            [sty.insertwithInsertButton]: hasVariant(
-              $state,
-              "withInsertButton",
-              "withInsertButton"
-            ),
-          })}
-        />
-      ) : null}
-      {true ? (
-        <div className={classNames(projectcss.all, sty.freeBox__s2Zn2)}>
-          {p.renderPlasmicSlot({
-            defaultContents: (
-              <React.Fragment>
-                <LeftTabButton
-                  className={classNames(
-                    "__wab_instance",
-                    sty.leftTabButton__xnfKt
-                  )}
-                  icon={
-                    <WarningTrianglesvgIcon
-                      className={classNames(projectcss.all, sty.svg__fJuLy)}
-                      role={"img"}
-                    />
-                  }
-                />
+      <AddButton
+        data-plasmic-name={"insert"}
+        data-plasmic-override={overrides.insert}
+        className={classNames("__wab_instance", sty.insert, {
+          [sty.insertwithInsertButton]: hasVariant(
+            $state,
+            "withInsertButton",
+            "withInsertButton"
+          ),
+        })}
+      />
 
-                <LeftTabButton
-                  className={classNames(
-                    "__wab_instance",
-                    sty.leftTabButton__ro6Iy
-                  )}
-                  icon={
-                    <TreeIcon
-                      className={classNames(projectcss.all, sty.svg__rJYem)}
-                      role={"img"}
-                    />
-                  }
-                />
+      <div className={classNames(projectcss.all, sty.freeBox__s2Zn2)}>
+        {p.renderPlasmicSlot({
+          defaultContents: (
+            <React.Fragment>
+              <LeftTabButton
+                className={classNames(
+                  "__wab_instance",
+                  sty.leftTabButton__xnfKt
+                )}
+                icon={
+                  <WarningTrianglesvgIcon
+                    className={classNames(projectcss.all, sty.svg__fJuLy)}
+                    role={"img"}
+                  />
+                }
+              />
 
-                <LeftTabButton
-                  className={classNames(
-                    "__wab_instance",
-                    sty.leftTabButton__uOnAi
-                  )}
-                  icon={
-                    <ComponentssvgIcon
-                      className={classNames(projectcss.all, sty.svg__p2MgB)}
-                      role={"img"}
-                    />
-                  }
-                />
+              <LeftTabButton
+                className={classNames(
+                  "__wab_instance",
+                  sty.leftTabButton__ro6Iy
+                )}
+                icon={
+                  <TreeIcon
+                    className={classNames(projectcss.all, sty.svg__rJYem)}
+                    role={"img"}
+                  />
+                }
+              />
 
-                <LeftTabButton
-                  className={classNames(
-                    "__wab_instance",
-                    sty.leftTabButton___8X6Fn
-                  )}
-                  icon={
-                    <GearIcon
-                      className={classNames(projectcss.all, sty.svg__qPkMk)}
-                      role={"img"}
-                    />
-                  }
-                />
+              <LeftTabButton
+                className={classNames(
+                  "__wab_instance",
+                  sty.leftTabButton__uOnAi
+                )}
+                icon={
+                  <ComponentssvgIcon
+                    className={classNames(projectcss.all, sty.svg__p2MgB)}
+                    role={"img"}
+                  />
+                }
+              />
 
-                <LeftTabButton
-                  className={classNames(
-                    "__wab_instance",
-                    sty.leftTabButton___5AwUj
-                  )}
-                  icon={
-                    <DotsHorizontalCirclesvgIcon
-                      className={classNames(projectcss.all, sty.svg___7Cd9B)}
-                      role={"img"}
-                    />
-                  }
-                />
-              </React.Fragment>
-            ),
-            value: args.buttons,
-          })}
-        </div>
-      ) : null}
+              <LeftTabButton
+                className={classNames(
+                  "__wab_instance",
+                  sty.leftTabButton___8X6Fn
+                )}
+                icon={
+                  <GearIcon
+                    className={classNames(projectcss.all, sty.svg__qPkMk)}
+                    role={"img"}
+                  />
+                }
+              />
+
+              <LeftTabButton
+                className={classNames(
+                  "__wab_instance",
+                  sty.leftTabButton___5AwUj
+                )}
+                icon={
+                  <DotsHorizontalCirclesvgIcon
+                    className={classNames(projectcss.all, sty.svg___7Cd9B)}
+                    role={"img"}
+                  />
+                }
+              />
+            </React.Fragment>
+          ),
+          value: args.buttons,
+        })}
+      </div>
       <div
         data-plasmic-name={"divider"}
         data-plasmic-override={overrides.divider}
@@ -405,491 +394,592 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
         })}
       />
 
-      {true ? (
-        <LeftTabButton
-          data-plasmic-name={"copilot"}
-          data-plasmic-override={overrides.copilot}
-          className={classNames("__wab_instance", sty.copilot, {
-            [sty.copilotactiveTab_copilot]: hasVariant(
-              $state,
-              "activeTab",
-              "copilot"
-            ),
-            [sty.copilotactiveTab_endpoints]: hasVariant(
-              $state,
-              "activeTab",
-              "endpoints"
-            ),
-            [sty.copilotactiveTab_outline]: hasVariant(
-              $state,
-              "activeTab",
-              "outline"
-            ),
-            [sty.copilotshowAvatar]: hasVariant(
+      <LeftTabButton
+        data-plasmic-name={"copilot"}
+        data-plasmic-override={overrides.copilot}
+        className={classNames("__wab_instance", sty.copilot, {
+          [sty.copilotactiveTab_copilot]: hasVariant(
+            $state,
+            "activeTab",
+            "copilot"
+          ),
+          [sty.copilotactiveTab_endpoints]: hasVariant(
+            $state,
+            "activeTab",
+            "endpoints"
+          ),
+          [sty.copilotactiveTab_outline]: hasVariant(
+            $state,
+            "activeTab",
+            "outline"
+          ),
+          [sty.copilotshowAvatar]: hasVariant(
+            $state,
+            "showAvatar",
+            "showAvatar"
+          ),
+          [sty.copilotwithInsertButton]: hasVariant(
+            $state,
+            "withInsertButton",
+            "withInsertButton"
+          ),
+        })}
+        icon={
+          <WandIcon
+            className={classNames(projectcss.all, sty.svg__wujwR)}
+            role={"img"}
+          />
+        }
+        isSelected={
+          hasVariant($state, "activeTab", "copilot") ? true : undefined
+        }
+      />
+
+      <LeftTabButton
+        data-plasmic-name={"tokens"}
+        data-plasmic-override={overrides.tokens}
+        className={classNames("__wab_instance", sty.tokens, {
+          [sty.tokensactiveTab_mixins]: hasVariant(
+            $state,
+            "activeTab",
+            "mixins"
+          ),
+          [sty.tokensactiveTab_tokens]: hasVariant(
+            $state,
+            "activeTab",
+            "tokens"
+          ),
+          [sty.tokenswithInsertButton]: hasVariant(
+            $state,
+            "withInsertButton",
+            "withInsertButton"
+          ),
+        })}
+        icon={
+          <DiamondssvgIcon
+            className={classNames(projectcss.all, sty.svg__mn5Uf, {
+              [sty.svgactiveTab_tokens__mn5UfdVhrq]: hasVariant(
+                $state,
+                "activeTab",
+                "tokens"
+              ),
+            })}
+            role={"img"}
+          />
+        }
+        isSelected={
+          hasVariant($state, "activeTab", "tokens") ? true : undefined
+        }
+      />
+
+      <LeftTabButton
+        data-plasmic-name={"mixins"}
+        data-plasmic-override={overrides.mixins}
+        className={classNames("__wab_instance", sty.mixins, {
+          [sty.mixinsactiveTab_mixins]: hasVariant(
+            $state,
+            "activeTab",
+            "mixins"
+          ),
+        })}
+        icon={
+          <MixinIcon
+            className={classNames(projectcss.all, sty.svg__nxYe)}
+            role={"img"}
+          />
+        }
+        isSelected={
+          hasVariant($state, "activeTab", "mixins") ? true : undefined
+        }
+      />
+
+      <LeftTabButton
+        data-plasmic-name={"components"}
+        data-plasmic-override={overrides.components}
+        className={classNames("__wab_instance", sty.components, {
+          [sty.componentsactiveTab_components]: hasVariant(
+            $state,
+            "activeTab",
+            "components"
+          ),
+          [sty.componentsactiveTab_images]: hasVariant(
+            $state,
+            "activeTab",
+            "images"
+          ),
+          [sty.componentsactiveTab_pages]: hasVariant(
+            $state,
+            "activeTab",
+            "pages"
+          ),
+        })}
+        icon={
+          <ComponentsvgIcon
+            className={classNames(projectcss.all, sty.svg__kca03, {
+              [sty.svgshowAvatar__kca039NVfe]: hasVariant(
+                $state,
+                "showAvatar",
+                "showAvatar"
+              ),
+            })}
+            role={"img"}
+          />
+        }
+        isSelected={
+          hasVariant($state, "activeTab", "components") ? true : undefined
+        }
+      />
+
+      <LeftTabButton
+        data-plasmic-name={"pages"}
+        data-plasmic-override={overrides.pages}
+        className={classNames("__wab_instance", sty.pages, {
+          [sty.pagesactiveTab_components]: hasVariant(
+            $state,
+            "activeTab",
+            "components"
+          ),
+          [sty.pagesactiveTab_images]: hasVariant(
+            $state,
+            "activeTab",
+            "images"
+          ),
+          [sty.pagesactiveTab_pages]: hasVariant($state, "activeTab", "pages"),
+          [sty.pagesdevFlags_pageComponent]: hasVariant(
+            $state,
+            "devFlags",
+            "pageComponent"
+          ),
+        })}
+        icon={
+          <File2SvgIcon
+            className={classNames(projectcss.all, sty.svg__g5Iby)}
+            role={"img"}
+          />
+        }
+        isSelected={hasVariant($state, "activeTab", "pages") ? true : undefined}
+      />
+
+      <LeftTabButton
+        data-plasmic-name={"images"}
+        data-plasmic-override={overrides.images}
+        className={classNames("__wab_instance", sty.images, {
+          [sty.imagesactiveTab_images]: hasVariant(
+            $state,
+            "activeTab",
+            "images"
+          ),
+          [sty.imagesactiveTab_themes]: hasVariant(
+            $state,
+            "activeTab",
+            "themes"
+          ),
+        })}
+        icon={
+          <PhotosvgIcon
+            className={classNames(projectcss.all, sty.svg___75XmC, {
+              [sty.svgactiveTab_tokens___75XmCdVhrq]: hasVariant(
+                $state,
+                "activeTab",
+                "tokens"
+              ),
+              [sty.svgdevFlags_continuousDeployment___75XmCmbQnL]: hasVariant(
+                $state,
+                "devFlags",
+                "continuousDeployment"
+              ),
+              [sty.svgshowAvatar___75XmC9NVfe]: hasVariant(
+                $state,
+                "showAvatar",
+                "showAvatar"
+              ),
+            })}
+            role={"img"}
+          />
+        }
+        isSelected={
+          hasVariant($state, "activeTab", "images") ? true : undefined
+        }
+      />
+
+      <LeftTabButton
+        data-plasmic-name={"themes"}
+        data-plasmic-override={overrides.themes}
+        className={classNames("__wab_instance", sty.themes, {
+          [sty.themesactiveTab_fonts]: hasVariant($state, "activeTab", "fonts"),
+          [sty.themesactiveTab_themes]: hasVariant(
+            $state,
+            "activeTab",
+            "themes"
+          ),
+        })}
+        icon={
+          <PaintbrushsvgIcon
+            className={classNames(projectcss.all, sty.svg___15AOq)}
+            role={"img"}
+          />
+        }
+        isSelected={
+          hasVariant($state, "activeTab", "themes") ? true : undefined
+        }
+      />
+
+      <LeftTabButton
+        data-plasmic-name={"fonts"}
+        data-plasmic-override={overrides.fonts}
+        className={classNames("__wab_instance", sty.fonts, {
+          [sty.fontsactiveTab_fonts]: hasVariant($state, "activeTab", "fonts"),
+        })}
+        icon={
+          <FontFamily2SvgIcon
+            className={classNames(projectcss.all, sty.svg__odrDh)}
+            role={"img"}
+          />
+        }
+        isSelected={hasVariant($state, "activeTab", "fonts") ? true : undefined}
+      />
+
+      <LeftTabButton
+        data-plasmic-name={"responsiveness"}
+        data-plasmic-override={overrides.responsiveness}
+        className={classNames("__wab_instance", sty.responsiveness, {
+          [sty.responsivenessactiveTab_fonts]: hasVariant(
+            $state,
+            "activeTab",
+            "fonts"
+          ),
+          [sty.responsivenessactiveTab_pages]: hasVariant(
+            $state,
+            "activeTab",
+            "pages"
+          ),
+          [sty.responsivenessactiveTab_responsiveness]: hasVariant(
+            $state,
+            "activeTab",
+            "responsiveness"
+          ),
+        })}
+        icon={
+          <DevicessvgIcon
+            className={classNames(projectcss.all, sty.svg__qjH4W)}
+            role={"img"}
+          />
+        }
+        isSelected={
+          hasVariant($state, "activeTab", "responsiveness") ? true : undefined
+        }
+      />
+
+      <LeftTabButton
+        data-plasmic-name={"splits"}
+        data-plasmic-override={overrides.splits}
+        className={classNames("__wab_instance", sty.splits, {
+          [sty.splitsactiveTab_fonts]: hasVariant($state, "activeTab", "fonts"),
+          [sty.splitsactiveTab_pages]: hasVariant($state, "activeTab", "pages"),
+          [sty.splitsactiveTab_responsiveness]: hasVariant(
+            $state,
+            "activeTab",
+            "responsiveness"
+          ),
+          [sty.splitsactiveTab_splits]: hasVariant(
+            $state,
+            "activeTab",
+            "splits"
+          ),
+        })}
+        icon={
+          <IconIcon
+            className={classNames(projectcss.all, sty.svg___2ZAk3)}
+            role={"img"}
+          />
+        }
+        isSelected={
+          hasVariant($state, "activeTab", "splits") ? true : undefined
+        }
+      />
+
+      <LeftTabButton
+        data-plasmic-name={"imports"}
+        data-plasmic-override={overrides.imports}
+        className={classNames("__wab_instance", sty.imports, {
+          [sty.importsactiveTab_fonts]: hasVariant(
+            $state,
+            "activeTab",
+            "fonts"
+          ),
+          [sty.importsactiveTab_imports]: hasVariant(
+            $state,
+            "activeTab",
+            "imports"
+          ),
+          [sty.importsactiveTab_versions]: hasVariant(
+            $state,
+            "activeTab",
+            "versions"
+          ),
+        })}
+        icon={
+          <DownloadsvgIcon
+            className={classNames(projectcss.all, sty.svg__c7UmG)}
+            role={"img"}
+          />
+        }
+        isSelected={
+          hasVariant($state, "activeTab", "imports") ? true : undefined
+        }
+      />
+
+      <LeftTabButton
+        data-plasmic-name={"versions"}
+        data-plasmic-override={overrides.versions}
+        className={classNames("__wab_instance", sty.versions, {
+          [sty.versionsactiveTab_versions]: hasVariant(
+            $state,
+            "activeTab",
+            "versions"
+          ),
+          [sty.versionsshowAvatar]: hasVariant(
+            $state,
+            "showAvatar",
+            "showAvatar"
+          ),
+        })}
+        icon={
+          <ClocksvgIcon
+            className={classNames(projectcss.all, sty.svg__pfWid)}
+            role={"img"}
+          />
+        }
+        isSelected={
+          hasVariant($state, "activeTab", "versions") ? true : undefined
+        }
+      />
+
+      <LeftTabButton
+        data-plasmic-name={"settings"}
+        data-plasmic-override={overrides.settings}
+        className={classNames("__wab_instance", sty.settings, {
+          [sty.settingsactiveTab_settings]: hasVariant(
+            $state,
+            "activeTab",
+            "settings"
+          ),
+        })}
+        icon={
+          <Settings2SvgIcon
+            className={classNames(projectcss.all, sty.svg__kWpBc, {
+              [sty.svgactiveTab_settings__kWpBcpqVqJ]: hasVariant(
+                $state,
+                "activeTab",
+                "settings"
+              ),
+            })}
+            role={"img"}
+          />
+        }
+        isSelected={
+          hasVariant($state, "activeTab", "settings") ? true : undefined
+        }
+      />
+
+      <LeftTabButton
+        data-plasmic-name={"endpoints"}
+        data-plasmic-override={overrides.endpoints}
+        className={classNames("__wab_instance", sty.endpoints, {
+          [sty.endpointsactiveTab_endpoints]: hasVariant(
+            $state,
+            "activeTab",
+            "endpoints"
+          ),
+          [sty.endpointsactiveTab_settings]: hasVariant(
+            $state,
+            "activeTab",
+            "settings"
+          ),
+        })}
+        icon={
+          <PlugsvgIcon
+            className={classNames(projectcss.all, sty.svg__sZo1B, {
+              [sty.svgactiveTab_endpoints__sZo1By0Hm3]: hasVariant(
+                $state,
+                "activeTab",
+                "endpoints"
+              ),
+              [sty.svgactiveTab_settings__sZo1BpqVqJ]: hasVariant(
+                $state,
+                "activeTab",
+                "settings"
+              ),
+            })}
+            role={"img"}
+          />
+        }
+        isSelected={
+          hasVariant($state, "activeTab", "endpoints") ? true : undefined
+        }
+      />
+
+      <IconButton
+        data-plasmic-name={"helpGroup"}
+        data-plasmic-override={overrides.helpGroup}
+        children2={
+          <ChevronDownsvgIcon
+            className={classNames(projectcss.all, sty.svg__b3F)}
+            role={"img"}
+          />
+        }
+        className={classNames("__wab_instance", sty.helpGroup, {
+          [sty.helpGroupshowAvatar]: hasVariant(
+            $state,
+            "showAvatar",
+            "showAvatar"
+          ),
+        })}
+        size={"large"}
+      >
+        <HelpCirclesvgIcon
+          className={classNames(projectcss.all, sty.svg__tupD, {
+            [sty.svgshowAvatar__tupD9NVfe]: hasVariant(
               $state,
               "showAvatar",
               "showAvatar"
             ),
-            [sty.copilotwithInsertButton]: hasVariant(
-              $state,
-              "withInsertButton",
-              "withInsertButton"
-            ),
           })}
-          icon={
-            <WandIcon
-              className={classNames(projectcss.all, sty.svg__wujwR)}
+          role={"img"}
+        />
+      </IconButton>
+      <p.Stack
+        as={"div"}
+        hasGap={true}
+        className={classNames(projectcss.all, sty.freeBox___3AubH, {
+          [sty.freeBoxshowAvatar___3AubH9NVfe]: hasVariant(
+            $state,
+            "showAvatar",
+            "showAvatar"
+          ),
+        })}
+      >
+        <IconButton
+          data-plasmic-name={"figma"}
+          data-plasmic-override={overrides.figma}
+          children2={
+            <ChevronDownsvgIcon
+              className={classNames(projectcss.all, sty.svg__gjOa1)}
               role={"img"}
             />
           }
-          isSelected={
-            hasVariant($state, "activeTab", "copilot") ? true : undefined
-          }
-        />
-      ) : null}
-      {true ? (
-        <LeftTabButton
-          data-plasmic-name={"tokens"}
-          data-plasmic-override={overrides.tokens}
-          className={classNames("__wab_instance", sty.tokens, {
-            [sty.tokensactiveTab_mixins]: hasVariant(
+          className={classNames("__wab_instance", sty.figma, {
+            [sty.figmadevFlags_continuousDeployment]: hasVariant(
               $state,
-              "activeTab",
-              "mixins"
+              "devFlags",
+              "continuousDeployment"
             ),
-            [sty.tokensactiveTab_tokens]: hasVariant(
-              $state,
-              "activeTab",
-              "tokens"
-            ),
-            [sty.tokenswithInsertButton]: hasVariant(
-              $state,
-              "withInsertButton",
-              "withInsertButton"
-            ),
-          })}
-          icon={
-            <DiamondssvgIcon
-              className={classNames(projectcss.all, sty.svg__mn5Uf, {
-                [sty.svgactiveTab_tokens__mn5UfdVhrq]: hasVariant(
-                  $state,
-                  "activeTab",
-                  "tokens"
-                ),
-              })}
-              role={"img"}
-            />
-          }
-          isSelected={
-            hasVariant($state, "activeTab", "tokens") ? true : undefined
-          }
-        />
-      ) : null}
-      {true ? (
-        <LeftTabButton
-          data-plasmic-name={"mixins"}
-          data-plasmic-override={overrides.mixins}
-          className={classNames("__wab_instance", sty.mixins, {
-            [sty.mixinsactiveTab_mixins]: hasVariant(
-              $state,
-              "activeTab",
-              "mixins"
-            ),
-          })}
-          icon={
-            <MixinIcon
-              className={classNames(projectcss.all, sty.svg__nxYe)}
-              role={"img"}
-            />
-          }
-          isSelected={
-            hasVariant($state, "activeTab", "mixins") ? true : undefined
-          }
-        />
-      ) : null}
-      {true ? (
-        <LeftTabButton
-          data-plasmic-name={"components"}
-          data-plasmic-override={overrides.components}
-          className={classNames("__wab_instance", sty.components, {
-            [sty.componentsactiveTab_components]: hasVariant(
-              $state,
-              "activeTab",
-              "components"
-            ),
-            [sty.componentsactiveTab_images]: hasVariant(
-              $state,
-              "activeTab",
-              "images"
-            ),
-            [sty.componentsactiveTab_pages]: hasVariant(
-              $state,
-              "activeTab",
-              "pages"
-            ),
-          })}
-          icon={
-            <ComponentsvgIcon
-              className={classNames(projectcss.all, sty.svg__kca03, {
-                [sty.svgshowAvatar__kca039NVfe]: hasVariant(
-                  $state,
-                  "showAvatar",
-                  "showAvatar"
-                ),
-              })}
-              role={"img"}
-            />
-          }
-          isSelected={
-            hasVariant($state, "activeTab", "components") ? true : undefined
-          }
-        />
-      ) : null}
-      {(hasVariant($state, "devFlags", "pageComponent") ? true : true) ? (
-        <LeftTabButton
-          data-plasmic-name={"pages"}
-          data-plasmic-override={overrides.pages}
-          className={classNames("__wab_instance", sty.pages, {
-            [sty.pagesactiveTab_components]: hasVariant(
-              $state,
-              "activeTab",
-              "components"
-            ),
-            [sty.pagesactiveTab_images]: hasVariant(
-              $state,
-              "activeTab",
-              "images"
-            ),
-            [sty.pagesactiveTab_pages]: hasVariant(
-              $state,
-              "activeTab",
-              "pages"
-            ),
-            [sty.pagesdevFlags_pageComponent]: hasVariant(
+            [sty.figmadevFlags_continuousDeployment_devFlags_pageComponent]:
+              hasVariant($state, "devFlags", "continuousDeployment") &&
+              hasVariant($state, "devFlags", "pageComponent"),
+            [sty.figmadevFlags_pageComponent]: hasVariant(
               $state,
               "devFlags",
               "pageComponent"
             ),
-          })}
-          icon={
-            <File2SvgIcon
-              className={classNames(projectcss.all, sty.svg__g5Iby)}
-              role={"img"}
-            />
-          }
-          isSelected={
-            hasVariant($state, "activeTab", "pages") ? true : undefined
-          }
-        />
-      ) : null}
-      {true ? (
-        <LeftTabButton
-          data-plasmic-name={"images"}
-          data-plasmic-override={overrides.images}
-          className={classNames("__wab_instance", sty.images, {
-            [sty.imagesactiveTab_images]: hasVariant(
-              $state,
-              "activeTab",
-              "images"
-            ),
-            [sty.imagesactiveTab_themes]: hasVariant(
-              $state,
-              "activeTab",
-              "themes"
-            ),
-          })}
-          icon={
-            <PhotosvgIcon
-              className={classNames(projectcss.all, sty.svg___75XmC, {
-                [sty.svgactiveTab_tokens___75XmCdVhrq]: hasVariant(
-                  $state,
-                  "activeTab",
-                  "tokens"
-                ),
-                [sty.svgdevFlags_continuousDeployment___75XmCmbQnL]: hasVariant(
-                  $state,
-                  "devFlags",
-                  "continuousDeployment"
-                ),
-                [sty.svgshowAvatar___75XmC9NVfe]: hasVariant(
-                  $state,
-                  "showAvatar",
-                  "showAvatar"
-                ),
-              })}
-              role={"img"}
-            />
-          }
-          isSelected={
-            hasVariant($state, "activeTab", "images") ? true : undefined
-          }
-        />
-      ) : null}
-      {true ? (
-        <LeftTabButton
-          data-plasmic-name={"themes"}
-          data-plasmic-override={overrides.themes}
-          className={classNames("__wab_instance", sty.themes, {
-            [sty.themesactiveTab_fonts]: hasVariant(
-              $state,
-              "activeTab",
-              "fonts"
-            ),
-            [sty.themesactiveTab_themes]: hasVariant(
-              $state,
-              "activeTab",
-              "themes"
-            ),
-          })}
-          icon={
-            <PaintbrushsvgIcon
-              className={classNames(projectcss.all, sty.svg___15AOq)}
-              role={"img"}
-            />
-          }
-          isSelected={
-            hasVariant($state, "activeTab", "themes") ? true : undefined
-          }
-        />
-      ) : null}
-      {true ? (
-        <LeftTabButton
-          data-plasmic-name={"fonts"}
-          data-plasmic-override={overrides.fonts}
-          className={classNames("__wab_instance", sty.fonts, {
-            [sty.fontsactiveTab_fonts]: hasVariant(
-              $state,
-              "activeTab",
-              "fonts"
-            ),
-          })}
-          icon={
-            <FontFamily2SvgIcon
-              className={classNames(projectcss.all, sty.svg__odrDh)}
-              role={"img"}
-            />
-          }
-          isSelected={
-            hasVariant($state, "activeTab", "fonts") ? true : undefined
-          }
-        />
-      ) : null}
-      {true ? (
-        <LeftTabButton
-          data-plasmic-name={"responsiveness"}
-          data-plasmic-override={overrides.responsiveness}
-          className={classNames("__wab_instance", sty.responsiveness, {
-            [sty.responsivenessactiveTab_fonts]: hasVariant(
-              $state,
-              "activeTab",
-              "fonts"
-            ),
-            [sty.responsivenessactiveTab_pages]: hasVariant(
-              $state,
-              "activeTab",
-              "pages"
-            ),
-            [sty.responsivenessactiveTab_responsiveness]: hasVariant(
-              $state,
-              "activeTab",
-              "responsiveness"
-            ),
-          })}
-          icon={
-            <DevicessvgIcon
-              className={classNames(projectcss.all, sty.svg__qjH4W)}
-              role={"img"}
-            />
-          }
-          isSelected={
-            hasVariant($state, "activeTab", "responsiveness") ? true : undefined
-          }
-        />
-      ) : null}
-      {true ? (
-        <LeftTabButton
-          data-plasmic-name={"splits"}
-          data-plasmic-override={overrides.splits}
-          className={classNames("__wab_instance", sty.splits, {
-            [sty.splitsactiveTab_fonts]: hasVariant(
-              $state,
-              "activeTab",
-              "fonts"
-            ),
-            [sty.splitsactiveTab_pages]: hasVariant(
-              $state,
-              "activeTab",
-              "pages"
-            ),
-            [sty.splitsactiveTab_responsiveness]: hasVariant(
-              $state,
-              "activeTab",
-              "responsiveness"
-            ),
-            [sty.splitsactiveTab_splits]: hasVariant(
-              $state,
-              "activeTab",
-              "splits"
-            ),
-          })}
-          icon={
-            <IconIcon
-              className={classNames(projectcss.all, sty.svg___2ZAk3)}
-              role={"img"}
-            />
-          }
-          isSelected={
-            hasVariant($state, "activeTab", "splits") ? true : undefined
-          }
-        />
-      ) : null}
-      {true ? (
-        <LeftTabButton
-          data-plasmic-name={"imports"}
-          data-plasmic-override={overrides.imports}
-          className={classNames("__wab_instance", sty.imports, {
-            [sty.importsactiveTab_fonts]: hasVariant(
-              $state,
-              "activeTab",
-              "fonts"
-            ),
-            [sty.importsactiveTab_imports]: hasVariant(
-              $state,
-              "activeTab",
-              "imports"
-            ),
-            [sty.importsactiveTab_versions]: hasVariant(
-              $state,
-              "activeTab",
-              "versions"
-            ),
-          })}
-          icon={
-            <DownloadsvgIcon
-              className={classNames(projectcss.all, sty.svg__c7UmG)}
-              role={"img"}
-            />
-          }
-          isSelected={
-            hasVariant($state, "activeTab", "imports") ? true : undefined
-          }
-        />
-      ) : null}
-      {true ? (
-        <LeftTabButton
-          data-plasmic-name={"versions"}
-          data-plasmic-override={overrides.versions}
-          className={classNames("__wab_instance", sty.versions, {
-            [sty.versionsactiveTab_versions]: hasVariant(
-              $state,
-              "activeTab",
-              "versions"
-            ),
-            [sty.versionsshowAvatar]: hasVariant(
+            [sty.figmashowAvatar]: hasVariant(
               $state,
               "showAvatar",
               "showAvatar"
             ),
           })}
-          icon={
-            <ClocksvgIcon
-              className={classNames(projectcss.all, sty.svg__pfWid)}
-              role={"img"}
-            />
-          }
-          isSelected={
-            hasVariant($state, "activeTab", "versions") ? true : undefined
-          }
-        />
-      ) : null}
-      {true ? (
-        <LeftTabButton
-          data-plasmic-name={"settings"}
-          data-plasmic-override={overrides.settings}
-          className={classNames("__wab_instance", sty.settings, {
-            [sty.settingsactiveTab_settings]: hasVariant(
-              $state,
-              "activeTab",
-              "settings"
-            ),
-          })}
-          icon={
-            <Settings2SvgIcon
-              className={classNames(projectcss.all, sty.svg__kWpBc, {
-                [sty.svgactiveTab_settings__kWpBcpqVqJ]: hasVariant(
-                  $state,
-                  "activeTab",
-                  "settings"
-                ),
-              })}
-              role={"img"}
-            />
-          }
-          isSelected={
-            hasVariant($state, "activeTab", "settings") ? true : undefined
-          }
-        />
-      ) : null}
-      {true ? (
-        <LeftTabButton
-          data-plasmic-name={"endpoints"}
-          data-plasmic-override={overrides.endpoints}
-          className={classNames("__wab_instance", sty.endpoints, {
-            [sty.endpointsactiveTab_endpoints]: hasVariant(
-              $state,
-              "activeTab",
-              "endpoints"
-            ),
-            [sty.endpointsactiveTab_settings]: hasVariant(
-              $state,
-              "activeTab",
-              "settings"
-            ),
-          })}
-          icon={
-            <PlugsvgIcon
-              className={classNames(projectcss.all, sty.svg__sZo1B, {
-                [sty.svgactiveTab_endpoints__sZo1By0Hm3]: hasVariant(
-                  $state,
-                  "activeTab",
-                  "endpoints"
-                ),
-                [sty.svgactiveTab_settings__sZo1BpqVqJ]: hasVariant(
-                  $state,
-                  "activeTab",
-                  "settings"
-                ),
-              })}
-              role={"img"}
-            />
-          }
-          isSelected={
-            hasVariant($state, "activeTab", "endpoints") ? true : undefined
-          }
-        />
-      ) : null}
-      {true ? (
+          size={"large"}
+        >
+          <FigmasvgIcon
+            className={classNames(projectcss.all, sty.svg__r87Op, {
+              [sty.svgdevFlags_pageComponent__r87OPlk9O]: hasVariant(
+                $state,
+                "devFlags",
+                "pageComponent"
+              ),
+              [sty.svgshowAvatar__r87Op9NVfe]: hasVariant(
+                $state,
+                "showAvatar",
+                "showAvatar"
+              ),
+              [sty.svgwithInsertButton__r87Op9Mm6M]: hasVariant(
+                $state,
+                "withInsertButton",
+                "withInsertButton"
+              ),
+            })}
+            role={"img"}
+          />
+        </IconButton>
         <IconButton
-          data-plasmic-name={"helpGroup"}
-          data-plasmic-override={overrides.helpGroup}
+          data-plasmic-name={"keyboard"}
+          data-plasmic-override={overrides.keyboard}
           children2={
             <ChevronDownsvgIcon
-              className={classNames(projectcss.all, sty.svg__b3F)}
+              className={classNames(projectcss.all, sty.svg__zTmmf)}
               role={"img"}
             />
           }
-          className={classNames("__wab_instance", sty.helpGroup, {
-            [sty.helpGroupshowAvatar]: hasVariant(
+          className={classNames("__wab_instance", sty.keyboard, {
+            [sty.keyboardshowAvatar]: hasVariant(
               $state,
               "showAvatar",
               "showAvatar"
             ),
           })}
-          size={"large" as const}
+          size={"large"}
+        >
+          <KeyboardIcon
+            className={classNames(projectcss.all, sty.svg__isDmf)}
+            role={"img"}
+          />
+        </IconButton>
+        <IconButton
+          data-plasmic-name={"slack"}
+          data-plasmic-override={overrides.slack}
+          children2={
+            <ChevronDownsvgIcon
+              className={classNames(projectcss.all, sty.svg__rPpbx)}
+              role={"img"}
+            />
+          }
+          className={classNames("__wab_instance", sty.slack, {
+            [sty.slackshowAvatar]: hasVariant(
+              $state,
+              "showAvatar",
+              "showAvatar"
+            ),
+          })}
+          size={"large"}
+        >
+          <div className={classNames(projectcss.all, sty.freeBox__hJJr6)}>
+            <SpeechBubblesvgIcon
+              className={classNames(projectcss.all, sty.svg__pqmVd)}
+              role={"img"}
+            />
+          </div>
+        </IconButton>
+        <IconButton
+          data-plasmic-name={"help"}
+          data-plasmic-override={overrides.help}
+          children2={
+            <ChevronDownsvgIcon
+              className={classNames(projectcss.all, sty.svg__t8IHm)}
+              role={"img"}
+            />
+          }
+          className={classNames("__wab_instance", sty.help, {
+            [sty.helpshowAvatar]: hasVariant(
+              $state,
+              "showAvatar",
+              "showAvatar"
+            ),
+          })}
+          size={"large"}
         >
           <HelpCirclesvgIcon
-            className={classNames(projectcss.all, sty.svg__tupD, {
-              [sty.svgshowAvatar__tupD9NVfe]: hasVariant(
+            className={classNames(projectcss.all, sty.svg__tlcC1, {
+              [sty.svgshowAvatar__tlcC19NVfe]: hasVariant(
                 $state,
                 "showAvatar",
                 "showAvatar"
@@ -898,261 +988,84 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
             role={"img"}
           />
         </IconButton>
-      ) : null}
-      {true ? (
-        <p.Stack
-          as={"div"}
-          hasGap={true}
-          className={classNames(projectcss.all, sty.freeBox___3AubH, {
-            [sty.freeBoxshowAvatar___3AubH9NVfe]: hasVariant(
-              $state,
-              "showAvatar",
-              "showAvatar"
-            ),
-          })}
-        >
-          <IconButton
-            data-plasmic-name={"figma"}
-            data-plasmic-override={overrides.figma}
-            children2={
-              <ChevronDownsvgIcon
-                className={classNames(projectcss.all, sty.svg__gjOa1)}
-                role={"img"}
-              />
-            }
-            className={classNames("__wab_instance", sty.figma, {
-              [sty.figmadevFlags_continuousDeployment]: hasVariant(
-                $state,
-                "devFlags",
-                "continuousDeployment"
-              ),
-              [sty.figmadevFlags_continuousDeployment_devFlags_pageComponent]:
-                hasVariant($state, "devFlags", "continuousDeployment") &&
-                hasVariant($state, "devFlags", "pageComponent"),
-              [sty.figmadevFlags_pageComponent]: hasVariant(
-                $state,
-                "devFlags",
-                "pageComponent"
-              ),
-              [sty.figmashowAvatar]: hasVariant(
-                $state,
-                "showAvatar",
-                "showAvatar"
-              ),
-            })}
-            size={"large" as const}
-          >
-            <FigmasvgIcon
-              className={classNames(projectcss.all, sty.svg__r87Op, {
-                [sty.svgdevFlags_pageComponent__r87OPlk9O]: hasVariant(
-                  $state,
-                  "devFlags",
-                  "pageComponent"
-                ),
-                [sty.svgshowAvatar__r87Op9NVfe]: hasVariant(
-                  $state,
-                  "showAvatar",
-                  "showAvatar"
-                ),
-                [sty.svgwithInsertButton__r87Op9Mm6M]: hasVariant(
-                  $state,
-                  "withInsertButton",
-                  "withInsertButton"
-                ),
-              })}
-              role={"img"}
-            />
-          </IconButton>
-          <IconButton
-            data-plasmic-name={"keyboard"}
-            data-plasmic-override={overrides.keyboard}
-            children2={
-              <ChevronDownsvgIcon
-                className={classNames(projectcss.all, sty.svg__zTmmf)}
-                role={"img"}
-              />
-            }
-            className={classNames("__wab_instance", sty.keyboard, {
-              [sty.keyboardshowAvatar]: hasVariant(
-                $state,
-                "showAvatar",
-                "showAvatar"
-              ),
-            })}
-            size={"large" as const}
-          >
-            <KeyboardIcon
-              className={classNames(projectcss.all, sty.svg__isDmf)}
-              role={"img"}
-            />
-          </IconButton>
-          <IconButton
-            data-plasmic-name={"slack"}
-            data-plasmic-override={overrides.slack}
-            children2={
-              <ChevronDownsvgIcon
-                className={classNames(projectcss.all, sty.svg__rPpbx)}
-                role={"img"}
-              />
-            }
-            className={classNames("__wab_instance", sty.slack, {
-              [sty.slackshowAvatar]: hasVariant(
-                $state,
-                "showAvatar",
-                "showAvatar"
-              ),
-            })}
-            size={"large" as const}
-          >
-            {true ? (
-              <div className={classNames(projectcss.all, sty.freeBox__hJJr6)}>
-                <SpeechBubblesvgIcon
-                  className={classNames(projectcss.all, sty.svg__pqmVd)}
-                  role={"img"}
-                />
-              </div>
-            ) : null}
-          </IconButton>
-          <IconButton
-            data-plasmic-name={"help"}
-            data-plasmic-override={overrides.help}
-            children2={
-              <ChevronDownsvgIcon
-                className={classNames(projectcss.all, sty.svg__t8IHm)}
-                role={"img"}
-              />
-            }
-            className={classNames("__wab_instance", sty.help, {
-              [sty.helpshowAvatar]: hasVariant(
-                $state,
-                "showAvatar",
-                "showAvatar"
-              ),
-            })}
-            size={"large" as const}
-          >
-            <HelpCirclesvgIcon
-              className={classNames(projectcss.all, sty.svg__tlcC1, {
-                [sty.svgshowAvatar__tlcC19NVfe]: hasVariant(
-                  $state,
-                  "showAvatar",
-                  "showAvatar"
-                ),
-              })}
-              role={"img"}
-            />
-          </IconButton>
-        </p.Stack>
-      ) : null}
-      {true ? (
+      </p.Stack>
+      <div
+        className={classNames(projectcss.all, sty.freeBox__igmvF, {
+          [sty.freeBoxshowAvatar__igmvF9NVfe]: hasVariant(
+            $state,
+            "showAvatar",
+            "showAvatar"
+          ),
+        })}
+      >
         <div
-          className={classNames(projectcss.all, sty.freeBox__igmvF, {
-            [sty.freeBoxshowAvatar__igmvF9NVfe]: hasVariant(
+          data-plasmic-name={"players"}
+          data-plasmic-override={overrides.players}
+          className={classNames(projectcss.all, sty.players, {
+            [sty.playersshowAvatar]: hasVariant(
               $state,
               "showAvatar",
               "showAvatar"
             ),
           })}
         >
-          {(hasVariant($state, "showAvatar", "showAvatar") ? true : true) ? (
-            <div
-              data-plasmic-name={"players"}
-              data-plasmic-override={overrides.players}
-              className={classNames(projectcss.all, sty.players, {
-                [sty.playersshowAvatar]: hasVariant(
-                  $state,
-                  "showAvatar",
-                  "showAvatar"
-                ),
-              })}
-            >
-              {(
-                hasVariant($state, "showAvatar", "showAvatar") ? true : false
-              ) ? (
-                <img
-                  alt={""}
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.img,
-                    sty.img__fZbIh,
-                    {
-                      [sty.imgshowAvatar__fZbIh9NVfe]: hasVariant(
-                        $state,
-                        "showAvatar",
-                        "showAvatar"
-                      ),
-                    }
-                  )}
-                  src={image9D5NIfkhj}
-                />
-              ) : null}
-              {(
-                hasVariant($state, "showAvatar", "showAvatar") ? true : false
-              ) ? (
-                <UsersvgIcon
-                  className={classNames(projectcss.all, sty.svg__jFq8B, {
-                    [sty.svgshowAvatar__jFq8B9NVfe]: hasVariant(
-                      $state,
-                      "showAvatar",
-                      "showAvatar"
-                    ),
-                  })}
-                  role={"img"}
-                />
-              ) : null}
-              {(
-                hasVariant($state, "showAvatar", "showAvatar") ? true : false
-              ) ? (
-                <img
-                  alt={""}
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.img,
-                    sty.img__hptuc,
-                    {
-                      [sty.imgshowAvatar__hptuc9NVfe]: hasVariant(
-                        $state,
-                        "showAvatar",
-                        "showAvatar"
-                      ),
-                    }
-                  )}
-                  src={image9D5NIfkhj}
-                />
-              ) : null}
-              {(
-                hasVariant($state, "showAvatar", "showAvatar") ? true : false
-              ) ? (
-                <img
-                  alt={""}
-                  className={classNames(
-                    projectcss.all,
-                    projectcss.img,
-                    sty.img__l76QL,
-                    {
-                      [sty.imgshowAvatar__l76QL9NVfe]: hasVariant(
-                        $state,
-                        "showAvatar",
-                        "showAvatar"
-                      ),
-                    }
-                  )}
-                  src={image9D5NIfkhj}
-                />
-              ) : null}
-            </div>
-          ) : null}
-          {(hasVariant($state, "showAvatar", "showAvatar") ? true : true) ? (
+          {(hasVariant($state, "showAvatar", "showAvatar") ? true : false) ? (
             <img
-              data-plasmic-name={"avatar"}
-              data-plasmic-override={overrides.avatar}
               alt={""}
               className={classNames(
                 projectcss.all,
                 projectcss.img,
-                sty.avatar,
+                sty.img__fZbIh,
                 {
-                  [sty.avatarshowAvatar]: hasVariant(
+                  [sty.imgshowAvatar__fZbIh9NVfe]: hasVariant(
+                    $state,
+                    "showAvatar",
+                    "showAvatar"
+                  ),
+                }
+              )}
+              src={image9D5NIfkhj}
+            />
+          ) : null}
+          {(hasVariant($state, "showAvatar", "showAvatar") ? true : false) ? (
+            <UsersvgIcon
+              className={classNames(projectcss.all, sty.svg__jFq8B, {
+                [sty.svgshowAvatar__jFq8B9NVfe]: hasVariant(
+                  $state,
+                  "showAvatar",
+                  "showAvatar"
+                ),
+              })}
+              role={"img"}
+            />
+          ) : null}
+          {(hasVariant($state, "showAvatar", "showAvatar") ? true : false) ? (
+            <img
+              alt={""}
+              className={classNames(
+                projectcss.all,
+                projectcss.img,
+                sty.img__hptuc,
+                {
+                  [sty.imgshowAvatar__hptuc9NVfe]: hasVariant(
+                    $state,
+                    "showAvatar",
+                    "showAvatar"
+                  ),
+                }
+              )}
+              src={image9D5NIfkhj}
+            />
+          ) : null}
+          {(hasVariant($state, "showAvatar", "showAvatar") ? true : false) ? (
+            <img
+              alt={""}
+              className={classNames(
+                projectcss.all,
+                projectcss.img,
+                sty.img__l76QL,
+                {
+                  [sty.imgshowAvatar__l76QL9NVfe]: hasVariant(
                     $state,
                     "showAvatar",
                     "showAvatar"
@@ -1163,7 +1076,20 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
             />
           ) : null}
         </div>
-      ) : null}
+        <img
+          data-plasmic-name={"avatar"}
+          data-plasmic-override={overrides.avatar}
+          alt={""}
+          className={classNames(projectcss.all, projectcss.img, sty.avatar, {
+            [sty.avatarshowAvatar]: hasVariant(
+              $state,
+              "showAvatar",
+              "showAvatar"
+            ),
+          })}
+          src={image9D5NIfkhj}
+        />
+      </div>
     </p.Stack>
   ) as React.ReactElement | null;
 }
@@ -1283,7 +1209,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicLeftTabStrip__ArgProps,
           internalVariantPropNames: PlasmicLeftTabStrip__VariantProps,
         }),

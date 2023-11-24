@@ -87,13 +87,7 @@ export interface DefaultLeftImportsPanelProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicLeftImportsPanel__RenderFunc(props: {
   variants: PlasmicLeftImportsPanel__VariantsArgs;
@@ -177,58 +171,101 @@ function PlasmicLeftImportsPanel__RenderFunc(props: {
         data-plasmic-name={"importsHeader"}
         data-plasmic-override={overrides.importsHeader}
         actions={
-          true ? (
-            <p.Stack
-              as={"div"}
-              data-plasmic-name={"freeBox"}
-              data-plasmic-override={overrides.freeBox}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox, {
-                [sty.freeBoxwithUpdateAll]: hasVariant(
-                  $state,
-                  "withUpdateAll",
-                  "withUpdateAll"
-                ),
-              })}
+          <p.Stack
+            as={"div"}
+            data-plasmic-name={"freeBox"}
+            data-plasmic-override={overrides.freeBox}
+            hasGap={true}
+            className={classNames(projectcss.all, sty.freeBox, {
+              [sty.freeBoxwithUpdateAll]: hasVariant(
+                $state,
+                "withUpdateAll",
+                "withUpdateAll"
+              ),
+            })}
+          >
+            <Button
+              data-plasmic-name={"importButton"}
+              data-plasmic-override={overrides.importButton}
+              endIcon={
+                <ChevronDownsvgIcon
+                  className={classNames(projectcss.all, sty.svg__loisF)}
+                  role={"img"}
+                />
+              }
+              size={"wide"}
+              startIcon={
+                <PlusIcon
+                  className={classNames(projectcss.all, sty.svg__iQt2K)}
+                  role={"img"}
+                />
+              }
+              type={["secondary"]}
+              withIcons={["startIcon"]}
             >
+              {"Import"}
+            </Button>
+            <Button
+              data-plasmic-name={"refreshButton"}
+              data-plasmic-override={overrides.refreshButton}
+              disabled={
+                hasVariant($state, "state", "refreshing") ? true : undefined
+              }
+              endIcon={
+                <ChevronDownsvgIcon
+                  className={classNames(projectcss.all, sty.svg__ehFcE)}
+                  role={"img"}
+                />
+              }
+              size={"wide"}
+              startIcon={
+                <ResetIcon
+                  className={classNames(projectcss.all, sty.svg___8RJy, {
+                    [sty.svgstate_refreshing___8RJYgHBcw]: hasVariant(
+                      $state,
+                      "state",
+                      "refreshing"
+                    ),
+                  })}
+                  role={"img"}
+                />
+              }
+              type={["clear"]}
+              withIcons={["startIcon"]}
+            >
+              {hasVariant($state, "state", "refreshing")
+                ? "Checking\u2026"
+                : "Check for updates"}
+            </Button>
+            {(
+              hasVariant($state, "withUpdateAll", "withUpdateAll")
+                ? true
+                : false
+            ) ? (
               <Button
-                data-plasmic-name={"importButton"}
-                data-plasmic-override={overrides.importButton}
-                endIcon={
-                  <ChevronDownsvgIcon
-                    className={classNames(projectcss.all, sty.svg__loisF)}
-                    role={"img"}
-                  />
-                }
-                size={"wide" as const}
-                startIcon={
-                  <PlusIcon
-                    className={classNames(projectcss.all, sty.svg__iQt2K)}
-                    role={"img"}
-                  />
-                }
-                type={["secondary"]}
-                withIcons={["startIcon"]}
-              >
-                {"Import"}
-              </Button>
-              <Button
-                data-plasmic-name={"refreshButton"}
-                data-plasmic-override={overrides.refreshButton}
+                data-plasmic-name={"updateButton"}
+                data-plasmic-override={overrides.updateButton}
+                className={classNames("__wab_instance", {
+                  [sty.updateButtonwithUpdateAll]: hasVariant(
+                    $state,
+                    "withUpdateAll",
+                    "withUpdateAll"
+                  ),
+                })}
                 disabled={
                   hasVariant($state, "state", "refreshing") ? true : undefined
                 }
                 endIcon={
                   <ChevronDownsvgIcon
-                    className={classNames(projectcss.all, sty.svg__ehFcE)}
+                    className={classNames(projectcss.all, sty.svg__jX552)}
                     role={"img"}
                   />
                 }
-                size={"wide" as const}
+                size={"wide"}
                 startIcon={
-                  <ResetIcon
-                    className={classNames(projectcss.all, sty.svg___8RJy, {
-                      [sty.svgstate_refreshing___8RJYgHBcw]: hasVariant(
+                  <FetchIcon
+                    className={classNames(projectcss.all, sty.svg__elSwl, {
+                      [sty.svgstate_refreshing__elSwlgHBcw]: hasVariant(
                         $state,
                         "state",
                         "refreshing"
@@ -242,55 +279,10 @@ function PlasmicLeftImportsPanel__RenderFunc(props: {
               >
                 {hasVariant($state, "state", "refreshing")
                   ? "Checking\u2026"
-                  : "Check for updates"}
+                  : "Update all"}
               </Button>
-              {(
-                hasVariant($state, "withUpdateAll", "withUpdateAll")
-                  ? true
-                  : false
-              ) ? (
-                <Button
-                  data-plasmic-name={"updateButton"}
-                  data-plasmic-override={overrides.updateButton}
-                  className={classNames("__wab_instance", {
-                    [sty.updateButtonwithUpdateAll]: hasVariant(
-                      $state,
-                      "withUpdateAll",
-                      "withUpdateAll"
-                    ),
-                  })}
-                  disabled={
-                    hasVariant($state, "state", "refreshing") ? true : undefined
-                  }
-                  endIcon={
-                    <ChevronDownsvgIcon
-                      className={classNames(projectcss.all, sty.svg__jX552)}
-                      role={"img"}
-                    />
-                  }
-                  size={"wide" as const}
-                  startIcon={
-                    <FetchIcon
-                      className={classNames(projectcss.all, sty.svg__elSwl, {
-                        [sty.svgstate_refreshing__elSwlgHBcw]: hasVariant(
-                          $state,
-                          "state",
-                          "refreshing"
-                        ),
-                      })}
-                      role={"img"}
-                    />
-                  }
-                  type={["clear"]}
-                  withIcons={["startIcon"]}
-                >
-                  {hasVariant($state, "state", "refreshing")
-                    ? "Checking\u2026"
-                    : "Update all"}
-                </Button>
-              ) : null}
-            </p.Stack>
-          ) : null
+            ) : null}
+          </p.Stack>
         }
         className={classNames("__wab_instance", sty.importsHeader, {
           [sty.importsHeaderstate_refreshing]: hasVariant(
@@ -398,7 +390,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicLeftImportsPanel__ArgProps,
           internalVariantPropNames: PlasmicLeftImportsPanel__VariantProps,
         }),

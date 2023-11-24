@@ -73,13 +73,7 @@ export interface DefaultFilterButtonProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicFilterButton__RenderFunc(props: {
   variants: PlasmicFilterButton__VariantsArgs;
@@ -129,13 +123,9 @@ function PlasmicFilterButton__RenderFunc(props: {
       className={classNames("__wab_instance", sty.root, {
         [sty.rootisActive]: hasVariant($state, "isActive", "isActive"),
       })}
-      color={
-        hasVariant($state, "isActive", "isActive")
-          ? ("green" as const)
-          : undefined
-      }
-      font={"dim" as const}
-      size={"compact" as const}
+      color={hasVariant($state, "isActive", "isActive") ? "green" : undefined}
+      font={"dim"}
+      size={"compact"}
       type={hasVariant($state, "isActive", "isActive") ? [] : ["clear"]}
       withIcons={["endIcon"]}
     >
@@ -197,7 +187,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicFilterButton__ArgProps,
           internalVariantPropNames: PlasmicFilterButton__VariantProps,
         }),

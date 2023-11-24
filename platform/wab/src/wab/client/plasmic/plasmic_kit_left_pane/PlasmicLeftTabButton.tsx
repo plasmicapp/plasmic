@@ -88,13 +88,7 @@ export interface DefaultLeftTabButtonProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicLeftTabButton__RenderFunc(props: {
   variants: PlasmicLeftTabButton__VariantsArgs;
@@ -182,32 +176,30 @@ function PlasmicLeftTabButton__RenderFunc(props: {
         }
       )}
     >
-      {true ? (
-        <div className={classNames(projectcss.all, sty.freeBox__b5WN)}>
-          {p.renderPlasmicSlot({
-            defaultContents: (
-              <TreeIcon
-                className={classNames(projectcss.all, sty.svg__zvJof)}
-                role={"img"}
-              />
-            ),
+      <div className={classNames(projectcss.all, sty.freeBox__b5WN)}>
+        {p.renderPlasmicSlot({
+          defaultContents: (
+            <TreeIcon
+              className={classNames(projectcss.all, sty.svg__zvJof)}
+              role={"img"}
+            />
+          ),
 
-            value: args.icon,
-            className: classNames(sty.slotTargetIcon, {
-              [sty.slotTargetIconisSelected]: hasVariant(
-                $state,
-                "isSelected",
-                "isSelected"
-              ),
-              [sty.slotTargetIconshowAlert_showAlert]: hasVariant(
-                $state,
-                "showAlert",
-                "showAlert"
-              ),
-            }),
-          })}
-        </div>
-      ) : null}
+          value: args.icon,
+          className: classNames(sty.slotTargetIcon, {
+            [sty.slotTargetIconisSelected]: hasVariant(
+              $state,
+              "isSelected",
+              "isSelected"
+            ),
+            [sty.slotTargetIconshowAlert_showAlert]: hasVariant(
+              $state,
+              "showAlert",
+              "showAlert"
+            ),
+          }),
+        })}
+      </div>
       {(
         hasVariant($state, "showAlert", "showYellowCircle")
           ? true
@@ -239,29 +231,27 @@ function PlasmicLeftTabButton__RenderFunc(props: {
           role={"img"}
         />
       ) : null}
-      {(hasVariant($state, "hasLabel", "hasLabel") ? true : true) ? (
-        <div
-          className={classNames(projectcss.all, sty.freeBox__t4REh, {
-            [sty.freeBoxhasLabel__t4REhrO5Dz]: hasVariant(
+      <div
+        className={classNames(projectcss.all, sty.freeBox__t4REh, {
+          [sty.freeBoxhasLabel__t4REhrO5Dz]: hasVariant(
+            $state,
+            "hasLabel",
+            "hasLabel"
+          ),
+        })}
+      >
+        {p.renderPlasmicSlot({
+          defaultContents: "Label",
+          value: args.label,
+          className: classNames(sty.slotTargetLabel, {
+            [sty.slotTargetLabelhasLabel]: hasVariant(
               $state,
               "hasLabel",
               "hasLabel"
             ),
-          })}
-        >
-          {p.renderPlasmicSlot({
-            defaultContents: "Label",
-            value: args.label,
-            className: classNames(sty.slotTargetLabel, {
-              [sty.slotTargetLabelhasLabel]: hasVariant(
-                $state,
-                "hasLabel",
-                "hasLabel"
-              ),
-            }),
-          })}
-        </div>
-      ) : null}
+          }),
+        })}
+      </div>
     </p.Stack>
   ) as React.ReactElement | null;
 }
@@ -312,7 +302,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicLeftTabButton__ArgProps,
           internalVariantPropNames: PlasmicLeftTabButton__VariantProps,
         }),

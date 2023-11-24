@@ -232,7 +232,7 @@ export const MixinFormContent = observer(function MixinFormContent(props: {
       )}
 
       {(!s || s.container) && (
-        <LayoutSection expsProvider={expsProvider} vsh={vsh} />
+        <LayoutSection expsProvider={expsProvider} vsh={vsh} allowConvert />
       )}
 
       {(!s || s.background) && (

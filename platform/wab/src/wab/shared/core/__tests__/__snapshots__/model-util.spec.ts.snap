@@ -6581,6 +6581,7 @@ Object {
       "__iid": "914",
       "__type": "Theme",
       "active": true,
+      "addItemPrefs": Object {},
       "defaultStyle": Object {
         "__iid": "915",
         "__type": "Mixin",

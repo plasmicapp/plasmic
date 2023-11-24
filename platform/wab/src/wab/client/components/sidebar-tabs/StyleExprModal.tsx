@@ -235,7 +235,7 @@ const StyleExprForm = observer(function StyleExprForm(props: {
         <PositioningPanelSection expsProvider={expsProvider} />
       )}
       {show(PublicStyleSection.Layout) && (
-        <LayoutSection expsProvider={expsProvider} />
+        <LayoutSection expsProvider={expsProvider} allowConvert />
       )}
       {show(PublicStyleSection.Overflow) && (
         <OverflowSection expsProvider={expsProvider} />

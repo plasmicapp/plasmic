@@ -238,8 +238,9 @@ export const StyleTokenControl = observer(function StyleTokenControl(props: {
                       )}
                       {makeUsageControl(
                         summary.themes.map((t) => t.style.name),
-                        "Default Styles"
+                        "Default Typography Styles"
                       )}
+                      {makeUsageControl(summary.addItemPrefs, "Initial Styles")}
                     </>
                   );
 

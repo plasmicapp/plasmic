@@ -283,7 +283,8 @@
           "styles": [],
           "layout": null,
           "active": true,
-          "__type": "Theme"
+          "__type": "Theme",
+          "addItemPrefs": {}
         },
         "5531022": {
           "name": "Default Typography",
@@ -297,7 +298,7 @@
         "5531023": { "values": {}, "mixins": [], "__type": "RuleSet" }
       },
       "deps": [],
-      "version": "225-release-global-actions"
+      "version": "226-add-item-prefs"
     }
   ],
   [
@@ -1951,7 +1952,8 @@
           "styles": [],
           "layout": null,
           "active": true,
-          "__type": "Theme"
+          "__type": "Theme",
+          "addItemPrefs": {}
         },
         "11866076": {
           "name": "Default Typography",
@@ -4329,7 +4331,7 @@
         }
       },
       "deps": [],
-      "version": "225-release-global-actions"
+      "version": "226-add-item-prefs"
     }
   ],
   [
@@ -18115,7 +18117,8 @@
           "styles": [],
           "layout": null,
           "active": true,
-          "__type": "Theme"
+          "__type": "Theme",
+          "addItemPrefs": {}
         },
         "32119076": {
           "name": "Default Typography",
@@ -30935,7 +30938,7 @@
         }
       },
       "deps": [],
-      "version": "225-release-global-actions"
+      "version": "226-add-item-prefs"
     }
   ],
   [
@@ -32649,7 +32652,8 @@
           ],
           "layout": null,
           "active": true,
-          "__type": "Theme"
+          "__type": "Theme",
+          "addItemPrefs": {}
         },
         "zL8-8JQnkFpM": {
           "name": "Screen",
@@ -33048,7 +33052,7 @@
         "9c488568-819f-4186-896f-d32559c8714f",
         "ea14a8ed-7ed0-46bb-b4b3-ff4cbfd151c3"
       ],
-      "version": "225-release-global-actions"
+      "version": "226-add-item-prefs"
     }
   ]
 ]

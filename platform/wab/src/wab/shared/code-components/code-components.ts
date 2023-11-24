@@ -122,7 +122,7 @@ import {
   CONTENT_LAYOUT_WIDE,
   isValidStyleProp,
 } from "@/wab/shared/core/style-props";
-import { getDefaultStyles } from "@/wab/shared/default-styles";
+import { AddItemPrefs, getDefaultStyles } from "@/wab/shared/default-styles";
 import { convertSelfContainerType } from "@/wab/shared/layoututils";
 import { getPlumeEditorPlugin } from "@/wab/shared/plume/plume-registry";
 import { canComponentTakeRef } from "@/wab/shared/react-utils";
@@ -1027,7 +1027,10 @@ async function addNewRegisteredComponents(
           ({ run: changeRun, success: changeSuccess }) => {
             const newComponents = newComponentRegistrations.map(
               (r) =>
-                [r.meta, createCodeComponent(r.meta.name, r.meta, fns)] as const
+                [
+                  r.meta,
+                  createCodeComponent(ctx.site, r.meta.name, r.meta, fns),
+                ] as const
             );
             newComponents.forEach(([_meta, c]) =>
               ctx.tplMgr().attachComponent(c)
@@ -1062,16 +1065,23 @@ async function addNewRegisteredComponents(
 }
 
 function createCodeComponent(
+  site: Site,
   name: string,
   meta: ComponentMeta<any> | GlobalContextMeta<any>,
   fns: CodeComponentSyncCallbackFns
 ) {
+  const prefs = site.activeTheme?.addItemPrefs as AddItemPrefs | undefined;
   const styles =
     "defaultStyles" in meta
       ? meta.defaultStyles &&
-        parseStylesAndHandleErrors(meta.defaultStyles, "component", fns)
+        parseStylesAndHandleErrors(meta.defaultStyles, "component", fns, {
+          prefs,
+        })
       : undefined;
-  const component = mkCodeComponent(meta.name, meta, styles);
+  const component = mkCodeComponent(meta.name, meta, {
+    parsedDefaultStyles: styles,
+    prefs,
+  });
 
   fns.onCreateCodeComponent?.(name, meta);
 
@@ -1125,7 +1135,9 @@ async function refreshCodeComponentMetas(
           if (!meta) {
             return;
           }
-          const mustBeNamed = run(refreshCodeComponentMeta(c, meta, fns));
+          const mustBeNamed = run(
+            refreshCodeComponentMeta(ctx.site, c, meta, fns)
+          );
           if (mustBeNamed) {
             findAllInstancesOfComponent(ctx.site, c).forEach(
               ({ referencedComponent, tpl }) => {
@@ -1148,6 +1160,7 @@ async function refreshCodeComponentMetas(
 }
 
 function refreshCodeComponentMeta(
+  site: Site,
   c: Component,
   meta: ComponentMeta<any>,
   fns: Pick<CodeComponentSyncCallbackFns, "onElementStyleWarnings">
@@ -1192,7 +1205,9 @@ function refreshCodeComponentMeta(
 
       const maybeStylesObj =
         meta.defaultStyles &&
-        parseStylesAndHandleErrors(meta.defaultStyles, "component", fns);
+        parseStylesAndHandleErrors(meta.defaultStyles, "component", fns, {
+          prefs: site.activeTheme?.addItemPrefs as AddItemPrefs | undefined,
+        });
       const defaultStyles = maybeStylesObj
         ? mkRuleSet({
             values: Object.fromEntries(
@@ -2063,9 +2078,10 @@ export function doUpdateComponentProps(
 function parseStylesAndHandleErrors(
   rawStyles: React.CSSProperties,
   elementType: Exclude<PlasmicElement, string>["type"],
-  fns: Pick<CodeComponentSyncCallbackFns, "onElementStyleWarnings">
+  fns: Pick<CodeComponentSyncCallbackFns, "onElementStyleWarnings">,
+  opts: { prefs?: AddItemPrefs }
 ): React.CSSProperties {
-  const { styles, warnings } = parseStyles(rawStyles, elementType);
+  const { styles, warnings } = parseStyles(rawStyles, elementType, opts);
   if (warnings.length > 0) {
     fns.onElementStyleWarnings?.(warnings);
   }
@@ -2223,6 +2239,7 @@ export function elementSchemaToTpl(
   const baseVariant =
     opts.baseVariant ?? component?.variants[0] ?? mkBaseVariant();
   const baseCombo = [baseVariant];
+  const prefs = site.activeTheme?.addItemPrefs as AddItemPrefs | undefined;
   const rec = (schema: PlasmicElement) => {
     return failable<
       { tpl: TplNode; warnings: SchemaWarning[] },
@@ -2251,7 +2268,10 @@ export function elementSchemaToTpl(
       }
       const { styles, warnings: styleWarnings } = parseStyles(
         schema.styles ?? {},
-        schema.type
+        schema.type,
+        {
+          prefs: site.activeTheme?.addItemPrefs as AddItemPrefs | undefined,
+        }
       );
       styleWarnings.forEach((err) => warnings.push(err));
 
@@ -2391,7 +2411,7 @@ export function elementSchemaToTpl(
           const vs = ensureVariantSetting(tpl, baseCombo);
           const rsh = RSH(vs.rs, tpl);
           rsh.set("object-fit", "cover");
-          rsh.merge(getDefaultStyles(AddItemKey.image));
+          rsh.merge(getDefaultStyles(AddItemKey.image, prefs));
           rsh.merge(styles);
           return success({ tpl, warnings });
         }
@@ -2406,7 +2426,8 @@ export function elementSchemaToTpl(
           const vs = ensureVariantSetting(tpl, baseCombo);
           RSH(vs.rs, tpl).merge(
             getDefaultStyles(
-              schema.type === "text" ? AddItemKey.text : AddItemKey.button
+              schema.type === "text" ? AddItemKey.text : AddItemKey.button,
+              prefs
             )
           );
           RSH(vs.rs, tpl).merge(styles);
@@ -2443,7 +2464,8 @@ export function elementSchemaToTpl(
                 ? AddItemKey.box
                 : schema.type === "vbox"
                 ? AddItemKey.vstack
-                : AddItemKey.hstack
+                : AddItemKey.hstack,
+              prefs
             )
           );
           RSH(vs.rs, tpl).merge(styles);
@@ -2473,7 +2495,8 @@ export function elementSchemaToTpl(
                 ? AddItemKey.textbox
                 : schema.type === "password"
                 ? AddItemKey.password
-                : AddItemKey.textarea
+                : AddItemKey.textarea,
+              prefs
             )
           );
           RSH(vs.rs, tpl).merge(styles);
@@ -2537,7 +2560,10 @@ export interface SchemaWarning {
 type LayoutType = "vbox" | "hbox" | "box" | "page-section";
 const LAYOUT_VALUES = ["vbox", "hbox", "box", "page-section"];
 
-function layoutTypeToStyles(layout: LayoutType) {
+function layoutTypeToStyles(
+  layout: LayoutType,
+  opts: { prefs?: AddItemPrefs }
+) {
   return getDefaultStyles(
     layout === "page-section"
       ? AddItemKey.section
@@ -2545,14 +2571,16 @@ function layoutTypeToStyles(layout: LayoutType) {
       ? AddItemKey.box
       : layout === "vbox"
       ? AddItemKey.vstack
-      : AddItemKey.hstack
+      : AddItemKey.hstack,
+    opts.prefs
   );
 }
 
 // Sanitize user defined styles
 export function parseStyles(
   rawStyles: React.CSSProperties,
-  elementType: Exclude<PlasmicElement, String>["type"]
+  elementType: Exclude<PlasmicElement, String>["type"],
+  opts: { prefs?: AddItemPrefs }
 ): {
   styles: CSSProperties;
   warnings: SchemaWarning[];
@@ -2574,7 +2602,7 @@ export function parseStyles(
     | undefined;
 
   if (layout) {
-    Object.assign(sanitized, layoutTypeToStyles(layout));
+    Object.assign(sanitized, layoutTypeToStyles(layout, opts));
   }
 
   const expandedBorderProps = ["width", "style", "color"];
@@ -3074,12 +3102,16 @@ function metaToComponentStates(component: Component, meta: ComponentMeta<any>) {
 export function mkCodeComponent(
   name: string,
   meta: ComponentMeta<any> | GlobalContextMeta<any>,
-  parsedDefaultStyles?: CSSProperties
+  opts: {
+    prefs?: AddItemPrefs;
+    parsedDefaultStyles?: CSSProperties;
+  }
 ) {
-  const styles = parsedDefaultStyles
-    ? parsedDefaultStyles
+  const styles = opts.parsedDefaultStyles
+    ? opts.parsedDefaultStyles
     : "defaultStyles" in meta
-    ? meta.defaultStyles && parseStyles(meta.defaultStyles, "component").styles
+    ? meta.defaultStyles &&
+      parseStyles(meta.defaultStyles, "component", opts).styles
     : undefined;
 
   const component = mkComponent({
@@ -4537,7 +4569,7 @@ export function syncPlumeComponent(siteCtx: SiteCtx, comp: Component) {
 
     // Sync over some component meta attributes that make sense for Components
     // in general
-    run(refreshCodeComponentMeta(comp, compMeta, {}));
+    run(refreshCodeComponentMeta(siteCtx.site, comp, compMeta, {}));
 
     const diff = {
       ...run(compareComponentPropsWithMeta(siteCtx.site, comp, compMeta)),

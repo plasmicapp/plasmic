@@ -73,13 +73,7 @@ export interface DefaultLeftLintIssuesPanelProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicLeftLintIssuesPanel__RenderFunc(props: {
   variants: PlasmicLeftLintIssuesPanel__VariantsArgs;
@@ -141,7 +135,7 @@ function PlasmicLeftLintIssuesPanel__RenderFunc(props: {
                 role={"img"}
               />
             }
-            size={"wide" as const}
+            size={"wide"}
             startIcon={
               <PlusIcon
                 className={classNames(projectcss.all, sty.svg__cxuNo)}
@@ -244,7 +238,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicLeftLintIssuesPanel__ArgProps,
           internalVariantPropNames: PlasmicLeftLintIssuesPanel__VariantProps,
         }),

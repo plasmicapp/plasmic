@@ -83,13 +83,7 @@ export interface DefaultLeftImagesPanelProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicLeftImagesPanel__RenderFunc(props: {
   variants: PlasmicLeftImagesPanel__VariantsArgs;
@@ -175,11 +169,7 @@ function PlasmicLeftImagesPanel__RenderFunc(props: {
                 role={"img"}
               />
             }
-            size={
-              hasVariant($state, "compact", "compact")
-                ? ("small" as const)
-                : ("wide" as const)
-            }
+            size={hasVariant($state, "compact", "compact") ? "small" : "wide"}
             startIcon={
               <PlusIcon
                 className={classNames(projectcss.all, sty.svg__rksSt)}
@@ -227,7 +217,7 @@ function PlasmicLeftImagesPanel__RenderFunc(props: {
         description={
           "Icons are colorable SVGs that you can use throughout your designs."
         }
-        expandState={"expanded" as const}
+        expandState={"expanded"}
         title={"Icons"}
       />
 
@@ -250,7 +240,7 @@ function PlasmicLeftImagesPanel__RenderFunc(props: {
                 role={"img"}
               />
             }
-            size={"wide" as const}
+            size={"wide"}
             startIcon={
               <PlusIcon
                 className={classNames(projectcss.all, sty.svg___5CEB)}
@@ -299,9 +289,7 @@ function PlasmicLeftImagesPanel__RenderFunc(props: {
           "Images are any PNGs, JPGs, or non-colorable SVGs that you can use throughout your designs as pictures or background images."
         }
         expandState={
-          hasVariant($state, "compact", "compact")
-            ? ("expanded" as const)
-            : undefined
+          hasVariant($state, "compact", "compact") ? "expanded" : undefined
         }
         title={"Images"}
       />
@@ -390,7 +378,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicLeftImagesPanel__ArgProps,
           internalVariantPropNames: PlasmicLeftImagesPanel__VariantProps,
         }),

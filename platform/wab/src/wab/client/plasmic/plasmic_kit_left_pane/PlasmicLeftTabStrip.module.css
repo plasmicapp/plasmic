@@ -27,10 +27,6 @@
   max-width: 100%;
   position: relative;
   margin-bottom: 10px;
-  display: flex;
-}
-.insertwithInsertButton:global(.__wab_instance) {
-  display: flex;
 }
 .freeBox__s2Zn2 {
   display: flex;
@@ -48,7 +44,6 @@
 .leftTabButton__xnfKt:global(.__wab_instance) {
   position: relative;
   flex-shrink: 0;
-  display: flex;
 }
 .svg__fJuLy {
   position: relative;
@@ -63,7 +58,6 @@
 .svg__rJYem {
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .leftTabButton__uOnAi:global(.__wab_instance) {
@@ -136,7 +130,6 @@
 .svg__wujwR {
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .tokens:global(.__wab_instance) {
@@ -156,7 +149,6 @@
 .svg__mn5Uf {
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .mixins:global(.__wab_instance) {
@@ -170,7 +162,6 @@
 .svg__nxYe {
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .components:global(.__wab_instance) {
@@ -190,7 +181,6 @@
 .svg__kca03 {
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .pages:global(.__wab_instance) {
@@ -230,7 +220,6 @@
 .svg___75XmC {
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .themes:global(.__wab_instance) {
@@ -281,7 +270,6 @@
 .svg__qjH4W {
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .splits:global(.__wab_instance) {
@@ -341,7 +329,6 @@
 .svg__pfWid {
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .settings:global(.__wab_instance) {
@@ -356,7 +343,6 @@
 .svg__kWpBc {
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .endpoints:global(.__wab_instance) {
@@ -375,7 +361,6 @@
   position: relative;
   object-fit: cover;
   height: 1em;
-  width: 1em;
 }
 .helpGroup:global(.__wab_instance) {
   position: relative;
@@ -391,7 +376,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .svg__b3F {
@@ -399,7 +383,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .freeBox___3AubH {
@@ -451,7 +434,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .svg__gjOa1 {
@@ -459,7 +441,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .keyboard:global(.__wab_instance) {
@@ -473,7 +454,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .svg__zTmmf {
@@ -481,7 +461,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .slack:global(.__wab_instance) {
@@ -506,7 +485,6 @@
 .svg__pqmVd {
   display: flex;
   object-fit: cover;
-  width: 1em;
   height: 1em;
   flex-shrink: 0;
 }
@@ -515,7 +493,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .help:global(.__wab_instance) {
@@ -529,7 +506,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .svg__t8IHm {
@@ -537,7 +513,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .freeBox__igmvF {
@@ -577,9 +552,6 @@
 .img__fZbIh > picture > img {
   object-fit: cover;
 }
-.img__fZbIh > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .imgshowAvatar__fZbIh9NVfe {
   width: 24px;
   height: 24px;
@@ -592,7 +564,6 @@
 .svg__jFq8B {
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
   flex-shrink: 0;
 }
@@ -612,9 +583,6 @@
 .img__hptuc > picture > img {
   object-fit: cover;
 }
-.img__hptuc > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .imgshowAvatar__hptuc9NVfe {
   width: 24px;
   height: 24px;
@@ -631,9 +599,6 @@
 .img__l76QL > picture > img {
   object-fit: cover;
 }
-.img__l76QL > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .imgshowAvatar__l76QL9NVfe {
   width: 24px;
   height: 24px;
@@ -645,12 +610,8 @@
 }
 .avatar {
   object-fit: cover;
-  display: block !important;
 }
 .avatar > picture > img {
-  object-fit: cover;
-}
-.avatar > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .avatarshowAvatar {

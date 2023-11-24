@@ -82,6 +82,7 @@ import { standardCorners, standardSides } from "./geom";
 import { getGoogFontMeta } from "./googfonts";
 import { getImageAssetVarName, resolveAllAssetRefs } from "./image-assets";
 import { walkDependencyTree } from "./project-deps";
+import { AddItemKey } from "./shared/add-item-keys";
 import { getArenaFrames } from "./shared/Arenas";
 import {
   makeTokenRefResolver,
@@ -2801,6 +2802,12 @@ export function cloneTheme(theme: Theme) {
     active: theme.active,
     styles: theme.styles.map((s) => cloneThemeStyle(s)),
     layout: theme.layout ? cloneThemeLayoutSettings(theme.layout) : null,
+    addItemPrefs: Object.fromEntries(
+      Object.entries(theme.addItemPrefs).map(([key, rs]) => [
+        key,
+        cloneRuleSet(rs),
+      ])
+    ),
   });
 }
 
@@ -2886,6 +2893,7 @@ export interface TokenUsageSummary {
   mixins: Mixin[];
   tokens: StyleToken[];
   themes: DefaultStyle[];
+  addItemPrefs: AddItemKey[];
 }
 
 export function extractTokenUsages(
@@ -2896,6 +2904,7 @@ export function extractTokenUsages(
   const usingComponents = new Set<Component>();
   const usingMixins = new Set<Mixin>();
   const usingThemes = new Set<DefaultStyle>();
+  const usingAddItemPrefs = new Set<AddItemKey>();
   const usingTokens = new Set<StyleToken>();
   const traverseTpl = (tplRoot: TplNode, component: Component) => {
     const trackComponent = () => {
@@ -2967,6 +2976,11 @@ export function extractTokenUsages(
         });
       }
     }
+    for (const [key, rs] of Object.entries(theme.addItemPrefs)) {
+      if (findUsagesInRs(rs)) {
+        usingAddItemPrefs.add(key as AddItemKey);
+      }
+    }
   }
   for (const t of site.styleTokens) {
     if (extractAllReferencedTokenIds(t.value).includes(token.uuid)) {
@@ -2989,6 +3003,7 @@ export function extractTokenUsages(
     tokens: [...usingTokens],
     themes: [...usingThemes],
     frames: usingFrames,
+    addItemPrefs: [...usingAddItemPrefs],
   });
 }
 

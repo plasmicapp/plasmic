@@ -72,13 +72,7 @@ export interface DefaultLeftComponentsPanelProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicLeftComponentsPanel__RenderFunc(props: {
   variants: PlasmicLeftComponentsPanel__VariantsArgs;
@@ -139,7 +133,7 @@ function PlasmicLeftComponentsPanel__RenderFunc(props: {
                 role={"img"}
               />
             }
-            size={"wide" as const}
+            size={"wide"}
             startIcon={
               <PlusIcon
                 className={classNames(projectcss.all, sty.svg__ao8JE)}
@@ -226,7 +220,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicLeftComponentsPanel__ArgProps,
           internalVariantPropNames: PlasmicLeftComponentsPanel__VariantProps,
         }),

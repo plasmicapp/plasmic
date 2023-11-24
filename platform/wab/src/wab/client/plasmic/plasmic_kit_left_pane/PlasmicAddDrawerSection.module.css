@@ -64,7 +64,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .iconButton___8Kc5N:global(.__wab_instance) {
@@ -84,7 +83,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .img__v3T1K {
@@ -94,8 +92,5 @@
   min-width: 0;
 }
 .img__v3T1K > picture > img {
-  object-fit: cover;
-}
-.img__v3T1K > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }

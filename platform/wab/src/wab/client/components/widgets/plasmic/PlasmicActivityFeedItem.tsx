@@ -113,13 +113,7 @@ export interface DefaultActivityFeedItemProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicActivityFeedItem__RenderFunc(props: {
   variants: PlasmicActivityFeedItem__VariantsArgs;
@@ -208,70 +202,68 @@ function PlasmicActivityFeedItem__RenderFunc(props: {
           ),
         })}
       >
-        {(hasVariant($state, "state", "versionPublished") ? true : true) ? (
-          <div
-            data-plasmic-name={"text"}
-            data-plasmic-override={overrides.text}
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text,
-              {
-                [sty.textstate_anonymousVisited]: hasVariant(
-                  $state,
-                  "state",
-                  "anonymousVisited"
-                ),
-                [sty.textstate_projectCreated]: hasVariant(
-                  $state,
-                  "state",
-                  "projectCreated"
-                ),
-                [sty.textstate_projectForked]: hasVariant(
-                  $state,
-                  "state",
-                  "projectForked"
-                ),
-                [sty.textstate_projectRenamed]: hasVariant(
-                  $state,
-                  "state",
-                  "projectRenamed"
-                ),
-                [sty.textstate_projectShared]: hasVariant(
-                  $state,
-                  "state",
-                  "projectShared"
-                ),
-                [sty.textstate_userVisited]: hasVariant(
-                  $state,
-                  "state",
-                  "userVisited"
-                ),
-                [sty.textstate_versionPublished]: hasVariant(
-                  $state,
-                  "state",
-                  "versionPublished"
-                ),
-              }
-            )}
-          >
-            {hasVariant($state, "state", "versionPublished")
-              ? "\ud83d\uddc3\ufe0f"
-              : hasVariant($state, "state", "anonymousVisited")
-              ? "\ud83d\udd75\ufe0f"
-              : hasVariant($state, "state", "userVisited")
-              ? "\ud83d\ude0e"
-              : hasVariant($state, "state", "projectForked")
-              ? "\ud83c\udf5d"
-              : hasVariant($state, "state", "projectShared")
-              ? "\ud83d\udc4b"
-              : hasVariant($state, "state", "projectRenamed")
-              ? "\u2328\ufe0f"
-              : hasVariant($state, "state", "projectCreated")
-              ? "\u2728"
-              : "\ud83e\udd26\u200d\u2640\ufe0f"}
-          </div>
-        ) : null}
+        <div
+          data-plasmic-name={"text"}
+          data-plasmic-override={overrides.text}
+          className={classNames(
+            projectcss.all,
+            projectcss.__wab_text,
+            sty.text,
+            {
+              [sty.textstate_anonymousVisited]: hasVariant(
+                $state,
+                "state",
+                "anonymousVisited"
+              ),
+              [sty.textstate_projectCreated]: hasVariant(
+                $state,
+                "state",
+                "projectCreated"
+              ),
+              [sty.textstate_projectForked]: hasVariant(
+                $state,
+                "state",
+                "projectForked"
+              ),
+              [sty.textstate_projectRenamed]: hasVariant(
+                $state,
+                "state",
+                "projectRenamed"
+              ),
+              [sty.textstate_projectShared]: hasVariant(
+                $state,
+                "state",
+                "projectShared"
+              ),
+              [sty.textstate_userVisited]: hasVariant(
+                $state,
+                "state",
+                "userVisited"
+              ),
+              [sty.textstate_versionPublished]: hasVariant(
+                $state,
+                "state",
+                "versionPublished"
+              ),
+            }
+          )}
+        >
+          {hasVariant($state, "state", "versionPublished")
+            ? "\ud83d\uddc3\ufe0f"
+            : hasVariant($state, "state", "anonymousVisited")
+            ? "\ud83d\udd75\ufe0f"
+            : hasVariant($state, "state", "userVisited")
+            ? "\ud83d\ude0e"
+            : hasVariant($state, "state", "projectForked")
+            ? "\ud83c\udf5d"
+            : hasVariant($state, "state", "projectShared")
+            ? "\ud83d\udc4b"
+            : hasVariant($state, "state", "projectRenamed")
+            ? "\u2328\ufe0f"
+            : hasVariant($state, "state", "projectCreated")
+            ? "\u2728"
+            : "\ud83e\udd26\u200d\u2640\ufe0f"}
+        </div>
         <div
           className={classNames(projectcss.all, sty.freeBox__wrNkZ, {
             [sty.freeBoxselected__wrNkZ7Xsi1]: hasVariant(
@@ -374,9 +366,7 @@ function PlasmicActivityFeedItem__RenderFunc(props: {
                   projectcss.img,
                   sty.img___14Wx
                 )}
-                src={
-                  "http://localhost:3003/static/img/placeholder.png" as const
-                }
+                src={"http://localhost:3003/static/img/placeholder.png"}
               />
             ),
 
@@ -507,7 +497,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicActivityFeedItem__ArgProps,
           internalVariantPropNames: PlasmicActivityFeedItem__VariantProps,
         }),

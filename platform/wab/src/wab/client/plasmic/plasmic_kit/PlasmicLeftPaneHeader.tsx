@@ -120,13 +120,7 @@ export interface DefaultLeftPaneHeaderProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicLeftPaneHeader__RenderFunc(props: {
   variants: PlasmicLeftPaneHeader__VariantsArgs;
@@ -248,175 +242,161 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
             ),
           })}
         >
-          {(hasVariant($state, "showAlert", "showAlert") ? true : true) ? (
-            <p.Stack
-              as={"div"}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox__f9FwI, {
-                [sty.freeBoxnoDescription__f9FwIcTtUc]: hasVariant(
+          <p.Stack
+            as={"div"}
+            hasGap={true}
+            className={classNames(projectcss.all, sty.freeBox__f9FwI, {
+              [sty.freeBoxnoDescription__f9FwIcTtUc]: hasVariant(
+                $state,
+                "noDescription",
+                "noDescription"
+              ),
+              [sty.freeBoxshowAlert__f9FwI7K1Nc]: hasVariant(
+                $state,
+                "showAlert",
+                "showAlert"
+              ),
+            })}
+          >
+            <div
+              data-plasmic-name={"titleContainer"}
+              data-plasmic-override={overrides.titleContainer}
+              className={classNames(projectcss.all, sty.titleContainer, {
+                [sty.titleContainercompact]: hasVariant(
                   $state,
-                  "noDescription",
-                  "noDescription"
+                  "compact",
+                  "compact"
                 ),
-                [sty.freeBoxshowAlert__f9FwI7K1Nc]: hasVariant(
+                [sty.titleContainerexpandState_collapsed]: hasVariant(
+                  $state,
+                  "expandState",
+                  "collapsed"
+                ),
+                [sty.titleContainerexpandState_expanded]: hasVariant(
+                  $state,
+                  "expandState",
+                  "expanded"
+                ),
+                [sty.titleContainershowAlert]: hasVariant(
                   $state,
                   "showAlert",
                   "showAlert"
                 ),
               })}
             >
-              {(hasVariant($state, "compact", "compact") ? true : true) ? (
-                <div
-                  data-plasmic-name={"titleContainer"}
-                  data-plasmic-override={overrides.titleContainer}
-                  className={classNames(projectcss.all, sty.titleContainer, {
-                    [sty.titleContainercompact]: hasVariant(
+              {p.renderPlasmicSlot({
+                defaultContents: "Color tokens",
+                value: args.title,
+                className: classNames(sty.slotTargetTitle, {
+                  [sty.slotTargetTitlecompact]: hasVariant(
+                    $state,
+                    "compact",
+                    "compact"
+                  ),
+                  [sty.slotTargetTitleshowAlert]: hasVariant(
+                    $state,
+                    "showAlert",
+                    "showAlert"
+                  ),
+                }),
+              })}
+              <div
+                data-plasmic-name={"titleActionsContainer"}
+                data-plasmic-override={overrides.titleActionsContainer}
+                className={classNames(
+                  projectcss.all,
+                  sty.titleActionsContainer,
+                  {
+                    [sty.titleActionsContainerhasTitleActions]: hasVariant(
                       $state,
-                      "compact",
-                      "compact"
+                      "hasTitleActions",
+                      "hasTitleActions"
                     ),
-                    [sty.titleContainerexpandState_collapsed]: hasVariant(
+                  }
+                )}
+              >
+                {p.renderPlasmicSlot({
+                  defaultContents: null,
+                  value: args.titleActions,
+                })}
+              </div>
+              {(
+                hasVariant($state, "expandState", "collapsed")
+                  ? true
+                  : hasVariant($state, "expandState", "expanded")
+                  ? true
+                  : false
+              ) ? (
+                <ExpandButton
+                  data-plasmic-name={"expandButton"}
+                  data-plasmic-override={overrides.expandButton}
+                  className={classNames("__wab_instance", sty.expandButton, {
+                    [sty.expandButtonexpandState_collapsed]: hasVariant(
                       $state,
                       "expandState",
                       "collapsed"
                     ),
-                    [sty.titleContainerexpandState_expanded]: hasVariant(
+                    [sty.expandButtonexpandState_expanded]: hasVariant(
                       $state,
                       "expandState",
                       "expanded"
                     ),
-                    [sty.titleContainershowAlert]: hasVariant(
+                  })}
+                  isExpanded={
+                    hasVariant($state, "expandState", "expanded")
+                      ? true
+                      : undefined
+                  }
+                />
+              ) : null}
+            </div>
+            {(
+              hasVariant($state, "noDescription", "noDescription")
+                ? false
+                : hasVariant($state, "expandState", "collapsed")
+                ? true
+                : hasVariant($state, "compact", "compact")
+                ? true
+                : true
+            ) ? (
+              <div
+                data-plasmic-name={"descriptionContainer"}
+                data-plasmic-override={overrides.descriptionContainer}
+                className={classNames(
+                  projectcss.all,
+                  sty.descriptionContainer,
+                  {
+                    [sty.descriptionContainercompact]: hasVariant(
+                      $state,
+                      "compact",
+                      "compact"
+                    ),
+                    [sty.descriptionContainerexpandState_collapsed]: hasVariant(
+                      $state,
+                      "expandState",
+                      "collapsed"
+                    ),
+                    [sty.descriptionContainernoDescription]: hasVariant(
+                      $state,
+                      "noDescription",
+                      "noDescription"
+                    ),
+                    [sty.descriptionContainershowAlert]: hasVariant(
                       $state,
                       "showAlert",
                       "showAlert"
                     ),
-                  })}
-                >
-                  {p.renderPlasmicSlot({
-                    defaultContents: "Color tokens",
-                    value: args.title,
-                    className: classNames(sty.slotTargetTitle, {
-                      [sty.slotTargetTitlecompact]: hasVariant(
-                        $state,
-                        "compact",
-                        "compact"
-                      ),
-                      [sty.slotTargetTitleshowAlert]: hasVariant(
-                        $state,
-                        "showAlert",
-                        "showAlert"
-                      ),
-                    }),
-                  })}
-                  {(
-                    hasVariant($state, "hasTitleActions", "hasTitleActions")
-                      ? true
-                      : true
-                  ) ? (
-                    <div
-                      data-plasmic-name={"titleActionsContainer"}
-                      data-plasmic-override={overrides.titleActionsContainer}
-                      className={classNames(
-                        projectcss.all,
-                        sty.titleActionsContainer,
-                        {
-                          [sty.titleActionsContainerhasTitleActions]:
-                            hasVariant(
-                              $state,
-                              "hasTitleActions",
-                              "hasTitleActions"
-                            ),
-                        }
-                      )}
-                    >
-                      {p.renderPlasmicSlot({
-                        defaultContents: null,
-                        value: args.titleActions,
-                      })}
-                    </div>
-                  ) : null}
-                  {(
-                    hasVariant($state, "expandState", "collapsed")
-                      ? true
-                      : hasVariant($state, "expandState", "expanded")
-                      ? true
-                      : false
-                  ) ? (
-                    <ExpandButton
-                      data-plasmic-name={"expandButton"}
-                      data-plasmic-override={overrides.expandButton}
-                      className={classNames(
-                        "__wab_instance",
-                        sty.expandButton,
-                        {
-                          [sty.expandButtonexpandState_collapsed]: hasVariant(
-                            $state,
-                            "expandState",
-                            "collapsed"
-                          ),
-                          [sty.expandButtonexpandState_expanded]: hasVariant(
-                            $state,
-                            "expandState",
-                            "expanded"
-                          ),
-                        }
-                      )}
-                      isExpanded={
-                        hasVariant($state, "expandState", "expanded")
-                          ? true
-                          : undefined
-                      }
-                    />
-                  ) : null}
-                </div>
-              ) : null}
-              {(
-                hasVariant($state, "noDescription", "noDescription")
-                  ? false
-                  : hasVariant($state, "expandState", "collapsed")
-                  ? true
-                  : hasVariant($state, "compact", "compact")
-                  ? true
-                  : true
-              ) ? (
-                <div
-                  data-plasmic-name={"descriptionContainer"}
-                  data-plasmic-override={overrides.descriptionContainer}
-                  className={classNames(
-                    projectcss.all,
-                    sty.descriptionContainer,
-                    {
-                      [sty.descriptionContainercompact]: hasVariant(
-                        $state,
-                        "compact",
-                        "compact"
-                      ),
-                      [sty.descriptionContainerexpandState_collapsed]:
-                        hasVariant($state, "expandState", "collapsed"),
-                      [sty.descriptionContainernoDescription]: hasVariant(
-                        $state,
-                        "noDescription",
-                        "noDescription"
-                      ),
-                      [sty.descriptionContainershowAlert]: hasVariant(
-                        $state,
-                        "showAlert",
-                        "showAlert"
-                      ),
-                    }
-                  )}
-                >
-                  {(hasVariant($state, "compact", "compact") ? true : true)
-                    ? p.renderPlasmicSlot({
-                        defaultContents:
-                          "Color tokens are reusable color values that you can name and apply anywhere there you have a color picker (fill color, text color, etc.).  You can even define color tokens in terms of other color tokens.",
-                        value: args.description,
-                      })
-                    : null}
-                </div>
-              ) : null}
-            </p.Stack>
-          ) : null}
+                  }
+                )}
+              >
+                {p.renderPlasmicSlot({
+                  defaultContents:
+                    "Color tokens are reusable color values that you can name and apply anywhere there you have a color picker (fill color, text color, etc.).  You can even define color tokens in terms of other color tokens.",
+                  value: args.description,
+                })}
+              </div>
+            ) : null}
+          </p.Stack>
           {(
             hasVariant($state, "compact", "compact")
               ? true
@@ -524,72 +504,60 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
                 value: args.compactTitle,
               })
             : null}
-          {true ? (
-            <p.Stack
-              as={"div"}
-              hasGap={true}
-              className={classNames(projectcss.all, sty.freeBox___1SjU4)}
-            >
-              {p.renderPlasmicSlot({
-                defaultContents: (
-                  <Button
-                    endIcon={
-                      <ChevronDownsvgIcon
-                        className={classNames(projectcss.all, sty.svg__ne1Zy)}
-                        role={"img"}
-                      />
-                    }
-                    size={"wide" as const}
-                    startIcon={
-                      <PlusIcon
-                        className={classNames(projectcss.all, sty.svg__xTd68)}
-                        role={"img"}
-                      />
-                    }
-                    type={["secondary"]}
-                    withIcons={["startIcon"]}
-                  >
-                    {"New token"}
-                  </Button>
-                ),
-                value: args.actions,
-              })}
-              {(
-                hasVariant($state, "compact", "compact") &&
-                hasVariant($state, "expandState", "collapsed")
-                  ? true
-                  : hasVariant($state, "compact", "compact") &&
-                    hasVariant($state, "expandState", "expanded")
-                  ? true
-                  : true
-              ) ? (
-                <ExpandButton
-                  data-plasmic-name={"expandButton2"}
-                  data-plasmic-override={overrides.expandButton2}
-                  className={classNames("__wab_instance", sty.expandButton2, {
-                    [sty.expandButton2compact]: hasVariant(
-                      $state,
-                      "compact",
-                      "compact"
-                    ),
-                    [sty.expandButton2compact_expandState_collapsed]:
-                      hasVariant($state, "compact", "compact") &&
-                      hasVariant($state, "expandState", "collapsed"),
-                    [sty.expandButton2compact_expandState_expanded]:
-                      hasVariant($state, "compact", "compact") &&
-                      hasVariant($state, "expandState", "expanded"),
-                  })}
-                  isExpanded={
-                    hasVariant($state, "compact", "compact") &&
-                    hasVariant($state, "expandState", "expanded")
-                      ? true
-                      : undefined
+          <p.Stack
+            as={"div"}
+            hasGap={true}
+            className={classNames(projectcss.all, sty.freeBox___1SjU4)}
+          >
+            {p.renderPlasmicSlot({
+              defaultContents: (
+                <Button
+                  endIcon={
+                    <ChevronDownsvgIcon
+                      className={classNames(projectcss.all, sty.svg__ne1Zy)}
+                      role={"img"}
+                    />
                   }
-                  size={"small" as const}
-                />
-              ) : null}
-            </p.Stack>
-          ) : null}
+                  size={"wide"}
+                  startIcon={
+                    <PlusIcon
+                      className={classNames(projectcss.all, sty.svg__xTd68)}
+                      role={"img"}
+                    />
+                  }
+                  type={["secondary"]}
+                  withIcons={["startIcon"]}
+                >
+                  {"New token"}
+                </Button>
+              ),
+              value: args.actions,
+            })}
+            <ExpandButton
+              data-plasmic-name={"expandButton2"}
+              data-plasmic-override={overrides.expandButton2}
+              className={classNames("__wab_instance", sty.expandButton2, {
+                [sty.expandButton2compact]: hasVariant(
+                  $state,
+                  "compact",
+                  "compact"
+                ),
+                [sty.expandButton2compact_expandState_collapsed]:
+                  hasVariant($state, "compact", "compact") &&
+                  hasVariant($state, "expandState", "collapsed"),
+                [sty.expandButton2compact_expandState_expanded]:
+                  hasVariant($state, "compact", "compact") &&
+                  hasVariant($state, "expandState", "expanded"),
+              })}
+              isExpanded={
+                hasVariant($state, "compact", "compact") &&
+                hasVariant($state, "expandState", "expanded")
+                  ? true
+                  : undefined
+              }
+              size={"small"}
+            />
+          </p.Stack>
         </p.Stack>
       ) : null}
     </p.Stack>
@@ -663,7 +631,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicLeftPaneHeader__ArgProps,
           internalVariantPropNames: PlasmicLeftPaneHeader__VariantProps,
         }),

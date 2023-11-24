@@ -24,7 +24,8 @@
           "styles": [],
           "layout": { "__ref": "C4GB0KU3KFyO" },
           "active": true,
-          "__type": "Theme"
+          "__type": "Theme",
+          "addItemPrefs": {}
         },
         "eAeyKovPET4q": {
           "uuid": "Q2JSGqXY9Epp",
@@ -27019,7 +27020,7 @@
         }
       },
       "deps": [],
-      "version": "225-release-global-actions"
+      "version": "226-add-item-prefs"
     }
   ],
   [
@@ -27437,7 +27438,8 @@
           ],
           "layout": { "__ref": "wlVFKGSsecz5" },
           "active": true,
-          "__type": "Theme"
+          "__type": "Theme",
+          "addItemPrefs": {}
         },
         "rTQLNhhNIewI": { "name": "text", "__type": "Text" },
         "26K0x-nxDWQW": {
@@ -29421,7 +29423,7 @@
         "0C_x9nWtO9s1": { "tpl": [], "__type": "VirtualRenderExpr" }
       },
       "deps": ["2d9b4d39-3373-465f-8045-538cac45fce6"],
-      "version": "225-release-global-actions"
+      "version": "226-add-item-prefs"
     }
   ]
 ]

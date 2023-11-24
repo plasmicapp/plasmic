@@ -166,7 +166,7 @@ export const INSERTABLES: readonly AddItem[] = [
       ensureBaseRs(vc, tag, {
         position: "relative",
         display: "block",
-        ...getSimplifiedStyles(AddItemKey.box),
+        ...getSimplifiedStyles(AddItemKey.box, vc.studioCtx.getAddItemPrefs()),
       });
       return tag;
     },
@@ -185,7 +185,10 @@ export const INSERTABLES: readonly AddItem[] = [
         position: "relative",
         alignItems: "stretch",
         justifyContent: "flex-start",
-        ...getSimplifiedStyles(AddItemKey.hstack),
+        ...getSimplifiedStyles(
+          AddItemKey.hstack,
+          vc.studioCtx.getAddItemPrefs()
+        ),
       });
       return tag;
     },
@@ -204,7 +207,10 @@ export const INSERTABLES: readonly AddItem[] = [
         position: "relative",
         alignItems: "stretch",
         justifyContent: "flex-start",
-        ...getSimplifiedStyles(AddItemKey.vstack),
+        ...getSimplifiedStyles(
+          AddItemKey.vstack,
+          vc.studioCtx.getAddItemPrefs()
+        ),
       });
       return tag;
     },
@@ -251,12 +257,18 @@ export const INSERTABLES: readonly AddItem[] = [
         tag,
         variant,
         isBaseColumn,
-        getSimplifiedStyles(AddItemKey.columns)
+        getSimplifiedStyles(AddItemKey.columns, vc.studioCtx.getAddItemPrefs())
       );
 
       L.range(2).forEach(() => {
         $$$(tag).append(
-          makeTplColumn(vc, getSimplifiedStyles(AddItemKey.vstack))
+          makeTplColumn(
+            vc,
+            getSimplifiedStyles(
+              AddItemKey.vstack,
+              vc.studioCtx.getAddItemPrefs()
+            )
+          )
         );
       });
 
@@ -276,12 +288,16 @@ export const INSERTABLES: readonly AddItem[] = [
         position: "relative",
         display: "grid",
         gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-        ...getSimplifiedStyles(AddItemKey.grid),
+        ...getSimplifiedStyles(AddItemKey.grid, vc.studioCtx.getAddItemPrefs()),
       });
 
       L.range(2).forEach(() => {
         const vertStack = vc.variantTplMgr().mkTplTagX("div");
-        ensureBaseRs(vc, vertStack, getSimplifiedStyles(AddItemKey.vstack));
+        ensureBaseRs(
+          vc,
+          vertStack,
+          getSimplifiedStyles(AddItemKey.vstack, vc.studioCtx.getAddItemPrefs())
+        );
         $$$(tag).append(vertStack);
       });
       return tag;
@@ -298,7 +314,10 @@ export const INSERTABLES: readonly AddItem[] = [
       ensureBaseRs(vc, tag, {
         position: "relative",
         ...CONTENT_LAYOUT_INITIALS,
-        ...getSimplifiedStyles(AddItemKey.section),
+        ...getSimplifiedStyles(
+          AddItemKey.section,
+          vc.studioCtx.getAddItemPrefs()
+        ),
         width: CONTENT_LAYOUT_FULL_BLEED,
       });
       return tag;
@@ -319,7 +338,10 @@ export const INSERTABLES: readonly AddItem[] = [
         position: "relative",
         alignItems: "stretch",
         justifyContent: "flex-start",
-        ...getSimplifiedStyles(AddItemKey.stack),
+        ...getSimplifiedStyles(
+          AddItemKey.stack,
+          vc.studioCtx.getAddItemPrefs()
+        ),
       });
       return tag;
     },
@@ -334,7 +356,7 @@ export const INSERTABLES: readonly AddItem[] = [
       const tag = vc.variantTplMgr().mkTplInlinedText("Enter some text", "div");
       ensureBaseRs(vc, tag, {
         position: "relative",
-        ...getSimplifiedStyles(AddItemKey.text),
+        ...getSimplifiedStyles(AddItemKey.text, vc.studioCtx.getAddItemPrefs()),
       });
       return tag;
     },
@@ -348,7 +370,11 @@ export const INSERTABLES: readonly AddItem[] = [
     factory(vc: ViewCtx) {
       const vtm = vc.variantTplMgr();
       const tag = vtm.mkTplImage({ type: ImageAssetType.Picture });
-      ensureBaseRs(vc, tag, getSimplifiedStyles(AddItemKey.image));
+      ensureBaseRs(
+        vc,
+        tag,
+        getSimplifiedStyles(AddItemKey.image, vc.studioCtx.getAddItemPrefs())
+      );
       return tag;
     },
   },
@@ -361,7 +387,11 @@ export const INSERTABLES: readonly AddItem[] = [
     factory(vc: ViewCtx) {
       const vtm = vc.variantTplMgr();
       const tag = vtm.mkTplImage({ type: ImageAssetType.Icon });
-      ensureBaseRs(vc, tag, getSimplifiedStyles(AddItemKey.icon));
+      ensureBaseRs(
+        vc,
+        tag,
+        getSimplifiedStyles(AddItemKey.icon, vc.studioCtx.getAddItemPrefs())
+      );
       return tag;
     },
   },
@@ -378,7 +408,11 @@ export const INSERTABLES: readonly AddItem[] = [
           href: "https://www.plasmic.app/",
         },
       });
-      ensureBaseRs(vc, tag, getSimplifiedStyles(AddItemKey.link));
+      ensureBaseRs(
+        vc,
+        tag,
+        getSimplifiedStyles(AddItemKey.link, vc.studioCtx.getAddItemPrefs())
+      );
       return tag;
     },
   },
@@ -396,7 +430,10 @@ export const INSERTABLES: readonly AddItem[] = [
         position: "relative",
         alignItems: "stretch",
         justifyContent: "flex-start",
-        ...getSimplifiedStyles(AddItemKey.hstack),
+        ...getSimplifiedStyles(
+          AddItemKey.hstack,
+          vc.studioCtx.getAddItemPrefs()
+        ),
       });
       return tag;
     },
@@ -415,7 +452,11 @@ export const INSERTABLES: readonly AddItem[] = [
     factory(vc: ViewCtx) {
       const vtm = vc.variantTplMgr();
       const tag = vtm.mkTplInlinedText("Click Me", "button");
-      ensureBaseRs(vc, tag, getSimplifiedStyles(AddItemKey.button));
+      ensureBaseRs(
+        vc,
+        tag,
+        getSimplifiedStyles(AddItemKey.button, vc.studioCtx.getAddItemPrefs())
+      );
       return tag;
     },
   },
@@ -446,7 +487,11 @@ export const INSERTABLES: readonly AddItem[] = [
         },
       });
       vc.getViewOps().renameTpl(AddItemKey.textbox, tag, vc.component);
-      ensureBaseRs(vc, tag, getSimplifiedStyles(AddItemKey.textbox));
+      ensureBaseRs(
+        vc,
+        tag,
+        getSimplifiedStyles(AddItemKey.textbox, vc.studioCtx.getAddItemPrefs())
+      );
       return tag;
     },
   },
@@ -465,7 +510,11 @@ export const INSERTABLES: readonly AddItem[] = [
         attrs: { value: "This is a text area." },
       });
       vc.getViewOps().renameTpl(AddItemKey.textarea, tag, vc.component);
-      ensureBaseRs(vc, tag, getSimplifiedStyles(AddItemKey.textarea));
+      ensureBaseRs(
+        vc,
+        tag,
+        getSimplifiedStyles(AddItemKey.textarea, vc.studioCtx.getAddItemPrefs())
+      );
       return tag;
     },
   },
@@ -481,7 +530,10 @@ export const INSERTABLES: readonly AddItem[] = [
       vc.getViewOps().renameTpl(AddItemKey.password, tag, vc.component);
       ensureBaseRs(vc, tag, {
         width: "180px",
-        ...getSimplifiedStyles(AddItemKey.password),
+        ...getSimplifiedStyles(
+          AddItemKey.password,
+          vc.studioCtx.getAddItemPrefs()
+        ),
       });
       return tag;
     },
@@ -497,7 +549,11 @@ export const INSERTABLES: readonly AddItem[] = [
         "You won't believe what happens next.",
         "h1"
       );
-      ensureBaseRs(vc, tag, getSimplifiedStyles(AddItemKey.heading));
+      ensureBaseRs(
+        vc,
+        tag,
+        getSimplifiedStyles(AddItemKey.heading, vc.studioCtx.getAddItemPrefs())
+      );
       return tag;
     },
   },
@@ -665,7 +721,11 @@ export const WRAPPERS: AddTplItem[] = [
         vc,
         null
       ) as TplTag;
-      ensureBaseRs(vc, tag, getSimplifiedStyles(WrapItemKey.hstack));
+      ensureBaseRs(
+        vc,
+        tag,
+        getSimplifiedStyles(WrapItemKey.hstack, vc.studioCtx.getAddItemPrefs())
+      );
       return tag;
     },
   },
@@ -680,7 +740,11 @@ export const WRAPPERS: AddTplItem[] = [
         vc,
         null
       ) as TplTag;
-      ensureBaseRs(vc, tag, getSimplifiedStyles(WrapItemKey.vstack));
+      ensureBaseRs(
+        vc,
+        tag,
+        getSimplifiedStyles(WrapItemKey.vstack, vc.studioCtx.getAddItemPrefs())
+      );
       return tag;
     },
   },

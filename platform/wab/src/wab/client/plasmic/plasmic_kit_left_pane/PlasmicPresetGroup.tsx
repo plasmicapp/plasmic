@@ -77,13 +77,7 @@ export interface DefaultPresetGroupProps {
   className?: string;
 }
 
-const __wrapUserFunction =
-  globalThis.__PlasmicWrapUserFunction ?? ((loc, fn) => fn());
-const __wrapUserPromise =
-  globalThis.__PlasmicWrapUserPromise ??
-  (async (loc, promise) => {
-    return await promise;
-  });
+const $$ = {};
 
 function PlasmicPresetGroup__RenderFunc(props: {
   variants: PlasmicPresetGroup__VariantsArgs;
@@ -262,7 +256,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicPresetGroup__ArgProps,
           internalVariantPropNames: PlasmicPresetGroup__VariantProps,
         }),
