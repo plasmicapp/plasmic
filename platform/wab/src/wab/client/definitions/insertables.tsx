@@ -133,10 +133,15 @@ export const isAddItem = (i: { type: string }): i is AddItem =>
   L.values(AddItemType).includes(i.type as AddItemType);
 
 function mkListItem(vc: ViewCtx) {
-  const tag = vc.variantTplMgr().mkTplInlinedText("Enter some text", "li");
-  ensureBaseRs(vc, tag, {
-    position: "relative",
-  });
+  // We create a wrapper li to have display: "list-item" because
+  // it is required to style the list correctly.
+  const children = vc
+    .variantTplMgr()
+    .mkTplTagX("div", undefined, [
+      vc.variantTplMgr().mkTplInlinedText("Enter some text", "div"),
+    ]);
+  const tag = vc.variantTplMgr().mkTplTagX("li", undefined, [children]);
+  ensureBaseRs(vc, tag, { display: "list-item" });
   return tag;
 }
 

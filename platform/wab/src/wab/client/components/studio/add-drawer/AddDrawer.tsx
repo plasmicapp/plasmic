@@ -1037,12 +1037,7 @@ const Row = React.memo(function Row(props: {
         style={style}
       >
         <MaybeWrap
-          cond={
-            // We don't currently allow dragging plume items, because DragInsertManager
-            // creates one and appends to the site immediately, when instead we'd rather
-            // do so at drop time.
-            item.type === "tpl"
-          }
+          cond={item.type === "tpl"}
           wrapper={(child) => (
             <DraggableInsertable
               key={item.key}
