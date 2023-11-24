@@ -1,16 +1,18 @@
-import React from "react";
 import { Popover } from "antd";
+import React from "react";
 import { Registerable, registerComponentHelper } from "./utils";
 
 export function AntdPopover(
   props: React.ComponentProps<typeof Popover> & {
     popoverScopeClassName?: string;
     contentText?: string;
+    defaultStylesClassName?: string;
   }
 ) {
   const {
     overlayClassName,
     popoverScopeClassName,
+    defaultStylesClassName,
     contentText,
     content,
     ...rest
@@ -18,7 +20,7 @@ export function AntdPopover(
   return (
     <Popover
       content={content || contentText}
-      overlayClassName={`${overlayClassName} ${popoverScopeClassName}`}
+      overlayClassName={`${overlayClassName} ${popoverScopeClassName} ${defaultStylesClassName}`}
       {...rest}
     />
   );
@@ -137,6 +139,9 @@ export function registerPopover(loader?: Registerable) {
         argTypes: [{ name: "open", type: "boolean" }],
         advanced: true,
       },
+      defaultStylesClassName: {
+        type: "themeResetClass",
+      } as any,
     },
     states: {
       open: {
