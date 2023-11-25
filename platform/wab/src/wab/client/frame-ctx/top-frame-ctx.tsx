@@ -1,12 +1,12 @@
+import { filteredApi } from "@/wab/client/api";
+import { ensureIsTopFrame } from "@/wab/client/cli-routes";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import { assert } from "@/wab/common";
+import { PromisifyMethods } from "@/wab/commons/promisify-methods";
+import { bindMethods } from "@/wab/commons/proxies";
 import * as Comlink from "comlink";
 import { UnregisterCallback } from "history";
 import * as React from "react";
-import { assert } from "../../common";
-import { PromisifyMethods } from "../../commons/promisify-methods";
-import { bindMethods } from "../../commons/proxies";
-import { filteredApi } from "../api";
-import { ensureIsTopFrame } from "../cli-routes";
-import { useAppCtx } from "../contexts/AppContexts";
 import { providesFrameCtx, useFrameCtx, useFrameCtxMaybe } from "./frame-ctx";
 import { HostFrameApi } from "./host-frame-api";
 import { TopFrameApi, TopFrameFullApi } from "./top-frame-api";
@@ -98,6 +98,15 @@ export function TopFrameCtxProvider({
           return Comlink.proxy(
             topFrameApi.registerLocationListener(locationListener)
           );
+        },
+
+        toJSON() {
+          // When we do console.log(studioCtx) in the inner frame, fullstory
+          // tries to jsonify studioCtx, converting all descendant objects
+          // into json to record in fullstory, eventually calling api.toJSON().
+          // So we add that method here to prevent comlink from trying to call a
+          // non-existent function on our API object.
+          return "API";
         },
       } as TopFrameFullApi;
       Comlink.expose(topFrameCtxApi, {

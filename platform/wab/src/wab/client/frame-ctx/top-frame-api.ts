@@ -1,10 +1,10 @@
+import { Api } from "@/wab/client/api";
+import { TopBarPromptBillingArgs } from "@/wab/client/components/modals/PricingModal";
+import { MergeModalContext } from "@/wab/client/components/TopFrame/TopFrameChrome";
+import { TopFrameTourState } from "@/wab/client/tours/tutorials/TutorialTours";
+import { ApiBranch } from "@/wab/shared/ApiSchema";
+import { DataSourceType } from "@/wab/shared/data-sources-meta/data-source-registry";
 import { LocationListener, UnregisterCallback } from "history";
-import { ApiBranch } from "../../shared/ApiSchema";
-import { DataSourceType } from "../../shared/data-sources-meta/data-source-registry";
-import { Api } from "../api";
-import { TopBarPromptBillingArgs } from "../components/modals/PricingModal";
-import { MergeModalContext } from "../components/TopFrame/TopFrameChrome";
-import { TopFrameTourState } from "../tours/tutorials/TutorialTours";
 import { HostFrameApi } from "./host-frame-api";
 
 /**
@@ -15,6 +15,7 @@ import { HostFrameApi } from "./host-frame-api";
  */
 export type TopFrameFullApi = {
   exposeHostFrameApi(hostFrameApi: HostFrameApi): void;
+  toJSON(): string;
 } & Api &
   TopFrameApi;
 
