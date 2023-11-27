@@ -31,6 +31,7 @@ import {
   ListInviteRequestsResponse,
   ListUsersResponse,
   LoginResponse,
+  PkgVersionId,
   ProjectId,
   RemoveWhitelistRequest,
   TeamId,
@@ -354,6 +355,39 @@ export async function saveProjectRevisionData(req: Request, res: Response) {
     room: `projects/${projectId}`,
     type: "update",
     message: { projectId, revisionNum: newRev.revision },
+  });
+}
+
+export async function getPkgVersion(req: Request, res: Response) {
+  const mgr = superDbMgr(req);
+  let pkgVersion: PkgVersion;
+  if (req.query.pkgVersionId) {
+    pkgVersion = await mgr.getPkgVersionById(
+      req.query.pkgVersionId as PkgVersionId
+    );
+  } else if (req.query.pkgId) {
+    pkgVersion = await mgr.getPkgVersion(
+      req.query.pkgId as string,
+      req.query.version as string | undefined
+    );
+  } else {
+    throw new BadRequestError("Must specify either PkgVersion ID or Pkg ID");
+  }
+  res.json({
+    pkgVersion,
+  });
+}
+
+export async function savePkgVersion(req: Request, res: Response) {
+  const mgr = superDbMgr(req);
+  const pkgVersionId = req.params.pkgVersionId;
+  const data = req.body.data as string;
+  const pkgVersion = await mgr.getPkgVersionById(pkgVersionId);
+  await mgr.updatePkgVersion(pkgVersion.pkgId, pkgVersion.version, null, {
+    model: data,
+  });
+  res.json({
+    pkgVersion,
   });
 }
 

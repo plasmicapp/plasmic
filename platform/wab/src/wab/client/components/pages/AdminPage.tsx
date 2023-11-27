@@ -43,6 +43,7 @@ import {
   TeamId,
   TeamWhiteLabelInfo,
 } from "@/wab/shared/ApiSchema";
+import { PkgVersionInfo } from "@/wab/shared/SharedApi";
 import {
   Button,
   Checkbox,
@@ -2261,7 +2262,7 @@ function DownloadAppMeta() {
   );
 }
 
-function EditBundle() {
+function EditProjectRevBundle() {
   const nonAuthCtx = useNonAuthCtx();
   const [initialRev, setInitialRev] = React.useState<
     ApiProjectRevision | undefined
@@ -2269,7 +2270,7 @@ function EditBundle() {
   const editorRef = React.useRef<FullCodeEditor>(null);
   return (
     <div>
-      <h1>Edit bundle</h1>
+      <h1>Edit ProjectRevision bundle</h1>
       <Form
         onFinish={async (values) => {
           const projectId = values.projectId;
@@ -2319,6 +2320,94 @@ function EditBundle() {
                       );
                     notification.success({
                       message: `Project saved as revision ${res.revision}`,
+                    });
+                  }
+                }}
+              >
+                Save
+              </Button>
+            </Form.Item>
+          </>
+        )}
+      </Form>
+    </div>
+  );
+}
+
+function EditPkgVersionBundle() {
+  const nonAuthCtx = useNonAuthCtx();
+  const [pkgVersion, setPkgVersion] = React.useState<
+    PkgVersionInfo | undefined
+  >(undefined);
+  const editorRef = React.useRef<FullCodeEditor>(null);
+  return (
+    <div>
+      <h1>Edit PkgVersion bundle</h1>
+      <p>Look up either by Pkg ID or PkgVersion ID</p>
+      <Form
+        onFinish={async (values) => {
+          const res = await nonAuthCtx.api.getPkgVersionAsAdmin({
+            pkgId: values.pkgId,
+            version:
+              values.version?.trim()?.length > 0
+                ? values.version.trim()
+                : undefined,
+            pkgVersionId:
+              values.pkgVersionId?.trim()?.length > 0
+                ? values.pkgVersionId.trim()
+                : undefined,
+          });
+          setPkgVersion(res);
+        }}
+      >
+        <Form.Item name="pkgId" label="Pkg ID">
+          <Input placeholder="Pkg ID" />
+        </Form.Item>
+        <Form.Item name="version" label="Pkg version string (empty for latest)">
+          <Input placeholder="Pkg version string" />
+        </Form.Item>
+        <Form.Item name="pkgVersionId" label="PkgVersion ID">
+          <Input placeholder="PkgVersion ID" />
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Lookup
+          </Button>
+        </Form.Item>
+      </Form>
+      <Form>
+        {pkgVersion && (
+          <>
+            <p>
+              <code>PkgVersion ID {pkgVersion.id}</code>
+            </p>
+            <p>
+              <code>Version {pkgVersion.version}</code>
+            </p>
+            <React.Suspense fallback={<Spinner />}>
+              <div style={{ height: 500 }}>
+                <LazyFullCodeEditor
+                  language="json"
+                  ref={editorRef}
+                  defaultValue={
+                    pkgVersion.model
+                      ? JSON.stringify(pkgVersion.model, undefined, 2)
+                      : ""
+                  }
+                />
+              </div>
+            </React.Suspense>
+            <Form.Item>
+              <Button
+                onClick={async () => {
+                  const data = editorRef.current?.getValue();
+                  if (data && JSON.parse(data)) {
+                    const res = await nonAuthCtx.api.savePkgVersionAsAdmin({
+                      pkgVersionId: pkgVersion.id,
+                      data,
+                    });
+                    notification.success({
+                      message: `PkgVersion saved`,
                     });
                   }
                 }}
@@ -2397,7 +2486,8 @@ export default function AdminPage({ nonAuthCtx }: { nonAuthCtx: NonAuthCtx }) {
           <CopilotFeedbackView />
           <AppAuthMetrics />
           <DownloadAppMeta />
-          <EditBundle />
+          <EditProjectRevBundle />
+          <EditPkgVersionBundle />
         </div>
       </AdminContext.Provider>
     </NonAuthCtxContext.Provider>

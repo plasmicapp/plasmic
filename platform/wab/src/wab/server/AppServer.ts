@@ -1526,6 +1526,16 @@ export function addMainAppServerRoutes(app: express.Application) {
     adminOnly,
     withNext(adminRoutes.saveProjectRevisionData)
   );
+  app.get(
+    `/api/v1/admin/pkg-version/data`,
+    adminOnly,
+    withNext(adminRoutes.getPkgVersion)
+  );
+  app.post(
+    `/api/v1/admin/pkg-version/:pkgVersionId`,
+    adminOnly,
+    withNext(adminRoutes.savePkgVersion)
+  );
 
   /**
    * Self routes
