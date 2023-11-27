@@ -194,7 +194,10 @@ export function DataSourceModal({
 
         const key = JSON.stringify(params);
 
-        if (isUntestableDataSourceType(selectedDataSourceType)) {
+        if (
+          isUntestableDataSourceType(selectedDataSourceType) ||
+          editingDataSource !== "new"
+        ) {
           return { result: { connected: true } };
         }
 
