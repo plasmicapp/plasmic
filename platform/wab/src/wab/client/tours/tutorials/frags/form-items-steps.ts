@@ -1,13 +1,19 @@
-import { notification } from "antd";
-import { tryExtractString } from "../../../../exprs";
-import { TutorialEvent, TutorialEventsType } from "../tutorials-events";
+import {
+  TutorialEvent,
+  TutorialEventsType,
+} from "@/wab/client/tours/tutorials/tutorials-events";
 import {
   getFormItems,
   sleep,
   updateFormWithFormItems,
-} from "../tutorials-helpers";
-import { STUDIO_ELEMENTS_TARGETS } from "../tutorials-targets";
-import { OnNextCtx, StudioTutorialStep } from "../tutorials-types";
+} from "@/wab/client/tours/tutorials/tutorials-helpers";
+import { STUDIO_ELEMENTS_TARGETS } from "@/wab/client/tours/tutorials/tutorials-targets";
+import {
+  OnNextCtx,
+  StudioTutorialStep,
+} from "@/wab/client/tours/tutorials/tutorials-types";
+import { tryExtractString } from "@/wab/exprs";
+import { notification } from "antd";
 
 export const FORM_ITEMS_STEPS: StudioTutorialStep[] = [
   {
@@ -89,7 +95,7 @@ Let's keep it as-is. **Click "Next" to continue.**`,
   {
     name: "form-items-name",
     content: `
-The **Name** identifies what field to update in the database, so we need to make sure it matches our database column name exactly.
+**Field key** identifies what field to update in the database, so we need to make sure it matches our database column name exactly.
 
 **Type in "contact_name" and press Enter.**
 `,
