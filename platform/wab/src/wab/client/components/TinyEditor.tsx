@@ -7,7 +7,6 @@ if (window && "matchMedia" in window) {
 
   require("tinymce/icons/default");
   require("tinymce/models/dom/model");
-  require("tinymce/skins/ui/tinymce-5/skin.min.css");
   require("tinymce/themes/silver");
 
   require("tinymce/plugins/advlist");
@@ -26,6 +25,9 @@ if (window && "matchMedia" in window) {
   require("tinymce/plugins/table");
   require("tinymce/plugins/visualblocks");
 }
+
+import "tinymce/skins/ui/tinymce-5/content.min.css";
+import "tinymce/skins/ui/tinymce-5/skin.min.css";
 
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { Editor, IAllProps } from "@tinymce/tinymce-react";
