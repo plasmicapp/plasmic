@@ -546,22 +546,6 @@ export function useDollarState(
     }
   }
 
-  // For each spec with an initFunc, evaluate it and see if
-  // the init value has changed. If so, reset its state.
-  const resetSpecs: {
-    stateCell: StateCell<any>;
-  }[] = [];
-  getStateCells($state, $$state.rootSpecTree).forEach((stateCell) => {
-    if (stateCell.initFunc) {
-      const newInit = invokeInitFuncBackwardsCompatible(stateCell.initFunc, {
-        $state,
-        ...(stateCell.overrideEnv ?? envFieldsAreNonNill(env)),
-      });
-      if (!deepEqual(newInit, stateCell.initialValue)) {
-        resetSpecs.push({ stateCell });
-      }
-    }
-  });
   const reInitializeState = (stateCell: StateCell<any>) => {
     const newInit = initializeStateValue($$state, stateCell, $state);
     const spec = stateCell.node.getSpec();
@@ -570,10 +554,26 @@ export function useDollarState(
     }
   };
   useIsomorphicLayoutEffect(() => {
+    // For each spec with an initFunc, evaluate it and see if
+    // the init value has changed. If so, reset its state.
+    const resetSpecs: {
+      stateCell: StateCell<any>;
+    }[] = [];
+    getStateCells($state, $$state.rootSpecTree).forEach((stateCell) => {
+      if (stateCell.initFunc) {
+        const newInit = invokeInitFuncBackwardsCompatible(stateCell.initFunc, {
+          $state,
+          ...(stateCell.overrideEnv ?? envFieldsAreNonNill(env)),
+        });
+        if (!deepEqual(newInit, stateCell.initialValue)) {
+          resetSpecs.push({ stateCell });
+        }
+      }
+    });
     resetSpecs.forEach(({ stateCell }) => {
       reInitializeState(stateCell);
     });
-  }, [env.$props, resetSpecs]);
+  }, [env.$props, $state, $$state, reInitializeState]);
   useIsomorphicLayoutEffect(() => {
     while ($$state.registrationsQueue.length) {
       const { path, f, overrideEnv } = $$state.registrationsQueue.shift()!;

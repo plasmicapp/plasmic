@@ -32,6 +32,9 @@ export function traverseUpdates(
     const nextFallback = child ? child.sibling : null;
     const prevChild = prev.child;
     const prevFallback = prevChild ? prevChild.sibling : null;
+    if (prevFallback == null && nextFallback != null) {
+      traverseTree(nextFallback, enter, leave, true);
+    }
     if (nextFallback != null && prevFallback != null) {
       traverseUpdates(
         nextFallback,
