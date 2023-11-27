@@ -415,7 +415,12 @@ async function checkExternalPkgs(
 ) {
   const missingPkgs = pkgs
     .map((pkgSpec) => {
-      const [pkg, version] = pkgSpec.split("@");
+      // Handle both @package@version and package@version
+      const splitPkgSpec = pkgSpec.split("@");
+      const [pkg, version] =
+        splitPkgSpec.length === 2
+          ? splitPkgSpec
+          : [splitPkgSpec[1], splitPkgSpec[2]];
       const installedVersion = findInstalledVersion(
         context.config,
         baseDir,
