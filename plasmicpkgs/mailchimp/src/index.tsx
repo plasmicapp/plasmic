@@ -2,12 +2,7 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import registerGlobalContext from "@plasmicapp/host/registerGlobalContext";
-import {
-
-  MailchimpSignupForm,
-  MailchimpSignupFormMeta,
-} from "./mailchimp";
-
+import { MailchimpSignupForm, MailchimpSignupFormMeta } from "./mailchimp";
 
 export function registerAll(loader?: {
   registerComponent: typeof registerComponent;
@@ -24,8 +19,6 @@ export function registerAll(loader?: {
     }
   };
 
-  if (loader) {
-    _registerComponent(MailchimpSignupForm, MailchimpSignupFormMeta);
-  }
+  _registerComponent(MailchimpSignupForm, MailchimpSignupFormMeta);
 }
 export * from "./mailchimp";

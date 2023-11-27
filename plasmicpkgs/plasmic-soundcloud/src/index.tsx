@@ -2,11 +2,7 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import registerGlobalContext from "@plasmicapp/host/registerGlobalContext";
-import {
-  SoundCloud,
-  SoundCloudMeta,
-} from "./soundcloud";
-
+import { SoundCloud, SoundCloudMeta } from "./soundcloud";
 
 export function registerAll(loader?: {
   registerComponent: typeof registerComponent;
@@ -23,9 +19,7 @@ export function registerAll(loader?: {
     }
   };
 
-  if (loader) {
-    _registerComponent(SoundCloud, SoundCloudMeta);
-  }
+  _registerComponent(SoundCloud, SoundCloudMeta);
 }
 
 export * from "./soundcloud";

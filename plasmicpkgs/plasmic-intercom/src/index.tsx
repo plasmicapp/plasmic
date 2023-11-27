@@ -2,11 +2,7 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import registerGlobalContext from "@plasmicapp/host/registerGlobalContext";
-import {
-  IntercomProvider,
-  IntercomProviderMeta,
-
-} from "./intercom";
+import { IntercomProvider, IntercomProviderMeta } from "./intercom";
 
 export function registerAll(loader?: {
   registerComponent: typeof registerComponent;
@@ -23,9 +19,7 @@ export function registerAll(loader?: {
     }
   };
 
-  if (loader) {
-    _registerComponent(IntercomProvider, IntercomProviderMeta);
-  }
+  _registerComponent(IntercomProvider, IntercomProviderMeta);
 }
 
 export * from "./intercom";

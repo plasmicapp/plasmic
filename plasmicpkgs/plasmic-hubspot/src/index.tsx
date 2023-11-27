@@ -2,11 +2,7 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import registerGlobalContext from "@plasmicapp/host/registerGlobalContext";
-import {
-  HubspotSignupForm,
-  HubspotSignupFormMeta,
-} from "./hubspot";
-
+import { HubspotSignupForm, HubspotSignupFormMeta } from "./hubspot";
 
 export function registerAll(loader?: {
   registerComponent: typeof registerComponent;
@@ -23,10 +19,6 @@ export function registerAll(loader?: {
     }
   };
 
-  if (loader) {
-    _registerComponent(HubspotSignupForm, HubspotSignupFormMeta);
-
-
-  }
+  _registerComponent(HubspotSignupForm, HubspotSignupFormMeta);
 }
 export * from "./hubspot";

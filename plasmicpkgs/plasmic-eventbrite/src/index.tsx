@@ -5,7 +5,6 @@ import { Eventbrite, EventbriteMeta } from "./eventbrite";
 
 export function registerAll(loader?: {
   registerComponent: typeof registerComponent;
-
 }) {
   const _registerComponent = <T extends React.ComponentType<any>>(
     Component: T,
@@ -18,8 +17,6 @@ export function registerAll(loader?: {
     }
   };
 
-  if (loader) {
-    _registerComponent(Eventbrite, EventbriteMeta);
-  }
+  _registerComponent(Eventbrite, EventbriteMeta);
 }
 export * from "./eventbrite";

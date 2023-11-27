@@ -2,13 +2,7 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import registerGlobalContext from "@plasmicapp/host/registerGlobalContext";
-import {
-  Typeform,
-  TypeformMeta,
-
-
-} from "./typeform";
-
+import { Typeform, TypeformMeta } from "./typeform";
 
 export function registerAll(loader?: {
   registerComponent: typeof registerComponent;
@@ -25,11 +19,7 @@ export function registerAll(loader?: {
     }
   };
 
-  if (loader) {
-
-    _registerComponent(Typeform, TypeformMeta);
-
-  }
+  _registerComponent(Typeform, TypeformMeta);
 }
 
 export * from "./typeform";

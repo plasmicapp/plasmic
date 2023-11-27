@@ -20,9 +20,7 @@ export function registerAll(loader?: {
     }
   };
 
-  if (loader) {
-    _registerComponent(Giphy, GiphyMeta);
-  }
+  _registerComponent(Giphy, GiphyMeta);
 }
 
 export * from "./giphy";
