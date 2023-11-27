@@ -12,6 +12,7 @@ import {
   ApiCmseRow,
   ApiCmsTable,
   CmsDatabaseId,
+  CmsFieldMeta,
   CmsRowId,
   CmsTableId,
 } from "@/wab/shared/ApiSchema";
@@ -109,8 +110,8 @@ export function renderContentEntryFormFields(
   return (
     <>
       {table.schema.fields
-        .filter((field) => !field.hidden)
-        .map((field, index) => (
+        .filter((field: CmsFieldMeta) => !field.hidden)
+        .map((field: CmsFieldMeta, index) => (
           <React.Fragment key={field.identifier}>
             <ContentEntryFormContext.Provider
               value={{
@@ -130,6 +131,12 @@ export function renderContentEntryFormFields(
                 formItemProps: deriveFormItemPropsFromField(field),
                 typeName: field.type,
                 required: field.required,
+                ...(field.type === "text" || field.type === "long-text"
+                  ? {
+                      maxChars: field.maxChars,
+                      minChars: field.minChars,
+                    }
+                  : {}),
               })}
             </ContentEntryFormContext.Provider>
           </React.Fragment>

@@ -62,6 +62,7 @@ function renderTypeSpecificSubform(
           fieldPathSuffix: [],
           formItemProps: { label: "Default value" },
           typeName: typeMeta.type,
+          
         })}
       </ContentEntryFormContext.Provider>
       {(typeName === "text" || typeName === "long-text") && (

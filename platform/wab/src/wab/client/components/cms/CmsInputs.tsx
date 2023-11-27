@@ -46,7 +46,6 @@ type NamePathz = (string | number)[];
 
 interface ContentEntryFormContextValue {
   disabled: boolean;
-
   typeMeta: CmsTypeMeta;
   database: ApiCmsDatabase;
   name: NamePathz;
@@ -234,18 +233,29 @@ function MaybeFormItem({
   name,
   label,
   ...props
-}: Omit<FormItemProps, "name"> & { typeName: CmsTypeName; name: NamePathz }) {
+}: Omit<FormItemProps, "name"> & {
+  typeName: CmsTypeName;
+  name: NamePathz;
+  maxChars?: number;
+  minChars?: number;
+}) {
+  const commonRules = [
+    { required: props.required, message: "Field is required" },
+  ];
+  const typeSpecificRules =
+    (typeName === "text" || typeName === "long-text") &&
+    (props.minChars !== undefined || props.maxChars !== undefined)
+      ? [{ max: props.maxChars }, { min: props.minChars }]
+      : [];
+
+  const rules = [...commonRules, ...typeSpecificRules];
+
   return typeName === "list" ? (
     <FormNameContext.Provider value={{ name, label }}>
       {props.children as any}
     </FormNameContext.Provider>
   ) : (
-    <Form.Item
-      name={name}
-      label={label}
-      {...props}
-      rules={[{ required: props.required, message: "Field is required" }]}
-    />
+    <Form.Item name={name} label={label} {...props} rules={rules} />
   );
 }
 
@@ -549,6 +559,11 @@ export function renderMaybeLocalizedInput({
           ...ensure(ctx_, "ContentEntryFormContext must be set"),
           directlyInsideList: false,
         };
+        const { maxChars, minChars } =
+          ctx.typeMeta.type === "text" || ctx.typeMeta.type === "long-text"
+            ? ctx.typeMeta
+            : { maxChars: undefined, minChars: undefined };
+
         return !localized ? (
           <ContentEntryFormContext.Provider
             value={{
@@ -557,6 +572,8 @@ export function renderMaybeLocalizedInput({
             }}
           >
             <MaybeFormItem
+              maxChars={maxChars}
+              minChars={minChars}
               required={required}
               typeName={typeName}
               {...formItemProps}
@@ -569,7 +586,11 @@ export function renderMaybeLocalizedInput({
           <Form.Item
             {...formItemProps}
             style={{ marginBottom: "2" }}
-            rules={[{ required: required, message: "Field is required" }]}
+            rules={[
+              { required: required, message: "Field is required" },
+              { max: maxChars },
+              { min: minChars },
+            ]}
           >
             <div
               style={{ padding: "8px 0 8px 8px", borderLeft: "8px solid #eef" }}
@@ -587,6 +608,8 @@ export function renderMaybeLocalizedInput({
                     }}
                   >
                     <MaybeFormItem
+                      maxChars={maxChars}
+                      minChars={minChars}
                       required={required}
                       typeName={typeName}
                       name={[...fieldPath, locale, ...fieldPathSuffix]}
