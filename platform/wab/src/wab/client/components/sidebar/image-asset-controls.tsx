@@ -25,12 +25,14 @@ import ImageBlockIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ImageB
 import PlasmicLeftImagesPanel from "@/wab/client/plasmic/plasmic_kit/PlasmicLeftImagesPanel";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { ensure } from "@/wab/common";
+import { DEVFLAGS } from "@/wab/devflags";
 import { ImageAssetType } from "@/wab/image-asset-type";
 import { extractImageAssetUsages } from "@/wab/image-assets";
 import { ImageUploadResponse } from "@/wab/shared/ApiSchema";
 import { imageDataUriToBlob } from "@/wab/shared/data-urls";
 import { Menu } from "antd";
-import { orderBy } from "lodash";
+import { last, orderBy } from "lodash";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
@@ -494,4 +496,19 @@ export async function promptFileUpload(
     });
     input.click();
   });
+}
+
+export function getCmsImageUrl(uploaded: ImageUploadResponse) {
+  const imgId = ensure(last(uploaded.dataUri.split("/")), "Expected imgId");
+  let imgUrl = uploaded.dataUri;
+
+  if (!uploaded.mimeType?.includes("svg")) {
+    imgUrl = `${DEVFLAGS.imgOptimizerHost}/img-optimizer/v1/img/${imgId}?f=webp&q=75`;
+    if (uploaded.width > 3840) {
+      // Cap width at 3840
+      imgUrl += "&w=3840";
+    }
+  }
+
+  return imgUrl;
 }

@@ -473,12 +473,21 @@ export function CmsColorInput(props: {
   );
 }
 
-export function CmsRichTextInput(props: {
+export function CmsRichTextInput({
+  value,
+  onChange,
+}: {
   value?: string | undefined;
   onChange?: (value: string | undefined) => void;
 }) {
   const { disabled } = useContentEntryFormContext();
-  return <RichTextEditor readOnly={disabled} {...props} />;
+  return (
+    <RichTextEditor
+      value={value ?? ""}
+      onChange={ensure(onChange, "Rich text editor requires onChange callback")}
+      readOnly={disabled}
+    />
+  );
 }
 
 export function renderEntryField(type: CmsTypeName): ReactElement {

@@ -481,6 +481,8 @@ const DEFAULT_DEVFLAGS = {
   useWhitespaceNormal: false,
   autoUpgradeHostless: true,
 
+  cmsRichTextEditor: "quill" as "quill" | "tinymce",
+
   // Disabled by default
   runningInCypress: false,
   posthog: true,
