@@ -1,4 +1,3 @@
-import { flatten, keyBy } from "lodash";
 import {
   Arg,
   Component,
@@ -22,7 +21,7 @@ import {
   Variant,
   VariantSetting,
   VariantsRef,
-} from "../classes";
+} from "@/wab/classes";
 import {
   arrayEqIgnoreOrder,
   assert,
@@ -31,26 +30,28 @@ import {
   remove,
   strictFind,
   withoutNils,
-} from "../common";
-import { resolveAllTokenRefs } from "../commons/StyleToken";
+} from "@/wab/common";
+import { resolveAllTokenRefs } from "@/wab/commons/StyleToken";
 import {
   cloneComponent,
+  isCodeComponent,
   isHostLessCodeComponent,
   isPlumeComponent,
   PlumeComponent,
-} from "../components";
-import { clone as cloneExpr } from "../exprs";
-import { ImageAssetType } from "../image-asset-type";
-import { mkImageAssetRef } from "../image-assets";
-import { syncGlobalContexts } from "../project-deps";
-import { allImageAssets, allStyleTokens, isHostLessPackage } from "../sites";
-import { createExpandedRuleSetMerger } from "../styles";
+} from "@/wab/components";
+import { clone as cloneExpr } from "@/wab/exprs";
+import { ImageAssetType } from "@/wab/image-asset-type";
+import { mkImageAssetRef } from "@/wab/image-assets";
+import { syncGlobalContexts } from "@/wab/project-deps";
+import { allImageAssets, allStyleTokens, isHostLessPackage } from "@/wab/sites";
+import { createExpandedRuleSetMerger } from "@/wab/styles";
 import {
   clone as cloneTpl,
   findVariantSettingsUnderTpl,
   fixParentPointers,
   flattenTpls,
   flattenTplsBottomUp,
+  isTplCodeComponent,
   isTplComponent,
   isTplSlot,
   isTplTag,
@@ -58,7 +59,8 @@ import {
   isTplVariantable,
   TplTextTag,
   walkTpls,
-} from "../tpls";
+} from "@/wab/tpls";
+import { flatten, keyBy } from "lodash";
 import { flattenComponent, siteToAllImageAssetsDict } from "./cached-selectors";
 import {
   adaptEffectiveVariantSetting,
@@ -343,10 +345,7 @@ export function assertValidInsertable(tplTree: TplNode): void {
         console.warn(path);
       } else if (isTplComponent(tpl)) {
         if (
-          !(
-            isPlumeComponent(tpl.component) ||
-            isHostLessCodeComponent(tpl.component)
-          )
+          !(isPlumeComponent(tpl.component) || isCodeComponent(tpl.component))
         ) {
           assert(
             !isTplComponent(tpl),
@@ -528,7 +527,7 @@ const getSiteMatchingPlumeComponent = (
   }
 
   const plumeComponents = targetPlumeSite.components;
-  let plumeComponent = plumeComponents.find(
+  const plumeComponent = plumeComponents.find(
     (c): c is PlumeComponent =>
       isPlumeComponent(c) && c.plumeInfo.type === targetType
   );
@@ -625,6 +624,12 @@ const adjustInsertableTemplateComponentArgs = (
           ) {
             // Try to adjust hostless component if we aren't able, we simply ignore it
             if (!adjustHostLessCodeComponent(tpl, ctx)) {
+              return null;
+            }
+            tpl.parent = sourceTpl;
+            return tpl;
+          } else if (isTplComponent(tpl) && isCodeComponent(tpl.component)) {
+            if (!adjustHostedCodeComponent(tpl, ctx)) {
               return null;
             }
             tpl.parent = sourceTpl;
@@ -793,6 +798,32 @@ function ensureHostLessDepComponent(
   return newComp;
 }
 
+const adjustHostedCodeComponent = (
+  tpl: TplComponent,
+  ctx: InlineComponentContext
+) => {
+  if (
+    !isCodeComponent(tpl.component) ||
+    isHostLessCodeComponent(tpl.component)
+  ) {
+    return false;
+  }
+  const newComp = ctx.targetSite.components.find(
+    (c) => isCodeComponent(c) && c.name === tpl.component.name
+  );
+  assert(
+    newComp,
+    `Component ${tpl.component.name} isn't available in this project`
+  );
+  assert(
+    isCodeComponent(newComp),
+    "must succeed because it was checked before"
+  );
+  tpl.component = newComp;
+  adjustInsertableTemplateComponentArgs(tpl, newComp, ctx);
+  return true;
+};
+
 const adjustHostLessCodeComponent = (
   tpl: TplComponent,
   ctx: InlineComponentContext
@@ -820,6 +851,9 @@ const adjustInsertableTemplateComponent = (
   }
   if (isHostLessCodeComponent(tpl.component)) {
     return adjustHostLessCodeComponent(tpl, ctx);
+  }
+  if (isTplCodeComponent(tpl)) {
+    return adjustHostedCodeComponent(tpl, ctx);
   }
   return false;
 };
@@ -1082,13 +1116,10 @@ export function cloneInsertableTemplate(
       }
 
       // Wipe out remaining arguments (Should have been flattened by now)
-      // if it's a plume component or a hostless component we keep the information
+      // if it's a plume component or a code-component we keep the information
       if (
         !isTplComponent(tpl) ||
-        !(
-          isPlumeComponent(tpl.component) ||
-          isHostLessCodeComponent(tpl.component)
-        )
+        !(isPlumeComponent(tpl.component) || isCodeComponent(tpl.component))
       ) {
         vs.args = [];
       }
