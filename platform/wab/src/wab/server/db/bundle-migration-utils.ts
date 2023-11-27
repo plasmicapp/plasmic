@@ -179,10 +179,13 @@ export const getHostlessData = (() => {
     const latestVersions = new Set<string>();
     await Promise.all(
       hostlessProjects.map(async (p) => {
-        const pkg = ensure(
-          await db.getPkgByProjectId(p.id),
-          () => "Expected hostless projects to have published versions"
-        );
+        const pkg = await db.getPkgByProjectId(p.id);
+        // For hostless without a published version, just ignore it.
+        // Needed when creating a new hostless project that does not have
+        // a published version yet.
+        if (!pkg) {
+          return;
+        }
         const latestVersion = await db.getPkgVersion(pkg.id);
         const allVersions = await db.listPkgVersions(pkg.id);
         allVersions.forEach((v) =>
