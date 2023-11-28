@@ -28,10 +28,7 @@ import {
   parseProjectLocation,
   UU,
 } from "@/wab/client/cli-routes";
-import {
-  LEFT_PANE_INIT_WIDTH,
-  PANNING_LIMIT_BUFFER,
-} from "@/wab/client/ClientConstants";
+import { LEFT_PANE_INIT_WIDTH } from "@/wab/client/ClientConstants";
 import { Clipboard } from "@/wab/client/clipboard";
 import { syncCodeComponentsAndHandleErrors } from "@/wab/client/code-components/code-components";
 import { CodeFetchersRegistry } from "@/wab/client/code-fetchers";
@@ -100,11 +97,6 @@ import { PLATFORM } from "@/wab/client/platform";
 import { ProjectDependencyManager } from "@/wab/client/ProjectDependencyManager";
 import { requestIdleCallbackAsync } from "@/wab/client/requestidlecallback";
 import { plasmicExtensionAvailable } from "@/wab/client/screenshot-util";
-import {
-  doFixManualScrollbar,
-  scrollAreaSize,
-  ScrollbarMetadata,
-} from "@/wab/client/scrollbar-utils";
 import {
   StyleMgr,
   summaryToStyleChanges,
@@ -378,10 +370,6 @@ import { SpotlightAndVariantsInfo, ViewCtx } from "./view-ctx";
 const MAX_SAVE_RETRIES = 300; // Saves every 2 seconds means retry for 10 minutes
 const DEFAULT_ZOOM_PADDING = 40;
 const VARIANTS_BAR_HEIGHT = 35; // TODO: replace by dynamic measuring
-
-/** This value must be synced with .canvas-editor__canvas padding in
- * styles/main.sass. */
-const CANVAS_EDITOR_PADDING = 2000;
 
 interface StudioCtxArgs {
   dbCtx: DbCtx;
@@ -756,11 +744,38 @@ export class StudioCtx extends WithDbCtx {
           this.updatePkgsList(usedHostLessPkgs(this.site));
         }
       }),
+      autorun(
+        () => {
+          if (this.isZooming()) {
+            if (this.maybeCanvasClipper()) {
+              this.canvasClipper().style.overflow = "hidden";
+            }
+            this._canvasSize.set(
+              Box.fromRectSides({
+                top: 0,
+                bottom: 999999,
+                left: 0,
+                right: 999999,
+              })
+            );
+          } else {
+            if (this.maybeCanvasClipper()) {
+              this.canvasClipper().style.overflow = "auto";
+            }
+            const scalerRect = this.getCanvasEditorFramesScalerRect();
+            if (!scalerRect) {
+              return;
+            }
+
+            this._canvasSize.set(Box.fromRect(scalerRect).scale(this.zoom));
+          }
+        },
+        { name: "StudioCtx.adjustCanvasSize" }
+      ),
       reaction(
         () => this.isTransforming(),
         () => {
           // Things that should be fixed upon canvas transform
-          this.fixScrollbar();
           this.fixRuler();
           this.adjustDevEnv(this.zoom);
         }
@@ -1033,9 +1048,7 @@ export class StudioCtx extends WithDbCtx {
     // have its position updated.
     defer(() => this.framesChanged.dispatch());
 
-    if (this.focusedMode) {
-      window.requestAnimationFrame(() => this.tryZoomToFitArena());
-    }
+    this.tryZoomToFitArena();
   }
 
   getSubReactVersion() {
@@ -1913,17 +1926,7 @@ export class StudioCtx extends WithDbCtx {
 
       if (!this.watchPlayerId) {
         if (viewState.lastViewSnapshot) {
-          const lastViewSnapshot = viewState.lastViewSnapshot;
-          this.restoreStudioViewportSnapshot(lastViewSnapshot, true);
-          // restoreStudioViewportSnapshot doesn't work if we are moving
-          // from not focused frame to focused frame.
-          // Defer to ensure the focused frame has loaded.
-          // https://linear.app/plasmic/issue/PLA-10107
-          if (prevFocusedMode !== this.focusedMode) {
-            defer(() => {
-              this.restoreStudioViewportSnapshot(lastViewSnapshot, true);
-            });
-          }
+          this.restoreStudioViewportSnapshot(viewState.lastViewSnapshot, true);
 
           // We dispatch a framesChanged event, as new frames are now rendered,
           // so that hoverbox can position itself properly
@@ -2725,35 +2728,6 @@ export class StudioCtx extends WithDbCtx {
     return this._$canvasClipper()[0] as HTMLElement | undefined;
   }
 
-  // Get relative content area rect, relative to the top left corner of the
-  // clipper
-  relContentAreaRect(): Box | undefined {
-    const vcBBs = withoutNils(
-      this.viewCtxs
-        .filter((vc) => this.shouldShowArenaFrame(vc.arenaFrame()))
-        .map((vc) => this.getArenaFrameScalerRect(vc.arenaFrame()))
-    );
-    if (vcBBs.length === 0) {
-      return undefined;
-    }
-    const rawRect = ensure(Box.mergeBBs(vcBBs), "mergeBBs should be non null");
-    return rawRect
-      .scale(this.zoom)
-      .moveBy(this.curTranslate.x, this.curTranslate.y);
-  }
-
-  contentAreaRect(): ClientRect | undefined {
-    const relRect = this.relContentAreaRect();
-    if (!relRect) {
-      return undefined;
-    }
-    return relRect.moveBy(this.clipperBB().left, this.clipperBB().top).rect();
-  }
-  canvasScrollAreaSize(): { width: number; height: number } {
-    const contentBB = this.contentAreaRect();
-    return scrollAreaSize(this.clipperBB(), contentBB);
-  }
-
   getVisibleScalerRect(): Rect {
     const clipperRect = this.clipperBB();
     const translate = this.getScalerTranslate();
@@ -2783,85 +2757,27 @@ export class StudioCtx extends WithDbCtx {
 
   /**
    * Applies a transform (scale + translate) on the canvas.
-   *
-   * By default, the transform will be constrained to ensure the user doesn't
-   * scroll all frames out of view. This can be disabled with the `noConstrain`
-   * option. Currently, we might use this option in a few cases:
-   * 1) When zooming with a pinch gesture or mouse wheel, weird things happen
-   *    if the event source jumps from an inner frame to the canvas frame.
-   *    For now, we just avoid this issue by not constraining during zooms.
-   * 2) There's a problem calling setTransform/getConstrainedTransform twice in tryZoomToFitRect.
-   *    On the second pass, getArenaFrameScalerRect reports the wrong measurements since the zoom
-   *    changes on the first pass.
    */
   setTransform(
     rawTransform: ScalerTransform,
     opts?: {
       smooth?: boolean;
-      noConstrain?: boolean;
     }
   ) {
     runInAction(() => {
       window.dispatchEvent(new Event(plasmicCanvasTransformEvent));
 
       this.setIsTransforming();
-      const transformArray: string[] = [];
 
-      if (this.focusedMode) {
-        // On focus mode, we use browser scrolling instead of CSS translate.
-        // Just scrolling canvasClipper is enough, since that will trigger
-        // StudioCtx.onClipperScrolled() which sets this.curTranslate to
-        // the current scroll position. There is no need to get a constrained
-        // transform, because the browser will constrain the transform based
-        // in the element dimensions.
-        this.canvasClipper().scroll({
-          top: CANVAS_EDITOR_PADDING - rawTransform.translate3D.y,
-          left: CANVAS_EDITOR_PADDING - rawTransform.translate3D.x,
-        });
-
-        transformArray.push(`scale(${rawTransform.scale})`);
-        this.setZoom(rawTransform.scale);
-      } else {
-        const constrainedTransform = opts?.noConstrain
-          ? rawTransform
-          : this.getConstrainedTransform(rawTransform);
-        const t = {
-          x: Math.round(constrainedTransform.translate3D.x),
-          y: Math.round(constrainedTransform.translate3D.y),
-          z: Math.round(constrainedTransform.translate3D.z),
-        };
-        this.curTranslate.x = t.x;
-        this.curTranslate.y = t.y;
-        this.curTranslate.z = t.z;
-        transformArray.push(`translate3d(${t.x}px, ${t.y}px, ${t.z}px)`);
-
-        transformArray.push(`scale(${constrainedTransform.scale})`);
-        this.setZoom(constrainedTransform.scale);
-      }
-
-      if (opts?.smooth) {
-        this.canvasScaler().style.transition = `transform 0.5s, -webkit-transform 0.5s`;
-      } else {
-        this.canvasScaler().style.transition = ``;
-      }
-      this.actuallySetScalerTransform(transformArray.join(" "));
-    });
-
-    // this.fixScrollbar();
-  }
-
-  private actuallySetScalerTransform = (() => {
-    let curRequestId: number | undefined = undefined;
-    return (transform: string) => {
-      if (curRequestId) {
-        cancelAnimationFrame(curRequestId);
-      }
-      curRequestId = requestAnimationFrame(() => {
-        this.canvasScaler().style.transform = transform;
-        curRequestId = undefined;
+      const clipperRect = this.clipperBB();
+      this.canvasClipper().scroll({
+        top: clipperRect.height - rawTransform.translate3D.y,
+        left: clipperRect.width - rawTransform.translate3D.x,
       });
-    };
-  })();
+
+      this.setZoom(rawTransform.scale, opts);
+    });
+  }
 
   private _$ruler?: JQuery;
   private $ruler() {
@@ -2891,7 +2807,7 @@ export class StudioCtx extends WithDbCtx {
   private translateScalerAbsolute(
     x: number,
     y: number,
-    opts?: { smooth?: boolean; noConstrain?: boolean }
+    opts?: { smooth?: boolean }
   ) {
     this.setTransform(
       {
@@ -2976,53 +2892,9 @@ export class StudioCtx extends WithDbCtx {
     });
   }
 
-  private getConstrainedTransform(transform: ScalerTransform): ScalerTransform {
-    const zoom = transform.scale;
-    let x = transform.translate3D.x;
-    let y = transform.translate3D.y;
-
-    const framesBounds = this.getCanvasEditorFramesScalerRect();
-    if (!framesBounds) {
-      return transform;
-    }
-
-    const scaledFramesLeft = framesBounds.left * zoom;
-    const scaledFramesRight = (framesBounds.left + framesBounds.width) * zoom;
-    const scaledFramesTop = framesBounds.top * zoom;
-    const scaledFramesBottom = (framesBounds.top + framesBounds.height) * zoom;
-
-    const canvasWidth = this.canvasClipper().offsetWidth;
-    const canvasHeight = this.canvasClipper().offsetHeight;
-
-    // We want to implement panning limits to ensure that a frame is always visible on the canvas.
-    // Therefore, the left border of the canvas should be less than the right-most frame,
-    // right border of the canvas should be greater than the left-most frame, etc.
-    // The PANNING_LIMIT_BUFFER is the minimum number of pixels that should be visible.
-
-    // left border of canvas: -x
-    // right border of canvas: -x + canvasWidth
-    if (-x > scaledFramesRight - PANNING_LIMIT_BUFFER) {
-      x = -(scaledFramesRight - PANNING_LIMIT_BUFFER);
-    } else if (-x + canvasWidth < scaledFramesLeft + PANNING_LIMIT_BUFFER) {
-      x = -(scaledFramesLeft + PANNING_LIMIT_BUFFER - canvasWidth);
-    }
-
-    // top border of canvas: -y
-    // bottom border of canvas: -y + canvasHeight
-    if (-y > scaledFramesBottom - PANNING_LIMIT_BUFFER) {
-      y = -(scaledFramesBottom - PANNING_LIMIT_BUFFER);
-    } else if (-y + canvasHeight < scaledFramesTop + PANNING_LIMIT_BUFFER) {
-      y = -(scaledFramesTop + PANNING_LIMIT_BUFFER - canvasHeight);
-    }
-
-    return {
-      ...transform,
-      translate3D: {
-        ...transform.translate3D,
-        x,
-        y,
-      },
-    };
+  private _canvasSize = observable.box<Box>();
+  canvasSize() {
+    return this._canvasSize.get();
   }
 
   centerFocusedFrame(maxZoom?: number) {
@@ -3085,34 +2957,25 @@ export class StudioCtx extends WithDbCtx {
 
   clipperResizedSignal = new Signals.Signal();
 
-  private _clipperBB?: ClientRect;
+  private _clipperBB = observable.box<ClientRect>();
 
   onClipperResized() {
-    // invalidate cached and refresh them
-    this._clipperBB = undefined;
-    this.hScrollbar = undefined;
-    this.vScrollbar = undefined;
-    this.maybeCanvasHorizontalScrollbarMetadata();
-    this.maybeCanvasVerticalScrollbarMetadata();
-    this.maybeClipperBB();
+    this._clipperBB.set(this.maybeCanvasClipper()?.getBoundingClientRect());
+
+    // Ensure clipper scroll state is in sync with DOM after resize
+    this.onClipperScrolled();
 
     this.clipperResizedSignal.dispatch();
   }
 
   onClipperScrolled() {
-    if (this.focusedMode) {
-      this.curTranslate.x =
-        CANVAS_EDITOR_PADDING - this.canvasClipper().scrollLeft;
-      this.curTranslate.y =
-        CANVAS_EDITOR_PADDING - this.canvasClipper().scrollTop;
-    }
+    const clipperRect = this.clipperBB();
+    this.curTranslate.x = clipperRect.width - this.canvasClipper().scrollLeft;
+    this.curTranslate.y = clipperRect.height - this.canvasClipper().scrollTop;
   }
 
   maybeClipperBB() {
-    if (!this._clipperBB) {
-      this._clipperBB = this.maybeCanvasClipper()?.getBoundingClientRect();
-    }
-    return this._clipperBB;
+    return this._clipperBB.get();
   }
 
   clipperBB() {
@@ -3183,44 +3046,7 @@ export class StudioCtx extends WithDbCtx {
     }
   };
 
-  private hScrollbar?: ScrollbarMetadata;
-  private vScrollbar?: ScrollbarMetadata;
-
-  private maybeCanvasHorizontalScrollbarMetadata() {
-    if (this.hScrollbar && !this.hScrollbar.$dom.get(0).isConnected) {
-      this.hScrollbar = undefined;
-    }
-    if (!this.hScrollbar) {
-      const elt = document.querySelector(
-        ".canvas-editor__scrollbar-horizontal"
-      );
-      if (!elt) {
-        return undefined;
-      }
-      const $bar = $(ensureHTMLElt(elt));
-      this.hScrollbar = new ScrollbarMetadata($bar, true);
-    }
-
-    return this.hScrollbar;
-  }
-
-  private maybeCanvasVerticalScrollbarMetadata() {
-    if (this.hScrollbar && !this.hScrollbar.$dom.get(0).isConnected) {
-      this.hScrollbar = undefined;
-    }
-    if (!this.vScrollbar) {
-      const elt = document.querySelector(".canvas-editor__scrollbar-vertical");
-      if (!elt) {
-        return undefined;
-      }
-      const $bar = $(ensureHTMLElt(elt));
-      this.vScrollbar = new ScrollbarMetadata($bar, false);
-    }
-
-    return this.vScrollbar;
-  }
-
-  fixScrollbarAndCanvas = () => {
+  fixCanvas = () => {
     if (!this.maybeCanvasScaler()) {
       // studio hasn't loaded yet
       return;
@@ -3230,45 +3056,8 @@ export class StudioCtx extends WithDbCtx {
         if (this.currentArenaEmpty) {
           this.setTransform({ scale: 1, translate3D: { x: 0, y: 0, z: 0 } });
         }
-        // this.fixScrollbar();
       })
     );
-  };
-
-  private fixScrollbar = () => {
-    if (this.isLiveMode) {
-      return;
-    }
-    const h = this.maybeCanvasHorizontalScrollbarMetadata();
-    const v = this.maybeCanvasVerticalScrollbarMetadata();
-    if (!h || !v) {
-      return;
-    }
-    if (this.isTransforming()) {
-      h.$dom.removeClass("manual__scrollbar-visible");
-      v.$dom.removeClass("manual__scrollbar-visible");
-    } else {
-      const contentBB = this.contentAreaRect();
-      if (contentBB === undefined) {
-        h.$dom.removeClass("manual__scrollbar-visible");
-        v.$dom.removeClass("manual__scrollbar-visible");
-        return;
-      }
-      doFixManualScrollbar(
-        h,
-        this.clipperBB().left,
-        this.clipperBB().right,
-        contentBB.left,
-        contentBB.right
-      );
-      doFixManualScrollbar(
-        v,
-        this.clipperBB().top,
-        this.clipperBB().bottom,
-        contentBB.top,
-        contentBB.bottom
-      );
-    }
   };
 
   private _ccRegistry = new CodeComponentsRegistry(
@@ -3361,38 +3150,52 @@ export class StudioCtx extends WithDbCtx {
   isTransforming() {
     return this._isTransforming.get();
   }
-  setIsTransforming = (() => {
-    const delay = 200;
-    let timeoutId: number | undefined = undefined;
-    return () => {
-      if (timeoutId) {
-        window.clearTimeout(timeoutId);
-      }
-
-      if (!this._isTransforming.get()) {
-        // Starting to transform
-        this._isTransforming.set(true);
-      }
-      // Unset in the future
-      timeoutId = window.setTimeout(() => {
-        this._isTransforming.set(false);
-        timeoutId = undefined;
-      }, delay);
-    };
-  })();
+  setIsTransforming() {
+    this._isTransforming.set(true);
+    debounce(this._unsetIsTransforming, 200)();
+  }
+  private _unsetIsTransforming = () => this._isTransforming.set(false);
 
   //
   // Manage zooming
   //
 
-  private _zoom = observable.box<number>(1);
+  private _zoom = observable.box(1);
+  private _isZooming = observable.box(false);
 
   get zoom() {
     return this._zoom.get();
   }
 
-  setZoom(v: number) {
-    this._zoom.set(v);
+  private setZoom = (() => {
+    let pendingTransformFn: (() => void) | undefined = undefined;
+
+    return (v: number, opts?: { smooth?: boolean }) => {
+      if (v === this._zoom.get()) {
+        return;
+      }
+      this._zoom.set(v);
+
+      // Enqueue actually transforming the DOM
+      if (!pendingTransformFn) {
+        requestAnimationFrame(() => pendingTransformFn?.());
+      }
+      pendingTransformFn = () => {
+        this.canvasScaler().style.transform = `scale(${v})`;
+        this.canvasScaler().style.transition = opts?.smooth
+          ? `transform 0.5s, -webkit-transform 0.5s`
+          : "";
+        pendingTransformFn = undefined;
+      };
+
+      this._isZooming.set(true);
+      debounce(this._unsetIsZooming, 200)();
+    };
+  })();
+  private _unsetIsZooming = () => this._isZooming.set(false);
+
+  isZooming() {
+    return this._isZooming.get();
   }
 
   maybeCanvasScaler() {
@@ -3635,19 +3438,14 @@ export class StudioCtx extends WithDbCtx {
 
     const xInClipper = zoomState.clientX - clipperBB.left;
     const yInClipper = zoomState.clientY - clipperBB.top;
-    this.setTransform(
-      {
-        translate3D: {
-          x: xInClipper - zoomState.xOffsetInScaler * newScale,
-          y: yInClipper - zoomState.yOffsetInScaler * newScale,
-          z: 0,
-        },
-        scale: newScale,
+    this.setTransform({
+      translate3D: {
+        x: xInClipper - zoomState.xOffsetInScaler * newScale,
+        y: yInClipper - zoomState.yOffsetInScaler * newScale,
+        z: 0,
       },
-      {
-        noConstrain: true,
-      }
-    );
+      scale: newScale,
+    });
 
     return true;
   };
@@ -3749,10 +3547,6 @@ export class StudioCtx extends WithDbCtx {
       opts.ignoreHeight ? DEFAULT_ZOOM_PADDING : yRoom,
       {
         smooth: opts.smooth,
-        // There's a problem calling setTransform/getConstrainedTransform twice in tryZoomToFitRect.
-        // On the second pass, getArenaFrameScalerRect reports the wrong measurements since the zoom
-        // changes on the first pass.
-        noConstrain: true,
       }
     );
   }
@@ -3799,7 +3593,7 @@ export class StudioCtx extends WithDbCtx {
 
     const box = Box.mergeBBs(withoutNils(rects));
     if (!box) {
-      return this.fixScrollbarAndCanvas();
+      return this.fixCanvas();
     }
 
     // ALSO: retry this after frame auto-resizing

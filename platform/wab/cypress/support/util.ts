@@ -254,9 +254,9 @@ export function waitForNewFrame(
   opts?: { skipWaitInit: boolean }
 ) {
   waitStudioLoaded();
-  return cy.get(".canvas-editor__scaler").then(($scaler) => {
+  return cy.get(".canvas-editor__canvas-clipper").then(($clipper) => {
     return curDocument().then((doc) => {
-      const initXform = $scaler.css("transform");
+      const initScrollTop = $clipper.scrollTop();
       const existingFrames = doc.querySelectorAll(
         ".canvas-editor__viewport[data-test-frame-uid]"
       );
@@ -286,7 +286,7 @@ export function waitForNewFrame(
           if (opts?.skipWaitInit) {
             return framed;
           }
-          return framed.waitInit(initXform).then(() => framed);
+          return framed.waitInit(initScrollTop).then(() => framed);
         });
     });
   });
@@ -470,7 +470,12 @@ export class Framed {
       })
       .find('[contenteditable="true"]')
       .wait(500) // Needed to prevent losing some keystrokes, probably need a better solution.
-      .type(`{selectall}${text}{esc}`, { delay: 100 })
+      .type(`{selectall}${text}{esc}`, {
+        delay: 100,
+        // With browser scrolling, Cypress will scroll the element into view,
+        // even if it's already in view. This would mess up free drawing tests.
+        scrollBehavior: false,
+      })
       .then(() => {
         this.base().find(".__wab_editing").should("not.exist");
         this.base()
@@ -514,11 +519,11 @@ export class Framed {
   }
 
   /**
-   * @param initXform The initial arena transform (scroll position).  We wait
+   * @param initScrollTop The initial vertical scroll.  We wait
    *   until we have scrolled to a position that is different from this, since
    *   after frame creation we always trigger a scroll.
    */
-  waitInit(initXform?: string) {
+  waitInit(initScrollTop?: number) {
     // TODO This timeout does not do anything, but leaving here as a note in case you run into this (hopefully rare) timeout.  Issue is blocked on https://github.com/cypress-io/cypress/issues/5980.
     cy.wrap(null, { timeout: 9999 }).then(() =>
       waitCanvasOrPreviewIframeLoaded(this.frame)
@@ -528,10 +533,12 @@ export class Framed {
     this.base().find(".__wab_root").should("exist");
     waitFrameEval(this);
     // Wait for the auto-scroll to happen.
-    return cy.get(".canvas-editor__scaler").should(($scaler) => {
-      console.log($scaler.css("transform"), "vs", initXform);
-      expect($scaler.css("transform")).not.eq(initXform);
-    });
+    return this.base()
+      .get(".canvas-editor__canvas-clipper")
+      .should(($clipper) => {
+        console.log($clipper.scrollTop(), "vs", initScrollTop);
+        expect($clipper.scrollTop()).not.eq(initScrollTop);
+      });
   }
 
   plotText(x: number, y: number, text: string) {
@@ -1106,7 +1113,12 @@ export function withinLiveMode(func: () => void) {
 }
 
 export function openArtboardSettings() {
-  cy.get(`[data-test-id="artboard-config-button"]`).click();
+  cy.get(`[data-test-id="artboard-config-button"]`).click({
+    // With browser scrolling, Cypress will scroll the element into view,
+    // even if it's already in view. This would mess up free drawing tests.
+    scrollBehavior: "center",
+    force: true,
+  });
 }
 
 export function addElementInteraction(pseudoSelector: string) {

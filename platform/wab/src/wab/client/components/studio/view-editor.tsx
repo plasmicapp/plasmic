@@ -57,10 +57,6 @@ import { providesSidebarPopupSetting } from "@/wab/client/components/style-contr
 import { TopBar } from "@/wab/client/components/top-bar";
 import { getContextMenuForFocusedTpl } from "@/wab/client/components/tpl-menu";
 import * as widgets from "@/wab/client/components/widgets";
-import {
-  ManualScrollHorizontalBar,
-  ManualScrollVerticalBar,
-} from "@/wab/client/components/widgets";
 import { BrowserAlertBanner } from "@/wab/client/components/widgets/BrowserAlertBanner";
 import { DropdownButton } from "@/wab/client/components/widgets/DropdownButton";
 import { AlertBanner } from "@/wab/client/components/widgets/plasmic/AlertBanner";
@@ -1437,13 +1433,6 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       dragMoveManager: undefined,
     });
 
-    const inScrollbar =
-      e.clientX > (e.currentTarget as HTMLElement).clientWidth ||
-      e.clientY > (e.currentTarget as HTMLElement).clientHeight;
-    if (inScrollbar && !this.isZoomOverlay($(e.target as HTMLElement))) {
-      return;
-    }
-
     const internalElements = targetVc.canvasCtx.$wabInternalElements();
     if (internalElements.find((elm) => $target.is(elm))) {
       // Clicked on the empty space between root and frame
@@ -1971,22 +1960,6 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
     return tuple($target, focusedVc);
   }
 
-  private handleDragVerticalScrollbar = (deltaPercent: number) => {
-    const scrollAreaSize = this.props.studioCtx.canvasScrollAreaSize();
-    this.props.studioCtx.translateScalerRelative(
-      0,
-      scrollAreaSize.height * deltaPercent
-    );
-  };
-
-  private handleDragHorizontalScrollbar = (deltaPercent: number) => {
-    const scrollAreaSize = this.props.studioCtx.canvasScrollAreaSize();
-    this.props.studioCtx.translateScalerRelative(
-      scrollAreaSize.width * deltaPercent,
-      0
-    );
-  };
-
   private makeAlert = () => {
     const { studioCtx } = this.props;
     const freestyleState = studioCtx.freestyleState();
@@ -2114,7 +2087,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
   private onFrameLoad = (frame: ArenaFrame, canvasCtx: CanvasCtx) => {
     const studioCtx = this.props.studioCtx;
 
-    // Intentionall using runInAction instead of studioCtx.change(). The
+    // Intentionally using runInAction instead of studioCtx.change(). The
     // reason is that in studioCtx.restoreUndoRecord(), we await the creation
     // of viewCtx.  But studioCtx.restoreUndoRecord() itself is run within
     // studioCtx.change(), and only one change() can run at a time.  That means
@@ -2182,6 +2155,9 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       !!(DEVFLAGS.richtext2 && this.viewCtx()?.editingTextContext()) ||
       (this.viewCtx()?.focusedTpls().length ?? 0) > 1;
 
+    const clipperBB = studioCtx.maybeClipperBB();
+    const canvasSize = studioCtx.canvasSize();
+
     return (
       <div className="canvas-editor">
         {studioCtx.currentArena && (
@@ -2214,11 +2190,8 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
                   !studioCtx.isInteractiveMode &&
                   !studioCtx.isSpaceDown() &&
                   e.button === 0 &&
-                  // canvas clicked without canvas rendering
-                  (e.target === this.canvasClipper.current ||
-                    // canvas clicked with canvas rendering (i.e. focused mode)
-                    (e.target instanceof Element &&
-                      e.target.matches(".canvas-editor__canvas")) ||
+                  ((e.target instanceof Element &&
+                    e.target.matches(".canvas-editor__canvas")) ||
                     $(e.target).parents().is(".canvas-editor__frames"))
                 ) {
                   // Make sure that the onBlur events are called before resetting
@@ -2281,35 +2254,31 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
                   "canvas-editor__canvas-clipper": true,
                   "canvas-editor__canvas-clipper--live": studioCtx.isLiveMode,
                 })}
-                style={{
-                  overflow:
-                    studioCtx.isDevMode && !studioCtx.focusedMode
-                      ? "hidden"
-                      : "auto",
-                  gridArea: "clipper",
-                }}
               >
                 {studioCtx.isDevMode && (
                   <div className="canvas-editor__canvas-clipper-grid" />
                 )}
-                <div className="canvas-editor__canvas">
+                <div
+                  className="canvas-editor__canvas"
+                  style={{
+                    margin: clipperBB
+                      ? `${clipperBB.height}px ${clipperBB.width}px`
+                      : undefined,
+                    width: canvasSize ? `${canvasSize.width()}px` : undefined,
+                    height: canvasSize ? `${canvasSize.height()}px` : undefined,
+                  }}
+                >
                   <div className="canvas-editor__scaler">
-                    <div
-                      className={cx("canvas-editor__frames", {
-                        "display-none": !studioCtx.isDevMode,
-                      })}
-                    >
-                      {getSiteArenas(studioCtx.site, { noSorting: true }).map(
-                        (arena) => (
-                          <CanvasArenaShell
-                            key={arena.uid}
-                            arena={arena}
-                            studioCtx={studioCtx}
-                            onFrameLoad={this.onFrameLoad}
-                          />
-                        )
-                      )}
-                    </div>
+                    {getSiteArenas(studioCtx.site, { noSorting: true }).map(
+                      (arena) => (
+                        <CanvasArenaShell
+                          key={arena.uid}
+                          arena={arena}
+                          studioCtx={studioCtx}
+                          onFrameLoad={this.onFrameLoad}
+                        />
+                      )
+                    )}
                     <DevContainer
                       className="abs"
                       showControls={studioCtx.isDevMode}
@@ -2365,20 +2334,6 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
                   <div className="canvas-editor__viewport-click-guard" />
                   <CanvasDndOverlay opts={this.dndOverlayOpts} />
                 </div>
-                {!studioCtx.isLiveMode && !studioCtx.focusedMode && (
-                  <ManualScrollVerticalBar
-                    trackClassName="canvas-editor__scrollbar-vertical-track"
-                    barClassName="canvas-editor__scrollbar-vertical"
-                    scrollRelative={this.handleDragVerticalScrollbar}
-                  />
-                )}
-                {!studioCtx.isLiveMode && !studioCtx.focusedMode && (
-                  <ManualScrollHorizontalBar
-                    trackClassName="canvas-editor__scrollbar-horizontal-track"
-                    barClassName="canvas-editor__scrollbar-horizontal"
-                    scrollRelative={this.handleDragHorizontalScrollbar}
-                  />
-                )}
                 {!studioCtx.focusedMode && <VariantsBar />}
               </div>
               {DEVFLAGS.richtext2 && this.viewCtx()?.editingTextContext() && (

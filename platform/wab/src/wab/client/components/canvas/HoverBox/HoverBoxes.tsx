@@ -1,3 +1,79 @@
+import {
+  ArenaFrame,
+  isKnownArena,
+  isKnownArenaFrame,
+  TplNode,
+} from "@/wab/classes";
+import { EditableNodeLabel } from "@/wab/client/components/canvas/EditableNodeLabel";
+import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
+import { toast } from "@/wab/client/components/Messages";
+import {
+  canEditSection,
+  Section,
+} from "@/wab/client/components/sidebar-tabs/Sections";
+import { OneShortcutCombo } from "@/wab/client/components/studio/Shortcuts";
+import { getContextMenuForFocusedTpl } from "@/wab/client/components/tpl-menu";
+import { LinkButton } from "@/wab/client/components/widgets";
+import { offsetPxAsUnits } from "@/wab/client/DimManip";
+import { DragMoveManager } from "@/wab/client/Dnd";
+import {
+  DragMoveFrameManager,
+  FreestyleManipulator,
+  ManipState,
+  ManipulatorAbortedError,
+  mkFreestyleManipForFocusedDomElt,
+  mkFreestyleManipForFocusedFrame,
+} from "@/wab/client/FreestyleManipulator";
+import {
+  cssPropsForInvertTransform,
+  StudioCtx,
+  usePlasmicCtx,
+} from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { useForceUpdate } from "@/wab/client/useForceUpdate";
+import {
+  ensure,
+  ensureArray,
+  ensureInstance,
+  maybe,
+  spawnWrapper,
+} from "@/wab/common";
+import {
+  XDraggable,
+  XDraggableEvent,
+} from "@/wab/commons/components/XDraggable";
+import { sidesAndCorners, styleCase } from "@/wab/commons/ViewUtil";
+import { DEVFLAGS } from "@/wab/devflags";
+import {
+  Corner,
+  isAxisSide,
+  Pt,
+  Side,
+  sideOrCornerToSides,
+  sideToOrient,
+  sideToSize,
+} from "@/wab/geom";
+import { isSelectableLocked, Selectable, SQ } from "@/wab/selection";
+import {
+  isHeightAutoDerived,
+  isPositionManagedFrame,
+} from "@/wab/shared/Arenas";
+import { createNumericSize, showSizeCss, Unit } from "@/wab/shared/Css";
+import { isTplAutoSizable, resetTplSize } from "@/wab/shared/sizingutils";
+import { SlotSelection } from "@/wab/slots";
+import {
+  isTplColumns,
+  isTplImage,
+  isTplNodeNamable,
+  isTplTextBlock,
+} from "@/wab/tpls";
+import {
+  isScrollableVal,
+  ValComponent,
+  ValNode,
+  ValSlot,
+  ValTag,
+} from "@/wab/val-nodes";
 import { notification } from "antd";
 import { ArgsProps } from "antd/lib/notification";
 import cn from "classnames";
@@ -9,80 +85,7 @@ import { useLocalStorage } from "react-use";
 import { useHoverIntent } from "react-use-hoverintent";
 import ResizeObserver from "resize-observer-polyfill";
 import { failable } from "ts-failable";
-import {
-  ArenaFrame,
-  isKnownArena,
-  isKnownArenaFrame,
-  TplNode,
-} from "../../../../classes";
-import {
-  ensure,
-  ensureArray,
-  ensureInstance,
-  maybe,
-  spawnWrapper,
-} from "../../../../common";
-import {
-  XDraggable,
-  XDraggableEvent,
-} from "../../../../commons/components/XDraggable";
-import { sidesAndCorners, styleCase } from "../../../../commons/ViewUtil";
-import { DEVFLAGS } from "../../../../devflags";
-import {
-  Corner,
-  isAxisSide,
-  Pt,
-  Side,
-  sideOrCornerToSides,
-  sideToOrient,
-  sideToSize,
-} from "../../../../geom";
-import { isSelectableLocked, Selectable, SQ } from "../../../../selection";
-import {
-  isHeightAutoDerived,
-  isPositionManagedFrame,
-} from "../../../../shared/Arenas";
-import { createNumericSize, showSizeCss, Unit } from "../../../../shared/Css";
-import { isTplAutoSizable, resetTplSize } from "../../../../shared/sizingutils";
-import { SlotSelection } from "../../../../slots";
-import {
-  isTplColumns,
-  isTplImage,
-  isTplNodeNamable,
-  isTplTextBlock,
-} from "../../../../tpls";
-import {
-  isScrollableVal,
-  ValComponent,
-  ValNode,
-  ValSlot,
-  ValTag,
-} from "../../../../val-nodes";
-import { offsetPxAsUnits } from "../../../DimManip";
-import { DragMoveManager } from "../../../Dnd";
-import {
-  DragMoveFrameManager,
-  FreestyleManipulator,
-  ManipState,
-  ManipulatorAbortedError,
-  mkFreestyleManipForFocusedDomElt,
-  mkFreestyleManipForFocusedFrame,
-} from "../../../FreestyleManipulator";
 import { PLATFORM } from "../../../platform";
-import {
-  cssPropsForInvertTransform,
-  StudioCtx,
-  usePlasmicCtx,
-} from "../../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../../studio-ctx/view-ctx";
-import { useForceUpdate } from "../../../useForceUpdate";
-import { maybeShowContextMenu } from "../../ContextMenu";
-import { toast } from "../../Messages";
-import { canEditSection, Section } from "../../sidebar-tabs/Sections";
-import { OneShortcutCombo } from "../../studio/Shortcuts";
-import { getContextMenuForFocusedTpl } from "../../tpl-menu";
-import { LinkButton } from "../../widgets";
-import { EditableNodeLabel } from "../EditableNodeLabel";
 import {
   computeHoverBoxTargets,
   computeHoverBoxViewState,
@@ -248,10 +251,6 @@ function HoverBoxInner_({ viewProps }: { viewProps: HoverBoxViewProps }) {
 
       setResizePart(undefined);
       setManipState(undefined);
-      if (!viewCtx || studioCtx.focusedFrame()) {
-        // At the end of resizing a frame, adjust scrollbar
-        studioCtx.fixScrollbarAndCanvas();
-      }
     });
   };
 

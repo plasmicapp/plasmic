@@ -28,7 +28,6 @@ import {
   XDraggableEventHandler,
 } from "@/wab/commons/components/XDraggable";
 import { ReadablePromise } from "@/wab/commons/control";
-import { $ } from "@/wab/deps";
 import { Dropdown, Table, Tooltip } from "antd";
 import classNames from "classnames";
 import { isKeyHotkey } from "is-hotkey";
@@ -952,62 +951,6 @@ export class ListBoxItem extends React.Component<ListBoxItemProps, {}> {
       </Draggable>
     );
   }
-}
-
-export function ManualScrollVerticalBar(props: {
-  trackClassName: string;
-  barClassName: string;
-  scrollRelative: (deltaPercetage: number) => void;
-  style?: React.CSSProperties;
-}) {
-  return (
-    <div
-      className={`manual__scrollbar-vertical-track ${props.trackClassName}`}
-      onMouseDown={(e) => e.preventDefault()}
-      onMouseUp={(e) => e.preventDefault()}
-      style={props.style}
-    >
-      <XDraggable
-        onDrag={(e) => {
-          const trackLength = ensure(
-            $(`.${props.trackClassName}`).height(),
-            `Not found any element for the selector: .${props.trackClassName}`
-          );
-          props.scrollRelative(-(e.draggableData.deltaY * 1.0) / trackLength);
-        }}
-      >
-        <div className={`manual__scrollbar-vertical ${props.barClassName}`} />
-      </XDraggable>
-    </div>
-  );
-}
-
-export function ManualScrollHorizontalBar(props: {
-  trackClassName: string;
-  barClassName: string;
-  scrollRelative: (deltaPercetage: number) => void;
-  style?: React.CSSProperties;
-}) {
-  return (
-    <div
-      className={`manual__scrollbar-horizontal-track ${props.trackClassName}`}
-      onMouseDown={(e) => e.preventDefault()}
-      onMouseUp={(e) => e.preventDefault()}
-      style={props.style}
-    >
-      <XDraggable
-        onDrag={(e) => {
-          const trackLength = ensure(
-            $(`.${props.trackClassName}`).width(),
-            `Not found any element for the selector: .${props.trackClassName}`
-          );
-          props.scrollRelative(-(e.draggableData.deltaX * 1.0) / trackLength);
-        }}
-      >
-        <div className={`manual__scrollbar-horizontal ${props.barClassName}`} />
-      </XDraggable>
-    </div>
-  );
 }
 
 export function InlineIcon({ children }: { children: ReactNode }) {

@@ -20,7 +20,7 @@ describe("Can use stale bundle", function () {
         }).withinStudioIframe(() => {
           cy.waitForFrameToLoad();
           cy.curDocument()
-            .get(".canvas-editor__viewport[data-test-frame-uid]")
+            .get(".canvas-editor__frames .canvas-editor__viewport")
             .then(($frame) => {
               const frame = $frame[0] as HTMLIFrameElement;
               return new Framed(frame);

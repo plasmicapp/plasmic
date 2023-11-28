@@ -7,12 +7,11 @@ import {
   showCanvasPageNavigationNotification,
 } from "@/wab/client/components/canvas/studio-canvas-util";
 import { CommentOverlays } from "@/wab/client/components/comments/CommentOverlays";
-import { getGlobalCssVariableValue } from "@/wab/client/components/studio/GlobalCssVariables";
 import { bindShortcutHandlers } from "@/wab/client/shortcuts/shortcut-handler";
 import { STUDIO_SHORTCUTS } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
-import { assert, ensure, spawn, spawnWrapper, tuple } from "@/wab/common";
+import { assert, cx, ensure, spawn, spawnWrapper, tuple } from "@/wab/common";
 import { ScreenDimmer } from "@/wab/commons/components/ScreenDimmer";
 import { $, JQ } from "@/wab/deps";
 import {
@@ -20,7 +19,6 @@ import {
   FrameViewMode,
   getArenaName,
   getFrameHeight,
-  isMixedArena,
 } from "@/wab/shared/Arenas";
 import { siteToAllGlobalVariants } from "@/wab/shared/cached-selectors";
 import {
@@ -28,7 +26,6 @@ import {
   toJsIdentifier,
   toVarName,
 } from "@/wab/shared/codegen/util";
-import { gridSpacing, hoverBoxTagHeight } from "@/wab/styles/css-variables";
 import { getPublicUrl } from "@/wab/urls";
 import { Spin } from "antd";
 import L from "lodash";
@@ -293,7 +290,7 @@ export const CanvasFrame = observer(function CanvasFrame({
       // We cannot register wheel handler using React's onWheel property - the
       // wheel event is now passive by default in Chrome, which means we cannot
       // call preventDefault on it.
-      ctx.$body().get(0).addEventListener("wheel", onWheel, { passive: false });
+      ctx.$html().get(0).addEventListener("wheel", onWheel, { passive: false });
 
       studioCtx.fontManager.installAllUsedFonts([ctx.$head()]);
       onFrameLoad(arenaFrame, ctx);
@@ -318,7 +315,7 @@ export const CanvasFrame = observer(function CanvasFrame({
           .off("mouseout", absorbEvent)
           .off("click", absorbEvent);
         unbindShortcutHandlers();
-        ctx.$body().get(0).removeEventListener("wheel", onWheel);
+        ctx.$html().get(0).removeEventListener("wheel", onWheel);
         ctx.viewport().removeEventListener("focus", onFocus);
         ctx.dispose();
         studioCtx.clipperResizedSignal.remove(onClipperResized);
@@ -481,17 +478,6 @@ export const CanvasFrame = observer(function CanvasFrame({
     }
   }, [loadState]);
 
-  const _gridSpacing = parseInt(getGlobalCssVariableValue(gridSpacing), 10);
-  const _hoverBoxTagHeight = parseInt(
-    getGlobalCssVariableValue(hoverBoxTagHeight),
-    10
-  );
-
-  // Only subscribe to studioCtx.zoom if arena is visible
-  const zoom = studioCtx.isArenaVisible(arena) ? studioCtx.zoom : 0;
-  const surroundingSize =
-    _hoverBoxTagHeight / Math.max(zoom, _hoverBoxTagHeight / _gridSpacing);
-
   const makeFrameHash = React.useCallback(() => {
     const globalVariantMap = L.keyBy(
       siteToAllGlobalVariants(studioCtx.site),
@@ -520,7 +506,6 @@ export const CanvasFrame = observer(function CanvasFrame({
         return [globalVariantGroupName, globalVariantName];
       })
     );
-    const _path = new URL(studioCtx.getHostUrl()).pathname;
     const hash = new URLSearchParams({
       canvas: "true",
       origin: getPublicUrl(),
@@ -549,112 +534,96 @@ export const CanvasFrame = observer(function CanvasFrame({
   }, [makeFrameHash, iframeRef.current]);
 
   return (
-    <div
-      style={
-        isMixedArena(arena)
-          ? {}
-          : isNaN(surroundingSize)
-          ? { alignSelf: "flex-start" }
-          : {
-              padding: `${surroundingSize}px 0 0 ${surroundingSize}px`,
-              marginTop: -surroundingSize,
-              marginLeft: -surroundingSize,
-              alignSelf: "flex-start",
-            }
-      }
-    >
-      <div className={styles.root} onClick={handleSelectionClick}>
-        {maybeViewCtx()?.canvasCtx.isUpdatingCcRegistry() &&
-          createPortal(
-            <ScreenDimmer>
-              <Spin size={"large"} />
-            </ScreenDimmer>,
-            document.body
+    <div className={styles.root} onClick={handleSelectionClick}>
+      {maybeViewCtx()?.canvasCtx.isUpdatingCcRegistry() &&
+        createPortal(
+          <ScreenDimmer>
+            <Spin size={"large"} />
+          </ScreenDimmer>,
+          document.body
+        )}
+      <div
+        className={"CanvasFrame__Container"}
+        style={
+          isFree
+            ? {
+                position: "absolute",
+                left: ensure(
+                  arenaFrame.left,
+                  () => "Expected arenaFrame.left to exist"
+                ),
+                top: ensure(
+                  arenaFrame.top,
+                  () => "Expected arenaFrame.top to exist"
+                ),
+                width: arenaFrame.width,
+                height: getFrameHeight(arenaFrame),
+              }
+            : {
+                width: arenaFrame.width,
+                height: getFrameHeight(arenaFrame),
+              }
+        }
+        data-frame-id={`${arenaFrame.uid}`}
+      >
+        <iframe
+          className={cx(
+            "canvas-editor__viewport",
+            loadState !== "loaded" && "no-pointer-events"
           )}
-        <div
-          className={"CanvasFrame__Container"}
-          style={
-            isFree
-              ? {
-                  position: "absolute",
-                  left: ensure(
-                    arenaFrame.left,
-                    () => "Expected arenaFrame.left to exist"
-                  ),
-                  top: ensure(
-                    arenaFrame.top,
-                    () => "Expected arenaFrame.top to exist"
-                  ),
-                  width: arenaFrame.width,
-                  height: getFrameHeight(arenaFrame),
-                }
-              : {
-                  width: arenaFrame.width,
-                  height: getFrameHeight(arenaFrame),
-                }
+          data-test-frame-uid={
+            loadState === "unloaded" || loadState === "queued"
+              ? undefined
+              : arenaFrame.uid
           }
-          data-frame-id={`${arenaFrame.uid}`}
-        >
-          <iframe
-            className={"canvas-editor__viewport"}
-            data-test-frame-uid={
-              loadState === "unloaded" || loadState === "queued"
-                ? undefined
-                : arenaFrame.uid
-            }
-            ref={iframeRef}
-            key={
-              iFrameKey +
-              String(loadState === "unloaded" || loadState === "queued")
-            }
-          />
-          <div
-            className={"CanvasFrame__OverlayTop"}
-            data-frame-uid={arenaFrame.uid}
-          />
-          <div
-            className={"CanvasFrame__OverlayRight"}
-            data-frame-uid={arenaFrame.uid}
-          />
-          <div
-            className={"CanvasFrame__OverlayBottom"}
-            data-frame-uid={arenaFrame.uid}
-          />
-          <div
-            className={"CanvasFrame__OverlayLeft"}
-            data-frame-uid={arenaFrame.uid}
-          />
-          {DEVFLAGS.loadingDebug && (
-            <div className={styles.statusBadge}>
-              {loadState === "unloaded" && "Mounted..."}
-              {loadState === "queued" && "Queued to be loaded..."}
-              {loadState === "ready-to-load" && "Waiting to be loaded..."}
-              {loadState === "loading" && "Loading host..."}
-              {initState === "user-body-wait" &&
-                "Waiting for host to render <PlasmicCanvasHost />..."}
-              {initState === "script-wait" && "Executing artboard scripts..."}
-              {initState === "hostless-wait" &&
-                "Installing built-in comopnent packages..."}
-              {initState === "done" && "Loaded"}
-            </div>
-          )}
+          ref={iframeRef}
+          key={
+            iFrameKey +
+            String(loadState === "unloaded" || loadState === "queued")
+          }
+        />
+        <div
+          className={"CanvasFrame__OverlayTop"}
+          data-frame-uid={arenaFrame.uid}
+        />
+        <div
+          className={"CanvasFrame__OverlayRight"}
+          data-frame-uid={arenaFrame.uid}
+        />
+        <div
+          className={"CanvasFrame__OverlayBottom"}
+          data-frame-uid={arenaFrame.uid}
+        />
+        <div
+          className={"CanvasFrame__OverlayLeft"}
+          data-frame-uid={arenaFrame.uid}
+        />
+        {DEVFLAGS.loadingDebug && (
+          <div className={styles.statusBadge}>
+            {loadState === "unloaded" && "Mounted..."}
+            {loadState === "queued" && "Queued to be loaded..."}
+            {loadState === "ready-to-load" && "Waiting to be loaded..."}
+            {loadState === "loading" && "Loading host..."}
+            {initState === "user-body-wait" &&
+              "Waiting for host to render <PlasmicCanvasHost />..."}
+            {initState === "script-wait" && "Executing artboard scripts..."}
+            {initState === "hostless-wait" &&
+              "Installing built-in comopnent packages..."}
+            {initState === "done" && "Loaded"}
+          </div>
+        )}
 
-          <CanvasHeader
-            studioCtx={studioCtx}
-            frame={arenaFrame}
-            arena={arena}
-          />
-          <CanvasArtboardSelectionHandle
-            frame={arenaFrame}
-            onClick={handleSelectionClick}
-          />
-          {studioCtx.rightTabKey === "comments" && (
-            <CommentOverlays arena={arena} arenaFrame={arenaFrame} />
-          )}
-          {studioCtx.appCtx.appConfig.warningsInCanvas && (
-            <CanvasActions arena={arena} arenaFrame={arenaFrame} />
-          )}
-        </div>
+        <CanvasHeader studioCtx={studioCtx} frame={arenaFrame} arena={arena} />
+        <CanvasArtboardSelectionHandle
+          frame={arenaFrame}
+          onClick={handleSelectionClick}
+        />
+        {studioCtx.rightTabKey === "comments" && (
+          <CommentOverlays arena={arena} arenaFrame={arenaFrame} />
+        )}
+        {studioCtx.appCtx.appConfig.warningsInCanvas && (
+          <CanvasActions arena={arena} arenaFrame={arenaFrame} />
+        )}
       </div>
     </div>
   );
