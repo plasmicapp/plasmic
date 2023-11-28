@@ -139,7 +139,7 @@ describe("hostless-rich-calendar", () => {
 
         addCalendar(`2023`);
         cy.get(`[data-test-id="prop-editor-row-data"] label`)
-          .contains("Data")
+          .contains("Events")
           .rightclick();
         cy.get("#use-dynamic-value-btn").click(); // NOTE: This is not selectable by .contains("Use dynamic value"), which is strange!
         cy.contains("Switch to Code").click();
