@@ -764,6 +764,7 @@ async function importFullProjectData(
   if (pkgVersions[0] && pkgVersions[0].branchId !== MainBranchId) {
     // The ancestor pkg version must be in main branch
     pkgVersions[0].branchId = MainBranchId;
+    pkgVersions[0].version = "0.0.0"; // Avoid duplicate versions / ancestor with higher version
   }
 
   // Store dependencies and published versions
