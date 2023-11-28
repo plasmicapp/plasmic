@@ -507,6 +507,34 @@ function CmsEntryDetailsForm_(
                         <span>Unpublish entry</span>
                       </Tooltip>
                     </Menu.Item>
+                    {row.data && row.draftData && (
+                      <Menu.Item
+                        key="revert"
+                        onClick={async () => {
+                          await message.loading({
+                            key: "revert-message",
+                            content: "Reverting...",
+                          });
+                          await api.updateCmsRow(row.id, {
+                            draftData: null,
+                            revision,
+                          });
+                          await mutateRow();
+                          await resetFormByRow();
+                          setHasUnpublishedChanges(hasPublishableChanges());
+                          await validateFields();
+                          await message.success({
+                            key: "revert-message",
+                            content: "Reverted.",
+                          });
+                        }}
+                        disabled={isSaving || isPublishing}
+                      >
+                        <Tooltip title="Reverts draft data to previously-published data">
+                          <span>Revert to published entry</span>
+                        </Tooltip>
+                      </Menu.Item>
+                    )}
                     <Menu.Divider />
                   </>
                 )}
