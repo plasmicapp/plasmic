@@ -3,6 +3,7 @@ import {
   Component,
   Expr,
   ExprText,
+  isKnownCompositeExpr,
   isKnownExpr,
   Param,
   RenderExpr,
@@ -124,12 +125,18 @@ export function generateTplsFromFormItems(
     itemArg: Arg | undefined,
     itemParam: Param
   ) => {
-    return itemArg
-      ? deserCompositeExprMaybe(itemArg.expr)
-      : itemParam.defaultExpr
-      ? tryExtractJson(itemParam.defaultExpr)
-      : undefined;
+    if (itemArg) {
+      if (isKnownCompositeExpr(itemArg.expr)) {
+        return deserCompositeExprMaybe(itemArg.expr);
+      }
+      return tryExtractJson(itemArg.expr);
+    }
+    if (itemParam.defaultExpr) {
+      return tryExtractJson(itemParam.defaultExpr);
+    }
+    return undefined;
   };
+
   const formItems: FormItemProps[] = extractFormItemsFromArg(
     formItemsArg,
     formItemsParam
