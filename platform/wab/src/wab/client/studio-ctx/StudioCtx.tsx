@@ -6649,7 +6649,9 @@ export class StudioCtx extends WithDbCtx {
         customProperties: newProperties,
       };
 
-      await this.logAsAppUser(newAppUser);
+      if (!isEqual(this.currentAppUserCtx.appUser, newAppUser)) {
+        await this.logAsAppUser(newAppUser);
+      }
     }
   }
 
