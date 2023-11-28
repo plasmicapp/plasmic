@@ -26,7 +26,6 @@ if (window && "matchMedia" in window) {
   require("tinymce/plugins/visualblocks");
 }
 
-import "tinymce/skins/ui/tinymce-5/content.min.css";
 import "tinymce/skins/ui/tinymce-5/skin.min.css";
 
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
@@ -44,6 +43,8 @@ export function TinyEditor({ value, onChange, ...props }: TinyEditorProps) {
     <div>
       <Editor
         init={{
+          skin: false,
+          content_css: false,
           height: 500,
           width: 600,
           menubar: false,
