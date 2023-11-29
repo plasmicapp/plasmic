@@ -436,6 +436,7 @@
     "prettier": "2.8.8",
     "pretty": "^2.0.0",
     "prism-react-renderer": "^1.1.1",
+    "prismjs": "^1.29.0",
     "private-ip": "^3.0.1",
     "process": "^0.11.10",
     "prom-client": "^14.0.1",
@@ -561,7 +562,8 @@
       "XXX/node_modules/(?!(@plasmicapp/react-web/lib/|private-ip|ip-regex|get-port|@chainsafe)).+\\.(js|jsx|mjs|cjs|ts|tsx)$"
     ],
     "moduleNameMapper": {
-      "^@/(.*)": "<rootDir>/src/$1"
+      "^@/(.*)": "<rootDir>/src/$1",
+      "^!file-loader!": "<rootDir>/__mocks__/file-loader-mock.js"
     }
   }
 }
