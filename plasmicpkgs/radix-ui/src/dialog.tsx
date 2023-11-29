@@ -125,6 +125,7 @@ export const SheetContent = React.forwardRef<
           className={clsx(
             sheetVariants({ side }),
             dynClass ? dynClass : "",
+            themeResetClass,
             className
           )}
           {...props}
