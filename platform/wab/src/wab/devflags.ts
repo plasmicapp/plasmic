@@ -5,6 +5,7 @@ import { assert, ensureType, mergeSane } from "./common";
 import { DEFAULT_DEVFLAG_OVERRIDES } from "./devflag-overrides";
 import {
   ApiFeatureTier,
+  CmsDatabaseId,
   FeatureTierId,
   TeamId,
   WorkspaceId,
@@ -481,7 +482,8 @@ const DEFAULT_DEVFLAGS = {
   useWhitespaceNormal: false,
   autoUpgradeHostless: true,
 
-  cmsRichTextEditor: "quill" as "quill" | "tinymce",
+  tinymceDatabaseIds: [] as CmsDatabaseId[],
+  forceTinymce: false,
 
   // Disabled by default
   runningInCypress: false,
