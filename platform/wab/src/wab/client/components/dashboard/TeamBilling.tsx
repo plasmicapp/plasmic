@@ -1,31 +1,38 @@
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { notification } from "antd";
-import * as React from "react";
-import Stripe from "stripe";
-import { ensure } from "../../../common";
-import { DEVFLAGS } from "../../../devflags";
+import { AppCtx } from "@/wab/client/app-ctx";
+import { U } from "@/wab/client/cli-routes";
+import {
+  promptBilling,
+  showUpsellConfirm,
+} from "@/wab/client/components/modals/PricingModal";
+import { promptUpdateCc } from "@/wab/client/components/modals/UpdateCreditCardModal";
+import {
+  reactConfirm,
+  reactHardConfirm,
+  reactPrompt,
+} from "@/wab/client/components/quick-modals";
+import {
+  DefaultTeamBillingProps,
+  PlasmicTeamBilling,
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicTeamBilling";
+import { ensure } from "@/wab/common";
+import { DEVFLAGS } from "@/wab/devflags";
 import {
   ApiFeatureTier,
   ApiTeam,
   BillingFrequency,
   TeamMember,
-} from "../../../shared/ApiSchema";
+} from "@/wab/shared/ApiSchema";
 import {
   calculateRecurringBill,
   getSubscriptionStatus,
-} from "../../../shared/billing/billing-util";
-import { isCoreTeamEmail } from "../../../shared/devflag-utils";
-import { ORGANIZATION_CAP } from "../../../shared/Labels";
-import { isUpgradableTier } from "../../../shared/pricing/pricing-utils";
-import { AppCtx } from "../../app-ctx";
-import { U } from "../../cli-routes";
-import {
-  DefaultTeamBillingProps,
-  PlasmicTeamBilling,
-} from "../../plasmic/plasmic_kit_dashboard/PlasmicTeamBilling";
-import { promptBilling, showUpsellConfirm } from "../modals/PricingModal";
-import { promptUpdateCc } from "../modals/UpdateCreditCardModal";
-import { reactConfirm, reactHardConfirm } from "../quick-modals";
+} from "@/wab/shared/billing/billing-util";
+import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { ORGANIZATION_CAP } from "@/wab/shared/Labels";
+import { isUpgradableTier } from "@/wab/shared/pricing/pricing-utils";
+import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import { notification } from "antd";
+import * as React from "react";
+import Stripe from "stripe";
 
 interface TeamBillingProps extends DefaultTeamBillingProps {
   appCtx: AppCtx;
@@ -232,6 +239,20 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
           }
 
           // Ask the user to confirm their cancellation
+          const cancelReason = await reactPrompt({
+            message: `Can you tell us why you're cancelling? What could we have done better?`,
+            rules: [
+              {
+                required: true,
+              },
+            ],
+            placeholder: "Please don't hold back - we need to know the truth.",
+          });
+          if (!cancelReason) {
+            return;
+          }
+
+          // Ask the user to confirm their cancellation
           const confirmed = await reactHardConfirm({
             title: "Cancel your Plasmic plan",
             message: `To cancel your plan, type 'cancel' into the textbox`,
@@ -246,7 +267,9 @@ function TeamBilling_(props: TeamBillingProps, ref: HTMLElementRefOf<"div">) {
             team,
             `${ORGANIZATION_CAP} should exist to change subscription`
           ).id;
-          await appCtx.api.cancelSubscription(teamId);
+          await appCtx.api.cancelSubscription(teamId, {
+            reason: cancelReason,
+          });
           // Refresh the latest team data
           await onChange();
         },

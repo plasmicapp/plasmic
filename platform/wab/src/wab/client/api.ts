@@ -60,7 +60,7 @@ export const ajax = async (
 ) =>
   new Promise<any>((resolve, reject) => {
     let search = "";
-    if (method === "get") {
+    if (method === "get" || method === "delete") {
       search = new URLSearchParams(
         L.mapValues(data, (v) => JSON.stringify(v))
       ).toString();

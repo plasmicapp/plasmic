@@ -1006,8 +1006,11 @@ export abstract class SharedApi {
     return this.put(`/billing/subscription/${args.teamId}`, args);
   }
 
-  async cancelSubscription(teamId: TeamId): Promise<{}> {
-    return this.delete(`/billing/subscription/${teamId}`);
+  async cancelSubscription(
+    teamId: TeamId,
+    { reason }: { reason?: string } = {}
+  ): Promise<{}> {
+    return this.delete(`/billing/subscription/${teamId}`, { reason });
   }
 
   async createSetupIntent(teamId: TeamId): Promise<Stripe.SetupIntent> {

@@ -83,7 +83,7 @@ export const loadingBoundaryMeta: ComponentMeta<LoadingBoundaryProps> = {
     children: "slot",
     loadingState: {
       type: "slot",
-      displayName: "Loading State",
+      displayName: "Loading state",
       defaultValue: {
         type: "text",
         value: "Loading...",
@@ -92,8 +92,9 @@ export const loadingBoundaryMeta: ComponentMeta<LoadingBoundaryProps> = {
     forceLoading: {
       type: "boolean",
       editOnly: true,
-      displayName: "Force Loading",
-      description: "Force rendering the 'Loading' state",
+      displayName: "Preview loading",
+      description:
+        "Force preview the 'Loading' state - impacts only editor, and not published page behavior",
     },
   },
   providesData: true,
