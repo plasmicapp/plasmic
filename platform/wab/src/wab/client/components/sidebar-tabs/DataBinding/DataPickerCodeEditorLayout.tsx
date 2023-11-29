@@ -66,7 +66,7 @@ function DataPickerCodeEditorLayout_(
             key={codeEditorKey}
             hideLineNumbers={true}
             language={"javascript"}
-            defaultValue={currentValue}
+            defaultValue={defaultValue}
             data={data}
             onSave={onSave}
             onChange={(val: string) => setCurrentValue(val)}
