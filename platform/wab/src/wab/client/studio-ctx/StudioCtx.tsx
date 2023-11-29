@@ -3152,9 +3152,11 @@ export class StudioCtx extends WithDbCtx {
   }
   setIsTransforming() {
     this._isTransforming.set(true);
-    debounce(this._unsetIsTransforming, 200)();
+    this._unsetIsTransforming();
   }
-  private _unsetIsTransforming = () => this._isTransforming.set(false);
+  private _unsetIsTransforming = debounce(() => {
+    this._isTransforming.set(false);
+  }, 200);
 
   //
   // Manage zooming
