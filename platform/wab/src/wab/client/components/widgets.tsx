@@ -345,6 +345,7 @@ type _TabsProps = {
   contentWrapper: (...args: any[]) => any;
   scrollByTransform?: boolean;
   forceRender?: boolean;
+  tabBarExtraContent?: React.ReactNode;
 };
 class _Tabs extends React.Component<_TabsProps, {}> {
   static defaultProps = {
@@ -362,39 +363,42 @@ class _Tabs extends React.Component<_TabsProps, {}> {
             className={cx("nav-tabs", this.props.tabBarClassName)}
             role="tablist"
           >
-            {this.props.tabs.map((tab: /*TWZ*/ Tab, i: /*TWZ*/ number) => {
-              const key = tab.key != null ? tab.key : i;
-              const isActive = tabKey === key;
-              return (
-                <button
-                  key={key}
-                  className={cx(
-                    {
-                      "nav-tab": true && this.props.useDefaultClasses,
-                      "nav-tab--active":
-                        isActive && this.props.useDefaultClasses,
-                      "nav-tab--pull-right":
-                        this.props.tabs.length > 1 && tab.pullRight,
-                    },
-                    this.props.tabClassName,
-                    tabKey === key ? this.props.activeTabClassName : undefined
-                  )}
-                  id={`nav-tab-${key}`}
-                  onClick={() => {
-                    if (typeof this.props.onSwitch === "function") {
-                      this.props.onSwitch(key);
-                    }
-                    return this.setState({ tabKey: key });
-                  }}
-                  data-test-tabkey={key}
-                  tabIndex={0}
-                  aria-selected={isActive}
-                  role="tab"
-                >
-                  {tab.name}
-                </button>
-              );
-            })}
+            <div>
+              {this.props.tabs.map((tab: /*TWZ*/ Tab, i: /*TWZ*/ number) => {
+                const key = tab.key != null ? tab.key : i;
+                const isActive = tabKey === key;
+                return (
+                  <button
+                    key={key}
+                    className={cx(
+                      {
+                        "nav-tab": true && this.props.useDefaultClasses,
+                        "nav-tab--active":
+                          isActive && this.props.useDefaultClasses,
+                        "nav-tab--pull-right":
+                          this.props.tabs.length > 1 && tab.pullRight,
+                      },
+                      this.props.tabClassName,
+                      tabKey === key ? this.props.activeTabClassName : undefined
+                    )}
+                    id={`nav-tab-${key}`}
+                    onClick={() => {
+                      if (typeof this.props.onSwitch === "function") {
+                        this.props.onSwitch(key);
+                      }
+                      return this.setState({ tabKey: key });
+                    }}
+                    data-test-tabkey={key}
+                    tabIndex={0}
+                    aria-selected={isActive}
+                    role="tab"
+                  >
+                    {tab.name}
+                  </button>
+                );
+              })}
+            </div>
+            {this.props.tabBarExtraContent}
           </div>
         )}
 
