@@ -3091,10 +3091,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/luxon-parser/-/luxon-parser-3.4.4.tgz#32150fc2c7bbad1e9e0242c897518680c6dc5fed"
   integrity sha512-VN/nwVehURL1TeHt7WlxuYXD7v9f87MG58YLrZeBQOcGDA9ck/gZNz7m1S1MeJ67gpnbpyJ3uFUPt+t1KnMQxw==
 
-"@plasmicpkgs/plasmic-basic-components@^0.0.203":
-  version "0.0.203"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-basic-components/-/plasmic-basic-components-0.0.203.tgz#78980a46445ea6e9e52a67b278404cc78cf2ef79"
-  integrity sha512-B4yUMFm09L92J84+8cD5U3M/XRV4ZnbBavBKfBfQaWE3j6KZaQXUwpuQXr0VshqHgcaQCjmeLpKH1x6AaFIG4Q==
+"@plasmicpkgs/plasmic-basic-components@^0.0.204":
+  version "0.0.204"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-basic-components/-/plasmic-basic-components-0.0.204.tgz#7af59d3f2b48da3540ea303f4d02d35a68df7f8e"
+  integrity sha512-e6OvzO1x2+E20yuyaLtsZdjkxdBEJ38KEDMn8dy8++hTpyflc+h5RQAWX9y9h2u3UrXmGvTrPD3m5kWsekxR4A==
 
 "@plasmicpkgs/plasmic-chakra-ui@^0.0.17":
   version "0.0.17"
@@ -3269,10 +3269,10 @@
     react-scroll-parallax "3.0.0-alpha.14"
     resize-observer-polyfill "^1.5.1"
 
-"@plasmicpkgs/react-slick@^0.0.203":
-  version "0.0.203"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-slick/-/react-slick-0.0.203.tgz#9b2e52d43309c33963c0913cb87d57ef0849e134"
-  integrity sha512-ga+oAvXiNPPtdTZuWxXd1Xob+KiIBFONBDb18E8vGyxlkuJbuKVc14Bv6g6sk/GA2372lfXOdV86R5SUPJxe5A==
+"@plasmicpkgs/react-slick@^0.0.204":
+  version "0.0.204"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-slick/-/react-slick-0.0.204.tgz#bca9a4c441da5791c7cff4dbbad33aa693a8a66a"
+  integrity sha512-zNYg6BXVnUyT7v2DcFB02LZjZLWmunAMXdQxWgMmFpjDEHgaCB9pnXdKapwDh6Wqh/+7X/e1gw8gbyKafyGKOg==
   dependencies:
     "@seznam/compose-react-refs" "^1.0.6"
     antd "^4.23.4"
