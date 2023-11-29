@@ -19,6 +19,8 @@ import {
   ComponentInstance,
   CustomCode,
   CustomFunction,
+  DateRangeStrings,
+  DateString,
   DefaultStylesClassNamePropType,
   ensureKnownPropParam,
   ensureKnownTplTag,
@@ -349,6 +351,14 @@ export type ControlModePropType<P> = PropTypeBase<P> & {
 
 export type HrefPropType<P> = PropTypeBase<P> & {
   type: "href";
+};
+
+export type DateStringPropType<P> = PropTypeBase<P> & {
+  type: "dateString";
+};
+
+export type DateRangeStringsPropType<P> = PropTypeBase<P> & {
+  type: "dateRangeStrings";
 };
 
 export type TargetPropType<P> = PropTypeBase<P> & {
@@ -3728,6 +3738,12 @@ export function wabTypeToPropType(type: Type): StudioPropType<any> {
     }))
     .when(QueryData, () => ({
       type: "dataSourceOpData" as const,
+    }))
+    .when(DateString, () => ({
+      type: "dateString" as const,
+    }))
+    .when(DateRangeStrings, () => ({
+      type: "dateRangeStrings" as const,
     }))
     .when(HrefType, () => ({ type: "href" as const }))
     .when(TargetType, () => ({ type: "target" as const }))

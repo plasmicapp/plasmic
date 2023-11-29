@@ -10,6 +10,8 @@ import {
   Component,
   ComponentInstance,
   CustomCode,
+  DateRangeStrings,
+  DateString,
   DefaultStylesClassNamePropType,
   DefaultStylesPropType,
   ensureKnownTplComponent,
@@ -1349,6 +1351,8 @@ export function cloneType<T extends Type>(type_: T): T {
     .when(ComponentInstance, (t) => typeFactory.instance(t.component))
     .when(PlumeInstance, (t) => typeFactory.plumeInstance(t.plumeType))
     .when(ColorPropType, (t) => typeFactory.color({ noDeref: t.noDeref }))
+    .when(DateString, (t) => typeFactory.dateString())
+    .when(DateRangeStrings, (t) => typeFactory.dateRangeStrings())
     .when(ClassNamePropType, (t) => typeFactory.classNamePropType(t.selectors))
     .when(StyleScopeClassNamePropType, (t) =>
       typeFactory.styleScopeClassNamePropType(t.scopeName)

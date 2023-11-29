@@ -43,7 +43,15 @@ export interface $StateSpec<T> {
 
   isImmutable?: boolean;
 
-  variableType: "text" | "number" | "boolean" | "array" | "object" | "variant";
+  variableType:
+    | "text"
+    | "number"
+    | "boolean"
+    | "array"
+    | "object"
+    | "variant"
+    | "dateString"
+    | "dateRangeStrings";
 
   // Hash used to re-create the state
   // This is only used in canvas where the state specs are dynamic

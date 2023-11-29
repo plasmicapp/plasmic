@@ -1,11 +1,3 @@
-import L, {
-  isArray,
-  isBoolean,
-  isEqual,
-  isNil,
-  isNumber,
-  isString,
-} from "lodash";
 import {
   AnyType,
   ArgType,
@@ -15,6 +7,8 @@ import {
   ColorPropType,
   Component,
   ComponentInstance,
+  DateRangeStrings,
+  DateString,
   DefaultStylesClassNamePropType,
   DefaultStylesPropType,
   FunctionType,
@@ -47,15 +41,23 @@ import {
   Text,
   TplNode,
   Type,
-} from "../../classes";
-import { assert, ensureInstance, switchType } from "../../common";
-import { Values } from "../../commons/types";
-import { getComponentDisplayName } from "../../components";
-import { Type as ModelType } from "../../model/model-meta";
-import { StateVariableType } from "../../states";
-import { isTplComponent, isTplTextBlock } from "../../tpls";
-import { StudioPropType } from "../code-components/code-components";
-import { jsLiteral } from "../codegen/util";
+} from "@/wab/classes";
+import { assert, ensureInstance, switchType } from "@/wab/common";
+import { Values } from "@/wab/commons/types";
+import { getComponentDisplayName } from "@/wab/components";
+import { Type as ModelType } from "@/wab/model/model-meta";
+import { StudioPropType } from "@/wab/shared/code-components/code-components";
+import { jsLiteral } from "@/wab/shared/codegen/util";
+import { StateVariableType } from "@/wab/states";
+import { isTplComponent, isTplTextBlock } from "@/wab/tpls";
+import L, {
+  isArray,
+  isBoolean,
+  isEqual,
+  isNil,
+  isNumber,
+  isString,
+} from "lodash";
 import { instUtil as defaultInstUtil } from "./InstUtil";
 
 export const typeFactory = {
@@ -86,6 +88,8 @@ export const typeFactory = {
   plumeInstance: (plumeType: string) =>
     new PlumeInstance({ name: "plumeInstance", plumeType }),
   queryData: () => new QueryData({ name: "queryData" }),
+  dateString: () => new DateString({ name: "dateString" }),
+  dateRangeStrings: () => new DateRangeStrings({ name: "dateRangeStrings" }),
   classNamePropType: (
     selectors: { selector: string; label?: string | null }[]
   ) =>
@@ -252,6 +256,8 @@ export const STATE_VARIABLE_TYPE_TO_WAB_TYPE_KEY = {
   boolean: "bool",
   array: "any",
   object: "any",
+  dateString: "dateString",
+  dateRangeStrings: "dateRangeStrings",
   variant: "any",
 } as const;
 
@@ -271,6 +277,8 @@ export const STATE_VARIABLE_TYPE_TO_PROP_TYPE: Record<
   boolean: "boolean",
   array: { type: "array" },
   object: { type: "object" },
+  dateString: { type: "dateString" },
+  dateRangeStrings: { type: "dateRangeStrings" },
   variant: { type: "variant" },
 };
 

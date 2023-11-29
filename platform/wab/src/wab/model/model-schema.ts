@@ -47,6 +47,10 @@ Type
     allowed: [ComponentInstance]
   QueryData
     @Const name: 'queryData'
+  DateString
+    @Const name: 'dateString'
+  DateRangeStrings
+    @Const name: 'dateRangeStrings'
   FunctionType
     @Const name: 'func'
     params: [ArgType]
@@ -54,7 +58,7 @@ Type
     @Const name: 'arg'
     argName: String
     displayName: String?
-    type: PrimitiveType | Img | HrefType | TargetType | QueryData | StylePropType
+    type: PrimitiveType | Img | HrefType | TargetType | DateString | DateRangeStrings | QueryData | StylePropType
   StylePropType
     ClassNamePropType
       @Const name: 'className'
@@ -510,7 +514,7 @@ BindingStruct
       type: RenderableType | RenderFuncType
       @Const @WeakRef tplSlot: TplSlot
     StateParam
-      type: PrimitiveType | Img | HrefType | TargetType | QueryData | StylePropType
+      type: PrimitiveType | Img | HrefType | TargetType | DateString | DateRangeStrings | QueryData | StylePropType
       @Const @WeakRef state: State
     GlobalVariantGroupParam
       type: Text | BoolType | Choice | AnyType
@@ -518,7 +522,7 @@ BindingStruct
       type: FunctionType
       @Const @WeakRef state: State
     PropParam
-      type: PrimitiveType | Img | HrefType | TargetType | QueryData | FunctionType | StylePropType
+      type: PrimitiveType | Img | HrefType | TargetType | DateString | DateRangeStrings | QueryData | FunctionType | StylePropType
   Arg
     @WeakRef param: Param
     expr: Expr
@@ -613,7 +617,7 @@ QueryRef
 State (concrete)
   @Const @WeakRef param: StateParam
   accessType: 'private' | 'readonly' | 'writable'
-  variableType: 'text' | 'number' |'boolean' | 'array' | 'object' | 'variant'
+  variableType: 'text' | 'number' |'boolean' | 'array' | 'object' | 'variant' | 'dateString' | 'dateRangeStrings'
   # onChangeParam should be a StateChangeHandlerParam, except for code / plume
   # components since the event handlers are registered as normal props
   # and can be used as change handlers for multiple states
@@ -626,7 +630,7 @@ State (concrete)
     # states and TplTag implicit states. For others (Plasmic explicit
     # states and TplComponent implicit states), we use 'param' for
     # both value prop and state name.
-    variableType: 'text' | 'number' |'boolean' | 'array' | 'object'
+    variableType: 'text' | 'number' |'boolean' | 'array' | 'object' | 'dateString' | 'dateRangeStrings'
     name: String
   VariantGroupState
     @Const @WeakRef variantGroup: ComponentVariantGroup

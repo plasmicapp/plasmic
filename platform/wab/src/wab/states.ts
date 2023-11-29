@@ -82,6 +82,8 @@ export const STATE_VARIABLE_TYPES = [
   "boolean",
   "array",
   "object",
+  "dateString",
+  "dateRangeStrings",
   "variant",
 ] as const;
 export const DEFAULT_STATE_VARIABLE_TYPE = STATE_VARIABLE_TYPES[0];
@@ -112,6 +114,10 @@ export function getDefaultValueForStateVariableType(
       return [];
     case "object":
       return {};
+    case "dateString":
+      return new Date().toISOString();
+    case "dateRangeStrings":
+      return [];
     default:
       unexpected(`unexpected variable type: ${variableType}`);
   }

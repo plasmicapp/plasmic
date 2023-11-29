@@ -108,8 +108,25 @@ export type StateSpec<P> = {
       initVal?: object;
     }
   | {
+      type: "readonly";
+      variableType: "dateString";
+      initVal?: string;
+    }
+  | {
+      type: "readonly";
+      variableType: "dateRangeStrings";
+      initVal?: [string, string];
+    }
+  | {
       type: "writable";
-      variableType: "text" | "number" | "boolean" | "array" | "object";
+      variableType:
+        | "text"
+        | "number"
+        | "boolean"
+        | "array"
+        | "object"
+        | "dateString"
+        | "dateRangeStrings";
       valueProp: string;
     }
 );

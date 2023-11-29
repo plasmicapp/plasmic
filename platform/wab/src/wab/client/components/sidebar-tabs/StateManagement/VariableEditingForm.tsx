@@ -140,7 +140,7 @@ const VariableEditingForm = observer(
                 (stateType) => stateType !== "variant"
               ).map((stateType) => (
                 <StyleSelect.Option value={stateType} key={stateType}>
-                  {L.capitalize(stateType)}
+                  {L.startCase(stateType)}
                 </StyleSelect.Option>
               )),
             },

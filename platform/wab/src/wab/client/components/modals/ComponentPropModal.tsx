@@ -1,6 +1,3 @@
-import { isNaN } from "lodash";
-import React from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
 import {
   Component,
   Expr,
@@ -11,29 +8,32 @@ import {
   isKnownRenderableType,
   isKnownRenderFuncType,
   Param,
-} from "../../../classes";
-import { assert, ensure, mkShortId, spawn } from "../../../common";
-import { canRenameParam } from "../../../components";
-import { clone, codeLit, tryExtractJson } from "../../../exprs";
-import { mkParam } from "../../../lang";
+} from "@/wab/classes";
+import { PropValueEditor } from "@/wab/client/components/sidebar-tabs/PropValueEditor";
+import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
+import { IconLinkButton } from "@/wab/client/components/widgets";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import LabeledListItem from "@/wab/client/components/widgets/LabeledListItem";
+import Select from "@/wab/client/components/widgets/Select";
+import Textbox from "@/wab/client/components/widgets/Textbox";
+import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import PlasmicParamSection from "@/wab/client/plasmic/plasmic_kit_state_management/PlasmicParamSection";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { assert, ensure, mkShortId, spawn } from "@/wab/common";
+import { canRenameParam } from "@/wab/components";
+import { clone, codeLit, tryExtractJson } from "@/wab/exprs";
+import { mkParam } from "@/wab/lang";
 import {
   getPropTypeType,
   wabTypeToPropType,
-} from "../../../shared/code-components/code-components";
-import { typeDisplayName, typeFactory } from "../../../shared/core/model-util";
-import { COMPONENT_PROP_CAP } from "../../../shared/Labels";
-import { smartHumanize } from "../../../strs";
-import { cloneType } from "../../../tpls";
-import PlusIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Plus";
-import PlasmicParamSection from "../../plasmic/plasmic_kit_state_management/PlasmicParamSection";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { PropValueEditor } from "../sidebar-tabs/PropValueEditor";
-import { SidebarModal } from "../sidebar/SidebarModal";
-import { IconLinkButton } from "../widgets";
-import { Icon } from "../widgets/Icon";
-import LabeledListItem from "../widgets/LabeledListItem";
-import Select from "../widgets/Select";
-import Textbox from "../widgets/Textbox";
+} from "@/wab/shared/code-components/code-components";
+import { typeDisplayName, typeFactory } from "@/wab/shared/core/model-util";
+import { COMPONENT_PROP_CAP } from "@/wab/shared/Labels";
+import { smartHumanize } from "@/wab/strs";
+import { cloneType } from "@/wab/tpls";
+import { isNaN } from "lodash";
+import React from "react";
+import { Modal } from "src/wab/client/components/widgets/Modal";
 
 function getComponentParamTypeOptions() {
   return [
@@ -45,6 +45,8 @@ function getComponentParamTypeOptions() {
     { value: "queryData", label: "Fetched data", isPrimitive: true },
     { value: "eventHandler", label: "Event handler", isPrimitive: false },
     { value: "href", label: "Link URL", isPrimitive: false },
+    { value: "dateString", label: "Date", isPrimitive: true },
+    { value: "dateRangeStrings", label: "Date Range", isPrimitive: true },
   ] as const;
 }
 
