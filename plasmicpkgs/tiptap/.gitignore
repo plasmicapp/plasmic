@@ -1,0 +1,7 @@
+dist
+lib
+skinny/*.mjs
+skinny/*.js
+skinny/*.ts
+skinny/*.map
+.tsbuildinfo
