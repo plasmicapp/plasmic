@@ -14,6 +14,8 @@ export function getActiveVariation(opts: {
     updateKnownValue?: (key: string, value: string) => void;
     getRandomValue?: (key: string) => number;
     enableUnseededExperiments?: boolean;
+    useSeedBucketing?: boolean;
+    seedRange?: number;
 }): Record<string, string>;
 
 // @public (undocumented)
