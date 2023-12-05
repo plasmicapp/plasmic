@@ -17,7 +17,7 @@
     "local-unpublish": "lerna exec -- npm unpublish -f --registry=\"http://localhost:4873/\" \"\\${LERNA_PACKAGE_NAME}\"",
     "make": "cd platform/wab && make",
     "release": "echo 'Use the jenkins job release_public_packages instead: https://jenkins.aws.plasmic.app/job/release_public_packages/'",
-    "setup": "yarn && yarn setup:wab && yarn setup:sub && yarn setup:react-web-bundle && yarn setup:live-frame && yarn setup:loader-bundle-env && yarn setup:loader-html-hydrate && yarn make && yarn setup:pybackend",
+    "setup": "yarn && yarn setup:wab && yarn setup:sub && yarn setup:react-web-bundle && yarn setup:live-frame && yarn setup:loader-bundle-env && yarn setup:loader-html-hydrate && yarn make",
     "setup-all": "yarn setup && yarn setup:canvas-packages && cd platform/wab && yarn typeorm migration:run && yarn migrate-dev-bundles && yarn plume:dev update",
     "setup:canvas-packages": "cd platform/canvas-packages && for d in internal_pkgs/*; do if [ -d \"$d\" ]; then cd $d && yarn && cd -; fi done && yarn && yarn build",
     "setup:live-frame": "cd platform/live-frame && yarn && yarn build",
