@@ -53,7 +53,7 @@
 
 ## See Plasmic in action
 
-- Twitter clone: https://youtu.be/rpdjrFuVMog (live app: https://twitter-staging.plasmic.run)
+- Twitter clone: https://youtu.be/rpdjrFuVMog (live app: https://twitter.plasmic.run)
 
 - Service desk app: https://youtu.be/rYqSpUEJSTw (live app: https://tickets.plasmic.run)
 
