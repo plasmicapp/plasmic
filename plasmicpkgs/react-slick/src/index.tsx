@@ -68,7 +68,7 @@ export const SliderWrapper = forwardRef(function SliderWrapper_(
   const debouncedInitialSlide = useDebounce(initialSlide);
 
   useEffect(() => {
-    if (debouncedInitialSlide !== undefined && inCanvas) {
+    if (debouncedInitialSlide !== undefined) {
       slider.current?.slickGoTo(debouncedInitialSlide);
     }
   }, [debouncedInitialSlide, inCanvas]);
