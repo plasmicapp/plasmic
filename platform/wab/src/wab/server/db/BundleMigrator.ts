@@ -5,6 +5,7 @@ import {
   PkgVersion,
   ProjectRevision,
 } from "@/wab/server/entities/Entities";
+import { withSpan } from "@/wab/server/util/apm-util";
 import { DataSourceId, ProjectId } from "@/wab/shared/ApiSchema";
 import {
   checkBundleFields,
@@ -142,129 +143,136 @@ const TEN_MB = 10 * 1024 * 1024;
 export async function getMigratedBundle(
   entity: PkgVersion | ProjectRevision
 ): Promise<Bundle> {
-  const serializedSize = getSerializedBundleSize(entity);
-  if (serializedSize > TEN_MB) {
-    console.log(
-      "Get migrated bundle",
-      entity.constructor.name,
-      entity.id,
-      `${(serializedSize / (1024 * 1024)).toFixed(2)} MB`
-    );
-  }
+  return await withSpan("getMigratedBundle", async () => {
+    const serializedSize = getSerializedBundleSize(entity);
+    if (serializedSize > TEN_MB) {
+      console.log(
+        "Get migrated bundle",
+        entity.constructor.name,
+        entity.id,
+        `${(serializedSize / (1024 * 1024)).toFixed(2)} MB`
+      );
+    }
 
-  const bundle = parseBundle(entity);
-
-  if (
-    (!DEVFLAGS.autoUpgradeHostless || !DEVFLAGS.hostLessWorkspaceId) &&
-    isExpectedBundleVersion(bundle, await getLastBundleVersion())
-  ) {
-    return bundle;
-  }
-
-  if (isEmptyBundle(bundle)) {
-    console.log(
-      `Detected empty bundle in ${entity.constructor.name} ${entity.id}. Will update to latest version and skip migrations.`
-    );
-    bundle.version = lastBundleVersion;
-  }
-
-  const currentVersion = bundle.version || "0-new-version";
-
-  const conn = await getMigrationConnection();
-  const fixedBundle = await conn.transaction(async (txMgr) => {
-    const db = new DbMgr(txMgr, SUPER_USER);
+    const bundle = parseBundle(entity);
 
     if (
-      isExpectedBundleVersion(bundle, await getLastBundleVersion()) &&
-      !(await bundleHasStaleHostlessDeps(bundle, db))
+      (!DEVFLAGS.autoUpgradeHostless || !DEVFLAGS.hostLessWorkspaceId) &&
+      isExpectedBundleVersion(bundle, await getLastBundleVersion())
     ) {
       return bundle;
     }
 
-    if (migrationSorter.compare(currentVersion, lastBundleVersion) == 1) {
-      // Bundle version is higher than the current version. Rollback the bundle!
+    if (isEmptyBundle(bundle)) {
       console.log(
-        `Bundle in ${entity.constructor.name} ${entity.id} has version ${currentVersion} which is ahead of the last version ${lastBundleVersion}!`
+        `Detected empty bundle in ${entity.constructor.name} ${entity.id}. Will update to latest version and skip migrations.`
       );
+      bundle.version = lastBundleVersion;
     }
 
-    const migrations = await getMigrationsToExecute(currentVersion);
+    const currentVersion = bundle.version || "0-new-version";
 
-    // Sequencially apply migrations
-    console.log(
-      `Migrating bundle in ${entity.constructor.name} ${entity.id} from version ${currentVersion} to ${lastBundleVersion}.`
-    );
+    const conn = await getMigrationConnection();
+    const fixedBundle = await conn.transaction(async (txMgr) => {
+      const db = new DbMgr(txMgr, SUPER_USER);
 
-    for (const migration of migrations) {
-      await db.saveBundleBackupForEntity(
-        migration.name,
-        entity,
-        JSON.stringify(bundle)
-      );
-
-      if (migration.type === "bundled") {
-        await migration.migrate(bundle, entity);
-      } else {
-        await migration.migrate(bundle, db, entity);
+      if (
+        isExpectedBundleVersion(bundle, await getLastBundleVersion()) &&
+        !(await bundleHasStaleHostlessDeps(bundle, db))
+      ) {
+        return bundle;
       }
-      bundle.version = migration.name;
-    }
 
-    if (DEVFLAGS.autoUpgradeHostless) {
-      if (await bundleHasStaleHostlessDeps(bundle, db)) {
+      if (migrationSorter.compare(currentVersion, lastBundleVersion) == 1) {
+        // Bundle version is higher than the current version. Rollback the bundle!
         console.log(
-          `Upgrading hostless dependencies in ${entity.constructor.name} ${entity.id}`
+          `Bundle in ${entity.constructor.name} ${entity.id} has version ${currentVersion} which is ahead of the last version ${lastBundleVersion}!`
         );
+      }
+
+      const migrations = await getMigrationsToExecute(currentVersion);
+
+      // Sequencially apply migrations
+      console.log(
+        `Migrating bundle in ${entity.constructor.name} ${entity.id} from version ${currentVersion} to ${lastBundleVersion}.`
+      );
+
+      for (const migration of migrations) {
         await db.saveBundleBackupForEntity(
-          `hostless-auto-upgrade-${mkShortId()}`,
+          migration.name,
           entity,
           JSON.stringify(bundle)
         );
-        await upgradeHostlessProject(bundle, entity, db);
+
+        if (migration.type === "bundled") {
+          await migration.migrate(bundle, entity);
+        } else {
+          await migration.migrate(bundle, db, entity);
+        }
+        bundle.version = migration.name;
       }
-    }
 
-    bundle.version = lastBundleVersion;
-    checkExistingReferences(bundle as Bundle);
-    checkBundleFields(bundle as Bundle);
-    checkRefsInBundle(bundle as Bundle);
+      if (DEVFLAGS.autoUpgradeHostless) {
+        if (await bundleHasStaleHostlessDeps(bundle, db)) {
+          console.log(
+            `Upgrading hostless dependencies in ${entity.constructor.name} ${entity.id}`
+          );
+          await db.saveBundleBackupForEntity(
+            `hostless-auto-upgrade-${mkShortId()}`,
+            entity,
+            JSON.stringify(bundle)
+          );
+          await upgradeHostlessProject(bundle, entity, db);
+        }
+      }
 
-    if (!isExpectedBundleVersion(bundle, await getLastBundleVersion())) {
-      unexpected();
-    }
+      bundle.version = lastBundleVersion;
+      checkExistingReferences(bundle as Bundle);
+      checkBundleFields(bundle as Bundle);
+      checkRefsInBundle(bundle as Bundle);
 
-    if (entity instanceof PkgVersion) {
-      assert(
-        isEmptyBundle(bundle as any) ||
-          bundle.map[bundle.root].__type === "ProjectDependency",
-        () =>
-          `The root of a PkgVersion bundle must be ProjectDependency, but got ${
-            bundle.map[bundle.root].__type
-          }`
-      );
-      await db.updatePkgVersion(entity.pkgId, entity.version, entity.branchId, {
-        model: JSON.stringify(bundle),
-      });
-    } else {
-      assert(
-        isEmptyBundle(bundle as any) ||
-          bundle.map[bundle.root].__type === "Site",
-        () =>
-          `The root of a ProjectRevision bundle must be Site, but got ${
-            bundle.map[bundle.root].__type
-          }`
-      );
-      await db.updateProjectRev({
-        projectId: entity.projectId,
-        data: JSON.stringify(bundle),
-        revisionNum: entity.revision,
-        branchId: entity.branchId ?? undefined,
-      });
-    }
+      if (!isExpectedBundleVersion(bundle, await getLastBundleVersion())) {
+        unexpected();
+      }
 
-    setBundle(entity, bundle);
-    return bundle;
+      if (entity instanceof PkgVersion) {
+        assert(
+          isEmptyBundle(bundle as any) ||
+            bundle.map[bundle.root].__type === "ProjectDependency",
+          () =>
+            `The root of a PkgVersion bundle must be ProjectDependency, but got ${
+              bundle.map[bundle.root].__type
+            }`
+        );
+        await db.updatePkgVersion(
+          entity.pkgId,
+          entity.version,
+          entity.branchId,
+          {
+            model: JSON.stringify(bundle),
+          }
+        );
+      } else {
+        assert(
+          isEmptyBundle(bundle as any) ||
+            bundle.map[bundle.root].__type === "Site",
+          () =>
+            `The root of a ProjectRevision bundle must be Site, but got ${
+              bundle.map[bundle.root].__type
+            }`
+        );
+        await db.updateProjectRev({
+          projectId: entity.projectId,
+          data: JSON.stringify(bundle),
+          revisionNum: entity.revision,
+          branchId: entity.branchId ?? undefined,
+        });
+      }
+
+      setBundle(entity, bundle);
+      return bundle;
+    });
+
+    return fixedBundle;
   });
-
-  return fixedBundle;
 }
