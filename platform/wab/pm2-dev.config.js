@@ -4,6 +4,7 @@ module.exports = {
       name: "backend",
       script: "yarn",
       args: ["backend"],
+      time: true,
       env: {
         debug: 1,
         REACT_APP_DEFAULT_HOST_URL: `http://localhost:${
