@@ -1,7 +1,7 @@
+import { DataSourceError } from "@/wab/shared/data-sources-meta/data-sources";
+import { GraphqlDataSource } from "@/wab/shared/data-sources-meta/graphql-meta";
 import { isEmpty, isString } from "lodash";
 import fetch, { Response } from "node-fetch";
-import { DataSourceError } from "../../shared/data-sources-meta/data-sources";
-import { GraphqlDataSource } from "../../shared/data-sources-meta/graphql-meta";
 
 export function makeGraphqlFetcher(source: GraphqlDataSource) {
   return new GraphqlFetcher(source);
@@ -113,9 +113,7 @@ fragment TypeRef on __Type {
 export class GraphqlFetcher {
   private readonly baseUrl: string;
   constructor(private source: GraphqlDataSource) {
-    this.baseUrl = source.settings.baseUrl.endsWith("/")
-      ? source.settings.baseUrl
-      : `${source.settings.baseUrl}/`;
+    this.baseUrl = source.settings.baseUrl;
   }
   async query(opts: {
     query: string;
