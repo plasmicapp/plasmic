@@ -5101,7 +5101,7 @@ export class DbMgr implements MigrationDbMgr {
     if (this.actor.type === "NormalUser") {
       const userId = this.checkNormalUser();
       const user = await this.getUserById(userId);
-      const isPlasmicTeam = user.email.endsWith("@plasmic.app");
+      const isPlasmicTeam = user.email.endsWith("@" + DEVFLAGS.coreTeamDomain);
 
       const allPerms = (
         await this.sudo().getPermissionsForResources(taggedResourceIds, false)

@@ -1,11 +1,11 @@
+import { ensure } from "@/wab/common";
+import { sequentially } from "@/wab/commons/asyncutil";
+import { runAppServer } from "@/wab/server/app-backend-real";
+import { Project, User } from "@/wab/server/entities/Entities";
 import getPort from "get-port";
 import { customAlphabet } from "nanoid";
 import { alphanumeric } from "nanoid-dictionary";
 import { EntityManager } from "typeorm";
-import { ensure } from "../../common";
-import { sequentially } from "../../commons/asyncutil";
-import { runAppServer } from "../app-backend-real";
-import { Project, User } from "../entities/Entities";
 import { ensureDbConnection } from "./DbCon";
 import { initDb } from "./DbInitUtil";
 import { DbMgr, normalActor, SUPER_USER } from "./DbMgr";
@@ -29,7 +29,7 @@ export async function withDb(
       const users = await sequentially(
         [1, 2, 3].map(async (num) => {
           const user = await sudo.createUser({
-            email: `yang${num}@example.com`,
+            email: `yang${num}@test.com`,
             firstName: "Yang",
             lastName: "Zhang",
             password: "!53kr3tz!",
