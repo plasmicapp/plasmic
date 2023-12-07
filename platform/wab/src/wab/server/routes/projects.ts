@@ -141,10 +141,6 @@ import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { DomainValidator } from "@/wab/shared/hosting";
 import { createTaggedResourceId } from "@/wab/shared/perms";
 import { requiredPackageVersions } from "@/wab/shared/required-versions";
-import {
-  parseAndAssignSeqId,
-  ProjectSeqIdAssignment,
-} from "@/wab/shared/seq-id-utils";
 import { PkgVersionInfoMeta } from "@/wab/shared/SharedApi";
 import { assertSiteInvariants } from "@/wab/shared/site-invariants";
 import { TplMgr } from "@/wab/shared/TplMgr";
@@ -566,7 +562,7 @@ export async function doImportProject(
         projectId: project.id,
         data: JSON.stringify(depSite),
         revisionNum: fstRev.revision + 1,
-        seqIdAssign: new ProjectSeqIdAssignment(new Map()),
+        seqIdAssign: undefined,
       });
 
       pkgVersion = await mgr.insertPkgVersion(
@@ -654,7 +650,7 @@ export async function doImportProject(
     projectId: project.id,
     data: JSON.stringify(siteBundle),
     revisionNum: rev.revision + 1,
-    seqIdAssign: new ProjectSeqIdAssignment(new Map()),
+    seqIdAssign: undefined,
   });
 
   if (opts?.keepProjectIdsAndNames) {
@@ -807,7 +803,7 @@ async function importFullProjectData(
       projectId: newProjectId,
       data: JSON.stringify(depSite),
       revisionNum: latestRev + 1,
-      seqIdAssign: new ProjectSeqIdAssignment(new Map()),
+      seqIdAssign: undefined,
     });
 
     if (branchId !== MainBranchId) {
@@ -882,7 +878,7 @@ async function importFullProjectData(
           newProject.id,
           branchData.id !== MainBranchId ? { branchId: newBranchId } : undefined
         )) + 1,
-      seqIdAssign: new ProjectSeqIdAssignment(new Map()),
+      seqIdAssign: undefined,
       ...(branchData.id !== MainBranchId ? { branchId: newBranchId } : {}),
     });
   }
@@ -1197,17 +1193,11 @@ export async function saveProjectRev(req: Request, res: Response) {
     },
   });
 
-  const existingProjectAssign = await mgr.tryGetSeqAssignment(projectId);
-  const projectAssign = parseAndAssignSeqId(
-    existingProjectAssign?.assign,
-    req.body.nodesByComponent
-  );
-
   const rev = await mgr.saveProjectRev({
     projectId,
     data: data,
     revisionNum: +req.params.revision,
-    seqIdAssign: projectAssign,
+    seqIdAssign: undefined,
     branchId,
   });
 
@@ -1992,17 +1982,11 @@ export async function revertToVersion(req: Request, res: Response) {
     },
   });
 
-  const existingProjectAssign = await mgr.tryGetSeqAssignment(projectId);
-  const projectAssign = parseAndAssignSeqId(
-    existingProjectAssign?.assign,
-    req.body.nodesByComponent
-  );
-
   const rev = await mgr.saveProjectRev({
     projectId,
     revisionNum: latestRev.revision + 1,
     data: JSON.stringify(data),
-    seqIdAssign: projectAssign,
+    seqIdAssign: undefined,
     branchId,
   });
 
@@ -2753,10 +2737,6 @@ export async function updateProjectData(req: Request, res: Response) {
   // assertObservabeModelInvariants(site, bundler, projectId);
 
   const existingProjectAssign = await dbMgr.tryGetSeqAssignment(projectId);
-  const projectAssign = parseAndAssignSeqId(
-    existingProjectAssign?.assign,
-    req.body.nodesByComponent
-  );
 
   const project = await dbMgr.getProjectById(projectId);
 
@@ -2764,7 +2744,7 @@ export async function updateProjectData(req: Request, res: Response) {
     projectId: projectId,
     data: JSON.stringify(newBundle),
     revisionNum: latestRev.revision + 1,
-    seqIdAssign: projectAssign,
+    seqIdAssign: undefined,
   });
 
   userAnalytics(req).track({

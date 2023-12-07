@@ -192,7 +192,6 @@ import { OperationTemplate } from "./data-sources-meta/data-sources";
 import { CodeSandboxInfo } from "./db-json-blobs";
 import { GrantableAccessLevel } from "./EntUtil";
 import { LowerHttpMethod } from "./HttpClientUtil";
-import { NodesByComponent } from "./seq-id-utils";
 import { UiConfig } from "./ui-config-utils";
 
 export interface SiteInfo {
@@ -500,28 +499,25 @@ export abstract class SharedApi {
    **/
   saveProjectRevChanges(
     projectId: string,
-    revisionNum: number,
-    data: string,
-    modelVersion: number,
-    hostlessDataVersion: number,
-    nodesByComponent: NodesByComponent,
-    incremental: boolean,
-    toDeleteIids: string[],
-    branchId?: BranchId
+    rev: {
+      revisionNum: number;
+      data: string;
+      modelVersion: number;
+      hostlessDataVersion: number;
+      incremental: boolean;
+      toDeleteIids: string[];
+      branchId?: BranchId;
+    }
   ) {
+    const { branchId, revisionNum, ...rest } = rev;
     return this.post(
       `/projects/${showProjectBranchId(
         brand(projectId),
         branchId
       )}/revisions/${revisionNum}`,
       {
-        data,
-        modelSchemaHash: modelSchemaHash,
-        hostlessDataVersion,
-        modelVersion: modelVersion,
-        nodesByComponent,
-        incremental: incremental,
-        toDeleteIids,
+        modelSchemaHash,
+        ...rest,
       }
     );
   }

@@ -215,10 +215,7 @@ import {
   TaggedResourceId,
   TaggedResourceIds,
 } from "@/wab/shared/perms";
-import {
-  mkProjectAssignFromSite,
-  ProjectSeqIdAssignment,
-} from "@/wab/shared/seq-id-utils";
+import { ProjectSeqIdAssignment } from "@/wab/shared/seq-id-utils";
 import {
   calculateSemVer,
   compareSites,
@@ -2923,7 +2920,7 @@ export class DbMgr implements MigrationDbMgr {
     data: string;
     revisionNum: number;
     // if undefined, skip updating the assignment
-    seqIdAssign: ProjectSeqIdAssignment | undefined;
+    seqIdAssign: undefined;
   }) {
     await this.checkProjectBranchPerms(
       { projectId, branchId },
@@ -3677,7 +3674,7 @@ export class DbMgr implements MigrationDbMgr {
       projectId: project.id,
       data: JSON.stringify(newBundle),
       revisionNum: rev.revision + 1,
-      seqIdAssign: mkProjectAssignFromSite(clonedSite),
+      seqIdAssign: undefined,
     });
     return project;
   }
@@ -7127,7 +7124,7 @@ export class DbMgr implements MigrationDbMgr {
         bundler.bundle(site, project.id, await getLastBundleVersion())
       ),
       revisionNum: rev.revision + 1,
-      seqIdAssign: new ProjectSeqIdAssignment(new Map()),
+      seqIdAssign: undefined,
     });
     return {
       project,

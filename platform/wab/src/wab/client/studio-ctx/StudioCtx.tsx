@@ -257,7 +257,6 @@ import {
 } from "@/wab/shared/insertable-templates";
 import { reorderPageArenaCols } from "@/wab/shared/page-arenas";
 import { getAccessLevelToResource } from "@/wab/shared/perms";
-import { extractNodesByComponent } from "@/wab/shared/seq-id-utils";
 import {
   DeletedAssetsSummary,
   getEmptyDeletedAssetsSummary,
@@ -4917,17 +4916,15 @@ export class StudioCtx extends WithDbCtx {
       this.pendingSavedRevisionNum = 1 + this.dbCtx().revisionNum;
 
       try {
-        await this.appCtx.api.saveProjectRevChanges(
-          this.siteInfo.id,
-          this.dbCtx().revisionNum + 1,
-          JSON.stringify(changesBundle),
-          this.dbCtx().modelVersion,
-          this.dbCtx().hostlessDataVersion,
-          extractNodesByComponent(this.site),
-          incremental,
+        await this.appCtx.api.saveProjectRevChanges(this.siteInfo.id, {
+          revisionNum: this.dbCtx().revisionNum + 1,
+          data: JSON.stringify(changesBundle),
+          modelVersion: this.dbCtx().modelVersion,
+          hostlessDataVersion: this.dbCtx().hostlessDataVersion,
+          incremental: incremental,
           toDeleteIids,
-          this.dbCtx().branchInfo?.id
-        );
+          branchId: this.dbCtx().branchInfo?.id,
+        });
         this.dbCtx().revisionNum++;
         // We can clear the change records as they have already been saved
         this._changeRecords.splice(
