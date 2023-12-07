@@ -162,7 +162,7 @@ import * as Prettier from "prettier";
 import { EntityManager, getConnection, MigrationExecutor } from "typeorm";
 import { escapeHTML } from "underscore.string";
 import { mkApiDataSource } from "./data-source";
-import { moveAssetsToS3 } from "./moveAssetsToS3";
+import { moveBundleAssetsToS3 } from "./moveAssetsToS3";
 import { maybeTriggerPaywall, passPaywall } from "./team-plans";
 import {
   getUser,
@@ -1113,7 +1113,7 @@ export async function saveProjectRev(req: Request, res: Response) {
     req.params.projectBranchId
   );
 
-  let data: string = await (async () => {
+  const mergedBundle: Bundle = await (async () => {
     if (req.body.incremental) {
       const rev = await mgr.getLatestProjectRev(projectId, { branchId });
 
@@ -1170,16 +1170,20 @@ export async function saveProjectRev(req: Request, res: Response) {
         Sentry.captureException(e);
         throw new BundleTypeError();
       }
-      return JSON.stringify(mergedData);
+      return mergedData;
     } else {
       const bundle = getBundle(req.body, await getLastBundleVersion());
       checkBundleFields(bundle);
       checkRefsInBundle(bundle);
-      return req.body.data;
+      return bundle;
     }
   })();
 
-  data = await moveAssetsToS3(data);
+  await moveBundleAssetsToS3(mergedBundle);
+
+  // Prefer re using the bundle up to this point, so that it won't require running
+  // multiple JSON.stringify()/JSON.parse() on large bundles
+  const data = JSON.stringify(mergedBundle);
 
   const project = await mgr.getProjectById(projectId);
   req.promLabels.projectId = projectId;

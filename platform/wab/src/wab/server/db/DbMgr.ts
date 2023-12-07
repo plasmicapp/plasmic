@@ -2928,7 +2928,10 @@ export class DbMgr implements MigrationDbMgr {
       "save",
       true
     );
-    const latest = await this.getLatestProjectRev(projectId, { branchId });
+    const latest = await this.getLatestProjectRev(projectId, {
+      branchId,
+      revisionNumOnly: true,
+    });
     if (revisionNum !== latest.revision + 1) {
       throw new ProjectRevisionError(
         `Tried saving revision ${revisionNum}, but expecting ${
@@ -3194,7 +3197,12 @@ export class DbMgr implements MigrationDbMgr {
     {
       noAddPerm = false,
       branchId,
-    }: { noAddPerm?: boolean; branchId?: BranchId } = {}
+      revisionNumOnly,
+    }: {
+      noAddPerm?: boolean;
+      branchId?: BranchId;
+      revisionNumOnly?: boolean;
+    } = {}
   ) {
     await this.checkProjectBranchPerms(
       { projectId, branchId },
@@ -3209,6 +3217,8 @@ export class DbMgr implements MigrationDbMgr {
     whereEqOrNull(qb, "rev.branch", { branchId }, true);
     qb.setParameter("projectId", projectId);
     qb.orderBy("rev.revision", "DESC").limit(1);
+    // This is done to avoid loading the entire data of a project revision.
+    qb.select(revisionNumOnly ? "rev.revision" : "rev");
     return ensureFound<ProjectRevision>(
       await getOneOrFailIfTooMany(qb.printSql()),
       `Project with ID ${projectId} branch ${branchId}`

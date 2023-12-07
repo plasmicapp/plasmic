@@ -4,7 +4,7 @@ module.exports = {
       name: "backend",
       script: "yarn",
       args: ["backend"],
-      time: true,
+      log_date_format: "HH:mm:ss.SSS",
       env: {
         debug: 1,
         REACT_APP_DEFAULT_HOST_URL: `http://localhost:${
