@@ -3152,9 +3152,9 @@ export class StudioCtx extends WithDbCtx {
   }
   setIsTransforming() {
     this._isTransforming.set(true);
-    this._unsetIsTransforming();
+    this._debouncedUnsetIsTransforming();
   }
-  private _unsetIsTransforming = debounce(() => {
+  private _debouncedUnsetIsTransforming = debounce(() => {
     this._isTransforming.set(false);
   }, 200);
 
@@ -3191,10 +3191,13 @@ export class StudioCtx extends WithDbCtx {
       };
 
       this._isZooming.set(true);
-      debounce(this._unsetIsZooming, 200)();
+      this._debouncedUnsetIsZooming();
     };
   })();
-  private _unsetIsZooming = () => this._isZooming.set(false);
+  private _debouncedUnsetIsZooming = debounce(
+    () => this._isZooming.set(false),
+    200
+  );
 
   isZooming() {
     return this._isZooming.get();
