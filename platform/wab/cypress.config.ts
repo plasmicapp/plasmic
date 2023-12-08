@@ -23,4 +23,5 @@ export default defineConfig({
     baseUrl: "http://localhost:3003",
     specPattern: "cypress/e2e/**/*.{js,jsx,ts,tsx}",
   },
+  reporter: "mocha-reporter-gha",
 });

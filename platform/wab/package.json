@@ -391,6 +391,7 @@
     "mobx-react": "^7.6.0",
     "mobx-react-lite": "^3.4.0",
     "mobx-utils": "^6.0.4",
+    "mocha-reporter-gha": "^1.1.1",
     "moize": "^6.1.5",
     "moment": "^2.29.4",
     "monaco-editor": "^0.34.0",
