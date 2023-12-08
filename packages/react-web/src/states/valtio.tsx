@@ -561,12 +561,21 @@ export function useDollarState(
     }[] = [];
     getStateCells($state, $$state.rootSpecTree).forEach((stateCell) => {
       if (stateCell.initFunc) {
-        const newInit = invokeInitFuncBackwardsCompatible(stateCell.initFunc, {
-          $state,
-          ...(stateCell.overrideEnv ?? envFieldsAreNonNill(env)),
-        });
-        if (!deepEqual(newInit, stateCell.initialValue)) {
-          resetSpecs.push({ stateCell });
+        try {
+          const newInit = invokeInitFuncBackwardsCompatible(
+            stateCell.initFunc,
+            {
+              $state,
+              ...(stateCell.overrideEnv ?? envFieldsAreNonNill(env)),
+            }
+          );
+          if (!deepEqual(newInit, stateCell.initialValue)) {
+            resetSpecs.push({ stateCell });
+          }
+        } catch {
+          // Exception may be thrown from initFunc -- for example, if it tries to access $queries
+          // that are still loading. We swallow those here, since we're only interested in
+          // checking if the init value has changed, not in handling these errors.
         }
       }
     });
