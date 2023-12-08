@@ -24,11 +24,11 @@ describe("Postgres Data Source", () => {
   it("postgres basic queries", () => {
     cy.withinStudioIframe(() => {
       const customers = [
-        "Sven Ottlieb",
-        "Paula Wilson",
-        "Rene Phillips",
-        "Eduardo Saavedra",
-        "Carlos González",
+        "Maria Anders",
+        "Ana Trujillo",
+        "Antonio Moreno",
+        "Thomas Hardy",
+        "Christina Berglund",
       ];
       cy.createNewPageInOwnArena("Homepage").then((page: Framed) => {
         // Creating customers query ordered by country
@@ -39,7 +39,7 @@ describe("Postgres Data Source", () => {
           "data-source-modal-pick-resource-btn",
           "customers"
         );
-        cy.selectDataPlasmicProp("data-source-sort", "city");
+        cy.selectDataPlasmicProp("data-source-sort", "customer_id");
         cy.setDataPlasmicProp("data-source-pagination-size", "5");
         cy.saveDataSourceModal();
         // Add repeated stack with list of contact_name from $queries.query
@@ -135,7 +135,7 @@ describe("Postgres Data Source", () => {
                     value: "Aaa",
                   },
                   "data-source-modal-variables-customer_id-json-editor": {
-                    value: "CREATED",
+                    value: "AAAAA",
                   },
                 },
               },
@@ -157,14 +157,14 @@ describe("Postgres Data Source", () => {
           customers.forEach((c) => {
             cy.contains(c).should("exist");
           });
-          cy.contains("DRACD").should("exist");
+          cy.contains("ALFKI").should("exist");
           cy.contains("Create").click();
           cy.wait(5000);
           customers[4] = "Created Name";
           customers.forEach((c) => {
             cy.contains(c).should("exist");
           });
-          cy.contains("CREATED").should("exist");
+          cy.contains("AAAAA").should("exist");
         });
       });
       cy.checkNoErrors();
