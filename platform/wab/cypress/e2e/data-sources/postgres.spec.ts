@@ -1,3 +1,4 @@
+import { v4 } from "uuid";
 import { HORIZ_CONTAINER_CAP } from "../../../src/wab/shared/Labels";
 import {
   createTutorialDataSource,
@@ -9,15 +10,17 @@ import {
 const TUTORIAL_DB_TYPE = "northwind";
 
 describe("Postgres Data Source", () => {
+  let dsname = "";
   beforeEach(() => {
-    createTutorialDataSource(TUTORIAL_DB_TYPE);
+    dsname = `TutorialDB ${v4()}`;
+    createTutorialDataSource(TUTORIAL_DB_TYPE, dsname);
     return setupNewProject({
       name: "Postgres Data Source",
     });
   });
 
   afterEach(() => {
-    cy.deleteDataSource();
+    cy.deleteDataSourceOfCurrentTest();
     removeCurrentProject();
   });
 
@@ -34,7 +37,7 @@ describe("Postgres Data Source", () => {
         // Creating customers query ordered by country
         cy.switchToComponentDataTab();
         cy.addComponentQuery();
-        cy.pickDataSource("TutorialDB");
+        cy.pickDataSource(dsname);
         cy.selectDataPlasmicProp(
           "data-source-modal-pick-resource-btn",
           "customers"
@@ -89,7 +92,7 @@ describe("Postgres Data Source", () => {
             actionName: "dataSourceOp",
             args: {
               dataSourceOp: {
-                integration: "TutorialDB",
+                integration: dsname,
                 args: {
                   operation: { value: "updateById" },
                   resource: { value: "customers" },
@@ -121,7 +124,7 @@ describe("Postgres Data Source", () => {
             actionName: "dataSourceOp",
             args: {
               dataSourceOp: {
-                integration: "TutorialDB",
+                integration: dsname,
                 args: {
                   operation: { value: "create" },
                   resource: { value: "customers" },

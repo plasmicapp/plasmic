@@ -1,22 +1,26 @@
+import { v4 } from "uuid";
 import {
   createTutorialDataSource,
   getSelectedElt,
+  pickDataSource,
   removeCurrentProject,
   setSelectByLabel,
   setupNewProject,
   TUTORIAL_DB_TYPE,
-  withinTopFrame,
 } from "../support/util";
 
 describe("dynamic-pages-simplified", function () {
-  beforeEach(() => {});
+  let dsname = "";
+  beforeEach(() => {
+    dsname = `TutorialDB ${v4()}`;
+  });
 
   afterEach(() => {
     removeCurrentProject();
   });
 
   it("simplified works", () => {
-    createTutorialDataSource(TUTORIAL_DB_TYPE);
+    createTutorialDataSource(TUTORIAL_DB_TYPE, dsname);
     setupNewProject({
       name: "dynamic-pages",
     });
@@ -24,14 +28,7 @@ describe("dynamic-pages-simplified", function () {
       cy.createNewPageInOwnArena("Greeter", {
         template: "Dynamic page",
         after: () => {
-          cy.get("#data-source-modal-pick-integration-btn").click();
-          withinTopFrame(() => {
-            setSelectByLabel("dataSource", "TutorialDB");
-            // In this within(), for some reason, .contains() doesn't work.
-            // It internally uses :cy-contains(), and for some reason it's just not matching the elements.
-            // But these selectors continue to work.
-            cy.get("button:contains(Confirm)").click();
-          });
+          pickDataSource(dsname);
           setSelectByLabel("dataTablePickerTable", "products");
 
           cy.get("button:contains(product_id)").should("be.visible");

@@ -25,6 +25,7 @@ import {
 } from "../../src/wab/common";
 import { DevFlagsType } from "../../src/wab/devflags";
 import {
+  ApiDataSource,
   ApiUpdateDataSourceRequest,
   CreateSiteRequest,
 } from "../../src/wab/shared/ApiSchema";
@@ -1518,14 +1519,34 @@ export function removeCurrentProject(email = "user2@example.com") {
   }
 }
 
-export function deleteDataSource() {
+export function deleteDataSourcesByName(name: string) {
+  return cy
+    .request({
+      url: `/api/v1/data-source/sources`,
+      method: "GET",
+    })
+    .its("body.dataSources")
+    .then((sources: ApiDataSource[]) => {
+      for (const source of sources) {
+        if (source.name === name) {
+          return cy.deleteDataSource(source.id);
+        }
+      }
+    });
+}
+
+export function deleteDataSource(dsid: string) {
+  return cy.request({
+    url: `/api/v1/data-source/sources/${dsid}`,
+    method: "DELETE",
+  });
+}
+
+export function deleteDataSourceOfCurrentTest() {
   const dataSourceId = Cypress.env("dataSourceId");
   if (dataSourceId) {
     Cypress.env("dataSourceId", undefined);
-    cy.request({
-      url: `/api/v1/data-source/sources/${dataSourceId}`,
-      method: "DELETE",
-    });
+    cy.deleteDataSource(dataSourceId);
   }
 }
 
@@ -2218,7 +2239,7 @@ export function createTutorialDb(type: string) {
     .its("body.id", { log: false });
 }
 
-export function createTutorialDataSource(type: string) {
+export function createTutorialDataSource(type: string, dsname: string) {
   cy.login()
     .request({
       url: "/api/v1/personal-workspace",
@@ -2230,7 +2251,7 @@ export function createTutorialDataSource(type: string) {
       createTutorialDb(type).then((dbId) => {
         cy.createDataSource({
           source: "tutorialdb",
-          name: "TutorialDB",
+          name: dsname,
           workspaceId: wsId,
           credentials: {
             tutorialDbId: dbId,
@@ -2275,7 +2296,9 @@ export function deleteProjectAndRevisions(projectId: string) {
 }
 
 export function createDataSource(
-  dataSourceInfo: Partial<ApiUpdateDataSourceRequest> & { workspaceId?: string }
+  dataSourceInfo: Partial<ApiUpdateDataSourceRequest> & {
+    workspaceId?: string;
+  }
 ) {
   return cy
     .login()
