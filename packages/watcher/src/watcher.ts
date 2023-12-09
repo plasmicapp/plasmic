@@ -1,5 +1,5 @@
-import type { Socket } from 'socket.io-client';
-import socketio from 'socket.io-client';
+import type { Socket } from "socket.io-client";
+import socketio from "socket.io-client";
 
 export interface PlasmicRemoteChangeListener {
   onUpdate?: (projectId: string, revision: number) => void;
@@ -18,7 +18,7 @@ export class PlasmicRemoteChangeWatcher {
       host?: string;
     }
   ) {
-    this.host = opts.host ?? 'https://studio.plasmic.app';
+    this.host = opts.host ?? "https://studio.plasmic.app";
   }
 
   subscribe(watcher: PlasmicRemoteChangeListener) {
@@ -55,9 +55,9 @@ export class PlasmicRemoteChangeWatcher {
   private makeAuthHeaders() {
     const tokens = this.opts.projects
       .map((p) => `${p.id}:${p.token}`)
-      .join(',');
+      .join(",");
     return {
-      'x-plasmic-api-project-tokens': tokens,
+      "x-plasmic-api-project-tokens": tokens,
     };
   }
 
@@ -71,21 +71,21 @@ export class PlasmicRemoteChangeWatcher {
     }
 
     const socket = (this.socket = await this.connectSocket());
-    socket.on('initServerInfo', () => {
-      socket.emit('subscribe', {
-        namespace: 'projects',
+    socket.on("initServerInfo", () => {
+      socket.emit("subscribe", {
+        namespace: "projects",
         projectIds: this.opts.projects.map((p) => p.id),
       });
     });
 
-    socket.on('error', (data) => {
+    socket.on("error", (data) => {
       console.error(`${new Date().toISOString()}: Encountered error ${data}`);
       this.watchers.forEach((watcher) => watcher.onError?.(data));
       socket.disconnect();
       this.socket = undefined;
     });
 
-    socket.on('update', async (data: any) => {
+    socket.on("update", async (data: any) => {
       console.log(
         `${new Date().toISOString()}: Project ${
           data.projectId
@@ -96,7 +96,7 @@ export class PlasmicRemoteChangeWatcher {
       );
     });
 
-    socket.on('publish', async (data: any) => {
+    socket.on("publish", async (data: any) => {
       console.log(
         `${new Date().toISOString()}: Project ${
           data.projectId

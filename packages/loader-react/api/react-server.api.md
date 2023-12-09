@@ -46,6 +46,7 @@ export interface InitOptions {
     };
     // @deprecated (undocumented)
     i18nKeyScheme?: "content" | "hash";
+    manualRedirect?: boolean;
     nativeFetch?: boolean;
     // (undocumented)
     onClientSideFetch?: "warn" | "error";

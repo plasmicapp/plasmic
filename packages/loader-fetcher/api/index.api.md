@@ -13,6 +13,7 @@ export class Api {
         }[];
         host?: string;
         nativeFetch?: boolean;
+        manualRedirect?: boolean;
     });
     // (undocumented)
     fetchHtmlData(opts: {
@@ -110,6 +111,8 @@ export interface FetcherOptions {
     };
     // @deprecated (undocumented)
     i18nKeyScheme?: "content" | "hash" | "path";
+    // (undocumented)
+    manualRedirect?: boolean;
     // (undocumented)
     nativeFetch?: boolean;
     // (undocumented)

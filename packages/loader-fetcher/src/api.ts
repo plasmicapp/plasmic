@@ -133,11 +133,20 @@ export const isBrowser =
 export class Api {
   private host: string;
   private fetch: typeof globalThis.fetch;
+
+  private lastResponse:
+    | {
+        bundle: LoaderBundleOutput;
+        key: string;
+      }
+    | undefined = undefined;
+
   constructor(
     private opts: {
       projects: { id: string; token: string }[];
       host?: string;
       nativeFetch?: boolean;
+      manualRedirect?: boolean;
     }
   ) {
     this.host = opts.host ?? "https://codegen.plasmic.app";
@@ -178,6 +187,62 @@ export class Api {
     const url = `${this.host}/api/v1/loader/code/${
       preview ? "preview" : "published"
     }?${query}`;
+
+    // We only expect a redirect when we're dealing with published mode, as there should be
+    // a stable set of versions to be used. As in browser, we could receive a opaque response
+    // with a redirect, we don't try to use last response in browser.
+    const useLastReponse = this.opts.manualRedirect && !preview && !isBrowser;
+
+    if (useLastReponse) {
+      const redirectResp = await this.fetch(url, {
+        method: "GET",
+        headers: this.makeGetHeaders(),
+        redirect: "manual",
+      });
+
+      if (redirectResp.status !== 301 && redirectResp.status !== 302) {
+        const error = await this.parseJsonResponse(redirectResp);
+        throw new Error(
+          `Error fetching loader data, a redirect was expected: ${
+            error?.error?.message ?? redirectResp.statusText
+          }`
+        );
+      }
+
+      const nextLocation = redirectResp.headers.get("location");
+      if (!nextLocation) {
+        throw new Error(
+          `Error fetching loader data, a redirect was expected but no location header was found`
+        );
+      }
+
+      if (this.lastResponse?.key === nextLocation) {
+        return this.lastResponse.bundle;
+      }
+
+      const resp = await this.fetch(`${this.host}${nextLocation}`, {
+        method: "GET",
+        headers: this.makeGetHeaders(),
+      });
+
+      if (resp.status >= 400) {
+        const error = await this.parseJsonResponse(resp);
+        throw new Error(
+          `Error fetching loader data: ${
+            error?.error?.message ?? resp.statusText
+          }`
+        );
+      }
+
+      const json = (await this.parseJsonResponse(resp)) as LoaderBundleOutput;
+      this.lastResponse = {
+        bundle: json,
+        key: nextLocation,
+      };
+
+      return json;
+    }
+
     const resp = await this.fetch(url, {
       method: "GET",
       headers: this.makeGetHeaders(),

@@ -25,6 +25,7 @@ export interface FetcherOptions {
   };
   skipHead?: boolean;
   nativeFetch?: boolean;
+  manualRedirect?: boolean;
 }
 
 export interface LoaderBundleCache {
@@ -40,6 +41,7 @@ export class PlasmicModulesFetcher {
       projects: opts.projects,
       host: opts.host,
       nativeFetch: opts.nativeFetch,
+      manualRedirect: opts.manualRedirect,
     });
   }
 

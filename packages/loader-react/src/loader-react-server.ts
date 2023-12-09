@@ -56,6 +56,12 @@ export interface InitOptions {
    * If true, uses browser / node's native fetch
    */
   nativeFetch?: boolean;
+
+  /**
+   * If true, will not redirect to the codegen server automatically, and will
+   * try to reuse the existing bundle in the cache.
+   */
+  manualRedirect?: boolean;
 }
 
 /** Subset of loader functionality that works on React Server Components. */
