@@ -32,6 +32,7 @@
     "@plasmicpkgs/plasmic-contentful": "^0.0.126",
     "@plasmicpkgs/plasmic-embed-css": "^0.1.170",
     "@plasmicpkgs/plasmic-graphcms": "^0.0.156",
+    "@plasmicpkgs/plasmic-link-preview": "^1.0.83",
     "@plasmicpkgs/plasmic-nav": "^0.0.155",
     "@plasmicpkgs/plasmic-query": "^0.0.202",
     "@plasmicpkgs/plasmic-rich-components": "^1.0.171",
