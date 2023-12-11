@@ -1,8 +1,8 @@
+import { mkShortUuid } from "@/wab/common";
+import { generateSomeApiToken } from "@/wab/server/util/Tokens";
 import fs from "fs";
 import { Connection, ConnectionOptions, createConnection } from "typeorm";
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
-import { mkShortUuid } from "../../common";
-import { generateSomeApiToken } from "../util/Tokens";
 
 export type TutorialType = "todo" | "northwind";
 export interface TutorialDbInfo {
@@ -27,17 +27,13 @@ export async function createTutorialDb(
 
     const runner = con.createQueryRunner();
     await runner.createDatabase(databaseName, true);
-    await runner.query(`
-    CREATE USER ${userName} PASSWORD '${password}'
-    `);
 
     // Only userName (and db owner like supertbwab) can connect
     // to this database
     await runner.query(`
-    REVOKE CONNECT ON DATABASE ${databaseName} FROM public
-    `);
-    await runner.query(`
-    GRANT CONNECT ON DATABASE ${databaseName} TO ${userName}
+      CREATE USER ${userName} PASSWORD '${password}';
+      REVOKE CONNECT ON DATABASE ${databaseName} FROM public;
+      GRANT CONNECT ON DATABASE ${databaseName} TO ${userName};
     `);
     return {
       databaseName,
@@ -51,9 +47,6 @@ export async function createTutorialDb(
 
   await withSuperTutorialDbConnection(
     async (con) => {
-      const mod = require(`./${type}/init`);
-      await mod.initDb(con);
-
       await initTutorialDb(con, info);
     },
     { database: info.databaseName, type }
@@ -68,13 +61,9 @@ async function initTutorialDb(con: Connection, info: TutorialDbInfo) {
 
   // Make sure the GRANT statements come after the init, so that
   // all tables that were created above will be granted
-  await con.query(
-    `GRANT ALL ON ALL TABLES IN SCHEMA public TO ${info.userName}`
-  );
-  await con.query(
-    `GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO ${info.userName}`
-  );
   await con.query(`
+GRANT ALL ON ALL TABLES IN SCHEMA public TO ${info.userName};
+GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO ${info.userName};
 DO $$
 BEGIN
   IF EXISTS (
