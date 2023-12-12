@@ -85,7 +85,7 @@ export function TinyEditor({ value, onChange, ...props }: TinyEditorProps) {
           ],
           toolbar: [
             "blocks | bold italic underline strikethrough | forecolor backcolor | numlist bullist outdent indent",
-            "link image media | blockquote codesample | superscript subscript | alignleft aligncenter alignright alignjustify | code removeformat",
+            "link image media | blockquote table codesample | superscript subscript | alignleft aligncenter alignright alignjustify | removeformat | code",
           ],
           images_upload_handler: async (blobInfo) => {
             const uploaded = await appCtx.api.uploadImageFile({
