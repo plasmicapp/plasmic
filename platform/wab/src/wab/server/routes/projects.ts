@@ -993,6 +993,7 @@ export async function getModelUpdates(req: Request, res: Response) {
   ) {
     const rev = await mgr.getLatestProjectRev(projectId, {
       branchId,
+      revisionNumOnly: true,
     });
     if (rev.revision === revisionNum) {
       // Up to date - no data to fetch
