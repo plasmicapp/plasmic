@@ -754,6 +754,16 @@ export class SiteOps {
       }
     }
 
+    if (this.studioCtx.site.pageWrapper === component) {
+      notification.error({
+        message: `Cannot remove component ${getComponentDisplayName(
+          component
+        )} because it is set as the default page wrapper.`,
+      });
+
+      return;
+    }
+
     const curArena = this.studioCtx.currentArena;
 
     const comps = [component, ...getSubComponents(component)];
