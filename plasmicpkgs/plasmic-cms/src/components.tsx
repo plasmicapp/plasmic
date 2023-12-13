@@ -469,6 +469,7 @@ interface CmsRowFieldProps extends CanvasComponentProps<RowContextData> {
   field: string;
   className?: string;
   dateFormat?: string;
+  themeResetClassName?: string;
 }
 
 export const cmsRowFieldMeta: ComponentMeta<CmsRowFieldProps> = {
@@ -581,6 +582,10 @@ export const cmsRowFieldMeta: ComponentMeta<CmsRowFieldProps> = {
         },
       ],
     },
+    themeResetClassName: {
+      type: "themeResetClass",
+      targetAllTags: true,
+    },
   },
   defaultStyles: {
     objectFit: "cover",
@@ -593,6 +598,7 @@ export function CmsRowField({
   field,
   dateFormat,
   setControlContextData,
+  themeResetClassName,
   ...rest
 }: CmsRowFieldProps) {
   const tables = useTablesWithDataLoaded("rows");
@@ -643,7 +649,7 @@ export function CmsRowField({
   }
   return data
     ? renderValue(data, fieldMeta.type, {
-        className,
+        className: `${themeResetClassName} ${className}`,
         ...rest,
       })
     : null;
