@@ -195,9 +195,7 @@ module.exports = function (webpackEnv) {
                   ],
                 ],
           },
-          // TODO: Disabling sourcemap for now to debug memory issue
-          sourceMap: isEnvDevelopment,
-          // sourceMap: isEnvProduction ? shouldUseSourceMap : isEnvDevelopment,
+          sourceMap: isEnvProduction ? shouldUseSourceMap : isEnvDevelopment,
         },
       },
     ].filter(Boolean);
@@ -206,18 +204,14 @@ module.exports = function (webpackEnv) {
         {
           loader: require.resolve('resolve-url-loader'),
           options: {
-            // TODO: Disabling sourcemap for now to debug memory issue
-            sourceMap: isEnvDevelopment,
-            // sourceMap: isEnvProduction ? shouldUseSourceMap : isEnvDevelopment,
+            sourceMap: isEnvProduction ? shouldUseSourceMap : isEnvDevelopment,
             root: paths.appSrc,
           },
         },
         {
           loader: require.resolve(preProcessor),
           options: {
-            // TODO: Disabling sourcemap for now to debug memory issue
-            sourceMap: isEnvDevelopment,
-            // sourceMap: isEnvProduction ? shouldUseSourceMap : isEnvDevelopment,
+            sourceMap: isEnvProduction ? shouldUseSourceMap : isEnvDevelopment,
           },
         }
       );
@@ -226,9 +220,7 @@ module.exports = function (webpackEnv) {
         {
           loader: require.resolve('resolve-url-loader'),
           options: {
-            // TODO: Disabling sourcemap for now to debug memory issue
-            sourceMap: isEnvDevelopment,
-            // sourceMap: isEnvProduction ? shouldUseSourceMap : isEnvDevelopment,
+            sourceMap: isEnvProduction ? shouldUseSourceMap : isEnvDevelopment,
             root: paths.appSrc,
           },
         },
@@ -669,11 +661,9 @@ module.exports = function (webpackEnv) {
               exclude: cssModuleRegex,
               use: getStyleLoaders({
                 importLoaders: 1,
-                // TODO: Disabling sourcemap for now to debug memory issue
-                // sourceMap: isEnvProduction
-                //   ? shouldUseSourceMap
-                //   : isEnvDevelopment,
-                sourceMap: isEnvDevelopment,
+                sourceMap: isEnvProduction
+                  ? shouldUseSourceMap
+                  : isEnvDevelopment,
                 modules: {
                   mode: 'icss',
                 },
@@ -690,11 +680,9 @@ module.exports = function (webpackEnv) {
               test: cssModuleRegex,
               use: getStyleLoaders({
                 importLoaders: 1,
-                // TODO: Disabling sourcemap for now to debug memory issue
-                sourceMap: isEnvDevelopment,
-                // sourceMap: isEnvProduction
-                //   ? shouldUseSourceMap
-                //   : isEnvDevelopment,
+                sourceMap: isEnvProduction
+                  ? shouldUseSourceMap
+                  : isEnvDevelopment,
                 modules: {
                   mode: 'local',
                   getLocalIdent: getCSSModuleLocalIdent,
@@ -710,11 +698,9 @@ module.exports = function (webpackEnv) {
               use: getStyleLoaders(
                 {
                   importLoaders: 3,
-                  // TODO: Disabling sourcemap for now to debug memory issue
-                  sourceMap: isEnvDevelopment,
-                  // sourceMap: isEnvProduction
-                  //   ? shouldUseSourceMap
-                  //   : isEnvDevelopment,
+                  sourceMap: isEnvProduction
+                    ? shouldUseSourceMap
+                    : isEnvDevelopment,
                   modules: {
                     mode: 'icss',
                   },
@@ -735,11 +721,9 @@ module.exports = function (webpackEnv) {
               use: getStyleLoaders(
                 {
                   importLoaders: 3,
-                  // TODO: Disabling sourcemap for now to debug memory issue
-                  sourceMap: isEnvDevelopment,
-                  // sourceMap: isEnvProduction
-                  //   ? shouldUseSourceMap
-                  //   : isEnvDevelopment,
+                  sourceMap: isEnvProduction
+                    ? shouldUseSourceMap
+                    : isEnvDevelopment,
                   modules: {
                     mode: 'local',
                     getLocalIdent: getCSSModuleLocalIdent,
@@ -753,11 +737,9 @@ module.exports = function (webpackEnv) {
               use: getStyleLoaders(
                 {
                   importLoaders: 2,
-                  // TODO: Disabling sourcemap for now to debug memory issue
-                  sourceMap: isEnvDevelopment,
-                  // sourceMap: isEnvProduction
-                  //   ? shouldUseSourceMap
-                  //   : isEnvDevelopment,
+                  sourceMap: isEnvProduction
+                    ? shouldUseSourceMap
+                    : isEnvDevelopment,
                 },
                 {
                   loader: require.resolve('less-loader'),
