@@ -1196,7 +1196,9 @@ export class SiteOps {
     if (refCompsAndPresets.length > 0) {
       notification.error({
         message: `A page component cannot be instantiated.`,
-        description: `${component.name} is still being used by ${L.uniq(
+        description: `${getComponentDisplayName(
+          component
+        )} is still being used by ${L.uniq(
           refCompsAndPresets.map((c) => getComponentDisplayName(c))
         ).join(", ")}.`,
       });
@@ -1206,7 +1208,9 @@ export class SiteOps {
     if (this.site.pageWrapper === component) {
       notification.error({
         message: `A page component cannot be instantiated.`,
-        description: `${component.name} is still being used as the default page wrapper.`,
+        description: `${getComponentDisplayName(
+          component
+        )} is still being used as the default page wrapper.`,
       });
 
       return;
