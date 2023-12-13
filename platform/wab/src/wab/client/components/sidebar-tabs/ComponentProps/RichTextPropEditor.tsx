@@ -1,8 +1,10 @@
+import { OnClickAway } from "@/wab/commons/components/OnClickAway";
+import useDebounce from "@/wab/commons/components/use-debounce";
 import React, { useEffect, useState } from "react";
 import "react-quill/dist/quill.snow.css";
-import { OnClickAway } from "../../../../commons/components/OnClickAway";
-import useDebounce from "../../../../commons/components/use-debounce";
-import { RichTextEditor } from "../../RichTextEditor";
+const LazyRichTextEditor = React.lazy(
+  () => import("@/wab/client/components/RichTextEditor")
+);
 
 export function RichTextPropEditor({
   onChange,
@@ -45,7 +47,7 @@ export function RichTextPropEditor({
           save();
         }}
       >
-        <RichTextEditor
+        <LazyRichTextEditor
           onChange={(text) => {
             setDraft(text);
           }}

@@ -1,6 +1,5 @@
 import { UU } from "@/wab/client/cli-routes";
 import { PublicLink } from "@/wab/client/components/PublicLink";
-import { RichTextEditor } from "@/wab/client/components/RichTextEditor";
 import { FileUploader } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
 import "@/wab/client/components/widgets/ColorPicker/Pickr.overrides.scss";
@@ -41,6 +40,9 @@ import { createContext, ReactElement, ReactNode, useContext } from "react";
 import { GrNewWindow } from "react-icons/all";
 import { useCmsRows, useCmsTableMaybe } from "./cms-contexts";
 import { getRowIdentifierNode } from "./CmsEntryDetails";
+const LazyRichTextEditor = React.lazy(
+  () => import("@/wab/client/components/RichTextEditor")
+);
 
 type NamePathz = (string | number)[];
 
@@ -492,7 +494,7 @@ export function CmsRichTextInput({
 }) {
   const { disabled } = useContentEntryFormContext();
   return (
-    <RichTextEditor
+    <LazyRichTextEditor
       value={value ?? ""}
       onChange={ensure(onChange, "Rich text editor requires onChange callback")}
       readOnly={disabled}

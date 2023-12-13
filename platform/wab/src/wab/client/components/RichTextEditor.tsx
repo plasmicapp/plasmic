@@ -20,3 +20,5 @@ export function RichTextEditor(props: RichTextEditorProps) {
       : QuillEditor;
   return <Editor {...props} />;
 }
+
+export default RichTextEditor;
