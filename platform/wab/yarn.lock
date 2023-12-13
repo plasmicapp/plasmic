@@ -4091,10 +4091,10 @@
     fast-deep-equal "^3.1.3"
     valtio "^1.6.3"
 
-"@plasmicpkgs/antd5@^0.0.200":
-  version "0.0.200"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.200.tgz#31ce9ff0a64686d735488aa4bb2651537aaf706f"
-  integrity sha512-3BNm4AlZgM+iEelHyAQMscVgBC0y7RdrN7Yq8MyVzCFS8JFPYs9W07yBl0O5mtb2nSNGsZHSYiYbDFX6HgeDQg==
+"@plasmicpkgs/antd5@^0.0.201":
+  version "0.0.201"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.201.tgz#3e1ebf735d8f50311d3cd190f1686d359cd0e8d1"
+  integrity sha512-Q0nS1PIG0u2Go3m55+Bc8zXwinG50Az/mjHvLcY5AWu0RaxAzEARb6otBH1mMPSN3D6tejtlZy1L9Ql38i5TVQ==
   dependencies:
     antd "^5.7.3"
     classnames "^2.3.2"
