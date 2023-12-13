@@ -1,6 +1,6 @@
 import { UU } from "@/wab/client/cli-routes";
 import { PublicLink } from "@/wab/client/components/PublicLink";
-import { FileUploader } from "@/wab/client/components/widgets";
+import { FileUploader, Spinner } from "@/wab/client/components/widgets";
 import Button from "@/wab/client/components/widgets/Button";
 import "@/wab/client/components/widgets/ColorPicker/Pickr.overrides.scss";
 import { Icon } from "@/wab/client/components/widgets/Icon";
@@ -494,11 +494,16 @@ export function CmsRichTextInput({
 }) {
   const { disabled } = useContentEntryFormContext();
   return (
-    <LazyRichTextEditor
-      value={value ?? ""}
-      onChange={ensure(onChange, "Rich text editor requires onChange callback")}
-      readOnly={disabled}
-    />
+    <React.Suspense fallback={<Spinner />}>
+      <LazyRichTextEditor
+        value={value ?? ""}
+        onChange={ensure(
+          onChange,
+          "Rich text editor requires onChange callback"
+        )}
+        readOnly={disabled}
+      />
+    </React.Suspense>
   );
 }
 

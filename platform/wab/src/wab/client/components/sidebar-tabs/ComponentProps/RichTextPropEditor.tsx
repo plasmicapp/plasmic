@@ -1,3 +1,4 @@
+import { Spinner } from "@/wab/client/components/widgets";
 import { OnClickAway } from "@/wab/commons/components/OnClickAway";
 import useDebounce from "@/wab/commons/components/use-debounce";
 import React, { useEffect, useState } from "react";
@@ -30,30 +31,32 @@ export function RichTextPropEditor({
   // We must save on blur or click away, or else we can trigger a save too late (e.g. if we're in a popover and you click out, unmounting).
 
   return (
-    <div
-      onKeyDown={(e) => e.stopPropagation()}
-      onKeyUp={(e) => e.stopPropagation()}
-      onKeyPress={(e) => e.stopPropagation()}
-      onBlur={() => {
-        save();
-      }}
-      style={{
-        padding: "0px 0px 0px 8px",
-        borderLeft: "4px solid rgb(243, 243, 242)",
-      }}
-    >
-      <OnClickAway
-        onDone={() => {
+    <React.Suspense fallback={<Spinner />}>
+      <div
+        onKeyDown={(e) => e.stopPropagation()}
+        onKeyUp={(e) => e.stopPropagation()}
+        onKeyPress={(e) => e.stopPropagation()}
+        onBlur={() => {
           save();
         }}
+        style={{
+          padding: "0px 0px 0px 8px",
+          borderLeft: "4px solid rgb(243, 243, 242)",
+        }}
       >
-        <LazyRichTextEditor
-          onChange={(text) => {
-            setDraft(text);
+        <OnClickAway
+          onDone={() => {
+            save();
           }}
-          value={draft}
-        />
-      </OnClickAway>
-    </div>
+        >
+          <LazyRichTextEditor
+            onChange={(text) => {
+              setDraft(text);
+            }}
+            value={draft}
+          />
+        </OnClickAway>
+      </div>
+    </React.Suspense>
   );
 }
