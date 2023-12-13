@@ -155,6 +155,7 @@ export interface ApiTeam extends ApiEntityBase {
   trialStartDate: Date | string | null;
   trialDays: number | null;
   onTrial: boolean;
+  whiteLabelName: string | null;
   whiteLabelInfo: TeamWhiteLabelInfo | null;
   uiConfig: UiConfig | null;
 }

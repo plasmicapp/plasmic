@@ -83,6 +83,7 @@ export function mkApiTeam(team: Team): ApiTeam {
       "inviteId",
       "defaultAccessLevel",
       "whiteLabelInfo",
+      "whiteLabelName",
       "uiConfig",
     ]),
     {

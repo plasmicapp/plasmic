@@ -1171,6 +1171,15 @@ export class DbMgr implements MigrationDbMgr {
     return await this.entMgr.save(team);
   }
 
+  async updateTeamWhiteLabelName(id: TeamId, name: string | null) {
+    this.checkSuperUser();
+    const team = await this.getTeamById(id);
+    assignAllowEmpty(team, this.stampUpdate(), {
+      whiteLabelName: name,
+    });
+    return await this.entMgr.save(team);
+  }
+
   async startFreeTrial({
     teamId,
     featureTierName,

@@ -1502,6 +1502,11 @@ export function addMainAppServerRoutes(app: express.Application) {
     withNext(adminRoutes.updateTeamWhiteLabelInfo)
   );
   app.post(
+    "/api/v1/admin/update-team-white-label-name",
+    adminOnly,
+    withNext(adminRoutes.updateTeamWhiteLabelName)
+  );
+  app.post(
     "/api/v1/admin/promotion-code",
     adminOnly,
     withNext(adminRoutes.createPromotionCode)

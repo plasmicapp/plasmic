@@ -1760,7 +1760,7 @@ function TeamApiTokens() {
   const nonAuthCtx = useNonAuthCtx();
   return (
     <div>
-      <h1>Create Team API Token</h1>
+      <h3>Create Team API Token</h3>
       <Form
         onFinish={async (event) => {
           try {
@@ -1930,10 +1930,47 @@ function TeamClientCredentials() {
   );
 }
 
+function SetTeamWhiteLabelName() {
+  const nonAuthCtx = useNonAuthCtx();
+  return (
+    <div>
+      <p>
+        Convert a team to a white-labeled team by associating a white-label name
+        with it.
+      </p>
+      <Form
+        onFinish={async (values) => {
+          if (values.whiteLabelName?.trim() === "") {
+            values.whiteLabelName = null;
+          }
+          const team = await nonAuthCtx.api.updateTeamWhiteLabelName(
+            values.teamId,
+            values.whiteLabelName
+          );
+          notification.success({
+            message: "Successfully updated white label team name",
+            description: `Team ${team.id} has name "${team.whiteLabelName}"`,
+          });
+        }}
+      >
+        <Form.Item name="teamId" label="Team ID">
+          <Input />
+        </Form.Item>
+        <Form.Item name="whiteLabelName" label="White label name">
+          <Input />
+        </Form.Item>
+        <Form.Item>
+          <Button htmlType="submit">Save</Button>
+        </Form.Item>
+      </Form>
+    </div>
+  );
+}
+
 function WhiteLabeledTeam() {
   return (
     <div>
-      <h2>Manage white-labeled teams</h2>
+      <h1>Manage white-labeled teams</h1>
       <Tabs
         items={[
           {
@@ -1954,7 +1991,7 @@ function WhiteLabeledTeam() {
           {
             key: "create",
             label: "Make white-labeled team",
-            children: <div>Maybe layter!</div>,
+            children: <SetTeamWhiteLabelName />,
           },
         ]}
       />

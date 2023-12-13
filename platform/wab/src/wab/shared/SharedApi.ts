@@ -1119,6 +1119,17 @@ export abstract class SharedApi {
     return res.team;
   }
 
+  async updateTeamWhiteLabelName(
+    teamId: TeamId,
+    name: string | null
+  ): Promise<ApiTeam> {
+    const res = await this.post(`/admin/update-team-white-label-name`, {
+      id: teamId,
+      whiteLabelName: name,
+    });
+    return res.team;
+  }
+
   async createTutorialDb(type: any): Promise<any> {
     return await this.post(`/admin/create-tutorial-db`, { type });
   }
