@@ -13,10 +13,10 @@ import {
   withoutNils,
   xSetDefault,
 } from "@/wab/common";
-import { $ } from "@/wab/deps";
 import { Selectable } from "@/wab/selection";
 import { makeSlotSelectionKey, SlotSelection } from "@/wab/slots";
 import { cloneValNode, ValComponent, ValNode, ValSlot } from "@/wab/val-nodes";
+import $ from "jquery";
 import { maxBy } from "lodash";
 
 // We only export the `RenderState` as a type

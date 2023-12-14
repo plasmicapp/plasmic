@@ -1,7 +1,7 @@
 import L from "lodash";
+import * as US from "underscore.string";
 import { isKnownRenderExpr, isKnownTplNode, TplNode } from "./classes";
 import { switchType, unreachable } from "./common";
-import { US } from "./deps";
 import { Selectable } from "./selection";
 import {
   isPlaceholderValue,

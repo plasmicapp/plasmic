@@ -1,14 +1,3 @@
-import { notification, Tooltip } from "antd";
-import cx from "classnames";
-import L, { isArray } from "lodash";
-import * as mobx from "mobx";
-import { computed } from "mobx";
-import { observer } from "mobx-react";
-import { computedFn } from "mobx-utils";
-import pluralize from "pluralize";
-import * as React from "react";
-import { FixedSizeList } from "react-window";
-import { isPlainObjectPropType } from "src/wab/shared/code-components/code-components";
 import {
   ArenaFrame,
   Component,
@@ -24,86 +13,26 @@ import {
   TplNode,
   TplSlot,
   TplTag,
-} from "../../../classes";
+} from "@/wab/classes";
+import { TplClip } from "@/wab/client/clipboard";
 import {
-  assert,
-  eagerCoalesce,
-  ensure,
-  filterMapTruthy,
-  maybe,
-  switchType,
-  unexpected,
-  withoutNils,
-} from "../../../common";
+  getPreferredInsertLocs,
+  InsertRelLoc,
+} from "@/wab/client/components/canvas/view-ops";
+import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
+import { PlumyIcon } from "@/wab/client/components/plume/plume-markers";
 import {
-  swallowingClick,
-  useChanged,
-  useConstant,
-  useForwardedRef,
-} from "../../../commons/components/ReactUtil";
-import { isCodeComponent } from "../../../components";
-import { $ } from "../../../deps";
-import { tryExtractLit } from "../../../exprs";
-import { getOnlyAssetRef } from "../../../image-assets";
-import { Selectable } from "../../../selection";
-import { AnyArena, FrameViewMode } from "../../../shared/Arenas";
-import { isTplSlotVisible } from "../../../shared/cached-selectors";
-import {
-  EffectiveVariantSetting,
-  getTplComponentActiveVariants,
-} from "../../../shared/effective-variant-setting";
-import { CanvasEnv } from "../../../shared/eval";
-import {
-  ContainerLayoutType,
-  getRshContainerType,
-} from "../../../shared/layoututils";
-import {
-  canAddChildrenAndWhy,
-  canAddSiblingsAndWhy,
-  CantAddChildMsg,
-  CantAddSiblingMsg,
-} from "../../../shared/parenting";
-import {
-  getPlumeEditorPlugin,
-  getPlumeElementDef,
-  getPlumeSlotDef,
-} from "../../../shared/plume/plume-registry";
-import { ReadonlyIRuleSetHelpersX } from "../../../shared/RuleSetHelpers";
-import {
-  getAncestorTplSlot,
-  getSlotParams,
-  getSlotSelectionContainingTpl,
-  getTplSlotForParam,
-  isCodeComponentSlot,
-  isPlainTextTplSlot,
-  isTplPlainText,
-} from "../../../shared/SlotUtils";
-import { $$$ } from "../../../shared/TplQuery";
-import { isBaseVariant, isVariantSettingEmpty } from "../../../shared/Variants";
-import {
-  isVisibilityHidden,
-  TplVisibility,
-} from "../../../shared/visibility-utils";
-import { isTplAttachedToSite } from "../../../sites";
-import { SlotSelection } from "../../../slots";
-import { selectionControlsColor } from "../../../styles/css-variables";
-import * as Tpls from "../../../tpls";
-import {
-  clone,
-  getTplOwnerComponent,
-  isCodeComponentRoot,
-  isTplImage,
-  isTplTagOrComponent,
-  isTplVariantable,
-} from "../../../tpls";
-import {
-  bestValForTpl,
-  ValComponent,
-  ValNode,
-  ValSlot,
-} from "../../../val-nodes";
-import { asTpl, asTplOrSlotSelection } from "../../../vals";
-import { TplClip } from "../../clipboard";
+  variantComboName,
+  VariantSettingPopoverContent,
+  VariantSettingPopoverTitle,
+} from "@/wab/client/components/style-controls/DefinedIndicator";
+import Indicator from "@/wab/client/components/style-controls/Indicator";
+import { makeTreeNodeMenu } from "@/wab/client/components/tpl-menu";
+import { DragItem } from "@/wab/client/components/widgets";
+import { EditableLabel } from "@/wab/client/components/widgets/EditableLabel";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { ListSpace } from "@/wab/client/components/widgets/ListStack";
+import MenuButton from "@/wab/client/components/widgets/MenuButton";
 import {
   BUTTON_ICON,
   COMPONENT_ICON,
@@ -124,34 +53,103 @@ import {
   TEXTAREA_ICON,
   TEXT_ICON,
   VERT_STACK_ICON,
-} from "../../icons";
-import { renderCantAddMsg } from "../../messages/parenting-msgs";
-import LockIcon from "../../plasmic/plasmic_kit_design_system/PlasmicIcon__Lock";
-import UnlockIcon from "../../plasmic/plasmic_kit_design_system/PlasmicIcon__Unlock";
-import VerticalDashIcon from "../../plasmic/plasmic_kit_design_system/PlasmicIcon__VerticalDash";
-import RepeatingsvgIcon from "../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__Repeatingsvg";
-import { DragInsertState, StudioCtx } from "../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
-import { TutorialEventsType } from "../../tours/tutorials/tutorials-events";
+} from "@/wab/client/icons";
+import { renderCantAddMsg } from "@/wab/client/messages/parenting-msgs";
+import LockIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Lock";
+import UnlockIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Unlock";
+import VerticalDashIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__VerticalDash";
+import RepeatingsvgIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__Repeatingsvg";
+import { DragInsertState, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import {
   canSetDisplayNone,
   getSlotSelectionDisplayName,
-} from "../../utils/tpl-client-utils";
-import { getPreferredInsertLocs, InsertRelLoc } from "../canvas/view-ops";
-import { maybeShowContextMenu } from "../ContextMenu";
-import { PlumyIcon } from "../plume/plume-markers";
+} from "@/wab/client/utils/tpl-client-utils";
 import {
-  variantComboName,
-  VariantSettingPopoverContent,
-  VariantSettingPopoverTitle,
-} from "../style-controls/DefinedIndicator";
-import Indicator from "../style-controls/Indicator";
-import { makeTreeNodeMenu } from "../tpl-menu";
-import { DragItem } from "../widgets";
-import { EditableLabel } from "../widgets/EditableLabel";
-import { Icon } from "../widgets/Icon";
-import { ListSpace } from "../widgets/ListStack";
-import MenuButton from "../widgets/MenuButton";
+  assert,
+  eagerCoalesce,
+  ensure,
+  filterMapTruthy,
+  maybe,
+  switchType,
+  unexpected,
+  withoutNils,
+} from "@/wab/common";
+import {
+  swallowingClick,
+  useChanged,
+  useConstant,
+  useForwardedRef,
+} from "@/wab/commons/components/ReactUtil";
+import { isCodeComponent } from "@/wab/components";
+import { tryExtractLit } from "@/wab/exprs";
+import { getOnlyAssetRef } from "@/wab/image-assets";
+import { Selectable } from "@/wab/selection";
+import { AnyArena, FrameViewMode } from "@/wab/shared/Arenas";
+import { isTplSlotVisible } from "@/wab/shared/cached-selectors";
+import {
+  EffectiveVariantSetting,
+  getTplComponentActiveVariants,
+} from "@/wab/shared/effective-variant-setting";
+import { CanvasEnv } from "@/wab/shared/eval";
+import {
+  ContainerLayoutType,
+  getRshContainerType,
+} from "@/wab/shared/layoututils";
+import {
+  canAddChildrenAndWhy,
+  canAddSiblingsAndWhy,
+  CantAddChildMsg,
+  CantAddSiblingMsg,
+} from "@/wab/shared/parenting";
+import {
+  getPlumeEditorPlugin,
+  getPlumeElementDef,
+  getPlumeSlotDef,
+} from "@/wab/shared/plume/plume-registry";
+import { ReadonlyIRuleSetHelpersX } from "@/wab/shared/RuleSetHelpers";
+import {
+  getAncestorTplSlot,
+  getSlotParams,
+  getSlotSelectionContainingTpl,
+  getTplSlotForParam,
+  isCodeComponentSlot,
+  isPlainTextTplSlot,
+  isTplPlainText,
+} from "@/wab/shared/SlotUtils";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { isBaseVariant, isVariantSettingEmpty } from "@/wab/shared/Variants";
+import {
+  isVisibilityHidden,
+  TplVisibility,
+} from "@/wab/shared/visibility-utils";
+import { isTplAttachedToSite } from "@/wab/sites";
+import { SlotSelection } from "@/wab/slots";
+import { selectionControlsColor } from "@/wab/styles/css-variables";
+import * as Tpls from "@/wab/tpls";
+import {
+  clone,
+  getTplOwnerComponent,
+  isCodeComponentRoot,
+  isTplImage,
+  isTplTagOrComponent,
+  isTplVariantable,
+} from "@/wab/tpls";
+import { bestValForTpl, ValComponent, ValNode, ValSlot } from "@/wab/val-nodes";
+import { asTpl, asTplOrSlotSelection } from "@/wab/vals";
+import { notification, Tooltip } from "antd";
+import cx from "classnames";
+import $ from "jquery";
+import L, { isArray } from "lodash";
+import * as mobx from "mobx";
+import { computed } from "mobx";
+import { observer } from "mobx-react";
+import { computedFn } from "mobx-utils";
+import pluralize from "pluralize";
+import * as React from "react";
+import { FixedSizeList } from "react-window";
+import { isPlainObjectPropType } from "src/wab/shared/code-components/code-components";
 import { makeOutlineVisibleKey, OutlineCtx } from "./outline-tab";
 
 const getCachedSlotParams = computedFn(

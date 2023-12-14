@@ -1,4 +1,4 @@
-import { FontInstallSpec } from "../fonts";
+import { FontInstallSpec } from "@/wab/shared/fonts";
 
 export const fontWeightOptions = [
   "Thin",

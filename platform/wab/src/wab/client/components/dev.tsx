@@ -1,7 +1,7 @@
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { cx } from "@/wab/common";
+import $ from "jquery";
 import * as React from "react";
-import { cx } from "../../common";
-import { $ } from "../../deps";
-import { ViewCtx } from "../studio-ctx/view-ctx";
 
 interface DevContainerProps {
   showControls?: boolean;

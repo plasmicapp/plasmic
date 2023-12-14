@@ -1,12 +1,12 @@
+import { fixWorkerUrl } from "@/wab/client/monaco-worker-url";
+import { ensure, maybe, mkUuid } from "@/wab/common";
+import { dbg } from "@/wab/dbg";
+import { Size } from "@/wab/geom";
 import * as monaco from "monaco-editor";
 import { editor } from "monaco-editor";
 import React, { useEffect, useRef } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import MonacoEditor from "react-monaco-editor";
-import { ensure, maybe, mkUuid } from "../../../common";
-import { dbg } from "../../../deps";
-import { Size } from "../../../geom";
-import { fixWorkerUrl } from "../../monaco-worker-url";
 
 type IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
 type IEditorConstructionOptions = editor.IStandaloneEditorConstructionOptions;

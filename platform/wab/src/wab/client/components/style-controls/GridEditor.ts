@@ -1,12 +1,12 @@
+import { getRect } from "@/wab/client/dom";
+import { Dict } from "@/wab/collections";
+import { ensure, parsePx, zipWithIndex } from "@/wab/common";
+import { ClientRect } from "@/wab/geom";
+import { Axis, Offset } from "@/wab/shared/Grids";
+import { px } from "@/wab/styles";
+import $ from "jquery";
 import L from "lodash";
 import { CSSProperties } from "react";
-import { Dict } from "../../../collections";
-import { ensure, parsePx, zipWithIndex } from "../../../common";
-import { $ } from "../../../deps";
-import { getRect } from "../../../dom";
-import { ClientRect } from "../../../geom";
-import { Axis, Offset } from "../../../shared/Grids";
-import { px } from "../../../styles";
 import styles from "./GridEditor.module.scss";
 
 function ensureValues<T>(x: Dict<T | null | undefined>): Dict<T> {

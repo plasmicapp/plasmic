@@ -91,6 +91,7 @@ import {
   showError,
 } from "@/wab/client/ErrorNotifications";
 import { fixupChrome, fixupForChanges } from "@/wab/client/fixes-post-change";
+import { FontManager } from "@/wab/client/fonts";
 import { checkDepPkgHosts } from "@/wab/client/init-ctx";
 import { postInsertableTemplate } from "@/wab/client/insertable-templates";
 import { PLATFORM } from "@/wab/client/platform";
@@ -154,14 +155,12 @@ import {
   isPlainComponent,
   PageComponent,
 } from "@/wab/components";
-import { $, Signals } from "@/wab/deps";
 import {
   DEVFLAGS,
   InsertableTemplatesGroup,
   InsertableTemplatesItem,
 } from "@/wab/devflags";
 import { tryExtractJson } from "@/wab/exprs";
-import { FontManager } from "@/wab/fonts";
 import { absRect, Box, ClientRect, Rect } from "@/wab/geom";
 import {
   ChangesType,
@@ -331,6 +330,7 @@ import asynclib from "async";
 import cn from "classnames";
 import stringify from "fast-stringify";
 import { Location } from "history";
+import $ from "jquery";
 import {
   debounce,
   groupBy,
@@ -357,6 +357,7 @@ import {
 import { computedFn } from "mobx-utils";
 import React, { useContext } from "react";
 import semver from "semver";
+import * as Signals from "signals";
 import { mutate } from "swr";
 import { failable, FailableArgParams, IFailable } from "ts-failable";
 import { ComponentCtx } from "./component-ctx";

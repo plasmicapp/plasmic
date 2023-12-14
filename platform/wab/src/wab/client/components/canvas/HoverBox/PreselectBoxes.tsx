@@ -1,27 +1,27 @@
-import cn from "classnames";
-import { observer } from "mobx-react-lite";
-import React from "react";
-import { ensure, maybe } from "../../../../common";
-import { $ } from "../../../../deps";
-import { hasLayoutBox } from "../../../../dom";
-import { makeSelectableFullKey, Selectable, SQ } from "../../../../selection";
-import { getArenaFrames } from "../../../../shared/Arenas";
-import { isTplTagOrComponent, isTplVariantable } from "../../../../tpls";
-import { frameToScalerRect } from "../../../coords";
-import { computeNodeOutlineTagLayoutClass } from "../../../node-outline";
+import { EditableNodeLabel } from "@/wab/client/components/canvas/EditableNodeLabel";
+import { createNodeIcon } from "@/wab/client/components/sidebar-tabs/tpl-tree";
+import {
+  BASE_VARIANT_COLOR,
+  NON_BASE_VARIANT_COLOR,
+} from "@/wab/client/components/studio/GlobalCssVariables";
+import { frameToScalerRect } from "@/wab/client/coords";
+import { hasLayoutBox } from "@/wab/client/dom";
+import { computeNodeOutlineTagLayoutClass } from "@/wab/client/node-outline";
 import {
   cssPropsForInvertTransform,
   StudioCtx,
   useStudioCtx,
-} from "../../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../../studio-ctx/view-ctx";
-import { summarizeFocusObj } from "../../../utils/tpl-client-utils";
-import { createNodeIcon } from "../../sidebar-tabs/tpl-tree";
-import {
-  BASE_VARIANT_COLOR,
-  NON_BASE_VARIANT_COLOR,
-} from "../../studio/GlobalCssVariables";
-import { EditableNodeLabel } from "../EditableNodeLabel";
+} from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { summarizeFocusObj } from "@/wab/client/utils/tpl-client-utils";
+import { ensure, maybe } from "@/wab/common";
+import { makeSelectableFullKey, Selectable, SQ } from "@/wab/selection";
+import { getArenaFrames } from "@/wab/shared/Arenas";
+import { isTplTagOrComponent, isTplVariantable } from "@/wab/tpls";
+import cn from "classnames";
+import $ from "jquery";
+import { observer } from "mobx-react-lite";
+import React from "react";
 import styles from "./HoverBox.module.scss";
 import { recomputeBounds } from "./recomputeBounds";
 

@@ -1,15 +1,15 @@
 // So we should just be transforming the angle to 90 - angle.
-import L from "lodash";
-import * as React from "react";
-import { useRef } from "react";
-import { deg2rad, ensure, rad2deg } from "../../../common";
+import { PlainLinkButton } from "@/wab/client/components/widgets";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { deg2rad, ensure, rad2deg } from "@/wab/common";
 import {
   XDraggable,
   XDraggableEvent,
-} from "../../../commons/components/XDraggable";
-import { $ } from "../../../deps";
-import { useStudioCtx } from "../../studio-ctx/StudioCtx";
-import { PlainLinkButton } from "../widgets";
+} from "@/wab/commons/components/XDraggable";
+import $ from "jquery";
+import L from "lodash";
+import * as React from "react";
+import { useRef } from "react";
 import Dial from "./Dial.svg";
 
 function angleToOffset(angle: /*TWZ*/ number, radius: /*TWZ*/ number) {

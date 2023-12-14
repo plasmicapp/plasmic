@@ -1,5 +1,46 @@
+import { WithContextMenu } from "@/wab/client/components/ContextMenu";
+import { FullRow } from "@/wab/client/components/sidebar/sidebar-helpers";
+import Button from "@/wab/client/components/widgets/Button";
+import {
+  DimTokenSpinner,
+  DimValueOpts,
+} from "@/wab/client/components/widgets/DimTokenSelector";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { IconButton } from "@/wab/client/components/widgets/IconButton";
+import { DimManip, roundDim } from "@/wab/client/DimManip";
+import { useQuerySelector } from "@/wab/client/hooks/useQuerySelector";
+import ArrowBottomIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ArrowBottom";
+import ArrowLeftIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ArrowLeft";
+import ArrowRightIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ArrowRight";
+import ArrowTopIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ArrowTop";
+import PositionCornerIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__PositionCorner";
+import PositionCoverIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__PositionCover";
+import PositionSideIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__PositionSide";
+import { cx, ensure, maybe, spawn } from "@/wab/common";
+import { useForwardedRef } from "@/wab/commons/components/ReactUtil";
+import { XDraggable } from "@/wab/commons/components/XDraggable";
+import { TokenType, tryParseTokenRef } from "@/wab/commons/StyleToken";
+import { sidesAndCorners } from "@/wab/commons/ViewUtil";
+import { parseCssNumericNew } from "@/wab/css";
+import {
+  Corner,
+  cornerToSides,
+  isStandardCorner,
+  isStandardSide,
+  oppSide,
+  Orient,
+  Side,
+  sideToAdjacentSides,
+  standardCorners,
+  standardSides,
+} from "@/wab/geom";
+import { ensureUnit } from "@/wab/shared/Css";
+import { isIndicatorExplicitlySet } from "@/wab/shared/defined-indicator";
+import { IRuleSetHelpers, IRuleSetHelpersX } from "@/wab/shared/RuleSetHelpers";
+import { allStyleTokens } from "@/wab/sites";
 import { Tooltip } from "antd";
 import { MenuProps } from "antd/lib/menu";
+import $ from "jquery";
 import L from "lodash";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
@@ -16,47 +57,6 @@ import {
 } from "react-aria";
 import * as ReactDOM from "react-dom";
 import { useOverlayTriggerState } from "react-stately";
-import { cx, ensure, maybe, spawn } from "../../../common";
-import { useForwardedRef } from "../../../commons/components/ReactUtil";
-import { XDraggable } from "../../../commons/components/XDraggable";
-import { TokenType, tryParseTokenRef } from "../../../commons/StyleToken";
-import { sidesAndCorners } from "../../../commons/ViewUtil";
-import { parseCssNumericNew } from "../../../css";
-import { $ } from "../../../deps";
-import {
-  Corner,
-  cornerToSides,
-  isStandardCorner,
-  isStandardSide,
-  oppSide,
-  Orient,
-  Side,
-  sideToAdjacentSides,
-  standardCorners,
-  standardSides,
-} from "../../../geom";
-import { ensureUnit } from "../../../shared/Css";
-import { isIndicatorExplicitlySet } from "../../../shared/defined-indicator";
-import {
-  IRuleSetHelpers,
-  IRuleSetHelpersX,
-} from "../../../shared/RuleSetHelpers";
-import { allStyleTokens } from "../../../sites";
-import { DimManip, roundDim } from "../../DimManip";
-import { useQuerySelector } from "../../hooks/useQuerySelector";
-import ArrowBottomIcon from "../../plasmic/plasmic_kit/PlasmicIcon__ArrowBottom";
-import ArrowLeftIcon from "../../plasmic/plasmic_kit/PlasmicIcon__ArrowLeft";
-import ArrowRightIcon from "../../plasmic/plasmic_kit/PlasmicIcon__ArrowRight";
-import ArrowTopIcon from "../../plasmic/plasmic_kit/PlasmicIcon__ArrowTop";
-import PositionCornerIcon from "../../plasmic/plasmic_kit/PlasmicIcon__PositionCorner";
-import PositionCoverIcon from "../../plasmic/plasmic_kit/PlasmicIcon__PositionCover";
-import PositionSideIcon from "../../plasmic/plasmic_kit/PlasmicIcon__PositionSide";
-import { WithContextMenu } from "../ContextMenu";
-import { FullRow } from "../sidebar/sidebar-helpers";
-import Button from "../widgets/Button";
-import { DimTokenSpinner, DimValueOpts } from "../widgets/DimTokenSelector";
-import { Icon } from "../widgets/Icon";
-import { IconButton } from "../widgets/IconButton";
 import { DefinedIndicator } from "./DefinedIndicator";
 import styles from "./PosControls.module.sass";
 import {

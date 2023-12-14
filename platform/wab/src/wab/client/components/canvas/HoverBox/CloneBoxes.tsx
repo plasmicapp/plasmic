@@ -1,20 +1,20 @@
-import { computed } from "mobx";
-import { observer } from "mobx-react-lite";
-import * as React from "react";
-import { maybes } from "../../../../common";
-import { $ } from "../../../../deps";
-import { hasLayoutBox } from "../../../../dom";
-import { Selectable } from "../../../../selection";
-import Chroma from "../../../../shared/utils/color-utils";
-import { isTplVariantable } from "../../../../tpls";
-import { useStudioCtx } from "../../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../../studio-ctx/view-ctx";
+import { CanvasTransformedBox } from "@/wab/client/components/canvas/CanvasTransformedBox";
+import { useRerenderOnUserBodyChange } from "@/wab/client/components/canvas/UserBodyObserver";
 import {
   BASE_VARIANT_COLOR,
   NON_BASE_VARIANT_COLOR,
-} from "../../studio/GlobalCssVariables";
-import { CanvasTransformedBox } from "../CanvasTransformedBox";
-import { useRerenderOnUserBodyChange } from "../UserBodyObserver";
+} from "@/wab/client/components/studio/GlobalCssVariables";
+import { hasLayoutBox } from "@/wab/client/dom";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { maybes } from "@/wab/common";
+import { Selectable } from "@/wab/selection";
+import Chroma from "@/wab/shared/utils/color-utils";
+import { isTplVariantable } from "@/wab/tpls";
+import $ from "jquery";
+import { computed } from "mobx";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
 export const CloneBoxes = observer(function CloneBoxes() {
   const studioCtx = useStudioCtx();
   const viewCtx = studioCtx.focusedViewCtx();

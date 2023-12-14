@@ -1,5 +1,5 @@
-import { $ } from "../deps";
-import * as Dom from "../dom";
+import * as Dom from "@/wab/client/dom";
+import $ from "jquery";
 
 if (typeof window !== "undefined" && window !== null) {
   describe("bfs", () =>

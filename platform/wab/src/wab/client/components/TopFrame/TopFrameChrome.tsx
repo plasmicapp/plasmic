@@ -1,45 +1,45 @@
-import { message, notification } from "antd";
-import { Action, Location } from "history";
-import { ExtendedKeyboardEvent } from "mousetrap";
-import React from "react";
-import { useHistory, useLocation } from "react-router";
-import { assert, asyncWrapper, mkUuid, spawn } from "../../../common";
-import { Signals } from "../../../deps";
-import { DEVFLAGS } from "../../../devflags";
-import {
-  ApiBranch,
-  ApiPermission,
-  ApiProject,
-  MergeSrcDst,
-} from "../../../shared/ApiSchema";
-import { isCoreTeamEmail } from "../../../shared/devflag-utils";
-import { getAccessLevelToResource } from "../../../shared/perms";
-import { AppCtx } from "../../app-ctx";
-import { isPlasmicPath, U, UU } from "../../cli-routes";
+import { AppCtx } from "@/wab/client/app-ctx";
+import { isPlasmicPath, U, UU } from "@/wab/client/cli-routes";
+import { AppAuthSettingsModal } from "@/wab/client/components/app-auth/AppAuthSettings";
+import { HostConfig } from "@/wab/client/components/HostConfig";
+import { MergeModalWrapper } from "@/wab/client/components/merge/MergeFlow";
+import { EnableLocalizationModal } from "@/wab/client/components/modals/EnableLocalizationModal";
+import { TopBarPromptBillingArgs } from "@/wab/client/components/modals/PricingModal";
+import { IconButton } from "@/wab/client/components/widgets/IconButton";
 import {
   TopFrameApi,
   TopFrameApiArgs,
   TopFrameApiResolveType,
   TopFrameApiReturnType,
-} from "../../frame-ctx/top-frame-api";
-import { useTopFrameCtx } from "../../frame-ctx/top-frame-ctx";
-import CloseIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Close";
-import { Shortcut } from "../../shortcuts/shortcut";
-import { useBindShortcutHandlers } from "../../shortcuts/shortcut-handler";
+} from "@/wab/client/frame-ctx/top-frame-api";
+import { useTopFrameCtx } from "@/wab/client/frame-ctx/top-frame-ctx";
+import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
+import { Shortcut } from "@/wab/client/shortcuts/shortcut";
+import { useBindShortcutHandlers } from "@/wab/client/shortcuts/shortcut-handler";
 import {
   StudioShortcutAction,
   STUDIO_SHORTCUTS,
-} from "../../shortcuts/studio/studio-shortcuts";
+} from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import {
   TopFrameTours,
   TopFrameTourState,
-} from "../../tours/tutorials/TutorialTours";
-import { AppAuthSettingsModal } from "../app-auth/AppAuthSettings";
-import { HostConfig } from "../HostConfig";
-import { MergeModalWrapper } from "../merge/MergeFlow";
-import { EnableLocalizationModal } from "../modals/EnableLocalizationModal";
-import { TopBarPromptBillingArgs } from "../modals/PricingModal";
-import { IconButton } from "../widgets/IconButton";
+} from "@/wab/client/tours/tutorials/TutorialTours";
+import { assert, asyncWrapper, mkUuid, spawn } from "@/wab/common";
+import { DEVFLAGS } from "@/wab/devflags";
+import {
+  ApiBranch,
+  ApiPermission,
+  ApiProject,
+  MergeSrcDst,
+} from "@/wab/shared/ApiSchema";
+import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { getAccessLevelToResource } from "@/wab/shared/perms";
+import { message, notification } from "antd";
+import { Action, Location } from "history";
+import { ExtendedKeyboardEvent } from "mousetrap";
+import React from "react";
+import { useHistory, useLocation } from "react-router";
+import * as Signals from "signals";
 import { DataSourcePicker } from "./DataSourcePicker";
 import CloneProjectModal from "./TopBar/CloneProjectModal";
 import CodeModal from "./TopBar/CodeModal";

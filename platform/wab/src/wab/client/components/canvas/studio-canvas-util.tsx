@@ -1,14 +1,10 @@
-import { notification } from "antd";
-import { when } from "mobx";
-import React from "react";
-import { CustomError, delay, hackyCast, unexpected } from "@/wab/common";
-import { isAbsoluteUrl } from "@/wab/commons/urls";
-import { PageComponent } from "@/wab/components";
-import { JQ } from "@/wab/deps";
-import * as domMod from "@/wab/dom";
-import { InteractionArgLoc, InteractionLoc } from "@/wab/exprs";
-import { maybePropTypeToDisplayName } from "@/wab/shared/code-components/code-components";
-import { getDisplayNameOfEventHandlerKey } from "@/wab/tpls";
+import {
+  getComponentByPath,
+  getMatchingPagePathParams,
+} from "@/wab/client/components/live/PreviewCtx";
+import { PublicLink } from "@/wab/client/components/PublicLink";
+import { LinkButton } from "@/wab/client/components/widgets";
+import * as domMod from "@/wab/client/dom";
 import { Fiber } from "@/wab/client/react-global-hook/fiber";
 import {
   getMostRecentFiberVersion,
@@ -17,14 +13,17 @@ import {
 import { ACTIONS_META } from "@/wab/client/state-management/interactions-meta";
 import { RightTabKey, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
-import {
-  getComponentByPath,
-  getMatchingPagePathParams,
-} from "@/wab/client/components/live/PreviewCtx";
-import { PublicLink } from "@/wab/client/components/PublicLink";
-import { LinkButton } from "@/wab/client/components/widgets";
+import { CustomError, delay, hackyCast, unexpected } from "@/wab/common";
+import { isAbsoluteUrl } from "@/wab/commons/urls";
+import { PageComponent } from "@/wab/components";
+import { InteractionArgLoc, InteractionLoc } from "@/wab/exprs";
+import { maybePropTypeToDisplayName } from "@/wab/shared/code-components/code-components";
+import { getDisplayNameOfEventHandlerKey } from "@/wab/tpls";
+import { notification } from "antd";
+import { when } from "mobx";
+import React from "react";
 
-export function hasLinkedSelectable(x: JQ, viewCtx: ViewCtx) {
+export function hasLinkedSelectable(x: JQuery, viewCtx: ViewCtx) {
   return x.toArray().some((elt) => {
     const key = Object.keys(elt).find(
       (k) =>
@@ -64,19 +63,19 @@ export function hasLinkedSelectable(x: JQ, viewCtx: ViewCtx) {
 // Nodes with `data-nonselectable` are ignored in closestTaggedNonTextDomElt
 // when excludeNonSelectable opt is used. That is used to avoid hovering
 // nodes inside rich text blocks that are being edited.
-function isNonSelectable(x: JQ) {
+function isNonSelectable(x: JQuery) {
   return !!x[0].dataset.nonselectable;
 }
 
 export function closestTaggedNonTextDomElt(
-  start: JQ,
+  start: JQuery,
   viewCtx: ViewCtx,
   opts?: {
     dir?: "up" | "down";
     excludeNonSelectable?: boolean;
     excludeSelf?: boolean;
   }
-): JQ | null {
+): JQuery | null {
   opts = opts || {};
   const dir = opts.dir || "up";
   const excludeNonSelectable = opts.excludeNonSelectable || false;
@@ -103,7 +102,7 @@ export function closestTaggedNonTextDomElt(
 
 class NonValNodeError extends CustomError {}
 
-export function closestNonText(x: JQ<any>, viewCtx: ViewCtx) {
+export function closestNonText(x: JQuery<any>, viewCtx: ViewCtx) {
   let spanCount = 0;
   // eslint-disable-next-line no-constant-condition
   while (true) {
@@ -130,7 +129,7 @@ export function closestNonText(x: JQ<any>, viewCtx: ViewCtx) {
 /**
  * Find nearest non-text-node
  */
-export function closestTag(x: JQ<any>) {
+export function closestTag(x: JQuery<any>) {
   while (domMod.tag(x) === "" || x.is("div.structure")) {
     x = x.parent();
   }

@@ -11,12 +11,12 @@ import type {
 import type * as ReactWeb from "@plasmicapp/react-web";
 import type * as PlasmicDataSources from "@plasmicapp/react-web/lib/data-sources";
 import type domAlign from "dom-align";
+import type $ from "jquery";
 import type React from "react";
 import type ReactDOM from "react-dom";
 import type ResizeObserver from "resize-observer-polyfill";
 import type * as slate from "slate";
 import type * as slateReact from "slate-react";
-import type { $ } from "../../../deps";
 import type { RepeatedElementFnType } from "./repeatedElement";
 
 export const tags = [

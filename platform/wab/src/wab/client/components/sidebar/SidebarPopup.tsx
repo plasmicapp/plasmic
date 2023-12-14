@@ -1,25 +1,25 @@
-import classNames from "classnames";
-import domAlign from "dom-align";
-import { observer } from "mobx-react";
-import * as React from "react";
-import { createContext, ReactNode, useEffect, useRef } from "react";
-import * as ReactDOM from "react-dom";
-import { ensure } from "../../../common";
-import { withConsumer } from "../../../commons/components/ContextUtil";
+import {
+  SidebarPopupSetting,
+  withSidebarPopupSetting,
+} from "@/wab/client/components/style-controls/StyleComponent";
+import { getHTMLElt } from "@/wab/client/components/view-common";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { IconButton } from "@/wab/client/components/widgets/IconButton";
+import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
+import { ensure } from "@/wab/common";
+import { withConsumer } from "@/wab/commons/components/ContextUtil";
 import {
   Slot,
   SlotContent,
   SlotProvider,
-} from "../../../commons/components/Slots";
-import { $ } from "../../../deps";
-import CloseIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Close";
-import {
-  SidebarPopupSetting,
-  withSidebarPopupSetting,
-} from "../style-controls/StyleComponent";
-import { getHTMLElt } from "../view-common";
-import { Icon } from "../widgets/Icon";
-import { IconButton } from "../widgets/IconButton";
+} from "@/wab/commons/components/Slots";
+import classNames from "classnames";
+import domAlign from "dom-align";
+import $ from "jquery";
+import { observer } from "mobx-react";
+import * as React from "react";
+import { createContext, ReactNode, useEffect, useRef } from "react";
+import * as ReactDOM from "react-dom";
 export interface AdjacencyOptions {
   my: string;
   at: string;
@@ -53,8 +53,9 @@ export interface SidebarPopupContext {
   close: () => void;
 }
 
-export const SidebarPopupContext =
-  createContext<SidebarPopupContext | undefined>(undefined);
+export const SidebarPopupContext = createContext<
+  SidebarPopupContext | undefined
+>(undefined);
 
 export const withSidebarPopupContext = withConsumer(
   SidebarPopupContext.Consumer,
@@ -69,7 +70,7 @@ interface SidebarPopupContentProps {
   popupClassName?: string;
   maskClassName?: string;
   // whether to show the popup content at the left panel or right panel.
-  leftPane?: Boolean;
+  leftPane?: boolean;
   contentPanelClass?: string;
   popupTitle?: React.ReactNode;
 }

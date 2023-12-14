@@ -33,7 +33,6 @@ import { sequentially } from "@/wab/commons/asyncutil";
 import { removeFromArray } from "@/wab/commons/collections";
 import * as semver from "@/wab/commons/semver";
 import { brand } from "@/wab/commons/types";
-import { shortUuid } from "@/wab/deps";
 import { DEVFLAGS } from "@/wab/devflags";
 import { withoutUids } from "@/wab/model/model-meta";
 import { adminEmails } from "@/wab/server/admin";
@@ -239,6 +238,7 @@ import * as _ from "lodash";
 import L, { fromPairs, intersection, pick, uniq } from "lodash";
 import moment from "moment";
 import { CreateChatCompletionRequest } from "openai";
+import ShortUuid from "short-uuid";
 import {
   DeepPartial,
   EntityManager,
@@ -415,6 +415,8 @@ export class PwnedPasswordError extends DbMgrError {
 export class MismatchPasswordError extends DbMgrError {
   name = "MismatchPasswordError";
 }
+
+export const shortUuid = ShortUuid();
 
 export function checkPermissions(
   predicate: boolean,

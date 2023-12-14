@@ -55,7 +55,6 @@ import {
   isCodeComponent,
   isFrameComponent,
 } from "@/wab/components";
-import { $, JQ } from "@/wab/deps";
 import { DEVFLAGS } from "@/wab/devflags";
 import { getRawCode } from "@/wab/exprs";
 import { Pt, Rect, rectsIntersect } from "@/wab/geom";
@@ -99,6 +98,7 @@ import {
   useDollarState,
 } from "@plasmicapp/react-web";
 import asynclib from "async";
+import $ from "jquery";
 import L, { defer, groupBy, head } from "lodash";
 import * as mobx from "mobx";
 import { computed, observable } from "mobx";
@@ -184,13 +184,13 @@ export class ViewCtx extends WithDbCtx {
   _triggerEditingTextDataPicker = observable.box<boolean | null>(null);
   _editingTextContext = observable.box<EditingTextContext | null>(null);
 
-  private _xFocusedDomElts = observable.box<(JQ | null)[]>([], {
+  private _xFocusedDomElts = observable.box<(JQuery | null)[]>([], {
     name: "ViewCtx.focusedDomElts",
   });
   private get _focusedDomElts() {
     return this._xFocusedDomElts.get();
   }
-  private set _focusedDomElts(domElt: (JQ | null)[]) {
+  private set _focusedDomElts(domElt: (JQuery | null)[]) {
     const curRealElt = this._xFocusedDomElts.get();
     const newRealElt = domElt;
     if (curRealElt.length !== newRealElt.length) {
@@ -211,13 +211,13 @@ export class ViewCtx extends WithDbCtx {
     }
   }
 
-  private _$hoveredDomElt = observable.box<JQ | null | undefined>(null, {
+  private _$hoveredDomElt = observable.box<JQuery | null | undefined>(null, {
     name: "ViewCtx.hoveredDomElt",
   });
   $hoveredDomElt() {
     return this._$hoveredDomElt.get();
   }
-  private setHoveredDomElt($domElt: JQ | null | undefined) {
+  private setHoveredDomElt($domElt: JQuery | null | undefined) {
     this._$hoveredDomElt.set($domElt);
   }
 
@@ -253,7 +253,7 @@ export class ViewCtx extends WithDbCtx {
     return this._focusedCloneKeys;
   }
 
-  private _$measureToolDomElt = observable.box<JQ | null | undefined | Pt>(
+  private _$measureToolDomElt = observable.box<JQuery | null | undefined | Pt>(
     null,
     {
       name: "ViewCtx.measureToolDomElt",
@@ -262,7 +262,7 @@ export class ViewCtx extends WithDbCtx {
   $measureToolDomElt() {
     return this._$measureToolDomElt.get();
   }
-  setMeasureToolDomElt($domElt: JQ | null | undefined | Pt) {
+  setMeasureToolDomElt($domElt: JQuery | null | undefined | Pt) {
     this._$measureToolDomElt.set($domElt);
   }
 
@@ -813,7 +813,7 @@ export class ViewCtx extends WithDbCtx {
     // component that has no real DOM element (e.g. Overlay).
     const $focusedDom = maybes(val)((v) =>
       this.renderState.sel2dom(v, this.canvasCtx, anchorCloneKey)
-    )((x) => $(ensureArray(x)) as JQ)();
+    )((x) => $(ensureArray(x)) as JQuery)();
     const focusedCloneKey =
       val && isValSelectable(val) ? this.sel2cloneKey(val) : undefined;
     return { val, focusedTpl, focusedDom: $focusedDom, focusedCloneKey };
@@ -2151,14 +2151,16 @@ export class ViewCtx extends WithDbCtx {
 
   // Fiber Related methods
 
-  dom2val<T extends object = HTMLElement>($dom: JQ<T>): Selectable | undefined {
+  dom2val<T extends object = HTMLElement>(
+    $dom: JQuery<T>
+  ): Selectable | undefined {
     return this.dom2focusObj($dom);
   }
-  dom2tpl<T extends object = HTMLElement>($dom: JQ<T>) {
+  dom2tpl<T extends object = HTMLElement>($dom: JQuery<T>) {
     return ensure(this.dom2val($dom), "Couldn't find ValNode from DOM").tpl;
   }
   dom2focusObj<T extends object = HTMLElement>(
-    $dom: /*TWZ*/ JQ<T>
+    $dom: /*TWZ*/ JQuery<T>
   ): ValNode | SlotSelection | undefined {
     for (const elt of $dom.toArray()) {
       // React attaches the fiber node associated to the DOM node it renders

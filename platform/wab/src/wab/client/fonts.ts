@@ -1,67 +1,21 @@
+import { ProjectDependency, Site } from "@/wab/classes";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { assertNever, spawn } from "@/wab/common";
+import { derefTokenRefs } from "@/wab/commons/StyleToken";
+import { getGoogFontsMeta, makeGoogleFontApiUrl } from "@/wab/googfonts";
+import { walkDependencyTree } from "@/wab/project-deps";
+import { extractUsedFontsFromComponents } from "@/wab/shared/codegen/fonts";
+import {
+  FontInstallSpec,
+  getFontSpec,
+  toGoogleFontInstallSpec,
+} from "@/wab/shared/fonts";
+import { allStyleTokens } from "@/wab/sites";
 import { notification } from "antd";
+import $ from "jquery";
 import L from "lodash";
 import { computed, observable } from "mobx";
-import { ProjectDependency, Site } from "./classes";
-import { StudioCtx } from "./client/studio-ctx/StudioCtx";
-import { assertNever, spawn, unexpected } from "./common";
-import { derefTokenRefs } from "./commons/StyleToken";
-import { $, JQ, US } from "./deps";
-import {
-  getGoogFontMeta,
-  getGoogFontsMeta,
-  GoogFontMeta,
-  makeGoogleFontApiUrl,
-} from "./googfonts";
-import { walkDependencyTree } from "./project-deps";
-import { extractUsedFontsFromComponents } from "./shared/codegen/fonts";
-import { allStyleTokens } from "./sites";
-
-//
-// typography
-//
-
-let _defaultFonts = L(
-  US.lines(
-    `\
-Arial
-Bitter
-Calibri
-Cambria
-Changa One
-Comic Sans MS
-Consolas
-Corsiva
-Courier New
-Droid Sans
-Droid Serif
-Exo
-Georgia
-Great Vibes
-Helvetica Neue
-Inconsolata
-Lato
-Merriweather
-Montserrat
-Open Sans
-Oswald
-PT Sans
-PT Serif
-Palotino Linotype
-Syncopate
-Tahoma
-Times New Roman
-Trebuchet MS
-Ubuntu
-Varela
-Varela Round
-Verdana
-Vollkorn\
-`.trim()
-  )
-)
-  .uniq()
-  .sort()
-  .value();
+import * as US from "underscore.string";
 
 // From http://www.ampsoft.net/webdesign-l/WindowsMacFonts.html
 const commonLocalFonts = L(
@@ -108,16 +62,6 @@ system-ui\
   .sort()
   .value();
 
-export function getFontSpec(fontFamily: string): FontInstallSpec {
-  const maybeGoogleMeta = getGoogFontMeta(fontFamily);
-  return !!maybeGoogleMeta
-    ? toGoogleFontInstallSpec(maybeGoogleMeta)
-    : {
-        fontType: "local",
-        fontFamily,
-      };
-}
-
 const plasmicTestFont = "plasmicTestFont";
 
 interface NotificationArgs {
@@ -136,24 +80,6 @@ class ThrottledNotification {
   notify() {
     this.doNotify();
   }
-}
-
-export type FontInstallSpec = GoogleFontInstallSpec | LocalFontInstallSpec;
-
-export interface GoogleFontInstallSpec {
-  fontType: "google-font";
-  fontFamily: string;
-  variants: FontVariant[];
-}
-
-export interface LocalFontInstallSpec {
-  fontType: "local";
-  fontFamily: string;
-}
-
-export interface FontVariant {
-  italic: boolean;
-  weight: number;
 }
 
 export class FontManager {
@@ -280,7 +206,10 @@ export class FontManager {
     }
   };
 
-  private installFont = (htmlHeads: Array<JQ>, fontSpec: FontInstallSpec) => {
+  private installFont = (
+    htmlHeads: Array<JQuery>,
+    fontSpec: FontInstallSpec
+  ) => {
     if (fontSpec.fontType === "local") {
       if (!this.site.userManagedFonts.includes(fontSpec.fontFamily)) {
         // We only warn missing fonts that is not in user managed fonts. This
@@ -308,7 +237,7 @@ export class FontManager {
     }
   };
 
-  installAllUsedFonts = (htmlHeads: Array<JQ>) => {
+  installAllUsedFonts = (htmlHeads: Array<JQuery>) => {
     this.usedFonts.forEach((fontSpec) => this.installFont(htmlHeads, fontSpec));
   };
 
@@ -384,34 +313,3 @@ const isLocalFontAvailable = (localFont: string) => {
   const r = newWidth !== initialWidth;
   return r;
 };
-
-function toGoogleFontInstallSpec(meta: GoogFontMeta): GoogleFontInstallSpec {
-  return {
-    fontType: "google-font",
-    fontFamily: meta.family,
-    variants: meta.variants.map((s) => {
-      return {
-        italic: s.includes("italic"),
-        weight: s.includes("100")
-          ? 100
-          : s.includes("200")
-          ? 200
-          : s.includes("300")
-          ? 300
-          : s.includes("500")
-          ? 500
-          : s.includes("600")
-          ? 600
-          : s.includes("700")
-          ? 700
-          : s.includes("800")
-          ? 800
-          : s.includes("900")
-          ? 900
-          : s.includes("regular") || s.includes("italic")
-          ? 400
-          : unexpected(),
-      };
-    }),
-  };
-}

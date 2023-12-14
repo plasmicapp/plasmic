@@ -26,6 +26,7 @@ import {
   Variant,
   VariantSetting,
 } from "@/wab/classes";
+import { getBoundingClientRect, getOffsetPoint } from "@/wab/client/dom";
 import * as common from "@/wab/common";
 import {
   assert,
@@ -53,9 +54,7 @@ import {
   isPageComponent,
 } from "@/wab/components";
 import { getCssInitial, parseCssNumericNew, tryGetCssInitial } from "@/wab/css";
-import { $, JQ } from "@/wab/deps";
 import { DEVFLAGS } from "@/wab/devflags";
-import { getBoundingClientRect, getOffsetPoint } from "@/wab/dom";
 import * as exprs from "@/wab/exprs";
 import { codeLit } from "@/wab/exprs";
 import { Box, isStandardSide, Pt, Rect, Side, sideToOrient } from "@/wab/geom";
@@ -111,6 +110,7 @@ import {
   PositionLayoutType,
 } from "@/wab/shared/layoututils";
 import { notification } from "antd";
+import $ from "jquery";
 import L, { clamp, isArray, merge } from "lodash";
 import pluralize from "pluralize";
 import React from "react";
@@ -296,7 +296,7 @@ export class ViewOps {
    * @param target
    */
   deepFocusElement(
-    target: JQ | undefined | null,
+    target: JQuery | undefined | null,
     trigger: "ctrl-click" | "dbl-click"
   ) {
     if (!target) {
@@ -1485,7 +1485,7 @@ export class ViewOps {
   }
 
   tryFocusDomElt(
-    $elt: JQ,
+    $elt: JQuery,
     opts: { appendToMultiSelection?: boolean; exact: boolean }
   ) {
     const focusable = this.viewCtx().dom2focusObj($elt);
@@ -1502,7 +1502,7 @@ export class ViewOps {
     return focusable;
   }
 
-  tryHoverDomElt($elt: JQ, opts: { exact: boolean }) {
+  tryHoverDomElt($elt: JQuery, opts: { exact: boolean }) {
     const $closest = closestTaggedNonTextDomElt($elt, this.viewCtx(), {
       excludeNonSelectable: true,
     });
@@ -1520,7 +1520,7 @@ export class ViewOps {
       });
     }
   }
-  getFinalFocusable($elt: JQ) {
+  getFinalFocusable($elt: JQuery) {
     const $closest = closestTaggedNonTextDomElt($elt, this.viewCtx(), {
       excludeNonSelectable: true,
     });

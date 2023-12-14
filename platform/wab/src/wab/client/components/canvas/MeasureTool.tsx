@@ -1,12 +1,11 @@
+import { hasLayoutBox } from "@/wab/client/dom";
+import { StudioCtx, withStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewComponentBase } from "@/wab/client/studio-ctx/view-ctx";
+import { ensure, maybe } from "@/wab/common";
+import { Box, horizontalSides, Pt, Side } from "@/wab/geom";
 import { Observer } from "mobx-react-lite";
 import * as React from "react";
 import { memo } from "react";
-import { ensure, maybe } from "../../../common";
-import { JQ } from "../../../deps";
-import { hasLayoutBox } from "../../../dom";
-import { Box, horizontalSides, Pt, Side } from "../../../geom";
-import { StudioCtx, withStudioCtx } from "../../studio-ctx/StudioCtx";
-import { ViewComponentBase } from "../../studio-ctx/view-ctx";
 import { recomputeBounds } from "./HoverBox";
 
 interface MeasureToolViewProps {
@@ -77,7 +76,7 @@ export const MeasureToolView = memo(_MeasureToolView);
 function sides(
   fn: (side: Side) => MeasureToolViewProps[]
 ): MeasureToolViewProps[] {
-  let result: MeasureToolViewProps[] = [];
+  const result: MeasureToolViewProps[] = [];
   return result.concat(fn("left"), fn("right"), fn("top"), fn("bottom"));
 }
 
@@ -96,7 +95,7 @@ class _MeasureTool extends ViewComponentBase<MeasureToolProps, {}> {
   /**
    * Given a DOM element, compute a scalar box for it
    **/
-  makeBox($dom: JQ): Box {
+  makeBox($dom: JQuery): Box {
     const vc = this.viewCtx();
     const boxInFrame = recomputeBounds($dom);
     const frameBox = vc.studioCtx.getArenaFrameScalerRect(vc.arenaFrame());
@@ -138,7 +137,7 @@ class _MeasureTool extends ViewComponentBase<MeasureToolProps, {}> {
    * Draw lines and guides for 2 disjoint boxes
    **/
   drawNonoverlapping(src: Box, dst: Box): MeasureToolViewProps[] {
-    let result: MeasureToolViewProps[] = [];
+    const result: MeasureToolViewProps[] = [];
     // Solid horizontal lines
     const rightOf = src.left() > dst.right();
     if (src.left() > dst.right() || src.right() < dst.left()) {

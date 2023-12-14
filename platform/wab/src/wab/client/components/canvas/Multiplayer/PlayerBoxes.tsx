@@ -1,17 +1,17 @@
-import { observer } from "mobx-react-lite";
-import * as React from "react";
-import { maybe } from "../../../../common";
-import { $ } from "../../../../deps";
-import { hasLayoutBox } from "../../../../dom";
-import { getArenaFrames } from "../../../../shared/Arenas";
-import { frameToScalerRect } from "../../../coords";
+import { recomputeBounds } from "@/wab/client/components/canvas/HoverBox/recomputeBounds";
+import { frameToScalerRect } from "@/wab/client/coords";
+import { hasLayoutBox } from "@/wab/client/dom";
 import {
   cssPropsForInvertTransform,
   StudioCtx,
   useStudioCtx,
-} from "../../../studio-ctx/StudioCtx";
-import { useForceUpdate } from "../../../useForceUpdate";
-import { recomputeBounds } from "../HoverBox/recomputeBounds";
+} from "@/wab/client/studio-ctx/StudioCtx";
+import { useForceUpdate } from "@/wab/client/useForceUpdate";
+import { maybe } from "@/wab/common";
+import { getArenaFrames } from "@/wab/shared/Arenas";
+import $ from "jquery";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
 
 export const PlayerBoxes = observer(function PlayerBoxes() {
   const studioCtx = useStudioCtx();

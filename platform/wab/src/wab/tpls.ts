@@ -81,6 +81,7 @@ import {
     no-fallthrough,
 */
 import L, { uniq, uniqBy } from "lodash";
+import * as US from "underscore.string";
 import type { ViewCtx } from "./client/studio-ctx/view-ctx";
 import {
   assert,
@@ -117,7 +118,6 @@ import {
   isPlumeComponent,
 } from "./components";
 import { getCssInitial } from "./css";
-import { US } from "./deps";
 import * as Exprs from "./exprs";
 import {
   isRealCodeExpr,

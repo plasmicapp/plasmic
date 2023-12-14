@@ -1,7 +1,7 @@
-import { ensure } from "../../common";
-import { $ } from "../../deps";
-import { standardSides } from "../../geom";
-import { StudioCtx } from "../studio-ctx/StudioCtx";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ensure } from "@/wab/common";
+import { standardSides } from "@/wab/geom";
+import $ from "jquery";
 
 export function createDarkMask(studioCtx: StudioCtx) {
   // clear so there's only one dark mask

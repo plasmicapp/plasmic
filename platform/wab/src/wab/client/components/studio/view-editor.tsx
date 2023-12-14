@@ -70,6 +70,7 @@ import {
   plasmicIFrameWheelEvent,
 } from "@/wab/client/definitions/events";
 import { DndAdoptee, DndMarkers, DragMoveManager } from "@/wab/client/Dnd";
+import { isArrowKey } from "@/wab/client/dom";
 import {
   getElementBounds,
   ImageAssetOpts,
@@ -119,9 +120,8 @@ import {
   isPageComponent,
 } from "@/wab/components";
 import { parseCssNumericNew } from "@/wab/css";
-import { $, dbg, JQ } from "@/wab/deps";
+import { dbg } from "@/wab/dbg";
 import { DEVFLAGS } from "@/wab/devflags";
-import { isArrowKey } from "@/wab/dom";
 import { SceneNode } from "@/wab/figmaTypes";
 import { Box, Pt } from "@/wab/geom";
 import { mkImageAssetRef } from "@/wab/image-assets";
@@ -165,6 +165,7 @@ import { ValComponent, ValNode, ValTag } from "@/wab/val-nodes";
 import { Alert, notification } from "antd";
 import { ArgsProps } from "antd/lib/notification";
 import { default as cn, default as cx } from "classnames";
+import $ from "jquery";
 import L, { throttle } from "lodash";
 import { observable, runInAction } from "mobx";
 import { observer } from "mobx-react";
@@ -233,7 +234,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
   private dragState?: DragState;
   private cursorClientPt?: Pt;
   private measureToolTargets?: {
-    targetDom?: JQ;
+    targetDom?: JQuery;
     targetPt?: Pt;
     targetVc: ViewCtx;
   };
@@ -1883,7 +1884,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
     });
   };
 
-  private isZoomOverlay = ($target: JQ) => {
+  private isZoomOverlay = ($target: JQuery) => {
     return (
       $target.is(".CanvasFrame__OverlayTop") ||
       $target.is(".CanvasFrame__OverlayLeft") ||
@@ -1895,7 +1896,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
   private extractEventTarget(
     e: MouseEvent,
     focusedVc: ViewCtx | undefined | null
-  ): [JQ, ViewCtx | undefined] | undefined {
+  ): [JQuery, ViewCtx | undefined] | undefined {
     const $target = $(e.target as HTMLElement);
     if (this.isZoomOverlay($target) || isCanvasOverlay($target)) {
       const frameUid = +ensure(

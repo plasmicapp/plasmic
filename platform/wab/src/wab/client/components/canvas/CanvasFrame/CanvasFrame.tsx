@@ -13,7 +13,6 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
 import { assert, cx, ensure, spawn, spawnWrapper, tuple } from "@/wab/common";
 import { ScreenDimmer } from "@/wab/commons/components/ScreenDimmer";
-import { $, JQ } from "@/wab/deps";
 import {
   AnyArena,
   FrameViewMode,
@@ -28,6 +27,7 @@ import {
 } from "@/wab/shared/codegen/util";
 import { getPublicUrl } from "@/wab/urls";
 import { Spin } from "antd";
+import $ from "jquery";
 import L from "lodash";
 import { reaction } from "mobx";
 import { observer } from "mobx-react-lite";
@@ -636,6 +636,6 @@ function createCanvasCtx($viewport: JQuery<HTMLIFrameElement>, name: string) {
   });
 }
 
-export function isCanvasOverlay($target: JQ) {
+export function isCanvasOverlay($target: JQuery) {
   return $target.is(".__wab_canvas_overlay");
 }

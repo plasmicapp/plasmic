@@ -1,10 +1,10 @@
-import { $, JQ } from "../../../../deps";
-import { Box, Pt } from "../../../../geom";
-import { ensureNonEmpty } from "../../../../common";
-import { hasLayoutBox } from "../../../../dom";
-import { getElementBounds } from "../../../dom-utils";
+import { hasLayoutBox } from "@/wab/client/dom";
+import { getElementBounds } from "@/wab/client/dom-utils";
+import { ensureNonEmpty } from "@/wab/common";
+import { Box, Pt } from "@/wab/geom";
+import $ from "jquery";
 
-export function recomputeBounds($node: JQ): Box {
+export function recomputeBounds($node: JQuery): Box {
   const nodes: HTMLElement[] = $node.toArray();
   const dims = ensureNonEmpty(
     nodes

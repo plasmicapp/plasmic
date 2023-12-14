@@ -1,9 +1,9 @@
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { ensure } from "@/wab/common";
 import { CustomControl } from "@plasmicapp/host/dist/prop-types";
 import domAlign from "dom-align";
+import $ from "jquery";
 import React, { useEffect } from "react";
-import { ensure } from "../../../../common";
-import { $ } from "../../../../deps";
-import { ViewCtx } from "../../../studio-ctx/view-ctx";
 
 interface CustomPropEditorProps {
   value: any;

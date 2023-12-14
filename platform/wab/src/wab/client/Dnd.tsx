@@ -1,4 +1,6 @@
 import { TplNode } from "@/wab/classes";
+import * as domMod from "@/wab/client/dom";
+import { getPaddingRect, hasLayoutBox } from "@/wab/client/dom";
 import {
   assert,
   ensure,
@@ -8,8 +10,6 @@ import {
   tuple,
   withoutNils,
 } from "@/wab/common";
-import * as domMod from "@/wab/dom";
-import { getPaddingRect, hasLayoutBox } from "@/wab/dom";
 import { Box, Orientation, Pt, Rect, Side, sideToOrient } from "@/wab/geom";
 import { isSelectableLocked, Selectable, SelQuery, SQ } from "@/wab/selection";
 import { Area } from "@/wab/shared/Grids";
@@ -37,10 +37,10 @@ import {
 } from "@/wab/val-nodes";
 import { asVal } from "@/wab/vals";
 import classNames from "classnames";
+import $ from "jquery";
 import L from "lodash";
 import { Observer, observer } from "mobx-react-lite";
 import * as React from "react";
-import { $, JQ } from "../deps";
 import { hasLinkedSelectable } from "./components/canvas/studio-canvas-util";
 import {
   findRowColForMouse,
@@ -497,7 +497,7 @@ export interface Adoptee {
  * A stateful manager for moving around an existing ValNode using drag and drop.
  */
 export class DragMoveManager {
-  private $dragHandles: JQ[];
+  private $dragHandles: JQuery[];
   private targeter: NodeTargeter | undefined;
   private isAbsPos: boolean[];
   private moveStates: (ManipState | undefined)[];

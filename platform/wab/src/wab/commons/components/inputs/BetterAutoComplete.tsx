@@ -6,7 +6,6 @@ import {
   callEventHandlers,
   KeyModifiers,
 } from "@/wab/commons/components/ReactUtil";
-import { $ } from "@/wab/deps";
 import { Dropdown, Menu } from "antd";
 import Downshift, {
   ControllerStateAndHelpers,
@@ -14,6 +13,7 @@ import Downshift, {
   DownshiftState,
   StateChangeOptions,
 } from "downshift";
+import $ from "jquery";
 import L, * as _ from "lodash";
 import * as React from "react";
 import { Component, createRef } from "react";

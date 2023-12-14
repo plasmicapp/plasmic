@@ -1,18 +1,11 @@
-import { notification } from "antd";
-import { History } from "history";
-import L from "lodash";
-import { observable } from "mobx";
-import * as React from "react";
-import { useContext } from "react";
-import { ensure, swallowAsync } from "../common";
-import { PromisifyMethods } from "../commons/promisify-methods";
-import { $ } from "../deps";
+import { ensure, swallowAsync } from "@/wab/common";
+import { PromisifyMethods } from "@/wab/commons/promisify-methods";
 import {
   applyDevFlagOverrides,
   applyPlasmicUserDevFlagOverrides,
   DEVFLAGS,
   DevFlagsType,
-} from "../devflags";
+} from "@/wab/devflags";
 import {
   ApiPermission,
   ApiTeam,
@@ -20,10 +13,17 @@ import {
   ApiWorkspace,
   AppCtxResponse,
   PersonalApiToken,
-} from "../shared/ApiSchema";
-import { FastBundler } from "../shared/bundler";
-import { parseBundle } from "../shared/bundles";
-import { isCoreTeamEmail } from "../shared/devflag-utils";
+} from "@/wab/shared/ApiSchema";
+import { FastBundler } from "@/wab/shared/bundler";
+import { parseBundle } from "@/wab/shared/bundles";
+import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { notification } from "antd";
+import { History } from "history";
+import $ from "jquery";
+import L from "lodash";
+import { observable } from "mobx";
+import * as React from "react";
+import { useContext } from "react";
 import { Api, setUser } from "./api";
 import { isHostFrame, Router, UU } from "./cli-routes";
 import { getClientDevFlagOverrides } from "./client-dev-flags";

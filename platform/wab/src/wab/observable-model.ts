@@ -27,7 +27,7 @@ import {
 } from "./common";
 import { hasTokenRefs, tryParseAllTokenRefs } from "./commons/StyleToken";
 import { allComponentVariants } from "./components";
-import { dbg } from "./deps";
+import { dbg } from "./dbg";
 import { hasAssetRefs, tryParseImageAssetRef } from "./image-assets";
 import {
   Class,

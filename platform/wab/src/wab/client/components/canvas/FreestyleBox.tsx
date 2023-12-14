@@ -1,29 +1,29 @@
-import { notification } from "antd";
-import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
-import { ensureKnownTplTag } from "../../../classes";
-import { ensure, ensureString } from "../../../common";
-import {
-  XDraggable,
-  XDraggableEvent,
-} from "../../../commons/components/XDraggable";
-import { $ } from "../../../deps";
-import { Box, Pt, Rect, rectTopLeft } from "../../../geom";
-import { $$$ } from "../../../shared/TplQuery";
-import { isTplSlot, isTplTag, isTplTagOrComponent } from "../../../tpls";
+import { ensureKnownTplTag } from "@/wab/classes";
 import {
   clientToFramePt,
   clientToFrameRect,
   clientToScalerRect,
-} from "../../coords";
-import { NodeTargeter } from "../../Dnd";
-import { resizeRect } from "../../FreestyleManipulator";
-import { renderCantAddMsg } from "../../messages/parenting-msgs";
+} from "@/wab/client/coords";
+import { NodeTargeter } from "@/wab/client/Dnd";
+import { resizeRect } from "@/wab/client/FreestyleManipulator";
+import { renderCantAddMsg } from "@/wab/client/messages/parenting-msgs";
 import {
   cssPropsForInvertTransform,
   useStudioCtx,
-} from "../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
+} from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { ensure, ensureString } from "@/wab/common";
+import {
+  XDraggable,
+  XDraggableEvent,
+} from "@/wab/commons/components/XDraggable";
+import { Box, Pt, Rect, rectTopLeft } from "@/wab/geom";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { isTplSlot, isTplTag, isTplTagOrComponent } from "@/wab/tpls";
+import { notification } from "antd";
+import $ from "jquery";
+import { observer } from "mobx-react-lite";
+import React, { useState } from "react";
 
 export function _FreestyleBox() {
   const [targeter, setTargeter] = useState<NodeTargeter | undefined>(undefined);
