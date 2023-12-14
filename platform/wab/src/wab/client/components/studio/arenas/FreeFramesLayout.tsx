@@ -1,15 +1,15 @@
+import { ArenaFrame } from "@/wab/classes";
+import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
+import { CanvasFrame } from "@/wab/client/components/canvas/CanvasFrame";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { AnyArena, PositionedArenaFrame } from "@/wab/shared/Arenas";
 import L from "lodash";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { ArenaFrame } from "../../../../classes";
-import { AnyArena } from "../../../../shared/Arenas";
-import { StudioCtx } from "../../../studio-ctx/StudioCtx";
-import { CanvasCtx } from "../../canvas/canvas-ctx";
-import { CanvasFrame } from "../../canvas/CanvasFrame";
 
 export const FreeFramesLayout = observer(function FreeFramesLayout(props: {
   studioCtx: StudioCtx;
-  frames: ArenaFrame[];
+  frames: PositionedArenaFrame[];
   arena: AnyArena;
   onFrameLoad: (frame: ArenaFrame, canvasCtx: CanvasCtx) => void;
 }) {
@@ -21,7 +21,7 @@ export const FreeFramesLayout = observer(function FreeFramesLayout(props: {
   // doesn't matter.
   return (
     <>
-      {L.sortBy([...frames], (f) => f.uid).map((frame, i) => {
+      {L.sortBy([...frames], (f) => f.uid).map((frame) => {
         return (
           <CanvasFrame
             studioCtx={studioCtx}

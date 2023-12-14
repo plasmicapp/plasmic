@@ -2157,7 +2157,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       (this.viewCtx()?.focusedTpls().length ?? 0) > 1;
 
     const clipperBB = studioCtx.maybeClipperBB();
-    const canvasSize = studioCtx.canvasSize();
+    const canvasBB = studioCtx.canvasBB();
 
     return (
       <div className="canvas-editor">
@@ -2262,11 +2262,19 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
                 <div
                   className="canvas-editor__canvas"
                   style={{
-                    margin: clipperBB
-                      ? `${clipperBB.height}px ${clipperBB.width}px`
-                      : undefined,
-                    width: canvasSize ? `${canvasSize.width()}px` : undefined,
-                    height: canvasSize ? `${canvasSize.height()}px` : undefined,
+                    ...(canvasBB
+                      ? {
+                          height: `${canvasBB.height()}px`,
+                          width: `${canvasBB.width()}px`,
+                          // The margin controls how far the clipper (viewport)
+                          // can be scrolled from the canvas.
+                          ...(clipperBB
+                            ? {
+                                margin: `${clipperBB.height}px ${clipperBB.width}px`,
+                              }
+                            : {}),
+                        }
+                      : {}),
                   }}
                 >
                   <div className="canvas-editor__scaler">

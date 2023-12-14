@@ -211,6 +211,7 @@ import {
   isDedicatedArena,
   isHeightAutoDerived,
   isMixedArena,
+  normalizeMixedArenaFrames,
   setFocusedFrame,
   syncArenaFrameSize,
   updateAutoDerivedFrameHeight,
@@ -746,11 +747,14 @@ export class StudioCtx extends WithDbCtx {
       }),
       autorun(
         () => {
-          if (this.isZooming()) {
+          if (this.isZooming() || this.isDraggingObject()) {
+            // Don't show scrollbars if the canvas size could be changing.
             if (this.maybeCanvasClipper()) {
               this.canvasClipper().style.overflow = "hidden";
             }
-            this._canvasSize.set(
+            // Don't compute canvas size and instead set a big canvas size
+            // so that the scroll position won't be affected by canvas size changes.
+            this._canvasBB.set(
               Box.fromRectSides({
                 top: 0,
                 bottom: 999999,
@@ -759,15 +763,16 @@ export class StudioCtx extends WithDbCtx {
               })
             );
           } else {
+            // Restore scrollbars.
             if (this.maybeCanvasClipper()) {
               this.canvasClipper().style.overflow = "auto";
             }
+            // Restore correct canvas size and position.
             const scalerRect = this.getCanvasEditorFramesScalerRect();
             if (!scalerRect) {
               return;
             }
-
-            this._canvasSize.set(Box.fromRect(scalerRect).scale(this.zoom));
+            this._canvasBB.set(Box.fromRect(scalerRect).scale(this.zoom));
           }
         },
         { name: "StudioCtx.adjustCanvasSize" }
@@ -1896,7 +1901,6 @@ export class StudioCtx extends WithDbCtx {
     try {
       const prevFocusedViewCtx = this.focusedViewCtx();
       const prevArena = this.currentArena;
-      const prevFocusedMode = this.focusedMode;
 
       if (prevFocusedViewCtx && prevArena) {
         this.arenaViewStates.set(prevArena, {
@@ -1955,7 +1959,16 @@ export class StudioCtx extends WithDbCtx {
           });
 
           defer(() => {
-            this.tryZoomToFitArena();
+            this.change(
+              ({ success }) => {
+                this.normalizeCurrentArena();
+                this.tryZoomToFitArena();
+                return success();
+              },
+              {
+                noUndoRecord: true,
+              }
+            );
           });
         }
       }
@@ -2892,9 +2905,9 @@ export class StudioCtx extends WithDbCtx {
     });
   }
 
-  private _canvasSize = observable.box<Box>();
-  canvasSize() {
-    return this._canvasSize.get();
+  private _canvasBB = observable.box<Box>();
+  canvasBB() {
+    return this._canvasBB.get();
   }
 
   centerFocusedFrame(maxZoom?: number) {
@@ -6691,6 +6704,18 @@ export class StudioCtx extends WithDbCtx {
 
   getCurrentPathName = () => {
     return this.focusedOrFirstViewCtx()?.component.pageMeta?.path;
+  };
+
+  normalizeCurrentArena = () => {
+    const arena = this.currentArena;
+    if (isMixedArena(arena)) {
+      const { deltaX, deltaY } = normalizeMixedArenaFrames(arena);
+
+      // Adjust scroll if clipper is loaded
+      if (this.maybeCanvasClipper()) {
+        this.translateScalerRelative(deltaX * this.zoom, deltaY * this.zoom);
+      }
+    }
   };
 }
 

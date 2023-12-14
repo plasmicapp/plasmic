@@ -510,6 +510,7 @@ export class DragMoveFrameManager {
   }
 
   endDrag() {
+    this.studioCtx.normalizeCurrentArena();
     if (this.studioCtx.isUnlogged()) {
       this.studioCtx.stopUnlogged();
     }

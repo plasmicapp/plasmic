@@ -1,16 +1,18 @@
-import {
-  ArenaFrame,
-  isKnownArena,
-  isKnownComponentArena,
-  isKnownPageArena,
-} from "@/wab/classes";
+import { ArenaFrame } from "@/wab/classes";
 import { ComponentArenaLayout } from "@/wab/client/components/studio/arenas/ComponentArenaLayout";
 import { FocusModeLayout } from "@/wab/client/components/studio/arenas/FocusModeLayout";
 import { FreeFramesLayout } from "@/wab/client/components/studio/arenas/FreeFramesLayout";
 import { PageArenaLayout } from "@/wab/client/components/studio/arenas/PageArenaLayout";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { unexpected } from "@/wab/common";
-import { AnyArena } from "@/wab/shared/Arenas";
+import {
+  AnyArena,
+  getPositionedArenaFrames,
+  isComponentArena,
+  isFocusedDedicatedArena,
+  isMixedArena,
+  isPageArena,
+} from "@/wab/shared/Arenas";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { CanvasCtx } from "./canvas-ctx";
@@ -57,16 +59,16 @@ export const CanvasArena = observer(function CanvasArena(props: {
   onFrameLoad: (frame: ArenaFrame, canvasCtx: CanvasCtx) => void;
 }) {
   const { studioCtx, arena, onFrameLoad } = props;
-  if (isKnownArena(arena)) {
+  if (isMixedArena(arena)) {
     return (
       <FreeFramesLayout
         arena={arena}
         studioCtx={studioCtx}
-        frames={arena.children}
+        frames={getPositionedArenaFrames(arena)}
         onFrameLoad={onFrameLoad}
       />
     );
-  } else if (arena._focusedFrame) {
+  } else if (isFocusedDedicatedArena(arena)) {
     return (
       <FocusModeLayout
         arena={arena}
@@ -74,7 +76,7 @@ export const CanvasArena = observer(function CanvasArena(props: {
         onFrameLoad={onFrameLoad}
       />
     );
-  } else if (isKnownPageArena(arena)) {
+  } else if (isPageArena(arena)) {
     return (
       <PageArenaLayout
         studioCtx={studioCtx}
@@ -82,7 +84,7 @@ export const CanvasArena = observer(function CanvasArena(props: {
         onFrameLoad={onFrameLoad}
       />
     );
-  } else if (isKnownComponentArena(arena)) {
+  } else if (isComponentArena(arena)) {
     return (
       <ComponentArenaLayout
         studioCtx={studioCtx}
