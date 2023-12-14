@@ -17,6 +17,7 @@ import type {
   CmsRowId,
   CmsTableId,
   CmsTableSchema,
+  CmsTableSettings,
   CommentData,
   CommentId,
   CommentReactionData,
@@ -1185,6 +1186,9 @@ export class CmsTable extends Base<"CmsTableId"> {
 
   @ManyToOne(() => CmsDatabase)
   database: CmsDatabase | null;
+
+  @Column("jsonb", { nullable: true })
+  settings: CmsTableSettings | null;
 }
 
 @Entity()

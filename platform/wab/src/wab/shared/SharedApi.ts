@@ -71,6 +71,7 @@ import {
   CmsRowRevisionId,
   CmsTableId,
   CmsTableSchema,
+  CmsTableSettings,
   CommentData,
   CommentId,
   CommentReactionData,
@@ -1617,6 +1618,7 @@ export abstract class SharedApi {
       name?: string;
       schema?: CmsTableSchema;
       description?: string;
+      settings?: CmsTableSettings;
     }
   ) {
     return (await this.put(`/cmse/tables/${tableId}`, opts)) as ApiCmsTable;
@@ -1624,6 +1626,14 @@ export abstract class SharedApi {
 
   async deleteCmsTable(tableId: CmsTableId) {
     return await this.delete(`/cmse/tables/${tableId}`);
+  }
+
+  async triggerCmsTableWebhooks(tableId: CmsTableId, event: "publish") {
+    return this.post(
+      `/cmse/tables/${tableId}/trigger-webhook?event=${event}`
+    ) as Promise<{
+      responses: { status: number; data: string }[];
+    }>;
   }
 
   async createCmsRow(

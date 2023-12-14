@@ -150,6 +150,7 @@ import {
   CmsRowRevisionId,
   CmsTableId,
   CmsTableSchema,
+  CmsTableSettings,
   CommentData,
   CommentId,
   CommentReactionData,
@@ -6718,9 +6719,10 @@ export class DbMgr implements MigrationDbMgr {
       name?: string;
       schema?: CmsTableSchema;
       description?: string | null;
+      settings?: CmsTableSettings | null;
     }
   ) {
-    const { name, schema, description } = opts;
+    const { name, schema, description, settings } = opts;
     const table = await this.getCmsTableById(tableId);
     await this.checkCmsDatabasePerms(table.databaseId, "editor");
     if (name && table.name !== name) {
@@ -6731,6 +6733,9 @@ export class DbMgr implements MigrationDbMgr {
     }
     if (schema) {
       table.schema = normalizeTableSchema(schema);
+    }
+    if (settings) {
+      table.settings = settings;
     }
     Object.assign(table, this.stampUpdate());
     await this.entMgr.save(table);

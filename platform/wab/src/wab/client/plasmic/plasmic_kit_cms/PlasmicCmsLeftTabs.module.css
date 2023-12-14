@@ -35,7 +35,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .schemaButton:global(.__wab_instance) {
@@ -52,7 +51,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .listSectionSeparator:global(.__wab_instance) {
@@ -73,6 +71,5 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }

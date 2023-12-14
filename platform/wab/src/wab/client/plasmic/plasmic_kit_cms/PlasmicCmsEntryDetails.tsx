@@ -46,6 +46,7 @@ import sty from "./PlasmicCmsEntryDetails.module.css"; // plasmic-import: 9vM3ZF
 import EditsvgIcon from "../q_4_icons/icons/PlasmicIcon__Editsvg"; // plasmic-import: _Qa2gdunG/icon
 import HistoryIcon from "../plasmic_kit/PlasmicIcon__History"; // plasmic-import: 6ZOswzsUR/icon
 import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
+import SharesvgIcon from "../q_4_icons/icons/PlasmicIcon__Sharesvg"; // plasmic-import: vRB2dtcKk/icon
 import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
 
 createPlasmicElementProxy;
@@ -72,8 +73,7 @@ export type PlasmicCmsEntryDetails__OverridesType = {
   saveStatus?: p.Flex<"div">;
   right?: p.Flex<"div">;
   historyButton?: p.Flex<typeof Button>;
-  svg?: p.Flex<"svg">;
-  text?: p.Flex<"div">;
+  previewButton?: p.Flex<typeof Button>;
   publishButton?: p.Flex<typeof Button>;
   menuButton?: p.Flex<typeof MenuButton>;
 };
@@ -82,6 +82,8 @@ export interface DefaultCmsEntryDetailsProps {
   children?: React.ReactNode;
   className?: string;
 }
+
+const $$ = {};
 
 function PlasmicCmsEntryDetails__RenderFunc(props: {
   variants: PlasmicCmsEntryDetails__VariantsArgs;
@@ -171,9 +173,7 @@ function PlasmicCmsEntryDetails__RenderFunc(props: {
             size={"wide"}
             startIcon={
               <HistoryIcon
-                data-plasmic-name={"svg"}
-                data-plasmic-override={overrides.svg}
-                className={classNames(projectcss.all, sty.svg)}
+                className={classNames(projectcss.all, sty.svg__xNuI)}
                 role={"img"}
               />
             }
@@ -181,15 +181,37 @@ function PlasmicCmsEntryDetails__RenderFunc(props: {
             withIcons={["startIcon"]}
           >
             <div
-              data-plasmic-name={"text"}
-              data-plasmic-override={overrides.text}
               className={classNames(
                 projectcss.all,
                 projectcss.__wab_text,
-                sty.text
+                sty.text__hLvhX
               )}
             >
               {"History"}
+            </div>
+          </Button>
+          <Button
+            data-plasmic-name={"previewButton"}
+            data-plasmic-override={overrides.previewButton}
+            className={classNames("__wab_instance", sty.previewButton)}
+            size={"wide"}
+            startIcon={
+              <SharesvgIcon
+                className={classNames(projectcss.all, sty.svg__r3VpA)}
+                role={"img"}
+              />
+            }
+            type={["clear"]}
+            withIcons={["startIcon"]}
+          >
+            <div
+              className={classNames(
+                projectcss.all,
+                projectcss.__wab_text,
+                sty.text___8Mqz6
+              )}
+            >
+              {"Preview"}
             </div>
           </Button>
           <Button
@@ -229,8 +251,7 @@ const PlasmicDescendants = {
     "saveStatus",
     "right",
     "historyButton",
-    "svg",
-    "text",
+    "previewButton",
     "publishButton",
     "menuButton",
   ],
@@ -241,14 +262,12 @@ const PlasmicDescendants = {
   right: [
     "right",
     "historyButton",
-    "svg",
-    "text",
+    "previewButton",
     "publishButton",
     "menuButton",
   ],
-  historyButton: ["historyButton", "svg", "text"],
-  svg: ["svg"],
-  text: ["text"],
+  historyButton: ["historyButton"],
+  previewButton: ["previewButton"],
   publishButton: ["publishButton"],
   menuButton: ["menuButton"],
 } as const;
@@ -263,8 +282,7 @@ type NodeDefaultElementType = {
   saveStatus: "div";
   right: "div";
   historyButton: typeof Button;
-  svg: "svg";
-  text: "div";
+  previewButton: typeof Button;
   publishButton: typeof Button;
   menuButton: typeof MenuButton;
 };
@@ -303,7 +321,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicCmsEntryDetails__ArgProps,
           internalVariantPropNames: PlasmicCmsEntryDetails__VariantProps,
         }),
@@ -335,8 +353,7 @@ export const PlasmicCmsEntryDetails = Object.assign(
     saveStatus: makeNodeComponent("saveStatus"),
     right: makeNodeComponent("right"),
     historyButton: makeNodeComponent("historyButton"),
-    svg: makeNodeComponent("svg"),
-    text: makeNodeComponent("text"),
+    previewButton: makeNodeComponent("previewButton"),
     publishButton: makeNodeComponent("publishButton"),
     menuButton: makeNodeComponent("menuButton"),
 

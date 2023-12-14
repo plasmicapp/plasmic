@@ -13,6 +13,7 @@ import {
 import { getFrameHeight } from "@/wab/shared/Arenas";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { FramePinManager } from "@/wab/shared/PinManager";
+import { substituteUrlParams } from "@/wab/shared/utils/url-utils";
 import {
   getReferencedVariantGroups,
   isGlobalVariant,
@@ -567,14 +568,7 @@ function mkPreviewPath(
 ) {
   let path = component.pageMeta?.path || component.uuid;
   if (component.pageMeta) {
-    for (const [key, value] of Object.entries(
-      pageParams || component.pageMeta.params
-    )) {
-      if (value) {
-        // if value is empty string, keep the placeholder so the path is still valid
-        path = path.replace(`[${key}]`, encodeURIComponent(value));
-      }
-    }
+    path = substituteUrlParams(path, pageParams || component.pageMeta.params);
   }
   return path;
 }

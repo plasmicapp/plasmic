@@ -16,6 +16,7 @@ import {
   CmsRowId,
   CmsTableId,
 } from "@/wab/shared/ApiSchema";
+import { substituteUrlParams } from "@/wab/shared/utils/url-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Drawer, Form, Menu, message, notification, Tooltip } from "antd";
 import { useForm } from "antd/lib/form/Form";
@@ -421,6 +422,24 @@ function CmsEntryDetailsForm_(
               }
             </Form.Item>
           }
+          previewButton={
+            table.settings?.previewUrl
+              ? {
+                  props: {
+                    href: substituteUrlParams(
+                      table.settings.previewUrl,
+                      (row.draftData?.[""] ?? row.data?.[""] ?? {}) as Record<
+                        string,
+                        string
+                      >
+                    ),
+                    target: "_blank",
+                  },
+                }
+              : {
+                  render: () => null,
+                }
+          }
           publishButton={{
             render: (ps, Comp) => (
               // Wrap in Form.Item so it can react to form error state
@@ -449,6 +468,24 @@ function CmsEntryDetailsForm_(
                           content: "Your changes have been published.",
                           duration: 5,
                         });
+                        const hooks = table.settings?.webhooks?.filter(
+                          (hook) => hook.event === "publish"
+                        );
+                        if (hooks && hooks.length > 0) {
+                          const hooksResp = await api.triggerCmsTableWebhooks(
+                            table.id,
+                            "publish"
+                          );
+                          const failed = hooksResp.responses.filter(
+                            (r) => r.status !== 200
+                          );
+                          if (failed.length > 0) {
+                            await message.warning({
+                              content: "Some publish hooks failed.",
+                              duration: 5,
+                            });
+                          }
+                        }
                       }
                     }}
                     disabled={

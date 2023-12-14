@@ -71,6 +71,8 @@ export interface DefaultCmsTopBarProps {
   className?: string;
 }
 
+const $$ = {};
+
 function PlasmicCmsTopBar__RenderFunc(props: {
   variants: PlasmicCmsTopBar__VariantsArgs;
   args: PlasmicCmsTopBar__ArgsType;
@@ -236,7 +238,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicCmsTopBar__ArgProps,
           internalVariantPropNames: PlasmicCmsTopBar__VariantProps,
         }),

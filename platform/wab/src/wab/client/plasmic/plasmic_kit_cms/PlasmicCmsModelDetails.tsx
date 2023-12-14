@@ -79,6 +79,8 @@ export interface DefaultCmsModelDetailsProps {
   className?: string;
 }
 
+const $$ = {};
+
 function PlasmicCmsModelDetails__RenderFunc(props: {
   variants: PlasmicCmsModelDetails__VariantsArgs;
   args: PlasmicCmsModelDetails__ArgsType;
@@ -254,7 +256,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicCmsModelDetails__ArgProps,
           internalVariantPropNames: PlasmicCmsModelDetails__VariantProps,
         }),

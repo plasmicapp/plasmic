@@ -1020,8 +1020,8 @@ export interface ApiProjectWebhook {
   id: string;
   method: string;
   url: string;
-  headers: Array<WebhookHeader>;
-  payload: string;
+  headers: Array<WebhookHeader> | undefined;
+  payload: string | undefined;
 }
 export const apiProjectWebhookFields = [
   "id",
@@ -1182,6 +1182,19 @@ export type ImageUploadResponse = {
 
 export interface CmsTableSchema {
   fields: CmsFieldMeta[];
+}
+
+interface CmsWebhook {
+  url: string;
+  method: string;
+  headers: WebhookHeader[];
+  payload: string;
+  event: "publish";
+}
+
+export interface CmsTableSettings {
+  previewUrl?: string;
+  webhooks?: CmsWebhook[];
 }
 
 export interface CmsBaseType<T> {
@@ -1372,6 +1385,7 @@ export interface ApiCmsTable extends ApiEntityBase<CmsTableId> {
   name: string;
   schema: CmsTableSchema;
   description: string | null;
+  settings: CmsTableSettings | null;
 }
 
 export interface ApiCmsRow extends ApiEntityBase<CmsRowId> {

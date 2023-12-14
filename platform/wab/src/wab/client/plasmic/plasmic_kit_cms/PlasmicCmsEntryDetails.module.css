@@ -39,7 +39,6 @@
   left: auto;
   top: auto;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
 .saveStatus {
@@ -68,21 +67,40 @@
   max-width: 100%;
   position: relative;
 }
-.svg {
+.svg__xNuI {
   display: flex;
   position: relative;
   object-fit: cover;
   width: 16px;
   height: 16px;
 }
-.text {
+.text__hLvhX {
   color: var(--token-fVn5vRhXJxQ);
 }
 .svg__gKon5 {
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
+  height: 1em;
+}
+.previewButton:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.svg__r3VpA {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.text___8Mqz6 {
+  color: var(--token-fVn5vRhXJxQ);
+}
+.svg__zW5U {
+  display: flex;
+  position: relative;
+  object-fit: cover;
   height: 1em;
 }
 .publishButton:global(.__wab_instance) {
@@ -93,14 +111,12 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .svg___4Eybx {
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .menuButton:global(.__wab_instance):global(.__wab_instance) {

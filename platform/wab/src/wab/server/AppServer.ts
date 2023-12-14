@@ -100,6 +100,7 @@ import {
   updateDatabase,
   updateRow,
   updateTable,
+  triggerTableWebhooks,
 } from "./routes/cmse";
 import {
   allowProjectToDataSource,
@@ -842,6 +843,10 @@ export function addCmsEditorRoutes(app: express.Application) {
 
   app.get("/api/v1/cmse/tables/:tableId/rows", withNext(listRows));
   app.post("/api/v1/cmse/tables/:tableId/rows", withNext(createRows));
+  app.post(
+    "/api/v1/cmse/tables/:tableId/trigger-webhook",
+    withNext(triggerTableWebhooks)
+  );
 
   app.get("/api/v1/cmse/rows/:rowId", withNext(getCmseRow));
   app.get("/api/v1/cmse/rows/:rowId/revisions", withNext(listRowRevisions));
