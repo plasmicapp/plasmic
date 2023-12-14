@@ -37,9 +37,8 @@
     "db:permanently-delete": "npm run run-ts -- src/wab/server/db/permanently-delete.ts",
     "db:upgrade-stale-bundle": "npm run run-ts -- src/wab/server/scripts/upgrade-stale-bundle.ts",
     "prepare": "playwright install chromium",
-    "test": "react-scripts test --env=jsdom --runInBand --forceExit",
-    "test:coverage": "react-scripts test --env=jsdom --coverage",
-    "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache --env=jsdom",
+    "test": "jest --runInBand --forceExit",
+    "test:coverage": "jest --coverage",
     "eject": "react-scripts eject",
     "backend": "bash tools/backend-server.bash",
     "backend:debug": "debug=1 bash tools/backend-server.bash",
@@ -170,7 +169,7 @@
     "diff": "^4.0.2",
     "downscale": "^1.0.6",
     "enzyme": "^3.11.0",
-    "enzyme-to-json": "^3.5.0",
+    "enzyme-to-json": "^3.6.2",
     "graphql-ws": "^5.14.0",
     "http-proxy-middleware": "^1.0.5",
     "http-server": "^0.12.3",
@@ -196,7 +195,7 @@
     "type-fest": "^4.3.1",
     "uglify-js": "3.10.0",
     "wait-on": "^5.2.0",
-    "whatwg-fetch": "^3.2.0"
+    "whatwg-fetch": "^3.6.20"
   },
   "dependenciesComments": {
     "@ant-design/pro-components": "Must be 2.6.4. Earlier doesn't support newer antd, later incurs a disallowed dynamic require of antd/es/layout/Sider. https://app.shortcut.com/plasmic/story/37043/richlayout-always-initially-loads-with-dark-background"
@@ -209,6 +208,9 @@
     "@babel/core": "^7.23.2",
     "@babel/generator": "^7.23.0",
     "@babel/parser": "^7.23.0",
+    "@babel/plugin-proposal-decorators": "^7.23.6",
+    "@babel/preset-env": "^7.23.6",
+    "@babel/preset-typescript": "^7.23.3",
     "@babel/traverse": "^7.23.2",
     "@babel/types": "^7.23.0",
     "@clickhouse/client": "^0.2.1",
@@ -285,6 +287,7 @@
     "async-mutex": "^0.4.0",
     "aws-sdk": "^2.1427.0",
     "axios": "0.19.2",
+    "babel-jest": "^29.7.0",
     "babel-plugin-implicit-return": "^1.0.1",
     "babel-traverse": "^6.26.0",
     "bcrypt": "^5.1.0",
@@ -367,6 +370,9 @@
     "inquirer": "^9.2.9",
     "is-hotkey": "^0.1.6",
     "isomorphic-unfetch": "^3",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jest-watch-typeahead": "^2.2.2",
     "jquery": "~3.5.1",
     "jquery-serializejson": "^2.9.0",
     "js-cookie": "^3.0.1",
@@ -478,6 +484,7 @@
     "rebound": "^0.1.0",
     "recharts": "^2.1.10",
     "rectangle-overlap": "^2.0.0",
+    "reflect-metadata": "^0.2.0",
     "regexp.execall": "^1.0.2",
     "replace-css-url": "^1.2.6",
     "resize-observer-polyfill": "^1.5.1",
@@ -558,15 +565,5 @@
   },
   "nohoist": [
     "**/babel-preset-react-app/@babel/runtime"
-  ],
-  "jest": {
-    "transformIgnorePatterns": [
-      ".+\\.(js|jsx|mjs|cjs|ts|tsx)foo$",
-      "XXX/node_modules/(?!(@plasmicapp/react-web/lib/|private-ip|ip-regex|get-port|@chainsafe)).+\\.(js|jsx|mjs|cjs|ts|tsx)$"
-    ],
-    "moduleNameMapper": {
-      "^@/(.*)": "<rootDir>/src/$1",
-      "^!file-loader!": "<rootDir>/__mocks__/file-loader-mock.js"
-    }
-  }
+  ]
 }
