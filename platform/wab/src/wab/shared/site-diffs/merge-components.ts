@@ -9,6 +9,7 @@ import {
   isKnownTplComponent,
   isKnownTplTag,
   isKnownVirtualRenderExpr,
+  ObjInst,
   Param,
   RenderExpr,
   Site,
@@ -35,7 +36,7 @@ import {
   xIntersect,
 } from "@/wab/common";
 import { CodeComponent, isCodeComponent } from "@/wab/components";
-import { Field, ObjInst } from "@/wab/model/model-meta";
+import { Field } from "@/wab/model/model-meta";
 import { Bundler } from "@/wab/shared/bundler";
 import { flattenComponent } from "@/wab/shared/cached-selectors";
 import { attachRenderableTplSlots } from "@/wab/shared/code-components/code-components";

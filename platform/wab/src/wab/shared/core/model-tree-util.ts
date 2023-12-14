@@ -1,5 +1,5 @@
 import { zip } from "lodash";
-import { Site } from "../../classes";
+import { ObjInst, Site } from "../../classes";
 import { meta } from "../../classes-metas";
 import {
   assert,
@@ -8,7 +8,7 @@ import {
   tuple,
   unexpected,
 } from "../../common";
-import { isWeakRefField, ObjInst } from "../../model/model-meta";
+import { isWeakRefField } from "../../model/model-meta";
 import { Bundler } from "../bundler";
 import { instUtil } from "./InstUtil";
 

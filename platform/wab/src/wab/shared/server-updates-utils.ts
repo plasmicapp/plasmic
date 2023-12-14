@@ -44,6 +44,7 @@ import {
   NameArg,
   NodeMarker,
   ObjectPath,
+  ObjInst,
   PageArena,
   PageHref,
   PageMeta,
@@ -92,7 +93,6 @@ import {
 import { removeFromArray } from "@/wab/commons/collections";
 import { resolveAllTokenRefs } from "@/wab/commons/StyleToken";
 import { hasImageAssetRef } from "@/wab/image-assets";
-import { ObjInst } from "@/wab/model/model-meta";
 import {
   IChangeRecorder,
   ModelChange,

@@ -24,6 +24,7 @@ import {
   isKnownVirtualRenderExpr,
   NodeMarker,
   ObjectPath,
+  ObjInst,
   QueryInvalidationExpr,
   QueryRef,
   RawText,
@@ -66,7 +67,7 @@ import { asCode, codeLit } from "@/wab/exprs";
 import { Pt } from "@/wab/geom";
 import { ImageAssetType } from "@/wab/image-asset-type";
 import { mkParam, mkParamsForState } from "@/wab/lang";
-import { ObjInst, withoutUids } from "@/wab/model/model-meta";
+import { withoutUids } from "@/wab/model/model-meta";
 import { getLastBundleVersion } from "@/wab/server/db/BundleMigrator";
 import { getLowestCommonAncestor } from "@/wab/server/db/DbMgr";
 import { ProjectFullDataResponse } from "@/wab/shared/ApiSchema";

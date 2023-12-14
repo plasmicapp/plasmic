@@ -19,6 +19,7 @@ import {
   TplTag,
   Variant,
   VariantGroup,
+  ObjInst,
 } from "@/wab/classes";
 import { modelSchemaHash } from "@/wab/classes-metas";
 import { apiKey, invalidationKey } from "@/wab/client/api";
@@ -167,7 +168,6 @@ import {
   ChangeSummary,
   summarizeChanges,
 } from "@/wab/model-change-util";
-import { ObjInst } from "@/wab/model/model-meta";
 import {
   emptyRecordedChanges,
   filterPersistentChanges,

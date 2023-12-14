@@ -11,7 +11,7 @@ import {
 } from "@/wab/common";
 import { Leaves, Paths } from "@/wab/commons/types";
 import { isCodeComponent, isFrameComponent } from "@/wab/components";
-import { isWeakRefField, ObjInst, Type } from "@/wab/model/model-meta";
+import { isWeakRefField, Type } from "@/wab/model/model-meta";
 import { Bundler } from "@/wab/shared/bundler";
 import { NodeCtx } from "@/wab/shared/core/model-tree-util";
 import { isSlot } from "@/wab/shared/SlotUtils";
@@ -75,7 +75,9 @@ export type ModelConflictsMeta = {
   };
 };
 
-export type MergeSpecialFieldHandler<Cls extends ObjInst = ObjInst> = (
+export type MergeSpecialFieldHandler<
+  Cls extends classes.ObjInst = classes.ObjInst
+> = (
   ancestorCtx: NodeCtx<Cls>,
   leftCtx: NodeCtx<Cls>,
   rightCtx: NodeCtx<Cls>,
@@ -85,7 +87,7 @@ export type MergeSpecialFieldHandler<Cls extends ObjInst = ObjInst> = (
 ) => DirectConflict[];
 
 export type FieldConflictDescriptorMeta<
-  Cls extends ObjInst = ObjInst,
+  Cls extends classes.ObjInst = classes.ObjInst,
   P extends keyof Cls = any
 > =
   | "harmless"
@@ -106,7 +108,7 @@ export type FieldConflictDescriptorMeta<
               contents?: boolean;
             } & (
               | { conflictType: "unexpected" }
-              | (E extends ObjInst
+              | (E extends classes.ObjInst
                   ? // `walkAndFixNames` expects array values to be `ObjInst`s
                     | {
                           conflictType: "rename";
@@ -184,11 +186,11 @@ const tplVariantableMeta = {
  * these refs would need to be updated to point to the cloned instances.
  */
 function shallowCloneArrayValuesAndAddToBundle<
-  T extends ObjInst | string | number | boolean | null | undefined,
+  T extends classes.ObjInst | string | number | boolean | null | undefined,
   U extends new (arg: any) => any
 >(
   vals: T[],
-  parent: ObjInst,
+  parent: classes.ObjInst,
   bundler: Bundler,
   types: U[]
 ): Exclude<
@@ -206,7 +208,7 @@ function shallowCloneArrayValuesAndAddToBundle<
     types.forEach((t) => {
       typeCond = typeCond.when(t, (typedValue) => new t(typedValue));
     });
-    const cloned: T & ObjInst = typeCond.result();
+    const cloned: T & classes.ObjInst = typeCond.result();
     // Besides cloning the array values, we need to make sure the instance
     // has an IID
     generateIidForInst(cloned, bundler, bundler.addrOf(parent).uuid);

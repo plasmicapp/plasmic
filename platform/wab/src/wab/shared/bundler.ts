@@ -29,7 +29,6 @@ import {
   isStrongRefField,
   isWeakRefField,
   MetaRuntime,
-  ObjInst,
   toTs,
   Type,
 } from "@/wab/model/model-meta";
@@ -444,10 +443,10 @@ export class Bundler {
   protected _instUtil: InstUtil;
   protected _realClasses;
   // Public for tests
-  _addr2inst: { [k: string]: ObjInst };
+  _addr2inst: { [k: string]: classesModule.ObjInst };
   // Public for tests
   _uid2addr: { [k: string]: Addr };
-  private _uuid2root: Record<string, ObjInst>;
+  private _uuid2root: Record<string, classesModule.ObjInst>;
 
   /**
    * looseMode means skip checking of fields and ignore missing xrefs (leaving the references in place)
@@ -482,15 +481,15 @@ export class Bundler {
    * also returned; we just don't call `visitInst` on them.
    */
   protected _fieldVals(
-    inst: ObjInst,
-    visitInst: (inst: ObjInst, field: Field) => any,
+    inst: classesModule.ObjInst,
+    visitInst: (inst: classesModule.ObjInst, field: Field) => any,
     fields?: string[],
     opts?: { noTypeCheck?: boolean }
   ) {
     const cls = this._instUtil.getInstClass(inst);
     const maybeVisit = (x: {} | null | undefined, field: Field) => {
       if (x && this._instUtil.isObjInst(x)) {
-        return visitInst(x as ObjInst, field);
+        return visitInst(x as classesModule.ObjInst, field);
       } else {
         return x;
       }
@@ -539,10 +538,10 @@ export class Bundler {
       });
   }
 
-  addrOf(obj: ObjInst) {
+  addrOf(obj: classesModule.ObjInst) {
     return this._uid2addr[obj.uid];
   }
-  addrSlugOf(obj: ObjInst) {
+  addrSlugOf(obj: classesModule.ObjInst) {
     return addrSlug(this.addrOf(obj));
   }
   objByAddr(addr: Addr) {
@@ -587,11 +586,11 @@ export class Bundler {
    * Returns a mapping from uuid to ObjInst for internal instances.
    */
   private _gatherInternalInstsAndAssignAddrs(
-    root: ObjInst,
+    root: classesModule.ObjInst,
     uuid: string
-  ): Record<number, ObjInst> {
+  ): Record<number, classesModule.ObjInst> {
     const map = {};
-    const visitInst = (inst: ObjInst) => {
+    const visitInst = (inst: classesModule.ObjInst) => {
       if (inst.uid in map) {
         return;
       }
@@ -618,7 +617,7 @@ export class Bundler {
   // UID/Insts referencing Insts -> Addr/Json referencing Addrs
   //
   // Need uid2addr.
-  bundle(root: ObjInst, uuid: string, version: string): Bundle {
+  bundle(root: classesModule.ObjInst, uuid: string, version: string): Bundle {
     this._uuid2root[uuid] = root;
 
     // Build a map from uid to all instances under `root`.  This map will only
@@ -634,7 +633,7 @@ export class Bundler {
     /**
      * Creates a reference to the argument `inst` by its id
      */
-    const mkRef = (inst: ObjInst) => {
+    const mkRef = (inst: classesModule.ObjInst) => {
       const addr = check(this._uid2addr[inst.uid]);
       if (addr.uuid === uuid) {
         // If this is an internal instance, we reference it by the internal id
@@ -647,7 +646,8 @@ export class Bundler {
       }
     };
 
-    const getIid = (inst: ObjInst) => check(this._uid2addr[inst.uid]).iid;
+    const getIid = (inst: classesModule.ObjInst) =>
+      check(this._uid2addr[inst.uid]).iid;
     const iid2json = Object.fromEntries(
       Object.keys(uid2inst || {}).map((uid) => {
         const inst = uid2inst[uid];
@@ -698,8 +698,8 @@ export class Bundler {
     bundle: UnsafeBundle,
     uuid: string,
     incremental: boolean
-  ): { [iid: string]: ObjInst } {
-    const localAddr2inst: Record<string, ObjInst> = mkMap();
+  ): { [iid: string]: classesModule.ObjInst } {
+    const localAddr2inst: Record<string, classesModule.ObjInst> = mkMap();
     const addr2inst = (addr: string) =>
       localAddr2inst[addr] != null
         ? localAddr2inst[addr]
@@ -732,35 +732,36 @@ export class Bundler {
     // First we build a map from iid to instances from the bundle.  All instances here
     // should be internal instances; we instantiate the classes, but are not doing anything
     // to fix up instance references in field values yet.
-    const iid2internalInst: Record<string, ObjInst> = Object.fromEntries(
-      Object.keys(bundle.map || {}).map((iid) => {
-        const json = bundle.map[iid];
-        const realClass = this._realClasses[json.__type];
-        if (!realClass) {
-          throw new Error(`Unknown type ${json.__type}`);
-        }
-        const addr = { uuid, iid };
-        let inst = addr2inst(addrKey(addr));
-        if (inst == null) {
-          inst = localAddr2inst[addrKey(addr)] = this.looseMode
-            ? Object.assign(
-                Object.create(realClass.prototype),
-                { uid: Math.random() },
-                json
-              )
-            : new realClass(json);
-        } else {
-          assert(
-            inst instanceof realClass,
-            `Cached instance has unexpected type ${this._instUtil.getInstClassName(
-              inst
-            )}, expected ${json.__type}`
-          );
-        }
-        localUid2addr[inst.uid] = addr;
-        return tuple(iid, inst);
-      })
-    );
+    const iid2internalInst: Record<string, classesModule.ObjInst> =
+      Object.fromEntries(
+        Object.keys(bundle.map || {}).map((iid) => {
+          const json = bundle.map[iid];
+          const realClass = this._realClasses[json.__type];
+          if (!realClass) {
+            throw new Error(`Unknown type ${json.__type}`);
+          }
+          const addr = { uuid, iid };
+          let inst = addr2inst(addrKey(addr));
+          if (inst == null) {
+            inst = localAddr2inst[addrKey(addr)] = this.looseMode
+              ? Object.assign(
+                  Object.create(realClass.prototype),
+                  { uid: Math.random() },
+                  json
+                )
+              : new realClass(json);
+          } else {
+            assert(
+              inst instanceof realClass,
+              `Cached instance has unexpected type ${this._instUtil.getInstClassName(
+                inst
+              )}, expected ${json.__type}`
+            );
+          }
+          localUid2addr[inst.uid] = addr;
+          return tuple(iid, inst);
+        })
+      );
 
     // Now we deal with fixing up the field values, basically replacing
     // {__ref} and {__xref} with actual instances.  At this point, all internal references
@@ -904,10 +905,10 @@ export class FastBundler extends Bundler {
   }
 
   fastBundle(
-    root: ObjInst,
+    root: classesModule.ObjInst,
     uuid: string,
     changedInsts: {
-      readonly inst: ObjInst;
+      readonly inst: classesModule.ObjInst;
       readonly field: string;
     }[]
   ): DeepReadonly<Bundle> {
@@ -918,16 +919,16 @@ export class FastBundler extends Bundler {
     assert(this._bundle, () => `_bundle is not set`);
     const bundle = this._bundle;
 
-    const getIid = (inst: ObjInst): string | undefined =>
+    const getIid = (inst: classesModule.ObjInst): string | undefined =>
       this._uid2addr[inst.uid]?.iid;
 
     // We only want to process the changed fields of the reachable iids;
     // each element in the queue is the inst to be included in the bundle
     // and the field to be visited (or null if all fields should be).
-    const queueOfChangedNodes: [ObjInst, string | null][] = [];
+    const queueOfChangedNodes: [classesModule.ObjInst, string | null][] = [];
 
     // Stores the nodes already recorded and their fields
-    const seenNodesToField = new Map<ObjInst, string | null>();
+    const seenNodesToField = new Map<classesModule.ObjInst, string | null>();
 
     changedInsts.forEach(({ inst, field }) => {
       const iid = getIid(inst);
@@ -941,7 +942,7 @@ export class FastBundler extends Bundler {
      * and adds the child to the queue if it wasn't reachable
      */
     const mkRefAndMaybeVisit = (
-      child: ObjInst,
+      child: classesModule.ObjInst,
       parentIid: string,
       field: Field
     ) => {

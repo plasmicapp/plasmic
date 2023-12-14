@@ -8,6 +8,7 @@ import {
   Component,
   ImageAsset,
   isKnownSite,
+  ObjInst,
   RuleSet,
   Site,
   StyleToken,
@@ -34,7 +35,6 @@ import {
   Field,
   isStrongRefField,
   isWeakRefField,
-  ObjInst,
 } from "./model/model-meta";
 import {
   componentToAllVariants,

@@ -4,7 +4,6 @@ import pick from "lodash/pick";
 import sortBy from "lodash/sortBy";
 import uniqBy from "lodash/uniqBy";
 import { coalesce, ensure, filterMapTruthy, multimap, tuple } from "../common";
-export type { ObjInst } from "../classes";
 
 export class Class {
   name: string;

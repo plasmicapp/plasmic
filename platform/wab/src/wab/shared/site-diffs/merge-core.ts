@@ -6,6 +6,7 @@ import {
   ComponentArena,
   ImageAsset,
   Mixin,
+  ObjInst,
   PageArena,
   Param,
   Site,
@@ -45,7 +46,6 @@ import {
   Class,
   Field,
   isWeakRefField,
-  ObjInst,
   withoutUids,
 } from "@/wab/model/model-meta";
 import { ChangeRecorder } from "@/wab/observable-model";

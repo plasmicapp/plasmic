@@ -23,6 +23,7 @@ import {
   Marker,
   Mixin,
   ObjectPath,
+  ObjInst,
   PageHref,
   Param,
   QueryInvalidationExpr,
@@ -50,7 +51,6 @@ import { ensure, switchType, withoutNils } from "../../common";
 import { getParamDisplayName, isReusableComponent } from "../../components";
 import { asCode, ExprCtx } from "../../exprs";
 import { ImageAssetType } from "../../image-asset-type";
-import { ObjInst } from "../../model/model-meta";
 import { SplitStatus } from "../../splits";
 import { isPrivateState } from "../../states";
 import {
