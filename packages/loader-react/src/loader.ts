@@ -26,7 +26,10 @@ import {
   Registry,
   TrackRenderOptions,
 } from "@plasmicapp/loader-core";
-import { internal_getCachedBundleInNodeServer } from "@plasmicapp/loader-fetcher";
+import {
+  CodeModule,
+  internal_getCachedBundleInNodeServer,
+} from "@plasmicapp/loader-fetcher";
 import { getActiveVariation, getExternalIds } from "@plasmicapp/loader-splits";
 import * as PlasmicQuery from "@plasmicapp/query";
 import React from "react";
@@ -379,6 +382,10 @@ export class InternalPlasmicComponentLoader {
     return this.reactServerLoader.getActiveSplits();
   }
 
+  getChunksUrl(bundle: LoaderBundleOutput, modules: CodeModule[]) {
+    return this.reactServerLoader.getChunksUrl(bundle, modules);
+  }
+
   trackConversion(value = 0) {
     this.tracker.trackConversion(value);
   }
@@ -626,6 +633,10 @@ export class PlasmicComponentLoader {
         }
       },
     });
+  }
+
+  getChunksUrl(bundle: LoaderBundleOutput, modules: CodeModule[]) {
+    return this.__internal.getChunksUrl(bundle, modules);
   }
 
   getExternalVariation(

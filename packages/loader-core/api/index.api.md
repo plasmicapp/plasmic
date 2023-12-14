@@ -35,7 +35,7 @@ export { FontMeta }
 
 // @public
 export function getBundleSubset(bundle: LoaderBundleOutput, names: string[], opts?: {
-    target?: 'browser' | 'server';
+    target?: "browser" | "server";
 }): LoaderBundleOutput;
 
 export { GlobalGroupMeta }

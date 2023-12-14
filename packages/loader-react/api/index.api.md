@@ -6,6 +6,7 @@
 
 import { AssetModule } from '@plasmicapp/loader-core';
 import { CodeComponentMeta as CodeComponentMeta_2 } from '@plasmicapp/host';
+import { CodeModule } from '@plasmicapp/loader-fetcher';
 import { ComponentMeta } from '@plasmicapp/loader-core';
 import { CustomFunctionMeta as CustomFunctionMeta_2 } from '@plasmicapp/host';
 import { DataCtxReader } from '@plasmicapp/host';
@@ -161,6 +162,8 @@ export class InternalPlasmicComponentLoader {
     // (undocumented)
     getBundle(): LoaderBundleOutput;
     // (undocumented)
+    getChunksUrl(bundle: LoaderBundleOutput, modules: CodeModule[]): string;
+    // (undocumented)
     getGlobalVariants(): GlobalVariantSpec[];
     // (undocumented)
     getLookup(): ComponentLookup;
@@ -246,6 +249,8 @@ export class PlasmicComponentLoader {
         getKnownValue: (key: string) => string | undefined;
         updateKnownValue: (key: string, value: string) => void;
     }): Promise<Record<string, string>>;
+    // (undocumented)
+    getChunksUrl(bundle: LoaderBundleOutput, modules: CodeModule[]): string;
     // (undocumented)
     getExternalVariation(variation: Record<string, string>, filters?: Parameters<typeof getExternalIds>[2]): Record<string, string>;
     maybeFetchComponentData(...specs: ComponentLookupSpec[]): Promise<ComponentRenderData | null>;

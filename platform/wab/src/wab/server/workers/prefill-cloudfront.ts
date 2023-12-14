@@ -4,7 +4,10 @@ import {
   getResolvedProjectVersions,
   mkVersionToSync,
 } from "@/wab/server/loader/resolve-projects";
-import { makeGenPublishedLoaderCodeBundleOpts } from "@/wab/server/routes/loader";
+import {
+  makeCacheableVersionedLoaderQuery,
+  makeGenPublishedLoaderCodeBundleOpts,
+} from "@/wab/server/routes/loader";
 import { withSpan } from "@/wab/server/util/apm-util";
 import { uniqBy } from "lodash";
 import { PlasmicWorkerPool } from "./pool";
@@ -75,6 +78,18 @@ export async function prefillCloudfront(
         })}, appDir=${publishment.appDir} projectIds=${JSON.stringify(
           publishment.projectIds
         )} pkgVersionId=${pkgVersionId}`;
+
+        const cacheableQuery = makeCacheableVersionedLoaderQuery({
+          browserOnly: publishment.browserOnly,
+          loaderVersion: publishment.loaderVersion,
+          nextjsAppDir: publishment.appDir ?? false,
+          platform: publishment.platform,
+          resolvedProjectIdSpecs,
+          i18nKeyScheme: publishment.i18nKeyScheme ?? undefined,
+          i18nTagPrefix: publishment.i18nTagPrefix ?? undefined,
+          skipHead: false,
+        });
+
         await withSpan(
           "loader-prefill",
           async () => {
@@ -96,6 +111,7 @@ export async function prefillCloudfront(
                   keyScheme: publishment.i18nKeyScheme ?? undefined,
                   tagPrefix: publishment.i18nTagPrefix ?? undefined,
                 },
+                cacheableQuery,
               })
             );
           },

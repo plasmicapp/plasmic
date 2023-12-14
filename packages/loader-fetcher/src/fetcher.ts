@@ -1,4 +1,4 @@
-import { Api, isBrowser, LoaderBundleOutput } from "./api";
+import { Api, CodeModule, isBrowser, LoaderBundleOutput } from "./api";
 
 export interface FetcherOptions {
   projects: {
@@ -43,6 +43,10 @@ export class PlasmicModulesFetcher {
       nativeFetch: opts.nativeFetch,
       manualRedirect: opts.manualRedirect,
     });
+  }
+
+  getChunksUrl(bundle: LoaderBundleOutput, modules: CodeModule[]) {
+    return this.api.getChunksUrl(bundle, modules);
   }
 
   async fetchAllData() {

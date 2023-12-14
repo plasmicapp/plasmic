@@ -70,6 +70,10 @@ export interface NextInitOptions extends InitOptions {
 export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
     constructor(internal: InternalPlasmicComponentLoader);
     // (undocumented)
+    __unstable_fetchComponentMetadata: PlasmicComponentLoader["fetchComponentData"];
+    // (undocumented)
+    __unstable_maybeFetchComponentMetadata: PlasmicComponentLoader["maybeFetchComponentData"];
+    // (undocumented)
     getActiveVariation(opts: {
         req?: ServerRequest;
         res?: ServerResponse;
@@ -93,7 +97,9 @@ export { PlasmicComponent }
 export { plasmicPrepass }
 
 // @public (undocumented)
-export function PlasmicRootProvider(props: Omit<React_2.ComponentProps<typeof PlasmicRootProvider_2>, "Head">): React_2.JSX.Element;
+export function PlasmicRootProvider(props: Omit<React_2.ComponentProps<typeof PlasmicRootProvider_2>, "Head"> & {
+    skipChunks?: boolean;
+}): React_2.JSX.Element;
 
 export { PlasmicTranslator }
 

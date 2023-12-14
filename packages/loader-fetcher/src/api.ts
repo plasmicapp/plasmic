@@ -104,6 +104,8 @@ export interface LoaderBundleOutput {
   globalGroups: GlobalGroupMeta[];
   projects: ProjectMeta[];
   activeSplits: Split[];
+  // URL seach params for loading JavaScript chunks in this bundle
+  bundleUrlQuery: string | null;
 }
 
 export interface LoaderHtmlOutput {
@@ -305,5 +307,14 @@ export class Api {
     return {
       "x-plasmic-api-project-tokens": tokens,
     };
+  }
+
+  getChunksUrl(bundle: LoaderBundleOutput, modules: CodeModule[]) {
+    return `${this.host}/api/v1/loader/chunks?${
+      bundle.bundleUrlQuery
+    }&fileName=${modules
+      .map((m) => m.fileName)
+      .sort()
+      .join(",")}`;
   }
 }

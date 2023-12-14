@@ -79,6 +79,8 @@ export interface LoaderBundleOutput {
   globalGroups: GlobalGroupMeta[];
   projects: ProjectMeta[];
   activeSplits: ActiveSplit[];
+  // URL seach params for loading JavaScript chunks in this bundle
+  bundleUrlQuery: string | null;
 }
 
 export interface CodeModule {
@@ -99,6 +101,7 @@ type BundleOpts = {
   mode: "production" | "development";
   loaderVersion: number;
   browserOnly: boolean;
+  cacheableQuery?: string;
 };
 
 const RE_RENDERER_FILE = /\/render__[^./]*\.tsx/g;
@@ -530,7 +533,7 @@ async function bundleModulesRollup(
   const getModules = (output: typeof outputBrowser) =>
     sortBy(
       withoutNils(
-        output.map((out) => {
+        output.map<CodeModule | AssetModule | undefined>((out) => {
           if (out.type === "chunk") {
             return {
               fileName: out.fileName,
@@ -540,13 +543,13 @@ async function bundleModulesRollup(
                 ...withoutNils([entry2css.get(out.fileName)]),
               ],
               type: "code",
-            } as CodeModule;
+            };
           } else if (out.type === "asset") {
             return {
               fileName: out.fileName,
               source: ensureString(out.source),
               type: "asset",
-            } as AssetModule;
+            };
           } else {
             return undefined;
           }
@@ -760,6 +763,7 @@ function makeLoaderBundleOutput(
       })),
       (x) => x.id
     ),
+    bundleUrlQuery: opts.cacheableQuery ?? null,
   };
   return output;
 }

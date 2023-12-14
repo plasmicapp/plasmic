@@ -4,6 +4,7 @@
 
 ```ts
 
+import { CodeModule } from '@plasmicapp/loader-fetcher';
 import { ComponentMeta } from '@plasmicapp/loader-core';
 import { ComponentMeta as ComponentMeta_2 } from '@plasmicapp/loader-fetcher';
 import { LoaderBundleCache } from '@plasmicapp/loader-core';
@@ -104,6 +105,8 @@ export class ReactServerPlasmicComponentLoader {
     getActiveSplits(): Split[];
     // (undocumented)
     getBundle(): LoaderBundleOutput_2;
+    // (undocumented)
+    getChunksUrl(bundle: LoaderBundleOutput_2, modules: CodeModule[]): string;
     // (undocumented)
     maybeFetchComponentData(specs: ComponentLookupSpec[], opts?: FetchComponentDataOpts): Promise<ComponentRenderData | null>;
     // (undocumented)

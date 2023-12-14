@@ -177,6 +177,7 @@ describe("Prefill cloudfront", () => {
             },
             browserOnly: false,
             preferEsbuild: true,
+            cacheableQuery: `cb=${genCodeBundleMod.LOADER_CACHE_BUST}&platform=react&loaderVersion=8&projectId=p1%400.0.1&projectId=p2%400.0.2&projectId=p3%400.0.3`,
           }
         );
         expect(genPublishedLoaderCodeBundle).toHaveBeenNthCalledWith(
@@ -200,6 +201,7 @@ describe("Prefill cloudfront", () => {
             preferEsbuild: true,
             i18nKeyScheme: "hash",
             i18nTagPrefix: "n",
+            cacheableQuery: `cb=${genCodeBundleMod.LOADER_CACHE_BUST}&platform=nextjs&nextjsAppDir=true&loaderVersion=8&projectId=p1%400.0.1&projectId=p2%400.0.2&projectId=p3%400.0.3&i18nKeyScheme=hash&i18nTagPrefix=n`,
           }
         );
         expect(genPublishedLoaderCodeBundle).toHaveBeenNthCalledWith(
@@ -219,6 +221,7 @@ describe("Prefill cloudfront", () => {
             },
             browserOnly: true,
             preferEsbuild: true,
+            cacheableQuery: `cb=${genCodeBundleMod.LOADER_CACHE_BUST}&platform=react&loaderVersion=8&projectId=p1%400.0.1&browserOnly=true`,
           }
         );
 

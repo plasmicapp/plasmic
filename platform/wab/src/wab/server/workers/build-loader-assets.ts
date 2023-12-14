@@ -16,6 +16,7 @@ export async function workerBuildAssets(
     loaderVersion: number;
     browserOnly: boolean;
     preferEsbuild: boolean;
+    cacheableQuery?: string;
   }
 ) {
   return new Promise<LoaderBundleOutput>((resolve, reject) => {
@@ -40,6 +41,7 @@ export async function workerBuildAssets(
                 mode: opts.mode,
                 loaderVersion: opts.loaderVersion,
                 browserOnly: opts.browserOnly,
+                cacheableQuery: opts.cacheableQuery,
               },
               opts.preferEsbuild
             );

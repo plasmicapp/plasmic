@@ -13,12 +13,14 @@ import { IncomingMessage, ServerResponse } from "http";
 // assert(typeof NextHead === 'object')
 // assert(typeof NextHead.default === 'function')
 // ```
+import type { CodeModule } from "@plasmicapp/loader-core";
 import NextHead from "next/head.js";
 import NextLink from "next/link.js";
 import * as NextRouter from "next/router.js";
+import Script from "next/script";
 import * as React from "react";
 import { initPlasmicLoaderWithCache } from "./cache";
-import type { NextInitOptions } from "./shared-exports";
+import type { ComponentRenderData, NextInitOptions } from "./shared-exports";
 
 export {
   DataCtxReader,
@@ -50,6 +52,33 @@ type ServerRequest = IncomingMessage & {
     [key: string]: string;
   };
 };
+
+const reactMajorVersion = +React.version.split(".")[0];
+
+function filterCodeFromRenderData(data: ComponentRenderData) {
+  if (reactMajorVersion >= 18 && !!data.bundle.bundleUrlQuery) {
+    // Keep the entrypoints
+    const entrypoints = new Set([
+      ...data.entryCompMetas.map((compMeta) => compMeta.entry),
+      "root-provider.js",
+      ...data.bundle.projects
+        .map((x) => x.globalContextsProviderFileName)
+        .filter((x) => !!x),
+      ...data.bundle.components
+        .filter((c) => c.isGlobalContextProvider)
+        .map((c) => c.entry),
+      ...data.bundle.globalGroups.map((g) => g.contextFile),
+    ]);
+
+    data.bundle.modules.browser = data.bundle.modules.browser.map((module) => {
+      if (module.type !== "code" || entrypoints.has(module.fileName)) {
+        return module;
+      }
+      return { ...module, code: "" };
+    });
+  }
+}
+
 export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
   constructor(internal: InternalPlasmicComponentLoader) {
     super(internal);
@@ -99,6 +128,22 @@ export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
       },
     });
   }
+
+  __unstable_maybeFetchComponentMetadata: PlasmicComponentLoader["maybeFetchComponentData"] =
+    async (...specs) => {
+      const data = await this.maybeFetchComponentData(...specs);
+      if (data) {
+        filterCodeFromRenderData(data);
+      }
+      return data;
+    };
+
+  __unstable_fetchComponentMetadata: PlasmicComponentLoader["fetchComponentData"] =
+    async (...specs) => {
+      const data = await this.fetchComponentData(...specs);
+      filterCodeFromRenderData(data);
+      return data;
+    };
 }
 
 export function initPlasmicLoader(opts: NextInitOptions) {
@@ -165,13 +210,77 @@ const PlasmicNextLink = React.forwardRef(function PlasmicNextLink(
 
 export function PlasmicRootProvider(
   // We omit Head but still allow override for Link
-  props: Omit<React.ComponentProps<typeof CommonPlasmicRootProvider>, "Head">
+  props: Omit<
+    React.ComponentProps<typeof CommonPlasmicRootProvider>,
+    "Head"
+  > & { skipChunks?: boolean }
 ) {
   return (
-    <CommonPlasmicRootProvider
-      Head={NextHead}
-      Link={PlasmicNextLink}
-      {...props}
-    />
+    <>
+      {!props.skipChunks &&
+        renderDynamicPayloadScripts(props.loader, props.prefetchedData)}
+      <CommonPlasmicRootProvider
+        Head={NextHead}
+        Link={PlasmicNextLink}
+        {...props}
+      />
+    </>
+  );
+}
+
+function renderDynamicPayloadScripts(
+  loader: PlasmicComponentLoader,
+  prefetchedData: ComponentRenderData | undefined
+) {
+  const missingModulesData =
+    prefetchedData &&
+    prefetchedData.bundle.modules.browser.filter(
+      (module): module is CodeModule => module.type === "code" && !module.code
+    );
+  if (!missingModulesData || missingModulesData.length === 0) {
+    return null;
+  }
+  return (
+    <>
+      <Script
+        strategy="beforeInteractive"
+        key={"init:" + missingModulesData.map((m) => m.fileName).join(";")}
+        id={"init:" + missingModulesData.map((m) => m.fileName).join(";")}
+        dangerouslySetInnerHTML={{
+          __html: `
+            if (!globalThis.__PlasmicBundlePromises) {
+              globalThis.__PlasmicBundlePromises = {};
+            }
+            ${missingModulesData
+              .map(
+                (
+                  module
+                ) => `if (!globalThis.__PlasmicBundlePromises[${JSON.stringify(
+                  module.fileName
+                )}]) {
+                  globalThis.__PlasmicBundlePromises[${JSON.stringify(
+                    module.fileName
+                  )}] = new Promise((resolve) => {
+                    globalThis.__PlasmicBundlePromises[${JSON.stringify(
+                      "__promise_resolve_" + module.fileName
+                    )}] = resolve;
+                  })
+                }
+              `
+              )
+              .join("\n")}`.trim(),
+        }}
+      ></Script>
+      {missingModulesData.length > 0 && (
+        <Script
+          strategy="beforeInteractive"
+          key={"load:" + missingModulesData.map((m) => m.fileName).join(";")}
+          id={"load:" + missingModulesData.map((m) => m.fileName).join(";")}
+          defer
+          async
+          src={loader.getChunksUrl(prefetchedData.bundle, missingModulesData)}
+        />
+      )}
+    </>
   );
 }

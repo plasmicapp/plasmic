@@ -58,6 +58,7 @@ export async function genPublishedLoaderCodeBundle(
     preferEsbuild: boolean;
     i18nKeyScheme: LocalizationKeyScheme | undefined;
     i18nTagPrefix: string | undefined;
+    cacheableQuery: string;
     skipHead?: boolean;
   }
 ) {
@@ -88,6 +89,7 @@ export async function genPublishedLoaderCodeBundle(
       i18nKeyScheme: opts.i18nKeyScheme,
       i18nTagPrefix: opts.i18nTagPrefix,
       skipHead: opts.skipHead,
+      cacheableQuery: opts.cacheableQuery,
     }
   );
 }
@@ -157,6 +159,7 @@ async function genLoaderCodeBundleForProjectVersions(
     preferEsbuild: boolean;
     i18nKeyScheme?: LocalizationKeyScheme;
     i18nTagPrefix: string | undefined;
+    cacheableQuery?: string;
     skipHead?: boolean;
   }
 ) {
@@ -252,6 +255,7 @@ async function genLoaderCodeBundleForProjectVersions(
         loaderVersion: opts.loaderVersion,
         browserOnly: opts.browserOnly,
         preferEsbuild: opts.preferEsbuild,
+        cacheableQuery: opts.cacheableQuery,
       },
     ]);
   };

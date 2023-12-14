@@ -194,6 +194,7 @@ import {
   buildVersionedLoaderReprV3,
   getHydrationScript,
   getHydrationScriptVersioned,
+  getLoaderChunk,
   prefillPublishedLoader,
 } from "./routes/loader";
 import { genTranslatableStrings } from "./routes/localization";
@@ -363,6 +364,7 @@ const isCsrfFreeRoute = (pathname: string) => {
     pathname.includes("/api/v1/clip/") ||
     pathname.includes("/code/") ||
     pathname.includes("/api/v1/loader/code") ||
+    pathname.includes("/api/v1/loader/chunks") ||
     pathname.includes("/api/v1/shopify/publish") ||
     pathname.includes("/api/v1/shopify/webhooks/") ||
     pathname.includes("/jsbundle") ||
@@ -1187,6 +1189,7 @@ export function addCodegenRoutes(app: express.Application) {
     apiAuth,
     withNext(buildLatestLoaderAssets)
   );
+  app.get("/api/v1/loader/chunks", cors(), withNext(getLoaderChunk));
   app.get(
     "/api/v1/loader/html/published/:projectId/:component",
     cors(),
