@@ -856,7 +856,7 @@ const PropValueEditor_ = (
         ? {
             ...env,
             ..._getContextDependentValue(hackyCast(propType).extraData),
-          } ?? {}
+          }
         : {}),
     };
     return (
@@ -891,7 +891,7 @@ const PropValueEditor_ = (
         ? {
             ...env,
             ..._getContextDependentValue(hackyCast(propType).extraData),
-          } ?? {}
+          }
         : {}),
     };
 
