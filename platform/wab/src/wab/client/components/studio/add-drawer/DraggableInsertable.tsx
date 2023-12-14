@@ -1,20 +1,22 @@
+import { DragItem } from "@/wab/client/components/widgets";
+import { AddTplItem } from "@/wab/client/definitions/insertables";
+import { DragInsertManager } from "@/wab/client/Dnd";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ensure } from "@/wab/common";
+import { Box, Pt } from "@/wab/geom";
 import * as React from "react";
-import { ensure } from "../../../../common";
-import { Box, Pt } from "../../../../geom";
-import { AddTplItem } from "../../../definitions/insertables";
-import { DragInsertManager } from "../../../Dnd";
-import { StudioCtx } from "../../../studio-ctx/StudioCtx";
-import { DragItem } from "../../widgets";
 
 export function DraggableInsertable(props: {
   spec: AddTplItem;
+  shouldInterceptInsert?: (item: AddTplItem) => boolean;
   sc: StudioCtx;
   children: React.ReactNode;
   onDragStart?: () => void;
   onDragEnd?: () => void;
   minPx?: number;
 }) {
-  const { spec, sc, onDragStart, onDragEnd, minPx } = props;
+  const { spec, shouldInterceptInsert, sc, onDragStart, onDragEnd, minPx } =
+    props;
   const dragManagerRef = React.useRef<DragInsertManager>();
   // `onDrag` might run before `onDragStart` finishes since
   // `DragInsertManager.build` is async, so we chain the drag operations
@@ -62,6 +64,19 @@ export function DraggableInsertable(props: {
       }}
       onDragEnd={async () => {
         previousDragOps.current = previousDragOps.current.then(async () => {
+          if (shouldInterceptInsert && shouldInterceptInsert(spec)) {
+            // If it was intercepted, we simulate a normal drag end.
+            sc.stopUnlogged();
+            sc.setIsDraggingObject(false);
+            ensure(
+              dragManagerRef.current,
+              () => "Expected `dragManagerRef.current` to exist"
+            ).endDrag();
+            dragManagerRef.current = undefined;
+            onDragEnd && onDragEnd();
+            return;
+          }
+
           const manager = dragManagerRef.current;
           const vc = manager?.tentativeVc;
           const extraInfo = spec.asyncExtraInfo
