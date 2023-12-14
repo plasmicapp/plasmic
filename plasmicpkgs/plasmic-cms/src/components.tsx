@@ -11,6 +11,7 @@ import { DatabaseConfig, HttpError, mkApi, QueryParams } from "./api";
 import {
   CountProvider,
   DatabaseProvider,
+  makeDatabaseCacheKey,
   QueryResultProvider,
   RowProvider,
   TablesProvider,
@@ -133,7 +134,7 @@ function TablesFetcher({ children }: { children: React.ReactNode }) {
 
   const cacheKey = JSON.stringify({
     component: "TablesFetcher",
-    databaseConfig,
+    databaseConfig: makeDatabaseCacheKey(databaseConfig),
   });
   const maybeData = usePlasmicQueryData(cacheKey, async () => {
     if (!isDatabaseConfigured(databaseConfig)) {
@@ -391,7 +392,7 @@ export function CmsQueryRepeater({
     component: "CmsQueryLoader",
     mode,
     table,
-    databaseConfig,
+    databaseConfig: makeDatabaseCacheKey(databaseConfig),
     params,
   });
 
@@ -469,6 +470,7 @@ interface CmsRowFieldProps extends CanvasComponentProps<RowContextData> {
   field: string;
   className?: string;
   dateFormat?: string;
+  usePlasmicTheme?: boolean;
   themeResetClassName?: string;
 }
 
@@ -582,6 +584,12 @@ export const cmsRowFieldMeta: ComponentMeta<CmsRowFieldProps> = {
         },
       ],
     },
+    usePlasmicTheme: {
+      type: "boolean",
+      displayName: "Use Plasmic tag styles?",
+      description: "For HTML content, use tag styles defined in Plasmic",
+      advanced: true,
+    },
     themeResetClassName: {
       type: "themeResetClass",
       targetAllTags: true,
@@ -598,6 +606,7 @@ export function CmsRowField({
   field,
   dateFormat,
   setControlContextData,
+  usePlasmicTheme,
   themeResetClassName,
   ...rest
 }: CmsRowFieldProps) {
@@ -649,7 +658,7 @@ export function CmsRowField({
   }
   return data
     ? renderValue(data, fieldMeta.type, {
-        className: `${themeResetClassName} ${className}`,
+        className: `${usePlasmicTheme ? themeResetClassName : ""} ${className}`,
         ...rest,
       })
     : null;

@@ -32,6 +32,14 @@ export function useDatabase() {
   return useSelector(databaseContextKey) as DatabaseConfig | undefined;
 }
 
+export function makeDatabaseCacheKey(config: DatabaseConfig | undefined) {
+  if (!config) {
+    return null;
+  }
+  const { databaseToken, ...rest } = config;
+  return JSON.stringify(rest);
+}
+
 export function DatabaseProvider({
   config,
   children,
