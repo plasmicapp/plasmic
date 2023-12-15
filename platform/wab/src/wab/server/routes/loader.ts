@@ -509,6 +509,9 @@ export async function getLoaderChunk(req: Request, res: Response) {
 
   const response = `
     (() => {
+      if (!globalThis.__PLASMIC_CHUNKS) {
+        globalThis.__PLASMIC_CHUNKS = {};
+      }
       ${modules
         .map((module) =>
           `globalThis.__PLASMIC_CHUNKS[${JSON.stringify(
