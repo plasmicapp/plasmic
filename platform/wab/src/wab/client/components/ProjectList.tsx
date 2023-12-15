@@ -1,20 +1,18 @@
-import React, { useState } from "react";
-import { Helmet } from "react-helmet";
-import NewProjectModal from "../../../NewProjectModal";
-import { mkIdMap } from "../../collections";
-import { ensure, filterMapTruthy, spawn } from "../../common";
-import { DEVFLAGS } from "../../devflags";
-import { ApiPermission, ApiProject, ApiUser } from "../../shared/ApiSchema";
-import { getExtraData, updateExtraDataJson } from "../../shared/ApiSchemaUtil";
-import { hideStarters } from "../app-ctx";
-import { U } from "../cli-routes";
-import { useAppCtx } from "../contexts/AppContexts";
-import { getUploadedFile } from "../dom-utils";
-import { useProjectsFilter } from "../hooks/useProjectsFilter";
+import NewProjectModal from "@/NewProjectModal";
+import { hideStarters } from "@/wab/client/app-ctx";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import { useProjectsFilter } from "@/wab/client/hooks/useProjectsFilter";
 import {
   DefaultProjectListProps,
   PlasmicProjectList,
-} from "../plasmic/plasmic_kit/PlasmicProjectList";
+} from "@/wab/client/plasmic/plasmic_kit/PlasmicProjectList";
+import { mkIdMap } from "@/wab/collections";
+import { ensure, filterMapTruthy, spawn } from "@/wab/common";
+import { DEVFLAGS } from "@/wab/devflags";
+import { ApiPermission, ApiProject, ApiUser } from "@/wab/shared/ApiSchema";
+import { getExtraData, updateExtraDataJson } from "@/wab/shared/ApiSchemaUtil";
+import React, { useState } from "react";
+import { Helmet } from "react-helmet";
 import ProjectListItem from "./ProjectListItem";
 import StarterGroup from "./StarterGroup";
 import { Spinner } from "./widgets";
@@ -127,14 +125,7 @@ function ProjectList(props: ProjectListProps) {
           render: () => null,
         }}
         uploadButton={{
-          onClick: () =>
-            getUploadedFile(async (data: string) => {
-              await appCtx.api.importProject(data).then(({ projectId }) => {
-                document.location.href = U.project({
-                  projectId: projectId,
-                });
-              });
-            }),
+          onClick: () => alert("We do this from the admin page now"),
         }}
         noProjects={!projects.length}
         noProjectsText={
