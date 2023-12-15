@@ -1,16 +1,7 @@
-import { notification } from "antd";
-import * as downscale from "downscale";
-import { imageSize } from "image-size";
-import find from "lodash/find";
-import isFunction from "lodash/isFunction";
-import memoize from "lodash/memoize";
-import * as parseDataUrl from "parse-data-url";
-import React from "react";
-import intersection from "rectangle-overlap";
-import { ImageBackground, mkBackgroundLayer } from "../bg-styles";
-import { ensure, ensureHTMLElt, ensureString } from "../common";
-import { Rect } from "../geom";
-import { ImageAssetType } from "../image-asset-type";
+import { ImageBackground, mkBackgroundLayer } from "@/wab/bg-styles";
+import { ensure, ensureHTMLElt, ensureString } from "@/wab/common";
+import { Rect } from "@/wab/geom";
+import { ImageAssetType } from "@/wab/image-asset-type";
 import {
   asSvgDataUrl,
   imageDataUriToBlob,
@@ -18,8 +9,7 @@ import {
   parseSvgXml,
   sanitizeImageDataUrl,
   SVG_MEDIA_TYPE as SVG_CONTENT_TYPE,
-  SVG_MEDIA_TYPE,
-} from "../shared/data-urls";
+} from "@/wab/shared/data-urls";
 import {
   clearExplicitColors,
   convertSvgToTextSized,
@@ -27,7 +17,16 @@ import {
 } from "@/wab/shared/svg-utils";
 import { processSvg } from "@/wab/shared/svgo";
 import { ASPECT_RATIO_SCALE_FACTOR } from "@/wab/tpls";
+import imageSize from "@coderosh/image-size";
+import { notification } from "antd";
+import * as downscale from "downscale";
 import $ from "jquery";
+import find from "lodash/find";
+import isFunction from "lodash/isFunction";
+import memoize from "lodash/memoize";
+import * as parseDataUrl from "parse-data-url";
+import React from "react";
+import intersection from "rectangle-overlap";
 import { AppCtx } from "./app-ctx";
 import defer = setTimeout;
 
@@ -288,67 +287,67 @@ export const getUploadedFile = (
   $input.trigger("click");
 };
 
-export function parseImageSync(base64: string): {
+export async function parseImage(base64: string): Promise<{
   width: number;
   height: number;
-  aspectRatio: number | undefined;
-  type: string;
-} {
+  source: string;
+}> {
   const binary = atob(base64);
   const bytes = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i++) {
     bytes[i] = binary.charCodeAt(i);
   }
-  const meta = imageSize(Buffer.from(bytes));
+  const meta = await imageSize(Buffer.from(bytes));
   return {
+    source: new Blob([bytes]).toString(),
     width: meta.width || 0,
     height: meta.height || 0,
-    aspectRatio:
-      meta.type === SVG_MEDIA_TYPE
-        ? processSvg(
-            typeof window === "undefined"
-              ? Buffer.from(base64).toString("utf8")
-              : window.atob(base64)
-          )?.aspectRatio
-        : undefined,
-    type: ensure(meta.type, `Unexpected undefined type in ${meta}`),
   };
 }
 
-export async function deriveImageSize(
-  url: string
-): Promise<{ width: number; height: number }> {
-  const img = document.createElement("img");
-  let resolver;
-  let rejector;
-  const promise = new Promise<{ width: number; height: number }>(
+async function deriveImageSize(src: string | ArrayBuffer | Blob) {
+  return new Promise<{ height: number; width: number; source: string }>(
     (resolve, reject) => {
-      resolver = resolve;
-      rejector = reject;
+      const image = new Image();
+      let source: string;
+
+      if (typeof src === "string") {
+        source = src;
+      } else if (src instanceof ArrayBuffer) {
+        source = URL.createObjectURL(new Blob([new Uint8Array(src)]));
+      } else if (src instanceof Blob) {
+        source = URL.createObjectURL(src);
+      } else {
+        throw new Error(`Invalid argument provided`);
+      }
+
+      image.onload = () => {
+        const { height, width } = image;
+        if (src instanceof Blob) {
+          URL.revokeObjectURL(source);
+        }
+
+        resolve({ height, width, source });
+      };
+
+      image.onerror = (
+        e,
+        _source?: string,
+        _lineno?: number,
+        _colno?: number,
+        error?: Error
+      ) => {
+        reject(
+          error ||
+            new Error(
+              "Browser cannot load this image - if you believe this is a valid image file, please share it with team@plasmic.app."
+            )
+        );
+      };
+
+      image.src = source;
     }
   );
-  img.onload = () => {
-    resolver({
-      width: img.naturalWidth || img.width,
-      height: img.naturalHeight || img.height,
-    });
-  };
-  img.onerror = (
-    e,
-    source?: string,
-    lineno?: number,
-    colno?: number,
-    error?: Error
-  ) => {
-    rejector(
-      error ||
-        new Error(
-          "Browser cannot load this image - if you believe this is a valid image file, please share it with team@plasmic.app."
-        )
-    );
-  };
-  img.src = url;
-  return promise;
 }
 
 export function getBackgroundImageProps(url: string) {
