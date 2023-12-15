@@ -408,7 +408,7 @@ export async function buildLatestLoaderAssets(req: Request, res: Response) {
 }
 
 export async function getLoaderChunk(req: Request, res: Response) {
-  const mgr = userDbMgr(req);
+  const mgr = superDbMgr(req);
   const {
     platform,
     nextjsAppDir,
