@@ -2176,6 +2176,11 @@ export class StudioCtx extends WithDbCtx {
     }
   }
 
+  // Set the studio focus to focus only on the frame object, not on the root node.
+  setStudioFocusOnlyOnFrame(frame: ArenaFrame | undefined) {
+    this.setHighLevelFocusOnly(this.tryGetViewCtxForFrame(frame), frame);
+  }
+
   // In this case, the focus is inside a viewCtx. Set the viewCtx with the
   // focus.
   setStudioFocusOnViewCtxContent(viewCtx: ViewCtx) {

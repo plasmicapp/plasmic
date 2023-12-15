@@ -13,12 +13,7 @@ import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { useForceUpdate } from "@/wab/client/useForceUpdate";
 import { assert, cx, ensure, spawn, spawnWrapper, tuple } from "@/wab/common";
 import { ScreenDimmer } from "@/wab/commons/components/ScreenDimmer";
-import {
-  AnyArena,
-  FrameViewMode,
-  getArenaName,
-  getFrameHeight,
-} from "@/wab/shared/Arenas";
+import { AnyArena, getArenaName, getFrameHeight } from "@/wab/shared/Arenas";
 import { siteToAllGlobalVariants } from "@/wab/shared/cached-selectors";
 import {
   toClassName,
@@ -384,17 +379,27 @@ export const CanvasFrame = observer(function CanvasFrame({
       return;
     }
     spawn(
-      studioCtx.changeUnsafe(() => {
-        studioCtx.setStudioFocusOnFrameContents(arenaFrame);
-
-        if (arenaFrame.viewMode === FrameViewMode.Stretch) {
-          studioCtx
-            .focusedViewCtx()
-            ?.setStudioFocusByTpl(arenaFrame.container.component.tplTree);
-        }
+      studioCtx.change(({ success }) => {
+        studioCtx.setStudioFocusOnFrame({ frame: arenaFrame });
+        return success();
       })
     );
   }, [studioCtx]);
+  const handleArenaHandleClick = useCallback(
+    (e?: React.MouseEvent<HTMLElement>) => {
+      if (studioCtx.isInteractiveMode) {
+        return;
+      }
+      spawn(
+        studioCtx.change(({ success }) => {
+          studioCtx.setStudioFocusOnlyOnFrame(arenaFrame);
+          return success();
+        })
+      );
+      e?.stopPropagation();
+    },
+    [studioCtx]
+  );
 
   useEffect(() => {
     if (loadState === "ready-to-load" && iframeRef.current) {
@@ -616,7 +621,7 @@ export const CanvasFrame = observer(function CanvasFrame({
         <CanvasHeader studioCtx={studioCtx} frame={arenaFrame} arena={arena} />
         <CanvasArtboardSelectionHandle
           frame={arenaFrame}
-          onClick={handleSelectionClick}
+          onClick={handleArenaHandleClick}
         />
         {studioCtx.rightTabKey === "comments" && (
           <CommentOverlays arena={arena} arenaFrame={arenaFrame} />
