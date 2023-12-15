@@ -8038,10 +8038,16 @@ export class DbMgr implements MigrationDbMgr {
 
   async upsertAppAuthConfig(
     projectId: ProjectId,
-    config: Partial<AppAuthConfig>
+    config: Partial<AppAuthConfig>,
+    skipPermissionCheck = false
   ) {
-    await this.checkProjectPerms(projectId, "editor", "upsert app auth config");
-    const { registeredRoleId } = config;
+    if (!skipPermissionCheck) {
+      await this.checkProjectPerms(
+        projectId,
+        "editor",
+        "upsert app auth config"
+      );
+    }
     let appAuthConfig = await this.appAuthConfigs().findOne({
       projectId,
       ...excludeDeleted(),
@@ -9075,7 +9081,7 @@ export class DbMgr implements MigrationDbMgr {
     });
     await this.appAuthConfigs().save(newAuthConfig);
 
-    const accessRules = await this.listAppAccessRules(fromProjectId);
+    const accessRules = await this.listAppAccessRules(fromProjectId, true);
     const newAccessRules = accessRules.map((accessRule) => {
       // Also requires to fix directoryEndUserGroupId
       const newAccessRule = this.appEndUserAccess().create({
