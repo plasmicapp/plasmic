@@ -1812,121 +1812,128 @@ function TourCypressTest() {
   );
 }
 
-function TeamJwtOpen() {
+function WhiteLabelTeamJwtOpen() {
   const nonAuthCtx = useNonAuthCtx();
-  const [form] = Form.useForm();
+  const [team, setTeam] = React.useState<ApiTeam | undefined>(undefined);
 
   return (
+    <>
+      <TeamWhiteLabelLookup onChange={(t) => setTeam(t)} />
+      {team && (
+        <>
+          <h3>
+            Team "{team.name}" ({team.whiteLabelName})
+          </h3>
+          <Form
+            initialValues={team.whiteLabelInfo ?? undefined}
+            onFinish={async (values) => {
+              console.log("FORM SUBMISSION", values);
+              const whiteLabelInfo: TeamWhiteLabelInfo = {
+                openRedirect: {
+                  ...values.openRedirect,
+                  scheme: "jwt",
+                  algo: "RS256",
+                },
+              };
+              console.log("New WhiteLabelInfo", whiteLabelInfo);
+              await nonAuthCtx.api.updateTeamWhiteLabelInfo(
+                team.id,
+                whiteLabelInfo
+              );
+              notification.success({ message: "Updated!" });
+            }}
+          >
+            <Form.Item
+              name={["openRedirect", "publicKey"]}
+              label="JWT Public Key (RS256)"
+            >
+              <Input.TextArea />
+            </Form.Item>
+            <Form.Item>
+              <Button htmlType="submit" type="primary">
+                Save
+              </Button>
+            </Form.Item>
+          </Form>
+        </>
+      )}
+    </>
+  );
+}
+
+function TeamWhiteLabelLookup(props: { onChange: (team: ApiTeam) => void }) {
+  const { onChange } = props;
+  const nonAuthCtx = useNonAuthCtx();
+  return (
     <Form
-      form={form}
-      onFinish={async (event) => {
-        console.log("FORM SUBMISSION", event);
-        const teamName = event.whiteLabelName;
+      layout="inline"
+      onFinish={async (values) => {
+        const teamName = values.whiteLabelName;
         const team = await nonAuthCtx.api.getTeamByWhiteLabelName(teamName);
-        const whiteLabelInfo: TeamWhiteLabelInfo = {
-          openRedirect: {
-            ...event.whiteLabelInfo.openRedirect,
-            scheme: "jwt",
-            algo: "RS256",
-          },
-        };
-        await nonAuthCtx.api.updateTeamWhiteLabelInfo(team.id, whiteLabelInfo);
-        notification.success({ message: "Updated!" });
+        onChange(team);
       }}
     >
-      <Form.Item name="whiteLabelName" label="White label name">
-        <Input
-          onBlur={async () => {
-            const teamName = form.getFieldValue("whiteLabelName");
-            let team: ApiTeam;
-            try {
-              team = await nonAuthCtx.api.getTeamByWhiteLabelName(teamName);
-            } catch (err) {
-              notification.error({
-                message: `No team with name ${teamName}: ${err}`,
-              });
-              return;
-            }
-            console.log("GOT TERAM", team);
-            form.setFieldsValue({
-              whiteLabelInfo: team.whiteLabelInfo,
-            });
-          }}
-        />
-      </Form.Item>
-      <Form.Item
-        name={["whiteLabelInfo", "openRedirect", "publicKey"]}
-        label="JWT Public Key"
-      >
-        <Input.TextArea />
+      <Form.Item label="White label name" name="whiteLabelName">
+        <Input />
       </Form.Item>
       <Form.Item>
-        <Button htmlType="submit">Save</Button>
+        <Button htmlType="submit">Lookup</Button>
       </Form.Item>
     </Form>
   );
 }
-function TeamClientCredentials() {
+
+function WhiteLabelTeamClientCredentials() {
   const nonAuthCtx = useNonAuthCtx();
-  const [form] = Form.useForm();
+  const [team, setTeam] = React.useState<ApiTeam | undefined>(undefined);
 
   return (
-    <Form
-      form={form}
-      onFinish={async (event) => {
-        console.log("FORM SUBMISSION", event);
-        const teamName = event.whiteLabelName;
-        const team = await nonAuthCtx.api.getTeamByWhiteLabelName(teamName);
-        const whiteLabelInfo: TeamWhiteLabelInfo = {
-          apiClientCredentials: {
-            ...event.whiteLabelInfo.apiClientCredentials,
-          },
-        };
-        await nonAuthCtx.api.updateTeamWhiteLabelInfo(team.id, whiteLabelInfo);
-        notification.success({ message: "Updated!" });
-      }}
-    >
-      <Form.Item name="whiteLabelName" label="White label name">
-        <Input
-          onBlur={async () => {
-            const teamName = form.getFieldValue("whiteLabelName");
-            let team: ApiTeam;
-            try {
-              team = await nonAuthCtx.api.getTeamByWhiteLabelName(teamName);
-            } catch (err) {
-              notification.error({
-                message: `No team with name ${teamName}: ${err}`,
-              });
-              return;
-            }
-            form.setFieldsValue({
-              whiteLabelInfo: team.whiteLabelInfo,
-            });
-          }}
-        />
-      </Form.Item>
-      <Form.Item
-        name={["whiteLabelInfo", "apiClientCredentials", "clientId"]}
-        label="Client ID"
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        name={["whiteLabelInfo", "apiClientCredentials", "issuer"]}
-        label="Issuer"
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        name={["whiteLabelInfo", "apiClientCredentials", "aud"]}
-        label="Expected audience (aud)"
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item>
-        <Button htmlType="submit">Save</Button>
-      </Form.Item>
-    </Form>
+    <>
+      <TeamWhiteLabelLookup onChange={(t) => setTeam(t)} />
+      {team && (
+        <>
+          <h3>
+            Team "{team.name}" ({team.whiteLabelName})
+          </h3>
+          <Form
+            initialValues={team.whiteLabelInfo ?? undefined}
+            onFinish={async (event) => {
+              const whiteLabelInfo: TeamWhiteLabelInfo = {
+                apiClientCredentials: {
+                  ...event.apiClientCredentials,
+                },
+              };
+              await nonAuthCtx.api.updateTeamWhiteLabelInfo(
+                team.id,
+                whiteLabelInfo
+              );
+              notification.success({ message: "Updated!" });
+            }}
+          >
+            <Form.Item
+              name={["apiClientCredentials", "clientId"]}
+              label="Client ID"
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item name={["apiClientCredentials", "issuer"]} label="Issuer">
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name={["apiClientCredentials", "aud"]}
+              label="Expected audience (aud)"
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item>
+              <Button htmlType="submit" type="primary">
+                Save
+              </Button>
+            </Form.Item>
+          </Form>
+        </>
+      )}
+    </>
   );
 }
 
@@ -1981,12 +1988,12 @@ function WhiteLabeledTeam() {
           {
             key: "jwt",
             label: "Configure Redirect flow with JWT",
-            children: <TeamJwtOpen />,
+            children: <WhiteLabelTeamJwtOpen />,
           },
           {
             key: "client-credentials",
             label: "Configure API client credentials",
-            children: <TeamClientCredentials />,
+            children: <WhiteLabelTeamClientCredentials />,
           },
           {
             key: "create",
