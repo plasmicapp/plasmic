@@ -1535,6 +1535,7 @@ export async function updateHostUrl(req: Request, res: Response) {
       `Unexpected hostUrl to be of type ${typeof data.hostUrl}`
     );
   }
+  console.log("Updating project hostUrl", projectId, data.hostUrl);
   if (data.branchId == null) {
     const project = await mgr.updateProject({
       id: projectId,
@@ -2577,6 +2578,7 @@ async function makeProjectMeta(mgr: DbMgr, projectId: string) {
 export async function updateProjectMeta(req: Request, res: Response) {
   const projectId = req.params.projectId;
   const mgr = userDbMgr(req);
+  console.log("Updating project hostUrl", projectId, req.body.hostUrl);
   await mgr.updateProject({
     id: projectId,
     ...(req.body.hostUrl ? { hostUrl: req.body.hostUrl } : {}),
