@@ -10,6 +10,7 @@ import {
 import { ApiCmseRow, CmsDatabaseId, CmsTableId } from "@/wab/shared/ApiSchema";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import fastStringify from "fast-stringify";
+import { debounce } from "lodash";
 import * as React from "react";
 import { useHistory, useRouteMatch } from "react-router";
 import { useCmsTable, useMutateTableRows } from "./cms-contexts";
@@ -34,34 +35,49 @@ function CmsEntriesList_(
   const table = useCmsTable(databaseId, tableId);
   const mutateTableRows = useMutateTableRows();
   const [query, setQuery] = React.useState("");
+  const [debouncedQuery, setDebouncedQuery] = React.useState("");
+
+  const filteredRows = React.useMemo(() => {
+    if (!rows) {
+      return [];
+    }
+    const hasQuery = !!debouncedQuery && debouncedQuery.trim().length > 0;
+    const normQuery = debouncedQuery.toLowerCase();
+    return hasQuery
+      ? rows?.filter((row) =>
+          fastStringify(Object.values(row)).toLowerCase().includes(normQuery)
+        )
+      : rows;
+  }, [rows, debouncedQuery]);
+
+  const debouncedSetQuery = React.useCallback(
+    debounce((q: string) => {
+      setDebouncedQuery(q);
+    }, 300),
+    [setDebouncedQuery]
+  );
 
   if (!rows || !table) {
     return <Spinner />;
   }
-  const filteredRows = rows?.filter((row) =>
-    fastStringify(Object.values(row))
-      .toLowerCase()
-      .includes(query.toLowerCase())
-  );
 
   return (
     <PlasmicCmsEntriesList
       {...rest}
       root={{ ref }}
       modelName={table.name}
-      // searchInput={{
-      //   value: query,
-      //   onChange: (e) => setQuery(e.target.value),
-      // }}
+      searchInput={{
+        value: query,
+        onChange: (e) => {
+          setQuery(e.target.value);
+          debouncedSetQuery(e.target.value);
+        },
+      }}
       children={
         <>
-          {filteredRows
-            ? filteredRows.map((row) => (
-                <CmsEntryItem table={table} row={row} key={row.id} />
-              ))
-            : rows.map((row) => (
-                <CmsEntryItem table={table} row={row} key={row.id} />
-              ))}
+          {filteredRows.map((row) => (
+            <CmsEntryItem table={table} row={row} key={row.id} />
+          ))}
         </>
       }
       addButton={{

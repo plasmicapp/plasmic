@@ -33,6 +33,7 @@ import {
   ensureGlobalVariants,
 } from "@plasmicapp/react-web";
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import Searchbox from "../../components/widgets/Searchbox"; // plasmic-import: po7gr0PX4_gWo/component
 import CmsEntryItem from "../../components/cms/CmsEntryItem"; // plasmic-import: girCdMST6R/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -71,6 +72,7 @@ export const PlasmicCmsEntriesList__ArgProps = new Array<ArgPropType>(
 export type PlasmicCmsEntriesList__OverridesType = {
   root?: p.Flex<"div">;
   addButton?: p.Flex<typeof IconButton>;
+  searchInput?: p.Flex<typeof Searchbox>;
   text?: p.Flex<"div">;
 };
 
@@ -157,6 +159,14 @@ function PlasmicCmsEntriesList__RenderFunc(props: {
           withBackgroundHover={true}
         />
       </div>
+      <div className={classNames(projectcss.all, sty.freeBox__hQjfP)}>
+        <Searchbox
+          data-plasmic-name={"searchInput"}
+          data-plasmic-override={overrides.searchInput}
+          className={classNames("__wab_instance", sty.searchInput)}
+          placeholder={"Filter..."}
+        />
+      </div>
       {(hasVariant($state, "isEmpty", "isEmpty") ? false : true) ? (
         <p.Stack
           as={"div"}
@@ -205,8 +215,9 @@ function PlasmicCmsEntriesList__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: ["root", "addButton", "text"],
+  root: ["root", "addButton", "searchInput", "text"],
   addButton: ["addButton"],
+  searchInput: ["searchInput"],
   text: ["text"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
@@ -215,6 +226,7 @@ type DescendantsType<T extends NodeNameType> =
 type NodeDefaultElementType = {
   root: "div";
   addButton: typeof IconButton;
+  searchInput: typeof Searchbox;
   text: "div";
 };
 
@@ -279,6 +291,7 @@ export const PlasmicCmsEntriesList = Object.assign(
   {
     // Helper components rendering sub-elements
     addButton: makeNodeComponent("addButton"),
+    searchInput: makeNodeComponent("searchInput"),
     text: makeNodeComponent("text"),
 
     // Metadata about props expected for PlasmicCmsEntriesList

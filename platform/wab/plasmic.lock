@@ -7640,7 +7640,7 @@
     },
     {
       "projectId": "ieacQ3Z46z4gwo1FnaB5vY",
-      "version": "4.0.0",
+      "version": "4.1.0",
       "dependencies": {
         "tXkSR39sgCDWSitZxC5xFV": "75.3.1",
         "oT38tGyqov9SPWHpf3Y2Rf": "4.7.0",
@@ -7717,12 +7717,12 @@
         {
           "type": "renderModule",
           "assetId": "k2vc2stl18",
-          "checksum": "7691d46eef02acf7c29f3a9d83c35ed7"
+          "checksum": "e7fb06b29cc788d43e25e25b1940b146"
         },
         {
           "type": "cssRules",
           "assetId": "k2vc2stl18",
-          "checksum": "7691d46eef02acf7c29f3a9d83c35ed7"
+          "checksum": "e7fb06b29cc788d43e25e25b1940b146"
         },
         {
           "type": "renderModule",
