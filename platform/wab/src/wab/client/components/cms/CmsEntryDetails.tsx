@@ -52,9 +52,14 @@ export function getRowIdentifierText(
   const firstTextField = table.schema.fields.find((field, _) =>
     ["text", "long-text"].includes(field.type)
   )?.identifier;
-  let placeholder =
-    firstTextField && row.data && (row.data[""][firstTextField] as string);
-  if (!placeholder || placeholder === "") placeholder = "Untitled entry";
+  let placeholder: string | undefined = undefined;
+  if (firstTextField) {
+    placeholder = (row.draftData?.[""]?.[firstTextField] ||
+      row.data?.[""]?.[firstTextField]) as string | undefined;
+  }
+  if (!placeholder || placeholder === "") {
+    placeholder = "Untitled entry";
+  }
   return { placeholder };
 }
 

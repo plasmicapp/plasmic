@@ -370,7 +370,7 @@ export function CmsImageInput(props: {
             setUploading(false);
             onChange?.(result.files[0]);
           }}
-          accept={".gif,.jpg,.jpeg,.png,.tif,.svg"}
+          accept={".gif,.jpg,.jpeg,.png,.tif,.svg,.webp"}
         />
       )}
       {isUploading && <em>Uploading...</em>}

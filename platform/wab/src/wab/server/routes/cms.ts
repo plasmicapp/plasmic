@@ -244,7 +244,11 @@ export function cachePublicCmsRead(
   next: NextFunction
 ) {
   // Instruct cloudfront to cache reads for 1 minute for
-  // now to avoid huge spikes
-  res?.setHeader("Cache-Control", `max-age=${60}`);
+  // now to avoid huge spikes.  But we make an exception for
+  // when we are requesting the "draft" version, as that should
+  // always return the freshest draft data.
+  if (req.query.draft !== "1") {
+    res?.setHeader("Cache-Control", `max-age=${60}`);
+  }
   return next();
 }
