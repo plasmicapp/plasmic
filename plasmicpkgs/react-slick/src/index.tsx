@@ -4,7 +4,11 @@ import registerComponent, {
   ComponentHelpers,
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { Button } from "antd";
+// import { Button } from "antd";
+
+
+
+
 import React, {
   ChangeEvent,
   forwardRef,
@@ -210,7 +214,7 @@ export function registerSlider(loader?: {
 
   function NavigateSlides({ componentProps, studioOps }: ActionProps<any>) {
     const { dotCount, currentDotIndex } = getSlideInfo(componentProps);
-
+  
     return (
       <div
         style={{
@@ -221,19 +225,17 @@ export function registerSlider(loader?: {
           justifyContent: "space-between",
         }}
       >
-        <Button
+        <button
           style={{ width: "100%" }}
           onClick={() => {
             const prevSlide =
-              currentDotIndex === 0
-                ? dotCount - 1
-                : (currentDotIndex - 1) % dotCount;
+              currentDotIndex === 0 ? dotCount - 1 : (currentDotIndex - 1) % dotCount;
             studioOps.updateStates({ currentSlide: prevSlide });
           }}
         >
           Prev slide
-        </Button>
-        <Button
+        </button>
+        <button
           style={{ width: "100%" }}
           onClick={() => {
             const nextSlide = (currentDotIndex + 1) % dotCount;
@@ -241,11 +243,11 @@ export function registerSlider(loader?: {
           }}
         >
           Next slide
-        </Button>
+        </button>
       </div>
     );
   }
-
+  
   function OutlineMessage() {
     return <div>* To re-arrange slides, use the Outline panel</div>;
   }
