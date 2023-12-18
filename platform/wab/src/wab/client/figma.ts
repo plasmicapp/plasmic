@@ -1,3 +1,13 @@
+import { getBoundingRect } from "@figma-plugin/helpers";
+import { isString, keys } from "lodash";
+import { CSSProperties } from "react";
+import {
+  applyToPoint,
+  compose,
+  inverse,
+  Matrix,
+  rotate,
+} from "transformation-matrix";
 import {
   BackgroundLayer,
   ColorFill,
@@ -8,7 +18,7 @@ import {
   NoneBackground,
   RadialGradient,
   Stop,
-} from "@/wab/bg-styles";
+} from "../bg-styles";
 import {
   Component,
   ensureKnownTplTag,
@@ -19,8 +29,8 @@ import {
   TplNode,
   TplTag,
   VariantsRef,
-} from "@/wab/classes";
-import { unzip } from "@/wab/collections";
+} from "../classes";
+import { unzip } from "../collections";
 import {
   arrayEqIgnoreOrder,
   assert,
@@ -32,15 +42,15 @@ import {
   uniqueName,
   withoutNils,
   withoutNilTuples,
-} from "@/wab/common";
-import { arrayReversed } from "@/wab/commons/collections";
-import { Matrix as AltMatrix } from "@/wab/commons/transformation-matrix";
+} from "../common";
+import { arrayReversed } from "../commons/collections";
+import { Matrix as AltMatrix } from "../commons/transformation-matrix";
 import {
   getComponentDisplayName,
   isContextCodeComponent,
   isReusableComponent,
-} from "@/wab/components";
-import { codeLit } from "@/wab/exprs";
+} from "../components";
+import { codeLit } from "../exprs";
 import {
   ComponentNode,
   DefaultFrameMixin,
@@ -55,13 +65,13 @@ import {
   SolidPaint,
   TextNode,
   Transform,
-} from "@/wab/figmaTypes";
-import { ImageAssetType } from "@/wab/image-asset-type";
-import { mkImageAssetRef } from "@/wab/image-assets";
-import { toVarName } from "@/wab/shared/codegen/util";
-import { RSH } from "@/wab/shared/RuleSetHelpers";
-import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
-import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
+} from "../figmaTypes";
+import { ImageAssetType } from "../image-asset-type";
+import { mkImageAssetRef } from "../image-assets";
+import { toVarName } from "../shared/codegen/util";
+import { RSH } from "../shared/RuleSetHelpers";
+import { isStandaloneVariantGroup } from "../shared/Variants";
+import { VariantTplMgr } from "../shared/VariantTplMgr";
 import {
   flattenTpls,
   isTplNamable,
@@ -70,23 +80,13 @@ import {
   MkTplTagOpts,
   mkTplTagX,
   TplTagType,
-} from "@/wab/tpls";
-import { getBoundingRect } from "@figma-plugin/helpers";
-import { isString, keys } from "lodash";
-import { CSSProperties } from "react";
-import {
-  applyToPoint,
-  compose,
-  inverse,
-  Matrix,
-  rotate,
-} from "transformation-matrix";
+} from "../tpls";
 import { AppCtx } from "./app-ctx";
 import { SiteOps, uploadSvgImage } from "./components/canvas/site-ops";
 import {
   ImageAssetOpts,
   maybeUploadImage,
-  parseImage,
+  parseImageSync,
   ResizableImage,
 } from "./dom-utils";
 
@@ -156,12 +156,13 @@ export const uploadFigmaImages = async (
   > = new Map();
   for (const hash of [...keys(figmaData.i)]) {
     const imageData = figmaData.i[hash];
-    const image = await parseImage(imageData);
+    const image = parseImageSync(imageData);
+    const url = `data:image/${image.type};base64,${imageData}`;
     const img = new ResizableImage(
-      image.source,
+      url,
       image.width,
       image.height,
-      image.width / image.height
+      image.aspectRatio
     );
     const { imageResult, opts } = await maybeUploadImage(
       appCtx,
@@ -247,7 +248,7 @@ export const tplNodeFromFigmaData = (
   const nodeToTpl = new Map(
     withoutNilTuples(nodes.map((node) => tuple(node, maker(node))))
   );
-  const wrapped = wrapTplNodes(nodeToTpl, vtm);
+  let wrapped = wrapTplNodes(nodeToTpl, vtm);
   if (wrapped) {
     ensureUniqueNames(wrapped);
   }
@@ -1215,8 +1216,8 @@ async function uploadAssetFromNode(node: SceneNode, appCtx: AppCtx) {
 
   // For Vector node types, attempt to use the svg dimensions as in figma
   // they're usually managed via strokes.
-  const nodeWidth = node.width;
-  const nodeHeight = node.height;
+  let nodeWidth = node.width;
+  let nodeHeight = node.height;
 
   const xml = ensure(node.svgData, "Checked before");
 
@@ -1676,7 +1677,7 @@ const delimiters = {
 
 type Style = CSSProperties | StyleArray | false | null | undefined;
 
-type StyleArray = Array<Style>;
+interface StyleArray extends Array<Style> {}
 
 const flattenStyles = (...styles: Array<Style>): CSSProperties => {
   if (!styles.length) {
