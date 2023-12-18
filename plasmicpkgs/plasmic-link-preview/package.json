@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-link-preview",
-  "version": "1.0.83",
+  "version": "1.0.84",
   "description": "A React component that renders beautiful, fully-customizable link previews.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
