@@ -4,7 +4,6 @@ import registerComponent, {
   ComponentHelpers,
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
-import { Button } from "antd";
 import React, {
   ChangeEvent,
   forwardRef,
@@ -210,7 +209,11 @@ export function registerSlider(loader?: {
 
   function NavigateSlides({ componentProps, studioOps }: ActionProps<any>) {
     const { dotCount, currentDotIndex } = getSlideInfo(componentProps);
-
+    const btnStyles = {
+      width: "100%",
+      backgroundColor: "#f3f3f2",
+      borderRadius: 6,
+    };
     return (
       <div
         style={{
@@ -221,8 +224,8 @@ export function registerSlider(loader?: {
           justifyContent: "space-between",
         }}
       >
-        <Button
-          style={{ width: "100%" }}
+        <button
+          style={btnStyles}
           onClick={() => {
             const prevSlide =
               currentDotIndex === 0
@@ -232,16 +235,16 @@ export function registerSlider(loader?: {
           }}
         >
           Prev slide
-        </Button>
-        <Button
-          style={{ width: "100%" }}
+        </button>
+        <button
+          style={btnStyles}
           onClick={() => {
             const nextSlide = (currentDotIndex + 1) % dotCount;
             studioOps.updateStates({ currentSlide: nextSlide });
           }}
         >
           Next slide
-        </Button>
+        </button>
       </div>
     );
   }
