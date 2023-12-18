@@ -692,7 +692,11 @@ function ModelSettingsModal(props: {
           >
             <Input />
           </Form.Item>
-          <Form.Item label="Webhooks">
+          <Form.Item label="Publish Webhooks">
+            <p>
+              You can specify webhooks that are triggered whenever a CMS entry
+              is published.
+            </p>
             <Form.List name={["webhooks"]}>
               {(fields, handles) => (
                 <div className="flex-col vlist-gap-m">
