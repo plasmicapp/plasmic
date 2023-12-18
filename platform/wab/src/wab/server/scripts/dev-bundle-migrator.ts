@@ -38,6 +38,7 @@ const paths = [
   "../loader-tests/data/antd5/progress.json",
   "../loader-tests/data/antd5/pagination.json",
   "../loader-tests/data/plasmic-basic-components/timer.json",
+  "../loader-tests/data/plasmic-link-preview.json",
   "../loader-tests/data/app-hosting.json",
   "../loader-tests/data/plasmic-kit-website-components_16033.json",
   "../loader-tests/data/plasmic-website-2023-cypress_12.json",

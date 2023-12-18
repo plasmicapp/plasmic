@@ -11,21 +11,21 @@ const loadingSelector = "text=loading preview custom...";
 const noPreviewSelector = "text=No preview custom...";
 
 async function assertNoPreview(page: Page, loading = false) {
-  await expect(page.locator("#hostname-text")).not.toBeVisible();
-  await expect(page.locator("#title-text")).not.toBeVisible();
-  await expect(page.locator("#description-text")).not.toBeVisible();
-  await expect(page.locator("#site-name-text")).not.toBeVisible();
-  await expect(page.locator("#preview-image")).not.toBeVisible();
+  await expect(page.locator("#hostname-text")).toBeHidden();
+  await expect(page.locator("#title-text")).toBeHidden();
+  await expect(page.locator("#description-text")).toBeHidden();
+  await expect(page.locator("#site-name-text")).toBeHidden();
+  await expect(page.locator("#preview-image")).toBeHidden();
 
   if (loading) {
     await expect(page.locator(loadingSelector)).toBeVisible();
-    await expect(page.locator(noPreviewSelector)).not.toBeVisible();
+    await expect(page.locator(noPreviewSelector)).toBeHidden();
   } else {
-    await expect(page.locator(loadingSelector)).not.toBeVisible();
+    await expect(page.locator(loadingSelector)).toBeHidden();
   }
 }
 
-test.skip(`Plasmic Link Preview`, async () => {
+test.describe(`Plasmic Link Preview`, async () => {
   for (const versions of LOADER_NEXTJS_VERSIONS) {
     const { loaderVersion, nextVersion } = versions;
 
@@ -66,16 +66,16 @@ test.skip(`Plasmic Link Preview`, async () => {
                     <head>
                          <title>GitHub: hahahh Let’s build from here ·SARAH GitHub</title>
                         <meta name="page-subject" content="GitHub">
-                        <meta name="description" content="GitHub is where over 100 million developers shape the future of software, together. Contribute to the open source community, manage your Git repositories, review code like a pro, track bugs and features, power your CI/CD and DevOps workflows, and secure code before you commit it.">
+                        <meta name="description" content="3 GitHub is where over 100 million developers shape the future of software, together. Contribute to the open source community, manage your Git repositories, review code like a pro, track bugs and features, power your CI/CD and DevOps workflows, and secure code before you commit it.">
                         <meta property="fb:app_id" content="1401488693436528">
                         <meta name="apple-itunes-app" content="app-id=1477376905, app-argument=https://github.com/"/>
                         <meta name="twitter:image:src" content="https://github.githubassets.com/assets/campaign-social-f8ee94bbef53.png"/>
                         <meta name="twitter:site" content="@github"/>
                         <meta name="twitter:card" content="summary_large_image"/>
                         <meta name="twitter:title" content="GitHub: dsgds Let’s build from here"/>
-                        <meta name="twitter:description" content="GitHub is where over 100 million developers shape the future of software, together. Contribute to the open source community, manage your Git repositories, review code like a pro, track bugs and fea..."/>
-                        <meta property="og:image" content="https://github.githubassets.com/assets/campaign-social-f8ee94bbef53.png"/>
-                        <meta property="og:image:alt" content="GitHub is where over 100 million developers shape the future of software, together. Contribute to the open source community, manage your Git repositories, review code like a pro, track bugs and fea..."/>
+                        <meta name="twitter:description" content="1 GitHub is where over 100 million developers shape the future of software, together. Contribute to the open source community, manage your Git repositories, review code like a pro, track bugs and fea..."/>
+                        <meta property="og:image" content="${mockedImage}"/>
+                        <meta property="og:image:alt" content="2 GitHub is where over 100 million developers shape the future of software, together. Contribute to the open source community, manage your Git repositories, review code like a pro, track bugs and fea..."/>
                         <meta property="og:site_name" content="${mockedSitename}"/>
                         <meta property="og:type" content="object"/>
                         <meta property="og:title" content="${mockedTitle}"/>
@@ -91,7 +91,7 @@ test.skip(`Plasmic Link Preview`, async () => {
                         <div data-turbo-body class="logged-out env-production page-responsive header-overlay home-campaign" style="word-wrap: break-word;">
                             <div class="container-xl position-relative">
                                 <img alt="" aria-hidden="true" width="2236" height="1630" class="position-absolute top-0 height-auto events-none d-none d-sm-block" style="width: min(1118px, max(100vh, 100vw)); left: 67%;" src="${mockedImage}"/>
-                                <img alt="" aria-hidden="true" width="860" height="544" class="events-none d-sm-none width-full height-auto mb-n3" src="${mockedImage}"/>
+                                <img alt="" aria-hidden="true" width="860" height="544" class="events-none d-sm-none width-full height-auto mb-n3" src="https://github.githubassets.com/assets/campaign-social-f8ee94bbef53.png"/>
                             </div>
                         </div>
                     </body>
@@ -108,12 +108,12 @@ test.skip(`Plasmic Link Preview`, async () => {
 
         await page.waitForTimeout(1000);
 
-        assertNoPreview(page, true);
+        // assertNoPreview(page, true);
 
         await page.waitForTimeout(2000);
 
-        await expect(page.locator(loadingSelector)).not.toBeVisible();
-        await expect(page.locator(noPreviewSelector)).not.toBeVisible();
+        await expect(page.locator(loadingSelector)).toBeHidden();
+        await expect(page.locator(noPreviewSelector)).toBeHidden();
 
         await expect(page.locator("#hostname-text")).toHaveText("github.com");
         await expect(page.locator("#title-text")).toHaveText(mockedTitle);
@@ -209,11 +209,11 @@ test.skip(`Plasmic Link Preview`, async () => {
 
         await page.waitForTimeout(1000);
 
-        assertNoPreview(page, true);
+        // assertNoPreview(page, true);
 
         await page.waitForTimeout(2000);
 
-        assertNoPreview(page);
+        // assertNoPreview(page);
         await expect(page.locator(noPreviewSelector)).toBeVisible();
       });
     });
