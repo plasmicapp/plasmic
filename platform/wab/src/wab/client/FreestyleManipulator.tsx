@@ -1,5 +1,5 @@
-import { failable } from "ts-failable";
-import { ArenaFrame, Site } from "../classes";
+import { ArenaFrame, Site } from "@/wab/classes";
+import { getOffsetRect } from "@/wab/client/dom";
 import {
   absmax,
   CustomError,
@@ -11,9 +11,11 @@ import {
   parsePx,
   safeCast,
   tuple,
-} from "../common";
-import { lazyDerefTokenRefsWithDeps, TokenType } from "../commons/StyleToken";
-import { getOffsetRect } from "../dom";
+} from "@/wab/common";
+import {
+  lazyDerefTokenRefsWithDeps,
+  TokenType,
+} from "@/wab/commons/StyleToken";
 import {
   Box,
   ClientRect,
@@ -31,24 +33,28 @@ import {
   sideOrCornerToSides,
   sideToOrient,
   sizeAxisToSides,
-} from "../geom";
-import { Selectable } from "../selection";
+} from "@/wab/geom";
+import { Selectable } from "@/wab/selection";
 import {
   getFrameHeight,
   isComponentArena,
   isPositionManagedFrame,
-} from "../shared/Arenas";
+} from "@/wab/shared/Arenas";
 import {
   createNumericSize,
   parseAtomicSize,
   showSizeCss,
   Size,
-} from "../shared/Css";
-import { makeMergedExpProxy } from "../shared/exprs";
-import { getRshPositionType, PositionLayoutType } from "../shared/layoututils";
-import { IRuleSetHelpers } from "../shared/RuleSetHelpers";
-import { isSpecialSizeVal } from "../shared/sizingutils";
-import { ValComponent, ValTag } from "../val-nodes";
+} from "@/wab/shared/Css";
+import { makeMergedExpProxy } from "@/wab/shared/exprs";
+import {
+  getRshPositionType,
+  PositionLayoutType,
+} from "@/wab/shared/layoututils";
+import { IRuleSetHelpers } from "@/wab/shared/RuleSetHelpers";
+import { isSpecialSizeVal } from "@/wab/shared/sizingutils";
+import { ValComponent, ValTag } from "@/wab/val-nodes";
+import { failable } from "ts-failable";
 import { Dims, offsetPxAsUnits } from "./DimManip";
 import { StudioCtx } from "./studio-ctx/StudioCtx";
 import { ViewCtx } from "./studio-ctx/view-ctx";
@@ -504,6 +510,7 @@ export class DragMoveFrameManager {
   }
 
   endDrag() {
+    this.studioCtx.normalizeCurrentArena();
     if (this.studioCtx.isUnlogged()) {
       this.studioCtx.stopUnlogged();
     }

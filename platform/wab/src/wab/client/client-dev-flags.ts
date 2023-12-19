@@ -1,7 +1,7 @@
+import { assert, withoutNils } from "@/wab/common";
+import { dbg } from "@/wab/dbg";
+import { applyDevFlagOverrides, DEVFLAGS, DevFlagsType } from "@/wab/devflags";
 import { isPlainObject } from "lodash";
-import { assert, withoutNils } from "../common";
-import { dbg } from "../deps";
-import { applyDevFlagOverrides, DEVFLAGS, DevFlagsType } from "../devflags";
 import { isTopFrame } from "./cli-routes";
 import { getPlasmicStudioArgs } from "./frame-ctx/plasmic-studio-args";
 

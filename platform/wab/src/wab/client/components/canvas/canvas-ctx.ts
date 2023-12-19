@@ -6,6 +6,8 @@ import {
   getReactWebBundle,
   getSortedHostLessPkgs,
 } from "@/wab/client/components/studio/studio-bundles";
+import * as domMod from "@/wab/client/dom";
+import { NodeAndOffset } from "@/wab/client/dom";
 import { scriptExec, upsertJQSelector } from "@/wab/client/dom-utils";
 import { handleError, reportError } from "@/wab/client/ErrorNotifications";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -13,10 +15,7 @@ import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import * as common from "@/wab/common";
 import { ensure, ensureInstance } from "@/wab/common";
 import { ComponentType, isPageComponent } from "@/wab/components";
-import { $, JQ } from "@/wab/deps";
 import { DEVFLAGS } from "@/wab/devflags";
-import * as domMod from "@/wab/dom";
-import { NodeAndOffset } from "@/wab/dom";
 import { Box } from "@/wab/geom";
 import {
   DEFAULT_INITIAL_PAGE_FRAME_SIZE,
@@ -40,6 +39,7 @@ import {
 } from "@plasmicapp/host";
 import { FetcherRegistration } from "@plasmicapp/host/dist/fetcher";
 import { notification } from "antd";
+import $ from "jquery";
 import L from "lodash";
 import debounce from "lodash/debounce";
 import { autorun, Lambda, observable, runInAction } from "mobx";
@@ -59,14 +59,14 @@ export class CanvasCtx {
   private ccRegistry: CodeComponentsRegistry;
   private codeFetchersRegistry: CodeFetchersRegistry;
 
-  _$viewport: /*TWZ*/ JQ<HTMLIFrameElement>;
+  _$viewport: /*TWZ*/ JQuery<HTMLIFrameElement>;
   _win: /*TWZ*/ typeof window;
-  _$doc: /*TWZ*/ JQ<HTMLDocument>;
+  _$doc: /*TWZ*/ JQuery<HTMLDocument>;
   _controlStyleNode: HTMLStyleElement;
-  _$html: /*TWZ*/ JQ;
-  _$head: /*TWZ*/ JQ;
-  _$userBody: /*TWZ*/ JQ;
-  _$body: JQ;
+  _$html: /*TWZ*/ JQuery;
+  _$head: /*TWZ*/ JQuery;
+  _$userBody: /*TWZ*/ JQuery;
+  _$body: JQuery;
   _keyAdjustment: null | ((key: string) => string);
   _name: string;
 
@@ -88,7 +88,7 @@ export class CanvasCtx {
     $viewport,
     name,
   }: {
-    $viewport: JQ<HTMLIFrameElement>;
+    $viewport: JQuery<HTMLIFrameElement>;
     name: string;
   }) {
     this._$viewport = $viewport;
@@ -152,7 +152,7 @@ export class CanvasCtx {
   }
 
   async *initViewPort(
-    $viewport: JQ<HTMLIFrameElement>,
+    $viewport: JQuery<HTMLIFrameElement>,
     arenaFrame: ArenaFrame,
     sc: StudioCtx
   ) {
@@ -184,7 +184,7 @@ export class CanvasCtx {
     );
     this.codeFetchersRegistry = new CodeFetchersRegistry(this._win);
     const doc = this._win.document;
-    const $doc = (this._$doc = $(doc) as JQ<HTMLDocument>);
+    const $doc = (this._$doc = $(doc) as JQuery<HTMLDocument>);
 
     this._$html = $doc.find("html");
     this.setInteractiveMode(sc.isInteractiveMode);
@@ -356,7 +356,7 @@ export class CanvasCtx {
     yield "done";
   }
 
-  private async waitForUserBody(): Promise<JQ<HTMLElement>> {
+  private async waitForUserBody(): Promise<JQuery<HTMLElement>> {
     const getBody = () => {
       // Some frameworks or dev servers (Remix Hydrogen on Oxygen local dev server) can end up blowing away the entire document, so _$html would be an old unmounted handle.
       this._$html = this._$doc.find("html");

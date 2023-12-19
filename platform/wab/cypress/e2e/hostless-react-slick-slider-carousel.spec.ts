@@ -46,6 +46,14 @@ describe("hostless-react-slick slider carousel", () => {
 
         assertState("0");
         cy.selectTreeNode(["Slider Carousel"]);
+        cy.get(
+          `[data-test-id="prop-editor-row-initialSlide"] label`
+        ).rightclick();
+        cy.contains("Use dynamic value").click();
+        cy.contains("Switch to Code").click();
+        cy.resetMonacoEditorToCode(`1`);
+        cy.wait(1000);
+
         cy.contains("Append new slide").click();
         assertState("3");
 
@@ -103,7 +111,7 @@ describe("hostless-react-slick slider carousel", () => {
 
         // Check live mode.
         cy.withinLiveMode(() => {
-          cy.get(`#${textId}`).should("have.text", "0");
+          cy.get(`#${textId}`).should("have.text", "1");
         });
       });
     });

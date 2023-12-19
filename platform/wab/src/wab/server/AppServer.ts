@@ -100,6 +100,7 @@ import {
   updateDatabase,
   updateRow,
   updateTable,
+  triggerTableWebhooks,
 } from "./routes/cmse";
 import {
   allowProjectToDataSource,
@@ -194,6 +195,7 @@ import {
   buildVersionedLoaderReprV3,
   getHydrationScript,
   getHydrationScriptVersioned,
+  getLoaderChunk,
   prefillPublishedLoader,
 } from "./routes/loader";
 import { genTranslatableStrings } from "./routes/localization";
@@ -363,6 +365,7 @@ const isCsrfFreeRoute = (pathname: string) => {
     pathname.includes("/api/v1/clip/") ||
     pathname.includes("/code/") ||
     pathname.includes("/api/v1/loader/code") ||
+    pathname.includes("/api/v1/loader/chunks") ||
     pathname.includes("/api/v1/shopify/publish") ||
     pathname.includes("/api/v1/shopify/webhooks/") ||
     pathname.includes("/jsbundle") ||
@@ -840,6 +843,10 @@ export function addCmsEditorRoutes(app: express.Application) {
 
   app.get("/api/v1/cmse/tables/:tableId/rows", withNext(listRows));
   app.post("/api/v1/cmse/tables/:tableId/rows", withNext(createRows));
+  app.post(
+    "/api/v1/cmse/tables/:tableId/trigger-webhook",
+    withNext(triggerTableWebhooks)
+  );
 
   app.get("/api/v1/cmse/rows/:rowId", withNext(getCmseRow));
   app.get("/api/v1/cmse/rows/:rowId/revisions", withNext(listRowRevisions));
@@ -1187,6 +1194,7 @@ export function addCodegenRoutes(app: express.Application) {
     apiAuth,
     withNext(buildLatestLoaderAssets)
   );
+  app.get("/api/v1/loader/chunks", cors(), withNext(getLoaderChunk));
   app.get(
     "/api/v1/loader/html/published/:projectId/:component",
     cors(),
@@ -1500,6 +1508,11 @@ export function addMainAppServerRoutes(app: express.Application) {
     "/api/v1/admin/update-team-white-label-info",
     adminOnly,
     withNext(adminRoutes.updateTeamWhiteLabelInfo)
+  );
+  app.post(
+    "/api/v1/admin/update-team-white-label-name",
+    adminOnly,
+    withNext(adminRoutes.updateTeamWhiteLabelName)
   );
   app.post(
     "/api/v1/admin/promotion-code",

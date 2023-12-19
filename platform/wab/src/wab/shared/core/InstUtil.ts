@@ -1,7 +1,7 @@
 import * as classes from "@/wab/classes";
 import { meta } from "@/wab/classes-metas";
 import { ensure, tuple, xor } from "@/wab/common";
-import { Class, Field, MetaRuntime, ObjInst } from "@/wab/model/model-meta";
+import { Class, Field, MetaRuntime } from "@/wab/model/model-meta";
 import L from "lodash";
 
 export class InstUtil {
@@ -17,11 +17,11 @@ export class InstUtil {
     );
   }
 
-  allInstFields(inst: ObjInst): Field[] {
+  allInstFields(inst: classes.ObjInst): Field[] {
     return this.meta.allFields(this.getInstClass(inst));
   }
 
-  isObjInst(inst: any): inst is ObjInst {
+  isObjInst(inst: any): inst is classes.ObjInst {
     return !!inst && !!this.tryGetInstClass(inst);
   }
 
@@ -29,11 +29,11 @@ export class InstUtil {
     return ensure(this.realClass2Class.get(cls));
   }
 
-  getInstClass(inst: ObjInst) {
+  getInstClass(inst: classes.ObjInst) {
     return ensure(this.tryGetInstClass(inst));
   }
 
-  tryGetInstClass(inst: ObjInst) {
+  tryGetInstClass(inst: classes.ObjInst) {
     return this.realClass2Class.get(inst.constructor);
   }
 
@@ -108,7 +108,7 @@ export class InstUtil {
     return this._equals(x, y, false, ignoreUuidsAndNils);
   }
 
-  getInstClassName(inst: ObjInst) {
+  getInstClassName(inst: classes.ObjInst) {
     return this.getInstClass(inst).name;
   }
 }

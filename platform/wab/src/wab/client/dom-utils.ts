@@ -9,7 +9,6 @@ import React from "react";
 import intersection from "rectangle-overlap";
 import { ImageBackground, mkBackgroundLayer } from "../bg-styles";
 import { ensure, ensureHTMLElt, ensureString } from "../common";
-import { $, JQ } from "../deps";
 import { Rect } from "../geom";
 import { ImageAssetType } from "../image-asset-type";
 import {
@@ -25,9 +24,10 @@ import {
   clearExplicitColors,
   convertSvgToTextSized,
   gatherSvgColors,
-} from "../shared/svg-utils";
-import { processSvg } from "../shared/svgo";
-import { ASPECT_RATIO_SCALE_FACTOR } from "../tpls";
+} from "@/wab/shared/svg-utils";
+import { processSvg } from "@/wab/shared/svgo";
+import { ASPECT_RATIO_SCALE_FACTOR } from "@/wab/tpls";
+import $ from "jquery";
 import { AppCtx } from "./app-ctx";
 import defer = setTimeout;
 
@@ -408,12 +408,12 @@ export function getVisibleBoundingClientRect(element: HTMLElement): Rect {
   return element.getBoundingClientRect();
 }
 
-export function getElementVisibleBounds(node: JQ | HTMLElement) {
+export function getElementVisibleBounds(node: JQuery | HTMLElement) {
   const elt = ensure($(node).get(0), `Unexpected undefined query ${node}.`);
   return getVisibleBoundingClientRect(elt);
 }
 
-export function getElementBounds(node: JQ | HTMLElement) {
+export function getElementBounds(node: JQuery | HTMLElement) {
   const elt = ensure($(node).get(0), `Unexpected undefined query ${node}.`);
   return elt.getBoundingClientRect();
 }
@@ -654,7 +654,7 @@ export function isCanvasIframeEvent(e: UIEvent) {
 }
 
 export function cachedJQSelector(selector: string) {
-  let $cached: JQ | undefined = undefined;
+  let $cached: JQuery | undefined = undefined;
   return () => {
     if (!$cached || $cached.length === 0 || !$cached[0].isConnected) {
       $cached = $(selector);
@@ -666,7 +666,7 @@ export function cachedJQSelector(selector: string) {
 export function upsertJQSelector(
   selector: string,
   insert: () => void,
-  context: JQ
+  context: JQuery
 ) {
   let sel = $(selector, context);
   if (sel.length === 0) {

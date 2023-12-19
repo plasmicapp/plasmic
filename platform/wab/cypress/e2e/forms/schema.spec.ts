@@ -1,5 +1,5 @@
 import {
-  deleteDataSource,
+  deleteDataSourceOfCurrentTest,
   Framed,
   removeCurrentProject,
 } from "../../support/util";
@@ -21,7 +21,7 @@ describe("arena", function () {
   });
 
   afterEach(() => {
-    deleteDataSource();
+    deleteDataSourceOfCurrentTest();
     removeCurrentProject();
   });
 

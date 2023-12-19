@@ -1,5 +1,3 @@
-import { has, isArray, isEmpty, keyBy, orderBy } from "lodash";
-import { IObservableValue, observable } from "mobx";
 import {
   Arena,
   ArenaChild,
@@ -18,8 +16,8 @@ import {
   Site,
   Variant,
   VariantGroup,
-} from "../classes";
-import { StudioCtx } from "../client/studio-ctx/StudioCtx";
+} from "@/wab/classes";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   assert,
   ensure,
@@ -27,13 +25,13 @@ import {
   mkShortId,
   pairwise,
   switchType,
-} from "../common";
-import { arrayReversed, removeFromArray } from "../commons/collections";
+} from "@/wab/common";
+import { arrayReversed, removeFromArray } from "@/wab/commons/collections";
 import {
   allComponentVariants,
   isPageComponent,
   isPageFrame,
-} from "../components";
+} from "@/wab/components";
 import {
   allGlobalVariants,
   getAllSiteFrames,
@@ -43,9 +41,11 @@ import {
   getResponsiveStrategy,
   getSiteArenas,
   getSiteScreenSizes,
-} from "../sites";
-import { capitalizeFirst } from "../strs";
-import { clone, mkTplComponent } from "../tpls";
+} from "@/wab/sites";
+import { capitalizeFirst } from "@/wab/strs";
+import { clone, mkTplComponent } from "@/wab/tpls";
+import { has, isArray, isEmpty, keyBy, orderBy } from "lodash";
+import { IObservableValue, observable } from "mobx";
 import { ArenaType, arenaTypes } from "./ApiSchema";
 import {
   deriveDefaultFrameSize,
@@ -219,6 +219,16 @@ export function setFocusedFrame(
   newFocusedFrame.viewMode = FrameViewMode.Stretch;
   arena._focusedFrame = newFocusedFrame;
   return newFocusedFrame;
+}
+
+/** An ArenaFrame with top/left positioning. */
+export type PositionedArenaFrame = ArenaFrame & {
+  top: number;
+  left: number;
+};
+
+export function getPositionedArenaFrames(arena: Arena): PositionedArenaFrame[] {
+  return arena.children as PositionedArenaFrame[];
 }
 
 export function getArenaFrames(
@@ -468,23 +478,64 @@ export function removeVariantGroupFromArenas(
   removeVariantsFromArenas(site, group.variants, component);
 }
 
-export function isPageArena(arena: any): arena is PageArena {
+export function isPageArena(
+  arena: AnyArena | null | undefined
+): arena is PageArena {
   return isKnownPageArena(arena);
 }
 
-export function isComponentArena(arena: any): arena is ComponentArena {
+export function isComponentArena(
+  arena: AnyArena | null | undefined
+): arena is ComponentArena {
   return isKnownComponentArena(arena);
 }
 
-export function isMixedArena(arena: any): arena is Arena {
+export function isMixedArena(
+  arena: AnyArena | null | undefined
+): arena is Arena {
   return isKnownArena(arena);
 }
 
-/** A dedicated, design-mode arena for a page or component. */
+export function normalizeMixedArenaFrames(arena: Arena) {
+  const frames = getPositionedArenaFrames(arena);
+
+  let minTop = Infinity;
+  let minLeft = Infinity;
+  for (const frame of frames) {
+    if (frame.top < minTop) {
+      minTop = frame.top;
+    }
+    if (frame.left < minLeft) {
+      minLeft = frame.left;
+    }
+  }
+
+  for (const frame of frames) {
+    frame.top -= minTop;
+    frame.left -= minLeft;
+  }
+
+  return { deltaX: minLeft, deltaY: minTop };
+}
+
+/** A dedicated arena for a page or component. */
 export type DedicatedArena = PageArena | ComponentArena;
 
-export function isDedicatedArena(arena: any): arena is DedicatedArena {
+/** A dedicated arena for a page or component, in focused mode. */
+export type FocusedDedicatedArena = DedicatedArena & {
+  _focusedFrame: ArenaFrame;
+};
+
+export function isDedicatedArena(
+  arena: AnyArena | null | undefined
+): arena is DedicatedArena {
   return isKnownPageArena(arena) || isKnownComponentArena(arena);
+}
+
+export function isFocusedDedicatedArena(
+  arena: AnyArena
+): arena is FocusedDedicatedArena {
+  return isDedicatedArena(arena) && !!arena._focusedFrame;
 }
 
 export function getActivatedVariantsForFrame(site: Site, frame: ArenaFrame) {

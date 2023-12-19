@@ -1,13 +1,5 @@
-import React, { ReactNode, useEffect } from "react";
 import { DataProvider } from "@plasmicapp/loader-nextjs";
-
-export interface ScrollContextValue {
-  isScrolled: boolean;
-}
-
-export const ScrollContext = React.createContext<ScrollContextValue>({
-  isScrolled: false,
-});
+import React, { useEffect } from "react";
 
 export function ScrollProvider({ children }: { children: React.ReactNode }) {
   const [isScrolled, setIsScrolled] = React.useState(false);

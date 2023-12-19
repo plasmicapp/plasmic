@@ -1,4 +1,4 @@
-import { HTMLElement, parse as HTML } from "node-html-parser";
+import { parse as HTML } from "node-html-parser";
 
 interface Meta {
   title?: string;
@@ -16,11 +16,6 @@ export interface Metadata {
   siteName?: string;
   hostname?: string;
 }
-
-const readMT = (el: HTMLElement, name: string) => {
-  const prop = el.getAttribute("name") || el.getAttribute("property");
-  return prop == name ? el.getAttribute("content") : null;
-};
 
 const isValidUrl = (url: string) => {
   return /(^http(s?):\/\/[^\s$.?#].[^\s]*)/i.test(url);
@@ -45,39 +40,50 @@ const getMetadata = async (url: string): Promise<Metadata> => {
     return title?.text;
   };
 
-  const metas = $.querySelectorAll("meta");
   const meta: Meta = {};
 
-  for (let i = 0; i < metas.length; i++) {
-    const el = metas[i];
+  const metas = $.querySelectorAll("meta")
+    .map((el) => ({
+      name: el.getAttribute("name") || el.getAttribute("property"),
+      content: el.getAttribute("content"),
+    }))
+    .filter((item) => item.name && item.content);
 
-    ["title", "description", "image"].forEach((s) => {
-      const val = readMT(el, s);
-      if (val) meta[s as keyof Meta] = val;
-    });
+  [
+    "og:title",
+    "og:description",
+    "twitter:description",
+    // in order of priority, og:image is sufficient if present
+    "og:image",
+    "twitter:image",
+    "og:url",
+    "og:site_name",
+    "og:type",
+  ].forEach((metaName) => {
+    const metasItem = metas.find((m) => m.name === metaName);
+    if (!metasItem || !metasItem.name) return;
+    const key = metasItem.name.split(":")[1] as keyof Meta;
+    if (!meta[key]) meta[key] = metasItem.content;
+  });
 
-    [
-      "og:title",
-      "og:description",
-      "og:image",
-      "og:url",
-      "og:site_name",
-      "og:type",
-    ].forEach((s) => {
-      const val = readMT(el, s);
-      if (val) meta[s.split(":")[1] as keyof Meta] = val;
+  ["title", "description", "image"].forEach((metaName) => {
+    const metasItem = metas.find((m) => m.name === metaName);
+    if (!metasItem || !metasItem.name) return;
+    const key = metaName as keyof Meta;
+    if (!meta[key]) meta[key] = metasItem.content;
+  });
+
+  if (!meta.image) {
+    // find all images available and choose one!
+    $.querySelectorAll("img").every((el) => {
+      const src: string | undefined = el.getAttribute("src");
+      if (src) {
+        meta.image = new URL(src, url).href;
+        return false;
+      }
+      return true;
     });
   }
-
-  // images
-  $.querySelectorAll("img").every((el) => {
-    const src: string | undefined = el.getAttribute("src");
-    if (src) {
-      meta.image = new URL(src, url).href;
-      return false;
-    }
-    return true;
-  });
 
   const metadata: Metadata = {
     hostname: getHostname(),

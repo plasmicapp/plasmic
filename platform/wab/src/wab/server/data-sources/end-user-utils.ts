@@ -1,11 +1,11 @@
-import { ProjectId } from "../../shared/ApiSchema";
-import { Bundle } from "../../shared/bundles";
 import {
   getLastBundleVersion,
   getMigrationsToExecute,
-} from "../db/BundleMigrator";
-import { DbMgr } from "../db/DbMgr";
-import { ProjectRevision } from "../entities/Entities";
+} from "@/wab/server/db/BundleMigrator";
+import { DbMgr } from "@/wab/server/db/DbMgr";
+import { ProjectRevision } from "@/wab/server/entities/Entities";
+import { ProjectId } from "@/wab/shared/ApiSchema";
+import { Bundle } from "@/wab/shared/bundles";
 
 export async function getMigratedUserPropsOpBundle(
   mgr: DbMgr,
@@ -31,9 +31,13 @@ export async function getMigratedUserPropsOpBundle(
 
   bundle.version = latestBundleVersion;
 
-  await mgr.upsertAppAuthConfig(projectId as ProjectId, {
-    userPropsBundledOp: JSON.stringify(bundle),
-  });
+  await mgr.upsertAppAuthConfig(
+    projectId as ProjectId,
+    {
+      userPropsBundledOp: JSON.stringify(bundle),
+    },
+    true
+  );
 
   return bundle;
 }

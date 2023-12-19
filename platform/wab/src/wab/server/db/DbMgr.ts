@@ -33,7 +33,6 @@ import { sequentially } from "@/wab/commons/asyncutil";
 import { removeFromArray } from "@/wab/commons/collections";
 import * as semver from "@/wab/commons/semver";
 import { brand } from "@/wab/commons/types";
-import { shortUuid } from "@/wab/deps";
 import { DEVFLAGS } from "@/wab/devflags";
 import { withoutUids } from "@/wab/model/model-meta";
 import { adminEmails } from "@/wab/server/admin";
@@ -151,6 +150,7 @@ import {
   CmsRowRevisionId,
   CmsTableId,
   CmsTableSchema,
+  CmsTableSettings,
   CommentData,
   CommentId,
   CommentReactionData,
@@ -215,10 +215,7 @@ import {
   TaggedResourceId,
   TaggedResourceIds,
 } from "@/wab/shared/perms";
-import {
-  mkProjectAssignFromSite,
-  ProjectSeqIdAssignment,
-} from "@/wab/shared/seq-id-utils";
+import { ProjectSeqIdAssignment } from "@/wab/shared/seq-id-utils";
 import {
   calculateSemVer,
   compareSites,
@@ -242,6 +239,7 @@ import * as _ from "lodash";
 import L, { fromPairs, intersection, pick, uniq } from "lodash";
 import moment from "moment";
 import { CreateChatCompletionRequest } from "openai";
+import ShortUuid from "short-uuid";
 import {
   DeepPartial,
   EntityManager,
@@ -418,6 +416,8 @@ export class PwnedPasswordError extends DbMgrError {
 export class MismatchPasswordError extends DbMgrError {
   name = "MismatchPasswordError";
 }
+
+export const shortUuid = ShortUuid();
 
 export function checkPermissions(
   predicate: boolean,
@@ -1170,6 +1170,15 @@ export class DbMgr implements MigrationDbMgr {
         ...team.whiteLabelInfo,
         ...info,
       },
+    });
+    return await this.entMgr.save(team);
+  }
+
+  async updateTeamWhiteLabelName(id: TeamId, name: string | null) {
+    this.checkSuperUser();
+    const team = await this.getTeamById(id);
+    assignAllowEmpty(team, this.stampUpdate(), {
+      whiteLabelName: name,
     });
     return await this.entMgr.save(team);
   }
@@ -2923,7 +2932,7 @@ export class DbMgr implements MigrationDbMgr {
     data: string;
     revisionNum: number;
     // if undefined, skip updating the assignment
-    seqIdAssign: ProjectSeqIdAssignment | undefined;
+    seqIdAssign: undefined;
   }) {
     await this.checkProjectBranchPerms(
       { projectId, branchId },
@@ -2931,7 +2940,10 @@ export class DbMgr implements MigrationDbMgr {
       "save",
       true
     );
-    const latest = await this.getLatestProjectRev(projectId, { branchId });
+    const latest = await this.getLatestProjectRev(projectId, {
+      branchId,
+      revisionNumOnly: true,
+    });
     if (revisionNum !== latest.revision + 1) {
       throw new ProjectRevisionError(
         `Tried saving revision ${revisionNum}, but expecting ${
@@ -3197,7 +3209,12 @@ export class DbMgr implements MigrationDbMgr {
     {
       noAddPerm = false,
       branchId,
-    }: { noAddPerm?: boolean; branchId?: BranchId } = {}
+      revisionNumOnly,
+    }: {
+      noAddPerm?: boolean;
+      branchId?: BranchId;
+      revisionNumOnly?: boolean;
+    } = {}
   ) {
     await this.checkProjectBranchPerms(
       { projectId, branchId },
@@ -3212,6 +3229,8 @@ export class DbMgr implements MigrationDbMgr {
     whereEqOrNull(qb, "rev.branch", { branchId }, true);
     qb.setParameter("projectId", projectId);
     qb.orderBy("rev.revision", "DESC").limit(1);
+    // This is done to avoid loading the entire data of a project revision.
+    qb.select(revisionNumOnly ? "rev.revision" : "rev");
     return ensureFound<ProjectRevision>(
       await getOneOrFailIfTooMany(qb.printSql()),
       `Project with ID ${projectId} branch ${branchId}`
@@ -3677,7 +3696,7 @@ export class DbMgr implements MigrationDbMgr {
       projectId: project.id,
       data: JSON.stringify(newBundle),
       revisionNum: rev.revision + 1,
-      seqIdAssign: mkProjectAssignFromSite(clonedSite),
+      seqIdAssign: undefined,
     });
     return project;
   }
@@ -5104,7 +5123,7 @@ export class DbMgr implements MigrationDbMgr {
     if (this.actor.type === "NormalUser") {
       const userId = this.checkNormalUser();
       const user = await this.getUserById(userId);
-      const isPlasmicTeam = user.email.endsWith("@plasmic.app");
+      const isPlasmicTeam = user.email.endsWith("@" + DEVFLAGS.coreTeamDomain);
 
       const allPerms = (
         await this.sudo().getPermissionsForResources(taggedResourceIds, false)
@@ -6344,13 +6363,22 @@ export class DbMgr implements MigrationDbMgr {
   async getDataSourceById(
     dataSourceId: string,
     opts?: {
-      skipPermissionCheck: boolean;
+      columns?: (keyof DataSource)[];
+      skipPermissionCheck?: boolean;
     }
   ) {
     const source = ensureFound(
       await this.dataSources().findOne({
-        id: dataSourceId,
-        deletedAt: IsNull(),
+        select: opts?.columns
+          ? uniq([
+              ...(opts?.columns ?? []),
+              "workspaceId",
+            ] as (keyof DataSource)[])
+          : undefined,
+        where: {
+          id: dataSourceId,
+          deletedAt: IsNull(),
+        },
       }),
       `Data source ${dataSourceId}`
     );
@@ -6466,7 +6494,9 @@ export class DbMgr implements MigrationDbMgr {
   }
 
   async checkDataSourceIssueOpIdPerms(id: string) {
-    const dataSource = await this.getDataSourceById(id);
+    const dataSource = await this.getDataSourceById(id, {
+      columns: ["workspaceId"],
+    });
     await this.checkWorkspacePerms(
       dataSource.workspaceId,
       "editor",
@@ -6479,7 +6509,9 @@ export class DbMgr implements MigrationDbMgr {
     dataSourceId: string
   ) {
     await this.checkDataSourceIssueOpIdPerms(dataSourceId);
-    const source = await this.getDataSourceById(dataSourceId);
+    const source = await this.getDataSourceById(dataSourceId, {
+      columns: ["source"],
+    });
     const sourceMeta = getDataSourceMeta(source.source);
     const normed = normalizeOperationTemplate(sourceMeta, dataOp);
     const dataSourceOp = this.dataSourceOperations().create({
@@ -6500,7 +6532,9 @@ export class DbMgr implements MigrationDbMgr {
     dataSourceId: string
   ) {
     await this.checkDataSourceIssueOpIdPerms(dataSourceId);
-    const source = await this.getDataSourceById(dataSourceId);
+    const source = await this.getDataSourceById(dataSourceId, {
+      columns: ["source"],
+    });
     const sourceMeta = getDataSourceMeta(source.source);
     const normed = normalizeOperationTemplate(sourceMeta, dataOp);
     return this.dataSourceOperations().findOne({
@@ -6685,9 +6719,10 @@ export class DbMgr implements MigrationDbMgr {
       name?: string;
       schema?: CmsTableSchema;
       description?: string | null;
+      settings?: CmsTableSettings | null;
     }
   ) {
-    const { name, schema, description } = opts;
+    const { name, schema, description, settings } = opts;
     const table = await this.getCmsTableById(tableId);
     await this.checkCmsDatabasePerms(table.databaseId, "editor");
     if (name && table.name !== name) {
@@ -6698,6 +6733,9 @@ export class DbMgr implements MigrationDbMgr {
     }
     if (schema) {
       table.schema = normalizeTableSchema(schema);
+    }
+    if (settings) {
+      table.settings = settings;
     }
     Object.assign(table, this.stampUpdate());
     await this.entMgr.save(table);
@@ -7127,7 +7165,7 @@ export class DbMgr implements MigrationDbMgr {
         bundler.bundle(site, project.id, await getLastBundleVersion())
       ),
       revisionNum: rev.revision + 1,
-      seqIdAssign: new ProjectSeqIdAssignment(new Map()),
+      seqIdAssign: undefined,
     });
     return {
       project,
@@ -8000,10 +8038,16 @@ export class DbMgr implements MigrationDbMgr {
 
   async upsertAppAuthConfig(
     projectId: ProjectId,
-    config: Partial<AppAuthConfig>
+    config: Partial<AppAuthConfig>,
+    skipPermissionCheck = false
   ) {
-    await this.checkProjectPerms(projectId, "editor", "upsert app auth config");
-    const { registeredRoleId } = config;
+    if (!skipPermissionCheck) {
+      await this.checkProjectPerms(
+        projectId,
+        "editor",
+        "upsert app auth config"
+      );
+    }
     let appAuthConfig = await this.appAuthConfigs().findOne({
       projectId,
       ...excludeDeleted(),
@@ -9037,7 +9081,7 @@ export class DbMgr implements MigrationDbMgr {
     });
     await this.appAuthConfigs().save(newAuthConfig);
 
-    const accessRules = await this.listAppAccessRules(fromProjectId);
+    const accessRules = await this.listAppAccessRules(fromProjectId, true);
     const newAccessRules = accessRules.map((accessRule) => {
       // Also requires to fix directoryEndUserGroupId
       const newAccessRule = this.appEndUserAccess().create({

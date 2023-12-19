@@ -1,8 +1,15 @@
+import { getElementBounds } from "@/wab/client/dom-utils";
+import {
+  coalesce,
+  ensure,
+  isHTMLElt,
+  maybe,
+  parsePx,
+  tuple,
+} from "@/wab/common";
+import { Box, ClientRect, Pt } from "@/wab/geom";
 import * as Immutable from "immutable";
-import { getElementBounds } from "./client/dom-utils";
-import { coalesce, ensure, isHTMLElt, maybe, parsePx, tuple } from "./common";
-import { $, JQ } from "./deps";
-import { Box, ClientRect, Pt } from "./geom";
+import $ from "jquery";
 
 export interface NodeAndOffset {
   node: Element;
@@ -38,7 +45,7 @@ export const clearRange = (doc: /*TWZ*/ HTMLDocument) => {
   }
 };
 
-export function* ancestors(x: JQ, excludeSelf = false) {
+export function* ancestors(x: JQuery, excludeSelf = false) {
   let cur = x;
   while (cur.length > 0) {
     if (!(cur === x && excludeSelf)) {
@@ -56,7 +63,7 @@ export function* ancestors(x: JQ, excludeSelf = false) {
  *  See https://jquery.com/upgrade-guide/3.5/ for more details.
  **/
 
-export function* bfs($elt: JQ, excludeSelf = false) {
+export function* bfs($elt: JQuery, excludeSelf = false) {
   const q = Immutable.List<[any[], any[]]>().asMutable();
   q.push(tuple([], [$elt]));
   while (!q.isEmpty()) {
@@ -330,7 +337,7 @@ export function getMarginRect(node: HTMLElement): DOMRect {
 }
 
 export function getContentOnlyRect(
-  elt: JQ<HTMLElement>,
+  elt: JQuery<HTMLElement>,
   opts: {
     origin?: {
       top: number;

@@ -8,6 +8,7 @@ import {
   Component,
   ImageAsset,
   isKnownSite,
+  ObjInst,
   RuleSet,
   Site,
   StyleToken,
@@ -27,14 +28,13 @@ import {
 } from "./common";
 import { hasTokenRefs, tryParseAllTokenRefs } from "./commons/StyleToken";
 import { allComponentVariants } from "./components";
-import { dbg } from "./deps";
+import { dbg } from "./dbg";
 import { hasAssetRefs, tryParseImageAssetRef } from "./image-assets";
 import {
   Class,
   Field,
   isStrongRefField,
   isWeakRefField,
-  ObjInst,
 } from "./model/model-meta";
 import {
   componentToAllVariants,

@@ -1,29 +1,29 @@
-import classNames from "classnames";
-import { observer } from "mobx-react-lite";
-import React, { createContext, ReactNode, useContext } from "react";
-import { createPortal } from "react-dom";
-import { ArenaFrame, TplNode } from "../../../classes";
+import { ArenaFrame, TplNode } from "@/wab/classes";
+import { CanvasTransformedBox } from "@/wab/client/components/canvas/CanvasTransformedBox";
+import { useRerenderOnUserBodyChange } from "@/wab/client/components/canvas/UserBodyObserver";
+import { Avatar } from "@/wab/client/components/studio/Avatar";
+import {
+  BASE_VARIANT_COLOR,
+  NON_BASE_VARIANT_COLOR,
+} from "@/wab/client/components/studio/GlobalCssVariables";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
   ensure,
   ensureString,
   xGroupBy,
   xSymmetricDifference,
-} from "../../../common";
-import { OnClickAway } from "../../../commons/components/OnClickAway";
-import { $ } from "../../../deps";
-import { ApiComment, CommentThreadId } from "../../../shared/ApiSchema";
-import { AnyArena } from "../../../shared/Arenas";
-import Chroma from "../../../shared/utils/color-utils";
-import { isTplVariantable } from "../../../tpls";
-import { useStudioCtx } from "../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
-import { CanvasTransformedBox } from "../canvas/CanvasTransformedBox";
-import { useRerenderOnUserBodyChange } from "../canvas/UserBodyObserver";
-import { Avatar } from "../studio/Avatar";
-import {
-  BASE_VARIANT_COLOR,
-  NON_BASE_VARIANT_COLOR,
-} from "../studio/GlobalCssVariables";
+} from "@/wab/common";
+import { OnClickAway } from "@/wab/commons/components/OnClickAway";
+import { ApiComment, CommentThreadId } from "@/wab/shared/ApiSchema";
+import { AnyArena } from "@/wab/shared/Arenas";
+import Chroma from "@/wab/shared/utils/color-utils";
+import { isTplVariantable } from "@/wab/tpls";
+import classNames from "classnames";
+import $ from "jquery";
+import { observer } from "mobx-react-lite";
+import React, { createContext, ReactNode, useContext } from "react";
+import { createPortal } from "react-dom";
 import { useCommentViews } from "./CommentViews";
 
 interface CommentOverlaysContextData {

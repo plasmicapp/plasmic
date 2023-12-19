@@ -1,33 +1,55 @@
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { Collapse, Dropdown, Form, InputNumber, Menu, message } from "antd";
-import { FormInstance, useForm } from "antd/lib/form/Form";
-import L, { isEqual, sortBy } from "lodash";
-import * as React from "react";
-import { Prompt, useHistory } from "react-router";
-import { useBeforeUnload } from "react-use";
-import { ensureType, jsonClone, tuple, uniqueName } from "../../../common";
+import { useRRouteMatch, UU } from "@/wab/client/cli-routes";
+import PlasmicWebhookHeader from "@/wab/client/components/webhooks/plasmic/plasmic_kit_continuous_deployment/PlasmicWebhookHeader";
+import PlasmicWebhooksItem from "@/wab/client/components/webhooks/plasmic/plasmic_kit_continuous_deployment/PlasmicWebhooksItem";
+import { Spinner } from "@/wab/client/components/widgets";
+import Button from "@/wab/client/components/widgets/Button";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { Modal } from "@/wab/client/components/widgets/Modal";
+import Select from "@/wab/client/components/widgets/Select";
+import Textbox from "@/wab/client/components/widgets/Textbox";
+import { useApi } from "@/wab/client/contexts/AppContexts";
+import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import Trash2Icon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Trash2";
+import {
+  DefaultCmsModelDetailsProps,
+  PlasmicCmsModelDetails,
+} from "@/wab/client/plasmic/plasmic_kit_cms/PlasmicCmsModelDetails";
+import {
+  ensureType,
+  jsonClone,
+  remove,
+  spawn,
+  tuple,
+  uniqueName,
+} from "@/wab/common";
+import { extractParamsFromPagePath } from "@/wab/components";
 import {
   ApiCmsDatabase,
   CmsDatabaseId,
   CmsFieldMeta,
   cmsFieldMetaDefaults,
   CmsTableId,
+  CmsTableSettings,
   CmsTypeMeta,
   CmsTypeName,
   cmsTypes,
-} from "../../../shared/ApiSchema";
-import { useRRouteMatch, UU } from "../../cli-routes";
-import { useApi } from "../../contexts/AppContexts";
-import PlusIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Plus";
-import Trash2Icon from "../../plasmic/plasmic_kit/PlasmicIcon__Trash2";
+} from "@/wab/shared/ApiSchema";
+import { httpMethods } from "@/wab/shared/HttpClientUtil";
+import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import {
-  DefaultCmsModelDetailsProps,
-  PlasmicCmsModelDetails,
-} from "../../plasmic/plasmic_kit_cms/PlasmicCmsModelDetails";
-import Button from "../widgets/Button";
-import { Icon } from "../widgets/Icon";
-import Select from "../widgets/Select";
-import Textbox from "../widgets/Textbox";
+  Collapse,
+  Dropdown,
+  Form,
+  Input,
+  InputNumber,
+  Menu,
+  message,
+} from "antd";
+import { FormInstance, useForm } from "antd/lib/form/Form";
+import L, { isEqual, sortBy } from "lodash";
+import * as React from "react";
+import { Prompt, useHistory } from "react-router";
+import { useBeforeUnload } from "react-use";
 import { useCmsDatabase, useCmsTable, useMutateTable } from "./cms-contexts";
 import {
   ContentEntryFormContext,
@@ -36,7 +58,7 @@ import {
   ValueSwitch,
 } from "./CmsInputs";
 
-export interface CmsModelDetailsProps extends DefaultCmsModelDetailsProps {}
+export type CmsModelDetailsProps = DefaultCmsModelDetailsProps;
 
 function renderTypeSpecificSubform(
   database: ApiCmsDatabase,
@@ -62,7 +84,6 @@ function renderTypeSpecificSubform(
           fieldPathSuffix: [],
           formItemProps: { label: "Default value" },
           typeName: typeMeta.type,
-          
         })}
       </ContentEntryFormContext.Provider>
       {(typeName === "text" || typeName === "long-text") && (
@@ -308,6 +329,7 @@ function CmsModelDetails_(
   const match = useRRouteMatch(UU.cmsModelSchema)!;
   const history = useHistory();
   const { databaseId, tableId } = match.params;
+  const [showSettingsModal, setShowSettingsModal] = React.useState(false);
 
   const database = useCmsDatabase(databaseId);
 
@@ -418,6 +440,15 @@ function CmsModelDetails_(
             menu: () => (
               <Menu>
                 <Menu.Item
+                  key="settings"
+                  onClick={() => {
+                    setShowSettingsModal(true);
+                  }}
+                >
+                  Configure settings
+                </Menu.Item>
+                <Menu.Divider />
+                <Menu.Item
                   key="delete"
                   onClick={async () => {
                     await api.deleteCmsTable(tableId);
@@ -467,6 +498,13 @@ function CmsModelDetails_(
           }
         />
       </Form>
+      {showSettingsModal && (
+        <ModelSettingsModal
+          databaseId={databaseId}
+          tableId={tableId}
+          onClose={() => setShowSettingsModal(false)}
+        />
+      )}
     </>
   );
 }
@@ -578,6 +616,240 @@ function ModelFields({
         );
       }}
     </Form.List>
+  );
+}
+
+function ModelSettingsModal(props: {
+  databaseId: CmsDatabaseId;
+  tableId: CmsTableId;
+  onClose: () => void;
+}) {
+  const { onClose, databaseId, tableId } = props;
+  const table = useCmsTable(databaseId, tableId);
+  const api = useApi();
+  const [saving, setSaving] = React.useState(false);
+  const mutateTable = useMutateTable();
+  return (
+    <Modal
+      title={`${table?.name} Settings`}
+      footer={null}
+      open={true}
+      onCancel={onClose}
+    >
+      {!table ? (
+        <Spinner />
+      ) : (
+        <Form
+          initialValues={table.settings ?? undefined}
+          onFinish={async (values) => {
+            console.log("FORM VALUES", values);
+            setSaving(true);
+            normalizeTableSettings(values);
+            await api.updateCmsTable(tableId, {
+              settings: values,
+            });
+            await mutateTable(databaseId, tableId);
+            setSaving(false);
+            spawn(message.success("Model settings have been saved."));
+            onClose();
+          }}
+          disabled={saving}
+        >
+          <Form.Item
+            label="Preview URL"
+            name="previewUrl"
+            extra={
+              <>
+                A url for previewing entries from this model. The url can
+                reference model fields within <code>[brackets]</code>, and they
+                will be substituted with the values from the entry you are
+                looking at. For example,{" "}
+                <code>https://preview.mysite.com/blogs/[slug]</code> will have{" "}
+                <code>[slug]</code> filled in with the "slug" field on the model
+                entry.
+              </>
+            }
+            rules={[
+              { type: "url" },
+              {
+                validator: (_, value, callback) => {
+                  const pathParams = extractParamsFromPagePath(value);
+                  const invalidParams = pathParams.filter(
+                    (p) => !table.schema.fields.find((f) => f.identifier === p)
+                  );
+                  if (invalidParams.length > 0) {
+                    callback(
+                      `URL references fields that don't exist on this model: ${invalidParams.join(
+                        ", "
+                      )}`
+                    );
+                  } else {
+                    callback();
+                  }
+                },
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item label="Publish Webhooks">
+            <p>
+              You can specify webhooks that are triggered whenever a CMS entry
+              is published.
+            </p>
+            <Form.List name={["webhooks"]}>
+              {(fields, handles) => (
+                <div className="flex-col vlist-gap-m">
+                  {fields.map((field) => (
+                    <WebhookForm
+                      fieldPath={[field.name]}
+                      onDelete={() => handles.remove(field.name)}
+                    />
+                  ))}
+                  <Button
+                    style={{ alignSelf: "flex-start" }}
+                    onClick={() =>
+                      handles.add({
+                        method: "GET",
+                        event: "publish",
+                      })
+                    }
+                  >
+                    Add webhook
+                  </Button>
+                </div>
+              )}
+            </Form.List>
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Save
+            </Button>
+            <Button className="ml-ch" onClick={() => onClose()}>
+              Cancel
+            </Button>
+          </Form.Item>
+        </Form>
+      )}
+    </Modal>
+  );
+}
+
+function normalizeTableSettings(settings: CmsTableSettings) {
+  if (settings.previewUrl && settings.previewUrl.trim() === "") {
+    settings.previewUrl = undefined;
+  }
+  if (settings.webhooks) {
+    for (const hook of [...settings.webhooks]) {
+      if (!hook.method || !hook.url) {
+        remove(settings.webhooks, hook);
+      }
+      if (hook.headers) {
+        for (const header of [...hook.headers]) {
+          if (!header.key || !header.value) {
+            remove(hook.headers, header);
+          }
+        }
+      }
+    }
+  }
+  return settings;
+}
+
+function WebhookForm(props: {
+  fieldPath: (string | number)[];
+  onDelete: () => void;
+}) {
+  const { fieldPath, onDelete } = props;
+  return (
+    <>
+      <PlasmicWebhooksItem
+        checkbox={{ render: () => null }}
+        method={{
+          wrap: (x) => (
+            <Form.Item name={[...fieldPath, "method"]} noStyle>
+              {x}
+            </Form.Item>
+          ),
+          props: {
+            children: httpMethods.map((m) => (
+              <Select.Option value={m} key={m}>
+                {m}
+              </Select.Option>
+            )),
+          },
+        }}
+        url={{
+          wrap: (x) => (
+            <Form.Item
+              name={[...fieldPath, "url"]}
+              noStyle
+              rules={[{ type: "url" }]}
+            >
+              {x}
+            </Form.Item>
+          ),
+        }}
+        payload={{
+          wrap: (x) => (
+            <Form.Item name={[...fieldPath, "payload"]} noStyle>
+              {x}
+            </Form.Item>
+          ),
+        }}
+        menuButton={{
+          menu: () => (
+            <Menu>
+              <Menu.Item onClick={() => onDelete()}>Delete webhook</Menu.Item>
+            </Menu>
+          ),
+        }}
+        expanded={true}
+        headers={
+          <Form.List name={[...fieldPath, "headers"]}>
+            {(fields, handles) => (
+              <div className="flex-col vlist-gap-sm">
+                {fields.map((field, index) => (
+                  <PlasmicWebhookHeader
+                    keyInput={{
+                      wrap: (x) => (
+                        <Form.Item name={[field.name, "key"]} noStyle>
+                          {x}
+                        </Form.Item>
+                      ),
+                    }}
+                    valueInput={{
+                      wrap: (x) => (
+                        <Form.Item name={[field.name, "value"]} noStyle>
+                          {x}
+                        </Form.Item>
+                      ),
+                    }}
+                    addButton={{
+                      render: () => null,
+                    }}
+                    deleteButton={{
+                      onClick: () => handles.remove(index),
+                      tooltip: "Delete header",
+                    }}
+                  />
+                ))}
+                <Button
+                  style={{ alignSelf: "flex-start", marginLeft: 126 }}
+                  type={"link"}
+                  onClick={() => handles.add()}
+                >
+                  Add header
+                </Button>
+              </div>
+            )}
+          </Form.List>
+        }
+      />
+      <Form.Item hidden name={[...fieldPath, "event"]}>
+        <Input hidden />
+      </Form.Item>
+    </>
   );
 }
 

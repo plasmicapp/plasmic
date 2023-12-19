@@ -6,6 +6,7 @@
 
 import { AssetModule } from '@plasmicapp/loader-core';
 import { CodeComponentMeta as CodeComponentMeta_2 } from '@plasmicapp/host';
+import { CodeModule } from '@plasmicapp/loader-fetcher';
 import { ComponentMeta } from '@plasmicapp/loader-core';
 import { CustomFunctionMeta as CustomFunctionMeta_2 } from '@plasmicapp/host';
 import { DataCtxReader } from '@plasmicapp/host';
@@ -111,6 +112,7 @@ export interface InitOptions {
     };
     // @deprecated (undocumented)
     i18nKeyScheme?: "content" | "hash";
+    manualRedirect?: boolean;
     nativeFetch?: boolean;
     // (undocumented)
     onClientSideFetch?: "warn" | "error";
@@ -160,6 +162,8 @@ export class InternalPlasmicComponentLoader {
     // (undocumented)
     getBundle(): LoaderBundleOutput;
     // (undocumented)
+    getChunksUrl(bundle: LoaderBundleOutput, modules: CodeModule[]): string;
+    // (undocumented)
     getGlobalVariants(): GlobalVariantSpec[];
     // (undocumented)
     getLookup(): ComponentLookup;
@@ -202,9 +206,9 @@ export class InternalPlasmicComponentLoader {
 }
 
 // @public
-export function matchesPagePath(pagePath: string, lookup: string): {
+export function matchesPagePath(pattern: string, path: string): false | {
     params: Record<string, string | string[]>;
-} | false;
+};
 
 export { PageMeta }
 
@@ -245,6 +249,8 @@ export class PlasmicComponentLoader {
         getKnownValue: (key: string) => string | undefined;
         updateKnownValue: (key: string, value: string) => void;
     }): Promise<Record<string, string>>;
+    // (undocumented)
+    getChunksUrl(bundle: LoaderBundleOutput, modules: CodeModule[]): string;
     // (undocumented)
     getExternalVariation(variation: Record<string, string>, filters?: Parameters<typeof getExternalIds>[2]): Record<string, string>;
     maybeFetchComponentData(...specs: ComponentLookupSpec[]): Promise<ComponentRenderData | null>;

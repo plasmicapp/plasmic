@@ -263,10 +263,10 @@ function PlasmicHostingSettings_(
         },
       }}
       hideBadgeSwitch={
-        DEVFLAGS.useNewFeatureTiers &&
-        (!projectTeam ||
-          !projectTeam.featureTierId ||
-          projectTeam.featureTierId === DEVFLAGS.freeTier.id)
+        !projectTeam ||
+        !projectTeam.featureTierId ||
+        projectTeam.featureTierId === DEVFLAGS.freeTier.id ||
+        projectTeam.onTrial
       }
       faviconControlContainer={
         <div className="flex flex-vcenter gap-lg">

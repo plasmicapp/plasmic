@@ -49,7 +49,6 @@ import {
 } from "@/wab/commons/StyleToken";
 import { isEmptyReactNode } from "@/wab/commons/ViewUtil";
 import { isCodeComponent } from "@/wab/components";
-import { JQ } from "@/wab/deps";
 import {
   colorProps,
   filterExtractableStyles,
@@ -945,7 +944,7 @@ export interface ExpsProvider {
 
   forTag: () => string;
 
-  forDom: () => JQ | undefined | null;
+  forDom: () => JQuery | undefined | null;
 
   onContainerTypeChange: (val: ContainerType) => void;
 

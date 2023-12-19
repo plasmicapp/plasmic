@@ -1,3 +1,20 @@
+import { AppCtx } from "@/wab/client/app-ctx";
+import { reactConfirm } from "@/wab/client/components/quick-modals";
+import { topFrameTourSignals } from "@/wab/client/components/TopFrame/TopFrameChrome";
+import Button from "@/wab/client/components/widgets/Button";
+import IconButton from "@/wab/client/components/widgets/IconButton";
+import { useApi, useTopFrameApi } from "@/wab/client/contexts/AppContexts";
+import { reportError } from "@/wab/client/ErrorNotifications";
+import { TopFrameApi } from "@/wab/client/frame-ctx/top-frame-api";
+import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
+import HelpIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Help";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { trackEvent } from "@/wab/client/tracking";
+import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
+import { zIndex } from "@/wab/client/z-index";
+import { mkShortId, spawn, waitUntil } from "@/wab/common";
+import { useSignalListener } from "@/wab/commons/components/use-signal-listener";
+import { ProjectId } from "@/wab/shared/ApiSchema";
 import * as Sentry from "@sentry/browser";
 import { notification } from "antd";
 import { observer } from "mobx-react-lite";
@@ -5,22 +22,6 @@ import React from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import type { Step } from "react-joyride";
 import { useMountedState } from "react-use";
-import { mkShortId, spawn, waitUntil } from "../../../common";
-import { useSignalListener } from "../../../commons/components/use-signal-listener";
-import { ProjectId } from "../../../shared/ApiSchema";
-import { AppCtx } from "../../app-ctx";
-import { reactConfirm } from "../../components/quick-modals";
-import { topFrameTourSignals } from "../../components/TopFrame/TopFrameChrome";
-import Button from "../../components/widgets/Button";
-import IconButton from "../../components/widgets/IconButton";
-import { useApi, useTopFrameApi } from "../../contexts/AppContexts";
-import { reportError } from "../../ErrorNotifications";
-import { TopFrameApi } from "../../frame-ctx/top-frame-api";
-import CloseIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Close";
-import { useStudioCtx } from "../../studio-ctx/StudioCtx";
-import { trackEvent } from "../../tracking";
-import { StandardMarkdown } from "../../utils/StandardMarkdown";
-import { zIndex } from "../../z-index";
 import { TutorialHighlightEffect } from "./TutorialHighlightEffect";
 import { TutorialEvent } from "./tutorials-events";
 import { waitElementToBeVisible } from "./tutorials-helpers";
@@ -78,6 +79,16 @@ function StepContentPopup(props: StepContentPopupProps) {
               .trim()}
           </StandardMarkdown>
         </div>
+        <IconButton
+          href="https://plasmic.app/slack"
+          target="_blank"
+          style={{
+            minWidth: 32,
+          }}
+          hoverText="Join our community for help"
+        >
+          <HelpIcon />
+        </IconButton>
         <IconButton
           hoverText="Exit tutorial"
           onClick={async () => {

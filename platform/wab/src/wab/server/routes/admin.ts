@@ -494,6 +494,15 @@ export async function updateTeamWhiteLabelInfo(req: Request, res: Response) {
   res.json({ team: team2 });
 }
 
+export async function updateTeamWhiteLabelName(req: Request, res: Response) {
+  const mgr = superDbMgr(req);
+  const team = await mgr.updateTeamWhiteLabelName(
+    req.body.id as TeamId,
+    req.body.whiteLabelName
+  );
+  res.json({ team: team });
+}
+
 export async function updateSelfAdminMode(req: Request, res: Response) {
   const mgr = superDbMgr(req);
   const disabled = uncheckedCast<UpdateSelfAdminModeRequest>(

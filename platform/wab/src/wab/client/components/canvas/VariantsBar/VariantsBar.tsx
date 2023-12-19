@@ -1,3 +1,24 @@
+import { isKnownArenaFrame, Variant } from "@/wab/classes";
+import {
+  getSpotlightDomInfo,
+  getSpotlightInfo,
+} from "@/wab/client/components/canvas/Spotlight";
+import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
+import { frameToClientRect, scalerToClientRect } from "@/wab/client/coords";
+import { plasmicCanvasTransformEvent } from "@/wab/client/definitions/events";
+import PlasmicVariantsBar from "@/wab/client/plasmic/plasmic_kit_variants_bar/PlasmicVariantsBar";
+import { StudioCtx, usePlasmicCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { ensure } from "@/wab/common";
+import { useSignalListener } from "@/wab/commons/components/use-signal-listener";
+import {
+  getSuperComponentVariantGroupToComponent,
+  isFrameComponent,
+} from "@/wab/components";
+import { areRectsIntersecting, Box } from "@/wab/geom";
+import { isDedicatedArena, isMixedArena } from "@/wab/shared/Arenas";
+import { withoutIrrelevantScreenVariants } from "@/wab/shared/PinManager";
+import { getAllVariantsForTpl, isScreenVariant } from "@/wab/shared/Variants";
 import { Dropdown } from "antd";
 import defer from "lodash/defer";
 import last from "lodash/lodash";
@@ -9,28 +30,8 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { isKnownArenaFrame, Variant } from "../../../../classes";
-import { ensure } from "../../../../common";
-import { useSignalListener } from "../../../../commons/components/use-signal-listener";
-import {
-  getSuperComponentVariantGroupToComponent,
-  isFrameComponent,
-} from "../../../../components";
-import { areRectsIntersecting, Box } from "../../../../geom";
-import { isDedicatedArena, isMixedArena } from "../../../../shared/Arenas";
-import { withoutIrrelevantScreenVariants } from "../../../../shared/PinManager";
-import {
-  getAllVariantsForTpl,
-  isScreenVariant,
-} from "../../../../shared/Variants";
-import { frameToClientRect, scalerToClientRect } from "../../../coords";
-import { plasmicCanvasTransformEvent } from "../../../definitions/events";
-import PlasmicVariantsBar from "../../../plasmic/plasmic_kit_variants_bar/PlasmicVariantsBar";
-import { StudioCtx, usePlasmicCtx } from "../../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../../studio-ctx/view-ctx";
-import { makeVariantsController } from "../../variants/VariantsController";
-import { getSpotlightDomInfo, getSpotlightInfo } from "../Spotlight";
 import VariantBadge from "./VariantBadge";
+import styles from "./VariantsBar.module.scss";
 import VariantsDrawer from "./VariantsDrawer";
 
 const HOVER_TAG_HEIGHT = 30;
@@ -159,21 +160,28 @@ function useFloatingBarForFocusedFrame({
       const maxTranslateY =
         clipperRect.height - panelRect.height - CANVAS_PADDING;
 
-      let translateX = Math.max(
-        Math.min(componentRect.left - clipperRect.left + GUTTER, maxTranslateX),
-        CANVAS_PADDING
-      );
+      const translateX =
+        studioCtx.canvasClipper().scrollLeft +
+        Math.max(
+          Math.min(
+            componentRect.left - clipperRect.left + GUTTER,
+            maxTranslateX
+          ),
+          CANVAS_PADDING
+        );
 
-      let translateY = Math.max(
-        Math.min(
-          componentRect.top -
-            componentTopMargin -
-            clipperRect.top -
-            panelRect.height,
-          maxTranslateY
-        ),
-        CANVAS_PADDING
-      );
+      const translateY =
+        studioCtx.canvasClipper().scrollTop +
+        Math.max(
+          Math.min(
+            componentRect.top -
+              componentTopMargin -
+              clipperRect.top -
+              panelRect.height,
+            maxTranslateY
+          ),
+          CANVAS_PADDING
+        );
 
       panelRef.current.style.transform = `translate(${translateX}px, ${translateY}px)`;
 
@@ -364,12 +372,14 @@ const VariantsBarInner = observer(function VariantsBarInner_({
         isEditable={canChangeVariants}
         isEmpty={!displayVariants.length}
         contained={contained}
-        root={{
-          ref: contained ? null : panelRef,
-          style: {
-            visibility: showPanel ? "visible" : "hidden",
-          },
-        }}
+        root={
+          contained
+            ? undefined
+            : {
+                ref: panelRef,
+                className: showPanel ? styles.absolute : styles.hidden,
+              }
+        }
         dropdownTrigger={{
           onMouseDown: () => {
             preventDismissingRef.current = true;

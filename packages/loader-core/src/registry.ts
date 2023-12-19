@@ -1,9 +1,9 @@
-import { LoaderBundleOutput } from '@plasmicapp/loader-fetcher';
+import { LoaderBundleOutput } from "@plasmicapp/loader-fetcher";
 
 const isBrowser =
-  typeof window !== 'undefined' &&
+  typeof window !== "undefined" &&
   window != null &&
-  typeof window.document !== 'undefined';
+  typeof window.document !== "undefined";
 
 export class Registry {
   private loadedModules: Record<string, any> = {};
@@ -45,6 +45,23 @@ export class Registry {
       return this.loadedModules[name];
     }
 
+    if (
+      !this.modules[name] &&
+      (globalThis as any).__PLASMIC_CHUNKS &&
+      !!(globalThis as any).__PLASMIC_CHUNKS[name]
+    ) {
+      this.modules[name] = (globalThis as any).__PLASMIC_CHUNKS[name];
+    }
+
+    if (
+      !this.modules[name] &&
+      (globalThis as any).__PlasmicBundlePromises &&
+      !!typeof (globalThis as any).__PlasmicBundlePromises[name] &&
+      !!(globalThis as any).__PlasmicBundlePromises[name].then
+    ) {
+      throw (globalThis as any).__PlasmicBundlePromises[name];
+    }
+
     if (!(name in this.modules)) {
       throw new Error(`Unknown module ${name}`);
     }
@@ -63,7 +80,7 @@ export class Registry {
           } catch (err) {
             try {
               // Might be a nodeJs module such as tty
-              return eval('require')(dep);
+              return eval("require")(dep);
             } catch {
               throw err;
             }
@@ -72,7 +89,7 @@ export class Registry {
 
     let func;
     try {
-      func = new Function('require', 'exports', code);
+      func = new Function("require", "exports", code);
     } catch (err) {
       throw new Error(`PLASMIC: Failed to create function for ${name}: ${err}`);
     }
@@ -80,10 +97,14 @@ export class Registry {
     this.loadedModules[name] = exports;
     try {
       func(requireFn, exports);
-    } catch (err) {
+    } catch (err: any) {
       // Delete exports from loadedModules, so subsequent uses don't incorrectly
       // believe that this module has been loaded.
       delete this.loadedModules[name];
+      if (!(err instanceof Error) && !!err && !!err.then) {
+        // Re-throw the Promise
+        throw err;
+      }
       throw new Error(`PLASMIC: Failed to load ${name}: ${err}`);
     }
     return exports;
@@ -94,8 +115,16 @@ export class Registry {
     for (const mod of isBrowser
       ? bundle.modules.browser
       : bundle.modules.server) {
-      if (mod.type === 'code' && mod.code !== this.modules[mod.fileName]) {
+      if (
+        mod.type === "code" &&
+        !!mod.code &&
+        mod.code !== this.modules[mod.fileName]
+      ) {
         this.modules[mod.fileName] = mod.code;
+        if (!(globalThis as any).__PLASMIC_CHUNKS) {
+          (globalThis as any).__PLASMIC_CHUNKS = {};
+        }
+        (globalThis as any).__PLASMIC_CHUNKS[mod.fileName] = mod.code;
         updated = true;
       }
     }
@@ -108,21 +137,21 @@ export class Registry {
 }
 
 function resolvePath(path: string, from: string) {
-  const fromParts = from.split('/');
-  const pathParts = path.split('/');
+  const fromParts = from.split("/");
+  const pathParts = path.split("/");
   if (pathParts.length === 0) {
     return path;
   }
 
-  if (pathParts[0] === '.') {
+  if (pathParts[0] === ".") {
     return [
       ...fromParts.slice(0, fromParts.length - 1),
       ...pathParts.slice(1),
-    ].join('/');
-  } else if (pathParts[0] === '..') {
+    ].join("/");
+  } else if (pathParts[0] === "..") {
     let count = 0;
     for (const part of pathParts) {
-      if (part === '..') {
+      if (part === "..") {
         count += 1;
       } else {
         break;
@@ -131,7 +160,7 @@ function resolvePath(path: string, from: string) {
     return [
       ...fromParts.slice(0, fromParts.length - count - 1),
       ...pathParts.slice(count),
-    ].join('/');
+    ].join("/");
   } else {
     return path;
   }

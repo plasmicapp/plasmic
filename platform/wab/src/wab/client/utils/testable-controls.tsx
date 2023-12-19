@@ -1,9 +1,9 @@
+import { dbg } from "@/wab/dbg";
+import { DEVFLAGS } from "@/wab/devflags";
+import { reactNodeToString } from "@/wab/shared/react-utils";
 import * as React from "react";
 import { ReactNode } from "react";
 import { unstable_batchedUpdates } from "react-dom";
-import { dbg } from "../../deps";
-import { DEVFLAGS } from "../../devflags";
-import { reactNodeToString } from "../../shared/react-utils";
 
 /**
  * This is needed to be able to interact with Selects even when the Cypress test runner is out of focus (so developers

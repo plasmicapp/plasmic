@@ -33,6 +33,7 @@ import {
   ensureGlobalVariants,
 } from "@plasmicapp/react-web";
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
+import Searchbox from "../../components/widgets/Searchbox"; // plasmic-import: po7gr0PX4_gWo/component
 import CmsEntryItem from "../../components/cms/CmsEntryItem"; // plasmic-import: girCdMST6R/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -44,8 +45,6 @@ import sty from "./PlasmicCmsEntriesList.module.css"; // plasmic-import: k2vc2st
 
 import PlussvgIcon from "../q_4_icons/icons/PlasmicIcon__Plussvg"; // plasmic-import: sQKgd2GNr/icon
 import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
-import SearchBox  from '../../components/widgets/Searchbox';
-import Searchbox from "../../components/widgets/Searchbox";
 
 createPlasmicElementProxy;
 
@@ -73,8 +72,8 @@ export const PlasmicCmsEntriesList__ArgProps = new Array<ArgPropType>(
 export type PlasmicCmsEntriesList__OverridesType = {
   root?: p.Flex<"div">;
   addButton?: p.Flex<typeof IconButton>;
+  searchInput?: p.Flex<typeof Searchbox>;
   text?: p.Flex<"div">;
-  searchInput?:p.Flex<typeof SearchBox>
 };
 
 export interface DefaultCmsEntriesListProps {
@@ -83,6 +82,8 @@ export interface DefaultCmsEntriesListProps {
   isEmpty?: SingleBooleanChoiceArg<"isEmpty">;
   className?: string;
 }
+
+const $$ = {};
 
 function PlasmicCmsEntriesList__RenderFunc(props: {
   variants: PlasmicCmsEntriesList__VariantsArgs;
@@ -158,9 +159,9 @@ function PlasmicCmsEntriesList__RenderFunc(props: {
           withBackgroundHover={true}
         />
       </div>
-      <div className={classNames(projectcss.all, sty.freeBox___73Lo)}>
+      <div className={classNames(projectcss.all, sty.freeBox__hQjfP)}>
         <Searchbox
-          data-plasmic-name={"entrySearchInput"}
+          data-plasmic-name={"searchInput"}
           data-plasmic-override={overrides.searchInput}
           className={classNames("__wab_instance", sty.searchInput)}
           placeholder={"Filter..."}
@@ -214,10 +215,10 @@ function PlasmicCmsEntriesList__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: ["root", "addButton", "text","searchInput"],
+  root: ["root", "addButton", "searchInput", "text"],
   addButton: ["addButton"],
-  text: ["text"],
   searchInput: ["searchInput"],
+  text: ["text"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -225,8 +226,8 @@ type DescendantsType<T extends NodeNameType> =
 type NodeDefaultElementType = {
   root: "div";
   addButton: typeof IconButton;
-  text: "div";
   searchInput: typeof Searchbox;
+  text: "div";
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -263,7 +264,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicCmsEntriesList__ArgProps,
           internalVariantPropNames: PlasmicCmsEntriesList__VariantProps,
         }),
@@ -290,8 +291,8 @@ export const PlasmicCmsEntriesList = Object.assign(
   {
     // Helper components rendering sub-elements
     addButton: makeNodeComponent("addButton"),
-    text: makeNodeComponent("text"),
     searchInput: makeNodeComponent("searchInput"),
+    text: makeNodeComponent("text"),
 
     // Metadata about props expected for PlasmicCmsEntriesList
     internalVariantProps: PlasmicCmsEntriesList__VariantProps,

@@ -71,6 +71,8 @@ export interface DefaultCmsContentPageProps {
   className?: string;
 }
 
+const $$ = {};
+
 function PlasmicCmsContentPage__RenderFunc(props: {
   variants: PlasmicCmsContentPage__VariantsArgs;
   args: PlasmicCmsContentPage__ArgsType;
@@ -215,7 +217,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicCmsContentPage__ArgProps,
           internalVariantPropNames: PlasmicCmsContentPage__VariantProps,
         }),

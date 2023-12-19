@@ -1,0 +1,7 @@
+.container :global(.ant-dropdown-menu-root) {
+  max-height: 30vh;
+}
+
+.item__active {
+  background-color: #f5f5f5;
+}

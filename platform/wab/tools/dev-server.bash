@@ -11,6 +11,7 @@ if [[ $WAB_HTTPS ]]; then
   export SSL_KEY_FILE=localhost-key.pem
 fi
 
+cmd=${1:-start}
 port=${PORT:-3003}
 
 if [[ $REACT_APP_DEV_HOST_PROXY ]]; then
@@ -31,4 +32,4 @@ REACT_APP_DEFAULT_HOST_URL=${HOST_URL} \
   PORT=$port \
   NODE_OPTIONS="--max-old-space-size=10000" \
   SKIP_PREFLIGHT_CHECK=true \
-  node --max_old_space_size=10000 node_modules/.bin/react-scripts start
+  node --max_old_space_size=10000 node_modules/.bin/react-scripts $cmd

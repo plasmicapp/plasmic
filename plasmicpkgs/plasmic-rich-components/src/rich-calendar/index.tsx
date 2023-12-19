@@ -29,8 +29,9 @@ export function registerRichCalendar(loader?: Registerable) {
     props: {
       data: {
         type: "dataSourceOpData" as any,
+        displayName: "Events",
         description:
-          "The data to display. Should be a list of records with some date field.",
+          "The events data should be a list of records with some date field.",
       },
       title: roleProp({ role: "title" }),
       date: roleProp({ role: "date", singular: true }),

@@ -71,6 +71,8 @@ export interface DefaultCmsSchemaPageProps {
   className?: string;
 }
 
+const $$ = {};
+
 function PlasmicCmsSchemaPage__RenderFunc(props: {
   variants: PlasmicCmsSchemaPage__VariantsArgs;
   args: PlasmicCmsSchemaPage__ArgsType;
@@ -214,7 +216,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicCmsSchemaPage__ArgProps,
           internalVariantPropNames: PlasmicCmsSchemaPage__VariantProps,
         }),

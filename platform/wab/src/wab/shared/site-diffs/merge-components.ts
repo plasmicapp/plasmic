@@ -9,6 +9,7 @@ import {
   isKnownTplComponent,
   isKnownTplTag,
   isKnownVirtualRenderExpr,
+  ObjInst,
   Param,
   RenderExpr,
   Site,
@@ -35,7 +36,7 @@ import {
   xIntersect,
 } from "@/wab/common";
 import { CodeComponent, isCodeComponent } from "@/wab/components";
-import { Field, ObjInst } from "@/wab/model/model-meta";
+import { Field } from "@/wab/model/model-meta";
 import { Bundler } from "@/wab/shared/bundler";
 import { flattenComponent } from "@/wab/shared/cached-selectors";
 import { attachRenderableTplSlots } from "@/wab/shared/code-components/code-components";
@@ -445,7 +446,7 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
       ) {
         // Conflict when re-rooting the component
         const pathStr = JSON.stringify(mergedSiteCtx.path);
-        const conf = {
+        const conf: SpecialDirectConflict = {
           conflictType: "special",
           objectType: "components",
           conflictParts: ["tplTree"],
@@ -469,7 +470,7 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
             }
             fixParentPointers(mergedComp.tplTree);
           },
-        } as SpecialDirectConflict;
+        };
         if (picks) {
           const side = ensure(
             picks[pathStr],
@@ -573,7 +574,7 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
           ) {
             // Both branches moved the same element to different locations
             const pathStr = JSON.stringify(mergedSiteCtx.path);
-            const conf = {
+            const conf: SpecialDirectConflict = {
               conflictType: "special",
               objectType: "components",
               conflictParts: ["tplTree"],
@@ -591,7 +592,7 @@ export const tryMergeComponents: MergeSpecialFieldHandler<Site> = (
                 }
                 while (checkAndFixCycle());
               },
-            } as SpecialDirectConflict;
+            };
 
             if (picks) {
               const side = ensure(
@@ -842,7 +843,7 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
 
       if (finalOrder === "conflict") {
         const pathStr = JSON.stringify(mergedCtx.path);
-        const conf = {
+        const conf: SpecialDirectConflict = {
           conflictType: "special",
           conflictParts: [`tpl ${merged.uuid} children order`],
           objectInsts: [left, right],
@@ -864,7 +865,7 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
               }
             });
           },
-        } as SpecialDirectConflict;
+        };
 
         if (picks) {
           const side = ensure(
@@ -1127,7 +1128,7 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
 
       if (finalOrder === "conflict") {
         const pathStr = JSON.stringify(mergedCtx.path);
-        const conf = {
+        const conf: SpecialDirectConflict = {
           conflictType: "special",
           conflictParts: [`tpl ${merged.uuid} children order`],
           objectInsts: [left, right],
@@ -1137,7 +1138,7 @@ export const mergeTplNodeChildren: MergeSpecialFieldHandler<TplNode> = (
             finalOrder = side === "left" ? leftOrder : rightOrder;
             applyFinalOrder();
           },
-        } as SpecialDirectConflict;
+        };
 
         if (picks) {
           const side = ensure(

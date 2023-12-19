@@ -25,6 +25,7 @@ import {
 } from "../../src/wab/common";
 import { DevFlagsType } from "../../src/wab/devflags";
 import {
+  ApiDataSource,
   ApiUpdateDataSourceRequest,
   CreateSiteRequest,
 } from "../../src/wab/shared/ApiSchema";
@@ -254,9 +255,9 @@ export function waitForNewFrame(
   opts?: { skipWaitInit: boolean }
 ) {
   waitStudioLoaded();
-  return cy.get(".canvas-editor__scaler").then(($scaler) => {
+  return cy.get(".canvas-editor__canvas-clipper").then(($clipper) => {
     return curDocument().then((doc) => {
-      const initXform = $scaler.css("transform");
+      const initScrollTop = $clipper.scrollTop();
       const existingFrames = doc.querySelectorAll(
         ".canvas-editor__viewport[data-test-frame-uid]"
       );
@@ -286,7 +287,7 @@ export function waitForNewFrame(
           if (opts?.skipWaitInit) {
             return framed;
           }
-          return framed.waitInit(initXform).then(() => framed);
+          return framed.waitInit().then(() => framed);
         });
     });
   });
@@ -470,7 +471,12 @@ export class Framed {
       })
       .find('[contenteditable="true"]')
       .wait(500) // Needed to prevent losing some keystrokes, probably need a better solution.
-      .type(`{selectall}${text}{esc}`, { delay: 100 })
+      .type(`{selectall}${text}{esc}`, {
+        delay: 100,
+        // With browser scrolling, Cypress will scroll the element into view,
+        // even if it's already in view. This would mess up free drawing tests.
+        scrollBehavior: false,
+      })
       .then(() => {
         this.base().find(".__wab_editing").should("not.exist");
         this.base()
@@ -513,12 +519,7 @@ export class Framed {
     });
   }
 
-  /**
-   * @param initXform The initial arena transform (scroll position).  We wait
-   *   until we have scrolled to a position that is different from this, since
-   *   after frame creation we always trigger a scroll.
-   */
-  waitInit(initXform?: string) {
+  waitInit() {
     // TODO This timeout does not do anything, but leaving here as a note in case you run into this (hopefully rare) timeout.  Issue is blocked on https://github.com/cypress-io/cypress/issues/5980.
     cy.wrap(null, { timeout: 9999 }).then(() =>
       waitCanvasOrPreviewIframeLoaded(this.frame)
@@ -526,12 +527,7 @@ export class Framed {
 
     // Wait for the full initial render eval cycle.
     this.base().find(".__wab_root").should("exist");
-    waitFrameEval(this);
-    // Wait for the auto-scroll to happen.
-    return cy.get(".canvas-editor__scaler").should(($scaler) => {
-      console.log($scaler.css("transform"), "vs", initXform);
-      expect($scaler.css("transform")).not.eq(initXform);
-    });
+    return waitFrameEval(this);
   }
 
   plotText(x: number, y: number, text: string) {
@@ -1106,7 +1102,12 @@ export function withinLiveMode(func: () => void) {
 }
 
 export function openArtboardSettings() {
-  cy.get(`[data-test-id="artboard-config-button"]`).click();
+  cy.get(`[data-test-id="artboard-config-button"]`).click({
+    // With browser scrolling, Cypress will scroll the element into view,
+    // even if it's already in view. This would mess up free drawing tests.
+    scrollBehavior: "center",
+    force: true,
+  });
 }
 
 export function addElementInteraction(pseudoSelector: string) {
@@ -1506,14 +1507,34 @@ export function removeCurrentProject(email = "user2@example.com") {
   }
 }
 
-export function deleteDataSource() {
+export function deleteDataSourcesByName(name: string) {
+  return cy
+    .request({
+      url: `/api/v1/data-source/sources`,
+      method: "GET",
+    })
+    .its("body.dataSources")
+    .then((sources: ApiDataSource[]) => {
+      for (const source of sources) {
+        if (source.name === name) {
+          return cy.deleteDataSource(source.id);
+        }
+      }
+    });
+}
+
+export function deleteDataSource(dsid: string) {
+  return cy.request({
+    url: `/api/v1/data-source/sources/${dsid}`,
+    method: "DELETE",
+  });
+}
+
+export function deleteDataSourceOfCurrentTest() {
   const dataSourceId = Cypress.env("dataSourceId");
   if (dataSourceId) {
     Cypress.env("dataSourceId", undefined);
-    cy.request({
-      url: `/api/v1/data-source/sources/${dataSourceId}`,
-      method: "DELETE",
-    });
+    cy.deleteDataSource(dataSourceId);
   }
 }
 
@@ -2206,7 +2227,7 @@ export function createTutorialDb(type: string) {
     .its("body.id", { log: false });
 }
 
-export function createTutorialDataSource(type: string) {
+export function createTutorialDataSource(type: string, dsname: string) {
   cy.login()
     .request({
       url: "/api/v1/personal-workspace",
@@ -2218,7 +2239,7 @@ export function createTutorialDataSource(type: string) {
       createTutorialDb(type).then((dbId) => {
         cy.createDataSource({
           source: "tutorialdb",
-          name: "TutorialDB",
+          name: dsname,
           workspaceId: wsId,
           credentials: {
             tutorialDbId: dbId,
@@ -2263,7 +2284,9 @@ export function deleteProjectAndRevisions(projectId: string) {
 }
 
 export function createDataSource(
-  dataSourceInfo: Partial<ApiUpdateDataSourceRequest> & { workspaceId?: string }
+  dataSourceInfo: Partial<ApiUpdateDataSourceRequest> & {
+    workspaceId?: string;
+  }
 ) {
   return cy
     .login()

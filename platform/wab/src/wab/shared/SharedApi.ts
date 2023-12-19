@@ -71,6 +71,7 @@ import {
   CmsRowRevisionId,
   CmsTableId,
   CmsTableSchema,
+  CmsTableSettings,
   CommentData,
   CommentId,
   CommentReactionData,
@@ -192,7 +193,6 @@ import { OperationTemplate } from "./data-sources-meta/data-sources";
 import { CodeSandboxInfo } from "./db-json-blobs";
 import { GrantableAccessLevel } from "./EntUtil";
 import { LowerHttpMethod } from "./HttpClientUtil";
-import { NodesByComponent } from "./seq-id-utils";
 import { UiConfig } from "./ui-config-utils";
 
 export interface SiteInfo {
@@ -500,28 +500,25 @@ export abstract class SharedApi {
    **/
   saveProjectRevChanges(
     projectId: string,
-    revisionNum: number,
-    data: string,
-    modelVersion: number,
-    hostlessDataVersion: number,
-    nodesByComponent: NodesByComponent,
-    incremental: boolean,
-    toDeleteIids: string[],
-    branchId?: BranchId
+    rev: {
+      revisionNum: number;
+      data: string;
+      modelVersion: number;
+      hostlessDataVersion: number;
+      incremental: boolean;
+      toDeleteIids: string[];
+      branchId?: BranchId;
+    }
   ) {
+    const { branchId, revisionNum, ...rest } = rev;
     return this.post(
       `/projects/${showProjectBranchId(
         brand(projectId),
         branchId
       )}/revisions/${revisionNum}`,
       {
-        data,
-        modelSchemaHash: modelSchemaHash,
-        hostlessDataVersion,
-        modelVersion: modelVersion,
-        nodesByComponent,
-        incremental: incremental,
-        toDeleteIids,
+        modelSchemaHash,
+        ...rest,
       }
     );
   }
@@ -1006,8 +1003,11 @@ export abstract class SharedApi {
     return this.put(`/billing/subscription/${args.teamId}`, args);
   }
 
-  async cancelSubscription(teamId: TeamId): Promise<{}> {
-    return this.delete(`/billing/subscription/${teamId}`);
+  async cancelSubscription(
+    teamId: TeamId,
+    { reason }: { reason?: string } = {}
+  ): Promise<{}> {
+    return this.delete(`/billing/subscription/${teamId}`, { reason });
   }
 
   async createSetupIntent(teamId: TeamId): Promise<Stripe.SetupIntent> {
@@ -1116,6 +1116,17 @@ export abstract class SharedApi {
     const res = await this.post(`/admin/update-team-white-label-info`, {
       id: teamId,
       whiteLabelInfo: info,
+    });
+    return res.team;
+  }
+
+  async updateTeamWhiteLabelName(
+    teamId: TeamId,
+    name: string | null
+  ): Promise<ApiTeam> {
+    const res = await this.post(`/admin/update-team-white-label-name`, {
+      id: teamId,
+      whiteLabelName: name,
     });
     return res.team;
   }
@@ -1607,6 +1618,7 @@ export abstract class SharedApi {
       name?: string;
       schema?: CmsTableSchema;
       description?: string;
+      settings?: CmsTableSettings;
     }
   ) {
     return (await this.put(`/cmse/tables/${tableId}`, opts)) as ApiCmsTable;
@@ -1614,6 +1626,14 @@ export abstract class SharedApi {
 
   async deleteCmsTable(tableId: CmsTableId) {
     return await this.delete(`/cmse/tables/${tableId}`);
+  }
+
+  async triggerCmsTableWebhooks(tableId: CmsTableId, event: "publish") {
+    return this.post(
+      `/cmse/tables/${tableId}/trigger-webhook?event=${event}`
+    ) as Promise<{
+      responses: { status: number; data: string }[];
+    }>;
   }
 
   async createCmsRow(

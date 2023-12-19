@@ -1,3 +1,5 @@
+import { OnClickAway } from "@/wab/commons/components/OnClickAway";
+import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import Tooltip from "antd/lib/tooltip";
 import cn from "classnames";
 import L from "lodash";
@@ -11,8 +13,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { OnClickAway } from "../../../../commons/components/OnClickAway";
-import { MaybeWrap } from "../../../../commons/components/ReactUtil";
 import styles from "./EditableLabel.module.scss";
 
 export type EditableLabelProps = {
@@ -104,7 +104,7 @@ const EditableLabel_: ForwardRefRenderFunction<
 
   const tryFinish = useCallback(
     (val: /*TWZ*/ string) => {
-      // @ts-ignore
+      // @ts-expect-error
       if (onEdit!(val.trim()) !== false) {
         onAbort?.();
         return _setEditing(false);
@@ -183,7 +183,7 @@ const EditableLabel_: ForwardRefRenderFunction<
 
   React.useEffect(() => {
     if (_editing && inputBoxRef.current) {
-      inputBoxRef.current.focus();
+      inputBoxRef.current.focus({ preventScroll: true });
       inputBoxRef.current.select();
     }
   }, [_editing]);

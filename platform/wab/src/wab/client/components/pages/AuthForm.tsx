@@ -7,9 +7,9 @@ import {
 import { LinkButton } from "@/wab/client/components/widgets";
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { mkUuid, spawnWrapper } from "@/wab/common";
-import { $ } from "@/wab/deps";
 import { ApiUser, UserId } from "@/wab/shared/ApiSchema";
 import { Button, Divider, Input, notification } from "antd";
+import $ from "jquery";
 import Cookies from "js-cookie";
 import * as React from "react";
 import { useState } from "react";

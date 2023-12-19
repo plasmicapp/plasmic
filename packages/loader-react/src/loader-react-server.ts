@@ -4,7 +4,11 @@ import {
   PlasmicModulesFetcher,
   PlasmicTracker,
 } from "@plasmicapp/loader-core";
-import { ComponentMeta, LoaderBundleOutput } from "@plasmicapp/loader-fetcher";
+import {
+  CodeModule,
+  ComponentMeta,
+  LoaderBundleOutput,
+} from "@plasmicapp/loader-fetcher";
 import { prepComponentData } from "./bundles";
 import { ComponentRenderData, FetchPagesOpts } from "./loader";
 import {
@@ -56,6 +60,12 @@ export interface InitOptions {
    * If true, uses browser / node's native fetch
    */
   nativeFetch?: boolean;
+
+  /**
+   * If true, will not redirect to the codegen server automatically, and will
+   * try to reuse the existing bundle in the cache.
+   */
+  manualRedirect?: boolean;
 }
 
 /** Subset of loader functionality that works on React Server Components. */
@@ -76,6 +86,7 @@ export class ReactServerPlasmicComponentLoader {
     external: [],
     projects: [],
     activeSplits: [],
+    bundleUrlQuery: null,
   };
 
   constructor(args: {
@@ -195,6 +206,10 @@ export class ReactServerPlasmicComponentLoader {
     return this.bundle.activeSplits;
   }
 
+  getChunksUrl(bundle: LoaderBundleOutput, modules: CodeModule[]) {
+    return this.fetcher.getChunksUrl(bundle, modules);
+  }
+
   private async fetchMissingData(opts: {
     missingSpecs: ComponentLookupSpec[];
   }) {
@@ -231,6 +246,8 @@ export class ReactServerPlasmicComponentLoader {
     // TODO: this is only possible as the bundle is the full bundle,
     // not a partial bundle. Figure it out how to merge partial bundles.
     this.bundle = bundle;
+    // Avoid `undefined` as it cannot be serialized as JSON
+    this.bundle.bundleUrlQuery = this.bundle.bundleUrlQuery ?? null;
     this.onBundleMerged?.();
   }
 
@@ -249,6 +266,7 @@ export class ReactServerPlasmicComponentLoader {
       external: [],
       projects: [],
       activeSplits: [],
+      bundleUrlQuery: null,
     };
   }
 }

@@ -16,6 +16,10 @@ import {
   textAreaComponentName,
 } from "./names";
 import { registerAvatar, registerAvatarGroup } from "./registerAvatar";
+import {
+  registerBreadcrumb,
+  registerBreadcrumbItem,
+} from "./registerBreadcrumb";
 import { registerButton } from "./registerButton";
 import { registerCheckbox } from "./registerCheckbox";
 import { registerCollapse } from "./registerCollapse";
@@ -95,6 +99,8 @@ export function registerAll(loader?: Registerable) {
   registerSegmented(loader);
   registerProgress(loader);
   registerPagination(loader);
+  registerBreadcrumb(loader);
+  registerBreadcrumbItem(loader);
 }
 
 export { FormType, InputType, OPTIMIZED_FORM_IMPORT } from "./form/Form";

@@ -403,7 +403,12 @@ function literalize(value: any) {
       } else if (isPlainObject(val)) {
         const res = { ...val };
         for (const key of Object.keys(res)) {
-          if (key.startsWith("__plasmic")) {
+          if (
+            key.startsWith("__plasmic") ||
+            // Exclude functions on $state that shouldn't be used by
+            // the user
+            ["registerInitFunc", "eagerInitializeStates"].includes(key)
+          ) {
             delete res[key];
           }
         }

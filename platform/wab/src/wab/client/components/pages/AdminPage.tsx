@@ -4,7 +4,7 @@ import {
   NonAuthCtxContext,
   useNonAuthCtx,
 } from "@/wab/client/app-ctx";
-import { UU } from "@/wab/client/cli-routes";
+import { U, UU } from "@/wab/client/cli-routes";
 import type FullCodeEditor from "@/wab/client/components/coding/FullCodeEditor";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
 import {
@@ -12,7 +12,7 @@ import {
   SearchBox,
   Spinner,
 } from "@/wab/client/components/widgets";
-import { downloadBlob } from "@/wab/client/dom-utils";
+import { downloadBlob, getUploadedFile } from "@/wab/client/dom-utils";
 import {
   useAsyncFnStrict,
   useAsyncStrict,
@@ -85,7 +85,7 @@ function ChangePasswordView() {
 
   return (
     <div>
-      <h1>Change password for a user</h1>
+      <h2>Change password for a user</h2>
       <Form onFinish={handleSubmit}>
         <Input
           type={"email"}
@@ -130,7 +130,7 @@ export function UsersView() {
 
   return (
     <div className="mv-lg">
-      <h1>Users</h1>
+      <h2>Users</h2>
       <SearchBox value={query} onChange={(e) => setQuery(e.target.value)} />
       <Table
         dataSource={(usersResp.value?.users ?? []).filter((user) => {
@@ -195,7 +195,7 @@ export function UserProjects() {
 
   return (
     <div className="mv-lg">
-      <h1>Lookup projects for user</h1>
+      <h2>Lookup projects for user</h2>
       <div>
         <Select
           style={{ width: 400 }}
@@ -396,7 +396,7 @@ export function UserTeams() {
 
   return (
     <div className="mv-lg">
-      <h1>Lookup teams for user</h1>
+      <h2>Lookup teams for user</h2>
       <div>
         <Select
           style={{ width: 400 }}
@@ -537,7 +537,7 @@ export function Inviter() {
 
   return (
     <div className="mv-lg">
-      <h1>Invite and whitelist user</h1>
+      <h2>Invite and whitelist user</h2>
 
       <Form onFinish={onSubmit}>
         This can be whitespace and comma separated.
@@ -587,7 +587,7 @@ export function InviteApprovalsView() {
 
   return (
     <div>
-      <h1>Invite approval requests</h1>
+      <h2>Invite approval requests</h2>
       <Table
         dataSource={requestsResp.value?.requests ?? []}
         rowKey={"id"}
@@ -637,7 +637,7 @@ function PublicProjectsView() {
 
   return (
     <div>
-      <h1>Update Public Projects</h1>
+      <h2>Update Public Projects</h2>
       <Form
         onFinish={async () => {
           await nonAuthCtx.api.setSiteInfo(projectId, {
@@ -668,7 +668,7 @@ function CloneProjectView() {
 
   return (
     <div>
-      <h1>Clone projects</h1>
+      <h2>Clone projects</h2>
       <p>
         This allows you to clone projects by ID, even if share-by-link is turned
         off
@@ -714,7 +714,7 @@ function DeactivateUserView() {
 
   return (
     <div>
-      <h1>Offload user</h1>
+      <h2>Offload user</h2>
       <p>
         This deactivates the user in the database. You still need to follow{" "}
         <a href="https://coda.io/d/Plasmic-Wiki_dHQygjmQczq/Offboarding-users_suPpD#_lu6Th">
@@ -743,11 +743,34 @@ function DeactivateUserView() {
   );
 }
 
+function UploadProject() {
+  const nonAuthCtx = useNonAuthCtx();
+  return (
+    <div>
+      <h2>Upload project from JSON</h2>
+      <p>This uploads a json bundle as a project.</p>
+      <Button
+        onClick={() =>
+          getUploadedFile(async (data: string) => {
+            await nonAuthCtx.api.importProject(data).then(({ projectId }) => {
+              document.location.href = U.project({
+                projectId: projectId,
+              });
+            });
+          })
+        }
+      >
+        Upload
+      </Button>
+    </div>
+  );
+}
+
 function DownloadProjectView() {
   const nonAuthCtx = useNonAuthCtx();
   return (
     <div>
-      <h1>Download project as JSON</h1>
+      <h2>Download project as JSON</h2>
       <p>
         This downloads a project as a json blob, which you can then import into
         your own local dev server.
@@ -784,7 +807,7 @@ function DownloadProjectViewAndBranches() {
   const nonAuthCtx = useNonAuthCtx();
   return (
     <div>
-      <h1>Download project and branches as JSON</h1>
+      <h2>Download project and branches as JSON</h2>
       <p>
         This downloads the whole project data, including branches and
         dependencies, as a JSON blob, which you can then import into your own
@@ -885,7 +908,7 @@ function ImportProjectsFromProd() {
 
   return (
     <div>
-      <h1>Import devflags and plasmic projects from prod</h1>
+      <h2>Import devflags and plasmic projects from prod</h2>
       <Modal
         visible={modalVisible}
         footer={null}
@@ -926,7 +949,7 @@ function DownloadPlumePkg() {
   };
   return (
     <div>
-      <h1>Download Plume pkg as json</h1>
+      <h2>Download Plume pkg as json</h2>
       <Button onClick={() => download("latest")}>
         Download latest version
       </Button>
@@ -986,7 +1009,7 @@ function DevFlagControls() {
           await submit();
         }}
       >
-        <h1>Dev Flag Overrides</h1>
+        <h2>Dev Flag Overrides</h2>
         {error && <p style={{ color: "red" }}>{error}</p>}
         {submitError && <p style={{ color: "red" }}>{submitError}</p>}
         <div style={{ height: 1050 }}>
@@ -1149,7 +1172,7 @@ export function FeatureTierControls() {
 
   return (
     <div className="mv-lg">
-      <h1>Feature Tiers</h1>
+      <h2>Feature Tiers</h2>
       <SearchBox value={query} onChange={(e) => setQuery(e.target.value)} />
       <Table
         dataSource={tiers.filter((tier) => {
@@ -1227,7 +1250,7 @@ function TeamTierControls() {
 
   return (
     <div>
-      <h1>Modify team billing</h1>
+      <h2>Modify team billing</h2>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <h2>Upgrade a team from free tier</h2>
       <p></p>
@@ -1444,7 +1467,7 @@ function CodeSandboxControls() {
 
   return (
     <div>
-      <h1>CodeSandbox</h1>
+      <h2>CodeSandbox</h2>
       <p>To refresh the CodeSandbox token</p>
       <ol>
         <li>
@@ -1507,7 +1530,7 @@ function RevertProjectRev() {
   const nonAuthCtx = useNonAuthCtx();
   return (
     <div>
-      <h1>Revert project to revision</h1>
+      <h2>Revert project to revision</h2>
       <p>Creates a new revision with data from a specific revision</p>
       <Form
         onFinish={async (event) => {
@@ -1539,7 +1562,7 @@ function ChangeProjectOwner() {
   const nonAuthCtx = useNonAuthCtx();
   return (
     <div>
-      <h1>Change project owner</h1>
+      <h2>Change project owner</h2>
       <Form
         onFinish={async (event) => {
           try {
@@ -1569,7 +1592,7 @@ function ConfigureSaml() {
   const nonAuthCtx = useNonAuthCtx();
   return (
     <div>
-      <h1>Configure SAML SSO</h1>
+      <h2>Configure SAML SSO</h2>
       <Form
         onFinish={async (event) => {
           console.log("FORM", event);
@@ -1612,7 +1635,7 @@ function ConfigureSso() {
   const [form] = Form.useForm();
   return (
     <div>
-      <h1>Configure SSO</h1>
+      <h2>Configure SSO</h2>
       <Form
         form={form}
         initialValues={{
@@ -1681,7 +1704,7 @@ function CreateTutorialDb() {
   const nonAuthCtx = useNonAuthCtx();
   return (
     <div>
-      <h1>Create a TutorialDB</h1>
+      <h2>Create a TutorialDB</h2>
       <p>
         Enter the name of the tutorialdb directory in src/wab/server/tutorialdb
       </p>
@@ -1723,7 +1746,7 @@ function ResetTutorialDb() {
   const nonAuthCtx = useNonAuthCtx();
   return (
     <div>
-      <h1>Reset a TutorialDB</h1>
+      <h2>Reset a TutorialDB</h2>
       <Form
         onFinish={async (event) => {
           try {
@@ -1760,7 +1783,7 @@ function TeamApiTokens() {
   const nonAuthCtx = useNonAuthCtx();
   return (
     <div>
-      <h1>Create Team API Token</h1>
+      <h3>Create Team API Token</h3>
       <Form
         onFinish={async (event) => {
           try {
@@ -1795,7 +1818,7 @@ function TeamApiTokens() {
 function TourCypressTest() {
   return (
     <div>
-      <h1> Get updated tour Cypress test</h1>
+      <h2> Get updated tour Cypress test</h2>
       <Button
         onClick={async () => {
           const content = stepsToCypress(STUDIO_ONBOARDING_TUTORIALS.complete);
@@ -1812,121 +1835,165 @@ function TourCypressTest() {
   );
 }
 
-function TeamJwtOpen() {
+function WhiteLabelTeamJwtOpen() {
   const nonAuthCtx = useNonAuthCtx();
-  const [form] = Form.useForm();
+  const [team, setTeam] = React.useState<ApiTeam | undefined>(undefined);
 
   return (
+    <>
+      <TeamWhiteLabelLookup onChange={(t) => setTeam(t)} />
+      {team && (
+        <>
+          <h3>
+            Team "{team.name}" ({team.whiteLabelName})
+          </h3>
+          <Form
+            initialValues={team.whiteLabelInfo ?? undefined}
+            onFinish={async (values) => {
+              console.log("FORM SUBMISSION", values);
+              const whiteLabelInfo: TeamWhiteLabelInfo = {
+                openRedirect: {
+                  ...values.openRedirect,
+                  scheme: "jwt",
+                  algo: "RS256",
+                },
+              };
+              console.log("New WhiteLabelInfo", whiteLabelInfo);
+              await nonAuthCtx.api.updateTeamWhiteLabelInfo(
+                team.id,
+                whiteLabelInfo
+              );
+              notification.success({ message: "Updated!" });
+            }}
+          >
+            <Form.Item
+              name={["openRedirect", "publicKey"]}
+              label="JWT Public Key (RS256)"
+            >
+              <Input.TextArea />
+            </Form.Item>
+            <Form.Item>
+              <Button htmlType="submit" type="primary">
+                Save
+              </Button>
+            </Form.Item>
+          </Form>
+        </>
+      )}
+    </>
+  );
+}
+
+function TeamWhiteLabelLookup(props: { onChange: (team: ApiTeam) => void }) {
+  const { onChange } = props;
+  const nonAuthCtx = useNonAuthCtx();
+  return (
     <Form
-      form={form}
-      onFinish={async (event) => {
-        console.log("FORM SUBMISSION", event);
-        const teamName = event.whiteLabelName;
+      layout="inline"
+      onFinish={async (values) => {
+        const teamName = values.whiteLabelName;
         const team = await nonAuthCtx.api.getTeamByWhiteLabelName(teamName);
-        const whiteLabelInfo: TeamWhiteLabelInfo = {
-          openRedirect: {
-            ...event.whiteLabelInfo.openRedirect,
-            scheme: "jwt",
-            algo: "RS256",
-          },
-        };
-        await nonAuthCtx.api.updateTeamWhiteLabelInfo(team.id, whiteLabelInfo);
-        notification.success({ message: "Updated!" });
+        onChange(team);
       }}
     >
-      <Form.Item name="whiteLabelName" label="White label name">
-        <Input
-          onBlur={async () => {
-            const teamName = form.getFieldValue("whiteLabelName");
-            let team: ApiTeam;
-            try {
-              team = await nonAuthCtx.api.getTeamByWhiteLabelName(teamName);
-            } catch (err) {
-              notification.error({
-                message: `No team with name ${teamName}: ${err}`,
-              });
-              return;
-            }
-            console.log("GOT TERAM", team);
-            form.setFieldsValue({
-              whiteLabelInfo: team.whiteLabelInfo,
-            });
-          }}
-        />
-      </Form.Item>
-      <Form.Item
-        name={["whiteLabelInfo", "openRedirect", "publicKey"]}
-        label="JWT Public Key"
-      >
-        <Input.TextArea />
+      <Form.Item label="White label name" name="whiteLabelName">
+        <Input />
       </Form.Item>
       <Form.Item>
-        <Button htmlType="submit">Save</Button>
+        <Button htmlType="submit">Lookup</Button>
       </Form.Item>
     </Form>
   );
 }
-function TeamClientCredentials() {
+
+function WhiteLabelTeamClientCredentials() {
   const nonAuthCtx = useNonAuthCtx();
-  const [form] = Form.useForm();
+  const [team, setTeam] = React.useState<ApiTeam | undefined>(undefined);
 
   return (
-    <Form
-      form={form}
-      onFinish={async (event) => {
-        console.log("FORM SUBMISSION", event);
-        const teamName = event.whiteLabelName;
-        const team = await nonAuthCtx.api.getTeamByWhiteLabelName(teamName);
-        const whiteLabelInfo: TeamWhiteLabelInfo = {
-          apiClientCredentials: {
-            ...event.whiteLabelInfo.apiClientCredentials,
-          },
-        };
-        await nonAuthCtx.api.updateTeamWhiteLabelInfo(team.id, whiteLabelInfo);
-        notification.success({ message: "Updated!" });
-      }}
-    >
-      <Form.Item name="whiteLabelName" label="White label name">
-        <Input
-          onBlur={async () => {
-            const teamName = form.getFieldValue("whiteLabelName");
-            let team: ApiTeam;
-            try {
-              team = await nonAuthCtx.api.getTeamByWhiteLabelName(teamName);
-            } catch (err) {
-              notification.error({
-                message: `No team with name ${teamName}: ${err}`,
-              });
-              return;
-            }
-            form.setFieldsValue({
-              whiteLabelInfo: team.whiteLabelInfo,
-            });
-          }}
-        />
-      </Form.Item>
-      <Form.Item
-        name={["whiteLabelInfo", "apiClientCredentials", "clientId"]}
-        label="Client ID"
+    <>
+      <TeamWhiteLabelLookup onChange={(t) => setTeam(t)} />
+      {team && (
+        <>
+          <h3>
+            Team "{team.name}" ({team.whiteLabelName})
+          </h3>
+          <Form
+            initialValues={team.whiteLabelInfo ?? undefined}
+            onFinish={async (event) => {
+              const whiteLabelInfo: TeamWhiteLabelInfo = {
+                apiClientCredentials: {
+                  ...event.apiClientCredentials,
+                },
+              };
+              await nonAuthCtx.api.updateTeamWhiteLabelInfo(
+                team.id,
+                whiteLabelInfo
+              );
+              notification.success({ message: "Updated!" });
+            }}
+          >
+            <Form.Item
+              name={["apiClientCredentials", "clientId"]}
+              label="Client ID"
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item name={["apiClientCredentials", "issuer"]} label="Issuer">
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name={["apiClientCredentials", "aud"]}
+              label="Expected audience (aud)"
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item>
+              <Button htmlType="submit" type="primary">
+                Save
+              </Button>
+            </Form.Item>
+          </Form>
+        </>
+      )}
+    </>
+  );
+}
+
+function SetTeamWhiteLabelName() {
+  const nonAuthCtx = useNonAuthCtx();
+  return (
+    <div>
+      <p>
+        Convert a team to a white-labeled team by associating a white-label name
+        with it.
+      </p>
+      <Form
+        onFinish={async (values) => {
+          if (values.whiteLabelName?.trim() === "") {
+            values.whiteLabelName = null;
+          }
+          const team = await nonAuthCtx.api.updateTeamWhiteLabelName(
+            values.teamId,
+            values.whiteLabelName
+          );
+          notification.success({
+            message: "Successfully updated white label team name",
+            description: `Team ${team.id} has name "${team.whiteLabelName}"`,
+          });
+        }}
       >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        name={["whiteLabelInfo", "apiClientCredentials", "issuer"]}
-        label="Issuer"
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        name={["whiteLabelInfo", "apiClientCredentials", "aud"]}
-        label="Expected audience (aud)"
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item>
-        <Button htmlType="submit">Save</Button>
-      </Form.Item>
-    </Form>
+        <Form.Item name="teamId" label="Team ID">
+          <Input />
+        </Form.Item>
+        <Form.Item name="whiteLabelName" label="White label name">
+          <Input />
+        </Form.Item>
+        <Form.Item>
+          <Button htmlType="submit">Save</Button>
+        </Form.Item>
+      </Form>
+    </div>
   );
 }
 
@@ -1944,17 +2011,17 @@ function WhiteLabeledTeam() {
           {
             key: "jwt",
             label: "Configure Redirect flow with JWT",
-            children: <TeamJwtOpen />,
+            children: <WhiteLabelTeamJwtOpen />,
           },
           {
             key: "client-credentials",
             label: "Configure API client credentials",
-            children: <TeamClientCredentials />,
+            children: <WhiteLabelTeamClientCredentials />,
           },
           {
             key: "create",
             label: "Make white-labeled team",
-            children: <div>Maybe layter!</div>,
+            children: <SetTeamWhiteLabelName />,
           },
         ]}
       />
@@ -1968,7 +2035,7 @@ function PromotionCode() {
 
   return (
     <div>
-      <h1>Create promotion code</h1>
+      <h2>Create promotion code</h2>
       <Form
         form={form}
         onFinish={async (event) => {
@@ -2089,7 +2156,7 @@ function CopilotFeedbackView() {
 
   return (
     <div className="mv-lg">
-      <h1>View Copilot Feedback</h1>
+      <h2>View Copilot Feedback</h2>
       <SearchBox
         placeholder={"Project ID or user email (press enter to run)"}
         onEdit={(v) => setQuery(v)}
@@ -2182,7 +2249,7 @@ function AppAuthMetrics() {
 
   return (
     <div className="mv-lg">
-      <h1>App Auth Metrics</h1>
+      <h2>App Auth Metrics</h2>
       <InputNumber
         value={recency}
         onChange={(value) => setRecency(value ?? 0)}
@@ -2237,7 +2304,7 @@ function DownloadAppMeta() {
   const nonAuthCtx = useNonAuthCtx();
   return (
     <div>
-      <h1>Download App Meta</h1>
+      <h2>Download App Meta</h2>
       <p>This downloads metadata of auth and datasources of an app</p>
       <Form
         onFinish={async (event) => {
@@ -2270,7 +2337,7 @@ function EditProjectRevBundle() {
   const editorRef = React.useRef<FullCodeEditor>(null);
   return (
     <div>
-      <h1>Edit ProjectRevision bundle</h1>
+      <h2>Edit ProjectRevision bundle</h2>
       <Form
         onFinish={async (values) => {
           const projectId = values.projectId;
@@ -2342,7 +2409,7 @@ function EditPkgVersionBundle() {
   const editorRef = React.useRef<FullCodeEditor>(null);
   return (
     <div>
-      <h1>Edit PkgVersion bundle</h1>
+      <h2>Edit PkgVersion bundle</h2>
       <p>Look up either by Pkg ID or PkgVersion ID</p>
       <Form
         onFinish={async (values) => {
@@ -2438,57 +2505,86 @@ export default function AdminPage({ nonAuthCtx }: { nonAuthCtx: NonAuthCtx }) {
   return (
     <NonAuthCtxContext.Provider value={nonAuthCtx}>
       <AdminContext.Provider value={adminCtx}>
-        <div
-          style={{
-            padding: 50,
-            display: "flex",
-            flexDirection: "column",
-            gap: 50,
-          }}
-          key={key}
-        >
-          {/* <Inviter /> */}
-
-          <UsersView />
-
-          {/* <WhitelistView /> */}
-
-          <UserProjects />
-
-          <ChangePasswordView />
-
-          <UserTeams />
-
-          {/* <InviteApprovalsView /> */}
-
-          <DevFlagControls />
-          <FeatureTierControls />
-          <TeamTierControls />
-
-          {/* <CodeSandboxControls /> */}
-
-          <PublicProjectsView />
-
-          <CloneProjectView />
-          <DownloadProjectView />
-          <DownloadProjectViewAndBranches />
-          <ChangeProjectOwner />
-          <RevertProjectRev />
-          <DeactivateUserView />
-          <DownloadPlumePkg />
-          <ImportProjectsFromProd />
-          <ConfigureSso />
-          <CreateTutorialDb />
-          <ResetTutorialDb />
-          <TourCypressTest />
-          <WhiteLabeledTeam />
-          <PromotionCode />
-          <CopilotFeedbackView />
-          <AppAuthMetrics />
-          <DownloadAppMeta />
-          <EditProjectRevBundle />
-          <EditPkgVersionBundle />
-        </div>
+        <Tabs
+          items={[
+            {
+              key: "users",
+              label: "Users",
+              children: (
+                <div className="flex-col gap-xxxlg">
+                  <UsersView />
+                  <UserProjects />
+                  <ChangePasswordView />
+                  <UserTeams />
+                  <DeactivateUserView />
+                </div>
+              ),
+            },
+            {
+              key: "projects",
+              label: "Projects",
+              children: (
+                <div className="flex-col gap-xxxlg">
+                  <DownloadProjectView />
+                  <DownloadProjectViewAndBranches />
+                  <UploadProject />
+                  <ChangeProjectOwner />
+                  <RevertProjectRev />
+                  <DownloadAppMeta />
+                  <EditProjectRevBundle />
+                  <EditPkgVersionBundle />
+                  <PublicProjectsView />
+                  <CloneProjectView />
+                </div>
+              ),
+            },
+            {
+              key: "devflags",
+              label: "Devflags",
+              children: (
+                <div className="flex-col gap-xxxlg">
+                  <DevFlagControls />
+                </div>
+              ),
+            },
+            {
+              key: "pricing",
+              label: "Pricing",
+              children: (
+                <div className="flex-col gap-xxxlg">
+                  <FeatureTierControls />
+                  <TeamTierControls />
+                  <PromotionCode />
+                </div>
+              ),
+            },
+            {
+              key: "teams",
+              label: "Teams",
+              children: (
+                <div className="flex-col gap-xxxlg">
+                  <ConfigureSso />
+                  <WhiteLabeledTeam />
+                </div>
+              ),
+            },
+            {
+              key: "dev",
+              label: "Development",
+              children: (
+                <div className="flex-col gap-xxxlg">
+                  <CreateTutorialDb />
+                  <ResetTutorialDb />
+                  <TourCypressTest />
+                  <DownloadPlumePkg />
+                  <ImportProjectsFromProd />
+                  <CopilotFeedbackView />
+                  <AppAuthMetrics />
+                </div>
+              ),
+            },
+          ]}
+        />
       </AdminContext.Provider>
     </NonAuthCtxContext.Provider>
   );

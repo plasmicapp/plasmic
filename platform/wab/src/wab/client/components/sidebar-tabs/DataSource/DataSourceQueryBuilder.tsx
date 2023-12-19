@@ -139,7 +139,7 @@ function DataSourceQueryBuilder_(
   }, [data]);
 
   const types = React.useMemo(
-    () => ["boolean", "number", "datetime", "select"],
+    () => ["boolean", "number", "datetime", "date", "select"],
     []
   );
 
@@ -256,7 +256,8 @@ function DataSourceQueryBuilder_(
                     typeof v === fieldConfig.type ||
                     `${typeof v}-custom` === fieldConfig.type ||
                     (fieldConfig.type === "select" && isString(v)) ||
-                    (fieldConfig.type === "datetime" && isString(v))
+                    (fieldConfig.type === "datetime" && isString(v)) ||
+                    (fieldConfig.type === "date" && isString(v))
                   );
                 },
               },

@@ -1,8 +1,9 @@
-import classNames from "classnames";
-import L from "lodash";
-import { observer } from "mobx-react";
-import React from "react";
-import { Dim, LinearGradient, Stop } from "../../../bg-styles";
+import { Dim, LinearGradient, Stop } from "@/wab/bg-styles";
+import { getHTMLElt } from "@/wab/client/components/view-common";
+import { ColorPicker } from "@/wab/client/components/widgets/ColorPicker";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import ColorStopIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__ColorStop";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   check,
   ensure,
@@ -13,18 +14,17 @@ import {
   removeAt,
   tuple,
   withoutNils,
-} from "../../../common";
-import { XDraggable } from "../../../commons/components/XDraggable";
-import { derefTokenRefs } from "../../../commons/StyleToken";
-import { $ } from "../../../deps";
-import { Chroma } from "../../../shared/utils/color-utils";
-import { VariantedStylesHelper } from "../../../shared/VariantedStylesHelper";
-import { allStyleTokens } from "../../../sites";
-import ColorStopIcon from "../../plasmic/plasmic_kit_design_system/icons/PlasmicIcon__ColorStop";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { getHTMLElt } from "../view-common";
-import { ColorPicker } from "../widgets/ColorPicker";
-import { Icon } from "../widgets/Icon";
+} from "@/wab/common";
+import { XDraggable } from "@/wab/commons/components/XDraggable";
+import { derefTokenRefs } from "@/wab/commons/StyleToken";
+import { Chroma } from "@/wab/shared/utils/color-utils";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { allStyleTokens } from "@/wab/sites";
+import classNames from "classnames";
+import $ from "jquery";
+import L from "lodash";
+import { observer } from "mobx-react";
+import React from "react";
 
 // Normally:
 //
@@ -78,7 +78,10 @@ class ColorStops_ extends React.Component<ColorStopsProps, ColorStopsState> {
     return ensureHTMLElt(this.refs.bar).offsetWidth;
   }
   relOffset = (e: React.MouseEvent) => {
-    const containerOffset = ensure($(getHTMLElt(this.refs.bar)).offset());
+    const containerOffset = ensure(
+      $(getHTMLElt(this.refs.bar)).offset(),
+      "Element must have offset"
+    );
     const top = e.clientY - containerOffset.top;
     const left = e.clientX - containerOffset.left;
     const leftFrac = left / this.colorStopsWidth;
@@ -97,7 +100,7 @@ class ColorStops_ extends React.Component<ColorStopsProps, ColorStopsState> {
     if (index < 0) {
       // Add to end, and reuse last stop's color
       index = this.props.stops.length;
-      color = ensure(L.last(this.props.stops)).color;
+      color = ensure(L.last(this.props.stops), "Stops must not be empty").color;
     } else if (index === 0) {
       color = this.props.stops[0].color;
     } else {
@@ -124,7 +127,7 @@ class ColorStops_ extends React.Component<ColorStopsProps, ColorStopsState> {
     const speculatedStops = insert(this.props.stops.slice(), index, stop);
     check(
       L(speculatedStops)
-        .sortBy((stop) => stop.dim.value)
+        .sortBy((_stop) => _stop.dim.value)
         .isEqual(speculatedStops)
     );
     // Ensure all stops have distinct values

@@ -1,42 +1,5 @@
-import { Alert, Menu } from "antd";
-import cn from "classnames";
-import { observer } from "mobx-react";
-import React from "react";
-import { isKnownImageAssetRef } from "../../../classes";
-import { assert, spawn, withoutNils } from "../../../common";
-import { TokenType, tokenTypeDimOpts } from "../../../commons/StyleToken";
-import { isPageComponent } from "../../../components";
-import { getLengthUnits } from "../../../css";
-import {
-  CONTENT_LAYOUT_FULL_BLEED,
-  CONTENT_LAYOUT_WIDE,
-} from "../../../shared/core/style-props";
-import { parseDataUrl, SVG_MEDIA_TYPE } from "../../../shared/data-urls";
-import { isContentLayoutTpl } from "../../../shared/layoututils";
-import {
-  getPageFrameSizeType,
-  isTplAutoSizable,
-  isTplResizable,
-  setPageSizeType,
-} from "../../../shared/sizingutils";
-import { $$$ } from "../../../shared/TplQuery";
-import { VariantedStylesHelper } from "../../../shared/VariantedStylesHelper";
-import { capitalizeFirst } from "../../../strs";
-import { isComponentRoot, isTplComponent, isTplImage } from "../../../tpls";
-import { DimManip } from "../../DimManip";
-import {
-  default as PlasmicIcon__Stretch,
-  default as StretchIcon,
-} from "../../plasmic/plasmic_kit/PlasmicIcon__Stretch";
-import {
-  default as PlasmicIcon__Wrap,
-  default as WrapIcon,
-} from "../../plasmic/plasmic_kit/PlasmicIcon__Wrap";
-import WidthFullBleedIcon from "../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__WidthFullBleed";
-import WidthStandardStretchIcon from "../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__WidthStandardStretch";
-import WidthWideIcon from "../../plasmic/plasmic_kit_icons/icons/PlasmicIcon__WidthWide";
-import { makeVariantedStylesHelperFromCurrentCtx } from "../../utils/style-utils";
-import { WithContextMenu } from "../ContextMenu";
+import { isKnownImageAssetRef } from "@/wab/classes";
+import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import {
   FullRow,
   getValueSetState,
@@ -47,9 +10,9 @@ import {
   LabeledStyleSwitchItem,
   SectionSeparator,
   shouldBeDisabled,
-} from "../sidebar/sidebar-helpers";
-import { SidebarSection } from "../sidebar/SidebarSection";
-import StyleCheckbox from "../style-controls/StyleCheckbox";
+} from "@/wab/client/components/sidebar/sidebar-helpers";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import StyleCheckbox from "@/wab/client/components/style-controls/StyleCheckbox";
 import {
   ExpsProvider,
   FlexControlHelper,
@@ -58,9 +21,46 @@ import {
   StylePanelSection,
   TplExpsProvider,
   useStyleComponent,
-} from "../style-controls/StyleComponent";
-import { Icon as IconComponent } from "../widgets/Icon";
-import IconButton from "../widgets/IconButton";
+} from "@/wab/client/components/style-controls/StyleComponent";
+import { Icon as IconComponent } from "@/wab/client/components/widgets/Icon";
+import IconButton from "@/wab/client/components/widgets/IconButton";
+import { DimManip } from "@/wab/client/DimManip";
+import {
+  default as PlasmicIcon__Stretch,
+  default as StretchIcon,
+} from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Stretch";
+import {
+  default as PlasmicIcon__Wrap,
+  default as WrapIcon,
+} from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Wrap";
+import WidthFullBleedIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WidthFullBleed";
+import WidthStandardStretchIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WidthStandardStretch";
+import WidthWideIcon from "@/wab/client/plasmic/plasmic_kit_icons/icons/PlasmicIcon__WidthWide";
+import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
+import { assert, spawn, withoutNils } from "@/wab/common";
+import { TokenType, tokenTypeDimOpts } from "@/wab/commons/StyleToken";
+import { getLengthUnits } from "@/wab/css";
+import {
+  CONTENT_LAYOUT_FULL_BLEED,
+  CONTENT_LAYOUT_WIDE,
+} from "@/wab/shared/core/style-props";
+import { parseDataUrl, SVG_MEDIA_TYPE } from "@/wab/shared/data-urls";
+import { isContentLayoutTpl } from "@/wab/shared/layoututils";
+import {
+  getPageFrameSizeType,
+  isTplAutoSizable,
+  isTplResizable,
+  setPageSizeType,
+} from "@/wab/shared/sizingutils";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { capitalizeFirst } from "@/wab/strs";
+import { isComponentRoot, isTplComponent, isTplImage } from "@/wab/tpls";
+import { Alert, Menu } from "antd";
+import cn from "classnames";
+import { observer } from "mobx-react";
+import React from "react";
+import { isPageComponent } from "../../../components";
 import S from "./SizeSection.module.scss";
 
 interface SizePanelSectionState {
@@ -171,7 +171,7 @@ class SizeSection_ extends StyleComponent<
                       dimOpts={{
                         ...tokenTypeDimOpts(TokenType.Spacing),
                         min: 0,
-                        extraOptions: ["none"],
+                        extraOptions: ["auto"],
                       }}
                       tokenType={TokenType.Spacing}
                       vsh={vsh}
@@ -191,7 +191,7 @@ class SizeSection_ extends StyleComponent<
                       dimOpts={{
                         ...tokenTypeDimOpts(TokenType.Spacing),
                         min: 0,
-                        extraOptions: ["none"],
+                        extraOptions: ["auto"],
                       }}
                       tokenType={TokenType.Spacing}
                       vsh={vsh}
@@ -622,10 +622,14 @@ const FlexGrowControls = observer(function FlexGrowControls(props: {
         value={isNonzero}
         data-plasmic-prop={prop}
         onChange={(checked) => {
-          !isDisabled &&
+          if (isDisabled) {
+            return;
+          }
+          spawn(
             expsProvider.studioCtx.changeUnsafe(() => {
               exp().set(prop, checked ? "1" : "0");
-            });
+            })
+          );
         }}
       />
     );

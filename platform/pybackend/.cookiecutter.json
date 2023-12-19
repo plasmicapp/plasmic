@@ -1,0 +1,15 @@
+{
+  "_output_dir": "/Users/yang/proj/plasmic",
+  "_repo_dir": "/Users/yang/.cookiecutters/cookiecutter-hypermodern-python",
+  "_template": "gh:cjolowicz/cookiecutter-hypermodern-python",
+  "author": "Plasmic Team",
+  "copyright_year": "2023",
+  "development_status": "Development Status :: 2 - Pre-Alpha",
+  "email": "team@plasmic.app",
+  "friendly_name": "Plasmic DB service",
+  "github_user": "plasmicops",
+  "license": "MIT",
+  "package_name": "pybackend",
+  "project_name": "pybackend",
+  "version": "0.0.0"
+}

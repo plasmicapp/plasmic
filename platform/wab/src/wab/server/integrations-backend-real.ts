@@ -1,5 +1,6 @@
 // newrelic must be imported as early as possible, so we shift config loading to
 // the top so that we know if we are running production and want newrelic.
+import { addInternalIntegrationsRoutes } from "@/wab/server/routes/custom-routes";
 import "core-js";
 import {
   addAppAuthRoutes,
@@ -25,6 +26,7 @@ async function runAppServer(config: Config) {
       addCmsPublicRoutes(app_);
       addIntegrationsRoutes(app_);
       addAppAuthRoutes(app_);
+      addInternalIntegrationsRoutes(app_);
     },
     undefined,
     { skipSession: true }

@@ -1,15 +1,15 @@
+import { isPlasmicPath, U } from "@/wab/client/cli-routes";
+import { maybeShowPaywall } from "@/wab/client/components/modals/PricingModal";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { getTeamInviteLink } from "@/wab/client/components/widgets/plasmic/ShareDialogContent";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import MarkFullColorIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__MarkFullColor";
+import { ensure, isValidEmail, spawn } from "@/wab/common";
+import { ApiTeam, Grant } from "@/wab/shared/ApiSchema";
 import { Button, Form, Input, notification, Select, Tooltip } from "antd";
 import copy from "copy-to-clipboard";
 import * as React from "react";
 import { ReactNode, useState } from "react";
-import { ensure, isValidEmail, spawn } from "../../../common";
-import { ApiTeam, Grant } from "../../../shared/ApiSchema";
-import { isPlasmicPath, U } from "../../cli-routes";
-import { useAppCtx } from "../../contexts/AppContexts";
-import MarkFullColorIcon from "../../plasmic/plasmic_kit_design_system/PlasmicIcon__MarkFullColor";
-import { maybeShowPaywall } from "../modals/PricingModal";
-import { Icon } from "../widgets/Icon";
-import { getTeamInviteLink } from "../widgets/plasmic/ShareDialogContent";
 import "./AuthForm.sass";
 import { PageFooter } from "./PageFooter";
 
@@ -139,9 +139,6 @@ export function TeamCreation() {
               >
                 Name this organization
               </Button>
-              <Button htmlType={"button"} size={"large"} onClick={onSkip}>
-                Do this later
-              </Button>
             </Form>
           )}
           {team && (
@@ -175,6 +172,9 @@ export function TeamCreation() {
                 size={"large"}
               >
                 Send invites
+              </Button>
+              <Button htmlType={"button"} size={"large"} onClick={onSkip}>
+                Do this later
               </Button>
             </Form>
           )}

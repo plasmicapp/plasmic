@@ -4,6 +4,7 @@ import { groupBy, sortBy } from "lodash";
 import moment from "moment/moment";
 import React, { ReactNode, useState } from "react";
 import { mutate } from "swr";
+import { ObjInst } from "../../../classes";
 import {
   ensure,
   ensureString,
@@ -14,7 +15,6 @@ import {
 } from "../../../common";
 import { OnClickAway } from "../../../commons/components/OnClickAway";
 import { Stated } from "../../../commons/components/Stated";
-import { ObjInst } from "../../../model/model-meta";
 import {
   ApiComment,
   CommentData,

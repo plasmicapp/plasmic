@@ -28,10 +28,10 @@ import {
 } from "@/wab/shared/SharedApi";
 import * as Sentry from "@sentry/browser";
 import { proxy, ProxyMarked } from "comlink";
+import $ from "jquery";
 import L, { pick } from "lodash";
 import LogRocket from "logrocket";
 import io, { Socket } from "socket.io-client";
-import { $ } from "../deps";
 import { ensureIsTopFrame, isHostFrame } from "./cli-routes";
 import {
   ClipboardAction,
@@ -60,7 +60,7 @@ export const ajax = async (
 ) =>
   new Promise<any>((resolve, reject) => {
     let search = "";
-    if (method === "get") {
+    if (method === "get" || method === "delete") {
       search = new URLSearchParams(
         L.mapValues(data, (v) => JSON.stringify(v))
       ).toString();

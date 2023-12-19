@@ -1,8 +1,8 @@
+import { plasmicIFrameMouseDownEvent } from "@/wab/client/definitions/events";
+import $ from "jquery";
 import React, { cloneElement, ReactElement, useRef } from "react";
 import { useInteractOutside } from "react-aria";
 import { useEvent } from "react-use";
-import { plasmicIFrameMouseDownEvent } from "../../client/definitions/events";
-import { $ } from "../../deps";
 
 export interface OnClickAwayProps {
   onDone: () => void;

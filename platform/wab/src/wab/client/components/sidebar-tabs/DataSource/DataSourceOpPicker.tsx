@@ -2007,6 +2007,7 @@ function DataSourceOpDataPreview(props: {
   const [schemaReference, setSchemaReference] = React.useState<
     TableFieldSchema[] | undefined
   >(undefined);
+  const [expandLevel, setExpandLevel] = React.useState(3);
 
   function convertResultsToRenderable(results: DataSourceOpResults) {
     return results && isArray(results.data)
@@ -2099,6 +2100,17 @@ function DataSourceOpDataPreview(props: {
     }
   }, [dataOpResults, hideDataTab, isReadOp, tableSchema, mutateOpResults]);
 
+  const extraContent = React.useMemo(() => {
+    if (tabKey !== "response") {
+      return null;
+    }
+    return (
+      <div className="flex-row fill-height mr-m flex-vcenter">
+        <a onClick={() => setExpandLevel(50)}>Expand All</a>
+      </div>
+    );
+  }, [tabKey]);
+
   const rowKeys = rowKey ? ensureArray(rowKey) : ["id"];
 
   const { schemaTunnel } = useContext(DataSourceDraftContext);
@@ -2116,9 +2128,10 @@ function DataSourceOpDataPreview(props: {
           tabKey={tabKey}
           onSwitch={(newKey) => setTabKey(newKey)}
           className="fill-height"
-          tabBarClassName="hilite-tabs"
+          tabBarClassName="hilite-tabs justify-between"
           tabClassName="hilite-tab"
           activeTabClassName="hilite-tab--active"
+          tabBarExtraContent={extraContent}
           tabs={withoutFalsy([
             !hideDataTab &&
               opResults &&
@@ -2222,7 +2235,7 @@ function DataSourceOpDataPreview(props: {
                       data={{}}
                       className="code-preview-inner"
                       opts={{
-                        expandLevel: 50,
+                        expandLevel: expandLevel,
                       }}
                     />
                   </React.Suspense>

@@ -77,6 +77,8 @@ export interface DefaultCmsLeftTabsProps {
   className?: string;
 }
 
+const $$ = {};
+
 function PlasmicCmsLeftTabs__RenderFunc(props: {
   variants: PlasmicCmsLeftTabs__VariantsArgs;
   args: PlasmicCmsLeftTabs__ArgsType;
@@ -259,7 +261,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicCmsLeftTabs__ArgProps,
           internalVariantPropNames: PlasmicCmsLeftTabs__VariantProps,
         }),

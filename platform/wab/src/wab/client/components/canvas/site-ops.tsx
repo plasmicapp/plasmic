@@ -1,6 +1,3 @@
-import { notification } from "antd";
-import L from "lodash";
-import React from "react";
 import {
   Arena,
   ArenaFrame,
@@ -17,7 +14,22 @@ import {
   State,
   Variant,
   VariantGroup,
-} from "../../../classes";
+} from "@/wab/classes";
+import { AppCtx } from "@/wab/client/app-ctx";
+import { U } from "@/wab/client/cli-routes";
+import { FrameClip } from "@/wab/client/clipboard";
+import { toast } from "@/wab/client/components/Messages";
+import { confirm, reactConfirm } from "@/wab/client/components/quick-modals";
+import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
+import { NewComponentInfo } from "@/wab/client/components/widgets/NewComponentModal";
+import {
+  ImageAssetOpts,
+  maybeUploadImage,
+  ResizableImage,
+} from "@/wab/client/dom-utils";
+import { promptComponentTemplate, promptPageName } from "@/wab/client/prompts";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { trackEvent } from "@/wab/client/tracking";
 import {
   assert,
   ensure,
@@ -26,8 +38,8 @@ import {
   switchType,
   uniqueName,
   xAddAll,
-} from "../../../common";
-import { joinReactNodes } from "../../../commons/components/ReactUtil";
+} from "@/wab/common";
+import { joinReactNodes } from "@/wab/commons/components/ReactUtil";
 import {
   ComponentType,
   DefaultComponentKind,
@@ -38,10 +50,10 @@ import {
   isPageComponent,
   isPlumeComponent,
   removeVariantGroup,
-} from "../../../components";
-import { Pt } from "../../../geom";
-import { ImageAssetType } from "../../../image-asset-type";
-import { extractTransitiveDepsFromComponents } from "../../../project-deps";
+} from "@/wab/components";
+import { Pt } from "@/wab/geom";
+import { ImageAssetType } from "@/wab/image-asset-type";
+import { extractTransitiveDepsFromComponents } from "@/wab/project-deps";
 import {
   deriveInitFrameSettings,
   getActivatedVariantsForFrame,
@@ -51,13 +63,13 @@ import {
   isDedicatedArena,
   isMixedArena,
   isPageArena,
-} from "../../../shared/Arenas";
+} from "@/wab/shared/Arenas";
 import {
   findComponentsUsingComponentVariant,
   findComponentsUsingGlobalVariant,
   getComponentsUsingImageAsset,
-} from "../../../shared/cached-selectors";
-import { toVarName } from "../../../shared/codegen/util";
+} from "@/wab/shared/cached-selectors";
+import { toVarName } from "@/wab/shared/codegen/util";
 import {
   addCustomComponentFrame,
   getComponentArenaBaseFrame,
@@ -66,32 +78,32 @@ import {
   isCustomComponentFrame,
   isGlobalVariantFrame,
   isSuperVariantFrame,
-} from "../../../shared/component-arenas";
-import { convertVariableTypeToWabType } from "../../../shared/core/model-util";
-import { parseScreenSpec } from "../../../shared/Css";
+} from "@/wab/shared/component-arenas";
+import { convertVariableTypeToWabType } from "@/wab/shared/core/model-util";
+import { parseScreenSpec } from "@/wab/shared/Css";
 import {
   asSvgDataUrl,
   parseDataUrlToSvgXml,
   parseSvgXml,
-} from "../../../shared/data-urls";
-import { DATA_QUERY_LOWER } from "../../../shared/Labels";
+} from "@/wab/shared/data-urls";
+import { DATA_QUERY_LOWER } from "@/wab/shared/Labels";
 import {
   getFrameColumnIndex,
   removeManagedFramesFromPageArenaForVariants,
-} from "../../../shared/page-arenas";
+} from "@/wab/shared/page-arenas";
 import {
   getPlumeEditorPlugin,
   getPlumeVariantDef,
-} from "../../../shared/plume/plume-registry";
-import { isQueryUsedInExpr } from "../../../shared/refactoring";
+} from "@/wab/shared/plume/plume-registry";
+import { isQueryUsedInExpr } from "@/wab/shared/refactoring";
 import {
   FrameSize,
   frameSizeGroups,
   ResponsiveStrategy,
-} from "../../../shared/responsiveness";
-import { removeSvgIds } from "../../../shared/svg-utils";
-import { processSvg } from "../../../shared/svgo";
-import { VariantOptionsType } from "../../../shared/TplMgr";
+} from "@/wab/shared/responsiveness";
+import { removeSvgIds } from "@/wab/shared/svg-utils";
+import { processSvg } from "@/wab/shared/svgo";
+import { VariantOptionsType } from "@/wab/shared/TplMgr";
 import {
   ensureBaseRuleVariantSetting,
   getDisplayVariants,
@@ -104,47 +116,35 @@ import {
   removeTplVariantSettings,
   removeTplVariantSettingsContaining,
   VariantGroupType,
-} from "../../../shared/Variants";
+} from "@/wab/shared/Variants";
 import {
   getVariantSettingVisibility,
   setTplVisibility,
   TplVisibility,
-} from "../../../shared/visibility-utils";
+} from "@/wab/shared/visibility-utils";
 import {
   getComponentArena,
   getPageArena,
   getReferencingComponents,
   getResponsiveStrategy,
   getSiteArenas,
-} from "../../../sites";
+} from "@/wab/sites";
 import {
   findImplicitUsages,
   isStateUsedInExpr,
   removeComponentState,
   StateType,
   updateStateAccessType,
-} from "../../../states";
+} from "@/wab/states";
 import {
   findExprsInComponent,
   flattenTpls,
   isTplSlot,
   isTplVariantable,
-} from "../../../tpls";
-import { AppCtx } from "../../app-ctx";
-import { U } from "../../cli-routes";
-import { FrameClip } from "../../clipboard";
-import {
-  ImageAssetOpts,
-  maybeUploadImage,
-  ResizableImage,
-} from "../../dom-utils";
-import { promptComponentTemplate, promptPageName } from "../../prompts";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { trackEvent } from "../../tracking";
-import { toast } from "../Messages";
-import { confirm, reactConfirm } from "../quick-modals";
-import { makeVariantsController } from "../variants/VariantsController";
-import { NewComponentInfo } from "../widgets/NewComponentModal";
+} from "@/wab/tpls";
+import { notification } from "antd";
+import L from "lodash";
+import React from "react";
 
 /**
  * Place for site-wide logic that both performs data model manipulation
@@ -556,7 +556,7 @@ export class SiteOps {
 
   private fixChromeAfterRemoveFrame() {
     this.studioCtx.pruneInvalidViewCtxs();
-    this.studioCtx.fixScrollbarAndCanvas();
+    this.studioCtx.fixCanvas();
   }
 
   moveFrameToArena(
@@ -752,6 +752,16 @@ export class SiteOps {
 
         return;
       }
+    }
+
+    if (this.studioCtx.site.pageWrapper === component) {
+      notification.error({
+        message: `Cannot remove component ${getComponentDisplayName(
+          component
+        )} because it is set as the default page wrapper.`,
+      });
+
+      return;
     }
 
     const curArena = this.studioCtx.currentArena;
@@ -1186,7 +1196,9 @@ export class SiteOps {
     if (refCompsAndPresets.length > 0) {
       notification.error({
         message: `A page component cannot be instantiated.`,
-        description: `${component.name} is still being used by ${L.uniq(
+        description: `${getComponentDisplayName(
+          component
+        )} is still being used by ${L.uniq(
           refCompsAndPresets.map((c) => getComponentDisplayName(c))
         ).join(", ")}.`,
       });
@@ -1196,7 +1208,9 @@ export class SiteOps {
     if (this.site.pageWrapper === component) {
       notification.error({
         message: `A page component cannot be instantiated.`,
-        description: `${component.name} is still being used as the default page wrapper.`,
+        description: `${getComponentDisplayName(
+          component
+        )} is still being used as the default page wrapper.`,
       });
 
       return;

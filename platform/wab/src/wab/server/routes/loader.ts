@@ -1,40 +1,42 @@
-import execa from "execa";
-import { Request, Response } from "express-serve-static-core";
-import fs from "fs";
-import path from "path";
-import { ProjectId } from "src/wab/shared/ApiSchema";
-import { LocalizationKeyScheme } from "src/wab/shared/localization";
-import { getConnection } from "typeorm";
-import { ensure, ensureArray, hackyCast, tuple } from "../../common";
-import { BadRequestError, NotFoundError } from "../../shared/ApiErrors/errors";
-import { Bundler } from "../../shared/bundler";
-import { ExportOpts } from "../../shared/codegen/types";
-import { toClassName } from "../../shared/codegen/util";
-import { toJson } from "../../shared/core/model-tree-util";
-import { tplToPlasmicElements } from "../../shared/element-repr/gen-element-repr-v2";
-import { getCodegenUrl } from "../../urls";
-import { DbMgr } from "../db/DbMgr";
-import { Project } from "../entities/Entities";
+import { ensure, ensureArray, hackyCast, tuple } from "@/wab/common";
+import { DbMgr } from "@/wab/server/db/DbMgr";
+import { Project } from "@/wab/server/entities/Entities";
 import {
   genLatestLoaderCodeBundle,
   genPublishedLoaderCodeBundle,
   LATEST_LOADER_VERSION,
   LOADER_CACHE_BUST,
   LOADER_CODEGEN_OPTS_DEFAULTS,
-} from "../loader/gen-code-bundle";
-import { genLoaderHtmlBundle } from "../loader/gen-html-bundle";
+} from "@/wab/server/loader/gen-code-bundle";
+import { genLoaderHtmlBundle } from "@/wab/server/loader/gen-html-bundle";
+import { CodeModule } from "@/wab/server/loader/module-bundler";
 import {
   parseComponentProps,
   parseGlobalVariants,
-} from "../loader/parse-query-params";
+} from "@/wab/server/loader/parse-query-params";
 import {
   getResolvedProjectVersions,
   mkVersionToSync,
   parseProjectIdSpec,
   resolveLatestProjectRevisions,
   VersionToSync,
-} from "../loader/resolve-projects";
-import { prefillCloudfront } from "../workers/prefill-cloudfront";
+} from "@/wab/server/loader/resolve-projects";
+import { prefillCloudfront } from "@/wab/server/workers/prefill-cloudfront";
+import { BadRequestError, NotFoundError } from "@/wab/shared/ApiErrors/errors";
+import { Bundler } from "@/wab/shared/bundler";
+import { ExportOpts } from "@/wab/shared/codegen/types";
+import { toClassName } from "@/wab/shared/codegen/util";
+import { toJson } from "@/wab/shared/core/model-tree-util";
+import { tplToPlasmicElements } from "@/wab/shared/element-repr/gen-element-repr-v2";
+import { getCodegenUrl } from "@/wab/urls";
+import execa from "execa";
+import { Request, Response } from "express-serve-static-core";
+import fs from "fs";
+import { isString } from "lodash";
+import path from "path";
+import { ProjectId } from "src/wab/shared/ApiSchema";
+import { LocalizationKeyScheme } from "src/wab/shared/localization";
+import { getConnection } from "typeorm";
 import { hasUser, superDbMgr, userAnalytics, userDbMgr } from "./util";
 
 /**
@@ -119,7 +121,7 @@ export async function buildPublishedLoaderAssets(req: Request, res: Response) {
   redirectToCacheableResource(res, `/api/v1/loader/code/versioned?${query}`);
 }
 
-function makeCacheableVersionedLoaderQuery({
+export function makeCacheableVersionedLoaderQuery({
   platform,
   nextjsAppDir,
   resolvedProjectIdSpecs,
@@ -206,6 +208,23 @@ export async function buildVersionedLoaderAssets(req: Request, res: Response) {
 
   req.promLabels.projectId = projects.map((p) => p.id).join(",");
 
+  const resolvedProjectIdSpecs = await getResolvedProjectVersions(
+    mgr,
+    projectIdSpecs,
+    { prefilledOnly: true }
+  );
+
+  const cacheableQuery = makeCacheableVersionedLoaderQuery({
+    browserOnly,
+    loaderVersion,
+    nextjsAppDir,
+    platform,
+    resolvedProjectIdSpecs,
+    i18nKeyScheme,
+    i18nTagPrefix,
+    skipHead,
+  });
+
   const result = await genPublishedLoaderCodeBundle(
     mgr,
     req.workerpool,
@@ -227,6 +246,7 @@ export async function buildVersionedLoaderAssets(req: Request, res: Response) {
       loaderVersion,
       browserOnly,
       skipHead,
+      cacheableQuery,
     })
   );
 
@@ -260,6 +280,7 @@ export function makeGenPublishedLoaderCodeBundleOpts(opts: {
     keyScheme: LocalizationKeyScheme | undefined;
     tagPrefix: string | undefined;
   };
+  cacheableQuery: string;
   skipHead?: boolean;
 }): Parameters<typeof genPublishedLoaderCodeBundle>[2] {
   const {
@@ -269,6 +290,7 @@ export function makeGenPublishedLoaderCodeBundleOpts(opts: {
     i18n,
     loaderVersion,
     browserOnly,
+    cacheableQuery,
     skipHead,
   } = opts;
   return {
@@ -284,6 +306,7 @@ export function makeGenPublishedLoaderCodeBundleOpts(opts: {
     loaderVersion,
     browserOnly,
     preferEsbuild: true,
+    cacheableQuery,
     skipHead,
   };
 }
@@ -382,6 +405,127 @@ export async function buildLatestLoaderAssets(req: Request, res: Response) {
   });
 
   res.json(result);
+}
+
+export async function getLoaderChunk(req: Request, res: Response) {
+  const mgr = superDbMgr(req);
+  const {
+    platform,
+    nextjsAppDir,
+    browserOnly,
+    projectIdSpecs,
+    loaderVersion,
+    i18nKeyScheme,
+    i18nTagPrefix,
+    skipHead,
+  } = getLoaderOptions(req);
+
+  const fileNames = isString(req.query.fileName)
+    ? req.query.fileName.split(",")
+    : undefined;
+
+  const projectVersions = projectIdSpecs.map(parseProjectIdSpec);
+
+  for (const { projectId, version } of projectVersions) {
+    if (!version) {
+      throw new BadRequestError(
+        `Project ${projectId} does not have a specified version`
+      );
+    }
+  }
+
+  if (!Array.isArray(fileNames)) {
+    throw new BadRequestError(
+      "Invalid `fileName` param: " + req.query.fileName
+    );
+  }
+
+  const fileNamesSet = new Set(fileNames);
+
+  const projects = await Promise.all(
+    projectVersions.map(
+      async ({ projectId }) => await mgr.getProjectById(projectId)
+    )
+  );
+
+  trackLoaderCodegenEvent(req, projects, {
+    versionType: "chunk",
+    platform,
+  });
+
+  req.promLabels.projectId = projects.map((p) => p.id).join(",");
+
+  const resolvedProjectIdSpecs = await getResolvedProjectVersions(
+    mgr,
+    projectIdSpecs,
+    { prefilledOnly: true }
+  );
+
+  const cacheableQuery = makeCacheableVersionedLoaderQuery({
+    browserOnly,
+    loaderVersion,
+    nextjsAppDir,
+    platform,
+    resolvedProjectIdSpecs,
+    i18nKeyScheme,
+    i18nTagPrefix,
+    skipHead,
+  });
+
+  const bundle = await genPublishedLoaderCodeBundle(
+    mgr,
+    req.workerpool,
+    makeGenPublishedLoaderCodeBundleOpts({
+      platform,
+      appDir: nextjsAppDir,
+      projectVersions: Object.fromEntries(
+        projectVersions.map(({ projectId, version }) => [
+          projectId,
+          mkVersionToSync(
+            ensure(version, "Unexpected nullish version in projectVersions")
+          ),
+        ])
+      ),
+      i18n: {
+        keyScheme: i18nKeyScheme,
+        tagPrefix: i18nTagPrefix,
+      },
+      loaderVersion,
+      browserOnly,
+      skipHead,
+      cacheableQuery,
+    })
+  );
+
+  const modules = (
+    Array.isArray(bundle.modules) ? bundle.modules : bundle.modules.browser
+  ).filter(
+    (m): m is CodeModule => m.type === "code" && fileNamesSet.has(m.fileName)
+  );
+
+  if (!modules.length || !fileNames) {
+    throw new NotFoundError(`chunk not found: ${fileNames.join(",")}`);
+  }
+
+  const response = `
+    (() => {
+      if (!globalThis.__PLASMIC_CHUNKS) {
+        globalThis.__PLASMIC_CHUNKS = {};
+      }
+      ${modules
+        .map((module) =>
+          `globalThis.__PLASMIC_CHUNKS[${JSON.stringify(
+            module.fileName
+          )}] = ${JSON.stringify(module.code)};
+          globalThis.__PlasmicBundlePromises[${JSON.stringify(
+            "__promise_resolve_" + module.fileName
+          )}]();`.trim()
+        )
+        .join("\n")}
+    })()`.trim();
+  setAsCacheableResource(res);
+  res.setHeader("content-type", "text/javascript");
+  res.send(response);
 }
 
 export async function buildPublishedLoaderHtml(req: Request, res: Response) {
@@ -798,7 +942,7 @@ function redirectToCacheableResource(res: Response, destination: string) {
   res.redirect(destination);
 }
 
-function setAsCacheableResource(res: Response, maxAge: number = 31536000) {
+function setAsCacheableResource(res: Response, maxAge = 31536000) {
   // We set a relatively short max-age, and a long s-maxage (so, the browser
   // doesn't cache much, but cloudfront caches for a long time).  This is
   // because if we discover a bug on the image optimizer, it is easy for us to
@@ -846,7 +990,7 @@ function trackLoaderCodegenEvent(
   req: Request,
   projects: Project[],
   opts: {
-    versionType: "versioned" | "preview";
+    versionType: "versioned" | "preview" | "chunk";
     platform: string;
   }
 ) {

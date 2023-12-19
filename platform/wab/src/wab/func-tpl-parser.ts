@@ -1,4 +1,4 @@
-import { PR } from "./deps";
+import PR from "packrattle";
 import { plus, seq, seq_, _ } from "./packrattle-util";
 
 function noExc(f: /*TWZ*/ () => any) {

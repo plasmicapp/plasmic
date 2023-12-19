@@ -76,6 +76,8 @@ export interface DefaultCmsSettingsPageProps {
   className?: string;
 }
 
+const $$ = {};
+
 function PlasmicCmsSettingsPage__RenderFunc(props: {
   variants: PlasmicCmsSettingsPage__VariantsArgs;
   args: PlasmicCmsSettingsPage__ArgsType;
@@ -246,7 +248,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicCmsSettingsPage__ArgProps,
           internalVariantPropNames: PlasmicCmsSettingsPage__VariantProps,
         }),

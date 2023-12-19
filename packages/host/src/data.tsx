@@ -141,7 +141,11 @@ function mkPathFromRouteAndParams(
     if (typeof value === "string") {
       path = path.replace(`[${key}]`, value);
     } else if (Array.isArray(value)) {
-      path = path.replace(`[...${key}]`, value.join("/"));
+      if (path.includes(`[[...${key}]]`)) {
+        path = path.replace(`[[...${key}]]`, value.join("/"));
+      } else if (path.includes(`[...${key}]`)) {
+        path = path.replace(`[...${key}]`, value.join("/"));
+      }
     }
   }
   return path;

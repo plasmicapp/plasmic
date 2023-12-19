@@ -1,14 +1,17 @@
-import { Utils as QbUtils } from "@react-awesome-query-builder/antd";
-import { assert, ensure, substringOccurrencesCount } from "../../common";
+import { assert, ensure, substringOccurrencesCount } from "@/wab/common";
 import {
   DATA_SOURCE_QUERY_BUILDER_CONFIG,
   GenericDataSource,
-} from "../data-sources-meta/data-source-registry";
+} from "@/wab/shared/data-sources-meta/data-source-registry";
 import {
   buildQueryBuilderConfig,
   Filters,
-} from "../data-sources-meta/data-sources";
-import { getDynamicStringSegments, isDynamicValue } from "../dynamic-bindings";
+} from "@/wab/shared/data-sources-meta/data-sources";
+import {
+  getDynamicStringSegments,
+  isDynamicValue,
+} from "@/wab/shared/dynamic-bindings";
+import { Utils as QbUtils } from "@react-awesome-query-builder/antd";
 
 export function buildSqlStringForFilterTemplateArg(
   source: GenericDataSource,
@@ -41,7 +44,7 @@ export function buildSqlStringForFilterTemplateArg(
   });
   // Fix types from our custom types to normal types
   substitutedTemplate = substitutedTemplate.replace(
-    /"valueType":\["(boolean|number|datetime|select)-custom"\]/g,
+    /"valueType":\["(boolean|number|datetime|select|date)-custom"\]/g,
     '"valueType":["$1"]'
   );
   const unquotedFilter = JSON.parse(substitutedTemplate) as Filters;

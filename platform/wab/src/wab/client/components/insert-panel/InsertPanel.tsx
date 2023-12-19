@@ -331,11 +331,7 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
     ? getValidInsertLocs(vc, getFocusedInsertAnchor(vc))
     : undefined;
 
-  const onInserted = (item: AddItem) => {
-    onInsertedItem(item);
-  };
-
-  const onInsert = async (item: AddItem) => {
+  const shouldInterceptOnInsert = (item: AddItem) => {
     if (
       studioCtx.onboardingTourState.triggers.includes(
         TutorialEventsType.TplInserted
@@ -348,6 +344,22 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
           itemType: item.type,
         },
       });
+      return true;
+    }
+
+    return false;
+  };
+
+  const onInserted = (item: AddItem) => {
+    if (shouldInterceptOnInsert(item)) {
+      return;
+    }
+
+    onInsertedItem(item);
+  };
+
+  const onInsert = async (item: AddItem) => {
+    if (shouldInterceptOnInsert(item)) {
       return;
     }
 
@@ -418,6 +430,7 @@ const AddDrawerContent = observer(function AddDrawerContent(props: {
         getItemProps,
         highlightedItemIndex,
         validTplLocs,
+        shouldInterceptOnInsert,
       }}
     >
       <PlasmicInsertPanel
@@ -630,6 +643,7 @@ interface AddDrawerContextValue {
   getItemProps: (options: UseComboboxGetItemPropsOptions<AddItem>) => any;
   highlightedItemIndex: number;
   validTplLocs: Set<InsertRelLoc> | undefined;
+  shouldInterceptOnInsert?: (item: AddTplItem) => boolean;
 }
 
 const AddDrawerContext = React.createContext<AddDrawerContextValue | undefined>(
@@ -712,6 +726,7 @@ const Row = React.memo(function Row(props: {
             getItemProps,
             validTplLocs,
             highlightedItemIndex,
+            shouldInterceptOnInsert,
           } = context;
 
           const i = item;
@@ -746,6 +761,7 @@ const Row = React.memo(function Row(props: {
             >
               <DraggableInsertable
                 key={item.key}
+                shouldInterceptInsert={shouldInterceptOnInsert}
                 sc={studioCtx}
                 spec={item as AddTplItem}
                 onDragStart={onDragStart}

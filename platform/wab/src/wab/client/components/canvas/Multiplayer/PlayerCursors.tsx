@@ -1,12 +1,12 @@
+import { scalerToClientPt } from "@/wab/client/coords";
+import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { ensure } from "@/wab/common";
+import { Pt } from "@/wab/geom";
+import { getArenaType, getArenaUuidOrName } from "@/wab/shared/Arenas";
+import $ from "jquery";
 import { observer } from "mobx-react-lite";
 import { PerfectCursor } from "perfect-cursors";
 import * as React from "react";
-import { ensure } from "../../../../common";
-import { $ } from "../../../../deps";
-import { Pt } from "../../../../geom";
-import { getArenaType, getArenaUuidOrName } from "../../../../shared/Arenas";
-import { scalerToClientPt } from "../../../coords";
-import { StudioCtx, useStudioCtx } from "../../../studio-ctx/StudioCtx";
 import MultiplayerCursor from "./MultiplayerCursor";
 
 export const PlayerCursors = observer(function PlayerCursors() {

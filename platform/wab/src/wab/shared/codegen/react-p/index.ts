@@ -3771,9 +3771,7 @@ function serializeWithPlasmicPageGuard(
         minRole={${jsLiteral(roleId)}}
         appId={${jsLiteral(ctx.projectConfig.projectId)}}
         authorizeEndpoint={${jsLiteral(`${getPublicUrl()}/authorize`)}}
-        canTriggerLogin={${jsLiteral(
-          ctx.appAuthProvider === "plasmic-auth" ?? false
-        )}}
+        canTriggerLogin={${jsLiteral(ctx.appAuthProvider === "plasmic-auth")}}
         ${generateUnauthorizedComp()}
       >
         <WrappedComponent {...props} />

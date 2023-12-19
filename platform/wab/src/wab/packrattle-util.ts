@@ -1,4 +1,4 @@
-import { PR } from "./deps";
+import PR from "packrattle";
 
 // In later versions of packrattle, this should be: PR.repeat(x, min: 1)
 export const plus = (x) => PR.repeat(x, 1);

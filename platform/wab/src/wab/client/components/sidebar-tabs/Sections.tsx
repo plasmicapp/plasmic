@@ -28,7 +28,6 @@ import {
   isCodeComponentTpl,
   isPageComponent,
 } from "@/wab/components";
-import { $ } from "@/wab/deps";
 import { DEVFLAGS, DevFlagsType } from "@/wab/devflags";
 import { PublicStyleSection } from "@/wab/shared/ApiSchema";
 import { isTagListContainer } from "@/wab/shared/core/rich-text-util";
@@ -63,6 +62,7 @@ import {
 } from "@/wab/tpls";
 import { ValComponent } from "@/wab/val-nodes";
 import { Alert } from "antd";
+import $ from "jquery";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { BackgroundSection } from "./background-section";

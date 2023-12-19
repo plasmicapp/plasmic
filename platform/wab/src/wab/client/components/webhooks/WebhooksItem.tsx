@@ -1,11 +1,11 @@
+import Select from "@/wab/client/components/widgets/Select";
+import TrashIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Trash";
+import PresetsIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Presets";
+import { ApiProjectWebhook } from "@/wab/shared/ApiSchema";
+import { httpMethods } from "@/wab/shared/HttpClientUtil";
 import { Menu } from "antd";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
-import { ApiProjectWebhook } from "../../../shared/ApiSchema";
-import { httpMethods } from "../../../shared/HttpClientUtil";
-import TrashIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Trash";
-import PresetsIcon from "../../plasmic/plasmic_kit_design_system/PlasmicIcon__Presets";
-import Select from "../widgets/Select";
 import {
   DefaultWebhooksItemProps,
   PlasmicWebhooksItem,
@@ -28,33 +28,33 @@ const WebhooksItem = observer(function WebhooksItem(props: WebhooksItemProps) {
 
   const [expanded, setExpanded] = React.useState(false);
   React.useEffect(() => {
-    if (webhook.headers.length || webhook.payload) {
+    if (webhook.headers?.length || webhook.payload) {
       setExpanded(true);
     }
   }, []);
 
   const onAddHeader = () => {
     const w = { ...webhook };
-    w.headers = [{ key: "", value: "" }, ...webhook.headers];
+    w.headers = [{ key: "", value: "" }, ...(webhook.headers ?? [])];
     setWebhook(w);
   };
   const onChangeHeader = (i: number, key: string, value: string) => {
     const w = { ...webhook };
     if (i === -1) {
-      w.headers = [{ key, value }, ...webhook.headers];
+      w.headers = [{ key, value }, ...(webhook.headers ?? [])];
     } else {
-      w.headers = [...webhook.headers];
+      w.headers = [...(webhook.headers ?? [])];
       w.headers[i] = { key, value };
     }
     setWebhook(w);
   };
   const onRemoveHeader = (i: number) => {
     const w = { ...webhook };
-    w.headers = [...webhook.headers];
+    w.headers = [...(webhook.headers ?? [])];
     w.headers.splice(i, 1);
     setWebhook(w);
   };
-  const headers = webhook.headers.map(({ key, value }, i) => (
+  const headers = (webhook.headers ?? []).map(({ key, value }, i) => (
     <WebhookHeader
       key={i}
       index={i}

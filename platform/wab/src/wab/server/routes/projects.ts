@@ -141,10 +141,6 @@ import { accessLevelRank } from "@/wab/shared/EntUtil";
 import { DomainValidator } from "@/wab/shared/hosting";
 import { createTaggedResourceId } from "@/wab/shared/perms";
 import { requiredPackageVersions } from "@/wab/shared/required-versions";
-import {
-  parseAndAssignSeqId,
-  ProjectSeqIdAssignment,
-} from "@/wab/shared/seq-id-utils";
 import { PkgVersionInfoMeta } from "@/wab/shared/SharedApi";
 import { assertSiteInvariants } from "@/wab/shared/site-invariants";
 import { TplMgr } from "@/wab/shared/TplMgr";
@@ -166,7 +162,7 @@ import * as Prettier from "prettier";
 import { EntityManager, getConnection, MigrationExecutor } from "typeorm";
 import { escapeHTML } from "underscore.string";
 import { mkApiDataSource } from "./data-source";
-import { moveAssetsToS3 } from "./moveAssetsToS3";
+import { moveBundleAssetsToS3 } from "./moveAssetsToS3";
 import { maybeTriggerPaywall, passPaywall } from "./team-plans";
 import {
   getUser,
@@ -566,7 +562,7 @@ export async function doImportProject(
         projectId: project.id,
         data: JSON.stringify(depSite),
         revisionNum: fstRev.revision + 1,
-        seqIdAssign: new ProjectSeqIdAssignment(new Map()),
+        seqIdAssign: undefined,
       });
 
       pkgVersion = await mgr.insertPkgVersion(
@@ -654,7 +650,7 @@ export async function doImportProject(
     projectId: project.id,
     data: JSON.stringify(siteBundle),
     revisionNum: rev.revision + 1,
-    seqIdAssign: new ProjectSeqIdAssignment(new Map()),
+    seqIdAssign: undefined,
   });
 
   if (opts?.keepProjectIdsAndNames) {
@@ -764,6 +760,7 @@ async function importFullProjectData(
   if (pkgVersions[0] && pkgVersions[0].branchId !== MainBranchId) {
     // The ancestor pkg version must be in main branch
     pkgVersions[0].branchId = MainBranchId;
+    pkgVersions[0].version = "0.0.0"; // Avoid duplicate versions / ancestor with higher version
   }
 
   // Store dependencies and published versions
@@ -806,7 +803,7 @@ async function importFullProjectData(
       projectId: newProjectId,
       data: JSON.stringify(depSite),
       revisionNum: latestRev + 1,
-      seqIdAssign: new ProjectSeqIdAssignment(new Map()),
+      seqIdAssign: undefined,
     });
 
     if (branchId !== MainBranchId) {
@@ -881,7 +878,7 @@ async function importFullProjectData(
           newProject.id,
           branchData.id !== MainBranchId ? { branchId: newBranchId } : undefined
         )) + 1,
-      seqIdAssign: new ProjectSeqIdAssignment(new Map()),
+      seqIdAssign: undefined,
       ...(branchData.id !== MainBranchId ? { branchId: newBranchId } : {}),
     });
   }
@@ -996,6 +993,7 @@ export async function getModelUpdates(req: Request, res: Response) {
   ) {
     const rev = await mgr.getLatestProjectRev(projectId, {
       branchId,
+      revisionNumOnly: true,
     });
     if (rev.revision === revisionNum) {
       // Up to date - no data to fetch
@@ -1116,7 +1114,7 @@ export async function saveProjectRev(req: Request, res: Response) {
     req.params.projectBranchId
   );
 
-  let data: string = await (async () => {
+  const mergedBundle: Bundle = await (async () => {
     if (req.body.incremental) {
       const rev = await mgr.getLatestProjectRev(projectId, { branchId });
 
@@ -1173,16 +1171,20 @@ export async function saveProjectRev(req: Request, res: Response) {
         Sentry.captureException(e);
         throw new BundleTypeError();
       }
-      return JSON.stringify(mergedData);
+      return mergedData;
     } else {
       const bundle = getBundle(req.body, await getLastBundleVersion());
       checkBundleFields(bundle);
       checkRefsInBundle(bundle);
-      return req.body.data;
+      return bundle;
     }
   })();
 
-  data = await moveAssetsToS3(data);
+  await moveBundleAssetsToS3(mergedBundle);
+
+  // Prefer re using the bundle up to this point, so that it won't require running
+  // multiple JSON.stringify()/JSON.parse() on large bundles
+  const data = JSON.stringify(mergedBundle);
 
   const project = await mgr.getProjectById(projectId);
   req.promLabels.projectId = projectId;
@@ -1196,17 +1198,11 @@ export async function saveProjectRev(req: Request, res: Response) {
     },
   });
 
-  const existingProjectAssign = await mgr.tryGetSeqAssignment(projectId);
-  const projectAssign = parseAndAssignSeqId(
-    existingProjectAssign?.assign,
-    req.body.nodesByComponent
-  );
-
   const rev = await mgr.saveProjectRev({
     projectId,
     data: data,
     revisionNum: +req.params.revision,
-    seqIdAssign: projectAssign,
+    seqIdAssign: undefined,
     branchId,
   });
 
@@ -1539,6 +1535,7 @@ export async function updateHostUrl(req: Request, res: Response) {
       `Unexpected hostUrl to be of type ${typeof data.hostUrl}`
     );
   }
+  console.log("Updating project hostUrl", projectId, data.hostUrl);
   if (data.branchId == null) {
     const project = await mgr.updateProject({
       id: projectId,
@@ -1991,17 +1988,11 @@ export async function revertToVersion(req: Request, res: Response) {
     },
   });
 
-  const existingProjectAssign = await mgr.tryGetSeqAssignment(projectId);
-  const projectAssign = parseAndAssignSeqId(
-    existingProjectAssign?.assign,
-    req.body.nodesByComponent
-  );
-
   const rev = await mgr.saveProjectRev({
     projectId,
     revisionNum: latestRev.revision + 1,
     data: JSON.stringify(data),
-    seqIdAssign: projectAssign,
+    seqIdAssign: undefined,
     branchId,
   });
 
@@ -2587,6 +2578,7 @@ async function makeProjectMeta(mgr: DbMgr, projectId: string) {
 export async function updateProjectMeta(req: Request, res: Response) {
   const projectId = req.params.projectId;
   const mgr = userDbMgr(req);
+  console.log("Updating project hostUrl", projectId, req.body.hostUrl);
   await mgr.updateProject({
     id: projectId,
     ...(req.body.hostUrl ? { hostUrl: req.body.hostUrl } : {}),
@@ -2752,10 +2744,6 @@ export async function updateProjectData(req: Request, res: Response) {
   // assertObservabeModelInvariants(site, bundler, projectId);
 
   const existingProjectAssign = await dbMgr.tryGetSeqAssignment(projectId);
-  const projectAssign = parseAndAssignSeqId(
-    existingProjectAssign?.assign,
-    req.body.nodesByComponent
-  );
 
   const project = await dbMgr.getProjectById(projectId);
 
@@ -2763,7 +2751,7 @@ export async function updateProjectData(req: Request, res: Response) {
     projectId: projectId,
     data: JSON.stringify(newBundle),
     revisionNum: latestRev.revision + 1,
-    seqIdAssign: projectAssign,
+    seqIdAssign: undefined,
   });
 
   userAnalytics(req).track({

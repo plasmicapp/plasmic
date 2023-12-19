@@ -389,7 +389,33 @@ export const QueryBuilderPostgresConfig = {
               // If it's not a string, it's a dynamic value and we should keep it
               if (typeof val === "string") {
                 const dateVal = moment(val, wgtDef.valueFormat);
-                return SqlString.escape(dateVal.toDate());
+                if (dateVal.toString() === "Invalid date") {
+                  return val;
+                }
+                return SqlString.escape(dateVal.format(wgtDef.valueFormat));
+              }
+              return val;
+            },
+          },
+        },
+      },
+    },
+    date: {
+      valueSources: ["value"],
+      excludeOperators: OPERATORS_NOT_AVAILABLE,
+      widgets: {
+        date: {
+          widgetProps: {
+            dateFormat: "YYYY-MM-DD",
+            valueFormat: "YYYY-MM-DD",
+            sqlFormatValue: (val, _, wgtDef) => {
+              // If it's not a string, it's a dynamic value and we should keep it
+              if (typeof val === "string") {
+                const dateVal = moment(val, wgtDef.valueFormat);
+                if (dateVal.toString() === "Invalid date") {
+                  return val;
+                }
+                return SqlString.escape(dateVal.format(wgtDef.valueFormat));
               }
               return val;
             },

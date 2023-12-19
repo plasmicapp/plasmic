@@ -1,14 +1,14 @@
+import { MenuMaker } from "@/wab/client/components/widgets";
+import MenuButton from "@/wab/client/components/widgets/MenuButton";
+import {
+  DefaultContextMenuIndicatorProps,
+  PlasmicContextMenuIndicator,
+} from "@/wab/client/plasmic/plasmic_kit_context_menu_indicator/PlasmicContextMenuIndicator";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Tooltip } from "antd";
 import * as React from "react";
 import { createContext, ReactNode, useState } from "react";
-import { Signals } from "../../../deps";
-import {
-  DefaultContextMenuIndicatorProps,
-  PlasmicContextMenuIndicator,
-} from "../../plasmic/plasmic_kit_context_menu_indicator/PlasmicContextMenuIndicator";
-import { MenuMaker } from "../widgets";
-import MenuButton from "../widgets/MenuButton";
+import * as Signals from "signals";
 
 function createContextMenuContext() {
   return {

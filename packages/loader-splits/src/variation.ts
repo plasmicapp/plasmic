@@ -37,6 +37,8 @@ export function getActiveVariation(opts: {
   updateKnownValue?: (key: string, value: string) => void;
   getRandomValue?: (key: string) => number;
   enableUnseededExperiments?: boolean;
+  useSeedBucketing?: boolean;
+  seedRange?: number;
 }) {
   const { splits, getKnownValue, updateKnownValue } = opts;
   const getRandomValue = (key: string) => {
@@ -70,14 +72,54 @@ export function getActiveVariation(opts: {
     const numSlices = split.slices.length;
     let chosenSlice = undefined;
     if (split.type === "experiment") {
-      let p = getRandomValue(split.id);
-      chosenSlice = split.slices[numSlices - 1];
-      for (let i = 0; i < numSlices; i++) {
-        if (p - split.slices[i].prob <= 0) {
-          chosenSlice = split.slices[i];
-          break;
+      /**
+       * If useSeedBucketing is enabled, we will use the seed to bucket the user
+       * into a slice. Otherwise, we will use the random value to bucket the user
+       * into a slice.
+       *
+       * By using seed bucketing, we ensure the number of seeds that each slice gets,
+       * is proportional to the slice's probability.
+       */
+      if (opts.useSeedBucketing) {
+        const seed = opts.traits[PLASMIC_SEED];
+        const buckets: string[] = [];
+        const totalBuckets = opts.seedRange ?? 1;
+        let avaiableBuckets = totalBuckets;
+        for (let i = 0; i < numSlices; i++) {
+          const slice = split.slices[i];
+          const numBuckets = Math.min(
+            Math.floor(slice.prob * totalBuckets),
+            avaiableBuckets
+          );
+          for (let j = 0; j < numBuckets; j++) {
+            buckets.push(slice.id);
+          }
+          avaiableBuckets -= numBuckets;
         }
-        p -= split.slices[i].prob;
+        if (buckets.length > 0) {
+          // We need to stable shuffle the buckets to ensure that the order of the
+          // buckets is deterministic.
+          const shuffleRand = getSeededRandomFunction(split.id);
+          for (let i = 0; i < buckets.length; i++) {
+            const j = Math.floor(shuffleRand() * (i + 1));
+            [buckets[i], buckets[j]] = [buckets[j], buckets[i]];
+          }
+          // We use the seed to bucket the user into a slice.
+          const sliceIdx = +(seed ?? "0") % buckets.length;
+          chosenSlice = split.slices.find((s) => s.id === buckets[sliceIdx]);
+        } else {
+          chosenSlice = split.slices[numSlices - 1];
+        }
+      } else {
+        let p = getRandomValue(split.id);
+        chosenSlice = split.slices[numSlices - 1];
+        for (let i = 0; i < numSlices; i++) {
+          if (p - split.slices[i].prob <= 0) {
+            chosenSlice = split.slices[i];
+            break;
+          }
+          p -= split.slices[i].prob;
+        }
       }
     } else if (split.type === "segment") {
       for (let i = 0; i < numSlices; i++) {

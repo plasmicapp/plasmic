@@ -16,6 +16,7 @@ import {
   CmsRowId,
   CmsTableId,
 } from "@/wab/shared/ApiSchema";
+import { substituteUrlParams } from "@/wab/shared/utils/url-utils";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { Drawer, Form, Menu, message, notification, Tooltip } from "antd";
 import { useForm } from "antd/lib/form/Form";
@@ -51,9 +52,14 @@ export function getRowIdentifierText(
   const firstTextField = table.schema.fields.find((field, _) =>
     ["text", "long-text"].includes(field.type)
   )?.identifier;
-  let placeholder =
-    firstTextField && row.data && (row.data[""][firstTextField] as string);
-  if (!placeholder || placeholder === "") placeholder = "Untitled entry";
+  let placeholder: string | undefined = undefined;
+  if (firstTextField) {
+    placeholder = (row.draftData?.[""]?.[firstTextField] ||
+      row.data?.[""]?.[firstTextField]) as string | undefined;
+  }
+  if (!placeholder || placeholder === "") {
+    placeholder = "Untitled entry";
+  }
   return { placeholder };
 }
 
@@ -421,6 +427,24 @@ function CmsEntryDetailsForm_(
               }
             </Form.Item>
           }
+          previewButton={
+            table.settings?.previewUrl
+              ? {
+                  props: {
+                    href: substituteUrlParams(
+                      table.settings.previewUrl,
+                      (row.draftData?.[""] ?? row.data?.[""] ?? {}) as Record<
+                        string,
+                        string
+                      >
+                    ),
+                    target: "_blank",
+                  },
+                }
+              : {
+                  render: () => null,
+                }
+          }
           publishButton={{
             render: (ps, Comp) => (
               // Wrap in Form.Item so it can react to form error state
@@ -449,6 +473,24 @@ function CmsEntryDetailsForm_(
                           content: "Your changes have been published.",
                           duration: 5,
                         });
+                        const hooks = table.settings?.webhooks?.filter(
+                          (hook) => hook.event === "publish"
+                        );
+                        if (hooks && hooks.length > 0) {
+                          const hooksResp = await api.triggerCmsTableWebhooks(
+                            table.id,
+                            "publish"
+                          );
+                          const failed = hooksResp.responses.filter(
+                            (r) => r.status !== 200
+                          );
+                          if (failed.length > 0) {
+                            await message.warning({
+                              content: "Some publish hooks failed.",
+                              duration: 5,
+                            });
+                          }
+                        }
                       }
                     }}
                     disabled={
@@ -507,6 +549,34 @@ function CmsEntryDetailsForm_(
                         <span>Unpublish entry</span>
                       </Tooltip>
                     </Menu.Item>
+                    {row.data && row.draftData && (
+                      <Menu.Item
+                        key="revert"
+                        onClick={async () => {
+                          await message.loading({
+                            key: "revert-message",
+                            content: "Reverting...",
+                          });
+                          await api.updateCmsRow(row.id, {
+                            draftData: null,
+                            revision,
+                          });
+                          await mutateRow();
+                          await resetFormByRow();
+                          setHasUnpublishedChanges(hasPublishableChanges());
+                          await validateFields();
+                          await message.success({
+                            key: "revert-message",
+                            content: "Reverted.",
+                          });
+                        }}
+                        disabled={isSaving || isPublishing}
+                      >
+                        <Tooltip title="Reverts draft data to previously-published data">
+                          <span>Revert to published entry</span>
+                        </Tooltip>
+                      </Menu.Item>
+                    )}
                     <Menu.Divider />
                   </>
                 )}

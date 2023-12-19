@@ -5,7 +5,6 @@ import { DEFAULT_DATABASE_URI } from "@/wab/server/config";
 import { PlumePkgMgr } from "@/wab/server/pkgs/plume-pkg-mgr";
 import { initializeGlobals } from "@/wab/server/svr-init";
 import { Bundler } from "@/wab/shared/bundler";
-import { ProjectSeqIdAssignment } from "@/wab/shared/seq-id-utils";
 import { createSite } from "@/wab/sites";
 import { EntityManager } from "typeorm";
 import { getLastBundleVersion } from "./BundleMigrator";
@@ -49,7 +48,7 @@ async function createFakeUser(
       projectId: project.id,
       data: '{"hello": "world"}',
       revisionNum: 2,
-      seqIdAssign: new ProjectSeqIdAssignment(new Map()),
+      seqIdAssign: undefined,
     });
     const latest = await db.getLatestProjectRev(project.id);
     console.log(latest);
@@ -60,7 +59,7 @@ async function createFakeUser(
       projectId: project.id,
       data: JSON.stringify(siteBundle),
       revisionNum: 3,
-      seqIdAssign: new ProjectSeqIdAssignment(new Map()),
+      seqIdAssign: undefined,
     });
   }
 

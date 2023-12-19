@@ -978,7 +978,7 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
                   switchToDynamicValue();
                 }}
                 className="qb-custom-widget"
-                fullWidth={!isBooleanPropType(propType)}
+                fullWidth={!isBooleanPropType(propType) || isCustomCode}
               >
                 {referencedParam && !disableLinkToProp
                   ? renderEditorForReferencedParam()

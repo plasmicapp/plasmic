@@ -81,6 +81,7 @@ import {
     no-fallthrough,
 */
 import L, { uniq, uniqBy } from "lodash";
+import * as US from "underscore.string";
 import type { ViewCtx } from "./client/studio-ctx/view-ctx";
 import {
   assert,
@@ -117,7 +118,6 @@ import {
   isPlumeComponent,
 } from "./components";
 import { getCssInitial } from "./css";
-import { US } from "./deps";
 import * as Exprs from "./exprs";
 import {
   isRealCodeExpr,
@@ -159,6 +159,7 @@ import {
   getSlotArgs,
   getSlotSelectionContainingTpl,
   isCodeComponentSlot,
+  isDescendantOfVirtualRenderExpr,
 } from "./shared/SlotUtils";
 import { getTplComponentArg, TplMgr } from "./shared/TplMgr";
 import { $$$ } from "./shared/TplQuery";
@@ -2764,6 +2765,12 @@ export function getReactEventHandlerTsType(
 const ELEMENT_TAGS_WITH_REF = ["button", "input", "select", "textarea"];
 export function tplHasRef(tpl: TplNode) {
   if (!isTplNamable(tpl) || !tpl.name || tpl.name === "") {
+    return false;
+  }
+  if (ancestorsUp(tpl, true).some((node) => isKnownTplSlot(node))) {
+    return false;
+  }
+  if (isDescendantOfVirtualRenderExpr(tpl)) {
     return false;
   }
   if (isKnownTplTag(tpl)) {

@@ -393,7 +393,7 @@ function processData(data: Record<string, any>) {
                   : ([key, rec(v[key], depth + 1, [...path, key])] as const)
               )
             )
-          )
+          ).slice(0, 50)
         );
       }
     };

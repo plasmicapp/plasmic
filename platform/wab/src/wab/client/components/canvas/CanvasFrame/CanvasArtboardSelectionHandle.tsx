@@ -1,19 +1,15 @@
+import { ArenaFrame } from "@/wab/classes";
+import { maybeShowContextMenu } from "@/wab/client/components/ContextMenu";
+import { makeFrameMenu } from "@/wab/client/components/frame-menu";
+import { getGlobalCssVariableValue } from "@/wab/client/components/studio/GlobalCssVariables";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { useScaledElementRef } from "@/wab/client/hooks/useScaledElementRef";
+import PlasmicIcon__Frame from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Frame";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { gridSpacing, hoverBoxTagHeight } from "@/wab/styles/css-variables";
 import cn from "classnames";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
-import { ArenaFrame } from "../../../../classes";
-import { FrameViewMode } from "../../../../shared/Arenas";
-import {
-  gridSpacing,
-  hoverBoxTagHeight,
-} from "../../../../styles/css-variables";
-import { useScaledElementRef } from "../../../hooks/useScaledElementRef";
-import PlasmicIcon__Frame from "../../../plasmic/plasmic_kit/PlasmicIcon__Frame";
-import { useStudioCtx } from "../../../studio-ctx/StudioCtx";
-import { maybeShowContextMenu } from "../../ContextMenu";
-import { makeFrameMenu } from "../../frame-menu";
-import { getGlobalCssVariableValue } from "../../studio/GlobalCssVariables";
-import { Icon } from "../../widgets/Icon";
 import styles from "./CanvasFrame.module.scss";
 
 export const CanvasArtboardSelectionHandle = observer(
@@ -22,7 +18,7 @@ export const CanvasArtboardSelectionHandle = observer(
     onClick,
   }: {
     frame: ArenaFrame;
-    onClick: () => void;
+    onClick: (e?: React.MouseEvent<HTMLElement>) => void;
   }) {
     const studioCtx = useStudioCtx();
     const hoverBoxObj = studioCtx.hoverBoxControlledObj;
@@ -41,7 +37,7 @@ export const CanvasArtboardSelectionHandle = observer(
     });
 
     const handleContextMenu = (e) => {
-      onClick();
+      onClick(e);
 
       const viewCtx = studioCtx.focusedViewCtx();
 

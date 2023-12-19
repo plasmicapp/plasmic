@@ -26,6 +26,7 @@ import {
   Variant,
   VariantSetting,
 } from "@/wab/classes";
+import { getBoundingClientRect, getOffsetPoint } from "@/wab/client/dom";
 import * as common from "@/wab/common";
 import {
   assert,
@@ -53,9 +54,7 @@ import {
   isPageComponent,
 } from "@/wab/components";
 import { getCssInitial, parseCssNumericNew, tryGetCssInitial } from "@/wab/css";
-import { $, JQ } from "@/wab/deps";
 import { DEVFLAGS } from "@/wab/devflags";
-import { getBoundingClientRect, getOffsetPoint } from "@/wab/dom";
 import * as exprs from "@/wab/exprs";
 import { codeLit } from "@/wab/exprs";
 import { Box, isStandardSide, Pt, Rect, Side, sideToOrient } from "@/wab/geom";
@@ -111,7 +110,8 @@ import {
   PositionLayoutType,
 } from "@/wab/shared/layoututils";
 import { notification } from "antd";
-import L, { clamp, isArray } from "lodash";
+import $ from "jquery";
+import L, { clamp, isArray, merge } from "lodash";
 import pluralize from "pluralize";
 import React from "react";
 
@@ -296,7 +296,7 @@ export class ViewOps {
    * @param target
    */
   deepFocusElement(
-    target: JQ | undefined | null,
+    target: JQuery | undefined | null,
     trigger: "ctrl-click" | "dbl-click"
   ) {
     if (!target) {
@@ -1485,7 +1485,7 @@ export class ViewOps {
   }
 
   tryFocusDomElt(
-    $elt: JQ,
+    $elt: JQuery,
     opts: { appendToMultiSelection?: boolean; exact: boolean }
   ) {
     const focusable = this.viewCtx().dom2focusObj($elt);
@@ -1502,7 +1502,7 @@ export class ViewOps {
     return focusable;
   }
 
-  tryHoverDomElt($elt: JQ, opts: { exact: boolean }) {
+  tryHoverDomElt($elt: JQuery, opts: { exact: boolean }) {
     const $closest = closestTaggedNonTextDomElt($elt, this.viewCtx(), {
       excludeNonSelectable: true,
     });
@@ -1520,7 +1520,7 @@ export class ViewOps {
       });
     }
   }
-  getFinalFocusable($elt: JQ) {
+  getFinalFocusable($elt: JQuery) {
     const $closest = closestTaggedNonTextDomElt($elt, this.viewCtx(), {
       excludeNonSelectable: true,
     });
@@ -3308,6 +3308,7 @@ export class ViewOps {
     if (!cmptTpl || !Tpls.isTplTag(cmptTpl)) {
       return;
     }
+    const isStack = ["hstack", "vstack", "stack"].includes(insertableKey);
     ensureBaseRs(
       this.viewCtx(),
       cmptTpl,
@@ -3318,7 +3319,7 @@ export class ViewOps {
               height: px(place.height),
             }
           : undefined),
-        ...(["hstack", "vstack", "stack"].includes(insertableKey)
+        ...(isStack
           ? getSimplifiedStyles(
               insertableKey as AddItemKey,
               this.site().activeTheme?.addItemPrefs as AddItemPrefs | undefined
@@ -3368,7 +3369,8 @@ export class ViewOps {
           itemRect.left - parentRect.left,
           itemRect.top - parentRect.top
         );
-        this.insertAsChild(item.val.tpl, cmptTpl, { parentOffset });
+        const opts = isStack ? { keepFree: false } : undefined;
+        this.insertAsChild(item.val.tpl, cmptTpl, opts);
       }
     }
 
@@ -3469,6 +3471,9 @@ export class ViewOps {
    * @param opts.forceFree if parent is not free, usually the child will be
    *   relatively- positioned.  You can force the child to still be foree by
    *   passing true for forceFree.
+   * @param opts.keepFree if argument `newNode` has position free, keep it, else
+   *   use `newParent` container position to calculate the new child position.
+   *   Defaults to true.
    */
   insertAsChild(
     newNode: TplNode,
@@ -3476,11 +3481,13 @@ export class ViewOps {
     opts: {
       parentOffset?: Pt;
       forceFree?: boolean;
+      keepFree?: boolean;
       prepend?: boolean;
       beforeNode?: TplNode;
       afterNode?: TplNode;
     } = {}
   ) {
+    opts = merge({ keepFree: true }, opts);
     assert(
       this.canInsertAsChild(newNode, newParent, false),
       "Should be able to insert newParent as parent of newNode"
@@ -4051,7 +4058,9 @@ export class ViewOps {
           .toArrayOfTplNodes()
           .forEach((nchild) => {
             if (Tpls.isTplVariantable(nchild))
-              this.adoptParentContainerStyle(nchild, new_child, {});
+              this.adoptParentContainerStyle(nchild, new_child, {
+                keepFree: true,
+              });
           });
       });
 
@@ -4079,7 +4088,7 @@ export class ViewOps {
   private adoptLayoutParentContainerStyle(
     child: TplNode,
     parent: TplNode | SlotSelection,
-    opts: { parentOffset?: Pt; forceFree?: boolean } = {}
+    opts: { parentOffset?: Pt; forceFree?: boolean; keepFree?: boolean } = {}
   ) {
     const layoutParent = $$$(parent)
       .layoutParent({ includeSelf: true })
@@ -4117,7 +4126,7 @@ export class ViewOps {
   private adoptParentContainerStyle(
     layoutChild: TplNode,
     layoutParent: TplTag,
-    opts: { parentOffset?: Pt; forceFree?: boolean }
+    opts: { parentOffset?: Pt; forceFree?: boolean; keepFree?: boolean }
   ) {
     if (!Tpls.isTplTagOrComponent(layoutChild)) {
       return;
@@ -4144,7 +4153,7 @@ export class ViewOps {
         layoutChild,
         layoutParent,
         variantCombo,
-        { ...opts, keepFree: true }
+        opts
       );
     }
   }

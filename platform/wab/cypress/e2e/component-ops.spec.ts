@@ -100,7 +100,7 @@ describe("component tricky operations", function () {
         cy.get('[data-test-id="edit-component"]').click();
         cy.waitForFrameToLoad();
         cy.curDocument()
-          .get(".canvas-editor__viewport[data-test-frame-uid]")
+          .get(".canvas-editor__frames .canvas-editor__viewport")
           .then(($frame) => {
             const frame = $frame[0] as HTMLIFrameElement;
             return new Framed(frame);

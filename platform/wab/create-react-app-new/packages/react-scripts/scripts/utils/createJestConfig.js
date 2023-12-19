@@ -80,6 +80,10 @@ module.exports = (resolve, rootDir, isEjecting) => {
     ],
     resetMocks: true,
     resolver: resolve('scripts/utils/cjsResolver.js'),
+    reporters: [
+      process.env.CI ? ['github-actions', { silent: false }] : 'default',
+      'summary',
+    ],
   };
   if (rootDir) {
     config.rootDir = rootDir;

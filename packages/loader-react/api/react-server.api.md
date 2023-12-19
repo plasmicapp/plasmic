@@ -4,6 +4,7 @@
 
 ```ts
 
+import { CodeModule } from '@plasmicapp/loader-fetcher';
 import { ComponentMeta } from '@plasmicapp/loader-core';
 import { ComponentMeta as ComponentMeta_2 } from '@plasmicapp/loader-fetcher';
 import { LoaderBundleCache } from '@plasmicapp/loader-core';
@@ -46,6 +47,7 @@ export interface InitOptions {
     };
     // @deprecated (undocumented)
     i18nKeyScheme?: "content" | "hash";
+    manualRedirect?: boolean;
     nativeFetch?: boolean;
     // (undocumented)
     onClientSideFetch?: "warn" | "error";
@@ -72,9 +74,9 @@ export interface InitOptions {
 export function initPlasmicLoader(opts: InitOptions): ReactServerPlasmicComponentLoader;
 
 // @public
-export function matchesPagePath(pagePath: string, lookup: string): {
+export function matchesPagePath(pattern: string, path: string): false | {
     params: Record<string, string | string[]>;
-} | false;
+};
 
 export { PageMeta }
 
@@ -103,6 +105,8 @@ export class ReactServerPlasmicComponentLoader {
     getActiveSplits(): Split[];
     // (undocumented)
     getBundle(): LoaderBundleOutput_2;
+    // (undocumented)
+    getChunksUrl(bundle: LoaderBundleOutput_2, modules: CodeModule[]): string;
     // (undocumented)
     maybeFetchComponentData(specs: ComponentLookupSpec[], opts?: FetchComponentDataOpts): Promise<ComponentRenderData | null>;
     // (undocumented)

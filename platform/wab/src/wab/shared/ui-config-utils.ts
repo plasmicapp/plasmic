@@ -62,8 +62,11 @@ export const COMPONENT_ALIASES = [
   "carousel",
   "chart",
   "checkbox",
+  "collapse",
+  "countdown",
   "dataDetails",
   "dataFetcher",
+  "dataGrid",
   "dataList",
   "dataProvider",
   "dateTimePicker",
@@ -74,8 +77,10 @@ export const COMPONENT_ALIASES = [
   "form",
   "iframe",
   "input",
+  "linkPreview",
   "loadingBoundary",
   "lottie",
+  "marquee",
   "navbar",
   "numberInput",
   "pageMeta",
@@ -215,7 +220,7 @@ export function mergeUiConfigs(
 type SectionedAliases = Record<string, Record<string, InsertAlias[]>>;
 
 export interface InsertPanelConfig {
-  aliases: Record<InsertComponentAlias, string>;
+  aliases: Partial<Record<InsertComponentAlias, string>>;
   builtinSections: SectionedAliases;
   overrideSections: {
     website?: SectionedAliases;

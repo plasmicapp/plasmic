@@ -9,6 +9,3 @@ screen screen -dR wab-watch
 split
 focus down
 screen screen -dR wab-node-server
-split
-focus down
-screen screen -dR pybackend

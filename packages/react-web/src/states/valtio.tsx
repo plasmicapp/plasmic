@@ -42,6 +42,7 @@ import {
   StateCell,
   UNINITIALIZED,
 } from "./types";
+import defer = setTimeout;
 
 function isNum(value: string | number | symbol): value is number {
   return typeof value === "symbol" ? false : !isNaN(+value);
@@ -414,6 +415,29 @@ export function useDollarState(
   ...rest: any[]
 ): $State {
   const { env, opts } = extractDollarStateParametersBackwardCompatible(...rest);
+  const [, setState] = React.useState<[]>();
+
+  const mountedRef = React.useRef<boolean>(false);
+  const isMounted = React.useCallback(() => mountedRef.current, []);
+
+  React.useEffect(() => {
+    mountedRef.current = true;
+    return () => (mountedRef.current = false);
+  }, []);
+
+  const pendingUpdate = React.useRef(false);
+
+  const forceUpdate = React.useCallback(
+    () =>
+      defer(() => {
+        if (isMounted()) {
+          setState([]);
+          pendingUpdate.current = false;
+        }
+      }),
+    []
+  );
+
   const $$state = React.useRef<Internal$State>(
     (() => {
       const rootSpecTree = buildTree(specs);
@@ -423,7 +447,7 @@ export function useDollarState(
         stateValues: createValtioProxy({}),
         env: envFieldsAreNonNill(env),
         specs: [],
-        registrationsQueue: createValtioProxy([]),
+        registrationsQueue: [],
         stateInitializationEnv: { stack: [], visited: new Set<string>() },
       };
     })()
@@ -474,16 +498,18 @@ export function useDollarState(
             ? envFieldsAreNonNill(overrideEnv)
             : $$state.env;
           if (!deepEqual(stateCell.initialValue, f({ $state, ...env }))) {
-            $$state.registrationsQueue.push(
-              mkUntrackedValue({
-                node,
-                path: realPath,
-                f,
-                overrideEnv: overrideEnv
-                  ? envFieldsAreNonNill(overrideEnv)
-                  : undefined,
-              })
-            );
+            $$state.registrationsQueue.push({
+              node,
+              path: realPath,
+              f,
+              overrideEnv: overrideEnv
+                ? envFieldsAreNonNill(overrideEnv)
+                : undefined,
+            });
+            if (!pendingUpdate.current) {
+              pendingUpdate.current = true;
+              forceUpdate();
+            }
           }
         },
         ...(opts?.inCanvas
@@ -561,12 +587,21 @@ export function useDollarState(
     }[] = [];
     getStateCells($state, $$state.rootSpecTree).forEach((stateCell) => {
       if (stateCell.initFunc) {
-        const newInit = invokeInitFuncBackwardsCompatible(stateCell.initFunc, {
-          $state,
-          ...(stateCell.overrideEnv ?? envFieldsAreNonNill(env)),
-        });
-        if (!deepEqual(newInit, stateCell.initialValue)) {
-          resetSpecs.push({ stateCell });
+        try {
+          const newInit = invokeInitFuncBackwardsCompatible(
+            stateCell.initFunc,
+            {
+              $state,
+              ...(stateCell.overrideEnv ?? envFieldsAreNonNill(env)),
+            }
+          );
+          if (!deepEqual(newInit, stateCell.initialValue)) {
+            resetSpecs.push({ stateCell });
+          }
+        } catch {
+          // Exception may be thrown from initFunc -- for example, if it tries to access $queries
+          // that are still loading. We swallow those here, since we're only interested in
+          // checking if the init value has changed, not in handling these errors.
         }
       }
     });
@@ -582,7 +617,7 @@ export function useDollarState(
       stateCell.overrideEnv = overrideEnv;
       reInitializeState(stateCell);
     }
-  }, [$$state.registrationsQueue.length]);
+  });
   // immediately initialize exposed non-private states
   useIsomorphicLayoutEffect(() => {
     $$state.specTreeLeaves.forEach((node) => {
@@ -599,7 +634,6 @@ export function useDollarState(
 
   // Re-render if any value changed in one of these objects
   useSnapshot($$state.stateValues, { sync: true });
-  useSnapshot($$state.registrationsQueue, { sync: true });
   return $state;
 }
 

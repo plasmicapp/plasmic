@@ -3,6 +3,7 @@ import { ensureArray, ensureString, ensureType } from "@/wab/common";
 import { uploadDataUriToS3 } from "@/wab/server/cdn/images";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { CmsDatabase } from "@/wab/server/entities/Entities";
+import { triggerWebhookOnly } from "@/wab/server/trigger-webhooks";
 import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
 import {
   ApiCmsDatabase,
@@ -268,6 +269,23 @@ export async function updateRow(req: Request, res: Response) {
     },
   });
   res.json(row);
+}
+
+export async function triggerTableWebhooks(req: Request, res: Response) {
+  const event = req.query.event as string;
+  const mgr = userDbMgr(req);
+  const table = await mgr.getCmsTableById(req.params.tableId as CmsTableId);
+  const webhooks = table.settings?.webhooks?.filter(
+    (hook) => hook.event === event
+  );
+  if (webhooks && webhooks.length > 0) {
+    const responses = await Promise.all(
+      webhooks.map((hook) => triggerWebhookOnly(hook))
+    );
+    res.json({ responses });
+  } else {
+    res.json({ responses: [] });
+  }
 }
 
 export async function createRows(req: Request, res: Response) {

@@ -48,6 +48,7 @@ export interface DataSourceModalProps {
   onUpdate: (dataSource: ApiDataSource) => Promise<any>;
   onDone: () => void;
   dataSourceType?: DataSourceType;
+  readOpsOnly?: boolean;
 }
 
 const INTEGRATION_KEY = "/api/v1/auth/integrations";
@@ -113,6 +114,7 @@ export function DataSourceModal({
   onDone,
   onUpdate,
   dataSourceType,
+  readOpsOnly,
 }: DataSourceModalProps) {
   const api = useApi();
   const [form] = Form.useForm<DataSourceFormData>();
@@ -385,11 +387,18 @@ export function DataSourceModal({
             aria-label="Source"
             data-test-id={"data-source-picker"}
           >
-            {dataSourceMetasOrAliases.map((s) => (
-              <Select.Option key={s.id} value={s.id}>
-                {s.label}
-              </Select.Option>
-            ))}
+            {dataSourceMetasOrAliases
+              .filter((s) => {
+                return (
+                  !readOpsOnly ||
+                  getDataSourceMeta(s.id).ops.some((op) => op.type === "read")
+                );
+              })
+              .map((s) => (
+                <Select.Option key={s.id} value={s.id}>
+                  {s.label}
+                </Select.Option>
+              ))}
           </Select>
         </Form.Item>
         {selectedDataSourceType && (

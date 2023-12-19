@@ -14,6 +14,7 @@ if (window && "matchMedia" in window) {
   require("tinymce/plugins/autolink");
   require("tinymce/plugins/charmap");
   require("tinymce/plugins/code");
+  require("tinymce/plugins/codesample");
   require("tinymce/plugins/fullscreen");
   require("tinymce/plugins/image");
   require("tinymce/plugins/insertdatetime");
@@ -27,6 +28,11 @@ if (window && "matchMedia" in window) {
 }
 
 import "tinymce/skins/ui/tinymce-5/skin.min.css";
+
+// @ts-ignore
+import contentCss from "!file-loader!tinymce/skins/ui/tinymce-5/content.min.css";
+// @ts-ignore
+import prismCss from "!file-loader!prismjs/themes/prism.min.css";
 
 import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import { Editor, IAllProps } from "@tinymce/tinymce-react";
@@ -44,7 +50,7 @@ export function TinyEditor({ value, onChange, ...props }: TinyEditorProps) {
       <Editor
         init={{
           skin: false,
-          content_css: false,
+          content_css: [contentCss, prismCss],
           height: 500,
           width: 600,
           menubar: false,
@@ -65,6 +71,7 @@ export function TinyEditor({ value, onChange, ...props }: TinyEditorProps) {
             "autolink",
             "charmap",
             "code",
+            "codesample",
             "fullscreen",
             "image",
             "insertdatetime",
@@ -77,8 +84,9 @@ export function TinyEditor({ value, onChange, ...props }: TinyEditorProps) {
             "visualblocks",
           ],
           toolbar: [
-            "blocks | bold italic underline strikethrough | forecolor backcolor | numlist bullist outdent indent",
-            "link image media | blockquote code | superscript subscript | alignleft aligncenter alignright alignjustify | removeformat",
+            "undo redo | bold italic underline strikethrough | forecolor backcolor | superscript subscript | removeformat",
+            "blocks | alignleft aligncenter alignright alignjustify | numlist bullist outdent indent",
+            "link image media | blockquote table codesample hr |  code",
           ],
           images_upload_handler: async (blobInfo) => {
             const uploaded = await appCtx.api.uploadImageFile({

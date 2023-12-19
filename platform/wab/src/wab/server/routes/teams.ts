@@ -13,6 +13,7 @@ import {
   Team,
   Workspace,
 } from "@/wab/server/entities/Entities";
+import { isTeamOnFreeTrial } from "@/wab/server/freeTrial";
 import {
   ApiPermission,
   ApiTeam,
@@ -82,14 +83,11 @@ export function mkApiTeam(team: Team): ApiTeam {
       "inviteId",
       "defaultAccessLevel",
       "whiteLabelInfo",
+      "whiteLabelName",
       "uiConfig",
     ]),
     {
-      onTrial: !!(
-        team.featureTier &&
-        !team.stripeSubscriptionId &&
-        team.trialStartDate
-      ),
+      onTrial: isTeamOnFreeTrial(team),
     }
   );
 }

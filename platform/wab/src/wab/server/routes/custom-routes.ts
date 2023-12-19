@@ -12,6 +12,8 @@ export function addInternalRoutes(app: Application) {
   addPaymentRoutes(app);
 }
 
+export function addInternalIntegrationsRoutes(app: Application) {}
+
 function addHostingRoutes(app: Application) {
   app.post("/api/v1/revalidate-hosting", withNext(revalidatePlasmicHosting));
 }

@@ -54,15 +54,21 @@ export const SliderWrapper = forwardRef(function SliderWrapper_(
   props: SliderProps,
   userRef?: Ref<SliderMethods>
 ) {
-  const { initialSlide, arrowColor, className, sliderScopeClassName, ...rest } =
-    props;
+  const {
+    initialSlide,
+    arrowColor,
+    className,
+    sliderScopeClassName,
+    autoplay,
+    ...rest
+  } = props;
   // "data-plasmic-canvas-envs" prop only exists in studio canvas
   const inCanvas = !!usePlasmicCanvasContext();
   const slider = useRef<Slider>(null);
   const debouncedInitialSlide = useDebounce(initialSlide);
 
   useEffect(() => {
-    if (debouncedInitialSlide !== undefined && inCanvas) {
+    if (debouncedInitialSlide !== undefined) {
       slider.current?.slickGoTo(debouncedInitialSlide);
     }
   }, [debouncedInitialSlide, inCanvas]);
@@ -126,6 +132,10 @@ export const SliderWrapper = forwardRef(function SliderWrapper_(
       <Slider
         className={`${className} ${sliderScopeClassName}`}
         ref={slider}
+        // We don't want to turn on autoplay while editing in canvas, because this
+        // leads to a state update for current slide, which ends up re-rendering
+        // the entire artboard.
+        autoplay={autoplay && !inCanvas ? autoplay : undefined}
         {...rest}
       />
       <style dangerouslySetInnerHTML={{ __html: css }} />
@@ -399,7 +409,8 @@ export function registerSlider(loader?: {
       autoplay: {
         displayName: "Auto Play",
         type: "boolean",
-        description: "Automatically start scrolling",
+        description:
+          "Automatically start scrolling; does not take effect while in the editor, but you can see it in live preview.",
         defaultValueHint: false,
       },
       autoplaySpeed: {

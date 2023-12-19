@@ -1,16 +1,16 @@
+import { ColumnSizeControlDraggables } from "@/wab/client/components/sidebar-tabs/ResponsiveColumns/ColumnsSizeControls";
+import { shouldBeDisabled } from "@/wab/client/components/sidebar/sidebar-helpers";
+import { getContentOnlyRect } from "@/wab/client/dom";
+import { getElementBounds } from "@/wab/client/dom-utils";
+import { reportError } from "@/wab/client/ErrorNotifications";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { useForceUpdate } from "@/wab/client/useForceUpdate";
+import { ensure, NullOrUndefinedValueError } from "@/wab/common";
+import { useSignalListener } from "@/wab/commons/components/use-signal-listener";
+import { computeDefinedIndicator } from "@/wab/shared/defined-indicator";
+import { isTplColumns, TplColumnsTag } from "@/wab/tpls";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
-import { ensure, NullOrUndefinedValueError } from "../../../../common";
-import { useSignalListener } from "../../../../commons/components/use-signal-listener";
-import { getContentOnlyRect } from "../../../../dom";
-import { computeDefinedIndicator } from "../../../../shared/defined-indicator";
-import { isTplColumns, TplColumnsTag } from "../../../../tpls";
-import { getElementBounds } from "../../../dom-utils";
-import { reportError } from "../../../ErrorNotifications";
-import { ViewCtx } from "../../../studio-ctx/view-ctx";
-import { useForceUpdate } from "../../../useForceUpdate";
-import { ColumnSizeControlDraggables } from "../../sidebar-tabs/ResponsiveColumns/ColumnsSizeControls";
-import { shouldBeDisabled } from "../../sidebar/sidebar-helpers";
 
 export const ResponsiveColumnsCanvasControls = observer(
   function ResponsiveColumnsCanvasControls(props: {
@@ -18,14 +18,13 @@ export const ResponsiveColumnsCanvasControls = observer(
     tpl: TplColumnsTag;
   }) {
     const { viewCtx, tpl } = props;
-    const [dragState, setDragState] =
-      React.useState<
-        | {
-            index: number;
-            cols: number[];
-          }
-        | undefined
-      >(undefined);
+    const [dragState, setDragState] = React.useState<
+      | {
+          index: number;
+          cols: number[];
+        }
+      | undefined
+    >(undefined);
 
     const forceUpdate = useForceUpdate();
 

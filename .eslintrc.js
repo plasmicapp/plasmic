@@ -6,6 +6,7 @@ module.exports = {
     // Maybe not needed, from public-packages
     // "@typescript-eslint/no-empty-interface": "off",
     // "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/no-explicit-any": "off",
     "prefer-const": "warn",
     "no-restricted-properties": [
       "error",
@@ -225,7 +226,7 @@ module.exports = {
                     allowTypeImports: true,
                   },
                   {
-                    name: "mobx",
+                    group: ["mobx"],
                     message:
                       "Files in `server/` can only import mobx from `shared/import-mobx` or use `import type`",
                   },

@@ -1,6 +1,7 @@
 import { ArenaFrame } from "@/wab/classes";
 import { CanvasTransformedBox } from "@/wab/client/components/canvas/CanvasTransformedBox";
 import { useRerenderOnUserBodyChange } from "@/wab/client/components/canvas/UserBodyObserver";
+import { hasLayoutBox } from "@/wab/client/dom";
 import WarningIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__WarningTrianglesvg";
 import { globalHookCtx } from "@/wab/client/react-global-hook/globalHook";
 import { RightTabKey, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -11,7 +12,6 @@ import {
   getComponentDisplayName,
   isCodeComponent,
 } from "@/wab/components";
-import { $ } from "@/wab/deps";
 import { AnyArena } from "@/wab/shared/Arenas";
 import { maybePropTypeToDisplayName } from "@/wab/shared/code-components/code-components";
 import {
@@ -22,9 +22,9 @@ import {
   ValidationType,
 } from "@/wab/val-nodes";
 import { Tooltip } from "antd";
+import $ from "jquery";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { hasLayoutBox } from "src/wab/dom";
 
 const getErrorMessage = (invalidArg: InvalidArgMeta) =>
   invalidArg.validationType === ValidationType.Required

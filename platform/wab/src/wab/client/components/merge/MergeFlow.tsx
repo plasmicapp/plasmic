@@ -382,39 +382,44 @@ function MergeFlow_(
     }
   }
   // Find the nearest grouping and use its label / name functions
-  const genPairedChangesConfs = genericPairedChanges.map((change) => {
+  const pairedChangesConfs = [
+    ...specialPairedChanges,
+    ...genericPairedChanges,
+  ].map((change) => {
+    const path =
+      change.conflictType === "generic"
+        ? change.leftRootPath
+        : JSON.parse(change.pathStr);
     const descriptionsAndTypes = withoutNils(
-      [...matchAllGroupings(change.leftRootPath)].map(
-        ({ grouping, key }, i) => {
-          const isFirst = i === 0;
-          if (!grouping.name && !isFirst) {
-            return null;
-          }
-          const leftInst = keyPathGet(
-            fromSite,
-            change.leftRootPath.slice(0, key.length),
-            bundler
-          );
-          const rightInst = keyPathGet(
-            toSite,
-            change.rightRootPath.slice(0, key.length),
-            bundler
-          );
-          const label = grouping.label(leftInst, fromSite, rightInst, toSite);
-          const semverItem = maybeMkSemVerSiteElement(leftInst);
-          const labelPart = isFirst ? capitalizeFirst(label) : "of " + label;
-          if (!grouping.name) {
-            return tuple(labelPart + " ", semverItem);
-          }
-          const name = grouping.name?.(leftInst, fromSite, rightInst, toSite);
-          return tuple(
-            <>
-              {labelPart} <strong>{name}</strong>{" "}
-            </>,
-            semverItem
-          );
+      [...matchAllGroupings(path)].map(({ grouping, key }, i) => {
+        const isFirst = i === 0;
+        if (!grouping.name && !isFirst) {
+          return null;
         }
-      )
+        const leftInst = keyPathGet(
+          fromSite,
+          path.slice(0, key.length),
+          bundler
+        );
+        const rightInst = keyPathGet(
+          toSite,
+          path.slice(0, key.length),
+          bundler
+        );
+        const label = grouping.label(leftInst, fromSite, rightInst, toSite);
+        const semverItem = maybeMkSemVerSiteElement(leftInst);
+        const labelPart = isFirst ? capitalizeFirst(label) : "of " + label;
+        if (!grouping.name) {
+          return tuple(labelPart + " ", semverItem);
+        }
+        const name = grouping.name?.(leftInst, fromSite, rightInst, toSite);
+        return tuple(
+          <>
+            {labelPart} <strong>{name}</strong>{" "}
+          </>,
+          semverItem
+        );
+      })
     );
 
     const innermostIcon =
@@ -452,34 +457,6 @@ function MergeFlow_(
       />
     );
   });
-
-  const specialPairedChangesConfs = specialPairedChanges.map((change) => {
-    return (
-      <Conflict
-        merged={change.mergeStatus == "full"}
-        hasSubtext={change.mergeStatus === "partial" || !!change.renamed}
-        icon={null}
-        name={<span>{change.pathStr}</span>}
-        subtext={[
-          change.mergeStatus === "partial" && `Some changes were auto-merged.`,
-          change.renamed && `Main branch renamed to ${change.renamed}.`,
-        ]
-          .filter(Boolean)
-          .join(" ")}
-        side={picks[change.index] ?? "left"}
-        onPickSide={(side) =>
-          setPicks({
-            ...picks,
-            [change.index]: side,
-          })
-        }
-      />
-    );
-  });
-
-  const pairedChangesConfs = genPairedChangesConfs.concat(
-    specialPairedChangesConfs
-  );
 
   const canMerge =
     pretendMergeResult.status !== "uncommitted changes on destination branch" &&

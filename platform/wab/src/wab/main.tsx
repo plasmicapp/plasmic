@@ -1,21 +1,18 @@
 import * as mobx from "mobx";
 import { main } from "./client/components/Shell";
 // import { main } from "./client/sandboxes/GraphqlSandbox";
-import * as deps from "./deps";
+import "jquery";
+import "jquery-serializejson";
+import { dbg } from "./dbg";
 import "./styles/antd-overrides.less";
 import "./styles/loader.scss";
 import "./styles/main.sass";
-
-declare namespace global {
-  let dbg: { [name: string]: any };
-}
-global.dbg.deps = deps;
 
 mobx.configure({
   enforceActions: "never",
 });
 
-(window as any).mobx = mobx;
+dbg.mobx = mobx;
 
 //
 // Main application code

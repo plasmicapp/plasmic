@@ -224,7 +224,9 @@ export async function getDataSourceOperationId(req: Request, res: Response) {
   const dataSourceId = req.params.dataSourceId;
   const mgr = userDbMgr(req);
   // Make sure permission checks out
-  const dataSource = await mgr.getDataSourceById(dataSourceId);
+  const dataSource = await mgr.getDataSourceById(dataSourceId, {
+    columns: ["id"],
+  });
   const projectId = req.body.projectId;
 
   // This check is required so that we don't ever allow a malicious project

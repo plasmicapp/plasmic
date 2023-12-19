@@ -3236,7 +3236,7 @@ input[type="checkbox"]:checked + .checkbox__repr
 
 .style__assets__label__menu
   display: inline-block
-  cusor: pointer
+  cursor: pointer
 
 .style__assets__item__container
   margin-top: 5px
@@ -3998,12 +3998,9 @@ $color-stops-width: 100%
   pointer-events: auto
 
 .canvas-editor__canvas
-  position: absolute
-  padding-right: 0px
-  padding-bottom: 0px
+  position: relative
   user-select: none
-  width: 0
-  height: 0
+
 .canvas-editor__canvas__popup_live
   width: 100%
   height: 100%
@@ -4015,10 +4012,11 @@ $color-stops-width: 100%
   overflow: scroll
 // We need to clip the canvas content.
 .canvas-editor__canvas-clipper
-  overflow: hidden
+  overflow: auto
   height: 100%
   width: 100%
   position: absolute
+  grid-area: clipper
 .canvas-editor__canvas-clipper--live
   left: 0
   right: 0
@@ -4036,66 +4034,6 @@ $color-stops-width: 100%
   transform-origin: top left
   pointer-events: none
 
-@mixin manual__scrollbar-track-common
-  pointer-events: none
-  z-index: 2
-  position: absolute
-  right: 0
-  bottom: 0
-  overflow: hidden
-.manual__scrollbar-vertical-track
-  @include manual__scrollbar-track-common
-  top: 0
-  width: 11px
-  margin-bottom: 11px
-.manual__scrollbar-horizontal-track
-  @include manual__scrollbar-track-common
-  left: 0
-  height: 11px
-  margin-right: 11px
-
-@mixin manual__scrollbar-before-common
-  position: absolute
-  content: ''
-  background: $sand7
-  border-radius: 7px
-  left: 0
-  right: 0
-  transition: opacity 0.2s linear
-  &:hover
-    background: $sand6
-.manual__scrollbar-vertical:before
-  @include manual__scrollbar-before-common
-  top: 2px
-  bottom: 2px
-.manual__scrollbar-horizontal:before
-  @include manual__scrollbar-before-common
-  height: 100%
-  left: 2px
-  right: 2px
-
-@mixin manual__scrollbar-common
-  position: absolute
-  right: 2px
-  width: 7px
-  min-height: 50px
-  pointer-events: auto
-  display: none
-.manual__scrollbar-vertical
-  @include manual__scrollbar-common
-.manual__scrollbar-horizontal
-  @include manual__scrollbar-common
-  right: auto
-  left: 0
-  top: 2px
-  height: 7px
-  min-height: 0
-  min-width: 50px
-  width: auto
-
-.manual__scrollbar-visible
-  display: block
-
 .topbar__preview__frame__name
   left: 50%
   top: 50%
@@ -4104,31 +4042,24 @@ $color-stops-width: 100%
   white-space: nowrap
 
 .canvas-editor__canvas-container
-  flex: 1
-  display: flex
+  display: grid
+  grid-template-rows: auto
+  grid-template-areas: "clipper"
+  grid-template-columns: 100%
   overflow: hidden
   background: $canvas-bg
-  justify-content: center
+  justify-items: center
   width: 100%
   height: 100%
   z-index: 0
   position: relative
 
-.canvas-editor__canvas-container__focus_mode
-  display: grid
-  grid-template-rows: 50px auto
-  grid-template-areas: "topbar" "clipper"
-  grid-template-columns: 100%
-  justify-items: center
-
   & > *
     position: relative
 
-  .canvas-editor__canvas
-    height: auto
-    padding: 2000px
-    position: relative
-    width: auto
+.canvas-editor__canvas-container__focus_mode
+  grid-template-rows: 50px auto
+  grid-template-areas: "topbar" "clipper"
 
 .canvas-editor__watch-mode
   position: absolute !important

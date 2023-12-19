@@ -1,5 +1,5 @@
-import { LoaderBundleOutput } from '@plasmicapp/loader-fetcher';
-import { DepsGraph } from './deps-graph';
+import { LoaderBundleOutput } from "@plasmicapp/loader-fetcher";
+import { DepsGraph } from "./deps-graph";
 
 /**
  * Get sub-bundle including only modules that are reachable from `names`.
@@ -10,13 +10,13 @@ export function getBundleSubset(
   bundle: LoaderBundleOutput,
   names: string[],
   opts?: {
-    target?: 'browser' | 'server';
+    target?: "browser" | "server";
   }
 ): LoaderBundleOutput {
   const namesSet = new Set(names);
-  const target = opts?.target ?? 'browser';
+  const target = opts?.target ?? "browser";
 
-  const forBrowser = target === 'browser';
+  const forBrowser = target === "browser";
   const graph = new DepsGraph(bundle, forBrowser);
   const deps = new Set(names.flatMap((name) => graph.getTransitiveDeps(name)));
   const isSubModule = (fileName: string) =>
@@ -33,5 +33,6 @@ export function getBundleSubset(
     globalGroups: bundle.globalGroups,
     projects: bundle.projects,
     activeSplits: bundle.activeSplits,
+    bundleUrlQuery: bundle.bundleUrlQuery ?? null,
   };
 }

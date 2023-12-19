@@ -1,3 +1,4 @@
+import { v4 } from "uuid";
 import {
   Framed,
   removeCurrentProject,
@@ -5,10 +6,12 @@ import {
 } from "../../support/util";
 
 describe("HTTP Data Source", () => {
+  let dsname = "";
   beforeEach(() => {
+    dsname = `HTTP ${v4()}`;
     cy.createDataSource({
       source: "http",
-      name: "HTTP",
+      name: dsname,
       settings: {
         baseUrl: "https://jsonplaceholder.typicode.com/",
         commonHeaders: {
@@ -22,7 +25,7 @@ describe("HTTP Data Source", () => {
   });
 
   afterEach(() => {
-    cy.deleteDataSource();
+    cy.deleteDataSourceOfCurrentTest();
     removeCurrentProject();
   });
 
@@ -33,7 +36,7 @@ describe("HTTP Data Source", () => {
         // Creating customers query ordered by country
         cy.switchToComponentDataTab();
         cy.addComponentQuery();
-        cy.pickDataSource("HTTP");
+        cy.pickDataSource(dsname);
         cy.setDataPlasmicProp("data-source-modal-path", "users", {
           clickPosition: "right",
         });
@@ -66,7 +69,7 @@ describe("HTTP Data Source", () => {
         cy.insertFromAddDrawer("Text");
         cy.bindTextContentToObjectPath(["statusCode"]);
 
-        // Create button with Post
+        // // Create button with Post
         cy.insertFromAddDrawer("Button");
         cy.bindTextContentToCustomCode(`"Post"`);
         cy.addInteraction("onClick", [
@@ -74,7 +77,7 @@ describe("HTTP Data Source", () => {
             actionName: "dataSourceOp",
             args: {
               dataSourceOp: {
-                integration: "HTTP",
+                integration: dsname,
                 args: {
                   operation: { value: "post" },
                   "data-source-modal-path": {

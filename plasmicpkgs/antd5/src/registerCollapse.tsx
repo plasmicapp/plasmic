@@ -20,7 +20,7 @@ type SingleCollapseProps = Omit<
     open?: boolean;
     defaultOpen?: boolean;
     disabled?: boolean;
-    expandIcon: React.ReactElement;
+    expandIcon?: React.ReactElement;
     rotateCustomExpandIcon: boolean;
     children: React.ReactElement;
     label2: React.ReactElement; // For backwards compatibility
@@ -39,7 +39,7 @@ export function AntdAccordion(
     defaultActiveKey?: string;
     activeKey?: string;
     disabled?: boolean;
-    expandIcon: React.ReactElement;
+    expandIcon?: React.ReactElement;
     rotateCustomExpandIcon: boolean;
   }
 ) {
@@ -91,7 +91,7 @@ export function AntdAccordion(
       activeKey={activeKey}
       collapsible={disabled ? "disabled" : collapsible}
       expandIcon={
-        expandIcon?.key
+        expandIcon
           ? ({ isActive }) => (
               <div
                 style={
@@ -151,7 +151,7 @@ export function AntdSingleCollapse(props: SingleCollapseProps) {
       activeKey={open ? item.key : undefined}
       collapsible={disabled ? "disabled" : collapsible}
       expandIcon={
-        expandIcon?.key
+        expandIcon
           ? ({ isActive }) => (
               <div
                 style={
@@ -204,7 +204,7 @@ const commonAccordionProps: Record<string, PropType<any>> = {
     type: "boolean",
     description: "Enable rotation of custom expand icon when panel is expanded",
     advanced: true,
-    hidden: (ps) => !ps.expandIcon?.key,
+    hidden: (ps) => !ps.expandIcon,
   },
   expandIconPosition: {
     type: "choice",

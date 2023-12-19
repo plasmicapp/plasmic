@@ -1,23 +1,23 @@
-import cn from "classnames";
-import { observer } from "mobx-react-lite";
-import * as React from "react";
-import { ensure } from "../../../../common";
-import { hasLayoutBox } from "../../../../dom";
-import { getArenaFrames } from "../../../../shared/Arenas";
-import { isTplTagOrComponent, isTplVariantable } from "../../../../tpls";
-import { frameToScalerRect } from "../../../coords";
-import { computeNodeOutlineTagLayoutClass } from "../../../node-outline";
-import {
-  cssPropsForInvertTransform,
-  useStudioCtx,
-} from "../../../studio-ctx/StudioCtx";
-import { summarizeFocusObj } from "../../../utils/tpl-client-utils";
-import { createNodeIcon } from "../../sidebar-tabs/tpl-tree";
+import { EditableNodeLabel } from "@/wab/client/components/canvas/EditableNodeLabel";
+import { createNodeIcon } from "@/wab/client/components/sidebar-tabs/tpl-tree";
 import {
   BASE_VARIANT_COLOR,
   NON_BASE_VARIANT_COLOR,
-} from "../../studio/GlobalCssVariables";
-import { EditableNodeLabel } from "../EditableNodeLabel";
+} from "@/wab/client/components/studio/GlobalCssVariables";
+import { frameToScalerRect } from "@/wab/client/coords";
+import { hasLayoutBox } from "@/wab/client/dom";
+import { computeNodeOutlineTagLayoutClass } from "@/wab/client/node-outline";
+import {
+  cssPropsForInvertTransform,
+  useStudioCtx,
+} from "@/wab/client/studio-ctx/StudioCtx";
+import { summarizeFocusObj } from "@/wab/client/utils/tpl-client-utils";
+import { ensure } from "@/wab/common";
+import { getArenaFrames } from "@/wab/shared/Arenas";
+import { isTplTagOrComponent, isTplVariantable } from "@/wab/tpls";
+import cn from "classnames";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
 import styles from "./HoverBox.module.scss";
 import { recomputeBounds } from "./recomputeBounds";
 

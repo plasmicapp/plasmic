@@ -1,27 +1,27 @@
-import { Form } from "antd";
-import React from "react";
-import { Modal } from "src/wab/client/components/widgets/Modal";
-import useSWR from "swr";
-import { ApiProject, WorkspaceId } from "../../../shared/ApiSchema";
+import { UU } from "@/wab/client/cli-routes";
+import { DataSourceModal } from "@/wab/client/components/modals/DataSourceModal";
+import { Spinner } from "@/wab/client/components/widgets";
+import Button from "@/wab/client/components/widgets/Button";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import IconButton from "@/wab/client/components/widgets/IconButton";
+import Select from "@/wab/client/components/widgets/Select";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import RefreshsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Refreshsvg";
+import { ApiProject, WorkspaceId } from "@/wab/shared/ApiSchema";
 import {
   DataSourceType,
   getDataSourceMeta,
-} from "../../../shared/data-sources-meta/data-source-registry";
+} from "@/wab/shared/data-sources-meta/data-source-registry";
 import {
   A_DATA_SOURCE_LOWER,
   DATA_SOURCE_CAP,
   DATA_SOURCE_LOWER,
   DATA_SOURCE_PLURAL_LOWER,
-} from "../../../shared/Labels";
-import { UU } from "../../cli-routes";
-import { useAppCtx } from "../../contexts/AppContexts";
-import RefreshsvgIcon from "../../plasmic/q_4_icons/icons/PlasmicIcon__Refreshsvg";
-import { DataSourceModal } from "../modals/DataSourceModal";
-import { Spinner } from "../widgets";
-import Button from "../widgets/Button";
-import { Icon } from "../widgets/Icon";
-import IconButton from "../widgets/IconButton";
-import Select from "../widgets/Select";
+} from "@/wab/shared/Labels";
+import { Form } from "antd";
+import React from "react";
+import { Modal } from "src/wab/client/components/widgets/Modal";
+import useSWR from "swr";
 
 interface DataSourcePickerProps {
   sourceType?: DataSourceType;
@@ -100,6 +100,12 @@ export function DataSourcePicker({
                   ({ workspace, dataSources }) =>
                     workspace.id === thisProjectsWorkspace.id
                 )?.dataSources ?? [];
+              const nonTutorialSources = sources.filter(
+                (source) => source.source !== "tutorialdb"
+              );
+              const tutorialSources = sources.filter(
+                (source) => source.source === "tutorialdb"
+              );
               return (
                 <Form.Item label={DATA_SOURCE_CAP} name={"sourceId"}>
                   <div className="flex">
@@ -127,7 +133,7 @@ export function DataSourcePicker({
                       >
                         Create a new {DATA_SOURCE_LOWER}...
                       </Select.Option>
-                      {sources
+                      {nonTutorialSources
                         .filter(
                           (source) =>
                             !readOpsOnly ||
@@ -144,6 +150,27 @@ export function DataSourcePicker({
                             {source.name}
                           </Select.Option>
                         ))}
+                      {tutorialSources.length > 0 && (
+                        <Select.OptionGroup title="Plasmic Tutorial Integrations">
+                          {tutorialSources
+                            .filter(
+                              (source) =>
+                                !readOpsOnly ||
+                                getDataSourceMeta(source.source).ops.some(
+                                  (op) => op.type === "read"
+                                )
+                            )
+                            .map((source) => (
+                              <Select.Option
+                                key={source.id}
+                                textValue={source.name}
+                                value={source.id}
+                              >
+                                {source.name}
+                              </Select.Option>
+                            ))}
+                        </Select.OptionGroup>
+                      )}
                     </Select>
                     <IconButton onClick={() => mutate()}>
                       <Icon icon={RefreshsvgIcon} />
@@ -193,6 +220,7 @@ export function DataSourcePicker({
             setSelectedSourceId(source.id);
           }}
           dataSourceType={sourceType}
+          readOpsOnly={readOpsOnly}
         />
       )}
     </>

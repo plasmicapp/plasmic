@@ -39,7 +39,7 @@ import {
 import { makeGlobalContextPropName } from "@/wab/shared/codegen/react-p/utils";
 import { paramToVarName } from "@/wab/shared/codegen/util";
 import { DefinedIndicatorType } from "@/wab/shared/defined-indicator";
-import { isSlot } from "@/wab/shared/SlotUtils";
+import { isRenderFuncParam, isSlot } from "@/wab/shared/SlotUtils";
 import { tryGetTplOwnerComponent } from "@/wab/tpls";
 import { Menu, notification, Tooltip } from "antd";
 import L from "lodash";
@@ -484,7 +484,11 @@ const ContextPropEditor = observer(function ContextPropEditor_(props: {
 <PlasmicRootProvider
   globalContextsProps={{
     ${makeGlobalContextPropName(tpl.component)}: {
-      // ... prop overrides here
+      // prop overrides here
+${tpl.component.params
+  .filter((p) => !isRenderFuncParam(p))
+  .map((p) => `      ${paramToVarName(tpl.component, p)}: ...,`)
+  .join("\n")}
     }
   }}
 >

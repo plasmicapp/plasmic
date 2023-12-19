@@ -1,5 +1,7 @@
 import "jest-extended";
 import { TextDecoder, TextEncoder } from "util";
+import "whatwg-fetch";
+
 import "./initTests";
 
 jest.mock("./wab/client/cli-routes");
