@@ -49,6 +49,13 @@ export type CodeComponentMeta<P> = Omit<CodeComponentMeta_2<P>, "importPath" | "
     states?: Record<string, StateSpec<P> & StateHelpers<P, any>>;
 };
 
+// @public (undocumented)
+export type ComponentLookupSpec = string | {
+    name: string;
+    projectId?: string;
+    isCode?: boolean;
+};
+
 export { ComponentMeta }
 
 // @public (undocumented)
@@ -79,6 +86,11 @@ export function extractPlasmicQueryDataFromElement(loader: PlasmicComponentLoade
     globalVariants?: GlobalVariantSpec[];
     prefetchedQueryData?: Record<string, any>;
 }): Promise<Record<string, any>>;
+
+// @public (undocumented)
+export interface FetchComponentDataOpts {
+    target?: "server" | "browser";
+}
 
 // @public (undocumented)
 export interface GlobalVariantSpec {
@@ -234,6 +246,8 @@ export class PlasmicComponentLoader {
     // (undocumented)
     clearCache(): void;
     fetchComponentData(...specs: ComponentLookupSpec[]): Promise<ComponentRenderData>;
+    // (undocumented)
+    fetchComponentData(specs: ComponentLookupSpec[], opts?: FetchComponentDataOpts): Promise<ComponentRenderData>;
     fetchComponents(): Promise<ComponentMeta[]>;
     fetchPages(opts?: FetchPagesOpts): Promise<PageMeta_2[]>;
     // (undocumented)
@@ -254,6 +268,8 @@ export class PlasmicComponentLoader {
     // (undocumented)
     getExternalVariation(variation: Record<string, string>, filters?: Parameters<typeof getExternalIds>[2]): Record<string, string>;
     maybeFetchComponentData(...specs: ComponentLookupSpec[]): Promise<ComponentRenderData | null>;
+    // (undocumented)
+    maybeFetchComponentData(specs: ComponentLookupSpec[], opts?: FetchComponentDataOpts): Promise<ComponentRenderData | null>;
     registerComponent<T extends React_2.ComponentType<any>>(component: T, meta: CodeComponentMeta<React_2.ComponentProps<T>>): void;
     registerComponent<T extends React_2.ComponentType<any>>(component: T, name: ComponentLookupSpec): void;
     // (undocumented)

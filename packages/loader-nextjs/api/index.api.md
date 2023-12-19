@@ -7,11 +7,13 @@
 /// <reference types="node" />
 
 import { CodeComponentMeta } from '@plasmicapp/loader-react';
+import { ComponentLookupSpec } from '@plasmicapp/loader-react';
 import { ComponentMeta } from '@plasmicapp/loader-react/react-server-conditional';
 import { ComponentRenderData } from '@plasmicapp/loader-react/react-server-conditional';
 import { DataCtxReader } from '@plasmicapp/loader-react';
 import { DataProvider } from '@plasmicapp/loader-react';
 import { extractPlasmicQueryData } from '@plasmicapp/loader-react';
+import { FetchComponentDataOpts as FetchComponentDataOpts_2 } from '@plasmicapp/loader-react';
 import { IncomingMessage } from 'http';
 import { InitOptions } from '@plasmicapp/loader-react/react-server-conditional';
 import { InternalPlasmicComponentLoader } from '@plasmicapp/loader-react';
@@ -49,6 +51,11 @@ export { DataProvider }
 
 export { extractPlasmicQueryData }
 
+// @public (undocumented)
+export interface FetchComponentDataOpts extends FetchComponentDataOpts_2 {
+    deferChunks?: boolean;
+}
+
 export { InitOptions }
 
 // @public (undocumented)
@@ -70,9 +77,9 @@ export interface NextInitOptions extends InitOptions {
 export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
     constructor(internal: InternalPlasmicComponentLoader);
     // (undocumented)
-    __unstable_fetchComponentMetadata: PlasmicComponentLoader["fetchComponentData"];
+    fetchComponentData(...specs: ComponentLookupSpec[]): Promise<ComponentRenderData>;
     // (undocumented)
-    __unstable_maybeFetchComponentMetadata: PlasmicComponentLoader["maybeFetchComponentData"];
+    fetchComponentData(specs: ComponentLookupSpec[], opts?: FetchComponentDataOpts): Promise<ComponentRenderData>;
     // (undocumented)
     getActiveVariation(opts: {
         req?: ServerRequest;
@@ -80,6 +87,10 @@ export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
         known?: Record<string, string>;
         traits: Record<string, string | number | boolean>;
     }): Promise<Record<string, string>>;
+    // (undocumented)
+    maybeFetchComponentData(specs: ComponentLookupSpec[], opts?: FetchComponentDataOpts): Promise<ComponentRenderData | null>;
+    // (undocumented)
+    maybeFetchComponentData(...specs: ComponentLookupSpec[]): Promise<ComponentRenderData | null>;
 }
 
 export { PageMeta }

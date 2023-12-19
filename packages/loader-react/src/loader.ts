@@ -574,10 +574,15 @@ export class PlasmicComponentLoader {
    * Throws an Error if a specified component to fetch does not exist in
    * the Plasmic project.
    */
-  async fetchComponentData(
+  fetchComponentData(
     ...specs: ComponentLookupSpec[]
-  ): Promise<ComponentRenderData> {
-    return this.__internal.fetchComponentData(...specs);
+  ): Promise<ComponentRenderData>;
+  fetchComponentData(
+    specs: ComponentLookupSpec[],
+    opts?: FetchComponentDataOpts
+  ): Promise<ComponentRenderData>;
+  fetchComponentData(...args: any[]): Promise<ComponentRenderData> {
+    return this.__internal.fetchComponentData(...args);
   }
 
   /**
@@ -587,8 +592,15 @@ export class PlasmicComponentLoader {
    */
   async maybeFetchComponentData(
     ...specs: ComponentLookupSpec[]
+  ): Promise<ComponentRenderData | null>;
+  async maybeFetchComponentData(
+    specs: ComponentLookupSpec[],
+    opts?: FetchComponentDataOpts
+  ): Promise<ComponentRenderData | null>;
+  async maybeFetchComponentData(
+    ...args: any[]
   ): Promise<ComponentRenderData | null> {
-    return this.__internal.maybeFetchComponentData(...specs);
+    return this.__internal.maybeFetchComponentData(...args);
   }
 
   /**

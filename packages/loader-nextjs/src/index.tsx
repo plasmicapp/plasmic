@@ -1,4 +1,6 @@
 import {
+  ComponentLookupSpec,
+  FetchComponentDataOpts as InternalFetchComponentDataOpts,
   InternalPlasmicComponentLoader,
   PlasmicComponentLoader,
   PlasmicRootProvider as CommonPlasmicRootProvider,
@@ -79,6 +81,13 @@ function filterCodeFromRenderData(data: ComponentRenderData) {
   }
 }
 
+export interface FetchComponentDataOpts extends InternalFetchComponentDataOpts {
+  /**
+   * Defer loading code chunks to script tags, reducing initial payload size.
+   */
+  deferChunks?: boolean;
+}
+
 export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
   constructor(internal: InternalPlasmicComponentLoader) {
     super(internal);
@@ -129,21 +138,60 @@ export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
     });
   }
 
-  __unstable_maybeFetchComponentMetadata: PlasmicComponentLoader["maybeFetchComponentData"] =
-    async (...specs) => {
-      const data = await this.maybeFetchComponentData(...specs);
-      if (data) {
-        filterCodeFromRenderData(data);
-      }
-      return data;
-    };
-
-  __unstable_fetchComponentMetadata: PlasmicComponentLoader["fetchComponentData"] =
-    async (...specs) => {
-      const data = await this.fetchComponentData(...specs);
+  maybeFetchComponentData(
+    specs: ComponentLookupSpec[],
+    opts?: FetchComponentDataOpts
+  ): Promise<ComponentRenderData | null>;
+  maybeFetchComponentData(
+    ...specs: ComponentLookupSpec[]
+  ): Promise<ComponentRenderData | null>;
+  async maybeFetchComponentData(
+    ...args: any[]
+  ): Promise<ComponentRenderData | null> {
+    const data = await super.maybeFetchComponentData(...args);
+    const { opts } = parseFetchComponentDataArgs(...args);
+    if (data && opts?.deferChunks) {
       filterCodeFromRenderData(data);
-      return data;
-    };
+    }
+    return data;
+  }
+
+  fetchComponentData(
+    ...specs: ComponentLookupSpec[]
+  ): Promise<ComponentRenderData>;
+  fetchComponentData(
+    specs: ComponentLookupSpec[],
+    opts?: FetchComponentDataOpts
+  ): Promise<ComponentRenderData>;
+  async fetchComponentData(...args: any[]): Promise<ComponentRenderData> {
+    const data = await super.fetchComponentData(...args);
+    const { opts } = parseFetchComponentDataArgs(...args);
+    if (opts?.deferChunks) {
+      filterCodeFromRenderData(data);
+    }
+    return data;
+  }
+}
+
+function parseFetchComponentDataArgs(
+  specs: ComponentLookupSpec[],
+  opts?: FetchComponentDataOpts
+): { specs: ComponentLookupSpec[]; opts?: FetchComponentDataOpts };
+function parseFetchComponentDataArgs(...specs: ComponentLookupSpec[]): {
+  specs: ComponentLookupSpec[];
+  opts?: FetchComponentDataOpts;
+};
+function parseFetchComponentDataArgs(...args: any[]) {
+  let specs: ComponentLookupSpec[];
+  let opts: FetchComponentDataOpts | undefined;
+  if (Array.isArray(args[0])) {
+    specs = args[0];
+    opts = args[1];
+  } else {
+    specs = args;
+    opts = undefined;
+  }
+  return { specs, opts };
 }
 
 export function initPlasmicLoader(opts: NextInitOptions) {
