@@ -206,9 +206,9 @@ export class InternalPlasmicComponentLoader {
 }
 
 // @public
-export function matchesPagePath(pagePath: string, lookup: string): {
+export function matchesPagePath(pattern: string, path: string): false | {
     params: Record<string, string | string[]>;
-} | false;
+};
 
 export { PageMeta }
 

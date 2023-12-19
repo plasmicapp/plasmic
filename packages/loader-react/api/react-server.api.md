@@ -74,9 +74,9 @@ export interface InitOptions {
 export function initPlasmicLoader(opts: InitOptions): ReactServerPlasmicComponentLoader;
 
 // @public
-export function matchesPagePath(pagePath: string, lookup: string): {
+export function matchesPagePath(pattern: string, path: string): false | {
     params: Record<string, string | string[]>;
-} | false;
+};
 
 export { PageMeta }
 
