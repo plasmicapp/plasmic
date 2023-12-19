@@ -53,15 +53,15 @@
 
 ## See Plasmic in action
 
-- Twitter clone: https://youtu.be/rpdjrFuVMog (live app: https://twitter.plasmic.run)
-
-- Service desk app: https://youtu.be/rYqSpUEJSTw (live app: https://tickets.plasmic.run)
-
 - Vercel marketing page: https://youtu.be/itvbmgLZvcM (live app: https://vercel-workflow.vercel.app)
+
+- Apple.com: https://apple.plasmic.run
 
 - Shopify headless storefront: https://commerce.plasmic.run
 
-- Apple.com: https://apple.plasmic.run
+- Twitter clone: https://youtu.be/rpdjrFuVMog (live app: https://twitter.plasmic.run)
+
+- Service desk app: https://youtu.be/rYqSpUEJSTw (live app: https://tickets.plasmic.run)
 
 - Interview with Lee Robinson, Plasmic as a visual CMS: https://www.youtube.com/watch?v=pcVzNR6FBAQ
 
