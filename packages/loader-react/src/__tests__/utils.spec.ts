@@ -34,6 +34,11 @@ describe("matchesPagePath", () => {
       params: { slug: "some-slug" },
     });
     expect(
+      matchesPagePath("/blogs/[slug-with-dashes]", "/blogs/some-slug")
+    ).toEqual({
+      params: { "slug-with-dashes": "some-slug" },
+    });
+    expect(
       matchesPagePath("/something/[wicked]/is/[here]", "/something/what/is")
     ).toEqual(false);
     expect(matchesPagePath("/something/[wicked]", "/something")).toEqual(false);

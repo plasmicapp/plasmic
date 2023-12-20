@@ -142,9 +142,9 @@ export function matchesPagePath(pattern: string, path: string) {
 
   // Modify the regex to match optional leading slashes
   const regexString = normalizedPattern
-    .replace(/\/\[\[\.\.\.(\w+)]]/g, "(?:/([^]*))?") // Optional catch-all
-    .replace(/\/\[\.\.\.(\w+)]/g, "/([^]*)") // Catch-all
-    .replace(/\[(\w+)]/g, "([^/]+)") // Normal slug
+    .replace(/\/\[\[\.\.\.([^\]^]+)]]/g, "(?:/([^]*))?") // Optional catch-all
+    .replace(/\/\[\.\.\.([^\]^]+)]/g, "/([^]*)") // Catch-all
+    .replace(/\[([^\]^]+)]/g, "([^/]+)") // Normal slug
     .replace(/\//g, "\\/"); // Escape forward slashes
 
   const regex = new RegExp(`^/?${regexString}$`); // Allow optional leading slash
@@ -153,7 +153,7 @@ export function matchesPagePath(pattern: string, path: string) {
   if (!match) return false;
 
   // Extract slug names from pattern
-  const slugNames = [...pattern.matchAll(/\[\.?\.?\.?(\w+)]/g)].map(
+  const slugNames = [...pattern.matchAll(/\[\.?\.?\.?([^[\]]+)]/g)].map(
     (m) => m[1]
   );
 
