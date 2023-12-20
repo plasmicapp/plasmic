@@ -4000,6 +4000,8 @@ $color-stops-width: 100%
 .canvas-editor__canvas
   position: relative
   user-select: none
+  // We don't want padding to interfere with height/width.
+  box-sizing: content-box
 
 .canvas-editor__canvas__popup_live
   width: 100%

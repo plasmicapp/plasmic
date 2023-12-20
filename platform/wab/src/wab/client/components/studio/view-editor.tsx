@@ -2266,11 +2266,11 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
                       ? {
                           height: `${canvasBB.height()}px`,
                           width: `${canvasBB.width()}px`,
-                          // The margin controls how far the clipper (viewport)
+                          // The padding controls how far the clipper (viewport)
                           // can be scrolled from the canvas.
                           ...(clipperBB
                             ? {
-                                margin: `${clipperBB.height}px ${clipperBB.width}px`,
+                                padding: `${clipperBB.height}px ${clipperBB.width}px`,
                               }
                             : {}),
                         }
