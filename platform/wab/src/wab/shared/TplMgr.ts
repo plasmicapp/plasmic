@@ -819,9 +819,7 @@ export class TplMgr {
   }
 
   removeGlobalVariantGroup(group: VariantGroup) {
-    for (const variant of group.variants) {
-      this.tryRemoveVariant(variant, undefined);
-    }
+    this.tryRemoveVariant(group.variants, undefined);
     removeVariantGroupFromArenas(this.site(), group, undefined);
     remove(this.site().globalVariantGroups, group);
   }
