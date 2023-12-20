@@ -121,7 +121,9 @@ function fixCatchallParams(
     }
     if (key.startsWith("...")) {
       newParams[key.slice(3)] =
-        typeof value === "string" ? value.split("/") : value;
+        typeof value === "string"
+          ? value.replace(/^\/|\/$/g, "").split("/")
+          : value;
     } else {
       newParams[key] = value;
     }

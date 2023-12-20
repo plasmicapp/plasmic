@@ -434,12 +434,13 @@ const _asCode = maybeComputedFn(
         assert(expr.page.pageMeta, "PageHref is expected to contain a page");
         let path = expr.page.pageMeta.path;
         for (const [key, value] of Object.entries(expr.params)) {
-          path = path.replace(
-            `[${key}]`,
+          const valueExpr =
             "${" +
-              getCodeExpressionWithFallback(asCode(value, exprCtx), exprCtx) +
-              "}"
-          );
+            getCodeExpressionWithFallback(asCode(value, exprCtx), exprCtx) +
+            "}";
+          path = path
+            .replace(`[[${key}]]`, valueExpr)
+            .replace(`[${key}]`, valueExpr);
         }
         return code("(`" + path + "`)");
       })

@@ -10,6 +10,7 @@ import {
   isKnownComponentArena,
   isKnownProjectDependency,
   isKnownVariantSetting,
+  ObjInst,
   PageArena,
   ProjectDependency,
   TemplatedString,
@@ -19,7 +20,6 @@ import {
   TplTag,
   Variant,
   VariantGroup,
-  ObjInst,
 } from "@/wab/classes";
 import { modelSchemaHash } from "@/wab/classes-metas";
 import { apiKey, invalidationKey } from "@/wab/client/api";
@@ -144,12 +144,13 @@ import {
   withProvider,
 } from "@/wab/commons/components/ContextUtil";
 import { safeCallbackify } from "@/wab/commons/control";
-import { isLatest, latestTag } from "@/wab/commons/semver";
+import { isLatest, latestTag, lt } from "@/wab/commons/semver";
 import { DeepReadonly } from "@/wab/commons/types";
 import {
   allComponentVariants,
   CodeComponent,
   ComponentType,
+  extractParamsFromPagePath,
   getRealParams,
   isCodeComponent,
   isPageComponent,
@@ -1959,15 +1960,17 @@ export class StudioCtx extends WithDbCtx {
           });
 
           defer(() => {
-            this.change(
-              ({ success }) => {
-                this.normalizeCurrentArena();
-                this.tryZoomToFitArena();
-                return success();
-              },
-              {
-                noUndoRecord: true,
-              }
+            spawn(
+              this.change(
+                ({ success }) => {
+                  this.normalizeCurrentArena();
+                  this.tryZoomToFitArena();
+                  return success();
+                },
+                {
+                  noUndoRecord: true,
+                }
+              )
             );
           });
         }
@@ -4739,6 +4742,32 @@ export class StudioCtx extends WithDbCtx {
     }
     if ((page.pageMeta?.path || "") === newPath) {
       return;
+    }
+    const params = extractParamsFromPagePath(newPath);
+    for (let i = 0; i < params.length; i++) {
+      if (params[i].startsWith("...") && i !== params.length - 1) {
+        notification.error({
+          message: "Catch-all path slugs must be the last slug in the path",
+        });
+        return;
+      }
+    }
+    if (params.some((p) => p.startsWith("..."))) {
+      // catch all routes only supported if host is greater than
+      // 1.0.186
+      const hostVersion = (window.parent as any).__Sub.hostVersion;
+      if (!hostVersion || lt(hostVersion, "1.0.186")) {
+        notification.error({
+          message: "Catch-all routes are not supported for your host",
+          description: (
+            <>
+              Please upgrade <code>@plasmicapp/*</code> packages in your host
+              app to the latest version.
+            </>
+          ),
+        });
+        return;
+      }
     }
     return this.changeUnsafe(() => {
       this.tplMgr().changePagePath(page, newPath);

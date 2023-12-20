@@ -1,13 +1,3 @@
-import { isString, memoize, pickBy, uniqBy } from "lodash";
-import flatten from "lodash/flatten";
-import has from "lodash/has";
-import kebabCase from "lodash/kebabCase";
-import keyBy from "lodash/keyBy";
-import repeat from "lodash/repeat";
-import trim from "lodash/trim";
-import uniq from "lodash/uniq";
-import without from "lodash/without";
-import { CSSProperties } from "react";
 import {
   Arena,
   ArenaFrame,
@@ -48,7 +38,7 @@ import {
   VariantGroup,
   VariantSetting,
   VariantsRef,
-} from "../classes";
+} from "@/wab/classes";
 import {
   assert,
   check,
@@ -68,13 +58,13 @@ import {
   withoutNils,
   xDifference,
   xGroupBy,
-} from "../common";
+} from "@/wab/common";
 import {
   arrayReversed,
   removeFromArray,
   tryRemoveFromArray,
-} from "../commons/collections";
-import { TokenType } from "../commons/StyleToken";
+} from "@/wab/commons/collections";
+import { TokenType } from "@/wab/commons/StyleToken";
 import {
   allComponentVariants,
   cloneComponent,
@@ -95,22 +85,22 @@ import {
   PageComponent,
   removeVariantGroup,
   tryGetVariantGroupValueFromArg,
-} from "../components";
-import { DEVFLAGS } from "../devflags";
-import { clone } from "../exprs";
-import { findSpaceForRectSweepRight, Pt, Rect } from "../geom";
-import { ImageAssetType } from "../image-asset-type";
+} from "@/wab/components";
+import { DEVFLAGS } from "@/wab/devflags";
+import { clone } from "@/wab/exprs";
+import { findSpaceForRectSweepRight, Pt, Rect } from "@/wab/geom";
+import { ImageAssetType } from "@/wab/image-asset-type";
 import {
   extractImageAssetUsages,
   mkImageAsset,
   removeImageAssetUsage,
-} from "../image-assets";
-import { mkOnChangeParamForState, mkParam } from "../lang";
+} from "@/wab/image-assets";
+import { mkOnChangeParamForState, mkParam } from "@/wab/lang";
 import {
   fixImageAssetRefsForClonedTemplateComponent,
   upgradeProjectDeps,
   walkDependencyTree,
-} from "../project-deps";
+} from "@/wab/project-deps";
 import {
   ensureScreenVariantsOrderOnMatrices,
   getAllSiteFrames,
@@ -122,8 +112,8 @@ import {
   isFrameRootTplComponent,
   removeReferencingLinks,
   removeReferencingTypeInstances,
-} from "../sites";
-import { mkGlobalVariantSplit, SplitStatus, SplitType } from "../splits";
+} from "@/wab/sites";
+import { mkGlobalVariantSplit, SplitStatus, SplitType } from "@/wab/splits";
 import {
   genOnChangeParamName,
   isPrivateState,
@@ -131,14 +121,14 @@ import {
   mkState,
   removeComponentState,
   updateStateAccessType,
-} from "../states";
+} from "@/wab/states";
 import {
   changeTokenUsage,
   cloneMixin,
   cloneStyleToken,
   extractTokenUsages,
   mkRuleSet,
-} from "../styles";
+} from "@/wab/styles";
 import {
   cloneVariantSetting,
   findExprsInComponent,
@@ -165,7 +155,17 @@ import {
   TplNamable,
   trackComponentSite,
   walkTpls,
-} from "../tpls";
+} from "@/wab/tpls";
+import { isString, memoize, pickBy, uniqBy } from "lodash";
+import flatten from "lodash/flatten";
+import has from "lodash/has";
+import kebabCase from "lodash/kebabCase";
+import keyBy from "lodash/keyBy";
+import repeat from "lodash/repeat";
+import trim from "lodash/trim";
+import uniq from "lodash/uniq";
+import without from "lodash/without";
+import { CSSProperties } from "react";
 import {
   AnyArena,
   cloneArenaFrame,
@@ -1577,7 +1577,7 @@ export class TplMgr {
     if (name && name.trim() === "") {
       return "";
     }
-    let nameBase = (name || "Unnamed Component").trim();
+    const nameBase = (name || "Unnamed Component").trim();
     const existingNames = [
       ...this.site()
         .components.filter((c) => !isCodeComponent(c))
@@ -1590,7 +1590,7 @@ export class TplMgr {
   }
 
   getUniqueSubComponentName(superComp: Component, name: string) {
-    let nameBase = (name || "Unnamed Component").trim();
+    const nameBase = (name || "Unnamed Component").trim();
     const existingNames = [...superComp.subComps.map((t) => t.name)];
     return uniqueName(existingNames, nameBase, {
       separator: "",
@@ -1626,8 +1626,8 @@ export class TplMgr {
     // We auto insert slashes to break up things. If there are adjacent hyphens or periods, we just remove them.
     path = path
       .replace(/[-.]\[/g, "/[")
-      .replace(/[^/]\[/g, "/[")
-      .replace(/\][^/]/g, "]/")
+      .replace(/[^/[]\[/g, "/[")
+      .replace(/\][^/]]/g, "]/")
       .replace(/\][-.]/g, "]/");
 
     cleanup();

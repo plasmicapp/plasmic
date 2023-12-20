@@ -2256,8 +2256,14 @@ export function removeComponentMetadata(component: Component, key: string) {
   delete component.metadata[key];
 }
 
+/**
+ * Extracts param names from page path, but retains the `...`
+ * prefix for catchall params
+ *
+ * /hello/[yes]/and/[...what] => ["yes", "...what"]
+ */
 export function extractParamsFromPagePath(path: string) {
-  return [...path.matchAll(/\[([^\]]*)\]/g)].map((match) => match[1]);
+  return [...path.matchAll(/\[\[?([^\]]*)\]/g)].map((m) => m[1]);
 }
 
 export function getRepetitionIndexName(dataRep: Rep) {
