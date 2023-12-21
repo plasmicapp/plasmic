@@ -3551,13 +3551,12 @@
     react-scroll-parallax "3.0.0-alpha.14"
     resize-observer-polyfill "^1.5.1"
 
-"@plasmicpkgs/react-slick@^0.0.208":
-  version "0.0.208"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-slick/-/react-slick-0.0.208.tgz#561b39581a283d54e0061aa87fe46f287c10f0af"
-  integrity sha512-Tj7mMOxnlfAevUldIpv1OFpz1iLaoNWa6T49O8Ieqi2veoXk0ctMNTDdF9NAu8yDe4oL6ozu5B80ECoN66a0QQ==
+"@plasmicpkgs/react-slick@^0.0.209":
+  version "0.0.209"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/react-slick/-/react-slick-0.0.209.tgz#cbb26be616c91e5b6e3920f1f996a0c7e5584a1b"
+  integrity sha512-XbIjUNXq7G5jFTdyjFwSTNiRmt5Pmhm/Q4kMLU6EWuKPedgcpvfQOM2FMtNfpde1riU2vqBUmyvDRwMfPwgvYg==
   dependencies:
     "@seznam/compose-react-refs" "^1.0.6"
-    antd "^4.23.4"
     react-slick "^0.28.1"
     slick-carousel "^1.8.1"
 
@@ -6275,7 +6274,7 @@ ansi-styles@^4.0.0, ansi-styles@^4.1.0:
   dependencies:
     color-convert "^2.0.1"
 
-antd@4.19.3, antd@^4.19.5, antd@^4.23.4:
+antd@4.19.3, antd@^4.19.5:
   version "4.19.3"
   resolved "https://registry.yarnpkg.com/antd/-/antd-4.19.3.tgz#2b6bb938bda9850c797db59c8923f3c8a14a6693"
   integrity sha512-q4oT2lIM0Fb60MfcdtjH6LFQcmo5MuM27PN3nJMsRG1FeiQ9n+OPFlkQSdtb0ZWFIFjTH3p0W02T6SbB2U7ChQ==
