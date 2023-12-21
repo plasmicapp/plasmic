@@ -1,3 +1,29 @@
+import { AppCtx, hideStarters } from "@/wab/client/app-ctx";
+import { isTopFrame, UU } from "@/wab/client/cli-routes";
+import { initClientFlags } from "@/wab/client/client-dev-flags";
+import {
+  handleError,
+  shouldIgnoreError,
+} from "@/wab/client/ErrorNotifications";
+import {
+  HostFrameCtxProvider,
+  useHostFrameCtxIfHostFrame,
+} from "@/wab/client/frame-ctx/host-frame-ctx";
+import type { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { useTracking } from "@/wab/client/tracking";
+import {
+  CustomError,
+  hackyCast,
+  mkUuid,
+  stampObjectUuid,
+  tuple,
+  withoutFalsy,
+} from "@/wab/common";
+import DeploymentFlags from "@/wab/DeploymentFlags";
+import { applyDevFlagOverrides, DEVFLAGS } from "@/wab/devflags";
+import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { getMaximumTier } from "@/wab/shared/pricing/pricing-utils";
+import { UserError } from "@/wab/shared/UserError";
 import * as Sentry from "@sentry/browser";
 import * as Integrations from "@sentry/integrations";
 import { createBrowserHistory } from "history";
@@ -8,29 +34,6 @@ import * as React from "react";
 import { OverlayProvider } from "react-aria";
 import * as ReactDOM from "react-dom";
 import { Router } from "react-router-dom";
-import {
-  CustomError,
-  hackyCast,
-  mkUuid,
-  stampObjectUuid,
-  tuple,
-  withoutFalsy,
-} from "../../common";
-import DeploymentFlags from "../../DeploymentFlags";
-import { applyDevFlagOverrides, DEVFLAGS } from "../../devflags";
-import { isCoreTeamEmail } from "../../shared/devflag-utils";
-import { getMaximumTier } from "../../shared/pricing/pricing-utils";
-import { UserError } from "../../shared/UserError";
-import { AppCtx, hideStarters } from "../app-ctx";
-import { isTopFrame, UU } from "../cli-routes";
-import { initClientFlags } from "../client-dev-flags";
-import { handleError, shouldIgnoreError } from "../ErrorNotifications";
-import {
-  HostFrameCtxProvider,
-  useHostFrameCtxIfHostFrame,
-} from "../frame-ctx/host-frame-ctx";
-import type { StudioCtx } from "../studio-ctx/StudioCtx";
-import { useTracking } from "../tracking";
 import { Root } from "./root-view";
 
 declare const COMMITHASH: string;
@@ -143,7 +146,10 @@ export function main() {
     Sentry.init({
       dsn: `https://dd4fc160e1a548609dc8db7e6c9f7a08@sentry.io/${sentryProjId}`,
       release: COMMITHASH,
-      integrations: [new Integrations.Dedupe()],
+      integrations: [
+        new Integrations.Dedupe(),
+        new posthog.SentryIntegration(posthog, sentryOrgId, +sentryProjId),
+      ],
       beforeSend(event, hint) {
         if (
           hint &&

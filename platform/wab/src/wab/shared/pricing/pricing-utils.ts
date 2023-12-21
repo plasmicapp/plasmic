@@ -1,5 +1,6 @@
+import { withoutFalsy } from "@/wab/common";
+import { ApiFeatureTier, ApiTeam } from "@/wab/shared/ApiSchema";
 import { maxBy } from "lodash";
-import { ApiFeatureTier } from "../ApiSchema";
 
 export const featureTiers = ["Basic", "Growth", "Enterprise"] as const;
 const featureTierTypes = ["basic", "growth", "enterprise"] as const;
@@ -72,4 +73,9 @@ export const getNewPriceTierType = (name?: string): NewPriceTierType => {
 export function getMaximumTier(names: string[]): NewPriceTierType {
   const types = names.map((name) => getNewPriceTierType(name));
   return maxBy(types, (type) => newTiers.indexOf(type)) ?? "free";
+}
+
+export function getMaximumTierFromTeams(teams: ApiTeam[]) {
+  const names = withoutFalsy(teams.map((t) => t.featureTier?.name));
+  return getMaximumTier(names);
 }

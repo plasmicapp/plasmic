@@ -1,36 +1,38 @@
 /** @format */
 
-import * as React from "react";
-import { Redirect, Route, Switch, useHistory } from "react-router";
-import { ensure, hackyCast, spawn } from "../../common";
-import {
-  promisifyMethods,
-  PromisifyMethods,
-} from "../../commons/promisify-methods";
-import { StarterSectionConfig } from "../../devflags";
-import { CmsDatabaseId } from "../../shared/ApiSchema";
-import { isArenaType } from "../../shared/Arenas";
-import { FastBundler } from "../../shared/bundler";
-import { isCoreTeamEmail } from "../../shared/devflag-utils";
-import { Api } from "../api";
+import { Api } from "@/wab/client/api";
 import {
   AppCtx,
   loadAppCtx,
   NonAuthCtx,
   NonAuthCtxContext,
   useNonAuthCtx,
-} from "../app-ctx";
+} from "@/wab/client/app-ctx";
 import {
   getLoginRouteWithContinuation,
   getRouteContinuation,
   mkProjectLocation,
   Router,
   UU,
-} from "../cli-routes";
-import { providesAppCtx, useAppCtx } from "../contexts/AppContexts";
-import { useHostFrameCtxIfHostFrame } from "../frame-ctx/host-frame-ctx";
-import deployedVersions from "../plasmic-deployed.json";
-import { useForceUpdate } from "../useForceUpdate";
+} from "@/wab/client/cli-routes";
+import { providesAppCtx, useAppCtx } from "@/wab/client/contexts/AppContexts";
+import { useHostFrameCtxIfHostFrame } from "@/wab/client/frame-ctx/host-frame-ctx";
+import deployedVersions from "@/wab/client/plasmic-deployed.json";
+import { useForceUpdate } from "@/wab/client/useForceUpdate";
+import { ensure, hackyCast, spawn } from "@/wab/common";
+import {
+  promisifyMethods,
+  PromisifyMethods,
+} from "@/wab/commons/promisify-methods";
+import { StarterSectionConfig } from "@/wab/devflags";
+import { CmsDatabaseId } from "@/wab/shared/ApiSchema";
+import { isArenaType } from "@/wab/shared/Arenas";
+import { FastBundler } from "@/wab/shared/bundler";
+import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { getMaximumTierFromTeams } from "@/wab/shared/pricing/pricing-utils";
+import posthog from "posthog-js";
+import * as React from "react";
+import { Redirect, Route, Switch, useHistory } from "react-router";
 import AllProjectsPage from "./dashboard/AllProjectsPage";
 import MyPlayground from "./dashboard/MyPlayground";
 import { documentTitle } from "./dashboard/page-utils";
@@ -446,6 +448,21 @@ export function Root() {
   const loader = async () => {
     const appCtx = await loadAppCtx(nonAuthCtx);
     hackyCast(window).gAppCtx = appCtx;
+
+    if (appCtx.selfInfo?.email) {
+      const email = appCtx.selfInfo.email;
+      posthog.identify(appCtx.selfInfo.id, {
+        email,
+        firstName: appCtx.selfInfo.firstName,
+        lastName: appCtx.selfInfo.lastName,
+        isWhiteLabel: appCtx.selfInfo.isWhiteLabel,
+        whiteLabelId: appCtx.selfInfo.whiteLabelId,
+        whiteLabelEmail: appCtx.selfInfo.whiteLabelInfo?.email,
+        tier: isCoreTeamEmail(email, appCtx.appConfig)
+          ? "core"
+          : getMaximumTierFromTeams(appCtx.teams),
+      });
+    }
     return appCtx;
   };
   return (
