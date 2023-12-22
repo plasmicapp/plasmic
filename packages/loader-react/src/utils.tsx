@@ -236,6 +236,16 @@ export function getLookupSpecName(lookup: ComponentLookupSpec) {
   }
 }
 
+export function MaybeWrap(props: {
+  children: React.ReactNode;
+  cond: boolean;
+  wrapper: (children: React.ReactNode) => React.ReactElement;
+}) {
+  return (
+    props.cond ? props.wrapper(props.children) : props.children
+  ) as React.ReactElement;
+}
+
 export function uniq<T>(elements: T[]): T[] {
   return Array.from(new Set(elements));
 }

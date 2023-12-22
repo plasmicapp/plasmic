@@ -8,7 +8,7 @@ import {
   InternalPlasmicComponentLoader,
   PlasmicComponentLoader,
 } from "./loader";
-import { useForceUpdate } from "./utils";
+import { MaybeWrap, useForceUpdate } from "./utils";
 import {
   ensureVariationCookies,
   getGlobalVariantsFromSplits,
@@ -244,6 +244,8 @@ export function PlasmicRootProvider(
     ]
   );
 
+  const reactMajorVersion = +React.version.split(".")[0];
+
   return (
     <PlasmicQueryDataProvider
       prefetchedCache={prefetchedQueryData}
@@ -262,7 +264,16 @@ export function PlasmicRootProvider(
           params={pageParams}
           query={pageQuery}
         >
-          {children}
+          <MaybeWrap
+            cond={!disableLoadingBoundary && reactMajorVersion >= 18}
+            wrapper={(contents) => (
+              <React.Suspense fallback={suspenseFallback ?? "Loading..."}>
+                {contents}
+              </React.Suspense>
+            )}
+          >
+            {children}
+          </MaybeWrap>
         </PageParamsProvider>
       </PlasmicRootContext.Provider>
     </PlasmicQueryDataProvider>

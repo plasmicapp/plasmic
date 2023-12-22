@@ -1,6 +1,7 @@
 import * as React from "react";
 import { usePlasmicRootContext } from "./PlasmicRootProvider";
 import { usePlasmicComponent } from "./usePlasmicComponent";
+import { MaybeWrap } from "./utils";
 
 const PlasmicComponentContext = React.createContext(false);
 
@@ -133,14 +134,4 @@ export function PlasmicComponent(props: {
     authRedirectUri,
   ]);
   return element;
-}
-
-function MaybeWrap(props: {
-  children: React.ReactNode;
-  cond: boolean;
-  wrapper: (children: React.ReactNode) => React.ReactElement;
-}) {
-  return (
-    props.cond ? props.wrapper(props.children) : props.children
-  ) as React.ReactElement;
 }
