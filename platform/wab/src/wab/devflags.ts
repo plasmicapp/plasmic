@@ -493,6 +493,7 @@ const DEFAULT_DEVFLAGS = {
   cleanRedundantOverrides: false,
   cms: false,
   comments: false,
+  commentsTeamIds: [] as TeamId[],
   rightTabs: true,
   hideLeftTabs: false,
   codePreview: false,

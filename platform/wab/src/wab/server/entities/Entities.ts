@@ -1304,6 +1304,7 @@ export class HostlessVersion extends Base<"HostlessVersionId"> {
 }
 
 @Entity()
+@Index("PROJECT_AND_BRANCH_IDX", ["projectId", "branchId"])
 export class Comment extends Base<"CommentId"> {
   @ManyToOne((type) => Project, { nullable: false })
   project: Project | null;
@@ -1326,6 +1327,7 @@ export class CommentReaction extends Base<"CommentReactionId"> {
   @ManyToOne((type) => Comment, { nullable: false, onDelete: "CASCADE" })
   comment: Comment | null;
 
+  @Index()
   @Column("text")
   commentId: CommentId;
 

@@ -18,9 +18,9 @@
   cursor: pointer;
 }
 .freeBox__sfn9I {
-  flex-direction: row;
   display: flex;
   position: relative;
+  flex-direction: row;
   width: 100%;
   height: auto;
   max-width: 100%;
@@ -29,8 +29,8 @@
 }
 .freeBox__sfn9I > :global(.__wab_flex-container) {
   flex-direction: row;
-  justify-content: flex-start;
   align-items: center;
+  justify-content: flex-start;
   min-width: 0;
   margin-left: calc(0px - 8px);
   width: calc(100% + 8px);
@@ -63,9 +63,6 @@
   min-width: 0;
 }
 .img > picture > img {
-  object-fit: cover;
-}
-.img > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .text {
@@ -107,14 +104,12 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
-.svg__yh1Nh {
+.svg__naNKt {
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .freeBox___5UHnq {
@@ -173,7 +168,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .freeBox__xBuRf {
@@ -199,17 +193,16 @@
   min-width: 0;
   min-height: 0;
 }
-.svg__hsh5 {
+.svg__zBxfh {
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .reactionsContainer {
-  flex-direction: row;
   display: flex;
   position: relative;
+  flex-direction: row;
   width: 100%;
   height: auto;
   max-width: 100%;
@@ -218,9 +211,9 @@
 }
 .reactionsContainer > :global(.__wab_flex-container) {
   flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: flex-start;
   align-items: stretch;
+  justify-content: flex-start;
+  flex-wrap: wrap;
   min-width: 0;
   margin-left: calc(0px - 4px);
   width: calc(100% + 4px);
@@ -270,7 +263,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .freeBox___0N5Wz {
@@ -296,11 +288,10 @@
   min-width: 0;
   min-height: 0;
 }
-.svg__k3U7A {
+.svg__k1C7L {
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .repliesLink:global(.__wab_instance) {
@@ -313,17 +304,15 @@
 .repliesLinkthread:global(.__wab_instance) {
   display: flex;
 }
-.svg__nXnHi {
+.svg__mnz3V {
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
-.svg__hh9Er {
+.svg__bzKp0 {
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }

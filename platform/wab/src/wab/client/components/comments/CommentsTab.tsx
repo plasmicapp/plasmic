@@ -2,22 +2,26 @@
 // This file is owned by you, feel free to edit as you see fit.
 import { Dropdown, Menu } from "antd";
 
+import { TplNode } from "@/wab/classes";
+import { apiKey } from "@/wab/client/api";
+import {
+  SidebarModal,
+  SidebarModalProvider,
+} from "@/wab/client/components/sidebar/SidebarModal";
+import { useViewCtxMaybe } from "@/wab/client/contexts/StudioContexts";
+import {
+  DefaultCommentsTabProps,
+  PlasmicCommentsTab,
+} from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicCommentsTab";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { xGroupBy, xSymmetricDifference } from "@/wab/common";
+import { ApiComment, CommentThreadId } from "@/wab/shared/ApiSchema";
+import { isTplNamable } from "@/wab/tpls";
+import { sortBy } from "lodash";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
 import { useState } from "react";
 import { mutate } from "swr";
-import { TplNode } from "../../../classes";
-import { xGroupBy, xSymmetricDifference } from "../../../common";
-import { ApiComment, CommentThreadId } from "../../../shared/ApiSchema";
-import { isTplNamable } from "../../../tpls";
-import { apiKey } from "../../api";
-import { useViewCtxMaybe } from "../../contexts/StudioContexts";
-import {
-  DefaultCommentsTabProps,
-  PlasmicCommentsTab,
-} from "../../plasmic/plasmic_kit_comments/PlasmicCommentsTab";
-import { useStudioCtx } from "../../studio-ctx/StudioCtx";
-import { SidebarModal, SidebarModalProvider } from "../sidebar/SidebarModal";
 import { useCommentViews } from "./CommentViews";
 
 export const DEFAULT_NOTIFICATION_LEVEL = "all";
@@ -40,7 +44,7 @@ export const notifyAboutKeyToLabel = {
 //
 // You can also stop extending from DefaultCommentsTabProps altogether and have
 // total control over the props for your component.
-export interface CommentsTabProps extends DefaultCommentsTabProps {}
+export type CommentsTabProps = DefaultCommentsTabProps;
 
 export const CommentsTab = observer(function CommentsTab(
   props: CommentsTabProps
@@ -48,8 +52,9 @@ export const CommentsTab = observer(function CommentsTab(
   const studioCtx = useStudioCtx();
   const viewCtx = useViewCtxMaybe();
 
-  const [shownThreadId, setShownThreadId] =
-    useState<CommentThreadId | undefined>(undefined);
+  const [shownThreadId, setShownThreadId] = useState<
+    CommentThreadId | undefined
+  >(undefined);
 
   let focusedTpl = viewCtx?.focusedTpl();
   if (!isTplNamable(focusedTpl)) {
@@ -124,7 +129,6 @@ export const CommentsTab = observer(function CommentsTab(
       xSymmetricDifference(variants, getCurrentVariants()).length === 0;
     return isSelected;
   }
-
   const commentsForSelection = xGroupBy(
     allComments.filter((comment) => isCommentForSelection(comment)),
     (comment) => comment.data.threadId
@@ -204,9 +208,10 @@ export const CommentsTab = observer(function CommentsTab(
               : { children: "Comment on selected" }
           }
           currentThreadsList={{
-            children: [...commentsForSelection.values()].map((threadComments) =>
-              renderThreadPreview(threadComments)
-            ),
+            children: sortBy(
+              [...commentsForSelection.values()],
+              (comment) => -comment[0].createdAt
+            ).map((threadComments) => renderThreadPreview(threadComments)),
           }}
           newThreadForm={{
             render: () => (focusedTpl ? renderPostForm() : null),
@@ -215,9 +220,10 @@ export const CommentsTab = observer(function CommentsTab(
             wrap: (node) => commentsForOther.size > 0 && node,
           }}
           restThreadsList={{
-            children: [...commentsForOther.values()].map((threadComments) =>
-              renderThreadPreview(threadComments)
-            ),
+            children: sortBy(
+              [...commentsForOther.values()],
+              (comment) => -comment[0].createdAt
+            ).map((threadComments) => renderThreadPreview(threadComments)),
           }}
         />
       </SidebarModalProvider>

@@ -436,7 +436,11 @@ function _TopBar({ preview }: TopBarProps) {
             : {}
         }
         commentButton={{
-          wrap: DEVFLAGS.comments ? undefined : () => null,
+          wrap:
+            DEVFLAGS.comments ||
+            (team && DEVFLAGS.commentsTeamIds.includes(team.id))
+              ? undefined
+              : () => null,
           props: {
             active: studioCtx.showCommentsPanel,
             onClick: () => studioCtx.toggleCommentsPanel(),

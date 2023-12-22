@@ -1,6 +1,6 @@
 .root {
-  flex-direction: column;
   display: flex;
+  flex-direction: column;
   width: 100%;
   height: auto;
   max-width: 100%;
@@ -10,8 +10,8 @@
 }
 .root > :global(.__wab_flex-container) {
   flex-direction: column;
-  justify-content: flex-start;
   align-items: stretch;
+  justify-content: flex-start;
   min-width: 0;
   margin-top: calc(0px - 8px);
   height: calc(100% + 8px);
@@ -37,14 +37,14 @@
 .bodyInput:global(.__wab_instance) {
   max-width: 100%;
 }
-.svg__i8VwN {
+.svg__u6Al {
   display: flex;
   position: relative;
   object-fit: cover;
   width: 1.25rem;
   height: 1.25rem;
 }
-.svg__k4F8I {
+.svg__deuX {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -77,17 +77,15 @@
 .submitButtoninitial:global(.__wab_instance) {
   display: none;
 }
-.svg___1DBHe {
+.svg__w82Pn {
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
-.svg___6E9B {
+.svg___4SqK {
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
