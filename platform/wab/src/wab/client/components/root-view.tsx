@@ -7,6 +7,7 @@ import {
   NonAuthCtx,
   NonAuthCtxContext,
   useNonAuthCtx,
+  withHostFrameCache,
 } from "@/wab/client/app-ctx";
 import {
   getLoginRouteWithContinuation,
@@ -420,23 +421,31 @@ export function Root() {
     history.listen(() => {
       analytics.page("studio");
     });
+
     spawn(
-      api
-        .refreshCsrfToken()
-        .then(() => api.getLastBundleVersion())
-        .then(({ latestBundleVersion }) => {
-          setNonAuthCtx(
-            new NonAuthCtx({
-              api,
-              topFrameApi,
-              history,
-              router: new Router(history),
-              change: forceUpdate,
-              bundler,
-              lastBundleVersion: latestBundleVersion,
-            })
-          );
-        })
+      (async () => {
+        const lastBundleVersion = await withHostFrameCache(
+          "bundle",
+          true,
+          api,
+          async () => {
+            await api.refreshCsrfToken();
+            const { latestBundleVersion } = await api.getLastBundleVersion();
+            return latestBundleVersion;
+          }
+        );
+        setNonAuthCtx(
+          new NonAuthCtx({
+            api,
+            topFrameApi,
+            history,
+            router: new Router(history),
+            change: forceUpdate,
+            bundler,
+            lastBundleVersion,
+          })
+        );
+      })()
     );
   }, []);
 
@@ -446,7 +455,7 @@ export function Root() {
   }
 
   const loader = async () => {
-    const appCtx = await loadAppCtx(nonAuthCtx);
+    const appCtx = await loadAppCtx(nonAuthCtx, true);
     hackyCast(window).gAppCtx = appCtx;
 
     if (appCtx.selfInfo?.email) {

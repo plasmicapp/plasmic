@@ -403,7 +403,34 @@ export function loadStarters(
   };
 }
 
-export async function loadAppCtx(nonAuthCtx: NonAuthCtx) {
+export async function withHostFrameCache<T>(
+  key: string,
+  useCaching: boolean,
+  baseApi: PromisifyMethods<Api>,
+  f: () => Promise<T>
+): Promise<T> {
+  const realKey = `plasmic.load-cache.${key}`;
+  if (isHostFrame()) {
+    if (useCaching) {
+      const cached = await baseApi.getStorageItem(realKey);
+      if (cached) {
+        return JSON.parse(cached);
+      }
+    }
+  }
+  const result = await f();
+  if (result) {
+    await baseApi.addStorageItem(realKey, JSON.stringify(result));
+  } else {
+    await baseApi.removeStorageItem(realKey);
+  }
+  return result;
+}
+
+export async function loadAppCtx(
+  nonAuthCtx: NonAuthCtx,
+  useCaching: boolean = false
+) {
   const baseApi = nonAuthCtx.api;
 
   async function getAppCtx(): Promise<AppCtxResponse> {
@@ -420,8 +447,12 @@ export async function loadAppCtx(nonAuthCtx: NonAuthCtx) {
       { config: dbConfigOverrides },
       { teams, workspaces, perms },
     ] = await Promise.all([
-      swallowAsync(baseApi.getSelfInfo()),
-      baseApi.getAppConfig(),
+      withHostFrameCache("selfInfo", useCaching, baseApi, () =>
+        swallowAsync(baseApi.getSelfInfo())
+      ),
+      withHostFrameCache("appConfig", useCaching, baseApi, () =>
+        baseApi.getAppConfig()
+      ),
       getAppCtx(),
     ]);
 

@@ -446,6 +446,7 @@ export function filteredApi(
     "plasmic.tours.",
     "plasmic.focused.",
     "plasmic.free-trial.",
+    "plasmic.load-cache.",
   ];
 
   // Methods that are always safe for the host app to call
