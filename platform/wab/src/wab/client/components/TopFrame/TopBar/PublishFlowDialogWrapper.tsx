@@ -119,6 +119,8 @@ export const PublishFlowDialogWrapper = observer(
     const [dismissedWizard, setDismissedWizard] = React.useState(false);
     const isWizardDisabled = true;
 
+    const isVisible = wizard || showPublishModal || keepPublishModalOpen;
+
     const [publishState, setPublishState] =
       React.useState<PublishState>(undefined);
 
@@ -145,7 +147,7 @@ export const PublishFlowDialogWrapper = observer(
       StatusPlasmicHosting | undefined
     >(undefined);
     const { data: domainsResult } = useSWR(
-      apiKey(`getDomainsForProject`, projectId),
+      isVisible ? apiKey(`getDomainsForProject`, projectId) : null,
       () =>
         !activatedBranch && appCtx.appConfig.enablePlasmicHosting
           ? appCtx.api.getDomainsForProject(projectId)
@@ -201,10 +203,10 @@ export const PublishFlowDialogWrapper = observer(
       });
     }, [projectRepository]);
     useAsyncStrict(async () => {
-      if (view !== "status" && !projectRepository.loading) {
+      if (isVisible && view !== "status" && !projectRepository.loading) {
         await updateProjectRepository();
       }
-    }, [view]);
+    }, [view, isVisible]);
     const [connectedToGithub, setConnectedToGithub] = React.useState(false);
     const [statusPushDeploy, setStatusPushDeploy] = React.useState<
       StatusPushDeploy | undefined
