@@ -2192,8 +2192,8 @@ export function asyncOneAtATime(
 ): AsyncCallable {
   interface CallInfo {
     args: any[];
-    resolve: any;
-    reject: any;
+    resolve: (arg?: any) => any;
+    reject: (arg?: any) => any;
   }
   let waitingCall: CallInfo | undefined = undefined,
     currentPromise: Promise<any> | undefined = undefined;
@@ -2747,6 +2747,24 @@ export async function waitUntil(
       }
     })
   );
+}
+
+export class PromiseTimeoutError extends CustomError {
+  readonly name = "PromiseTimeoutError";
+  constructor(message?: string) {
+    super(message);
+  }
+}
+
+export function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  let timeoutId: NodeJS.Timeout;
+  return Promise.race([
+    promise.finally(() => clearTimeout(timeoutId!)),
+    new Promise<never>(
+      (_resolve, reject) =>
+        (timeoutId = setTimeout(() => reject(new PromiseTimeoutError()), ms))
+    ),
+  ]);
 }
 
 /**

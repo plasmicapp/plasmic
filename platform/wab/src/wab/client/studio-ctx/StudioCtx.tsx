@@ -126,6 +126,7 @@ import {
   ensureType,
   last,
   maybe,
+  mkShortId,
   notNil,
   removeWhere,
   spawn,
@@ -134,6 +135,7 @@ import {
   switchType,
   tuple,
   withoutNils,
+  withTimeout,
   xDifference,
   xGroupBy,
 } from "@/wab/common";
@@ -474,6 +476,7 @@ enum SaveResult {
   Success = "Success",
   GatewayError = "GatewayError",
   UnknownError = "UnknownError",
+  TimedOut = "TimedOut",
 }
 
 export enum PublishResult {
@@ -4899,7 +4902,7 @@ export class StudioCtx extends WithDbCtx {
     return this.asyncSaver();
   }
 
-  private async trySave(preferIncremental = true) {
+  private async trySave(preferIncremental = true): Promise<SaveResult> {
     if (!this.hasUnsavedChanges() && !this.needsFullSave) {
       return SaveResult.SkipUpToDate;
     }
@@ -4964,15 +4967,19 @@ export class StudioCtx extends WithDbCtx {
       this.pendingSavedRevisionNum = 1 + this.dbCtx().revisionNum;
 
       try {
-        await this.appCtx.api.saveProjectRevChanges(this.siteInfo.id, {
-          revisionNum: this.dbCtx().revisionNum + 1,
-          data: JSON.stringify(changesBundle),
-          modelVersion: this.dbCtx().modelVersion,
-          hostlessDataVersion: this.dbCtx().hostlessDataVersion,
-          incremental: incremental,
-          toDeleteIids,
-          branchId: this.dbCtx().branchInfo?.id,
-        });
+        await withTimeout(
+          this.appCtx.api.saveProjectRevChanges(this.siteInfo.id, {
+            revisionNum: this.dbCtx().revisionNum + 1,
+            data: JSON.stringify(changesBundle),
+            modelVersion: this.dbCtx().modelVersion,
+            hostlessDataVersion: this.dbCtx().hostlessDataVersion,
+            incremental: incremental,
+            toDeleteIids,
+            branchId: this.dbCtx().branchInfo?.id,
+          }),
+          // One-minute timeout
+          60 * 1000
+        );
         this.dbCtx().revisionNum++;
         // We can clear the change records as they have already been saved
         this._changeRecords.splice(
@@ -4994,7 +5001,7 @@ export class StudioCtx extends WithDbCtx {
         return SaveResult.Success;
       } catch (e) {
         if (e.name === "ProjectRevisionError") {
-          return await this.fetchUpdates().then(() =>
+          return await withTimeout(this.fetchUpdates(), 60 * 1000).then(() =>
             this.trySave(preferIncremental)
           );
         } else if (e.name === "ForbiddenError") {
@@ -5025,6 +5032,28 @@ export class StudioCtx extends WithDbCtx {
 
           // Try to save again with incremental save disabled
           return await this.trySave(false);
+        } else if (e.name === "PromiseTimeoutError") {
+          reportError(e, "PromiseTimeoutError");
+          // We don't know at this point whether the save succeeded or not.
+          // If it did succeed, we cannot re-apply the local changes as it
+          // might result in a broken state - e.g., if it was a `array-splice`
+          // adding a `TplNode`, re-applying this change after it's been saved
+          // and synced from the server would result in a duplicated element.
+          //
+          // Even if no save has been committed yet, the request could be
+          // fulfilled afterwards, so we will just discard the local changes.
+          const notificationKey = mkShortId();
+          notification.warn({
+            message: "Failed to sync project",
+            description: `Loading latest changes...`,
+            duration: 0,
+            key: notificationKey,
+            closeIcon: null,
+          });
+          await this.loadVersion(undefined, true).finally(() =>
+            notification.close(notificationKey)
+          );
+          return SaveResult.TimedOut;
         } else {
           reportError(e, "Unknown save error");
           if (this.saveErrorState === "normal") {
