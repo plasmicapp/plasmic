@@ -1678,7 +1678,7 @@ export async function getLatestPlumePkg(req: Request, res: Response) {
 export async function getPlumePkg(req: Request, res: Response) {
   const mgr = superDbMgr(req);
   const version = await getLastBundleVersion();
-  const etag = `plume-pkg-${REAL_PLUME_VERSION}-${version}`;
+  const etag = `"plume-pkg-${REAL_PLUME_VERSION}-${version}"`;
 
   if (checkEtagSkippable(req, res, etag)) {
     return;
