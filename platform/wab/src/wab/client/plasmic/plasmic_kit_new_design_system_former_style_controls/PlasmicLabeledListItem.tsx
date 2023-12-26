@@ -54,7 +54,6 @@ export type PlasmicLabeledListItem__VariantMembers = {
   valueSetState: "isSet" | "isInherited" | "isUnset";
   noLabel: "noLabel";
   draggable: "draggable";
-  dragging: "dragging";
   deletable: "deletable";
   clickable: "clickable";
   withMenu: "withMenu";
@@ -75,7 +74,6 @@ export type PlasmicLabeledListItem__VariantsArgs = {
   valueSetState?: SingleChoiceArg<"isSet" | "isInherited" | "isUnset">;
   noLabel?: SingleBooleanChoiceArg<"noLabel">;
   draggable?: SingleBooleanChoiceArg<"draggable">;
-  dragging?: SingleBooleanChoiceArg<"dragging">;
   deletable?: SingleBooleanChoiceArg<"deletable">;
   clickable?: SingleBooleanChoiceArg<"clickable">;
   withMenu?: SingleBooleanChoiceArg<"withMenu">;
@@ -97,7 +95,6 @@ export const PlasmicLabeledListItem__VariantProps = new Array<VariantPropType>(
   "valueSetState",
   "noLabel",
   "draggable",
-  "dragging",
   "deletable",
   "clickable",
   "withMenu",
@@ -139,6 +136,7 @@ export const PlasmicLabeledListItem__ArgProps = new Array<ArgPropType>(
 
 export type PlasmicLabeledListItem__OverridesType = {
   root?: p.Flex<"div">;
+  dragHandle?: p.Flex<"div">;
   grip?: p.Flex<"svg">;
   labelContainer?: p.Flex<"div">;
   spacer?: p.Flex<"div">;
@@ -166,7 +164,6 @@ export interface DefaultLabeledListItemProps {
   valueSetState?: SingleChoiceArg<"isSet" | "isInherited" | "isUnset">;
   noLabel?: SingleBooleanChoiceArg<"noLabel">;
   draggable?: SingleBooleanChoiceArg<"draggable">;
-  dragging?: SingleBooleanChoiceArg<"dragging">;
   deletable?: SingleBooleanChoiceArg<"deletable">;
   clickable?: SingleBooleanChoiceArg<"clickable">;
   withMenu?: SingleBooleanChoiceArg<"withMenu">;
@@ -232,22 +229,16 @@ function PlasmicLabeledListItem__RenderFunc(props: {
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.noLabel,
       },
       {
-        path: "draggable",
-        type: "private",
-        variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.draggable,
-      },
-      {
         path: "deletable",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.deletable,
       },
       {
-        path: "dragging",
+        path: "draggable",
         type: "private",
         variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.dragging,
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.draggable,
       },
       {
         path: "clickable",
@@ -373,7 +364,6 @@ function PlasmicLabeledListItem__RenderFunc(props: {
           [sty.rootclickable]: hasVariant($state, "clickable", "clickable"),
           [sty.rootdeletable]: hasVariant($state, "deletable", "deletable"),
           [sty.rootdraggable]: hasVariant($state, "draggable", "draggable"),
-          [sty.rootdragging]: hasVariant($state, "dragging", "dragging"),
           [sty.rootlayout_vertical]: hasVariant($state, "layout", "vertical"),
           [sty.rootnesting_double]: hasVariant($state, "nesting", "double"),
           [sty.rootnesting_simple]: hasVariant($state, "nesting", "simple"),
@@ -418,6 +408,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
             })()
           : undefined;
         if (
+          $steps["invokeOnClick"] != null &&
           typeof $steps["invokeOnClick"] === "object" &&
           typeof $steps["invokeOnClick"].then === "function"
         ) {
@@ -425,24 +416,27 @@ function PlasmicLabeledListItem__RenderFunc(props: {
         }
       }}
     >
-      {(
-        hasVariant($state, "dragging", "dragging")
-          ? true
-          : hasVariant($state, "draggable", "draggable")
-          ? true
-          : false
-      ) ? (
+      <div
+        data-plasmic-name={"dragHandle"}
+        data-plasmic-override={overrides.dragHandle}
+        className={classNames(projectcss.all, sty.dragHandle, {
+          [sty.dragHandledraggable]: hasVariant(
+            $state,
+            "draggable",
+            "draggable"
+          ),
+        })}
+      >
         <GripsvgIcon
           data-plasmic-name={"grip"}
           data-plasmic-override={overrides.grip}
           className={classNames(projectcss.all, sty.grip, {
             [sty.gripdraggable]: hasVariant($state, "draggable", "draggable"),
-            [sty.gripdragging]: hasVariant($state, "dragging", "dragging"),
             [sty.griplayout_vertical]: hasVariant($state, "layout", "vertical"),
           })}
           role={"img"}
         />
-      ) : null}
+      </div>
       {(hasVariant($state, "noLabel", "noLabel") ? false : true) ? (
         <div
           data-plasmic-name={"labelContainer"}
@@ -467,11 +461,6 @@ function PlasmicLabeledListItem__RenderFunc(props: {
               $state,
               "draggable",
               "draggable"
-            ),
-            [sty.labelContainerdragging]: hasVariant(
-              $state,
-              "dragging",
-              "dragging"
             ),
             [sty.labelContainerlabelSize_auto]: hasVariant(
               $state,
@@ -617,6 +606,11 @@ function PlasmicLabeledListItem__RenderFunc(props: {
                     "deletable",
                     "deletable"
                   ),
+                  [sty.slotTargetLabeldraggable]: hasVariant(
+                    $state,
+                    "draggable",
+                    "draggable"
+                  ),
                   [sty.slotTargetLabellayout_vertical]: hasVariant(
                     $state,
                     "layout",
@@ -728,6 +722,11 @@ function PlasmicLabeledListItem__RenderFunc(props: {
             $state,
             "deletable",
             "deletable"
+          ),
+          [sty.contentContainerdraggable]: hasVariant(
+            $state,
+            "draggable",
+            "draggable"
           ),
           [sty.contentContainerlabelSize_half]: hasVariant(
             $state,
@@ -900,6 +899,7 @@ function PlasmicLabeledListItem__RenderFunc(props: {
 const PlasmicDescendants = {
   root: [
     "root",
+    "dragHandle",
     "grip",
     "labelContainer",
     "spacer",
@@ -914,6 +914,7 @@ const PlasmicDescendants = {
     "indicatorContainer",
     "indicator",
   ],
+  dragHandle: ["dragHandle", "grip"],
   grip: ["grip"],
   labelContainer: [
     "labelContainer",
@@ -940,6 +941,7 @@ type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: "div";
+  dragHandle: "div";
   grip: "svg";
   labelContainer: "div";
   spacer: "div";
@@ -989,7 +991,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicLabeledListItem__ArgProps,
           internalVariantPropNames: PlasmicLabeledListItem__VariantProps,
         }),
@@ -1015,6 +1017,7 @@ export const PlasmicLabeledListItem = Object.assign(
   makeNodeComponent("root"),
   {
     // Helper components rendering sub-elements
+    dragHandle: makeNodeComponent("dragHandle"),
     grip: makeNodeComponent("grip"),
     labelContainer: makeNodeComponent("labelContainer"),
     spacer: makeNodeComponent("spacer"),

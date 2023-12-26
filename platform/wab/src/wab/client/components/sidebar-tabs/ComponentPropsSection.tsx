@@ -193,11 +193,7 @@ export const ComponentPropsSection = observer(
     const mainProps = params.filter(
       (param) => !isKnownFunctionType(param.type)
     );
-    const maybeSortProps = (_props: Param[]) =>
-      isCodeComponent(component) || isPlumeComponent(component)
-        ? // Code component props are sorted above
-          _props
-        : sortBy(_props, (param) => param.variable.name);
+
     return (
       <>
         {(mainProps.length > 0 || actions.length > 0) && (
@@ -225,7 +221,7 @@ export const ComponentPropsSection = observer(
                 )}
                 {mainProps.length > 0 &&
                   renderMaybeCollapsibleRows(
-                    maybeSortProps(mainProps).map((param) => {
+                    mainProps.map((param) => {
                       const propType = viewCtx.canvasCtx
                         .getRegisteredCodeComponentsMap()
                         .get(tpl.component.name)?.meta.props[

@@ -208,6 +208,7 @@ function PlasmicTooltip__RenderFunc(props: {
                   })()
                 : undefined;
               if (
+                $steps["setIsOpen"] != null &&
                 typeof $steps["setIsOpen"] === "object" &&
                 typeof $steps["setIsOpen"].then === "function"
               ) {
@@ -304,6 +305,7 @@ function PlasmicTooltip__RenderFunc(props: {
               })()
             : undefined;
           if (
+            $steps["setIsOpen"] != null &&
             typeof $steps["setIsOpen"] === "object" &&
             typeof $steps["setIsOpen"].then === "function"
           ) {
@@ -368,7 +370,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicTooltip__ArgProps,
           internalVariantPropNames: PlasmicTooltip__VariantProps,
         }),

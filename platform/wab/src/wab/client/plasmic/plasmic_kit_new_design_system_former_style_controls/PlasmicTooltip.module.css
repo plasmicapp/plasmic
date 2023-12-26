@@ -49,7 +49,5 @@
 .svg {
   position: relative;
   object-fit: cover;
-  width: 1em;
-  flex-shrink: 0;
   height: 1em;
 }

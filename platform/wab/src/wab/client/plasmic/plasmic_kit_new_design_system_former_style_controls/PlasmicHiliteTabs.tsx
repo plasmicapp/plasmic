@@ -197,6 +197,7 @@ function PlasmicHiliteTabs__RenderFunc(props: {
                   })()
                 : undefined;
               if (
+                $steps["setSelectedTabKey"] != null &&
                 typeof $steps["setSelectedTabKey"] === "object" &&
                 typeof $steps["setSelectedTabKey"].then === "function"
               ) {
@@ -273,7 +274,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicHiliteTabs__ArgProps,
           internalVariantPropNames: PlasmicHiliteTabs__VariantProps,
         }),

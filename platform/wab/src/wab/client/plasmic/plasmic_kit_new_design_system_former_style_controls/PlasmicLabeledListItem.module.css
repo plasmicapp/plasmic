@@ -2,7 +2,7 @@
   display: flex;
   width: 100%;
   position: relative;
-  align-items: flex-start;
+  align-items: center;
   min-height: var(--token-aDa535tnF);
   justify-content: flex-start;
   flex-shrink: 0;
@@ -35,33 +35,38 @@
 .rootclickable:hover {
   background: var(--token-p-rw5DRJTx);
 }
-.grip {
+.dragHandle {
   position: absolute;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  left: 0px;
+  top: 0px;
+  min-height: 0;
+  display: none;
+  padding: 0px;
+}
+.dragHandledraggable {
+  display: flex;
+}
+.grip {
+  position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
   width: 16px;
-  height: var(--token-aDa535tnF);
+  height: var(--token-dA6NVsnIp);
   cursor: grabbing;
   transition-property: opacity;
   transition-duration: 250ms;
   align-self: center;
-  left: -4px;
-  top: 0px;
+  left: auto;
+  top: auto;
   flex-shrink: 0;
   -webkit-transition-property: opacity;
   -webkit-transition-duration: 250ms;
-}
-.gripdraggable {
-  opacity: 0;
-  width: 16px;
-  flex-shrink: 0;
-  display: block;
-}
-.gripdragging {
-  display: block;
-}
-.rootdraggable:hover .gripdraggable {
-  opacity: 0.5;
 }
 .labelContainer {
   display: flex;
@@ -143,8 +148,6 @@
 .svg__k5Ltc {
   position: relative;
   object-fit: cover;
-  width: 1em;
-  flex-shrink: 0;
   height: 1em;
 }
 .labelTextContainer {
@@ -325,14 +328,12 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .svg___9TaH7 {
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .menuButton:global(.__wab_instance):global(.__wab_instance) {

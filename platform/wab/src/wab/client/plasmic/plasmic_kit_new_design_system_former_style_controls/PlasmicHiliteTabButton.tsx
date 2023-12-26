@@ -154,6 +154,7 @@ function PlasmicHiliteTabButton__RenderFunc(props: {
             })()
           : undefined;
         if (
+          $steps["invokeOnTabSelected"] != null &&
           typeof $steps["invokeOnTabSelected"] === "object" &&
           typeof $steps["invokeOnTabSelected"].then === "function"
         ) {
@@ -221,7 +222,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicHiliteTabButton__ArgProps,
           internalVariantPropNames: PlasmicHiliteTabButton__VariantProps,
         }),

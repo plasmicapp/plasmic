@@ -1,9 +1,15 @@
-import { Menu } from "antd";
-import { observer } from "mobx-react-lite";
-import React from "react";
-import { FaCheck } from "react-icons/fa";
-import { Component, Param } from "../../../classes";
-import { spawn } from "../../../common";
+import { Component, Param } from "@/wab/classes";
+import { WithContextMenu } from "@/wab/client/components/ContextMenu";
+import { ComponentPropModal } from "@/wab/client/components/modals/ComponentPropModal";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import { IconLinkButton } from "@/wab/client/components/widgets";
+import { EditableLabel } from "@/wab/client/components/widgets/EditableLabel";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { LabeledListItem } from "@/wab/client/components/widgets/LabeledListItem";
+import { SimpleReorderableList } from "@/wab/client/components/widgets/SimpleReorderableList";
+import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { moveIndex, spawn } from "@/wab/common";
 import {
   canChangeParamExportType,
   canDeleteParam,
@@ -11,23 +17,19 @@ import {
   getRealParams,
   isCodeComponent,
   removeComponentParam,
-} from "../../../components";
-import { ParamExportType } from "../../../lang";
-import { toVarName } from "../../../shared/codegen/util";
+} from "@/wab/components";
+import { ParamExportType } from "@/wab/lang";
+import { toVarName } from "@/wab/shared/codegen/util";
 import {
   COMPONENT_PROP_LOWER,
   COMPONENT_PROP_PLURAL_CAP,
-} from "../../../shared/Labels";
-import { getSlotParams } from "../../../shared/SlotUtils";
-import PlusIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Plus";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { WithContextMenu } from "../ContextMenu";
-import { ComponentPropModal } from "../modals/ComponentPropModal";
-import { SidebarSection } from "../sidebar/SidebarSection";
-import { IconLinkButton } from "../widgets";
-import { EditableLabel } from "../widgets/EditableLabel";
-import { Icon } from "../widgets/Icon";
-import { LabeledListItem } from "../widgets/LabeledListItem";
+} from "@/wab/shared/Labels";
+import { getSlotParams } from "@/wab/shared/SlotUtils";
+import { Menu } from "antd";
+import { observer } from "mobx-react-lite";
+import React from "react";
+import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
+import { FaCheck } from "react-icons/fa";
 import { ValuePreview } from "./data-tab";
 
 export const ComponentPropsDefinitionSection = observer(
@@ -65,6 +67,7 @@ export const ComponentPropsDefinitionSection = observer(
               params={realParams}
               showType={true}
               showDefault={true}
+              draggable
             />
           )}
         </SidebarSection>
@@ -86,20 +89,39 @@ function PropsDefinitionSection(props: {
   component: Component;
   params: Param[];
   showType?: boolean;
+  draggable?: boolean;
   showDefault?: boolean;
 }) {
-  const { studioCtx, component, params, showType, showDefault } = props;
+  const { studioCtx, component, params, showType, showDefault, draggable } =
+    props;
   return (
     <div className="mb-xlg">
-      {params.map((param) => (
-        <PropRow
-          studioCtx={studioCtx}
-          component={component}
-          param={param}
-          showType={showType}
-          showDefault={showDefault}
-        />
-      ))}
+      <SimpleReorderableList
+        onReordered={(fromIndex, toIndex) =>
+          studioCtx.change(({ success }) => {
+            const realFromIndex = component.params.findIndex(
+              (param) => params[fromIndex].uid === param.uid
+            );
+            const realToIndex = component.params.findIndex(
+              (param) => params[toIndex].uid === param.uid
+            );
+            moveIndex(component.params, realFromIndex, realToIndex);
+            return success();
+          })
+        }
+        customDragHandle
+      >
+        {params.map((param) => (
+          <PropRow
+            studioCtx={studioCtx}
+            component={component}
+            param={param}
+            showType={showType}
+            showDefault={showDefault}
+            draggable={draggable}
+          />
+        ))}
+      </SimpleReorderableList>
     </div>
   );
 }
@@ -111,8 +133,10 @@ const PropRow = observer(function ParamRow(props: {
   children?: React.ReactNode;
   showType?: boolean;
   showDefault?: boolean;
+  draggable?: boolean;
+  dragHandleProps?: DraggableProvidedDragHandleProps;
 }) {
-  const { studioCtx, component, param } = props;
+  const { studioCtx, component, param, draggable } = props;
 
   const viewCtx = studioCtx.focusedViewCtx();
   const maybeState = component.states.find((s) => s.param === param);
@@ -132,6 +156,8 @@ const PropRow = observer(function ParamRow(props: {
     <>
       <WithContextMenu overlay={overlay}>
         <LabeledListItem
+          draggable={draggable}
+          dragHandleProps={props.dragHandleProps}
           onClick={() => setShowModal(true)}
           label={
             <EditableLabel

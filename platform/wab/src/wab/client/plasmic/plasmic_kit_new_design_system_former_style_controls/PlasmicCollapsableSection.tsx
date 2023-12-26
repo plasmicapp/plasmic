@@ -167,6 +167,7 @@ function PlasmicCollapsableSection__RenderFunc(props: {
               })()
             : undefined;
           if (
+            $steps["updateIsExpanded"] != null &&
             typeof $steps["updateIsExpanded"] === "object" &&
             typeof $steps["updateIsExpanded"].then === "function"
           ) {
@@ -282,7 +283,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicCollapsableSection__ArgProps,
           internalVariantPropNames: PlasmicCollapsableSection__VariantProps,
         }),
