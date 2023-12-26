@@ -138,11 +138,11 @@ export function main() {
     });
   }
 
-  if (DEVFLAGS.posthog) {
-    posthog.init("phc_eaI1hFsPRIZkmwrXaSGRNDh4H9J3xdh1j9rgNy27NgP");
-  }
-
   if (DeploymentFlags.DEPLOYENV === "production") {
+    if (DEVFLAGS.posthog) {
+      posthog.init("phc_eaI1hFsPRIZkmwrXaSGRNDh4H9J3xdh1j9rgNy27NgP");
+    }
+
     Sentry.init({
       dsn: `https://dd4fc160e1a548609dc8db7e6c9f7a08@sentry.io/${sentryProjId}`,
       release: COMMITHASH,
