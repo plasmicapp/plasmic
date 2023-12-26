@@ -90,27 +90,21 @@
   max-width: 100%;
   padding: 0px;
 }
-.btnMore:global(.__wab_instance) {
-  max-width: 100%;
+.btnMore:global(.__wab_instance):global(.__wab_instance) {
   position: relative;
   opacity: 0;
   flex-shrink: 0;
 }
-.root:hover .btnMore:global(.__wab_instance) {
+.btnMorethread:global(.__wab_instance):global(.__wab_instance) {
+  flex-shrink: 0;
+}
+.root:hover .btnMore:global(.__wab_instance):global(.__wab_instance) {
   opacity: 1;
   flex-shrink: 0;
 }
-.svg__rq90N {
-  display: flex;
-  position: relative;
-  object-fit: cover;
-  height: 1em;
-}
-.svg__naNKt {
-  display: flex;
-  position: relative;
-  object-fit: cover;
-  height: 1em;
+.rootthread:hover
+  .btnMorethread:global(.__wab_instance):global(.__wab_instance) {
+  flex-shrink: 0;
 }
 .freeBox___5UHnq {
   display: flex;
@@ -193,7 +187,7 @@
   min-width: 0;
   min-height: 0;
 }
-.svg__zBxfh {
+.svg__ehl5T {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -288,7 +282,7 @@
   min-width: 0;
   min-height: 0;
 }
-.svg__k1C7L {
+.svg__cwGdU {
   display: flex;
   position: relative;
   object-fit: cover;
@@ -304,13 +298,13 @@
 .repliesLinkthread:global(.__wab_instance) {
   display: flex;
 }
-.svg__mnz3V {
+.svg__oQhpp {
   display: flex;
   position: relative;
   object-fit: cover;
   height: 1em;
 }
-.svg__bzKp0 {
+.svg__pfR4P {
   display: flex;
   position: relative;
   object-fit: cover;

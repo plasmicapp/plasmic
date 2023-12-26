@@ -48,21 +48,21 @@ createPlasmicElementProxy;
 export type PlasmicMenuButton__VariantMembers = {
   stepUp: "stepUp";
   withBackgroundHover: "withBackgroundHover";
-  medium: "medium";
   type: "seamless";
+  size: "small";
 };
 export type PlasmicMenuButton__VariantsArgs = {
   stepUp?: SingleBooleanChoiceArg<"stepUp">;
   withBackgroundHover?: SingleBooleanChoiceArg<"withBackgroundHover">;
-  medium?: SingleBooleanChoiceArg<"medium">;
   type?: SingleChoiceArg<"seamless">;
+  size?: SingleChoiceArg<"small">;
 };
 type VariantPropType = keyof PlasmicMenuButton__VariantsArgs;
 export const PlasmicMenuButton__VariantProps = new Array<VariantPropType>(
   "stepUp",
   "withBackgroundHover",
-  "medium",
-  "type"
+  "type",
+  "size"
 );
 
 export type PlasmicMenuButton__ArgsType = {
@@ -79,8 +79,8 @@ export interface DefaultMenuButtonProps {
   hoverText?: string;
   stepUp?: SingleBooleanChoiceArg<"stepUp">;
   withBackgroundHover?: SingleBooleanChoiceArg<"withBackgroundHover">;
-  medium?: SingleBooleanChoiceArg<"medium">;
   type?: SingleChoiceArg<"seamless">;
+  size?: SingleChoiceArg<"small">;
   className?: string;
 }
 
@@ -123,16 +123,16 @@ function PlasmicMenuButton__RenderFunc(props: {
           $props.withBackgroundHover,
       },
       {
-        path: "medium",
-        type: "private",
-        variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.medium,
-      },
-      {
         path: "type",
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.type,
+      },
+      {
+        path: "size",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.size,
       },
     ],
     [$props, $ctx, $refs]
@@ -157,7 +157,7 @@ function PlasmicMenuButton__RenderFunc(props: {
         />
       }
       className={classNames("__wab_instance", sty.root, {
-        [sty.rootmedium]: hasVariant($state, "medium", "medium"),
+        [sty.rootsize_small]: hasVariant($state, "size", "small"),
         [sty.rootstepUp]: hasVariant($state, "stepUp", "stepUp"),
         [sty.roottype_seamless]: hasVariant($state, "type", "seamless"),
         [sty.rootwithBackgroundHover]: hasVariant(
@@ -167,7 +167,7 @@ function PlasmicMenuButton__RenderFunc(props: {
         ),
       })}
       hoverText={args.hoverText}
-      size={"vertical"}
+      size={hasVariant($state, "size", "small") ? "small" : "vertical"}
       type={
         hasVariant($state, "type", "seamless")
           ? ["seamless"]
@@ -183,7 +183,6 @@ function PlasmicMenuButton__RenderFunc(props: {
     >
       <DotsVerticalsvgIcon
         className={classNames(projectcss.all, sty.svg__jeWc1, {
-          [sty.svgmedium__jeWc109MCz]: hasVariant($state, "medium", "medium"),
           [sty.svgtype_seamless__jeWc1Z4VSy]: hasVariant(
             $state,
             "type",
@@ -240,7 +239,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicMenuButton__ArgProps,
           internalVariantPropNames: PlasmicMenuButton__VariantProps,
         }),

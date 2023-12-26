@@ -522,8 +522,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
-  flex-shrink: 0;
   height: 1em;
 }
 .slotTargetChildren2 {
@@ -615,8 +613,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
-  flex-shrink: 0;
   height: 1em;
 }
 .svg {
@@ -626,7 +622,5 @@
   top: 0;
   right: 0;
   color: var(--token-fVn5vRhXJxQ);
-  width: 1em;
-  flex-shrink: 0;
   height: 1em;
 }

@@ -32,6 +32,7 @@ import {
   deriveRenderOpts,
   ensureGlobalVariants,
 } from "@plasmicapp/react-web";
+import MenuButton from "../../components/widgets/MenuButton"; // plasmic-import: h69wHrrKtL/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
 import ReactionButton from "../../components/comments/ReactionButton"; // plasmic-import: FOzDmFDbWm/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
@@ -43,10 +44,9 @@ import plasmic_plasmic_kit_color_tokens_css from "../plasmic_kit_q_4_color_token
 import projectcss from "./plasmic_plasmic_kit_comments.module.css"; // plasmic-import: BP7V3EkXPURJVwwMyWoHn/projectcss
 import sty from "./PlasmicCommentPost.module.css"; // plasmic-import: l_AKXl2AAu/css
 
-import DotsVerticalsvgIcon from "../q_4_icons/icons/PlasmicIcon__DotsVerticalsvg"; // plasmic-import: joYBQwH-P/icon
-import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 import EmojiHappysvgIcon from "../q_4_icons/icons/PlasmicIcon__EmojiHappysvg"; // plasmic-import: 1Vli2Q2_d/icon
 import PlusIcon from "../plasmic_kit/PlasmicIcon__Plus"; // plasmic-import: -k064DlQ8k8-L/icon
+import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
 import _69B43A437055B398Eff90A515Ed4F551Svg2AijDeIx4X from "./images/_69B43A437055B398Eff90A515Ed4F551Svg.svg"; // plasmic-import: 2aijDEIx4x/picture
 
@@ -75,7 +75,7 @@ export type PlasmicCommentPost__OverridesType = {
   userFullName?: p.Flex<"span">;
   timestamp?: p.Flex<"span">;
   actions?: p.Flex<"div">;
-  btnMore?: p.Flex<typeof IconButton>;
+  btnMore?: p.Flex<typeof MenuButton>;
   subjectLabel?: p.Flex<"div">;
   body?: p.Flex<"div">;
   btnAddReaction?: p.Flex<typeof IconButton>;
@@ -231,18 +231,15 @@ function PlasmicCommentPost__RenderFunc(props: {
           data-plasmic-override={overrides.actions}
           className={classNames(projectcss.all, sty.actions)}
         >
-          <IconButton
+          <MenuButton
             data-plasmic-name={"btnMore"}
             data-plasmic-override={overrides.btnMore}
-            className={classNames("__wab_instance", sty.btnMore)}
+            className={classNames("__wab_instance", sty.btnMore, {
+              [sty.btnMorethread]: hasVariant($state, "thread", "thread"),
+            })}
             size={"small"}
             withBackgroundHover={true}
-          >
-            <DotsVerticalsvgIcon
-              className={classNames(projectcss.all, sty.svg__rq90N)}
-              role={"img"}
-            />
-          </IconButton>
+          />
         </div>
       </p.Stack>
       <div
@@ -425,7 +422,7 @@ type NodeDefaultElementType = {
   userFullName: "span";
   timestamp: "span";
   actions: "div";
-  btnMore: typeof IconButton;
+  btnMore: typeof MenuButton;
   subjectLabel: "div";
   body: "div";
   btnAddReaction: typeof IconButton;
