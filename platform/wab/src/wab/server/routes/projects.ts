@@ -64,6 +64,8 @@ import {
   ProjectRevision,
 } from "@/wab/server/entities/Entities";
 import "@/wab/server/extensions";
+import { REAL_PLUME_VERSION } from "@/wab/server/pkgs/plume-pkg-mgr";
+import { checkEtagSkippable } from "@/wab/server/routes/loader";
 import { getCodesandboxToken } from "@/wab/server/secrets";
 import { broadcastProjectsMessage } from "@/wab/server/socket-util";
 import { TutorialType } from "@/wab/server/tutorialdb/tutorialdb-utils";
@@ -1675,6 +1677,13 @@ export async function getLatestPlumePkg(req: Request, res: Response) {
 
 export async function getPlumePkg(req: Request, res: Response) {
   const mgr = superDbMgr(req);
+  const version = await getLastBundleVersion();
+  const etag = `plume-pkg-${REAL_PLUME_VERSION}-${version}`;
+
+  if (checkEtagSkippable(req, res, etag)) {
+    return;
+  }
+
   const pkg = await mgr.getPlumePkgVersion();
   res.json(await getPkgWithDeps(mgr, pkg));
 }

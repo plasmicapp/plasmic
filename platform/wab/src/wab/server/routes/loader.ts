@@ -954,7 +954,7 @@ function setAsCacheableResource(res: Response, maxAge = 31536000) {
   );
 }
 
-function checkEtagSkippable(req: Request, res: Response, etag: string) {
+export function checkEtagSkippable(req: Request, res: Response, etag: string) {
   if (req.headers["x-plasmic-uptime-check"]) {
     // Never skip uptime checks
     return false;
