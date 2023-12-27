@@ -753,39 +753,58 @@ function upgradeProjectDep(
       `Failed to find old token ${oldToken.name}`
     );
     let newToken = oldToNewToken.get(oldToken);
-    const tokens = allStyleTokens(oldDep.site, { includeDeps: "all" });
+    const oldTokens = allStyleTokens(oldDep.site, { includeDeps: "all" });
+    const siteTokens = allStyleTokens(site, { includeDeps: "all" });
     if (!newToken) {
-      const tokenName = tplMgr.getUniqueTokenName(oldToken.name);
-      newToken = tplMgr.addToken({
-        name: tokenName,
-        tokenType: oldToken.type as TokenType,
-        value: derefToken(tokens, oldToken),
-      });
-      oldToken.variantedValues.forEach((v) => {
-        const newVariants = withoutNils(
-          v.variants.map((gv) =>
-            oldToNewGlobalVariant.has(gv) ? getOrCloneOldGlobalVariant(gv) : gv
-          )
-        );
-        if (newVariants.length === 0) {
-          return;
-        }
-        ensure(
-          newToken,
-          "Unexpected undefined newToken. newToken should be created before"
-        ).variantedValues.push(
-          new VariantedValue({
-            value: derefToken(
-              tokens,
-              oldToken,
-              new VariantedStylesHelper(oldDep.site, v.variants)
-            ),
-            variants: newVariants,
-          })
-        );
-      });
+      // We search into the current site looking for (name, type, value, |variantedValues|) match
+      // this can introduce some false positives as we don't check for the variants, but we assume
+      // it's too rare to be a problem
+      const similarToken = site.styleTokens.find(
+        (m) =>
+          m.name === oldToken.name &&
+          m.type === oldToken.type &&
+          derefToken(siteTokens, m) === derefToken(oldTokens, oldToken) &&
+          m.variantedValues.length === oldToken.variantedValues.length
+      );
 
-      oldToNewToken.set(oldToken, newToken);
+      if (similarToken) {
+        newToken = similarToken;
+        oldToNewToken.set(oldToken, newToken);
+      } else {
+        const tokenName = tplMgr.getUniqueTokenName(oldToken.name);
+        newToken = tplMgr.addToken({
+          name: tokenName,
+          tokenType: oldToken.type as TokenType,
+          value: derefToken(oldTokens, oldToken),
+        });
+        oldToken.variantedValues.forEach((v) => {
+          const newVariants = withoutNils(
+            v.variants.map((gv) =>
+              oldToNewGlobalVariant.has(gv)
+                ? getOrCloneOldGlobalVariant(gv)
+                : gv
+            )
+          );
+          if (newVariants.length === 0) {
+            return;
+          }
+          ensure(
+            newToken,
+            "Unexpected undefined newToken. newToken should be created before"
+          ).variantedValues.push(
+            new VariantedValue({
+              value: derefToken(
+                oldTokens,
+                oldToken,
+                new VariantedStylesHelper(oldDep.site, v.variants)
+              ),
+              variants: newVariants,
+            })
+          );
+        });
+
+        oldToNewToken.set(oldToken, newToken);
+      }
     }
     return newToken;
   };
