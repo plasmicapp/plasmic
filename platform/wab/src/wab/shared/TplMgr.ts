@@ -1892,6 +1892,8 @@ export class TplMgr {
       // "className" and "style" are reserved param names
       "className",
       "style",
+      // Include tpl names as they will also be in prop names
+      ...this.getExistingTplNames(component),
       ...component.params
         .filter((p) => p !== exclude)
         .map((p) => p.variable.name)
@@ -2007,9 +2009,8 @@ export class TplMgr {
   ) {
     return withoutNils([
       ...this.getExistingTplNames(component, nodeToExclude),
-      ...component.states
-        .filter((s) => !s.tplNode && s !== stateToExclude)
-        .map((s) => s.param.variable.name),
+      // Include param names as they will also be in prop names
+      ...component.params.map((p) => p.variable.name),
     ]);
   }
 
