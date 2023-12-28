@@ -59,6 +59,7 @@ packages:
   - plasmicpkgs/plasmic-link-preview
   - plasmicpkgs/react-parallax-tilt
   - plasmicpkgs/react-quill
+  - plasmicpkgs/tiptap
   - plasmicpkgs/react-scroll-parallax
   - plasmicpkgs/react-slick
   - plasmicpkgs/react-twitter-widgets

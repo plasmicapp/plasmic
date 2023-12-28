@@ -80,6 +80,7 @@
     "packages/react-web-runtime",
     "packages/watcher",
     "plasmicpkgs/airtable",
+    "plasmicpkgs/tiptap",
     "plasmicpkgs/antd",
     "plasmicpkgs/antd5",
     "plasmicpkgs/chakra-ui",
