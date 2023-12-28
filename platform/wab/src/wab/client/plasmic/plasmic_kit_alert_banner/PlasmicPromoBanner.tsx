@@ -68,6 +68,8 @@ export interface DefaultPromoBannerProps {
   className?: string;
 }
 
+const $$ = {};
+
 function PlasmicPromoBanner__RenderFunc(props: {
   variants: PlasmicPromoBanner__VariantsArgs;
   args: PlasmicPromoBanner__ArgsType;
@@ -189,7 +191,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicPromoBanner__ArgProps,
           internalVariantPropNames: PlasmicPromoBanner__VariantProps,
         }),

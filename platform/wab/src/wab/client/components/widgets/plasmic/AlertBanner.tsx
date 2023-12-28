@@ -2,10 +2,10 @@
 import { observer } from "mobx-react-lite";
 // Feel free to edit as you see fit.
 import React, { useEffect } from "react";
-import { assert } from "../../../../common";
-import { U } from "../../../cli-routes";
-import { StudioCtx } from "../../../studio-ctx/StudioCtx";
-import { createDarkMask } from "../../darkMask";
+import { assert } from "@/wab/common";
+import { U } from "@/wab/client/cli-routes";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { createDarkMask } from "@/wab/client/components/darkMask";
 import {
   PlasmicAlertBanner,
   PlasmicAlertBanner__VariantsArgs,
@@ -90,6 +90,11 @@ export const AlertSpec = {
     actionFn: async (studioCtx: StudioCtx) => {
       return studioCtx.appCtx.api.reloadLocation();
     },
+  },
+
+  ProtectedMainBranch: {
+    stateVariant: "protectedMainBranch",
+    actionFn: async (studioCtx: StudioCtx) => {},
   },
 } as const;
 

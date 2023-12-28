@@ -319,6 +319,10 @@ export class Project extends OrgChild<"ProjectId"> {
   @Column("timestamptz", { nullable: true })
   permanentlyDeletedAt: Date | null;
 
+  // Whether we should allow edits in the main branch or not
+  @Column("boolean", { nullable: true })
+  isMainBranchProtected?: boolean;
+
   toJSON() {
     return normalizeJson(_.omit(this, "secretApiToken"));
   }

@@ -477,6 +477,7 @@ enum SaveResult {
   GatewayError = "GatewayError",
   UnknownError = "UnknownError",
   TimedOut = "TimedOut",
+  TriedEditProtectedMain = "TriedEditProtectedMain",
 }
 
 export enum PublishResult {
@@ -719,7 +720,7 @@ export class StudioCtx extends WithDbCtx {
       ),
       autorun(
         () => {
-          if (!this.canEditProject()) {
+          if (!this.canEditProject() || !this.canEditBranch()) {
             this.blockChanges = true;
           } else {
             this.blockChanges = false;
@@ -1000,6 +1001,7 @@ export class StudioCtx extends WithDbCtx {
       hasAppAuth,
       appAuthProvider,
       workspaceTutorialDbs,
+      isMainBranchProtected,
     } = await this.appCtx.api.getSiteInfo(this.siteInfo.id);
     this.dbCtx().setSiteInfo({
       ...project,
@@ -1009,6 +1011,7 @@ export class StudioCtx extends WithDbCtx {
       hasAppAuth,
       appAuthProvider,
       workspaceTutorialDbs,
+      isMainBranchProtected,
     });
     return this.siteInfo;
   }
@@ -1851,6 +1854,7 @@ export class StudioCtx extends WithDbCtx {
       }
     }
     await this.loadVersion(pkgVersionInfoMeta, editMode, branch);
+    this.handleBranchProtectionAlert();
   }
 
   private async handleArenaChange(
@@ -4852,7 +4856,7 @@ export class StudioCtx extends WithDbCtx {
    * state to be saved
    */
   canSave() {
-    return this.isAtTip && this.canEditProject();
+    return this.isAtTip && this.canEditProject() && this.canEditBranch();
   }
 
   /** Whether the project is dirty and should be saved */
@@ -4870,6 +4874,12 @@ export class StudioCtx extends WithDbCtx {
   canEditProject() {
     return (
       this.editMode && canUserEditProject(this.appCtx.selfInfo, this.siteInfo)
+    );
+  }
+
+  canEditBranch() {
+    return !!(
+      this.dbCtx().branchInfo?.id || !this.siteInfo.isMainBranchProtected
     );
   }
 
@@ -4903,6 +4913,11 @@ export class StudioCtx extends WithDbCtx {
   }
 
   private async trySave(preferIncremental = true): Promise<SaveResult> {
+    const branchId = this.dbCtx().branchInfo?.id;
+    if (!branchId && this.siteInfo.isMainBranchProtected) {
+      return SaveResult.TriedEditProtectedMain;
+    }
+
     if (!this.hasUnsavedChanges() && !this.needsFullSave) {
       return SaveResult.SkipUpToDate;
     }
@@ -5841,6 +5856,14 @@ export class StudioCtx extends WithDbCtx {
     await this.loadVersion();
     this.alertBannerState.set(AlertSpec.Watch);
     clearDarkMask();
+  }
+
+  handleBranchProtectionAlert() {
+    if (!this.canEditBranch()) {
+      this.alertBannerState.set(AlertSpec.ProtectedMainBranch);
+    } else if (this.alertBannerState.get() === AlertSpec.ProtectedMainBranch) {
+      this.alertBannerState.set(null);
+    }
   }
 
   private async fetchUpdatesWatch() {

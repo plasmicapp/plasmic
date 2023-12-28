@@ -1,18 +1,3 @@
-import { TableSchema } from "@plasmicapp/data-sources";
-import { executePlasmicDataOp } from "@plasmicapp/react-web/lib/data-sources";
-import { Dropdown, Menu, notification } from "antd";
-import { UseComboboxGetItemPropsOptions } from "downshift";
-import { orderBy } from "lodash";
-import { observer } from "mobx-react-lite";
-import { computedFn } from "mobx-utils";
-import React, { ReactNode, useRef, useState } from "react";
-import { FocusScope } from "react-aria";
-import { useDebounce } from "react-use";
-import { FixedSizeList } from "react-window";
-import { isCoreTeamEmail } from "src/wab/shared/devflag-utils";
-import { Modal } from "src/wab/client/components/widgets/Modal";
-import { InsertableTemplateExtraInfo } from "src/wab/shared/insertable-templates";
-import useSWR, { mutate } from "swr";
 import {
   Component,
   ComponentArena,
@@ -22,7 +7,62 @@ import {
   isKnownPageArena,
   ObjectPath,
   PageArena,
-} from "../../../../classes";
+} from "@/wab/classes";
+import { apiKey } from "@/wab/client/api";
+import {
+  KeyboardShortcut,
+  menuSection,
+} from "@/wab/client/components/menu-builder";
+import {
+  reactConfirm,
+  reactPrompt,
+  showTemporaryPrompt,
+} from "@/wab/client/components/quick-modals";
+import {
+  getOpIdForDataSourceOpExpr,
+  orderFieldsByRanking,
+  useSource,
+  useSourceSchemaData,
+} from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceOpPicker";
+import {
+  DataSourceTablePicker,
+  INVALID_DATA_SOURCE_MESSAGE,
+} from "@/wab/client/components/sidebar-tabs/DataSource/DataSourceTablePicker";
+import { Matcher } from "@/wab/client/components/view-common";
+import { Spinner } from "@/wab/client/components/widgets";
+import Button from "@/wab/client/components/widgets/Button";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
+import { NewComponentInfo } from "@/wab/client/components/widgets/NewComponentModal";
+import {
+  providesAppCtx,
+  useTopFrameApi,
+} from "@/wab/client/contexts/AppContexts";
+import { useVirtualCombobox } from "@/wab/client/hooks/useVirtualCombobox";
+import {
+  buildInsertableExtraInfo,
+  getScreenVariantToInsertableTemplate,
+  replaceWithPageTemplate,
+} from "@/wab/client/insertable-templates";
+import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
+import MixedArenaIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__MixedArena";
+import PageIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Page";
+import { DefaultFolderItemProps } from "@/wab/client/plasmic/project_panel/PlasmicFolderItem";
+import PlasmicProjectPanel from "@/wab/client/plasmic/project_panel/PlasmicProjectPanel";
+import PlasmicSearchInput from "@/wab/client/plasmic/project_panel/PlasmicSearchInput";
+import {
+  promptComponentTemplate,
+  promptPageTemplate,
+} from "@/wab/client/prompts";
+import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
+import {
+  calculateNextVersionKey,
+  providesStudioCtx,
+  StudioCtx,
+  useStudioCtx,
+} from "@/wab/client/studio-ctx/StudioCtx";
+import { testIds } from "@/wab/client/test-helpers/test-ids";
+import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import {
   assert,
   ensure,
@@ -32,8 +72,8 @@ import {
   spawnWrapper,
   swallow,
   withoutNils,
-} from "../../../../common";
-import { valueAsString } from "../../../../commons/values";
+} from "@/wab/common";
+import { valueAsString } from "@/wab/commons/values";
 import {
   ComponentType,
   getSubComponents,
@@ -41,21 +81,21 @@ import {
   isPageComponent,
   isReusableComponent,
   PageComponent,
-} from "../../../../components";
-import { DEVFLAGS } from "../../../../devflags";
+} from "@/wab/components";
+import { DEVFLAGS } from "@/wab/devflags";
 import {
   asCode,
   code,
   codeLit,
   mkTemplatedStringOfOneDynExpr,
-} from "../../../../exprs";
+} from "@/wab/exprs";
 import {
   ApiBranch,
   BranchId,
   ListBranchesResponse,
   MainBranchId,
-} from "../../../../shared/ApiSchema";
-import { validateBranchName } from "../../../../shared/ApiSchemaUtil";
+} from "@/wab/shared/ApiSchema";
+import { validateBranchName } from "@/wab/shared/ApiSchemaUtil";
 import {
   AnyArena,
   getArenaName,
@@ -63,27 +103,27 @@ import {
   isDedicatedArena,
   isMixedArena,
   isPageArena,
-} from "../../../../shared/Arenas";
-import { getHostLessComponents } from "../../../../shared/code-components/code-components";
-import { toVarName } from "../../../../shared/codegen/util";
-import { getDataSourceMeta } from "../../../../shared/data-sources-meta/data-source-registry";
+} from "@/wab/shared/Arenas";
+import { getHostLessComponents } from "@/wab/shared/code-components/code-components";
+import { toVarName } from "@/wab/shared/codegen/util";
+import { getDataSourceMeta } from "@/wab/shared/data-sources-meta/data-source-registry";
 import {
   ensureDataSourceStandardQuery,
   ensureLookupSpecFromDraft,
   LookupSpec,
   LookupSpecDraft,
-} from "../../../../shared/data-sources-meta/data-sources";
-import { tryEvalExpr } from "../../../../shared/eval";
-import { pathToString } from "../../../../shared/eval/expression-parser";
+} from "@/wab/shared/data-sources-meta/data-sources";
+import { tryEvalExpr } from "@/wab/shared/eval";
+import { pathToString } from "@/wab/shared/eval/expression-parser";
 import {
   ARENAS_CAP,
   ARENAS_DESCRIPTION,
   ARENA_LOWER,
-} from "../../../../shared/Labels";
-import { tryGetMainContentSlotTarget } from "../../../../shared/SlotUtils";
-import { addEmptyQuery } from "../../../../shared/TplMgr";
-import { $$$ } from "../../../../shared/TplQuery";
-import { getPageArena } from "../../../../sites";
+} from "@/wab/shared/Labels";
+import { tryGetMainContentSlotTarget } from "@/wab/shared/SlotUtils";
+import { addEmptyQuery } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { getPageArena } from "@/wab/sites";
 import {
   flattenTpls,
   isTplContainer,
@@ -91,53 +131,22 @@ import {
   isTplTextBlock,
   mkTplComponentX,
   mkTplInlinedText,
-} from "../../../../tpls";
-import { apiKey } from "../../../api";
-import { providesAppCtx, useTopFrameApi } from "../../../contexts/AppContexts";
-import { useVirtualCombobox } from "../../../hooks/useVirtualCombobox";
-import {
-  buildInsertableExtraInfo,
-  getScreenVariantToInsertableTemplate,
-  replaceWithPageTemplate,
-} from "../../../insertable-templates";
-import ComponentIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Component";
-import MixedArenaIcon from "../../../plasmic/plasmic_kit_design_system/icons/PlasmicIcon__MixedArena";
-import PageIcon from "../../../plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Page";
-import { DefaultFolderItemProps } from "../../../plasmic/project_panel/PlasmicFolderItem";
-import PlasmicProjectPanel from "../../../plasmic/project_panel/PlasmicProjectPanel";
-import PlasmicSearchInput from "../../../plasmic/project_panel/PlasmicSearchInput";
-import { promptComponentTemplate, promptPageTemplate } from "../../../prompts";
-import { getComboForAction } from "../../../shortcuts/studio/studio-shortcuts";
-import {
-  calculateNextVersionKey,
-  providesStudioCtx,
-  StudioCtx,
-  useStudioCtx,
-} from "../../../studio-ctx/StudioCtx";
-import { testIds } from "../../../test-helpers/test-ids";
-import { StandardMarkdown } from "../../../utils/StandardMarkdown";
-import { KeyboardShortcut, menuSection } from "../../menu-builder";
-import {
-  reactConfirm,
-  reactPrompt,
-  showTemporaryPrompt,
-} from "../../quick-modals";
-import { Matcher } from "../../view-common";
-import { Spinner } from "../../widgets";
-import Button from "../../widgets/Button";
-import { Icon } from "../../widgets/Icon";
-import { LabelWithDetailedTooltip } from "../../widgets/LabelWithDetailedTooltip";
-import { NewComponentInfo } from "../../widgets/NewComponentModal";
-import {
-  getOpIdForDataSourceOpExpr,
-  orderFieldsByRanking,
-  useSource,
-  useSourceSchemaData,
-} from "../DataSource/DataSourceOpPicker";
-import {
-  DataSourceTablePicker,
-  INVALID_DATA_SOURCE_MESSAGE,
-} from "../DataSource/DataSourceTablePicker";
+} from "@/wab/tpls";
+import { TableSchema } from "@plasmicapp/data-sources";
+import { executePlasmicDataOp } from "@plasmicapp/react-web/lib/data-sources";
+import { Dropdown, Menu, notification, Tooltip } from "antd";
+import { UseComboboxGetItemPropsOptions } from "downshift";
+import { orderBy } from "lodash";
+import { observer } from "mobx-react-lite";
+import { computedFn } from "mobx-utils";
+import React, { ReactNode, useRef, useState } from "react";
+import { FocusScope } from "react-aria";
+import { useDebounce } from "react-use";
+import { FixedSizeList } from "react-window";
+import { Modal } from "src/wab/client/components/widgets/Modal";
+import { isCoreTeamEmail } from "src/wab/shared/devflag-utils";
+import { InsertableTemplateExtraInfo } from "src/wab/shared/insertable-templates";
+import useSWR, { mutate } from "swr";
 import FolderItem from "./FolderItem";
 import styles from "./ProjectPanel.module.scss";
 
@@ -1500,7 +1509,7 @@ function BranchPanelTop_(
             const branch = currentItem.branch;
             const onSwitch = async () => {
               dismissSearch();
-              await studioCtx.switchToBranch(branch);
+              studioCtx.switchToBranch(branch);
               onClose();
             };
 
@@ -1526,6 +1535,21 @@ function BranchPanelTop_(
                   },
                   studioCtx,
                   onClose,
+                  onToggleProtectionMainBranch: async () => {
+                    await api.setMainBranchProtection(
+                      projectId,
+                      !studioCtx.siteInfo.isMainBranchProtected
+                    );
+                    await studioCtx.refreshSiteInfo();
+                    notification.success({
+                      message: `Main branch is now ${
+                        studioCtx.siteInfo.isMainBranchProtected
+                          ? "protected"
+                          : "unprotected"
+                      }`,
+                    });
+                    studioCtx.handleBranchProtectionAlert();
+                  },
                 })}
                 renamingDisabled
                 onRename={spawnWrapper(async (newName) => {
@@ -1554,17 +1578,20 @@ function getBranchMenuRenderer({
   onRename,
   onSwitch,
   onDuplicate,
+  onToggleProtectionMainBranch,
 }: {
   branch: ApiBranch | undefined;
   onClose: () => void;
   onRename: () => Promise<void>;
   onSwitch: () => Promise<void>;
   onDuplicate: () => Promise<void>;
+  onToggleProtectionMainBranch: () => Promise<void>;
   studioCtx: StudioCtx;
 }) {
   return () => {
     const branch = _branch;
     const projectId = studioCtx.siteInfo.id;
+    const isMainBranchProtected = studioCtx.siteInfo.isMainBranchProtected;
     const api = studioCtx.appCtx.api;
 
     function refresh() {
@@ -1578,6 +1605,23 @@ function getBranchMenuRenderer({
         }}
         id="proj-item-menu"
       >
+        {menuSection(
+          !branch && (
+            <Menu.Item
+              key="protect"
+              onClick={async () => {
+                await onToggleProtectionMainBranch();
+              }}
+            >
+              <Tooltip title="When the main branch is in a protected state it's not possible to do direct changes to it.">
+                <strong>
+                  {isMainBranchProtected ? "Unprotect" : "Protect"}
+                </strong>{" "}
+                main branch
+              </Tooltip>
+            </Menu.Item>
+          )
+        )}
         {menuSection(
           <Menu.Item key="switch" onClick={onSwitch}>
             <strong>Switch</strong> to branch

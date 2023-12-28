@@ -1116,6 +1116,12 @@ export async function saveProjectRev(req: Request, res: Response) {
     req.params.projectBranchId
   );
 
+  const project = await mgr.getProjectById(projectId);
+
+  if (project.isMainBranchProtected && !branchId) {
+    throw new BadRequestError();
+  }
+
   const mergedBundle: Bundle = await (async () => {
     if (req.body.incremental) {
       const rev = await mgr.getLatestProjectRev(projectId, { branchId });
@@ -1188,7 +1194,6 @@ export async function saveProjectRev(req: Request, res: Response) {
   // multiple JSON.stringify()/JSON.parse() on large bundles
   const data = JSON.stringify(mergedBundle);
 
-  const project = await mgr.getProjectById(projectId);
   req.promLabels.projectId = projectId;
   userAnalytics(req).track({
     event: "Save project",
@@ -1302,6 +1307,13 @@ export async function updateBranch(req: Request, res: Response) {
   res.json({});
 }
 
+export async function setMainBranchProtection(req: Request, res: Response) {
+  const mgr = userDbMgr(req);
+  const projectId = req.params.projectId as ProjectId;
+  await mgr.setMainBranchProtection(projectId, !!req.body.protected);
+  res.json({});
+}
+
 export async function getProjectRev(req: Request, res: Response) {
   const revisionId = req.query.revisionId
     ? JSON.parse(req.query.revisionId as string)
@@ -1387,6 +1399,7 @@ export async function getProjectRev(req: Request, res: Response) {
     hasAppAuth,
     appAuthProvider,
     workspaceTutorialDbs,
+    isMainBranchProtected: !!project.isMainBranchProtected,
   });
 }
 

@@ -262,6 +262,7 @@ import {
   resolveSync,
   revertToVersion,
   saveProjectRev,
+  setMainBranchProtection,
   shareCodeSandbox,
   tryMergeBranch,
   updateBranch,
@@ -1630,6 +1631,10 @@ export function addMainAppServerRoutes(app: express.Application) {
   app.delete(
     "/api/v1/projects/:projectId/branches/:branchId",
     withNext(deleteBranch)
+  );
+  app.post(
+    "/api/v1/projects/:projectId/main-branch-protection",
+    withNext(setMainBranchProtection)
   );
   app.get("/api/v1/projects/:projectBranchId", withNext(getProjectRev));
   app.get(

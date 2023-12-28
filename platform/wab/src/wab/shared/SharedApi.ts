@@ -227,6 +227,7 @@ export interface SiteInfo {
   appAuthProvider?: AppAuthProvider;
   workspaceTutorialDbs?: ApiDataSource[];
   readableByPublic: boolean;
+  isMainBranchProtected: boolean;
 }
 
 export interface SiteInstInfo {
@@ -1072,6 +1073,18 @@ export abstract class SharedApi {
       `/projects/${encodeURIComponent(projectId)}/branches/${encodeURIComponent(
         branchId
       )}`
+    );
+  }
+
+  async setMainBranchProtection(
+    projectId: ProjectId,
+    mainBranchProtection: boolean
+  ): Promise<{}> {
+    return this.post(
+      `/projects/${encodeURIComponent(projectId)}/main-branch-protection`,
+      {
+        protected: mainBranchProtection,
+      }
     );
   }
 

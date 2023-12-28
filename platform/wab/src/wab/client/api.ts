@@ -587,6 +587,7 @@ export function filteredApi(
           excludeSettings: true,
         });
       },
+    setMainBranchProtection: checkProjectIdInFirstArg,
   };
 
   // Start with all methods marked as forbidden

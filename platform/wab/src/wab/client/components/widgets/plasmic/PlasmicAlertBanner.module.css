@@ -37,6 +37,9 @@
 .rootstate_watch {
   background: var(--token-5j3rDkMLTbx);
 }
+.rootstate_protectedMainBranch {
+  background: var(--token-5j3rDkMLTbx);
+}
 .freeBox__ncsVm {
   display: flex;
   position: relative;
@@ -175,6 +178,9 @@
 }
 .freeBoxstate_watch___8R5SCfKC {
   margin-right: 10px;
+}
+.actionBtnstate_protectedMainBranch:global(.__wab_instance) {
+  display: none;
 }
 .svg__i6KIv {
   display: flex;

@@ -59,7 +59,8 @@ export type PlasmicAlertBanner__VariantMembers = {
     | "unlogged"
     | "permError"
     | "watch"
-    | "invariantError";
+    | "invariantError"
+    | "protectedMainBranch";
 };
 export type PlasmicAlertBanner__VariantsArgs = {
   state?: SingleChoiceArg<
@@ -74,6 +75,7 @@ export type PlasmicAlertBanner__VariantsArgs = {
     | "permError"
     | "watch"
     | "invariantError"
+    | "protectedMainBranch"
   >;
 };
 type VariantPropType = keyof PlasmicAlertBanner__VariantsArgs;
@@ -107,9 +109,12 @@ export interface DefaultAlertBannerProps {
     | "permError"
     | "watch"
     | "invariantError"
+    | "protectedMainBranch"
   >;
   className?: string;
 }
+
+const $$ = {};
 
 function PlasmicAlertBanner__RenderFunc(props: {
   variants: PlasmicAlertBanner__VariantsArgs;
@@ -182,6 +187,11 @@ function PlasmicAlertBanner__RenderFunc(props: {
           [sty.rootstate_notChrome]: hasVariant($state, "state", "notChrome"),
           [sty.rootstate_outOfDate]: hasVariant($state, "state", "outOfDate"),
           [sty.rootstate_permError]: hasVariant($state, "state", "permError"),
+          [sty.rootstate_protectedMainBranch]: hasVariant(
+            $state,
+            "state",
+            "protectedMainBranch"
+          ),
           [sty.rootstate_readOnly]: hasVariant($state, "state", "readOnly"),
           [sty.rootstate_saveFailed]: hasVariant($state, "state", "saveFailed"),
           [sty.rootstate_unlogged]: hasVariant($state, "state", "unlogged"),
@@ -265,6 +275,11 @@ function PlasmicAlertBanner__RenderFunc(props: {
               "state",
               "notChrome"
             ),
+            [sty.freeBoxstate_protectedMainBranch__bzauTcl19]: hasVariant(
+              $state,
+              "state",
+              "protectedMainBranch"
+            ),
             [sty.freeBoxstate_readOnly__bzauKX362]: hasVariant(
               $state,
               "state",
@@ -313,6 +328,11 @@ function PlasmicAlertBanner__RenderFunc(props: {
                   "state",
                   "permError"
                 ),
+                [sty.textstate_protectedMainBranch__su8VUtcl19]: hasVariant(
+                  $state,
+                  "state",
+                  "protectedMainBranch"
+                ),
                 [sty.textstate_readOnly__su8VUkX362]: hasVariant(
                   $state,
                   "state",
@@ -341,7 +361,9 @@ function PlasmicAlertBanner__RenderFunc(props: {
               }
             )}
           >
-            {hasVariant($state, "state", "invariantError")
+            {hasVariant($state, "state", "protectedMainBranch")
+              ? "The main branch is currently protected."
+              : hasVariant($state, "state", "invariantError")
               ? "Could not save your project."
               : hasVariant($state, "state", "watch")
               ? "You are in watch mode"
@@ -401,6 +423,11 @@ function PlasmicAlertBanner__RenderFunc(props: {
                   "state",
                   "permError"
                 ),
+                [sty.textstate_protectedMainBranch__n3UE1Tcl19]: hasVariant(
+                  $state,
+                  "state",
+                  "protectedMainBranch"
+                ),
                 [sty.textstate_readOnly__n3UE1KX362]: hasVariant(
                   $state,
                   "state",
@@ -429,7 +456,9 @@ function PlasmicAlertBanner__RenderFunc(props: {
               }
             )}
           >
-            {hasVariant($state, "state", "invariantError")
+            {hasVariant($state, "state", "protectedMainBranch")
+              ? "Switch to a different branch to edit project content."
+              : hasVariant($state, "state", "invariantError")
               ? "The last action you took resulted in an invalid state. We're looking into it!"
               : hasVariant($state, "state", "watch")
               ? "You can see the project while others make changes, but you cannot edit it."
@@ -620,7 +649,9 @@ function PlasmicAlertBanner__RenderFunc(props: {
         })}
       >
         {(
-          hasVariant($state, "state", "watch")
+          hasVariant($state, "state", "protectedMainBranch")
+            ? true
+            : hasVariant($state, "state", "watch")
             ? true
             : hasVariant($state, "state", "unlogged")
             ? true
@@ -635,6 +666,13 @@ function PlasmicAlertBanner__RenderFunc(props: {
           <Button
             data-plasmic-name={"actionBtn"}
             data-plasmic-override={overrides.actionBtn}
+            className={classNames("__wab_instance", {
+              [sty.actionBtnstate_protectedMainBranch]: hasVariant(
+                $state,
+                "state",
+                "protectedMainBranch"
+              ),
+            })}
             endIcon={
               <ChevronDownsvgIcon
                 className={classNames(projectcss.all, sty.svg__jR75H)}
@@ -886,7 +924,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicAlertBanner__ArgProps,
           internalVariantPropNames: PlasmicAlertBanner__VariantProps,
         }),

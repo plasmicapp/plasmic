@@ -317,6 +317,7 @@ export const updatableProjectFields = [
   "workspaceId",
   "extraData",
   "secretApiToken",
+  "isMainBranchProtected",
 ] as const;
 
 export const editorOnlyUpdatableProjectFields = [
@@ -7470,6 +7471,20 @@ export class DbMgr implements MigrationDbMgr {
     return this.branches().find({
       projectId,
       ...maybeIncludeDeleted(includeDeleted),
+    });
+  }
+
+  async setMainBranchProtection(projectId: ProjectId, protected_: boolean) {
+    await this.checkProjectPerms(
+      projectId,
+      "editor",
+      "change main branch protection"
+    );
+
+    const project = await this.getProjectById(projectId);
+    await this.updateProject({
+      id: projectId,
+      isMainBranchProtected: protected_,
     });
   }
 

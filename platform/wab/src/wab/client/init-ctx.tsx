@@ -54,6 +54,7 @@ export async function loadSiteDbCtx(
     hasAppAuth,
     appAuthProvider,
     workspaceTutorialDbs,
+    isMainBranchProtected,
   } = await (async () => {
     try {
       return await baseApi.getSiteInfo(siteId, { branchId: branch?.id });
@@ -79,6 +80,7 @@ export async function loadSiteDbCtx(
   siteInfo.hasAppAuth = hasAppAuth;
   siteInfo.appAuthProvider = appAuthProvider;
   siteInfo.workspaceTutorialDbs = workspaceTutorialDbs;
+  siteInfo.isMainBranchProtected = isMainBranchProtected;
 
   if (hideStarters(appCtx) && siteInfo.name.includes("Plasmic Levels")) {
     throw new Error("Could not read property '__bundleInfo' of undefined");

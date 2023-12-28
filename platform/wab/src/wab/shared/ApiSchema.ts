@@ -1744,6 +1744,7 @@ export interface GetProjectResponse {
   hasAppAuth: boolean;
   appAuthProvider?: AppAuthProvider;
   workspaceTutorialDbs?: ApiDataSource[];
+  isMainBranchProtected: boolean;
 }
 
 export type MergeSrcDst =
