@@ -33,6 +33,6 @@ export function getBundleSubset(
     globalGroups: bundle.globalGroups,
     projects: bundle.projects,
     activeSplits: bundle.activeSplits,
-    bundleUrlQuery: bundle.bundleUrlQuery ?? null,
+    bundleKey: bundle.bundleKey ?? null,
   };
 }

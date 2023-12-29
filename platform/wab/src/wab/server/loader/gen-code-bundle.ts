@@ -43,7 +43,7 @@ export const LOADER_CACHE_BUST = "17";
  */
 export const LATEST_LOADER_VERSION = 10;
 
-const LOADER_ASSETS_BUCKET =
+export const LOADER_ASSETS_BUCKET =
   process.env.LOADER_ASSETS_BUCKET ?? "plasmic-loader-assets-dev";
 
 export async function genPublishedLoaderCodeBundle(
@@ -58,7 +58,6 @@ export async function genPublishedLoaderCodeBundle(
     preferEsbuild: boolean;
     i18nKeyScheme: LocalizationKeyScheme | undefined;
     i18nTagPrefix: string | undefined;
-    cacheableQuery: string;
     skipHead?: boolean;
   }
 ) {
@@ -89,7 +88,6 @@ export async function genPublishedLoaderCodeBundle(
       i18nKeyScheme: opts.i18nKeyScheme,
       i18nTagPrefix: opts.i18nTagPrefix,
       skipHead: opts.skipHead,
-      cacheableQuery: opts.cacheableQuery,
     }
   );
 }
@@ -159,7 +157,6 @@ async function genLoaderCodeBundleForProjectVersions(
     preferEsbuild: boolean;
     i18nKeyScheme?: LocalizationKeyScheme;
     i18nTagPrefix: string | undefined;
-    cacheableQuery?: string;
     skipHead?: boolean;
   }
 ) {
@@ -255,7 +252,6 @@ async function genLoaderCodeBundleForProjectVersions(
         loaderVersion: opts.loaderVersion,
         browserOnly: opts.browserOnly,
         preferEsbuild: opts.preferEsbuild,
-        cacheableQuery: opts.cacheableQuery,
       },
     ]);
   };
@@ -279,19 +275,22 @@ async function genLoaderCodeBundleForProjectVersions(
           )
         ).every((x) => x)
       ) {
-        return await upsertS3CacheEntry({
+        const bundleKey = makeBundleBucketPath({
+          projectVersions,
+          platform: exportOpts.platform,
+          loaderVersion: opts.loaderVersion,
+          browserOnly: opts.browserOnly,
+          exportOpts,
+        });
+        const bundle = await upsertS3CacheEntry({
           bucket: LOADER_ASSETS_BUCKET,
-          key: makeBundleBucketPath({
-            projectVersions,
-            platform: exportOpts.platform,
-            loaderVersion: opts.loaderVersion,
-            browserOnly: opts.browserOnly,
-            exportOpts,
-          }),
+          key: bundleKey,
           compute: bundleProjects,
           serialize: (obj) => JSON.stringify(obj),
           deserialize: (str) => JSON.parse(str),
         });
+        bundle.bundleKey = bundleKey;
+        return bundle;
       } else {
         return await bundleProjects();
       }

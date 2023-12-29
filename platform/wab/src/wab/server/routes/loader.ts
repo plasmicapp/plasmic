@@ -1,15 +1,25 @@
-import { ensure, ensureArray, hackyCast, tuple } from "@/wab/common";
+import {
+  ensure,
+  ensureArray,
+  ensureInstance,
+  hackyCast,
+  tuple,
+} from "@/wab/common";
 import { DbMgr } from "@/wab/server/db/DbMgr";
 import { Project } from "@/wab/server/entities/Entities";
 import {
   genLatestLoaderCodeBundle,
   genPublishedLoaderCodeBundle,
   LATEST_LOADER_VERSION,
+  LOADER_ASSETS_BUCKET,
   LOADER_CACHE_BUST,
   LOADER_CODEGEN_OPTS_DEFAULTS,
 } from "@/wab/server/loader/gen-code-bundle";
 import { genLoaderHtmlBundle } from "@/wab/server/loader/gen-html-bundle";
-import { CodeModule } from "@/wab/server/loader/module-bundler";
+import {
+  CodeModule,
+  LoaderBundleOutput,
+} from "@/wab/server/loader/module-bundler";
 import {
   parseComponentProps,
   parseGlobalVariants,
@@ -29,6 +39,7 @@ import { toClassName } from "@/wab/shared/codegen/util";
 import { toJson } from "@/wab/shared/core/model-tree-util";
 import { tplToPlasmicElements } from "@/wab/shared/element-repr/gen-element-repr-v2";
 import { getCodegenUrl } from "@/wab/urls";
+import S3 from "aws-sdk/clients/s3";
 import execa from "execa";
 import { Request, Response } from "express-serve-static-core";
 import fs from "fs";
@@ -208,23 +219,6 @@ export async function buildVersionedLoaderAssets(req: Request, res: Response) {
 
   req.promLabels.projectId = projects.map((p) => p.id).join(",");
 
-  const resolvedProjectIdSpecs = await getResolvedProjectVersions(
-    mgr,
-    projectIdSpecs,
-    { prefilledOnly: true }
-  );
-
-  const cacheableQuery = makeCacheableVersionedLoaderQuery({
-    browserOnly,
-    loaderVersion,
-    nextjsAppDir,
-    platform,
-    resolvedProjectIdSpecs,
-    i18nKeyScheme,
-    i18nTagPrefix,
-    skipHead,
-  });
-
   const result = await genPublishedLoaderCodeBundle(
     mgr,
     req.workerpool,
@@ -246,7 +240,6 @@ export async function buildVersionedLoaderAssets(req: Request, res: Response) {
       loaderVersion,
       browserOnly,
       skipHead,
-      cacheableQuery,
     })
   );
 
@@ -280,7 +273,6 @@ export function makeGenPublishedLoaderCodeBundleOpts(opts: {
     keyScheme: LocalizationKeyScheme | undefined;
     tagPrefix: string | undefined;
   };
-  cacheableQuery: string;
   skipHead?: boolean;
 }): Parameters<typeof genPublishedLoaderCodeBundle>[2] {
   const {
@@ -290,7 +282,6 @@ export function makeGenPublishedLoaderCodeBundleOpts(opts: {
     i18n,
     loaderVersion,
     browserOnly,
-    cacheableQuery,
     skipHead,
   } = opts;
   return {
@@ -306,7 +297,6 @@ export function makeGenPublishedLoaderCodeBundleOpts(opts: {
     loaderVersion,
     browserOnly,
     preferEsbuild: true,
-    cacheableQuery,
     skipHead,
   };
 }
@@ -408,30 +398,14 @@ export async function buildLatestLoaderAssets(req: Request, res: Response) {
 }
 
 export async function getLoaderChunk(req: Request, res: Response) {
-  const mgr = superDbMgr(req);
-  const {
-    platform,
-    nextjsAppDir,
-    browserOnly,
-    projectIdSpecs,
-    loaderVersion,
-    i18nKeyScheme,
-    i18nTagPrefix,
-    skipHead,
-  } = getLoaderOptions(req);
-
   const fileNames = isString(req.query.fileName)
     ? req.query.fileName.split(",")
     : undefined;
 
-  const projectVersions = projectIdSpecs.map(parseProjectIdSpec);
+  const bundleKey = req.query.bundleKey;
 
-  for (const { projectId, version } of projectVersions) {
-    if (!version) {
-      throw new BadRequestError(
-        `Project ${projectId} does not have a specified version`
-      );
-    }
+  if (!isString(bundleKey)) {
+    throw new BadRequestError("Invalid `bundleKey` param: " + bundleKey);
   }
 
   if (!Array.isArray(fileNames)) {
@@ -442,60 +416,19 @@ export async function getLoaderChunk(req: Request, res: Response) {
 
   const fileNamesSet = new Set(fileNames);
 
-  const projects = await Promise.all(
-    projectVersions.map(
-      async ({ projectId }) => await mgr.getProjectById(projectId)
-    )
-  );
+  console.log(`Loading S3 bundle from ${LOADER_ASSETS_BUCKET} ${bundleKey}`);
 
-  trackLoaderCodegenEvent(req, projects, {
-    versionType: "chunk",
-    platform,
-  });
+  const s3 = new S3();
 
-  req.promLabels.projectId = projects.map((p) => p.id).join(",");
-
-  const resolvedProjectIdSpecs = await getResolvedProjectVersions(
-    mgr,
-    projectIdSpecs,
-    { prefilledOnly: true }
-  );
-
-  const cacheableQuery = makeCacheableVersionedLoaderQuery({
-    browserOnly,
-    loaderVersion,
-    nextjsAppDir,
-    platform,
-    resolvedProjectIdSpecs,
-    i18nKeyScheme,
-    i18nTagPrefix,
-    skipHead,
-  });
-
-  const bundle = await genPublishedLoaderCodeBundle(
-    mgr,
-    req.workerpool,
-    makeGenPublishedLoaderCodeBundleOpts({
-      platform,
-      appDir: nextjsAppDir,
-      projectVersions: Object.fromEntries(
-        projectVersions.map(({ projectId, version }) => [
-          projectId,
-          mkVersionToSync(
-            ensure(version, "Unexpected nullish version in projectVersions")
-          ),
-        ])
-      ),
-      i18n: {
-        keyScheme: i18nKeyScheme,
-        tagPrefix: i18nTagPrefix,
-      },
-      loaderVersion,
-      browserOnly,
-      skipHead,
-      cacheableQuery,
+  const obj = await s3
+    .getObject({
+      Bucket: LOADER_ASSETS_BUCKET,
+      Key: bundleKey,
     })
-  );
+    .promise();
+  const serialized = ensureInstance(obj.Body, Buffer).toString("utf8");
+
+  const bundle: LoaderBundleOutput = JSON.parse(serialized);
 
   const modules = (
     Array.isArray(bundle.modules) ? bundle.modules : bundle.modules.browser

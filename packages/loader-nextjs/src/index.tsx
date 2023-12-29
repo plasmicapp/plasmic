@@ -58,7 +58,7 @@ type ServerRequest = IncomingMessage & {
 const reactMajorVersion = +React.version.split(".")[0];
 
 function filterCodeFromRenderData(data: ComponentRenderData) {
-  if (reactMajorVersion >= 18 && !!data.bundle.bundleUrlQuery) {
+  if (reactMajorVersion >= 18 && !!data.bundle.bundleKey) {
     // Keep the entrypoints
     const entrypoints = new Set([
       ...data.entryCompMetas.map((compMeta) => compMeta.entry),

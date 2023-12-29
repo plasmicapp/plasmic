@@ -175,7 +175,7 @@ export interface LoaderBundleOutput {
     // (undocumented)
     activeSplits: Split[];
     // (undocumented)
-    bundleUrlQuery: string | null;
+    bundleKey: string | null;
     // (undocumented)
     components: ComponentMeta[];
     // (undocumented)

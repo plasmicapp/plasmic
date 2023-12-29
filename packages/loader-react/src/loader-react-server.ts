@@ -86,7 +86,7 @@ export class ReactServerPlasmicComponentLoader {
     external: [],
     projects: [],
     activeSplits: [],
-    bundleUrlQuery: null,
+    bundleKey: null,
   };
 
   constructor(args: {
@@ -247,7 +247,7 @@ export class ReactServerPlasmicComponentLoader {
     // not a partial bundle. Figure it out how to merge partial bundles.
     this.bundle = bundle;
     // Avoid `undefined` as it cannot be serialized as JSON
-    this.bundle.bundleUrlQuery = this.bundle.bundleUrlQuery ?? null;
+    this.bundle.bundleKey = this.bundle.bundleKey ?? null;
     this.onBundleMerged?.();
   }
 
@@ -266,7 +266,7 @@ export class ReactServerPlasmicComponentLoader {
       external: [],
       projects: [],
       activeSplits: [],
-      bundleUrlQuery: null,
+      bundleKey: null,
     };
   }
 }

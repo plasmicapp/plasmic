@@ -104,8 +104,7 @@ export interface LoaderBundleOutput {
   globalGroups: GlobalGroupMeta[];
   projects: ProjectMeta[];
   activeSplits: Split[];
-  // URL seach params for loading JavaScript chunks in this bundle
-  bundleUrlQuery: string | null;
+  bundleKey: string | null;
 }
 
 export interface LoaderHtmlOutput {
@@ -313,11 +312,13 @@ export class Api {
   }
 
   getChunksUrl(bundle: LoaderBundleOutput, modules: CodeModule[]) {
-    return `${this.host}/api/v1/loader/chunks?${
-      bundle.bundleUrlQuery
-    }&fileName=${modules
-      .map((m) => m.fileName)
-      .sort()
-      .join(",")}`;
+    return `${this.host}/api/v1/loader/chunks?bundleKey=${encodeURIComponent(
+      bundle.bundleKey ?? "null"
+    )}&fileName=${encodeURIComponent(
+      modules
+        .map((m) => m.fileName)
+        .sort()
+        .join(",")
+    )}`;
   }
 }

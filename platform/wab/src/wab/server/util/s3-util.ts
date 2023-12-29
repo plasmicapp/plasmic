@@ -1,6 +1,6 @@
+import { ensureInstance } from "@/wab/common";
 import S3 from "aws-sdk/clients/s3";
 import path from "path";
-import { ensureInstance } from "../../common";
 
 export async function upsertS3CacheEntry<T>(opts: {
   bucket: string;
@@ -21,7 +21,8 @@ export async function upsertS3CacheEntry<T>(opts: {
       .promise();
     const serialized = ensureInstance(obj.Body, Buffer).toString("utf8");
     console.log(`S3 cache hit for ${bucket} ${key}`);
-    return deserialize(serialized);
+    const data = deserialize(serialized);
+    return data;
   } catch (err) {
     console.log(`S3 cache miss for ${bucket} ${key}; computing`);
     const content = await f();

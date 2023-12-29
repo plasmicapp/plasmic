@@ -79,8 +79,8 @@ export interface LoaderBundleOutput {
   globalGroups: GlobalGroupMeta[];
   projects: ProjectMeta[];
   activeSplits: ActiveSplit[];
-  // URL seach params for loading JavaScript chunks in this bundle
-  bundleUrlQuery: string | null;
+  // Bundle key for loading chunks
+  bundleKey: string | null;
 }
 
 export interface CodeModule {
@@ -101,7 +101,6 @@ type BundleOpts = {
   mode: "production" | "development";
   loaderVersion: number;
   browserOnly: boolean;
-  cacheableQuery?: string;
 };
 
 const RE_RENDERER_FILE = /\/render__[^./]*\.tsx/g;
@@ -763,7 +762,8 @@ function makeLoaderBundleOutput(
       })),
       (x) => x.id
     ),
-    bundleUrlQuery: opts.cacheableQuery ?? null,
+    // Populated in `upsertS3CacheEntry` call
+    bundleKey: null,
   };
   return output;
 }
