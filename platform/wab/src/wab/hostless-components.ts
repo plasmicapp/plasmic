@@ -36,6 +36,7 @@ export const fstPartyHostLessComponents = [
   "react-chartjs-2",
   "plasmic-link-preview",
   "react-quill",
+  "tiptap",
   "loading-boundary",
   "radix-ui",
   "lodash",
