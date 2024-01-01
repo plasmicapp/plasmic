@@ -1,6 +1,6 @@
 import type { StyleSection } from "@plasmicapp/host/registerComponent";
 import { Modal } from "antd";
-import React, { ReactElement, useMemo, useState } from "react";
+import React, { ReactElement, useMemo } from "react";
 import { Registerable, registerComponentHelper } from "./utils";
 
 // hide sizing section, as width can only be set via a width prop, and not css!
@@ -28,8 +28,6 @@ export function AntdModal(
     trigger?: ReactElement;
   }
 ) {
-  const [isOpen, setIsOpen] = useState(false);
-
   const {
     onOpenChange,
     onOk,
@@ -47,7 +45,6 @@ export function AntdModal(
   const memoOnOk = React.useMemo(() => {
     if (onOpenChange || onOk) {
       return (e: React.MouseEvent<HTMLButtonElement>) => {
-        setIsOpen(false);
         onOpenChange?.(false);
         onOk?.(e);
       };
@@ -58,7 +55,6 @@ export function AntdModal(
   const memoOnCancel = React.useMemo(() => {
     if (onOpenChange || onCancel) {
       return (e: React.MouseEvent<HTMLButtonElement>) => {
-        setIsOpen(false);
         onOpenChange?.(false);
         onCancel?.(e);
       };
@@ -84,12 +80,14 @@ export function AntdModal(
         onOk={memoOnOk}
         width={widthProp}
         onCancel={memoOnCancel}
-        open={isOpen || open}
+        open={open}
         footer={hideFooter ? null : footer ?? undefined}
         wrapClassName={wrapClassName}
         className={`${props.className} ${props.defaultStylesClassName} ${modalScopeClassName}`}
       />
-      {trigger ? <div onClick={() => setIsOpen(true)}>{trigger}</div> : null}
+      {trigger ? (
+        <div onClick={() => onOpenChange?.(true)}>{trigger}</div>
+      ) : null}
     </>
   );
 }
