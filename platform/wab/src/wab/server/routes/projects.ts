@@ -1803,7 +1803,7 @@ export async function publishProject(req: Request, res: Response) {
       { pkg: _.omit(pkgVersion, "model") },
       undefined,
       {
-        verifyMonthlyViews: false,
+        verifyMonthlyViews: true,
       }
     )
   );
