@@ -127,7 +127,9 @@ export const CommentOverlays = observer(function CommentOverlays({
             label,
             threadComments.length > 1
               ? `${threadComments.length - 1} replies`
-              : "Reply"
+              : "Reply",
+            undefined,
+            true
           )}
         </div>
         {isSelected && (

@@ -85,6 +85,8 @@ import {
   ApiProject,
   BranchId,
   CloneProjectRequest,
+  CommentId,
+  CommentThreadId,
   CreateBranchRequest,
   CreateBranchResponse,
   CreateSiteRequest,
@@ -2841,20 +2843,6 @@ export async function getCommentsForProject(req: Request, res: Response) {
   );
 }
 
-export async function updateNotificationSettings(req: Request, res: Response) {
-  const mgr = userDbMgr(req);
-  const { projectId, branchId } = parseProjectBranchId(
-    req.params.projectBranchId
-  );
-  const settings: ApiNotificationSettings = req.body;
-  await mgr.updateNotificationSettings(
-    getUser(req).id,
-    brand(projectId),
-    settings
-  );
-  res.json({});
-}
-
 export async function postCommentInProject(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const author = getUser(req);
@@ -2932,6 +2920,40 @@ export async function postCommentInProject(req: Request, res: Response) {
   res.json(ensureType<PostCommentResponse>({}));
 }
 
+export async function deleteCommentInProject(req: Request, res: Response) {
+  const mgr = userDbMgr(req);
+  const { projectId, branchId } = parseProjectBranchId(
+    req.params.projectBranchId
+  );
+  const commentId = req.params.commentId as CommentId;
+  await mgr.deleteCommentInProject({ projectId, branchId }, commentId);
+
+  await broadcastProjectsMessage({
+    room: `projects/${projectId}`,
+    type: "commentsUpdate",
+    message: {},
+  });
+
+  res.json({});
+}
+
+export async function deleteThreadInProject(req: Request, res: Response) {
+  const mgr = userDbMgr(req);
+  const { projectId, branchId } = parseProjectBranchId(
+    req.params.projectBranchId
+  );
+  const threadId = req.params.threadId as CommentThreadId;
+  await mgr.deleteThreadInProject({ projectId, branchId }, threadId);
+
+  await broadcastProjectsMessage({
+    room: `projects/${projectId}`,
+    type: "commentsUpdate",
+    message: {},
+  });
+
+  res.json({});
+}
+
 export async function addReactionToComment(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const { data } = uncheckedCast<AddCommentReactionRequest>(req.body);
@@ -2962,4 +2984,18 @@ export async function checkAndNofityHostlessVersion(dbMgr: DbMgr) {
       },
     });
   }
+}
+
+export async function updateNotificationSettings(req: Request, res: Response) {
+  const mgr = userDbMgr(req);
+  const { projectId, branchId } = parseProjectBranchId(
+    req.params.projectBranchId
+  );
+  const settings: ApiNotificationSettings = req.body;
+  await mgr.updateNotificationSettings(
+    getUser(req).id,
+    brand(projectId),
+    settings
+  );
+  res.json({});
 }

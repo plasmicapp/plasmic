@@ -1541,6 +1541,9 @@ export interface PostCommentRequest {
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PostCommentResponse {}
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface DeleteCommentResponse {}
+
 export interface DomainsForProjectRequest {
   projectId: string;
 }

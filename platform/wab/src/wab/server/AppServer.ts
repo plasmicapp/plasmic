@@ -226,7 +226,9 @@ import {
   createProject,
   createProjectWithHostlessPackages,
   deleteBranch,
+  deleteCommentInProject,
   deleteProject,
+  deleteThreadInProject,
   detachCodeSandbox,
   fmtCode,
   genCode,
@@ -1708,6 +1710,14 @@ export function addMainAppServerRoutes(app: express.Application) {
   app.post(
     "/api/v1/projects/:projectBranchId/comments",
     withNext(postCommentInProject)
+  );
+  app.delete(
+    "/api/v1/projects/:projectBranchId/comment/:commentId",
+    withNext(deleteCommentInProject)
+  );
+  app.delete(
+    "/api/v1/projects/:projectBranchId/thread/:threadId",
+    withNext(deleteThreadInProject)
   );
   app.post(
     "/api/v1/comments/:commentId/reactions",

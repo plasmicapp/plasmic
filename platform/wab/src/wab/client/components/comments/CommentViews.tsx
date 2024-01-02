@@ -1,37 +1,39 @@
-import { Popover, Tooltip } from "antd";
-import EmojiPicker, { Emoji } from "emoji-picker-react";
-import { groupBy, sortBy } from "lodash";
-import moment from "moment/moment";
-import React, { ReactNode, useState } from "react";
-import { mutate } from "swr";
-import { ObjInst } from "../../../classes";
+import { ObjInst } from "@/wab/classes";
+import { apiKey } from "@/wab/client/api";
+import { Avatar } from "@/wab/client/components/studio/Avatar";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import PlasmicCommentPostForm from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicCommentPostForm";
+import PlasmicReactionButton from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicReactionButton";
+import PlasmicThreadComments from "@/wab/client/plasmic/plasmic_kit_comments/PlasmicThreadComments";
+import {
+  isUserProjectEditor,
+  StudioCtx,
+} from "@/wab/client/studio-ctx/StudioCtx";
+import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import {
   ensure,
   ensureString,
   jsonClone,
   maybe,
   mkUuid,
+  spawn,
   xGroupBy,
-} from "../../../common";
-import { OnClickAway } from "../../../commons/components/OnClickAway";
-import { Stated } from "../../../commons/components/Stated";
+} from "@/wab/common";
 import {
   ApiComment,
   CommentData,
   CommentThreadId,
-} from "../../../shared/ApiSchema";
-import { fullName } from "../../../shared/ApiSchemaUtil";
-import { mkSemVerSiteElement } from "../../../shared/site-diffs";
-import { isTplNamable } from "../../../tpls";
-import { apiKey } from "../../api";
-import { useAppCtx } from "../../contexts/AppContexts";
-import PlasmicCommentPost from "../../plasmic/plasmic_kit_comments/PlasmicCommentPost";
-import PlasmicCommentPostForm from "../../plasmic/plasmic_kit_comments/PlasmicCommentPostForm";
-import PlasmicReactionButton from "../../plasmic/plasmic_kit_comments/PlasmicReactionButton";
-import PlasmicThreadComments from "../../plasmic/plasmic_kit_comments/PlasmicThreadComments";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { ViewCtx } from "../../studio-ctx/view-ctx";
-import { Avatar } from "../studio/Avatar";
+} from "@/wab/shared/ApiSchema";
+import { fullName } from "@/wab/shared/ApiSchemaUtil";
+import { mkSemVerSiteElement } from "@/wab/shared/site-diffs";
+import { isTplNamable } from "@/wab/tpls";
+import { Menu, Tooltip } from "antd";
+import { Emoji } from "emoji-picker-react";
+import { groupBy, sortBy } from "lodash";
+import moment from "moment/moment";
+import React, { ReactNode, useState } from "react";
+import { mutate } from "swr";
+import CommentPost from "./CommentPost";
 
 export function useCommentViews(
   studioCtx: StudioCtx,
@@ -83,106 +85,101 @@ export function useCommentViews(
     comment: ApiComment,
     subjectLabel?: ReactNode,
     threadRepliesLabel?: string,
-    onClick?: () => any
+    onClick?: () => any,
+    isThread?: boolean
   ) {
     const author = ensure(userMap.get(ensureString(comment.createdById)), "");
     const reactionsByEmoji =
       maybe(reactionsByCommentId.get(comment.id), (xs) =>
         groupBy(xs, (x) => x.data.emojiName)
       ) ?? {};
+    const isEditor = isUserProjectEditor(
+      appCtx.selfInfo,
+      studioCtx.siteInfo,
+      studioCtx.siteInfo.perms
+    );
+    const moreMenu = (isEditor ||
+      appCtx.selfInfo?.id === comment.createdById) && (
+      <Menu>
+        <Menu.Item
+          key="remove"
+          onClick={() => {
+            const deleteComment = async () => {
+              if (isThread) {
+                await api.deleteThread(
+                  projectId,
+                  branchId,
+                  comment.data.threadId
+                );
+              } else {
+                await api.deleteComment(projectId, branchId, comment.id);
+              }
+            };
+
+            spawn(deleteComment());
+          }}
+        >
+          Delete {isThread ? "thread" : "comment"}
+        </Menu.Item>
+      </Menu>
+    );
     return (
-      <Stated defaultValue={false}>
-        {(showPicker, setShowPicker) => (
+      <CommentPost
+        onClick={onClick}
+        thread={!!threadRepliesLabel}
+        repliesLinkLabel={threadRepliesLabel}
+        subjectLabel={subjectLabel}
+        avatarContainer={<Avatar user={author} />}
+        userFullName={fullName(author)}
+        timestamp={moment(comment.createdAt).fromNow()}
+        body={comment.data.body}
+        onAddEmoji={async (e) => {
+          await api.addReactionToComment(comment.id, {
+            emojiName: e.unified,
+          });
+          await refresh();
+        }}
+        moreMenu={moreMenu}
+        reactionsContainer={
           <>
-            <PlasmicCommentPost
-              onClick={onClick}
-              thread={!!threadRepliesLabel}
-              repliesLink={{
-                children: threadRepliesLabel,
-              }}
-              subjectLabel={{ children: subjectLabel }}
-              avatarContainer={{ children: <Avatar user={author} /> }}
-              userFullName={fullName(author)}
-              timestamp={moment(comment.createdAt).fromNow()}
-              body={comment.data.body}
-              btnAddReaction={{
-                render: (props, Comp) => (
-                  <Popover
-                    trigger={[]}
-                    visible={showPicker}
-                    onVisibleChange={(x) => setShowPicker(x)}
-                    overlayClassName={"NoPaddingPopover"}
-                    content={
-                      <div>
-                        <OnClickAway onDone={() => setShowPicker(false)}>
-                          <div>
-                            <EmojiPicker
-                              onEmojiClick={async (e) => {
-                                await api.addReactionToComment(comment.id, {
-                                  emojiName: e.unified,
-                                });
-                                await refresh();
-                                setShowPicker(false);
-                              }}
-                            />
-                          </div>
-                        </OnClickAway>
-                      </div>
-                    }
-                  >
-                    <Comp
-                      {...props}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setShowPicker(true);
-                      }}
-                    />
-                  </Popover>
-                ),
-              }}
-              reactionsContainer={{
-                children: Object.entries(reactionsByEmoji).map(
-                  ([emojiName, reactions]) => {
-                    const currentUsersReaction = reactions.find(
-                      (r) => r.createdById === appCtx.selfInfo?.id
-                    );
-                    return (
-                      <Tooltip
-                        title={reactions
-                          .map((r) =>
-                            fullName(
-                              ensure(userMap.get(ensure(r.createdById, "")), "")
-                            )
-                          )
-                          .join(", ")}
-                      >
-                        <PlasmicReactionButton
-                          includesSelf={!!currentUsersReaction}
-                          emoji={<Emoji size={20} unified={emojiName} />}
-                          count={<>{reactions.length}</>}
-                          onClick={async (e) => {
-                            e.stopPropagation();
-                            if (currentUsersReaction) {
-                              await api.removeReactionFromComment(
-                                currentUsersReaction.id
-                              );
-                            } else {
-                              await api.addReactionToComment(comment.id, {
-                                emojiName,
-                              });
-                            }
-                            await refresh();
-                          }}
-                        />
-                      </Tooltip>
-                    );
-                  }
-                ),
-              }}
-            />
+            {Object.entries(reactionsByEmoji).map(([emojiName, reactions]) => {
+              const currentUsersReaction = reactions.find(
+                (r) => r.createdById === appCtx.selfInfo?.id
+              );
+              return (
+                <Tooltip
+                  title={reactions
+                    .map((r) =>
+                      fullName(
+                        ensure(userMap.get(ensure(r.createdById, "")), "")
+                      )
+                    )
+                    .join(", ")}
+                >
+                  <PlasmicReactionButton
+                    includesSelf={!!currentUsersReaction}
+                    emoji={<Emoji size={20} unified={emojiName} />}
+                    count={<>{reactions.length}</>}
+                    onClick={async (e) => {
+                      e.stopPropagation();
+                      if (currentUsersReaction) {
+                        await api.removeReactionFromComment(
+                          currentUsersReaction.id
+                        );
+                      } else {
+                        await api.addReactionToComment(comment.id, {
+                          emojiName,
+                        });
+                      }
+                      await refresh();
+                    }}
+                  />
+                </Tooltip>
+              );
+            })}
           </>
-        )}
-      </Stated>
+        }
+      />
     );
   }
 

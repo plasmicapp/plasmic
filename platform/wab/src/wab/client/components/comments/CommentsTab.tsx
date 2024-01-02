@@ -106,7 +106,8 @@ export const CommentsTab = observer(function CommentsTab(
               studioCtx.centerFocusedFrame(1);
             }
             setShownThreadId(threadId);
-          }
+          },
+          true
         )}
         <SidebarModal
           show={shownThreadId === threadId}

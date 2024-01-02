@@ -155,6 +155,7 @@ import {
   CommentId,
   CommentReactionData,
   CommentReactionId,
+  CommentThreadId,
   CommitGraph,
   CopilotInteractionId,
   DataSourceId,
@@ -255,6 +256,7 @@ import {
   Raw,
   Repository,
   SelectQueryBuilder,
+  UpdateResult,
 } from "typeorm";
 import { Brand } from "utility-types";
 import * as uuid from "uuid";
@@ -5708,6 +5710,19 @@ export class DbMgr implements MigrationDbMgr {
     return ensure(userId, "User id should exist");
   }
 
+  isUserIdSelf(userId?: string) {
+    if (this.actor.type === "NormalUser") {
+      if (userId && userId !== this.actor.userId) {
+        return false;
+      }
+      userId = this.actor.userId;
+    }
+    if (this.actor.type === "SuperUser" && !userId) {
+      return false;
+    }
+    return userId != null;
+  }
+
   //
   // Team API tokens.
   //
@@ -9220,6 +9235,75 @@ export class DbMgr implements MigrationDbMgr {
     });
     await this.entMgr.save([comment]);
     return comment;
+  }
+
+  async deleteCommentInProject(
+    { projectId, branchId }: ProjectAndBranchId,
+    commentId: CommentId
+  ): Promise<Comment> {
+    const comment = await findExactlyOne(this.comments(), {
+      projectId,
+      branchId: branchId ?? null,
+      id: commentId,
+    });
+    if (!this.isUserIdSelf(comment.createdById ?? undefined)) {
+      await this.checkProjectBranchPerms(
+        { projectId, branchId },
+        "editor",
+        "delete comments",
+        true
+      );
+    }
+    Object.assign(comment, this.stampDelete());
+    await this.entMgr.save(comment);
+    return comment;
+  }
+
+  async deleteThreadInProject(
+    { projectId, branchId }: ProjectAndBranchId,
+    threadId: CommentThreadId
+  ): Promise<UpdateResult> {
+    const firstCommentQuery = this.comments()
+      .createQueryBuilder()
+      .select()
+      .where(`"projectId" = :projectId`, {
+        projectId,
+      });
+    if (branchId) {
+      firstCommentQuery.andWhere(`"branchId" = :branchId`, {
+        branchId: branchId,
+      });
+    }
+    const firstComment = ensureFound(
+      (await firstCommentQuery
+        .andWhere(`"data"->>'threadId' = :threadId`, { threadId })
+        .orderBy('"createdAt"', "DESC")
+        .limit(1)
+        .execute()) as Comment | undefined,
+      `Thread ${threadId}`
+    );
+    if (!this.isUserIdSelf(firstComment.createdById ?? undefined)) {
+      await this.checkProjectBranchPerms(
+        { projectId, branchId },
+        "editor",
+        "delete comments",
+        true
+      );
+    }
+
+    const updateQuery = this.comments()
+      .createQueryBuilder()
+      .update()
+      .set(this.stampDelete())
+      .where(`"projectId" = :projectId`, {
+        projectId,
+      });
+    if (branchId) {
+      updateQuery.andWhere(`"branchId" = :branchId`, { branchId: branchId });
+    }
+    updateQuery.andWhere(`"data"->>'threadId' = :threadId`, { threadId });
+
+    return updateQuery.execute();
   }
 
   async getReactionsForComments(

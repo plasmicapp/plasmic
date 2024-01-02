@@ -23,8 +23,8 @@ const DEFAULT_CONFIG: Config = {
   host: getPublicUrl(),
   databaseUri: DEFAULT_DATABASE_URI,
   sessionSecret: "x",
-  mailFrom: "Plasmic <team@example.com>",
-  mailUserOps: "ops@example.com",
+  mailFrom: "Plasmic <team@plasmic.app>",
+  mailUserOps: "ops@plasmic.app",
   production: process.env.NODE_ENV === "production",
   cluster: false,
 };

@@ -564,6 +564,8 @@ export function filteredApi(
     deleteBranch: checkProjectIdInFirstArg,
     getComments: checkProjectIdInFirstArg,
     postComment: checkProjectIdInFirstArg,
+    deleteComment: checkProjectIdInFirstArg,
+    deleteThread: checkProjectIdInFirstArg,
     updateNotificationSettings: checkProjectIdInFirstArg,
     listAppUsers: checkProjectIdInFirstArg,
     getEndUserRoleInApp: checkProjectIdInFirstArg,

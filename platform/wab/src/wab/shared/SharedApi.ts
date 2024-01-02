@@ -84,6 +84,7 @@ import {
   CreateTeamResponse,
   CreateWorkspaceRequest,
   CreateWorkspaceResponse,
+  DeleteCommentResponse,
   DomainsForProjectResponse,
   ExistingGithubRepoRequest,
   FeatureTierId,
@@ -1813,6 +1814,31 @@ export abstract class SharedApi {
     );
   }
 
+  async deleteComment(
+    projectId: ProjectId,
+    branchId: BranchId | undefined,
+    commentId: string
+  ): Promise<DeleteCommentResponse> {
+    return this.delete(
+      `/projects/${showProjectBranchId(
+        brand(projectId),
+        branchId
+      )}/comment/${commentId}`
+    );
+  }
+
+  async deleteThread(
+    projectId: ProjectId,
+    branchId: BranchId | undefined,
+    threadId: string
+  ): Promise<DeleteCommentResponse> {
+    return this.delete(
+      `/projects/${showProjectBranchId(
+        brand(projectId),
+        branchId
+      )}/thread/${threadId}`
+    );
+  }
   async updateNotificationSettings(
     projectId: ProjectId,
     branchId: BranchId | undefined,
