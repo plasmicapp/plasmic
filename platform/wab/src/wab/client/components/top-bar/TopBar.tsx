@@ -25,7 +25,6 @@ import {
   isPageComponent,
   isReusableComponent,
 } from "@/wab/components";
-import { DEVFLAGS } from "@/wab/devflags";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { Menu, notification, Tooltip } from "antd";
 import { observer } from "mobx-react-lite";
@@ -437,8 +436,11 @@ function _TopBar({ preview }: TopBarProps) {
         }
         commentButton={{
           wrap:
-            DEVFLAGS.comments ||
-            (team && DEVFLAGS.commentsTeamIds.includes(team.id))
+            appCtx.appConfig.comments ||
+            (studioCtx.siteInfo.teamId &&
+              appCtx.appConfig.commentsTeamIds.includes(
+                studioCtx.siteInfo.teamId
+              ))
               ? undefined
               : () => null,
           props: {
