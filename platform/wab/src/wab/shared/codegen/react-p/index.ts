@@ -575,26 +575,9 @@ export function makeGlobalContextBundle(
       const maybeArg = tpl.vsettings[0].args.find((arg) => arg.param === param);
       const varName = paramToVarName(tpl.component, param);
       let serializedExpr = "undefined";
-      if (isKnownDefaultStylesPropType(param.type)) {
-        const conditionals = buildConditionalDefaultStylesPropArg(site);
-        serializedExpr = joinVariantVals(
-          conditionals.map(([expr, combo]) => [
-            safeExprAsCode(expr, exprCtx),
-            combo,
-          ]),
-          variantChecker,
-          "undefined"
-        ).value;
-      } else if (maybeArg) {
-        if (
-          isKnownColorPropType(param.type) &&
-          isKnownStyleTokenRef(maybeArg.expr) &&
-          !param.type.noDeref
-        ) {
-          const conditionals = buildConditionalDerefTokenValueArg(
-            site,
-            maybeArg.expr.token
-          );
+      if (param.exportType !== ParamExportType.ToolsOnly) {
+        if (isKnownDefaultStylesPropType(param.type)) {
+          const conditionals = buildConditionalDefaultStylesPropArg(site);
           serializedExpr = joinVariantVals(
             conditionals.map(([expr, combo]) => [
               safeExprAsCode(expr, exprCtx),
@@ -603,8 +586,29 @@ export function makeGlobalContextBundle(
             variantChecker,
             "undefined"
           ).value;
-        } else {
-          serializedExpr = safeExprAsCode(maybeArg.expr, exprCtx);
+        } else if (maybeArg) {
+          if (
+            isKnownColorPropType(param.type) &&
+            isKnownStyleTokenRef(maybeArg.expr) &&
+            !param.type.noDeref
+          ) {
+            const conditionals = buildConditionalDerefTokenValueArg(
+              site,
+              maybeArg.expr.token
+            );
+            serializedExpr = joinVariantVals(
+              conditionals.map(([expr, combo]) => [
+                safeExprAsCode(expr, exprCtx),
+                combo,
+              ]),
+              variantChecker,
+              "undefined"
+            ).value;
+          } else {
+            serializedExpr = safeExprAsCode(maybeArg.expr, exprCtx);
+          }
+        } else if (param.defaultExpr) {
+          serializedExpr = safeExprAsCode(param.defaultExpr, exprCtx);
         }
       } else if (param.defaultExpr) {
         serializedExpr = safeExprAsCode(param.defaultExpr, exprCtx);
