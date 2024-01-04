@@ -5555,16 +5555,19 @@ export function makeSplitsProviderBundle(
     import { getActiveVariation } from "@plasmicapp/react-web/lib/splits";
     ${makeGlobalGroupImports(referencedGlobalVariantGroups)}
 
-    export interface PlasmicSplitsProviderProps {
+    type GetActiveVariationParams = Partial<
+      Parameters<typeof getActiveVariation>[0]
+    >;
+
+    export interface PlasmicSplitsProviderProps extends GetActiveVariationParams {
       children?: React.ReactNode;
-      traits?: Record<string, string>;
     };
 
-    const splits = ${JSON.stringify(
+    export const splits = ${JSON.stringify(
       exportActiveSplitsConfig(runningSplits, projectId)
     )};
 
-    function getGlobalContextValueFromVariation(groupId: string, variation: Record<string, string>) {
+    export function getGlobalContextValueFromVariation(groupId: string, variation: Record<string, string>) {
       let groupValue: string | undefined = undefined;
       Object.keys(variation).forEach((variationKey: string) => {
         const [_type, splitId] = variationKey.split(".");
@@ -5590,10 +5593,11 @@ export function makeSplitsProviderBundle(
     };
 
     export default function PlasmicSplitsProvider(props: PlasmicSplitsProviderProps) {
-      const { children, traits } = props;
+      const { children, traits, ...rest } = props;
       const variation = getActiveVariation({
         splits,
         traits: traits ?? {},
+        ...rest,
       });
 
       return (
