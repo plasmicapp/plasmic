@@ -1,6 +1,3 @@
-import { genTranslatableString } from "@plasmicapp/react-web";
-import { isEmpty, sortBy, uniq } from "lodash";
-import React from "react";
 import {
   Component,
   Expr,
@@ -9,11 +6,11 @@ import {
   RichText,
   Site,
   TplNode,
-} from "../classes";
-import { assert, unexpected } from "../common";
-import { isPageComponent, isPlainComponent } from "../components";
-import { getCssRulesFromRs } from "../css";
-import { tryExtractJson } from "../exprs";
+} from "@/wab/classes";
+import { assert, unexpected } from "@/wab/common";
+import { isPageComponent, isPlainComponent } from "@/wab/components";
+import { getCssRulesFromRs } from "@/wab/css";
+import { tryExtractJson } from "@/wab/exprs";
 import {
   flattenTpls,
   hasTextAncestor,
@@ -24,7 +21,10 @@ import {
   isTplVariantable,
   tplChildren,
   TplTextTag,
-} from "../tpls";
+} from "@/wab/tpls";
+import { genTranslatableString } from "@plasmicapp/react-web";
+import { isEmpty, sortBy, uniq } from "lodash";
+import React from "react";
 import { ProjectId } from "./ApiSchema";
 import { flattenComponent } from "./cached-selectors";
 import {
@@ -75,7 +75,11 @@ export function genLocalizationStringsForProject(
     const variantComboSorter = makeVariantComboSorter(site, component);
     for (const tpl of flattenComponent(component)) {
       // Extract localizable text blocks
-      if (isTplTextBlock(tpl) && !hasTextAncestor(tpl)) {
+      if (
+        isTplTextBlock(tpl) &&
+        !hasTextAncestor(tpl) &&
+        isLocalizableTextBlock(tpl)
+      ) {
         // If this is a "root" tpl text block -- that is, it is the start
         // of a rich text block, and not an embedded text block in a
         // rich text block -- then generate the content as a localizable
@@ -158,6 +162,31 @@ export function genLocalizationStringsForProject(
   }
 
   return localizedStrs;
+}
+
+/**
+ * For now, a tpl text block is only localizable if it doesn't use any
+ * dynamic expression in any of its variants
+ */
+export function isLocalizableTextBlock(tpl: TplTextTag) {
+  const rec = (node: TplNode): boolean => {
+    if (isTplTextBlock(node)) {
+      for (const vs of node.vsettings) {
+        if (isKnownExprText(vs.text)) {
+          return false;
+        }
+      }
+      if (node.children.some((c) => !rec(c))) {
+        return false;
+      }
+      return true;
+    } else if (isTplTag(node)) {
+      return node.children.every((c) => rec(c));
+    } else {
+      unexpected("Unexpected child of TplTextTag");
+    }
+  };
+  return rec(tpl);
 }
 
 interface ParamDefaultExprSource {

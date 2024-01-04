@@ -175,6 +175,7 @@ import { exprUsesCtxOrFreeVars } from "@/wab/shared/eval/expression-parser";
 import {
   extractAllVariantCombosForText,
   genLocalizationString,
+  isLocalizableTextBlock,
   LocalizableStringSource,
   LOCALIZABLE_HTML_ATTRS,
   LocalizationConfig,
@@ -2732,9 +2733,11 @@ export function serializeTplTextBlockContent(
   const { variantComboChecker } = ctx;
   const textSettings = orderedVsettings.filter((vs) => !!vs.text);
   const useTranslation = ctx.projectFlags.usePlasmicTranslation;
-  const transKey = memoizeOne(() =>
-    useTranslation ? serializeLocalizationKey(ctx, node) : undefined
-  );
+  const transKey =
+    useTranslation && isLocalizableTextBlock(node)
+      ? memoizeOne(() => serializeLocalizationKey(ctx, node))
+      : undefined;
+
   const rawStringAndVariants = textSettings.map((vs) => {
     const res = resolveRichTextToJsx(ctx, vs.text);
     return tuple(res.content || "", vs.variants);
@@ -2748,7 +2751,7 @@ export function serializeTplTextBlockContent(
   );
 
   let value = r.value;
-  if (useTranslation && !ctx.insideRichTextBlock) {
+  if (useTranslation && transKey && !ctx.insideRichTextBlock) {
     value = `<p.Trans${
       transKey() ? ` transKey={${transKey()}}` : ""
     }>{${value}}</p.Trans>`;
