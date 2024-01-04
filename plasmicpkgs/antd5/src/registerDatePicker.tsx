@@ -1,12 +1,11 @@
 import { DatePicker } from "antd";
 import dayjs, { Dayjs } from "dayjs";
-import React, { useState } from "react";
+import React from "react";
 import { capitalize, Registerable, registerComponentHelper } from "./utils";
 
 /**
  * onChangeIsoString uses ISO strings rather than dayjs.
  *
- * On mobile, Ant DatePicker is unusable, so also have a hidden native picker for the popup.
  */
 export function AntdDatePicker(
   props: Omit<React.ComponentProps<typeof DatePicker>, "value" | "onChange"> & {
@@ -17,18 +16,72 @@ export function AntdDatePicker(
     popupScopeClassName?: string;
   }
 ) {
-  const nativeInput = React.useRef<HTMLInputElement>(null);
-  const [open, setOpen] = useState(false);
-  const strValue: string | undefined =
-    props.value &&
-    typeof props.value === "object" &&
-    "toISOString" in props.value
-      ? props.value.toISOString()
-      : props.value === null
-      ? undefined
-      : props.value;
-
   const { picker, popupScopeClassName, ...rest } = props;
+
+  const css = `
+
+  @media(max-width: 500px) {
+    .ant-picker-dropdown {
+      top: 20px !important;
+      left: 10px !important;
+      right: 10px !important;
+      max-height: 95vh;
+      position: fixed;
+      overflow-y: scroll;
+    }
+
+    .ant-picker-panel-layout {
+      flex-direction: column;
+    }
+
+    .ant-picker-presets {
+      min-height: 50px;
+      min-width: 100%;
+    }
+
+    .ant-picker-presets > ul {
+      overflow-y: hidden;
+      overflow-x: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      flex-direction: column;
+    }
+
+    .ant-picker-presets > ul > li {
+      margin: 0 !important;
+    }
+
+    .ant-picker-panel-container {
+      width: 300px;
+    }
+
+    .ant-picker-datetime-panel {
+      flex-direction: column;
+    }
+
+    .ant-picker-header-view {
+      line-height: unset !important;
+    }
+
+    .ant-picker-content {
+      height: unset !important;
+    }
+
+    .ant-picker-time-panel-column {
+      height: 100px;
+    }
+
+    .ant-picker-time-panel-column::after {
+      height: 0px !important;
+    }
+
+    .ant-picker-time-panel-column::after {
+      display: none;
+    }
+  }`;
+
   return (
     <>
       <DatePicker
@@ -51,25 +104,8 @@ export function AntdDatePicker(
         onChange={(value, _dateString) => {
           props.onChange?.(value !== null ? value.toISOString() : null);
         }}
-        open={open}
-        onOpenChange={(_open) => {
-          if (_open && window.innerWidth < 500) {
-            nativeInput.current!.showPicker();
-          } else {
-            setOpen(_open);
-          }
-        }}
       />
-      <input
-        hidden
-        ref={nativeInput}
-        type={props.showTime ? "datetime-local" : "date"}
-        // Clearing -> undefined -> will leave it unchanged, so set ""
-        value={strValue || ""}
-        onChange={(e) => {
-          props.onChange?.(e.target.value);
-        }}
-      />
+      <style dangerouslySetInnerHTML={{ __html: css }} />
     </>
   );
 }

@@ -89,32 +89,46 @@ export function AntdDateRangePicker(
     className,
     ...rest
   } = props;
-  const popupScopeClassNameSelector = popupScopeClassName
-    ? `.${popupScopeClassName}`
-    : "";
-  const css = `
-    @media(max-width: 900px) {
-      .ant-picker-panels{
-        flex-direction: column;
-      }
-    }
 
+  const css = `
     @media(max-width: 500px) {
-      ${popupScopeClassNameSelector}.ant-picker-dropdown {
+      .ant-picker-dropdown {
         top: 20px !important;
         left: 10px !important;
         right: 10px !important;
         max-height: 95vh;
         position: fixed;
         overflow-y: scroll;
-        max-width: 100vw;
       }
 
-      ${popupScopeClassNameSelector} .ant-picker-panel-container {
-        min-width: 300px;
+      .ant-picker-panel-layout {
+        flex-direction: column;
       }
 
-      ${popupScopeClassNameSelector} .ant-picker-datetime-panel {
+      .ant-picker-presets {
+        min-height: 50px;
+        min-width: 100% !important;
+      }
+
+      .ant-picker-presets > ul {
+        overflow-y: hidden;
+        overflow-x: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        flex-direction: column;
+      }
+
+      .ant-picker-presets > ul > li {
+        margin: 0 !important;
+      }
+
+      .ant-picker-panel-container {
+        width: 300px;
+      }
+
+      .ant-picker-datetime-panel {
         flex-direction: column;
       }
 
@@ -122,19 +136,23 @@ export function AntdDateRangePicker(
         font-size: 16px !important;
       }
 
-      ${popupScopeClassNameSelector} .ant-picker-header-view {
+      .ant-picker-header-view {
         line-height: unset !important;
       }
 
-      ${popupScopeClassNameSelector} .ant-picker-content {
+      .ant-picker-content {
         height: unset !important;
       }
 
-      ${popupScopeClassNameSelector} .ant-picker-time-panel-column {
+      .ant-picker-time-panel-column {
         height: 100px;
       }
 
-      ${popupScopeClassNameSelector} .ant-picker-range-arrow {
+      .ant-picker-time-panel-column::after {
+        height: 0px !important;
+      }
+
+      .ant-picker-range-arrow {
         display: none;
       }
     }

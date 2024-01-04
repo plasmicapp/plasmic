@@ -2498,7 +2498,9 @@ function checkFormValues(
       } else if (item.type === "Radio Group") {
         root().find(`input[value="${item.value}"]`).should("be.checked");
       } else if (item.type === "DatePicker") {
-        root().find(`input[value="${item.value}"]`).should("be.hidden");
+        root()
+          .find(`input[value="${item.value.slice(0, 10)}"]`)
+          .should("be.visible");
       } else {
         root()
           .find(`input[id="${item.name}"]`)
