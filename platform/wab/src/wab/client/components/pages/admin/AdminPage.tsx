@@ -22,14 +22,7 @@ import EyeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Eye";
 import CircleCloseIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__CircleClose";
 import { stepsToCypress } from "@/wab/client/tours/tutorials/tutorials-helpers";
 import { STUDIO_ONBOARDING_TUTORIALS } from "@/wab/client/tours/tutorials/tutorials-meta";
-import {
-  assert,
-  ensure,
-  extractDomainFromEmail,
-  spawn,
-  tryRemove,
-  uncheckedCast,
-} from "@/wab/common";
+import { assert, spawn, tryRemove, uncheckedCast } from "@/wab/common";
 import { DEVFLAGS } from "@/wab/devflags";
 import {
   ApiFeatureTier,
@@ -60,13 +53,7 @@ import {
 import TextArea from "antd/lib/input/TextArea";
 import L from "lodash";
 import moment from "moment";
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
 import useSWR from "swr/immutable";
 
@@ -117,10 +104,9 @@ export function UsersView() {
   const nonAuthCtx = useNonAuthCtx();
 
   const [query, setQuery] = useState<string>("");
-  const [reloadCount, setReloadCount] = useState(0);
   const usersResp = useAsyncStrict(
     () => nonAuthCtx.api.listUsers(),
-    [nonAuthCtx, reloadCount]
+    [nonAuthCtx]
   );
 
   async function handleLogin(email: string) {
@@ -149,7 +135,7 @@ export function UsersView() {
           {
             title: "",
             key: "avatar",
-            render: (value, user) => <Avatar user={user} />,
+            render: (_value, user) => <Avatar user={user} />,
           },
           ...["email", "firstName", "lastName", "createdAt", "deletedAt"].map(
             (key) => ({
@@ -259,7 +245,7 @@ export function UserProjects() {
               title: "Owner?",
               dataIndex: "createdById",
               render: (id) => (id === userId ? "Yes" : "No"),
-              sorter: (a, b) => (a.createdById === userId ? -1 : 1),
+              sorter: (a) => (a.createdById === userId ? -1 : 1),
             },
           ]}
         />
@@ -501,7 +487,7 @@ export function UserTeams() {
       </div>
       <div>
         <Modal
-          visible={modalVisible}
+          open={modalVisible}
           footer={null}
           title={selectedTeam?.name}
           onCancel={() => setModalVisible(false)}
@@ -510,122 +496,6 @@ export function UserTeams() {
           <AllTeamUsers key={selectedTeam?.id} teamId={selectedTeam?.id} />
         </Modal>
       </div>
-    </div>
-  );
-}
-
-export function Inviter() {
-  const nonAuthCtx = useNonAuthCtx();
-  const admin = useAdminContext();
-  const [emails, setEmails] = useState("");
-
-  async function onSubmit() {
-    const uniqEmails = L.uniq(emails.toLowerCase().split(/[,\s]+/g));
-    const { skippedEmails } = await nonAuthCtx.api.invite({
-      emails: uniqEmails,
-    });
-    if (skippedEmails.length) {
-      notification.warn({
-        message: "Some emails failed",
-        description: `Skipped ${
-          skippedEmails.length
-        } of ${uniqEmails} unique emails: ${skippedEmails.join(", ")}. `,
-      });
-    }
-    admin.onRefresh();
-  }
-
-  return (
-    <div className="mv-lg">
-      <h2>Invite and whitelist user</h2>
-
-      <Form onFinish={onSubmit}>
-        This can be whitespace and comma separated.
-        <Input
-          placeholder={"Email(s)"}
-          name={"emails"}
-          value={emails}
-          onChange={(e) => setEmails(e.target.value.toLowerCase())}
-        />
-        <Button htmlType={"submit"}>Send invite</Button>
-      </Form>
-    </div>
-  );
-}
-
-function UserLoader({ id }: { id: string }) {
-  const nonAuthCtx = useNonAuthCtx();
-
-  const userResp = useAsyncStrict(
-    () => nonAuthCtx.api.getUsersById([id]),
-    [nonAuthCtx]
-  );
-
-  const user = userResp.value?.users[0];
-  return <div>{user && <Avatar user={user} />}</div>;
-}
-
-export function InviteApprovalsView() {
-  const nonAuthCtx = useNonAuthCtx();
-  const admin = useAdminContext();
-
-  const requestsResp = useAsyncStrict(
-    () => nonAuthCtx.api.listInviteRequests(),
-    [nonAuthCtx]
-  );
-
-  async function whitelistUser(email: string) {
-    await nonAuthCtx.api.addToWhitelist({ email });
-    admin.onRefresh();
-  }
-  async function whitelistDomain(email: string) {
-    await nonAuthCtx.api.addToWhitelist({
-      domain: extractDomainFromEmail(email),
-    });
-    admin.onRefresh();
-  }
-
-  return (
-    <div>
-      <h2>Invite approval requests</h2>
-      <Table
-        dataSource={requestsResp.value?.requests ?? []}
-        rowKey={"id"}
-        columns={[
-          {
-            key: "createdById",
-            dataIndex: "createdById",
-            title: "Created By",
-            render: (id) => <UserLoader id={id} />,
-          },
-          ...["inviteeEmail", "projectId", "createdAt"].map((key) => ({
-            key,
-            dataIndex: key,
-            title: L.startCase(key),
-            render: smartRender,
-            ...(key === "createdAt"
-              ? { defaultSortOrder: "descend" as const }
-              : {}),
-          })),
-          {
-            title: "Action",
-            key: "action",
-            render: (value, request) => (
-              <div>
-                <LinkButton onClick={() => whitelistUser(request.inviteeEmail)}>
-                  Whitelist user
-                </LinkButton>{" "}
-                |{" "}
-                <LinkButton
-                  onClick={() => whitelistDomain(request.inviteeEmail)}
-                >
-                  Whitelist domain
-                </LinkButton>
-              </div>
-            ),
-          },
-        ]}
-      />
     </div>
   );
 }
@@ -910,7 +780,7 @@ function ImportProjectsFromProd() {
     <div>
       <h2>Import devflags and plasmic projects from prod</h2>
       <Modal
-        visible={modalVisible}
+        open={modalVisible}
         footer={null}
         title={"Import plasmic projects from prod"}
         onCancel={() => setModalVisible(false)}
@@ -1126,7 +996,6 @@ function DevFlagControls() {
 
 export function FeatureTierControls() {
   const nonAuthCtx = useNonAuthCtx();
-  const admin = useAdminContext();
   // Viewing table
   const [query, setQuery] = useState<string | undefined>("");
   const [reloadCount, setReloadCount] = useState(0);
@@ -1166,7 +1035,7 @@ export function FeatureTierControls() {
       setError(e.toString());
     } finally {
       setSubmitting(false);
-      admin.onRefresh();
+      setReloadCount((prev) => prev + 1);
     }
   }
 
@@ -1192,9 +1061,9 @@ export function FeatureTierControls() {
             sorter: (a, b) => (a[key] < b[key] ? -1 : 1),
           })),
         ]}
-        onRow={(record, rowIndex) => {
+        onRow={(record) => {
           return {
-            onClick: (e) => setNewTierData(JSON.stringify(record, null, 4)),
+            onClick: (_e) => setNewTierData(JSON.stringify(record, null, 4)),
           };
         }}
       />
@@ -1228,7 +1097,6 @@ export function FeatureTierControls() {
  */
 function TeamTierControls() {
   const nonAuthCtx = useNonAuthCtx();
-  const admin = useAdminContext();
   const [error, setError] = useState("");
   const [teamId, setTeamId] = React.useState<TeamId | undefined>();
   const [featureTierName, setFeatureTierName] = React.useState<
@@ -1455,72 +1323,6 @@ function TeamTierControls() {
           onChange={(e) => setTeamId(uncheckedCast<TeamId>(e.target.value))}
         />
         <Button htmlType={"submit"}>Cancel plan</Button>
-      </Form>
-    </div>
-  );
-}
-
-function CodeSandboxControls() {
-  const nonAuthCtx = useNonAuthCtx();
-  const admin = useAdminContext();
-  const [token, setToken] = React.useState("");
-
-  return (
-    <div>
-      <h2>CodeSandbox</h2>
-      <p>To refresh the CodeSandbox token</p>
-      <ol>
-        <li>
-          1. Go to{" "}
-          <a href="https://codesandbox.io/cli/login" target="_blank">
-            this url
-          </a>
-        </li>
-        <li>
-          2. Log into Github using the <strong>plasmicops</strong> user; find
-          credentials{" "}
-          <a
-            href="https://docs.google.com/document/d/1tl4jM1lel8uSbMhtxN-ExiQe06Y4cPvCd57feiE3WI4/edit"
-            target="_blank"
-          >
-            here
-          </a>
-          . <strong>Make sure you don't use your own Github login!</strong>
-        </li>
-        <li>3. Paste the token you see on the page into this form.</li>
-      </ol>
-      <Form
-        onFinish={async () => {
-          try {
-            const result = await nonAuthCtx.api.updateCodeSandboxToken(token);
-            if (result.error) {
-              notification.error({
-                message: "Codesandbox token did not work :'(",
-                description: `${result.error}`,
-              });
-            } else {
-              notification.success({
-                message: "Codesandbox token updated!",
-                description: `User: ${result.user.email}`,
-              });
-            }
-          } catch (e) {
-            notification.error({
-              message: "Codesandbox token did not work :'(",
-              description: `${e}`,
-            });
-          }
-          setToken("");
-          admin.onRefresh();
-        }}
-      >
-        <Input
-          placeholder={"New Token"}
-          name={"token"}
-          value={token}
-          onChange={(e) => setToken(e.target.value)}
-        />
-        <Button htmlType={"submit"}>Update token</Button>
       </Form>
     </div>
   );
@@ -2045,14 +1847,13 @@ function PromotionCode() {
           const expirationDate = event.expirationDate
             ? (event.expirationDate.utc().endOf("day").toDate() as Date)
             : undefined;
-          console.log(typeof trialDays);
           assert(id && typeof id === "string", "Promo code requires an id");
           assert(
             message && typeof message === "string",
             "Promo code requires a message"
           );
           assert(
-            trialDays && typeof trialDays === "number" && trialDays > 0,
+            !Number.isNaN(trialDays) && trialDays > 0,
             "Promo code requires the amount of trial days"
           );
           await nonAuthCtx.api.createPromotionCode(
@@ -2489,103 +2290,89 @@ function EditPkgVersionBundle() {
   );
 }
 
-interface AdminActions {
-  onRefresh: () => void;
-}
-
-const AdminContext = createContext<AdminActions | undefined>(undefined);
-const useAdminContext = () =>
-  ensure(useContext(AdminContext), () => "AdminContext must be used");
-
 export default function AdminPage({ nonAuthCtx }: { nonAuthCtx: NonAuthCtx }) {
-  const [key, setKey] = useState(0);
-  const adminCtx: AdminActions = {
-    onRefresh: () => setKey(key + 1),
-  };
   return (
     <NonAuthCtxContext.Provider value={nonAuthCtx}>
-      <AdminContext.Provider value={adminCtx}>
-        <Tabs
-          items={[
-            {
-              key: "users",
-              label: "Users",
-              children: (
-                <div className="flex-col gap-xxxlg">
-                  <UsersView />
-                  <UserProjects />
-                  <ChangePasswordView />
-                  <UserTeams />
-                  <DeactivateUserView />
-                </div>
-              ),
-            },
-            {
-              key: "projects",
-              label: "Projects",
-              children: (
-                <div className="flex-col gap-xxxlg">
-                  <DownloadProjectView />
-                  <DownloadProjectViewAndBranches />
-                  <UploadProject />
-                  <ChangeProjectOwner />
-                  <RevertProjectRev />
-                  <DownloadAppMeta />
-                  <EditProjectRevBundle />
-                  <EditPkgVersionBundle />
-                  <PublicProjectsView />
-                  <CloneProjectView />
-                </div>
-              ),
-            },
-            {
-              key: "devflags",
-              label: "Devflags",
-              children: (
-                <div className="flex-col gap-xxxlg">
-                  <DevFlagControls />
-                </div>
-              ),
-            },
-            {
-              key: "pricing",
-              label: "Pricing",
-              children: (
-                <div className="flex-col gap-xxxlg">
-                  <FeatureTierControls />
-                  <TeamTierControls />
-                  <PromotionCode />
-                </div>
-              ),
-            },
-            {
-              key: "teams",
-              label: "Teams",
-              children: (
-                <div className="flex-col gap-xxxlg">
-                  <ConfigureSso />
-                  <WhiteLabeledTeam />
-                </div>
-              ),
-            },
-            {
-              key: "dev",
-              label: "Development",
-              children: (
-                <div className="flex-col gap-xxxlg">
-                  <CreateTutorialDb />
-                  <ResetTutorialDb />
-                  <TourCypressTest />
-                  <DownloadPlumePkg />
-                  <ImportProjectsFromProd />
-                  <CopilotFeedbackView />
-                  <AppAuthMetrics />
-                </div>
-              ),
-            },
-          ]}
-        />
-      </AdminContext.Provider>
+      <Tabs
+        items={[
+          {
+            key: "users",
+            label: "Users",
+            children: (
+              <div className="flex-col gap-xxxlg">
+                <UsersView />
+                <UserProjects />
+                <ChangePasswordView />
+                <UserTeams />
+                <DeactivateUserView />
+              </div>
+            ),
+          },
+          {
+            key: "teams",
+            label: "Teams",
+            children: (
+              <div className="flex-col gap-xxxlg">
+                <ConfigureSso />
+                <WhiteLabeledTeam />
+              </div>
+            ),
+          },
+          {
+            key: "projects",
+            label: "Projects",
+            children: (
+              <div className="flex-col gap-xxxlg">
+                <DownloadProjectView />
+                <DownloadProjectViewAndBranches />
+                <UploadProject />
+                <ChangeProjectOwner />
+                <RevertProjectRev />
+                <DownloadAppMeta />
+                <EditProjectRevBundle />
+                <EditPkgVersionBundle />
+                <PublicProjectsView />
+                <CloneProjectView />
+              </div>
+            ),
+          },
+          {
+            key: "devflags",
+            label: "Devflags",
+            children: (
+              <div className="flex-col gap-xxxlg">
+                <DevFlagControls />
+              </div>
+            ),
+          },
+          {
+            key: "pricing",
+            label: "Pricing",
+            children: (
+              <div className="flex-col gap-xxxlg">
+                <FeatureTierControls />
+                <TeamTierControls />
+                <PromotionCode />
+              </div>
+            ),
+          },
+          {
+            key: "dev",
+            label: "Development",
+            children: (
+              <div className="flex-col gap-xxxlg">
+                <CreateTutorialDb />
+                <ResetTutorialDb />
+                <TourCypressTest />
+                <DownloadPlumePkg />
+                <ImportProjectsFromProd />
+                <CopilotFeedbackView />
+                <AppAuthMetrics />
+              </div>
+            ),
+          },
+        ]}
+      />
     </NonAuthCtxContext.Provider>
   );
 }
