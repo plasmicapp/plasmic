@@ -10,6 +10,7 @@ import {
   maybe,
   parsePx,
   safeCast,
+  spawn,
   tuple,
 } from "@/wab/common";
 import {
@@ -510,9 +511,14 @@ export class DragMoveFrameManager {
   }
 
   endDrag() {
-    this.studioCtx.normalizeCurrentArena();
-    if (this.studioCtx.isUnlogged()) {
-      this.studioCtx.stopUnlogged();
-    }
+    spawn(
+      this.studioCtx.change(({ success }) => {
+        this.studioCtx.normalizeCurrentArena();
+        if (this.studioCtx.isUnlogged()) {
+          this.studioCtx.stopUnlogged();
+        }
+        return success();
+      })
+    );
   }
 }
