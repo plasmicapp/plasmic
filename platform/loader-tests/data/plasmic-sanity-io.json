@@ -907,7 +907,7 @@
         }
       },
       "deps": [],
-      "version": "226-add-item-prefs"
+      "version": "227-add-ids-templateInfo"
     }
   ],
   [
@@ -2038,7 +2038,7 @@
         }
       },
       "deps": ["4536e610-f7b7-43b7-b45e-172856a7e132"],
-      "version": "226-add-item-prefs"
+      "version": "227-add-ids-templateInfo"
     }
   ]
 ]

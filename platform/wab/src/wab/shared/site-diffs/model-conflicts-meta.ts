@@ -740,7 +740,11 @@ export const modelConflictsMeta: ModelConflictsMeta = {
   },
   NameArg: { expr: "generic", name: "generic" },
   PlumeInfo: { type: "generic" },
-  ComponentTemplateInfo: { name: "generic" },
+  ComponentTemplateInfo: {
+    name: "generic",
+    projectId: "generic",
+    componentId: "generic",
+  },
   Variant: {
     description: "generic",
     forTpl: "generic",

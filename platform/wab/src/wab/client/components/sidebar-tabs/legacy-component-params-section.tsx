@@ -253,6 +253,8 @@ export const LegacyComponentParamsSection = observer(
                     } else {
                       component.templateInfo = new ComponentTemplateInfo({
                         name: value,
+                        projectId: undefined,
+                        componentId: undefined,
                       });
                     }
                   })

@@ -488,6 +488,8 @@ export function cloneTemplateInfo(
   return info
     ? new ComponentTemplateInfo({
         name: info.name,
+        projectId: info.projectId,
+        componentId: info.componentId,
       })
     : null;
 }

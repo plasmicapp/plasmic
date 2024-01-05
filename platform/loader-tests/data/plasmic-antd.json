@@ -11085,7 +11085,7 @@
         }
       },
       "deps": [],
-      "version": "226-add-item-prefs"
+      "version": "227-add-ids-templateInfo"
     }
   ],
   [
@@ -17485,7 +17485,7 @@
         }
       },
       "deps": ["39835060-ce5b-4983-baf1-aad50207dbde"],
-      "version": "226-add-item-prefs"
+      "version": "227-add-ids-templateInfo"
     }
   ]
 ]

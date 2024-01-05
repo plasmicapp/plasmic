@@ -399,8 +399,11 @@ PlumeInfo
   type: String
 
 ComponentTemplateInfo
-  # Unique name of the template
-  name: String
+  # Unique name of the template if it's a component template
+  name: String?
+  # Extra information about how the component was created from a template
+  projectId: String?
+  componentId: String?
 
 Variant
   @Const uuid: String
