@@ -413,10 +413,6 @@ Help
             )
           : unexpected()
       )}
-      devFlags={{
-        continuousDeployment: DEVFLAGS.continuousDeployment,
-        pageComponent: DEVFLAGS.pageComponent,
-      }}
       players={{
         render: (_props) => {
           return <Players {..._props} studioCtx={studioCtx} />;

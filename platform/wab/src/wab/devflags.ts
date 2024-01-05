@@ -345,7 +345,6 @@ const DEFAULT_DEVFLAGS = {
     process.env.CODEGEN_ORIGIN_HOST ||
     process.env.CODEGEN_HOST ||
     "http://codegen-origin.plasmic.app",
-  continuousDeployment: true,
   coreTeamDomain:
     process.env.NODE_ENV === "production" ? "plasmic.app" : "example.com",
   defaultHostUrl:
@@ -455,7 +454,6 @@ const DEFAULT_DEVFLAGS = {
   imgOptimizerHost: "https://img.plasmic.app",
   introYoutubeId: "K_YzFBd7b2I",
   noFlipTags: true,
-  pageComponent: true,
   preset: true,
   proxyDomainSuffixes: [".devtun.plasmic.app", ".prox1.plasmic.link"],
   revisionNum: undefined,

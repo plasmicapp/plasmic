@@ -197,9 +197,6 @@
 .pagesactiveTab_pages:global(.__wab_instance) {
   flex-shrink: 0;
 }
-.pagesdevFlags_pageComponent:global(.__wab_instance) {
-  flex-shrink: 0;
-}
 .svg__g5Iby {
   position: relative;
   object-fit: cover;
@@ -416,18 +413,7 @@
   position: relative;
   flex-shrink: 0;
 }
-.figmadevFlags_pageComponent:global(.__wab_instance) {
-  flex-shrink: 0;
-}
-.figmadevFlags_continuousDeployment:global(.__wab_instance) {
-  flex-shrink: 0;
-}
 .figmashowAvatar:global(.__wab_instance) {
-  flex-shrink: 0;
-}
-.figmadevFlags_continuousDeployment_devFlags_pageComponent:global(
-    .__wab_instance
-  ) {
   flex-shrink: 0;
 }
 .svg__r87Op {

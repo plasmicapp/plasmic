@@ -382,9 +382,7 @@ function _TopBar({ preview }: TopBarProps) {
         }}
         publishButton={{
           props: {
-            enable:
-              appCtx.appConfig.continuousDeployment &&
-              studioCtx.canEditProject(),
+            enable: studioCtx.canEditProject(),
           },
         }}
         avatar={{

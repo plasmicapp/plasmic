@@ -31,7 +31,6 @@ import {
   isShownHostLessCodeComponent,
   sortComponentsByName,
 } from "@/wab/components";
-import { DEVFLAGS } from "@/wab/devflags";
 import { isMixedArena } from "@/wab/shared/Arenas";
 import { FRAME_CAP } from "@/wab/shared/Labels";
 import { isHostLessPackage } from "@/wab/sites";
@@ -374,7 +373,7 @@ const ComponentRow = observer(function ComponentRow(props: {
         );
       }
 
-      if (!readOnly && DEVFLAGS.pageComponent) {
+      if (!readOnly) {
         push(
           <Menu.Item
             key="convert_to_page"

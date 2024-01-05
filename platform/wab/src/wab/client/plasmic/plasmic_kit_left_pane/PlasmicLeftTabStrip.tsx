@@ -92,7 +92,6 @@ export type PlasmicLeftTabStrip__VariantMembers = {
     | "insert"
     | "copilot"
     | "lint";
-  devFlags: "pageComponent" | "continuousDeployment";
   showAvatar: "showAvatar";
   withInsertButton: "withInsertButton";
 };
@@ -116,14 +115,12 @@ export type PlasmicLeftTabStrip__VariantsArgs = {
     | "copilot"
     | "lint"
   >;
-  devFlags?: MultiChoiceArg<"pageComponent" | "continuousDeployment">;
   showAvatar?: SingleBooleanChoiceArg<"showAvatar">;
   withInsertButton?: SingleBooleanChoiceArg<"withInsertButton">;
 };
 type VariantPropType = keyof PlasmicLeftTabStrip__VariantsArgs;
 export const PlasmicLeftTabStrip__VariantProps = new Array<VariantPropType>(
   "activeTab",
-  "devFlags",
   "showAvatar",
   "withInsertButton"
 );
@@ -182,7 +179,6 @@ export interface DefaultLeftTabStripProps {
     | "copilot"
     | "lint"
   >;
-  devFlags?: MultiChoiceArg<"pageComponent" | "continuousDeployment">;
   showAvatar?: SingleBooleanChoiceArg<"showAvatar">;
   withInsertButton?: SingleBooleanChoiceArg<"withInsertButton">;
   className?: string;
@@ -218,12 +214,6 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
         type: "private",
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.activeTab,
-      },
-      {
-        path: "devFlags",
-        type: "private",
-        variableType: "variant",
-        initFunc: ({ $props, $state, $queries, $ctx }) => $props.devFlags,
       },
       {
         path: "showAvatar",
@@ -277,11 +267,6 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
             $state,
             "activeTab",
             "versions"
-          ),
-          [sty.rootdevFlags_continuousDeployment]: hasVariant(
-            $state,
-            "devFlags",
-            "continuousDeployment"
           ),
           [sty.rootshowAvatar]: hasVariant($state, "showAvatar", "showAvatar"),
           [sty.rootwithInsertButton]: hasVariant(
@@ -545,11 +530,6 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
             "images"
           ),
           [sty.pagesactiveTab_pages]: hasVariant($state, "activeTab", "pages"),
-          [sty.pagesdevFlags_pageComponent]: hasVariant(
-            $state,
-            "devFlags",
-            "pageComponent"
-          ),
         })}
         icon={
           <File2SvgIcon
@@ -582,11 +562,6 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
                 $state,
                 "activeTab",
                 "tokens"
-              ),
-              [sty.svgdevFlags_continuousDeployment___75XmCmbQnL]: hasVariant(
-                $state,
-                "devFlags",
-                "continuousDeployment"
               ),
               [sty.svgshowAvatar___75XmC9NVfe]: hasVariant(
                 $state,
@@ -869,19 +844,6 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
             />
           }
           className={classNames("__wab_instance", sty.figma, {
-            [sty.figmadevFlags_continuousDeployment]: hasVariant(
-              $state,
-              "devFlags",
-              "continuousDeployment"
-            ),
-            [sty.figmadevFlags_continuousDeployment_devFlags_pageComponent]:
-              hasVariant($state, "devFlags", "continuousDeployment") &&
-              hasVariant($state, "devFlags", "pageComponent"),
-            [sty.figmadevFlags_pageComponent]: hasVariant(
-              $state,
-              "devFlags",
-              "pageComponent"
-            ),
             [sty.figmashowAvatar]: hasVariant(
               $state,
               "showAvatar",
@@ -892,11 +854,6 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
         >
           <FigmasvgIcon
             className={classNames(projectcss.all, sty.svg__r87Op, {
-              [sty.svgdevFlags_pageComponent__r87OPlk9O]: hasVariant(
-                $state,
-                "devFlags",
-                "pageComponent"
-              ),
               [sty.svgshowAvatar__r87Op9NVfe]: hasVariant(
                 $state,
                 "showAvatar",
