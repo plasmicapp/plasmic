@@ -68,11 +68,11 @@ export default function AdminPage({ nonAuthCtx }: { nonAuthCtx: NonAuthCtx }) {
 }
 
 function AdminPageTabs() {
-  const { tabKey, setState } = useAdminCtx();
+  const { tab, navigate } = useAdminCtx();
   return (
     <Tabs
-      activeKey={tabKey}
-      onChange={(newTabKey) => setState({ tabKey: newTabKey })}
+      activeKey={tab}
+      onChange={(newTab) => navigate({ tab: newTab })}
       items={[
         {
           key: "users",

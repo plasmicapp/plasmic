@@ -321,7 +321,7 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                   />
                   <Route
                     exact
-                    path={UU.admin.pattern}
+                    path={[UU.admin.pattern, UU.adminTeams.pattern]}
                     render={() =>
                       isCoreTeamEmail(selfInfo.email, appCtx.appConfig) ? (
                         <NormalLayout appCtx={appCtx}>

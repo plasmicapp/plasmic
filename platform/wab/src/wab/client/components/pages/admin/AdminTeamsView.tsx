@@ -26,7 +26,7 @@ import React, { useCallback, useState } from "react";
 import { AutoInfo, smartRender } from "./admin-util";
 
 export function AdminTeamsView() {
-  const { teamId, setState } = useAdminCtx();
+  const { teamId, navigate } = useAdminCtx();
   const nonAuthCtx = useNonAuthCtx();
   const [shouldRefetch, setShouldRefetch] = useState({});
   const refetch = useCallback(() => setShouldRefetch({}), [setShouldRefetch]);
@@ -52,7 +52,7 @@ export function AdminTeamsView() {
           }
           loading={loading}
           extra={
-            <Button onClick={() => setState({ teamId: undefined })}>
+            <Button onClick={() => navigate({ tab: "teams" })}>
               Close team
             </Button>
           }
@@ -159,7 +159,7 @@ function TeamLookup() {
         style={{ cursor: "pointer" }}
         onRow={(record) => ({
           onClick: () => {
-            adminCtx.setState({ teamId: record.id });
+            adminCtx.navigate({ tab: "teams", id: record.id });
           },
         })}
       />

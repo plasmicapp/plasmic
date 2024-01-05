@@ -213,7 +213,12 @@ export class RouteSet {
   starter = new R<{
     starterTag: string;
   }>("/starters/:starterTag");
-  admin = new R("/admin");
+  admin = new R<{
+    tab: string | undefined;
+  }>("/admin/:tab?");
+  adminTeams = new R<{
+    teamId: string | undefined;
+  }>("/admin/teams/:teamId?");
   login = new R("/login");
   logout = new R("/logout");
   signup = new R("/signup");

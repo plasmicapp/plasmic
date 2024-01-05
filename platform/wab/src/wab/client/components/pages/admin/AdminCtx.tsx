@@ -1,16 +1,18 @@
-import { ensure } from "@/wab/common";
+import { UU } from "@/wab/client/cli-routes";
+import { ensure, unexpected } from "@/wab/common";
 import { TeamId } from "@/wab/shared/ApiSchema";
-import React, { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
+import { useHistory } from "react-router";
 
 interface AdminState {
-  /** Active tab key on AdminPage. */
-  tabKey: string;
+  /** Active tab on AdminPage. */
+  tab: string;
   /** Selected team ID. */
   teamId: TeamId | undefined;
 }
 
 interface AdminActions {
-  setState(state: Partial<AdminState>): void;
+  navigate(to: { tab: string; id?: string }): void;
 }
 
 export type AdminCtx = AdminState & AdminActions;
@@ -25,15 +27,41 @@ export function useAdminCtx() {
 }
 
 export function AdminCtxProvider({ children }: React.PropsWithChildren) {
-  const [state, setState] = useState<AdminState>({
-    tabKey: "users",
-    teamId: undefined,
-  });
-  const setPartialState = useCallback((partialState: Partial<AdminState>) => {
-    return setState((prevState) => ({ ...prevState, ...partialState }));
-  }, []);
+  const history = useHistory();
+  const pathname = history.location.pathname;
+  const state = useMemo<AdminState>(() => {
+    const matchesTeams = UU.adminTeams.parse(pathname);
+    if (matchesTeams) {
+      return {
+        tab: "teams",
+        teamId: matchesTeams.params.teamId,
+      };
+    }
+
+    const matchesAdmin = UU.admin.parse(pathname);
+    if (matchesAdmin) {
+      return {
+        tab: matchesAdmin.params.tab,
+        teamId: undefined,
+      };
+    }
+
+    unexpected();
+  }, [pathname]);
+
+  const navigate = useCallback<AdminActions["navigate"]>(
+    ({ tab, id }) => {
+      if (tab === "teams") {
+        history.push(UU.adminTeams.fill({ teamId: id }));
+      } else {
+        history.push(UU.admin.fill({ tab }));
+      }
+    },
+    [history, state]
+  );
+
   return (
-    <AdminCtxContext.Provider value={{ ...state, setState: setPartialState }}>
+    <AdminCtxContext.Provider value={{ ...state, navigate }}>
       {children}
     </AdminCtxContext.Provider>
   );
