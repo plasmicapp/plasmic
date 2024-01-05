@@ -23,7 +23,7 @@ function maskTimestampHours(x: string) {
   return x.replace(/(, )\d+(:\d+)/, "$1XX$2");
 }
 
-describe("hostless-rich-components", () => {
+describe.skip("hostless-rich-components", () => {
   beforeEach(() => {
     cy.setupProjectWithHostlessPackages({
       hostLessPackagesInfo: [

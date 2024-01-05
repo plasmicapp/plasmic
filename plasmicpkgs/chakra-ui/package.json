@@ -35,7 +35,7 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "1.0.76",
+    "@plasmicapp/host": "1.0.188",
     "@rollup/plugin-commonjs": "^25.0.2",
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.1.0",

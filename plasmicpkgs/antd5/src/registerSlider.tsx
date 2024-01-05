@@ -33,6 +33,7 @@ export type AntdSliderBaseProps = Omit<
   | "trackStyle"
   | "railStyle"
   | "handleStyle"
+  | "onChangeComplete"
 > &
   SliderTooltip & {
     stylableMarks?: ReactElement;
@@ -121,6 +122,7 @@ export function AntdRangeSlider(props: AntdRangeSliderProps) {
     valueMax,
     defaultValueMin,
     defaultValueMax,
+    onAfterChange,
     ...rest
   } = props;
   const marksProp = useMarks({ simpleMarks: marks, stylableMarks });
@@ -138,6 +140,7 @@ export function AntdRangeSlider(props: AntdRangeSliderProps) {
       className={`${sliderScopeClassName} ${className}`}
       tooltip={tooltipProp}
       marks={marksProp}
+      onChangeComplete={onAfterChange}
       {...rest}
     />
   );
@@ -153,6 +156,7 @@ export function AntdSingleSlider(props: AntdSingleSliderProps) {
     tooltipPlacement,
     tooltipPrefix,
     tooltipSuffix,
+    onAfterChange,
     ...rest
   } = props;
 
@@ -168,6 +172,8 @@ export function AntdSingleSlider(props: AntdSingleSliderProps) {
       className={`${sliderScopeClassName} ${className}`}
       tooltip={tooltipProp}
       marks={marksProp}
+      range={false}
+      onChangeComplete={onAfterChange}
       {...rest}
     />
   );

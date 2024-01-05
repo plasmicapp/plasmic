@@ -55,7 +55,7 @@
     "test-storybook": "test-storybook"
   },
   "dependencies": {
-    "antd": "^5.7.3",
+    "antd": "^5.12.7",
     "classnames": "^2.3.2",
     "dayjs": "^1.11.10",
     "fast-deep-equal": "^3.1.3",

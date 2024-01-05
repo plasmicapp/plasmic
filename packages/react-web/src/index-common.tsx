@@ -34,10 +34,11 @@ export {
 export { Stack } from "./render/Stack";
 export {
   genTranslatableString,
-  Trans,
   PlasmicTranslator,
+  Trans,
   usePlasmicTranslator,
 } from "./render/translation";
 export { useTrigger } from "./render/triggers";
 export * from "./states";
-export const classNames = _classNames;
+// Using any while classnames package is not updated to have the correct types exported
+export const classNames: any = _classNames;

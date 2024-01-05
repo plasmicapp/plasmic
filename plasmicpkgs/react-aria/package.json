@@ -50,7 +50,7 @@
     "react-aria-components": "^1.0.0-rc.0"
   },
   "devDependencies": {
-    "@plasmicapp/host": "1.0.177",
+    "@plasmicapp/host": "1.0.188",
     "@rollup/plugin-commonjs": "^11.0.0",
     "@rollup/plugin-json": "^4.0.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
