@@ -6,6 +6,10 @@ import {
 } from "@/wab/client/app-ctx";
 import { U, UU } from "@/wab/client/cli-routes";
 import type FullCodeEditor from "@/wab/client/components/coding/FullCodeEditor";
+import {
+  AdminCtxProvider,
+  useAdminCtx,
+} from "@/wab/client/components/pages/admin/AdminCtx";
 import { Avatar } from "@/wab/client/components/studio/Avatar";
 import {
   LinkButton,
@@ -13,12 +17,8 @@ import {
   Spinner,
 } from "@/wab/client/components/widgets";
 import { downloadBlob, getUploadedFile } from "@/wab/client/dom-utils";
-import {
-  useAsyncFnStrict,
-  useAsyncStrict,
-} from "@/wab/client/hooks/useAsyncStrict";
+import { useAsyncStrict } from "@/wab/client/hooks/useAsyncStrict";
 import CheckIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Check";
-import EyeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Eye";
 import CircleCloseIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__CircleClose";
 import { stepsToCypress } from "@/wab/client/tours/tutorials/tutorials-helpers";
 import { STUDIO_ONBOARDING_TUTORIALS } from "@/wab/client/tours/tutorials/tutorials-meta";
@@ -26,15 +26,12 @@ import { assert, spawn, tryRemove, uncheckedCast } from "@/wab/common";
 import { DEVFLAGS } from "@/wab/devflags";
 import {
   ApiFeatureTier,
-  ApiPermission,
   ApiProjectRevision,
-  ApiTeam,
   ApiUser,
   BillingFrequency,
   StripeCustomerId,
   StripeSubscriptionId,
   TeamId,
-  TeamWhiteLabelInfo,
 } from "@/wab/shared/ApiSchema";
 import { PkgVersionInfo } from "@/wab/shared/SharedApi";
 import {
@@ -56,6 +53,105 @@ import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
 import useSWR from "swr/immutable";
+import { AdminTeamsView } from "./AdminTeamsView";
+
+import { smartRender } from "@/wab/client/components/pages/admin/admin-util";
+
+export default function AdminPage({ nonAuthCtx }: { nonAuthCtx: NonAuthCtx }) {
+  return (
+    <NonAuthCtxContext.Provider value={nonAuthCtx}>
+      <AdminCtxProvider>
+        <AdminPageTabs />
+      </AdminCtxProvider>
+    </NonAuthCtxContext.Provider>
+  );
+}
+
+function AdminPageTabs() {
+  const { tabKey, setState } = useAdminCtx();
+  return (
+    <Tabs
+      activeKey={tabKey}
+      onChange={(newTabKey) => setState({ tabKey: newTabKey })}
+      items={[
+        {
+          key: "users",
+          label: "Users",
+          children: (
+            <div className="flex-col gap-xxxlg">
+              <UsersView />
+              <UserProjects />
+              <ChangePasswordView />
+              <DeactivateUserView />
+            </div>
+          ),
+        },
+        {
+          key: "teams",
+          label: "Teams",
+          children: (
+            <div className="flex-col gap-xxxlg">
+              <AdminTeamsView />
+            </div>
+          ),
+        },
+        {
+          key: "projects",
+          label: "Projects",
+          children: (
+            <div className="flex-col gap-xxxlg">
+              <DownloadProjectView />
+              <DownloadProjectViewAndBranches />
+              <UploadProject />
+              <ChangeProjectOwner />
+              <RevertProjectRev />
+              <DownloadAppMeta />
+              <EditProjectRevBundle />
+              <EditPkgVersionBundle />
+              <PublicProjectsView />
+              <CloneProjectView />
+            </div>
+          ),
+        },
+        {
+          key: "devflags",
+          label: "Devflags",
+          children: (
+            <div className="flex-col gap-xxxlg">
+              <DevFlagControls />
+            </div>
+          ),
+        },
+        {
+          key: "pricing",
+          label: "Pricing",
+          children: (
+            <div className="flex-col gap-xxxlg">
+              <FeatureTierControls />
+              <TeamTierControls />
+              <PromotionCode />
+            </div>
+          ),
+        },
+        {
+          key: "dev",
+          label: "Development",
+          children: (
+            <div className="flex-col gap-xxxlg">
+              <CreateTutorialDb />
+              <ResetTutorialDb />
+              <TourCypressTest />
+              <DownloadPlumePkg />
+              <ImportProjectsFromProd />
+              <CopilotFeedbackView />
+              <AppAuthMetrics />
+            </div>
+          ),
+        },
+      ]}
+    />
+  );
+}
 
 function ChangePasswordView() {
   const nonAuthCtx = useNonAuthCtx();
@@ -90,14 +186,6 @@ function ChangePasswordView() {
       </Form>
     </div>
   );
-}
-
-function smartRender(value: any) {
-  if (isNaN(new Date("2020-03-27T20:06:43.340Z").getTime())) {
-    return moment(value).fromNow();
-  } else {
-    return "" + value;
-  }
 }
 
 export function UsersView() {
@@ -249,252 +337,6 @@ export function UserProjects() {
             },
           ]}
         />
-      </div>
-    </div>
-  );
-}
-
-export function AllTeamUsers({ teamId }: { teamId?: string }) {
-  if (!teamId) {
-    return <p>Team not found!</p>;
-  }
-  const [shouldReRender, forceRender] = React.useState({});
-  const nonAuthCtx = useNonAuthCtx();
-  const teamResp = useAsyncStrict(
-    () => nonAuthCtx.api.getTeam(teamId as TeamId),
-    [nonAuthCtx, 0, shouldReRender]
-  );
-
-  const [selectedUser, setSelectedUser] = useState<string | undefined>(
-    undefined
-  );
-
-  const changeTeamOwner = async () => {
-    if (selectedUser) {
-      await nonAuthCtx.api.changeTeamOwner(teamId, selectedUser);
-    }
-    forceRender({});
-  };
-  const resetTeamTrial = async () => {
-    await nonAuthCtx.api.resetTeamTrial(teamId);
-    forceRender({});
-  };
-  const getEmail = (perm: ApiPermission) => perm.user?.email ?? perm.email;
-
-  return (
-    <div className="mv-lg">
-      <Table
-        dataSource={teamResp.value?.perms ?? []}
-        rowKey="id"
-        columns={[
-          {
-            title: "Email",
-            key: "email",
-            render: (value: any, perm: ApiPermission) => getEmail(perm),
-            sorter: (a, b) =>
-              (getEmail(a) ?? "") < (getEmail(b) ?? "") ? -1 : 1,
-          },
-          {
-            title: "isUser",
-            key: "isUser",
-            render: (value: any, perm: ApiPermission) => `${!!perm.user}`,
-            sorter: (a, b) => (!!a.user < !!b.user ? -1 : 1),
-          },
-          {
-            title: "Access Level",
-            dataIndex: "accessLevel",
-            render: smartRender,
-            sorter: (a, b) => (a.accessLevel < b.accessLevel ? -1 : 1),
-          },
-        ]}
-      />
-      <div
-        style={{
-          display: "flex",
-          gap: "16px",
-          alignItems: "center",
-        }}
-      >
-        <strong>Change team owner</strong>
-        <Select
-          style={{ width: 400 }}
-          showSearch
-          placeholder="Select new owner"
-          filterOption={(input, option) => {
-            const perm: ApiPermission | undefined = option?.perm;
-            if (perm?.user) {
-              return (
-                perm.user.email?.toLowerCase().includes(input.toLowerCase()) ||
-                perm.user.firstName
-                  ?.toLowerCase()
-                  .includes(input.toLowerCase()) ||
-                perm.user.lastName
-                  ?.toLowerCase()
-                  .includes(input.toLowerCase()) ||
-                false
-              );
-            }
-            return false;
-          }}
-          options={
-            teamResp.value
-              ? teamResp.value.perms
-                  .filter((perm) => perm.user)
-                  .map((perm) => ({
-                    value: perm.user?.id,
-                    label: perm.user?.email,
-                    perm,
-                  }))
-              : []
-          }
-          onChange={(val) => {
-            setSelectedUser(val);
-          }}
-          value={selectedUser}
-        />
-        <Button onClick={changeTeamOwner}>Confirm</Button>
-      </div>
-      <div>
-        <Button onClick={resetTeamTrial}>Reset team free trial</Button>
-      </div>
-    </div>
-  );
-}
-
-export function UserTeams() {
-  const nonAuthCtx = useNonAuthCtx();
-  const [userId, setUserId] = useState<string | undefined>(undefined);
-  const usersResp = useAsyncStrict(
-    () => nonAuthCtx.api.listUsers(),
-    [nonAuthCtx, 0]
-  );
-  const [teamsResp, fetchTeams] = useAsyncFnStrict(
-    async () =>
-      userId ? await nonAuthCtx.api.listTeamsForUser(userId) : undefined,
-    [nonAuthCtx, userId]
-  );
-  useAsyncStrict(fetchTeams, [nonAuthCtx, userId]);
-
-  const [selectedTeam, setSelectedTeam] = useState<ApiTeam | undefined>(
-    undefined
-  );
-  const [modalVisible, setModalVisible] = useState(false);
-
-  return (
-    <div className="mv-lg">
-      <h2>Lookup teams for user</h2>
-      <div>
-        <Select
-          style={{ width: 400 }}
-          showSearch
-          placeholder="Search for a user"
-          filterOption={(input, option) => {
-            const user: ApiUser | undefined = option?.user;
-            if (user) {
-              return (
-                user.email?.toLowerCase().includes(input.toLowerCase()) ||
-                user.firstName?.toLowerCase().includes(input.toLowerCase()) ||
-                user.lastName?.toLowerCase().includes(input.toLowerCase()) ||
-                false
-              );
-            }
-            return false;
-          }}
-          options={
-            usersResp.value
-              ? usersResp.value.users.map((user) => ({
-                  value: user.id,
-                  label: user.email,
-                  user,
-                }))
-              : []
-          }
-          onChange={(val) => {
-            setUserId(val);
-          }}
-          value={userId}
-        />
-        <Table
-          dataSource={teamsResp.value?.teams ?? []}
-          rowKey="id"
-          columns={[
-            {
-              title: "Team",
-              dataIndex: "name",
-              render: smartRender,
-              sorter: (a, b) => (a.name < b.name ? -1 : 1),
-            },
-            {
-              title: "Created at",
-              dataIndex: "createdAt",
-              render: smartRender,
-              sorter: (a, b) => (a.createdAt < b.createdAt ? -1 : 1),
-              defaultSortOrder: "descend",
-            },
-            {
-              title: "Modified at",
-              dataIndex: "updatedAt",
-              render: smartRender,
-              sorter: (a, b) => (a.updatedAt < b.updatedAt ? -1 : 1),
-              defaultSortOrder: "descend",
-            },
-            {
-              title: "Billing Email",
-              dataIndex: "billingEmail",
-              render: smartRender,
-              sorter: (a, b) => (a.billingEmail < b.billingEmail ? -1 : 1),
-            },
-            {
-              title: "Seats",
-              dataIndex: "seats",
-              render: smartRender,
-              sorter: (a, b) => (a.name < b.name ? -1 : 1),
-            },
-            {
-              title: "Users",
-              key: "users",
-              render: () => <EyeIcon />,
-            },
-            {
-              title: "Actions",
-              render: (record: ApiTeam) => {
-                if (!record.personalTeamOwnerId) {
-                  return null;
-                }
-                return (
-                  <div>
-                    <LinkButton
-                      onClick={async () => {
-                        await nonAuthCtx.api.upgradePersonalTeam(record.id);
-                        await fetchTeams();
-                      }}
-                    >
-                      Promote to real team
-                    </LinkButton>
-                  </div>
-                );
-              },
-            },
-          ]}
-          style={{ cursor: "pointer" }}
-          onRow={(record) => ({
-            onClick: () => {
-              setSelectedTeam(record);
-              setModalVisible(true);
-            },
-          })}
-        />
-      </div>
-      <div>
-        <Modal
-          open={modalVisible}
-          footer={null}
-          title={selectedTeam?.name}
-          onCancel={() => setModalVisible(false)}
-          width={"80%"}
-        >
-          <AllTeamUsers key={selectedTeam?.id} teamId={selectedTeam?.id} />
-        </Modal>
       </div>
     </div>
   );
@@ -1390,118 +1232,6 @@ function ChangeProjectOwner() {
   );
 }
 
-function ConfigureSaml() {
-  const nonAuthCtx = useNonAuthCtx();
-  return (
-    <div>
-      <h2>Configure SAML SSO</h2>
-      <Form
-        onFinish={async (event) => {
-          console.log("FORM", event);
-          try {
-            const saml = await nonAuthCtx.api.upsertSamlConfig(event);
-            console.log("Created", saml);
-            notification.success({
-              message: `SAML Config updated!  Tenant ID is ${saml.tenantId}`,
-            });
-          } catch (e) {
-            notification.error({ message: `${e}` });
-          }
-        }}
-      >
-        <Form.Item name="teamId" label="Team ID">
-          <Input />
-        </Form.Item>
-        <Form.Item name="domain" label="Domain">
-          <Input />
-        </Form.Item>
-        <Form.Item name="entrypoint" label="Entrypoint">
-          <Input />
-        </Form.Item>
-        <Form.Item name="issuer" label="Issuer">
-          <Input />
-        </Form.Item>
-        <Form.Item name="cert" label="Cert">
-          <TextArea />
-        </Form.Item>
-        <Form.Item>
-          <Button htmlType="submit">Update</Button>
-        </Form.Item>
-      </Form>
-    </div>
-  );
-}
-
-function ConfigureSso() {
-  const nonAuthCtx = useNonAuthCtx();
-  const [form] = Form.useForm();
-  return (
-    <div>
-      <h2>Configure SSO</h2>
-      <Form
-        form={form}
-        initialValues={{
-          provider: "okta",
-          config: DEFAULT_SSO_CONFIG_TEMPLATES["okta"],
-        }}
-        onFinish={async (event) => {
-          console.log("FORM", event);
-
-          try {
-            const data = { ...event, config: JSON.parse(event.config) };
-            console.log("Submitting", data);
-            const sso = await nonAuthCtx.api.upsertSsoConfig(data);
-            console.log("Created", sso);
-            notification.success({
-              message: `SSO Config updated!  Tenant ID is ${sso.tenantId}`,
-            });
-          } catch (e) {
-            notification.error({ message: `${e}` });
-          }
-        }}
-      >
-        <Form.Item name="teamId" label="Team ID">
-          <Input
-            onBlur={async () => {
-              const teamId = form.getFieldValue("teamId");
-              const existing = await nonAuthCtx.api.getSsoConfigByTeamId(
-                teamId as TeamId
-              );
-              if (existing) {
-                form.setFieldsValue({
-                  ...existing,
-                  domain: existing.domains[0],
-                  config: JSON.stringify(existing.config, undefined, 2),
-                });
-              }
-            }}
-          />
-        </Form.Item>
-        <Form.Item name="domain" label="Domain">
-          <Input />
-        </Form.Item>
-        <Form.Item name="provider" label="Provider">
-          <Select
-            onChange={(e) =>
-              form.setFieldsValue({
-                config: DEFAULT_SSO_CONFIG_TEMPLATES[e],
-              })
-            }
-          >
-            <Select.Option value="okta">Okta</Select.Option>
-          </Select>
-        </Form.Item>
-        <Form.Item name="config" label="Config">
-          <Input.TextArea autoSize={{ minRows: 4 }} className="code" />
-        </Form.Item>
-        <Form.Item>
-          <Button htmlType="submit">Update</Button>
-        </Form.Item>
-      </Form>
-    </div>
-  );
-}
-
 function CreateTutorialDb() {
   const nonAuthCtx = useNonAuthCtx();
   return (
@@ -1581,42 +1311,6 @@ function ResetTutorialDb() {
   );
 }
 
-function TeamApiTokens() {
-  const nonAuthCtx = useNonAuthCtx();
-  return (
-    <div>
-      <h3>Create Team API Token</h3>
-      <Form
-        onFinish={async (event) => {
-          try {
-            const { teamId } = event;
-            const res = await nonAuthCtx.api.createTeamApiToken(
-              teamId as TeamId
-            );
-            notification.success({
-              message: (
-                <div>
-                  Token: <strong>{res.token}</strong>
-                </div>
-              ),
-              duration: 0,
-            });
-          } catch (e) {
-            notification.error({ message: `${e}` });
-          }
-        }}
-      >
-        <Form.Item name="teamId" label="Team ID">
-          <Input />
-        </Form.Item>
-        <Form.Item>
-          <Button htmlType="submit">Create</Button>
-        </Form.Item>
-      </Form>
-    </div>
-  );
-}
-
 function TourCypressTest() {
   return (
     <div>
@@ -1633,200 +1327,6 @@ function TourCypressTest() {
       >
         Generate
       </Button>
-    </div>
-  );
-}
-
-function WhiteLabelTeamJwtOpen() {
-  const nonAuthCtx = useNonAuthCtx();
-  const [team, setTeam] = React.useState<ApiTeam | undefined>(undefined);
-
-  return (
-    <>
-      <TeamWhiteLabelLookup onChange={(t) => setTeam(t)} />
-      {team && (
-        <>
-          <h3>
-            Team "{team.name}" ({team.whiteLabelName})
-          </h3>
-          <Form
-            initialValues={team.whiteLabelInfo ?? undefined}
-            onFinish={async (values) => {
-              console.log("FORM SUBMISSION", values);
-              const whiteLabelInfo: TeamWhiteLabelInfo = {
-                openRedirect: {
-                  ...values.openRedirect,
-                  scheme: "jwt",
-                  algo: "RS256",
-                },
-              };
-              console.log("New WhiteLabelInfo", whiteLabelInfo);
-              await nonAuthCtx.api.updateTeamWhiteLabelInfo(
-                team.id,
-                whiteLabelInfo
-              );
-              notification.success({ message: "Updated!" });
-            }}
-          >
-            <Form.Item
-              name={["openRedirect", "publicKey"]}
-              label="JWT Public Key (RS256)"
-            >
-              <Input.TextArea />
-            </Form.Item>
-            <Form.Item>
-              <Button htmlType="submit" type="primary">
-                Save
-              </Button>
-            </Form.Item>
-          </Form>
-        </>
-      )}
-    </>
-  );
-}
-
-function TeamWhiteLabelLookup(props: { onChange: (team: ApiTeam) => void }) {
-  const { onChange } = props;
-  const nonAuthCtx = useNonAuthCtx();
-  return (
-    <Form
-      layout="inline"
-      onFinish={async (values) => {
-        const teamName = values.whiteLabelName;
-        const team = await nonAuthCtx.api.getTeamByWhiteLabelName(teamName);
-        onChange(team);
-      }}
-    >
-      <Form.Item label="White label name" name="whiteLabelName">
-        <Input />
-      </Form.Item>
-      <Form.Item>
-        <Button htmlType="submit">Lookup</Button>
-      </Form.Item>
-    </Form>
-  );
-}
-
-function WhiteLabelTeamClientCredentials() {
-  const nonAuthCtx = useNonAuthCtx();
-  const [team, setTeam] = React.useState<ApiTeam | undefined>(undefined);
-
-  return (
-    <>
-      <TeamWhiteLabelLookup onChange={(t) => setTeam(t)} />
-      {team && (
-        <>
-          <h3>
-            Team "{team.name}" ({team.whiteLabelName})
-          </h3>
-          <Form
-            initialValues={team.whiteLabelInfo ?? undefined}
-            onFinish={async (event) => {
-              const whiteLabelInfo: TeamWhiteLabelInfo = {
-                apiClientCredentials: {
-                  ...event.apiClientCredentials,
-                },
-              };
-              await nonAuthCtx.api.updateTeamWhiteLabelInfo(
-                team.id,
-                whiteLabelInfo
-              );
-              notification.success({ message: "Updated!" });
-            }}
-          >
-            <Form.Item
-              name={["apiClientCredentials", "clientId"]}
-              label="Client ID"
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item name={["apiClientCredentials", "issuer"]} label="Issuer">
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name={["apiClientCredentials", "aud"]}
-              label="Expected audience (aud)"
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item>
-              <Button htmlType="submit" type="primary">
-                Save
-              </Button>
-            </Form.Item>
-          </Form>
-        </>
-      )}
-    </>
-  );
-}
-
-function SetTeamWhiteLabelName() {
-  const nonAuthCtx = useNonAuthCtx();
-  return (
-    <div>
-      <p>
-        Convert a team to a white-labeled team by associating a white-label name
-        with it.
-      </p>
-      <Form
-        onFinish={async (values) => {
-          if (values.whiteLabelName?.trim() === "") {
-            values.whiteLabelName = null;
-          }
-          const team = await nonAuthCtx.api.updateTeamWhiteLabelName(
-            values.teamId,
-            values.whiteLabelName
-          );
-          notification.success({
-            message: "Successfully updated white label team name",
-            description: `Team ${team.id} has name "${team.whiteLabelName}"`,
-          });
-        }}
-      >
-        <Form.Item name="teamId" label="Team ID">
-          <Input />
-        </Form.Item>
-        <Form.Item name="whiteLabelName" label="White label name">
-          <Input />
-        </Form.Item>
-        <Form.Item>
-          <Button htmlType="submit">Save</Button>
-        </Form.Item>
-      </Form>
-    </div>
-  );
-}
-
-function WhiteLabeledTeam() {
-  return (
-    <div>
-      <h2>Manage white-labeled teams</h2>
-      <Tabs
-        items={[
-          {
-            key: "gen-token",
-            label: "Generate Team API token",
-            children: <TeamApiTokens />,
-          },
-          {
-            key: "jwt",
-            label: "Configure Redirect flow with JWT",
-            children: <WhiteLabelTeamJwtOpen />,
-          },
-          {
-            key: "client-credentials",
-            label: "Configure API client credentials",
-            children: <WhiteLabelTeamClientCredentials />,
-          },
-          {
-            key: "create",
-            label: "Make white-labeled team",
-            children: <SetTeamWhiteLabelName />,
-          },
-        ]}
-      />
     </div>
   );
 }
@@ -2289,101 +1789,3 @@ function EditPkgVersionBundle() {
     </div>
   );
 }
-
-export default function AdminPage({ nonAuthCtx }: { nonAuthCtx: NonAuthCtx }) {
-  return (
-    <NonAuthCtxContext.Provider value={nonAuthCtx}>
-      <Tabs
-        items={[
-          {
-            key: "users",
-            label: "Users",
-            children: (
-              <div className="flex-col gap-xxxlg">
-                <UsersView />
-                <UserProjects />
-                <ChangePasswordView />
-                <UserTeams />
-                <DeactivateUserView />
-              </div>
-            ),
-          },
-          {
-            key: "teams",
-            label: "Teams",
-            children: (
-              <div className="flex-col gap-xxxlg">
-                <ConfigureSso />
-                <WhiteLabeledTeam />
-              </div>
-            ),
-          },
-          {
-            key: "projects",
-            label: "Projects",
-            children: (
-              <div className="flex-col gap-xxxlg">
-                <DownloadProjectView />
-                <DownloadProjectViewAndBranches />
-                <UploadProject />
-                <ChangeProjectOwner />
-                <RevertProjectRev />
-                <DownloadAppMeta />
-                <EditProjectRevBundle />
-                <EditPkgVersionBundle />
-                <PublicProjectsView />
-                <CloneProjectView />
-              </div>
-            ),
-          },
-          {
-            key: "devflags",
-            label: "Devflags",
-            children: (
-              <div className="flex-col gap-xxxlg">
-                <DevFlagControls />
-              </div>
-            ),
-          },
-          {
-            key: "pricing",
-            label: "Pricing",
-            children: (
-              <div className="flex-col gap-xxxlg">
-                <FeatureTierControls />
-                <TeamTierControls />
-                <PromotionCode />
-              </div>
-            ),
-          },
-          {
-            key: "dev",
-            label: "Development",
-            children: (
-              <div className="flex-col gap-xxxlg">
-                <CreateTutorialDb />
-                <ResetTutorialDb />
-                <TourCypressTest />
-                <DownloadPlumePkg />
-                <ImportProjectsFromProd />
-                <CopilotFeedbackView />
-                <AppAuthMetrics />
-              </div>
-            ),
-          },
-        ]}
-      />
-    </NonAuthCtxContext.Provider>
-  );
-}
-
-const DEFAULT_SSO_CONFIG_TEMPLATES = {
-  okta: `
-{
-  "audience": "",
-  "authorizationId": "",
-  "clientID": "",
-  "clientSecret": ""
-}
-  `.trim(),
-};
