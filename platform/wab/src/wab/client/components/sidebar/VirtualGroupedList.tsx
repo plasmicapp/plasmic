@@ -1,8 +1,8 @@
+import ListSectionHeader from "@/wab/client/components/ListSectionHeader";
+import { ListSpace } from "@/wab/client/components/widgets/ListStack";
 import { sum } from "lodash";
 import React from "react";
 import { VariableSizeList } from "react-window";
-import ListSectionHeader from "../ListSectionHeader";
-import { ListSpace } from "../widgets/ListStack";
 
 export interface Item<I> {
   type: "item";
@@ -19,9 +19,16 @@ export interface Group<G, I> {
 
 export type ItemOrGroup<G, I> = Item<I> | Group<G, I>;
 
+interface GroupedItem<G, I> {
+  type: "grouped_item";
+  group: Group<G, I>;
+  item: Item<I>;
+}
+type Row<G, I> = Item<I> | Group<G, I> | GroupedItem<G, I>;
+
 export function VirtualGroupedList<I, G>(props: {
   items: (Item<I> | Group<G, I>)[];
-  renderItem: (item: I) => React.ReactNode;
+  renderItem: (item: I, group: Group<G, I> | undefined) => React.ReactNode;
   itemHeight: number;
   renderGroupHeader: (group: G) => React.ReactNode;
   headerHeight: number;
@@ -50,14 +57,30 @@ export function VirtualGroupedList<I, G>(props: {
     return !forceExpandAll && collapsed[item.key];
   };
 
-  const flattenItems = (itms: ItemOrGroup<G, I>[]): ItemOrGroup<G, I>[] => {
-    return itms.flatMap((item) => {
-      if (item.type === "item") {
-        return item;
-      } else if (hideEmptyGroups && item.items.length === 0) {
+  const flattenItems = (
+    itemsOrGroups: ItemOrGroup<G, I>[],
+    group?: Group<G, I>
+  ): Row<G, I>[] => {
+    return itemsOrGroups.flatMap((itemOrGroup) => {
+      if (itemOrGroup.type === "item") {
+        if (group) {
+          return {
+            type: "grouped_item",
+            group,
+            item: itemOrGroup,
+          };
+        } else {
+          return itemOrGroup;
+        }
+      } else if (hideEmptyGroups && itemOrGroup.items.length === 0) {
         return [];
       } else {
-        return [item, ...(isCollapsed(item) ? [] : flattenItems(item.items))];
+        return [
+          itemOrGroup,
+          ...(isCollapsed(itemOrGroup)
+            ? []
+            : flattenItems(itemOrGroup.items, itemOrGroup)),
+        ];
       }
     });
   };
@@ -104,24 +127,33 @@ export function VirtualGroupedList<I, G>(props: {
           ref={listRef}
         >
           {({ data, index, style }) => {
-            const item = data[index];
-            if (item.type === "group") {
+            const row: Row<G, I> = data[index];
+            if (row.type === "group") {
               return (
                 <ListSectionHeader
-                  collapseState={isCollapsed(item) ? "collapsed" : "expanded"}
+                  className={row.items.length > 0 ? "pointer" : undefined}
+                  collapseState={isCollapsed(row) ? "collapsed" : "expanded"}
                   onToggle={() =>
                     setCollapsed({
                       ...collapsed,
-                      [item.key]: !collapsed[item.key],
+                      [row.key]: !collapsed[row.key],
                     })
                   }
                   style={style}
                 >
-                  {renderGroupHeader(item.group)}
+                  {renderGroupHeader(row.group)}
                 </ListSectionHeader>
               );
+            } else if (row.type === "grouped_item") {
+              return (
+                <li style={{ ...style }}>
+                  {renderItem(row.item.item, row.group)}
+                </li>
+              );
             } else {
-              return <li style={{ ...style }}>{renderItem(item.item)}</li>;
+              return (
+                <li style={{ ...style }}>{renderItem(row.item, undefined)}</li>
+              );
             }
           }}
         </VariableSizeList>

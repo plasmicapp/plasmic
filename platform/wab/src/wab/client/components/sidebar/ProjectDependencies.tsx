@@ -1,5 +1,5 @@
 import { ProjectDependency } from "@/wab/classes";
-import { U } from "@/wab/client/cli-routes";
+import { openNewTab, U } from "@/wab/client/cli-routes";
 import { WithContextMenu } from "@/wab/client/components/ContextMenu";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import {
@@ -62,15 +62,11 @@ const DependencyItem = observer(function DependencyItem(props: {
           <Menu.Item
             key="jump-newtab"
             onClick={() => {
-              const win = window.open(
+              openNewTab(
                 U.project({
                   projectId: targetProjectId,
-                }),
-
-                "_blank"
+                })
               );
-
-              win?.focus();
             }}
           >
             Open project in new tab

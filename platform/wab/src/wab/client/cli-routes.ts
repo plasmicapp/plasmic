@@ -14,7 +14,13 @@ import {
 } from "@/wab/shared/ApiSchema";
 import { isArenaType } from "@/wab/shared/Arenas";
 import { getPublicUrl } from "@/wab/urls";
-import { History, Location, LocationDescriptor } from "history";
+import {
+  createPath,
+  History,
+  Location,
+  LocationDescriptor,
+  LocationDescriptorObject,
+} from "history";
 import L from "lodash";
 import { compile, PathFunction } from "path-to-regexp";
 import { match as Match, matchPath, useRouteMatch } from "react-router-dom";
@@ -320,7 +326,7 @@ export function mkProjectLocation({
   branchVersion,
   arenaType,
   arenaUuidOrName,
-}: ProjectLocationParams): LocationDescriptor {
+}: ProjectLocationParams): LocationDescriptorObject {
   const searchParams: [string, string][] = [];
   if (branchName !== MainBranchId) {
     searchParams.push([SEARCH_PARAM_BRANCH, branchName]);
@@ -349,6 +355,13 @@ export function mkProjectLocation({
     pathname,
     search,
   };
+}
+
+export function openNewTab(location: LocationDescriptor) {
+  window.open(
+    typeof location === "string" ? location : createPath(location),
+    "_blank"
+  );
 }
 
 export class Router {
