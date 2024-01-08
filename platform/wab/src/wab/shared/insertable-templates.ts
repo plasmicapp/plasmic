@@ -1,6 +1,7 @@
 import {
   Arg,
   Component,
+  ComponentTemplateInfo,
   CustomCode,
   ImageAsset,
   ImageAssetRef,
@@ -19,6 +20,7 @@ import {
   TplNode,
   TplSlot,
   Variant,
+  VariantedValue,
   VariantSetting,
   VariantsRef,
 } from "@/wab/classes";
@@ -31,7 +33,15 @@ import {
   strictFind,
   withoutNils,
 } from "@/wab/common";
-import { resolveAllTokenRefs } from "@/wab/commons/StyleToken";
+import {
+  derefToken,
+  derefTokenRefs,
+  hasTokenRefs,
+  mkTokenRef,
+  replaceAllTokenRefs,
+  resolveAllTokenRefs,
+  TokenType,
+} from "@/wab/commons/StyleToken";
 import {
   cloneComponent,
   isCodeComponent,
@@ -39,10 +49,15 @@ import {
   isPlumeComponent,
   PlumeComponent,
 } from "@/wab/components";
+import {
+  InsertableTemplateComponentResolution,
+  InsertableTemplateTokenResolution,
+} from "@/wab/devflags";
 import { clone as cloneExpr } from "@/wab/exprs";
 import { ImageAssetType } from "@/wab/image-asset-type";
 import { mkImageAssetRef } from "@/wab/image-assets";
 import { syncGlobalContexts } from "@/wab/project-deps";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { allImageAssets, allStyleTokens, isHostLessPackage } from "@/wab/sites";
 import { createExpandedRuleSetMerger } from "@/wab/styles";
 import {
@@ -98,6 +113,11 @@ export interface InsertableTemplateExtraInfo {
       projectDependency: ProjectDependency;
     }
   >;
+  projectId: string;
+  resolution: {
+    token?: InsertableTemplateTokenResolution;
+    component?: InsertableTemplateComponentResolution;
+  };
 }
 
 /**
@@ -126,7 +146,11 @@ export function inlineMixins(tplTree: TplNode) {
  * Mutates a TplTree by resolving all token refs
  * @param tplTree
  */
-export function inlineTokens(tplTree: TplNode, tokens: StyleToken[]) {
+export function inlineTokens(
+  tplTree: TplNode,
+  tokens: StyleToken[],
+  onFontSeen?: (font: string) => void
+) {
   // Walk TplTree
   const vsAndTpls = [...findVariantSettingsUnderTpl(tplTree)];
   for (const [vs, tpl] of vsAndTpls) {
@@ -137,7 +161,11 @@ export function inlineTokens(tplTree: TplNode, tokens: StyleToken[]) {
     for (const prop of rsHelper.props()) {
       const val = rsHelper.getRaw(prop);
       if (val) {
-        rsHelper.set(prop, resolveAllTokenRefs(val, tokens));
+        const realVal = resolveAllTokenRefs(val, tokens);
+        rsHelper.set(prop, realVal);
+        if (prop === "font-family") {
+          onFontSeen?.(realVal);
+        }
       }
     }
   }
@@ -336,23 +364,23 @@ export function inlineSlots(tplTree: TplNode, slotArgs?: Arg[]): boolean {
  * - For now, just checks that there are no TplSlots and TplComponents
  * @param tplTree
  */
-export function assertValidInsertable(tplTree: TplNode): void {
+export function assertValidInsertable(
+  tplTree: TplNode,
+  allowComponents: boolean
+): void {
   walkTpls(tplTree, {
     pre(tpl, path) {
       if (isTplSlot(tpl)) {
-        assert(!isTplSlot(tpl), "Insertable templates cannot have TplSlots");
         console.warn("Path:");
         console.warn(path);
-      } else if (isTplComponent(tpl)) {
+        assert(false, "Insertable templates cannot have TplSlots");
+      } else if (isTplComponent(tpl) && !allowComponents) {
         if (
           !(isPlumeComponent(tpl.component) || isCodeComponent(tpl.component))
         ) {
-          assert(
-            !isTplComponent(tpl),
-            "Insertable templates cannot have TplComponents"
-          );
           console.warn("Path:");
           console.warn(path);
+          assert(false, "Insertable templates cannot have TplComponents");
         }
       }
       return true;
@@ -499,6 +527,8 @@ const getSiteMatchingPlumeComponent = (
 
     inlineMixins(component.tplTree);
     const allTokens = allStyleTokens(site, { includeDeps: "all" });
+    // We ignore fonts here, because as we are inlining the tree we will pass again
+    // through this elements
     inlineTokens(component.tplTree, allTokens);
 
     const vsAndTpls = [...findVariantSettingsUnderTpl(component.tplTree)];
@@ -941,23 +971,22 @@ const fixBackgroundImage = (
   }
 };
 
-export function cloneInsertableTemplateComponent(
+export function mkInsertableComponentImporter(
   site: Site,
   info: InsertableTemplateExtraInfo,
-  plumeSite: Site | undefined
+  plumeSite: Site | undefined,
+  resolveTreeTokens: (tplTree: TplNode) => void
 ) {
   const oldToNewComponent = new Map<Component, Component>();
-  const allSourceTokens = allStyleTokens(info.site, { includeDeps: "all" });
   const assetFixer = makeImageAssetFixer(
     site,
     keyBy(allImageAssets(info.site, { includeDeps: "all" }), (x) => x.uuid)
   );
   const tplMgr = new TplMgr({ site });
-  const seenFonts = new Set<string>();
 
   const fixupComp = (comp: Component) => {
     inlineMixins(comp.tplTree);
-    inlineTokens(comp.tplTree, allSourceTokens);
+    resolveTreeTokens(comp.tplTree);
     for (const tpl of flattenComponent(comp)) {
       for (const vs of [...tpl.vsettings]) {
         fixGlobalVariants(tpl, vs, { screenVariant: info.screenVariant });
@@ -965,13 +994,6 @@ export function cloneInsertableTemplateComponent(
       // Do this in another loop because fixGlobalVariants may remove some vs
       for (const vs of tpl.vsettings) {
         assetFixer(tpl, vs);
-        if (isTypographyNode(tpl)) {
-          const rsh = RSH(vs.rs, tpl);
-          const rawFont = rsh.getRaw("font-family");
-          if (rawFont) {
-            seenFonts.add(rawFont);
-          }
-        }
       }
       if (isTplComponent(tpl)) {
         const newComp = getNewComponent(tpl.component, tpl);
@@ -985,16 +1007,25 @@ export function cloneInsertableTemplateComponent(
     if (oldToNewComponent.has(comp)) {
       return oldToNewComponent.get(comp)!;
     }
-    if (comp.templateInfo) {
-      const existing = site.components.find(
-        (c) => c.templateInfo?.name === comp.templateInfo?.name
-      );
-      if (existing) {
-        oldToNewComponent.set(comp, existing);
-        return existing;
-      }
+
+    if (isHostLessCodeComponent(comp)) {
+      // For hostless components, we just need to make sure our Site
+      // has the necessary project dep installed. We can directly
+      // keep using the `comp` instance, as long as it is unbundled
+      // with the same bundler as `site`.
+      return ensureHostLessDepComponent(site, comp, info);
     }
-    if (comp.plumeInfo) {
+
+    if (isCodeComponent(comp)) {
+      // If it's a code component, we need to make sure it exists in our site
+      // this should be true if they are both using the same host
+      const existing = site.components.find((c) => c.name === comp.name);
+      assert(existing, () => `Cannot find code component ${comp.name}`);
+      oldToNewComponent.set(comp, existing);
+      return existing;
+    }
+
+    if (isPlumeComponent(comp)) {
       const plumeComp = getSiteMatchingPlumeComponent(
         site,
         info.site,
@@ -1010,26 +1041,222 @@ export function cloneInsertableTemplateComponent(
       return plumeComp;
     }
 
-    if (isHostLessCodeComponent(comp)) {
-      // For hostless components, we just need to make sure our Site
-      // has the necessary project dep installed. We can directly
-      // keep using the `comp` instance, as long as it is unbundled
-      // with the same bundler as `site`.
-      return ensureHostLessDepComponent(site, comp, info);
+    const existing = site.components.find(
+      (c) =>
+        // We can match by name if the there is one in templateInfo, or by (projectId, componentId)
+        // we could also just match by componentId it should be hard to collide, but let's be safe
+        //
+        // It's important to note that components coming from dependencies sites will also be added
+        // with the template projectId
+        //
+        // We also check if the component is a valid replacement based in the params/variants
+        (c.templateInfo?.name &&
+          c.templateInfo?.name === comp.templateInfo?.name) ||
+        (c.templateInfo?.componentId === comp.uuid &&
+          c.templateInfo?.projectId === info.projectId)
+    );
+    if (existing) {
+      oldToNewComponent.set(comp, existing);
+      return existing;
     }
 
-    return cloneComp(comp);
+    const newComp = cloneComp(comp);
+    oldToNewComponent.set(comp, newComp);
+    return newComp;
   };
 
   const cloneComp = (comp: Component) => {
     const newComp = cloneComponent(comp, comp.name).component;
-    oldToNewComponent.set(comp, newComp);
     fixupComp(newComp);
+    newComp.templateInfo = new ComponentTemplateInfo({
+      name: newComp.templateInfo?.name,
+      projectId: info.projectId,
+      componentId: comp.uuid,
+    });
     tplMgr.attachComponent(newComp);
     return newComp;
   };
 
-  return { component: cloneComp(info.component), seenFonts };
+  return getNewComponent;
+}
+
+export function cloneInsertableTemplateComponent(
+  site: Site,
+  info: InsertableTemplateExtraInfo,
+  plumeSite: Site | undefined
+) {
+  const seenFonts = new Set<string>();
+
+  const oldTokens = allStyleTokens(info.site, { includeDeps: "all" });
+
+  const tokenImporter = (tplTree: TplNode) => {
+    inlineTokens(tplTree, oldTokens, (font) => seenFonts.add(font));
+  };
+
+  const componentImporter = mkInsertableComponentImporter(
+    site,
+    info,
+    plumeSite,
+    tokenImporter
+  );
+
+  return { component: componentImporter(info.component), seenFonts };
+}
+
+function ensureTplWithBaseAndScreenVariants(
+  sourceComp: Component,
+  tpl: TplNode,
+  targetBaseVariant: Variant,
+  screenVariant: Variant | undefined
+) {
+  // Create a new array, since we can mutate tpl.vsettings
+  for (const vs of [...tpl.vsettings]) {
+    // Fix the variant references
+    if (isBaseVariant(vs.variants)) {
+      vs.variants = [targetBaseVariant];
+    } else if (screenVariant && vs.variants.find((v) => isScreenVariant(v))) {
+      // Replace the screen variant reference
+      vs.variants = [screenVariant];
+    } else {
+      // Remove non-base/screen variant settings
+      remove(tpl.vsettings, vs);
+      console.warn(
+        `Insertable template ${sourceComp.name} has a non-base/screen variant. Please remove this from the source project.`
+      );
+    }
+  }
+
+  if (tpl.vsettings.length > 2) {
+    console.warn(
+      "Tpl node has more than 2 variant settings. Removing extra variant settings",
+      tpl
+    );
+    tpl.vsettings.splice(2);
+  }
+}
+
+function mkInsertableTokenImporter(
+  sourceSite: Site,
+  targetSite: Site,
+  sourceTokens: StyleToken[],
+  targetTokens: StyleToken[],
+  tokenResolution: InsertableTemplateTokenResolution | undefined,
+  screenVariant: Variant | undefined,
+  onFontSeen: (font: string) => void
+) {
+  const oldToNewToken = new Map<StyleToken, StyleToken>();
+
+  function getOrAddToken(oldTokens: StyleToken[], oldToken: StyleToken) {
+    if (oldToNewToken.has(oldToken)) {
+      return oldToNewToken.get(oldToken)!;
+    }
+
+    // `targetTokens` won't consider tokens that have been added by `getOrAddToken`
+    // but this is expected as if it would have a similarity from tokens that have
+    // been added, it would be an inconsistency in the template
+    const similarToken = targetTokens.find((targetToken) => {
+      if (targetToken.type !== oldToken.type) {
+        return false;
+      }
+
+      const isSameName = targetToken.name === oldToken.name;
+
+      if (tokenResolution === "retain-by-name") {
+        return isSameName;
+      }
+
+      const isSameValue =
+        derefToken(targetTokens, targetToken) ===
+        derefToken(oldTokens, oldToken);
+
+      if (tokenResolution === "retain-by-value") {
+        return isSameValue;
+      }
+
+      // We fallback to retain-by-value-and-name
+      return isSameValue && isSameName;
+    });
+
+    if (similarToken) {
+      oldToNewToken.set(oldToken, similarToken);
+      return similarToken;
+    }
+
+    const tplMgr = new TplMgr({ site: targetSite });
+    const newToken = tplMgr.addToken({
+      name: tplMgr.getUniqueTokenName(oldToken.name),
+      tokenType: oldToken.type as TokenType,
+      value: derefToken(oldTokens, oldToken),
+    });
+
+    if (screenVariant) {
+      // We get a single varianted value that we can keep for the screenVariant
+      const variantedValues = oldToken.variantedValues.find((v) => {
+        return v.variants.length === 1 && isScreenVariant(v.variants[0]);
+      });
+      if (variantedValues) {
+        newToken.variantedValues.push(
+          new VariantedValue({
+            value: derefToken(
+              oldTokens,
+              oldToken,
+              new VariantedStylesHelper(sourceSite, variantedValues.variants)
+            ),
+            variants: [screenVariant],
+          })
+        );
+      }
+    }
+
+    oldToNewToken.set(oldToken, newToken);
+    return newToken;
+  }
+
+  function fixTokensInTplTree(tplTree: TplNode) {
+    if (!tokenResolution || tokenResolution === "inline") {
+      inlineTokens(tplTree, sourceTokens, onFontSeen);
+      return;
+    }
+
+    function getNewMaybeTokenRefValue(value: string) {
+      if (!hasTokenRefs(value)) {
+        return value;
+      }
+
+      return replaceAllTokenRefs(value, (tokenId) => {
+        const oldToken = sourceTokens.find((t) => t.uuid === tokenId);
+        if (!oldToken) {
+          return undefined;
+        }
+        return mkTokenRef(getOrAddToken(sourceTokens, oldToken));
+      });
+    }
+
+    const vsAndTpls = [...findVariantSettingsUnderTpl(tplTree)];
+    for (const [vs, tpl] of vsAndTpls) {
+      const forTag = isKnownTplTag(tpl) ? tpl.tag : "div";
+      const rsHelper = new RuleSetHelpers(vs.rs, forTag);
+
+      // Iterate over all Rules to resolve token refs
+      for (const prop of rsHelper.props()) {
+        const val = rsHelper.getRaw(prop);
+        if (val) {
+          const newVal = getNewMaybeTokenRefValue(val);
+          rsHelper.set(prop, newVal);
+          if (prop === "font-family") {
+            onFontSeen(
+              derefTokenRefs(
+                [...targetTokens, ...oldToNewToken.values()],
+                newVal
+              )
+            );
+          }
+        }
+      }
+    }
+  }
+
+  return fixTokensInTplTree;
 }
 
 /**
@@ -1040,9 +1267,16 @@ export function cloneInsertableTemplate(
   site: Site,
   info: InsertableTemplateExtraInfo,
   targetBaseVariant: Variant,
-  plumeSite: Site | undefined
+  plumeSite: Site | undefined,
+  ownerComponent: Component
 ) {
-  const { component: sourceComp, site: sourceSite, screenVariant } = info;
+  const {
+    component: sourceComp,
+    site: sourceSite,
+    screenVariant,
+    resolution,
+  } = info;
+
   const newTplTree = cloneTpl(sourceComp.tplTree);
   const assetFixer = makeImageAssetFixer(
     site,
@@ -1059,39 +1293,63 @@ export function cloneInsertableTemplate(
   // Slots first - want to avoid nested slots
   inlineSlots(newTplTree);
   // Clone component instances recursively
-  inlineComponents(newTplTree, {
+  const ctx: InlineComponentContext = {
     sourceComp,
     sourceSite,
     targetSite: site,
     targetBaseVariant,
     extraInfo: info,
     plumeSite,
-  });
+  };
+
+  const oldTokens = allStyleTokens(sourceSite, { includeDeps: "all" });
+  const newTokens = allStyleTokens(site, { includeDeps: "all" });
+
+  const tokenImporter = mkInsertableTokenImporter(
+    ctx.sourceSite,
+    ctx.targetSite,
+    oldTokens,
+    newTokens,
+    resolution.token,
+    screenVariant,
+    (font) => seenFonts.add(font)
+  );
+
+  if (resolution.component === "import") {
+    const componentImporter = mkInsertableComponentImporter(
+      site,
+      info,
+      plumeSite,
+      tokenImporter
+    );
+    for (const tpl of flattenTpls(newTplTree)) {
+      if (isTplComponent(tpl)) {
+        const newComp = componentImporter(tpl.component, tpl);
+        const swapper = makeComponentSwapper(
+          ctx.targetSite,
+          tpl.component,
+          newComp
+        );
+        swapper(tpl, ownerComponent);
+      }
+    }
+  } else {
+    inlineComponents(newTplTree, ctx);
+  }
   // Apply all mixins and tokens
   // Note - if you call this earlier, you may not get into the component instances
   inlineMixins(newTplTree);
-  const allTokens = allStyleTokens(sourceSite, { includeDeps: "all" });
-  inlineTokens(newTplTree, allTokens);
-  assertValidInsertable(newTplTree);
+  tokenImporter(newTplTree);
+  assertValidInsertable(newTplTree, resolution.component === "import");
 
   // Traverse all VariantSettings
   for (const tpl of flattenTpls(newTplTree)) {
-    for (const vs of [...tpl.vsettings]) {
-      // Fix the variant references
-      if (isBaseVariant(vs.variants)) {
-        vs.variants = [targetBaseVariant];
-      } else if (screenVariant && vs.variants.find((v) => isScreenVariant(v))) {
-        // Replace the screen variant reference
-        vs.variants = [screenVariant];
-      } else {
-        // Remove non-base/screen variant settings
-        remove(tpl.vsettings, vs);
-        console.warn(
-          `Insertable template ${sourceComp.name} has a non-base/screen variant. Please remove this from the source project.`
-        );
-        continue;
-      }
-    }
+    ensureTplWithBaseAndScreenVariants(
+      sourceComp,
+      tpl,
+      targetBaseVariant,
+      screenVariant
+    );
 
     for (const vs of tpl.vsettings) {
       assetFixer(tpl, vs);
@@ -1112,24 +1370,20 @@ export function cloneInsertableTemplate(
       }
 
       if (isTplTextBlock(tpl)) {
-        fixTextTplStyles(tpl, vs, allTokens, sourceComp, sourceSite);
+        fixTextTplStyles(tpl, vs, oldTokens, sourceComp, sourceSite);
       }
 
       // Wipe out remaining arguments (Should have been flattened by now)
       // if it's a plume component or a code-component we keep the information
-      if (
+      // or we aren't importing the components
+      const shouldRemoveArgs =
         !isTplComponent(tpl) ||
-        !(isPlumeComponent(tpl.component) || isCodeComponent(tpl.component))
-      ) {
+        (!isPlumeComponent(tpl.component) &&
+          !isCodeComponent(tpl.component) &&
+          resolution.component !== "import");
+      if (shouldRemoveArgs) {
         vs.args = [];
       }
-    }
-    if (tpl.vsettings.length > 2) {
-      console.warn(
-        "Tpl node has more than 2 variant settings. Removing extra variant settings",
-        tpl
-      );
-      tpl.vsettings.splice(2);
     }
   }
 

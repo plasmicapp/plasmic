@@ -48,6 +48,14 @@ export interface StarterProjectConfig {
   isPlasmicOnly?: boolean;
 }
 
+export type InsertableTemplateTokenResolution =
+  | "inline"
+  | "retain-by-name"
+  | "retain-by-value"
+  | "retain-by-name-and-value";
+
+export type InsertableTemplateComponentResolution = "inline" | "import";
+
 /**
  * Represents a collection of related templates (e.g. Hero sections)
  */
@@ -72,6 +80,8 @@ export interface InsertableTemplatesItem {
   imageUrl?: string; // A preview image
   displayName?: string;
   onlyShownIn?: "old" | "new";
+  tokenResolution?: InsertableTemplateTokenResolution;
+  componentResolution?: InsertableTemplateComponentResolution;
 }
 
 /**

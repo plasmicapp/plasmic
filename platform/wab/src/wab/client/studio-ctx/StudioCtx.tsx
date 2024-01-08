@@ -7045,6 +7045,8 @@ export function normalizeTemplateSpec(
             componentName: spec.componentName,
             imageUrl: spec.imageUrl,
             displayName: spec.displayName,
+            tokenResolution: spec.tokenResolution,
+            componentResolution: spec.componentResolution,
           })
         ),
       })

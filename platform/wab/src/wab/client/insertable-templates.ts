@@ -39,6 +39,31 @@ export const getPageTemplates = (studioCtx: StudioCtx) => {
   return pageTemplates as InsertableTemplatesItem[];
 };
 
+export const getInsertableTemplatesGroups = (studioCtx: StudioCtx) => {
+  const insertableTemplates =
+    maybe(studioCtx.getCurrentUiConfig()?.insertableTemplates, (x) =>
+      normalizeTemplateSpec(x, false)
+    ) ?? studioCtx.appCtx.appConfig.insertableTemplates;
+  if (!insertableTemplates) {
+    return [];
+  }
+  const insertableTemplatesGrups = insertableTemplates.items.filter(
+    (i) => i.type === "insertable-templates-group" && !i.isPageTemplatesGroup
+  );
+  return insertableTemplatesGrups as InsertableTemplatesGroup[];
+};
+
+export const getInsertableTemplates = (studioCtx: StudioCtx) => {
+  const insertableTemplates = flatten(
+    getInsertableTemplatesGroups(studioCtx).map((g) => g.items)
+  ).filter((i) => i.type === "insertable-templates-item");
+  return insertableTemplates as InsertableTemplatesItem[];
+};
+
+export const getAllTemplates = (studioCtx: StudioCtx) => {
+  return [...getInsertableTemplates(studioCtx), ...getPageTemplates(studioCtx)];
+};
+
 export const getPageTemplate = (
   studioCtx: StudioCtx,
   projectId: string,
@@ -90,7 +115,8 @@ export const replaceWithPageTemplate = (
     studioCtx.site,
     templateInfo,
     getBaseVariant(page),
-    studioCtx.projectDependencyManager.plumeSite
+    studioCtx.projectDependencyManager.plumeSite,
+    page
   );
   postInsertableTemplate(studioCtx, seenFonts);
 
@@ -231,10 +257,19 @@ export async function buildInsertableExtraInfo(
     return undefined;
   }
 
+  const template = getAllTemplates(studioCtx).find(
+    (c) => c.projectId === projectId && c.componentName === componentName
+  );
+
   return {
     ...it,
     screenVariant,
     ...(await getHostLessDependenciesToInsertableTemplate(studioCtx, it.site)),
+    projectId,
+    resolution: {
+      token: template?.tokenResolution,
+      component: template?.componentResolution,
+    },
   };
 }
 

@@ -4,7 +4,11 @@
 
 import { Dict } from "@/wab/collections";
 import { TokenType } from "@/wab/commons/StyleToken";
-import { DEVFLAGS } from "@/wab/devflags";
+import {
+  DEVFLAGS,
+  InsertableTemplateComponentResolution,
+  InsertableTemplateTokenResolution,
+} from "@/wab/devflags";
 import type { DataSourceSchema } from "@plasmicapp/data-sources";
 import { PlasmicElement } from "@plasmicapp/host/dist/element-types";
 import Stripe from "stripe";
@@ -281,6 +285,8 @@ export interface TemplateSpec {
   projectId: ProjectId;
   componentName: string;
   category?: string;
+  tokenResolution?: InsertableTemplateTokenResolution;
+  componentResolution?: InsertableTemplateComponentResolution;
 }
 
 export interface ApiWorkspace extends ApiEntityBase {

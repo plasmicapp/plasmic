@@ -1,23 +1,24 @@
 import {
   Component,
-  ensureKnownVariantsRef,
+  isKnownCustomCode,
   isKnownRenderExpr,
   isKnownStateParam,
+  isKnownVariantsRef,
   Param,
   Site,
   State,
   TplComponent,
   TplNode,
   Variant,
-} from "../classes";
-import { assert, isNonNil } from "../common";
-import { removeFromArray } from "../commons/collections";
+} from "@/wab/classes";
+import { assert, isNonNil } from "@/wab/common";
+import { removeFromArray } from "@/wab/commons/collections";
 import {
   ensureCorrectImplicitStates,
   isPublicState,
   removeComponentState,
-} from "../states";
-import { isTplComponent } from "../tpls";
+} from "@/wab/states";
+import { isTplComponent } from "@/wab/tpls";
 import { componentToDeepReferenced } from "./cached-selectors";
 import { wabToTsType } from "./core/model-util";
 import { isSlot } from "./SlotUtils";
@@ -129,14 +130,22 @@ export function makeComponentSwapper(
           isKnownStateParam(toParam) &&
           toVariantGroupParams.has(toParam)
         ) {
-          // A variants arg; map to new variants
-          const expr = ensureKnownVariantsRef(arg.expr);
-          const fromVariants = expr.variants;
-          const toVariants = fromVariants
-            .map((v) => variantMap.get(v))
-            .filter(isNonNil);
-          expr.variants = toVariants;
-          arg.param = toParam;
+          // A variants arg; map to new variants if we have a variants ref
+          if (isKnownVariantsRef(arg.expr)) {
+            const expr = arg.expr;
+            const fromVariants = expr.variants;
+            const toVariants = fromVariants
+              .map((v) => variantMap.get(v))
+              .filter(isNonNil);
+            expr.variants = toVariants;
+            arg.param = toParam;
+          } else if (isKnownCustomCode(arg.expr)) {
+            // If we have a custom code we assume it's an expression that properly
+            // matches to the new variants
+            arg.param = toParam;
+          } else {
+            assert(false, "Unexpected variants arg");
+          }
         } else {
           // Pray for the best
           arg.param = toParam;

@@ -510,7 +510,8 @@ export function createAddInsertableTemplate(
         vc.site,
         extraInfo,
         getBaseVariant(targetComponent),
-        vc.studioCtx.projectDependencyManager.plumeSite
+        vc.studioCtx.projectDependencyManager.plumeSite,
+        targetComponent
       );
       postInsertableTemplate(vc.studioCtx, seenFonts);
       return tpl;
