@@ -1,8 +1,25 @@
-import { Tag } from "antd";
+import {
+  FREE_CONTAINER_ICON,
+  HORIZ_STACK_ICON,
+  TEXT_ICON,
+  VERT_STACK_ICON,
+} from "@/wab/client/icons";
+import { mkNoActionShortcuts, Shortcut } from "@/wab/client/shortcuts/shortcut";
+import {
+  CHROME_SHORTCUT_GROUP,
+  EDIT_SHORTCUT_GROUP,
+  MISC_SHORTCUT_GROUP,
+  SELECTION_SHORTCUT_GROUP,
+  TOOLS_SHORTCUT_GROUP,
+  VIEW_SHORTCUT_GROUP,
+} from "@/wab/client/shortcuts/studio/studio-shortcuts";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { SearchOutlined } from "@ant-design/icons";
+import { Input, Tag } from "antd";
 import cn from "classnames";
 import L from "lodash";
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useState } from "react";
 import {
   FaArrowDown,
   FaArrowLeft,
@@ -11,28 +28,13 @@ import {
   FaRegHandRock,
 } from "react-icons/fa";
 import { Modal } from "src/wab/client/components/widgets/Modal";
-import {
-  FREE_CONTAINER_ICON,
-  HORIZ_STACK_ICON,
-  TEXT_ICON,
-  VERT_STACK_ICON,
-} from "../../icons";
-import { mkNoActionShortcuts, Shortcut } from "../../shortcuts/shortcut";
-import {
-  CHROME_SHORTCUT_GROUP,
-  EDIT_SHORTCUT_GROUP,
-  MISC_SHORTCUT_GROUP,
-  SELECTION_SHORTCUT_GROUP,
-  TOOLS_SHORTCUT_GROUP,
-  VIEW_SHORTCUT_GROUP,
-} from "../../shortcuts/studio/studio-shortcuts";
-import { useStudioCtx } from "../../studio-ctx/StudioCtx";
 import styles from "./Shortcuts.module.scss";
 
 export const ShortcutsModal = observer(
   ({ children }: { children: React.ReactNode }) => {
     const studioCtx = useStudioCtx();
     const open = studioCtx.isShortcutsModalOpen();
+    const [searchQuery, setSearchQuery] = useState("");
 
     return (
       <>
@@ -46,8 +48,18 @@ export const ShortcutsModal = observer(
           onCancel={studioCtx.closeShortcutsModal}
         >
           <div className={styles.scrollableShortcuts}>
+            <Input
+              addonBefore={<SearchOutlined />}
+              placeholder="Search shortcuts here..."
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className={styles.searchInput}
+            />
             {SHORTCUT_SECTIONS.map((section, i) => (
-              <ShortcutSection key={i} section={section} />
+              <ShortcutSection
+                key={i}
+                section={section}
+                searchQuery={searchQuery}
+              />
             ))}
           </div>
         </Modal>
@@ -66,17 +78,41 @@ interface ShortcutChunk {
   title?: string;
 }
 
-function ShortcutSection(props: { section: ShortcutSection }) {
+function ShortcutSection(props: {
+  section: ShortcutSection;
+  searchQuery?: string;
+}) {
+  const { searchQuery } = props;
+
+  const filteredChunks: ShortcutChunk[] = searchQuery
+    ? props.section.chunks.map((chunk) => ({
+        ...chunk,
+        shortcuts: chunk.shortcuts.filter((shortcut) =>
+          shortcut.description.toLowerCase().includes(searchQuery.toLowerCase())
+        ),
+      }))
+    : [...props.section.chunks];
+
+  const isSectionShowing = filteredChunks.some(
+    (chunk) => chunk.shortcuts.length > 0
+  );
+
+  if (!isSectionShowing) return null;
+
   return (
     <div className="mb-xlg">
       <h2>{props.section.title}</h2>
-      {props.section.chunks.map((chunk, i) => (
-        <div className="pv-sm" key={i}>
-          {chunk.title && <h3 className="dimfg">{chunk.title}</h3>}
-          {chunk.shortcuts.map((s, _i) => (
-            <ShortcutRow shortcut={s} key={_i} />
-          ))}
-        </div>
+      {filteredChunks.map((chunk, i) => (
+        <>
+          {chunk.shortcuts.length ? (
+            <div className="pv-sm" key={i}>
+              {chunk.title && <h3 className="dimfg">{chunk.title}</h3>}
+              {chunk.shortcuts.map((s, _i) => (
+                <ShortcutRow shortcut={s} key={_i} />
+              ))}
+            </div>
+          ) : null}
+        </>
       ))}
     </div>
   );

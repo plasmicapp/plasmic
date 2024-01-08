@@ -2,6 +2,10 @@
   max-height: 70vh;
   overflow: auto;
   padding: 20px 25px;
+
+  .searchInput {
+    margin-bottom: 20px;
+  }
 }
 
 .shortcutRow:not(:last-child) {
