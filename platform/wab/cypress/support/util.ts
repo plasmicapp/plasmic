@@ -763,30 +763,31 @@ export function getTreeNode(
   const [name, ...rest] = names;
   const labelSelector = !parentId
     ? ".tpltree__root .tpltree__label"
-    : `.tpltree__label[data-test-parent-id="${parentId}"]`;
+    : `.tpltree__root .tpltree__label[data-test-parent-id="${parentId}"]`;
+
+  const getRoot = !parentId && name === "root";
+  if (getRoot) {
+    // The tpltree is virtualized, so scroll to the top to ensure the first element is the root.
+    cy.get(".tpltree-scroller").scrollTo("top", { ensureScrollable: false });
+    cy.wait(500); // virtual list needs a bit of time to rerender
+  }
+
   return (
-    !parentId && name === "root"
-      ? cy.get(".tpltree__root .tpltree__label").first()
-      : cy.contains(labelSelector, name)
+    getRoot ? cy.get(labelSelector).first() : cy.contains(labelSelector, name)
   ).then(($elt) => {
-    console.log("Got tree node", $elt);
+    const id = $elt.data("test-id");
     if (rest.length === 0) {
-      const elt = $elt[0];
-      if (!elt.isConnected) {
-        // For whatever reason, the $elt is no longer attached to the DOM, so we
-        // query the DOM again by its unique test id
-        return cy.get(`[data-test-id="${$elt.data("test-id")}"]`);
-      } else {
-        return cy.wrap($elt);
-      }
+      // For whatever reason, the $elt may no longer be attached to the DOM,
+      // so query the DOM again by its unique test id.
+      return cy.get(`[data-test-id="${id}"]`);
     }
     const expander = $elt.find(
       `.tpltree__label__expander[data-state-isopen="false"]`
     );
     if (expander.length > 0) {
       cy.wrap(expander).click({ force: true });
+      cy.wait(500); // virtual list needs a bit of time to rerender
     }
-    const id = $elt.data("test-id");
     console.log("Got tree node id", id);
     return getTreeNode(rest, id);
   });

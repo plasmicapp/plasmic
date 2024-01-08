@@ -1,9 +1,7 @@
 import {
-  ArenaFrame,
   Component,
   ensureKnownRenderExpr,
   Expr,
-  isKnownArenaFrame,
   isKnownNodeMarker,
   isKnownRawText,
   isKnownTplComponent,
@@ -148,9 +146,10 @@ import { observer } from "mobx-react";
 import { computedFn } from "mobx-utils";
 import pluralize from "pluralize";
 import * as React from "react";
+import { useEffect } from "react";
 import { FixedSizeList } from "react-window";
 import { isPlainObjectPropType } from "src/wab/shared/code-components/code-components";
-import { makeOutlineVisibleKey, OutlineCtx } from "./outline-tab";
+import { makeNodeKey, NodeKey, OutlineCtx } from "./outline-tab";
 
 const getCachedSlotParams = computedFn(
   function getCachedSlotParams(component: Component) {
@@ -171,7 +170,7 @@ function RepIcon() {
 }
 
 const TplTreeNode = observer(function TplTreeNode(props: {
-  id: string;
+  id: NodeKey;
   item: TplNode | SlotSelection;
   viewCtx: ViewCtx;
   outlineCtx: OutlineCtx;
@@ -184,7 +183,7 @@ const TplTreeNode = observer(function TplTreeNode(props: {
   isHidden: boolean;
   setOpen: (open: boolean) => void;
   isLeaf: boolean;
-  parentId: string | undefined;
+  parentId: NodeKey | undefined;
   isDropParent: boolean;
 }) {
   const {
@@ -693,7 +692,7 @@ const TplTreeNode = observer(function TplTreeNode(props: {
 
   return (
     <div
-      key={makeOutlineVisibleKey(item)}
+      key={makeNodeKey(item)}
       className={cx({
         tpltree__label: true,
         "tpltree__label--focused": isFocused,
@@ -1742,23 +1741,18 @@ export class TreeDndManager {
       // if children are rendered, then the bottom sliver of this node is not
       // really the "bottom", as children will come below this.
       insertion = "insert-below";
-    } else if (acceptsChildren === true && !childrenShowing) {
-      // We only allow insert-as-child if no children are showing -- which is when
-      // either the tree is collapsed, or when tree has no children.  This is because
-      // if there are children rendered, then the user should just insert as
-      // children siblings instead.
+    } else if (acceptsChildren === true) {
       insertion = "insert-as-child";
     } else if (
       !(item instanceof SlotSelection) &&
       acceptsSibling !== true &&
-      acceptsSibling !== undefined &&
       (isAbove || isBelow)
     ) {
       insertion = {
         type: isAbove ? "cant-insert-above" : "cant-insert-below",
         msg: acceptsSibling,
       };
-    } else if (acceptsChildren !== true && !childrenShowing) {
+    } else if (!childrenShowing) {
       insertion = {
         type: "cant-insert-child",
         msg: acceptsChildren,
@@ -1828,8 +1822,7 @@ function indentPadding(indent: number) {
 }
 
 interface ArenaTreeNodeData {
-  id: string;
-  isOpenByDefault: boolean;
+  id: NodeKey;
   viewCtx: ViewCtx;
   outlineCtx: OutlineCtx;
   dndManager: TreeDndManager;
@@ -1843,14 +1836,14 @@ interface ArenaTreeNodeData {
     ownerTplComponent: TplComponent;
     isLeaf: boolean;
     ancestorLocked: boolean;
-    parentId: string | undefined;
+    parentId: NodeKey | undefined;
   };
 }
 
 interface TreeRowItemData {
   nodes: ArenaTreeNodeData[];
-  isKeyOpen: (key: string) => boolean | undefined;
-  setKeysOpen: (openness: Record<string, boolean>) => void;
+  isKeyOpen: ReturnType<typeof useTreeData>["isKeyOpen"];
+  setKeyOpen: ReturnType<typeof useTreeData>["setKeyOpen"];
 }
 
 const ArenaTreeNode = observer(function ArenaTreeNode(props: {
@@ -1859,14 +1852,14 @@ const ArenaTreeNode = observer(function ArenaTreeNode(props: {
   style?: React.CSSProperties;
 }) {
   const { index, data, style } = props;
-  const { nodes, isKeyOpen, setKeysOpen } = data;
+  const { nodes, isKeyOpen, setKeyOpen } = data;
   const node = nodes[index];
   const { viewCtx, outlineCtx, dndManager, tplData } = node;
   const key = node.id;
   const isOpen = isKeyOpen(key) ?? false;
   const setOpen = React.useCallback(
-    (open: boolean) => setKeysOpen({ [key]: open }),
-    [setKeysOpen, key]
+    (open: boolean) => setKeyOpen(node.id, open),
+    [viewCtx, node.tplData.item, setKeyOpen]
   );
   const isDropParent = dndManager.isDropParent(tplData.item);
   return (
@@ -1902,17 +1895,6 @@ const ArenaTreeNode = observer(function ArenaTreeNode(props: {
   );
 });
 
-function makeArenaTreeNodeKey(
-  item: ArenaFrame | TplNode | SlotSelection,
-  viewCtx: ViewCtx
-) {
-  if (isKnownArenaFrame(item)) {
-    return `${item.uid}`;
-  } else {
-    return `${viewCtx.arenaFrame().uid}-${makeOutlineVisibleKey(item)}`;
-  }
-}
-
 export type ArenaTreeRef = FixedSizeList;
 
 export const ArenaTree = observer(
@@ -1933,7 +1915,7 @@ export const ArenaTree = observer(
       visibleNodes,
       getKeyIndex,
       isKeyOpen,
-      setKeysOpen,
+      setKeyOpen,
       focusedPathKeys,
     } = useTreeData(studioCtx, arena, outlineCtx, dndManager);
 
@@ -1948,9 +1930,14 @@ export const ArenaTree = observer(
       () => ({
         nodes: visibleNodes,
         isKeyOpen,
-        setKeysOpen,
+        setKeyOpen,
       }),
-      [visibleNodes, isKeyOpen, setKeysOpen]
+      [visibleNodes, isKeyOpen, setKeyOpen]
+    );
+
+    const itemKey = React.useCallback(
+      (index: number, data: TreeRowItemData) => data.nodes[index].id,
+      []
     );
 
     return (
@@ -1963,6 +1950,7 @@ export const ArenaTree = observer(
       <ListSpace space={5000}>
         {({ height }) => (
           <FixedSizeList
+            className="tpltree-scroller"
             width={"100%"}
             height={height}
             itemCount={visibleNodes.length}
@@ -1970,7 +1958,7 @@ export const ArenaTree = observer(
             overscanCount={2}
             itemData={itemData}
             ref={onRef}
-            itemKey={(index, data) => data.nodes[index].id}
+            itemKey={itemKey}
           >
             {ArenaTreeNode}
           </FixedSizeList>
@@ -1995,9 +1983,9 @@ const makeTplSubtreeData = computedFn(function _makeTplSubtreeData(
   ancestorLocked: boolean,
   ownerTplComponent: TplComponent,
   componentFrameNum: number,
-  parentId: string | undefined
+  parentId: NodeKey | undefined
 ): SubtreeData | undefined {
-  const id = makeArenaTreeNodeKey(node, viewCtx);
+  const id = makeNodeKey(node);
 
   const effectiveVs = computed(
     () =>
@@ -2035,9 +2023,8 @@ const makeTplSubtreeData = computedFn(function _makeTplSubtreeData(
     ownerTplComponent
   );
 
-  const self = {
+  const self: ArenaTreeNodeData = {
     id,
-    isOpenByDefault: true,
     viewCtx,
     outlineCtx,
     dndManager,
@@ -2053,7 +2040,7 @@ const makeTplSubtreeData = computedFn(function _makeTplSubtreeData(
       ancestorLocked,
       parentId,
     },
-  } as ArenaTreeNodeData;
+  };
 
   // When we encounter a descendant TplSlot, we may show either the arg for that slot,
   // or the default contents for that slot.  "Usually" we would show the default contents,
@@ -2105,7 +2092,7 @@ const makeFrameSubtreeData = computedFn(function _makeFrameSubtreeData(
   dndManager: TreeDndManager
 ) {
   const frame = viewCtx.arenaFrame();
-  const id = makeArenaTreeNodeKey(frame, viewCtx);
+  const id = makeNodeKey(frame);
   const root = viewCtx.tplUserRoot();
   const ownerTplComponent = viewCtx.tplSysRoot();
 
@@ -2133,41 +2120,35 @@ const makeArenaTreeNodeChildrenData = computedFn(
     studioCtx: StudioCtx,
     outlineCtx: OutlineCtx,
     dndManager: TreeDndManager
-  ) {
+  ): SubtreeData | undefined {
     // Show the focused frame only
-    return withoutNils(
-      [studioCtx.focusedOrFirstViewCtx()?.arenaFrame()].map((frame) => {
-        const viewCtx = studioCtx.tryGetViewCtxForFrame(frame);
-
-        return viewCtx && viewCtx.hasValState
-          ? makeFrameSubtreeData(viewCtx, outlineCtx, dndManager)
-          : undefined;
-      })
-    );
+    const viewCtx = studioCtx.focusedOrFirstViewCtx();
+    if (viewCtx && viewCtx.hasValState) {
+      return makeFrameSubtreeData(viewCtx, outlineCtx, dndManager);
+    } else {
+      return undefined;
+    }
   }
 );
 
 function getObjectPathKeys(
   vc: ViewCtx,
-  frame: ArenaFrame,
-  tplOrSelection: TplNode | SlotSelection | null,
-  ignoreSelf: boolean // if true its going return all keys except for the key of tplOrSelection
-) {
+  tplOrSelection: TplNode | SlotSelection | null
+): NodeKey[] {
+  const frame = vc.arenaFrame();
+
   if (!tplOrSelection) {
-    return [makeArenaTreeNodeKey(frame, vc)];
+    return [makeNodeKey(frame)];
   }
   const isHiddenRoot =
     tplOrSelection === vc.component.tplTree &&
     vc.arenaFrame().viewMode === FrameViewMode.Stretch;
 
   if (isHiddenRoot) {
-    return [makeArenaTreeNodeKey(frame, vc)];
+    return [makeNodeKey(frame)];
   }
 
-  const ancestors = $$$(tplOrSelection)
-    .ancestorsWithSlotSelections()
-    .toArray()
-    .slice(ignoreSelf ? 1 : 0);
+  const ancestors = $$$(tplOrSelection).ancestorsWithSlotSelections().toArray();
 
   const curCtxAncestors = vc
     .componentStackFrames()
@@ -2176,9 +2157,7 @@ function getObjectPathKeys(
       $$$(f.tplComponent).ancestorsWithSlotSelections().toArray()
     );
 
-  return [...ancestors, ...curCtxAncestors, frame].map((x) =>
-    makeArenaTreeNodeKey(x, vc)
-  );
+  return [...ancestors, ...curCtxAncestors, frame].map(makeNodeKey);
 }
 
 const getFocusedObjectPathKeys = computedFn(function getFocusedObject(
@@ -2189,13 +2168,12 @@ const getFocusedObjectPathKeys = computedFn(function getFocusedObject(
     return [];
   }
 
-  const frame = vc.arenaFrame();
   const focusedSelectable = vc.focusedSelectable();
   const focusedTplOrSlotSelection = focusedSelectable
     ? asTplOrSlotSelection(focusedSelectable)
     : vc.focusedTpl();
 
-  return getObjectPathKeys(vc, frame, focusedTplOrSlotSelection, false);
+  return getObjectPathKeys(vc, focusedTplOrSlotSelection);
 });
 
 const getHoveredObjectPathKeys = computedFn(function getHoveredObjectPathKeys(
@@ -2206,7 +2184,6 @@ const getHoveredObjectPathKeys = computedFn(function getHoveredObjectPathKeys(
     return [];
   }
 
-  const frame = vc.arenaFrame();
   const hoveredSelectable = vc.hoveredSelectable();
 
   if (!hoveredSelectable) {
@@ -2221,7 +2198,7 @@ const getHoveredObjectPathKeys = computedFn(function getHoveredObjectPathKeys(
     return [];
   }
 
-  return getObjectPathKeys(vc, frame, tplOrSlotSelection, true);
+  return getObjectPathKeys(vc, tplOrSlotSelection);
 });
 
 function useTreeData(
@@ -2230,54 +2207,55 @@ function useTreeData(
   outlineCtx: OutlineCtx,
   dndManager: TreeDndManager
 ) {
-  // The open/close state of the tree is mostly automatically controlled by:
-  // 1. If an element is in focus, its ancestors are automatically opened
-  // 2. If an element is hovered, its ancestors are automatically opened
-  // with the exception of the element itself, this way hovering on tpl tree
-  // wont automatically open previously closed elements
-  // 3. If there's a search query, then every element is opened
-  // However, the user is able to explicitly specify the desired open and
-  // close state by opening / collapsing the tree nodes.  We remember those
-  // choices here in these pinnedOpen and pinnedClosed sets. When a tree
-  // node is explicitly expanded, it is pinned open, and when explicitly
-  // closed it is pinned closed.  The difference between the two sets is
-  // that, whenever we switch focus to a different element, the
-  // pinnedClosed set is cleared; that's because either you've selected
-  // something else -- in which case, the collapsed element will not be
-  // closed or hidden anyway -- or you've selected something in its
-  // subtree -- in which case, the collapsed element must be opened now.
-  // In this way, pinnedClosed is really a transient state that is relevant
-  // given a specific focused element.
-  const pinnedOpen = useConstant(() => mobx.observable.set<string>());
-  const pinnedClosed = useConstant(() => mobx.observable.set<string>());
+  // Open/close state behavior:
+  // - Frames share open/close state within an arena.
+  // - Elements default to closed.
+  // - Elements can be manually opened or closed from the outline.
+  // - If there's a search query, open all elements.
+  // - If an element is hovered, open all its ancestors (except itself), until unhovered.
+  // - If an element is focused, open all its ancestors and itself, until manually closed.
+  const openMap = useConstant(() => mobx.observable.map<NodeKey, boolean>());
   const viewCtx = studioCtx.focusedOrFirstViewCtx();
-  const root =
-    !!viewCtx && makeArenaTreeNodeKey(viewCtx.component.tplTree, viewCtx);
+  const root = !!viewCtx && makeNodeKey(viewCtx.component.tplTree);
 
-  const focusedPathKeys = [
-    ...getFocusedObjectPathKeys(studioCtx),
-    ...getHoveredObjectPathKeys(studioCtx),
-  ];
+  const focusedPathKeys = getFocusedObjectPathKeys(studioCtx);
+  useEffect(() => {
+    if (focusedPathKeys.length > 0) {
+      for (const key of focusedPathKeys) {
+        openMap.set(key, true);
+      }
+    }
+  }, [focusedPathKeys, openMap]);
+
   const hasQuery = outlineCtx.hasQuery();
+  const hoveredPathKeys = getHoveredObjectPathKeys(studioCtx);
   const isKeyOpen = React.useCallback(
-    (key: string) => {
+    (key: NodeKey) => {
       if (root == key || hasQuery) {
         return true;
       }
-      if (pinnedClosed.has(key)) {
-        return false;
+
+      // Search from index 1 to only open hovered element's ancestors and NOT itself.
+      const isAncestorOfHovered = hoveredPathKeys.indexOf(key, 1) >= 1;
+      if (isAncestorOfHovered) {
+        return true;
       }
 
-      return focusedPathKeys.includes(key) || pinnedOpen.has(key);
+      const open = openMap.get(key);
+      if (open !== undefined) {
+        return open;
+      }
+
+      return false;
     },
-    [pinnedClosed, pinnedOpen, hasQuery, focusedPathKeys]
+    [openMap, hasQuery, hoveredPathKeys]
   );
 
   const buildVisibleNodes = React.useMemo(
     () =>
       computedFn(function _buildVisibleNodes() {
         const visibleNodes: ArenaTreeNodeData[] = [];
-        const keyToIndex: Record<string, number> = {};
+        const keyToIndex: Record<NodeKey, number> = {};
 
         const pushVisibleNodes = (subtree: SubtreeData) => {
           const node = subtree.self;
@@ -2292,11 +2270,12 @@ function useTreeData(
           }
         };
 
-        for (const subtree of makeArenaTreeNodeChildrenData(
+        const subtree = makeArenaTreeNodeChildrenData(
           studioCtx,
           outlineCtx,
           dndManager
-        )) {
+        );
+        if (subtree) {
           pushVisibleNodes(subtree);
         }
         return { visibleNodes, keyToIndex };
@@ -2313,35 +2292,20 @@ function useTreeData(
     [keyToIndex]
   );
 
-  const setKeysOpen = React.useCallback(
-    (openness: Record<string, boolean | undefined>) => {
+  const setKeyOpen = React.useCallback(
+    (key: NodeKey, open: boolean) => {
       mobx.runInAction(() => {
-        for (const key in openness) {
-          pinnedOpen.delete(key);
-          pinnedClosed.delete(key);
-          if (openness[key] === true) {
-            pinnedOpen.add(key);
-          } else if (openness[key] === false) {
-            pinnedClosed.add(key);
-          }
-        }
+        openMap.set(key, open);
       });
     },
-    [pinnedOpen, pinnedClosed]
+    [openMap]
   );
-
-  const clearClosePins = React.useCallback(() => {
-    pinnedClosed.clear();
-  }, [pinnedClosed]);
-
-  const focusedKey = focusedPathKeys[0];
-  useChanged(focusedKey, clearClosePins);
 
   return {
     visibleNodes,
     getKeyIndex,
     isKeyOpen,
-    setKeysOpen,
+    setKeyOpen,
     focusedPathKeys,
   };
 }
@@ -2364,7 +2328,7 @@ export function getTreeNodeSummary(
  */
 function useRevealOnFocus(opts: {
   listRef: React.MutableRefObject<FixedSizeList | null>;
-  focusedKey: string | undefined;
+  focusedKey: NodeKey | undefined;
   getKeyIndex: (key: string) => number;
 }) {
   const { listRef, getKeyIndex, focusedKey } = opts;
