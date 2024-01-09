@@ -19,9 +19,9 @@ import {
   TeamId,
   WorkspaceId,
 } from "@/wab/shared/ApiSchema";
+import imageSize from "@coderosh/image-size";
 import { UploadedFile } from "express-fileupload";
 import { Request, Response } from "express-serve-static-core";
-import { imageSize } from "image-size";
 import { flatten, mapValues, pick } from "lodash";
 import { userAnalytics, userDbMgr } from "./util";
 import { mkApiWorkspace } from "./workspaces";
@@ -343,7 +343,7 @@ async function upload(file: UploadedFile): Promise<CmsUploadedFile> {
   }
 
   const size = file.mimetype.startsWith("image/")
-    ? imageSize(file.data)
+    ? await imageSize(file.data)
     : undefined;
   const imageMeta =
     size?.width && size?.height

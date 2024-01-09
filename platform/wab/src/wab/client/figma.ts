@@ -1,13 +1,3 @@
-import { getBoundingRect } from "@figma-plugin/helpers";
-import { isString, keys } from "lodash";
-import { CSSProperties } from "react";
-import {
-  applyToPoint,
-  compose,
-  inverse,
-  Matrix,
-  rotate,
-} from "transformation-matrix";
 import {
   BackgroundLayer,
   ColorFill,
@@ -18,7 +8,7 @@ import {
   NoneBackground,
   RadialGradient,
   Stop,
-} from "../bg-styles";
+} from "@/wab/bg-styles";
 import {
   Component,
   ensureKnownTplTag,
@@ -29,8 +19,8 @@ import {
   TplNode,
   TplTag,
   VariantsRef,
-} from "../classes";
-import { unzip } from "../collections";
+} from "@/wab/classes";
+import { unzip } from "@/wab/collections";
 import {
   arrayEqIgnoreOrder,
   assert,
@@ -42,15 +32,15 @@ import {
   uniqueName,
   withoutNils,
   withoutNilTuples,
-} from "../common";
-import { arrayReversed } from "../commons/collections";
-import { Matrix as AltMatrix } from "../commons/transformation-matrix";
+} from "@/wab/common";
+import { arrayReversed } from "@/wab/commons/collections";
+import { Matrix as AltMatrix } from "@/wab/commons/transformation-matrix";
 import {
   getComponentDisplayName,
   isContextCodeComponent,
   isReusableComponent,
-} from "../components";
-import { codeLit } from "../exprs";
+} from "@/wab/components";
+import { codeLit } from "@/wab/exprs";
 import {
   ComponentNode,
   DefaultFrameMixin,
@@ -65,13 +55,13 @@ import {
   SolidPaint,
   TextNode,
   Transform,
-} from "../figmaTypes";
-import { ImageAssetType } from "../image-asset-type";
-import { mkImageAssetRef } from "../image-assets";
-import { toVarName } from "../shared/codegen/util";
-import { RSH } from "../shared/RuleSetHelpers";
-import { isStandaloneVariantGroup } from "../shared/Variants";
-import { VariantTplMgr } from "../shared/VariantTplMgr";
+} from "@/wab/figmaTypes";
+import { ImageAssetType } from "@/wab/image-asset-type";
+import { mkImageAssetRef } from "@/wab/image-assets";
+import { toVarName } from "@/wab/shared/codegen/util";
+import { RSH } from "@/wab/shared/RuleSetHelpers";
+import { isStandaloneVariantGroup } from "@/wab/shared/Variants";
+import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import {
   flattenTpls,
   isTplNamable,
@@ -80,13 +70,23 @@ import {
   MkTplTagOpts,
   mkTplTagX,
   TplTagType,
-} from "../tpls";
+} from "@/wab/tpls";
+import { getBoundingRect } from "@figma-plugin/helpers";
+import { isString, keys } from "lodash";
+import { CSSProperties } from "react";
+import {
+  applyToPoint,
+  compose,
+  inverse,
+  Matrix,
+  rotate,
+} from "transformation-matrix";
 import { AppCtx } from "./app-ctx";
 import { SiteOps, uploadSvgImage } from "./components/canvas/site-ops";
 import {
   ImageAssetOpts,
   maybeUploadImage,
-  parseImageSync,
+  parseImage,
   ResizableImage,
 } from "./dom-utils";
 
@@ -156,8 +156,8 @@ export const uploadFigmaImages = async (
   > = new Map();
   for (const hash of [...keys(figmaData.i)]) {
     const imageData = figmaData.i[hash];
-    const image = parseImageSync(imageData);
-    const url = `data:image/${image.type};base64,${imageData}`;
+    const image = await parseImage(imageData);
+    const url = `data:${image.type};base64,${imageData}`;
     const img = new ResizableImage(
       url,
       image.width,
@@ -248,7 +248,7 @@ export const tplNodeFromFigmaData = (
   const nodeToTpl = new Map(
     withoutNilTuples(nodes.map((node) => tuple(node, maker(node))))
   );
-  let wrapped = wrapTplNodes(nodeToTpl, vtm);
+  const wrapped = wrapTplNodes(nodeToTpl, vtm);
   if (wrapped) {
     ensureUniqueNames(wrapped);
   }
@@ -1216,8 +1216,8 @@ async function uploadAssetFromNode(node: SceneNode, appCtx: AppCtx) {
 
   // For Vector node types, attempt to use the svg dimensions as in figma
   // they're usually managed via strokes.
-  let nodeWidth = node.width;
-  let nodeHeight = node.height;
+  const nodeWidth = node.width;
+  const nodeHeight = node.height;
 
   const xml = ensure(node.svgData, "Checked before");
 
@@ -1677,7 +1677,7 @@ const delimiters = {
 
 type Style = CSSProperties | StyleArray | false | null | undefined;
 
-interface StyleArray extends Array<Style> {}
+type StyleArray = Array<Style>;
 
 const flattenStyles = (...styles: Array<Style>): CSSProperties => {
   if (!styles.length) {

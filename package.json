@@ -31,6 +31,7 @@
     "typecheck": "cd platform/wab && yarn ts-watch",
     "upgrade-internal": "bash scripts/upgrade-internal.bash"
   },
+  "packageManager": "yarn@1.22.21",
   "devDependencies": {
     "@microsoft/api-extractor": "7.38.2",
     "@typescript-eslint/eslint-plugin": "6.14.0",

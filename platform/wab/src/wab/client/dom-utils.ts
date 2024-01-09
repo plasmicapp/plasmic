@@ -1,16 +1,7 @@
-import { notification } from "antd";
-import * as downscale from "downscale";
-import { imageSize } from "image-size";
-import find from "lodash/find";
-import isFunction from "lodash/isFunction";
-import memoize from "lodash/memoize";
-import * as parseDataUrl from "parse-data-url";
-import React from "react";
-import intersection from "rectangle-overlap";
-import { ImageBackground, mkBackgroundLayer } from "../bg-styles";
-import { ensure, ensureHTMLElt, ensureString } from "../common";
-import { Rect } from "../geom";
-import { ImageAssetType } from "../image-asset-type";
+import { ImageBackground, mkBackgroundLayer } from "@/wab/bg-styles";
+import { ensure, ensureHTMLElt, ensureString } from "@/wab/common";
+import { Rect } from "@/wab/geom";
+import { ImageAssetType } from "@/wab/image-asset-type";
 import {
   asSvgDataUrl,
   imageDataUriToBlob,
@@ -19,7 +10,8 @@ import {
   sanitizeImageDataUrl,
   SVG_MEDIA_TYPE as SVG_CONTENT_TYPE,
   SVG_MEDIA_TYPE,
-} from "../shared/data-urls";
+} from "@/wab/shared/data-urls";
+import { getFileType } from "@/wab/shared/file-types";
 import {
   clearExplicitColors,
   convertSvgToTextSized,
@@ -27,7 +19,16 @@ import {
 } from "@/wab/shared/svg-utils";
 import { processSvg } from "@/wab/shared/svgo";
 import { ASPECT_RATIO_SCALE_FACTOR } from "@/wab/tpls";
+import imageSize from "@coderosh/image-size";
+import { notification } from "antd";
+import * as downscale from "downscale";
 import $ from "jquery";
+import find from "lodash/find";
+import isFunction from "lodash/isFunction";
+import memoize from "lodash/memoize";
+import * as parseDataUrl from "parse-data-url";
+import React from "react";
+import intersection from "rectangle-overlap";
 import { AppCtx } from "./app-ctx";
 import defer = setTimeout;
 
@@ -288,30 +289,34 @@ export const getUploadedFile = (
   $input.trigger("click");
 };
 
-export function parseImageSync(base64: string): {
+export async function parseImage(base64: string): Promise<{
   width: number;
   height: number;
   aspectRatio: number | undefined;
   type: string;
-} {
+}> {
   const binary = atob(base64);
   const bytes = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i++) {
     bytes[i] = binary.charCodeAt(i);
   }
-  const meta = imageSize(Buffer.from(bytes));
+  const meta = await imageSize(bytes.buffer);
+  const fileType = ensure(
+    await getFileType(bytes.buffer),
+    "Unexpected undefined file type"
+  );
   return {
     width: meta.width || 0,
     height: meta.height || 0,
     aspectRatio:
-      meta.type === SVG_MEDIA_TYPE
+      fileType.mime === (SVG_MEDIA_TYPE as any)
         ? processSvg(
             typeof window === "undefined"
               ? Buffer.from(base64).toString("utf8")
               : window.atob(base64)
           )?.aspectRatio
         : undefined,
-    type: ensure(meta.type, `Unexpected undefined type in ${meta}`),
+    type: fileType.mime,
   };
 }
 
