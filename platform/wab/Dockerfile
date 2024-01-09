@@ -1,5 +1,5 @@
 # Need newer alpine for bubblewrap to work
-FROM node:18.17-alpine3.18
+FROM node:18.19-alpine3.18
 
 # System setup
 RUN apk add --no-cache bash=5.2.15-r5 make=4.4.1-r1 bubblewrap=0.8.0-r1 git=2.40.1-r0

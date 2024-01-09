@@ -59,6 +59,12 @@ const config: Config = {
     process.env.CI ? ["github-actions", { silent: false }] : "default",
     "summary",
   ],
+  // Workaround to "TypeError: Cannot assign to read only property
+  // 'structuredClone' of object '[object global]'", which started when
+  // upgrading node from 18.17.1 to 18.19.0.
+  globals: {
+    structuredClone: {},
+  },
 };
 
 export default config;
