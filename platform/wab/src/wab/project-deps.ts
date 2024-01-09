@@ -12,6 +12,7 @@ import {
   isKnownArenaFrame,
   isKnownComponent,
   isKnownCustomCode,
+  isKnownEventHandler,
   isKnownImageAsset,
   isKnownImageAssetRef,
   isKnownPageHref,
@@ -957,6 +958,20 @@ function upgradeProjectDep(
         expr.page = newPage;
       } else {
         return true;
+      }
+    } else if (isKnownEventHandler(expr)) {
+      // EventHandler expr can also reference pages, from the
+      // "navigate page" interaction
+      for (const interaction of expr.interactions) {
+        for (const arg of [...interaction.args]) {
+          if (shouldDeletePageHRef(arg.expr)) {
+            // References a page that doesn't exist anymore; so
+            // remove the arg.  We remove it from interaction.args,
+            // and return `false` from this function, as we've "fixed it"
+            // and don't need to remove the root arg or attr.
+            removeFromArray(interaction.args, arg);
+          }
+        }
       }
     }
     return false;
