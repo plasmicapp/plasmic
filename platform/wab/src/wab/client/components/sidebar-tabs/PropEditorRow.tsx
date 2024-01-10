@@ -46,7 +46,9 @@ import {
   ValueSetState,
 } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { TplExpsProvider } from "@/wab/client/components/style-controls/StyleComponent";
+import { InlineIcon } from "@/wab/client/components/widgets";
 import { Icon } from "@/wab/client/components/widgets/Icon";
+import InfoIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Info";
 import LinkIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Link";
 import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -943,12 +945,20 @@ function InnerPropEditorRow_(props: PropEditorRowProps) {
           <LabeledItemRow
             data-test-id={`prop-editor-row-${attr ?? label}`}
             label={
-              isPlainObjectPropType(propType) &&
-              hackyCast(propType).required ? (
-                <span className="required-prop">{label}</span>
-              ) : (
-                label
-              )
+              <div className={about ? "pointer" : ""}>
+                {isPlainObjectPropType(propType) &&
+                hackyCast(propType).required ? (
+                  <span className="required-prop">{label}</span>
+                ) : (
+                  label
+                )}
+                {about ? (
+                  <InlineIcon>
+                    &thinsp;
+                    <Icon icon={InfoIcon} className="dimfg" />
+                  </InlineIcon>
+                ) : null}
+              </div>
             }
             definedIndicator={definedIndicator}
             layout={layout}
