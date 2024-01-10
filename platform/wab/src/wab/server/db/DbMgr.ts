@@ -320,6 +320,7 @@ export const updatableProjectFields = [
   "extraData",
   "secretApiToken",
   "isMainBranchProtected",
+  "isUserStarter",
 ] as const;
 
 export const editorOnlyUpdatableProjectFields = [
@@ -2476,6 +2477,13 @@ export class DbMgr implements MigrationDbMgr {
         );
       }
       fields["workspace"] = { id: fields.workspaceId };
+    }
+    if ("isUserStarter" in fields && fields.workspaceId) {
+      await this.checkWorkspacePerms(
+        fields.workspaceId,
+        "editor",
+        "change workspace starters"
+      );
     }
     // We use assignAllowEmpty rather than mergeAllowEmpty to disallow merging
     // the two codeSandboxInfo array

@@ -1,15 +1,15 @@
-import NewProjectModal from "@/NewProjectModal";
 import { hideStarters } from "@/wab/client/app-ctx";
-import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import {
+  useAllProjectsData,
+  useAppCtx,
+} from "@/wab/client/contexts/AppContexts";
 import { useProjectsFilter } from "@/wab/client/hooks/useProjectsFilter";
 import {
   DefaultProjectListProps,
   PlasmicProjectList,
 } from "@/wab/client/plasmic/plasmic_kit/PlasmicProjectList";
-import { mkIdMap } from "@/wab/collections";
-import { ensure, filterMapTruthy, spawn } from "@/wab/common";
+import { ensure } from "@/wab/common";
 import { DEVFLAGS } from "@/wab/devflags";
-import { ApiPermission, ApiProject, ApiUser } from "@/wab/shared/ApiSchema";
 import { getExtraData, updateExtraDataJson } from "@/wab/shared/ApiSchemaUtil";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";
@@ -26,27 +26,11 @@ function ProjectList(props: ProjectListProps) {
 
   const appCtx = useAppCtx();
   const selfInfo = ensure(appCtx.selfInfo, "Unexpected undefined selfInfo");
-  const [projectsData, setProjectsData] = React.useState<{
-    usersById: Map<string, ApiUser>;
-    projects: ApiProject[];
-    perms: ApiPermission[];
-  }>();
 
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
 
-  const updateProjectsData = React.useCallback(async () => {
-    const fetchData = async () => {
-      const { projects, perms } = await appCtx.api.getProjects();
-      const users = filterMapTruthy(perms, (p) => p.user);
-      return { usersById: mkIdMap(users), projects, perms };
-    };
-    await fetchData().then((data) => setProjectsData(data));
-  }, [appCtx, selfInfo, setProjectsData]);
-
-  // Fetch data for the first time
-  React.useEffect(() => {
-    spawn(updateProjectsData());
-  }, [updateProjectsData]);
+  const { data: projectsData, mutate: updateProjectsData } =
+    useAllProjectsData();
 
   const allProjects = projectsData?.projects || [];
 
@@ -81,7 +65,7 @@ function ProjectList(props: ProjectListProps) {
               key={project.id}
               project={project}
               perms={projectsData.perms}
-              onUpdate={updateProjectsData}
+              onUpdate={updateProjectsData as () => Promise<void>}
               workspaces={workspaces || DEVFLAGS.workspaces}
               matcher={matcher}
               showWorkspace={true}
@@ -134,10 +118,6 @@ function ProjectList(props: ProjectListProps) {
             : 'You have no projects. Create a new one by hitting the "New project" button in the top bar.'
         }
       />
-
-      {showNewProjectModal && (
-        <NewProjectModal onCancel={() => setShowNewProjectModal(false)} />
-      )}
     </>
   );
 }

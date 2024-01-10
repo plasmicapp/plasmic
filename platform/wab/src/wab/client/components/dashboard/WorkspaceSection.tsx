@@ -1,37 +1,40 @@
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import * as _ from "lodash";
-import { trimStart } from "lodash";
-import * as React from "react";
-import { useHistory } from "react-router-dom";
-import NewProjectModal from "../../../../NewProjectModal";
-import { asOne, ensure, filterMapTruthy, spawn } from "../../../common";
-import { InlineEdit } from "../../../commons/components/InlineEdit";
-import { OnClickAway } from "../../../commons/components/OnClickAway";
-import { Stated } from "../../../commons/components/Stated";
+import EditableResourceName from "@/wab/client/components/EditableResourceName";
+import { maybeShowPaywall } from "@/wab/client/components/modals/PricingModal";
+import NewProjectModal from "@/wab/client/components/NewProjectModal";
+import ProjectListItem from "@/wab/client/components/ProjectListItem";
+import { Matcher } from "@/wab/client/components/view-common";
+import { Spinner } from "@/wab/client/components/widgets";
+import Textbox from "@/wab/client/components/widgets/Textbox";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import {
+  useAsyncFnStrict,
+  useAsyncStrict,
+} from "@/wab/client/hooks/useAsyncStrict";
+import {
+  DefaultWorkspaceSectionProps,
+  PlasmicWorkspaceSection,
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicWorkspaceSection";
+import { asOne, ensure, filterMapTruthy, spawn } from "@/wab/common";
+import { InlineEdit } from "@/wab/commons/components/InlineEdit";
+import { OnClickAway } from "@/wab/commons/components/OnClickAway";
+import { Stated } from "@/wab/commons/components/Stated";
 import {
   ApiCmsDatabase,
   ApiPermission,
   ApiProject,
   ApiWorkspace,
-} from "../../../shared/ApiSchema";
-import { accessLevelRank } from "../../../shared/EntUtil";
-import { DATA_SOURCE_PLURAL_LOWER } from "../../../shared/Labels";
+} from "@/wab/shared/ApiSchema";
+import { accessLevelRank } from "@/wab/shared/EntUtil";
+import { DATA_SOURCE_PLURAL_LOWER } from "@/wab/shared/Labels";
 import {
   filterDirectResourcePerms,
   getAccessLevelToResource,
-} from "../../../shared/perms";
-import { useAppCtx } from "../../contexts/AppContexts";
-import { useAsyncFnStrict, useAsyncStrict } from "../../hooks/useAsyncStrict";
-import {
-  DefaultWorkspaceSectionProps,
-  PlasmicWorkspaceSection,
-} from "../../plasmic/plasmic_kit_dashboard/PlasmicWorkspaceSection";
-import EditableResourceName from "../EditableResourceName";
-import { maybeShowPaywall } from "../modals/PricingModal";
-import ProjectListItem from "../ProjectListItem";
-import { Matcher } from "../view-common";
-import { Spinner } from "../widgets";
-import Textbox from "../widgets/Textbox";
+} from "@/wab/shared/perms";
+import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import * as _ from "lodash";
+import { trimStart } from "lodash";
+import * as React from "react";
+import { useHistory } from "react-router-dom";
 import { promptNewDatabase, WorkspaceMenu } from "./dashboard-actions";
 import DatabaseListItem from "./DatabaseListItem";
 import { ProjectsFilterProps } from "./ProjectsFilter";

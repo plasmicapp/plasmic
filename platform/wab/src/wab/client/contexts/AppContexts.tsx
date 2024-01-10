@@ -1,9 +1,11 @@
+import { AppCtx } from "@/wab/client/app-ctx";
+import { TopFrameApi } from "@/wab/client/frame-ctx/top-frame-api";
+import { mkIdMap } from "@/wab/collections";
+import { ensure, filterMapTruthy } from "@/wab/common";
+import { withProvider } from "@/wab/commons/components/ContextUtil";
+import { ApiPermission, ApiProject, ApiUser } from "@/wab/shared/ApiSchema";
 import * as React from "react";
 import useSWR from "swr";
-import { ensure } from "../../common";
-import { withProvider } from "../../commons/components/ContextUtil";
-import { AppCtx } from "../app-ctx";
-import { TopFrameApi } from "../frame-ctx/top-frame-api";
 
 export const AppCtxContext = React.createContext<AppCtx | undefined>(undefined);
 export const providesAppCtx = withProvider(AppCtxContext.Provider);
@@ -17,6 +19,25 @@ export function useDataSource(sourceId: string | undefined) {
     () => (sourceId ? `/data-sources/${sourceId}` : null),
     async () => {
       return await api.getDataSourceById(sourceId!);
+    }
+  );
+}
+
+export function useAllProjectsData() {
+  const api = useApi();
+  return useSWR<{
+    usersById: Map<string, ApiUser>;
+    projects: ApiProject[];
+    perms: ApiPermission[];
+  }>(
+    "/projects",
+    async () => {
+      const { projects, perms } = await api.getProjects();
+      const users = filterMapTruthy(perms, (p) => p.user);
+      return { usersById: mkIdMap(users), projects, perms };
+    },
+    {
+      revalidateOnMount: true,
     }
   );
 }

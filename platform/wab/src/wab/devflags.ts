@@ -46,6 +46,8 @@ export interface StarterProjectConfig {
   // show notification for users when the global context values aren't modified
   globalContextConfigs?: StarterGlobalContextConfig[];
   isPlasmicOnly?: boolean;
+  withDropShadow?: boolean;
+  cloneWithoutName?: boolean;
 }
 
 export type InsertableTemplateTokenResolution =

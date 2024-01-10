@@ -482,6 +482,7 @@ export interface ApiProject extends ApiEntityBase {
   contentCreatorConfig: UiConfig | null | undefined;
   extraData: ProjectExtraData | null;
   readableByPublic: boolean;
+  isUserStarter?: boolean;
 }
 
 export interface ApiWhiteLabelUser {

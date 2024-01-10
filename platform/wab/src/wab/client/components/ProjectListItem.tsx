@@ -1,23 +1,23 @@
+import { U } from "@/wab/client/cli-routes";
+import { ClickStopper } from "@/wab/client/components/widgets";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import { PlasmicProjectListItem } from "@/wab/client/plasmic/plasmic_kit/PlasmicProjectListItem";
+import { ensure } from "@/wab/common";
+import { InlineEdit } from "@/wab/commons/components/InlineEdit";
+import { OnClickAway } from "@/wab/commons/components/OnClickAway";
+import { Stated } from "@/wab/commons/components/Stated";
+import { DEVFLAGS } from "@/wab/devflags";
+import { ApiPermission, ApiProject } from "@/wab/shared/ApiSchema";
+import { accessLevelRank } from "@/wab/shared/EntUtil";
+import { PERSONAL_WORKSPACE } from "@/wab/shared/Labels";
+import {
+  getAccessLevelToParent,
+  getAccessLevelToResource,
+} from "@/wab/shared/perms";
 import { Menu, notification } from "antd";
 import moment from "moment";
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { ensure } from "../../common";
-import { InlineEdit } from "../../commons/components/InlineEdit";
-import { OnClickAway } from "../../commons/components/OnClickAway";
-import { Stated } from "../../commons/components/Stated";
-import { DEVFLAGS } from "../../devflags";
-import { ApiPermission, ApiProject } from "../../shared/ApiSchema";
-import { accessLevelRank } from "../../shared/EntUtil";
-import { PERSONAL_WORKSPACE } from "../../shared/Labels";
-import {
-  getAccessLevelToParent,
-  getAccessLevelToResource,
-} from "../../shared/perms";
-import { U } from "../cli-routes";
-import { ClickStopper } from "../components/widgets";
-import { useAppCtx } from "../contexts/AppContexts";
-import { PlasmicProjectListItem } from "../plasmic/plasmic_kit/PlasmicProjectListItem";
 import { promptMoveToWorkspace } from "./dashboard/dashboard-actions";
 import EditableResourceName from "./EditableResourceName";
 import { HostConfig } from "./HostConfig";
@@ -256,6 +256,26 @@ function ProjectListItem(props: ProjectListItemProps) {
                     }}
                   >
                     <strong>Move</strong> to workspace
+                  </Menu.Item>
+                )}
+                {accessLevelRank(workspaceAccessLevel) >=
+                  accessLevelRank("editor") && (
+                  <Menu.Item
+                    onClick={async () => {
+                      await appCtx.api.setSiteInfo(project.id, {
+                        isUserStarter: !project.isUserStarter,
+                      });
+                      notification.success({
+                        message: `Project "${project.name}" ${
+                          project.isUserStarter ? "unset" : "set"
+                        } as workspace starter.`,
+                      });
+
+                      await onUpdate?.();
+                    }}
+                  >
+                    <strong>{!project.isUserStarter ? "Set" : "Unset"}</strong>{" "}
+                    as workspace starter
                   </Menu.Item>
                 )}
                 {!(

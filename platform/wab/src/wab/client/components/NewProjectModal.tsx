@@ -1,16 +1,19 @@
-import { observer } from "mobx-react-lite";
-import * as React from "react";
-import StartersSection from "./StartersSection";
-import StarterGroup from "./wab/client/components/StarterGroup";
-import { BareModal } from "./wab/client/components/studio/BareModal";
-import { Tab, Tabs } from "./wab/client/components/widgets";
-import { useAppCtx } from "./wab/client/contexts/AppContexts";
+import StartersSection from "@/StartersSection";
+import {
+  useAllProjectsData,
+  useAppCtx,
+} from "@/wab/client/contexts/AppContexts";
 import {
   DefaultNewProjectModalProps,
   PlasmicNewProjectModal,
-} from "./wab/client/plasmic/plasmic_kit_dashboard/PlasmicNewProjectModal";
-import { zIndex } from "./wab/client/z-index";
-import { WorkspaceId } from "./wab/shared/ApiSchema";
+} from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicNewProjectModal";
+import { zIndex } from "@/wab/client/z-index";
+import { WorkspaceId } from "@/wab/shared/ApiSchema";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
+import StarterGroup from "./StarterGroup";
+import { BareModal } from "./studio/BareModal";
+import { Tab, Tabs } from "./widgets";
 
 interface NewProjectModalProps extends DefaultNewProjectModalProps {
   onCancel: () => void;
@@ -98,6 +101,17 @@ const NewProjectModal = observer(function NewProjectModal({
   ...rest
 }: NewProjectModalProps) {
   const appCtx = useAppCtx();
+  const { data: projectsData } = useAllProjectsData();
+
+  const workspaceStarters = React.useMemo(() => {
+    if (!projectsData || !workspaceId) {
+      return [];
+    }
+    return projectsData.projects.filter(
+      (project) => project.workspaceId === workspaceId && project.isUserStarter
+    );
+  }, [projectsData, workspaceId]);
+
   return (
     <BareModal onClose={onCancel} width={1450} style={{ top: 32 }}>
       <PlasmicNewProjectModal
@@ -113,6 +127,21 @@ const NewProjectModal = observer(function NewProjectModal({
           <NewProjectModalBody workspaceId={workspaceId} />
         ) : (
           <>
+            {workspaceStarters.length > 0 && (
+              <StarterGroup
+                title="Workspace starters"
+                tag="workspace-starters"
+                projects={workspaceStarters.map((project) => ({
+                  name: project.name,
+                  projectId: project.id,
+                  tag: project.id,
+                  description: "",
+                  withDropShadow: true,
+                  cloneWithoutName: true,
+                }))}
+                workspaceId={workspaceId}
+              />
+            )}
             {appCtx.starters.templateAndExampleSections.map((section) => (
               <StarterGroup
                 key={section.tag}

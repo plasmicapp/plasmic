@@ -1,16 +1,16 @@
-import { Tooltip } from "antd";
-import * as React from "react";
-import { StarterProjectConfig, StarterSectionConfig } from "../../devflags";
-import { WorkspaceId } from "../../shared/ApiSchema";
-import { isCoreTeamEmail } from "../../shared/devflag-utils";
-import { useAppCtx } from "../contexts/AppContexts";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
   DefaultStarterGroupProps,
   PlasmicStarterGroup,
-} from "../plasmic/plasmic_kit/PlasmicStarterGroup";
-import ClockIcon from "../plasmic/plasmic_kit_dashboard/icons/PlasmicIcon__Clock";
-import HatchIcon from "../plasmic/plasmic_kit_dashboard/icons/PlasmicIcon__Hatch";
-import JoystickIcon from "../plasmic/plasmic_kit_dashboard/icons/PlasmicIcon__Joystick";
+} from "@/wab/client/plasmic/plasmic_kit/PlasmicStarterGroup";
+import ClockIcon from "@/wab/client/plasmic/plasmic_kit_dashboard/icons/PlasmicIcon__Clock";
+import HatchIcon from "@/wab/client/plasmic/plasmic_kit_dashboard/icons/PlasmicIcon__Hatch";
+import JoystickIcon from "@/wab/client/plasmic/plasmic_kit_dashboard/icons/PlasmicIcon__Joystick";
+import { StarterProjectConfig, StarterSectionConfig } from "@/wab/devflags";
+import { WorkspaceId } from "@/wab/shared/ApiSchema";
+import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { Tooltip } from "antd";
+import * as React from "react";
 import StarterProject from "./StarterProject";
 
 const iconMap = {
@@ -51,6 +51,8 @@ function StarterGroup(props: StarterGroupProps) {
         authorLink={proj.authorLink}
         showPreview={proj.showPreview}
         workspaceId={props.workspaceId}
+        withDropShadow={proj.withDropShadow}
+        cloneWithoutName={proj.cloneWithoutName}
       />
     ));
 

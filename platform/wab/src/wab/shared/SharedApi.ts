@@ -535,6 +535,7 @@ export abstract class SharedApi {
         | "inviteOnly"
         | "defaultAccessLevel"
         | "readableByPublic"
+        | "isUserStarter"
       >
     >
   ): Promise<MayTriggerPaywall<UpdateProjectResponse>> {

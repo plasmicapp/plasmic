@@ -323,6 +323,11 @@ export class Project extends OrgChild<"ProjectId"> {
   @Column("boolean", { nullable: true })
   isMainBranchProtected?: boolean;
 
+  // Whether this project is a starter configured by the user, not by us
+  // It will be available as starter in the project workspace
+  @Column("boolean", { nullable: true })
+  isUserStarter?: boolean;
+
   toJSON() {
     return normalizeJson(_.omit(this, "secretApiToken"));
   }
