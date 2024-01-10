@@ -436,10 +436,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicapp/react-ssr-prepass/-/react-ssr-prepass-2.0.3.tgz#d946d81c3d1e3a8f4f3cfcb8751edfe14b90d09e"
   integrity sha512-jFde/wfL8NlJEr76Mshyju/3GvJD5Z9YijCG1/8DR+KOEv7m5uRvORjxtEEw2GKDXRp2GqpQqj97iWGLFUsOzA==
 
-"@plasmicapp/react-web@^0.2.314":
-  version "0.2.314"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.314.tgz#fbb180e75b1b9e34d967be642de58d4d9cd8ca81"
-  integrity sha512-lj165YAbIJEJLsy29WU64B+9GeuLJ64IdXNyTqtEtC07S3wI1puZGAVpYw8rqLEtRmnwnExTzBZAAXeQUi2fQQ==
+"@plasmicapp/react-web@^0.2.315":
+  version "0.2.315"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/react-web/-/react-web-0.2.315.tgz#29adce7efd3905e84735a6f6cfa34b96c4c7949e"
+  integrity sha512-BQu+kyDmBldEVv8qvb7Rt7HJTXDCEo35/z4dtvCX74Wzq3D9AKdt4oFRfKEn0r1ZjWsR5aaVhmkHytmlD94EUA==
   dependencies:
     "@plasmicapp/auth-react" "0.0.19"
     "@plasmicapp/data-sources" "0.1.146"
@@ -466,7 +466,7 @@
     "@react-stately/select" "^3.5.5"
     "@react-stately/toggle" "^3.6.3"
     "@react-stately/tree" "^3.7.3"
-    classnames "^2.2.6"
+    classnames "^2.5.1"
     clone "^2.1.2"
     dlv "^1.1.3"
     fast-deep-equal "^3.1.3"
@@ -1135,10 +1135,10 @@ chalk@^4.0.0:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
-classnames@^2.2.6:
-  version "2.3.2"
-  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.3.2.tgz#351d813bf0137fcc6a76a16b88208d2560a0d924"
-  integrity sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==
+classnames@^2.5.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.5.1.tgz#ba774c614be0f016da105c858e7159eae8e7687b"
+  integrity sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==
 
 clone@^2.1.2:
   version "2.1.2"
