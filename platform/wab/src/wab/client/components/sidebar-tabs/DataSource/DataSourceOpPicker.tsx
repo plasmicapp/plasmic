@@ -4,6 +4,8 @@ import {
   DataSourceSchema,
   executePlasmicDataOp,
   makeCacheKey,
+  ManyRowsResult,
+  SingleRowResult,
   TableFieldSchema,
   TableSchema,
   usePlasmicDataOp,
@@ -3410,10 +3412,17 @@ export async function executeDataSourceOp(
       swallow(() => tryEvalExpr(asCode(expr, exprCtx).code, env ?? {}))) ||
     undefined;
 
-  const result = await executePlasmicDataOp(
-    maybeEvalResult?.val ?? {},
-    opts as Parameters<typeof executePlasmicDataOp>[1]
-  );
+  let result: Partial<SingleRowResult<any> | ManyRowsResult<any>> & {
+    error?: any;
+  };
+  try {
+    result = await executePlasmicDataOp(
+      maybeEvalResult?.val ?? {},
+      opts as Parameters<typeof executePlasmicDataOp>[1]
+    );
+  } catch (err) {
+    result = { error: err };
+  }
 
   return result;
 }
