@@ -9,6 +9,7 @@ import {
   PageArena,
 } from "@/wab/classes";
 import { apiKey } from "@/wab/client/api";
+import { SEARCH_PARAM_BRANCH, UU } from "@/wab/client/cli-routes";
 import {
   KeyboardShortcut,
   menuSection,
@@ -136,7 +137,7 @@ import { TableSchema } from "@plasmicapp/data-sources";
 import { executePlasmicDataOp } from "@plasmicapp/react-web/lib/data-sources";
 import { Dropdown, Menu, notification, Tooltip } from "antd";
 import { UseComboboxGetItemPropsOptions } from "downshift";
-import { orderBy } from "lodash";
+import { orderBy, trimStart } from "lodash";
 import { observer } from "mobx-react-lite";
 import { computedFn } from "mobx-utils";
 import React, { ReactNode, useRef, useState } from "react";
@@ -1506,7 +1507,26 @@ function BranchPanelTop_(
             const branch = currentItem.branch;
             const onSwitch = async () => {
               dismissSearch();
-              studioCtx.switchToBranch(branch);
+              if (
+                studioCtx.isLiveMode &&
+                UU.projectPreview.parse(
+                  studioCtx.appCtx.history.location.pathname
+                )
+              ) {
+                // Avoid navigating back to dev mode
+                const hashParams = new URLSearchParams(
+                  trimStart(studioCtx.appCtx.history.location.hash, "#")
+                );
+                hashParams.set(
+                  SEARCH_PARAM_BRANCH,
+                  branch?.name || MainBranchId
+                );
+                studioCtx.appCtx.history.push({
+                  hash: `#${hashParams.toString()}`,
+                });
+              } else {
+                studioCtx.switchToBranch(branch);
+              }
               onClose();
             };
 
