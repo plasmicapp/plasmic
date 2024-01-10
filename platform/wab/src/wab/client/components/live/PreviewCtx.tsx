@@ -137,7 +137,11 @@ export class PreviewCtx {
 
     // Add history listener
     const historyListener = (location: Location) => {
+      const wasLive = this.isLive;
       this.isLive = isLiveMode(location.pathname);
+      if (!this.isLive && wasLive) {
+        this.previousLocation = undefined;
+      }
       spawn(this.parseRoute());
     };
     const disposeHistoryListener = hostFrameCtx.history.listen(historyListener);
@@ -196,7 +200,7 @@ export class PreviewCtx {
 
   async toggleLiveMode() {
     if (this.isLive) {
-      await this._stopLiveMode();
+      this._stopLiveMode();
     } else {
       if (this.popup) {
         notification.error({
@@ -208,9 +212,9 @@ export class PreviewCtx {
     }
   }
 
-  async stopLiveMode() {
+  stopLiveMode() {
     if (this.isLive) {
-      await this._stopLiveMode();
+      this._stopLiveMode();
     }
   }
 
@@ -223,15 +227,13 @@ export class PreviewCtx {
     history.push(location);
   }
 
-  private async _stopLiveMode() {
+  private _stopLiveMode() {
     const history = this.studioCtx.appCtx.history;
 
     history.push(
       this.previousLocation ||
         U.project({ projectId: this.studioCtx.siteInfo.id })
     );
-
-    this.previousLocation = undefined;
   }
 
   async setPopup(popup: Window | undefined) {
