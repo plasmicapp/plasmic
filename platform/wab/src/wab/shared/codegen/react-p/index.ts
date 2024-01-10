@@ -2054,7 +2054,7 @@ export function serializeComponentLocalVars(ctx: SerializerBaseContext) {
       component.states.length
         ? `const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(() =>
           (${serializeStateSpecs(component, ctx)})
-        , [$props, $ctx, $refs])
+        , [$props, $ctx, $refs]);
         const $state = p.useDollarState(stateSpecs, {$props, $ctx, $queries: ${
           ctx.usesComponentLevelQueries ? "$queries" : "{}"
         }, $refs});`
@@ -4785,6 +4785,7 @@ export function getArgParams(ctx: SerializerBaseContext) {
       // https://app.shortcut.com/plasmic/story/24077
       !(
         ctx.component.plumeInfo &&
+        ctx.component.plumeInfo.type === "text-input" &&
         isOnChangeParam(p, ctx.component) &&
         p.variable.name === "onChange"
       ) &&
