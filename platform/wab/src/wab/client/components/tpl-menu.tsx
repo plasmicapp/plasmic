@@ -446,7 +446,7 @@ export function makeTplMenu(
                     branchName: MainBranchId,
                     branchVersion: "latest",
                     arenaType: "component",
-                    arenaUuidOrName: tpl.component.uuid,
+                    arenaUuidOrNameOrPath: tpl.component.uuid,
                   })
                 );
               }}

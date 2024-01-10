@@ -21,7 +21,7 @@ import {
   LocationDescriptor,
   LocationDescriptorObject,
 } from "history";
-import L from "lodash";
+import L, { trimStart } from "lodash";
 import { compile, PathFunction } from "path-to-regexp";
 import { match as Match, matchPath, useRouteMatch } from "react-router-dom";
 import * as url from "url";
@@ -268,7 +268,7 @@ export const U: {
   )
 );
 
-const SEARCH_PARAM_BRANCH = "branch";
+export const SEARCH_PARAM_BRANCH = "branch";
 const SEARCH_PARAM_VERSION = "version";
 const SEARCH_PARAM_ARENA_TYPE = "arena_type";
 const SEARCH_PARAM_ARENA = "arena";
@@ -279,18 +279,20 @@ export interface ProjectLocationParams {
   branchName: MainBranchId | string;
   branchVersion: typeof latestTag | string;
   arenaType: ArenaType | undefined;
-  arenaUuidOrName: string | undefined;
+  arenaUuidOrNameOrPath: string | undefined;
+  isPreview?: boolean;
 }
 
 export function parseProjectLocation(
   location: Location
 ): ProjectLocationParams | undefined {
   const searchParams = new URLSearchParams(location.search);
-  const branchName = searchParams.get(SEARCH_PARAM_BRANCH) || MainBranchId;
+  let branchName = searchParams.get(SEARCH_PARAM_BRANCH) || MainBranchId;
   const branchVersion = searchParams.get(SEARCH_PARAM_VERSION) || latestTag;
   const arenaTypeString = searchParams.get(SEARCH_PARAM_ARENA_TYPE);
   const arenaType = isArenaType(arenaTypeString) ? arenaTypeString : undefined;
-  const arenaUuidOrName = searchParams.get(SEARCH_PARAM_ARENA) || undefined;
+  const arenaUuidOrNameOrPath =
+    searchParams.get(SEARCH_PARAM_ARENA) || undefined;
 
   const matchProject = UU.project.parse(location.pathname);
   if (matchProject) {
@@ -300,7 +302,7 @@ export function parseProjectLocation(
       branchName,
       branchVersion,
       arenaType,
-      arenaUuidOrName,
+      arenaUuidOrNameOrPath,
     };
   }
 
@@ -312,7 +314,23 @@ export function parseProjectLocation(
       branchName,
       branchVersion,
       arenaType,
-      arenaUuidOrName,
+      arenaUuidOrNameOrPath,
+    };
+  }
+
+  const matchProjectPreview = UU.projectPreview.parse(location.pathname);
+  if (matchProjectPreview) {
+    const hashParams = new URLSearchParams(trimStart(location.hash, "#"));
+    branchName = hashParams.get(SEARCH_PARAM_BRANCH) || MainBranchId;
+    const previewPath = matchProjectPreview.params.previewPath || "";
+    return {
+      projectId: matchProjectPreview.params.projectId,
+      slug: undefined,
+      arenaType: undefined,
+      branchName,
+      branchVersion: latestTag,
+      arenaUuidOrNameOrPath: previewPath,
+      isPreview: true,
     };
   }
 
@@ -325,7 +343,7 @@ export function mkProjectLocation({
   branchName,
   branchVersion,
   arenaType,
-  arenaUuidOrName,
+  arenaUuidOrNameOrPath,
 }: ProjectLocationParams): LocationDescriptorObject {
   const searchParams: [string, string][] = [];
   if (branchName !== MainBranchId) {
@@ -337,8 +355,8 @@ export function mkProjectLocation({
   if (arenaType) {
     searchParams.push([SEARCH_PARAM_ARENA_TYPE, arenaType]);
   }
-  if (arenaUuidOrName) {
-    searchParams.push([SEARCH_PARAM_ARENA, arenaUuidOrName]);
+  if (arenaUuidOrNameOrPath) {
+    searchParams.push([SEARCH_PARAM_ARENA, arenaUuidOrNameOrPath]);
   }
   const search =
     searchParams.length === 0 ? undefined : "?" + encodeUriParams(searchParams);

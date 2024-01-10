@@ -1,4 +1,5 @@
 import { extractParamsFromPagePath } from "@/wab/components";
+import { matchesPagePath } from "@plasmicapp/loader-react";
 
 /**
  * Takes in a url template and params, and substitutes in the param values
@@ -43,4 +44,34 @@ function substitutePathFragment(
   // Remove starting and ending `/` from value
   value = value.replace(/^\/|\/$/g, "");
   return template.replace(marker, value);
+}
+
+/**
+ * If `lookup` URI does not match `pagePath`, returns `false`.
+ * Otherwise, returns param values. Param values are always returned as
+ * strings, even for catchall params. However, param keys start with
+ * "..." in such cases. Example:
+ *
+ * `getMatchingPagePathParams("/hello/[...catchall]/[slug]", "/hello/a/b/c")`
+ * returns `{ "...catchall": "a/b", "slug": "c" }`.
+ */
+export function getMatchingPagePathParams(
+  pagePath: string,
+  lookup: string
+): Record<string, string> | false {
+  const match = matchesPagePath(pagePath, lookup);
+  if (!match) {
+    return false;
+  }
+
+  const params: Record<string, string> = {};
+  for (const [key, value] of Object.entries(match.params)) {
+    if (Array.isArray(value)) {
+      params[`...${key}`] = value.join("/");
+    } else {
+      params[key] = value;
+    }
+  }
+
+  return params;
 }

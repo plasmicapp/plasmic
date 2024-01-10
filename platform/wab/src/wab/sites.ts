@@ -153,6 +153,7 @@ import {
 } from "./shared/responsiveness";
 import { getSlotArgs } from "./shared/SlotUtils";
 import { mkScreenVariantGroup } from "./shared/SpecialVariants";
+import { getMatchingPagePathParams } from "./shared/utils/url-utils";
 import {
   isGlobalVariant,
   isGlobalVariantGroup,
@@ -1379,35 +1380,45 @@ export function getArenaFromFrame(site: Site, frame: ArenaFrame) {
 /**
  * Look first by name, then by uuid
  */
-export function getArenaByNameOrUuid(
+export function getArenaByNameOrUuidOrPath(
   site: Site,
-  arenaNameOrUuid: string,
+  arenaNameOrUuidOrPath: string,
   arenaType: ArenaType | undefined
 ): AnyArena | undefined {
   if (arenaType === "custom") {
-    return site.arenas.find((arena) => arena.name === arenaNameOrUuid);
+    return site.arenas.find((arena) => arena.name === arenaNameOrUuidOrPath);
   } else if (arenaType === "component") {
     return (
       site.componentArenas.find(
-        (arena) => arena.component.name === arenaNameOrUuid
+        (arena) => arena.component.name === arenaNameOrUuidOrPath
       ) ??
       site.componentArenas.find(
-        (arena) => arena.component.uuid === arenaNameOrUuid
+        (arena) => arena.component.uuid === arenaNameOrUuidOrPath
       )
     );
   } else if (arenaType === "page") {
     return (
       site.pageArenas.find(
-        (arena) => arena.component.name === arenaNameOrUuid
+        (arena) => arena.component.name === arenaNameOrUuidOrPath
       ) ??
-      site.pageArenas.find((arena) => arena.component.uuid === arenaNameOrUuid)
+      site.pageArenas.find(
+        (arena) => arena.component.uuid === arenaNameOrUuidOrPath
+      ) ??
+      site.pageArenas.find(
+        (arena) =>
+          arena.component.pageMeta &&
+          getMatchingPagePathParams(
+            arena.component.pageMeta.path,
+            arenaNameOrUuidOrPath
+          )
+      )
     );
   } else {
     // support legacy ArenaTypes like "focusedframe" or if for some reason the query param is missing
     return (
-      getArenaByNameOrUuid(site, arenaNameOrUuid, "custom") ??
-      getArenaByNameOrUuid(site, arenaNameOrUuid, "page") ??
-      getArenaByNameOrUuid(site, arenaNameOrUuid, "component")
+      getArenaByNameOrUuidOrPath(site, arenaNameOrUuidOrPath, "custom") ??
+      getArenaByNameOrUuidOrPath(site, arenaNameOrUuidOrPath, "page") ??
+      getArenaByNameOrUuidOrPath(site, arenaNameOrUuidOrPath, "component")
     );
   }
 }

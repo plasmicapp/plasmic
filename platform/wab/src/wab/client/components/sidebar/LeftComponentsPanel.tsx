@@ -367,7 +367,7 @@ const ComponentRow = observer(function ComponentRow(props: {
                   branchName: MainBranchId,
                   branchVersion: "latest",
                   arenaType: "component",
-                  arenaUuidOrName: component.uuid,
+                  arenaUuidOrNameOrPath: component.uuid,
                 })
               );
             }}

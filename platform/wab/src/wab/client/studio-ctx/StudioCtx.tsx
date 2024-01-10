@@ -293,7 +293,7 @@ import { isVariantSettingEmpty } from "@/wab/shared/Variants";
 import {
   allGlobalVariants,
   getAllSiteFrames,
-  getArenaByNameOrUuid,
+  getArenaByNameOrUuidOrPath,
   getDedicatedArena,
   getSiteArenas,
   isHostLessPackage,
@@ -1770,7 +1770,7 @@ export class StudioCtx extends WithDbCtx {
       branchName,
       branchVersion,
       arenaType,
-      arenaUuidOrName,
+      arenaUuidOrNameOrPath: arenaUuidOrName,
     });
 
     if (replace) {
@@ -1795,11 +1795,21 @@ export class StudioCtx extends WithDbCtx {
   private async handleRouteChange(location: Location) {
     const match = parseProjectLocation(location);
     if (match) {
-      const { branchName, branchVersion, arenaType, arenaUuidOrName } = match;
+      const {
+        branchName,
+        branchVersion,
+        arenaType,
+        arenaUuidOrNameOrPath,
+        isPreview,
+      } = match;
       await this.handleBranchChange(branchName, branchVersion);
-      await this.handleArenaChange(arenaType, arenaUuidOrName);
+      if (!isPreview) {
+        // We don't want to render the arenas in preview mode, for performance
+        // and to avoid setting the zoom level when the arena is not rendered.
+        await this.handleArenaChange(arenaType, arenaUuidOrNameOrPath);
+      }
     } else {
-      // We are probably on a preview path. We can skip updating state since we're not being shown right now.
+      // We are in other path such as `projectDocs`. We can skip updating state since we're not being shown right now.
     }
   }
 
@@ -1883,7 +1893,7 @@ export class StudioCtx extends WithDbCtx {
         this.switchToFirstArena();
       } else {
         // Lookup the target arena.
-        const targetArena = getArenaByNameOrUuid(
+        const targetArena = getArenaByNameOrUuidOrPath(
           this.site,
           arenaName,
           arenaType
@@ -3958,7 +3968,7 @@ export class StudioCtx extends WithDbCtx {
 
     const changeResult = await this.change<void, AnyArena>(
       ({ success, failure }) => {
-        const arena = getArenaByNameOrUuid(
+        const arena = getArenaByNameOrUuidOrPath(
           this.site,
           arenaInfo.uuidOrName,
           arenaInfo.type
@@ -5927,7 +5937,7 @@ export class StudioCtx extends WithDbCtx {
       // we make sure this.currentArena is valid, so we will trigger a re-render
       // of the current view
       if (this.currentArena) {
-        const newCurrentArena = getArenaByNameOrUuid(
+        const newCurrentArena = getArenaByNameOrUuidOrPath(
           this.site,
           getArenaName(this.currentArena),
           getArenaType(this.currentArena)

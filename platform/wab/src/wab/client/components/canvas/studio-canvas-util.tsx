@@ -1,7 +1,4 @@
-import {
-  getComponentByPath,
-  getMatchingPagePathParams,
-} from "@/wab/client/components/live/PreviewCtx";
+import { getComponentByPath } from "@/wab/client/components/live/PreviewCtx";
 import { PublicLink } from "@/wab/client/components/PublicLink";
 import { LinkButton } from "@/wab/client/components/widgets";
 import * as domMod from "@/wab/client/dom";
@@ -18,6 +15,7 @@ import { isAbsoluteUrl } from "@/wab/commons/urls";
 import { PageComponent } from "@/wab/components";
 import { InteractionArgLoc, InteractionLoc } from "@/wab/exprs";
 import { maybePropTypeToDisplayName } from "@/wab/shared/code-components/code-components";
+import { getMatchingPagePathParams } from "@/wab/shared/utils/url-utils";
 import { getDisplayNameOfEventHandlerKey } from "@/wab/tpls";
 import { notification } from "antd";
 import { when } from "mobx";

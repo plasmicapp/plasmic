@@ -225,7 +225,7 @@ function LoggedInContainer(props: LoggedInContainerProps) {
                             branchName,
                             branchVersion,
                             arenaType,
-                            arenaUuidOrName: arenaName,
+                            arenaUuidOrNameOrPath: arenaName,
                           })}
                         />
                       );

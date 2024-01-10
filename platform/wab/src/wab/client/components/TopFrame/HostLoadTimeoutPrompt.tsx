@@ -58,7 +58,10 @@ export function HostLoadTimeoutPrompt({
             : {}),
         });
       }, 10000);
-      return () => clearTimeout(id);
+      return () => {
+        clearTimeout(id);
+        notification.close(key);
+      };
     }
     return () => {};
   }, [project, editorPerm, hostConnected]);

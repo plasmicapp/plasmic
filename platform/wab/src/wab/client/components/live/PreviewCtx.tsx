@@ -1,19 +1,37 @@
 import { Component, Variant } from "@/wab/classes";
-import { R, U, UU } from "@/wab/client/cli-routes";
+import {
+  mkProjectLocation,
+  parseProjectLocation,
+  R,
+  SEARCH_PARAM_BRANCH,
+  U,
+  UU,
+} from "@/wab/client/cli-routes";
 import { showCanvasPageNavigationNotification } from "@/wab/client/components/canvas/studio-canvas-util";
 import { ClientPinManager } from "@/wab/client/components/variants/ClientPinManager";
 import { HostFrameCtx } from "@/wab/client/frame-ctx/host-frame-ctx";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure, hackyCast, spawn, spawnWrapper, tuple } from "@/wab/common";
+import {
+  asyncTimeout,
+  ensure,
+  hackyCast,
+  spawn,
+  spawnWrapper,
+  tuple,
+} from "@/wab/common";
 import { withProvider } from "@/wab/commons/components/ContextUtil";
 import {
   allComponentNonStyleVariants,
   allComponentVariants,
 } from "@/wab/components";
+import { MainBranchId, ProjectId } from "@/wab/shared/ApiSchema";
 import { getFrameHeight } from "@/wab/shared/Arenas";
 import { toVarName } from "@/wab/shared/codegen/util";
 import { FramePinManager } from "@/wab/shared/PinManager";
-import { substituteUrlParams } from "@/wab/shared/utils/url-utils";
+import {
+  getMatchingPagePathParams,
+  substituteUrlParams,
+} from "@/wab/shared/utils/url-utils";
 import {
   getReferencedVariantGroups,
   isGlobalVariant,
@@ -21,7 +39,6 @@ import {
   VariantCombo,
 } from "@/wab/shared/Variants";
 import { allGlobalVariants } from "@/wab/sites";
-import { matchesPagePath } from "@plasmicapp/loader-react";
 import * as Sentry from "@sentry/browser";
 import { notification } from "antd";
 import { Location, LocationDescriptorObject } from "history";
@@ -57,6 +74,7 @@ interface PreviewInputData {
   allVariants: VariantCombo;
   width: number;
   height: number;
+  branchName: string | null;
 }
 
 /** Preview input data plus extra output data, parsed from the route. */
@@ -192,6 +210,18 @@ export class PreviewCtx {
           })()
       )
     );
+
+    const match = parseProjectLocation(this.studioCtx.appCtx.history.location);
+    if (match && match.isPreview) {
+      // If we started from live mode, go back to the same component when
+      // navigating to dev mode.
+      this.previousLocation = {
+        ...this.studioCtx.appCtx.history.location,
+        ...mkProjectLocation({
+          ...match,
+        }),
+      };
+    }
   }
 
   dispose() {
@@ -233,6 +263,28 @@ export class PreviewCtx {
     history.push(
       this.previousLocation ||
         U.project({ projectId: this.studioCtx.siteInfo.id })
+    );
+
+    spawn(
+      (async () => {
+        // Fix the zoom level when leaving live mode when the artboards have
+        // never rendered. In this case, the clipperBB might already exist in
+        // the DOM, but doesn't have the correct size yet.
+        // We then add a listener to observe when it changes, and a timeout of
+        // 2 seconds so later changes unrelated  to it (like navigating between
+        // arenas) don't result in unintended zoom changes.
+        const clipperResizedListener = () => {
+          this.studioCtx.clipperResizedSignal.remove(clipperResizedListener);
+          this.studioCtx.tryZoomToFitArena();
+        };
+        await asyncTimeout(100);
+        this.studioCtx.clipperResizedSignal.add(clipperResizedListener);
+        setTimeout(
+          () =>
+            this.studioCtx.clipperResizedSignal.remove(clipperResizedListener),
+          2000
+        );
+      })()
     );
   }
 
@@ -308,6 +360,7 @@ export class PreviewCtx {
     const height = heightString
       ? parseInt(heightString)
       : DEFAULT_VIEWPORT_HEIGHT;
+    const branchName = hashParams.get(SEARCH_PARAM_BRANCH) || MainBranchId;
 
     let allVariants: VariantCombo = [];
     let variants: Record<string, string | string[]> = {};
@@ -350,6 +403,7 @@ export class PreviewCtx {
       global,
       width,
       height,
+      branchName,
     };
   }
 
@@ -418,6 +472,7 @@ export class PreviewCtx {
       width,
       height,
       allVariants,
+      branchName,
     }: Partial<PreviewInputData>,
     replace = false
   ) {
@@ -434,6 +489,7 @@ export class PreviewCtx {
       width: width || prev.width,
       height: height || prev.height,
       allVariants: allVariants || prev.allVariants,
+      branchName: branchName === undefined ? prev.branchName : branchName,
     });
     return this.pushRouteToHistoryOrPopup(location, replace);
   }
@@ -532,7 +588,7 @@ export function isLiveMode(pathname: string) {
 }
 
 function mkPreviewRoute(
-  projectId,
+  projectId: ProjectId,
   previewData: PreviewInputData
 ): LocationDescriptorObject {
   const { full, componentPath, pageQuery } = previewData;
@@ -595,6 +651,7 @@ function mkPreviewHash({
   width,
   height,
   allVariants,
+  branchName,
 }: PreviewInputData) {
   const hashParams = new URLSearchParams();
 
@@ -616,6 +673,9 @@ function mkPreviewHash({
   }
   if (Object.keys(global).length > 0) {
     hashParams.set("global", JSON.stringify(global));
+  }
+  if (branchName && branchName !== MainBranchId) {
+    hashParams.set(SEARCH_PARAM_BRANCH, branchName);
   }
 
   const hash = hashParams.toString();
@@ -652,6 +712,7 @@ export async function getUrlsForLiveMode(
     allVariants: [...variants, ...global],
     width: full ? DEFAULT_VIEWPORT_WIDTH : arenaFrame.width,
     height: full ? DEFAULT_VIEWPORT_HEIGHT : getFrameHeight(arenaFrame),
+    branchName: studioCtx.branchInfo()?.name ?? null,
   });
 }
 
@@ -721,36 +782,6 @@ export function getComponentByPath(
     component,
     pageParams,
   };
-}
-
-/**
- * If `lookup` URI does not match `pagePath`, returns `false`.
- * Otherwise, returns param values. Param values are always returned as
- * strings, even for catchall params. However, param keys start with
- * "..." in such cases. Example:
- *
- * `getMatchingPagePathParams("/hello/[...catchall]/[slug]", "/hello/a/b/c")`
- * returns `{ "...catchall": "a/b", "slug": "c" }`.
- */
-export function getMatchingPagePathParams(
-  pagePath: string,
-  lookup: string
-): Record<string, string> | false {
-  const match = matchesPagePath(pagePath, lookup);
-  if (!match) {
-    return false;
-  }
-
-  const params: Record<string, string> = {};
-  for (const [key, value] of Object.entries(match.params)) {
-    if (Array.isArray(value)) {
-      params[`...${key}`] = value.join("/");
-    } else {
-      params[key] = value;
-    }
-  }
-
-  return params;
 }
 
 function queryStringToRecord(query: string): Record<string, string> {
