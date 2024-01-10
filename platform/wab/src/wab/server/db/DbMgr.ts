@@ -1341,7 +1341,12 @@ export class DbMgr implements MigrationDbMgr {
       ...projectPerms.filter(
         (p) => accessLevelRank(p.accessLevel) >= accessLevelRank("content")
       ),
-    ].map((p) => _.pick(p, ["userId", "email"]));
+    ].map((p) => {
+      return {
+        userId: p.userId,
+        email: p.user == null ? p.email : p.user.email,
+      };
+    });
 
     if (excludePlasmicEmails) {
       users = users.filter((u) => !isCoreTeamEmail(u.email, DEVFLAGS));

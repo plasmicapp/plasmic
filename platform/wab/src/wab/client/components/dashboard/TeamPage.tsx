@@ -12,6 +12,7 @@ import {
 } from "@/wab/client/plasmic/plasmic_kit_dashboard/PlasmicTeamPage";
 import { isNonNil } from "@/wab/common";
 import { TeamId } from "@/wab/shared/ApiSchema";
+import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { ORGANIZATION_LOWER } from "@/wab/shared/Labels";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { notification } from "antd";
@@ -52,7 +53,10 @@ function TeamPage_(props: TeamPageProps, ref: HTMLElementRefOf<"div">) {
 
   const team = asyncData?.value?.team;
   const numProjects = asyncData?.value?.projects.length || 0;
-  const numMembers = asyncData?.value?.members.length || 0;
+  const numMembers =
+    asyncData?.value?.members.filter(
+      (member) => !isCoreTeamEmail(member.email, appCtx.appConfig)
+    ).length || 0;
   const workspaces = asyncData?.value?.workspaces || [];
   const perms = asyncData?.value?.perms || [];
   const unsortedProjects = asyncData?.value?.projects || [];
