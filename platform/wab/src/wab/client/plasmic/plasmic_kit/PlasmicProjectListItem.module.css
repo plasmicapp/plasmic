@@ -181,9 +181,6 @@
 .img__ozrRo > picture > img {
   object-fit: cover;
 }
-.img__ozrRo > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .img__yIlQz {
   object-fit: cover;
   width: 24px;
@@ -195,9 +192,6 @@
 .img__yIlQz > picture > img {
   object-fit: cover;
 }
-.img__yIlQz > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .img__tDxmf {
   object-fit: cover;
   width: 24px;
@@ -207,9 +201,6 @@
   border: 1px solid #ffffff;
 }
 .img__tDxmf > picture > img {
-  object-fit: cover;
-}
-.img__tDxmf > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .menuButton:global(.__wab_instance):global(.__wab_instance) {

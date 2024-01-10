@@ -131,9 +131,6 @@
 .img__bswpt > picture > img {
   object-fit: cover;
 }
-.img__bswpt > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .svg__bmtLe {
   min-width: 20px;
   min-height: 20px;
@@ -142,7 +139,6 @@
   display: flex;
   position: relative;
   color: rgb(255, 255, 255);
-  width: 1em;
   height: 1em;
 }
 .img__fSbyP {
@@ -151,9 +147,6 @@
   max-width: 100%;
 }
 .img__fSbyP > picture > img {
-  object-fit: cover;
-}
-.img__fSbyP > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .starterProject__jyNxe:global(.__wab_instance) {
@@ -170,9 +163,6 @@
 .img__srtNt > picture > img {
   object-fit: cover;
 }
-.img__srtNt > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .svg__zu5R {
   min-width: 20px;
   min-height: 20px;
@@ -181,7 +171,6 @@
   display: flex;
   position: relative;
   color: rgb(255, 255, 255);
-  width: 1em;
   height: 1em;
 }
 .img__oYopF {
@@ -190,9 +179,6 @@
   max-width: 100%;
 }
 .img__oYopF > picture > img {
-  object-fit: cover;
-}
-.img__oYopF > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .starterGroup___3Qocf:global(.__wab_instance) {
@@ -209,9 +195,6 @@
 .img___9FjeT > picture > img {
   object-fit: cover;
 }
-.img___9FjeT > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .svg__maOdt {
   min-width: 20px;
   min-height: 20px;
@@ -220,7 +203,6 @@
   display: flex;
   position: relative;
   color: rgb(255, 255, 255);
-  width: 1em;
   height: 1em;
 }
 .img__gsx6F {
@@ -229,9 +211,6 @@
   max-width: 100%;
 }
 .img__gsx6F > picture > img {
-  object-fit: cover;
-}
-.img__gsx6F > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .starterProject__xj6B:global(.__wab_instance) {
@@ -248,9 +227,6 @@
 .img__zpUCp > picture > img {
   object-fit: cover;
 }
-.img__zpUCp > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .svg__fXwO {
   min-width: 20px;
   min-height: 20px;
@@ -259,7 +235,6 @@
   display: flex;
   position: relative;
   color: rgb(255, 255, 255);
-  width: 1em;
   height: 1em;
 }
 .img__cpV4 {
@@ -268,8 +243,5 @@
   max-width: 100%;
 }
 .img__cpV4 > picture > img {
-  object-fit: cover;
-}
-.img__cpV4 > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }

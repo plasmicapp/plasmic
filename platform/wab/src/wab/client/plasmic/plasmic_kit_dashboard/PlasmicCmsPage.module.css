@@ -55,6 +55,3 @@
 .img__lXcEq > picture > img {
   object-fit: cover;
 }
-.img__lXcEq > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}

@@ -100,9 +100,6 @@
 .preview22 > picture > img {
   object-fit: cover;
 }
-.preview22 > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .svg__by7Ek {
   min-width: 20px;
   min-height: 20px;
@@ -111,7 +108,6 @@
   display: flex;
   position: relative;
   color: rgb(255, 255, 255);
-  width: 1em;
   height: 1em;
 }
 .img__gHpLe {
@@ -120,9 +116,6 @@
   max-width: 100%;
 }
 .img__gHpLe > picture > img {
-  object-fit: cover;
-}
-.img__gHpLe > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .preview223 {
@@ -136,9 +129,6 @@
 .preview223 > picture > img {
   object-fit: cover;
 }
-.preview223 > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .svg__mwqWs {
   min-width: 20px;
   min-height: 20px;
@@ -147,7 +137,6 @@
   display: flex;
   position: relative;
   color: rgb(255, 255, 255);
-  width: 1em;
   height: 1em;
 }
 .img__nWagV {
@@ -156,9 +145,6 @@
   max-width: 100%;
 }
 .img__nWagV > picture > img {
-  object-fit: cover;
-}
-.img__nWagV > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .preview222 {
@@ -172,9 +158,6 @@
 .preview222 > picture > img {
   object-fit: cover;
 }
-.preview222 > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .svg___8WEqf {
   min-width: 20px;
   min-height: 20px;
@@ -183,7 +166,6 @@
   display: flex;
   position: relative;
   color: rgb(255, 255, 255);
-  width: 1em;
   height: 1em;
 }
 .img__owx0H {
@@ -192,9 +174,6 @@
   max-width: 100%;
 }
 .img__owx0H > picture > img {
-  object-fit: cover;
-}
-.img__owx0H > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .starterProject__kroAp:global(.__wab_instance) {
@@ -209,9 +188,6 @@
   min-height: 0;
 }
 .preview34 > picture > img {
-  object-fit: cover;
-}
-.preview34 > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .text__c5V {
@@ -233,9 +209,6 @@
 .img__qMBcL > picture > img {
   object-fit: cover;
 }
-.img__qMBcL > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .starterProject__wvtKw:global(.__wab_instance) {
   position: relative;
 }
@@ -250,9 +223,6 @@
 .preview32 > picture > img {
   object-fit: cover;
 }
-.preview32 > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .svg__laDb {
   min-width: 20px;
   min-height: 20px;
@@ -260,7 +230,6 @@
   max-height: 20px;
   display: flex;
   position: relative;
-  width: 1em;
   height: 1em;
 }
 .img__v8GHj {
@@ -269,9 +238,6 @@
   max-width: 100%;
 }
 .img__v8GHj > picture > img {
-  object-fit: cover;
-}
-.img__v8GHj > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .starterProject__mnUxm:global(.__wab_instance) {
@@ -287,7 +253,6 @@
   max-height: 20px;
   display: flex;
   position: relative;
-  width: 1em;
   height: 1em;
 }
 .img___4Azhf {
@@ -296,9 +261,6 @@
   max-width: 100%;
 }
 .img___4Azhf > picture > img {
-  object-fit: cover;
-}
-.img___4Azhf > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .starterGroup__xY8Xb:global(.__wab_instance) {
@@ -316,9 +278,6 @@
 .preview352 > picture > img {
   object-fit: cover;
 }
-.preview352 > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .svg__kTsVu {
   min-width: 20px;
   min-height: 20px;
@@ -326,7 +285,6 @@
   max-height: 20px;
   display: flex;
   position: relative;
-  width: 1em;
   height: 1em;
 }
 .img__j6ORt {
@@ -335,9 +293,6 @@
   max-width: 100%;
 }
 .img__j6ORt > picture > img {
-  object-fit: cover;
-}
-.img__j6ORt > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .starterProject___1FA8:global(.__wab_instance) {
@@ -352,9 +307,6 @@
 .preview3524 > picture > img {
   object-fit: cover;
 }
-.preview3524 > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .svg__bbSn5 {
   min-width: 20px;
   min-height: 20px;
@@ -362,7 +314,6 @@
   max-height: 20px;
   display: flex;
   position: relative;
-  width: 1em;
   height: 1em;
 }
 .img__mog7Q {
@@ -371,9 +322,6 @@
   max-width: 100%;
 }
 .img__mog7Q > picture > img {
-  object-fit: cover;
-}
-.img__mog7Q > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .starterProject__hb6Rg:global(.__wab_instance) {
@@ -388,9 +336,6 @@
 .preview3525 > picture > img {
   object-fit: cover;
 }
-.preview3525 > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .svg__evM1Z {
   min-width: 20px;
   min-height: 20px;
@@ -398,7 +343,6 @@
   max-height: 20px;
   display: flex;
   position: relative;
-  width: 1em;
   height: 1em;
 }
 .img__rchQz {
@@ -407,9 +351,6 @@
   max-width: 100%;
 }
 .img__rchQz > picture > img {
-  object-fit: cover;
-}
-.img__rchQz > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .freeBox__miuC3 {
@@ -503,9 +444,6 @@
 .preview2 > picture > img {
   object-fit: cover;
 }
-.preview2 > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .svg__epZ7H {
   min-width: 20px;
   min-height: 20px;
@@ -514,7 +452,6 @@
   display: flex;
   position: relative;
   color: rgb(255, 255, 255);
-  width: 1em;
   height: 1em;
 }
 .img__pP5S5 {
@@ -523,9 +460,6 @@
   max-width: 100%;
 }
 .img__pP5S5 > picture > img {
-  object-fit: cover;
-}
-.img__pP5S5 > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .starterProject__rz9Y6:global(.__wab_instance) {
@@ -542,9 +476,6 @@
 .preview3 > picture > img {
   object-fit: cover;
 }
-.preview3 > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .svg__pEw7 {
   min-width: 20px;
   min-height: 20px;
@@ -553,7 +484,6 @@
   display: flex;
   position: relative;
   color: rgb(255, 255, 255);
-  width: 1em;
   height: 1em;
 }
 .img___8UU2Y {
@@ -562,9 +492,6 @@
   max-width: 100%;
 }
 .img___8UU2Y > picture > img {
-  object-fit: cover;
-}
-.img___8UU2Y > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .starterGroup__bKla6:global(.__wab_instance) {
@@ -581,9 +508,6 @@
 .img__qgkiq > picture > img {
   object-fit: cover;
 }
-.img__qgkiq > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .svg__jHE {
   min-width: 20px;
   min-height: 20px;
@@ -592,7 +516,6 @@
   display: flex;
   position: relative;
   color: rgb(255, 255, 255);
-  width: 1em;
   height: 1em;
 }
 .img__olWvG {
@@ -601,9 +524,6 @@
   max-width: 100%;
 }
 .img__olWvG > picture > img {
-  object-fit: cover;
-}
-.img__olWvG > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .starterProject__xgKzV:global(.__wab_instance) {
@@ -620,9 +540,6 @@
 .img__acfiy > picture > img {
   object-fit: cover;
 }
-.img__acfiy > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .svg__zwJRf {
   min-width: 20px;
   min-height: 20px;
@@ -631,7 +548,6 @@
   display: flex;
   position: relative;
   color: rgb(255, 255, 255);
-  width: 1em;
   height: 1em;
 }
 .img___60YkE {
@@ -640,8 +556,5 @@
   max-width: 100%;
 }
 .img___60YkE > picture > img {
-  object-fit: cover;
-}
-.img___60YkE > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }

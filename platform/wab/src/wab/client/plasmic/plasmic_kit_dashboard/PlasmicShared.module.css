@@ -47,9 +47,6 @@
 .img__yZ5Ov > picture > img {
   object-fit: cover;
 }
-.img__yZ5Ov > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .img__voYmc {
   object-fit: cover;
   width: 24px;
@@ -62,9 +59,6 @@
 .img__voYmc > picture > img {
   object-fit: cover;
 }
-.img__voYmc > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .img__z81Bn {
   object-fit: cover;
   width: 24px;
@@ -75,8 +69,5 @@
   border: 1px solid #ffffff;
 }
 .img__z81Bn > picture > img {
-  object-fit: cover;
-}
-.img__z81Bn > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }

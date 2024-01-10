@@ -23,9 +23,6 @@
 .img__zrryr > picture > img {
   object-fit: cover;
 }
-.img__zrryr > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .navTeamSection:global(.__wab_instance) {
   position: relative;
 }

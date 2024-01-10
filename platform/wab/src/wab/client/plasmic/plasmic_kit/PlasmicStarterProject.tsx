@@ -53,6 +53,7 @@ export type PlasmicStarterProject__VariantMembers = {
   image: "withImage";
   withDescrip: "withDescrip";
   showPreview: "showPreview";
+  withDropShadow: "withDropShadow";
 };
 export type PlasmicStarterProject__VariantsArgs = {
   type?: SingleChoiceArg<"first" | "second" | "third" | "noBorder">;
@@ -60,6 +61,7 @@ export type PlasmicStarterProject__VariantsArgs = {
   image?: SingleChoiceArg<"withImage">;
   withDescrip?: SingleBooleanChoiceArg<"withDescrip">;
   showPreview?: SingleBooleanChoiceArg<"showPreview">;
+  withDropShadow?: SingleBooleanChoiceArg<"withDropShadow">;
 };
 type VariantPropType = keyof PlasmicStarterProject__VariantsArgs;
 export const PlasmicStarterProject__VariantProps = new Array<VariantPropType>(
@@ -67,7 +69,8 @@ export const PlasmicStarterProject__VariantProps = new Array<VariantPropType>(
   "icon",
   "image",
   "withDescrip",
-  "showPreview"
+  "showPreview",
+  "withDropShadow"
 );
 
 export type PlasmicStarterProject__ArgsType = {
@@ -106,6 +109,7 @@ export interface DefaultStarterProjectProps {
   image?: SingleChoiceArg<"withImage">;
   withDescrip?: SingleBooleanChoiceArg<"withDescrip">;
   showPreview?: SingleBooleanChoiceArg<"showPreview">;
+  withDropShadow?: SingleBooleanChoiceArg<"withDropShadow">;
   className?: string;
 }
 
@@ -164,6 +168,12 @@ function PlasmicStarterProject__RenderFunc(props: {
         variableType: "variant",
         initFunc: ({ $props, $state, $queries, $ctx }) => $props.showPreview,
       },
+      {
+        path: "withDropShadow",
+        type: "private",
+        variableType: "variant",
+        initFunc: ({ $props, $state, $queries, $ctx }) => $props.withDropShadow,
+      },
     ],
     [$props, $ctx, $refs]
   );
@@ -208,6 +218,14 @@ function PlasmicStarterProject__RenderFunc(props: {
             "withDescrip",
             "withDescrip"
           ),
+          [sty.rootwithDropShadow]: hasVariant(
+            $state,
+            "withDropShadow",
+            "withDropShadow"
+          ),
+          [sty.rootwithDropShadow_withDescrip]:
+            hasVariant($state, "withDropShadow", "withDropShadow") &&
+            hasVariant($state, "withDescrip", "withDescrip"),
         }
       )}
     >
@@ -234,9 +252,20 @@ function PlasmicStarterProject__RenderFunc(props: {
             "withDescrip",
             "withDescrip"
           ),
+          [sty.buttonwithDropShadow]: hasVariant(
+            $state,
+            "withDropShadow",
+            "withDropShadow"
+          ),
         })}
       >
-        {(hasVariant($state, "image", "withImage") ? true : false) ? (
+        {(
+          hasVariant($state, "withDropShadow", "withDropShadow")
+            ? true
+            : hasVariant($state, "image", "withImage")
+            ? true
+            : false
+        ) ? (
           <div
             className={classNames(projectcss.all, sty.freeBox__vAmgL, {
               [sty.freeBoxicon_withIcon__vAmgLn8MlJ]: hasVariant(
@@ -253,6 +282,11 @@ function PlasmicStarterProject__RenderFunc(props: {
                 $state,
                 "type",
                 "second"
+              ),
+              [sty.freeBoxwithDropShadow__vAmgLqdgSu]: hasVariant(
+                $state,
+                "withDropShadow",
+                "withDropShadow"
               ),
             })}
             style={{ aspectRatio: "285 / 165" }}
@@ -316,6 +350,11 @@ function PlasmicStarterProject__RenderFunc(props: {
               "withDescrip",
               "withDescrip"
             ),
+            [sty.freeBoxwithDropShadow__yWsHwQdgSu]: hasVariant(
+              $state,
+              "withDropShadow",
+              "withDropShadow"
+            ),
           })}
         >
           <div
@@ -335,6 +374,11 @@ function PlasmicStarterProject__RenderFunc(props: {
               [sty.dividertype_first]: hasVariant($state, "type", "first"),
               [sty.dividertype_second]: hasVariant($state, "type", "second"),
               [sty.dividertype_third]: hasVariant($state, "type", "third"),
+              [sty.dividerwithDropShadow]: hasVariant(
+                $state,
+                "withDropShadow",
+                "withDropShadow"
+              ),
             })}
           />
 
@@ -380,6 +424,11 @@ function PlasmicStarterProject__RenderFunc(props: {
                 "withDescrip",
                 "withDescrip"
               ),
+              [sty.freeBoxwithDropShadow__h0GnqdgSu]: hasVariant(
+                $state,
+                "withDropShadow",
+                "withDropShadow"
+              ),
             })}
           >
             {(hasVariant($state, "icon", "withIcon") ? true : false) ? (
@@ -414,6 +463,11 @@ function PlasmicStarterProject__RenderFunc(props: {
                   [sty.freeBoxtype_third_icon_withIcon___15Zn92NMmaN8MlJ]:
                     hasVariant($state, "icon", "withIcon") &&
                     hasVariant($state, "type", "third"),
+                  [sty.freeBoxwithDropShadow___15Zn9QdgSu]: hasVariant(
+                    $state,
+                    "withDropShadow",
+                    "withDropShadow"
+                  ),
                 })}
               >
                 {(hasVariant($state, "icon", "withIcon") ? true : false)
@@ -446,6 +500,11 @@ function PlasmicStarterProject__RenderFunc(props: {
                         [sty.slotTargetChildrentype_third_icon_withIcon]:
                           hasVariant($state, "icon", "withIcon") &&
                           hasVariant($state, "type", "third"),
+                        [sty.slotTargetChildrenwithDropShadow]: hasVariant(
+                          $state,
+                          "withDropShadow",
+                          "withDropShadow"
+                        ),
                       }),
                     })
                   : null}
@@ -485,6 +544,11 @@ function PlasmicStarterProject__RenderFunc(props: {
                   "withDescrip",
                   "withDescrip"
                 ),
+                [sty.freeBoxwithDropShadow__wHm4FqdgSu]: hasVariant(
+                  $state,
+                  "withDropShadow",
+                  "withDropShadow"
+                ),
               })}
             >
               <p.Stack
@@ -514,6 +578,11 @@ function PlasmicStarterProject__RenderFunc(props: {
                     $state,
                     "withDescrip",
                     "withDescrip"
+                  ),
+                  [sty.frame317withDropShadow]: hasVariant(
+                    $state,
+                    "withDropShadow",
+                    "withDropShadow"
                   ),
                 })}
               >
@@ -567,6 +636,11 @@ function PlasmicStarterProject__RenderFunc(props: {
                     [sty.slotTargetNamewithDescrip_type_first]:
                       hasVariant($state, "withDescrip", "withDescrip") &&
                       hasVariant($state, "type", "first"),
+                    [sty.slotTargetNamewithDropShadow]: hasVariant(
+                      $state,
+                      "withDropShadow",
+                      "withDropShadow"
+                    ),
                   }),
                 })}
               </p.Stack>
@@ -608,6 +682,11 @@ function PlasmicStarterProject__RenderFunc(props: {
                       $state,
                       "withDescrip",
                       "withDescrip"
+                    ),
+                    [sty.frame308withDropShadow]: hasVariant(
+                      $state,
+                      "withDropShadow",
+                      "withDropShadow"
                     ),
                   })}
                 >
@@ -655,6 +734,11 @@ function PlasmicStarterProject__RenderFunc(props: {
                       [sty.slotTargetInstructionwithDescrip_type_first]:
                         hasVariant($state, "withDescrip", "withDescrip") &&
                         hasVariant($state, "type", "first"),
+                      [sty.slotTargetInstructionwithDropShadow]: hasVariant(
+                        $state,
+                        "withDropShadow",
+                        "withDropShadow"
+                      ),
                     }),
                   })}
                 </p.Stack>
@@ -740,6 +824,11 @@ function PlasmicStarterProject__RenderFunc(props: {
               [sty.bordersoutlinesstrokesPlaceholderwithDescrip_type_first]:
                 hasVariant($state, "withDescrip", "withDescrip") &&
                 hasVariant($state, "type", "first"),
+              [sty.bordersoutlinesstrokesPlaceholderwithDropShadow]: hasVariant(
+                $state,
+                "withDropShadow",
+                "withDropShadow"
+              ),
             }
           )}
         />
@@ -815,7 +904,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicStarterProject__ArgProps,
           internalVariantPropNames: PlasmicStarterProject__VariantProps,
         }),

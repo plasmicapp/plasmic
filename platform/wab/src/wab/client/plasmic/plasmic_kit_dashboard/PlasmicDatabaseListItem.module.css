@@ -223,9 +223,6 @@
 .img__pEBoG > picture > img {
   object-fit: cover;
 }
-.img__pEBoG > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .img__nYrEy {
   object-fit: cover;
   width: 24px;
@@ -237,9 +234,6 @@
 .img__nYrEy > picture > img {
   object-fit: cover;
 }
-.img__nYrEy > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .img___8WmfA {
   object-fit: cover;
   width: 24px;
@@ -249,9 +243,6 @@
   border: 1px solid #ffffff;
 }
 .img___8WmfA > picture > img {
-  object-fit: cover;
-}
-.img___8WmfA > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .menuButton:global(.__wab_instance):global(.__wab_instance) {

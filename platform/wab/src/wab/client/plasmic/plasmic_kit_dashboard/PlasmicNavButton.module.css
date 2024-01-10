@@ -237,8 +237,6 @@
 .svg__qik2M {
   display: flex;
   position: relative;
-  width: 1em;
-  flex-shrink: 0;
   height: 1em;
 }
 .freeBox {
@@ -455,7 +453,5 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
-  flex-shrink: 0;
   height: 1em;
 }

@@ -424,7 +424,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicWorkspaceDataSources__ArgProps,
           internalVariantPropNames: PlasmicWorkspaceDataSources__VariantProps,
         }),

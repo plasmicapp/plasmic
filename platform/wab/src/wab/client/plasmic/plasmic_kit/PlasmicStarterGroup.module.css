@@ -122,9 +122,6 @@
 .img__bP7Ph > picture > img {
   object-fit: cover;
 }
-.img__bP7Ph > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .svg__gFtv {
   min-width: 20px;
   min-height: 20px;
@@ -133,7 +130,6 @@
   display: flex;
   position: relative;
   color: rgb(255, 255, 255);
-  width: 1em;
   height: 1em;
 }
 .img__zkh64 {
@@ -142,9 +138,6 @@
   max-width: 100%;
 }
 .img__zkh64 > picture > img {
-  object-fit: cover;
-}
-.img__zkh64 > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }
 .starterProject__s5Vns:global(.__wab_instance) {
@@ -161,9 +154,6 @@
 .img___9FOdj > picture > img {
   object-fit: cover;
 }
-.img___9FOdj > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .svg__go0Gq {
   min-width: 20px;
   min-height: 20px;
@@ -172,7 +162,6 @@
   display: flex;
   position: relative;
   color: rgb(255, 255, 255);
-  width: 1em;
   height: 1em;
 }
 .img__q6GP {
@@ -181,8 +170,5 @@
   max-width: 100%;
 }
 .img__q6GP > picture > img {
-  object-fit: cover;
-}
-.img__q6GP > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }

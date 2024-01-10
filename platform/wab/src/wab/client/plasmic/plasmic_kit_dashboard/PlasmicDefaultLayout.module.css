@@ -89,7 +89,6 @@
   position: relative;
   object-fit: cover;
   color: var(--token-mu3x63xzJRW);
-  width: 1em;
   height: 1em;
 }
 .text {
@@ -100,7 +99,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .svgnewProjectButtonAsDropdown__iw3P2LewDp {
@@ -114,7 +112,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .svg__uSFd {
@@ -212,7 +209,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .svg__ti7An {
@@ -229,7 +225,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .svg__ebJx {
@@ -315,7 +310,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .svg__tkcPl {
@@ -354,7 +348,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .svg__fmNan {
@@ -371,7 +364,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .svg__mJhnX {
@@ -402,14 +394,10 @@
 .img__xzqEi > picture > img {
   object-fit: cover;
 }
-.img__xzqEi > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .svg__dvFlL {
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .main {

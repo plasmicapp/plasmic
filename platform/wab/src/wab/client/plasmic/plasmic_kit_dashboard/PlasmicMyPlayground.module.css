@@ -31,9 +31,6 @@
 .img__fvceM > picture > img {
   object-fit: cover;
 }
-.img__fvceM > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .navTeamSection:global(.__wab_instance) {
   position: relative;
 }

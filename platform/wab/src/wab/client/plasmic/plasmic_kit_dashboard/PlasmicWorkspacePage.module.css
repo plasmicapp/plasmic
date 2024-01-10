@@ -42,9 +42,6 @@
 .img__gK7GD > picture > img {
   object-fit: cover;
 }
-.img__gK7GD > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .navTeamSection:global(.__wab_instance) {
   position: relative;
 }
