@@ -35,7 +35,7 @@ test.describe(`Plasmic Antd5 Tabs`, async () => {
             `${activeIndex}a`
           ); // default assigned value
           await page.waitForTimeout(1000);
-          for (let i = 1; i <= 4; i++) {
+          for (let i = 1; i <= 6; i++) {
             if (i === activeIndex) {
               await expect(
                 page.locator(
@@ -71,6 +71,9 @@ test.describe(`Plasmic Antd5 Tabs`, async () => {
 
         await page.locator(`.ant-tabs-nav-list [data-node-key="3a"]`).click();
         await checkActiveTab(3);
+
+        await page.locator(`.ant-tabs-nav-list [data-node-key="6a"]`).click();
+        await checkActiveTab(6);
 
         await page.locator(`.ant-tabs-nav-list [data-node-key="4a"]`).click();
         await checkActiveTab(4);

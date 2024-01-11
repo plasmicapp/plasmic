@@ -21,7 +21,7 @@ export const AntdTabItem: React.FC<TabItemType> = ({ children }) => {
 function getTabItems(items: ReactElement): React.ReactElement<TabItemType>[] {
   return (items?.type as any)?.name == AntdTabItem.name
     ? [items]
-    : items?.props.children;
+    : items?.props?.children?.flat(1);
 }
 
 function getTabItemKeys(items: ReactElement): string[] {
@@ -89,7 +89,7 @@ export function AntdTabs(props: TabsProps) {
         return {
           ...currentItem.props,
           key: currentItem.key,
-          children: <>{currentItem.props.children}</>,
+          children: <>{currentItem.props?.children}</>,
         };
       })
       .filter((i) => i != null) as TabItemType[];
