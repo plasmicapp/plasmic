@@ -4886,10 +4886,10 @@
     fast-deep-equal "^3.1.3"
     valtio "^1.6.3"
 
-"@plasmicpkgs/antd5@^0.0.208":
-  version "0.0.208"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.208.tgz#42ff70f4765f071b2196a125813b017dd18d2081"
-  integrity sha512-1HVI1zUNrvHwNxRtNdiMb7clH632OvVdrt/8uaVH6PJfkpM0jnn0VUhZafOdO0mHeZtJ6WcpWfa4nemo+9C0nQ==
+"@plasmicpkgs/antd5@^0.0.209":
+  version "0.0.209"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.209.tgz#0472d9209279daa32e1acfc03b0b2108331a42c8"
+  integrity sha512-h8rTa55+g9bBg+KuLqBH+a3FsYs3MJnHM1RqNYJvycoggninUXj3geRXX+gKBE9klbzSJ8c0GhsVXcA8Ijx81Q==
   dependencies:
     antd "^5.12.7"
     classnames "^2.3.2"
