@@ -19,6 +19,7 @@ export const AntdTabItem: React.FC<TabItemType> = ({ children }) => {
 };
 
 function getTabItems(items: ReactElement): React.ReactElement<TabItemType>[] {
+  if (!React.isValidElement(items) && Array.isArray(items)) return [...items]; // indicates a single TabItem on repeat
   return (items?.type as any)?.name == AntdTabItem.name
     ? [items]
     : items?.props?.children?.flat(1);
@@ -82,7 +83,6 @@ export function AntdTabs(props: TabsProps) {
     [animateTabBar, animateTabContent, animated]
   );
   const items: TabItemType[] = useMemo(() => {
-    if (!React.isValidElement(itemsRaw)) return [];
     const tabItems = getTabItems(itemsRaw);
     return tabItems
       .map((currentItem) => {
