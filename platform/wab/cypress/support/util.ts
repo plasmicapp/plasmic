@@ -493,7 +493,9 @@ export class Framed {
               .join(", ")
           )
           .contains(text);
-        this.base().get(".tpltree__label--focused").click();
+        this.base().get(".tpltree__label--focused").click({
+          force: true, // let's force it to click, even if it's hidden
+        });
       });
   }
 

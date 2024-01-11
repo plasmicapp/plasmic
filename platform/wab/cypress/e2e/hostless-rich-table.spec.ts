@@ -23,7 +23,7 @@ function maskTimestampHours(x: string) {
   return x.replace(/(, )\d+(:\d+)/, "$1XX$2");
 }
 
-describe.skip("hostless-rich-components", () => {
+describe("hostless-rich-components", () => {
   beforeEach(() => {
     cy.setupProjectWithHostlessPackages({
       hostLessPackagesInfo: [
@@ -47,7 +47,7 @@ describe.skip("hostless-rich-components", () => {
   it("RichTable works", () => {
     // Create a project to use it
     cy.withinStudioIframe(() => {
-      cy.createNewPageInOwnArena("Homepage").then((framed) => {
+      cy.createNewPageInOwnArena("Homepage").then(() => {
         turnOffDesignMode();
 
         cy.insertFromAddDrawer("hostless-rich-table");
@@ -131,7 +131,7 @@ describe.skip("hostless-rich-components", () => {
             .find("td")
             .eq(2)
             .click()
-            .should("have.css", "background-color", "rgb(230, 244, 255)");
+            .should("have.css", "background-color", "rgb(186, 224, 255)");
         }
 
         checkAndInteract();

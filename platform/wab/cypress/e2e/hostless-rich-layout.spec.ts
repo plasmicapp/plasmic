@@ -30,7 +30,7 @@ function checkDarkFgColors() {
   maybeSelectedElt()
     .find(".ant-menu-item a")
     .first()
-    .should("have.css", "color", "rgba(0, 0, 0, 0.65)");
+    .should("have.css", "color", "rgba(83, 83, 83, 0.65)");
 }
 
 function checkActiveNavDarkBgPrimary() {
@@ -108,7 +108,7 @@ describe("hostless-rich-components", () => {
         maybeSelectedElt()
           .find(".ant-layout-header li a")
           .last()
-          .should("have.css", "color", "rgba(0, 0, 0, 0.95)");
+          .should("have.css", "color", "rgba(83, 83, 83, 0.95)");
 
         // Check that changing color scheme works.
         // Check that foreground colors adapt.

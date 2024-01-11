@@ -58,7 +58,7 @@
     "@types/semver": "^7.5.3",
     "@types/tinycolor2": "^1.4.4",
     "@types/uuid": "^9.0.5",
-    "antd": "^5.7.3",
+    "antd": "^5.12.7",
     "axios": "^1.5.1",
     "chart.js": "^4.2.1",
     "classnames": "^2.3.2",
