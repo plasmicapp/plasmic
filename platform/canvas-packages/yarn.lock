@@ -3325,10 +3325,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/airtable/-/airtable-0.0.202.tgz#4603b2ccdd2de9ae26a7992b289c60a18fe8452c"
   integrity sha512-ApCd/ly3IOoWkUMv2j+1davrz7a3rh55gv1BA7yRO6dTsG0YiLwk1Jqyn6JzrtSB0p+2luz6JjG1rwarYu+FMw==
 
-"@plasmicpkgs/antd5@^0.0.209":
-  version "0.0.209"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.209.tgz#0472d9209279daa32e1acfc03b0b2108331a42c8"
-  integrity sha512-h8rTa55+g9bBg+KuLqBH+a3FsYs3MJnHM1RqNYJvycoggninUXj3geRXX+gKBE9klbzSJ8c0GhsVXcA8Ijx81Q==
+"@plasmicpkgs/antd5@^0.0.210":
+  version "0.0.210"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/antd5/-/antd5-0.0.210.tgz#4316dd4d7567a6c04fa09d793c2afb7cb900343f"
+  integrity sha512-6P5fzaRwMFjWY/Ny7Cr02mWFO7TYrvl0vjV5Hi2qDWDkAgUSz8ZstXaC9EzkjmC+Be72ITBzoHvBs2h6Eyds7w==
   dependencies:
     antd "^5.12.7"
     classnames "^2.3.2"
