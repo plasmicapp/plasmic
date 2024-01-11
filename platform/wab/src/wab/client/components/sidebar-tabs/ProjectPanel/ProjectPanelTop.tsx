@@ -696,7 +696,6 @@ function ProjectPanelTop_(
           // where if it is open/closed quickly it may not remove the
           // `pointerEvents: none` it adds to the popover container
           style={{ zIndex: 0, pointerEvents: "auto" }}
-          noHeader
           root={{
             ...getComboboxProps(),
           }}
@@ -1428,7 +1427,6 @@ function BranchPanelTop_(
     <div className={styles.root} ref={outerRef} {...testIds.projectPanel}>
       <PlasmicProjectPanel
         style={{ zIndex: 0 }}
-        noHeader
         plusButton={{
           props: {
             tooltip: "Create new branch",

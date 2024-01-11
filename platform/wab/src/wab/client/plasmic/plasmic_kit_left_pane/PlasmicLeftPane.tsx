@@ -34,7 +34,6 @@ import {
 } from "@plasmicapp/react-web";
 import LeftTabStrip from "../../components/studio/LeftTabStrip"; // plasmic-import: l7y_rhJyMt2/component
 import LeftTabButton from "../../components/studio/LeftTabButton"; // plasmic-import: 1q_JapBg7U/component
-import { OutlineTab as LeftOutlinePanel } from "../../components/sidebar-tabs/outline-tab"; // plasmic-import: OXltm_7BbQ/component
 import LeftGeneralTokensPanel from "../../components/sidebar/LeftGeneralTokensPanel"; // plasmic-import: bDbzY5jXLz/component
 import { MixinsPanel as LeftMixinsPanel } from "../../components/sidebar/MixinControls"; // plasmic-import: ZsFxxgE4E8/component
 import { ImageAssetsPanel as LeftImagesPanel } from "../../components/sidebar/image-asset-controls"; // plasmic-import: ECu8FUyP0f3/component
@@ -115,7 +114,6 @@ export type PlasmicLeftPane__OverridesType = {
   leftTabStrip?: p.Flex<typeof LeftTabStrip>;
   paneContainer?: p.Flex<"div">;
   paneContent?: p.Flex<"div">;
-  leftOutlinePanel?: p.Flex<typeof LeftOutlinePanel>;
   leftGeneralTokensPanel?: p.Flex<typeof LeftGeneralTokensPanel>;
   leftMixinsPanel?: p.Flex<typeof LeftMixinsPanel>;
   leftImagesPanel?: p.Flex<typeof LeftImagesPanel>;
@@ -213,7 +211,6 @@ function PlasmicLeftPane__RenderFunc(props: {
           [sty.roottype_components]: hasVariant($state, "type", "components"),
           [sty.roottype_imports]: hasVariant($state, "type", "imports"),
           [sty.roottype_mixins]: hasVariant($state, "type", "mixins"),
-          [sty.roottype_outline]: hasVariant($state, "type", "outline"),
           [sty.roottype_pages]: hasVariant($state, "type", "pages"),
           [sty.roottype_settings]: hasVariant($state, "type", "settings"),
           [sty.roottype_tokens]: hasVariant($state, "type", "tokens"),
@@ -247,8 +244,6 @@ function PlasmicLeftPane__RenderFunc(props: {
             ? "mixins"
             : hasVariant($state, "type", "tokens")
             ? "tokens"
-            : hasVariant($state, "type", "outline")
-            ? "outline"
             : undefined
         }
         className={classNames("__wab_instance", sty.leftTabStrip, {
@@ -267,7 +262,6 @@ function PlasmicLeftPane__RenderFunc(props: {
           [sty.leftTabStriptype_imports]: hasVariant($state, "type", "imports"),
           [sty.leftTabStriptype_lint]: hasVariant($state, "type", "lint"),
           [sty.leftTabStriptype_mixins]: hasVariant($state, "type", "mixins"),
-          [sty.leftTabStriptype_outline]: hasVariant($state, "type", "outline"),
           [sty.leftTabStriptype_pages]: hasVariant($state, "type", "pages"),
           [sty.leftTabStriptype_responsiveness]: hasVariant(
             $state,
@@ -302,11 +296,6 @@ function PlasmicLeftPane__RenderFunc(props: {
             "imports"
           ),
           [sty.paneContainertype_mixins]: hasVariant($state, "type", "mixins"),
-          [sty.paneContainertype_outline]: hasVariant(
-            $state,
-            "type",
-            "outline"
-          ),
           [sty.paneContainertype_pages]: hasVariant($state, "type", "pages"),
           [sty.paneContainertype_responsiveness]: hasVariant(
             $state,
@@ -375,34 +364,6 @@ function PlasmicLeftPane__RenderFunc(props: {
             ),
           })}
         >
-          {(hasVariant($state, "type", "outline") ? true : false) ? (
-            <LeftOutlinePanel
-              data-plasmic-name={"leftOutlinePanel"}
-              data-plasmic-override={overrides.leftOutlinePanel}
-              className={classNames("__wab_instance", sty.leftOutlinePanel, {
-                [sty.leftOutlinePaneltype_mixins]: hasVariant(
-                  $state,
-                  "type",
-                  "mixins"
-                ),
-                [sty.leftOutlinePaneltype_outline]: hasVariant(
-                  $state,
-                  "type",
-                  "outline"
-                ),
-                [sty.leftOutlinePaneltype_responsiveness]: hasVariant(
-                  $state,
-                  "type",
-                  "responsiveness"
-                ),
-                [sty.leftOutlinePaneltype_tokens]: hasVariant(
-                  $state,
-                  "type",
-                  "tokens"
-                ),
-              })}
-            />
-          ) : null}
           {(hasVariant($state, "type", "tokens") ? true : false) ? (
             <LeftGeneralTokensPanel
               data-plasmic-name={"leftGeneralTokensPanel"}
@@ -501,11 +462,6 @@ function PlasmicLeftPane__RenderFunc(props: {
                   $state,
                   "type",
                   "mixins"
-                ),
-                [sty.leftImportsPaneltype_outline]: hasVariant(
-                  $state,
-                  "type",
-                  "outline"
                 ),
                 [sty.leftImportsPaneltype_pages]: hasVariant(
                   $state,
@@ -634,7 +590,6 @@ const PlasmicDescendants = {
     "leftTabStrip",
     "paneContainer",
     "paneContent",
-    "leftOutlinePanel",
     "leftGeneralTokensPanel",
     "leftMixinsPanel",
     "leftImagesPanel",
@@ -652,7 +607,6 @@ const PlasmicDescendants = {
   paneContainer: [
     "paneContainer",
     "paneContent",
-    "leftOutlinePanel",
     "leftGeneralTokensPanel",
     "leftMixinsPanel",
     "leftImagesPanel",
@@ -668,7 +622,6 @@ const PlasmicDescendants = {
   ],
   paneContent: [
     "paneContent",
-    "leftOutlinePanel",
     "leftGeneralTokensPanel",
     "leftMixinsPanel",
     "leftImagesPanel",
@@ -682,7 +635,6 @@ const PlasmicDescendants = {
     "leftSplitsPanel",
     "leftLintIssuesPanel",
   ],
-  leftOutlinePanel: ["leftOutlinePanel"],
   leftGeneralTokensPanel: ["leftGeneralTokensPanel"],
   leftMixinsPanel: ["leftMixinsPanel"],
   leftImagesPanel: ["leftImagesPanel"],
@@ -704,7 +656,6 @@ type NodeDefaultElementType = {
   leftTabStrip: typeof LeftTabStrip;
   paneContainer: "div";
   paneContent: "div";
-  leftOutlinePanel: typeof LeftOutlinePanel;
   leftGeneralTokensPanel: typeof LeftGeneralTokensPanel;
   leftMixinsPanel: typeof LeftMixinsPanel;
   leftImagesPanel: typeof LeftImagesPanel;
@@ -782,7 +733,6 @@ export const PlasmicLeftPane = Object.assign(
     leftTabStrip: makeNodeComponent("leftTabStrip"),
     paneContainer: makeNodeComponent("paneContainer"),
     paneContent: makeNodeComponent("paneContent"),
-    leftOutlinePanel: makeNodeComponent("leftOutlinePanel"),
     leftGeneralTokensPanel: makeNodeComponent("leftGeneralTokensPanel"),
     leftMixinsPanel: makeNodeComponent("leftMixinsPanel"),
     leftImagesPanel: makeNodeComponent("leftImagesPanel"),

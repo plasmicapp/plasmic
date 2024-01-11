@@ -1,3 +1,69 @@
+import PageSettings from "@/PageSettings";
+import {
+  Arena,
+  Component,
+  ComponentArena,
+  isKnownArena,
+  isKnownComponentArena,
+  isKnownPageArena,
+  PageArena,
+} from "@/wab/classes";
+import {
+  KeyboardShortcut,
+  menuSection,
+} from "@/wab/client/components/menu-builder";
+import { FindReferencesModal } from "@/wab/client/components/sidebar/FindReferencesModal";
+import { TopModal } from "@/wab/client/components/studio/TopModal";
+import { Matcher } from "@/wab/client/components/view-common";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { LabelWithDetailedTooltip } from "@/wab/client/components/widgets/LabelWithDetailedTooltip";
+import { NewComponentInfo } from "@/wab/client/components/widgets/NewComponentModal";
+import {
+  buildInsertableExtraInfo,
+  getScreenVariantToInsertableTemplate,
+  replaceWithPageTemplate,
+} from "@/wab/client/insertable-templates";
+import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
+import MixedArenaIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__MixedArena";
+import PageIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Page";
+import { DefaultFolderItemProps } from "@/wab/client/plasmic/project_panel/PlasmicFolderItem";
+import PlasmicProjectPanel from "@/wab/client/plasmic/project_panel/PlasmicProjectPanel";
+import PlasmicSearchInput from "@/wab/client/plasmic/project_panel/PlasmicSearchInput";
+import ChevronRightsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronRightsvg";
+import {
+  promptComponentTemplate,
+  promptPageTemplate,
+} from "@/wab/client/prompts";
+import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
+import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { testIds } from "@/wab/client/test-helpers/test-ids";
+import { maybe, spawn, switchType } from "@/wab/common";
+import { XDraggable } from "@/wab/commons/components/XDraggable";
+import {
+  ComponentType,
+  getComponentDisplayName,
+  getSubComponents,
+  getSuperComponents,
+  isPageComponent,
+  isReusableComponent,
+  PageComponent,
+} from "@/wab/components";
+import { DEVFLAGS } from "@/wab/devflags";
+import {
+  AnyArena,
+  getArenaName,
+  isComponentArena,
+  isDedicatedArena,
+  isMixedArena,
+  isPageArena,
+} from "@/wab/shared/Arenas";
+import { InsertableTemplateExtraInfo } from "@/wab/shared/insertable-templates";
+import {
+  ARENAS_CAP,
+  ARENAS_DESCRIPTION,
+  ARENA_LOWER,
+} from "@/wab/shared/Labels";
+import { extractComponentUsages, getPageArena } from "@/wab/sites";
 import { Dropdown, Menu } from "antd";
 import { observer } from "mobx-react-lite";
 import React, {
@@ -9,66 +75,6 @@ import React, {
 } from "react";
 import { useDebounce, useLocalStorage } from "react-use";
 import { FixedSizeList } from "react-window";
-import PageSettings from "../../../../../PageSettings";
-import {
-  Arena,
-  Component,
-  ComponentArena,
-  isKnownArena,
-  isKnownComponentArena,
-  isKnownPageArena,
-  PageArena,
-} from "../../../../classes";
-import { maybe, spawn, switchType } from "../../../../common";
-import { XDraggable } from "../../../../commons/components/XDraggable";
-import {
-  ComponentType,
-  getComponentDisplayName,
-  getSubComponents,
-  getSuperComponents,
-  isPageComponent,
-  isReusableComponent,
-  PageComponent,
-} from "../../../../components";
-import { DEVFLAGS } from "../../../../devflags";
-import {
-  AnyArena,
-  getArenaName,
-  isComponentArena,
-  isDedicatedArena,
-  isMixedArena,
-  isPageArena,
-} from "../../../../shared/Arenas";
-import { InsertableTemplateExtraInfo } from "../../../../shared/insertable-templates";
-import {
-  ARENAS_CAP,
-  ARENAS_DESCRIPTION,
-  ARENA_LOWER,
-} from "../../../../shared/Labels";
-import { extractComponentUsages, getPageArena } from "../../../../sites";
-import {
-  buildInsertableExtraInfo,
-  getScreenVariantToInsertableTemplate,
-  replaceWithPageTemplate,
-} from "../../../insertable-templates";
-import ComponentIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Component";
-import MixedArenaIcon from "../../../plasmic/plasmic_kit_design_system/icons/PlasmicIcon__MixedArena";
-import PageIcon from "../../../plasmic/plasmic_kit_design_system/icons/PlasmicIcon__Page";
-import { DefaultFolderItemProps } from "../../../plasmic/project_panel/PlasmicFolderItem";
-import PlasmicProjectPanel from "../../../plasmic/project_panel/PlasmicProjectPanel";
-import PlasmicSearchInput from "../../../plasmic/project_panel/PlasmicSearchInput";
-import ChevronRightsvgIcon from "../../../plasmic/q_4_icons/icons/PlasmicIcon__ChevronRightsvg";
-import { promptComponentTemplate, promptPageTemplate } from "../../../prompts";
-import { getComboForAction } from "../../../shortcuts/studio/studio-shortcuts";
-import { StudioCtx, useStudioCtx } from "../../../studio-ctx/StudioCtx";
-import { testIds } from "../../../test-helpers/test-ids";
-import { KeyboardShortcut, menuSection } from "../../menu-builder";
-import { FindReferencesModal } from "../../sidebar/FindReferencesModal";
-import { TopModal } from "../../studio/TopModal";
-import { Matcher } from "../../view-common";
-import { Icon } from "../../widgets/Icon";
-import { LabelWithDetailedTooltip } from "../../widgets/LabelWithDetailedTooltip";
-import { NewComponentInfo } from "../../widgets/NewComponentModal";
 import FolderItem from "./FolderItem";
 import styles from "./ProjectPanel.module.scss";
 
@@ -374,7 +380,6 @@ export const ProjectPanel = observer(function ProjectPanel_() {
         </TopModal>
       )}
       <PlasmicProjectPanel
-        noHeader
         plusButton={{
           props: {
             tooltip: contentEditorMode

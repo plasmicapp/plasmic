@@ -336,16 +336,6 @@
       "value": "rgb(4,164,244)",
       "category": "color",
       "meta": {
-        "projectId": "m8VxGcigeLAEXFe8c12w5Q",
-        "id": "vOCK-O8Ewb"
-      }
-    },
-    {
-      "name": "Spectrum/Cyan/60",
-      "type": "color",
-      "value": "rgb(4,164,244)",
-      "category": "color",
-      "meta": {
         "projectId": "fQPf2UiMEMhB52C8QQXwWe",
         "id": "jkHiEp9PkT"
       }
@@ -646,16 +636,6 @@
       "value": "rgb(164,167,171)",
       "category": "color",
       "meta": {
-        "projectId": "m8VxGcigeLAEXFe8c12w5Q",
-        "id": "kiwR9KiUI7"
-      }
-    },
-    {
-      "name": "Spectrum/Gray/65",
-      "type": "color",
-      "value": "rgb(164,167,171)",
-      "category": "color",
-      "meta": {
         "projectId": "6CrqkTcB6gSAHoA8c8zpNz",
         "id": "tsu4_rPSkF0"
       }
@@ -718,16 +698,6 @@
       "meta": {
         "projectId": "fpbcKyXdMTvY59T4C5fjcC",
         "id": "0vHxN11ixM"
-      }
-    },
-    {
-      "name": "Spectrum/Gray/90",
-      "type": "color",
-      "value": "rgb(228,230,235)",
-      "category": "color",
-      "meta": {
-        "projectId": "m8VxGcigeLAEXFe8c12w5Q",
-        "id": "JFZwj63RPJ"
       }
     },
     {

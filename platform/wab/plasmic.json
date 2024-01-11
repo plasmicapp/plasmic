@@ -78,20 +78,6 @@
           "componentType": "component"
         },
         {
-          "id": "OXltm_7BbQ",
-          "name": "LeftOutlinePanel",
-          "type": "managed",
-          "projectId": "aukbrhkegRkQ6KizvhdUPT",
-          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit/PlasmicLeftOutlinePanel.tsx",
-          "importSpec": {
-            "modulePath": "wab/client/components/sidebar-tabs/outline-tab.tsx",
-            "exportName": "OutlineTab"
-          },
-          "cssFilePath": "wab/client/plasmic/plasmic_kit/PlasmicLeftOutlinePanel.module.css",
-          "scheme": "blackbox",
-          "componentType": "component"
-        },
-        {
           "id": "ZsFxxgE4E8",
           "name": "LeftMixinsPanel",
           "type": "managed",
@@ -4809,7 +4795,7 @@
     {
       "projectId": "m8VxGcigeLAEXFe8c12w5Q",
       "projectName": "[PlasmicKit] ProjectPanel",
-      "version": ">=0.0.0",
+      "version": "latest",
       "cssFilePath": "wab/client/plasmic/project_panel/plasmic_project_panel.module.css",
       "components": [
         {
@@ -4850,6 +4836,20 @@
           "cssFilePath": "wab/client/plasmic/project_panel/PlasmicSearchInput.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "BSjTPez6aCjk",
+          "name": "OutlineTab",
+          "type": "managed",
+          "projectId": "m8VxGcigeLAEXFe8c12w5Q",
+          "renderModuleFilePath": "wab/client/plasmic/project_panel/PlasmicOutlineTab.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/sidebar-tabs/outline-tab.tsx",
+            "exportName": "OutlineTab"
+          },
+          "cssFilePath": "wab/client/plasmic/project_panel/PlasmicOutlineTab.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [],
@@ -4858,14 +4858,21 @@
         {
           "id": "eu3GIKsVNh",
           "name": "PlasmicHead",
+          "displayName": "hostless-plasmic-head",
           "componentImportPath": "@plasmicapp/react-web"
+        },
+        {
+          "id": "ukG7fFRJIr",
+          "name": "Fetcher",
+          "displayName": "plasmic-data-source-fetcher",
+          "componentImportPath": "@plasmicapp/react-web/lib/data-sources"
         }
       ],
       "projectApiToken": "fl06a7X18fSpoPofcNH7s11u3b2GLfyhHkM4NzgpId9pqN5ANzQZIWB2LRm0WC90o3nPOZtyENzWTeVonOg",
       "indirect": false,
       "globalContextsFilePath": "",
-      "jsBundleThemes": [],
-      "splitsProviderFilePath": ""
+      "splitsProviderFilePath": "",
+      "customFunctions": []
     },
     {
       "projectId": "fQPf2UiMEMhB52C8QQXwWe",

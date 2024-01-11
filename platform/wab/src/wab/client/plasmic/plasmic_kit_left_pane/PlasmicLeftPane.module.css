@@ -84,9 +84,6 @@
   min-height: 0;
   border-right: 1px solid var(--token-hoA5qaM-91G);
 }
-.leftOutlinePanel:global(.__wab_instance) {
-  position: relative;
-}
 .leftGeneralTokensPanel:global(.__wab_instance) {
   position: relative;
 }

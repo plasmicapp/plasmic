@@ -129,13 +129,13 @@ import { toast } from "@/wab/client/components/Messages";
 import { promptExtractComponent } from "@/wab/client/components/modals/ExtractComponentModal";
 import { promptWrapInComponent } from "@/wab/client/components/modals/WrapInComponentModal";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
+import { getTreeNodeVisibility } from "@/wab/client/components/sidebar-tabs/OutlineCtx";
 import {
   ensureTplColumnRs,
   ensureTplColumnsRs,
   getScreenVariant,
   makeTplColumn,
 } from "@/wab/client/components/sidebar-tabs/ResponsiveColumns/tpl-columns-utils";
-import { getTreeNodeVisibility } from "@/wab/client/components/sidebar-tabs/tpl-tree";
 import { TargetBlockedTooltip } from "@/wab/client/components/sidebar/sidebar-helpers";
 import { createAddTplComponent } from "@/wab/client/components/studio/add-drawer/AddDrawer";
 import { OneShortcutCombo } from "@/wab/client/components/studio/Shortcuts";

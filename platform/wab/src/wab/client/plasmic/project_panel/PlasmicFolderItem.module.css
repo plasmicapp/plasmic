@@ -17,7 +17,6 @@
 .svg__q8HG {
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .svgtype_folderopen__q8HG7YhjV {
@@ -36,7 +35,6 @@
 }
 .svg__yn2Mk {
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .svgtype_folderclosed__yn2Mk1OX {
@@ -51,7 +49,6 @@
   display: flex;
   position: relative;
   object-fit: cover;
-  width: 1em;
   height: 1em;
 }
 .svg__i2ZUu {
@@ -59,6 +56,5 @@
   position: relative;
   object-fit: cover;
   color: var(--token-UunsGa2Y3t3);
-  width: 1em;
   height: 1em;
 }
