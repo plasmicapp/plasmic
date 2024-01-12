@@ -305,7 +305,6 @@
     "codesandbox-import-util-types": "^2.1.15",
     "codesandbox-import-utils": "^2.1.16",
     "coffeescript": "^2.5.1",
-    "colors": "^1.4.0",
     "comlink": "^4.3.1",
     "commander": "^11.0.0",
     "connect-datadog": "^0.0.9",
