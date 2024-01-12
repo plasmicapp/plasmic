@@ -559,14 +559,10 @@ export class SiteOps {
   }
 
   moveFrameToArena(
+    originArena: Arena,
     movingFrame: ArenaFrame,
-    destinationArena: Arena = this.tplMgr.addArena(movingFrame.name)
+    destinationArena: Arena
   ) {
-    const originArena = ensure(
-      this.getArenaByFrame(movingFrame),
-      "Frame should have a corresponding (origin) arena"
-    );
-
     this.tplMgr.removeExistingArenaFrame(originArena, movingFrame, {
       pruneUnnamedComponent: false,
     });

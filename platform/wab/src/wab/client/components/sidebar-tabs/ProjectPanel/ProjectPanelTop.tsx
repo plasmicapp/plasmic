@@ -1047,7 +1047,6 @@ function getFolderItemMenuRenderer({
             ![
               "rename",
               "duplicate",
-              "editInNewArtboard",
               "convertToComponent",
               "convertToPage",
               "delete",

@@ -496,6 +496,12 @@ export function isMixedArena(
   return isKnownArena(arena);
 }
 
+/**
+ * Updates a mixed arena's frames to ensure that the min top/left of all frames
+ * is at (0, 0).
+ *
+ * The canvas assumes the min top/left is at (0, 0) to set the clipper bounds.
+ */
 export function normalizeMixedArenaFrames(arena: Arena) {
   const frames = getPositionedArenaFrames(arena);
 

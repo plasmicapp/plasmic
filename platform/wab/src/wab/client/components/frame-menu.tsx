@@ -55,9 +55,11 @@ export function makeFrameMenu({
     const otherArenas = viewCtx.studioCtx.site.arenas.filter(
       (it) => it.uid !== originArena?.uid && isMixedArena(it)
     );
-    const onClickToMoveToArena = (destinationArena?: Arena) => () =>
+    const onClickToMoveToArena = (destinationArena: Arena) => () =>
       viewCtx.studioCtx.changeUnsafe(() =>
-        viewCtx.studioCtx.siteOps().moveFrameToArena(frame, destinationArena)
+        viewCtx.studioCtx
+          .siteOps()
+          .moveFrameToArena(originArena, frame, destinationArena)
       );
     builder.genSub(`Move to ${ARENA_LOWER}...`, (push) => {
       for (const it of otherArenas) {
@@ -70,7 +72,11 @@ export function makeFrameMenu({
       builder.genSection(undefined, (push) => {
         push(
           <Menu.Item
-            onClick={onClickToMoveToArena()}
+            onClick={() =>
+              onClickToMoveToArena(
+                viewCtx.studioCtx.tplMgr().addArena(frame.name)
+              )
+            }
             key={`new-${ARENA_LOWER}`}
           >
             <MenuItemContent>New {ARENA_LOWER}</MenuItemContent>

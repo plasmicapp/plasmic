@@ -3,6 +3,7 @@ import {
   ArenaFrame,
   Arg,
   Component,
+  ComponentArena,
   ComponentDataQuery,
   ComponentVariantGroup,
   ensureKnownEventHandler,
@@ -167,7 +168,6 @@ import uniq from "lodash/uniq";
 import without from "lodash/without";
 import { CSSProperties } from "react";
 import {
-  AnyArena,
   cloneArenaFrame,
   ensureActivatedScreenVariantsForArena,
   ensureFrameSizeForTargetScreenVariant,
@@ -176,9 +176,9 @@ import {
   getFrameHeight,
   isComponentArena,
   isMixedArena,
-  isPageArena,
   mkArenaFrame,
   mkMixedArena,
+  normalizeMixedArenaFrames,
   removeVariantGroupFromArenas,
   removeVariantsFromArenas,
 } from "./Arenas";
@@ -1062,12 +1062,14 @@ export class TplMgr {
       arenaFrame.pinnedGlobalVariants[gv.uuid] = true;
     });
 
-    arena.children.push(arenaFrame);
     ensureVariantSetting(arenaFrame.container, [this.site().globalVariant]);
+
+    arena.children.push(arenaFrame);
+    normalizeMixedArenaFrames(arena);
     return arenaFrame;
   }
 
-  computeFrameInsertLoc(
+  private computeFrameInsertLoc(
     arena: Arena,
     width: number,
     height: number,
@@ -1100,22 +1102,22 @@ export class TplMgr {
     frame.top = top;
     frame.left = left;
     arena.children.push(frame);
+    normalizeMixedArenaFrames(arena);
   }
 
   removeExistingArenaFrame(
-    arena: AnyArena,
+    arena: Arena | ComponentArena,
     frame: ArenaFrame,
     opts: { pruneUnnamedComponent: boolean } = { pruneUnnamedComponent: true }
   ) {
     if (isMixedArena(arena)) {
       removeFromArray(arena.children, frame);
+      normalizeMixedArenaFrames(arena);
       const component = frame.container.component;
       if (opts.pruneUnnamedComponent && isFrameComponent(component)) {
         // There shouldn't be any other reference to this component, since it's unnamed.
         this.removeComponent(component);
       }
-    } else if (isPageArena(arena)) {
-      // TODO[arenas]
     } else if (isComponentArena(arena)) {
       if (
         isGlobalVariantFrame(arena, frame) ||
