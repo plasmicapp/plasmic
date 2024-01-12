@@ -1,12 +1,13 @@
-import { pick } from "lodash";
-import { ArenaFrame, Component, TplNode } from "../classes";
-import { ensure } from "../common";
-import { cloneArenaFrame } from "../shared/Arenas";
-import { VariantCombo } from "../shared/Variants";
-import * as Tpls from "../tpls";
+import { ArenaFrame, Component, TplNode } from "@/wab/classes";
+import { ensure } from "@/wab/common";
+import { cloneArenaFrame } from "@/wab/shared/Arenas";
+import { VariantCombo } from "@/wab/shared/Variants";
+import * as Tpls from "@/wab/tpls";
+import { AppCtx } from "./app-ctx";
 import {
   readAndSanitizeFileAsImage,
   readAndSanitizeSvgXmlAsImage,
+  readUploadedFileAsDataUrl,
   ResizableImage,
 } from "./dom-utils";
 
@@ -103,16 +104,8 @@ export class Clipboard {
 
 export type ClipboardAction = "cut" | "copy";
 
-interface ParsedClipboardImage {
-  url: string;
-  height: number;
-  width: number;
-  aspectRatio: number | undefined;
-}
-
 export interface ParsedClipboardData {
   map: Record<string, string>;
-  image?: ParsedClipboardImage;
 }
 
 export async function parseClipboardItems(
@@ -120,7 +113,6 @@ export async function parseClipboardItems(
   lastAction: ClipboardAction
 ): Promise<ParsedClipboardData> {
   const map: Record<string, string> = {};
-  let image: ParsedClipboardImage | undefined;
   for (let i = 0; i < items.length; i++) {
     for (let j = 0; j < items[i].types.length; j++) {
       const format = items[i].types[j];
@@ -144,36 +136,16 @@ export async function parseClipboardItems(
         b.lastModifiedDate = new Date();
         const file = b as File;
 
-        const resizableImage = await readAndSanitizeFileAsImage(file);
-        if (resizableImage?.url) {
-          image = {
-            ...pick(resizableImage, ["url", "width", "height"]),
-            aspectRatio: resizableImage.actualAspectRatio,
-          };
-          continue;
-        }
+        const dataUrl = await readUploadedFileAsDataUrl(file);
+        map[format] = dataUrl;
+        continue;
       }
 
       const text = await blob.text();
-
-      try {
-        const svg = await readAndSanitizeSvgXmlAsImage(text);
-        if (svg?.url) {
-          image = {
-            ...pick(svg, ["url", "width", "height"]),
-            aspectRatio: svg.actualAspectRatio,
-          };
-          continue;
-        }
-      } catch (_) {
-        // If an error happens in SVG parsing, just keep going and
-        // treat the pasted content as plain text.
-      }
-
       map[format] = text;
     }
   }
-  return { map, image };
+  return { map };
 }
 
 /**
@@ -188,16 +160,35 @@ export class ClipboardData {
     this.map = {};
   }
 
-  setParsedData(data: ParsedClipboardData) {
-    this.map = { ...data.map };
-    this.image = data.image
-      ? new ResizableImage(
-          data.image.url,
-          data.image.width,
-          data.image.height,
-          data.image.aspectRatio
-        )
-      : undefined;
+  async setParsedData(appCtx: AppCtx, data: ParsedClipboardData) {
+    this.map = {};
+    for (const [key, value] of Object.entries(data.map)) {
+      if (key.indexOf("image") >= 0) {
+        const resizableImage = await readAndSanitizeFileAsImage(appCtx, value);
+        if (resizableImage?.url) {
+          this.image = resizableImage;
+          continue;
+        }
+      }
+
+      try {
+        const svg = await readAndSanitizeSvgXmlAsImage(appCtx, value);
+        if (svg?.url) {
+          this.image = new ResizableImage(
+            svg.url,
+            svg.width,
+            svg.height,
+            svg.actualAspectRatio
+          );
+          continue;
+        }
+      } catch (_) {
+        // If an error happens in SVG parsing, just keep going and
+        // treat the pasted content as plain text.
+      }
+
+      this.map[key] = value;
+    }
   }
 
   getData(format: string): string {

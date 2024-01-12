@@ -473,7 +473,10 @@ export async function promptFileUpload(
     input.addEventListener("change", async () => {
       if (input.files && input.files[0]) {
         try {
-          const image = await readAndSanitizeFileAsImage(input.files[0]);
+          const image = await readAndSanitizeFileAsImage(
+            appCtx,
+            input.files[0]
+          );
           if (!image) {
             reject(new Error("Invalid image"));
           } else {

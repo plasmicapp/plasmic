@@ -1988,3 +1988,22 @@ export interface UpdateHostUrlRequest {
 export interface UpdateHostUrlResponse extends UpdateHostUrlRequest {
   updatedAt: Date | string;
 }
+
+export interface ProcessSvgRequest {
+  svgXml: string;
+}
+
+export type ProcessSvgResponse =
+  | {
+      status: "success";
+      result: {
+        xml: string;
+        width: number;
+        height: number;
+        aspectRatio: number | undefined;
+      };
+    }
+  | {
+      status: "failure";
+      error: Error;
+    };

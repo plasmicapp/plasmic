@@ -4,10 +4,9 @@ import { Rect } from "@/wab/geom";
 import { ImageAssetType } from "@/wab/image-asset-type";
 import {
   asSvgDataUrl,
+  getParsedDataUrlData,
   imageDataUriToBlob,
-  maybeGetAspectRatioFromImageDataUrl,
   parseSvgXml,
-  sanitizeImageDataUrl,
   SVG_MEDIA_TYPE as SVG_CONTENT_TYPE,
   SVG_MEDIA_TYPE,
 } from "@/wab/shared/data-urls";
@@ -17,12 +16,12 @@ import {
   convertSvgToTextSized,
   gatherSvgColors,
 } from "@/wab/shared/svg-utils";
-import { processSvg } from "@/wab/shared/svgo";
 import { ASPECT_RATIO_SCALE_FACTOR } from "@/wab/tpls";
 import imageSize from "@coderosh/image-size";
 import { notification } from "antd";
 import * as downscale from "downscale";
 import $ from "jquery";
+import { isString } from "lodash";
 import find from "lodash/find";
 import isFunction from "lodash/isFunction";
 import memoize from "lodash/memoize";
@@ -196,10 +195,50 @@ export const isDescendant = ({
   return false;
 };
 
+async function sanitizeImageDataUrl(appCtx: AppCtx, dataUrl: string) {
+  const parsed = parseDataUrl(dataUrl);
+  if (parsed && parsed.mediaType === SVG_MEDIA_TYPE) {
+    const xml = getParsedDataUrlData(parsed);
+    return await asSanitizedSvgUrl(appCtx, xml);
+  } else {
+    // May want to do something for non-svg too?  At least white-list
+    // the media types
+    return dataUrl;
+  }
+}
+
+async function asSanitizedSvgUrl(appCtx: AppCtx, xml: string) {
+  const processed = await appCtx.api.processSvg({ svgXml: xml });
+  if (processed.status === "failure") {
+    return undefined;
+  }
+  return asSvgDataUrl(processed.result.xml);
+}
+
+async function maybeGetAspectRatioFromImageDataUrl(
+  appCtx: AppCtx,
+  dataUrl: string
+) {
+  const parsed = parseDataUrl(dataUrl);
+  if (parsed && parsed.mediaType === SVG_MEDIA_TYPE) {
+    const processed = await appCtx.api.processSvg({
+      svgXml: getParsedDataUrlData(parsed),
+    });
+    if (processed.status === "success") {
+      return processed.result.aspectRatio;
+    }
+  }
+  return undefined;
+}
+
 export async function readAndSanitizeFileAsImage(
-  file: File
+  appCtx: AppCtx,
+  fileOrDataUrl: File | string
 ): Promise<ResizableImage | undefined> {
-  const url = sanitizeImageDataUrl(await readUploadedFileAsDataUrl(file));
+  const dataUrl = isString(fileOrDataUrl)
+    ? fileOrDataUrl
+    : await readUploadedFileAsDataUrl(fileOrDataUrl);
+  const url = await sanitizeImageDataUrl(appCtx, dataUrl);
   if (!url) {
     return undefined;
   }
@@ -208,23 +247,26 @@ export async function readAndSanitizeFileAsImage(
     url,
     size.width,
     size.height,
-    maybeGetAspectRatioFromImageDataUrl(url)
+    await maybeGetAspectRatioFromImageDataUrl(appCtx, url)
   );
   return Promise.resolve(img);
 }
 
-export async function readAndSanitizeSvgXmlAsImage(svgXml: string) {
-  const sanitized = processSvg(svgXml);
-  if (!sanitized) {
+export async function readAndSanitizeSvgXmlAsImage(
+  appCtx: AppCtx,
+  svgXml: string
+) {
+  const sanitized = await appCtx.api.processSvg({ svgXml });
+  if (sanitized.status === "failure") {
     return undefined;
   }
-  const url = asSvgDataUrl(sanitized.xml);
+  const url = asSvgDataUrl(sanitized.result.xml);
   const size = await deriveImageSize(url);
   return new ResizableImage(
     url,
     size.width,
     size.height,
-    sanitized.aspectRatio
+    sanitized.result.aspectRatio
   );
 }
 
@@ -289,7 +331,10 @@ export const getUploadedFile = (
   $input.trigger("click");
 };
 
-export async function parseImage(base64: string): Promise<{
+export async function parseImage(
+  appCtx: AppCtx,
+  base64: string
+): Promise<{
   width: number;
   height: number;
   aspectRatio: number | undefined;
@@ -305,17 +350,24 @@ export async function parseImage(base64: string): Promise<{
     await getFileType(bytes.buffer),
     "Unexpected undefined file type"
   );
+
+  let aspectRatio: number | undefined;
+  if (fileType.mime === (SVG_MEDIA_TYPE as any)) {
+    const processedSvg = await appCtx.api.processSvg({
+      svgXml:
+        typeof window === "undefined"
+          ? Buffer.from(base64).toString("utf8")
+          : window.atob(base64),
+    });
+    if (processedSvg.status === "success") {
+      aspectRatio = processedSvg.result.aspectRatio;
+    }
+  }
+
   return {
-    width: meta.width || 0,
-    height: meta.height || 0,
-    aspectRatio:
-      fileType.mime === (SVG_MEDIA_TYPE as any)
-        ? processSvg(
-            typeof window === "undefined"
-              ? Buffer.from(base64).toString("utf8")
-              : window.atob(base64)
-          )?.aspectRatio
-        : undefined,
+    width: meta.width,
+    height: meta.height,
+    aspectRatio,
     type: fileType.mime,
   };
 }
@@ -500,7 +552,10 @@ export function deriveImageAssetTypeAndUri(
   }
 }
 
-export async function readImageFromClipboard(clipboardData: DataTransfer) {
+export async function readImageFromClipboard(
+  appCtx: AppCtx,
+  clipboardData: DataTransfer
+) {
   const imageItem = find(
     clipboardData.items,
     (x) => x.type.indexOf("image") >= 0
@@ -509,7 +564,7 @@ export async function readImageFromClipboard(clipboardData: DataTransfer) {
   if (imageItem) {
     const blob = imageItem.getAsFile();
     if (blob) {
-      const image = await readAndSanitizeFileAsImage(blob);
+      const image = await readAndSanitizeFileAsImage(appCtx, blob);
       if (image) {
         return image;
       }
@@ -526,7 +581,7 @@ export async function readImageFromClipboard(clipboardData: DataTransfer) {
       );
     }
     console.log("Pasting svg", textContent);
-    const svg = await readAndSanitizeSvgXmlAsImage(textContent);
+    const svg = await readAndSanitizeSvgXmlAsImage(appCtx, textContent);
     if (svg) {
       return svg;
     }

@@ -1,6 +1,10 @@
 // Copied from https://github.com/jakearchibald/svgomg/blob/master/src/js/svgo-worker/index.js
 
 "use strict";
+import { ensure, mkShortId } from "@/wab/common";
+import { ProcessSvgResponse } from "@/wab/shared/ApiSchema";
+import { parseSvgXml } from "@/wab/shared/data-urls";
+import { JSDOM } from "jsdom";
 import js2svg from "svgo/lib/svgo/js2svg";
 import applyPlugins from "svgo/lib/svgo/plugins";
 import svg2js from "svgo/lib/svgo/svg2js";
@@ -44,8 +48,6 @@ import removeXMLProcInst from "svgo/plugins/removeXMLProcInst";
 import reusePaths from "svgo/plugins/reusePaths";
 import sortAttrs from "svgo/plugins/sortAttrs";
 import sortDefsChildren from "svgo/plugins/sortDefsChildren";
-import { ensure, mkShortId } from "../common";
-import { parseSvgXml } from "./data-urls";
 
 const removeMarginStyle = {
   type: "perItem",
@@ -182,7 +184,7 @@ function getDimensions(parsedSvg) {
   return {};
 }
 
-export function processSvg(svgXml: string, domParser?: DOMParser) {
+export function svgoProcess(svgXml: string): ProcessSvgResponse {
   // prefix IDs with random uuids, so that we don't collide on global IDs.
   // Specifically, SVGs copied from Figma may reuse the same global IDs
   // for different defs.
@@ -190,6 +192,7 @@ export function processSvg(svgXml: string, domParser?: DOMParser) {
   cleanupIDs.params.prefix = mkShortId();
   cleanupIDs.params.force = true;
   try {
+    const domParser = new new JSDOM().window.DOMParser();
     const svgElt = parseSvgXml(svgXml, domParser);
     const svg = parseSvg(svgElt.outerHTML);
 
@@ -231,13 +234,19 @@ export function processSvg(svgXml: string, domParser?: DOMParser) {
     const dims = getDimensions(svg);
 
     return {
-      xml: svgData,
-      width: ensure(dims.width, "Svg must have defined width value"),
-      height: ensure(dims.height, "Svg must have defined height value"),
-      aspectRatio: dims.aspectRatio,
+      status: "success",
+      result: {
+        xml: svgData,
+        width: ensure(dims.width, "Svg must have defined width value"),
+        height: ensure(dims.height, "Svg must have defined height value"),
+        aspectRatio: dims.aspectRatio,
+      },
     };
-  } catch {
-    return undefined;
+  } catch (e) {
+    return {
+      status: "failure",
+      error: e,
+    };
   }
 }
 

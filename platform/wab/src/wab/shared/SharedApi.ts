@@ -135,6 +135,8 @@ import {
   PlasmicHostingSettings,
   PostCommentRequest,
   PostCommentResponse,
+  ProcessSvgRequest,
+  ProcessSvgResponse,
   ProjectExtraData,
   ProjectFullDataResponse,
   ProjectId,
@@ -2222,5 +2224,9 @@ export abstract class SharedApi {
 
   async getAppMeta(projectId: string): Promise<any> {
     return this.get(`/admin/project/${projectId}/app-meta`);
+  }
+
+  async processSvg(data: ProcessSvgRequest): Promise<ProcessSvgResponse> {
+    return this.post(`/process-svg`, data);
   }
 }

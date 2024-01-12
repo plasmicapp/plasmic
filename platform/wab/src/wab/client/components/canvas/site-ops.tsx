@@ -102,7 +102,6 @@ import {
   ResponsiveStrategy,
 } from "@/wab/shared/responsiveness";
 import { removeSvgIds } from "@/wab/shared/svg-utils";
-import { processSvg } from "@/wab/shared/svgo";
 import { VariantOptionsType } from "@/wab/shared/TplMgr";
 import {
   ensureBaseRuleVariantSetting,
@@ -1419,8 +1418,9 @@ export async function uploadSvgImage(
 ) {
   const svg = parseSvgXml(xml);
 
-  const processedSvg = processSvg(xml);
-  const sanitized = ensure(processedSvg?.xml, "Invalid processed SVG");
+  const processedSvg = await appCtx.api.processSvg({ svgXml: xml });
+  assert(processedSvg.status === "success", "Invalid processed SVG");
+  const sanitized = processedSvg.result.xml;
 
   // Attempt to use the svg dimensions.
   if (useSvgSize) {
@@ -1432,7 +1432,7 @@ export async function uploadSvgImage(
     asSvgDataUrl(sanitized),
     width,
     height,
-    processedSvg?.aspectRatio
+    processedSvg.result.aspectRatio
   );
   const { imageResult, opts } = await maybeUploadImage(
     appCtx,

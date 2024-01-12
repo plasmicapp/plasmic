@@ -1,11 +1,13 @@
+import { Site } from "@/wab/classes";
+import { ResizableImage } from "@/wab/client/dom-utils";
+import { ImageAssetType } from "@/wab/image-asset-type";
+import { svgoProcess } from "@/wab/server/svgo";
+import { ProcessSvgRequest, ProcessSvgResponse } from "@/wab/shared/ApiSchema";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
 import fs from "fs";
 import { map, split, uniq } from "lodash";
 import path from "path";
-import { Site } from "../classes";
-import { ResizableImage } from "../client/dom-utils";
-import { ImageAssetType } from "../image-asset-type";
-import { TplMgr } from "../shared/TplMgr";
-import { VariantTplMgr } from "../shared/VariantTplMgr";
 
 export const createTplMgr = (site: Site) => new TplMgr({ site });
 
@@ -59,7 +61,16 @@ export const createSiteOps = (tplMgr: TplMgr) => {
 };
 
 export const createAppCtx = () => {
-  return {};
+  // AppCtx/API mock with the minimum required to pass Figma spec.
+  return {
+    api: {
+      processSvg: async function (
+        data: ProcessSvgRequest
+      ): Promise<ProcessSvgResponse> {
+        return svgoProcess(data.svgXml);
+      },
+    },
+  };
 };
 
 export const FILES_PATH = path.join(

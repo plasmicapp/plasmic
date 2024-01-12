@@ -1,17 +1,16 @@
-import S3 from "aws-sdk/clients/s3";
-import { JSDOM } from "jsdom";
-import { ensure } from "../../common";
-import { ImageAssetType } from "../../image-asset-type";
+import { ensure } from "@/wab/common";
+import { ImageAssetType } from "@/wab/image-asset-type";
+import { BundleMigrationType } from "@/wab/server/db/bundle-migration-utils";
+import { BundledMigrationFn } from "@/wab/server/db/BundleMigrator";
+import { svgoProcess } from "@/wab/server/svgo";
 import {
   asDataUrl,
   getParsedDataUrlData,
   parseDataUrl,
   SVG_MEDIA_TYPE,
-} from "../../shared/data-urls";
-import { processSvg } from "../../shared/svgo";
-import { ASPECT_RATIO_SCALE_FACTOR } from "../../tpls";
-import { BundleMigrationType } from "../db/bundle-migration-utils";
-import { BundledMigrationFn } from "../db/BundleMigrator";
+} from "@/wab/shared/data-urls";
+import { ASPECT_RATIO_SCALE_FACTOR } from "@/wab/tpls";
+import S3 from "aws-sdk/clients/s3";
 
 const siteAssetsBucket = process.env.SITE_ASSETS_BUCKET as string;
 
@@ -39,10 +38,11 @@ export const migrate: BundledMigrationFn = async (bundle) => {
         );
         const parsed = parseDataUrl(dataUrl);
         if (parsed && parsed.mediaType === SVG_MEDIA_TYPE) {
-          const aspectRatio = processSvg(
-            getParsedDataUrlData(parsed),
-            new new JSDOM().window.DOMParser()
-          )?.aspectRatio;
+          const processed = svgoProcess(getParsedDataUrlData(parsed));
+          const aspectRatio =
+            processed.status === "success"
+              ? processed.result.aspectRatio
+              : undefined;
           if (aspectRatio && isFinite(aspectRatio)) {
             inst["aspectRatio"] = Math.round(
               aspectRatio * ASPECT_RATIO_SCALE_FACTOR

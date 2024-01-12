@@ -1,10 +1,9 @@
+import { assert } from "@/wab/common";
 import {
   DOMParser as NodeDOMParser,
   XMLSerializer as NodeXMLSerializer,
 } from "@xmldom/xmldom";
 import * as _parseDataUrl from "parse-data-url";
-import { assert } from "../common";
-import { processSvg } from "./svgo";
 
 // nodejs doesn't have DOMParser, so we need to polyfill with xmldom :-/
 const DOMParser: typeof window.DOMParser =
@@ -60,34 +59,6 @@ export function parseDataUrlToSvgXml(dataUrl: string) {
     `Unexpected mediaType for svg: ${parsed?.mediaType}`
   );
   return getParsedDataUrlData(parsed);
-}
-
-export function sanitizeImageDataUrl(dataUrl: string) {
-  const parsed = parseDataUrl(dataUrl);
-  if (parsed && parsed.mediaType === SVG_MEDIA_TYPE) {
-    const xml = getParsedDataUrlData(parsed);
-    return asSanitizedSvgUrl(xml);
-  } else {
-    // May want to do something for non-svg too?  At least white-list
-    // the media types
-    return dataUrl;
-  }
-}
-
-export function maybeGetAspectRatioFromImageDataUrl(dataUrl: string) {
-  const parsed = parseDataUrl(dataUrl);
-  if (parsed && parsed.mediaType === SVG_MEDIA_TYPE) {
-    return processSvg(getParsedDataUrlData(parsed))?.aspectRatio;
-  }
-  return undefined;
-}
-
-export function asSanitizedSvgUrl(xml: string) {
-  const newSvgXml = processSvg(xml)?.xml;
-  if (!newSvgXml) {
-    return undefined;
-  }
-  return asSvgDataUrl(newSvgXml);
 }
 
 export function imageDataUriToBlob(dataUri: string) {

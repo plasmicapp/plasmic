@@ -325,6 +325,7 @@ import { getDevFlagsMergedWithOverrides } from "./db/appconfig";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
 import { addInternalRoutes, ROUTES_WITH_TIMING } from "./routes/custom-routes";
 import { ensureDevFlags } from "./workers/worker-utils";
+import { processSvgRoute } from "./routes/svg";
 
 const hotShots = require("hot-shots");
 
@@ -1960,6 +1961,11 @@ export function addMainAppServerRoutes(app: express.Application) {
     "/api/v1/project_repositories/:projectRepositoryId/runs/:workflowRunId",
     withNext(getGitWorkflowJob)
   );
+
+  /**
+   * SVG utilities.
+   */
+  app.post("/api/v1/process-svg", withNext(processSvgRoute));
 
   /**
    * Trusted hosts

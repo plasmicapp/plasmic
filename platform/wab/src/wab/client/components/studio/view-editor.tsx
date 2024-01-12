@@ -947,13 +947,13 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       const clipboardData = await sc.appCtx.api.readNavigatorClipboard(
         this.clipboardAction
       );
-      data.setParsedData(clipboardData);
+      await data.setParsedData(sc.appCtx, clipboardData);
     } catch (e) {
       console.error(e);
 
       // If unable to read data from the clipboard, assume that it
       // contains a paste from Plasmic.
-      data.setParsedData({
+      await data.setParsedData(sc.appCtx, {
         map: {
           "application/vnd.plasmic.clipboard+json": JSON.stringify({
             action: this.clipboardAction,
@@ -1213,7 +1213,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       const image =
         clipboardData instanceof ClipboardData
           ? clipboardData.getImage()
-          : await readImageFromClipboard(clipboardData);
+          : await readImageFromClipboard(sc.appCtx, clipboardData);
 
       if (image) {
         return await sc.app.withSpinner(

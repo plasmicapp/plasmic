@@ -475,6 +475,7 @@ export function filteredApi(
     "addReactionToComment",
     "removeReactionFromComment",
     "getAppAuthPubConfig",
+    "processSvg",
   ];
   const checkProjectIdInFirstArg =
     (f: any) =>

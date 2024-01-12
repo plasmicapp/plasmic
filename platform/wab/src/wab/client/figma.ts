@@ -156,7 +156,7 @@ export const uploadFigmaImages = async (
   > = new Map();
   for (const hash of [...keys(figmaData.i)]) {
     const imageData = figmaData.i[hash];
-    const image = await parseImage(imageData);
+    const image = await parseImage(appCtx, imageData);
     const url = `data:${image.type};base64,${imageData}`;
     const img = new ResizableImage(
       url,
