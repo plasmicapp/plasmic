@@ -850,7 +850,20 @@ function PostgresConnectionStringImportButton(props: {
           if (!connectionString) {
             return;
           }
-          const connectionOptions = parse(connectionString);
+          // pg-connection-string 2.6.2 does not work in the browser because
+          // of browser's URL constructor behavior. In the browser,
+          // `new URL("postgres://user:pass@host:123/base")` is not well
+          // understood. The following line is a workaround to make it work.
+          // We just replace the existing protocol (pg, postgres, postgresql,
+          // ...) with `ftp` - that way the browser will parse it correctly.
+          // In the future, when pg-connection-string is fixed/updated, we
+          // should be able to just parse `connectionString`. The issue is
+          // filed to: https://github.com/brianc/node-postgres/issues/3126
+          const hackyConnectionString = connectionString.replace(
+            /^[a-z]*:\/\//,
+            "ftp://"
+          );
+          const connectionOptions = parse(hackyConnectionString);
 
           form.setFieldsValue({
             credentials: {
