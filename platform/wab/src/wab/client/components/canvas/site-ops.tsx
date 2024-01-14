@@ -555,7 +555,6 @@ export class SiteOps {
 
   private fixChromeAfterRemoveFrame() {
     this.studioCtx.pruneInvalidViewCtxs();
-    this.studioCtx.fixCanvas();
   }
 
   moveFrameToArena(
@@ -574,7 +573,6 @@ export class SiteOps {
     );
 
     this.studioCtx.switchToArena(destinationArena);
-    this.studioCtx.tryZoomToFitArena();
   }
 
   updateImageAsset(asset: ImageAsset, image: ResizableImage) {

@@ -759,7 +759,7 @@ export class StudioCtx extends WithDbCtx {
             }
             // Don't compute canvas size and instead set a big canvas size
             // so that the scroll position won't be affected by canvas size changes.
-            this._canvasBB.set(
+            this._canvasSize.set(
               Box.fromRectSides({
                 top: 0,
                 bottom: 999999,
@@ -772,12 +772,18 @@ export class StudioCtx extends WithDbCtx {
             if (this.maybeCanvasClipper()) {
               this.canvasClipper().style.overflow = "auto";
             }
-            // Restore correct canvas size and position.
-            const scalerRect = this.getCanvasEditorFramesScalerRect();
-            if (!scalerRect) {
-              return;
-            }
-            this._canvasBB.set(Box.fromRect(scalerRect).scale(this.zoom));
+            // Restore correct canvas size.
+            const restoreCanvasSize = () => {
+              const scalerRect = this.getCanvasEditorFramesScalerRect();
+              if (scalerRect) {
+                this._canvasSize.set(Box.fromRect(scalerRect).scale(this.zoom));
+              } else {
+                // getCanvasEditorFramesScalerRect may return undefined
+                // if a frame hasn't been rendered yet. Retry next tick.
+                defer(restoreCanvasSize);
+              }
+            };
+            restoreCanvasSize();
           }
         },
         { name: "StudioCtx.adjustCanvasSize" }
@@ -2291,19 +2297,6 @@ export class StudioCtx extends WithDbCtx {
     this._xLeftPaneWidth.set(width);
   }
 
-  private _artboardNavBarHeight = observable.box(0);
-
-  get artboardNavBarHeight() {
-    return this._artboardNavBarHeight.get();
-  }
-
-  set artboardNavBarHeight(height: number) {
-    if (height !== this.artboardNavBarHeight) {
-      this.onClipperResized();
-      this._artboardNavBarHeight.set(height);
-    }
-  }
-
   private _xRightTabKey = observable.box<RightTabKey | undefined>(undefined);
   private lastElementRightTabKey:
     | Extract<RightTabKey, RightTabKey.style | RightTabKey.settings>
@@ -2806,13 +2799,7 @@ export class StudioCtx extends WithDbCtx {
       window.dispatchEvent(new Event(plasmicCanvasTransformEvent));
 
       this.setIsTransforming();
-
-      const clipperRect = this.clipperBB();
-      this.canvasClipper().scroll({
-        top: clipperRect.height - rawTransform.translate3D.y,
-        left: clipperRect.width - rawTransform.translate3D.x,
-      });
-
+      this.setTranslate(rawTransform.translate3D, opts);
       this.setZoom(rawTransform.scale, opts);
     });
   }
@@ -2865,7 +2852,17 @@ export class StudioCtx extends WithDbCtx {
    * If the arena hasn't been rendered yet, this function returns `undefined`,
    * which you should handle by retrying later.
    */
-  private getCanvasEditorFramesScalerRect() {
+  private getCanvasEditorFramesScalerRect(): Rect | undefined {
+    const frames = getArenaFrames(this.currentArena);
+    if (frames.length === 0) {
+      return {
+        top: 0,
+        height: 0,
+        left: 0,
+        width: 0,
+      };
+    }
+
     // For page/component arenas not in focused mode, measure .canvas-editor__frames,
     // because it includes "ghost" frames for adding new variants.
     if (isDedicatedArena(this.currentArena) && !this.focusedMode) {
@@ -2882,7 +2879,7 @@ export class StudioCtx extends WithDbCtx {
     }
 
     // Otherwise, compute based on arena frame bounds.
-    const frameBounds = getArenaFrames(this.currentArena)
+    const frameBounds = frames
       .map((frame) => {
         const bounds = this.getArenaFrameScalerRect(frame);
         if (!bounds) {
@@ -2930,10 +2927,28 @@ export class StudioCtx extends WithDbCtx {
     });
   }
 
-  private _canvasBB = observable.box<Box>();
-  canvasBB() {
-    return this._canvasBB.get();
+  private _canvasSize = observable.box<Box>(new Box(0, 0, 0, 0));
+
+  /** Controls the height and width of the canvas (should tightly fit all frames). */
+  canvasSize() {
+    return this._canvasSize.get();
   }
+
+  /** Controls the padding around the canvas (for limiting scrolling). */
+  canvasPadding = computedFn(() => {
+    const clipperBB = this.maybeClipperBB();
+    if (clipperBB) {
+      return {
+        vertical: clipperBB.height * 0.95,
+        horizontal: clipperBB.width * 0.95,
+      };
+    } else {
+      return {
+        vertical: 0,
+        horizontal: 0,
+      };
+    }
+  });
 
   centerFocusedFrame(maxZoom?: number) {
     const frame =
@@ -3007,9 +3022,11 @@ export class StudioCtx extends WithDbCtx {
   }
 
   onClipperScrolled() {
-    const clipperRect = this.clipperBB();
-    this.curTranslate.x = clipperRect.width - this.canvasClipper().scrollLeft;
-    this.curTranslate.y = clipperRect.height - this.canvasClipper().scrollTop;
+    const canvasPadding = this.canvasPadding();
+    this.curTranslate.x =
+      canvasPadding.horizontal - this.canvasClipper().scrollLeft;
+    this.curTranslate.y =
+      canvasPadding.vertical - this.canvasClipper().scrollTop;
   }
 
   maybeClipperBB() {
@@ -3018,6 +3035,49 @@ export class StudioCtx extends WithDbCtx {
 
   clipperBB() {
     return ensure(this.maybeClipperBB(), "clipperBB must exist");
+  }
+
+  private setTranslate(
+    translate: { x: number; y: number },
+    opts?: { smooth?: boolean }
+  ) {
+    const clipperBB = this.clipperBB();
+    const canvasPadding = this.canvasPadding();
+    const targetScrollTop = canvasPadding.vertical - translate.y;
+    const targetScrollLeft = canvasPadding.horizontal - translate.x;
+
+    const doScroll = () => {
+      this.canvasClipper().scroll({
+        top: targetScrollTop,
+        left: targetScrollLeft,
+        behavior: opts?.smooth ? "smooth" : undefined,
+      });
+    };
+
+    // Before scrolling, validate the scroll makes sense.
+    // setTranslate may be called before frames have rendered,
+    // in which case the canvas size may be smaller than expected.
+    // If the canvas size is too small, the target scroll top/left may be
+    // out-of-bounds of the maximum possible scroll top/left.
+
+    // This should match canvas clipper's scrollHeight/Width.
+    // To avoid querying the DOM, we compute it since we know the size of the canvas.
+    const canvasSize = this.canvasSize();
+    const clipperScrollHeight = Math.min(
+      canvasSize.height() + 2 * canvasPadding.vertical
+    );
+    const clipperScrollWidth = Math.min(
+      canvasSize.width() + 2 * canvasPadding.horizontal
+    );
+
+    const maxScrollTop = clipperScrollHeight - clipperBB.height;
+    const maxScrollLeft = clipperScrollWidth - clipperBB.width;
+
+    if (targetScrollTop <= maxScrollTop && targetScrollLeft <= maxScrollLeft) {
+      doScroll();
+    } else {
+      defer(doScroll);
+    }
   }
 
   endPanning = () => {
@@ -3082,20 +3142,6 @@ export class StudioCtx extends WithDbCtx {
     for (const vc of this.viewCtxs) {
       vc.canvasCtx.$body()[0].classList.remove("panning-grabbable");
     }
-  };
-
-  fixCanvas = () => {
-    if (!this.maybeCanvasScaler()) {
-      // studio hasn't loaded yet
-      return;
-    }
-    spawn(
-      this.changeUnsafe(() => {
-        if (this.currentArenaEmpty) {
-          this.setTransform({ scale: 1, translate3D: { x: 0, y: 0, z: 0 } });
-        }
-      })
-    );
   };
 
   private _ccRegistry = new CodeComponentsRegistry(
@@ -3440,10 +3486,10 @@ export class StudioCtx extends WithDbCtx {
     const curScale = this.zoom;
     // Zoom under the center of the canvas viewport
     // TODO zoom under the current position of the cursor?
-    const displayArea = this.getDisplayArea();
+    const clipperBB = this.clipperBB();
     const zoomState = this.doComputeZoomState(
-      displayArea.left + displayArea.width / 2,
-      displayArea.top + displayArea.height / 2,
+      clipperBB.left + clipperBB.width / 2,
+      clipperBB.top + clipperBB.height / 2,
       curScale
     );
     if (!zoomState) {
@@ -3493,23 +3539,7 @@ export class StudioCtx extends WithDbCtx {
     return true;
   };
 
-  private getDisplayArea() {
-    const bb = this.clipperBB();
-    const artboardNavBarHeight = this.artboardNavBarHeight;
-
-    return {
-      left: bb.left,
-      top: bb.top + artboardNavBarHeight,
-      width: bb.width,
-      height: bb.height - artboardNavBarHeight,
-    };
-  }
-
-  getArenaFrameScalerRect(frame?: ArenaFrame) {
-    if (!frame) {
-      return undefined;
-    }
-
+  getArenaFrameScalerRect(frame: ArenaFrame) {
     if (frame.left != null && frame.top != null) {
       // Absolutely laid out, so we always know the scaler rect
       return {
@@ -3522,6 +3552,27 @@ export class StudioCtx extends WithDbCtx {
 
     // Automatically laid out, so we need to query the DOM for
     // the scaler rect
+    const frameElt = this.getFrameElement(frame);
+    if (!frameElt) {
+      return undefined;
+    }
+
+    // Check frameElt.offsetParent to make sure it is visible
+    // (not display:none) and that the arena is shown (not visibility:hidden),
+    // so we can trust its actual bounding box
+    const clientRect = frameElt.getBoundingClientRect();
+    if (clientRect.height === 0 || clientRect.width === 0) {
+      // When we initially switch to an arena, our clientRect will be zero-sized because
+      // of the scale(0) transform on the ancestor canvas-editor__frames and the browser
+      // hasn't had a chance to re-draw yet
+      return undefined;
+    }
+    const scalerRect = clientToScalerRect(clientRect, this);
+    return scalerRect;
+  }
+
+  /** Returns element of frame if rendered and visible. */
+  private getFrameElement(frame: ArenaFrame) {
     const frameElt = document.querySelector(
       `[data-frame-id="${frame.uid}"]`
     ) as HTMLElement | null;
@@ -3531,20 +3582,10 @@ export class StudioCtx extends WithDbCtx {
       $(frameElt).parents(".canvas-editor__frames").css("visibility") !==
         "hidden"
     ) {
-      // Check frameElt.offsetParent to make sure it is visible
-      // (not display:none) and that the arena is shown (not visibility:hidden),
-      // so we can trust its actual bounding box
-      const clientRect = frameElt.getBoundingClientRect();
-      if (clientRect.height === 0 || clientRect.width === 0) {
-        // When we initially switch to an arena, our clientRect will be zero-sized because
-        // of the scale(0) transform on the ancestor canvas-editor__frames and the browser
-        // hasn't had a chance to re-draw yet
-        return undefined;
-      }
-      const scalerRect = clientToScalerRect(clientRect, this);
-      return scalerRect;
+      return frameElt;
+    } else {
+      return null;
     }
-    return undefined;
   }
 
   private tryZoomToFitRect(
@@ -3562,9 +3603,9 @@ export class StudioCtx extends WithDbCtx {
       padding = DEFAULT_ZOOM_PADDING,
       extraLeftPadding = 0,
     } = opts;
-    const displayArea = this.getDisplayArea();
-    const width = displayArea.width - padding * 2 - extraLeftPadding;
-    const height = displayArea.height - padding * 2 - VARIANTS_BAR_HEIGHT * 2; // For the sake of symmetry, variantsBarHeight is doubled
+    const clipperBB = this.clipperBB();
+    const width = clipperBB.width - padding * 2 - extraLeftPadding;
+    const height = clipperBB.height - padding * 2 - VARIANTS_BAR_HEIGHT * 2; // For the sake of symmetry, variantsBarHeight is doubled
     const targetZoom = opts.ignoreHeight
       ? width / scalerRect.width
       : Math.min(width / scalerRect.width, height / scalerRect.height);
@@ -3582,7 +3623,6 @@ export class StudioCtx extends WithDbCtx {
       (height - scalerRect.height * this.zoom) / 2 +
       padding -
       scalerRect.top * this.zoom +
-      this.artboardNavBarHeight +
       VARIANTS_BAR_HEIGHT;
 
     this.translateScalerAbsolute(
@@ -3606,8 +3646,8 @@ export class StudioCtx extends WithDbCtx {
       return setTimeout(() => this.tryZoomToFitArena(), 10);
     }
 
-    const displayArea = this.getDisplayArea();
-    if (displayArea.height === 0 || displayArea.width === 0) {
+    const clipperBB = this.clipperBB();
+    if (clipperBB.height === 0 || clipperBB.width === 0) {
       // Window hasn't fully initialized yet, try again after 10ms
       return setTimeout(() => this.tryZoomToFitArena(), 10);
     }
@@ -3636,7 +3676,7 @@ export class StudioCtx extends WithDbCtx {
 
     const box = Box.mergeBBs(withoutNils(rects));
     if (!box) {
-      return this.fixCanvas();
+      return;
     }
 
     // ALSO: retry this after frame auto-resizing
@@ -3671,8 +3711,13 @@ export class StudioCtx extends WithDbCtx {
   }
 
   tryZoomToFitFrame(frame: ArenaFrame, maxZoom?: number) {
-    const rect = this.getArenaFrameScalerRect(frame);
+    const frameElt = this.getFrameElement(frame);
+    if (!frameElt) {
+      // Frame hasn't been rendered yet, so try again next tick
+      defer(() => this.tryZoomToFitFrame(frame, maxZoom));
+    }
 
+    const rect = this.getArenaFrameScalerRect(frame);
     if (rect) {
       this.tryZoomToFitRect(rect, { maxZoom });
     } else {
