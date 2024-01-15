@@ -576,7 +576,10 @@ export function makeGlobalContextBundle(
       const maybeArg = tpl.vsettings[0].args.find((arg) => arg.param === param);
       const varName = paramToVarName(tpl.component, param);
       let serializedExpr = "undefined";
-      if (param.exportType !== ParamExportType.ToolsOnly) {
+      if (
+        opts.forceAllProps ||
+        param.exportType !== ParamExportType.ToolsOnly
+      ) {
         if (isKnownDefaultStylesPropType(param.type)) {
           const conditionals = buildConditionalDefaultStylesPropArg(site);
           serializedExpr = joinVariantVals(
