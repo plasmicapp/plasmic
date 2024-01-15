@@ -1,3 +1,4 @@
+import type { PlasmicConfig } from "@plasmicapp/cli/dist/utils/config-utils";
 import { existsSync, promises as fs, unlinkSync } from "fs";
 import glob from "glob";
 import L from "lodash";
@@ -80,7 +81,8 @@ export async function overwriteReadme(
  */
 export function generateHomePage(
   componentAbsPath: string,
-  indexAbsPath: string
+  indexAbsPath: string,
+  globalContextsAbsPath?: string
 ): string {
   const componentFilename = path.basename(componentAbsPath);
   const componentName = stripExtension(componentFilename);
@@ -89,11 +91,23 @@ export function generateHomePage(
     path.dirname(indexAbsPath),
     componentAbsPath
   );
+  const globalContextsImport = globalContextsAbsPath
+    ? `import GlobalContextsProvider from './${stripExtension(
+        path.relative(path.dirname(indexAbsPath), globalContextsAbsPath)
+      )}'`
+    : ``;
+  const maybeWrapInGlobalContexts = (content: string) => {
+    return globalContextsAbsPath
+      ? `<GlobalContextsProvider>${content}</GlobalContextsProvider>`
+      : content;
+  };
+
   const appjsContents = `
 import ${componentName} from './${stripExtension(componentRelativePath)}';
+${globalContextsImport}
 
 function App() {
-  return (<${componentName} />);
+  return (${maybeWrapInGlobalContexts(`<${componentName} />`)});
 }
 
 export default App;
@@ -154,7 +168,7 @@ export async function getPlasmicConfig(
   projectPath: string,
   platform: PlatformType,
   scheme: string
-) {
+): Promise<PlasmicConfig> {
   const isNextjs = platform === "nextjs";
   const isGatsby = platform === "gatsby";
   const isLoader = scheme === "loader";

@@ -9,7 +9,6 @@ import {
   generateWelcomePage,
   getPlasmicConfig,
 } from "../utils/file-utils";
-import { ensureString } from "../utils/lang-utils";
 import { installUpgrade } from "../utils/npm-utils";
 import { CPAStrategy } from "../utils/strategy";
 
@@ -59,7 +58,20 @@ export const reactStrategy: CPAStrategy = {
 
       // Pick a page for the entry point App.tsx page
       const config = await getPlasmicConfig(projectPath, "react", scheme);
-      const pagesDir = path.join(projectPath, ensureString(config.srcDir));
+      const pagesDir = path.join(projectPath, config.srcDir);
+      const projectConfig = config.projects.find(
+        (p) => p.projectId === projectId
+      );
+      const globalContextsPath =
+        projectConfig &&
+        projectConfig.globalContextsFilePath &&
+        config.wrapPagesWithGlobalContexts
+          ? path.join(
+              projectPath,
+              config.srcDir,
+              projectConfig.globalContextsFilePath
+            )
+          : undefined;
       const homeFilePossibilities = glob.sync(
         path.join(pagesDir, "**", "@(index|Home|home|Homepage).*")
       );
@@ -68,7 +80,11 @@ export const reactStrategy: CPAStrategy = {
       const indexPath = path.join(projectPath, "src", `App.${jsOrTs}x`);
       const content =
         homeFilePossibilities.length > 0
-          ? generateHomePage(homeFilePossibilities[0], indexPath)
+          ? generateHomePage(
+              homeFilePossibilities[0],
+              indexPath,
+              globalContextsPath
+            )
           : generateWelcomePage(config, "react");
       await fs.writeFile(indexPath, content);
     }
