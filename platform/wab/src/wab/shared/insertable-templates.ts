@@ -971,6 +971,15 @@ const fixBackgroundImage = (
   }
 };
 
+function fixVariantSettingAttrs(vs: VariantSetting) {
+  if ("href" in vs.attrs) {
+    if (isKnownPageHref(vs.attrs.href)) {
+      // Delete references to page that aren't project dependent
+      delete vs.attrs.href;
+    }
+  }
+}
+
 export function mkInsertableComponentImporter(
   site: Site,
   info: InsertableTemplateExtraInfo,
@@ -994,6 +1003,7 @@ export function mkInsertableComponentImporter(
       // Do this in another loop because fixGlobalVariants may remove some vs
       for (const vs of tpl.vsettings) {
         assetFixer(tpl, vs);
+        fixVariantSettingAttrs(vs);
       }
       if (isTplComponent(tpl)) {
         const newComp = getNewComponent(tpl.component, tpl);
@@ -1353,19 +1363,15 @@ export function cloneInsertableTemplate(
 
     for (const vs of tpl.vsettings) {
       assetFixer(tpl, vs);
-
-      if ("href" in vs.attrs) {
-        if (isKnownPageHref(vs.attrs.href)) {
-          // Delete references to page that aren't project dependent
-          delete vs.attrs.href;
-        }
-      }
+      fixVariantSettingAttrs(vs);
 
       if (isTypographyNode(tpl)) {
         const rsh = RSH(vs.rs, tpl);
         const rawFont = rsh.getRaw("font-family");
         if (rawFont) {
-          seenFonts.add(rawFont);
+          seenFonts.add(
+            resolveAllTokenRefs(rawFont, [...oldTokens, ...newTokens])
+          );
         }
       }
 
