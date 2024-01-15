@@ -864,6 +864,7 @@ export type TryMergeResponse = MergeResult;
 
 export interface UpdateBranchRequest {
   name: string;
+  hostUrl?: string;
 }
 
 export interface ListInviteRequestsResponse {

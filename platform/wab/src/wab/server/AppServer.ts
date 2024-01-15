@@ -1629,6 +1629,7 @@ export function addMainAppServerRoutes(app: express.Application) {
   app.post("/api/v1/projects/:projectId/branches", withNext(createBranch));
   app.put(
     "/api/v1/projects/:projectId/branches/:branchId",
+    safeCast<RequestHandler>(authRoutes.teamApiUserAuth),
     withNext(updateBranch)
   );
   app.delete(

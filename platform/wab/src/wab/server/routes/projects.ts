@@ -1306,8 +1306,12 @@ export async function updateBranch(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const args = req.body as UpdateBranchRequest;
   const branchId = req.params.branchId as BranchId;
-  await mgr.updateBranch(branchId, args);
-  res.json({});
+  const branch = await mgr.updateBranch(branchId, args);
+  res.json({
+    name: branch.name,
+    hostUrl: branch.hostUrl,
+    status: branch.status,
+  });
 }
 
 export async function setMainBranchProtection(req: Request, res: Response) {
