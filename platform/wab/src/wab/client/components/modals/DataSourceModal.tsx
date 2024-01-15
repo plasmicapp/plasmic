@@ -36,7 +36,6 @@ import { DATA_SOURCE_CAP, DATA_SOURCE_LOWER } from "@/wab/shared/Labels";
 import { Alert, Form, FormInstance, Input, notification } from "antd";
 import jsonrepair from "jsonrepair";
 import { isEqual, noop } from "lodash";
-import { parse } from "pg-connection-string";
 import React from "react";
 import { Modal } from "src/wab/client/components/widgets/Modal";
 import useSWR, { useSWRConfig } from "swr";
@@ -64,6 +63,20 @@ interface DataSourceAlias {
 
 function isDataSourceAlias(x: unknown): x is DataSourceAlias {
   return typeof x === "object" && x !== null && "aliasFor" in x;
+}
+
+// https://www.npmjs.com/package/pg-connection-string has a broader
+// support for connection strings, but it can't run on the browser
+// as of 2024-01-15.
+function parseConnectionString(connectionString: string) {
+  const url = new URL(connectionString.replace(/^[a-z]*:\/\//, "ftp://"));
+  return {
+    host: url.hostname,
+    port: url.port,
+    user: url.username,
+    password: url.password,
+    database: url.pathname.replace(/^\//, ""),
+  };
 }
 
 const DATA_SOURCE_ALIASES: DataSourceAlias[] = [
@@ -850,20 +863,7 @@ function PostgresConnectionStringImportButton(props: {
           if (!connectionString) {
             return;
           }
-          // pg-connection-string 2.6.2 does not work in the browser because
-          // of browser's URL constructor behavior. In the browser,
-          // `new URL("postgres://user:pass@host:123/base")` is not well
-          // understood. The following line is a workaround to make it work.
-          // We just replace the existing protocol (pg, postgres, postgresql,
-          // ...) with `ftp` - that way the browser will parse it correctly.
-          // In the future, when pg-connection-string is fixed/updated, we
-          // should be able to just parse `connectionString`. The issue is
-          // filed to: https://github.com/brianc/node-postgres/issues/3126
-          const hackyConnectionString = connectionString.replace(
-            /^[a-z]*:\/\//,
-            "ftp://"
-          );
-          const connectionOptions = parse(hackyConnectionString);
+          const connectionOptions = parseConnectionString(connectionString);
 
           form.setFieldsValue({
             credentials: {
