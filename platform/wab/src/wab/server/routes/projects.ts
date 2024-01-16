@@ -34,6 +34,7 @@ import { ProjectVersionMeta, VersionResolution } from "@/wab/commons/versions";
 import { ComponentType, isPlasmicComponent } from "@/wab/components";
 import { DEVFLAGS } from "@/wab/devflags";
 import { syncGlobalContexts } from "@/wab/project-deps";
+import { createBranchFromBase } from "@/wab/server/branch";
 import { reevaluateDataSourceExprOpIds } from "@/wab/server/data-sources/data-source-utils";
 import { unbundleSite } from "@/wab/server/db/bundle-migration-utils";
 import {
@@ -1282,12 +1283,11 @@ export async function listBranchesForProject(req: Request, res: Response) {
 export async function createBranch(req: Request, res: Response) {
   const mgr = userDbMgr(req);
   const projectId = req.params.projectId as ProjectId;
-  const { name, sourceBranchId } = req.body as CreateBranchRequest;
+  const { name, sourceBranchId, base } = req.body as CreateBranchRequest;
+
   const branch = sourceBranchId
     ? await mgr.cloneBranch(sourceBranchId, { name })
-    : await mgr.createBranchFromLatestPkgVersion(projectId, {
-        name,
-      });
+    : await createBranchFromBase(mgr, projectId, name, base);
   res.json(
     ensureType<CreateBranchResponse>({
       branch,

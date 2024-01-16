@@ -847,6 +847,7 @@ export interface ListBranchesResponse {
 export interface CreateBranchRequest {
   name: string;
   sourceBranchId?: BranchId;
+  base?: "new" | "latest";
 }
 
 export interface CreateBranchResponse {

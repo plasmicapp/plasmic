@@ -1,4 +1,3 @@
-import L, { isString, mapValues } from "lodash";
 import {
   CollectionExpr,
   Component,
@@ -46,22 +45,26 @@ import {
   VariantSetting,
   VariantsRef,
   VarRef,
-} from "../../classes";
-import { ensure, switchType, withoutNils } from "../../common";
-import { getParamDisplayName, isReusableComponent } from "../../components";
-import { asCode, ExprCtx } from "../../exprs";
-import { ImageAssetType } from "../../image-asset-type";
-import { SplitStatus } from "../../splits";
-import { isPrivateState } from "../../states";
+} from "@/wab/classes";
+import { ensure, switchType, withoutNils } from "@/wab/common";
+import { getParamDisplayName, isReusableComponent } from "@/wab/components";
+import { asCode, ExprCtx } from "@/wab/exprs";
+import { ImageAssetType } from "@/wab/image-asset-type";
+import { computedProjectFlags } from "@/wab/shared/cached-selectors";
+import { makeNodeNamer } from "@/wab/shared/codegen/react-p";
+import {
+  isStandaloneVariantGroup,
+  VariantGroupType,
+} from "@/wab/shared/Variants";
+import { SplitStatus } from "@/wab/splits";
+import { isPrivateState } from "@/wab/states";
 import {
   flattenTpls,
   isTplNamable,
   isTplSlot,
   isTplVariantable,
-} from "../../tpls";
-import { computedProjectFlags } from "../cached-selectors";
-import { makeNodeNamer } from "../codegen/react-p";
-import { isStandaloneVariantGroup, VariantGroupType } from "../Variants";
+} from "@/wab/tpls";
+import L, { isString, mapValues } from "lodash";
 
 export const INITIAL_VERSION_NUMBER = "0.0.1";
 
@@ -642,8 +645,6 @@ function checkTplNodes(
 
   const aNames = new Set(withoutNils(aNodes.map(aNodeNamer)));
   const bNames = new Set(withoutNils(bNodes.map(bNodeNamer)));
-
-  console.log("Compare names", aNames, bNames);
 
   for (const aNode of aNodes) {
     const aName = aNodeNamer(aNode);
