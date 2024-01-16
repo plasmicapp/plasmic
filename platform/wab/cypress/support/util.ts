@@ -612,6 +612,7 @@ export function waitForFrameToLoad() {
   cy.wait(1000);
   cy.waitAllEval();
   cy.wait(2000);
+  cy.switchToTreeTab();
   cy.get(".tpltree__root .tpltree__label", {
     timeout: 90000,
   }).should("exist");
@@ -762,6 +763,9 @@ export function getTreeNode(
   if (names.length === 0) {
     unexpected();
   }
+
+  switchToTreeTab();
+
   const [name, ...rest] = names;
   const labelSelector = !parentId
     ? ".tpltree__root .tpltree__label"

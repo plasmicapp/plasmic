@@ -13,6 +13,7 @@ describe("publish", function () {
             // Edit text and publish new version
             cy.getSelectedElt().dblclick({ force: true });
             framed.enterIntoTplTextBlock("goodbye");
+            cy.wait(3000); // ensure first version is done publishing
             cy.publishVersion("second version");
             // Preview first version and check if you see the previous text
             cy.previewVersion("first version");

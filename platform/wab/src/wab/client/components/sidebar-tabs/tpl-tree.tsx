@@ -1684,21 +1684,33 @@ export const ArenaTree = observer(
       // through the tree again ourselves.  We should consider skipping FixedSizeTree
       // and just going straight to FixedSizeList instead.
       <ListSpace space={5000}>
-        {({ height }) => (
-          <FixedSizeList
-            className="tpltree-scroller"
-            width={"100%"}
-            height={height}
-            itemCount={visibleNodes.length}
-            itemSize={32}
-            overscanCount={2}
-            itemData={itemData}
-            ref={onRef}
-            itemKey={itemKey}
-          >
-            {ArenaTreeNode}
-          </FixedSizeList>
-        )}
+        {({ height }) =>
+          // When the outline is closed, ListSpace sets the height as 0.
+          // If an element is focused while the height is 0, useRevealOnFocus
+          // will scroll the FixedSizeList. When the outline is opened,
+          // the scroll persists, causing FixedSizeList to only render elements
+          // after the scroll offset.
+          //
+          // This may be a bug on FixedSizeList not adjusting scroll offset
+          // automatically when the height changes.
+          //
+          // To prevent this, don't render the FixedSizeList if height is 0.
+          height > 0 && (
+            <FixedSizeList
+              className="tpltree-scroller"
+              width={"100%"}
+              height={height}
+              itemCount={visibleNodes.length}
+              itemSize={32}
+              overscanCount={2}
+              itemData={itemData}
+              ref={onRef}
+              itemKey={itemKey}
+            >
+              {ArenaTreeNode}
+            </FixedSizeList>
+          )
+        }
       </ListSpace>
     );
   })
