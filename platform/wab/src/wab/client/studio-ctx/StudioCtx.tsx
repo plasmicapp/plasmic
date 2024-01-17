@@ -5378,31 +5378,46 @@ export class StudioCtx extends WithDbCtx {
   releases = observable.array<PkgVersionInfoMeta>([], { deep: false });
 
   /** Reverts the current branch to the given version and switches to the latest version. */
-  async revertToVersion(pkgVersion?: PkgVersionInfoMeta) {
+  async revertToVersion(pkgVersion: PkgVersionInfoMeta) {
     this.setWatchPlayerId(null);
 
-    if (pkgVersion) {
-      assert(
-        (pkgVersion.branchId ?? null) === (this.branchInfo()?.id ?? null),
-        () => `Can only revert to a version of the same branch`
-      );
-      await this.appCtx.api.revertToVersion(this.siteInfo.id, {
-        branchId: this.branchInfo()?.id,
-        pkgId: pkgVersion.pkgId,
-        version: pkgVersion.version,
-      });
-    } else {
-      await this.loadVersion(pkgVersion, true, this.branchInfo());
-    }
+    assert(
+      (pkgVersion.branchId ?? null) === (this.branchInfo()?.id ?? null),
+      () => `Can only revert to a version of the same branch`
+    );
+    await this.appCtx.api.revertToVersion(this.siteInfo.id, {
+      branchId: this.branchInfo()?.id,
+      pkgId: pkgVersion.pkgId,
+      version: pkgVersion.version,
+    });
 
-    this.switchToBranchVersion(undefined);
+    const prevArenaName = this.currentArena
+      ? getArenaName(this.currentArena)
+      : undefined;
+    const version = this.dbCtx().pkgVersionInfoMeta?.version ?? latestTag;
+    if (version === latestTag) {
+      // Already viewing latest version of branch. Reload and switch arena.
+      await this.loadVersion(undefined, true, this.branchInfo());
+      const prevArena = prevArenaName
+        ? getArenaByNameOrUuidOrPath(this.site, prevArenaName, undefined)
+        : undefined;
+      this.switchToArena(prevArena);
+    } else {
+      // Switch to latest version of branch.
+      this.switchToBranchVersion(undefined);
+    }
   }
 
   /**
    * Download, unbundle, and load the Site into the Studio
+   *
+   * Note just calling this function will not cause the arena to be loaded in the canvas.
+   * The arena's view state must be set to `isAlive` via `switchToArena`/`changeArena`.
+   *
    * @param pkgVersion - if unspecified, get latest revision
    * @param editMode - if falsey, stops saves and shows AlertBanner. If truthy,
    *   will autosave as normal
+   * @param branch - branch to load
    **/
   private async loadVersion(
     pkgVersion?: PkgVersionInfoMeta,
