@@ -1308,6 +1308,7 @@ export async function updateBranch(req: Request, res: Response) {
   const branchId = req.params.branchId as BranchId;
   const branch = await mgr.updateBranch(branchId, args);
   res.json({
+    id: branch.id,
     name: branch.name,
     hostUrl: branch.hostUrl,
     status: branch.status,
@@ -2588,6 +2589,7 @@ async function makeProjectMeta(mgr: DbMgr, projectId: string) {
       uniq(withoutNils(allVersions.map((v) => v.createdById)))
     )
   );
+  const branches = await mgr.listBranchesForProject(brand(projectId));
   return {
     id: project.id,
     name: project.name,
@@ -2601,6 +2603,9 @@ async function makeProjectMeta(mgr: DbMgr, projectId: string) {
       createdBy: maybe(v.createdById, (x) => usersById.get(x)?.email),
       tags: v.tags,
     })),
+    branches: branches.map((branch) =>
+      L.pick(branch, ["id", "name", "hostUrl", "status"])
+    ),
   };
 }
 
