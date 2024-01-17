@@ -125,3 +125,10 @@ export function removeSvgIds(svg: SVGSVGElement) {
   remove(svg);
   return svg;
 }
+
+export function isSVG(buffer: Buffer | ArrayBuffer) {
+  // We get the first 10kB, just in case of
+  // some very long comments before the svg tag
+  const fileContent = buffer.toString("utf8", 0, 10240);
+  return /<svg\s.*?>/i.test(fileContent);
+}

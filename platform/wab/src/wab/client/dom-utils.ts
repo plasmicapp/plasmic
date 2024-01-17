@@ -10,16 +10,17 @@ import {
   SVG_MEDIA_TYPE as SVG_CONTENT_TYPE,
   SVG_MEDIA_TYPE,
 } from "@/wab/shared/data-urls";
-import { getFileType } from "@/wab/shared/file-types";
 import {
   clearExplicitColors,
   convertSvgToTextSized,
   gatherSvgColors,
+  isSVG,
 } from "@/wab/shared/svg-utils";
 import { ASPECT_RATIO_SCALE_FACTOR } from "@/wab/tpls";
 import imageSize from "@coderosh/image-size";
 import { notification } from "antd";
 import * as downscale from "downscale";
+import { fileTypeFromBlob } from "file-type-browser";
 import $ from "jquery";
 import { isString } from "lodash";
 import find from "lodash/find";
@@ -330,6 +331,18 @@ export const getUploadedFile = (
   $input.change(handleFileChange);
   $input.trigger("click");
 };
+
+async function getFileType(buffer: ArrayBuffer) {
+  const blob = new Blob([buffer]);
+  let fileType = await fileTypeFromBlob(blob);
+  if (!fileType && isSVG(buffer)) {
+    fileType = {
+      mime: "image/svg+xml",
+      ext: "svg",
+    };
+  }
+  return fileType;
+}
 
 export async function parseImage(
   appCtx: AppCtx,

@@ -1,14 +1,26 @@
 import { md5 } from "@/wab/server/util/hash";
 import { parseDataUrl } from "@/wab/shared/data-urls";
-import { getFileType } from "@/wab/shared/file-types";
+import { isSVG } from "@/wab/shared/svg-utils";
 import * as Sentry from "@sentry/node";
 import S3 from "aws-sdk/clients/s3";
+import FileType from "file-type";
 import { extension } from "mime-types";
 import sharp from "sharp";
 import { failableAsync } from "ts-failable";
 
 const siteAssetsBucket = process.env.SITE_ASSETS_BUCKET as string;
 const siteAssetsBaseUrl = process.env.SITE_ASSETS_BASE_URL as string;
+
+async function getFileType(buffer: Buffer | ArrayBuffer) {
+  let fileType = await FileType.fromBuffer(buffer);
+  if (!fileType && isSVG(buffer)) {
+    fileType = {
+      mime: "image/svg+xml" as FileType.MimeType,
+      ext: "svg" as FileType.FileExtension,
+    };
+  }
+  return fileType;
+}
 
 export async function uploadDataUriToS3(
   dataUri: string,

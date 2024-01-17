@@ -343,6 +343,7 @@
     "express-session": "^1.17.1",
     "fast-stringify": "2.0.0",
     "file-type": "^16.3.0",
+    "file-type-browser": "^1.0.0",
     "font-awesome": "^4.7.0",
     "framer-motion": "^7.6.7",
     "fs-extra": "9.1.0",
