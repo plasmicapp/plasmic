@@ -39,7 +39,7 @@ import {
   ensureGlobalVariants,
 } from "@plasmicapp/react-web";
 import PageLayout from "../../PageLayout"; // plasmic-import: _BlCShYS9xHe/component
-import { AntdButton } from "@plasmicpkgs/antd5/skinny/registerButton"; // plasmic-import: bx9Xzvf5_eu/codeComponent
+import { AntdButton } from "@plasmicpkgs/antd5/skinny/registerButton";
 
 import {
   ButtonTypeValue,
@@ -49,6 +49,7 @@ import {
 import "@plasmicapp/react-web/lib/plasmic.css";
 
 import plasmic_antd_5_hostless_css from "../antd_5_hostless/plasmic_antd_5_hostless.module.css"; // plasmic-import: ohDidvG9XsCeFumugENU3J/projectcss
+import plasmic_plasmic_rich_components_css from "../plasmic_rich_components/plasmic_plasmic_rich_components.module.css"; // plasmic-import: jkU633o1Cz7HrJdwdxhVHk/projectcss
 import projectcss from "./plasmic_codegen_custom_targettng.module.css"; // plasmic-import: pKnDSUf6hHdKMbSuzompSH/projectcss
 import sty from "./PlasmicAbtest.module.css"; // plasmic-import: 3d8o-GSwQEqG/css
 
@@ -145,6 +146,7 @@ function PlasmicAbtest__RenderFunc(props: {
             projectcss.plasmic_mixins,
             projectcss.plasmic_tokens,
             plasmic_antd_5_hostless_css.plasmic_tokens,
+            plasmic_plasmic_rich_components_css.plasmic_tokens,
             sty.root,
             {
               [sty.rootglobal_buttonType_dashed]: hasVariant(
@@ -208,6 +210,7 @@ function PlasmicAbtest__RenderFunc(props: {
                           })()
                         : undefined;
                       if (
+                        $steps["runCode"] != null &&
                         typeof $steps["runCode"] === "object" &&
                         typeof $steps["runCode"].then === "function"
                       ) {
@@ -350,7 +353,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicAbtest__ArgProps,
           internalVariantPropNames: PlasmicAbtest__VariantProps,
         }),

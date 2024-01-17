@@ -10,14 +10,18 @@ import { ChromeContext } from "./PlasmicGlobalVariant__Chrome"; // plasmic-impor
 import { GoogleSourceContext } from "./PlasmicGlobalVariant__GoogleSource"; // plasmic-import: tAgF8lNmfePw/globalVariant
 import { ButtonTypeContext } from "./PlasmicGlobalVariant__ButtonType"; // plasmic-import: C8lCX5Vidzec/globalVariant
 
-export interface PlasmicSplitsProviderProps {
+type GetActiveVariationParams = Partial<
+  Parameters<typeof getActiveVariation>[0]
+>;
+
+export interface PlasmicSplitsProviderProps extends GetActiveVariationParams {
   children?: React.ReactNode;
-  traits?: Record<string, string>;
 }
 
-const splits = [
+export const splits = [
   {
     id: "D-zxmBLN4VIn",
+    projectId: "pKnDSUf6hHdKMbSuzompSH",
     externalId: null,
     type: "segment",
     slices: [
@@ -40,6 +44,7 @@ const splits = [
   },
   {
     id: "ZGk6TWR0qgO9",
+    projectId: "pKnDSUf6hHdKMbSuzompSH",
     externalId: null,
     type: "segment",
     slices: [
@@ -62,6 +67,7 @@ const splits = [
   },
   {
     id: "g_jPbIB9Ti5Z",
+    projectId: "pKnDSUf6hHdKMbSuzompSH",
     externalId: null,
     type: "experiment",
     slices: [
@@ -84,7 +90,7 @@ const splits = [
   },
 ];
 
-function getGlobalContextValueFromVariation(
+export function getGlobalContextValueFromVariation(
   groupId: string,
   variation: Record<string, string>
 ) {
@@ -113,10 +119,11 @@ function getGlobalContextValueFromVariation(
 export default function PlasmicSplitsProvider(
   props: PlasmicSplitsProviderProps
 ) {
-  const { children, traits } = props;
+  const { children, traits, ...rest } = props;
   const variation = getActiveVariation({
     splits,
     traits: traits ?? {},
+    ...rest,
   });
 
   return (
