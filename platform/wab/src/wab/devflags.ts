@@ -52,11 +52,11 @@ export interface StarterProjectConfig {
 
 export type InsertableTemplateTokenResolution =
   | "inline"
-  | "retain-by-name"
-  | "retain-by-value"
-  | "retain-by-name-and-value";
+  | "reuse-by-name"
+  | "reuse-by-value"
+  | "reuse-by-name-and-value";
 
-export type InsertableTemplateComponentResolution = "inline" | "import";
+export type InsertableTemplateComponentResolution = "inline" | "duplicate";
 
 /**
  * Represents a collection of related templates (e.g. Hero sections)

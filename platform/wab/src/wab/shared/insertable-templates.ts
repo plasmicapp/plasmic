@@ -1171,7 +1171,7 @@ function mkInsertableTokenImporter(
 
       const isSameName = targetToken.name === oldToken.name;
 
-      if (tokenResolution === "retain-by-name") {
+      if (tokenResolution === "reuse-by-name") {
         return isSameName;
       }
 
@@ -1179,7 +1179,7 @@ function mkInsertableTokenImporter(
         derefToken(targetTokens, targetToken) ===
         derefToken(oldTokens, oldToken);
 
-      if (tokenResolution === "retain-by-value") {
+      if (tokenResolution === "reuse-by-value") {
         return isSameValue;
       }
 
@@ -1325,7 +1325,7 @@ export function cloneInsertableTemplate(
     (font) => seenFonts.add(font)
   );
 
-  if (resolution.component === "import") {
+  if (resolution.component === "duplicate") {
     const componentImporter = mkInsertableComponentImporter(
       site,
       info,
@@ -1350,7 +1350,7 @@ export function cloneInsertableTemplate(
   // Note - if you call this earlier, you may not get into the component instances
   inlineMixins(newTplTree);
   tokenImporter(newTplTree);
-  assertValidInsertable(newTplTree, resolution.component === "import");
+  assertValidInsertable(newTplTree, resolution.component === "duplicate");
 
   // Traverse all VariantSettings
   for (const tpl of flattenTpls(newTplTree)) {
@@ -1386,7 +1386,7 @@ export function cloneInsertableTemplate(
         !isTplComponent(tpl) ||
         (!isPlumeComponent(tpl.component) &&
           !isCodeComponent(tpl.component) &&
-          resolution.component !== "import");
+          resolution.component !== "duplicate");
       if (shouldRemoveArgs) {
         vs.args = [];
       }
