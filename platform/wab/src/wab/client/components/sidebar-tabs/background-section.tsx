@@ -1,7 +1,3 @@
-import { Tooltip } from "antd";
-import { observer } from "mobx-react-lite";
-import { basename } from "path";
-import React, { useState } from "react";
 import {
   Background,
   BackgroundLayer,
@@ -13,9 +9,48 @@ import {
   NoneBackground,
   RadialGradient,
   Stop,
-} from "../../../bg-styles";
-import { isKnownImageAsset, Site } from "../../../classes";
-import { arrayMoveIndex } from "../../../collections";
+} from "@/wab/bg-styles";
+import { isKnownImageAsset, Site } from "@/wab/classes";
+import { EllipseControl } from "@/wab/client/components/EllipseControl";
+import {
+  FullRow,
+  LabeledItem,
+  LabeledItemRow,
+  shouldBeDisabled,
+} from "@/wab/client/components/sidebar/sidebar-helpers";
+import { SidebarModal } from "@/wab/client/components/sidebar/SidebarModal";
+import { SidebarSection } from "@/wab/client/components/sidebar/SidebarSection";
+import { AngleDial } from "@/wab/client/components/style-controls/AngleDial";
+import { ColorStops } from "@/wab/client/components/style-controls/ColorStops";
+import { ImageAssetPreviewAndPicker } from "@/wab/client/components/style-controls/ImageSelector";
+import { PosControls2 } from "@/wab/client/components/style-controls/PosControls";
+import {
+  ExpsProvider,
+  StylePanelSection,
+  TabbedStylePanelSection,
+  useStyleComponent,
+} from "@/wab/client/components/style-controls/StyleComponent";
+import StyleSelect from "@/wab/client/components/style-controls/StyleSelect";
+import StyleToggleButton from "@/wab/client/components/style-controls/StyleToggleButton";
+import StyleToggleButtonGroup from "@/wab/client/components/style-controls/StyleToggleButtonGroup";
+import { StyleWrapper } from "@/wab/client/components/style-controls/StyleWrapper";
+import { UnloggedDragCatcher } from "@/wab/client/components/style-controls/UnloggedDragCatcher";
+import * as widgets from "@/wab/client/components/widgets";
+import { ColorPicker } from "@/wab/client/components/widgets/ColorPicker";
+import { DimTokenSpinner } from "@/wab/client/components/widgets/DimTokenSelector";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import IconButton from "@/wab/client/components/widgets/IconButton";
+import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
+import ContainIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Contain";
+import CoverIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Cover";
+import ImageBlockIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ImageBlock";
+import LinearIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Linear";
+import RadialIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Radial";
+import RepeatGridIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__RepeatGrid";
+import RepeatHIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__RepeatH";
+import PaintBucketFillIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/PlasmicIcon__PaintBucketFill";
+import { makeVariantedStylesHelperFromCurrentCtx } from "@/wab/client/utils/style-utils";
+import { arrayMoveIndex } from "@/wab/collections";
 import {
   assert,
   ensure,
@@ -25,58 +60,23 @@ import {
   switchType,
   unexpected,
   uniqueKey,
-} from "../../../common";
-import { isTokenRef, tryParseTokenRef } from "../../../commons/StyleToken";
-import * as css from "../../../css";
-import * as cssPegParser from "../../../gen/cssPegParser";
-import { isStandardSide, oppSides } from "../../../geom";
-import { ImageAssetType } from "../../../image-asset-type";
-import { mkImageAssetRef, tryParseImageAssetRef } from "../../../image-assets";
-import { joinCssValues, splitCssValue } from "../../../shared/RuleSetHelpers";
-import Chroma from "../../../shared/utils/color-utils";
-import { VariantedStylesHelper } from "../../../shared/VariantedStylesHelper";
-import { allColorTokens, allMixins, allStyleTokens } from "../../../sites";
-import { CssVarResolver } from "../../../styles";
-import { userImgUrl } from "../../../urls";
-import CloseIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Close";
-import ContainIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Contain";
-import CoverIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Cover";
-import ImageBlockIcon from "../../plasmic/plasmic_kit/PlasmicIcon__ImageBlock";
-import LinearIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Linear";
-import RadialIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Radial";
-import RepeatGridIcon from "../../plasmic/plasmic_kit/PlasmicIcon__RepeatGrid";
-import RepeatHIcon from "../../plasmic/plasmic_kit/PlasmicIcon__RepeatH";
-import PaintBucketFillIcon from "../../plasmic/plasmic_kit_design_system/icons/PlasmicIcon__PaintBucketFill";
-import { makeVariantedStylesHelperFromCurrentCtx } from "../../utils/style-utils";
-import { EllipseControl } from "../EllipseControl";
-import {
-  FullRow,
-  LabeledItem,
-  LabeledItemRow,
-  shouldBeDisabled,
-} from "../sidebar/sidebar-helpers";
-import { SidebarModal } from "../sidebar/SidebarModal";
-import { SidebarSection } from "../sidebar/SidebarSection";
-import { AngleDial } from "../style-controls/AngleDial";
-import { ColorStops } from "../style-controls/ColorStops";
-import { ImageAssetPreviewAndPicker } from "../style-controls/ImageSelector";
-import { PosControls2 } from "../style-controls/PosControls";
-import {
-  ExpsProvider,
-  StylePanelSection,
-  TabbedStylePanelSection,
-  useStyleComponent,
-} from "../style-controls/StyleComponent";
-import StyleSelect from "../style-controls/StyleSelect";
-import StyleToggleButton from "../style-controls/StyleToggleButton";
-import StyleToggleButtonGroup from "../style-controls/StyleToggleButtonGroup";
-import { StyleWrapper } from "../style-controls/StyleWrapper";
-import { UnloggedDragCatcher } from "../style-controls/UnloggedDragCatcher";
-import * as widgets from "../widgets";
-import { ColorPicker } from "../widgets/ColorPicker";
-import { DimTokenSpinner } from "../widgets/DimTokenSelector";
-import { Icon } from "../widgets/Icon";
-import IconButton from "../widgets/IconButton";
+} from "@/wab/common";
+import { isTokenRef, tryParseTokenRef } from "@/wab/commons/StyleToken";
+import * as css from "@/wab/css";
+import * as cssPegParser from "@/wab/gen/cssPegParser";
+import { isStandardSide, oppSides } from "@/wab/geom";
+import { ImageAssetType } from "@/wab/image-asset-type";
+import { mkImageAssetRef, tryParseImageAssetRef } from "@/wab/image-assets";
+import { joinCssValues, splitCssValue } from "@/wab/shared/RuleSetHelpers";
+import Chroma from "@/wab/shared/utils/color-utils";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
+import { allColorTokens, allMixins, allStyleTokens } from "@/wab/sites";
+import { CssVarResolver } from "@/wab/styles";
+import { userImgUrl } from "@/wab/urls";
+import { Tooltip } from "antd";
+import { observer } from "mobx-react-lite";
+import { basename } from "path";
+import React, { useState } from "react";
 
 export const resolvedBackgroundImageCss = (
   bgImg: BackgroundLayer["image"],
@@ -404,9 +404,11 @@ const BackgroundLayerPanel = observer(function BackgroundLayerPanel({
           autoFocus
           color={col.color}
           onChange={(color) => {
-            updateImg(col, () => {
-              return (col.color = color);
-            });
+            if (layer.image instanceof ColorFill) {
+              updateImg(col, () => {
+                return (col.color = color);
+              });
+            }
           }}
           vsh={vsh}
         />
