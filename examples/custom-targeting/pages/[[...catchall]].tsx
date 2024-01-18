@@ -86,21 +86,15 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const pageModules = await PLASMIC.fetchPages();
-  function* gen() {
-    for (const page of pageModules) {
-      // Generate all possible paths for this page including all variations
-      const allPaths = generateAllPaths(page.path);
-      for (const path of allPaths) {
-        yield {
-          params: {
-            catchall: path.substring(1).split("/"),
-          },
-        };
-      }
-    }
-  }
+  const paths = pageModules.flatMap((page) =>
+    generateAllPaths(page.path).map((path) => ({
+      params: {
+        catchall: path.substring(1).split("/"),
+      },
+    }))
+  );
   return {
-    paths: Array.from(gen()),
+    paths,
     fallback: "blocking",
   };
 };

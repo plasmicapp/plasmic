@@ -44,27 +44,18 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  function* gen() {
-    // This is going to generate all the possible paths for the current page
-    // with the seed trait set. It's possible to generate all the possible
-    // paths including traits by using `generateAllPathsWithTraits` instead.
-    const allPaths = generateAllPaths("/");
-    for (const path of allPaths) {
-      yield {
-        params: {
-          catchall: path.substring(1).split("/"),
-        },
-      };
-    }
-  }
-
+  const paths = generateAllPaths("/").map((path) => ({
+    params: {
+      catchall: path.substring(1).split("/"),
+    },
+  }));
   return {
     // We set `fallback:"blocking"` to generate page variations lazily.
     // Once a page for a specific set of traits has been generated, it
     // will be cached and reused. We use paths to generate some possible
     // paths to be generated already in the build time to avoid the
     // first request to be slow.
-    paths: Array.from(gen()),
+    paths,
     fallback: "blocking",
   };
 };
