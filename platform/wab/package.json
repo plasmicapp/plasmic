@@ -70,7 +70,7 @@
   "gitHead": "14cfee473c6a27212c54d536a8bd531c84e9fb68",
   "devDependencies": {
     "@cypress/webpack-preprocessor": "^5.4.1",
-    "@plasmicapp/cli": "^0.1.325",
+    "@plasmicapp/cli": "^0.1.326",
     "@storybook/addon-essentials": "^7.5.0",
     "@storybook/addon-interactions": "^7.5.0",
     "@storybook/addon-links": "^7.5.0",
