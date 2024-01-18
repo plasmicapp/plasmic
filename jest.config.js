@@ -1,5 +1,6 @@
 /** @type {import('jest').Config} */
 module.exports = {
+  modulePathIgnorePatterns: ["<rootDir>/verdaccio-storage/"],
   reporters: [
     process.env.CI ? ["github-actions", { silent: false }] : "default",
     "summary",
