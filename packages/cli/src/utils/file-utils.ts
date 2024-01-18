@@ -41,9 +41,7 @@ export async function writeFileContentRaw(
       opts.yes
     );
     if (!overwrite) {
-      throw new HandledError(
-        `Cannot write to ${filePath}; file already exists.`
-      );
+      return;
     }
   }
 
