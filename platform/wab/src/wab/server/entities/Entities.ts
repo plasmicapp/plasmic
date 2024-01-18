@@ -1198,6 +1198,9 @@ export class CmsTable extends Base<"CmsTableId"> {
 
   @Column("jsonb", { nullable: true })
   settings: CmsTableSettings | null;
+
+  @Column("boolean", { nullable: true })
+  isArchived: boolean | null;
 }
 
 @Entity()
