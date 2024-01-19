@@ -37,6 +37,7 @@ import {
 } from "@/wab/geom";
 import { Selectable } from "@/wab/selection";
 import {
+  ensureActivatedScreenVariantsForFrameByWidth,
   getFrameHeight,
   isComponentArena,
   isPositionManagedFrame,
@@ -167,6 +168,13 @@ export function mkFreestyleManipForFocusedFrame(
             if (isComponentArena(arena)) {
               // screen variants are explicitly managed in component arenas
               focusedFrame[prop] = parsedVal;
+              if (arena._focusedFrame === focusedFrame) {
+                // We only want to activate screen variants in focus mode
+                ensureActivatedScreenVariantsForFrameByWidth(
+                  sc.site,
+                  focusedFrame
+                );
+              }
             } else if (vc && (prop === "width" || prop === "height")) {
               vc.studioCtx.changeFrameSize({ dim: prop, amount: parsedVal });
             } else {

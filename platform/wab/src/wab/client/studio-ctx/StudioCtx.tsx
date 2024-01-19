@@ -1041,7 +1041,7 @@ export class StudioCtx extends WithDbCtx {
     frame[dim] = amount;
 
     if (dim === "width") {
-      if (isComponentArena(this.currentArena)) {
+      if (isComponentArena(this.currentArena) && !this.focusedMode) {
         ensureActivatedScreenVariantsForComponentArenaFrame(
           this.site,
           this.currentArena,
@@ -1979,7 +1979,11 @@ export class StudioCtx extends WithDbCtx {
               ? !!prevArena._focusedFrame
               : this.focusPreference.get() ?? this.siteInfo.hasAppAuth;
             if (focusedMode) {
-              setFocusedFrame(this.site, arena);
+              const newFocusedFrame = setFocusedFrame(this.site, arena);
+              ensureActivatedScreenVariantsForFrameByWidth(
+                this.site,
+                newFocusedFrame
+              );
             }
           }
 
@@ -2628,6 +2632,7 @@ export class StudioCtx extends WithDbCtx {
       currentArena,
       this.focusedContentFrame()
     );
+    ensureActivatedScreenVariantsForFrameByWidth(this.site, newFocusedFrame);
     this.setStudioFocusOnFrame({ frame: newFocusedFrame, autoZoom: false });
     setTimeout(() => {
       this.tryZoomToFitArena();
