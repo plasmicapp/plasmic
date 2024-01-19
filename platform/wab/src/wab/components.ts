@@ -154,6 +154,7 @@ import {
   TplVisibility,
 } from "./shared/visibility-utils";
 import { UNINITIALIZED_VALUE, writeable } from "./sites";
+import { removeVariantGroupFromSplits } from "./splits";
 import {
   genOnChangeParamName,
   isOnChangeParam,
@@ -2290,6 +2291,7 @@ export function removeVariantGroup(
     removeComponentParam(site, component, group.linkedState.onChangeParam);
   }
   removeComponentParam(site, component, group.param);
+  removeVariantGroupFromSplits(site, group);
 }
 
 export function tryGetDefaultComponent(

@@ -2,8 +2,11 @@ import {
   ArenaFrame,
   CodeLibrary,
   Component,
+  ComponentSwapSplitContent,
+  ComponentVariantSplitContent,
   CustomFunction,
   DataSourceOpExpr,
+  GlobalVariantSplitContent,
   ImageAsset,
   isKnownCustomCode,
   isKnownDataSourceOpExpr,
@@ -29,6 +32,7 @@ import {
   ensureArray,
   filterFalsy,
   maybeMemoizeFn,
+  switchType,
   tuple,
   withoutNils,
   xAddAll,
@@ -985,6 +989,24 @@ export const findComponentsUsingGlobalVariant = maybeComputedFn(
       }
     }
     return results;
+  }
+);
+
+export const findSplitsUsingVariantGroup = maybeComputedFn(
+  function findSplitsUsingVariantGroup(site: Site, variantGroup: VariantGroup) {
+    return site.splits.filter((split) =>
+      split.slices.some((slice) =>
+        slice.contents.some((content) =>
+          switchType(content)
+            .when(ComponentSwapSplitContent, () => false)
+            .when(
+              [GlobalVariantSplitContent, ComponentVariantSplitContent],
+              (variantContent) => variantContent.group === variantGroup
+            )
+            .result()
+        )
+      )
+    );
   }
 );
 

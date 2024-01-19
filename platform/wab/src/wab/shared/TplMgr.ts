@@ -114,7 +114,12 @@ import {
   removeReferencingLinks,
   removeReferencingTypeInstances,
 } from "@/wab/sites";
-import { mkGlobalVariantSplit, SplitStatus, SplitType } from "@/wab/splits";
+import {
+  mkGlobalVariantSplit,
+  removeVariantGroupFromSplits,
+  SplitStatus,
+  SplitType,
+} from "@/wab/splits";
 import {
   genOnChangeParamName,
   isPrivateState,
@@ -494,6 +499,10 @@ export class TplMgr {
 
     const variants = ensureArray(variant);
 
+    if (variants.length === 0) {
+      return;
+    }
+
     if (component && isStandaloneVariant(variants[0])) {
       const group = ensure(
         variants[0].parent,
@@ -822,6 +831,7 @@ export class TplMgr {
     this.tryRemoveVariant(group.variants, undefined);
     removeVariantGroupFromArenas(this.site(), group, undefined);
     remove(this.site().globalVariantGroups, group);
+    removeVariantGroupFromSplits(this.site(), group);
   }
 
   removeState(component: Component, state: State) {

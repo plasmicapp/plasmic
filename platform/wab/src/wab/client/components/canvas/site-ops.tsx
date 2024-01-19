@@ -67,6 +67,7 @@ import {
 import {
   findComponentsUsingComponentVariant,
   findComponentsUsingGlobalVariant,
+  findSplitsUsingVariantGroup,
   getComponentsUsingImageAsset,
 } from "@/wab/shared/cached-selectors";
 import { toVarName } from "@/wab/shared/codegen/util";
@@ -143,6 +144,7 @@ import {
 } from "@/wab/tpls";
 import { notification } from "antd";
 import L from "lodash";
+import pluralize from "pluralize";
 import React from "react";
 
 /**
@@ -498,7 +500,12 @@ export class SiteOps {
         : findComponentsUsingGlobalVariant(this.site, variant);
       xAddAll(usingComps, compsUsingVariant);
     }
-    if (opts.confirm === "always" || usingComps.size > 0) {
+    const usingSplits = findSplitsUsingVariantGroup(this.site, group);
+    if (
+      opts.confirm === "always" ||
+      usingComps.size > 0 ||
+      usingSplits.length > 0
+    ) {
       return await reactConfirm({
         title: (
           <div>
@@ -510,7 +517,7 @@ export class SiteOps {
           <>
             {usingComps.size > 0 && (
               <p>
-                It is being used by{" "}
+                It is being used by {pluralize("component", usingComps.size)}{" "}
                 {joinReactNodes(
                   [...usingComps].map((comp) =>
                     makeComponentName(this.site, comp)
@@ -518,6 +525,16 @@ export class SiteOps {
                   ", "
                 )}
                 .
+              </p>
+            )}
+            {usingSplits.length > 0 && (
+              <p>
+                It is being used by content{" "}
+                {pluralize("split", usingSplits.length)}{" "}
+                {joinReactNodes(
+                  usingSplits.map((split) => split.name),
+                  ", "
+                )}
               </p>
             )}
           </>

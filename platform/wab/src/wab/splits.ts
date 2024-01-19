@@ -1,13 +1,17 @@
 import {
+  ComponentSwapSplitContent,
+  ComponentVariantSplitContent,
   GlobalVariantGroup,
   GlobalVariantSplitContent,
   RandomSplitSlice,
   SegmentSplitSlice,
+  Site,
   Split,
   SplitSlice,
   Variant,
+  VariantGroup,
 } from "./classes";
-import { mkShortId } from "./common";
+import { mkShortId, removeWhere, switchType } from "./common";
 
 export enum SplitType {
   Experiment = "experiment",
@@ -84,4 +88,20 @@ export function mkGlobalVariantSplit(opts: {
     targetEvents: ["track-conversion"],
     description: undefined,
   });
+}
+
+export function removeVariantGroupFromSplits(site: Site, group: VariantGroup) {
+  site.splits.forEach((split) =>
+    split.slices.forEach((slice) =>
+      removeWhere(slice.contents, (content) =>
+        switchType(content)
+          .when(ComponentSwapSplitContent, () => false)
+          .when(
+            [GlobalVariantSplitContent, ComponentVariantSplitContent],
+            (variantContent) => variantContent.group === group
+          )
+          .result()
+      )
+    )
+  );
 }
