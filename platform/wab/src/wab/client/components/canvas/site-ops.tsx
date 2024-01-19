@@ -776,7 +776,13 @@ export class SiteOps {
 
     const curArena = this.studioCtx.currentArena;
 
-    const comps = [component, ...getSubComponents(component)];
+    const comps = [component];
+    if (!isCodeComponent(component)) {
+      // `removeComponentGroup` handles the case of code components, whose
+      // "subComponents" structure is just for organization and doesn't require
+      // deleting the whole branch of sub-components.
+      comps.push(...getSubComponents(component));
+    }
     this.tplMgr.removeComponentGroup(comps);
     this.studioCtx.pruneInvalidViewCtxs();
 
