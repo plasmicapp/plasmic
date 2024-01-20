@@ -154,6 +154,7 @@ export interface ValComponentParams extends ValNodeParams {
   tpl: TplComponent;
   slotArgs: Map<Param, ValNode[]>;
   className: string;
+  slotCanvasEnvs: Map<Param, CanvasEnv>;
 }
 export class ValComponent extends ValNode {
   static modelTypeName = "ValComponent";
@@ -201,6 +202,7 @@ export class ValComponent extends ValNode {
   merge(other: ValComponent) {
     super.merge(other);
     insertMaps(this.slotArgs, other.slotArgs);
+    insertMaps(this.slotCanvasEnvs, other.slotCanvasEnvs);
     if (!shallowEq(this.codeComponentProps, other.codeComponentProps)) {
       this.codeComponentProps = other.codeComponentProps;
     }
@@ -217,6 +219,9 @@ export class ValComponent extends ValNode {
   copy(other: ValComponent) {
     super.copy(other);
     writeableValNode(this).slotArgs = new Map([...other.slotArgs.entries()]);
+    writeableValNode(this).slotCanvasEnvs = new Map([
+      ...other.slotCanvasEnvs.entries(),
+    ]);
     if (!shallowEq(this.codeComponentProps, other.codeComponentProps)) {
       this.codeComponentProps = other.codeComponentProps;
     }
@@ -243,6 +248,9 @@ export class ValComponent extends ValNode {
   declare readonly tpl: TplComponent;
   declare readonly slotArgs: Map<Param, ValNode[]>;
   declare readonly className: string;
+  // For components that provide data, we also store the DataCtx
+  // results for each slot so the canvasEnv can have more accurate values
+  declare readonly slotCanvasEnvs: Map<Param, CanvasEnv>;
 }
 
 export interface ValSlotParams extends ValNodeParams {
@@ -321,6 +329,7 @@ export function cloneValNode<T extends ValNode>(valNode: T): T {
         slotArgs: new Map([...valComp.slotArgs.entries()]),
         tpl: valComp.tpl,
         className: valComp.className,
+        slotCanvasEnvs: new Map([...valComp.slotCanvasEnvs.entries()]),
       });
       clonedValComp.codeComponentProps = valComp.codeComponentProps;
       clonedValComp.contents = valComp.contents;

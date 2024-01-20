@@ -71,6 +71,7 @@ import {
 import { CanvasEnv, evalCodeWithEnv } from "@/wab/shared/eval";
 import { RSH } from "@/wab/shared/RuleSetHelpers";
 import { isTplResizable } from "@/wab/shared/sizingutils";
+import { getAncestorSlotArg } from "@/wab/shared/SlotUtils";
 import { $$$ } from "@/wab/shared/TplQuery";
 import { isBaseVariant } from "@/wab/shared/Variants";
 import { VariantTplMgr } from "@/wab/shared/VariantTplMgr";
@@ -1147,9 +1148,35 @@ export class ViewCtx extends WithDbCtx {
           return undefined;
         }
         const val = vals[0];
-        const canvasEnv = opts?.forDataRepCollection
-          ? val.wrappingEnv
-          : val.env;
+        if (
+          bestTpl !== tpl &&
+          val instanceof ValComponent &&
+          val.slotCanvasEnvs.size > 0
+        ) {
+          // We couldn't get a corresponding `ValNode` for the `tpl`, but we
+          // found a corresponding `ValNode` for an ancestor `TplComponent`
+          // which provides data to the slots, so we will try to get the
+          // `CanvasEnv` from `val.slotCanvasEnvs` in order to include the
+          // provided data.
+          let ancestorTpl = getAncestorSlotArg(tpl);
+          while (ancestorTpl && ancestorTpl.tplComponent !== val.tpl) {
+            ancestorTpl = getAncestorSlotArg(ancestorTpl.tplComponent);
+          }
+          if (
+            ancestorTpl &&
+            ancestorTpl.tplComponent === val.tpl &&
+            val.slotCanvasEnvs.has(ancestorTpl.arg.param)
+          ) {
+            return ensure(
+              val.slotCanvasEnvs.get(ancestorTpl.arg.param),
+              () => `Already checked`
+            );
+          }
+        }
+        const canvasEnv =
+          opts?.forDataRepCollection && bestTpl === tpl
+            ? val.wrappingEnv
+            : val.env;
         return canvasEnv;
       },
       {

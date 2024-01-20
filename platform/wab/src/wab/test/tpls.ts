@@ -65,6 +65,7 @@ function evalTpl(tpl: TplNode, ctx: EvalCtxForTests): ValNode {
         ...baseValParams,
         slotArgs: new Map(),
         tpl: tplComp,
+        slotCanvasEnvs: new Map(),
       });
       renderStateForTests._key2val.set(updatedKey, val);
       const slots = new Map(

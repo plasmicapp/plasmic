@@ -57,6 +57,7 @@ import {
   ensure,
   ensureArray,
   ensureInstance,
+  ensureType,
   mapEquals,
   maybe,
   setEquals,
@@ -113,6 +114,7 @@ import {
   setControlContextDataProp,
   slotArgCompKeyProp,
   slotArgParamProp,
+  slotExtraCanvasEnvProp,
   slotFragmentKey,
   slotPlaceholderAttr,
   valKeyProp,
@@ -409,6 +411,12 @@ export const createCanvasComponent = computedFn(
     keepAlive: true,
   }
 );
+
+export interface ExtraSlotCanvasEnvData {
+  env: CanvasEnv;
+  tplComponentValKey: string;
+  slotPropUuid: string;
+}
 
 export function mkEventHandlerEnv(
   env: CanvasEnv,
@@ -1729,6 +1737,7 @@ function computeTplComponentArgs(
                         ctx.sub.React.Fragment,
                         {},
                         computeRenderedArg(param, _expr.tpl, ctx, {
+                          ...envOverrides,
                           ...zipObject(
                             paramType.params.map((p) => p.argName),
                             args
@@ -1750,7 +1759,23 @@ function computeTplComponentArgs(
                   ctx.sub.React,
                   ctx,
                   tpl,
-                  () => contents({ $ctx: $newCtx }),
+                  () =>
+                    ctx.sub.React.createElement(mkCanvasWrapper(ctx.sub), {
+                      // Whenever we read the data ctx for a slot, we provide
+                      // the updated canvas env to the React tree so we can use
+                      // these values in the data picker in case the descendent
+                      // nodes end up not being rendered.
+                      [slotExtraCanvasEnvProp]:
+                        ensureType<ExtraSlotCanvasEnvData>({
+                          env: {
+                            ...ctx.env,
+                            $ctx: { ...$newCtx },
+                          },
+                          slotPropUuid: param.uuid,
+                          tplComponentValKey: ctx.valKey,
+                        }),
+                      children: contents({ $ctx: $newCtx }),
+                    }),
                   {
                     hasLoadingBoundary:
                       $newCtx?.[hasLoadingBoundaryKey] ||
@@ -3315,6 +3340,17 @@ export function getEnvId(ctx: RenderingCtx) {
   globalHookCtx.envIdToEnvs.set(id, new WeakRef(box.get()));
   return id;
 }
+
+// A wrapper for providing extra props consumed by the global hook. Just renders
+// the children.
+const mkCanvasWrapper = computedFn(function mkCanvasWrapper(sub: SubDeps) {
+  return function CanvasWrapper(props: {
+    children: React.ReactNode;
+    [prop: string]: any;
+  }) {
+    return sub.React.createElement(sub.React.Fragment, {}, props.children);
+  };
+});
 
 function wrapInDataCtxReader(
   ctx: RenderingCtx,

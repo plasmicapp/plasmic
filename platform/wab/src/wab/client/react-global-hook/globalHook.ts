@@ -5,6 +5,7 @@ import {
   TplSlot,
   TplTag,
 } from "@/wab/classes";
+import { ExtraSlotCanvasEnvData } from "@/wab/client/components/canvas/canvas-rendering";
 import { handleError } from "@/wab/client/ErrorNotifications";
 import {
   getRenderState,
@@ -36,6 +37,7 @@ import {
   richTextProp,
   slotArgCompKeyProp,
   slotArgParamProp,
+  slotExtraCanvasEnvProp,
   slotFragmentKey,
   slotPlaceholderAttr,
   valKeyProp,
@@ -157,6 +159,17 @@ type SlotPlaceholderData = {
   toSlotSelection: () => SlotSelection | undefined;
 };
 
+/**
+ * For components that provide data, we support getting the `CanvasEnv` with
+ * the provided data for each slot. First, the DataCtxReader wraps the slot
+ * contents in canvas-rendering with a dummy component, and provides the updated
+ * env as a prop to that wrapper.
+ *
+ * Then the global hook consumes that env and stores it for each slot of the
+ * `ValComponent`.
+ */
+type SlotCanvasEnv = Record<string /* Param uuid */, CanvasEnv>;
+
 if (officialHook) {
   // TODO: assert `officialHook.plasmic` is null once we fix browser navigation
   // See: https://app.shortcut.com/plasmic/story/27162
@@ -189,6 +202,13 @@ if (officialHook) {
   const fiberToSlotArgsInSubtree = new WeakMap<
     Fiber,
     Record<string, SlotArgsData>
+  >();
+
+  // This maps from a Fiber to ValComponent.key to its SlotCanvasEnv, similar
+  // to `fiberToSlotArgsInSubtree` and `fiberToValSubtrees`.
+  const fiberToSlotCanvasEnvInSubtree = new WeakMap<
+    Fiber,
+    Record<string, SlotCanvasEnv>
   >();
 
   officialHook.plasmic = {
@@ -260,8 +280,49 @@ if (officialHook) {
         );
       }
     };
+
+    const mergeSlotCanvasEnvsInSubtree = () => {
+      if (nodeChildren.length === 0) {
+        return {};
+      } else if (nodeChildren.length === 1) {
+        return fiberToSlotCanvasEnvInSubtree.get(nodeChildren[0]) ?? {};
+      } else {
+        const infos = nodeChildren
+          .map((n) => fiberToSlotCanvasEnvInSubtree.get(n))
+          .filter(
+            (v): v is Record<string, SlotCanvasEnv> =>
+              !!v && Object.keys(v).length > 0
+          );
+        if (infos.length === 0) {
+          return {};
+        }
+        if (infos.length === 1) {
+          return infos[0];
+        }
+        const res: Record<string, SlotCanvasEnv> = {};
+        // We also don't use `structuralMerge` for this one because
+        // we don't want to merge the canvas envs as it can have side
+        // effects, throw `PlasmicUndefinedDataError`, etc.
+        for (const info of infos) {
+          for (const valCompKey in info) {
+            if (!res[valCompKey]) {
+              res[valCompKey] = {};
+            }
+            for (const paramUuid in info[valCompKey]) {
+              res[valCompKey][paramUuid] = info[valCompKey][paramUuid];
+            }
+          }
+        }
+        return (
+          structuralMerge(
+            nodeChildren.map((n) => fiberToSlotCanvasEnvInSubtree.get(n) ?? {})
+          ) ?? {}
+        );
+      }
+    };
     const argsInSubtree = mergeArgsInSubtree();
-    return { valsInSubtree, argsInSubtree };
+    const slotCanvasEnvsInSubtree = mergeSlotCanvasEnvsInSubtree();
+    return { valsInSubtree, argsInSubtree, slotCanvasEnvsInSubtree };
   };
 
   // Return true if this is a canvas frame's tree.
@@ -656,7 +717,34 @@ if (officialHook) {
             // our fiber children have, and set them as our own val nodes.
             // This is the default behavior for a fiber that does not correspond
             // to a valnode.
-            let { valsInSubtree, argsInSubtree } = mergeValsInSubtree(node);
+            let { valsInSubtree, argsInSubtree, slotCanvasEnvsInSubtree } =
+              mergeValsInSubtree(node);
+
+            const maybeSlotEnvData = tryGetSlotCanvasEnv(node);
+            if (maybeSlotEnvData) {
+              // If this is a wrapper element with the updated canvas env of
+              // a slot arg from a component that provides data. Update
+              // `fiberToSlotCanvasEnvInSubtree`.
+              // We check for that independently of whether `instanceKey`
+              // exists, since this is not a prop provided to a `ValNode`.
+              // We also don't use anything like `structuralMerge` because
+              // we don't want to merge the canvas envs as it can have side
+              // effects, throw `PlasmicUndefinedDataError`, etc.
+              if (
+                !slotCanvasEnvsInSubtree[maybeSlotEnvData.tplComponentValKey]
+              ) {
+                slotCanvasEnvsInSubtree[maybeSlotEnvData.tplComponentValKey] =
+                  {};
+              }
+              slotCanvasEnvsInSubtree[maybeSlotEnvData.tplComponentValKey][
+                maybeSlotEnvData.slotPropUuid
+              ] = maybeSlotEnvData.env;
+              fiberToSlotCanvasEnvInSubtree.set(node, slotCanvasEnvsInSubtree);
+            } else {
+              // Otherwise, we just propagate whatever args we've accumulated
+              // so far upward
+              fiberToSlotCanvasEnvInSubtree.set(node, slotCanvasEnvsInSubtree);
+            }
 
             if (!instanceKey) {
               // For fibers that don't correspond to val nodes, we don't need
@@ -665,6 +753,7 @@ if (officialHook) {
               // propagating them upward
               fiberToValSubtrees.set(node, valsInSubtree);
               fiberToSlotArgsInSubtree.set(node, argsInSubtree);
+              fiberToSlotCanvasEnvInSubtree.set(node, slotCanvasEnvsInSubtree);
               return;
             }
 
@@ -755,6 +844,24 @@ if (officialHook) {
                   // There's no need to propagate the args for this ValComp
                   // further up the tree
                   argsInSubtree = omit(argsInSubtree, valComp.key);
+
+                  // Similarly we look for slot canvas envs for this ValComp
+                  const slotCanvasEnvs = slotCanvasEnvsInSubtree[valComp.key];
+                  if (slotCanvasEnvs) {
+                    Object.entries(slotCanvasEnvs).forEach(
+                      ([uuid, slotEnv]) => {
+                        const p = valComp.tpl.component.params.find(
+                          (param) => param.uuid === uuid
+                        );
+                        if (p) {
+                          nonCachedComp.slotCanvasEnvs.set(p, slotEnv);
+                        }
+                      }
+                    );
+                  }
+                  // Do not use omit as it performs a deep clone for plain objects
+                  slotCanvasEnvsInSubtree = { ...slotCanvasEnvsInSubtree };
+                  delete slotCanvasEnvsInSubtree[valComp.key];
                 })
                 .when(ValTag, () => {
                   const nonCachedTag = ensureInstance(
@@ -982,6 +1089,14 @@ const tryGetFrameUid = (node: Fiber): number | undefined => {
   }
   return undefined;
 };
+const tryGetSlotCanvasEnv = (
+  node: Fiber
+): ExtraSlotCanvasEnvData | undefined => {
+  if (hasKey(node.memoizedProps, slotExtraCanvasEnvProp)) {
+    return node.memoizedProps[slotExtraCanvasEnvProp] as ExtraSlotCanvasEnvData;
+  }
+  return undefined;
+};
 const tryGetCloneIndex = (node: Fiber): number | undefined => {
   if (hasKey(node.memoizedProps, plasmicClonedIndex)) {
     return +node.memoizedProps[plasmicClonedIndex];
@@ -1086,6 +1201,7 @@ function createValNode(opts: {
             className,
             () => `Couldn't get className for ValComponent ${fullKey}`
           ),
+          slotCanvasEnvs: new Map(),
         })
     )
     .when(
