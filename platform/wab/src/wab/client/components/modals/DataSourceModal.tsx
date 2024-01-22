@@ -79,10 +79,32 @@ function parseConnectionString(connectionString: string) {
   };
 }
 
+const DATA_SOURCE_MESSAGE = {
+  supabase: (
+    <>
+      <p>
+        Connect to a Supabase Storage bucket and upload images, videos,
+        documents, or any other file type.
+      </p>
+      <p>
+        If you are looking to connect to Supabase database / tables, please use
+        the <b>Supabase Database</b> integration instead.
+      </p>
+      <p>
+        See{" "}
+        <a href="https://docs.plasmic.app/learn/supabase" target="_blank">
+          our Supabase docs
+        </a>{" "}
+        for more details.
+      </p>
+    </>
+  ),
+};
+
 const DATA_SOURCE_ALIASES: DataSourceAlias[] = [
   {
-    id: "supabase",
-    label: "Supabase",
+    id: "supabase-db",
+    label: "Supabase Database",
     aliasFor: POSTGRES_META,
     message: (
       <>
@@ -306,7 +328,13 @@ export function DataSourceModal({
           message={<div>Only the owner of the integration can edit it</div>}
         />
       )}
-
+      {sourceMeta?.id && DATA_SOURCE_MESSAGE[sourceMeta.id] && (
+        <Alert
+          className="mb-xlg"
+          type="info"
+          message={DATA_SOURCE_MESSAGE[sourceMeta.id]}
+        />
+      )}
       <Form
         form={form}
         autoComplete="off"
@@ -404,7 +432,9 @@ export function DataSourceModal({
               .filter((s) => {
                 return (
                   !readOpsOnly ||
-                  getDataSourceMeta(s.id).ops.some((op) => op.type === "read")
+                  getDataSourceMeta(
+                    isDataSourceAlias(s) ? s.aliasFor.id : s.id
+                  ).ops.some((op) => op.type === "read")
                 );
               })
               .map((s) => (
@@ -414,6 +444,11 @@ export function DataSourceModal({
               ))}
           </Select>
         </Form.Item>
+        {showAliasMessage && (
+          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+            <Alert message={showAliasMessage} type="info" />
+          </Form.Item>
+        )}
         {selectedDataSourceType && (
           <Form.Item
             name="name"
@@ -433,11 +468,6 @@ export function DataSourceModal({
               disabled={isDisabled}
               data-test-id={`data-source-name`}
             />
-          </Form.Item>
-        )}
-        {showAliasMessage && (
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Alert message={showAliasMessage} type="info" />
           </Form.Item>
         )}
         {selectedDataSourceType === "airtable" && (

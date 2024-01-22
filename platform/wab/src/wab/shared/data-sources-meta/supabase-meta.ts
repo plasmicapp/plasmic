@@ -65,7 +65,7 @@ const SORT_TYPE: SortArgMeta = {
 
 export const SUPABASE_META: DataSourceMeta = {
   id: "supabase",
-  label: "Supabase",
+  label: "Supabase Storage",
   credentials: {
     apiKey: {
       type: "string",
