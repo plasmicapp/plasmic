@@ -2,7 +2,7 @@ import { ifTs } from "../../../utils/file-utils";
 import { JsOrTs } from "../../../utils/types";
 
 export function makeCustomApp_pages_codegen(jsOrTs: JsOrTs): string {
-  return `import 'styles/globals.css'
+  return `import '@/styles/globals.css'
 import { PlasmicRootProvider } from "@plasmicapp/react-web";${ifTs(
     jsOrTs,
     `
