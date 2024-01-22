@@ -6059,17 +6059,17 @@ export class DbMgr implements MigrationDbMgr {
     return !project.extraData?.hideHostingBadge;
   }
 
-  async setShowHostingBadgeForProject(
+  async updateProjectExtraData(
     projectId: ProjectId,
-    showBadge: boolean
+    extraData: Partial<Project["extraData"]>
   ) {
-    await this.checkProjectPerms(projectId, "editor", "update hosting");
+    await this.checkProjectPerms(projectId, "editor", "update extra data");
     const project = await this.getProjectById(projectId);
     await this.updateProject({
       id: projectId,
       extraData: {
         ...(project.extraData ?? {}),
-        hideHostingBadge: !showBadge,
+        ...extraData,
       },
     });
   }

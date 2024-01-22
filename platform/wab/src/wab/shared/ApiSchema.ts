@@ -92,6 +92,11 @@ export interface ProjectExtraData {
    * badge is shown.
    */
   hideHostingBadge?: boolean;
+
+  /**
+   * Allow robots to crawl the site. If undefined, robots aren't allowed.
+   */
+  allowRobots?: boolean;
 }
 
 export interface ApiEntityBase<IdType extends string = string> {
