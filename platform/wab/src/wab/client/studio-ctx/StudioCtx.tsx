@@ -2937,7 +2937,7 @@ export class StudioCtx extends WithDbCtx {
   /** Controls the padding around the canvas (for limiting scrolling). */
   canvasPadding = computedFn(() => {
     const clipperBB = this.maybeClipperBB();
-    if (clipperBB) {
+    if (clipperBB && !this.currentArenaEmpty) {
       return {
         vertical: clipperBB.height * 0.95,
         horizontal: clipperBB.width * 0.95,
