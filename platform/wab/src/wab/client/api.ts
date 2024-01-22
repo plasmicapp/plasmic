@@ -62,7 +62,7 @@ export const ajax = async (
     let search = "";
     if (method === "get" || method === "delete") {
       search = new URLSearchParams(
-        L.mapValues(data, (v) => JSON.stringify(v))
+        L.mapValues(L.omitBy(data, L.isUndefined), (v) => JSON.stringify(v))
       ).toString();
       if (search) {
         search = "?" + search;

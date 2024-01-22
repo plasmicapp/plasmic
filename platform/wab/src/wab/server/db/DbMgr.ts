@@ -6669,14 +6669,20 @@ export class DbMgr implements MigrationDbMgr {
     return db;
   }
 
-  async listCmsTables(databaseId: CmsDatabaseId) {
+  async listCmsTables(
+    databaseId: CmsDatabaseId,
+    includeArchived: boolean = false
+  ) {
     await this.checkCmsDatabasePerms(databaseId, "viewer");
-    return this.cmsTables().find({
-      where: {
+    let cmsTablesQuery = this.cmsTables()
+      .createQueryBuilder()
+      .where(`"databaseId" = :databaseId AND "deletedAt" IS NULL`, {
         databaseId,
-        ...excludeDeleted(),
-      },
-    });
+      });
+    if (!includeArchived) {
+      cmsTablesQuery = cmsTablesQuery.andWhere(`"isArchived" IS NOT TRUE`);
+    }
+    return cmsTablesQuery.getMany();
   }
 
   async createCmsTable(opts: {
@@ -6749,9 +6755,10 @@ export class DbMgr implements MigrationDbMgr {
       schema?: CmsTableSchema;
       description?: string | null;
       settings?: CmsTableSettings | null;
+      isArchived?: boolean | null;
     }
   ) {
-    const { name, schema, description, settings } = opts;
+    const { name, schema, description, settings, isArchived } = opts;
     const table = await this.getCmsTableById(tableId);
     await this.checkCmsDatabasePerms(table.databaseId, "editor");
     if (name && table.name !== name) {
@@ -6765,6 +6772,9 @@ export class DbMgr implements MigrationDbMgr {
     }
     if (settings) {
       table.settings = settings;
+    }
+    if (isArchived !== undefined) {
+      table.isArchived = isArchived;
     }
     Object.assign(table, this.stampUpdate());
     await this.entMgr.save(table);

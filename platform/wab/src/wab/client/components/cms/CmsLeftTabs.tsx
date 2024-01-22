@@ -1,17 +1,17 @@
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import * as React from "react";
-import { useRouteMatch } from "react-router";
-import { ensure } from "../../../common";
-import { accessLevelRank } from "../../../shared/EntUtil";
-import { UU } from "../../cli-routes";
-import { useAppCtx } from "../../contexts/AppContexts";
+import { UU } from "@/wab/client/cli-routes";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
 import {
   DefaultCmsLeftTabsProps,
   PlasmicCmsLeftTabs,
-} from "../../plasmic/plasmic_kit_cms/PlasmicCmsLeftTabs";
+} from "@/wab/client/plasmic/plasmic_kit_cms/PlasmicCmsLeftTabs";
+import { ensure } from "@/wab/common";
+import { accessLevelRank } from "@/wab/shared/EntUtil";
+import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import * as React from "react";
+import { useRouteMatch } from "react-router";
 import { useCmsDatabase } from "./cms-contexts";
 
-export interface CmsLeftTabsProps extends DefaultCmsLeftTabsProps {}
+export type CmsLeftTabsProps = DefaultCmsLeftTabsProps;
 
 function CmsLeftTabs_(props: CmsLeftTabsProps, ref: HTMLElementRefOf<"div">) {
   const match = useRouteMatch<any>()!;
@@ -38,7 +38,6 @@ function CmsLeftTabs_(props: CmsLeftTabsProps, ref: HTMLElementRefOf<"div">) {
           p.userId === ensure(appCtx.selfInfo, "Unexpected nullish selfInfo").id
       )?.accessLevel || "blocked"
     ) < accessLevelRank("editor");
-
   return (
     <PlasmicCmsLeftTabs
       root={{ ref }}

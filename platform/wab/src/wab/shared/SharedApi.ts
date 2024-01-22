@@ -1583,8 +1583,10 @@ export abstract class SharedApi {
     return res.databases as ApiCmsDatabase[];
   }
 
-  async getCmsDatabase(databaseId: CmsDatabaseId) {
-    const res = await this.get(`/cmse/databases/${databaseId}`);
+  async getCmsDatabase(databaseId: CmsDatabaseId, includeArchived?: boolean) {
+    const res = await this.get(`/cmse/databases/${databaseId}`, {
+      includeArchived,
+    });
     return res as ApiCmsDatabase;
   }
 
@@ -1636,6 +1638,7 @@ export abstract class SharedApi {
       schema?: CmsTableSchema;
       description?: string;
       settings?: CmsTableSettings;
+      isArchived?: boolean;
     }
   ) {
     return (await this.put(`/cmse/tables/${tableId}`, opts)) as ApiCmsTable;

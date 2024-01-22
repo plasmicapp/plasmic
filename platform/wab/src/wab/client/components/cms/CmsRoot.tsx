@@ -1,15 +1,15 @@
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import * as React from "react";
-import { Redirect, Route, Switch } from "react-router";
-import useSWR from "swr";
-import { CmsDatabaseId } from "../../../shared/ApiSchema";
-import { UU } from "../../cli-routes";
-import { useApi } from "../../contexts/AppContexts";
+import { UU } from "@/wab/client/cli-routes";
+import { Spinner } from "@/wab/client/components/widgets";
+import { useApi } from "@/wab/client/contexts/AppContexts";
 import {
   DefaultCmsRootProps,
   PlasmicCmsRoot,
-} from "../../plasmic/plasmic_kit_cms/PlasmicCmsRoot";
-import { Spinner } from "../widgets";
+} from "@/wab/client/plasmic/plasmic_kit_cms/PlasmicCmsRoot";
+import { CmsDatabaseId } from "@/wab/shared/ApiSchema";
+import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import * as React from "react";
+import { Redirect, Route, Switch } from "react-router";
+import { useCmsDatabase } from "./cms-contexts";
 
 export interface CmsRootProps extends DefaultCmsRootProps {
   databaseId: CmsDatabaseId;
@@ -18,9 +18,7 @@ export interface CmsRootProps extends DefaultCmsRootProps {
 function CmsRoot_(props: CmsRootProps, ref: HTMLElementRefOf<"div">) {
   const { databaseId, ...rest } = props;
   const api = useApi();
-  const { data: database } = useSWR(`/cms/${databaseId}`, async () =>
-    api.getCmsDatabase(databaseId)
-  );
+  const database = useCmsDatabase(databaseId);
   if (!database) {
     return <Spinner />;
   }

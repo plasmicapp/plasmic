@@ -54,11 +54,12 @@ export async function getCmsDatabaseAndSecretTokenById(
   res: Response
 ) {
   const databaseId = req.params.dbId;
+  const includeArchived = req.query.includeArchived as boolean | undefined;
   const mgr = userDbMgr(req);
   const database = await mgr.getCmsDatabaseAndSecretTokenById(
     databaseId as CmsDatabaseId
   );
-  res.json(await makeApiDatabase(mgr, database));
+  res.json(await makeApiDatabase(mgr, database, includeArchived));
 }
 
 export async function getDatabaseMeta(req: Request, res: Response) {
@@ -124,9 +125,10 @@ export async function makeApiDatabases(mgr: DbMgr, databases: CmsDatabase[]) {
 
 export async function makeApiDatabase(
   mgr: DbMgr,
-  database: CmsDatabase
+  database: CmsDatabase,
+  includeArchived: boolean = false
 ): Promise<ApiCmsDatabase> {
-  const tables = await mgr.listCmsTables(database.id);
+  const tables = await mgr.listCmsTables(database.id, includeArchived);
   return {
     ...database,
     tables,

@@ -1,8 +1,8 @@
-import * as React from "react";
 import {
   DefaultListSectionProps,
   PlasmicListSection,
-} from "../plasmic/plasmic_kit_design_system/PlasmicListSection";
+} from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicListSection";
+import * as React from "react";
 
 interface ListSectionProps
   extends Omit<DefaultListSectionProps, "collapseState"> {
@@ -10,13 +10,21 @@ interface ListSectionProps
   defaultCollapsed?: boolean;
   style?: React.CSSProperties;
   actions?: React.ReactNode;
+  headerClassName?: string;
+  collapsedState?: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
 }
 
 function ListSection(props: ListSectionProps) {
-  const { isCollapsible, defaultCollapsed, actions, ...rest } = props;
-  const [collapsed, setCollapsed] = React.useState(
-    isCollapsible ? defaultCollapsed : false
-  );
+  const {
+    isCollapsible,
+    defaultCollapsed,
+    actions,
+    headerClassName,
+    collapsedState,
+    ...rest
+  } = props;
+  const [collapsed, setCollapsed] =
+    collapsedState ?? React.useState(isCollapsible ? defaultCollapsed : false);
 
   const collapseState = isCollapsible
     ? collapsed
@@ -32,6 +40,7 @@ function ListSection(props: ListSectionProps) {
         ...(isCollapsible ? { onToggle: () => setCollapsed(!collapsed) } : {}),
         actions,
         showActions: actions != null ? true : false,
+        className: headerClassName,
       }}
     />
   );

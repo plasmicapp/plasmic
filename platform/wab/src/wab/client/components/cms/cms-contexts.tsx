@@ -13,7 +13,7 @@ export function useCmsDatabase(databaseId: CmsDatabaseId | undefined) {
   const api = useApi();
   const { data: database } = useSWR(
     databaseId ? `/cmse/databases/${databaseId}` : undefined,
-    async () => api.getCmsDatabase(databaseId!)
+    async () => api.getCmsDatabase(databaseId!, true)
   );
   return database;
 }

@@ -1395,6 +1395,7 @@ export interface ApiCmsTable extends ApiEntityBase<CmsTableId> {
   schema: CmsTableSchema;
   description: string | null;
   settings: CmsTableSettings | null;
+  isArchived: boolean | null;
 }
 
 export interface ApiCmsRow extends ApiEntityBase<CmsRowId> {

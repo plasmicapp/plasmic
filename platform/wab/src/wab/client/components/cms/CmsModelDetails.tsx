@@ -44,6 +44,7 @@ import {
   InputNumber,
   Menu,
   message,
+  notification,
 } from "antd";
 import { FormInstance, useForm } from "antd/lib/form/Form";
 import L, { isEqual, sortBy } from "lodash";
@@ -448,6 +449,22 @@ function CmsModelDetails_(
                   Configure settings
                 </Menu.Item>
                 <Menu.Divider />
+                <Menu.Item
+                  key="archive"
+                  onClick={async () => {
+                    await api.updateCmsTable(tableId, {
+                      isArchived: !table.isArchived,
+                    });
+                    await mutateTable(databaseId, tableId);
+                    notification.success({
+                      message: `Successfully ${
+                        !table.isArchived ? "archived" : "unarchived"
+                      } model`,
+                    });
+                  }}
+                >
+                  {!table.isArchived ? "Archive" : "Unarchive"} model
+                </Menu.Item>
                 <Menu.Item
                   key="delete"
                   onClick={async () => {

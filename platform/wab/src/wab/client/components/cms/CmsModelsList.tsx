@@ -1,20 +1,20 @@
-import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { sortBy } from "lodash";
-import * as React from "react";
-import { useHistory, useRouteMatch } from "react-router";
-import { CmsDatabaseId, CmsTableId } from "../../../shared/ApiSchema";
-import { UU } from "../../cli-routes";
-import { useApi } from "../../contexts/AppContexts";
+import { UU } from "@/wab/client/cli-routes";
+import { reactPrompt } from "@/wab/client/components/quick-modals";
+import { Matcher } from "@/wab/client/components/view-common";
+import { useApi } from "@/wab/client/contexts/AppContexts";
 import {
   DefaultCmsModelsListProps,
   PlasmicCmsModelsList,
-} from "../../plasmic/plasmic_kit_cms/PlasmicCmsModelsList";
-import { reactPrompt } from "../quick-modals";
-import { Matcher } from "../view-common";
+} from "@/wab/client/plasmic/plasmic_kit_cms/PlasmicCmsModelsList";
+import { CmsDatabaseId, CmsTableId } from "@/wab/shared/ApiSchema";
+import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import { partition, sortBy } from "lodash";
+import * as React from "react";
+import { useHistory, useRouteMatch } from "react-router";
 import { useCmsDatabase, useMutateTables } from "./cms-contexts";
 import CmsModelItem from "./CmsModelItem";
 
-export interface CmsModelsListProps extends DefaultCmsModelsListProps {}
+export type CmsModelsListProps = DefaultCmsModelsListProps;
 
 function CmsModelsList_(
   props: CmsModelsListProps,
@@ -24,7 +24,7 @@ function CmsModelsList_(
     databaseId: CmsDatabaseId;
     tableId?: CmsTableId;
   }>();
-  const { databaseId } = match.params;
+  const { databaseId, tableId } = match.params;
   const database = useCmsDatabase(databaseId);
   const api = useApi();
   const mutateTables = useMutateTables();
@@ -32,8 +32,15 @@ function CmsModelsList_(
   const [query, setQuery] = React.useState("");
   const matcher = new Matcher(query);
   const tables = database ? sortBy(database.tables, (table) => table.name) : [];
-  const filteredTables = tables.filter(
+  const searchFilterTables = tables.filter(
     (t) => matcher.matches(t.name) || matcher.matches(t.identifier)
+  );
+  const [filteredTables, archivedTables] = partition(
+    searchFilterTables,
+    (t) => !t.isArchived
+  );
+  const collapsedState = React.useState(
+    tableId && archivedTables.some((t) => t.id === tableId) ? false : true
   );
   return (
     <PlasmicCmsModelsList
@@ -72,6 +79,19 @@ function CmsModelsList_(
         },
         "data-test-id": "addModelButton",
       }}
+      hasArchivedModels={archivedTables.length > 0}
+      archivedModelsSection={{
+        isCollapsible: true,
+        collapsedState: collapsedState,
+        headerClassName: "flex-no-shrink",
+      }}
+      archivedModels={
+        <>
+          {archivedTables.map((table) => (
+            <CmsModelItem key={table.id} table={table} matcher={matcher} />
+          ))}
+        </>
+      }
     />
   );
 }
