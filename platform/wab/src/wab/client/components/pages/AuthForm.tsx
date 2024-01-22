@@ -361,10 +361,8 @@ export function ResetPasswordForm() {
               } else if (res.reason === "InvalidToken") {
                 setFeedback({
                   type: "error",
-                  content:
-                    "The password reset link has expired. Submit the form below to generate a new one.",
+                  content: "The password reset link has expired.",
                 });
-                setMode(nonAuthCtx, "forgot password");
               } else {
                 setFeedback({
                   type: "error",

@@ -445,12 +445,17 @@ export async function resetPassword(req: Request, res: Response) {
     return;
   }
 
-  // We don't care to time-limit the validity of these URLs for now.
-  // const MILLIS_IN_TWO_DAYS = 1000 * 60 * 60 * 24 * 2;
-  // const millisElapsed = new Date().valueOf() - resetRequest.createdAt.valueOf();
-  // if (millisElapsed > MILLIS_IN_TWO_DAYS) {
-  //   throw new NotFoundError();
-  // }
+  const MILLIS_IN_TEN_MINUTES = 1000 * 60 * 10;
+  const millisElapsed = new Date().valueOf() - resetRequest.createdAt.valueOf();
+  if (millisElapsed > MILLIS_IN_TEN_MINUTES) {
+    res.json(
+      ensureType<ResetPasswordResponse>({
+        status: false,
+        reason: "InvalidToken",
+      })
+    );
+    return;
+  }
 
   try {
     await mgr.updateUserPassword(user, newPassword);
