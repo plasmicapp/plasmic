@@ -11,7 +11,7 @@
 //   }
 //   return origOn.apply(this, args);
 // };
-
+import { nanoid } from "nanoid";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
 import Analytics from "analytics-node";
@@ -2232,6 +2232,10 @@ export function makeExpressSessionMiddleware(config: Config) {
         sameSite: "none",
         secure: true,
       }),
+    },
+    genid: function (req: any) {
+      const userId = req.user?.id ?? "";
+      return `${userId}-${nanoid(24)}`;
     },
     // Trust the proxy in deciding whether we are in an https
     // connection. Because app server sits behind nginx, which

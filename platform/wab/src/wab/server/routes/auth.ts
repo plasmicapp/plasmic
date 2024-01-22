@@ -361,6 +361,7 @@ export async function updateSelf(req: Request, res: Response) {
 }
 
 export async function updateSelfPassword(req: Request, res: Response) {
+  const superMgr = superDbMgr(req);
   const dbMgr = userDbMgr(req);
   const oldPassword = (req.body.oldPassword as string) || "";
   const newPassword = (req.body.newPassword as string) || "";
@@ -383,6 +384,8 @@ export async function updateSelfPassword(req: Request, res: Response) {
       throw error;
     }
   }
+  await superMgr.deleteSessionsForUser(req.sessionID, getUser(req).id);
+
   res.json(
     ensureType<UpdatePasswordResponse>({
       status: true,
@@ -483,6 +486,7 @@ export async function resetPassword(req: Request, res: Response) {
   }
 
   await mgr.markResetPasswordUsed(resetRequest);
+  await mgr.deleteSessionsForUser(req.sessionID, user.id);
 
   res.json(ensureType<ResetPasswordResponse>({ status: true }));
 }

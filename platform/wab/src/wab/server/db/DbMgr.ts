@@ -1825,6 +1825,15 @@ export class DbMgr implements MigrationDbMgr {
     return user;
   }
 
+  async deleteSessionsForUser(currentSessionId: string, userId: string) {
+    return this.sessions()
+      .createQueryBuilder()
+      .where('"id" != :currentSessionId', { currentSessionId })
+      .andWhere('"id" like :userId', { userId: `${userId}-%` })
+      .delete()
+      .execute();
+  }
+
   //
   // Password methods.
   //
