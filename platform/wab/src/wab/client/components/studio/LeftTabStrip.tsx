@@ -358,7 +358,7 @@ Help
           },
         },
       }}
-      root={{ className: props.className }}
+      root={{ className: props.className, id: "left-tab-strip" }}
       buttons={Object.entries(menu).map(([key, item]) =>
         item.type === "item"
           ? renderButton(key, item, false, undefined)

@@ -6,6 +6,7 @@ import {
   isKnownCustomCode,
   isKnownObjectPath,
   isKnownTplComponent,
+  isKnownTplSlot,
   ObjectPath,
   QueryInvalidationExpr,
   TemplatedString,
@@ -17,7 +18,10 @@ import {
   createAddHostLessComponent,
   HostLessComponentExtraInfo,
 } from "@/wab/client/components/studio/add-drawer/AddDrawer";
-import { AddTplItem } from "@/wab/client/definitions/insertables";
+import {
+  AddTplItem,
+  INSERTABLES_MAP,
+} from "@/wab/client/definitions/insertables";
 import { addGetManyQuery, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
 import { ensure, ensureArray, waitUntil } from "@/wab/common";
@@ -29,6 +33,7 @@ import {
   serCompositeExprMaybe,
   tryExtractJson,
 } from "@/wab/exprs";
+import { AddItemKey } from "@/wab/shared/add-item-keys";
 import {
   ALL_QUERIES,
   dataSourceTemplateToString,
@@ -40,6 +45,7 @@ import { $$$ } from "@/wab/shared/TplQuery";
 import { mkInteraction } from "@/wab/states";
 import {
   filterTpls,
+  flattenTpls,
   isTplComponent,
   tryGetTplOwnerComponent,
 } from "@/wab/tpls";
@@ -373,6 +379,28 @@ export function addRichTable(studioCtx: StudioCtx) {
 
 export function addForm(studioCtx: StudioCtx) {
   return addHostLessComponent(studioCtx, "antd5-form", "plasmic-antd5-form");
+}
+
+export async function addTextElement(studioCtx: StudioCtx) {
+  const vc = studioCtx.focusedOrFirstViewCtx();
+  if (!vc) {
+    throw new Error("Missing view context");
+  }
+  const tplTree = vc.arenaFrame().container.component.tplTree;
+  const target = flattenTpls(tplTree).find(
+    (tpl) => !isKnownTplSlot(tpl) && tpl.name === "mainTextContainer"
+  );
+  await studioCtx.change(({ success }) => {
+    vc.viewOps.tryInsertInsertableSpec(
+      INSERTABLES_MAP[AddItemKey.text] as AddTplItem,
+      InsertRelLoc.append,
+      undefined,
+      target
+    );
+    return success();
+  });
+
+  studioCtx.setShowAddDrawer(false);
 }
 
 export async function isTableLinkedToRightQuery(

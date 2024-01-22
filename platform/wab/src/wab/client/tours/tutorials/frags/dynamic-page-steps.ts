@@ -1,6 +1,7 @@
-import { RightTabKey } from "src/wab/client/studio-ctx/StudioCtx";
-import { ensure } from "../../../../common";
-import { TutorialEvent, TutorialEventsType } from "../tutorials-events";
+import {
+  TutorialEvent,
+  TutorialEventsType,
+} from "@/wab/client/tours/tutorials/tutorials-events";
 import {
   addDynamicPage,
   addTutorialdbQuery,
@@ -8,16 +9,21 @@ import {
   ONBOARDING_TUTORIALS_META,
   sleep,
   TUTORIAL_DB_META,
-} from "../tutorials-helpers";
-import { STUDIO_ELEMENTS_TARGETS } from "../tutorials-targets";
-import { OnNextCtx, StudioTutorialStep } from "../tutorials-types";
+} from "@/wab/client/tours/tutorials/tutorials-helpers";
+import { STUDIO_ELEMENTS_TARGETS } from "@/wab/client/tours/tutorials/tutorials-targets";
 import {
+  OnNextCtx,
+  StudioTutorialStep,
+} from "@/wab/client/tours/tutorials/tutorials-types";
+import { ensure } from "@/wab/common";
+import { RightTabKey } from "src/wab/client/studio-ctx/StudioCtx";
+import {
+  ADMIN_PANEL_WELCOME_TUTORIAL_STEP,
   changeRightTabKeyStepFunc,
-  WELCOME_TUTORIAL_STEP,
 } from "./basic-steps";
 
 export const DYNAMIC_PAGE_STEPS: StudioTutorialStep[] = [
-  WELCOME_TUTORIAL_STEP,
+  ADMIN_PANEL_WELCOME_TUTORIAL_STEP,
   {
     name: "open-project-panel",
     target: STUDIO_ELEMENTS_TARGETS.projNavBtn,
