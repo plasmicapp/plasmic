@@ -1,4 +1,19 @@
 import {
+  assert,
+  asyncToCallback,
+  ensure,
+  extractDomainFromEmail,
+  isValidEmail,
+  maybes,
+  spreadLog,
+  StandardCallback,
+} from "@/wab/common";
+import { DevFlagsType } from "@/wab/devflags";
+import { BadRequestError } from "@/wab/shared/ApiErrors/errors";
+import { SsoConfigId, UserId } from "@/wab/shared/ApiSchema";
+import { findGoogleAuthRequiredEmailDomain } from "@/wab/shared/devflag-utils";
+import { getPublicUrl } from "@/wab/urls";
+import {
   MultiSamlStrategy,
   Profile as SamlProfile,
   SamlConfig,
@@ -12,21 +27,6 @@ import OAuth2Strategy from "passport-oauth2";
 import refresh from "passport-oauth2-refresh";
 import { getManager } from "typeorm";
 import * as util from "util";
-import {
-  assert,
-  asyncToCallback,
-  ensure,
-  extractDomainFromEmail,
-  isValidEmail,
-  maybes,
-  spreadLog,
-  StandardCallback,
-} from "../common";
-import { DevFlagsType } from "../devflags";
-import { BadRequestError } from "../shared/ApiErrors/errors";
-import { SsoConfigId, UserId } from "../shared/ApiSchema";
-import { findGoogleAuthRequiredEmailDomain } from "../shared/devflag-utils";
-import { getPublicUrl } from "../urls";
 import { Config } from "./config";
 import { setupCustomPassport } from "./custom-passport-cfg";
 import { DbMgr, SUPER_USER } from "./db/DbMgr";
@@ -167,7 +167,7 @@ export async function setupPassport(
             );
           }
 
-          let user = await mgr.tryGetUserByEmail(email);
+          const user = await mgr.tryGetUserByEmail(email);
           if (!user) {
             throw new BadRequestError(`SAML Error: Invalid user`);
           }
@@ -417,8 +417,6 @@ export async function upsertOauthUser(
 
   const userFields = deriveOAuthUserFields(profile);
 
-  console.log("USER FIELDS", userFields);
-
   const email = userFields.email;
 
   assert(
@@ -460,6 +458,9 @@ export async function upsertOauthUser(
       );
       throw new UserNotWhitelistedError();
     }
+  } else {
+    // Prefer OAuth over password login
+    await mgr.clearUserPassword(user.id);
   }
 
   await updateUserFromProfile(mgr, user.id, profile);

@@ -1893,6 +1893,14 @@ export class DbMgr implements MigrationDbMgr {
     await this.entMgr.save(user);
   }
 
+  async clearUserPassword(userId: string) {
+    await this.checkSuperUser();
+    const user = await this.getUserById(userId);
+    user.bcrypt = "";
+    Object.assign(user, this.stampUpdate());
+    await this.entMgr.save(user);
+  }
+
   private async _getUserBcrypt(id: string) {
     return ensureFound<User>(
       await this.users().findOne({
