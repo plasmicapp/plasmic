@@ -774,6 +774,13 @@ export class StudioCtx extends WithDbCtx {
             }
             // Restore correct canvas size.
             const restoreCanvasSize = () => {
+              // Subscribe to auto-derived height changes
+              getArenaFrames(this.currentArena).forEach((frame) => {
+                if (isHeightAutoDerived(frame)) {
+                  frame._height?.get();
+                }
+              });
+
               const scalerRect = this.getCanvasEditorFramesScalerRect();
               if (scalerRect) {
                 this._canvasSize.set(Box.fromRect(scalerRect).scale(this.zoom));

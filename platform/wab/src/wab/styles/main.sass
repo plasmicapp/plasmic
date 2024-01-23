@@ -4003,6 +4003,8 @@ $color-stops-width: 100%
   user-select: none
   // We don't want padding to interfere with height/width.
   box-sizing: content-box
+  // Hide overflow so it doesn't confuse the clipper about the scroll height/width.
+  overflow: hidden
 
 .canvas-editor__canvas__popup_live
   width: 100%
