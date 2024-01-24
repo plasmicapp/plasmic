@@ -11,7 +11,8 @@
 //   }
 //   return origOn.apply(this, args);
 // };
-import { nanoid } from "nanoid";
+import { mkShortId, safeCast, spawn } from "@/wab/common";
+import { DEVFLAGS } from "@/wab/devflags";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
 import Analytics from "analytics-node";
@@ -22,21 +23,17 @@ import cors from "cors";
 import errorHandler from "errorhandler";
 import express, { ErrorRequestHandler, RequestHandler } from "express";
 import "express-async-errors";
-// Exempt from prettier-plugin-organize-imports, which removes
-// importing from "./extensions"
-// organize-imports-ignore
-import fileUpload from "express-fileupload";
 import promMetrics from "express-prom-bundle";
+import { rateLimit } from "express-rate-limit";
 import { NextFunction, Request, Response } from "express-serve-static-core";
 import session from "express-session";
 import * as lusca from "lusca";
 import morgan from "morgan";
+import { nanoid } from "nanoid";
 import passport from "passport";
 import * as path from "path";
 import { getConnection } from "typeorm";
 import v8 from "v8";
-import { mergeSane, mkShortId, safeCast, spawn } from "@/wab/common";
-import { DEVFLAGS } from "@/wab/devflags";
 // API keys and Passport configuration
 import {
   AuthError,
@@ -45,7 +42,10 @@ import {
   transformErrors,
 } from "@/wab/shared/ApiErrors/errors";
 import { Bundler } from "@/wab/shared/bundler";
+import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import fileUpload from "express-fileupload";
 import { Config } from "./config";
+import { getDevFlagsMergedWithOverrides } from "./db/appconfig";
 import { DbMgr, SUPER_USER } from "./db/DbMgr";
 import { createMailer } from "./emails/Mailer";
 import { ExpressSession } from "./entities/Entities";
@@ -97,11 +97,12 @@ import {
   listDatabasesMeta,
   listRowRevisions,
   listRows,
+  triggerTableWebhooks,
   updateDatabase,
   updateRow,
   updateTable,
-  triggerTableWebhooks,
 } from "./routes/cmse";
+import { addInternalRoutes, ROUTES_WITH_TIMING } from "./routes/custom-routes";
 import {
   allowProjectToDataSource,
   createDataSource,
@@ -275,6 +276,7 @@ import {
   updateProjectData,
   updateProjectMeta,
 } from "./routes/projects";
+import { getPromotionCodeById } from "./routes/promo-code";
 import {
   executeDataSourceOperationHandler,
   executeDataSourceOperationHandlerInStudio,
@@ -287,6 +289,7 @@ import {
   publishShopifyPages,
   updateShopifyStorePassword,
 } from "./routes/shopify";
+import { processSvgRoute } from "./routes/svg";
 import * as teamRoutes from "./routes/teams";
 import { getUsersById } from "./routes/users";
 import {
@@ -295,6 +298,12 @@ import {
   superDbMgr,
   withNext,
 } from "./routes/util";
+import {
+  createWhiteLabelUser,
+  deleteWhiteLabelUser,
+  getWhiteLabelUser,
+  openJwt,
+} from "./routes/whitelabel";
 import {
   createWorkspace,
   deleteWorkspace,
@@ -314,18 +323,7 @@ import {
 } from "./util/pruneCache";
 import { TypeormStore } from "./util/TypeormSessionStore";
 import { createWorkerPool } from "./workers/pool";
-import {
-  createWhiteLabelUser,
-  deleteWhiteLabelUser,
-  getWhiteLabelUser,
-  openJwt,
-} from "./routes/whitelabel";
-import { getPromotionCodeById } from "./routes/promo-code";
-import { getDevFlagsMergedWithOverrides } from "./db/appconfig";
-import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
-import { addInternalRoutes, ROUTES_WITH_TIMING } from "./routes/custom-routes";
 import { ensureDevFlags } from "./workers/worker-utils";
-import { processSvgRoute } from "./routes/svg";
 
 const hotShots = require("hot-shots");
 
@@ -396,6 +394,27 @@ const ignoredErrorMessages = [
   // a typeorm query. Nothing we can do about that.
   "Query runner already released",
 ];
+
+// Rate limit for forgetPassword and signUp routes.
+// Currently using in-memory storage, can be improved to use
+// redis/postgres.
+const sensitiveRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 15,
+  message: "Too many requests, please try again later.",
+  handler: (req, res, next, options) => {
+    req
+      .resolveTransaction()
+      .catch(() => {})
+      .finally(() => res.status(options.statusCode).send(options.message));
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  validate: {
+    xForwardedForHeader: false,
+    trustProxy: false,
+  },
+});
 
 function shouldIgnoreErrorByMessage(message: string) {
   return ignoredErrorMessages.some((pattern) => message.includes(pattern));
@@ -1289,7 +1308,11 @@ export function addMainAppServerRoutes(app: express.Application) {
    */
   app.get("/api/v1/auth/csrf", withNext(authRoutes.csrf));
   app.post("/api/v1/auth/login", withNext(authRoutes.login));
-  app.post("/api/v1/auth/sign-up", withNext(authRoutes.signUp));
+  app.post(
+    "/api/v1/auth/sign-up",
+    sensitiveRateLimiter,
+    withNext(authRoutes.signUp)
+  );
   app.get("/api/v1/auth/self", withNext(authRoutes.self));
   app.post("/api/v1/auth/self", withNext(authRoutes.updateSelf));
   app.post(
@@ -1297,7 +1320,11 @@ export function addMainAppServerRoutes(app: express.Application) {
     withNext(authRoutes.updateSelfPassword)
   );
   app.post("/api/v1/auth/logout", withNext(authRoutes.logout));
-  app.post("/api/v1/auth/forgotPassword", withNext(authRoutes.forgotPassword));
+  app.post(
+    "/api/v1/auth/forgotPassword",
+    sensitiveRateLimiter,
+    withNext(authRoutes.forgotPassword)
+  );
   app.post("/api/v1/auth/resetPassword", withNext(authRoutes.resetPassword));
   app.post("/api/v1/auth/confirmEmail", withNext(authRoutes.confirmEmail));
   app.post(

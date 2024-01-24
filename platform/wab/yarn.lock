@@ -15293,6 +15293,11 @@ express-prom-bundle@^6.4.1:
     on-finished "^2.3.0"
     url-value-parser "^2.0.0"
 
+express-rate-limit@^7.1.5:
+  version "7.1.5"
+  resolved "https://registry.yarnpkg.com/express-rate-limit/-/express-rate-limit-7.1.5.tgz#af4c81143a945ea97f2599d13957440a0ddbfcfe"
+  integrity sha512-/iVogxu7ueadrepw1bS0X0kaRC/U0afwiYRSLg68Ts+p4Dc85Q5QKsOnPS/QUjPMHvOJQtBDrZgvkOzf8ejUYw==
+
 express-session@^1.15.6, express-session@^1.17.1:
   version "1.17.1"
   resolved "https://registry.yarnpkg.com/express-session/-/express-session-1.17.1.tgz#36ecbc7034566d38c8509885c044d461c11bf357"
