@@ -45,6 +45,7 @@ import CloneProjectModal from "./TopBar/CloneProjectModal";
 import CodeModal from "./TopBar/CodeModal";
 import ProjectNameModal from "./TopBar/ProjectNameModal";
 import PublishFlowDialogWrapper from "./TopBar/PublishFlowDialogWrapper";
+import { showRegenerateSecretTokenModal } from "./TopBar/RegenerateSecretTokenModal";
 import ShareModal from "./TopBar/ShareModal";
 import UpsellModal from "./TopBar/UpsellModal";
 
@@ -98,6 +99,8 @@ export interface TopFrameChromeProps {
   setDefaultPageRoleId: (roleId: string | null | undefined) => void;
   onboardingTour: TopFrameTourState;
   refreshBranchData: () => void;
+  shouldShowRegenerateSecretTokenModal: boolean;
+  didShowRegenerateSecretTokenModal: () => void;
 }
 
 export const topFrameTourSignals = new Signals.Signal();
@@ -113,6 +116,8 @@ export function TopFrameChrome({
   refreshStudio,
   topFrameApi,
   refreshBranchData,
+  shouldShowRegenerateSecretTokenModal,
+  didShowRegenerateSecretTokenModal,
   ...rest
 }: TopFrameChromeProps) {
   const location = useLocation();
@@ -121,6 +126,23 @@ export function TopFrameChrome({
   React.useEffect(() => {
     document.title = `${project.name} - Plasmic`;
   }, [project.name]);
+
+  React.useEffect(() => {
+    if (shouldShowRegenerateSecretTokenModal) {
+      spawn(
+        showRegenerateSecretTokenModal({
+          appCtx,
+          project,
+        })
+      );
+      didShowRegenerateSecretTokenModal();
+    }
+  }, [
+    appCtx,
+    project,
+    showRegenerateSecretTokenModal,
+    didShowRegenerateSecretTokenModal,
+  ]);
 
   React.useEffect(() => {
     if (fullPreview && appCtx.appConfig.showFullPreviewWarning) {
@@ -377,6 +399,14 @@ export function useTopFrameState({
   const [showHostModal, setShowHostModal] = React.useState(false);
   const [showLocalizationModal, setShowLocalizationModal] =
     React.useState(false);
+  const [
+    shouldShowRegenerateSecretTokenModal,
+    setShouldShowRegenerateSecretTokenModal,
+  ] = React.useState(false);
+  const didShowRegenerateSecretTokenModal = React.useCallback(
+    () => setShouldShowRegenerateSecretTokenModal(false),
+    [setShouldShowRegenerateSecretTokenModal]
+  );
   const [showUpsellForm, setShowUpsellForm] = React.useState<
     TopBarPromptBillingArgs | undefined
   >(undefined);
@@ -469,6 +499,8 @@ export function useTopFrameState({
       setShowCloneProjectModal: asyncWrapper(setShowCloneProjectModal),
       setShowHostModal: asyncWrapper(setShowHostModal),
       setShowLocalizationModal: asyncWrapper(setShowLocalizationModal),
+      showRegenerateSecretTokenModal: async () =>
+        setShouldShowRegenerateSecretTokenModal(true),
       setShowUpsellForm: asyncWrapper(setShowUpsellForm),
       setShowAppAuthModal: asyncWrapper(setShowAppAuthModal),
       setOnboardingTour: asyncWrapper(setOnboardingTour),
@@ -508,6 +540,8 @@ export function useTopFrameState({
     defaultPageRoleId,
     setDefaultPageRoleId,
     onboardingTour,
+    shouldShowRegenerateSecretTokenModal,
+    didShowRegenerateSecretTokenModal,
   };
 }
 

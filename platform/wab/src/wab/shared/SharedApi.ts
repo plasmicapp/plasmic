@@ -162,6 +162,7 @@ import {
   SetCustomDomainForProjectRequest,
   SetCustomDomainForProjectResponse,
   SetDevFlagOverridesResponse,
+  SetSiteInfoReq,
   SetSubdomainForProjectRequest,
   SetSubdomainForProjectResponse,
   SignUpRequest,
@@ -529,17 +530,7 @@ export abstract class SharedApi {
 
   setSiteInfo(
     siteId: string,
-    data: Partial<
-      Pick<
-        ApiProject,
-        | "name"
-        | "workspaceId"
-        | "inviteOnly"
-        | "defaultAccessLevel"
-        | "readableByPublic"
-        | "isUserStarter"
-      >
-    >
+    data: SetSiteInfoReq
   ): Promise<MayTriggerPaywall<UpdateProjectResponse>> {
     return this.put(`/projects/${siteId}`, data);
   }

@@ -63,6 +63,7 @@ export interface TopFrameApi {
   setShowCloneProjectModal(val: boolean): Promise<void>;
   setShowHostModal(val: boolean): Promise<void>;
   setShowLocalizationModal(val: boolean): Promise<void>;
+  showRegenerateSecretTokenModal(): Promise<void>;
   setShowUpsellForm(val: TopBarPromptBillingArgs | undefined): Promise<void>;
   setShowAppAuthModal(val: boolean): Promise<void>;
   setOnboardingTour(val: TopFrameTourState): Promise<void>;

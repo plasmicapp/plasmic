@@ -936,6 +936,21 @@ export interface UpdateProjectReq {
   regenerateSecretApiToken?: boolean;
 }
 
+export interface SetSiteInfoReq
+  extends Partial<
+    Pick<
+      ApiProject,
+      | "name"
+      | "workspaceId"
+      | "inviteOnly"
+      | "defaultAccessLevel"
+      | "readableByPublic"
+      | "isUserStarter"
+    >
+  > {
+  regenerateSecretApiToken?: boolean;
+}
+
 export type GitSyncAction = "commit" | "pr" | "build";
 export type GitSyncScheme = "codegen" | "loader";
 export type GitSyncPlatform = "react" | "nextjs" | "gatsby";

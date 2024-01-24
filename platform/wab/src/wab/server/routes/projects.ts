@@ -108,6 +108,7 @@ import {
   ProjectsResponse,
   PublishProjectRequest,
   ResolveSyncRequest,
+  SetSiteInfoReq,
   TryMergeRequest,
   TryMergeResponse,
   UpdateBranchRequest,
@@ -1497,14 +1498,16 @@ export async function getFullProjectData(req: Request, res: Response) {
 
 export async function updateProject(req: Request, res: Response) {
   const mgr = userDbMgr(req);
-  const data = req.body;
+  const data: SetSiteInfoReq = req.body;
   const projectId = req.params.projectId;
   let regeneratedSecretApiToken: string | undefined = undefined;
   const project = await mgr.updateProject({
     id: projectId,
     ...data,
-    ...(data.secretApiToken
-      ? { secretApiToken: (regeneratedSecretApiToken = generateSomeApiToken()) }
+    ...(data.regenerateSecretApiToken
+      ? {
+          secretApiToken: (regeneratedSecretApiToken = generateSomeApiToken()),
+        }
       : {}),
   });
 

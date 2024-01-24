@@ -7,7 +7,6 @@ import {
   TextAndShortcut,
 } from "@/wab/client/components/menu-builder";
 import { PublicLink } from "@/wab/client/components/PublicLink";
-import { reactAlert, reactConfirm } from "@/wab/client/components/quick-modals";
 import { AvatarGallery } from "@/wab/client/components/studio/Avatar";
 import { Icon } from "@/wab/client/components/widgets/Icon";
 import Select from "@/wab/client/components/widgets/Select";
@@ -128,34 +127,7 @@ function _TopBar({ preview }: TopBarProps) {
             push2(
               <Menu.Item
                 key="secret"
-                onClick={async () => {
-                  if (
-                    !(await reactConfirm({
-                      message:
-                        "Generate new secret API token? (This will invalidate any existing secret token.) This is only needed for the Write API.",
-                    }))
-                  ) {
-                    return;
-                  }
-                  const response = await appCtx.api.setSiteInfo(
-                    studioCtx.siteInfo.id,
-                    {}
-                  );
-                  if (response.paywall === "pass") {
-                    const { regeneratedSecretApiToken } = response.response;
-                    await reactAlert({
-                      message: (
-                        <>
-                          <p>
-                            New secret API token for this project (will not be
-                            shown again):
-                          </p>
-                          <pre>{regeneratedSecretApiToken}</pre>
-                        </>
-                      ),
-                    });
-                  }
-                }}
+                onClick={() => topFrameApi.showRegenerateSecretTokenModal()}
               >
                 Regenerate secret project API token
               </Menu.Item>
