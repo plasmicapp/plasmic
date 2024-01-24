@@ -7,7 +7,6 @@
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  pointer-events: auto;
   min-width: 0;
 }
 .rootisSelected {

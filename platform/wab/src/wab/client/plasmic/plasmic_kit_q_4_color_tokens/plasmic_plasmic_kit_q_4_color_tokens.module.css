@@ -1071,11 +1071,21 @@
   --plasmic-mixin-extra-small-shadow_box-shadow: var(
     --mixin-YjNYCA5-gK_i_box-shadow
   );
+  --mixin-YjNYCA5-gK_i_white-space: pre-wrap;
+  --plasmic-mixin-extra-small-shadow_white-space: var(
+    --mixin-YjNYCA5-gK_i_white-space
+  );
   --mixin-dlZINIZ_AIyZ_box-shadow: 0px 4px 8px 1px var(--token-zBV3PmIqbJ9F);
   --plasmic-mixin-small-shadow_box-shadow: var(--mixin-dlZINIZ_AIyZ_box-shadow);
+  --mixin-dlZINIZ_AIyZ_white-space: pre-wrap;
+  --plasmic-mixin-small-shadow_white-space: var(
+    --mixin-dlZINIZ_AIyZ_white-space
+  );
   --mixin-yJTLoKkET_box-shadow: 0px 8px 32px -8px var(--token-XeFw4MGauXBT),
     0px 8px 20px -16px var(--token-JrjdlBU-a5Ju);
   --plasmic-mixin-medium-shadow_box-shadow: var(--mixin-yJTLoKkET_box-shadow);
+  --mixin-yJTLoKkET_white-space: pre-wrap;
+  --plasmic-mixin-medium-shadow_white-space: var(--mixin-yJTLoKkET_white-space);
 }
 
 :where(.all) {

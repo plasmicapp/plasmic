@@ -88,6 +88,7 @@ export type PlasmicSelect__ArgsType = {
   name?: string;
   icon?: React.ReactNode;
   options?: any;
+  onChange?: (value: string) => void;
   "aria-label"?: string;
   "aria-labelledby"?: string;
 };
@@ -100,6 +101,7 @@ export const PlasmicSelect__ArgProps = new Array<ArgPropType>(
   "name",
   "icon",
   "options",
+  "onChange",
   "aria-label",
   "aria-labelledby"
 );

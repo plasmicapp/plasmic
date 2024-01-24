@@ -1,19 +1,19 @@
+import { StyleToken } from "@/wab/classes";
+import { ColorSwatch } from "@/wab/client/components/style-controls/ColorSwatch";
+import { Matcher } from "@/wab/client/components/view-common";
+import { PlainLinkButton } from "@/wab/client/components/widgets";
+import { useToggleDisplayed } from "@/wab/client/dom-utils";
+import { PlusIcon } from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import SearchIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Search";
+import { cx } from "@/wab/common";
+import { TokenResolver } from "@/wab/shared/cached-selectors";
+import Chroma from "@/wab/shared/utils/color-utils";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { Tooltip } from "antd";
 import Downshift from "downshift";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { FixedSizeList } from "react-window";
-import { StyleToken } from "../../../classes";
-import { cx } from "../../../common";
-import { TokenResolver } from "../../../shared/cached-selectors";
-import Chroma from "../../../shared/utils/color-utils";
-import { VariantedStylesHelper } from "../../../shared/VariantedStylesHelper";
-import { useToggleDisplayed } from "../../dom-utils";
-import { PlusIcon } from "../../plasmic/plasmic_kit/PlasmicIcon__Plus";
-import SearchIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Search";
-import { ColorSwatch } from "../style-controls/ColorSwatch";
-import { Matcher } from "../view-common";
-import { PlainLinkButton } from "../widgets";
 import { Icon } from "./Icon";
 import { IconButton } from "./IconButton";
 
@@ -140,34 +140,41 @@ export const ColorTokenSelector = observer(function ColorTokenSelector(props: {
                       return null;
                     }
                     return (
-                      <div
-                        {...downshift.getItemProps({
-                          item: token,
-                          key: token.uuid,
-                          style: style,
-                          index,
-                          onMouseDown: () => onSelect(token),
-                          className: cx({
-                            NamedSwatch: true,
-                            "NamedSwatch--highlighted":
-                              downshift.highlightedIndex === index,
-                            "NamedSwatch--selected": token === selectedToken,
-                            "pl-m": true,
-                          }),
-                        })}
+                      <Tooltip
+                        key={`tooltip-${token.uuid}`}
+                        title={`${token.name} (${Chroma.stringify(
+                          resolver(token, vsh)
+                        )})`}
                       >
-                        <ColorSwatch
-                          color={resolver(token, vsh)}
-                          isSelected={token === selectedToken}
-                        />
-                        <div className="ml-m">
-                          {matcher.boldSnippets(token.name)} (
-                          {matcher.boldSnippets(
-                            Chroma.stringify(resolver(token, vsh))
-                          )}
-                          )
+                        <div
+                          {...downshift.getItemProps({
+                            item: token,
+                            key: token.uuid,
+                            style: style,
+                            index,
+                            onMouseDown: () => onSelect(token),
+                            className: cx({
+                              NamedSwatch: true,
+                              "NamedSwatch--highlighted":
+                                downshift.highlightedIndex === index,
+                              "NamedSwatch--selected": token === selectedToken,
+                              "pl-m": true,
+                            }),
+                          })}
+                        >
+                          <ColorSwatch
+                            color={resolver(token, vsh)}
+                            isSelected={token === selectedToken}
+                          />
+                          <div className="text-ellipsis ml-m">
+                            {matcher.boldSnippets(token.name)} (
+                            {matcher.boldSnippets(
+                              Chroma.stringify(resolver(token, vsh))
+                            )}
+                            )
+                          </div>
                         </div>
-                      </div>
+                      </Tooltip>
                     );
                   } else {
                     const rowTokens = tokens.slice(

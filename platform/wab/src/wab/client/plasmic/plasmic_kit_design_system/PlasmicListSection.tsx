@@ -223,6 +223,11 @@ function PlasmicListSection__RenderFunc(props: {
               "collapseState",
               "collapsed"
             ),
+            [sty.itemsContainercollapseState_expanded]: hasVariant(
+              $state,
+              "collapseState",
+              "expanded"
+            ),
           })}
         >
           {p.renderPlasmicSlot({

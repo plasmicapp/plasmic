@@ -65,6 +65,35 @@
   --mixin-qjB654aOL_white-space: pre-wrap;
 }
 
+.plasmic_mixins {
+  --mixin-jNeCCTXV9FR_white-space: pre-wrap;
+  --plasmic-mixin-heading-400_white-space: var(--mixin-jNeCCTXV9FR_white-space);
+  --mixin-tQBS5SaX-_white-space: pre-wrap;
+  --plasmic-mixin-heading-medium-500_white-space: var(
+    --mixin-tQBS5SaX-_white-space
+  );
+  --mixin-Ydvj9CeRg_white-space: pre-wrap;
+  --plasmic-mixin-heading-semi-bold-600_white-space: var(
+    --mixin-Ydvj9CeRg_white-space
+  );
+  --mixin-Ji6hZyKZV_c_white-space: pre-wrap;
+  --plasmic-mixin-primary-400_white-space: var(--mixin-Ji6hZyKZV_c_white-space);
+  --mixin-ZEpf2iR8p_white-space: pre-wrap;
+  --plasmic-mixin-primary-medium-500_white-space: var(
+    --mixin-ZEpf2iR8p_white-space
+  );
+  --mixin-33vFThckx_white-space: pre-wrap;
+  --plasmic-mixin-primary-semi-bold-600_white-space: var(
+    --mixin-33vFThckx_white-space
+  );
+  --mixin-yeEhB4O1C_white-space: pre-wrap;
+  --plasmic-mixin-all-caps-medium-500_white-space: var(
+    --mixin-yeEhB4O1C_white-space
+  );
+  --mixin-BKALyGzv5_white-space: pre-wrap;
+  --plasmic-mixin-caption-400_white-space: var(--mixin-BKALyGzv5_white-space);
+}
+
 :where(.all) {
   display: block;
   white-space: inherit;

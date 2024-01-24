@@ -3272,8 +3272,7 @@
       "indirect": false,
       "globalContextsFilePath": "",
       "customFunctions": [],
-      "splitsProviderFilePath": "",
-      "jsBundleThemes": []
+      "splitsProviderFilePath": ""
     },
     {
       "projectId": "wT5BWZPEc2fYxyqbTLXMt2",
@@ -5625,8 +5624,8 @@
       "projectApiToken": "WZnqNPTrQWzh5I8cONNBKCxmEf6EHRATFi0toD2IS019rO2Lk6XuFRZFQ3y7JBhKPWhROn9mnR7VjJiVFtw",
       "indirect": false,
       "globalContextsFilePath": "",
-      "jsBundleThemes": [],
-      "splitsProviderFilePath": ""
+      "splitsProviderFilePath": "",
+      "customFunctions": []
     },
     {
       "projectId": "oT38tGyqov9SPWHpf3Y2Rf",
@@ -8474,8 +8473,8 @@
       "projectApiToken": "el302sauzLq9TF1HjJbObNrtsIniSCy7av8KnADA1NPzWfOMMo6gfGVN8u3bDJ5r3aP2nZukJ5x4xSEaXig",
       "indirect": false,
       "globalContextsFilePath": "",
-      "jsBundleThemes": [],
-      "splitsProviderFilePath": ""
+      "splitsProviderFilePath": "",
+      "customFunctions": []
     },
     {
       "projectId": "95xp9cYcv7HrNWpFWWhbcv",
@@ -8495,8 +8494,8 @@
       "projectApiToken": "X9RF4QUgEjfqAlBk6Nl7OhgXLqkhClEfwbGYrPzja9eIAqXGaTkltUmNaeX46ylhQdL0q5oCn6BzRE43wsMyg",
       "indirect": false,
       "globalContextsFilePath": "",
-      "jsBundleThemes": [],
-      "splitsProviderFilePath": ""
+      "splitsProviderFilePath": "",
+      "customFunctions": []
     },
     {
       "projectId": "sZNLVjiaeNGLXmdsrbRQAX",
@@ -8826,7 +8825,8 @@
         }
       ],
       "splitsProviderFilePath": "",
-      "customFunctions": []
+      "customFunctions": [],
+      "jsBundleThemes": []
     },
     {
       "projectId": "gtUDvxG6cmBbSzqLikNzoP",
@@ -11084,6 +11084,6 @@
   "postSyncCommands": [
     "git ls-files -m | xargs pre-commit run prettier --files"
   ],
-  "cliVersion": "0.1.325",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.325/dist/plasmic.schema.json"
+  "cliVersion": "0.1.326",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.326/dist/plasmic.schema.json"
 }

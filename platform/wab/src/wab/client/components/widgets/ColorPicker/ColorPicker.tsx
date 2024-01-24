@@ -510,7 +510,9 @@ function ColorPicker_({
                   }
                   withIcons={["startIcon", "endIcon"]}
                 >
-                  <div className="text-ellipsis">{appliedToken.name}</div>
+                  <div className="fill-width text-ellipsis">
+                    {appliedToken.name}
+                  </div>
                 </Button>
               </MaybeWrap>
             </div>
