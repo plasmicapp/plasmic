@@ -91,7 +91,7 @@ export async function executeDataSourceOperation(
   if (!opMeta) {
     throw new Error(`Unknown operation ${source.source}.${operation.name}`);
   }
-  console.log({ operation, userArgs, fetchArgs });
+  console.log({ operation: operation.name, userArgs, fetchArgs });
   const finalArgs = substituteArgs(
     source,
     opMeta,
