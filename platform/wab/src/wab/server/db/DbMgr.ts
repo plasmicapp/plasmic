@@ -1187,6 +1187,17 @@ export class DbMgr implements MigrationDbMgr {
     return await this.entMgr.save(team);
   }
 
+  async isTeamWhiteLabel(team: Team) {
+    if (!!team.whiteLabelName) {
+      return true;
+    }
+    let parentTeam = team.parentTeam;
+    if (team.parentTeamId && !team.parentTeam) {
+      parentTeam = await this.getTeamById(team.parentTeamId);
+    }
+    return !!team.whiteLabelName || !!parentTeam?.whiteLabelName;
+  }
+
   async startFreeTrial({
     teamId,
     featureTierName,
@@ -1401,6 +1412,18 @@ export class DbMgr implements MigrationDbMgr {
       .where(
         "p.id = :projectId AND p.deletedAt IS NULL AND w.deletedAt IS NULL AND t.deletedAt IS NULL",
         { projectId }
+      )
+      .getOne();
+  }
+
+  async getTeamByWorkspaceId(workspaceId: WorkspaceId) {
+    await this.checkWorkspacePerms(workspaceId, "viewer", "get", false);
+    return await this.teams()
+      .createQueryBuilder("t")
+      .innerJoin(Workspace, "w", "w.teamId = t.id")
+      .where(
+        "w.id = :workspaceId AND w.deletedAt IS NULL AND t.deletedAt IS NULL",
+        { workspaceId }
       )
       .getOne();
   }
@@ -2416,6 +2439,9 @@ export class DbMgr implements MigrationDbMgr {
         : undefined;
 
       workspaceId = personalWorkspace?.id ?? workspaceId;
+    } else if (workspaceId && inviteOnly === undefined) {
+      const team = await this.getTeamByWorkspaceId(workspaceId);
+      inviteOnly = team ? await this.isTeamWhiteLabel(team) : undefined;
     }
 
     const project = this.projects().create({
