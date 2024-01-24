@@ -4792,16 +4792,7 @@ export function getArgParams(ctx: SerializerBaseContext) {
   const params = getNonVariantParams(ctx.component);
   return params.filter(
     (p) =>
-      // we need to omit onChange from the list of arg props
-      // https://app.shortcut.com/plasmic/story/24077
-      !(
-        ctx.component.plumeInfo &&
-        ctx.component.plumeInfo.type === "text-input" &&
-        isOnChangeParam(p, ctx.component) &&
-        p.variable.name === "onChange"
-      ) &&
-      (ctx.exportOpts.forceAllProps ||
-        p.exportType !== ParamExportType.ToolsOnly)
+      ctx.exportOpts.forceAllProps || p.exportType !== ParamExportType.ToolsOnly
   );
 }
 
