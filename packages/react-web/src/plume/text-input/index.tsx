@@ -117,14 +117,30 @@ export function useTextInput<
     },
     [config.input]: {
       props: {
+        // We throw all of extra "rest" onto the `input` element, except props
+        // that were meant for the Plasmic component -- the args and variants.
+        // We make two exceptions though:
+        // 1. onChange - Plume text-input is kind of screwy, and the "value" state
+        //    of the input element is not exposed to the outer component via the
+        //    normal way; instead, we register a separate "value" state that's
+        //    in additional to the input.value state. So that means there are
+        //    two `onChange` that we need to pipe through -- the one that updates
+        //    `$state.input.value`, the input value state internal to the component,
+        //    and the one that updates `$state.value`, the separate value state
+        //    exposed to the outside. The generated <PlasmicTextInput/> will pass
+        //    in the onChange for updating the internal `$state.input.value`, and
+        //    props.onChange here will pass in the onChange for updating the
+        //    externally exposed `$state.value`. Wow! Very sad.  If
+        //    `$state.input.value` were just externally exposed, then we wouldn't
+        //    need to do so; but we can't retroactively update people's TextInput
+        //    components that have already been forked :-/
+        // 2. `required`, because that prop existed prior to Plume pkg <= 19.1.1,
+        //    but it was not linked to the input's `required` attribute as it should.
+        //    So this again works around older versions of TextInput out there.
         ...omit(
           rest as any,
-          // We need to remove `required` from the list of internalArgProps to
-          // be omitted in the props being passed through because Plume pkg
-          // <= 19.1.1 had a bug: input[required] was not linked to the
-          // `required` arg as it should.
           ...plasmicClass.internalArgProps.filter(
-            (prop) => prop !== "required"
+            (prop) => prop !== "required" && prop !== "onChange"
           ),
           ...plasmicClass.internalVariantProps
         ),
