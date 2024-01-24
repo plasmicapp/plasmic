@@ -1,3 +1,11 @@
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import { plasmicIFrameMouseDownEvent } from "@/wab/client/definitions/events";
+import {
+  useScaledElementRef,
+  useZoomStyledRef,
+} from "@/wab/client/hooks/useScaledElementRef";
+import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import { cx, mkShortId } from "@/wab/common";
 import { Dropdown, Popover, Tooltip } from "antd";
 import { isString } from "lodash";
 import React, {
@@ -9,15 +17,11 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { cx, mkShortId } from "../../../../common";
-import { plasmicIFrameMouseDownEvent } from "../../../definitions/events";
-import {
-  useScaledElementRef,
-  useZoomStyledRef,
-} from "../../../hooks/useScaledElementRef";
-import PlusIcon from "../../../plasmic/plasmic_kit/PlasmicIcon__Plus";
-import { Icon } from "../../widgets/Icon";
 import sty from "./GhostFrame.module.sass";
+
+const GHOST_FRAME_MIN_DIM = 80;
+const GHOST_FRAME_MAX_DIM = 1200;
+const GHOST_FRAME_DEFAULT_DIM = 300;
 
 export type GhostFrameRef = {
   closeMenu: () => void;
@@ -46,10 +50,19 @@ export const GhostFrame = React.forwardRef(function GhostFrame_(
     style,
     menu,
     popover,
-    width = 300,
-    height = 300,
+    width: widthProp = GHOST_FRAME_DEFAULT_DIM,
+    height: heightProp = GHOST_FRAME_DEFAULT_DIM,
     ...rest
   } = props;
+
+  const height = Math.max(
+    GHOST_FRAME_MIN_DIM,
+    Math.min(GHOST_FRAME_MAX_DIM, heightProp)
+  );
+  const width = Math.max(
+    GHOST_FRAME_MIN_DIM,
+    Math.min(GHOST_FRAME_MAX_DIM, widthProp)
+  );
 
   const plusIconSize = 48;
   const plusIconPadding = 20;
@@ -87,17 +100,14 @@ export const GhostFrame = React.forwardRef(function GhostFrame_(
     };
   }, [showMenu]);
 
-  const actualHeight = Math.max(70, height);
-  const actualWidth = Math.max(70, width);
-
   let content = (
     <button
       ref={plusButtonRef}
       className={cx(sty.root, className)}
       style={{
         ...style,
-        height: actualHeight,
-        width: actualWidth,
+        height,
+        width,
       }}
       aria-label={
         props["aria-label"] ?? (isString(tooltip) ? tooltip : undefined)
