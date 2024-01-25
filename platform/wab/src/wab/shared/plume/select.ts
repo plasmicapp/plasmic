@@ -187,6 +187,9 @@ export const SelectPlugin: PlumePlugin = {
         opts?.typeName ?? makeDefaultExternalPropsName(component)
       } extends pp.BaseSelectProps {
         ${params
+          // We exclude onChange here, as we just inherit the onChange prop
+          // with better types from pp.BaseSelectProps
+          .filter((p) => paramToVarName(ctx.component, p) !== "onChange")
           .map(
             (param) =>
               `"${paramToVarName(ctx.component, param)}"?: ${serializeParamType(
