@@ -69,6 +69,7 @@ export type PlasmicStyleSwitch__ArgsType = {
   value?: string;
   "aria-label"?: string;
   "aria-labelledby"?: string;
+  onChange?: (isChecked: boolean) => void;
 };
 type ArgPropType = keyof PlasmicStyleSwitch__ArgsType;
 export const PlasmicStyleSwitch__ArgProps = new Array<ArgPropType>(
@@ -76,7 +77,8 @@ export const PlasmicStyleSwitch__ArgProps = new Array<ArgPropType>(
   "name",
   "value",
   "aria-label",
-  "aria-labelledby"
+  "aria-labelledby",
+  "onChange"
 );
 
 export type PlasmicStyleSwitch__OverridesType = {
@@ -90,6 +92,7 @@ export type PlasmicStyleSwitch__OverridesType = {
 export interface DefaultStyleSwitchProps extends pp.SwitchProps {
   "aria-label"?: string;
   "aria-labelledby"?: string;
+  onChange?: (isChecked: boolean) => void;
   valueSetState?: SingleChoiceArg<"isSet" | "isUnset" | "isInherited">;
 }
 

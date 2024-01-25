@@ -33,6 +33,8 @@ import {
   ensureGlobalVariants,
 } from "@plasmicapp/react-web";
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
+import Select__Option from "../../components/widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
+import Select__OptionGroup from "../../components/widgets/Select__OptionGroup"; // plasmic-import: _qMm1mtrqOi/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -60,6 +62,7 @@ export const PlasmicThemeInitialStylesPanel__ArgProps =
 export type PlasmicThemeInitialStylesPanel__OverridesType = {
   root?: p.Flex<"div">;
   elementSelect?: p.Flex<typeof Select>;
+  svg?: p.Flex<"svg">;
   form?: p.Flex<"div">;
 };
 
@@ -157,6 +160,14 @@ function PlasmicThemeInitialStylesPanel__RenderFunc(props: {
           data-plasmic-name={"elementSelect"}
           data-plasmic-override={overrides.elementSelect}
           className={classNames("__wab_instance", sty.elementSelect)}
+          icon={
+            <PlussvgIcon
+              data-plasmic-name={"svg"}
+              data-plasmic-override={overrides.svg}
+              className={classNames(projectcss.all, sty.svg)}
+              role={"img"}
+            />
+          }
           onChange={(...eventArgs) => {
             p.generateStateOnChangeProp($state, ["elementSelect", "value"])(
               eventArgs[0]
@@ -180,8 +191,9 @@ function PlasmicThemeInitialStylesPanel__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: ["root", "elementSelect", "form"],
-  elementSelect: ["elementSelect"],
+  root: ["root", "elementSelect", "svg", "form"],
+  elementSelect: ["elementSelect", "svg"],
+  svg: ["svg"],
   form: ["form"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
@@ -190,6 +202,7 @@ type DescendantsType<T extends NodeNameType> =
 type NodeDefaultElementType = {
   root: "div";
   elementSelect: typeof Select;
+  svg: "svg";
   form: "div";
 };
 
@@ -255,6 +268,7 @@ export const PlasmicThemeInitialStylesPanel = Object.assign(
   {
     // Helper components rendering sub-elements
     elementSelect: makeNodeComponent("elementSelect"),
+    svg: makeNodeComponent("svg"),
     form: makeNodeComponent("form"),
 
     // Metadata about props expected for PlasmicThemeInitialStylesPanel

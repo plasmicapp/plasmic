@@ -846,6 +846,17 @@ const expToPictureAssetRefs = maybeComputedFn(function expToPictureAssetRefs(
   return refIds;
 });
 
+export const getAllUsedImageAssets = maybeComputedFn(
+  function getAllUsedImageAssets(site: Site) {
+    const usedAssets = new Set<ImageAsset>();
+    for (const comp of site.components) {
+      const usedAssetsByComponent = componentToUsedImageAssets(site, comp);
+      xAddAll(usedAssets, usedAssetsByComponent);
+    }
+    return usedAssets;
+  }
+);
+
 export const getComponentsUsingImageAsset = maybeComputedFn(
   function getComponentsUsingImageAsset(site: Site, asset: ImageAsset) {
     return site.components.filter((comp) => {

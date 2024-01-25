@@ -79,6 +79,7 @@ export type PlasmicStyleSelect__ArgsType = {
   value?: "Dynamic options";
   name?: string;
   options?: any;
+  onChange?: (value: string) => void;
   "aria-label"?: string;
   "aria-labelledby"?: string;
 };
@@ -90,6 +91,7 @@ export const PlasmicStyleSelect__ArgProps = new Array<ArgPropType>(
   "value",
   "name",
   "options",
+  "onChange",
   "aria-label",
   "aria-labelledby"
 );

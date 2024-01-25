@@ -2,6 +2,10 @@ import { ImageAsset, ProjectDependency } from "@/wab/classes";
 import { AppCtx } from "@/wab/client/app-ctx";
 import ListItem from "@/wab/client/components/ListItem";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
+import { reactConfirm } from "@/wab/client/components/quick-modals";
+import MultiAssetsActions, {
+  useMultiAssetsActions,
+} from "@/wab/client/components/sidebar/MultiAssetsActions";
 import { DraggableInsertable } from "@/wab/client/components/studio/add-drawer/DraggableInsertable";
 import {
   ImagePaster,
@@ -9,6 +13,7 @@ import {
   ImageUploader,
 } from "@/wab/client/components/style-controls/ImageSelector";
 import { Matcher } from "@/wab/client/components/view-common";
+import Checkbox from "@/wab/client/components/widgets/Checkbox";
 import {
   LeftIconsSectionTooltip,
   LeftImagesSectionTooltip,
@@ -30,6 +35,7 @@ import { DEVFLAGS } from "@/wab/devflags";
 import { ImageAssetType } from "@/wab/image-asset-type";
 import { extractImageAssetUsages } from "@/wab/image-assets";
 import { ImageUploadResponse } from "@/wab/shared/ApiSchema";
+import { getAllUsedImageAssets } from "@/wab/shared/cached-selectors";
 import { imageDataUriToBlob } from "@/wab/shared/data-urls";
 import { Menu } from "antd";
 import { last, orderBy } from "lodash";
@@ -77,6 +83,8 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
       [ImageAssetType.Icon]: true,
       [ImageAssetType.Picture]: true,
     });
+
+  const usedImageAssets = getAllUsedImageAssets(studioCtx.site);
 
   const addAsset = async (type: ImageAssetType) => {
     return studioCtx.changeUnsafe(() => {
@@ -156,32 +164,72 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
         )
       ),
     ];
+
     return (
-      <VirtualGroupedList
-        items={items}
-        renderItem={(asset) => (
-          <ImageAssetControl
-            key={asset.uuid}
-            studioCtx={studioCtx}
-            asset={asset}
-            matcher={matcher}
-            readOnly={readOnly || !editableAssets.has(asset)}
-            onFindReferences={() => onFindReferences(asset)}
-            onClick={
-              editableAssets.has(asset) ? () => onSelect(asset) : undefined
+      <MultiAssetsActions
+        onDelete={async (selected: string[]) => {
+          const selectedAssetsIds = new Set(selected);
+          const selectedAssets = studioCtx.site.imageAssets.filter((asset) => {
+            return selectedAssetsIds.has(asset.uuid);
+          });
+          const assetsInUse = selectedAssets.filter((_asset) =>
+            usedImageAssets.has(_asset)
+          );
+          if (assetsInUse.length > 0) {
+            const confirmed = await reactConfirm({
+              message: (
+                <>
+                  <p>
+                    <strong>
+                      {assetsInUse.map((_asset) => _asset.name).join(", ")}
+                    </strong>{" "}
+                    are being used in your project.
+                  </p>
+                  Are you sure you want to delete it?
+                </>
+              ),
+            });
+            if (!confirmed) {
+              return false;
             }
-          />
-        )}
-        itemHeight={32}
-        renderGroupHeader={(dep) =>
-          `Imported from "${studioCtx.projectDependencyManager.getNiceDepName(
-            dep
-          )}"`
-        }
-        headerHeight={50}
-        hideEmptyGroups
-        forceExpandAll={matcher.hasQuery() || filterDeps.length > 0}
-      />
+          }
+
+          await studioCtx.change(({ success }) => {
+            for (const _asset of selectedAssets) {
+              studioCtx.tplMgr().removeImageAsset(_asset);
+            }
+            return success();
+          });
+
+          return true;
+        }}
+      >
+        <VirtualGroupedList
+          items={items}
+          renderItem={(asset) => (
+            <ImageAssetControl
+              key={asset.uuid}
+              studioCtx={studioCtx}
+              asset={asset}
+              matcher={matcher}
+              readOnly={readOnly || !editableAssets.has(asset)}
+              onFindReferences={() => onFindReferences(asset)}
+              onClick={
+                editableAssets.has(asset) ? () => onSelect(asset) : undefined
+              }
+            />
+          )}
+          itemHeight={32}
+          renderGroupHeader={(dep) =>
+            `Imported from "${studioCtx.projectDependencyManager.getNiceDepName(
+              dep
+            )}"`
+          }
+          headerHeight={50}
+          hideEmptyGroups
+          forceExpandAll={matcher.hasQuery() || filterDeps.length > 0}
+        />
+      </MultiAssetsActions>
     );
   };
 
@@ -287,6 +335,9 @@ const ImageAssetControl = observer(function ImageAssetControl(props: {
     onFindReferences,
     onClick,
   } = props;
+
+  const multiAssetsActions = useMultiAssetsActions();
+
   const renderMenu = () => {
     const builder = new MenuBuilder();
     builder.genSection(undefined, (push) => {
@@ -296,14 +347,26 @@ const ImageAssetControl = observer(function ImageAssetControl(props: {
         </Menu.Item>
       );
       if (!readOnly) {
-        push(
-          <Menu.Item
-            key="delete"
-            onClick={() => studioCtx.siteOps().tryDeleteImageAsset(asset)}
-          >
-            Delete
-          </Menu.Item>
-        );
+        if (!multiAssetsActions.isSelecting) {
+          push(
+            <Menu.Item
+              key="start-bulk-delete"
+              onClick={() =>
+                multiAssetsActions.onAssetSelected(asset.uuid, true)
+              }
+            >
+              Start bulk selection
+            </Menu.Item>
+          );
+          push(
+            <Menu.Item
+              key="delete"
+              onClick={() => studioCtx.siteOps().tryDeleteImageAsset(asset)}
+            >
+              Delete
+            </Menu.Item>
+          );
+        }
       }
     });
     return builder.build({
@@ -315,6 +378,12 @@ const ImageAssetControl = observer(function ImageAssetControl(props: {
     asset.type === ImageAssetType.Picture && !!asset.width && !!asset.height
       ? `${Math.round(asset.width)} × ${Math.round(asset.height)}`
       : undefined;
+
+  const isSelected = multiAssetsActions.isAssetSelected(asset.uuid);
+  const onToggle = () => {
+    multiAssetsActions.onAssetSelected(asset.uuid, !isSelected);
+  };
+
   return (
     <DraggableInsertable
       sc={studioCtx}
@@ -332,18 +401,23 @@ const ImageAssetControl = observer(function ImageAssetControl(props: {
         isDragging={isDragging}
         isDraggable={!readOnly}
         icon={
-          <ImagePreview
-            uri={asset.dataUri || undefined}
-            className="mr-ch"
-            style={{
-              width: 28,
-              height: 28,
-            }}
-          />
+          <>
+            {multiAssetsActions.isSelecting && (
+              <Checkbox isChecked={isSelected}> </Checkbox>
+            )}
+            <ImagePreview
+              uri={asset.dataUri || undefined}
+              className="mr-ch"
+              style={{
+                width: 28,
+                height: 28,
+              }}
+            />
+          </>
         }
         dragHandleProps={dragHandleProps}
         menu={renderMenu}
-        onClick={onClick}
+        onClick={multiAssetsActions.isSelecting ? onToggle : onClick}
         rightContent={size}
         hasRightContents={!!size}
       >

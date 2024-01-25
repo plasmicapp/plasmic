@@ -246,6 +246,11 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
             as={"div"}
             hasGap={true}
             className={classNames(projectcss.all, sty.freeBox__f9FwI, {
+              [sty.freeBoxcompact__f9FwIzQlq]: hasVariant(
+                $state,
+                "compact",
+                "compact"
+              ),
               [sty.freeBoxnoDescription__f9FwIcTtUc]: hasVariant(
                 $state,
                 "noDescription",
@@ -307,6 +312,11 @@ function PlasmicLeftPaneHeader__RenderFunc(props: {
                   projectcss.all,
                   sty.titleActionsContainer,
                   {
+                    [sty.titleActionsContainercompact]: hasVariant(
+                      $state,
+                      "compact",
+                      "compact"
+                    ),
                     [sty.titleActionsContainerhasTitleActions]: hasVariant(
                       $state,
                       "hasTitleActions",

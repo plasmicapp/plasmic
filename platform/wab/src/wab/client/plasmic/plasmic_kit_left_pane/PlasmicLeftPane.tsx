@@ -112,6 +112,11 @@ export const PlasmicLeftPane__ArgProps = new Array<ArgPropType>();
 export type PlasmicLeftPane__OverridesType = {
   root?: p.Flex<"div">;
   leftTabStrip?: p.Flex<typeof LeftTabStrip>;
+  lint?: p.Flex<typeof LeftTabButton>;
+  outline?: p.Flex<typeof LeftTabButton>;
+  assets?: p.Flex<typeof LeftTabButton>;
+  settingsGroup?: p.Flex<typeof LeftTabButton>;
+  more?: p.Flex<typeof LeftTabButton>;
   paneContainer?: p.Flex<"div">;
   paneContent?: p.Flex<"div">;
   leftGeneralTokensPanel?: p.Flex<typeof LeftGeneralTokensPanel>;
@@ -245,6 +250,69 @@ function PlasmicLeftPane__RenderFunc(props: {
             : hasVariant($state, "type", "tokens")
             ? "tokens"
             : undefined
+        }
+        buttons={
+          <React.Fragment>
+            <LeftTabButton
+              data-plasmic-name={"lint"}
+              data-plasmic-override={overrides.lint}
+              className={classNames("__wab_instance", sty.lint)}
+              icon={
+                <WarningTrianglesvgIcon
+                  className={classNames(projectcss.all, sty.svg__zOfU0)}
+                  role={"img"}
+                />
+              }
+            />
+
+            <LeftTabButton
+              data-plasmic-name={"outline"}
+              data-plasmic-override={overrides.outline}
+              className={classNames("__wab_instance", sty.outline)}
+              icon={
+                <TreeIcon
+                  className={classNames(projectcss.all, sty.svg__sSj6U)}
+                  role={"img"}
+                />
+              }
+            />
+
+            <LeftTabButton
+              data-plasmic-name={"assets"}
+              data-plasmic-override={overrides.assets}
+              className={classNames("__wab_instance", sty.assets)}
+              icon={
+                <ComponentssvgIcon
+                  className={classNames(projectcss.all, sty.svg___2I0R2)}
+                  role={"img"}
+                />
+              }
+            />
+
+            <LeftTabButton
+              data-plasmic-name={"settingsGroup"}
+              data-plasmic-override={overrides.settingsGroup}
+              className={classNames("__wab_instance", sty.settingsGroup)}
+              icon={
+                <GearIcon
+                  className={classNames(projectcss.all, sty.svg__otRy1)}
+                  role={"img"}
+                />
+              }
+            />
+
+            <LeftTabButton
+              data-plasmic-name={"more"}
+              data-plasmic-override={overrides.more}
+              className={classNames("__wab_instance", sty.more)}
+              icon={
+                <DotsHorizontalCirclesvgIcon
+                  className={classNames(projectcss.all, sty.svg___52RoI)}
+                  role={"img"}
+                />
+              }
+            />
+          </React.Fragment>
         }
         className={classNames("__wab_instance", sty.leftTabStrip, {
           [sty.leftTabStriptype_components]: hasVariant(
@@ -588,6 +656,11 @@ const PlasmicDescendants = {
   root: [
     "root",
     "leftTabStrip",
+    "lint",
+    "outline",
+    "assets",
+    "settingsGroup",
+    "more",
     "paneContainer",
     "paneContent",
     "leftGeneralTokensPanel",
@@ -603,7 +676,19 @@ const PlasmicDescendants = {
     "leftSplitsPanel",
     "leftLintIssuesPanel",
   ],
-  leftTabStrip: ["leftTabStrip"],
+  leftTabStrip: [
+    "leftTabStrip",
+    "lint",
+    "outline",
+    "assets",
+    "settingsGroup",
+    "more",
+  ],
+  lint: ["lint"],
+  outline: ["outline"],
+  assets: ["assets"],
+  settingsGroup: ["settingsGroup"],
+  more: ["more"],
   paneContainer: [
     "paneContainer",
     "paneContent",
@@ -654,6 +739,11 @@ type DescendantsType<T extends NodeNameType> =
 type NodeDefaultElementType = {
   root: "div";
   leftTabStrip: typeof LeftTabStrip;
+  lint: typeof LeftTabButton;
+  outline: typeof LeftTabButton;
+  assets: typeof LeftTabButton;
+  settingsGroup: typeof LeftTabButton;
+  more: typeof LeftTabButton;
   paneContainer: "div";
   paneContent: "div";
   leftGeneralTokensPanel: typeof LeftGeneralTokensPanel;
@@ -731,6 +821,11 @@ export const PlasmicLeftPane = Object.assign(
   {
     // Helper components rendering sub-elements
     leftTabStrip: makeNodeComponent("leftTabStrip"),
+    lint: makeNodeComponent("lint"),
+    outline: makeNodeComponent("outline"),
+    assets: makeNodeComponent("assets"),
+    settingsGroup: makeNodeComponent("settingsGroup"),
+    more: makeNodeComponent("more"),
     paneContainer: makeNodeComponent("paneContainer"),
     paneContent: makeNodeComponent("paneContent"),
     leftGeneralTokensPanel: makeNodeComponent("leftGeneralTokensPanel"),

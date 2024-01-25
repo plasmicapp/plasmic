@@ -224,7 +224,9 @@ function PlasmicLeftImagesPanel__RenderFunc(props: {
       <div
         data-plasmic-name={"iconsContent"}
         data-plasmic-override={overrides.iconsContent}
-        className={classNames(projectcss.all, sty.iconsContent)}
+        className={classNames(projectcss.all, sty.iconsContent, {
+          [sty.iconsContentcompact]: hasVariant($state, "compact", "compact"),
+        })}
       />
 
       <LeftPaneHeader

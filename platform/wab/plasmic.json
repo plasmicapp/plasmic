@@ -523,6 +523,19 @@
           "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicThemeInitialStylesPanel.module.css",
           "scheme": "blackbox",
           "componentType": "component"
+        },
+        {
+          "id": "d693eBfNDs7j",
+          "name": "MultiAssetsActions",
+          "type": "managed",
+          "projectId": "aukbrhkegRkQ6KizvhdUPT",
+          "renderModuleFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicMultiAssetsActions.tsx",
+          "importSpec": {
+            "modulePath": "wab/client/components/sidebar/MultiAssetsActions.tsx"
+          },
+          "cssFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicMultiAssetsActions.module.css",
+          "scheme": "blackbox",
+          "componentType": "component"
         }
       ],
       "icons": [
@@ -560,10 +573,9 @@
         }
       ],
       "indirect": false,
-      "globalContextsFilePath": "",
+      "globalContextsFilePath": "wab/client/plasmic/plasmic_kit_left_pane/PlasmicGlobalContextsProvider.tsx",
       "splitsProviderFilePath": "",
-      "customFunctions": [],
-      "jsBundleThemes": []
+      "customFunctions": []
     },
     {
       "projectId": "ooL7EhXDmFQWnW9sxtchhE",

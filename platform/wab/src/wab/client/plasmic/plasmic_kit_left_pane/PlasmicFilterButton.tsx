@@ -65,7 +65,6 @@ export const PlasmicFilterButton__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicFilterButton__OverridesType = {
   root?: p.Flex<typeof Button>;
-  svg?: p.Flex<"svg">;
 };
 
 export interface DefaultFilterButtonProps {
@@ -124,16 +123,36 @@ function PlasmicFilterButton__RenderFunc(props: {
         [sty.rootisActive]: hasVariant($state, "isActive", "isActive"),
       })}
       color={hasVariant($state, "isActive", "isActive") ? "green" : undefined}
+      endIcon={
+        <ChevronDownsvgIcon
+          className={classNames(projectcss.all, sty.svg__ydByj, {
+            [sty.svgisActive__ydByjpuhxi]: hasVariant(
+              $state,
+              "isActive",
+              "isActive"
+            ),
+          })}
+          role={"img"}
+        />
+      }
       font={"dim"}
       size={"compact"}
+      startIcon={
+        <ArrowRightsvgIcon
+          className={classNames(projectcss.all, sty.svg__h6NCv)}
+          role={"img"}
+        />
+      }
       type={hasVariant($state, "isActive", "isActive") ? [] : ["clear"]}
       withIcons={["endIcon"]}
     >
       <FilterIcon
-        data-plasmic-name={"svg"}
-        data-plasmic-override={overrides.svg}
-        className={classNames(projectcss.all, sty.svg, {
-          [sty.svgisActive]: hasVariant($state, "isActive", "isActive"),
+        className={classNames(projectcss.all, sty.svg__wHz3V, {
+          [sty.svgisActive__wHz3Vpuhxi]: hasVariant(
+            $state,
+            "isActive",
+            "isActive"
+          ),
         })}
         role={"img"}
       />
@@ -142,15 +161,13 @@ function PlasmicFilterButton__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: ["root", "svg"],
-  svg: ["svg"],
+  root: ["root"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
   (typeof PlasmicDescendants)[T][number];
 type NodeDefaultElementType = {
   root: typeof Button;
-  svg: "svg";
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -213,7 +230,6 @@ export const PlasmicFilterButton = Object.assign(
   makeNodeComponent("root"),
   {
     // Helper components rendering sub-elements
-    svg: makeNodeComponent("svg"),
 
     // Metadata about props expected for PlasmicFilterButton
     internalVariantProps: PlasmicFilterButton__VariantProps,
