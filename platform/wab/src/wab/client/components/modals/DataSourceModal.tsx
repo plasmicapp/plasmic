@@ -9,7 +9,6 @@ import Button from "@/wab/client/components/widgets/Button";
 import Select from "@/wab/client/components/widgets/Select";
 import { Textbox } from "@/wab/client/components/widgets/Textbox";
 import { useApi } from "@/wab/client/contexts/AppContexts";
-import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
 import { ensure, notNil } from "@/wab/common";
 import GLogo from "@/wab/commons/images/g-logo.png";
 import { RequiredSubKeys } from "@/wab/commons/types";
@@ -987,11 +986,7 @@ function StringDictEditor(props: {
   return (
     <ListBox
       appendPrepend="append"
-      addNode={
-        <div style={{ color: "blue" }}>
-          <PlusIcon /> Add new
-        </div>
-      }
+      addNode={<Button type="link">+ Add New</Button>}
       onAdd={() => {
         setCurrentValues([...currentValues, { key: "", value: "" }]);
       }}
