@@ -1,4 +1,3 @@
-import L from "lodash";
 import {
   Component,
   Site,
@@ -6,14 +5,15 @@ import {
   Variant,
   VariantGroup,
   VariantSetting,
-} from "../../classes";
-import { xAddAll } from "../../common";
-import { createExpandedRuleSetMerger } from "../../styles";
-import { isTplTag, isTplVariantable } from "../../tpls";
-import { flattenComponent } from "../cached-selectors";
-import { plasmicImgAttrStyles } from "../core/style-props";
-import { makeLayoutAwareRuleSet } from "../layoututils";
-import { isGlobalVariant, VariantGroupType } from "../Variants";
+} from "@/wab/classes";
+import { xAddAll } from "@/wab/common";
+import { flattenComponent } from "@/wab/shared/cached-selectors";
+import { plasmicImgAttrStyles } from "@/wab/shared/core/style-props";
+import { makeLayoutAwareRuleSet } from "@/wab/shared/layoututils";
+import { isGlobalVariant, VariantGroupType } from "@/wab/shared/Variants";
+import { createExpandedRuleSetMerger } from "@/wab/styles";
+import { isTplTag, isTplVariantable } from "@/wab/tpls";
+import L from "lodash";
 import { ComponentGenHelper } from "./codegen-helpers";
 import { getReactWebPackageName } from "./react-p";
 import { makeGlobalVariantIdFileName, makeUseClient } from "./react-p/utils";
@@ -94,7 +94,7 @@ export function ${makeGlobalVariantGroupUseName(vg)}() {
     );
 
     serializedHook = `
-export const useScreenVariants = p.createUseScreenVariants(${jsLiteral(
+export const useScreenVariants = createUseScreenVariants(${jsLiteral(
       vg.multi
     )},{
   ${variants
@@ -126,7 +126,7 @@ export function ${makeGlobalVariantGroupUseName(vg)}() {
     ${makeUseClient(opts)}
 
     import * as React from "react";
-    import * as p from "${getReactWebPackageName(opts)}";
+    import { createUseScreenVariants } from "${getReactWebPackageName(opts)}";
 
     export type ${valueType} = ${serializeVariantGroupMembersType(vg)};
     export const ${contextName} = React.createContext<${

@@ -783,8 +783,8 @@ export const updateVariableOperations: {
     hidden: (variableType, isImplicitStateArray) =>
       isImplicitStateArray || variableType !== "number",
     functionBody: `
-    const oldValue = p.get(objRoot, variablePath);
-    p.set(objRoot, variablePath, oldValue+1);
+    const oldValue = $stateGet(objRoot, variablePath);
+    $stateSet(objRoot, variablePath, oldValue+1);
     return oldValue+1;
   `,
   },
@@ -794,8 +794,8 @@ export const updateVariableOperations: {
     hidden: (variableType, isImplicitStateArray) =>
       isImplicitStateArray || variableType !== "number",
     functionBody: `
-    const oldValue = p.get(objRoot, variablePath);
-    p.set(objRoot, variablePath, oldValue-1);
+    const oldValue = $stateGet(objRoot, variablePath);
+    $stateSet(objRoot, variablePath, oldValue-1);
     return oldValue-1;
   `,
   },
@@ -805,8 +805,8 @@ export const updateVariableOperations: {
     hidden: (variableType, isImplicitStateArray) =>
       isImplicitStateArray || variableType !== "boolean",
     functionBody: `
-    const oldValue = p.get(objRoot, variablePath);
-    p.set(objRoot, variablePath, !oldValue);
+    const oldValue = $stateGet(objRoot, variablePath);
+    $stateSet(objRoot, variablePath, !oldValue);
     return !oldValue;
   `,
   },
@@ -816,7 +816,7 @@ export const updateVariableOperations: {
     hidden: (variableType, isImplicitStateArray) =>
       !isImplicitStateArray && variableType !== "array",
     functionBody: `
-    const arr = p.get(objRoot, variablePath);
+    const arr = $stateGet(objRoot, variablePath);
     arr.push(value);
     return arr;
   `,
@@ -827,7 +827,7 @@ export const updateVariableOperations: {
     hidden: (variableType, isImplicitStateArray) =>
       !isImplicitStateArray && variableType !== "array",
     functionBody: `
-    const arr = p.get(objRoot, variablePath);
+    const arr = $stateGet(objRoot, variablePath);
     arr.splice(startIndex, deleteCount);
     return arr;
   `,
@@ -836,7 +836,7 @@ export const updateVariableOperations: {
     label: "New value",
     value: UpdateVariableOperations.NewValue,
     functionBody: `
-    p.set(objRoot, variablePath, value);
+    $stateSet(objRoot, variablePath, value);
     return value;
   `,
   },
@@ -844,7 +844,7 @@ export const updateVariableOperations: {
     label: "Clear value",
     value: UpdateVariableOperations.ClearValue,
     functionBody: `
-    p.set(objRoot, variablePath, undefined);
+    $stateSet(objRoot, variablePath, undefined);
     return undefined;
   `,
   },
@@ -877,7 +877,7 @@ export const updateVariantOperations: {
     label: "New value",
     value: UpdateVariantOperations.NewValue,
     functionBody: `
-    p.set($state, vgroup, value);
+    $stateSet($state, vgroup, value);
     return value;
   `,
     hidden: (vg) => isStandaloneVariantGroup(vg),
@@ -886,7 +886,7 @@ export const updateVariantOperations: {
     label: "Clear variant",
     value: UpdateVariantOperations.ClearValue,
     functionBody: `
-    p.set($state, vgroup, undefined);
+    $stateSet($state, vgroup, undefined);
     return undefined;
   `,
     hidden: (vg) => isStandaloneVariantGroup(vg),
@@ -896,8 +896,8 @@ export const updateVariantOperations: {
     value: UpdateVariantOperations.Toggle,
     hidden: (vg) => !isStandaloneVariantGroup(vg),
     functionBody: `
-    const oldValue = p.get($state, vgroup);
-    p.set($state, vgroup, !oldValue);
+    const oldValue = $stateGet($state, vgroup);
+    $stateSet($state, vgroup, !oldValue);
     return !oldValue;
   `,
   },
@@ -906,7 +906,7 @@ export const updateVariantOperations: {
     value: UpdateVariantOperations.MultiToggle,
     hidden: (vg) => isStandaloneVariantGroup(vg) || !vg.multi,
     functionBody: `
-    let activeVariants = p.get($state, vgroup) ?? [];
+    let activeVariants = $stateGet($state, vgroup) ?? [];
     if (typeof activeVariants === "string") {
       activeVariants = [activeVariants];
     }
@@ -917,7 +917,7 @@ export const updateVariantOperations: {
         activeVariants.push(variant);
       }
     }
-    p.set($state, vgroup, activeVariants);
+    $stateSet($state, vgroup, activeVariants);
     return activeVariants;
   `,
   },
@@ -926,7 +926,7 @@ export const updateVariantOperations: {
     value: UpdateVariantOperations.Activate,
     hidden: (vg) => !isStandaloneVariantGroup(vg),
     functionBody: `
-    p.set($state, vgroup, true);
+    $stateSet($state, vgroup, true);
     return true;
   `,
   },
@@ -935,7 +935,7 @@ export const updateVariantOperations: {
     value: UpdateVariantOperations.MultiActivate,
     hidden: (vg) => isStandaloneVariantGroup(vg) || !vg.multi,
     functionBody: `
-    let activeVariants = p.get($state, vgroup) ?? [];
+    let activeVariants = $stateGet($state, vgroup) ?? [];
     if (typeof activeVariants === "string") {
       activeVariants = [activeVariants];
     }
@@ -944,7 +944,7 @@ export const updateVariantOperations: {
         activeVariants.push(variant)
       }
     }
-    p.set($state, vgroup, activeVariants);
+    $stateSet($state, vgroup, activeVariants);
     return activeVariants;
   `,
   },
@@ -953,7 +953,7 @@ export const updateVariantOperations: {
     value: UpdateVariantOperations.Deactivate,
     hidden: (vg) => !isStandaloneVariantGroup(vg),
     functionBody: `
-    p.set($state, vgroup, false);
+    $stateSet($state, vgroup, false);
     return false;
   `,
   },
@@ -962,12 +962,12 @@ export const updateVariantOperations: {
     value: UpdateVariantOperations.MultiDeactivate,
     hidden: (vg) => isStandaloneVariantGroup(vg) || !vg.multi,
     functionBody: `
-    const activeVariants = p.get($state, vgroup) ?? [];
+    const activeVariants = $stateGet($state, vgroup) ?? [];
     if (typeof activeVariants === "string") {
       activeVariants = [activeVariants];
     }
     const filteredVariants = activeVariants.filter(variant => !value.includes(variant));
-    p.set($state, vgroup, filteredVariants);
+    $stateSet($state, vgroup, filteredVariants);
     return filteredVariants;
   `,
   },

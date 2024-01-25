@@ -603,3 +603,55 @@ export function maybeMakePlasmicImgSrc(asset: ImageAsset, exprCtx: ExprCtx) {
     ),
   };
 }
+
+export function getReactWebNamedImportsForRender() {
+  return `Flex as Flex__,
+  MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
+  SingleBooleanChoiceArg,
+  SingleChoiceArg,
+  Stack as Stack__,
+  StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
+  deriveRenderOpts,
+  ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
+  `;
+}
+
+export function getHostNamedImportsForRender() {
+  return `
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+  `;
+}
+
+export function getHostNamedImportsForSkeleton() {
+  return `
+  PageParamsProvider as PageParamsProvider__,
+  `;
+}

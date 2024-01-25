@@ -78,8 +78,11 @@ import {
 import { optimizeGeneratedCodeForHostlessPackages } from "./optimize-hostless-packages";
 import {
   getExportedComponentName,
+  getHostNamedImportsForRender,
+  getHostNamedImportsForSkeleton,
   getImportedComponentName,
   getNormalizedComponentName,
+  getReactWebNamedImportsForRender,
   makeArgPropsName,
   makeArgsTypeName,
   makeCssFileName,
@@ -226,8 +229,13 @@ export function exportReactPlain(
   const refName = plumeImports?.refName;
   const module = `
 import * as React from "react";
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
+import {
+  ${getReactWebNamedImportsForRender()}
+} from "@plasmicapp/react-web";
+import {
+  ${getHostNamedImportsForRender()}
+  ${getHostNamedImportsForSkeleton()}
+} from "@plasmicapp/react-web/lib/host";
 ${
   ctx.usesDataSourceInteraction || ctx.usesComponentLevelQueries
     ? `import { usePlasmicDataConfig, executePlasmicDataOp, usePlasmicDataOp } from "@plasmicapp/react-web/lib/data-sources";`
@@ -235,7 +243,6 @@ ${
 }
 ${plumeType ? `import * as pp from "@plasmicapp/react-web";` : ""}
 ${plumeImports ? plumeImports.imports : ""}
-import {hasVariant, classNames, wrapWithClassName, createPlasmicElementProxy, makeFragment, MultiChoiceArg, SingleBooleanChoiceArg, SingleChoiceArg, pick, omit, useTrigger, ensureGlobalVariants} from "@plasmicapp/react-web";
 
 ${referencedImports.join("\n")}
 ${importGlobalVariantContexts}
@@ -564,7 +571,7 @@ function serializeTplSlot(ctx: SerializerBaseContext, node: TplSlot) {
     serializeTplSlotArgsAsArray(ctx, fallback)
   );
 
-  const serializedSlot = `p.renderPlasmicSlot({
+  const serializedSlot = `renderPlasmicSlot({
     defaultContents: ${serializedFallback},
     value: ${argValue},
     ${slotClassName ? `className: ${slotClassName}` : ""}

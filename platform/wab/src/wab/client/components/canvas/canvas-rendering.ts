@@ -475,7 +475,8 @@ export function mkEventHandlerEnv(
         throw error;
       }
     },
-    p: reactWeb,
+    $stateGet: reactWeb.get,
+    $stateSet: reactWeb.set,
     executePlasmicDataOp:
       dataSources?.executePlasmicDataOp ??
       studioCtx.executePlasmicDataOp.bind(studioCtx),
