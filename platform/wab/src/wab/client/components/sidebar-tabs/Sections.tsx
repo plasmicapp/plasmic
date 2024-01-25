@@ -833,7 +833,8 @@ export function getRenderBySection(
     [
       Section.Tag,
       () =>
-        isTag && (
+        isTag &&
+        showSection(Section.Tag) && (
           <TplTagSection
             key={`${tpl.uuid}-tag`}
             viewCtx={viewCtx}
@@ -844,7 +845,8 @@ export function getRenderBySection(
     [
       Section.HTMLAttributes,
       () =>
-        isTag && (
+        isTag &&
+        showSection(Section.HTMLAttributes) && (
           <HTMLAttributesSection
             key={`${tpl.uuid}-html-attrs`}
             viewCtx={viewCtx}
