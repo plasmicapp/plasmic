@@ -12,6 +12,7 @@ import {
   LeftTabKey,
   LEFT_TAB_PANEL_KEYS,
   makeNiceAliasName,
+  PROJECT_CONFIGS,
   UiConfig,
 } from "@/wab/shared/ui-config-utils";
 import { capitalizeFirst } from "@/wab/strs";
@@ -98,6 +99,19 @@ export function ContentEditorConfigModal(props: {
                 label: pkg.name,
               })),
             ]}
+          />
+        </Form.Item>
+
+        <h3 className="mv-xlg">Project Configs</h3>
+        <Form.Item name={["projectConfigs"]} noStyle>
+          <PreferencesControl
+            label={"Can edit project configurations?"}
+            prefKeys={PROJECT_CONFIGS.map((t) => ({
+              value: t,
+              label: capitalizeFirst(t),
+            }))}
+            options={[true, false]}
+            optionLabel={(op) => (op ? "Enabled" : "Disabled")}
           />
         </Form.Item>
 

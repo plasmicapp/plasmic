@@ -128,6 +128,10 @@ export type LeftTabKey = (typeof LEFT_TAB_PANEL_KEYS)[number];
 export const LEFT_TAB_BUTTON_KEYS = [...LEFT_TAB_PANEL_KEYS, "figma"] as const;
 export type LeftTabButtonKey = (typeof LEFT_TAB_BUTTON_KEYS)[number];
 
+export const PROJECT_CONFIGS = ["localization", "rename"] as const;
+
+export type ProjectConfig = (typeof PROJECT_CONFIGS)[number];
+
 export interface UiConfig {
   styleSectionVisibilities?: Partial<StyleSectionVisibilities>;
   canInsertBasics?: Record<InsertBasicAlias, boolean> | boolean;
@@ -136,6 +140,7 @@ export interface UiConfig {
   pageTemplates?: TemplateSpec[];
   insertableTemplates?: TemplateSpec[];
   leftTabs?: Record<LeftTabButtonKey, "hidden" | "readable" | "writable">;
+  projectConfigs?: Record<ProjectConfig, boolean>;
   brand?: {
     logoImgSrc?: string;
     logoHref?: string;
@@ -212,6 +217,7 @@ export function mergeUiConfigs(
     leftTabs: mergeshallowObjs(configs.map((c) => c.leftTabs)),
     pageTemplates: mergedFirst(configs.map((c) => c.pageTemplates)),
     insertableTemplates: mergedFirst(configs.map((c) => c.insertableTemplates)),
+    projectConfigs: mergeshallowObjs(configs.map((c) => c.projectConfigs)),
     // Deep merge `brand`
     brand: merge({}, ...configs.map((c) => c.brand)),
   };
@@ -346,3 +352,14 @@ const LEFT_TAB_CONTENT_CREATOR_DEFAULT: Record<
   copilot: "hidden",
   figma: "hidden",
 };
+
+export function canEditProjectConfig(
+  config: UiConfig,
+  projectConfig: ProjectConfig
+) {
+  if (!config.projectConfigs) {
+    return true;
+  }
+
+  return config.projectConfigs[projectConfig] ?? true;
+}

@@ -25,6 +25,7 @@ import {
   isReusableComponent,
 } from "@/wab/components";
 import { isCoreTeamEmail } from "@/wab/shared/devflag-utils";
+import { canEditProjectConfig } from "@/wab/shared/ui-config-utils";
 import { Menu, notification, Tooltip } from "antd";
 import { observer } from "mobx-react-lite";
 import React from "react";
@@ -49,11 +50,16 @@ function _TopBar({ preview }: TopBarProps) {
   const isWhiteLabelUser = appCtx.isWhiteLabelUser();
   const isObserver = appCtx.selfInfo?.isObserver;
 
+  const uiConfig = studioCtx.getCurrentUiConfig();
+
   const menu = () => {
     const builder = new MenuBuilder();
     builder.genSection(undefined, (push) => {
       builder.genSection(undefined, (push2) => {
-        if (studioCtx.canEditProject()) {
+        if (
+          studioCtx.canEditProject() &&
+          canEditProjectConfig(uiConfig, "rename")
+        ) {
           push2(
             <Menu.Item
               key="rename"
@@ -103,7 +109,7 @@ function _TopBar({ preview }: TopBarProps) {
             );
           }
 
-          if (!isWhiteLabelUser) {
+          if (canEditProjectConfig(uiConfig, "localization")) {
             push2(
               <Menu.Item
                 key="localization"
@@ -283,7 +289,6 @@ function _TopBar({ preview }: TopBarProps) {
   };
 
   const contextMenuProps = useContextMenu({ menu });
-  const uiConfig = studioCtx.getCurrentUiConfig();
 
   const brand =
     uiConfig.brand ??
