@@ -39,7 +39,10 @@ import { CodeComponent, isCodeComponent } from "@/wab/components";
 import { Field } from "@/wab/model/model-meta";
 import { Bundler } from "@/wab/shared/bundler";
 import { flattenComponent } from "@/wab/shared/cached-selectors";
-import { attachRenderableTplSlots } from "@/wab/shared/code-components/code-components";
+import {
+  attachRenderableTplSlots,
+  mkCodeComponent,
+} from "@/wab/shared/code-components/code-components";
 import { instUtil } from "@/wab/shared/core/InstUtil";
 import { assertSameInstType } from "@/wab/shared/core/model-tree-util";
 import {
@@ -53,12 +56,14 @@ import { $$$ } from "@/wab/shared/TplQuery";
 import {
   BASE_VARIANT_NAME,
   isBaseVariant,
+  mkBaseVariant,
   mkVariantSetting,
   tryGetBaseVariantSetting,
 } from "@/wab/shared/Variants";
 import { visitComponentRefs } from "@/wab/sites";
 import {
   fixParentPointers,
+  mkTplComponentX,
   tplChildren,
   trackComponentRoot,
   trackComponentSite,
@@ -96,6 +101,16 @@ function getCompPath(comp: Component, bundler: Bundler) {
     getArrayKey(bundler, comp, {
       cls: meta.clsByName["Site"],
       field: meta.getFieldByName("Site", "components"),
+    }),
+  ];
+}
+
+function getGlobalContextPath(globalContext: TplComponent, bundler: Bundler) {
+  return [
+    "globalContexts",
+    getArrayKey(bundler, globalContext, {
+      cls: meta.clsByName["Site"],
+      field: meta.getFieldByName("Site", "globalContexts"),
     }),
   ];
 }
@@ -1664,3 +1679,158 @@ export function fixVirtualSlotArgs(mergedSite: Site) {
   };
   mergedSite.components.forEach((c) => fixComponent(c));
 }
+
+export const tryMergeGlobalContexts: MergeSpecialFieldHandler<Site> = (
+  ancestorCtx,
+  leftCtx,
+  rightCtx,
+  mergedCtx,
+  bundler,
+  picks
+): DirectConflict[] => {
+  const directConflicts: DirectConflict[] = [];
+  const globalContextsNames: Set<string> = new Set();
+  [ancestorCtx, leftCtx, rightCtx].forEach((ctx) =>
+    ctx.site.globalContexts.forEach((tpl) => {
+      globalContextsNames.add(tpl.component.name);
+    })
+  );
+
+  globalContextsNames.forEach((globalContextName) => {
+    let ancestorTpl = ancestorCtx.site.globalContexts.find(
+      (tpl) => tpl.component.name === globalContextName
+    );
+    const leftTpl = leftCtx.site.globalContexts.find(
+      (tpl) => tpl.component.name === globalContextName
+    );
+    const rightTpl = rightCtx.site.globalContexts.find(
+      (tpl) => tpl.component.name === globalContextName
+    );
+
+    // Deleted Global Context
+    if ((!leftTpl || !rightTpl) && ancestorTpl) {
+      removeWhere(
+        mergedCtx.site.globalContexts,
+        (tpl) => tpl.component.name === globalContextName
+      );
+    }
+    // Added Global Context
+    if (leftTpl && !rightTpl && !ancestorTpl) {
+      const mergedTpl = cloneObjInstToMergedSite(
+        leftTpl,
+        leftCtx.site,
+        mergedCtx.site,
+        bundler
+      );
+
+      mergedCtx.site.globalContexts.push(mergedTpl);
+    } else if (!leftTpl && rightTpl && !ancestorTpl) {
+      const mergedTpl = cloneObjInstToMergedSite(
+        rightTpl!,
+        rightCtx.site,
+        mergedCtx.site,
+        bundler
+      );
+      mergedCtx.site.globalContexts.push(mergedTpl);
+    }
+
+    // Check for conflict in case it existed in both left and right
+    if (leftTpl && rightTpl) {
+      // We can't send an undefined ancestorTpl because special handlers do not accept it
+      if (ancestorTpl === undefined) {
+        const ancestorComponent = mkCodeComponent(
+          globalContextName,
+          { name: globalContextName, props: {}, importPath: "" },
+          {}
+        );
+        bundler.bundle(
+          ancestorComponent,
+          bundler.addrOf(ancestorCtx.site).uuid,
+          ""
+        );
+        ancestorTpl = mkTplComponentX({
+          component: ancestorComponent,
+          baseVariant: mkBaseVariant(),
+        });
+        bundler.bundle(ancestorTpl, bundler.addrOf(ancestorCtx.site).uuid, "");
+        const mergedTpl = cloneObjInstToMergedSite(
+          ancestorTpl,
+          ancestorCtx.site,
+          mergedCtx.site,
+          bundler
+        );
+        mergedTpl.component = cloneObjInstToMergedSite(
+          leftTpl.component,
+          leftCtx.site,
+          mergedCtx.site,
+          bundler
+        );
+        mergedCtx.site.globalContexts.push(mergedTpl);
+      }
+      const mergedTpl = ensure(
+        mergedCtx.site.globalContexts.find(
+          (tpl) => tpl.component.name === globalContextName
+        ),
+        "If Global Context exists in both left and right site, it should also exist in the merged site"
+      );
+
+      directConflicts.push(
+        ...getDirectConflicts(
+          {
+            node: ancestorTpl,
+            path: [
+              ...ancestorCtx.path,
+              ...(ancestorTpl
+                ? getGlobalContextPath(ancestorTpl, bundler)
+                : ["globalContexts", "new"]),
+            ],
+            site: ancestorCtx.site,
+          },
+          {
+            node: leftTpl,
+            path: [...leftCtx.path, ...getGlobalContextPath(leftTpl, bundler)],
+            site: leftCtx.site,
+          },
+          {
+            node: rightTpl,
+            path: [
+              ...rightCtx.path,
+              ...getGlobalContextPath(rightTpl, bundler),
+            ],
+            site: rightCtx.site,
+          },
+          {
+            node: mergedTpl,
+            path: [
+              ...mergedCtx.path,
+              ...getGlobalContextPath(mergedTpl, bundler),
+            ],
+            site: mergedCtx.site,
+          },
+          bundler,
+          picks,
+
+          // Component conflicts will be fixed later in `fixDuplicatedCodeComponents`
+          (conflict) => {
+            const pathStr = JSON.parse(
+              conflict.conflictType === "generic"
+                ? conflict.conflictDetails.length > 0
+                  ? conflict.conflictDetails[0].pathStr
+                  : `[]`
+                : conflict.pathStr
+            );
+            if (
+              pathStr.length === 3 &&
+              pathStr[0] === "globalContexts" &&
+              (pathStr[2] === "component" || pathStr[2] === "uuid")
+            ) {
+              return false;
+            }
+            return true;
+          }
+        )
+      );
+    }
+  });
+  return directConflicts;
+};

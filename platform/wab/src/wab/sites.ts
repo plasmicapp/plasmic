@@ -1539,7 +1539,7 @@ export function removeReferencingLinks(
 export function visitComponentRefs(
   site: Site,
   component: Component,
-  fn: (tpl: TplComponent, owner: Component) => void
+  fn: (tpl: TplComponent, owner?: Component) => void
 ) {
   for (const c of site.components) {
     [...flattenTpls(c.tplTree)].forEach((tpl) => {
@@ -1547,6 +1547,11 @@ export function visitComponentRefs(
         fn(tpl, c);
       }
     });
+  }
+  for (const tpl of site.globalContexts) {
+    if (tpl.component === component) {
+      fn(tpl);
+    }
   }
 }
 

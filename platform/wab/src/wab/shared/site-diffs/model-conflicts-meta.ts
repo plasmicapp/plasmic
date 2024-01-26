@@ -22,6 +22,7 @@ import {
   mergeTplNodeChildren,
   mergeVSettings,
   tryMergeComponents,
+  tryMergeGlobalContexts,
 } from "./merge-components";
 import {
   DirectConflict,
@@ -349,8 +350,9 @@ export const modelConflictsMeta: ModelConflictsMeta = {
     flags: "harmless",
     globalContexts: {
       arrayType: "unordered",
-      conflictType: "merge",
-      mergeKeyIsIdentity: true,
+      conflictType: "special",
+      handler: (ancestor, left, right, merged, bundler, picks) =>
+        tryMergeGlobalContexts(ancestor, left, right, merged, bundler, picks),
     },
     globalVariant: "unexpected",
     globalVariantGroups: {

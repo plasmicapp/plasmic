@@ -992,6 +992,7 @@ function visitSpecialHandlers(
       );
     }
   }
+
   return conflicts;
 }
 
@@ -1021,7 +1022,8 @@ export function getDirectConflicts(
   rightCtx: NodeCtx,
   mergedCtx: NodeCtx,
   bundler: Bundler,
-  picks: DirectConflictPickMap | undefined
+  picks: DirectConflictPickMap | undefined,
+  filterConflict?: (conflict: DirectConflict) => boolean
 ): DirectConflict[] {
   const cloneFieldValue = (field: Field, v: any, branch: Site) =>
     cloneFieldValueToMergedSite(field, v, branch, mergedCtx.site, bundler);
@@ -1033,6 +1035,8 @@ export function getDirectConflicts(
 
   const allLeftUpdates = getInstUpdates(ancestorCtx, leftCtx, bundler);
   const allRightUpdates = getInstUpdates(ancestorCtx, rightCtx, bundler);
+  const filterConflictWrapper = (conflict: DirectConflict) =>
+    filterConflict?.(conflict) ?? true;
   const conflicts: DirectConflict[] = [];
 
   // Group updates by the global `groupings`
@@ -1362,7 +1366,21 @@ export function getDirectConflicts(
               } else {
                 hasConflict = true;
               }
-              if (hasConflict) {
+              const currentConflictDetails: ConflictDetails = {
+                pathStr,
+                leftUpdate,
+                rightUpdate,
+              };
+              if (
+                hasConflict &&
+                filterConflictWrapper({
+                  ...conflict,
+                  conflictDetails: [
+                    ...conflict.conflictDetails,
+                    currentConflictDetails,
+                  ],
+                })
+              ) {
                 if (picks) {
                   const side = ensure(
                     picks[pathStr],
@@ -1409,11 +1427,7 @@ export function getDirectConflicts(
                           );
                   }
                 } else {
-                  conflict.conflictDetails.push({
-                    pathStr,
-                    leftUpdate,
-                    rightUpdate,
-                  });
+                  conflict.conflictDetails.push(currentConflictDetails);
                 }
               }
             }
@@ -1489,7 +1503,7 @@ export function getDirectConflicts(
     )
   );
 
-  return conflicts;
+  return conflicts.filter((c) => filterConflictWrapper(c));
 }
 
 /**
