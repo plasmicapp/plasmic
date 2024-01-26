@@ -54,9 +54,16 @@ export type InsertableTemplateTokenResolution =
   | "inline"
   | "reuse-by-name"
   | "reuse-by-value"
-  | "reuse-by-name-and-value";
+  | "reuse-by-name-and-value"
+  | "retain-by-name" // deprecated
+  | "retain-by-value" // deprecated
+  | "retain-by-name-and-value"; // deprecated
 
-export type InsertableTemplateComponentResolution = "inline" | "duplicate";
+export type InsertableTemplateComponentResolution =
+  | "inline"
+  | "reuse"
+  | "duplicate" // deprecated
+  | "import"; // deprecated
 
 /**
  * Represents a collection of related templates (e.g. Hero sections)

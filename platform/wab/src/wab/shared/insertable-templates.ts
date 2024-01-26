@@ -1171,7 +1171,10 @@ function mkInsertableTokenImporter(
 
       const isSameName = targetToken.name === oldToken.name;
 
-      if (tokenResolution === "reuse-by-name") {
+      if (
+        tokenResolution === "reuse-by-name" ||
+        tokenResolution === "retain-by-name"
+      ) {
         return isSameName;
       }
 
@@ -1179,11 +1182,14 @@ function mkInsertableTokenImporter(
         derefToken(targetTokens, targetToken) ===
         derefToken(oldTokens, oldToken);
 
-      if (tokenResolution === "reuse-by-value") {
+      if (
+        tokenResolution === "reuse-by-value" ||
+        tokenResolution === "retain-by-value"
+      ) {
         return isSameValue;
       }
 
-      // We fallback to retain-by-value-and-name
+      // We fallback to reuse-by-value-and-name
       return isSameValue && isSameName;
     });
 
@@ -1325,7 +1331,11 @@ export function cloneInsertableTemplate(
     (font) => seenFonts.add(font)
   );
 
-  if (resolution.component === "duplicate") {
+  if (
+    resolution.component === "reuse" ||
+    resolution.component === "duplicate" ||
+    resolution.component === "import"
+  ) {
     const componentImporter = mkInsertableComponentImporter(
       site,
       info,
