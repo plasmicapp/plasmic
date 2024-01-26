@@ -111,6 +111,10 @@ export function registerTooltip(PLASMIC?: Registerable) {
           ...popoverProps.side,
           defaultValueHint: "top",
         },
+        delayDuration: {
+          type: "number",
+          defaultValueHint: 700
+        },
       },
       overlay: {
         type: "slot",
