@@ -14,8 +14,8 @@
     "build": "yarn build:types && yarn build:index",
     "build:types": "yarn tsc --emitDeclarationOnly",
     "build:index": "esbuild --format=cjs --outfile=./dist/index.cjs.js ./src/index.tsx && esbuild --format=esm --outfile=./dist/index.esm.js ./src/index.tsx",
-    "test": "yarn --cwd=../.. test",
-    "coverage": "yarn --cwd=../.. test --coverage --passWithNoTests",
+    "test": "TEST_CWD=`pwd` yarn --cwd=../.. test",
+    "coverage": "TEST_CWD=`pwd` yarn --cwd=../.. test --coverage --passWithNoTests",
     "lint": "eslint",
     "prepublishOnly": "npm run build"
   },

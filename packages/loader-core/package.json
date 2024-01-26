@@ -22,7 +22,7 @@
     "build:types": "yarn tsc",
     "build:index": "node ../../build.mjs ./src/index.ts",
     "yalcp": "yalc publish --push",
-    "test": "yarn --cwd=../.. test",
+    "test": "TEST_CWD=`pwd` yarn --cwd=../.. test",
     "lint": "eslint",
     "prepublishOnly": "npm run build",
     "postpublish": "bash ../../scripts/publish-api-doc-model.sh",

@@ -14,7 +14,7 @@
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
-    "test": "yarn --cwd=../.. test --passWithNoTests",
+    "test": "TEST_CWD=`pwd` yarn --cwd=../.. test --passWithNoTests",
     "lint": "tsdx lint",
     "prepublishOnly": "npm run build",
     "size": "size-limit",

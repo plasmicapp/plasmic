@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "build": "tsup-node src/index.tsx --dts --format esm,cjs --target es2019",
-    "test": "yarn --cwd=../.. test --passWithNoTests",
+    "test": "TEST_CWD=`pwd` yarn --cwd=../.. test --passWithNoTests",
     "prepublishOnly": "npm run build",
     "size": "size-limit",
     "analyze": "size-limit --why"

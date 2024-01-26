@@ -27,7 +27,7 @@
     "setup:sub": "cd platform/sub && yarn && yarn build",
     "setup:wab": "cd platform/wab && yarn",
     "setup:pybackend": "cd platform/pybackend && bash ./setup.sh",
-    "test": "jest $INIT_CWD",
+    "test": "jest $TEST_CWD",
     "typecheck": "cd platform/wab && yarn ts-watch",
     "upgrade-internal": "bash scripts/upgrade-internal.bash"
   },

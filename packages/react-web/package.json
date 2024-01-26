@@ -75,7 +75,7 @@
   "scripts": {
     "build": "rollup -c && mkdir -p lib && cp src/styles/plasmic.css lib/",
     "clean": "rm -rf dist/ skinny/dist/ lib/host/*js lib/host/*.ts lib/host/*.map lib/data-sources/*js lib/data-sources/*.ts lib/data-sources/*.map lib/query/*js lib/query/*.ts lib/query/*.map lib/auth/*js lib/auth/*.ts lib/auth/*.map lib/splits/*js lib/splits/*.ts lib/splits/*.map",
-    "test": "yarn --cwd=../.. test",
+    "test": "TEST_CWD=`pwd` yarn --cwd=../.. test",
     "lint": "eslint",
     "upgrade-aria": "yarn upgrade --latest --scope @react-aria && yarn upgrade --latest --scope @react-stately && yarn upgrade --latest --scope @react-types",
     "prepublishOnly": "npm run build",

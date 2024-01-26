@@ -36,7 +36,7 @@
   ],
   "scripts": {
     "build": "./update_version.sh && rollup -c",
-    "test": "yarn --cwd=../.. test --passWithNoTests",
+    "test": "TEST_CWD=`pwd` yarn --cwd=../.. test --passWithNoTests",
     "lint": "eslint",
     "prepublishOnly": "npm run build",
     "size": "size-limit",

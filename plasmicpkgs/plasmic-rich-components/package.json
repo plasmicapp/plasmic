@@ -33,7 +33,7 @@
   ],
   "scripts": {
     "build": "rollup -c rollup.config.mjs && yarn tsc --emitDeclarationOnly --declaration src/index.tsx --incremental --tsBuildInfoFile ./dist/.tsbuildinfo  --skipLibCheck --jsx react --lib dom,esnext --esModuleInterop --strict --outDir ./dist/ && rsync -r --include='*/' --include='*.d.ts' --exclude='*' ./dist/ ./skinny/ && rm skinny/index.d.ts",
-    "test": "yarn --cwd=../.. test --passWithNoTests",
+    "test": "TEST_CWD=`pwd` yarn --cwd=../.. test --passWithNoTests",
     "prepublishOnly": "npm run build",
     "size": "size-limit",
     "analyze": "size-limit --why"
