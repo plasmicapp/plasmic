@@ -49,8 +49,6 @@ import {
 import { useViewCtx } from "./contexts/StudioContexts";
 import {
   clientToFramePt,
-  clientToScalerPt,
-  clientToScalerRect,
   frameToClientRect,
   frameToScalerRect,
 } from "./coords";
@@ -254,17 +252,17 @@ function DndTentativeSlotDropMarker_(props: { viewCtx: ViewCtx }) {
       ? insertionBox.box.pad(-4, 0)
       : insertionBox.box.pad(0, -4);
 
-  const scalerMarkerRect = clientToScalerRect(markerBox.rect(), vc.studioCtx);
+  const scalerMarkerBox = vc.viewportCtx.clientToScaler(markerBox);
 
   return (
     <div
       className="dnd__drop-marker"
       style={{
-        left: scalerMarkerRect.left,
-        top: scalerMarkerRect.top,
+        left: scalerMarkerBox.left(),
+        top: scalerMarkerBox.top(),
         ...cssPropsForInvertTransform(vc.studioCtx.zoom, {
-          width: scalerMarkerRect.width,
-          height: scalerMarkerRect.height,
+          width: scalerMarkerBox.width(),
+          height: scalerMarkerBox.height(),
         }),
       }}
     />
@@ -633,9 +631,8 @@ export class DragMoveManager {
       return;
     }
 
-    const dragPtInScaler = clientToScalerPt(
-      clientPt.moveBy(this.cursorOffset.x, this.cursorOffset.y),
-      this.vc.studioCtx
+    const dragPtInScaler = this.vc.viewportCtx.clientToScaler(
+      clientPt.plus(this.cursorOffset)
     );
 
     this.$dragHandles.forEach(($dragHandle) => {

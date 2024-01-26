@@ -24,10 +24,29 @@ export interface ClientRect {
   height: number;
 }
 
-export class Pt {
+export interface Transformable<T> {
+  scale(factor: number): T;
+  moveBy(dx: number, dy: number): T;
+  plus(vec: Pt): T;
+  sub(vec: Pt): T;
+}
+
+export class Pt implements Transformable<Pt> {
   constructor(public readonly x: number, public readonly y: number) {}
-  moveBy(dx, dy) {
+  equals(other: Pt) {
+    return this === other || (this.x === other.x && this.y === other.y);
+  }
+  toString() {
+    return `Pt[x=${this.x},y=${this.y}]`;
+  }
+  moveBy(dx: number, dy: number) {
     return new Pt(this.x + dx, this.y + dy);
+  }
+  plus(vec: Pt) {
+    return this.moveBy(vec.x, vec.y);
+  }
+  sub(vec: Pt) {
+    return this.moveBy(-vec.x, -vec.y);
   }
   dist(p: Pt) {
     const dx = p.x - this.x;
@@ -40,6 +59,9 @@ export class Pt {
   toUnitBox() {
     return new Box(this.y, this.x, 1, 1);
   }
+  static zero() {
+    return new Pt(0, 0);
+  }
   static fromOffset(off: Offset) {
     return new Pt(off.left, off.top);
   }
@@ -51,9 +73,6 @@ export class Pt {
   }
   round() {
     return new Pt(Math.round(this.x), Math.round(this.y));
-  }
-  sub(other: Pt) {
-    return new Pt(this.x - other.x, this.y - other.y);
   }
   floor() {
     return new Pt(Math.floor(this.x), Math.floor(this.y));
@@ -74,13 +93,28 @@ export function absRect({ top, left, width, height }: Rect): Rect {
 
 type BoxAnchor = Side | Corner | "center";
 
-export class Box {
+export class Box implements Transformable<Box> {
   constructor(
     private readonly t: number,
     private readonly l: number,
     private readonly w: number,
     private readonly h: number
   ) {}
+  equals(other: Box) {
+    return (
+      this === other ||
+      (this.t === other.t &&
+        this.l === other.l &&
+        this.w === other.w &&
+        this.h === other.h)
+    );
+  }
+  toString() {
+    return `Box[x=${this.l},y=${this.t},w=${this.w},h=${this.h}]`;
+  }
+  static zero() {
+    return new Box(0, 0, 0, 0);
+  }
   static fromRect(rect: Rect) {
     const { top, left, width, height } = rect;
     return new Box(top, left, width, height);
@@ -130,6 +164,9 @@ export class Box {
         `Unexpected undefined value. ${xs} should not be empty or falsey`
       ),
     });
+  }
+  size() {
+    return new Pt(this.width(), this.height());
   }
   topLeft() {
     return new Pt(this.left(), this.top());
@@ -254,6 +291,9 @@ export class Box {
       ? undefined
       : new Box(top, left, right - left, bottom - top);
   }
+  intersects(box: Box, includeTouching = false): boolean {
+    return !!this.intersection(box, includeTouching);
+  }
 
   withSides(newSides: { [S in Side]?: number }) {
     return Box.fromRectSides({ ...this.rect(), ...newSides });
@@ -313,12 +353,18 @@ export class Box {
   moveBy(dx: /*TWZ*/ number, dy: /*TWZ*/ number) {
     return new Box(this.t + dy, this.l + dx, this.w, this.h);
   }
-  moveByVec(vec: Pt) {
+  plus(vec: Pt) {
     return this.moveBy(vec.x, vec.y);
+  }
+  sub(vec: Pt) {
+    return this.moveBy(-vec.x, -vec.y);
   }
 
   withSize(w: number, h: number) {
     return new Box(this.t, this.l, w, h);
+  }
+  withSizeOfPt(size: Pt) {
+    return this.withSize(size.x, size.y);
   }
   withSizeOfRect({ width, height }: Rect) {
     return this.withSize(width, height);
@@ -376,7 +422,7 @@ export class Box {
    */
   moveSuchThat(anchor: BoxAnchor, pt: Pt) {
     const diff = pt.sub(this.getSideMidptOrCorner(anchor));
-    return this.moveByVec(diff);
+    return this.plus(diff);
   }
 
   /**
@@ -582,7 +628,7 @@ export function rectsIntersect(rect1: Rect, rect2: Rect) {
 }
 
 export function mergeSpans(spans: [number, number][]) {
-  const sorted = sortBy(spans, ([left, right]) => left);
+  const sorted = sortBy(spans, ([left, _right]) => left);
 
   function* genMergedSpans() {
     let [currentLeft, currentRight] = sorted[0];
@@ -688,7 +734,7 @@ export function findSpaceForRectSweepRight(
   console.log();
   console.log();
   console.log();
-  for (const [[left0, right0], [left1, right1]] of pairwise(mergedSpans)) {
+  for (const [[_left0, right0], [left1, _right1]] of pairwise(mergedSpans)) {
     if (left1 - right0 > width) {
       return {
         top: beam.top(),
@@ -700,8 +746,4 @@ export function findSpaceForRectSweepRight(
     top: beam.top(),
     left: last(mergedSpans)[1],
   };
-}
-
-export function areRectsIntersecting(rect1: Rect, rect2: Rect) {
-  return !!Box.fromRect(rect1).intersection(Box.fromRect(rect2), true);
 }

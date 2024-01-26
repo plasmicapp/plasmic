@@ -11,7 +11,7 @@
   & > *
     display: flex
 
-    & > *:not(:last-child)
+    & > *:not(:last-child):not(.rowLabel)
       margin-right: $gridSpacing
 
 
@@ -27,7 +27,7 @@
   line-height: 28px
 
 .rowLabelInner
-  padding-right: 15px
+  margin-right: 20px
   position: absolute
   right: 0
   display: flex
@@ -36,5 +36,3 @@
 
   & input
     text-align: right
-
-

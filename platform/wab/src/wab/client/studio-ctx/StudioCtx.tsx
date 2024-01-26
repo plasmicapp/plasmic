@@ -70,9 +70,8 @@ import {
   AlertSpec,
 } from "@/wab/client/components/widgets/plasmic/AlertBanner";
 import { personalProjectPaywallMessage } from "@/wab/client/components/widgets/plasmic/ShareDialogContent";
-import { clientToScalerRect, frameToScalerRect } from "@/wab/client/coords";
+import { frameToScalerRect } from "@/wab/client/coords";
 import { DbCtx, WithDbCtx } from "@/wab/client/db";
-import { plasmicCanvasTransformEvent } from "@/wab/client/definitions/events";
 import {
   AddFakeItem,
   AddTplItem,
@@ -127,7 +126,6 @@ import {
   last,
   maybe,
   mkShortId,
-  notNil,
   removeWhere,
   spawn,
   spawnWrapper,
@@ -165,7 +163,7 @@ import {
   InsertableTemplatesItem,
 } from "@/wab/devflags";
 import { tryExtractJson } from "@/wab/exprs";
-import { absRect, Box, ClientRect, Rect } from "@/wab/geom";
+import { Box, Pt } from "@/wab/geom";
 import {
   ChangesType,
   ChangeSummary,
@@ -367,29 +365,26 @@ import * as Signals from "signals";
 import { mutate } from "swr";
 import { failable, FailableArgParams, IFailable } from "ts-failable";
 import { ComponentCtx } from "./component-ctx";
-import { StudioViewportSnapshot } from "./live-state";
 import { MultiplayerCtx } from "./multiplayer-ctx";
 import { SpotlightAndVariantsInfo, ViewCtx } from "./view-ctx";
+import { ViewportCtx } from "./ViewportCtx";
 
 (window as any).dbg.classes = classes;
 
 const MAX_SAVE_RETRIES = 300; // Saves every 2 seconds means retry for 10 minutes
 const DEFAULT_ZOOM_PADDING = 40;
-const VARIANTS_BAR_HEIGHT = 35; // TODO: replace by dynamic measuring
 
 interface StudioCtxArgs {
   dbCtx: DbCtx;
   clipboard: Clipboard;
 }
 
-export interface ZoomState {
-  readonly clientX: number;
-  readonly clientY: number;
-  readonly xOffsetInScaler: number;
-  readonly yOffsetInScaler: number;
+interface ZoomState {
+  readonly clientPt: Pt;
+  readonly scalerPt: Pt;
 }
 
-export interface WheelZoomState extends ZoomState {
+interface WheelZoomState extends ZoomState {
   // These are used for zooming by wheel
   readonly startScreenX: number;
   readonly startScreenY: number;
@@ -399,17 +394,10 @@ export interface WheelZoomState extends ZoomState {
 interface PanningState {
   readonly initScreenX: number;
   readonly initScreenY: number;
-  readonly initTranslateX: number;
-  readonly initTranslateY: number;
+  readonly initScrollX: number;
+  readonly initScrollY: number;
   readonly initiatedByMiddleButton: boolean;
 }
-
-interface ScalerTransform {
-  scale: number;
-  translate3D: { x: number; y: number; z: number };
-}
-
-export type DataSourceOrCmsType = "airtable" | "cms";
 
 export class FreestyleState {
   constructor(readonly spec: AddTplItem) {}
@@ -431,6 +419,12 @@ interface ArenaViewInfo {
   lastAccess: number;
   isAlive: boolean;
   lastViewSnapshot: StudioViewportSnapshot | undefined;
+}
+
+interface StudioViewportSnapshot {
+  readonly focusedArenaFrame?: ArenaFrame;
+  readonly scroll: Pt;
+  readonly scale: number;
 }
 
 export type StudioAppUser = Pick<
@@ -572,13 +566,14 @@ export class StudioCtx extends WithDbCtx {
   clipboard: Clipboard;
   fontManager: FontManager;
   popupCodesandboxWindow: Window | null = null;
-  siteInst: {
-    created: string;
-    id: string;
-    modified: string;
-    subdomain: string;
-  };
   previewCtx: PreviewCtx | undefined;
+  _viewportCtx = observable.box<ViewportCtx | null>(null);
+  get viewportCtx() {
+    return this._viewportCtx.get();
+  }
+  set viewportCtx(value: ViewportCtx | null) {
+    this._viewportCtx.set(value);
+  }
 
   studioIsVisible = false;
   latestVariantCreated: Variant | undefined = undefined;
@@ -748,51 +743,6 @@ export class StudioCtx extends WithDbCtx {
           this.updatePkgsList(usedHostLessPkgs(this.site));
         }
       }),
-      autorun(
-        () => {
-          if (this.isZooming() || this.isDraggingObject()) {
-            // Don't show scrollbars if the canvas size could be changing.
-            if (this.maybeCanvasClipper()) {
-              this.canvasClipper().style.overflow = "hidden";
-            }
-            // Don't compute canvas size and instead set a big canvas size
-            // so that the scroll position won't be affected by canvas size changes.
-            this._canvasSize.set(
-              Box.fromRectSides({
-                top: 0,
-                bottom: 999999,
-                left: 0,
-                right: 999999,
-              })
-            );
-          } else {
-            // Restore scrollbars.
-            if (this.maybeCanvasClipper()) {
-              this.canvasClipper().style.overflow = "auto";
-            }
-            // Restore correct canvas size.
-            const restoreCanvasSize = () => {
-              // Subscribe to auto-derived height changes
-              getArenaFrames(this.currentArena).forEach((frame) => {
-                if (isHeightAutoDerived(frame)) {
-                  frame._height?.get();
-                }
-              });
-
-              const scalerRect = this.getCanvasEditorFramesScalerRect();
-              if (scalerRect) {
-                this._canvasSize.set(Box.fromRect(scalerRect).scale(this.zoom));
-              } else {
-                // getCanvasEditorFramesScalerRect may return undefined
-                // if a frame hasn't been rendered yet. Retry next tick.
-                defer(restoreCanvasSize);
-              }
-            };
-            restoreCanvasSize();
-          }
-        },
-        { name: "StudioCtx.adjustCanvasSize" }
-      ),
       reaction(
         () => this.isTransforming(),
         () => {
@@ -1528,6 +1478,7 @@ export class StudioCtx extends WithDbCtx {
 
     const viewCtx = new ViewCtx({
       studioCtx: this,
+      viewportCtx: this.viewportCtx!,
       canvasCtx,
       arenaFrame: frame,
     });
@@ -1585,8 +1536,8 @@ export class StudioCtx extends WithDbCtx {
   getCurrentStudioViewportSnapshot(): StudioViewportSnapshot {
     return {
       focusedArenaFrame: this.focusedViewCtx()?.arenaFrame(),
-      translate: this.getScalerTranslate(),
-      zoom: this.zoom,
+      scroll: this.viewportCtx!.scroll(),
+      scale: this.viewportCtx!.scale(),
     };
   }
 
@@ -1601,10 +1552,7 @@ export class StudioCtx extends WithDbCtx {
       });
     }
 
-    this.setTransform({
-      scale: snapshot.zoom,
-      translate3D: snapshot.translate,
-    });
+    this.viewportCtx!.enqueueTransform(snapshot.scale, snapshot.scroll, false);
   }
 
   canEditComponent(component: Component) {
@@ -1939,6 +1887,12 @@ export class StudioCtx extends WithDbCtx {
         });
       }
 
+      // Normalize mixed arena frames so min top/left is 0.
+      if (isMixedArena(arena)) {
+        normalizeMixedArenaFrames(arena);
+      }
+
+      this.viewportCtx?.setArena(arena);
       this._currentArena.set(arena);
       if (!arena) {
         return;
@@ -1992,18 +1946,7 @@ export class StudioCtx extends WithDbCtx {
           });
 
           defer(() => {
-            spawn(
-              this.change(
-                ({ success }) => {
-                  this.normalizeCurrentArena();
-                  this.tryZoomToFitArena();
-                  return success();
-                },
-                {
-                  noUndoRecord: true,
-                }
-              )
-            );
+            this.tryZoomToFitArena();
           });
         }
       }
@@ -2766,6 +2709,7 @@ export class StudioCtx extends WithDbCtx {
   //
 
   private _$canvasClipper = cachedJQSelector(".canvas-editor__canvas-clipper");
+  private _$canvas = cachedJQSelector(".canvas-editor__canvas");
   private _$canvasScaler = cachedJQSelector(".canvas-editor__scaler");
 
   canvasClipper() {
@@ -2776,50 +2720,29 @@ export class StudioCtx extends WithDbCtx {
     return this._$canvasClipper()[0] as HTMLElement | undefined;
   }
 
-  getVisibleScalerRect(): Rect {
-    const clipperRect = this.clipperBB();
-    const translate = this.getScalerTranslate();
-    const zoom = this.zoom;
-    return {
-      left: -translate.x / zoom,
-      top: -translate.y / zoom,
-      width: clipperRect.width / zoom,
-      height: clipperRect.height / zoom,
-    };
+  private canvas() {
+    return ensureHTMLElt(this.maybeCanvas());
+  }
+
+  private maybeCanvas() {
+    return this._$canvas()[0];
+  }
+
+  private canvasScaler() {
+    return ensureHTMLElt(this.maybeCanvasScaler());
+  }
+
+  private maybeCanvasScaler() {
+    return this._$canvasScaler()[0];
   }
 
   currentViewportMidpt() {
-    return Box.fromRect(this.getVisibleScalerRect()).midpt();
+    return (this.viewportCtx?.visibleScalerBox() ?? Box.zero()).midpt();
   }
 
   //
   // Managing viewport
   //
-
-  // Note: Map preserves the insertion order.
-  private curTranslate = observable.object({
-    x: 0,
-    y: 0,
-    z: 0,
-  });
-
-  /**
-   * Applies a transform (scale + translate) on the canvas.
-   */
-  setTransform(
-    rawTransform: ScalerTransform,
-    opts?: {
-      smooth?: boolean;
-    }
-  ) {
-    runInAction(() => {
-      window.dispatchEvent(new Event(plasmicCanvasTransformEvent));
-
-      this.setIsTransforming();
-      this.setTranslate(rawTransform.translate3D, opts);
-      this.setZoom(rawTransform.scale, opts);
-    });
-  }
 
   private _$ruler?: JQuery;
   private $ruler() {
@@ -2834,138 +2757,22 @@ export class StudioCtx extends WithDbCtx {
     if (this.isTransforming() || this.zoom < 4) {
       $ruler.hide();
     } else {
-      const scale = this.zoom;
+      const viewportCtx = this.viewportCtx!;
+      const scale = viewportCtx.scale();
+      const canvasPadding = viewportCtx.canvasPadding();
+      const scroll = viewportCtx.scroll();
+      const clipperBox = viewportCtx.clipperBox();
+
       const remainder = (n: number) => n - Math.trunc(n / scale + 1) * scale;
-      const t = this.curTranslate;
+      const t = canvasPadding.sub(scroll);
       $ruler.show().css({
         backgroundSize: `${scale}px ${scale}px`,
         transform: `translate3d(${remainder(t.x)}px, ${remainder(t.y)}px, 0px)`,
-        width: this.clipperBB().width + 2 * scale,
-        height: this.clipperBB().height + 2 * scale,
+        width: clipperBox.width() + 2 * scale,
+        height: clipperBox.height() + 2 * scale,
       });
     }
   }
-
-  private translateScalerAbsolute(
-    x: number,
-    y: number,
-    opts?: { smooth?: boolean }
-  ) {
-    this.setTransform(
-      {
-        translate3D: { x, y, z: 0 },
-        scale: this.zoom,
-      },
-      opts
-    );
-  }
-
-  /**
-   * Gets the bounds of the usable area of the canvas editor (e.g. frames, ghost frames).
-   *
-   * The bounds do NOT include the labels, because they scale differently.
-   *
-   * This function may depend on the arena being rendered already to return measurements.
-   * If the arena hasn't been rendered yet, this function returns `undefined`,
-   * which you should handle by retrying later.
-   */
-  private getCanvasEditorFramesScalerRect(): Rect | undefined {
-    const frames = getArenaFrames(this.currentArena);
-    if (frames.length === 0) {
-      return {
-        top: 0,
-        height: 0,
-        left: 0,
-        width: 0,
-      };
-    }
-
-    // For page/component arenas not in focused mode, measure .canvas-editor__frames,
-    // because it includes "ghost" frames for adding new variants.
-    if (isDedicatedArena(this.currentArena) && !this.focusedMode) {
-      const canvasEditorFrames = $(".canvas-editor__frames")[0];
-      if (!canvasEditorFrames) {
-        return undefined;
-      }
-      // For dedicated arenas, .canvas-editor__frames has an extra 80px/150px of left padding.
-      // TODO: Remove this extra padding or account for it.
-      const clientRect = canvasEditorFrames.getBoundingClientRect();
-      if (clientRect.height > 0 && clientRect.width > 0) {
-        return clientToScalerRect(clientRect, this);
-      }
-    }
-
-    // Otherwise, compute based on arena frame bounds.
-    const frameBounds = frames
-      .map((frame) => {
-        const bounds = this.getArenaFrameScalerRect(frame);
-        if (!bounds) {
-          return undefined;
-        }
-
-        const { top, left, width, height } = bounds;
-        const right = left + width;
-        const bottom = top + height;
-        return {
-          top,
-          left,
-          right,
-          bottom,
-        };
-      })
-      .filter(notNil);
-    if (frameBounds.length === 0) {
-      return undefined;
-    }
-
-    let minTop = Infinity,
-      minLeft = Infinity,
-      maxRight = -Infinity,
-      maxBottom = -Infinity;
-    for (const { top, left, right, bottom } of frameBounds) {
-      if (top < minTop) {
-        minTop = top;
-      }
-      if (left < minLeft) {
-        minLeft = left;
-      }
-      if (right > maxRight) {
-        maxRight = right;
-      }
-      if (bottom > maxBottom) {
-        maxBottom = bottom;
-      }
-    }
-    return absRect({
-      top: minTop,
-      height: maxBottom - minTop,
-      left: minLeft,
-      width: maxRight - minLeft,
-    });
-  }
-
-  private _canvasSize = observable.box<Box>(new Box(0, 0, 0, 0));
-
-  /** Controls the height and width of the canvas (should tightly fit all frames). */
-  canvasSize() {
-    return this._canvasSize.get();
-  }
-
-  /** Controls the padding around the canvas (for limiting scrolling). */
-  canvasPadding = computedFn(() => {
-    const clipperBB = this.maybeClipperBB();
-    if (clipperBB && !this.currentArenaEmpty) {
-      return {
-        vertical: clipperBB.height * 0.95,
-        horizontal: clipperBB.width * 0.95,
-      };
-    } else {
-      return {
-        vertical: 0,
-        horizontal: 0,
-      };
-    }
-  });
 
   centerFocusedFrame(maxZoom?: number) {
     const frame =
@@ -3025,78 +2832,6 @@ export class StudioCtx extends WithDbCtx {
   //
   private panningState?: PanningState;
 
-  clipperResizedSignal = new Signals.Signal();
-
-  private _clipperBB = observable.box<ClientRect>();
-
-  onClipperResized() {
-    this._clipperBB.set(this.maybeCanvasClipper()?.getBoundingClientRect());
-
-    // Ensure clipper scroll state is in sync with DOM after resize
-    this.onClipperScrolled();
-
-    this.clipperResizedSignal.dispatch();
-  }
-
-  onClipperScrolled() {
-    const canvasPadding = this.canvasPadding();
-    this.curTranslate.x =
-      canvasPadding.horizontal - this.canvasClipper().scrollLeft;
-    this.curTranslate.y =
-      canvasPadding.vertical - this.canvasClipper().scrollTop;
-  }
-
-  maybeClipperBB() {
-    return this._clipperBB.get();
-  }
-
-  clipperBB() {
-    return ensure(this.maybeClipperBB(), "clipperBB must exist");
-  }
-
-  private setTranslate(
-    translate: { x: number; y: number },
-    opts?: { smooth?: boolean }
-  ) {
-    const clipperBB = this.clipperBB();
-    const canvasPadding = this.canvasPadding();
-    const targetScrollTop = canvasPadding.vertical - translate.y;
-    const targetScrollLeft = canvasPadding.horizontal - translate.x;
-
-    const doScroll = () => {
-      this.canvasClipper().scroll({
-        top: targetScrollTop,
-        left: targetScrollLeft,
-        behavior: opts?.smooth ? "smooth" : undefined,
-      });
-    };
-
-    // Before scrolling, validate the scroll makes sense.
-    // setTranslate may be called before frames have rendered,
-    // in which case the canvas size may be smaller than expected.
-    // If the canvas size is too small, the target scroll top/left may be
-    // out-of-bounds of the maximum possible scroll top/left.
-
-    // This should match canvas clipper's scrollHeight/Width.
-    // To avoid querying the DOM, we compute it since we know the size of the canvas.
-    const canvasSize = this.canvasSize();
-    const clipperScrollHeight = Math.min(
-      canvasSize.height() + 2 * canvasPadding.vertical
-    );
-    const clipperScrollWidth = Math.min(
-      canvasSize.width() + 2 * canvasPadding.horizontal
-    );
-
-    const maxScrollTop = clipperScrollHeight - clipperBB.height;
-    const maxScrollLeft = clipperScrollWidth - clipperBB.width;
-
-    if (targetScrollTop <= maxScrollTop && targetScrollLeft <= maxScrollLeft) {
-      doScroll();
-    } else {
-      defer(doScroll);
-    }
-  }
-
   endPanning = () => {
     this.panningState = undefined;
     this.hidePanningCursor();
@@ -3107,12 +2842,12 @@ export class StudioCtx extends WithDbCtx {
   };
 
   startPanning = (e: MouseEvent) => {
-    const curTranslate = this.getScalerTranslate();
+    const initScroll = this.viewportCtx!.scroll();
     this.panningState = {
       initScreenX: e.screenX,
       initScreenY: e.screenY,
-      initTranslateX: curTranslate.x,
-      initTranslateY: curTranslate.y,
+      initScrollX: initScroll.x,
+      initScrollY: initScroll.y,
       initiatedByMiddleButton: e.button === 1,
     };
     this.showPanningCursor(e);
@@ -3121,9 +2856,11 @@ export class StudioCtx extends WithDbCtx {
   tryPanning = (e: MouseEvent) => {
     const s = this.panningState;
     s !== undefined &&
-      this.translateScalerAbsolute(
-        s.initTranslateX + e.screenX - s.initScreenX,
-        s.initTranslateY + e.screenY - s.initScreenY
+      this.viewportCtx!.scrollTo(
+        new Pt(
+          s.initScrollX + e.screenX - s.initScreenX,
+          s.initScrollY + e.screenY - s.initScreenY
+        )
       );
     return s !== undefined;
   };
@@ -3247,73 +2984,16 @@ export class StudioCtx extends WithDbCtx {
     return this._traitRegistry.getRegisteredTraits();
   }
 
-  private _isTransforming = observable.box<boolean>(false);
   isTransforming() {
-    return this._isTransforming.get();
+    return this.viewportCtx?.isTransforming() ?? false;
   }
-  setIsTransforming() {
-    this._isTransforming.set(true);
-    this._debouncedUnsetIsTransforming();
-  }
-  private _debouncedUnsetIsTransforming = debounce(() => {
-    this._isTransforming.set(false);
-  }, 200);
 
   //
   // Manage zooming
   //
 
-  private _zoom = observable.box(1);
-  private _isZooming = observable.box(false);
-
   get zoom() {
-    return this._zoom.get();
-  }
-
-  private setZoom = (() => {
-    let pendingTransformFn: (() => void) | undefined = undefined;
-
-    return (v: number, opts?: { smooth?: boolean }) => {
-      if (v === this._zoom.get()) {
-        return;
-      }
-      this._zoom.set(v);
-
-      // Enqueue actually transforming the DOM
-      if (!pendingTransformFn) {
-        requestAnimationFrame(() => pendingTransformFn?.());
-      }
-      pendingTransformFn = () => {
-        this.canvasScaler().style.transform = `scale(${v})`;
-        this.canvasScaler().style.transition = opts?.smooth
-          ? `transform 0.5s, -webkit-transform 0.5s`
-          : "";
-        pendingTransformFn = undefined;
-      };
-
-      this._isZooming.set(true);
-      this._debouncedUnsetIsZooming();
-    };
-  })();
-  private _debouncedUnsetIsZooming = debounce(
-    () => this._isZooming.set(false),
-    200
-  );
-
-  isZooming() {
-    return this._isZooming.get();
-  }
-
-  maybeCanvasScaler() {
-    return this._$canvasScaler()[0];
-  }
-
-  canvasScaler() {
-    return ensureHTMLElt(this.maybeCanvasScaler());
-  }
-
-  canvasScalerBB() {
-    return this.canvasScaler().getBoundingClientRect();
+    return this.viewportCtx?.scale() ?? 1;
   }
 
   // Used when zoom by wheel
@@ -3366,7 +3046,7 @@ export class StudioCtx extends WithDbCtx {
           // we swap deltas to scroll horizontally
           [e.deltaY * 0.5, e.deltaX * 0.5];
 
-    this.translateScalerRelative(-deltaX, -deltaY);
+    this.viewportCtx!.scrollBy(new Pt(deltaX, deltaY));
 
     const shouldAbsorbMove = () => {
       // We normally do want to absorb the wheel event that we are handling as
@@ -3417,106 +3097,59 @@ export class StudioCtx extends WithDbCtx {
     e.preventDefault();
     e.stopPropagation();
 
-    const curScale = this.zoom;
     const now = new Date().getTime();
     if (
       this.wheelZoomState === undefined ||
       !this.isContinuousWheelZooming(e, now)
     ) {
-      const zoomState = this.doComputeZoomState(
-        topClientX,
-        topClientY,
-        curScale
-      );
-      this.wheelZoomState = zoomState
-        ? {
-            ...zoomState,
-            startScreenX: e.screenX,
-            startScreenY: e.screenY,
-            lastZoomEventTimestamp: now,
-          }
-        : undefined;
+      const zoomState = this.doComputeZoomState(new Pt(topClientX, topClientY));
+      this.wheelZoomState = {
+        ...zoomState,
+        startScreenX: e.screenX,
+        startScreenY: e.screenY,
+        lastZoomEventTimestamp: now,
+      };
     } else {
       this.wheelZoomState.lastZoomEventTimestamp = now;
     }
 
-    const isWheelByMouseMiddleButton = () => {
-      return this.isCtrlOrMetaDown();
-    };
+    const curScale = this.zoom;
+    const isWheelByMouseMiddleButton = this.isCtrlOrMetaDown();
 
     // When ctrl or meta is pressed, wheel event is generated by the mouse's
     // middle key. In that case, we re-align the minDelta with the device.
     const getMinDeltaY = () => {
       if (PLATFORM === "osx") {
-        return isWheelByMouseMiddleButton() ? 4 : 0.7;
+        return isWheelByMouseMiddleButton ? 4 : 0.7;
       } else {
-        return isWheelByMouseMiddleButton() ? 79.5 : 2.29;
+        return isWheelByMouseMiddleButton ? 79.5 : 2.29;
       }
     };
     const normalizedDeltaY = e.deltaY / getMinDeltaY();
     // The factor for one notch operation. The higher, the more scale per notch
     // can make. We make zooming by mouse zoom faster than trackpad.
-    const scaleFactor = isWheelByMouseMiddleButton() ? 2.5 : 0.5;
+    const scaleFactor = isWheelByMouseMiddleButton ? 2.5 : 0.5;
     const scaleDelta = (normalizedDeltaY * curScale * scaleFactor) / 100;
     // keep the scale precision to 0.00001
     const newScale = Math.trunc((curScale - scaleDelta) * 100000) / 100000;
-    if (this.wheelZoomState) {
-      this.tryZoomAtFixedPos(newScale, this.wheelZoomState);
-    }
+    this.tryZoomAtFixedPos(newScale, this.wheelZoomState);
   };
-
-  getScalerTranslate() {
-    return {
-      x: this.curTranslate.x,
-      y: this.curTranslate.y,
-      z: this.curTranslate.z,
-    };
-  }
-
-  translateScalerRelative(deltaX: number, deltaY: number) {
-    const currentTranslate = this.getScalerTranslate();
-    this.translateScalerAbsolute(
-      currentTranslate.x + deltaX,
-      currentTranslate.y + deltaY
-    );
-  }
 
   // Compute zoomState to keep the focus at clientX/clientY in the current
   // topmost window's viewport.
-  doComputeZoomState = (clientX: number, clientY: number, curScale: number) => {
-    const scaler = this.maybeCanvasScaler();
-    if (!scaler) {
-      // studioCtx was unmounted.
-      return undefined;
-    }
-
-    const scalerBB = scaler.getBoundingClientRect();
-    return {
-      clientX,
-      clientY,
-      xOffsetInScaler: (clientX - scalerBB.left) / curScale,
-      yOffsetInScaler: (clientY - scalerBB.top) / curScale,
-    };
+  doComputeZoomState = (clientPt: Pt) => {
+    const scalerPt = this.viewportCtx!.clientToScaler(clientPt);
+    return { clientPt, scalerPt };
   };
 
-  tryZoomWithScale = (newScale: number): boolean => {
-    const curScale = this.zoom;
+  tryZoomWithScale = (scale: number): void => {
     // Zoom under the center of the canvas viewport
     // TODO zoom under the current position of the cursor?
-    const clipperBB = this.clipperBB();
-    const zoomState = this.doComputeZoomState(
-      clipperBB.left + clipperBB.width / 2,
-      clipperBB.top + clipperBB.height / 2,
-      curScale
-    );
-    if (!zoomState) {
-      return false;
-    }
-    return this.tryZoomAtFixedPos(newScale, zoomState);
+    this.viewportCtx!.scaleAtMidPt(scale);
   };
 
-  tryZoomWithDirection = (dir: -1 | 1): boolean => {
-    return this.tryZoomWithScale(zoomJump(this.zoom, dir));
+  tryZoomWithDirection = (dir: -1 | 1): void => {
+    this.tryZoomWithScale(zoomJump(this.zoom, dir));
   };
 
   private isContinuousWheelZooming = (e: WheelEvent, now: number) => {
@@ -3529,31 +3162,12 @@ export class StudioCtx extends WithDbCtx {
     );
   };
 
-  tryZoomAtFixedPos = (newScale: number, zoomState: ZoomState): boolean => {
-    if (newScale === this.zoom) {
-      return false;
-    }
-    if (newScale < 0.02) {
-      newScale = 0.02;
-    } else if (newScale > 256) {
-      newScale = 256;
-    }
-    // truncate the precision to two digits, same as Figma.
-    // newScale = +newScale.toFixed(2);
-    const clipperBB = this.clipperBB();
-
-    const xInClipper = zoomState.clientX - clipperBB.left;
-    const yInClipper = zoomState.clientY - clipperBB.top;
-    this.setTransform({
-      translate3D: {
-        x: xInClipper - zoomState.xOffsetInScaler * newScale,
-        y: yInClipper - zoomState.yOffsetInScaler * newScale,
-        z: 0,
-      },
-      scale: newScale,
-    });
-
-    return true;
+  tryZoomAtFixedPos = (scale: number, zoomState: ZoomState): void => {
+    this.viewportCtx!.scaleAtFixedPt(
+      scale,
+      zoomState.scalerPt,
+      zoomState.clientPt
+    );
   };
 
   getArenaFrameScalerRect(frame: ArenaFrame) {
@@ -3584,7 +3198,9 @@ export class StudioCtx extends WithDbCtx {
       // hasn't had a chance to re-draw yet
       return undefined;
     }
-    const scalerRect = clientToScalerRect(clientRect, this);
+    const scalerRect = this.viewportCtx!.clientToScaler(
+      Box.fromRect(clientRect)
+    ).rect();
     return scalerRect;
   }
 
@@ -3605,103 +3221,31 @@ export class StudioCtx extends WithDbCtx {
     }
   }
 
-  private tryZoomToFitRect(
-    scalerRect: Rect,
-    opts: {
-      ignoreHeight?: boolean;
-      maxZoom?: number;
-      padding?: number;
-      extraLeftPadding?: number;
-      smooth?: boolean;
-    } = {}
-  ) {
-    const {
-      maxZoom = Number.MAX_SAFE_INTEGER,
-      padding = DEFAULT_ZOOM_PADDING,
-      extraLeftPadding = 0,
-    } = opts;
-    const clipperBB = this.clipperBB();
-    const width = clipperBB.width - padding * 2 - extraLeftPadding;
-    const height = clipperBB.height - padding * 2 - VARIANTS_BAR_HEIGHT * 2; // For the sake of symmetry, variantsBarHeight is doubled
-    const targetZoom = opts.ignoreHeight
-      ? width / scalerRect.width
-      : Math.min(width / scalerRect.width, height / scalerRect.height);
-    const finalZoom = Math.min(maxZoom, targetZoom);
-
-    this.tryZoomWithScale(finalZoom);
-
-    const xRoom =
-      (width - scalerRect.width * this.zoom) / 2 +
-      padding -
-      scalerRect.left * this.zoom +
-      extraLeftPadding;
-
-    const yRoom =
-      (height - scalerRect.height * this.zoom) / 2 +
-      padding -
-      scalerRect.top * this.zoom +
-      VARIANTS_BAR_HEIGHT;
-
-    this.translateScalerAbsolute(
-      xRoom,
-      opts.ignoreHeight ? DEFAULT_ZOOM_PADDING : yRoom,
-      {
-        smooth: opts.smooth,
-      }
-    );
-  }
-
   tryZoomToFitArena() {
     const arena = this.currentArena;
-
     if (!arena) {
       return;
     }
 
-    if (!this.maybeClipperBB()) {
+    const viewportCtx = this.viewportCtx;
+    if (!viewportCtx) {
       // Window hasn't fully initialized yet, try again after 10ms
       return setTimeout(() => this.tryZoomToFitArena(), 10);
     }
 
-    const clipperBB = this.clipperBB();
-    if (clipperBB.height === 0 || clipperBB.width === 0) {
-      // Window hasn't fully initialized yet, try again after 10ms
-      return setTimeout(() => this.tryZoomToFitArena(), 10);
-    }
-
-    if (isDedicatedArena(arena)) {
-      const gridRect = this.getCanvasEditorFramesScalerRect();
-      if (!gridRect) {
-        // The arena probably hasn't rendered yet, try again after 10ms
-        return setTimeout(() => this.tryZoomToFitArena(), 10);
-      }
-      const labelsWidth = this.getArenaGridLabelsWidth();
-
-      return this.tryZoomToFitRect(gridRect, {
-        maxZoom: 1,
-        extraLeftPadding: labelsWidth,
+    viewportCtx.zoomToScalerBox(
+      Box.zero().withSizeOfPt(viewportCtx.arenaScalerSize()),
+      {
+        maxScale: 1,
+        minPadding: {
+          left: DEFAULT_ZOOM_PADDING + this.getArenaGridLabelsWidth(),
+          right: DEFAULT_ZOOM_PADDING,
+          top: DEFAULT_ZOOM_PADDING,
+          bottom: DEFAULT_ZOOM_PADDING,
+        },
         ignoreHeight: this.focusedMode,
-      });
-    }
-
-    const frames = getArenaFrames(arena) as ArenaFrame[];
-    const rects = frames.map((frame) => this.getArenaFrameScalerRect(frame));
-
-    if (rects.some((x) => !x)) {
-      return defer(() => this.tryZoomToFitArena());
-    }
-
-    const box = Box.mergeBBs(withoutNils(rects));
-    if (!box) {
-      return;
-    }
-
-    // ALSO: retry this after frame auto-resizing
-
-    this.tryZoomToFitRect(box.rect(), {
-      maxZoom: 1,
-      ignoreHeight: this.focusedMode,
-    });
+      }
+    );
   }
 
   tryZoomToFitSelection() {
@@ -3723,31 +3267,24 @@ export class StudioCtx extends WithDbCtx {
         $focusedDom[0].getBoundingClientRect(),
         vc
       );
-      this.tryZoomToFitRect(scalerRect);
+      this.viewportCtx!.zoomToScalerBox(Box.fromRect(scalerRect), {
+        minPadding: DEFAULT_ZOOM_PADDING,
+      });
     }
   }
 
   tryZoomToFitFrame(frame: ArenaFrame, maxZoom?: number) {
-    const frameElt = this.getFrameElement(frame);
-    if (!frameElt) {
-      // Frame hasn't been rendered yet, so try again next tick
-      defer(() => this.tryZoomToFitFrame(frame, maxZoom));
-    }
-
-    const rect = this.getArenaFrameScalerRect(frame);
-    if (rect) {
-      this.tryZoomToFitRect(rect, { maxZoom });
+    const viewportCtx = this.viewportCtx;
+    const scalerRect = this.getArenaFrameScalerRect(frame);
+    if (viewportCtx && scalerRect) {
+      viewportCtx.zoomToScalerBox(Box.fromRect(scalerRect), {
+        maxScale: maxZoom,
+        minPadding: DEFAULT_ZOOM_PADDING,
+      });
     } else {
       // Frame hasn't been rendered yet, so try again next tick
       defer(() => this.tryZoomToFitFrame(frame, maxZoom));
     }
-  }
-
-  zoomToFitCurrentViewportAndRect(rect: Rect) {
-    this.tryZoomToFitRect(
-      Box.fromRect(rect).pad(50, 50).merge(this.getVisibleScalerRect()).rect(),
-      { padding: 0 }
-    );
   }
 
   private getArenaGridLabelsWidth() {
@@ -3828,9 +3365,8 @@ export class StudioCtx extends WithDbCtx {
                   ? makeSelectableFullKey(selectable)
                   : undefined;
                 const cursor = this.cursorLocation.get();
-                const position = this.maybeClipperBB()
-                  ? this.getVisibleScalerRect()
-                  : null;
+                const position =
+                  this.viewportCtx?.visibleScalerBox().rect() ?? null;
 
                 const branchInfo = this.branchInfo();
                 const data: UpdatePlayerViewRequest = {
@@ -4058,12 +3594,9 @@ export class StudioCtx extends WithDbCtx {
 
     const arena = changeResult.result.value;
 
-    this.tryZoomToFitRect(
-      {
-        ...position,
-      },
-      { padding: 0, extraLeftPadding: 0, smooth }
-    );
+    this.viewportCtx?.zoomToScalerBox(Box.fromRect(position), {
+      smooth,
+    });
     const selection = playerData?.viewInfo?.selectionInfo;
     const arenaFrame = selection
       ? getArenaFrames(arena).find(
@@ -6882,11 +6415,13 @@ export class StudioCtx extends WithDbCtx {
   normalizeCurrentArena = () => {
     const arena = this.currentArena;
     if (isMixedArena(arena)) {
-      const { deltaX, deltaY } = normalizeMixedArenaFrames(arena);
-
-      // Adjust scroll if clipper is loaded
-      if (this.maybeCanvasClipper()) {
-        this.translateScalerRelative(deltaX * this.zoom, deltaY * this.zoom);
+      const delta = normalizeMixedArenaFrames(arena);
+      // normalizeMixedArenaFrames may change the top left of the arena.
+      // To avoid seeming like the clipper moved for the user,
+      // scroll by the delta.
+      if (delta) {
+        const viewportCtx = this.viewportCtx!;
+        viewportCtx.scrollBy(delta.scale(viewportCtx.scale()));
       }
     }
   };

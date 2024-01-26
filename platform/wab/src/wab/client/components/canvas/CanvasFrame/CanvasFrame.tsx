@@ -10,7 +10,6 @@ import { CommentOverlays } from "@/wab/client/components/comments/CommentOverlay
 import { bindShortcutHandlers } from "@/wab/client/shortcuts/shortcut-handler";
 import { STUDIO_SHORTCUTS } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { useForceUpdate } from "@/wab/client/useForceUpdate";
 import { assert, cx, ensure, spawn, spawnWrapper, tuple } from "@/wab/common";
 import { ScreenDimmer } from "@/wab/commons/components/ScreenDimmer";
 import { AnyArena, getArenaName, getFrameHeight } from "@/wab/shared/Arenas";
@@ -56,7 +55,6 @@ export const CanvasFrame = observer(function CanvasFrame({
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const canvasName = `Canvas[${getArenaName(arena)}][${arenaFrame.uid}]`;
   const [toggleTrailingSlash, setToggleTrailingSlash] = useState(false);
-  const appConfig = studioCtx.appCtx.appConfig;
 
   // We want to only load one CanvasFrame at a time, so we let StudioCtx
   // help us coordinate.  The load states are:
@@ -107,7 +105,6 @@ export const CanvasFrame = observer(function CanvasFrame({
     [maybeViewCtx]
   );
   const canvasCtx = useCallback(() => viewCtx().canvasCtx, [viewCtx]);
-  const onClipperResized = useForceUpdate();
 
   const needsToRecreateVc = createdVc && !maybeViewCtx();
 
@@ -290,7 +287,6 @@ export const CanvasFrame = observer(function CanvasFrame({
       studioCtx.fontManager.installAllUsedFonts([ctx.$head()]);
       onFrameLoad(arenaFrame, ctx);
 
-      studioCtx.clipperResizedSignal.add(onClipperResized);
       setCreatedVc(true);
       setLoadState("loaded");
       if (loadedResolveRef.current) {
@@ -313,7 +309,6 @@ export const CanvasFrame = observer(function CanvasFrame({
         ctx.$html().get(0).removeEventListener("wheel", onWheel);
         ctx.viewport().removeEventListener("focus", onFocus);
         ctx.dispose();
-        studioCtx.clipperResizedSignal.remove(onClipperResized);
         loadedResolveRef.current?.();
       };
     },
@@ -324,7 +319,6 @@ export const CanvasFrame = observer(function CanvasFrame({
       arenaFrame,
       loadState,
       toggleTrailingSlash,
-      onClipperResized,
       onFrameLoad,
     ]
   );

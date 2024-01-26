@@ -4,10 +4,9 @@ import { FocusModeLayout } from "@/wab/client/components/studio/arenas/FocusMode
 import { FreeFramesLayout } from "@/wab/client/components/studio/arenas/FreeFramesLayout";
 import { PageArenaLayout } from "@/wab/client/components/studio/arenas/PageArenaLayout";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { unexpected } from "@/wab/common";
+import { cx, unexpected } from "@/wab/common";
 import {
   AnyArena,
-  getPositionedArenaFrames,
   isComponentArena,
   isFocusedDedicatedArena,
   isMixedArena,
@@ -23,24 +22,17 @@ export const CanvasArenaShell = observer(function CanvasArenaShell(props: {
   onFrameLoad: (frame: ArenaFrame, canvasCtx: CanvasCtx) => void;
 }) {
   const { studioCtx, arena, onFrameLoad } = props;
-  const visible = studioCtx.isArenaVisible(arena) && studioCtx.isDevMode;
+  const isDevMode = studioCtx.isDevMode;
+  const isVisible = studioCtx.isArenaVisible(arena);
   const isAlive = studioCtx.isArenaAlive(arena);
 
   return (
     <div
       data-arena-uid={arena.uid}
-      className={visible ? "canvas-editor__frames" : undefined}
-      style={
-        !visible
-          ? {
-              display: "none",
-              visibility: "hidden",
-              pointerEvents: "none",
-              position: "absolute",
-              transform: "scale(0)",
-            }
-          : undefined
-      }
+      className={cx(
+        isVisible ? "canvas-editor__frames" : "display-none",
+        isDevMode ? undefined : "invisible"
+      )}
     >
       {isAlive && (
         <CanvasArena
@@ -64,7 +56,6 @@ export const CanvasArena = observer(function CanvasArena(props: {
       <FreeFramesLayout
         arena={arena}
         studioCtx={studioCtx}
-        frames={getPositionedArenaFrames(arena)}
         onFrameLoad={onFrameLoad}
       />
     );

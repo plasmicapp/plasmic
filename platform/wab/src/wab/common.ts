@@ -1781,6 +1781,16 @@ export function betweenRange(x: number, a: number, b: number) {
   return a <= x && x < b;
 }
 
+export function restrictBetweenInclusive(x: number, min: number, max: number) {
+  if (x < min) {
+    return min;
+  } else if (x > max) {
+    return max;
+  } else {
+    return x;
+  }
+}
+
 export function* cumsum(xs: number[]) {
   let sum = 0;
   for (const x of xs) {

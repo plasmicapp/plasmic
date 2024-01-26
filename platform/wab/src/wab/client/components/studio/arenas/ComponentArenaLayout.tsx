@@ -344,7 +344,6 @@ export const ComponentArenaLayout = observer(
               grid={arena.customMatrix}
               onFrameLoad={onFrameLoad}
               makeRowLabel={() => COMBINATIONS_CAP}
-              className={sty.customGrid}
               rowEndControls={() => (
                 <VariantComboGhostFrame studioCtx={studioCtx} arena={arena} />
               )}

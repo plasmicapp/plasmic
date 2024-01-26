@@ -11,14 +11,7 @@ import { showCanvasPageNavigationNotification } from "@/wab/client/components/ca
 import { ClientPinManager } from "@/wab/client/components/variants/ClientPinManager";
 import { HostFrameCtx } from "@/wab/client/frame-ctx/host-frame-ctx";
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import {
-  asyncTimeout,
-  ensure,
-  hackyCast,
-  spawn,
-  spawnWrapper,
-  tuple,
-} from "@/wab/common";
+import { ensure, hackyCast, spawn, spawnWrapper, tuple } from "@/wab/common";
 import { withProvider } from "@/wab/commons/components/ContextUtil";
 import {
   allComponentNonStyleVariants,
@@ -263,28 +256,6 @@ export class PreviewCtx {
     history.push(
       this.previousLocation ||
         U.project({ projectId: this.studioCtx.siteInfo.id })
-    );
-
-    spawn(
-      (async () => {
-        // Fix the zoom level when leaving live mode when the artboards have
-        // never rendered. In this case, the clipperBB might already exist in
-        // the DOM, but doesn't have the correct size yet.
-        // We then add a listener to observe when it changes, and a timeout of
-        // 2 seconds so later changes unrelated  to it (like navigating between
-        // arenas) don't result in unintended zoom changes.
-        const clipperResizedListener = () => {
-          this.studioCtx.clipperResizedSignal.remove(clipperResizedListener);
-          this.studioCtx.tryZoomToFitArena();
-        };
-        await asyncTimeout(100);
-        this.studioCtx.clipperResizedSignal.add(clipperResizedListener);
-        setTimeout(
-          () =>
-            this.studioCtx.clipperResizedSignal.remove(clipperResizedListener),
-          2000
-        );
-      })()
     );
   }
 

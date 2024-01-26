@@ -1,9 +1,7 @@
-import { scalerToClientPt } from "@/wab/client/coords";
 import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { ensure } from "@/wab/common";
+import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
 import { Pt } from "@/wab/geom";
 import { getArenaType, getArenaUuidOrName } from "@/wab/shared/Arenas";
-import $ from "jquery";
 import { observer } from "mobx-react-lite";
 import { PerfectCursor } from "perfect-cursors";
 import * as React from "react";
@@ -11,7 +9,9 @@ import MultiplayerCursor from "./MultiplayerCursor";
 
 export const PlayerCursors = observer(function PlayerCursors() {
   const studioCtx = useStudioCtx();
+  const viewportCtx = studioCtx.viewportCtx;
   if (
+    !viewportCtx ||
     !studioCtx.editMode ||
     studioCtx.isLiveMode ||
     !studioCtx.showMultiplayerSelections()
@@ -23,6 +23,7 @@ export const PlayerCursors = observer(function PlayerCursors() {
       {studioCtx.multiplayerCtx.getAllPlayerIds().map((playerId) => (
         <PlayerCursor
           studioCtx={studioCtx}
+          viewportCtx={viewportCtx}
           key={playerId}
           playerId={playerId}
         />
@@ -33,11 +34,13 @@ export const PlayerCursors = observer(function PlayerCursors() {
 
 interface PlayerCursorProps {
   studioCtx: StudioCtx;
+  viewportCtx: ViewportCtx;
   playerId: number;
 }
 
 const PlayerCursor = observer(function PlayerCursor({
   studioCtx,
+  viewportCtx,
   playerId,
 }: PlayerCursorProps) {
   const multiplayerCtx = studioCtx.multiplayerCtx;
@@ -69,17 +72,9 @@ const PlayerCursor = observer(function PlayerCursor({
     return null;
   }
 
-  // Trigger rerender of PlayerCursors when the user moves or zooms in the canvas
-  const _ = [studioCtx.getScalerTranslate(), studioCtx.zoom];
-  const clipperOffset = ensure(
-    $(clipper).offset(),
-    "Offset should not be undefiend"
-  );
-
-  const pt = scalerToClientPt(
-    new Pt(cursorData.left, cursorData.top),
-    studioCtx
-  ).moveBy(-clipperOffset.left, -clipperOffset.top);
+  const pt = viewportCtx
+    .scalerToClient(new Pt(cursorData.left, cursorData.top))
+    .sub(viewportCtx.clipperBox().topLeft());
 
   return (
     <AnimatedCursor

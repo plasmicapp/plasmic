@@ -1,9 +1,5 @@
 import { ensureKnownTplTag } from "@/wab/classes";
-import {
-  clientToFramePt,
-  clientToFrameRect,
-  clientToScalerRect,
-} from "@/wab/client/coords";
+import { clientToFramePt, clientToFrameRect } from "@/wab/client/coords";
 import { NodeTargeter } from "@/wab/client/Dnd";
 import { resizeRect } from "@/wab/client/FreestyleManipulator";
 import { renderCantAddMsg } from "@/wab/client/messages/parenting-msgs";
@@ -57,7 +53,9 @@ export function _FreestyleBox() {
   const guardOffset = { top: -500000, left: -500000 };
   const getFreestyleBoxStyle = (e: XDraggableEvent) => {
     const drawnClientRect = getClientRect(e);
-    const drawnScalerRect = clientToScalerRect(drawnClientRect, studioCtx);
+    const drawnScalerRect = studioCtx
+      .viewportCtx!.clientToScaler(Box.fromRect(drawnClientRect))
+      .rect();
     const invertTransformStyle = cssPropsForInvertTransform(
       studioCtx.zoom,
       drawnScalerRect

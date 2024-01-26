@@ -60,11 +60,7 @@ import * as widgets from "@/wab/client/components/widgets";
 import { BrowserAlertBanner } from "@/wab/client/components/widgets/BrowserAlertBanner";
 import { DropdownButton } from "@/wab/client/components/widgets/DropdownButton";
 import { AlertBanner } from "@/wab/client/components/widgets/plasmic/AlertBanner";
-import {
-  clientToFramePt,
-  clientToScalerPt,
-  frameToClientPt,
-} from "@/wab/client/coords";
+import { clientToFramePt, frameToClientPt } from "@/wab/client/coords";
 import {
   plasmicIFrameMouseDownEvent,
   plasmicIFrameWheelEvent,
@@ -94,6 +90,7 @@ import { shouldHandleStudioShortcut } from "@/wab/client/shortcuts/studio/studio
 import { STUDIO_SHORTCUTS } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import { RightTabKey, StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "@/wab/client/studio-ctx/view-ctx";
+import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
 import { TutorialEventsType } from "@/wab/client/tours/tutorials/tutorials-events";
 import { trackEvent } from "@/wab/client/tracking";
 import {
@@ -111,6 +108,7 @@ import {
   spawn,
   swallowAsync,
   tuple,
+  unexpected,
   withoutNils,
 } from "@/wab/common";
 import {
@@ -231,6 +229,9 @@ type ViewEditorState = {};
 
 class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
   private canvasClipper = createRef<HTMLDivElement>();
+  private canvas = createRef<HTMLDivElement>();
+  private canvasScaler = createRef<HTMLDivElement>();
+  private onClipperScrollListener: (() => void) | null = null;
   private dragState?: DragState;
   private cursorClientPt?: Pt;
   private measureToolTargets?: {
@@ -254,7 +255,6 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
   constructor(props: ViewEditorProps) {
     super(props);
     dbg.viewEditor = this;
-    this.onClipperScrolled = this.onClipperScrolled.bind(this);
   }
 
   private viewCtx() {
@@ -309,6 +309,13 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
   }
 
   componentDidMount(): void {
+    const canvasClipper = this.canvasClipper.current;
+    const canvas = this.canvas.current;
+    const canvasScaler = this.canvasScaler.current;
+    if (!canvasClipper || !canvas || !canvasScaler) {
+      unexpected();
+    }
+
     // Ensure focus on this page, since we are being loaded in an iframe.
     window.focus();
 
@@ -419,6 +426,44 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
     });
 
     const initArena = this.props.studioCtx.currentArena;
+    const viewportCtx = new ViewportCtx({
+      dom: {
+        updateCanvasPadding: (canvasPadding) => {
+          canvas.style.padding = `${canvasPadding.y}px ${canvasPadding.x}px`;
+        },
+        updateArenaSize: (arenaSize) => {
+          canvas.style.width = `${arenaSize.x}px`;
+          canvas.style.height = `${arenaSize.y}px`;
+        },
+        scaleTo: (scale, smooth) => {
+          canvasScaler.style.transform = `scale(${scale})`;
+          canvasScaler.style.transition = smooth
+            ? `transform 0.5s, -webkit-transform 0.5s`
+            : "";
+        },
+        scrollTo: (scroll, smooth) => {
+          canvasClipper.scrollTo({
+            left: scroll.x,
+            top: scroll.y,
+            behavior: smooth ? "smooth" : "auto",
+          });
+        },
+        scrollBy: (scroll, smooth) => {
+          canvasClipper.scrollBy({
+            left: scroll.x,
+            top: scroll.y,
+            behavior: smooth ? "smooth" : "auto",
+          });
+        },
+      },
+      initialArena: initArena,
+      initialClipperBox: Box.fromRect(canvasClipper.getBoundingClientRect()),
+      initialClipperScroll: new Pt(
+        canvasClipper.scrollLeft,
+        canvasClipper.scrollTop
+      ),
+    });
+    this.props.studioCtx.viewportCtx = viewportCtx;
 
     if (initArena) {
       const initArenaChildren = getArenaFrames(initArena);
@@ -436,15 +481,25 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       this.props.studioCtx.tryZoomToFitArena();
     }
 
-    const canvasClipper = ensure(
-      this.canvasClipper.current,
-      () => "Expected canvasClipper to exist"
-    );
-    this.resizeObserver = new ResizeObserver(() => {
-      this.props.studioCtx.onClipperResized();
+    this.resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.target === canvasClipper) {
+          // We want the client box of the clipper, so use getBoundingClientRect().
+          // contentRect only provides the size of the box.
+          viewportCtx.setClipperBox(
+            Box.fromRect(canvasClipper.getBoundingClientRect())
+          );
+        } else if (entry.target === canvasScaler) {
+          // We want the size of the scaler, before CSS transforms, so use contentRect.
+          // Note that CSS transforms do not trigger the resize observer.
+          viewportCtx.setArenaScalerSize(
+            Box.fromRect(entry.contentRect).size()
+          );
+        }
+      }
     });
     this.resizeObserver.observe(canvasClipper);
-    this.props.studioCtx.onClipperResized();
+    this.resizeObserver.observe(canvasScaler);
     (window as any).drift?.show();
 
     this.focusResetListener = this.props.studioCtx.focusReset.add(() => {
@@ -453,7 +508,12 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       }
     });
 
-    canvasClipper.addEventListener("scroll", this.onClipperScrolled);
+    this.onClipperScrollListener = () => {
+      viewportCtx.setScroll(
+        new Pt(canvasClipper.scrollLeft, canvasClipper.scrollTop)
+      );
+    };
+    canvasClipper.addEventListener("scroll", this.onClipperScrollListener);
 
     const shortcutHandlers = {
       NAV_PARENT: (e: KeyboardEvent) =>
@@ -848,27 +908,33 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
   }
 
   componentWillUnmount() {
-    this.unbindShortcutHandlers();
-    if (this.resizeObserver) {
-      this.resizeObserver.unobserve(
-        ensure(
-          this.canvasClipper.current,
-          () => "Expected canvasClipper to exist"
-        )
-      );
+    const canvasClipper = this.canvasClipper.current;
+    const canvas = this.canvas.current;
+    const canvasScaler = this.canvasScaler.current;
+    if (!canvasClipper || !canvas || !canvasScaler) {
+      unexpected();
     }
+
+    this.unbindShortcutHandlers();
     this.unregisterListeners();
+
+    if (this.resizeObserver) {
+      this.resizeObserver.unobserve(canvasClipper);
+      this.resizeObserver.unobserve(canvasScaler);
+    }
     (window as any).drift?.hide();
     if (this.focusResetListener) {
       this.focusResetListener.detach();
       this.focusResetListener = undefined;
     }
 
-    const canvasClipper = ensure(
-      this.canvasClipper.current,
-      () => "Expected canvasClipper to exist"
-    );
-    canvasClipper.removeEventListener("scroll", this.onClipperScrolled);
+    if (this.onClipperScrollListener) {
+      canvasClipper.removeEventListener("scroll", this.onClipperScrollListener);
+      this.onClipperScrollListener = null;
+    }
+
+    this.props.studioCtx.viewportCtx?.dispose();
+    this.props.studioCtx.viewportCtx = null;
   }
 
   focusResetListener: SignalBinding | undefined = undefined;
@@ -878,10 +944,6 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       document.activeElement === document.body &&
       !this.props.studioCtx.isBottomModalFocused()
     );
-  }
-
-  private onClipperScrolled() {
-    this.props.studioCtx.onClipperScrolled();
   }
 
   private hotkey = (f: (e: UIEventBase) => any, requireViewCtx = true) => {
@@ -1292,7 +1354,7 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       if (vc) {
         clientPt = frameToClientPt(clientPt, vc);
       }
-      const pt = clientToScalerPt(clientPt, this.props.studioCtx);
+      const pt = this.props.studioCtx.viewportCtx!.clientToScaler(clientPt);
       data = {
         left: pt.x,
         top: pt.y,
@@ -1771,8 +1833,8 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
               : undefined,
           targetPt: arenaBounds.contains(cursorPt)
             ? cursorPt.moveBy(
-                targetVc.arenaFrame().left,
-                targetVc.arenaFrame().top
+                targetVc.arenaFrame().left ?? 0,
+                targetVc.arenaFrame().top ?? 0
               )
             : undefined,
           targetVc: targetVc,
@@ -2156,9 +2218,6 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
       !!(DEVFLAGS.richtext2 && this.viewCtx()?.editingTextContext()) ||
       (this.viewCtx()?.focusedTpls().length ?? 0) > 1;
 
-    const canvasSize = studioCtx.canvasSize();
-    const canvasPadding = studioCtx.canvasPadding();
-
     return (
       <div className="canvas-editor">
         {studioCtx.currentArena && (
@@ -2171,12 +2230,9 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
         <div className="canvas-editor__outer-main-area">
           <BrowserAlertBanner />
           <DevContainer className="canvas-editor__top-bar" showControls={true}>
-            <>
-              {!this.props.studioCtx.isLiveMode &&
-                !this.props.studioCtx.isDocs && <TopBar />}
-              {!this.props.studioCtx.isLiveMode &&
-                !this.props.studioCtx.isDocs && <TopFrameObserver />}
-            </>
+            <TopBar />
+            {!this.props.studioCtx.isLiveMode &&
+              !this.props.studioCtx.isDocs && <TopFrameObserver />}
           </DevContainer>
 
           <div className="canvas-editor__hsplit">
@@ -2251,25 +2307,16 @@ class ViewEditor_ extends React.Component<ViewEditorProps, ViewEditorState> {
               )}
               <div
                 ref={this.canvasClipper}
-                className={cx({
-                  "canvas-editor__canvas-clipper": true,
-                  "canvas-editor__canvas-clipper--live": studioCtx.isLiveMode,
-                })}
+                className="canvas-editor__canvas-clipper"
               >
                 {studioCtx.isDevMode && (
                   <div className="canvas-editor__canvas-clipper-grid" />
                 )}
-                <div
-                  className="canvas-editor__canvas"
-                  style={{
-                    height: `${canvasSize.height()}px`,
-                    width: `${canvasSize.width()}px`,
-                    // The padding controls how far the clipper (viewport)
-                    // can be scrolled from the canvas.
-                    padding: `${canvasPadding.vertical}px ${canvasPadding.horizontal}px`,
-                  }}
-                >
-                  <div className="canvas-editor__scaler">
+                <div ref={this.canvas} className="canvas-editor__canvas">
+                  <div
+                    ref={this.canvasScaler}
+                    className="canvas-editor__scaler"
+                  >
                     {getSiteArenas(studioCtx.site, { noSorting: true }).map(
                       (arena) => (
                         <CanvasArenaShell

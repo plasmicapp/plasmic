@@ -24,7 +24,7 @@ export class DevContainer extends React.Component<DevContainerProps, {}> {
         }}
         className={cx(this.props.className, {
           "dev-env": true,
-          "dev-env--hidden":
+          invisible:
             this.props.showControls === undefined
               ? this.props.defaultHidden
               : !this.props.showControls,

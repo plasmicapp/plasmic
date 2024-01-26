@@ -32,6 +32,7 @@ import {
   isPageComponent,
   isPageFrame,
 } from "@/wab/components";
+import { Pt } from "@/wab/geom";
 import {
   allGlobalVariants,
   getAllSiteFrames,
@@ -498,7 +499,7 @@ export function isMixedArena(
 
 /**
  * Updates a mixed arena's frames to ensure that the min top/left of all frames
- * is at (0, 0).
+ * is at (0, 0). Returns the delta change in min top/left, if any.
  *
  * The canvas assumes the min top/left is at (0, 0) to set the clipper bounds.
  */
@@ -516,12 +517,43 @@ export function normalizeMixedArenaFrames(arena: Arena) {
     }
   }
 
-  for (const frame of frames) {
-    frame.top -= minTop;
-    frame.left -= minLeft;
+  if (minLeft === 0 && minTop === 0) {
+    return null;
   }
 
-  return { deltaX: minLeft, deltaY: minTop };
+  const delta = new Pt(-minLeft, -minTop);
+  for (const frame of frames) {
+    frame.top += delta.y;
+    frame.left += delta.x;
+  }
+  return delta;
+}
+
+/**
+ * Get the size of a mixed arena.
+ *
+ * Only works for mixed arenas where we use absolute positioning.
+ */
+export function getMixedArenaSize(arena: Arena): Pt {
+  const frames = getPositionedArenaFrames(arena);
+  if (frames.length === 0) {
+    return Pt.zero();
+  }
+
+  let maxRight = -Infinity;
+  let maxBottom = -Infinity;
+  for (const frame of frames) {
+    const right = frame.left + frame.width;
+    const bottom = frame.top + getFrameHeight(frame);
+    if (right > maxRight) {
+      maxRight = right;
+    }
+    if (bottom > maxBottom) {
+      maxBottom = bottom;
+    }
+  }
+
+  return new Pt(maxRight, maxBottom);
 }
 
 /** A dedicated arena for a page or component. */

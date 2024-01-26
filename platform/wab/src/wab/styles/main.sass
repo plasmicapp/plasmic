@@ -3985,9 +3985,11 @@ $color-stops-width: 100%
   margin-bottom: 8px
   pointer-events: auto
 .canvas-editor__scaler
+  // position: absolute ensures the scaler's children
+  // can be measured by ResizeObserver
+  position: absolute
   transform: scale(1)
   transform-origin: 0 0
-  display: flex
 .canvas-editor__scaler__popup_live
   width: 100%
   height: 100%
@@ -4022,9 +4024,6 @@ $color-stops-width: 100%
   width: 100%
   position: absolute
   grid-area: clipper
-.canvas-editor__canvas-clipper--live
-  left: 0
-  right: 0
 
 .canvas-editor__canvas-clipper-grid
   z-index: 1
@@ -4117,9 +4116,6 @@ $color-stops-width: 100%
   color: white
   z-index: 99999
   box-shadow: 4px 4px 8px 0px rgba(0, 0, 0, 0.5)
-
-.dev-env--hidden
-  display: none
 
 .creation-lasso
   border: 2px solid green

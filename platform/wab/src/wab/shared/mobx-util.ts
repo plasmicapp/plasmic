@@ -1,6 +1,32 @@
-import type { IComputedValue, IComputedValueOptions } from "mobx";
+import type {
+  IComputedValue,
+  IComputedValueOptions,
+  IEqualsComparer,
+} from "mobx";
 import { computedFn } from "mobx-utils";
 import mobx from "./import-mobx";
+
+type Getter<T> = () => T;
+type Setter<T> = (value: T) => void;
+
+/** Shorthand for defining a getter function. */
+export function getter<T>(observable: { get: Getter<T> }): Getter<T> {
+  // Can't return observable.get because it's a method on the prototype.
+  // Use arrow function to capture the observable instance.
+  return () => observable.get();
+}
+
+/** Shorthand for defining a setter function. */
+export function setter<T>(observable: { set: Setter<T> }): Setter<T> {
+  // Can't return observable.set because it's a method on the prototype.
+  // Use arrow function to capture the observable instance.
+  return (value: T) => observable.set(value);
+}
+
+/** Custom equals comparer that uses an object's `equals` method. */
+export const equalsComparer: IEqualsComparer<{
+  equals: (other: any) => boolean;
+}> = (a, b) => a.equals(b);
 
 export function maybeComputedFn<T extends (...args: any[]) => any>(
   fn: T,

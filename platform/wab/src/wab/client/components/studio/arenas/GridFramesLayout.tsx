@@ -1,17 +1,17 @@
-import { observer } from "mobx-react-lite";
-import React from "react";
 import {
   ArenaFrame,
   ArenaFrameGrid,
   ArenaFrameRow,
   ComponentArena,
   PageArena,
-} from "../../../../classes";
-import { cx, maybe, switchType } from "../../../../common";
-import { AnyArena, getFrameHeight } from "../../../../shared/Arenas";
-import { StudioCtx, useStudioCtx } from "../../../studio-ctx/StudioCtx";
-import { CanvasCtx } from "../../canvas/canvas-ctx";
-import { CanvasFrame } from "../../canvas/CanvasFrame";
+} from "@/wab/classes";
+import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
+import { CanvasFrame } from "@/wab/client/components/canvas/CanvasFrame";
+import { StudioCtx, useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { maybe, switchType } from "@/wab/common";
+import { AnyArena, getFrameHeight } from "@/wab/shared/Arenas";
+import { observer } from "mobx-react-lite";
+import React from "react";
 import sty from "./GridFramesLayout.module.sass";
 
 export const GridFramesLayout = observer(GridFramesLayout_);
@@ -23,8 +23,6 @@ function GridFramesLayout_(props: {
   makeRowLabelControls?: (row: ArenaFrameRow, index: number) => React.ReactNode;
   rowEndControls?: (row: ArenaFrameRow, index: number) => React.ReactNode;
   gridEndControls?: () => React.ReactNode;
-  className?: string;
-  style?: React.CSSProperties;
 }) {
   const {
     arena,
@@ -32,8 +30,6 @@ function GridFramesLayout_(props: {
     onFrameLoad,
     makeRowLabel,
     makeRowLabelControls,
-    className,
-    style,
     rowEndControls,
     gridEndControls,
   } = props;
@@ -41,12 +37,7 @@ function GridFramesLayout_(props: {
   const studioCtx = useStudioCtx();
 
   return (
-    <div
-      className={cx([sty.root, className], {
-        [sty.root__withRowLabels]: !!makeRowLabel,
-      })}
-      style={style}
-    >
+    <div className={sty.root}>
       {grid.rows.map((row, rowIndex) => (
         <div key={row.rowKey?.uuid ?? rowIndex}>
           <ArenaGridRowLabel
@@ -96,15 +87,14 @@ function GridFramesLayout_(props: {
   );
 }
 
-export const ArenaGridRowLabel = observer(ArenaGridRowLabel_);
+const ArenaGridRowLabel = observer(ArenaGridRowLabel_);
 function ArenaGridRowLabel_(props: {
   arena: AnyArena;
   studioCtx: StudioCtx;
   children: React.ReactNode;
-  className?: string;
   style?: React.CSSProperties;
 }) {
-  const { studioCtx, children, style, className } = props;
+  const { studioCtx, children, style } = props;
 
   const minRowHeight = switchType(props.arena)
     .when(ComponentArena, (arena) =>
@@ -127,7 +117,7 @@ function ArenaGridRowLabel_(props: {
 
   return (
     <div
-      className={cx(sty.rowLabel, className)}
+      className={sty.rowLabel}
       style={{
         transform: `scale(${Math.min(
           1 / studioCtx.zoom,

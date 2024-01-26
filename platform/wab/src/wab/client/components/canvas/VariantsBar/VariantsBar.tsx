@@ -4,7 +4,7 @@ import {
   getSpotlightInfo,
 } from "@/wab/client/components/canvas/Spotlight";
 import { makeVariantsController } from "@/wab/client/components/variants/VariantsController";
-import { frameToClientRect, scalerToClientRect } from "@/wab/client/coords";
+import { frameToClientRect } from "@/wab/client/coords";
 import { plasmicCanvasTransformEvent } from "@/wab/client/definitions/events";
 import PlasmicVariantsBar from "@/wab/client/plasmic/plasmic_kit_variants_bar/PlasmicVariantsBar";
 import { StudioCtx, usePlasmicCtx } from "@/wab/client/studio-ctx/StudioCtx";
@@ -15,7 +15,7 @@ import {
   getSuperComponentVariantGroupToComponent,
   isFrameComponent,
 } from "@/wab/components";
-import { areRectsIntersecting, Box } from "@/wab/geom";
+import { Box } from "@/wab/geom";
 import { isDedicatedArena, isMixedArena } from "@/wab/shared/Arenas";
 import { withoutIrrelevantScreenVariants } from "@/wab/shared/PinManager";
 import { getAllVariantsForTpl, isScreenVariant } from "@/wab/shared/Variants";
@@ -73,10 +73,11 @@ function getFocusedElementRect(studioCtx: StudioCtx) {
   const focusObj = studioCtx.hoverBoxControlledObj;
 
   if (isKnownArenaFrame(focusObj) && vc) {
-    return scalerToClientRect(
-      studioCtx.getArenaFrameScalerRect(focusObj)!,
-      studioCtx
-    );
+    return vc.viewportCtx
+      .scalerToClient(
+        Box.fromRect(studioCtx.getArenaFrameScalerRect(focusObj)!)
+      )
+      .rect();
   } else {
     const objRect = vc?.focusedDomElt()?.[0]?.getBoundingClientRect();
 
@@ -133,8 +134,10 @@ function useFloatingBarForFocusedFrame({
         return;
       }
 
-      const clipperRect = studioCtx.canvasClipper().getBoundingClientRect();
-      const componentRect = scalerToClientRect(focusedComponentRect, studioCtx);
+      const clipperBox = viewCtx.viewportCtx.clipperBox();
+      const componentBox = viewCtx.viewportCtx.scalerToClient(
+        Box.fromRect(focusedComponentRect)
+      );
       const panelRect = panelRef.current.getBoundingClientRect();
       const controlledObj = studioCtx.hoverBoxControlledObj;
       const focusedElementRect = getFocusedElementRect(studioCtx);
@@ -149,22 +152,22 @@ function useFloatingBarForFocusedFrame({
           ? HOVER_TAG_HEIGHT
           : focusedElementRect && focusedElementRect.height
           ? Math.max(
-              componentRect.top - (focusedElementRect.top - hoverTagHeight),
+              componentBox.top() - (focusedElementRect.top - hoverTagHeight),
               0
             )
           : 0) +
         GUTTER * 1.3;
 
       const maxTranslateX =
-        clipperRect.width - panelRect.width - CANVAS_PADDING;
+        clipperBox.width() - panelRect.width - CANVAS_PADDING;
       const maxTranslateY =
-        clipperRect.height - panelRect.height - CANVAS_PADDING;
+        clipperBox.height() - panelRect.height - CANVAS_PADDING;
 
       const translateX =
         studioCtx.canvasClipper().scrollLeft +
         Math.max(
           Math.min(
-            componentRect.left - clipperRect.left + GUTTER,
+            componentBox.left() - clipperBox.left() + GUTTER,
             maxTranslateX
           ),
           CANVAS_PADDING
@@ -174,9 +177,9 @@ function useFloatingBarForFocusedFrame({
         studioCtx.canvasClipper().scrollTop +
         Math.max(
           Math.min(
-            componentRect.top -
+            componentBox.top() -
               componentTopMargin -
-              clipperRect.top -
+              clipperBox.top() -
               panelRect.height,
             maxTranslateY
           ),
@@ -185,7 +188,7 @@ function useFloatingBarForFocusedFrame({
 
       panelRef.current.style.transform = `translate(${translateX}px, ${translateY}px)`;
 
-      setShowPanel(areRectsIntersecting(clipperRect, componentRect));
+      setShowPanel(clipperBox.intersects(componentBox, true));
     });
   }, [
     viewCtx?.focusedSelectable(),

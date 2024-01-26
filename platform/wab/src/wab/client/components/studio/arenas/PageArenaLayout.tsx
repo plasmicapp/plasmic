@@ -1,18 +1,15 @@
+import { ArenaFrame, ensureKnownVariant, PageArena } from "@/wab/classes";
+import { CanvasCtx } from "@/wab/client/components/canvas/canvas-ctx";
+import { makeFrameSizeMenu } from "@/wab/client/components/menus/FrameSizeMenu";
+import ExperimentCanvasButton from "@/wab/client/components/splits/ExperimentCanvasButton";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { spawn } from "@/wab/common";
+import { allComponentVariants } from "@/wab/components";
+import { COMBINATIONS_CAP } from "@/wab/shared/Labels";
+import { isBaseVariant, isStandaloneVariant } from "@/wab/shared/Variants";
+import { allGlobalVariantGroups } from "@/wab/sites";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { ArenaFrame, ensureKnownVariant, PageArena } from "../../../../classes";
-import { spawn } from "../../../../common";
-import { allComponentVariants } from "../../../../components";
-import { COMBINATIONS_CAP } from "../../../../shared/Labels";
-import {
-  isBaseVariant,
-  isStandaloneVariant,
-} from "../../../../shared/Variants";
-import { allGlobalVariantGroups } from "../../../../sites";
-import { StudioCtx } from "../../../studio-ctx/StudioCtx";
-import { CanvasCtx } from "../../canvas/canvas-ctx";
-import { makeFrameSizeMenu } from "../../menus/FrameSizeMenu";
-import ExperimentCanvasButton from "../../splits/ExperimentCanvasButton";
 import { VariantComboGhostFrame } from "./ComponentArenaLayout";
 import sty from "./ComponentArenaLayout.module.sass";
 import { GhostFrame } from "./GhostFrame";
@@ -95,7 +92,6 @@ export const PageArenaLayout = observer(function PageArenaLayout(props: {
             grid={arena.customMatrix}
             onFrameLoad={onFrameLoad}
             makeRowLabel={() => COMBINATIONS_CAP}
-            className={sty.customGrid}
             rowEndControls={() => (
               <VariantComboGhostFrame studioCtx={studioCtx} arena={arena} />
             )}

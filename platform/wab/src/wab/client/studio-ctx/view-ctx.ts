@@ -30,6 +30,7 @@ import {
   mkFrameValKeyToContextDataKey,
 } from "@/wab/client/react-global-hook/globalHook";
 import { requestIdleCallbackAsync } from "@/wab/client/requestidlecallback";
+import { ViewportCtx } from "@/wab/client/studio-ctx/ViewportCtx";
 import { trackEvent } from "@/wab/client/tracking";
 import { ViewStateSnapshot } from "@/wab/client/undo-log";
 import {
@@ -57,7 +58,7 @@ import {
 } from "@/wab/components";
 import { DEVFLAGS } from "@/wab/devflags";
 import { getRawCode } from "@/wab/exprs";
-import { Pt, Rect, rectsIntersect } from "@/wab/geom";
+import { Pt, rectsIntersect } from "@/wab/geom";
 import { metaSvc } from "@/wab/metas";
 import { Selectable, SQ } from "@/wab/selection";
 import { getArenaFrames } from "@/wab/shared/Arenas";
@@ -129,6 +130,7 @@ interface ViewCtxSyncArgs {
 
 interface ViewCtxArgs {
   studioCtx: StudioCtx;
+  viewportCtx: ViewportCtx;
   canvasCtx: CanvasCtx;
   arenaFrame: ArenaFrame;
 }
@@ -156,7 +158,8 @@ export interface SpotlightAndVariantsInfo {
 }
 
 export class ViewCtx extends WithDbCtx {
-  studioCtx: StudioCtx;
+  readonly studioCtx: StudioCtx;
+  readonly viewportCtx: ViewportCtx;
 
   csEvaluator: DevCliSvrEvaluator;
 
@@ -453,6 +456,7 @@ export class ViewCtx extends WithDbCtx {
 
     ({
       studioCtx: this.studioCtx,
+      viewportCtx: this.viewportCtx,
       canvasCtx: this.canvasCtx,
       arenaFrame: this._arenaFrame,
     } = args);
@@ -2100,12 +2104,12 @@ export class ViewCtx extends WithDbCtx {
       return true;
     }
 
-    const visibleScalerRect: Rect = this.studioCtx.getVisibleScalerRect();
+    const visibleScalerBox = this.viewportCtx.visibleScalerBox();
     const frameScalerRect = this.studioCtx.getArenaFrameScalerRect(
       this.arenaFrame()
     );
     return frameScalerRect
-      ? rectsIntersect(visibleScalerRect, frameScalerRect)
+      ? rectsIntersect(visibleScalerBox.rect(), frameScalerRect)
       : true;
   }
 
