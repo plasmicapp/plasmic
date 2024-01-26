@@ -33,6 +33,7 @@ import {
   isTplComponent,
   isTplIcon,
   isTplPicture,
+  pushExprs,
 } from "@/wab/tpls";
 import L, { last } from "lodash";
 import mime from "mime/lite";
@@ -98,16 +99,20 @@ export function collectUsedImageAssetsForTplByAttrs(
 export function collectUsedImageAssetsByExpr(
   assets: Set<ImageAsset>,
   component: Component,
-  expr: Expr
+  rootExpr: Expr
 ) {
-  if (isKnownImageAssetRef(expr)) {
-    assets.add(expr.asset);
-  } else if (isKnownVarRef(expr)) {
-    const param = component.params.find((p) => p.variable === expr.variable);
-    if (param && isKnownImageAssetRef(param.defaultExpr)) {
-      assets.add(param.defaultExpr.asset);
+  const exprs: Expr[] = [];
+  pushExprs(exprs, rootExpr);
+  exprs.forEach((expr) => {
+    if (isKnownImageAssetRef(expr)) {
+      assets.add(expr.asset);
+    } else if (isKnownVarRef(expr)) {
+      const param = component.params.find((p) => p.variable === expr.variable);
+      if (param && isKnownImageAssetRef(param.defaultExpr)) {
+        assets.add(param.defaultExpr.asset);
+      }
     }
-  }
+  });
 }
 
 export function extractUsedPictureAssetsForComponents(

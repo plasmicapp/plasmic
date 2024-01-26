@@ -584,7 +584,7 @@ export function makeGlobalContextBundle(
           const conditionals = buildConditionalDefaultStylesPropArg(site);
           serializedExpr = joinVariantVals(
             conditionals.map(([expr, combo]) => [
-              safeExprAsCode(expr, exprCtx),
+              getRawCode(expr, exprCtx),
               combo,
             ]),
             variantChecker,
@@ -602,20 +602,20 @@ export function makeGlobalContextBundle(
             );
             serializedExpr = joinVariantVals(
               conditionals.map(([expr, combo]) => [
-                safeExprAsCode(expr, exprCtx),
+                getRawCode(expr, exprCtx),
                 combo,
               ]),
               variantChecker,
               "undefined"
             ).value;
           } else {
-            serializedExpr = safeExprAsCode(maybeArg.expr, exprCtx);
+            serializedExpr = getRawCode(maybeArg.expr, exprCtx);
           }
         } else if (param.defaultExpr) {
-          serializedExpr = safeExprAsCode(param.defaultExpr, exprCtx);
+          serializedExpr = getRawCode(param.defaultExpr, exprCtx);
         }
       } else if (param.defaultExpr) {
-        serializedExpr = safeExprAsCode(param.defaultExpr, exprCtx);
+        serializedExpr = getRawCode(param.defaultExpr, exprCtx);
       }
 
       serializedExpr = `(${overridePropName} && "${varName}" in ${overridePropName}) ? ${overridePropName}.${varName}! : ${serializedExpr}`;
@@ -1767,11 +1767,11 @@ function serializeInitFunc(
   if (!state.tplNode && state.variableType === "variant") {
     initFunc = `({$props, $state, $queries, $ctx}) => (${
       state.param.defaultExpr
-        ? safeExprAsCode(state.param.defaultExpr, exprCtx) + " ?? "
+        ? getRawCode(state.param.defaultExpr, exprCtx) + " ?? "
         : ""
     } $props.${getStateValuePropName(state)})`;
   } else if (!state.tplNode && state.param.defaultExpr) {
-    initFunc = `({$props, $state, $queries, $ctx}) => (${safeExprAsCode(
+    initFunc = `({$props, $state, $queries, $ctx}) => (${getRawCode(
       state.param.defaultExpr,
       exprCtx
     )})`;
@@ -1784,13 +1784,13 @@ function serializeInitFunc(
           (vsArg) => vsArg.param === state.implicitState?.param
         );
         if (arg) {
-          exprs.push([safeExprAsCode(arg.expr, exprCtx), vs.variants]);
+          exprs.push([getRawCode(arg.expr, exprCtx), vs.variants]);
         }
       } else if (isTplTag(tpl)) {
         const namedState = ensureKnownNamedState(state);
         const varName = toVarName(namedState.name);
         if (varName in vs.attrs) {
-          exprs.push([safeExprAsCode(vs.attrs[varName], exprCtx), vs.variants]);
+          exprs.push([getRawCode(vs.attrs[varName], exprCtx), vs.variants]);
         }
       }
     }
@@ -1804,7 +1804,7 @@ function serializeInitFunc(
     ) {
       const initExpr = getVirtualWritableStateInitialValue(state);
       if (initExpr) {
-        exprs.unshift([safeExprAsCode(initExpr, exprCtx), [baseVariant]]);
+        exprs.unshift([getRawCode(initExpr, exprCtx), [baseVariant]]);
       }
     }
     if (
@@ -1816,7 +1816,7 @@ function serializeInitFunc(
       // initializing readonly state from code commponents
       // writable states are initialized with the value prop
       exprs.unshift([
-        safeExprAsCode(state.implicitState.param.defaultExpr, exprCtx),
+        getRawCode(state.implicitState.param.defaultExpr, exprCtx),
         [baseVariant],
       ]);
     }
@@ -4937,7 +4937,7 @@ function conditionalComponentArgs(
             toCode(
               joinVariantVals(
                 conditionals.map(([expr, combo]) => [
-                  safeExprAsCode(expr, ctx.exprCtx),
+                  getRawCode(expr, ctx.exprCtx),
                   combo,
                 ]),
                 ctx.variantComboChecker,
@@ -5064,10 +5064,6 @@ function getSerializedImgSrcForAsset(
   return jsLiteral(maybeSrcObject ?? "");
 }
 
-export function safeExprAsCode(expr: Expr, exprCtx: ExprCtx) {
-  return getRawCode(expr, exprCtx);
-}
-
 function conditionalStyleProp(
   ctx: SerializerBaseContext,
   node: TplNode,
@@ -5149,10 +5145,16 @@ function serializeNonParamExpr(
       });
       return `($translator?.(${jsLiteral(key)}) ?? ${jsLiteral(lit)})`;
     } else {
-      return safeExprAsCode(expr, ctx.exprCtx);
+      return getRawCode(expr, ctx.exprCtx, {
+        fallbackSerializer: (fallback) =>
+          serializeNonParamExpr(ctx, fallback, opts),
+      });
     }
   } else {
-    return safeExprAsCode(expr, ctx.exprCtx);
+    return getRawCode(expr, ctx.exprCtx, {
+      fallbackSerializer: (fallback) =>
+        serializeNonParamExpr(ctx, fallback, opts),
+    });
   }
 }
 

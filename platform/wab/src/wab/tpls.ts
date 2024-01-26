@@ -2131,7 +2131,7 @@ export function listHostLessComponentsInTplTree(tplTree: TplNode) {
   return uniq(hostLessComponents);
 }
 
-function pushExprs(exprs: Expr[], expr: Expr | null | undefined) {
+export function pushExprs(exprs: Expr[], expr: Expr | null | undefined) {
   if (!expr) {
     return;
   }

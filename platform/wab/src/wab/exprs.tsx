@@ -815,7 +815,8 @@ export function extractReferencedParam(component: Component, expr: Expr) {
  */
 export function getCodeExpressionWithFallback(
   expr: CustomCode | ObjectPath,
-  exprCtx: ExprCtx
+  exprCtx: ExprCtx,
+  opts?: { fallbackSerializer?: (fallback: Expr) => string }
 ): string {
   let codeExpr = isKnownCustomCode(expr) ? expr.code : pathToString(expr.path);
   codeExpr = isEmptyCodeExpr(codeExpr) ? "(undefined)" : codeExpr;
@@ -826,15 +827,22 @@ export function getCodeExpressionWithFallback(
       ${stripParensAndMaybeConvertToIife(codeExpr)}
     )`;
   } else {
-    const fallbackCode = asCode(expr.fallback, exprCtx).code;
+    const fallbackCode = opts?.fallbackSerializer
+      ? opts.fallbackSerializer(expr.fallback)
+      : asCode(expr.fallback, exprCtx).code;
     return getCodeExpressionWithFallbackExpr(codeExpr, fallbackCode, exprCtx);
   }
 }
 
-export function getRawCode(expr: Expr, exprCtx: ExprCtx) {
+export function getRawCode(
+  expr: Expr,
+  exprCtx: ExprCtx,
+  opts?: { fallbackSerializer?: (fallback: Expr) => string }
+) {
   return getCodeExpressionWithFallback(
     toFallbackableExpr(expr, exprCtx),
-    exprCtx
+    exprCtx,
+    opts
   );
 }
 
