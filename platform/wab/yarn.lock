@@ -4936,10 +4936,10 @@
   resolved "https://registry.yarnpkg.com/@plasmicpkgs/plasmic-embed-css/-/plasmic-embed-css-0.1.173.tgz#8655254f2aa79e0ff347eecb08cfafd04db5e1a9"
   integrity sha512-/C/NYEsZxdAYkvad/tzrgoJFsgX03FCSjerlyKNov9zZlAAnR+J3LqAnm/taXulDQnrDSm9hDjEtaDstz2DDxA==
 
-"@plasmicpkgs/radix-ui@^0.0.41":
-  version "0.0.41"
-  resolved "https://registry.yarnpkg.com/@plasmicpkgs/radix-ui/-/radix-ui-0.0.41.tgz#edbd4eedd53d9cd793cd63f7be7b52a30718dbb2"
-  integrity sha512-fTucWcrDFc4L6QDSGQ4DvJ64NqNiUWBVcYu32yIUsXFCb8KkEgrhNqomnA14+1gZzfeDTWjMCiBrNMC/zyPo0A==
+"@plasmicpkgs/radix-ui@^0.0.42":
+  version "0.0.42"
+  resolved "https://registry.yarnpkg.com/@plasmicpkgs/radix-ui/-/radix-ui-0.0.42.tgz#99e52f523cafd5633fc474efde57a01735d79ba7"
+  integrity sha512-kJ3WeYhYoK3sTP2Q7CAlkV0Arlry5GIetJmQIsAWN50Fw0zqdiEZLZjctZOF8KGeA/ikl0i6+chy9n3e3z3mbw==
   dependencies:
     "@radix-ui/react-context-menu" "^2.1.4"
     "@radix-ui/react-dialog" "^1.0.4"

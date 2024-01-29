@@ -41,7 +41,7 @@
     "@plasmicpkgs/plasmic-tabs": "^0.0.28",
     "@plasmicpkgs/plasmic-wordpress": "^0.0.109",
     "@plasmicpkgs/plasmic-wordpress-graphql": "^0.0.104",
-    "@plasmicpkgs/radix-ui": "^0.0.41",
+    "@plasmicpkgs/radix-ui": "^0.0.42",
     "@plasmicpkgs/react-aria": "^0.0.6",
     "@plasmicpkgs/react-awesome-reveal": "^3.8.189",
     "@plasmicpkgs/react-chartjs-2": "^1.0.92",
