@@ -400,7 +400,7 @@ Help
                       data-test-tabkey={key}
                       onClick={() =>
                         studioCtx.changeUnsafe(() => {
-                          studioCtx.leftTabKey = undefined;
+                          studioCtx.switchLeftTab(undefined);
                         })
                       }
                       isSelected={Object.keys(item.items).some(

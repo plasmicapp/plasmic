@@ -493,7 +493,7 @@ export class Framed {
               .join(", ")
           )
           .contains(text);
-        this.base().get(".tpltree__label--focused").click({
+        this.base().getSelectedTreeNode().click({
           force: true, // let's force it to click, even if it's hidden
         });
       });
@@ -732,6 +732,7 @@ export function convertToSlot() {
 }
 
 export function getSelectedTreeNode() {
+  cy.switchToTreeTab();
   return cy.get(".tpltree__label--focused");
 }
 
@@ -836,7 +837,7 @@ export function renameTreeNode(
     blurFocused(); // if an input were selected, cmd+r wouldn't work
     justType("{cmd}{r}");
     justType(`${name}{enter}`);
-    cy.get(".tpltree__label--focused").contains(name);
+    getSelectedTreeNode().contains(name);
   }
 }
 

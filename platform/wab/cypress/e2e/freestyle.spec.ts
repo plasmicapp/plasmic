@@ -14,6 +14,7 @@ describe("freestyle", function () {
 
   it("can draw tweet", function () {
     cy.withinStudioIframe(() => {
+      cy.switchToTreeTab();
       cy.createNewFrame().then((framed) => {
         const frame = framed.getFrame();
         cy.waitFrameEval(framed);

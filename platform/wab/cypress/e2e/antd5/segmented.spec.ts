@@ -47,6 +47,7 @@ describe("Antd5 segmented", () => {
     cy.withinStudioIframe(() => {
       cy.createNewPageInOwnArena("Homepage").then((framed) => {
         turnOffDesignMode();
+        cy.switchToTreeTab();
         cy.insertFromAddDrawer("plasmic-antd5-segmented");
         cy.get(
           `#component-props-section [data-test-id="show-extra-content"]`

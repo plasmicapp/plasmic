@@ -286,6 +286,8 @@ import { addEmptyQuery } from "@/wab/shared/TplMgr";
 import {
   getLeftTabPermission,
   LeftTabKey,
+  LEFT_TAB_KEY_LOCAL_STORAGE_KEY,
+  LEFT_TAB_PANEL_KEYS,
   mergeUiConfigs,
   UiConfig,
 } from "@/wab/shared/ui-config-utils";
@@ -606,10 +608,6 @@ export class StudioCtx extends WithDbCtx {
     this.rightTabKey = this.appCtx.appConfig.rightTabs
       ? RightTabKey.settings
       : RightTabKey.style;
-
-    if (this.appCtx.appConfig.hideLeftTabs) {
-      this.leftTabKey = undefined;
-    }
 
     this.setHostLessPkgs();
 
@@ -2259,7 +2257,11 @@ export class StudioCtx extends WithDbCtx {
   //
   // Currently-displayed tabs on the left and right panels
   //
-  private _xLeftTabKey = observable.box<LeftTabKey | undefined>("outline");
+  private _xLeftTabKey = observable.box<LeftTabKey | undefined>(
+    LEFT_TAB_PANEL_KEYS.filter(
+      (key) => key === localStorage.getItem(LEFT_TAB_KEY_LOCAL_STORAGE_KEY)
+    )[0]
+  );
   get leftTabKey() {
     return this._xLeftTabKey.get();
   }
@@ -2328,6 +2330,9 @@ export class StudioCtx extends WithDbCtx {
   ) {
     if (tabKey) {
       this.lastLeftTabKey = tabKey;
+      localStorage.setItem(LEFT_TAB_KEY_LOCAL_STORAGE_KEY, tabKey);
+    } else {
+      localStorage.removeItem(LEFT_TAB_KEY_LOCAL_STORAGE_KEY);
     }
     this.leftTabKey = tabKey;
     if (opts?.highlight) {
