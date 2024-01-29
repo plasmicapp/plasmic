@@ -1,5 +1,5 @@
 {
-  "version": "0.0.19",
+  "version": "0.0.20",
   "license": "MIT",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
@@ -37,9 +37,9 @@
     }
   ],
   "dependencies": {
-    "@plasmicapp/auth-api": "0.0.16",
+    "@plasmicapp/auth-api": "0.0.17",
     "@plasmicapp/isomorphic-unfetch": "1.0.3",
-    "@plasmicapp/query": "0.1.77"
+    "@plasmicapp/query": "0.1.78"
   },
   "publishConfig": {
     "access": "public"

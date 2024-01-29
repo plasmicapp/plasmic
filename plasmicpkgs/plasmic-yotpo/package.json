@@ -1,6 +1,6 @@
 {
   "name": "@plasmicpkgs/plasmic-yotpo",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "description": "Plasmic Yotpo components.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -34,8 +34,8 @@
     }
   ],
   "devDependencies": {
-    "@plasmicapp/host": "1.0.188",
-    "@plasmicapp/query": "^0.1.77",
+    "@plasmicapp/host": "1.0.189",
+    "@plasmicapp/query": "0.1.78",
     "@size-limit/preset-small-lib": "^7.0.8",
     "@types/dlv": "^1.1.2",
     "@types/react": "^18.0.27",
