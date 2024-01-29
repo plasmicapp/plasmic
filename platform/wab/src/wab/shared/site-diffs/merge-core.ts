@@ -577,9 +577,10 @@ export function getInstUpdates(
           const updatedChild = updatedMap.get(key);
           const updatedIndex = updatedValue?.indexOf(updatedChild);
           if (
-            typeof fieldMeta !== "object" ||
-            (!swallow(() => fieldMeta?.excludeFromMerge?.(origChild)) &&
-              !swallow(() => fieldMeta?.excludeFromMerge?.(updatedChild)))
+            updatedChild !== undefined &&
+            (typeof fieldMeta !== "object" ||
+              (!swallow(() => fieldMeta?.excludeFromMerge?.(origChild)) &&
+                !swallow(() => fieldMeta?.excludeFromMerge?.(updatedChild))))
           ) {
             rec(
               nextCtx(origFieldCtx, `${origIndex}`, key),

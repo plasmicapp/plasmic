@@ -115,6 +115,7 @@ import { DeepPartial } from "utility-types";
 import codeComponentsWithSameNameBundle from "./code-components-with-same-name.json";
 import globalContextBundle from "./global-context-merge.json";
 import richTextConflict from "./rich-text-conflict.json";
+import styleTokenBundle from "./style-tokens-conflict.json";
 import edgeCasesBundle2 from "./test-edge-cases-merge-2.json";
 import edgeCasesBundle from "./test-edge-cases-merge.json";
 import mergeDepsBundle from "./test-merging-deps.json";
@@ -4919,7 +4920,7 @@ describe("merging", () => {
     expect(tplToMove.uuid).toBe(tplToMoveUuid);
   });
 
-  it("Test global context merge", () => {
+  it("Global context should merge without conflicts", () => {
     const result = testMergeFromJsonBundle(
       hackyCast<ProjectFullDataResponse>(globalContextBundle)
     );
@@ -4943,5 +4944,15 @@ describe("merging", () => {
     ).not.toBeNil();
     expect(tryExtractJson(argValues[0].expr)).toBe("set");
     expect(tryExtractJson(argValues[1].expr)).toBe("set");
+  });
+
+  it("Style tokens should not have conflicts when removing", () => {
+    const result = testMergeFromJsonBundle(
+      hackyCast<ProjectFullDataResponse>(styleTokenBundle)
+    );
+
+    expect(result).toMatchObject({
+      status: "merged",
+    });
   });
 });
