@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import AddButton from "../../../../AddButton"; // plasmic-import: ss1yYyG4Pi/component
 import LeftTabButton from "../../components/studio/LeftTabButton"; // plasmic-import: 1q_JapBg7U/component
 import IconButton from "../../components/widgets/IconButton"; // plasmic-import: LPry-TF4j22a/component
@@ -132,30 +155,30 @@ type ArgPropType = keyof PlasmicLeftTabStrip__ArgsType;
 export const PlasmicLeftTabStrip__ArgProps = new Array<ArgPropType>("buttons");
 
 export type PlasmicLeftTabStrip__OverridesType = {
-  root?: p.Flex<"div">;
-  insert?: p.Flex<typeof AddButton>;
-  divider?: p.Flex<"div">;
-  copilot?: p.Flex<typeof LeftTabButton>;
-  tokens?: p.Flex<typeof LeftTabButton>;
-  mixins?: p.Flex<typeof LeftTabButton>;
-  components?: p.Flex<typeof LeftTabButton>;
-  pages?: p.Flex<typeof LeftTabButton>;
-  images?: p.Flex<typeof LeftTabButton>;
-  themes?: p.Flex<typeof LeftTabButton>;
-  fonts?: p.Flex<typeof LeftTabButton>;
-  responsiveness?: p.Flex<typeof LeftTabButton>;
-  splits?: p.Flex<typeof LeftTabButton>;
-  imports?: p.Flex<typeof LeftTabButton>;
-  versions?: p.Flex<typeof LeftTabButton>;
-  settings?: p.Flex<typeof LeftTabButton>;
-  endpoints?: p.Flex<typeof LeftTabButton>;
-  helpGroup?: p.Flex<typeof IconButton>;
-  figma?: p.Flex<typeof IconButton>;
-  keyboard?: p.Flex<typeof IconButton>;
-  slack?: p.Flex<typeof IconButton>;
-  help?: p.Flex<typeof IconButton>;
-  players?: p.Flex<"div">;
-  avatar?: p.Flex<"img">;
+  root?: Flex__<"div">;
+  insert?: Flex__<typeof AddButton>;
+  divider?: Flex__<"div">;
+  copilot?: Flex__<typeof LeftTabButton>;
+  tokens?: Flex__<typeof LeftTabButton>;
+  mixins?: Flex__<typeof LeftTabButton>;
+  components?: Flex__<typeof LeftTabButton>;
+  pages?: Flex__<typeof LeftTabButton>;
+  images?: Flex__<typeof LeftTabButton>;
+  themes?: Flex__<typeof LeftTabButton>;
+  fonts?: Flex__<typeof LeftTabButton>;
+  responsiveness?: Flex__<typeof LeftTabButton>;
+  splits?: Flex__<typeof LeftTabButton>;
+  imports?: Flex__<typeof LeftTabButton>;
+  versions?: Flex__<typeof LeftTabButton>;
+  settings?: Flex__<typeof LeftTabButton>;
+  endpoints?: Flex__<typeof LeftTabButton>;
+  helpGroup?: Flex__<typeof IconButton>;
+  figma?: Flex__<typeof IconButton>;
+  keyboard?: Flex__<typeof IconButton>;
+  slack?: Flex__<typeof IconButton>;
+  help?: Flex__<typeof IconButton>;
+  players?: Flex__<"div">;
+  avatar?: Flex__<"img">;
 };
 
 export interface DefaultLeftTabStripProps {
@@ -201,13 +224,13 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "activeTab",
@@ -231,7 +254,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -239,7 +262,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -290,7 +313,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
       />
 
       <div className={classNames(projectcss.all, sty.freeBox__s2Zn2)}>
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: (
             <React.Fragment>
               <LeftTabButton
@@ -823,7 +846,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           role={"img"}
         />
       </IconButton>
-      <p.Stack
+      <Stack__
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox___3AubH, {
@@ -945,7 +968,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
             role={"img"}
           />
         </IconButton>
-      </p.Stack>
+      </Stack__>
       <div
         className={classNames(projectcss.all, sty.freeBox__igmvF, {
           [sty.freeBoxshowAvatar__igmvF9NVfe]: hasVariant(
@@ -1047,7 +1070,7 @@ function PlasmicLeftTabStrip__RenderFunc(props: {
           src={image9D5NIfkhj}
         />
       </div>
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 

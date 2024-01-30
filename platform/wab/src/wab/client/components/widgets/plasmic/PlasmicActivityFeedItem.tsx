@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import Button from "../Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -89,11 +112,11 @@ export const PlasmicActivityFeedItem__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicActivityFeedItem__OverridesType = {
-  root?: p.Flex<"div">;
-  text?: p.Flex<"div">;
-  button?: p.Flex<typeof Button>;
-  startIcon?: p.Flex<"img">;
-  svg?: p.Flex<"svg">;
+  root?: Flex__<"div">;
+  text?: Flex__<"div">;
+  button?: Flex__<typeof Button>;
+  startIcon?: Flex__<"img">;
+  svg?: Flex__<"svg">;
 };
 
 export interface DefaultActivityFeedItemProps {
@@ -130,13 +153,13 @@ function PlasmicActivityFeedItem__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "state",
@@ -153,7 +176,7 @@ function PlasmicActivityFeedItem__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -161,7 +184,7 @@ function PlasmicActivityFeedItem__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -303,7 +326,7 @@ function PlasmicActivityFeedItem__RenderFunc(props: {
           ),
         })}
       >
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: "Something happened",
           value: args.title,
           className: classNames(sty.slotTargetTitle, {
@@ -344,7 +367,7 @@ function PlasmicActivityFeedItem__RenderFunc(props: {
             ),
           }),
         })}
-        {p.renderPlasmicSlot({
+        {renderPlasmicSlot({
           defaultContents: "5d ago",
           value: args.subtitle,
           className: classNames(sty.slotTargetSubtitle, {
@@ -357,7 +380,7 @@ function PlasmicActivityFeedItem__RenderFunc(props: {
         })}
       </div>
       {(hasVariant($state, "state", "anonymousVisited") ? false : true)
-        ? p.renderPlasmicSlot({
+        ? renderPlasmicSlot({
             defaultContents: (
               <img
                 alt={""}
@@ -441,7 +464,7 @@ function PlasmicActivityFeedItem__RenderFunc(props: {
           {""}
         </Button>
       ) : null}
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 

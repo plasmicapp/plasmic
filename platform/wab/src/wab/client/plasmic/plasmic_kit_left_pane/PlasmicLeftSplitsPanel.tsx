@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import LeftPaneHeader from "../../components/studio/LeftPaneHeader"; // plasmic-import: XLa52PvduIy/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 import TextWithInfo from "../../../../TextWithInfo"; // plasmic-import: -EsDm7v023/component
@@ -60,17 +83,17 @@ type ArgPropType = keyof PlasmicLeftSplitsPanel__ArgsType;
 export const PlasmicLeftSplitsPanel__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicLeftSplitsPanel__OverridesType = {
-  root?: p.Flex<"div">;
-  abHeader?: p.Flex<typeof LeftPaneHeader>;
-  newTestButton?: p.Flex<typeof Button>;
-  abContent?: p.Flex<"div">;
-  segmentsHeader?: p.Flex<typeof LeftPaneHeader>;
-  newSegmentButton?: p.Flex<typeof Button>;
-  text?: p.Flex<"div">;
-  segmentsContent?: p.Flex<"div">;
-  leftPaneHeader?: p.Flex<typeof LeftPaneHeader>;
-  newScheduleButton?: p.Flex<typeof Button>;
-  scheduledContent?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  abHeader?: Flex__<typeof LeftPaneHeader>;
+  newTestButton?: Flex__<typeof Button>;
+  abContent?: Flex__<"div">;
+  segmentsHeader?: Flex__<typeof LeftPaneHeader>;
+  newSegmentButton?: Flex__<typeof Button>;
+  text?: Flex__<"div">;
+  segmentsContent?: Flex__<"div">;
+  leftPaneHeader?: Flex__<typeof LeftPaneHeader>;
+  newScheduleButton?: Flex__<typeof Button>;
+  scheduledContent?: Flex__<"div">;
 };
 
 export interface DefaultLeftSplitsPanelProps {
@@ -94,11 +117,11 @@ function PlasmicLeftSplitsPanel__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
   return (
     <div

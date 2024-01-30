@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
 import Select__Option from "../../components/widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
 import Select__OptionGroup from "../../components/widgets/Select__OptionGroup"; // plasmic-import: _qMm1mtrqOi/component
@@ -60,10 +83,10 @@ export const PlasmicThemeInitialStylesPanel__ArgProps =
   new Array<ArgPropType>();
 
 export type PlasmicThemeInitialStylesPanel__OverridesType = {
-  root?: p.Flex<"div">;
-  elementSelect?: p.Flex<typeof Select>;
-  svg?: p.Flex<"svg">;
-  form?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  elementSelect?: Flex__<typeof Select>;
+  svg?: Flex__<"svg">;
+  form?: Flex__<"div">;
 };
 
 export interface DefaultThemeInitialStylesPanelProps {
@@ -87,13 +110,13 @@ function PlasmicThemeInitialStylesPanel__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "elementSelect.value",
@@ -104,7 +127,7 @@ function PlasmicThemeInitialStylesPanel__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -142,7 +165,7 @@ function PlasmicThemeInitialStylesPanel__RenderFunc(props: {
           }
         </div>
       </div>
-      <p.Stack
+      <Stack__
         as={"div"}
         hasGap={true}
         className={classNames(projectcss.all, sty.freeBox__kPz9)}
@@ -169,7 +192,7 @@ function PlasmicThemeInitialStylesPanel__RenderFunc(props: {
             />
           }
           onChange={(...eventArgs) => {
-            p.generateStateOnChangeProp($state, ["elementSelect", "value"])(
+            generateStateOnChangeProp($state, ["elementSelect", "value"])(
               eventArgs[0]
             );
           }}
@@ -178,9 +201,9 @@ function PlasmicThemeInitialStylesPanel__RenderFunc(props: {
             { value: "option2", label: "Option 2" },
           ]}
           type={"bordered"}
-          value={p.generateStateValueProp($state, ["elementSelect", "value"])}
+          value={generateStateValueProp($state, ["elementSelect", "value"])}
         />
-      </p.Stack>
+      </Stack__>
       <div
         data-plasmic-name={"form"}
         data-plasmic-override={overrides.form}

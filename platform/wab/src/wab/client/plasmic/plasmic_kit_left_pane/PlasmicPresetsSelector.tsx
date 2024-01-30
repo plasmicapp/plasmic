@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import LeftSearchPanel from "../../components/studio/LeftSearchPanel"; // plasmic-import: TqAPn0srTq/component
 import PresetGroup from "../../../../PresetGroup"; // plasmic-import: kZ3Ar3RnLt/component
 import Preset from "../../../../Preset"; // plasmic-import: eS_Bw5U3wr/component
@@ -57,13 +80,13 @@ type ArgPropType = keyof PlasmicPresetsSelector__ArgsType;
 export const PlasmicPresetsSelector__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicPresetsSelector__OverridesType = {
-  root?: p.Flex<"div">;
-  freeBox?: p.Flex<"div">;
-  search?: p.Flex<typeof LeftSearchPanel>;
-  text?: p.Flex<"div">;
-  groups?: p.Flex<"div">;
-  example16?: p.Flex<"div">;
-  example162?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  freeBox?: Flex__<"div">;
+  search?: Flex__<typeof LeftSearchPanel>;
+  text?: Flex__<"div">;
+  groups?: Flex__<"div">;
+  example16?: Flex__<"div">;
+  example162?: Flex__<"div">;
 };
 
 export interface DefaultPresetsSelectorProps {
@@ -87,11 +110,11 @@ function PlasmicPresetsSelector__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
   return (
     <div
@@ -134,7 +157,7 @@ function PlasmicPresetsSelector__RenderFunc(props: {
           {"All Presets"}
         </div>
       </div>
-      <p.Stack
+      <Stack__
         as={"div"}
         data-plasmic-name={"groups"}
         data-plasmic-override={overrides.groups}
@@ -211,7 +234,7 @@ function PlasmicPresetsSelector__RenderFunc(props: {
             }
           />
         </PresetGroup>
-      </p.Stack>
+      </Stack__>
     </div>
   ) as React.ReactElement | null;
 }

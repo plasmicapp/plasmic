@@ -13,25 +13,49 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
+import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -41,7 +65,9 @@ import plasmic_plasmic_kit_new_design_system_former_style_controls_css from "../
 import projectcss from "../PP__plasmickit_left_pane.module.css"; // plasmic-import: aukbrhkegRkQ6KizvhdUPT/projectcss
 import sty from "./PlasmicMultiAssetsActions.module.css"; // plasmic-import: d693eBfNDs7j/css
 
+import ArrowRightsvgIcon from "../q_4_icons/icons/PlasmicIcon__ArrowRightsvg"; // plasmic-import: 9Jv8jb253/icon
 import TrashIcon from "../plasmic_kit/PlasmicIcon__Trash"; // plasmic-import: 7bxap5bzcUODa/icon
+import ChevronDownsvgIcon from "../q_4_icons/icons/PlasmicIcon__ChevronDownsvg"; // plasmic-import: xZrB9_0ir/icon
 import CloseIcon from "../plasmic_kit/PlasmicIcon__Close"; // plasmic-import: hy7vKrgdAZwW4/icon
 
 createPlasmicElementProxy;
@@ -65,11 +91,13 @@ export const PlasmicMultiAssetsActions__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicMultiAssetsActions__OverridesType = {
-  root?: p.Flex<"div">;
-  controlBar?: p.Flex<"div">;
-  numSelected?: p.Flex<"div">;
-  deleteSelected?: p.Flex<"div">;
-  cancel?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  controlBar?: Flex__<"div">;
+  numSelected?: Flex__<"div">;
+  deleteSelected?: Flex__<typeof Button>;
+  deleteSelectedBox?: Flex__<"div">;
+  cancel?: Flex__<typeof Button>;
+  cancelBox?: Flex__<"div">;
 };
 
 export interface DefaultMultiAssetsActionsProps {
@@ -95,13 +123,13 @@ function PlasmicMultiAssetsActions__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "withoutControlBar",
@@ -113,7 +141,7 @@ function PlasmicMultiAssetsActions__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -138,7 +166,7 @@ function PlasmicMultiAssetsActions__RenderFunc(props: {
         sty.root
       )}
     >
-      <p.Stack
+      <Stack__
         as={"div"}
         data-plasmic-name={"controlBar"}
         data-plasmic-override={overrides.controlBar}
@@ -162,48 +190,64 @@ function PlasmicMultiAssetsActions__RenderFunc(props: {
         >
           {"8 elements selected"}
         </div>
-        <div
+        <Button
           data-plasmic-name={"deleteSelected"}
           data-plasmic-override={overrides.deleteSelected}
-          className={classNames(projectcss.all, sty.deleteSelected)}
+          className={classNames("__wab_instance", sty.deleteSelected)}
+          size={"compact"}
+          type={["clear"]}
         >
-          <TrashIcon
-            className={classNames(projectcss.all, sty.svg__lY64)}
-            role={"img"}
-          />
-
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__h9Tgv
-            )}
+            data-plasmic-name={"deleteSelectedBox"}
+            data-plasmic-override={overrides.deleteSelectedBox}
+            className={classNames(projectcss.all, sty.deleteSelectedBox)}
           >
-            {"Delete"}
+            <TrashIcon
+              className={classNames(projectcss.all, sty.svg__lY64)}
+              role={"img"}
+            />
+
+            <div
+              className={classNames(
+                projectcss.all,
+                projectcss.__wab_text,
+                sty.text__h9Tgv
+              )}
+            >
+              {"Delete"}
+            </div>
           </div>
-        </div>
-        <div
+        </Button>
+        <Button
           data-plasmic-name={"cancel"}
           data-plasmic-override={overrides.cancel}
-          className={classNames(projectcss.all, sty.cancel)}
+          className={classNames("__wab_instance", sty.cancel)}
+          size={"compact"}
+          type={["clear"]}
         >
-          <CloseIcon
-            className={classNames(projectcss.all, sty.svg__dFu8E)}
-            role={"img"}
-          />
-
           <div
-            className={classNames(
-              projectcss.all,
-              projectcss.__wab_text,
-              sty.text__brp3D
-            )}
+            data-plasmic-name={"cancelBox"}
+            data-plasmic-override={overrides.cancelBox}
+            className={classNames(projectcss.all, sty.cancelBox)}
           >
-            {"Cancel"}
+            <CloseIcon
+              className={classNames(projectcss.all, sty.svg__dFu8E)}
+              role={"img"}
+            />
+
+            <div
+              className={classNames(
+                projectcss.all,
+                projectcss.__wab_text,
+                sty.text__brp3D
+              )}
+            >
+              {"Cancel"}
+            </div>
           </div>
-        </div>
-      </p.Stack>
-      {p.renderPlasmicSlot({
+        </Button>
+      </Stack__>
+      {renderPlasmicSlot({
         defaultContents: null,
         value: args.children,
       })}
@@ -212,11 +256,28 @@ function PlasmicMultiAssetsActions__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: ["root", "controlBar", "numSelected", "deleteSelected", "cancel"],
-  controlBar: ["controlBar", "numSelected", "deleteSelected", "cancel"],
+  root: [
+    "root",
+    "controlBar",
+    "numSelected",
+    "deleteSelected",
+    "deleteSelectedBox",
+    "cancel",
+    "cancelBox",
+  ],
+  controlBar: [
+    "controlBar",
+    "numSelected",
+    "deleteSelected",
+    "deleteSelectedBox",
+    "cancel",
+    "cancelBox",
+  ],
   numSelected: ["numSelected"],
-  deleteSelected: ["deleteSelected"],
-  cancel: ["cancel"],
+  deleteSelected: ["deleteSelected", "deleteSelectedBox"],
+  deleteSelectedBox: ["deleteSelectedBox"],
+  cancel: ["cancel", "cancelBox"],
+  cancelBox: ["cancelBox"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -225,8 +286,10 @@ type NodeDefaultElementType = {
   root: "div";
   controlBar: "div";
   numSelected: "div";
-  deleteSelected: "div";
-  cancel: "div";
+  deleteSelected: typeof Button;
+  deleteSelectedBox: "div";
+  cancel: typeof Button;
+  cancelBox: "div";
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -292,7 +355,9 @@ export const PlasmicMultiAssetsActions = Object.assign(
     controlBar: makeNodeComponent("controlBar"),
     numSelected: makeNodeComponent("numSelected"),
     deleteSelected: makeNodeComponent("deleteSelected"),
+    deleteSelectedBox: makeNodeComponent("deleteSelectedBox"),
     cancel: makeNodeComponent("cancel"),
+    cancelBox: makeNodeComponent("cancelBox"),
 
     // Metadata about props expected for PlasmicMultiAssetsActions
     internalVariantProps: PlasmicMultiAssetsActions__VariantProps,

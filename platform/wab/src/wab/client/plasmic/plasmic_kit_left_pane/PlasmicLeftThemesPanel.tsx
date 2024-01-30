@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import LeftPaneHeader from "../../components/studio/LeftPaneHeader"; // plasmic-import: XLa52PvduIy/component
 import TextWithInfo from "../../../../TextWithInfo"; // plasmic-import: -EsDm7v023/component
 import StyleSelect from "../../components/style-controls/StyleSelect"; // plasmic-import: E0bKgamUEin/component
@@ -75,15 +98,15 @@ type ArgPropType = keyof PlasmicLeftThemesPanel__ArgsType;
 export const PlasmicLeftThemesPanel__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicLeftThemesPanel__OverridesType = {
-  root?: p.Flex<"div">;
-  themeHeader?: p.Flex<typeof LeftPaneHeader>;
-  textWithInfo?: p.Flex<typeof TextWithInfo>;
-  freeBox?: p.Flex<"div">;
-  themeSelector?: p.Flex<typeof StyleSelect>;
-  hiliteTabs?: p.Flex<typeof HiliteTabs>;
-  defaultStylesPanel?: p.Flex<typeof DefaultStylesPanel>;
-  themeLayoutPanel?: p.Flex<typeof ThemeLayoutPanel>;
-  themeInitialStylesPanel?: p.Flex<typeof ThemeInitialStylesPanel>;
+  root?: Flex__<"div">;
+  themeHeader?: Flex__<typeof LeftPaneHeader>;
+  textWithInfo?: Flex__<typeof TextWithInfo>;
+  freeBox?: Flex__<"div">;
+  themeSelector?: Flex__<typeof StyleSelect>;
+  hiliteTabs?: Flex__<typeof HiliteTabs>;
+  defaultStylesPanel?: Flex__<typeof DefaultStylesPanel>;
+  themeLayoutPanel?: Flex__<typeof ThemeLayoutPanel>;
+  themeInitialStylesPanel?: Flex__<typeof ThemeInitialStylesPanel>;
 };
 
 export interface DefaultLeftThemesPanelProps {
@@ -111,13 +134,13 @@ function PlasmicLeftThemesPanel__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "notOwnedBySite",
@@ -160,7 +183,7 @@ function PlasmicLeftThemesPanel__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -199,7 +222,7 @@ function PlasmicLeftThemesPanel__RenderFunc(props: {
         data-plasmic-name={"themeHeader"}
         data-plasmic-override={overrides.themeHeader}
         actions={
-          <p.Stack
+          <Stack__
             as={"div"}
             data-plasmic-name={"freeBox"}
             data-plasmic-override={overrides.freeBox}
@@ -231,7 +254,7 @@ function PlasmicLeftThemesPanel__RenderFunc(props: {
                 ),
               })}
               onChange={(...eventArgs) => {
-                p.generateStateOnChangeProp($state, ["themeSelector", "value"])(
+                generateStateOnChangeProp($state, ["themeSelector", "value"])(
                   eventArgs[0]
                 );
               }}
@@ -239,13 +262,10 @@ function PlasmicLeftThemesPanel__RenderFunc(props: {
                 { value: "option1", label: "Option 1" },
                 { value: "option2", label: "Option 2" },
               ]}
-              value={p.generateStateValueProp($state, [
-                "themeSelector",
-                "value",
-              ])}
+              value={generateStateValueProp($state, ["themeSelector", "value"])}
               valueSetState={"isSet"}
             />
-          </p.Stack>
+          </Stack__>
         }
         className={classNames("__wab_instance", sty.themeHeader, {
           [sty.themeHeadernoThemePicker]: hasVariant(
@@ -310,7 +330,7 @@ function PlasmicLeftThemesPanel__RenderFunc(props: {
             [sty.hiliteTabstab_styles]: hasVariant($state, "tab", "styles"),
           })}
           onSelectedTabKeyChange={async (...eventArgs: any) => {
-            p.generateStateOnChangeProp($state, [
+            generateStateOnChangeProp($state, [
               "hiliteTabs",
               "selectedTabKey",
             ]).apply(null, eventArgs);
@@ -333,7 +353,7 @@ function PlasmicLeftThemesPanel__RenderFunc(props: {
                       }
                       const { objRoot, variablePath } = variable;
 
-                      p.set(objRoot, variablePath, value);
+                      $stateSet(objRoot, variablePath, value);
                       return value;
                     })?.apply(null, [actionArgs]);
                   })()
@@ -347,7 +367,7 @@ function PlasmicLeftThemesPanel__RenderFunc(props: {
               }
             }).apply(null, eventArgs);
           }}
-          selectedTabKey={p.generateStateValueProp($state, [
+          selectedTabKey={generateStateValueProp($state, [
             "hiliteTabs",
             "selectedTabKey",
           ])}

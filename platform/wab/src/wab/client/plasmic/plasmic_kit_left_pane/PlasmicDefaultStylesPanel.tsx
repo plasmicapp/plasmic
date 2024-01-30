@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import Select from "../../components/widgets/Select"; // plasmic-import: j_4IQyOWK2b/component
 import Select__Option from "../../components/widgets/Select__Option"; // plasmic-import: rr-LWdMni2G/component
 import Select__OptionGroup from "../../components/widgets/Select__OptionGroup"; // plasmic-import: _qMm1mtrqOi/component
@@ -66,15 +89,15 @@ type ArgPropType = keyof PlasmicDefaultStylesPanel__ArgsType;
 export const PlasmicDefaultStylesPanel__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicDefaultStylesPanel__OverridesType = {
-  root?: p.Flex<"div">;
-  selector?: p.Flex<"div">;
-  freeBox?: p.Flex<"div">;
-  globalVariantSelectorContainer?: p.Flex<"div">;
-  globalVariantSelect?: p.Flex<typeof Select>;
-  option?: p.Flex<typeof Select__Option>;
-  tagSelect?: p.Flex<typeof Select>;
-  pseudoClassSelect?: p.Flex<typeof Select>;
-  content?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  selector?: Flex__<"div">;
+  freeBox?: Flex__<"div">;
+  globalVariantSelectorContainer?: Flex__<"div">;
+  globalVariantSelect?: Flex__<typeof Select>;
+  option?: Flex__<typeof Select__Option>;
+  tagSelect?: Flex__<typeof Select>;
+  pseudoClassSelect?: Flex__<typeof Select>;
+  content?: Flex__<"div">;
 };
 
 export interface DefaultDefaultStylesPanelProps {
@@ -100,13 +123,13 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "showPseudoClass",
@@ -142,7 +165,7 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -185,7 +208,7 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
           "Define default typography styles; you can define different styles for different tags and responsive breakpoints."
         }
       </div>
-      <p.Stack
+      <Stack__
         as={"div"}
         data-plasmic-name={"selector"}
         data-plasmic-override={overrides.selector}
@@ -218,7 +241,7 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
           >
             {"Tag"}
           </div>
-          <p.Stack
+          <Stack__
             as={"div"}
             data-plasmic-name={"globalVariantSelectorContainer"}
             data-plasmic-override={overrides.globalVariantSelectorContainer}
@@ -256,7 +279,7 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
               }
               name={""}
               onChange={(...eventArgs) => {
-                p.generateStateOnChangeProp($state, [
+                generateStateOnChangeProp($state, [
                   "globalVariantSelect",
                   "value",
                 ])(eventArgs[0]);
@@ -273,7 +296,7 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
                 </div>
               }
               size={"tiny"}
-              value={p.generateStateValueProp($state, [
+              value={generateStateValueProp($state, [
                 "globalVariantSelect",
                 "value",
               ])}
@@ -295,7 +318,7 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
                 </div>
               </Select__Option>
             </Select>
-          </p.Stack>
+          </Stack__>
         </div>
         <Select
           data-plasmic-name={"tagSelect"}
@@ -314,7 +337,7 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
             />
           }
           onChange={(...eventArgs) => {
-            p.generateStateOnChangeProp($state, ["tagSelect", "value"])(
+            generateStateOnChangeProp($state, ["tagSelect", "value"])(
               eventArgs[0]
             );
           }}
@@ -328,7 +351,7 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
               : "Select tag\u2026"
           }
           type={"bordered"}
-          value={p.generateStateValueProp($state, ["tagSelect", "value"])}
+          value={generateStateValueProp($state, ["tagSelect", "value"])}
         />
 
         {(
@@ -353,10 +376,9 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
               />
             }
             onChange={(...eventArgs) => {
-              p.generateStateOnChangeProp($state, [
-                "pseudoClassSelect",
-                "value",
-              ])(eventArgs[0]);
+              generateStateOnChangeProp($state, ["pseudoClassSelect", "value"])(
+                eventArgs[0]
+              );
             }}
             options={[
               { value: "option1", label: "Option 1" },
@@ -364,13 +386,13 @@ function PlasmicDefaultStylesPanel__RenderFunc(props: {
             ]}
             placeholder={"Select\u2026"}
             type={"bordered"}
-            value={p.generateStateValueProp($state, [
+            value={generateStateValueProp($state, [
               "pseudoClassSelect",
               "value",
             ])}
           />
         ) : null}
-      </p.Stack>
+      </Stack__>
       <div
         data-plasmic-name={"content"}
         data-plasmic-override={overrides.content}

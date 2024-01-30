@@ -30,6 +30,16 @@ export function useMultiAssetsActions() {
   return context;
 }
 
+function getLabelForNumSelected(numSelected: number) {
+  if (numSelected === 0) {
+    return "Select assets";
+  }
+  if (numSelected === 1) {
+    return "1 asset selected";
+  }
+  return `${numSelected} assets selected`;
+}
+
 function MultiAssetsActions_(
   props: MultiAssetsActionsProps,
   ref: HTMLElementRefOf<"div">
@@ -60,7 +70,7 @@ function MultiAssetsActions_(
     <PlasmicMultiAssetsActions
       root={{ ref }}
       withoutControlBar={!isSelecting}
-      numSelected={`${selectedAssets.length} assets selected`}
+      numSelected={getLabelForNumSelected(selectedAssets.length)}
       cancel={{
         onClick: () => {
           setIsSelecting(false);
@@ -70,6 +80,7 @@ function MultiAssetsActions_(
       deleteSelected={{
         onClick: async () => {
           if (await onDelete(selectedAssets)) {
+            setIsSelecting(false);
             setSelectedAssets([]);
           }
         },

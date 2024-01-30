@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import InlineInsertionPosition from "../../../../InlineInsertionPosition"; // plasmic-import: 5cuG3IeJcb/component
 import LeftSearchPanel from "../../components/studio/LeftSearchPanel"; // plasmic-import: TqAPn0srTq/component
 import ListSectionHeader from "../../components/ListSectionHeader"; // plasmic-import: wNvxk7eOak/component
@@ -80,65 +103,65 @@ type ArgPropType = keyof PlasmicInlineAddDrawer__ArgsType;
 export const PlasmicInlineAddDrawer__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicInlineAddDrawer__OverridesType = {
-  root?: p.Flex<"div">;
-  freeBox?: p.Flex<"div">;
-  placementOptions?: p.Flex<"div">;
-  placeInside?: p.Flex<typeof InlineInsertionPosition>;
-  placeBefore?: p.Flex<typeof InlineInsertionPosition>;
-  placeAfter?: p.Flex<typeof InlineInsertionPosition>;
-  text?: p.Flex<"div">;
-  leftSearchPanel?: p.Flex<typeof LeftSearchPanel>;
-  content?: p.Flex<"div">;
-  prependButton2?: p.Flex<typeof IconButton>;
-  appendButton2?: p.Flex<typeof IconButton>;
-  prependButton3?: p.Flex<typeof IconButton>;
-  appendButton3?: p.Flex<typeof IconButton>;
-  prependButton4?: p.Flex<typeof IconButton>;
-  appendButton4?: p.Flex<typeof IconButton>;
-  prependButton5?: p.Flex<typeof IconButton>;
-  appendButton5?: p.Flex<typeof IconButton>;
-  prependButton6?: p.Flex<typeof IconButton>;
-  appendButton6?: p.Flex<typeof IconButton>;
-  prependButton7?: p.Flex<typeof IconButton>;
-  appendButton7?: p.Flex<typeof IconButton>;
-  prependButton8?: p.Flex<typeof IconButton>;
-  appendButton8?: p.Flex<typeof IconButton>;
-  prependButton9?: p.Flex<typeof IconButton>;
-  appendButton9?: p.Flex<typeof IconButton>;
-  prependButton10?: p.Flex<typeof IconButton>;
-  appendButton10?: p.Flex<typeof IconButton>;
-  prependButton11?: p.Flex<typeof IconButton>;
-  appendButton11?: p.Flex<typeof IconButton>;
-  prependButton12?: p.Flex<typeof IconButton>;
-  appendButton12?: p.Flex<typeof IconButton>;
-  prependButton13?: p.Flex<typeof IconButton>;
-  appendButton13?: p.Flex<typeof IconButton>;
-  prependButton14?: p.Flex<typeof IconButton>;
-  appendButton14?: p.Flex<typeof IconButton>;
-  prependButton15?: p.Flex<typeof IconButton>;
-  appendButton15?: p.Flex<typeof IconButton>;
-  prependButton16?: p.Flex<typeof IconButton>;
-  appendButton16?: p.Flex<typeof IconButton>;
-  prependButton17?: p.Flex<typeof IconButton>;
-  appendButton17?: p.Flex<typeof IconButton>;
-  prependButton18?: p.Flex<typeof IconButton>;
-  appendButton18?: p.Flex<typeof IconButton>;
-  prependButton?: p.Flex<typeof IconButton>;
-  appendButton?: p.Flex<typeof IconButton>;
-  prependButton232222222222322?: p.Flex<typeof IconButton>;
-  appendButton232222222222322?: p.Flex<typeof IconButton>;
-  prependButton2322222222223222?: p.Flex<typeof IconButton>;
-  appendButton2322222222223222?: p.Flex<typeof IconButton>;
-  prependButton23222222222232222?: p.Flex<typeof IconButton>;
-  appendButton23222222222232222?: p.Flex<typeof IconButton>;
-  prependButton232222222222322222?: p.Flex<typeof IconButton>;
-  appendButton232222222222322222?: p.Flex<typeof IconButton>;
-  prependButton23222222222232?: p.Flex<typeof IconButton>;
-  appendButton23222222222232?: p.Flex<typeof IconButton>;
-  prependButton232222222222?: p.Flex<typeof IconButton>;
-  appendButton232222222222?: p.Flex<typeof IconButton>;
-  prependButton22?: p.Flex<typeof IconButton>;
-  appendButton22?: p.Flex<typeof IconButton>;
+  root?: Flex__<"div">;
+  freeBox?: Flex__<"div">;
+  placementOptions?: Flex__<"div">;
+  placeInside?: Flex__<typeof InlineInsertionPosition>;
+  placeBefore?: Flex__<typeof InlineInsertionPosition>;
+  placeAfter?: Flex__<typeof InlineInsertionPosition>;
+  text?: Flex__<"div">;
+  leftSearchPanel?: Flex__<typeof LeftSearchPanel>;
+  content?: Flex__<"div">;
+  prependButton2?: Flex__<typeof IconButton>;
+  appendButton2?: Flex__<typeof IconButton>;
+  prependButton3?: Flex__<typeof IconButton>;
+  appendButton3?: Flex__<typeof IconButton>;
+  prependButton4?: Flex__<typeof IconButton>;
+  appendButton4?: Flex__<typeof IconButton>;
+  prependButton5?: Flex__<typeof IconButton>;
+  appendButton5?: Flex__<typeof IconButton>;
+  prependButton6?: Flex__<typeof IconButton>;
+  appendButton6?: Flex__<typeof IconButton>;
+  prependButton7?: Flex__<typeof IconButton>;
+  appendButton7?: Flex__<typeof IconButton>;
+  prependButton8?: Flex__<typeof IconButton>;
+  appendButton8?: Flex__<typeof IconButton>;
+  prependButton9?: Flex__<typeof IconButton>;
+  appendButton9?: Flex__<typeof IconButton>;
+  prependButton10?: Flex__<typeof IconButton>;
+  appendButton10?: Flex__<typeof IconButton>;
+  prependButton11?: Flex__<typeof IconButton>;
+  appendButton11?: Flex__<typeof IconButton>;
+  prependButton12?: Flex__<typeof IconButton>;
+  appendButton12?: Flex__<typeof IconButton>;
+  prependButton13?: Flex__<typeof IconButton>;
+  appendButton13?: Flex__<typeof IconButton>;
+  prependButton14?: Flex__<typeof IconButton>;
+  appendButton14?: Flex__<typeof IconButton>;
+  prependButton15?: Flex__<typeof IconButton>;
+  appendButton15?: Flex__<typeof IconButton>;
+  prependButton16?: Flex__<typeof IconButton>;
+  appendButton16?: Flex__<typeof IconButton>;
+  prependButton17?: Flex__<typeof IconButton>;
+  appendButton17?: Flex__<typeof IconButton>;
+  prependButton18?: Flex__<typeof IconButton>;
+  appendButton18?: Flex__<typeof IconButton>;
+  prependButton?: Flex__<typeof IconButton>;
+  appendButton?: Flex__<typeof IconButton>;
+  prependButton232222222222322?: Flex__<typeof IconButton>;
+  appendButton232222222222322?: Flex__<typeof IconButton>;
+  prependButton2322222222223222?: Flex__<typeof IconButton>;
+  appendButton2322222222223222?: Flex__<typeof IconButton>;
+  prependButton23222222222232222?: Flex__<typeof IconButton>;
+  appendButton23222222222232222?: Flex__<typeof IconButton>;
+  prependButton232222222222322222?: Flex__<typeof IconButton>;
+  appendButton232222222222322222?: Flex__<typeof IconButton>;
+  prependButton23222222222232?: Flex__<typeof IconButton>;
+  appendButton23222222222232?: Flex__<typeof IconButton>;
+  prependButton232222222222?: Flex__<typeof IconButton>;
+  appendButton232222222222?: Flex__<typeof IconButton>;
+  prependButton22?: Flex__<typeof IconButton>;
+  appendButton22?: Flex__<typeof IconButton>;
 };
 
 export interface DefaultInlineAddDrawerProps {
@@ -162,11 +185,11 @@ function PlasmicInlineAddDrawer__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
   return (
     <div

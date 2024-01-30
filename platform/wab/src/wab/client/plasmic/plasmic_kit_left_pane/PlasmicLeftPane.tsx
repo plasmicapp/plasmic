@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import LeftTabStrip from "../../components/studio/LeftTabStrip"; // plasmic-import: l7y_rhJyMt2/component
 import LeftTabButton from "../../components/studio/LeftTabButton"; // plasmic-import: 1q_JapBg7U/component
 import LeftGeneralTokensPanel from "../../components/sidebar/LeftGeneralTokensPanel"; // plasmic-import: bDbzY5jXLz/component
@@ -110,27 +133,27 @@ type ArgPropType = keyof PlasmicLeftPane__ArgsType;
 export const PlasmicLeftPane__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicLeftPane__OverridesType = {
-  root?: p.Flex<"div">;
-  leftTabStrip?: p.Flex<typeof LeftTabStrip>;
-  lint?: p.Flex<typeof LeftTabButton>;
-  outline?: p.Flex<typeof LeftTabButton>;
-  assets?: p.Flex<typeof LeftTabButton>;
-  settingsGroup?: p.Flex<typeof LeftTabButton>;
-  more?: p.Flex<typeof LeftTabButton>;
-  paneContainer?: p.Flex<"div">;
-  paneContent?: p.Flex<"div">;
-  leftGeneralTokensPanel?: p.Flex<typeof LeftGeneralTokensPanel>;
-  leftMixinsPanel?: p.Flex<typeof LeftMixinsPanel>;
-  leftImagesPanel?: p.Flex<typeof LeftImagesPanel>;
-  leftThemesPanel?: p.Flex<typeof LeftThemesPanel>;
-  leftFontsPanel?: p.Flex<typeof LeftFontsPanel>;
-  leftImportsPanel?: p.Flex<typeof LeftImportsPanel>;
-  leftVersionsPanel?: p.Flex<typeof LeftVersionsPanel>;
-  leftComponentsPanel?: p.Flex<typeof LeftComponentsPanel>;
-  leftPagesPanel?: p.Flex<typeof LeftPagesPanel>;
-  leftSettingsPanel?: p.Flex<typeof LeftSettingsPanel>;
-  leftSplitsPanel?: p.Flex<typeof LeftSplitsPanel>;
-  leftLintIssuesPanel?: p.Flex<typeof LeftLintIssuesPanel>;
+  root?: Flex__<"div">;
+  leftTabStrip?: Flex__<typeof LeftTabStrip>;
+  lint?: Flex__<typeof LeftTabButton>;
+  outline?: Flex__<typeof LeftTabButton>;
+  assets?: Flex__<typeof LeftTabButton>;
+  settingsGroup?: Flex__<typeof LeftTabButton>;
+  more?: Flex__<typeof LeftTabButton>;
+  paneContainer?: Flex__<"div">;
+  paneContent?: Flex__<"div">;
+  leftGeneralTokensPanel?: Flex__<typeof LeftGeneralTokensPanel>;
+  leftMixinsPanel?: Flex__<typeof LeftMixinsPanel>;
+  leftImagesPanel?: Flex__<typeof LeftImagesPanel>;
+  leftThemesPanel?: Flex__<typeof LeftThemesPanel>;
+  leftFontsPanel?: Flex__<typeof LeftFontsPanel>;
+  leftImportsPanel?: Flex__<typeof LeftImportsPanel>;
+  leftVersionsPanel?: Flex__<typeof LeftVersionsPanel>;
+  leftComponentsPanel?: Flex__<typeof LeftComponentsPanel>;
+  leftPagesPanel?: Flex__<typeof LeftPagesPanel>;
+  leftSettingsPanel?: Flex__<typeof LeftSettingsPanel>;
+  leftSplitsPanel?: Flex__<typeof LeftSplitsPanel>;
+  leftLintIssuesPanel?: Flex__<typeof LeftLintIssuesPanel>;
 };
 
 export interface DefaultLeftPaneProps {
@@ -172,13 +195,13 @@ function PlasmicLeftPane__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "type",
@@ -189,7 +212,7 @@ function PlasmicLeftPane__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},

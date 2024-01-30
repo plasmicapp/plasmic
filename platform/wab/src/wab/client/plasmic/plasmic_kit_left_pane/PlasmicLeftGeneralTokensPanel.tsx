@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import LeftSearchPanel from "../../components/studio/LeftSearchPanel"; // plasmic-import: TqAPn0srTq/component
 import LeftPaneHeader from "../../components/studio/LeftPaneHeader"; // plasmic-import: XLa52PvduIy/component
 import Button from "../../components/widgets/Button"; // plasmic-import: SEF-sRmSoqV5c/component
@@ -69,26 +92,26 @@ type ArgPropType = keyof PlasmicLeftGeneralTokensPanel__ArgsType;
 export const PlasmicLeftGeneralTokensPanel__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicLeftGeneralTokensPanel__OverridesType = {
-  root?: p.Flex<"div">;
-  leftSearchPanel?: p.Flex<typeof LeftSearchPanel>;
-  leftPaneHeader?: p.Flex<typeof LeftPaneHeader>;
-  importTokensButton?: p.Flex<typeof Button>;
-  globalVariantsSelectContainer?: p.Flex<"div">;
-  globalVariantSelect?: p.Flex<typeof Select>;
-  option?: p.Flex<typeof Select__Option>;
-  freeBox?: p.Flex<"div">;
-  colorTokenHeader?: p.Flex<typeof TokenTypeHeader>;
-  colorTokens?: p.Flex<"div">;
-  spacingTokenHeader?: p.Flex<typeof TokenTypeHeader>;
-  spacingTokens?: p.Flex<"div">;
-  fontFamilyTokenHeader?: p.Flex<typeof TokenTypeHeader>;
-  fontFamilyTokens?: p.Flex<"div">;
-  fontSizeTokenHeader?: p.Flex<typeof TokenTypeHeader>;
-  fontSizeTokens?: p.Flex<"div">;
-  lineHeightTokenHeader?: p.Flex<typeof TokenTypeHeader>;
-  lineHeightTokens?: p.Flex<"div">;
-  opacityTokenHeader?: p.Flex<typeof TokenTypeHeader>;
-  opacityTokens?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  leftSearchPanel?: Flex__<typeof LeftSearchPanel>;
+  leftPaneHeader?: Flex__<typeof LeftPaneHeader>;
+  importTokensButton?: Flex__<typeof Button>;
+  globalVariantsSelectContainer?: Flex__<"div">;
+  globalVariantSelect?: Flex__<typeof Select>;
+  option?: Flex__<typeof Select__Option>;
+  freeBox?: Flex__<"div">;
+  colorTokenHeader?: Flex__<typeof TokenTypeHeader>;
+  colorTokens?: Flex__<"div">;
+  spacingTokenHeader?: Flex__<typeof TokenTypeHeader>;
+  spacingTokens?: Flex__<"div">;
+  fontFamilyTokenHeader?: Flex__<typeof TokenTypeHeader>;
+  fontFamilyTokens?: Flex__<"div">;
+  fontSizeTokenHeader?: Flex__<typeof TokenTypeHeader>;
+  fontSizeTokens?: Flex__<"div">;
+  lineHeightTokenHeader?: Flex__<typeof TokenTypeHeader>;
+  lineHeightTokens?: Flex__<"div">;
+  opacityTokenHeader?: Flex__<typeof TokenTypeHeader>;
+  opacityTokens?: Flex__<"div">;
 };
 
 export interface DefaultLeftGeneralTokensPanelProps {
@@ -113,13 +136,13 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "isTargeting",
@@ -136,7 +159,7 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -220,7 +243,7 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
         hasTitleActions={true}
         title={"Style Tokens"}
         titleActions={
-          <p.Stack
+          <Stack__
             as={"div"}
             data-plasmic-name={"globalVariantsSelectContainer"}
             data-plasmic-override={overrides.globalVariantsSelectContainer}
@@ -258,7 +281,7 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
               }
               name={""}
               onChange={(...eventArgs) => {
-                p.generateStateOnChangeProp($state, [
+                generateStateOnChangeProp($state, [
                   "globalVariantSelect",
                   "value",
                 ])(eventArgs[0]);
@@ -275,7 +298,7 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
                 </div>
               }
               size={"tiny"}
-              value={p.generateStateValueProp($state, [
+              value={generateStateValueProp($state, [
                 "globalVariantSelect",
                 "value",
               ])}
@@ -297,7 +320,7 @@ function PlasmicLeftGeneralTokensPanel__RenderFunc(props: {
                 </div>
               </Select__Option>
             </Select>
-          </p.Stack>
+          </Stack__>
         }
       />
 
