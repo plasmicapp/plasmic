@@ -1,9 +1,18 @@
-import { Form, Menu } from "antd";
-import { History } from "history";
-import * as React from "react";
-import { useHistory } from "react-router-dom";
-import { MakeADT } from "ts-adt/MakeADT";
-import { ensure } from "../../../common";
+import { AppCtx } from "@/wab/client/app-ctx";
+import { U } from "@/wab/client/cli-routes";
+import { MenuBuilder } from "@/wab/client/components/menu-builder";
+import { ContentEditorConfigModal } from "@/wab/client/components/modals/ContentEditorConfigModal";
+import { maybeShowPaywall } from "@/wab/client/components/modals/PricingModal";
+import {
+  reactConfirm,
+  reactPrompt,
+  showTemporaryPrompt,
+} from "@/wab/client/components/quick-modals";
+import Button from "@/wab/client/components/widgets/Button";
+import { Modal } from "@/wab/client/components/widgets/Modal";
+import Select from "@/wab/client/components/widgets/Select";
+import Textbox from "@/wab/client/components/widgets/Textbox";
+import { ensure } from "@/wab/common";
 import {
   ApiPermission,
   ApiTeam,
@@ -11,29 +20,21 @@ import {
   CmsDatabaseId,
   TeamId,
   WorkspaceId,
-} from "../../../shared/ApiSchema";
-import { accessLevelRank } from "../../../shared/EntUtil";
+} from "@/wab/shared/ApiSchema";
+import { accessLevelRank } from "@/wab/shared/EntUtil";
 import {
   ORGANIZATION_CAP,
   ORGANIZATION_LOWER,
   ORGANIZATION_PLURAL_LOWER,
   PERSONAL_WORKSPACE,
-} from "../../../shared/Labels";
-import { getAccessLevelToResource } from "../../../shared/perms";
-import { mergeUiConfigs, UiConfig } from "../../../shared/ui-config-utils";
-import { AppCtx } from "../../app-ctx";
-import { U } from "../../cli-routes";
-import { Modal } from "../../components/widgets/Modal";
-import { MenuBuilder } from "../menu-builder";
-import { ContentEditorConfigModal } from "../modals/ContentEditorConfigModal";
-import { maybeShowPaywall } from "../modals/PricingModal";
-import {
-  reactConfirm,
-  reactPrompt,
-  showTemporaryPrompt,
-} from "../quick-modals";
-import Button from "../widgets/Button";
-import Select from "../widgets/Select";
+} from "@/wab/shared/Labels";
+import { getAccessLevelToResource } from "@/wab/shared/perms";
+import { mergeUiConfigs, UiConfig } from "@/wab/shared/ui-config-utils";
+import { Form, Menu } from "antd";
+import { History } from "history";
+import * as React from "react";
+import { useHistory } from "react-router-dom";
+import { MakeADT } from "ts-adt/MakeADT";
 
 // import Checkbox from "../widgets/Checkbox";
 
@@ -347,12 +348,13 @@ async function promptContentCreatorConfig(
     )
   );
 }
+type PromptMoveToWorkspaceOperation = "Duplicate" | "Move";
 // { result: "noWorkspace" } is used when user submitted the form choosing
 // to move the project to their personal drafts space.
 type PromptWorkspaceResponse = MakeADT<
   "result",
   {
-    workspace: { workspace: ApiWorkspace };
+    workspace: { workspace: ApiWorkspace; name?: string };
     noWorkspace: {};
   }
 >;
@@ -360,7 +362,8 @@ export async function promptMoveToWorkspace(
   appCtx: AppCtx,
   currentWorkspaceId: WorkspaceId | null,
   allowNoWorkspace: boolean,
-  operationLabel: string
+  operationLabel: PromptMoveToWorkspaceOperation,
+  projectName?: string
 ): Promise<PromptWorkspaceResponse | undefined> {
   const selfInfo = ensure(appCtx.selfInfo, "Unexpected nullish selfInfo");
   const { workspaces, perms } = appCtx;
@@ -386,6 +389,7 @@ export async function promptMoveToWorkspace(
     message: "Select a destination workspace:",
     noWorkspacesMessage: "No workspaces available.",
     selectedWorkspaceId: currentWorkspaceId ?? undefined,
+    projectName,
   });
 }
 
@@ -393,10 +397,11 @@ interface PromptWorkspaceProps {
   workspaces: ApiWorkspace[];
   message: string;
   noWorkspacesMessage: string;
-  confirmButtonMessage?: string;
+  confirmButtonMessage?: PromptMoveToWorkspaceOperation;
   selectedWorkspaceId?: WorkspaceId;
   allowNoWorkspace: boolean;
   allTeams: ApiTeam[];
+  projectName?: string;
 }
 
 export async function promptWorkspace({
@@ -407,7 +412,9 @@ export async function promptWorkspace({
   selectedWorkspaceId,
   allowNoWorkspace,
   allTeams,
+  projectName,
 }: PromptWorkspaceProps) {
+  const defaultNewName = projectName ? `Copy of ${projectName}` : "New Project";
   const teams = allTeams.filter((t) =>
     workspaces.find((w) => w.team.id === t.id)
   );
@@ -425,7 +432,11 @@ export async function promptWorkspace({
           onFinish={(e) => {
             const workspace = workspaces.find((w) => w.id === e.select);
             if (workspace) {
-              onSubmit({ result: "workspace", workspace });
+              onSubmit({
+                result: "workspace",
+                workspace,
+                name: e.name || undefined,
+              });
             } else {
               if (allowNoWorkspace) {
                 onSubmit({ result: "noWorkspace" });
@@ -436,6 +447,21 @@ export async function promptWorkspace({
           }}
           layout="vertical"
         >
+          {confirmButtonMessage === "Duplicate" && (
+            <Form.Item
+              name="name"
+              label={"Enter a name for the duplicated project"}
+            >
+              <Textbox
+                name="name"
+                placeholder={defaultNewName}
+                defaultValue={defaultNewName}
+                styleType={["bordered"]}
+                autoFocus
+                data-test-id="promptName"
+              />
+            </Form.Item>
+          )}
           <Form.Item name="select" label={message}>
             <Select name="select" autoFocus>
               {selectedWorkspaceId && allowNoWorkspace ? (
@@ -461,11 +487,24 @@ export async function promptWorkspace({
               )}
             </Select>
           </Form.Item>
-          <Form.Item style={{ margin: 0 }}>
-            <Button className="mr-sm" type="primary" htmlType="submit">
-              {confirmButtonMessage ?? "Confirm"}
-            </Button>
-            <Button onClick={() => onCancel()}>Cancel</Button>
+          <Form.Item style={{ margin: 0 }} shouldUpdate>
+            {({ getFieldsValue }) => {
+              const { select } = getFieldsValue();
+
+              return (
+                <>
+                  <Button
+                    disabled={allowNoWorkspace ? false : !Boolean(select)}
+                    className="mr-sm"
+                    type="primary"
+                    htmlType="submit"
+                  >
+                    {confirmButtonMessage ?? "Confirm"}
+                  </Button>
+                  <Button onClick={() => onCancel()}>Cancel</Button>
+                </>
+              );
+            }}
           </Form.Item>
         </Form>
       </Modal>

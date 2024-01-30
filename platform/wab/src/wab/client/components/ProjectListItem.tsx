@@ -188,7 +188,8 @@ function ProjectListItem(props: ProjectListItemProps) {
                       appCtx,
                       null,
                       false,
-                      "Duplicate"
+                      "Duplicate",
+                      project.name
                     );
                     if (response === undefined) {
                       return;
@@ -199,7 +200,10 @@ function ProjectListItem(props: ProjectListItemProps) {
                         appCtx.api.cloneProject(
                           project.id,
                           response.result === "workspace"
-                            ? { workspaceId: response.workspace.id }
+                            ? {
+                                workspaceId: response.workspace.id,
+                                name: response.name,
+                              }
                             : undefined
                         )
                       );

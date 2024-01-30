@@ -1,12 +1,12 @@
 /** @format */
 
+import { parseProjectLocation, U } from "@/wab/client/cli-routes";
+import { promptMoveToWorkspace } from "@/wab/client/components/dashboard/dashboard-actions";
+import { useAppCtx } from "@/wab/client/contexts/AppContexts";
+import { assert, spawn } from "@/wab/common";
+import { ApiProject, MainBranchId } from "@/wab/shared/ApiSchema";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
-import { assert, spawn } from "../../../../common";
-import { ApiProject, MainBranchId } from "../../../../shared/ApiSchema";
-import { parseProjectLocation, U } from "../../../cli-routes";
-import { useAppCtx } from "../../../contexts/AppContexts";
-import { promptMoveToWorkspace } from "../../dashboard/dashboard-actions";
 
 interface CloneProjectModalProps {
   project: ApiProject;
@@ -25,22 +25,24 @@ export const CloneProjectModal = observer(function ProjectNameModal({
     spawn(
       (async () => {
         if (showCloneProjectModal) {
-          const destWorkspaceId = await promptMoveToWorkspace(
+          const response = await promptMoveToWorkspace(
             appCtx,
             null,
             false,
-            "Duplicate"
+            "Duplicate",
+            project.name
           );
-          if (!destWorkspaceId) {
+          if (!response) {
             await setShowCloneProjectModal(false);
             return;
           }
-          assert(destWorkspaceId.result === "workspace", "");
+          assert(response.result === "workspace", "");
           const parsedLocation = parseProjectLocation(appCtx.history.location);
 
           const { projectId: newProjectId } = await appCtx.app.withSpinner(
             appCtx.api.cloneProject(project.id, {
-              workspaceId: destWorkspaceId.workspace.id,
+              workspaceId: response.workspace.id,
+              name: response.name,
               ...(parsedLocation?.branchName &&
               parsedLocation.branchName !== MainBranchId
                 ? { branchName: parsedLocation.branchName }
