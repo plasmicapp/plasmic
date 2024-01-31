@@ -2,6 +2,7 @@
 import { StyleToken } from "@/wab/classes";
 import { MenuBuilder } from "@/wab/client/components/menu-builder";
 import { reactConfirm } from "@/wab/client/components/quick-modals";
+import { useMultiAssetsActions } from "@/wab/client/components/sidebar/MultiAssetsActions";
 import { ColorSidebarPopup } from "@/wab/client/components/style-controls/ColorButton";
 import ColorSwatch from "@/wab/client/components/style-controls/ColorSwatch";
 import { Matcher } from "@/wab/client/components/view-common";
@@ -121,6 +122,8 @@ export const StyleTokenControl = observer(function StyleTokenControl(props: {
     vsh,
   } = props;
 
+  const multiAssetsActions = useMultiAssetsActions();
+
   const overlay = () => {
     const builder = new MenuBuilder();
     builder.genSection(undefined, (push) => {
@@ -206,8 +209,18 @@ export const StyleTokenControl = observer(function StyleTokenControl(props: {
         });
       });
 
-      if (!readOnly) {
+      if (!readOnly && !multiAssetsActions.isSelecting) {
         builder.genSection(undefined, (push2) => {
+          push2(
+            <Menu.Item
+              key="bulk-select"
+              onClick={() => {
+                multiAssetsActions.onAssetSelected(token.uuid, true);
+              }}
+            >
+              Start bulk selection
+            </Menu.Item>
+          );
           push2(
             <Menu.Item
               key="delete"
@@ -277,6 +290,18 @@ export const StyleTokenControl = observer(function StyleTokenControl(props: {
     });
   };
 
+  const onToggle = React.useCallback(() => {
+    if (multiAssetsActions.isSelecting) {
+      const uuid = token.uuid;
+      multiAssetsActions.onAssetSelected(
+        uuid,
+        !multiAssetsActions.isAssetSelected(uuid)
+      );
+    }
+  }, [multiAssetsActions, token.uuid]);
+
+  const onClickHandler = multiAssetsActions.isSelecting ? onToggle : onClick;
+
   return (
     <>
       {token.type === TokenType.Color && (
@@ -288,7 +313,7 @@ export const StyleTokenControl = observer(function StyleTokenControl(props: {
           menu={overlay}
           isDragging={isDragging}
           dragHandleProps={dragHandleProps}
-          onClick={onClick}
+          onClick={onClickHandler}
           resolver={resolver}
           vsh={vsh}
         />
@@ -303,7 +328,7 @@ export const StyleTokenControl = observer(function StyleTokenControl(props: {
           matcher={props.matcher}
           isDragging={isDragging}
           dragHandleProps={dragHandleProps}
-          onClick={onClick}
+          onClick={onClickHandler}
           resolver={resolver}
           vsh={vsh}
         />

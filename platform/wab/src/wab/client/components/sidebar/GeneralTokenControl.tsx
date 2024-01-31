@@ -1,14 +1,15 @@
+import { StyleToken } from "@/wab/classes";
+import { useMultiAssetsActions } from "@/wab/client/components/sidebar/MultiAssetsActions";
+import { TokenDefinedIndicator } from "@/wab/client/components/style-controls/TokenDefinedIndicator";
+import { Matcher } from "@/wab/client/components/view-common";
+import Checkbox from "@/wab/client/components/widgets/Checkbox";
+import PlasmicGeneralTokenControl from "@/wab/client/plasmic/plasmic_kit_left_pane/PlasmicGeneralTokenControl";
+import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { TokenResolver } from "@/wab/shared/cached-selectors";
+import { VariantedStylesHelper } from "@/wab/shared/VariantedStylesHelper";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
-import { StyleToken } from "../../../classes";
-import { DEVFLAGS } from "../../../devflags";
-import { TokenResolver } from "../../../shared/cached-selectors";
-import { VariantedStylesHelper } from "../../../shared/VariantedStylesHelper";
-import PlasmicGeneralTokenControl from "../../plasmic/plasmic_kit_left_pane/PlasmicGeneralTokenControl";
-import { StudioCtx } from "../../studio-ctx/StudioCtx";
-import { TokenDefinedIndicator } from "../style-controls/TokenDefinedIndicator";
-import { Matcher } from "../view-common";
 
 interface GeneralTokenControlProps {
   token: StyleToken;
@@ -40,6 +41,10 @@ const GeneralTokenControl = observer(function GeneralTokenControl(
     vsh,
   } = props;
   const realValue = resolver(token, vsh);
+  const multiAssetsActions = useMultiAssetsActions();
+
+  const isSelected = multiAssetsActions.isAssetSelected(token.uuid);
+
   return (
     <>
       <PlasmicGeneralTokenControl
@@ -51,15 +56,22 @@ const GeneralTokenControl = observer(function GeneralTokenControl(
           dragHandleProps,
           menu,
           onClick,
-          icon: vsh && (
-            <TokenDefinedIndicator
-              token={token}
-              vsh={vsh}
-              studioCtx={studioCtx}
-            />
+          icon: (
+            <>
+              {multiAssetsActions.isSelecting && (
+                <Checkbox isChecked={isSelected}> </Checkbox>
+              )}
+              {vsh && !multiAssetsActions.isSelecting && (
+                <TokenDefinedIndicator
+                  token={token}
+                  vsh={vsh}
+                  studioCtx={studioCtx}
+                />
+              )}
+            </>
           ),
         }}
-        showIcon={DEVFLAGS.variantedStyles && !!vsh}
+        showIcon={!!vsh || multiAssetsActions.isSelecting}
       >
         {matcher.boldSnippets(token.name)}
       </PlasmicGeneralTokenControl>

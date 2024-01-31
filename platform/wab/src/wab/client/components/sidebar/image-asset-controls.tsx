@@ -167,6 +167,7 @@ export const ImageAssetsPanel = observer(function ImageAssetsPanel() {
 
     return (
       <MultiAssetsActions
+        type="asset"
         onDelete={async (selected: string[]) => {
           const selectedAssetsIds = new Set(selected);
           const selectedAssets = studioCtx.site.imageAssets.filter((asset) => {

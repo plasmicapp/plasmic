@@ -10,6 +10,7 @@ import * as React from "react";
 
 export interface MultiAssetsActionsProps
   extends DefaultMultiAssetsActionsProps {
+  type: "asset" | "token";
   onDelete: (selected: string[]) => Promise<boolean>;
 }
 
@@ -30,21 +31,26 @@ export function useMultiAssetsActions() {
   return context;
 }
 
-function getLabelForNumSelected(numSelected: number) {
+function getLabelForNumSelected(
+  type: MultiAssetsActionsProps["type"],
+  numSelected: number
+) {
+  const singular = type === "asset" ? "asset" : "token";
+  const plural = type === "asset" ? "assets" : "tokens";
   if (numSelected === 0) {
-    return "Select assets";
+    return `Select ${plural}`;
   }
   if (numSelected === 1) {
-    return "1 asset selected";
+    return `1 ${singular} selected`;
   }
-  return `${numSelected} assets selected`;
+  return `${numSelected} ${plural} selected`;
 }
 
 function MultiAssetsActions_(
   props: MultiAssetsActionsProps,
   ref: HTMLElementRefOf<"div">
 ) {
-  const { children, onDelete, ...rest } = props;
+  const { type, children, onDelete, ...rest } = props;
 
   const [isSelecting, setIsSelecting] = React.useState(false);
   const [selectedAssets, setSelectedAssets] = React.useState<string[]>([]);
@@ -70,7 +76,7 @@ function MultiAssetsActions_(
     <PlasmicMultiAssetsActions
       root={{ ref }}
       withoutControlBar={!isSelecting}
-      numSelected={getLabelForNumSelected(selectedAssets.length)}
+      numSelected={getLabelForNumSelected(type, selectedAssets.length)}
       cancel={{
         onClick: () => {
           setIsSelecting(false);
