@@ -135,6 +135,14 @@ module.exports = {
     "@typescript-eslint/no-empty-function": "off",
     "prefer-spread": "off",
     "@typescript-eslint/no-this-alias": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        argsIgnorePattern: "^_",
+        varsIgnorePattern: "^_",
+        caughtErrorsIgnorePattern: "^_",
+      },
+    ],
   },
   env: {
     es6: true,
