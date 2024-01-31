@@ -1802,13 +1802,15 @@ export async function publishProject(req: Request, res: Response) {
     body.branchId
   );
   req.promLabels.projectId = projectId;
+  const project = await mgr.getProjectById(projectId);
   userAnalytics(req).track({
     event: "Publish project",
     properties: {
+      projectId: projectId,
+      projectName: project.name,
       pkgId: req.params.pkgId,
     },
   });
-  const project = await mgr.getProjectById(projectId);
   const affectedResourceIds = [
     createTaggedResourceId("project", projectId),
     ...(project.workspace?.teamId
