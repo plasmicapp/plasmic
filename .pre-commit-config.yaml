@@ -21,9 +21,7 @@ repos:
         name: Run prettier on code written by humans
         files: ^.*\.(js|jsx|cjs|mjs|ts|tsx|cts|mts|json|css|scss|md|toml|xml)$
         exclude: (^.*/(plasmic|deps|static|\.yalc)/.*$)|(^loader-tests/data/.*\.json$)|(examples/hydrogen-.*)|(api/.*\.md$)
-        args: [NODE_OPTIONS=--max-old-space-size=4096]
-#        env:
-#          NODE_OPTIONS: "--max-old-space-size=4096"
+        entry: env NODE_OPTIONS=--max-old-space-size=4096 prettier --write --ignore-unknown
         additional_dependencies:
           - prettier@2.8.8
           - prettier-plugin-organize-imports@3.2.2
