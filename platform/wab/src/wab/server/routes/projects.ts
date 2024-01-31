@@ -2629,10 +2629,17 @@ export async function updateProjectData(req: Request, res: Response) {
   const dbMgr = userDbMgr(req);
   const suMgr = superDbMgr(req);
   const projectId = req.params.projectId;
-  const latestRev = await dbMgr.getLatestProjectRev(projectId);
+  const data = req.body as UpdateProjectReq;
+  const latestRev = await dbMgr.getLatestProjectRev(
+    projectId,
+    data.branchId
+      ? {
+          branchId: brand(data.branchId),
+        }
+      : undefined
+  );
   const oldBundle = await getMigratedBundle(latestRev);
   const bundler = new Bundler();
-  const data = req.body as UpdateProjectReq;
   // Need to use superuser because our API token set probably only has access to leaf project and not dependencies
   const site = ensureKnownSite(
     (await unbundleSite(bundler, oldBundle, suMgr, latestRev)).siteOrProjectDep

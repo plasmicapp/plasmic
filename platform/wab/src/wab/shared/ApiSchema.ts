@@ -934,6 +934,7 @@ export interface UpdateProjectReq {
   updateComponents?: NewComponentReq[];
   tokens?: UpsertTokenReq[];
   regenerateSecretApiToken?: boolean;
+  branchId?: string;
 }
 
 export interface SetSiteInfoReq
