@@ -184,9 +184,6 @@
 .img__nwEkP > picture > img {
   object-fit: cover;
 }
-.img__nwEkP > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 ._switch:global(.__wab_instance) {
   position: relative;
   flex-shrink: 0;
@@ -357,8 +354,5 @@
   flex-shrink: 0;
 }
 .img__jFqLq > picture > img {
-  object-fit: cover;
-}
-.img__jFqLq > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }

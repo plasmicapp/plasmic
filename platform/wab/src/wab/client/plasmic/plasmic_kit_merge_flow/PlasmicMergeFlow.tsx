@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import Switch from "../../components/merge/Switch"; // plasmic-import: AJepyKzS-T-/component
 import Conflict from "../../components/merge/Conflict"; // plasmic-import: RM-Ya_c-mv/component
 import LineItem from "../../components/merge/LineItem"; // plasmic-import: VgvN9iOqwZ/component
@@ -77,106 +100,106 @@ type ArgPropType = keyof PlasmicMergeFlow__ArgsType;
 export const PlasmicMergeFlow__ArgProps = new Array<ArgPropType>();
 
 export type PlasmicMergeFlow__OverridesType = {
-  root?: p.Flex<"div">;
-  reviewAndMergeBranch?: p.Flex<"div">;
-  frame8?: p.Flex<"div">;
-  frame25?: p.Flex<"div">;
-  frame1864?: p.Flex<"div">;
-  button?: p.Flex<"div">;
-  startIconsContainer?: p.Flex<"div">;
-  labelsContainer?: p.Flex<"div">;
-  labelText?: p.Flex<"div">;
-  label?: p.Flex<"div">;
-  labelIconsContainer?: p.Flex<"div">;
-  endIconsContainer?: p.Flex<"div">;
-  button2?: p.Flex<"div">;
-  startIconsContainer2?: p.Flex<"div">;
-  labelsContainer2?: p.Flex<"div">;
-  labelText2?: p.Flex<"div">;
-  label2?: p.Flex<"div">;
-  labelIconsContainer2?: p.Flex<"div">;
-  endIconsContainer2?: p.Flex<"div">;
-  frame1863?: p.Flex<"div">;
-  sourceBranchChanges?: p.Flex<"button">;
-  startIconsContainer3?: p.Flex<"div">;
-  labelsContainer3?: p.Flex<"div">;
-  labelText3?: p.Flex<"div">;
-  label3?: p.Flex<"div">;
-  labelIconsContainer3?: p.Flex<"div">;
-  endIconsContainer3?: p.Flex<"div">;
-  destinationBranchChanges?: p.Flex<"button">;
-  startIconsContainer4?: p.Flex<"div">;
-  labelsContainer4?: p.Flex<"div">;
-  labelText4?: p.Flex<"div">;
-  label4?: p.Flex<"div">;
-  labelIconsContainer4?: p.Flex<"div">;
-  endIconsContainer4?: p.Flex<"div">;
-  dividerSeparator?: p.Flex<"div">;
-  frame4?: p.Flex<"div">;
-  frame23?: p.Flex<"div">;
-  frame1857?: p.Flex<"div">;
-  button5?: p.Flex<"div">;
-  startIconsContainer5?: p.Flex<"div">;
-  labelsContainer5?: p.Flex<"div">;
-  labelText5?: p.Flex<"div">;
-  label5?: p.Flex<"div">;
-  label6?: p.Flex<"div">;
-  labelIconsContainer5?: p.Flex<"div">;
-  endIconsContainer5?: p.Flex<"div">;
-  showAllSwitchContainer?: p.Flex<"div">;
-  showAllSwitch?: p.Flex<typeof Switch>;
-  frame1856?: p.Flex<"div">;
-  frame1860?: p.Flex<"div">;
-  button7?: p.Flex<"div">;
-  startIconsContainer7?: p.Flex<"div">;
-  labelsContainer7?: p.Flex<"div">;
-  labelText7?: p.Flex<"div">;
-  label8?: p.Flex<"div">;
-  labelIconsContainer7?: p.Flex<"div">;
-  endIconsContainer7?: p.Flex<"div">;
-  frame1855?: p.Flex<"div">;
-  button8?: p.Flex<"div">;
-  startIconsContainer8?: p.Flex<"div">;
-  labelsContainer8?: p.Flex<"div">;
-  labelText8?: p.Flex<"div">;
-  label9?: p.Flex<"div">;
-  labelIconsContainer8?: p.Flex<"div">;
-  endIconsContainer8?: p.Flex<"div">;
-  button9?: p.Flex<"div">;
-  startIconsContainer9?: p.Flex<"div">;
-  labelsContainer9?: p.Flex<"div">;
-  labelText9?: p.Flex<"div">;
-  label10?: p.Flex<"div">;
-  labelIconsContainer9?: p.Flex<"div">;
-  endIconsContainer9?: p.Flex<"div">;
-  dividerSeparator2?: p.Flex<"div">;
-  frame5?: p.Flex<"div">;
-  pairedChanges?: p.Flex<"div">;
-  name?: p.Flex<"div">;
-  name2?: p.Flex<"div">;
-  name3?: p.Flex<"div">;
-  dividerSeparator3?: p.Flex<"div">;
-  frame6?: p.Flex<"div">;
-  reconciliationsContainer?: p.Flex<"div">;
-  frame18?: p.Flex<"div">;
-  button13?: p.Flex<"div">;
-  startIconsContainer13?: p.Flex<"div">;
-  labelsContainer13?: p.Flex<"div">;
-  labelText13?: p.Flex<"div">;
-  label15?: p.Flex<"div">;
-  labelIconsContainer13?: p.Flex<"div">;
-  endIconsContainer13?: p.Flex<"div">;
-  reconciliations?: p.Flex<"div">;
-  blockedContainer?: p.Flex<"div">;
-  mergeBlockedTitle?: p.Flex<"div">;
-  mergeBlockedMsg?: p.Flex<"div">;
-  dividerSeparator5?: p.Flex<"div">;
-  frame9?: p.Flex<"div">;
-  frame24?: p.Flex<"div">;
-  frame19?: p.Flex<"div">;
-  cancelButton?: p.Flex<typeof Button>;
-  finishButton?: p.Flex<typeof Button>;
-  spinnerContainer?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  reviewAndMergeBranch?: Flex__<"div">;
+  frame8?: Flex__<"div">;
+  frame25?: Flex__<"div">;
+  frame1864?: Flex__<"div">;
+  button?: Flex__<"div">;
+  startIconsContainer?: Flex__<"div">;
+  labelsContainer?: Flex__<"div">;
+  labelText?: Flex__<"div">;
+  label?: Flex__<"div">;
+  labelIconsContainer?: Flex__<"div">;
+  endIconsContainer?: Flex__<"div">;
+  button2?: Flex__<"div">;
+  startIconsContainer2?: Flex__<"div">;
+  labelsContainer2?: Flex__<"div">;
+  labelText2?: Flex__<"div">;
+  label2?: Flex__<"div">;
+  labelIconsContainer2?: Flex__<"div">;
+  endIconsContainer2?: Flex__<"div">;
+  frame1863?: Flex__<"div">;
+  sourceBranchChanges?: Flex__<"button">;
+  startIconsContainer3?: Flex__<"div">;
+  labelsContainer3?: Flex__<"div">;
+  labelText3?: Flex__<"div">;
+  label3?: Flex__<"div">;
+  labelIconsContainer3?: Flex__<"div">;
+  endIconsContainer3?: Flex__<"div">;
+  destinationBranchChanges?: Flex__<"button">;
+  startIconsContainer4?: Flex__<"div">;
+  labelsContainer4?: Flex__<"div">;
+  labelText4?: Flex__<"div">;
+  label4?: Flex__<"div">;
+  labelIconsContainer4?: Flex__<"div">;
+  endIconsContainer4?: Flex__<"div">;
+  dividerSeparator?: Flex__<"div">;
+  frame4?: Flex__<"div">;
+  frame23?: Flex__<"div">;
+  frame1857?: Flex__<"div">;
+  button5?: Flex__<"div">;
+  startIconsContainer5?: Flex__<"div">;
+  labelsContainer5?: Flex__<"div">;
+  labelText5?: Flex__<"div">;
+  label5?: Flex__<"div">;
+  label6?: Flex__<"div">;
+  labelIconsContainer5?: Flex__<"div">;
+  endIconsContainer5?: Flex__<"div">;
+  showAllSwitchContainer?: Flex__<"div">;
+  showAllSwitch?: Flex__<typeof Switch>;
+  frame1856?: Flex__<"div">;
+  frame1860?: Flex__<"div">;
+  button7?: Flex__<"div">;
+  startIconsContainer7?: Flex__<"div">;
+  labelsContainer7?: Flex__<"div">;
+  labelText7?: Flex__<"div">;
+  label8?: Flex__<"div">;
+  labelIconsContainer7?: Flex__<"div">;
+  endIconsContainer7?: Flex__<"div">;
+  frame1855?: Flex__<"div">;
+  button8?: Flex__<"div">;
+  startIconsContainer8?: Flex__<"div">;
+  labelsContainer8?: Flex__<"div">;
+  labelText8?: Flex__<"div">;
+  label9?: Flex__<"div">;
+  labelIconsContainer8?: Flex__<"div">;
+  endIconsContainer8?: Flex__<"div">;
+  button9?: Flex__<"div">;
+  startIconsContainer9?: Flex__<"div">;
+  labelsContainer9?: Flex__<"div">;
+  labelText9?: Flex__<"div">;
+  label10?: Flex__<"div">;
+  labelIconsContainer9?: Flex__<"div">;
+  endIconsContainer9?: Flex__<"div">;
+  dividerSeparator2?: Flex__<"div">;
+  frame5?: Flex__<"div">;
+  pairedChanges?: Flex__<"div">;
+  name?: Flex__<"div">;
+  name2?: Flex__<"div">;
+  name3?: Flex__<"div">;
+  dividerSeparator3?: Flex__<"div">;
+  frame6?: Flex__<"div">;
+  reconciliationsContainer?: Flex__<"div">;
+  frame18?: Flex__<"div">;
+  button13?: Flex__<"div">;
+  startIconsContainer13?: Flex__<"div">;
+  labelsContainer13?: Flex__<"div">;
+  labelText13?: Flex__<"div">;
+  label15?: Flex__<"div">;
+  labelIconsContainer13?: Flex__<"div">;
+  endIconsContainer13?: Flex__<"div">;
+  reconciliations?: Flex__<"div">;
+  blockedContainer?: Flex__<"div">;
+  mergeBlockedTitle?: Flex__<"div">;
+  mergeBlockedMsg?: Flex__<"div">;
+  dividerSeparator5?: Flex__<"div">;
+  frame9?: Flex__<"div">;
+  frame24?: Flex__<"div">;
+  frame19?: Flex__<"div">;
+  cancelButton?: Flex__<typeof Button>;
+  finishButton?: Flex__<typeof Button>;
+  spinnerContainer?: Flex__<"div">;
 };
 
 export interface DefaultMergeFlowProps {
@@ -185,6 +208,8 @@ export interface DefaultMergeFlowProps {
   blocked?: SingleBooleanChoiceArg<"blocked">;
   className?: string;
 }
+
+const $$ = {};
 
 function PlasmicMergeFlow__RenderFunc(props: {
   variants: PlasmicMergeFlow__VariantsArgs;
@@ -201,13 +226,13 @@ function PlasmicMergeFlow__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "empty",
@@ -236,7 +261,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -265,7 +290,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
         }
       )}
     >
-      <p.Stack
+      <Stack__
         as={"div"}
         data-plasmic-name={"reviewAndMergeBranch"}
         data-plasmic-override={overrides.reviewAndMergeBranch}
@@ -291,7 +316,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
             [sty.frame8loading]: hasVariant($state, "loading", "loading"),
           })}
         >
-          <p.Stack
+          <Stack__
             as={"div"}
             data-plasmic-name={"frame25"}
             data-plasmic-override={overrides.frame25}
@@ -306,7 +331,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
               data-plasmic-override={overrides.frame1864}
               className={classNames(projectcss.all, sty.frame1864)}
             >
-              <p.Stack
+              <Stack__
                 as={"div"}
                 data-plasmic-name={"button"}
                 data-plasmic-override={overrides.button}
@@ -314,7 +339,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 className={classNames(projectcss.all, sty.button)}
               >
                 {false ? (
-                  <p.Stack
+                  <Stack__
                     as={"div"}
                     data-plasmic-name={"startIconsContainer"}
                     data-plasmic-override={overrides.startIconsContainer}
@@ -328,7 +353,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       className={classNames(projectcss.all, sty.svg__pv5KQ)}
                       role={"img"}
                     />
-                  </p.Stack>
+                  </Stack__>
                 ) : null}
                 <div
                   data-plasmic-name={"labelsContainer"}
@@ -380,7 +405,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   ) : null}
                 </div>
                 {false ? (
-                  <p.Stack
+                  <Stack__
                     as={"div"}
                     data-plasmic-name={"endIconsContainer"}
                     data-plasmic-override={overrides.endIconsContainer}
@@ -390,7 +415,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       sty.endIconsContainer
                     )}
                   >
-                    <p.PlasmicImg
+                    <PlasmicImg__
                       alt={""}
                       className={classNames(sty.img___88CXy)}
                       displayHeight={"20px"}
@@ -407,17 +432,17 @@ function PlasmicMergeFlow__RenderFunc(props: {
                         aspectRatio: 1,
                       }}
                     />
-                  </p.Stack>
+                  </Stack__>
                 ) : null}
-              </p.Stack>
-              <p.Stack
+              </Stack__>
+              <Stack__
                 as={"div"}
                 data-plasmic-name={"button2"}
                 data-plasmic-override={overrides.button2}
                 hasGap={true}
                 className={classNames(projectcss.all, sty.button2)}
               >
-                <p.Stack
+                <Stack__
                   as={"div"}
                   data-plasmic-name={"startIconsContainer2"}
                   data-plasmic-override={overrides.startIconsContainer2}
@@ -431,7 +456,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     className={classNames(projectcss.all, sty.svg__r3Owl)}
                     role={"img"}
                   />
-                </p.Stack>
+                </Stack__>
                 {false ? (
                   <div
                     data-plasmic-name={"labelsContainer2"}
@@ -487,7 +512,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   </div>
                 ) : null}
                 {false ? (
-                  <p.Stack
+                  <Stack__
                     as={"div"}
                     data-plasmic-name={"endIconsContainer2"}
                     data-plasmic-override={overrides.endIconsContainer2}
@@ -497,7 +522,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       sty.endIconsContainer2
                     )}
                   >
-                    <p.PlasmicImg
+                    <PlasmicImg__
                       alt={""}
                       className={classNames(sty.img__bfIyh)}
                       displayHeight={"20px"}
@@ -514,11 +539,11 @@ function PlasmicMergeFlow__RenderFunc(props: {
                         aspectRatio: 1,
                       }}
                     />
-                  </p.Stack>
+                  </Stack__>
                 ) : null}
-              </p.Stack>
+              </Stack__>
             </div>
-            <p.Stack
+            <Stack__
               as={"div"}
               data-plasmic-name={"frame1863"}
               data-plasmic-override={overrides.frame1863}
@@ -531,7 +556,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 ),
               })}
             >
-              <p.Stack
+              <Stack__
                 as={"button"}
                 data-plasmic-name={"sourceBranchChanges"}
                 data-plasmic-override={overrides.sourceBranchChanges}
@@ -546,7 +571,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 }}
               >
                 {false ? (
-                  <p.Stack
+                  <Stack__
                     as={"div"}
                     data-plasmic-name={"startIconsContainer3"}
                     data-plasmic-override={overrides.startIconsContainer3}
@@ -560,7 +585,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       className={classNames(projectcss.all, sty.svg__rwequ)}
                       role={"img"}
                     />
-                  </p.Stack>
+                  </Stack__>
                 ) : null}
                 <div
                   data-plasmic-name={"labelsContainer3"}
@@ -611,7 +636,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     </div>
                   ) : null}
                 </div>
-                <p.Stack
+                <Stack__
                   as={"div"}
                   data-plasmic-name={"endIconsContainer3"}
                   data-plasmic-override={overrides.endIconsContainer3}
@@ -622,9 +647,9 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     className={classNames(projectcss.all, sty.svg__qeCf)}
                     role={"img"}
                   />
-                </p.Stack>
-              </p.Stack>
-              <p.Stack
+                </Stack__>
+              </Stack__>
+              <Stack__
                 as={"button"}
                 data-plasmic-name={"destinationBranchChanges"}
                 data-plasmic-override={overrides.destinationBranchChanges}
@@ -639,7 +664,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 }}
               >
                 {false ? (
-                  <p.Stack
+                  <Stack__
                     as={"div"}
                     data-plasmic-name={"startIconsContainer4"}
                     data-plasmic-override={overrides.startIconsContainer4}
@@ -653,7 +678,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       className={classNames(projectcss.all, sty.svg__igbUt)}
                       role={"img"}
                     />
-                  </p.Stack>
+                  </Stack__>
                 ) : null}
                 <div
                   data-plasmic-name={"labelsContainer4"}
@@ -704,7 +729,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     </div>
                   ) : null}
                 </div>
-                <p.Stack
+                <Stack__
                   as={"div"}
                   data-plasmic-name={"endIconsContainer4"}
                   data-plasmic-override={overrides.endIconsContainer4}
@@ -715,11 +740,11 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     className={classNames(projectcss.all, sty.svg__mAv6V)}
                     role={"img"}
                   />
-                </p.Stack>
-              </p.Stack>
-            </p.Stack>
-          </p.Stack>
-          <p.Stack
+                </Stack__>
+              </Stack__>
+            </Stack__>
+          </Stack__>
+          <Stack__
             as={"div"}
             data-plasmic-name={"dividerSeparator"}
             data-plasmic-override={overrides.dividerSeparator}
@@ -737,8 +762,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
               data-plasmic-override={overrides.frame4}
               className={classNames(projectcss.all, sty.frame4)}
             />
-          </p.Stack>
-          <p.Stack
+          </Stack__>
+          <Stack__
             as={"div"}
             data-plasmic-name={"frame23"}
             data-plasmic-override={overrides.frame23}
@@ -752,7 +777,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
               data-plasmic-override={overrides.frame1857}
               className={classNames(projectcss.all, sty.frame1857)}
             >
-              <p.Stack
+              <Stack__
                 as={"div"}
                 data-plasmic-name={"button5"}
                 data-plasmic-override={overrides.button5}
@@ -760,7 +785,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 className={classNames(projectcss.all, sty.button5)}
               >
                 {false ? (
-                  <p.Stack
+                  <Stack__
                     as={"div"}
                     data-plasmic-name={"startIconsContainer5"}
                     data-plasmic-override={overrides.startIconsContainer5}
@@ -774,16 +799,18 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       className={classNames(projectcss.all, sty.svg__b5Ju)}
                       role={"img"}
                     />
-                  </p.Stack>
+                  </Stack__>
                 ) : null}
                 <div
                   data-plasmic-name={"labelsContainer5"}
                   data-plasmic-override={overrides.labelsContainer5}
                   className={classNames(projectcss.all, sty.labelsContainer5)}
                 >
-                  <div
+                  <Stack__
+                    as={"div"}
                     data-plasmic-name={"labelText5"}
                     data-plasmic-override={overrides.labelText5}
+                    hasGap={true}
                     className={classNames(projectcss.all, sty.labelText5)}
                   >
                     <div
@@ -808,7 +835,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     >
                       {"Pick the branch to keep changes from."}
                     </div>
-                  </div>
+                  </Stack__>
                   {false ? (
                     <div
                       data-plasmic-name={"labelIconsContainer5"}
@@ -826,7 +853,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   ) : null}
                 </div>
                 {false ? (
-                  <p.Stack
+                  <Stack__
                     as={"div"}
                     data-plasmic-name={"endIconsContainer5"}
                     data-plasmic-override={overrides.endIconsContainer5}
@@ -836,7 +863,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       sty.endIconsContainer5
                     )}
                   >
-                    <p.PlasmicImg
+                    <PlasmicImg__
                       alt={""}
                       className={classNames(sty.img___0MvkB)}
                       displayHeight={"20px"}
@@ -853,9 +880,9 @@ function PlasmicMergeFlow__RenderFunc(props: {
                         aspectRatio: 1,
                       }}
                     />
-                  </p.Stack>
+                  </Stack__>
                 ) : null}
-              </p.Stack>
+              </Stack__>
               <div
                 data-plasmic-name={"showAllSwitchContainer"}
                 data-plasmic-override={overrides.showAllSwitchContainer}
@@ -870,13 +897,13 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     data-plasmic-override={overrides.showAllSwitch}
                     className={classNames("__wab_instance", sty.showAllSwitch)}
                     isChecked={
-                      p.generateStateValueProp($state, [
+                      generateStateValueProp($state, [
                         "showAllSwitch",
                         "isChecked",
                       ]) ?? false
                     }
                     onChange={(...eventArgs) => {
-                      p.generateStateOnChangeProp($state, [
+                      generateStateOnChangeProp($state, [
                         "showAllSwitch",
                         "isChecked",
                       ])(eventArgs[0]);
@@ -895,7 +922,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 </div>
               </div>
             </div>
-            <p.Stack
+            <Stack__
               as={"div"}
               data-plasmic-name={"frame1856"}
               data-plasmic-override={overrides.frame1856}
@@ -904,7 +931,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 [sty.frame1856empty]: hasVariant($state, "empty", "empty"),
               })}
             >
-              <p.Stack
+              <Stack__
                 as={"div"}
                 data-plasmic-name={"frame1860"}
                 data-plasmic-override={overrides.frame1860}
@@ -913,7 +940,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   [sty.frame1860empty]: hasVariant($state, "empty", "empty"),
                 })}
               >
-                <p.Stack
+                <Stack__
                   as={"div"}
                   data-plasmic-name={"button7"}
                   data-plasmic-override={overrides.button7}
@@ -927,7 +954,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   })}
                 >
                   {false ? (
-                    <p.Stack
+                    <Stack__
                       as={"div"}
                       data-plasmic-name={"startIconsContainer7"}
                       data-plasmic-override={overrides.startIconsContainer7}
@@ -941,7 +968,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                         className={classNames(projectcss.all, sty.svg__zuEam)}
                         role={"img"}
                       />
-                    </p.Stack>
+                    </Stack__>
                   ) : null}
                   <div
                     data-plasmic-name={"labelsContainer7"}
@@ -996,7 +1023,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     ) : null}
                   </div>
                   {false ? (
-                    <p.Stack
+                    <Stack__
                       as={"div"}
                       data-plasmic-name={"endIconsContainer7"}
                       data-plasmic-override={overrides.endIconsContainer7}
@@ -1006,7 +1033,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                         sty.endIconsContainer7
                       )}
                     >
-                      <p.PlasmicImg
+                      <PlasmicImg__
                         alt={""}
                         className={classNames(sty.img__qp40P)}
                         displayHeight={"20px"}
@@ -1023,17 +1050,17 @@ function PlasmicMergeFlow__RenderFunc(props: {
                           aspectRatio: 1,
                         }}
                       />
-                    </p.Stack>
+                    </Stack__>
                   ) : null}
-                </p.Stack>
-                <p.Stack
+                </Stack__>
+                <Stack__
                   as={"div"}
                   data-plasmic-name={"frame1855"}
                   data-plasmic-override={overrides.frame1855}
                   hasGap={true}
                   className={classNames(projectcss.all, sty.frame1855)}
                 >
-                  <p.Stack
+                  <Stack__
                     as={"div"}
                     data-plasmic-name={"button8"}
                     data-plasmic-override={overrides.button8}
@@ -1041,7 +1068,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     className={classNames(projectcss.all, sty.button8)}
                   >
                     {false ? (
-                      <p.Stack
+                      <Stack__
                         as={"div"}
                         data-plasmic-name={"startIconsContainer8"}
                         data-plasmic-override={overrides.startIconsContainer8}
@@ -1055,7 +1082,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                           className={classNames(projectcss.all, sty.svg__tad73)}
                           role={"img"}
                         />
-                      </p.Stack>
+                      </Stack__>
                     ) : null}
                     <div
                       data-plasmic-name={"labelsContainer8"}
@@ -1113,7 +1140,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       ) : null}
                     </div>
                     {false ? (
-                      <p.Stack
+                      <Stack__
                         as={"div"}
                         data-plasmic-name={"endIconsContainer8"}
                         data-plasmic-override={overrides.endIconsContainer8}
@@ -1123,7 +1150,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                           sty.endIconsContainer8
                         )}
                       >
-                        <p.PlasmicImg
+                        <PlasmicImg__
                           alt={""}
                           className={classNames(sty.img__p8Jv0)}
                           displayHeight={"20px"}
@@ -1140,10 +1167,10 @@ function PlasmicMergeFlow__RenderFunc(props: {
                             aspectRatio: 1,
                           }}
                         />
-                      </p.Stack>
+                      </Stack__>
                     ) : null}
-                  </p.Stack>
-                  <p.Stack
+                  </Stack__>
+                  <Stack__
                     as={"div"}
                     data-plasmic-name={"button9"}
                     data-plasmic-override={overrides.button9}
@@ -1151,7 +1178,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                     className={classNames(projectcss.all, sty.button9)}
                   >
                     {false ? (
-                      <p.Stack
+                      <Stack__
                         as={"div"}
                         data-plasmic-name={"startIconsContainer9"}
                         data-plasmic-override={overrides.startIconsContainer9}
@@ -1165,7 +1192,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                           className={classNames(projectcss.all, sty.svg__hub8L)}
                           role={"img"}
                         />
-                      </p.Stack>
+                      </Stack__>
                     ) : null}
                     <div
                       data-plasmic-name={"labelsContainer9"}
@@ -1223,7 +1250,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       ) : null}
                     </div>
                     {false ? (
-                      <p.Stack
+                      <Stack__
                         as={"div"}
                         data-plasmic-name={"endIconsContainer9"}
                         data-plasmic-override={overrides.endIconsContainer9}
@@ -1233,7 +1260,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                           sty.endIconsContainer9
                         )}
                       >
-                        <p.PlasmicImg
+                        <PlasmicImg__
                           alt={""}
                           className={classNames(sty.img__t922V)}
                           displayHeight={"20px"}
@@ -1250,12 +1277,12 @@ function PlasmicMergeFlow__RenderFunc(props: {
                             aspectRatio: 1,
                           }}
                         />
-                      </p.Stack>
+                      </Stack__>
                     ) : null}
-                  </p.Stack>
-                </p.Stack>
-              </p.Stack>
-              <p.Stack
+                  </Stack__>
+                </Stack__>
+              </Stack__>
+              <Stack__
                 as={"div"}
                 data-plasmic-name={"dividerSeparator2"}
                 data-plasmic-override={overrides.dividerSeparator2}
@@ -1267,8 +1294,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   data-plasmic-override={overrides.frame5}
                   className={classNames(projectcss.all, sty.frame5)}
                 />
-              </p.Stack>
-              <p.Stack
+              </Stack__>
+              <Stack__
                 as={"div"}
                 data-plasmic-name={"pairedChanges"}
                 data-plasmic-override={overrides.pairedChanges}
@@ -1365,7 +1392,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   }
                   subtext={"Some changes were auto merged"}
                 />
-              </p.Stack>
+              </Stack__>
               <div
                 className={classNames(
                   projectcss.all,
@@ -1382,9 +1409,9 @@ function PlasmicMergeFlow__RenderFunc(props: {
               >
                 {"No conflicting changes!"}
               </div>
-            </p.Stack>
-          </p.Stack>
-          <p.Stack
+            </Stack__>
+          </Stack__>
+          <Stack__
             as={"div"}
             data-plasmic-name={"dividerSeparator3"}
             data-plasmic-override={overrides.dividerSeparator3}
@@ -1404,8 +1431,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 [sty.frame6empty]: hasVariant($state, "empty", "empty"),
               })}
             />
-          </p.Stack>
-          <p.Stack
+          </Stack__>
+          <Stack__
             as={"div"}
             data-plasmic-name={"reconciliationsContainer"}
             data-plasmic-override={overrides.reconciliationsContainer}
@@ -1432,7 +1459,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
               data-plasmic-override={overrides.frame18}
               className={classNames(projectcss.all, sty.frame18)}
             >
-              <p.Stack
+              <Stack__
                 as={"div"}
                 data-plasmic-name={"button13"}
                 data-plasmic-override={overrides.button13}
@@ -1440,7 +1467,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                 className={classNames(projectcss.all, sty.button13)}
               >
                 {false ? (
-                  <p.Stack
+                  <Stack__
                     as={"div"}
                     data-plasmic-name={"startIconsContainer13"}
                     data-plasmic-override={overrides.startIconsContainer13}
@@ -1454,7 +1481,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       className={classNames(projectcss.all, sty.svg__hgECr)}
                       role={"img"}
                     />
-                  </p.Stack>
+                  </Stack__>
                 ) : null}
                 <div
                   data-plasmic-name={"labelsContainer13"}
@@ -1506,7 +1533,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   ) : null}
                 </div>
                 {false ? (
-                  <p.Stack
+                  <Stack__
                     as={"div"}
                     data-plasmic-name={"endIconsContainer13"}
                     data-plasmic-override={overrides.endIconsContainer13}
@@ -1516,7 +1543,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
                       sty.endIconsContainer13
                     )}
                   >
-                    <p.PlasmicImg
+                    <PlasmicImg__
                       alt={""}
                       className={classNames(sty.img__vpzpQ)}
                       displayHeight={"20px"}
@@ -1533,11 +1560,11 @@ function PlasmicMergeFlow__RenderFunc(props: {
                         aspectRatio: 1,
                       }}
                     />
-                  </p.Stack>
+                  </Stack__>
                 ) : null}
-              </p.Stack>
+              </Stack__>
             </div>
-            <p.Stack
+            <Stack__
               as={"div"}
               data-plasmic-name={"reconciliations"}
               data-plasmic-override={overrides.reconciliations}
@@ -1564,8 +1591,8 @@ function PlasmicMergeFlow__RenderFunc(props: {
                   "Component \u201cListItem\u201d deleted in this branch, but got used in the main branch, so we deleted those new usages."
                 }
               </LineItem>
-            </p.Stack>
-          </p.Stack>
+            </Stack__>
+          </Stack__>
           {(
             hasVariant($state, "blocked", "blocked")
               ? true
@@ -1664,7 +1691,7 @@ function PlasmicMergeFlow__RenderFunc(props: {
               </div>
             </div>
           ) : null}
-          <p.Stack
+          <Stack__
             as={"div"}
             data-plasmic-name={"dividerSeparator5"}
             data-plasmic-override={overrides.dividerSeparator5}
@@ -1676,20 +1703,22 @@ function PlasmicMergeFlow__RenderFunc(props: {
               data-plasmic-override={overrides.frame9}
               className={classNames(projectcss.all, sty.frame9)}
             />
-          </p.Stack>
-          <p.Stack
+          </Stack__>
+          <Stack__
             as={"div"}
             data-plasmic-name={"frame24"}
             data-plasmic-override={overrides.frame24}
             hasGap={true}
             className={classNames(projectcss.all, sty.frame24)}
           >
-            <p.Stack
+            <Stack__
               as={"div"}
               data-plasmic-name={"frame19"}
               data-plasmic-override={overrides.frame19}
               hasGap={true}
-              className={classNames(projectcss.all, sty.frame19)}
+              className={classNames(projectcss.all, sty.frame19, {
+                [sty.frame19empty]: hasVariant($state, "empty", "empty"),
+              })}
             >
               <Button
                 data-plasmic-name={"cancelButton"}
@@ -1717,10 +1746,10 @@ function PlasmicMergeFlow__RenderFunc(props: {
               >
                 {"Merge"}
               </Button>
-            </p.Stack>
-          </p.Stack>
+            </Stack__>
+          </Stack__>
         </div>
-      </p.Stack>
+      </Stack__>
       <div
         className={classNames(projectcss.all, sty.freeBox__tFpp, {
           [sty.freeBoxblocked__tFpp1MFev]: hasVariant(
@@ -2650,7 +2679,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicMergeFlow__ArgProps,
           internalVariantPropNames: PlasmicMergeFlow__VariantProps,
         }),

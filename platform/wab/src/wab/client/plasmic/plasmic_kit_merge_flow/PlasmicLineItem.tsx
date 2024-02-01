@@ -13,25 +13,47 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
 
 import "@plasmicapp/react-web/lib/plasmic.css";
 
@@ -58,23 +80,25 @@ type ArgPropType = keyof PlasmicLineItem__ArgsType;
 export const PlasmicLineItem__ArgProps = new Array<ArgPropType>("children");
 
 export type PlasmicLineItem__OverridesType = {
-  root?: p.Flex<"div">;
-  startIconsContainer14?: p.Flex<"div">;
-  icon?: p.Flex<"svg">;
-  labelsContainer14?: p.Flex<"div">;
-  labelText14?: p.Flex<"div">;
-  freeBox?: p.Flex<"div">;
-  text?: p.Flex<"div">;
-  labelIconsContainer14?: p.Flex<"div">;
-  svg?: p.Flex<"svg">;
-  endIconsContainer14?: p.Flex<"div">;
-  img?: p.Flex<typeof p.PlasmicImg>;
+  root?: Flex__<"div">;
+  startIconsContainer14?: Flex__<"div">;
+  icon?: Flex__<"svg">;
+  labelsContainer14?: Flex__<"div">;
+  labelText14?: Flex__<"div">;
+  freeBox?: Flex__<"div">;
+  text?: Flex__<"div">;
+  labelIconsContainer14?: Flex__<"div">;
+  svg?: Flex__<"svg">;
+  endIconsContainer14?: Flex__<"div">;
+  img?: Flex__<typeof PlasmicImg__>;
 };
 
 export interface DefaultLineItemProps {
   children?: React.ReactNode;
   className?: string;
 }
+
+const $$ = {};
 
 function PlasmicLineItem__RenderFunc(props: {
   variants: PlasmicLineItem__VariantsArgs;
@@ -91,14 +115,14 @@ function PlasmicLineItem__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -116,7 +140,7 @@ function PlasmicLineItem__RenderFunc(props: {
         sty.root
       )}
     >
-      <p.Stack
+      <Stack__
         as={"div"}
         data-plasmic-name={"startIconsContainer14"}
         data-plasmic-override={overrides.startIconsContainer14}
@@ -129,7 +153,7 @@ function PlasmicLineItem__RenderFunc(props: {
           className={classNames(projectcss.all, sty.icon)}
           role={"img"}
         />
-      </p.Stack>
+      </Stack__>
       <div
         data-plasmic-name={"labelsContainer14"}
         data-plasmic-override={overrides.labelsContainer14}
@@ -145,7 +169,7 @@ function PlasmicLineItem__RenderFunc(props: {
             data-plasmic-override={overrides.freeBox}
             className={classNames(projectcss.all, sty.freeBox)}
           >
-            {p.renderPlasmicSlot({
+            {renderPlasmicSlot({
               defaultContents:
                 "Token \u201cInfo\u201d added in both branches, so we renamed this branch\u2019s to \u201cInfo2\u201d.",
               value: args.children,
@@ -182,14 +206,14 @@ function PlasmicLineItem__RenderFunc(props: {
         ) : null}
       </div>
       {false ? (
-        <p.Stack
+        <Stack__
           as={"div"}
           data-plasmic-name={"endIconsContainer14"}
           data-plasmic-override={overrides.endIconsContainer14}
           hasGap={true}
           className={classNames(projectcss.all, sty.endIconsContainer14)}
         >
-          <p.PlasmicImg
+          <PlasmicImg__
             data-plasmic-name={"img"}
             data-plasmic-override={overrides.img}
             alt={""}
@@ -208,9 +232,9 @@ function PlasmicLineItem__RenderFunc(props: {
               aspectRatio: 1,
             }}
           />
-        </p.Stack>
+        </Stack__>
       ) : null}
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 
@@ -260,7 +284,7 @@ type NodeDefaultElementType = {
   labelIconsContainer14: "div";
   svg: "svg";
   endIconsContainer14: "div";
-  img: typeof p.PlasmicImg;
+  img: typeof PlasmicImg__;
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -297,7 +321,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicLineItem__ArgProps,
           internalVariantPropNames: PlasmicLineItem__VariantProps,
         }),

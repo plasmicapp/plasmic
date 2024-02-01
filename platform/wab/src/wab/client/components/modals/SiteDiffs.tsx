@@ -1,28 +1,29 @@
-import L, { uniq } from "lodash";
-import { observer } from "mobx-react-lite";
-import * as React from "react";
-import { ensure, withoutNils, xSetDefault } from "../../../common";
-import { MIXIN_CAP } from "../../../shared/Labels";
+import { Icon } from "@/wab/client/components/widgets/Icon";
+import ArrowRightIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ArrowRight";
+import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
+import ComponentIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Component";
+import GlobeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Globe";
+import ImageBlockIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__ImageBlock";
+import MixinIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Mixin";
+import PencilIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Pencil";
+import PlusIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Plus";
+import SlotIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Slot";
+import ThemeIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Theme";
+import TokenIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Token";
+import VariantGroupIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__VariantGroup";
+import TextInputIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__TextInput";
+import VariantIcon from "@/wab/client/plasmic/plasmic_kit_design_system/PlasmicIcon__Variant";
+import RocketsvgIcon from "@/wab/client/plasmic/q_4_icons/icons/PlasmicIcon__Rocketsvg";
+import { ensure, withoutNils, xSetDefault } from "@/wab/common";
+import { MIXIN_CAP } from "@/wab/shared/Labels";
 import type {
   ChangeLogEntry,
   SemVerSiteElement,
-} from "../../../shared/site-diffs";
-import { SplitType } from "../../../splits";
-import CloseIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Close";
-import ComponentIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Component";
-import GlobeIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Globe";
-import ImageBlockIcon from "../../plasmic/plasmic_kit/PlasmicIcon__ImageBlock";
-import MixinIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Mixin";
-import PencilIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Pencil";
-import PlusIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Plus";
-import SlotIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Slot";
-import ThemeIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Theme";
-import TokenIcon from "../../plasmic/plasmic_kit/PlasmicIcon__Token";
-import VariantGroupIcon from "../../plasmic/plasmic_kit/PlasmicIcon__VariantGroup";
-import TextInputIcon from "../../plasmic/plasmic_kit_design_system/PlasmicIcon__TextInput";
-import VariantIcon from "../../plasmic/plasmic_kit_design_system/PlasmicIcon__Variant";
-import RocketsvgIcon from "../../plasmic/q_4_icons/icons/PlasmicIcon__Rocketsvg";
-import { Icon } from "../widgets/Icon";
+} from "@/wab/shared/site-diffs";
+import { SplitType } from "@/wab/splits";
+import L, { uniq } from "lodash";
+import { observer } from "mobx-react-lite";
+import * as React from "react";
 import sty from "./SiteDiffs.module.css";
 
 React;
@@ -93,7 +94,28 @@ export const SiteDiffs = observer(function SideDiffs(props: {
   );
 });
 
-export function objIcon(obj: SemVerSiteElement) {
+export function getObjClassName(typename: SemVerSiteElement["type"]) {
+  switch (typename) {
+    case "Variant":
+    case "Variant group":
+      return "variant-fg";
+    case "Param":
+    case "Component":
+      return "component-fg";
+    case "Style token":
+      return "token-fg";
+    case "Mixin":
+      return "mixin-fg";
+    case "Icon":
+    case "Image":
+    case "Element":
+    default:
+      return "tag-fg";
+  }
+}
+
+export function objIcon(obj: SemVerSiteElement, tplIcon?: React.ReactNode) {
+  const className = getObjClassName(obj.type);
   if (obj.type === "Variant group" || obj.type === "Global variant group") {
     return (
       <Icon
@@ -102,33 +124,21 @@ export function objIcon(obj: SemVerSiteElement) {
       />
     );
   } else if (obj.type === "Param") {
-    return <Icon className="component-fg" icon={SlotIcon} />;
+    return <Icon className={className} icon={SlotIcon} />;
   } else if (obj.type === "Variant") {
-    return <Icon className="variant-fg" icon={VariantIcon} />;
+    return <Icon className={className} icon={VariantIcon} />;
   } else if (obj.type === "Style token") {
-    return <Icon className="token-fg" icon={TokenIcon} />;
+    return <Icon className={className} icon={TokenIcon} />;
   } else if (obj.type === "Mixin") {
-    return <Icon className="mixin-fg" icon={MixinIcon} />;
+    return <Icon className={className} icon={MixinIcon} />;
   } else if (obj.type === "Component") {
-    return <Icon className="component-fg" icon={ComponentIcon} />;
+    return <Icon className={className} icon={ComponentIcon} />;
   } else if (obj.type === "Icon" || obj.type === "Image") {
-    return <Icon className="tag-fg" icon={ImageBlockIcon} />;
+    return <Icon className={className} icon={ImageBlockIcon} />;
+  } else if (obj.type === "Element") {
+    return <span className={className}>{tplIcon}</span>;
   } else {
-    // tpl node
-    return (
-      <span className="tag-fg">
-        {/*
-        TODO: Store the Icon info in `obj` since we can't compute it here
-        createNodeIcon(
-          obj,
-          isTplVariantable(obj)
-            ? new EffectiveVariantSetting(obj, [
-                ensure(tryGetBaseVariantSetting(obj)),
-              ])
-            : undefined
-        )*/}
-      </span>
-    );
+    return <Icon className={className} icon={ArrowRightIcon} />;
   }
 }
 

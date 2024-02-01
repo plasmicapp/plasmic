@@ -162,6 +162,11 @@ export type AutoReconciliation =
       newPath: string;
     };
 
+export type AutoReconciliationOfDuplicateNames = Extract<
+  AutoReconciliation,
+  { violation: "duplicate-names" }
+>;
+
 export type MergeAuto = {
   status: "merged";
   autoReconciliations: AutoReconciliation[];
@@ -1658,7 +1663,7 @@ function preFixTplNames(a: Site, b: Site, bundler: Bundler) {
           violation: "duplicate-names",
           mergedInst: tpl,
           fieldName: "name",
-          mergedParent: tpl,
+          mergedParent: selfComponent,
           origName: oldName,
           renamedTo: newName,
         });

@@ -206,9 +206,6 @@
 .img___4HY8P > picture > img {
   object-fit: cover;
 }
-.img___4HY8P > :global(.__wab_img-spacer) > img {
-  object-fit: cover;
-}
 .right {
   height: 28px;
   display: flex;
@@ -371,8 +368,5 @@
   flex-shrink: 0;
 }
 .img__atOz > picture > img {
-  object-fit: cover;
-}
-.img__atOz > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }

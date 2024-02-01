@@ -3,13 +3,19 @@
   display: flex;
   flex-direction: row;
   position: relative;
-  border-radius: 6px;
-  padding: 6px 8px 6px 6px;
+  border-bottom-width: 1px;
+  width: 100%;
+  min-width: 0;
+  border-radius: 0px;
+  padding: 10px 6px;
+  border-style: dashed;
+  border-color: var(--token-hoA5qaM-91G);
 }
 .root > :global(.__wab_flex-container) {
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
+  min-width: 0;
   margin-left: calc(0px - 4px);
   width: calc(100% + 4px);
 }
@@ -85,7 +91,7 @@
 .slotTargetChildren {
   font-size: 12px;
   color: rgba(26, 48, 29, 1);
-  line-height: 100%;
+  line-height: 1.2;
   letter-spacing: 0em;
 }
 .text {
@@ -156,8 +162,5 @@
   flex-shrink: 0;
 }
 .img > picture > img {
-  object-fit: cover;
-}
-.img > :global(.__wab_img-spacer) > img {
   object-fit: cover;
 }

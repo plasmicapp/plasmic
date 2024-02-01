@@ -13,25 +13,48 @@
 
 import * as React from "react";
 
-import * as p from "@plasmicapp/react-web";
-import * as ph from "@plasmicapp/react-web/lib/host";
-
 import {
-  hasVariant,
-  classNames,
-  wrapWithClassName,
-  createPlasmicElementProxy,
-  makeFragment,
+  Flex as Flex__,
   MultiChoiceArg,
+  PlasmicDataSourceContextProvider as PlasmicDataSourceContextProvider__,
+  PlasmicIcon as PlasmicIcon__,
+  PlasmicImg as PlasmicImg__,
+  PlasmicLink as PlasmicLink__,
+  PlasmicPageGuard as PlasmicPageGuard__,
   SingleBooleanChoiceArg,
   SingleChoiceArg,
-  pick,
-  omit,
-  useTrigger,
+  Stack as Stack__,
   StrictProps,
+  Trans as Trans__,
+  classNames,
+  createPlasmicElementProxy,
   deriveRenderOpts,
   ensureGlobalVariants,
+  generateOnMutateForSpec,
+  generateStateOnChangeProp,
+  generateStateOnChangePropForCodeComponents,
+  generateStateValueProp,
+  get as $stateGet,
+  hasVariant,
+  initializeCodeComponentStates,
+  initializePlasmicStates,
+  makeFragment,
+  omit,
+  pick,
+  renderPlasmicSlot,
+  set as $stateSet,
+  useCurrentUser,
+  useDollarState,
+  usePlasmicTranslator,
+  useTrigger,
+  wrapWithClassName,
 } from "@plasmicapp/react-web";
+import {
+  DataCtxReader as DataCtxReader__,
+  useDataEnv,
+  useGlobalActions,
+} from "@plasmicapp/react-web/lib/host";
+
 import ToggleButtonSwitch from "../../components/merge/ToggleButtonSwitch"; // plasmic-import: LCAZOUPfDDB/component
 
 import "@plasmicapp/react-web/lib/plasmic.css";
@@ -74,24 +97,24 @@ export const PlasmicConflict__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicConflict__OverridesType = {
-  root?: p.Flex<"div">;
-  button10?: p.Flex<"div">;
-  startIconsContainer10?: p.Flex<"div">;
-  icon?: p.Flex<"svg">;
-  labelsContainer10?: p.Flex<"div">;
-  labelText10?: p.Flex<"div">;
-  subtext?: p.Flex<"div">;
-  labelIconsContainer10?: p.Flex<"div">;
-  endIconsContainer10?: p.Flex<"div">;
-  _switch?: p.Flex<typeof ToggleButtonSwitch>;
-  right?: p.Flex<"button">;
-  startIconsContainer12?: p.Flex<"div">;
-  labelsContainer12?: p.Flex<"div">;
-  labelText12?: p.Flex<"div">;
-  label14?: p.Flex<"div">;
-  text?: p.Flex<"div">;
-  labelIconsContainer12?: p.Flex<"div">;
-  endIconsContainer12?: p.Flex<"div">;
+  root?: Flex__<"div">;
+  button10?: Flex__<"div">;
+  startIconsContainer10?: Flex__<"div">;
+  icon?: Flex__<"svg">;
+  labelsContainer10?: Flex__<"div">;
+  labelText10?: Flex__<"div">;
+  subtext?: Flex__<"div">;
+  labelIconsContainer10?: Flex__<"div">;
+  endIconsContainer10?: Flex__<"div">;
+  _switch?: Flex__<typeof ToggleButtonSwitch>;
+  right?: Flex__<"button">;
+  startIconsContainer12?: Flex__<"div">;
+  labelsContainer12?: Flex__<"div">;
+  labelText12?: Flex__<"div">;
+  label14?: Flex__<"div">;
+  text?: Flex__<"div">;
+  labelIconsContainer12?: Flex__<"div">;
+  endIconsContainer12?: Flex__<"div">;
 };
 
 export interface DefaultConflictProps {
@@ -101,6 +124,8 @@ export interface DefaultConflictProps {
   merged?: SingleBooleanChoiceArg<"merged">;
   className?: string;
 }
+
+const $$ = {};
 
 function PlasmicConflict__RenderFunc(props: {
   variants: PlasmicConflict__VariantsArgs;
@@ -117,13 +142,13 @@ function PlasmicConflict__RenderFunc(props: {
     ...variants,
   };
 
-  const $ctx = ph.useDataEnv?.() || {};
+  const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
-  const currentUser = p.useCurrentUser?.() || {};
+  const currentUser = useCurrentUser?.() || {};
 
-  const stateSpecs: Parameters<typeof p.useDollarState>[0] = React.useMemo(
+  const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
         path: "hasSubtext",
@@ -140,7 +165,7 @@ function PlasmicConflict__RenderFunc(props: {
     ],
     [$props, $ctx, $refs]
   );
-  const $state = p.useDollarState(stateSpecs, {
+  const $state = useDollarState(stateSpecs, {
     $props,
     $ctx,
     $queries: {},
@@ -148,7 +173,7 @@ function PlasmicConflict__RenderFunc(props: {
   });
 
   return (
-    <p.Stack
+    <Stack__
       as={"div"}
       data-plasmic-name={"root"}
       data-plasmic-override={overrides.root}
@@ -170,14 +195,14 @@ function PlasmicConflict__RenderFunc(props: {
         }
       )}
     >
-      <p.Stack
+      <Stack__
         as={"div"}
         data-plasmic-name={"button10"}
         data-plasmic-override={overrides.button10}
         hasGap={true}
         className={classNames(projectcss.all, sty.button10)}
       >
-        <p.Stack
+        <Stack__
           as={"div"}
           data-plasmic-name={"startIconsContainer10"}
           data-plasmic-override={overrides.startIconsContainer10}
@@ -190,7 +215,7 @@ function PlasmicConflict__RenderFunc(props: {
             className={classNames(projectcss.all, sty.icon)}
             role={"img"}
           />
-        </p.Stack>
+        </Stack__>
         <div
           data-plasmic-name={"labelsContainer10"}
           data-plasmic-override={overrides.labelsContainer10}
@@ -207,7 +232,7 @@ function PlasmicConflict__RenderFunc(props: {
               ),
             })}
           >
-            {p.renderPlasmicSlot({
+            {renderPlasmicSlot({
               defaultContents: (
                 <div
                   className={classNames(
@@ -241,7 +266,7 @@ function PlasmicConflict__RenderFunc(props: {
               })}
             >
               {(hasVariant($state, "hasSubtext", "hasSubtext") ? true : false)
-                ? p.renderPlasmicSlot({
+                ? renderPlasmicSlot({
                     defaultContents: "Some changes were auto merged",
                     value: args.subtext,
                     className: classNames(sty.slotTargetSubtext, {
@@ -269,14 +294,14 @@ function PlasmicConflict__RenderFunc(props: {
           ) : null}
         </div>
         {false ? (
-          <p.Stack
+          <Stack__
             as={"div"}
             data-plasmic-name={"endIconsContainer10"}
             data-plasmic-override={overrides.endIconsContainer10}
             hasGap={true}
             className={classNames(projectcss.all, sty.endIconsContainer10)}
           >
-            <p.PlasmicImg
+            <PlasmicImg__
               alt={""}
               className={classNames(sty.img__nwEkP)}
               displayHeight={"20px"}
@@ -293,9 +318,9 @@ function PlasmicConflict__RenderFunc(props: {
                 aspectRatio: 1,
               }}
             />
-          </p.Stack>
+          </Stack__>
         ) : null}
-      </p.Stack>
+      </Stack__>
       <ToggleButtonSwitch
         data-plasmic-name={"_switch"}
         data-plasmic-override={overrides._switch}
@@ -310,7 +335,7 @@ function PlasmicConflict__RenderFunc(props: {
       />
 
       {(hasVariant($state, "merged", "merged") ? true : false) ? (
-        <p.Stack
+        <Stack__
           as={"button"}
           data-plasmic-name={"right"}
           data-plasmic-override={overrides.right}
@@ -323,7 +348,7 @@ function PlasmicConflict__RenderFunc(props: {
           }}
         >
           {false ? (
-            <p.Stack
+            <Stack__
               as={"div"}
               data-plasmic-name={"startIconsContainer12"}
               data-plasmic-override={overrides.startIconsContainer12}
@@ -334,7 +359,7 @@ function PlasmicConflict__RenderFunc(props: {
                 className={classNames(projectcss.all, sty.svg___08H1Q)}
                 role={"img"}
               />
-            </p.Stack>
+            </Stack__>
           ) : null}
           <div
             data-plasmic-name={"labelsContainer12"}
@@ -388,14 +413,14 @@ function PlasmicConflict__RenderFunc(props: {
             ) : null}
           </div>
           {false ? (
-            <p.Stack
+            <Stack__
               as={"div"}
               data-plasmic-name={"endIconsContainer12"}
               data-plasmic-override={overrides.endIconsContainer12}
               hasGap={true}
               className={classNames(projectcss.all, sty.endIconsContainer12)}
             >
-              <p.PlasmicImg
+              <PlasmicImg__
                 alt={""}
                 className={classNames(sty.img__jFqLq)}
                 displayHeight={"20px"}
@@ -412,11 +437,11 @@ function PlasmicConflict__RenderFunc(props: {
                   aspectRatio: 1,
                 }}
               />
-            </p.Stack>
+            </Stack__>
           ) : null}
-        </p.Stack>
+        </Stack__>
       ) : null}
-    </p.Stack>
+    </Stack__>
   ) as React.ReactElement | null;
 }
 
@@ -546,7 +571,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       () =>
         deriveRenderOpts(props, {
           name: nodeName,
-          descendantNames: [...PlasmicDescendants[nodeName]],
+          descendantNames: PlasmicDescendants[nodeName],
           internalArgPropNames: PlasmicConflict__ArgProps,
           internalVariantPropNames: PlasmicConflict__VariantProps,
         }),
