@@ -1,5 +1,5 @@
 {
-  "root": "ecFKeMw7iR82",
+  "root": "1HqJtO7dv9PU",
   "map": {
     "1": {
       "components": [
@@ -261,9 +261,9 @@
         { "__ref": "14592108" }
       ],
       "layout": null,
+      "addItemPrefs": {},
       "active": true,
-      "__type": "Theme",
-      "addItemPrefs": {}
+      "__type": "Theme"
     },
     "48": {
       "name": "Default Typography",
@@ -3826,8 +3826,8 @@
       "viewMode": "stretch",
       "bgColor": null,
       "name": "",
-      "top": 71,
-      "left": 313,
+      "top": 179,
+      "left": 0,
       "__type": "ArenaFrame"
     },
     "976": {
@@ -11897,8 +11897,8 @@
       "viewMode": "stretch",
       "bgColor": null,
       "name": "",
-      "top": -108,
-      "left": 2222,
+      "top": 0,
+      "left": 1909,
       "__type": "ArenaFrame"
     },
     "460003": {
@@ -17586,8 +17586,8 @@
       "viewMode": "centered",
       "bgColor": null,
       "name": "",
-      "top": 1260,
-      "left": 1546,
+      "top": 1368,
+      "left": 1233,
       "__type": "ArenaFrame"
     },
     "20123947": {
@@ -20265,7 +20265,7 @@
       "isMainContentSlot": false,
       "required": false,
       "mergeWithParent": false,
-      "isLocalizable": false,
+      "isLocalizable": true,
       "__type": "PropParam"
     },
     "26480349": {
@@ -30627,8 +30627,8 @@
       "viewMode": "centered",
       "bgColor": null,
       "name": "",
-      "top": 1039,
-      "left": 1926,
+      "top": 1147,
+      "left": 1613,
       "__type": "ArenaFrame"
     },
     "52167002": {
@@ -30667,8 +30667,8 @@
       "viewMode": "centered",
       "bgColor": null,
       "name": "",
-      "top": 1001,
-      "left": 2306,
+      "top": 1109,
+      "left": 1993,
       "__type": "ArenaFrame"
     },
     "52167007": {
@@ -30706,8 +30706,8 @@
       "viewMode": "centered",
       "bgColor": null,
       "name": "",
-      "top": 1381,
-      "left": 2346,
+      "top": 1489,
+      "left": 2033,
       "__type": "ArenaFrame"
     },
     "52167011": {
@@ -42228,11 +42228,11 @@
     "0HsoVFS9gioz": { "markers": [], "text": "Select…", "__type": "RawText" },
     "UxCeN-7yBplK": { "values": {}, "mixins": [], "__type": "RuleSet" },
     "boIhHFIaZ6r3": { "markers": [], "text": "Select…", "__type": "RawText" },
-    "ecFKeMw7iR82": {
-      "uuid": "8NDroO-SpaCS",
+    "1HqJtO7dv9PU": {
+      "uuid": "ZT__1IVCWN2N",
       "pkgId": "079b163a-f92e-426a-8f13-a652a12fcf89",
       "projectId": "tH77ekFNugan8Yv3d3xJez",
-      "version": "19.4.1",
+      "version": "19.4.2",
       "name": "[Plume] MAIN",
       "site": { "__ref": "1" },
       "__type": "ProjectDependency"

@@ -17,7 +17,7 @@ import yargs from "yargs";
 // constant is updated to point to them. This makes it possible to
 // update Plume project, publish a new version, save the json to
 // git, and run tests against it in cypress before it is live in prod.
-export const REAL_PLUME_VERSION = "19.4.1";
+export const REAL_PLUME_VERSION = "19.4.2";
 
 export class PlumePkgMgr {
   constructor(private db: DbMgr) {}
