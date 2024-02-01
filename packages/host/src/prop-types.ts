@@ -415,6 +415,12 @@ export interface RichSlotType<P> {
    */
   allowedComponents?: string[];
   /**
+   * Wheter Plasmic Components with a root component included in the
+   * "allowedComponents" list are valid or not.
+   * Only used if the "allowedComponents" list is set.
+   */
+  allowRootWrapper?: boolean;
+  /**
    * Whether the "empty slot" placeholder should be hidden in the canvas.
    */
   hidePlaceholder?: boolean;
