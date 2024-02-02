@@ -49,7 +49,7 @@ import { Type as ModelType } from "@/wab/model/model-meta";
 import { StudioPropType } from "@/wab/shared/code-components/code-components";
 import { jsLiteral } from "@/wab/shared/codegen/util";
 import { StateVariableType } from "@/wab/states";
-import { isTplComponent, isTplTextBlock } from "@/wab/tpls";
+import { isTplComponent, isTplFromComponent, isTplTextBlock } from "@/wab/tpls";
 import L, {
   isArray,
   isBoolean,
@@ -74,10 +74,19 @@ export const typeFactory = {
       type,
       displayName: displayName ?? null,
     }),
-  renderable: (...params: (ComponentInstance | PlumeInstance)[]) =>
-    new RenderableType({ name: "renderable", params }),
-  renderFunc: (opts: { params: ArgType[]; allowed: ComponentInstance[] }) =>
-    new RenderFuncType({ name: "renderFunc", ...opts }),
+  renderable: (opts?: {
+    params: (ComponentInstance | PlumeInstance)[];
+    allowRootWrapper: boolean | undefined | null;
+  }) =>
+    new RenderableType({
+      name: "renderable",
+      ...(opts ? opts : { params: [], allowRootWrapper: undefined }),
+    }),
+  renderFunc: (opts: {
+    params: ArgType[];
+    allowed: ComponentInstance[];
+    allowRootWrapper: boolean | undefined | null;
+  }) => new RenderFuncType({ name: "renderFunc", ...opts }),
   href: () => new HrefType({ name: "href" }),
   target: () => new TargetType({ name: "target" }),
   choice: (
@@ -379,7 +388,11 @@ export function conformsToType(
   }
 }
 
-export function nodeConformsToType(node: TplNode, type: Type) {
+export function nodeConformsToType(
+  node: TplNode,
+  type: Type,
+  opts?: { allowRootWrapper?: boolean }
+) {
   if (isAnyType(type)) {
     return true;
   } else if (isTextType(type)) {
@@ -389,19 +402,36 @@ export function nodeConformsToType(node: TplNode, type: Type) {
       // No constraint
       return true;
     } else {
-      return type.params.some((t) => nodeConformsToType(node, t));
+      return type.params.some((t) =>
+        nodeConformsToType(node, t, {
+          allowRootWrapper: type.allowRootWrapper ?? undefined,
+        })
+      );
     }
   } else if (isRenderFuncType(type)) {
     if (type.allowed.length === 0) {
       return true;
     } else {
-      return type.allowed.some((t) => nodeConformsToType(node, t));
+      return type.allowed.some((t) =>
+        nodeConformsToType(node, t, {
+          allowRootWrapper: type.allowRootWrapper ?? undefined,
+        })
+      );
     }
   } else if (isKnownComponentInstance(type)) {
-    return isTplComponent(node) && node.component === type.component;
+    return (
+      isTplFromComponent(node, type.component) ||
+      (opts?.allowRootWrapper &&
+        isTplComponent(node) &&
+        isTplFromComponent(node.component.tplTree, type.component))
+    );
   } else if (isKnownPlumeInstance(type)) {
     return (
-      isTplComponent(node) && node.component.plumeInfo?.type === type.plumeType
+      isTplComponent(node) &&
+      (node.component.plumeInfo?.type === type.plumeType ||
+        (opts?.allowRootWrapper &&
+          isTplComponent(node.component.tplTree) &&
+          node.component.tplTree.component.plumeInfo?.type === type.plumeType))
     );
   } else {
     return false;

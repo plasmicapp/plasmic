@@ -871,7 +871,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "gDig8cIM4xsM" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "kA6vOLVW_QZX": {
             "name": "children",
@@ -951,7 +952,7 @@
           }
         },
         "deps": [],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       },
       "projectId": "jktPeioPm3Q1RvAsGWDSCe",
       "version": "0.0.1",
@@ -1841,7 +1842,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "gDig8cIM4xsM" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "kA6vOLVW_QZX": {
             "name": "children",
@@ -2078,7 +2080,8 @@
           "o_bOdd2m7buc": {
             "__type": "RenderableType",
             "name": "renderable",
-            "params": []
+            "params": [],
+            "allowRootWrapper": null
           },
           "OQs3AvBYMXSH": {
             "__type": "Var",
@@ -2135,7 +2138,7 @@
           }
         },
         "deps": [],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       }
     },
     {
@@ -3009,7 +3012,8 @@
             "__type": "RenderFuncType",
             "name": "renderFunc",
             "params": [{ "__ref": "gDig8cIM4xsM" }],
-            "allowed": []
+            "allowed": [],
+            "allowRootWrapper": null
           },
           "kA6vOLVW_QZX": {
             "__type": "Var",
@@ -3246,7 +3250,8 @@
           "eFKf410EvDek": {
             "__type": "RenderableType",
             "name": "renderable",
-            "params": []
+            "params": [],
+            "allowRootWrapper": null
           },
           "c6MGmY6x1uxG": {
             "__type": "Var",
@@ -3303,7 +3308,7 @@
           }
         },
         "deps": [],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       }
     }
   ]

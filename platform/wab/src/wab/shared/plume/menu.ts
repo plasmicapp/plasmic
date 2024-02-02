@@ -1,24 +1,28 @@
-import type { MenuRef } from "@plasmicapp/react-web";
-import { omit, pick } from "lodash";
-import type React from "react";
-import { Component, Param } from "../../classes";
-import { assert, ensure, withoutNils } from "../../common";
-import { internalCanvasElementProps } from "../../shared/canvas-constants";
+import { Component, Param } from "@/wab/classes";
+import { assert, ensure, withoutNils } from "@/wab/common";
+import { internalCanvasElementProps } from "@/wab/shared/canvas-constants";
 import {
   getExternalParams,
   getPlumePackageName,
   serializeParamType,
   SerializerBaseContext,
-} from "../codegen/react-p";
+} from "@/wab/shared/codegen/react-p";
 import {
   getExportedComponentName,
   getImportedComponentName,
   makeDefaultExternalPropsName,
   makePlasmicComponentName,
-} from "../codegen/react-p/utils";
-import { jsLiteral, paramToVarName, toVarName } from "../codegen/util";
-import { typeFactory } from "../core/model-util";
-import { getTplSlotByName } from "../SlotUtils";
+} from "@/wab/shared/codegen/react-p/utils";
+import {
+  jsLiteral,
+  paramToVarName,
+  toVarName,
+} from "@/wab/shared/codegen/util";
+import { typeFactory } from "@/wab/shared/core/model-util";
+import { getTplSlotByName } from "@/wab/shared/SlotUtils";
+import type { MenuRef } from "@plasmicapp/react-web";
+import { omit, pick } from "lodash";
+import type React from "react";
 import { PlumePlugin } from "./plume-registry";
 import {
   createDefaultSlotContentsStub,
@@ -209,12 +213,13 @@ export const MenuPlugin: PlumePlugin = {
       const group = component.subComps.find(
         (c) => c.plumeInfo?.type === "menu-group"
       );
-      return typeFactory.renderable(
-        ...withoutNils([
+      return typeFactory.renderable({
+        params: withoutNils([
           item ? typeFactory.instance(item) : undefined,
           group ? typeFactory.instance(group) : undefined,
-        ])
-      );
+        ]),
+        allowRootWrapper: undefined,
+      });
     }
 
     return undefined;

@@ -1997,7 +1997,8 @@
           "name": "renderFunc",
           "params": [{ "__ref": "OR5ye9_9daOX" }],
           "allowed": [],
-          "__type": "RenderFuncType"
+          "__type": "RenderFuncType",
+          "allowRootWrapper": null
         },
         "HS2722oq16cA": {
           "name": "children",
@@ -2147,7 +2148,8 @@
         "91Rl2hlXFvsp": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "aDIj5niPR2FU": {
           "name": "children",
@@ -2169,7 +2171,8 @@
         "Afe4RlOHyyda": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "wRphmjtG0DZi": {
           "name": "start icon",
@@ -2179,7 +2182,8 @@
         "q6gEws74zvgJ": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "OB0NGo0lYLCq": {
           "name": "end icon",
@@ -9385,7 +9389,7 @@
         }
       },
       "deps": [],
-      "version": "227-add-ids-templateInfo"
+      "version": "228-add-allow-root-wrapper"
     }
   ]
 ]

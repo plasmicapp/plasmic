@@ -227,7 +227,8 @@
         "mkPuLBmkSzA_": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "IoyrDjd1uy6G": {
           "name": "children",
@@ -395,12 +396,14 @@
         "x7AWeHNw-OCC": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "_sSYAK9fPfkg": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "w-gEkHNsVIEo": {
           "name": "plasmic-link-preview",
@@ -422,7 +425,7 @@
         }
       },
       "deps": [],
-      "version": "227-add-ids-templateInfo"
+      "version": "228-add-allow-root-wrapper"
     }
   ],
   [
@@ -1308,7 +1311,8 @@
           "name": "renderFunc",
           "params": [{ "__ref": "0ATjxP71o2C5" }],
           "allowed": [],
-          "__type": "RenderFuncType"
+          "__type": "RenderFuncType",
+          "allowRootWrapper": null
         },
         "GOs5CnOp4NA8": {
           "name": "children",
@@ -2091,7 +2095,7 @@
         }
       },
       "deps": ["1f6fbbaf-82a8-43b5-abd3-ead1dee4ab4c"],
-      "version": "227-add-ids-templateInfo"
+      "version": "228-add-allow-root-wrapper"
     }
   ]
 ]

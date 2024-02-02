@@ -1,18 +1,22 @@
-import { omit, pick } from "lodash";
-import { Component, Param, TplComponent } from "../../classes";
-import { internalCanvasElementProps } from "../canvas-constants";
+import { Component, Param, TplComponent } from "@/wab/classes";
+import { internalCanvasElementProps } from "@/wab/shared/canvas-constants";
 import {
   getExternalParams,
   serializeParamType,
   SerializerBaseContext,
-} from "../codegen/react-p";
+} from "@/wab/shared/codegen/react-p";
 import {
   getExportedComponentName,
   makeDefaultExternalPropsName,
   makePlasmicComponentName,
-} from "../codegen/react-p/utils";
-import { jsLiteral, paramToVarName, toVarName } from "../codegen/util";
-import { typeFactory } from "../core/model-util";
+} from "@/wab/shared/codegen/react-p/utils";
+import {
+  jsLiteral,
+  paramToVarName,
+  toVarName,
+} from "@/wab/shared/codegen/util";
+import { typeFactory } from "@/wab/shared/core/model-util";
+import { omit, pick } from "lodash";
 import { PlumePlugin } from "./plume-registry";
 import { makeComponentImportPath } from "./plume-utils";
 
@@ -150,7 +154,10 @@ export const SelectOptionGroupPlugin: PlumePlugin = {
         (c) => c.plumeInfo?.type === "select-option"
       );
       if (option) {
-        return typeFactory.renderable(typeFactory.instance(option));
+        return typeFactory.renderable({
+          params: [typeFactory.instance(option)],
+          allowRootWrapper: undefined,
+        });
       }
     }
     return undefined;

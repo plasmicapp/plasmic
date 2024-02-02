@@ -474,7 +474,8 @@
         "13821008": {
           "name": "renderable",
           "params": [{ "__ref": "13821009" }],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "13821009": {
           "name": "instance",
@@ -596,7 +597,8 @@
         "13821021": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "13821022": {
           "tag": "div",
@@ -1544,7 +1546,8 @@
         "14719056": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "14719057": {
           "name": "overlay",
@@ -1712,12 +1715,14 @@
         "14719179": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "14719180": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "14719185": {
           "name": "choice",
@@ -7215,7 +7220,8 @@
         "19675455": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "19675456": {
           "name": "forceSubMenuRender",
@@ -7249,7 +7255,8 @@
         "19675467": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "19675468": {
           "name": "selectable",
@@ -7398,7 +7405,8 @@
         "19675501": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "19675502": {
           "name": "addonBefore",
@@ -7408,7 +7416,8 @@
         "19675503": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "19675504": {
           "name": "allowClear",
@@ -7450,7 +7459,8 @@
         "19675517": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "19675518": { "name": "size", "uuid": "rX_zDytmGXWX", "__type": "Var" },
         "19675519": {
@@ -7466,7 +7476,8 @@
         "19675521": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "19675522": { "name": "type", "uuid": "7IIHPPSjxPUG", "__type": "Var" },
         "19675523": { "name": "text", "__type": "Text" },
@@ -7590,7 +7601,8 @@
         "19675553": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "19675554": {
           "name": "allowClear",
@@ -7618,7 +7630,8 @@
         "19675561": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "19675562": { "name": "id", "uuid": "irDpgfRABv2n", "__type": "Var" },
         "19675563": { "name": "text", "__type": "Text" },
@@ -7648,7 +7661,8 @@
         "19675571": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "19675572": { "name": "size", "uuid": "IkbIMb4SuwuO", "__type": "Var" },
         "19675573": {
@@ -7664,7 +7678,8 @@
         "19675575": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "19675576": { "name": "type", "uuid": "oDXCscZxxNRw", "__type": "Var" },
         "19675577": { "name": "text", "__type": "Text" },
@@ -7728,7 +7743,8 @@
         "19675587": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "19675588": {
           "name": "addonBefore",
@@ -7738,7 +7754,8 @@
         "19675589": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "19675590": {
           "name": "allowClear",
@@ -7780,7 +7797,8 @@
         "19675603": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "19675604": { "name": "size", "uuid": "PjzdRTea0dRI", "__type": "Var" },
         "19675605": {
@@ -8592,7 +8610,8 @@
         "19962025": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "19962026": {
           "tag": "div",
@@ -9013,7 +9032,8 @@
         "26017024": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "26017025": {
           "variants": [{ "__ref": "19675097" }],
@@ -9034,7 +9054,8 @@
         "26017027": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "26017028": {
           "name": "closeIcon",
@@ -9044,7 +9065,8 @@
         "26017029": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "26017030": {
           "variants": [{ "__ref": "19675107" }],
@@ -9845,7 +9867,8 @@
         "43229067": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "43229068": {
           "name": "children",
@@ -9904,7 +9927,8 @@
         "43229078": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "43229079": {
           "name": "animated",
@@ -9926,7 +9950,8 @@
         "43229084": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "43229085": { "name": "size", "uuid": "jqQUPH8c17A", "__type": "Var" },
         "43229086": {
@@ -9964,7 +9989,8 @@
         "43229094": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "43229095": {
           "name": "rightTabBarExtraContent",
@@ -9974,7 +10000,8 @@
         "43229096": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "43229097": {
           "name": "tabBarStyle",
@@ -10152,7 +10179,8 @@
         "48810001": {
           "name": "renderable",
           "params": [{ "__ref": "48810002" }],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "48810002": {
           "name": "instance",
@@ -10162,72 +10190,86 @@
         "52743001": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "52743002": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "52743004": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "52743006": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "52743007": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "52743009": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "52743011": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "52743012": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "52743014": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "52743017": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "52743020": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "52743022": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "52743023": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "52743024": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "53322001": {
           "components": [
@@ -10316,12 +10358,14 @@
         "61025001": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "61025019": {
           "name": "renderable",
           "params": [{ "__ref": "61025020" }],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "61025020": {
           "name": "instance",
@@ -10331,7 +10375,8 @@
         "61025026": {
           "name": "renderable",
           "params": [{ "__ref": "61025027" }],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "61025027": {
           "name": "instance",
@@ -10341,7 +10386,8 @@
         "61025035": {
           "name": "renderable",
           "params": [{ "__ref": "61025036" }],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "61025036": {
           "name": "instance",
@@ -10355,7 +10401,8 @@
             { "__ref": "61025045" },
             { "__ref": "61025046" }
           ],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "61025044": {
           "name": "instance",
@@ -10380,7 +10427,8 @@
             { "__ref": "61025050" },
             { "__ref": "61025060" }
           ],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "61025048": {
           "name": "instance",
@@ -10404,7 +10452,8 @@
             { "__ref": "61025053" },
             { "__ref": "61025054" }
           ],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "61025052": {
           "name": "instance",
@@ -10429,12 +10478,14 @@
         "61025105": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "61025116": {
           "name": "renderable",
           "params": [{ "__ref": "61025117" }],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "61025117": {
           "name": "instance",
@@ -10444,7 +10495,8 @@
         "61025123": {
           "name": "renderable",
           "params": [{ "__ref": "61025124" }],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "61025124": {
           "name": "instance",
@@ -11085,7 +11137,7 @@
         }
       },
       "deps": [],
-      "version": "227-add-ids-templateInfo"
+      "version": "228-add-allow-root-wrapper"
     }
   ],
   [
@@ -11096,7 +11148,8 @@
         "2484901": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "2484902": { "name": "bool", "__type": "BoolType" },
         "3305301": {
@@ -15908,7 +15961,8 @@
           "name": "renderFunc",
           "params": [{ "__ref": "43396040" }],
           "allowed": [],
-          "__type": "RenderFuncType"
+          "__type": "RenderFuncType",
+          "allowRootWrapper": null
         },
         "43396033": {
           "name": "pageSize",
@@ -17485,7 +17539,7 @@
         }
       },
       "deps": ["39835060-ce5b-4983-baf1-aad50207dbde"],
-      "version": "227-add-ids-templateInfo"
+      "version": "228-add-allow-root-wrapper"
     }
   ]
 ]

@@ -721,7 +721,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "aA60ZqW9wiOR" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "3dqxWrMGaFXF": {
             "name": "children",
@@ -1016,7 +1017,7 @@
           }
         },
         "deps": [],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       },
       "projectId": "aH1hFXMTo8YybdGp5ScZNk",
       "version": "0.0.1",
@@ -1755,7 +1756,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "aA60ZqW9wiOR" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "3dqxWrMGaFXF": {
             "name": "children",
@@ -2037,7 +2039,7 @@
           }
         },
         "deps": [],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       }
     },
     {
@@ -2760,7 +2762,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "aA60ZqW9wiOR" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "3dqxWrMGaFXF": {
             "name": "children",
@@ -3046,7 +3049,7 @@
           }
         },
         "deps": [],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       }
     }
   ]

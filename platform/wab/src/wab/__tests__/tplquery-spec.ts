@@ -4,25 +4,25 @@ import {
   ensureKnownTplTag,
   isKnownRenderExpr,
   RenderExpr,
-} from "../classes";
-import { ensure, tuple } from "../common";
-import * as Components from "../components";
-import { ComponentType, mkComponent } from "../components";
-import { mkParam, ParamExportType } from "../lang";
-import { withoutUids } from "../model/model-meta";
-import { typeFactory } from "../shared/core/model-util";
-import { TplMgr } from "../shared/TplMgr";
-import { $$$ } from "../shared/TplQuery";
-import { getBaseVariant } from "../shared/Variants";
-import { createSite } from "../sites";
-import { mkTplTestText, TEST_GLOBAL_VARIANT } from "../test/tpls";
-import * as tpls from "../tpls";
+} from "@/wab/classes";
+import { ensure, tuple } from "@/wab/common";
+import * as Components from "@/wab/components";
+import { ComponentType, mkComponent } from "@/wab/components";
+import { mkParam, ParamExportType } from "@/wab/lang";
+import { withoutUids } from "@/wab/model/model-meta";
+import { typeFactory } from "@/wab/shared/core/model-util";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import { $$$ } from "@/wab/shared/TplQuery";
+import { getBaseVariant } from "@/wab/shared/Variants";
+import { createSite } from "@/wab/sites";
+import { mkTplTestText, TEST_GLOBAL_VARIANT } from "@/wab/test/tpls";
+import * as tpls from "@/wab/tpls";
 import {
   checkTplIntegrity,
   mkTplComponentX,
   mkTplTagSimple,
   mkTplTagX,
-} from "../tpls";
+} from "@/wab/tpls";
 
 describe("TplQuery", function () {
   let allWrapped,

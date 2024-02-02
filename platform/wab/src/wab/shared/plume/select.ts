@@ -449,12 +449,13 @@ export const SelectPlugin: PlumePlugin = {
       const group = component.subComps.find(
         (c) => c.plumeInfo?.type === "select-option-group"
       );
-      return typeFactory.renderable(
-        ...withoutNils([
+      return typeFactory.renderable({
+        params: withoutNils([
           option ? typeFactory.instance(option) : undefined,
           group ? typeFactory.instance(group) : undefined,
-        ])
-      );
+        ]),
+        allowRootWrapper: undefined,
+      });
     }
 
     return undefined;

@@ -37,6 +37,7 @@ Type
   RenderableType
     @Const name: 'renderable'
     params: [PlumeInstance | ComponentInstance]
+    allowRootWrapper: Bool?
   HrefType
     @Const name: 'href'
   TargetType
@@ -45,6 +46,7 @@ Type
     @Const name: 'renderFunc'
     params: [ArgType]
     allowed: [ComponentInstance]
+    allowRootWrapper: Bool?
   QueryData
     @Const name: 'queryData'
   DateString

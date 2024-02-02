@@ -1,27 +1,31 @@
-import type { BaseMenuButtonProps, MenuButtonRef } from "@plasmicapp/react-web";
-import { omit, pick } from "lodash";
-import type React from "react";
-import { Component, Param, Site, TplComponent } from "../../classes";
-import { assert, ensure } from "../../common";
-import { getParamByVarName } from "../../components";
-import { internalCanvasElementProps } from "../../shared/canvas-constants";
-import { fixParentPointers, mkTplComponent } from "../../tpls";
+import { Component, Param, Site, TplComponent } from "@/wab/classes";
+import { assert, ensure } from "@/wab/common";
+import { getParamByVarName } from "@/wab/components";
+import { internalCanvasElementProps } from "@/wab/shared/canvas-constants";
 import {
   getExternalParams,
   getPlumePackageName,
   serializeParamType,
   SerializerBaseContext,
-} from "../codegen/react-p";
+} from "@/wab/shared/codegen/react-p";
 import {
   getExportedComponentName,
   makeDefaultExternalPropsName,
   makePlasmicComponentName,
-} from "../codegen/react-p/utils";
-import { jsLiteral, paramToVarName, toVarName } from "../codegen/util";
-import { typeFactory } from "../core/model-util";
-import { getTplSlotByName, getTplSlotForParam } from "../SlotUtils";
-import { ensureBaseVariant, TplMgr } from "../TplMgr";
-import { ensureBaseVariantSetting } from "../VariantTplMgr";
+} from "@/wab/shared/codegen/react-p/utils";
+import {
+  jsLiteral,
+  paramToVarName,
+  toVarName,
+} from "@/wab/shared/codegen/util";
+import { typeFactory } from "@/wab/shared/core/model-util";
+import { getTplSlotByName, getTplSlotForParam } from "@/wab/shared/SlotUtils";
+import { ensureBaseVariant, TplMgr } from "@/wab/shared/TplMgr";
+import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
+import { fixParentPointers, mkTplComponent } from "@/wab/tpls";
+import type { BaseMenuButtonProps, MenuButtonRef } from "@plasmicapp/react-web";
+import { omit, pick } from "lodash";
+import type React from "react";
 import { PlumePlugin } from "./plume-registry";
 import {
   createDefaultSlotContentsStub,
@@ -181,7 +185,10 @@ export const MenuButtonPlugin: PlumePlugin = {
 
   getSlotType(component: Component, param: Param) {
     if (param.variable.name === "menu") {
-      return typeFactory.renderable(typeFactory.plumeInstance("menu"));
+      return typeFactory.renderable({
+        params: [typeFactory.plumeInstance("menu")],
+        allowRootWrapper: undefined,
+      });
     }
     return undefined;
   },

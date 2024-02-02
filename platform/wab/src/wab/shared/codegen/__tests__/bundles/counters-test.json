@@ -415,7 +415,8 @@
           "name": "renderFunc",
           "params": [{ "__ref": "14363040" }],
           "allowed": [],
-          "__type": "RenderFuncType"
+          "__type": "RenderFuncType",
+          "allowRootWrapper": null
         },
         "14363033": {
           "name": "pageSize",
@@ -1299,7 +1300,8 @@
         "14363125": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "14363126": {
           "name": "Show Start Icon",
@@ -1321,7 +1323,8 @@
         "14363131": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "14363132": {
           "name": "end icon",
@@ -1331,7 +1334,8 @@
         "14363133": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "14363134": {
           "name": "Is Disabled",
@@ -6807,7 +6811,8 @@
         "14364017": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "14364018": {
           "variants": [{ "__ref": "14363052" }],
@@ -9472,7 +9477,7 @@
         }
       },
       "deps": [],
-      "version": "227-add-ids-templateInfo"
+      "version": "228-add-allow-root-wrapper"
     }
   ]
 ]

@@ -62,6 +62,8 @@ const paths = [
   "src/wab/shared/site-diffs/__tests__/test-merging-deps.json",
   "src/wab/shared/site-diffs/__tests__/test-edge-cases-merge.json",
   "src/wab/shared/site-diffs/__tests__/test-edge-cases-merge-2.json",
+  "src/wab/shared/site-diffs/__tests__/global-context-merge.json",
+  "src/wab/shared/site-diffs/__tests__/style-tokens-conflict.json",
 ];
 
 async function migrate() {

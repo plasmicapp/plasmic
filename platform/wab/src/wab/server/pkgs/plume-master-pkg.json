@@ -4087,12 +4087,37 @@
     "1030": { "markers": [], "text": "Option 1", "__type": "RawText" },
     "1031": { "values": {}, "mixins": [], "__type": "RuleSet" },
     "1032": { "markers": [], "text": "Option 2", "__type": "RawText" },
-    "1037": { "name": "renderable", "params": [], "__type": "RenderableType" },
-    "1038": { "name": "renderable", "params": [], "__type": "RenderableType" },
-    "1041": { "name": "renderable", "params": [], "__type": "RenderableType" },
+    "1037": {
+      "name": "renderable",
+      "params": [],
+      "__type": "RenderableType",
+      "allowRootWrapper": null
+    },
+    "1038": {
+      "name": "renderable",
+      "params": [],
+      "__type": "RenderableType",
+      "allowRootWrapper": null
+    },
+    "1041": {
+      "name": "renderable",
+      "params": [],
+      "__type": "RenderableType",
+      "allowRootWrapper": null
+    },
     "1048": { "name": "text", "__type": "Text" },
-    "1050": { "name": "renderable", "params": [], "__type": "RenderableType" },
-    "1051": { "name": "renderable", "params": [], "__type": "RenderableType" },
+    "1050": {
+      "name": "renderable",
+      "params": [],
+      "__type": "RenderableType",
+      "allowRootWrapper": null
+    },
+    "1051": {
+      "name": "renderable",
+      "params": [],
+      "__type": "RenderableType",
+      "allowRootWrapper": null
+    },
     "1059": { "name": "text", "__type": "Text" },
     "1060": {
       "variants": [{ "__ref": "687" }],
@@ -4585,7 +4610,12 @@
       "__type": "TplSlot"
     },
     "1173": { "name": "children", "uuid": "cnSpehsJ6", "__type": "Var" },
-    "1174": { "name": "renderable", "params": [], "__type": "RenderableType" },
+    "1174": {
+      "name": "renderable",
+      "params": [],
+      "__type": "RenderableType",
+      "allowRootWrapper": null
+    },
     "1175": {
       "variants": [{ "__ref": "1065" }],
       "args": [],
@@ -4879,7 +4909,12 @@
       "__type": "Arg"
     },
     "1226": { "name": "children", "uuid": "Fgo4HQsN7", "__type": "Var" },
-    "1227": { "name": "renderable", "params": [], "__type": "RenderableType" },
+    "1227": {
+      "name": "renderable",
+      "params": [],
+      "__type": "RenderableType",
+      "allowRootWrapper": null
+    },
     "1228": {
       "tag": "div",
       "name": null,
@@ -5078,7 +5113,12 @@
       "__type": "TplSlot"
     },
     "1266": { "name": "children", "uuid": "xdbFcBhuv", "__type": "Var" },
-    "1267": { "name": "renderable", "params": [], "__type": "RenderableType" },
+    "1267": {
+      "name": "renderable",
+      "params": [],
+      "__type": "RenderableType",
+      "allowRootWrapper": null
+    },
     "1268": {
       "variants": [{ "__ref": "1107" }],
       "args": [],
@@ -5122,7 +5162,12 @@
       "__type": "TplSlot"
     },
     "1278": { "name": "title", "uuid": "qtliIb2HI", "__type": "Var" },
-    "1279": { "name": "renderable", "params": [], "__type": "RenderableType" },
+    "1279": {
+      "name": "renderable",
+      "params": [],
+      "__type": "RenderableType",
+      "allowRootWrapper": null
+    },
     "1280": {
       "tag": "div",
       "name": null,
@@ -5779,7 +5824,12 @@
       "__type": "TplSlot"
     },
     "1409": { "name": "children", "uuid": "dr3iU-vcv", "__type": "Var" },
-    "1410": { "name": "renderable", "params": [], "__type": "RenderableType" },
+    "1410": {
+      "name": "renderable",
+      "params": [],
+      "__type": "RenderableType",
+      "allowRootWrapper": null
+    },
     "1411": {
       "tag": "div",
       "name": null,
@@ -5856,7 +5906,12 @@
       "__type": "TplSlot"
     },
     "1421": { "name": "menu", "uuid": "5b87CcXn_", "__type": "Var" },
-    "1422": { "name": "renderable", "params": [], "__type": "RenderableType" },
+    "1422": {
+      "name": "renderable",
+      "params": [],
+      "__type": "RenderableType",
+      "allowRootWrapper": null
+    },
     "1423": {
       "variants": [{ "__ref": "1354" }],
       "args": [],
@@ -6584,7 +6639,12 @@
       "__type": "TplSlot"
     },
     "1640": { "name": "children", "uuid": "kvPKWfra7", "__type": "Var" },
-    "1641": { "name": "renderable", "params": [], "__type": "RenderableType" },
+    "1641": {
+      "name": "renderable",
+      "params": [],
+      "__type": "RenderableType",
+      "allowRootWrapper": null
+    },
     "1642": {
       "variants": [{ "__ref": "1566" }],
       "args": [],
@@ -7114,7 +7174,12 @@
     },
     "1847": { "rows": [{ "__ref": "1863" }], "__type": "ArenaFrameGrid" },
     "1848": { "name": "children", "uuid": "WpsK4Rr3CL", "__type": "Var" },
-    "1849": { "name": "renderable", "params": [], "__type": "RenderableType" },
+    "1849": {
+      "name": "renderable",
+      "params": [],
+      "__type": "RenderableType",
+      "allowRootWrapper": null
+    },
     "1850": {
       "name": "Relative placement",
       "uuid": "0F6WtAkVqS",
@@ -7908,7 +7973,12 @@
     },
     "1983": { "rows": [{ "__ref": "1999" }], "__type": "ArenaFrameGrid" },
     "1984": { "name": "children", "uuid": "MPh5I1GpUz", "__type": "Var" },
-    "1985": { "name": "renderable", "params": [], "__type": "RenderableType" },
+    "1985": {
+      "name": "renderable",
+      "params": [],
+      "__type": "RenderableType",
+      "allowRootWrapper": null
+    },
     "1986": {
       "name": "Relative placement",
       "uuid": "9vLXNbMBVI",
@@ -12680,25 +12750,29 @@
     "1115713": {
       "name": "renderable",
       "params": [],
-      "__type": "RenderableType"
+      "__type": "RenderableType",
+      "allowRootWrapper": null
     },
     "1115714": { "name": "text", "__type": "Text" },
     "1115715": {
       "name": "renderable",
       "params": [],
-      "__type": "RenderableType"
+      "__type": "RenderableType",
+      "allowRootWrapper": null
     },
     "1115716": { "name": "bool", "__type": "BoolType" },
     "1115717": {
       "name": "renderable",
       "params": [],
-      "__type": "RenderableType"
+      "__type": "RenderableType",
+      "allowRootWrapper": null
     },
     "1115718": { "name": "bool", "__type": "BoolType" },
     "1115719": {
       "name": "renderable",
       "params": [],
-      "__type": "RenderableType"
+      "__type": "RenderableType",
+      "allowRootWrapper": null
     },
     "1115720": { "name": "bool", "__type": "BoolType" },
     "1115721": { "code": "\"\"", "fallback": null, "__type": "CustomCode" },
@@ -12706,7 +12780,8 @@
     "1115723": {
       "name": "renderable",
       "params": [],
-      "__type": "RenderableType"
+      "__type": "RenderableType",
+      "allowRootWrapper": null
     },
     "1115724": { "name": "bool", "__type": "BoolType" },
     "1115725": {
@@ -14001,7 +14076,8 @@
       "name": "renderFunc",
       "params": [{ "__ref": "7772002" }],
       "allowed": [],
-      "__type": "RenderFuncType"
+      "__type": "RenderFuncType",
+      "allowRootWrapper": null
     },
     "7772002": {
       "name": "arg",
@@ -15253,13 +15329,15 @@
     "11429041": {
       "name": "renderable",
       "params": [],
-      "__type": "RenderableType"
+      "__type": "RenderableType",
+      "allowRootWrapper": null
     },
     "11429042": { "name": "end icon", "uuid": "be5-3Vrl9BW", "__type": "Var" },
     "11429043": {
       "name": "renderable",
       "params": [],
-      "__type": "RenderableType"
+      "__type": "RenderableType",
+      "allowRootWrapper": null
     },
     "11429044": {
       "name": "Is Disabled",
@@ -20515,7 +20593,8 @@
     "26480373": {
       "name": "renderable",
       "params": [],
-      "__type": "RenderableType"
+      "__type": "RenderableType",
+      "allowRootWrapper": null
     },
     "26480374": {
       "name": "start icon",
@@ -20525,7 +20604,8 @@
     "26480375": {
       "name": "renderable",
       "params": [],
-      "__type": "RenderableType"
+      "__type": "RenderableType",
+      "allowRootWrapper": null
     },
     "26480376": {
       "name": "Show Start Icon",
@@ -32475,13 +32555,15 @@
     "64969253": {
       "name": "renderable",
       "params": [],
-      "__type": "RenderableType"
+      "__type": "RenderableType",
+      "allowRootWrapper": null
     },
     "64969254": { "name": "end icon", "uuid": "NZur1Ifg-uF", "__type": "Var" },
     "64969255": {
       "name": "renderable",
       "params": [],
-      "__type": "RenderableType"
+      "__type": "RenderableType",
+      "allowRootWrapper": null
     },
     "64969256": {
       "name": "Is Disabled",
@@ -42239,5 +42321,5 @@
     }
   },
   "deps": [],
-  "version": "227-add-ids-templateInfo"
+  "version": "228-add-allow-root-wrapper"
 }

@@ -437,7 +437,8 @@
           "name": "renderFunc",
           "params": [{ "__ref": "5592032" }],
           "allowed": [],
-          "__type": "RenderFuncType"
+          "__type": "RenderFuncType",
+          "allowRootWrapper": null
         },
         "5592032": {
           "name": "arg",
@@ -1065,7 +1066,8 @@
         "5592112": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "5592113": {
           "param": { "__ref": "5592102" },
@@ -1206,7 +1208,8 @@
         "5592122": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "5592123": {
           "type": { "__ref": "5592125" },
@@ -1237,7 +1240,8 @@
         "5592125": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "5592126": {
           "type": { "__ref": "5592128" },
@@ -3394,7 +3398,8 @@
         "5592546": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "5592547": {
           "type": { "__ref": "5592549" },
@@ -3479,7 +3484,8 @@
         "5592555": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "5592556": {
           "type": { "__ref": "5592558" },
@@ -3510,7 +3516,8 @@
         "5592558": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "5592559": {
           "type": { "__ref": "5592561" },
@@ -12373,7 +12380,7 @@
         }
       },
       "deps": [],
-      "version": "227-add-ids-templateInfo"
+      "version": "228-add-allow-root-wrapper"
     }
   ]
 ]

@@ -1361,12 +1361,16 @@ export function cloneType<T extends Type>(type_: T): T {
       typeFactory[tt.name]({
         params: tt.params.map((t) => cloneType(t)),
         allowed: tt.allowed.map((t) => cloneType(t)),
+        allowRootWrapper: tt.allowRootWrapper,
       })
     )
     .when(ArgType, (t) => typeFactory[t.name](t.argName, cloneType(t.type)))
     .when(FunctionType, (t) => typeFactory[t.name](...t.params.map(cloneType)))
     .when(RenderableType, (t) =>
-      typeFactory[t.name](...t.params.map(cloneType))
+      typeFactory[t.name]({
+        params: t.params.map(cloneType),
+        allowRootWrapper: t.allowRootWrapper,
+      })
     )
     .when(DefaultStylesPropType, (t) => typeFactory[t.name]())
     .when(DefaultStylesClassNamePropType, (t) =>
@@ -2029,6 +2033,10 @@ export function isComponentRoot(tpl: TplNode) {
 
 export function getComponentIfRoot(tpl: TplNode) {
   return tpl.parent ? undefined : TPLROOT_TO_COMPONENT.get(tpl);
+}
+
+export function isTplFromComponent(tpl: TplNode, component: Component) {
+  return isTplComponent(tpl) && tpl.component === component;
 }
 
 export function isCodeComponentRoot(tpl: TplNode) {

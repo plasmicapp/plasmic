@@ -891,7 +891,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "53903040" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "53903033": {
             "name": "pageSize",
@@ -1321,7 +1322,8 @@
           "53903129": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53903130": {
             "variants": [{ "__ref": "53903086" }],
@@ -1374,7 +1376,8 @@
           "53903137": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53903138": {
             "tag": "div",
@@ -1531,7 +1534,8 @@
           "53903165": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53903166": {
             "tag": "div",
@@ -1971,7 +1975,8 @@
           "53903263": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53903264": {
             "variants": [{ "__ref": "53903237" }],
@@ -2405,7 +2410,8 @@
           "53903367": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53903368": {
             "variants": [{ "__ref": "53903314" }],
@@ -2457,7 +2463,8 @@
           "53903375": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53903376": {
             "variants": [{ "__ref": "53903341" }],
@@ -2483,7 +2490,7 @@
           }
         },
         "deps": [],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       },
       "projectId": "2YAtuqUruz4SscKrr5g25x",
       "version": "0.0.1",
@@ -3393,7 +3400,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "53903040" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "53903033": {
             "name": "pageSize",
@@ -3823,7 +3831,8 @@
           "53903129": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53903130": {
             "variants": [{ "__ref": "53903086" }],
@@ -3876,7 +3885,8 @@
           "53903137": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53903138": {
             "tag": "div",
@@ -4033,7 +4043,8 @@
           "53903165": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53903166": {
             "tag": "div",
@@ -4399,7 +4410,8 @@
           "53903263": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53903264": {
             "variants": [{ "__ref": "53903237" }],
@@ -4660,7 +4672,7 @@
           "53903362": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       }
     },
     {
@@ -5553,7 +5565,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "53903040" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "53903033": {
             "name": "pageSize",
@@ -5983,7 +5996,8 @@
           "53903129": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53903130": {
             "variants": [{ "__ref": "53903086" }],
@@ -6036,7 +6050,8 @@
           "53903137": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53903138": {
             "tag": "div",
@@ -6193,7 +6208,8 @@
           "53903165": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53903166": {
             "tag": "div",
@@ -6629,7 +6645,8 @@
           "53903263": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53903264": {
             "variants": [{ "__ref": "53903237" }],
@@ -7059,7 +7076,8 @@
           "53903367": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53903368": {
             "variants": [{ "__ref": "53903314" }],
@@ -7111,7 +7129,8 @@
           "53903375": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53903376": {
             "variants": [{ "__ref": "53903341" }],
@@ -7311,7 +7330,7 @@
           }
         },
         "deps": [],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       }
     }
   ]

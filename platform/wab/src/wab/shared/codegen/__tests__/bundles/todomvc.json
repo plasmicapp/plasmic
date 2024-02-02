@@ -831,7 +831,12 @@
       "__type": "SlotParam"
     },
     "164": { "name": "children", "uuid": "6xnTLxHUUCl", "__type": "Var" },
-    "165": { "name": "renderable", "params": [], "__type": "RenderableType" },
+    "165": {
+      "name": "renderable",
+      "params": [],
+      "__type": "RenderableType",
+      "allowRootWrapper": null
+    },
     "166": {
       "tag": "div",
       "name": null,
@@ -2191,7 +2196,12 @@
       "__type": "SlotParam"
     },
     "483": { "name": "count", "uuid": "y5lYRsgtHlJ", "__type": "Var" },
-    "484": { "name": "renderable", "params": [], "__type": "RenderableType" },
+    "484": {
+      "name": "renderable",
+      "params": [],
+      "__type": "RenderableType",
+      "allowRootWrapper": null
+    },
     "485": {
       "tag": "div",
       "name": "footer-container",
@@ -2577,7 +2587,12 @@
       "__type": "SlotParam"
     },
     "547": { "name": "children", "uuid": "EMMOSAZ59Jj", "__type": "Var" },
-    "548": { "name": "renderable", "params": [], "__type": "RenderableType" },
+    "548": {
+      "name": "renderable",
+      "params": [],
+      "__type": "RenderableType",
+      "allowRootWrapper": null
+    },
     "549": {
       "tag": "div",
       "name": null,
@@ -4874,5 +4889,5 @@
     }
   },
   "deps": [],
-  "version": "227-add-ids-templateInfo"
+  "version": "228-add-allow-root-wrapper"
 }

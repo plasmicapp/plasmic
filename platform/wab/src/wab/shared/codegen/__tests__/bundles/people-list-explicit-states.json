@@ -98,7 +98,8 @@
         "3378006": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "3378007": {
           "tag": "div",
@@ -1042,7 +1043,8 @@
         "3378124": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "3378125": {
           "name": "Show Start Icon",
@@ -1064,7 +1066,8 @@
         "3378130": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "3378131": {
           "name": "end icon",
@@ -1074,7 +1077,8 @@
         "3378132": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "3378133": {
           "name": "Is Disabled",
@@ -8840,7 +8844,8 @@
           "name": "renderFunc",
           "params": [{ "__ref": "36693040" }],
           "allowed": [],
-          "__type": "RenderFuncType"
+          "__type": "RenderFuncType",
+          "allowRootWrapper": null
         },
         "36693033": {
           "name": "pageSize",
@@ -9947,7 +9952,8 @@
         "36693178": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "36693179": {
           "name": "start icon",
@@ -9957,7 +9963,8 @@
         "36693180": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "36693181": {
           "name": "Show Start Icon",
@@ -12551,7 +12558,7 @@
         }
       },
       "deps": [],
-      "version": "227-add-ids-templateInfo"
+      "version": "228-add-allow-root-wrapper"
     }
   ]
 ]

@@ -265,6 +265,7 @@ export const modelConflictsMeta: ModelConflictsMeta = {
           classes.PlumeInstance,
         ]),
     },
+    allowRootWrapper: "generic",
   },
   ClassNamePropType: {
     name: "unexpected",
@@ -514,6 +515,7 @@ export const modelConflictsMeta: ModelConflictsMeta = {
           classes.ComponentInstance,
         ]),
     },
+    allowRootWrapper: "generic",
   },
   FunctionType: {
     name: "unexpected",

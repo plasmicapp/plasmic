@@ -5,17 +5,21 @@ import {
   TplComponent,
   TplTag,
   VarRef,
-} from "../classes";
-import { ensureInstance } from "../common";
-import { ComponentType, mkComponent } from "../components";
-import { code } from "../exprs";
-import { mkParam, mkVar, ParamExportType } from "../lang";
-import { typeFactory } from "../shared/core/model-util";
-import { assertSiteInvariants } from "../shared/site-invariants";
-import { TplMgr } from "../shared/TplMgr";
-import { mkBaseVariant, mkVariant, mkVariantSetting } from "../shared/Variants";
-import { ensureBaseVariantSetting } from "../shared/VariantTplMgr";
-import { createSite } from "../sites";
+} from "@/wab/classes";
+import { ensureInstance } from "@/wab/common";
+import { ComponentType, mkComponent } from "@/wab/components";
+import { code } from "@/wab/exprs";
+import { mkParam, mkVar, ParamExportType } from "@/wab/lang";
+import { typeFactory } from "@/wab/shared/core/model-util";
+import { assertSiteInvariants } from "@/wab/shared/site-invariants";
+import { TplMgr } from "@/wab/shared/TplMgr";
+import {
+  mkBaseVariant,
+  mkVariant,
+  mkVariantSetting,
+} from "@/wab/shared/Variants";
+import { ensureBaseVariantSetting } from "@/wab/shared/VariantTplMgr";
+import { createSite } from "@/wab/sites";
 import {
   flattenTpls,
   mkRep,
@@ -23,7 +27,7 @@ import {
   mkTplComponentFlex,
   mkTplComponentX,
   mkTplTagX,
-} from "../tpls";
+} from "@/wab/tpls";
 import { mkTplTestText } from "./tpls";
 
 export const componentLib = {

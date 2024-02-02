@@ -3551,10 +3551,16 @@ export function propTypeToWabType(
                       typeFactory.arg(p, typeFactory.any())
                     ),
                     allowed: components,
+                    allowRootWrapper: type.allowRootWrapper,
                   })
                 );
               } else {
-                return success(typeFactory.renderable(...components));
+                return success(
+                  typeFactory.renderable({
+                    params: components,
+                    allowRootWrapper: type.allowRootWrapper,
+                  })
+                );
               }
             }
             case "choice": {

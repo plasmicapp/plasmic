@@ -371,7 +371,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "53897032" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "53897032": {
             "name": "arg",
@@ -676,7 +677,8 @@
           "53897063": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897064": {
             "type": { "__ref": "53897066" },
@@ -707,7 +709,8 @@
           "53897066": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897067": {
             "type": { "__ref": "53897069" },
@@ -738,7 +741,8 @@
           "53897069": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897070": {
             "tag": "div",
@@ -1593,7 +1597,8 @@
           "53897205": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897206": {
             "tag": "div",
@@ -1974,7 +1979,8 @@
           "53897274": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897275": {
             "tag": "div",
@@ -2314,7 +2320,8 @@
           "53897332": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897333": {
             "tag": "div",
@@ -2694,7 +2701,8 @@
           "53897399": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897400": {
             "tag": "div",
@@ -3071,7 +3079,8 @@
           "53897466": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897467": {
             "tag": "div",
@@ -4234,7 +4243,8 @@
           "53897665": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897666": {
             "tag": "div",
@@ -4601,7 +4611,8 @@
           "53897731": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897732": {
             "type": { "__ref": "53897734" },
@@ -4632,7 +4643,8 @@
           "53897734": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897735": {
             "tag": "div",
@@ -6106,7 +6118,7 @@
           "53898074": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       },
       "projectId": "5txi3zd6hPLtbkzbV8p6jB",
       "version": "0.0.1",
@@ -6666,7 +6678,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "53897032" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "53897032": {
             "name": "arg",
@@ -6971,7 +6984,8 @@
           "53897063": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897064": {
             "type": { "__ref": "53897066" },
@@ -7002,7 +7016,8 @@
           "53897066": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897067": {
             "type": { "__ref": "53897069" },
@@ -7033,7 +7048,8 @@
           "53897069": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897070": {
             "tag": "div",
@@ -7853,7 +7869,8 @@
           "53897205": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897206": {
             "tag": "div",
@@ -8218,7 +8235,8 @@
           "53897274": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897275": {
             "tag": "div",
@@ -8554,7 +8572,8 @@
           "53897332": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897333": {
             "tag": "div",
@@ -8930,7 +8949,8 @@
           "53897399": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897400": {
             "tag": "div",
@@ -9233,7 +9253,8 @@
           "53897466": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897467": {
             "tag": "div",
@@ -10657,7 +10678,8 @@
           "53897731": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897732": {
             "type": { "__ref": "53897734" },
@@ -10688,7 +10710,8 @@
           "53897734": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897735": {
             "tag": "div",
@@ -12277,7 +12300,7 @@
           "63532015": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       }
     },
     {
@@ -12641,7 +12664,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "53897032" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "53897032": {
             "name": "arg",
@@ -12946,7 +12970,8 @@
           "53897063": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897064": {
             "type": { "__ref": "53897066" },
@@ -12977,7 +13002,8 @@
           "53897066": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897067": {
             "type": { "__ref": "53897069" },
@@ -13008,7 +13034,8 @@
           "53897069": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897070": {
             "tag": "div",
@@ -13837,7 +13864,8 @@
           "53897205": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897206": {
             "tag": "div",
@@ -14218,7 +14246,8 @@
           "53897274": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897275": {
             "tag": "div",
@@ -14558,7 +14587,8 @@
           "53897332": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897333": {
             "tag": "div",
@@ -14938,7 +14968,8 @@
           "53897399": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897400": {
             "tag": "div",
@@ -15299,7 +15330,8 @@
           "53897466": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897467": {
             "tag": "div",
@@ -16447,7 +16479,8 @@
           "53897665": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897666": {
             "tag": "div",
@@ -16814,7 +16847,8 @@
           "53897731": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897732": {
             "type": { "__ref": "53897734" },
@@ -16845,7 +16879,8 @@
           "53897734": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "53897735": {
             "tag": "div",
@@ -18532,7 +18567,7 @@
           }
         },
         "deps": [],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       }
     }
   ]

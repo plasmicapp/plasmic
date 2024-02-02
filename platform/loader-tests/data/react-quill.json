@@ -732,7 +732,7 @@
         }
       },
       "deps": [],
-      "version": "227-add-ids-templateInfo"
+      "version": "228-add-allow-root-wrapper"
     }
   ],
   [
@@ -1618,7 +1618,8 @@
           "name": "renderFunc",
           "params": [{ "__ref": "s0gY8o2gv2ri" }],
           "allowed": [],
-          "__type": "RenderFuncType"
+          "__type": "RenderFuncType",
+          "allowRootWrapper": null
         },
         "ejjtjSSlWKkA": {
           "name": "children",
@@ -2099,7 +2100,7 @@
         "tkbX31iChEAr": { "text": ["quill-state"], "__type": "TemplatedString" }
       },
       "deps": ["b911462e-59ce-455d-b8d3-0d84f50a35dd"],
-      "version": "227-add-ids-templateInfo"
+      "version": "228-add-allow-root-wrapper"
     }
   ]
 ]

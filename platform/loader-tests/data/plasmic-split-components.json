@@ -2408,7 +2408,8 @@
         "61747054": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "61747055": {
           "variants": [{ "__ref": "61747004" }],
@@ -2430,7 +2431,7 @@
         }
       },
       "deps": [],
-      "version": "227-add-ids-templateInfo"
+      "version": "228-add-allow-root-wrapper"
     }
   ]
 ]

@@ -891,7 +891,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "65167040" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "65167033": {
             "name": "pageSize",
@@ -1090,7 +1091,7 @@
           "65167068": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       },
       "projectId": "iFkoBAzyW77n4pChdSYgsG",
       "version": "0.0.1",
@@ -1986,7 +1987,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "60118040" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "60118033": {
             "name": "pageSize",
@@ -2224,7 +2226,7 @@
           "60118072": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       },
       "projectId": "8uBwJD7SLePaoY9TKegvH7",
       "version": "1.0.0",
@@ -3120,7 +3122,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "57103040" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "57103033": {
             "name": "pageSize",
@@ -3358,7 +3361,7 @@
           "57103072": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       },
       "projectId": "gZPuBeqjCafmbUY9RKnp61",
       "version": "1.0.0",
@@ -4254,7 +4257,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "48972040" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "48972033": {
             "name": "pageSize",
@@ -4492,7 +4496,7 @@
           "48972072": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       },
       "projectId": "7nMxxUmJrhy58kA9uBsL3V",
       "version": "0.0.1",
@@ -5379,7 +5383,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "30721040" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "30721033": {
             "name": "pageSize",
@@ -5626,7 +5631,7 @@
           }
         },
         "deps": [],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       },
       "projectId": "t44ZSh3EA7S5G9S9EMW7Vj",
       "version": "0.0.1",
@@ -6522,7 +6527,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "19793040" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "19793033": {
             "name": "pageSize",
@@ -6760,7 +6766,7 @@
           "19793072": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       },
       "projectId": "sRBc4tTdChZrFDkXW74Z36",
       "version": "0.0.1",
@@ -7656,7 +7662,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "52870040" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "52870033": {
             "name": "pageSize",
@@ -7894,7 +7901,7 @@
           "52870072": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       },
       "projectId": "9sEbK61REdmFqh53jTLG7F",
       "version": "1.0.0",
@@ -8790,7 +8797,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "57103040" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "57103033": {
             "name": "pageSize",
@@ -9028,7 +9036,7 @@
           "57103072": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       },
       "projectId": "gZPuBeqjCafmbUY9RKnp61",
       "version": "2.0.0",
@@ -9924,7 +9932,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "30721040" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "30721033": {
             "name": "pageSize",
@@ -10162,7 +10171,7 @@
           "30721072": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       },
       "projectId": "t44ZSh3EA7S5G9S9EMW7Vj",
       "version": "1.0.0",
@@ -11058,7 +11067,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "52870040" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "52870033": {
             "name": "pageSize",
@@ -11296,7 +11306,7 @@
           "52870072": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       },
       "projectId": "9sEbK61REdmFqh53jTLG7F",
       "version": "0.0.1",
@@ -12192,7 +12202,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "60118040" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "60118033": {
             "name": "pageSize",
@@ -12430,7 +12441,7 @@
           "60118072": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       },
       "projectId": "8uBwJD7SLePaoY9TKegvH7",
       "version": "0.0.1",
@@ -13326,7 +13337,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "57103040" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "57103033": {
             "name": "pageSize",
@@ -13564,7 +13576,7 @@
           "57103072": { "values": {}, "mixins": [], "__type": "RuleSet" }
         },
         "deps": [],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       },
       "projectId": "gZPuBeqjCafmbUY9RKnp61",
       "version": "0.0.1",
@@ -13959,7 +13971,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "11533040" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "11533033": {
             "name": "pageSize",
@@ -14426,7 +14439,8 @@
           "11533138": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "11533139": {
             "variants": [{ "__ref": "11533086" }],
@@ -14483,7 +14497,8 @@
           "11533146": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "11533147": {
             "tag": "div",
@@ -14619,7 +14634,8 @@
           "11533166": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "11533167": {
             "tpl": [{ "__ref": "11533170" }],
@@ -16293,7 +16309,7 @@
           "cafdd9be-624e-4326-92e5-224cc666283e",
           "af93112b-f516-4d48-8745-933a31e1ca43"
         ],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       },
       "projectId": "rmvEdSfG1oBCrHP8owTn99",
       "version": "0.0.1",
@@ -16701,7 +16717,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "11533040" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "11533033": {
             "name": "pageSize",
@@ -17168,7 +17185,8 @@
           "11533138": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "11533139": {
             "variants": [{ "__ref": "11533086" }],
@@ -17225,7 +17243,8 @@
           "11533146": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "11533147": {
             "tag": "div",
@@ -17361,7 +17380,8 @@
           "11533166": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "11533167": {
             "tpl": [{ "__ref": "11533170" }],
@@ -19385,7 +19405,7 @@
           "1a85d0b6-fa09-44c9-a29e-f9c8124b9eb5",
           "12cf73ec-46a8-4453-a8ba-25b075787a6f"
         ],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       }
     },
     {
@@ -19777,7 +19797,8 @@
             "name": "renderFunc",
             "params": [{ "__ref": "11533040" }],
             "allowed": [],
-            "__type": "RenderFuncType"
+            "__type": "RenderFuncType",
+            "allowRootWrapper": null
           },
           "11533033": {
             "name": "pageSize",
@@ -20244,7 +20265,8 @@
           "11533138": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "11533139": {
             "variants": [{ "__ref": "11533086" }],
@@ -20301,7 +20323,8 @@
           "11533146": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "11533147": {
             "tag": "div",
@@ -20437,7 +20460,8 @@
           "11533166": {
             "name": "renderable",
             "params": [],
-            "__type": "RenderableType"
+            "__type": "RenderableType",
+            "allowRootWrapper": null
           },
           "11533167": {
             "tpl": [{ "__ref": "11533170" }],
@@ -22236,7 +22260,7 @@
           "1a85d0b6-fa09-44c9-a29e-f9c8124b9eb5",
           "e770f432-52ad-4ed7-be37-c0a50b0532be"
         ],
-        "version": "227-add-ids-templateInfo"
+        "version": "228-add-allow-root-wrapper"
       }
     }
   ]

@@ -202,7 +202,8 @@
         "8246023": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "8246024": {
           "param": { "__ref": "8246008" },
@@ -650,22 +651,26 @@
         "21970002": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "21970003": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "21970004": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "21970005": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "28075001": {
           "type": { "__ref": "21970004" },
@@ -1673,7 +1678,8 @@
         "60389022": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "60389023": { "name": "table", "uuid": "IkOy36FfaR", "__type": "Var" },
         "60389025": { "name": "field", "uuid": "PyA2ZIyiMR", "__type": "Var" },
@@ -1721,7 +1727,8 @@
         "60389034": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "60389035": { "name": "table", "uuid": "qivKAbekC6q", "__type": "Var" },
         "60389037": { "name": "field", "uuid": "uTB7brETrG3", "__type": "Var" },
@@ -2073,7 +2080,7 @@
         }
       },
       "deps": [],
-      "version": "227-add-ids-templateInfo"
+      "version": "228-add-allow-root-wrapper"
     }
   ],
   [
@@ -4514,7 +4521,7 @@
         }
       },
       "deps": ["7349d209-ded6-417a-aa97-05311f8b93c4"],
-      "version": "227-add-ids-templateInfo"
+      "version": "228-add-allow-root-wrapper"
     }
   ]
 ]

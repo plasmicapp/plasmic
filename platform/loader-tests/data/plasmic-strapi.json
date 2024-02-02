@@ -396,7 +396,8 @@
         "26311024": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "26311025": { "name": "name", "uuid": "6NuQ2KC7XyN", "__type": "Var" },
         "26311026": { "name": "text", "__type": "Text" },
@@ -474,7 +475,8 @@
         "26311044": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "26311045": {
           "param": { "__ref": "26311018" },
@@ -763,7 +765,7 @@
         }
       },
       "deps": [],
-      "version": "227-add-ids-templateInfo"
+      "version": "228-add-allow-root-wrapper"
     }
   ],
   [
@@ -1857,7 +1859,7 @@
         }
       },
       "deps": ["c30818bb-2f70-4079-bc4d-65eaecf566f6"],
-      "version": "227-add-ids-templateInfo"
+      "version": "228-add-allow-root-wrapper"
     }
   ]
 ]

@@ -3045,6 +3045,7 @@ exports[`model-util works 1`] = `
           "type": {
             "__iid": "165",
             "__type": "RenderableType",
+            "allowRootWrapper": null,
             "name": "renderable",
             "params": [],
           },
@@ -4628,6 +4629,7 @@ exports[`model-util works 1`] = `
           "type": {
             "__iid": "484",
             "__type": "RenderableType",
+            "allowRootWrapper": null,
             "name": "renderable",
             "params": [],
           },
@@ -5771,6 +5773,7 @@ exports[`model-util works 1`] = `
           "type": {
             "__iid": "548",
             "__type": "RenderableType",
+            "allowRootWrapper": null,
             "name": "renderable",
             "params": [],
           },

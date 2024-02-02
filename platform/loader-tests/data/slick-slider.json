@@ -900,7 +900,8 @@
         "ejSM67D97QE-": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "-Jl8LJi4HATR": {
           "name": "children",
@@ -1278,7 +1279,7 @@
         }
       },
       "deps": [],
-      "version": "227-add-ids-templateInfo"
+      "version": "228-add-allow-root-wrapper"
     }
   ],
   [
@@ -2176,7 +2177,8 @@
           "name": "renderFunc",
           "params": [{ "__ref": "MgF_FZCbldme" }],
           "allowed": [],
-          "__type": "RenderFuncType"
+          "__type": "RenderFuncType",
+          "allowRootWrapper": null
         },
         "Q83aWr3hwOHh": {
           "name": "children",
@@ -3190,7 +3192,8 @@
         "bEwAJzn4ynZP": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "7GIvy8a1qDOG": {
           "name": "children",
@@ -3212,7 +3215,8 @@
         "FJEykkIv_kRs": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "luIiebJieIdE": {
           "name": "start icon",
@@ -3222,7 +3226,8 @@
         "TXDm70PXNeuY": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "1PobtVuUU8sd": {
           "name": "end icon",
@@ -9285,7 +9290,8 @@
         "FND4XsxD25M4": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "vJ-onWU0SojN": {
           "name": "end icon",
@@ -9295,7 +9301,8 @@
         "S1K71nxCSFXr": {
           "name": "renderable",
           "params": [],
-          "__type": "RenderableType"
+          "__type": "RenderableType",
+          "allowRootWrapper": null
         },
         "OThPoZjreuw-": {
           "name": "start icon",
@@ -13894,7 +13901,7 @@
         }
       },
       "deps": ["1397401c-b15c-47b2-8659-9b44c397e887"],
-      "version": "227-add-ids-templateInfo"
+      "version": "228-add-allow-root-wrapper"
     }
   ]
 ]

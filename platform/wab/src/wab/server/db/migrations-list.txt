@@ -225,3 +225,4 @@ platform/wab/src/wab/server/bundle-migrations/224-migrate-hostless.ts
 platform/wab/src/wab/server/bundle-migrations/225-release-global-actions.ts
 platform/wab/src/wab/server/bundle-migrations/226-add-item-prefs.ts
 platform/wab/src/wab/server/bundle-migrations/227-add-ids-templateInfo.ts
+platform/wab/src/wab/server/bundle-migrations/228-add-allow-root-wrapper.ts
