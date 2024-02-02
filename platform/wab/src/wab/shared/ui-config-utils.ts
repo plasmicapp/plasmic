@@ -123,8 +123,6 @@ export const LEFT_TAB_PANEL_KEYS = [
   "copilot",
 ] as const;
 
-export const LEFT_TAB_KEY_LOCAL_STORAGE_KEY = "leftTabKey";
-
 export type LeftTabKey = (typeof LEFT_TAB_PANEL_KEYS)[number];
 
 export const LEFT_TAB_BUTTON_KEYS = [...LEFT_TAB_PANEL_KEYS, "figma"] as const;

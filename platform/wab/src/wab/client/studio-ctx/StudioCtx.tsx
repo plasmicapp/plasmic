@@ -284,7 +284,6 @@ import { addEmptyQuery } from "@/wab/shared/TplMgr";
 import {
   getLeftTabPermission,
   LeftTabKey,
-  LEFT_TAB_KEY_LOCAL_STORAGE_KEY,
   LEFT_TAB_PANEL_KEYS,
   mergeUiConfigs,
   UiConfig,
@@ -352,6 +351,7 @@ import orderBy from "lodash/orderBy";
 import {
   autorun,
   flow,
+  IObservableValue,
   makeObservable,
   observable,
   reaction,
@@ -584,6 +584,12 @@ export class StudioCtx extends WithDbCtx {
   private hostLessPkgsFrame: HTMLIFrameElement;
   private hostLessPkgsLock = Promise.resolve();
 
+  //
+  // Currently-displayed tabs on the left and right panels
+  //
+  private _xLeftTabKey: IObservableValue<LeftTabKey | undefined> =
+    observable.box(undefined);
+
   readonly hostPageHtml: Promise<string>;
 
   constructor(args: StudioCtxArgs) {
@@ -604,6 +610,11 @@ export class StudioCtx extends WithDbCtx {
       ? RightTabKey.settings
       : RightTabKey.style;
 
+    this.getInitialLeftTabKey()
+      .then((key) => {
+        this.leftTabKey = key;
+      })
+      .catch((e) => console.error(e));
     this.setHostLessPkgs();
 
     this.bundler()
@@ -792,6 +803,16 @@ export class StudioCtx extends WithDbCtx {
       getBuiltinComponentRegistrations()
     );
     this.installedHostLessPkgs.clear();
+  }
+
+  private async getInitialLeftTabKey() {
+    const existingLeftTabKey = await this.appCtx.api.getStorageItem(
+      this.leftTabKeyLocalStorageKey()
+    );
+    const filteredKey = LEFT_TAB_PANEL_KEYS.find(
+      (key) => key === existingLeftTabKey
+    );
+    return filteredKey;
   }
 
   async updateCcRegistry(pkgs: string[]) {
@@ -2197,14 +2218,6 @@ export class StudioCtx extends WithDbCtx {
     return this.focusedFrame() ?? this.focusedViewCtx()?.arenaFrame();
   }
 
-  //
-  // Currently-displayed tabs on the left and right panels
-  //
-  private _xLeftTabKey = observable.box<LeftTabKey | undefined>(
-    LEFT_TAB_PANEL_KEYS.filter(
-      (key) => key === localStorage.getItem(LEFT_TAB_KEY_LOCAL_STORAGE_KEY)
-    )[0]
-  );
   get leftTabKey() {
     return this._xLeftTabKey.get();
   }
@@ -2273,9 +2286,13 @@ export class StudioCtx extends WithDbCtx {
   ) {
     if (tabKey) {
       this.lastLeftTabKey = tabKey;
-      localStorage.setItem(LEFT_TAB_KEY_LOCAL_STORAGE_KEY, tabKey);
+      this.appCtx.api
+        .addStorageItem(this.leftTabKeyLocalStorageKey(), tabKey)
+        .catch((e) => console.error(e));
     } else {
-      localStorage.removeItem(LEFT_TAB_KEY_LOCAL_STORAGE_KEY);
+      this.appCtx.api
+        .removeStorageItem(this.leftTabKeyLocalStorageKey())
+        .catch((e) => console.error(e));
     }
     this.leftTabKey = tabKey;
     if (opts?.highlight) {
@@ -2607,6 +2624,10 @@ export class StudioCtx extends WithDbCtx {
 
   private mkFocusPreferenceKey = () => {
     return `plasmic.focused.${this.siteInfo.id}`;
+  };
+
+  private leftTabKeyLocalStorageKey = () => {
+    return `plasmic.leftTabKey.${this.siteInfo.id}`;
   };
 
   /**

@@ -445,6 +445,7 @@ export function filteredApi(
   const whitelistedLocalStorageKeyPrefixes = [
     "plasmic.tours.",
     "plasmic.focused.",
+    "plasmic.leftTabKey",
     "plasmic.free-trial.",
     "plasmic.load-cache.",
   ];

@@ -66,6 +66,7 @@ describe("hostless-react-slick slider carousel", () => {
 
         cy.contains("Delete current slide").click();
         assertState("4");
+        cy.wait(1000);
 
         cy.contains("Delete current slide").click();
         assertState("3");
