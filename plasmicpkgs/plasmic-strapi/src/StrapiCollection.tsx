@@ -1,79 +1,14 @@
-import {
-  ComponentMeta,
-  DataProvider,
-  GlobalContextMeta,
-  repeatedElement,
-  useSelector,
-} from "@plasmicapp/host";
+import { ComponentMeta, DataProvider, repeatedElement } from "@plasmicapp/host";
 import { usePlasmicQueryData } from "@plasmicapp/query";
-import * as qs from "qs";
-import get from "dlv";
 import { pascalCase } from "change-case";
-import React, { ReactNode, useContext } from "react";
-import { queryParameters, uniq } from "./utils";
-
-export function ensure<T>(x: T | null | undefined): T {
-  if (x === null || x === undefined) {
-    throw new Error(`Value must not be undefined or null`);
-  } else {
-    return x;
-  }
-}
-
-const modulePath = "@plasmicpkgs/plasmic-strapi";
+import get from "dlv";
+import * as qs from "qs";
+import React, { ReactNode } from "react";
+import { useStrapiCredentials } from "./StrapiCredentialsProvider";
+import { modulePath, queryParameters, uniq } from "./utils";
 
 const makeDataProviderName = (collection: string) =>
   `currentStrapi${pascalCase(collection)}Item`;
-
-interface StrapiCredentialsProviderProps {
-  host?: string;
-  token?: string;
-}
-
-const CredentialsContext = React.createContext<
-  StrapiCredentialsProviderProps | undefined
->(undefined);
-
-export const strapiCredentialsProviderMeta: GlobalContextMeta<StrapiCredentialsProviderProps> =
-  {
-    name: "StrapiCredentialsProvider",
-    displayName: "Strapi Credentials Provider",
-    description: `[See tutorial video](https://www.youtube.com/watch?v=1SLoVY3hkQ4).
-
-API token is needed only if data is not publicly readable.
-
-Learn how to [get your API token](https://docs.strapi.io/user-docs/latest/settings/managing-global-settings.html#managing-api-tokens).`,
-    importName: "StrapiCredentialsProvider",
-    importPath: modulePath,
-    props: {
-      host: {
-        type: "string",
-        displayName: "Host",
-        defaultValueHint: "https://strapi-app.plasmic.app",
-        defaultValue: "https://strapi-app.plasmic.app",
-        description: "Server where you application is hosted.",
-      },
-      token: {
-        type: "string",
-        displayName: "API Token",
-        description:
-          "API Token (generated in http://yourhost/admin/settings/api-tokens) (or leave blank for unauthenticated usage).",
-      },
-    },
-  };
-
-export function StrapiCredentialsProvider({
-  host,
-  token,
-  children,
-}: React.PropsWithChildren<StrapiCredentialsProviderProps>) {
-  host = host?.slice(-1) === "/" ? host.slice(0, -1) : host;
-  return (
-    <CredentialsContext.Provider value={{ host, token }}>
-      {children}
-    </CredentialsContext.Provider>
-  );
-}
 
 interface StrapiCollectionProps {
   name?: string;
@@ -179,7 +114,7 @@ export function StrapiCollection({
   noAutoRepeat,
   setControlContextData,
 }: StrapiCollectionProps) {
-  const creds = ensure(useContext(CredentialsContext));
+  const creds = useStrapiCredentials();
 
   if (!creds.host) {
     return <div>Please specify a host.</div>;
@@ -303,91 +238,4 @@ export function StrapiCollection({
       )}
     </DataProvider>
   );
-}
-
-interface StrapiFieldProps {
-  className?: string;
-  path?: string;
-  setControlContextData?: (data: {
-    fields: string[];
-    isImage: boolean;
-  }) => void;
-}
-
-export const strapiFieldMeta: ComponentMeta<StrapiFieldProps> = {
-  name: "StrapiField",
-  displayName: "Strapi Field",
-  importName: "StrapiField",
-  importPath: modulePath,
-  props: {
-    path: {
-      type: "choice",
-      options: (props, ctx) => {
-        return ctx?.fields ?? [];
-      },
-      displayName: "Field",
-      description: "Field name",
-    },
-  },
-};
-
-export function StrapiField({
-  className,
-  path,
-  setControlContextData,
-}: StrapiFieldProps) {
-  const item = useSelector("strapiItem");
-  if (!item) {
-    return <div>StrapiField must be used within a StrapiCollection</div>;
-  }
-
-  // Getting only fields that aren't objects
-  const attributes = get(item, ["attributes"]);
-  const displayableFields = Object.keys(attributes).filter((field) => {
-    const value = attributes[field];
-    const maybeMime = value.data?.attributes?.mime;
-    return (
-      typeof value !== "object" ||
-      (typeof maybeMime === "string" && maybeMime.startsWith("image"))
-    );
-  });
-
-  setControlContextData?.({
-    fields: displayableFields,
-    isImage: false,
-  });
-
-  if (!path) {
-    return <div>StrapiField must specify a field name.</div>;
-  }
-
-  const data = get(item, ["attributes", path]);
-  const maybeMime = data?.data?.attributes?.mime;
-
-  setControlContextData?.({
-    fields: displayableFields,
-    isImage: typeof maybeMime === "string" && maybeMime.startsWith("image"),
-  });
-
-  if (!data) {
-    return <div>Please specify a valid field name.</div>;
-  } else if (typeof maybeMime === "string" && maybeMime.startsWith("image")) {
-    const creds = ensure(useContext(CredentialsContext));
-    const attrs = data.data.attributes;
-    const img_url = attrs.url.startsWith("http")
-      ? attrs.url
-      : creds.host + attrs.url;
-    const img_width = attrs.width;
-    const img_height = attrs.height;
-    return (
-      <img
-        className={className}
-        src={img_url}
-        width={300}
-        height={(300 * img_height) / img_width}
-      />
-    );
-  } else {
-    return <div className={className}>{data}</div>;
-  }
 }

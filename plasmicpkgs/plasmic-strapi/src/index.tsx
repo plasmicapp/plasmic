@@ -2,15 +2,12 @@ import registerComponent, {
   ComponentMeta,
 } from "@plasmicapp/host/registerComponent";
 import registerGlobalContext from "@plasmicapp/host/registerGlobalContext";
+import { StrapiCollection, strapiCollectionMeta } from "./StrapiCollection";
 import {
-    StrapiCredentialsProvider,
-    strapiCredentialsProviderMeta,
-    StrapiCollection,
-    strapiCollectionMeta,
-    StrapiField,
-    strapiFieldMeta,
-} from "./strapi";
-
+  StrapiCredentialsProvider,
+  strapiCredentialsProviderMeta,
+} from "./StrapiCredentialsProvider";
+import { StrapiField, strapiFieldMeta } from "./StrapiField";
 
 export function registerAll(loader?: {
   registerComponent: typeof registerComponent;
@@ -28,13 +25,24 @@ export function registerAll(loader?: {
   };
 
   if (loader) {
-    loader.registerGlobalContext(StrapiCredentialsProvider, strapiCredentialsProviderMeta);
+    loader.registerGlobalContext(
+      StrapiCredentialsProvider,
+      strapiCredentialsProviderMeta
+    );
   } else {
-    registerGlobalContext(StrapiCredentialsProvider, strapiCredentialsProviderMeta);
+    registerGlobalContext(
+      StrapiCredentialsProvider,
+      strapiCredentialsProviderMeta
+    );
   }
 
   _registerComponent(StrapiCollection, strapiCollectionMeta);
   _registerComponent(StrapiField, strapiFieldMeta);
 }
 
-export * from "./strapi";
+export { StrapiCollection, strapiCollectionMeta } from "./StrapiCollection";
+export {
+  StrapiCredentialsProvider,
+  strapiCredentialsProviderMeta,
+} from "./StrapiCredentialsProvider";
+export { StrapiField, strapiFieldMeta } from "./StrapiField";
