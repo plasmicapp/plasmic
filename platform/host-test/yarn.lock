@@ -150,10 +150,10 @@
     picocolors "^1.0.0"
     tslib "^2.6.0"
 
-"@plasmicapp/host@^1.0.189":
-  version "1.0.189"
-  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.189.tgz#2685135a6d27e0b7c2ad1c9168aca5aa7d1a22ba"
-  integrity sha512-o0dHqpjeJUl8y5zX3JmraMrzrrH472FFceWMTNz9GQdf4q4gteSJlQtkbtVMeLjuOE689EOUi+DoCpbcTyfEKA==
+"@plasmicapp/host@^1.0.190":
+  version "1.0.190"
+  resolved "https://registry.yarnpkg.com/@plasmicapp/host/-/host-1.0.190.tgz#c0dfa8e529ef7269184be37222af76325fc173f9"
+  integrity sha512-g8SjtzNRbkMmVNFUppJQYf50QwGKAz9waEonjNDfuBVmRQjPpSgMUIEK73zy8ocSq3ZPejGsvAWK1rzyn6DfTA==
   dependencies:
     "@plasmicapp/query" "0.1.78"
     csstype "^3.1.2"
