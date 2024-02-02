@@ -3,6 +3,7 @@
     {
       "id": 5,
       "attributes": {
+        "nullValuesCanBeHandled": null,
         "name": "Café Coffee Day",
         "description": "Café Coffee Day (CCD) is an Indian multinational chain of coffeehouses headquartered in Bengaluru, Karnataka. It is a subsidiary of Coffee Day Enterprises Limited. Internationally, CCDs were present in Austria, Czech Republic, Malaysia, Nepal and Egypt before shutting down all operations outside India.[4]",
         "createdAt": "2022-04-19T15:13:46.616Z",

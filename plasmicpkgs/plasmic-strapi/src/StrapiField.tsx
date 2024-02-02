@@ -44,7 +44,7 @@ export function StrapiField({
   const attributes = get(item, ["attributes"]);
   const displayableFields = Object.keys(attributes).filter((field) => {
     const value = attributes[field];
-    const maybeMime = value.data?.attributes?.mime;
+    const maybeMime = get(value, "data.attributes.mime");
     return (
       typeof value !== "object" ||
       (typeof maybeMime === "string" && maybeMime.startsWith("image"))
