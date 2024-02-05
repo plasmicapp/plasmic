@@ -335,7 +335,7 @@ export const getUploadedFile = (
 async function getFileType(buffer: ArrayBuffer) {
   const blob = new Blob([buffer]);
   let fileType = await fileTypeFromBlob(blob);
-  if (!fileType && isSVG(buffer)) {
+  if ((!fileType || fileType?.mime === "application/xml") && isSVG(buffer)) {
     fileType = {
       mime: "image/svg+xml",
       ext: "svg",

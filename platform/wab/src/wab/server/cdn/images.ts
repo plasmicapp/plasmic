@@ -13,7 +13,7 @@ const siteAssetsBaseUrl = process.env.SITE_ASSETS_BASE_URL as string;
 
 async function getFileType(buffer: Buffer | ArrayBuffer) {
   let fileType = await FileType.fromBuffer(buffer);
-  if (!fileType && isSVG(buffer)) {
+  if ((!fileType || fileType.mime === "application/xml") && isSVG(buffer)) {
     fileType = {
       mime: "image/svg+xml" as FileType.MimeType,
       ext: "svg" as FileType.FileExtension,

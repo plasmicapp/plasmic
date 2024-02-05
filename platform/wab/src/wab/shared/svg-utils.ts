@@ -130,5 +130,5 @@ export function isSVG(buffer: Buffer | ArrayBuffer) {
   // We get the first 10kB, just in case of
   // some very long comments before the svg tag
   const fileContent = buffer.toString("utf8", 0, 10240);
-  return /<svg\s.*?>/i.test(fileContent);
+  return /<svg\s[\S\s]*?>/i.test(fileContent);
 }
