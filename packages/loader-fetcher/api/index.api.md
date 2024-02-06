@@ -179,6 +179,8 @@ export interface LoaderBundleOutput {
     // (undocumented)
     components: ComponentMeta[];
     // (undocumented)
+    deferChunksByDefault: boolean;
+    // (undocumented)
     external: string[];
     // (undocumented)
     globalGroups: GlobalGroupMeta[];

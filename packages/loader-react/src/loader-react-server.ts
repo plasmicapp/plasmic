@@ -87,6 +87,7 @@ export class ReactServerPlasmicComponentLoader {
     projects: [],
     activeSplits: [],
     bundleKey: null,
+    deferChunksByDefault: false,
   };
 
   constructor(args: {
@@ -267,6 +268,7 @@ export class ReactServerPlasmicComponentLoader {
       projects: [],
       activeSplits: [],
       bundleKey: null,
+      deferChunksByDefault: false,
     };
   }
 }

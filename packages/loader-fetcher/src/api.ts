@@ -105,6 +105,7 @@ export interface LoaderBundleOutput {
   projects: ProjectMeta[];
   activeSplits: Split[];
   bundleKey: string | null;
+  deferChunksByDefault: boolean;
 }
 
 export interface LoaderHtmlOutput {

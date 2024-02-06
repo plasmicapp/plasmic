@@ -81,6 +81,8 @@ export interface LoaderBundleOutput {
   activeSplits: ActiveSplit[];
   // Bundle key for loading chunks
   bundleKey: string | null;
+  // Store this configuration here so we can easily change it
+  deferChunksByDefault: boolean;
 }
 
 export interface CodeModule {
@@ -764,6 +766,7 @@ function makeLoaderBundleOutput(
     ),
     // Populated in `upsertS3CacheEntry` call
     bundleKey: null,
+    deferChunksByDefault: true,
   };
   return output;
 }

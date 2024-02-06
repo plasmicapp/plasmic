@@ -150,7 +150,11 @@ export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
   ): Promise<ComponentRenderData | null> {
     const data = await super.maybeFetchComponentData(...args);
     const { opts } = parseFetchComponentDataArgs(...args);
-    if (data && opts?.deferChunks) {
+    if (
+      data &&
+      (opts?.deferChunks ||
+        (opts?.deferChunks === undefined && data.bundle.deferChunksByDefault))
+    ) {
       filterCodeFromRenderData(data);
     }
     return data;
@@ -166,7 +170,10 @@ export class NextJsPlasmicComponentLoader extends PlasmicComponentLoader {
   async fetchComponentData(...args: any[]): Promise<ComponentRenderData> {
     const data = await super.fetchComponentData(...args);
     const { opts } = parseFetchComponentDataArgs(...args);
-    if (opts?.deferChunks) {
+    if (
+      opts?.deferChunks ||
+      (opts?.deferChunks === undefined && data.bundle.deferChunksByDefault)
+    ) {
       filterCodeFromRenderData(data);
     }
     return data;

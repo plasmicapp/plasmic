@@ -34,5 +34,6 @@ export function getBundleSubset(
     projects: bundle.projects,
     activeSplits: bundle.activeSplits,
     bundleKey: bundle.bundleKey ?? null,
+    deferChunksByDefault: bundle.deferChunksByDefault,
   };
 }
