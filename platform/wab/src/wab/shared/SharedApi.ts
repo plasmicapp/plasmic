@@ -88,7 +88,6 @@ import {
   DomainsForProjectResponse,
   ExistingGithubRepoRequest,
   FeatureTierId,
-  FindFreeVarsRequest,
   ForgotPasswordRequest,
   ForgotPasswordResponse,
   GetClipResponse,
@@ -1451,10 +1450,6 @@ export abstract class SharedApi {
    */
   async discourseConnect(search: string) {
     return this.get("/auth/discourse-connect?" + search.replace(/^\?/, ""));
-  }
-
-  async findFreeVars(request: FindFreeVarsRequest) {
-    return this.post("/refactor/find-free-vars", request);
   }
 
   async getTrustedHostsList(): Promise<TrustedHostsListResponse> {

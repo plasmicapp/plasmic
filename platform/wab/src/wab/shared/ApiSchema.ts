@@ -1132,21 +1132,6 @@ export interface ExistingGithubRepoRequest {
   token?: string;
 }
 
-export interface FindFreeVarsRequest {
-  /**
-   * Must include `tplMarker` around the section to attempt extracting as a
-   * function.
-   */
-  generatedCode: string;
-}
-
-export interface FindFreeVarsResponse {
-  /**
-   * The names are JS identifiers, *not* the original Studio variable names.
-   */
-  params: { [name: string]: string };
-}
-
 export interface PublishShopifyPage {
   errors: [];
 }

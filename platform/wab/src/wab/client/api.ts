@@ -467,7 +467,6 @@ export function filteredApi(
     "getLastBundleVersion",
     "getAppConfig",
     "getClip",
-    "findFreeVars",
     "readNavigatorClipboard",
     "uploadImageFile",
     "queryCopilot",

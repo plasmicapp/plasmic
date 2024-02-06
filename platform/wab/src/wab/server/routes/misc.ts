@@ -1,18 +1,17 @@
-import S3 from "aws-sdk/clients/s3";
-import crypto from "crypto";
-import { Request, Response } from "express-serve-static-core";
-import L from "lodash";
 import {
   ensure,
   ensureInstance,
   ensureString,
   ensureType,
   omitNils,
-} from "../../common";
-import { FindFreeVarsResponse, GetClipResponse } from "../../shared/ApiSchema";
-import "../extensions";
-import { RefactorSvc } from "../RefactorSvc";
-import { getDiscourseConnectSecret } from "../secrets";
+} from "@/wab/common";
+import "@/wab/server/extensions";
+import { getDiscourseConnectSecret } from "@/wab/server/secrets";
+import { GetClipResponse } from "@/wab/shared/ApiSchema";
+import S3 from "aws-sdk/clients/s3";
+import crypto from "crypto";
+import { Request, Response } from "express-serve-static-core";
+import L from "lodash";
 import { getUser, userAnalytics } from "./util";
 
 export async function getAppConfig(req: Request, res: Response) {
@@ -96,12 +95,4 @@ export async function discourseConnect(req: Request, res: Response) {
     sso: responsePayloadEncoded,
     sig: responseSig,
   });
-}
-
-export async function findFreeVars(req: Request, res: Response) {
-  const refactorSvc = new RefactorSvc(
-    ensure(req.tsSvc, "Request must have tsSvc")
-  );
-  const response = await refactorSvc.findFreeVars(req.body);
-  res.json(ensureType<FindFreeVarsResponse>(response));
 }

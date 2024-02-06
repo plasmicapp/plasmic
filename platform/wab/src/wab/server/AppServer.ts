@@ -203,7 +203,6 @@ import { genTranslatableStrings } from "./routes/localization";
 import * as mailingListRoutes from "./routes/mailinglist";
 import {
   discourseConnect,
-  findFreeVars,
   getAppConfig,
   getClip,
   putClip,
@@ -1824,11 +1823,6 @@ export function addMainAppServerRoutes(app: express.Application) {
     "/api/v1/teams/:teamId/tokens/:token",
     withNext(teamRoutes.revokeTeamToken)
   );
-
-  /**
-   * Refactoring operations.
-   */
-  app.post("/api/v1/refactor/find-free-vars", withNext(findFreeVars));
 
   /**
    * Workspaces routes.

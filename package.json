@@ -31,11 +31,14 @@
     "typecheck": "cd platform/wab && yarn ts-watch",
     "upgrade-internal": "bash scripts/upgrade-internal.bash"
   },
+  "resolutions": {
+    "eslint": "^8.55.0"
+  },
   "packageManager": "yarn@1.22.21",
   "devDependencies": {
     "@microsoft/api-extractor": "7.38.2",
-    "@typescript-eslint/eslint-plugin": "6.14.0",
-    "@typescript-eslint/parser": "6.14.0",
+    "@typescript-eslint/eslint-plugin": "6.21.0",
+    "@typescript-eslint/parser": "6.21.0",
     "esbuild": "0.17.18",
     "esbuild-register": "^3.4.2",
     "eslint": "^8.55.0",

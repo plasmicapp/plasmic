@@ -1864,17 +1864,6 @@ export class ViewCtx extends WithDbCtx {
     return allBundle;
   }
 
-  async findFreeVars(component: Component, tpl: TplNode) {
-    const allBundle = this.bundleAllForTransport();
-    const { freeVars } = await this.api._siteApi.nodeOp({
-      method: "findFreeVars",
-      allBundle: allBundle,
-      componentAddr: this.bundler().addrOf(component),
-      tplAddr: this.bundler().addrOf(tpl),
-    });
-    return freeVars as { name: string; type: string }[];
-  }
-
   eltFinder = (val: ValNode) => {
     return this.renderState.sel2dom(val, this.canvasCtx);
   };
