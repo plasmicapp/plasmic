@@ -2,12 +2,27 @@ const TYPES = `AnyType|Arena|ArenaChild|ArenaFrame|ArenaFrameCell|ArenaFrameGrid
 
 module.exports = {
   root: true,
+  ignorePatterns: [
+    ".tmp",
+    "build",
+    "node_modules",
+    "storybook-static",
+
+    "examples/",
+    "internal/",
+    "packages/host/src/type-utils.ts",
+    "platform/wab/create-react-app-new/",
+    "platform/wab/deps/",
+    "platform/wab/public/static/",
+    "platform/wab/src/wab/classes.ts",
+    "platform/wab/src/wab/classes-metas.ts",
+    "platform/wab/src/wab/client/plasmic/",
+    "platform/wab/src/wab/client/sandboxes/",
+  ],
   rules: {
     // Maybe not needed, from public-packages
     // "@typescript-eslint/no-empty-interface": "off",
     // "@typescript-eslint/ban-ts-comment": "off",
-    "@typescript-eslint/no-explicit-any": "off",
-    "prefer-const": "warn",
     "no-restricted-properties": [
       "error",
       {
@@ -91,7 +106,7 @@ module.exports = {
       },
     ],
     "no-restricted-syntax": [
-      "error",
+      "warn",
       {
         selector: "CallExpression[callee.name='ensure'][arguments.length!=2]",
         message: "`ensure` must always be invoked with a message.",
@@ -132,8 +147,22 @@ module.exports = {
     "no-var": "error",
     "no-constant-condition": ["error", { checkLoops: false }],
     "no-empty": ["error", { allowEmptyCatch: true }],
-    "@typescript-eslint/no-empty-function": "off",
+    "prefer-const": "warn",
     "prefer-spread": "off",
+    "@typescript-eslint/ban-types": [
+      "error",
+      {
+        extendDefaults: true,
+        types: {
+          // un-ban types banned by default
+          "{}": false,
+          Function: false,
+        },
+      },
+    ],
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-namespace": "off",
     "@typescript-eslint/no-this-alias": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",
@@ -143,6 +172,7 @@ module.exports = {
         caughtErrorsIgnorePattern: "^_",
       },
     ],
+    "@typescript-eslint/no-var-requires": "off",
   },
   env: {
     es6: true,
@@ -183,21 +213,21 @@ module.exports = {
           },
         ],
         "no-inner-declarations": "off",
-        "@typescript-eslint/ban-types": "warn",
         "@typescript-eslint/no-empty-function": "warn",
         "@typescript-eslint/no-empty-interface": "warn",
         "@typescript-eslint/no-non-null-asserted-optional-chain": "warn",
         "@typescript-eslint/ban-ts-comment": "warn",
-        "@typescript-eslint/no-var-requires": "warn",
         "import/no-extraneous-dependencies": [
           "error",
           {
             devDependencies: [
-              "platform/wab/src/wab/client/**/*.ts",
-              "platform/wab/src/wab/client/**/*.tsx",
               "**/*.spec.ts",
               "**/*.spec.tsx",
               "**/*-spec.ts",
+              "**/*-spec.tsx",
+              "**/*.stories.tsx",
+              "**/*.test.ts",
+              "**/*.test.tsx",
             ],
           },
         ],
