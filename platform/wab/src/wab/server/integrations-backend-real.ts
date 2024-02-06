@@ -21,7 +21,6 @@ async function runAppServer(config: Config) {
   const { app } = await createApp(
     "integrations",
     config,
-    undefined,
     (app_) => {
       addCmsPublicRoutes(app_);
       addIntegrationsRoutes(app_);

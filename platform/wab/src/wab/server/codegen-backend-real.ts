@@ -9,12 +9,7 @@ import { runExpressApp, setupServerCli } from "./server-common";
 async function runAppServer(config: Config) {
   await ensureDbConnections(config.databaseUri);
 
-  const { app } = await createApp(
-    "codegen",
-    config,
-    undefined,
-    addCodegenRoutes
-  );
+  const { app } = await createApp("codegen", config, addCodegenRoutes);
   return runExpressApp(app);
 }
 

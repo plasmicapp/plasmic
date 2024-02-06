@@ -314,7 +314,6 @@ import {
 import { getSegmentWriteKey } from "./secrets";
 import { logError } from "./server-util";
 import { ASYNC_TIMING } from "./timing-util";
-import { TsSvc } from "./TsSvc";
 import { doLogout } from "./util/auth-util";
 import {
   pruneOldBundleBackupsCache,
@@ -521,7 +520,6 @@ function addMiddlewares(
   name: string,
   config: Config,
   expressSessionMiddleware: express.RequestHandler,
-  tsSvc: TsSvc | undefined,
   opts?: {
     skipSession?: boolean;
   }
@@ -604,7 +602,6 @@ function addMiddlewares(
     safeCast<RequestHandler>(async (req, res, next) => {
       req.config = config;
       req.con = connectionPool;
-      req.tsSvc = tsSvc;
 
       req.mailer = createMailer();
       req.activeTransaction = req.con
@@ -2133,7 +2130,6 @@ function addNotFoundHandler(app: express.Application) {
 export async function createApp(
   name: string,
   config: Config,
-  tsSvc: TsSvc | undefined,
   addRoutes: (app: express.Application) => void,
   addCleanRoutes?: (app: express.Application) => void,
   opts?: {
@@ -2165,7 +2161,7 @@ export async function createApp(
 
   addCleanRoutes?.(app);
 
-  addMiddlewares(app, name, config, expressSessionMiddleware, tsSvc, opts);
+  addMiddlewares(app, name, config, expressSessionMiddleware, opts);
 
   if (!config.production) {
     addStaticRoutes(app);

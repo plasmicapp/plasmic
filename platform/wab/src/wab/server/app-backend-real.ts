@@ -18,11 +18,8 @@ import { runExpressApp, setupServerCli } from "./server-common";
 import httpProxy from "http-proxy";
 import { addSocketRoutes } from "./app-socket-backend-real";
 import { Config } from "./config";
-import { startTsSvc } from "./TsSvc";
 
 export async function runAppServer(config: Config) {
-  const tsSvc = await startTsSvc();
-
   await ensureDbConnections(config.databaseUri, {
     defaultPoolSize: 100,
   });
@@ -44,7 +41,6 @@ export async function runAppServer(config: Config) {
   const { app } = await createApp(
     "studio",
     config,
-    tsSvc,
     (application) => {
       addMainAppServerRoutes(application);
 

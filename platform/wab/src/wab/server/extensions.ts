@@ -1,28 +1,28 @@
+import { DEVFLAGS } from "@/wab/devflags";
+import { ProjectIdAndToken } from "@/wab/shared/ApiSchema";
+import { Bundler } from "@/wab/shared/bundler";
 import Analytics from "analytics-node";
 import socketio from "socket.io";
 import { Connection, EntityManager } from "typeorm";
-import { DEVFLAGS } from "../devflags";
-import { ProjectIdAndToken } from "../shared/ApiSchema";
-import { Bundler } from "../shared/bundler";
 import { Config } from "./config";
 import { Actor } from "./db/DbMgr";
 import { Mailer } from "./emails/Mailer";
 import { Team, User as UserEnt } from "./entities/Entities";
 import { WabPromStats } from "./promstats";
 import { TimingStore } from "./timing-util";
-import { TsSvc } from "./TsSvc";
 import { PlasmicWorkerPool } from "./workers/pool";
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     export interface Application {
       analytics: Analytics;
     }
     // Merge our User with passport's User
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
     export interface User extends UserEnt {}
     export interface Request {
       con: Connection;
-      tsSvc: TsSvc | undefined;
       txMgr: EntityManager;
       resolveTransaction: () => Promise<void>;
       rejectTransaction: (err: Error) => Promise<void>;
