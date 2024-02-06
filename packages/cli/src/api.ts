@@ -5,6 +5,7 @@ import {
   CodeConfig,
   CustomFunctionConfig,
   DEFAULT_HOST,
+  FontConfig,
   I18NConfig,
   ImagesConfig,
   StyleConfig,
@@ -285,6 +286,7 @@ export class PlasmicApi {
       componentIdOrNames: readonly string[] | undefined;
       version: string;
       imageOpts: ImagesConfig;
+      fontOpts?: FontConfig;
       stylesOpts: StyleConfig;
       i18nOpts?: I18NConfig;
       codeOpts: CodeConfig;

@@ -62,6 +62,9 @@ export interface PlasmicConfig {
   /** Config for pictures */
   images: ImagesConfig;
 
+  /** Config for fonts import */
+  fontOpts?: FontConfig;
+
   /** Config for style generation */
   style: StyleConfig;
 
@@ -305,6 +308,14 @@ export interface ImageConfig {
   name: string;
   /** File path for the image file, relative to srcDir */
   filePath: string;
+}
+
+export interface FontConfig {
+  /**  "import" generates `@import url(...)`
+   *
+   * "none" doesn't generate anything; you need to load the font yourself.
+   */
+  scheme: "import" | "none";
 }
 
 export interface GlobalVariantsConfig {
