@@ -2858,8 +2858,8 @@ export class StudioCtx extends WithDbCtx {
     s !== undefined &&
       this.viewportCtx!.scrollTo(
         new Pt(
-          s.initScrollX + e.screenX - s.initScreenX,
-          s.initScrollY + e.screenY - s.initScreenY
+          s.initScrollX + s.initScreenX - e.screenX,
+          s.initScrollY + s.initScreenY - e.screenY
         )
       );
     return s !== undefined;
