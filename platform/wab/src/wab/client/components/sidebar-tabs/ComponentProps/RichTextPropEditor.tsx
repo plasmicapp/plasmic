@@ -2,7 +2,6 @@ import { Spinner } from "@/wab/client/components/widgets";
 import { OnClickAway } from "@/wab/commons/components/OnClickAway";
 import useDebounce from "@/wab/commons/components/use-debounce";
 import React, { useEffect, useState } from "react";
-import "react-quill/dist/quill.snow.css";
 const LazyRichTextEditor = React.lazy(
   () => import("@/wab/client/components/RichTextEditor")
 );
