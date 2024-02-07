@@ -113,10 +113,17 @@ Ready?
 
 export const CANVAS_ARTBOARDS_STEP: StudioTutorialStep = {
   name: "canvas-artboards",
-  content: `This is our canvas. It's where you build your project.`,
+  content: `
+## Artboards
+
+This is your canvas. It's where you design your page. You can add new elements, move them around, and style them.
+
+You can also add edit artboards specific to different screen sizes to achieve responsive design.
+`,
   nextButtonText: "Next",
   placement: "center",
   target: STUDIO_ELEMENTS_TARGETS.canvasFrameContainer,
+  highlightTarget: STUDIO_ELEMENTS_TARGETS.canvasFrameContainer,
 };
 
 export function addElementStepFunc({
@@ -210,13 +217,17 @@ export const TURN_OFF_INTERACTIVE_MODE_STEP_FUNC: TutorialStepFunctionality<OnNe
 
 export const ADD_TEXT_STEP: StudioTutorialStep = {
   name: "add-text",
-  content: `Let's add a text element`,
+  content: `
+Let's add a text element
+
+You can add it by clicking into the it or by dragging it from the insert menu.
+`,
   ...addElementStepFunc({
     highlightTarget: STUDIO_ELEMENTS_TARGETS.addTextBlock,
     componentName: "text",
     onNext: async (ctx: OnNextCtx) => {
       await addTextElement(ctx.studioCtx);
-      ctx.studioCtx.leftTabKey = "outline";
+      ctx.studioCtx.switchLeftTab("outline");
     },
   }),
 };

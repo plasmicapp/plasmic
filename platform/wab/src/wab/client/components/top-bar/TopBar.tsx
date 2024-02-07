@@ -16,7 +16,10 @@ import PageIcon from "@/wab/client/plasmic/plasmic_kit_design_system/icons/Plasm
 import PlasmicTopBar from "@/wab/client/plasmic/plasmic_kit_top_bar/PlasmicTopBar";
 import { getComboForAction } from "@/wab/client/shortcuts/studio/studio-shortcuts";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { STUDIO_ONBOARDING_TUTORIALS_LIST } from "@/wab/client/tours/tutorials/tutorials-meta";
+import {
+  STUDIO_ONBOARDING_TUTORIALS,
+  STUDIO_ONBOARDING_TUTORIALS_LIST,
+} from "@/wab/client/tours/tutorials/tutorials-meta";
 import { ensure, sortBy, spawn, withoutNils } from "@/wab/common";
 import {
   isCodeComponent,
@@ -256,7 +259,8 @@ function _TopBar({ preview }: TopBarProps) {
                           });
                         }}
                       >
-                        {tour}
+                        {tour} - {STUDIO_ONBOARDING_TUTORIALS[tour].length}{" "}
+                        steps
                       </Menu.Item>
                     );
                   })}

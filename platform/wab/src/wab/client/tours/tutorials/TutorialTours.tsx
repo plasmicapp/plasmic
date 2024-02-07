@@ -9,6 +9,7 @@ import { TopFrameApi } from "@/wab/client/frame-ctx/top-frame-api";
 import CloseIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Close";
 import HelpIcon from "@/wab/client/plasmic/plasmic_kit/PlasmicIcon__Help";
 import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import { TopFramePublishTours } from "@/wab/client/tours/tutorials/frags/publish-steps";
 import { trackEvent } from "@/wab/client/tracking";
 import { StandardMarkdown } from "@/wab/client/utils/StandardMarkdown";
 import { zIndex } from "@/wab/client/z-index";
@@ -516,36 +517,38 @@ export const StudioTutorialTours = observer(function _StudioTutorialTours() {
         />
       )}
       <React.Suspense fallback={null}>
-        <LazyJoyRide
-          continuous
-          hideCloseButton
-          hideBackButton
-          disableOverlayClose
-          disableScrolling
-          disableScrollParentFix
-          {...tourState}
-          styles={{
-            options: {
-              zIndex: zIndex.tour,
-            },
-            tooltip: {
-              color: undefined,
-              fontSize: undefined,
-              padding: "20px",
-              background: `
+        {!currentStep?.hidden && (
+          <LazyJoyRide
+            continuous
+            hideCloseButton
+            hideBackButton
+            disableOverlayClose
+            disableScrolling
+            disableScrollParentFix
+            {...tourState}
+            styles={{
+              options: {
+                zIndex: zIndex.tour,
+              },
+              tooltip: {
+                color: undefined,
+                fontSize: undefined,
+                padding: "20px",
+                background: `
 linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), url(/static/img/grid-pattern-bg.png)
 
           `,
-              backgroundPosition: "bottom left",
-              // Scale tooltip a bit so that the arrow feels more seamless
-              transform: "scale(1.01)",
-            },
-            tooltipContent: {
-              padding: 0,
-            },
-          }}
-          steps={steps}
-        />
+                backgroundPosition: "bottom left",
+                // Scale tooltip a bit so that the arrow feels more seamless
+                transform: "scale(1.01)",
+              },
+              tooltipContent: {
+                padding: 0,
+              },
+            }}
+            steps={steps}
+          />
+        )}
       </React.Suspense>
     </ErrorBoundary>
   );
@@ -569,9 +572,13 @@ export interface TopFrameTourState {
 
 const PROJECT_TOUR_HOSTING_PREFIX = "tutorial-";
 
-function generateCustomDomain(appCtx: AppCtx) {
+function generateCustomDomain(appCtx: AppCtx, tour: string) {
   const uniqueId = mkShortId().toLowerCase();
-  return `${PROJECT_TOUR_HOSTING_PREFIX}${uniqueId}.${appCtx.appConfig.plasmicHostingSubdomainSuffix}`;
+  const tourPrefix =
+    tour === TopFramePublishTours.PortfolioPublish
+      ? "portfolio-"
+      : "admin-panel-";
+  return `${tourPrefix}${uniqueId}.${appCtx.appConfig.plasmicHostingSubdomainSuffix}`;
 }
 
 export function TopFrameTours(props: {
@@ -590,7 +597,10 @@ export function TopFrameTours(props: {
     currentStep?.target
   );
 
-  const [domain] = React.useState(generateCustomDomain(appCtx));
+  const domain = React.useMemo(
+    () => generateCustomDomain(appCtx, tourState.tour),
+    [appCtx, tourState.tour]
+  );
 
   function trackCurrentStepTourEvent(status: TourStepMeta["status"]) {
     trackTourEvent({
@@ -705,33 +715,42 @@ export function TopFrameTours(props: {
   });
 
   return (
-    <LazyJoyRide
-      continuous
-      hideCloseButton
-      hideBackButton
-      disableOverlayClose
-      disableScrolling
-      disableScrollParentFix
-      {...tourState}
-      styles={{
-        options: {
-          zIndex: zIndex.tour,
-        },
-        tooltip: {
-          color: undefined,
-          fontSize: undefined,
-          padding: "20px",
-          background: `
+    <>
+      {currentStep?.highlightTarget && (
+        <TutorialHighlightEffect
+          target={currentStep.highlightTarget}
+          targetContainer={currentStep.target}
+          zIndex={currentStep.highlightZIndex || zIndex.tourHighlight}
+        />
+      )}
+      <LazyJoyRide
+        continuous
+        hideCloseButton
+        hideBackButton
+        disableOverlayClose
+        disableScrolling
+        disableScrollParentFix
+        {...tourState}
+        styles={{
+          options: {
+            zIndex: zIndex.tour,
+          },
+          tooltip: {
+            color: undefined,
+            fontSize: undefined,
+            padding: "20px",
+            background: `
           linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), url(/static/img/grid-pattern-bg.png)
 
           `,
-          backgroundPosition: "bottom left",
-        },
-        tooltipContent: {
-          padding: 0,
-        },
-      }}
-      steps={steps}
-    />
+            backgroundPosition: "bottom left",
+          },
+          tooltipContent: {
+            padding: 0,
+          },
+        }}
+        steps={steps}
+      />
+    </>
   );
 }

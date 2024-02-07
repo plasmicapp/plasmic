@@ -65,6 +65,8 @@ export const STUDIO_ELEMENTS_TARGETS = {
   canvasLeftPane: ".canvas-editor__left-pane-container",
   leftTabStrip: "#left-tab-strip",
   tplTreeRoot: ".tpltree__root",
+  pageDataGearIcon: `[data-test-id="btn-show-settings"]`,
+  outlineTabKey: `[data-test-tabkey="outline"]`,
 };
 
 export const TOPFRAME_ELEMENTS_TARGETS = {

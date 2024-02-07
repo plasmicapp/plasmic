@@ -33,6 +33,11 @@ export interface TutorialStepUI {
    * Text of secondary button.
    */
   secondaryButtonText?: string;
+  /**
+   * Whether the step popover should be hidden, so that the step wait for the user to interact without showing
+   * any message
+   */
+  hidden?: boolean;
 }
 
 /** Tutorial step props that affect its functionality, like when to advance to the next step. */
