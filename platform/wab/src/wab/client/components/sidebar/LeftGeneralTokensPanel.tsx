@@ -259,19 +259,19 @@ const LeftGeneralTokensPanel = observer(function LeftGeneralTokensPanel() {
             if (!confirmed) {
               return false;
             }
-
-            await studioCtx.change(({ success }) => {
-              tokensUsages.forEach(({ usages, token }) => {
-                usages[0].forEach((usage) => {
-                  changeTokenUsage(studioCtx.site, token, usage, "inline");
-                });
-              });
-              tokens.forEach((token) =>
-                removeFromArray(studioCtx.site.styleTokens, token)
-              );
-              return success();
-            });
           }
+
+          await studioCtx.change(({ success }) => {
+            tokensUsages.forEach(({ usages, token }) => {
+              usages[0].forEach((usage) => {
+                changeTokenUsage(studioCtx.site, token, usage, "inline");
+              });
+            });
+            tokens.forEach((token) =>
+              removeFromArray(studioCtx.site.styleTokens, token)
+            );
+            return success();
+          });
 
           return true;
         }}
