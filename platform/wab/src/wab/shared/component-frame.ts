@@ -21,6 +21,7 @@ import {
 import { allComponentVariants } from "@/wab/components";
 import { allGlobalVariants } from "@/wab/sites";
 import L from "lodash";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { computed, observable } from "mobx";
 import { ensureValidCombo, isPrivateStyleVariant } from "./Variants";
 

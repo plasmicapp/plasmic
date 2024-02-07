@@ -2,6 +2,7 @@
 // This file is owned by you, feel free to edit as you see fit.
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import {
   DefaultCollapseToggleProps,
   PlasmicCollapseToggle,
@@ -53,6 +54,7 @@ function CollapseToggle_(
     <PlasmicCollapseToggle
       root={{ ref }}
       onClick={() => {
+        // eslint-disable-next-line @typescript-eslint/no-shadow
         setIsCollapsed((isCollapsed) => !isCollapsed);
         if (!!onCollapseStateChange) {
           onCollapseStateChange();

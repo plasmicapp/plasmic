@@ -159,7 +159,6 @@ function main() {
     console.error(
       `Found ${badPaths.length} unhandled paths ending at WeakRefs`
     );
-    // @ts-ignore
     process.exit(1);
   }
 }

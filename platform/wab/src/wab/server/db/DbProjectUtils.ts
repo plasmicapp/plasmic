@@ -20,6 +20,7 @@ import { upgradeReferencedHostlessDeps } from "./upgrade-hostless-utils";
 initializeGlobals();
 
 export async function main() {
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   yargs
     .option("dburi", {
       alias: "db",

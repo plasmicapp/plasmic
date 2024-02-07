@@ -30,6 +30,7 @@ describe("hostless-react-slick slider carousel", () => {
   it("works", () => {
     // Create a project to use it
     cy.withinStudioIframe(() => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       cy.createNewPageInOwnArena("Homepage").then((framed) => {
         const textId = "slider-current-slide-state-text";
         cy.insertFromAddDrawer("hostless-slider");

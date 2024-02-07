@@ -15,6 +15,7 @@ describe("Antd5 segmented", () => {
   it("state", () => {
     // Create a project to use it
     cy.withinStudioIframe(() => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       cy.createNewPageInOwnArena("Homepage").then((framed) => {
         turnOffDesignMode();
         cy.insertFromAddDrawer("plasmic-antd5-segmented");
@@ -45,6 +46,7 @@ describe("Antd5 segmented", () => {
   it("custom actions for slot Options", () => {
     // Create a project to use it
     cy.withinStudioIframe(() => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       cy.createNewPageInOwnArena("Homepage").then((framed) => {
         turnOffDesignMode();
         cy.switchToTreeTab();

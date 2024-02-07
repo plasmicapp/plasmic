@@ -157,6 +157,7 @@ export class ImageBackground extends ImageBackgroundArgs {
     if (this.url.startsWith("var(--")) {
       return this.url;
     } else {
+      // eslint-disable-next-line no-useless-escape
       return `url(\"${this.url}\")`;
     }
   }

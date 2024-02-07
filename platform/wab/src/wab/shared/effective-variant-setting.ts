@@ -1,4 +1,5 @@
 import L from "lodash";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { computed, isObservable, makeObservable } from "mobx";
 
 import {

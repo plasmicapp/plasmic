@@ -8,6 +8,7 @@ function cleanup(path: string) {
 }
 
 async function main() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [node, cmd, jsonPath, dotPath, queryModule] = process.argv;
   const result: ICruiseResult = JSON.parse(fs.readFileSync(jsonPath, "utf8"));
   const moduleToDependents = multimap(

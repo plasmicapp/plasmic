@@ -1,5 +1,6 @@
 import { SelectOptionRef } from "@plasmicapp/react-web";
 import * as React from "react";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import {
   DefaultHostProtocolSelect__OptionProps,
   PlasmicHostProtocolSelect__Option,

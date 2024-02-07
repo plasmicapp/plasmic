@@ -69,6 +69,7 @@ export function makeFrameMenu({
           </Menu.Item>
         );
       }
+      // eslint-disable-next-line @typescript-eslint/no-shadow
       builder.genSection(undefined, (push) => {
         push(
           <Menu.Item

@@ -161,6 +161,7 @@ describe("state-management-variants-interactions", function () {
         const variantOptions = ["foo", "bar"];
         let activatedVariants: string[] = [];
         const newVariants = (variants: string[]) => variants;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const clearVariants = (variants: string[]) => [];
         const toggleVariants = (variants: string[]) =>
           variantOptions.filter(

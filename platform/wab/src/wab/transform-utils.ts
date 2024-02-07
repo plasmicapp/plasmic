@@ -108,9 +108,9 @@ export const functionToTransform = {
  * when applying the match
  */
 const TRANSFORM_PATTERN =
-  /([a-zA-Z0-9]+)\((-?[0-9]+\.?[0-9]*((deg)|(px)|(rad)|\%|(grad)|(turn))?)\)/g;
+  /([a-zA-Z0-9]+)\((-?[0-9]+\.?[0-9]*((deg)|(px)|(rad)|%|(grad)|(turn))?)\)/g;
 const TRANSFORM_SPLIT_PATTERN =
-  /([a-zA-Z0-9]+)\(|(-?[0-9]+\.?[0-9]*((deg)|(px)|(rad)|\%|(grad)|(turn))?)|\)/g;
+  /([a-zA-Z0-9]+)\(|(-?[0-9]+\.?[0-9]*((deg)|(px)|(rad)|%|(grad)|(turn))?)|\)/g;
 
 export const fromTransformStringToObj = (rawTransform: string): Transform => {
   const functions = rawTransform.match(TRANSFORM_PATTERN);

@@ -54,6 +54,7 @@ async function main() {
     return [siteUuid_, site_!];
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const recorder = measured(
     "Observing",
     () =>

@@ -7,6 +7,7 @@ import L from "lodash";
 export class InstUtil {
   private realClass2Class: Map<Function, Class>;
   constructor(
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     public meta: MetaRuntime,
     realClasses: { [key: string]: Function }
   ) {
@@ -44,10 +45,13 @@ export class InstUtil {
     ignoreUuidsAndNils: boolean
   ) {
     const fcmp = shallow
-      ? (x: any, y: any) => x === y
-      : (x: any, y: any) => rec(x, y);
+      ? // eslint-disable-next-line @typescript-eslint/no-shadow
+        (x: any, y: any) => x === y
+      : // eslint-disable-next-line @typescript-eslint/no-shadow
+        (x: any, y: any) => rec(x, y);
     const visitedX2Y = {};
     const visitedY2X = {};
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     const rec = (x: any, y: any) => {
       if (x === y) {
         return true;

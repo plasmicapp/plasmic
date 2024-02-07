@@ -33,6 +33,7 @@ describe("component tricky operations", function () {
           initialValue: "5",
         });
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         cy.createNewComponent("CompB").then((framedB) => {
           cy.insertFromAddDrawer(VERT_CONTAINER_CAP);
           cy.justType("{enter}");

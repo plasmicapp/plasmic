@@ -115,6 +115,7 @@ function compareVals(a: any, b: any) {
   return a === b;
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 function oneLevelDeepComparison(a: Object, b: Object, excludeKeys?: string[]) {
   // Minimizing object allocations during this comparison
   const aKeys = Object.keys(a);

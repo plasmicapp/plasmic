@@ -5,6 +5,7 @@ import * as React from "react";
 import { useState } from "react";
 import SimplePathColumn from "./SimplePathColumn";
 import { Var } from "./wab/classes";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import {
   DefaultSimplePathBuilderProps,
   PlasmicSimplePathBuilder,

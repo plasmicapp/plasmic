@@ -13,20 +13,28 @@ import util from "util";
 import { AuthData } from "./AuthForm";
 import KeyValueRow from "./KeyValueRow";
 import { RestQuery } from "./wab/classes";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { ValueViewer } from "./wab/client/components/coding/ValueViewer";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import {
   ReadablePromiseLoadable,
   Spinner,
 } from "./wab/client/components/widgets";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { LabelWithDetailedTooltip } from "./wab/client/components/widgets/LabelWithDetailedTooltip";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import Select from "./wab/client/components/widgets/Select";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { Textbox } from "./wab/client/components/widgets/Textbox";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import {
   DefaultRestBuilderProps,
   PlasmicRestBuilder,
   PlasmicRestBuilder__OverridesType,
 } from "./wab/client/plasmic/plasmic_kit_data_queries/PlasmicRestBuilder";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import ChevronDownsvgIcon from "./wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronDownsvg";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import ChevronLeftsvgIcon from "./wab/client/plasmic/q_4_icons/icons/PlasmicIcon__ChevronLeftsvg";
 import {
   ensure,
@@ -96,8 +104,9 @@ function _RestBuilder(
 
   const [showBody, setShowBody] = useState(true);
   const [requestStatus, setRequestStatus] = useState<RequestStatus>("idle");
-  const [responseSummary, setResponseSummary] =
-    useState<ResponseSummary | undefined>(undefined);
+  const [responseSummary, setResponseSummary] = useState<
+    ResponseSummary | undefined
+  >(undefined);
   // TODO to add
   const [showImporter, setShowImporter] = useState(false);
 

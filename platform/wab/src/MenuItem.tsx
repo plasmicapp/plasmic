@@ -4,7 +4,9 @@
 // This file is owned by you, feel free to edit as you see fit.
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import * as React from "react";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { PublicLink } from "./wab/client/components/PublicLink";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import {
   DefaultMenuItemProps,
   PlasmicMenuItem,

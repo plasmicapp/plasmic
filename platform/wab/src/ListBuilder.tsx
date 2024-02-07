@@ -2,6 +2,7 @@
 // This file is owned by you, feel free to edit as you see fit.
 import * as React from "react";
 import { ReactNode } from "react";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import {
   DefaultListBuilderProps,
   PlasmicListBuilder,

@@ -350,6 +350,7 @@ export function observeModel(
       new localObject(),
       Object.fromEntries(
         allFields.map((f) => [f.name, mobx.observable])
+        // eslint-disable-next-line @typescript-eslint/ban-types
       ) as Object
     );
   });
@@ -646,6 +647,7 @@ export function observeModel(
 
     // Now, observe the object itself, so we get notified when new entries
     // are added, removed, or changed.
+    // eslint-disable-next-line @typescript-eslint/ban-types
     const objDispose = mobx.observe(obj as Object, (event) => {
       if (event.type === "add") {
         fireFieldChange(inst, field.name, {

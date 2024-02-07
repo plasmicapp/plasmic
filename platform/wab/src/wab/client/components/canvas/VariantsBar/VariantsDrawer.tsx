@@ -167,28 +167,32 @@ function VariantsDrawer_({
   const handleSearchKeyDown = (e: React.KeyboardEvent) => {
     switch (e.key) {
       case "Escape":
-      case "Tab":
+      case "Tab": {
         handleDismiss();
         break;
+      }
       case "Enter":
-      case "Space":
+      case "Space": {
         const currentHighlightedVariant = flattenedVariants[highlightIndex];
         if (currentHighlightedVariant) {
           handleVariantClick(currentHighlightedVariant)();
         }
         setQuery("");
         break;
+      }
       case "ArrowDown": {
         shiftHighlightIndex(+1);
         e.preventDefault();
         break;
       }
-      case "ArrowUp":
+      case "ArrowUp": {
         shiftHighlightIndex(-1);
         e.preventDefault();
         break;
-      default:
+      }
+      default: {
         break;
+      }
     }
   };
 

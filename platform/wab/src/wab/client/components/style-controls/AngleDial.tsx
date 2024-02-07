@@ -48,6 +48,7 @@ export function AngleDial({ angle, onChange }: AngleDialProps) {
     const containerOffset = ensure($(ensure(container.current)).offset());
     const left = e.mouseEvent.pageX - containerOffset.left;
     const top = e.mouseEvent.pageY - containerOffset.top;
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     const angle = offsetToAngle({ top, left });
     return onChange(angle);
   };

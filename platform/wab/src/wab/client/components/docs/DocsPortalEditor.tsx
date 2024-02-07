@@ -31,7 +31,7 @@ import REACT_WEB_TYPES from "!raw-loader!../../../../../node_modules/@plasmicapp
 // support typing <Plasmic*/> components.  We cheat a bit here by just
 // loading the relevant types directly from our own node_modules :-p
 // @ts-expect-error: Importing raw react types as a string
-// eslint-disable-next-line path/no-relative-imports
+// eslint-disable-next-line path/no-relative-imports, import/no-extraneous-dependencies
 import REACT_TYPES from "!raw-loader!../../../../../node_modules/@types/react/index.d.ts";
 
 type MonacoType = typeof monacoEditor;

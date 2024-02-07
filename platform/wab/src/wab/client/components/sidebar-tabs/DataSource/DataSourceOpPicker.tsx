@@ -2992,6 +2992,7 @@ const JsonArrayWithSchemaEditor = observer(function JsonArrayWithSchemaEditor({
   );
 
   const handleChange = (
+    // eslint-disable-next-line @typescript-eslint/ban-types
     newVal: Object[] | string,
     usedType: "editor" | "code"
   ) => {

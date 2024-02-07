@@ -1,3 +1,45 @@
+import {
+  Component,
+  CustomCode,
+  isKnownCustomCode,
+  isKnownObjectPath,
+  ObjectPath,
+  TemplatedString,
+} from "@/wab/classes";
+import { resetNodes as doResetNodes } from "@/wab/client/components/canvas/slate";
+import { ContextMenuContext } from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
+import CopilotCodePrompt from "@/wab/client/components/CopilotCodePrompt";
+import DataPicker, {
+  DataPickerTypesSchema,
+} from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
+import { PropEditorRef } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
+import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
+import {
+  arrayEqIgnoreOrder,
+  cx,
+  delay,
+  randUint16,
+  spawn,
+  xSetDefault,
+} from "@/wab/common";
+import { useSignalListener } from "@/wab/commons/components/use-signal-listener";
+import { DropFirst } from "@/wab/commons/types";
+import {
+  asCode,
+  clone,
+  codeLit,
+  createExprForDataPickerValue,
+  customCode,
+  ExprCtx,
+  extractValueSavedFromDataPicker,
+  isRealCodeExpr,
+  summarizeExpr,
+} from "@/wab/exprs";
+import {
+  getDynamicBindings,
+  isDynamicValue,
+} from "@/wab/shared/dynamic-bindings";
+import { tryEvalExpr } from "@/wab/shared/eval";
 import { DataSourceSchema } from "@plasmicapp/data-sources";
 import { Popover, Tooltip } from "antd";
 import { debounce } from "lodash";
@@ -42,46 +84,6 @@ import {
   RenderPlaceholderProps,
 } from "slate-react/dist/components/editable";
 import { getSegments } from "sql-highlight";
-import {
-  Component,
-  CustomCode,
-  isKnownCustomCode,
-  isKnownObjectPath,
-  ObjectPath,
-  TemplatedString,
-} from "@/wab/classes";
-import {
-  arrayEqIgnoreOrder,
-  cx,
-  delay,
-  randUint16,
-  spawn,
-  xSetDefault,
-} from "@/wab/common";
-import { useSignalListener } from "@/wab/commons/components/use-signal-listener";
-import { DropFirst } from "@/wab/commons/types";
-import {
-  asCode,
-  clone,
-  codeLit,
-  createExprForDataPickerValue,
-  customCode,
-  ExprCtx,
-  extractValueSavedFromDataPicker,
-  isRealCodeExpr,
-  summarizeExpr,
-} from "@/wab/exprs";
-import {
-  getDynamicBindings,
-  isDynamicValue,
-} from "@/wab/shared/dynamic-bindings";
-import { tryEvalExpr } from "@/wab/shared/eval";
-import { useStudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
-import { resetNodes as doResetNodes } from "@/wab/client/components/canvas/slate";
-import { ContextMenuContext } from "@/wab/client/components/ContextMenuIndicator/ContextMenuIndicator";
-import CopilotCodePrompt from "@/wab/client/components/CopilotCodePrompt";
-import DataPicker, { DataPickerTypesSchema } from "@/wab/client/components/sidebar-tabs/DataBinding/DataPicker";
-import { PropEditorRef } from "@/wab/client/components/sidebar-tabs/PropEditorRow";
 import styles from "./TemplatedTextEditor.module.scss";
 
 type CodeTagNode = {
@@ -705,6 +707,7 @@ function resolveTemplatedString(nodes: Descendant[]): TemplatedString {
 
 interface CodeTagProps {
   element: CodeTagNode;
+  // eslint-disable-next-line @typescript-eslint/ban-types
   attributes: Object;
   children: React.ReactElement;
   data: Record<string, any> | undefined;

@@ -4,13 +4,18 @@ import { Menu } from "antd";
 import { observer, Observer } from "mobx-react-lite";
 import * as React from "react";
 import { useState } from "react";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { WithContextMenu } from "./wab/client/components/ContextMenu";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { LegacyComponentParamsSection } from "./wab/client/components/sidebar-tabs/legacy-component-params-section";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { ImageAssetPreviewAndPicker } from "./wab/client/components/style-controls/ImageSelector";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import {
   DefaultPageSettingsProps,
   PlasmicPageSettings,
 } from "./wab/client/plasmic/plasmic_kit_page_settings/PlasmicPageSettings";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { useStudioCtx } from "./wab/client/studio-ctx/StudioCtx";
 import { nullToUndefined, spawn } from "./wab/common";
 import { PageComponent } from "./wab/components";

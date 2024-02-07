@@ -10,6 +10,7 @@ import { MaybeWrap } from "@/wab/commons/components/ReactUtil";
 import { validJsIdentifierChars } from "@/wab/shared/codegen/util";
 import { tryEvalExpr } from "@/wab/shared/eval";
 import { isValidJavaScriptCode } from "@/wab/shared/parser-utils";
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { FocusScope } from "@react-aria/focus";
 import { notification, Tooltip } from "antd";
 import { default as classNames } from "classnames";

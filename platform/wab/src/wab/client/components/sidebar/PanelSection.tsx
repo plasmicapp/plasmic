@@ -29,6 +29,7 @@ export function PanelSection({
   const [openState, setOpenState] = useState(defaultOpen);
   open = open ?? openState;
 
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   function handleChangeOpen(open: boolean) {
     onChangeOpen?.(open);
     setOpenState(open);

@@ -31,6 +31,7 @@ describe("hostless-tiptap", () => {
 
   it("has no extensions added by default", () => {
     cy.withinStudioIframe(() => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       cy.createNewPageInOwnArena("Homepage").then((framed) => {
         initialSetup();
 
@@ -47,6 +48,7 @@ describe("hostless-tiptap", () => {
   it("works - bold, italic, underline, strike, code, link, mention", () => {
     // Create a project to use it
     cy.withinStudioIframe(() => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       cy.createNewPageInOwnArena("Homepage").then((framed) => {
         initialSetup();
         cy.selectTreeNode(["Tiptap Rich Text Editor"]);

@@ -38,10 +38,11 @@ async function main() {
       case "force-setup":
         await shopifyPostInstallSetup(client, { force: true });
         break;
-      case "encode-origin":
+      case "encode-origin": {
         const combined = bytesToHex(stringToUTF8Bytes(process.argv[4]));
         console.log(combined.slice(0, 63));
         break;
+      }
       case "set-cookies":
         await db.setKeyValue(
           "shopify-store-data",

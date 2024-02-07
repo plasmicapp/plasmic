@@ -24,6 +24,7 @@ async function main() {
     const componentName = capCamelCase(filename.replace(".svg", "")) + "Icon";
     // For some reason, maskType on <mask> React elements is not recognized by
     // React.
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const jsxified = content
       .replace("<svg", '<svg className="custom-svg-icon"')
       .replace(/\b(clip-path|clip-rule|fill-rule|stroke-width)\b/g, (text) =>

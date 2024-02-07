@@ -6,6 +6,7 @@ import * as fs from "fs";
 import L from "lodash";
 import { check } from "../src/wab/common";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const JS = require("JSONStream");
 
 /**
@@ -56,6 +57,7 @@ async function main() {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getParent = (x: any) => parentMap.get(x.id);
   const getById = (id: number) => idMap.get(id);
   const reflect = (x: any) => getById(x.id);
@@ -110,6 +112,7 @@ async function main() {
     }
   }
 
+  // eslint-disable-next-line no-shadow
   function genPkgMeta(pkg: string, pkgPathPattern: RegExp) {
     // TODO Currently only processes classes descending from React.Component.
     // Does not handle ComponentClass objects.

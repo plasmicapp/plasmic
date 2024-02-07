@@ -51,6 +51,7 @@ function DocsPortalIntro(props: DocsPortalIntroProps) {
   const projectId = studioCtx.siteInfo.id;
 
   function _replaceLink(
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     props: DetailedHTMLProps<
       React.HTMLAttributes<HTMLDivElement>,
       HTMLDivElement
@@ -104,9 +105,11 @@ module.exports = {
         `,
       }}
       introText={{
+        // eslint-disable-next-line @typescript-eslint/no-shadow
         render: (props) => _replaceLink(props),
       }}
       introText2={{
+        // eslint-disable-next-line @typescript-eslint/no-shadow
         render: (props) => _replaceLink(props),
       }}
       loaderv2Config={{

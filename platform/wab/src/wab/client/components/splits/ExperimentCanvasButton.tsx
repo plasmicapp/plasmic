@@ -29,6 +29,7 @@ export interface ExperimentCanvasButtonProps
 }
 
 const convertSplitType = (split: Split) => {
+  // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
   switch (split.splitType) {
     case SplitType.Experiment:
       return "abTest";

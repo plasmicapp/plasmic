@@ -21,6 +21,7 @@ describe.skip("hostless-timer", () => {
   it("works", () => {
     // Create a project to use it
     cy.withinStudioIframe(() => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       cy.createNewPageInOwnArena("Homepage").then((framed) => {
         cy.addState({
           name: "isRunning",

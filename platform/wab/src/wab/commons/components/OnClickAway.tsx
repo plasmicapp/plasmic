@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { plasmicIFrameMouseDownEvent } from "@/wab/client/definitions/events";
 import $ from "jquery";
 import React, { cloneElement, ReactElement, useRef } from "react";

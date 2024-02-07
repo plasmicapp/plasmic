@@ -2,12 +2,9 @@
 /*
  * Note about this module: we should use Cypress's custom commands when possible.
  */
-// @ts-ignore
-import _ from "lodash";
+import * as _ from "lodash";
 import * as platform from "platform";
 import { HostLessPackageInfo, State } from "../../src/wab/classes";
-import { ACTIONS_META } from "../../src/wab/shared/state-management/interactions-meta";
-// @ts-ignore
 import { StudioCtx } from "../../src/wab/client/studio-ctx/StudioCtx";
 import { ViewCtx } from "../../src/wab/client/studio-ctx/view-ctx";
 import { testIds } from "../../src/wab/client/test-helpers/test-ids";
@@ -255,9 +252,8 @@ export function waitForNewFrame(
   opts?: { skipWaitInit: boolean }
 ) {
   waitStudioLoaded();
-  return cy.get(".canvas-editor__canvas-clipper").then(($clipper) => {
+  return cy.get(".canvas-editor__canvas-clipper").then(() => {
     return curDocument().then((doc) => {
-      const initScrollTop = $clipper.scrollTop();
       const existingFrames = doc.querySelectorAll(
         ".canvas-editor__viewport[data-test-frame-uid]"
       );
@@ -1192,7 +1188,7 @@ export function doVariantGroupMenuCommand(groupName: string, menuItem: string) {
  * https://stackoverflow.com/questions/17158932/how-to-detect-when-an-iframe-has-already-been-loaded
  * for some details.
  */
-function waitCanvasOrPreviewIframeLoaded<T>(
+function waitCanvasOrPreviewIframeLoaded(
   iframe: HTMLIFrameElement
 ): Promise<void> {
   return new Promise(
@@ -1865,7 +1861,7 @@ export function multiSelectDataPlasmicProp(prop: string, values: string[]) {
   cy.get(`[data-plasmic-prop="${prop}"]`).click({ force: true });
   cy.get(
     `[data-plasmic-prop="${prop}"] [data-test-id="multi-select-value"]`
-  ).each((el) => {
+  ).each(() => {
     cy.get(`[data-plasmic-prop="${prop}"]`)
       .click({ force: true })
       .type("{backspace}");
@@ -1993,12 +1989,6 @@ function disableTours() {
     win.localStorage.setItem("plasmic.tours.top-project-nav", "true");
   });
 }
-
-const menu = {
-  outline: true,
-  copilot: true,
-  lint: true,
-};
 
 function switchRightTab(key: string) {
   clickIfExists(`button[data-test-tabkey="${key}"][aria-selected="false"]`);

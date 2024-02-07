@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { FocusScope, useFocusManager } from "@react-aria/focus";
 import { isKeyHotkey } from "is-hotkey";
 import * as React from "react";

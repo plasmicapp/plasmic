@@ -20,6 +20,7 @@ export const OmnibarOverlay = observer(function OmnibarOverlay(
   const omnibarState = studioCtx.getOmnibarState();
   const state = useOverlayTriggerState({
     isOpen: omnibarState.show,
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     onOpenChange: async (isOpen) =>
       studioCtx.changeUnsafe(() =>
         isOpen ? studioCtx.showOmnibar() : studioCtx.hideOmnibar()

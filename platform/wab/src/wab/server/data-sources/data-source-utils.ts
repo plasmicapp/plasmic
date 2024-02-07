@@ -109,6 +109,7 @@ export async function executeDataSourceOperation(
 export async function makeFetcher(
   dbCon: Connection,
   source: GenericDataSource
+  // eslint-disable-next-line @typescript-eslint/ban-types
 ): Promise<Object> {
   switch (source.source) {
     case "airtable":

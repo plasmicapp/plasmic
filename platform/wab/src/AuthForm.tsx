@@ -3,8 +3,11 @@
 import * as React from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { RestFormData } from "./RestBuilder";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import Select2 from "./wab/client/components/widgets/Select";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { Textbox } from "./wab/client/components/widgets/Textbox";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import {
   DefaultAuthFormProps,
   PlasmicAuthForm,

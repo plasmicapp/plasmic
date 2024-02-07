@@ -81,6 +81,7 @@ export function SelectorsInput({
         setKeepOpen(false);
         onBlur?.(e);
       }}
+      // eslint-disable-next-line @typescript-eslint/no-shadow
       onInputValueChange={(text) => setText(text)}
       className={className}
       focusedClassName={focusedClassName}

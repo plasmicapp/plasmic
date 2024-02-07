@@ -39,6 +39,7 @@ export interface ExperimentPanelProps extends DefaultExperimentPanelProps {
 }
 
 const getExperimentPanelSplitType = (split: Split) => {
+  // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
   switch (split.splitType) {
     case SplitType.Experiment:
       return undefined;

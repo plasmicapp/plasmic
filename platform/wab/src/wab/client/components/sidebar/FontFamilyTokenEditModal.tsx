@@ -71,6 +71,7 @@ export const FontFamilyTokenEditModal = observer(
           <FontFamilySelector
             studioCtx={studioCtx}
             selectOpts={{
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onChange: onChange,
               value: vsh.getActiveTokenValue(token),
               vsh,

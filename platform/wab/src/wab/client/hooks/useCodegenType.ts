@@ -24,6 +24,7 @@ export function useCodegenType(): "loader" | "codegen" {
       )
     );
     const uniqueId = mkUuid();
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     appCtx.api.addStorageListener(
       uniqueId,
       proxy(({ key, newValue }) => {
@@ -33,6 +34,7 @@ export function useCodegenType(): "loader" | "codegen" {
       })
     );
     return () => {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       appCtx.api.removeEventListener("storage", uniqueId);
     };
   }, []);

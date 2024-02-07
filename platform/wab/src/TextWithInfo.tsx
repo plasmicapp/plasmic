@@ -3,6 +3,7 @@
 import { Tooltip } from "antd";
 import * as React from "react";
 import { ReactNode } from "react";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import {
   DefaultTextWithInfoProps,
   PlasmicTextWithInfo,

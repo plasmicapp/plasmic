@@ -72,6 +72,7 @@ describe("Table and form tutorial", function () {
             projectId: tourProjectId,
           }).then(
             (clonedProject: { projectId: string; workspaceId: string }) => {
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
               const { projectId, workspaceId } = clonedProject;
 
               cy.openProject({

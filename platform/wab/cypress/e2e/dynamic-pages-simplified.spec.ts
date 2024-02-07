@@ -36,6 +36,7 @@ describe("dynamic-pages-simplified", function () {
             "button:not([disabled]):contains(Create dynamic page)"
           ).click();
         },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       }).then((frame) => {
         cy.contains("Page data").click();
 

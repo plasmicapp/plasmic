@@ -1,5 +1,7 @@
 import * as React from "react";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { ClickStopper } from "./wab/client/components/widgets";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { PlasmicInlineEditable } from "./wab/client/plasmic/plasmic_kit_design_system/PlasmicInlineEditable";
 import { InlineEdit } from "./wab/commons/components/InlineEdit";
 import { OnClickAway } from "./wab/commons/components/OnClickAway";

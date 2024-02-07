@@ -5,7 +5,9 @@ import * as React from "react";
 import { CSSProperties, useState } from "react";
 import SimplePathRow from "./SimplePathRow";
 import SimplePathRowHeader from "./SimplePathRowHeader";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { richSummarizeVal } from "./wab/client/components/sidebar-tabs/data-tab";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import {
   DefaultSimplePathColumnProps,
   PlasmicSimplePathColumn,
@@ -47,6 +49,7 @@ function SimplePathColumn({
     <PlasmicSimplePathColumn
       {...props}
       root={{
+        // eslint-disable-next-line @typescript-eslint/no-shadow
         render: (props) => (
           <motion.div
             {...uncheckedCast(props)}

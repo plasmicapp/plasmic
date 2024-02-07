@@ -1,5 +1,6 @@
 import { SwitchRef } from "@plasmicapp/react-web";
 import * as React from "react";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import {
   DefaultSwitchProps,
   PlasmicSwitch,

@@ -16,6 +16,7 @@ import { lintIssuesEquals } from "@/wab/shared/linting/lint-utils";
 import { maybeComputedFn } from "@/wab/shared/mobx-util";
 import { getSlotArgs } from "@/wab/shared/SlotUtils";
 import { isTplTag, walkTpls } from "@/wab/tpls";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { comparer } from "mobx";
 import {
   AncestorInfo,

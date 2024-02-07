@@ -17,6 +17,7 @@ import {
   Variant,
   VariantGroup,
 } from "@/wab/classes";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { StudioCtx } from "@/wab/client/studio-ctx/StudioCtx";
 import {
   assert,
@@ -46,6 +47,7 @@ import {
 import { capitalizeFirst } from "@/wab/strs";
 import { clone, mkTplComponent } from "@/wab/tpls";
 import { has, isArray, isEmpty, keyBy, orderBy } from "lodash";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { IObservableValue, observable } from "mobx";
 import { ArenaType, arenaTypes } from "./ApiSchema";
 import {

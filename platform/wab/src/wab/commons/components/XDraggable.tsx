@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { App, withAppContext } from "@/wab/client/components/top-view";
 import { ensure, safeCast } from "@/wab/common";
 import L from "lodash";

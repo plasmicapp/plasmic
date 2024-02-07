@@ -211,7 +211,9 @@ class _MeasureTool extends ViewComponentBase<MeasureToolProps, {}> {
         {() => {
           const sc = this.props.studioCtx;
           const vc = sc.focusedViewCtx();
+          // eslint-disable-next-line @typescript-eslint/no-shadow
           const $focusedDomElt = maybe(vc, (vc) => vc.focusedDomElt());
+          // eslint-disable-next-line @typescript-eslint/no-shadow
           const $target = maybe(vc, (vc) => vc.$measureToolDomElt());
           // Only display MeasureTool lines if we know the
           // 2 unique elements we want a line between

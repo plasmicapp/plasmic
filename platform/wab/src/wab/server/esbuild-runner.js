@@ -5,6 +5,7 @@ const path = require("path");
 const Module = require("module");
 require("dotenv").config({ path: path.resolve(__dirname, "../../../.env") });
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const [node, self, first, ...rest] = process.argv;
 process.argv = [node, first, ...rest];
 

@@ -15,6 +15,7 @@ interface ClipboardItem {
   getType(format: string): Promise<Blob | null>;
 }
 
+// eslint-disable-next-line no-var
 declare var ClipboardItem: {
   prototype: ClipboardItem;
   new (objects: Record<string, Blob>): ClipboardItem;

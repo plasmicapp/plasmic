@@ -40,6 +40,7 @@ async function main() {
     }
   }
   const freq2Keys: { [freq: number]: number[] } = {};
+  // eslint-disable-next-line no-shadow
   for (const key of Object.keys(key2prop).map((key) => +key)) {
     const freq = ensure(key2tags[key].length);
     if (!(freq in freq2Keys)) {
@@ -51,6 +52,7 @@ async function main() {
   const largeCliques: ReactMetaClique[] = [];
   const keysInCliques = new Set<number>();
 
+  // eslint-disable-next-line no-shadow
   for (const freq of Object.keys(freq2Keys).map((freq) => +freq)) {
     const keys = ensure(freq2Keys[freq]);
     // Usually frequent props happen to be used by the same set of components

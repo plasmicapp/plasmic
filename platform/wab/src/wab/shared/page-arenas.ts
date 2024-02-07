@@ -21,6 +21,7 @@ import {
   getSiteScreenSizes,
 } from "@/wab/sites";
 import { orderBy } from "lodash";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { IObservableArray } from "mobx";
 import {
   ensureActivatedScreenVariantsForArena,

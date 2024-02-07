@@ -1,5 +1,6 @@
 import { TriggeredOverlayRef } from "@plasmicapp/react-web";
 import * as React from "react";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import {
   DefaultHostProtocolSelect__OverlayProps,
   PlasmicHostProtocolSelect__Overlay,

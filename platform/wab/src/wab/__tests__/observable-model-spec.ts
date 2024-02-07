@@ -12,7 +12,7 @@ import L from "lodash";
 import { Lambda } from "mobx";
 
 class Sentinel {
-  tag: "SENTINEL" = "SENTINEL";
+  tag = "SENTINEL" as const;
 }
 const sentinel = new Sentinel();
 

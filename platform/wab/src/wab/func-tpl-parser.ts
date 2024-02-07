@@ -68,6 +68,7 @@ const phrase = () =>
 
 const word = () =>
   PR.regex(/[a-z0-9][a-z0-9-]*/).onMatch(function (...args) {
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     let word;
     [word] = [...args[0]];
     return word;

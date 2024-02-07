@@ -93,8 +93,10 @@ export class CodePreviewCtx {
       }
     `;
 
+    // eslint-disable-next-line no-useless-escape
     while (initialCode.match(/<Instance[^ \/]* ?\/>/)) {
       initialCode = initialCode.replace(
+        // eslint-disable-next-line no-useless-escape
         /<Instance([^ \/]*) ?\/>/g,
         (_, key) => instances[key]
       );

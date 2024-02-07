@@ -1,8 +1,8 @@
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { OpenAIWrapper } from "@/wab/server/copilot/llms";
 import { DataSourceSchema } from "@plasmicapp/data-sources";
 import GPT3Tokenizer from "gpt3-tokenizer";
 import { CreateChatCompletionRequest } from "openai";
-import { Awaited } from "ts-essentials";
 
 export interface Issue {
   message: string;
